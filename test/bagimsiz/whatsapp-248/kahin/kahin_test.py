@@ -33,7 +33,12 @@ Bölümler:
      (M210) ayrışır; güncelleme 15: S7-e denetimi I12'ye taşındı (tersine döndü); S22 senaryolarında S23 tetiği yok
   I12 (güncelleme 15, 2.5.0: S23, SW3): eski S7-e girdisi S23 ile hesaplanır (elle, şüphesiz tutarla; B seçeneği M213 ayrışır); `s23_an` iki okumasında kime / kaç kez AYNI, okumaların
      ayrıştığı durum (S23-a) hata verir; S-W3: yil_sonra birim denetimi, bekleyen / belirsiz işte silme (S-W3-a) ve silinmiş Ekstre'nin yeniden gönderimi (S-W3-b) hata verir, silinmiş
-     Ödeme Hatırlatma'nın yeniden gönderimi karttan hesaplanır; yeni alanlar (icerik_silindi, elle_sayilan, kontrol içerik) yalnız S23 / SW3 senaryolarında
+     Ödeme Hatırlatma'nın yeniden gönderimi karttan hesaplanır; yeni alanlar (icerik_silindi, elle_sayilan, kontrol içerik) yalnız S23 / SW3 senaryolarında. Güncelleme 16: (b), (c), (e), (f)
+     I13'e taşındı (tersine döndü)
+  I13 (güncelleme 16, 2.5.0: S29–S32): eski S23-a girdisi S29 ile hesaplanır (gönderim anındaki tutarla gider; B M223 ayrışır), `s23_an` okuması yok; S30: eski S-W3-a girdileri hesaplanır
+     (bekleyen iş gönderilmez, belirsiz iz kalır), `s30_an` iki okumada kime / kaç kez AYNI, okumaların ayrıştığı sıra (S30-a) ve Gönderiliyor anında talep hata verir; S31: eski S-W3-b
+     girdisi `icerik_silindi` ile elenir, Ödeme Hatırlatma'nın karşılığı (S31-a) hata verir; S32: talepten önceki yedek geri yüklenince içerik silinmiş, taşıma sonrası plan_susuyor (S32-a);
+     yeni adlar yalnız S29–S32 (+ SW3) senaryolarında
 """
 import copy
 import json
@@ -428,6 +433,19 @@ MUTASYON_IPUCU = {
     "M220": "SW3-02-gece-yarisi-yerel-gun-utc-farkli-bir-yil-siniri",
     "M221": "SW3-03-silme-talebi-ayni-donem-elenir-sonraki-donem-gider-silinen-telefon-kullanilmaz",
     "M222": "SW3-04-geri-yukleme-bir-yildan-eski-icerik-donunce-silinir",
+    "M223": "S29-01-yeniden-basmada-tutar-yok-ertesi-gun-devam-et-gonderim-anindaki-tutarla-gider",
+    "M224": "S29-01-yeniden-basmada-tutar-yok-ertesi-gun-devam-et-gonderim-anindaki-tutarla-gider",
+    "M225": "S30-01-talep-duraklatildi-meta-bekletti-zincir-gonderilmez-belirsiz-iz-eler",
+    "M226": "S30-01-talep-duraklatildi-meta-bekletti-zincir-gonderilmez-belirsiz-iz-eler",
+    "M227": "S30-01-talep-duraklatildi-meta-bekletti-zincir-gonderilmez-belirsiz-iz-eler",
+    "M228": "S30-01-talep-duraklatildi-meta-bekletti-zincir-gonderilmez-belirsiz-iz-eler",
+    "M229": "S30-03-bir-yil-dolumu-bekleyen-isler-gonderilmez-belirsiz-iz-eler",
+    "M230": "S31-01-talep-sonrasi-basarisizlari-yeniden-dene-silinmis-ekstre-elenir-yeni-gonderim-gider",
+    "M231": "S31-02-bir-yil-sonra-silinmis-ekstre-yeniden-dene-ve-yine-de-gonder-kapali",
+    "M232": "S32-01-talepten-once-ve-sonra-alinan-iki-yedek-icerik-gelmez-sonraki-icerik-kalir",
+    "M233": "S32-01-talepten-once-ve-sonra-alinan-iki-yedek-icerik-gelmez-sonraki-icerik-kalir",
+    "M234": "S32-01-talepten-once-ve-sonra-alinan-iki-yedek-icerik-gelmez-sonraki-icerik-kalir",
+    "M235": "S31-01-talep-sonrasi-basarisizlari-yeniden-dene-silinmis-ekstre-elenir-yeni-gonderim-gider",
 }
 
 
@@ -584,7 +602,7 @@ def _i2():
     h = []
     for k in ("K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "E1", "E2", "E3", "E4", "N6", "F1", "F2", "G0", "G1", "G2", "G3", "G4", "G5", "G6", "H1", "H2", "H3", "H4",
               "J1", "J2", "J3", "J4", "J5", "J6", "J7", "J8", "J9", "J10", "J11", "J12", "W1", "W2", "W3",
-              "SW1", "SW2", "SD1837", "SD1915", "SW4", "S7", "S7A", "S7B", "S16", "S17", "NB5", "S22", "S23", "SW3"):
+              "SW1", "SW2", "SD1837", "SD1915", "SW4", "S7", "S7A", "S7B", "S16", "S17", "NB5", "S22", "S23", "SW3", "S29", "S30", "S31", "S32"):
         if not kahin.KARARLAR.get(k, {}).get("metin"):
             h.append(f"{k}: karar metni yok")
         n = sum(1 for s in TUM if s["baslik"] == k or f"{k} " in s["kaynak"] or s["kaynak"].startswith(k) or f", {k}" in s["kaynak"] or f"+ {k}" in s["kaynak"])
@@ -867,8 +885,8 @@ def _i10():
     # (e) supheli_etiketi yalnız S16 senaryolarının (güncelleme 14: ve S22'nin yolu S16 ile yeniden basma — README §19 Y14-4) yanıtında (Y13-4; eski çıktılar değişmez)
     for s in TUM:
         for e, y in (beklenen(s)[0]["sonuc"].get("yeniden") or {}).items():
-            if "supheli_etiketi" in y and s["baslik"] not in ("S16", "S22", "S23"):        # güncelleme 15: S23 onay penceresi (Y15-2)
-                h.append(f"{s['ad']} {e}: S16 / S22 / S23 dışı yanıtta supheli_etiketi")
+            if "supheli_etiketi" in y and s["baslik"] not in ("S16", "S22", "S23", "S29"):  # güncelleme 15: S23 onay penceresi (Y15-2); 16: S29 (S23 yeniden basması)
+                h.append(f"{s['ad']} {e}: S16 / S22 / S23 / S29 dışı yanıtta supheli_etiketi")
     # (f) net eleme adı iki seçenekli (Y13-7) ve en az bir senaryoda başlatmada + gönderim anında
     ne = kahin.Benzetim.NET_ENGEL
     if ne.get("secenek") != ["gecikmis_borc_yok", kahin.NET_BORC_YOK]:
@@ -945,7 +963,7 @@ def _i11():
     return h
 
 
-@test("I güncelleme 15 (S23, SW3): eski S7-e girdisi S23 ile hesaplanır, B (M213) ayrışır; s23_an iki okumada kime / kaç kez AYNI, S23-a hata verir; yil_sonra; S-W3-a / S-W3-b hata verir; yeni alanlar yalnız S23 / SW3'te")
+@test("I güncelleme 15 (S23, SW3): eski S7-e girdisi S23 ile hesaplanır, B (M213) ayrışır; yil_sonra; yeni alanlar yalnız S23 / SW3'te (güncelleme 16: + S29–S32; s23_an, S-W3-a / S-W3-b → I13)")
 def _i12():
     h = []; bilgi = []
 
@@ -978,35 +996,7 @@ def _i12():
             h.append(f"M213 (B seçeneği) beklenen gibi değil: {j} / {r['yeniden']['Y2']}")
     except ValueError as e:
         h.append(f"M213 hata verdi: {e}")
-    # (b) s23_an iki okuması: kime / kaç kez alanları AYNI; okuma başına elle_sayilan ∩ (elenen ∪ alınan) = ∅
-    n = 0
-    for s in TUM:
-        for zaman in kahin.ZAMANLAR:
-            b0 = kahin.Benzetim(senaryolar.girdi(s), kahin.tam_secim({}), zaman)
-            r0 = b0.calistir()
-            if "s23_an" not in b0.okuma_izi:
-                continue
-            n += 1
-            for o in kahin.S23_OKUMALARI[1:]:
-                r = kahin.Benzetim(senaryolar.girdi(s), kahin.tam_secim({}), zaman, okuma={"s23_an": o}).calistir()
-                for ad_, rr in ((kahin.S23_OKUMALARI[0], r0), (o, r)):
-                    for e, y in (rr.get("yeniden") or {}).items():
-                        if set(y.get("elle_sayilan", [])) & (set(y["elenen"]) | set(y["alinan"])) or set(y["elenen"]) & set(y["alinan"]):
-                            h.append(f"{s['ad']} [{zaman}] okuma {ad_} {e}: aynı kişi iki kümede")
-                for alan in ("elenen", "olusmadi", "onceki_uyari", "bu_ay", "baslamadi"):
-                    if not senaryolar._esit(r[alan], r0[alan]):
-                        h.append(f"{s['ad']} [{zaman}] okuma {o}: {alan} ayrışıyor (kime / kaç kez)")
-                for alan in ("post", "kabul", "meta_ileti", "toplam_post", "toplam_meta_ileti", "toplam_kabul_program"):
-                    if not senaryolar._esit(r["meta"][alan], r0["meta"][alan]):
-                        h.append(f"{s['ad']} [{zaman}] okuma {o}: meta.{alan} ayrışıyor (kime / kaç kez)")
-    if n == 0:
-        h.append("S23 iki okuması (s23_an) hiçbir senaryoda yok")
-    bilgi.append(f"bilgi: s23_an iki okumalı koşu {n} (senaryo × zaman ucu)")
-    # (c) S23-a (README §20.5): yeniden basmada şüphesiz tutar yok, Devam Et ERTESİ GÜN (30.10 kalemi gecikmiş, kayıt açık) → okumalar ayrışır → hata (senaryosuz)
-    s5 = next(x for x in TUM if x["ad"].startswith("S23-05"))
-    g = copy.deepcopy(senaryolar.girdi(s5))
-    g["olaylar"] = [o_ for o_ in g["olaylar"] if o_["tur"] not in ("devam", "kontrol")] + [{"t": "+24h", "tur": "devam", "toplu": "T1"}]
-    hata_bekle(g, "KULLANICIYA SORULMALI S23-a", "S23-a (okumalar ayrışır)")
+    # (b), (c) güncelleme 16: s23_an iki okuması ve S23-a KAPANDI (S29 = A) → I13 (s23_an hiçbir senaryoda yok; eski S23-a girdisi hesaplanır)
     # (d) yil_sonra birim denetimi (Y15-13): takvim yılı, yerel an; 29 Şubat → 28 Şubat; saat dilimi sabit kaymada aynı an
     ys = kahin.yil_sonra
     for bas, son, tz in (("2026-11-02T10:00:00+03:00", "2027-11-02T10:00:00+03:00", kahin.TR), ("2026-11-01T00:30:00+03:00", "2027-11-01T00:30:00+03:00", kahin.TR),
@@ -1015,46 +1005,183 @@ def _i12():
             h.append(f"yil_sonra({bas}) ≠ {son}")
     if ys(_ms("2026-11-01T00:30:00+03:00"), kahin.TR) != ys(_ms("2026-11-01T00:30:00+03:00"), kahin.timezone.utc):
         h.append("yil_sonra: 29 Şubat'sız yılda yerel ↔ UTC aynı an vermiyor")
-    # (e) S-W3-a: silme talebi bekleyen işte (Duraklatıldı) ve Sonucu Belirsiz işte; 1 yıl dolarken bekleyen iş → hata (kodlanmadı)
-    s3 = next(x for x in TUM if x["ad"].startswith("SW3-03"))
-    g = copy.deepcopy(senaryolar.girdi(s3))
-    g["olaylar"] = [g["olaylar"][0], {"t": "+0s", "tur": "duraklat", "toplu": "T1"}, {"t": "+1h", "tur": "kvkk_sil", "id": "A"}]
-    hata_bekle(g, "KULLANICIYA SORULMALI S-W3-a", "S-W3-a (bekleyen işte silme talebi)")
-    g = copy.deepcopy(senaryolar.girdi(s3))
-    g["meta_davranis"] = {"mesaj": {"A": "yanitsiz_kabul"}, "kanca": {"A": {"1": []}, "*": senaryolar.K_STD}}   # bildirimsiz → Sonucu Belirsiz kalır (§7a 3)
-    g["olaylar"] = [g["olaylar"][0], {"t": "+1h", "tur": "kvkk_sil", "id": "A"}]
-    hata_bekle(g, "KULLANICIYA SORULMALI S-W3-a", "S-W3-a (Sonucu Belirsiz işte silme talebi)")
-    g = copy.deepcopy(senaryolar.girdi(s3))
-    g["olaylar"] = [g["olaylar"][0], {"t": "+0s", "tur": "duraklat", "toplu": "T1"}, {"t": "+366d", "tur": "kontrol", "ad": "K1"}]
-    g["bitis"] = "+367d"
-    hata_bekle(g, "KULLANICIYA SORULMALI S-W3-a", "S-W3-a (1 yıl dolarken bekleyen iş)")
-    # (f) S-W3-b: silinmiş Ekstre işinin Başarısızları Yeniden Dene'si → hata; Ödeme Hatırlatma'da karttan hesaplanır (Y15-21: yeni içerik, icerik_silindi kalkar)
-    g = copy.deepcopy(senaryolar.girdi(s3))
-    g["meta_davranis"] = {"mesaj": {"A": [{"hata": 131021}, "kabul"]}, "kanca": {"*": senaryolar.K_STD}}
-    g["olaylar"] = [g["olaylar"][0], {"t": "+1h", "tur": "kvkk_sil", "id": "A"}, {"t": "+2h", "tur": "basarisizlari_yeniden_dene", "toplu": "T1", "etiket": "Y1"}]
-    hata_bekle(g, "KULLANICIYA SORULMALI S-W3-b", "S-W3-b (silinmiş Ekstre'nin yeniden denemesi)")
-    g = {"baslangic": "2026-10-30T10:00:00+03:00", "cariler": [senaryolar.A7()], "meta_davranis": {"mesaj": {"A": [{"hata": 131021}, "kabul"]}, "kanca": {"*": senaryolar.K_STD}},
-         "olaylar": [{"t": "+0s", "tur": "baslat", "etiket": "T1", "secim": ["A"], "sablon": "hatirlatma"}, {"t": "+1h", "tur": "kvkk_sil", "id": "A"},
-                     {"t": "+1h", "tur": "kontrol", "ad": "K1", "icerik": True}, {"t": "+2h", "tur": "basarisizlari_yeniden_dene", "toplu": "T1", "etiket": "Y1"}]}
-    try:
-        r = kahin.hesapla(g)[0]["sonuc"]
-        j = r["isler"]["T1/A"]
-        if (r["kontroller"]["K1"]["icerik"]["T1/A"] != senaryolar.SIL or j["durum"] != kahin.TESLIM or j["post"] != 2 or "icerik_silindi" in j
-                or j["telefon"] != "+905321112233" or j["degiskenler"] != senaryolar.A_HAT):
-            h.append(f"silinmiş Ödeme Hatırlatma'nın yeniden denemesi: {j} / {r['kontroller']['K1']}")
-    except ValueError as e:
-        h.append(f"silinmiş Ödeme Hatırlatma'nın yeniden denemesi hata verdi: {e}")
-    # (g) yeni alanlar yalnız yeni başlıklarda (eski çıktılar değişmez — I4 ile birlikte)
+    # (e), (f) güncelleme 16: S-W3-a (S30 = A) ve S-W3-b (S31 = A) KAPANDI → I13 (aynı girdiler artık hesaplanır; Ödeme Hatırlatma'nın karşılığı S31-a hata verir)
+    # (g) yeni alanlar yalnız yeni başlıklarda (eski çıktılar değişmez — I4 ile birlikte); güncelleme 16: S29 (S23 yeniden basması) ve S30–S32 (silme) başlıkları da
     for s in TUM:
         r = beklenen(s)[0]["sonuc"]
-        if s["baslik"] != "SW3" and (any("icerik_silindi" in j for j in r.get("isler", {}).values()) or any("icerik" in k for k in r.get("kontroller", {}).values())):
-            h.append(f"{s['ad']}: SW3 dışında icerik_silindi / kontrol içerik")
-        if s["baslik"] != "S23" and any("elle_sayilan" in y for y in (r.get("yeniden") or {}).values()):
-            h.append(f"{s['ad']}: S23 dışında elle_sayilan")
+        if s["baslik"] not in ("SW3", "S30", "S31", "S32") and (any("icerik_silindi" in j for j in r.get("isler", {}).values())
+                                                              or any("icerik" in k for k in r.get("kontroller", {}).values())):
+            h.append(f"{s['ad']}: SW3 / S30–S32 dışında icerik_silindi / kontrol içerik")
+        if s["baslik"] not in ("S23", "S29") and any("elle_sayilan" in y for y in (r.get("yeniden") or {}).values()):
+            h.append(f"{s['ad']}: S23 / S29 dışında elle_sayilan")
     sw3 = [s for s in TUM if s["baslik"] == "SW3"]
     s23 = [s for s in TUM if s["baslik"] == "S23"]
     if len(sw3) < 5 or len(s23) < 5:
         h.append(f"SW3 senaryosu {len(sw3)}, S23 senaryosu {len(s23)} (< 5)")
+    return h + bilgi
+
+
+@test("I güncelleme 16 (S29–S32): eski S23-a / S-W3-a / S-W3-b girdileri hesaplanır (B seçenekleri ayrışır); s30_an iki okumada kime / kaç kez AYNI; S30-a, S31-a, Gönderiliyor anında talep hata verir; S32 taşımada plan_susuyor; yeni adlar yalnız yeni başlıklarda")
+def _i13():
+    h = []; bilgi = []
+
+    def hata_bekle(g, parca, ad, mut=frozenset()):
+        try:
+            kahin.hesapla(g, mut)
+            h.append(f"{ad}: sessizce hesaplandı")
+        except ValueError as e:
+            if parca not in str(e):
+                h.append(f"{ad}: beklenmeyen hata {e}")
+
+    def hesap(g, ad, mut=frozenset()):
+        try:
+            return kahin.hesapla(g, mut)[0]["sonuc"]
+        except ValueError as e:
+            h.append(f"{ad}: hata verdi: {e}")
+            return None
+    # (a) I12'nin eski (c) girdisi (S23-a): yeniden basmada şüphesiz tutar yok, Devam Et ERTESİ GÜN → S29: elle sayılmıştı, 30.10 kalemiyle (150,00 TL = 500 − 350) gider, POST 2
+    s5 = next(x for x in TUM if x["ad"].startswith("S23-05"))
+    g = copy.deepcopy(senaryolar.girdi(s5))
+    g["olaylar"] = [o_ for o_ in g["olaylar"] if o_["tur"] not in ("devam", "kontrol")] + [{"t": "+24h", "tur": "devam", "toplu": "T1"}]
+    r = hesap(g, "S29 (eski S23-a girdisi)")
+    if r is not None:
+        j = r["isler"]["T1/NZ"]
+        if j["durum"] != kahin.TESLIM or j["post"] != 2 or j["degiskenler"][2:4] != ["30.10.2026", "150,00 TL"] or r["yeniden"]["Y2"] != senaryolar.s23_yanit("NZ"):
+            h.append(f"S29 (eski S23-a girdisi): {j} / {r['yeniden'].get('Y2')}")
+    r = hesap(g, "M223 (S29 B)", frozenset(["M223"]))                     # B seçeneği: basmada elenir, iş işaretsiz → gönderim anında S22 "Atlandı" — A ↔ B ayrışır
+    if r is not None:
+        j = r["isler"]["T1/NZ"]
+        if j["durum"] != kahin.ATLANDI or j["atlanma_nedeni"] != kahin.SUPHELI or j["post"] != 1 or r["yeniden"]["Y2"]["elenen"] != {"NZ": "gecikmis_borc_yok"}:
+            h.append(f"M223 (S29 B seçeneği) beklenen gibi değil: {j} / {r['yeniden']['Y2']}")
+    # (b) s23_an okuması kalktı: OKUMALAR'da yok, hiçbir beklenende S23 iki okuma metni yok
+    if "s23_an" in kahin.OKUMALAR or hasattr(kahin, "S23_OKUMALARI"):
+        h.append("s23_an okuması hâlâ tanımlı")
+    for s in TUM:
+        if "S23 yeniden basmasında şüphesiz tutar yok" in json.dumps(beklenen(s), ensure_ascii=False):
+            h.append(f"{s['ad']}: S23 iki okuma (s23_an) seçeneği kaldı")
+    # (c) s30_an iki okuması: kime / kaç kez alanları AYNI; okuma başına elenen ∩ alınan = ∅
+    n = 0
+    for s in TUM:
+        for zaman in kahin.ZAMANLAR:
+            b0 = kahin.Benzetim(senaryolar.girdi(s), kahin.tam_secim({}), zaman)
+            r0 = b0.calistir()
+            if "s30_an" not in b0.okuma_izi:
+                continue
+            n += 1
+            for o in kahin.S30_OKUMALARI[1:]:
+                r_ = kahin.Benzetim(senaryolar.girdi(s), kahin.tam_secim({}), zaman, okuma={"s30_an": o}).calistir()
+                for ad_, rr in ((kahin.S30_OKUMALARI[0], r0), (o, r_)):
+                    for e, y in (rr.get("yeniden") or {}).items():
+                        if set(y["elenen"]) & set(y["alinan"]):
+                            h.append(f"{s['ad']} [{zaman}] okuma {ad_} {e}: aynı kişi hem elendi hem alındı")
+                for alan in ("elenen", "olusmadi", "onceki_uyari", "bu_ay", "baslamadi", "yeniden"):
+                    if not senaryolar._esit(r_.get(alan), r0.get(alan)):
+                        h.append(f"{s['ad']} [{zaman}] okuma {o}: {alan} ayrışıyor (kime / kaç kez)")
+                for alan in ("post", "kabul", "meta_ileti", "toplam_post", "toplam_meta_ileti", "toplam_kabul_program"):
+                    if not senaryolar._esit(r_["meta"][alan], r0["meta"][alan]):
+                        h.append(f"{s['ad']} [{zaman}] okuma {o}: meta.{alan} ayrışıyor (kime / kaç kez)")
+    if n < 3:
+        h.append(f"S30 iki okuması (s30_an) yalnız {n} koşuda")
+    bilgi.append(f"bilgi: s30_an iki okumalı koşu {n} (senaryo × zaman ucu)")
+    # (d) S30-a (README §21.7): talepten sonra bekleyen iş kapanmadan aynı dönem yeni gönderim → okumalar ayrışır → hata (senaryosuz)
+    s301 = next(x for x in TUM if x["ad"].startswith("S30-01"))
+    g = copy.deepcopy(senaryolar.girdi(s301))
+    son_talep = max(i for i, o_ in enumerate(g["olaylar"]) if o_["tur"] == "kvkk_sil")
+    g["olaylar"] = g["olaylar"][:son_talep + 1] + [{"t": "+2h10m", "tur": "baslat", "etiket": "T9", "secim": ["B"], "sablon": "ekstre", "donem": senaryolar.EKIM}]
+    try:                                                                   # model okuması ('aninda') tek başına: B'nin bekleyen işi kapandı → yeni iş gider (ayrışmanın bir yanı)
+        r = kahin.Benzetim(copy.deepcopy(g), kahin.tam_secim({}), "hizli").calistir()
+        if r["isler"].get("T9/B", {}).get("durum") != kahin.TESLIM:
+            h.append(f"S30-a girdisi 'aninda' okumasında T9/B gitmedi: {r['isler'].get('T9/B')}")
+    except ValueError as e:
+        h.append(f"S30-a girdisi 'aninda' okumasında hata: {e}")
+    hata_bekle(g, "KULLANICIYA SORULMALI S30-a", "S30-a (bekleyen iş kapanmadan aynı dönem yeni gönderim)")
+    # (e) Gönderiliyor (yanıt bekleniyor) anında silme talebi → KÂHİN SUSUYOR (modellenmedi)
+    g = copy.deepcopy(senaryolar.girdi(TUM[0]))
+    g["meta_davranis"] = {"mesaj": {"A": {"gec_kabul": "+10m"}}, "kanca": {"*": senaryolar.K_STD}}
+    g["olaylar"] = [g["olaylar"][0], {"t": "+1m", "tur": "kvkk_sil", "id": "A"}]
+    hata_bekle(g, "KÂHİN SUSUYOR (README §21.7, Y16-9)", "Gönderiliyor anında talep")
+    # (f) I12'nin eski (e) S-W3-a girdileri artık hesaplanır
+    s3 = next(x for x in TUM if x["ad"].startswith("SW3-03"))
+    g = copy.deepcopy(senaryolar.girdi(s3))                                # (f1) bekleyen (Duraklatıldı) işte talep + Devam Et → gönderilmez; B (M225) ile gider
+    g["olaylar"] = [g["olaylar"][0], {"t": "+0s", "tur": "duraklat", "toplu": "T1"}, {"t": "+1h", "tur": "kvkk_sil", "id": "A"}, {"t": "+2h", "tur": "devam", "toplu": "T1"}]
+    r = hesap(g, "S30 (bekleyen işte talep)")
+    if r is not None:
+        j = r["isler"]["T1/A"]
+        if j["durum"] != kahin.ATLANDI or j["atlanma_nedeni"] != "silme_talebi" or j["post"] != 0 or r["isler"]["T1/B"]["durum"] != kahin.TESLIM:
+            h.append(f"S30 bekleyen işte talep: {j}")
+    r = hesap(g, "M225 (S30 B)", frozenset(["M225"]))
+    if r is not None and (r["isler"]["T1/A"]["post"] != 1 or r["isler"]["T1/A"]["durum"] != kahin.TESLIM):
+        h.append(f"M225 (S30 B seçeneği: kartla gider) beklenen gibi değil: {r['isler']['T1/A']}")
+    g = copy.deepcopy(senaryolar.girdi(s3))                                # (f2) Sonucu Belirsiz işte talep → iş Belirsiz kalır, aynı dönem elenir; M226 ile gider
+    g["meta_davranis"] = {"mesaj": {"A": "yanitsiz_kabul"}, "kanca": {"T1/A": {"1": []}, "*": senaryolar.K_STD}}
+    g["olaylar"] = [g["olaylar"][0], {"t": "+1h", "tur": "kvkk_sil", "id": "A"}, {"t": "+2h", "tur": "baslat", "etiket": "T2", "secim": ["A"], "sablon": "ekstre", "donem": {"secim": "gecen_ay"}}]
+    r = hesap(g, "S30 (Sonucu Belirsiz işte talep)")
+    if r is not None:
+        j = r["isler"]["T1/A"]
+        if j["durum"] != kahin.BELIRSIZ or not j.get("icerik_silindi") or j["telefon"] is not None or r["elenen"].get("T2") != {"A": kahin.BELIRSIZ_NEDEN}:
+            h.append(f"S30 Sonucu Belirsiz işte talep: {j} / {r['elenen']}")
+    r = hesap(g, "M226", frozenset(["M226"]))
+    if r is not None and r["elenen"].get("T2"):
+        h.append(f"M226 (belirsiz iz silinir) beklenen gibi değil: {r['elenen']}")
+    g = copy.deepcopy(senaryolar.girdi(s3))                                # (f3) 1 yıl dolarken bekleyen iş → gönderilmez (anı iki okuma — secenek)
+    g["olaylar"] = [g["olaylar"][0], {"t": "+0s", "tur": "duraklat", "toplu": "T1"}, {"t": "+366d", "tur": "kontrol", "ad": "K1"}]
+    g["bitis"] = "+367d"
+    r = hesap(g, "S30 (1 yıl dolarken bekleyen iş)")
+    if r is not None:
+        d = r["isler"]["T1/A"]["durum"]
+        if not (isinstance(d, dict) and d.get("secenek") == [kahin.ATLANDI, kahin.DURAKLATILDI]) or r["isler"]["T1/A"]["post"] != 0:
+            h.append(f"S30 1 yıl dolarken bekleyen iş: {r['isler']['T1/A']}")
+    # (g) I12'nin eski (f) girdisi: silinmiş Ekstre'nin Başarısızları Yeniden Dene'si → elenen icerik_silindi; Ödeme Hatırlatma'nın karşılığı S31-a hata verir
+    g = copy.deepcopy(senaryolar.girdi(s3))
+    g["meta_davranis"] = {"mesaj": {"A": [{"hata": 131021}, "kabul"]}, "kanca": {"*": senaryolar.K_STD}}
+    g["olaylar"] = [g["olaylar"][0], {"t": "+1h", "tur": "kvkk_sil", "id": "A"}, {"t": "+2h", "tur": "basarisizlari_yeniden_dene", "toplu": "T1", "etiket": "Y1"}]
+    r = hesap(g, "S31 (silinmiş Ekstre'nin yeniden denemesi)")
+    if r is not None and (r["yeniden"]["Y1"] != {"elenen": {"A": kahin.ICERIK_SILINDI}, "alinan": [], "oneri": None} or r["isler"]["T1/A"]["durum"] != kahin.BASARISIZ
+                          or r["isler"]["T1/A"]["post"] != 1):
+        h.append(f"S31 silinmiş Ekstre'nin yeniden denemesi: {r['yeniden']} / {r['isler']['T1/A']}")
+    r = hesap(g, "M230 (S31 B)", frozenset(["M230"]))
+    if r is not None and (r["isler"]["T1/A"]["post"] != 2 or r["isler"]["T1/A"]["durum"] != kahin.TESLIM):
+        h.append(f"M230 (S31 B: yeniden üretilip gider) beklenen gibi değil: {r['isler']['T1/A']}")
+    g = {"baslangic": "2026-10-30T10:00:00+03:00", "cariler": [senaryolar.A7()], "meta_davranis": {"mesaj": {"A": [{"hata": 131021}, "kabul"]}, "kanca": {"*": senaryolar.K_STD}},
+         "olaylar": [{"t": "+0s", "tur": "baslat", "etiket": "T1", "secim": ["A"], "sablon": "hatirlatma"}, {"t": "+1h", "tur": "kvkk_sil", "id": "A"},
+                     {"t": "+2h", "tur": "basarisizlari_yeniden_dene", "toplu": "T1", "etiket": "Y1"}]}
+    hata_bekle(g, "KULLANICIYA SORULMALI S31-a", "S31-a (silinmiş Ödeme Hatırlatma'nın yeniden denemesi)")
+    g["meta_davranis"] = {"mesaj": {"A": ["yanitsiz_kabul", "kabul"]}, "kanca": {"T1/A": {"1": []}, "*": senaryolar.K_STD}}
+    g["olaylar"] = g["olaylar"][:2] + [{"t": "+2h", "tur": "yine_de_gonder", "toplu": "T1", "cari": "A", "etiket": "Y1"}]
+    hata_bekle(g, "KULLANICIYA SORULMALI S31-a", "S31-a (silinmiş Ödeme Hatırlatma'da işteki Yine de Gönder)")
+    # (h) S32: talepten önceki yedek → silinmiş (SW3-05); başka bilgisayara taşındıktan sonra geri yüklenen eski içerik plan_susuyor (S32-a)
+    s5w = next(x for x in TUM if x["ad"].startswith("SW3-05"))
+    g = copy.deepcopy(senaryolar.girdi(s5w))
+    g["olaylar"] = g["olaylar"][:3] + [{"t": "+2h30m", "tur": "tasindi"}, {"t": "+3h", "tur": "geri_yukle", "yedek": "Y0"},
+                                       {"t": "+3h30m", "tur": "kontrol", "ad": "K2", "icerik": True}]
+    r = hesap(g, "S32-a (taşıma sonrası geri yükleme)")
+    if r is not None:
+        ic = r["kontroller"]["K2"]["icerik"]
+        if not all(isinstance(v, dict) and "plan_susuyor" in v for v in ic["T1/A"].values()) or ic["T1/B"] != senaryolar.B_EKIM:
+            h.append(f"S32-a taşıma sonrası: {ic}")
+    # (i) silinmiş Sonucu Belirsiz işe imzalı geç teslim: iş Teslim, içerik silinmiş kalır, pencere alıcıyı sayar, aynı dönem "Daha Önce Gönderildi"
+    g = copy.deepcopy(senaryolar.girdi(s3))
+    g["meta_davranis"] = {"mesaj": {"A": "yanitsiz_kabul"}, "kanca": {"T1/A": {"1": [["delivered", "+5s", {"varis": "+3h"}]]}, "*": senaryolar.K_STD}}
+    g["olaylar"] = [g["olaylar"][0], {"t": "+1h", "tur": "kvkk_sil", "id": "A"}, {"t": "+3h1m", "tur": "kontrol", "ad": "K1"},
+                    {"t": "+4h", "tur": "baslat", "etiket": "T2", "secim": ["A"], "sablon": "ekstre", "donem": {"secim": "gecen_ay"}}]
+    r = hesap(g, "S30 silinmiş belirsiz işe geç teslim")
+    if r is not None:
+        j = r["isler"]["T1/A"]
+        if (j["durum"] != kahin.TESLIM or not j.get("icerik_silindi") or j["telefon"] is not None or r["elenen"].get("T2") != {"A": kahin.DAHA_ONCE}
+                or r["kontroller"]["K1"]["pencere_farkli_alici"] != {"W1": 3}):
+            h.append(f"S30 silinmiş belirsiz işe geç teslim: {j} / {r['elenen']} / {r['kontroller']['K1']['pencere_farkli_alici']}")
+    # (j) yeni adlar yalnız yeni başlıklarda; her karar ≥ 2 senaryo (S30 ≥ 3: üç bekleme yolu)
+    for s in TUM:
+        r = beklenen(s)[0]["sonuc"]
+        metin = json.dumps(r, ensure_ascii=False)
+        if s["baslik"] not in ("S30",) and ('"silme_talebi"' in metin or '"saklama_suresi"' in metin):
+            h.append(f"{s['ad']}: S30 dışında silme_talebi / saklama_suresi")
+        if s["baslik"] not in ("S30", "S31", "S32") and f'"{kahin.ICERIK_SILINDI}"' in json.dumps(r.get("yeniden") or {}, ensure_ascii=False):
+            h.append(f"{s['ad']}: S30–S32 dışında icerik_silindi elemesi")
+    for k, en_az in (("S29", 2), ("S30", 3), ("S31", 2), ("S32", 2)):
+        n_ = sum(1 for s in TUM if s["baslik"] == k)
+        if n_ < en_az:
+            h.append(f"{k} senaryosu {n_} < {en_az}")
     return h + bilgi
 
 

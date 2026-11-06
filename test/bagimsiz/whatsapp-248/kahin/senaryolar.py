@@ -23,7 +23,10 @@ kâhin güncellemesi 14 (2.5.0, KULLANICI KARARI 06.11.2026 05:30 UTC "a"): S22 
   "Atlandı — Şüpheli Alacağı Var"; yol: kayıt açıkken yeniden Yine de Gönder → S16 (S22, 6) — README §19;
 kâhin güncellemesi 15 (2.5.0, KULLANICI KARARI 06.11.2026 06:03 UTC "a" + 05.11.2026 ~16:48 S-W3): S23 (eski S7-e) — gönderim beklerken kayıt açılan işte asıl işte yeniden Yine de Gönder →
   bekleyen iş elle sayılır, yeni iş açılmaz, gönderim anında şüphesiz tutarla gider (S23, 5); S-W3 — içerik / telefon / PDF 1 yıl sonra ya da silme talebinde silinir, anonim iz kalır
-  (SW3, 5) — README §20.
+  (SW3, 5) — README §20;
+kâhin güncellemesi 16 (2.5.0, KULLANICI KARARI 06.11.2026 06:52 UTC "a" — S29–S32 hepsi A): S29 (eski S23-a) yeniden basmada şüphesiz tutar yoksa da iş elle sayılır, gönderim anındaki
+  tutarla gider (S29, 4); S30 (S-W3-a) silme talebi / 1 yıl dolumu anında bekleyen iş gönderilmez, belirsiz iz eler (S30, 3); S31 (S-W3-b) içeriği silinmiş Ekstre işi yeniden gönderilemez
+  (S31, 2); S32 (S-W3-c) talep kaydı makinede, geri yüklemede yeniden uygulanır (S32, 2); S23-05 ve SW3-05'in beklentisi kesinleşti — README §21.
 
 Her senaryo: GİRDİ (cariler, seçim, saat, sahte Meta davranışı, olaylar) + ELLE yazılmış beklenen (yalnız plandan, kâhinin modelinden
 bağımsız hesaplanmış anahtar sayılar). `python3 -I senaryolar.py` modeli koşar; elle beklenen ile model AYNI değilse dosya YAZILMAZ,
@@ -2147,7 +2150,7 @@ BNS = "190 / 0 ile duran toplu işin neden adı (hata kodu ya da 'Bağlantı Sü
 BKS = "190 / 0 alıp bekleyenlere dönen işin hata kodu karar metninde yok ('kalan kişilerle bekler')"
 S7S = "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"
 TASINAN_D = "Taşınan Veri — Durduruldu"
-YENI_250 = ("SW1", "SW2", "SD1837", "SD1915", "SW4", "S7", "S7A", "S7B", "S16", "S17", "NB5", "S22", "S23", "SW3")   # kahin_test I4: bu başlıklar "eski senaryo" değil (S7A, S7B: güncelleme 12; S16, S17, NB5: 13; S22: 14; S23, SW3: 15)
+YENI_250 = ("SW1", "SW2", "SD1837", "SD1915", "SW4", "S7", "S7A", "S7B", "S16", "S17", "NB5", "S22", "S23", "SW3", "S29", "S30", "S31", "S32")   # kahin_test I4: bu başlıklar "eski senaryo" değil (S7A, S7B: güncelleme 12; S16, S17, NB5: 13; S22: 14; S23, SW3: 15; S29–S32: 16)
 
 
 def SA_(**kw):
@@ -2886,9 +2889,9 @@ S("S23-04-meta-bekletti-beklerken-yeniden-basma-ikinci-denemede-gider", "S23",
 
 S("S23-05-yeniden-basmada-suphesiz-tutar-yok-iki-okuma-ileti-gitmez", "S23",
   "NZ'nin iletisi Sonucu Belirsiz; işteki Yine de Gönder + duraklatma; 2. saatte şüpheli kaydı açılır (öbür kalemin vadesi BUGÜN — şüphesiz gecikmiş yok); 3. saatte asıl işte yeniden "
-  "Yine de Gönder: S16 anının iki okuması (README §20 Y15-6) — elle sayılır ya da yanıtta 'Gecikmiş Borç Yok' ile elenir; aynı gün Devam Et: iki okumada da 'Atlandı' (ad seçenekli), "
-  "ileti gitmez",
-  "S23 (Y15-6) + S16 + S7A + Y12-2 + S22", [A7(),
+  "Yine de Gönder: güncelleme 16 (S29 = A, README §21 Y16-3) — şüphesiz tutar yoksa da bekleyen iş elle sayılır (güncelleme 15'teki iki okuma kalktı; ad tarihsel); aynı gün Devam Et: "
+  "gönderim anında da şüphesiz tutar yok → 'Atlandı — Gecikmiş Borç Yok', ileti gitmez",
+  "S23 (Y15-6) + S29 (Y16-2/3) + S16 + S7A + Y12-2", [A7(),
    cari_h("NZ", "Nur Sıfırlı", "0549 800 90 00", [_h("2026-09-01", 500, 0)], vadeler=[_v("2026-10-08", 350), _v("2026-10-30", 150)])],
   [baslat("+0s", "T1", ["NZ", "A"], sablon="hatirlatma"),
    olay("+1h", "yine_de_gonder", toplu="T1", cari="NZ", etiket="Y1"), olay("+1h", "duraklat", toplu="T1"),
@@ -2896,10 +2899,9 @@ S("S23-05-yeniden-basmada-suphesiz-tutar-yok-iki-okuma-ileti-gitmez", "S23",
    olay("+3h", "yine_de_gonder", toplu="T1", cari="NZ", etiket="Y2", hedef="asil"), kontrol("+3h5m", "K1"),
    olay("+4h", "devam", toplu="T1"), kontrol("+4h5m", "K2")],
   {"yeniden.Y1": {"elenen": {}, "alinan": ["NZ"], "oneri": None},
-   "yeniden.Y2": {"elenen": {"secenek": [{}, {"NZ": "gecikmis_borc_yok"}], "susuyor": S23S}, "alinan": [], "oneri": None, "supheli_etiketi": ["NZ"],
-                  "elle_sayilan": {"secenek": [["NZ"], []], "susuyor": S23S}},
+   "yeniden.Y2": s23_yanit("NZ"),
    "kontroller.K1.isler": {"T1/A": "Teslim Edildi", "T1/NZ": "Duraklatıldı"}, "kontroller.K2.isler": {"T1/A": "Teslim Edildi", "T1/NZ": "Atlandı"},
-   "isler.T1/NZ.durum": "Atlandı", "isler.T1/NZ.atlanma_nedeni": {"secenek": ["gecikmis_borc_yok", "supheli_alacak"], "susuyor": S23S}, "isler.T1/NZ.post": 1,
+   "isler.T1/NZ.durum": "Atlandı", "isler.T1/NZ.atlanma_nedeni": "gecikmis_borc_yok", "isler.T1/NZ.post": 1,
    "meta.post": {"A": 1, "NZ": 1}, "bu_ay": {"W1": {"2026-10": ay_kova(1)}}},
   meta_davranis=_bel("NZ"))
 
@@ -2994,20 +2996,261 @@ S("SW3-04-geri-yukleme-bir-yildan-eski-icerik-donunce-silinir", "SW3",
   baslangic=T0_KASIM, bitis="+366d", meta_davranis={"kanca": {"*": K_STD}})
 
 S("SW3-05-silme-talebinden-once-alinan-yedek-geri-yuklenir-icerik-susuyor-r3-kesin", "SW3",
-  "A ve B'ye Ekim ekstresi gider; 1. saatte yedek alınır, 2. saatte A silme talebinde bulunur (içerik silinir); 3. saatte talepten ÖNCEKİ yedek geri yüklenir: A'nın içeriğinin geri gelip "
-  "gelmediği karar metninde yok (S-W3-c — denetlenmez), B'ninki durur; aynı dönem yeni gönderimde A ve B 'Daha Önce Gönderildi' (kesin), R3 'Yine de Gönder' ile A'ya yeni içerikle gider; "
-  "'Bu Ay' düşmez",
-  "SW3 (Y15-12/17/18) + G0 (4, 5) + D7 + J5", [A(), B()],
+  "A ve B'ye Ekim ekstresi gider; 1. saatte yedek alınır, 2. saatte A silme talebinde bulunur (içerik silinir); 3. saatte talepten ÖNCEKİ yedek geri yüklenir: güncelleme 16 (S32 = A, "
+  "README §21 Y16-21) — talep makinede kayıtlı, geri yüklemeden sonra yeniden uygulanır → A'nın içeriği / telefonu GELMEZ (güncelleme 15'te denetlenmiyordu; ad tarihsel), B'ninki durur; "
+  "aynı dönem yeni gönderimde A ve B 'Daha Önce Gönderildi', R3 'Yine de Gönder' ile A'ya yeni içerikle gider; 'Bu Ay' düşmez",
+  "SW3 (Y15-12/17/18) + S32 (Y16-21) + G0 (4, 5) + D7 + J5", [A(), B()],
   [baslat("+0s", "T1", "AB", donem=GECEN_AY), olay("+1h", "yedek_al", ad="Y0"), olay("+2h", "kvkk_sil", id="A"), kontrol_ic("+2h30m", "K1"),
    olay("+3h", "geri_yukle", yedek="Y0"), kontrol_ic("+3h30m", "K2"),
    baslat("+4h", "T2", "AB", donem=GECEN_AY), baslat("+5h", "T3", "A", donem=GECEN_AY, onceki="gonder"), kontrol_ic("+6h", "K3")],
   {"kontroller.K1.icerik": {"T1/A": SIL, "T1/B": B_EKIM},
-   "kontroller.K2.icerik": {"T1/A": {"telefon": PS3, "degiskenler": PS3, "pdf": PS3, "dosya_adi": PS3, "icerik_silindi": PS3}, "T1/B": B_EKIM},
+   "kontroller.K2.icerik": {"T1/A": SIL, "T1/B": B_EKIM},
    "elenen": {"T2": {"A": DO, "B": DO}}, "olusmadi": ["T2"],
    "onceki_uyari": {"T2": {"sayi": 2, "son": "2026-11-02"}, "T3": {"sayi": 1, "son": "2026-11-02"}},
    "kontroller.K3.icerik.T3/A": A_EKIM, "isler.T1/A.durum": "Teslim Edildi",
    "meta.post": {"A": 2, "B": 1}, "bu_ay": {"W1": {"2026-11": ay_kova(3)}}},
   baslangic=T0_KASIM, bitis="+1d", meta_davranis={"kanca": {"*": K_STD}})
+
+
+# ======================================================================== kâhin güncellemesi 16 (2.5.0, KULLANICI KARARI 06.11.2026 06:52 UTC "a": S29–S32 hepsi A — README §21)
+# Elle beklenen YALNIZ karar metinlerinden (kahin.KARARLAR S29, S30, S31, S32) ve README §21.2–21.5 yorumlarından (kodlamadan önce yazıldı, ayrı commit). Yeni atlanma nedenleri silme_talebi /
+# saklama_suresi (S30), yeni elenme nedeni icerik_silindi (S31); yeni olay / girdi alanı YOK. S30'da bekleyen işin kapanma anı iki okuma (`s30_an`): ara denetimde iş durumu `secenek`.
+S30S = ("S30 'bekleyen iş gönderilmez': silme talebi / 1 yıl dolumu anında bekleyen işin o anda mı kapandığı ('Atlandı') yoksa içeriksiz kuyrukta kalıp kendi gönderim anında mı atlandığı "
+        "karar metninde yok — iki okumada da ileti gitmez")
+IS = "icerik_silindi"
+
+
+def s30(bekleme):
+    """S30 iki okuması: 'aninda' (model) Atlandı, 'gonderimde' işin bekleme durumu (gönderim anına kadar)."""
+    return {"secenek": ["Atlandı", bekleme], "susuyor": S30S}
+
+
+# ---- S29: S23 yeniden basmasında şüphesiz tutar yoktu, gönderim anına kadar doğdu → gönderim anındaki şüphesiz tutarla gider (bekleyen iş elle sayılır) ----
+S("S29-01-yeniden-basmada-tutar-yok-ertesi-gun-devam-et-gonderim-anindaki-tutarla-gider", "S29",
+  "NZ2 ve NY'nin iletisi Sonucu Belirsiz; 1. saatte işteki Yine de Gönder (kayıt yok) + duraklatma; 2. saatte ikisinin şüpheli kaydı açılır; 3. saatte asıl işte yeniden Yine de Gönder: "
+  "şüphesiz tutar YOK (NZ2'nin öbür kalemi bugün vadeli, NY'ninki 20.11'de) → ikisi de elle sayılır; ertesi gün Devam Et: NZ2'nin 30.10 kalemi artık gecikmiş → gönderim anındaki tutarla "
+  "(30.10.2026, 150,00 TL = şüphesiz net 500 − 350) gider; NY'de gönderim anında da tutar yok → 'Atlandı — Gecikmiş Borç Yok'",
+  "S29 (Y16-1/2/4) + S23 + S17 + S7A + Y12-2", [A7(),
+   cari_h("NZ2", "Nil Ertesi", "0546 100 20 30", [_h("2026-09-01", 500, 0)], vadeler=[_v("2026-10-08", 350), _v("2026-10-30", 150)]),
+   cari_h("NY", "Necla Yok", "0546 200 30 40", [_h("2026-09-01", 400, 0)], vadeler=[_v("2026-10-09", 250), _v("2026-11-20", 150)])],
+  [baslat("+0s", "T1", ["NZ2", "NY", "A"], sablon="hatirlatma"),
+   olay("+1h", "yine_de_gonder", toplu="T1", cari="NZ2", etiket="Y1"), olay("+1h", "yine_de_gonder", toplu="T1", cari="NY", etiket="Y2"), olay("+1h", "duraklat", toplu="T1"),
+   olay("+2h", "cari", id="NZ2", vadeler=[_v("2026-10-08", 350, True), _v("2026-10-30", 150)]), olay("+2h", "cari", id="NY", vadeler=[_v("2026-10-09", 250, True), _v("2026-11-20", 150)]),
+   olay("+3h", "yine_de_gonder", toplu="T1", cari="NZ2", etiket="Y3", hedef="asil"), olay("+3h", "yine_de_gonder", toplu="T1", cari="NY", etiket="Y4", hedef="asil"),
+   kontrol("+3h5m", "K1"), olay("+24h", "devam", toplu="T1"), kontrol("+24h5m", "K2")],
+  {"elenen": {}, "olusmadi": [],
+   "yeniden.Y1": {"elenen": {}, "alinan": ["NZ2"], "oneri": None}, "yeniden.Y2": {"elenen": {}, "alinan": ["NY"], "oneri": None},
+   "yeniden.Y3": s23_yanit("NZ2"), "yeniden.Y4": s23_yanit("NY"),
+   "kontroller.K1.isler": {"T1/A": "Teslim Edildi", "T1/NY": "Duraklatıldı", "T1/NZ2": "Duraklatıldı"}, "kontroller.K1.toplam_post": 3,
+   "kontroller.K2.isler": {"T1/A": "Teslim Edildi", "T1/NY": "Atlandı", "T1/NZ2": "Teslim Edildi"},
+   "isler.T1/NZ2.degiskenler": ["Nil Ertesi", FIRMA, "30.10.2026", "150,00 TL", SUS7], "isler.T1/NZ2.post": 2, "isler.T1/NZ2.atlanma_nedeni": None,
+   "isler.T1/NY.durum": "Atlandı", "isler.T1/NY.atlanma_nedeni": "gecikmis_borc_yok", "isler.T1/NY.post": 1,
+   "toplular.T1.is_sayisi": 3, "meta.post": {"A": 1, "NY": 1, "NZ2": 2}, "bu_ay": {"W1": {"2026-10": ay_kova(2)}}},
+  meta_davranis=_bel("NZ2", "NY"))
+
+S("S29-02-gece-yarisi-yerel-gun-tutar-dogar-utc-gunu-farkli", "S29",
+  "31.10 23:30 (yerel): GN'nin iletisi Sonucu Belirsiz; 23:35 Yine de Gönder + duraklatma; 23:40 şüpheli kaydı açılır; 23:45 yeniden Yine de Gönder: 31.10 kalemi henüz gecikmiş değil → "
+  "tutar yok, elle sayılır; 01.11 00:10 yerel (UTC'de hâlâ 31.10) Devam Et: YEREL güne göre 31.10 kalemi gecikmiş → 31.10.2026 / 200,00 TL ile gider; 'Bu Ay' Türkiye saatiyle (Ekim 1 + Kasım 1)",
+  "S29 (Y16-2/4) + S23 + Y14-9 + §7a 19, 20", [A7(),
+   cari_h("GN", "Gece Nur", "0546 300 40 50", [_h("2026-09-01", 600, 0)], vadeler=[_v("2026-10-05", 400), _v("2026-10-31", 200)])],
+  [baslat("+0s", "T1", ["GN", "A"], sablon="hatirlatma"),
+   olay("+5m", "yine_de_gonder", toplu="T1", cari="GN", etiket="Y1"), olay("+5m", "duraklat", toplu="T1"),
+   olay("+10m", "cari", id="GN", vadeler=[_v("2026-10-05", 400, True), _v("2026-10-31", 200)]),
+   olay("+15m", "yine_de_gonder", toplu="T1", cari="GN", etiket="Y2", hedef="asil"), kontrol("+20m", "K1"),
+   olay("+40m", "devam", toplu="T1"), kontrol("+45m", "K2")],
+  {"elenen": {}, "yeniden.Y1": {"elenen": {}, "alinan": ["GN"], "oneri": None}, "yeniden.Y2": s23_yanit("GN"),
+   "kontroller.K1.isler": {"T1/A": "Teslim Edildi", "T1/GN": "Duraklatıldı"}, "kontroller.K1.t": "2026-10-31T23:50:00+03:00",
+   "kontroller.K2.isler": {"T1/A": "Teslim Edildi", "T1/GN": "Teslim Edildi"}, "kontroller.K2.t": "2026-11-01T00:15:00+03:00",
+   "isler.T1/GN.degiskenler": ["Gece Nur", FIRMA, "31.10.2026", "200,00 TL", SUS7], "isler.T1/GN.post": 2, "isler.T1/GN.atlanma_nedeni": None,
+   "isler.T1/A.degiskenler": A_HAT, "meta.post": {"A": 1, "GN": 2}, "bu_ay": {"W1": {"2026-10": ay_kova(1), "2026-11": ay_kova(1)}}},
+  baslangic="2026-10-31T23:30:00+03:00", meta_davranis=_bel("GN"))
+
+S("S29-03-meta-bekletti-ikinci-denemede-tutar-dogar-net-borcla-sinirli", "S29",
+  "MZ'nin iletisi Sonucu Belirsiz; işteki Yine de Gönder'in iletisi Meta Bekletti (131049); 2. saatte şüpheli kaydı açılır; 4. saatte yeniden Yine de Gönder: 30.10 kalemi bugün vadeli → "
+  "şüphesiz tutar yok, elle sayılır, Meta Bekletti beklemesi sürer; 24 saat sonraki 2. deneme gönderim anıdır: 30.10 kalemi (300) gecikmiş, şüphesiz net borç 900 − 300 (tahsilat) − 400 "
+  "(şüpheli) = 200 → 30.10.2026 / 200,00 TL ile gider (S17 gönderim anında)",
+  "S29 (Y16-2/4) + S23 + S17 (Y13-8) + NB5 + §7a 14", [A7(),
+   cari_h("MZ", "Mert Bekleme", "0546 400 50 60", [_h("2026-09-01", 900, 0), _h("2026-10-29", 0, 300)], vadeler=[_v("2026-10-06", 400), _v("2026-10-30", 300)])],
+  [baslat("+0s", "T1", ["MZ", "A"], sablon="hatirlatma"), olay("+1h", "yine_de_gonder", toplu="T1", cari="MZ", etiket="Y1"),
+   olay("+2h", "cari", id="MZ", vadeler=[_v("2026-10-06", 400, True), _v("2026-10-30", 300)]), kontrol("+3h", "K1"),
+   olay("+4h", "yine_de_gonder", toplu="T1", cari="MZ", etiket="Y2", hedef="asil"), kontrol("+5h", "K2"), kontrol("+26h", "K3")],
+  {"yeniden.Y1": {"elenen": {}, "alinan": ["MZ"], "oneri": None},
+   "kontroller.K1.isler": {"T1/A": "Teslim Edildi", "T1/MZ": BEKLETTI}, "yeniden.Y2": s23_yanit("MZ"),
+   "kontroller.K2.isler": {"T1/A": "Teslim Edildi", "T1/MZ": BEKLETTI}, "kontroller.K2.toplam_post": 3,
+   "kontroller.K3.isler": {"T1/A": "Teslim Edildi", "T1/MZ": "Teslim Edildi"},
+   "isler.T1/MZ.degiskenler": ["Mert Bekleme", FIRMA, "30.10.2026", "200,00 TL", SUS7], "isler.T1/MZ.post": 3, "isler.T1/MZ.atlanma_nedeni": None,
+   "meta.post": {"A": 1, "MZ": 3}, "bu_ay": {"W1": {"2026-10": ay_kova(2)}}},
+  meta_davranis={"mesaj": {"MZ": ["yanitsiz_kabul", "kabul", "kabul"]}, "kanca": {"MZ": {"1": [], "2": K49, "3": K_STD}, "*": K_STD}})
+
+S("S29-04-sinirda-yeni-gecikmis-kalem-eklenir-kayit-kapanirsa-butun-gecikmisle", "S29",
+  "Günlük sınır 1: SQ ve SK'nin iletisi Sonucu Belirsiz, A gider; 1. saatte ikisine işteki Yine de Gönder → sınırda bekler; 2. saatte şüpheli kayıtları açılır (SQ'nun tek kalemi şüpheliye); "
+  "3. saatte ikisine yeniden Yine de Gönder: şüphesiz tutar yok → elle sayılır; 4. saatte SQ'ya eski vadeli yeni fatura (20.10, 200) girer; 5. saatte SK'nin icra tahsili kaydı kapatır; "
+  "pencere açılınca SQ gönderim anındaki tutarla (20.10.2026, 200,00 TL = 700 − 500), ertesi gün SK kayıt kapalı → bütün gecikmişiyle ve güncel bakiyeyle (30.10.2026, 150,00 TL, 150,00 TL) gider",
+  "S29 (Y16-2/4/5) + S23 + Y12-7 + S17 + NB5", [A7(),
+   cari_h("SQ", "Sena Yeni", "0546 500 60 70", [_h("2026-09-01", 500, 0)], vadeler=[_v("2026-10-07", 500)]),
+   cari_h("SK", "Sarp Kapanan", "0546 600 70 80", [_h("2026-09-01", 450, 0)], vadeler=[_v("2026-10-08", 300), _v("2026-10-30", 150)])],
+  [baslat("+0s", "T1", ["SQ", "SK", "A"], sablon="hatirlatma"),
+   olay("+1h", "yine_de_gonder", toplu="T1", cari="SQ", etiket="Y1"), olay("+1h", "yine_de_gonder", toplu="T1", cari="SK", etiket="Y2"), kontrol("+1h30m", "K1"),
+   olay("+2h", "cari", id="SQ", vadeler=[_v("2026-10-07", 500, True)]), olay("+2h", "cari", id="SK", vadeler=[_v("2026-10-08", 300, True), _v("2026-10-30", 150)]),
+   olay("+3h", "yine_de_gonder", toplu="T1", cari="SQ", etiket="Y3", hedef="asil"), olay("+3h", "yine_de_gonder", toplu="T1", cari="SK", etiket="Y4", hedef="asil"),
+   olay("+4h", "cari", id="SQ", vadeler=[_v("2026-10-07", 500, True), _v("2026-10-20", 200)], hareket_ekle=_h("2026-10-20", 200, 0)),
+   olay("+5h", "cari", id="SK", vadeler=[_v("2026-10-08", 0, True), _v("2026-10-30", 150)], hareket_ekle=_h("2026-10-30", 0, 300)),
+   kontrol("+6h", "K2"), kontrol("+25h", "K3")],
+  {"elenen": {}, "yeniden.Y1": {"elenen": {}, "alinan": ["SQ"], "oneri": None}, "yeniden.Y2": {"elenen": {}, "alinan": ["SK"], "oneri": None},
+   "kontroller.K1.isler": {"T1/A": "Teslim Edildi", "T1/SK": SINIR_B, "T1/SQ": SINIR_B},
+   "yeniden.Y3": s23_yanit("SQ"), "yeniden.Y4": s23_yanit("SK"),
+   "kontroller.K2.isler": {"T1/A": "Teslim Edildi", "T1/SK": SINIR_B, "T1/SQ": SINIR_B},
+   "kontroller.K3.isler": {"T1/A": "Teslim Edildi", "T1/SK": SINIR_B, "T1/SQ": "Teslim Edildi"},
+   "isler.T1/SQ.degiskenler": ["Sena Yeni", FIRMA, "20.10.2026", "200,00 TL", SUS7], "isler.T1/SQ.post": 2,
+   "isler.T1/SK.durum": "Teslim Edildi", "isler.T1/SK.degiskenler": ["Sarp Kapanan", FIRMA, "30.10.2026", "150,00 TL", "150,00 TL"], "isler.T1/SK.post": 2,
+   "meta.post": {"A": 1, "SK": 2, "SQ": 2}, "bu_ay": {"W1": {"2026-10": ay_kova(2), "2026-11": ay_kova(1)}}},
+  ayar={"gunluk_ust_sinir": 1}, meta_davranis=_bel("SQ", "SK"))
+
+
+# ---- S30: silme talebi / 1 yıl dolumu anında bekleyen iş gönderilmez (telefon / içerik silindi); Sonucu Belirsiz izi kalır (aynı dönem elenir) ----
+S("S30-01-talep-duraklatildi-meta-bekletti-zincir-gonderilmez-belirsiz-iz-eler", "S30",
+  "Ekim ekstresi: A gider, E'ninki Sonucu Belirsiz; B'nin işi hemen duraklatılır (hiç gitmedi); D'ninki Meta Bekletti (131049); 1. saatte E'ye işteki Yine de Gönder + duraklatma (zincir); "
+  "2. saatte B, D, E silme talebinde bulunur → üç bekleyen iş GÖNDERİLMEZ (içerik / telefon silinir; anında 'Atlandı' ya da gönderim anında — secenek); Devam Et ve 24 saat sonra hepsi "
+  "Atlandı (silme_talebi), POST yok; ertesi gün aynı dönem yeni gönderimde B ve D gider (karttaki telefonla, yeni içerikle; Meta Bekletti iletisi sayılmaz — K7), E belirsiz izle 'Sonucu "
+  "Belirsiz' (D6); E'nin asıl işinde Yine de Gönder içeriği silinmiş Ekstre için kapalı (S31)",
+  "S30 (Y16-8/9/10/11/12/13) + S31 (Y16-17) + D1 + D6 + K7 + G0 (1, 2)", [A(), B(), D(), E()],
+  [baslat("+0s", "T1", "AE"), baslat("+0s", "T2", "B"), olay("+0s", "duraklat", toplu="T2"), baslat("+0s", "T3", "D"),
+   olay("+1h", "yine_de_gonder", toplu="T1", cari="E", etiket="Y1"), olay("+1h", "duraklat", toplu="T1"), kontrol("+1h30m", "K1"),
+   olay("+2h", "kvkk_sil", id="B"), olay("+2h", "kvkk_sil", id="D"), olay("+2h", "kvkk_sil", id="E"), kontrol_ic("+2h30m", "K2"),
+   olay("+3h", "devam", toplu="T1"), olay("+3h", "devam", toplu="T2"), kontrol("+26h", "K3"),
+   baslat("+27h", "T4", "BDE"), olay("+28h", "yine_de_gonder", toplu="T1", cari="E", etiket="Y2", hedef="asil"), kontrol_ic("+29h", "K4")],
+  {"yeniden.Y1": {"elenen": {}, "alinan": ["E"], "oneri": None},
+   "kontroller.K1.isler": {"T1/A": "Teslim Edildi", "T1/E": "Duraklatıldı", "T2/B": "Duraklatıldı", "T3/D": BEKLETTI},
+   "kontroller.K2.isler": {"T1/A": "Teslim Edildi", "T1/E": s30("Duraklatıldı"), "T2/B": s30("Duraklatıldı"), "T3/D": s30(BEKLETTI)},
+   "kontroller.K2.icerik": {"T1/A": A_EKIM, "T1/E": SIL, "T2/B": SIL, "T3/D": SIL},
+   "kontroller.K3.isler": {"T1/A": "Teslim Edildi", "T1/E": "Atlandı", "T2/B": "Atlandı", "T3/D": "Atlandı"},
+   "elenen": {"T4": {"E": "sonucu_belirsiz"}}, "olusmadi": [], "onceki_uyari": {}, "toplular.T4.is_sayisi": 2,
+   "yeniden.Y2": {"elenen": {"E": IS}, "alinan": [], "oneri": None},
+   "isler.T1/E.atlanma_nedeni": "silme_talebi", "isler.T2/B.atlanma_nedeni": "silme_talebi", "isler.T3/D.atlanma_nedeni": "silme_talebi",
+   "isler.T1/E.post": 1, "isler.T2/B.post": 0, "isler.T3/D.post": 1, "isler.T1/E.icerik_silindi": True, "isler.T2/B.icerik_silindi": True,
+   "kontroller.K4.icerik.T4/B": B_EKIM, "kontroller.K4.icerik.T4/D": _ek("Hasan Çelik", "+905354445566", DON, "2026-10-01", "2026-10-31", "0.00", 1, "750.00", "750,00 TL"),
+   "isler.T4/B.durum": "Teslim Edildi", "isler.T4/D.durum": "Teslim Edildi",
+   "meta.post": {"A": 1, "B": 1, "D": 2, "E": 1}, "bu_ay": {"W1": {"2026-10": ay_kova(3)}}},
+  meta_davranis={"mesaj": {"E": ["yanitsiz_kabul", "kabul"]}, "kanca": {"T1/E": {"1": [], "*": K_STD}, "T3/D": {"1": K49, "*": K_STD}, "*": K_STD}})
+
+S("S30-02-talep-sinir-lisans-gonderilmez-belirsiz-hatirlatma-ayni-gun-elenir-ertesi-gun-gider", "S30",
+  "Ödeme Hatırlatma, günlük sınır 2: BE'nin iletisi Sonucu Belirsiz, A ve XN gider, SB ve LS sınırda bekler; 1. saatte SB (Sınır) ve BE (Sonucu Belirsiz) silme talebinde bulunur; 2. saatte "
+  "lisans salt okunur (LS 'Lisans Nedeniyle Durdu'), 3. saatte LS silme talebinde bulunur; lisans dönünce Devam Et: SB ve LS GÖNDERİLMEZ (silme_talebi); BE iş Sonucu Belirsiz kalır, içeriği "
+  "silinir; aynı gün yeni gönderimde BE 'Sonucu Belirsiz' ile elenir (E3), SB ve LS yeni işle (karttaki telefonla) sınır açılınca gider; ertesi gün BE uyarısız gider",
+  "S30 (Y16-9/10/11/13) + E3 + D1 + §7a 25 + G0 (1, 2, 4)", [A7(),
+   cari_h("BE", "Betül Belirsiz", "0543 100 20 30", [_h("2026-09-01", 300, 0)], vadeler=[_v("2026-10-10", 300)]),
+   cari_h("XN", "Ece Normal", "0543 200 30 40", [_h("2026-09-01", 250, 0)], vadeler=[_v("2026-10-12", 250)]),
+   cari_h("SB", "Selim Sınırda", "0543 300 40 50", [_h("2026-09-01", 400, 0)], vadeler=[_v("2026-10-11", 400)]),
+   cari_h("LS", "Leyla Lisans", "0543 400 50 60", [_h("2026-09-01", 350, 0)], vadeler=[_v("2026-10-13", 350)])],
+  [baslat("+0s", "T1", ["BE", "A", "XN", "SB", "LS"], sablon="hatirlatma"), kontrol("+30m", "K0"),
+   olay("+1h", "kvkk_sil", id="SB"), olay("+1h", "kvkk_sil", id="BE"), olay("+2h", "lisans", yazilabilir=False), olay("+3h", "kvkk_sil", id="LS"),
+   kontrol_ic("+3h30m", "K1"), olay("+4h", "lisans", yazilabilir=True), olay("+5h", "devam", toplu="T1"), kontrol("+5h5m", "K2"),
+   baslat("+6h", "T2", ["BE", "SB", "LS"], sablon="hatirlatma"), baslat("+50h", "T3", ["BE"], sablon="hatirlatma")],
+  {"kontroller.K0.isler": {"T1/A": "Teslim Edildi", "T1/BE": "Sonucu Belirsiz", "T1/LS": SINIR_B, "T1/SB": SINIR_B, "T1/XN": "Teslim Edildi"},
+   "kontroller.K1.isler": {"T1/A": "Teslim Edildi", "T1/BE": "Sonucu Belirsiz", "T1/LS": s30("Lisans Nedeniyle Durdu"), "T1/SB": s30("Lisans Nedeniyle Durdu"),
+                           "T1/XN": "Teslim Edildi"},
+   "kontroller.K1.icerik.T1/BE": SIL, "kontroller.K1.icerik.T1/SB": SIL, "kontroller.K1.icerik.T1/LS": SIL,
+   "kontroller.K1.icerik.T1/XN": {"telefon": "+905432003040", "degiskenler": ["Ece Normal", FIRMA, "12.10.2026", "250,00 TL", "250,00 TL"], "pdf": None, "dosya_adi": None},
+   "kontroller.K2.isler": {"T1/A": "Teslim Edildi", "T1/BE": "Sonucu Belirsiz", "T1/LS": "Atlandı", "T1/SB": "Atlandı", "T1/XN": "Teslim Edildi"},
+   "isler.T1/SB.atlanma_nedeni": "silme_talebi", "isler.T1/LS.atlanma_nedeni": "silme_talebi", "isler.T1/SB.post": 0, "isler.T1/LS.post": 0,
+   "isler.T1/BE.durum": "Sonucu Belirsiz", "isler.T1/BE.icerik_silindi": True, "isler.T1/BE.telefon": None, "isler.T1/BE.post": 1,
+   "elenen": {"T2": {"BE": "sonucu_belirsiz"}}, "olusmadi": [], "toplular.T2.is_sayisi": 2,
+   "isler.T2/SB.degiskenler": ["Selim Sınırda", FIRMA, "11.10.2026", "400,00 TL", "400,00 TL"], "isler.T2/SB.durum": "Teslim Edildi",
+   "isler.T2/LS.degiskenler": ["Leyla Lisans", FIRMA, "13.10.2026", "350,00 TL", "350,00 TL"], "isler.T2/LS.durum": "Teslim Edildi",
+   "isler.T3/BE.degiskenler": ["Betül Belirsiz", FIRMA, "10.10.2026", "300,00 TL", "300,00 TL"], "isler.T3/BE.durum": "Teslim Edildi",
+   "meta.post": {"A": 1, "BE": 2, "LS": 1, "SB": 1, "XN": 1}, "bu_ay": {"W1": {"2026-10": ay_kova(4), "2026-11": ay_kova(1)}}},
+  ayar={"gunluk_ust_sinir": 2}, meta_davranis={"mesaj": {"BE": ["yanitsiz_kabul", "kabul"]}, "kanca": {"T1/BE": {"1": [], "*": K_STD}, "*": K_STD}})
+
+S("S30-03-bir-yil-dolumu-bekleyen-isler-gonderilmez-belirsiz-iz-eler", "S30",
+  "02.11.2026: A'ya Ekim ekstresi gider; B'nin ekstresi ve HC'nin Ödeme Hatırlatma'sı hemen duraklatılır (hiç gitmez; HC'nin içeriği hiç yazılmadı); D'ninki Sonucu Belirsiz; 1 yıl dolmadan "
+  "2 saat önce içerikler durur; 1 yıl dolunca bekleyen B ve HC GÖNDERİLMEZ (saklama_suresi — anında ya da gönderim anında, secenek), A ve D'nin içeriği silinir (D Sonucu Belirsiz kalır); "
+  "Devam Et'te ikisi Atlandı, POST yok; aynı dönem yeni gönderimde A 'Daha Önce Gönderildi' (iz), D 'Sonucu Belirsiz' (iz), B yeni içerikle gider; HC'ye yeni hatırlatma gider",
+  "S30 (Y16-9/10/11/13/14) + SW3 (Y15-11/12/13) + D1 + D4 + R3 + G0 (1, 2, 4)", [A(), B(), D(),
+   cari_h("HC", "Hilal Cari", "0543 500 60 70", [_h("2026-10-01", 500, 0)], vadeler=[_v("2026-10-15", 500)])],
+  [baslat("+0s", "T1", "A", donem=GECEN_AY), baslat("+0s", "T2", "B", donem=GECEN_AY), olay("+0s", "duraklat", toplu="T2"),
+   baslat("+0s", "T3", ["HC"], sablon="hatirlatma"), olay("+0s", "duraklat", toplu="T3"), baslat("+0s", "T4", "D", donem=GECEN_AY),
+   kontrol_ic("+364d22h", "K1"), kontrol_ic("+365d2h", "K2"), olay("+365d3h", "devam", toplu="T2"), olay("+365d3h", "devam", toplu="T3"), kontrol("+365d4h", "K3"),
+   baslat("+365d5h", "T5", "ABD", donem=EKIM), baslat("+365d6h", "T6", ["HC"], sablon="hatirlatma"), kontrol_ic("+365d7h", "K4")],
+  {"kontroller.K1.isler": {"T1/A": "Teslim Edildi", "T2/B": "Duraklatıldı", "T3/HC": "Duraklatıldı", "T4/D": "Sonucu Belirsiz"},
+   "kontroller.K1.icerik.T1/A": A_EKIM, "kontroller.K1.icerik.T4/D": _ek("Hasan Çelik", "+905354445566", DON, "2026-10-01", "2026-10-31", "0.00", 1, "750.00", "750,00 TL"),
+   "kontroller.K2.isler": {"T1/A": "Teslim Edildi", "T2/B": s30("Duraklatıldı"), "T3/HC": s30("Duraklatıldı"), "T4/D": "Sonucu Belirsiz"},
+   "kontroller.K2.icerik": {"T1/A": SIL, "T2/B": SIL, "T3/HC": SIL, "T4/D": SIL},
+   "kontroller.K3.isler": {"T1/A": "Teslim Edildi", "T2/B": "Atlandı", "T3/HC": "Atlandı", "T4/D": "Sonucu Belirsiz"},
+   "isler.T2/B.atlanma_nedeni": "saklama_suresi", "isler.T3/HC.atlanma_nedeni": "saklama_suresi", "isler.T2/B.post": 0, "isler.T3/HC.post": 0,
+   "elenen": {"T5": {"A": DO, "D": "sonucu_belirsiz"}}, "olusmadi": [], "onceki_uyari": {"T5": {"sayi": 1, "son": "2026-11-02"}},
+   "kontroller.K4.icerik.T5/B": B_EKIM,
+   "kontroller.K4.icerik.T6/HC": {"telefon": "+905435006070", "degiskenler": ["Hilal Cari", FIRMA, "15.10.2026", "500,00 TL", "500,00 TL"], "pdf": None, "dosya_adi": None},
+   "isler.T4/D.durum": "Sonucu Belirsiz", "isler.T4/D.icerik_silindi": True,
+   "meta.post": {"A": 1, "B": 1, "D": 1, "HC": 1}, "bu_ay": {"W1": {"2026-11": ay_kova(1), "2027-11": ay_kova(2)}}},
+  baslangic=T0_KASIM, bitis="+366d", meta_davranis={"mesaj": {"D": "yanitsiz_kabul"}, "kanca": {"T4/D": {"1": []}, "*": K_STD}})
+
+
+# ---- S31: içeriği silinmiş Ekstre işi yeniden gönderilemez (neden görünür); yol yeni Ekstre gönderimi ----
+S("S31-01-talep-sonrasi-basarisizlari-yeniden-dene-silinmis-ekstre-elenir-yeni-gonderim-gider", "S31",
+  "Ekim ekstresi: A ve B alıcı hatasıyla (131021) Başarısız, C gider; 1. saatte A silme talebinde bulunur (içerik silinir); 2. saatte Başarısızları Yeniden Dene: A 'içerik silindi' nedeniyle "
+  "alınmaz (iş Başarısız kalır), B alınır ve gider; 3. saatte aynı dönem yeni Ekstre gönderimi: A'nın Başarısız denemesi sayılmaz → uyarısız, yeni içerikle gider",
+  "S31 (Y16-16/17/18) + K3 + SW3 (Y15-16)", [A(), B(), C()],
+  [baslat("+0s", "T1", "ABC"), olay("+1h", "kvkk_sil", id="A"), kontrol_ic("+1h30m", "K1"),
+   olay("+2h", "basarisizlari_yeniden_dene", toplu="T1", etiket="Y1"), kontrol("+2h30m", "K2"), baslat("+3h", "T2", "A"), kontrol_ic("+3h30m", "K3")],
+  {"kontroller.K1.icerik.T1/A": SIL, "kontroller.K1.icerik.T1/B": B_EKIM,
+   "yeniden.Y1": {"elenen": {"A": IS}, "alinan": ["B"], "oneri": None},
+   "kontroller.K2.isler": {"T1/A": "Başarısız", "T1/B": "Teslim Edildi", "T1/C": "Teslim Edildi"},
+   "elenen": {}, "olusmadi": [], "onceki_uyari": {}, "kontroller.K3.icerik.T2/A": A_EKIM, "kontroller.K3.icerik.T1/A": SIL,
+   "isler.T1/A.durum": "Başarısız", "isler.T1/A.post": 1, "isler.T1/A.icerik_silindi": True, "isler.T2/A.durum": "Teslim Edildi",
+   "meta.post": {"A": 2, "B": 2, "C": 1}, "bu_ay": {"W1": {"2026-10": ay_kova(3)}}},
+  meta_davranis={"mesaj": {"A": [{"hata": 131021}, "kabul"], "B": [{"hata": 131021}, "kabul"]}, "kanca": {"*": K_STD}})
+
+S("S31-02-bir-yil-sonra-silinmis-ekstre-yeniden-dene-ve-yine-de-gonder-kapali", "S31",
+  "02.11.2026 'Geçen Ay' ekstresi: A Başarısız (131021), B Sonucu Belirsiz; 1 yıl dolunca ikisinin içeriği silinir; sonra Başarısızları Yeniden Dene (A) ve işteki Yine de Gönder (B) "
+  "'içerik silindi' nedeniyle alınmaz; aynı dönem yeni gönderimde A uyarısız gider, B belirsiz izle 'Sonucu Belirsiz' (S30 — aynı dönemde yol kalmaz, README §21.7 S30-b); sonraki dönem "
+  "(Ekim 2027) B'ye gider",
+  "S31 (Y16-16/17/18) + S30 (Y16-13) + SW3 (Y15-13) + K3 + D1", [A(), B()],
+  [baslat("+0s", "T1", "AB", donem=GECEN_AY), kontrol_ic("+364d22h", "K1"), kontrol_ic("+365d2h", "K2"),
+   olay("+365d3h", "basarisizlari_yeniden_dene", toplu="T1", etiket="Y1"), olay("+365d3h", "yine_de_gonder", toplu="T1", cari="B", etiket="Y2"),
+   baslat("+365d4h", "T2", "AB", donem=EKIM), baslat("+365d5h", "T3", "B", donem=GECEN_AY)],
+  {"kontroller.K1.icerik": {"T1/A": A_EKIM, "T1/B": B_EKIM}, "kontroller.K2.icerik": {"T1/A": SIL, "T1/B": SIL},
+   "yeniden.Y1": {"elenen": {"A": IS}, "alinan": [], "oneri": None}, "yeniden.Y2": {"elenen": {"B": IS}, "alinan": [], "oneri": None},
+   "elenen": {"T2": {"B": "sonucu_belirsiz"}}, "olusmadi": [], "onceki_uyari": {},
+   "isler.T1/A.durum": "Başarısız", "isler.T1/B.durum": "Sonucu Belirsiz", "isler.T2/A.degiskenler": ["Ayşe Yılmaz", FIRMA, DON, "1.250,00 TL"],
+   "isler.T3/B.degiskenler": ["Mehmet Kaya", FIRMA, DON_27, "2.000,00 TL"], "isler.T3/B.durum": "Teslim Edildi",
+   "meta.post": {"A": 2, "B": 2}, "bu_ay": {"W1": {"2027-11": ay_kova(2)}}},
+  baslangic=T0_KASIM, bitis="+366d", meta_davranis={"mesaj": {"A": [{"hata": 131021}, "kabul"], "B": ["yanitsiz_kabul", "kabul"]},
+                                                   "kanca": {"T1/B": {"1": [], "*": K_STD}, "*": K_STD}})
+
+
+# ---- S32: silme talebinden önce alınmış yedek geri yüklenince silinmiş içerik / telefon GELMEZ; talepler makinede kalır, geri yüklemeden sonra yeniden uygulanır ----
+S("S32-01-talepten-once-ve-sonra-alinan-iki-yedek-icerik-gelmez-sonraki-icerik-kalir", "S32",
+  "02.11.2026 A ve B'ye Ekim ekstresi gider; 1. saatte yedek Y0 (talepten ÖNCE); 2. saatte A silme talebinde bulunur; 3. saatte A'ya Kasım ekstresi gider (talepten SONRA yazılan içerik); "
+  "4. saatte yedek Y1 (talepten SONRA); 5. saatte Y0 geri yüklenir → talep yeniden uygulanır: A'nın Ekim içeriği / telefonu GELMEZ, B'ninki durur; 6. saatte Y1 geri yüklenir → A'nın Ekim "
+  "içeriği silinmiş kalır, talepten sonraki Kasım içeriği DURUR; aynı dönem (Ekim) yeni gönderimde A ve B 'Daha Önce Gönderildi'",
+  "S32 (Y16-20/21/22) + SW3 (Y15-12) + D7 + G0 (5)", [A(), B()],
+  [baslat("+0s", "T1", "AB", donem=GECEN_AY), olay("+1h", "yedek_al", ad="Y0"), olay("+2h", "kvkk_sil", id="A"),
+   baslat("+3h", "T2", "A", donem={"bas": "2026-11-01", "son": "2026-11-30"}), olay("+4h", "yedek_al", ad="Y1"),
+   olay("+5h", "geri_yukle", yedek="Y0"), kontrol_ic("+5h", "K1"), olay("+6h", "geri_yukle", yedek="Y1"), kontrol_ic("+6h", "K2"),
+   baslat("+7h", "T3", "AB", donem=EKIM)],
+  {"kontroller.K1.icerik": {"T1/A": SIL, "T1/B": B_EKIM}, "kontroller.K1.isler": {"T1/A": "Teslim Edildi", "T1/B": "Teslim Edildi"},
+   "kontroller.K2.icerik": {"T1/A": SIL, "T1/B": B_EKIM, "T2/A": A_KASIM},
+   "elenen": {"T3": {"A": DO, "B": DO}}, "olusmadi": ["T3"], "onceki_uyari": {"T3": {"sayi": 2, "son": "2026-11-02"}},
+   "isler.T1/A.icerik_silindi": True, "isler.T2/A.durum": "Teslim Edildi", "isler.T2/A.telefon": "+905321112233",
+   "meta.post": {"A": 2, "B": 1}, "bu_ay": {"W1": {"2026-11": ay_kova(3)}}},
+  baslangic=T0_KASIM, bitis="+1d", meta_davranis={"kanca": {"*": K_STD}})
+
+S("S32-02-talepten-once-yedekte-basarisiz-ve-belirsiz-geri-yukleme-sonrasi-silinmis", "S32",
+  "Ekim ekstresi: B gider, C alıcı hatasıyla Başarısız, D Sonucu Belirsiz; 1. saatte yedek; 2. saatte C ve D silme talebinde bulunur; 3. saatte talepten önceki yedek geri yüklenir → "
+  "talepler yeniden uygulanır: C ve D'nin içeriği / telefonu GELMEZ (D Sonucu Belirsiz kalır); C'nin Başarısızları Yeniden Dene'si ve D'nin işteki Yine de Gönder'i 'içerik silindi' (S31); "
+  "aynı dönem yeni gönderimde C gider (Başarısız sayılmaz), D 'Sonucu Belirsiz' (iz)",
+  "S32 (Y16-21/23/24) + S31 + S30 (Y16-13) + K3 + D1", [B(), C(), D()],
+  [baslat("+0s", "T1", "BCD"), olay("+1h", "yedek_al", ad="Y0"), olay("+2h", "kvkk_sil", id="C"), olay("+2h", "kvkk_sil", id="D"),
+   olay("+3h", "geri_yukle", yedek="Y0"), kontrol_ic("+3h", "K1"),
+   olay("+4h", "basarisizlari_yeniden_dene", toplu="T1", etiket="Y1"), olay("+4h", "yine_de_gonder", toplu="T1", cari="D", etiket="Y2"),
+   baslat("+5h", "T2", "CD")],
+  {"kontroller.K1.icerik": {"T1/B": B_EKIM, "T1/C": SIL, "T1/D": SIL},
+   "kontroller.K1.isler": {"T1/B": "Teslim Edildi", "T1/C": "Başarısız", "T1/D": "Sonucu Belirsiz"},
+   "yeniden.Y1": {"elenen": {"C": IS}, "alinan": [], "oneri": None}, "yeniden.Y2": {"elenen": {"D": IS}, "alinan": [], "oneri": None},
+   "elenen": {"T2": {"D": "sonucu_belirsiz"}}, "olusmadi": [], "isler.T2/C.durum": "Teslim Edildi",
+   "isler.T2/C.degiskenler": ["Zeynep Demir", FIRMA, DON, "0,00 TL"], "isler.T1/C.post": 1, "isler.T1/D.post": 1,
+   "meta.post": {"B": 1, "C": 2, "D": 1}, "bu_ay": {"W1": {"2026-10": ay_kova(2)}}},
+  meta_davranis={"mesaj": {"C": [{"hata": 131021}, "kabul"], "D": ["yanitsiz_kabul", "kabul"]}, "kanca": {"T1/D": {"1": [], "*": K_STD}, "*": K_STD}})
 
 
 # ======================================================================== üretim / denetim
