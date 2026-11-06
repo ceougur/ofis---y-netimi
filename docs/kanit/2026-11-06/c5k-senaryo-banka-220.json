@@ -1,0 +1,43 @@
+{
+  "ad": "c5k-senaryo-banka-220",
+  "komut": "npm run test:senaryo-banka-220",
+  "commit": "b340a271b60edbc77d7d339ff9b1f9382aaa1c8e",
+  "dal": "worktree-agent-a6f19e17f6fe2a037",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T14:31:52.866Z",
+  "sure_sn": 93.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 66,
+    "gecen": 65,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "beklenmeyen hata: TypeError: Cannot read properties of null (reading 'dispatchEvent')",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "senaryo-banka-220: 65 geçti, 1 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a6f19e17f6fe2a037/test/e2e/artifacts/senaryo-banka-220",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-is/kanit/2026-11-06/c5k-senaryo-banka-220.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a6f19e17f6fe2a037",
+  "ham_cikti_sha256": "ffe1a9d4a1be134244e7db2ea130870cbd98d8a16332414e58387796141f330f",
+  "ham_cikti_bayt": 8509
+}

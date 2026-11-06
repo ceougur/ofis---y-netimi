@@ -1,0 +1,12 @@
+(node:8630) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a6f19e17f6fe2a037 · açılış 20179 ms
+nakit satırı: cash_entries 9222 · cari 13038 · kayıt 848 · taksit 3710 · stok 9434 · çek 16642
+AÇILIŞSIZ Kasa Giriş: 30 istek · ilk 43.9 ms · medyan 16.0 ms · p95 66.0 ms · olay döngüsü en çok 73.8 ms
+AÇILIŞSIZ cari nakit tahsilat: 30 istek · ilk 16589.2 ms · medyan 12992.7 ms · p95 15776.2 ms · olay döngüsü en çok 17834.2 ms
+AÇILIŞSIZ kayıt nakit tahsilatı: 30 istek · ilk 30.4 ms · medyan 16.6 ms · p95 33.4 ms · olay döngüsü en çok 21.0 ms
+açılış 2000-01-01 (ilk Kasa satırı 2022-10-12): 200
+AÇILIŞLI Kasa Giriş: 30 istek · ilk 40.2 ms · medyan 21.1 ms · p95 40.2 ms · olay döngüsü en çok 225.6 ms
+AÇILIŞLI cari nakit tahsilat: 30 istek · ilk 13319.4 ms · medyan 13655.5 ms · p95 16794.1 ms · olay döngüsü en çok 18203.3 ms
+AÇILIŞLI kayıt nakit tahsilatı: 30 istek · ilk 29.2 ms · medyan 11.3 ms · p95 15.5 ms · olay döngüsü en çok 6.6 ms
+Mutabakat Testi (tam tarama): 200 · 10040 ms · olay döngüsü en çok 0 ms · uyarı null

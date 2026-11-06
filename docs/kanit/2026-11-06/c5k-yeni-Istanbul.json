@@ -1,0 +1,32 @@
+{
+  "ad": "c5k-yeni-Istanbul",
+  "komut": "node --test test/kasa-acilis-once-250.test.mjs",
+  "commit": "bdff9c7a06933fddf1cf17ed730d7671884e9618",
+  "dal": "worktree-agent-a6f19e17f6fe2a037",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T13:44:07.585Z",
+  "sure_sn": 19,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 41,
+    "gecen": 41,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-is/kanit/2026-11-06/c5k-yeni-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a6f19e17f6fe2a037",
+  "ham_cikti_sha256": "af66a6b79245b65887a7abd5c8c4c312e3a2d5e050d0d1ea279971659e658c3e",
+  "ham_cikti_bayt": 17813
+}

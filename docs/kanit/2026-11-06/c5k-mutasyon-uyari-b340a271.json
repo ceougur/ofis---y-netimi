@@ -1,0 +1,32 @@
+{
+  "ad": "c5k-mutasyon-uyari-b340a271",
+  "komut": "node test/kasa-acilis-once-250-mutasyon.mjs --kopya /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-mut-b340a271 --yalniz 15,16,17",
+  "commit": "483ffc60e824edb13df922656c1ef060f1060423",
+  "dal": "worktree-agent-a6f19e17f6fe2a037",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T16:55:37.135Z",
+  "sure_sn": 66,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 3,
+    "gecen": 3,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-is/kanit/2026-11-06/c5k-mutasyon-uyari-b340a271.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a6f19e17f6fe2a037",
+  "ham_cikti_sha256": "97f470a1d9fef3905d5cb9af4c5f2d0148a2b4f7cf95c190d8f514e9a6330be5",
+  "ham_cikti_bayt": 736
+}

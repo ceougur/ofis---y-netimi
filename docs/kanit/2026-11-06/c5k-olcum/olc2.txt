@@ -1,0 +1,48 @@
+== once 1 13:33:15 9.40 10.67 11.12
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164 · açılış 11465 ms
+nakit satırı: cash_entries 9222 · cari 13038 · kayıt 848 · taksit 3710 · stok 9434 · çek 16642
+AÇILIŞSIZ Kasa Giriş: 100 istek · ilk 30.2 ms · medyan 9.0 ms · p95 19.8 ms · olay döngüsü en çok 26.9 ms · COMMIT denetimleri (store.lastTx.guardMs) medyan 3.58 ms
+AÇILIŞSIZ kayıt nakit tahsilatı: 100 istek · ilk 9.2 ms · medyan 6.8 ms · p95 14.0 ms · olay döngüsü en çok 25.8 ms · COMMIT denetimleri (store.lastTx.guardMs) medyan 3.31 ms
+açılış 2000-01-01 (ilk Kasa satırı 2022-10-12): 200
+AÇILIŞLI Kasa Giriş: 100 istek · ilk 7.7 ms · medyan 9.1 ms · p95 21.3 ms · olay döngüsü en çok 30.8 ms · COMMIT denetimleri (store.lastTx.guardMs) medyan 4.43 ms
+AÇILIŞLI kayıt nakit tahsilatı: 100 istek · ilk 14.7 ms · medyan 8.1 ms · p95 15.9 ms · olay döngüsü en çok 10.5 ms · COMMIT denetimleri (store.lastTx.guardMs) medyan 3.72 ms
+cari nakit tahsilat 1: 200 · 8936 ms · store.lastTx {"marksMs":0.02996499999972002,"guardMs":8762.242139,"moneyMs":0.12933999999950174}
+cari nakit tahsilat 2: 200 · 8793 ms · store.lastTx {"marksMs":0.10302100000262726,"guardMs":8614.304569,"moneyMs":0.16853999999875668}
+cari nakit tahsilat 3: 200 · 8206 ms · store.lastTx {"marksMs":0.065853000000061,"guardMs":8042.532391000001,"moneyMs":0.12487799999507843}
+Mutabakat Testi (tam tarama): 200 · 8044 ms · olay döngüsü en çok 0 ms · uyarı null
+== sonra 1 13:34:54 6.60 9.42 10.63
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a6f19e17f6fe2a037 · açılış 13834 ms
+nakit satırı: cash_entries 9222 · cari 13038 · kayıt 848 · taksit 3710 · stok 9434 · çek 16642
+AÇILIŞSIZ Kasa Giriş: 100 istek · ilk 33.7 ms · medyan 7.9 ms · p95 14.0 ms · olay döngüsü en çok 30.2 ms · COMMIT denetimleri (store.lastTx.guardMs) medyan 3.75 ms
+AÇILIŞSIZ kayıt nakit tahsilatı: 100 istek · ilk 10.2 ms · medyan 7.3 ms · p95 13.7 ms · olay döngüsü en çok 13.2 ms · COMMIT denetimleri (store.lastTx.guardMs) medyan 3.63 ms
+açılış 2000-01-01 (ilk Kasa satırı 2022-10-12): 200
+AÇILIŞLI Kasa Giriş: 100 istek · ilk 6.9 ms · medyan 6.6 ms · p95 10.9 ms · olay döngüsü en çok 7.2 ms · COMMIT denetimleri (store.lastTx.guardMs) medyan 3.26 ms
+AÇILIŞLI kayıt nakit tahsilatı: 100 istek · ilk 9.9 ms · medyan 6.3 ms · p95 9.9 ms · olay döngüsü en çok 5.6 ms · COMMIT denetimleri (store.lastTx.guardMs) medyan 3.19 ms
+cari nakit tahsilat 1: 200 · 7982 ms · store.lastTx {"marksMs":0.033290999999735504,"guardMs":7746.795194999999,"moneyMs":0.1717769999995653}
+cari nakit tahsilat 2: 200 · 8712 ms · store.lastTx {"marksMs":0.07707099999970524,"guardMs":8541.995295,"moneyMs":0.1278459999957704}
+cari nakit tahsilat 3: 200 · 7330 ms · store.lastTx {"marksMs":0.09541199999512173,"guardMs":7155.6264169999995,"moneyMs":0.11458500000298955}
+Mutabakat Testi (tam tarama): 200 · 8446 ms · olay döngüsü en çok 0 ms · uyarı null
+== once 2 13:35:45 5.37 8.62 10.29
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164 · açılış 13896 ms
+nakit satırı: cash_entries 9222 · cari 13038 · kayıt 848 · taksit 3710 · stok 9434 · çek 16642
+AÇILIŞSIZ Kasa Giriş: 100 istek · ilk 35.8 ms · medyan 7.9 ms · p95 15.6 ms · olay döngüsü en çok 25.8 ms · COMMIT denetimleri (store.lastTx.guardMs) medyan 3.47 ms
+AÇILIŞSIZ kayıt nakit tahsilatı: 100 istek · ilk 8.4 ms · medyan 7.4 ms · p95 17.4 ms · olay döngüsü en çok 27.9 ms · COMMIT denetimleri (store.lastTx.guardMs) medyan 3.36 ms
+açılış 2000-01-01 (ilk Kasa satırı 2022-10-12): 200
+AÇILIŞLI Kasa Giriş: 100 istek · ilk 7.9 ms · medyan 7.3 ms · p95 19.9 ms · olay döngüsü en çok 12.8 ms · COMMIT denetimleri (store.lastTx.guardMs) medyan 3.32 ms
+AÇILIŞLI kayıt nakit tahsilatı: 100 istek · ilk 6.2 ms · medyan 8.9 ms · p95 20.3 ms · olay döngüsü en çok 19.4 ms · COMMIT denetimleri (store.lastTx.guardMs) medyan 3.33 ms
+cari nakit tahsilat 1: 200 · 8346 ms · store.lastTx {"marksMs":0.03889799999888055,"guardMs":8163.930232999999,"moneyMs":0.1742309999972349}
+cari nakit tahsilat 2: 200 · 9317 ms · store.lastTx {"marksMs":0.0744459999987157,"guardMs":9067.483391999998,"moneyMs":0.1771909999952186}
+cari nakit tahsilat 3: 200 · 9918 ms · store.lastTx {"marksMs":0.06468100000347476,"guardMs":9718.197226999997,"moneyMs":0.17356999999901745}
+Mutabakat Testi (tam tarama): 200 · 8963 ms · olay döngüsü en çok 0 ms · uyarı null
+== sonra 2 13:36:41 5.47 8.07 10.00
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a6f19e17f6fe2a037 · açılış 14933 ms
+nakit satırı: cash_entries 9222 · cari 13038 · kayıt 848 · taksit 3710 · stok 9434 · çek 16642
+AÇILIŞSIZ Kasa Giriş: 100 istek · ilk 68.6 ms · medyan 12.8 ms · p95 36.8 ms · olay döngüsü en çok 111.9 ms · COMMIT denetimleri (store.lastTx.guardMs) medyan 4.15 ms
+AÇILIŞSIZ kayıt nakit tahsilatı: 100 istek · ilk 11.6 ms · medyan 10.6 ms · p95 24.6 ms · olay döngüsü en çok 24.2 ms · COMMIT denetimleri (store.lastTx.guardMs) medyan 3.64 ms
+açılış 2000-01-01 (ilk Kasa satırı 2022-10-12): 200
+AÇILIŞLI Kasa Giriş: 100 istek · ilk 13.2 ms · medyan 7.6 ms · p95 18.3 ms · olay döngüsü en çok 25.2 ms · COMMIT denetimleri (store.lastTx.guardMs) medyan 3.65 ms
+AÇILIŞLI kayıt nakit tahsilatı: 100 istek · ilk 7.0 ms · medyan 8.1 ms · p95 16.6 ms · olay döngüsü en çok 14.5 ms · COMMIT denetimleri (store.lastTx.guardMs) medyan 3.38 ms
+cari nakit tahsilat 1: 200 · 8671 ms · store.lastTx {"marksMs":0.031246999998984393,"guardMs":8489.051753,"moneyMs":0.16475700000228244}
+cari nakit tahsilat 2: 200 · 10600 ms · store.lastTx {"marksMs":0.0711379999993369,"guardMs":9690.048372000001,"moneyMs":0.12563599999703}
+cari nakit tahsilat 3: 200 · 8084 ms · store.lastTx {"marksMs":0.07740999999805354,"guardMs":7914.260160999998,"moneyMs":0.12419899999804329}
+Mutabakat Testi (tam tarama): 200 · 10924 ms · olay döngüsü en çok 10930 ms · uyarı null

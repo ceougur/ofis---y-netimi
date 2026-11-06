@@ -14,7 +14,7 @@ import { METHODS, NEGATIVE_GUARDED, NEGATIVE_KEY, NEGATIVE_POLICIES, methodOf, r
 import { systemClock } from "../lib/clock.mjs";
 import { createMoneyLines, waysFor } from "../lib/bank/money-lines.mjs";
 import { negativeConfirmed } from "../lib/bank/module-ref.mjs";
-import { CASH_OPENING_TEXT, cashOpenings, firstCashMovement, isCashOpeningId } from "../lib/cash-opening.mjs";
+import { CASH_OPENING_TEXT, cashOpenings, firstCashMovement, installCashOpeningGuard, isCashOpeningId } from "../lib/cash-opening.mjs";
 import { assertRowVersion, rowVersion } from "../lib/row-version.mjs";
 
 // Banka Fişi'nin para hareketi olmayan türleri (açılış, Devir Kapanışı, eski bakiye aktarımı): raporda "Açılış ve Devir Düzeltmeleri".
@@ -25,6 +25,9 @@ const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).get
 
 export function registerCashRoutes(router, context) {
   const { store, auth, audit, events, trash, bank } = context;
+  // 2.5.0 Ç5-K (S12 = A; lib/cash-opening.mjs): Kasa açılışından önce tarihli YENİ nakit hareketi — 100'e yazan bütün yollar (bu dosyanın dışındakiler dahil) —
+  // ortak COMMIT denetiminden geçer (409 cash-before-opening; bankadaki bank-before-opening'in ikizi). Mutabakat kapısından önce kurulur (reddin nedeni önce).
+  installCashOpeningGuard(store);
   // İş saati (v2.1.0): context.now (config.now).
   const clock = context.now || systemClock;
   const now = () => clock().toISOString();

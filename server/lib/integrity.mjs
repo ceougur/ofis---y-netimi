@@ -37,6 +37,7 @@ import { BANK_SUBS, DOCUMENT_MAINS, DOCUMENT_SUB_NAMES, RECEIVED_MAINS, document
 import { compareVersions } from "./semver.mjs";
 import { CHEQUE_BOND_BAD, createScopedGate, familyOf } from "./integrity-scope.mjs";
 import { runScanWorker } from "./integrity-scan-runner.mjs";
+import { cashBeforeOpening } from "./cash-opening.mjs";
 import { systemClock } from "./clock.mjs";
 import { roundMoney, toCents } from "./money.mjs";
 
@@ -639,6 +640,17 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       const count = early.length ? store.get("SELECT COUNT(*) AS n FROM plan_items i JOIN plans p ON p.id = i.plan_id AND p.deleted_at IS NULL WHERE p.registered_on <> '' AND i.due_date < p.registered_on").n : 0;
       checks.push({ code: "dates:due-before-start", name: "Kayıt Tarihi'nden önceki taksit vadesi", ok: count === 0, count, sample: early.map(row => `${row.name}: vade ${row.due} < kayıt ${row.start}`) });
       lap("dates");
+    }
+    // 2.5.0 Ç5-K (S20 = A; lib/cash-opening.mjs): Kasa açılışından önce tarihli nakit hareketi — geri yüklenen yedek, eski sürüm verisi ya da Silinenler'den aynen
+    // gelen satır (yeni hareket COMMIT'te 409 cash-before-opening). Düzey UYARI, YALNIZ tam taramada (açılış, Mutabakat Testi, arka plan taraması, Defter Mutabakatı;
+    // COMMIT kapısında yok — geri yükleme ve tarihi değişmeyen düzeltme engellenmez). Açılış ya da böyle satır yoksa denetim listede yok (liste 2.4.9 ile aynı).
+    if (!touched && has("cash_entries")) {
+      const early = cashBeforeOpening(store, money());
+      if (early?.rows.length) {
+        const opening = early.opening.split("-").reverse().join(".");
+        checks.push({ code: "cash:before-opening", name: "Kasa Açılışından Önce Tarihli Hareket", ok: false, count: early.rows.length, severity: "warning", opening: early.opening, hint: `Bu nakit hareketleri Kasa açılışından (${opening}) önce tarihli (geri yüklenen yedek, eski sürüm verisi ya da Silinenler'den geri gelen kayıt). Tarihi değişmeden düzeltilebilir; açılıştan önceye yeni hareket girilemez. Hareketler açılışın içinde değilse yönetici Kasa → Açılış Bakiyesi'nin tarihini öne alır; uyarı kalkar.`, sample: early.rows.slice(0, 5).map(item => item.sample), items: early.rows.slice(0, 100).map(({ source, id, date }) => ({ source, id, date })) });
+      }
+      lap("cash-opening");
     }
     // v2.1.0 (§3.11): banka çekirdeğinin denetimleri. Olay bazlılar (bank:event, money:report) COMMIT'te yalnız dokunulan olaylara
     // (scoped: kapı tabanı değil, "eski olmayan her sapma engeller" kuralı); tam taramada (açılış, Mutabakat Testi, 15 dakikalık tarama)
