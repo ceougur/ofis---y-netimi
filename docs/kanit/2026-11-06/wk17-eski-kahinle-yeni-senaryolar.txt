@@ -1,0 +1,37 @@
+komut: TZ=UTC python3 -I /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wk17-calisma/araclar/eski_kahinle.py /home/user/ofis---y-netimi/.claude/worktrees/agent-af5d3ff11385d060f/test/bagimsiz/whatsapp-248/kahin /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wk17-eski-7d6c6369/kahin/kahin.py
+commit: bb920588 (+ çalışma ağacı)
+zaman: 2026-11-06T08:46:49Z
+---
+eski kahin.py sha256 426498d0771701f5e8d6ddb7f67b8189057d17467090f0f56f5dfb52abea3f7f
+KIRMIZI (değişen) S16-02-yine-de-gonder-suphesiz-tutar-yok-elenir-ertesi-gun-gider: 2 fark
+    S16-02-yine-de-gonder-suphesiz-tutar-yok-elenir-ertesi-gun-gider * [{}…] yeniden.Y1: elle {"elenen": {}, "alinan": ["X"], "oneri": null, "supheli_etiketi": ["X"]} ≠ model {"elenen": {"secenek": [{"X": "gecikmis_borc_yok"}, {}], "susuyor": "S16 'yoksa elenir': elemenin işteki Yine de Gönder basıldığı anda mı (yanıtta elenir, iş S
+    S16-02-yine-de-gonder-suphesiz-tutar-yok-elenir-ertesi-gun-gider * [{}…] kontroller.K1.isler.T1/X: elle "Atlandı" ≠ model {"secenek": ["Sonucu Belirsiz", "Atlandı"], "susuyor": "S16 'yoksa elenir': elemenin işteki Yine de Gönder basıldığı anda mı (yanıtta elenir, iş Sonucu Belirsiz
+KIRMIZI (değişen) S30-01-talep-duraklatildi-meta-bekletti-zincir-gonderilmez-belirsiz-iz-eler: 1 fark
+    S30-01-talep-duraklatildi-meta-bekletti-zincir-gonderilmez-belirsiz-iz-eler * [{}…] kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/E": "Atlandı", "T2/B": "Atlandı", "T3/D": "Atlandı"} ≠ model {"T1/A": "Teslim Edildi", "T1/E": {"secenek": ["Atlandı", "Duraklatıldı"], "susuyor": "S30 'bekleyen iş gönderilmez': silme taleb
+KIRMIZI (değişen) S30-02-talep-sinir-lisans-gonderilmez-belirsiz-hatirlatma-ayni-gun-elenir-ertesi-gun-gider: 1 fark
+    S30-02-talep-sinir-lisans-gonderilmez-belirsiz-hatirlatma-ayni-gun-elenir-ertesi-gun-gider * [{}…] kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/BE": "Sonucu Belirsiz", "T1/LS": "Atlandı", "T1/SB": "Atlandı", "T1/XN": "Teslim Edildi"} ≠ model {"T1/A": "Teslim Edildi", "T1/BE": "Sonucu Belirsiz", "T1/LS": {"secenek": ["
+KIRMIZI (değişen) S30-03-bir-yil-dolumu-bekleyen-isler-gonderilmez-belirsiz-iz-eler: 1 fark
+    S30-03-bir-yil-dolumu-bekleyen-isler-gonderilmez-belirsiz-iz-eler * [{}…] kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T2/B": "Atlandı", "T3/HC": "Atlandı", "T4/D": "Sonucu Belirsiz"} ≠ model {"T1/A": "Teslim Edildi", "T2/B": {"secenek": ["Atlandı", "Duraklatıldı"], "susuyor": "S30 'bekleyen iş gönderilmez': silme talebi
+KIRMIZI (yeni) S34-01-ilk-yine-de-gonder-tutar-yok-is-alinir-ertesi-gun-gonderim-anindaki-tutarla: ValueError: KULLANICIYA SORULMALI (README §18.4, S16 elemenin anı): basma anında şüphesiz tutar yoktu, gönderim anında doğdu — basma okumasında elenir, gönderim okumasında gider; kodlanmadı
+KIRMIZI (yeni) S34-02-ilk-yine-de-gonder-gece-yarisi-yerel-gun-tutar-dogar: ValueError: KULLANICIYA SORULMALI (README §18.4, S16 elemenin anı): basma anında şüphesiz tutar yoktu, gönderim anında doğdu — basma okumasında elenir, gönderim okumasında gider; kodlanmadı
+KIRMIZI (yeni) S35-01-talep-aninda-kapanir-ayni-donem-yeni-gonderim-gider-meta-bekletti-gec-teslim: ValueError: KULLANICIYA SORULMALI S30-a (README §21.7): silme talebi / 1 yıl dolumu anında bekleyen iş kapanmadan aynı kişiye aynı dönem yeni gönderim ya da yeniden deneme — bekleyen iş anında mı kapanır (gider) yoksa gönderim anına kadar kuy
+KIRMIZI (yeni) S35-02-hatirlatma-talep-sonrasi-ayni-gun-yeni-gonderim-gece-yarisi-belirsiz-yerel-gun: ValueError: KULLANICIYA SORULMALI S30-a (README §21.7): silme talebi / 1 yıl dolumu anında bekleyen iş kapanmadan aynı kişiye aynı dönem yeni gönderim ya da yeniden deneme — bekleyen iş anında mı kapanır (gider) yoksa gönderim anına kadar kuy
+AYNI (yeni) S36-01-silinmis-belirsiz-ekstre-ayni-donem-yol-yok-sonraki-donem-gider
+AYNI (yeni) S36-02-silinmis-belirsiz-son-3-ay-yedi-gun-icinde-yol-yok-sonra-gider
+KIRMIZI (yeni) S37-01-talep-sonrasi-hatirlatma-yeniden-dene-ve-yine-de-gonder-karttan-gider: ValueError: KULLANICIYA SORULMALI S31-a (README §21.7): içeriği silinmiş Ödeme Hatırlatma işinin yeniden gönderimi (S31 yalnız Ekstre der) — kodlanmadı
+KIRMIZI (yeni) S37-02-bir-yil-sonra-hatirlatma-yeniden-dene-ve-yine-de-gonder-karttan-gider: ValueError: KULLANICIYA SORULMALI S31-a (README §21.7): içeriği silinmiş Ödeme Hatırlatma işinin yeniden gönderimi (S31 yalnız Ekstre der) — kodlanmadı
+KIRMIZI (yeni) S38-01-tasima-oncesi-talep-yeni-bilgisayarda-geri-yuklemede-uygulanir: 1 fark
+    S38-01-tasima-oncesi-talep-yeni-bilgisayarda-geri-yuklemede-uygulanir * [{}…] kontroller.K1.icerik: elle {"T1/A": {"telefon": null, "degiskenler": null, "pdf": null, "dosya_adi": null, "icerik_silindi": true}, "T1/B": {"telefon": "+905332223344", "degiskenler": ["M ≠ model {"T1/A": {"telefon": {"plan_susuyor": "silme talebi kayd
+KIRMIZI (yeni) S38-02-tasima-sonrasi-talep-ve-zincirleme-tasima: 2 fark
+    S38-02-tasima-sonrasi-talep-ve-zincirleme-tasima * [{}…] kontroller.K2.icerik: elle {"T1/A": {"telefon": null, "degiskenler": null, "pdf": null, "dosya_adi": null, "icerik_silindi": true}, "T1/B": {"telefon": "+905332223344", "degiskenler": ["M ≠ model {"T1/A": {"telefon": {"plan_susuyor": "silme talebi kaydı makinede: başka bil
+    S38-02-tasima-sonrasi-talep-ve-zincirleme-tasima * [{}…] kontroller.K3.icerik: elle {"T1/A": {"telefon": null, "degiskenler": null, "pdf": null, "dosya_adi": null, "icerik_silindi": true}, "T1/B": {"telefon": "+905332223344", "degiskenler": ["M ≠ model {"T1/A": {"telefon": {"plan_susuyor": "silme talebi kaydı makinede: başka bil
+AYNI (yeni) S33-01-yol-2-imzasiz-bildirim-isaret-koymaz-sure-dolmaz-ayni-donem-daha-once
+KIRMIZI (yeni) S33-02-yol-1-imzasiz-bildirim-kabul-isaret-ve-sure-dolumu-sahte-de-islenir: 7 fark
+    S33-02-yol-1-imzasiz-bildirim-kabul-isaret-ve-sure-dolumu-sahte-de-islenir * [{}…] kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "Gönderildi", "T1/C": "Teslim Edildi"} ≠ model {"T1/A": "Teslim Edildi", "T1/B": "Gönderildi", "T1/C": "Meta Kabul Etti"}
+    S33-02-yol-1-imzasiz-bildirim-kabul-isaret-ve-sure-dolumu-sahte-de-islenir * [{}…] kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "Süresi Doldu", "T1/C": "Teslim Edildi"} ≠ model {"T1/A": "Teslim Edildi", "T1/B": "Süresi Doldu", "T1/C": "Süresi Doldu"}
+    S33-02-yol-1-imzasiz-bildirim-kabul-isaret-ve-sure-dolumu-sahte-de-islenir * [{}…] elenen: elle {"T2": {"A": "daha_once_gonderildi", "C": "daha_once_gonderildi"}} ≠ model {"T2": {"A": "daha_once_gonderildi"}}
+    S33-02-yol-1-imzasiz-bildirim-kabul-isaret-ve-sure-dolumu-sahte-de-islenir * [{}…] onceki_uyari: elle {"T2": {"sayi": 2, "son": "2026-10-30"}} ≠ model {"T2": {"sayi": 1, "son": "2026-10-30"}}
+AYNI (yeni) S41-01-yol-2-uygulama-duzeyi-adres-imzali-islenir-imzasiz-duser
+AYNI (yeni) S41-02-yol-1-uygulama-duzeyi-adres-imzasiz-kabul
+özet: 13 KIRMIZI, 5 AYNI
+--- çıkış 0
