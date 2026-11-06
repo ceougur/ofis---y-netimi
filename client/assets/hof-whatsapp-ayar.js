@@ -165,7 +165,70 @@
     // 2.4.8 W5: Bilgilendirme Şablonları kartı (hof-whatsapp-sablon.js) bağlantıyla birlikte yenilenir.
     await HOF.whatsappTemplates?.load();
     await loadSending();
+    renderKvkk();
   }
+
+  // ---------- 2.5.0 W-3: Gönderim Kayıtları ve KVKK (KULLANICI KARARI S-W3 + S35 / S42; sunucu lib/whatsapp/saklama.mjs, routes/whatsapp.mjs kvkk-erase) ----------
+  // Bağlantı kaldırılmış olsa da (eski kayıtlar durur) ve cari kartında telefon kalmamış olsa da (kartın WhatsApp düğmesi görünmez) silme talebi buradan yapılır. Yalnız yönetici.
+  const KVKK_CONFIRM = name => `${name} için WhatsApp gönderim kayıtlarındaki ileti içeriği, ekstre PDF'i ve telefon numarası silinecek; bekleyen gönderimi gönderilmeyecek. Tarih ve gönderim sonucu kalır (bu döneme ikinci ileti gitmez). Cari kartı değişmez. İşlem geri alınamaz.`;
+  function renderKvkk() {
+    let box = $("#adm-wa-kvkk");
+    if (!box) {
+      const anchor = $("#adm-wa-sending") || $("#adm-wa-status");
+      if (!anchor) return;
+      box = document.createElement("section");
+      box.id = "adm-wa-kvkk";
+      box.className = "adm-card adm-wa-kvkk";
+      anchor.insertAdjacentElement("afterend", box);
+    }
+    box.innerHTML = `
+      <div class="adm-wa-head"><h2>Gönderim Kayıtları ve KVKK</h2>
+        <p>WhatsApp gönderim kayıtlarındaki ileti içeriği, ekstre PDF'i ve telefon numarası bir yıl sonra kendiliğinden silinir; tarih ve gönderim sonucu kalır. Bir cari kayıtlarının silinmesini isterse cariyi bulup silin (cari kartında da WhatsApp → Gönderim Kayıtlarını Sil (KVKK)).</p></div>
+      <div class="adm-inline"><input type="search" class="hof-input" data-wa-kvkk-q data-nodirty aria-label="Cari Ara" placeholder="Cari adı ya da numarası"><button type="button" class="hof-button hof-button-ghost" data-wa-kvkk-find>Cari Ara</button></div>
+      <div class="adm-wa-kvkk-list" data-wa-kvkk-list></div>`;
+  }
+  async function findKvkk() {
+    const q = String($("[data-wa-kvkk-q]")?.value || "").trim();
+    const list = $("[data-wa-kvkk-list]");
+    if (!list) return;
+    if (!q) {
+      list.innerHTML = '<p class="adm-muted">Aramak için cari adını ya da numarasını yazın.</p>';
+      return;
+    }
+    try {
+      const rows = await HOF.api(`/api/workspace/accounts/search?q=${encodeURIComponent(q)}`);
+      list.innerHTML = rows.length
+        ? rows.slice(0, 10).map(row => `<div class="adm-inline" data-wa-kvkk-row="${esc(row.id)}"><span>${esc(row.name)}${row.refNo ? ` · ${esc(row.refNo)}` : ""}</span><button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-wa-kvkk-erase="${esc(row.id)}" data-wa-kvkk-name="${esc(row.name)}">Gönderim Kayıtlarını Sil (KVKK)</button></div>`).join("")
+        : '<p class="adm-muted">Eşleşen cari yok.</p>';
+    } catch (error) {
+      HOF.toastError(error);
+    }
+  }
+  async function eraseKvkk(button) {
+    const name = button.dataset.waKvkkName || "";
+    const sure = await HOF.confirm({ title: "Gönderim Kayıtları Silinsin mi?", message: KVKK_CONFIRM(name), confirmLabel: "Sil", danger: true });
+    if (!sure) return;
+    button.disabled = true;
+    try {
+      const answer = await HOF.api("/api/workspace/whatsapp/kvkk-erase", { method: "POST", body: { accountId: button.dataset.waKvkkErase, confirm: true } });
+      HOF.toast(`Gönderim kayıtları silindi: ${Number(answer?.jobs || 0) + Number(answer?.manual || 0)} kayıt${answer?.skipped ? `, ${answer.skipped} bekleyen gönderim atlandı` : ""}.`, { type: "success" });
+    } catch (error) {
+      HOF.toastError(error);
+    } finally {
+      button.disabled = false;
+    }
+  }
+  document.addEventListener("click", event => {
+    if (event.target.closest?.("[data-wa-kvkk-find]")) return void findKvkk();
+    const erase = event.target.closest?.("[data-wa-kvkk-erase]");
+    if (erase && !erase.disabled) eraseKvkk(erase);
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Enter" && event.target.closest?.("[data-wa-kvkk-q]")) {
+      event.preventDefault();
+      findKvkk();
+    }
+  });
 
   // ---------- 2.4.8 W4: Gönderim Onayı ve Bu Ay Gönderilen İleti Sayısı ----------
   // Bir kez onay (plan §1, §7a 28): işaretlenmeden toplu/tekli otomatik gönderim BAŞLAMAZ (sunucu da reddeder). "Bu Ay": teslim edilen ileti (Teslim Edildi +

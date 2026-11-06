@@ -1,0 +1,19 @@
+W-3 — ESKİ KODDA KIRMIZI ve NEDENİ (ders 7 / 38). Eski kod: git archive 75f1aad9 → scratchpad/w3-eski-75f1aad9 (ayrı kopya, ders 23 / 25); yeni test dosyası ve
+fikstürü (test/whatsapp-w3-saklama-250.test.mjs, test/whatsapp-sahte-graph.mjs) kopyaya alındı, program kodu eski. Koşu: w3-eski-75f1aad9-utc (TZ=UTC) — 0/14 geçti, 14 başarısız.
+Her hücrede başarısız denetimin iletisi okundu; neden = iddia edilen davranışın yokluğu:
+
+ 1 S-W3 + S35 talep              POST /api/workspace/whatsapp/kvkk-erase → 404 (silme talebi yolu yok; yetki 403 beklenirken)
+ 2 1 yıl + Y17-6                 "dolum anında: B kuyrukta değil (Y17-6)" — 1 yılı dolan bekleyen iş 'Zaten Kuyrukta' eliyor (kapanmıyor)
+ 3 29 Şubat                      "28.02.2029 01:00: bekleyen iş kapandı" — iş kuyrukta kalıyor ('Zaten Kuyrukta')
+ 4 takvim yılı ≠ 365 gün         "takvim yılı doldu: silindi" — telefon '+905321112233', içerik 4 değişken, PDF adı duruyor (saklama süresi yok)
+ 5 S42                           kvkk-erase → 404
+ 6 S35 + K7                      kvkk-erase → 404
+ 7 S31 + S36                     kvkk-erase → 404
+ 8 S37 = B                       kvkk-erase → 404
+ 9 S32 (002)                     kvkk-erase → 404
+10 S32 (001) + S38               kvkk-erase → 404
+11 İki şirket                    kvkk-erase → 404
+12 KVKK sızıntı                  kvkk-erase → 404
+13 Defter tetikleri              "telefonun anonimleştirilmesi geçer (yükseltilmiş tetik)" — eski defter tetiği anonimleştirmeyi 'reddedildi'
+14 Yarıda kesilme                kvkk-erase → 404 (503 beklenirken)
+Yeni kodda aynı dosya: w3-yeni-utc 14/14, w3-yeni-istanbul 14/14.

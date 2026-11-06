@@ -21,11 +21,15 @@
 //      kancasına son bildirim (saat başına bir satır; §7a 16 "bildirim yolu çalışıyor").
 //   7. BAĞLANTI KİPİ (2.5.0 WY): şirket + WABA başına son kip (Elle Bağla / WhatsApp'ı Bağla; meta "mode:<şirket>:<WABA>") — durum bildirimi şirket dosyası açılamazken
 //      de Yol 2'nin imzasız bildirimini yazmaz (noteMode / modeOf).
+//   8. SAKLAMA + KVKK (2.5.0 W-3; docs/erp/W3-SAKLAMA-TASARIM.md): talebin telefonu ve denemenin wamid'i 1 yıl sonra (işin son talebinden, yerel saat) ya da silme talebinde
+//      anonimleşir (anonymizeJobs; tetikler yalnız bu dönüşüme izin verir). Silme TALEPLERİ bu dosyada DEĞİL, aynı klasörde ayrı dosyadadır (whatsapp-silme-talepleri.sqlite;
+//      lib/whatsapp/saklama.mjs): gönderim defteri bilgisayara özgüdür, talep kaydı veri klasörüyle taşınır (KULLANICI KARARI S38) ve yedeğe girmez (S32).
 // Zamanlar iş saatinden (config.now) ISO metni; karşılaştırmalar metin üzerinden (hepsi toISOString biçiminde, UTC).
 import { mkdirSync } from "node:fs";
 import { randomUUID } from "node:crypto";
 import path from "node:path";
 import { openDatabase, probeWritableDb } from "../db.mjs";
+import { checkpoint, openErasureRequests, wamidDigest, wamidForms, withSecureDelete } from "./saklama.mjs";
 
 export const WA_LEDGER_FILE = "whatsapp-gonderim.sqlite";
 const SCHEMA = `
@@ -85,9 +89,13 @@ const SCHEMA = `
   -- 2.4.8 İş Q2: işteki "Yine de Gönder"in açtığı iş (job_id) → kaynağı olan Sonucu Belirsiz iş (source_job_id). Kabul / teslim edilen iş zincirinin kaynakları
   -- "Sonucu Belirsiz" elemesi yapmaz (unsettled).
   CREATE TABLE IF NOT EXISTS anyway_links (job_id TEXT PRIMARY KEY, source_job_id TEXT NOT NULL, at TEXT NOT NULL) STRICT;
+  -- 2.5.0 W-3 (KULLANICI KARARI S35 = A, Y17-6; K7 düzeni): KVKK silme talebi / 1 yıl dolumuyla bekleyen iş kapandı — bir daha denenmeyecek. 131049 ile bırakılmış denemesi (Meta Bekletti)
+  -- iptal edilmiş toplu işteki gibi R3'te SAYILMAZ (teslim gelirse sayılır). Yalnız eklenir.
+  CREATE TABLE IF NOT EXISTS job_stops (job_id TEXT PRIMARY KEY, reason TEXT NOT NULL DEFAULT '', at TEXT NOT NULL) STRICT;
+  CREATE TRIGGER IF NOT EXISTS job_stops_no_update BEFORE UPDATE ON job_stops BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
+  CREATE TRIGGER IF NOT EXISTS job_stops_no_delete BEFORE DELETE ON job_stops BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TABLE IF NOT EXISTS learned_wamids (job_id TEXT NOT NULL, attempt INTEGER NOT NULL, wamid TEXT NOT NULL, at TEXT NOT NULL, PRIMARY KEY (job_id, attempt)) STRICT;
   CREATE INDEX IF NOT EXISTS idx_learned_wamids_wamid ON learned_wamids(wamid);
-  CREATE TRIGGER IF NOT EXISTS learned_wamids_no_update BEFORE UPDATE ON learned_wamids BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS learned_wamids_no_delete BEFORE DELETE ON learned_wamids BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS hook_events_no_update BEFORE UPDATE ON hook_events BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS hook_events_no_delete BEFORE DELETE ON hook_events BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
@@ -105,9 +113,7 @@ const SCHEMA = `
   CREATE TRIGGER IF NOT EXISTS batch_events_no_delete BEFORE DELETE ON batch_events BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS batch_log_no_update BEFORE UPDATE ON batch_log BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS batch_log_no_delete BEFORE DELETE ON batch_log BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
-  CREATE TRIGGER IF NOT EXISTS claims_no_update BEFORE UPDATE ON claims BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS claims_no_delete BEFORE DELETE ON claims BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
-  CREATE TRIGGER IF NOT EXISTS outcomes_no_update BEFORE UPDATE ON outcomes BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS outcomes_no_delete BEFORE DELETE ON outcomes BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS failures_no_update BEFORE UPDATE ON failures BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS failures_no_delete BEFORE DELETE ON failures BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
@@ -122,6 +128,43 @@ const SCHEMA = `
   CREATE TRIGGER IF NOT EXISTS deliveries_no_update BEFORE UPDATE ON deliveries BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS deliveries_no_delete BEFORE DELETE ON deliveries BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
 `;
+// 2.5.0 W-3 (KULLANICI KARARI S-W3 "1 yıl + anonim iz"; docs/erp/W3-SAKLAMA-TASARIM.md §2): defter "yalnız eklenir" kalır, TEK istisna KVKK anonimleştirmesi — claims.phone
+// YALNIZ 'silinmis:' || job_id olabilir (24 saat sayacı alıcıyı işin kimliğiyle sayar; sayaç azalmaz), outcomes / learned_wamids.wamid YALNIZ açık değerden 'h:' + SHA-256 özetine
+// (66 karakter; geç bildirim özetle eşleşir — lib/whatsapp/saklama.mjs wamidDigest). Öbür her sütun aynı kalmalı; başka her UPDATE ve her DELETE yine düşer. Eski defterdeki
+// koşulsuz tetik açılışta bir kez değiştirilir (upgradeAnonTriggers).
+const ANON_TRIGGERS = [
+  ["claims_no_update", `CREATE TRIGGER IF NOT EXISTS claims_no_update BEFORE UPDATE ON claims
+    WHEN NOT (NEW.phone = 'silinmis:' || OLD.job_id AND OLD.phone <> NEW.phone AND NEW.job_id IS OLD.job_id AND NEW.attempt IS OLD.attempt AND NEW.batch_id IS OLD.batch_id
+      AND NEW.company_id IS OLD.company_id AND NEW.waba_id IS OLD.waba_id AND NEW.account_id IS OLD.account_id AND NEW.kind IS OLD.kind AND NEW.period_key IS OLD.period_key AND NEW.at IS OLD.at)
+    BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END`],
+  ["outcomes_no_update", `CREATE TRIGGER IF NOT EXISTS outcomes_no_update BEFORE UPDATE ON outcomes
+    WHEN NOT (OLD.wamid <> '' AND substr(OLD.wamid, 1, 2) <> 'h:' AND substr(NEW.wamid, 1, 2) = 'h:' AND length(NEW.wamid) = 66
+      AND NEW.job_id IS OLD.job_id AND NEW.attempt IS OLD.attempt AND NEW.outcome IS OLD.outcome AND NEW.at IS OLD.at)
+    BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END`],
+  ["learned_wamids_no_update", `CREATE TRIGGER IF NOT EXISTS learned_wamids_no_update BEFORE UPDATE ON learned_wamids
+    WHEN NOT (OLD.wamid <> '' AND substr(OLD.wamid, 1, 2) <> 'h:' AND substr(NEW.wamid, 1, 2) = 'h:' AND length(NEW.wamid) = 66
+      AND NEW.job_id IS OLD.job_id AND NEW.attempt IS OLD.attempt AND NEW.at IS OLD.at)
+    BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END`],
+];
+function upgradeAnonTriggers(db) {
+  for (const [name, sql] of ANON_TRIGGERS) {
+    const current = db.prepare("SELECT sql FROM sqlite_master WHERE type = 'trigger' AND name = ?").get(name)?.sql || "";
+    if (current && /\bWHEN\s+NOT\b/i.test(current)) continue;
+    db.exec("BEGIN IMMEDIATE");
+    try {
+      if (current) db.exec(`DROP TRIGGER ${name}`);
+      db.exec(sql);
+      db.exec("COMMIT");
+    } catch (error) {
+      try {
+        db.exec("ROLLBACK");
+      } catch {
+        // işlem zaten kapanmış
+      }
+      throw error;
+    }
+  }
+}
 // R3 sorgusu (aşağıdaki q.sentBefore açıklaması). outer / tail: gruplanmış (cari → son an) ya da İş Q1'in satır satır biçimi (eşleşen anahtarlarla).
 // İş Z (2.4.8, T9 ORTA; yalnız sorgu PLANI, sonuç aynı): claim_keys üyeliğinde `+k.period_key` — tekli + değeri ve harmanlamayı değiştirmez (SQLite: "no-op"), yalnız
 // (job_id, attempt, period_key=?) dizin yoklamasını kapatır. Yoksa "Tüm Hareketler"in kişiye özel ~2.000 anahtarı HER talepte birer birer yoklanıyordu
@@ -139,8 +182,9 @@ const SENT_BEFORE_SQL = (outer, tail) => `${outer} FROM (SELECT c.account_id AS 
               AND (EXISTS (SELECT 1 FROM outcomes o WHERE o.job_id = c.job_id AND o.attempt = c.attempt AND o.outcome = 'accepted')
                 OR EXISTS (SELECT 1 FROM learned_wamids l WHERE l.job_id = c.job_id AND l.attempt = c.attempt))
               AND NOT (EXISTS (SELECT 1 FROM releases r WHERE r.job_id = c.job_id AND r.attempt = c.attempt)
-                AND COALESCE((SELECT l.event || ':' || l.reason FROM batch_log l WHERE l.batch_id = c.batch_id ORDER BY l.seq DESC LIMIT 1),
-                  (SELECT 'stop:' || s.reason FROM batch_events s WHERE s.batch_id = c.batch_id AND s.event = 'stop'), '') IN ('stop:canceled', 'stop:restored', 'stop:moved', 'stop:reset', 'stop:removed')))
+                AND (COALESCE((SELECT l.event || ':' || l.reason FROM batch_log l WHERE l.batch_id = c.batch_id ORDER BY l.seq DESC LIMIT 1),
+                  (SELECT 'stop:' || s.reason FROM batch_events s WHERE s.batch_id = c.batch_id AND s.event = 'stop'), '') IN ('stop:canceled', 'stop:restored', 'stop:moved', 'stop:reset', 'stop:removed')
+                  OR EXISTS (SELECT 1 FROM job_stops js WHERE js.job_id = c.job_id))))
           OR EXISTS (SELECT 1 FROM deliveries d WHERE d.job_id = c.job_id))
       ${tail}`;
 // "Sonucu Belirsiz" sorgusu (aşağıdaki q.unsettled açıklaması). extra: İş Q1'in eşleşen anahtar sütunları.
@@ -188,7 +232,7 @@ export function openWaLedger({ dir, log = console, fault = null }) {
   // şema) bağlantı kapatılır, asıl hata aynen fırlatılır — yoksa defter dosyası çöp toplamaya kadar açık kalır (Windows'ta silinemez; createApp'ı aynı
   // süreçte yeniden çağıran araç / test). openDatabase PRAGMA'da düşeni zaten kapatır (2.4.8).
   try {
-    return buildWaLedger(db, { file, log, fault });
+    return buildWaLedger(db, { file, dir, log, fault });
   } catch (error) {
     try {
       db.close();
@@ -199,8 +243,20 @@ export function openWaLedger({ dir, log = console, fault = null }) {
   }
 }
 
-function buildWaLedger(db, { file, log, fault }) {
+function buildWaLedger(db, { file, dir, log, fault }) {
   db.exec(SCHEMA);
+  // 2.5.0 W-3: eski tetiklerin yükseltilmesi açılışı DÜŞÜRMEZ (dosya o an başka süreçte kilitliyse): anonimleştirme ilk kullanımda yeniden dener.
+  let anonReady = false;
+  const ensureAnon = () => {
+    if (anonReady) return;
+    upgradeAnonTriggers(db);
+    anonReady = true;
+  };
+  try {
+    ensureAnon();
+  } catch (error) {
+    log.warn?.(`WhatsApp gönderim defteri: KVKK anonimleştirme tetikleri yükseltilemedi (${error.message}); ilk silmede yeniden denenecek.`);
+  }
   let id = db.prepare("SELECT value FROM meta WHERE key = 'ledgerId'").get()?.value;
   if (!id) {
     id = `wal-${randomUUID()}`;
@@ -305,12 +361,27 @@ function buildWaLedger(db, { file, log, fault }) {
     hookByPath: db.prepare("SELECT DISTINCT waba_id AS wabaId FROM hook_events WHERE path_hash = ?"),
     hookSeen: db.prepare("INSERT OR IGNORE INTO hook_seen (waba_id, hour, at) VALUES (?, ?, ?)"),
     hookSeenAt: db.prepare("SELECT MAX(at) AS at FROM hook_seen WHERE waba_id = ?"),
-    companyOfWamid: db.prepare(`SELECT c.company_id AS companyId, c.waba_id AS wabaId FROM outcomes o JOIN claims c ON c.job_id = o.job_id AND c.attempt = o.attempt WHERE o.wamid = ?1
-      UNION ALL SELECT c.company_id, c.waba_id FROM learned_wamids l JOIN claims c ON c.job_id = l.job_id AND c.attempt = l.attempt WHERE l.wamid = ?1 LIMIT 1`),
+    // 2.5.0 W-3: silinen işin wamid'i özetiyle saklanır — gelen açık wamid iki biçimle aranır (?1 açık, ?2 özet).
+    companyOfWamid: db.prepare(`SELECT c.company_id AS companyId, c.waba_id AS wabaId FROM outcomes o JOIN claims c ON c.job_id = o.job_id AND c.attempt = o.attempt WHERE o.wamid IN (?1, ?2) AND o.wamid <> ''
+      UNION ALL SELECT c.company_id, c.waba_id FROM learned_wamids l JOIN claims c ON c.job_id = l.job_id AND c.attempt = l.attempt WHERE l.wamid IN (?1, ?2) LIMIT 1`),
     companyOfJob: db.prepare("SELECT company_id AS companyId, waba_id AS wabaId FROM claims WHERE job_id = ? LIMIT 1"),
     deliveredJob: db.prepare("SELECT 1 AS x FROM deliveries WHERE job_id = ?"),
-    attemptOfWamid: db.prepare(`SELECT job_id AS jobId, attempt FROM outcomes WHERE wamid = ?1 AND wamid <> ''
-      UNION ALL SELECT job_id, attempt FROM learned_wamids WHERE wamid = ?1 AND wamid <> '' LIMIT 1`),
+    attemptOfWamid: db.prepare(`SELECT job_id AS jobId, attempt FROM outcomes WHERE wamid IN (?1, ?2) AND wamid <> ''
+      UNION ALL SELECT job_id, attempt FROM learned_wamids WHERE wamid IN (?1, ?2) AND wamid <> '' LIMIT 1`),
+    // 2.5.0 W-3 (KVKK / saklama): anonimleştirme.
+    claimJobsOfAccount: db.prepare("SELECT DISTINCT job_id AS jobId FROM claims WHERE company_id = ? AND account_id = ? AND account_id <> ''"),
+    anonClaim: db.prepare("UPDATE claims SET phone = 'silinmis:' || job_id WHERE job_id = ? AND phone <> 'silinmis:' || job_id"),
+    plainOutcomes: db.prepare("SELECT attempt, wamid FROM outcomes WHERE job_id = ? AND wamid <> '' AND substr(wamid, 1, 2) <> 'h:'"),
+    anonOutcome: db.prepare("UPDATE outcomes SET wamid = ? WHERE job_id = ? AND attempt = ?"),
+    plainLearned: db.prepare("SELECT attempt, wamid FROM learned_wamids WHERE job_id = ? AND wamid <> '' AND substr(wamid, 1, 2) <> 'h:'"),
+    anonLearned: db.prepare("UPDATE learned_wamids SET wamid = ? WHERE job_id = ? AND attempt = ?"),
+    jobAnonymized: db.prepare("SELECT 1 AS x FROM claims WHERE job_id = ?1 AND phone = 'silinmis:' || ?1 LIMIT 1"),
+    jobStop: db.prepare("INSERT OR IGNORE INTO job_stops (job_id, reason, at) VALUES (?, ?, ?)"),
+    // Saklama süresi adayı: işin talepleri içinde açık telefonu kalan ve SON talebi `?` anından eski olan işler (kesin 1 yıl denetimi çağıranda — yerel takvim).
+    // Satır numarası penceresi (?1 < rowid <= ?2) içinde açık telefonlu ve `?3`ten eski talepler; işin SON talebi birincil anahtar dizininden (MAX(at)).
+    expiredJobs: db.prepare(`SELECT DISTINCT c.job_id AS jobId, (SELECT MAX(c2.at) FROM claims c2 WHERE c2.job_id = c.job_id) AS last FROM claims c
+      WHERE c.rowid > ?1 AND c.rowid <= ?2 AND substr(c.phone, 1, 9) <> 'silinmis:' AND c.at <= ?3`),
+    lastClaimRow: db.prepare("SELECT COALESCE(MAX(rowid), 0) AS m FROM claims"),
     learnWamid: db.prepare("INSERT OR IGNORE INTO learned_wamids (job_id, attempt, wamid, at) VALUES (?, ?, ?, ?)"),
     outcomeOf: db.prepare("SELECT outcome FROM outcomes WHERE job_id = ? AND attempt = ?"),
     pendingClaim: db.prepare(`SELECT COUNT(*) AS n FROM claims c WHERE c.waba_id = ? AND c.at >= ?
@@ -326,6 +397,12 @@ function buildWaLedger(db, { file, log, fault }) {
     modeSet: db.prepare("INSERT INTO meta (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value"),
   };
   const modeKey = (companyId, wabaId) => `mode:${companyId}:${wabaId}`;
+  // 2.5.0 W-3: silme talepleri dosyası ilk kullanımda açılır (açılamazsa yalnız talep yolu düşer; gönderim defteri çalışmaya devam eder).
+  let erasureStore = null;
+  const erasures = () => {
+    if (!erasureStore) erasureStore = openErasureRequests({ dir: dir || path.dirname(file) });
+    return erasureStore;
+  };
   const hookView = row => {
     if (!row) return null;
     return {
@@ -627,7 +704,7 @@ function buildWaLedger(db, { file, log, fault }) {
     },
     hookSeenAt: wabaId => q.hookSeenAt.get(String(wabaId))?.at || null,
     /** Durum bildiriminin şirketi: wamid'in (kabul edilmiş deneme) ya da iş kimliğinin (sonucu belirsiz deneme) talebini yazan şirket. */
-    companyOfWamid: wamid => (wamid ? q.companyOfWamid.get(String(wamid)) || null : null),
+    companyOfWamid: wamid => (wamid ? q.companyOfWamid.get(...wamidForms(wamid)) || null : null),
     companyOfJob: jobId => (jobId ? q.companyOfJob.get(String(jobId)) || null : null),
     /** 2.4.8 İş P1 (c2): defter dosyası şimdi yazılabilir mi — kısa senkron sınama (lib/db.mjs probeWritableDb); başka süreç kilitliyken arka plan işi ve durum kancası
      * 10 sn beklemez. Dönüş: true | false | null. */
@@ -690,7 +767,7 @@ function buildWaLedger(db, { file, log, fault }) {
      * T2 dar kontrol ORTA-2 / dar kontrol 2 ORTA-A: wamid'in ait olduğu deneme (Meta'nın kabul ettiği deneme; wamid her denemede yenidir) — eşzamanlı kabulden
      * (outcomes) ya da sonradan öğrenilenden (learned_wamids). Bildirim yalnız o denemeye yazılır.
      */
-    attemptOfWamid: wamid => (wamid ? q.attemptOfWamid.get(String(wamid)) || null : null),
+    attemptOfWamid: wamid => (wamid ? q.attemptOfWamid.get(...wamidForms(wamid)) || null : null),
     /** İş T A6 (K5 istisnası): bu WABA'da `since`'ten beri talebi olup sonucu henüz yazılmamış (istek Meta'da / yanıt işlenmedi) deneme sayısı. */
     pendingClaims: (wabaId, since) => Number(q.pendingClaim.get(String(wabaId), String(since))?.n || 0),
     /** İş T K6 (R4/Q5): denemenin defterdeki kabul anı — eşzamanlı kabul (outcomes accepted), yoksa öğrenilen wamid'in anı; yoksa null. */
@@ -703,7 +780,73 @@ function buildWaLedger(db, { file, log, fault }) {
       const waba = wabaId ? { accepted: q.acceptedWaba.get(String(wabaId), from, to).n, ...(row => ({ delivered: row.n, billable: row.billable }))(q.deliveredWaba.get(String(wabaId), from, to)) } : null;
       return { company, waba };
     },
+    // ---------- 2.5.0 W-3: saklama süresi + KVKK silme (docs/erp/W3-SAKLAMA-TASARIM.md) ----------
+    /** Talepleri telefonu anonimleşmiş iş (KVKK / saklama): yeni wamid bu işe açık değil özet olarak yazılır. */
+    jobAnonymized: jobId => Boolean(jobId && q.jobAnonymized.get(String(jobId))),
+    /** Carinin (şirket + cari kimliği) talebi olan işleri — şirket dosyasında artık olmayanlar dahil (geri yükleme / sıfırlama). */
+    jobsOfAccount: (companyId, accountId) => (accountId ? q.claimJobsOfAccount.all(String(companyId), String(accountId)).map(row => row.jobId) : []),
+    /**
+     * Saklama süresi adayları: [{ jobId, last }] — `bound`tan (ISO) eski, açık telefonlu talebi olan işler ve işin SON talep anı; satır numarası penceresi (after < rowid <=
+     * after + size; her çağrı en çok size satıra bakar — olay döngüsü kilitlenmez). Kesin 1 yıl denetimi çağıranda (saklama.mjs retentionDue).
+     */
+    expiredJobs: (bound, { after = 0, size = 4000 } = {}) => q.expiredJobs.all(Number(after), Number(after) + Number(size), String(bound)).map(row => ({ jobId: row.jobId, last: row.last })),
+    /** Talep tablosunun son satır numarası (saklama süpürmesinin pencere sınırı). */
+    lastClaimRow: () => Number(q.lastClaimRow.get()?.m) || 0,
+    /** WAL'ı boşaltır (KVKK: silinen değerlerin eski çerçeveleri gider). Hata fırlatmaz. */
+    flush: () => checkpoint(db),
+    /**
+     * İşlerin talep telefonu 'silinmis:<iş>', deneme wamid'leri özet olur (tek işlem; secure_delete altında; ardından WAL boşaltılır). Yalnız eklenir tetikleri bu dönüşüme
+     * izin verir. Eşgüçlü. Yazılamazsa hata fırlatır (çağıran yeniden dener / açılışta tamamlanır). Dönüş: değişen satır sayısı.
+     */
+    anonymizeJobs(jobIds, { flush = true } = {}) {
+      const ids = [...new Set((jobIds || []).map(String).filter(Boolean))];
+      if (!ids.length) return 0;
+      guard("anonymize", { jobIds: ids });
+      ensureAnon();
+      let changed = 0;
+      withSecureDelete(db, () => {
+        db.exec("BEGIN IMMEDIATE");
+        try {
+          for (const id of ids) {
+            changed += Number(q.anonClaim.run(id).changes) || 0;
+            for (const row of q.plainOutcomes.all(id)) changed += Number(q.anonOutcome.run(wamidDigest(row.wamid), id, row.attempt).changes) || 0;
+            for (const row of q.plainLearned.all(id)) changed += Number(q.anonLearned.run(wamidDigest(row.wamid), id, row.attempt).changes) || 0;
+          }
+          db.exec("COMMIT");
+        } catch (error) {
+          try {
+            db.exec("ROLLBACK");
+          } catch {
+            // işlem zaten kapanmış
+          }
+          throw error;
+        }
+      });
+      if (changed && flush) checkpoint(db);
+      return changed;
+    },
+    /** S35 / Y17-6: silme talebi / saklama süresiyle kapanan bekleyen iş bir daha denenmeyecek (131049 bırakılmış denemesi R3'te sayılmaz — K7 düzeni). Hata fırlatmaz. */
+    stopJob({ jobId, reason, at }) {
+      try {
+        guard("jobStop", { jobId });
+        q.jobStop.run(String(jobId), String(reason || ""), String(at));
+        return true;
+      } catch (error) {
+        log.warn?.(`WhatsApp gönderim defteri: ${jobId} kapanışı yazılamadı (${error.message}).`);
+        return false;
+      }
+    },
+    /** Silme talebi (makine düzeyi, ayrı dosya): yazılır; yazılamazsa hata fırlatır. Dönüş: kayıttaki an (aynı kişinin önceki talebi de kapsanır). */
+    addErasureRequest: (companyId, accountId, at) => erasures().add(companyId, accountId, at),
+    /** Şirketin silme talepleri [{ accountId, at }] (okunamazsa hata fırlatır — ders 4: okunamayan "talep yok" sayılmaz). */
+    erasureRequests: companyId => erasures().of(companyId),
     close() {
+      try {
+        erasureStore?.close();
+      } catch {
+        // talep dosyası kapatılamadı; asıl defter yine kapanır
+      }
+      erasureStore = null;
       db.close();
     },
   };
