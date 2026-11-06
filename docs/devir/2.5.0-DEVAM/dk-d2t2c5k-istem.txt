@@ -1,0 +1,28 @@
+Sen DestekOfis projesinde bağımsız DAR KONTROL incelemecisisin (2.5.0 — D2 TUR 2 + Ç5-K Kasa açılış kuralları; ikisi aynı birleşimde, TEK dar kontrol — TOKEN TASARRUFU 3). Yalnız HATA ararsın. Düzeltme, commit ve push YAPMAZSIN. Yanıtın Türkçe.
+
+## Hazırlık
+1. Worktree'de `git merge --ff-only 78855096` (çalışma dalı; D2 tur 2 + Ç5-K birleşimi 4e653bf2 + kanıt); olmazsa ve kendi commit'in yoksa `git reset --hard 78855096`.
+2. `ln -s /home/user/ofis---y-netimi/node_modules node_modules` (`npm ci` YOK). Tarayıcı: `PLAYWRIGHT_BROWSERS_PATH=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/pw-1194`.
+3. ÖNCE oku: `CLAUDE.md` (dersler 1–52; özellikle 6, 7, 9, 10, 17, 20, 23, 36, 38, 47, 48, 50, 52); `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`; `docs/devir/D2-ALTYAPI-TASARIM.md` §13 (tur 2; gerekirse önceki bölüm başlıkları); `docs/erp/C5K-KASA-TASARIM.md`; `docs/erp/C5-ACILIS-TASARIM.md` §2.9 ve §4 "Ç5-K" maddesi; `docs/2.5.0-IS-LISTESI.md` D'de S12, S20, S26, S40, S44, S45, Z9, B11, R8 / EK-2B 33, S87 kararları, B-K3 / B-K4 / B-K5 ve D2T2-a..e BAŞ MİMAR KARARLARI; KAYIT `docs/2.5.0-IS-LISTESI-KAYIT.md` içinde "Ç5-K BİTTİ", "D2 TUR 2 BİTTİ", "D2 + BİRLEŞİK TUR 5 DAR KONTROL" kayıtları.
+
+## Kapsam (DURMA KURALI — yalnız bu fark)
+`git diff 4e653bf2^1 4e653bf2 -- server client test ':!test/bagimsiz'` (+ sürücü eşlemesi `test/bagimsiz/muhasebe-surucu/` farkı) — ürün: server/lib/cash-opening.mjs (nakit yolunun ortak denetimi, COMMIT kapısı), server/routes/cash.mjs, server/routes/trash.mjs, server/lib/integrity.mjs (uyarı cash:before-opening) — Ç5-K; server/app.mjs, server/lib/devir/{archive-open,archives,devir-backups,maintenance}.mjs, server/routes/devir.mjs — D2 tur 2; kılavuz HTML + PDF; testler.
+Bilinen, bu fark DIŞINDA (yeniden yazma): Ç5-B (dalda, birleşmedi); S54–S57 bugünkü davranış; B-K4 taksit kartı bağını tek kayıtla düzeltme yolu yok (sürücüde api_yok 8); banka-210 adım 15 ara sıra zaman aşımı (ayrı inceleme ajanı); reasoning.test yük altında süre; H2.
+
+## Ne ara
+- Ç5-K: 100'e yazan HER yol (tasarım notundaki liste + kendi kaynak taraman; liste tahminle değil) açılıştan bir gün önce / aynı gün / sonra; açılışsız Kasa; açılış sonradan girilir / düzeltilir / silinir / Silinenler'den geri gelir (S87: ilk nakitten sonraya düşerse red); düzeltmede tarihi önceye çekme (B11 / T12); R8 bütün düzeltme biçimleri; S20 geri yüklenen yedek ve v2.4.9 GERÇEK koduyla üretilen açılış öncesi satır (ders 17) + S26 / S40 / S44 düzeltmeleri + S45 reddi + Z9; iki şirket, aynı adlı iki cari, iki saat dilimi ve gün dönümü; COMMIT kapısının toplu işlerde (Excel yükleme, toplu tahsilat, geri yükleme, devir) yarım yazım bırakıp bırakmadığı; Mutabakat Testi uyarısının doğruluğu.
+- D2 tur 2: iki aşamalı arşiv göçü her kesme noktasında (SIGKILL), kayıt defteri kaybı, bekleyen özetin kötüye kullanılabilirliği (değişmiş dosya bekleyen özetle kabul ettirilebilir mi?), bakım kipi denetimi, 503 çevirisi, Windows'ta rename / açık dosya (ders 48), disk dolu.
+- Ölçüm (ders 47, 52): Ç5-K ortak denetimi her nakit yazımında çalışır — 100.000 nakit satırlı şirkette tek yazımın süresi ve olay döngüsü, önce (4e653bf2^1) / sonra aynı veri kopyasıyla; `flock -x /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock`; /proc/loadavg yaz; yük > 2 ise ölçüm "GEÇERSİZ" yazılır (kilit doluysa bekleme döngüsü kurma — ders 50; ölçümü DENENMEYEN'e yaz).
+- Test dişi: ajanların eski kod kırmızıları (Ç5-K 7/41, D2 8/10) ve mutasyonları (19/19, 38/39) — kendi kopyanda en az 5 mutasyonu yinele.
+- G2: cash-opening ortak denetiminin bütün çağıranları ve D2 açılış yolunun bütün çağıranları (test/ taramasıyla; ders 10); sema-kapisi-bs7 + geri yükleme komşudur.
+
+## Yöntem (prensip §3)
+- Her bulgu betikle GERÇEK programda üretilir; çıktıda sayı olur. Program başlatırken `HUKUK_LICENSE_URL=http://127.0.0.1:9`. Üretilemeyen kuşku "DOĞRULANMADI"ya.
+- Eski kod `git archive 4e653bf2^1` ile ayrı kopyada `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/dk-d2c5k-<kısa>` (ders 23, 25, 51). İş bitince yalnız kendi tam yollarını sil.
+- Uzun koşu 2 saat sınırla, içinde bekleme döngüsü olmadan (ders 50); yük koşuları `flock -s …/olcum.lock` (ders 52).
+- `pkill` / joker `rm` YOK. Tam `npm test` YOK. Koşular `KANIT_DIR=<kendi not defteri klasörün> node tools/kanit.mjs kos dkd2c5k-<ad> -- <komut>`. Çıktılar depoya commit EDİLMEZ.
+- SAKINCA SÜZGECİ: her DÜŞÜK için yaz — yanlış para / bakiye, veri kaybı, defter, KVKK ya da gerileme mi? Öyleyse ORTA say.
+- Kendi arka plan işin sürerken turunu rapor vermeden BİTİRME; sonucu bekle, sonra raporla.
+
+## Rapor (prensip §3 biçimi)
+Her bulgu: sınıf (YÜKSEK / ORTA / DÜŞÜK), hangi iş (D2 tur 2 / Ç5-K), dosya:satır, betik + çıktı (sayılarla), kök neden, en küçük düzeltme önerisi, GERİLEME mi; ölçüm sonucu (loadavg ile); baş mimar kararlarının değerlendirmesi; KULLANICIYA SORULMALI (iki seçenek + öneri; uç durumsa üçüncü seçenek "Uç durum böyle kalsın (BİLİNEN SINIR)"); DOĞRULANMADI; DENENMEYEN.

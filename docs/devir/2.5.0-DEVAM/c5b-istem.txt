@@ -1,0 +1,50 @@
+Sen DestekOfis projesinde Ç5-B KOD ajanısın (2.5.0 — B1: tek "gecikmiş" tanımı, Tek Yükümlülük Kuyruğu = TYK). Kod ve test yazarsın, KENDİ dalında commit edersin. PUSH YAPMAZSIN. Yanıtın Türkçe. Eforun xhigh (kapama sırası, gecikmiş, bütün ekranların aynı sayısı). Büyük paket: önce tasarım notu, sonra adım adım.
+
+## Hazırlık
+1. Taban ba661d1b (yerel dal `c5b-taban`: çalışma dalı + birleşik tur 5 + D2 + muhasebe kâhini bakımı 8 + 9 + 10). Worktree'de `git merge --ff-only ba661d1b`; olmazsa ve dalında kendi commit'in yoksa `git reset --hard ba661d1b`.
+2. Eski kâhinler dalını (defter 2.4.3 + cari 2.4.x kâhinleri, S65–S69 işlenmiş) KENDİ dalına birleştir: `git merge --no-ff worktree-agent-aee95d00d296d627a` (2aa1e733; yalnız test/bagimsiz/ + kâhin bağları). Bu dal ana dala ancak Ç5-A ile birlikte girer; sen onunla koşarsın (CI kahin-cari / kahin-defter senin dalında koşulur).
+3. `ln -s /home/user/ofis---y-netimi/node_modules node_modules` (`npm ci` YOK). Tarayıcı: `PLAYWRIGHT_BROWSERS_PATH=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/pw-1194`.
+4. ÖNCE oku:
+   - `CLAUDE.md` (anayasa + dersler 1–52; özellikle 5, 6, 7, 10, 13, 17, 20, 23, 31, 38, 40, 41, 43, 46, 47, 48, 50, 51, 52; SORU DÜZENİ);
+   - `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`;
+   - `docs/erp/C5-ACILIS-TASARIM.md`: §0, §1.4, §1.7, §2.10 (BÜTÜNÜ), §2.12 (BİRLEŞİM KURALI), §4 "Ç5-B (TYK)" 13–21, §5, §6 (TYK satırları), §7 (Ç5-B satırı), §8, §9 (B1, B12, B13 ve Ç5-B'ye dokunanlar), §10;
+   - `docs/2.5.0-IS-LISTESI.md` D bölümü: Ç5-B'ye dokunan KULLANICI KARARLARI AYNEN — S1, S2, S3, S8, S11, S18, S19, karar (1)(2)(3)(5), M1a–M1f, M13, S50, S52, S54, S55, S57, S67, S68, S69, S72, S73, S79, S80, S81, S83, S84, S85 (ve D'de "→ Ç5-B" diye atanan başka her karar); BAŞ MİMAR KARARLARI: S54 / S55 / S57 → Ç5-B ataması, K8-1..K8-6 (K8-3), K9-1..K9-3, K10-1..K10-3, Y3-1 / Y3-2, B1–B17 (Ç5-B'ye dokunanlar). C bölümünde S74–S78 = C (BİLİNEN SINIR — bugünkü davranış kalır, kodlama);
+   - muhasebe kâhini README `test/bagimsiz/muhasebe/README.md`: güncel kural dizini, "Kâhin bakımı 8" ve "Kâhin bakımı 9" (P1–P9) + "Sürücü için notlar"; cari kâhini (eski kâhinler dalındaki `test/bagimsiz/` cari 2.4.x README'si, S65–S69 bölümleri). Kâhinlerin KODUNU değiştirme; okuyabilirsin.
+   - Sürücü: `test/bagimsiz/muhasebe-surucu/` (kos.mjs, program.mjs).
+
+## Kararlar (AYNEN; para / kapama kuralı DEĞİŞMEZ)
+- Karar metinlerini D'den AYNEN uygula; tasarım §2.10 madde 1–9 bunların koda karşılığıdır.
+- BİRLEŞİM KURALI (§2.12, §9 B1 öneri): Ç5-B `totals.overdue`'nun anlamını değiştirir; WhatsApp (queue.mjs) Ç5-C'ye kadar ESKİ alanı (`overdueInstallments`) okumaya devam eder — Ç5-B o alanı KORUR, WhatsApp dosyalarına DOKUNMAZ. S72 / S73'ün WhatsApp otomatik seçimindeki karşılığı Ç5-C'de; Ç5-B'de cari tarafı (waFacts / cari listesi "Ödeme Sözü Var" görünümü ve gecikmiş) uygulanır.
+- S80 = A: fatura formunda alınan peşinin carisi düzeltmeyle değişmez → düzeltmenin TAMAMI red, "faturayı düzenleyin". S81 = A: olağan tahsilat aynı düzeltmede şüpheli kaydı açık bir cariye alınıp 120 bakiyesini aşarsa S56 gibi red (`SUPHELI_NORMAL_ASIM`). S80 / S81 kâhin bakımı 10'da işlendi (tabanda). S83 = A (alış faturası formundaki peşin ÖDEMENİN carisi: S80 ile aynı red), S84 = A (formdaki peşinin carisi aynı, BAĞI değişirse red "faturayı düzenleyin"), S85 = A ("Normal Cari Hesaba İşle"li kaydın yalnız tutarı / tarihi düzeltilip 120 bakiyesi aşılırsa — ya da geri yüklenmiş kayıtta yalnız cari düzeltmesiyle, S40 — red SUPHELI_NORMAL_ASIM). Kâhin bakımı 11 S83–S85'i PARALEL işliyor; sürücü koşunda bu üç durumda kâhin henüz susabilir — ayrışma sayma, raporda "kâhin 11 bekleniyor" yaz. Red sırası K10-1.
+- S74–S78 BİLİNEN SINIR: bugünkü davranış kalır.
+- Karar metni bir durumu çözmüyorsa KARAR VERME: "KULLANICIYA SORULMALI" (iki seçenek + öneri; çok uç durumsa üçüncü seçenek "Uç durum böyle kalsın (BİLİNEN SINIR)") ya da mimari seçimse "BAŞ MİMAR KARARI GEREKİYOR" yaz, o durumu kodlama (ders 43).
+
+## Yapılacak
+1. Önce kısa tasarım notu: `docs/erp/C5B-TYK-TASARIM.md` — TYK modülünün arayüzü, bugünkü üç kaynağın (plans.dueItems + accounts.openDueItems + invoices.dueItems) ve `invoice-settle.mjs` dağıtımının TYK'ya geçişi (dosya:satır), KULLANAN YOLLAR listesinin tamamı (§2.10 sonu; kaynak taramasıyla doğrula), önbellek ve bayatlık (zil / takvim `fingerprint` ilişkisi — §10'un "ilk adım"ı), ölçüm planı, "nasıl bozulur?" listesi (§4 13–21 + kendi eklerin). Koddan ÖNCE commit.
+2. Kod: §7 Ç5-B satırındaki dosyalar; TYK saf modül (`server/lib/obligation-queue.mjs`).
+3. Testler: her karar için en az bir test + karşı mutant; §4 13–21'in her maddesi; v2.4.9'un GERÇEK koduyla üretilmiş veri (ders 17; yedekten geri yükleme ve göç); iki saat dilimi, gün dönümü, ay sonu; aynı adlı iki cari; iki şirket; "bütün ekranlar aynı sayı" (cari kartı = liste = Anlık Durum = mobil özet = Vade Takip = fatura durumu) e2e.
+4. Sürücü: muhasebe sürücüsüyle TYK / gecikmiş / kapama senaryolarını (S2, S50, S52, S54, S55, S57, S67–S69, S72, S73, S79, karar (1)(2)(3)(5), S8 / S11 / S18 / S19) programa karşı iki saat diliminde koş + cari kâhini (eski kâhinler dalı, `npm run test:kahin-cari`) ve defter kâhini (`npm run test:kahin-defter`). Ayrışma = önce hata (ders 6); Ç5-A kapsamındaki (defter 519 / KG-16 / açılış evrakı / 128 ↔ 120) ayrışmaları AYRI listele, düzeltme. Sürücüye yalnız yeni alan / olay eşlemesi ekleyebilirsin (cari kos.mjs GECIKMIS_ALAN / KARSILIKSIZ_CARI; `odeme_sozu`, `hatirlatma.*`); kâhini değiştirme.
+5. Ölçüm (ders 47, 52): §6 TYK satırları — 100.000 satırlı şirkette tek cari, bütün cariler SOĞUK (worker / ana iş parçacığı dışı), yazımdan sonra, WhatsApp önizlemesi 2.000 cari (yalnız okuma; WhatsApp koduna dokunmadan ölç) — önce / sonra aynı veri kopyasıyla, `flock -x /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock`, /proc/loadavg yazılarak (yük > 2 → geçersiz, yinele).
+
+## Kapsam ve dokunulmayacaklar
+- Yazabileceğin: tasarım §7 Ç5-B satırı (YENİ lib/obligation-queue.mjs, lib/invoice-settle.mjs, routes/invoices.mjs, routes/accounts.mjs, lib/accounts.mjs, routes/overview.mjs, routes/dues.mjs, routes/plans.mjs (görünüm), lib/mobile.mjs, client hof-accounts.js / hof-overview / fatura ekranı adları), düzeltme reddi için kayıt düzeltme yolu (S54 / S55 / S57 / S79 / S80 / S81 / S83 / S84 / S85 — hangi dosya olduğunu tasarım notunda yaz), testler, tasarım notu, kılavuz (yalnız kısa "nasıl yapılır" + PDF, ders 42), sürücü eşlemesi.
+- YAZILMAZ: `server/lib/whatsapp/**`, `server/routes/whatsapp.mjs` (WhatsApp tur 2 / Ç5-C); `server/lib/general-ledger.mjs`, `server/routes/ledger.mjs`, `server/lib/ledger-*.mjs`, `server/lib/bank/voucher*.mjs`, `server/lib/doubtful-gl.mjs`, `server/lib/bank/doubtful.mjs` (Ç5-A / Ç3 tur 4); `server/lib/cash-opening.mjs`, `server/routes/cash.mjs`, `server/routes/trash.mjs`, `server/lib/integrity.mjs` (Ç5-K); `server/lib/db.mjs`, `server/lib/migrations.mjs` (göç gerekiyorsa DUR, ana oturuma sor); `server/routes/report-center.mjs` (:61 süzgeç adı gerekiyorsa DUR, sor); `test/bagimsiz/**` (sürücü eşlemesi dışında).
+- Başka bir dosya gerekirse DUR, ana oturuma sor.
+
+## Yöntem
+- Ders 7 / 38 / 51: her yeni test eski kodda (ba661d1b) BEKLENEN NEDENLE kırmızı, yeni kodda yeşil; nedenler döküm dosyasında. Eski kod `git archive ba661d1b` ile `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-<kısa>` (ders 23, 25); eski kopyaya yalnız YENİ test dosyaları ve yeni yardımcılar.
+- İki saat dilimi (UTC, Europe/Istanbul); mutasyon: her kararın karşı seçeneği + sınır kayması (vade günü / ertesi gün, aynı gün borç + ödeme sırası, söz günü ±1) — yakalanmalı.
+- G2 komşular: test/ taranır (tahminle seçilmez; ders 10): invoice / settle / overdue / gecikmiş / due / vade / plans / taksit / accounts / cari / overview / mobile / Kapatılacak / Mahsup / karşılıksız / şüpheli testleri + bunları açan bütün e2e'ler (senaryo-cari-243, senaryo-cari-vade-245, senaryo-fatura-243, senaryo-kayit-tahsilat-244, senaryo-mobil-*, senaryo-iade-246, senaryo-supheli-230, senaryo-tahsile-ver-220, senaryo-pil-karti-245 …; ders 9, 28, 37). Değişen e2e'yi koş.
+- Ders 41: tam `npm test` YOK (ana oturum koşar). Uzun arka plan koşusu 2 saat sınırla, İÇİNDE BEKLEME DÖNGÜSÜ OLMADAN (ders 50); yük koşuları `flock -s …/olcum.lock` (ders 52).
+- Windows (ders 48): dosya silen / takas eden testleri raporda belirt.
+- Program başlatırken `HUKUK_LICENSE_URL=http://127.0.0.1:9`. Koşular `KANIT_DIR=<kendi not defteri klasörün> node tools/kanit.mjs kos c5b-<ad> -- <komut>`; kanıtı `docs/kanit/2026-11-06/c5b-*` (gün değişirse o gün) commit edebilirsin.
+- `pkill` / joker `rm` YOK. Commit'e yalnız kendi yolların (ders 44).
+- Commit iletisi sonunda tam olarak şu iki satır:
+  ```
+  Co-Authored-By: Claude <noreply@anthropic.com>
+  Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og
+  ```
+  (model adı YOK).
+
+## Rapor
+Her karar için yapılan (dosya:satır), KULLANAN YOLLAR listesi ve her birinin testi, test adı, kırmızı (eski, neden) / yeşil sayıları (iki TZ), mutasyon, ölçüm (yükle), sürücü + cari / defter kâhini sonucu (ayrışmaların sınıfı: Ç5-B hatası / Ç5-A kapsamı / kâhin 11 bekleniyor / BİLİNEN SINIR), komşular; ana oturumun yeniden koşacağı komutlar + beklenen sayılar; BAŞ MİMAR KARARI gerektiren seçimler (ders 40), KULLANICIYA SORULMALI, DENENMEYEN, BİLİNEN SINIR.
