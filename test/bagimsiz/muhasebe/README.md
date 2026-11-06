@@ -1166,3 +1166,55 @@ KULLANICIYA SORULMALI (S54–S57 eki; SORU DÜZENİ 06.11 09:01):
    bakım 7 ve öncesinin kalanları aynen (bakım 8 KS 6. madde).
 - BAŞ MİMAR değerlendirir (kâhin yorumu, kodlandı): P1 ("söz geçince" = ertesi takvim günü), P3 (gecikmişsiz verilen söz de bütün borcu kapsar), P6 (tarih de aynı düzeltmede — olağan tarih
   düzeltmesi, S79 kısıt koymaz).
+
+### Önceki beklentilerle çelişen yerler (eski → yeni, nedeni; G3)
+- `s88` — S72 A: `hat3` (20.03, C1'in söz günü) `kahin_susuyor` [C1 `S52_SOZ_GUNU`] → `odeme_sozu_var` {C1: 600, C3: 500}. S73 A: `hat5` (26.03, C3'te söz sırasında F4
+  gecikti) `kahin_susuyor` [C3 `S52_YENI_GECIKME`] → `odeme_sozu_var` {C3: 800}; `hat6` (28.03) `kahin_susuyor` [C3 …] → `odeme_sozu_var` {C1: 600, C3: 800}. Olaylar, gecikmiş
+  tutarları, değişmezler ve öbür anahtarlar aynen; senaryo dosyasında açıklama ve kapsam (+ S72, S73, P1, P2). Beklenen dosyasında yalnız bu üç raporun iki alanı değişti.
+- `test_S57_olagan_kayit_susma` → `test_S79_olagan_kayit_bag_cari` (S79 A): PB {cari C3, fatura F3} ve PB {cari C3, fatura null} senaryo hatası → KABUL; PP {cari C1} (formdaki peşin) susma
+  aynen; kabul / red / susma vakaları genişletildi (P5–P7).
+- Mutantlar: B88c ve B88f kaldırıldı (S72 / S73 A ile modelin KENDİSİ oldular); B88d ("söz günü girer") S72'nin B'si → B102; B98'in parçası `_s57_kapsam(d, k, dg)` imzasına taşındı
+  (anlamı aynı).
+- Model: `soz_durumu` yalnız None / "soz" döner; `hatirlatma.kahin_susuyor` artık yalnız S55 nedenleri (`S52_SOZ_GUNU`, `S52_YENI_GECIKME` YOK); `_s57_kapsam` S79 kabulünü
+  `_s79_hedef` ile yapar (hedef denetimi + P7 susmaları).
+- Elle senaryolarda s01–s100'ün (s88 dışında) ve `rastgele-1/2/3`'ün senaryo + beklenen dosyalarının HİÇBİRİ değişmedi (model adımından sonra `uret_beklenen.py` + durum: yalnız s88
+  ve yeni s101–s103 dosyaları).
+
+### Elle beklenenlerin yazılış sırası (bakım 9)
+- b0f3ae4e: yorum P1–P9 + KULLANICIYA SORULMALI 1–2 + bakım 8 satırlarına işaretler — kod, senaryo ve testten önce, AYRI commit (ders 40).
+- 0783375f: s101–s103, birim testleri ve G3 (s88, S57 testi) model DEĞİŞTİRİLMEDEN ÖNCE. Eski kâhin (5502508a kopyası + yeni dosyalar) 175 testten 9'u kırmızı
+  (`kahin9-eski-model-kirmizi.*`); NEDEN dökümü `kahin9-eski-model-neden.*` (betiği `kahin9-eski-model-neden.py`): s88 3 anahtar (hat3 `S52_SOZ_GUNU`, hat5 / hat6 `S52_YENI_GECIKME`),
+  s101 3 (h20 / h21 / h31 `S52_SOZ_GUNU`), s102 5 (h12 / h16 / h20 / h21 `S52_YENI_GECIKME`, h20 / h31 `S52_SOZ_GUNU`), s103 senaryo hatası (bakım 8 U7 (a) susması); birim
+  `test_S72_S73_soz_kapsami` (`S52_YENI_GECIKME`), `test_S79_olagan_kayit_bag_cari` ve `test_S79_S54_ile_ayni` (U7 (a)), `test_EK2_4_1_ayni_gun_yazim_sirasi_sonucu_degistirmez`
+  (bütün elle senaryoları koşar → s103'te U7 (a)), `Dosyalar` (s88 ve yeni dosyalar henüz yazılmamıştı). Hepsi beklenen nedenle; eski modelde YEŞİL kalan yeni senaryo / test yok.
+- a94f1a45: model (P1–P7) + mutantlar. İlk koşuda elle değerlerin HİÇBİRİ değişmedi (174/175; tek kırmızı dosya güncelliği → `uret_beklenen.py`). Aynı commit'te README KULLANICIYA
+  SORULMALI 2'nin ÖRNEĞİ düzeltildi (fatura bağında S14 / S25 (a) ile önce 128'den düşüldüğü için örnek sınırı aşmıyordu → "Normal Cari Hesaba İşle" örneği; soru ve seçenekler aynen).
+- Kanıt (`docs/kanit/2026-11-06/kahin9-*`): `kahin9-test-utc.*`, `kahin9-test-istanbul.*` (175/175 iki saat diliminde), `kahin9-mutasyon.*` (250/250 öldü; temel 169 test yeşil; ölçülen commit a94f1a45), yeni mutantların öldüren testleri `kahin9-yeni-mutantlar-oldurenler.txt` (betiği `kahin9-yeni-mutantlar.py`), eski model kayıtları.
+
+### Yeni senaryolar, testler ve mutasyonlar
+- Elle senaryolar (3, toplam 104): s101 (S72: söz dün / bugün / yarın, söz girildiği gün, söz bitişinin ertesi günü, söz geçtikten sonra yeni söz, ay sonu sözü ve ay dönümü), s102 (S73: söz
+  öncesi / sırasında / sonrasında geciken kalem; söz anındaki borç ödenince yalnız yeni geciken kalemle söz sürer; söz bitince bütün gecikmiş), s103 (S79: bağ yeni carinin vadesi sonra
+  gelen faturasına / kartına / kaldırılır; kart bağından faturaya; tutar + açıklama aynı düzeltmede; geri yüklenmiş ama açılıştan sonra tarihli kayıt; ödemede alış faturası; bağ
+  değişmeden cari → S57 red).
+- Birim (175 test): `test_S72_S73_soz_kapsami` (P1, P3), `test_S79_olagan_kayit_bag_cari` (P5–P7: kabul / red / susma), `test_S79_S54_ile_ayni` (P8).
+- Mutantlar: 12 yeni, 3 kalktı → liste 250. Öldüren testler (ayrı koşu, not defteri `kahin9-betik/yeni_mutantlar.py`): B102 / B102b / B102c — s101, s102, s88 ve birim; B102d — s101
+  (yalnız değerle); B103 / B103b — s102, s88 ve birim; B104 / B104b / B104c — s103 ve iki birim; B104d — s103 ve birim; B104e, B104f — birim (susma dişi). Her kararın B seçeneği ve
+  sınır kayması en az bir elle senaryonun DEĞERİYLE yakalanıyor.
+
+### Sürücü için (programla karşılaştırmadan önce)
+- **S72 / S73:** `hatirlatma.odeme_sozu_var` artık söz GÜNÜNDE ve söz süresinde yeni geciken kalemi olan caride de dolu (tutar o günkü bütün gecikmiş); `hatirlatma.kahin_susuyor` yalnız
+  S55 nedenleri — sürücü söz günü ve söz süresinde de hatırlatmayı KARŞILAŞTIRIR. "Söz geçince" = söz tarihinin ertesi takvim günü. P3 (gecikmişsiz verilen söz) elle senaryoda yok.
+  Program Ödeme Sözü'nü kalem düzeyinde tutuyorsa (karar cari düzeyi der) eşleme sürücüde; ayrışırsa önce hata (ders 6).
+- **S79:** olağan bağlı kaydın aynı düzeltmede cari + bağı (kaldırma / yeni carinin faturası / kartı; ödemede alış faturası) KABUL; kayıt kendi gününde yeni caride yeniden türetilir. s103'te
+  PK geri yüklenmiş ama açılıştan sonra tarihli (s97 PK gibi; sürücü v2.4.9 yedeğinden üretir, ders 17). Senaryo kurulmayan (kâhin susar): yeni bağ başka carinin belgesi / kartı,
+  ödemede taksit kartı, formdaki peşin (KS 1), S56 sınırı aşımı (KS 2).
+- **S74–S78 = C:** BİLİNEN SINIR — senaryo yok, karşılaştırılmaz (bakım 8'in susma kodları / senaryo hatası iletileri aynen).
+
+### DENENMEYEN (bu bakım)
+- Programla karşılaştırma (sürücü güncellemesi ayrı iş; kod Ç5-B).
+- S72: hafta sonu / tatile denk gelen söz günü (takvim günü varsayıldı — P1, BAŞ MİMAR değerlendirir; ayrı senaryo yok); devir / yedek geri yüklemede söz kaydı; şüpheli + söz yalnız birim (bakım 8).
+- S73: P3 yalnız birim; kalem düzeyinde söz (model dilinde yok).
+- S79: hedefi kayıttan SONRA doğan yeni bağ (S55 ile; aradaki dönem S77 = C); tarih + cari + bağ aynı düzeltmede ve şüpheli yeni cariye sınır aşmayan bağ yalnız birimde (red yok; değer
+  ölçülmedi); çek / senetle alınmış bağlı tahsilatın carisi (evrakın carisi); Excel kartına (`taksit_excel`) bağ; kilitli dönem; devirle gelen kayıt.
+- S74–S78 (C — BİLİNEN SINIR).
+- Dinî bayram tarihleri (bu bakımda aranmadı; Z12 aynen).

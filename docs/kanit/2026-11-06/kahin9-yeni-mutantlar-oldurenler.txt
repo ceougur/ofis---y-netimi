@@ -1,0 +1,27 @@
+bütün mutant parçaları kaynakta tam bir kez geçiyor
+B88 W13 S52 B: söz tarihine kadar gecikmiş de sayılmaz                                     ÖLDÜ (5/169): test_S52_soz_kapsami, test_S72_S73_soz_kapsami, test_s101_s72_soz_gunu, test_s102_s73_soz_butun_borc, test_s88_s52_odeme_sozu
+B88b W13 S52 C: Ödeme Sözü hatırlatmayı değiştirmez                                        ÖLDÜ (4/169): test_S72_S73_soz_kapsami, test_s101_s72_soz_gunu, test_s102_s73_soz_butun_borc, test_s88_s52_odeme_sozu
+B88e W13 S52 sınır: söz tarihi geçmiş söz de etkin                                         ÖLDÜ (4/169): test_S72_S73_soz_kapsami, test_s101_s72_soz_gunu, test_s102_s73_soz_butun_borc, test_s88_s52_odeme_sozu
+B88g W12 S52 sınır: ilk söz geçerli (yeni söz öncekinin yerine geçmez)                     ÖLDÜ (2/169): test_s101_s72_soz_gunu, test_s88_s52_odeme_sozu
+B88h W12 S52 sınır: söz, girildiği günden önceki tarihlerde de etkin                       ÖLDÜ (1/169): test_s88_s52_odeme_sozu
+B95 U1 S54 B: aynı düzeltmede bağ + cari de 'önce bağı kaldırın' ile red                   ÖLDÜ (3/169): test_S40_S44_S45_kapsam_ve_susma, test_S79_S54_ile_ayni, test_s94_s54_ayni_duzeltmede_bag_cari
+B95b U1 S54 sınır: yalnız bağın kaldırılması kabul, yeni carinin belgesine bağ red         ÖLDÜ (3/169): test_S40_S44_S45_kapsam_ve_susma, test_S79_S54_ile_ayni, test_s94_s54_ayni_duzeltmede_bag_cari
+B97 U5 S56 B: S44 düzeltmesi şüpheli-normal sınırını aşsa da kabul                         ÖLDÜ (3/169): test_S40_S44_S45_kapsam_ve_susma, test_S79_olagan_kayit_bag_cari, test_s96_s56_s44_normal_cari_siniri
+B98 U6 S57 B: olağan bağlı kaydın carisi değişince bağ düşer, kayıt yeni caride bağsız     ÖLDÜ (3/169): test_S79_olagan_kayit_bag_cari, test_s103_s79_olagan_bag_cari, test_s97_s57_olagan_bagli_kayit_cari
+B98b U6 S57 sınır: yalnız Kapatılacak Fatura bağlı olağan kayıt reddedilir (taksit kartı b ÖLDÜ (1/169): test_s97_s57_olagan_bagli_kayit_cari
+B98c U6 S57 sınır: geri yüklenmiş (açılıştan sonra tarihli) kayıt olağan sayılmaz          ÖLDÜ (1/169): test_s97_s57_olagan_bagli_kayit_cari
+B102 P1 S72 B: söz günü otomatik listeye girer (bakım 8'in B88d'si)                        ÖLDÜ (4/169): test_S72_S73_soz_kapsami, test_s101_s72_soz_gunu, test_s102_s73_soz_butun_borc, test_s88_s52_odeme_sozu
+B102b P1 S72 sınır +1: söz bitişinin ertesi günü de listeye girmez                         ÖLDÜ (4/169): test_S72_S73_soz_kapsami, test_s101_s72_soz_gunu, test_s102_s73_soz_butun_borc, test_s88_s52_odeme_sozu
+B102c P1 S72 sınır −1: söz arifesinde (söz tarihinden bir gün önce) listeye girer          ÖLDÜ (4/169): test_S72_S73_soz_kapsami, test_s101_s72_soz_gunu, test_s102_s73_soz_butun_borc, test_s88_s52_odeme_sozu
+B102d P1 / W13 sınır: söz girildiği gün henüz etkin değil                                  ÖLDÜ (1/169): test_s101_s72_soz_gunu
+B103 P2 S73 B: söz yalnız söz anındaki borcu kapsar — söz sırasında geciken kalemle cari l ÖLDÜ (3/169): test_S72_S73_soz_kapsami, test_s102_s73_soz_butun_borc, test_s88_s52_odeme_sozu
+B103b P2 S73 B: söz sırasında geciken kalemle cari listeye girer, tutar yalnız söz sonrası ÖLDÜ (3/169): test_S72_S73_soz_kapsami, test_s102_s73_soz_butun_borc, test_s88_s52_odeme_sozu
+B104 P5 S79 B: olağan bağlı kayıtta aynı düzeltmede bağ + cari de 'önce bağı kaldırın' ile ÖLDÜ (3/169): test_S79_S54_ile_ayni, test_S79_olagan_kayit_bag_cari, test_s103_s79_olagan_bag_cari
+B104b P5 S79 sınır: yalnız bağın kaldırılması kabul, yeni carinin belgesine / kartına bağ  ÖLDÜ (3/169): test_S79_S54_ile_ayni, test_S79_olagan_kayit_bag_cari, test_s103_s79_olagan_bag_cari
+B104c P6 S79: kabul ama yeni bağ uygulanmaz — kayıt yeni caride bağsız (S57'nin B'si)      ÖLDÜ (3/169): test_S79_S54_ile_ayni, test_S79_olagan_kayit_bag_cari, test_s103_s79_olagan_bag_cari
+B104d P5 S79 sınır: yalnız tahsilatta kabul (ödemede S57 red aynen)                        ÖLDÜ (2/169): test_S79_olagan_kayit_bag_cari, test_s103_s79_olagan_bag_cari
+B104e P7 (d) S79: S56 sınırı aşılsa da kâhin susmaz (olağan düzeltme sınırsız kabul)       ÖLDÜ (1/169): test_S79_olagan_kayit_bag_cari
+B104f P7 (a) S79: yeni bağın hedefi denetlenmez (başka carinin belgesi de kabul)           ÖLDÜ (1/169): test_S79_olagan_kayit_bag_cari
+sağ kalan: 0
+
+[exited with code 0]
