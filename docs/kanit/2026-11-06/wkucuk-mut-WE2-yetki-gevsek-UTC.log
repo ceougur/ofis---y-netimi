@@ -1,0 +1,74 @@
+TAP version 13
+# Subtest: 2.5.0 WE — Elle Bağla webhook bilgileri: program gösterir, kurulum başına, gizli
+    # Subtest: WE-1 yönetici: Callback URL = ofisin adresi + /wa/kanca/<43>, Verify token 43 karakter; yeniden sorulunca ve öbür şirkette AYNI (kurulum başına); WABA'nın bildirim adresinden farklı
+    ok 1 - WE-1 yönetici: Callback URL = ofisin adresi + /wa/kanca/<43>, Verify token 43 karakter; yeniden sorulunca ve öbür şirkette AYNI (kurulum başına); WABA'nın bildirim adresinden farklı
+      ---
+      duration_ms: 716.667705
+      type: 'test'
+      ...
+    # Subtest: WE-2 Meta doğrulaması: GET doğru belirteç → 200 challenge, yanlış / eksik → 403; POST 200 ama İŞLENMEZ (iş Meta Kabul Etti kalır, defterde teslim ve bildirim yolu işareti yok); WABA adresi aynen çalışır
+    ok 2 - WE-2 Meta doğrulaması: GET doğru belirteç → 200 challenge, yanlış / eksik → 403; POST 200 ama İŞLENMEZ (iş Meta Kabul Etti kalır, defterde teslim ve bildirim yolu işareti yok); WABA adresi aynen çalışır
+      ---
+      duration_ms: 760.026154
+      type: 'test'
+      ...
+    # Subtest: WE-3 yetkisiz kullanıcı (Personel) göremez (403); belirteç ve gizli yol yöneticinin öbür yanıtlarında da yok (bağlantı, gönderim durumu, onay, sayaç, işlem geçmişi)
+    not ok 3 - WE-3 yetkisiz kullanıcı (Personel) göremez (403); belirteç ve gizli yol yöneticinin öbür yanıtlarında da yok (bağlantı, gönderim durumu, onay, sayaç, işlem geçmişi)
+      ---
+      duration_ms: 709.217562
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-WE2-yetki-gevsek/test/whatsapp-we-webhook-bilgisi-250.test.mjs:119:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Personel 403 (geldi 200)
+        
+        200 !== 403
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 403
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-WE2-yetki-gevsek/test/whatsapp-we-webhook-bilgisi-250.test.mjs:127:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: WE-4 sızıntı yok: günlük, veri klasöründeki BÜTÜN dosyalar (şirket dosyası, makine defteri, WAL) ve yedek belirteci / gizli yolu AÇIK hâlde taşımaz; ayar yazılamazsa 503 + Türkçe ileti (değer yok)
+    ok 4 - WE-4 sızıntı yok: günlük, veri klasöründeki BÜTÜN dosyalar (şirket dosyası, makine defteri, WAL) ve yedek belirteci / gizli yolu AÇIK hâlde taşımaz; ayar yazılamazsa 503 + Türkçe ileti (değer yok)
+      ---
+      duration_ms: 511.931906
+      type: 'test'
+      ...
+    # Subtest: WE-5 kalıcılık: program yeniden açılınca ve Şirket Verisini Sıfırla'dan sonra AYNI değerler; secret.key değişince (veri başka bilgisayarda) yeni değerler, eski yol kapanır
+    ok 5 - WE-5 kalıcılık: program yeniden açılınca ve Şirket Verisini Sıfırla'dan sonra AYNI değerler; secret.key değişince (veri başka bilgisayarda) yeni değerler, eski yol kapanır
+      ---
+      duration_ms: 723.459366
+      type: 'test'
+      ...
+    # Subtest: WE-6 ofisin uzaktan adresi hazır değil: ready false, adres boş, neden Türkçe cümle; belirteç yine gösterilir (aynı)
+    ok 6 - WE-6 ofisin uzaktan adresi hazır değil: ready false, adres boş, neden Türkçe cümle; belirteç yine gösterilir (aynı)
+      ---
+      duration_ms: 564.104441
+      type: 'test'
+      ...
+    1..6
+not ok 1 - 2.5.0 WE — Elle Bağla webhook bilgileri: program gösterir, kurulum başına, gizli
+  ---
+  duration_ms: 3986.947707
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-WE2-yetki-gevsek/test/whatsapp-we-webhook-bilgisi-250.test.mjs:50:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 6
+# suites 1
+# pass 5
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4405.054355

@@ -54,8 +54,18 @@ async function readBody(req, max) {
  * @param {(id: string) => object|null} o.companyOf şirket kimliği → şirket kaydı
  * @param {(company: object) => object} o.appFor şirketin program örneği (app.mjs appFor; meşgulse HttpError 503 atar)
  * @param {(req) => { ok: boolean, signed?: boolean }} o.verifyMark kapıcı işareti (lib/mobile-sync.mjs kancaIsareti)
+ * @param {(companyId: string, wabaId: string) => "manual"|"embedded"|null} o.modeOf şirketin o WABA'daki bağlantı kipi, dosyası açılamazken de (lib/whatsapp/hub.mjs modeOf)
+ * @param {object|null} o.appWebhook Elle Bağla'nın uygulama düzeyi webhook adresi (lib/whatsapp/app-webhook.mjs matchesPath / matchesVerify)
  */
-export function createWhatsappHook({ hooks, companyOf, companies = () => [], appFor, verifyMark = () => ({ ok: true, signed: false }), log = console, maxBytes = HOOK_MAX_BYTES, now = () => new Date() }) {
+export function createWhatsappHook({ hooks, companyOf, companies = () => [], appFor, verifyMark = () => ({ ok: true, signed: false }), modeOf = () => null, appWebhook = null, log = console, maxBytes = HOOK_MAX_BYTES, now = () => new Date() }) {
+  // 2.5.0 WY (2.4.8 dar kontrol 18 DÜŞÜK "Yol 2'de imzasız bildirim 503 yolunda deftere yazılıyor"; plan docs/erp/WHATSAPP-PAKETI-2.5.0-PLANI.md §1 WY): Yol 2 ("WhatsApp'ı
+  // Bağla", kip embedded) bağlantısında imzası doğrulanamayan bildirim HİÇBİR yolda yazılmaz — şirket dosyası açılamazken de (silinmiş şirket, kalıcı açılamama, geçici açılamamada
+  // 503'ten önceki defter yazımı); "tanınmadı" diye günlüğe yazılır, 200 dönülmez (Meta yeniden dener; gerçek, imzalı bildirim gelince uygulanır). Kip şirket + WABA başına
+  // (modeOf: ortak kayıt, yoksa makine defterindeki son kip). Kip BİLİNMİYORSA Yol 1 sayılır (BAŞ MİMAR KARARI: 2.5.0'dan önce Yol 2 ileti gönderemezdi — Tech Provider onayı
+  // yok —, kipi bilinmeyen bağlantı Yol 1'dir; Yol 1'in imzasız bildirimi tasarım gereğidir, plan 2.4.8 §3 C — davranışı değişmez).
+  const unsignedRejected = (owner, signed) => !signed && modeOf(owner.companyId, owner.wabaId) === "embedded";
+  // "Tanınmadı" kaydı (yalnız sayı; gizli yol / wamid / içerik yazılmaz).
+  const noteUnsigned = count => log.warn?.(`WhatsApp durum bildirimi: ${count} bildirim tanınmadı — Meta imzası doğrulanamadı (WhatsApp'ı Bağla bağlantısı); yazılmadı.`);
   // T1 ayıklaması İş M (soru 8 / K7 + "KİME KAÇ KEZ" ilkesi (5)): başka bilgisayardan TAŞINAN veride bildirimin sahibi bu makinenin defterinde yoktur; o zaman wamid
   // şirket dosyalarında, yalnız BU DEFTERDE AÇILMAMIŞ toplu işlerin işlerinde aranır (queue.movedOwnerOfWamid; aynı bilgisayardaki veride karar defterindir). Sahip
   // şirketin WABA'sı kancanınkiyle aynı olmalı (aşağıda); Yol 2'de imzasız bildirim yine yazılmaz (aynı kurallar). İş U6 (dar kontrol 15): kabulü deftere yazılamamış
@@ -83,6 +93,10 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
   // TEK yardımcısında (ledgerOnlyResult; queue.applyLedgerOnly ile aynı): D/R o denemeye teslim, F (131049 dahil) son denemeye teslim edilemedi. 200 (Meta 7 gün yeniden
   // denemeye itilmez); yazılamazsa 503.
   function ledgerOnly(items, owner, signed, out) {
+    if (unsignedRejected(owner, signed)) {
+      out.unsigned += items.length; // 2.5.0 WY: Yol 2'de imzasız → yazılmaz (tanınmadı)
+      return;
+    }
     for (const { status } of items) {
       const value = String(status?.status || "").toLowerCase();
       const wamid = String(status?.id || "").slice(0, 200);
@@ -101,6 +115,17 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
       else out.ignored += 1;
     }
   }
+  // 2.5.0 WE: Elle Bağla'nın UYGULAMA DÜZEYİ webhook adresi (lib/whatsapp/app-webhook.mjs; Meta uygulama paneli → Configure Webhooks). GET: Meta'nın doğrulaması (bu kurulumun
+  // belirteci → hub.challenge, yoksa 403). POST: 200 ile kabul — İŞLENMEZ, SAKLANMAZ, bildirim yolu işareti (hookSeen) konmaz (durum bildirimi WABA'nın alternatif adresine gelir).
+  async function appLevel(req, res, url, method) {
+    if (method === "GET") {
+      const token = url.searchParams.get("hub.verify_token") || "";
+      if (url.searchParams.get("hub.mode") !== "subscribe" || !appWebhook.matchesVerify(token)) return failure(res, 403, "whatsapp-hook-verify", "Doğrulama belirteci geçersiz.");
+      return reply(res, 200, String(url.searchParams.get("hub.challenge") || "").slice(0, 200), "text/plain; charset=utf-8");
+    }
+    if (!(await readBody(req, maxBytes))) return failure(res, 413, "whatsapp-hook-large", "İstek çok büyük.");
+    return reply(res, 200, { ok: true });
+  }
   async function handle(req, res) {
     const url = new URL(String(req.url || "/"), "http://kanca.invalid");
     const secret = url.pathname.slice(HOOK_PREFIX.length);
@@ -110,6 +135,7 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
     const mark = verifyMark(req);
     if (!mark?.ok) return failure(res, 401, "whatsapp-hook-mark", "İstek kapıcıdan gelmedi.");
     const hook = hooks?.hookByPath(sha256(secret)) || null;
+    if (!hook && appWebhook?.matchesPath(secret)) return appLevel(req, res, url, method);
     if (!hook) return failure(res, 404, "whatsapp-hook-missing", "Bu adres uzaktan erişime açık değil.");
     if (method === "GET") {
       const token = url.searchParams.get("hub.verify_token") || "";
@@ -132,7 +158,7 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
     hooks.hookSeen?.(hook.wabaId, now().toISOString());
     // Durumlar şirkete göre toplanır (wamid → kabulü yazan şirket; imzalı olayda iş kimliği → talebi yazan şirket). Aynı WABA'nın olayı değilse düşer.
     const groups = new Map(); // şirket → [{ phoneNumberId, statuses[] }]
-    const out = { applied: 0, ignored: 0, unknown: 0 };
+    const out = { applied: 0, ignored: 0, unknown: 0, unsigned: 0 }; // unsigned (2.5.0 WY): Yol 2'de imzası doğrulanamadığı için yazılmayan
     let unowned = 0; // İş T A6: hiçbir şirkette sahibi bulunamayan bildirim
     const lookup = { busy: false }; // İş U6: dosya araması sırasında geçici olarak açılamayan şirket var mı
     for (const entry of Array.isArray(payload?.entry) ? payload.entry : []) {
@@ -153,7 +179,6 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
         }
       }
     }
-    let unsigned = 0;
     for (const [companyId, items] of groups) {
       const company = companyOf(companyId);
       if (!company) {
@@ -167,11 +192,14 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
         // Geri yükleme / açılış sürüyor, kilit, bozuk dosya …: 503, Meta bildirimi yeniden dener (200 dışı yanıtta 7 güne kadar; uygulanmış olanlar yinelenince etkisizdir).
         // İş X1 (dar kontrol 17 f1b): 503'ten ÖNCE delivered / read deftere (o denemeye; eşgüçlü) — Meta bırakırsa da teslim sayılır; failed şirket açılınca uygulanır.
         if (!permanent(error)) {
-          ledgerOnly(items.filter(item => ["delivered", "read"].includes(String(item.status?.status || "").toLowerCase())), items[0].owner, signed, { applied: 0, ignored: 0, unknown: 0 });
+          // 2.5.0 WY: Yol 2'de imzasız D/R bu ön yazıma da girmez (ledgerOnly); yanıt yine 503 (şirket açılınca olağan yol imzasızı 401 ile reddeder).
+          const early = { applied: 0, ignored: 0, unknown: 0, unsigned: 0 };
+          ledgerOnly(items.filter(item => ["delivered", "read"].includes(String(item.status?.status || "").toLowerCase())), items[0].owner, signed, early);
+          if (early.unsigned) noteUnsigned(early.unsigned);
           return failure(res, 503, "whatsapp-hook-busy", "Şirket şu anda açılamıyor; bildirim yeniden denenecek.");
         }
         // İş U (a) + V1: KALICI açılamama (sürüp giden veri dosyası yokluğu) → yalnız defter, 200.
-        log.warn?.(`WhatsApp durum bildirimi: şirket açılamadı (${error?.message}); yalnız defter yazıldı.`);
+        if (!unsignedRejected(items[0].owner, signed)) log.warn?.(`WhatsApp durum bildirimi: şirket açılamadı (${error?.message}); yalnız defter yazıldı.`);
         ledgerOnly(items, items[0].owner, signed, out);
         continue;
       }
@@ -185,7 +213,7 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
         continue;
       }
       if (record.mode === "embedded" && !signed) {
-        unsigned += items.length;
+        out.unsigned += items.length;
         continue;
       }
       const byPhone = new Map();
@@ -195,8 +223,9 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
         for (const key of Object.keys(out)) out[key] += result[key] || 0;
       }
     }
-    // Yol 2 bağlantısında imzasız bildirim yazılmaz; hiçbir şey yazılmadıysa 401 (kapıcı imzayı doğrulamadı).
-    if (unsigned && !out.applied) return failure(res, 401, "whatsapp-hook-signature", "Meta imzası doğrulanmadı.");
+    // Yol 2 bağlantısında imzasız bildirim yazılmaz (şirket dosyası açılamazken de — 2.5.0 WY); hiçbir şey yazılmadıysa 401 (kapıcı imzayı doğrulamadı; Meta yeniden dener).
+    if (out.unsigned) noteUnsigned(out.unsigned);
+    if (out.unsigned && !out.applied) return failure(res, 401, "whatsapp-hook-signature", "Meta imzası doğrulanmadı.");
     // İş T A6 (K5 istisnası; İ2 "almış olabilir → kayıp yok"): sahibi bulunamayan bildirim varken bu WABA'da yanıtı henüz işlenmemiş istek (talep var, sonuç yok, son
     // PENDING_MS içinde) varsa bildirim o isteğin olabilir (Meta durumu yanıttan önce yollayabilir) → 503, Meta yeniden dener; yanıt işlenince tanınır. Pencere SINIRLI:
     // daha eski sonuçsuz talep toparlamada "Sonucu Belirsiz" olur; pencere dışında ya da bekleyen talep yokken 200 (yabancı iletiler — aynı WABA'yı başka araçla kullanan

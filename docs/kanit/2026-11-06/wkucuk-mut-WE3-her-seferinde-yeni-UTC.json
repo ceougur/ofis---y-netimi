@@ -1,0 +1,48 @@
+{
+  "ad": "wkucuk-mut-WE3-her-seferinde-yeni-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-we-webhook-bilgisi-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T06:28:25.960Z",
+  "sure_sn": 4.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 3,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 WE — Elle Bağla webhook bilgileri: program gösterir, kurulum başına, gizli › WE-1 yönetici: Callback URL = ofisin adresi + /wa/kanca/<43>, Verify token 43 karakter; yeniden sorulunca ve öbür şirkette AYNI (kurulum başına); WABA'nın bildirim adresinden farklı",
+      "konum": "test/whatsapp-we-webhook-bilgisi-250.test.mjs:51:3",
+      "hata": "ikinci soruşta aynı değerler · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 WE — Elle Bağla webhook bilgileri: program gösterir, kurulum başına, gizli › WE-5 kalıcılık: program yeniden açılınca ve Şirket Verisini Sıfırla'dan sonra AYNI değerler; secret.key değişince (veri başka bilgisayarda) yeni değerler, eski yol kapanır",
+      "konum": "test/whatsapp-we-webhook-bilgisi-250.test.mjs:182:3",
+      "hata": "yeniden açılışta aynı · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 WE — Elle Bağla webhook bilgileri: program gösterir, kurulum başına, gizli › WE-6 ofisin uzaktan adresi hazır değil: ready false, adres boş, neden Türkçe cümle; belirteç yine gösterilir (aynı)",
+      "konum": "test/whatsapp-we-webhook-bilgisi-250.test.mjs:214:3",
+      "hata": "adres gelince belirteç değişmez · + actual - expected · + 'hwmtlUbnMdqWPQDBeaqRi9EweE3ibRJWYQaVO5feKUM' (beklenen N2548wSsbX43z_gMFWBxErm92qQyG9uLm-uW_zVJxrs, gelen hwmtlUbnMdqWPQDBeaqRi9EweE3ibRJWYQaVO5feKUM)"
+    }
+  ],
+  "ham_cikti": "../wkucuk-kanit/2026-11-06/wkucuk-mut-WE3-her-seferinde-yeni-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-WE3-her-seferinde-yeni",
+  "ham_cikti_sha256": "457b52dedd822d797462be65e5a9b7f5091d1aba53f285b29c821117357ccf6a",
+  "ham_cikti_bayt": 8135
+}

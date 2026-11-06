@@ -19,6 +19,8 @@
 //      saklanmaz). Aynı WABA'yı kullanan iki şirket aynı adresi paylaşır; gelen bildirim wamid'den (claims + outcomes) ya da imzalı iş kimliğinden doğru şirkete
 //      yönlendirilir. Yedekten Geri Yükle / Şirket Verisini Sıfırla bu kaydı değiştirmez (eski bir dosya eski gizli yolu "geri getiremez"). hook_seen: bu WABA'nın
 //      kancasına son bildirim (saat başına bir satır; §7a 16 "bildirim yolu çalışıyor").
+//   7. BAĞLANTI KİPİ (2.5.0 WY): şirket + WABA başına son kip (Elle Bağla / WhatsApp'ı Bağla; meta "mode:<şirket>:<WABA>") — durum bildirimi şirket dosyası açılamazken
+//      de Yol 2'nin imzasız bildirimini yazmaz (noteMode / modeOf).
 // Zamanlar iş saatinden (config.now) ISO metni; karşılaştırmalar metin üzerinden (hepsi toISOString biçiminde, UTC).
 import { mkdirSync } from "node:fs";
 import { randomUUID } from "node:crypto";
@@ -319,7 +321,11 @@ function buildWaLedger(db, { file, log, fault }) {
     acceptedWamid: db.prepare(`SELECT COALESCE((SELECT o.wamid FROM outcomes o WHERE o.job_id = ?1 AND o.attempt = ?2 AND o.outcome = 'accepted' AND o.wamid <> ''),
       (SELECT l.wamid FROM learned_wamids l WHERE l.job_id = ?1 AND l.attempt = ?2)) AS wamid`),
     anywayLink: db.prepare("INSERT OR IGNORE INTO anyway_links (job_id, source_job_id, at) VALUES (?, ?, ?)"),
+    // 2.5.0 WY: şirketin bu WABA'daki bağlantı kipi (meta anahtarı "mode:<şirket>:<WABA>"; değer manual | embedded). Anahtar–değer: son kip geçerlidir.
+    modeGet: db.prepare("SELECT value FROM meta WHERE key = ?"),
+    modeSet: db.prepare("INSERT INTO meta (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value"),
   };
+  const modeKey = (companyId, wabaId) => `mode:${companyId}:${wabaId}`;
   const hookView = row => {
     if (!row) return null;
     return {
@@ -630,6 +636,35 @@ function buildWaLedger(db, { file, log, fault }) {
     deliveredJob: jobId => Boolean(jobId && q.deliveredJob.get(String(jobId))),
     /** İş U5: bu DENEMENİN teslimi defterde var mı (aynı denemenin yinelenen teslimi etkisiz; başka denemenin teslimi ayrı sayılır). */
     deliveredAttempt: (jobId, attempt) => Boolean(jobId && q.deliveredAttempt.get(String(jobId), Number(attempt))),
+    // ---------- 2.5.0 WY: şirket + WABA başına bağlantı kipi (durum bildirimi şirket dosyası açılamazken imzasız bildirimi yazar mı) ----------
+    // Kip şirket dosyasındadır (whatsapp.meta); dosya açılamazken (geri yükleme sürüyor, şirket silindi, veri dosyası yok) kanca onu okuyamaz. Ortak kayıt (lib/whatsapp/hub.mjs)
+    // her bağlantı değişikliğinde ve açılış taramasında son kipi buraya da yazar. Kip WABA'ya DEĞİL şirket + WABA'ya bağlıdır (2.4.8 İş Y3'ün WABA başına kipi aynı WABA'yı iki
+    // kipte kullanan iki şirkette Yol 1 bildirimini kaybettiriyordu — dar kontrol 19 D2). Yazım yalnız kip DEĞİŞİNCE ve defter o an yazılabilirse (kısa sınama — başka
+    // süreç kilitliyken 10 sn beklenmez; ortak kayıt kipi bellekte bilir, sonraki duyuruda yeniden denenir). Hata fırlatmaz.
+    noteMode(companyId, wabaId, mode) {
+      if (!companyId || !wabaId || (mode !== "manual" && mode !== "embedded")) return false;
+      const key = modeKey(String(companyId), String(wabaId));
+      try {
+        if (q.modeGet.get(key)?.value === mode) return true;
+        if (probeWritableDb(db, 150) !== true) return false;
+        guard("mode", { companyId, wabaId, mode });
+        q.modeSet.run(key, mode);
+        return true;
+      } catch (error) {
+        log.warn?.(`WhatsApp gönderim defteri: bağlantı kipi yazılamadı (${error.message}).`);
+        return false;
+      }
+    },
+    /** Şirketin bu WABA'daki son bilinen kipi ("manual" | "embedded") ya da null (bilinmiyor: 2.5.0 öncesi defter / hiç yazılamadı). Hata fırlatmaz. */
+    modeOf(companyId, wabaId) {
+      if (!companyId || !wabaId) return null;
+      try {
+        const value = q.modeGet.get(modeKey(String(companyId), String(wabaId)))?.value;
+        return value === "manual" || value === "embedded" ? value : null;
+      } catch {
+        return null;
+      }
+    },
     /** İş V2: denemenin teslim anı (deneme başına teslim satırı); yoksa null. */
     deliveryOf: (jobId, attempt) => q.deliveryOf.get(String(jobId), Number(attempt))?.at || null,
     /**

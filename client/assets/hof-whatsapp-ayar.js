@@ -34,10 +34,14 @@
   // 2.4.9 UI tur B (ORTA-3, UI/UX gezintisi 04.11): Bildirim Yolu kaydedilemediyse neden Türkçe satırda (sunucu Meta'nın iletisini ayırır — lib/whatsapp/connection.mjs
   // hookView); Meta'nın ham iletisi (İngilizce) varsa ayrı, küçük satırda. Önce hata yalnız dar hücrede, İngilizce ileti ve iç içe parantezle görünüyordu.
   const HOOK_FAILED_TAIL = "Kaydedilene dek teslim ve okundu bilgisi bu bilgisayara gelmez; program saatte bir kendiliğinden yeniden dener.";
+  // 2.5.0 BS-1 (2.4.9 birleşik son dar kontrol DÜŞÜK-3, gerileme): Meta YALNIZ hata kodu döndürüp ileti göndermezse (Meta iletisi satırı yok) kod neden satırında
+  // "(Meta hata kodu N)" olarak kalır — 2.4.9 UI tur B'den önce hücrede görünüyordu; destek kodu görür. Meta iletisi varsa kod onun satırında (aşağıda), neden satırı yalnız Türkçe.
   const hookFailure = hook => {
-    const raw = String(hook.cause ?? hook.error ?? "").trim();
-    const cause = raw && !/[.!?]$/.test(raw) ? `${raw}.` : raw;
     const meta = String(hook.metaMessage || "").trim();
+    const codeOnly = !meta && hook.metaCode != null && hook.metaCode !== "" ? `(Meta hata kodu ${hook.metaCode})` : "";
+    const text = String(hook.cause ?? hook.error ?? "").trim();
+    const raw = codeOnly ? [text.replace(/\.$/, ""), codeOnly].filter(Boolean).join(" ") : text;
+    const cause = raw && !/[.!?]$/.test(raw) ? `${raw}.` : raw;
     const code = hook.metaCode != null && !meta.includes(`#${hook.metaCode}`) ? ` (hata kodu ${hook.metaCode})` : "";
     const why = `<p class="adm-wa-why" data-wa-hook-why>${esc(`Bildirim Yolu kaydedilemedi${cause ? ` — ${cause}` : "."} ${HOOK_FAILED_TAIL}`)}</p>`;
     return meta ? `${why}<p class="adm-wa-why adm-wa-meta" data-wa-hook-meta>${esc(`Meta iletisi: ${meta}${code}`)}</p>` : why;
@@ -144,7 +148,7 @@
         ${reconnect}
         <button type="button" class="hof-button${reconnect ? " hof-button-ghost" : ""}" data-wa-action="test" ${metaBlock ? "disabled" : ""}>Bağlantıyı Sına</button>
         <button type="button" class="hof-button hof-button-ghost" data-wa-action="self-test" ${selfBlock ? "disabled" : ""}>Kendime Deneme Gönder</button>
-        ${data.mode === "embedded" ? (reconnect ? "" : `<button type="button" class="hof-button hof-button-ghost" data-wa-action="embedded" ${embeddedBlock ? "disabled" : ""}>WhatsApp'ı Yeniden Bağla</button>`) : `<button type="button" class="hof-button hof-button-ghost" data-wa-action="connect" ${editBlock ? "disabled" : ""}>Bilgileri Değiştir</button>`}
+        ${data.mode === "embedded" ? (reconnect ? "" : `<button type="button" class="hof-button hof-button-ghost" data-wa-action="embedded" ${embeddedBlock ? "disabled" : ""}>WhatsApp'ı Yeniden Bağla</button>`) : `<button type="button" class="hof-button hof-button-ghost" data-wa-action="connect" ${editBlock ? "disabled" : ""}>Bilgileri Değiştir</button><button type="button" class="hof-button hof-button-ghost" data-wa-action="webhook">Webhook Bilgileri</button>`}
         <button type="button" class="hof-button hof-button-danger" data-wa-action="remove" ${editBlock ? "disabled" : ""}>Bağlantıyı Kaldır</button>
       </div>
       ${metaBlock ? `<p class="adm-wa-why" data-wa-why>${esc(metaBlock)}</p>` : selfBlock ? `<p class="adm-wa-why" data-wa-why-self>${esc(selfBlock)}</p>` : ""}${data.mode === "embedded" ? embeddedWhy : ""}
@@ -376,6 +380,38 @@
     });
   }
 
+  // 2.5.0 WE: Elle Bağla'nın uygulama düzeyi webhook bilgileri (Meta uygulama paneli → WhatsApp → Configure Webhooks: Callback URL + Verify token; sunucu
+  // lib/whatsapp/app-webhook.mjs, kurulum başına). Değerler yalnız bu pencerede görünür, kartta / sayfada tutulmaz; doğrulama belirteci gizlidir.
+  async function webhookInfo() {
+    let info;
+    try {
+      info = await HOF.api("/api/workspace/whatsapp/app-webhook");
+    } catch (error) {
+      HOF.toastError(error);
+      return;
+    }
+    const row = (key, label, value) => `<div data-wa-webhook="${key}"><dt>${esc(label)}</dt><dd><code data-wa-webhook-value="${key}">${esc(value)}</code></dd></div>`;
+    const body = `
+      <p class="adm-muted">Meta uygulamanızın WhatsApp ayarlarında Configure Webhooks'a bu iki değeri girip Verify and save'e basın; sonra Webhook fields'ta yalnız messages alanına abone olun. Doğrulama belirteci gizlidir: kimseyle paylaşmayın, e-postayla ya da mesajla göndermeyin.</p>
+      ${info.ready ? "" : `<p class="adm-wa-why" data-wa-webhook-why>${esc(info.reason)}</p>`}
+      <dl class="adm-license-facts" data-wa-webhook-facts>
+        ${info.ready ? row("callback", "Callback URL (Bildirim Adresi)", info.callbackUrl) : ""}
+        ${row("verify", "Verify Token (Doğrulama Belirteci)", info.verifyToken)}
+      </dl>
+      <div class="adm-inline">
+        ${info.ready ? '<button type="button" class="hof-button" data-wa-webhook-copy="callback">Adresi Kopyala</button>' : ""}
+        <button type="button" class="hof-button hof-button-ghost" data-wa-webhook-copy="verify">Belirteci Kopyala</button>
+      </div>`;
+    const modal = HOF.modal({ title: "Webhook Bilgileri", eyebrow: "WHATSAPP · ELLE BAĞLA", body, size: "wide" });
+    const dialog = modal?.dialog;
+    for (const [key, value, label] of [["callback", info.callbackUrl, "Bildirim adresi"], ["verify", info.verifyToken, "Doğrulama belirteci"]]) {
+      dialog?.querySelector(`[data-wa-webhook-copy="${key}"]`)?.addEventListener("click", async () => {
+        if (await HOF.copyText(value)) HOF.toast(`${label} panoya kopyalandı.`, { type: "success" });
+        else HOF.toast("Kopyalanamadı; değeri seçip kendiniz kopyalayın.", { type: "error" });
+      });
+    }
+  }
+
   // 2.5.0 W-2: Meta'daki abonelik de silinir; yerel kaldırma her durumda yapılır. Meta tarafı düşerse uyarı + veri silme sayfası (bağlantı düğmesi).
   let removeBusy = false;
   async function removeConnection(button) {
@@ -423,6 +459,7 @@
       button.classList.add("is-busy");
       testNow();
     } else if (action === "self-test") selfTestForm();
+    else if (action === "webhook") webhookInfo();
     else if (action === "remove") removeConnection(button);
   });
 

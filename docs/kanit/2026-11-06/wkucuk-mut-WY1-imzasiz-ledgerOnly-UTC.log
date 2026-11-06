@@ -1,0 +1,146 @@
+TAP version 13
+# Subtest: 2.5.0 WY — Yol 2 imzasız bildirim: şirket dosyası açılamazken de yazılmaz, tanınmadı (401/503), gerçek bildirim kaybolmaz
+    # Subtest: WY-1 Yol 2 · geri yükleme sürüyor (geçici) · İMZASIZ delivered → 503, defterde teslim YOK; açılınca imzasız yine 401; gerçek (imzalı) failed uygulanır: Başarısız, kişi gönderilecek, Bu Ay 0
+    not ok 1 - WY-1 Yol 2 · geri yükleme sürüyor (geçici) · İMZASIZ delivered → 503, defterde teslim YOK; açılınca imzasız yine 401; gerçek (imzalı) failed uygulanır: Başarısız, kişi gönderilecek, Bu Ay 0
+      ---
+      duration_ms: 2618.099151
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-WY1-imzasiz-ledgerOnly/test/whatsapp-wy-imzasiz-250.test.mjs:23:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        imzasız bildirim defterde teslim YAZMADI (sahte teslim sayılmaz)
+        
+        true !== false
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      actual: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-WY1-imzasiz-ledgerOnly/test/whatsapp-wy-imzasiz-250.test.mjs:31:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: WY-2 Yol 2 · geri yükleme sürüyor · İMZALI delivered ×2 → 503 ×2, defterde TEK teslim (503'ten önce yazım sürer — X1); açılınca imzalı delivered 200: Teslim Edildi, Bu Ay 1, Daha Önce Gönderildi
+    ok 2 - WY-2 Yol 2 · geri yükleme sürüyor · İMZALI delivered ×2 → 503 ×2, defterde TEK teslim (503'ten önce yazım sürer — X1); açılınca imzalı delivered 200: Teslim Edildi, Bu Ay 1, Daha Önce Gönderildi
+      ---
+      duration_ms: 1229.32899
+      type: 'test'
+      ...
+    # Subtest: WY-3 Yol 2 · şirket SİLİNDİ · imzasız delivered ve failed → 401 (200 değil; Meta yeniden dener), defterde teslim / teslim edilemedi YOK; imzalı delivered ×2 → 200, defterde tek teslim
+    not ok 3 - WY-3 Yol 2 · şirket SİLİNDİ · imzasız delivered ve failed → 401 (200 değil; Meta yeniden dener), defterde teslim / teslim edilemedi YOK; imzalı delivered ×2 → 200, defterde tek teslim
+      ---
+      duration_ms: 830.609456
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-WY1-imzasiz-ledgerOnly/test/whatsapp-wy-imzasiz-250.test.mjs:75:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        silinmiş şirket · imzasız delivered → 401 (geldi 200 {"ok":true})
+        
+        200 !== 401
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 401
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-WY1-imzasiz-ledgerOnly/test/whatsapp-wy-imzasiz-250.test.mjs:83:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: WY-4 Yol 2 · veri dosyası YOK (kalıcı) · imzasız failed 131026 → 401, teslim edilemedi YAZILMAZ; dosya geri gelince kişi Daha Önce Gönderildi (sahte başarısızlık ikinci ileti açmaz); imzalı failed → 200 + defterde
+    not ok 4 - WY-4 Yol 2 · veri dosyası YOK (kalıcı) · imzasız failed 131026 → 401, teslim edilemedi YAZILMAZ; dosya geri gelince kişi Daha Önce Gönderildi (sahte başarısızlık ikinci ileti açmaz); imzalı failed → 200 + defterde
+      ---
+      duration_ms: 732.107879
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-WY1-imzasiz-ledgerOnly/test/whatsapp-wy-imzasiz-250.test.mjs:94:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kalıcı açılamama · imzasız failed → 401 (geldi 200 {"ok":true})
+        
+        200 !== 401
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 401
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-WY1-imzasiz-ledgerOnly/test/whatsapp-wy-imzasiz-250.test.mjs:101:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: WY-5 Yol 1 AYNEN · aynı WABA'da 001 WhatsApp'ı Bağla + 002 Elle Bağla · 002 geçici açılamıyor → imzasız delivered 503 + defterde teslim (X1); 002 silinince imzasız delivered 200 + defterde teslim (kip şirket başına)
+    ok 5 - WY-5 Yol 1 AYNEN · aynı WABA'da 001 WhatsApp'ı Bağla + 002 Elle Bağla · 002 geçici açılamıyor → imzasız delivered 503 + defterde teslim (X1); 002 silinince imzasız delivered 200 + defterde teslim (kip şirket başına)
+      ---
+      duration_ms: 1182.745108
+      type: 'test'
+      ...
+    1..5
+not ok 1 - 2.5.0 WY — Yol 2 imzasız bildirim: şirket dosyası açılamazken de yazılmaz, tanınmadı (401/503), gerçek bildirim kaybolmaz
+  ---
+  duration_ms: 6594.476645
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-WY1-imzasiz-ledgerOnly/test/whatsapp-wy-imzasiz-250.test.mjs:22:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 WY — kip makine defterinde: yeniden açılışta şirket dosyası açılamazken de bilinir
+    # Subtest: WY-6 Yol 2 · program YENİDEN AÇILDI, 002'nin veri dosyası açılışta YOK (kip bellekte değil, makine defterinde) · imzasız delivered → 401, defterde teslim YOK
+    not ok 1 - WY-6 Yol 2 · program YENİDEN AÇILDI, 002'nin veri dosyası açılışta YOK (kip bellekte değil, makine defterinde) · imzasız delivered → 401, defterde teslim YOK
+      ---
+      duration_ms: 810.563411
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-WY1-imzasiz-ledgerOnly/test/whatsapp-wy-imzasiz-250.test.mjs:142:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        imzasız Yol 2 → 401 (geldi 200 {"ok":true})
+        
+        200 !== 401
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 401
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-WY1-imzasiz-ledgerOnly/test/whatsapp-wy-imzasiz-250.test.mjs:144:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: WY-7 kip BİLİNMİYOR (2.5.0 öncesi defter, dosya açılamıyor) → Yol 1 sayılır (bugünkü davranış): imzasız delivered 200 + defterde teslim (BAŞ MİMAR KARARI: 2.5.0 öncesi Yol 2 ileti gönderemezdi)
+    ok 2 - WY-7 kip BİLİNMİYOR (2.5.0 öncesi defter, dosya açılamıyor) → Yol 1 sayılır (bugünkü davranış): imzasız delivered 200 + defterde teslim (BAŞ MİMAR KARARI: 2.5.0 öncesi Yol 2 ileti gönderemezdi)
+      ---
+      duration_ms: 1587.770254
+      type: 'test'
+      ...
+    1..2
+not ok 2 - 2.5.0 WY — kip makine defterinde: yeniden açılışta şirket dosyası açılamazken de bilinir
+  ---
+  duration_ms: 2398.896153
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-WY1-imzasiz-ledgerOnly/test/whatsapp-wy-imzasiz-250.test.mjs:141:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 7
+# suites 2
+# pass 3
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9525.033507

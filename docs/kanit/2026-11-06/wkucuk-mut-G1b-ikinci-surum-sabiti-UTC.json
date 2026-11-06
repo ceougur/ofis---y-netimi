@@ -1,0 +1,38 @@
+{
+  "ad": "wkucuk-mut-G1b-ikinci-surum-sabiti-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-g1-graph-surum-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T06:29:43.358Z",
+  "sure_sn": 0.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 1,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 G1 — Graph API sürümü tek yerden (program + kapıcı) › kaynakta (server/, bulut/, istemcinin WhatsApp dosyaları) başka yerde Graph sürümü yazılı değil",
+      "konum": "test/whatsapp-g1-graph-surum-250.test.mjs:32:3",
+      "hata": "Graph sürümü yalnız iki sabitte · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../wkucuk-kanit/2026-11-06/wkucuk-mut-G1b-ikinci-surum-sabiti-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-G1b-ikinci-surum-sabiti",
+  "ham_cikti_sha256": "257b597615c05a375e1e6dbe17810dca490dc096524b3daa0b7b5fd335250097",
+  "ham_cikti_bayt": 2462
+}

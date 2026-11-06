@@ -18,6 +18,7 @@
 //   POST   /api/workspace/whatsapp/connection/self-test   Kendime Deneme Gönder { to } — yazılabilir lisans
 //   POST   /api/workspace/whatsapp/connection/embedded            2.4.8 W7 WhatsApp'ı Bağla: oturum aç → { session, url (kapi.<alan>/wa/bagla#o=…), seconds }
 //   POST   /api/workspace/whatsapp/connection/embedded/:session   oturumun sonucu: { state: waiting | error (message) | ready (connection) }
+//   GET    /api/workspace/whatsapp/app-webhook            2.5.0 WE Elle Bağla uygulama düzeyi webhook: { ready, callbackUrl, verifyToken, reason } (kurulum başına; gizli)
 // Yazma uçları salt okunur lisansta app.mjs'teki genel kapıda (license.assertWritable) 403 LICENSE_READ_ONLY alır; deneme ayrıca burada denetlenir.
 //
 // 2.4.8 W2 (plan §6 W2; lib/whatsapp/queue.mjs): gönderim çekirdeği — toplu gönderim (Ekstre + PDF / Ödeme Hatırlatma), yetki whatsapp.send.
@@ -268,6 +269,20 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
     if (!writable()) throw new HttpError(403, "Program salt okunur çalışıyor; durum bildirimi adresi kaydedilemez.", { code: "LICENSE_READ_ONLY" });
     await connection.registerHook(user, mobileRemote?.publicUrl?.() || "");
     ok(res, view());
+  });
+  // 2.5.0 WE: Elle Bağla'nın uygulama düzeyi webhook bilgileri (Meta uygulama paneli → WhatsApp → Configure Webhooks: Callback URL + Verify token; lib/whatsapp/app-webhook.mjs).
+  // Kurulum başına tek çift (bütün şirketler aynı değerleri görür); GİZLİ — yalnız yönetici (system.manage), günlüğe / işlem geçmişine / hata iletisine yazılmaz.
+  router.get("/api/workspace/whatsapp/app-webhook", async ({ req, res }) => {
+    auth.requirePermission(req, "system.manage");
+    const failed = () => new HttpError(503, "Webhook bilgileri hazırlanamadı; programı yeniden başlatıp tekrar deneyin. Sürerse diskte boş yer olduğunu ve veri klasörüne yazılabildiğini denetleyin.", { code: "whatsapp-app-webhook" });
+    if (!whatsapp?.appWebhook) throw failed();
+    let info;
+    try {
+      info = whatsapp.appWebhook.reveal(mobileRemote?.publicUrl?.() || "");
+    } catch {
+      throw failed();
+    }
+    ok(res, info);
   });
   router.post("/api/workspace/whatsapp/connection/self-test", async ({ req, res }) => {
     // Bağlantı ekranının denemesi: yalnız yönetici (system.manage yalnız yönetici rolündedir ve yönetici her yetkiye — whatsapp.send dahil — sahiptir).

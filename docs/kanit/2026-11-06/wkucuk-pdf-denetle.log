@@ -1,0 +1,42 @@
+✓ PDF sayfa sayısı: 46
+✓ PDF'teki resim sayısı 38 ≥ kılavuzdaki farklı ekran 38
+✓ PDF metninde: “8. Banka”
+✓ PDF metninde: “Kurulum Sihirbazı”
+✓ PDF metninde: “Hesabı Atanmamış Eski Hareketler”
+✓ PDF metninde: “Tarihi Gelince Atanabilir”
+✓ PDF metninde: “Seçilenleri Bu Hesaba Ata”
+✓ PDF metninde: “+ Kredi Kartı Ekle”
+✓ PDF metninde: “Kredi Kartı Kullan”
+✓ PDF metninde: “Çek Hesabı”
+✓ PDF metninde: “İşlemden Sonra”
+✓ PDF metninde: “Kalanın Tamamını Öde”
+✓ PDF metninde: “Kart ve Kredi Borcu”
+✓ PDF metninde: “+ Kart Borcu Ödemesi”
+✓ PDF metninde: “Bankalar Arası Transfer”
+✓ PDF metninde: “Ters Kaydet”
+✓ PDF metninde: “Gerçek Banka”
+✓ PDF metninde: “Bugünkü Nakit ve Banka”
+✓ PDF metninde: “Banka Bakiye Raporu”
+✓ PDF metninde: “Alt Hesap Mizanı”
+✓ PDF metninde: “Banka ve POS”
+✓ PDF metninde: “Yine de Kaydet”
+✓ PDF metninde: “Hesapsız (Açılıştan Önce)”
+✓ PDF metninde: “Kurulum Geçmişi”
+✓ PDF metninde: “Kart Borcuna Aktar”
+✓ PDF metninde: “Bankaya Geçmiş Say”
+✓ PDF metninde YOK: “Drive”
+✓ PDF metninde YOK: “OneDrive”
+✓ PDF metninde YOK: “Kasa ve Banka”
+✓ PDF metninde YOK: “bugünkü kasadan”
+✓ PDF metninde YOK: “Banka / POS”
+✓ PDF metninde YOK: “Kurumsal Kart”
+✓ PDF metninde YOK: “Kurumsal Kredi”
+✓ PDF metninde YOK: “Tamamı Peşin”
+✓ PDF kapağı ve dip notu program sürümü 2.4.9 (bulunan: 2.4.9)
+✓ client/kilavuz kopyası aynı dosya (sha256 44a7db2eb59ca79ac1e73d7140c7fca939e9379627ffeca06755116dde7f84cd)
+✓ açılış ekranında “Resimli kullanım kılavuzunu açın” bağlantısı /kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf
+✓ sunucunun verdiği kılavuz: 200 application/pdf sha256 44a7db2eb59ca79ac1e73d7140c7fca939e9379627ffeca06755116dde7f84cd
+✓ sol menü “Kullanım Kılavuzu” → yeni sekme /kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf
+# tests 39
+# pass 39
+# fail 0
