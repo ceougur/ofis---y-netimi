@@ -1,0 +1,32 @@
+{
+  "ad": "c2t1-birlesim-yeni-istanbul",
+  "komut": "env TZ=Europe/Istanbul HUKUK_LICENSE_URL=http://127.0.0.1:9 node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/fis-defteri-250.test.mjs test/fis-defteri-yasam-250.test.mjs test/fis-defteri-koruma-250.test.mjs",
+  "commit": "f4763430819582d914d27eca649301d52ead78a7",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T04:31:58.163Z",
+  "sure_sn": 13,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 40,
+    "gecen": 40,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bekleyen-kanit/2026-11-06/2026-11-06/c2t1-birlesim-yeni-istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "fb6b27c922990b666ab0c06a5c4db1b02714768c1b4d61931697d734097ee014",
+  "ham_cikti_bayt": 18398
+}

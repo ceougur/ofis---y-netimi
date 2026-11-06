@@ -1,0 +1,334 @@
+TAP version 13
+# Subtest: 2.5.0 Ç2 — saklanan fiş defteri
+    # Subtest: N12 (tohum): fiş yokken Defter Mutabakatı'nda Fiş Defteri denetimi görünmez, yevmiyede fiş maddesi yok
+    ok 1 - N12 (tohum): fiş yokken Defter Mutabakatı'nda Fiş Defteri denetimi görünmez, yevmiyede fiş maddesi yok
+      ---
+      duration_ms: 23.369974
+      type: 'test'
+      ...
+    # Subtest: N1–N3: dengesiz, sıfır, iki taraflı, eksi, kesirli satır; planda olmayan hesap, yabancı alt hesap, kontrol dışı cari → 400, hiçbir satır yazılmaz
+    ok 2 - N1–N3: dengesiz, sıfır, iki taraflı, eksi, kesirli satır; planda olmayan hesap, yabancı alt hesap, kontrol dışı cari → 400, hiçbir satır yazılmaz
+      ---
+      duration_ms: 2.41071
+      type: 'test'
+      ...
+    # Subtest: N4: aynı istek kimliği — aynı içerik aynı fişi döndürür (yeni fiş yok), farklı içerik 409; numara tüketilmez
+    ok 3 - N4: aynı istek kimliği — aynı içerik aynı fişi döndürür (yeni fiş yok), farklı içerik 409; numara tüketilmez
+      ---
+      duration_ms: 19.127119
+      type: 'test'
+      ...
+    # Subtest: N7 ileri tarih 400; N6 kilitli tarihe fiş 409 period-locked, hiçbir satır yazılmaz
+    ok 4 - N7 ileri tarih 400; N6 kilitli tarihe fiş 409 period-locked, hiçbir satır yazılmaz
+      ---
+      duration_ms: 193.821767
+      type: 'test'
+      ...
+    # Subtest: N8: fiş ve satırı UPDATE / DELETE / INSERT OR REPLACE / UPSERT ile değişmez; kapanmış fişe satır eklenmez; fişsiz satır eklenmez
+    ok 5 - N8: fiş ve satırı UPDATE / DELETE / INSERT OR REPLACE / UPSERT ile değişmez; kapanmış fişe satır eklenmez; fişsiz satır eklenmez
+      ---
+      duration_ms: 8.328785
+      type: 'test'
+      ...
+    # Subtest: N9–N10: ters kayıt aynalar, mizan sıfırlanır, iki madde de yevmiyede; ikinci ters kayıt, ters kaydın tersi ve asıldan önce tarih reddedilir; kilitli asıl tarihe ters kayıt 409
+    ok 6 - N9–N10: ters kayıt aynalar, mizan sıfırlanır, iki madde de yevmiyede; ikinci ters kayıt, ters kaydın tersi ve asıldan önce tarih reddedilir; kilitli asıl tarihe ters kayıt 409
+      ---
+      duration_ms: 207.889916
+      type: 'test'
+      ...
+    # Subtest: N9 (HTTP): aynı istek kimliğiyle eşzamanlı iki ters kayıt → tek fiş (biri yinelenen); farklı kimlikle eşzamanlı iki ters kayıt → biri 200, biri 409
+    ok 7 - N9 (HTTP): aynı istek kimliğiyle eşzamanlı iki ters kayıt → tek fiş (biri yinelenen); farklı kimlikle eşzamanlı iki ters kayıt → biri 200, biri 409
+      ---
+      duration_ms: 42.411472
+      type: 'test'
+      ...
+    # Subtest: N13: aynı gün sırası — açılış fişi günün en başında, olağan fiş Banka Fişi'nden sonra, dönem sonu KDV mahsubundan sonra, kapanış günün en sonunda; sınıf içinde yazım sırası
+    ok 8 - N13: aynı gün sırası — açılış fişi günün en başında, olağan fiş Banka Fişi'nden sonra, dönem sonu KDV mahsubundan sonra, kapanış günün en sonunda; sınıf içinde yazım sırası
+      ---
+      duration_ms: 1.411439
+      type: 'test'
+      ...
+    # Subtest: N14: kapanış fişleri ve kilit AYNI işlemde (lockThrough); biri düşerse fiş de kilit de yazılmaz; yalnız kapanış türleri, fiş ≤ kilit
+    ok 9 - N14: kapanış fişleri ve kilit AYNI işlemde (lockThrough); biri düşerse fiş de kilit de yazılmaz; yalnız kapanış türleri, fiş ≤ kilit
+      ---
+      duration_ms: 25.464941
+      type: 'test'
+      ...
+    # Subtest: N20: 31.12 ve 01.01 — numara yılı ayrı, 31.12 kapanışı yılın son maddesi, 01.01 açılışı yeni yılın ilk maddesi, mizan devri
+    ok 10 - N20: 31.12 ve 01.01 — numara yılı ayrı, 31.12 kapanışı yılın son maddesi, 01.01 açılışı yeni yılın ilk maddesi, mizan devri
+      ---
+      duration_ms: 59.009144
+      type: 'test'
+      ...
+    # Subtest: N21: kontrol (alt defter) hesabına yazan fiş reddedilir — fiş denetiminde 400 (Ç2 tur 1, K6 yeni kuralı); kapı ikinci katman (korumasız kurulan modülde 409); numara tüketilmez
+    ok 11 - N21: kontrol (alt defter) hesabına yazan fiş reddedilir — fiş denetiminde 400 (Ç2 tur 1, K6 yeni kuralı); kapı ikinci katman (korumasız kurulan modülde 409); numara tüketilmez
+      ---
+      duration_ms: 13.945942
+      type: 'test'
+      ...
+    # Subtest: N23: uçlar yalnız system.manage — Muhasebe ve Personel 403
+    ok 12 - N23: uçlar yalnız system.manage — Muhasebe ve Personel 403
+      ---
+      duration_ms: 190.206736
+      type: 'test'
+      ...
+    # Subtest: Fiş Defteri denetimi: fiş varken Defter Mutabakatı'nda tutarlı satır; yapısı bozulan fişi (store dışı) tam tarama yakalar
+    ok 13 - Fiş Defteri denetimi: fiş varken Defter Mutabakatı'nda tutarlı satır; yapısı bozulan fişi (store dışı) tam tarama yakalar
+      ---
+      duration_ms: 49.292768
+      type: 'test'
+      ...
+    1..13
+ok 1 - 2.5.0 Ç2 — saklanan fiş defteri
+  ---
+  duration_ms: 1316.756298
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç2 — N22: kilitli dönemdeki fiş store dışından silinirse tam tarama "Kapanmış dönem" der
+    # Subtest: kilit izi fiş satırlarını içerir
+    ok 1 - kilit izi fiş satırlarını içerir
+      ---
+      duration_ms: 276.259266
+      type: 'test'
+      ...
+    1..1
+ok 2 - 2.5.0 Ç2 — N22: kilitli dönemdeki fiş store dışından silinirse tam tarama "Kapanmış dönem" der
+  ---
+  duration_ms: 543.216768
+  type: 'suite'
+  ...
+# Subtest: Ç2 tur 1 — ORTA-1: alt defter hesabına fiş yazılmaz (boş kurulum; modül kullanılmış olsun olmasın)
+    # Subtest: boş kurulumda alt defterin 20 hesabının her birine (hesap ya da alt hesabıyla) yazan fiş 400 voucher-subledger-account; hiçbir fiş yazılmaz, numara tüketilmez
+    ok 1 - boş kurulumda alt defterin 20 hesabının her birine (hesap ya da alt hesabıyla) yazan fiş 400 voucher-subledger-account; hiçbir fiş yazılmaz, numara tüketilmez
+      ---
+      duration_ms: 17.059829
+      type: 'test'
+      ...
+    # Subtest: alt defter dışındaki hesaplar (153 dahil: N-01 dönem sonu stok değerlemesi) fişle yazılır
+    ok 2 - alt defter dışındaki hesaplar (153 dahil: N-01 dönem sonu stok değerlemesi) fişle yazılır
+      ---
+      duration_ms: 201.904001
+      type: 'test'
+      ...
+    # Subtest: dar kontrol p1b / p1c: boş kurulumda 121 fişi reddedilir → ilk senet girişi 200 → dönem kilidi 200 → Mutabakat Testi tutarlı (kalıcı fark yok)
+    ok 3 - dar kontrol p1b / p1c: boş kurulumda 121 fişi reddedilir → ilk senet girişi 200 → dönem kilidi 200 → Mutabakat Testi tutarlı (kalıcı fark yok)
+      ---
+      duration_ms: 243.167003
+      type: 'test'
+      ...
+    1..3
+ok 3 - Ç2 tur 1 — ORTA-1: alt defter hesabına fiş yazılmaz (boş kurulum; modül kullanılmış olsun olmasın)
+  ---
+  duration_ms: 910.743885
+  type: 'suite'
+  ...
+# Subtest: Ç2 tur 1 — DÜŞÜK-3: MA bugün tarihli fiş, MB kilit yalnız ileri, MC istek kimliğinde sınıf, MG yevmiyede alt hesap
+    # Subtest: MA: bugün tarihli fiş yazılır (yalnız yarın ve sonrası 400)
+    ok 1 - MA: bugün tarihli fiş yazılır (yalnız yarın ve sonrası 400)
+      ---
+      duration_ms: 8.067368
+      type: 'test'
+      ...
+    # Subtest: MB: yinelenen kapanış kilidi geri çekmez — kilit sonradan ileri alındıysa aynı kapanışın yinelenmesi kilidi ve izi değiştirmez
+    ok 2 - MB: yinelenen kapanış kilidi geri çekmez — kilit sonradan ileri alındıysa aynı kapanışın yinelenmesi kilidi ve izi değiştirmez
+      ---
+      duration_ms: 209.526033
+      type: 'test'
+      ...
+    # Subtest: MC: aynı istek kimliği, yalnız sınıfı farklı (closing ↔ period-end) → 409 request-id-reused (yeni fiş yok)
+    ok 3 - MC: aynı istek kimliği, yalnız sınıfı farklı (closing ↔ period-end) → 409 request-id-reused (yeni fiş yok)
+      ---
+      duration_ms: 6.978699
+      type: 'test'
+      ...
+    # Subtest: MG: fiş satırının alt hesabı yevmiyede (Ana Defter maddesi ve Yevmiye Defteri raporu) aynen görünür
+    ok 4 - MG: fiş satırının alt hesabı yevmiyede (Ana Defter maddesi ve Yevmiye Defteri raporu) aynen görünür
+      ---
+      duration_ms: 15.976235
+      type: 'test'
+      ...
+    1..4
+ok 4 - Ç2 tur 1 — DÜŞÜK-3: MA bugün tarihli fiş, MB kilit yalnız ileri, MC istek kimliğinde sınıf, MG yevmiyede alt hesap
+  ---
+  duration_ms: 540.405119
+  type: 'suite'
+  ...
+# Subtest: Ç2 tur 1 — madde 5: fişin metin alanları nesne / dizi almaz ([object Object] kalıcı saklanmaz)
+    # Subtest: ters kayıt ucu: açıklama nesne ya da dizi → 400 voucher-text, ters kayıt yazılmaz; metin açıklama saklanır
+    ok 1 - ters kayıt ucu: açıklama nesne ya da dizi → 400 voucher-text, ters kayıt yazılmaz; metin açıklama saklanır
+      ---
+      duration_ms: 36.557784
+      type: 'test'
+      ...
+    # Subtest: iç API: açıklama, kaynak ya da satır notu nesne → 400 voucher-text
+    ok 2 - iç API: açıklama, kaynak ya da satır notu nesne → 400 voucher-text
+      ---
+      duration_ms: 0.996846
+      type: 'test'
+      ...
+    1..2
+ok 5 - Ç2 tur 1 — madde 5: fişin metin alanları nesne / dizi almaz ([object Object] kalıcı saklanmaz)
+  ---
+  duration_ms: 350.418715
+  type: 'suite'
+  ...
+# Subtest: Ç2 tur 1 — DÜŞÜK-2: "kapanmış fiş" tetikleyicisi doğrusal; 12 atlatma denemesi yine engelli
+    # Subtest: dar kontrolün 12 atlatma denemesi (programın dosyasında, ayrı bağlantı) engelli; fiş verisi değişmez; dış bağlantının yarım fişi yalnız eksik sırasıyla tamamlanır
+    ok 1 - dar kontrolün 12 atlatma denemesi (programın dosyasında, ayrı bağlantı) engelli; fiş verisi değişmez; dış bağlantının yarım fişi yalnız eksik sırasıyla tamamlanır
+      ---
+      duration_ms: 305.049415
+      type: 'test'
+      ...
+    # Subtest: 24.000 satırlık fişin satırları (yalnız tetikleyiciler, bellek içi) 2 sn'den kısa sürede yazılır — eski kural (her satırda COUNT(*)) O(n²): 16.000 satır ≈ 4 sn ölçüldü
+    ok 2 - 24.000 satırlık fişin satırları (yalnız tetikleyiciler, bellek içi) 2 sn'den kısa sürede yazılır — eski kural (her satırda COUNT(*)) O(n²): 16.000 satır ≈ 4 sn ölçüldü
+      ---
+      duration_ms: 155.431156
+      type: 'test'
+      ...
+    1..2
+ok 6 - Ç2 tur 1 — DÜŞÜK-2: "kapanmış fiş" tetikleyicisi doğrusal; 12 atlatma denemesi yine engelli
+  ---
+  duration_ms: 460.768293
+  type: 'suite'
+  ...
+# Subtest: Ç2 tur 1 — DÜŞÜK-1 (ORTA): eski sürüm sıfırlamasının onarımı yalnız AYNI şirketin sıfırlama izinden önce yazılmış fişi kaldırır
+    # Subtest: iki şirket (dar kontrol p5): 001'in izsiz fişi, 002 sıfırlanınca 001'in dosyasına düşen 'company.reset' (entity 002) yüzünden KALDIRILMAZ
+    ok 1 - iki şirket (dar kontrol p5): 001'in izsiz fişi, 002 sıfırlanınca 001'in dosyasına düşen 'company.reset' (entity 002) yüzünden KALDIRILMAZ
+      ---
+      duration_ms: 765.845032
+      type: 'test'
+      ...
+    # Subtest: zaman: sıfırlama izinden ÖNCE yazılan izsiz fiş kaldırılır, SONRA yazılan (izi başka nedenle düşmüş) fiş kalır; günlükte kalan sayısı
+    ok 2 - zaman: sıfırlama izinden ÖNCE yazılan izsiz fiş kaldırılır, SONRA yazılan (izi başka nedenle düşmüş) fiş kalır; günlükte kalan sayısı
+      ---
+      duration_ms: 440.301757
+      type: 'test'
+      ...
+    # Subtest: saat dilimi eki: sıfırlama izi '+03:00' ekli (06:30Z) — 05:00Z'deki fiş kaldırılır, 07:00Z'deki kalır (an karşılaştırması; metin karşılaştırması 07:00Z'yi de silerdi)
+    ok 3 - saat dilimi eki: sıfırlama izi '+03:00' ekli (06:30Z) — 05:00Z'deki fiş kaldırılır, 07:00Z'deki kalır (an karşılaştırması; metin karşılaştırması 07:00Z'yi de silerdi)
+      ---
+      duration_ms: 320.579113
+      type: 'test'
+      ...
+    # Subtest: geri yükleme: 002 sıfırlandıktan sonra alınan 001 yedeği (izsiz fiş + entity 002 sıfırlama izi) geri yüklenince 001'in fişi kalır; yedekten sonraki fiş gider
+    ok 4 - geri yükleme: 002 sıfırlandıktan sonra alınan 001 yedeği (izsiz fiş + entity 002 sıfırlama izi) geri yüklenince 001'in fişi kalır; yedekten sonraki fiş gider
+      ---
+      duration_ms: 1050.920074
+      type: 'test'
+      ...
+    1..4
+ok 7 - Ç2 tur 1 — DÜŞÜK-1 (ORTA): eski sürüm sıfırlamasının onarımı yalnız AYNI şirketin sıfırlama izinden önce yazılmış fişi kaldırır
+  ---
+  duration_ms: 2599.028102
+  type: 'suite'
+  ...
+# Subtest: Ç2 tur 1 — madde 6: postAll lockThrough PUT period-lock'un ön adımından (POS) geçer
+    # Subtest: Elle Onay kipi: valörü gelmiş bekleyen kalem varken 409 bank-pending-before-lock (fiş ve kilit yok); force → kilit konur, kalem kilit + 1'e Gecikmeli Aktarım (PUT 'Yine de Kilitle' ile aynı)
+    ok 1 - Elle Onay kipi: valörü gelmiş bekleyen kalem varken 409 bank-pending-before-lock (fiş ve kilit yok); force → kilit konur, kalem kilit + 1'e Gecikmeli Aktarım (PUT 'Yine de Kilitle' ile aynı)
+      ---
+      duration_ms: 458.620556
+      type: 'test'
+      ...
+    # Subtest: Otomatik kip: vadesi gelmiş kalem kilitten ÖNCE kendi valör gününe (12.10) aktarılır (PUT period-lock ile aynı), sonra fiş + kilit
+    ok 2 - Otomatik kip: vadesi gelmiş kalem kilitten ÖNCE kendi valör gününe (12.10) aktarılır (PUT period-lock ile aynı), sonra fiş + kilit
+      ---
+      duration_ms: 616.119014
+      type: 'test'
+      ...
+    1..2
+ok 8 - Ç2 tur 1 — madde 6: postAll lockThrough PUT period-lock'un ön adımından (POS) geçer
+  ---
+  duration_ms: 1075.03419
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç2 — fiş defteri: iki şirket, yedek → geri yükle, Şirket Verisini Sıfırla
+    # Subtest: N15: 001'e yazılan fiş 002'de yok; numaralar şirket başına ayrı; 002'nin defterinde yalnız kendi fişi
+    ok 1 - N15: 001'e yazılan fiş 002'de yok; numaralar şirket başına ayrı; 002'nin defterinde yalnız kendi fişi
+      ---
+      duration_ms: 37.336706
+      type: 'test'
+      ...
+    # Subtest: N16: 002 yedeği → yeni fiş → geri yükle: yedekteki fişler ve tetikleyiciler döner, numara yedeğin devamı
+    ok 2 - N16: 002 yedeği → yeni fiş → geri yükle: yedekteki fişler ve tetikleyiciler döner, numara yedeğin devamı
+      ---
+      duration_ms: 215.159624
+      type: 'test'
+      ...
+    # Subtest: N17: Şirket Verisini Sıfırla (movements) fişleri ve satırları siler, tetikleyiciler yeniden kurulu, numara 1'den
+    ok 3 - N17: Şirket Verisini Sıfırla (movements) fişleri ve satırları siler, tetikleyiciler yeniden kurulu, numara 1'den
+      ---
+      duration_ms: 135.913608
+      type: 'test'
+      ...
+    # Subtest: N17: Şirket Verisini Sıfırla (all) fişleri ve satırları siler, tetikleyiciler yeniden kurulu, numara 1'den
+    ok 4 - N17: Şirket Verisini Sıfırla (all) fişleri ve satırları siler, tetikleyiciler yeniden kurulu, numara 1'den
+      ---
+      duration_ms: 128.767306
+      type: 'test'
+      ...
+    1..4
+ok 9 - 2.5.0 Ç2 — fiş defteri: iki şirket, yedek → geri yükle, Şirket Verisini Sıfırla
+  ---
+  duration_ms: 1115.216735
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç2 — N18: eski sürüm (fiş defterini bilmeyen kod) Şirket Verisini Sıfırla yaptıysa artakalan fiş açılışta kaldırılır
+    # Subtest: izi olmayan fiş + sıfırlama izi → kaldırılır (Mutabakat Günlüğü 'repair', işlem geçmişi); sonra yazılan fiş kalır; sıfırlama izi yoksa dokunulmaz
+    ok 1 - izi olmayan fiş + sıfırlama izi → kaldırılır (Mutabakat Günlüğü 'repair', işlem geçmişi); sonra yazılan fiş kalır; sıfırlama izi yoksa dokunulmaz
+      ---
+      duration_ms: 398.439893
+      type: 'test'
+      ...
+    1..1
+ok 10 - 2.5.0 Ç2 — N18: eski sürüm (fiş defterini bilmeyen kod) Şirket Verisini Sıfırla yaptıysa artakalan fiş açılışta kaldırılır
+  ---
+  duration_ms: 401.663445
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç2 — N19: eski sürüm verisinden göç (v2.4.3 fikstürü, iki şirket) 46'ya; kilit izi ve defter değişmez
+    # Subtest: iki şirketin dosyası son şemaya çıkar, tablolar ve tetikleyiciler kurulu, kilit izi (2.4.9 tanımı = güncel tanım), Mutabakat tutarlı; ikinci açılışta göç yok
+    ok 1 - iki şirketin dosyası son şemaya çıkar, tablolar ve tetikleyiciler kurulu, kilit izi (2.4.9 tanımı = güncel tanım), Mutabakat tutarlı; ikinci açılışta göç yok
+      ---
+      duration_ms: 321.55198
+      type: 'test'
+      ...
+    1..1
+ok 11 - 2.5.0 Ç2 — N19: eski sürüm verisinden göç (v2.4.3 fikstürü, iki şirket) 46'ya; kilit izi ve defter değişmez
+  ---
+  duration_ms: 338.82649
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç2 — N11 süreç öldürme / disk dolu ve N5 eşzamanlı iki süreç (ayrı bağlantılar)
+    # Subtest: N11a: fiş yazılırken (işlem açık) süreç öldürülürse yarım fiş yok — başlık, satır ve iz yok; dosya sağlam
+    ok 1 - N11a: fiş yazılırken (işlem açık) süreç öldürülürse yarım fiş yok — başlık, satır ve iz yok; dosya sağlam
+      ---
+      duration_ms: 225.789326
+      type: 'test'
+      ...
+    # Subtest: N11b: disk dolu (sayfa sınırı) → fiş yazılamaz, hiçbir satır kalmaz; yer açılınca aynı istek kimliğiyle yazılır
+    ok 2 - N11b: disk dolu (sayfa sınırı) → fiş yazılamaz, hiçbir satır kalmaz; yer açılınca aynı istek kimliğiyle yazılır
+      ---
+      duration_ms: 53.661167
+      type: 'test'
+      ...
+    # Subtest: N5: iki ayrı süreç aynı anda aynı istek kimliğiyle fiş yazar → tek fiş; biri yeni, öbürü yinelenen (aynı kimlik)
+    ok 3 - N5: iki ayrı süreç aynı anda aynı istek kimliğiyle fiş yazar → tek fiş; biri yeni, öbürü yinelenen (aynı kimlik)
+      ---
+      duration_ms: 1519.329192
+      type: 'test'
+      ...
+    1..3
+ok 12 - 2.5.0 Ç2 — N11 süreç öldürme / disk dolu ve N5 eşzamanlı iki süreç (ayrı bağlantılar)
+  ---
+  duration_ms: 2102.753105
+  type: 'suite'
+  ...
+1..12
+# tests 40
+# suites 12
+# pass 40
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 12851.444397
