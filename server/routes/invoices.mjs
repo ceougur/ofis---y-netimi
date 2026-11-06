@@ -2069,6 +2069,33 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // olan taksitli faturanın etkin kartı; kalan yeni hedeften büyük ve eski kuralın hedefini aşmıyorsa (yani fark bu hatadan) kalan
   // hedefe indirilir (shrinkPlan: yalnız ödenmemiş kısım, son taksitten geriye). Küçülecek taksitlerden biri kilitli dönemdeyse kart
   // değişmez (kilitli döneme yazılmaz), yalnız sonuçta listelenir. Her değişiklik audit'e (plan.repaired, previous) yazılır.
+  //
+  // 2.5.0 AH (ders 47; Ç3 ölçümü 06.11: 100.000 satırda açılış 101,7 sn, 1.000.000'da 22 dk'da bitmedi, olay döngüsü boyunca kilitli): aday kart başına
+  // coverState → paymentStates → accountSettleInput (carinin bütün defteri + çek olayları tam tarama) ve refundsFor (iade başına iki sorgu) yapılıyordu.
+  // DAVRANIŞ AYNEN: aday listesi (aynı SQL, aynı sıra), karar kuralı, kesilen tutar, kilit denetimi, yazım ve iz değişmez. Değişen yalnız okuma:
+  //   - geri ödenen iade toplamı bütün adaylar için tek sorguda (repairRefunds: refundOf / refundsFor ile aynı satırlar, aynı sıra, aynı yuvarlama);
+  //   - fatura durumu toplu kapamadan (allPaymentStates; "toplu yol = cari başına yol" değişmezi, test/kapama-tek-gecis-245) — yalnız ELEMEK için:
+  //     onarım kararı çıkan her aday yazmadan önce cari başına yoldan (coverState, eski kodun okuması) yeniden okunur ve karar onunla yeniden verilir
+  //     (yazılan tutar eski yolla birebir); bu açılışta onarım yazılan kartın carisinin ve kartı taşıyan faturaların carisinin sonraki adayları da
+  //     cari başına yoldan okunur (toplu sonuç o cariler için bayat). Toplu durum yalnız iadesi geri ödenmiş aday varken bir kez hesaplanır.
+  // Eşdeğerlik: test/acilis-onarimi-hiz-250.test.mjs (eski ↔ yeni çıktı, kâhin = taban kodun gerçek çıktısı) + tools/acilis-onarimi-esdegerlik-250.mjs.
+  const repairRefunds = () => {
+    const perReturn = new Map();
+    const originalOf = new Map();
+    for (const row of store.all(`SELECT r.original_id AS originalId, r.id AS returnId, e.amount FROM invoices r
+      JOIN account_entries e ON e.source = 'invoice' AND e.source_id = r.id AND e.kind = 'out'
+      WHERE r.kind = 'sale_return' AND r.status = 'issued' AND r.original_id <> '' ORDER BY r.rowid, e.rowid`)) {
+      originalOf.set(row.returnId, row.originalId);
+      perReturn.set(row.returnId, (perReturn.get(row.returnId) || 0) + (Number(row.amount) || 0));
+    }
+    const out = new Map();
+    for (const [returnId, sum] of perReturn) {
+      const originalId = originalOf.get(returnId);
+      out.set(originalId, (out.get(originalId) || 0) + roundMoney(sum));
+    }
+    for (const [originalId, sum] of out) out.set(originalId, roundMoney(sum));
+    return out;
+  };
   function repairOwnCards({ log = null } = {}) {
     const p = plans();
     if (!p?.shrinkPlan || !p.leftOf) return { fixed: [], locked: [] };
@@ -2080,18 +2107,46 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       WHERE i.status = 'issued' AND i.plan_id <> ''`);
     const fixed = [];
     const locked = [];
-    for (const row of rows) {
-      const refunds = refundsFor(row.id);
-      if (!(refunds > 0.005)) continue;
-      const state = coverState(row.id);
-      if (!state) continue;
-      // İmzalı açık (K1: geri ödenen iade faturadan düşülmez). Yeni hedef = max(0, imzalı açık); eski kuralın (2.0.24–2.0.26) hedefi = o
-      // sürümlerin açığı (geri ödenen iade de düşülmüş, 0'da kırpılı) + geri ödenen.
+    const refundsOf = rows.length ? repairRefunds() : new Map();
+    let batch = null;
+    const dirty = new Set();
+    const accountOf = invoiceId => store.get("SELECT account_id AS accountId FROM invoices WHERE id = ?", invoiceId)?.accountId || "";
+    // İmzalı açık (K1: geri ödenen iade faturadan düşülmez). Yeni hedef = max(0, imzalı açık); eski kuralın (2.0.24–2.0.26) hedefi = o
+    // sürümlerin açığı (geri ödenen iade de düşülmüş, 0'da kırpılı) + geri ödenen.
+    const decide = (state, refunds) => {
       const signed = roundMoney(state.open - state.excess + (legacyClosing ? refunds : 0));
-      const target = roundMoney(Math.max(0, signed));
-      const before = roundMoney(Math.max(0, signed - refunds) + refunds);
+      return { target: roundMoney(Math.max(0, signed)), before: roundMoney(Math.max(0, signed - refunds) + refunds) };
+    };
+    for (const row of rows) {
+      const refunds = refundsOf.get(row.id) || 0;
+      if (!(refunds > 0.005)) continue;
+      // Eleme: toplu durum (carisi bu açılışta yazılmadıysa ve toplu sonuçta varsa); yoksa cari başına yol.
+      let exact = dirty.size > 0 && dirty.has(accountOf(row.id));
+      let state = null;
+      if (!exact) {
+        if (!batch) {
+          try {
+            batch = allPaymentStates();
+          } catch {
+            batch = new Map(); // toplu okuma düşerse her aday eski yoldan (cari başına; o yol carinin defter hatasını yutar)
+          }
+        }
+        const found = batch.get(row.id);
+        if (found) state = { open: Number(found.open) || 0, excess: Number(found.excess) || 0 };
+        else exact = true;
+      }
+      if (exact) state = coverState(row.id);
+      if (!state) continue;
+      let { target, before } = decide(state, refunds);
       const left = p.leftOf(row.planId);
       if (!(left > target + 0.005) || left > before + 0.005) continue;
+      if (!exact) {
+        // Onarım kararı: eski kodun okumasıyla (cari başına yol) yeniden verilir.
+        state = coverState(row.id);
+        if (!state) continue;
+        ({ target, before } = decide(state, refunds));
+        if (!(left > target + 0.005) || left > before + 0.005) continue;
+      }
       const cut = roundMoney(left - target);
       const plan = store.get("SELECT total FROM plans WHERE id = ?", row.planId);
       const items = store.all("SELECT id, due_date AS dueDate, amount FROM plan_items WHERE plan_id = ? ORDER BY due_date, seq", row.planId);
@@ -2112,6 +2167,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         if (done > 0) {
           audit(actor, "plan.repaired", row.planId, { invoiceId: row.id, number: row.number, reason: "iade-geri-odeme", previous: { total: Number(plan?.total) || 0, left, items: items.map(item => ({ dueDate: item.dueDate, amount: item.amount })) }, total: roundMoney((Number(plan?.total) || 0) - done), left: target, cut: done });
           fixed.push({ invoiceId: row.id, number: row.number, planId: row.planId, from: left, to: target });
+          // Toplu durum bu cariler için bayat: kartın carisi ve kartı taşıyan her faturanın carisi (kapama girdisinde kartın toplamı / taksitleri
+          // yalnız bunlarda yer alır); sonraki adayları cari başına yoldan okunur.
+          dirty.add(store.get("SELECT account_id AS accountId FROM plans WHERE id = ?", row.planId)?.accountId || "");
+          for (const owner of store.all("SELECT DISTINCT account_id AS accountId FROM invoices WHERE plan_id = ?", row.planId)) dirty.add(owner.accountId || "");
         }
       });
     }
