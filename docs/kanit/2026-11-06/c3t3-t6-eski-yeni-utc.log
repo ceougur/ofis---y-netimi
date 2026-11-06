@@ -1,0 +1,10 @@
+ok 1 - v2.0.26 Tüm Hareketleri Sil: HTTP 200
+# v2.4.9 kendi Mutabakat Testi: HTTP 500
+# eski-834cd0ad: HTTP 500 {"ok":false,"error":"Sunucu işlemi tamamlayamadı."}
+ok 2 - eski-834cd0ad: Mutabakat Testi HTTP 500 (beklenen 500)
+# yeni: HTTP 200 kesik satır 1: [{"action":"repair","detail":null,"detailNote":"Kayıt ayrıntısı okunamadı (kesik ya da bozuk kayıt; 20000 karakter).","summary":"Açılış onarımı (eski sürümden): iptal edilen işlem başlığı 600"}]
+ok 3 - yeni: Mutabakat Testi HTTP 200 (beklenen 200)
+
+# tests 3
+# pass 3
+# fail 0

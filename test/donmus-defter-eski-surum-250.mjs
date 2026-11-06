@@ -42,6 +42,12 @@ const raw = sql => {
 const lockOf = () => raw("SELECT value FROM settings WHERE key = 'ledger.lockedUntil'")[0]?.value || "";
 const canon = entries => entries.map(entry => JSON.stringify([entry.id, entry.date, entry.lines.map(line => [line.account, line.sub || "", line.party || "", line.debit, line.credit])]));
 const sameAsLive = (server, lock) => JSON.stringify(canon(server.app.ledger.snapshots.entries())) === JSON.stringify(canon(server.app.ledger.build().filter(entry => entry.date <= lock)));
+// Ç3 tur 2: YENİ kodun kilit ucu dondurmayı beklemez (arkada sürer) — denetimden ve kapanıştan önce bitsin (kapanış süren dondurmayı durdurur).
+const lockNew = async (server, admin, body) => {
+  const response = await admin.put("/api/admin/period-lock", body);
+  await server.app.ledger.snapshots.runPending();
+  return response;
+};
 try {
   // 1) yeni kod
   let server = await neu.startTestServer({ ...dirs, now: { time: NOW, fixed: true } });
@@ -49,7 +55,7 @@ try {
   const customer = (await admin.post("/api/workspace/accounts", { name: "Eski Sürüm Carisi", registeredOn: "2026-01-05" })).data.data;
   await admin.post(`/api/workspace/accounts/${customer.id}/entries`, { kind: "debt", amount: "600", date: "2026-01-05", note: "Açılış bakiyesi" });
   for (const [day, amount] of [["2026-03-03", "100"], ["2026-08-08", "200"], ["2026-12-12", "300"]]) await admin.post("/api/workspace/cash", { kind: "in", amount, date: day, description: `Giriş ${day}` });
-  check((await admin.put("/api/admin/period-lock", { lockedUntil: "2026-06-30" })).status === 200, "yeni kod: kilit 30.06.2026");
+  check((await lockNew(server, admin, { lockedUntil: "2026-06-30" })).status === 200, "yeni kod: kilit 30.06.2026");
   check(server.app.ledger.snapshots.coverage() === "2026-06-30", "yeni kod: 30.06'ya kadar dondu");
   const version = server.app.store.get("PRAGMA user_version").user_version;
   await server.close();
@@ -93,7 +99,7 @@ try {
   const thaw = server.app.store.get("SELECT kind, reason, through FROM ledger_snapshot_runs ORDER BY no DESC LIMIT 1");
   check(thaw.kind === "thaw" && thaw.reason === "repair" && thaw.through === "" && server.app.ledger.snapshots.coverage() === "" && server.app.store.get("SELECT COUNT(*) AS n FROM ledger_snapshots").n === 0, `yeni kod: thaw (repair), kapsam boş, bayat satır silindi (${JSON.stringify({ ...thaw })})`);
   admin = await neu.loginAdmin(server);
-  check((await admin.put("/api/admin/period-lock", { lockedUntil: "2026-12-31" })).status === 200 && sameAsLive(server, "2026-12-31"), "yeni kod: yeniden kilit, donmuş = canlı");
+  check((await lockNew(server, admin, { lockedUntil: "2026-12-31" })).status === 200 && sameAsLive(server, "2026-12-31"), "yeni kod: yeniden kilit, donmuş = canlı");
   await server.close();
 
   // 6) eski kod: Şirket Verisini Sıfırla (Tüm Hareketleri Sil) — donmuş satırlar varken
@@ -113,7 +119,7 @@ try {
   const scan = await admin.get("/api/workspace/ledger/integrity");
   check(scan.status === 200 && scan.data.data.ok === true, `yeni kod: Mutabakat Testi tutarlı (${JSON.stringify(scan.data.data?.checks?.filter(item => !item.ok).map(item => item.code))})`);
   await admin.post("/api/workspace/cash", { kind: "in", amount: "10", date: "2026-11-11", description: "Sıfırlamadan sonra" });
-  check((await admin.put("/api/admin/period-lock", { lockedUntil: "2026-12-31" })).status === 200 && sameAsLive(server, "2026-12-31") && server.app.ledger.snapshots.entries().length > 0, "yeni kod: sıfırlamadan sonra kilit yeniden donar");
+  check((await lockNew(server, admin, { lockedUntil: "2026-12-31" })).status === 200 && sameAsLive(server, "2026-12-31") && server.app.ledger.snapshots.entries().length > 0, "yeni kod: sıfırlamadan sonra kilit yeniden donar");
   await server.close();
 } finally {
   rmSync(root, { recursive: true, force: true });

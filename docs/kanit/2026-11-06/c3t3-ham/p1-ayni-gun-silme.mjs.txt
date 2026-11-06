@@ -1,0 +1,118 @@
+// DAR KONTROL Ç3 tur 1-2 — p1: dondurma YAZIM adımında sürerken AYNI güne yinelenen kilit isteği (T2-4; kart "kilidi yeniden kaydedin" der, Kaydet düğmesi açık).
+// Soru: arka işin (afterLock → purgeStale) süren koşunun yazdığı satırları "bayat" sayıp silmesi → koşu "done" olunca kapsam içinde EKSİK donmuş satır mı?
+// Kullanım: node p1-ayni-gun-silme.mjs <kod kökü>
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+
+const ROOT = path.resolve(process.argv[2] || ".");
+const imp = rel => import(pathToFileURL(path.join(ROOT, rel)).href);
+const { loginAdmin, removeTestDir, startTestServer } = await imp("test/helpers.mjs");
+const { trialBalance } = await imp("server/lib/general-ledger.mjs");
+
+const NOW = "2027-01-10T10:00:00+03:00";
+const LOCK = "2026-12-31";
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+const must = async (label, promise) => {
+  const response = await promise;
+  if (response.status !== 200) throw new Error(`${label}: ${response.status} ${JSON.stringify(response.data)}`);
+  return response.data.data;
+};
+let release = () => {};
+const held = new Promise(resolve => {
+  release = resolve;
+});
+const hook = { fn: null };
+let batches = 0;
+const server = await startTestServer({ now: { time: NOW, fixed: true }, __testFreezeHook: hook, freezeBatchLines: 5, env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
+const out = { kok: ROOT };
+try {
+  const admin = await loginAdmin(server);
+  const customer = await must("cari", admin.post("/api/workspace/accounts", { name: "Ece Tan", registeredOn: "2026-01-03" }));
+  await must("açılış", admin.post(`/api/workspace/accounts/${customer.id}/entries`, { kind: "debt", amount: "700", date: "2026-01-03", note: "Açılış bakiyesi" }));
+  for (let i = 1; i <= 40; i += 1) await must(`kasa ${i}`, admin.post("/api/workspace/cash", { kind: "in", amount: String(10 + i), date: `2026-${String(1 + (i % 12)).padStart(2, "0")}-1${i % 9}`, description: `Giriş ${i}` }));
+  await must("tahsilat", admin.post(`/api/workspace/accounts/${customer.id}/entries`, { kind: "in", amount: "150", date: "2026-11-20", method: "cash", note: "Tahsilat" }));
+  const S = () => server.app.ledger.snapshots;
+  const db = server.app.store;
+  // Dondurma 3. parçadan sonra tutulur (15 satır yazılmış olur).
+  hook.fn = async phase => {
+    if (phase === "batch") {
+      batches += 1;
+      if (batches === 3) await held;
+    }
+  };
+  const first = admin.put("/api/admin/period-lock", { lockedUntil: LOCK });
+  for (let i = 0; i < 1000 && batches < 3; i += 1) await sleep(10);
+  out.onkosul_yazilan_satir = db.get("SELECT COUNT(*) AS n FROM ledger_snapshots").n;
+  out.onkosul_durum = S().status();
+  // Aynı gün, ikinci istek (kartın "Kaydet"i).
+  const second = admin.put("/api/admin/period-lock", { lockedUntil: LOCK });
+  // İkinci isteğin arka işi (purgeStale) koşsun; sonra dondurmayı bırak.
+  await sleep(1500);
+  out.ikinci_istekten_sonra_tabloda_satir = db.get("SELECT COUNT(*) AS n FROM ledger_snapshots").n;
+  release();
+  const [a, b] = await Promise.all([first, second]);
+  out.yanitlar = [a.status, b.status];
+  // Arka iş bitene kadar bekle.
+  for (let i = 0; i < 2000; i += 1) {
+    const view = (await admin.get("/api/workspace/ledger/lock")).data.data;
+    if (!view.freeze?.active && !S().status().running) break;
+    await sleep(25);
+  }
+  const state = S().state();
+  const last = db.get("SELECT * FROM ledger_snapshot_runs WHERE state = 'done' ORDER BY no DESC LIMIT 1");
+  const visible = db.get("SELECT COUNT(*) AS n, COALESCE(SUM(debit_minor),0) AS d FROM ledger_snapshots WHERE date <= ?", state.coverage);
+  const live = server.app.ledger.build().filter(entry => entry.date <= LOCK);
+  const liveLines = live.reduce((n, entry) => n + entry.lines.length, 0);
+  out.kapsam = state.coverage;
+  out.kosular = db.all("SELECT no, kind, state, through, line_count, state_lines FROM ledger_snapshot_runs ORDER BY no").map(row => ({ ...row }));
+  out.gorunen_donmus_satir = visible.n;
+  out.kosunun_kayitli_satiri = last?.state_lines;
+  out.canli_turetme_satiri = liveLines;
+  out.donmus_madde = S().entries().length;
+  out.canli_madde = live.length;
+  // Hesap Planı Mizanı (kilitli yıl): GET /api/workspace/ledger?from=2026-01-01&to=2026-12-31 (karma) ↔ canlı mizan.
+  const report = await must("mizan", admin.get(`/api/workspace/ledger?from=2026-01-01&to=${LOCK}`));
+  const liveTrial = trialBalance(server.app.ledger.build(), { from: "2026-01-01", to: LOCK });
+  const pick = trial => Object.fromEntries(trial.accounts.map(row => [row.code, row.balance]));
+  out.mizan_karma = pick(report.trial);
+  out.mizan_canli = pick(liveTrial);
+  // Rapor Merkezi (ekranın raporu): Hesap Planı Mizanı ve Yevmiye Defteri, kilitli yıl.
+  const rm = await must("rapor hesap-mizani", admin.get(`/api/workspace/report-center/hesap-mizani?from=2026-01-01&to=${LOCK}`));
+  out.rapor_hesap_mizani_altbaslik = rm.subtitle;
+  out.rapor_hesap_mizani_satirlar = rm.rows.map(row => row.slice(0, 6).join(" | "));
+  const ry = await must("rapor yevmiye", admin.get(`/api/workspace/report-center/yevmiye?from=2026-01-01&to=${LOCK}`));
+  out.rapor_yevmiye_ozet = ry.summary;
+  // Mutabakat Testi
+  const integrity = await must("mutabakat", admin.get("/api/workspace/ledger/integrity"));
+  out.mutabakat_ok = integrity.ok;
+  out.mutabakat_sapmalar = (integrity.failures || []).map(item => `${item.name}: ${(item.sample || []).join(" | ")}`.slice(0, 400));
+  out.SONUC = visible.n === liveLines && visible.n === Number(last?.state_lines) ? "TUTARLI" : `HATA: kapsam ${state.coverage} içinde ${visible.n} donmuş satır görünüyor, koşu ${last?.state_lines} satır kaydetti, canlı türetme ${liveLines} satır`;
+  // Yeniden açılış (açılış onarımı): hangi kuralla yeniden donuyor?
+  if (process.env.P1_YENIDEN_AC) {
+    hook.fn = null;
+    const dirs = { dataDir: server.dataDir, backupDir: server.backupDir };
+    await server.app.close();
+    server.closed = true;
+    const again = await startTestServer({ now: { time: NOW, fixed: true }, ...dirs, env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
+    try {
+      out.yeniden_acilis_onarim = again.app.context.snapshotRepair;
+      await again.app.ledger.snapshots.runPending();
+      const st = again.app.ledger.snapshots.state();
+      out.yeniden_acilis_kapsam = st.coverage;
+      out.yeniden_acilis_kosular = again.app.store.all("SELECT no, kind, state, from_date, through, rule_version, reason, state_lines FROM ledger_snapshot_runs ORDER BY no").map(row => ({ ...row }));
+      out.yeniden_acilis_gorunen = again.app.store.get("SELECT COUNT(*) AS n FROM ledger_snapshots WHERE date <= ?", st.coverage).n;
+      out.yeniden_acilis_satir_kurallari = again.app.store.all("SELECT rule_version, COUNT(*) AS n FROM ledger_snapshots WHERE date <= ? GROUP BY rule_version", st.coverage).map(row => ({ ...row }));
+    } finally {
+      await again.app.close();
+      removeTestDir(again.root);
+    }
+  }
+} catch (error) {
+  out.HATA = String(error?.stack || error);
+} finally {
+  release();
+  hook.fn = null;
+  if (!server.closed) await server.close();
+  removeTestDir(server.root);
+}
+console.log(JSON.stringify(out, null, 1));

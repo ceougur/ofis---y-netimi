@@ -54,6 +54,8 @@ try {
     for (const [day, amount] of [["2026-02-10", "1.200"], ["2026-05-20", "300"], ["2026-09-09", "450"], ["2026-12-31", "80"], ["2027-01-02", "70"]]) await must(`kasa ${day}`, admin.post("/api/workspace/cash", { kind: "in", amount, date: day, description: `Giriş ${day}` }));
     await must("tahsilat", admin.post(`/api/workspace/accounts/${customer.id}/entries`, { kind: "in", amount: "250", date: "2026-07-07", method: "cash", note: "Tahsilat" }));
     await must("kilit", admin.put("/api/admin/period-lock", { lockedUntil: "2026-12-31" }));
+    // Ç3 tur 2: uç dondurmayı beklemez (arkada sürer); raporlar ve kapanış dondurma bittikten sonra.
+    await server.app.ledger.snapshots.runPending();
     base = { journal: await fullReport(server, "yevmiye", "2026-01-01", "2026-12-31"), trial: await fullReport(server, "hesap-mizani", "2026-01-01", "2026-12-31"), scan: await must("tarama", admin.get("/api/workspace/ledger/integrity")) };
     check(server.app.ledger.snapshots.coverage() === "2026-12-31", "bu kod: 31.12.2026'ya kadar dondu");
     check(base.journal.rows.some(row => row[3] === "649") && !base.journal.rows.some(row => row[3] === "642"), "bu kod: Kasa girişleri 649'da");
@@ -84,11 +86,13 @@ try {
     check(true, "yeni kural: açık döneme yazım engellenmez");
     // Yeni kilit yeni kural etiketiyle; eski satırlar eski etiketle.
     await must("kilit 05.01", admin.put("/api/admin/period-lock", { lockedUntil: "2027-01-05" }));
+    await server.app.ledger.snapshots.runPending();
     const labels = server.app.store.all("SELECT rule_version AS rule, MIN(date) AS first, MAX(date) AS last FROM ledger_snapshots GROUP BY rule_version ORDER BY rule_version").map(row => ({ ...row }));
     check(JSON.stringify(labels) === JSON.stringify([{ rule: "2.5.0", first: "2026-01-05", last: "2026-12-31" }, { rule: "2.5.0-deneme", first: "2027-01-02", last: "2027-01-02" }]), `yeni kilit: kural etiketleri (${JSON.stringify(labels)})`);
     // 3) Geri çek + yeniden kilitle: açılan dönem yeni kuralla yeniden donar; fark yalnız 30.06'ya kadar.
     await must("geri çek", admin.put("/api/admin/period-lock", { lockedUntil: "2026-06-30" }));
     await must("yeniden kilitle", admin.put("/api/admin/period-lock", { lockedUntil: "2026-12-31" }));
+    await server.app.ledger.snapshots.runPending();
     const again = await fullReport(server, "yevmiye", "2026-07-01", "2026-12-31");
     check(again.rows.some(row => row[3] === "642") && !again.rows.some(row => row[3] === "649"), "yeniden kilit: 01.07–31.12 yeni kuralla yeniden dondu");
     const after = (await must("tarama", admin.get("/api/workspace/ledger/integrity"))).checks.find(item => item.code === "ledger:rule-diff");

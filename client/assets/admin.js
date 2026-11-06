@@ -1038,19 +1038,98 @@
 
   // ---------- Dönem kilidi ve mutabakat ----------
   const dayText = iso => (iso ? `${iso.slice(8, 10)}.${iso.slice(5, 7)}.${iso.slice(0, 4)}` : "");
+  // 2.5.0 Ç3 tur 2: kilit ucu kilitli dönemin defterinin UZUN dondurulmasını beklemez (en çok 5 sn; büyük şirkette dakikalar); dondurma sunucuda arkada sürer. Kart durumu
+  // GET /api/workspace/ledger/lock → freeze ile yazar (pending: bekleyen koşu, active: süren iş) ve sürerken ARKA PLAN isteğiyle yoklar; bitince durur.
+  const FREEZE_FIRST_POLL_MS = 500;
+  const FREEZE_POLL_MS = 1500;
+  const FREEZE_POLL_FAILURES = 5;
+  let freezeTimer = null;
+  let freezeLong = false; // bir yoklama dondurmayı sürerken gördü (kısa dondurmada "donduruldu" bildirimi çıkmaz)
+  let freezeFailures = 0;
+  // Ç3 tur 3: dondurma ya da önceki dönemin defter temizliği (kilit geri çekilince; büyük şirkette dakikalar) sürerken Kilitle PASİF, nedeni düğmenin altında görünür yazı
+  // (kalıcı ürün kararı: pasif düğmenin nedeni görünür). Sunucu da korur: aynı güne yinelenen kilit süren dondurmanın satırlarına dokunmaz, temizlik sürerken yeni kilit 409.
+  let lockBusy = "";
+  let lockSaving = false;
+  const freezing = freeze => Boolean(freeze?.pending && freeze.active);
+  const cleaning = freeze => Boolean(freeze?.cleanup?.running) && !freezing(freeze);
+  function freezeText(freeze) {
+    if (!freeze?.pending) return "";
+    if (freeze.active) return `Kilitli dönemin defteri donduruluyor${freeze.phase === "yazım" && freeze.done ? ` (${Number(freeze.done).toLocaleString("tr-TR")} satır yazıldı)` : ""}… Bu sırada çalışmaya devam edebilirsiniz.`;
+    if (freeze.error && freeze.run === freeze.pending.no) return `Kilitli dönemin defteri dondurulamadı (${freeze.error}). Kilit yerinde; kilidi yeniden kaydedin ya da programı yeniden açın, dondurma yeniden denenir.`;
+    return "Kilitli dönemin defteri dondurulmayı bekliyor; kilidi yeniden kaydedin ya da programı yeniden açın.";
+  }
+  const cleanupText = freeze => (cleaning(freeze) ? `Önceki dönemin defter temizliği sürüyor${freeze.cleanup.removed ? ` (${Number(freeze.cleanup.removed).toLocaleString("tr-TR")} satır silindi)` : ""}…` : "");
+  const busyReason = freeze => (freezing(freeze) ? "Kilitle, kilitli dönemin defteri dondurulurken kullanılamaz; dondurma bitince açılır." : cleaning(freeze) ? "Kilitle, önceki dönemin defter temizliği sürerken kullanılamaz; temizlik bitince açılır." : "");
+  function syncLockButton() {
+    const save = $("#adm-period-save");
+    save.disabled = lockSaving || Boolean(lockBusy);
+    save.title = lockBusy;
+    let note = $("#adm-period-busy");
+    if (!note && lockBusy) {
+      note = document.createElement("p");
+      note.className = "adm-muted";
+      note.id = "adm-period-busy";
+      $("#adm-period-status").before(note);
+    }
+    if (note) {
+      note.textContent = lockBusy;
+      note.hidden = !lockBusy;
+    }
+  }
+  function renderLock({ lockedUntil, freeze }) {
+    const status = $("#adm-period-status");
+    const extra = lockedUntil ? freezeText(freeze) : "";
+    const base = lockedUntil ? `${dayText(lockedUntil)} ve öncesi kilitli.` : "Kilitli dönem yok; tüm geçmiş tarihlere hareket girilebilir.";
+    status.textContent = [base, extra, cleanupText(freeze)].filter(Boolean).join(" ");
+    status.classList.toggle("adm-warn-text", Boolean(extra) && !freeze?.active);
+    lockBusy = busyReason(freeze);
+    syncLockButton();
+  }
+  // view: GET /api/workspace/ledger/lock. "Donduruldu" bildirimi yalnız kilit varken ve kapsam = kilit iken (Ç3 tur 3 DÜŞÜK-1: kilit kaldırılınca da çıkıyordu).
+  function watchFreeze(view, delay = FREEZE_FIRST_POLL_MS) {
+    const freeze = view?.freeze;
+    clearTimeout(freezeTimer);
+    freezeTimer = null;
+    if (!(freezing(freeze) || cleaning(freeze))) {
+      if (freezeLong) {
+        freezeLong = false;
+        if (!freeze?.pending && view?.lockedUntil && view.frozenThrough === view.lockedUntil) HOF.toast("Kilitli dönemin defteri donduruldu.", { type: "success" });
+      }
+      return;
+    }
+    freezeTimer = setTimeout(async () => {
+      freezeTimer = null;
+      try {
+        const next = await HOF.api("/api/workspace/ledger/lock", { background: true });
+        freezeFailures = 0;
+        if (freezing(next.freeze)) freezeLong = true;
+        renderLock(next);
+        watchFreeze(next, FREEZE_POLL_MS);
+      } catch {
+        // Yoklama düştü (ağ, oturum): birkaç tur yeniden denenir, sonra durur (kart yeniden açılınca sürer).
+        freezeFailures += 1;
+        if (freezeFailures < FREEZE_POLL_FAILURES) watchFreeze(view, FREEZE_POLL_MS);
+      }
+    }, delay);
+  }
   async function loadPeriod() {
     const status = $("#adm-period-status");
-    const health = $("#adm-integrity-status");
     try {
-      const { lockedUntil, today } = await HOF.api("/api/workspace/ledger/lock");
+      const view = await HOF.api("/api/workspace/ledger/lock");
       const input = $("#adm-period-date");
-      input.max = today;
-      if (document.activeElement !== input) input.value = lockedUntil || "";
-      status.textContent = lockedUntil ? `${dayText(lockedUntil)} ve öncesi kilitli.` : "Kilitli dönem yok; tüm geçmiş tarihlere hareket girilebilir.";
-      $("#adm-period-clear").hidden = !lockedUntil;
+      input.max = view.today;
+      if (document.activeElement !== input) input.value = view.lockedUntil || "";
+      renderLock(view);
+      $("#adm-period-clear").hidden = !view.lockedUntil;
+      freezeFailures = 0;
+      watchFreeze(view);
     } catch (error) {
       status.textContent = error.message;
     }
+    await loadIntegrity();
+  }
+  async function loadIntegrity() {
+    const health = $("#adm-integrity-status");
     try {
       const result = await HOF.api("/api/workspace/ledger/integrity");
       const rolled = (result.log || []).filter(row => row.action === "rolled-back").length;
@@ -1065,25 +1144,32 @@
           : `Mutabakat: ${result.failures.length} denetimde sapma var (${result.failures.map(item => (legacyOnly(item) ? `${item.name} — eski sürümden kalan ${item.legacy} satır; yeni işlemler engellenmez` : item.name)).join(", ")}). Raporlar › Defter Mutabakatı'nda ayrıntıyı görün.`;
       health.classList.toggle("adm-error-text", !result.ok && !onlyLegacy);
       health.classList.toggle("adm-warn-text", onlyLegacy);
-    } catch {
-      health.textContent = "";
+    } catch (error) {
+      // Ç3 tur 3 (Ç3 küçük işler (c)): Mutabakat Testi çalışamazsa satır sessizce boşalmaz — neden görünür (ders 4: okunamayan boş değildir).
+      health.textContent = `Mutabakat Testi çalıştırılamadı: ${error?.message || String(error)}`;
+      health.classList.add("adm-error-text");
+      health.classList.remove("adm-warn-text");
     }
   }
   async function savePeriod(value) {
-    const save = $("#adm-period-save");
-    save.disabled = true;
+    lockSaving = true;
+    syncLockButton();
     try {
       const { lockedUntil } = await HOF.api("/api/admin/period-lock", { method: "PUT", body: { lockedUntil: value } });
       HOF.toast(lockedUntil ? `${dayText(lockedUntil)} ve öncesi kilitlendi.` : "Dönem kilidi kaldırıldı.", { type: "success" });
       await loadPeriod();
     } catch (error) {
       HOF.toastError(error);
+      // Temizlik sürüyor (409 ledger-cleanup-running): kart ilerlemeyi gösterir, Kilitle temizlik bitince açılır.
+      if (error?.data?.code === "ledger-cleanup-running") await loadPeriod();
     } finally {
-      save.disabled = false;
+      lockSaving = false;
+      syncLockButton();
     }
   }
   $("#adm-period").addEventListener("submit", event => {
     event.preventDefault();
+    if (lockBusy) return HOF.toast(lockBusy, { type: "error" });
     const value = $("#adm-period-date").value;
     if (!value) return HOF.toast("Kilitlenecek son günü seçin.", { type: "error" });
     savePeriod(value);

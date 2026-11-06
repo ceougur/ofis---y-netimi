@@ -1,0 +1,82 @@
+// DAR KONTROL Ç3 tur 1-2 — p5: açılışta süren ESKİ KURALLI (2.4.9) dondurma (göç 47 / açılış onarımı koşusu; yükseltmeden sonraki ilk açılış) sürerken
+// kullanıcı Dönem Kilidi kartında AYNI tarihle "Kilitle" der. Soru: p1'deki silme eski kurallı koşuda da mı (kart bu sırada "donduruluyor…" der, düğme açık)?
+// Eski sürüm kilidi: kilit ayarı dosyaya doğrudan yazılır (2.4.9'un yaptığı gibi, koşu yok) → açılış onarımı GAP_RULE (2.4.9) bekleyen koşusu → açılışta iş parçacığında donar.
+// Kullanım: node p5-gocte-ayni-gun.mjs <kod kökü>
+import path from "node:path";
+import { DatabaseSync } from "node:sqlite";
+import { pathToFileURL } from "node:url";
+
+const ROOT = path.resolve(process.argv[2] || ".");
+const imp = rel => import(pathToFileURL(path.join(ROOT, rel)).href);
+const { loginAdmin, removeTestDir, startTestServer } = await imp("test/helpers.mjs");
+const NOW = "2027-01-10T10:00:00+03:00";
+const LOCK = "2026-12-31";
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+const must = async (label, promise) => {
+  const response = await promise;
+  if (response.status !== 200) throw new Error(`${label}: ${response.status} ${JSON.stringify(response.data)}`);
+  return response.data.data;
+};
+const env = { HUKUK_LICENSE_URL: "http://127.0.0.1:9" };
+const out = { kok: ROOT };
+const first = await startTestServer({ now: { time: NOW, fixed: true }, env });
+let second = null;
+let release = () => {};
+try {
+  const admin = await loginAdmin(first);
+  for (let i = 1; i <= 40; i += 1) await must(`kasa ${i}`, admin.post("/api/workspace/cash", { kind: "in", amount: String(10 + i), date: `2026-${String(1 + (i % 12)).padStart(2, "0")}-1${i % 9}`, description: `Giriş ${i}` }));
+  const dirs = { dataDir: first.dataDir, backupDir: first.backupDir };
+  const dbFile = path.join(first.dataDir, "destekofis.sqlite");
+  await first.app.close();
+  // Eski sürümün kilidi (koşu açmadan).
+  const raw = new DatabaseSync(dbFile);
+  raw.prepare("INSERT INTO settings (key, value, updated_at, updated_by) VALUES ('ledger.lockedUntil', ?, ?, NULL) ON CONFLICT(key) DO UPDATE SET value = excluded.value").run(LOCK, new Date().toISOString());
+  raw.close();
+  const held = new Promise(resolve => {
+    release = resolve;
+  });
+  let batches = 0;
+  const hook = { fn: async phase => {
+    if (phase === "batch") {
+      batches += 1;
+      if (batches === 3) await held;
+    }
+  } };
+  second = await startTestServer({ now: { time: NOW, fixed: true }, ...dirs, env, __testFreezeHook: hook, freezeBatchLines: 5 });
+  out.acilis_onarimi = second.app.context.snapshotRepair;
+  const S = second.app.ledger.snapshots;
+  const db = second.app.store;
+  for (let i = 0; i < 1000 && batches < 3; i += 1) await sleep(10);
+  out.onkosul = { durum: S.status(), bekleyen: S.state().pending, yazilan: db.get("SELECT COUNT(*) AS n FROM ledger_snapshots").n };
+  const admin2 = await loginAdmin(second);
+  const card = await must("kart", admin2.get("/api/workspace/ledger/lock"));
+  out.kart_gorunumu = { lockedUntil: card.lockedUntil, active: card.freeze.active, pending: card.freeze.pending };
+  const again = admin2.put("/api/admin/period-lock", { lockedUntil: LOCK });
+  await sleep(1500);
+  out.ikinci_istekten_sonra_tabloda = db.get("SELECT COUNT(*) AS n FROM ledger_snapshots").n;
+  release();
+  out.yanit = (await again).status;
+  for (let i = 0; i < 2000; i += 1) {
+    const view = await must("kart", admin2.get("/api/workspace/ledger/lock"));
+    if (!view.freeze.active) break;
+    await sleep(25);
+  }
+  const cover = S.coverage();
+  const visible = db.get("SELECT COUNT(*) AS n FROM ledger_snapshots WHERE date <= ?", cover).n;
+  const lastRun = db.get("SELECT no, rule_version, reason, state_lines FROM ledger_snapshot_runs WHERE state = 'done' ORDER BY no DESC LIMIT 1");
+  const live = second.app.ledger.build().filter(entry => entry.date <= LOCK).reduce((n, entry) => n + entry.lines.length, 0);
+  out.sonuc = { kapsam: cover, gorunen: visible, kosu: { ...lastRun }, canli: live };
+  const rm = await must("mizan", admin2.get(`/api/workspace/report-center/hesap-mizani?from=2026-01-01&to=${LOCK}`));
+  out.hesap_mizani = { altbaslik: rm.subtitle, satirlar: rm.rows.map(row => row.slice(0, 6).join(" | ")) };
+  out.SONUC = visible === live ? "TUTARLI" : `HATA: eski kurallı (${lastRun?.rule_version}) dondurma sürerken aynı güne kilit → kapsam ${cover} içinde ${visible} donmuş satır (canlı ${live}, koşu ${lastRun?.state_lines})`;
+} catch (error) {
+  out.HATA = String(error?.stack || error);
+} finally {
+  release();
+  if (second) {
+    await second.app.close();
+    removeTestDir(second.root);
+  }
+  removeTestDir(first.root);
+}
+console.log(JSON.stringify(out, null, 1));

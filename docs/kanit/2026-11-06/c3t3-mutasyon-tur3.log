@@ -1,0 +1,29 @@
+taban e2e: 39 geçti / 0 kaldı (çıkış 0)
+taban: 56 geçti / 0 kaldı (çıkış 0)
+ok 15 - bayat satırlar temizlenmez: çıkış 1, 4 geçti / 9 kaldı
+ok 203 - bütçe yok (uç dondurmanın bitmesini sınırsız bekler; 1 M'de 30 sn sınırı): çıkış 1, 3 geçti / 6 kaldı
+ok 208 - uç arka işi hiç beklemez (iz bekliyorken tam kapının ikinci katmanı yok — D8; kısa kilitte de yanıttan sonra yazım): çıkış 1, 7 geçti / 2 kaldı
+ok 209 - uç yalnız izi bekler (kısa dondurma da yanıttan sonra biter; kilitten hemen sonraki sayım fotoğrafı bozulur): çıkış 1, 12 geçti / 1 kaldı
+ok 206 - ilerleme görünümü arka işi saymaz (temizlik / iz sırasında 'bitti' görünür): çıkış 1, 21 geçti / 1 kaldı
+ok 301 - YÜKSEK-1: yazılan koşu korunmaz (temizlik süren koşunun satırlarını siler): çıkış 1, 16 geçti / 3 kaldı
+ok 302 - YÜKSEK-1: yazım bayrağı konmaz (temizlik süren koşuyu görmez): çıkış 1, 16 geçti / 3 kaldı
+ok 303 - YÜKSEK-1: koşu sayaçla tamamlanır (tablo doğrulaması yok): çıkış 1, 9 geçti / 1 kaldı
+ok 304 - YÜKSEK-1: iş parçacığı yolunda tablo yerine sayaç ölçülür: çıkış 1, 9 geçti / 1 kaldı
+ok 311 - ORTA-1: temizlik bütçesiz beklenir (1 M'de 30 sn sınırı): çıkış 1, 8 geçti / 2 kaldı
+ok 312 - ORTA-1: temizlik denetimi yok (kilit işleminin içinde büyük DELETE, 409 yok): çıkış 1, 8 geçti / 2 kaldı
+ok 313 - ORTA-1: açılıştaki temizlik süren iş sayılmaz (kart 'bitti' görür, Kilitle açılır): çıkış 1, 9 geçti / 1 kaldı
+ok 314 - ORTA-1: temizliğin ilerlemesi görünmez: çıkış 1, 8 geçti / 2 kaldı
+ok 321 - DÜŞÜK-1: kilit kaldırılınca da 'donduruldu' bildirimi: çıkış 1, 38 geçti / 1 kaldı
+ok 322 - Kilitle dondurma / temizlik sürerken pasif değil: çıkış 1, 36 geçti / 3 kaldı
+ok 323 - Ç3 küçük işler (c): Mutabakat Testi hatasında satır sessizce boşalır: çıkış 1, 38 geçti / 1 kaldı
+ok 324 - pasif düğmenin nedeni yazılmaz: çıkış 1, 37 geçti / 2 kaldı
+ok 331 - Ç3 küçük işler (a): alt başlık yine 'Defter kuralı program sürümüyle değişti': çıkış 1, 9 geçti / 1 kaldı
+ok 341 - Ç3 küçük işler (b): kesik kayıt Mutabakat Testi'ni düşürür (500): çıkış 1, 9 geçti / 1 kaldı
+ok 342 - Ç3 küçük işler (b): okunamayan ayrıntı boş sayılır (ders 4): çıkış 1, 9 geçti / 1 kaldı
+ok 351 - S46 karşı seçenek B: eksilen dönem her durumda 2.4.9 kopyasıyla: çıkış 1, 8 geçti / 2 kaldı
+ok 352 - S46: izsiz dönem de koşunun kendi kuralıyla (S13 çiğnenir): çıkış 1, 18 geçti / 4 kaldı
+ok 353 - S46: yeniden donma planı sürdürülmez (kalan dilimler GAP_RULE): çıkış 1, 9 geçti / 1 kaldı
+
+# tests 23
+# pass 23
+# fail 0

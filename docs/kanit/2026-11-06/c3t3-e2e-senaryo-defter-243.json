@@ -1,0 +1,32 @@
+{
+  "ad": "c3t3-e2e-senaryo-defter-243",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-defter-243.mjs",
+  "commit": "2d42d493adc34e81a9bc1eaace959b6dbbf188ef",
+  "dal": "worktree-agent-a9a8e7bc8f35a45ce",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T11:13:27.289Z",
+  "sure_sn": 36.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 24,
+    "gecen": 24,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t3-kanit/2026-11-06/c3t3-e2e-senaryo-defter-243.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9a8e7bc8f35a45ce",
+  "ham_cikti_sha256": "cc6cab6c4ceb03f154419540621d66b8fa3e6bccbdd3f50d99eb02c173f935cf",
+  "ham_cikti_bayt": 2707
+}

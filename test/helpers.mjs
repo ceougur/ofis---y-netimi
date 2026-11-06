@@ -6,6 +6,13 @@ import { createApp } from "../server/app.mjs";
 
 export const ADMIN_PASSWORD = "Test-Admin-2026!";
 
+// 2.5.0 Ç3 tur 2 (ders 20 — "dondurma arkada sürüyor" penceresini ZORLA üretmek): HOF_TEST_DONMA_GECIKME_MS verilirse kendi kancası olmayan her test sunucusunda dondurma
+// tamamlanmadan önce o kadar bekler (iş parçacığı yolu, "before-done"). Dönem kilidi ucu arka işi en çok LOCK_WAIT_MS (5 sn) bekler; gecikme bunu aşarsa (ör. 6000) yanıt
+// dondurma bitmeden gelir ve kilitten hemen sonra donmuş defteri okuyan ya da kilitli döneme yakın yazan testler bu pencerede koşar. Varsayılan kapalı (CI ve npm test
+// etkilenmez); yalnız komşu taraması için elle verilir.
+const FREEZE_DELAY_MS = Number(process.env.HOF_TEST_DONMA_GECIKME_MS) || 0;
+const freezeDelayHook = () => ({ fn: phase => (phase === "before-done" ? new Promise(resolve => setTimeout(resolve, FREEZE_DELAY_MS)) : undefined) });
+
 export async function startTestServer(options = {}) {
   const root = mkdtempSync(path.join(tmpdir(), "destekofis-test-"));
   const dataDir = options.dataDir || path.join(root, "data");
@@ -78,7 +85,7 @@ export async function startTestServer(options = {}) {
     ...(options.__testOpenFault ? { __testOpenFault: options.__testOpenFault } : {}),
     // 2.5.0 Ç3 (test/donmus-defter-250.test.mjs): kural değişikliği benzetimi ({ fn(entries) }), dondurma kancası ({ fn(phase) }) ve parça boyu (satır) — yalnız testlerde.
     ...(options.__testLedgerRule ? { __testLedgerRule: options.__testLedgerRule } : {}),
-    ...(options.__testFreezeHook ? { __testFreezeHook: options.__testFreezeHook } : {}),
+    ...(options.__testFreezeHook ? { __testFreezeHook: options.__testFreezeHook } : FREEZE_DELAY_MS > 0 ? { __testFreezeHook: freezeDelayHook() } : {}),
     ...(options.freezeBatchLines ? { freezeBatchLines: options.freezeBatchLines } : {}),
     // Para yazımı denetimi (K6) test kipinde: bank.post dışından para satırı ya da ham düzeltme/silme hata verir (üretimde günlük).
     // Üretim davranışını sınayan testler { moneyStrict: false } verir.

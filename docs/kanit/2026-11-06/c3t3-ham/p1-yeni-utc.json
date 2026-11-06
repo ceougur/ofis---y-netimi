@@ -1,0 +1,70 @@
+{
+ "kok": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9a8e7bc8f35a45ce",
+ "onkosul_yazilan_satir": 15,
+ "onkosul_durum": {
+  "running": true,
+  "phase": "yazım",
+  "done": 15,
+  "total": 0,
+  "run": 1,
+  "error": "",
+  "coverage": "",
+  "cleanup": {
+   "running": false,
+   "removed": 0
+  }
+ },
+ "ikinci_istekten_sonra_tabloda_satir": 15,
+ "yanitlar": [
+  200,
+  200
+ ],
+ "kapsam": "2026-12-31",
+ "kosular": [
+  {
+   "no": 1,
+   "kind": "freeze",
+   "state": "done",
+   "through": "2026-12-31",
+   "line_count": 84,
+   "state_lines": 84
+  }
+ ],
+ "gorunen_donmus_satir": 84,
+ "kosunun_kayitli_satiri": 84,
+ "canli_turetme_satiri": 84,
+ "donmus_madde": 42,
+ "canli_madde": 42,
+ "mizan_karma": {
+  "100": 1370,
+  "120": 550,
+  "500": -700,
+  "649": -1220
+ },
+ "mizan_canli": {
+  "100": 1370,
+  "120": 550,
+  "500": -700,
+  "649": -1220
+ },
+ "rapor_hesap_mizani_altbaslik": "01.01.2026 – 31.12.2026 · Borç = Alacak · Mutabakat tutarlı",
+ "rapor_hesap_mizani_satirlar": [
+  "100 | Kasa (Nakit) | 0,00 TL | 1.370,00 TL | 0,00 TL | 1.370,00 TL",
+  "120 | Alıcılar (Müşteri Carileri) | 0,00 TL | 700,00 TL | 150,00 TL | 550,00 TL",
+  "500 | Açılış ve Devir Bakiyeleri | 0,00 TL | 0,00 TL | 700,00 TL | 700,00 TL",
+  "649 | Diğer Olağan Gelir ve Kârlar | 0,00 TL | 0,00 TL | 1.220,00 TL | 1.220,00 TL"
+ ],
+ "rapor_yevmiye_ozet": [
+  [
+   "Madde",
+   "42"
+  ],
+  [
+   "Satır",
+   "84"
+  ]
+ ],
+ "mutabakat_ok": true,
+ "mutabakat_sapmalar": [],
+ "SONUC": "TUTARLI"
+}
