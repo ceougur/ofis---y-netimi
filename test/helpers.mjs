@@ -7,8 +7,9 @@ import { createApp } from "../server/app.mjs";
 export const ADMIN_PASSWORD = "Test-Admin-2026!";
 
 // 2.5.0 Ç3 tur 2 (ders 20 — "dondurma arkada sürüyor" penceresini ZORLA üretmek): HOF_TEST_DONMA_GECIKME_MS verilirse kendi kancası olmayan her test sunucusunda dondurma
-// tamamlanmadan önce o kadar bekler (iş parçacığı yolu, "before-done"). Dönem kilidi ucu yanıtını dondurmadan önce verdiği için kilitten hemen sonra donmuş defteri okuyan ya da
-// kilitli döneme yakın yazan testler bu pencerede koşar. Varsayılan kapalı (CI ve npm test etkilenmez); yalnız komşu taraması için elle verilir.
+// tamamlanmadan önce o kadar bekler (iş parçacığı yolu, "before-done"). Dönem kilidi ucu arka işi en çok LOCK_WAIT_MS (5 sn) bekler; gecikme bunu aşarsa (ör. 6000) yanıt
+// dondurma bitmeden gelir ve kilitten hemen sonra donmuş defteri okuyan ya da kilitli döneme yakın yazan testler bu pencerede koşar. Varsayılan kapalı (CI ve npm test
+// etkilenmez); yalnız komşu taraması için elle verilir.
 const FREEZE_DELAY_MS = Number(process.env.HOF_TEST_DONMA_GECIKME_MS) || 0;
 const freezeDelayHook = () => ({ fn: phase => (phase === "before-done" ? new Promise(resolve => setTimeout(resolve, FREEZE_DELAY_MS)) : undefined) });
 

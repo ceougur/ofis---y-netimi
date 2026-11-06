@@ -41,8 +41,8 @@ değişiklik yok, düzeltme yok — düzeltme fişi Ç5'in işi, KG-15 A / EK-1 
     Kilit + fişler + donmuş satırlar tek işlem (biri düşerse hiçbiri yok).
   - İŞ PARÇACIĞI kipi (`PUT period-lock`): kilit + bekleyen koşu küçük bir işlemde; sonra `ledger-freeze-worker.mjs` salt okunur bağlantıda, tek okuma işleminde (WAL anlık görüntüsü)
     koşunun kuralıyla türetir, (from, through] satırlarını ve kaynak izini 2.000'lik parçalar hâlinde gönderir; ana iş parçacığı her parçayı küçük bir işlemde yazar (koşu hâlâ en son ve
-    bekliyor mu — değilse durur); son küçük işlem sayıyı ve toplamları doğrular, koşuyu `done` yapar, izi (`ledger.snapshot.frozen`) yazar. Uç işin bitmesini bekler (yanıt dondurma
-    bittikten sonra); ilerleme `ledger.freeze.progress` olayıyla ve `GET /api/workspace/ledger/lock` (`freeze`) ile.
+    bekliyor mu — değilse durur); son küçük işlem sayıyı ve toplamları doğrular, koşuyu `done` yapar, izi (`ledger.snapshot.frozen`) yazar. Uç işin bitmesini BEKLEMEZ (Ç3 tur 2, §18:
+    kilit + koşu yazılınca yanıt; dondurma arkada); ilerleme `ledger.freeze.progress` olayıyla ve `GET /api/workspace/ledger/lock` (`freeze`: pending, active) ile.
 - GERİ (next < kapsam): bekleyen koşu `abandoned`; `thaw` koşusu (through = next, `done`) kilitle aynı işlemde; bayat satırlar (date > next) parça parça silinir (görünmezler).
   İz: `ledger.snapshot.thawed` (işlem geçmişi) + kilidin kendi izi (`ledger.period.unlocked/locked`).
 - ATOMİKLİK (BAŞ MİMAR KARARI önerisi K1): iş parçacığı kipinde kilit önce konur, donma arkasından gelir. Her an: donmuş ≤ kapsam ≤ kilit; (kapsam, kilit] kilitli ama donmamış
@@ -246,3 +246,90 @@ raporların kilitli / açık okuma süresi önce / sonra.
   (2) Kilidi geri çekme 1M'de olay döngüsünü ~0,5 sn tutar (öneri: geri çekilen dönemin toplamı işlemden önce iş parçacığında; ya da gün toplamları tablosu). (3) Raporlar ve tam tarama
   ana iş parçacığında: 1M'de Yevmiye Defteri kilitli yıl 5,4 sn, Hesap Planı Mizanı ilk 6,6 sn, Kural Değişikliği Farkı (açılış taraması, Mutabakat Testi, Defter Mutabakatı) ~28 sn
   akış + canlı türetme — plan §8 rapor bütçesi Ç6'nın işi (rapor iş parçacığı). (4) Büyük veride açılış (repairOwnCards) dakikalar — Ç3 dışı, AH.
+
+## 18. Ç3 tur 2 (06.11.2026): kilit ucunun sırası ve arkada dondurma (dar kontrol DÜŞÜK-1 → ORTA; plan §8 "1.000.000: hedef ≤ 2 dk, İLERLEME")
+Ürün SON: 7f5c4170 (ara commit'ler 25d0f145 → 4bf815ea → 34b901b2 → 7f5c4170; nedenleri aşağıda "TASARIMIN YOLU"); test 57a41e80 … 8f9e767d; araç 9dda14d4; taban 40473f17. Kanıt
+docs/kanit/2026-11-06/c3t2-* (OKU-BENI).
+- YENİDEN ÜRETİM (ders 6; taban 40473f17, `git archive` ayrı kopya):
+  (a) DÜŞÜK-1 (dar kontrol betiği p7; bekleme döngülü p7b, iki TZ): dondurma sürerken `lockedUntil: "2099-01-01"` → 400 "Gelecekteki bir dönem kilitlenemez."; süren dondurma "durdu",
+  kapsam boş, koşu bekliyor, sürdüren yok. Kök neden routes/ledger.mjs PUT: `cancel()` doğrulamadan (setLock işlemin içinde) ÖNCEydi; POS ön adımı da doğrulanmamış tarihle çalışıyordu.
+  (b) PUT bekleme: 1.000.000 verisinde (001: 2.254.506 para satırı) gerçek routes/ledger.mjs ucu + gerçek yönlendirici + gerçek HTTP; istemci 30 sn'de keser (hof-core.js sendApi
+  timeoutMs): istemci 30.003 / 30.004 ms'de "Sunucu zamanında yanıt vermedi. (client-timeout)"; sunucu kilidi koymuş, 79–92 sn'de dondurmuş (2.741.312 satır) — başarılı kilit ekranda
+  hata. createApp ile 1.000.000 açılışı 22 dakikada bitmediği için (Ç3 dışı bulgu AH, repairOwnCards) çekirdek kip; 100.000'de gerçek sunucu (createApp) PUT 7,7–8,4 sn.
+- SIRA (routes/ledger.mjs PUT period-lock): doğrula (`period.checkLock` — setLock ile AYNI kural, yazmadan; setLock da onu çağırır) → ön adım (`beforeLock`: POS) → başka güne süren
+  dondurmayı durdur (`cancel`) → bayat satırlar → kilit + koşu (tek işlem) → iz "bekliyor" (`adoptLock` null) → arka iş (`afterLock`) → YANIT (arka iş bitince, en çok 5 sn).
+  Reddedilecek istek (400 geçersiz / gelecek tarih, 409 POS) hiçbir şeye dokunmaz (K1, K2). Durdurduktan sonra kilit işlemi düşerse (kapı 409, disk) durdurulan koşu sahipsiz kalmaz:
+  `afterLock(mevcut kilit)` onu arkada sürdürür (K3).
+- ARKA İŞ (`afterLock`, `lockJobs`): iki iş PARALEL — (1) kapının kilit izi ayrı iş parçacığında (`snapshots.digestOf`); (2) bayat satırlar (`purgeStale`) → bekleyen koşu
+  (`runPending`; dondurmanın kendi izi de gelince freezeRun `adoptLock` karşılaştırır, fark Mutabakat Günlüğü'ne §4). Bu arada kilit başka güne alındıysa iz benimsenmez. İş düşerse yanıt
+  düşmez: günlükte uyarı; koşu bekler, sonraki kilitte / açılışta sürer.
+- YANIT BÜTÇESİ (BAŞ MİMAR KARARI önerisi T2-2; `LOCK_WAIT_MS` = 5 sn): yanıt arka işi (iz + dondurma) en çok 5 sn bekler. KISA iş (küçük / orta şirket) bütçe içinde biter: yanıt bitmiş
+  dondurmayla — ESKİ DAVRANIŞ AYNEN (yanıttan sonra veri tabanına arka yazım yok, kapının izi hazır). UZUN iş (1.000.000) bütçe dolunca yanıt; dondurma arkada, kart ilerleme gösterir;
+  istemcinin 30 sn sınırı aşılmaz. KARAR metni "kilit + koşu yazılınca yanıt verir" idi: harfiyen uygulanınca (4bf815ea) iki gerileme G2 komşu taramasında YENİDEN ÜRETİLDİ:
+  (i) test/banka-210-gg-kapi D8 "kilitli satırın kimliğini değiştir → 409": 40473f17 2/2, 4bf815ea 0/2 — iz "bekliyor"ken tam kapı kilitli dönemin iz karşılaştırmasını (ikinci katman)
+  yapamaz; kapsam süzgecinin kilit nedeni dışından gelen kilitli satır değişikliği kabul edilir ve kendi (değişmiş) izini benimser. (ii) test/banka-230-supheli-bozma I/J kilitten hemen
+  sonra sayıların fotoğrafını çekip "hiçbir şey yazılmaz" der; dondurmanın izi (audit_events +1) fotoğraftan sonra yazılıyordu (34b901b2'de kırmızı). Gerekçe: eski testlerin
+  beklentisini değiştirmek (G3) yerine kısa dondurmada eski sözleşme korunur; yalnız uzun dondurma (planın derdi: 30 sn sınırı) arkaya geçer. İz dondurmayla paralel ölçüldüğü için
+  100.000'de iz (~2,6 sn) bütçe içinde gelir (dondurma ~8 sn sürse de ikinci katman yanıttan önce hazır).
+- TASARIMIN YOLU (ders 6, 40 — kayıt için): 25d0f145 "iz önce" (yanıt izi sınırsız bekler) gerekçesi YANLIŞTI ("kilitli fişin Ters Kaydet'i iz beklerken 409" — yeniden üretilince 200;
+  bugün tarihli ayna fiş kapsam süzgecinin kilit sınıfında değil) ve 1 M'de yanıt 29,1 sn → geri alındı (4bf815ea, harfiyen: yanıt kilit + koşu yazılınca). G2 taraması (i)'yi buldu
+  → iz paralel + 5 sn bütçe (34b901b2); (ii)'yi buldu → bütçe bütün arka işe (7f5c4170). Test K8 Ters Kaydet'in dondurma sürerken 200'ünü korur.
+- KAPANIŞ: `server.app.ledger.snapshots.close` routes/ledger.mjs'te sarılır — süren dondurmayı durdurur (`snapshots.close`) VE arka işi (iz + dondurma) bekler (iz iş parçacığı dosyayı
+  tutarken bağlantı kapanmaz; Windows'ta geri yükleme / silme dosya takası, ders 48; test K7). Öbür iç API aynen.
+- YANIT BİÇİMİ (geriye uyumlu; alan eklendi): PUT ve GET /api/workspace/ledger/lock → `freeze` = `snapshots.status()` + `pending` ({ no, from, through, rule } | null) + `active`
+  (süren iş: dondurma, bayat satır temizliği, kilit izi). PUT'un `frozenThrough`'u yanıt anındaki kapsamdır (kısa işte kilit; uzun işte önceki kapsam; geri çekmede yeni kapsam).
+  ÇAĞIRANLAR (G4, test/ ve tools/ tarandı): admin.js (kart, aşağıda); test/fixtures/donma-bekle.mjs (`waitForFreeze` / `lockAndWait`: GET → `freeze.active` düşene kadar);
+  donmus-defter-250 / -yasam-250 testleri ve -esdegerlik / -eski-surum / -kural / -olcum betikleri, tools/kapi-olcum.mjs (uçtan sonra kapsamı / satırları okuyan ya da dosyayı kapatıp
+  dışarıdan değiştiren her adım bekler — büyük veride bütçe dolabilir); muhasebe sürücüsü (yanıttaki `frozenThrough`'u yalnız kayda yazar, gerileme.py "kilit" alanını karşılaştırmaz —
+  değişmedi); Ç2 `postAll(lockThrough)` DEĞİŞMEDİ (eşzamanlı kip: kilit + fiş + donmuş satırlar aynı işlemde; ön adımı aynı `beforeLock`).
+- ARADA (uzun işte; K1 kararı sürer): kilit konmuştur (bütün yazma yolları kilitli tarihi 409 period-locked ile reddeder); kilitli dönem bekleyen koşunun kuralıyla canlı okunur (raporlar
+  aynı, test K4); iz bütçe içinde geldiyse ikinci katman çalışır (K4); açık döneme yazım ve kilitli fişin bugün tarihli Ters Kaydet'i 200 (K4, K8).
+- İSTEMCİ (client/assets/admin.js, Yönetim → Sistem → Dönem Kilidi ve Mutabakat): kart `freeze`'e göre yazar — sürerken "… ve öncesi kilitli. Kilitli dönemin defteri donduruluyor
+  (N satır yazıldı)… Bu sırada çalışmaya devam edebilirsiniz."; düşünce "… Kilitli dönemin defteri dondurulamadı (<neden>). Kilit yerinde; kilidi yeniden kaydedin ya da programı
+  yeniden açın, dondurma yeniden denenir." (sarı); koşu bekliyor ama süren iş yoksa "… dondurulmayı bekliyor; …". Sürerken ARKA PLAN isteğiyle yoklar (ilk 0,5 sn, sonra 1,5 sn),
+  bitince / düşünce durur, 5 ardışık yoklama hatasında durur; bir yoklama dondurmayı sürerken gördüyse bitişte "Kilitli dönemin defteri donduruldu." bildirimi. Mutabakat Testi
+  yoklamada yeniden koşmaz (1 M'de tam tarama ~30 sn). Yalnız Yönetim panelinde; ana uygulamada istek yok (senaryo-222 "toplam istek ≤ 50" etkilenmez). Metinler cümle düzeninde
+  (Yazım düzeni: bildirim / durum cümlesi). Kılavuz DEĞİŞMEDİ (kart kendisi anlatıyor; kılavuzun "Dönem kilidi" maddesi doğru kalıyor) → PDF üretilmedi. e2e
+  test/e2e/senaryo-donem-kilidi-ilerleme-250.mjs (ci.yml + release.yml + package.json).
+- BİLİNEN SINIR: (1) 1.000.000'da (iz ~29 sn paralel) yanıttan sonra ~25 sn kapının izi bekler: o arada kilitli döneme dokunan yazım "dönem kilidi yeni kondu" ile reddedilir (zaten kilitle
+  yasak olanlar) ve kapsam süzgecinin kilit nedeni dışından gelen kilitli satır değişikliği ikinci katmanı görmez (D8 sınıfı; yalnız store dışı / iç yollar); dondurmanın izi (veri ~80 sn)
+  benimsenince fark Mutabakat Günlüğü'ne yazılır. Kalıcı çözüm önerisi: dondurma iş parçacığı kaynak izini türetmeden ÖNCE ölçüp erkenden göndersin (ledger-freeze-worker.mjs +
+  ledger-snapshots.mjs — tur 1'in dosyaları, bu turda dokunulmadı) — ikinci iş parçacığı gereksizleşir. (2) İz ve dondurma aynı veriyi paralel okur (yük altında dondurma uzar).
+  (3) Kısa / uzun ayrımı süreye bağlıdır (5 sn): çok yavaş makinede küçük şirketin dondurması da arkaya geçebilir (davranış doğru kalır; yalnız yanıt sözleşmesi uzun işinki olur).
+  (4) Dondurma sürerken kapanış (program kapatma, geri yükleme) dondurmayı durdurur; koşu açılışta sürer (§7) — tasarım gereği. (5) Kart "donduruldu" bildirimini yalnız bir yoklama
+  dondurmayı SÜRERKEN gördüyse verir (zamanlamaya bağlı).
+- ÖLÇÜM (test/donmus-defter-kilit-ucu-olcum-250.mjs; flock scratchpad/olcum.lock, her koşu taze kopya; programın kendi verisi tools/kapi-olcum.mjs --yalniz-kur; 4 çekirdek; makine YÜKÜ
+  başka ajanlar yüzünden değişken — her satırda yazılı; süreler son adayda boş makinede yinelenir). İstemci 30 sn'de keser (sendApi). Olay döngüsü 5 ms'lik yoklayıcı; pencereye yalnız
+  pencere açıldıktan sonra başlayan boşluk yazılır (ilk araç sürümü kurulumun boşluğunu pencereye taşıyordu — düzeltildi).
+  | Yol | Eski (40473f17) | Son (7f5c4170) |
+  |---|---|---|
+  | 100.000 gerçek sunucu (createApp; 226.734 para satırı) — kilit yanıtı | 7.728 / 8.425 ms (dondurmayı bekler; yük 3,2–3,7) · döngü 16–19 ms | 5.017 / 5.030 ms (bütçe; iz içinde) · döngü 13 / 20 ms (yük 6,9–7,8) |
+  | 100.000 — dondurmanın bitişi | = yanıt | 11.173 / 13.253 ms arkada (yük 7–8) · döngü en çok 27 / 47 ms · 50 ms üstü boşluk 0. Yük ~3'te (aynı iş, 4bf815ea / 34b901b2): 8,1–8,7 sn, döngü 24–65 ms |
+  | 1.000.000 çekirdek (gerçek uç + HTTP; 2.254.506 para satırı) — kilit yanıtı | YOK: 30.003 / 30.004 ms "Sunucu zamanında yanıt vermedi" (yük 3,3–4,3) | 5.054 ms (bütçe) · döngü 35 ms (yük 9,7) |
+  | 1.000.000 — kilit izi / dondurmanın bitişi | — / 79,3–91,6 sn (kullanıcı bilmiyor) | iz 35,6 sn · dondurma 122,3 sn (yük 9–10; yük ~3'te 4bf815ea: 79,6 sn) · döngü en çok 75 ms (5 boşluk > 50 ms) · yoklama 116 (en uzun 77 ms) |
+  | Ara tasarımlar (kayıt) | — | 4bf815ea (yanıt hemen): 100.000 15 / 20 ms, 1.000.000 82 ms; 25d0f145 (iz sınırsız): 100.000 2.646 ms, 1.000.000 29.132 ms |
+  Plan §8: "100.000 kilit + dondurma ≤ 10 sn" yük ~3'te KARŞILANDI (8,1–8,7 sn), yük 7–8'de AŞILDI (11,2 / 13,3 sn; boş makinede son adayda yinelenir); "olay döngüsü ≤ 50 ms" 100.000'de
+  KARŞILANDI (27 / 47 ms; yük ~3'te bir koşuda 65 ms); "1.000.000 hedef ≤ 2 dk, İLERLEME": yük ~3'te 79,6 sn KARŞILANDI, yük 9–10'da 122 sn (sınırda); yanıt 30 sn sınırının altında
+  (5,05 sn), kartta ilerleme. 1.000.000'da olay döngüsü dondurma sürerken 75–116 ms (yük altı; §16'daki 55–105 ms ile aynı aile) — BİLİNEN SINIR.
+- TESTLER / KANIT (docs/kanit/2026-11-06/c3t2-*; her koşu tools/kanit.mjs kos):
+  - Yeni test/donmus-defter-kilit-ucu-250.test.mjs K1–K9 (+ değişen donmus-defter-250 / -yasam-250): son kodda 29/29 TZ=UTC ve TZ=Europe/Istanbul (c3t2-yeni-utc / -istanbul).
+    Dondurma kancayla TUTULUR (süre değil — ders 20: iz 3 sn sürünce süreli dondurma uçtan önce bitiyordu, zorla üretildi c3t2-zorla; ZORLA_IZ_MS=3000 ile K1–K7 7/7).
+  - Kırmızı (ders 7, 38): eski kod 40473f17 ayrı kopyada 1/9 iki TZ (c3t2-kirmizi-eski-40473f17-*): K1 "reddedilen istek süren dondurmayı durdurdu (… running false, phase durdu)",
+    K3 "durdurulan koşu sahipsiz kaldı", K4 "uç dondurmayı bekledi (… 20.004 ms)", K9 "iz bütçesi dolunca yanıt (~5 sn; 20.008 ms)" — BEKLENEN NEDENLE; K5 / K6 / K7 / K8 eski kodda
+    ön koşul ya da alan yokluğuyla kırmızı (kanıt sayılmaz; dişleri mutasyonla); K2 eski kodda da yeşil (davranış doğruydu; dişi mutant 202). p7b (dar kontrol betiği): yeni 1/1, eski 0/1 iki TZ.
+  - Mutasyon (test/donmus-defter-250-mutasyon.mjs; 23 + 201–209): 32/32 beklenen nedenle, taban 34/34 (c3t2-mutasyon). Mutant 201 ilk koşuda POS denetimiyle yakalanıyordu (kurtarma
+    yolu durdurulan koşuyu yeniden açıyor, "dondurma sürüyor" geçiyordu) → K1'e "baştan başlamadı" denetimi; 205 / 206 bütçe tasarımında yaşıyordu → K7 / K5'e iz tutma.
+  - G2 komşular (162 dosya: period-lock / ledger/lock / frozenThrough / snapshots / createPeriod / setLock / routes/ledger / admin.js anan + kaynak tarayan + Ç3 / Ç2 / BS-7 testleri):
+    TZ=UTC 1.841/1.841 (c3t2-komsu-utc; koşu 3a4737a5'te başladı, 66480b5f / 4af0aafc koşu sırasında girdi — yalnız kapanış satırı + K testi; K testleri ayrıca son kodla); bu tarama
+    D8 ve I/J gerilemelerini buldu (yukarıda). TZ=Europe/Istanbul (son kod 4af0aafc) 1.840/1.841 (c3t2-komsu-istanbul): tek kırmızı banka-210-rapor-is-parcacigi-kapanis H2
+    "sorgusu süren iş parçacığı yuvada: 0" — bu turun farkına dokunmayan rapor iş parçacığı testi (report-runner; 100 ms zaman aşımı iş parçacığı SQL'e başlamadan dolunca terminate işler,
+    yuva boşalır). Koşu sırasında makine yükü 13–15 (4 çekirdek). Aynı dosya İstanbul'da 3/3 yeşil (c3t2-rapor-is-parcacigi-istanbul-1..3); ZORLA (ders 20; 8 meşgul döngüyle CPU açlığı):
+    son kodda 2/3, eski kod 40473f17'de 3/3 aynı iletiyle kırmızı (c3t2-zorla/rapor-is-parcacigi-zorla.txt) → önceden var olan test yarışı, ürün değil, bu turun gerilemesi değil.
+    Pencere zorlama (ders 20): HOF_TEST_DONMA_GECIKME_MS=6000 (> LOCK_WAIT_MS; dondurma bitişi 6 sn gecikir, kilit yanıtı dondurma bitmeden gelir) dönem kilidi koyan 37 komşu
+    dosyada 583/583 (c3t2-komsu-utc-gecikme6000). Gecikme yalnız startTestServer'da işler (createApp'i doğrudan açan 19 dosyada ön koşul OLUŞMAZ — onlar için kanıt değil); bu yüzden
+    startTestServer kullanan 18 dosya, her kilit PUT yanıtının freeze.active'ini sayan bir ön yüklemeyle (onkosul-yukle.mjs, yalnız fetch sarar) yeniden koşuldu: 347/347
+    (c3t2-komsu-utc-gecikme6000-onkosul); 120 PUT'un 109'u 200, bunların 57'si dondurma SÜRERKEN yanıtlandı (ön koşul 18 dosyanın HER BİRİNDE en az bir kez oluştu; ham
+    c3t2-ham/onkosul-6000.jsonl). (1.500 ms ilk düşünülmüştü; bütçe içinde kaldığı için pencereyi açmıyor, koşulmadı.)
+  - e2e 12 senaryo (c3t2-e2e-*): senaryo-donem-kilidi-ilerleme-250 22/22, senaryo-222 60/60 (istek sayısı), senaryo-213 64/64, senaryo-224 69/69, senaryo-226 22/22, gg243-banka-kart-aciklama
+    11/11, gg244-numara-tarih-onay 40/40, senaryo-form-izolasyon-243 188/188, sema-kapisi-bs7 12/12, senaryo-defter-243 24/24, senaryo-220-yedek 37/37, senaryo-banka-210 424/424.
+  - WINDOWS'A DUYARLI (ders 48; CI'nin Windows işlerinde görülmeli): K7 (dondurma + iz arkadayken kapanış, aynı dosyayı yeniden açma), yasam F7a / F13b (değişmedi; şimdi lockAndWait).
