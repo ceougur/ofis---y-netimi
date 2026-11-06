@@ -9,6 +9,9 @@
 //   B hareketi düzeltir, A "Yine de Kaydet" der → 409 formda + kart yenilenir). Her adımda GERİLEME: yeniden açılan form B'nin değeriyle dolu, yarışsız düzeltme 200.
 //   İnsan hızı + Tab (ders 12): açıklama / not alanları harf harf yazılır. Kapatma sorusu (ders 34): yazılmış formda Esc → "Kaydedilmemiş Değişiklik" BEKLENİR.
 //   Saat AKAN sahte saat: sabit saatte iki yazımın damgası (sürüm) aynı olurdu.
+// BİRLEŞİK TUR 4 (tur 3 dar kontrolü): E1b / E1c Nakit Kasa'nın varsayılan "Uyar" yolu — "Kasa Eksiye Düşecek" sorusu açıkken B kaydı değiştirir, A "Yine de Kaydet"
+//   der → hof-core'un cashForce yeniden gönderimi formun sürümünü taşır, 409 (açılış ve Kasa hareketi düzeltmesi; N6 mutantı). E7 yanıtı kopan KENDİ kaydı (taksit
+//   düzelt, taksit kartı, stok kartı): yeniden Kaydet 200, tek yazım ("değişiklik yok" kısa yolu); yanıt koptuktan sonra B farklı değer girerse yine 409.
 // Çalıştırma: node --disable-warning=ExperimentalWarning test/e2e/senaryo-duzeltme-kilidi-tur3-250.mjs
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -245,6 +248,84 @@ try {
     await closeAll();
   });
 
+  // BİRLEŞİK TUR 4 (tur 3 dar kontrolü DÜŞÜK-1 → süzgeçle ORTA, yalnız test): Nakit Kasa'nın varsayılan "Uyar" yolu. Düşüren düzeltme önce "Kasa Eksiye Düşecek"
+  // sorusunu açar; soru açıkken B kaydı değiştirir; A "Yine de Kaydet" der. hof-core.js HOF.api aynı gövdeyi cashForce ile YENİDEN gönderir — o gönderim formun
+  // açıldığı andaki sürümü (updatedAt; açılışta openingId de) TAŞIMALI, yoksa B'nin değeri ezilir ve Kasa eksiye düşer (N6 mutantı tur 3 e2e'sinde yaşadı).
+  const cashOut = () => db.get("SELECT id, amount, description, updated_by AS by FROM cash_entries WHERE description = 'Tur4 Kira'");
+  const cashBalance = async () => (await must("Kasa", api.get("/api/workspace/cash"))).byMethod.cash;
+  const askAndForce = async ({ label, urlPart, method, during }) => {
+    const first = await clickAndRead(`${TOP} form button[type="submit"]`, urlPart, method);
+    ok(first.status === 409 && first.code === "cash-negative", `${label}: ilk gönderim Kasa sorusu (409 ${first.code}: ${String(first.body?.error || "").slice(0, 90)})`);
+    const confirmSel = `${TOP} [data-answer="yes"]`;
+    const asked = await page
+      .waitForSelector(confirmSel, { timeout: 8000 })
+      .then(() => true)
+      .catch(() => false);
+    const title = await page.$eval(`${TOP} .hof-modal-title, ${TOP} h2`, node => node.textContent.trim()).catch(() => "");
+    ok(asked && /Kasa Eksiye Düşecek/.test(title), `${label}: “Kasa Eksiye Düşecek” sorusu açık (“${title}”)`);
+    const bAt = Date.now();
+    await sleep(5);
+    await during();
+    await calm(cashRead, bAt);
+    const res = await clickAndRead(confirmSel, urlPart, method);
+    await page.waitForTimeout(300);
+    return res;
+  };
+
+  await step("E1b Kasa açılışı Uyar: soru açıkken B açılışı değiştirir, A 'Yine de Kaydet' (hof-core cashForce yeniden gönderimi; U1)", async () => {
+    await must("Kasa ödemesi (ön koşul)", api.post("/api/workspace/cash", { kind: "out", amount: "4.000", date: day(-1), description: "Tur4 Kira" }));
+    const before = await cashBalance();
+    ok(Math.abs(before - 300) < 0.005 && opening().amount === 4300, `ön koşul: açılış 4.300, Kasa nakit 300 (${opening().amount}; ${before})`);
+    await openCash();
+    await page.click(`${CASH} [data-opening]`);
+    await waitForm("amount");
+    await typeHuman("amount", "1.000");
+    const res = await askAndForce({
+      label: "Açılış Uyar",
+      urlPart: "/api/workspace/cash/opening",
+      method: "POST",
+      during: async () => {
+        const state = await must("B formu açar", other.get("/api/workspace/cash/opening"));
+        const bRes = await other.post("/api/workspace/cash/opening", { amount: "6.000", date: state.opening.date, openingId: state.opening.id, updatedAt: state.opening.updatedAt });
+        ok(bRes.status === 200 && opening().amount === 6000, `B açılışı 6.000 yaptı → ${bRes.status} (${opening().amount})`);
+      },
+    });
+    await after409({ label: "Açılış Uyar", res, urlPart: "/api/workspace/cash/opening", method: "POST", readPattern: cashRead, field: "amount", dbCheck: () => opening().amount === 6000 && db.get("SELECT updated_by AS u FROM cash_entries WHERE is_opening = 1").u === B, dbText: () => JSON.stringify({ amount: opening().amount }) });
+    ok(res.code === "cash-opening-stale", `Açılış Uyar: kod cash-opening-stale (${res.code})`);
+    const afterBalance = await cashBalance();
+    ok(Math.abs(afterBalance - 2000) < 0.005, `Açılış Uyar: Kasa eksiye düşmedi — nakit 2.000 (B'nin 6.000'i − 4.000; gelen ${afterBalance})`);
+    await escClose(page, { expect: "soru-var", step: "E1b 409 sonrası form kapatılıyor (tutar yazıldı)" });
+    await closeAll();
+  });
+
+  await step("E1c Kasa hareketi düzelt Uyar: soru açıkken B ödemeyi düzeltir, A 'Yine de Kaydet' (hof-workspace editCashEntry; aynı yeniden gönderim)", async () => {
+    const target = cashOut();
+    ok(Boolean(target?.id) && target.amount === 4000, `ön koşul: Kasa ödemesi 4.000 (${JSON.stringify(target)})`);
+    await openCash();
+    await page.click(`${CASH} [data-edit="${target.id}"]`);
+    await waitForm("amount");
+    await typeHuman("amount", "9.000");
+    const urlPart = `/api/workspace/cash/${target.id}`;
+    const res = await askAndForce({
+      label: "Kasa hareketi Uyar",
+      urlPart,
+      method: "PUT",
+      during: async () => {
+        const list = await must("B Kasa listesini okur", other.get(`/api/workspace/cash?from=${day(-60)}&to=${day(0)}`));
+        const fresh = (list.entries || list.items || list.rows || []).find(entry => entry.id === target.id);
+        ok(Boolean(fresh), `B hareketi listede gördü (${fresh ? fresh.updatedAt || "sürüm boş" : "yok"})`);
+        const bRes = await other.put(urlPart, { kind: "out", amount: "4.100", date: day(-1), description: "Tur4 Kira", updatedAt: fresh?.updatedAt || "" });
+        ok(bRes.status === 200 && cashOut().amount === 4100 && cashOut().by === B, `B ödemeyi 4.100 yaptı → ${bRes.status} ${bRes.data?.error || ""}`);
+      },
+    });
+    await after409({ label: "Kasa hareketi Uyar", res, urlPart, method: "PUT", readPattern: cashRead, field: "amount", dbCheck: () => cashOut().amount === 4100 && cashOut().by === B, dbText: () => JSON.stringify(cashOut()) });
+    ok(res.code === "cash-entry-stale", `Kasa hareketi Uyar: kod cash-entry-stale (${res.code})`);
+    const afterBalance = await cashBalance();
+    ok(Math.abs(afterBalance - 1900) < 0.005, `Kasa hareketi Uyar: Kasa eksiye düşmedi — nakit 1.900 (6.000 − B'nin 4.100'ü; gelen ${afterBalance})`);
+    await escClose(page, { expect: "soru-var", step: "E1c 409 sonrası form kapatılıyor (tutar yazıldı)" });
+    await closeAll();
+  });
+
   await step("E2 Taksit düzelt (hof-plans editItem; YAN-B)", async () => {
     const target = plan.items[0];
     const row = () => db.get("SELECT amount, due_date AS dueDate, note FROM plan_items WHERE id = ?", target.id);
@@ -382,6 +463,108 @@ try {
       .catch(() => false);
     ok(shown, "arkadaki kart B'nin 2 adedine yenilendi");
     await escClose(page, { expect: "soru-var", step: "E5 409 sonrası form kapatılıyor (miktar yazıldı)" });
+    await closeAll();
+  });
+
+  // BİRLEŞİK TUR 4 (tur 3 dar kontrolü ORTA-1, gerileme): yanıtı kopan KENDİ kaydı. Kaydet'in isteği sunucuya ulaşır ve yazılır, yanıt yolda kopar (route.fetch +
+  // abort); form "Sunucuya ulaşılamadı" der ve açık kalır; kullanıcı aynı formda yeniden Kaydet'e basar (aynı gövde, formun eski sürümü). Beklenen: 200, form kapanır,
+  // "kaydedilmedi" iletisi YOK; veri tabanında tek yazım (Değişiklik Geçmişi'nde tek kayıt, ikinci gönderimde sürüm ilerlemez). Tur 3 kodunda (ccbf7812) ikinci gönderim
+  // 409 "değişikliğiniz kaydedilmedi" alıyordu (kaydedilmişti). Koruma bozulmaz: yanıt koptuktan sonra B FARKLI bir değer girerse A'nın yeniden gönderimi yine 409.
+  const audits = (type, ref) => db.get("SELECT COUNT(*) AS n FROM audit_events WHERE type = ? AND entity_id = ?", type, ref)?.n ?? -1;
+  // Kaydet → istek sunucuya gider, yanıt koparılır; dönen: formdaki ileti ve o adrese giden yazım sayısı.
+  const dropResponse = async (pathname, method) => {
+    let dropped = 0;
+    const match = u => u.pathname === pathname;
+    await page.route(match, async route => {
+      if (route.request().method() === method && dropped === 0) {
+        dropped += 1;
+        await route.fetch();
+        return route.abort("connectionreset");
+      }
+      return route.continue();
+    });
+    const at = Date.now();
+    await page.click(`${TOP} form button[type="submit"]`);
+    let message = "";
+    for (let index = 0; index < 60 && !message; index += 1) {
+      await sleep(100);
+      message = await formError();
+    }
+    await page.unroute(match);
+    return { message, dropped, at };
+  };
+  const retryOwn = async ({ label, pathname, field, audit, version, value }) => {
+    const lost = await dropResponse(pathname, "PUT");
+    ok(lost.dropped === 1 && /Sunucuya ulaşılamadı/.test(lost.message), `${label}: 1. Kaydet sunucuya ulaştı, yanıt koptu — ileti “${lost.message}”`);
+    ok(value(), `${label}: veri tabanında A'nın değeri yazıldı (yanıt kopmuş olsa da)`);
+    const auditsAfterFirst = audit();
+    const versionAfterFirst = version();
+    ok(Boolean(await page.$(`${TOP} form [name="${field}"]`)), `${label}: form açık kaldı`);
+    const again = await clickAndRead(`${TOP} form button[type="submit"]`, pathname, "PUT");
+    const closed = await page
+      .waitForSelector(`${TOP} form [name="${field}"]`, { state: "detached", timeout: 8000 })
+      .then(() => true)
+      .catch(() => false);
+    const message = closed ? "" : await formError();
+    ok(again.status === 200 && closed && !STALE.test(message), `${label}: aynı formda yeniden Kaydet 200, form kapandı, “kaydedilmedi” iletisi yok (${again.status} ${again.code}; ileti “${message}”)`);
+    const count = await writesSince(pathname, "PUT", again.clickAt);
+    ok(count === 1, `${label}: yeniden Kaydet tek istek (1,5 sn'de ${count})`);
+    ok(audit() === auditsAfterFirst && version() === versionAfterFirst && value(), `${label}: veri tabanında tek yazım — Değişiklik Geçmişi ${auditsAfterFirst} → ${audit()}, sürüm ${versionAfterFirst} → ${version()}`);
+    await page.waitForTimeout(500);
+  };
+
+  await step("E7a Yanıtı kopan kendi kaydı: taksit düzelt — yeniden Kaydet 200, tek yazım", async () => {
+    const target = plan.items[1];
+    const itemRow = () => db.get("SELECT amount, note, updated_at AS updatedAt FROM plan_items WHERE id = ?", target.id);
+    await openPlan();
+    await page.click(`${PLN} [data-edit-item="${target.id}"]`);
+    await waitForm("note");
+    await typeHuman("note", "Kopan yanıt taksit");
+    const itemAudits0 = audits("plan.item.updated", target.id);
+    await retryOwn({ label: "Taksit", pathname: `/api/workspace/plans/${plan.id}/items/${target.id}`, field: "note", audit: () => audits("plan.item.updated", target.id), version: () => itemRow().updatedAt, value: () => itemRow().note === "Kopan yanıt taksit" });
+    ok(audits("plan.item.updated", target.id) === itemAudits0 + 1, `Taksit: toplam tek düzeltme kaydı (${itemAudits0} → ${audits("plan.item.updated", target.id)})`);
+    await closeAll();
+  });
+
+  await step("E7b Yanıtı kopan kendi kaydı: taksit kartı Düzenle — yeniden Kaydet 200, tek yazım", async () => {
+    const planRow = () => db.get("SELECT note, total, updated_at AS updatedAt FROM plans WHERE id = ?", plan.id);
+    await openPlan();
+    await page.click(`${PLN} [data-act="edit"]`);
+    await waitForm("note");
+    await typeHuman("note", "Kopan yanıt kart");
+    await retryOwn({ label: "Kart", pathname: `/api/workspace/plans/${plan.id}`, field: "note", audit: () => audits("plan.updated", plan.id), version: () => planRow().updatedAt, value: () => planRow().note === "Kopan yanıt kart" });
+    await closeAll();
+  });
+
+  await step("E7c Yanıtı kopan kendi kaydı: stok kartı Düzenle — yeniden Kaydet 200, tek yazım", async () => {
+    const stockRow = () => db.get("SELECT sale_price AS salePrice, note, updated_at AS updatedAt, updated_by AS by FROM stock_items WHERE id = ?", item.id);
+    await openStock();
+    await page.click(`${STK} [data-act="edit"]`);
+    await waitForm("note");
+    await typeHuman("salePrice", "21");
+    await retryOwn({ label: "Stok kartı", pathname: `/api/workspace/stock/${item.id}`, field: "note", audit: () => audits("stock.item.updated", item.id), version: () => stockRow().updatedAt, value: () => stockRow().salePrice === 21 });
+    await closeAll();
+  });
+
+  await step("E7d Yanıtı kopan kayıttan sonra B farklı değer girer — A'nın yeniden gönderimi yine 409 (koruma bozulmaz)", async () => {
+    const stockRow = () => db.get("SELECT sale_price AS salePrice, note, updated_at AS updatedAt, updated_by AS by FROM stock_items WHERE id = ?", item.id);
+    await openStock();
+    // Koruma bozulmaz: yanıt koptu, ardından B Satış Fiyatı'nı FARKLI bir değere (24) çeker; A'nın aynı formdan yeniden gönderimi (22) 409, B'nin 24'ü durur.
+    await page.click(`${STK} [data-act="edit"]`);
+    await waitForm("note");
+    await typeHuman("salePrice", "22");
+    const pathname = `/api/workspace/stock/${item.id}`;
+    const lost = await dropResponse(pathname, "PUT");
+    ok(/Sunucuya ulaşılamadı/.test(lost.message) && stockRow().salePrice === 22, `Stok kartı (B arada): 1. Kaydet yazıldı, yanıt koptu (${stockRow().salePrice}; “${lost.message}”)`);
+    const bAt = Date.now();
+    await sleep(5);
+    const fresh = await must("B kartı okur", other.get(pathname));
+    const bRes = await other.put(pathname, { kind: fresh.kind, code: fresh.code, name: fresh.name, unit: fresh.unit, category: fresh.category || "", minQty: "", unitPrice: String(fresh.unitPrice), salePrice: "24", vatRate: "", note: fresh.note || "", updatedAt: fresh.updatedAt });
+    ok(bRes.status === 200 && stockRow().salePrice === 24 && stockRow().by === B, `B Satış Fiyatı'nı 24 yaptı → ${bRes.status} ${bRes.data?.error || ""}`);
+    await calm(stockRead, bAt);
+    const res = await clickAndRead(`${TOP} form button[type="submit"]`, pathname, "PUT");
+    await after409({ label: "Stok kartı (B arada)", res, urlPart: pathname, method: "PUT", readPattern: stockRead, field: "note", dbCheck: () => stockRow().salePrice === 24 && stockRow().by === B, dbText: () => JSON.stringify(stockRow()) });
+    await escClose(page, { expect: "soru-var", step: "E7 409 sonrası form kapatılıyor (fiyat yazıldı)" });
     await closeAll();
   });
 
