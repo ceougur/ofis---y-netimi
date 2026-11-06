@@ -3,37 +3,37 @@ TAP version 13
     # Subtest: K6.4 göç: account_entries'te due_date ve expected_date (TEXT, varsayılan '')
     ok 1 - K6.4 göç: account_entries'te due_date ve expected_date (TEXT, varsayılan '')
       ---
-      duration_ms: 5.650851
+      duration_ms: 1.434272
       type: 'test'
       ...
     # Subtest: K6.1 alanlar: Borç ve Alacak'ta saklanır, kartta döner; tahsilat / ödemede gönderilse de kaydedilmez
     ok 2 - K6.1 alanlar: Borç ve Alacak'ta saklanır, kartta döner; tahsilat / ödemede gönderilse de kaydedilmez
       ---
-      duration_ms: 249.973301
+      duration_ms: 151.656698
       type: 'test'
       ...
     # Subtest: K6.1 doğrulama: tarihten önce, biçimsiz ya da takvimde olmayan gün → 400 (field); hiçbir satır yazılmaz
     ok 3 - K6.1 doğrulama: tarihten önce, biçimsiz ya da takvimde olmayan gün → 400 (field); hiçbir satır yazılmaz
       ---
-      duration_ms: 81.797245
+      duration_ms: 87.066292
       type: 'test'
       ...
     # Subtest: K6.1 düzeltme: anahtar yoksa tarih kalır, boş metin siler; yön değişince kalır; tarih vadeden sonraya alınırsa 400
     ok 4 - K6.1 düzeltme: anahtar yoksa tarih kalır, boş metin siler; yön değişince kalır; tarih vadeden sonraya alınırsa 400
       ---
-      duration_ms: 92.770823
+      duration_ms: 111.657176
       type: 'test'
       ...
     # Subtest: K6.1 Açılış Bakiyesi: POST'ta openingDueDate / openingExpectedDate; tedarikçide alacak yönlü; açılış yoksa ya da tarihten önceyse 400; PUT günceller
     ok 5 - K6.1 Açılış Bakiyesi: POST'ta openingDueDate / openingExpectedDate; tedarikçide alacak yönlü; açılış yoksa ya da tarihten önceyse 400; PUT günceller
       ---
-      duration_ms: 68.266072
+      duration_ms: 92.496323
       type: 'test'
       ...
     # Subtest: S2: bağsız tahsilat vadesi en önce gelen borçtan kapatır (Vade Tarihi sırayı belirler; kayıt tarihi değil)
     not ok 6 - S2: bağsız tahsilat vadesi en önce gelen borçtan kapatır (Vade Tarihi sırayı belirler; kayıt tarihi değil)
       ---
-      duration_ms: 96.324722
+      duration_ms: 134.560787
       type: 'test'
       location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/cari-vade-245.test.mjs:165:3'
       failureType: 'testCodeFailure'
@@ -56,19 +56,19 @@ TAP version 13
     # Subtest: S1 karışık kuyruk: vadeli borç + taksitsiz satış faturası tarih sırasıyla; faturanın açığı aynı kuraldan
     ok 7 - S1 karışık kuyruk: vadeli borç + taksitsiz satış faturası tarih sırasıyla; faturanın açığı aynı kuraldan
       ---
-      duration_ms: 135.208222
+      duration_ms: 161.369357
       type: 'test'
       ...
     # Subtest: S1 bağlı ödeme: Kapatılacak Fatura seçilen tahsilat borç kaydını kapatmaz
     ok 8 - S1 bağlı ödeme: Kapatılacak Fatura seçilen tahsilat borç kaydını kapatmaz
       ---
-      duration_ms: 76.053579
+      duration_ms: 214.333192
       type: 'test'
       ...
     # Subtest: karar (5): müşterideki elle Alacak müşterinin borcuyla kendi tarihinde netleşir; sonraki bağsız ödeme kalemi kapatmaz, bakiyeye yazılır
     not ok 9 - karar (5): müşterideki elle Alacak müşterinin borcuyla kendi tarihinde netleşir; sonraki bağsız ödeme kalemi kapatmaz, bakiyeye yazılır
       ---
-      duration_ms: 53.236147
+      duration_ms: 53.95117
       type: 'test'
       location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/cari-vade-245.test.mjs:205:3'
       failureType: 'testCodeFailure'
@@ -91,33 +91,33 @@ TAP version 13
     # Subtest: S1 taksit kartı: ayrı kartın tahsilatı borç kaydını kapatmaz; Mevcut Borç kartının kapsadığı borç takvimden düşer (taksitlerle bir kez)
     ok 10 - S1 taksit kartı: ayrı kartın tahsilatı borç kaydını kapatmaz; Mevcut Borç kartının kapsadığı borç takvimden düşer (taksitlerle bir kez)
       ---
-      duration_ms: 215.732872
+      duration_ms: 149.524304
       type: 'test'
       ...
     # Subtest: tahsilat silinince kalem geri açılır, Silinenler'den dönünce yine kapanır; silinen borç tarihleriyle geri gelir
     ok 11 - tahsilat silinince kalem geri açılır, Silinenler'den dönünce yine kapanır; silinen borç tarihleriyle geri gelir
       ---
-      duration_ms: 168.562902
+      duration_ms: 142.80061
       type: 'test'
       ...
     # Subtest: çek karşılıksız dönünce kapattığı borç kaydı yeniden açılır
     ok 12 - çek karşılıksız dönünce kapattığı borç kaydı yeniden açılır
       ---
-      duration_ms: 71.671245
+      duration_ms: 110.91719
       type: 'test'
       ...
     # Subtest: borç düzenlenip tutar küçülünce Kalan küçülür; tutar tahsilatın altına inince kalem kapanır
     ok 13 - borç düzenlenip tutar küçülünce Kalan küçülür; tutar tahsilatın altına inince kalem kapanır
       ---
-      duration_ms: 93.168467
+      duration_ms: 112.545291
       type: 'test'
       ...
     # Subtest: K6.3 kalem sözleşmesi: id, source, accountId, entryId, direction, person, label, dueDate, amount, days, state; Beklenen Ödeme Tarihi önce gelir
     not ok 14 - K6.3 kalem sözleşmesi: id, source, accountId, entryId, direction, person, label, dueDate, amount, days, state; Beklenen Ödeme Tarihi önce gelir
       ---
-      duration_ms: 118.672013
+      duration_ms: 137.097154
       type: 'test'
-      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/cari-vade-245.test.mjs:281:3'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/cari-vade-245.test.mjs:283:3'
       failureType: 'testCodeFailure'
       error: |-
         vadesiz + söz bugün: kalem söz gününde, vade (kayıt günü) geçti → Gecikmiş, gün sayısı vadeden (S1, S67 / S69 = A)
@@ -146,7 +146,7 @@ TAP version 13
         3: 0
       operator: 'deepStrictEqual'
       stack: |-
-        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/cari-vade-245.test.mjs:303:12)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/cari-vade-245.test.mjs:305:12)
         process.processTicksAndRejections (node:internal/process/task_queues:103:5)
         async Test.run (node:internal/test_runner/test:1054:7)
         async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
@@ -154,9 +154,9 @@ TAP version 13
     # Subtest: K6.3 ufuk: geçmişin tamamı + bugünden 7 gün (8. gün yok); vadesiz borç kayıt gününde vadeli kalemdir (S1)
     not ok 15 - K6.3 ufuk: geçmişin tamamı + bugünden 7 gün (8. gün yok); vadesiz borç kayıt gününde vadeli kalemdir (S1)
       ---
-      duration_ms: 93.241281
+      duration_ms: 98.221865
       type: 'test'
-      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/cari-vade-245.test.mjs:308:3'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/cari-vade-245.test.mjs:310:3'
       failureType: 'testCodeFailure'
       error: |-
         vadesiz borç: vade = kayıt günü, ertesi gün gecikmiş
@@ -179,7 +179,7 @@ TAP version 13
         3: 10
       operator: 'deepStrictEqual'
       stack: |-
-        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/cari-vade-245.test.mjs:320:12)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/cari-vade-245.test.mjs:322:12)
         process.processTicksAndRejections (node:internal/process/task_queues:103:5)
         async Test.run (node:internal/test_runner/test:1054:7)
         async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
@@ -187,49 +187,49 @@ TAP version 13
     # Subtest: K6.3 Vade Takip aynı kalemleri gösterir (kaynak 'account', tarih, tutar, etiket); aralık dışı (8. gün) Vade Takip'te 30 günlükte var
     ok 16 - K6.3 Vade Takip aynı kalemleri gösterir (kaynak 'account', tarih, tutar, etiket); aralık dışı (8. gün) Vade Takip'te 30 günlükte var
       ---
-      duration_ms: 68.761241
+      duration_ms: 105.672321
       type: 'test'
       ...
     # Subtest: K6.3 yetki: Cari görüntüleme yetkisi olmayan kişi kalemi görmez (zil, takvim, Vade Takip); sürüm yetkiyle değişir
     ok 17 - K6.3 yetki: Cari görüntüleme yetkisi olmayan kişi kalemi görmez (zil, takvim, Vade Takip); sürüm yetkiyle değişir
       ---
-      duration_ms: 163.713302
+      duration_ms: 171.118743
       type: 'test'
       ...
     # Subtest: Ödendi Say yok: settle 'account|…' kalemini reddeder (400); kalem yerinde kalır
     ok 18 - Ödendi Say yok: settle 'account|…' kalemini reddeder (400); kalem yerinde kalır
       ---
-      duration_ms: 33.890156
+      duration_ms: 38.90541
       type: 'test'
       ...
     # Subtest: önbellek: durağan saatte yalnız Beklenen Ödeme Tarihi değişince kalem o güne kayar (sürüm değişir)
     ok 19 - önbellek: durağan saatte yalnız Beklenen Ödeme Tarihi değişince kalem o güne kayar (sürüm değişir)
       ---
-      duration_ms: 80.451403
+      duration_ms: 81.718579
       type: 'test'
       ...
     # Subtest: cari silinince kalem yok; geri yüklenince döner
     ok 20 - cari silinince kalem yok; geri yüklenince döner
       ---
-      duration_ms: 71.141455
+      duration_ms: 62.583745
       type: 'test'
       ...
     # Subtest: yevmiye ve mizan değişmez: tarih eklemek / silmek Ana Defter'i değiştirmez
     ok 21 - yevmiye ve mizan değişmez: tarih eklemek / silmek Ana Defter'i değiştirmez
       ---
-      duration_ms: 104.242376
+      duration_ms: 113.174595
       type: 'test'
       ...
     # Subtest: 002 şirketi: göç orada da; kalemler şirkete ayrı
     ok 22 - 002 şirketi: göç orada da; kalemler şirkete ayrı
       ---
-      duration_ms: 674.366422
+      duration_ms: 717.802207
       type: 'test'
       ...
     1..22
 not ok 1 - 2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi)
   ---
-  duration_ms: 3510.014993
+  duration_ms: 3603.183368
   type: 'suite'
   location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/cari-vade-245.test.mjs:35:1'
   failureType: 'subtestsFailed'
@@ -240,32 +240,32 @@ not ok 1 - 2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi
     # Subtest: (a) stoktan satıştan iade (alacak) alacak tarafında ödeme; alıştan iade (borç) borç tarafında ödeme
     ok 1 - (a) stoktan satıştan iade (alacak) alacak tarafında ödeme; alıştan iade (borç) borç tarafında ödeme
       ---
-      duration_ms: 9.632978
+      duration_ms: 1.523893
       type: 'test'
       ...
     # Subtest: (c) stoktan veresiye satış ve açık hesaba alım yükümlülük KALIR (nedeni boş)
     ok 2 - (c) stoktan veresiye satış ve açık hesaba alım yükümlülük KALIR (nedeni boş)
       ---
-      duration_ms: 0.179645
+      duration_ms: 0.202036
       type: 'test'
       ...
     # Subtest: (b) Değersiz Alacak satırı alacak tarafında ödeme; (c) elle Borç / Alacak yükümlülük (KS2)
     ok 3 - (b) Değersiz Alacak satırı alacak tarafında ödeme; (c) elle Borç / Alacak yükümlülük (KS2)
       ---
-      duration_ms: 0.314493
+      duration_ms: 0.286695
       type: 'test'
       ...
     1..3
 ok 2 - KS7 classifyLine (saf): faturasız stok iadesi ve Değersiz Alacak bağsız ödemedir; satış, alım, elle borç / alacak yükümlülüktür
   ---
-  duration_ms: 11.059549
+  duration_ms: 3.030881
   type: 'suite'
   ...
 # Subtest: KS7 API: Değersiz Alacak ve faturasız stok iadesi carinin en eski açık borcunu (vadeli elle borç, fatura) kapatır
     # Subtest: (b) şüpheliye alma KAPATMAZ (alacak sürer); Değersiz Alacak Yaz en eskiden kapatır — vadeli borç ve fatura; takvim / Vade Takip boşalır, bakiye 0
     not ok 1 - (b) şüpheliye alma KAPATMAZ (alacak sürer); Değersiz Alacak Yaz en eskiden kapatır — vadeli borç ve fatura; takvim / Vade Takip boşalır, bakiye 0
       ---
-      duration_ms: 243.382187
+      duration_ms: 132.782242
       type: 'test'
       location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/kapama-ks7-245.test.mjs:104:3'
       failureType: 'testCodeFailure'
@@ -307,7 +307,7 @@ ok 2 - KS7 classifyLine (saf): faturasız stok iadesi ve Değersiz Alacak bağs�
     # Subtest: (b) kısmi değersiz en eskiden kapatır; değersiz satırı silinince borç ve fatura yeniden açılır
     not ok 2 - (b) kısmi değersiz en eskiden kapatır; değersiz satırı silinince borç ve fatura yeniden açılır
       ---
-      duration_ms: 114.796916
+      duration_ms: 102.737086
       type: 'test'
       location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/kapama-ks7-245.test.mjs:130:3'
       failureType: 'testCodeFailure'
@@ -330,7 +330,7 @@ ok 2 - KS7 classifyLine (saf): faturasız stok iadesi ve Değersiz Alacak bağs�
     # Subtest: (a) faturasız stok Satış İadesi (açık hesap) en eskiden kapatır: vadeli borç ve fatura; iade silinince yeniden açılır; bakiye ve Kasa değişmez
     not ok 3 - (a) faturasız stok Satış İadesi (açık hesap) en eskiden kapatır: vadeli borç ve fatura; iade silinince yeniden açılır; bakiye ve Kasa değişmez
       ---
-      duration_ms: 81.724403
+      duration_ms: 112.027854
       type: 'test'
       location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/kapama-ks7-245.test.mjs:149:3'
       failureType: 'testCodeFailure'
@@ -353,19 +353,19 @@ ok 2 - KS7 classifyLine (saf): faturasız stok iadesi ve Değersiz Alacak bağs�
     # Subtest: (c) stoktan veresiye satış ödeme DEĞİLDİR (yükümlülük); elle Alacak müşterinin borcunu kapatmaz (KS2)
     ok 4 - (c) stoktan veresiye satış ödeme DEĞİLDİR (yükümlülük); elle Alacak müşterinin borcunu kapatmaz (KS2)
       ---
-      duration_ms: 101.031656
+      duration_ms: 94.118715
       type: 'test'
       ...
     # Subtest: (a) tedarikçide açık hesaba alım yükümlülüktür: alış faturasını kapatmaz, ödeme kapatır
     ok 5 - (a) tedarikçide açık hesaba alım yükümlülüktür: alış faturasını kapatmaz, ödeme kapatır
       ---
-      duration_ms: 76.419123
+      duration_ms: 75.664997
       type: 'test'
       ...
     1..5
 not ok 3 - KS7 API: Değersiz Alacak ve faturasız stok iadesi carinin en eski açık borcunu (vadeli elle borç, fatura) kapatır
   ---
-  duration_ms: 1266.861718
+  duration_ms: 1119.240822
   type: 'suite'
   location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/kapama-ks7-245.test.mjs:51:1'
   failureType: 'subtestsFailed'
@@ -376,19 +376,19 @@ not ok 3 - KS7 API: Değersiz Alacak ve faturasız stok iadesi carinin en eski a
     # Subtest: vadeli elle Borç: Vade Tarihi'nde giriş kalemi (Cari (vadeli), Tahsil Edilecek Borç); faturasız cari alacağı olarak ikinci kez yok; carinin Σ = bakiye
     ok 1 - vadeli elle Borç: Vade Tarihi'nde giriş kalemi (Cari (vadeli), Tahsil Edilecek Borç); faturasız cari alacağı olarak ikinci kez yok; carinin Σ = bakiye
       ---
-      duration_ms: 97.337607
+      duration_ms: 113.027464
       type: 'test'
       ...
     # Subtest: Beklenen Ödeme Tarihi girilmişse kalem o gündedir (Ödeme Sözü), Vade Tarihi'nde değil; Beklenen Ödeme Vade'den önce de olabilir (K6.5 (4))
     ok 2 - Beklenen Ödeme Tarihi girilmişse kalem o gündedir (Ödeme Sözü), Vade Tarihi'nde değil; Beklenen Ödeme Vade'den önce de olabilir (K6.5 (4))
       ---
-      duration_ms: 49.542422
+      duration_ms: 67.018427
       type: 'test'
       ...
     # Subtest: FIFO kalanı: kısmi tahsilat kalemi küçültür; tahsilat silinince kalem büyür ve vadesiz borcun kalanı KENDİ gününde faturasız alacak olur; tam tahsilatta kalem yok
     not ok 3 - FIFO kalanı: kısmi tahsilat kalemi küçültür; tahsilat silinince kalem büyür ve vadesiz borcun kalanı KENDİ gününde faturasız alacak olur; tam tahsilatta kalem yok
       ---
-      duration_ms: 127.579908
+      duration_ms: 162.969475
       type: 'test'
       location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/projeksiyon-vade-246.test.mjs:100:3'
       failureType: 'testCodeFailure'
@@ -444,13 +444,13 @@ not ok 3 - KS7 API: Değersiz Alacak ve faturasız stok iadesi carinin en eski a
     # Subtest: tedarikçideki elle Alacak ve alacak yönlü Açılış Bakiyesi: vadesinde ÇIKIŞ (Ödenecek Borç); ödeme kalemi küçültür
     ok 4 - tedarikçideki elle Alacak ve alacak yönlü Açılış Bakiyesi: vadesinde ÇIKIŞ (Ödenecek Borç); ödeme kalemi küçültür
       ---
-      duration_ms: 145.856219
+      duration_ms: 127.151055
       type: 'test'
       ...
     # Subtest: karar (5): müşterideki elle Alacak müşterinin borcuyla netleşir (çıkış kalemi yok); net borç kendi vadesinde; carinin net = bakiye
     not ok 5 - karar (5): müşterideki elle Alacak müşterinin borcuyla netleşir (çıkış kalemi yok); net borç kendi vadesinde; carinin net = bakiye
       ---
-      duration_ms: 66.868742
+      duration_ms: 50.760346
       type: 'test'
       location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/projeksiyon-vade-246.test.mjs:137:3'
       failureType: 'testCodeFailure'
@@ -464,7 +464,7 @@ not ok 3 - KS7 API: Değersiz Alacak ve faturasız stok iadesi carinin en eski a
         +     '2026-10-26',
         +     'out',
         +     300,
-        +     'aentry-f360540d-2d64-45b7-9fda-8e524c31c6b7'
+        +     'aentry-ab79db6c-c4ba-45e9-b3e3-1e98fa7c9b45'
         +   ],
         +   [
         +     'unbilled',
@@ -473,7 +473,7 @@ not ok 3 - KS7 API: Değersiz Alacak ve faturasız stok iadesi carinin en eski a
         +     1000,
         +     undefined
         -     700,
-        -     'aentry-008cbda7-586e-47c8-ba07-59f2cd4725c3'
+        -     'aentry-a0bed74d-43dc-43d3-9c7c-c7abb64d404e'
             ]
           ]
         
@@ -485,14 +485,14 @@ not ok 3 - KS7 API: Değersiz Alacak ve faturasız stok iadesi carinin en eski a
           1: '2026-10-05'
           2: 'in'
           3: 700
-          4: 'aentry-008cbda7-586e-47c8-ba07-59f2cd4725c3'
+          4: 'aentry-a0bed74d-43dc-43d3-9c7c-c7abb64d404e'
       actual:
         0:
           0: 'account'
           1: '2026-10-26'
           2: 'out'
           3: 300
-          4: 'aentry-f360540d-2d64-45b7-9fda-8e524c31c6b7'
+          4: 'aentry-ab79db6c-c4ba-45e9-b3e3-1e98fa7c9b45'
         1:
           0: 'unbilled'
           1: '2026-10-05'
@@ -508,18 +508,18 @@ not ok 3 - KS7 API: Değersiz Alacak ve faturasız stok iadesi carinin en eski a
     # Subtest: K6.5 (1): Mevcut Borç kartının kapsadığı kısım kartın taksitleriyle BİR kez; kapsanmayan kalan cari kalemidir
     ok 6 - K6.5 (1): Mevcut Borç kartının kapsadığı kısım kartın taksitleriyle BİR kez; kapsanmayan kalan cari kalemidir
       ---
-      duration_ms: 101.135336
+      duration_ms: 101.467399
       type: 'test'
       ...
     # Subtest: karışık kuyruk: vadeli borç + vadeli satış faturası + tahsilat → fatura açığı ve borç kalanı kendi vadelerinde; Σ = bakiye, faturasız alacak yok
     not ok 7 - karışık kuyruk: vadeli borç + vadeli satış faturası + tahsilat → fatura açığı ve borç kalanı kendi vadelerinde; Σ = bakiye, faturasız alacak yok
       ---
-      duration_ms: 191.727336
+      duration_ms: 176.776235
       type: 'test'
       location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/projeksiyon-vade-246.test.mjs:170:3'
       failureType: 'testCodeFailure'
       error: |-
-        [{"source":"account","date":"2026-10-23","direction":"in","amount":500,"label":"Tahsil Edilecek Borç"},{"source":"invoice","date":"2026-11-14","direction":"in","amount":1500,"label":"Satış faturası FIS2026000000001 (kalan)"}] (late aentry-d0f63ac2-f8ef-476a-8647-1f37a305fda2)
+        [{"source":"account","date":"2026-10-23","direction":"in","amount":500,"label":"Tahsil Edilecek Borç"},{"source":"invoice","date":"2026-11-14","direction":"in","amount":1500,"label":"Satış faturası FIS2026000000001 (kalan)"}] (late aentry-bd9325e0-08f7-4b62-ab07-51660b8c748e)
         + actual - expected
         
           [
@@ -562,31 +562,31 @@ not ok 3 - KS7 API: Değersiz Alacak ve faturasız stok iadesi carinin en eski a
     # Subtest: toplam = kalemler, her süzgeç: 7/30/60/90 gün, aralık + başlangıca kadar beklenen, gecikmişleri başlangıca ekle, gün / hafta / ay toplamları
     ok 8 - toplam = kalemler, her süzgeç: 7/30/60/90 gün, aralık + başlangıca kadar beklenen, gecikmişleri başlangıca ekle, gün / hafta / ay toplamları
       ---
-      duration_ms: 163.398929
+      duration_ms: 171.062087
       type: 'test'
       ...
     # Subtest: PDF ve Excel aynı satırları yazar: 'Cari (vadeli)' kaynaklı kalem Nakit Akışı ve Gecikmiş sayfalarında, tutarıyla
     ok 9 - PDF ve Excel aynı satırları yazar: 'Cari (vadeli)' kaynaklı kalem Nakit Akışı ve Gecikmiş sayfalarında, tutarıyla
       ---
-      duration_ms: 107.247924
+      duration_ms: 139.201941
       type: 'test'
       ...
     # Subtest: ortak yardımcı: projeksiyonun cari kalemleri = Vade Takip'in cari kalemleri (aynı aralık) = zil / takvim kalemleri (7 gün); kimlik, gün, yön, etiket, tutar
     ok 10 - ortak yardımcı: projeksiyonun cari kalemleri = Vade Takip'in cari kalemleri (aynı aralık) = zil / takvim kalemleri (7 gün); kimlik, gün, yön, etiket, tutar
       ---
-      duration_ms: 100.15554
+      duration_ms: 150.906271
       type: 'test'
       ...
     # Subtest: yetki: Finans Raporları (overview.view) yoksa 403 (ekran, PDF, Excel); cari kalemi yalnız Cari görüntüleme (accounts.view) yetkisi olana — yoksa aynı borç bir kez, faturasız alacakta
     ok 11 - yetki: Finans Raporları (overview.view) yoksa 403 (ekran, PDF, Excel); cari kalemi yalnız Cari görüntüleme (accounts.view) yetkisi olana — yoksa aynı borç bir kez, faturasız alacakta
       ---
-      duration_ms: 297.665275
+      duration_ms: 288.381126
       type: 'test'
       ...
     # Subtest: bir kez: Σ (cari kalemi + faturasız cari alacağı + kartın taksitleri) = carilerin açık bakiyesi; vadeli borç faturasız alacakta YOK, vadesiz borç orada
     not ok 12 - bir kez: Σ (cari kalemi + faturasız cari alacağı + kartın taksitleri) = carilerin açık bakiyesi; vadeli borç faturasız alacakta YOK, vadesiz borç orada
       ---
-      duration_ms: 202.649545
+      duration_ms: 188.66137
       type: 'test'
       location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/projeksiyon-vade-246.test.mjs:286:3'
       failureType: 'testCodeFailure'
@@ -630,7 +630,7 @@ not ok 3 - KS7 API: Değersiz Alacak ve faturasız stok iadesi carinin en eski a
     # Subtest: bir kez (açık alış faturası; 2.4.3 MM5'ten kalan çift sayım): alış faturası kendi vadesinde çıkış, faturasız alacakta ikinci kez düşülmez; tedarikçinin vadesiz borcu kaybolmaz
     not ok 13 - bir kez (açık alış faturası; 2.4.3 MM5'ten kalan çift sayım): alış faturası kendi vadesinde çıkış, faturasız alacakta ikinci kez düşülmez; tedarikçinin vadesiz borcu kaybolmaz
       ---
-      duration_ms: 57.586468
+      duration_ms: 67.218261
       type: 'test'
       location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/projeksiyon-vade-246.test.mjs:318:3'
       failureType: 'testCodeFailure'
@@ -684,31 +684,31 @@ not ok 3 - KS7 API: Değersiz Alacak ve faturasız stok iadesi carinin en eski a
     # Subtest: gecikmiş vadeli kalem takvimdeki gibi görünür: 'Vadesi geçmiş, kapanmamış' listesinde (gün, tutar, kimlik takvimle aynı); 'başlangıca ekle' ile başlangıca girer
     ok 14 - gecikmiş vadeli kalem takvimdeki gibi görünür: 'Vadesi geçmiş, kapanmamış' listesinde (gün, tutar, kimlik takvimle aynı); 'başlangıca ekle' ile başlangıca girer
       ---
-      duration_ms: 64.458811
+      duration_ms: 59.967307
       type: 'test'
       ...
     # Subtest: pencere iki ucu kapalı (K-P1): son gündeki kalem dahil, ertesi gün değil; aralığın ilk günündeki kalem dahil
     ok 15 - pencere iki ucu kapalı (K-P1): son gündeki kalem dahil, ertesi gün değil; aralığın ilk günündeki kalem dahil
       ---
-      duration_ms: 118.949912
+      duration_ms: 108.142025
       type: 'test'
       ...
     # Subtest: cari silinince kalemi de faturasız alacağı da yok; geri yüklenince döner
     ok 16 - cari silinince kalemi de faturasız alacağı da yok; geri yüklenince döner
       ---
-      duration_ms: 77.503342
+      duration_ms: 75.878702
       type: 'test'
       ...
     # Subtest: 002 şirketi: boş veri (satır yok, toplamlar 0); kalemler şirkete ayrı
     ok 17 - 002 şirketi: boş veri (satır yok, toplamlar 0); kalemler şirkete ayrı
       ---
-      duration_ms: 302.449416
+      duration_ms: 280.85685
       type: 'test'
       ...
     1..17
 not ok 4 - 2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemleri
   ---
-  duration_ms: 2887.249549
+  duration_ms: 2970.562026
   type: 'suite'
   location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/projeksiyon-vade-246.test.mjs:75:1'
   failureType: 'subtestsFailed'
@@ -719,13 +719,13 @@ not ok 4 - 2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kaleml
     # Subtest: bugün vadeli kalem aralıktadır (gecikmiş değil); yarın (yeni yıl) aralıkta; ay sonu (31 Ocak) 30 günlükte değil 60 günlükte; gün değişince bugünkü kalem gecikmişe geçer
     ok 1 - bugün vadeli kalem aralıktadır (gecikmiş değil); yarın (yeni yıl) aralıkta; ay sonu (31 Ocak) 30 günlükte değil 60 günlükte; gün değişince bugünkü kalem gecikmişe geçer
       ---
-      duration_ms: 87.9946
+      duration_ms: 108.492845
       type: 'test'
       ...
     1..1
 ok 5 - 2.4.6 madde 11: ay sonu, yıl dönümü ve gün değişimi (sahte saat)
   ---
-  duration_ms: 494.091975
+  duration_ms: 529.388627
   type: 'suite'
   ...
 1..5
@@ -736,4 +736,4 @@ ok 5 - 2.4.6 madde 11: ay sonu, yıl dönümü ve gün değişimi (sahte saat)
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 5656.633139
+# duration_ms 5610.365661

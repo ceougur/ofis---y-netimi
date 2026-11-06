@@ -17,7 +17,7 @@ TAP version 13
 # Subtest: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-250.test.mjs
 not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-250.test.mjs
   ---
-  duration_ms: 52.978749
+  duration_ms: 60.585149
   type: 'test'
   location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-250.test.mjs:1:1'
   failureType: 'testCodeFailure'
@@ -31,7 +31,7 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
         # Subtest: cari kartı: Gecikmiş Borç 1.100 (3 kalem), bakiye 1.400; eski alan (taksit) ayrı
         not ok 1 - cari kartı: Gecikmiş Borç 1.100 (3 kalem), bakiye 1.400; eski alan (taksit) ayrı
           ---
-          duration_ms: 8.434575
+          duration_ms: 7.334091
           type: 'test'
           location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:68:5'
           failureType: 'testCodeFailure'
@@ -72,7 +72,7 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
         # Subtest: cari listesi satırı ve 'Gecikmiş Borcu Olan' süzgeci aynı sayı; sıralama TYK'ya göre
         not ok 2 - cari listesi satırı ve 'Gecikmiş Borcu Olan' süzgeci aynı sayı; sıralama TYK'ya göre
           ---
-          duration_ms: 5.968925
+          duration_ms: 4.764419
           type: 'test'
           location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:73:5'
           failureType: 'testCodeFailure'
@@ -105,7 +105,7 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
         # Subtest: Anlık Durum alacak gecikmişi = cari listesinin toplamı (bu sunucuda tek gecikmiş cari bu)
         not ok 3 - Anlık Durum alacak gecikmişi = cari listesinin toplamı (bu sunucuda tek gecikmiş cari bu)
           ---
-          duration_ms: 30.340335
+          duration_ms: 23.062065
           type: 'test'
           location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:78:5'
           failureType: 'testCodeFailure'
@@ -125,35 +125,18 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
             async Test.run (node:internal/test_runner/test:1054:7)
             async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
           ...
-        # Subtest: mobil / Rapor Merkezi Cari Listesi (süzgeç Gecikmiş Borcu Olan) aynı cariyi aynı tutarla verir
-        not ok 4 - mobil / Rapor Merkezi Cari Listesi (süzgeç Gecikmiş Borcu Olan) aynı cariyi aynı tutarla verir
+        # Subtest: Rapor Merkezi Cari Listesi: report-center TYK'ya geçene kadar eski anlam (geciken taksit 300; cari kartı Gecikmiş Borç 1.100)
+        ok 4 - Rapor Merkezi Cari Listesi: report-center TYK'ya geçene kadar eski anlam (geciken taksit 300; cari kartı Gecikmiş Borç 1.100)
           ---
-          duration_ms: 7.345454
+          duration_ms: 8.951935
           type: 'test'
-          location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:84:5'
-          failureType: 'testCodeFailure'
-          error: |-
-            The input did not match the regular expression /1\.100,00/. Input:
-            
-            '300,00 TL'
-            
-          code: 'ERR_ASSERTION'
-          name: 'AssertionError'
-          expected:
-          actual: '300,00 TL'
-          operator: 'match'
-          stack: |-
-            TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:88:14)
-            process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-            async Test.run (node:internal/test_runner/test:1054:7)
-            async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
           ...
         # Subtest: Vade Takip: carinin vadesi geçmiş kalemleri toplamı = gecikmiş; aynı borç bir kez (fatura 500, borç 300, taksit 300)
         not ok 5 - Vade Takip: carinin vadesi geçmiş kalemleri toplamı = gecikmiş; aynı borç bir kez (fatura 500, borç 300, taksit 300)
           ---
-          duration_ms: 13.133456
+          duration_ms: 30.786511
           type: 'test'
-          location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:90:5'
+          location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:92:5'
           failureType: 'testCodeFailure'
           error: |-
             Expected values to be strictly equal:
@@ -166,7 +149,7 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
           actual: 80000
           operator: 'strictEqual'
           stack: |-
-            TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:94:14)
+            TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:96:14)
             process.processTicksAndRejections (node:internal/process/task_queues:103:5)
             async Test.run (node:internal/test_runner/test:1054:7)
             async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
@@ -174,9 +157,9 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
         # Subtest: zil / takvim: aynı kalemler (ufuk +7 gün); fatura durumu Vadesi Geçti, Kalan 500
         not ok 6 - zil / takvim: aynı kalemler (ufuk +7 gün); fatura durumu Vadesi Geçti, Kalan 500
           ---
-          duration_ms: 10.162851
+          duration_ms: 9.127981
           type: 'test'
-          location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:97:5'
+          location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:99:5'
           failureType: 'testCodeFailure'
           error: |-
             Expected values to be strictly deep-equal:
@@ -221,7 +204,7 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
               2: 'overdue'
           operator: 'deepStrictEqual'
           stack: |-
-            TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:100:14)
+            TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:102:14)
             process.processTicksAndRejections (node:internal/process/task_queues:103:5)
             async Test.run (node:internal/test_runner/test:1054:7)
             async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
@@ -229,9 +212,9 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
         # Subtest: S50: taksit kartı ekranı taksit kalanını kuyruktan gösterir; kartın kendi hesabı (Kalan 600) değişmez
         not ok 7 - S50: taksit kartı ekranı taksit kalanını kuyruktan gösterir; kartın kendi hesabı (Kalan 600) değişmez
           ---
-          duration_ms: 2.947434
+          duration_ms: 3.288766
           type: 'test'
-          location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:105:5'
+          location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:107:5'
           failureType: 'testCodeFailure'
           error: |-
             Expected values to be strictly deep-equal:
@@ -255,7 +238,7 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
             0: 600
           operator: 'deepStrictEqual'
           stack: |-
-            TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:108:14)
+            TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:110:14)
             process.processTicksAndRejections (node:internal/process/task_queues:103:5)
             async Test.run (node:internal/test_runner/test:1054:7)
             async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
@@ -263,11 +246,11 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
         1..7
     not ok 1 - B1: bütün ekranlar aynı sayı (cari kartı = liste = Anlık Durum = mobil cari listesi = Vade Takip = zil; fatura durumu)
       ---
-      duration_ms: 198.360351
+      duration_ms: 200.68148
       type: 'suite'
       location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:54:3'
       failureType: 'subtestsFailed'
-      error: '7 subtests failed'
+      error: '6 subtests failed'
       code: 'ERR_TEST_FAILURE'
       stack: |-
         async Promise.all (index 0)
@@ -275,9 +258,9 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
     # Subtest: S50 = A: kart seçilmeden alınan tahsilat ayrı kartın vadesi gelmiş taksitini kapatır; Taksitler ve zil bunu gösterir
     not ok 2 - S50 = A: kart seçilmeden alınan tahsilat ayrı kartın vadesi gelmiş taksitini kapatır; Taksitler ve zil bunu gösterir
       ---
-      duration_ms: 59.700448
+      duration_ms: 81.085691
       type: 'test'
-      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:112:3'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:114:3'
       failureType: 'testCodeFailure'
       error: |-
         Expected values to be strictly deep-equal:
@@ -313,7 +296,7 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
           0: 300
       operator: 'deepStrictEqual'
       stack: |-
-        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:118:12)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:120:12)
         process.processTicksAndRejections (node:internal/process/task_queues:103:5)
         async Test.run (node:internal/test_runner/test:1054:7)
         async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
@@ -321,9 +304,9 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
     # Subtest: S52 / S72 / S73: Ödeme Sözü gecikmişi değiştirmez; söz günü DAHİL 'Ödeme Sözü Var'; söz geçince düşer
     not ok 3 - S52 / S72 / S73: Ödeme Sözü gecikmişi değiştirmez; söz günü DAHİL 'Ödeme Sözü Var'; söz geçince düşer
       ---
-      duration_ms: 37.410826
+      duration_ms: 36.985329
       type: 'test'
-      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:125:3'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:127:3'
       failureType: 'testCodeFailure'
       error: |-
         söz günü (S72): gecikmiş sayılır, söz etkin
@@ -347,7 +330,7 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
       actual:
       operator: 'deepStrictEqual'
       stack: |-
-        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:129:12)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:131:12)
         process.processTicksAndRejections (node:internal/process/task_queues:103:5)
         async Test.run (node:internal/test_runner/test:1054:7)
         async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
@@ -356,9 +339,9 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
         # Subtest: S57: bağlı (Kapatılacak Fatura) kaydın carisi bağ değişmeden düzeltilmez → 409 entry-link-first; kayıt değişmez
         not ok 1 - S57: bağlı (Kapatılacak Fatura) kaydın carisi bağ değişmeden düzeltilmez → 409 entry-link-first; kayıt değişmez
           ---
-          duration_ms: 90.146216
+          duration_ms: 130.540645
           type: 'test'
-          location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:140:5'
+          location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:142:5'
           failureType: 'testCodeFailure'
           error: |-
             Expected values to be strictly equal:
@@ -371,7 +354,7 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
           actual: 200
           operator: 'strictEqual'
           stack: |-
-            TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:146:14)
+            TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:148:14)
             process.processTicksAndRejections (node:internal/process/task_queues:103:5)
             async Test.run (node:internal/test_runner/test:1054:7)
             async Promise.all (index 0)
@@ -381,9 +364,9 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
         # Subtest: S79 = A (S54 gibi): aynı düzeltmede cari + bağ değişirse kabul — bağ yeni carinin belgesine; eski fatura yeniden açılır
         not ok 2 - S79 = A (S54 gibi): aynı düzeltmede cari + bağ değişirse kabul — bağ yeni carinin belgesine; eski fatura yeniden açılır
           ---
-          duration_ms: 82.146938
+          duration_ms: 111.272429
           type: 'test'
-          location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:151:5'
+          location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:153:5'
           failureType: 'testCodeFailure'
           error: |-
             cari + bağ: 404 {"ok":false,"error":"Kapatılacak fatura bu caride bulunamadı."}
@@ -398,16 +381,16 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
           stack: |-
             must (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:41:12)
             process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-            async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:157:7)
+            async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:159:7)
             async Test.run (node:internal/test_runner/test:1054:7)
             async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
           ...
         # Subtest: bağsız kaydın carisi düzeltilir (S57 uygulanmaz); iki carinin bakiyesi ve kuyruğu yeniden kurulur
         not ok 3 - bağsız kaydın carisi düzeltilir (S57 uygulanmaz); iki carinin bakiyesi ve kuyruğu yeniden kurulur
           ---
-          duration_ms: 102.178845
+          duration_ms: 103.370989
           type: 'test'
-          location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:167:5'
+          location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:169:5'
           failureType: 'testCodeFailure'
           error: |-
             Expected values to be strictly deep-equal:
@@ -428,7 +411,7 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
           actual:
           operator: 'deepStrictEqual'
           stack: |-
-            TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:174:14)
+            TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:176:14)
             process.processTicksAndRejections (node:internal/process/task_queues:103:5)
             async Test.run (node:internal/test_runner/test:1054:7)
             async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
@@ -436,9 +419,9 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
         # Subtest: S80 / S83 / S84 = A: fatura formunda alınan / yapılan peşinin carisi ya da bağı → 409 invoice-payment-edit ('faturayı düzenleyin')
         not ok 4 - S80 / S83 / S84 = A: fatura formunda alınan / yapılan peşinin carisi ya da bağı → 409 invoice-payment-edit ('faturayı düzenleyin')
           ---
-          duration_ms: 64.933932
+          duration_ms: 74.488319
           type: 'test'
-          location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:176:5'
+          location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:178:5'
           failureType: 'testCodeFailure'
           error: |-
             S80 carisi
@@ -460,7 +443,7 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
             1: 'invoice-linked'
           operator: 'deepStrictEqual'
           stack: |-
-            TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:183:14)
+            TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:185:14)
             process.processTicksAndRejections (node:internal/process/task_queues:103:5)
             async Test.run (node:internal/test_runner/test:1054:7)
             async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
@@ -468,9 +451,9 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
         # Subtest: K10-1: kilitli dönemdeki peşinin carisi → önce KILITLI_DONEM (409 period-locked)
         not ok 5 - K10-1: kilitli dönemdeki peşinin carisi → önce KILITLI_DONEM (409 period-locked)
           ---
-          duration_ms: 304.139386
+          duration_ms: 280.671034
           type: 'test'
-          location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:194:5'
+          location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:196:5'
           failureType: 'testCodeFailure'
           error: |-
             Expected values to be strictly deep-equal:
@@ -492,7 +475,7 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
             1: 'invoice-linked'
           operator: 'deepStrictEqual'
           stack: |-
-            TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:200:16)
+            TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:202:16)
             process.processTicksAndRejections (node:internal/process/task_queues:103:5)
             async Test.run (node:internal/test_runner/test:1054:7)
             async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
@@ -500,9 +483,9 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
         # Subtest: S81 = A: Normal Cari tahsilat aynı düzeltmede şüpheli kaydı açık bir cariye alınıp 120 bakiyesini aşarsa red (doubtful-normal-exceeds)
         not ok 6 - S81 = A: Normal Cari tahsilat aynı düzeltmede şüpheli kaydı açık bir cariye alınıp 120 bakiyesini aşarsa red (doubtful-normal-exceeds)
           ---
-          duration_ms: 128.764548
+          duration_ms: 148.585449
           type: 'test'
-          location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:205:5'
+          location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:207:5'
           failureType: 'testCodeFailure'
           error: |-
             Expected values to be strictly deep-equal:
@@ -524,7 +507,7 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
             0: 200
           operator: 'deepStrictEqual'
           stack: |-
-            TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:214:14)
+            TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:216:14)
             process.processTicksAndRejections (node:internal/process/task_queues:103:5)
             async Test.run (node:internal/test_runner/test:1054:7)
             async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
@@ -532,9 +515,9 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
         # Subtest: S85 = A (K10-3): Normal Cari kaydın yalnız TARİHİ 120'nin küçük olduğu güne alınırsa sınır yeni günde ölçülür → red
         not ok 7 - S85 = A (K10-3): Normal Cari kaydın yalnız TARİHİ 120'nin küçük olduğu güne alınırsa sınır yeni günde ölçülür → red
           ---
-          duration_ms: 112.111901
+          duration_ms: 110.751121
           type: 'test'
-          location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:220:5'
+          location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:222:5'
           failureType: 'testCodeFailure'
           error: |-
             Expected values to be strictly deep-equal:
@@ -556,7 +539,7 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
             0: 200
           operator: 'deepStrictEqual'
           stack: |-
-            TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:229:14)
+            TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:231:14)
             process.processTicksAndRejections (node:internal/process/task_queues:103:5)
             async Test.run (node:internal/test_runner/test:1054:7)
             async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
@@ -564,9 +547,9 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
         1..7
     not ok 4 - düzeltmede cari değişimi (S54 / S57 / S79 / S80 / S81 / S83 / S84 / S85; sıra K10-1)
       ---
-      duration_ms: 885.426974
+      duration_ms: 961.459059
       type: 'suite'
-      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:139:3'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:141:3'
       failureType: 'subtestsFailed'
       error: '7 subtests failed'
       code: 'ERR_TEST_FAILURE'
@@ -574,16 +557,16 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
     # Subtest: artımlı önbellek (tasarım §5): yazımdan sonra yalnız dokunulan cari yeniden kurulur; her carinin sonucu cari başına baştan kurulumla aynı
     not ok 5 - artımlı önbellek (tasarım §5): yazımdan sonra yalnız dokunulan cari yeniden kurulur; her carinin sonucu cari başına baştan kurulumla aynı
       ---
-      duration_ms: 0.497989
+      duration_ms: 0.53777
       type: 'test'
-      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:234:3'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:236:3'
       failureType: 'testCodeFailure'
       error: 'inv.allObligations is not a function'
       code: 'ERR_TEST_FAILURE'
       name: 'TypeError'
       stack: |-
-        snapshot (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:238:23)
-        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:241:21)
+        snapshot (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:240:23)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:243:21)
         Test.runInAsyncScope (node:async_hooks:214:14)
         Test.run (node:internal/test_runner/test:1047:25)
         process.processTicksAndRejections (node:internal/process/task_queues:103:5)
@@ -592,9 +575,9 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
     # Subtest: mutabakat kapısının list()'i (iç kimlik 'ledger' / 'integrity', ids) TYK hesaplamaz
     not ok 6 - mutabakat kapısının list()'i (iç kimlik 'ledger' / 'integrity', ids) TYK hesaplamaz
       ---
-      duration_ms: 2.954675
+      duration_ms: 3.247806
       type: 'test'
-      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:273:3'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:275:3'
       failureType: 'testCodeFailure'
       error: |-
         kullanıcı listesi TYK'yı okur
@@ -607,7 +590,7 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
       actual: 0
       operator: 'strictEqual'
       stack: |-
-        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:288:14)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:290:14)
         Test.runInAsyncScope (node:async_hooks:214:14)
         Test.run (node:internal/test_runner/test:1047:25)
         process.processTicksAndRejections (node:internal/process/task_queues:103:5)
@@ -616,7 +599,7 @@ not ok 1 - /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratch
     1..6
 not ok 2 - 2.5.0 Ç5-B — Tek Yükümlülük Kuyruğu (API)
   ---
-  duration_ms: 1874.508779
+  duration_ms: 2050.041462
   type: 'suite'
   location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/tyk-api-250.test.mjs:23:1'
   failureType: 'subtestsFailed'
@@ -627,21 +610,21 @@ not ok 2 - 2.5.0 Ç5-B — Tek Yükümlülük Kuyruğu (API)
     # Subtest: v2.4.9: iki fatura (vade belge sırasına ters) + bağsız tahsilat + Yeni Borç kartı + bağsız tahsilat + vadesiz Borç Yaz → güncel kod TYK sayıları
     ok 1 - v2.4.9: iki fatura (vade belge sırasına ters) + bağsız tahsilat + Yeni Borç kartı + bağsız tahsilat + vadesiz Borç Yaz → güncel kod TYK sayıları # SKIP v2.4.9 etiketi yok (git fetch --tags)
       ---
-      duration_ms: 0.658433
+      duration_ms: 0.66932
       type: 'test'
       ...
     1..1
 ok 3 - 2.5.0 Ç5-B — v2.4.9 verisi güncel kodun kuyruğunda
   ---
-  duration_ms: 1.610286
+  duration_ms: 1.574122
   type: 'suite'
   ...
 1..3
 # tests 20
 # suites 4
-# pass 0
-# fail 19
+# pass 1
+# fail 18
 # cancelled 0
 # skipped 1
 # todo 0
-# duration_ms 2363.89555
+# duration_ms 2627.041513

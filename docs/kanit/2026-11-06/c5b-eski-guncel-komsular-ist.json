@@ -1,16 +1,16 @@
 {
   "ad": "c5b-eski-guncel-komsular-ist",
   "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=2 /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/cari-vade-245.test.mjs /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/kapama-ks7-245.test.mjs /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-eski/test/projeksiyon-vade-246.test.mjs",
-  "commit": "25c449d9cf51d43a46f03ea9cea2f4767378ecbd",
+  "commit": "b09153cf17203eb1f4f630948754f7e68083cc40",
   "dal": "worktree-agent-ae5136939616adbab",
-  "kirli": 29,
-  "izlenmeyen": 2,
+  "kirli": 0,
+  "izlenmeyen": 1,
   "platform": "linux 6.18.44-fc-v242 x64",
   "node": "v22.23.4",
   "cpu": 4,
   "bellek_gb": 16,
-  "basladi": "2026-11-06T18:02:35.108Z",
-  "sure_sn": 5.6,
+  "basladi": "2026-11-06T19:23:10.259Z",
+  "sure_sn": 6.2,
   "cikis_kodu": 1,
   "sinyal": null,
   "zaman_asimi": false,
@@ -37,12 +37,12 @@
     },
     {
       "ad": "2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi) › K6.3 kalem sözleşmesi: id, source, accountId, entryId, direction, person, label, dueDate, amount, days, state; Beklenen Ödeme Tarihi önce gelir",
-      "konum": "test/cari-vade-245.test.mjs:281:3",
+      "konum": "test/cari-vade-245.test.mjs:283:3",
       "hata": "vadesiz + söz bugün: kalem söz gününde, vade (kayıt günü) geçti → Gecikmiş, gün sayısı vadeden (S1, S67 / S69 = A) · + actual - expected · [ (beklenen , gelen )"
     },
     {
       "ad": "2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi) › K6.3 ufuk: geçmişin tamamı + bugünden 7 gün (8. gün yok); vadesiz borç kayıt gününde vadeli kalemdir (S1)",
-      "konum": "test/cari-vade-245.test.mjs:308:3",
+      "konum": "test/cari-vade-245.test.mjs:310:3",
       "hata": "vadesiz borç: vade = kayıt günü, ertesi gün gecikmiş · + actual - expected · + undefined"
     },
     {
@@ -73,7 +73,7 @@
     {
       "ad": "2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemleri › karışık kuyruk: vadeli borç + vadeli satış faturası + tahsilat → fatura açığı ve borç kalanı kendi vadelerinde; Σ = bakiye, faturasız alacak yok",
       "konum": "test/projeksiyon-vade-246.test.mjs:170:3",
-      "hata": "[{\"source\":\"account\",\"date\":\"2026-10-23\",\"direction\":\"in\",\"amount\":500,\"label\":\"Tahsil Edilecek Borç\"},{\"source\":\"invoice\",\"date\":\"2026-11-14\",\"direction\":\"in\",\"amount\":1500,\"label\":\"Satış faturası FIS2026000000001 (kalan)\"}] (late aentry-d979d347-bc8b-45e2-a6c2-5d5145c36d02) · + actual - expected · [ (beklenen , gelen )"
+      "hata": "[{\"source\":\"account\",\"date\":\"2026-10-23\",\"direction\":\"in\",\"amount\":500,\"label\":\"Tahsil Edilecek Borç\"},{\"source\":\"invoice\",\"date\":\"2026-11-14\",\"direction\":\"in\",\"amount\":1500,\"label\":\"Satış faturası FIS2026000000001 (kalan)\"}] (late aentry-0a098648-5771-4975-bd72-76b1a7d73914) · + actual - expected · [ (beklenen , gelen )"
     },
     {
       "ad": "2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemleri › bir kez: Σ (cari kalemi + faturasız cari alacağı + kartın taksitleri) = carilerin açık bakiyesi; vadeli borç faturasız alacakta YOK, vadesiz borç orada",
@@ -88,6 +88,6 @@
   ],
   "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-kanit/2026-11-06/c5b-eski-guncel-komsular-ist.log",
   "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ae5136939616adbab",
-  "ham_cikti_sha256": "945efe5ce4f52e62ee59d83a3c874fa0f7fc82dd11f962d797970f52bce3d614",
-  "ham_cikti_bayt": 33718
+  "ham_cikti_sha256": "86677936622b2ec1a243689c2551ab0f6cdb4839549da7f71a23a57c7eca8867",
+  "ham_cikti_bayt": 33723
 }
