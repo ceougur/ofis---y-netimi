@@ -1,0 +1,59 @@
+KIRMIZI (DEĞER) S23-01-sinirda-bekleyen-yeniden-basma-elle-sayilir-pencere-acilinca-gider: 7 fark
+    * [{}…] yeniden.Y3: elle {"elenen": {}, "alinan": [], "oneri": null, "supheli_etiketi": ["SR"], "elle_sayilan": ["SR"]} ≠ model {"elenen": {"SR": "zaten_kuyrukta"}, "alinan": [], "oneri": null, "supheli_etiketi": ["SR"]}
+    * [{}…] kontroller.K3.isler: elle {"T1/A": "Teslim Edildi", "T1/SR": "Teslim Edildi", "T1/SV": "Atlandı"} ≠ model {"T1/A": "Teslim Edildi", "T1/SR": "Atlandı", "T1/SV": "Atlandı"}
+    * [{}…] isler.T1/SR.degiskenler: elle ["Serkan Sınırda", "Deneme Ticaret Ltd. Şti.", "15.10.2026", "300,00 TL", {"plan_susuyor": "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel b ≠ model ["Serkan Sınırda", "Deneme Ticaret Ltd. Şti.", "06.10.2026", "800,00 TL", "800,00 TL"]
+    * [{}…] isler.T1/SR.post: elle 2 ≠ model 1
+    * [{}…] isler.T1/SR.atlanma_nedeni: elle null ≠ model "supheli_alacak"
+    * [{}…] meta.post: elle {"A": 1, "SR": 2, "SV": 1} ≠ model {"A": 1, "SR": 1, "SV": 1}
+KIRMIZI (DEĞER) S23-02-duraklatildi-yeniden-basma-elle-devam-et-ile-gider-kayitsiz-zaten-kuyrukta: 7 fark
+    * [{}…] yeniden.Y4: elle {"elenen": {}, "alinan": [], "oneri": null, "supheli_etiketi": ["DK"], "elle_sayilan": ["DK"]} ≠ model {"elenen": {"DK": "zaten_kuyrukta"}, "alinan": [], "oneri": null, "supheli_etiketi": ["DK"]}
+    * [{}…] kontroller.K3.isler: elle {"T1/A": "Teslim Edildi", "T1/DK": "Teslim Edildi", "T1/DL": "Atlandı", "T1/DT": "Teslim Edildi"} ≠ model {"T1/A": "Teslim Edildi", "T1/DK": "Atlandı", "T1/DL": "Atlandı", "T1/DT": "Teslim Edildi"}
+    * [{}…] isler.T1/DK.degiskenler: elle ["Doğan Kuyrukta", "Deneme Ticaret Ltd. Şti.", "18.10.2026", "300,00 TL", {"plan_susuyor": "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel b ≠ model ["Doğan Kuyrukta", "Deneme Ticaret Ltd. Şti.", "04.10.2026", "900,00 TL", "900,00 TL"]
+    * [{}…] isler.T1/DK.post: elle 2 ≠ model 1
+    * [{}…] isler.T1/DK.atlanma_nedeni: elle null ≠ model "supheli_alacak"
+    * [{}…] meta.post: elle {"A": 1, "DK": 2, "DL": 1, "DT": 2} ≠ model {"A": 1, "DK": 1, "DL": 1, "DT": 2}
+KIRMIZI (DEĞER) S23-03-zincirdeki-yeniden-deneme-beklerken-yeniden-basma-elle-gider: 7 fark
+    * [{}…] yeniden.Y3: elle {"elenen": {}, "alinan": [], "oneri": null, "supheli_etiketi": ["ZK"], "elle_sayilan": ["ZK"]} ≠ model {"elenen": {"ZK": "zaten_kuyrukta"}, "alinan": [], "oneri": null, "supheli_etiketi": ["ZK"]}
+    * [{}…] kontroller.K3.isler: elle {"T1/A": "Teslim Edildi", "T1/ZK": "Teslim Edildi"} ≠ model {"T1/A": "Teslim Edildi", "T1/ZK": "Atlandı"}
+    * [{}…] isler.T1/ZK.degiskenler: elle ["Zeki Zincir", "Deneme Ticaret Ltd. Şti.", "17.10.2026", "400,00 TL", {"plan_susuyor": "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel baki ≠ model ["Zeki Zincir", "Deneme Ticaret Ltd. Şti.", "03.10.2026", "1.000,00 TL", "1.000,00 TL"]
+    * [{}…] isler.T1/ZK.post: elle 3 ≠ model 2
+    * [{}…] isler.T1/ZK.atlanma_nedeni: elle null ≠ model "supheli_alacak"
+    * [{}…] meta.post: elle {"A": 1, "ZK": 3} ≠ model {"A": 1, "ZK": 2}
+KIRMIZI (DEĞER) S23-04-meta-bekletti-beklerken-yeniden-basma-ikinci-denemede-gider: 7 fark
+    * [{}…] yeniden.Y2: elle {"elenen": {}, "alinan": [], "oneri": null, "supheli_etiketi": ["MK"], "elle_sayilan": ["MK"]} ≠ model {"elenen": {"MK": "zaten_kuyrukta"}, "alinan": [], "oneri": null, "supheli_etiketi": ["MK"]}
+    * [{}…] kontroller.K3.isler: elle {"T1/A": "Teslim Edildi", "T1/MK": "Teslim Edildi"} ≠ model {"T1/A": "Teslim Edildi", "T1/MK": "Atlandı"}
+    * [{}…] isler.T1/MK.degiskenler: elle ["Mine Bekletilen", "Deneme Ticaret Ltd. Şti.", "16.10.2026", "250,00 TL", {"plan_susuyor": "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel  ≠ model ["Mine Bekletilen", "Deneme Ticaret Ltd. Şti.", "06.10.2026", "650,00 TL", "650,00 TL"]
+    * [{}…] isler.T1/MK.post: elle 3 ≠ model 2
+    * [{}…] isler.T1/MK.atlanma_nedeni: elle null ≠ model "supheli_alacak"
+    * [{}…] meta.post: elle {"A": 1, "MK": 3} ≠ model {"A": 1, "MK": 2}
+KIRMIZI (DEĞER) S23-05-yeniden-basmada-suphesiz-tutar-yok-iki-okuma-ileti-gitmez: 2 fark
+    * [{}…] yeniden.Y2: elle {"elenen": {"secenek": [{}, {"NZ": "gecikmis_borc_yok"}], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar metninde yok — b ≠ model {"elenen": {"NZ": {"secenek": ["gecikmis_borc_yok", "zaten_kuyrukta"], "susuyor": "S16 'yoksa elenir': elemenin işteki Yine de Gönder ba
+    * [{}…] isler.T1/NZ.atlanma_nedeni: elle {"secenek": ["gecikmis_borc_yok", "supheli_alacak"], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar metninde yok — bekley ≠ model "supheli_alacak"
+KIRMIZI (DEĞER) SW3-01-bir-yil-siniri-iki-yani-sure-dolunca-ayni-donem-daha-once-gonderildi: 4 fark
+    * [{}…] kontroller.K2.icerik: elle {"T1/A": {"telefon": null, "degiskenler": null, "pdf": null, "dosya_adi": null, "icerik_silindi": true}, "T1/B": {"telefon": null, "degiskenler": null, "pdf": n ≠ model {"T1/A": {"telefon": "+905321112233", "degiskenler": ["Ayşe Yılmaz", "Deneme Ticaret Ltd. Şti.", "01.10.2026 – 31.10.2026", "1
+    * [{}…] kontroller.K3.icerik: elle {"T1/A": {"telefon": null, "degiskenler": null, "pdf": null, "dosya_adi": null, "icerik_silindi": true}, "T1/B": {"telefon": null, "degiskenler": null, "pdf": n ≠ model {"T1/A": {"telefon": "+905321112233", "degiskenler": ["Ayşe Yılmaz", "Deneme Ticaret Ltd. Şti.", "01.10.2026 – 31.10.2026", "1
+    * [{}…] isler.T1/A.icerik_silindi: elle true ≠ model "<YOK>"
+    * [{}…] isler.T1/A.telefon: elle null ≠ model "+905321112233"
+KIRMIZI (DEĞER) SW3-02-gece-yarisi-yerel-gun-utc-farkli-bir-yil-siniri: 2 fark
+    * [{}…] kontroller.K2.icerik: elle {"T1/A": {"telefon": null, "degiskenler": null, "pdf": null, "dosya_adi": null, "icerik_silindi": true}} ≠ model {"T1/A": {"telefon": "+905321112233", "degiskenler": ["Ayşe Yılmaz", "Deneme Ticaret Ltd. Şti.", "01.10.2026 – 31.10.2026", "1.250,00 TL"], "pdf": {"cari_ad": "
+    * [{}…] isler.T1/A.icerik_silindi: elle true ≠ model "<YOK>"
+KIRMIZI (DEĞER) SW3-03-silme-talebi-ayni-donem-elenir-sonraki-donem-gider-silinen-telefon-kullanilmaz: 4 fark
+    * [{}…] kontroller.K1.icerik: elle {"T1/A": {"telefon": null, "degiskenler": null, "pdf": null, "dosya_adi": null, "icerik_silindi": true}, "T1/B": {"telefon": "+905332223344", "degiskenler": ["M ≠ model {"T1/A": {"telefon": "+905321112233", "degiskenler": ["Ayşe Yılmaz", "Deneme Ticaret Ltd. Şti.", "01.10.2026 – 31.10.2026", "1
+    * [{}…] kontroller.K2.icerik: elle {"T1/A": {"telefon": null, "degiskenler": null, "pdf": null, "dosya_adi": null, "icerik_silindi": true}, "T1/B": {"telefon": "+905332223344", "degiskenler": ["M ≠ model {"T1/A": {"telefon": "+905321112233", "degiskenler": ["Ayşe Yılmaz", "Deneme Ticaret Ltd. Şti.", "01.10.2026 – 31.10.2026", "1
+    * [{}…] isler.T1/A.icerik_silindi: elle true ≠ model "<YOK>"
+    * [{}…] isler.T1/C.icerik_silindi: elle true ≠ model "<YOK>"
+KIRMIZI (DEĞER) SW3-04-geri-yukleme-bir-yildan-eski-icerik-donunce-silinir: 3 fark
+    * [{}…] kontroller.K1.icerik: elle {"T1/A": {"telefon": null, "degiskenler": null, "pdf": null, "dosya_adi": null, "icerik_silindi": true}} ≠ model {"T1/A": {"telefon": "+905321112233", "degiskenler": ["Ayşe Yılmaz", "Deneme Ticaret Ltd. Şti.", "01.10.2026 – 31.10.2026", "1.250,00 TL"], "pdf": {"cari_ad": "
+    * [{}…] kontroller.K2.icerik: elle {"T1/A": {"telefon": null, "degiskenler": null, "pdf": null, "dosya_adi": null, "icerik_silindi": true}} ≠ model {"T1/A": {"telefon": "+905321112233", "degiskenler": ["Ayşe Yılmaz", "Deneme Ticaret Ltd. Şti.", "01.10.2026 – 31.10.2026", "1.250,00 TL"], "pdf": {"cari_ad": "
+    * [{}…] isler.T1/A.icerik_silindi: elle true ≠ model "<YOK>"
+KIRMIZI (DEĞER) SW3-05-silme-talebinden-once-alinan-yedek-geri-yuklenir-icerik-susuyor-r3-kesin: 2 fark
+    * [{}…] kontroller.K1.icerik: elle {"T1/A": {"telefon": null, "degiskenler": null, "pdf": null, "dosya_adi": null, "icerik_silindi": true}, "T1/B": {"telefon": "+905332223344", "degiskenler": ["M ≠ model {"T1/A": {"telefon": "+905321112233", "degiskenler": ["Ayşe Yılmaz", "Deneme Ticaret Ltd. Şti.", "01.10.2026 – 31.10.2026", "1
+    * [{}…] kontroller.K2.icerik: elle {"T1/A": {"telefon": {"plan_susuyor": "silme talebinden ÖNCE alınmış yedek geri yüklenince silinen içerik / telefon / PDF'in geri gelip gelmediği (talebin yenid ≠ model {"T1/A": {"telefon": "+905321112233", "degiskenler": ["Ayşe Yılmaz", "Deneme Ticaret Ltd. Şti.", "01.10.2026 – 31.10.2026", "1
+yeni 10 senaryo: 10 KIRMIZI (0 hata, 10 değer), 0 AYNI
+1..10
+# tests 10
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
