@@ -97,6 +97,10 @@ export function summaryOf(value) {
   return { configured: typeof raw.tokenSealed === "string" && raw.tokenSealed !== "", mode: raw.mode === "embedded" ? "embedded" : "manual", wabaId: String(raw.wabaId), phoneNumberId: String(raw.phoneNumberId) };
 }
 export const sha256 = value => createHash("sha256").update(String(value)).digest("hex");
+// Ofisin uzaktan (telefon) adresi kanca kökü olarak: sondaki "/" atılır; yalnız HTTPS kök (testte .test / .localhost üzerinde HTTP). 2.5.0 WE: Elle Bağla'nın uygulama düzeyi
+// webhook adresi de (lib/whatsapp/app-webhook.mjs) AYNI kuralla.
+export const hookBase = value => String(value || "").replace(/\/+$/, "");
+export const usableBase = base => /^https:\/\/[^\s/?#]+$/i.test(base) || /^http:\/\/[^\s/?#]+\.(test|localhost)(:\d+)?$/i.test(base);
 // sharedWaba(wabaId) (2.5.0 W-2): bu bilgisayarda BAŞKA bir şirket aynı WhatsApp Business hesabına belirteçli bağlı mı (ortak kayıt — lib/whatsapp/hub.mjs). Bağlıysa
 // Bağlantıyı Kaldır Meta'daki aboneliği SİLMEZ (abonelik uygulama + WABA başına tektir; öbür şirketinki de odur — plan §3 "Nasıl bozulur" 1).
 export function createWhatsappConnection({ store, config = {}, audit = () => {}, now = () => new Date(), onChange = () => {}, hooks = null, publicUrl = () => "", sharedWaba = () => false }) {
@@ -639,8 +643,6 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
   // istekte açık durur, saklanan yalnız SHA-256 karmaları. Aynı WABA'yı kullanan iki şirket aynı adresi paylaşır (bildirim wamid'le doğru şirkete gider —
   // lib/whatsapp/hook.mjs); Yedekten Geri Yükle / Şirket Verisini Sıfırla kaydı değiştirmez. Kayıt önce "Bekliyor" yazılır (Meta abonelik sırasında adresi
   // doğrulayabilir), Meta kabul edince "Kayıtlı".
-  const hookBase = value => String(value || "").replace(/\/+$/, "");
-  const usableBase = base => /^https:\/\/[^\s/?#]+$/i.test(base) || /^http:\/\/[^\s/?#]+\.(test|localhost)(:\d+)?$/i.test(base);
   const lastCheck = new Map(); // WABA → son "Meta'daki adres" okuması (ISO; bakım turunda saatte en çok bir kez)
   const ms = value => Date.parse(value || "");
   const within = (value, span) => {

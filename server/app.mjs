@@ -277,7 +277,8 @@ function buildApp(overrides, opening) {
   const migration = runMigrations(store, { backupDir: backupDirNow(), keep: config.backupKeep, log, company: companyIdentity(), now: config.now });
   openFault("after-migrations");
   // 2.4.8 W2 (lib/whatsapp/hub.mjs): WhatsApp gönderim defteri (makine düzeyi, ana veri klasöründe), tek işçi ve bağlantı kaydı — ortak katmanda tek örnek.
-  const whatsapp = hub ? hub.whatsapp : createWhatsappHub({ dataDir: config.dataDir, log, gapMs: config.whatsappGapMs, manual: config.whatsappWorker === "manual", fault: config.whatsappLedgerFault });
+  // 2.5.0 WE: store = ortak katmanın deposu (Elle Bağla uygulama düzeyi webhook bilgileri kurulum başına orada, mühürlü — lib/whatsapp/app-webhook.mjs).
+  const whatsapp = hub ? hub.whatsapp : createWhatsappHub({ dataDir: config.dataDir, store, now: () => new Date(config.now()), log, gapMs: config.whatsappGapMs, manual: config.whatsappWorker === "manual", fault: config.whatsappLedgerFault });
   if (!hub) {
     undo.push(() => whatsapp.ledger.close());
     undo.push(() => whatsapp.scheduler.stop()); // tersten: önce işçi (async, beklenmez; açılışta başlamamıştır), sonra defter
@@ -862,7 +863,7 @@ function buildApp(overrides, opening) {
   // 2.4.8 W9: WhatsApp durum bildirimi (kapıcının cihazsız geçirdiği /wa/kanca/<gizli yol>; lib/whatsapp/hook.mjs) mobil uzak oturum kapısından ÖNCE işlenir.
   const whatsappHook = hub
     ? null
-    : createWhatsappHook({ hooks: whatsapp.ledger, companyOf: id => companies.get(id), companies: () => companies.list(), appFor: company => appFor(company), verifyMark: req => context.mobileSync.kancaIsareti(req), log, now: () => new Date(config.now()) });
+    : createWhatsappHook({ hooks: whatsapp.ledger, companyOf: id => companies.get(id), companies: () => companies.list(), appFor: company => appFor(company), verifyMark: req => context.mobileSync.kancaIsareti(req), modeOf: (id, wabaId) => whatsapp.modeOf(id, wabaId), appWebhook: whatsapp.appWebhook, log, now: () => new Date(config.now()) });
   const remoteServer = hub ? null : createServer((req, res) => {
     if (isHookRequest(req)) return void whatsappHook.handle(req, res);
     context.mobileSync.izle(req, res); // 2.4.7 M3
