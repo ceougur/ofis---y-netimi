@@ -401,7 +401,7 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   (2) Ç3 TUR 2 (ae037f9ed9ae9cefe; xhigh; taban 40473f17; routes/ledger.mjs PUT period-lock sırası doğrula → beforeLock → iptal → kilit + kanca; PUT erken yanıt + istemci ilerleme (plan §8 1 M ≤ 2 dk,
       İLERLEME), önce 1 M'de yeniden üretim; ledger-snapshots.mjs'e dokunmaz). Ç3 tur 1 + tur 2 birleşince BİRLEŞİK Ç3 TUR 1-2 DAR KONTROL.
   (3) BİRLEŞİK TUR 3 (a0712b8dfbfc9c5d9; high; taban 3360687f; YAN-A, YAN-B, taksit / stok kartı PUT sürümü (önce yeniden üret), hof-stock.js:450, e2e PUT sayımı (DÜŞÜK-3); ledger dosyalarına dokunmaz).
-  (4) Ç2 TUR 1 DAR KONTROL (ac32450bbb47e5f23; xhigh; fark 1e68ad05..f4763430; G4 expected() every-kipi çağıranları, göç 46 yerinde değişim).
+  (4) Ç2 TUR 1 DAR KONTROL BİTTİ 04:58: YÜKSEK 0; B1 (süzgeçle ORTA: K5 saat + tek yönlü çift kuralı) + B2 (test) → Ç2 TUR 2 (xhigh, yeni ajan, ledger-vouchers.mjs) KOD AJANI YERİ AÇILINCA; B3 → 2.5.1.
   (5) KÂHİN BAKIMI 4 (acf8e287df213d69e; kodu görmeyen, xhigh; taban e6e5610f; S14, S15, S18–S21) ve (6) WK GÜNCELLEMESİ 13 (adcc281ecb00414de; kodu görmeyen, xhigh; S16, S17 + karar (5)) —
       bitince BAĞIMSIZLIK DENETİMİ (readlink tasks/<id>.output → scratchpad/denetim-wk250/arac-kaydi.py) → birleştir → yeniden koş (iki TZ, mutasyon).
   YANITLANDI 06.11 04:50 (kullanıcı "benden beklediğin cevapların hepsine A yap"; hepsi A, tam metin D): S14 (R4 faturaya bağlı çek şüpheli caride hangi hesap), S15 (R5 kartlı faturanın İptal Et'i), S16 (S7-c Sonucu Belirsiz +
