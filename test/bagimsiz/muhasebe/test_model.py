@@ -637,6 +637,9 @@ class OlayMaddeleri(unittest.TestCase):
             self.assertEqual(kos(kaynak, dg)[:2], (["SUPHELI_NORMAL_ASIM"], (100, 800)), f"{kaynak} {dg}")
         self.assertEqual(kos("PB", {"cari": "C2"})[0], ["BAG_KALDIRILMALI"])                              # S57 önce
         self.assertEqual(kos("PP", {"cari": "C2", "fatura": None, "normal_cari": True})[0], ["FATURA_DUZENLENMELI"])   # S80 önce
+        pp2 = [o("tahsilat", "2026-01-05", id="PP2", cari="C1", yol="havale", banka="B1", tutar=150, fatura="F1", fatura_odemesi=True)]
+        self.assertEqual(kos("PP2", {"cari": "C2", "fatura": None, "normal_cari": True}, ek=pp2)[0], ["FATURA_DUZENLENMELI"])   # 150 > 100 de olsa S80 önce (L6)
+        self.assertEqual(kos("PB", {"cari": "C2", "tutar": 150})[0], ["BAG_KALDIRILMALI"])                # 150 > 100 de olsa S57 önce (L6)
         # kabul: eşitlik (PE 100 = 100; PK kendi 100'ü = 100), fatura bağında 128'den düşen sayılmaz (PB 101 tamamı 128'den), fatura bağında 120'de kapanan = 120 (PF:
         # 900 128'den, 100 120'den), şüpheli kaydı olmayan cari (C3)
         self.assertEqual(kos("PE", {"cari": "C2", "fatura": None, "normal_cari": True})[:2], ([], (0, 800)))
