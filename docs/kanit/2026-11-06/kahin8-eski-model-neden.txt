@@ -1,0 +1,138 @@
+s17-cari-duzeltme-kg16: 4 elle anahtar farklı
+  mz/satirlar/519/bakiye: beklenen -245000 · eski -205000
+  mz/satirlar/602.90/bakiye: beklenen -50000 · eski -90000
+  gt/kalemler/A: beklenen 50000 · eski 90000
+  gt/kalemler/DNK: beklenen 40000 · eski 80000
+s30-kilit-kural-farki-kg15: ESKİ MODEL HATA AttributeError: 'Model' object has no attribute '_o_acilis_onayla'
+  eskinin bilmediği olay / rapor atlanarak (atlanan raporlar: []):
+s30-kilit-kural-farki-kg15: 7 elle anahtar farklı
+  fark/519: beklenen -200000 · eski -150000
+  fark/602.90: beklenen 40000 · eski -10000
+  mz/satirlar/519/bakiye: beklenen -200000 · eski -150000
+  mz/satirlar/602.90/bakiye: beklenen 0 · eski -50000
+  gt/kalemler/A: beklenen 150000 · eski 200000
+  gt/kalemler/DNK: beklenen 150000 · eski 200000
+  bil/pasif/V.G: beklenen 200000 · eski 150000
+s83-s47-b6-acilis-olabilir-bekleyis: ESKİ MODEL HATA KeyError: 'acilis_olabilir'
+  eskinin bilmediği olay / rapor atlanarak (atlanan raporlar: ['ao0', 'ao1', 'ao2']):
+s83-s47-b6-acilis-olabilir-bekleyis: 20 elle anahtar farklı
+  mz0/satirlar/519/bakiye: beklenen -2000 · eski '<yok>'
+  mz0/satirlar/602.90/bakiye: beklenen -2400 · eski -8400
+  gt0/kalemler/A: beklenen 7400 · eski 13400
+  gt0/kalemler/DNK: beklenen 7400 · eski 9400
+  bil0/pasif/V.G: beklenen 2000 · eski '<yok>'
+  bil0/pasif/V.F: beklenen 7400 · eski 9400
+  bil0/kesin_degil: beklenen ['ACILIS_OLABILIR_ONAY_BEKLIYOR', 'TAMAMLANMAMIS_ACILIS'] · eski []
+  mz1/satirlar/519/bakiye: beklenen -4000 · eski '<yok>'
+  mz1/satirlar/602.90/bakiye: beklenen -4400 · eski -8400
+  bil1/pasif/V.G: beklenen 4000 · eski '<yok>'
+  bil1/pasif/V.F: beklenen 5400 · eski 9400
+  bil1/kesin_degil: beklenen ['ACILIS_OLABILIR_ONAY_BEKLIYOR', 'TAMAMLANMAMIS_ACILIS'] · eski []
+  bil2/pasif/V.G: beklenen 4000 · eski '<yok>'
+  bil2/kesin_degil: beklenen ['TAMAMLANMAMIS_ACILIS'] · eski []
+  bil3/pasif/V.A: beklenen 4000 · eski '<yok>'
+  gt/kalemler/A: beklenen 9400 · eski 13400
+  gt/kalemler/DNK: beklenen 5400 · eski 9400
+  gt/hesaplar/602.90: beklenen 4400 · eski 8400
+  acilis_olabilir: beklenen ['AYD', 'BYA', 'BYB', 'BYC'] · eski ['AYD', 'BYA', 'BYH']
+  redler: beklenen [] · eski ['ESLESTIRME_TERS']
+s84-s48-carisiz-acilis-evraki-karsiliksiz: ESKİ MODEL HATA KeyError: None
+  (atlayarak da) HATA KeyError: None
+s85-s49-formdan-carisiz-evrak: ESKİ MODEL HATA AttributeError: 'Model' object has no attribute '_o_carisiz_evrak'
+  eskinin bilmediği olay / rapor atlanarak (atlanan raporlar: []):
+s85-s49-formdan-carisiz-evrak: 23 elle anahtar farklı
+  mz0/satirlar/101.01/bakiye: beklenen 5000 · eski '<yok>'
+  mz0/satirlar/121.01/bakiye: beklenen 2000 · eski '<yok>'
+  mz0/satirlar/649.90/bakiye: beklenen -7000 · eski '<yok>'
+  mz0/satirlar/770.90/bakiye: beklenen 4000 · eski '<yok>'
+  mz0/satirlar/103/bakiye: beklenen -3000 · eski '<yok>'
+  mz0/satirlar/321/bakiye: beklenen -1000 · eski '<yok>'
+  mz/satirlar/102.B1/bakiye: beklenen 7000 · eski 10000
+  mz/satirlar/100/bakiye: beklenen 5000 · eski '<yok>'
+  mz/satirlar/321/bakiye: beklenen -1000 · eski '<yok>'
+  mz/satirlar/320|T1/bakiye: beklenen 2000 · eski '<yok>'
+  mz/satirlar/649.90/bakiye: beklenen -7000 · eski '<yok>'
+  mz/satirlar/770.90/bakiye: beklenen 4000 · eski '<yok>'
+  gt/kalemler/F: beklenen 7000 · eski 0
+  gt/kalemler/E: beklenen 4000 · eski 0
+  gt/kalemler/DNK: beklenen 3000 · eski 0
+  gt/hesaplar/649.90: beklenen 7000 · eski '<yok>'
+  gt/hesaplar/770.90: beklenen 4000 · eski '<yok>'
+  bil/aktif/I.A: beklenen 12000 · eski 10000
+  bil/aktif/I.E: beklenen 2000 · eski '<yok>'
+  bil/aktif_toplam: beklenen 14000 · eski 10000
+  bil/pasif/III.B: beklenen 1000 · eski '<yok>'
+  bil/pasif/V.F: beklenen 3000 · eski '<yok>'
+  redler: beklenen [] · eski ['EVRAK_DURUMU', 'EVRAK_DURUMU', 'EVRAK_DURUMU']
+s86-s50-tek-kuyruk-kart-taksiti: 0 elle anahtar farklı
+s87-s51-geri-alinan-acilis: ESKİ MODEL HATA KeyError: 'acilis_olabilir'
+  eskinin bilmediği olay / rapor atlanarak (atlanan raporlar: ['ao0', 'ao1']):
+s87-s51-geri-alinan-acilis: 12 elle anahtar farklı
+  mz0/satirlar/519/bakiye: beklenen -13800 · eski -13000
+  mz0/satirlar/602.90/bakiye: beklenen -700 · eski -1500
+  bil0/pasif/V.G: beklenen 13800 · eski 13000
+  bil0/pasif/V.F: beklenen 700 · eski 1500
+  bil0/kesin_degil: beklenen ['ACILIS_OLABILIR_ONAY_BEKLIYOR', 'TAMAMLANMAMIS_ACILIS'] · eski ['TAMAMLANMAMIS_ACILIS']
+  mz1/satirlar/519/bakiye: beklenen -8800 · eski -13000
+  mz1/satirlar/602.90/bakiye: beklenen -5700 · eski -1500
+  bil1/pasif/V.G: beklenen 8800 · eski 13000
+  bil1/pasif/V.F: beklenen 5700 · eski 1500
+  gt1/kalemler/A: beklenen 5700 · eski 1500
+  gt1/kalemler/DNK: beklenen 5700 · eski 1500
+  acilis_olabilir: beklenen ['AC1', 'AC4', 'BY7'] · eski ['BY6', 'BY7']
+s88-s52-odeme-sozu: ESKİ MODEL HATA AttributeError: 'Model' object has no attribute '_o_odeme_sozu'
+  eskinin bilmediği olay / rapor atlanarak (atlanan raporlar: []):
+s88-s52-odeme-sozu: 6 elle anahtar farklı
+  hat1: beklenen {'tarih': '2026-03-15', 'otomatik': {'C2': 800}, 'supheli_etiketli': [], 'elle': {}, 'odeme_sozu_var': {'C1': 600, 'C3': 500}} · eski {'tarih': '2026-03-15', 'otomatik': {'C1': 600, 'C2': 800, 'C3': 500}, 'supheli_etiketli': [], 'elle': {}}
+  hat2: beklenen {'tarih': '2026-03-19', 'otomatik': {'C2': 800}, 'supheli_etiketli': [], 'elle': {}, 'odeme_sozu_var': {'C1': 600, 'C3': 500}} · eski {'tarih': '2026-03-19', 'otomatik': {'C1': 600, 'C2': 800, 'C3': 500}, 'supheli_etiketli': [], 'elle': {}}
+  hat3: beklenen {'tarih': '2026-03-20', 'otomatik': {'C2': 800}, 'supheli_etiketli': [], 'elle': {}, 'odeme_sozu_var': {'C3': 500}, 'kahin_susuyor': [{'cari': 'C1', 'neden': 'S52_SOZ_GUNU'}]} · eski {'tarih': '2026-03-20', 'otomatik': {'C1': 600, 'C2': 800, 'C3': 500}, 'supheli_etiketli': [], 'elle': {}}
+  hat4: beklenen {'tarih': '2026-03-21', 'otomatik': {'C1': 600, 'C2': 800}, 'supheli_etiketli': [], 'elle': {}, 'odeme_sozu_var': {'C3': 500}} · eski {'tarih': '2026-03-21', 'otomatik': {'C1': 600, 'C2': 800, 'C3': 500}, 'supheli_etiketli': [], 'elle': {}}
+  hat5: beklenen {'tarih': '2026-03-26', 'otomatik': {'C1': 600, 'C2': 800}, 'supheli_etiketli': [], 'elle': {}, 'kahin_susuyor': [{'cari': 'C3', 'neden': 'S52_YENI_GECIKME'}]} · eski {'tarih': '2026-03-26', 'otomatik': {'C1': 600, 'C2': 800, 'C3': 800}, 'supheli_etiketli': [], 'elle': {}}
+  hat6: beklenen {'tarih': '2026-03-28', 'otomatik': {'C2': 800}, 'supheli_etiketli': [], 'elle': {}, 'odeme_sozu_var': {'C1': 600}, 'kahin_susuyor': [{'cari': 'C3', 'neden': 'S52_YENI_GECIKME'}]} · eski {'tarih': '2026-03-28', 'otomatik': {'C1': 600, 'C2': 800, 'C3': 800}, 'supheli_etiketli': [], 'elle': {}}
+s89-s53-kilitsiz-gecmis-yil: ESKİ MODEL HATA KeyError: 'defter_mutabakati_bilgi'
+  eskinin bilmediği olay / rapor atlanarak (atlanan raporlar: ['dm', 'dm0', 'dm2']):
+s89-s53-kilitsiz-gecmis-yil: 7 elle anahtar farklı
+  mz25/satirlar/519/bakiye: beklenen -15000 · eski -13000
+  gt25/kalemler/A: beklenen 5000 · eski 7000
+  gt25/kalemler/DNK: beklenen 5000 · eski 7000
+  bil/pasif/V.G: beklenen 15000 · eski 13000
+  bil/pasif/V.K: beklenen 9000 · eski 11000
+  bil/kesin_degil: beklenen ['ACILIS_OLABILIR_ONAY_BEKLIYOR', 'KAPANMAMIS_ONCEKI_YIL', 'TAMAMLANMAMIS_ACILIS'] · eski ['KAPANMAMIS_ONCEKI_YIL', 'TAMAMLANMAMIS_ACILIS']
+  mz25b/satirlar/519/bakiye: beklenen -15000 · eski -13000
+s90-s53-kilitli-gecmis-yil: ESKİ MODEL HATA KeyError: 'defter_mutabakati_bilgi'
+  eskinin bilmediği olay / rapor atlanarak (atlanan raporlar: ['dm']):
+s90-s53-kilitli-gecmis-yil: 2 elle anahtar farklı
+  bil/kesin_degil: beklenen ['ACILIS_OLABILIR_ONAY_BEKLIYOR', 'KAPANMAMIS_ONCEKI_YIL', 'KURAL_DEGISIKLIGI_FARKI'] · eski ['KAPANMAMIS_ONCEKI_YIL', 'KURAL_DEGISIKLIGI_FARKI']
+  fark: beklenen {'500': 12000, '519': -15000, '602': 3000} · eski {'500': 12000, '519': -13000, '602': 3000, '602.90': -2000}
+s91-b5-kg5-yukleme-yerel-gunu: 4 elle anahtar farklı
+  mz0/satirlar/120|C1/bakiye: beklenen 0 · eski 2000
+  mz0/satirlar/519/bakiye: beklenen -1200 · eski -3200
+  mz1/satirlar/120|C2/borc: beklenen 0 · eski 700
+  mz1/satirlar/519/alacak: beklenen 500 · eski 1200
+s92-b11-kasa-acilis-oncesi-duzeltme: 0 elle anahtar farklı
+s93-b14-alt-defter-kural-farki: 8 elle anahtar farklı; eski değişmez kırmızı: ['tyk']
+  fark1: beklenen {'120|C1': 4000, '128|C1': -4000} · eski {}
+  redler: beklenen ['KURAL_FARKI_ALT_DEFTER'] · eski ['KURAL_FARKI_YOK']
+  mz/satirlar/120|C1/bakiye: beklenen -4000 · eski 0
+  mz/satirlar/128|C1/bakiye: beklenen 10000 · eski 6000
+  bil/aktif/I.C: beklenen 10000 · eski 6000
+  bil/aktif_toplam: beklenen 24000 · eski 20000
+  bil/pasif/III.D: beklenen 4000 · eski '<yok>'
+  bil/kesin_degil: beklenen ['KURAL_DEGISIKLIGI_FARKI', 'TAMAMLANMAMIS_ACILIS'] · eski ['TAMAMLANMAMIS_ACILIS']
+s94-s54-ayni-duzeltmede-bag-cari: ESKİ MODEL HATA AssertionError: senaryo hatası: bağlı kaydın bağı ve carisi AYNI düzeltmede değişti — 'önce bağı kaldırın' ayrı adım mı, kâhin susar (README bakım 7 V7, KULLANICIYA SORULMALI 1)
+s95-s55-bag-hedefi-sonra: ESKİ MODEL HATA AssertionError: senaryo hatası: bağ hedefi F2 (2026-01-20) kayıttan (2026-01-10) SONRA tarihli — bağın hangi gün uygulanacağı karar metninde yok; kâhin susar (README bakım 7 V3 (c), KULLANICIYA SORULMALI 2)
+s96-s56-s44-normal-cari-siniri: ESKİ MODEL HATA AssertionError: senaryo hatası: düzeltmeyle 120'ye yazılacak 3000 > kaydın günündeki 120 bakiyesi — şüpheli-normal aşım sınırının düzeltmeye uygulanıp uygulanmadığı karar metninde yok; kâhin susar (README bakım 7 V3 (d), KULLANICIYA SORULMALI 3)
+s97-s57-olagan-bagli-kayit-cari: 10 elle anahtar farklı
+  redler: beklenen ['BAG_KALDIRILMALI', 'BAG_KALDIRILMALI', 'BAG_KALDIRILMALI', 'BAG_KALDIRILMALI'] · eski []
+  mz1/satirlar/120|C1/bakiye: beklenen 400 · eski 950
+  mz1/satirlar/120|C3/bakiye: beklenen 500 · eski 0
+  mz1/satirlar/102.B1/bakiye: beklenen 700 · eski 650
+  g1c/gecikmis: beklenen 400 · eski 950
+  mz/satirlar/120|C1/bakiye: beklenen 800 · eski 1300
+  mz/satirlar/120|C3/bakiye: beklenen 100 · eski -350
+  g1/gecikmis: beklenen 800 · eski 1300
+  g3/gecikmis: beklenen 100 · eski 0
+  ak3: beklenen [{'k': 'fatura:F3', 'tur': 'fatura', 'kalan': 100, 'vade': '2026-01-20', 'tarih': '2026-01-06'}] · eski [{'k': 'tahsilat:PT', 'tur': 'tahsilat', 'kalan': -150, 'vade': '2026-01-11', 'tarih': '2026-01-11'}, {'k': 'tahsilat:PK', 'tur': 'tahsilat', 'kalan': -200, 'vade': '2026-01-12', 'tarih': '2026-01-12'}]
+s98-s65-acilis-ortada: 0 elle anahtar farklı
+s99-s66-formdan-carisiz-evrak-karsiliksiz: ESKİ MODEL HATA AssertionError: senaryo hatası: formdan carisiz (açılış dışı) evrakın karşılıksızı / iadesi — karar metninde yok; kâhin susar (README bakım 8 W9, KULLANICIYA SORULMALI 4)
+s100-s68-bagsiz-odeme-vade-sirasi: 0 elle anahtar farklı

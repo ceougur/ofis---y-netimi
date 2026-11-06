@@ -1,0 +1,32 @@
+{
+  "ad": "kahin8-s65-s68-onceki-model-kirmizi",
+  "komut": "python3 -I /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-s57/test/bagimsiz/muhasebe/test_model.py",
+  "commit": "8ee8ef144dc58eb8abc6f4990b2e925989e29227",
+  "dal": "worktree-agent-a1f15bb684be35a17",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T12:25:45.541Z",
+  "sure_sn": 15.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 170,
+    "gecen": 168,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-kanit/2026-11-06/kahin8-s65-s68-onceki-model-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1f15bb684be35a17",
+  "ham_cikti_sha256": "2264922017bd2fcb8e9c76cf0cf08fd6ab6637a9b2fa4a5e77e336904e066d1a",
+  "ham_cikti_bayt": 6367
+}

@@ -1,0 +1,214 @@
+{
+ "aciklama": "S49: formdan carisiz (açılış dışı) alınan evrak 649.90, verilen 770.90; tahsil, ciro, ödeme cari gerektirmeden aynen.",
+ "ad": "s85-s49-formdan-carisiz-evrak",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "bil/aktif/I.A": 12000,
+   "bil/aktif/I.E": 2000,
+   "bil/aktif_toplam": 14000,
+   "bil/kesin_degil": [
+    "TAMAMLANMAMIS_ACILIS"
+   ],
+   "bil/pasif/III.B": 1000,
+   "bil/pasif/V.F": 3000,
+   "bil/pasif/V.G": 10000,
+   "gt/hesaplar/649.90": 7000,
+   "gt/hesaplar/770.90": 4000,
+   "gt/kalemler/DNK": 3000,
+   "gt/kalemler/E": 4000,
+   "gt/kalemler/F": 7000,
+   "mz/satirlar/100/bakiye": 5000,
+   "mz/satirlar/101.01/bakiye": 0,
+   "mz/satirlar/102.B1/bakiye": 7000,
+   "mz/satirlar/103/bakiye": 0,
+   "mz/satirlar/121.01/bakiye": 0,
+   "mz/satirlar/320|T1/bakiye": 2000,
+   "mz/satirlar/321/bakiye": -1000,
+   "mz/satirlar/519/bakiye": -10000,
+   "mz/satirlar/649.90/bakiye": -7000,
+   "mz/satirlar/770.90/bakiye": 4000,
+   "mz0/satirlar/101.01/bakiye": 5000,
+   "mz0/satirlar/103/bakiye": -3000,
+   "mz0/satirlar/121.01/bakiye": 2000,
+   "mz0/satirlar/321/bakiye": -1000,
+   "mz0/satirlar/519/alacak": 0,
+   "mz0/satirlar/602/bakiye": 0,
+   "mz0/satirlar/649.90/bakiye": -7000,
+   "mz0/satirlar/770.90/bakiye": 4000,
+   "mz0/satirlar/770/bakiye": 0,
+   "redler": []
+  }
+ },
+ "kapsam": [
+  "S49",
+  "KG-3",
+  "K-02",
+  "Ç-04",
+  "Ç-06",
+  "Ç-10",
+  "G-8",
+  "W8"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "banka": "B1",
+   "tarih": "2026-01-01",
+   "tur": "banka_acilis",
+   "tutar": 10000
+  },
+  {
+   "evrak": "CK5",
+   "evrak_turu": "cek",
+   "id": "CE1",
+   "tarih": "2026-03-10",
+   "tur": "carisiz_evrak",
+   "tutar": 5000,
+   "yon": "alinan"
+  },
+  {
+   "evrak": "SN5",
+   "evrak_turu": "senet",
+   "id": "CE2",
+   "tarih": "2026-03-11",
+   "tur": "carisiz_evrak",
+   "tutar": 2000,
+   "yon": "alinan"
+  },
+  {
+   "banka": "B1",
+   "evrak": "VC5",
+   "evrak_turu": "cek",
+   "id": "CE3",
+   "tarih": "2026-03-12",
+   "tur": "carisiz_evrak",
+   "tutar": 3000,
+   "yon": "verilen"
+  },
+  {
+   "evrak": "VS5",
+   "evrak_turu": "senet",
+   "id": "CE4",
+   "tarih": "2026-03-13",
+   "tur": "carisiz_evrak",
+   "tutar": 1000,
+   "yon": "verilen"
+  },
+  {
+   "ad": "mz0",
+   "bas": "2026-03-01",
+   "rapor": "mizan",
+   "son": "2026-03-13",
+   "tur": "rapor"
+  },
+  {
+   "cari": "T1",
+   "evrak": "SN5",
+   "tarih": "2026-03-15",
+   "tur": "odeme",
+   "yol": "ciro"
+  },
+  {
+   "evrak": "CK5",
+   "tarih": "2026-03-20",
+   "tur": "evrak_tahsil",
+   "yol": "kasa"
+  },
+  {
+   "evrak": "VC5",
+   "tarih": "2026-03-25",
+   "tur": "verilen_evrak_ode"
+  },
+  {
+   "ad": "mz",
+   "bas": "2026-01-01",
+   "rapor": "mizan",
+   "son": "2026-03-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "gt",
+   "bas": "2026-01-01",
+   "rapor": "gelir_tablosu",
+   "son": "2026-03-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "bil",
+   "rapor": "bilanco",
+   "tarih": "2026-03-31",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

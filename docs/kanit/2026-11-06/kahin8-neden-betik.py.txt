@@ -1,0 +1,70 @@
+#!/usr/bin/env python3
+"""Kâhin bakımı 8 — eski model kırmızısının NEDEN dökümü (ders 38). Kullanım: neden-betik.py <eski kâhin klasörü> <yeni senaryolar_elle.py> <senaryo adı önekleri…>
+Her senaryo eski modelle koşulur; hata verirse ileti, vermezse elle anahtar başına (beklenen ↔ eski değer) farklar yazılır."""
+import copy
+import importlib.util
+import sys
+
+eski_klasor, yeni_sen, *onekler = sys.argv[1:]
+sys.path.insert(0, eski_klasor)
+import model as M  # noqa: E402  (ESKİ model)
+
+spec = importlib.util.spec_from_file_location("yeni_sen", yeni_sen)
+E = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(E)
+
+
+def yol_al(sonuc, yol):
+    p = yol.split("/")
+    x = sonuc if p[0] in ("redler", "acilis_olabilir", "degismezler", "devirler") else sonuc["raporlar"]
+    for seg in p:
+        if isinstance(x, list):
+            x = x[int(seg)]
+        elif isinstance(x, dict) and seg in x:
+            x = x[seg]
+        else:
+            return "<yok>"
+    if p == ["redler"]:
+        return [r["kod"] for r in x]
+    return x
+
+
+for s in E.SENARYOLAR:
+    if not any(s["ad"].startswith(o) for o in onekler):
+        continue
+    x = dict(s)
+    x.update(copy.deepcopy(E.TANIM))
+    atlanan = set()
+    try:
+        r = M.kos(x)
+    except Exception as e:  # noqa: BLE001
+        print(f"{s['ad']}: ESKİ MODEL HATA {type(e).__name__}: {e}")
+        # eskinin bilmediği olay / rapor atlanarak (bilmediği şey yok sayılır) yeniden koşu — kalan anahtarların farkı
+        yeni_olay = ("acilis_onayla", "odeme_sozu", "carisiz_evrak")
+        yeni_rapor = ("acilis_olabilir", "defter_mutabakati_bilgi")
+        olaylar = []
+        for ol in x["olaylar"]:
+            if ol["tur"] in yeni_olay or (ol["tur"] == "rapor" and ol["rapor"] in yeni_rapor):
+                if ol["tur"] == "rapor":
+                    atlanan.add(ol["ad"])
+                continue
+            olaylar.append(ol)
+        try:
+            r = M.kos(dict(x, olaylar=olaylar))
+        except Exception as e2:  # noqa: BLE001
+            print(f"  (atlayarak da) HATA {type(e2).__name__}: {e2}")
+            continue
+        print(f"  eskinin bilmediği olay / rapor atlanarak (atlanan raporlar: {sorted(atlanan)}):")
+    farklar = []
+    for yol, bek in s["elle"].get("A", {}).items():
+        if yol.split("/")[0] in atlanan or (yol == "acilis_olabilir" and atlanan is not None and False):
+            continue
+        g = yol_al(r, yol)
+        if g == "<yok>" and bek == 0:
+            continue
+        if g != bek:
+            farklar.append(f"  {yol}: beklenen {bek!r} · eski {g!r}")
+    deg = [k for k, v in r["degismezler"]["canli"].items() if v]
+    print(f"{s['ad']}: {len(farklar)} elle anahtar farklı" + (f"; eski değişmez kırmızı: {deg}" if deg else ""))
+    for f in farklar:
+        print(f)

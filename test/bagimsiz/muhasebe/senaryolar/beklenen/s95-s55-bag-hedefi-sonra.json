@@ -1,0 +1,252 @@
+{
+ "ad": "s95-s55-bag-hedefi-sonra",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "ak1": [
+     {
+      "k": "fatura:F1",
+      "kalan": 1000,
+      "tarih": "2026-01-05",
+      "tur": "fatura",
+      "vade": "2026-01-15"
+     }
+    ],
+    "ak3": [
+     {
+      "k": "fatura:F3",
+      "kalan": 400,
+      "tarih": "2026-01-05",
+      "tur": "fatura",
+      "vade": "2026-01-08"
+     }
+    ],
+    "g1a": {
+     "cari": "C1",
+     "detay": [],
+     "gecikmis": 0,
+     "supheli": 0,
+     "tarih": "2026-02-01"
+    },
+    "g1b": {
+     "cari": "C1",
+     "detay": [
+      {
+       "kalan": 1000,
+       "kalem": "fatura:F1",
+       "vade": "2026-01-15"
+      }
+     ],
+     "gecikmis": 1000,
+     "supheli": 0,
+     "tarih": "2026-02-01"
+    },
+    "g1w": {
+     "cari": "C1",
+     "detay": [
+      {
+       "kalan": 1000,
+       "kalem": "fatura:F1",
+       "vade": "2026-01-15"
+      }
+     ],
+     "gecikmis": 1000,
+     "kahin_susuyor": [
+      {
+       "kaynak": "PY",
+       "neden": "S55_BEKLEYEN_BAG",
+       "tutar": 1000
+      }
+     ],
+     "supheli": 0,
+     "tarih": "2026-01-16"
+    },
+    "g1x": {
+     "cari": "C1",
+     "detay": [
+      {
+       "kalan": 1000,
+       "kalem": "fatura:F1",
+       "vade": "2026-01-15"
+      }
+     ],
+     "gecikmis": 1000,
+     "supheli": 0,
+     "tarih": "2026-01-20"
+    },
+    "g2": {
+     "cari": "C2",
+     "detay": [],
+     "gecikmis": 0,
+     "kahin_susuyor": [
+      {
+       "kaynak": "P2",
+       "neden": "S55_FAZLA",
+       "tutar": 300
+      }
+     ],
+     "supheli": 0,
+     "tarih": "2026-02-01"
+    },
+    "g3": {
+     "cari": "C3",
+     "detay": [
+      {
+       "kalan": 400,
+       "kalem": "fatura:F3",
+       "vade": "2026-01-08"
+      }
+     ],
+     "gecikmis": 400,
+     "supheli": 0,
+     "tarih": "2026-02-01"
+    },
+    "hat": {
+     "elle": {},
+     "kahin_susuyor": [
+      {
+       "cari": "C2",
+       "neden": "S55_FAZLA"
+      }
+     ],
+     "otomatik": {
+      "C1": 1000,
+      "C3": 400
+     },
+     "supheli_etiketli": [],
+     "tarih": "2026-02-01"
+    },
+    "kt3": {
+     "TK7": {
+      "kapali": false,
+      "taksitler": [
+       {
+        "kalan": 0,
+        "tutar": 400,
+        "vade": "2026-02-25"
+       }
+      ]
+     }
+    },
+    "mu": [
+     {
+      "acilis": "2026-01-15",
+      "kaynak": "PY",
+      "kod": "KASA_ACILIS_ONCESI_HAREKET",
+      "tarih": "2026-01-10"
+     }
+    ],
+    "mz": {
+     "ana": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 11000,
+       "borc": 11000,
+       "devir": 0
+      },
+      "102": {
+       "alacak": 0,
+       "bakiye": 1200,
+       "borc": 1200,
+       "devir": 0
+      },
+      "120": {
+       "alacak": 2200,
+       "bakiye": 1100,
+       "borc": 3300,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 10000,
+       "bakiye": -10000,
+       "borc": 0,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 3300,
+       "bakiye": -3300,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "bas": "2026-01-01",
+     "satirlar": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 11000,
+       "borc": 11000,
+       "devir": 0
+      },
+      "102.B1": {
+       "alacak": 0,
+       "bakiye": 1200,
+       "borc": 1200,
+       "devir": 0
+      },
+      "120|C1": {
+       "alacak": 1000,
+       "bakiye": 1000,
+       "borc": 2000,
+       "devir": 0
+      },
+      "120|C2": {
+       "alacak": 800,
+       "bakiye": -300,
+       "borc": 500,
+       "devir": 0
+      },
+      "120|C3": {
+       "alacak": 400,
+       "bakiye": 400,
+       "borc": 800,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 10000,
+       "bakiye": -10000,
+       "borc": 0,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 2900,
+       "bakiye": -2900,
+       "borc": 0,
+       "devir": 0
+      },
+      "600.90": {
+       "alacak": 400,
+       "bakiye": -400,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "son": "2026-01-31",
+     "toplam": {
+      "alacak": 15500,
+      "bakiye": 0,
+      "borc": 15500,
+      "devir": 0
+     }
+    }
+   },
+   "redler": []
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

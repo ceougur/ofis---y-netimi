@@ -1,0 +1,299 @@
+{
+ "ad": "s97-s57-olagan-bagli-kayit-cari",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "ak3": [
+     {
+      "k": "fatura:F3",
+      "kalan": 100,
+      "tarih": "2026-01-06",
+      "tur": "fatura",
+      "vade": "2026-01-20"
+     }
+    ],
+    "g1": {
+     "cari": "C1",
+     "detay": [
+      {
+       "kalan": 800,
+       "kalem": "fatura:F1",
+       "vade": "2026-01-31"
+      }
+     ],
+     "gecikmis": 800,
+     "supheli": 0,
+     "tarih": "2026-02-02"
+    },
+    "g1a": {
+     "cari": "C1",
+     "detay": [
+      {
+       "kalan": 400,
+       "kalem": "fatura:F1",
+       "vade": "2026-01-31"
+      }
+     ],
+     "gecikmis": 400,
+     "supheli": 0,
+     "tarih": "2026-02-02"
+    },
+    "g1c": {
+     "cari": "C1",
+     "detay": [
+      {
+       "kalan": 400,
+       "kalem": "fatura:F1",
+       "vade": "2026-01-31"
+      }
+     ],
+     "gecikmis": 400,
+     "supheli": 0,
+     "tarih": "2026-02-02"
+    },
+    "g3": {
+     "cari": "C3",
+     "detay": [
+      {
+       "kalan": 100,
+       "kalem": "fatura:F3",
+       "vade": "2026-01-20"
+      }
+     ],
+     "gecikmis": 100,
+     "supheli": 0,
+     "tarih": "2026-01-21"
+    },
+    "g3a": {
+     "cari": "C3",
+     "detay": [
+      {
+       "kalan": 500,
+       "kalem": "fatura:F3",
+       "vade": "2026-01-20"
+      }
+     ],
+     "gecikmis": 500,
+     "supheli": 0,
+     "tarih": "2026-01-21"
+    },
+    "mu": [],
+    "mz": {
+     "ana": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 1200,
+       "borc": 1200,
+       "devir": 0
+      },
+      "102": {
+       "alacak": 0,
+       "bakiye": 700,
+       "borc": 700,
+       "devir": 0
+      },
+      "120": {
+       "alacak": 900,
+       "bakiye": 900,
+       "borc": 1800,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 1000,
+       "bakiye": -1000,
+       "borc": 0,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 1800,
+       "bakiye": -1800,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "bas": "2026-01-01",
+     "satirlar": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 1200,
+       "borc": 1200,
+       "devir": 0
+      },
+      "102.B1": {
+       "alacak": 0,
+       "bakiye": 700,
+       "borc": 700,
+       "devir": 0
+      },
+      "120|C1": {
+       "alacak": 500,
+       "bakiye": 800,
+       "borc": 1300,
+       "devir": 0
+      },
+      "120|C3": {
+       "alacak": 400,
+       "bakiye": 100,
+       "borc": 500,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 1000,
+       "bakiye": -1000,
+       "borc": 0,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 1500,
+       "bakiye": -1500,
+       "borc": 0,
+       "devir": 0
+      },
+      "600.90": {
+       "alacak": 300,
+       "bakiye": -300,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "son": "2026-01-31",
+     "toplam": {
+      "alacak": 3700,
+      "bakiye": 0,
+      "borc": 3700,
+      "devir": 0
+     }
+    },
+    "mz1": {
+     "ana": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 1200,
+       "borc": 1200,
+       "devir": 0
+      },
+      "102": {
+       "alacak": 0,
+       "bakiye": 700,
+       "borc": 700,
+       "devir": 0
+      },
+      "120": {
+       "alacak": 900,
+       "bakiye": 900,
+       "borc": 1800,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 1000,
+       "bakiye": -1000,
+       "borc": 0,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 1800,
+       "bakiye": -1800,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "bas": "2026-01-01",
+     "satirlar": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 1200,
+       "borc": 1200,
+       "devir": 0
+      },
+      "102.B1": {
+       "alacak": 0,
+       "bakiye": 700,
+       "borc": 700,
+       "devir": 0
+      },
+      "120|C1": {
+       "alacak": 900,
+       "bakiye": 400,
+       "borc": 1300,
+       "devir": 0
+      },
+      "120|C3": {
+       "alacak": 0,
+       "bakiye": 500,
+       "borc": 500,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 1000,
+       "bakiye": -1000,
+       "borc": 0,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 1500,
+       "bakiye": -1500,
+       "borc": 0,
+       "devir": 0
+      },
+      "600.90": {
+       "alacak": 300,
+       "bakiye": -300,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "son": "2026-01-31",
+     "toplam": {
+      "alacak": 3700,
+      "bakiye": 0,
+      "borc": 3700,
+      "devir": 0
+     }
+    }
+   },
+   "redler": [
+    {
+     "kod": "BAG_KALDIRILMALI",
+     "neden": "önce fatura / taksit kartı bağını kaldırın (S57 A; olağan kayıt, S45 ile aynı)",
+     "olay": 10,
+     "tur": "duzenle"
+    },
+    {
+     "kod": "BAG_KALDIRILMALI",
+     "neden": "önce fatura / taksit kartı bağını kaldırın (S57 A; olağan kayıt, S45 ile aynı)",
+     "olay": 11,
+     "tur": "duzenle"
+    },
+    {
+     "kod": "BAG_KALDIRILMALI",
+     "neden": "önce fatura / taksit kartı bağını kaldırın (S57 A; olağan kayıt, S45 ile aynı)",
+     "olay": 12,
+     "tur": "duzenle"
+    },
+    {
+     "kod": "BAG_KALDIRILMALI",
+     "neden": "önce fatura / taksit kartı bağını kaldırın (S57 A; olağan kayıt, S45 ile aynı)",
+     "olay": 13,
+     "tur": "duzenle"
+    }
+   ]
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}
