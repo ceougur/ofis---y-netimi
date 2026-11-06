@@ -1,0 +1,32 @@
+{
+  "ad": "wk14-birlesim-kahin-Europe-Istanbul",
+  "komut": "python3 -I test/bagimsiz/whatsapp-248/kahin/kahin_test.py",
+  "commit": "f10c85bd37e902ed64ffd6c51ab51af0ac98e757",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T05:59:27.104Z",
+  "sure_sn": 38.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 359,
+    "gecen": 359,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bekleyen-kanit/2026-11-06/2026-11-06/wk14-birlesim-kahin-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "e42b673067cd5a7d95f672544120822fa512dc13a00a1f3b868621b0decd52f5",
+  "ham_cikti_bayt": 86401
+}
