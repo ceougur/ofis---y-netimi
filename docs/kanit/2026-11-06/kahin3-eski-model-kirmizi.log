@@ -1,0 +1,86 @@
+....F......ESKİ: senaryolar/s63-s11-kilitli-karsiliksiz.json (yok), senaryolar/beklenen/s63-s11-kilitli-karsiliksiz.json (yok), senaryolar/s64-s12-kasa-acilistan-once.json (yok), senaryolar/beklenen/s64-s12-kasa-acilistan-once.json (yok)
+F...............................................................FF.......................F................
+======================================================================
+FAIL: test_kasa_acilis_ilk_hareketten_sonra_yakalanir (__main__.DegismezDenetcileri.test_kasa_acilis_ilk_hareketten_sonra_yakalanir)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-a99413a50237f8d87/test/bagimsiz/muhasebe/test_model.py", line 550, in test_kasa_acilis_ilk_hareketten_sonra_yakalanir
+    self.assertEqual([x["kod"] for x in m.redler], ["KASA_ACILIS_ONCE"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['KASA_ACILIS_ONCE']
+
+Second list contains 1 additional elements.
+First extra element 0:
+'KASA_ACILIS_ONCE'
+
+- []
++ ['KASA_ACILIS_ONCE']
+
+======================================================================
+FAIL: test_senaryo_ve_beklenen_dosyalari_guncel (__main__.Dosyalar.test_senaryo_ve_beklenen_dosyalari_guncel)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-a99413a50237f8d87/test/bagimsiz/muhasebe/test_model.py", line 605, in test_senaryo_ve_beklenen_dosyalari_guncel
+    self.assertEqual(UB.main(denetle=True), 0, "python3 test/bagimsiz/muhasebe/uret_beklenen.py ile yeniden yazın")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : python3 test/bagimsiz/muhasebe/uret_beklenen.py ile yeniden yazın
+
+======================================================================
+FAIL: test_s63_s11_kilitli_karsiliksiz (__main__.ElleSenaryolar.test_s63_s11_kilitli_karsiliksiz)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-a99413a50237f8d87/test/bagimsiz/muhasebe/test_model.py", line 409, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: [{'kaynak': 'KS1', 'evrak_kaynak': 'P1', 'neden': 'S8_KILIT'}] != 0 : s63-s11-kilitli-karsiliksiz [A] g1a/kahin_susuyor
+
+======================================================================
+FAIL: test_s64_s12_kasa_acilistan_once (__main__.ElleSenaryolar.test_s64_s12_kasa_acilistan_once)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-a99413a50237f8d87/test/bagimsiz/muhasebe/test_model.py", line 409, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['KAS[13 chars]A', 'EVRAK_DURUMU'] != ['KAS[13 chars]A', 'KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE', 'K[72 chars]NCE']
+
+First differing element 1:
+'EVRAK_DURUMU'
+'KASA_ACILIS_ONCE'
+
+Second list contains 5 additional elements.
+First extra element 2:
+'KASA_ACILIS_ONCE'
+
+- ['KASA_ACILIS_SONRA', 'EVRAK_DURUMU']
++ ['KASA_ACILIS_SONRA',
++  'KASA_ACILIS_ONCE',
++  'KASA_ACILIS_ONCE',
++  'KASA_ACILIS_ONCE',
++  'KASA_ACILIS_ONCE',
++  'KASA_ACILIS_ONCE',
++  'KASA_ACILIS_ONCE'] : s64-s12-kasa-acilistan-once [A] redler
+
+======================================================================
+FAIL: test_S11_avans_kahin_susar (__main__.OlayMaddeleri.test_S11_avans_kahin_susar)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-a99413a50237f8d87/test/bagimsiz/muhasebe/test_model.py", line 340, in test_S11_avans_kahin_susar
+    self.assertEqual([(x["neden"], x.get("tutar")) for x in r["raporlar"]["g"].get("kahin_susuyor", [])], [("S11_AVANS", 10000)])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [('S8_KILIT', None)] != [('S11_AVANS', 10000)]
+
+First differing element 0:
+('S8_KILIT', None)
+('S11_AVANS', 10000)
+
+- [('S8_KILIT', None)]
++ [('S11_AVANS', 10000)]
+
+----------------------------------------------------------------------
+Ran 117 tests in 13.284s
+
+FAILED (failures=5)
+# tests 117
+# pass 112
+# fail 5
+# skipped 0
