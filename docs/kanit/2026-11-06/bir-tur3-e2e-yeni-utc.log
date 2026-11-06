@@ -1,0 +1,77 @@
+  ✓ ön koşul: açılış, kart (2 taksit), ürün ve hareket açıldı
+
+■ E1 Kasa → Açılış Bakiyesi (hof-workspace cashOpeningForm; YAN-A)
+  ✓ form 5.000 ile açıldı (5.000,00)
+  ✓ B açılışı 4.000 yaptı → 200 (4000)
+    (ön koşul: B'nin yazımından sonra canlı yenileme geldi; okumalar 2508 ms'de duruldu)
+  ✓ A yalnız tarihi değiştirdi (2026-09-20 → 2026-08-20)
+  ✓ Açılış: A'nın eskimiş formu 409 aldı (409 cash-opening-stale)
+  ✓ Açılış: ileti formda: “Kasa açılış bakiyesi siz formu açtıktan sonra başka biri tarafından girildi, değiştirildi ya da silindi; kaydınız yapılmadı. Formu kapatıp yeniden açın.”
+  ✓ Açılış: form açık kaldı
+  ✓ Açılış: 409'dan sonra kendiliğinden yeniden göndermedi (1,5 sn'de POST /api/workspace/cash/opening: 1; beklenen 1)
+  ✓ Açılış: veri tabanında B'nin değeri duruyor, A'nınki yazılmadı ({"amount":4000,"date":"2026-09-20"})
+  ✓ Açılış: 409'dan sonra form arkadaki Kasa listesini kendisi yeniden okudu (^\/api\/workspace\/cash\?from=)
+  ✓ yeniden açılan form B'nin 4.000'iyle dolu (4.000,00)
+  ✓ yarışsız düzeltme kaydedildi (200 ; 4250)
+  ✓ ardışık ikinci düzeltme de kaydedildi (200 ; 4300)
+  ✓ son düzeltme A'nın
+
+■ E2 Taksit düzelt (hof-plans editItem; YAN-B)
+  ✓ B taksiti 300 yaptı → 200
+    (ön koşul: B'nin yazımından sonra canlı yenileme geldi; okumalar 4022 ms'de duruldu)
+  ✓ Taksit: A'nın eskimiş formu 409 aldı (409 plan-item-stale)
+  ✓ Taksit: ileti formda: “Bu taksit siz açtıktan sonra başka biri tarafından değiştirildi; düzeltmeniz kaydedilmedi. Kartı yenileyip yeniden deneyin.”
+  ✓ Taksit: form açık kaldı
+  ✓ Taksit: 409'dan sonra kendiliğinden yeniden göndermedi (1,5 sn'de PUT /plans/plan-a73b0c21-ca22-4312-9889-c47d758e2b74/items/item-cb827aaa-660a-48e9-bd2c-5bf596b259ce: 1; beklenen 1)
+  ✓ Taksit: veri tabanında B'nin değeri duruyor, A'nınki yazılmadı ({"amount":300,"dueDate":"2026-10-30","note":""})
+  ✓ Taksit: 409'dan sonra form arkadaki kartı kendisi yeniden okudu (^\/api\/workspace\/plans\/plan-a73b0c21-ca22-4312-9889-c47d758e2b74(\?|$))
+  ✓ arkadaki kart B'nin 300'üne yenilendi
+  ✓ yeniden açılan form B'nin 300'üyle dolu (300,00)
+  ✓ yarışsız düzeltme kaydedildi (200 {"amount":300,"dueDate":"2026-10-30","note":"A yeniden"})
+  ✓ ardışık ikinci düzeltme de kaydedildi (200 )
+
+■ E3 Taksit kartı Düzenle (hof-plans editPlan; 3a)
+  ✓ B kartın tutarını 1.200 yaptı → 200 
+    (ön koşul: B'nin yazımından sonra canlı yenileme geldi; okumalar 2514 ms'de duruldu)
+  ✓ Kart: A'nın eskimiş formu 409 aldı (409 plan-stale)
+  ✓ Kart: ileti formda: “Bu taksit kartı siz açtıktan sonra başka biri tarafından değiştirildi; değişikliğiniz kaydedilmedi. Kartı yenileyip yeniden deneyin.”
+  ✓ Kart: form açık kaldı
+  ✓ Kart: 409'dan sonra kendiliğinden yeniden göndermedi (1,5 sn'de PUT /api/workspace/plans/plan-a73b0c21-ca22-4312-9889-c47d758e2b74: 1; beklenen 1)
+  ✓ Kart: veri tabanında B'nin değeri duruyor, A'nınki yazılmadı ({"total":1200,"note":""})
+  ✓ Kart: 409'dan sonra form arkadaki kartı kendisi yeniden okudu (^\/api\/workspace\/plans\/plan-a73b0c21-ca22-4312-9889-c47d758e2b74(\?|$))
+  ✓ yeniden açılan form B'nin 1.200'üyle dolu (1.200,00)
+  ✓ yarışsız düzeltme kaydedildi (200 {"total":1200,"note":"A yeniden"})
+  ✓ ardışık ikinci düzeltme de kaydedildi (200 )
+
+■ E4 Stok kartı Düzenle (hof-stock editItem; 3a)
+  ✓ B Satış Fiyatı'nı 20 yaptı → 200 
+    (ön koşul: B'nin yazımından sonra canlı yenileme geldi; okumalar 4016 ms'de duruldu)
+  ✓ Stok kartı: A'nın eskimiş formu 409 aldı (409 stock-item-stale)
+  ✓ Stok kartı: ileti formda: “Bu stok kartı siz açtıktan sonra başka biri tarafından değiştirildi; değişikliğiniz kaydedilmedi. Kartı yenileyip yeniden deneyin.”
+  ✓ Stok kartı: form açık kaldı
+  ✓ Stok kartı: 409'dan sonra kendiliğinden yeniden göndermedi (1,5 sn'de PUT /api/workspace/stock/stock-b8a9b4f8-f0d6-407a-945a-14c544de4f31: 1; beklenen 1)
+  ✓ Stok kartı: veri tabanında B'nin değeri duruyor, A'nınki yazılmadı ({"salePrice":20,"note":""})
+  ✓ Stok kartı: 409'dan sonra form arkadaki kartı kendisi yeniden okudu (^\/api\/workspace\/stock\/stock-b8a9b4f8-f0d6-407a-945a-14c544de4f31(\?|$))
+  ✓ yeniden açılan form B'nin 20'siyle dolu (20,00)
+  ✓ yarışsız düzeltme kaydedildi (200 {"salePrice":20,"note":"A yeniden"})
+  ✓ ardışık ikinci düzeltme de kaydedildi (200 )
+
+■ E5 Stok hareketi: 'Stok Eksiye Düşecek' onayı açıkken B hareketi düzeltir, A 'Yine de Kaydet' der (hof-stock editMove; 3b)
+  ✓ ön koşul: ilk gönderim eksi stok sorusu (409 stock-negative: Stokta 20 Adet var; 50 Adet çıkış stoğu eksiye düşürür. Kayıttan sonra stok: -30)
+  ✓ "Stok Eksiye Düşecek" onay penceresi açıldı
+  ✓ onay başlığı: “Stok Eksiye Düşecek”
+  ✓ B hareketi 2 adede düzeltti → 200 
+    (ön koşul: B'nin yazımından sonra canlı yenileme geldi; okumalar 4019 ms'de duruldu)
+  ✓ Eksi stok onayı: A'nın eskimiş formu 409 aldı (409 stock-move-stale)
+  ✓ Eksi stok onayı: ileti formda: “Bu stok hareketi siz açtıktan sonra başka biri tarafından değiştirildi; düzeltmeniz kaydedilmedi. Listeyi yenileyip yeniden deneyin.”
+  ✓ Eksi stok onayı: form açık kaldı
+  ✓ Eksi stok onayı: 409'dan sonra kendiliğinden yeniden göndermedi (1,5 sn'de PUT /moves/smove-9dff2d20-5d44-4926-af38-edc528efd6b7: 1; beklenen 1)
+  ✓ Eksi stok onayı: veri tabanında B'nin değeri duruyor, A'nınki yazılmadı ({"qty":2,"note":"ilk not","by":"user-1e30a9aa-54be-4a98-bdf0-5411e95f6d56"})
+  ✓ Eksi stok onayı: 409'dan sonra form arkadaki kartı kendisi yeniden okudu (^\/api\/workspace\/stock\/stock-b8a9b4f8-f0d6-407a-945a-14c544de4f31(\?|$))
+  ✓ arkadaki kart B'nin 2 adedine yenilendi
+
+■ E6 Mutabakat Testi
+  ✓ Mutabakat Testi ok ([])
+  ✓ sayfa hatası yok
+
+58 geçti, 0 kaldı

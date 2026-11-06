@@ -304,11 +304,20 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     const user = auth.requirePermission(req, "stock.view");
     ok(res, detail(params.id, user));
   });
+  // 2.5.0 BİRLEŞİK TUR 3 (3a; iyimser kilit, lib/row-version.mjs): stok kartı düzenleme formu açıldığı andaki kartın sürümünü (updatedAt) gönderir; kart o andan sonra
+  // değiştiyse (başka biri düzeltti, alım hareketi Alış Fiyatı'nı güncelledi, Excel'den güncellendi) 409 stock-item-stale. Önceden tam form öbür kişinin düzeltmesini
+  // sessizce geri yazıyordu (B Satış Fiyatı'nı 15 → 20 yaptı, yalnız notu değiştiren A'nın formu 15'i yazdı; arada girilen alımın 12'lik fiyatı 10'a döndü). Gövdede
+  // updatedAt yoksa (eski istemci) denetim yok.
+  const ITEM_STALE = { code: "stock-item-stale", message: "Bu stok kartı siz açtıktan sonra başka biri tarafından değiştirildi; değişikliğiniz kaydedilmedi. Kartı yenileyip yeniden deneyin." };
   router.put("/api/workspace/stock/:id", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "stock.manage");
-    const previous = itemRow(params.id);
+    const opened = itemRow(params.id);
     const body = await readJson(req);
     const result = store.tx(() => {
+      // Kart yazım işleminin İÇİNDE yeniden okunur (birleşik tur 1 deseni): gövde beklenirken kart değiştiyse denetimler ve gövdede olmayan alanlar GÜNCEL karttan;
+      // silindiyse 404.
+      const previous = itemRow(opened.id);
+      assertRowVersion(body, previous, ITEM_STALE);
       const input = itemInput({ ...previous, ...body }, previous);
       if (store.get("SELECT 1 AS found FROM stock_items WHERE deleted_at IS NULL AND name = ? COLLATE NOCASE AND unit = ? COLLATE NOCASE AND id <> ?", input.name, input.unit, previous.id)) throw new HttpError(409, `“${input.name}” (${input.unit}) adlı başka bir ürün var.`);
       if (String(input.code).toLocaleLowerCase("tr-TR") !== String(previous.code || "").toLocaleLowerCase("tr-TR")) assertCodeFree(input.code, previous.id);
@@ -316,7 +325,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
       audit(user, "stock.item.updated", previous.id, { previous: { name: previous.name, minQty: previous.minQty, unitPrice: previous.unitPrice }, ...input });
       return detail(previous.id, user);
     });
-    changed(user, { itemId: previous.id });
+    changed(user, { itemId: opened.id });
     ok(res, result);
   });
   router.delete("/api/workspace/stock/:id", async ({ req, res, params }) => {

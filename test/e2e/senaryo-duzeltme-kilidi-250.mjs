@@ -102,6 +102,13 @@ const submitAndRead = async urlPart => {
 };
 // Kartı / listeyi okuyan GET istekleri (zamanıyla): 409'dan SONRA formun kendi yenilemesi var mı (canlı değişiklik bildiriminden bağımsız).
 const reads = [];
+// 2.5.0 BİRLEŞİK TUR 3 (birleşik tur 2 dar kontrolü DÜŞÜK-3): "kendiliğinden yeniden göndermedi" denetimi yazım isteklerini SAYAR. Önceden yalnız formun açık
+// kaldığına bakılıyordu; 409'dan sonra aynı sürümle bir kez daha PUT gönderen mutant (M-yinele) 74/74 geçiyordu (ikinci PUT de 409 alır, form yine açık kalır).
+const puts = [];
+const putsSince = async (urlPart, since) => {
+  await sleep(1500);
+  return puts.filter(item => item.at >= since && item.url.includes(urlPart)).length;
+};
 const readAfter = async (pattern, since, timeout = 6000) => {
   const until = Date.now() + timeout;
   while (Date.now() < until) {
@@ -153,6 +160,7 @@ try {
   page.on("pageerror", error => errors.push(error.message));
   page.on("request", request => {
     if (request.method() === "GET" && request.url().includes("/api/workspace/")) reads.push({ url: new URL(request.url()).pathname + new URL(request.url()).search, at: Date.now() });
+    if (request.method() === "PUT" && request.url().includes("/api/workspace/")) puts.push({ url: new URL(request.url()).pathname, at: Date.now() });
   });
   await installPageClock(page, clock);
   await page.goto(`${server.base}/`);
@@ -216,7 +224,9 @@ try {
     const message = await formError();
     ok(res.status === 409 && /-stale$/.test(res.code), `${label}: A'nın eskimiş formu 409 aldı (${res.status} ${res.code})`);
     ok(STALE.test(message), `${label}: ileti formda: “${message}”`);
-    ok(Boolean(await page.$(`${TOP} form [name="${noteField}"]`)), `${label}: form açık kaldı (kendiliğinden yeniden göndermedi; yazılan açıklama formda)`);
+    ok(Boolean(await page.$(`${TOP} form [name="${noteField}"]`)), `${label}: form açık kaldı (yazılan açıklama formda)`);
+    const sent = await putsSince(urlPart, res.clickAt);
+    ok(sent === 1, `${label}: 409'dan sonra kendiliğinden yeniden göndermedi (tıklamadan sonraki ~2 sn'de ${urlPart} adresine PUT: ${sent}; beklenen 1)`);
     const now = rowOf(table, id);
     ok(bCheck(now) && now.updated_by === B && (now.note ?? now.description) === (before.note ?? before.description), `${label}: veri tabanında B'nin değeri duruyor, A'nın açıklaması yazılmadı (${JSON.stringify(pick(now))})`);
     const selfRead = await readAfter(cardRead, res.clickAt);

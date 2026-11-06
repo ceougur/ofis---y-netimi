@@ -269,11 +269,23 @@ export function registerCashRoutes(router, context) {
     if (first && entry.date > first) throw new HttpError(409, `Açılış tarihi (${dateText(entry.date)}) Kasa'nın ilk hareketinden (${dateText(first)}) sonra olamaz. Açılış, o günün başındaki nakittir; ilk hareketin günü ya da öncesi seçilir.`, { code: "cash-opening-after-first", firstMovement: first, field: "date" });
   }
 
+  // 2.5.0 BİRLEŞİK TUR 3 (YAN-A; iyimser kilit, lib/row-version.mjs): Kasa → Açılış Bakiyesi formu açıldığı andaki açılışı gönderir — openingId (kimlik; "" = form
+  // açılırken açılış yoktu) ve updatedAt (sürüm). Arada başka yönetici açılışı girdiyse, düzelttiyse ya da sildiyse 409 cash-opening-stale: formdaki eski tutar /
+  // tarih öbür kişinin kaydını sessizce ezmez (önceden B 5.000 → 4.000 yapınca, yalnız tarihi değiştiren A'nın formu 5.000'i geri yazıyordu; açılış yokken açılan
+  // form da B'nin girdiği açılışın üstüne yazıyordu). Gövdede openingId / updatedAt yoksa (eski istemci) denetim yok.
+  const OPENING_STALE = { code: "cash-opening-stale", message: "Kasa açılış bakiyesi siz formu açtıktan sonra başka biri tarafından girildi, değiştirildi ya da silindi; kaydınız yapılmadı. Formu kapatıp yeniden açın." };
+  function assertOpeningVersion(body, current) {
+    if (!body || typeof body !== "object") return;
+    if (Object.hasOwn(body, "openingId") && body.openingId !== undefined && text(body.openingId) !== (current?.id || "")) throw new HttpError(409, OPENING_STALE.message, { code: OPENING_STALE.code, id: current?.id || "" });
+    if (current) assertRowVersion(body, rowVersion(store, "cash_entries", current.id), OPENING_STALE);
+  }
+
   router.get("/api/workspace/cash/opening", async ({ req, res }) => {
     const user = auth.requirePermission(req, "cash.view");
     const opening = cashOpenings(store)[0] || null;
+    const version = opening ? rowVersion(store, "cash_entries", opening.id) : null;
     ok(res, {
-      opening: opening ? { id: opening.id, date: opening.date, amount: roundMoney(opening.amount), description: opening.description } : null,
+      opening: opening ? { id: opening.id, date: opening.date, amount: roundMoney(opening.amount), description: opening.description, updatedAt: version?.updatedAt || "", createdAt: version?.createdAt || "" } : null,
       firstMovement: firstCashMovement(store, lines, { except: opening?.id || "" }),
       lockedUntil: context.period?.lockedUntil?.() || "",
       canManage: canUser(user, "system.manage"),
@@ -291,6 +303,8 @@ export function registerCashRoutes(router, context) {
     const existing = cashOpenings(store)[0] || null;
     const entry = { kind: "in", amount: roundMoney(amount), date, description: existing?.description || CASH_OPENING_TEXT, method: "cash" };
     if (!existing) {
+      // Form açılırken açılış vardı, şimdi yok (başka biri sildi): yeni açılış yazılmaz, 409 (BİRLEŞİK TUR 3).
+      assertOpeningVersion(body, null);
       const id = auth.newId("cash");
       const result = bank.post({
         user,
@@ -299,7 +313,11 @@ export function registerCashRoutes(router, context) {
         requestId: requestIdOf(req, body),
         scope: "cash.opening.create",
         body,
-        prepare: () => assertOpening(user, entry),
+        // Sürüm denetimi yazım işleminin İÇİNDE de yinelenir (ayrı süreç arada açılış girmiş olabilir); sonra açılış kuralları.
+        prepare: () => {
+          assertOpeningVersion(body, cashOpenings(store)[0] || null);
+          assertOpening(user, entry);
+        },
         write: () => {
           store.run("INSERT INTO cash_entries (id, kind, amount, date, description, method, event_id, is_opening, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?)", id, entry.kind, entry.amount, entry.date, entry.description, entry.method, bank.eventFor("cash_entries", entry), user.id, now());
           audit(user, "cash.opening.entered", id, entry);
@@ -312,6 +330,10 @@ export function registerCashRoutes(router, context) {
     }
     context.period?.assertOpen(existing.date, "Kasa açılışı");
     if (existing.date === entry.date && Math.abs(roundMoney(existing.amount) - entry.amount) < 0.005) return ok(res, { id: existing.id, created: false, unchanged: true, opening: { ...entry, id: existing.id } });
+    // BİRLEŞİK TUR 3 (YAN-A): form açıldıktan sonra açılış değiştiyse (ya da form açılışsızken açıldıysa) 409 — Kasa "Uyar" sorusundan ÖNCE (eskimiş formla önce
+    // yanıltıcı Kasa sorusu, sonra kilit iletisi çıkmasın). "Değişiklik yok" kısa yolu önce: gövde güncel açılışla aynıysa hiçbir şey yazılmaz (yinelenen istek de
+    // buraya düşer).
+    assertOpeningVersion(body, existing);
     // Açılışı düşürmek Kasa'yı eksiye düşürecekse sorulur (Uyar) ya da reddedilir (Engelle); "Yine de Kaydet" cashForce.
     guardChange(existing, entry, body.cashForce === true);
     const previous = store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId, event_id AS eventId, fin_ref AS finRef FROM cash_entries WHERE id = ?", existing.id);
@@ -323,7 +345,10 @@ export function registerCashRoutes(router, context) {
       requestId: requestIdOf(req, body),
       scope: "cash.opening.update",
       body: { ...body, id: existing.id },
-      prepare: () => assertOpening(user, entry, existing.id),
+      prepare: () => {
+        assertOpeningVersion(body, cashOpenings(store)[0] || null);
+        assertOpening(user, entry, existing.id);
+      },
       write: () => {
         const eventId = bank.eventFor("cash_entries", { ...entry, transfer_id: "", event_id: previous.eventId || "" });
         store.run("UPDATE cash_entries SET amount = ?, date = ?, description = ?, event_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", entry.amount, entry.date, entry.description, eventId, user.id, now(), existing.id);

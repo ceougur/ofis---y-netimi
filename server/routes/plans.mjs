@@ -177,7 +177,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       COALESCE(g.name, '') AS groupName, COALESCE(s.name, '') AS subgroupName, COALESCE(ac.name, '') AS accountName, COALESCE(ac.ref_no, '') AS accountRef
     FROM plans p LEFT JOIN users u ON u.id = p.created_by LEFT JOIN plan_groups g ON g.id = p.group_id LEFT JOIN plan_groups s ON s.id = p.subgroup_id
       LEFT JOIN accounts ac ON ac.id = p.account_id AND ac.deleted_at IS NULL`;
-  const itemsOf = planId => store.all("SELECT id, seq, due_date AS dueDate, amount, note FROM plan_items WHERE plan_id = ? ORDER BY due_date, seq", planId);
+  // updatedAt: taksit düzeltme formunun iyimser kilidi (BİRLEŞİK TUR 3, YAN-B).
+  const itemsOf = planId => store.all("SELECT id, seq, due_date AS dueDate, amount, note, updated_at AS updatedAt FROM plan_items WHERE plan_id = ? ORDER BY due_date, seq", planId);
   const entriesOf = planId =>
     store.all(
       `SELECT e.id, e.item_id AS itemId, e.kind, e.amount, e.date, e.note, e.method, e.receipt_no AS receiptNo, e.cheque_id AS chequeId, e.opening, e.fin_ref AS finRef, e.created_by AS createdBy, e.created_at AS createdAt, e.updated_at AS updatedAt,
@@ -601,11 +602,19 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     ok(res, detail(params.id, user));
   });
 
+  // 2.5.0 BİRLEŞİK TUR 3 (3a; iyimser kilit, lib/row-version.mjs): kart düzenleme formu açıldığı andaki kartın sürümünü (updatedAt) gönderir; kart o andan sonra
+  // değiştiyse (başka biri tutarı / adı düzeltti, cari adı değişti) 409 plan-stale. Önceden tam form (bütün alanlar) öbür kişinin düzeltmesini sessizce geri yazıyordu
+  // (B tutarı 1.000 → 1.200 yaptı, yalnız notu değiştiren A'nın formu 1.000'i yazdı). Gövdede updatedAt yoksa (Kartı Kapat / Yeniden Aç, eski istemci) denetim yok.
+  const PLAN_STALE = { code: "plan-stale", message: "Bu taksit kartı siz açtıktan sonra başka biri tarafından değiştirildi; değişikliğiniz kaydedilmedi. Kartı yenileyip yeniden deneyin." };
   router.put("/api/workspace/plans/:id", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "plans.manage");
-    const previous = planRow(params.id);
+    const opened = planRow(params.id);
     const body = await readJson(req);
     const result = store.tx(() => {
+      // Kart yazım işleminin İÇİNDE yeniden okunur (birleşik tur 1 deseni): gövde beklenirken kart değiştiyse denetimler ve gövdede olmayan alanlar GÜNCEL karttan;
+      // silindiyse 404.
+      const previous = planRow(opened.id);
+      assertRowVersion(body, previous, PLAN_STALE);
       const input = planInput({ ...previous, ...body }, user, previous);
       const status = body.status === undefined ? previous.status : body.status === "closed" ? "closed" : "active";
       // v2.0.23 (gözden geçirme): faturanın kendi taksit kartının tutarı ve carisi faturadan gelir; burada değişince fatura ile
@@ -650,7 +659,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       audit(user, "plan.updated", previous.id, { previous: { name: previous.name, total: previous.total, status: previous.status, accountId: previous.accountId }, ...input, accountId, status });
       return detail(previous.id, user);
     });
-    changed(user, { planId: previous.id });
+    changed(user, { planId: opened.id });
     changed(user, { kind: "accounts", accountId: result.accountId || "" });
     ok(res, result);
   });
@@ -740,16 +749,26 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     changed(user, { planId: plan.id });
     ok(res, detail(plan.id, user));
   });
+  // 2.5.0 BİRLEŞİK TUR 3 (YAN-B; iyimser kilit, lib/row-version.mjs): taksit düzeltme formu açıldığı andaki taksitin sürümünü (updatedAt) gönderir; taksit o andan sonra
+  // değiştiyse 409 plan-item-stale. Önceden tam form öbür kişinin düzeltmesini sessizce geri yazıyordu (B taksiti 500 → 300 yaptı, yalnız vadeyi değiştiren A'nın formu
+  // 500'ü yazdı). Gövdede updatedAt yoksa (eski istemci) denetim yok.
+  const ITEM_STALE = { code: "plan-item-stale", message: "Bu taksit siz açtıktan sonra başka biri tarafından değiştirildi; düzeltmeniz kaydedilmedi. Kartı yenileyip yeniden deneyin." };
   router.put("/api/workspace/plans/:id/items/:itemId", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "plans.manage");
     const plan = planRow(params.id);
-    const previous = itemOf(plan.id, params.itemId);
-    const input = itemInput({ ...previous, ...(await readJson(req)) }, plan);
-    if (!(input.amount > 0)) throw new HttpError(400, "Taksit tutarı sıfırdan büyük olmalı.");
+    const opened = itemOf(plan.id, params.itemId);
+    const body = await readJson(req);
+    // Erken doğrulama (alan iletileri); karar aşağıda işlemin İÇİNDE güncel taksitle yinelenir.
+    const early = itemInput({ ...opened, ...body }, plan);
+    if (!(early.amount > 0)) throw new HttpError(400, "Taksit tutarı sıfırdan büyük olmalı.");
     store.tx(() => {
-      assertPlanLive(plan.id);
+      const live = planRow(plan.id); // assertPlanLive: gövde beklenirken kart silindiyse 404
       // 2.5.0 BS-3 (g): gövde beklenirken TAKSİT silinirse 404 (kart denetimiyle aynı desen; önceden UPDATE 0 satır, 200 ve "taksit düzeltildi" geçmişi).
-      itemOf(plan.id, previous.id);
+      // BİRLEŞİK TUR 3: taksit işlemin içinde GÜNCEL hâliyle okunur; sürüm denetimi, gövdede olmayan alanlar ve Değişiklik Geçmişi'nin "önceki"si ondan.
+      const previous = itemOf(plan.id, opened.id);
+      assertRowVersion(body, rowVersion(store, "plan_items", previous.id), ITEM_STALE);
+      const input = itemInput({ ...previous, ...body }, live);
+      if (!(input.amount > 0)) throw new HttpError(400, "Taksit tutarı sıfırdan büyük olmalı.");
       store.run("UPDATE plan_items SET due_date = ?, amount = ?, note = ?, updated_at = ? WHERE id = ?", input.dueDate, input.amount, input.note, now(), previous.id);
       audit(user, "plan.item.updated", previous.id, { planId: plan.id, previous, ...input });
     });
