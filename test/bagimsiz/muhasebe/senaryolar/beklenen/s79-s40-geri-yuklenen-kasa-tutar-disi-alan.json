@@ -1,0 +1,250 @@
+{
+ "ad": "s79-s40-geri-yuklenen-kasa-tutar-disi-alan",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "ak1": [
+     {
+      "k": "fatura:F1",
+      "kalan": 150,
+      "tarih": "2026-01-05",
+      "tur": "fatura",
+      "vade": "2026-01-31"
+     }
+    ],
+    "ak3": [
+     {
+      "k": "fatura:F3",
+      "kalan": 1800,
+      "tarih": "2026-01-06",
+      "tur": "fatura",
+      "vade": "2026-01-20"
+     }
+    ],
+    "g1": {
+     "cari": "C1",
+     "detay": [
+      {
+       "kalan": 150,
+       "kalem": "fatura:F1",
+       "vade": "2026-01-31"
+      }
+     ],
+     "gecikmis": 150,
+     "supheli": 0,
+     "tarih": "2026-02-01"
+    },
+    "g1a": {
+     "cari": "C1",
+     "detay": [],
+     "gecikmis": 0,
+     "supheli": 0,
+     "tarih": "2026-02-01"
+    },
+    "g3": {
+     "cari": "C3",
+     "detay": [
+      {
+       "kalan": 1800,
+       "kalem": "fatura:F3",
+       "vade": "2026-01-20"
+      }
+     ],
+     "gecikmis": 1800,
+     "supheli": 0,
+     "tarih": "2026-02-01"
+    },
+    "g3a": {
+     "cari": "C3",
+     "detay": [
+      {
+       "kalan": 2000,
+       "kalem": "fatura:F3",
+       "vade": "2026-01-20"
+      }
+     ],
+     "gecikmis": 2000,
+     "supheli": 0,
+     "tarih": "2026-02-01"
+    },
+    "hat": {
+     "elle": {},
+     "otomatik": {
+      "C1": 150,
+      "C3": 1800
+     },
+     "supheli_etiketli": [],
+     "tarih": "2026-02-01"
+    },
+    "mod14": {
+     "cari|C1": 150,
+     "cari|C3": 1800,
+     "kasa": 1450
+    },
+    "mu0": [
+     {
+      "acilis": "2026-01-15",
+      "kaynak": "KY",
+      "kod": "KASA_ACILIS_ONCESI_HAREKET",
+      "tarih": "2026-01-10"
+     },
+     {
+      "acilis": "2026-01-15",
+      "kaynak": "PS",
+      "kod": "KASA_ACILIS_ONCESI_HAREKET",
+      "tarih": "2026-01-11"
+     },
+     {
+      "acilis": "2026-01-15",
+      "kaynak": "PY",
+      "kod": "KASA_ACILIS_ONCESI_HAREKET",
+      "tarih": "2026-01-12"
+     },
+     {
+      "acilis": "2026-01-15",
+      "kaynak": "PZ",
+      "kod": "KASA_ACILIS_ONCESI_HAREKET",
+      "tarih": "2026-01-13"
+     }
+    ],
+    "mu1": [
+     {
+      "acilis": "2026-01-15",
+      "kaynak": "KY",
+      "kod": "KASA_ACILIS_ONCESI_HAREKET",
+      "tarih": "2026-01-10"
+     },
+     {
+      "acilis": "2026-01-15",
+      "kaynak": "PS",
+      "kod": "KASA_ACILIS_ONCESI_HAREKET",
+      "tarih": "2026-01-11"
+     },
+     {
+      "acilis": "2026-01-15",
+      "kaynak": "PY",
+      "kod": "KASA_ACILIS_ONCESI_HAREKET",
+      "tarih": "2026-01-12"
+     },
+     {
+      "acilis": "2026-01-15",
+      "kaynak": "PZ",
+      "kod": "KASA_ACILIS_ONCESI_HAREKET",
+      "tarih": "2026-01-13"
+     }
+    ],
+    "mz": {
+     "ana": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 11450,
+       "borc": 11450,
+       "devir": 0
+      },
+      "120": {
+       "alacak": 1050,
+       "bakiye": 1950,
+       "borc": 3000,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 10000,
+       "bakiye": -10000,
+       "borc": 0,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 3000,
+       "bakiye": -3000,
+       "borc": 0,
+       "devir": 0
+      },
+      "649": {
+       "alacak": 400,
+       "bakiye": -400,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "bas": "2026-01-01",
+     "satirlar": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 11450,
+       "borc": 11450,
+       "devir": 0
+      },
+      "120|C1": {
+       "alacak": 850,
+       "bakiye": 150,
+       "borc": 1000,
+       "devir": 0
+      },
+      "120|C3": {
+       "alacak": 200,
+       "bakiye": 1800,
+       "borc": 2000,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 10000,
+       "bakiye": -10000,
+       "borc": 0,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 3000,
+       "bakiye": -3000,
+       "borc": 0,
+       "devir": 0
+      },
+      "649.90": {
+       "alacak": 400,
+       "bakiye": -400,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "son": "2026-01-31",
+     "toplam": {
+      "alacak": 14450,
+      "bakiye": 0,
+      "borc": 14450,
+      "devir": 0
+     }
+    }
+   },
+   "redler": [
+    {
+     "kod": "KASA_ACILIS_ONCE",
+     "neden": "Kasa hareketi 2026-01-14 < Kasa açılışı 2026-01-15",
+     "olay": 17,
+     "tur": "duzenle"
+    },
+    {
+     "kod": "KASA_ACILIS_ONCE",
+     "neden": "Kasa hareketi 2026-01-09 < Kasa açılışı 2026-01-15",
+     "olay": 18,
+     "tur": "duzenle"
+    }
+   ]
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}
