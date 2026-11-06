@@ -68,6 +68,13 @@ Yok"). S30 (S-W3-a) KAPANDI — silme talebi / 1 yıl dolumu anında bekleyen i�
 sıra S30-a KULLANICIYA SORULMALI), Sonucu Belirsiz iş iz olarak kalır ve aynı dönemde eler. S31 (S-W3-b) KAPANDI — içeriği silinmiş Ekstre işi aynı iş üzerinden yeniden gönderilemez (`elenen`
 `icerik_silindi`), Ödeme Hatırlatma'daki karşılığı S31-a KULLANICIYA SORULMALI (kâhin hata verir). S32 (S-W3-c) KAPANDI — silme talebi kaydı makinede (şirket + cari + an) kalır, geri
 yüklemeden sonra yeniden uygulanır (talepten önce yazılmış içerik / telefon gelmez); başka bilgisayarda (S32-a) `plan_susuyor`.
+GÜNCELLEME 17 (2.5.0, KULLANICI KARARLARI 06.11.2026 08:06 UTC "a" — S34–S38 öneriler (S37 = B) — ve 07:00 S33, 08:08 S41; metinler AYNEN KARARLAR S34, S35, S36, S37, S38, S33, S41; yorumlar
+README §22, kodlamadan önce yazıldı ve ayrı commit'lendi): S34 (S29-a) KAPANDI — S16 ilk Yine de Gönder'inde şüphesiz tutar yoksa da iş ALINIR (elle), gönderim anındaki tutarla gider, yoksa
+"Atlandı — Gecikmiş Borç Yok" (`s16_an` kalktı). S35 (S30-a) KAPANDI — silme talebi (ve 1 yıl dolumu — README Y17-6) anında bekleyen iş O ANDA "Atlandı — Silme Talebi", kuyruktan çıkar
+(`s30_an` kalktı). S36 (S30-b) — içeriği silinmiş Sonucu Belirsiz Ekstre'de aynı dönem yolu yok (hesap aynen). S37 (S31-a = B) — içeriği silinmiş Ödeme Hatırlatma aynı iş üzerinden yeniden
+gönderilir, içerik gönderim anında karttan. S38 (S32-a) — silme talebi kayıtları taşımada yeni bilgisayara gider ve orada uygulanır. S33 / S41 — yeni girdi `ayar.baglanti_yolu` (yol1 / yol2;
+yoksa yol2) ve kanca `adres` (alternatif / uygulama): Yol 2'de işareti ve işlemeyi yalnız imzalı bildirim, Yol 1'de imzasız bildirim kabul; uygulama düzeyi adrese gelen bildirim aynı kurallarla.
+Gönderiliyor anında talep (S35-a) ve tanınmayan iletiye ait bildirimin işareti (S33-a) KULLANICIYA SORULMALI.
 
 KÂHİN GÜNCELLEMESİ 8 (31.10.2026): H1 (kullanıcı) — Yine de Gönder ile açılan iş kabul/teslim edilince KAYNAK Sonucu Belirsiz deneme o kişi için artık
 elemez (kişi "Daha Önce Gönderildi"; yol R3 Yine de Gönder); açılan iş başarısız/belirsiz kalırsa kaynak elemeye devam eder. H2–H4 (baş mimar, G0 İLKEYLE):
@@ -148,12 +155,13 @@ DURDU_BAGLANTI = "Durduruldu (Bağlantı)"              # yalnız M189 (P6 §3 m
 SUPHELI = "supheli_alacak"                            # S7 (Y11-18): elenme nedeni ("Şüpheli Alacağı Var" etiketi)
 BELIRTEC_KODLARI = {190, 0}                           # SD1915 (190) + SW4 (0 "190 gibi"); 102 kararın DIŞINDA (Y11-15)
 DEVAM_OKUMALARI = ("ret", "bekle", "dene")            # yeniden bağlanmadan Devam Et'in üç okuması (README §16.4) — ilki model, öbürleri seçenek
-S16_OKUMALARI = ("basma", "gonderim")                 # güncelleme 13 (README §18.4 Y13-3): S16 "yoksa elenir"in anı — ilki model, öbürü seçenek
 # güncelleme 15'in S23_OKUMALARI ("gonderim", "basma") güncelleme 16'da KALKTI: S29 = A 'gonderim' okumasını kesinleştirdi, 'basma' S29'un B seçeneğidir (M223) — README §21 Y16-3
-S30_OKUMALARI = ("aninda", "gonderimde")              # güncelleme 16 (README §21 Y16-10/11): S30 bekleyen iş silme anında mı kapanır (model) yoksa kendi gönderim anında mı atlanır
-OKUMALAR = {"devam_sd": DEVAM_OKUMALARI, "s16_an": S16_OKUMALARI, "s30_an": S30_OKUMALARI}
+# güncelleme 13'ün S16_OKUMALARI ("basma", "gonderim") güncelleme 17'de KALKTI: S34 = A 'gonderim' okumasını kesinleştirdi, 'basma' S34'ün B seçeneğidir (M236) — README §22 Y17-3
+# güncelleme 16'nın S30_OKUMALARI ("aninda", "gonderimde") güncelleme 17'de KALKTI: S35 = A 'aninda' okumasını kesinleştirdi, 'gonderimde' S35'in B seçeneğidir (M238) — README §22 Y17-7
+OKUMALAR = {"devam_sd": DEVAM_OKUMALARI}
+BAGLANTI_YOLLARI = ("yol2", "yol1")                   # güncelleme 17 (README §22 Y17-24): ayar.baglanti_yolu — ilki varsayılan (eski senaryolar: imza kapıcıda doğrulanır)
 S30_BEKLEYEN = {BEKLIYOR, SINIR, DURAKLATILDI, LISANS, SORULUYOR, BEKLEME_131049, HAZIRLANIYOR}   # S30 (Y16-9): isteği henüz gitmemiş bekleyen iş (zincir dahil)
-SILME_NEDEN = {"talep": "silme_talebi", "sure": "saklama_suresi"}   # S30 (Y16-10): bekleyen işin atlanma nedeni (kâhin adı; karar metninde ad yok)
+SILME_NEDEN = {"talep": "silme_talebi", "sure": "saklama_suresi"}   # S30 (Y16-10) + S35 (Y17-7): bekleyen işin atlanma nedeni — "Atlandı — Silme Talebi" (S35 metni); 1 yıl adı kâhinin
 ICERIK_SILINDI = "icerik_silindi"                     # S31 (Y16-17): içeriği silinmiş Ekstre işinin yeniden gönderiminde elenme nedeni (kâhin adı — "neden görünür")
 NET_BORC_YOK = "net_borc_yok"                         # güncelleme 13 (Y13-7): karar (5) "bize alacaklı" / S17 net sınırı elemesinin olası ikinci adı (karar metninde ad yok)
 TANINMAYAN_503 = 5 * 60 * 1000                        # J6: yanıt beklenirken tanınmayan bildirime en çok 5 dk 503
@@ -457,6 +465,22 @@ MUTASYONLAR = {
     "M233": "S32 (Y16-22) zaman sınırı: yeniden uygulamada talepten SONRA yazılmış içerik de silinir",
     "M234": "S32 (Y16-20): silme talebi kaydı şirket dosyasında (yedekle birlikte) — talepten önceki yedek geri yüklenince kayıt da kaybolur, sonraki geri yüklemelerde de uygulanmaz",
     "M235": "S31 'neden görünür'ün tersi: içeriği silinmiş Ekstre işi yeniden gönderime sessizce alınmaz — kişi yanıtta ne alınan ne elenen listesinde",
+    # ---- kâhin güncellemesi 17 (README §22): S34, S35, S36, S37, S38, S33, S41 ve Yol 1 — her kararın karşı seçeneği + sınır kaymaları
+    "M236": "S34'ün tersi (B seçeneği): ilk Yine de Gönder'de şüphesiz tutar yoksa kişi basmada 'Gecikmiş Borç Yok' ile elenir, iş Sonucu Belirsiz kalır (eski s16_an 'basma' okuması)",
+    "M237": "S34 (Y17-2/4) zaman sınırı: ilk Yine de Gönder'de tutar yoksa şüphesiz tutar basma anının gününe göre sabitlenir — gönderim anına kadar vadesi geçen kalem sayılmaz",
+    "M238": "S35'in tersi (B seçeneği): silme talebinde bekleyen iş gönderim anına kadar kuyrukta sayılır ('Zaten Kuyrukta'), kendi gönderim anında atlanır",
+    "M239": "S35 (Y17-8) sınır: talep anında kapanan ('Atlandı — Silme Talebi') iş 'Zaten Kuyrukta' sayılır — aynı dönem yeni gönderim elenir",
+    "M240": "S35 (Y17-6) kapsam: anında kapanma yalnız silme talebinde — 1 yıl dolumunda bekleyen iş gönderim anına kadar kuyrukta kalır",
+    "M241": "S36'nın tersi (B seçeneği): içeriği silinmiş Sonucu Belirsiz Ekstre'nin kişisi yeni gönderimde 'Sonucu Belirsiz' yerine R3 uyarısıyla gelir, onaylı Yine de Gönder ile gider",
+    "M242": "S36 (Y17-13) dönem sınırı: içeriği silinmiş Sonucu Belirsiz Ekstre izi dönem eşliğine bakmadan eler — sonraki dönem de gitmez",
+    "M243": "S37'nin tersi (A seçeneği): içeriği silinmiş Ödeme Hatırlatma da Ekstre gibi yeniden gönderilemez ('içerik silindi' ile elenir)",
+    "M244": "S37 (Y17-16) yol sınırı: yalnız Başarısızları Yeniden Dene açık — işteki Yine de Gönder içeriği silinmiş Ödeme Hatırlatma'yı 'içerik silindi' ile eler",
+    "M245": "S38'in tersi (B seçeneği): silme talebi kayıtları taşınmaz — yeni bilgisayarda talep öncesi yedek geri yüklenince içerik / telefon geri gelir",
+    "M246": "S38 (Y17-20) zaman sınırı: taşınan talep kaydının anı taşıma anı olur — talepten sonra (taşımadan önce) yazılmış içerik de geri yüklemede silinir",
+    "M247": "S33'ün tersi (B seçeneği, bugünkü program): Yol 2'de imzasız bildirim de (wamid tanınmasa bile) 'bildirim yolu çalışıyor' işaretini koyar — TTL + 1 sa'te Süresi Doldu",
+    "M248": "S41'in tersi (B seçeneği): uygulama düzeyi adrese gelen bildirim işlenmez (200, yok sayılır) — teslim bilgisi kaybolur",
+    "M249": "S41 'aynı kurallar'ın tersi: uygulama düzeyi adreste imza aranmaz — Yol 2'de imzasız bildirim de işlenir",
+    "M250": "Yol 1 'imzasız kabul'ün tersi (S41 metni): Yol 1'de de imzasız bildirim düşer (§7a 3) — Meta'nın bildirimleri işlenmez",
 }
 
 # Kâhin güncellemesi 2'nin kaynak karar metinleri (AYNEN; CLAUDE.md "Açık iş" + docs/2.4.8-IS-LISTESI.md, 31.10.2026). "kaynak_turu": kullanıcı kararı mı,
@@ -755,6 +779,56 @@ KARARLAR = {
                       "silme talepleri yeniden uygulanır (talep kaydı makinede kalır; ilke 5) / B: yedek aynen gelir, kullanıcı yeniden siler.",
                       "İLKEYLE (WK 15; plan §0 genel ilke, soru değil, teslim notuna \"İLKEYLE\"): içeriği silinmiş kayıtta da R3 \"Yine de Gönder\" açık kalır (ilke 4, çıkmaz yok); kapanmış "
                       "işteki belirsiz deneme izi yine eler (ilke 2)."]},
+    # ---- kâhin güncellemesi 17 (2.5.0; docs/2.5.0-IS-LISTESI.md D "KULLANICI KARARI 06.11 08:06 UTC" (S34–S38), "06.11 07:00 UTC" (S33), "06.11 08:08 UTC" (S41) + C soru metinleri — AYNEN) ----
+    "S34": {"kaynak_turu": "kullanıcı (06.11.2026 08:06 UTC, 'a' = öneriler; iş listesi D + C, aynen) — WK güncellemesi 16'nın KULLANICIYA SORULMALI S29-a'sı (README §21.7)",
+            "metin": ["KULLANICI KARARI 06.11 08:06 UTC (AYNEN: \"a\"; sorular C bölümünde S34–S40, öneriyle soruldu; kullanıcıya \"önerileri kabul ediyorsanız 'a' yeterli (S37'de öneri B)\" "
+                      "denmişti → \"a\" = ÖNERİLER):",
+                      "S34 = A: ilk Yine de Gönder'de şüphesiz tutar yok, gönderim anına kadar doğuyor → iş alınır, gönderim anındaki tutarla gider (S29 ile aynı).",
+                      "İŞ ATAMASI: S34–S38 → WK GÜNCELLEMESİ 17 (kâhin önce) → W-3 kodu (S30–S32 + S35–S38) + Ç5 (S34); …",
+                      "soru (iş listesi C, SORULDU 06.11 07:39 → YANITLANDI 06.11 08:06 \"a\"): S34 (S29-a ★): İLK Yine de Gönder basıldığında şüphesiz tutar yok, gönderim anına kadar doğuyor — "
+                      "A öneri: iş alınır, gönderim anındaki tutarla gider (S29 ile aynı) / B: basmada elenir."]},
+    "S35": {"kaynak_turu": "kullanıcı (06.11.2026 08:06 UTC, 'a' = öneriler; iş listesi D + C, aynen) — WK güncellemesi 16'nın KULLANICIYA SORULMALI S30-a'sı (README §21.7)",
+            "metin": ["KULLANICI KARARI 06.11 08:06 UTC (AYNEN: \"a\"; sorular C bölümünde S34–S40, öneriyle soruldu; … \"a\" = ÖNERİLER):",
+                      "S35 = A: silme talebinde bekleyen iş talep anında kapanır (\"Atlandı — Silme Talebi\").",
+                      "soru (iş listesi C): S35 (S30-a ★): silme talebinde bekleyen iş ne zaman kapanır (fark yalnız iş kapanmadan aynı kişiye aynı dönem yeni gönderim denenirse) — A öneri: talep "
+                      "anında kapanır (\"Atlandı — Silme Talebi\") / B: gönderim anına kadar kuyrukta sayılır (\"Zaten Kuyrukta\").",
+                      "ana oturum görev metni (WK 17): WK 16'nın s30_an seçenekli yaprakları S35 ile kesinleşir (README §22 Y17-6: 1 yıl dolumu dahil — BAŞ MİMAR teyidi)."]},
+    "S36": {"kaynak_turu": "kullanıcı (06.11.2026 08:06 UTC, 'a' = öneriler; iş listesi D + C, aynen) — WK güncellemesi 16'nın KULLANICIYA SORULMALI S30-b'si (README §21.7)",
+            "metin": ["KULLANICI KARARI 06.11 08:06 UTC (AYNEN: \"a\"; sorular C bölümünde S34–S40, öneriyle soruldu; … \"a\" = ÖNERİLER):",
+                      "S36 = A: Sonucu Belirsiz Ekstre işinin içeriği silinince aynı dönem için yol kalmaz; sonraki dönem gider (ilke 4'ün bu duruma özel istisnası, kullanıcı onaylı).",
+                      "soru (iş listesi C): S36 (S30-b ★): Sonucu Belirsiz Ekstre işinin içeriği silinince aynı dönem için gönderme yolu kalmıyor (ilke 4 ile çatışır) — A öneri: böyle kalsın, "
+                      "sonraki dönem gider / B: yeni gönderimde uyarıyla onaylı Yine de Gönder açık."]},
+    "S37": {"kaynak_turu": "kullanıcı (06.11.2026 08:06 UTC, 'a' = öneriler — S37'de öneri B; iş listesi D + C, aynen) — WK güncellemesi 16'nın KULLANICIYA SORULMALI S31-a'sı (README §21.7)",
+            "metin": ["KULLANICI KARARI 06.11 08:06 UTC (AYNEN: \"a\"; sorular C bölümünde S34–S40, öneriyle soruldu; kullanıcıya \"önerileri kabul ediyorsanız 'a' yeterli (S37'de öneri B)\" "
+                      "denmişti → \"a\" = ÖNERİLER):",
+                      "S37 = B (öneri): içeriği silinmiş ÖDEME HATIRLATMA işi aynı iş üzerinden yeniden gönderilebilir; içerik gönderim anında karttan yeniden hazırlanıp gider.",
+                      "soru (iş listesi C): S37 (S31-a ★): içeriği silinmiş ÖDEME HATIRLATMA işi aynı iş üzerinden yeniden gönderilebilir mi — A: Ekstre gibi gönderilemez / B öneri: içerik gönderim "
+                      "anında hazırlandığı için karttan yeniden hazırlanıp gider."]},
+    "S38": {"kaynak_turu": "kullanıcı (06.11.2026 08:06 UTC, 'a' = öneriler; iş listesi D + C, aynen) — WK güncellemesi 16'nın S32-a'sı (README §21.7; KVKK, ileti sayısını etkilemez)",
+            "metin": ["KULLANICI KARARI 06.11 08:06 UTC (AYNEN: \"a\"; sorular C bölümünde S34–S40, öneriyle soruldu; … \"a\" = ÖNERİLER):",
+                      "S38 = A: başka bilgisayara taşımada silme talebi kayıtları taşınır ve yeni bilgisayarda da uygulanır (ilke 5).",
+                      "soru (iş listesi C): S38 (S32-a, KVKK; ileti sayısını etkilemez): başka bilgisayara taşımada silme talepleri — A öneri (ilke 5): talep kayıtları taşınır, yeni bilgisayarda da "
+                      "uygulanır / B: uygulanmaz."]},
+    "S33": {"kaynak_turu": "kullanıcı (06.11.2026 07:00 UTC, 'a'; iş listesi D + C, aynen) — WhatsApp küçük işler ajanının KULLANICIYA SORULMALI S-WY-1'i; WK 17'ye ana oturum iletisiyle eklendi",
+            "metin": ["KULLANICI KARARI 06.11 07:00 UTC (AYNEN: \"a\"; soru C bölümünde S33, öneriyle soruldu):",
+                      "S33 = A: Yol 2'de \"bildirim yolu çalışıyor\" işaretini yalnız İMZALI (Meta imzası doğrulanmış) bildirim koyar (ilke 2). İŞ ATAMASI: WHATSAPP KÜÇÜK İŞLER TUR 1 (dar kontrol "
+                      "bulgularıyla birlikte, yeni ajan, xhigh).",
+                      "soru (iş listesi C, SORULDU 06.11 06:58 → YANITLANDI 06.11 07:00 \"a\"): S33 (S-WY-1): Yol 2'de imzasız tek bir bildirim (sahte istek ya da kapıcıda uygulama sırrı eksik) wamid "
+                      "tanınmasa bile 200 alıyor ve \"bildirim yolu çalışıyor\" işaretini koyuyor → teslim bilgisi gelmeyen iş TTL + 1 sa sonra \"Süresi Doldu\", kişi aynı dönemde yeniden "
+                      "\"gönderilecek\" görünür, İKİNCİ İLETİ mümkün (ölçüldü: sahte POST yokken \"Daha Önce Gönderildi\", varken \"gönderilecek\") — A öneri: Yol 2'de işareti yalnız İMZALI bildirim "
+                      "koyar (ilke 2: almış olabilirse elenir) / B: bugünkü gibi kalır.",
+                      "ana oturum iletisi (WK 17'ye ekleme, 06.11.2026): Yol 1 (Elle Bağla) imzasız bildirim kabul etmeye devam eder."]},
+    "S41": {"kaynak_turu": "kullanıcı (06.11.2026 08:08 UTC, 'A'; iş listesi D + C, aynen) — WhatsApp küçük işler dar kontrolünün ORTA-1'i; WK 17'ye ana oturum iletisiyle eklendi",
+            "metin": ["KULLANICI KARARI 06.11 08:08 UTC (AYNEN: \"A\"; soru C bölümünde S41, öneriyle soruldu):",
+                      "S41 = A: Meta'da WABA'nın alternatif bildirim adresi yokken teslim / teslim edilemedi bildirimi uygulama düzeyi adrese gelirse, bu kurulumda kaydı olan WABA'nın bildirimi "
+                      "alternatif adresle AYNI kurallarla işlenir (Yol 1 imzasız kabul, Yol 2 yalnız imzalı) ve Meta'daki adres hemen yeniden denetlenir. Baş mimar kararı (5) \"uygulama düzeyi "
+                      "POST işlenmez\" bu durum için KALKTI.",
+                      "soru (iş listesi C, SORULDU 06.11 08:04 → YANITLANDI 06.11 08:08 \"A\"): S41: Meta'da WABA'nın alternatif bildirim adresi yokken (ör. gövdesiz subscribed_apps adımı yinelenince) "
+                      "teslim / teslim edilemedi bildirimi UYGULAMA DÜZEYİ adrese (/wa/kanca/…) gelirse — bugün 200 dönüp işlenmiyor (baş mimar kararı (5)); iş \"sent\" kalıyor, süre dolunca "
+                      "\"Süresi Doldu\", iletiyi almış kişi aynı dönemde yeniden \"gönderilecek\" (ölçüldü, s3 betiği; Meta'nın gerçekten oraya gönderdiği sahte Meta ile DOĞRULANMADI) — A öneri: bu "
+                      "kurulumda kaydı olan WABA'nın bildirimi alternatif adresle AYNI kurallarla işlenir (Yol 1 imzasız kabul, Yol 2 yalnız imzalı) + Meta'daki adres hemen yeniden denetlenir / "
+                      "B: bugünkü gibi işlenmez, BİLİNEN SINIR.",
+                      "ana oturum iletisi (WK 17'ye ekleme, 06.11.2026): teslim bilgisi kaybolmaz, \"Süresi Doldu\" yüzünden aynı dönemde ikinci ileti gitmez."]},
     "K8": {"kaynak_turu": "kullanıcı (08:20 'şimdi yap'); en yeni önce / yerel gün / iki uç dahil / ters aralık ret ana oturum görev metni",
            "metin": ["KARAR (kullanıcı, 31.10.2026 ~08:20 UTC: \"şimdi yap\"): WhatsApp Gönderimleri ekranına 2.4.8'de \"Daha Fazla Göster\" (30'ar, imleçli) + "
                      "Başlangıç/Bitiş tarih süzgeci (eski gönderimlere erişim)."]},
@@ -1093,8 +1167,12 @@ class Benzetim:
         self.kontroller = {}; self.baslamadi = {}; self.elenen = {}
         # kâhin güncellemesi 15 (S-W3): silme talepleri (makine düzeyi: (şirket, cari) → an), silinen telefonlar (yalnız M218), saklama alt sınırı (ufku 1 yıldan kısa senaryoda bakılmaz)
         self.kvkk = {}; self.silinen_tel = {}
-        # kâhin güncellemesi 16 (S32, Y16-20/25): talep kaydı makinede (şirket + cari → an); taşımadan önceki bilgisayarın talepleri (yalnız S32-a plan_susuyor); yedekteki kayıt yalnız M234
-        self.kvkk_onceki = {}; self.yedek_kvkk = {}
+        # kâhin güncellemesi 16 (S32, Y16-20): talep kaydı makinede (şirket + cari → an); yedekteki kayıt yalnız M234. Güncelleme 17 (S38, Y17-20): taşımada yeni bilgisayara gider
+        self.yedek_kvkk = {}
+        # kâhin güncellemesi 17 (S33 / S41, README §22 Y17-24): bağlantı yolu — Yol 2 (WhatsApp'ı Bağla; imza kapıcıda doğrulanır — eski senaryoların düzeni) / Yol 1 (Elle Bağla; imzasız kabul)
+        self.yol = self.ayar.get("baglanti_yolu") or BAGLANTI_YOLLARI[0]
+        if self.yol not in BAGLANTI_YOLLARI:
+            raise ValueError(f"girdi: ayar.baglanti_yolu {self.yol!r} (yol1 / yol2)")
         self.saklama_alt = yil_sonra(self.T0, self.tz) - 2 * GUN
         self.ozet = bool(sen.get("ozet_cikti"))
         self.degismez = {"silinmis_medyayla_gonderim": 0, "kesin_oncesi_medya_silme": 0,
@@ -1240,7 +1318,11 @@ class Benzetim:
                     self.kvkk = dict(self.yedek_kvkk.get(o["yedek"], {}))   # M234: talep kaydı dosyadaymış gibi yedekle döner
             if tur == "tasindi":
                 self.defter = set()                                     # başka bilgisayar: makine defteri o bilgisayarda yok (§6 W2)
-                self.kvkk_onceki.update(self.kvkk); self.kvkk = {}       # S32 (Y16-25): talep kaydı makinede kalır — yeni bilgisayarda yok (S32-a: yalnız plan_susuyor için tutulur)
+                # S38 = A (KULLANICI KARARI 06.11.2026 08:06 UTC; README §22 Y17-20/21): silme talebi kayıtları (şirket + cari + an) taşınır, yeni bilgisayarda da uygulanır — self.kvkk aynen
+                if "M245" in self.mut:
+                    self.kvkk = {}                                      # M245 (S38'in B'si): talep kaydı eski bilgisayarda kalır
+                elif "M246" in self.mut:
+                    self.kvkk = {k: t for k in self.kvkk}               # M246: taşınan kaydın anı taşıma anı olur
             for tp in self.toplular.values():
                 for j in tp.isler:
                     if tur == "tasindi" and j.durum == GONDERILIYOR:
@@ -1301,8 +1383,10 @@ class Benzetim:
             wamid = o.get("wamid", "wamid.SAHTE")
             if "is" in o:                                    # sahte olay gerçek bir işin wamid'ini taşır (saldırgan wamid'i biliyor)
                 wamid = self.isler[o["is"]].wamidler[-1]
-            self.kanca_planla(t, wamid, o["durum"], o.get("kod"),
-                              {"opaque": o.get("opaque"), "sahte": True, "imzali": bool(o.get("imzali")), "olay_t": t})
+            ek = {"opaque": o.get("opaque"), "sahte": True, "imzali": bool(o.get("imzali")), "olay_t": t}
+            if o.get("adres"):
+                ek["adres"] = o["adres"]                                # güncelleme 17 (S41, Y17-24): bildirimin geldiği adres (yoksa alternatif)
+            self.kanca_planla(t, wamid, o["durum"], o.get("kod"), ek)
         else:
             raise ValueError(f"bilinmeyen olay: {tur}")
 
@@ -1331,26 +1415,19 @@ class Benzetim:
             if yalniz is not None and j is not yalniz:
                 continue
             m196 = "M196" in self.mut and j.durum == ATLANDI and j.elendi_neden == SUPHELI   # Y12-5'in tersi: S7-b ile atlanan iş kuyrukta sayılır
+            m196 = m196 or ("M239" in self.mut and j.durum == ATLANDI and j.elendi_neden in SILME_NEDEN.values())   # S35 (Y17-8)'in tersi: talep anında kapanan iş kuyrukta sayılır
             if j.sirket != sirket or j.cari != cid or (j.durum not in durumlar and not m196) or self.toplular[j.toplu].sablon != sablon:
                 continue
             if sablon == "hatirlatma":
                 if "M105" in self.mut and j.anahtar_donem != ctx[0]:
                     continue
-                return self.s30_kuyrukta(j)
+                return True
             if not donem_eslesir((j.anahtar_donem, j.tarih_donem, j.kanon_donem, j.tarihler_donem), ctx, self.mut):
                 continue
             if "M72" in self.mut and ctx[0][0] == "secim" and t - self.toplular[j.toplu].t >= R3_PENCERE:
                 continue
-            return self.s30_kuyrukta(j)
+            return True        # güncelleme 17: S35 = A — talep anında kapanan iş Atlandı'dır, kuyrukta değil (güncelleme 16'nın S30-a hatası kalktı; M238 / M240 işi kuyrukta tutar)
         return False
-
-    def s30_kuyrukta(self, j):
-        """S30 (README §21 Y16-11): 'gonderimde' okumasında içeriği silinmiş bekleyen iş kuyrukta durur — 'aninda' okumasında (model) Atlandı'dır, kuyrukta değil.
-        Bu eşleşme iki okumanın kime / kaç kez ayrıştığı tek sıradır (aynı kişiye aynı dönem yeni gönderim / yeniden deneme) → S30-a KULLANICIYA SORULMALI."""
-        if getattr(j, "silme_bekliyor", None):
-            raise ValueError("KULLANICIYA SORULMALI S30-a (README §21.7): silme talebi / 1 yıl dolumu anında bekleyen iş kapanmadan aynı kişiye aynı dönem yeni gönderim ya da "
-                             "yeniden deneme — bekleyen iş anında mı kapanır (gider) yoksa gönderim anına kadar kuyrukta mı sayılır (Zaten Kuyrukta); kodlanmadı")
-        return True
 
     def dosyadaki_kayitlar(self):
         ids = set()
@@ -1421,6 +1498,17 @@ class Benzetim:
                 en = rec["t"] if en is None else max(en, rec["t"])   # H4: son kabul/teslim edilen (sayılan) denemenin anı
         return en_tum if ("M135" in self.mut and en is not None) else en
 
+    def silinmis_belirsiz_ekstre_t(self, cid, sablon, ctx, sirket, t):
+        """Yalnız M241 (S36'nın B seçeneği, README §22 Y17-13): kişinin aynı dönemdeki Sonucu Belirsiz denemesi içeriği silinmiş bir EKSTRE işinin ise o denemenin anı, değilse None."""
+        if sablon != "ekstre":
+            return None
+        for rec, dosya_mi, _rid in self.gorunen_kayitlar():
+            sahip = self.isler.get(rec["is"])
+            if (dosya_mi and rec["son_durum"] == BELIRSIZ and sahip is not None and sahip.icerik_silindi
+                    and self.eslesir(rec, cid, sablon, ctx, sirket, t, belirsiz=True)):
+                return rec["t"]
+        return None
+
     def karar_siniri(self, tp, tasima_mut):
         """K5: asıl işin "Yine de Gönder" kararı yeniden denemeye / işteki Yine de Gönder'e taşınır → sınır = asıl işin açılış anı."""
         if "M95" in self.mut:
@@ -1445,8 +1533,13 @@ class Benzetim:
         for rec, dosya_mi, rid in gorunen:
             if rid in cozulen:
                 continue
-            if rid == haric or rec["son_durum"] != BELIRSIZ or not self.eslesir(rec, cid, sablon, ctx, sirket, t, belirsiz=True):
+            if rid == haric or rec["son_durum"] != BELIRSIZ:
                 continue
+            if not self.eslesir(rec, cid, sablon, ctx, sirket, t, belirsiz=True):
+                m242 = ("M242" in self.mut and sablon == "ekstre" and rec["sablon"] == sablon and rec["cari"] == cid and rec["sirket"] == sirket
+                        and getattr(self.isler.get(rec["is"]), "icerik_silindi", None))   # S36 (Y17-13) dönem sınırının tersi: silinmiş belirsiz Ekstre izi her dönemi eler
+                if not m242:
+                    continue
             if "M226" in self.mut and rec.get("belirsiz_silindi"):        # S30 (Y16-13): silinen kişinin belirsiz izi KALIR (M226 siler)
                 continue
             if "M124" in self.mut and rid not in self.defter:              # G3'ün tersi: taşınan veride dosyadaki belirsiz sayılmaz
@@ -1466,13 +1559,12 @@ class Benzetim:
 
     def tasi(self, j, tp, t):
         """Yeniden deneme / Yine de Gönder: iş yeniden gönderime alınır. K4: dönem asıl işten taşınır (M87/M88 bunu bozar)."""
-        if j.icerik_silindi:
-            if tp.sablon == "hatirlatma":
-                # README §21.7 S31-a (Y16-19): S31 yalnız Ekstre der — içeriği silinmiş Ödeme Hatırlatma'nın aynı iş üzerinden yeniden gönderimi (kime / kaç kez) kodlanmadı
-                raise ValueError("KULLANICIYA SORULMALI S31-a (README §21.7): içeriği silinmiş Ödeme Hatırlatma işinin yeniden gönderimi (S31 yalnız Ekstre der) — kodlanmadı")
+        if j.icerik_silindi and tp.sablon == "ekstre":
             # S31 (Y16-16/17): Ekstre'de çağıranlar (yeniden_dene / yine_de_gonder) bu işi `icerik_silindi` ile eler; buraya yalnız S31'in B'si (M230 / M231) gelir:
             # içerik açılış günü verisiyle yeniden üretilir (J12 düzeni), iş gider
             j.hazir = self.icerik(self.cariler[j.cari], tp, tp.t, j)
+        # S37 = B (KULLANICI KARARI 06.11.2026 08:06 UTC; README §22 Y17-16/17): içeriği silinmiş Ödeme Hatırlatma aynı iş üzerinden yeniden gönderilir — içerik (ve telefon) gönderim
+        # anında karttan yeniden hazırlanır (isci; `icerik_silindi` orada kalkar). Güncelleme 16'nın S31-a hatası kalktı.
         if j.asil_durum is None:
             j.asil_durum = j.durum
         if j.durum == ATLANDI:
@@ -1586,11 +1678,11 @@ class Benzetim:
                    and not ("M212" in self.mut and j.durum == ATLANDI and j.elendi_neden == SUPHELI))   # M212: S22 yolunda (Y14-4) yeniden basmada S16 yok
             s16_engel = None
             if s16 and "M200" not in self.mut:
-                s16_engel = self.hatirlatma_engeli(c, t)                    # S16 "yoksa elenir" + S7A + S17 / NB5 sınırı (Y13-3, Y13-8)
-                if s16_engel is not None:
-                    self.okuma_izi.add("s16_an")                           # README §18.4: elemenin anı karar metninde yok → iki okuma
-            if s16_engel is not None and self.okuma.get("s16_an", S16_OKUMALARI[0]) == "basma":
-                sonuc["elenen"][j.cari] = s16_engel                         # (a) basma anında elenir; iş Sonucu Belirsiz kalır (ilke 2)
+                s16_engel = self.hatirlatma_engeli(c, t)                    # basma anında şüphesiz tutar (S7A + S17 / NB5 sınırı — Y13-3, Y13-8)
+            # S34 = A (KULLANICI KARARI 06.11.2026 08:06 UTC; README §22 Y17-1…3): basmada şüphesiz tutar yoksa da iş ALINIR (elle), gönderim anındaki tutarla gider, yoksa gönderim
+            # anında "Atlandı — Gecikmiş Borç Yok" (S16 "yoksa elenir" gönderim anında; güncelleme 13'ün `s16_an` iki okuması ve "ayrışma" hatası kalktı)
+            if s16_engel is not None and "M236" in self.mut:
+                sonuc["elenen"][j.cari] = s16_engel                         # M236 (S34'ün B'si): basmada elenir; iş Sonucu Belirsiz kalır
             elif "M111" not in self.mut and self.kuyrukta(j.cari, tp.sablon, ctx, tp.sirket, t):
                 sonuc["elenen"][j.cari] = "zaten_kuyrukta"                  # E2 + F1: işteki Yine de Gönder'de de bekleyen ileti eler
             elif "M118" in self.mut and self.belirsiz_kaynagi(j.cari, tp.sablon, ctx, tp.sirket, t, haric=j.son_kayit):
@@ -1605,8 +1697,7 @@ class Benzetim:
                 j.belirsiz_onay = True                                          # J10 (07:11 a): belirsizlik onayı izi (yeniden denemeye taşınır — c)
                 if s16:
                     j.supheli_elle = True                                       # S16 (Y13-2): elle seçim sayılır — işte kalır (Y12-7 / Y12-8)
-                if s16_engel is not None:
-                    j.s16_bos = True                                            # (b) 'gonderim' okuması: basma anında şüphesiz tutar yoktu (gönderim anında Atlandı beklenir)
+                j.s34_t = t if s16_engel is not None else None                  # S34: basmada şüphesiz tutar yoktu (yalnız M237 okur — tutarı basma anına sabitler)
                 if "M200" in self.mut and acik and "M199" not in self.mut:
                     j.m200 = True
                 tp.durum = "aktif"; tp.bas = 0
@@ -1702,12 +1793,13 @@ class Benzetim:
 
     def icerik_sil(self, j, t, neden):
         """SW3 (Y15-10/11): içerik (değişkenler, PDF, dosya adı, açılışta hazırlanan ekstre) + telefon silinir; iz (tarih, dönem, cari, şablon + sonuç ve sayaçlar) kalır.
-        S30 = A (KULLANICI KARARI 06.11.2026 06:52 UTC; README §21 Y16-8…14): BEKLEYEN iş (S30_BEKLEYEN; zincir dahil) GÖNDERİLMEZ — 'aninda' okumasında (model) o anda "Atlandı"
-        (`silme_talebi` / `saklama_suresi`), 'gonderimde' okumasında içeriksiz kuyrukta kalır ve kendi gönderim anında atlanır (`s30_an`, Y16-11); Sonucu Belirsiz iş iz olarak KALIR
-        (aynı dönem eler — belirsiz_kaynagi). Gönderiliyor (istek gitti, yanıt bekleniyor) modellenmedi (Y16-9)."""
+        S30 = A (KULLANICI KARARI 06.11.2026 06:52 UTC; README §21 Y16-8…14): BEKLEYEN iş (S30_BEKLEYEN; zincir dahil) GÖNDERİLMEZ; Sonucu Belirsiz iş iz olarak KALIR (aynı dönem eler —
+        belirsiz_kaynagi). S35 = A (KULLANICI KARARI 06.11.2026 08:06 UTC; README §22 Y17-6…8): bekleyen iş talep (ve 1 yıl dolumu) ANINDA kapanır — "Atlandı — Silme Talebi"
+        (`silme_talebi` / `saklama_suresi`), kuyrukta değil (güncelleme 16'nın `s30_an` iki okuması kalktı; 'gonderimde' okuması M238 / M240). Gönderiliyor (istek gitti, yanıt bekleniyor)
+        modellenmedi — S35 "bekleyen iş" der (README §22.9 S35-a ★)."""
         if j.durum == GONDERILIYOR:
-            raise ValueError("KÂHİN SUSUYOR (README §21.7, Y16-9): " + ("silme talebi" if neden == "talep" else "1 yıllık saklama süresinin dolması")
-                             + f" anında iş Gönderiliyor (istek gitti, yanıt bekleniyor — {j.anahtar}) — modellenmedi")
+            raise ValueError("KULLANICIYA SORULMALI S35-a (README §22.9; WK 16 KÂHİN SUSUYOR §21.7, Y16-9): " + ("silme talebi" if neden == "talep" else "1 yıllık saklama süresinin dolması")
+                             + f" anında iş Gönderiliyor (istek gitti, yanıt bekleniyor — {j.anahtar}) — S35 yalnız bekleyen işi söyler; kodlanmadı")
         bekleyen = j.durum in S30_BEKLEYEN and not ("M225" in self.mut                                       # S30'un B seçeneği: kartla gider
                                                     or ("M227" in self.mut and j.durum == BEKLEME_131049)
                                                     or ("M228" in self.mut and j.durum in (DURAKLATILDI, LISANS, SORULUYOR)))
@@ -1725,18 +1817,20 @@ class Benzetim:
                 if self.kayitlar[r]["son_durum"] == BELIRSIZ:
                     self.kayitlar[r]["belirsiz_silindi"] = True          # M226: S30 'Sonucu Belirsiz izi kalır'ın tersi
         if bekleyen:
-            self.okuma_izi.add("s30_an")                                  # README §21 Y16-11: kapanma anı karar metninde yok → iki okuma (kime / kaç kez yalnız S30-a sırasında ayrışır)
             ad = SILME_NEDEN[neden]
-            if self.okuma.get("s30_an", S30_OKUMALARI[0]) == "aninda":
-                self.atla(j, ad, t)                                       # (a) model: o anda "Atlandı" — kuyrukta değil, R3'te sayılmaz
+            if "M238" in self.mut or ("M240" in self.mut and neden == "sure"):
+                j.silme_bekliyor = ad                                     # M238 / M240 (S35'in B'si): içeriksiz kuyrukta kalır ("Zaten Kuyrukta"); isci gönderim anında atlar
             else:
-                j.silme_bekliyor = ad                                     # (b) içeriksiz kuyrukta kalır; isci gönderim anında atlar
+                self.atla(j, ad, t)                                       # S35 = A: o anda "Atlandı — Silme Talebi" — kuyrukta değil, R3'te sayılmaz
 
     def s31_eler(self, j, tp, sonuc, yine=False):
         """S31 = A (KULLANICI KARARI 06.11.2026 06:52 UTC; README §21 Y16-16/17): içeriği silinmiş EKSTRE işi aynı iş üzerinden yeniden gönderilemez — yanıtta `elenen`
         `icerik_silindi` ("neden görünür"; M235 yazmaz), iş durumu değişmez. M230 (B: içerik yeniden üretilir) iki yolda, M231 yalnız işteki Yine de Gönder'de eleme yapmaz.
-        Ödeme Hatırlatma bu yoldan geçmez → tasi'de S31-a hatası (Y16-19)."""
-        if not j.icerik_silindi or tp.sablon != "ekstre" or "M230" in self.mut or (yine and "M231" in self.mut):
+        S37 = B (KULLANICI KARARI 06.11.2026 08:06 UTC; README §22 Y17-16/17): Ödeme Hatırlatma bu yoldan ELENMEZ — yeniden gönderilir, içerik gönderim anında karttan (M243: A seçeneği,
+        iki yolda elenir; M244: yalnız işteki Yine de Gönder'de elenir)."""
+        if not j.icerik_silindi or "M230" in self.mut or (yine and "M231" in self.mut):
+            return False
+        if tp.sablon != "ekstre" and not ("M243" in self.mut or (yine and "M244" in self.mut)):
             return False
         if "M235" not in self.mut:
             sonuc["elenen"][j.cari] = ICERIK_SILINDI
@@ -1761,21 +1855,13 @@ class Benzetim:
             if yazim < tt or "M233" in self.mut:
                 self.icerik_sil(j, t, "talep")
 
-    S32_TASIMA_SUSUYOR = ("silme talebi kaydı makinede: başka bilgisayara taşınan veride / orada geri yüklenen eski yedekte talebin yeniden uygulanıp uygulanmadığı karar metninde yok "
-                          "(README §21.7 S32-a, KVKK — kime / kaç kez değil)")
-
     def icerik_gorunum(self, j):
         """İşin içerik alanları (sonuç ve `kontrol {icerik: true}`): silinmişse null + icerik_silindi. S32 (Y16-21): talepten önceki yedekten dönen içerik geri yüklemede yeniden
-        silinir (güncelleme 15'in S-W3-c plan_susuyor'u kalktı); yalnız taşımadan önceki bilgisayarın talebinden ÖNCE yazılmış ve silinmemiş içerik plan_susuyor (S32-a)."""
+        silinir (güncelleme 15'in S-W3-c plan_susuyor'u kalktı); S38 (Y17-21/22): taşımadan sonra da (talep kaydı taşınır) — güncelleme 16'nın S32-a plan_susuyor'u kalktı."""
         g = {"telefon": j.telefon, "degiskenler": j.icerik["degiskenler"] if j.icerik else None,
              "pdf": j.icerik["pdf"] if j.icerik else None, "dosya_adi": j.icerik["dosya_adi"] if j.icerik else None}
         if j.icerik_silindi:
             g["icerik_silindi"] = True
-        else:
-            tt = self.kvkk_onceki.get((j.sirket, j.cari))
-            yazim = self.icerik_yazim_ani(j)
-            if tt is not None and yazim is not None and yazim < tt and (j.sirket, j.cari) not in self.kvkk:
-                g = {k: {"plan_susuyor": self.S32_TASIMA_SUSUYOR} for k in (*g, "icerik_silindi")}
         return g
 
     def dosyayi_geri_yukle(self, ad):
@@ -1940,14 +2026,21 @@ class Benzetim:
                     elenen[cid] = engel; continue
             ctx = self.kisi_ctx(coz, cid)                                  # J8: Tüm Hareketler'de kişiye özel kanon
             neden = None                                                  # E2: TEK neden, sıra Zaten Kuyrukta → Sonucu Belirsiz → Daha Önce Gönderildi
+            m241_t = None
             for k in (("belirsiz", "kuyruk") if "M112" in self.mut else ("kuyruk", "belirsiz")):
                 if k == "kuyruk" and "M37" not in self.mut and self.kuyrukta(cid, sablon, ctx, sirket, t):
                     neden = "zaten_kuyrukta"                              # §7a 9 + K1 eşlik + K2 + D2(b)
                 elif (k == "belirsiz" and "M101" not in self.mut and "M107" not in self.mut and not ("M102" in self.mut and o.get("onceki") == "gonder")
                       and self.belirsiz_kaynagi(cid, sablon, ctx, sirket, t, yalniz_dosya=True)):
-                    neden = BELIRSIZ_NEDEN                                # D1 (+ E1: yalnız dosyadaki; + E3 hatırlatmada aynı yerel gün)
+                    m241_t = self.silinmis_belirsiz_ekstre_t(cid, sablon, ctx, sirket, t) if "M241" in self.mut else None
+                    if m241_t is None:
+                        neden = BELIRSIZ_NEDEN                            # D1 (+ E1: yalnız dosyadaki; + E3 hatırlatmada aynı yerel gün); S36 = A: içeriği silinmiş belirsiz Ekstre de
                 if neden:
                     break
+            if m241_t is not None and not neden:                          # M241 (S36'nın B'si): R3 uyarısıyla gelir; varsayılan Bunları Çıkar, onaylı Yine de Gönder ile gider
+                onceki.append(m241_t)
+                if o.get("onceki", "cikar") != "gonder":
+                    elenen[cid] = DAHA_ONCE; continue
             if neden:
                 if "M113" in self.mut:                                    # E2: bu nedenlerle elenen R3 uyarısına GİRMEZ (M113 sokar)
                     ot = self.onceden_gonderildi(cid, sablon, ctx, sirket, t)
@@ -2141,7 +2234,7 @@ class Benzetim:
                 if j.durum not in CALISIR or j.next_at > t:
                     continue
                 if getattr(j, "silme_bekliyor", None):
-                    # S30 'gonderimde' okuması (README §21 Y16-11): içeriği silinmiş bekleyen iş kendi gönderim anında (eleme denetimi) atlanır — ileti gitmez
+                    # yalnız M238 / M240 (S35'in B'si — eski 'gonderimde' okuması): içeriği silinmiş bekleyen iş kendi gönderim anında (eleme denetimi) atlanır — ileti gitmez
                     ad_ = j.silme_bekliyor; j.silme_bekliyor = None
                     self.atla(j, ad_, t)
                     continue
@@ -2171,12 +2264,10 @@ class Benzetim:
                         # §7a 20 + S7A (Y12-2) + NB5 / S17 (Y13-7, Y13-8): hatırlatılacak tutar gönderim anında da (M191: elle şüpheli caride yalnız başlatmada; M206: net yalnız başlatmada)
                         engel = (None if ("M44" in self.mut or ("M191" in self.mut and elle_is and acik) or getattr(j, "m200", False))
                                  else self.hatirlatma_engeli(c, t, gonderim=True))
-                        if getattr(j, "s16_bos", False):
-                            j.s16_bos = False
-                            if engel is None and not sup:
-                                # README §18.4: 'gonderim' okumasında basmada elenecek kişiye ileti gidecek — iki okuma kime / kaç kez ayrışıyor
-                                raise ValueError("KULLANICIYA SORULMALI (README §18.4, S16 elemenin anı): basma anında şüphesiz tutar yoktu, gönderim anında doğdu — "
-                                                 "basma okumasında elenir, gönderim okumasında gider; kodlanmadı")
+                        # S34 = A (README §22 Y17-2/4): ilk Yine de Gönder'de şüphesiz tutar yoktuysa gönderim anındaki tutar geçer (güncelleme 13'ün "S16 elemenin anı" hatası kalktı);
+                        # M237 tutarı basma anına sabitler (zaman sınırı kayması)
+                        if "M237" in self.mut and getattr(j, "s34_t", None) is not None and engel is None and elle_is:
+                            engel = self.hatirlatma_engeli(c, j.s34_t, gonderim=True)
                         # S29 = A (README §21 Y16-2/4): S23 yeniden basmasında şüphesiz tutar yoktuysa gönderim anındaki tutar geçer (güncelleme 15'in S23-a hatası kalktı);
                         # M224 tutarı basma anına sabitler (zaman sınırı kayması)
                         if "M224" in self.mut and getattr(j, "s29_t", None) is not None and engel is None and elle_is:
@@ -2499,7 +2590,8 @@ class Benzetim:
             olay_t = zaman_ayristir(k[1], ts)
             varis = zaman_ayristir(ek["varis"], ts) if "varis" in ek else olay_t
             ek.setdefault("opaque", j.anahtar)
-            ek["olay_t"] = olay_t; ek["imzali"] = True        # Meta'nın kancası: imza kapıcıda doğrulanır (§7a 3)
+            # Meta'nın kancası: Yol 2'de imza kapıcıda doğrulanır (§7a 3); güncelleme 17 (Y17-26): Yol 1'de kapıcı doğrulayamaz — imzasız gelir (kanca_al'da kabul edilir)
+            ek["olay_t"] = olay_t; ek["imzali"] = self.yol != "yol1"
             for _ in range(int(ek.get("tekrar", 1))):
                 self.kanca_planla(varis, wamid, k[0], ek.get("kod"), ek)
 
@@ -2550,7 +2642,16 @@ class Benzetim:
     # ---- J6: kanca yanıt katmanı ----------------------------------------------------------------------------------------------
     def kanca_al(self, t, ilk, wamid, durum, kod, ek):
         """Programa ULAŞAN bildirim: imzalıysa yanıt (200 / 503) verilir; 503 alanı Meta yineler (kuyruk, `kanca_kuyrugu` olayı). İmzasız bildirim kapıcıda
-        düşer (§7a 3) — yanıt sayımına girmez."""
+        düşer (§7a 3) — yanıt sayımına girmez.
+        Güncelleme 17 (README §22 Y17-25…28): S41 = A — uygulama düzeyi adrese (`adres: "uygulama"`) gelen bildirim alternatif adresle AYNI kurallarla (M248: işlenmez; M249: orada imza aranmaz);
+        Yol 1'de imzasız bildirim KABUL edilir ve imzalı gibi işlenir (S41 "Yol 1 imzasız kabul"; M250: düşer); Yol 2'de yalnız imzalı (S33)."""
+        if ek.get("adres") == "uygulama":
+            if "M248" in self.mut:
+                return                                                 # S41'in B'si: 200, işlenmez — teslim bilgisi kaybolur
+            if "M249" in self.mut and not ek.get("imzali"):
+                ek = dict(ek, imzali=True)                             # 'aynı kurallar'ın tersi: uygulama adresinde imza aranmaz
+        if not ek.get("imzali") and self.yol == "yol1" and "M250" not in self.mut:
+            ek = dict(ek, imzali=True, yol1_imzasiz=True)              # Yol 1: kapıcı imzayı doğrulayamaz — imzasız bildirim kabul (gerçeği de sahtesi de)
         if not ek.get("imzali"):
             return self.kanca_isle(t, wamid, durum, kod, ek)
         kod_http, isle = self.kanca_kodu(t, wamid, ek, durum)
@@ -2648,7 +2749,12 @@ class Benzetim:
 
     def kanca_isle(self, t, wamid, durum, kod, ek):
         if not ek.get("imzali") and "M24" not in self.mut:
-            return                                           # §7a 3: imzasız olay düşer (GUV-06)
+            if "M247" in self.mut:                           # S33'ün B'si (bugünkü program): imzasız bildirim de (wamid tanınmasa bile) "bildirim yolu çalışıyor" işaretini koyar
+                s_ = self.meta_mesajlari.get(wamid) or self.wamid_is.get(wamid)
+                w_ = self.wabalar.get(s_.sirket) if s_ is not None else self.wabalar.get(ek.get("sirket", "A"))
+                if w_ is not None:
+                    self.son_kanca[w_] = t
+            return                                           # §7a 3 + S33 (Y17-25): Yol 2'de imzasız olay düşer ve işareti koymaz (GUV-06)
         sahibi = self.meta_mesajlari.get(wamid) or self.wamid_is.get(wamid)
         if sahibi is not None and ek.get("imzali"):
             self.son_kanca[self.wabalar[sahibi.sirket]] = t   # §7a 16: kanca yolu çalışıyor
@@ -2921,16 +3027,12 @@ class Benzetim:
     BELIRTEC_NEDEN_SUSUYOR = "190 / 0 ile duran toplu işin neden adı (hata kodu ya da 'Bağlantı Süresi Doldu') karar metninde yok"
     BELIRTEC_KOD_SUSUYOR = "190 / 0 alıp bekleyenlere dönen işin hata kodu karar metninde yok ('kalan kişilerle bekler')"
     S7_BAKIYE_SUSUYOR = "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"
-    # README §18.4 (güncelleme 13): kime / kaç kez DEĞİŞMEYEN, karar metninin sustuğu yerler
-    S16_AN_SUSUYOR = ("S16 'yoksa elenir': elemenin işteki Yine de Gönder basıldığı anda mı (yanıtta elenir, iş Sonucu Belirsiz kalır) yoksa gönderim anında mı (iş alınır, "
-                      "'Atlandı') yapıldığı karar metninde yok — iki okumada da ileti gitmez")
+    # README §18.4 (güncelleme 13): kime / kaç kez DEĞİŞMEYEN, karar metninin sustuğu yerler (S16_AN_SUSUYOR güncelleme 17'de KALKTI — S34 = A, README §22 Y17-3)
     NET_ADI_SUSUYOR = ("karar (5) / S17 net borç elemesinin adı karar metninde yok ('Gecikmiş Borç Yok' ya da ayrı 'Net Borcu Yok') — ileti iki adda da gitmez")
     NET_ENGEL = {"secenek": ["gecikmis_borc_yok", NET_BORC_YOK], "susuyor": NET_ADI_SUSUYOR}
     # güncelleme 15'in S23_AN_SUSUYOR'u (s23_an) güncelleme 16'da KALKTI — S29 = A (README §21 Y16-3)
-    # README §21.7 (güncelleme 16): S30 bekleyen işin kapanma anı (kime / kaç kez DEĞİŞMEZ; ayrışırsa S30-a hatası)
-    S30_AN_SUSUYOR = ("S30 'bekleyen iş gönderilmez': silme talebi / 1 yıl dolumu anında bekleyen işin o anda mı kapandığı ('Atlandı') yoksa içeriksiz kuyrukta kalıp kendi gönderim "
-                      "anında mı atlandığı karar metninde yok — iki okumada da ileti gitmez")
-    OKUMA_SUSUYOR = {"devam_sd": DEVAM_SD_SUSUYOR, "s16_an": S16_AN_SUSUYOR, "s30_an": S30_AN_SUSUYOR}
+    # güncelleme 16'nın S30_AN_SUSUYOR'u (s30_an) güncelleme 17'de KALKTI — S35 = A (README §22 Y17-7)
+    OKUMA_SUSUYOR = {"devam_sd": DEVAM_SD_SUSUYOR}
 
     def belirtec_bekliyor(self, j):
         return j.kod is not None and j.kod == getattr(j, "belirtec_kodu", None) and j.durum not in SIRA and j.durum not in KESIN
