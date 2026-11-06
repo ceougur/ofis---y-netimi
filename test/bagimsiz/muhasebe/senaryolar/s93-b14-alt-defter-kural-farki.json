@@ -1,0 +1,187 @@
+{
+ "aciklama": "B14: Kural Farkı Düzeltme Fişi alt defter hesaplarına (120 ↔ 128) yazmaz; fark Bilanço'da Kural Değişikliği Farkı olarak kalır (BİLİNEN SINIR).",
+ "ad": "s93-b14-alt-defter-kural-farki",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "bil/aktif/I.A": 14000,
+   "bil/aktif/I.C": 10000,
+   "bil/aktif_toplam": 24000,
+   "bil/kesin_degil": [
+    "KURAL_DEGISIKLIGI_FARKI",
+    "TAMAMLANMAMIS_ACILIS"
+   ],
+   "bil/pasif/III.D": 4000,
+   "bil/pasif/V.F": 10000,
+   "bil/pasif/V.G": 10000,
+   "fark0": {
+    "120|C1": 4000,
+    "128|C1": -4000,
+    "500": 10000,
+    "519": -10000
+   },
+   "fark1": {
+    "120|C1": 4000,
+    "128|C1": -4000
+   },
+   "mz/satirlar/100/bakiye": 10000,
+   "mz/satirlar/101.01/bakiye": 4000,
+   "mz/satirlar/120|C1/bakiye": -4000,
+   "mz/satirlar/128|C1/bakiye": 10000,
+   "mz/satirlar/500/bakiye": 0,
+   "mz/satirlar/519/bakiye": -10000,
+   "mz/satirlar/600/bakiye": -10000,
+   "redler": [
+    "KURAL_FARKI_ALT_DEFTER"
+   ]
+  }
+ },
+ "kapsam": [
+  "B14",
+  "KG-15",
+  "M7",
+  "N-16",
+  "Ç3",
+  "S14",
+  "J-01",
+  "§7.3",
+  "W18"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "tarih": "2026-01-01",
+   "tur": "kasa_acilis",
+   "tutar": 10000
+  },
+  {
+   "K": 0,
+   "M": 10000,
+   "cari": "C1",
+   "id": "F1",
+   "tarih": "2026-02-01",
+   "tur": "satis_faturasi"
+  },
+  {
+   "cari": "C1",
+   "id": "SA1",
+   "tarih": "2026-03-01",
+   "tur": "supheliye_al",
+   "tutar": 10000
+  },
+  {
+   "cari": "C1",
+   "evrak": "CK1",
+   "fatura": "F1",
+   "id": "P1",
+   "tarih": "2026-03-10",
+   "tur": "tahsilat",
+   "tutar": 4000,
+   "yol": "cek"
+  },
+  {
+   "kural": "2.4.9",
+   "tarih": "2026-03-31",
+   "tur": "donem_kilitle"
+  },
+  {
+   "ad": "fark0",
+   "rapor": "kural_farki",
+   "tur": "rapor"
+  },
+  {
+   "tur": "kural_farki_duzelt"
+  },
+  {
+   "ad": "fark1",
+   "rapor": "kural_farki",
+   "tur": "rapor"
+  },
+  {
+   "tur": "kural_farki_duzelt"
+  },
+  {
+   "ad": "mz",
+   "bas": "2026-01-01",
+   "rapor": "mizan",
+   "son": "2026-04-30",
+   "tur": "rapor"
+  },
+  {
+   "ad": "bil",
+   "rapor": "bilanco",
+   "tarih": "2026-04-30",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

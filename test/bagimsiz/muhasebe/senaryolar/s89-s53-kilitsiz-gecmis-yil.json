@@ -1,0 +1,232 @@
+{
+ "aciklama": "S53: kilitsiz şirkette geçmiş yılın defteri yeni kuralla (519); Defter Mutabakatı bilgisi 'Kilitlenmemiş geçmiş yıl yeni kuralla hesaplandı' + 'yılı kilitleyin'; kilitlenince bilgi kalkar.",
+ "ad": "s89-s53-kilitsiz-gecmis-yil",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "bil/aktif_toplam": 25000,
+   "bil/kesin_degil": [
+    "ACILIS_OLABILIR_ONAY_BEKLIYOR",
+    "KAPANMAMIS_ONCEKI_YIL",
+    "TAMAMLANMAMIS_ACILIS"
+   ],
+   "bil/pasif/V.F": 1000,
+   "bil/pasif/V.G": 15000,
+   "bil/pasif/V.K": 9000,
+   "dm": {
+    "bilgi": [
+     {
+      "kod": "KILITSIZ_GECMIS_YIL_YENI_KURAL",
+      "oneri": "YILI_KILITLEYIN",
+      "yil": 2025
+     }
+    ],
+    "olculmeyen": [
+     2024
+    ]
+   },
+   "dm0": {
+    "bilgi": [],
+    "olculmeyen": [
+     2024
+    ]
+   },
+   "dm2": {
+    "bilgi": [],
+    "olculmeyen": []
+   },
+   "gt25/kalemler/A": 5000,
+   "gt25/kalemler/DNK": 5000,
+   "mz25/satirlar/500/bakiye": 0,
+   "mz25/satirlar/519/bakiye": -15000,
+   "mz25/satirlar/600/alacak": 5000,
+   "mz25/satirlar/602/bakiye": 0,
+   "mz25b/satirlar/519/bakiye": -15000,
+   "redler": []
+  }
+ },
+ "kapsam": [
+  "S53",
+  "G-7",
+  "M-01",
+  "M-08",
+  "KG-16",
+  "S47",
+  "KG-12",
+  "W15"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "K": 0,
+   "M": 4000,
+   "cari": "C3",
+   "id": "F0",
+   "tarih": "2024-05-01",
+   "tur": "satis_faturasi",
+   "yedekten": true
+  },
+  {
+   "tarih": "2025-01-01",
+   "tur": "kasa_acilis",
+   "tutar": 10000,
+   "yedekten": true
+  },
+  {
+   "cari": "C1",
+   "durum": "portfoy",
+   "evrak": "CK1",
+   "evrak_turu": "cek",
+   "tarih": "2025-01-01",
+   "tur": "evrak_acilis",
+   "tutar": 3000,
+   "yedekten": true,
+   "yon": "alinan"
+  },
+  {
+   "aciklama": "Açılış bakiyesi",
+   "cari": "C2",
+   "id": "BY1",
+   "tarih": "2025-01-02",
+   "tur": "borc_yaz",
+   "tutar": 2000,
+   "yedekten": true
+  },
+  {
+   "K": 0,
+   "M": 5000,
+   "cari": "C1",
+   "id": "F1",
+   "tarih": "2025-06-01",
+   "tur": "satis_faturasi",
+   "yedekten": true
+  },
+  {
+   "ad": "dm0",
+   "rapor": "defter_mutabakati_bilgi",
+   "tarih": "2025-12-31",
+   "tur": "rapor"
+  },
+  {
+   "K": 0,
+   "M": 1000,
+   "cari": "C1",
+   "id": "F2",
+   "tarih": "2026-02-01",
+   "tur": "satis_faturasi"
+  },
+  {
+   "ad": "mz25",
+   "bas": "2025-01-01",
+   "rapor": "mizan",
+   "son": "2025-12-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "gt25",
+   "bas": "2025-01-01",
+   "rapor": "gelir_tablosu",
+   "son": "2025-12-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "bil",
+   "rapor": "bilanco",
+   "tarih": "2026-03-01",
+   "tur": "rapor"
+  },
+  {
+   "ad": "dm",
+   "rapor": "defter_mutabakati_bilgi",
+   "tarih": "2026-03-01",
+   "tur": "rapor"
+  },
+  {
+   "tarih": "2025-12-31",
+   "tur": "donem_kilitle"
+  },
+  {
+   "ad": "dm2",
+   "rapor": "defter_mutabakati_bilgi",
+   "tarih": "2026-03-01",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mz25b",
+   "bas": "2025-01-01",
+   "rapor": "mizan",
+   "son": "2025-12-31",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

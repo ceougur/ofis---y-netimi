@@ -1,0 +1,339 @@
+{
+ "aciklama": "S51: Silinenler'den geri alınan cari açılışı, carinin başka açılışı varken 'Açılış Olabilir' listesine girer (onaya kadar 519); başka açılış yoksa aynen; geri alınan 2.5.0 Borç Yaz'ı aday olmaz, eski kayıt (yedekten) aday kalır.",
+ "ad": "s87-s51-geri-alinan-acilis",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "acilis_olabilir": [
+    "AC1",
+    "AC4",
+    "BY7"
+   ],
+   "ao0": [
+    {
+     "cari": "C1",
+     "durum": "bekliyor",
+     "kaynak": "AC1",
+     "tarih": "2026-01-01",
+     "tutar": 5000,
+     "yon": "borc"
+    },
+    {
+     "cari": "C2",
+     "durum": "bekliyor",
+     "kaynak": "AC4",
+     "tarih": "2026-01-01",
+     "tutar": 3000,
+     "yon": "borc"
+    },
+    {
+     "cari": "C3",
+     "durum": "bekliyor",
+     "kaynak": "BY7",
+     "tarih": "2026-01-06",
+     "tutar": 800,
+     "yon": "borc"
+    }
+   ],
+   "ao1": [
+    {
+     "cari": "C1",
+     "durum": "reddedildi",
+     "kaynak": "AC1",
+     "tarih": "2026-01-01",
+     "tutar": 5000,
+     "yon": "borc"
+    },
+    {
+     "cari": "C2",
+     "durum": "onaylandi",
+     "kaynak": "AC4",
+     "tarih": "2026-01-01",
+     "tutar": 3000,
+     "yon": "borc"
+    },
+    {
+     "cari": "C3",
+     "durum": "onaylandi",
+     "kaynak": "BY7",
+     "tarih": "2026-01-06",
+     "tutar": 800,
+     "yon": "borc"
+    }
+   ],
+   "bil0/aktif/I.C": 15700,
+   "bil0/kesin_degil": [
+    "ACILIS_OLABILIR_ONAY_BEKLIYOR",
+    "TAMAMLANMAMIS_ACILIS"
+   ],
+   "bil0/pasif/III.D": 1200,
+   "bil0/pasif/V.F": 700,
+   "bil0/pasif/V.G": 13800,
+   "bil1/kesin_degil": [
+    "TAMAMLANMAMIS_ACILIS"
+   ],
+   "bil1/pasif/V.F": 5700,
+   "bil1/pasif/V.G": 8800,
+   "g1/gecikmis": 11700,
+   "gt1/kalemler/A": 5700,
+   "gt1/kalemler/DNK": 5700,
+   "mz0/satirlar/120|C1/bakiye": 11700,
+   "mz0/satirlar/120|C2/bakiye": 4000,
+   "mz0/satirlar/120|C3/bakiye": -1200,
+   "mz0/satirlar/519/bakiye": -13800,
+   "mz0/satirlar/602.90/bakiye": -700,
+   "mz1/satirlar/519/bakiye": -8800,
+   "mz1/satirlar/602.90/bakiye": -5700,
+   "redler": []
+  }
+ },
+ "kapsam": [
+  "S51",
+  "S47",
+  "KG-16",
+  "B8",
+  "G-7",
+  "R-04",
+  "M-02",
+  "M-03",
+  "C-01",
+  "W10"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "cari": "C1",
+   "id": "AC1",
+   "tarih": "2026-01-01",
+   "tur": "cari_acilis",
+   "tutar": 5000,
+   "yon": "borc"
+  },
+  {
+   "kaynak": "AC1",
+   "tur": "sil"
+  },
+  {
+   "cari": "C1",
+   "id": "AC2",
+   "tarih": "2026-01-01",
+   "tur": "cari_acilis",
+   "tutar": 6000,
+   "yon": "borc"
+  },
+  {
+   "kaynak": "AC1",
+   "tur": "geri_yukle"
+  },
+  {
+   "cari": "C3",
+   "id": "AC3",
+   "tarih": "2026-01-01",
+   "tur": "cari_acilis",
+   "tutar": 2000,
+   "yon": "alacak"
+  },
+  {
+   "kaynak": "AC3",
+   "tur": "sil"
+  },
+  {
+   "kaynak": "AC3",
+   "tur": "geri_yukle"
+  },
+  {
+   "cari": "C2",
+   "id": "AC4",
+   "tarih": "2026-01-01",
+   "tur": "cari_acilis",
+   "tutar": 3000,
+   "yon": "borc"
+  },
+  {
+   "kaynak": "AC4",
+   "tur": "sil"
+  },
+  {
+   "cari": "C2",
+   "id": "AC5",
+   "tarih": "2026-01-01",
+   "tur": "cari_acilis",
+   "tutar": 1000,
+   "yon": "borc"
+  },
+  {
+   "kaynak": "AC4",
+   "tur": "geri_yukle"
+  },
+  {
+   "aciklama": "Açılış farkı",
+   "cari": "C1",
+   "id": "BY6",
+   "tarih": "2026-01-05",
+   "tur": "borc_yaz",
+   "tutar": 700
+  },
+  {
+   "kaynak": "BY6",
+   "tur": "sil"
+  },
+  {
+   "kaynak": "BY6",
+   "tur": "geri_yukle"
+  },
+  {
+   "aciklama": "Açılış bakiyesi",
+   "cari": "C3",
+   "id": "BY7",
+   "tarih": "2026-01-06",
+   "tur": "borc_yaz",
+   "tutar": 800,
+   "yedekten": true
+  },
+  {
+   "kaynak": "BY7",
+   "tur": "sil"
+  },
+  {
+   "kaynak": "BY7",
+   "tur": "geri_yukle"
+  },
+  {
+   "ad": "mz0",
+   "bas": "2026-01-01",
+   "rapor": "mizan",
+   "son": "2026-01-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "bil0",
+   "rapor": "bilanco",
+   "tarih": "2026-01-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "ao0",
+   "rapor": "acilis_olabilir",
+   "tarih": "2026-01-31",
+   "tur": "rapor"
+  },
+  {
+   "karar": "red",
+   "kaynak": "AC1",
+   "tur": "acilis_onayla"
+  },
+  {
+   "karar": "onay",
+   "kaynak": "AC4",
+   "tur": "acilis_onayla"
+  },
+  {
+   "karar": "onay",
+   "kaynak": "BY7",
+   "tur": "acilis_onayla"
+  },
+  {
+   "ad": "mz1",
+   "bas": "2026-01-01",
+   "rapor": "mizan",
+   "son": "2026-01-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "bil1",
+   "rapor": "bilanco",
+   "tarih": "2026-01-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "ao1",
+   "rapor": "acilis_olabilir",
+   "tarih": "2026-01-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "gt1",
+   "bas": "2026-01-01",
+   "rapor": "gelir_tablosu",
+   "son": "2026-01-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "g1",
+   "cari": "C1",
+   "rapor": "gecikmis",
+   "tarih": "2026-02-01",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

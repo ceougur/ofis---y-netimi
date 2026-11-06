@@ -1,0 +1,130 @@
+{
+ "ad": "s98-s65-acilis-ortada",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [
+    "BY2"
+   ],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "ao": [
+     {
+      "cari": "C2",
+      "durum": "bekliyor",
+      "kaynak": "BY2",
+      "tarih": "2026-01-04",
+      "tutar": 300,
+      "yon": "borc"
+     }
+    ],
+    "bil": {
+     "aktif": {
+      "I.C": 1000
+     },
+     "aktif_toplam": 1000,
+     "bilgi": [],
+     "bilgi_amacli": false,
+     "detay": {
+      "I.C": {
+       "120|C1": 700,
+       "120|C2": 300
+      },
+      "V.F": {
+       "Dönem Net Kârı (Hesaplanmış)": 700
+      },
+      "V.G": {
+       "519": 300
+      }
+     },
+     "donem_net_kari": 700,
+     "fark": 0,
+     "gecmis_yillar_kapanmamis": 0,
+     "gecmis_yillar_kar": 0,
+     "gecmis_yillar_zarar": 0,
+     "kesin_degil": [
+      "ACILIS_OLABILIR_ONAY_BEKLIYOR",
+      "TAMAMLANMAMIS_ACILIS"
+     ],
+     "pasif": {
+      "V.F": 700,
+      "V.G": 300
+     },
+     "pasif_toplam": 1000,
+     "tarih": "2026-01-31"
+    },
+    "mz": {
+     "ana": {
+      "120": {
+       "alacak": 0,
+       "bakiye": 1000,
+       "borc": 1000,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 300,
+       "bakiye": -300,
+       "borc": 0,
+       "devir": 0
+      },
+      "602": {
+       "alacak": 700,
+       "bakiye": -700,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "bas": "2026-01-01",
+     "satirlar": {
+      "120|C1": {
+       "alacak": 0,
+       "bakiye": 700,
+       "borc": 700,
+       "devir": 0
+      },
+      "120|C2": {
+       "alacak": 0,
+       "bakiye": 300,
+       "borc": 300,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 300,
+       "bakiye": -300,
+       "borc": 0,
+       "devir": 0
+      },
+      "602.90": {
+       "alacak": 700,
+       "bakiye": -700,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "son": "2026-01-31",
+     "toplam": {
+      "alacak": 1000,
+      "bakiye": 0,
+      "borc": 1000,
+      "devir": 0
+     }
+    }
+   },
+   "redler": []
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}
