@@ -1993,3 +1993,76 @@ işareti koyar — 2.4.8 yorum 4, S43 parantezi).
 
 **Bilgi (senaryosuz):** Y18-1 (1 yıl dolumu canlı istekle aynı ana düşmez); Y18-5 bağlantı kurulamadı (R1), 131056 ve 190 / 0 yolları (kural aynı, senaryosuz); Y18-7; Y18-11; BAŞ MİMAR KARARI 06.11 08:52'nin
 BİLGİ cümleleri (Meta Bekletti işinde talep anında kapanan işin ilk iletisi sonradan teslim edilebilir; Yol 1 imzasız sahte "failed") aynen (Y17-9, Y17-26).
+
+### 23.6 Kâhinde (kodlama) — senaryolar (7) ve mutasyonlar (9)
+Kod: `KARARLAR` S42 (+ BAŞ MİMAR KARARI 08:52 ve WK 18 görev metni), S43 (AYNEN). **S42:** `gonder`'deki gecikmeli yanıt genellendi (`{"gec", "yanit"}`; J6 `gec_kabul` aynı yol — I15 (d) ile
+eşdeğer), kabul dışı yanıtın işlenmesi `gonder`'den `yanit_sonucu()`'na AYNEN taşındı (anlık ve gecikmeli yanıt ortak); `icerik_sil`: Gönderiliyor işte içerik + telefon o anda silinir, iş Gönderiliyor'da kalır,
+`j.s42 = (deneme, neden)`; eski S35-a `ValueError`'ı kalktı, yerine yanıtı beklenmeyen Gönderiliyor iş için KÂHİN SUSUYOR `ValueError`'ı (Y18-11); `yanit_gel`: yanıt talep yokmuş gibi işlendikten sonra
+deneme `s42`'ninkiyse ve iş S30'un bekleyen kümesindeyse `atla` (`silme_talebi` / `saklama_suresi`). **S43:** hesap AYNEN (`kanca_isle`'de yalnız mutant dalları). Yeni girdi: mesaj yanıtı
+`{"gec", "yanit"}`; yeni olay / çıktı alanı YOK.
+
+| Karar | Senaryo | Ne | Sınır | Mutasyon (yakalayan; değerle) |
+|---|---|---|---|---|
+| S42 | S42-01 | Ekim ekstresi; A'nın kabulü 10 sn gecikir, 5. sn talep → 7. sn A Gönderiliyor + içerik silinmiş, B Bekliyor, POST 1; kabul → Teslim Edildi (içerik silinmiş); 1. saat aynı dönem A, B "Daha Önce Gönderildi" (son 30.10); 2. saat R3 Yine de Gönder ile A'ya karttan | talep anı yanıttan önce | M251, M252 |
+| S42 | S42-02 | A, B Ekstre + HY Hatırlatma yanıtsız (zaman aşımı 15 sn), istek sürerken talep → Sonucu Belirsiz (iz kalır); aynı dönem / aynı yerel gün "Sonucu Belirsiz"; A'nın Yine de Gönder'i `icerik_silindi` (S31 / S36), HY'ninki karttan gider (S37); B'ye 2. saatte imzalı geç teslim → Teslim, aynı dönem "Daha Önce"; Kasım A'ya gider | zaman aşımı, H1 | M252, M254 |
+| S42 | S42-03 | G geçici hata (131000), M 131049, S sınır → yanıt anında Atlandı (`silme_talebi`), POST 1; R 131021 → Başarısız (Yeniden Dene `icerik_silindi`); N talepsiz geçici → 30 sn sonra gider; 10. dk aynı dönem G, M, R, S alınır, S'nin WABA bloğuyla 24 sa Sınır'da, sonra gider | yeniden gönderim ↔ kesin olumsuz; WABA bloğu aynen | M251, M252, M253, M256 |
+| S42 | S42-04 | 31.10 23:59:50 yerel: GB yanıtsız (iz 31.10, Belirsiz 01.11'de) → 01.11 00:24:50 GB'ye gider; 01.11 23:59:50 GK gecikmeli kabul (iz 01.11, yanıt ve teslim 02.11) → 02.11 00:24:50 gider, 00:44:50 aynı gün "Daha Önce" (son 02.11); "Bu Ay" Kasım 3 | gece yarısı yerel ≠ UTC; iz gönderim anında | M251, M252, M254, M255 |
+| S43 | S43-01 | Yol 2, teslim süresi 12 sa, Meta bildirimi yok; wamid'i tanınmayan İMZALI "delivered" (1. sa) ve "read" (6. sa) kabul edilir (200 × 2) ama işaret koymaz → 14. sa iki iş Meta Kabul Etti; aynı dönem "Daha Önce" | imzalı tanınmayan | M257 |
+| S43 | S43-02 | Yol 1: tanınmayan İMZASIZ "delivered" kabul edilir (200) ama işaret koymaz → 14. sa Meta Kabul Etti; aynı dönem "Daha Önce" | Yol 1 imzasız kabul | M257, M258 |
+| S43 | S43-03 | Yol 2: C yanıtsız (Sonucu Belirsiz); Meta'nın C iletisine imzalı "sent" (1. sa) iş kimliğiyle tanınır → C Gönderildi, işaret KONUR → 14. sa A ve C Süresi Doldu; aynı dönem ikisine yeniden gider (K3) | tanınan ↔ tanınmayan (iş kimliği) | M259 |
+
+Mutasyonlar (`kahin.MUTASYONLAR`): M251 S42'nin B'si (iş kendi yoluyla sürer — içerik gönderim bitene kadar durur, yeniden gönderim karttan), M252 talep anında kapanır (yanıt ize yazılmaz), M253 kesin olumsuz
+yanıt da Atlandı, M254 yanıtsız istek de Atlandı (belirsiz iz yok), M255 iz tarihi yanıt anı, M256 131049 yeniden gönderim sayılmaz, M257 S43'ün B'si (kabul edilen her bildirim işaret koyar), M258
+yalnız Yol 1'in imzasız kabulünde B, M259 tanıma yalnız wamid kaydıyla. Hepsi DEĞERLE (elle beklenen) yakalanıyor — matris (`wk18-mutant-matrisi`; bütün 374 senaryoda da aynı sayılar,
+`wk18-mutant-matrisi-tum-senaryolar-tz-istanbul`): M251 3, M252 4, M253 1, M254 2, M255 1, M256 1, M257 2, M258 1, M259 1; istisnayla 0. İstisnayla yakalanan yine yalnız M5, M108 (eskiden beri).
+Kâhinin kendi testine **I15** eklendi: (a) I14'ün eski (d) S35-a girdisi hesaplanır (içerik silinmiş, Meta Kabul Etti, kabul 1, POST 1) — M252 ile Atlandı, kabul 0; (b) 1 yıl dolumu yolu (Y17-6)
+doğrudan birim denetimi: Gönderiliyor işte `icerik_sil(…, "sure")`, geçici hata yanıtı → Atlandı `saklama_suresi`, POST 1; (c) yanıtı beklenmeyen Gönderiliyor iş (istek sürerken yedek, yanıttan sonra
+geri yükleme) KÂHİN SUSUYOR; (d) `{"gec", "yanit": "kabul"}` ≡ `gec_kabul` (3 senaryo, sonuç bayt bayt aynı); (e) S42-03'ün talepsiz hâli gonder()'deki kurallarla (G, M, N, S gider; R Başarısız) —
+M251 talepli hâlde G'yi gönderir; (f) S43-01 / 02'de bildirim yolu işareti hiç konmaz, M257 / M258 ile konur; (g) `gec` girdisi yalnız S42 başlığında, her yeni başlık ≥ 2. Eski testlerin başlık
+listeleri genişledi (G3 gerekçesi: yeni karar başlıkları): I12 (g) içerik alanları S42, I13 (j) `silme_talebi` / `icerik_silindi` S42, I14 (j) `baglanti_yolu` S43, I2 S42 / S43; I14 (d) kalktı (I15 (a)'ya
+tersine taşındı). Senaryo düzeneği notu: S43-03'ün elle beklenen ufuk sonu durumu ilk yazımda "Meta Kabul Etti"ydi — elle hesap hatası (işaret 7 gün geçerli; T2 iletileri 15 + 13 = 28. saatte Süresi
+Doldu); model kuralı değişmedi.
+
+### 23.7 Eski kâhinle karşılaştırma (taban 75f1aad9, değişiklikten ÖNCE alınmış kopya; `kahin.py` sha256 d054e986…)
+Yeni 7 senaryo, üç kip, iki saat dilimi (sonuçlar iki dilimde aynı; araç `wk18-araclar/eski_kahinle.py`, beklenen sonuç `--bekle` ile önceden yazıldı — TAP):
+- **ham** (eski dosya aynen; `wk18-eski-kahinle-ham`): S42 4 KIRMIZI değerle ama neden ZAYIF (ders 38): eski kâhin `{"gec", "yanit"}` girdisini tanımıyor → sınıfsız yanıt → iş Başarısız; S43 3 AYNI.
+- **uyarlanmış** (eski dosya + YALNIZ girdi düzeneği: gecikmeli yanıt J6 `gec_kabul` gibi bekletilir, yanıt gelince eski `gonder()`'in kendi satırları — dosyadan kesilip — işler; S42 kuralı YOK;
+  `wk18-eski-kahinle-uyarlanmis`): S42 4 KIRMIZI, neden BEKLENEN — eski kâhinin "KULLANICIYA SORULMALI S35-a (README §22.9 …): silme talebi anında iş Gönderiliyor … kodlanmadı" hatası; S43 3 AYNI.
+- **nötr** (uyarlanmış + eski S35-a satırı `None and ValueError(…)`; kural eklenmedi; `wk18-eski-kahinle-notr`): S42-03 KIRMIZI değerle — karar yokken düşülecek yol yeniden gönderimin karttaki
+  bilgiyle gitmesidir (G Teslim, M Meta Bekletti, S Sınır = S42'nin B'si yönü); S42-01 / 02 / 04 AYNI — kabulde ve yanıt yokta karar yokken düşülecek yol S42'nin A'sıyla aynı (içerik silinir, yanıt
+  zaten ize yazılıyordu) → bu üçünün dişi M251 / M252 / M254 / M255 (değerle); S43 3 AYNI.
+- **S43:** eski kâhin 2.4.8'den beri yorum 4 düzeninde (Y18-12) — AYNI beklenen ("Kâhin 2.4.8'den beri böyle yorumluyorsa yalnız karar kaynağı + senaryo + mutant"); dişi M257 / M258 / M259.
+
+### 23.8 Değişen eski beklentiler
+YOK: 367 eski senaryonun girdi + elle + TAM model sonucu (başlık / açıklama / kaynak dahil) bayt bayt aynı, sıra korunuyor (taban 75f1aad9'un değişiklikten önce alınmış `senaryolar.json` kopyasıyla,
+`wk18-eski-367-tam-sonuc-fark`: 367/367); üst alanlardan yalnız `kararlar`'a S42, S43 eklendi. Eski senaryoların hiçbiri Gönderiliyor anında talep içermiyordu (eski kâhin hata verirdi) ve `{"gec", …}`
+girdisini kullanmıyor; tanınmayan bildirimli eski senaryolar (GUV, J6) S43 hesabı değişmediği için aynı.
+
+### 23.9 Sürücü için (S-84 … S-90; programa karşı koşmadan önce gereken eşlemeler)
+- **S-84 gecikmeli yanıt `{"gec": süre, "yanit": Y}`:** sahte Meta isteği işler (Y "kabul" / "yanitsiz_kabul": ileti Meta'da) ya da işlemez (hata / sınır / "yanitsiz_red") ve yanıtı `gec` kadar geciktirir.
+  Kabul ve hata gecikmesi programın Meta istek zaman aşımından KISA (S-19: < 15 sn — senaryolarda 10 sn); "yanitsiz_*" gecikmesi zaman aşımından UZUN (sahte Meta en az 30 sn geciktirir; kâhinin 15 sn'si
+  programın vazgeçme anının yerine — talep 5. / 6. saniyede, denetimler dakikalar sonra; programın zaman aşımı talep anından önceyse adım GEÇERSİZ). Sahte Meta'da gecikme + hata (+ sınır) birleşik kuralı
+  yoksa sürücü işi; kurulamazsa senaryo GEÇERSİZ (fark sayılmaz) — sahte Meta bu güncellemede açılmadı, desteklenip desteklenmediği bilinmiyor.
+- **S-85 talep anı:** `kvkk_sil` (S-61) istek SÜRERKEN tetiklenmeli — sürücü talepten hemen önce işin "Gönderiliyor" olduğunu okur; değilse adım GEÇERSİZ (S35 yoluna düşer). Ara denetim (S42-01 K1,
+  S42-04 K1 / K3) içeriğin talep anında silindiğini (null + `icerik_silindi`) ve işin hâlâ Gönderiliyor olduğunu okur. §22.13 S-77 GEÇERSİZ.
+- **S-86 S42 sonuç eşlemesi:** kabul → Meta Kabul Etti / Teslim (içerik boş kalır); yanıt yok → Sonucu Belirsiz; yeniden gönderim gerektiren → "Atlandı" + neden "Silme Talebi" → `silme_talebi`, YANIT
+  ANINDA (sonra o iş için hiçbir istek gitmemeli — POST sayısı sahte Meta kaydından); kesin olumsuz → Başarısız + kod. S42-03'te S'nin sınır yanıtı WABA'yı 24 sa bloklar — T6 işleri programda "Sınır
+  Nedeniyle Bekliyor" olmalı (gecikmeli sınır yanıtı sahte Meta'da kurulamıyorsa o adım GEÇERSİZ).
+- **S-87 S42-04 gece yarısı:** sahte saat 31.10 23:59:50 (yerel); iki koşu `TZ=Europe/Istanbul` ve `TZ=UTC` (ders 13, 22); iz tarihi programın GÖNDERİM anı (yerel gün) — programın Gönderimler listesindeki
+  denemenin tarihi okunabiliyorsa okunur.
+- **S-88 1 yıl dolumu × Gönderiliyor:** senaryo yok (Y18-1: aynı ana düşmez); sürücü kurmaz.
+- **S-89 S43:** S43-01 `sahte_kanca {imzali: true}` (S-21 aynen — başka uygulamanın imzalı, opaque'sız bildirimi) Yol 2 kipinde; S43-02 imzasız, Yol 1 kipinde (S-81); bildirimin KABUL edildiği
+  `kanca_yanitlari` (200) ile okunur; "bildirim yolu çalışıyor" işareti programda görünüyorsa okunur, okunamıyorsa esas olan TTL + 1 sa sonucu (Süresi Doldu OLMAMALI). S43-03: C'nin isteği yanıtsız
+  (`koptu: "sonra"`), Meta'nın C iletisine gönderdiği imzalı "sent" (iş kimliği opaque'ta) 1. saatte; program C'yi çözmeli VE işareti koymalı (14. saatte Süresi Doldu).
+- **S-90 W-3 / WhatsApp küçük işler öncesi:** program S42'yi (W-3 kodu) ya da S43'ü (WhatsApp küçük işler tur 1) henüz uygulamıyorsa bu 7 senaryoda ayrışma BEKLENİR (S-83 düzeni) — kod birleşince
+  yeniden koşulur.
+
+### 23.10 Kanıt ve DENENMEYEN
+- **Kanıt** (`docs/kanit/2026-11-06/wk18-*`, OKU: `wk18-OKU.txt`; kod commit'leri 36de6046 + f3de90a4, koşular f3de90a4'te, ağaç temiz): senaryolar **374/374** elle = model (`wk18-senaryolar`, `TZ=UTC`;
+  `wk18-senaryolar-tz-istanbul` 374/374, `senaryolar.json` iki koşuda aynı sha256 47f09c3e…); kâhinin kendi testi **405/405**, F mutasyon **258/258** (`wk18-kahin`, `TZ=UTC`; `wk18-kahin-tz-istanbul`
+  405/405; I14 (i) Yol 1 = Yol 2 denetimi 363 senaryo, I15 (d) 3 senaryo); eski kâhinle yeni 7 senaryo (ham / uyarlanmış / nötr × iki TZ, hepsi `--bekle` ile 7/7 beklenen gibi); 367 eski senaryonun
+  tam sonuç farkı (367/367 aynı); mutant matrisi (yeni senaryolar + bütün senaryolar); araçlar `wk18-araclar/`. Sahte Meta'ya ve sürücüye DOKUNULMADI (açılmadı, testleri koşulmadı).
+- **DENENMEYEN:** programa karşı sürücü koşusu (görev gereği; S-84…S-90 yazılmadı); 1 yıl dolumu × Gönderiliyor (aynı ana düşmez — yalnız I15 (b) birim denetimi); 131056, 190 / 0, bağlantı kurulamadı (R1)
+  ve hesap / şablon hatası gecikmeli yanıtta talep (kural aynı sınıf — senaryosuz); "5 art arda" sayacının talepli istekle dolması; Meta Bekletti 2. denemesi Gönderiliyor iken talep; zincir (işteki Yine de
+  Gönder) Gönderiliyor iken talep; talepten sonra yanıt gelmeden kapanış / taşıma (Y18-11, bilgi); yedekten dönen Gönderiliyor iş (KÂHİN SUSUYOR — yalnız I15 (c)); S42 × geri yükleme (S32) ve taşıma
+  (S38); S43'te iki şirket aynı WABA ve tanınmayan bildirimin J6 503 penceresinde gelmesi; Yol 1'de imzasız sahte "failed" (Y17-26 BİLİNEN RİSK); iki şirket; 29 Şubat.

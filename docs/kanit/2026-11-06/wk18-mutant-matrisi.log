@@ -1,0 +1,33 @@
+senaryo 7, mutant 9
+M251 (S42'nin tersi (B seçeneği): Gönderiliyor işte talep iş kendi yoluyla sürer — telefon / içerik gönderim bitene ): DEĞERLE 3 senaryo
+   S42-01-: DEĞER (1 yaprak) — * [{}…] kontroller.K1.icerik.T1/A: elle {"telefon": null, "degiskenler": null, "pdf": null, "dosya_adi": null, "icerik_silindi": true} ≠ model {"telef
+   S42-03-: DEĞER (15 yaprak) — * [{}…] kontroller.K1.isler: elle {"T1/G": "Atlandı", "T2/M": "Atlandı", "T3/R": "Başarısız", "T4/N": "Bekliyor"} ≠ model {"T1/G": "Teslim Edildi", "T
+   S42-04-: DEĞER (2 yaprak) — * [{}…] kontroller.K1.icerik.T1/GB: elle {"telefon": null, "degiskenler": null, "pdf": null, "dosya_adi": null, "icerik_silindi": true} ≠ model {"tele
+M252 (S42 (Y18-3/5) zaman sınırı: Gönderiliyor iş talep ANINDA 'Atlandı — Silme Talebi' — yanıt beklenmez, isteğin s): DEĞERLE 4 senaryo
+   S42-01-: DEĞER (10 yaprak) — * [{}…] kontroller.K1.isler: elle {"T1/A": "Gönderiliyor", "T1/B": "Bekliyor"} ≠ model {"T1/A": "Atlandı", "T1/B": "Bekliyor"}
+   S42-02-: DEĞER (13 yaprak) — * [{}…] kontroller.K1.isler: elle {"T1/A": "Sonucu Belirsiz", "T1/B": "Sonucu Belirsiz", "T2/HY": "Sonucu Belirsiz"} ≠ model {"T1/A": "Atlandı", "T1/B
+   S42-03-: DEĞER (8 yaprak) — * [{}…] kontroller.K1.isler: elle {"T1/G": "Atlandı", "T2/M": "Atlandı", "T3/R": "Başarısız", "T4/N": "Bekliyor"} ≠ model {"T1/G": "Atlandı", "T2/M": 
+   S42-04-: DEĞER (6 yaprak) — * [{}…] kontroller.K1.isler: elle {"T1/GB": "Gönderiliyor"} ≠ model {"T1/GB": "Atlandı"}
+M253 (S42 (Y18-6) sınıf sınırı: yeniden gönderim gerektirmeyen kesin olumsuz yanıt (alıcı hatası, sınıfsız kod) da '): DEĞERLE 1 senaryo
+   S42-03-: DEĞER (7 yaprak) — * [{}…] kontroller.K1.isler: elle {"T1/G": "Atlandı", "T2/M": "Atlandı", "T3/R": "Başarısız", "T4/N": "Bekliyor"} ≠ model {"T1/G": "Atlandı", "T2/M": 
+M254 (S42 'yanıt yok → Sonucu Belirsiz izi kalır'ın tersi: yanıtsız istek de 'Atlandı — Silme Talebi' — belirsiz iz ): DEĞERLE 2 senaryo
+   S42-02-: DEĞER (13 yaprak) — * [{}…] kontroller.K1.isler: elle {"T1/A": "Sonucu Belirsiz", "T1/B": "Sonucu Belirsiz", "T2/HY": "Sonucu Belirsiz"} ≠ model {"T1/A": "Atlandı", "T1/B
+   S42-04-: DEĞER (2 yaprak) — * [{}…] kontroller.K2.isler: elle {"T1/GB": "Sonucu Belirsiz"} ≠ model {"T1/GB": "Atlandı"}
+M255 (S42 (Y18-8) zaman sınırı: isteğin sonucu izin tarihini yanıt anına taşır (gönderim anı değil) — gece yarısını ): DEĞERLE 1 senaryo
+   S42-04-: DEĞER (10 yaprak) — * [{}…] isler.T2/GB.durum: elle "Teslim Edildi" ≠ model "<YOK>"
+M256 (S42 (Y18-5) sınıf sınırı: 131049 (Meta Bekletti) yanıtı yeniden gönderim sayılmaz — iş kendi yoluyla, 24 sa so): DEĞERLE 1 senaryo
+   S42-03-: DEĞER (8 yaprak) — * [{}…] kontroller.K1.isler: elle {"T1/G": "Atlandı", "T2/M": "Atlandı", "T3/R": "Başarısız", "T4/N": "Bekliyor"} ≠ model {"T1/G": "Atlandı", "T2/M": 
+M257 (S43'ün tersi (B seçeneği): kabul edilen her bildirim (Yol 2'de imzalı, Yol 1'de imzasız) wamid'i tanınmasa da ): DEĞERLE 2 senaryo
+   S43-01-: DEĞER (7 yaprak) — * [{}…] kontroller.K1.isler: elle {"T1/A": "Meta Kabul Etti", "T1/B": "Meta Kabul Etti"} ≠ model {"T1/A": "Süresi Doldu", "T1/B": "Süresi Doldu"}
+   S43-02-: DEĞER (5 yaprak) — * [{}…] kontroller.K1.isler: elle {"T1/A": "Meta Kabul Etti", "T1/B": "Meta Kabul Etti"} ≠ model {"T1/A": "Süresi Doldu", "T1/B": "Süresi Doldu"}
+M258 (S43 (Y18-14) kapsam sınırı: kural yalnız imzalı bildirime — Yol 1'de imzasız kabul edilen tanınmayan bildirim ): DEĞERLE 1 senaryo
+   S43-02-: DEĞER (5 yaprak) — * [{}…] kontroller.K1.isler: elle {"T1/A": "Meta Kabul Etti", "T1/B": "Meta Kabul Etti"} ≠ model {"T1/A": "Süresi Doldu", "T1/B": "Süresi Doldu"}
+M259 (S43 (Y18-13) tanıma sınırı: tanıma yalnız programın wamid kaydıyla — iş kimliğiyle tanınan (yanıtı kaybolmuş, ): DEĞERLE 1 senaryo
+   S43-03-: DEĞER (8 yaprak) — * [{}…] kontroller.K2.isler: elle {"T1/A": "Süresi Doldu", "T1/C": "Süresi Doldu"} ≠ model {"T1/A": "Meta Kabul Etti", "T1/C": "Gönderildi"}
+DEĞERLE YAKALANMAYAN: YOK
+# tests 9
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
