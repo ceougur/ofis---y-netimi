@@ -1,0 +1,35 @@
+WK GÜNCELLEMESİ 16 (2.5.0) — WhatsApp kâhini S29–S32 = A — KANIT (06.11.2026)
+
+Kaynak karar: docs/2.5.0-IS-LISTESI.md D "KULLANICI KARARI 06.11 06:52 UTC (AYNEN: 'a')" S29–S32 (hepsi A) + C soru metni.
+Taban: ee344d86 (çalışma dalı ucu; WK 15 birleşik). Commit'ler (kendi dalı, PUSH YOK):
+  de1fa564  README §21.1–21.7 yorumlar (kodlamadan ÖNCE, ayrı commit — ders 40)
+  823ea335  kod: kahin.py, kahin_test.py, senaryolar.py, senaryolar.json
+  1ec564e7  README §21.8–21.12 sonuçlar
+  (bu kanıt commit'i)
+Bütün resmî koşular TEMİZ ağaçta, commit 1ec564e7 (kanit.mjs çıktısındaki "commit 1ec564e"; değişmiş dosya yok).
+
+1) Resmî koşular (node tools/kanit.mjs kos, KANIT_DIR = not defteri klasörü, sonra buraya kopyalandı)
+  wk16-senaryolar              TZ=UTC              python3 -I test/bagimsiz/whatsapp-248/kahin/senaryolar.py   → GEÇTİ, çıkış 0, 353/353 (elle = model)
+  wk16-senaryolar-tz-istanbul  TZ=Europe/Istanbul  aynı komut                                                → GEÇTİ, çıkış 0, 353/353
+     senaryolar.json sha256 iki koşuda: 24d6ca6e2f83fecd57fd18372dc055360ba26a50e037c435bdacc0fddff6a20d (aynı)
+  wk16-kahin                   TZ=UTC              python3 -I test/bagimsiz/whatsapp-248/kahin/kahin_test.py  → GEÇTİ, çıkış 0, 382/382 (0 başarısız / iptal / atlanan)
+  wk16-kahin-tz-istanbul       TZ=Europe/Istanbul  aynı komut                                                → GEÇTİ, çıkış 0, 382/382
+     F mutasyon: ok 363 — 234 mutasyonun her biri en az bir senaryoda yakalanır (iki TZ); istisnayla yalnız M5, M108 (eskiden beri)
+
+2) Eski kâhinle karşılaştırma (git'ten DEĞİL — taban ağaçtaki dosyaların değişiklikten ÖNCE not defterine alınmış kopyası):
+  sha256  429333a4f66cbdadf1fc0513c94c4b140af5aa5854c76ef17c61fca92607116a  eski/kahin.py
+          b6af84a63702d2fe4c2af12dcd5e7945eb0f96ec5795dde379ed9090b2b2527c  eski/kahin_test.py
+          e0e0fde46270b7d85170f0ec3565d07043d9f7eebc5a815576f485417bcf0330  eski/senaryolar.py
+          d4ae79d71dcfce754004574191f21aa6732ff18d4d29e22281f4eed2b6587168  eski/senaryolar.json
+  wk16-eski-kahinle-yeni-senaryolar.txt       python3 -I wk16-araclar/eski_kahinle.py <eski/kahin.py> <yeni senaryolar.json>
+        → yeni 11 + değişen 2: 13 KIRMIZI, 0 AYNI (10'u "KULLANICIYA SORULMALI S23-a / S-W3-a / S-W3-b … kodlanmadı" — beklenen neden; S32-01, S23-05, SW3-05 değerle)
+  wk16-eski-kahinle-yeni-senaryolar-notr.txt  aynı + --notr (YALNIZ üç hata satırı etkisiz; kural eklenmedi — ders 38)
+        → 13/13 DEĞERLE KIRMIZI; nedenler kararların B seçenekleri (S29: 'basma' okumasında ileti gitmez; S30: bekleyen iş kartla gider; S31: silinmiş Ekstre yeniden gider; S32: içerik geri gelir)
+  wk16-eski-342-tam-sonuc-fark.txt            python3 -I wk16-araclar/tam_sonuc_fark.py <eski/senaryolar.json> <yeni senaryolar.json>
+        → 342 eski senaryonun 340'ı bayt bayt aynı (girdi + elle + tam sonuç + başlık / açıklama / kaynak), sıra korunuyor; değişen 2: S23-05 (S29), SW3-05 (S32) — README §21.10;
+          üst alanlardan yalnız kararlar (+S29, S30, S31, S32)
+  wk16-mutant-matrisi.txt                     python3 -I wk16-araclar/mutant_matrisi.py test/bagimsiz/whatsapp-248/kahin
+        → M223–M235 hepsi DEĞERLE yakalanıyor (istisnayla 0); yeni / değişen 13 senaryo
+
+3) Bağımsızlık: program kodu (server/, client/, bulut/, tools/ — kanit.mjs yalnız çalıştırıldı), program testleri, test/bagimsiz/whatsapp-248/surucu.mjs ve sahte-meta/, docs/kanit/ altında başka
+   ajanların dosyaları (yalnız 2026-11-06'da wk1* dosya ADLARI listelendi), iş listesinin A / B / E bölümleri AÇILMADI. Okunan dosyaların tam listesi README §21.1 ve ajan raporunda.
