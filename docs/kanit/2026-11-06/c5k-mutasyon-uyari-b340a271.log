@@ -1,0 +1,5 @@
+taban: 41 geçti / 0 kaldı (çıkış 0)
+M15 YAKALANDI — S20 B: Mutabakat Testi uyarısı yok (34 geçti / 7 kaldı; neden "/Mutabakat Testi uyarısı var'/" var) ilk hata: AssertionError' expected: true
+M16 YAKALANDI — S20: uyarı COMMIT kapısında da (geri yükleme ve düzeltme kapıda reddedilir) (33 geçti / 6 kaldı; neden "/geri yükle [^:\n]*: (?:500 gate-equivalence|409 ledger-integrity)[^\n]*cash:before-opening/" var) ilk hata: AssertionError' expected: 200
+M17 YAKALANDI — S20 sınır: uyarı açılış GÜNÜNÜ de sayar (açılışın kendisi ve aynı gün hareketi) (33 geçti / 8 kaldı; neden "/6 !== 5/" var) ilk hata: AssertionError' expected: true
+SONUÇ: 3 geçti, 0 kaldı (3 mutasyonun 3'i yakalandı)
