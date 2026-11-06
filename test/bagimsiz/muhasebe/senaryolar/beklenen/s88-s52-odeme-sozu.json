@@ -86,13 +86,8 @@
     },
     "hat3": {
      "elle": {},
-     "kahin_susuyor": [
-      {
-       "cari": "C1",
-       "neden": "S52_SOZ_GUNU"
-      }
-     ],
      "odeme_sozu_var": {
+      "C1": 600,
       "C3": 500
      },
      "otomatik": {
@@ -115,12 +110,9 @@
     },
     "hat5": {
      "elle": {},
-     "kahin_susuyor": [
-      {
-       "cari": "C3",
-       "neden": "S52_YENI_GECIKME"
-      }
-     ],
+     "odeme_sozu_var": {
+      "C3": 800
+     },
      "otomatik": {
       "C1": 600,
       "C2": 800
@@ -130,14 +122,9 @@
     },
     "hat6": {
      "elle": {},
-     "kahin_susuyor": [
-      {
-       "cari": "C3",
-       "neden": "S52_YENI_GECIKME"
-      }
-     ],
      "odeme_sozu_var": {
-      "C1": 600
+      "C1": 600,
+      "C3": 800
      },
      "otomatik": {
       "C2": 800
