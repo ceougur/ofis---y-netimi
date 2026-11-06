@@ -1324,3 +1324,52 @@ takılan iş 0) tutarlı.
   "en eskiden düşülür" okuması; Başarısızları Yeniden Dene onayında etiket; S16 sonrası Sınır'da bekleyen işte kaydın kapanıp yeniden açılması (Y12-7 düzeni — senaryosuz); iki şirket; geri yükleme /
   taşıma ile S16; Meta Bekletti 2. denemesinde (5); (5) ile Excel taksit / açılış kalemleri (`vadeler` girdisinin üretimi Ç5 + muhasebe kâhini); hareketlerde alış faturası dışı alacak türleri
   (kâhin yalnız tutarı okur).
+
+## 19. Kâhin güncellemesi 14 — S22 (S7-d) (06.11.2026)
+
+### 19.1 Kaynak ve bağımsızlık
+Kaynak YALNIZ karar metni (AYNEN `kahin.KARARLAR` S22): `docs/2.5.0-IS-LISTESI.md` D bölümü "KULLANICI KARARI 06.11 05:30 UTC (AYNEN: 'a')" satırı ve C bölümündeki iki seçenekli soru metni
+(SORULDU 06.11 05:29 → YANITLANDI 05:30); önceki S7 / S7-a / S7-b / S16 / S17 / (5) kararları (`KARARLAR` S7, S7A, S7B, S16, S17, NB5, aynen) ve kâhinde zaten olan F1, E2, E3, D1, K6, J3,
+J10 metinleri (aynen); WhatsApp "kime kaç kez" genel ilkesi (CLAUDE.md "2.4.8 KARARLARI"; P6 §0). Okunan başka dosya: CLAUDE.md, `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`, bu README,
+`kahin/*`, `docs/erp/WHATSAPP-PAKETI-2.5.0-PLANI.md`, `docs/2.5.0-IS-LISTESI.md` YALNIZ C ve D bölümleri. `surucu.mjs` ve `sahte-meta/` bu güncellemede açılmadı ve aranmadı (S22 Meta
+davranışı değil; yeni olay türü yok). Program kodu (`server/`, `client/`, `bulut/`, `tools/` — `kanit.mjs` yalnız çalıştırıldı), program testleri, `docs/kanit/` (kendi kanıtı dışında), iş
+listesinin A, B ve E bölümleri ve öbür ajanların raporları GÖRÜLMEDİ; git'ten yalnız tabana hızlı ileri birleştirmenin ekrana düşen dosya adı listesi ve son üç commit iletisi (biçim için)
+göründü, fark / içerik açılmadı. Programa karşı KOŞULMADI. Eski kâhinle karşılaştırma git'ten değil, taban ağaçtaki (549359b0) `kahin/*` dosyalarının değişiklikten ÖNCE not defterine
+alınmış kopyasıyla (`kahin.py` sha256 ab151093…). Bu bölümün 19.1–19.4'ü kodlamadan ÖNCE yazıldı ve ayrı commit'lendi (ders 40); 19.5–19.9 kodlamadan sonra.
+
+### 19.2 Yorumlar (kâhinde; her birinin kaynağı)
+| # | Yorum (kâhinde) | Kaynak |
+|---|---|---|
+| Y14-1 | **S22 tetiği (eski S7-d)**: Ödeme Hatırlatma işi işteki Yine de Gönder ile (ya da o belirsizlik zincirindeki Başarısızları Yeniden Dene ile — J10 c: belirsizlik onayı izi yeniden denemeye taşınır, Y9c-1/2) gönderime alınmış; BASMA ANINDA carinin şüpheli kaydı YOKTU (Y13-1 tetiği yok → iş elle işaretsiz, etiket görünmedi — Y13-5); GÖNDERİM ANINDA (Y12-4: işçinin işi Hazırlanıyor'a almadan hemen önceki eleme denetimi) kayıt AÇIK (Y11-17: kalanı > 0 `supheli` kalem; vadesine bakılmaz). Kaydın NE ZAMAN açıldığı önemli değil: iş bekledikçe herhangi bir anda (Bekliyor, Sınır, Duraklatıldı, zincirde Başarısız iken ya da yeniden deneme beklerken, Meta Bekletti) — S7-b'nin "kuyruktayken"i gibi yalnız gönderim anındaki durum okunur | S22 + Y12-4 + Y13-1 / Y13-5 + J10 c |
+| Y14-2 | **Sonuç "S7-b gibi"**: iş "Atlandı", atlanma nedeni `supheli_alacak` ("Şüpheli Alacağı Var" — S7-b ile aynı ad, karar metnindeki ad); POST yok, deneme (talep) açılmaz → R3'te ve "Zaten Kuyrukta"da SAYILMAZ (Y12-5 aynen; ilke 1). Belirsizlik onayının ESKİ denemesi (Sonucu Belirsiz) olduğu gibi kalır (yeni deneme gitmedi; ilke 2) | S22 + S7B + Y12-5 + G0 (1, 2) |
+| Y14-3 | **Bekleme yolları** (hepsinde aynı gönderim anı denetimi): (a) Sınır Nedeniyle Bekliyor → pencere açılınca; (b) Duraklatıldı → Devam Et'ten sonraki ilk ziyaret; (c) zincirdeki Başarısızları Yeniden Dene — kayıt yeniden deneme basılmadan ÖNCE (iş Başarısız iken) ya da SONRA (yeniden deneme beklerken) açılsa da gönderim anında Atlandı (Başarısızları Yeniden Dene toplu işlemdir, elle seçim değildir — Y12-8; S7-b de iki anı ayırmaz); (d) Meta Bekletti 2. denemesi (Y12-4: S7-b'de gönderim anı sayılır — "S7-b gibi"); (e) Lisans Nedeniyle Durdu / açılışta sorulan → Devam Et (Duraklatıldı ile aynı yol — senaryosuz) | S22 soru metni ("Sınır, Duraklatıldı → Devam Et ya da zincirdeki yeniden deneme") + Y12-4 + Y12-8 + J10 c |
+| Y14-4 | **Yol (ilke 4) "kayıt açıkken yeniden Yine de Gönder basılırsa S16 ile şüphesiz tutarla gider"** = atlanan kişinin asıl işteki Sonucu Belirsiz denemesine (G0-02 yolu, `hedef: "asil"`) yeniden Yine de Gönder; basma anında kayıt açık → S16 aynen (Y13-1…4): onay penceresinde "Şüpheli Alacağı Var" (`yeniden.<etiket>.supheli_etiketi`), elle işareti, şüphesiz tutarla (S17 sınırı; {{5}} `plan_susuyor` S7S) gider; şüphesiz tutar yoksa elenir (Y13-3, `s16_an` iki okuma). Atlandı iş yeniden gönderime alınınca eski atlanma nedeni kalkar (güncelleme 13 `tasi` düzeni). Aynı gün yeni toplu işte kişi "Sonucu Belirsiz" ile elenir (D1 + E3: asıl deneme hâlâ belirsiz, aynı yerel gün) → o gün tek yol işteki Yine de Gönder (G0 2); ertesi gün yeni gönderimde elle seçim de yol (E3 + S7) | S22 + S16 + G0 (2, 4) + D1 + E3 |
+| Y14-5 | **Zincir (c) yolunun yolu**: zincirde yeniden denemenin kişiyi alabilmesi için 1. iletinin sonucu (geç "teslim edilemedi" — J3) gelmiş olmalı (K6: önceki iletisi belirsiz kalan yeniden denemede elenir) → asıl işte belirsiz deneme KALMAZ, kişi kesin almadı. Kâhinin bu durumda gösterdiği yol S7-b'nin yolu (Y12-5): yeni gönderimde elle seçim — aynı gün de (Zaten Kuyrukta / Sonucu Belirsiz / R3 doğmaz). Asıl işte yeniden Yine de Gönder kâhinde de mümkün (`hedef: "asil"`; kâhin asıl işin durumunu Sonucu Belirsiz tutar) ama 1. iletinin sonucu geldikten sonra programda bu düğmenin görünüp görünmediği karar metninde yok → senaryosuz (bilgi; iki yolda da tek ileti) | K6 + J3 + J10 c + Y12-5 + G0 (4) |
+| Y14-6 | **Kayıt gönderim anından ÖNCE kapanırsa** (bütün şüpheli kalemlerin kalanı 0, ör. icra tahsili): gönderim anında açık kayıt yok → S22 / S7-b yok; iş elle işaretsiz ve etiketsiz → bütün (açık) gecikmişiyle ((5) net sınırıyla) ve güncel bakiyeyle ({{5}}) gider (Y12-7 / S16-03 düzeni). Kapanıp yeniden açılırsa gönderim anındaki durum geçer (açık → Atlandı) | S22 + Y11-17 + Y12-7 |
+| Y14-7 | **Elle işaretli işte S22 yok**: iş başlatmada elle seçildiyse ya da basma anında kayıt açık olduğu için S16 ile elle işaretlendiyse, sonradan açılan yeni şüpheli kalem işareti değiştirmez (Y12-7 / Y13-2) → S7 elle yolu (gönderim anındaki şüphesiz tutarla). S22 yalnız elle İŞARETSİZ belirsizlik onayı işi. Ekstre işinde S22 yok (Y12-9; kuyrukta açılan şüpheli kaydı Ekstre'yi etkilemez) | S22 + Y12-7 + Y13-2 + Y12-9 |
+| Y14-8 | **Sıra** (gönderim anı): silindi / pasif / İstemiyor → numara → `supheli_alacak` (S7-b + S22) → `gecikmis_borc_yok` / net ((5), S17) — Y12-6 aynen: S22 ile atlanan kişide şüphesiz tutar da yoksa neden yine `supheli_alacak` | Y12-6 + Y13-7 |
+| Y14-9 | **Gün**: gönderim anı ve yeniden basma anı programın saatinde; "vadesi geçmiş" ve net borç YEREL güne göre (§7a 20 kâhin yorumu 5, S7A-03); bekleme gece yarısını geçerse gönderim / basma anının (yeni) yerel günü geçer — UTC günü değil | §7a 20 + Y12-1 + Y13-6 |
+| Y14-10 | **İlke denetimi (ders 45)**: (1) atlanan yeni deneme gitmedi → hiçbir yerde sayılmaz; (2) eski deneme belirsiz → aynı gün yeni toplu işte "Sonucu Belirsiz" ile elenir, tek yol işteki onaylı Yine de Gönder — S22 bu yolu AÇIK tutar ("yol kalır"); (3) bu duruma girmez (kesin alan yok); (4) çıkmaz yok: Y14-4 / Y14-5; şüphesiz tutar yoksa S16 "yoksa elenir" §7a 20 türünden eleme, Ekstre her zaman açık; (5) geri yükleme / taşıma ile duran bekleyen iş §7a 26 ile durur, dirilmez; dosyadan gelen işte gönderim anı aynı kural. Kimseye ikinci ileti doğurmaz. Çelişen tek yer 19.4 S7-e (KODLANMADI) | G0 (1)–(5) |
+
+### 19.3 Önceki güncellemelerle çelişen yerler (yeni KARAR geçer)
+- §18.4 "KULLANICIYA SORULMALI S7-d ★" (kâhin `ValueError`) → KAPANDI (S22 = A). Kâhinin gönderim anındaki S7-d hatası KALKAR; kâhinin kendi testi I10'un (b) duraklatma ve (c) zincirdeki
+  yeniden deneme denetimleri tersine döner (aynı girdiler hesaplanır: "Atlandı — Şüpheli Alacağı Var") — yeni denetim I11.
+- Y13-5 / Y13-10 "→ 18.4 S7-d (KODLANMADI)" → Y14-1 / Y14-2 ile kodlandı. §18.8 S-52 "S7-d'ye giren senaryo yok (kâhin hata verir)" → geçersiz (19.8).
+- I10 (e) "`supheli_etiketi` yalnız S16 senaryolarında" → S22 senaryolarının yolu S16 ile yeniden basma olduğundan (Y14-4) S22 başlığında da görünür; denetim S16 + S22'ye genişler.
+- F1 ("işteki Yine de Gönder … kişide bekleyen ileti varsa 'Zaten Kuyrukta' yine eler") ile S22'nin "kayıt açıkken yeniden Yine de Gönder basılırsa S16 ile … gider" cümlesi yalnız bir anda
+  çatışır → 19.4 S7-e (kodlanmadı).
+
+### 19.4 KULLANICIYA SORULMALI / KÂHİN SUSUYOR (ana oturuma)
+**KULLANICIYA SORULMALI (kime / kaç kez — KODLANMADI; senaryo bu duruma girerse kâhin `ValueError` verir):**
+- **S7-e ★** Ödeme Hatırlatma; işteki Yine de Gönder basıldı (kayıt yoktu, iş elle işaretsiz), ileti gönderim beklerken (Sınır / Duraklatıldı / Meta Bekletti / zincirdeki yeniden deneme
+  beklerken) şüpheli kaydı açıldı ve kullanıcı gönderim anı GELMEDEN asıl işte Yine de Gönder'e YENİDEN bastı (kayıt açık — onay penceresinde "Şüpheli Alacağı Var" görünür, Y13-4). S22'nin
+  "kayıt açıkken yeniden Yine de Gönder basılırsa S16 ile şüphesiz tutarla gider" cümlesi zaman sınırı koymuyor; F1 (kullanıcı) "kişide bekleyen ileti varsa 'Zaten Kuyrukta' yine eler" der:
+  A) (ÖNERİ) bekleyen iş S16 ile elle sayılır — yeni iş açılmaz, ikinci ileti doğmaz (F1'in amacı korunur); gönderim anında şüphesiz tutarla gider (yoksa elenir);
+  B) F1 aynen: "Zaten Kuyrukta" ile elenir; bekleyen ileti gönderim anında S22 ile "Atlandı — Şüpheli Alacağı Var"; ancak ondan SONRA yeniden basılınca S16 ile gider.
+  Kime / kaç kez: A'da o gönderim anında ileti gider, B'de gitmez (bir basış daha gerekir) → ders 43, 45. S22 senaryoları bu sıraya girmez (yeniden basma hep Atlandı'dan sonra).
+
+**Bilgi (kodlanmadı / senaryosuz):**
+- Y14-5: zincirde 1. iletinin sonucu geldikten sonra asıl işte yeniden Yine de Gönder düğmesinin programda görünüp görünmediği (kâhin izin verir; senaryo yeni gönderimde elle seçim yolunu kullanır).
+- S22 ile atlanan işin eski (belirsiz) iletisine geç teslim gelirse deneme teslim sayılır (J1 / J5, R3), iş Atlandı kalır (yeni ileti zaten gitmedi); yolun yeniden basması o gün "Daha Önce
+  Gönderildi" ile elenir (ilke 3) — bugünkü düzen, senaryosuz.
+- Lisans Nedeniyle Durdu / açılışta sorulan → Devam Et (Y14-3 e) ve geri yükleme / taşıma ile duran işte S22 (§7a 26) — senaryosuz.
