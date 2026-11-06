@@ -2431,7 +2431,10 @@ _MZ80 = {  # bağ düzeltmesi defteri DEĞİŞTİRMEZ (T-01; README V2): Kasa = 
     # 120|C3 = 2000 − 1000; 320|T1 = −2000 + 1000; 600 = −7 × 1000; 770 = A1 + A2 (genel gider); 770.90 = Alacak Yaz 600; 519 = −10000
     "satirlar/100/bakiye": 12000, "satirlar/120|C1/bakiye": 1000, "satirlar/120|C2/bakiye": 1400, "satirlar/120|C3/bakiye": 1000,
     "satirlar/320|T1/bakiye": -1000, "satirlar/600/bakiye": -7000, "satirlar/770/bakiye": 2000, "satirlar/770.90/bakiye": 600,
-    "satirlar/519/bakiye": -10000, "toplam/borc": 18000, "toplam/alacak": 18000}
+    "satirlar/519/bakiye": -10000,
+    # toplam = HAREKET toplamı (bakiye değil; s01 gibi): borç KA 10000 + 7 satış 7000 + A1 / A2 2000 + AY 600 + PA / PC / PB 3000 + OD 1000 = 23600; alacak aynı
+    # (bakım 7'de ilk yazılan 18000 bakiye toplamıydı — elle hesap hatası, model koşusunda görüldü, elle yeniden hesaplandı; README bakım 7)
+    "toplam/borc": 23600, "toplam/alacak": 23600}
 S("s80-s44-geri-yuklenen-kasa-fatura-bagi", ["S44", "S40", "S26", "Z9", "S20", "S12", "T12", "G-7", "R-04", "T-01", "T-05", "karar (1)", "karar (2)", "S2",
                                              "EK-2 Soru 23", "EK-2 Soru 24"], [
     o("satis_faturasi", "2026-01-05", id="F1", cari="C1", M=1000, K=0, vade="2026-01-20"),
