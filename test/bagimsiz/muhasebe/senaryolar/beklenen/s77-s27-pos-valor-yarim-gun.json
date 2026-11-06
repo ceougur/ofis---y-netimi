@@ -1,0 +1,71 @@
+{
+ "ad": "s77-s27-pos-valor-yarim-gun",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "m271027": {
+     "banka|B1": 9800,
+     "pos|POS1": 19600
+    },
+    "m271028": {
+     "banka|B1": 29400,
+     "pos|POS1": 29400
+    },
+    "m271029": {
+     "banka|B1": 29400,
+     "pos|POS1": 29400
+    },
+    "m271031": {
+     "banka|B1": 29400,
+     "pos|POS1": 29400
+    },
+    "m271101": {
+     "banka|B1": 58800
+    },
+    "mod1027": {
+     "pos|POS1": 9800
+    },
+    "mod1028": {
+     "banka|B1": 9800
+    },
+    "yev1028": [
+     {
+      "id": "P1#5",
+      "kaynak": "P1",
+      "satirlar": [
+       {
+        "b": 9800,
+        "h": "102.B1"
+       },
+       {
+        "a": 9800,
+        "h": "108.POS1"
+       }
+      ],
+      "sinif": 1,
+      "tarih": "2026-10-28",
+      "tur": "pos_valor"
+     }
+    ]
+   },
+   "redler": []
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

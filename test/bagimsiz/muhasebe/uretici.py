@@ -26,8 +26,8 @@ from senaryolar_elle import TANIM  # noqa: E402
 TOHUMLAR = (1, 2, 3)
 
 # Kâhin bakımı 4 (S21 A, README Y19–Y23): resmî tatil takvimi model.py'de (2429; tatil_turu). Sabit tam gün tatile düşen valör artık SERBEST (model sonraki
-# iş gününe kaydırır; bakım 3'ün kaçınması kalktı). BELİRSİZ günlerden (yarım gün 28 Ekim / arife, doğrulanmamış dinî bayram) kaçınma sürer: kâhin orada kural
-# kurmaz (KULLANICIYA SORULMALI 4).
+# iş gününe kaydırır; bakım 3'ün kaçınması kalktı). BELİRSİZ günlerden (doğrulanmamış dinî bayram penceresi, arife dahil) kaçınma sürer: kâhin orada kural
+# kurmaz (README Z12). Kâhin bakımı 5 (S27 A, README Z11): 28 Ekim yarım gün İŞ GÜNÜ — artık belirsiz değil (tohumlarda 28 Ekim valörü çıkmadı; akış değişmedi).
 def belirsiz_mi(g):
     return M.tatil_turu(g.isoformat()) == "belirsiz"
 

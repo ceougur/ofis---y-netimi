@@ -1,0 +1,213 @@
+{
+ "aciklama": "S27: POS valörü yarım güne (28 Ekim) düşerse yarım gün iş günüdür, valör kaymaz; tam gün tatil (29 Ekim) + hafta sonu atlanır.",
+ "ad": "s77-s27-pos-valor-yarim-gun",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "m271027/banka|B1": 9800,
+   "m271027/pos|POS1": 19600,
+   "m271028/banka|B1": 29400,
+   "m271028/pos|POS1": 29400,
+   "m271029/banka|B1": 29400,
+   "m271029/pos|POS1": 29400,
+   "m271031/pos|POS1": 29400,
+   "m271101/banka|B1": 58800,
+   "m271101/pos|POS1": 0,
+   "mod1027/banka|B1": 0,
+   "mod1027/pos|POS1": 9800,
+   "mod1028/banka|B1": 9800,
+   "mod1028/pos|POS1": 0,
+   "yev1028/0/kaynak": "P1",
+   "yev1028/0/satirlar/0/b": 9800,
+   "yev1028/0/satirlar/0/h": "102.B1",
+   "yev1028/0/tur": "pos_valor"
+  }
+ },
+ "kapsam": [
+  "S27",
+  "S21",
+  "2429",
+  "D-01",
+  "T-03",
+  "KG-6"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "K": 0,
+   "M": 10000,
+   "cari": "C1",
+   "id": "F1",
+   "tarih": "2026-10-27",
+   "tur": "satis_faturasi"
+  },
+  {
+   "cari": "C1",
+   "id": "P1",
+   "komisyon": 200,
+   "pos": "POS1",
+   "tarih": "2026-10-27",
+   "tur": "tahsilat",
+   "tutar": 10000,
+   "valor": "2026-10-28",
+   "yol": "pos"
+  },
+  {
+   "ad": "mod1027",
+   "rapor": "moduller",
+   "tarih": "2026-10-27",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mod1028",
+   "rapor": "moduller",
+   "tarih": "2026-10-28",
+   "tur": "rapor"
+  },
+  {
+   "ad": "yev1028",
+   "bas": "2026-10-28",
+   "rapor": "yevmiye",
+   "son": "2026-10-28",
+   "tur": "rapor"
+  },
+  {
+   "K": 0,
+   "M": 20000,
+   "cari": "C3",
+   "id": "F2",
+   "tarih": "2027-10-27",
+   "tur": "satis_faturasi"
+  },
+  {
+   "cari": "C3",
+   "id": "P2",
+   "komisyon": 400,
+   "pos": "POS1",
+   "tarih": "2027-10-27",
+   "tur": "tahsilat",
+   "tutar": 20000,
+   "valor": "2027-10-28",
+   "yol": "pos"
+  },
+  {
+   "K": 0,
+   "M": 30000,
+   "cari": "C3",
+   "id": "F3",
+   "tarih": "2027-10-28",
+   "tur": "satis_faturasi"
+  },
+  {
+   "cari": "C3",
+   "id": "P3",
+   "komisyon": 600,
+   "pos": "POS1",
+   "tarih": "2027-10-28",
+   "tur": "tahsilat",
+   "tutar": 30000,
+   "valor": "2027-10-29",
+   "yol": "pos"
+  },
+  {
+   "ad": "m271027",
+   "rapor": "moduller",
+   "tarih": "2027-10-27",
+   "tur": "rapor"
+  },
+  {
+   "ad": "m271028",
+   "rapor": "moduller",
+   "tarih": "2027-10-28",
+   "tur": "rapor"
+  },
+  {
+   "ad": "m271029",
+   "rapor": "moduller",
+   "tarih": "2027-10-29",
+   "tur": "rapor"
+  },
+  {
+   "ad": "m271031",
+   "rapor": "moduller",
+   "tarih": "2027-10-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "m271101",
+   "rapor": "moduller",
+   "tarih": "2027-11-01",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

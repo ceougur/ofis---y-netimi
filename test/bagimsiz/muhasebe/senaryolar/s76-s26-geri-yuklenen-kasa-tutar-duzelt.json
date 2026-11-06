@@ -1,0 +1,303 @@
+{
+ "aciklama": "S26: geri yüklenmiş, Kasa açılışından önce tarihli Kasa kaydının yalnız tutarı düzeltilirse kabul (Mutabakat uyarısı sürer); tarihi değiştiren düzeltme T12 ile red.",
+ "ad": "s76-s26-geri-yuklenen-kasa-tutar-duzelt",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "mod14/banka|B1": 400,
+   "mod14/cari|C1": -1000,
+   "mod14/kasa": 2150,
+   "mod14b/kasa": 1800,
+   "mod31/banka|B1": 400,
+   "mod31/kasa": 12160,
+   "mu0": [
+    {
+     "acilis": "2026-01-15",
+     "kaynak": "KG1",
+     "kod": "KASA_ACILIS_ONCESI_HAREKET",
+     "tarih": "2026-01-10"
+    },
+    {
+     "acilis": "2026-01-15",
+     "kaynak": "KY",
+     "kod": "KASA_ACILIS_ONCESI_HAREKET",
+     "tarih": "2026-01-12"
+    },
+    {
+     "acilis": "2026-01-15",
+     "kaynak": "PY",
+     "kod": "KASA_ACILIS_ONCESI_HAREKET",
+     "tarih": "2026-01-13"
+    }
+   ],
+   "mu1": [
+    {
+     "acilis": "2026-01-15",
+     "kaynak": "KG1",
+     "kod": "KASA_ACILIS_ONCESI_HAREKET",
+     "tarih": "2026-01-10"
+    },
+    {
+     "acilis": "2026-01-15",
+     "kaynak": "KY",
+     "kod": "KASA_ACILIS_ONCESI_HAREKET",
+     "tarih": "2026-01-12"
+    },
+    {
+     "acilis": "2026-01-15",
+     "kaynak": "PY",
+     "kod": "KASA_ACILIS_ONCESI_HAREKET",
+     "tarih": "2026-01-13"
+    }
+   ],
+   "mu2": [
+    {
+     "acilis": "2026-01-15",
+     "kaynak": "KG1",
+     "kod": "KASA_ACILIS_ONCESI_HAREKET",
+     "tarih": "2026-01-10"
+    },
+    {
+     "acilis": "2026-01-15",
+     "kaynak": "PY",
+     "kod": "KASA_ACILIS_ONCESI_HAREKET",
+     "tarih": "2026-01-13"
+    }
+   ],
+   "mz/satirlar/100/bakiye": 12160,
+   "mz/satirlar/102.B1/bakiye": 400,
+   "mz/satirlar/120|C1/bakiye": -1000,
+   "mz/satirlar/519/bakiye": -10000,
+   "mz/satirlar/649.90/bakiye": -1560,
+   "redler": [
+    "KASA_ACILIS_ONCE",
+    "KASA_ACILIS_ONCE",
+    "KASA_ACILIS_ONCE"
+   ]
+  }
+ },
+ "kapsam": [
+  "S26",
+  "S20",
+  "S12",
+  "T12",
+  "G-7",
+  "R-04",
+  "M-01",
+  "EK-2 §4 (8)"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "id": "KG1",
+   "tarih": "2026-01-10",
+   "tur": "kasa_giris",
+   "tutar": 1000
+  },
+  {
+   "kaynak": "KG1",
+   "tur": "sil"
+  },
+  {
+   "id": "KA",
+   "tarih": "2026-01-15",
+   "tur": "kasa_acilis",
+   "tutar": 10000
+  },
+  {
+   "kaynak": "KG1",
+   "tur": "geri_yukle"
+  },
+  {
+   "id": "KY",
+   "tarih": "2026-01-12",
+   "tur": "kasa_giris",
+   "tutar": 300,
+   "yedekten": true
+  },
+  {
+   "cari": "C1",
+   "id": "PY",
+   "tarih": "2026-01-13",
+   "tur": "tahsilat",
+   "tutar": 500,
+   "yedekten": true,
+   "yol": "nakit"
+  },
+  {
+   "banka": "B1",
+   "cari": "C1",
+   "id": "HY",
+   "tarih": "2026-01-11",
+   "tur": "tahsilat",
+   "tutar": 400,
+   "yedekten": true,
+   "yol": "havale"
+  },
+  {
+   "ad": "mu0",
+   "rapor": "mutabakat_uyarilari",
+   "tarih": "2026-01-31",
+   "tur": "rapor"
+  },
+  {
+   "degisiklik": {
+    "tutar": 1200
+   },
+   "kaynak": "KG1",
+   "tur": "duzenle"
+  },
+  {
+   "degisiklik": {
+    "tutar": 350
+   },
+   "kaynak": "KY",
+   "tur": "duzenle"
+  },
+  {
+   "degisiklik": {
+    "tarih": "2026-01-13",
+    "tutar": 600
+   },
+   "kaynak": "PY",
+   "tur": "duzenle"
+  },
+  {
+   "degisiklik": {
+    "tarih": "2026-01-14"
+   },
+   "kaynak": "KY",
+   "tur": "duzenle"
+  },
+  {
+   "degisiklik": {
+    "tarih": "2026-01-11",
+    "tutar": 700
+   },
+   "kaynak": "PY",
+   "tur": "duzenle"
+  },
+  {
+   "degisiklik": {
+    "yol": "nakit"
+   },
+   "kaynak": "HY",
+   "tur": "duzenle"
+  },
+  {
+   "ad": "mu1",
+   "rapor": "mutabakat_uyarilari",
+   "tarih": "2026-01-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mod14",
+   "rapor": "moduller",
+   "tarih": "2026-01-14",
+   "tur": "rapor"
+  },
+  {
+   "degisiklik": {
+    "tarih": "2026-01-20",
+    "tutar": 360
+   },
+   "kaynak": "KY",
+   "tur": "duzenle"
+  },
+  {
+   "ad": "mu2",
+   "rapor": "mutabakat_uyarilari",
+   "tarih": "2026-01-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mod14b",
+   "rapor": "moduller",
+   "tarih": "2026-01-14",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mod31",
+   "rapor": "moduller",
+   "tarih": "2026-01-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mz",
+   "bas": "2026-01-01",
+   "rapor": "mizan",
+   "son": "2026-01-31",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}
