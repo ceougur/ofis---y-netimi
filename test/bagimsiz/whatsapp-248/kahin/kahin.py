@@ -89,6 +89,12 @@ Yeniden Dene'sinde kişi başlatmada `telefonsuz` ile ALINMAZ, iş Başarısız 
 KULLANICIYA SORULMALI (kâhin hata verir). S62 — salt okunur lisansta silme talebi açık (kâhinde zaten öyleydi; hesap aynen). S63 — aynı WABA iki şirkette farklı Meta uygulamalarıyla: şirkete
 özel kip (`ayar.baglanti_yollari`), kanca kaydı (`kanca_kaydi {sirket}`) öbür şirketin bildirimlerini kaybettirmez; "bildirim yolu çalışıyor" işareti ŞİRKET başına (BAŞ MİMAR 11:27 (1) ile aynı
 kipte de); Meta bildiriminin imza durumu varış anındaki şirket kipine göre.
+GÜNCELLEME 20 (2.5.0, KULLANICI KARARI 06.11.2026 13:09 UTC "önerilerini uygula" — S70, S71 = A; BAŞ MİMAR KARARI 06.11 12:33 DÜŞÜK-2 (R3T); metinler AYNEN KARARLAR S70, S71, R3T; yorumlar
+README §25, kodlamadan önce yazıldı ve ayrı commit'lendi): S70 (S59-a) KAPANDI — Atlandı olmuş işe (nedeni ne olursa olsun; Meta Bekletti 1. iletisi, zincirin eski belirsiz iletisi, S42 öncesi
+1. ileti, J10 işinin öbür eski denemesi) geç teslim gelirse iş "Teslim Edildi" (read: Okundu) — S59 düzeni aynen (kod / atlanma nedeni temizlenir, PDF kesinleşir, iş gönderime dönmez). S71 (S61-a)
+KAPANDI — içeriği ve kart telefonu silinmiş Ödeme Hatırlatma'da işteki Yine de Gönder (asıl işte basma dahil) kişiyi `telefonsuz` ile ALMAZ, iş Sonucu Belirsiz kalır (telefon denetimi S61 gibi
+öbür nedenlerden önce). R3T — yeni gönderimde R3 uyarı sayısı (ve son tarihi) kartı telefonsuz olduğu için elenen ama aynı dönemde daha önce almış kişiyi de sayar (elenme nedeni Telefonsuz
+kalır); öbür ön nedenler (Geçersiz, İstemiyor …) eskisi gibi sayılmaz (KÂHİN SUSUYOR, senaryosuz).
 
 KÂHİN GÜNCELLEMESİ 8 (31.10.2026): H1 (kullanıcı) — Yine de Gönder ile açılan iş kabul/teslim edilince KAYNAK Sonucu Belirsiz deneme o kişi için artık
 elemez (kişi "Daha Önce Gönderildi"; yol R3 Yine de Gönder); açılan iş başarısız/belirsiz kalırsa kaynak elemeye devam eder. H2–H4 (baş mimar, G0 İLKEYLE):
@@ -524,6 +530,22 @@ MUTASYONLAR = {
     "M275": "S63'ün tersi (C seçeneği — bugünkü program): WABA başına tek kanca kaydı — sonraki (farklı uygulamalı) şirketin kaydı öbür şirketin bildirimlerini kaybettirir",
     "M276": "S63 (Y19-28/29) sınır: kayıt şirket başına sayılır — AYNI uygulamalı ikinci şirketin kaydı da öbür şirketin bildirimlerini kaybettirir",
     "M277": "S63 'her şirketin bildirim yolu ayrı' + BAŞ MİMAR 11:27 (1)'in tersi (eski kâhin): bildirim yolu işareti WABA başına — bir şirketin bildirimi aynı WABA'daki öbür şirketi de işaretler",
+    # ---- kâhin güncellemesi 20 (README §25): S70, S71, R3T — her kararın karşı seçeneği + sınır kaymaları
+    "M278": "S70'in tersi (B seçeneği — WK 19 kapsamı): S59 dışındaki Atlandı sıralarında (silme talebi + Meta Bekletti son denemesi DEĞİLSE) geç teslim gelince iş 'Atlandı' kalır (deneme sayılır)",
+    "M279": "S70 (Y20-1) sıra sınırı: yalnız işin SON denemesine (Meta Bekletti 1. iletisi) geç teslim 'Teslim Edildi' yapar — zincirin eski belirsiz iletisi / S42 öncesi 1. ileti / J10'un öbür denemesi Atlandı bırakır",
+    "M280": "S70 (Y20-1) neden sınırı: yalnız silme talebi / 1 yıl dolumu ile Atlandı olan işte — İstemiyor / Pasif / Şüpheli Alacağı Var / Gecikmiş Borç Yok ile atlanan iş Atlandı kalır",
+    "M281": "S70 (Y20-2) sonuç sınırı: iş 'Teslim Edildi' olur ama atlanma nedeni ve hata kodu (131049) görünür kalır, PDF kesinleşmez (Meta'dan silinmez)",
+    "M282": "S70 (Y20-2) read sınırı: geç 'read' bildirimi de 'Teslim Edildi' yazar ('Okundu' değil)",
+    "M283": "S70 (Y20-3) J10 sınırı: J10 ile 'Atlandı — Daha Önce Gönderildi' olmuş işin öbür eski denemesine geç teslim işi Atlandı bırakır",
+    "M284": "S71'in tersi (B seçeneği — S37 yolu): içeriği ve kart telefonu silinmiş Ödeme Hatırlatma işteki Yine de Gönder'de ALINIR, gönderim anında 'Atlandı — Telefonsuz' olur",
+    "M285": "S71 (Y20-8) kapsam sınırı: asıl işte basma (hedef asil) S71 dışında — orada kişi alınır (B yolu), gönderim anında Atlandı",
+    "M286": "S71 (Y20-10) sıra sınırı: 'Telefon Yok' denetimi F1 'Zaten Kuyrukta' / K5 'Daha Önce Gönderildi' nedenlerinden SONRA",
+    "M287": "S71 'neden görünür'ün tersi: kişi alınmaz ama yanıtta (elenen) görünmez",
+    "M288": "S71 (Y20-11) kapsam sınırı: Ekstre'ye de uygulanır — içeriği ve kart telefonu silinmiş Ekstre işteki Yine de Gönder'de 'içerik silindi' yerine 'telefonsuz' ile elenir",
+    "M289": "R3T'nin tersi (eski kâhin): R3 uyarı sayısı telefonsuz ama daha önce almış kişiyi SAYMAZ (yalnız R3 adımına ulaşanlar)",
+    "M290": "R3T (Y20-14) sınır: telefonsuz ama daha önce almış kişi sayılır VE elenme nedeni 'Daha Önce Gönderildi' olur (R3 telefon denetiminden önce)",
+    "M291": "R3T (Y20-15) sınır: telefonsuz kişi sayıya girer ama uyarının son tarihine girmez",
+    "M292": "R3T (Y20-16) sınır: telefonsuz kişi yalnız uyarı başka bir kişiden zaten çıkıyorsa sayılır — tek başına uyarı doğurmaz",
 }
 
 # Kâhin güncellemesi 2'nin kaynak karar metinleri (AYNEN; CLAUDE.md "Açık iş" + docs/2.4.8-IS-LISTESI.md, 31.10.2026). "kaynak_turu": kullanıcı kararı mı,
@@ -942,6 +964,30 @@ KARARLAR = {
                       "çalışması öbürünü kanıtlamaz; bedeli: aynı kipteki ikinci şirketin işi ancak kendi bildirimiyle \"Süresi Doldu\" olur.",
                       "WK 19 görev metni (ana oturum): S63 = A: aynı WABA iki şirkette farklı Meta uygulamalarıyla bağlıysa her şirketin bildirim yolu ayrı (bir şirketin kaydı öbürünün teslim bilgisini "
                       "kaybettirmez; teslim bilgisi her iki şirkette de gelir)."]},
+    # ---- kâhin güncellemesi 20 (2.5.0; docs/2.5.0-IS-LISTESI.md D "KULLANICI KARARI 06.11 13:09 UTC" (S70, S71) + C soru metinleri + "BAŞ MİMAR KARARLARI 06.11 12:33" DÜŞÜK-2 — AYNEN) ----
+    "S70": {"kaynak_turu": "kullanıcı (06.11.2026 13:09 UTC, 'önerilerini uygula'; iş listesi D + C, aynen) — WK güncellemesi 19'un KULLANICIYA SORULMALI S59-a'sı (README §24.9); UÇ DURUM",
+            "metin": ["KULLANICI KARARI 06.11 13:09 UTC (AYNEN: \"önerilerini uygula\"; sorular C bölümünde S69–S71, öneriyle soruldu) → hepsi A:",
+                      "S70 = A: K1′ genel — Atlandı olmuş işe geç teslim gelirse her Atlandı sırasında \"Teslim Edildi\" (zincir işin eski belirsiz iletisi; İstemiyor / Şüpheli Alacağı Var nedeniyle "
+                      "atlanan Meta Bekletti işinin 1. iletisi dahil).",
+                      "soru (iş listesi C, SORULDU 06.11 13:06 → YANITLANDI 13:09): S70 (WK 19 S59-a; UÇ DURUM; kime kaç kez DEĞİL): S59'daki \"Atlandı işe geç teslim → Teslim Edildi\" kuralı öbür "
+                      "Atlandı sıralarına da uygulansın mı (zincir işin eski belirsiz iletisine geç teslim; İstemiyor / Şüpheli Alacağı Var nedeniyle atlanan Meta Bekletti işinin 1. iletisine geç teslim) — "
+                      "A öneri: evet, K1′ genel (\"teslim her yolda sayılır\") → \"Teslim Edildi\" / B: iş \"Atlandı\" kalır / C: uç durum böyle kalsın (BİLİNEN SINIR).",
+                      "WK 20 görev metni (ana oturum): S70 = A (WK 19 S59-a): K1′ genel — Atlandı olmuş işe geç teslim gelirse her Atlandı sırasında \"Teslim Edildi\" (zincir işin eski belirsiz iletisine "
+                      "geç teslim; İstemiyor / Şüpheli Alacağı Var vb. nedenle atlanan Meta Bekletti işinin 1. iletisine geç teslim dahil)."]},
+    "S71": {"kaynak_turu": "kullanıcı (06.11.2026 13:09 UTC, 'önerilerini uygula'; iş listesi D + C, aynen) — WK güncellemesi 19'un KULLANICIYA SORULMALI S61-a'sı (README §24.9); UÇ DURUM",
+            "metin": ["KULLANICI KARARI 06.11 13:09 UTC (AYNEN: \"önerilerini uygula\"; sorular C bölümünde S69–S71, öneriyle soruldu) → hepsi A:",
+                      "S71 = A: içeriği ve kart telefonu silinmiş Ödeme Hatırlatma işinde \"Yine de Gönder\" → kişi \"Telefon Yok\" nedeniyle alınmaz, iş Sonucu Belirsiz kalır.",
+                      "soru (iş listesi C, SORULDU 06.11 13:06 → YANITLANDI 13:09): S71 (WK 19 S61-a; UÇ DURUM): içeriği ve kart telefonu silinmiş Ödeme Hatırlatma işinde \"Yine de Gönder\" — A öneri: kişi "
+                      "\"Telefon Yok\" nedeniyle alınmaz, iş Sonucu Belirsiz kalır (S61 ile aynı yön) / B: alınır, gönderim anında \"Atlandı — Telefonsuz\" / C: uç durum böyle kalsın (BİLİNEN SINIR).",
+                      "WK 20 görev metni (ana oturum): S71 = A (WK 19 S61-a): içeriği ve kart telefonu silinmiş Ödeme Hatırlatma işinde işteki \"Yine de Gönder\" (asıl işte basma dahil) → kişi \"Telefon "
+                      "Yok\" nedeniyle alınmaz, iş Sonucu Belirsiz kalır."]},
+    "R3T": {"kaynak_turu": "BAŞ MİMAR KARARI (06.11.2026 12:33; W-3 dar kontrol DÜŞÜK-2; iş listesi D, aynen; kullanıcıya gösterildi) — ders 40: kâhin programın davranışından değil karar cümlesinden",
+            "metin": ["BAŞ MİMAR KARARLARI 06.11 12:33 (ders 40; W-3 dar kontrol; kullanıcıya gösterildi): … DÜŞÜK-2 SW3-03 R3 uyarı sayısı 3 (telefonsuz ama daha önce almış kişi de sayılır) → program "
+                      "DOĞRU (kişi gerçekten almış; v2.4.9'da da 3, gerileme değil) — WhatsApp kâhini sonraki bakımda bu okumayı alır; …",
+                      "BAŞ MİMAR KARARLARI 06.11 11:33 (… AÇIK): SW3-03'te R3 uyarı sayısı 3 (kâhin 2; telefonsuz kişi de sayılıyor) — eski kodda kurulamadı → W-3 dar kontrolüne; …",
+                      "KULLANICI KARARI 06.11 13:09 İŞ ATAMASI: S70 + S71 → WhatsApp kâhini WK 20 (yeni ajan; + W-3 dk DÜŞÜK-2 SW3-03 okuması) → kod WhatsApp tur 2'den SONRAKİ tura (Ç5-C ile).",
+                      "WK 20 görev metni (ana oturum): BAŞ MİMAR KARARI (W-3 dar kontrol DÜŞÜK-2; iş listesi D): SW3-03'te R3 \"Yine de Gönder\" uyarı sayısı telefonsuz ama daha önce almış kişiyi de sayar "
+                      "(kişi gerçekten almış; v2.4.9'da da böyle) — kâhinin 2 okuması bu karara göre güncellenir; kaynağını README'ye yaz."]},
     "K8": {"kaynak_turu": "kullanıcı (08:20 'şimdi yap'); en yeni önce / yerel gün / iki uç dahil / ters aralık ret ana oturum görev metni",
            "metin": ["KARAR (kullanıcı, 31.10.2026 ~08:20 UTC: \"şimdi yap\"): WhatsApp Gönderimleri ekranına 2.4.8'de \"Daha Fazla Göster\" (30'ar, imleçli) + "
                      "Başlangıç/Bitiş tarih süzgeci (eski gönderimlere erişim)."]},
@@ -1825,13 +1871,21 @@ class Benzetim:
         # İLKEYLE G0 (4) + D6 "her seferinde onaylı Yine de Gönder": asıl işte belirsiz kalan deneme (hedef "asil") de Yine de Gönder ile gönderilebilir — çıkmaz yok
         asil_belirsiz = o.get("hedef") == "asil" and j.asil_durum == BELIRSIZ and "M128" not in self.mut
         if j.durum == BELIRSIZ or asil_belirsiz:
+            telsiz = bool(j.icerik_silindi) and numara(self.kart_telefonu(j.cari))[1] == "telefonsuz"
+            if telsiz and tp.sablon == "ekstre" and "M288" in self.mut:
+                sonuc["elenen"][j.cari] = "telefonsuz"                  # M288: S71 Ekstre'ye de (S31'den önce)
+                if o.get("etiket"):
+                    self.yeniden_sonuc[o["etiket"]] = sonuc
+                return
             if self.s31_eler(j, tp, sonuc, yine=True):                 # S31 (Y16-16/17): içeriği silinmiş (Sonucu Belirsiz) Ekstre işi bu yolla da gönderilemez
                 if o.get("etiket"):
                     self.yeniden_sonuc[o["etiket"]] = sonuc
                 return
-            if tp.sablon == "hatirlatma" and j.icerik_silindi and numara(self.kart_telefonu(j.cari))[1] == "telefonsuz":
-                raise ValueError("KULLANICIYA SORULMALI S61-a (README §24.9): içeriği ve kart telefonu silinmiş Ödeme Hatırlatma işinde işteki Yine de Gönder — S61 'yeni gönderimle aynı' "
-                                 "('Telefon Yok' ile alınmaz, iş Sonucu Belirsiz kalır) mı, S37 yolu (alınır, gönderim anında 'Atlandı — Telefonsuz') mı karar metninde yok — kodlanmadı")
+            # S71 = A (KULLANICI KARARI 06.11.2026 13:09 UTC; README §25 Y20-8…12): içeriği ve kart telefonu silinmiş ÖDEME HATIRLATMA işinde işteki Yine de Gönder (asıl işte basma dahil) →
+            # kişi "Telefon Yok" (`telefonsuz`, S61 / yeni gönderimle aynı ad) ile ALINMAZ, iş Sonucu Belirsiz kalır (durum, deneme, belirsizlik onayı izi değişmez); telefon denetimi bu yoldaki
+            # öbür nedenlerden (F1 Zaten Kuyrukta, K5 Daha Önce Gönderildi, S16 / S23 / S34) ÖNCE (S61 ile aynı yön — Y20-10); onay penceresi etiketi Y13-4 aynen. WK 19'un S61-a hatası KALKTI.
+            # M284 (B): alınır, gönderim anında Atlandı; M285: asıl işte basma S71 dışı; M286: telefon F1 / K5'ten sonra; M287: sessiz
+            s71 = telsiz and tp.sablon == "hatirlatma" and "M284" not in self.mut and not ("M285" in self.mut and o.get("hedef") == "asil")
             ctx = (j.anahtar_donem, j.tarih_donem, j.kanon_donem, j.tarihler_donem)
             c = self.cariler[j.cari]
             hat = tp.sablon == "hatirlatma"
@@ -1843,6 +1897,12 @@ class Benzetim:
                    and "M199" not in self.mut)
             if (acik or ("M209" in self.mut and not hat and self.supheli_acik(c))) and "M201" not in self.mut:
                 sonuc["supheli_etiketi"].append(j.cari)                    # Y13-4: onay penceresinde "Şüpheli Alacağı Var" (yanıttan önce — elense de görünür)
+            if s71 and "M286" not in self.mut:
+                if "M287" not in self.mut:
+                    sonuc["elenen"][j.cari] = "telefonsuz"                  # S71: "Telefon Yok" — neden görünür
+                if o.get("etiket"):
+                    self.yeniden_sonuc[o["etiket"]] = sonuc
+                return
             if s23:
                 self.s23_yeniden_bas(j, tp, c, t, sonuc)
                 if o.get("etiket"):
@@ -1864,6 +1924,8 @@ class Benzetim:
             elif self.onceden_gonderildi(j.cari, tp.sablon, ctx, tp.sirket, t, sinir=self.karar_siniri(tp, "M83"),
                                          pencere_t=tp.t if "M98" in self.mut else None) is not None:
                 sonuc["elenen"][j.cari] = DAHA_ONCE
+            elif s71:                                                       # yalnız M286: S71 'Telefon Yok' F1 / K5 nedenlerinden SONRA
+                sonuc["elenen"][j.cari] = "telefonsuz"
             else:
                 kaynak = tuple(r for r in j.kayitlar if self.kayitlar[r]["son_durum"] == BELIRSIZ)   # H1: aşılan Sonucu Belirsiz deneme(ler)
                 self.tasi(j, tp, t)
@@ -2202,7 +2264,7 @@ class Benzetim:
         coz = donem_coz(o.get("donem"), t, self.tz, sablon, self.mut)            # K1: dönem seçimi başlatmada çözülür (K4: yeniden denemede taşınır)
         self.toplu_sayac += 1
         tp = Toplu(etiket, sablon, o.get("donem"), sirket, t, kullanici, coz=coz, send_again=o.get("onceki") == "gonder", sira=self.toplu_sayac)
-        elenen = {}; goruldu = set(); telefonlar = set(); onceki = []
+        elenen = {}; goruldu = set(); telefonlar = set(); onceki = []; r3t = []
         for cid in o["secim"]:
             if cid in goruldu and "M5" not in self.mut:
                 continue                                                  # UNIQUE(batch_id, account_id)
@@ -2214,6 +2276,15 @@ class Benzetim:
                 elenen[cid] = "istemiyor"; continue
             tel, tur_ = numara(self.kart_telefonu(cid))                   # Y15-16: karttan (silinen telefon kullanılmaz)
             if tel is None:
+                # R3T (BAŞ MİMAR KARARI 06.11.2026 12:33 DÜŞÜK-2; README §25 Y20-14…17): kartı TELEFONSUZ olduğu için elenen ama aynı dönemde daha önce almış (R3 eşliğinde sayılan) kişi
+                # R3 uyarısının sayısına ve son tarihine girer; elenme nedeni "Telefonsuz" kalır. Öbür ön nedenler (Geçersiz, İstemiyor, Silinmiş, Pasif, Şüpheli, Gecikmiş Borç Yok) eskisi
+                # gibi sayılmaz (karar metni yalnız telefonsuz — KÂHİN SUSUYOR Y20-17). M289 (eski): sayılmaz; M290: nedeni Daha Önce Gönderildi olur; M291 / M292: aşağıda
+                if tur_ == "telefonsuz" and "M289" not in self.mut:
+                    ot_t = self.onceden_gonderildi(cid, sablon, self.kisi_ctx(coz, cid), sirket, t)
+                    if ot_t is not None:
+                        r3t.append(ot_t)
+                        if "M290" in self.mut:
+                            elenen[cid] = DAHA_ONCE; continue
                 elenen[cid] = tur_; continue                              # §7a 6: E.164'e çevrilemeyen elenir
             if tur_ == "sabit" and "M53" in self.mut:
                 elenen[cid] = "sabit_hat"; continue                       # §7a 6 (K1): sabit hat / yurt dışı ELENMEZ
@@ -2279,8 +2350,10 @@ class Benzetim:
             tp.isler.append(j)
             self.isler[anahtar] = j
         self.elenen[etiket] = elenen
-        if onceki:
-            self.onceki_uyari[etiket] = {"sayi": len(onceki), "son": tarih(max(onceki), timezone.utc if "M136" in self.mut else self.tz)}
+        hepsi = onceki + ([] if ("M292" in self.mut and not onceki) else r3t)    # R3T (Y20-14/16): telefonsuz ama daha önce almış kişi de (M292: yalnız başka kişiden uyarı varsa)
+        if hepsi:
+            son_kume = (onceki or hepsi) if "M291" in self.mut else hepsi         # R3T (Y20-15): son tarih aynı kümeden (M291: telefonsuz kişi son tarihe girmez)
+            self.onceki_uyari[etiket] = {"sayi": len(hepsi), "son": tarih(max(son_kume), timezone.utc if "M136" in self.mut else self.tz)}
         if not tp.isler and "M49" not in self.mut:
             self.olusmadi.append(etiket)                                  # §7a 31: kayıt OLUŞMAZ, nedenler listelenir
             return
@@ -3097,22 +3170,27 @@ class Benzetim:
         if j.durum == ATLANDI and teslim_olayi and rec is not None and not rec.get("teslim"):
             # S59 = A (KULLANICI KARARI 06.11.2026 12:06 UTC; README §24 Y19-9…13): silme talebiyle (ya da 1 yıl dolumunda) "Atlandı" olmuş Meta Bekletti işinin 1. iletisine (işin son
             # denemesi) GEÇ teslim → iş "Teslim Edildi" (read: Okundu — J2 düzeni); deneme teslim (J1 / J5), PDF kesinleşmede (S60 ile silinmişse bir kez), atlanma nedeni gösterilmez.
-            # Öbür "Atlandı + geç teslim" sıraları S59-a KULLANICIYA SORULMALI (kodlanmadı). M263 (B): Atlandı kalır (aşağıdaki eski yol); M264: İptal düzeni (ekran seçenekli)
-            if not (j.elendi_neden in SILME_NEDEN.values() and guncel and rec.get("bekletti")):
-                raise ValueError(f"KULLANICIYA SORULMALI S59-a (README §24.9): '{j.elendi_neden}' ile Atlandı olmuş işin ({j.anahtar}) "
-                                 + ("son denemesi olmayan (zincirin eski / Meta Bekletti 1.) " if not guncel else "")
-                                 + "iletisine geç teslim — ekran ('Teslim Edildi' / 'Atlandı') karar metninde yok (S59 yalnız silme talebiyle Atlandı olan Meta Bekletti işi) — kodlanmadı")
-            if "M263" not in self.mut:
+            # S70 = A (KULLANICI KARARI 06.11.2026 13:09 UTC; README §25 Y20-1…3): K1′ genel — HER Atlandı sırasında aynı (nedeni ne olursa olsun: İstemiyor / Pasif / Silinmiş / Telefonsuz /
+            # Şüpheli Alacağı Var / Gecikmiş Borç Yok / J10 Daha Önce Gönderildi / silme / 1 yıl; deneme: Meta Bekletti 1. iletisi, zincirin eski belirsiz iletisi, S42 öncesi 1. ileti, J10 işinin
+            # öbür eski denemesi). WK 19'un S59-a hatası KALKTI. M263 (S59 B): her sırada Atlandı kalır; M264: İptal düzeni (ekran seçenekli); M278 (S70 B): yalnız S59'un kendi sırası
+            # Teslim Edildi; M279: yalnız son deneme; M280: yalnız silme / 1 yıl nedeni; M281: neden + kod görünür, PDF kesinleşmez; M282: read de Teslim Edildi; M283: J10 işi Atlandı kalır
+            s59_sirasi = j.elendi_neden in SILME_NEDEN.values() and guncel and rec.get("bekletti")
+            kalir = (("M278" in self.mut and not s59_sirasi) or ("M279" in self.mut and not guncel)
+                     or ("M280" in self.mut and j.elendi_neden not in SILME_NEDEN.values()) or ("M283" in self.mut and j.elendi_neden == DAHA_ONCE))
+            if "M263" not in self.mut and not kalir:
                 self.deneme_teslim(rec, olay_t)
-                yeni = TESLIM if durum == "delivered" else OKUNDU
+                yeni = TESLIM if (durum == "delivered" or "M282" in self.mut) else OKUNDU
                 if "M264" in self.mut:
                     j.gec_teslim = yeni; j.m264 = True               # M264: K3/K7 İptal düzeni — ekran "karar susuyor", iş Atlandı + kodu kalır
                 else:
-                    if "M50" not in self.mut:
+                    if "M50" not in self.mut and "M281" not in self.mut:
                         j.kod = None                                 # §7a 32
-                    j.elendi_neden = None
+                    if "M281" not in self.mut:
+                        j.elendi_neden = None
                     self.durum(j, yeni, t)
-                self.teslim_yaz(j, olay_t); self.kesinlesti(j, t)
+                self.teslim_yaz(j, olay_t)
+                if "M281" not in self.mut:
+                    self.kesinlesti(j, t)                            # §11 S3: kesinleşti → PDF Meta'dan (her medya bir kez)
                 return
         if j.durum not in SIRA:
             # J1 (Y9-2/5): iş başka durumdayken gelen teslim YALNIZ denemeye yazılır; eski denemenin failed'ı o denemeyi Başarısız yapar (J3)
