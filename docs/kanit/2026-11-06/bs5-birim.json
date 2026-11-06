@@ -1,0 +1,32 @@
+{
+  "ad": "bs5-birim",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/kilavuz-metin-denetle.test.mjs test/kilavuz-surum.test.mjs test/kilavuz-pdf-surum.test.mjs test/yazim-duzeni.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/platform-tasinabilirlik.test.mjs",
+  "commit": "77dd1a50f18b625997d67653b6c083f2c39e17fe",
+  "dal": "worktree-agent-a9ee578441215b6a8",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T08:30:58.581Z",
+  "sure_sn": 1.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 28,
+    "gecen": 28,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs5-kanit/2026-11-06/bs5-birim.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9ee578441215b6a8",
+  "ham_cikti_sha256": "a7a7605083a9d1a3669389bfadecea02c4f6dbe0f979e4d4820148e8b8f2f524",
+  "ham_cikti_bayt": 7953
+}
