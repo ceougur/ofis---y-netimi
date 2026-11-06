@@ -19,6 +19,8 @@
 //      saklanmaz). Aynı WABA'yı kullanan iki şirket aynı adresi paylaşır; gelen bildirim wamid'den (claims + outcomes) ya da imzalı iş kimliğinden doğru şirkete
 //      yönlendirilir. Yedekten Geri Yükle / Şirket Verisini Sıfırla bu kaydı değiştirmez (eski bir dosya eski gizli yolu "geri getiremez"). hook_seen: bu WABA'nın
 //      kancasına son bildirim (saat başına bir satır; §7a 16 "bildirim yolu çalışıyor").
+//      2.5.0 WhatsApp tur 1–2: hook_seen artık YAZILMAZ ve OKUNMAZ (işaret şirket düzeyinde — lib/whatsapp/queue.mjs); KULLANICI KARARI S63 = A: kayıt WABA + UYGULAMA başına
+//      (hook_events.app — Elle Bağla / WhatsApp'ı Bağla; aynı uygulamayı kullanan şirketler aynı adresi paylaşır, öbür uygulamanın adresine dokunulmaz).
 //   7. BAĞLANTI KİPİ (2.5.0 WY): şirket + WABA başına son kip (Elle Bağla / WhatsApp'ı Bağla; meta "mode:<şirket>:<WABA>") — durum bildirimi şirket dosyası açılamazken
 //      de Yol 2'nin imzasız bildirimini yazmaz (noteMode / modeOf).
 //   8. SAKLAMA + KVKK (2.5.0 W-3; docs/erp/W3-SAKLAMA-TASARIM.md): talebin telefonu ve denemenin wamid'i 1 yıl sonra (işin son talebinden, yerel saat) ya da silme talebinde
@@ -76,9 +78,12 @@ const SCHEMA = `
   CREATE TABLE IF NOT EXISTS deliveries (job_id TEXT PRIMARY KEY, company_id TEXT NOT NULL, waba_id TEXT NOT NULL, billable INTEGER NOT NULL DEFAULT 1, at TEXT NOT NULL) STRICT;
   -- T2-3/4: durum bildirimi adresinin kayıt olayları (WABA başına; son satır geçerli kayıt). reason: manual (Yeniden Kaydet / Bağlantıyı Sına), auto (bakım turu:
   -- kayıt yok / adres değişti / düşmüştü), mismatch (Meta'daki adres programınkinden farklıydı).
+  -- 2.5.0 WhatsApp tur 2 (KULLANICI KARARI S63 = A): kayıt WABA + UYGULAMA başına — app: 'manual' (Elle Bağla = müşterinin uygulaması) | 'embedded' (WhatsApp'ı Bağla = DestekOfis
+  -- uygulaması); '' = tur 2'den önceki (WABA başına TEK) kayıt — sahibi ilk kullanımda kararlaştırılır (legacyOwner). Eski defterde sütun açılışta eklenir (ensureHookApp).
   CREATE TABLE IF NOT EXISTS hook_events (
     seq INTEGER PRIMARY KEY AUTOINCREMENT, waba_id TEXT NOT NULL, path_hash TEXT NOT NULL, verify_hash TEXT NOT NULL, base TEXT NOT NULL,
-    state TEXT NOT NULL CHECK (state IN ('pending', 'active', 'failed', 'conflict')), reason TEXT NOT NULL DEFAULT '', error TEXT NOT NULL DEFAULT '', at TEXT NOT NULL
+    state TEXT NOT NULL CHECK (state IN ('pending', 'active', 'failed', 'conflict')), reason TEXT NOT NULL DEFAULT '', error TEXT NOT NULL DEFAULT '', at TEXT NOT NULL,
+    app TEXT NOT NULL DEFAULT ''
   ) STRICT;
   CREATE INDEX IF NOT EXISTS idx_hook_events_waba ON hook_events(waba_id, seq);
   CREATE INDEX IF NOT EXISTS idx_hook_events_path ON hook_events(path_hash);
@@ -165,6 +170,15 @@ function upgradeAnonTriggers(db) {
     }
   }
 }
+// 2.5.0 WhatsApp tur 2 (S63 = A; docs/erp/WA-TUR2-TASARIM.md §3.2): eski defterin hook_events'ine uygulama sütunu — tek ALTER (yalnız eklenir tetikleri UPDATE / DELETE'e bakar;
+// sütun eklemek satır değiştirmez), göç numarası yok (makine defteri). Açılışta bir kez; şema yazımı (W-3'ün yeni tabloları gibi) açılışın parçasıdır.
+function ensureHookApp(db) {
+  if (!db.prepare("SELECT 1 AS x FROM pragma_table_info('hook_events') WHERE name = 'app'").get()) db.exec("ALTER TABLE hook_events ADD COLUMN app TEXT NOT NULL DEFAULT ''");
+  db.exec("CREATE INDEX IF NOT EXISTS idx_hook_events_app ON hook_events(waba_id, app, seq)");
+}
+/** Kanca kaydının uygulaması bağlantı kipinden: WhatsApp'ı Bağla → 'embedded' (DestekOfis uygulaması), öbürü → 'manual' (Elle Bağla — müşterinin uygulaması). */
+export const hookAppOf = mode => (mode === "embedded" ? "embedded" : "manual");
+export const HOOK_APPS = Object.freeze(["manual", "embedded"]);
 // R3 sorgusu (aşağıdaki q.sentBefore açıklaması). outer / tail: gruplanmış (cari → son an) ya da İş Q1'in satır satır biçimi (eşleşen anahtarlarla).
 // İş Z (2.4.8, T9 ORTA; yalnız sorgu PLANI, sonuç aynı): claim_keys üyeliğinde `+k.period_key` — tekli + değeri ve harmanlamayı değiştirmez (SQLite: "no-op"), yalnız
 // (job_id, attempt, period_key=?) dizin yoklamasını kapatır. Yoksa "Tüm Hareketler"in kişiye özel ~2.000 anahtarı HER talepte birer birer yoklanıyordu
@@ -245,6 +259,7 @@ export function openWaLedger({ dir, log = console, fault = null }) {
 
 function buildWaLedger(db, { file, dir, log, fault }) {
   db.exec(SCHEMA);
+  ensureHookApp(db);
   // 2.5.0 W-3: eski tetiklerin yükseltilmesi açılışı DÜŞÜRMEZ (dosya o an başka süreçte kilitliyse): anonimleştirme ilk kullanımda yeniden dener.
   let anonReady = false;
   const ensureAnon = () => {
@@ -354,11 +369,16 @@ function buildWaLedger(db, { file, dir, log, fault }) {
       SELECT c.id AS jobId, COALESCE((SELECT MIN(a.at) FROM attempt_deliveries a WHERE a.job_id = c.id), (SELECT d.at FROM deliveries d WHERE d.job_id = c.id)) AS at
       FROM chain c WHERE c.id <> ?1 AND COALESCE((SELECT MIN(a.at) FROM attempt_deliveries a WHERE a.job_id = c.id), (SELECT d.at FROM deliveries d WHERE d.job_id = c.id)) IS NOT NULL LIMIT 1`),
     // T2-3/4
-    hookEvent: db.prepare("INSERT INTO hook_events (waba_id, path_hash, verify_hash, base, state, reason, error, at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"),
+    hookEvent: db.prepare("INSERT INTO hook_events (waba_id, app, path_hash, verify_hash, base, state, reason, error, at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"),
     hookLast: db.prepare("SELECT * FROM hook_events WHERE waba_id = ? ORDER BY seq DESC LIMIT 1"),
+    // 2.5.0 WhatsApp tur 2 (S63): uygulamanın son olayı (app = '' → tur 2 öncesi tek kayıt); eski kaydın sahibi (meta "hookLegacy:<WABA>") ve şirketlerin kipleri ("mode:<şirket>:<WABA>").
+    hookLastApp: db.prepare("SELECT * FROM hook_events WHERE waba_id = ? AND app = ? ORDER BY seq DESC LIMIT 1"),
+    legacyGet: db.prepare("SELECT value FROM meta WHERE key = ?"),
+    legacySet: db.prepare("INSERT OR IGNORE INTO meta (key, value) VALUES (?, ?)"),
+    modeKeys: db.prepare("SELECT key, value FROM meta WHERE key LIKE 'mode:%'"),
     hookFirstOf: db.prepare("SELECT MIN(at) AS at FROM hook_events WHERE waba_id = ? AND path_hash = ?"),
     hookActiveOf: db.prepare("SELECT MAX(at) AS at FROM hook_events WHERE waba_id = ? AND path_hash = ? AND state = 'active'"),
-    hookByPath: db.prepare("SELECT DISTINCT waba_id AS wabaId FROM hook_events WHERE path_hash = ?"),
+    hookByPath: db.prepare("SELECT DISTINCT waba_id AS wabaId, app FROM hook_events WHERE path_hash = ?"),
     hookSeen: db.prepare("INSERT OR IGNORE INTO hook_seen (waba_id, hour, at) VALUES (?, ?, ?)"),
     hookSeenAt: db.prepare("SELECT MAX(at) AS at FROM hook_seen WHERE waba_id = ?"),
     // 2.5.0 W-3: silinen işin wamid'i özetiyle saklanır — gelen açık wamid iki biçimle aranır (?1 açık, ?2 özet).
@@ -370,6 +390,12 @@ function buildWaLedger(db, { file, dir, log, fault }) {
       UNION ALL SELECT job_id, attempt FROM learned_wamids WHERE wamid IN (?1, ?2) AND wamid <> '' LIMIT 1`),
     // 2.5.0 W-3 (KVKK / saklama): anonimleştirme.
     claimJobsOfAccount: db.prepare("SELECT DISTINCT job_id AS jobId FROM claims WHERE company_id = ? AND account_id = ? AND account_id <> ''"),
+    // 2.5.0 WhatsApp tur 2 (W-3 dk ORTA-1): talebin yeniden uygulanması — talep anından önce talebi olan işler (idx_claims_account) ve verilen işlerden telefonu / wamid'i hâlâ
+    // AÇIK olanlar (birincil anahtar dizinleri; iş başına üç yoklama — ders 47).
+    claimJobsUntil: db.prepare("SELECT DISTINCT job_id AS jobId FROM claims WHERE company_id = ? AND account_id = ? AND account_id <> '' AND at <= ?"),
+    plainJobs: db.prepare(`SELECT j.value AS jobId FROM json_each(?) j WHERE EXISTS (SELECT 1 FROM claims c WHERE c.job_id = j.value AND c.phone <> 'silinmis:' || c.job_id)
+      OR EXISTS (SELECT 1 FROM outcomes o WHERE o.job_id = j.value AND o.wamid <> '' AND substr(o.wamid, 1, 2) <> 'h:')
+      OR EXISTS (SELECT 1 FROM learned_wamids l WHERE l.job_id = j.value AND l.wamid <> '' AND substr(l.wamid, 1, 2) <> 'h:')`),
     anonClaim: db.prepare("UPDATE claims SET phone = 'silinmis:' || job_id WHERE job_id = ? AND phone <> 'silinmis:' || job_id"),
     plainOutcomes: db.prepare("SELECT attempt, wamid FROM outcomes WHERE job_id = ? AND wamid <> '' AND substr(wamid, 1, 2) <> 'h:'"),
     anonOutcome: db.prepare("UPDATE outcomes SET wamid = ? WHERE job_id = ? AND attempt = ?"),
@@ -403,10 +429,11 @@ function buildWaLedger(db, { file, dir, log, fault }) {
     if (!erasureStore) erasureStore = openErasureRequests({ dir: dir || path.dirname(file) });
     return erasureStore;
   };
-  const hookView = row => {
+  const hookView = (row, app = row?.app || "") => {
     if (!row) return null;
     return {
       wabaId: row.waba_id,
+      app,
       pathHash: row.path_hash,
       verifyHash: row.verify_hash,
       base: row.base,
@@ -418,6 +445,48 @@ function buildWaLedger(db, { file, dir, log, fault }) {
       registeredAt: q.hookActiveOf.get(row.waba_id, row.path_hash)?.at || null,
     };
   };
+  // 2.5.0 WhatsApp tur 2 (S63 = A; tasarım §3.3): tur 2'den önceki WABA başına TEK kaydın (app = '') sahibi. İlk kullanımda — açılış taramasından sonra; ortak kayıt her şirketin
+  // kipini deftere yazmıştır (hub.mjs noteMode) — bu WABA'nın bilinen kiplerinden kararlaştırılır ve YAZILIR (sonra kip değişse de karar değişmez): hepsi embedded → 'embedded';
+  // hepsi manual ya da kip bilinmiyor → 'manual' (BAŞ MİMAR KARARI WY (1): kipi bilinmeyen bağlantı Yol 1); iki kip birden → 'mixed' (son kaydeden bilinmez: eski dizi hiçbir
+  // uygulamanın değil, iki uygulama da ilk bakım turunda kendi adresini kaydeder). Yazılamazsa (başka süreç kilitli — kısa sınama) bellekte hesaplanır, kalıcı değil.
+  const legacyMemo = new Map();
+  let flushPending = false; // 2.5.0 tur 2 (W-3 dk ORTA-3): anonimleştirmeden sonraki denetim noktası düştü / ertelendi
+  function legacyOwner(wabaId) {
+    const key = String(wabaId);
+    if (legacyMemo.has(key)) return legacyMemo.get(key);
+    const metaKey = `hookLegacy:${key}`;
+    const saved = q.legacyGet.get(metaKey)?.value;
+    if (saved === "manual" || saved === "embedded" || saved === "mixed") {
+      legacyMemo.set(key, saved);
+      return saved;
+    }
+    if (!q.hookLastApp.get(key, "")) {
+      legacyMemo.set(key, null); // eski kayıt yok (yeni kod eski biçimde yazmaz)
+      return null;
+    }
+    const modes = new Set(q.modeKeys.all().filter(row => row.key.endsWith(`:${key}`)).map(row => row.value));
+    const owner = modes.has("embedded") && modes.has("manual") ? "mixed" : modes.has("embedded") ? "embedded" : "manual";
+    try {
+      if (probeWritableDb(db, 150) === true) {
+        guard("hookLegacy", { wabaId: key });
+        q.legacySet.run(metaKey, owner);
+        const stored = q.legacyGet.get(metaKey)?.value || owner;
+        legacyMemo.set(key, stored);
+        return stored;
+      }
+    } catch (error) {
+      log.warn?.(`WhatsApp gönderim defteri: eski bildirim adresi kaydının sahibi yazılamadı (${error.message}); sonraki kullanımda yeniden denenecek.`);
+    }
+    return owner;
+  }
+  /** Uygulamanın (app) GEÇERLİ kaydı: kendi son olayı; yoksa eski tek kayıt bu uygulamanınsa o (görünümde app = bu uygulama). */
+  function hookOfApp(wabaId, app) {
+    const key = String(wabaId);
+    const own = q.hookLastApp.get(key, app);
+    if (own) return hookView(own, app);
+    const legacy = legacyOwner(key) === app ? q.hookLastApp.get(key, "") : null;
+    return legacy ? hookView(legacy, app) : null;
+  }
   return {
     file,
     id,
@@ -674,22 +743,37 @@ function buildWaLedger(db, { file, dir, log, fault }) {
     },
     /** Süren bekleme bitişi (ISO) ya da null. */
     holdOf: (wabaId, now) => q.holdOf.get(String(wabaId), String(now))?.until || null,
-    // ---------- T2-3/4: durum bildirimi adresi (WABA başına) ve bildirimin şirketi ----------
-    /** WABA'nın geçerli kanca kaydı (son olay) ya da null. */
-    hookOf: wabaId => hookView(q.hookLast.get(String(wabaId))),
-    /** Gizli yolun karması GEÇERLİ kayda aitse o kayıt (yenilenmiş / eski yol → null). */
+    // ---------- T2-3/4: durum bildirimi adresi (2.5.0 tur 2 — S63: WABA + UYGULAMA başına) ve bildirimin şirketi ----------
+    /**
+     * Kanca kaydı. app ('manual' | 'embedded'): o uygulamanın geçerli kaydı (tur 2 öncesi tek kayıt sahibiyse o). app verilmezse WABA'nın herhangi bir uygulamadaki son olayı
+     * (S41 "bu kurulumda kaydı olan WABA" denetimi — lib/whatsapp/hook.mjs registeredWaba). Yoksa null.
+     */
+    hookOf: (wabaId, app = null) => (app ? hookOfApp(wabaId, hookAppOf(app)) : hookView(q.hookLast.get(String(wabaId)))),
+    /** Gizli yolun karması bir (WABA, uygulama) kaydının GEÇERLİ yoluysa o kayıt (yenilenmiş / eski yol → null). */
     hookByPath(pathHash) {
-      for (const row of q.hookByPath.all(String(pathHash))) {
-        const current = hookView(q.hookLast.get(row.wabaId));
-        if (current?.pathHash === String(pathHash)) return current;
+      const hash = String(pathHash);
+      for (const row of q.hookByPath.all(hash)) {
+        if (row.app) {
+          const current = q.hookLastApp.get(row.wabaId, row.app);
+          if (current?.path_hash === hash) return hookView(current, row.app);
+          continue;
+        }
+        // Tur 2 öncesi tek kayıt (tasarım §3.3): yol eski dizinin son yolu olmalı; sahibi uygulama kendi kaydını yazana dek geçerli ('mixed': iki uygulamadan biri yazmamışken).
+        const legacy = q.hookLastApp.get(row.wabaId, "");
+        if (legacy?.path_hash !== hash) continue;
+        const owner = legacyOwner(row.wabaId);
+        if (owner === "mixed") {
+          if (HOOK_APPS.some(app => !q.hookLastApp.get(row.wabaId, app))) return hookView(legacy, "");
+        } else if (owner && !q.hookLastApp.get(row.wabaId, owner)) return hookView(legacy, owner);
       }
       return null;
     },
-    /** Kanca kaydı olayı (yazılamazsa hata fırlatır — çağıran Meta'ya kayıt isteğini GÖNDERMEZ). */
+    /** Kanca kaydı olayı (yazılamazsa hata fırlatır — çağıran Meta'ya kayıt isteğini GÖNDERMEZ). row.app: kaydın uygulaması (kipten — hookAppOf; yoksa Elle Bağla). */
     hookEvent(row) {
       guard("hook", row);
-      q.hookEvent.run(String(row.wabaId), String(row.pathHash), String(row.verifyHash || ""), String(row.base || ""), String(row.state), String(row.reason || ""), String(row.error || "").slice(0, 500), String(row.at));
-      return this.hookOf(row.wabaId);
+      const app = hookAppOf(row.app);
+      q.hookEvent.run(String(row.wabaId), app, String(row.pathHash), String(row.verifyHash || ""), String(row.base || ""), String(row.state), String(row.reason || ""), String(row.error || "").slice(0, 500), String(row.at));
+      return this.hookOf(row.wabaId, app);
     },
     /** Bu WABA'nın kancasına bildirim geldi (saat başına bir satır). Hata fırlatmaz. */
     hookSeen(wabaId, at) {
@@ -785,6 +869,13 @@ function buildWaLedger(db, { file, dir, log, fault }) {
     jobAnonymized: jobId => Boolean(jobId && q.jobAnonymized.get(String(jobId))),
     /** Carinin (şirket + cari kimliği) talebi olan işleri — şirket dosyasında artık olmayanlar dahil (geri yükleme / sıfırlama). */
     jobsOfAccount: (companyId, accountId) => (accountId ? q.claimJobsOfAccount.all(String(companyId), String(accountId)).map(row => row.jobId) : []),
+    /** 2.5.0 WhatsApp tur 2 (W-3 dk ORTA-1): carinin talep anından (`at`, ISO) önce talebi olan işleri. */
+    accountJobsUntil: (companyId, accountId, at) => (accountId ? q.claimJobsUntil.all(String(companyId), String(accountId), String(at)).map(row => row.jobId) : []),
+    /** 2.5.0 WhatsApp tur 2 (W-3 dk ORTA-1): verilen işlerden defterde telefonu ya da wamid'i hâlâ AÇIK olanlar (anonimleştirme düşmüş / yarım kalmış). Okuma; hata fırlatabilir. */
+    plainJobs: jobIds => {
+      const ids = [...new Set((jobIds || []).map(String).filter(Boolean))];
+      return ids.length ? q.plainJobs.all(JSON.stringify(ids)).map(row => row.jobId) : [];
+    },
     /**
      * Saklama süresi adayları: [{ jobId, last }] — `bound`tan (ISO) eski, açık telefonlu talebi olan işler ve işin SON talep anı; satır numarası penceresi (after < rowid <=
      * after + size; her çağrı en çok size satıra bakar — olay döngüsü kilitlenmez). Kesin 1 yıl denetimi çağıranda (saklama.mjs retentionDue).
@@ -792,8 +883,16 @@ function buildWaLedger(db, { file, dir, log, fault }) {
     expiredJobs: (bound, { after = 0, size = 4000 } = {}) => q.expiredJobs.all(Number(after), Number(after) + Number(size), String(bound)).map(row => ({ jobId: row.jobId, last: row.last })),
     /** Talep tablosunun son satır numarası (saklama süpürmesinin pencere sınırı). */
     lastClaimRow: () => Number(q.lastClaimRow.get()?.m) || 0,
-    /** WAL'ı boşaltır (KVKK: silinen değerlerin eski çerçeveleri gider). Hata fırlatmaz. */
-    flush: () => checkpoint(db),
+    /**
+     * WAL'ı boşaltır (KVKK: silinen değerlerin eski çerçeveleri gider). Hata fırlatmaz. 2.5.0 WhatsApp tur 2 (W-3 dk ORTA-3): düşerse (başka bağlantı okuyor) bayrak kalır —
+     * bakım turu flushPending() iken yeniden dener; başarıda iner. Dönüş: tamamlandı mı.
+     */
+    flush: () => {
+      const done = checkpoint(db);
+      flushPending = !done;
+      return done;
+    },
+    flushPending: () => flushPending,
     /**
      * İşlerin talep telefonu 'silinmis:<iş>', deneme wamid'leri özet olur (tek işlem; secure_delete altında; ardından WAL boşaltılır). Yalnız eklenir tetikleri bu dönüşüme
      * izin verir. Eşgüçlü. Yazılamazsa hata fırlatır (çağıran yeniden dener / açılışta tamamlanır). Dönüş: değişen satır sayısı.
@@ -822,7 +921,10 @@ function buildWaLedger(db, { file, dir, log, fault }) {
           throw error;
         }
       });
-      if (changed && flush) checkpoint(db);
+      if (changed) {
+        if (flush) flushPending = !checkpoint(db);
+        else flushPending = true; // süpürme turun sonunda boşaltır; düşerse bakım turu
+      }
       return changed;
     },
     /** S35 / Y17-6: silme talebi / saklama süresiyle kapanan bekleyen iş bir daha denenmeyecek (131049 bırakılmış denemesi R3'te sayılmaz — K7 düzeni). Hata fırlatmaz. */

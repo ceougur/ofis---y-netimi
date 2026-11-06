@@ -1,0 +1,24 @@
+K1 Cari kartı → WhatsApp: KVKK düğmesi, Vazgeç
+  ✓ yönetici KVKK düğmesini görür
+  ✓ düğme adı
+  ✓ soru başlığı ve nedeni
+  ✓ Vazgeç: hiçbir kayıt silinmedi
+K2 Sil → bildirim ve veri tabanı
+  ✓ bildirim (Gönderim kayıtları silindi: 2 kayıt, 1 bekleyen gönderim atlandı.×)
+  ✓ A'nın iki işi içeriksiz
+  ✓ bekleyen iş Atlandı — Silme Talebi
+  ✓ B'nin işi durur
+  ✓ Son Gönderimler satırında İçerik Silindi
+K3 Gönderimler → ayrıntı
+  ✓ ayrıntıda neden metni
+  ✓ telefon boş, ad karttan
+K4 Yönetim → WhatsApp → Gönderim Kayıtları ve KVKK (telefonsuz cari)
+  ✓ kart başlığı
+  ✓ C'nin işi silindi (kartta WhatsApp düğmesi olmadan)
+K4b Yönetim → WhatsApp: Silinenler'deki cari (WhatsApp kaydı var) da bulunur — kart açılmaz, yalnız silme talebi
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('#adm-wa-kvkk [data-wa-kvkk-erase="account-832f513e-8ad7-40b0-a72f-551f72f81c26"]') to be visible[22m
+
+    at /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/e2e/senaryo-whatsapp-kvkk-250.mjs:144:14
+13 geçti, 1 kaldı
