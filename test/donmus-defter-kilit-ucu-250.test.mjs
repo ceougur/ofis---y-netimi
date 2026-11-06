@@ -45,10 +45,21 @@ describe("2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada do
   const S = () => server.app.ledger.snapshots;
   const pos = () => server.app.context.bankAccounts.pos;
   const runs = () => server.app.store.all("SELECT no, kind, state, through FROM ledger_snapshot_runs ORDER BY no").map(row => ({ ...row }));
-  // Dondurma kancası: her parçadan sonra ms bekle (iş uzun sürsün). Parça boyu 5 satır.
-  const slowBatches = ms => {
+  // Dondurma kancası: ilk parça yazılınca dondurma TUTULUR (süreye değil kapıya bağlı — ders 20: uç kilit izini beklerken süreli dondurma bitebiliyordu; zorla üretildi:
+  // iz 3 sn → K6 ön koşulu düştü). Bırakılınca (ya da 8 sn güvenlik süresi dolunca — uç dondurmayı beklerse, eski kod / mutant, test kilitlenmez) sürer. Parça boyu 5 satır.
+  let releaseBatches = () => {};
+  const holdBatches = () => {
+    let release = null;
+    const held = new Promise(resolve => {
+      release = resolve;
+    });
+    const fallback = setTimeout(() => release(), 8000);
+    releaseBatches = () => {
+      clearTimeout(fallback);
+      release();
+    };
     hook.fn = async phase => {
-      if (phase === "batch") await sleep(ms);
+      if (phase === "batch") await held;
     };
   };
   const untilWriting = async () => {
@@ -56,6 +67,7 @@ describe("2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada do
     assert.ok(S().status().running && S().status().phase === "yazım", `ön koşul: dondurma yazım adımında sürüyor (${JSON.stringify(S().status())})`);
   };
   const unlockAll = async () => {
+    releaseBatches();
     hook.fn = null;
     await waitForFreeze(admin);
     await must("kilidi kaldır", admin.put("/api/admin/period-lock", { lockedUntil: "" }));
@@ -81,7 +93,7 @@ describe("2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada do
       return original(...args);
     };
     try {
-      slowBatches(150);
+      holdBatches();
       const first = admin.put("/api/admin/period-lock", { lockedUntil: LOCK });
       await untilWriting();
       const callsBefore = posCalls;
@@ -97,8 +109,9 @@ describe("2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada do
         lastDone = now.done;
       }
       assert.equal(posCalls, callsBefore, "reddedilen istek POS ön adımını çalıştırmadı");
-      assert.equal((await first).status, 200);
+      releaseBatches();
       hook.fn = null;
+      assert.equal((await first).status, 200);
       const view = await waitForFreeze(admin);
       assert.equal(view.frozenThrough, LOCK, `kapsam = kilit: ${JSON.stringify(view)}`);
       assert.equal(view.freeze.pending, null);
@@ -108,6 +121,7 @@ describe("2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada do
       assert.deepEqual(canon(S().entries()), canon(upTo(server.app.ledger.build(), LOCK)), "donmuş = canlı");
     } finally {
       pos().beforeLock = original;
+      releaseBatches();
       hook.fn = null;
     }
   });
@@ -120,20 +134,22 @@ describe("2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada do
       return original(target, force);
     };
     try {
-      slowBatches(150);
+      holdBatches();
       const first = admin.put("/api/admin/period-lock", { lockedUntil: LOCK });
       await untilWriting();
       const refused = await admin.put("/api/admin/period-lock", { lockedUntil: "2026-11-30" });
       assert.equal(refused.status, 409, JSON.stringify(refused.data));
       assert.equal(refused.data.code, "bank-pending-before-lock");
       assert.equal(S().status().running, true, `ön adımı reddedilen istekten sonra dondurma sürüyor: ${JSON.stringify(S().status())}`);
-      assert.equal((await first).status, 200);
+      releaseBatches();
       hook.fn = null;
+      assert.equal((await first).status, 200);
       const view = await waitForFreeze(admin);
       assert.equal(view.frozenThrough, LOCK);
       assert.equal(server.app.context.period.lockedUntil(), LOCK, "kilit değişmedi");
     } finally {
       pos().beforeLock = original;
+      releaseBatches();
       hook.fn = null;
     }
   });
@@ -142,10 +158,16 @@ describe("2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada do
     await unlockAll();
     const period = server.app.context.period;
     const original = period.setLock;
+    const originalPos = pos().beforeLock;
     try {
-      slowBatches(100);
+      holdBatches();
       const first = admin.put("/api/admin/period-lock", { lockedUntil: LOCK });
       await untilWriting();
+      // Tutulan dondurma, ikinci isteğin ön adımında (POS; durdurmadan hemen ÖNCE, aynı turda) bırakılır: durdurma süren dondurmaya denk gelir (ön koşul), dondurma arada bitemez.
+      pos().beforeLock = (target, force) => {
+        if (target === "2026-11-30") releaseBatches();
+        return originalPos(target, force);
+      };
       let thrown = 0;
       period.setLock = value => {
         if (value === "2026-11-30") {
@@ -157,8 +179,8 @@ describe("2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada do
       const refused = await admin.put("/api/admin/period-lock", { lockedUntil: "2026-11-30" });
       assert.equal(thrown, 1, "ön koşul: istek süren dondurmayı durdurduktan sonra kilit işleminde düştü");
       assert.equal(refused.status, 409, JSON.stringify(refused.data));
-      assert.equal((await first).status, 200);
       hook.fn = null;
+      assert.equal((await first).status, 200);
       const view = await waitForFreeze(admin, { timeoutMs: 20000 });
       assert.equal(period.lockedUntil(), LOCK, "kilit önceki gününde");
       assert.equal(view.frozenThrough, LOCK, `durdurulan koşu sahipsiz kaldı (kapsam ${view.frozenThrough || "boş"}, bekleyen ${JSON.stringify(view.freeze.pending)})`);
@@ -166,6 +188,8 @@ describe("2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada do
       assert.deepEqual(canon(S().entries()), canon(upTo(server.app.ledger.build(), LOCK)));
     } finally {
       period.setLock = original;
+      pos().beforeLock = originalPos;
+      releaseBatches();
       hook.fn = null;
     }
   });
@@ -256,13 +280,16 @@ describe("2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada do
     await unlockAll();
     const before = runs().length;
     try {
-      slowBatches(120);
+      holdBatches();
       const first = await must("kilit", admin.put("/api/admin/period-lock", { lockedUntil: LOCK }));
       await untilWriting();
+      const runNo = S().status().run;
       const again = await must("aynı gün", admin.put("/api/admin/period-lock", { lockedUntil: LOCK }));
       assert.equal(again.freeze.pending.no, first.freeze.pending.no, "aynı bekleyen koşu");
-      assert.equal(S().status().running, true, "dondurma sürüyor");
+      const now = S().status();
+      assert.ok(now.running && now.run === runNo && now.done > 0, `dondurma sürüyor, baştan başlamadı: ${JSON.stringify(now)}`);
     } finally {
+      releaseBatches();
       hook.fn = null;
     }
     const view = await waitForFreeze(admin);
