@@ -89,6 +89,7 @@ const waitRow = (selector, pattern) =>
     .catch(() => false);
 // Kaydet'e basılır ve sunucunun yanıtı beklenir (sonuç kodu okunur: reddedilen istek başarı değildir — ders 3).
 const submitAndRead = async urlPart => {
+  const clickAt = Date.now();
   const [response] = await Promise.all([page.waitForResponse(res => res.url().includes(urlPart) && res.request().method() === "PUT", { timeout: 15000 }), page.click(`${TOP} form button[type="submit"]`)]);
   let body = {};
   try {
@@ -97,7 +98,27 @@ const submitAndRead = async urlPart => {
     body = {};
   }
   await page.waitForTimeout(600);
-  return { status: response.status(), code: body?.code || body?.error?.code || "", body };
+  return { status: response.status(), code: body?.code || body?.error?.code || "", body, clickAt };
+};
+// Kartı / listeyi okuyan GET istekleri (zamanıyla): 409'dan SONRA formun kendi yenilemesi var mı (canlı değişiklik bildiriminden bağımsız).
+const reads = [];
+const readAfter = async (pattern, since, timeout = 6000) => {
+  const until = Date.now() + timeout;
+  while (Date.now() < until) {
+    if (reads.some(item => item.at > since && pattern.test(item.url))) return true;
+    await sleep(100);
+  }
+  return false;
+};
+// Kartın / listenin canlı yenilemeleri duruldu mu: `quiet` ms boyunca o adrese yeni GET yok (en çok `timeout`). Kaç ms beklendiği döner (-1: durulmadı).
+const settle = async (pattern, quiet = 2500, timeout = 15000) => {
+  const start = Date.now();
+  while (Date.now() - start < timeout) {
+    const last = reads.filter(item => pattern.test(item.url)).at(-1)?.at || 0;
+    if (Date.now() - Math.max(last, start) >= quiet) return Date.now() - start;
+    await sleep(100);
+  }
+  return -1;
 };
 const STALE = /siz açtıktan sonra başka biri tarafından değiştirildi; düzeltmeniz kaydedilmedi\./;
 
@@ -130,6 +151,9 @@ try {
   page = await context.newPage();
   page.setDefaultTimeout(15000);
   page.on("pageerror", error => errors.push(error.message));
+  page.on("request", request => {
+    if (request.method() === "GET" && request.url().includes("/api/workspace/")) reads.push({ url: new URL(request.url()).pathname + new URL(request.url()).search, at: Date.now() });
+  });
   await installPageClock(page, clock);
   await page.goto(`${server.base}/`);
   await page.fill("#hof-auth input[name=username]", "admin");
@@ -174,14 +198,19 @@ try {
 
   // Ortak akış: A formu açar → B düzeltir → A yalnız açıklamayı değiştirir → 409 formda, veri B'de, kart yenilenir → Esc (soru beklenir) → gerileme: yeniden aç,
   // düzelt, kaydet (200) → hemen ikinci düzeltme (200).
-  const race = async ({ label, open, editSel, rowSel, table, id, noteField, urlPart, bWrite, bCheck, bRow, aNote, freshCheck }) => {
+  const race = async ({ label, open, editSel, rowSel, table, id, noteField, urlPart, cardRead, bWrite, bCheck, bRow, aNote, freshCheck }) => {
     await open();
     await page.click(editSel);
     await waitForm(noteField);
     const before = rowOf(table, id);
+    const bAt = Date.now();
     const bRes = await bWrite(versionOf(table, id));
     ok(bRes.status === 200, `${label}: B (muhasebe2, öbür oturum) aynı hareketi düzeltti → ${bRes.status} ${bRes.data?.error || ""}`);
     ok(bCheck(rowOf(table, id)), `${label}: B'nin düzeltmesi veri tabanında (${JSON.stringify(pick(rowOf(table, id)))})`);
+    // Ön koşul (ders 20): canlı değişiklik bildiriminin kart / liste yenilemesi (varsa) A Kaydet'e basmadan biter; 409'dan sonraki okuma formun kendi yenilemesidir.
+    const live = await readAfter(cardRead, bAt, 5000);
+    const calm = await settle(cardRead);
+    console.log(`    (ön koşul: B'nin düzeltmesinden sonra canlı yenileme ${live ? "geldi" : "gelmedi"}; kart okumaları ${calm >= 0 ? `${calm} ms'de duruldu` : "DURULMADI"})`);
     await typeHuman(noteField, aNote);
     const res = await submitAndRead(urlPart);
     const message = await formError();
@@ -190,6 +219,9 @@ try {
     ok(Boolean(await page.$(`${TOP} form [name="${noteField}"]`)), `${label}: form açık kaldı (kendiliğinden yeniden göndermedi; yazılan açıklama formda)`);
     const now = rowOf(table, id);
     ok(bCheck(now) && now.updated_by === B && (now.note ?? now.description) === (before.note ?? before.description), `${label}: veri tabanında B'nin değeri duruyor, A'nın açıklaması yazılmadı (${JSON.stringify(pick(now))})`);
+    const selfRead = await readAfter(cardRead, res.clickAt);
+    if (!selfRead) console.log(`    (409'dan sonraki okumalar: ${JSON.stringify(reads.filter(item => item.at > res.clickAt).map(item => item.url).slice(0, 12))})`);
+    ok(selfRead, `${label}: 409'dan sonra form ${table === "cash_entries" ? "Kasa listesini" : "kartı"} kendisi yeniden okudu (${cardRead.source})`);
     ok(await waitRow(rowSel, bRow), `${label}: arkadaki ${table === "cash_entries" ? "Kasa listesi" : "kart"} B'nin değerine yenilendi: “${(await rowText(rowSel)).slice(0, 140)}”`);
     await shot(`${label.slice(0, 12).replace(/[^\w]+/g, "-")}-409`);
     // Ders 34: açıklamaya yazıldı → kapatma sorusu BEKLENİR; escClose yanıtı (Kaydetmeden Kapat) nedeniyle günlüğe yazar.
@@ -229,6 +261,7 @@ try {
       id: ids.cari,
       noteField: "note",
       urlPart: `/entries/${ids.cari}`,
+      cardRead: new RegExp(`^/api/workspace/accounts/${customer.id}(\\?|$)`),
       bWrite: version => other.put(`/api/workspace/accounts/${customer.id}/entries/${ids.cari}`, { amount: "10", updatedAt: version }),
       bCheck: row => row?.amount === 10,
       bRow: /10,00/,
@@ -247,6 +280,7 @@ try {
       id: ids.stok,
       noteField: "note",
       urlPart: `/moves/${ids.stok}`,
+      cardRead: new RegExp(`^/api/workspace/stock/${item.id}(\\?|$)`),
       bWrite: version => other.put(`/api/workspace/stock/${item.id}/moves/${ids.stok}`, { unitPrice: "10", updatedAt: version }),
       bCheck: row => row?.unit_price === 10 && row?.amount === 10,
       bRow: /10,00/,
@@ -265,6 +299,7 @@ try {
       id: ids.taksit,
       noteField: "note",
       urlPart: `/entries/${ids.taksit}`,
+      cardRead: new RegExp(`^/api/workspace/plans/${plan.id}(\\?|$)`),
       bWrite: version => other.put(`/api/workspace/plans/${plan.id}/entries/${ids.taksit}`, { amount: "10", updatedAt: version }),
       bCheck: row => row?.amount === 10,
       bRow: /10,00/,
@@ -283,6 +318,7 @@ try {
       id: ids.kasa,
       noteField: "description",
       urlPart: `/api/workspace/cash/${ids.kasa}`,
+      cardRead: /^\/api\/workspace\/cash\?from=/,
       bWrite: version => other.put(`/api/workspace/cash/${ids.kasa}`, { kind: "out", amount: "10", date: day(-2), description: "Kırtasiye", updatedAt: version }),
       bCheck: row => row?.amount === 10,
       bRow: /10,00/,
@@ -302,6 +338,7 @@ try {
       id: ids.transferCash,
       noteField: "description",
       urlPart: `/api/workspace/cash/${ids.transferCash}`,
+      cardRead: /^\/api\/workspace\/cash\?from=/,
       // Yeni istemci gibi: B banka bacağını kendi açtığı sürümle düzeltir (iki bacak birlikte güncellenir).
       bWrite: () => other.put(`/api/workspace/cash/${ids.transferBank}`, { kind: bankLeg.kind, amount: "400", date: day(-2), description: "ATM'den çekildi", updatedAt: versionOf("cash_entries", ids.transferBank) }),
       bCheck: row => row?.amount === 400 && rowOf("cash_entries", ids.transferBank)?.amount === 400,
@@ -315,12 +352,18 @@ try {
     await openAccount();
     await page.click(`${ACC} [data-edit-entry="${ids.cariGone}"]`);
     await waitForm("note");
+    const delAt = Date.now();
     const del = await other.del(`/api/workspace/accounts/${customer.id}/entries/${ids.cariGone}`);
     ok(del.status === 200, `B hareketi sildi → ${del.status}`);
+    const cardRead = new RegExp(`^/api/workspace/accounts/${customer.id}(\\?|$)`);
+    const live = await readAfter(cardRead, delAt, 5000);
+    const calm = await settle(cardRead);
+    console.log(`    (ön koşul: silmeden sonra canlı yenileme ${live ? "geldi" : "gelmedi"}; kart okumaları ${calm >= 0 ? `${calm} ms'de duruldu` : "DURULMADI"})`);
     await typeHuman("note", "A'nın notu");
     const res = await submitAndRead(`/entries/${ids.cariGone}`);
     const message = await formError();
     ok(res.status === 404 && /Başka biri silmiş olabilir/.test(message), `404 ve ileti formda: ${res.status} “${message}”`);
+    ok(await readAfter(cardRead, res.clickAt), "404'ten sonra form kartı kendisi yeniden okudu");
     ok(!rowOf("account_entries", ids.cariGone), "veri tabanında hareket yok (yeniden yazılmadı)");
     const gone = await page
       .waitForFunction(sel => !document.querySelector(sel), `${ACC} [data-edit-entry="${ids.cariGone}"]`, { timeout: 10000 })
