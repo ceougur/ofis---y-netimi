@@ -1,6 +1,6 @@
 # Bağımsız CARİ / EVRAK kâhini — kurallar ve kararlar (2.4.4 madde 31a, B1–B2)
 
-Kural seti (06.11.2026): **`2.5.0`** varsayılan (2.4.9 + Ç5: açılış 519, KG-5, S49, tek yükümlülük kuyruğu S50 / S2 / ANINDA, B1 gecikmiş S52 — §13; bakım 2: S68 borç tarafı vade sırası, S67 takvim kalemi, S66 carisiz evrakın karşılıksızı — §14); (03.11.2026): **`2.4.9`** (2.4.6 + C1 hareketli cari silinemez — §12); 25.10.2026: **`2.4.6`** (2.4.5 + KS8–KS10 — §9; dil `/3` aynı, iki ek: `iade {geri}`, adımda `catal`); `--kural 2.4.5` 2.4.5 beklentilerini bayt bayt verir,
+Kural seti (06.11.2026): **`2.5.0`** varsayılan (2.4.9 + Ç5: açılış 519, KG-5, S49, tek yükümlülük kuyruğu S50 / S2 / ANINDA, B1 gecikmiş S52 — §13; bakım 2: S68 borç tarafı vade sırası, S67 takvim kalemi, S66 carisiz evrakın karşılıksızı — §14; bakım 3: S69 söz günü / söz geçmiş takvim kalemi — §15); (03.11.2026): **`2.4.9`** (2.4.6 + C1 hareketli cari silinemez — §12); 25.10.2026: **`2.4.6`** (2.4.5 + KS8–KS10 — §9; dil `/3` aynı, iki ek: `iade {geri}`, adımda `catal`); `--kural 2.4.5` 2.4.5 beklentilerini bayt bayt verir,
 `--legacy` 2.4.4. Dil: **`destekofis-cari/3`** (24.10.2026, 2.4.5 kuralları — §8; `/1` `/2` senaryoları değişmeden koşar ya da 2.4.5 kararıyla geçersiz diye atlanır — §8 C0) · `/2`: 23.10.2026, B3–B5 · İlk yazıldığı gün: 22.10.2026 · Kâhin: `model.py` (Python 3, yalnız standart kütüphane, `python3 -I`) ·
 Koşucu: `kos.mjs` · Rastgele üretici: `uretici.py` · Elle senaryolar: `senaryolar/*.json` · Komut: `node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs` (npm betiği `test:kahin-cari`, iş akışına eklenirken açılır: test/ci-kapi-listesi.test.mjs her test:kahin-* betiğinin ci.yml ya da uzun-dogrulama.yml'de koşmasını ister).
 
@@ -1058,6 +1058,7 @@ sonradan doğan borca kayar) · 208 M1e B: Mevcut Borç kartı alttaki borcu tü
   - **SK-5 sınırı (KULLANICIYA SORULMALI, aşağıda):** v < bugün ve v < Beklenen ≤ bugün (söz günü BUGÜN ya da söz GEÇMİŞ) — "ileri tarihli" bugüne göre mi (K6.3: bugün → "today" / 0, geçmiş →
     "overdue" / sözden) vadeye göre mi (S67: "overdue" / vadeden): kâhin ÇATAL {K6.3, S67}, etiket YAYGIN. Beklenen ≤ v (söz vadeden önce ya da vade günü) iki okumada da "ileri tarihli"
     değildir → K6.3 aynen (kesin).
+    (Bakım 3: S69 = A — SK-5 kapandı, ÇATAL kalktı; §15 C15.1.)
 - **C14.3 S66 = A — carisiz evrakın karşılıksızı (SK-2 kapandı; C13.3'e ek):** `karsiliksiz {evrak, cari?, tarih?}` formdan carisiz (S49) alınan evrakta:
   - **cari seçilirse** cari borçlanır: bakiye + tutar; mizan B 120 (müşteri) | 320 (tedarikçi) (kitap G-2) / A 101|121; S49'un A 649'u YERİNDE (karardaki "(S49 geliri geri alınır)" yalnız seçilmeyen
     dalda). Tek yükümlülük kuyruğunda AYRI borç kalemi: belge günü ve vade = karşılıksız günü (S1 A "karşılıksız çıkan çek / senet" vadesiz borç → ertesi gün gecikmiş; EK-1 M1(c) A; S11 / S18
@@ -1087,7 +1088,7 @@ sonradan doğan borca kayar) · 208 M1e B: Mevcut Borç kartı alttaki borcu tü
 214 S68 B: borç tarafında kayıt tarihi + yazım sırası (2.4.5 K-b; bakım 1'in "B dalı") · 215 S67 B: ileri tarihli sözde kalemin durumu ve gün sayısı söz tarihine göre (K6.3) · 216 S66 B: cari seçilmezse
 gider (B 770 / A 101) · 217 S66: cari seçilse de borçlanmaz (B 649 / A 101) · 218 S66: seçilen carinin karşılıksız borcu tek yükümlülük kuyruğunda kalem değil (avans kapatmaz, gecikmiş değil).
 
-### KULLANICIYA SORULMALI (bakım 2; kâhin ÇATAL — seçilmeyen dal kanıt sayılmaz)
+### KULLANICIYA SORULMALI (bakım 2; kâhin ÇATAL — seçilmeyen dal kanıt sayılmaz) — SK-5 YANITLANDI 06.11 13:09 UTC (S69 = A; kural §15 C15.1 — C14.2'nin SK-5 sınırının yerine)
 - **SK-5 (S67 sınırı; sunum — seyrek DEĞİL: her sözün günü gelir):** vadesi geçmiş borçta Ödeme Sözü'nün günü geldiğinde (Beklenen = bugün) ve söz geçip ödeme gelmediğinde (Beklenen < bugün)
   takvim / zil kaleminin durumu ve gün sayısı ne olsun? Örnek: vade 05.06, söz 15.06 — 15.06'da **A:** "Gecikmiş, 10 gün" · **B:** "Bugün, 0 gün"; 16.06'da **A:** "Gecikmiş, 11 gün" · **B:** "Gecikmiş,
   1 gün". **A (öneri):** "ileri tarihli" vadeye göre okunur — söz vadeden sonraysa kalem söz gününde, her zaman "Gecikmiş", gün sayısı vadeden (S52 "borç gecikmiş sayılır" ve S67 ile tutarlı;
@@ -1119,3 +1120,52 @@ Toplam 895 denetim satırı (elle 34, rastgele s1 861, rastgele ux18 0); döküm
 - `karsiliksiz {evrak, cari}` (carisiz evrakta cari seçimi): gövde alanı Ç5-A'da verilir — `kos.mjs` `KARSILIKSIZ_CARI` eşlemesi (verilene kadar adım GÖNDERİLMEZ, okuma hatası yazılır; sonuç yeşil
   sayılmaz). Cari seçilmeyen karşılıksız bugünkü `bounce` eşlemesiyle gider.
 - **Ana oturuma:** `model.py` değişti — mobil yazma kâhininin `kabul.json`'undaki `cari_model_sha256` yeniden üretilmeli (o dosya okunmadı, değiştirilmedi).
+
+## 15. 2.5.0 Ç5 bakımı 3 — S69 (06.11.2026; eski kâhinler bakımı 3 — kodu görmeyen AYRI el) — kural seti `2.5.0` = §13 + §14 + bu bölüm
+
+`--kural 2.4.9` (ve 2.4.6 / 2.4.5 / `--legacy`) AYNEN — bakım 2'nin modeliyle (`d6a7b0d5`) bayt bayt eşdeğerlik kanıtta. Bu dal ana dala Ç5-A ile birlikte girer; kod tarafı Ç5-B
+(iş listesi D 13:09 "İŞ ATAMASI: S69 → eski kâhinler bakımı 3 (cari) → kod Ç5-B"). Defter kâhininin dilinde takvim / zil / Ödeme Sözü yok (`test/bagimsiz/defter/KARARLAR.md` bakım 2
+"S67 / S68 bu kâhinin konusu değil") → defter kâhini DEĞİŞMEDİ.
+
+### C00h Temiz oda (bakım 3)
+- **Karar metni (AYNEN; `git show 39d6c28d:docs/2.5.0-IS-LISTESI.md` D):** "KULLANICI KARARI 06.11 13:09 UTC (AYNEN: 'önerilerini uygula'; sorular C bölümünde S69–S71, öneriyle soruldu) → hepsi A:
+  S69 = A: vadesi geçmiş borçta Ödeme Sözü günü gelince ve söz geçip ödeme gelmeyince takvim kalemi her zaman 'Gecikmiş', gün sayısı VADEDEN (vade 05.06, söz 15.06 → 15.06'da 10, 16.06'da 11)."
+  Sorunun metni (aynı dosya, C — S69): "S69 (eski kâhinler bakımı 2 SK-5; görünüm, seyrek DEĞİL; S67'nin sınırı): vadesi geçmiş borçta Ödeme Sözü'nün günü gelince (söz = bugün) ve söz geçip
+  ödeme gelmeyince takvim kaleminin durumu ve gün sayısı (örnek: vade 05.06, söz 15.06) — A öneri: her zaman 'Gecikmiş', gün sayısı VADEDEN (15.06'da 10, 16.06'da 11; S52 / S67 ile tutarlı) /
+  B: söz günü 'Bugün, 0'; söz geçince sözden sayılır (16.06'da 1)." S70 / S71 bu kâhinin konusu değil (WhatsApp kâhini).
+- **Okunan / okunmayan:** bakım 1–2'nin alanıyla aynı (C00f / C00g; bu sefer kural kitabı ve EK'lerden yalnız gecikmiş / vade / söz geçen bölümler — EK-1 §0 tablosu, M1(f)); tam liste ajan
+  raporunda. `server/**`, `client/**`, `bulut/**`, `packaging/**`, `tools/**` (yalnız `kanit.mjs` çalıştırıldı), `docs/erp/C5-ACILIS-TASARIM.md`, `test/**` (iki kâhin klasörü dışında),
+  başka ajanların `docs/kanit/**` dosyaları, git farkı / geçmiş içeriği OKUNMADI. Program koşulmadı; programın davranışı aranmadı.
+
+### Kurallar
+- **C15.1 S69 = A — söz günü ve söz geçmiş (SK-5 kapandı; C14.2'nin "SK-5 sınırı" ÇATAL'ının YERİNE):** elle kayıt / Açılış kalemi (K6.3; Kalan > 0, Beklenen Ödeme Tarihi var), vadesi
+  v < bugün (v = Vade Tarihi; vadesizse v = belge günü — S1 A; vade günü gecikmiş değil — M1f) ve Beklenen > v → kalem `dueDate` = Beklenen (K6.3, "söz gününde durur" — S67),
+  `state` = "overdue", `days` = v − bugün (eksi; K6.3'ün "dueDate − bugün" işaret düzeni — C14.2 ile aynı). Beklenen'in BUGÜNE göre yeri (yarın ve sonrası — C14.2 / S67; bugün; geçmiş — S69)
+  sonucu DEĞİŞTİRMEZ: kural tek, ÇATAL yok. Kararın örneği: vade 05.06, söz 15.06 → 14.06'da "overdue" −9 (S67), 15.06'da −10, 16.06'da −11 (S69); gün sayısı söz günü sıfırlanmaz, söz
+  geçince geri düşmez.
+- **C15.2 Kesin K6.3 (S69'un DIŞI):** (a) Beklenen ≤ v (söz vadeden ÖNCE ya da vade GÜNÜ): K6.3 aynen — `dueDate` = Beklenen, durum ve gün sayısı Beklenen'e göre (bugün → "today" 0, geçmiş →
+  "overdue" Beklenen − bugün, ileri → "upcoming"). Beklenen = v'de K6.3 ile C15.1 aynı değeri verir. (b) v ≥ bugün (vade bugün ya da ileride; borç vadesi geçmiş değil — M1f): K6.3 aynen.
+  - **Yorum Y3-1 (ders 40; kaynak önceden yazılmış metin, programın davranışı DEĞİL):** S69'un karar cümlesi tek başına okunursa "söz vadeden önce, ikisi de geçmiş" (ör. vade 10.06, söz 05.06,
+    bugün 15.06) de "vadesi geçmiş borç + söz geçmiş" sayılıp gün sayısı vadeden (−5) okunabilirdi. Bu okuma SEÇİLMEDİ: (1) soru S69 kendini "S67'nin sınırı" diye tanımlar; S67 "vadesi geçmiş
+    borca İLERİ TARİHLİ Ödeme Sözü" (sözün vadeye göre ileride olduğu aile); (2) sorunun kaynağı SK-5'in A seçeneği (bakım 2, karar ÖNCESİ yazıldı) "'ileri tarihli' vadeye göre okunur —
+    söz vadeden SONRAYSA kalem söz gününde, her zaman Gecikmiş, gün sayısı vadeden"; (3) C14.2 (karar öncesi) "Beklenen ≤ v iki okumada da 'ileri tarihli' değildir → K6.3 aynen (kesin)";
+    (4) kararın örneği ve gerekçesi ("S52 / S67 ile tutarlı") yalnız vadeden sonraki sözü anar. Sonuç: S69 = SK-5 A, kapsamı söz > vade. Para / kapama / "kime kaç kez" kuralı değil
+    (görünüm; tutar, tarih, gecikmiş değişmez) → soru değil, BAŞ MİMAR'a gösterilir.
+  - **Yorum Y3-2:** "takvim kalemi" = K6.3'ün takvim / zil kalemi (aynı `/dues` kalemi; `takvim:hareket` denetimi ikisini temsil eder). İki yön (Tahsil Edilecek Borç / Ödenecek Borç) — C14.2'nin
+    harfiyen yorumu (metin "vadesi geçmiş borç" yön ayırmıyor) S69'a da uygulanır; Açılış kalemi de (K6.3 "elle kayıt / açılış").
+- **DEĞİŞMEYEN (komşu — ders 10):** `amount` (Kalan − Mevcut Borç kartının açık kapsamı, K6.5), `label` ("… (Ödeme Sözü)"), `direction`, `person`, `dueDate` (= Beklenen), ufuk (K6.3 söz gününe
+  göre — Beklenen ≤ bugün olduğundan S69 kalemi her zaman ufukta), takvim kalem sayısı, Vade Takip ve projeksiyon satırı (`{amount, date, direction}` — durum / gün yok), B1 gecikmiş tutarı
+  (C13.5: Ödeme Sözü gecikmişi DEĞİŞTİRMEZ), kapama sırası (C13.4 / C14.1 — Beklenen sırayı değiştirmez), fatura / evrak / taksit kalemleri (S69 elle kayıt / Açılış kalemine).
+- **Etiket:** KULLANICI (S69 A + S67 A); carinin geçmişinde AJAN / YAYGIN nedeni varsa o (C14.2'deki düzen). SK-5 ÇATAL'ının YAYGIN etiketi kalktı.
+
+### C8h Nasıl bozulur? (bakım 3 — önce yazıldı; senaryo karşılıkları kod commit'inde)
+| # | Bozulma |
+|---|---|
+| Z45 | Söz günü (Beklenen = bugün) kalem "Bugün, 0" (S69 B) |
+| Z46 | Söz geçince gün sayısı sözden sayılır — ertesi gün −10'dan −1'e düşer (S69 B) |
+| Z47 | Söz günü sınırı kayar: S69 yalnız söz GEÇMİŞSE, söz günü K6.3 "today" 0 (ya da tersine yalnız söz günü) |
+| Z48 | Söz vadeden ÖNCE iken de gün sayısı vadeden (C15.2 (a) kesin K6.3 bozulur) |
+| Z49 | Gün sayısı vade ertesinden (bir gün eksik: vade 05.06, 15.06'da −9) ya da durum "overdue" iken gün sayısı söze göre |
+| Z50 | Vade günü vadesi geçmiş sayılır (M1f sınırı) — vade bugün, söz ileride kalem "overdue" 0 |
+| Z51 | Ödenecek Borç / Açılış / vadesiz (S1) / kısmi tahsilatlı kalem kuralın dışında kalır |
+| Z52 | S69 tutarı, tarihi ya da etiketi değiştirir (`dueDate` vadeye kayar, `amount` tutar olur, "(Ödeme Sözü)" düşer); gecikmiş tutarı (C13.5) söz gününde değişir |
