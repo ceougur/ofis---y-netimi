@@ -17,6 +17,8 @@ import path from "node:path";
 import { BACKUP_NAME, companyFolderName, moveBackupFolder, parseBackupName, readBackupIdentity } from "./backup.mjs";
 import { DatabaseSync } from "node:sqlite";
 import { HttpError } from "./http.mjs";
+import { DEVIR_YEARS_KEY, adoptionOf, archiveDirOf, cleanArchiveEntry, devirYearsOfSetting, readDevirYears, scanArchiveDirs, validYear, writeSidecar } from "./devir/archives.mjs";
+import { resolveDbPath } from "./db-path.mjs";
 
 export const ROOT_COMPANY_ID = "sirket-001";
 const CODE = /^\d{3}$/;
@@ -349,6 +351,8 @@ export function createCompanyRegistry({ dataDir, backupDir, hubStore, log = { in
     if (code !== undefined) next.code = codeInput(code, id);
     const entry = { id: next.id, code: next.code, name: next.name, dir: next.dir, createdAt: next.createdAt, createdBy: next.createdBy, updatedAt: now(), updatedBy: user?.id || "" };
     if (Array.isArray(company.oldBackupDirs) && company.oldBackupDirs.length) entry.oldBackupDirs = company.oldBackupDirs;
+    // 2.5.0 D2: arşiv kaydı ad / kod değişikliğinde korunur (alanlar burada tek tek yeniden kurulduğu için önceden düşerdi).
+    if (Array.isArray(company.archives) && company.archives.length) entry.archives = company.archives;
     // Yeni yedek klasörü adı başka şirketin klasörüyle ya da içinde yedek olan eski bir klasörle çakışırsa ek alır.
     const base = companyFolderName(entry);
     const current = backupFolderOf(company);
@@ -457,7 +461,98 @@ export function createCompanyRegistry({ dataDir, backupDir, hubStore, log = { in
     log.warn?.(`DİKKAT: ${group.companies.map(item => item.label).join(" ve ")} şirketleri aynı veri klasörünü kullanıyor (${group.dataDir}); kayıtları ortak. Yönetim → Şirketler → Ayır ile ayırın.`);
   }
 
-  return { file, list, get, require, byCode, nextCode, limit, dirsOf, create, update, settleOldBackupDirs, remove, accessOf, canAccess, selectedFor, select, setAccess, listFor, conflicts, conflictOf, sharesRoot, freeDataDir, setDataDir, ROOT_COMPANY_ID };
+  // 2.5.0 D2: arşiv kayıt defteri (aşağıda; ayrı işlevde — şirket kaydının öbür işleriyle karışmasın). Açılışta diskteki tutarlı arşivler tanınır.
+  const archiveApi = createArchiveRegistry({ current: () => registry, save, require, dirsOf, hubStore, log });
+  archiveApi.reconcileArchives();
+  return { file, list, get, require, byCode, nextCode, limit, dirsOf, create, update, settleOldBackupDirs, remove, accessOf, canAccess, selectedFor, select, setAccess, listFor, conflicts, conflictOf, sharesRoot, freeDataDir, setDataDir, ROOT_COMPANY_ID, ...archiveApi };
+}
+
+// ---------- 2.5.0 D2: arşiv kayıt defteri (docs/devir/D2-ALTYAPI-TASARIM.md §2; DEVIR-PLANI G1.6, §2.1) ----------
+// Arşiv şirket DEĞİLDİR: şirket kaydının "archives" alanında durur, şirket sınırına (limit) sayılmaz, listede ayrı satır olmaz. Kayıt sirketler.json +
+// ikinci kopya + ortak katmandaki kopya ile aynı yolla saklanır (save); her girdinin kopyası arşiv klasöründe (arsiv-kaydi.json). Açılışta (reconcileArchives)
+// diskte olup kayıtta olmayan arşiv YALNIZ arşivin işareti ve çalışma dosyasının devir yılları tutarlıysa tanınır (recovered: true; lib/devir/archives.mjs
+// adoptionOf); tutmayan "sahipsiz" listesine girer, dosyaya dokunulmaz. Kayıtta olup diskte olmayan girdi SİLİNMEZ (durumu "yok" görünür; geri yüklenebilir).
+function createArchiveRegistry({ current, save, require, dirsOf, hubStore, log }) {
+  let orphans = [];
+  const entriesOf = company => (Array.isArray(company?.archives) ? company.archives.map(cleanArchiveEntry).filter(Boolean) : []);
+  const sorted = list => [...list].sort((a, b) => a.year.localeCompare(b.year));
+  const archivesOf = id => sorted(entriesOf(current().companies.find(item => item.id === id)));
+  const archiveOf = (id, year) => archivesOf(id).find(item => item.year === String(year)) || null;
+  const archiveDirFor = (company, year) => archiveDirOf(dirsOf(company).dataDir, year);
+  function write(id, archives) {
+    save({ companies: current().companies.map(item => (item.id === id ? { ...item, archives: sorted(archives) } : item)) });
+    const company = require(id);
+    for (const entry of archives) writeSidecar(archiveDirFor(company, entry.year), entry, id);
+  }
+  function addArchive(id, entry) {
+    const company = require(id);
+    const clean = cleanArchiveEntry(entry);
+    if (!clean) throw new HttpError(400, "Arşiv yılı dört haneli olmalı (ör. 2026).");
+    if (archiveOf(id, clean.year)) throw new HttpError(409, `${company.code} · ${company.name} şirketinin ${clean.year} arşivi zaten kayıtlı.`, { code: "archive-exists" });
+    write(id, [...entriesOf(company), clean]);
+    return archiveOf(id, clean.year);
+  }
+  function updateArchive(id, year, patch = {}) {
+    const company = require(id);
+    if (!archiveOf(id, year)) throw new HttpError(404, `${year} arşivi bulunamadı.`, { code: "archive-not-found" });
+    write(id, entriesOf(company).map(item => (item.year === String(year) ? cleanArchiveEntry({ ...item, ...patch, year: item.year }) : item)));
+    return archiveOf(id, year);
+  }
+  function removeArchive(id, year) {
+    const company = require(id);
+    const found = archiveOf(id, year);
+    if (!found) return null;
+    write(id, entriesOf(company).filter(item => item.year !== String(year)));
+    return found;
+  }
+  // Çalışma dosyasının devir yılları: 001 ortak katmanın deposunda (açık), öbürleri kısa süreli salt okunur bağlantıyla.
+  function liveYearsOf(company) {
+    if (company.id === ROOT_COMPANY_ID || !company.dir) {
+      try {
+        return devirYearsOfSetting(hubStore.setting(DEVIR_YEARS_KEY, ""));
+      } catch {
+        return [];
+      }
+    }
+    return readDevirYears(resolveDbPath(dirsOf(company).dataDir));
+  }
+  function reconcileArchives() {
+    const found = [];
+    let changed = false;
+    const next = current().companies.map(company => {
+      let disk = [];
+      try {
+        disk = scanArchiveDirs(dirsOf(company).dataDir);
+      } catch {
+        disk = [];
+      }
+      const known = new Set(entriesOf(company).map(item => item.year));
+      const pending = disk.filter(item => !known.has(item.year));
+      if (!pending.length) return company;
+      const liveYears = liveYearsOf(company);
+      const adopted = [];
+      for (const item of pending) {
+        const result = adoptionOf({ companyId: company.id, item, liveYears, recovered: Boolean(company.recovered) });
+        if (result.entry) adopted.push(result.entry);
+        else found.push({ companyId: company.id, code: company.code, year: item.year, dir: item.dir, reason: result.reason });
+      }
+      if (!adopted.length) return company;
+      changed = true;
+      for (const entry of adopted) log.warn?.(`${company.code} · ${company.name} şirketinin ${entry.year} arşivi kayıt defterinde yoktu; diskten tanındı (arşiv işareti ve çalışma dosyasının devir kaydı tutarlı).`);
+      return { ...company, archives: sorted([...entriesOf(company), ...adopted]) };
+    });
+    orphans = found;
+    for (const item of found) log.warn?.(`Sahipsiz arşiv klasörü tanınmadı (${item.code} · ${item.year}: ${item.reason}); dosyaya dokunulmadı: ${item.dir}`);
+    if (changed) {
+      try {
+        save({ companies: next });
+      } catch (error) {
+        log.warn?.(`Diskten tanınan arşivler kayıt defterine yazılamadı: ${error.message}`);
+      }
+    }
+    return { adopted: changed, orphans };
+  }
+  return { archivesOf, archiveOf, archiveDirFor, addArchive, updateArchive, removeArchive, reconcileArchives, orphanArchives: () => orphans.map(item => ({ ...item })), validArchiveYear: validYear };
 }
 
 // Kullanıcı tablosunun şirket veri tabanına aynası (işlem geçmişi, Silinenler, "Kaydeden" gibi adlar için). Kimlik
