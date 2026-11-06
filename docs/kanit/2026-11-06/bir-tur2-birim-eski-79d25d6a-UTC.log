@@ -1,0 +1,69 @@
+TAP version 13
+# (node:25349) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 BİRLEŞİK TUR 2 (a) — transfer ÖBÜR bacaktan düzeltilirken Kasa tarafının düzeltmesi yolda
+    # Subtest: Kasa Engelle: banka bacağı 300 → 400 (Kasa 150) yazılırken yöneticinin Kasa bacağını 300 → 200 düzeltmesi güncel bacakla 409 cash-blocked; Kasa 150, iki bacak 400, Mutabakat ok
+    ok 1 - Kasa Engelle: banka bacağı 300 → 400 (Kasa 150) yazılırken yöneticinin Kasa bacağını 300 → 200 düzeltmesi güncel bacakla 409 cash-blocked; Kasa 150, iki bacak 400, Mutabakat ok
+      ---
+      duration_ms: 415.587676
+      type: 'test'
+      ...
+    # Subtest: iyimser kilit transferde: öbür bacaktan düzeltme açılan bacağın sürümünü de ilerletir — Kasa bacağının eski sürümüyle gelen düzeltme 409 cash-entry-stale
+    ok 2 - iyimser kilit transferde: öbür bacaktan düzeltme açılan bacağın sürümünü de ilerletir — Kasa bacağının eski sürümüyle gelen düzeltme 409 cash-entry-stale
+      ---
+      duration_ms: 33.270919
+      type: 'test'
+      ...
+    1..2
+ok 1 - 2.5.0 BİRLEŞİK TUR 2 (a) — transfer ÖBÜR bacaktan düzeltilirken Kasa tarafının düzeltmesi yolda
+  ---
+  duration_ms: 1006.867529
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 2 (b) — gövde yoldayken dönem kilitlenir / kartın kapanış günü kilitli döneme girer
+    # Subtest: dört uç: hareket 05.10 tarihli; düzeltme yoldayken dönem 06.10'a kadar kilitlenir → 409 period-locked (işlemin içinde), tutar değişmez
+    ok 1 - dört uç: hareket 05.10 tarihli; düzeltme yoldayken dönem 06.10'a kadar kilitlenir → 409 period-locked (işlemin içinde), tutar değişmez
+      ---
+      duration_ms: 1539.438254
+      type: 'test'
+      ...
+    # Subtest: taksit: kart 08.10'da kapatıldı, tahsilatı 10.10 tarihli; düzeltme yoldayken dönem 09.10'a kadar kilitlenir → kartın kapanışı kilitli: 409, tutar değişmez
+    ok 2 - taksit: kart 08.10'da kapatıldı, tahsilatı 10.10 tarihli; düzeltme yoldayken dönem 09.10'a kadar kilitlenir → kartın kapanışı kilitli: 409, tutar değişmez
+      ---
+      duration_ms: 469.868109
+      type: 'test'
+      ...
+    1..2
+ok 2 - 2.5.0 BİRLEŞİK TUR 2 (b) — gövde yoldayken dönem kilitlenir / kartın kapanış günü kilitli döneme girer
+  ---
+  duration_ms: 2509.428221
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 2 (c) — İKİNCİ SÜREÇ yazım kilidini tutarken düzeltme gelir: karar kilit alındıktan SONRA okunan satırla
+    # Subtest: Kasa Engelle (dört uç): dış süreç hareketi 100 → 10 yapıp kilidi tutarken yöneticinin 100 → 650 düzeltmesi gelir → 409 cash-blocked güncel satırla; Kasa 590
+    ok 1 - Kasa Engelle (dört uç): dış süreç hareketi 100 → 10 yapıp kilidi tutarken yöneticinin 100 → 650 düzeltmesi gelir → 409 cash-blocked güncel satırla; Kasa 590
+      ---
+      duration_ms: 3381.255006
+      type: 'test'
+      ...
+    # Subtest: kayıp güncelleme + iyimser kilit (cari): dış süreç açıklamayı değiştirir → yalnız tutarlı düzeltme açıklamayı KORUR; dış süreç sürümü ilerletince eski sürümle gelen düzeltme 409
+    ok 2 - kayıp güncelleme + iyimser kilit (cari): dış süreç açıklamayı değiştirir → yalnız tutarlı düzeltme açıklamayı KORUR; dış süreç sürümü ilerletince eski sürümle gelen düzeltme 409
+      ---
+      duration_ms: 1567.901382
+      type: 'test'
+      ...
+    1..2
+ok 3 - 2.5.0 BİRLEŞİK TUR 2 (c) — İKİNCİ SÜREÇ yazım kilidini tutarken düzeltme gelir: karar kilit alındıktan SONRA okunan satırla
+  ---
+  duration_ms: 5548.519126
+  type: 'suite'
+  ...
+1..3
+# tests 6
+# suites 3
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9464.795351

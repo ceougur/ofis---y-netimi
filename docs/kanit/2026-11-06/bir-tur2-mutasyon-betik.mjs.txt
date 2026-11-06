@@ -1,0 +1,40 @@
+// Kullanım: node mutasyon.mjs <kopya kökü> <istemci|yenile|okuma>
+import { readFileSync, writeFileSync } from "node:fs";
+import path from "node:path";
+
+const [root, kind] = process.argv.slice(2);
+const swap = (rel, from, to) => {
+  const file = path.join(root, rel);
+  const text = readFileSync(file, "utf8");
+  const count = text.split(from).length - 1;
+  if (count !== 1) throw new Error(`${rel}: "${from.slice(0, 60)}" ${count} kez`);
+  writeFileSync(file, text.replace(from, to));
+  console.log(`değişti: ${rel}`);
+};
+const lineEdit = (rel, readLine, readText, prevLine, prevFrom, insert, prevTo) => {
+  const file = path.join(root, rel);
+  const lines = readFileSync(file, "utf8").split("\n");
+  if (lines[readLine - 1].trim() !== readText) throw new Error(`${rel}:${readLine} beklenen değil: ${lines[readLine - 1]}`);
+  if (!lines[prevLine - 1].includes(prevFrom)) throw new Error(`${rel}:${prevLine} beklenen değil: ${lines[prevLine - 1]}`);
+  lines[prevLine - 1] = lines[prevLine - 1].replace(prevFrom, prevTo);
+  lines.splice(readLine, 0, `    ${insert}`);
+  writeFileSync(file, lines.join("\n"));
+  console.log(`değişti: ${rel}`);
+};
+if (kind === "istemci") {
+  swap("client/assets/hof-accounts.js", 'const version = entry ? { updatedAt: entry.updatedAt || "" } : {};', "const version = {};");
+  swap("client/assets/hof-stock.js", '...(move ? { updatedAt: move.updatedAt || "" } : {})', "...({})");
+  swap("client/assets/hof-plans.js", 'const version = entry ? { updatedAt: entry.updatedAt || "" } : {};', "const version = {};");
+  swap("client/assets/hof-workspace.js", 'kind: entry?.kind || kind, ...(entry ? { updatedAt: entry.updatedAt || "" } : {}) };', "kind: entry?.kind || kind };");
+} else if (kind === "yenile") {
+  swap("client/assets/hof-accounts.js", '&& modal && view.mode === "card" && view.id === account.id) loadAccount(account.id, { quiet: true }).catch(() => null);', "&& false) void 0;");
+  swap("client/assets/hof-stock.js", 'if (modal && view.mode === "card" && view.id === item.id) loadItem(item.id, { quiet: true }).catch(() => null);', "");
+  swap("client/assets/hof-plans.js", "&& modal) loadPlan(plan.id, { quiet: true }).catch(() => null);", "&& false) void 0;");
+  swap("client/assets/hof-workspace.js", "|| error?.status === 404)) after?.();", "|| error?.status === 404)) void 0;");
+} else if (kind === "okuma") {
+  // Yeniden okuma gövdeden SONRA ama yazım işleminin DIŞINDA (bank.post'tan önce): aynı süreçte eşdeğer, ikinci süreçle değil.
+  lineEdit("server/routes/accounts.mjs", 1064, "const body = await readJson(req);", 1083, "const previous = entryOf(account.id, opened.id);", "const afterBody = entryOf(account.id, opened.id);", "const previous = afterBody;");
+  lineEdit("server/routes/stock.mjs", 488, "const body = await readJson(req);", 509, "const previous = moveOf(item.id, opened.id);", "const afterBody = moveOf(item.id, opened.id);", "const previous = afterBody;");
+  lineEdit("server/routes/plans.mjs", 914, "const body = await readJson(req);", 933, "const previous = entryOf(plan.id, opened.id);", "const afterBody = entryOf(plan.id, opened.id);", "const previous = afterBody;");
+  lineEdit("server/routes/cash.mjs", 463, "const body = await readJson(req);", 480, "const previous = existing(opened.id);", "const afterBody = existing(opened.id);", "const previous = afterBody;");
+} else throw new Error("tür?");

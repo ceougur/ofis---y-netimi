@@ -1,0 +1,16 @@
+ok - ön koşul: formdaki Kapatılacak Fatura = F (invoice-39d5a97a-d8ea-40a6-b3ba-e81c6e7a1b8c)
+ok - B faturayı iptal etti → 200 
+  iptal tahsilatın bağını boşalttı: invoice_id “invoice-39d5a97a-d8ea-40a6-b3ba-e81c6e7a1b8c” → “”; updated_at “null” → “null” (iptal sürümü ilerletmiyor)
+  A'nın kaydı: 409  “Yalnız kaydedilmiş fatura kapatılır (taslak ya da iptal edilmiş fatura seçilemez).”
+ok - A'nın eskimiş formu 409 aldı (iptal edilen faturaya yeniden bağlanmadı)
+ok - veri tabanı: bağ boş, açıklama değişmedi ({"invoiceId":"","note":"ilk not"})
+  eski istemci gövdesi (updatedAt yok): 409  “Yalnız kaydedilmiş fatura kapatılır (taslak ya da iptal edilmiş fatura seçilemez).”
+ok - updatedAt olmadan da 409 (fatura durumu denetimi)
+ok - Otomatik ile kaydedilir → 200 
+ok - Mutabakat Testi ok ([])
+# tests 7
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

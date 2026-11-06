@@ -357,7 +357,9 @@
     const requestId = HOF.requestId();
     const send = async (data, force = false) => {
       const url = `/api/workspace/stock/${encodeURIComponent(item.id)}/moves${move ? `/${encodeURIComponent(move.id)}` : ""}`;
-      const post = flags => HOF.api(url, { method: move ? "PUT" : "POST", body: { ...data, kind: type, force, ...flags }, requestId });
+      // 2.5.0 BİRLEŞİK TUR 2 (iyimser kilit; sunucu lib/row-version.mjs): düzeltmede formun AÇILDIĞI andaki hareketin sürümü (updatedAt; hiç düzeltilmemişse
+      // ""). Arada başka biri aynı hareketi düzelttiyse 409 stock-move-stale: formdaki eski miktar / fiyat öbür kişinin düzeltmesini sessizce ezmez.
+      const post = flags => HOF.api(url, { method: move ? "PUT" : "POST", body: { ...data, kind: type, force, ...flags, ...(move ? { updatedAt: move.updatedAt || "" } : {}) }, requestId });
       return HOF.bank?.withConfirms ? HOF.bank.withConfirms(post) : post({});
     };
     HOF.formModal({
@@ -439,6 +441,12 @@
         try {
           result = await send(data);
         } catch (error) {
+          // Hareket bu arada düzeltildi (409 stock-move-stale) ya da silindi (404): kart güncel hâle yenilenir, sunucunun iletisi ("… kaydedilmedi …") formda
+          // görünür; form kendiliğinden yeniden göndermez.
+          if (move && ((error?.status === 409 && error?.data?.code === "stock-move-stale") || error?.status === 404)) {
+            if (modal && view.mode === "card" && view.id === item.id) loadItem(item.id, { quiet: true }).catch(() => null);
+            throw error;
+          }
           // Stok eksiye düşecekse sorulur (sayım farkı olabilir); onaylanırsa kaydedilir.
           if (!/eksiye/.test(error.message) || /^(cash|bank)-/.test(String(error.data?.code || ""))) throw error;
           const ok = await HOF.confirm({ title: "Stok Eksiye Düşecek", message: `${error.message} Sayım farkı olabilir. Yine de kaydedilsin mi?`, confirmLabel: "Yine de Kaydet", danger: true });

@@ -1,0 +1,213 @@
+TAP version 13
+# (node:25247) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 BİRLEŞİK TUR 2 (a) — transfer ÖBÜR bacaktan düzeltilirken Kasa tarafının düzeltmesi yolda
+    # Subtest: Kasa Engelle: banka bacağı 300 → 400 (Kasa 150) yazılırken yöneticinin Kasa bacağını 300 → 200 düzeltmesi güncel bacakla 409 cash-blocked; Kasa 150, iki bacak 400, Mutabakat ok
+    not ok 1 - Kasa Engelle: banka bacağı 300 → 400 (Kasa 150) yazılırken yöneticinin Kasa bacağını 300 → 200 düzeltmesi güncel bacakla 409 cash-blocked; Kasa 150, iki bacak 400, Mutabakat ok
+      ---
+      duration_ms: 434.727008
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur2-eski-03c0/test/birlesik-tur2-yaris-250.test.mjs:183:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Kasa bacağının düzeltmesi güncel bacakla engellenmeli (409 cash-blocked) — 200  {"ok":true,"data":{"id":"cash-de94fdc5-8571-4edd-9642-40ee47675854"}} | Kasa -50 (beklenen 150; Engelle politikasında eksiye düşmez) | bacaklar [["bank",200],["cash",200]] (beklenen ikisi de 400)
+        + actual - expected
+        
+        + [
+        +   'Kasa bacağının düzeltmesi güncel bacakla engellenmeli (409 cash-blocked) — 200  {"ok":true,"data":{"id":"cash-de94fdc5-8571-4edd-9642-40ee47675854"}}',
+        +   'Kasa -50 (beklenen 150; Engelle politikasında eksiye düşmez)',
+        +   'bacaklar [["bank",200],["cash",200]] (beklenen ikisi de 400)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'Kasa bacağının düzeltmesi güncel bacakla engellenmeli (409 cash-blocked) — 200  {"ok":true,"data":{"id":"cash-de94fdc5-8571-4edd-9642-40ee47675854"}}'
+        1: 'Kasa -50 (beklenen 150; Engelle politikasında eksiye düşmez)'
+        2: 'bacaklar [["bank",200],["cash",200]] (beklenen ikisi de 400)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur2-eski-03c0/test/birlesik-tur2-yaris-250.test.mjs:209:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: iyimser kilit transferde: öbür bacaktan düzeltme açılan bacağın sürümünü de ilerletir — Kasa bacağının eski sürümüyle gelen düzeltme 409 cash-entry-stale
+    not ok 2 - iyimser kilit transferde: öbür bacaktan düzeltme açılan bacağın sürümünü de ilerletir — Kasa bacağının eski sürümüyle gelen düzeltme 409 cash-entry-stale
+      ---
+      duration_ms: 47.656228
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur2-eski-03c0/test/birlesik-tur2-yaris-250.test.mjs:212:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        200 undefined
+        + actual - expected
+        
+          [
+        +   200,
+        +   undefined
+        -   409,
+        -   'cash-entry-stale'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 409
+        1: 'cash-entry-stale'
+      actual:
+        0: 200
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur2-eski-03c0/test/birlesik-tur2-yaris-250.test.mjs:219:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - 2.5.0 BİRLEŞİK TUR 2 (a) — transfer ÖBÜR bacaktan düzeltilirken Kasa tarafının düzeltmesi yolda
+  ---
+  duration_ms: 1015.466564
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur2-eski-03c0/test/birlesik-tur2-yaris-250.test.mjs:176:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 2 (b) — gövde yoldayken dönem kilitlenir / kartın kapanış günü kilitli döneme girer
+    # Subtest: dört uç: hareket 05.10 tarihli; düzeltme yoldayken dönem 06.10'a kadar kilitlenir → 409 period-locked (işlemin içinde), tutar değişmez
+    ok 1 - dört uç: hareket 05.10 tarihli; düzeltme yoldayken dönem 06.10'a kadar kilitlenir → 409 period-locked (işlemin içinde), tutar değişmez
+      ---
+      duration_ms: 1483.451882
+      type: 'test'
+      ...
+    # Subtest: taksit: kart 08.10'da kapatıldı, tahsilatı 10.10 tarihli; düzeltme yoldayken dönem 09.10'a kadar kilitlenir → kartın kapanışı kilitli: 409, tutar değişmez
+    not ok 2 - taksit: kart 08.10'da kapatıldı, tahsilatı 10.10 tarihli; düzeltme yoldayken dönem 09.10'a kadar kilitlenir → kartın kapanışı kilitli: 409, tutar değişmez
+      ---
+      duration_ms: 421.79849
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur2-eski-03c0/test/birlesik-tur2-yaris-250.test.mjs:249:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        409 period-locked olmalı — 409 ledger-integrity {"ok":false,"error":"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Kapanmış dönem (2026-10-09 ve öncesi) değişemez). Hiçbir değişiklik yazılm
+        + actual - expected
+        
+        + [
+        +   '409 period-locked olmalı — 409 ledger-integrity {"ok":false,"error":"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Kapanmış dönem (2026-10-09 ve öncesi) değişemez). Hiçbir değişiklik yazılm'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: '409 period-locked olmalı — 409 ledger-integrity {"ok":false,"error":"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Kapanmış dönem (2026-10-09 ve öncesi) değişemez). Hiçbir değişiklik yazılm'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur2-eski-03c0/test/birlesik-tur2-yaris-250.test.mjs:264:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 2 - 2.5.0 BİRLEŞİK TUR 2 (b) — gövde yoldayken dönem kilitlenir / kartın kapanış günü kilitli döneme girer
+  ---
+  duration_ms: 2385.347148
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur2-eski-03c0/test/birlesik-tur2-yaris-250.test.mjs:225:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 2 (c) — İKİNCİ SÜREÇ yazım kilidini tutarken düzeltme gelir: karar kilit alındıktan SONRA okunan satırla
+    # Subtest: Kasa Engelle (dört uç): dış süreç hareketi 100 → 10 yapıp kilidi tutarken yöneticinin 100 → 650 düzeltmesi gelir → 409 cash-blocked güncel satırla; Kasa 590
+    not ok 1 - Kasa Engelle (dört uç): dış süreç hareketi 100 → 10 yapıp kilidi tutarken yöneticinin 100 → 650 düzeltmesi gelir → 409 cash-blocked güncel satırla; Kasa 590
+      ---
+      duration_ms: 3284.044184
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur2-eski-03c0/test/birlesik-tur2-yaris-250.test.mjs:280:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        cari: ileti güncel satırı söylemeli — “Bu ödeme 100,00 TL'den 650,00 TL'ye düzeltilince Nakit Kasa'dan 550,00 TL düşer; Nakit Kasa 500,00 TL iken -50,00 TL olur. Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi).” | stok: ileti güncel satırı söylemeli — “Bu ödeme 100,00 TL'den 650,00 TL'ye düzeltilince Nakit Kasa'dan 550,00 TL düşer; Nakit Kasa 500,00 TL iken -50,00 TL olur. Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi).” | taksit: ileti güncel satırı söylemeli — “Bu ödeme 100,00 TL'den 650,00 TL'ye düzeltilince Nakit Kasa'dan 550,00 TL düşer; Nakit Kasa 500,00 TL iken -50,00 TL olur. Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi).” | kasa: ileti güncel satırı söylemeli — “Bu ödeme 100,00 TL'den 650,00 TL'ye düzeltilince Nakit Kasa'dan 550,00 TL düşer; Nakit Kasa 500,00 TL iken -50,00 TL olur. Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi).”
+        + actual - expected
+        
+        + [
+        +   "cari: ileti güncel satırı söylemeli — “Bu ödeme 100,00 TL'den 650,00 TL'ye düzeltilince Nakit Kasa'dan 550,00 TL düşer; Nakit Kasa 500,00 TL iken -50,00 TL olur. Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi).”",
+        +   "stok: ileti güncel satırı söylemeli — “Bu ödeme 100,00 TL'den 650,00 TL'ye düzeltilince Nakit Kasa'dan 550,00 TL düşer; Nakit Kasa 500,00 TL iken -50,00 TL olur. Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi).”",
+        +   "taksit: ileti güncel satırı söylemeli — “Bu ödeme 100,00 TL'den 650,00 TL'ye düzeltilince Nakit Kasa'dan 550,00 TL düşer; Nakit Kasa 500,00 TL iken -50,00 TL olur. Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi).”",
+        +   "kasa: ileti güncel satırı söylemeli — “Bu ödeme 100,00 TL'den 650,00 TL'ye düzeltilince Nakit Kasa'dan 550,00 TL düşer; Nakit Kasa 500,00 TL iken -50,00 TL olur. Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi).”"
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: "cari: ileti güncel satırı söylemeli — “Bu ödeme 100,00 TL'den 650,00 TL'ye düzeltilince Nakit Kasa'dan 550,00 TL düşer; Nakit Kasa 500,00 TL iken -50,00 TL olur. Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi).”"
+        1: "stok: ileti güncel satırı söylemeli — “Bu ödeme 100,00 TL'den 650,00 TL'ye düzeltilince Nakit Kasa'dan 550,00 TL düşer; Nakit Kasa 500,00 TL iken -50,00 TL olur. Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi).”"
+        2: "taksit: ileti güncel satırı söylemeli — “Bu ödeme 100,00 TL'den 650,00 TL'ye düzeltilince Nakit Kasa'dan 550,00 TL düşer; Nakit Kasa 500,00 TL iken -50,00 TL olur. Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi).”"
+        3: "kasa: ileti güncel satırı söylemeli — “Bu ödeme 100,00 TL'den 650,00 TL'ye düzeltilince Nakit Kasa'dan 550,00 TL düşer; Nakit Kasa 500,00 TL iken -50,00 TL olur. Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi).”"
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur2-eski-03c0/test/birlesik-tur2-yaris-250.test.mjs:301:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kayıp güncelleme + iyimser kilit (cari): dış süreç açıklamayı değiştirir → yalnız tutarlı düzeltme açıklamayı KORUR; dış süreç sürümü ilerletince eski sürümle gelen düzeltme 409
+    not ok 2 - kayıp güncelleme + iyimser kilit (cari): dış süreç açıklamayı değiştirir → yalnız tutarlı düzeltme açıklamayı KORUR; dış süreç sürümü ilerletince eski sürümle gelen düzeltme 409
+      ---
+      duration_ms: 797.662195
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur2-eski-03c0/test/birlesik-tur2-yaris-250.test.mjs:304:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        tutar düzeltildi, dış sürecin açıklaması korundu (bayat satır gövdeyle birleşmedi)
+        + actual - expected
+        
+          [
+            350,
+        +   'ilk not'
+        -   'dış süreç notu'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 350
+        1: 'dış süreç notu'
+      actual:
+        0: 350
+        1: 'ilk not'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur2-eski-03c0/test/birlesik-tur2-yaris-250.test.mjs:313:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 3 - 2.5.0 BİRLEŞİK TUR 2 (c) — İKİNCİ SÜREÇ yazım kilidini tutarken düzeltme gelir: karar kilit alındıktan SONRA okunan satırla
+  ---
+  duration_ms: 4498.052925
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur2-eski-03c0/test/birlesik-tur2-yaris-250.test.mjs:271:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..3
+# tests 6
+# suites 3
+# pass 1
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8286.932113

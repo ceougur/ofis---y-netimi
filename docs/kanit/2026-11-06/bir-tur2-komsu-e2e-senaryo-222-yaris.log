@@ -1,0 +1,242 @@
+
+=== deneme 1/20 (MODE=natural WAIT=new CPU=1): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 1 istek düştü
+  zaman (ms, deneme başına göre): olay — · yazma (input) 67 · fill bitti 68 · bekleme bitti 1075 · ağ kesildi 1079
+  #4 user başladı    39 bitti    48 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList < Object.open < HTMLDivElement.<anonymous>
+  #5 user başladı   317 bitti   322 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList
+  #6 bg   başladı  1064 bitti  1070 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  #7 bg   başladı  2563 bitti  2569 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  ekran: 56: 13 satır q="" | 330: 9 satır q="Müşteri 0"
+
+=== deneme 2/20 (MODE=natural WAIT=new CPU=1): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 1 istek düştü
+  zaman (ms, deneme başına göre): olay — · yazma (input) 73 · fill bitti 74 · bekleme bitti 1082 · ağ kesildi 1085
+  #13 user başladı    36 bitti    45 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList < Object.open < HTMLDivElement.<anonymous>
+  #14 user başladı   323 bitti   328 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList
+  #15 bg   başladı  1062 bitti  1068 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  #16 bg   başladı  2562 bitti  2566 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  ekran: 53: 14 satır q="" | 338: 9 satır q="Müşteri 0"
+
+=== deneme 3/20 (MODE=natural WAIT=new CPU=1): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 1 istek düştü
+  zaman (ms, deneme başına göre): olay — · yazma (input) 90 · fill bitti 92 · bekleme bitti 1099 · ağ kesildi 1102
+  #22 user başladı    35 bitti    44 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList < Object.open < HTMLDivElement.<anonymous>
+  #23 user başladı   341 bitti   346 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList
+  #24 bg   başladı  1061 bitti  1066 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  #25 bg   başladı  2562 bitti  2566 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  ekran: 63: 15 satır q="" | 357: 9 satır q="Müşteri 0"
+
+=== deneme 4/20 (MODE=natural WAIT=new CPU=1): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 1 istek düştü
+  zaman (ms, deneme başına göre): olay — · yazma (input) 77 · fill bitti 78 · bekleme bitti 1085 · ağ kesildi 1088
+  #31 user başladı    38 bitti    47 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList < Object.open < HTMLDivElement.<anonymous>
+  #32 user başladı   327 bitti   333 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList
+  #33 bg   başladı  1060 bitti  1070 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  #34 bg   başladı  2561 bitti  2565 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  ekran: 55: 16 satır q="" | 343: 9 satır q="Müşteri 0"
+
+=== deneme 5/20 (MODE=natural WAIT=new CPU=1): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 1 istek düştü
+  zaman (ms, deneme başına göre): olay — · yazma (input) 93 · fill bitti 94 · bekleme bitti 1101 · ağ kesildi 1104
+  #40 user başladı    49 bitti    59 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList < Object.open < HTMLDivElement.<anonymous>
+  #41 user başladı   343 bitti   348 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList
+  #42 bg   başladı  1072 bitti  1078 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  #43 bg   başladı  2572 bitti  2577 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  ekran: 72: 17 satır q="" | 356: 9 satır q="Müşteri 0"
+
+=== deneme 6/20 (MODE=natural WAIT=new CPU=1): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 1 istek düştü
+  zaman (ms, deneme başına göre): olay — · yazma (input) 106 · fill bitti 118 · bekleme bitti 1125 · ağ kesildi 1128
+  #49 user başladı    48 bitti    57 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList < Object.open < HTMLDivElement.<anonymous>
+  #50 user başladı   357 bitti   364 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList
+  #51 bg   başladı  1060 bitti  1066 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  #52 bg   başladı  2561 bitti  2566 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  ekran: 69: 18 satır q="" | 375: 9 satır q="Müşteri 0"
+
+=== deneme 7/20 (MODE=natural WAIT=new CPU=1): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 1 istek düştü
+  zaman (ms, deneme başına göre): olay — · yazma (input) 72 · fill bitti 73 · bekleme bitti 1080 · ağ kesildi 1083
+  #58 user başladı    34 bitti    42 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList < Object.open < HTMLDivElement.<anonymous>
+  #59 user başladı   323 bitti   328 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList
+  #60 bg   başladı  1060 bitti  1066 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  #61 bg   başladı  2560 bitti  2565 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  ekran: 51: 19 satır q="" | 336: 9 satır q="Müşteri 0"
+
+=== deneme 8/20 (MODE=natural WAIT=new CPU=1): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 1 istek düştü
+  zaman (ms, deneme başına göre): olay — · yazma (input) 66 · fill bitti 67 · bekleme bitti 1073 · ağ kesildi 1075
+  #67 user başladı    38 bitti    48 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList < Object.open < HTMLDivElement.<anonymous>
+  #68 user başladı   317 bitti   322 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList
+  #69 bg   başladı  1058 bitti  1064 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  #70 bg   başladı  2557 bitti  2561 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  ekran: 58: 20 satır q="" | 330: 9 satır q="Müşteri 0"
+
+=== deneme 9/20 (MODE=natural WAIT=new CPU=1): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 1 istek düştü
+  zaman (ms, deneme başına göre): olay — · yazma (input) 80 · fill bitti 81 · bekleme bitti 1087 · ağ kesildi 1090
+  #76 user başladı    36 bitti    45 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList < Object.open < HTMLDivElement.<anonymous>
+  #77 user başladı   331 bitti   336 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList
+  #78 bg   başladı  1061 bitti  1067 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  #79 bg   başladı  2561 bitti  2565 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  ekran: 57: 21 satır q="" | 345: 9 satır q="Müşteri 0"
+
+=== deneme 10/20 (MODE=natural WAIT=new CPU=1): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 1 istek düştü
+  zaman (ms, deneme başına göre): olay — · yazma (input) 71 · fill bitti 72 · bekleme bitti 1084 · ağ kesildi 1087
+  #85 user başladı    30 bitti    39 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList < Object.open < HTMLDivElement.<anonymous>
+  #86 user başladı   322 bitti   329 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList
+  #87 bg   başladı  1078 bitti  1083 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  #88 bg   başladı  2579 bitti  2583 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  ekran: 49: 22 satır q="" | 336: 9 satır q="Müşteri 0"
+
+=== deneme 11/20 (MODE=natural WAIT=new CPU=1): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 1 istek düştü
+  zaman (ms, deneme başına göre): olay — · yazma (input) 77 · fill bitti 78 · bekleme bitti 1085 · ağ kesildi 1088
+  #94 user başladı    31 bitti    39 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList < Object.open < HTMLDivElement.<anonymous>
+  #95 user başladı   327 bitti   332 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList
+  #96 bg   başladı  1057 bitti  1063 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  #97 bg   başladı  2557 bitti  2560 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  ekran: 52: 23 satır q="" | 340: 9 satır q="Müşteri 0"
+
+=== deneme 12/20 (MODE=natural WAIT=new CPU=1): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 1 istek düştü
+  zaman (ms, deneme başına göre): olay — · yazma (input) 97 · fill bitti 98 · bekleme bitti 1105 · ağ kesildi 1109
+  #103 user başladı    50 bitti    60 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList < Object.open < HTMLDivElement.<anonymous>
+  #104 user başladı   348 bitti   353 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList
+  #105 bg   başladı  1061 bitti  1066 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  #106 bg   başladı  2561 bitti  2565 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  ekran: 72: 24 satır q="" | 364: 9 satır q="Müşteri 0"
+
+=== deneme 13/20 (MODE=natural WAIT=new CPU=1): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 1 istek düştü
+  zaman (ms, deneme başına göre): olay — · yazma (input) 89 · fill bitti 91 · bekleme bitti 1098 · ağ kesildi 1101
+  #112 user başladı    43 bitti    54 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList < Object.open < HTMLDivElement.<anonymous>
+  #113 user başladı   340 bitti   345 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList
+  #114 bg   başladı  1061 bitti  1066 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  #115 bg   başladı  2561 bitti  2565 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  ekran: 66: 25 satır q="" | 353: 9 satır q="Müşteri 0"
+
+=== deneme 14/20 (MODE=natural WAIT=new CPU=1): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 1 istek düştü
+  zaman (ms, deneme başına göre): olay — · yazma (input) 86 · fill bitti 88 · bekleme bitti 1096 · ağ kesildi 1098
+  #121 user başladı    38 bitti    48 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList < Object.open < HTMLDivElement.<anonymous>
+  #122 user başladı   337 bitti   342 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList
+  #123 bg   başladı  1058 bitti  1064 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  #124 bg   başladı  2558 bitti  2562 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  ekran: 62: 26 satır q="" | 352: 9 satır q="Müşteri 0"
+
+=== deneme 15/20 (MODE=natural WAIT=new CPU=1): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 1 istek düştü
+  zaman (ms, deneme başına göre): olay — · yazma (input) 97 · fill bitti 98 · bekleme bitti 1106 · ağ kesildi 1109
+  #130 user başladı    33 bitti    44 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList < Object.open < HTMLDivElement.<anonymous>
+  #131 user başladı   347 bitti   351 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList
+  #132 bg   başladı  1061 bitti  1069 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  #133 bg   başladı  2564 bitti  2567 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  ekran: 78: 27 satır q="" | 360: 9 satır q="Müşteri 0"
+
+=== deneme 16/20 (MODE=natural WAIT=new CPU=1): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 1 istek düştü
+  zaman (ms, deneme başına göre): olay — · yazma (input) 104 · fill bitti 108 · bekleme bitti 1117 · ağ kesildi 1121
+  #139 user başladı    40 bitti    55 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList < Object.open < HTMLDivElement.<anonymous>
+  #140 user başladı   354 bitti   360 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList
+  #141 bg   başladı  1070 bitti  1081 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  #142 bg   başladı  2570 bitti  2578 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  ekran: 80: 28 satır q="" | 372: 9 satır q="Müşteri 0"
+
+=== deneme 17/20 (MODE=natural WAIT=new CPU=1): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 1 istek düştü
+  zaman (ms, deneme başına göre): olay — · yazma (input) 115 · fill bitti 116 · bekleme bitti 1122 · ağ kesildi 1125
+  #148 user başladı    40 bitti    63 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList < Object.open < HTMLDivElement.<anonymous>
+  #149 user başladı   365 bitti   371 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList
+  #150 bg   başladı  1062 bitti  1075 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  #151 bg   başladı  2562 bitti  2574 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  ekran: 85: 29 satır q="" | 381: 9 satır q="Müşteri 0"
+
+=== deneme 18/20 (MODE=natural WAIT=new CPU=1): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 1 istek düştü
+  zaman (ms, deneme başına göre): olay — · yazma (input) 235 · fill bitti 237 · bekleme bitti 1243 · ağ kesildi 1246
+  #157 user başladı    50 bitti    80 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList < Object.open < HTMLDivElement.<anonymous>
+  #158 user başladı   486 bitti   492 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList
+  #159 bg   başladı  1067 bitti  1095 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  #160 bg   başladı  2568 bitti  2572 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  ekran: 123: 30 satır q="" | 475: 30 satır q="Müşteri 0" | 506: 9 satır q="Müşteri 0"
+
+=== deneme 19/20 (MODE=natural WAIT=new CPU=1): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 1 istek düştü
+  zaman (ms, deneme başına göre): olay — · yazma (input) 116 · fill bitti 117 · bekleme bitti 1122 · ağ kesildi 1126
+  #166 user başladı    40 bitti    55 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList < Object.open < HTMLDivElement.<anonymous>
+  #167 user başladı   367 bitti   374 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList
+  #168 bg   başladı  1076 bitti  1085 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  #169 bg   başladı  2577 bitti  2584 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  ekran: 91: 31 satır q="" | 386: 9 satır q="Müşteri 0"
+
+=== deneme 20/20 (MODE=natural WAIT=new CPU=1): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 1 istek düştü
+  zaman (ms, deneme başına göre): olay — · yazma (input) 117 · fill bitti 118 · bekleme bitti 1124 · ağ kesildi 1127
+  #175 user başladı    51 bitti    73 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList < Object.open < HTMLDivElement.<anonymous>
+  #176 user başladı   367 bitti   373 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadListOnce < http://127.0.0.1:46239/assets/hof-accounts.js:137:32 < HOF.listRetry < loadList
+  #177 bg   başladı  1061 bitti  1072 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  #178 bg   başladı  2561 bitti  2565 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadListOnce < async HOF.listRetry < async run
+  ekran: 90: 32 satır q="" | 384: 9 satır q="Müşteri 0"
+
+Senaryo-222 yarış tanısı (MODE=natural WAIT=new CPU=1): 20 geçti, 0 kaldı.

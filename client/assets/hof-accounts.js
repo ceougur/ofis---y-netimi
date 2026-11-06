@@ -1140,8 +1140,20 @@
         const body = { ...data, kind: entry && data.kind ? data.kind : type, ...(money_ ? { refundOf: "" } : {}) };
         if (HOF.bank?.accountBody) HOF.bank.accountBody(body, data.method);
         else if (data.method !== "bank") delete body.bankAccountId;
-        const send = flags => HOF.api(url, { method: entry ? "PUT" : "POST", body: { ...body, ...flags }, requestId });
-        const result = HOF.bank?.withConfirms ? await HOF.bank.withConfirms(send) : await send({});
+        // 2.5.0 BİRLEŞİK TUR 2 (iyimser kilit; sunucu lib/row-version.mjs): düzeltmede formun AÇILDIĞI andaki hareketin sürümü (updatedAt; hiç
+        // düzeltilmemişse "") gider. Arada başka biri aynı hareketi düzelttiyse sunucu 409 account-entry-stale döner: önceden bu form, öbür kişinin
+        // düzelttiği tutarı formdaki eski tutarla sessizce geri yazıyordu (yalnız açıklama değişse de). İleti formda kalır, kart yenilenir; form kendiliğinden
+        // yeniden göndermez (aynı sürümle yeniden Kaydet yine 409 — güncel hâl hareketi yeniden açınca gelir).
+        const version = entry ? { updatedAt: entry.updatedAt || "" } : {};
+        const send = flags => HOF.api(url, { method: entry ? "PUT" : "POST", body: { ...body, ...flags, ...version }, requestId });
+        let result;
+        try {
+          result = HOF.bank?.withConfirms ? await HOF.bank.withConfirms(send) : await send({});
+        } catch (error) {
+          // Hareket bu arada düzeltildi (409) ya da silindi (404): kart güncel hâle yenilenir, sunucunun iletisi ("… kaydedilmedi …") formda görünür.
+          if (entry && ((error?.status === 409 && error?.data?.code === "account-entry-stale") || error?.status === 404) && modal && view.mode === "card" && view.id === account.id) loadAccount(account.id, { quiet: true }).catch(() => null);
+          throw error;
+        }
         applyAccount(result);
         if (result.replayed) {
           HOF.toast("Bu işlem zaten kaydedildi; ikinci kez yazılmadı.", { type: "info" });
