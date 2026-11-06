@@ -1,0 +1,145 @@
+TAP version 13
+# (node:25456) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 BİRLEŞİK TUR 2 (a) — transfer ÖBÜR bacaktan düzeltilirken Kasa tarafının düzeltmesi yolda
+    # Subtest: Kasa Engelle: banka bacağı 300 → 400 (Kasa 150) yazılırken yöneticinin Kasa bacağını 300 → 200 düzeltmesi güncel bacakla 409 cash-blocked; Kasa 150, iki bacak 400, Mutabakat ok
+    ok 1 - Kasa Engelle: banka bacağı 300 → 400 (Kasa 150) yazılırken yöneticinin Kasa bacağını 300 → 200 düzeltmesi güncel bacakla 409 cash-blocked; Kasa 150, iki bacak 400, Mutabakat ok
+      ---
+      duration_ms: 430.155385
+      type: 'test'
+      ...
+    # Subtest: iyimser kilit transferde: öbür bacaktan düzeltme açılan bacağın sürümünü de ilerletir — Kasa bacağının eski sürümüyle gelen düzeltme 409 cash-entry-stale
+    ok 2 - iyimser kilit transferde: öbür bacaktan düzeltme açılan bacağın sürümünü de ilerletir — Kasa bacağının eski sürümüyle gelen düzeltme 409 cash-entry-stale
+      ---
+      duration_ms: 35.849081
+      type: 'test'
+      ...
+    1..2
+ok 1 - 2.5.0 BİRLEŞİK TUR 2 (a) — transfer ÖBÜR bacaktan düzeltilirken Kasa tarafının düzeltmesi yolda
+  ---
+  duration_ms: 1033.178478
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 2 (b) — gövde yoldayken dönem kilitlenir / kartın kapanış günü kilitli döneme girer
+    # Subtest: dört uç: hareket 05.10 tarihli; düzeltme yoldayken dönem 06.10'a kadar kilitlenir → 409 period-locked (işlemin içinde), tutar değişmez
+    ok 1 - dört uç: hareket 05.10 tarihli; düzeltme yoldayken dönem 06.10'a kadar kilitlenir → 409 period-locked (işlemin içinde), tutar değişmez
+      ---
+      duration_ms: 1486.217724
+      type: 'test'
+      ...
+    # Subtest: taksit: kart 08.10'da kapatıldı, tahsilatı 10.10 tarihli; düzeltme yoldayken dönem 09.10'a kadar kilitlenir → kartın kapanışı kilitli: 409, tutar değişmez
+    ok 2 - taksit: kart 08.10'da kapatıldı, tahsilatı 10.10 tarihli; düzeltme yoldayken dönem 09.10'a kadar kilitlenir → kartın kapanışı kilitli: 409, tutar değişmez
+      ---
+      duration_ms: 378.50442
+      type: 'test'
+      ...
+    1..2
+ok 2 - 2.5.0 BİRLEŞİK TUR 2 (b) — gövde yoldayken dönem kilitlenir / kartın kapanış günü kilitli döneme girer
+  ---
+  duration_ms: 2329.303037
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 2 (c) — İKİNCİ SÜREÇ yazım kilidini tutarken düzeltme gelir: karar kilit alındıktan SONRA okunan satırla
+    # Subtest: Kasa Engelle (dört uç): dış süreç hareketi 100 → 10 yapıp kilidi tutarken yöneticinin 100 → 650 düzeltmesi gelir → 409 cash-blocked güncel satırla; Kasa 590
+    not ok 1 - Kasa Engelle (dört uç): dış süreç hareketi 100 → 10 yapıp kilidi tutarken yöneticinin 100 → 650 düzeltmesi gelir → 409 cash-blocked güncel satırla; Kasa 590
+      ---
+      duration_ms: 3517.965258
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur2-mut-okuma/test/birlesik-tur2-yaris-250.test.mjs:280:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        cari: güncel satırla 409 cash-blocked olmalı — 200   | cari: hareket 650 (beklenen dış sürecin 10'u) | cari: Kasa -50 (beklenen 590) | stok: güncel satırla 409 cash-blocked olmalı — 200   | stok: hareket 650 (beklenen dış sürecin 10'u) | stok: Kasa -50 (beklenen 590) | taksit: güncel satırla 409 cash-blocked olmalı — 200   | taksit: hareket 650 (beklenen dış sürecin 10'u) | taksit: Kasa -50 (beklenen 590) | kasa: güncel satırla 409 cash-blocked olmalı — 200   | kasa: hareket 650 (beklenen dış sürecin 10'u) | kasa: Kasa -50 (beklenen 590)
+        + actual - expected
+        
+        + [
+        +   'cari: güncel satırla 409 cash-blocked olmalı — 200  ',
+        +   "cari: hareket 650 (beklenen dış sürecin 10'u)",
+        +   'cari: Kasa -50 (beklenen 590)',
+        +   'stok: güncel satırla 409 cash-blocked olmalı — 200  ',
+        +   "stok: hareket 650 (beklenen dış sürecin 10'u)",
+        +   'stok: Kasa -50 (beklenen 590)',
+        +   'taksit: güncel satırla 409 cash-blocked olmalı — 200  ',
+        +   "taksit: hareket 650 (beklenen dış sürecin 10'u)",
+        +   'taksit: Kasa -50 (beklenen 590)',
+        +   'kasa: güncel satırla 409 cash-blocked olmalı — 200  ',
+        +   "kasa: hareket 650 (beklenen dış sürecin 10'u)",
+        +   'kasa: Kasa -50 (beklenen 590)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'cari: güncel satırla 409 cash-blocked olmalı — 200  '
+        1: "cari: hareket 650 (beklenen dış sürecin 10'u)"
+        2: 'cari: Kasa -50 (beklenen 590)'
+        3: 'stok: güncel satırla 409 cash-blocked olmalı — 200  '
+        4: "stok: hareket 650 (beklenen dış sürecin 10'u)"
+        5: 'stok: Kasa -50 (beklenen 590)'
+        6: 'taksit: güncel satırla 409 cash-blocked olmalı — 200  '
+        7: "taksit: hareket 650 (beklenen dış sürecin 10'u)"
+        8: 'taksit: Kasa -50 (beklenen 590)'
+        9: 'kasa: güncel satırla 409 cash-blocked olmalı — 200  '
+        10: "kasa: hareket 650 (beklenen dış sürecin 10'u)"
+        11: 'kasa: Kasa -50 (beklenen 590)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur2-mut-okuma/test/birlesik-tur2-yaris-250.test.mjs:301:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kayıp güncelleme + iyimser kilit (cari): dış süreç açıklamayı değiştirir → yalnız tutarlı düzeltme açıklamayı KORUR; dış süreç sürümü ilerletince eski sürümle gelen düzeltme 409
+    not ok 2 - kayıp güncelleme + iyimser kilit (cari): dış süreç açıklamayı değiştirir → yalnız tutarlı düzeltme açıklamayı KORUR; dış süreç sürümü ilerletince eski sürümle gelen düzeltme 409
+      ---
+      duration_ms: 815.930114
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur2-mut-okuma/test/birlesik-tur2-yaris-250.test.mjs:304:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        tutar düzeltildi, dış sürecin açıklaması korundu (bayat satır gövdeyle birleşmedi)
+        + actual - expected
+        
+          [
+            350,
+        +   'ilk not'
+        -   'dış süreç notu'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 350
+        1: 'dış süreç notu'
+      actual:
+        0: 350
+        1: 'ilk not'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur2-mut-okuma/test/birlesik-tur2-yaris-250.test.mjs:313:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 3 - 2.5.0 BİRLEŞİK TUR 2 (c) — İKİNCİ SÜREÇ yazım kilidini tutarken düzeltme gelir: karar kilit alındıktan SONRA okunan satırla
+  ---
+  duration_ms: 4777.595721
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur2-mut-okuma/test/birlesik-tur2-yaris-250.test.mjs:271:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..3
+# tests 6
+# suites 3
+# pass 4
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8506.967254

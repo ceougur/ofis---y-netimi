@@ -1,0 +1,14 @@
+  ✓ deneme 1: okuma 5826 ms; ön koşul (okuma anında profil olayından gelen yükleme uçuşta) OLUŞTU; istekler [{"t":4885,"end":4926,"origin":"seçim (renderActivity)"},{"t":5410,"end":5442,"origin":"not formu (afterCaseChange)"},{"t":5798,"end":7327,"origin":"profil olayı (data-refresh → insight → applyProfile → refreshActivity)"}]; okunan: "İŞLEM GEÇMİŞİ✎Not 1 ödeme sözü alındı 1793933939972Ofis yöneticisi · 06.11.2026 02:59✎×"
+  ✓ deneme 2: okuma 11066 ms; ön koşul (okuma anında profil olayından gelen yükleme uçuşta) OLUŞTU; istekler [{"t":10882,"end":10901,"origin":"not formu (afterCaseChange)"},{"t":10994,"end":12522,"origin":"profil olayı (data-refresh → insight → applyProfile → refreshActivity)"}]; okunan: "İŞLEM GEÇMİŞİ✎Not 2 ödeme sözü alındı 1793933945378Ofis yöneticisi · 06.11.2026 02:59✎×"
+  ✓ deneme 3: okuma 15958 ms; ön koşul (okuma anında profil olayından gelen yükleme uçuşta) OLUŞTU; istekler [{"t":15615,"end":15643,"origin":"not formu (afterCaseChange)"},{"t":15925,"end":17446,"origin":"profil olayı (data-refresh → insight → applyProfile → refreshActivity)"}]; okunan: "İŞLEM GEÇMİŞİ✎Not 3 ödeme sözü alındı 1793933950114Ofis yöneticisi · 06.11.2026 02:59✎×"
+  ✓ deneme 4: okuma 21052 ms; ön koşul (okuma anında profil olayından gelen yükleme uçuşta) OLUŞTU; istekler [{"t":20492,"end":20509,"origin":"not formu (afterCaseChange)"},{"t":21028,"end":22536,"origin":"profil olayı (data-refresh → insight → applyProfile → refreshActivity)"}]; okunan: "İŞLEM GEÇMİŞİ✎Not 4 ödeme sözü alındı 1793933955313Ofis yöneticisi · 06.11.2026 02:59✎×"
+  ✓ deneme 5: okuma 26167 ms; ön koşul (okuma anında profil olayından gelen yükleme uçuşta) OLUŞTU; istekler [{"t":25156,"end":25189,"origin":"seçim (renderActivity)"},{"t":25359,"end":25375,"origin":"not formu (afterCaseChange)"},{"t":26153,"end":27661,"origin":"profil olayı (data-refresh → insight → applyProfile → refreshActivity)"}]; okunan: "İŞLEM GEÇMİŞİ✎Not 5 ödeme sözü alındı 1793933960255Ofis yöneticisi · 06.11.2026 02:59✎×"
+  ✓ deneme 6: okuma 31247 ms; ön koşul (okuma anında profil olayından gelen yükleme uçuşta) OLUŞTU; istekler [{"t":30152,"end":30199,"origin":"seçim (renderActivity)"},{"t":30458,"end":30474,"origin":"not formu (afterCaseChange)"},{"t":31221,"end":32731,"origin":"profil olayı (data-refresh → insight → applyProfile → refreshActivity)"}]; okunan: "İŞLEM GEÇMİŞİ✎Not 6 ödeme sözü alındı 1793933965226Ofis yöneticisi · 06.11.2026 02:59✎×"
+
+MODE=forced DELAY=1500: 6 geçti, 0 kaldı; ön koşul 6/6 denemede oluştu (ön koşullu: 6 geçti, 0 kaldı)
+# tests 6
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

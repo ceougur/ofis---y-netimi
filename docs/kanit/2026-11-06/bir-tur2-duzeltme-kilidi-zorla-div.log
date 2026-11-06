@@ -1,0 +1,125 @@
+[pencere-zorla] kip div, hedef bütün pencereler
+  ✓ ön koşul: hareketler açıldı {"cari":"aentry-b04bb620-aead-44f0-a651-77b05b56254d","cariGone":"aentry-9d75d3e0-54b6-4d3a-974b-5ed5d9da2e6e","stok":"smove-334d1b20-3867-47e2-ade5-0525289c91b7","taksit":"entry-c81da4f1-2530-4975-b7af-318f6a543984","kasa":"cash-e193eb4b-722c-4041-8cf4-ca54d8d028e5","transferCash":"cash-3ecbcb4f-18a6-4ec7-b948-44b53c14056b","transferBank":"cash-028a1e80-8379-41d0-92f3-770396c42942"}
+
+■ D1 Cari hareketi düzelt (hof-accounts editEntry)
+[pencere-zorla] "Cari": pencereden sonra body'ye div eklendi
+[pencere-zorla] "Tahsilatı Düzelt": pencereden sonra body'ye div eklendi
+  ✓ Cari: B (muhasebe2, öbür oturum) aynı hareketi düzeltti → 200 
+  ✓ Cari: B'nin düzeltmesi veri tabanında ({"amount":10,"note":"ilk not","updated_by":"B"})
+    (ön koşul: B'nin düzeltmesinden sonra canlı yenileme geldi; kart okumaları 4119 ms'de duruldu)
+  ✓ Cari: A'nın eskimiş formu 409 aldı (409 account-entry-stale)
+  ✓ Cari: ileti formda: “Bu cari hareketi siz açtıktan sonra başka biri tarafından değiştirildi; düzeltmeniz kaydedilmedi. Listeyi yenileyip yeniden deneyin.”
+  ✓ Cari: form açık kaldı (kendiliğinden yeniden göndermedi; yazılan açıklama formda)
+  ✓ Cari: veri tabanında B'nin değeri duruyor, A'nın açıklaması yazılmadı ({"amount":10,"note":"ilk not","updated_by":"B"})
+  ✓ Cari: 409'dan sonra form kartı kendisi yeniden okudu (^\/api\/workspace\/accounts\/account-186c15c7-12b7-415b-840f-451349959751(\?|$))
+  ✓ Cari: arkadaki kart B'nin değerine yenilendi: “18.10.2026 Tahsilat Nakit Makbuz 1 ilk not ₺10,00 ₺4.990,00 Borçlu Makbuz✎×”
+[pencere-zorla] "Kaydedilmemiş Değişiklik": pencereden sonra body'ye div eklendi
+[pencere-zorla] "Tahsilatı Düzelt": pencereden sonra body'ye div eklendi
+  ✓ Cari: yeniden açılan form B'nin değeriyle dolu
+  ✓ Cari: yarışsız düzeltme kaydedildi (200 )
+  ✓ Cari: veri tabanı — açıklama A'nın, tutar B'nin ({"amount":10,"note":"A'nın notu (yeniden)","updated_by":"A"})
+[pencere-zorla] "Tahsilatı Düzelt": pencereden sonra body'ye div eklendi
+  ✓ Cari: ardışık ikinci düzeltme de kaydedildi (200 )
+  ✓ Cari: veri tabanında ikinci düzeltme
+
+■ D2 Stok hareketi düzelt (hof-stock editMove)
+[pencere-zorla] "Stok": pencereden sonra body'ye div eklendi
+[pencere-zorla] "Çıkışı Düzelt": pencereden sonra body'ye div eklendi
+  ✓ Stok: B (muhasebe2, öbür oturum) aynı hareketi düzeltti → 200 
+  ✓ Stok: B'nin düzeltmesi veri tabanında ({"amount":10,"qty":1,"unit_price":10,"note":"ilk not","updated_by":"B"})
+    (ön koşul: B'nin düzeltmesinden sonra canlı yenileme geldi; kart okumaları 4116 ms'de duruldu)
+  ✓ Stok: A'nın eskimiş formu 409 aldı (409 stock-move-stale)
+  ✓ Stok: ileti formda: “Bu stok hareketi siz açtıktan sonra başka biri tarafından değiştirildi; düzeltmeniz kaydedilmedi. Listeyi yenileyip yeniden deneyin.”
+  ✓ Stok: form açık kaldı (kendiliğinden yeniden göndermedi; yazılan açıklama formda)
+  ✓ Stok: veri tabanında B'nin değeri duruyor, A'nın açıklaması yazılmadı ({"amount":10,"qty":1,"unit_price":10,"note":"ilk not","updated_by":"B"})
+  ✓ Stok: 409'dan sonra form kartı kendisi yeniden okudu (^\/api\/workspace\/stock\/stock-b8cc41a0-6fbc-4bce-a87a-d2c2522e544c(\?|$))
+  ✓ Stok: arkadaki kart B'nin değerine yenilendi: “18.10.2026 Çıkış ilk not · Kasa’ya tahsil edildi · Ofis yöneticisi · düzeltildi 1 -1 ₺10,00 ₺10,00 ✎×”
+[pencere-zorla] "Kaydedilmemiş Değişiklik": pencereden sonra body'ye div eklendi
+[pencere-zorla] "Çıkışı Düzelt": pencereden sonra body'ye div eklendi
+  ✓ Stok: yeniden açılan form B'nin değeriyle dolu
+  ✓ Stok: yarışsız düzeltme kaydedildi (200 )
+  ✓ Stok: veri tabanı — açıklama A'nın, tutar B'nin ({"amount":10,"qty":1,"unit_price":10,"note":"A'nın notu (yeniden)","updated_by":"A"})
+[pencere-zorla] "Çıkışı Düzelt": pencereden sonra body'ye div eklendi
+  ✓ Stok: ardışık ikinci düzeltme de kaydedildi (200 )
+  ✓ Stok: veri tabanında ikinci düzeltme
+
+■ D3 Taksit hareketi düzelt (hof-plans editEntry)
+[pencere-zorla] "Taksitler": pencereden sonra body'ye div eklendi
+[pencere-zorla] "Tahsilatı Düzelt": pencereden sonra body'ye div eklendi
+  ✓ Taksit: B (muhasebe2, öbür oturum) aynı hareketi düzeltti → 200 
+  ✓ Taksit: B'nin düzeltmesi veri tabanında ({"amount":10,"note":"ilk not","updated_by":"B"})
+    (ön koşul: B'nin düzeltmesinden sonra canlı yenileme geldi; kart okumaları 4111 ms'de duruldu)
+  ✓ Taksit: A'nın eskimiş formu 409 aldı (409 plan-entry-stale)
+  ✓ Taksit: ileti formda: “Bu taksit hareketi siz açtıktan sonra başka biri tarafından değiştirildi; düzeltmeniz kaydedilmedi. Kartı yenileyip yeniden deneyin.”
+  ✓ Taksit: form açık kaldı (kendiliğinden yeniden göndermedi; yazılan açıklama formda)
+  ✓ Taksit: veri tabanında B'nin değeri duruyor, A'nın açıklaması yazılmadı ({"amount":10,"note":"ilk not","updated_by":"B"})
+  ✓ Taksit: 409'dan sonra form kartı kendisi yeniden okudu (^\/api\/workspace\/plans\/plan-9de43b2e-1f2b-4321-b7bf-bd89a6fd5496(\?|$))
+  ✓ Taksit: arkadaki kart B'nin değerine yenilendi: “18.10.2026 Tahsilat Makbuz 3 ilk not · Ofis yöneticisi · düzeltildi ₺10,00 Makbuz✎×”
+[pencere-zorla] "Kaydedilmemiş Değişiklik": pencereden sonra body'ye div eklendi
+[pencere-zorla] "Tahsilatı Düzelt": pencereden sonra body'ye div eklendi
+  ✓ Taksit: yeniden açılan form B'nin değeriyle dolu
+  ✓ Taksit: yarışsız düzeltme kaydedildi (200 )
+  ✓ Taksit: veri tabanı — açıklama A'nın, tutar B'nin ({"amount":10,"note":"A'nın notu (yeniden)","updated_by":"A"})
+[pencere-zorla] "Tahsilatı Düzelt": pencereden sonra body'ye div eklendi
+  ✓ Taksit: ardışık ikinci düzeltme de kaydedildi (200 )
+  ✓ Taksit: veri tabanında ikinci düzeltme
+
+■ D4 Kasa hareketi düzelt (hof-workspace editCashEntry)
+[pencere-zorla] "Kasa": pencereden sonra body'ye div eklendi
+[pencere-zorla] "Ödemeyi Düzelt": pencereden sonra body'ye div eklendi
+  ✓ Kasa: B (muhasebe2, öbür oturum) aynı hareketi düzeltti → 200 
+  ✓ Kasa: B'nin düzeltmesi veri tabanında ({"amount":10,"description":"Kırtasiye","updated_by":"B"})
+    (ön koşul: B'nin düzeltmesinden sonra canlı yenileme geldi; kart okumaları 2505 ms'de duruldu)
+  ✓ Kasa: A'nın eskimiş formu 409 aldı (409 cash-entry-stale)
+  ✓ Kasa: ileti formda: “Bu Kasa hareketi siz açtıktan sonra başka biri tarafından değiştirildi; düzeltmeniz kaydedilmedi. Listeyi yenileyip yeniden deneyin.”
+  ✓ Kasa: form açık kaldı (kendiliğinden yeniden göndermedi; yazılan açıklama formda)
+  ✓ Kasa: veri tabanında B'nin değeri duruyor, A'nın açıklaması yazılmadı ({"amount":10,"description":"Kırtasiye","updated_by":"B"})
+  ✓ Kasa: 409'dan sonra form Kasa listesini kendisi yeniden okudu (^\/api\/workspace\/cash\?from=)
+  ✓ Kasa: arkadaki Kasa listesi B'nin değerine yenilendi: “18.10.2026 Kırtasiye Ödeme · Ofis yöneticisi ₺10,00 ₺4.990,00 ✎×”
+[pencere-zorla] "Kaydedilmemiş Değişiklik": pencereden sonra body'ye div eklendi
+[pencere-zorla] "Ödemeyi Düzelt": pencereden sonra body'ye div eklendi
+  ✓ Kasa: yeniden açılan form B'nin değeriyle dolu
+  ✓ Kasa: yarışsız düzeltme kaydedildi (200 )
+  ✓ Kasa: veri tabanı — açıklama A'nın, tutar B'nin ({"amount":10,"description":"A'nın açıklaması (yeniden)","updated_by":"A"})
+[pencere-zorla] "Ödemeyi Düzelt": pencereden sonra body'ye div eklendi
+  ✓ Kasa: ardışık ikinci düzeltme de kaydedildi (200 )
+  ✓ Kasa: veri tabanında ikinci düzeltme
+
+■ D5 Kasa ↔ Banka transferi düzelt — B ÖBÜR bacaktan (banka tarafı) düzeltir
+[pencere-zorla] "Kasa": pencereden sonra body'ye div eklendi
+[pencere-zorla] "Transferi Düzelt": pencereden sonra body'ye div eklendi
+  ✓ Transfer: B (muhasebe2, öbür oturum) aynı hareketi düzeltti → 200 
+  ✓ Transfer: B'nin düzeltmesi veri tabanında ({"amount":400,"description":"ATM'den çekildi","updated_by":"B"})
+    (ön koşul: B'nin düzeltmesinden sonra canlı yenileme geldi; kart okumaları 2511 ms'de duruldu)
+  ✓ Transfer: A'nın eskimiş formu 409 aldı (409 cash-entry-stale)
+  ✓ Transfer: ileti formda: “Bu Kasa hareketi siz açtıktan sonra başka biri tarafından değiştirildi; düzeltmeniz kaydedilmedi. Listeyi yenileyip yeniden deneyin.”
+  ✓ Transfer: form açık kaldı (kendiliğinden yeniden göndermedi; yazılan açıklama formda)
+  ✓ Transfer: veri tabanında B'nin değeri duruyor, A'nın açıklaması yazılmadı ({"amount":400,"description":"ATM'den çekildi","updated_by":"B"})
+  ✓ Transfer: 409'dan sonra form Kasa listesini kendisi yeniden okudu (^\/api\/workspace\/cash\?from=)
+  ✓ Transfer: arkadaki Kasa listesi B'nin değerine yenilendi: “18.10.2026 ATM'den çekildi Bankadan kasaya aktarım · Ofis yöneticisi ₺400,00 ₺5.390,00 ✎×”
+[pencere-zorla] "Kaydedilmemiş Değişiklik": pencereden sonra body'ye div eklendi
+[pencere-zorla] "Transferi Düzelt": pencereden sonra body'ye div eklendi
+  ✓ Transfer: yeniden açılan form B'nin değeriyle dolu
+  ✓ Transfer: yarışsız düzeltme kaydedildi (200 )
+  ✓ Transfer: veri tabanı — açıklama A'nın, tutar B'nin ({"amount":400,"description":"A'nın transfer açıklaması (yeniden)","updated_by":"A"})
+[pencere-zorla] "Transferi Düzelt": pencereden sonra body'ye div eklendi
+  ✓ Transfer: ardışık ikinci düzeltme de kaydedildi (200 )
+  ✓ Transfer: veri tabanında ikinci düzeltme
+
+■ D6 Silinmiş cari hareketi: 404 iletisi formda, kart yenilenir (satır gider), hiçbir şey yazılmaz
+[pencere-zorla] "Cari": pencereden sonra body'ye div eklendi
+[pencere-zorla] "Tahsilatı Düzelt": pencereden sonra body'ye div eklendi
+  ✓ B hareketi sildi → 200
+    (ön koşul: silmeden sonra canlı yenileme geldi; kart okumaları 2502 ms'de duruldu)
+  ✓ 404 ve ileti formda: 404 “Hareket bulunamadı. Başka biri silmiş olabilir.”
+  ✓ 404'ten sonra form kartı kendisi yeniden okudu
+  ✓ veri tabanında hareket yok (yeniden yazılmadı)
+  ✓ arkadaki kart yenilendi: silinen satır listede yok
+[pencere-zorla] "Kaydedilmemiş Değişiklik": pencereden sonra body'ye div eklendi
+
+■ D7 Mutabakat Testi ve Kasa
+  ✓ Mutabakat Testi ok ([])
+  ✓ Nakit Kasa 5.420,00 (5420)
+  ✓ sayfa hatası yok
+
+74 geçti, 0 kaldı

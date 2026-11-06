@@ -1,0 +1,58 @@
+{
+  "ad": "bir-tur2-birim-eski-03c04532-UTC",
+  "komut": "node --test --test-concurrency=1 /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur2-eski-03c0/test/birlesik-tur2-yaris-250.test.mjs",
+  "commit": "9659020fff5d5a8cff5ec6fc1e96d8997897d4a1",
+  "dal": "worktree-agent-aaea58f1418cba48a",
+  "kirli": 0,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T01:49:04.066Z",
+  "sure_sn": 8.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 1,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 BİRLEŞİK TUR 2 (a) — transfer ÖBÜR bacaktan düzeltilirken Kasa tarafının düzeltmesi yolda › Kasa Engelle: banka bacağı 300 → 400 (Kasa 150) yazılırken yöneticinin Kasa bacağını 300 → 200 düzeltmesi güncel bacakla 409 cash-blocked; Kasa 150, iki bacak 400, Mutabakat ok",
+      "konum": "test/birlesik-tur2-yaris-250.test.mjs:183:3",
+      "hata": "Kasa bacağının düzeltmesi güncel bacakla engellenmeli (409 cash-blocked) — 200  {\"ok\":true,\"data\":{\"id\":\"cash-de94fdc5-8571-4edd-9642-40ee47675854\"}} | Kasa -50 (beklenen 150; Engelle politikasında eksiye düşmez) | bacaklar [[\"bank\",200],[\"cash\",200]] (beklenen ikisi de 400) · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 BİRLEŞİK TUR 2 (a) — transfer ÖBÜR bacaktan düzeltilirken Kasa tarafının düzeltmesi yolda › iyimser kilit transferde: öbür bacaktan düzeltme açılan bacağın sürümünü de ilerletir — Kasa bacağının eski sürümüyle gelen düzeltme 409 cash-entry-stale",
+      "konum": "test/birlesik-tur2-yaris-250.test.mjs:212:3",
+      "hata": "200 undefined · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 BİRLEŞİK TUR 2 (b) — gövde yoldayken dönem kilitlenir / kartın kapanış günü kilitli döneme girer › taksit: kart 08.10'da kapatıldı, tahsilatı 10.10 tarihli; düzeltme yoldayken dönem 09.10'a kadar kilitlenir → kartın kapanışı kilitli: 409, tutar değişmez",
+      "konum": "test/birlesik-tur2-yaris-250.test.mjs:249:3",
+      "hata": "409 period-locked olmalı — 409 ledger-integrity {\"ok\":false,\"error\":\"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Kapanmış dönem (2026-10-09 ve öncesi) değişemez). Hiçbir değişiklik yazılm · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 BİRLEŞİK TUR 2 (c) — İKİNCİ SÜREÇ yazım kilidini tutarken düzeltme gelir: karar kilit alındıktan SONRA okunan satırla › Kasa Engelle (dört uç): dış süreç hareketi 100 → 10 yapıp kilidi tutarken yöneticinin 100 → 650 düzeltmesi gelir → 409 cash-blocked güncel satırla; Kasa 590",
+      "konum": "test/birlesik-tur2-yaris-250.test.mjs:280:3",
+      "hata": "cari: ileti güncel satırı söylemeli — “Bu ödeme 100,00 TL'den 650,00 TL'ye düzeltilince Nakit Kasa'dan 550,00 TL düşer; Nakit Kasa 500,00 TL iken -50,00 TL olur. Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi).” | stok: ileti güncel satırı söylemeli — “Bu ödeme 100,00 TL'den 650,00 TL'ye düzeltilince Nakit Kasa'dan 550,00 TL düşer; Nakit Kasa 500,00 TL iken -50,00 TL olur. Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi).” | taksit: ileti güncel satırı söylemeli — “Bu ödeme 100,00 TL'den 650,00 TL'ye düzeltilince Nakit Kasa'dan 550,00 TL düşer; Nakit Kasa 500,00 TL iken -50,00 TL olur. Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi).” | kasa: ileti güncel satırı söylemeli — “Bu ödeme 100,00 TL'den 650,00 TL'ye düzeltilince Nakit Kasa'dan 550,00 TL düşer; Nakit Kasa 500,00 TL iken -50,00 TL olur. Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi).” · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 BİRLEŞİK TUR 2 (c) — İKİNCİ SÜREÇ yazım kilidini tutarken düzeltme gelir: karar kilit alındıktan SONRA okunan satırla › kayıp güncelleme + iyimser kilit (cari): dış süreç açıklamayı değiştirir → yalnız tutarlı düzeltme açıklamayı KORUR; dış süreç sürümü ilerletince eski sürümle gelen düzeltme 409",
+      "konum": "test/birlesik-tur2-yaris-250.test.mjs:304:3",
+      "hata": "tutar düzeltildi, dış sürecin açıklaması korundu (bayat satır gövdeyle birleşmedi) · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-06/bir-tur2-birim-eski-03c04532-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aaea58f1418cba48a",
+  "ham_cikti_sha256": "348b6447b26bb7dcb95c024fdfe89763c8525c6a2080586b0d1a74a39916d504",
+  "ham_cikti_bayt": 14454
+}

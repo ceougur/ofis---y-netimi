@@ -1,0 +1,24 @@
+
+> destekofis@2.4.9 test:senaryo-210
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-210.mjs
+
+
+■ Kurulum: yönetici girer, okul servisi Excel'i yükler, sektör önerisi uygulanır
+✓ 6 öğrenci kaydı tabloda
+
+■ A. Ana ekran (m13, m14, m15, m1)
+✓ m14: “Öğrenci özeti” başlık/açıklama bloğu kaldırıldı
+✓ m14: ANLIK DURUM ortada (sol 48px, sağ 48px)
+✓ m15: tablonun üstündeki “N kayıt · N kolon” satırı yok
+✓ m14: “Dışa aktar” tablo başlık satırının eylem grubunda (Yenile'nin yanında)
+✓ m15: arama kutusu tam genişlikte, yazısı kesilmiyor (pay 0.94)
+✓ m15: ana arama kutusu dolgulu açık yeşil (rgb(233, 245, 238))
+✓ m14: tablo başlığındaki “Dışa aktar” gerçek bir .xlsx indirir
+✗ m15: Cari, Taksitler, Stok, Çek/Senet arama kutuları aynı: Cari rgb(233, 245, 238)|rgb(180, 212, 193)|10px · Taksitler rgb(233, 245, 238)|rgb(183, 214, 195)|10px · Stok rgb(233, 245, 238)|rgb(183, 214, 195)|10px · Çek/Senet rgb(233, 245, 238)|rgb(183, 214, 195)|10px
+Error: BAŞARISIZ: m15: Cari, Taksitler, Stok, Çek/Senet arama kutuları aynı: Cari rgb(233, 245, 238)|rgb(180, 212, 193)|10px · Taksitler rgb(233, 245, 238)|rgb(183, 214, 195)|10px · Stok rgb(233, 245, 238)|rgb(183, 214, 195)|10px · Çek/Senet rgb(233, 245, 238)|rgb(183, 214, 195)|10px
+    at ok (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-aaea58f1418cba48a/test/e2e/senaryo-210.mjs:52:20)
+    at file:///home/user/ofis---y-netimi/.claude/worktrees/agent-aaea58f1418cba48a/test/e2e/senaryo-210.mjs:144:5
+    at async step (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-aaea58f1418cba48a/test/e2e/senaryo-210.mjs:56:3)
+    at async file:///home/user/ofis---y-netimi/.claude/worktrees/agent-aaea58f1418cba48a/test/e2e/senaryo-210.mjs:96:3
+
+8/9 denetim geçti. Ekran görüntüleri: /home/user/ofis---y-netimi/.claude/worktrees/agent-aaea58f1418cba48a/test/e2e/artifacts/senaryo-210
