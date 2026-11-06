@@ -1,0 +1,62 @@
+{
+ "kok": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9a8e7bc8f35a45ce",
+ "acilis_onarimi": {
+  "action": "freeze",
+  "pending": true,
+  "damaged": false
+ },
+ "onkosul": {
+  "durum": {
+   "running": true,
+   "phase": "yazım",
+   "done": 15,
+   "total": 0,
+   "run": 1,
+   "error": "",
+   "coverage": "",
+   "cleanup": {
+    "running": false,
+    "removed": 0
+   }
+  },
+  "bekleyen": {
+   "no": 1,
+   "from": "",
+   "through": "2026-12-31",
+   "rule": "2.4.9",
+   "reason": "repair"
+  },
+  "yazilan": 15
+ },
+ "kart_gorunumu": {
+  "lockedUntil": "2026-12-31",
+  "active": true,
+  "pending": {
+   "no": 1,
+   "from": "",
+   "through": "2026-12-31",
+   "rule": "2.4.9"
+  }
+ },
+ "ikinci_istekten_sonra_tabloda": 15,
+ "yanit": 200,
+ "sonuc": {
+  "kapsam": "2026-12-31",
+  "gorunen": 80,
+  "kosu": {
+   "no": 1,
+   "rule_version": "2.4.9",
+   "reason": "repair",
+   "state_lines": 80
+  },
+  "canli": 80
+ },
+ "hesap_mizani": {
+  "altbaslik": "01.01.2026 – 31.12.2026 · Borç = Alacak · Mutabakat tutarlı",
+  "satirlar": [
+   "100 | Kasa (Nakit) | 0,00 TL | 1.220,00 TL | 0,00 TL | 1.220,00 TL",
+   "649 | Diğer Olağan Gelir ve Kârlar | 0,00 TL | 0,00 TL | 1.220,00 TL | 1.220,00 TL"
+  ]
+ },
+ "SONUC": "TUTARLI"
+}
