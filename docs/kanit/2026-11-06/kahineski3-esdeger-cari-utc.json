@@ -1,0 +1,32 @@
+{
+  "ad": "kahineski3-esdeger-cari-utc",
+  "komut": "python3 -I /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski3-arac/karsilastir.py /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski3-eski-d6a7b0d5/test/bagimsiz/cari test/bagimsiz/cari",
+  "commit": "2da89282b0b4213e9ca35e62456c1024a00f72dd",
+  "dal": "worktree-agent-aee95d00d296d627a",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T13:25:44.339Z",
+  "sure_sn": 64.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 369,
+    "gecen": 369,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski3-kanit/2026-11-06/kahineski3-esdeger-cari-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aee95d00d296d627a",
+  "ham_cikti_sha256": "8294e79bc2b2482894064f78670f2e61b9a86a488e6def61ceacf6e1d34151fa",
+  "ham_cikti_bayt": 64967
+}

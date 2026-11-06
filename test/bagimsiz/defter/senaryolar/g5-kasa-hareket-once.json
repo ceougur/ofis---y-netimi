@@ -1,0 +1,20 @@
+{
+  "aciklama": "2.5.0 Ç5 D10 sınır 'hareket önce / açılış önce' (EK-2B 33 TÜRETİLDİ, S12 A): Kasa açılışı girilmeden ÖNCE 05.09 tarihli Kasa gideri var; 10.09 tarihli açılış reddedilir (açılış ilk hareketten sonra olamaz), 05.09 tarihli açılış kabul (aynı gün olur — açılış günün başı); sonra 04.09 tarihli gider ret (açılıştan önce), 05.09 tarihli gider kabul. Programla da koşulabilir (kos.mjs <bu dosya>).",
+  "simdi": "2026-09-15T17:00:00+03:00",
+  "bugun": "2026-09-15",
+  "olaylar": [
+    { "id": "KG1", "tur": "kasa_gider", "tarih": "2026-09-05", "tutar": 50 },
+    { "id": "KASA0", "tur": "kasa_acilis", "tarih": "2026-09-10", "tutar": 1000, "beklenen": "ret" },
+    { "id": "KASA1", "tur": "kasa_acilis", "tarih": "2026-09-05", "tutar": 1000 },
+    { "id": "KG2", "tur": "kasa_gider", "tarih": "2026-09-04", "tutar": 30, "beklenen": "ret" },
+    { "id": "KG3", "tur": "kasa_gider", "tarih": "2026-09-05", "tutar": 20 },
+    { "id": "K1", "tur": "kontrol", "tarih": "2026-09-15" }
+  ],
+  "elleBeklenenTL": {
+    "kontroller": {
+      "K1": { "100": 930, "770": 70, "519": -1000 }
+    },
+    "retler": ["KASA0", "KG2"],
+    "acilisOlabilir": []
+  }
+}

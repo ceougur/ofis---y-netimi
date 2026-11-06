@@ -1,0 +1,23 @@
+  mutasyon 200 (Ç5 C13.1 (30.10 B): açılış karşı hesabı 500): c6c-mevcut-borc-karti.json[2.5.0], d1-c5-acilis-519.json[2.5.0], d2-c5-kg5-excel-kart.json[2.5.0]
+  mutasyon 201 (Ç5 C13.1: alacaklı açılışın karşılığı ters yönde (B CH / A 519)): d1-c5-acilis-519.json[2.5.0]
+  mutasyon 202 (Ç5 C13.2 (KG-5 B): Tablodan Aktar yeni borç kartı gelire (B 120 / A 600)): c14f-c1-geri-al-y2.json[2.5.0], c2-tablodan-aktar-kapisi.json[2.5.0], d2-c5-kg5-excel-kart.json[2.5.0]
+  mutasyon 203 (Ç5 C13.2: Mevcut Borç kartı da madde yazar (B 120 / A 519)): c6c-mevcut-borc-karti.json[2.5.0], d2-c5-kg5-excel-kart.json[2.5.0]
+  mutasyon 204 (Ç5 C13.3 (S49 B): carisiz evrak 519'a): d11-c5-s66-carisiz-karsiliksiz.json[2.5.0], d3-c5-carisiz-evrak.json[2.5.0]
+  mutasyon 205 (Ç5 C13.4 (S50 B): kart seçilmeden alınan tahsilat taksit kapatmaz (taksitler yalnız kart tahsilatıyla)): d4-c5-s50-tek-kuyruk.json[2.5.0]
+  mutasyon 206 (Ç5 C13.4 (S2 B): kapama belge tarihi sırasıyla (Vade sırayı değiştirmez — 2.4.9)): c10-ks10-projeksiyon-cari-vade.json[2.5.0], c13-ks83-ayni-gun-sira.json[2.5.0], c6-cari-vade-fifo.json[2.5.0]
+  mutasyon 207 (Ç5 C13.4 ((1) B): HAVUZ — bağsız ödeme sonradan doğan erken vadeli borca kayar): d6-c5-aninda.json[2.5.0], d9-c5-s68-borc-tarafi-vade.json[2.5.0]
+  mutasyon 208 (Ç5 C13.4 (M1e B): Mevcut Borç kartı alttaki borcu tüketmez (kart ile borç birlikte)): c6c-mevcut-borc-karti.json[2.5.0], d4-c5-s50-tek-kuyruk.json[2.5.0], d7-c5-s52-gecikmis.json[2.5.0]
+  mutasyon 209 (Ç5 C13.5 (S52 B): ileri tarihli Ödeme Sözü varken borç gecikmiş sayılmaz): d10-c5-s67-soz-takvim.json[2.5.0], d7-c5-s52-gecikmis.json[2.5.0]
+  mutasyon 210 (Ç5 C13.5 (S1 B): vadesiz kalem gecikmiş sayılmaz): d10-c5-s67-soz-takvim.json[2.5.0], d11-c5-s66-carisiz-karsiliksiz.json[2.5.0], d7-c5-s52-gecikmis.json[2.5.0]
+  mutasyon 211 (Ç5 C13.5 (M1f B): vade günü gecikmiş sayılır): d10-c5-s67-soz-takvim.json[2.5.0], d7-c5-s52-gecikmis.json[2.5.0]
+  mutasyon 212 (Ç5 C13.5 ((5) B): gecikmiş tutar net borçla sınırlanmaz): d7-c5-s52-gecikmis.json[2.5.0]
+  mutasyon 213 (Ç5 C13.4 ((2) B): bağ, hedefi önceden bağsız kapanmışsa bağsız olur ('ilk gelen kazanır')): c12-ks81-sb-kalan-dagilimi.json[2.5.0], d6-c5-aninda.json[2.5.0]
+  mutasyon 214 (Ç5 C14.1 (S68 B): borç tarafında bağsız ödeme / ciro / iade bedeli kayıt tarihi + yazım sırasıyla kapatır (2.4.5 K-b)): c13-ks83-ayni-gun-sira.json[2.5.0], d9-c5-s68-borc-tarafi-vade.json[2.5.0]
+  mutasyon 215 (Ç5 C14.2 (S67 B): vadesi geçmiş borca ileri tarihli sözde takvim kaleminin durumu ve gün sayısı söz tarihine göre (K6.3)): c6-cari-vade-fifo.json[2.5.0], d10-c5-s67-soz-takvim.json[2.5.0], d7-c5-s52-gecikmis.json[2.5.0]
+  mutasyon 216 (Ç5 C14.3 (S66 B): carisiz evrakın karşılıksızı, cari seçilmezse gidere (B 770 / A 101)): d11-c5-s66-carisiz-karsiliksiz.json[2.5.0]
+  mutasyon 217 (Ç5 C14.3 (S66): cari seçilse de cari borçlanmaz (B 649 / A 101)): d11-c5-s66-carisiz-karsiliksiz.json[2.5.0]
+  mutasyon 218 (Ç5 C14.3 (S66): seçilen carinin karşılıksız borcu tek yükümlülük kuyruğunda kalem değil (avans kapatmaz, gecikmiş sayılmaz)): d11-c5-s66-carisiz-karsiliksiz.json[2.5.0]
+mutant 185, yakalanmayan 0
+# tests 185
+# pass 185
+# fail 0
