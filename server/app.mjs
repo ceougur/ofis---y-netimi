@@ -76,7 +76,7 @@ import { createBackup } from "./lib/backup.mjs";
 import { applyStagedRestore, commonLayer, createCompanyBackups } from "./lib/company-backups.mjs";
 import { ARCHIVE_READ_ONLY_CODE, archiveFileOf, archiveKey, validYear } from "./lib/devir/archives.mjs";
 import { archiveStatus, prepareArchive } from "./lib/devir/archive-open.mjs";
-import { MAINTENANCE_CODE, applyWriteGuard, createMaintenance, maintenanceMessage } from "./lib/devir/maintenance.mjs";
+import { MAINTENANCE_CODE, applyWriteGuard, archiveMaintenanceMessage, createMaintenance, isMaintenanceAbort, maintenanceMessage } from "./lib/devir/maintenance.mjs";
 import { registerDevirRoutes } from "./routes/devir.mjs";
 import { resolveDbPath } from "./lib/db-path.mjs";
 import { createReportRunner } from "./lib/report-runner.mjs";
@@ -738,6 +738,13 @@ function buildApp(overrides, opening) {
         if (res.headersSent) return res.end();
         return send(res, error.status, { ok: false, error: error.message, ...error.extra }, headers);
       }
+      // 2.5.0 D2 tur 2 (dar kontrol DÜŞÜK-1): 001 bakımdayken veri tabanı koruması (geçici tetikleyici, DESTEKOFIS_BAKIM) yazımı düşürdüyse istek 503 maintenance alır —
+      // istek kapısının görmediği her yazıcı (ör. ortak katmandaki "görevlerini devrederek kullanıcı sil" şirketin görev tablosuna yazar) doğru ileti verir; veri değişmedi.
+      if (isMaintenanceAbort(error)) {
+        const entry = maintenanceOf()?.get(companyId) || null;
+        if (res.headersSent) return res.end();
+        return send(res, 503, { ok: false, error: maintenanceMessage(entry), code: MAINTENANCE_CODE, maintenance: entry }, { "retry-after": "30" });
+      }
       log.error(`API hatası ${req.method} ${pathname}`, error);
       if (res.headersSent) return res.end();
       fail(res, 500, "Sunucu işlemi tamamlayamadı.");
@@ -776,17 +783,32 @@ function buildApp(overrides, opening) {
   const archiveChildren = new Map();
   const archiveOpening = new Map();
   const archiveVerifyCache = new Map();
+  // 2.5.0 D2 tur 2 (dar kontrol ORTA-2; G1.1): bakımdaki şirketin arşivi açılmaz, açık arşiv örneğine de istek gitmez (503 maintenance). Devir arşive dokunur (Devri Yenile
+  // yazar, Devri Geri Al arsiv/silinen'e taşır); kip açıkken arşiv dosyası göç etmemeli, kayıt yazılmamalı, closeCompany'nin kapattığı örnek yeniden açılmamalı (Windows'ta açık
+  // tutamak taşımayı düşürür — ders 48). Açılış sürerken kip açılırsa her beklemeden sonra (özet, göç kopyası) aynı denetim (prepareArchive guard): iş durur, dosya / kayıt değişmez.
+  const archiveMaintenanceRefusal = (company, year) => {
+    const entry = maintenance?.get(company.id) || null;
+    return entry ? new HttpError(503, archiveMaintenanceMessage(entry, { companyLabel: `${company.code} · ${company.name}`, year }), { code: MAINTENANCE_CODE, maintenance: entry, retryAfter: 30 }) : null;
+  };
   function openArchive(company, year) {
     if (hub) return hub.openArchive(company, year);
     const key = archiveKey(company.id, year);
     if (busyCompanies.has(company.id)) return Promise.reject(new HttpError(503, busyCompanies.get(company.id), { retryAfter: 5 }));
     if (busyCompanies.has(key)) return Promise.reject(new HttpError(503, busyCompanies.get(key), { retryAfter: 5 }));
+    const refusal = archiveMaintenanceRefusal(company, year);
+    if (refusal) return Promise.reject(refusal);
     if (archiveChildren.has(key)) return Promise.resolve(archiveChildren.get(key));
     if (archiveOpening.has(key)) return archiveOpening.get(key);
+    const guard = () => {
+      const refused = archiveMaintenanceRefusal(company, year);
+      if (refused) throw refused;
+    };
+    // YALNIZ TEST (test/fixtures/devir-d2-arsiv-goc-isci.mjs; __testOpenFault emsali): arşiv göçünün kesme noktaları. Programdan verilir, ayardan okunmaz.
+    const step = overrides.__testArchiveStep ? name => overrides.__testArchiveStep(name, { companyId: company.id, year: String(year) }) : null;
     const opening = (async () => {
       const entry = companies.archiveOf(company.id, year);
       if (!entry) throw new HttpError(404, `“${company.code} · ${company.name}” şirketinin ${year} arşivi bulunamadı.`, { code: "archive-not-found" });
-      const prepared = await prepareArchive({ company, entry, registry: companies, log, now: config.now, cache: archiveVerifyCache, key });
+      const prepared = await prepareArchive({ company, entry, registry: companies, log, now: config.now, cache: archiveVerifyCache, key, guard, step });
       const child = createApp({
         ...overrides,
         dataDir: companies.dirsOf(company).dataDir,

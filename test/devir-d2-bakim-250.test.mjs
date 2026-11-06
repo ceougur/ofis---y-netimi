@@ -4,14 +4,17 @@
 // ertelenmiş, Şimdi Güncelle, indirme sürerken kip açılması, tutma süresinin dolması); bakım açıkken süreç ölümü.
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { existsSync, mkdtempSync, readFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, readdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { after, describe, test } from "node:test";
 import { ROOT_COMPANY_ID } from "../server/lib/companies.mjs";
+import { resolveDbPath } from "../server/lib/db-path.mjs";
+import { LATEST_VERSION } from "../server/lib/migrations.mjs";
 import { createUpdateOrchestrator } from "../server/lib/update-orchestrator.mjs";
-import { ARCHIVE_MARK_KEY, ARCHIVE_SIDECAR, DEVIR_BACKUP_DIR, DEVIR_BACKUP_MANIFEST, DEVIR_YEARS_KEY, HUB_BLOCKED, HUB_ONLY, MAINTENANCE_MARKER, companyDbFile, diffKeys, fingerprint, getRoutes, writeRoutes } from "./devir-d2-yardimci.mjs";
+import { unpackFixture } from "./guvenilirlik/fikstur.mjs";
+import { ARCHIVE_MARK_KEY, ARCHIVE_SIDECAR, DEVIR_BACKUP_DIR, DEVIR_BACKUP_MANIFEST, DEVIR_YEARS_KEY, HUB_BLOCKED, HUB_ONLY, MAINTENANCE_MARKER, MIGRATION_WORK_FILE, companyDbFile, diffKeys, fingerprint, getRoutes, hashFile, makeArchive, placeLegacyArchive, schemaOf, writeRoutes } from "./devir-d2-yardimci.mjs";
 import { loginAdmin, removeTestDir, startTestServer } from "./helpers.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -357,6 +360,143 @@ describe("D2 bakım kipi (G1.1)", () => {
       assert.deepEqual(files.map(file => business(fingerprint(file, { skip: COMMON, commonSettings: false }))).map((print, index) => diffKeys(business(before[index]), print)), [[], []], "canlı iş verisi devir öncesiyle aynı");
       await must("001 yazar", admin.post("/api/workspace/cash", { kind: "in", amount: 1, date: "2026-11-02", description: "ölümden sonra" }));
       await must("002 yazar", admin.post(`/api/workspace/cash?hofCompany=${second.id}`, { kind: "in", amount: 1, date: "2026-11-02", description: "ölümden sonra" }));
+    } finally {
+      await server.close();
+    }
+  });
+
+  // 2.5.0 D2 tur 2 (dar kontrol 06.11 ORTA-2): openArchive yalnız busyCompanies'e bakıyordu — 001 bakımdayken eski şemalı arşiv istenince 200, arşiv 19 → 47 göç etti, kayıt
+  // yazıldı; 002 bakımdayken arşiv açıldı, closeCompany kapattı, sıradaki istek yeniden açtı (G1.1 güvencesi arşiv dosyası / kaydı için tutmuyordu; Windows'ta açık tutamak
+  // D4'ün arsiv/silinen taşımasını düşürür — ders 48). Eski şemalı arşiv GERÇEK v2.0.26 fikstüründen (ders 17).
+  test("bakımdaki şirketin arşivi açılmaz (503 maintenance): 001 bakımda eski şemalı arşiv istenince dosya / klasör / kayıt değişmez; açılış sürerken kip açılırsa (özet alınırken, göç kopyası hazırken) iş durur; 002 bakımda açık arşiv örneğine de istek gitmez, closeCompany sonrası yeniden açılmaz; öbür şirketin arşivi açılır; kip kalkınca açılır", async () => {
+    const dir = workDir();
+    const fixture = unpackFixture("surum-2.0.26-zincir", { root: path.join(dir, "fikstur") });
+    const server = await startTestServer({ dataDir: path.join(dir, "data"), backupDir: path.join(dir, "backups"), now: { time: NOW, fixed: true } });
+    try {
+      const admin = await loginAdmin(server);
+      const second = (await must("002", admin.post("/api/companies", { name: "Arşiv Bakım İkinci" }))).company;
+      const q = `hofCompany=${second.id}`;
+      await must("002 kasa", admin.post(`/api/workspace/cash?${q}`, { kind: "in", amount: 70, date: "2026-11-02", description: "002 girişi" }));
+      const legacy = await placeLegacyArchive(server.app, ROOT_COMPANY_ID, { source: resolveDbPath(fixture.dataDir), year: "2024" });
+      assert.ok(legacy.schemaVersion < LATEST_VERSION, `fikstür eski şemada (${legacy.schemaVersion})`);
+      const openIds = () => server.app.openArchiveIds?.() ?? [];
+      const state = async () => ({ sha256: await hashFile(legacy.file), schema: schemaOf(legacy.file), entry: JSON.stringify(server.app.companies.archiveOf?.(ROOT_COMPANY_ID, "2024") ?? null), files: readdirSync(legacy.dir).sort() });
+      const before = await state();
+      const refusedWith = (response, label) => {
+        assert.deepEqual([response.status, response.data?.code], [503, "maintenance"], `${label}: ${response.status} ${JSON.stringify(response.data).slice(0, 240)}`);
+        assert.match(response.data.error, /şirketinde .* bu sırada şirketin \d{4} arşivi açılamaz\. Birkaç dakika sonra yeniden deneyin\.$/, `${label}: Türkçe ileti`);
+        assert.equal(response.headers.get("retry-after"), "30", `${label}: retry-after`);
+      };
+      // (1) 001 bakımda: istek reddedilir, arşivin göçü YAPILMAZ.
+      await server.app.maintenance.enter(ROOT_COMPANY_ID, { reason: "devri-yenile", runId: "a-1", label: "001 · Arşiv" });
+      refusedWith(await admin.get("/api/workspace/cash?hofArchive=2024"), "001 bakımda 001 arşivi");
+      assert.deepEqual(await state(), before, "001 bakımda arşiv dosyası, klasörü ve kaydı değişmedi (göç yok, göç öncesi kopya yok)");
+      assert.deepEqual(openIds(), [], "arşiv örneği açılmadı");
+      await server.app.maintenance.exit(ROOT_COMPANY_ID, { runId: "a-1" });
+      const company = server.app.companies.get(ROOT_COMPANY_ID);
+      // (2) açılış sürerken (arşivin özeti alınırken — ilk bekleme) kip açılır: iş durur, hiçbir şey yazılmaz.
+      let settled = false;
+      const first = server.app.openArchive(company, "2024").finally(() => (settled = true));
+      await server.app.maintenance.enter(ROOT_COMPANY_ID, { reason: "devri-yenile", runId: "a-2", label: "001 · Arşiv" });
+      assert.equal(settled, false, "ön koşul: kip, açılış sürerken açıldı (ders 20)");
+      const firstError = await first.then(() => null, error => error);
+      assert.deepEqual([firstError?.status, firstError?.extra?.code], [503, "maintenance"], `özet alınırken bakıma giren şirket: ${firstError?.message}`);
+      assert.deepEqual(await state(), before, "özet alınırken bakıma giren şirkette arşiv dosyası, klasörü ve kaydı değişmedi");
+      await server.app.maintenance.exit(ROOT_COMPANY_ID, { runId: "a-2" });
+      // (3) göç çalışma kopyası hazırken (kopyanın özeti alınırken — ikinci bekleme) kip açılır: bekleyen özet yazılmaz, taşınmaz, kopya silinir.
+      const work = path.join(legacy.dir, MIGRATION_WORK_FILE);
+      settled = false;
+      let sawWork = false;
+      const second2 = server.app.openArchive(company, "2024").finally(() => (settled = true));
+      await new Promise(resolve => {
+        const tick = () => {
+          if (existsSync(work)) {
+            sawWork = true;
+            resolve();
+          } else if (settled) resolve();
+          else setImmediate(tick);
+        };
+        setImmediate(tick);
+      });
+      assert.equal(sawWork, true, "ön koşul: göç çalışma kopyası hazırlanırken kip açılacak (ders 20)");
+      await server.app.maintenance.enter(ROOT_COMPANY_ID, { reason: "devri-yenile", runId: "a-3", label: "001 · Arşiv" });
+      assert.equal(settled, false, "ön koşul: kip, göç sürerken açıldı");
+      const secondError = await second2.then(() => null, error => error);
+      assert.deepEqual([secondError?.status, secondError?.extra?.code], [503, "maintenance"], `göç kopyası hazırken bakıma giren şirket: ${secondError?.message}`);
+      const during = await state();
+      assert.deepEqual([during.sha256, during.schema, during.entry], [before.sha256, before.schema, before.entry], "göç kopyası hazırken bakıma giren şirkette arşiv dosyası ve kaydı değişmedi (bekleyen özet yok, taşıma yok)");
+      assert.ok(!during.files.includes(MIGRATION_WORK_FILE), `çalışma kopyası silindi (${during.files.join(", ")})`);
+      await server.app.maintenance.exit(ROOT_COMPANY_ID, { runId: "a-3" });
+      // (4) kip kalkınca açılır ve göç eder.
+      await must("kip kalkınca 001 arşivi", admin.get("/api/workspace/cash?hofArchive=2024"));
+      assert.equal(schemaOf(legacy.file), LATEST_VERSION, "kip kalkınca arşiv göç etti");
+      // (5) 002: arşiv örneği bakımdan önce açık; bakımda ona da istek gitmez; closeCompany (D4 sırası) kapatır, sıradaki istek yeniden AÇMAZ; 001'in arşivi açılır.
+      await makeArchive(server.app, second.id, { year: "2025" });
+      await must("002 arşivi (bakımdan önce)", admin.get(`/api/workspace/cash?${q}&hofArchive=2025`));
+      assert.ok(openIds().some(key => key.startsWith(`${second.id}@`)), "002 arşiv örneği açık");
+      await server.app.maintenance.enter(second.id, { reason: "devri-geri-al", runId: "a-5", label: "002 · Arşiv" });
+      refusedWith(await admin.get(`/api/workspace/cash?${q}&hofArchive=2025`), "002 bakımda açık arşiv örneği");
+      await server.app.context.closeCompany(second.id);
+      assert.ok(!openIds().some(key => key.startsWith(`${second.id}@`)), "closeCompany 002'nin arşiv örneğini kapattı");
+      refusedWith(await admin.get(`/api/workspace/cash?${q}&hofArchive=2025`), "002 bakımda closeCompany sonrası");
+      assert.ok(!openIds().some(key => key.startsWith(`${second.id}@`)), "bakım sürerken 002'nin arşiv örneği yeniden açılmadı");
+      await must("002 bakımdayken 001'in arşivi açılır", admin.get("/api/workspace/cash?hofArchive=2024"));
+      await server.app.maintenance.exit(second.id, { runId: "a-5" });
+      await must("kip kalkınca 002 arşivi", admin.get(`/api/workspace/cash?${q}&hofArchive=2025`));
+    } finally {
+      await server.close();
+      fixture.cleanup();
+    }
+  });
+
+  // 2.5.0 D2 tur 2 (dar kontrol 06.11 DÜŞÜK-1): 001 bakımdayken ortak katmandaki "görevlerini devrederek kullanıcı sil" şirketin görev tablosuna (tasks) yazar, geçici
+  // tetikleyiciye çarpar; DESTEKOFIS_BAKIM 503'e çevrilmiyordu → 500 "Sunucu işlemi tamamlayamadı." (veri değişmiyordu). Beklenen: 503 maintenance, veri aynı, kip kalkınca 200.
+  // Ayrıca koruma TABLO TABLO (dar kontrol DÜŞÜK-2 B1: 001 koruması yalnız accounts ile sınanıyordu): ortak katman dışındaki her tabloya ekleme DESTEKOFIS_BAKIM ile düşer.
+  test("001 bakımda veri tabanı korumasının düşürdüğü yazım 503 maintenance (görevlerini devrederek kullanıcı sil), veri değişmez, kip kalkınca 200; koruma ortak katman dışındaki HER tabloda", async () => {
+    const dir = workDir();
+    const server = await startTestServer({ dataDir: path.join(dir, "data"), backupDir: path.join(dir, "backups"), now: { time: NOW, fixed: true } });
+    try {
+      const admin = await loginAdmin(server);
+      const me = unwrap(await admin.get("/api/auth/me"));
+      const adminId = me?.user?.id || me?.id;
+      assert.ok(adminId, "yönetici kimliği");
+      const worker = await must("kullanıcı", admin.post("/api/admin/users", { username: "gorevli1", name: "Görevli Bir", role: "personel", password: "Personel-2026!", mustChangePassword: false }));
+      await must("görev", admin.post("/api/workspace/tasks", { title: "Bakım görevi", assigneeId: worker.id, dueDate: "2026-11-10" }));
+      const tasksOf = id => server.app.store.get("SELECT COUNT(*) AS n FROM tasks WHERE assignee_id = ? AND status = 'open'", id).n;
+      const deletedAt = () => server.app.store.get("SELECT deleted_at FROM users WHERE id = ?", worker.id)?.deleted_at || null;
+      assert.equal(tasksOf(worker.id), 1, "ön koşul: kişinin açık görevi var");
+      await server.app.maintenance.enter(ROOT_COMPANY_ID, { reason: "devir", runId: "k-1", label: "001 · Görev" });
+      const removed = await admin.del(`/api/admin/users/${worker.id}?reassignTo=${adminId}`);
+      assert.deepEqual([removed.status, removed.data?.code], [503, "maintenance"], `bakımda görevlerini devrederek kullanıcı sil: ${removed.status} ${JSON.stringify(removed.data).slice(0, 240)}`);
+      assert.equal(removed.data.error, "“001 · Görev” şirketinde yıl sonu devri yapılıyor; bu sırada kayıt girilemez. Birkaç dakika sonra yeniden deneyin.");
+      assert.equal(removed.headers.get("retry-after"), "30");
+      assert.deepEqual([tasksOf(worker.id), tasksOf(adminId), deletedAt()], [1, 0, null], "veri değişmedi (görev devredilmedi, kullanıcı silinmedi — işlem geri alındı)");
+      // Koruma tablo tablo: ortak katman (users, roles, sessions, mobile_*) dışındaki her tabloya ekleme DESTEKOFIS_BAKIM ile düşer; ayarlarda yalnız ortak anahtar yazılır.
+      const db = server.app.db;
+      const tables = db.prepare("SELECT name FROM main.sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%' ORDER BY name").all().map(row => row.name).filter(name => !COMMON.includes(name));
+      assert.ok(tables.length > 50, `şirket tabloları ${tables.length}`);
+      const unguarded = [];
+      const attempt = (label, sql) => {
+        db.exec("SAVEPOINT d2_tablo");
+        try {
+          db.exec(sql);
+          return null;
+        } catch (error) {
+          return error.message;
+        } finally {
+          db.exec("ROLLBACK TO d2_tablo; RELEASE d2_tablo");
+        }
+      };
+      for (const table of tables) {
+        const sql = table === "settings" ? "INSERT INTO settings (key, value, updated_at) VALUES ('d2tur2.sirket-ayari', '1', '')" : `INSERT INTO "${table.replace(/"/g, '""')}" DEFAULT VALUES`;
+        const message = attempt(table, sql);
+        if (!/DESTEKOFIS_BAKIM/.test(message || "")) unguarded.push(`${table}: ${message === null ? "ekleme GEÇTİ" : message}`);
+      }
+      assert.deepEqual(unguarded, [], `001 bakımda korumasız tablo:\n${unguarded.join("\n")}`);
+      assert.equal(attempt("ortak ayar", "INSERT INTO settings (key, value, updated_at) VALUES ('license.d2tur2', '1', '')"), null, "ortak ayar anahtarı (lisans) bakımda da yazılır");
+      await server.app.maintenance.exit(ROOT_COMPANY_ID, { runId: "k-1" });
+      await must("kip kalkınca görevlerini devrederek kullanıcı sil", admin.del(`/api/admin/users/${worker.id}?reassignTo=${adminId}`));
+      assert.deepEqual([tasksOf(worker.id), tasksOf(adminId), Boolean(deletedAt())], [0, 1, true], "kip kalkınca görev devredildi, kullanıcı silindi");
     } finally {
       await server.close();
     }
