@@ -20,6 +20,7 @@ import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { statementData, statementFileName, statementPdf } from "../lib/statement-pdf.mjs";
 import { readSheetMatrices } from "../lib/sheets.mjs";
 import { DUE_WINDOW } from "../lib/insight/dues.mjs";
+import { calendarState } from "../lib/obligation-queue.mjs";
 import { inferRolesByValues, findHeaderRow, sanitizeCell, validateRows } from "../lib/import-gate.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
 import { ANONYMOUS_TCKN, RETAIL_NAME, classifyTaxId, isRetailName, isValidIban, isValidMersis, normalizeIban } from "../lib/tax-id.mjs";
@@ -79,6 +80,14 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // Açılış Bakiyesi'nde (kaynağı boş, tür debt / credit). Tahsilat / ödeme ve faturadan, stoktan, çekten, şüpheli alacaktan gelen satır alan taşımaz.
   const DUE_KINDS = new Set(["debt", "credit"]);
   const isManualDue = entry => !entry.source && DUE_KINDS.has(entry.kind);
+  // 2.5.0 Ç5-B (B1, S1, M1f, S52, S72, S73): carinin TEK gecikmiş tanımı — Tek Yükümlülük Kuyruğu'nun açık borç kalemlerinden vadesi bugünden önce olanlar (şüpheli
+  // kuyruğu hariç, M13). Ödeme Sözü gecikmişi değiştirmez (S52); carinin sözü = açık kalemlerin bugün ya da sonraki en geç Beklenen Ödeme Tarihi (söz günü dahil, S72;
+  // bütün borcu kapsar, S73 / K9-2) — "Ödeme Sözü Var" görünümü (otomatik hatırlatma elemesi Ç5-C).
+  const tykTotals = (tyk, day = today()) => {
+    const overdue = tyk.overdue(day);
+    const promiseUntil = tyk.items.filter(item => item.side === "receivable" && item.promise && item.promise >= day).reduce((max, item) => (item.promise > max ? item.promise : max), "");
+    return { overdueDebt: overdue.amount, overdueDebtCount: overdue.count, overdueSince: overdue.since, doubtfulQueue: tyk.doubtful.amount, promiseUntil, promiseActive: Boolean(promiseUntil) && overdue.amount > 0 };
+  };
   const dueDateOf = (value, label, field) => {
     const day = text(value);
     if (!day) return "";
@@ -175,7 +184,9 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const ledger = accountLedger(entries, planList);
     // 2.4.5 madde 6 (BAŞ MİMAR KARARI K6.2): elle Borç / Alacak ve Açılış Bakiyesi satırının Kalan'ı (TL, kuruşa yuvarlı) — fatura kapamasıyla aynı
     // kuyruktan (routes/invoices.mjs entryStates → lib/invoice-settle.mjs settleLedger). Kalan > 0 olan satır açıktır; Vade Tarihi sırayı değiştirmez.
-    const remaining = withRemaining && invoiceModule()?.entryStates ? invoiceModule().entryStates(account.id, ledger.lines) : null;
+    // 2.5.0 Ç5-B: Kalan ve gecikmiş TEK YÜKÜMLÜLÜK KUYRUĞU'ndan (routes/invoices.mjs obligationsFor → lib/obligation-queue.mjs; NET görünüm G1).
+    const tyk = withRemaining && invoiceModule()?.obligationsFor ? invoiceModule().obligationsFor(account.id, ledger.lines) : null;
+    const remaining = tyk ? tyk.entries : null;
     if (remaining) for (const entry of entries) if (isManualDue(entry)) entry.remaining = remaining.get(entry.id)?.remaining ?? roundMoney(Number(entry.amount) || 0);
     return {
       ...account,
@@ -183,7 +194,9 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       entries,
       plans: planList.map(planSummaryOf),
       ledger: ledger.lines,
-      totals: ledger.totals,
+      // totals.overdue / overdueCount: ESKİ anlam (açık taksit kartlarının gecikmişi) — WhatsApp Ödeme Hatırlatma Ç5-C'ye kadar bunu okur (lib/whatsapp/queue.mjs overdueOf;
+      // tasarım §8 B1-W). TYK gecikmişi overdueDebt* (ekranda "Gecikmiş Borç").
+      totals: tyk ? { ...ledger.totals, overdueInstallments: ledger.totals.overdue, ...tykTotals(tyk) } : ledger.totals,
       side: balanceSide(ledger.totals.balance),
       canManage: manage,
       canCollect: canUser(user, "accounts.collect"),
@@ -213,7 +226,10 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const account = accountRow(id);
     const planList = plans()?.forAccount ? plans().forAccount(account.id, user) : [];
     const ledger = accountLedger(entriesOf(account.id), planList);
-    return { ...account, plans: planList.map(planSummaryOf), ledger: ledger.lines, totals: ledger.totals };
+    // Ç5-B: TYK gecikmişi ve Ödeme Sözü (overdueDebt*, promise*) bütün carilerin önbelleğinden (cari başına ağır okuma yok — ders 47); totals.overdue ESKİ anlamda
+    // kalır (WhatsApp elemesi Ç5-C'ye kadar onu okur).
+    const tyk = !store.inTransaction && invoiceModule()?.allObligations ? invoiceModule().allObligations()?.get(account.id) : null;
+    return { ...account, plans: planList.map(planSummaryOf), ledger: ledger.lines, totals: tyk ? { ...ledger.totals, overdueInstallments: ledger.totals.overdue, ...tykTotals(tyk) } : ledger.totals };
   }
 
   // Liste: hareket toplamları tek sorguda, taksit özetleri tek geçişte (5 bin caride de hızlı).
@@ -262,8 +278,14 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   }
   // ids (v2.1.0, §3.11 mutabakat kapısı): yalnız bu carilerin satırları ve bakiyeleri (kapı dokunulan carileri denetler); hesap her
   // cari için aynıdır.
-  function list(user, { q = "", group = "", subgroup = "", type = "", status = "active", balance = "all", sort = "no", plan = "", ids = null } = {}) {
+  // 2.5.0 Ç5-B: mutabakat kapısının ve Mutabakat Testi'nin list() çağrıları (ids ile ya da iç kimlikle — routes/ledger.mjs expected "ledger", lib/integrity.mjs
+  // "integrity") TYK HESAPLAMAZ (tasarım §3 madde 12; her para yazımının kapısı yavaşlamasın). Gecikmiş alanları orada eski (taksit) değeriyle kalır, kullanılmaz.
+  const GATE_USERS = new Set(["ledger", "integrity"]);
+  function list(user, { q = "", group = "", subgroup = "", type = "", status = "active", balance = "all", sort = "no", plan = "", ids = null, withOverdue = null } = {}) {
     const only = ids ? JSON.stringify([...ids]) : null;
+    const useTyk = (withOverdue ?? (!ids && !GATE_USERS.has(user?.id))) && !store.inTransaction && Boolean(invoiceModule()?.allObligations);
+    const tykAll = useTyk ? invoiceModule().allObligations() : null;
+    const day = today();
     // ids: tekli + deleted_at indeksini kapatır (birincil anahtar seçilir; değer aynı).
     const rows = only ? store.all(`${ACCOUNT_SQL} WHERE +a.deleted_at IS NULL AND a.id IN (SELECT value FROM json_each(?)) ORDER BY a.name COLLATE NOCASE`, only) : store.all(`${ACCOUNT_SQL} WHERE a.deleted_at IS NULL ORDER BY a.name COLLATE NOCASE`);
     const sums = new Map();
@@ -307,6 +329,17 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       const credit = roundMoney(sum.credit + sum.in + planCredit);
       const bal = roundMoney(debit - credit);
       const side = balanceSide(bal);
+      // Ç5-B: satırın gecikmişi TYK'dan (cari kartı "Gecikmiş Borç" ile aynı sayı); taksit kartlarının eski gecikmişi overdueInstallments*.
+      const overdueInstallments = overdue;
+      const overdueInstallmentCount = overdueCount;
+      let promiseUntil = "";
+      if (tykAll) {
+        const tyk = tykAll.get(row.id);
+        const t = tyk ? tykTotals(tyk, day) : { overdueDebt: 0, overdueDebtCount: 0, promiseUntil: "" };
+        overdue = t.overdueDebt;
+        overdueCount = t.overdueDebtCount;
+        promiseUntil = t.promiseActive ? t.promiseUntil : "";
+      }
       if (balance === "debtor" && side !== "debtor") continue;
       if (balance === "creditor" && side !== "creditor") continue;
       if (balance === "zero" && side !== "zero") continue;
@@ -369,6 +402,10 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         planRemaining: roundMoney(planRemaining),
         overdue: roundMoney(overdue),
         overdueCount,
+        overdueInstallments: roundMoney(overdueInstallments),
+        overdueInstallmentCount,
+        // "Ödeme Sözü Var" (S52 / S72 / S73; görünüm — otomatik hatırlatma elemesi Ç5-C): söz bugün ya da sonra ve gecikmiş borç var.
+        promiseUntil,
         next,
         // Açık şüpheli alacak (TL; 0 = yok). Kart bakiyesi şüpheliyi de kapsar (120 + 128 = kart).
         doubtfulOpen,
@@ -783,6 +820,20 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         : Math.round(Number(previous.amount) * 100) - (doubtful().allocatedMinor?.(account.id, previous.id) ?? 0))
       : 0;
     const deltaMinor = Math.round(input.amount * 100) - previousMinor;
+    // 2.5.0 Ç5-B (K10-3, S85): düzeltmede tarih de değişirse sınır kaydın YENİ gününde — o güne kadarki bakiye (kayıt hariç) − açık şüpheli; bugünkü sınırla küçüğü.
+    if (previous && input.date && input.date !== previous.date) {
+      const system = { id: "integrity", role: "admin", permissions: [] };
+      const ledger = accountLedger(entriesOf(account.id).filter(entry => entry.id !== previous.id), plans()?.forAccount ? plans().forAccount(account.id, system) : []);
+      const dayMinor = ledger.lines.filter(line => line.date <= input.date).reduce((sum, line) => sum + Math.round((Number(line.debit) || 0) * 100) - Math.round((Number(line.credit) || 0) * 100), 0);
+      const roomDay = dayMinor - room.openMinor;
+      if (roomDay < room.roomMinor) room.roomMinor = roomDay;
+      // Kayıt hariç ölçüldüğü için önceki payı düşülmez: yeni hâlin 120'ye yazacağı tutarın tamamı sayılır.
+      if (Math.round(input.amount * 100) > roomDay) {
+        const roomTl = roundMoney(Math.max(0, roomDay) / 100);
+        const why = input.doubtfulSkip ? "“Normal Cari Hesaba İşle” işaretini kaldırın" : "Kapatılacak Fatura bağını kaldırın";
+        throw new HttpError(409, `Normal cari hesaba işlenecek tahsilat (${tl(input.amount)}) ${dayText(input.date)} tarihinde carinin şüpheli dışı borç bakiyesini (${tl(roomTl)}) aşıyor; fazlası şüpheli alacaktan düşmek zorunda. Tutarı ya da tarihi değiştirin veya ${why}.`, { code: "doubtful-normal-exceeds", field: "date", roomMinor: roomDay, openMinor: room.openMinor });
+      }
+    }
     if (deltaMinor <= room.roomMinor) return;
     const roomTl = roundMoney(Math.max(0, room.roomMinor) / 100);
     const why = input.doubtfulSkip ? "“Normal Cari Hesaba İşle” işaretini kaldırın" : "Kapatılacak Fatura bağını kaldırın";
@@ -1059,9 +1110,19 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const account = accountRow(params.id);
     // Gövde okunmadan önceki denetimler yalnız erken yanıt içindir (yok / yetkisiz / kilitli dönem); karar aşağıda işlemin İÇİNDE güncel satırla yinelenir.
     const opened = entryOf(account.id, params.entryId);
+    const body = await readJson(req);
+    // 2.5.0 Ç5-B — düzeltmede CARİ değişimi (gövdede accountId; BAŞ MİMAR 06.11 12:09: bugüne kadar yok sayılıyordu). Red sırası K10-1: kilitli dönem → (Kasa açılışı,
+    // Ç5-K) → FATURA_DUZENLENMELI (S80 / S83 / S84: fatura formunda alınan / yapılan peşinin carisi ya da bağı yalnız faturadan değişir) → BAG_KALDIRILMALI (S57) →
+    // SUPHELI_NORMAL_ASIM (S81 / S85). S54 / S79: cari ile bağ AYNI düzeltmede değişirse kabul (bağ yeni carinin belgesine ya da kaldırılır).
+    const targetId = Object.hasOwn(body || {}, "accountId") ? text(body.accountId) : "";
+    const cariChange = Boolean(targetId) && targetId !== account.id;
+    const linkTouched = Object.hasOwn(body || {}, "invoiceId") || Object.hasOwn(body || {}, "refundOf");
+    if (opened.source === "invoice" && (cariChange || (linkTouched && (text(body.invoiceId) || text(body.refundOf)) !== (opened.sourceId || "")))) {
+      period?.assertOpen(opened.date, "Bu cari hareketi");
+      throw new HttpError(409, "Bu ödeme faturanın formunda kaydedildi; carisi ve bağlı olduğu fatura yalnız faturadan değişir. Faturayı düzenleyin.", { code: "invoice-payment-edit", invoiceId: opened.sourceId });
+    }
     requireEntryRight(user, opened);
     period?.assertOpen(opened.date, "Bu cari hareketi");
-    const body = await readJson(req);
     // 2.5.0 BİRLEŞİK TUR 1 (YB-1): isteğin başındaki okuma gövde beklenirken eskir — arada başka kullanıcı aynı hareketi düzeltirse Kasa / bakiye denetimleri
     // bayat satırla hesaplanıyordu (Kasa "Engelle" atlanıp Kasa eksiye düşüyordu) ve bayat satır gövdeyle birleşip öbür kullanıcının düzeltmesini siliyordu.
     // Artık hareket yazım işleminin İÇİNDE (bank.post prepare: istek kimliği bakışından sonra, yazımdan hemen önce) yeniden okunur; bütün denetimler, gövdeyle
@@ -1084,12 +1145,24 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         assertRowVersion(body, rowVersion(store, "account_entries", previous.id), ENTRY_STALE);
         requireEntryRight(user, previous);
         period?.assertOpen(previous.date, "Bu cari hareketi");
-        const party = accountRow(account.id);
+        const party = cariChange ? accountRow(targetId) : accountRow(account.id);
+        if (cariChange) {
+          if (Number(previous.isOpening) === 1) throw new HttpError(409, "Açılış bakiyesi başka cariye taşınmaz; bu carinin açılışını düzeltin, öbür cariye kendi açılışını girin.", { code: "entry-opening-party", field: "accountId" });
+          if (hasOffsets() && store.get("SELECT 1 AS found FROM invoice_offsets WHERE counter_type = 'entry' AND counter_id = ? LIMIT 1", previous.id)) throw new HttpError(409, "Bu kayıt bir mahsup fişinde karşı belge; carisi değişmeden önce mahsubu kaldırın.", { code: "entry-offset-party", field: "accountId" });
+          if (text(body.date)) period?.assertOpen(text(body.date), "Yeni tarih");
+          // S57 (S45 ile aynı): bağlı kaydın carisi bağ değişmeden düzeltilmez — bağ sessizce kopmaz (2.4.4 KAYIT BAĞI).
+          const previousLink = previous.refundOf || previous.invoiceId || "";
+          const nextLink = linkTouched ? text(body.refundOf) || text(body.invoiceId) : previousLink;
+          if (previousLink && nextLink === previousLink) throw new HttpError(409, "Bu kayıt bir faturaya (Kapatılacak Fatura) ya da iadeye bağlı; carisini değiştirmeden önce bağı kaldırın ya da aynı düzeltmede yeni carinin belgesine bağlayın.", { code: "entry-link-first", field: "invoiceId" });
+        }
         // v2.0.13: borç ↔ alacak yönü düzeltilebilir (yanlış yönde yazılan açılış bakiyesi gibi); tahsilat/ödeme yön değiştirmez.
         const flip = ["debt", "credit"].includes(previous.kind) && ["debt", "credit"].includes(text(body.kind)) ? text(body.kind) : previous.kind;
-        const input = entryInput({ ...previous, ...body, kind: flip }, account.id, previous);
+        // Cari değişiminde bağ yeni carinin belgesine kurulur (S54 / S79): eski bağ "değişmeyen bağ" sayılmaz.
+        const base = cariChange ? { ...previous, invoiceId: "", refundOf: "" } : previous;
+        const input = entryInput({ ...base, ...body, kind: flip }, party.id, base);
         assertOffsetFree(previous, input);
-        assertNormalRoom(party, input, previous);
+        // S81 (S56 gibi): yeni hâl şüpheli kaydı açık bir cariye 120'den yazıyorsa sınır o carinin şüpheli dışı bakiyesi; cari değişince önceki satırın payı sayılmaz.
+        assertNormalRoom(party, input, cariChange ? null : previous);
         // 2.4.9 P1 tur 2: kart iadesi kuralları POST'la aynı — iade olmayan satır müşteride iadeye çevrilirken kartla ödeme denetimi (DÜŞÜK-2), etkin kart
         // yoksa 400 (DÜŞÜK-1). Var olan iade satırının tutar / tarih / kart düzeltmesi serbest.
         if (!wasCardRefund(previous)) assertCardRefundRoom(party, input, body);
@@ -1108,12 +1181,20 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         const meta = finRef && !corporateOf(input, body, previous) ? posMetaOf(body) : null;
         const eventId = bank.eventFor("account_entries", { kind: input.kind, source: previous.source, date: input.date, method: input.method, event_id: previous.eventId, fin_ref: finRef, ...(meta ? { pos: meta } : {}) });
         store.run("UPDATE account_entries SET kind = ?, amount = ?, date = ?, note = ?, method = ?, invoice_id = ?, fin_ref = ?, event_id = ?, doubtful_skip = ?, due_date = ?, expected_date = ?, refund_of = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.kind, input.amount, input.date, input.note, input.method, input.invoiceId, finRef, eventId, input.doubtfulSkip ? 1 : 0, previous.source ? "" : input.dueDate, previous.source ? "" : input.expectedDate, previous.source ? "" : input.refundOf, user.id, now(), previous.id);
-        audit(user, "account.entry.updated", previous.id, { accountId: account.id, previous, ...input, finRef });
+        // Ç5-B: cari değişimi aynı satırda (kimlik, Kasa / banka hareketi ve iz aynı); defterde cari boyutu yeni cariye geçer.
+        if (cariChange) store.run("UPDATE account_entries SET account_id = ? WHERE id = ?", targetId, previous.id);
+        audit(user, "account.entry.updated", previous.id, { accountId: cariChange ? targetId : account.id, ...(cariChange ? { previousAccountId: account.id } : {}), previous, ...input, finRef });
         return { id: previous.id };
       },
       guard: (outcome, ctx) => step?.k7.guard?.(outcome, ctx),
     });
     step?.k7.prime(result);
+    if (cariChange) {
+      touched(user, accountRow(targetId));
+      touched(user, account);
+      changed(user, { kind: "cash" });
+      return ok(res, { ...detail(targetId, user), movedFrom: account.id, ...(result?.replayed ? { replayed: true } : {}) });
+    }
     touched(user, account);
     changed(user, { kind: "cash" });
     ok(res, { ...detail(account.id, user), ...(result?.replayed ? { replayed: true } : {}) });
@@ -1177,7 +1258,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       rows: account.ledger.map(line => [dayText(line.date), `${line.label}${line.receiptNo ? ` · Makbuz ${line.receiptNo}` : ""}`, line.note || "", line.debit ? tl(line.debit) : "", line.credit ? tl(line.credit) : "", `${tl(Math.abs(line.balance))} ${sideText(line.balance)}`.trim()]),
       // 2.4.3 (keşif A22; kalıcı karar "her raporda alt TOPLAM satırı"): satırların borç/alacak toplamı ve son bakiye (ekrandaki kart tablosuyla aynı).
       footer: account.ledger.length ? ["", "TOPLAM", "", tl(roundMoney(account.ledger.reduce((sum, line) => sum + line.debit, 0))), tl(roundMoney(account.ledger.reduce((sum, line) => sum + line.credit, 0))), `${tl(Math.abs(t.balance))} ${sideText(t.balance)}`.trim()] : null,
-      summary: [["Borç Toplamı", tl(t.debit)], ["Alacak Toplamı", tl(t.credit)], ["Bakiye", `${tl(Math.abs(t.balance))} ${sideText(t.balance)}`.trim()], ...(t.planRemaining ? [["Taksitlerden Kalan (bakiyeye dahil)", tl(t.planRemaining)]] : []), ...(t.overdueCount ? [["Geciken", `${tl(t.overdue)} · ${t.overdueCount} taksit`]] : [])],
+      summary: [["Borç Toplamı", tl(t.debit)], ["Alacak Toplamı", tl(t.credit)], ["Bakiye", `${tl(Math.abs(t.balance))} ${sideText(t.balance)}`.trim()], ...(t.planRemaining ? [["Taksitlerden Kalan (bakiyeye dahil)", tl(t.planRemaining)]] : []), ...(t.overdueDebtCount ? [["Gecikmiş Borç", `${tl(t.overdueDebt)} · ${t.overdueDebtCount} kalem`]] : [])],
       userName: user.display_name || user.username || "",
       ...header.pdf({ brand: office() }),
     });
@@ -1213,7 +1294,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       headers: ["No", "Ad / Unvan", "Tür", "Grup", "Telefon", "Kayıt", "Borç", "Alacak", "Bakiye", "Taksitten Kalan", "Bilgi Notu"],
       types: ["text", "text", "text", "text", "text", "text", "money", "money", "money", "money", "text"],
       rows: data.accounts.map(item => [item.refNo, item.name, ACCOUNT_TYPES[item.type] || "", [item.groupName, item.subgroupName].filter(Boolean).join(" › "), item.phone, dayText(item.registeredOn), tl(item.debit), tl(item.credit), `${tl(Math.abs(item.balance))} ${sideText(item.balance)}`.trim(), item.planRemaining ? tl(item.planRemaining) : "", item.note || ""]),
-      summary: [["Cari", String(data.totals.count)], ["Borçlular", tl(data.totals.debtor)], ["Alacaklılar", tl(data.totals.creditor)], ["Geciken Taksit", `${tl(data.totals.overdue)} · ${data.totals.overdueCount}`]],
+      summary: [["Cari", String(data.totals.count)], ["Borçlular", tl(data.totals.debtor)], ["Alacaklılar", tl(data.totals.creditor)], ["Gecikmiş Borç", `${tl(data.totals.overdue)} · ${data.totals.overdueCount} kalem`]],
       userName: user.display_name || user.username || "",
       ...header.pdf({ brand: office() }),
     });
@@ -1245,7 +1326,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         Alacak: money(item.credit),
         Bakiye: money(item.balance),
         "Taksitten Kalan": money(item.planRemaining),
-        Geciken: money(item.overdue),
+        "Gecikmiş Borç": money(item.overdue),
         "Bilgi Notu": item.note,
       };
       for (const field of fieldsById.get(item.id) || []) if (!base.includes(field.label)) row[field.label] = field.value;
@@ -1793,24 +1874,30 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // kartınca kapsanan kısmı (covered) kartın taksitleriyle gelir, burada düşülür (birleşik listelerde bir kez — açık faturadaki covered kuralı). Silinmiş
   // carinin satırı kalem değildir. openDueItems ufuksuzdur (Vade Takip kendi aralığını süzer); dueItems takvim / zil ufku (faturayla aynı: geçmişin
   // tamamı + bugünden DUE_WINDOW.aheadDays gün). "Ödendi Say" yoktur: kalem para kaydıyla (tahsilat / ödeme) kapanır.
-  const DUE_SQL = `SELECT e.id, e.account_id AS accountId, e.kind, e.amount, e.date, e.note, e.due_date AS dueDate, e.expected_date AS expectedDate, a.name, a.phone, a.ref_no AS refNo
-    FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
-    WHERE e.source = '' AND e.kind IN ('debt', 'credit') AND (e.due_date <> '' OR e.expected_date <> '') ORDER BY e.rowid`;
-  const dayGap = (from, to) => Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86_400_000);
+  // 2.5.0 Ç5-B (S1, §2.10 "aynı borç bir kez"): kalemler TEK YÜKÜMLÜLÜK KUYRUĞU'nun NET açık kalemlerinden — fatura ve taksit DIŞINDAKİ borç kalemleri (elle Borç /
+  // Alacak ve açılış — vadeli ya da vadesiz: vade yoksa belge günü, S1 —, stok veresiye, karşılıksız evrak). Tutar kuyruk kalanı (Mevcut Borç kartının tükettiği kısım
+  // kartın taksitlerinde; şüpheli kuyruğundaki kısım hariç). Gün / durum: S67, S69 = A, BAŞ MİMAR Y3-1 / Y3-2 (lib/obligation-queue.mjs calendarState).
+  const DUE_ITEM_KINDS = new Set(["entry", "stock", "bounce"]);
   function openDueItems(day = today()) {
-    const rows = store.all(DUE_SQL);
-    const states = rows.length && invoiceModule()?.allEntryStates ? invoiceModule().allEntryStates() : null;
-    if (!states) return [];
+    const all = invoiceModule()?.allObligations ? invoiceModule().allObligations() : null;
+    if (!all) return [];
+    const wanted = [];
+    for (const result of all.values()) for (const item of result.items) if (DUE_ITEM_KINDS.has(item.kind) && item.due && item.lineId) wanted.push(item);
+    if (!wanted.length) return [];
+    const rowsById = new Map(store.all(`SELECT e.id, e.account_id AS accountId, e.kind, e.amount, e.date, e.note, e.source, e.due_date AS dueDate, e.expected_date AS expectedDate, a.name, a.phone, a.ref_no AS refNo
+      FROM json_each(?) j JOIN account_entries e ON e.id = j.value JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL`, JSON.stringify(wanted.map(item => item.lineId))).map(row => [row.id, row]));
     const out = [];
-    for (const row of rows) {
-      const state = states.get(row.id);
-      if (!state) continue;
-      const amount = roundMoney(state.remaining - (state.covered || 0));
+    for (const item of wanted) {
+      const row = rowsById.get(item.lineId);
+      if (!row) continue;
+      const amount = item.remaining;
       if (!(amount > EPS)) continue;
       const promise = Boolean(row.expectedDate);
-      const dueDate = row.expectedDate || row.dueDate;
-      const days = dayGap(day, dueDate);
-      const incoming = row.kind === "debt";
+      const calendar = calendarState({ vade: item.vade, promise: row.expectedDate || "", day });
+      const dueDate = calendar.date;
+      const days = calendar.days;
+      const incoming = item.side === "receivable";
+      const what = item.kind === "bounce" ? "Karşılıksız Çek / Senet" : incoming ? "Tahsil Edilecek Borç" : "Ödenecek Borç";
       out.push({
         id: `account|${row.id}`,
         source: "account",
@@ -1818,12 +1905,12 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         entryId: row.id,
         direction: incoming ? "in" : "out",
         person: row.name,
-        label: `${incoming ? "Tahsil Edilecek Borç" : "Ödenecek Borç"}${promise ? " (Ödeme Sözü)" : ""}`,
+        label: `${what}${promise ? " (Ödeme Sözü)" : ""}`,
         dueDate,
         dueText: dayText(dueDate),
         amount,
         days,
-        state: days === 0 ? "today" : days < 0 ? "overdue" : "upcoming",
+        state: calendar.state,
         // 2.4.6 (2.4.5 gezinti B6): borç kaydının Açıklaması — aynı caride iki vadeli borç ayırt edilsin (pil kartı, zil, Vade Takip). Etiket (label)
         // değişmez (kâhin ve göç testleri onu okur); açıklama ayrı alan, ekranda etiketin yanında.
         note: String(row.note || "").trim(),
@@ -1855,7 +1942,15 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     // 2.4.6 madde 9 (DB1): iade geri ödemesi bağı fatura / borç açıklarını değiştirir; bağ değişince takvim önbelleği bayatlamasın (damga aynı kalsa da —
     // ör. durağan saatte aynı anda yazılan satırlar).
     const refunds = store.get("SELECT COALESCE(group_concat(id || '>' || refund_of, ','), '') AS r FROM (SELECT id, refund_of FROM account_entries WHERE refund_of <> '' ORDER BY rowid)").r;
-    return createHash("sha256").update([row.n, row.at, row.total, dated, people, offsets, refunds].join("|")).digest("base64url").slice(0, 22);
+    // 2.5.0 Ç5-B: kalemler TYK'dan — şüpheli kayıtlarının kuyruğu (M13) ve Kapatılacak Fatura bağları da tutarı değiştirir (kart / fatura / taksit izleri dues anahtarında).
+    let doubtfulPrint = "";
+    try {
+      doubtfulPrint = store.get("SELECT (SELECT COUNT(*) || '/' || COALESCE(MAX(COALESCE(updated_at, created_at)), '') FROM doubtful_receivables) || '|' || (SELECT COUNT(*) || '/' || COALESCE(MAX(COALESCE(updated_at, created_at)), '') FROM doubtful_provisions) AS f").f;
+    } catch {
+      doubtfulPrint = "";
+    }
+    const linksPrint = store.get("SELECT COUNT(*) || '/' || COALESCE(group_concat(invoice_id, ''), '') AS f FROM (SELECT invoice_id FROM account_entries WHERE invoice_id <> '' ORDER BY rowid)").f;
+    return createHash("sha256").update([row.n, row.at, row.total, dated, people, offsets, refunds, doubtfulPrint, linksPrint].join("|")).digest("base64url").slice(0, 22);
   };
   const fingerprint = () => {
     const row = store.get("SELECT (SELECT COUNT(*) || '/' || COALESCE(MAX(COALESCE(updated_at, created_at)), '') FROM account_entries) AS e, (SELECT COUNT(*) || '/' || COALESCE(MAX(updated_at), '') || '/' || COUNT(deleted_at) FROM accounts) AS a");

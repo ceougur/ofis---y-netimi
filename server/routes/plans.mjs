@@ -217,6 +217,44 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     };
   };
   const detail = (id, user) => shape(planRow(id), user);
+  // 2.5.0 Ç5-B (S50 = A, M1a, M1e, K8-3): cariye bağlı kartın taksit kalanı TEK YÜKÜMLÜLÜK KUYRUĞU'ndan (lib/obligation-queue.mjs) — kart seçilmeden alınan cari tahsilatının
+  // kapattığı pay dahil ("Taksitler, zil ve takvim bunu gösterir"); accountPaid = o pay. Görünüm katmanı: kartın kendi hesabı (allocate; shape / forAccount / summariesByAccount —
+  // cari defteri ve WhatsApp Ç5-C'ye kadar bunu okur) DEĞİŞMEZ. Carisiz eski kartta ve işlem içinde allocate aynen.
+  const queueOf = () => (store.inTransaction ? null : invoices()?.allObligations?.() || null);
+  function withQueue(plan, ledger, all, day = today()) {
+    const map = plan.accountId && all ? all.get(plan.accountId)?.installments.get(plan.id) : null;
+    if (!map) return ledger;
+    const closed = plan.status === "closed";
+    const items = ledger.items.map(item => {
+      const row = map.get(item.id);
+      const remaining = roundMoney(Math.min(item.amount, row ? row.remaining : 0));
+      const accountPaid = row ? roundMoney(row.byAccount) : 0;
+      const days = item.days;
+      const state = remaining <= 0.005 ? "paid" : closed ? "closed" : days < 0 ? "overdue" : days === 0 ? "today" : days <= 7 ? "upcoming" : "open";
+      return { ...item, remaining, accountPaid, partial: remaining > 0.005 && remaining < item.amount - 0.005, state };
+    });
+    const overdue = items.filter(item => item.state === "overdue");
+    const next = items.find(item => item.remaining > 0.005 && item.state !== "closed") || null;
+    const remaining = roundMoney(items.reduce((sum, item) => sum + item.remaining, 0) + Math.max(0, roundMoney(map.get("rest")?.remaining || 0)));
+    const accountPaid = roundMoney(items.reduce((sum, item) => sum + item.accountPaid, 0));
+    let state = ledger.state;
+    if (!closed) state = remaining <= 0.005 && items.every(item => item.state === "paid") ? "done" : overdue.length ? "overdue" : "active";
+    return {
+      ...ledger,
+      items,
+      // totals.remaining kartın KENDİ hesabı kalır (tutar − kart tahsilatı; Mutabakat Testi plans:totals "ekran = kartın satırları"); kuyruk kalanı ayrı alan.
+      totals: { ...ledger.totals, queueRemaining: remaining, accountPaid, overdue: roundMoney(overdue.reduce((sum, item) => sum + item.remaining, 0)), overdueCount: overdue.length },
+      next: next ? { id: next.id, seq: next.seq, dueDate: next.dueDate, remaining: next.remaining, days: next.days, state: next.state } : null,
+      state,
+    };
+  }
+  // Kart ekranı (GET): kartın kendi hesabı + kuyruk görünümü.
+  const detailView = (id, user) => {
+    const plan = planRow(id);
+    const shaped = shape(plan, user);
+    const view = withQueue(plan, shaped, queueOf());
+    return view === shaped ? shaped : { ...shaped, ...view };
+  };
 
   // Sıra No (v2.0.5): Excel'deki "S.N" kolonu ya da kart açılırken verilen numara. Sayı olanlar sayı gibi sıralanır
   // ("2" < "10"); boş ya da sayı olmayan numara en sona.
@@ -268,6 +306,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       entries.get(entry.planId).push(entry);
     }
     const day = today();
+    const queue = queueOf();
     const needle = String(q || "").toLocaleLowerCase("tr-TR").trim();
     const digits = needle.replace(/\D/g, "");
     const totals = { total: 0, paid: 0, remaining: 0, overdue: 0, overdueCount: 0, month: 0, count: 0 };
@@ -282,7 +321,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
         const refHit = String(plan.refNo || "").toLocaleLowerCase("tr-TR") === needle;
         if (!hay.includes(needle) && !phoneHit && !refHit) continue;
       }
-      const ledger = allocate(plan, items.get(plan.id) || [], entries.get(plan.id) || [], { today: day });
+      const ledger = withQueue(plan, allocate(plan, items.get(plan.id) || [], entries.get(plan.id) || [], { today: day }), queue, day);
       if (status === "active" && !["active", "overdue"].includes(ledger.state)) continue;
       if (status === "overdue" && ledger.state !== "overdue") continue;
       if (status === "done" && ledger.state !== "done") continue;
@@ -599,7 +638,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
 
   router.get("/api/workspace/plans/:id", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "plans.view");
-    ok(res, detail(params.id, user));
+    ok(res, detailView(params.id, user));
   });
 
   // 2.5.0 BİRLEŞİK TUR 3 (3a; iyimser kilit, lib/row-version.mjs): kart düzenleme formu açıldığı andaki kartın sürümünü (updatedAt) gönderir; kart o andan sonra
@@ -1307,6 +1346,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     const out = [];
     const plans = store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND p.status = 'active'`);
     if (!plans.length) return out;
+    const queue = queueOf();
     const items = new Map();
     for (const item of store.all("SELECT id, plan_id AS planId, seq, due_date AS dueDate, amount FROM plan_items ORDER BY due_date, seq")) {
       if (!items.has(item.planId)) items.set(item.planId, []);
@@ -1318,7 +1358,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       entries.get(entry.planId).push(entry);
     }
     for (const plan of plans) {
-      const ledger = allocate(plan, items.get(plan.id) || [], entries.get(plan.id) || [], { today: day });
+      const ledger = withQueue(plan, allocate(plan, items.get(plan.id) || [], entries.get(plan.id) || [], { today: day }), queue, day);
       for (const item of capToRemaining(ledger)) {
         if (item.remaining <= 0.005 || item.state === "open" || item.state === "closed") continue;
         const where = [plan.groupName, plan.subgroupName].filter(Boolean).join(" › ");
@@ -1358,6 +1398,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       "SELECT p.id, p.name, p.phone, p.ref_no AS refNo, p.total, p.status, p.account_id AS accountId, COALESCE(a.name, '') AS accountName FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE p.deleted_at IS NULL AND p.status = 'active'",
     );
     if (!plans.length) return out;
+    const queue = queueOf();
     const items = new Map();
     for (const item of store.all("SELECT id, plan_id AS planId, seq, due_date AS dueDate, amount FROM plan_items ORDER BY due_date, seq")) {
       if (!items.has(item.planId)) items.set(item.planId, []);
@@ -1369,7 +1410,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       entries.get(entry.planId).push(entry);
     }
     for (const plan of plans) {
-      const ledger = allocate(plan, items.get(plan.id) || [], entries.get(plan.id) || [], { today: day });
+      const ledger = withQueue(plan, allocate(plan, items.get(plan.id) || [], entries.get(plan.id) || [], { today: day }), queue, day);
       for (const item of capToRemaining(ledger)) {
         if (item.remaining <= 0.005 || item.state === "closed") continue;
         // Vade takip (v2.0.9) kartı, cariyi ve taksiti de gösterir; nakit akışı yalnız tarih/tutar/kaynağı okur.

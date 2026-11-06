@@ -95,6 +95,8 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
       stock()?.fingerprint?.() || "",
       cheques()?.fingerprint?.() || "",
       invoices()?.fingerprint?.() || "",
+      // 2.5.0 Ç5-B: gecikmiş TEK YÜKÜMLÜLÜK KUYRUĞU'ndan — mahsup, iade geri ödemesi bağı, Kapatılacak Fatura bağı ve şüpheli kayıtları da değiştirir.
+      accounts()?.dueFingerprint?.() || "",
       // v2.1.0: işlem başlıkları (Banka Fişi dahil; tek kaynağın 9. kaynağı banka fişi satırlarıdır).
       hasEvents() ? tableState("fin_events") : "",
       // Aşama 14 (K10): banka hesap kartları (hesap açma/silme, Pasife Al, tür) Banka kutusunu değiştirir.
@@ -258,7 +260,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const list = ledgers.accounts.filter(account => (!type || account.type === type) && hit(account));
     const result = trialBalance(list, ledgers.lines, { ...range, includeIdle });
     let rows = result.rows;
-    // v2.0.24: "Geciken Taksiti Olan" (ekran bu seçeneği sunuyordu; sunucu yok sayıp bütün carileri listeliyordu).
+    // v2.0.24: "Geciken Taksiti Olan" (ekran bu seçeneği sunuyordu; sunucu yok sayıp bütün carileri listeliyordu). 2.5.0 Ç5-B: "Gecikmiş Borcu Olan" (TYK; cari listesi süzgeciyle aynı).
     if (side === "overdue") {
       const late = new Set((accounts()?.list ? accounts().list({ id: "", role: "admin" }, { status: "all", balance: "overdue", limit: 1e9 }).accounts : []).map(account => account.id));
       rows = rows.filter(row => late.has(row.id));
@@ -275,7 +277,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
   });
   // Durum (v2.0.10): muhasebe programlarındaki gibi yalın — Borçlu (cari bize borçlu) · Alacaklı (biz cariye borçluyuz).
   const sideText = value => (value > 0.005 ? "Borçlu" : value < -0.005 ? "Alacaklı" : "Kapalı");
-  const SIDE_FILTER = { debtor: "Borçlular", creditor: "Alacaklılar", nonzero: "Sadece bakiyesi olanlar", zero: "Bakiyesi sıfır", overdue: "Geciken taksiti olan" };
+  const SIDE_FILTER = { debtor: "Borçlular", creditor: "Alacaklılar", nonzero: "Sadece bakiyesi olanlar", zero: "Bakiyesi sıfır", overdue: "Gecikmiş borcu olan" };
   const mizanTable = data => ({
     headers: ["Cari No", "Cari", "Tür", "Devir", "Borç", "Alacak", "Bakiye", "Durum"],
     types: ["", "", "", "money", "money", "money", "money", ""],
