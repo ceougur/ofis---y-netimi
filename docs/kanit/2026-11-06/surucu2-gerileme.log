@@ -1,0 +1,22 @@
+GERİLEME DENETİMİ: 132 koşu (senaryo × saat dilimi); program çıktısı BİREBİR 132, FARKLI 0
+
+KİLİTLİ DÖNEM (Ç3 donmuş okuma ↔ eski kodun canlı türetmesi): 12 koşu
+  s07-duzenle-iptal-sil-kilit [UTC] kilit ['2026-07-02'] durum ['yapildi'] frozenThrough ['2026-07-02'] son {'lockedUntil': '2026-07-02', 'frozenThrough': '2026-07-02'} denetim ledger:snapshot + ledger:rule-diff TUTARLI (API yalnız tutmayanı listeler; donmuş koşu var, tutmayan yok) · eski↔yeni program çıktısı BİREBİR
+  s30-kilit-kural-farki-kg15 [UTC] kilit ['2026-03-31'] durum ['yapildi'] frozenThrough ['2026-03-31'] son {'lockedUntil': '2026-03-31', 'frozenThrough': '2026-03-31'} denetim ledger:snapshot + ledger:rule-diff TUTARLI (API yalnız tutmayanı listeler; donmuş koşu var, tutmayan yok) · eski↔yeni program çıktısı BİREBİR
+  s38-cari-tur-degistir [UTC] kilit ['2026-03-31'] durum ['yapildi'] frozenThrough ['2026-03-31'] son {'lockedUntil': '2026-03-31', 'frozenThrough': '2026-03-31'} denetim ledger:snapshot + ledger:rule-diff TUTARLI (API yalnız tutmayanı listeler; donmuş koşu var, tutmayan yok) · eski↔yeni program çıktısı BİREBİR
+  s47-m4-onceki-yil-kilitli [UTC] kilit ['2025-12-31'] durum ['yapildi'] frozenThrough ['2025-12-31'] son {'lockedUntil': '2025-12-31', 'frozenThrough': '2025-12-31'} denetim ledger:snapshot + ledger:rule-diff TUTARLI (API yalnız tutmayanı listeler; donmuş koşu var, tutmayan yok) · eski↔yeni program çıktısı BİREBİR
+  s49-m7-kural-farki-671-681 [UTC] kilit ['2026-12-31'] durum ['yapildi'] frozenThrough ['2026-12-31'] son {'lockedUntil': '2026-12-31', 'frozenThrough': '2026-12-31'} denetim ledger:snapshot + ledger:rule-diff TUTARLI (API yalnız tutmayanı listeler; donmuş koşu var, tutmayan yok) · eski↔yeni program çıktısı BİREBİR
+  s56-r3-kilitli-bag [UTC] kilit ['2026-12-31'] durum ['yapildi'] frozenThrough ['2026-12-31'] son {'lockedUntil': '2026-12-31', 'frozenThrough': '2026-12-31'} denetim ledger:snapshot + ledger:rule-diff TUTARLI (API yalnız tutmayanı listeler; donmuş koşu var, tutmayan yok) · eski↔yeni program çıktısı BİREBİR
+  s07-duzenle-iptal-sil-kilit [Europe-Istanbul] kilit ['2026-07-02'] durum ['yapildi'] frozenThrough ['2026-07-02'] son {'lockedUntil': '2026-07-02', 'frozenThrough': '2026-07-02'} denetim ledger:snapshot + ledger:rule-diff TUTARLI (API yalnız tutmayanı listeler; donmuş koşu var, tutmayan yok) · eski↔yeni program çıktısı BİREBİR
+  s30-kilit-kural-farki-kg15 [Europe-Istanbul] kilit ['2026-03-31'] durum ['yapildi'] frozenThrough ['2026-03-31'] son {'lockedUntil': '2026-03-31', 'frozenThrough': '2026-03-31'} denetim ledger:snapshot + ledger:rule-diff TUTARLI (API yalnız tutmayanı listeler; donmuş koşu var, tutmayan yok) · eski↔yeni program çıktısı BİREBİR
+  s38-cari-tur-degistir [Europe-Istanbul] kilit ['2026-03-31'] durum ['yapildi'] frozenThrough ['2026-03-31'] son {'lockedUntil': '2026-03-31', 'frozenThrough': '2026-03-31'} denetim ledger:snapshot + ledger:rule-diff TUTARLI (API yalnız tutmayanı listeler; donmuş koşu var, tutmayan yok) · eski↔yeni program çıktısı BİREBİR
+  s47-m4-onceki-yil-kilitli [Europe-Istanbul] kilit ['2025-12-31'] durum ['yapildi'] frozenThrough ['2025-12-31'] son {'lockedUntil': '2025-12-31', 'frozenThrough': '2025-12-31'} denetim ledger:snapshot + ledger:rule-diff TUTARLI (API yalnız tutmayanı listeler; donmuş koşu var, tutmayan yok) · eski↔yeni program çıktısı BİREBİR
+  s49-m7-kural-farki-671-681 [Europe-Istanbul] kilit ['2026-12-31'] durum ['yapildi'] frozenThrough ['2026-12-31'] son {'lockedUntil': '2026-12-31', 'frozenThrough': '2026-12-31'} denetim ledger:snapshot + ledger:rule-diff TUTARLI (API yalnız tutmayanı listeler; donmuş koşu var, tutmayan yok) · eski↔yeni program çıktısı BİREBİR
+  s56-r3-kilitli-bag [Europe-Istanbul] kilit ['2026-12-31'] durum ['yapildi'] frozenThrough ['2026-12-31'] son {'lockedUntil': '2026-12-31', 'frozenThrough': '2026-12-31'} denetim ledger:snapshot + ledger:rule-diff TUTARLI (API yalnız tutmayanı listeler; donmuş koşu var, tutmayan yok) · eski↔yeni program çıktısı BİREBİR
+
+# tests 132
+# pass 132
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

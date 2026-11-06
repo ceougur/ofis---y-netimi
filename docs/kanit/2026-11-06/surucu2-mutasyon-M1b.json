@@ -1,0 +1,32 @@
+{
+  "ad": "surucu2-mutasyon-M1b",
+  "komut": "node test/bagimsiz/muhasebe-surucu/kos.mjs --paralel 3 --program /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/surucu2-mut-M1b-2ba5ac0b --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/surucu2-cikti/surucu2-mutasyon-M1b --veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/surucu2-veri/m1b",
+  "commit": "fb8be14310a4afaf9027a056b5985e08cd3e6d49",
+  "dal": "worktree-agent-a95435ad22c7ff7a7",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T03:49:23.129Z",
+  "sure_sn": 233.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4612,
+    "gecen": 4524,
+    "basarisiz": 74,
+    "iptal": 0,
+    "atlanan": 14
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 74 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/surucu2-kanit/2026-11-06/surucu2-mutasyon-M1b.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a95435ad22c7ff7a7",
+  "ham_cikti_sha256": "5f120b8822c4dcaf455757d8244915318a3e6cc369f4172f730a035d5320c9ca",
+  "ham_cikti_bayt": 65602
+}
