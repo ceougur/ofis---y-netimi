@@ -1,0 +1,32 @@
+{
+  "ad": "webs7-yeni-bs7-ist",
+  "komut": "node --test test/sema-kapisi-bs7.test.mjs",
+  "commit": "07e7056faa5ec4b5bd3f23a71c67ed14aa091bc7",
+  "dal": "worktree-agent-a790a293738c6ae40",
+  "kirli": 3,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T08:45:23.783Z",
+  "sure_sn": 13.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 4,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/webs7-kanit/2026-11-06/webs7-yeni-bs7-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a790a293738c6ae40",
+  "ham_cikti_sha256": "28403c5cc1d8b812e525249398a330124ec473ea015feef2dbca5c907ca3ca1c",
+  "ham_cikti_bayt": 1829
+}
