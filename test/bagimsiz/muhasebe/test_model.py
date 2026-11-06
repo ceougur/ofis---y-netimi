@@ -497,15 +497,75 @@ class OlayMaddeleri(unittest.TestCase):
         self.assertEqual(r["redler"], [])
         self.assertEqual((s.get("120|C3", {}).get("bakiye", 0), s["128|C3"]["bakiye"], s["100"]["bakiye"]), (0, 9000, 11000))
 
-    def test_S57_olagan_kayit_susma(self):
-        # kâhin bakımı 8 (README U7): olağan bağlı kayıtta AYNI düzeltmede bağ + cari (S57 harfiyen red mi, S54 gibi kabul mü — KULLANICIYA SORULMALI 8) ve
-        # formdaki peşinin carisi (faturanın düzenlenmesi, V3 (e)) → kâhin susar (senaryo hatası)
-        bas = [o("satis_faturasi", "2026-01-05", id="F1", cari="C1", M=1000, K=0), o("satis_faturasi", "2026-01-06", id="F3", cari="C3", M=500, K=0),
+    def test_S79_olagan_kayit_bag_cari(self):
+        # kâhin bakımı 9 (README P5–P7; G3: bakım 8'in test_S57_olagan_kayit_susma'sının YERİNE — orada PB {C3, F3} ve PB {C3, null} senaryo hatasıydı,
+        # S79 A ile KABUL). Bağ değişmeden cari → S57 red aynen. Susar (senaryo hatası): yeni bağ yeni carinin etkin belgesi / kartı değil (P7 a), ödemede
+        # taksit kartı (P7 b), formdaki peşin (P7 c; U7 (b) aynen), yeni carinin açık şüpheli kaydıyla S56 sınırı aşılıyor (P7 d)
+        bas = [o("satis_faturasi", "2026-01-05", id="F1", cari="C1", M=1000, K=0), o("satis_faturasi", "2026-01-05", id="F2", cari="C1", M=300, K=0),
+               o("satis_faturasi", "2026-01-06", id="F3", cari="C3", M=500, K=0), o("satis_faturasi", "2026-01-06", id="F6", cari="C2", M=1000, K=0),
+               o("taksit_karti", "2026-01-07", id="TK1", cari="C1", kaynak="yeni_borc", toplam=300, taksitler=[{"vade": "2026-02-01", "tutar": 300}]),
+               o("taksit_karti", "2026-01-07", id="TK3", cari="C3", kaynak="yeni_borc", toplam=400, taksitler=[{"vade": "2026-02-01", "tutar": 400}]),
+               o("supheliye_al", "2026-01-08", id="SA", cari="C2", tutar=900),                 # C2: 128 900, 120 100
+               o("alis_faturasi", "2026-01-05", id="A1", cari="T1", fatura_turu="gider", gider_turu="genel", M=1000, K=0),
                o("tahsilat", "2026-01-10", id="PB", cari="C1", yol="havale", banka="B1", tutar=400, fatura="F1"),
-               o("tahsilat", "2026-01-06", id="PP", cari="C3", yol="havale", banka="B1", tutar=100, fatura="F3", fatura_odemesi=True)]
-        for kaynak, dg in (("PB", {"cari": "C3", "fatura": "F3"}), ("PB", {"cari": "C3", "fatura": None}), ("PP", {"cari": "C1"})):
+               o("tahsilat", "2026-01-06", id="PP", cari="C3", yol="havale", banka="B1", tutar=100, fatura="F3", fatura_odemesi=True),
+               o("odeme", "2026-01-10", id="OA", cari="T1", yol="havale", banka="B1", tutar=400, fatura="A1")]
+
+        def kos(kaynak, dg):
+            return M.kos(senaryo(bas + [o("duzenle", kaynak=kaynak, degisiklik=dg)]))
+
+        for kaynak, dg in (("PB", {"cari": "C3", "fatura": "F3"}), ("PB", {"cari": "C3", "fatura": None}),
+                           ("PB", {"cari": "C3", "fatura": None, "taksit_karti": "TK3"}), ("PB", {"cari": "C3", "fatura": "F3", "tutar": 300}),
+                           ("PB", {"cari": "C3", "fatura": "F3", "tarih": "2026-01-12"}), ("OA", {"cari": "T2", "fatura": None}),
+                           ("PB", {"cari": "C2", "fatura": None}), ("PB", {"cari": "C2", "fatura": "F6"})):   # son ikisi: sınır aşılmıyor (K3 / S25 (a) 128'den)
+            self.assertEqual([x["kod"] for x in kos(kaynak, dg)["redler"]], [], f"{kaynak} {dg}")
+        for dg in ({"cari": "C3"}, {"cari": "C3", "fatura": "F1"}, {"cari": "C3", "tutar": 300}):
+            self.assertEqual([x["kod"] for x in kos("PB", dg)["redler"]], ["BAG_KALDIRILMALI"], dg)
+        for kaynak, dg in (("PB", {"cari": "C3", "fatura": "F2"}), ("PB", {"cari": "C3", "fatura": "F6"}),
+                           ("PB", {"cari": "C3", "fatura": None, "taksit_karti": "TK1"}), ("OA", {"cari": "T2", "fatura": None, "taksit_karti": "TK3"}),
+                           ("PP", {"cari": "C1"}), ("PP", {"cari": "C1", "fatura": "F1"}),
+                           ("PB", {"cari": "C2", "fatura": None, "normal_cari": True})):          # 400 > C2'nin 120 bakiyesi 100
             with self.assertRaises(AssertionError, msg=f"{kaynak} {dg}"):
-                M.kos(senaryo(bas + [o("duzenle", kaynak=kaynak, degisiklik=dg)]))
+                kos(kaynak, dg)
+
+    def test_S79_S54_ile_ayni(self):
+        # kâhin bakımı 9 (README P8): aynı düzeltme olağan kayıtta (S79) ve geri yüklenmiş, Kasa açılışından önce tarihli kayıtta (S54) aynı cari / kuyruk /
+        # kart / hatırlatma / mizan sonucunu verir; fark yalnız Mutabakat Testi uyarısı
+        def kur(olagan):
+            ek = {} if olagan else {"yedekten": True}
+            return senaryo([
+                o("satis_faturasi", "2026-01-05", id="F1", cari="C1", M=1000, K=0, vade="2026-01-31"),
+                o("satis_faturasi", "2026-01-06", id="F3", cari="C3", M=600, K=0, vade="2026-01-20"),
+                o("satis_faturasi", "2026-01-06", id="F5", cari="C3", M=500, K=0, vade="2026-02-28"),
+                o("taksit_karti", "2026-01-07", id="TK3", cari="C3", kaynak="yeni_borc", toplam=400, taksitler=[{"vade": "2026-02-01", "tutar": 400}]),
+                o("kasa_acilis", "2026-01-01" if olagan else "2026-01-15", id="KA", tutar=1000),
+                o("tahsilat", "2026-01-10", id="PA", cari="C1", yol="nakit", tutar=300, fatura="F1", **ek),
+                o("tahsilat", "2026-01-11", id="PB", cari="C1", yol="nakit", tutar=200, fatura="F1", **ek),
+                o("tahsilat", "2026-01-12", id="PC", cari="C1", yol="nakit", tutar=100, fatura="F1", **ek),
+                o("duzenle", kaynak="PA", degisiklik={"cari": "C3", "fatura": "F5", "tutar": 250}),
+                o("duzenle", kaynak="PB", degisiklik={"cari": "C3", "fatura": None, "taksit_karti": "TK3"}),
+                o("duzenle", kaynak="PC", degisiklik={"cari": "C2", "fatura": None}),
+                E.MZ("mz", "2026-01-01", "2026-01-31"), E.R("hat", "hatirlatma", tarih="2026-02-02"), E.R("mu", "mutabakat_uyarilari", tarih="2026-01-31"),
+            ] + [E.R(f"{r}-{c}", r, cari=c, tarih="2026-02-02") for r in ("gecikmis", "acik_kalemler", "kartlar") for c in ("C1", "C2", "C3")])
+        r1, r2 = M.kos(kur(True)), M.kos(kur(False))
+        self.assertEqual((r1["redler"], r2["redler"]), ([], []))
+        self.assertEqual(r1["raporlar"]["mu"], [])
+        self.assertEqual(len(r2["raporlar"]["mu"]), 3)
+        self.assertEqual(r1["raporlar"]["gecikmis-C3"]["gecikmis"], 800)   # F3 600 (PA'nın bağı F5'e) + taksit 400 − 200 (PB); F5 vadesi 28.02
+        for ad in r1["raporlar"]:
+            if ad != "mu":
+                self.assertEqual(r1["raporlar"][ad], r2["raporlar"][ad], ad)
+
+    def test_S72_S73_soz_kapsami(self):
+        # kâhin bakımı 9 (README P1–P3): söz günü dahil etkin (S72); P3: söz girildiği gün carinin gecikmiş borcu yoksa da söz bütün borcu kapsar (S73) —
+        # söz süresinde geciken kalem cariyi listeye sokmaz; söz geçince girer
+        r = M.kos(senaryo([o("satis_faturasi", "2026-02-01", cari="C1", M=1000, K=0, vade="2026-03-15"),
+                           o("odeme_sozu", "2026-03-10", cari="C1", soz_tarihi="2026-03-31"),
+                           E.R("h1", "hatirlatma", tarih="2026-03-20"), E.R("h2", "hatirlatma", tarih="2026-03-31"),
+                           E.R("h3", "hatirlatma", tarih="2026-04-01")]))["raporlar"]
+        self.assertEqual((r["h1"]["otomatik"], r["h1"].get("odeme_sozu_var"), r["h1"].get("kahin_susuyor")), ({}, {"C1": 1000}, None))
+        self.assertEqual((r["h2"]["otomatik"], r["h2"].get("odeme_sozu_var"), r["h2"].get("kahin_susuyor")), ({}, {"C1": 1000}, None))
+        self.assertEqual((r["h3"]["otomatik"], r["h3"].get("odeme_sozu_var")), ({"C1": 1000}, None))
 
     def test_S14_hedef_kalem_kapanir(self):
         # README Y3 (bakım 4'te mutant tasarımında görülüp SONRADAN elle eklendi: şüpheli kuyruğunda hangi kalemin kapandığını hiçbir senaryo ölçmüyordu):
