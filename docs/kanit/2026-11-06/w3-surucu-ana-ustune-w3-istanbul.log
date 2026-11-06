@@ -1,0 +1,86 @@
+TAP version 13
+# saat dilimi Europe/Istanbul
+(node:26901) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+not ok 1 - SW3-01-bir-yil-siniri-iki-yani-sure-dolunca-ayni-donem-daha-once-gonderildi [hizli] (6 fark; davranış farkı 0; gösterim: G1-borclu-eki 6)
+not ok 2 - SW3-02-gece-yarisi-yerel-gun-utc-farkli-bir-yil-siniri [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 3 - SW3-03-silme-talebi-ayni-donem-elenir-sonraki-donem-gider-silinen-telefon-kullanilmaz [hizli] (10 fark; davranış farkı 1; gösterim: G1-borclu-eki 9)
+  # onceki_uyari.T2.sayi: beklenen 2, program 3
+ok 4 - SW3-04-geri-yukleme-bir-yildan-eski-icerik-donunce-silinir [hizli]
+not ok 5 - SW3-05-silme-talebinden-once-alinan-yedek-geri-yuklenir-icerik-susuyor-r3-kesin [hizli] (7 fark; davranış farkı 1; gösterim: G1-borclu-eki 6)
+  # kontroller.K3.pencere_farkli_alici.W1: beklenen 2, program 3
+not ok 6 - S30-01-talep-duraklatildi-meta-bekletti-zincir-gonderilmez-belirsiz-iz-eler [hizli] (16 fark; davranış farkı 9; gösterim: G1-borclu-eki 7)
+  # meta.medya_silme.D: beklenen 1, program 2
+  # meta.medya_silme.E: beklenen 0, program 1
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 2, program 3
+  # kontroller.K2.pencere_farkli_alici.W1: beklenen 2, program 3
+  # kontroller.K2.medya_silme: beklenen 1, program 3
+  # kontroller.K3.medya_silme: beklenen 1, program 3
+  # kontroller.K4.medya_silme: beklenen 3, program 5
+  # isler.T1/E.medya_silme: beklenen 0, program 1
+  # isler.T3/D.medya_silme: beklenen 0, program 1
+ok 7 - S30-02-talep-sinir-lisans-gonderilmez-belirsiz-hatirlatma-ayni-gun-elenir-ertesi-gun-gider [hizli] # SKIP GEÇERSİZ: kvkk_sil LS: silme talebi oluşmadı (403 LICENSE_READ_ONLY Lisans geçerli değil. Program salt okunur çalışıyor; bu işlem yapılamaz.) — S-61
+not ok 8 - S30-03-bir-yil-dolumu-bekleyen-isler-gonderilmez-belirsiz-iz-eler [hizli] (6 fark; davranış farkı 0; gösterim: G1-borclu-eki 6)
+not ok 9 - S31-01-talep-sonrasi-basarisizlari-yeniden-dene-silinmis-ekstre-elenir-yeni-gonderim-gider [hizli] (5 fark; davranış farkı 0; gösterim: G1-borclu-eki 5)
+not ok 10 - S31-02-bir-yil-sonra-silinmis-ekstre-yeniden-dene-ve-yine-de-gonder-kapali [hizli] (4 fark; davranış farkı 0; gösterim: G1-borclu-eki 4)
+not ok 11 - S32-01-talepten-once-ve-sonra-alinan-iki-yedek-icerik-gelmez-sonraki-icerik-kalir [hizli] (8 fark; davranış farkı 3; gösterim: G1-borclu-eki 5)
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 2, program 3
+  # kontroller.K1.medya_silme: beklenen 2, program 3
+  # kontroller.K2.pencere_farkli_alici.W1: beklenen 2, program 3
+not ok 12 - S32-02-talepten-once-yedekte-basarisiz-ve-belirsiz-geri-yukleme-sonrasi-silinmis [hizli] (3 fark; davranış farkı 1; gösterim: G1-borclu-eki 2)
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 2
+not ok 13 - S35-01-talep-aninda-kapanir-ayni-donem-yeni-gonderim-gider-meta-bekletti-gec-teslim [hizli] (22 fark; davranış farkı 15; gösterim: G1-borclu-eki 7)
+  # durum_sayilari.Atlandı: beklenen 2, program 1
+  # durum_sayilari.Teslim Edildi: beklenen 3, program 4
+  # meta.medya_silme.D: beklenen 1, program 2
+  # kontroller.K1.medya_silme: beklenen 1, program 2
+  # kontroller.K2.pencere_farkli_alici.W1: beklenen 3, program 4
+  # kontroller.K2.medya_silme: beklenen 3, program 4
+  # kontroller.K3.durum_sayilari.Atlandı: beklenen 2, program 1
+  # kontroller.K3.durum_sayilari.Teslim Edildi: beklenen 3, program 4
+  # kontroller.K3.pencere_farkli_alici.W1: beklenen 3, program 4
+  # kontroller.K3.medya_silme: beklenen 3, program 4
+  # kontroller.K3.isler.T3/D: beklenen 'Atlandı', program 'Teslim Edildi'
+  # isler.T3/D.durum: beklenen 'Atlandı', program 'Teslim Edildi'
+not ok 14 - S35-02-hatirlatma-talep-sonrasi-ayni-gun-yeni-gonderim-gece-yarisi-belirsiz-yerel-gun [hizli] (9 fark; davranış farkı 2; gösterim: G1-borclu-eki 7)
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 2
+  # kontroller.K2.pencere_farkli_alici.W1: beklenen 3, program 4
+not ok 15 - S36-01-silinmis-belirsiz-ekstre-ayni-donem-yol-yok-sonraki-donem-gider [hizli] (4 fark; davranış farkı 0; gösterim: G1-borclu-eki 4)
+not ok 16 - S36-02-silinmis-belirsiz-son-3-ay-yedi-gun-icinde-yol-yok-sonra-gider [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 2)
+not ok 17 - S37-01-talep-sonrasi-hatirlatma-yeniden-dene-ve-yine-de-gonder-karttan-gider [hizli] (15 fark; davranış farkı 8; gösterim: G1-borclu-eki 7)
+  # durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 2
+  # kontroller.K2.durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # kontroller.K2.pencere_farkli_alici.W1: beklenen 3, program 4
+  # kontroller.K2.isler.T1/RT: beklenen 'Atlandı', program 'Başarısız'
+  # yeniden.Y1.alinan: beklenen ['RF', 'RT'], program ['RF']
+  # isler.T1/RT.durum: beklenen 'Atlandı', program 'Başarısız'
+  # isler.T1/RT.atlanma_nedeni: beklenen 'telefonsuz', program None
+not ok 18 - S37-02-bir-yil-sonra-hatirlatma-yeniden-dene-ve-yine-de-gonder-karttan-gider [hizli] (6 fark; davranış farkı 0; gösterim: G1-borclu-eki 6)
+not ok 19 - S38-01-tasima-oncesi-talep-yeni-bilgisayarda-geri-yuklemede-uygulanir [hizli] (9 fark; davranış farkı 4; gösterim: G1-borclu-eki 5)
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 2, program 0
+  # kontroller.K1.medya_silme: beklenen 2, program 3
+  # kontroller.K2.pencere_farkli_alici.W1: beklenen 2, program 0
+  # bu_ay.W1: beklenen nesne, program '<YOK>'
+not ok 20 - S38-02-tasima-sonrasi-talep-ve-zincirleme-tasima [hizli] (8 fark; davranış farkı 4; gösterim: G1-borclu-eki 4)
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 3, program 0
+  # kontroller.K2.pencere_farkli_alici.W1: beklenen 3, program 0
+  # kontroller.K3.pencere_farkli_alici.W1: beklenen 3, program 0
+  # bu_ay.W1: beklenen nesne, program '<YOK>'
+not ok 21 - S42-01-gonderiliyor-talep-kabul-gonderildi-izi-ayni-donem-daha-once [hizli] (1 fark; davranış farkı 1)
+  # SÜRÜCÜ HATASI
+  # Error: sürücü bu Meta yanıtını bilmiyor: {"yol":"messages","to":"905321112233","deneme":1,"yanit":null} |     at kuralEkle (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-ana-5620b55c/test/bagimsiz/whatsapp-248/surucu.mjs:419:25) |     at file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-ana-5620b55c/test/bagimsiz/whatsapp-248/surucu.mjs:436:37 |     at Array.forEach (<anonymous>)
+not ok 22 - S42-02-gonderiliyor-talep-yanit-yok-belirsiz-iz-ayni-donem-elenir [hizli] (1 fark; davranış farkı 1)
+  # SÜRÜCÜ HATASI
+  # Error: sürücü bu Meta yanıtını bilmiyor: {"yol":"messages","to":"905321112233","deneme":1,"yanit":null} |     at kuralEkle (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-ana-5620b55c/test/bagimsiz/whatsapp-248/surucu.mjs:419:25) |     at file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-ana-5620b55c/test/bagimsiz/whatsapp-248/surucu.mjs:436:37 |     at Array.forEach (<anonymous>)
+not ok 23 - S42-03-gonderiliyor-talep-yeniden-gonderim-gerektiren-yanit-atlandi-kesin-olumsuz-basarisiz [hizli] (1 fark; davranış farkı 1)
+  # SÜRÜCÜ HATASI
+  # Error: sürücü bu Meta yanıtını bilmiyor: {"yol":"messages","to":"905511002030","deneme":1,"yanit":null} |     at kuralEkle (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-ana-5620b55c/test/bagimsiz/whatsapp-248/surucu.mjs:419:25) |     at file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-ana-5620b55c/test/bagimsiz/whatsapp-248/surucu.mjs:436:37 |     at Array.forEach (<anonymous>)
+not ok 24 - S42-04-gonderiliyor-talep-gece-yarisi-yerel-gun-iz-gonderim-aninda [hizli] (1 fark; davranış farkı 1)
+  # SÜRÜCÜ HATASI
+  # Error: sürücü bu Meta yanıtını bilmiyor: {"yol":"messages","to":"905521002030","deneme":1,"yanit":null} |     at kuralEkle (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-ana-5620b55c/test/bagimsiz/whatsapp-248/surucu.mjs:419:25) |     at file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-ana-5620b55c/test/bagimsiz/whatsapp-248/surucu.mjs:436:37 |     at Array.forEach (<anonymous>)
+1..24
+# tests 24
+# pass 1
+# fail 22
+# skipped 1
