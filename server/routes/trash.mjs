@@ -11,7 +11,7 @@ import { methodInput } from "../lib/pay-method.mjs";
 import { FREEZE_CLOSE } from "./plans.mjs";
 import { bankForm } from "../lib/bank/module-ref.mjs";
 import { systemClock } from "../lib/clock.mjs";
-import { cashOpenings, firstCashMovement, isCashOpening } from "../lib/cash-opening.mjs";
+import { cashOpenings, firstCashMovement, isCashOpening, restoringCash } from "../lib/cash-opening.mjs";
 import { canUser } from "../lib/permissions.mjs";
 
 const KIND_LABELS = {
@@ -228,6 +228,13 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
   router.post("/api/admin/trash/restore", async ({ req, res }) => {
     const user = auth.requirePermission(req, "records.delete");
     const body = await readJson(req);
+    // 2.5.0 Ç5-K (S20 = A, Z9 BAŞ MİMAR KARARI; lib/cash-opening.mjs): Silinenler'den geri gelen para satırı silinmeden önceki hâliyle döner — Kasa açılışından
+    // önce tarihli olsa da (S12 yalnız YENİ harekette; Mutabakat Testi "Kasa Açılışından Önce Tarihli Hareket" uyarısı verir). Kapsam yalnız bu isteğin işlemleri.
+    return restoringCash(store, () => restoreItem(user, body, res));
+  });
+
+  // Silinenler'den geri yükleme (yukarıdaki uç; eşzamanlı — gövde okunduktan sonra bekleme yok).
+  function restoreItem(user, body, res) {
     const [source, ...rest] = text(body.id).split(":");
     const ref = rest.join(":");
     if (!source || !ref) throw new HttpError(400, "Geri yüklenecek öğe seçilmedi.");
@@ -533,5 +540,5 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
     } else throw new HttpError(400, "Bu öğe geri yüklenemez.");
     if (dropped) message = `${message} ${bank.droppedText(dropped)}`;
     return ok(res, { restored: item.kind, message });
-  });
+  }
 }
