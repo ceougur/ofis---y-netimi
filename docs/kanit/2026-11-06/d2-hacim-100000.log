@@ -1,0 +1,29 @@
+# veri-uretimi: 818780 ms, olay döngüsü en çok 428 ms
+ok 1 - 100000 hareket programın API'siyle yazıldı (başarısız 0, satır 100000)
+# bes-arsiv-benzetimi: 4546 ms, olay döngüsü en çok 553 ms
+# arsiv-listesi: 4 ms, olay döngüsü en çok 0 ms
+ok 2 - arşiv listesi 5 arşiv
+ok 3 - arşiv listesi ≤ 1 sn ve olay döngüsü ≤ 50 ms (4 / 0)
+# yedek-listesi: 3 ms, olay döngüsü en çok 0 ms
+ok 4 - Yedekler listesi ≤ 1 sn / ≤ 50 ms (3 / 0)
+# arsiv-ilk-acilis: 6970 ms, olay döngüsü en çok 6262 ms
+ok 5 - arşiv açıldı (6970 ms, olay döngüsü 6262 ms)
+# bes-arsiv-dogrulama: 804 ms, olay döngüsü en çok 10 ms
+ok 6 - 5 arşivin bütünlük denetimi olay döngüsünü ≤ 50 ms tutar (10 ms; toplam 804 ms)
+# devir-yedegi: 2125 ms, olay döngüsü en çok 7 ms
+ok 7 - devir yedeği alındı (11 dosya, 823 MB, 2125 ms, olay döngüsü en çok 7 ms — VACUUM INTO ana iş parçacığında, rutin yedekle aynı)
+# devir-yedekleri-listesi: 5 ms, olay döngüsü en çok 0 ms
+ok 8 - Devir Yedekleri listesi ≤ 1 sn / ≤ 50 ms (5 / 0)
+# bakim-ac: 9 ms, olay döngüsü en çok 0 ms
+ok 9 - bakım kipi açılışı ≤ 500 ms (9)
+# bakim-kapat: 5 ms, olay döngüsü en çok 0 ms
+# diskten-tanima-taramasi: 1 ms, olay döngüsü en çok 0 ms
+ok 10 - açılıştaki arşiv taraması ≤ 500 ms (1)
+{"veri-uretimi":{"ms":818780,"loopMaxMs":428},"dosyaBoyuMB":145,"bes-arsiv-benzetimi":{"ms":4546,"loopMaxMs":553},"arsiv-listesi":{"ms":4,"loopMaxMs":0},"yedek-listesi":{"ms":3,"loopMaxMs":0},"arsiv-ilk-acilis":{"ms":6970,"loopMaxMs":6262},"bes-arsiv-dogrulama":{"ms":804,"loopMaxMs":10},"devir-yedegi":{"ms":2125,"loopMaxMs":7},"devirYedegiMB":823,"devir-yedekleri-listesi":{"ms":5,"loopMaxMs":0},"bakim-ac":{"ms":9,"loopMaxMs":0},"bakim-kapat":{"ms":5,"loopMaxMs":0},"diskten-tanima-taramasi":{"ms":1,"loopMaxMs":0}}
+1..10
+# tests 10
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

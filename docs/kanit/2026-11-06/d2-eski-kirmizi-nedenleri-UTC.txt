@@ -1,0 +1,19 @@
+- kayıt defteri: arşiv sirketler.json + ikinci kopya + ortak katman kopy… → sirketler.json: 001 arşiv kaydı + actual - expected
+- diskten yeniden kurma: kayıt defteri tamamen kaybolunca ve eski sürüm … → 001 arşivi diskten tanındı, özeti arşiv klasöründen + actual - expected
+- salt okunur açma (002 ve 001): arşivde HER yazma ucu 403 archive-read-… → arşive yazma 403 olmalı (gelen 200 ) 
+- bütünlük: değişmiş arşiv (son şema) uyarıyla salt okunur açılır, değiş… → The expression evaluated to a falsy value: 
+- arşivin göçü: GERÇEK v2.0.26 koduyla üretilmiş eski şemalı arşiv ilk a… → arşiv son şemaya taşındı 
+- şirket kapanınca (geri yükleme / silme / Ayır yolu) o şirketin arşiv ö… → Expected values to be strictly equal: 
+- tarama tam: kaynaktaki her router.post/put/patch/delete kaydı çözüldü;… → 'HUB_ONLY ifadesi sunucudakiyle aynı değil (yardımcıyı güncelleyin)'
+- sözleşme sabitleri: test yardımcısının yerel değerleri programınkiyle … → "Cannot find module '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2-eski-b18ba7a6/server/lib/
+- 001 bakımda: şirket yazma uçlarının HEPSİ 503, ortak katmanın şirket /… → "Cannot read properties of undefined (reading 'enter')"
+- 002 bakımda: 002 yazmaları 503, 001 yazar; 002 bağlantısı query_only (… → "Cannot read properties of undefined (reading 'enter')"
+- arka plan yazıcıları bakımdaki şirkette durur, öbür şirkette sürer (ca… → "Cannot read properties of undefined (reading 'enter')"
+- güncelleme tutması (uygulama): kip açılırken update:hold istenir, kapa… → "Cannot read properties of undefined (reading 'enter')"
+- güncelleme orkestratörü: tutma varken kendiliğinden kurmaz, Şimdi Günc… → 'Bilinmeyen güncelleme işlemi.'
+- yarıda kesilme: bakım kipi açıkken süreç ölür → açılışta kip YOK (canl… → işçi erken çıktı (1): file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2-eski-b
+- devir yedeği: veri tabanı + arşiv + belgeler + mesaj arşivi + gizli an… → 'server.app.backups.createDevirBackupFor is not a function'
+- budanmaz: devir yedeği alındıktan sonra 35 rutin + 40 güvenlik yedeği … → 'server.app.backups.createDevirBackupFor is not a function'
+- Yedekten Geri Yükle (002, hemen): devir ÖNCESİ yedek 409 devir-oncesi-… → {"ok":true,"data":{"restored":true,"company":"002 · Yedek İkinci","name":"destekofis-002-2026-11-06T11-55-22-154Z-manuel.sqli
+- Şirket Verisini Sıfırla (Tümünü Sıfırla) devir işaretini (devir.years)… → sıfırlamadan sonra çalışma dosyası devrini bilir + actual - expected
+- Yedekten Geri Yükle (001, yeniden açılışta): devir öncesi yedek hazırl… → devirden sonra aynı yedek artık hazırlanmaz 
