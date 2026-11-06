@@ -1,0 +1,32 @@
+{
+  "ad": "bir-tur1-anaoturum-e2e-cari-vade-245",
+  "komut": "npm run test:senaryo-cari-vade-245",
+  "commit": "8eab4e561b0e14a664aea89377d6a7d63c71a88d",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T00:41:30.733Z",
+  "sure_sn": 29.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 39,
+    "gecen": 39,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-06/bir-tur1-anaoturum-e2e-cari-vade-245.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "a8b27fd10b28fee91281282ce88ce77f4c91d00b410486a41a6a1a66ba3f9811",
+  "ham_cikti_bayt": 4828
+}

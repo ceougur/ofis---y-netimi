@@ -1,0 +1,10 @@
+# mutasyon koşusu 2026-11-06T00:26:01.534Z kaynak /home/user/ofis---y-netimi TZ=(yerel)
+M1 YAKALANDI — cari: işlem içi yeniden okuma kaldırıldı (prepare bayat satırla) — çıkış 1, tests 12 pass 9 fail 3 cancelled 0
+    ✖ Kasa Engelle: yöneticinin 100 → 650 düzeltmesi yoldayken muhasebe aynı hareketi 100 → 10 yapar → 409 cash-blocked (güncel satırla), Kasa 590 kalır
+    ✖ Kasa Uyar: aynı yarışta soru GÜNCEL satırla sorulur (409 cash-negative); "Yine de Kaydet" (cashForce) yazar, Kasa −50, Değişiklik Geçmişi'nin önceki tutarı 10
+    ✖ kayıp güncelleme: gövdede yalnız tutar varken arada öbür kullanıcının açıklama düzeltmesi KORUNUR; Değişiklik Geçmişi'nin önceki hâli güncel satır
+    ✖ 2.5.0 BİRLEŞİK TUR 1 YB-1 — eşzamanlı düzeltmede korumalar işlemin içindeki GÜNCEL satırla (dört uç)
+M7 YAKALANDI — BS-4: meşgul şirketin HttpError'ı yutuldu (companies.mjs 'if (error instanceof HttpError) throw error;' silindi) — çıkış 1, tests 5 pass 4 fail 1 cancelled 0
+    ✖ meşgul 002: 503, ileti meşgul iletisi, retryAfter 5 ve Retry-After başlığı; yalnız 001 seçilince 200; meşguliyet kalkınca iki şirketle 200
+    ✖ 2.5.0 BS-4 — meşgul şirket (geri yükleme / silme sürüyor) varken Birleşik Rapor 503 + retryAfter döner (ekran = PDF = Excel); meşguliyet kalkınca 200
+# bitti
