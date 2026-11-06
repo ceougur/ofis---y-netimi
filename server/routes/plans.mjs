@@ -171,7 +171,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   });
 
   // ---------- Kart okuma ----------
-  const PLAN_SQL = `SELECT p.id, p.account_id AS accountId, p.ref_no AS refNo, p.registered_on AS registeredOn, p.case_key AS caseKey, p.case_source AS caseSource, p.case_title AS caseTitle, p.group_id AS groupId, p.subgroup_id AS subgroupId, p.name, p.note, p.phone, p.total, p.status, p.covers_balance AS coversBalance,
+  const PLAN_SQL = `SELECT p.id, p.account_id AS accountId, p.ref_no AS refNo, p.registered_on AS registeredOn, p.case_key AS caseKey, p.case_source AS caseSource, p.case_title AS caseTitle, p.group_id AS groupId, p.subgroup_id AS subgroupId, p.name, p.note, p.phone, p.total, p.status, p.covers_balance AS coversBalance, p.closed_at AS closedAt,
       p.invoice_id AS invoiceId, COALESCE((SELECT i.number FROM invoices i WHERE i.id = p.invoice_id), '') AS invoiceNumber,
       p.created_by AS createdBy, p.created_at AS createdAt, p.updated_at AS updatedAt, COALESCE(u.display_name, '') AS actorName,
       COALESCE(g.name, '') AS groupName, COALESCE(s.name, '') AS subgroupName, COALESCE(ac.name, '') AS accountName, COALESCE(ac.ref_no, '') AS accountRef
@@ -1463,7 +1463,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   // Mizan (v2.0.7): tüm carilerin kartları, hareketleriyle; carinin defteri (accountLedger) Cari kartıyla aynı girdiyi alır.
   function ledgerPlansByAccount() {
     const out = new Map();
-    const plans = store.all("SELECT id, account_id AS accountId, name, total, status, covers_balance AS coversBalance, registered_on AS registeredOn, created_at AS createdAt, updated_at AS updatedAt FROM plans WHERE deleted_at IS NULL AND account_id <> ''");
+    const plans = store.all("SELECT id, account_id AS accountId, name, total, status, covers_balance AS coversBalance, registered_on AS registeredOn, created_at AS createdAt, updated_at AS updatedAt, closed_at AS closedAt FROM plans WHERE deleted_at IS NULL AND account_id <> ''");
     if (!plans.length) return out;
     const seqs = new Map();
     const counts = new Map();

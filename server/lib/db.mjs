@@ -341,6 +341,30 @@ export function createStore(db) {
   const assertLive = () => {
     if (depth > 0 && openTx() === false) throw lostTx();
   };
+  // 2.5.0 BİRLEŞİK TUR 5 (AH dar kontrol ORTA-1): store.exec ve yazım yapabilen store.get / store.all (INSERT / UPDATE / DELETE … RETURNING, DDL, PRAGMA atama, WITH …) de
+  // BS-6 korumasında — kayıptan sonra exec INSERT diske gidiyor, DROP TABLE / DROP TRIGGER (Sıfırla'nın tetikleyici yolu) ve göçün PRAGMA user_version'ı işlemsiz kesinleşiyordu,
+  // ileti "yazım yapılmadı" diyordu. Yalnız açıkça okuma olan deyim (SELECT / VALUES / EXPLAIN ile başlayan, atamasız PRAGMA) denetimsiz geçer; geri kalan her deyim (WITH dahil)
+  // yazım sayılır. Okuma ya da exec hatası işlemi kendiliğinden geri aldırdıysa (yeniden üretildi: işlem içindeki SELECT önbellek taşırırken G/Ç hatası) ERR_TX_LOST iletisindeki
+  // "ilk hata" o hatadır.
+  const READ_SQL = /^\s*(?:SELECT|VALUES|EXPLAIN)\b|^\s*PRAGMA\s+[\w.]+\s*(?:\([^)]*\))?\s*;?\s*$/i;
+  const writeKinds = new Map();
+  const mayWrite = sql => {
+    let kind = writeKinds.get(sql);
+    if (kind === undefined) {
+      kind = !READ_SQL.test(sql);
+      writeKinds.set(sql, kind);
+    }
+    return kind;
+  };
+  const query = (method, sql, args) => {
+    if (depth > 0 && mayWrite(sql)) assertLive();
+    try {
+      return prepare(sql)[method](...args);
+    } catch (error) {
+      noteLost(error);
+      throw error;
+    }
+  };
   const store = {
     /**
      * 2.4.8 İş P1 (lib/write-lock.mjs): dosya şimdi yazılabilir mi — SENKRON kısa sınama (busy_timeout ms; BEGIN IMMEDIATE + ROLLBACK), bitince busy_timeout
@@ -352,8 +376,8 @@ export function createStore(db) {
       return probeWritableDb(db, ms);
     },
     db,
-    get: (sql, ...args) => prepare(sql).get(...args),
-    all: (sql, ...args) => prepare(sql).all(...args),
+    get: (sql, ...args) => query("get", sql, args),
+    all: (sql, ...args) => query("all", sql, args),
     run: (sql, ...args) => {
       assertLive();
       const table = writesTo(sql);
@@ -377,7 +401,15 @@ export function createStore(db) {
       if (scoped) afterScopedInsert(table, sql, result);
       return result;
     },
-    exec: sql => db.exec(sql),
+    exec: sql => {
+      assertLive();
+      try {
+        return db.exec(sql);
+      } catch (error) {
+        noteLost(error);
+        throw error;
+      }
+    },
     /** Mutabakat denetimi ekle: fn({ tables }) — hata fırlatırsa işlem geri alınır; after() başarılı COMMIT sonrası. */
     addCommitGuard(guard) {
       guards.push(guard);
@@ -517,7 +549,7 @@ export function createStore(db) {
       }
     },
     setting(key, fallback = null) {
-      const row = prepare("SELECT value FROM settings WHERE key = ?").get(key);
+      const row = query("get", "SELECT value FROM settings WHERE key = ?", [key]);
       return row ? row.value : fallback;
     },
     setSetting(key, value, userId = null) {

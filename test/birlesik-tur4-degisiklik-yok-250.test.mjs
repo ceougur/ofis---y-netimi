@@ -317,3 +317,127 @@ describe("2.5.0 BİRLEŞİK TUR 4 — stok kartı: 'değişiklik yok' kısa yolu
     assert.deepEqual({ salePrice: row(item.id).salePrice, unitPrice: row(item.id).unitPrice, note: row(item.id).note, vatRate: row(item.id).vatRate }, { salePrice: 20, unitPrice: 10, note: "", vatRate: null });
   });
 });
+
+// 2.5.0 BİRLEŞİK TUR 5 madde 3 (BT4 dar kontrol ORTA-1; süzgeçle — sessiz veri kaybı): "değişiklik yok" kısa yolu karşılaştırma listesinden bir alan düşerse (ya da karşılaştırma
+// büyük / küçük harfe, 1 kuruşa duyarsızlaşırsa) kullanıcının o alandaki değişikliği 200 yanıtla SESSİZCE YUTULUR (yazım yok). Dar kontrolün 9 mutantı yaşıyordu (grup, alt grup,
+// caseKey, stok türü / adı / birim / kategori, büyük-küçük harf, 1 kuruş). ALAN ALAN: TAZE form (sürüm güncel) + YALNIZ bir alan değişir → 200 + veri tabanında yeni değer +
+// Değişiklik Geçmişi +1 (dar kontrol betiği dk-bt4-betik/p1-alanlar.mjs (a) karşılığı). Yalnız test; yeterlilik dar kontrolün mutantlarıyla (dk-bt4-betik/mutasyon.mjs Y2–Y19).
+// Tür hücresi kritik seviyesi 0 olan üründe (hizmete geçişte kritik seviye de değişmesin, tek alan kalsın); kayıt bağında yalnız caseKey değişir (caseSource / caseTitle aynı).
+describe("2.5.0 BİRLEŞİK TUR 5 — alan alan: taze form + tek alan → 200, yeni değer veri tabanında, Değişiklik Geçmişi +1 (kısa yol değişikliği yutmaz)", () => {
+  let ctx;
+  const ref = {};
+  before(async () => {
+    ctx = await world();
+    ref.g1 = await must("grup 1", ctx.api.post(`${PLANS}/groups`, { name: "Tur5 Grup Bir" }));
+    ref.g2 = await must("grup 2", ctx.api.post(`${PLANS}/groups`, { name: "Tur5 Grup İki" }));
+    ref.s1 = await must("alt grup", ctx.api.post(`${PLANS}/groups`, { name: "Tur5 Alt", parentId: ref.g1.id }));
+    ref.acc2 = await must("cari 2", ctx.api.post(ACC, { name: "Tur5 Cari Öbür", type: "customer", registeredOn: PAST }));
+  });
+  after(async () => ctx?.server.close());
+  const planDb = id => ctx.store.get("SELECT name, phone, note, ref_no AS refNo, registered_on AS registeredOn, case_key AS caseKey, case_source AS caseSource, case_title AS caseTitle, group_id AS groupId, subgroup_id AS subgroupId, total, account_id AS accountId, status FROM plans WHERE id = ?", id);
+  const itemDb = id => ctx.store.get("SELECT due_date AS dueDate, amount, note FROM plan_items WHERE id = ?", id);
+  const stockDb = id => ctx.store.get("SELECT kind, code, name, unit, category, min_qty AS minQty, unit_price AS unitPrice, sale_price AS salePrice, vat_rate AS vatRate, note FROM stock_items WHERE id = ?", id);
+  async function makeFullPlan() {
+    const account = await must("cari", ctx.api.post(ACC, { name: `Tur5 Cari ${ctx.next()}`, type: "customer", registeredOn: PAST }));
+    return must("kart", ctx.api.post(PLANS, { accountId: account.id, name: `Tur5 Kart ${ctx.next()}`, total: "1000", mode: "auto", count: 2, firstDue: "2026-11-01", registeredOn: PAST, groupId: ref.g1.id, phone: "0532 000 00 00", note: "ilk not", caseKey: "tur5-kayit-1", caseSource: "tur5-oturum-a", caseTitle: "Tur5 Kayıt A" }));
+  }
+  async function makeFullStock(extra = {}) {
+    return must("ürün", ctx.api.post(STOCK, { name: `Tur5 Ürün ${ctx.next()}`, code: `T5-${ctx.next()}`, unit: "Adet", unitPrice: "10", salePrice: "15", vatRate: "20", category: "Gıda", minQty: "3", note: "ürün notu", ...extra }));
+  }
+  // [ad, değişiklik (güncel kayıttan), beklenen veri tabanı alanı ve değeri]
+  const planCases = [
+    ["ad", p => ({ name: `${p.name} Yeni` }), (r, p) => r.name === `${p.name} Yeni`],
+    ["ad yalnız büyük harf", p => ({ name: p.name.toLocaleUpperCase("tr-TR") }), (r, p) => r.name === p.name.toLocaleUpperCase("tr-TR")],
+    ["ad yalnız küçük harf", p => ({ name: p.name.toLocaleLowerCase("tr-TR") }), (r, p) => r.name === p.name.toLocaleLowerCase("tr-TR")],
+    ["telefon", () => ({ phone: "0533 111 22 33" }), r => r.phone === "0533 111 22 33"],
+    ["not", () => ({ note: "yeni not" }), r => r.note === "yeni not"],
+    ["Sıra No", () => ({ refNo: "77" }), r => String(r.refNo) === "77"],
+    ["Kayıt Tarihi", () => ({ registeredOn: "2026-08-15" }), r => r.registeredOn === "2026-08-15"],
+    ["kayıt bağı: yalnız caseKey", () => ({ caseKey: "tur5-kayit-2" }), r => r.caseKey === "tur5-kayit-2" && r.caseSource === "tur5-oturum-a" && r.caseTitle === "Tur5 Kayıt A"],
+    ["kayıt bağı: yalnız caseSource", () => ({ caseSource: "tur5-oturum-b" }), r => r.caseKey === "tur5-kayit-1" && r.caseSource === "tur5-oturum-b"],
+    ["kayıt bağı: yalnız caseTitle", () => ({ caseTitle: "Tur5 Kayıt B" }), r => r.caseKey === "tur5-kayit-1" && r.caseTitle === "Tur5 Kayıt B"],
+    ["grup", () => ({ groupId: ref.g2.id }), r => r.groupId === ref.g2.id],
+    ["alt grup", () => ({ subgroupId: ref.s1.id }), r => r.groupId === ref.g1.id && r.subgroupId === ref.s1.id],
+    ["cari", () => ({ accountId: ref.acc2.id }), r => r.accountId === ref.acc2.id],
+    ["toplam", () => ({ total: "1200" }), r => r.total === 1200],
+    ["toplam 1 kuruş", () => ({ total: "1000,01" }), r => Math.abs(r.total - 1000.01) < 1e-9],
+  ];
+  for (const [name, change, check] of planCases) {
+    test(`taksit kartı · ${name}`, async () => {
+      const plan = await makeFullPlan();
+      await sleep(5);
+      const before = ctx.audits("plan.updated", plan.id);
+      const res = await ctx.api.put(`${PLANS}/${plan.id}`, { ...planForm(plan), ...change(plan) });
+      const row = planDb(plan.id);
+      assert.equal(res.status, 200, `gelen ${res.status} ${res.data?.code || ""} ${res.error || ""}`);
+      assert.ok(check(row, plan), `veri tabanında yeni değer yok (kısa yol değişikliği yuttu): ${JSON.stringify(row)}`);
+      assert.equal(ctx.audits("plan.updated", plan.id), before + 1, "Değişiklik Geçmişi +1");
+    });
+  }
+  test("taksit kartı · durum (Kartı Kapat, yalnız status)", async () => {
+    const plan = await makeFullPlan();
+    await sleep(5);
+    const before = ctx.audits("plan.updated", plan.id);
+    const res = await ctx.api.put(`${PLANS}/${plan.id}`, { status: "closed" });
+    assert.equal(res.status, 200, `gelen ${res.status} ${res.error || ""}`);
+    assert.equal(planDb(plan.id).status, "closed", "kart kapanmadı (kısa yol durumu yuttu)");
+    assert.equal(ctx.audits("plan.updated", plan.id), before + 1, "Değişiklik Geçmişi +1");
+  });
+
+  const itemCases = [
+    ["vade", () => ({ dueDate: "2026-11-05" }), r => r.dueDate === "2026-11-05"],
+    ["tutar", () => ({ amount: "450" }), r => r.amount === 450],
+    ["tutar 1 kuruş", item => ({ amount: String(roundCent(item.amount + 0.01)).replace(".", ",") }), (r, item) => Math.abs(r.amount - roundCent(item.amount + 0.01)) < 1e-6],
+    ["açıklama", () => ({ note: "taksit notu" }), r => r.note === "taksit notu"],
+    ["açıklama yalnız büyük harf", () => ({ note: "TAKSİT ÖNCEKİ" }), r => r.note === "TAKSİT ÖNCEKİ", "taksit önceki"],
+    ["açıklama yalnız küçük harf", () => ({ note: "taksit önceki" }), r => r.note === "taksit önceki", "TAKSİT ÖNCEKİ"],
+  ];
+  for (const [name, change, check, pre] of itemCases) {
+    test(`taksit · ${name}`, async () => {
+      const plan = await makeFullPlan();
+      let item = plan.items[0];
+      if (pre) {
+        const prepared = await must("ön açıklama", ctx.api.put(`${PLANS}/${plan.id}/items/${item.id}`, itemForm(item, { note: pre })));
+        item = prepared.items.find(entry => entry.id === item.id);
+      }
+      await sleep(5);
+      const before = ctx.audits("plan.item.updated", item.id);
+      const res = await ctx.api.put(`${PLANS}/${plan.id}/items/${item.id}`, itemForm(item, change(item)));
+      const row = itemDb(item.id);
+      assert.equal(res.status, 200, `gelen ${res.status} ${res.data?.code || ""} ${res.error || ""}`);
+      assert.ok(check(row, item), `veri tabanında yeni değer yok (kısa yol değişikliği yuttu): ${JSON.stringify(row)}`);
+      assert.equal(ctx.audits("plan.item.updated", item.id), before + 1, "Değişiklik Geçmişi +1");
+    });
+  }
+
+  const stockCases = [
+    ["tür (kritik seviyesi 0 olan ürün → hizmet)", () => ({ kind: "service" }), r => r.kind === "service" && !r.minQty, { minQty: "" }],
+    ["Stok Kodu", () => ({ code: `T5X-${ctx.next()}` }), r => r.code.startsWith("T5X-")],
+    ["Stok Kodu yalnız büyük harf", s => ({ code: s.code.toLocaleUpperCase("tr-TR") }), (r, s) => r.code === s.code.toLocaleUpperCase("tr-TR"), { code: "t5k-küçük-kod" }],
+    ["ad", s => ({ name: `${s.name} Yeni` }), (r, s) => r.name === `${s.name} Yeni`],
+    ["ad yalnız büyük harf", s => ({ name: s.name.toLocaleUpperCase("tr-TR") }), (r, s) => r.name === s.name.toLocaleUpperCase("tr-TR")],
+    ["birim", () => ({ unit: "Kg" }), r => r.unit === "Kg"],
+    ["kategori", () => ({ category: "Temizlik" }), r => r.category === "Temizlik"],
+    ["KDV oranı", () => ({ vatRate: "10" }), r => r.vatRate === 10],
+    ["not", () => ({ note: "yeni ürün notu" }), r => r.note === "yeni ürün notu"],
+    ["not yalnız büyük harf", () => ({ note: "ÜRÜN NOTU" }), r => r.note === "ÜRÜN NOTU"],
+    ["kritik seviye", () => ({ minQty: "5" }), r => r.minQty === 5],
+    ["Alış Fiyatı", () => ({ unitPrice: "12" }), r => r.unitPrice === 12],
+    ["Alış Fiyatı 0,0001", () => ({ unitPrice: "10,0001" }), r => Math.abs(r.unitPrice - 10.0001) < 1e-9],
+    ["Satış Fiyatı", () => ({ salePrice: "16" }), r => r.salePrice === 16],
+    ["Satış Fiyatı 1 kuruş", () => ({ salePrice: "15,01" }), r => Math.abs(r.salePrice - 15.01) < 1e-9],
+  ];
+  for (const [name, change, check, extra] of stockCases) {
+    test(`stok kartı · ${name}`, async () => {
+      const item = await makeFullStock(typeof extra === "object" ? extra : {});
+      await sleep(5);
+      const before = ctx.audits("stock.item.updated", item.id);
+      const res = await ctx.api.put(`${STOCK}/${item.id}`, { ...stockForm(item), ...change(item) });
+      const row = stockDb(item.id);
+      assert.equal(res.status, 200, `gelen ${res.status} ${res.data?.code || ""} ${res.error || ""}`);
+      assert.ok(check(row, item), `veri tabanında yeni değer yok (kısa yol değişikliği yuttu): ${JSON.stringify(row)}`);
+      assert.equal(ctx.audits("stock.item.updated", item.id), before + 1, "Değişiklik Geçmişi +1");
+    });
+  }
+});
+const roundCent = value => Math.round(value * 100) / 100;
