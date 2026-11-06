@@ -1,0 +1,15 @@
+ok 1 - şema 47 (47 bekleniyor); uygulanan göçler [46,47]
+ok 2 - göç 46'nın kurduğu 'kapanmış fiş' tetikleyicisi yeni metin (COUNT(*) yok)
+ok 3 - açılış onarımı yok (null)
+ok 4 - kilit izi 2026-02-12, 2026-07-06: güncel tanım = 2.4.9 tanımı
+ok 5 - Mutabakat Testi tutarlı ()
+ok 6 - alt defter hesabı (121) fişi reddedildi: 400 voucher-subledger-account
+ok 7 - 8000 satırlık fiş eski sürüm verisinde yazıldı (Fiş 2026-000001)
+ok 8 - fişten sonra Mutabakat Testi tutarlı ()
+1..8
+# tests 8
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

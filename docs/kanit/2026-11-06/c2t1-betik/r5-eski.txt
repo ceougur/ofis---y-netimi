@@ -1,0 +1,7 @@
+nesne: HTTP 200 ; saklanan açıklama = "[object Object]"
+dizi: HTTP 200 ; saklanan açıklama = "a,b"
+mantıksal: HTTP 400 request-id-invalid; saklanan açıklama = null
+metin: HTTP 200 ; saklanan açıklama = "Düzeltme"
+iç API description: KABUL — saklanan "[object Object]"
+iç API source: KABUL — saklanan "[object Object]"
+iç API note: KABUL — saklanan "[object Object]"

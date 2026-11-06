@@ -1,0 +1,31 @@
+{
+  "ad": "c2t1-v249-yeni-kodla-ac",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t1-betik/v249-yeni-ac.mjs /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t1-mut-2d81e8fd /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t1-is/veri-v249 /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t1-is/v249-ac",
+  "commit": "2d81e8fdc652ecdea9353c8ad7805d59c8909510",
+  "dal": "worktree-agent-a916111504e511b77",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T03:10:26.237Z",
+  "sure_sn": 0.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": null,
+  "hukum": "BAŞARISIZ",
+  "neden": "özet satırı tanınmadı",
+  "basarisiz_testler": [
+    {
+      "ad": "kilit : iz (güncel tanım) = iz (2.4.9 tanımı)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t1-kanit/2026-11-06/c2t1-v249-yeni-kodla-ac.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a916111504e511b77",
+  "ham_cikti_sha256": "7e8352f850d69f33bad6b3fa517a95d0886f37c56dc609cb1d7d273616be0424",
+  "ham_cikti_bayt": 2065
+}
