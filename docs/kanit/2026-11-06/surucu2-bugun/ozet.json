@@ -1,0 +1,8949 @@
+{
+ "senaryolar": 66,
+ "tz": [
+  "UTC",
+  "Europe/Istanbul"
+ ],
+ "dal": "A",
+ "program": "bu-depo",
+ "say": {
+  "AYNI": 3442,
+  "U": 1092,
+  "P": 64,
+  "K": 2,
+  "R": 2,
+  "SINIFLANMADI": 0,
+  "OLCULEMEDI": 10,
+  "adim_sinifsiz": null
+ },
+ "etiketSay": {
+  "F06-GIDER-TURU": 148,
+  "KG8-IADE-KDV": 68,
+  "C5-ACILIS-519": 466,
+  "C5-EVRAK-ACILIS": 80,
+  "C1-ALT-90": 152,
+  "KG2-H03": 150,
+  "KG24-IHRACAT": 108,
+  "C5-EVRAK-KARSILIKSIZ": 36,
+  "KG6-POS-TARIH": 10,
+  "K14-HESAPSIZ": 36,
+  "KG3-KAYIT": 12,
+  "KG19-YOLDAKI": 8,
+  "KG16-ACIKLAMA": 6,
+  "KG5-EXCEL": 12,
+  "C7b6-KAPAT": 20
+ },
+ "bekleyen": {
+  "ATANMAMIŞ-ALT-90 (KG-4 602.90 / 770.90, K-01 649.90, K-02 770.90, M14 770.90)": {
+   "senaryo": 7,
+   "denetim": 76,
+   "senaryolar": [
+    "rastgele-1",
+    "rastgele-2",
+    "rastgele-3",
+    "s04-gider-yansitma-stopaj-devir",
+    "s17-cari-duzeltme-kg16",
+    "s40-s1-vadesiz-gecikmis",
+    "s52-k3-supheli-caride-alacak-satirlari"
+   ]
+  },
+  "D2–D4": {
+   "senaryo": 24,
+   "denetim": 26,
+   "senaryolar": [
+    "rastgele-1",
+    "rastgele-2",
+    "rastgele-3",
+    "s04-gider-yansitma-stopaj-devir",
+    "s21-devir-ayni-adli-iki-cari",
+    "s22-devir-temel",
+    "s23-devir-pos-valor-kg6",
+    "s24-devir-eksi-stok-kg9",
+    "s25-devir-onceki-yil-kg12",
+    "s26a-devir-borc-ve-alacaklari-aktar",
+    "s26b-devir-sadece-bakiyeyi-aktar",
+    "s27-devir-yoldaki-supheli-evrak-taksit",
+    "s28-devri-yenile-kg7",
+    "s29-devri-geri-al",
+    "s31-eslestirme-sonra-devir",
+    "s32-yil-donumu-29-subat",
+    "s34-ocakta-aralik-iadesi",
+    "s39-mahsup-acik-kalem",
+    "s45-m2-devirde-gecikmis-ayni",
+    "s46-m3-m12-tek-net-satir-ekstre",
+    "s47-m4-onceki-yil-kilitli",
+    "s48-m5-eksi-stok-devri",
+    "s50-m13-supheli-devir",
+    "s56-r3-kilitli-bag"
+   ]
+  },
+  "D4-(7)": {
+   "senaryo": 1,
+   "denetim": 1,
+   "senaryolar": [
+    "s28-devri-yenile-kg7"
+   ]
+  },
+  "D4-GERI-AL": {
+   "senaryo": 1,
+   "denetim": 1,
+   "senaryolar": [
+    "s29-devri-geri-al"
+   ]
+  },
+  "D4-M2": {
+   "senaryo": 2,
+   "denetim": 10,
+   "senaryolar": [
+    "s45-m2-devirde-gecikmis-ayni",
+    "s56-r3-kilitli-bag"
+   ]
+  },
+  "Ç5-(1)": {
+   "senaryo": 1,
+   "denetim": 2,
+   "senaryolar": [
+    "s54-r1-ayni-gun-borc-once"
+   ]
+  },
+  "Ç5-(2)": {
+   "senaryo": 1,
+   "denetim": 3,
+   "senaryolar": [
+    "s55-r2-bag-kendi-tarihinde"
+   ]
+  },
+  "Ç5-(3)": {
+   "senaryo": 1,
+   "denetim": 6,
+   "senaryolar": [
+    "s56-r3-kilitli-bag"
+   ]
+  },
+  "Ç5-(5)": {
+   "senaryo": 1,
+   "denetim": 3,
+   "senaryolar": [
+    "s59-r5-ayni-kisi-alis-satis"
+   ]
+  },
+  "Ç5-ACILIS-519": {
+   "senaryo": 35,
+   "denetim": 252,
+   "senaryolar": [
+    "rastgele-1",
+    "rastgele-2",
+    "rastgele-3",
+    "s01-satis-tahsilat-nakit",
+    "s03-alis-stok-tevkifat-havale",
+    "s04-gider-yansitma-stopaj-devir",
+    "s10-cek-senet-verilen",
+    "s11-kasa-carisiz-kg3",
+    "s12-banka-islemleri",
+    "s13-kart-kredi-ters-bakiye",
+    "s14-kdv-mahsup-360",
+    "s16-stok-modulu-kg2-kg11",
+    "s17-cari-duzeltme-kg16",
+    "s18-acilislar-eslestirme",
+    "s22-devir-temel",
+    "s25-devir-onceki-yil-kg12",
+    "s26a-devir-borc-ve-alacaklari-aktar",
+    "s26b-devir-sadece-bakiyeyi-aktar",
+    "s27-devir-yoldaki-supheli-evrak-taksit",
+    "s28-devri-yenile-kg7",
+    "s29-devri-geri-al",
+    "s31-eslestirme-sonra-devir",
+    "s32-yil-donumu-29-subat",
+    "s35-banka-ters-kayit",
+    "s36-yuvarlama-kg2-ic-yuzde",
+    "s37-kart-borcuna-aktar",
+    "s38-cari-tur-degistir",
+    "s40-s1-vadesiz-gecikmis",
+    "s43-s4-mahsuptan-sonra-ters",
+    "s45-m2-devirde-gecikmis-ayni",
+    "s46-m3-m12-tek-net-satir-ekstre",
+    "s47-m4-onceki-yil-kilitli",
+    "s53-kasa-acilis-duzelt-fatura-sil-geri-yukle",
+    "s57-r4-kart-kucultme",
+    "s62-r16-127-ters-bakiye"
+   ]
+  },
+  "Ç5-B1 (M13)": {
+   "senaryo": 1,
+   "denetim": 2,
+   "senaryolar": [
+    "s42-s3-supheli-hatirlatma"
+   ]
+  },
+  "Ç5-B1 (S2)": {
+   "senaryo": 1,
+   "denetim": 1,
+   "senaryolar": [
+    "s45-m2-devirde-gecikmis-ayni"
+   ]
+  },
+  "Ç5-B1 (ortak açık kalem görünümü)": {
+   "senaryo": 7,
+   "denetim": 9,
+   "senaryolar": [
+    "s41-s2-vade-sirasi",
+    "s54-r1-ayni-gun-borc-once",
+    "s55-r2-bag-kendi-tarihinde",
+    "s56-r3-kilitli-bag",
+    "s57-r4-kart-kucultme",
+    "s58-r9-kartli-fatura-sil-iptal",
+    "s61-r20-karsiliksiz-fatura-vadesi"
+   ]
+  },
+  "Ç5-B1": {
+   "senaryo": 22,
+   "denetim": 89,
+   "senaryolar": [
+    "rastgele-1",
+    "rastgele-2",
+    "rastgele-3",
+    "s26a-devir-borc-ve-alacaklari-aktar",
+    "s26b-devir-sadece-bakiyeyi-aktar",
+    "s33-gecikmis-b1",
+    "s40-s1-vadesiz-gecikmis",
+    "s41-s2-vade-sirasi",
+    "s42-s3-supheli-hatirlatma",
+    "s44-s5-iptalde-avans",
+    "s45-m2-devirde-gecikmis-ayni",
+    "s50-m13-supheli-devir",
+    "s51-m1e-mevcut-borc-karti",
+    "s52-k3-supheli-caride-alacak-satirlari",
+    "s54-r1-ayni-gun-borc-once",
+    "s55-r2-bag-kendi-tarihinde",
+    "s56-r3-kilitli-bag",
+    "s57-r4-kart-kucultme",
+    "s58-r9-kartli-fatura-sil-iptal",
+    "s59-r5-ayni-kisi-alis-satis",
+    "s60-r6-kart-kapat-borcta-kalir",
+    "s61-r20-karsiliksiz-fatura-vadesi"
+   ]
+  },
+  "Ç5-ESLESTIRME (M-11)": {
+   "senaryo": 3,
+   "denetim": 5,
+   "senaryolar": [
+    "s18-acilislar-eslestirme",
+    "s31-eslestirme-sonra-devir",
+    "s62-r16-127-ters-bakiye"
+   ]
+  },
+  "Ç5-KARSILIKSIZ-ACILIS-CEKI": {
+   "senaryo": 1,
+   "denetim": 18,
+   "senaryolar": [
+    "rastgele-2"
+   ]
+  },
+  "Ç5-KG15": {
+   "senaryo": 2,
+   "denetim": 6,
+   "senaryolar": [
+    "s30-kilit-kural-farki-kg15",
+    "s49-m7-kural-farki-671-681"
+   ]
+  },
+  "Ç5-KG16 (P1)": {
+   "senaryo": 1,
+   "denetim": 3,
+   "senaryolar": [
+    "s17-cari-duzeltme-kg16"
+   ]
+  },
+  "Ç5-KG5": {
+   "senaryo": 1,
+   "denetim": 6,
+   "senaryolar": [
+    "s19-taksit-kg5"
+   ]
+  },
+  "Ç5-S7": {
+   "senaryo": 1,
+   "denetim": 9,
+   "senaryolar": [
+    "s42-s3-supheli-hatirlatma"
+   ]
+  },
+  "Ç5-S8": {
+   "senaryo": 1,
+   "denetim": 5,
+   "senaryolar": [
+    "s61-r20-karsiliksiz-fatura-vadesi"
+   ]
+  },
+  "Ç7a-K14-K15": {
+   "senaryo": 2,
+   "denetim": 18,
+   "senaryolar": [
+    "s11-kasa-carisiz-kg3",
+    "s37-kart-borcuna-aktar"
+   ]
+  },
+  "Ç7a-KG19": {
+   "senaryo": 1,
+   "denetim": 4,
+   "senaryolar": [
+    "s12-banka-islemleri"
+   ]
+  },
+  "Ç7a-KG6": {
+   "senaryo": 2,
+   "denetim": 5,
+   "senaryolar": [
+    "s08-pos-kg6",
+    "s23-devir-pos-valor-kg6"
+   ]
+  },
+  "Ç7b-(4)": {
+   "senaryo": 2,
+   "denetim": 9,
+   "senaryolar": [
+    "s57-r4-kart-kucultme",
+    "s58-r9-kartli-fatura-sil-iptal"
+   ]
+  },
+  "Ç7b-(6)": {
+   "senaryo": 2,
+   "denetim": 13,
+   "senaryolar": [
+    "s40-s1-vadesiz-gecikmis",
+    "s60-r6-kart-kapat-borcta-kalir"
+   ]
+  },
+  "Ç7b-F06": {
+   "senaryo": 4,
+   "denetim": 74,
+   "senaryolar": [
+    "rastgele-1",
+    "rastgele-2",
+    "rastgele-3",
+    "s04-gider-yansitma-stopaj-devir"
+   ]
+  },
+  "Ç7b-KG2": {
+   "senaryo": 9,
+   "denetim": 75,
+   "senaryolar": [
+    "rastgele-1",
+    "rastgele-2",
+    "rastgele-3",
+    "s19-taksit-kg5",
+    "s27-devir-yoldaki-supheli-evrak-taksit",
+    "s40-s1-vadesiz-gecikmis",
+    "s52-k3-supheli-caride-alacak-satirlari",
+    "s60-r6-kart-kapat-borcta-kalir",
+    "s61-r20-karsiliksiz-fatura-vadesi"
+   ]
+  },
+  "Ç7b-KG24": {
+   "senaryo": 4,
+   "denetim": 54,
+   "senaryolar": [
+    "rastgele-1",
+    "rastgele-2",
+    "rastgele-3",
+    "s02-ihracat-tevkifat"
+   ]
+  },
+  "Ç7b-KG3": {
+   "senaryo": 1,
+   "denetim": 6,
+   "senaryolar": [
+    "s11-kasa-carisiz-kg3"
+   ]
+  },
+  "Ç7b-KG7": {
+   "senaryo": 1,
+   "denetim": 1,
+   "senaryolar": [
+    "s28-devri-yenile-kg7"
+   ]
+  },
+  "Ç7b-KG8 (P2)": {
+   "senaryo": 4,
+   "denetim": 34,
+   "senaryolar": [
+    "rastgele-1",
+    "rastgele-2",
+    "rastgele-3",
+    "s28-devri-yenile-kg7"
+   ]
+  }
+ },
+ "olculemedi": [
+  "s26a-devir-borc-ve-alacaklari-aktar [Europe/Istanbul] acik fatura:F1 program 80000 · kâhin 75000 · bugün null (geçmiş günlü rapor: program 2027-03-15 gününe kadar girilmiş kayıtları da görür (as-of gecikmiş okuması yok))",
+  "s26a-devir-borc-ve-alacaklari-aktar [UTC] acik fatura:F1 program 80000 · kâhin 75000 · bugün null (geçmiş günlü rapor: program 2027-03-15 gününe kadar girilmiş kayıtları da görür (as-of gecikmiş okuması yok))",
+  "s26b-devir-sadece-bakiyeyi-aktar [Europe/Istanbul] acik fatura:F1 program 80000 · kâhin 75000 · bugün null (geçmiş günlü rapor: program 2027-03-15 gününe kadar girilmiş kayıtları da görür (as-of gecikmiş okuması yok))",
+  "s26b-devir-sadece-bakiyeyi-aktar [UTC] acik fatura:F1 program 80000 · kâhin 75000 · bugün null (geçmiş günlü rapor: program 2027-03-15 gününe kadar girilmiş kayıtları da görür (as-of gecikmiş okuması yok))",
+  "s41-s2-vade-sirasi [Europe/Istanbul] acik1 fatura:F1 program 20000 · kâhin 50000 · bugün null (geçmiş günlü rapor: program 2026-07-01 gününe kadar girilmiş kayıtları da görür (as-of gecikmiş okuması yok))",
+  "s41-s2-vade-sirasi [Europe/Istanbul] acik1 fatura:F2 program 30000 · kâhin 0 · bugün null (geçmiş günlü rapor: program 2026-07-01 gününe kadar girilmiş kayıtları da görür (as-of gecikmiş okuması yok))",
+  "s41-s2-vade-sirasi [UTC] acik1 fatura:F1 program 20000 · kâhin 50000 · bugün null (geçmiş günlü rapor: program 2026-07-01 gününe kadar girilmiş kayıtları da görür (as-of gecikmiş okuması yok))",
+  "s41-s2-vade-sirasi [UTC] acik1 fatura:F2 program 30000 · kâhin 0 · bugün null (geçmiş günlü rapor: program 2026-07-01 gününe kadar girilmiş kayıtları da görür (as-of gecikmiş okuması yok))",
+  "s51-m1e-mevcut-borc-karti [Europe/Istanbul] acik fatura:F1 program 50000 · kâhin 0 · bugün null (geçmiş günlü rapor: program 2026-03-16 gününe kadar girilmiş kayıtları da görür (as-of gecikmiş okuması yok))",
+  "s51-m1e-mevcut-borc-karti [UTC] acik fatura:F1 program 50000 · kâhin 0 · bugün null (geçmiş günlü rapor: program 2026-03-16 gününe kadar girilmiş kayıtları da görür (as-of gecikmiş okuması yok))"
+ ],
+ "redFark": 0,
+ "uygulanamayan": 0,
+ "adimSinifsiz": 0,
+ "ozBozuk": 0,
+ "degismez": 0,
+ "hata": 0,
+ "sonuclar": [
+  {
+   "ad": "rastgele-1",
+   "tz": "Europe/Istanbul",
+   "ms": 59048,
+   "ozet": {
+    "AYNI": 219,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 69,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "api_yok": 6,
+    "rapor": 10,
+    "uygulanmadi": 1,
+    "yapildi": 1158
+   },
+   "redler": 0,
+   "adim": 8,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 276,
+    "olay_dongusu_p99_ms": 72,
+    "istek_sayisi": 4782,
+    "en_agir": [
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 1169,
+      "toplam_ms": 15638,
+      "en_cok_ms": 93
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 334,
+      "toplam_ms": 12368,
+      "en_cok_ms": 159
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 178,
+      "toplam_ms": 7034,
+      "en_cok_ms": 242
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 1169,
+      "toplam_ms": 5384,
+      "en_cok_ms": 35
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 1169,
+      "toplam_ms": 3191,
+      "en_cok_ms": 23
+     },
+     {
+      "istek": "POST /api/workspace/cheques/:id/actions",
+      "sayi": 65,
+      "toplam_ms": 2536,
+      "en_cok_ms": 81
+     }
+    ]
+   }
+  },
+  {
+   "ad": "rastgele-1",
+   "tz": "UTC",
+   "ms": 59367,
+   "ozet": {
+    "AYNI": 219,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 69,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "api_yok": 6,
+    "rapor": 10,
+    "uygulanmadi": 1,
+    "yapildi": 1158
+   },
+   "redler": 0,
+   "adim": 8,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 278,
+    "olay_dongusu_p99_ms": 66,
+    "istek_sayisi": 4782,
+    "en_agir": [
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 1169,
+      "toplam_ms": 15928,
+      "en_cok_ms": 82
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 334,
+      "toplam_ms": 12199,
+      "en_cok_ms": 256
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 178,
+      "toplam_ms": 6959,
+      "en_cok_ms": 108
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 1169,
+      "toplam_ms": 5731,
+      "en_cok_ms": 45
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 1169,
+      "toplam_ms": 3214,
+      "en_cok_ms": 19
+     },
+     {
+      "istek": "POST /api/workspace/cheques/:id/actions",
+      "sayi": 65,
+      "toplam_ms": 2357,
+      "en_cok_ms": 109
+     }
+    ]
+   }
+  },
+  {
+   "ad": "rastgele-2",
+   "tz": "Europe/Istanbul",
+   "ms": 54760,
+   "ozet": {
+    "AYNI": 198,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 78,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "api_yok": 4,
+    "rapor": 10,
+    "uygulanmadi": 1,
+    "yapildi": 1108
+   },
+   "redler": 0,
+   "adim": 16,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 314,
+    "olay_dongusu_p99_ms": 63,
+    "istek_sayisi": 4581,
+    "en_agir": [
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 1119,
+      "toplam_ms": 14226,
+      "en_cok_ms": 55
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 304,
+      "toplam_ms": 11669,
+      "en_cok_ms": 315
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 180,
+      "toplam_ms": 7028,
+      "en_cok_ms": 306
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 1119,
+      "toplam_ms": 5011,
+      "en_cok_ms": 36
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 1119,
+      "toplam_ms": 3089,
+      "en_cok_ms": 24
+     },
+     {
+      "istek": "POST /api/workspace/stock/:id/moves",
+      "sayi": 60,
+      "toplam_ms": 2023,
+      "en_cok_ms": 100
+     }
+    ]
+   }
+  },
+  {
+   "ad": "rastgele-2",
+   "tz": "UTC",
+   "ms": 55397,
+   "ozet": {
+    "AYNI": 198,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 78,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "api_yok": 4,
+    "rapor": 10,
+    "uygulanmadi": 1,
+    "yapildi": 1108
+   },
+   "redler": 0,
+   "adim": 16,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 259,
+    "olay_dongusu_p99_ms": 69,
+    "istek_sayisi": 4581,
+    "en_agir": [
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 1119,
+      "toplam_ms": 14771,
+      "en_cok_ms": 70
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 304,
+      "toplam_ms": 10840,
+      "en_cok_ms": 209
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 180,
+      "toplam_ms": 6821,
+      "en_cok_ms": 118
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 1119,
+      "toplam_ms": 5059,
+      "en_cok_ms": 37
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 1119,
+      "toplam_ms": 3013,
+      "en_cok_ms": 26
+     },
+     {
+      "istek": "POST /api/workspace/stock/:id/moves",
+      "sayi": 60,
+      "toplam_ms": 2299,
+      "en_cok_ms": 144
+     }
+    ]
+   }
+  },
+  {
+   "ad": "rastgele-3",
+   "tz": "Europe/Istanbul",
+   "ms": 51005,
+   "ozet": {
+    "AYNI": 226,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 59,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "api_yok": 7,
+    "rapor": 10,
+    "uygulanmadi": 1,
+    "yapildi": 1072
+   },
+   "redler": 0,
+   "adim": 5,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 337,
+    "olay_dongusu_p99_ms": 57,
+    "istek_sayisi": 4433,
+    "en_agir": [
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 1083,
+      "toplam_ms": 13284,
+      "en_cok_ms": 63
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 265,
+      "toplam_ms": 9030,
+      "en_cok_ms": 91
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 169,
+      "toplam_ms": 6285,
+      "en_cok_ms": 339
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 1083,
+      "toplam_ms": 4698,
+      "en_cok_ms": 32
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 1083,
+      "toplam_ms": 3079,
+      "en_cok_ms": 58
+     },
+     {
+      "istek": "POST /api/workspace/cheques/:id/actions",
+      "sayi": 65,
+      "toplam_ms": 2185,
+      "en_cok_ms": 71
+     }
+    ]
+   }
+  },
+  {
+   "ad": "rastgele-3",
+   "tz": "UTC",
+   "ms": 51545,
+   "ozet": {
+    "AYNI": 226,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 59,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "api_yok": 7,
+    "rapor": 10,
+    "uygulanmadi": 1,
+    "yapildi": 1072
+   },
+   "redler": 0,
+   "adim": 5,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 356,
+    "olay_dongusu_p99_ms": 59,
+    "istek_sayisi": 4433,
+    "en_agir": [
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 1083,
+      "toplam_ms": 13321,
+      "en_cok_ms": 48
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 265,
+      "toplam_ms": 9131,
+      "en_cok_ms": 187
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 169,
+      "toplam_ms": 6309,
+      "en_cok_ms": 167
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 1083,
+      "toplam_ms": 4852,
+      "en_cok_ms": 31
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 1083,
+      "toplam_ms": 3006,
+      "en_cok_ms": 27
+     },
+     {
+      "istek": "POST /api/workspace/cheques/:id/actions",
+      "sayi": 65,
+      "toplam_ms": 2504,
+      "en_cok_ms": 358
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s01-satis-tahsilat-nakit",
+   "tz": "Europe/Istanbul",
+   "ms": 1321,
+   "ozet": {
+    "AYNI": 9,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 6,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "yapildi": 6
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 29,
+    "olay_dongusu_p99_ms": 29,
+    "istek_sayisi": 60,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 125,
+      "en_cok_ms": 43
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 60,
+      "en_cok_ms": 25
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 12,
+      "toplam_ms": 45,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 12,
+      "toplam_ms": 42,
+      "en_cok_ms": 9
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 1,
+      "toplam_ms": 30,
+      "en_cok_ms": 30
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 12,
+      "toplam_ms": 28,
+      "en_cok_ms": 7
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s01-satis-tahsilat-nakit",
+   "tz": "UTC",
+   "ms": 1306,
+   "ozet": {
+    "AYNI": 9,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 6,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "yapildi": 6
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 28,
+    "olay_dongusu_p99_ms": 28,
+    "istek_sayisi": 60,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 123,
+      "en_cok_ms": 43
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 45,
+      "en_cok_ms": 18
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 12,
+      "toplam_ms": 45,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 12,
+      "toplam_ms": 30,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "POST /api/workspace/cash/opening",
+      "sayi": 1,
+      "toplam_ms": 30,
+      "en_cok_ms": 30
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 1,
+      "toplam_ms": 29,
+      "en_cok_ms": 29
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s02-ihracat-tevkifat",
+   "tz": "Europe/Istanbul",
+   "ms": 1161,
+   "ozet": {
+    "AYNI": 12,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 6,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "yapildi": 4
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 26,
+    "olay_dongusu_p99_ms": 26,
+    "istek_sayisi": 51,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 99,
+      "en_cok_ms": 24
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 2,
+      "toplam_ms": 42,
+      "en_cok_ms": 30
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 34,
+      "en_cok_ms": 12
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 10,
+      "toplam_ms": 33,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 10,
+      "toplam_ms": 26,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 10,
+      "toplam_ms": 18,
+      "en_cok_ms": 4
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s02-ihracat-tevkifat",
+   "tz": "UTC",
+   "ms": 1238,
+   "ozet": {
+    "AYNI": 12,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 6,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "yapildi": 4
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 28,
+    "olay_dongusu_p99_ms": 28,
+    "istek_sayisi": 51,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 142,
+      "en_cok_ms": 37
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 2,
+      "toplam_ms": 52,
+      "en_cok_ms": 33
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 10,
+      "toplam_ms": 39,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 37,
+      "en_cok_ms": 17
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 10,
+      "toplam_ms": 30,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 10,
+      "toplam_ms": 21,
+      "en_cok_ms": 4
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s03-alis-stok-tevkifat-havale",
+   "tz": "Europe/Istanbul",
+   "ms": 1377,
+   "ozet": {
+    "AYNI": 12,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 6,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "yapildi": 10
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 32,
+    "olay_dongusu_p99_ms": 32,
+    "istek_sayisi": 76,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 102,
+      "en_cok_ms": 30
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 16,
+      "toplam_ms": 67,
+      "en_cok_ms": 11
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 16,
+      "toplam_ms": 50,
+      "en_cok_ms": 9
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 41,
+      "en_cok_ms": 17
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 16,
+      "toplam_ms": 34,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/bank/accounts",
+      "sayi": 1,
+      "toplam_ms": 34,
+      "en_cok_ms": 34
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s03-alis-stok-tevkifat-havale",
+   "tz": "UTC",
+   "ms": 1353,
+   "ozet": {
+    "AYNI": 12,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 6,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "yapildi": 10
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 35,
+    "olay_dongusu_p99_ms": 35,
+    "istek_sayisi": 76,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 93,
+      "en_cok_ms": 25
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 16,
+      "toplam_ms": 72,
+      "en_cok_ms": 13
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 16,
+      "toplam_ms": 44,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 1,
+      "toplam_ms": 44,
+      "en_cok_ms": 44
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 16,
+      "toplam_ms": 43,
+      "en_cok_ms": 10
+     },
+     {
+      "istek": "POST /api/workspace/bank/accounts",
+      "sayi": 1,
+      "toplam_ms": 37,
+      "en_cok_ms": 37
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s04-gider-yansitma-stopaj-devir",
+   "tz": "Europe/Istanbul",
+   "ms": 1478,
+   "ozet": {
+    "AYNI": 39,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 18,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 6,
+    "red": 1,
+    "uygulanmadi": 1,
+    "yapildi": 14
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 28,
+    "olay_dongusu_p99_ms": 28,
+    "istek_sayisi": 105,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 96,
+      "en_cok_ms": 24
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 24,
+      "toplam_ms": 88,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 4,
+      "toplam_ms": 79,
+      "en_cok_ms": 29
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 24,
+      "toplam_ms": 65,
+      "en_cok_ms": 11
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 24,
+      "toplam_ms": 49,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 32,
+      "en_cok_ms": 12
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s04-gider-yansitma-stopaj-devir",
+   "tz": "UTC",
+   "ms": 1478,
+   "ozet": {
+    "AYNI": 39,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 18,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 6,
+    "red": 1,
+    "uygulanmadi": 1,
+    "yapildi": 14
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 34,
+    "olay_dongusu_p99_ms": 34,
+    "istek_sayisi": 105,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 93,
+      "en_cok_ms": 28
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 24,
+      "toplam_ms": 87,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 4,
+      "toplam_ms": 70,
+      "en_cok_ms": 28
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 24,
+      "toplam_ms": 66,
+      "en_cok_ms": 9
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 24,
+      "toplam_ms": 46,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 42,
+      "en_cok_ms": 17
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s05-iadeler",
+   "tz": "Europe/Istanbul",
+   "ms": 1412,
+   "ozet": {
+    "AYNI": 30,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 0,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "yapildi": 9
+   },
+   "redler": 0,
+   "adim": 2,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 29,
+    "olay_dongusu_p99_ms": 29,
+    "istek_sayisi": 73,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 96,
+      "en_cok_ms": 28
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 4,
+      "toplam_ms": 90,
+      "en_cok_ms": 37
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 15,
+      "toplam_ms": 50,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 46,
+      "en_cok_ms": 18
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 15,
+      "toplam_ms": 39,
+      "en_cok_ms": 9
+     },
+     {
+      "istek": "POST /api/workspace/bank/setup/dismiss",
+      "sayi": 1,
+      "toplam_ms": 36,
+      "en_cok_ms": 36
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s05-iadeler",
+   "tz": "UTC",
+   "ms": 1434,
+   "ozet": {
+    "AYNI": 30,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 0,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "yapildi": 9
+   },
+   "redler": 0,
+   "adim": 2,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 30,
+    "olay_dongusu_p99_ms": 30,
+    "istek_sayisi": 73,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 124,
+      "en_cok_ms": 29
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 4,
+      "toplam_ms": 92,
+      "en_cok_ms": 36
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 15,
+      "toplam_ms": 60,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 15,
+      "toplam_ms": 44,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 15,
+      "toplam_ms": 40,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 35,
+      "en_cok_ms": 14
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s06-esmm-gelen-smm",
+   "tz": "Europe/Istanbul",
+   "ms": 1404,
+   "ozet": {
+    "AYNI": 20,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 0,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 2,
+    "yapildi": 4
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 50,
+    "olay_dongusu_p99_ms": 50,
+    "istek_sayisi": 48,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 118,
+      "en_cok_ms": 42
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 2,
+      "toplam_ms": 73,
+      "en_cok_ms": 54
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 44,
+      "en_cok_ms": 20
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 9,
+      "toplam_ms": 40,
+      "en_cok_ms": 10
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 9,
+      "toplam_ms": 26,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "PUT /api/workspace/bank/settings",
+      "sayi": 1,
+      "toplam_ms": 21,
+      "en_cok_ms": 21
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s06-esmm-gelen-smm",
+   "tz": "UTC",
+   "ms": 1326,
+   "ozet": {
+    "AYNI": 20,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 0,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 2,
+    "yapildi": 4
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 30,
+    "olay_dongusu_p99_ms": 30,
+    "istek_sayisi": 48,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 116,
+      "en_cok_ms": 24
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 2,
+      "toplam_ms": 53,
+      "en_cok_ms": 33
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 9,
+      "toplam_ms": 50,
+      "en_cok_ms": 19
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 38,
+      "en_cok_ms": 17
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 9,
+      "toplam_ms": 30,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 9,
+      "toplam_ms": 24,
+      "en_cok_ms": 6
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s07-duzenle-iptal-sil-kilit",
+   "tz": "Europe/Istanbul",
+   "ms": 1921,
+   "ozet": {
+    "AYNI": 9,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 0,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "faturada": 1,
+    "rapor": 2,
+    "red": 2,
+    "yapildi": 15
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 48,
+    "olay_dongusu_p99_ms": 29,
+    "istek_sayisi": 104,
+    "en_agir": [
+     {
+      "istek": "PUT /api/admin/period-lock",
+      "sayi": 1,
+      "toplam_ms": 271,
+      "en_cok_ms": 271
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 141,
+      "en_cok_ms": 47
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 23,
+      "toplam_ms": 111,
+      "en_cok_ms": 13
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 4,
+      "toplam_ms": 106,
+      "en_cok_ms": 56
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 23,
+      "toplam_ms": 56,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 23,
+      "toplam_ms": 50,
+      "en_cok_ms": 6
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s07-duzenle-iptal-sil-kilit",
+   "tz": "UTC",
+   "ms": 1679,
+   "ozet": {
+    "AYNI": 9,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 0,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "faturada": 1,
+    "rapor": 2,
+    "red": 2,
+    "yapildi": 15
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 38,
+    "olay_dongusu_p99_ms": 19,
+    "istek_sayisi": 104,
+    "en_agir": [
+     {
+      "istek": "PUT /api/admin/period-lock",
+      "sayi": 1,
+      "toplam_ms": 205,
+      "en_cok_ms": 205
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 120,
+      "en_cok_ms": 44
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 23,
+      "toplam_ms": 100,
+      "en_cok_ms": 14
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 4,
+      "toplam_ms": 84,
+      "en_cok_ms": 44
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 23,
+      "toplam_ms": 49,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 23,
+      "toplam_ms": 45,
+      "en_cok_ms": 5
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s08-pos-kg6",
+   "tz": "Europe/Istanbul",
+   "ms": 1789,
+   "ozet": {
+    "AYNI": 26,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 3,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 6,
+    "yapildi": 14
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 29,
+    "olay_dongusu_p99_ms": 28,
+    "istek_sayisi": 112,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 131,
+      "en_cok_ms": 54
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 4,
+      "toplam_ms": 102,
+      "en_cok_ms": 36
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 23,
+      "toplam_ms": 85,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 23,
+      "toplam_ms": 59,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 3,
+      "toplam_ms": 54,
+      "en_cok_ms": 26
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 23,
+      "toplam_ms": 45,
+      "en_cok_ms": 6
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s08-pos-kg6",
+   "tz": "UTC",
+   "ms": 1738,
+   "ozet": {
+    "AYNI": 26,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 3,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 6,
+    "yapildi": 14
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 31,
+    "olay_dongusu_p99_ms": 30,
+    "istek_sayisi": 112,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 125,
+      "en_cok_ms": 28
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 4,
+      "toplam_ms": 105,
+      "en_cok_ms": 34
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 23,
+      "toplam_ms": 102,
+      "en_cok_ms": 11
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 3,
+      "toplam_ms": 69,
+      "en_cok_ms": 31
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 23,
+      "toplam_ms": 52,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 43,
+      "en_cok_ms": 16
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s09-cek-senet-alinan",
+   "tz": "Europe/Istanbul",
+   "ms": 1784,
+   "ozet": {
+    "AYNI": 34,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 0,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "red": 1,
+    "yapildi": 21
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 54,
+    "olay_dongusu_p99_ms": 30,
+    "istek_sayisi": 125,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 151,
+      "en_cok_ms": 41
+     },
+     {
+      "istek": "POST /api/workspace/cheques/:id/actions",
+      "sayi": 7,
+      "toplam_ms": 122,
+      "en_cok_ms": 27
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 28,
+      "toplam_ms": 110,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 2,
+      "toplam_ms": 79,
+      "en_cok_ms": 55
+     },
+     {
+      "istek": "POST /api/workspace/cheques",
+      "sayi": 4,
+      "toplam_ms": 79,
+      "en_cok_ms": 28
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 28,
+      "toplam_ms": 69,
+      "en_cok_ms": 17
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s09-cek-senet-alinan",
+   "tz": "UTC",
+   "ms": 1674,
+   "ozet": {
+    "AYNI": 34,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 0,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "red": 1,
+    "yapildi": 21
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 29,
+    "olay_dongusu_p99_ms": 25,
+    "istek_sayisi": 125,
+    "en_agir": [
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 28,
+      "toplam_ms": 123,
+      "en_cok_ms": 10
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 112,
+      "en_cok_ms": 25
+     },
+     {
+      "istek": "POST /api/workspace/cheques/:id/actions",
+      "sayi": 7,
+      "toplam_ms": 111,
+      "en_cok_ms": 24
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 28,
+      "toplam_ms": 68,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 28,
+      "toplam_ms": 64,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "POST /api/workspace/cheques",
+      "sayi": 4,
+      "toplam_ms": 59,
+      "en_cok_ms": 18
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s10-cek-senet-verilen",
+   "tz": "Europe/Istanbul",
+   "ms": 1550,
+   "ozet": {
+    "AYNI": 18,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 8,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "yapildi": 12
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 25,
+    "olay_dongusu_p99_ms": 25,
+    "istek_sayisi": 84,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 94,
+      "en_cok_ms": 24
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 18,
+      "toplam_ms": 74,
+      "en_cok_ms": 9
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 18,
+      "toplam_ms": 59,
+      "en_cok_ms": 9
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 18,
+      "toplam_ms": 43,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 39,
+      "en_cok_ms": 14
+     },
+     {
+      "istek": "POST /api/workspace/cheques",
+      "sayi": 2,
+      "toplam_ms": 32,
+      "en_cok_ms": 20
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s10-cek-senet-verilen",
+   "tz": "UTC",
+   "ms": 1575,
+   "ozet": {
+    "AYNI": 18,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 8,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "yapildi": 12
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 43,
+    "olay_dongusu_p99_ms": 43,
+    "istek_sayisi": 84,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 116,
+      "en_cok_ms": 38
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 18,
+      "toplam_ms": 78,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 75,
+      "en_cok_ms": 27
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 18,
+      "toplam_ms": 61,
+      "en_cok_ms": 14
+     },
+     {
+      "istek": "POST /api/workspace/bank/accounts",
+      "sayi": 1,
+      "toplam_ms": 50,
+      "en_cok_ms": 50
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 18,
+      "toplam_ms": 47,
+      "en_cok_ms": 12
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s11-kasa-carisiz-kg3",
+   "tz": "Europe/Istanbul",
+   "ms": 1630,
+   "ozet": {
+    "AYNI": 12,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 18,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "yapildi": 16
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 25,
+    "olay_dongusu_p99_ms": 24,
+    "istek_sayisi": 102,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 137,
+      "en_cok_ms": 38
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 22,
+      "toplam_ms": 92,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 22,
+      "toplam_ms": 55,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 22,
+      "toplam_ms": 55,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 46,
+      "en_cok_ms": 18
+     },
+     {
+      "istek": "POST /api/workspace/cash/transfer",
+      "sayi": 2,
+      "toplam_ms": 46,
+      "en_cok_ms": 27
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s11-kasa-carisiz-kg3",
+   "tz": "UTC",
+   "ms": 1505,
+   "ozet": {
+    "AYNI": 12,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 18,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "yapildi": 16
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 36,
+    "olay_dongusu_p99_ms": 24,
+    "istek_sayisi": 102,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 103,
+      "en_cok_ms": 26
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 22,
+      "toplam_ms": 79,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 22,
+      "toplam_ms": 55,
+      "en_cok_ms": 14
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 22,
+      "toplam_ms": 50,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/cash",
+      "sayi": 2,
+      "toplam_ms": 43,
+      "en_cok_ms": 29
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 1,
+      "toplam_ms": 38,
+      "en_cok_ms": 38
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s12-banka-islemleri",
+   "tz": "Europe/Istanbul",
+   "ms": 1531,
+   "ozet": {
+    "AYNI": 23,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 10,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "yapildi": 14
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 46,
+    "olay_dongusu_p99_ms": 46,
+    "istek_sayisi": 94,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/bank/vouchers",
+      "sayi": 6,
+      "toplam_ms": 143,
+      "en_cok_ms": 46
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 7,
+      "toplam_ms": 134,
+      "en_cok_ms": 28
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 20,
+      "toplam_ms": 77,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/bank/accounts",
+      "sayi": 2,
+      "toplam_ms": 48,
+      "en_cok_ms": 33
+     },
+     {
+      "istek": "POST /api/workspace/bank/transfers",
+      "sayi": 2,
+      "toplam_ms": 45,
+      "en_cok_ms": 23
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 20,
+      "toplam_ms": 44,
+      "en_cok_ms": 5
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s12-banka-islemleri",
+   "tz": "UTC",
+   "ms": 1634,
+   "ozet": {
+    "AYNI": 23,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 10,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "yapildi": 14
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 35,
+    "olay_dongusu_p99_ms": 35,
+    "istek_sayisi": 94,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 7,
+      "toplam_ms": 139,
+      "en_cok_ms": 50
+     },
+     {
+      "istek": "POST /api/workspace/bank/vouchers",
+      "sayi": 6,
+      "toplam_ms": 130,
+      "en_cok_ms": 33
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 20,
+      "toplam_ms": 97,
+      "en_cok_ms": 11
+     },
+     {
+      "istek": "POST /api/workspace/bank/transfers",
+      "sayi": 2,
+      "toplam_ms": 47,
+      "en_cok_ms": 27
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 20,
+      "toplam_ms": 46,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "POST /api/workspace/bank/accounts",
+      "sayi": 2,
+      "toplam_ms": 44,
+      "en_cok_ms": 30
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s13-kart-kredi-ters-bakiye",
+   "tz": "Europe/Istanbul",
+   "ms": 1509,
+   "ozet": {
+    "AYNI": 27,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 6,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "api_yok": 1,
+    "rapor": 3,
+    "yapildi": 17
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 29,
+    "olay_dongusu_p99_ms": 24,
+    "istek_sayisi": 109,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 90,
+      "en_cok_ms": 24
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 23,
+      "toplam_ms": 82,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "POST /api/workspace/bank/accounts",
+      "sayi": 3,
+      "toplam_ms": 62,
+      "en_cok_ms": 28
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 23,
+      "toplam_ms": 50,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 23,
+      "toplam_ms": 44,
+      "en_cok_ms": 4
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 2,
+      "toplam_ms": 40,
+      "en_cok_ms": 22
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s13-kart-kredi-ters-bakiye",
+   "tz": "UTC",
+   "ms": 1517,
+   "ozet": {
+    "AYNI": 27,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 6,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "api_yok": 1,
+    "rapor": 3,
+    "yapildi": 17
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 29,
+    "olay_dongusu_p99_ms": 28,
+    "istek_sayisi": 109,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 109,
+      "en_cok_ms": 25
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 23,
+      "toplam_ms": 81,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/bank/accounts",
+      "sayi": 3,
+      "toplam_ms": 59,
+      "en_cok_ms": 26
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 2,
+      "toplam_ms": 53,
+      "en_cok_ms": 33
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 23,
+      "toplam_ms": 50,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/bank/transfers",
+      "sayi": 2,
+      "toplam_ms": 45,
+      "en_cok_ms": 24
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s14-kdv-mahsup-360",
+   "tz": "Europe/Istanbul",
+   "ms": 1801,
+   "ozet": {
+    "AYNI": 27,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 6,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "api_yok": 1,
+    "rapor": 4,
+    "red": 1,
+    "yapildi": 28
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 32,
+    "olay_dongusu_p99_ms": 27,
+    "istek_sayisi": 155,
+    "en_agir": [
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 36,
+      "toplam_ms": 160,
+      "en_cok_ms": 12
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 7,
+      "toplam_ms": 137,
+      "en_cok_ms": 29
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 118,
+      "en_cok_ms": 27
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 36,
+      "toplam_ms": 100,
+      "en_cok_ms": 11
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 36,
+      "toplam_ms": 79,
+      "en_cok_ms": 13
+     },
+     {
+      "istek": "POST /api/workspace/tax/payments",
+      "sayi": 2,
+      "toplam_ms": 52,
+      "en_cok_ms": 33
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s14-kdv-mahsup-360",
+   "tz": "UTC",
+   "ms": 1825,
+   "ozet": {
+    "AYNI": 27,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 6,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "api_yok": 1,
+    "rapor": 4,
+    "red": 1,
+    "yapildi": 28
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 39,
+    "olay_dongusu_p99_ms": 33,
+    "istek_sayisi": 155,
+    "en_agir": [
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 36,
+      "toplam_ms": 165,
+      "en_cok_ms": 14
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 7,
+      "toplam_ms": 142,
+      "en_cok_ms": 39
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 117,
+      "en_cok_ms": 26
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 36,
+      "toplam_ms": 80,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 36,
+      "toplam_ms": 77,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/tax/vat-offset",
+      "sayi": 6,
+      "toplam_ms": 38,
+      "en_cok_ms": 10
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s15-supheli-alacak",
+   "tz": "Europe/Istanbul",
+   "ms": 1671,
+   "ozet": {
+    "AYNI": 31,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 0,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 4,
+    "red": 2,
+    "yapildi": 17
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 41,
+    "olay_dongusu_p99_ms": 33,
+    "istek_sayisi": 121,
+    "en_agir": [
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 26,
+      "toplam_ms": 116,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 88,
+      "en_cok_ms": 25
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 26,
+      "toplam_ms": 75,
+      "en_cok_ms": 11
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 2,
+      "toplam_ms": 62,
+      "en_cok_ms": 45
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 26,
+      "toplam_ms": 50,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/doubtful/:id/provision",
+      "sayi": 3,
+      "toplam_ms": 41,
+      "en_cok_ms": 23
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s15-supheli-alacak",
+   "tz": "UTC",
+   "ms": 1606,
+   "ozet": {
+    "AYNI": 31,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 0,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 4,
+    "red": 2,
+    "yapildi": 17
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 39,
+    "olay_dongusu_p99_ms": 25,
+    "istek_sayisi": 121,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 118,
+      "en_cok_ms": 42
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 26,
+      "toplam_ms": 104,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 26,
+      "toplam_ms": 65,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 2,
+      "toplam_ms": 56,
+      "en_cok_ms": 40
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 26,
+      "toplam_ms": 53,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 38,
+      "en_cok_ms": 18
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s16-stok-modulu-kg2-kg11",
+   "tz": "Europe/Istanbul",
+   "ms": 1366,
+   "ozet": {
+    "AYNI": 16,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 6,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "yapildi": 14
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 27,
+    "olay_dongusu_p99_ms": 27,
+    "istek_sayisi": 93,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 126,
+      "en_cok_ms": 34
+     },
+     {
+      "istek": "POST /api/workspace/stock/:id/moves",
+      "sayi": 6,
+      "toplam_ms": 87,
+      "en_cok_ms": 19
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 20,
+      "toplam_ms": 71,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 50,
+      "en_cok_ms": 23
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 20,
+      "toplam_ms": 48,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 20,
+      "toplam_ms": 38,
+      "en_cok_ms": 5
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s16-stok-modulu-kg2-kg11",
+   "tz": "UTC",
+   "ms": 1430,
+   "ozet": {
+    "AYNI": 16,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 6,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "yapildi": 14
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 24,
+    "olay_dongusu_p99_ms": 24,
+    "istek_sayisi": 93,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 128,
+      "en_cok_ms": 47
+     },
+     {
+      "istek": "POST /api/workspace/stock/:id/moves",
+      "sayi": 6,
+      "toplam_ms": 107,
+      "en_cok_ms": 30
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 20,
+      "toplam_ms": 101,
+      "en_cok_ms": 14
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 20,
+      "toplam_ms": 57,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 20,
+      "toplam_ms": 55,
+      "en_cok_ms": 15
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 40,
+      "en_cok_ms": 15
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s17-cari-duzeltme-kg16",
+   "tz": "Europe/Istanbul",
+   "ms": 1345,
+   "ozet": {
+    "AYNI": 12,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 5,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 5,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 2,
+    "yapildi": 12
+   },
+   "redler": 0,
+   "adim": 1,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 17,
+    "olay_dongusu_p99_ms": 17,
+    "istek_sayisi": 79,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 147,
+      "en_cok_ms": 50
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 17,
+      "toplam_ms": 72,
+      "en_cok_ms": 9
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 5,
+      "toplam_ms": 64,
+      "en_cok_ms": 16
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 17,
+      "toplam_ms": 44,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 17,
+      "toplam_ms": 43,
+      "en_cok_ms": 9
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 36,
+      "en_cok_ms": 14
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s17-cari-duzeltme-kg16",
+   "tz": "UTC",
+   "ms": 1342,
+   "ozet": {
+    "AYNI": 12,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 5,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 5,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 2,
+    "yapildi": 12
+   },
+   "redler": 0,
+   "adim": 1,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 25,
+    "olay_dongusu_p99_ms": 25,
+    "istek_sayisi": 79,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 113,
+      "en_cok_ms": 33
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 17,
+      "toplam_ms": 76,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 5,
+      "toplam_ms": 74,
+      "en_cok_ms": 22
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 17,
+      "toplam_ms": 52,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 38,
+      "en_cok_ms": 16
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 17,
+      "toplam_ms": 36,
+      "en_cok_ms": 6
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s18-acilislar-eslestirme",
+   "tz": "Europe/Istanbul",
+   "ms": 1448,
+   "ozet": {
+    "AYNI": 51,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 8,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 2,
+    "red": 1,
+    "uygulanmadi": 3,
+    "yapildi": 10
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 28,
+    "olay_dongusu_p99_ms": 28,
+    "istek_sayisi": 80,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 114,
+      "en_cok_ms": 39
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 16,
+      "toplam_ms": 71,
+      "en_cok_ms": 10
+     },
+     {
+      "istek": "POST /api/workspace/bank/accounts",
+      "sayi": 3,
+      "toplam_ms": 67,
+      "en_cok_ms": 27
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 48,
+      "en_cok_ms": 18
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 16,
+      "toplam_ms": 42,
+      "en_cok_ms": 10
+     },
+     {
+      "istek": "POST /api/workspace/cheques/import",
+      "sayi": 3,
+      "toplam_ms": 39,
+      "en_cok_ms": 18
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s18-acilislar-eslestirme",
+   "tz": "UTC",
+   "ms": 1512,
+   "ozet": {
+    "AYNI": 51,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 8,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 2,
+    "red": 1,
+    "uygulanmadi": 3,
+    "yapildi": 10
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 25,
+    "olay_dongusu_p99_ms": 25,
+    "istek_sayisi": 80,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 124,
+      "en_cok_ms": 47
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 16,
+      "toplam_ms": 66,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "POST /api/workspace/bank/accounts",
+      "sayi": 3,
+      "toplam_ms": 60,
+      "en_cok_ms": 24
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 46,
+      "en_cok_ms": 18
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 16,
+      "toplam_ms": 44,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 16,
+      "toplam_ms": 35,
+      "en_cok_ms": 7
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s19-taksit-kg5",
+   "tz": "Europe/Istanbul",
+   "ms": 1353,
+   "ozet": {
+    "AYNI": 10,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 8,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 4,
+    "yapildi": 6
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 45,
+    "olay_dongusu_p99_ms": 45,
+    "istek_sayisi": 63,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 98,
+      "en_cok_ms": 26
+     },
+     {
+      "istek": "POST /api/workspace/plans/import",
+      "sayi": 1,
+      "toplam_ms": 47,
+      "en_cok_ms": 47
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 11,
+      "toplam_ms": 45,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "POST /api/workspace/plans/:id/entries",
+      "sayi": 1,
+      "toplam_ms": 34,
+      "en_cok_ms": 34
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 31,
+      "en_cok_ms": 12
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 11,
+      "toplam_ms": 31,
+      "en_cok_ms": 10
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s19-taksit-kg5",
+   "tz": "UTC",
+   "ms": 1216,
+   "ozet": {
+    "AYNI": 10,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 8,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 4,
+    "yapildi": 6
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 40,
+    "olay_dongusu_p99_ms": 40,
+    "istek_sayisi": 63,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 114,
+      "en_cok_ms": 23
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 11,
+      "toplam_ms": 40,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 11,
+      "toplam_ms": 40,
+      "en_cok_ms": 10
+     },
+     {
+      "istek": "POST /api/workspace/plans/import",
+      "sayi": 1,
+      "toplam_ms": 38,
+      "en_cok_ms": 38
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 33,
+      "en_cok_ms": 14
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 11,
+      "toplam_ms": 33,
+      "en_cok_ms": 7
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s20-ters-bakiye-avans-ayni-ad",
+   "tz": "Europe/Istanbul",
+   "ms": 1265,
+   "ozet": {
+    "AYNI": 20,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 0,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 2,
+    "yapildi": 7
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 33,
+    "olay_dongusu_p99_ms": 33,
+    "istek_sayisi": 60,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 98,
+      "en_cok_ms": 33
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 2,
+      "toplam_ms": 47,
+      "en_cok_ms": 26
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 12,
+      "toplam_ms": 46,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 37,
+      "en_cok_ms": 18
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 12,
+      "toplam_ms": 34,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 12,
+      "toplam_ms": 30,
+      "en_cok_ms": 8
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s20-ters-bakiye-avans-ayni-ad",
+   "tz": "UTC",
+   "ms": 1236,
+   "ozet": {
+    "AYNI": 20,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 0,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 2,
+    "yapildi": 7
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 41,
+    "olay_dongusu_p99_ms": 41,
+    "istek_sayisi": 60,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 88,
+      "en_cok_ms": 22
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 12,
+      "toplam_ms": 54,
+      "en_cok_ms": 10
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 1,
+      "toplam_ms": 42,
+      "en_cok_ms": 42
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 2,
+      "toplam_ms": 41,
+      "en_cok_ms": 26
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 31,
+      "en_cok_ms": 13
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 12,
+      "toplam_ms": 30,
+      "en_cok_ms": 5
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s21-devir-ayni-adli-iki-cari",
+   "tz": "Europe/Istanbul",
+   "ms": 1309,
+   "ozet": {
+    "AYNI": 9,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 0,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 2,
+    "uygulanmadi": 1,
+    "yapildi": 7
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 26,
+    "olay_dongusu_p99_ms": 26,
+    "istek_sayisi": 60,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 111,
+      "en_cok_ms": 26
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 12,
+      "toplam_ms": 54,
+      "en_cok_ms": 15
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 2,
+      "toplam_ms": 51,
+      "en_cok_ms": 34
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 39,
+      "en_cok_ms": 15
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 12,
+      "toplam_ms": 28,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 1,
+      "toplam_ms": 22,
+      "en_cok_ms": 22
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s21-devir-ayni-adli-iki-cari",
+   "tz": "UTC",
+   "ms": 1265,
+   "ozet": {
+    "AYNI": 9,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 0,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 2,
+    "uygulanmadi": 1,
+    "yapildi": 7
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 25,
+    "olay_dongusu_p99_ms": 25,
+    "istek_sayisi": 60,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 89,
+      "en_cok_ms": 24
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 12,
+      "toplam_ms": 57,
+      "en_cok_ms": 16
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 2,
+      "toplam_ms": 42,
+      "en_cok_ms": 26
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 12,
+      "toplam_ms": 39,
+      "en_cok_ms": 10
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 38,
+      "en_cok_ms": 15
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 12,
+      "toplam_ms": 26,
+      "en_cok_ms": 4
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s22-devir-temel",
+   "tz": "Europe/Istanbul",
+   "ms": 1703,
+   "ozet": {
+    "AYNI": 51,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 8,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 7,
+    "uygulanmadi": 1,
+    "yapildi": 28
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 29,
+    "olay_dongusu_p99_ms": 28,
+    "istek_sayisi": 160,
+    "en_agir": [
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 37,
+      "toplam_ms": 136,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 6,
+      "toplam_ms": 106,
+      "en_cok_ms": 30
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 99,
+      "en_cok_ms": 26
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 3,
+      "toplam_ms": 74,
+      "en_cok_ms": 28
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 37,
+      "toplam_ms": 73,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 37,
+      "toplam_ms": 72,
+      "en_cok_ms": 8
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s22-devir-temel",
+   "tz": "UTC",
+   "ms": 1765,
+   "ozet": {
+    "AYNI": 51,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 8,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 7,
+    "uygulanmadi": 1,
+    "yapildi": 28
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 44,
+    "olay_dongusu_p99_ms": 40,
+    "istek_sayisi": 160,
+    "en_agir": [
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 37,
+      "toplam_ms": 149,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 6,
+      "toplam_ms": 131,
+      "en_cok_ms": 42
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 111,
+      "en_cok_ms": 30
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 3,
+      "toplam_ms": 103,
+      "en_cok_ms": 46
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 37,
+      "toplam_ms": 83,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 37,
+      "toplam_ms": 78,
+      "en_cok_ms": 5
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s23-devir-pos-valor-kg6",
+   "tz": "Europe/Istanbul",
+   "ms": 1359,
+   "ozet": {
+    "AYNI": 7,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 2,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "uygulanmadi": 1,
+    "yapildi": 3
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 33,
+    "olay_dongusu_p99_ms": 33,
+    "istek_sayisi": 52,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 104,
+      "en_cok_ms": 25
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 45,
+      "en_cok_ms": 25
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 9,
+      "toplam_ms": 33,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 1,
+      "toplam_ms": 33,
+      "en_cok_ms": 33
+     },
+     {
+      "istek": "POST /api/workspace/bank/accounts",
+      "sayi": 1,
+      "toplam_ms": 32,
+      "en_cok_ms": 32
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 1,
+      "toplam_ms": 29,
+      "en_cok_ms": 29
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s23-devir-pos-valor-kg6",
+   "tz": "UTC",
+   "ms": 1323,
+   "ozet": {
+    "AYNI": 7,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 2,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "uygulanmadi": 1,
+    "yapildi": 3
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 31,
+    "olay_dongusu_p99_ms": 31,
+    "istek_sayisi": 52,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 110,
+      "en_cok_ms": 28
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 9,
+      "toplam_ms": 34,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 32,
+      "en_cok_ms": 13
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 1,
+      "toplam_ms": 29,
+      "en_cok_ms": 29
+     },
+     {
+      "istek": "POST /api/workspace/bank/accounts",
+      "sayi": 1,
+      "toplam_ms": 28,
+      "en_cok_ms": 28
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 9,
+      "toplam_ms": 23,
+      "en_cok_ms": 5
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s24-devir-eksi-stok-kg9",
+   "tz": "Europe/Istanbul",
+   "ms": 1314,
+   "ozet": {
+    "AYNI": 21,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 0,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 4,
+    "uygulanmadi": 1,
+    "yapildi": 8
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 28,
+    "olay_dongusu_p99_ms": 28,
+    "istek_sayisi": 71,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 100,
+      "en_cok_ms": 26
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 4,
+      "toplam_ms": 84,
+      "en_cok_ms": 37
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 15,
+      "toplam_ms": 61,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 40,
+      "en_cok_ms": 17
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 15,
+      "toplam_ms": 40,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 15,
+      "toplam_ms": 37,
+      "en_cok_ms": 7
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s24-devir-eksi-stok-kg9",
+   "tz": "UTC",
+   "ms": 1367,
+   "ozet": {
+    "AYNI": 21,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 0,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 4,
+    "uygulanmadi": 1,
+    "yapildi": 8
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 30,
+    "olay_dongusu_p99_ms": 30,
+    "istek_sayisi": 71,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 107,
+      "en_cok_ms": 28
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 4,
+      "toplam_ms": 80,
+      "en_cok_ms": 34
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 15,
+      "toplam_ms": 60,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 41,
+      "en_cok_ms": 18
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 15,
+      "toplam_ms": 39,
+      "en_cok_ms": 9
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 15,
+      "toplam_ms": 35,
+      "en_cok_ms": 6
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s25-devir-onceki-yil-kg12",
+   "tz": "Europe/Istanbul",
+   "ms": 1369,
+   "ozet": {
+    "AYNI": 25,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 6,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 4,
+    "uygulanmadi": 1,
+    "yapildi": 15
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 24,
+    "olay_dongusu_p99_ms": 23,
+    "istek_sayisi": 99,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 89,
+      "en_cok_ms": 24
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 22,
+      "toplam_ms": 86,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 4,
+      "toplam_ms": 79,
+      "en_cok_ms": 25
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 22,
+      "toplam_ms": 56,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 22,
+      "toplam_ms": 42,
+      "en_cok_ms": 4
+     },
+     {
+      "istek": "POST /api/workspace/cash",
+      "sayi": 2,
+      "toplam_ms": 42,
+      "en_cok_ms": 24
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s25-devir-onceki-yil-kg12",
+   "tz": "UTC",
+   "ms": 1518,
+   "ozet": {
+    "AYNI": 25,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 6,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 4,
+    "uygulanmadi": 1,
+    "yapildi": 15
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 56,
+    "olay_dongusu_p99_ms": 56,
+    "istek_sayisi": 99,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 155,
+      "en_cok_ms": 40
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 4,
+      "toplam_ms": 110,
+      "en_cok_ms": 55
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 22,
+      "toplam_ms": 83,
+      "en_cok_ms": 11
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 22,
+      "toplam_ms": 48,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 22,
+      "toplam_ms": 45,
+      "en_cok_ms": 9
+     },
+     {
+      "istek": "POST /api/workspace/cash",
+      "sayi": 2,
+      "toplam_ms": 45,
+      "en_cok_ms": 23
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s26a-devir-borc-ve-alacaklari-aktar",
+   "tz": "Europe/Istanbul",
+   "ms": 1275,
+   "ozet": {
+    "AYNI": 6,
+    "K": 0,
+    "OLCULEMEDI": 1,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 4,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "uygulanmadi": 1,
+    "yapildi": 11
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 27,
+    "olay_dongusu_p99_ms": 27,
+    "istek_sayisi": 75,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 99,
+      "en_cok_ms": 26
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 14,
+      "toplam_ms": 57,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 3,
+      "toplam_ms": 45,
+      "en_cok_ms": 22
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 14,
+      "toplam_ms": 36,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 34,
+      "en_cok_ms": 14
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 1,
+      "toplam_ms": 29,
+      "en_cok_ms": 29
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s26a-devir-borc-ve-alacaklari-aktar",
+   "tz": "UTC",
+   "ms": 1409,
+   "ozet": {
+    "AYNI": 6,
+    "K": 0,
+    "OLCULEMEDI": 1,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 4,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "uygulanmadi": 1,
+    "yapildi": 11
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 45,
+    "olay_dongusu_p99_ms": 45,
+    "istek_sayisi": 75,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 105,
+      "en_cok_ms": 25
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 3,
+      "toplam_ms": 91,
+      "en_cok_ms": 51
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 14,
+      "toplam_ms": 74,
+      "en_cok_ms": 10
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 14,
+      "toplam_ms": 43,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 14,
+      "toplam_ms": 42,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 33,
+      "en_cok_ms": 13
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s26b-devir-sadece-bakiyeyi-aktar",
+   "tz": "Europe/Istanbul",
+   "ms": 1295,
+   "ozet": {
+    "AYNI": 6,
+    "K": 0,
+    "OLCULEMEDI": 1,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 4,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "uygulanmadi": 1,
+    "yapildi": 11
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 29,
+    "olay_dongusu_p99_ms": 29,
+    "istek_sayisi": 75,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 116,
+      "en_cok_ms": 32
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 14,
+      "toplam_ms": 56,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 3,
+      "toplam_ms": 48,
+      "en_cok_ms": 27
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 40,
+      "en_cok_ms": 15
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 14,
+      "toplam_ms": 32,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 1,
+      "toplam_ms": 31,
+      "en_cok_ms": 31
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s26b-devir-sadece-bakiyeyi-aktar",
+   "tz": "UTC",
+   "ms": 1405,
+   "ozet": {
+    "AYNI": 6,
+    "K": 0,
+    "OLCULEMEDI": 1,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 4,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "uygulanmadi": 1,
+    "yapildi": 11
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 29,
+    "olay_dongusu_p99_ms": 29,
+    "istek_sayisi": 75,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 105,
+      "en_cok_ms": 35
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 3,
+      "toplam_ms": 64,
+      "en_cok_ms": 28
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 14,
+      "toplam_ms": 61,
+      "en_cok_ms": 9
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 14,
+      "toplam_ms": 39,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 32,
+      "en_cok_ms": 13
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 14,
+      "toplam_ms": 29,
+      "en_cok_ms": 5
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s27-devir-yoldaki-supheli-evrak-taksit",
+   "tz": "Europe/Istanbul",
+   "ms": 1773,
+   "ozet": {
+    "AYNI": 23,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 6,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "uygulanmadi": 1,
+    "yapildi": 27
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 37,
+    "olay_dongusu_p99_ms": 29,
+    "istek_sayisi": 147,
+    "en_agir": [
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 32,
+      "toplam_ms": 152,
+      "en_cok_ms": 11
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 107,
+      "en_cok_ms": 24
+     },
+     {
+      "istek": "POST /api/workspace/cheques/:id/actions",
+      "sayi": 3,
+      "toplam_ms": 90,
+      "en_cok_ms": 37
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 32,
+      "toplam_ms": 79,
+      "en_cok_ms": 10
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 3,
+      "toplam_ms": 68,
+      "en_cok_ms": 26
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 32,
+      "toplam_ms": 62,
+      "en_cok_ms": 5
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s27-devir-yoldaki-supheli-evrak-taksit",
+   "tz": "UTC",
+   "ms": 1893,
+   "ozet": {
+    "AYNI": 23,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 6,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "uygulanmadi": 1,
+    "yapildi": 27
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 37,
+    "olay_dongusu_p99_ms": 31,
+    "istek_sayisi": 147,
+    "en_agir": [
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 32,
+      "toplam_ms": 151,
+      "en_cok_ms": 9
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 114,
+      "en_cok_ms": 35
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 32,
+      "toplam_ms": 97,
+      "en_cok_ms": 10
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 32,
+      "toplam_ms": 81,
+      "en_cok_ms": 12
+     },
+     {
+      "istek": "POST /api/workspace/cheques/:id/actions",
+      "sayi": 3,
+      "toplam_ms": 70,
+      "en_cok_ms": 28
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 3,
+      "toplam_ms": 69,
+      "en_cok_ms": 31
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s28-devri-yenile-kg7",
+   "tz": "Europe/Istanbul",
+   "ms": 1429,
+   "ozet": {
+    "AYNI": 34,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 13,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 5,
+    "red": 1,
+    "uygulanmadi": 1,
+    "yapildi": 10
+   },
+   "redler": 1,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 34,
+    "olay_dongusu_p99_ms": 34,
+    "istek_sayisi": 83,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 124,
+      "en_cok_ms": 39
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 3,
+      "toplam_ms": 62,
+      "en_cok_ms": 28
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 17,
+      "toplam_ms": 57,
+      "en_cok_ms": 4
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 17,
+      "toplam_ms": 47,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 17,
+      "toplam_ms": 35,
+      "en_cok_ms": 4
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 1,
+      "toplam_ms": 35,
+      "en_cok_ms": 35
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s28-devri-yenile-kg7",
+   "tz": "UTC",
+   "ms": 1445,
+   "ozet": {
+    "AYNI": 34,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 13,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 5,
+    "red": 1,
+    "uygulanmadi": 1,
+    "yapildi": 10
+   },
+   "redler": 1,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 48,
+    "olay_dongusu_p99_ms": 48,
+    "istek_sayisi": 83,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 146,
+      "en_cok_ms": 50
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 17,
+      "toplam_ms": 85,
+      "en_cok_ms": 10
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 3,
+      "toplam_ms": 85,
+      "en_cok_ms": 47
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 17,
+      "toplam_ms": 51,
+      "en_cok_ms": 9
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 45,
+      "en_cok_ms": 19
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 17,
+      "toplam_ms": 39,
+      "en_cok_ms": 5
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s29-devri-geri-al",
+   "tz": "Europe/Istanbul",
+   "ms": 1424,
+   "ozet": {
+    "AYNI": 8,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 4,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 1,
+    "uygulanmadi": 2,
+    "yapildi": 8
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 27,
+    "olay_dongusu_p99_ms": 27,
+    "istek_sayisi": 62,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 139,
+      "en_cok_ms": 58
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 3,
+      "toplam_ms": 59,
+      "en_cok_ms": 24
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 46,
+      "en_cok_ms": 22
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 12,
+      "toplam_ms": 46,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 12,
+      "toplam_ms": 46,
+      "en_cok_ms": 10
+     },
+     {
+      "istek": "POST /api/workspace/cash/opening",
+      "sayi": 1,
+      "toplam_ms": 25,
+      "en_cok_ms": 25
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s29-devri-geri-al",
+   "tz": "UTC",
+   "ms": 1282,
+   "ozet": {
+    "AYNI": 8,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 4,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 1,
+    "uygulanmadi": 2,
+    "yapildi": 8
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 28,
+    "olay_dongusu_p99_ms": 28,
+    "istek_sayisi": 62,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 100,
+      "en_cok_ms": 35
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 3,
+      "toplam_ms": 61,
+      "en_cok_ms": 29
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 12,
+      "toplam_ms": 50,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 12,
+      "toplam_ms": 42,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 31,
+      "en_cok_ms": 12
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 12,
+      "toplam_ms": 23,
+      "en_cok_ms": 4
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s30-kilit-kural-farki-kg15",
+   "tz": "Europe/Istanbul",
+   "ms": 1743,
+   "ozet": {
+    "AYNI": 45,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 4,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 5,
+    "red": 1,
+    "uygulanmadi": 1,
+    "yapildi": 13
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 26,
+    "olay_dongusu_p99_ms": 24,
+    "istek_sayisi": 98,
+    "en_agir": [
+     {
+      "istek": "PUT /api/admin/period-lock",
+      "sayi": 1,
+      "toplam_ms": 220,
+      "en_cok_ms": 220
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 130,
+      "en_cok_ms": 36
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 21,
+      "toplam_ms": 92,
+      "en_cok_ms": 10
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 3,
+      "toplam_ms": 54,
+      "en_cok_ms": 26
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 21,
+      "toplam_ms": 51,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 46,
+      "en_cok_ms": 18
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s30-kilit-kural-farki-kg15",
+   "tz": "UTC",
+   "ms": 1690,
+   "ozet": {
+    "AYNI": 45,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 4,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 5,
+    "red": 1,
+    "uygulanmadi": 1,
+    "yapildi": 13
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 37,
+    "olay_dongusu_p99_ms": 24,
+    "istek_sayisi": 98,
+    "en_agir": [
+     {
+      "istek": "PUT /api/admin/period-lock",
+      "sayi": 1,
+      "toplam_ms": 265,
+      "en_cok_ms": 265
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 103,
+      "en_cok_ms": 28
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 21,
+      "toplam_ms": 88,
+      "en_cok_ms": 13
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 21,
+      "toplam_ms": 57,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 3,
+      "toplam_ms": 54,
+      "en_cok_ms": 33
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 21,
+      "toplam_ms": 49,
+      "en_cok_ms": 6
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s31-eslestirme-sonra-devir",
+   "tz": "Europe/Istanbul",
+   "ms": 1303,
+   "ozet": {
+    "AYNI": 9,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 4,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 1,
+    "uygulanmadi": 2,
+    "yapildi": 5
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 40,
+    "olay_dongusu_p99_ms": 40,
+    "istek_sayisi": 49,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 121,
+      "en_cok_ms": 35
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 9,
+      "toplam_ms": 44,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 1,
+      "toplam_ms": 39,
+      "en_cok_ms": 39
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 38,
+      "en_cok_ms": 15
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 9,
+      "toplam_ms": 38,
+      "en_cok_ms": 12
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 9,
+      "toplam_ms": 34,
+      "en_cok_ms": 10
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s31-eslestirme-sonra-devir",
+   "tz": "UTC",
+   "ms": 1226,
+   "ozet": {
+    "AYNI": 9,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 4,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 1,
+    "uygulanmadi": 2,
+    "yapildi": 5
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 33,
+    "olay_dongusu_p99_ms": 33,
+    "istek_sayisi": 49,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 110,
+      "en_cok_ms": 31
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 34,
+      "en_cok_ms": 13
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 9,
+      "toplam_ms": 33,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "GET /api/workspace/ledger/integrity",
+      "sayi": 1,
+      "toplam_ms": 30,
+      "en_cok_ms": 30
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 1,
+      "toplam_ms": 24,
+      "en_cok_ms": 24
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 9,
+      "toplam_ms": 23,
+      "en_cok_ms": 6
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s32-yil-donumu-29-subat",
+   "tz": "Europe/Istanbul",
+   "ms": 1541,
+   "ozet": {
+    "AYNI": 27,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 6,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 7,
+    "uygulanmadi": 3,
+    "yapildi": 12
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 34,
+    "olay_dongusu_p99_ms": 34,
+    "istek_sayisi": 98,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 106,
+      "en_cok_ms": 32
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 22,
+      "toplam_ms": 92,
+      "en_cok_ms": 9
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 4,
+      "toplam_ms": 87,
+      "en_cok_ms": 34
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 22,
+      "toplam_ms": 60,
+      "en_cok_ms": 9
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 22,
+      "toplam_ms": 45,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 33,
+      "en_cok_ms": 12
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s32-yil-donumu-29-subat",
+   "tz": "UTC",
+   "ms": 1467,
+   "ozet": {
+    "AYNI": 27,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 6,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 7,
+    "uygulanmadi": 3,
+    "yapildi": 12
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 32,
+    "olay_dongusu_p99_ms": 32,
+    "istek_sayisi": 98,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 137,
+      "en_cok_ms": 30
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 22,
+      "toplam_ms": 81,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 4,
+      "toplam_ms": 78,
+      "en_cok_ms": 34
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 22,
+      "toplam_ms": 59,
+      "en_cok_ms": 9
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 54,
+      "en_cok_ms": 20
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 22,
+      "toplam_ms": 48,
+      "en_cok_ms": 9
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s33-gecikmis-b1",
+   "tz": "Europe/Istanbul",
+   "ms": 1678,
+   "ozet": {
+    "AYNI": 7,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 3,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "faturada": 1,
+    "rapor": 3,
+    "yapildi": 15
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 36,
+    "olay_dongusu_p99_ms": 36,
+    "istek_sayisi": 96,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 127,
+      "en_cok_ms": 39
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 3,
+      "toplam_ms": 83,
+      "en_cok_ms": 39
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 74,
+      "en_cok_ms": 32
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 19,
+      "toplam_ms": 71,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 2,
+      "toplam_ms": 51,
+      "en_cok_ms": 36
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 19,
+      "toplam_ms": 47,
+      "en_cok_ms": 6
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s33-gecikmis-b1",
+   "tz": "UTC",
+   "ms": 1608,
+   "ozet": {
+    "AYNI": 7,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 3,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "faturada": 1,
+    "rapor": 3,
+    "yapildi": 15
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 35,
+    "olay_dongusu_p99_ms": 35,
+    "istek_sayisi": 96,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 99,
+      "en_cok_ms": 24
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 19,
+      "toplam_ms": 92,
+      "en_cok_ms": 17
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 3,
+      "toplam_ms": 68,
+      "en_cok_ms": 32
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 19,
+      "toplam_ms": 59,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 2,
+      "toplam_ms": 47,
+      "en_cok_ms": 31
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 19,
+      "toplam_ms": 46,
+      "en_cok_ms": 7
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s34-ocakta-aralik-iadesi",
+   "tz": "Europe/Istanbul",
+   "ms": 1266,
+   "ozet": {
+    "AYNI": 22,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 0,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "uygulanmadi": 1,
+    "yapildi": 10
+   },
+   "redler": 0,
+   "adim": 1,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 30,
+    "olay_dongusu_p99_ms": 30,
+    "istek_sayisi": 75,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 87,
+      "en_cok_ms": 22
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 3,
+      "toplam_ms": 66,
+      "en_cok_ms": 30
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 15,
+      "toplam_ms": 52,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 15,
+      "toplam_ms": 39,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 30,
+      "en_cok_ms": 11
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 15,
+      "toplam_ms": 28,
+      "en_cok_ms": 4
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s34-ocakta-aralik-iadesi",
+   "tz": "UTC",
+   "ms": 1335,
+   "ozet": {
+    "AYNI": 22,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 0,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "uygulanmadi": 1,
+    "yapildi": 10
+   },
+   "redler": 0,
+   "adim": 1,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 35,
+    "olay_dongusu_p99_ms": 35,
+    "istek_sayisi": 75,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 94,
+      "en_cok_ms": 24
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 3,
+      "toplam_ms": 78,
+      "en_cok_ms": 38
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 15,
+      "toplam_ms": 68,
+      "en_cok_ms": 10
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 15,
+      "toplam_ms": 50,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 40,
+      "en_cok_ms": 21
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 15,
+      "toplam_ms": 28,
+      "en_cok_ms": 4
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s35-banka-ters-kayit",
+   "tz": "Europe/Istanbul",
+   "ms": 1281,
+   "ozet": {
+    "AYNI": 11,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 8,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 4,
+    "yapildi": 12
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 30,
+    "olay_dongusu_p99_ms": 30,
+    "istek_sayisi": 87,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 89,
+      "en_cok_ms": 25
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 19,
+      "toplam_ms": 64,
+      "en_cok_ms": 4
+     },
+     {
+      "istek": "POST /api/workspace/bank/vouchers",
+      "sayi": 3,
+      "toplam_ms": 58,
+      "en_cok_ms": 22
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 19,
+      "toplam_ms": 41,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 40,
+      "en_cok_ms": 17
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 19,
+      "toplam_ms": 37,
+      "en_cok_ms": 4
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s35-banka-ters-kayit",
+   "tz": "UTC",
+   "ms": 1327,
+   "ozet": {
+    "AYNI": 11,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 8,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 4,
+    "yapildi": 12
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 34,
+    "olay_dongusu_p99_ms": 34,
+    "istek_sayisi": 87,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 98,
+      "en_cok_ms": 23
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 19,
+      "toplam_ms": 71,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "POST /api/workspace/bank/vouchers",
+      "sayi": 3,
+      "toplam_ms": 65,
+      "en_cok_ms": 26
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 19,
+      "toplam_ms": 43,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 19,
+      "toplam_ms": 37,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 35,
+      "en_cok_ms": 13
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s36-yuvarlama-kg2-ic-yuzde",
+   "tz": "Europe/Istanbul",
+   "ms": 1439,
+   "ozet": {
+    "AYNI": 9,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 6,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "yapildi": 12
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 43,
+    "olay_dongusu_p99_ms": 43,
+    "istek_sayisi": 86,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 144,
+      "en_cok_ms": 41
+     },
+     {
+      "istek": "POST /api/workspace/stock/:id/moves",
+      "sayi": 6,
+      "toplam_ms": 133,
+      "en_cok_ms": 44
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 18,
+      "toplam_ms": 66,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 18,
+      "toplam_ms": 48,
+      "en_cok_ms": 16
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 38,
+      "en_cok_ms": 15
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 18,
+      "toplam_ms": 35,
+      "en_cok_ms": 4
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s36-yuvarlama-kg2-ic-yuzde",
+   "tz": "UTC",
+   "ms": 1308,
+   "ozet": {
+    "AYNI": 9,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 6,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "yapildi": 12
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 23,
+    "olay_dongusu_p99_ms": 23,
+    "istek_sayisi": 86,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/stock/:id/moves",
+      "sayi": 6,
+      "toplam_ms": 111,
+      "en_cok_ms": 21
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 94,
+      "en_cok_ms": 24
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 18,
+      "toplam_ms": 79,
+      "en_cok_ms": 13
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 45,
+      "en_cok_ms": 18
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 18,
+      "toplam_ms": 37,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 18,
+      "toplam_ms": 33,
+      "en_cok_ms": 5
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s37-kart-borcuna-aktar",
+   "tz": "Europe/Istanbul",
+   "ms": 1388,
+   "ozet": {
+    "AYNI": 8,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 12,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 2,
+    "yapildi": 8
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 42,
+    "olay_dongusu_p99_ms": 42,
+    "istek_sayisi": 65,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 121,
+      "en_cok_ms": 34
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 13,
+      "toplam_ms": 52,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 2,
+      "toplam_ms": 50,
+      "en_cok_ms": 29
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 1,
+      "toplam_ms": 39,
+      "en_cok_ms": 39
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 33,
+      "en_cok_ms": 13
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 13,
+      "toplam_ms": 31,
+      "en_cok_ms": 6
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s37-kart-borcuna-aktar",
+   "tz": "UTC",
+   "ms": 1348,
+   "ozet": {
+    "AYNI": 8,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 12,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 2,
+    "yapildi": 8
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 30,
+    "olay_dongusu_p99_ms": 30,
+    "istek_sayisi": 65,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 156,
+      "en_cok_ms": 65
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 2,
+      "toplam_ms": 52,
+      "en_cok_ms": 27
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 13,
+      "toplam_ms": 44,
+      "en_cok_ms": 4
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 32,
+      "en_cok_ms": 12
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 13,
+      "toplam_ms": 31,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 1,
+      "toplam_ms": 30,
+      "en_cok_ms": 30
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s38-cari-tur-degistir",
+   "tz": "Europe/Istanbul",
+   "ms": 1654,
+   "ozet": {
+    "AYNI": 14,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 8,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "red": 1,
+    "yapildi": 7
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 29,
+    "olay_dongusu_p99_ms": 21,
+    "istek_sayisi": 70,
+    "en_agir": [
+     {
+      "istek": "PUT /api/admin/period-lock",
+      "sayi": 1,
+      "toplam_ms": 215,
+      "en_cok_ms": 215
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 91,
+      "en_cok_ms": 21
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 14,
+      "toplam_ms": 62,
+      "en_cok_ms": 14
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 2,
+      "toplam_ms": 38,
+      "en_cok_ms": 27
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 14,
+      "toplam_ms": 36,
+      "en_cok_ms": 9
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 31,
+      "en_cok_ms": 13
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s38-cari-tur-degistir",
+   "tz": "UTC",
+   "ms": 1433,
+   "ozet": {
+    "AYNI": 14,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 8,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "red": 1,
+    "yapildi": 7
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 32,
+    "olay_dongusu_p99_ms": 17,
+    "istek_sayisi": 70,
+    "en_agir": [
+     {
+      "istek": "PUT /api/admin/period-lock",
+      "sayi": 1,
+      "toplam_ms": 209,
+      "en_cok_ms": 209
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 101,
+      "en_cok_ms": 36
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 14,
+      "toplam_ms": 54,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 14,
+      "toplam_ms": 36,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/cash/opening",
+      "sayi": 1,
+      "toplam_ms": 34,
+      "en_cok_ms": 34
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 32,
+      "en_cok_ms": 12
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s39-mahsup-acik-kalem",
+   "tz": "Europe/Istanbul",
+   "ms": 1484,
+   "ozet": {
+    "AYNI": 10,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 0,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 2,
+    "uygulanmadi": 1,
+    "yapildi": 8
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 26,
+    "olay_dongusu_p99_ms": 26,
+    "istek_sayisi": 63,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 127,
+      "en_cok_ms": 46
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 12,
+      "toplam_ms": 86,
+      "en_cok_ms": 15
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 3,
+      "toplam_ms": 74,
+      "en_cok_ms": 29
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 12,
+      "toplam_ms": 43,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 39,
+      "en_cok_ms": 17
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 12,
+      "toplam_ms": 34,
+      "en_cok_ms": 7
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s39-mahsup-acik-kalem",
+   "tz": "UTC",
+   "ms": 1258,
+   "ozet": {
+    "AYNI": 10,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 0,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 2,
+    "uygulanmadi": 1,
+    "yapildi": 8
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 26,
+    "olay_dongusu_p99_ms": 26,
+    "istek_sayisi": 63,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 88,
+      "en_cok_ms": 23
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 3,
+      "toplam_ms": 65,
+      "en_cok_ms": 27
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 12,
+      "toplam_ms": 57,
+      "en_cok_ms": 9
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 12,
+      "toplam_ms": 36,
+      "en_cok_ms": 10
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 33,
+      "en_cok_ms": 14
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 12,
+      "toplam_ms": 24,
+      "en_cok_ms": 4
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s40-s1-vadesiz-gecikmis",
+   "tz": "Europe/Istanbul",
+   "ms": 1591,
+   "ozet": {
+    "AYNI": 10,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 17,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 13,
+    "yapildi": 19
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 35,
+    "olay_dongusu_p99_ms": 28,
+    "istek_sayisi": 127,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 164,
+      "en_cok_ms": 52
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 22,
+      "toplam_ms": 93,
+      "en_cok_ms": 11
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 22,
+      "toplam_ms": 70,
+      "en_cok_ms": 9
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 22,
+      "toplam_ms": 62,
+      "en_cok_ms": 9
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 2,
+      "toplam_ms": 58,
+      "en_cok_ms": 29
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 47,
+      "en_cok_ms": 21
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s40-s1-vadesiz-gecikmis",
+   "tz": "UTC",
+   "ms": 1586,
+   "ozet": {
+    "AYNI": 10,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 17,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 13,
+    "yapildi": 19
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 38,
+    "olay_dongusu_p99_ms": 33,
+    "istek_sayisi": 127,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 96,
+      "en_cok_ms": 24
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 22,
+      "toplam_ms": 92,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 22,
+      "toplam_ms": 67,
+      "en_cok_ms": 9
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 2,
+      "toplam_ms": 58,
+      "en_cok_ms": 34
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 22,
+      "toplam_ms": 50,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "GET /api/workspace/report-center/acik-faturalar",
+      "sayi": 12,
+      "toplam_ms": 43,
+      "en_cok_ms": 13
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s41-s2-vade-sirasi",
+   "tz": "Europe/Istanbul",
+   "ms": 1438,
+   "ozet": {
+    "AYNI": 8,
+    "K": 0,
+    "OLCULEMEDI": 2,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 3,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 5,
+    "yapildi": 19
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 32,
+    "olay_dongusu_p99_ms": 25,
+    "istek_sayisi": 112,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 6,
+      "toplam_ms": 120,
+      "en_cok_ms": 34
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 113,
+      "en_cok_ms": 25
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 22,
+      "toplam_ms": 78,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 4,
+      "toplam_ms": 66,
+      "en_cok_ms": 23
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 22,
+      "toplam_ms": 47,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 22,
+      "toplam_ms": 42,
+      "en_cok_ms": 4
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s41-s2-vade-sirasi",
+   "tz": "UTC",
+   "ms": 1585,
+   "ozet": {
+    "AYNI": 8,
+    "K": 0,
+    "OLCULEMEDI": 2,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 3,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 5,
+    "yapildi": 19
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 26,
+    "olay_dongusu_p99_ms": 22,
+    "istek_sayisi": 112,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 6,
+      "toplam_ms": 112,
+      "en_cok_ms": 31
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 100,
+      "en_cok_ms": 36
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 22,
+      "toplam_ms": 84,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 4,
+      "toplam_ms": 65,
+      "en_cok_ms": 22
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 22,
+      "toplam_ms": 61,
+      "en_cok_ms": 10
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 22,
+      "toplam_ms": 51,
+      "en_cok_ms": 6
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s42-s3-supheli-hatirlatma",
+   "tz": "Europe/Istanbul",
+   "ms": 1585,
+   "ozet": {
+    "AYNI": 10,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 11,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 7,
+    "yapildi": 13
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 55,
+    "olay_dongusu_p99_ms": 55,
+    "istek_sayisi": 92,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 118,
+      "en_cok_ms": 35
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 3,
+      "toplam_ms": 73,
+      "en_cok_ms": 34
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 16,
+      "toplam_ms": 69,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 1,
+      "toplam_ms": 55,
+      "en_cok_ms": 55
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 16,
+      "toplam_ms": 41,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 39,
+      "en_cok_ms": 15
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s42-s3-supheli-hatirlatma",
+   "tz": "UTC",
+   "ms": 1616,
+   "ozet": {
+    "AYNI": 10,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 11,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 7,
+    "yapildi": 13
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 36,
+    "olay_dongusu_p99_ms": 36,
+    "istek_sayisi": 92,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 109,
+      "en_cok_ms": 29
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 16,
+      "toplam_ms": 86,
+      "en_cok_ms": 22
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 3,
+      "toplam_ms": 85,
+      "en_cok_ms": 50
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 16,
+      "toplam_ms": 44,
+      "en_cok_ms": 9
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 16,
+      "toplam_ms": 42,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 39,
+      "en_cok_ms": 15
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s43-s4-mahsuptan-sonra-ters",
+   "tz": "Europe/Istanbul",
+   "ms": 1480,
+   "ozet": {
+    "AYNI": 18,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 8,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 8,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "api_yok": 1,
+    "rapor": 3,
+    "yapildi": 13
+   },
+   "redler": 0,
+   "adim": 1,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 47,
+    "olay_dongusu_p99_ms": 47,
+    "istek_sayisi": 89,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 7,
+      "toplam_ms": 156,
+      "en_cok_ms": 40
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 19,
+      "toplam_ms": 85,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 52,
+      "en_cok_ms": 20
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 19,
+      "toplam_ms": 50,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 2,
+      "toplam_ms": 48,
+      "en_cok_ms": 25
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 19,
+      "toplam_ms": 46,
+      "en_cok_ms": 5
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s43-s4-mahsuptan-sonra-ters",
+   "tz": "UTC",
+   "ms": 1639,
+   "ozet": {
+    "AYNI": 18,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 8,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 8,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "api_yok": 1,
+    "rapor": 3,
+    "yapildi": 13
+   },
+   "redler": 0,
+   "adim": 1,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 44,
+    "olay_dongusu_p99_ms": 44,
+    "istek_sayisi": 89,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 7,
+      "toplam_ms": 106,
+      "en_cok_ms": 24
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 19,
+      "toplam_ms": 80,
+      "en_cok_ms": 11
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 2,
+      "toplam_ms": 45,
+      "en_cok_ms": 23
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 19,
+      "toplam_ms": 44,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/bank/vouchers",
+      "sayi": 1,
+      "toplam_ms": 43,
+      "en_cok_ms": 43
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 19,
+      "toplam_ms": 37,
+      "en_cok_ms": 4
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s44-s5-iptalde-avans",
+   "tz": "Europe/Istanbul",
+   "ms": 1478,
+   "ozet": {
+    "AYNI": 15,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 1,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "faturada": 1,
+    "rapor": 6,
+    "yapildi": 7
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 48,
+    "olay_dongusu_p99_ms": 48,
+    "istek_sayisi": 73,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 129,
+      "en_cok_ms": 32
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 2,
+      "toplam_ms": 75,
+      "en_cok_ms": 57
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 13,
+      "toplam_ms": 52,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 46,
+      "en_cok_ms": 24
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 13,
+      "toplam_ms": 36,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 1,
+      "toplam_ms": 30,
+      "en_cok_ms": 30
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s44-s5-iptalde-avans",
+   "tz": "UTC",
+   "ms": 1285,
+   "ozet": {
+    "AYNI": 15,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 1,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "faturada": 1,
+    "rapor": 6,
+    "yapildi": 7
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 36,
+    "olay_dongusu_p99_ms": 36,
+    "istek_sayisi": 73,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 88,
+      "en_cok_ms": 23
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 2,
+      "toplam_ms": 57,
+      "en_cok_ms": 39
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 13,
+      "toplam_ms": 42,
+      "en_cok_ms": 4
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 33,
+      "en_cok_ms": 12
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 13,
+      "toplam_ms": 32,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 1,
+      "toplam_ms": 28,
+      "en_cok_ms": 28
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s45-m2-devirde-gecikmis-ayni",
+   "tz": "Europe/Istanbul",
+   "ms": 1736,
+   "ozet": {
+    "AYNI": 6,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 8,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 6,
+    "uygulanmadi": 1,
+    "yapildi": 16
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 41,
+    "olay_dongusu_p99_ms": 32,
+    "istek_sayisi": 102,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 4,
+      "toplam_ms": 112,
+      "en_cok_ms": 41
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 19,
+      "toplam_ms": 109,
+      "en_cok_ms": 12
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 96,
+      "en_cok_ms": 25
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 3,
+      "toplam_ms": 78,
+      "en_cok_ms": 32
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 19,
+      "toplam_ms": 68,
+      "en_cok_ms": 18
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 19,
+      "toplam_ms": 63,
+      "en_cok_ms": 7
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s45-m2-devirde-gecikmis-ayni",
+   "tz": "UTC",
+   "ms": 1450,
+   "ozet": {
+    "AYNI": 6,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 8,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 6,
+    "uygulanmadi": 1,
+    "yapildi": 16
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 32,
+    "olay_dongusu_p99_ms": 32,
+    "istek_sayisi": 102,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 113,
+      "en_cok_ms": 25
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 19,
+      "toplam_ms": 78,
+      "en_cok_ms": 10
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 4,
+      "toplam_ms": 76,
+      "en_cok_ms": 24
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 3,
+      "toplam_ms": 64,
+      "en_cok_ms": 30
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 19,
+      "toplam_ms": 49,
+      "en_cok_ms": 10
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 41,
+      "en_cok_ms": 16
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s46-m3-m12-tek-net-satir-ekstre",
+   "tz": "Europe/Istanbul",
+   "ms": 1741,
+   "ozet": {
+    "AYNI": 7,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 2,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 2,
+    "uygulanmadi": 1,
+    "yapildi": 14
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 34,
+    "olay_dongusu_p99_ms": 34,
+    "istek_sayisi": 89,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 4,
+      "toplam_ms": 111,
+      "en_cok_ms": 32
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 103,
+      "en_cok_ms": 30
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 19,
+      "toplam_ms": 88,
+      "en_cok_ms": 10
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 3,
+      "toplam_ms": 76,
+      "en_cok_ms": 31
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 19,
+      "toplam_ms": 57,
+      "en_cok_ms": 10
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 19,
+      "toplam_ms": 55,
+      "en_cok_ms": 10
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s46-m3-m12-tek-net-satir-ekstre",
+   "tz": "UTC",
+   "ms": 1883,
+   "ozet": {
+    "AYNI": 7,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 2,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 2,
+    "uygulanmadi": 1,
+    "yapildi": 14
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 51,
+    "olay_dongusu_p99_ms": 31,
+    "istek_sayisi": 89,
+    "en_agir": [
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 19,
+      "toplam_ms": 142,
+      "en_cok_ms": 20
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 141,
+      "en_cok_ms": 51
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 4,
+      "toplam_ms": 125,
+      "en_cok_ms": 53
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 3,
+      "toplam_ms": 79,
+      "en_cok_ms": 33
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 19,
+      "toplam_ms": 78,
+      "en_cok_ms": 13
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 19,
+      "toplam_ms": 75,
+      "en_cok_ms": 11
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s47-m4-onceki-yil-kilitli",
+   "tz": "Europe/Istanbul",
+   "ms": 1766,
+   "ozet": {
+    "AYNI": 32,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 8,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 7,
+    "uygulanmadi": 1,
+    "yapildi": 18
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 30,
+    "olay_dongusu_p99_ms": 25,
+    "istek_sayisi": 122,
+    "en_agir": [
+     {
+      "istek": "PUT /api/admin/period-lock",
+      "sayi": 1,
+      "toplam_ms": 222,
+      "en_cok_ms": 222
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 111,
+      "en_cok_ms": 25
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 5,
+      "toplam_ms": 105,
+      "en_cok_ms": 30
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 28,
+      "toplam_ms": 98,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 28,
+      "toplam_ms": 62,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 28,
+      "toplam_ms": 53,
+      "en_cok_ms": 4
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s47-m4-onceki-yil-kilitli",
+   "tz": "UTC",
+   "ms": 1855,
+   "ozet": {
+    "AYNI": 32,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 8,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 7,
+    "uygulanmadi": 1,
+    "yapildi": 18
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 51,
+    "olay_dongusu_p99_ms": 30,
+    "istek_sayisi": 122,
+    "en_agir": [
+     {
+      "istek": "PUT /api/admin/period-lock",
+      "sayi": 1,
+      "toplam_ms": 200,
+      "en_cok_ms": 200
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 28,
+      "toplam_ms": 112,
+      "en_cok_ms": 9
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 5,
+      "toplam_ms": 105,
+      "en_cok_ms": 29
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 98,
+      "en_cok_ms": 27
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 28,
+      "toplam_ms": 67,
+      "en_cok_ms": 9
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 63,
+      "en_cok_ms": 25
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s48-m5-eksi-stok-devri",
+   "tz": "Europe/Istanbul",
+   "ms": 1211,
+   "ozet": {
+    "AYNI": 21,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 0,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 4,
+    "uygulanmadi": 1,
+    "yapildi": 7
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 35,
+    "olay_dongusu_p99_ms": 35,
+    "istek_sayisi": 67,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 100,
+      "en_cok_ms": 29
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 3,
+      "toplam_ms": 66,
+      "en_cok_ms": 35
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 14,
+      "toplam_ms": 45,
+      "en_cok_ms": 4
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 30,
+      "en_cok_ms": 12
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 14,
+      "toplam_ms": 29,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 14,
+      "toplam_ms": 24,
+      "en_cok_ms": 4
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s48-m5-eksi-stok-devri",
+   "tz": "UTC",
+   "ms": 1267,
+   "ozet": {
+    "AYNI": 21,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 0,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 4,
+    "uygulanmadi": 1,
+    "yapildi": 7
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 76,
+    "olay_dongusu_p99_ms": 76,
+    "istek_sayisi": 67,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 3,
+      "toplam_ms": 109,
+      "en_cok_ms": 76
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 96,
+      "en_cok_ms": 30
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 14,
+      "toplam_ms": 64,
+      "en_cok_ms": 10
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 14,
+      "toplam_ms": 37,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 35,
+      "en_cok_ms": 13
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 14,
+      "toplam_ms": 30,
+      "en_cok_ms": 5
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s49-m7-kural-farki-671-681",
+   "tz": "Europe/Istanbul",
+   "ms": 1350,
+   "ozet": {
+    "AYNI": 19,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 0,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "uygulanmadi": 1,
+    "yapildi": 6
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 22,
+    "olay_dongusu_p99_ms": 18,
+    "istek_sayisi": 62,
+    "en_agir": [
+     {
+      "istek": "PUT /api/admin/period-lock",
+      "sayi": 1,
+      "toplam_ms": 199,
+      "en_cok_ms": 199
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 96,
+      "en_cok_ms": 23
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 12,
+      "toplam_ms": 42,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 32,
+      "en_cok_ms": 14
+     },
+     {
+      "istek": "POST /api/workspace/cheques/import",
+      "sayi": 2,
+      "toplam_ms": 30,
+      "en_cok_ms": 20
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 12,
+      "toplam_ms": 28,
+      "en_cok_ms": 5
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s49-m7-kural-farki-671-681",
+   "tz": "UTC",
+   "ms": 1358,
+   "ozet": {
+    "AYNI": 19,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 0,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "uygulanmadi": 1,
+    "yapildi": 6
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 20,
+    "olay_dongusu_p99_ms": 17,
+    "istek_sayisi": 62,
+    "en_agir": [
+     {
+      "istek": "PUT /api/admin/period-lock",
+      "sayi": 1,
+      "toplam_ms": 199,
+      "en_cok_ms": 199
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 105,
+      "en_cok_ms": 26
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 12,
+      "toplam_ms": 44,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 35,
+      "en_cok_ms": 14
+     },
+     {
+      "istek": "POST /api/workspace/cheques/import",
+      "sayi": 2,
+      "toplam_ms": 30,
+      "en_cok_ms": 18
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 12,
+      "toplam_ms": 27,
+      "en_cok_ms": 4
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s50-m13-supheli-devir",
+   "tz": "Europe/Istanbul",
+   "ms": 1378,
+   "ozet": {
+    "AYNI": 9,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 2,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 4,
+    "uygulanmadi": 1,
+    "yapildi": 11
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 35,
+    "olay_dongusu_p99_ms": 35,
+    "istek_sayisi": 80,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 150,
+      "en_cok_ms": 65
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 15,
+      "toplam_ms": 57,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 2,
+      "toplam_ms": 55,
+      "en_cok_ms": 36
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 38,
+      "en_cok_ms": 17
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 15,
+      "toplam_ms": 34,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 15,
+      "toplam_ms": 31,
+      "en_cok_ms": 7
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s50-m13-supheli-devir",
+   "tz": "UTC",
+   "ms": 1310,
+   "ozet": {
+    "AYNI": 9,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 2,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 4,
+    "uygulanmadi": 1,
+    "yapildi": 11
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 43,
+    "olay_dongusu_p99_ms": 43,
+    "istek_sayisi": 80,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 104,
+      "en_cok_ms": 23
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 2,
+      "toplam_ms": 74,
+      "en_cok_ms": 50
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 15,
+      "toplam_ms": 61,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 53,
+      "en_cok_ms": 20
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 15,
+      "toplam_ms": 39,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 15,
+      "toplam_ms": 33,
+      "en_cok_ms": 7
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s51-m1e-mevcut-borc-karti",
+   "tz": "Europe/Istanbul",
+   "ms": 1394,
+   "ozet": {
+    "AYNI": 6,
+    "K": 0,
+    "OLCULEMEDI": 1,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 2,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 4,
+    "yapildi": 10
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 25,
+    "olay_dongusu_p99_ms": 25,
+    "istek_sayisi": 75,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 110,
+      "en_cok_ms": 36
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 13,
+      "toplam_ms": 49,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 32,
+      "en_cok_ms": 12
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 13,
+      "toplam_ms": 31,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 13,
+      "toplam_ms": 28,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "POST /api/workspace/plans/:id/entries",
+      "sayi": 1,
+      "toplam_ms": 28,
+      "en_cok_ms": 28
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s51-m1e-mevcut-borc-karti",
+   "tz": "UTC",
+   "ms": 1297,
+   "ozet": {
+    "AYNI": 6,
+    "K": 0,
+    "OLCULEMEDI": 1,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 2,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 4,
+    "yapildi": 10
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 29,
+    "olay_dongusu_p99_ms": 29,
+    "istek_sayisi": 75,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 105,
+      "en_cok_ms": 24
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 13,
+      "toplam_ms": 46,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 35,
+      "en_cok_ms": 13
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 13,
+      "toplam_ms": 32,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 1,
+      "toplam_ms": 32,
+      "en_cok_ms": 32
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 13,
+      "toplam_ms": 27,
+      "en_cok_ms": 4
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s52-k3-supheli-caride-alacak-satirlari",
+   "tz": "Europe/Istanbul",
+   "ms": 1720,
+   "ozet": {
+    "AYNI": 20,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 5,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 2,
+    "red": 1,
+    "yapildi": 31
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 30,
+    "olay_dongusu_p99_ms": 30,
+    "istek_sayisi": 164,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 11,
+      "toplam_ms": 173,
+      "en_cok_ms": 25
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 36,
+      "toplam_ms": 147,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 96,
+      "en_cok_ms": 24
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 36,
+      "toplam_ms": 75,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/doubtful",
+      "sayi": 5,
+      "toplam_ms": 67,
+      "en_cok_ms": 18
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 2,
+      "toplam_ms": 62,
+      "en_cok_ms": 32
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s52-k3-supheli-caride-alacak-satirlari",
+   "tz": "UTC",
+   "ms": 1840,
+   "ozet": {
+    "AYNI": 20,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 5,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 2,
+    "red": 1,
+    "yapildi": 31
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 30,
+    "olay_dongusu_p99_ms": 25,
+    "istek_sayisi": 164,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 11,
+      "toplam_ms": 186,
+      "en_cok_ms": 28
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 36,
+      "toplam_ms": 161,
+      "en_cok_ms": 12
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 132,
+      "en_cok_ms": 50
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 36,
+      "toplam_ms": 82,
+      "en_cok_ms": 10
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/doubtful",
+      "sayi": 5,
+      "toplam_ms": 74,
+      "en_cok_ms": 20
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 36,
+      "toplam_ms": 66,
+      "en_cok_ms": 4
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s53-kasa-acilis-duzelt-fatura-sil-geri-yukle",
+   "tz": "Europe/Istanbul",
+   "ms": 1529,
+   "ozet": {
+    "AYNI": 23,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 6,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "faturada": 1,
+    "rapor": 8,
+    "red": 2,
+    "yapildi": 21
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 32,
+    "olay_dongusu_p99_ms": 27,
+    "istek_sayisi": 147,
+    "en_agir": [
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 32,
+      "toplam_ms": 124,
+      "en_cok_ms": 10
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 93,
+      "en_cok_ms": 24
+     },
+     {
+      "istek": "POST /api/workspace/cash/opening",
+      "sayi": 5,
+      "toplam_ms": 74,
+      "en_cok_ms": 21
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 32,
+      "toplam_ms": 73,
+      "en_cok_ms": 7
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 3,
+      "toplam_ms": 56,
+      "en_cok_ms": 28
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 32,
+      "toplam_ms": 54,
+      "en_cok_ms": 4
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s53-kasa-acilis-duzelt-fatura-sil-geri-yukle",
+   "tz": "UTC",
+   "ms": 1438,
+   "ozet": {
+    "AYNI": 23,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 6,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "faturada": 1,
+    "rapor": 8,
+    "red": 2,
+    "yapildi": 21
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 26,
+    "olay_dongusu_p99_ms": 25,
+    "istek_sayisi": 147,
+    "en_agir": [
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 32,
+      "toplam_ms": 109,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 89,
+      "en_cok_ms": 23
+     },
+     {
+      "istek": "POST /api/workspace/cash/opening",
+      "sayi": 5,
+      "toplam_ms": 76,
+      "en_cok_ms": 24
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 32,
+      "toplam_ms": 66,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 3,
+      "toplam_ms": 57,
+      "en_cok_ms": 27
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 32,
+      "toplam_ms": 54,
+      "en_cok_ms": 4
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s54-r1-ayni-gun-borc-once",
+   "tz": "Europe/Istanbul",
+   "ms": 1257,
+   "ozet": {
+    "AYNI": 5,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 2,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "yapildi": 6
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 33,
+    "olay_dongusu_p99_ms": 33,
+    "istek_sayisi": 56,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 94,
+      "en_cok_ms": 23
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 2,
+      "toplam_ms": 57,
+      "en_cok_ms": 38
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 37,
+      "en_cok_ms": 15
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 9,
+      "toplam_ms": 32,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 9,
+      "toplam_ms": 27,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 1,
+      "toplam_ms": 26,
+      "en_cok_ms": 26
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s54-r1-ayni-gun-borc-once",
+   "tz": "UTC",
+   "ms": 1176,
+   "ozet": {
+    "AYNI": 5,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 2,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 3,
+    "yapildi": 6
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 36,
+    "olay_dongusu_p99_ms": 36,
+    "istek_sayisi": 56,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 103,
+      "en_cok_ms": 27
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 2,
+      "toplam_ms": 53,
+      "en_cok_ms": 35
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 1,
+      "toplam_ms": 37,
+      "en_cok_ms": 37
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 9,
+      "toplam_ms": 35,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 33,
+      "en_cok_ms": 12
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 9,
+      "toplam_ms": 25,
+      "en_cok_ms": 6
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s55-r2-bag-kendi-tarihinde",
+   "tz": "Europe/Istanbul",
+   "ms": 1445,
+   "ozet": {
+    "AYNI": 5,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 3,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 4,
+    "yapildi": 11
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 35,
+    "olay_dongusu_p99_ms": 35,
+    "istek_sayisi": 78,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 119,
+      "en_cok_ms": 38
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 14,
+      "toplam_ms": 95,
+      "en_cok_ms": 38
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 3,
+      "toplam_ms": 66,
+      "en_cok_ms": 30
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 14,
+      "toplam_ms": 47,
+      "en_cok_ms": 12
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 2,
+      "toplam_ms": 42,
+      "en_cok_ms": 24
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 38,
+      "en_cok_ms": 16
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s55-r2-bag-kendi-tarihinde",
+   "tz": "UTC",
+   "ms": 1490,
+   "ozet": {
+    "AYNI": 5,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 3,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 4,
+    "yapildi": 11
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 32,
+    "olay_dongusu_p99_ms": 32,
+    "istek_sayisi": 78,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 116,
+      "en_cok_ms": 40
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 3,
+      "toplam_ms": 73,
+      "en_cok_ms": 31
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 64,
+      "en_cok_ms": 28
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 14,
+      "toplam_ms": 63,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 2,
+      "toplam_ms": 52,
+      "en_cok_ms": 31
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 14,
+      "toplam_ms": 39,
+      "en_cok_ms": 6
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s56-r3-kilitli-bag",
+   "tz": "Europe/Istanbul",
+   "ms": 1812,
+   "ozet": {
+    "AYNI": 8,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 6,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 9,
+    "uygulanmadi": 1,
+    "yapildi": 21
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 34,
+    "olay_dongusu_p99_ms": 23,
+    "istek_sayisi": 126,
+    "en_agir": [
+     {
+      "istek": "PUT /api/admin/period-lock",
+      "sayi": 1,
+      "toplam_ms": 214,
+      "en_cok_ms": 214
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 123,
+      "en_cok_ms": 27
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 6,
+      "toplam_ms": 122,
+      "en_cok_ms": 35
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 24,
+      "toplam_ms": 88,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 4,
+      "toplam_ms": 84,
+      "en_cok_ms": 29
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 24,
+      "toplam_ms": 54,
+      "en_cok_ms": 6
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s56-r3-kilitli-bag",
+   "tz": "UTC",
+   "ms": 2050,
+   "ozet": {
+    "AYNI": 8,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 6,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 9,
+    "uygulanmadi": 1,
+    "yapildi": 21
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 36,
+    "olay_dongusu_p99_ms": 32,
+    "istek_sayisi": 126,
+    "en_agir": [
+     {
+      "istek": "PUT /api/admin/period-lock",
+      "sayi": 1,
+      "toplam_ms": 283,
+      "en_cok_ms": 283
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 6,
+      "toplam_ms": 139,
+      "en_cok_ms": 42
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 137,
+      "en_cok_ms": 34
+     },
+     {
+      "istek": "POST /api/workspace/accounts/:id/entries",
+      "sayi": 4,
+      "toplam_ms": 105,
+      "en_cok_ms": 32
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 24,
+      "toplam_ms": 102,
+      "en_cok_ms": 10
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 24,
+      "toplam_ms": 69,
+      "en_cok_ms": 12
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s57-r4-kart-kucultme",
+   "tz": "Europe/Istanbul",
+   "ms": 1916,
+   "ozet": {
+    "AYNI": 14,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 9,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "faturada": 3,
+    "rapor": 8,
+    "yapildi": 24
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 49,
+    "olay_dongusu_p99_ms": 37,
+    "istek_sayisi": 157,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 9,
+      "toplam_ms": 250,
+      "en_cok_ms": 46
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 31,
+      "toplam_ms": 136,
+      "en_cok_ms": 13
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 127,
+      "en_cok_ms": 46
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 31,
+      "toplam_ms": 89,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 31,
+      "toplam_ms": 62,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "POST /api/workspace/bank/settle",
+      "sayi": 14,
+      "toplam_ms": 35,
+      "en_cok_ms": 9
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s57-r4-kart-kucultme",
+   "tz": "UTC",
+   "ms": 2047,
+   "ozet": {
+    "AYNI": 14,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 9,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "faturada": 3,
+    "rapor": 8,
+    "yapildi": 24
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 48,
+    "olay_dongusu_p99_ms": 28,
+    "istek_sayisi": 157,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 9,
+      "toplam_ms": 208,
+      "en_cok_ms": 45
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 31,
+      "toplam_ms": 150,
+      "en_cok_ms": 13
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 129,
+      "en_cok_ms": 46
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 31,
+      "toplam_ms": 95,
+      "en_cok_ms": 21
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 31,
+      "toplam_ms": 82,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 39,
+      "en_cok_ms": 15
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s58-r9-kartli-fatura-sil-iptal",
+   "tz": "Europe/Istanbul",
+   "ms": 2200,
+   "ozet": {
+    "AYNI": 15,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 4,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "faturada": 2,
+    "rapor": 9,
+    "red": 2,
+    "yapildi": 17
+   },
+   "redler": 1,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 70,
+    "olay_dongusu_p99_ms": 31,
+    "istek_sayisi": 130,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 158,
+      "en_cok_ms": 31
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 25,
+      "toplam_ms": 154,
+      "en_cok_ms": 16
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 3,
+      "toplam_ms": 130,
+      "en_cok_ms": 81
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 25,
+      "toplam_ms": 86,
+      "en_cok_ms": 12
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 25,
+      "toplam_ms": 70,
+      "en_cok_ms": 10
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 66,
+      "en_cok_ms": 26
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s58-r9-kartli-fatura-sil-iptal",
+   "tz": "UTC",
+   "ms": 1687,
+   "ozet": {
+    "AYNI": 15,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 4,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "faturada": 2,
+    "rapor": 9,
+    "red": 2,
+    "yapildi": 17
+   },
+   "redler": 1,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 41,
+    "olay_dongusu_p99_ms": 31,
+    "istek_sayisi": 130,
+    "en_agir": [
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 25,
+      "toplam_ms": 163,
+      "en_cok_ms": 19
+     },
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 91,
+      "en_cok_ms": 25
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 25,
+      "toplam_ms": 83,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 3,
+      "toplam_ms": 75,
+      "en_cok_ms": 32
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 25,
+      "toplam_ms": 61,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/plans/:id/entries",
+      "sayi": 1,
+      "toplam_ms": 43,
+      "en_cok_ms": 43
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s59-r5-ayni-kisi-alis-satis",
+   "tz": "Europe/Istanbul",
+   "ms": 1669,
+   "ozet": {
+    "AYNI": 13,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 3,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 7,
+    "yapildi": 11
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 39,
+    "olay_dongusu_p99_ms": 39,
+    "istek_sayisi": 83,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 149,
+      "en_cok_ms": 59
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 4,
+      "toplam_ms": 97,
+      "en_cok_ms": 41
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 14,
+      "toplam_ms": 61,
+      "en_cok_ms": 9
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 56,
+      "en_cok_ms": 28
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 14,
+      "toplam_ms": 41,
+      "en_cok_ms": 13
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 14,
+      "toplam_ms": 40,
+      "en_cok_ms": 8
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s59-r5-ayni-kisi-alis-satis",
+   "tz": "UTC",
+   "ms": 1548,
+   "ozet": {
+    "AYNI": 13,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 3,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 7,
+    "yapildi": 11
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 31,
+    "olay_dongusu_p99_ms": 31,
+    "istek_sayisi": 83,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 160,
+      "en_cok_ms": 36
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 4,
+      "toplam_ms": 100,
+      "en_cok_ms": 47
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 14,
+      "toplam_ms": 67,
+      "en_cok_ms": 10
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 51,
+      "en_cok_ms": 18
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 14,
+      "toplam_ms": 50,
+      "en_cok_ms": 8
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 14,
+      "toplam_ms": 31,
+      "en_cok_ms": 6
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s60-r6-kart-kapat-borcta-kalir",
+   "tz": "Europe/Istanbul",
+   "ms": 1508,
+   "ozet": {
+    "AYNI": 6,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 15,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 6,
+    "yapildi": 10
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 29,
+    "olay_dongusu_p99_ms": 29,
+    "istek_sayisi": 81,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 130,
+      "en_cok_ms": 37
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 15,
+      "toplam_ms": 64,
+      "en_cok_ms": 9
+     },
+     {
+      "istek": "POST /api/workspace/plans/:id/entries",
+      "sayi": 2,
+      "toplam_ms": 47,
+      "en_cok_ms": 25
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 15,
+      "toplam_ms": 46,
+      "en_cok_ms": 14
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 15,
+      "toplam_ms": 46,
+      "en_cok_ms": 10
+     },
+     {
+      "istek": "PUT /api/admin/negative-policy",
+      "sayi": 1,
+      "toplam_ms": 43,
+      "en_cok_ms": 43
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s60-r6-kart-kapat-borcta-kalir",
+   "tz": "UTC",
+   "ms": 1550,
+   "ozet": {
+    "AYNI": 6,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 15,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 6,
+    "yapildi": 10
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 43,
+    "olay_dongusu_p99_ms": 43,
+    "istek_sayisi": 81,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 135,
+      "en_cok_ms": 51
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 15,
+      "toplam_ms": 83,
+      "en_cok_ms": 12
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 15,
+      "toplam_ms": 65,
+      "en_cok_ms": 10
+     },
+     {
+      "istek": "POST /api/workspace/plans/:id/entries",
+      "sayi": 2,
+      "toplam_ms": 63,
+      "en_cok_ms": 41
+     },
+     {
+      "istek": "POST /api/workspace/plans",
+      "sayi": 2,
+      "toplam_ms": 42,
+      "en_cok_ms": 23
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 38,
+      "en_cok_ms": 15
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s61-r20-karsiliksiz-fatura-vadesi",
+   "tz": "Europe/Istanbul",
+   "ms": 1666,
+   "ozet": {
+    "AYNI": 16,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 9,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 12,
+    "yapildi": 21
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 30,
+    "olay_dongusu_p99_ms": 27,
+    "istek_sayisi": 136,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 104,
+      "en_cok_ms": 30
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 25,
+      "toplam_ms": 93,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 3,
+      "toplam_ms": 64,
+      "en_cok_ms": 35
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 25,
+      "toplam_ms": 60,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 25,
+      "toplam_ms": 52,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "POST /api/workspace/cheques/:id/actions",
+      "sayi": 3,
+      "toplam_ms": 45,
+      "en_cok_ms": 17
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s61-r20-karsiliksiz-fatura-vadesi",
+   "tz": "UTC",
+   "ms": 1866,
+   "ozet": {
+    "AYNI": 16,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 9,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 12,
+    "yapildi": 21
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 43,
+    "olay_dongusu_p99_ms": 29,
+    "istek_sayisi": 136,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 118,
+      "en_cok_ms": 28
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 25,
+      "toplam_ms": 118,
+      "en_cok_ms": 11
+     },
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 3,
+      "toplam_ms": 88,
+      "en_cok_ms": 42
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 25,
+      "toplam_ms": 71,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "POST /api/workspace/cheques",
+      "sayi": 3,
+      "toplam_ms": 66,
+      "en_cok_ms": 27
+     },
+     {
+      "istek": "GET /api/workspace/bank/sub-trial",
+      "sayi": 25,
+      "toplam_ms": 56,
+      "en_cok_ms": 9
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s62-r16-127-ters-bakiye",
+   "tz": "Europe/Istanbul",
+   "ms": 1108,
+   "ozet": {
+    "AYNI": 2,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 4,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 1,
+    "uygulanmadi": 1,
+    "yapildi": 1
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 21,
+    "olay_dongusu_p99_ms": 21,
+    "istek_sayisi": 34,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 90,
+      "en_cok_ms": 25
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 32,
+      "en_cok_ms": 12
+     },
+     {
+      "istek": "POST /api/workspace/cash/opening",
+      "sayi": 1,
+      "toplam_ms": 24,
+      "en_cok_ms": 24
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 5,
+      "toplam_ms": 19,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 5,
+      "toplam_ms": 15,
+      "en_cok_ms": 6
+     },
+     {
+      "istek": "GET /api/workspace/ledger/integrity",
+      "sayi": 1,
+      "toplam_ms": 13,
+      "en_cok_ms": 13
+     }
+    ]
+   }
+  },
+  {
+   "ad": "s62-r16-127-ters-bakiye",
+   "tz": "UTC",
+   "ms": 1381,
+   "ozet": {
+    "AYNI": 2,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 4,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "rapor": 1,
+    "uygulanmadi": 1,
+    "yapildi": 1
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 24,
+    "olay_dongusu_p99_ms": 24,
+    "istek_sayisi": 34,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/accounts",
+      "sayi": 6,
+      "toplam_ms": 106,
+      "en_cok_ms": 25
+     },
+     {
+      "istek": "POST /api/workspace/stock",
+      "sayi": 3,
+      "toplam_ms": 45,
+      "en_cok_ms": 21
+     },
+     {
+      "istek": "POST /api/workspace/cash/opening",
+      "sayi": 1,
+      "toplam_ms": 26,
+      "en_cok_ms": 26
+     },
+     {
+      "istek": "PUT /api/workspace/bank/settings",
+      "sayi": 1,
+      "toplam_ms": 23,
+      "en_cok_ms": 23
+     },
+     {
+      "istek": "GET /api/workspace/ledger",
+      "sayi": 5,
+      "toplam_ms": 18,
+      "en_cok_ms": 5
+     },
+     {
+      "istek": "GET /api/workspace/report-center/mizan",
+      "sayi": 5,
+      "toplam_ms": 17,
+      "en_cok_ms": 9
+     }
+    ]
+   }
+  }
+ ]
+}
