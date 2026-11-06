@@ -1,0 +1,279 @@
+{
+ "aciklama": "S21: POS valörü resmî tatile düşerse bir sonraki iş gününe kayar (tatil + hafta sonu zinciri, yıl dönümü); iade ve devir etkin valöre göre.",
+ "ad": "s72-s21-pos-valor-resmi-tatil",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "devir/yeni_acilis/102.B1": 78200,
+   "devir/yeni_acilis/108.POS1": 19600,
+   "mod0103/banka|B1": 78200,
+   "mod0103/pos|POS1": 19600,
+   "mod0104/banka|B1": 97800,
+   "mod0104/pos|POS1": 0,
+   "mod0423/banka|B1": 0,
+   "mod0423/pos|POS1": 39000,
+   "mod0424/banka|B1": 39000,
+   "mod0424/pos|POS1": 0,
+   "mod0503/banka|B1": 39000,
+   "mod0503/pos|POS1": 29400,
+   "mod0504/banka|B1": 68400,
+   "mod0504/pos|POS1": 0,
+   "mod1029/banka|B1": 68400,
+   "mod1029/pos|POS1": 9800,
+   "mod1030/banka|B1": 78200,
+   "mod1030/pos|POS1": 0,
+   "mz/satirlar/102.B1/bakiye": 78200,
+   "mz/satirlar/108.POS1/bakiye": 19600,
+   "mz/satirlar/120|C1/bakiye": 0,
+   "mz/satirlar/120|C3/bakiye": 0,
+   "mz/satirlar/600/bakiye": -110000,
+   "mz/satirlar/610/bakiye": 10000,
+   "mz/satirlar/653/bakiye": 2200,
+   "yev0424/0/kaynak": "P1",
+   "yev0424/0/satirlar/0/b": 39000,
+   "yev0424/0/satirlar/0/h": "102.B1",
+   "yev0424/0/tur": "pos_valor"
+  }
+ },
+ "kapsam": [
+  "S21",
+  "2429",
+  "D-01",
+  "D-04",
+  "T-03",
+  "KG-6",
+  "N-11"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "K": 0,
+   "M": 50000,
+   "cari": "C1",
+   "id": "F1",
+   "tarih": "2026-04-22",
+   "tur": "satis_faturasi"
+  },
+  {
+   "cari": "C1",
+   "id": "P1",
+   "komisyon": 1000,
+   "pos": "POS1",
+   "tarih": "2026-04-22",
+   "tur": "tahsilat",
+   "tutar": 50000,
+   "valor": "2026-04-23",
+   "yol": "pos"
+  },
+  {
+   "K": 0,
+   "M": 10000,
+   "asil_fatura": "F1",
+   "cari": "C1",
+   "id": "I1",
+   "tarih": "2026-04-23",
+   "tur": "satis_iade_faturasi"
+  },
+  {
+   "cari": "C1",
+   "tahsilat": "P1",
+   "tarih": "2026-04-23",
+   "tur": "pos_iade",
+   "tutar": 10000
+  },
+  {
+   "ad": "mod0423",
+   "rapor": "moduller",
+   "tarih": "2026-04-23",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mod0424",
+   "rapor": "moduller",
+   "tarih": "2026-04-24",
+   "tur": "rapor"
+  },
+  {
+   "ad": "yev0424",
+   "bas": "2026-04-24",
+   "rapor": "yevmiye",
+   "son": "2026-04-24",
+   "tur": "rapor"
+  },
+  {
+   "K": 0,
+   "M": 30000,
+   "cari": "C3",
+   "id": "F2",
+   "tarih": "2026-04-30",
+   "tur": "satis_faturasi"
+  },
+  {
+   "cari": "C3",
+   "id": "P2",
+   "komisyon": 600,
+   "pos": "POS1",
+   "tarih": "2026-04-30",
+   "tur": "tahsilat",
+   "tutar": 30000,
+   "valor": "2026-05-01",
+   "yol": "pos"
+  },
+  {
+   "ad": "mod0503",
+   "rapor": "moduller",
+   "tarih": "2026-05-03",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mod0504",
+   "rapor": "moduller",
+   "tarih": "2026-05-04",
+   "tur": "rapor"
+  },
+  {
+   "K": 0,
+   "M": 10000,
+   "cari": "C3",
+   "id": "F4",
+   "tarih": "2026-10-28",
+   "tur": "satis_faturasi"
+  },
+  {
+   "cari": "C3",
+   "id": "P4",
+   "komisyon": 200,
+   "pos": "POS1",
+   "tarih": "2026-10-28",
+   "tur": "tahsilat",
+   "tutar": 10000,
+   "valor": "2026-10-29",
+   "yol": "pos"
+  },
+  {
+   "ad": "mod1029",
+   "rapor": "moduller",
+   "tarih": "2026-10-29",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mod1030",
+   "rapor": "moduller",
+   "tarih": "2026-10-30",
+   "tur": "rapor"
+  },
+  {
+   "K": 0,
+   "M": 20000,
+   "cari": "C1",
+   "id": "F3",
+   "tarih": "2026-12-30",
+   "tur": "satis_faturasi"
+  },
+  {
+   "cari": "C1",
+   "id": "P3",
+   "komisyon": 400,
+   "pos": "POS1",
+   "tarih": "2026-12-30",
+   "tur": "tahsilat",
+   "tutar": 20000,
+   "valor": "2027-01-01",
+   "yol": "pos"
+  },
+  {
+   "ad": "mz",
+   "bas": "2026-01-01",
+   "rapor": "mizan",
+   "son": "2026-12-31",
+   "tur": "rapor"
+  },
+  {
+   "K": "2026-12-31",
+   "ad": "devir",
+   "tur": "devir"
+  },
+  {
+   "ad": "mod0103",
+   "rapor": "moduller",
+   "tarih": "2027-01-03",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mod0104",
+   "rapor": "moduller",
+   "tarih": "2027-01-04",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

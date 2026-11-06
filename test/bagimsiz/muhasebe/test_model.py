@@ -352,6 +352,20 @@ class OlayMaddeleri(unittest.TestCase):
         self.assertEqual([(x["neden"], x.get("tutar")) for x in r["raporlar"]["g"].get("kahin_susuyor", [])], [("S14_KISMI", 6000)])
         self.assertEqual(r["redler"], [])
 
+    def test_S14_hedef_kalem_kapanir(self):
+        # README Y3 (bakım 4'te mutant tasarımında görülüp SONRADAN elle eklendi: şüpheli kuyruğunda hangi kalemin kapandığını hiçbir senaryo ölçmüyordu):
+        # SB 15000 → şüpheli kuyruğu [F4 10000, F5 5000]; P3 (F5'e bağlı) 128'den 5000 düşer ve F5'in şüpheli kalemini kapatır (vadesi önce gelen F4'ü
+        # DEĞİL). Şüpheliden Çıkar kalan kalemleri kendi vadeleriyle döndürür (M13) → açık kalem yalnız F4 10000 (vade 31.03)
+        r = M.kos(senaryo([o("satis_faturasi", "2026-03-01", id="F4", cari="C3", M=10000, K=0, vade="2026-03-31"),
+                           o("satis_faturasi", "2026-03-02", id="F5", cari="C3", M=10000, K=0, vade="2026-04-15"),
+                           o("supheliye_al", "2026-05-01", id="SB", cari="C3", tutar=15000),
+                           o("tahsilat", "2026-05-20", id="P3", cari="C3", yol="cek", evrak="CK3", tutar=10000, fatura="F5"),
+                           o("supheliden_cikar", "2026-06-10", cari="C3", kayit="SB"),
+                           E.R("ak", "acik_kalemler", cari="C3", tarih="2026-06-11"), E.MZ("mz", "2026-01-01", "2026-06-30")]))
+        self.assertEqual(r["raporlar"]["ak"], [{"k": "fatura:F4", "tur": "fatura", "kalan": 10000, "vade": "2026-03-31", "tarih": "2026-03-01"}])
+        self.assertEqual((r["raporlar"]["mz"]["satirlar"]["120|C3"]["bakiye"], r["raporlar"]["mz"]["satirlar"].get("128|C3", {}).get("bakiye", 0)),
+                         (10000, 0))
+
     def test_S21_tatil_takvimi(self):
         # README Y19 / Y20 (S21 A): nominal valör tam gün resmî tatile (2429) ya da hafta sonuna (K3) düşerse ilk iş günü; tatil + hafta sonu zinciri
         self.assertEqual(M.pos_etkin_valor("2026-04-23"), "2026-04-24")      # 23 Nisan Perşembe → Cuma

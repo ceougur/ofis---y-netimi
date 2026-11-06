@@ -1180,6 +1180,14 @@
       "onceki_yil": {},
       "sonuc": 24107554
      },
+     "s19_devir": [
+      "P456",
+      "P463",
+      "P469",
+      "P473",
+      "k771",
+      "k773"
+     ],
      "secenek": "sadece_bakiye",
      "yeni_acilis": {
       "100": 951148,
@@ -3337,6 +3345,14 @@
       "onceki_yil": {},
       "sonuc": 24092554
      },
+     "s19_devir": [
+      "P456",
+      "P463",
+      "P469",
+      "P473",
+      "k771",
+      "k773"
+     ],
      "secenek": "sadece_bakiye",
      "uyarilar": [],
      "yeni_acilis": {

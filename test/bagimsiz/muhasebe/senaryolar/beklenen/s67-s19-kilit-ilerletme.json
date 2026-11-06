@@ -1,0 +1,256 @@
+{
+ "ad": "s67-s19-kilit-ilerletme",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "ak1a": [
+     {
+      "k": "fatura:F1",
+      "kalan": 10000,
+      "tarih": "2026-11-01",
+      "tur": "fatura",
+      "vade": "2027-03-31"
+     }
+    ],
+    "ak1c": [
+     {
+      "k": "fatura:F1",
+      "kalan": 10000,
+      "tarih": "2026-11-01",
+      "tur": "fatura",
+      "vade": "2027-03-31"
+     }
+    ],
+    "ak2a": [
+     {
+      "k": "fatura:F5",
+      "kalan": 10000,
+      "tarih": "2027-01-05",
+      "tur": "fatura",
+      "vade": "2027-01-05"
+     }
+    ],
+    "ak2c": [
+     {
+      "k": "fatura:F5",
+      "kalan": 10000,
+      "tarih": "2027-01-05",
+      "tur": "fatura",
+      "vade": "2027-01-05"
+     }
+    ],
+    "ak3a": [
+     {
+      "k": "karsiliksiz:KS3",
+      "kalan": 10000,
+      "tarih": "2027-01-15",
+      "tur": "karsiliksiz",
+      "vade": "2027-01-15"
+     }
+    ],
+    "ak3c": [
+     {
+      "k": "karsiliksiz:KS3",
+      "kalan": 10000,
+      "tarih": "2027-01-15",
+      "tur": "karsiliksiz",
+      "vade": "2027-01-15"
+     }
+    ],
+    "g1a": {
+     "cari": "C1",
+     "detay": [],
+     "gecikmis": 0,
+     "supheli": 0,
+     "tarih": "2027-02-01"
+    },
+    "g1b": {
+     "cari": "C1",
+     "detay": [],
+     "gecikmis": 0,
+     "supheli": 0,
+     "tarih": "2027-02-01"
+    },
+    "g1c": {
+     "cari": "C1",
+     "detay": [],
+     "gecikmis": 0,
+     "supheli": 0,
+     "tarih": "2027-02-01"
+    },
+    "g2a": {
+     "cari": "C2",
+     "detay": [
+      {
+       "kalan": 10000,
+       "kalem": "fatura:F5",
+       "vade": "2027-01-05"
+      }
+     ],
+     "gecikmis": 10000,
+     "supheli": 0,
+     "tarih": "2027-02-01"
+    },
+    "g2b": {
+     "cari": "C2",
+     "detay": [
+      {
+       "kalan": 10000,
+       "kalem": "fatura:F5",
+       "vade": "2027-01-05"
+      }
+     ],
+     "gecikmis": 10000,
+     "supheli": 0,
+     "tarih": "2027-02-01"
+    },
+    "g2c": {
+     "cari": "C2",
+     "detay": [
+      {
+       "kalan": 10000,
+       "kalem": "fatura:F5",
+       "vade": "2027-01-05"
+      }
+     ],
+     "gecikmis": 10000,
+     "supheli": 0,
+     "tarih": "2027-02-01"
+    },
+    "g3a": {
+     "cari": "C3",
+     "detay": [
+      {
+       "kalan": 10000,
+       "kalem": "karsiliksiz:KS3",
+       "vade": "2027-01-15"
+      }
+     ],
+     "gecikmis": 10000,
+     "supheli": 0,
+     "tarih": "2027-02-01"
+    },
+    "g3b": {
+     "cari": "C3",
+     "detay": [
+      {
+       "kalan": 10000,
+       "kalem": "karsiliksiz:KS3",
+       "vade": "2027-01-15"
+      }
+     ],
+     "gecikmis": 10000,
+     "supheli": 0,
+     "tarih": "2027-02-01"
+    },
+    "g3c": {
+     "cari": "C3",
+     "detay": [
+      {
+       "kalan": 10000,
+       "kalem": "karsiliksiz:KS3",
+       "vade": "2027-01-15"
+      }
+     ],
+     "gecikmis": 10000,
+     "supheli": 0,
+     "tarih": "2027-02-01"
+    },
+    "mz": {
+     "ana": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 20000,
+       "borc": 20000,
+       "devir": 0
+      },
+      "101": {
+       "alacak": 20000,
+       "bakiye": 0,
+       "borc": 20000,
+       "devir": 0
+      },
+      "120": {
+       "alacak": 40000,
+       "bakiye": 30000,
+       "borc": 70000,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 50000,
+       "bakiye": -50000,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "bas": "2026-11-01",
+     "satirlar": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 20000,
+       "borc": 20000,
+       "devir": 0
+      },
+      "101.01": {
+       "alacak": 20000,
+       "bakiye": 0,
+       "borc": 20000,
+       "devir": 0
+      },
+      "120|C1": {
+       "alacak": 10000,
+       "bakiye": 10000,
+       "borc": 20000,
+       "devir": 0
+      },
+      "120|C2": {
+       "alacak": 20000,
+       "bakiye": 10000,
+       "borc": 30000,
+       "devir": 0
+      },
+      "120|C3": {
+       "alacak": 10000,
+       "bakiye": 10000,
+       "borc": 20000,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 50000,
+       "bakiye": -50000,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "son": "2027-02-28",
+     "toplam": {
+      "alacak": 110000,
+      "bakiye": 0,
+      "borc": 110000,
+      "devir": 0
+     }
+    },
+    "not2a": [],
+    "not2b": []
+   },
+   "redler": []
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}
