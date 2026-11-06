@@ -1,0 +1,32 @@
+{
+  "ad": "wkucuk-komsu-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=2 test/banka-210-rapor-is-parcacigi-kapanis.test.mjs test/banka-210-saat.test.mjs test/banka-220-kredi-karti-metin.test.mjs test/createapp-acilis-geri-alma-249.test.mjs test/donmus-defter-yasam-250.test.mjs test/drive-kaldirildi.test.mjs test/fis-defteri-yasam-250.test.mjs test/gorunen-adres-247.test.mjs test/iade-kesinti-tarama-249.test.mjs test/inceleme-221.test.mjs test/kanit-araci.test.mjs test/kapanis-zamanlayici-248.test.mjs test/kilavuz-pdf-surum.test.mjs test/kilavuz-surum.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/maliyet-bagsizlik.test.mjs test/mobil-gg247-b5.test.mjs test/mobil-karekod-248.test.mjs test/platform-tasinabilirlik.test.mjs test/sheets-yedek.test.mjs test/sirket-listesi-221.test.mjs test/t6-248/t8-guvenlik.mjs test/update-flow.test.mjs test/vekil-sunucu-uygulama.test.mjs test/whatsapp-213.test.mjs test/whatsapp-b3-buyume-249.test.mjs test/whatsapp-b3-goc-249.test.mjs test/whatsapp-b3-pdf-249.test.mjs test/whatsapp-bildirim-yolu-uyari-249.test.mjs test/whatsapp-bs1-hata-kodu-250.test.mjs test/whatsapp-dk10-son3-ozel-248.test.mjs test/whatsapp-dk11-kilit-248.test.mjs test/whatsapp-dk12-kilit-bakim-sayac-248.test.mjs test/whatsapp-dk13-arka-plan-kilit-248.test.mjs test/whatsapp-dk4-yeniden-dene-248.test.mjs test/whatsapp-dk5-yine-de-gonder-248.test.mjs test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs test/whatsapp-dk6-saat-kaymasi-248.test.mjs test/whatsapp-dk7-bekletti-ikinci-deneme-248.test.mjs test/whatsapp-dk7-bekletti-iptal-248.test.mjs test/whatsapp-dk7-belirsiz-ileti-248.test.mjs test/whatsapp-dk7-son3-pencere-248.test.mjs test/whatsapp-dk8-bekletti-geri-yukleme-248.test.mjs test/whatsapp-dk8-g-ek-248.test.mjs test/whatsapp-dk8-g-son-248.test.mjs test/whatsapp-dk8-g-yeni-belirsiz-248.test.mjs test/whatsapp-dk8-gec-teslim-248.test.mjs test/whatsapp-dk8-h-ozel-aralik-248.test.mjs test/whatsapp-dk8-i-tasinan-248.test.mjs test/whatsapp-dk8-iki-bekletti-248.test.mjs test/whatsapp-dk9-acilis-gunu-248.test.mjs test/whatsapp-dk9-ilke-248.test.mjs test/whatsapp-dk9-m-kanca-tasinan-248.test.mjs test/whatsapp-elle-alici-249.test.mjs test/whatsapp-g1-graph-surum-250.test.mjs test/whatsapp-gonderim-listesi-248.test.mjs test/whatsapp-meta-graph.test.mjs test/whatsapp-meta-izolasyon.test.mjs test/whatsapp-onizleme-olcek-248.test.mjs test/whatsapp-q1-tum-kisi-donemi-248.test.mjs test/whatsapp-q2-yine-de-gonder-kabul-248.test.mjs test/whatsapp-q3-tasinan-gonderiliyor-248.test.mjs test/whatsapp-q4-dosyasiz-imzali-248.test.mjs test/whatsapp-q5-son-kabul-248.test.mjs test/whatsapp-s1-satir-denemeyi-bilmiyor-248.test.mjs test/whatsapp-t-durum-karar-tablosu-248.test.mjs test/whatsapp-t1-b2-248.test.mjs test/whatsapp-t1-b3-248.test.mjs test/whatsapp-t1-p2-248.test.mjs test/whatsapp-t1-p4-248.test.mjs test/whatsapp-t1-p6-248.test.mjs test/whatsapp-t2-1-248.test.mjs test/whatsapp-t2-2-248.test.mjs test/whatsapp-t2-3-248.test.mjs test/whatsapp-t2-4-248.test.mjs test/whatsapp-t2-5-248.test.mjs test/whatsapp-t2-5b-248.test.mjs test/whatsapp-t2-6-248.test.mjs test/whatsapp-t2-7-248.test.mjs test/whatsapp-t2-8-248.test.mjs test/whatsapp-t2-p3-248.test.mjs test/whatsapp-t2dk-d1-248.test.mjs test/whatsapp-t2dk-d2-248.test.mjs test/whatsapp-t2dk-orta1-248.test.mjs test/whatsapp-t2dk-orta2-248.test.mjs test/whatsapp-t2dk2-a-248.test.mjs test/whatsapp-t2dk2-d1-248.test.mjs test/whatsapp-t6-b-248.test.mjs test/whatsapp-t6-e2-248.test.mjs test/whatsapp-u5-teslim-denemesi-gocu-248.test.mjs test/whatsapp-w-kok-ttl-249.test.mjs test/whatsapp-w1-baglanti.test.mjs test/whatsapp-w1a-belirtec-suresi-250.test.mjs test/whatsapp-w2-cekirdek-248.test.mjs test/whatsapp-w2-kaldir-250.test.mjs test/whatsapp-w2-onbellek-249.test.mjs test/whatsapp-w2-surec-olumu-248.test.mjs test/whatsapp-w2-veri-248.test.mjs test/whatsapp-w3-ekstre-248.test.mjs test/whatsapp-w4-gonderim-248.test.mjs test/whatsapp-w4-hata100-249.test.mjs test/whatsapp-w5-sablon.test.mjs test/whatsapp-w6-aydinlatma.test.mjs test/whatsapp-w7-appid-248.test.mjs test/whatsapp-w7-bagla-248.test.mjs test/whatsapp-w7-tasinma-248.test.mjs test/whatsapp-w9-kanca-248.test.mjs test/whatsapp-we-webhook-bilgisi-250.test.mjs test/whatsapp-wt-ttl-249.test.mjs test/whatsapp-wt2-kod0-250.test.mjs test/whatsapp-wy-imzasiz-250.test.mjs test/yazim-duzeni.test.mjs test/yedek-220-inceleme.test.mjs test/yedek-220.test.mjs",
+  "commit": "92b694c88a2a1407ee0300fb8106ba61cb7c4379",
+  "dal": "worktree-agent-a7c02d003909b3c2a",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T06:40:28.309Z",
+  "sure_sn": 723.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 789,
+    "gecen": 789,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-kanit/2026-11-06/wkucuk-komsu-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a7c02d003909b3c2a",
+  "ham_cikti_sha256": "a90c826b74f571402e6b2fafe8c3a4fac667646522616eb7e922ebf3b6277bd8",
+  "ham_cikti_bayt": 342450
+}

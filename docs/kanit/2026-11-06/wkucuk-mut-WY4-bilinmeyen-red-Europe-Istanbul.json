@@ -1,0 +1,38 @@
+{
+  "ad": "wkucuk-mut-WY4-bilinmeyen-red-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-wy-imzasiz-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T06:27:24.971Z",
+  "sure_sn": 7.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 7,
+    "gecen": 6,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 WY — kip makine defterinde: yeniden açılışta şirket dosyası açılamazken de bilinir › WY-7 kip BİLİNMİYOR (2.5.0 öncesi defter, dosya açılamıyor) → Yol 1 sayılır (bugünkü davranış): imzasız delivered 200 + defterde teslim (BAŞ MİMAR KARARI: 2.5.0 öncesi Yol 2 ileti gönderemezdi)",
+      "konum": "test/whatsapp-wy-imzasiz-250.test.mjs:147:3",
+      "hata": "kipi bilinmeyen (Yol 1) → 200 (geldi 401 {\"ok\":false,\"code\":\"whatsapp-hook-signature\",\"error\":\"Meta imzası doğrulanmadı.\"}) · 401 !== 200 (beklenen 200, gelen 401)"
+    }
+  ],
+  "ham_cikti": "../wkucuk-kanit/2026-11-06/wkucuk-mut-WY4-bilinmeyen-red-Europe-Istanbul.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-WY4-bilinmeyen-red",
+  "ham_cikti_sha256": "e1bf6ddfb98660ddbf02b5b3154a696a67456a4af95381f50db5a4dac6de4705",
+  "ham_cikti_bayt": 5575
+}

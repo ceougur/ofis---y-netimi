@@ -1,0 +1,60 @@
+TAP version 13
+# Subtest: 2.5.0 G1 — Graph API sürümü tek yerden (program + kapıcı)
+    # Subtest: program ve kapıcı aynı Graph sürümünü kullanır; biçim vNN.0
+    ok 1 - program ve kapıcı aynı Graph sürümünü kullanır; biçim vNN.0
+      ---
+      duration_ms: 0.751713
+      type: 'test'
+      ...
+    # Subtest: kaynakta (server/, bulut/, istemcinin WhatsApp dosyaları) başka yerde Graph sürümü yazılı değil
+    not ok 2 - kaynakta (server/, bulut/, istemcinin WhatsApp dosyaları) başka yerde Graph sürümü yazılı değil
+      ---
+      duration_ms: 88.544895
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-G1b-ikinci-surum-sabiti/test/whatsapp-g1-graph-surum-250.test.mjs:32:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Graph sürümü yalnız iki sabitte
+        + actual - expected
+        
+        + [
+        +   'server/lib/whatsapp/meta-graph.mjs:15: const EK_SURUM = "v24.0";'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'server/lib/whatsapp/meta-graph.mjs:15: const EK_SURUM = "v24.0";'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-G1b-ikinci-surum-sabiti/test/whatsapp-g1-graph-surum-250.test.mjs:50:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..2
+not ok 1 - 2.5.0 G1 — Graph API sürümü tek yerden (program + kapıcı)
+  ---
+  duration_ms: 90.43175
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-G1b-ikinci-surum-sabiti/test/whatsapp-g1-graph-surum-250.test.mjs:27:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 231.846541

@@ -1,0 +1,38 @@
+{
+  "ad": "wkucuk-mut-WY3-defter-yedegi-yok-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-wy-imzasiz-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T06:26:55.547Z",
+  "sure_sn": 11.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 7,
+    "gecen": 6,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 WY — kip makine defterinde: yeniden açılışta şirket dosyası açılamazken de bilinir › WY-6 Yol 2 · program YENİDEN AÇILDI, 002'nin veri dosyası açılışta YOK (kip bellekte değil, makine defterinde) · imzasız delivered → 401, defterde teslim YOK",
+      "konum": "test/whatsapp-wy-imzasiz-250.test.mjs:142:3",
+      "hata": "imzasız Yol 2 → 401 (geldi 200 {\"ok\":true}) · 200 !== 401 (beklenen 401, gelen 200)"
+    }
+  ],
+  "ham_cikti": "../wkucuk-kanit/2026-11-06/wkucuk-mut-WY3-defter-yedegi-yok-Europe-Istanbul.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-WY3-defter-yedegi-yok",
+  "ham_cikti_sha256": "d1e3945175d7c429d7659acc48c62db63feb6004c160fdcdd7aacce639f327c8",
+  "ham_cikti_bayt": 5605
+}
