@@ -75,9 +75,21 @@ try {
     };
     await readAll("once");
     // Kilit + dondurma (yeni kod: kilit, iş parçacığında türetme, parça parça yazım; eski kod: kilit + integrity.start tam taraması).
-    const lock = await timed("kilit", () => admin.put("/api/admin/period-lock", { lockedUntil: lockDay, force: true }));
+    // Ç3 tur 2: uç dondurmayı beklemez (kilit + koşu yazılınca yanıt, dondurma arkada) — "kilit" süresi yine kilit + dondurmanın BİTİŞİdir (önceki ölçümlerle karşılaştırılabilir);
+    // ucun kendi yanıt süresi ayrıca (yanitMs). Arka iş bitişi uç içi görünümden (ledger.freezeView().active); eski kodda görünüm yok, uç zaten bekler.
+    const settle = async () => {
+      while (server.app.ledger?.freezeView?.().active) await new Promise(resolve => setTimeout(resolve, 20));
+    };
+    let answeredMs = null;
+    const lock = await timed("kilit", async () => {
+      const started = performance.now();
+      const response = await admin.put("/api/admin/period-lock", { lockedUntil: lockDay, force: true });
+      answeredMs = Math.round(performance.now() - started);
+      await settle();
+      return response;
+    });
     if (lock.value.status !== 200) throw new Error(`kilit ${lock.value.status} ${JSON.stringify(lock.value.data).slice(0, 300)}`);
-    result.olcumler.kilit = { ms: lock.ms, loopMaxMs: lock.loopMaxMs, yanit: lock.value.data.data };
+    result.olcumler.kilit = { ms: lock.ms, loopMaxMs: lock.loopMaxMs, yanitMs: answeredMs, yanit: lock.value.data.data };
     const snapshots = server.app.ledger?.snapshots;
     if (snapshots) result.donmus = { kapsam: snapshots.coverage(), satir: Number(server.app.store.get("SELECT COUNT(*) AS n FROM ledger_snapshots").n), kosu: server.app.store.all("SELECT kind, state, line_count AS lines, entry_count AS entries FROM ledger_snapshot_runs").map(row => ({ ...row })) };
     await readAll("sonra");
@@ -85,7 +97,11 @@ try {
     const write = await timed("yazim", () => admin.post("/api/workspace/cash", { kind: "in", amount: "1", date: "2026-10-08", description: "Ölçüm" }));
     result.olcumler.yazimKilittenSonra = { ms: write.ms, loopMaxMs: write.loopMaxMs, status: write.value.status };
     // Kilidi geri çek (yeni kod: thaw + bayat satır temizliği + iz iş parçacığında).
-    const unlock = await timed("geri", () => admin.put("/api/admin/period-lock", { lockedUntil: `${String(Number(year) - 1)}-12-31` }));
+    const unlock = await timed("geri", async () => {
+      const response = await admin.put("/api/admin/period-lock", { lockedUntil: `${String(Number(year) - 1)}-12-31` });
+      await settle();
+      return response;
+    });
     result.olcumler.kilitGeriCek = { ms: unlock.ms, loopMaxMs: unlock.loopMaxMs, status: unlock.value.status };
   } finally {
     await server.close();

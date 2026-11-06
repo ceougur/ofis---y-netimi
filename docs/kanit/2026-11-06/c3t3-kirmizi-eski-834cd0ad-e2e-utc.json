@@ -1,0 +1,83 @@
+{
+  "ad": "c3t3-kirmizi-eski-834cd0ad-e2e-utc",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-donem-kilidi-ilerleme-250.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T10:26:52.048Z",
+  "sure_sn": 83.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 39,
+    "gecen": 29,
+    "basarisiz": 10,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 10 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "dondurma sürerken Kilitle pasif ({\"disabled\":false,\"title\":\"\",\"note\":\"\"})",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "pasif düğmenin nedeni görünür: \"\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "dondurma sürerken form gönderimi kilit isteği göndermedi (1 PUT), nedeni bildirildi (false)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ön koşul: dondurma sürüyor (Kilitle pasif)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "kilit kaldırılınca \"donduruldu\" bildirimi çıkmadı: [\"Dönem kilidi kaldırıldı.×\",\"Kilitli dönemin defteri donduruldu.×\"]",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "kart: \"Kilitli dönem yok; tüm geçmiş tarihlere hareket girilebilir.\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "temizlik sürerken Kilitle pasif, nedeni görünür ({\"disabled\":false,\"title\":\"\",\"note\":\"\"})",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "kart temizlik sürerken yokluyor (0 istek / 3,5 sn)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "mutabakat satırı: \"\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "hata rengi",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../c3t3-kanit/2026-11-06/c3t3-kirmizi-eski-834cd0ad-e2e-utc.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t3-eski-834cd0ad",
+  "ham_cikti_sha256": "68efed353bfc5f96f04fee967e0d57761bc1eb1c0ac5dca4cd294fc9c7919955",
+  "ham_cikti_bayt": 3353
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "c3t2-e2e-gg243-banka-kart-aciklama",
+  "komut": "npm run test:gg243-banka-kart-aciklama",
+  "commit": "4af0aafc514641f3109e53553da3747d1d71d6d4",
+  "dal": "worktree-agent-ae037f9ed9ae9cefe",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T06:48:36.011Z",
+  "sure_sn": 12.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 11,
+    "gecen": 11,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t2-kanit/2026-11-06/c3t2-e2e-gg243-banka-kart-aciklama.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ae037f9ed9ae9cefe",
+  "ham_cikti_sha256": "1c1973b35f9919ae38c552e072a96b54a09adc5a8a0e281a11ffab37af602f27",
+  "ham_cikti_bayt": 1207
+}
