@@ -1,0 +1,26 @@
+Kâhin bakımı 7 — eski modelde kırmızı: NEDEN dökümü (ders 7, 38)
+
+Koşu: kahin7-eski-model-kirmizi.log / .json (KANIT_DIR ile; commit f306026 — yorum 9a8a4caf + s80–s82 / birim testi, model DEĞİŞTİRİLMEDEN önce).
+Eski model: `git archive 06e9debf test/bagimsiz/muhasebe` (kâhin bakımı 6'nın birleşik hâli) not defteri kopyası
+  /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe
+  + f306026'nın senaryolar_elle.py ve test_model.py dosyaları (senaryolar/ dosyaları eski).
+Komut: KANIT_DIR=<not defteri>/kahin7-calisma/kanit node tools/kanit.mjs kos kahin7-eski-model-kirmizi -- python3 -I <kopya>/test_model.py
+Sonuç: 143 testten 6'sı kırmızı, 137 yeşil (çıkış 1).
+
+Kırmızılar ve nedenleri (iletiler günlükten AYNEN):
+1. test_s80_s44_geri_yuklenen_kasa_fatura_bagi — "senaryo hatası: … karar metninde sayılmayan alanı düzeltildi (['fatura']) … (README bakım 6 X11 (a) …)".
+   BEKLENEN NEDEN: eski kâhin S44'ün konusu olan Kapatılacak Fatura bağı düzeltmesinde SUSUYORDU (X11 (a)); S44 A bunu kabul yapar.
+2. test_s81_s44_geri_yuklenen_kasa_taksit_normal_cari — "… (['taksit_karti']) … X11 (a)". BEKLENEN NEDEN: taksit kartı bağı düzeltmesinde susma (S44 A kabul).
+3. test_s82_s45_bagli_geri_yuklenen_kayit_cari — "senaryo hatası: bağlı (Kapatılacak Fatura / taksit kartı) kaydın carisi düzeltildi … X11 (b)".
+   BEKLENEN NEDEN: eski kâhin bağlı kaydın cari düzeltmesinde SUSUYORDU (X11 (b)); S45 A bunu BAG_KALDIRILMALI reddi yapar.
+4. test_S40_S44_S45_kapsam_ve_susma — "… (['fatura']) … X11 (a)": ilk KABUL beklenen düzeltmede (PY {"fatura": "F1"}) eski kâhin susuyor. BEKLENEN NEDEN (S44).
+   (Testin susma listesi eski kâhinde de susuyor — o kısım eski / yeni aynı; kabul / red kısmı kırmızının konusu.)
+5. test_EK2_4_1_ayni_gun_yazim_sirasi_sonucu_degistirmez — "… (['fatura']) … X11 (a)": bu değişmez testi BÜTÜN elle senaryoları (s80 dahil) aynı gün
+   yazım sırası ters çevrilerek koşar; s80 eski kâhinde koşamıyor. Neden 1 ile aynı (s80'in S44 düzeltmesi) — yeni testin kendisi değil, s80'in eski kâhinde
+   kurulamaması.
+6. test_senaryo_ve_beklenen_dosyalari_guncel — aynı X11 (a) iletisi: eski kâhin s80'in beklenen dosyasını üretemiyor (ve s80–s82 dosyaları eski kopyada yok).
+   Dosya güncelliği; neden 1 ile aynı.
+
+Eski kâhinde yeşil kalan 137 test: s01–s79, tohumlar, öbür birim testleri — bakım 7 onların hiçbirine dokunmadı.
+Not: eski koşudan SONRA s80'in mz0 / mz toplam/borc ve toplam/alacak elle değeri 18000 → 23600 düzeltildi (elle hesap hatası, README bakım 7); eski kâhin s80'de
+ilk S44 düzeltmesinde zaten susup durduğu için bu düzeltme eski koşunun sonucunu değiştirmez.

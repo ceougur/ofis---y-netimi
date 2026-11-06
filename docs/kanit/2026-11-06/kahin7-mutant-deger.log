@@ -1,0 +1,48 @@
+yeni mutant: 10
+B70 V1 S44 B: geri yüklenmiş açılış öncesi Kasa kaydının bağ / Normal Cari düzeltmesi T12 ile red
+  → DEĞERLE: 4/137 test kırmızı (değer 4, susma 0, hata 0)
+     [DEĞER] test_S40_S44_S45_kapsam_ve_susma: AssertionError: AssertionError not raised : PB {'cari': 'C3', 'fatura': None}
+     [DEĞER] test_s80_s44_geri_yuklenen_kasa_fatura_bagi: -  'KASA_ACILIS_ONCE'] : s80-s44-geri-yuklenen-kasa-fatura-bagi [A] redler
+     [DEĞER] test_s81_s44_geri_yuklenen_kasa_taksit_normal_cari: -  'KASA_ACILIS_ONCE'] : s81-s44-geri-yuklenen-kasa-taksit-normal-cari [A] redler
+     [DEĞER] test_s82_s45_bagli_geri_yuklenen_kayit_cari: -  'BAG_KALDIRILMALI'] : s82-s45-bagli-geri-yuklenen-kayit-cari [A] redler
+B71 V3 (a) S44 sınır: tarih değişse de bağ / Normal Cari düzeltmesi kabul
+  → DEĞERLE: 3/137 test kırmızı (değer 3, susma 0, hata 0)
+     [DEĞER] test_S40_S44_S45_kapsam_ve_susma: + ['KASA_ACILIS_ONCE'] : {'fatura': 'F1', 'tarih': '2026-01-27'}
+     [DEĞER] test_s80_s44_geri_yuklenen_kasa_fatura_bagi: + ['KASA_ACILIS_ONCE'] : s80-s44-geri-yuklenen-kasa-fatura-bagi [A] redler
+     [DEĞER] test_s81_s44_geri_yuklenen_kasa_taksit_normal_cari: + ['KASA_ACILIS_ONCE'] : s81-s44-geri-yuklenen-kasa-taksit-normal-cari [A] redler
+B72 V1 S44 sınır: yalnız Kapatılacak Fatura bağı kabul; taksit kartı bağı ve Normal Cari T12 ile red
+  → DEĞERLE: 3/137 test kırmızı (değer 3, susma 0, hata 0)
+     [DEĞER] test_S40_S44_S45_kapsam_ve_susma: AssertionError: AssertionError not raised : PY {'taksit_karti': 'TK9'}
+     [DEĞER] test_s81_s44_geri_yuklenen_kasa_taksit_normal_cari: -  'KASA_ACILIS_ONCE'] : s81-s44-geri-yuklenen-kasa-taksit-normal-cari [A] redler
+     [DEĞER] test_s82_s45_bagli_geri_yuklenen_kayit_cari: -  'BAG_KALDIRILMALI'] : s82-s45-bagli-geri-yuklenen-kayit-cari [A] redler
+B73 V5 S45 B: bağlı kaydın carisi değişince bağ düşer, kayıt yeni caride bağsız
+  → DEĞERLE: 2/137 test kırmızı (değer 2, susma 0, hata 0)
+     [DEĞER] test_S40_S44_S45_kapsam_ve_susma: + ['BAG_KALDIRILMALI']
+     [DEĞER] test_s82_s45_bagli_geri_yuklenen_kayit_cari: + ['BAG_KALDIRILMALI', 'BAG_KALDIRILMALI', 'KASA_ACILIS_ONCE', 'BAG_KALDIRILMALI'] : s82-s45-bagli-geri-yuklenen-kayit-cari [A] redler
+B74 V5 S45 sınır: yalnız Kapatılacak Fatura bağlı kayıt reddedilir (taksit kartı bağlı kabul)
+  → DEĞERLE: 1/137 test kırmızı (değer 1, susma 0, hata 0)
+     [DEĞER] test_s82_s45_bagli_geri_yuklenen_kayit_cari:  : s82-s45-bagli-geri-yuklenen-kayit-cari [A] redler
+B75 V5 S45 sınır: red yalnız cariye — aynı düzeltmedeki tutar / açıklama yazılır
+  → DEĞERLE: 1/137 test kırmızı (değer 1, susma 0, hata 0)
+     [DEĞER] test_s82_s45_bagli_geri_yuklenen_kayit_cari: AssertionError: 11800 != 12000 : s82-s45-bagli-geri-yuklenen-kayit-cari [A] mz1/satirlar/100/bakiye
+B76 V1 Z9 S44: bağ / Normal Cari düzeltmesi yalnız yedekten gelen kayıtta (Silinenler'den geri alınan T12 ile red)
+  → DEĞERLE: 3/137 test kırmızı (değer 3, susma 0, hata 0)
+     [DEĞER] test_s80_s44_geri_yuklenen_kasa_fatura_bagi: + ['KASA_ACILIS_ONCE'] : s80-s44-geri-yuklenen-kasa-fatura-bagi [A] redler
+     [DEĞER] test_s81_s44_geri_yuklenen_kasa_taksit_normal_cari: + ['KASA_ACILIS_ONCE'] : s81-s44-geri-yuklenen-kasa-taksit-normal-cari [A] redler
+     [DEĞER] test_s82_s45_bagli_geri_yuklenen_kayit_cari: -  'BAG_KALDIRILMALI'] : s82-s45-bagli-geri-yuklenen-kayit-cari [A] redler
+B77 V2 S44 sınır: bağ / seçim EKLEME kabul, KALDIRMA (null / false) T12 ile red
+  → DEĞERLE: 4/137 test kırmızı (değer 4, susma 0, hata 0)
+     [DEĞER] test_S40_S44_S45_kapsam_ve_susma: AssertionError: AssertionError not raised : PB {'cari': 'C3', 'fatura': None}
+     [DEĞER] test_s80_s44_geri_yuklenen_kasa_fatura_bagi: + ['KASA_ACILIS_ONCE'] : s80-s44-geri-yuklenen-kasa-fatura-bagi [A] redler
+     [DEĞER] test_s81_s44_geri_yuklenen_kasa_taksit_normal_cari: + ['KASA_ACILIS_ONCE'] : s81-s44-geri-yuklenen-kasa-taksit-normal-cari [A] redler
+     [DEĞER] test_s82_s45_bagli_geri_yuklenen_kayit_cari: -  'BAG_KALDIRILMALI'] : s82-s45-bagli-geri-yuklenen-kayit-cari [A] redler
+B78 V3 (d) sınır: şüpheli-normal aşım sınırında eşitlik de aşım (kâhin eşitlikte susar)
+  → YALNIZ SUSMA/HATA: 1/137 test kırmızı (değer 0, susma 1, hata 0)
+     [SUSMA] test_S40_S44_S45_kapsam_ve_susma: AssertionError: senaryo hatası: düzeltmeyle 120'ye yazılacak 1000 > kaydın günündeki 120 bakiyesi — şüpheli-normal aşım sınırının düzeltmeye uygulanıp uygulanmadığı karar metninde yok; kâhin susar (RE
+B79 V5 S45 sınır: aynı carinin yeniden yazılması da cari düzeltmesi sayılır (red)
+  → DEĞERLE: 2/137 test kırmızı (değer 2, susma 0, hata 0)
+     [DEĞER] test_S40_S44_S45_kapsam_ve_susma: + ['BAG_KALDIRILMALI']
+     [DEĞER] test_s82_s45_bagli_geri_yuklenen_kayit_cari: -  'BAG_KALDIRILMALI'] : s82-s45-bagli-geri-yuklenen-kayit-cari [A] redler
+# tests 10
+# pass 9
+# fail 1
