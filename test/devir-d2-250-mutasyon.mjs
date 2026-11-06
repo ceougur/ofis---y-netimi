@@ -31,10 +31,11 @@ const MUTASYONLAR = [
   [3, "001 korumasında ortak ayar istisnası yok (giriş / lisans ayarı da kilitlenir)", MA, "          const when = table === \"settings\" ? ` WHEN NOT (${commonSettingsSql.replace(/\\bkey\\b/g, `${ref}.key`)})` : \"\";", "          const when = \"\";", [BAKIM], /not ok \d+ - 001 bakımda/],
   [4, "002 bakımda bağlantı query_only olmaz", APP, "    if (hub) db.exec(`PRAGMA query_only = ${on || schemaGate ? \"ON\" : \"OFF\"}`);", "    if (hub) db.exec(\"PRAGMA query_only = OFF\");", [BAKIM], /query_only/],
   [5, "bakımda açılan 002 örneği query_only almaz", APP, "  if (hub && !archive && inMaintenance()) db.exec(\"PRAGMA query_only = ON\");", "", [BAKIM], /bakımda açılan 002 örneği de query_only/],
-  [6, "arka plan yazıcıları bakımda sürer", APP, "const canWriteInBackground = () => !writeGate && !inMaintenance() && writeLock.guard(companyId, store);", "const canWriteInBackground = () => !writeGate && writeLock.guard(companyId, store);", [BAKIM], /arka plan yazamaz/],
+  // 6: EŞDEĞER MUTANT beklenir (iki kat koruma: writeLock sarmalayıcısı da bakımdaki şirkete false verir) — 28 ikisini birlikte kaldırır.
+  [6, "arka plan yazıcıları bakımda sürer (yalnız canWriteInBackground denetimi)", APP, "const canWriteInBackground = () => !writeGate && !inMaintenance() && writeLock.guard(companyId, store);", "const canWriteInBackground = () => !writeGate && writeLock.guard(companyId, store);", [BAKIM], /arka plan yazamaz/],
   [7, "WhatsApp işçisinin sınaması bakımı görmez", APP, "    guard: (key, target) => (key === companyId && inMaintenance() ? false : baseWriteLock.guard(key, target)),", "    guard: (key, target) => baseWriteLock.guard(key, target),", [BAKIM], /işçinin sınaması geçmez/],
   [8, "otomatik yedek bakımdaki şirketi atlamaz", CB, "!isBusy(company.id) && !isPaused(company.id) && ", "!isBusy(company.id) && ", [BAKIM], /otomatik yedek hedefi değil/],
-  [9, "orkestratör tutmayı görmez (kendiliğinden kurar)", UO, "if (updater.config().enabled && !held() && (quietTime()", "if (updater.config().enabled && (quietTime()", [BAKIM], /tutma varken mesai dışında/],
+  [9, "orkestratör tutmayı görmez (kendiliğinden kurar)", UO, "if (updater.config().enabled && !held() && (quietTime()", "if (updater.config().enabled && (quietTime()", [BAKIM], /tutma varken mesai dışında|ertelendi/],
   [10, "indirme sırasında gelen tutma kurulumu durdurmaz", UO, "        if (held()) {\n          status.lastResult = { outcome: \"held\"", "        if (false) {\n          status.lastResult = { outcome: \"held\"", [BAKIM], /eski sürüm durdurulmadı/],
   [11, "uygulama güncelleme tutması istemez", MA, "        held = await hold(id, true);", "        held = { supervised: false, held: false };", [BAKIM], /not ok \d+ - güncelleme tutması \(uygulama\)/],
   [12, "yarıda kalan kipin işareti silinmez", MA, "    try {\n      rmSync(marker, { force: true });\n    } catch {\n      // silinemedi; bir sonraki yazımda üzerine yazılır", "    try {\n      void 0;\n    } catch {\n      // silinemedi; bir sonraki yazımda üzerine yazılır", [BAKIM], /işaret dosyası silindi/],
@@ -53,6 +54,13 @@ const MUTASYONLAR = [
   [25, "geri alınmış devrin sonrası yedeği engellenmez", CB, "  if (after.length) {", "  if (false) {", [YEDEK], /not ok \d+ - Yedekten Geri Yükle \(002/],
   [26, "bakımdaki şirkete programdan geri yükleme", CB, "    if (isPaused(target.id)) throw", "    if (false) throw", [YEDEK], /not ok \d+ - Yedekten Geri Yükle \(002/],
   [27, "Tümünü Sıfırla devir işaretini siler (KEEP_SETTINGS)", APP, "    \"devir.\"];", "    ];", [YEDEK], /sıfırlamadan sonra çalışma dosyası devrini bilir/],
+];
+// Çok noktalı mutant: [no, ad, [[dosya, eski, yeni], …], testler, neden].
+const COKLU = [
+  [28, "arka plan yazıcıları bakımda sürer (canWriteInBackground + writeLock sarmalayıcısı birlikte)", [
+    [APP, "const canWriteInBackground = () => !writeGate && !inMaintenance() && writeLock.guard(companyId, store);", "const canWriteInBackground = () => !writeGate && writeLock.guard(companyId, store);"],
+    [APP, "    guard: (key, target) => (key === companyId && inMaintenance() ? false : baseWriteLock.guard(key, target)),", "    guard: (key, target) => baseWriteLock.guard(key, target),"],
+  ], [BAKIM], /arka plan yazamaz/],
 ];
 
 const run = files => {
@@ -88,5 +96,33 @@ for (const [no, ad, dosya, eski, yeni, testler, neden] of MUTASYONLAR) {
     writeFileSync(file, original);
   }
 }
-console.log(`SONUÇ: ${yakalanan}/${toplam} mutasyon yakalandı`);
-process.exitCode = yakalanan === toplam ? 0 : 1;
+for (const [no, ad, edits, testler, neden] of COKLU) {
+  if (ONLY && !ONLY.has(no)) continue;
+  toplam += 1;
+  const originals = new Map();
+  try {
+    let ok = true;
+    for (const [dosya, eski, yeni] of edits) {
+      const file = path.join(COPY, dosya);
+      const text = originals.get(file) ?? readFileSync(file, "utf8");
+      if (!originals.has(file)) originals.set(file, text);
+      const current = readFileSync(file, "utf8");
+      if (current.split(eski).length - 1 !== 1) {
+        console.log(`M${no} ${ad}: KURULAMADI (${dosya})`);
+        ok = false;
+        break;
+      }
+      writeFileSync(file, current.replace(eski, yeni));
+    }
+    if (!ok) continue;
+    const result = run(testler);
+    const caught = result.status !== 0 && neden.test(result.out);
+    if (caught) yakalanan += 1;
+    const firstFail = (result.out.match(/^ {4}not ok \d+ - (.*)$/m) || [])[1] || "";
+    console.log(`M${no} ${ad}: ${caught ? "YAKALANDI" : "KAÇTI"} (çıkış ${result.status}, ${result.pass} geçti / ${result.fail} kaldı${firstFail ? `; ilk kırmızı: ${firstFail.slice(0, 90)}` : ""})`);
+  } finally {
+    for (const [file, text] of originals) writeFileSync(file, text);
+  }
+}
+console.log(`SONUÇ: ${yakalanan}/${toplam} mutasyon yakalandı (6 numara eşdeğer mutant olarak beklenir: iki kat koruma)`);
+process.exitCode = yakalanan === toplam || (yakalanan === toplam - 1 && (!ONLY || ONLY.has(6))) ? 0 : 1;
