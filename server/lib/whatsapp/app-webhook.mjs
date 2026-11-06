@@ -25,6 +25,9 @@ export const APP_WEBHOOK_NOT_READY = "Ofisin uzaktan bağlantı adresi henüz ha
 // app.mjs schemaGate) o dosyaya YAZILMAZ — çift yoksa ya da bu bilgisayarda açılamıyorsa üretilmez, yanıt ready false + bu neden. Var olan çift okunur ve gösterilir
 // (okuma yazma değildir). Kapının ortak katman istisnası yalnız giriş / lisans / şirket seçimidir; webhook çifti ona girmez.
 export const APP_WEBHOOK_SCHEMA_AHEAD = "001 şirketinin verisi programın daha yeni bir sürümüyle açıldığı için webhook bilgileri hazırlanamıyor; programı güncelleyince burada görünür.";
+// 2.5.0 BİRLEŞİK TUR 5 madde 7 (BAŞ MİMAR KARARI; WE + BS-7 ile aynı düzen — okuma yazma değildir): salt okunur lisansta (genel kapı GET'i kesmez) çift YOKSA ya da bu
+// bilgisayarda açılamıyorsa ÜRETİLMEZ — yanıt ready false + bu neden; var olan çift okunur ve gösterilir. Lisans durumu çağıranın: reveal(publicUrl, { writable }).
+export const APP_WEBHOOK_READ_ONLY = "Lisans salt okunur; Webhook Bilgileri lisans etkinleşince gösterilir.";
 // S41 = A: uygulama düzeyi adrese bildirim gelince Meta'daki alternatif adresin yeniden denetlenme sıklığı (WABA başına). Meta her durum için ayrı POST gönderir; her POST'ta
 // Meta'ya istek gitmez. Bellekte tutulur (program yeniden açılınca ilk bildirimde yine hemen); bakım turunun saatlik denetimi ayrıca sürer.
 export const APP_LEVEL_RECHECK_MS = 15 * 60_000;
@@ -68,15 +71,16 @@ export function createAppWebhook({ store, dataDir, now = () => new Date() }) {
     return Boolean(row && token && sha256(token) === row.verifyHash);
   }
   /**
-   * Yöneticinin ekranı için açık değerler (yoksa ya da bu bilgisayarda açılamıyorsa üretilir; 001 şema kapısındaysa ÜRETİLMEZ). publicUrl: ofisin uzaktan adresi. Dönüş:
-   * { ready, callbackUrl ("" — adres hazır değil), verifyToken ("" — kapıda üretilemedi), reason }.
+   * Yöneticinin ekranı için açık değerler (yoksa ya da bu bilgisayarda açılamıyorsa üretilir; 001 şema kapısındaysa ya da lisans salt okunursa ÜRETİLMEZ). publicUrl: ofisin
+   * uzaktan adresi; writable: lisans yazılabilir mi (false → salt okunur). Dönüş: { ready, callbackUrl ("" — adres hazır değil), verifyToken ("" — üretilemedi), reason }.
    */
-  function reveal(publicUrl) {
+  function reveal(publicUrl, { writable = true } = {}) {
     const row = record();
     let path = row ? secrets().open(row.pathSealed) : "";
     let verify = row ? secrets().open(row.verifySealed) : "";
     if (!HOOK_PATH.test(String(path || "")) || !verify || sha256(path) !== row?.pathHash || sha256(verify) !== row?.verifyHash) {
       if (schemaAhead()) return { ready: false, callbackUrl: "", verifyToken: "", reason: APP_WEBHOOK_SCHEMA_AHEAD };
+      if (writable === false) return { ready: false, callbackUrl: "", verifyToken: "", reason: APP_WEBHOOK_READ_ONLY };
       ({ path, verify } = create());
     }
     const base = hookBase(publicUrl);

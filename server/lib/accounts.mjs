@@ -120,7 +120,11 @@ export function accountLedger(entries = [], plans = []) {
     if (plan.status === "closed") {
       // Kapatılan kartın ödenmeyen kısmı artık istenmez: defterde alacak olarak düşülür (iz kalır, bakiye doğru olur).
       const writeOff = roundMoney(total - paid);
-      if (writeOff > EPS) lines.push({ id: `plan-close:${plan.id}`, origin: "plan", planId: plan.id, kind: "plan-close", date: String(plan.updatedAt || plan.createdAt || opened).slice(0, 10), at: plan.updatedAt || "", label: "Kart kapatıldı", note: `${plan.name} · kalan düşüldü`, debit: 0, credit: writeOff });
+      // 2.5.0 BİRLEŞİK TUR 5 (BT4 dar kontrol YB-1): satırın tarihi genel defterle AYNI kural (routes/ledger.mjs + lib/general-ledger.mjs "plan-close"): kapanış günü
+      // (closed_at; 2.0.13 öncesi kapatılmışta closed_at boş → son güncelleme günü, FREEZE_CLOSE ilk güncellemede onu dondurur), Kayıt Tarihi'nden önce değil. Önceden
+      // updated_at'ten okunuyordu: kapalı kartın notu / adı sonradan düzeltilince satır cari ekstresinde düzeltme gününe kayıyor, genel defter kapanış gününde kalıyordu.
+      const closedOn = plan.closedAt || String(plan.updatedAt || "").slice(0, 10);
+      if (writeOff > EPS) lines.push({ id: `plan-close:${plan.id}`, origin: "plan", planId: plan.id, kind: "plan-close", date: closedOn && closedOn > opened ? closedOn : opened, at: plan.updatedAt || "", label: "Kart kapatıldı", note: `${plan.name} · kalan düşüldü`, debit: 0, credit: writeOff });
     } else {
       planTotal = roundMoney(planTotal + total);
       planRemaining = roundMoney(planRemaining + Math.max(0, total - paid));

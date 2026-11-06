@@ -1,0 +1,55 @@
+// BT5 madde 2 keşif 3: kirli işaretinin ilk satırı (kartın carisi) — kart başka cariye taşınmış (elle) iken iki aday; sıra kuru koşuyla okunur. node onarim-kesif3.mjs <kök>
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+const root = process.argv[2];
+const { boot, must, rawRun } = await import(pathToFileURL(path.join(root, "test/banka-210-ortak.mjs")).href);
+const T = "2026-10-08";
+const ctx = await boot({ now: { time: `${T}T12:00:00+03:00`, fixed: true }, env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
+const api = ctx.api;
+await must("kurulum", api.post("/api/workspace/bank/setup/dismiss", {}));
+const customer = name => must(`cari ${name}`, api.post("/api/workspace/accounts", { name, type: "customer", registeredOn: "2026-07-01" }));
+const sale = async acc => {
+  const doc = await must("satış", api.post("/api/workspace/invoices", { kind: "sale", accountId: acc.id, issueDate: "2026-08-09", currency: "TRY", rate: 1, pricesIncludeVat: false, lines: [{ name: "Hizmet", qty: 10, unitPrice: 100, vatRate: 0 }], payment: { cash: [{ amount: 500, method: "cash" }], cheques: [], endorse: [], rest: "installments", installments: { count: 1, firstDue: "2026-11-01", everyMonths: 1 } }, force: true }));
+  return { id: doc.id, accountId: acc.id, planId: doc.plan?.id || doc.planId, lineId: doc.lines[0].id };
+};
+const giveBack = async (inv, qty, refund) => (await must("iade", api.post("/api/workspace/invoices", { kind: "sale_return", accountId: inv.accountId, originalId: inv.id, issueDate: T, lines: [{ originLineId: inv.lineId, qty }], payment: { cash: refund ? [{ amount: refund, method: "cash" }] : [], cheques: [], endorse: [], rest: "open" }, force: true }))).id;
+const grow = (planId, amount) => {
+  rawRun(ctx.db, "UPDATE plan_items SET amount = ? WHERE plan_id = ?", amount, planId);
+  rawRun(ctx.db, "UPDATE plans SET total = ? WHERE id = ?", amount, planId);
+};
+const plans = ctx.app.context.plans;
+const inv = ctx.app.context.invoices;
+const exact = i => Number(inv.paymentStates([{ id: i.id, accountId: i.accountId }]).get(i.id)?.open);
+const A = await customer("Keşif A");
+const B = await customer("Keşif B");
+const one = await sale(A);
+const oneRet = await giveBack(one, 10, 500);
+const two = await sale(B);
+const twoRet = await giveBack(two, 10, 500);
+grow(one.planId, 500);
+grow(two.planId, 500);
+const order = [];
+const { leftOf, shrinkPlan } = plans;
+plans.leftOf = id => (order.push(id), leftOf(id));
+plans.shrinkPlan = () => 0;
+inv.repairOwnCards({});
+plans.leftOf = leftOf;
+plans.shrinkPlan = shrinkPlan;
+const firstIsOne = order.indexOf(one.planId) < order.indexOf(two.planId);
+const [F, S, sRet] = firstIsOne ? [one, two, twoRet] : [two, one, oneRet];
+console.log("sıra:", firstIsOne ? "one,two" : "two,one");
+rawRun(ctx.db, "UPDATE plans SET account_id = ? WHERE id = ?", S.accountId, F.planId);
+console.log("F kartı S'nin carisine taşındı; exact F", exact(F), "exact S", exact(S), "left F", plans.leftOf(F.planId), "left S", plans.leftOf(S.planId));
+const accounts = ctx.app.context.accounts;
+const all = accounts.allLedgers;
+accounts.allLedgers = options => {
+  const out = all(options);
+  if (out.lines.has(S.accountId)) out.lines.set(S.accountId, out.lines.get(S.accountId).filter(l => l.sourceId !== sRet));
+  return out;
+};
+const batch = inv.repairScreen([F.id, S.id]);
+console.log("toplu F", batch.get(F.id)?.open, "toplu S", batch.get(S.id)?.open);
+const result = inv.repairOwnCards({});
+accounts.allLedgers = all;
+console.log("onarım:", JSON.stringify(result.fixed.map(x => [x.planId === F.planId ? "F" : x.planId === S.planId ? "S" : "?", x.from, x.to])), "left F", plans.leftOf(F.planId), "left S", plans.leftOf(S.planId));
+await ctx.server.close();
