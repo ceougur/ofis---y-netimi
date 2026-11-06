@@ -1193,7 +1193,10 @@ Z52 → d12 / d13 `amount` / `dueDate` / `label`, `gecikmis` (16 cari), `vadeTak
 220: d10 / d12; 221: d10 / d12 / d13; 222: d10 / d12 / d13 / c6; 223: d10 F / d12 V); kos.mjs düzenindeki tarama (`model.py --mutasyon-tara`, 67 dosya × kipler) 190/190.
 
 ### Öz denetim (`oz-test.py`; program AÇILMAZ)
-Bakım 2'nin denetimlerine ek: her /3 senaryoda "SK-5 ÇATAL yok" ve 219–223'ün değerle yakalanması. Sayılar kanıtta (iki saat dilimi).
+Bakım 2'nin denetimlerine ek: her /3 senaryoda "SK-5 ÇATAL yok" ve 219–223'ün değerle yakalanması. Sayılar kanıtta (iki saat dilimi, kâhin `2da89282`; `docs/kanit/2026-11-06/kahineski3-*`):
+cari öz test 572/572 · defter öz test 171/171 (defter değişmedi) · mutasyon taraması 190/190 · eşdeğerlik + G3 369/369 (üretici 20/20, eşdeğerlik 348/348, G3 84 / BEKLENMEYEN 0) — UTC ve
+Europe/Istanbul aynı. KIRMIZI (ders 7, 38): bakım 2 kâhininin (`d6a7b0d5`, ayrı kopya) öz testi yeni / değişen senaryolarla 511/533 — 22 kırmızının HEPSİ d10 C / D + d12 10 + d13 10
+`takvim:hareket` kalemi, kâhin değeri `{"catal": [K6.3, S67]}` (ÇATAL SK-5 — beklenen neden). Araçlar `kahineski3-arac/` (karsilastir.py, mutasyon-tara.py, d13-uret.py).
 
 ### KULLANICIYA SORULMALI (bakım 3)
 YOK. S69 bu kâhinin durumlarını çözdü; Y3-1 (söz vadeden önce → K6.3) ve Y3-2 yorumdur — kaynakları yukarıda, BAŞ MİMAR'a gösterilir. Uç durumda başka iki okuma görülmedi.
