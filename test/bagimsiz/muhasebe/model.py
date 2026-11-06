@@ -21,6 +21,9 @@ BAKIM 5 (06.11.2026, altıncı tur): ürün sahibinin 06.11 06:26 S24 (devirden 
 Raporu listeler), S25 (kısmen aktarılmış faturaya küçük çek önce 128; çekin fazlası bağsız alacak 120; nakit / havale / POS S14 ile aynı), S26 (geri
 yüklenmiş açılış öncesi Kasa kaydının yalnız tutar düzeltmesi kabul) ve S27 (yarım gün iş günü; dinî bayram günleri tam gün tatil — tarihler resmî
 kaynaktan) kararları (A). Yorumlar README Z1–Z12.
+BAKIM 6 (06.11.2026, yedinci tur): ürün sahibinin 06.11 08:06 S39 (şüpheli caride faturaya bağlı Kredi Kartına İade S25 / S14 ile aynı) ve S40 (geri
+yüklenmiş, açılış öncesi Kasa kaydının açıklama / cari düzeltmesi tarih değişmeden kabul; uyarı sürer) kararları (A) + BAŞ MİMAR KARARI 06.11 07:59 Z9
+(S26 Silinenler'den geri alınan kayda da). Yorumlar README X1–X13.
 Saf Python, yalnız standart kütüphane. Para kuruş tamsayı; miktar Fraction.
 
 Yapı:
@@ -144,9 +147,12 @@ BILANCO_KALEMLERI = {
 }
 GT_SIRA = ("A", "B", "C", "D", "BSK", "E", "FK", "F", "G", "H", "OK", "I", "J", "DK", "K", "DNK")
 
-# S14 A (çek / senet) + S25 (c) A (nakit / havale / POS; README Z7): şüpheli caride faturaya bağlı tahsilat faturanın durduğu hesaptan düşer.
-# Kredi Kartına İade (yol kart) kararda yok → kâhin susar (README Z8).
-S14_YOLLARI = ("cek", "senet", "nakit", "havale", "pos")
+# S14 A (çek / senet) + S25 (c) A (nakit / havale / POS; README Z7) + S39 A (Kredi Kartına İade, T-11; README X1–X4; bakım 5'in Z8 susması kalktı):
+# şüpheli caride faturaya bağlı tahsilat faturanın durduğu hesaptan düşer (önce şüpheli kısım, kalanı 120).
+S14_YOLLARI = ("cek", "senet", "nakit", "havale", "pos", "kart")
+# S26 A (tutar; README Z9) + S40 A (karar metninin saydığı tutar dışı alanlar: açıklama, cari; README X7–X10): geri yüklenmiş, açılıştan önce tarihli Kasa
+# kaydının tarih değişmeden düzeltilebilen alanları. Öbürleri (fatura / taksit kartı bağı, Normal Cari Hesaba İşle, banka …) → kâhin susar (README X11).
+S26_S40_ALANLARI = ("tarih", "tutar", "aciklama", "cari")
 
 ACILIS_TURLERI = {"kasa_acilis", "cari_acilis", "banka_acilis", "kart_acilis", "kredi_acilis", "stok_acilis", "evrak_acilis",
                   "taksit_excel", "devir_kasa", "devir_cari", "devir_banka", "devir_kart", "devir_kredi",
@@ -423,7 +429,8 @@ class Gecis:
         return n
 
     def _s14_aday_mi(self, k, c, yol):
-        """S14 A (README Y1) + S25 (c) A (README Z7): faturaya bağlı çek / senet / nakit / havale / POS, carinin tahsilat günü açık şüpheli kaydı var."""
+        """S14 A (README Y1) + S25 (c) A (README Z7) + S39 A (README X1): faturaya bağlı çek / senet / nakit / havale / POS / Kredi Kartına İade, carinin
+        tahsilat günü açık şüpheli kaydı var."""
         return bool(k.v.get("fatura")) and yol in S14_YOLLARI and any(
             r["kalan"] > 0 and r["tarih"] <= k.tarih for r in self.supheli.get(c, []))
 
@@ -2408,9 +2415,7 @@ class Model:
                 raise Red("SUPHELI_YOK")
         if tur == "tahsilat" and (v.get("normal_cari") or v.get("fatura")):   # plan §3.11b/2 (a)–(b) SINIR
             acik = [r for r in d.gecis().supheli.get(v["cari"], []) if r["kalan"] > 0 and r["tarih"] <= tarih]
-            if acik and v.get("fatura") and v.get("yol") == "kart":
-                raise AssertionError("senaryo hatası: şüpheli caride faturaya bağlı Kredi Kartına İade (T-11) — S25 (c) yalnız nakit / havale / POS sayar; "
-                                     "kâhin susar (README bakım 5 Z8, KULLANICIYA SORULMALI 1)")
+            # S39 A (README X1–X6): faturaya bağlı Kredi Kartına İade de S14 / S25 kuralıyla (bakım 5'in Z8 susması kalktı)
             bak = d.bakiyeler(tarih).get((d.cari_hesap(v["cari"]), v["cari"]), 0)
             normal = self._s14_normal(d, tarih, v) if acik else v["tutar"]   # S14 / S25 A (README Y4, Z6): 128 kısmı ve fazla normal değil
             if acik and normal > bak:
@@ -2430,7 +2435,7 @@ class Model:
     @staticmethod
     def _s14_normal(d, tarih, v):
         """S14 + S25 A (README Y4, Z6): şüpheli caride faturaya bağlı tahsilatın SUPHELI_NORMAL_ASIM sınırına giren kısmı = bağla faturanın 120'deki kısmını
-        kapattığı tutar. 128'den düşen kısım (S14 / S25 (a), (c)) ve faturanın açık kısmını aşan FAZLA (S25 (b): carinin bağsız alacağı, avans) sınıra girmez.
+        kapattığı tutar. 128'den düşen kısım (S14 / S25 (a), (c), S39) ve faturanın açık kısmını aşan FAZLA (S25 (b): carinin bağsız alacağı, avans) sınıra girmez.
         Bağsız ("Normal Cari Hesaba İşle") ya da S14 yolu olmayan tahsilatta tutarın tamamı. Kaydı kopyaya uygulayıp türetilmiş kuyruktan okur (asıl dosya
         değişmez)."""
         if not (v.get("fatura") and v.get("yol") in S14_YOLLARI):
@@ -2464,16 +2469,31 @@ class Model:
             try:
                 self._kasa_acilis_oncesi(d, dg.get("tarih", k.tarih), lambda dd: self._duzelt(dd.kaynaklar[k.id], dg))
             except Red:
-                # S26 A (kullanıcı 06.11 06:26; README Z9): geri yüklenmiş (yedekten / Silinenler'den), açılıştan önce tarihli Kasa kaydının tarihi değişmeden
-                # YALNIZ tutarı düzeltilirse kabul — Mutabakat Testi uyarısı sürer (kayıt geri yüklenmiş kalır). Tarih değişiyorsa ya da kayıt geri yüklenmemişse
-                # ya da düzeltme öncesi açılıştan önce Kasa hareketi değilse T12 aynen
+                # S26 A (kullanıcı 06.11 06:26; README Z9) + S40 A (kullanıcı 06.11 08:06; README X7–X10): geri yüklenmiş (yedekten / Silinenler'den — Z9 BAŞ
+                # MİMAR KARARI 06.11 07:59), açılıştan önce tarihli Kasa kaydının tarihi değişmeden tutarı, açıklaması ya da carisi (tek tek ya da birlikte)
+                # düzeltilirse kabul — Mutabakat Testi uyarısı sürer (kayıt geri yüklenmiş kalır). Cari değişince kaydın CH satırı yeni cariye geçer (G-7; X9).
+                # Tarih değişiyorsa ya da kayıt geri yüklenmemişse ya da düzeltme öncesi açılıştan önce Kasa hareketi değilse T12 aynen (düzeltmenin tamamı)
                 if not (k.geri and self._kasa_once_mi(d, k) and yeni_t == k.tarih):
                     raise
-                if set(dg) - {"tarih", "tutar"}:
-                    raise AssertionError(f"senaryo hatası: geri yüklenmiş, açılıştan önce tarihli Kasa kaydının tutar dışı alanı düzeltildi "
-                                         f"({sorted(set(dg) - {'tarih', 'tutar'})}) — S26 yalnız tutar; kâhin susar (README bakım 5 Z10, KULLANICIYA SORULMALI 2)")
+                self._s40_kapsam(k, dg)
         self._duzelt(k, dg)
         d.degisti()
+
+    @staticmethod
+    def _s40_kapsam(k, dg):
+        """S40 A kapsamı (README X7, X11): karar metni tutar dışı alan olarak açıklama ve cariyi sayar. Kâhinin sustuğu (senaryo hatası; KULLANICIYA SORULMALI
+        1–2): (a) parantezde sayılmayan alan (fatura / taksit kartı bağı, Normal Cari Hesaba İşle, banka, evrak …), (b) BAĞLI kaydın carisi (bağ ne olur — karar
+        söylemez), (c) carisiz Kasa kaydına cari (kaydın türü değişir; model dilinde yok)."""
+        disi = sorted(set(dg) - set(S26_S40_ALANLARI))
+        if disi:
+            raise AssertionError(f"senaryo hatası: geri yüklenmiş, açılıştan önce tarihli Kasa kaydının karar metninde sayılmayan alanı düzeltildi ({disi}) — S40 "
+                                 "yalnız açıklama ve cari; kâhin susar (README bakım 6 X11 (a), KULLANICIYA SORULMALI 1)")
+        if "cari" in dg and dg["cari"] != k.v.get("cari"):
+            if "cari" not in k.v:
+                raise AssertionError("senaryo hatası: carisiz Kasa kaydına cari eklendi — kaydın türü değişir; model dilinde yok (README bakım 6 X11 (c))")
+            if k.v.get("fatura") or k.v.get("taksit_karti"):
+                raise AssertionError("senaryo hatası: bağlı (Kapatılacak Fatura / taksit kartı) kaydın carisi düzeltildi — bağ ne olur, karar söylemez; kâhin susar "
+                                     "(README bakım 6 X11 (b), KULLANICIYA SORULMALI 2)")
 
     @staticmethod
     def _kasa_once_mi(d, k):

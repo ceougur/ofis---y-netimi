@@ -1,0 +1,4 @@
+TEMEL s78 {'redler': [], 'mz/satirlar/128|C1/bakiye': 10000, 'mz/satirlar/120|C1/bakiye': 0, 'mz/satirlar/128|C2/bakiye': 0, 'mz/satirlar/120|C2/bakiye': 4000, 'mz/satirlar/128|C3/bakiye': 2000, 'mz/satirlar/120|C3/bakiye': 0, 'g2/gecikmis': 4000}
+B60 s78 {'redler': ['SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM'], 'mz/satirlar/128|C1/bakiye': 15000, 'mz/satirlar/120|C1/bakiye': 2000, 'mz/satirlar/128|C2/bakiye': 8000, 'mz/satirlar/120|C2/bakiye': 6000, 'mz/satirlar/128|C3/bakiye': 4000, 'mz/satirlar/120|C3/bakiye': 0, 'g2/gecikmis': 6000}
+TEMEL s79 {'redler': ['KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE'], 'mod14/kasa': 1450, 'g1/gecikmis': 150, 'g3/gecikmis': 1800, 'mz/satirlar/100/bakiye': 11450}
+B63 s79 {'redler': ['KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE'], 'mod14/kasa': 1400, 'g1/gecikmis': 0, 'g3/gecikmis': 2000, 'mz/satirlar/100/bakiye': 11400}
