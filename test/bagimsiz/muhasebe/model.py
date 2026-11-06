@@ -32,6 +32,8 @@ S48 (karşılıksız carisiz açılış evrakı: cari seçilirse borçlanır, se
 kart seçilmeden tahsilat taksiti de kapatır), S51 (Silinenler'den geri alınan ikinci açılış aday), S52 (Ödeme Sözü: gecikmiş sayılır, söz tarihine kadar otomatik
 hatırlatma yok), S53 (kilitsiz geçmiş yıl yeni kuralla; Defter Mutabakatı bilgisi) kararları (A) + BAŞ MİMAR KARARLARI 06.11 10:53 B5 (KG-5 madde tarihi içe
 aktarmanın yerel günü), B6 (KG-16 Türkçe küçük harf + ç/ı/ş katlama), B11 (T12), B14 (alt defter kural farkı fişle düzeltilmez). Yorumlar README W1–W19.
+Ek kapsam (kullanıcı 06.11 12:06): S54 (aynı düzeltmede bağ + cari kabul), S55 (sonradan doğan hedefe bağ hedefin gününde), S56 (S44 düzeltmesinde
+SUPHELI_NORMAL_ASIM), S57 (olağan bağlı kaydın carisi BAG_KALDIRILMALI). Yorumlar README U1–U8.
 Saf Python, yalnız standart kütüphane. Para kuruş tamsayı; miktar Fraction.
 
 Yapı:
@@ -1407,6 +1409,7 @@ class Kuyruk:
         self.cakisma = defaultdict(int)              # (bağ olayı, öğe id) → bu turda bulunan yeni rezerv ihtiyacı
         self.notlar = []                             # karar (3): kilit nedeniyle geri alınmayan bağ
         self.susulan = []                            # KÂHİN SUSUYOR durumları (README "Kâhin bakımı 3" KULLANICIYA SORULMALI 1)
+        self.bekleyen = defaultdict(list)            # S55 A (README U3, U4): hedefi henüz doğmamış bağ → taşıyıcı kalemler (hedefin doğduğu gün bağlanır)
 
     def olay(self, ev, tarih):
         self.ev, self.simdi, self._j = ev, tarih, 0
@@ -1461,9 +1464,10 @@ class Kuyruk:
         self._kirp(o)
 
     def net(self):
-        """Bağsız kalemler: açık (ayrılmamış) borçlar ve alacaklar S2 sırasıyla karşılaşır."""
-        B = sorted((o for o in self.ogeler if o["taraf"] == "b" and self.avail(o) > 0), key=s2_anahtari)
-        A = sorted((o for o in self.ogeler if o["taraf"] == "a" and self.avail(o) > 0), key=s2_anahtari)
+        """Bağsız kalemler: açık (ayrılmamış) borçlar ve alacaklar S2 sırasıyla karşılaşır. S50 A (README W11): taksit kartlarının taksitleri de bu kalemlerdendir
+        (tek kuyruk; kart seçilmeden tahsilat vadesi önce gelen taksiti de kapatır). S55 A: hedefini bekleyen bağın taşıyıcısı dağılmaz."""
+        B = sorted((o for o in self.ogeler if o["taraf"] == "b" and self.avail(o) > 0 and not o.get("bekle")), key=s2_anahtari)
+        A = sorted((o for o in self.ogeler if o["taraf"] == "a" and self.avail(o) > 0 and not o.get("bekle")), key=s2_anahtari)
         for a in A:
             for b in B:
                 if self.avail(a) <= 0:
@@ -1559,6 +1563,15 @@ class Kuyruk:
         for y in hed:
             self._birak(y)
 
+    def bekleyen_bagla(self, link):
+        """S55 A (kullanıcı 06.11 12:06; README U3): bağın hedefi doğduğu an (aynı günün bağsız dağılımından ÖNCE) bekleyen taşıyıcılar hedefe bağlanır. Taşıyıcının
+        tutarı hedefin açık kısmını aşarsa fazlanın dağılım günü iki okumalı → kâhin susar (U4 b, "S55_FAZLA"); fazla bu günden bağsız dağılır."""
+        for x in self.bekleyen.pop(link, []):
+            x["bekle"] = False
+            self.bagla(x, self.hedefler(link))
+            if x["kalan"] > 0:
+                self.susulan_ek.append({"kaynak": x["kaynak"], "neden": "S55_FAZLA", "tutar": x["kalan"]})
+
     def kart_kucult(self, kid, n, x):
         """Karar (4) / 2B-S3 A: kart vadesi en önce gelen AÇIK taksitten küçülür (x: küçülten alacak kalemi)."""
         kk = self.kartlar.get(kid)
@@ -1617,7 +1630,7 @@ class Kuyruk:
         elif kt["kaynak"] == "mevcut_borc":
             for ayrilmis in (False, True):           # önce ayrılmamış kısım (README soru 5)
                 for y in self.acik("b"):
-                    if y["kart"] or kalan <= 0:
+                    if y["kart"] or kalan <= 0 or y.get("bekle"):
                         continue
                     n = min(kalan, y["kalan"] if ayrilmis else self.avail(y))
                     if n > 0:
@@ -1639,6 +1652,7 @@ class Kuyruk:
             o["kucultme"] += m
             eksik -= m
         self.kartlar[kid] = {"taksitler": taksitler, "kapali": False, "kalani": [], "kaynak": kt["kaynak"], "tuketilen": T - kalan if tuketen else None}
+        self.bekleyen_bagla("kart:" + kid)            # S55 A: kartı bekleyen kart tahsilatları kartın doğduğu gün
         self.net()
 
     def devir_karti(self, kid, kt):
@@ -1668,6 +1682,8 @@ class Kuyruk:
             for y in self.acik("b"):
                 if kalan <= 0:
                     break
+                if y.get("bekle"):                    # S55: hedefini bekleyen borç yönlü taşıyıcı (ödeme) şüpheliye taşınmaz
+                    continue
                 n = min(kalan, y["kalan"] if ayrilmis else self.avail(y))
                 if n <= 0:
                     continue
@@ -2266,10 +2282,29 @@ class Dosya:
         L'de dağılmamış (avans) evrak da S11 (README Y10). Evrakın tahsilat kaleminin L günü sonundaki dağılmamış kalanı."""
         return sum(o["kalan"] for o in self.kuyruk(c, L).ogeler if o["k"] == hedef)
 
+    def _dogum(self, c):
+        """S55 A (README U3): bağ hedeflerinin kuyruğa girdiği (doğduğu) olayın sıra numarası — fatura satırı ya da kartın açılışı. BÜTÜN olaylar üzerinden (t'den
+        bağımsız): olay listesi tarihle başlayan anahtarla sıralı olduğundan kuyruk(c, t)'nin olayları bu listenin ön parçasıdır."""
+        anah = ("dogum", c)                           # önbellek kuyruk önbelleğiyle birlikte silinir (degisti, gecis)
+        if anah not in self._kq:
+            dogum = {}
+            for ev, (anahtar_, tur, x) in enumerate(self._kuyruk_olaylari(c, "9999-12-31")[0]):
+                if tur == "kart":
+                    dogum.setdefault("kart:" + x, ev)
+                elif tur == "satir":
+                    e = x[2]["e"] or {}
+                    if e.get("kart"):
+                        dogum.setdefault("kart:" + e["kart"], ev)
+                    if (e.get("k") or "").startswith("fatura:"):
+                        dogum.setdefault(e["k"], ev)
+            self._kq[anah] = dogum
+        return self._kq[anah]
+
     def _oynat(self, c, olaylar, rezerv, fg):
         g = self.gecis()
         q = Kuyruk(self.kilit, rezerv, fg, self.etkin_kilit)
         q.supheli = [dict(x, sira=tuple(x["sira"])) for x in g.devir_supheli.get(c, [])]
+        dogum = self._dogum(c)
         for ev, (anahtar_, tur, x) in enumerate(olaylar):
             q.olay(ev, anahtar_[0])
             sira = (anahtar_[1], anahtar_[4], max(anahtar_[6], 0))
@@ -2310,8 +2345,18 @@ class Dosya:
                     if o["link"] and o["link"].startswith("kart_kucult:"):
                         q.kart_kucult(o["link"][12:], o["kalan"], o)   # borçtan düşülen stok iadesi kartı küçültür (karar (4))
                     elif o["link"]:
-                        q.bagla(o, q.hedefler(o["link"]))
+                        hed = q.hedefler(o["link"])
+                        if not hed and dogum.get(o["link"], -1) > ev:   # S55 A: hedef kayıttan SONRA doğuyor → doğduğu gün bağlanır
+                            o["bekle"] = True
+                            q.bekleyen[o["link"]].append(o)
+                        else:
+                            q.bagla(o, hed)
+                    if o["k"] in q.bekleyen:           # S55 A: bu kalem bekleyen bağların hedefi — bağsız dağılımdan ÖNCE
+                        q.bekleyen_bagla(o["k"])
                     q.net()
+        for link, xs in sorted(q.bekleyen.items()):  # S55 kâhin susar (README U4 a): hedef t'de henüz doğmadı — aradaki dönem
+            for o in xs:
+                q.susulan_ek.append({"kaynak": o["kaynak"], "neden": "S55_BEKLEYEN_BAG", "tutar": o["kalan"]})
         return q
 
     def kuyruk(self, c, t, fg=False):
@@ -2391,6 +2436,10 @@ class Dosya:
                 sup.append(c)
                 if g["gecikmis"] > 0:
                     elle[c] = g["gecikmis"]
+                continue
+            s55 = [x["neden"] for x in g.get("kahin_susuyor", []) if x["neden"].startswith("S55")]
+            if s55:                                   # S55 (README U4): bekleyen bağ / fazla — gecikmiş iki okumalı, kâhin susar
+                sus.append({"cari": c, "neden": s55[0]})
                 continue
             durum = self.soz_durumu(c, t, g)
             if durum == "soz":
@@ -2637,6 +2686,7 @@ class Model:
                 ilk = [x[0] for x in d.gecis().mod if x[3] == ("kasa",) and x[5] != k.id]
                 if ilk and dg["tarih"] > min(ilk):
                     raise Red("KASA_ACILIS_SONRA", f"ilk Kasa hareketi {min(ilk)}")
+        s44_yolu = False
         if k.tur not in ("kasa_acilis", "devir_kasa"):   # S12 A + EK-2 §4 (8) (README bakım 3 T12): düzeltme de açılıştan önceye Kasa hareketi yazamaz
             yeni_t = dg.get("tarih", k.tarih)
             try:
@@ -2652,8 +2702,25 @@ class Model:
                     raise
                 self._s40_kapsam(k, dg)
                 dg = self._s44_kapsam(d, k, dg)
+                s44_yolu = True
+        if not s44_yolu:
+            self._s57_kapsam(k, dg)
         self._duzelt(k, dg)
         d.degisti()
+
+    def _s57_kapsam(self, k, dg):
+        """S57 A (kullanıcı 06.11 12:06; README U6, U7): OLAĞAN kayıt (S44 / S45 kapsamı dışı) Kapatılacak Fatura ya da taksit kartıyla bağlıyken carisi BAŞKA cariye
+        düzeltilirse düzeltmenin TAMAMI BAG_KALDIRILMALI ile red (S45 ile aynı). Kâhinin sustuğu: aynı düzeltmede bağ da değişiyor (KULLANICIYA SORULMALI 8),
+        formdaki peşin ödemenin carisi (faturanın düzenlenmesi — V3 (e))."""
+        if not ("cari" in dg and dg["cari"] != k.v.get("cari") and self._bagli(k)):
+            return
+        if k.v.get("fatura_odemesi"):
+            raise AssertionError("senaryo hatası: formdaki peşin ödemenin (fatura_odemesi) carisi düzeltildi — faturanın düzenlenmesidir (F-14); kâhin susar "
+                                 "(README bakım 8 U7 (b))")
+        if any(a in dg and dg[a] != k.v.get(a) for a in ("fatura", "taksit_karti")):
+            raise AssertionError("senaryo hatası: olağan bağlı kayıtta AYNI düzeltmede bağ + cari — S57 harfiyen red mi, S54 gibi kabul mü; kâhin susar "
+                                 "(README bakım 8 U7 (a), KULLANICIYA SORULMALI 8)")
+        raise Red("BAG_KALDIRILMALI", "önce fatura / taksit kartı bağını kaldırın (S57 A; olağan kayıt, S45 ile aynı)")
 
     @staticmethod
     def _s40_kapsam(k, dg):
@@ -2681,16 +2748,16 @@ class Model:
     def _s44_kapsam(self, d, k, dg):
         """S45 A (kullanıcı 06.11 09:09; README V5–V8) ve S44 A (README V1–V3). Yalnız geri yüklenmiş, düzeltmeden önce açılış öncesi Kasa hareketi yazan ve tarihi
         değişmeyen kaydın düzeltmesinde çağrılır (_o_duzenle). Düzeltmenin kullanılacak hâlini döndürür.
-        S45: bağlı kaydın carisi BAŞKA cariye değişiyorsa düzeltmenin TAMAMI BAG_KALDIRILMALI ile red (aynı cari düzeltme değildir); aynı düzeltme bağı da
-        değiştiriyorsa iki okuma → susar (V7, KULLANICIYA SORULMALI 1).
+        S45: bağlı kaydın carisi BAŞKA cariye değişiyorsa düzeltmenin TAMAMI BAG_KALDIRILMALI ile red (aynı cari düzeltme değildir); S54 A (bakım 8 U1, U2): aynı
+        düzeltme bağı da değiştiriyorsa (kaldırma ya da yeni carinin belgesi / kartı) KABUL.
         S44: bağ / Normal Cari kabul; kayıt kendi gününde yeniden türetilir (V2). Susar (senaryo hatası): hedef bu carinin etkin belgesi / kartı değil ya da ödemede
-        taksit kartı / Normal Cari (V3 (c), (f)); hedef kayıttan SONRA tarihli (V3 (c), KULLANICIYA SORULMALI 2); şüpheli-normal aşım sınırı (V3 (d), KULLANICIYA
-        SORULMALI 3)."""
+        taksit kartı / Normal Cari (V3 (c), (f)). S55 A (U3): hedef kayıttan SONRA tarihliyse bağ hedefin doğduğu gün (Kuyruk). S56 A (U5): şüpheli-normal aşım
+        sınırı SUPHELI_NORMAL_ASIM ile red (_s44_sinir)."""
         if "cari" in dg and dg["cari"] != k.v.get("cari") and self._bagli(k):
-            if any(a in dg and dg[a] != k.v.get(a) for a in ("fatura", "taksit_karti")):
-                raise AssertionError("senaryo hatası: bağlı kaydın bağı ve carisi AYNI düzeltmede değişti — 'önce bağı kaldırın' ayrı adım mı, kâhin susar "
-                                     "(README bakım 7 V7, KULLANICIYA SORULMALI 1)")
-            raise Red("BAG_KALDIRILMALI", "önce fatura / taksit kartı bağını kaldırın (S45 A; bağ sessizce kopmaz)")
+            # S54 A (kullanıcı 06.11 12:06; README U1, U2): AYNI düzeltmede bağ da değişiyorsa (kaldırma ya da yeni carinin belgesi / kartı) KABUL — bakım 7 V7
+            # susması kalktı; yeni bağın hedefi aşağıda yeni carinin etkin belgesi / kartı olarak denetlenir (V3 (c))
+            if not any(a in dg and dg[a] != k.v.get(a) for a in ("fatura", "taksit_karti")):
+                raise Red("BAG_KALDIRILMALI", "önce fatura / taksit kartı bağını kaldırın (S45 A; bağ sessizce kopmaz)")
         if not any(a in dg and dg[a] != k.v.get(a) for a in S44_ALANLARI):
             return dg
         if k.tur not in ("tahsilat", "odeme") or (k.tur == "odeme" and any(dg.get(a) for a in ("taksit_karti", "normal_cari"))):
@@ -2702,24 +2769,19 @@ class Model:
             tur = "satis_faturasi" if k.tur == "tahsilat" else "alis_faturasi"
             if f is None or f.durum != "aktif" or f.tur != tur or f.v.get("cari") != c:
                 raise AssertionError(f"senaryo hatası: bağ hedefi {v['fatura']} bu carinin ({c}) etkin {tur} kaydı değil — model dilinde yok (README bakım 7 V3 (c))")
-            if f.tarih > k.tarih:
-                raise AssertionError(f"senaryo hatası: bağ hedefi {v['fatura']} ({f.tarih}) kayıttan ({k.tarih}) SONRA tarihli — bağın hangi gün uygulanacağı karar "
-                                     "metninde yok; kâhin susar (README bakım 7 V3 (c), KULLANICIYA SORULMALI 2)")
+            # S55 A (README U3): hedef kayıttan SONRA tarihliyse bağ hedefin doğduğu gün uygulanır (Kuyruk bekleyen bağı) — bakım 7 V3 (c) susması kalktı
         if v.get("taksit_karti"):
             t = d.kaynaklar.get(v["taksit_karti"])
             if t is None or t.durum != "aktif" or t.tur not in ("taksit_karti", "taksit_excel") or t.v.get("cari") != c:
                 raise AssertionError(f"senaryo hatası: taksit kartı {v['taksit_karti']} bu carinin ({c}) etkin kartı değil — model dilinde yok (README bakım 7 V3 (c))")
-            if t.tarih > k.tarih:
-                raise AssertionError(f"senaryo hatası: taksit kartı {v['taksit_karti']} ({t.tarih}) kayıttan ({k.tarih}) SONRA açılmış — kâhin susar "
-                                     "(README bakım 7 V3 (c), KULLANICIYA SORULMALI 2)")
         if k.tur == "tahsilat" and (v.get("normal_cari") or v.get("fatura")):
             self._s44_sinir(d, k, v)
         return dg
 
     def _s44_sinir(self, d, k, v):
-        """README V3 (d): plan §3.11b/2 SINIR (açık şüpheli kaydı varken 120'ye yazılan kısım 120 bakiyesini aşamaz) düzeltmeye uygulanır mı — karar metni
-        söylemez. Kaydın günündeki 120 bakiyesi (kayıt hariç) düzeltmeyle 120'ye yazılacak kısımdan (Normal Cari: tutar; fatura bağı: S14 / S25 ile 120'de
-        kapanan) küçükse kâhin SUSAR (KULLANICIYA SORULMALI 3); eşitse ya da büyükse kabul. Açık kayıt = kaydın gününde 128 bakiyesi > 0 (kayıt hariç)."""
+        """README V3 (d) + S56 A (kullanıcı 06.11 12:06; bakım 8 U5): plan §3.11b/2 SINIR (açık şüpheli kaydı varken 120'ye yazılan kısım 120 bakiyesini aşamaz)
+        S44 düzeltmesine de uygulanır. Kaydın günündeki 120 bakiyesi (kayıt hariç) düzeltmeyle 120'ye yazılacak kısımdan (Normal Cari: tutar; fatura bağı: S14 / S25
+        ile 120'de kapanan) küçükse SUPHELI_NORMAL_ASIM ile RED (düzeltmenin tamamı); eşitse ya da büyükse kabul. Açık kayıt = kaydın gününde 128 > 0 (kayıt hariç)."""
         dd = d.kopya()
         dd.sayac = Sayac()
         dd.sayac.n = d.sayac.n
@@ -2731,8 +2793,8 @@ class Model:
             return
         normal = self._s14_normal(dd, k.tarih, v)
         if normal > bak.get((dd.cari_hesap(c), c), 0):
-            raise AssertionError(f"senaryo hatası: düzeltmeyle 120'ye yazılacak {normal} > kaydın günündeki 120 bakiyesi — şüpheli-normal aşım sınırının düzeltmeye "
-                                 "uygulanıp uygulanmadığı karar metninde yok; kâhin susar (README bakım 7 V3 (d), KULLANICIYA SORULMALI 3)")
+            # S56 A (kullanıcı 06.11 12:06; README U5): düzeltmenin TAMAMI red (bakım 7 V3 (d) susması kalktı); eşitlik kabul
+            raise Red("SUPHELI_NORMAL_ASIM", f"düzeltmeyle 120'ye yazılacak {normal} > kaydın günündeki 120 bakiyesi (S56 A)")
 
     @staticmethod
     def _kasa_once_mi(d, k):
@@ -3525,11 +3587,13 @@ def tyk_degismezleri(d, t):
             g = d.gecikmis(c, tt)
             ab = sum(o["kalan"] for o in q.ogeler if o["taraf"] == "b" and o["kalan"] > 0)
             aa = sum(o["kalan"] for o in q.ogeler if o["taraf"] == "a" and o["kalan"] > 0)
-            if not 0 <= g["gecikmis"] <= max(0, b):
+            # S55 (README U4 a): hedefi henüz doğmamış bağın taşıyıcısı bekliyor — aradaki dönemde kâhin susar; (i) ve "iki taraf" denetlenmez
+            bekleyen = any(x["neden"] == "S55_BEKLEYEN_BAG" for x in g.get("kahin_susuyor", []))
+            if not bekleyen and not 0 <= g["gecikmis"] <= max(0, b):
                 hata.append(f"{c}@{tt}: gecikmiş {g['gecikmis']} bakiye {b}")
             if ab - aa != b:
                 hata.append(f"{c}@{tt}: açık borç {ab} − açık alacak {aa} ≠ CH {b}")
-            if ab and aa:
+            if ab and aa and not bekleyen:
                 hata.append(f"{c}@{tt}: iki taraf birden açık")
             if any(o["kalan"] < 0 for o in q.ogeler) or any(x["kalan"] < 0 for x in q.supheli):
                 hata.append(f"{c}@{tt}: eksi kalan")
