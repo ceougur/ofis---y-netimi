@@ -119,3 +119,44 @@ döner; 29 düzeltmede cari değişimi (S54, S57, S79, S80, S81, S83–S85), red
 - **İade → kapsayan kartın küçülmesi** (coverState) eski kapsam sırasıyla (en yeni borç) kalır — karar (4) Ç7b ile TYK'ya geçer (BİLİNEN SINIR).
 - **G2'de K-b (bağsız paranın karşı tarafın açık iadesini kapatması, 2.4.6):** son geçişte açık iade kalanları karşı tarafın serbest parasıyla (eskiden) kapanır — 2.4.6'nın
   "tek sıra" ayrıntısı yaklaşık; cari kâhini KS8 senaryolarıyla denetlenir.
+
+## 9. Kodlama sırasında netleşenler (06.11.2026 akşam; komşu testleri ve fark incelemesinden — karar metinleri değişmedi, YORUMLAR rapora da yazıldı)
+- **Kart kapsamına giren borç** (v2.0.23 kuralı AYNEN): Mevcut Borç kartı yalnız kendisinden ÖNCE KAYDEDİLMİŞ (fatura: issued_at; öbürleri satırın kaydı) açık borcu
+  tüketir; karttan sonra yazılan (aynı gün ya da geriye tarihli) borç kapsanmaz. Kart açılışı gün içinde ÖDEME sınıfında kayıt anıyla sıralanır (taksitleri hemen
+  ardından): karttan önce yazılan aynı gün ödeme önce kapatır (bulgu-223 "3. tur"). Kartın anında bilinmeyen satırlar (sonradan yazılan karşılıksız, geriye tarihli
+  ödeme) kartın NEYİ tükettiğini değiştirmez: kartın anına kadar kaydedilmiş satırlarla bir ön geçiş oynatılır, kart asıl geçişte o kalemleri tüketir (`coverForcing`;
+  UX18 T17 (i) — portföydeki evrak sonradan karşılıksız dönünce yeniden açılan fatura kartın dışında). Ön geçişte tükettiği kalem asıl geçişte kapanmışsa o pay son
+  taksitlerden düşülür (EK-2B 32 yolu). 2.5.0 kararları yalnız tüketim SIRASINI değiştirdi (S2).
+- **Artımlı önbellek güvenliği:** cari izi damgaya ek olarak tarih ve bağ kolonlarını toplar (gün sayısı toplamı; kimliğin uzunluğu + son iki karakteri); yazım olduğu
+  hâlde hiçbir carinin izi değişmediyse (durağan / geri giden saatte aynı anlı bağ değişimi gibi) bütün cariler yeniden kurulur; dönem kilidinin izi değişince de.
+  Kalan teorik açık: aynı okuma aralığında bir caride izde görünmeyen değişiklik + başka bir caride görünen değişiklik + saatin ilerlememesi + kimliğin son iki
+  karakterinin aynı olması (BİLİNEN SINIR; gün dönünce bütün cariler yeniden kurulur).
+- **Rapor Merkezi eski anlamda kalır (report-center satırı sonra, C5-ACILIS §0):** Rapor Merkezi'nin "Cari Listesi ve Bakiyeler" (Geciken kolonu, "geciken taksit"
+  açıklaması), Cari Mizanı "Geciken Taksiti Olan" süzgeci (report-center.mjs SIDE_FILTER + hof-report-center.js; ikisi de bu işin dosyası değil) taksit anlamını
+  gösterir: cari listesi kimliksiz iç çağırana (Rapor Merkezi, projeksiyonun bakiye okuması) TYK hesaplamaz; Anlık Durum `withOverdue: true` verir. Ad ve anlam
+  birlikte değişsin diye — ana oturum / Ç3: report-center'da "Gecikmiş Borç" adına geçince kimliksiz çağırana `withOverdue: true` verilir.
+- **Küçültülmüş Mevcut Borç kartı:** kapsam tutarı (coverTotal) kartın açıldığı andaki tutardır; kart sonradan küçültülmüşse (iade → coverState, Tutarı Düzenle) TYK
+  taksitleri bugünkü taksit toplamıyla sınırlar (eksik kısım "kalan tek kalem" olarak geri eklenmez — iade-210 K: kart 250, Vade Takip 250).
+- **Cari kartının taksit özeti eski hesapta kalır (BİRLEŞİM KURALI):** cari kartının `plans` özeti (WhatsApp plan() okuması) kartın kendi hesabıdır; Taksitler ekranı
+  (GET /plans/:id) kuyruk kalanını / durumunu gösterir — iki görünüm Ç5-C'de birleşir (BİLİNEN SINIR, Ç5-C işi).
+- **config.legacyClosing (yalnız testler, 2.0.26 ile birebir karşılaştırma):** TYK görünümleri kapalı (allObligations null) — liste, taksit, cari kalemi eski yollarıyla.
+  K1 sınırı (göç zinciri, altın test) kapama DEFTERİ kuralında (repairScreen, invoice-settle.mjs) denetlenir; ekran durumu TYK görünümüdür.
+- **Gecikmiş = Σ açık BORÇ kalemi (EK-1 §1 madde 1 ve 5):** net kuyrukta her CH hareketi kalemdir; netleşmemiş borç yönlü bağsız ödeme (müşteriye para iadesi T-09,
+  tedarikçiye avans) da açık borç kalemidir, vadesi kendi günü (S1) — gecikmişte ve takvim / zil / Vade Takip'te ("Tahsil Edilecek Borç"; cari kartı satırı olmayan çek /
+  senet satırı takvim kalemi olmaz — BİLİNEN SINIR). Karşı yön (alınan avans) kalem değildir (bugünkü gibi). Önce "yalnız yükümlülük rolü" denendi; cari kâhininin c13
+  senaryosunda (aynı gün elle Alacak + stok iadesi + müşteriye Ödeme) vadesi geçmiş 200 gecikmişten kayboluyordu → EK-1 metnine dönüldü. KULLANICIYA SORULMALI (tedarikçiye
+  avans "Gecikmiş Borç" sayılsın mı).
+- **Karar (5) okuması:** net kuyruk (Kalan, takvim, zil, Vade Takip, gecikmiş) karşı yönlü kalemleri kendi tarihinde netleştirir (C5-ACILIS §2.10 madde 7, EK-2 S9 A
+  "gecikmiş 4.000"); fatura durumu iki yönlü kalır. Cari kâhini (KARARLAR §13 madde 9 + C13.5) Kalan / takvimi iki taraf ayrı, gecikmişi min(bakiye, Σ vadesi geçmiş)
+  hesaplar — S9 örneğinde 9.000 (= S9 B). Fark kâhin bakımına (kâhin şüphesi) — ana oturum / kâhin 11 değerlendirir.
+- **Şüpheli kuyruğu (M13) vade kalemi değildir:** zil / takvim / Vade Takip (cari, fatura, taksit kalemleri) şüpheli kısmı düşer; Vade Takip'teki "Şüpheli Alacak (vade
+  takibinin dışında)" satırı aynen (2.4.5 KS7 testindeki "şüpheliye alma: takvimde kalemler sürer" M13 ile değişti). Kalem ÖDENMİŞ sayılmaz: Kalan ve fatura açığı sürer.
+  Nakit akışı ve Alacak Yaşlandırma ("Şüpheli Alacak (dilimlere dahil)") bugünkü gibi bütün kalanı okur. Fatura durumu "Şüpheli Alacakta" etiketi (C5-ACILIS §2.10
+  madde 8) bu turda YOK (Ç5-A ile, 120 ↔ 128).
+- **S1'in görünür sonucu:** vadesiz elle Borç / Alacak, açılış, stok veresiye ve karşılıksız evrak takvim / zil / Vade Takip kalemidir (kayıt gününde vadeli; ertesi gün
+  "Gecikmiş"); nakit akışında "Faturasız Cari Alacağı" satırının bu kısmı cari kalemi olarak ("Tahsil Edilecek Borç") görünür — tutar aynı, kaynak adı değişir. Borç
+  yönü de simetriktir (S68): vadesiz elle Alacak / tedarikçi borcu "Ödenecek Borç" kalemidir (bugünkü vadesiz alış faturası gibi). Gerekçe: EK-1 §1 değişmez (iii)
+  "Vade Takip gecikmiş tutarı = gecikmiş" ve C5-ACILIS §4 madde 20. Cari kâhini K6.3'ü AYNEN tutar (yalnız Vade / Beklenen tarihli kayıt kalem) — fark kâhin bakımına;
+  zilde vadesiz her Borç Yaz ertesi gün "Tahsilat alınmadı" olur → KULLANICIYA SORULMALI (A: kalem — kodlanan / B: 2.4.5 K6.3 aynen, vadesiz yalnız gecikmişte).
+- **Kapatan adı:** CLOSER_MODES.auto "Otomatik (vadesi en önce gelen)" (C5-ACILIS §2.10 madde 3). Rapor Merkezi "Fatura ve Banka Hareketleri"nin kendi bağ türü adı
+  (report-center.mjs:1425 "Otomatik (En Eski)") ve çek formundaki "Otomatik (En Eski Açık Fatura)" (hof-cheques.js:325) bu işin dosyaları değil — ana oturuma.

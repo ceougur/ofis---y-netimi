@@ -32,6 +32,19 @@ describe("TYK — vade ve gecikmiş (S1, M1f)", () => {
     const next = build({ docs: [f, g], today: "2026-03-11" });
     assert.equal(state(next, "F1"), "overdue", "ertesi gün Vadesi Geçti (vadesiz = belge günü)");
   });
+  // EK-1 §1 (BAŞ MİMAR M1a; madde 1 "müşteriye para iadesi (T-09)" borç kalemi; madde 5 gecikmiş = Σ açık borç kalemi): netleşmemiş borç yönlü bağsız ödeme de açık borç
+  // kalemidir, vadesi kendi günü (S1). Örnek (cari kâhini c13 S1): satış 500 (01.05) · 01.06 aynı gün elle Alacak 300, faturasız stok iadesi 300, müşteriye Ödeme 300 →
+  // bakiye 200; Alacak satışla netleşir (karar (5)), iade kalan 200'ü ve 100 avans, Ödeme avansı kapatır ve 200 açık borç kalemi kalır → 02.06'dan itibaren gecikmiş 200.
+  // (Yalnız yükümlülük rolü sayılsaydı gecikmiş 0 olurdu — bakiye 200, vadesi geçmiş satış.) Rapor: KULLANICIYA SORULMALI (tedarikçiye avans da sayılır).
+  it("gecikmiş: netleşmemiş bağsız ödeme de açık borç kalemidir (EK-1 §1 T-09) — vadesi geçmiş satış gecikmişten kaybolmaz", () => {
+    const stokIade = (id, date, amount) => ({ id, origin: "stock", stockReason: "return", kind: "in", date, at: at(date, seq++), debit: 0, credit: amount, label: "Stok İadesi" });
+    const r = build({ docs: [sale("F1", "2026-05-01", 500)], lines: [alacak("A1", "2026-06-01", 300), stokIade("I1", "2026-06-01", 300), odeme("O1", "2026-06-01", 300)], dueDates: new Map([["A1", "2026-06-18"]]), today: "2026-06-10" });
+    assert.equal(r.items.reduce((s, i) => s + (i.side === "receivable" ? i.remaining : -i.remaining), 0), 200, "Σ kalem = bakiye 200");
+    assert.equal(gecikmis(r, "2026-06-01"), 0, "ödeme günü gecikmiş değil (M1f)");
+    assert.equal(gecikmis(r, "2026-06-10"), 200, "vadesi geçmiş 200 gecikmişte");
+    const av = build({ lines: [odeme("AV", "2026-03-01", 1000), borc("B", "2026-03-02", 200)], today: "2026-03-10" });
+    assert.equal(gecikmis(av, "2026-03-10"), 1200, "tedarikçiye avans da açık borç kalemi (EK-1 §1; KULLANICIYA SORULMALI)");
+  });
   it("elle Borç Yaz: Vade Tarihi yoksa belge günü (S1), varsa Vade Tarihi", () => {
     const r = build({ lines: [borc("B1", "2026-01-05", 300), borc("B2", "2026-01-05", 200)], dueDates: new Map([["B2", "2026-02-01"]]), today: "2026-01-20" });
     assert.equal(gecikmis(r, "2026-01-20"), 300);
@@ -192,12 +205,40 @@ describe("TYK — taksit kartları (S50, M1a, M1e, K8-3)", () => {
     assert.equal(gecikmis(r, "2026-01-25"), 0, "F2 kartta; taksitlerin vadesi gelmedi");
     assert.equal(r.items.reduce((s, i) => s + i.remaining, 0), 2500, "Σ kalem = bakiye (çift sayım yok)");
   });
+  // v2.0.23 kuralı AYNEN (karar metinleri yalnız tüketim SIRASINI değiştirdi): kart AÇILDIĞI ANA KADAR KAYDEDİLMİŞ satırlarla açık olan borcu tüketir.
+  const cheque = (id, date, amount, kind, when) => ({ id, origin: "cheque", kind: kind === "bounce" ? "debt" : "in", date, at: when || at(date, seq++), debit: kind === "bounce" ? amount : 0, credit: kind === "bounce" ? 0 : amount, label: "Çek / Senet" });
+  it("M1e kapsamı: karttan SONRA kaydedilen borç (aynı gün) kartın içinde değildir; aynı gün karttan ÖNCE kaydedilen ödeme önce kapatır", () => {
+    // 29.07: S 1.000 (08:00) · tahsilat 1.000 (08:10) · cariye ödeme 500 (08:20) · Mevcut Borç kartı 500 (08:30) · Y 800 (08:40). Kart o anda açık olan 500'ü (ödeme) tüketir.
+    const schedules = new Map([["M", [{ id: "m1", seq: 1, dueDate: "2026-09-01", amount: 500 }]]]);
+    const s = { inv: { id: "S", kind: "sale", status: "issued", payable: 1000, dueDate: "", planId: "", issuedAt: "2026-07-29T08:00:00.000Z" }, line: { id: "l-S", origin: "invoice", kind: "debt", sourceId: "S", date: "2026-07-29", at: "2026-07-29T08:00:00.000Z", debit: 1000, credit: 0 } };
+    const y = { inv: { id: "Y", kind: "sale", status: "issued", payable: 800, dueDate: "", planId: "", issuedAt: "2026-07-29T08:40:00.000Z" }, line: { id: "l-Y", origin: "invoice", kind: "debt", sourceId: "Y", date: "2026-07-29", at: "2026-07-29T08:40:00.000Z", debit: 800, credit: 0 } };
+    const lines = [{ id: "P", origin: "account", kind: "in", date: "2026-07-29", at: "2026-07-29T08:10:00.000Z", debit: 0, credit: 1000 }, { id: "O", origin: "account", kind: "out", date: "2026-07-29", at: "2026-07-29T08:20:00.000Z", debit: 500, credit: 0 }, { ...planLine("M", "2026-07-29", 0, { covers: true, coverTotal: 500 }), at: "2026-07-29T08:30:00.000Z" }];
+    const r = build({ docs: [s, y], lines, schedules, today: "2026-08-10" });
+    assert.equal(open(r, "Y"), 800, "Y kartın kapsamında değil — fatura durumu 800 açık");
+    assert.equal(r.invoices.get("Y").covered, 0);
+    assert.equal(r.invoiceNet.get("Y").remaining, 800, "net görünümde Y 800 (takvim / zil)");
+    assert.equal(r.installments.get("M").get("m1").remaining, 500, "kartın taksiti 500");
+  });
+  it("M1e kapsamı: kart açıldığında portföyde olan evrak sonradan karşılıksız dönerse kartın kapsamı DEĞİŞMEZ; yeniden açılan fatura kartın dışında (UX18 T17 (i))", () => {
+    // X 1.000 (01.03) · Y 1.000 (02.03) · çek 1.000 (03.03, bağsız → S2: X kapanır) · Mevcut Borç kartı 1.000 (04.03 — o an açık Y) · karşılıksız (05.03) · nakit 1.000 (06.03).
+    const schedules = new Map([["M", [{ id: "m1", seq: 1, dueDate: "2026-04-04", amount: 500 }, { id: "m2", seq: 2, dueDate: "2026-05-04", amount: 500 }]]]);
+    const docs = [sale("X", "2026-03-01", 1000), sale("Y", "2026-03-02", 1000)];
+    const lines = [cheque("C1", "2026-03-03", 1000, "receive"), planLine("M", "2026-03-04", 0, { covers: true, coverTotal: 1000 }), cheque("C2", "2026-03-05", 1000, "bounce")];
+    const events = { chequeEvents: new Map([["C1", "receive"], ["C2", "bounce"]]), reversals: new Map([["C2", "C1"]]) };
+    const r = build({ docs, lines, schedules, ...events, today: "2026-03-05" });
+    assert.deepEqual([r.invoices.get("X").covered, r.invoices.get("Y").covered], [0, 1000], "kart Y'yi kapsar (kartın anında X evrakla kapalıydı)");
+    assert.deepEqual([open(r, "X"), r.invoiceNet.get("X").remaining], [1000, 1000], "karşılıksız X'i KENDİ vadesiyle açar — kartın dışında");
+    const paid = build({ docs, lines: [...lines, tahsilat("N", "2026-03-06", 1000)], schedules, ...events, today: "2026-03-06" });
+    assert.deepEqual([open(paid, "X"), [...paid.installments.get("M").values()].map(i => i.remaining)], [0, [500, 500]], "bağsız nakit vadesi en önce gelen X'i kapatır; kartın taksitleri açık");
+  });
   it("M1a / S50: taksitli faturanın kendi kartının taksitleri de tek kuyrukta — bağsız tahsilat vadesi gelmiş taksiti kapatır", () => {
     const f = sale("F", "2026-01-01", 1200, "", { planId: "K", planTotal: 1200 });
     const schedules = new Map([["K", [{ id: "t1", seq: 1, dueDate: "2026-02-01", amount: 600 }, { id: "t2", seq: 2, dueDate: "2026-03-01", amount: 600 }]]]);
     const r = build({ docs: [f, sale("G", "2026-01-10", 300, "2026-02-15")], lines: [tahsilat("P", "2026-02-20", 600)], schedules, today: "2026-02-25" });
     assert.deepEqual([r.installments.get("K").get("t1").remaining, r.installments.get("K").get("t2").remaining, open(r, "G")], [0, 600, 300], "S2: taksit (01.02) önce, G (15.02) açık");
-    assert.equal(open(r, "F"), 600, "taksitli faturanın açığı = kartın kalanı");
+    // Fatura durumu (G2) taksitli faturada kartın KENDİ hesabıdır (v2.0.24 "açık = kartın kalanı"; kart tahsilatı yok → 1.200); M1a / S50 net görünümde (taksit kalanı, gecikmiş).
+    assert.equal(open(r, "F"), 1200, "taksitli faturanın açığı = kartın kendi kalanı");
+    assert.equal(gecikmis(r, "2026-02-25"), 300, "net: 1. taksit cari tahsilatıyla kapandı, G (15.02) 300 gecikmiş");
   });
 });
 

@@ -57,7 +57,7 @@ if (!["2.4.4", "2.4.5", "2.4.6", "2.4.9", "2.5.0"].includes(KURAL)) throw new Er
 // "<KURAL> kararıyla değişen beklenti" sınıfı: bir önceki kural setinin kâhin çıktısıyla fark (2.4.6 ↔ 2.4.5, 2.4.9 ↔ 2.4.6, 2.5.0 ↔ 2.4.9)
 const ONCEKI = { "2.4.6": "2.4.5", "2.4.9": "2.4.6", "2.5.0": "2.4.9" }[KURAL] || null;
 // 2.5.0 C13.5: carinin B1 gecikmiş tutarını cari kartı yanıtından okuyan eşleme — Ç5-B kod ajanı verir (ör. r => r.totals?.overdue); null → "okunamadı"
-const GECIKMIS_ALAN = null;
+const GECIKMIS_ALAN = r => r.totals?.overdueDebt; // 2.5.0 Ç5-B: cari kartının TYK gecikmişi (totals.overdue ESKİ anlam — WhatsApp Ç5-C'ye kadar)
 // 2.5.0 bakım 2 C14.3 (KARARLAR.md §14): carisiz evrakın karşılıksızında programın "cari seç" sorusuna verilen yanıtın gövde alanı — Ç5-A kod ajanı verir
 // (ör. (a, ids) => ({ accountId: ids.cari[a.cari] })); null → `karsiliksiz {cari}` adımı GÖNDERİLMEZ, okuma hatası yazılır (sonuç yeşil sayılmaz)
 const KARSILIKSIZ_CARI = null;

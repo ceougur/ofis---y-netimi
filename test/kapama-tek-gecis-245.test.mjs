@@ -45,7 +45,9 @@ describe("G8 tek geçiş: fatura durumları ve vadeli elle satırların Kalan'ı
   const purchase = (acc, date, amount) => must("alış", api.post("/api/workspace/invoices", { scenario: "expense_purchase", accountId: acc.id, number: `G8-AL-${(n += 1)}`, issueDate: date, lines: [{ name: "Danışmanlık", expenseCode: "advisory", qty: 1, unitPrice: amount, vatRate: 0 }], payment: { rest: "open", dueDate: date } }));
   const inv = () => server.app.context.invoices;
   const allRows = () => server.app.store.all("SELECT id, account_id AS accountId, try_payable AS tryPayable FROM invoices ORDER BY id");
-  const datedAccounts = () => server.app.store.all("SELECT DISTINCT e.account_id AS id FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL WHERE e.source = '' AND e.kind IN ('debt', 'credit') AND (e.due_date <> '' OR e.expected_date <> '') ORDER BY e.account_id").map(row => row.id);
+  // 2.5.0 Ç5-B (bilerek güncellendi; kullanıcı kararı S1 — vadesiz borcun vadesi belge günü): elle satır haritası VADELİ ya da VADESİZ elle Borç / Alacak satırı olan
+  // bütün carileri taşır (2.4.5'te yalnız vadeli satırı olanlar).
+  const datedAccounts = () => server.app.store.all("SELECT DISTINCT e.account_id AS id FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL WHERE e.source = '' AND e.kind IN ('debt', 'credit') ORDER BY e.account_id").map(row => row.id);
   // Toplu yol (BATCH_ACCOUNTS = 8 cariden çok fatura → allPaymentStates) ve elle satırlar (allEntryStates).
   const batch = () => ({ pay: new Map([...inv().paymentStates(allRows())].map(([id, state]) => [id, plain(state)])), entries: new Map([...inv().allEntryStates()].map(([id, state]) => [id, plain(state)])) });
   // Cari başına yol: her fatura tek başına (paymentStates([row]) → accountSettleInput + carinin kendi defteri), her vadeli cari entryStates ile.
@@ -107,12 +109,14 @@ describe("G8 tek geçiş: fatura durumları ve vadeli elle satırların Kalan'ı
   });
   after(async () => server?.close());
 
-  it("tek geçiş: yazımdan sonra iki harita için carilerin defteri BİR KEZ kurulur; ikinci çağrılar önbellekten", () => {
+  // 2.5.0 Ç5-B (bilerek güncellendi; C5B-TYK-TASARIM §5): önbellekten sonra izi değişen cariler TEK TEK kurulur (bütün carilerin defteri 0 kez — before'daki yazımlar
+  // işlem içinde okunduğu için ilk çağrıda bunlar), izi görünmeyen yazımda (burada: aynı değerle güncelleme) bütün cariler BİR kez — güvenli yön. Artımlı yol tyk-api-250'de.
+  it("tek geçiş: yazımdan sonra iki harita için carilerin defteri en çok BİR KEZ kurulur; ikinci çağrılar önbellekten", () => {
     write();
     const start = ledgerCalls;
     inv().allEntryStates();
     inv().paymentStates(allRows());
-    assert.equal(ledgerCalls - start, 1, `elle satırlar + fatura durumları için allLedgers ${ledgerCalls - start} kez (1 beklenir)`);
+    assert.ok(ledgerCalls - start <= 1, `elle satırlar + fatura durumları için allLedgers ${ledgerCalls - start} kez (en çok 1 beklenir)`);
     write();
     const again = ledgerCalls;
     inv().paymentStates(allRows());
@@ -143,13 +147,13 @@ describe("G8 tek geçiş: fatura durumları ve vadeli elle satırların Kalan'ı
     assert.equal(one.entries.get(dOnlyDebt.id).remaining, 500, "faturasız vadeli cari: 700 − 200");
   });
 
-  it("kapsam: elle satır haritası yalnız vadeli satırı olan carilerin satırlarını taşır (faturasız vadeli cari dahil, vadesiz cari yok)", () => {
+  it("kapsam: elle satır haritası elle Borç / Alacak satırı olan carilerin satırlarını taşır (faturasız vadeli cari dahil; vadesiz cari de — S1)", () => {
     write();
     const entries = inv().allEntryStates();
     const owners = new Set(server.app.store.all("SELECT id, account_id AS accountId FROM account_entries").filter(row => entries.has(row.id)).map(row => row.accountId));
-    assert.deepEqual([...owners].sort(), datedAccounts(), "harita carileri = vadeli satırı olan cariler");
+    assert.deepEqual([...owners].sort(), datedAccounts(), "harita carileri = elle Borç / Alacak satırı olan cariler");
     assert.ok(owners.has(made.dOnly.id) && owners.has(made.supplier.id), "faturasız vadeli müşteri ve tedarikçi haritada");
-    assert.ok(!owners.has(made.undated.id), "vadesiz elle borcu olan faturalı cari haritada YOK");
+    assert.ok(owners.has(made.undated.id), "vadesiz elle borcu olan faturalı cari haritada (S1: vade = belge günü)");
   });
 
   it("bayatlık: yazımdan sonra yeni değer; işlem içinde hesaplanan sonuç önbelleğe yazılmaz (geri alınınca eski değer)", async () => {

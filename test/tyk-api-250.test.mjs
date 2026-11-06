@@ -81,11 +81,13 @@ describe("2.5.0 Ç5-B — Tek Yükümlülük Kuyruğu (API)", () => {
       assert.equal(overview.receivable.overdue, list.totals.overdue);
       assert.ok(overview.receivable.overdue >= 1100);
     });
-    it("mobil / Rapor Merkezi Cari Listesi (süzgeç Gecikmiş Borcu Olan) aynı cariyi aynı tutarla verir", async () => {
+    // Rapor Merkezi (report-center.mjs + hof-report-center.js; Ç3 dosyaları, C5-ACILIS §0 "report-center satırı sonra"): "Geciken" kolonu ve "Geciken Taksiti Olan"
+    // süzgeci adlarıyla birlikte TYK'ya geçene kadar eski anlamı (taksit kartlarının gecikmişi) gösterir — ad / anlam uyuşmazlığı olmasın diye bilerek.
+    it("Rapor Merkezi Cari Listesi: report-center TYK'ya geçene kadar eski anlam (geciken taksit 300; cari kartı Gecikmiş Borç 1.100)", async () => {
       const report = await must("cari listesi raporu", api.get("/api/workspace/report-center/cari-listesi?side=overdue"));
       const row = report.rows.find(r => r[1] === acc.name);
-      assert.ok(row, "cari raporda");
-      assert.match(String(row.at(-1)), /1\.100,00/);
+      assert.ok(row, "cari raporda (geciken taksiti var)");
+      assert.match(String(row.at(-1)), /^300,00/);
     });
     it("Vade Takip: carinin vadesi geçmiş kalemleri toplamı = gecikmiş; aynı borç bir kez (fatura 500, borç 300, taksit 300)", async () => {
       const vade = await must("vade takip", api.get(`/api/workspace/overview/vade-takip?from=${day(-400)}&to=${day(60)}`));
@@ -229,6 +231,45 @@ describe("2.5.0 Ç5-B — Tek Yükümlülük Kuyruğu (API)", () => {
       assert.deepEqual([r.status, codeOf(r)], [409, "doubtful-normal-exceeds"]);
       assert.equal(server.app.store.get("SELECT date FROM account_entries WHERE id = ?", pay.id).date, day(-5));
     });
+  });
+
+  it("artımlı önbellek (tasarım §5): yazımdan sonra yalnız dokunulan cari yeniden kurulur; her carinin sonucu cari başına baştan kurulumla aynı", async () => {
+    const inv = server.app.context.invoices;
+    const AUDIT = { id: "test", role: "admin", permissions: [] };
+    const snapshot = () => {
+      const all = inv.allObligations();
+      return new Map([...all].map(([id, r]) => [id, JSON.stringify([r.overdue(TODAY).amount, r.items.map(i => [i.key, i.remaining]), [...r.invoices].map(([k, v]) => [k, v.open, v.state])])]));
+    };
+    const before_ = snapshot();
+    const acc = await account("Artımlı");
+    const accounts = server.app.context.accounts;
+    const original = accounts.allLedgers;
+    let full = 0;
+    accounts.allLedgers = (...args) => {
+      full += 1;
+      return original(...args);
+    };
+    let after_;
+    try {
+      await entry(acc, { kind: "debt", amount: "123", date: day(-2) });
+      full = 0;
+      after_ = snapshot();
+      assert.equal(full, 0, "cari yazımından sonra bütün carilerin defteri kurulmaz (yalnız yazılan cari)");
+      // İzi görünmeyen yazım (aynı değerle güncelleme): güvenli yön — bütün cariler bir kez.
+      server.app.store.run("UPDATE accounts SET updated_at = updated_at WHERE id = ?", acc.id);
+      inv.allObligations();
+      inv.allObligations();
+      assert.equal(full, 1, "izi görünmeyen yazımda bütün cariler BİR kez");
+    } finally {
+      accounts.allLedgers = original;
+    }
+    const changed = [...after_.keys()].filter(id => before_.get(id) !== after_.get(id));
+    assert.deepEqual(changed, [acc.id], "yalnız yazılan carinin sonucu değişti");
+    for (const [id, value] of after_) {
+      const ledger = server.app.context.accounts.detail(id, AUDIT, { withRemaining: false }).ledger;
+      const fresh = inv.obligationsFor(id, ledger);
+      assert.equal(JSON.stringify([fresh.overdue(TODAY).amount, fresh.items.map(i => [i.key, i.remaining]), [...fresh.invoices].map(([k, v]) => [k, v.open, v.state])]), value, `cari ${id}: önbellek = baştan`);
+    }
   });
 
   it("mutabakat kapısının list()'i (iç kimlik 'ledger' / 'integrity', ids) TYK hesaplamaz", async () => {

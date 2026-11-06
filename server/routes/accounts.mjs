@@ -186,7 +186,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     // kuyruktan (routes/invoices.mjs entryStates → lib/invoice-settle.mjs settleLedger). Kalan > 0 olan satır açıktır; Vade Tarihi sırayı değiştirmez.
     // 2.5.0 Ç5-B: Kalan ve gecikmiş TEK YÜKÜMLÜLÜK KUYRUĞU'ndan (routes/invoices.mjs obligationsFor → lib/obligation-queue.mjs; NET görünüm G1).
     const tyk = withRemaining && invoiceModule()?.obligationsFor ? invoiceModule().obligationsFor(account.id, ledger.lines) : null;
-    const remaining = tyk ? tyk.entries : null;
+    // Kalan haritası kartın "ekran eki"dir (entryStates; kuyruk bir kez kurulur, sonuç verilir): eki hata verirse cari kartı da hata verir (2.4.9 whatsapp-elle-alici §13 b).
+    const remaining = tyk ? (invoiceModule().entryStates ? invoiceModule().entryStates(account.id, ledger.lines, tyk) : tyk.entries) : null;
     if (remaining) for (const entry of entries) if (isManualDue(entry)) entry.remaining = remaining.get(entry.id)?.remaining ?? roundMoney(Number(entry.amount) || 0);
     return {
       ...account,
@@ -283,7 +284,11 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   const GATE_USERS = new Set(["ledger", "integrity"]);
   function list(user, { q = "", group = "", subgroup = "", type = "", status = "active", balance = "all", sort = "no", plan = "", ids = null, withOverdue = null } = {}) {
     const only = ids ? JSON.stringify([...ids]) : null;
-    const useTyk = (withOverdue ?? (!ids && !GATE_USERS.has(user?.id))) && !store.inTransaction && Boolean(invoiceModule()?.allObligations);
+    // config.legacyClosing (yalnız testler; eski sürümle birebir karşılaştırmalar — K1 öncesi kapama) eski gecikmiş tanımını (taksit) korur.
+    // Kullanıcı isteği (ekran, mobil, WhatsApp alıcı seçimi) TYK'yı okur; iç çağıranlar (kimliksiz: Rapor Merkezi Cari Listesi / Cari Mizanı süzgeci, yaşlandırma ve projeksiyonun
+    // bakiye okuması) yalnız withOverdue: true verirse (Anlık Durum) — Rapor Merkezi'nin "Geciken" / "Geciken Taksiti Olan" adları report-center.mjs'te (Ç3 dosyası; C5-ACILIS §0
+    // "report-center satırı sonra") TYK'ya geçene kadar eski anlamı (taksit) gösterir.
+    const useTyk = (withOverdue ?? (!ids && Boolean(user?.id) && !GATE_USERS.has(user?.id))) && !store.inTransaction && Boolean(invoiceModule()?.allObligations) && !invoiceModule()?.legacyView;
     const tykAll = useTyk ? invoiceModule().allObligations() : null;
     const day = today();
     // ids: tekli + deleted_at indeksini kapatır (birincil anahtar seçilir; değer aynı).
@@ -1877,12 +1882,15 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // 2.5.0 Ç5-B (S1, §2.10 "aynı borç bir kez"): kalemler TEK YÜKÜMLÜLÜK KUYRUĞU'nun NET açık kalemlerinden — fatura ve taksit DIŞINDAKİ borç kalemleri (elle Borç /
   // Alacak ve açılış — vadeli ya da vadesiz: vade yoksa belge günü, S1 —, stok veresiye, karşılıksız evrak). Tutar kuyruk kalanı (Mevcut Borç kartının tükettiği kısım
   // kartın taksitlerinde; şüpheli kuyruğundaki kısım hariç). Gün / durum: S67, S69 = A, BAŞ MİMAR Y3-1 / Y3-2 (lib/obligation-queue.mjs calendarState).
+  // Netleşmemiş BORÇ yönlü bağsız ödeme (cari kartından müşteriye ödeme — T-09 müşteriye para iadesi; tedarikçiye avans) da açık borç kalemidir (EK-1 §1, gecikmiş ile
+  // aynı küme — değişmez (iii)); karşı yön (alınan avans) kalem değildir (bugünkü gibi). Çek / senet satırı cari kartı satırı olmadığından takvim kalemi olmaz (BİLİNEN SINIR).
   const DUE_ITEM_KINDS = new Set(["entry", "stock", "bounce"]);
+  const dueItemOf = item => item.lineId && ((DUE_ITEM_KINDS.has(item.kind) && item.due) || (item.kind === "payment" && item.side === "receivable" && item.origin === "account"));
   function openDueItems(day = today()) {
     const all = invoiceModule()?.allObligations ? invoiceModule().allObligations() : null;
     if (!all) return [];
     const wanted = [];
-    for (const result of all.values()) for (const item of result.items) if (DUE_ITEM_KINDS.has(item.kind) && item.due && item.lineId) wanted.push(item);
+    for (const result of all.values()) for (const item of result.items) if (dueItemOf(item)) wanted.push(item);
     if (!wanted.length) return [];
     const rowsById = new Map(store.all(`SELECT e.id, e.account_id AS accountId, e.kind, e.amount, e.date, e.note, e.source, e.due_date AS dueDate, e.expected_date AS expectedDate, a.name, a.phone, a.ref_no AS refNo
       FROM json_each(?) j JOIN account_entries e ON e.id = j.value JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL`, JSON.stringify(wanted.map(item => item.lineId))).map(row => [row.id, row]));
@@ -1890,7 +1898,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     for (const item of wanted) {
       const row = rowsById.get(item.lineId);
       if (!row) continue;
-      const amount = item.remaining;
+      // Şüpheli kuyruğundaki kısım vade kalemi değildir (M13; S3 "otomatik hatırlatmaya girmez"; Vade Takip'te "Şüpheli Alacak (vade takibinin dışında)" ayrı satır).
+      const amount = roundMoney(item.remaining - (item.doubtful || 0));
       if (!(amount > EPS)) continue;
       const promise = Boolean(row.expectedDate);
       const calendar = calendarState({ vade: item.vade, promise: row.expectedDate || "", day });

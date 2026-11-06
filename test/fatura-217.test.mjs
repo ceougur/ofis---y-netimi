@@ -132,7 +132,8 @@ describe("Hem müşteri hem tedarikçi cari: hayalet kısmi ödeme yok (API)", (
     ids.freePay = paid.data.entryId;
     const p = await inv(ids.purchase);
     assert.deepEqual([p.paid, p.open], [400, 5600]);
-    assert.deepEqual(p.closers.map(item => [item.mode, item.modeLabel, item.amount, item.methodLabel]), [["auto", "Otomatik (en eski)", 400, "Nakit"]]);
+    // 2.5.0 Ç5-B (bilerek güncellendi; S2, C5-ACILIS-TASARIM §2.10 madde 3): kapatan adı "Otomatik (vadesi en önce gelen)".
+    assert.deepEqual(p.closers.map(item => [item.mode, item.modeLabel, item.amount, item.methodLabel]), [["auto", "Otomatik (vadesi en önce gelen)", 400, "Nakit"]]);
     assert.equal((await inv(ids.copy)).paid, 0);
     assert.equal((await inv(ids.sale)).paid, 0);
   });

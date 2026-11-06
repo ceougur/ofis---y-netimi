@@ -1054,8 +1054,8 @@ async function raporOku(o) {
     if (!cid) return null;
     const r = await api("GET", `/api/workspace/accounts/${cid}`, undefined, `rapor:${o.rapor}`);
     const a = r.data?.account || r.data || {};
-    // Cari kartındaki "Geciken" = totals.overdue (açık taksit kartlarının vadesi geçmiş kalanı; WhatsApp Ödeme Hatırlatma {{4}} ve elemesi bununla — lib/whatsapp/queue.mjs overdueOf).
-    return { gecikmis: kurus(a.totals?.overdue), gecikmis_sayi: Number(a.totals?.overdueCount) || 0, bakiye: kurus(a.totals?.balance), supheli: a.doubtful ? { kalan: Number(a.doubtful.remainingMinor ?? a.doubtful.openMinor ?? 0) || 0, sayi: Number(a.doubtful.count) || 0 } : null, kartlar: (a.plans || []).map(p => ({ id: p.id, durum: p.status, gecikmis: kurus(p.totals?.overdue) })) };
+    // 2.5.0 Ç5-B (sürücü eşlemesi): cari kartının "Gecikmiş Borç"u = totals.overdueDebt (Tek Yükümlülük Kuyruğu); totals.overdue ESKİ anlamda (açık taksit kartlarının gecikmişi — WhatsApp Ç5-C'ye kadar).
+    return { gecikmis: kurus(a.totals?.overdueDebt ?? a.totals?.overdue), gecikmis_sayi: Number(a.totals?.overdueDebtCount ?? a.totals?.overdueCount) || 0, bakiye: kurus(a.totals?.balance), supheli: a.doubtful ? { kalan: Number(a.doubtful.remainingMinor ?? a.doubtful.openMinor ?? 0) || 0, sayi: Number(a.doubtful.count) || 0 } : null, kartlar: (a.plans || []).map(p => ({ id: p.id, durum: p.status, gecikmis: kurus(p.totals?.overdue) })) };
   };
   if (["gecikmis", "acik_faturalar", "acik_kalemler", "kartlar", "kilit_bag_notu"].includes(o.rapor)) {
     out.cari = o.cari;

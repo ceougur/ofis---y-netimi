@@ -1,0 +1,32 @@
+{
+  "ad": "c5b-son2-yeni-ist",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=2 test/tyk-250.test.mjs test/tyk-api-250.test.mjs test/tyk-goc-249-250.test.mjs test/cari-vade-245.test.mjs test/kapama-ks7-245.test.mjs test/projeksiyon-vade-246.test.mjs test/kapama-tek-gecis-245.test.mjs test/iade-geri-odeme-246.test.mjs test/bulgu-223.test.mjs test/banka-230-supheli-ekran.test.mjs test/defter-243-raporlar.test.mjs test/cheques-overview.test.mjs test/banka-230-46-iade-iptal.test.mjs test/fatura-217.test.mjs test/acilis-onarimi-hiz-250.test.mjs test/acilis-onarimi-savunma-250.test.mjs test/goc-245-cari-vade.test.mjs test/iade-210.test.mjs test/iade-210-onarim.test.mjs test/raporlar-209.test.mjs test/whatsapp-elle-alici-249.test.mjs test/whatsapp-onizleme-olcek-248.test.mjs test/banka-210-goc-zinciri.test.mjs test/banka-210-altin.test.mjs",
+  "commit": "25c449d9cf51d43a46f03ea9cea2f4767378ecbd",
+  "dal": "worktree-agent-ae5136939616adbab",
+  "kirli": 40,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T18:57:26.764Z",
+  "sure_sn": 154.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 338,
+    "gecen": 338,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-kanit/2026-11-06/c5b-son2-yeni-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ae5136939616adbab",
+  "ham_cikti_sha256": "607f8344cfa116b247b1d7dc8507b02547227787ca6852c22b941f8cdd179737",
+  "ham_cikti_bayt": 135986
+}

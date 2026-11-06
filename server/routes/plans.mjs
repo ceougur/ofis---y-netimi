@@ -231,7 +231,9 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       const accountPaid = row ? roundMoney(row.byAccount) : 0;
       const days = item.days;
       const state = remaining <= 0.005 ? "paid" : closed ? "closed" : days < 0 ? "overdue" : days === 0 ? "today" : days <= 7 ? "upcoming" : "open";
-      return { ...item, remaining, accountPaid, partial: remaining > 0.005 && remaining < item.amount - 0.005, state };
+      // held: kalanın şüpheli kuyruğundaki kısmı (M13) — takvim / zil / Vade Takip kalemine girmez (S3; Vade Takip'te şüpheli ayrı satır).
+      const held = row ? roundMoney(Math.min(remaining, row.doubtful || 0)) : 0;
+      return { ...item, remaining, held, accountPaid, partial: remaining > 0.005 && remaining < item.amount - 0.005, state };
     });
     const overdue = items.filter(item => item.state === "overdue");
     const next = items.find(item => item.remaining > 0.005 && item.state !== "closed") || null;
@@ -243,7 +245,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       ...ledger,
       items,
       // totals.remaining kartın KENDİ hesabı kalır (tutar − kart tahsilatı; Mutabakat Testi plans:totals "ekran = kartın satırları"); kuyruk kalanı ayrı alan.
-      totals: { ...ledger.totals, queueRemaining: remaining, accountPaid, overdue: roundMoney(overdue.reduce((sum, item) => sum + item.remaining, 0)), overdueCount: overdue.length },
+      // ownOverdue: kartın kendi hesabıyla gecikmiş (taksit − kart tahsilatı; eski anlam) — onarım / göç karşılaştırmaları için.
+      totals: { ...ledger.totals, queueRemaining: remaining, accountPaid, overdue: roundMoney(overdue.reduce((sum, item) => sum + item.remaining, 0)), overdueCount: overdue.length, ownOverdue: ledger.totals.overdue ?? 0 },
       next: next ? { id: next.id, seq: next.seq, dueDate: next.dueDate, remaining: next.remaining, days: next.days, state: next.state } : null,
       state,
     };
@@ -1339,7 +1342,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     return ledger.items.map(item => {
       const remaining = roundMoney(Math.min(item.remaining, room));
       room = roundMoney(room - remaining);
-      return remaining === item.remaining ? item : { ...item, remaining, partial: remaining > 0.005 && remaining < item.amount - 0.005 };
+      return remaining === item.remaining ? item : { ...item, remaining, ...(item.held ? { held: Math.min(item.held, remaining) } : {}), partial: remaining > 0.005 && remaining < item.amount - 0.005 };
     });
   }
   function dueItems(day = today()) {
@@ -1360,7 +1363,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     for (const plan of plans) {
       const ledger = withQueue(plan, allocate(plan, items.get(plan.id) || [], entries.get(plan.id) || [], { today: day }), queue, day);
       for (const item of capToRemaining(ledger)) {
-        if (item.remaining <= 0.005 || item.state === "open" || item.state === "closed") continue;
+        const amount = roundMoney(item.remaining - (item.held || 0));
+        if (amount <= 0.005 || item.state === "open" || item.state === "closed") continue;
         const where = [plan.groupName, plan.subgroupName].filter(Boolean).join(" › ");
         out.push({
           id: `plan|${plan.id}|${item.id}`,
@@ -1377,8 +1381,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
           kind: "date",
           dueDate: item.dueDate,
           dueText: dayText(item.dueDate),
-          amount: item.remaining,
-          partial: item.partial,
+          amount,
+          partial: item.partial || amount < item.remaining - 0.005,
           days: item.days,
           state: item.state === "today" ? "today" : item.state === "overdue" ? "overdue" : "upcoming",
           phone: plan.phone,
@@ -1392,7 +1396,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     return out;
   }
   // Nakit akışı (v2.0.7): açık kartların kalanı olan TÜM taksitleri (vade penceresi yok; ayrımı rapor motoru yapar).
-  function openItems(day = today()) {
+  function openItems(day = today(), { withoutDoubtful = false } = {}) {
     const out = [];
     const plans = store.all(
       "SELECT p.id, p.name, p.phone, p.ref_no AS refNo, p.total, p.status, p.account_id AS accountId, COALESCE(a.name, '') AS accountName FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE p.deleted_at IS NULL AND p.status = 'active'",
@@ -1412,9 +1416,11 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     for (const plan of plans) {
       const ledger = withQueue(plan, allocate(plan, items.get(plan.id) || [], entries.get(plan.id) || [], { today: day }), queue, day);
       for (const item of capToRemaining(ledger)) {
-        if (item.remaining <= 0.005 || item.state === "closed") continue;
+        // withoutDoubtful (Vade Takip; 2.5.0 Ç5-B M13): kalanın şüpheli kuyruğundaki kısmı kalem değildir. Nakit akışı ve yaşlandırma (dilimlere dahil) bugünkü gibi.
+        const amount = roundMoney(item.remaining - (withoutDoubtful ? item.held || 0 : 0));
+        if (amount <= 0.005 || item.state === "closed") continue;
         // Vade takip (v2.0.9) kartı, cariyi ve taksiti de gösterir; nakit akışı yalnız tarih/tutar/kaynağı okur.
-        out.push({ date: item.dueDate, direction: "in", amount: item.remaining, source: "plan", label: `${item.seq}. taksit${item.partial ? " (kalan)" : ""}`, party: plan.name, ref: { type: "plan", id: plan.id }, seq: item.seq, fullAmount: item.amount, partial: Boolean(item.partial), phone: plan.phone || "", refNo: plan.refNo || "", accountId: plan.accountId || "", accountName: plan.accountName || "" });
+        out.push({ date: item.dueDate, direction: "in", amount, source: "plan", label: `${item.seq}. taksit${item.partial || amount < item.remaining - 0.005 ? " (kalan)" : ""}`, party: plan.name, ref: { type: "plan", id: plan.id }, seq: item.seq, fullAmount: item.amount, partial: Boolean(item.partial) || amount < item.remaining - 0.005, phone: plan.phone || "", refNo: plan.refNo || "", accountId: plan.accountId || "", accountName: plan.accountName || "" });
       }
     }
     return out;

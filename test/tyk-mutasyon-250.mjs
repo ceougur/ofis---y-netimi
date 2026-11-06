@@ -40,6 +40,10 @@ const MUTANTS = [
   ["M18", "K8-3 / M1e B — Mevcut Borç kartı en yeni borçtan (eski kural)", "    pool.sort(s2);\n    // Kartın tüketebileceği", "    pool.sort((a, b) => (a.date === b.date ? 0 : a.date < b.date ? 1 : -1));\n    // Kartın tüketebileceği"],
   ["M19", "S2 sınır kayması — eşit vadede belge tarihi tersten", "  : a.date !== b.date ? (a.date < b.date ? -1 : 1)\n  : a.at !== b.at", "  : a.date !== b.date ? (a.date < b.date ? 1 : -1)\n  : a.at !== b.at"],
   ["M20", "M1e B — kart tahsilatı en geç vadeli taksitten", "    const ordered = [...card.installments].sort(s2);", "    const ordered = [...card.installments].sort(s2).reverse();"],
+  ["M21", "v2.0.23 B — karttan SONRA kaydedilen borç da kapsanır", "      if (card.at && target.recorded && target.recorded > card.at) continue;\n", "\n"],
+  ["M22", "kart kapsamı B — kartın anındaki bilinen satırlar okunmaz (sonraki karşılıksız kapsamı değiştirir)", "  const forced = coverForcing(input, mode, pieces);", "  const forced = null;"],
+  ["M23", "kart açılışı gün sınıfı B — aynı gün karttan önce yazılan ödeme karttan sonra sayılır", "events.push({ type: \"cover\", card, date: card.date, cls: 2,", "events.push({ type: \"cover\", card, date: card.date, cls: 1,"],
+  ["M24", "gecikmiş B — yalnız yükümlülük rolü (netleşmemiş bağsız ödeme açık borç kalemi sayılmaz)", "item => item.side === \"receivable\" && item.vade < day", "item => item.due && item.side === \"receivable\" && item.vade < day"],
 ];
 rmSync(base, { recursive: true, force: true });
 let killed = 0;

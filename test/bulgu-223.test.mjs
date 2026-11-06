@@ -329,11 +329,16 @@ describe("2.0.23 gözden geçirme: kapamanın kalan yolları", () => {
       // MM5 (2.4.3, bilerek güncellendi; kullanıcı kararı 18.10.2026): yaşlandırma carinin borç bakiyesi kadardır — kart 5.000 + fatura 2.000 − kaleme
       // bağlanmamış alacak 2.000 (FIFO: en eski kalemden düşer) = 5.000. Önceden 7.000 (bakiyeden fazla alacak).
       assert.equal(await agingOf(acc), "5.000,00 TL", "yaşlandırma: carinin bakiyesi (kart 5.000 + fatura 2.000 − kaleme bağlanmamış alacak 2.000)");
+      // 2.5.0 Ç5-B (bilerek güncellendi; kullanıcı kararları (5) "Bakiyeden Netleşsin" ve S2 "vadesi en önce gelen"): takvim / nakit akışı NET kuyruğu okur —
+      // 05.04'teki Alacak Yaz (ya da alış faturası) 2.000 o gün vadesi en önce gelen açık borcu, F'yi (vade 04.04; kartın taksitleri 01.09'dan) kapatır. Testin
+      // asıl sorusu aynı: F karta bölünmez — kart 5.000 olarak kalır, F'nin 2.000'i kartın içinde sayılmaz (fatura durumu yukarıda 2.000 açık).
       const dues = await must("takvim", api.get("/api/workspace/dues"));
-      assert.deepEqual(dues.items.filter(i => i.id === `invoice|${f.id}`).map(i => i.amount), [2000], "takvimde fatura 2.000");
+      assert.deepEqual(dues.items.filter(i => i.id === `invoice|${f.id}`).map(i => i.amount), [], "takvimde F yok (net kuyrukta Alacak Yaz / alış ile kapandı)");
+      const plan = (await must("cari", api.get(`/api/workspace/accounts/${acc.id}`))).plans.find(p => p.coversBalance);
+      assert.equal(dues.items.filter(i => i.planId === plan.id).reduce((sum, i) => sum + i.amount, 0), 5000, "takvimde kartın taksitleri 5.000 (F karta girmedi)");
       const flow = await must("nakit akış", api.get("/api/workspace/overview/nakit-akisi?from=2025-01-01&to=2026-12-31&overdue=1&table=0"));
-      const fromInvoice = [...(flow.rows || []), ...(flow.overdue || [])].filter(r => r.ref?.id === f.id).reduce((sum, r) => sum + r.amount, 0);
-      assert.equal(fromInvoice, 2000, "nakit akışta fatura 2.000");
+      const sumRef = id => [...(flow.rows || []), ...(flow.overdue || [])].filter(r => r.ref?.id === id).reduce((sum, r) => sum + r.amount, 0);
+      assert.deepEqual([sumRef(f.id), sumRef(plan.id)], [0, 5000], "nakit akışta F 0, kart 5.000 (bakiye 5.000 = 5.000 + 2.000 − 2.000)");
     });
   }
 

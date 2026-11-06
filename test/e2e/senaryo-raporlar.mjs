@@ -218,11 +218,14 @@ try {
     const sources = new Set(data.rows.map(row => row.source));
     ok(["plan", "cheque", "cash"].every(source => sources.has(source)) && !sources.has("table") && !sources.has("promise"), `kaynaklar: ${[...sources].join(", ")}`);
     const overduePlan = data.rows.find(row => row.source === "plan" && row.state === "overdue");
-    ok(overduePlan && overduePlan.amount === 1000, "gecikmiş taksit (20 gün önce) 1.000 başta");
+    // 2.5.0 Ç5-B (bilerek güncellendi; kullanıcı kararı S50 + BAŞ MİMAR M1a, EK-1 §1 "tahsilat (her yol, çek / senet alma dahil)"): Ahmet (2)'den karta bağlanmadan
+    // alınan senet 700 vadesi en önce gelen açık kalemi — 20 gün önce vadeli 1. taksiti — kapatır: kalan 300 (önceden kart "kendi defteri"ydi, 1.000).
+    ok(overduePlan && overduePlan.amount === 300, `gecikmiş taksit (20 gün önce) 1.000 − bağsız senet 700 = 300 başta (${overduePlan?.amount})`);
     ok(!data.rows.some(row => row.source === "note"), "45 gün sonraki senet 30 günlük aralıkta yok");
     const inTotal = round(data.rows.filter(row => row.direction === "in" && row.amount !== null).reduce((sum, row) => sum + row.amount, 0));
     ok(data.totals.in.total.amount === inTotal, `tahsil edilecek toplamı satırların toplamı: ${money(inTotal)}`);
-    ok(data.totals.out.total.amount === 4800, `ödenecek: kira 4.000 + verilen çek 800 = ${money(data.totals.out.total.amount)}`);
+    // 2.5.0 Ç5-B (bilerek güncellendi; S1 + S68): Tedarik'in vadesiz Alacak Yaz'ı (2.000 − ödeme 500 − verilen çek 800 = 700) kayıt gününde "Ödenecek Borç" kalemi.
+    ok(data.totals.out.total.amount === 5500, `ödenecek: kira 4.000 + verilen çek 800 + Tedarik'in kalan alacağı 700 = ${money(data.totals.out.total.amount)}`);
     // 2.4.5 madde 4: tablo kalemi ne takvimde ne Vade Takip'te (2.4.4'te ikisi aynı kalemleri gösteriyordu); süzgeçte "Tablo" / "Ödeme Sözü" yok.
     const calendar = (await api("/api/workspace/dues")).data.items.filter(item => !item.source);
     const openData = (await api("/api/workspace/overview/vade-takip?preset=open")).data;
@@ -233,15 +236,16 @@ try {
     const visibleRows = () => page.$$eval(`${modal} .hof-rep-vade tbody tr[data-due-row]`, nodes => nodes.map(node => node.textContent));
     await page.fill(`${modal} [data-q]`, "0312 555");
     await page.press(`${modal} [data-q]`, "Enter");
-    await page.waitForFunction(() => { const rows = [...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-rep-vade tbody tr[data-due-row]")]; return rows.length === 1 && /Tedarik/.test(rows[0].textContent); }, null, { timeout: 10000 });
-    ok(true, "telefonla arama: 0312 555 → yalnız Tedarik Ltd.'nin verilen çeki");
+    // 2.5.0 Ç5-B (S1): Tedarik'in iki kalemi — verilen çek ve kalan alacağı (Ödenecek Borç).
+    await page.waitForFunction(() => { const rows = [...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-rep-vade tbody tr[data-due-row]")]; return rows.length === 2 && rows.every(row => /Tedarik/.test(row.textContent)); }, null, { timeout: 10000 });
+    ok(true, "telefonla arama: 0312 555 → yalnız Tedarik Ltd.'nin kalemleri (verilen çek + kalan alacağı)");
     await page.fill(`${modal} [data-q]`, "");
     await page.press(`${modal} [data-q]`, "Enter");
     await page.waitForFunction(() => document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-rep-vade tbody tr[data-due-row]").length > 2, null, { timeout: 10000 });
     // Yalnız ödenecekler.
     await page.selectOption(`${modal} [data-field="direction"]`, "out");
-    await page.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-rep-vade tbody tr[data-due-row]")].length === 2, null, { timeout: 10000 });
-    ok(true, "yalnız ödenecek: 2 satır (kira, verilen çek)");
+    await page.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-rep-vade tbody tr[data-due-row]")].length === 3, null, { timeout: 10000 });
+    ok(true, "yalnız ödenecek: 3 satır (kira, verilen çek, Tedarik'in kalan alacağı — S1)");
     await page.selectOption(`${modal} [data-field="direction"]`, "");
     await page.waitForFunction(() => document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-rep-vade tbody tr[data-due-row]").length > 2, null, { timeout: 10000 });
     // 2.4.5 madde 4: "Tablo" ve "Ödeme Sözü" süzgeç seçeneği yok; satırlarda tablo kaynağı yok.

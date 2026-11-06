@@ -792,6 +792,46 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const key = settleKey(day);
     if (!inTx && settledCache.key === key && settledCache.pay) return settledCache;
     // Ç5-B: TYK bütün carilerin defteriyle (gecikmiş cari listesinde, Anlık Durum'da, Vade Takip'te ve zilde her cari için).
+    // Ç5-B (tasarım §5, ders 47): yazımdan sonra yalnız parmak izi değişen carilerin kuyruğu yeniden kurulur (gün aynıysa; en çok INCREMENTAL_MAX cari) —
+    // öbür carilerin sonucu önceki önbellekten. Gün dönünce ya da çok cari değişince bütün cariler.
+    const prints = legacyClosing ? null : accountPrints();
+    const previous = settledCache;
+    if (!inTx && prints && previous.prints && previous.day === day && previous.tyk) {
+      const changed = new Set();
+      for (const [id, print] of prints) if (previous.prints.get(id) !== print) changed.add(id);
+      for (const id of previous.prints.keys()) if (!prints.has(id)) changed.add(id);
+      // Dönem kilidinin izi (karar (3), S11, S19) bütün carilerin girdisidir: değişince bütün cariler yeniden kurulur. Yazım oldu (anahtar değişti) ama hiçbir carinin izi
+      // değişmediyse değişiklik izde görünmüyor olabilir (ör. durağan saatte aynı anlı bağ değişimi) — güvenli yön: bütün cariler (bugünkü davranış).
+      if (changed.size && !changed.has(LOCK_PRINT) && changed.size <= INCREMENTAL_MAX) {
+        const tyk = new Map(previous.tyk);
+        const pay = new Map(previous.pay);
+        const entries = new Map(previous.entries);
+        for (const id of changed) {
+          const old = tyk.get(id);
+          if (old) {
+            for (const invoiceId of old.invoices.keys()) pay.delete(invoiceId);
+            for (const entryId of old.entries.keys()) entries.delete(entryId);
+          }
+          tyk.delete(id);
+          for (const row of store.all("SELECT id FROM invoices WHERE account_id = ?", id)) pay.delete(row.id);
+          let ledger = null;
+          try {
+            ledger = accounts()?.detail ? accounts().detail(id, AUDITOR, { withRemaining: false }).ledger || [] : null;
+          } catch {
+            ledger = null; // silinmiş cari: kuyruğu yok, faturaları (varsa) açık sayılır (toplu yolla aynı)
+          }
+          const result = obligationsFor(id, ledger || [], day);
+          if (ledger) {
+            tyk.set(id, result);
+            for (const [entryId, state] of result.entries) entries.set(entryId, state);
+          }
+          for (const [invoiceId, state] of result.invoices) pay.set(invoiceId, state);
+        }
+        const out = { key, pay, entries, tyk, prints, day };
+        settledCache = out;
+        return out;
+      }
+    }
     const both = accounts()?.allLedgers ? accounts().allLedgers({}) : null;
     const ledgers = both ? both.lines : new Map();
     const tables = settleTables();
@@ -807,13 +847,44 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     for (const accountId of tables.invoicesOf.keys()) for (const [id, state] of legacyClosing ? settle(inputOf(accountId)) : queue(accountId).invoices) pay.set(id, state);
     const entries = new Map();
     for (const [accountId, result] of tyk) if (ledgers.has(accountId)) for (const [id, state] of result.entries) entries.set(id, state);
-    const out = { key, pay, entries, tyk };
+    const out = { key, pay, entries, tyk, prints, day };
     if (!inTx) settledCache = out;
     return out;
   }
+  // Cari başına parmak izi: cari satırları, faturalar, kartlar, kart hareketleri, taksitler, çek olayları (evrakın carisi, ciro edilen, olayın carisi), mahsup fişleri,
+  // şüpheli kayıtları ve carinin silinmesi — her biri GROUP BY ile tek sorgu. Tablo yoksa (göç öncesi veri) null → bütün cariler.
+  const INCREMENTAL_MAX = 200;
+  const LOCK_PRINT = "\u0000kilit";
+  function accountPrints() {
+    const prints = new Map();
+    const fold = rows => {
+      for (const row of rows) if (row.id) prints.set(row.id, `${prints.get(row.id) || ""}|${row.f}`);
+    };
+    try {
+      fold(store.all("SELECT ? AS id, COUNT(*) || '/' || COALESCE(MAX(rowid), 0) AS f FROM audit_events WHERE entity_id = 'period' AND type IN ('ledger.period.locked', 'ledger.period.unlocked')", LOCK_PRINT));
+      // İz yalnız damgaya güvenmez (durağan / geri giden saat): kuyruğun okuduğu tarih ve bağ kolonları da toplanır — gün sayısı toplamı ve kimliğin uzunluğu + son iki karakteri.
+      const sig = col => `TOTAL(length(COALESCE(${col}, '')) * 65536 + COALESCE(unicode(substr(COALESCE(${col}, ''), -1)), 0) * 256 + COALESCE(unicode(substr(COALESCE(${col}, ''), -2, 1)), 0))`;
+      const days = col => `TOTAL(COALESCE(julianday(NULLIF(${col}, '')), 0))`;
+      fold(store.all("SELECT id, 'a' || COALESCE(deleted_at, '') AS f FROM accounts"));
+      fold(store.all(`SELECT account_id AS id, COUNT(*) || '/' || MAX(rowid) || '/' || TOTAL(amount) || '/' || COALESCE(MAX(COALESCE(updated_at, created_at)), '') || '/' || ${days("date")} || '/' || ${days("due_date")} || '/' || ${days("expected_date")} || '/' || ${sig("invoice_id")} || '/' || ${sig("refund_of")} || '/' || ${sig("kind")} || '/' || ${sig("source")} || '/' || TOTAL(is_opening) || '/' || TOTAL(doubtful_skip) AS f FROM account_entries GROUP BY account_id`));
+      fold(store.all(`SELECT account_id AS id, 'i' || COUNT(*) || '/' || MAX(rowid) || '/' || TOTAL(try_payable) || '/' || COALESCE(MAX(updated_at), '') || '/' || ${days("issue_date")} || '/' || ${days("due_date")} || '/' || ${sig("status")} || '/' || ${sig("plan_id")} || '/' || ${sig("kind")} || '/' || ${sig("original_id")} AS f FROM invoices GROUP BY account_id`));
+      fold(store.all(`SELECT account_id AS id, 'p' || COUNT(*) || '/' || MAX(rowid) || '/' || TOTAL(total) || '/' || COALESCE(MAX(updated_at), '') || '/' || COUNT(deleted_at) || '/' || ${sig("status")} || '/' || TOTAL(covers_balance) || '/' || ${sig("invoice_id")} AS f FROM plans GROUP BY account_id`));
+      fold(store.all(`SELECT p.account_id AS id, 'e' || COUNT(*) || '/' || MAX(e.rowid) || '/' || TOTAL(e.amount) || '/' || COALESCE(MAX(COALESCE(e.updated_at, e.created_at)), '') || '/' || ${days("e.date")} || '/' || ${sig("e.kind")} || '/' || ${sig("e.item_id")} AS f FROM plan_entries e JOIN plans p ON p.id = e.plan_id GROUP BY p.account_id`));
+      fold(store.all(`SELECT p.account_id AS id, 't' || COUNT(*) || '/' || MAX(i.rowid) || '/' || TOTAL(i.amount) || '/' || COALESCE(MAX(i.updated_at), '') || '/' || ${days("i.due_date")} AS f FROM plan_items i JOIN plans p ON p.id = i.plan_id GROUP BY p.account_id`));
+      for (const column of ["c.account_id", "c.endorse_account_id", "ev.account_id"]) fold(store.all(`SELECT ${column} AS id, 'c' || COUNT(*) || '/' || MAX(ev.rowid) || '/' || ${sig("ev.invoice_id")} || '/' || COALESCE(MAX(c.updated_at), '') || '/' || ${days("ev.date")} || '/' || ${sig("ev.kind")} || '/' || TOTAL(ev.amount) AS f FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id GROUP BY ${column}`));
+      if (store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'invoice_offsets'")) fold(store.all(`SELECT account_id AS id, 'o' || COUNT(*) || '/' || MAX(rowid) || '/' || TOTAL(amount) || '/' || ${days("date")} AS f FROM invoice_offsets GROUP BY account_id`));
+      if (store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'doubtful_receivables'")) {
+        fold(store.all(`SELECT account_id AS id, 'd' || COUNT(*) || '/' || MAX(rowid) || '/' || COALESCE(MAX(COALESCE(updated_at, created_at)), '') || '/' || ${sig("status")} || '/' || TOTAL(amount_minor) || '/' || ${days("date")} AS f FROM doubtful_receivables GROUP BY account_id`));
+      }
+    } catch {
+      return null;
+    }
+    return prints;
+  }
   const allPaymentStates = () => allSettled().pay;
   // Bütün carilerin kuyruğu (cari kimliği → buildObligations sonucu); önbellek fatura durumlarıyla aynı anahtar (işlem içinde okunmaz, yazılmaz).
-  const allObligations = () => allSettled().tyk;
+  // config.legacyClosing (yalnız testler: 2.0.26 ile birebir karşılaştırmalar) TYK görünümlerini kapatır — taksit, cari kalemi ve liste eski yollarıyla.
+  const allObligations = () => (legacyClosing ? null : allSettled().tyk);
   // Bir carinin kapama girdisi (tek carili yol): carinin defteri + faturaları + bağlar (paymentStates ve entryStates aynı kuralla).
   function accountSettleInput(accountId, ledger, day) {
     // Bu carinin bütün faturaları (listede olmayanlar da kapamada yer tutar).
@@ -880,7 +951,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   }
   // 2.4.5 madde 6 → 2.5.0 Ç5-B: carinin elle Borç / Alacak, açılış, stok ve karşılıksız satırlarının Kalan'ı — TYK'nın NET görünümünden (G1; karar (5)).
   // Dönüş: defter satırı kimliği → { side, remaining, covered } (TL).
-  const entryStates = (accountId, ledger) => obligationsFor(accountId, ledger).entries;
+  // result: çağıranın aynı defterle kurduğu kuyruk (cari kartı) — verilirse yeniden kurulmaz.
+  const entryStates = (accountId, ledger, result = null) => (result || obligationsFor(accountId, ledger)).entries;
   // allSettled (yukarıda) fatura durumlarıyla aynı geçişte üretir.
   const allEntryStates = () => allSettled().entries;
 
@@ -5157,19 +5229,25 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     }
     return out;
   }
-  function openItems(day = today(), { net = false, returns = false } = {}) {
+  // withoutDoubtful (2.5.0 Ç5-B M13; zil / takvim / Vade Takip): net kalanın şüpheli kuyruğundaki kısmı kalem değildir (Vade Takip'te şüpheli ayrı satır). Nakit akışı ve
+  // Alacak Yaşlandırma ("Şüpheli Alacak (dilimlere dahil)") bugünkü gibi bütün kalanı okur.
+  function openItems(day = today(), { net = false, returns = false, withoutDoubtful = false } = {}) {
     const rows = store.all(`${INVOICE_SQL} WHERE i.status = 'issued' AND i.kind IN ('sale', 'smm', 'purchase'${returns ? ", 'sale_return', 'purchase_return'" : ""}) AND i.plan_id = ''`);
     const states = paymentStates(rows);
     const netStates = net && !legacyClosing ? netInvoiceStates(rows) : null;
+    const netOpen = id => {
+      const value = netStates.get(id);
+      return value ? roundMoney(value.remaining - (withoutDoubtful ? value.doubtful || 0 : 0)) : 0;
+    };
     return rows
       .map(row => ({ row, state: states.get(row.id) }))
-      .map(({ row, state }) => ({ row, state, open: state ? (netStates ? netStates.get(row.id)?.remaining ?? 0 : roundMoney(state.open - (net ? state.covered || 0 : 0))) : 0 }))
+      .map(({ row, state }) => ({ row, state, open: state ? (netStates ? netOpen(row.id) : roundMoney(state.open - (net ? state.covered || 0 : 0))) : 0 }))
       .filter(({ state, open }) => state && open > 0.005)
       .map(({ row, state, open }) => ({ id: row.id, number: row.number, kind: row.kind, side: RETURN_SIDE[row.kind] || INVOICE_KINDS[row.kind].side, ...(RETURN_SIDE[row.kind] ? { isReturn: true } : {}), accountId: row.accountId, accountName: parseJson(row.partyJson, {}).name || row.accountName, phone: row.accountPhone, dueDate: row.dueDate || row.issueDate, issueDate: row.issueDate, payable: row.tryPayable, open, ...(net && state.covered > 0.005 ? { coveredByPlan: state.covered } : {}), state: state.state, days: Math.round((Date.parse(`${row.dueDate || row.issueDate}T00:00:00Z`) - Date.parse(`${day}T00:00:00Z`)) / 86_400_000) }));
   }
   // Tahsilat takvimi ve sağ alt bildirimler: vadesi geçen, bugün ve 7 gün içinde vadesi gelen açık faturalar.
   function dueItems(day = today()) {
-    return openItems(day, { net: true })
+    return openItems(day, { net: true, withoutDoubtful: true })
       .filter(item => item.days <= 7)
       .map(item => ({
         id: `invoice|${item.id}`,
@@ -5240,5 +5318,5 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     doc.paymentDraft = {};
     return writeDraft(user, doc);
   }
-  return { openItems, dueItems, fingerprint, countForAccount, list, listQuery, detail, settings, paymentStates, entryStates, allEntryStates, obligationsFor, allObligations, lastPrices, returnable, cancel, deleteInvoice, restoreDeleted, syncOwnCard, repairOwnCards, repairScreen, issueBankFee, issueBankFeeReturn, createCommissionDraft };
+  return { openItems, dueItems, fingerprint, countForAccount, list, listQuery, detail, settings, paymentStates, entryStates, allEntryStates, obligationsFor, allObligations, cardLedgerState: settledFor, legacyView: legacyClosing, lastPrices, returnable, cancel, deleteInvoice, restoreDeleted, syncOwnCard, repairOwnCards, repairScreen, issueBankFee, issueBankFeeReturn, createCommissionDraft };
 }

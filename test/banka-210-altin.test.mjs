@@ -449,7 +449,8 @@ async function sideBySide(sourceData, sourceBackups, label, companies) {
     for (const company of companies) {
       const [legacyApi, currentApi] = [await newServer.login(), await currentServer.login()];
       for (const api of [legacyApi, currentApi]) assert.equal((await api.post("/api/companies/select", { id: company.id })).status, 200, `${company.code} seçilemedi`);
-      const check = await k1Check(await invoiceStates(legacyApi), currentApi);
+      // 2.5.0 Ç5-B: K1'in sınırı kapama defteri kuralında (ekran durumu Tek Yükümlülük Kuyruğu görünümü — S2 / S50 / M1e ile iadesi olmayan caride de bilerek değişir).
+      const check = await k1Check(await invoiceStates(legacyApi), currentApi, { ledgerStates: ids => (currentServer.app.openCompany(company.id) || currentServer.app).context.invoices.repairScreen(ids) });
       result.k1Changed += check.changed.length;
       result.problems.push(...check.problems.map(text => `${label} · ${company.code} · K1: ${text}`));
     }

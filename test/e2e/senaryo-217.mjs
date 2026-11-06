@@ -183,7 +183,8 @@ try {
     await admin.click(`${modal} [data-entry="out"]`);
     await admin.waitForSelector(`${modal} select[name="invoiceId"]`, { timeout: 8000 });
     const invoiceOptions = await admin.$$eval(`${modal} select[name="invoiceId"] option`, nodes => nodes.map(node => node.textContent.trim()));
-    ok(invoiceOptions[0] === "Otomatik (En Eski Açık Fatura)" && invoiceOptions.some(text => /ALS2026000000089/.test(text)), `ödeme formunda “Kapatılacak Fatura” (${invoiceOptions.join(" | ")})`);
+    // 2.5.0 Ç5-B (bilerek güncellendi; S2 "vadesi en önce gelen"): cari kartı formundaki boş seçenek "Otomatik (Vadesi En Önce Gelen)".
+    ok(invoiceOptions[0] === "Otomatik (Vadesi En Önce Gelen)" && invoiceOptions.some(text => /ALS2026000000089/.test(text)), `ödeme formunda “Kapatılacak Fatura” (${invoiceOptions.join(" | ")})`);
     await admin.selectOption(`${modal} select[name="invoiceId"]`, ids.purchase);
     await admin.fill(`${modal} input[name="amount"]`, "1000");
     await shot(admin, "odeme-kapatilacak-fatura");
