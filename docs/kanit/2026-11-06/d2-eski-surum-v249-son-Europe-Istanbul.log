@@ -1,0 +1,31 @@
+ok 1 - v2.4.9: 001 kasa
+ok 2 - v2.4.9: 002 açıldı
+ok 3 - v2.4.9: 002 kasa
+ok 4 - v2.4.9: iki şirketin yedeği alındı
+ok 5 - arşiv v2.4.9 şemasında (45 < 47)
+ok 6 - yeni kod: v2.4.9 kayıt defteri okundu (2 şirket)
+ok 7 - 001'in arşivi yok
+ok 8 - 002'nin arşivi diskten tanındı (özet yok: ilk kullanımda güven) [{"year":"2025","cutoff":"2025-12-31","runId":"devir-2025-eski-surum","size":1404928,"schemaVersion":45,"recovered":true,"dir":"arsiv/2025"}]
+ok 9 - arşiv okunur (v2.4.9 kaydı görünür) 200
+ok 10 - arşiv son şemaya göç etti (45 → 47)
+ok 11 - kayıttaki özet göç sonrası dosyanınki; göçün kaynağı yazıldı
+ok 12 - göçten sonra arşivin kasa satırları aynı (1)
+ok 13 - arşivde yazma 403 (403 archive-read-only)
+ok 14 - canlı 002 yazar
+ok 15 - v2.4.9'da alınmış 002 yedeği geri yüklenmez (409 devir-oncesi-yedek)
+ok 16 - 001'in v2.4.9 yedeği hazırlanır (001'in arşivi yok) 200
+ok 17 - hazırlıktan vazgeçildi
+ok 18 - bakımda 002 yazması 503 (503)
+ok 19 - bakımda 001 yazar
+ok 20 - kip kalkınca 002 yazar
+ok 21 - v2.4.9: 002 ad değişikliği 200
+ok 22 - v2.4.9 ad değişikliği arşiv alanını düşürdü (beklenen eski davranış)
+ok 23 - yeni kod: arşiv yeniden tanındı, özet arşiv klasöründen (arsiv-kaydi.json)
+ok 24 - arşiv yine açılır (200)
+1..24
+# tests 24
+# pass 24
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

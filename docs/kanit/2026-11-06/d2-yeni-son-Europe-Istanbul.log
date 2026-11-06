@@ -1,0 +1,151 @@
+TAP version 13
+# Subtest: D2 arşiv kayıt defteri ve salt okunur açma
+    # Subtest: kayıt defteri: arşiv sirketler.json + ikinci kopya + ortak katman kopyasında ve arşiv klasöründe; ad / kod değişince korunur; şirket sınırına sayılmaz; aynı yıl ve geçersiz yıl reddedilir
+    ok 1 - kayıt defteri: arşiv sirketler.json + ikinci kopya + ortak katman kopyasında ve arşiv klasöründe; ad / kod değişince korunur; şirket sınırına sayılmaz; aynı yıl ve geçersiz yıl reddedilir
+      ---
+      duration_ms: 919.288279
+      type: 'test'
+      ...
+    # Subtest: diskten yeniden kurma: kayıt defteri tamamen kaybolunca ve eski sürüm alanı düşürünce arşivler tanınır (özet arşiv klasöründen); yarım devirde (çalışma dosyasında devir yok) TANINMAZ, sahipsiz listesine girer
+    ok 2 - diskten yeniden kurma: kayıt defteri tamamen kaybolunca ve eski sürüm alanı düşürünce arşivler tanınır (özet arşiv klasöründen); yarım devirde (çalışma dosyasında devir yok) TANINMAZ, sahipsiz listesine girer
+      ---
+      duration_ms: 1524.707806
+      type: 'test'
+      ...
+    # Subtest: salt okunur açma (002 ve 001): arşivde HER yazma ucu 403 archive-read-only, GET'ler 5xx vermez, arşiv dosyası bayt bayt aynı; canlı şirket yazmaya devam eder; arşiv kapanınca canlı şirketin WhatsApp kuyruğu işçiden çıkmaz
+    ok 3 - salt okunur açma (002 ve 001): arşivde HER yazma ucu 403 archive-read-only, GET'ler 5xx vermez, arşiv dosyası bayt bayt aynı; canlı şirket yazmaya devam eder; arşiv kapanınca canlı şirketin WhatsApp kuyruğu işçiden çıkmaz
+      ---
+      duration_ms: 3431.674831
+      type: 'test'
+      ...
+    # Subtest: bütünlük: değişmiş arşiv (son şema) uyarıyla salt okunur açılır, değişmiş + eski şema 409 archive-changed (göç edilmez), dosyası silinmiş arşiv 503 archive-missing; liste durumları
+    ok 4 - bütünlük: değişmiş arşiv (son şema) uyarıyla salt okunur açılır, değişmiş + eski şema 409 archive-changed (göç edilmez), dosyası silinmiş arşiv 503 archive-missing; liste durumları
+      ---
+      duration_ms: 888.57296
+      type: 'test'
+      ...
+    # Subtest: arşivin göçü: GERÇEK v2.0.26 koduyla üretilmiş eski şemalı arşiv ilk açılışta son şemaya taşınır (göç öncesi kopya kalır, kayıt özeti güncellenir, veri aynı); iki eşzamanlı istek tek göç; daha yeni şemalı arşiv göç edilmez, salt okunur açılır
+    ok 5 - arşivin göçü: GERÇEK v2.0.26 koduyla üretilmiş eski şemalı arşiv ilk açılışta son şemaya taşınır (göç öncesi kopya kalır, kayıt özeti güncellenir, veri aynı); iki eşzamanlı istek tek göç; daha yeni şemalı arşiv göç edilmez, salt okunur açılır
+      ---
+      duration_ms: 1151.226239
+      type: 'test'
+      ...
+    # Subtest: ortak katmanın arka plan işleri arşivi görmez: otomatik yedek hedefleri yalnız şirketler, zamanlayıcı turu arşivi açmaz / değiştirmez (güncellemenin deneme açılışında arşiv göç etmez — BS-7 Y5)
+    ok 6 - ortak katmanın arka plan işleri arşivi görmez: otomatik yedek hedefleri yalnız şirketler, zamanlayıcı turu arşivi açmaz / değiştirmez (güncellemenin deneme açılışında arşiv göç etmez — BS-7 Y5)
+      ---
+      duration_ms: 790.71721
+      type: 'test'
+      ...
+    # Subtest: şirket kapanınca (geri yükleme / silme / Ayır yolu) o şirketin arşiv örnekleri de kapanır; öbür şirketinki açık kalır
+    ok 7 - şirket kapanınca (geri yükleme / silme / Ayır yolu) o şirketin arşiv örnekleri de kapanır; öbür şirketinki açık kalır
+      ---
+      duration_ms: 763.33148
+      type: 'test'
+      ...
+    1..7
+ok 1 - D2 arşiv kayıt defteri ve salt okunur açma
+  ---
+  duration_ms: 9472.111797
+  type: 'suite'
+  ...
+# Subtest: D2 bakım kipi (G1.1)
+    # Subtest: tarama tam: kaynaktaki her router.post/put/patch/delete kaydı çözüldü; HUB_ONLY ifadesi sunucudakiyle aynı
+    ok 1 - tarama tam: kaynaktaki her router.post/put/patch/delete kaydı çözüldü; HUB_ONLY ifadesi sunucudakiyle aynı
+      ---
+      duration_ms: 46.654265
+      type: 'test'
+      ...
+    # Subtest: sözleşme sabitleri: test yardımcısının yerel değerleri programınkiyle aynı (işaret anahtarları, dosya adları)
+    ok 2 - sözleşme sabitleri: test yardımcısının yerel değerleri programınkiyle aynı (işaret anahtarları, dosya adları)
+      ---
+      duration_ms: 1.379419
+      type: 'test'
+      ...
+    # Subtest: 001 bakımda: şirket yazma uçlarının HEPSİ 503, ortak katmanın şirket / yedek / güncelleme / devir yazmaları 503, giriş çalışır; GET'ler 001'in verisini değiştirmez (GET'te yazan yol dahil); kip kalkınca yazılır
+    ok 3 - 001 bakımda: şirket yazma uçlarının HEPSİ 503, ortak katmanın şirket / yedek / güncelleme / devir yazmaları 503, giriş çalışır; GET'ler 001'in verisini değiştirmez (GET'te yazan yol dahil); kip kalkınca yazılır
+      ---
+      duration_ms: 2572.279447
+      type: 'test'
+      ...
+    # Subtest: 002 bakımda: 002 yazmaları 503, 001 yazar; 002 bağlantısı query_only (bakımda açılan örnek dahil); GET'ler 002'yi değiştirmez; ortak katmanın şirket / yedek yazmaları 503
+    ok 4 - 002 bakımda: 002 yazmaları 503, 001 yazar; 002 bağlantısı query_only (bakımda açılan örnek dahil); GET'ler 002'yi değiştirmez; ortak katmanın şirket / yedek yazmaları 503
+      ---
+      duration_ms: 2412.788122
+      type: 'test'
+      ...
+    # Subtest: arka plan yazıcıları bakımdaki şirkette durur, öbür şirkette sürer (canWriteInBackground, WhatsApp işçisi, otomatik yedek)
+    ok 5 - arka plan yazıcıları bakımdaki şirkette durur, öbür şirkette sürer (canWriteInBackground, WhatsApp işçisi, otomatik yedek)
+      ---
+      duration_ms: 1023.471325
+      type: 'test'
+      ...
+    # Subtest: güncelleme tutması (uygulama): kip açılırken update:hold istenir, kapanınca bırakılır; güncelleme geçişteyse kip açılmaz; güncelleyici yoksa sürer; ulaşılamazsa açılmaz
+    ok 6 - güncelleme tutması (uygulama): kip açılırken update:hold istenir, kapanınca bırakılır; güncelleme geçişteyse kip açılmaz; güncelleyici yoksa sürer; ulaşılamazsa açılmaz
+      ---
+      duration_ms: 343.89523
+      type: 'test'
+      ...
+    # Subtest: güncelleme orkestratörü: tutma varken kendiliğinden kurmaz, Şimdi Güncelle reddedilir; indirme sürerken tutma gelirse eski sürüm durdurulmaz; geçiş adımında tutma 'switching' döner; tutma kalkınca / süresi dolunca kurar
+    ok 7 - güncelleme orkestratörü: tutma varken kendiliğinden kurmaz, Şimdi Güncelle reddedilir; indirme sürerken tutma gelirse eski sürüm durdurulmaz; geçiş adımında tutma 'switching' döner; tutma kalkınca / süresi dolunca kurar
+      ---
+      duration_ms: 8.876286
+      type: 'test'
+      ...
+    # Subtest: yarıda kesilme: bakım kipi açıkken süreç ölür → açılışta kip YOK (canlı veri aynı), önceki çalışmanın izi lastAborted'da, işaret dosyası silinir, geçici tetikleyici kalmaz
+    ok 8 - yarıda kesilme: bakım kipi açıkken süreç ölür → açılışta kip YOK (canlı veri aynı), önceki çalışmanın izi lastAborted'da, işaret dosyası silinir, geçici tetikleyici kalmaz
+      ---
+      duration_ms: 1616.108751
+      type: 'test'
+      ...
+    1..8
+ok 2 - D2 bakım kipi (G1.1)
+  ---
+  duration_ms: 8027.689025
+  type: 'suite'
+  ...
+# Subtest: D2 kalıcı devir yedeği ve geri yüklemenin arşiv denetimi
+    # Subtest: devir yedeği: veri tabanı + arşiv + belgeler + mesaj arşivi + gizli anahtar, her dosyanın özeti bildirgede; doğrulama değişen / eksik / fazla dosyayı bulur; liste ucu
+    ok 1 - devir yedeği: veri tabanı + arşiv + belgeler + mesaj arşivi + gizli anahtar, her dosyanın özeti bildirgede; doğrulama değişen / eksik / fazla dosyayı bulur; liste ucu
+      ---
+      duration_ms: 1116.599921
+      type: 'test'
+      ...
+    # Subtest: budanmaz: devir yedeği alındıktan sonra 35 rutin + 40 güvenlik yedeği (gerçek createBackup + pruneBackups; zaman damgaları sahte, 35 gün) ve zamanlayıcı turu — rutin 30, güvenlik 30 kalır, devir yedeği eksiksiz; ad değişince yedek klasörüyle taşınır
+    ok 2 - budanmaz: devir yedeği alındıktan sonra 35 rutin + 40 güvenlik yedeği (gerçek createBackup + pruneBackups; zaman damgaları sahte, 35 gün) ve zamanlayıcı turu — rutin 30, güvenlik 30 kalır, devir yedeği eksiksiz; ad değişince yedek klasörüyle taşınır
+      ---
+      duration_ms: 3576.454987
+      type: 'test'
+      ...
+    # Subtest: Yedekten Geri Yükle (002, hemen): devir ÖNCESİ yedek 409 devir-oncesi-yedek; devir sonrası yedek geri yüklenir; devir geri alınınca devir SONRASI yedek 409 devir-sonrasi-yedek; aynı yıl başka devir çalışması 409; bakımdaki şirkete 503
+    ok 3 - Yedekten Geri Yükle (002, hemen): devir ÖNCESİ yedek 409 devir-oncesi-yedek; devir sonrası yedek geri yüklenir; devir geri alınınca devir SONRASI yedek 409 devir-sonrasi-yedek; aynı yıl başka devir çalışması 409; bakımdaki şirkete 503
+      ---
+      duration_ms: 1365.462621
+      type: 'test'
+      ...
+    # Subtest: Şirket Verisini Sıfırla (Tümünü Sıfırla) devir işaretini (devir.years) korur: arşiv kayıtlı kalır, sıfırlamadan sonra alınan yedek geri yüklenebilir, sıfırlama öncesi yedeği yine denetlenir
+    ok 4 - Şirket Verisini Sıfırla (Tümünü Sıfırla) devir işaretini (devir.years) korur: arşiv kayıtlı kalır, sıfırlamadan sonra alınan yedek geri yüklenebilir, sıfırlama öncesi yedeği yine denetlenir
+      ---
+      duration_ms: 1073.298959
+      type: 'test'
+      ...
+    # Subtest: Yedekten Geri Yükle (001, yeniden açılışta): devir öncesi yedek hazırlanmaz (409); devirden ÖNCE hazırlanıp devirden SONRA uygulanacak geri yükleme açılışta uygulanmaz, veri aynı kalır, neden Yedekler'de görünür
+    ok 5 - Yedekten Geri Yükle (001, yeniden açılışta): devir öncesi yedek hazırlanmaz (409); devirden ÖNCE hazırlanıp devirden SONRA uygulanacak geri yükleme açılışta uygulanmaz, veri aynı kalır, neden Yedekler'de görünür
+      ---
+      duration_ms: 1132.889245
+      type: 'test'
+      ...
+    1..5
+ok 3 - D2 kalıcı devir yedeği ve geri yüklemenin arşiv denetimi
+  ---
+  duration_ms: 8267.912612
+  type: 'suite'
+  ...
+1..3
+# tests 20
+# suites 3
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 27631.825838

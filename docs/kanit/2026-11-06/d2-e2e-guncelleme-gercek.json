@@ -1,0 +1,32 @@
+{
+  "ad": "d2-e2e-guncelleme-gercek",
+  "komut": "npm run test:guncelleme-gercek",
+  "commit": "23a1fb6244aebd1df92670f97f47b9887b776595",
+  "dal": "worktree-agent-ab27a0002c2919cb2",
+  "kirli": 5,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T11:05:37.863Z",
+  "sure_sn": 248.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 22,
+    "gecen": 22,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2-calisma/kanit/2026-11-06/d2-e2e-guncelleme-gercek.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab27a0002c2919cb2",
+  "ham_cikti_sha256": "501057aa23ff309b6440cc998407c118358cd0b6587f1b2ae785517699587c62",
+  "ham_cikti_bayt": 2092
+}
