@@ -1,0 +1,27 @@
+FAIL test_senaryo_ve_beklenen_dosyalari_guncel
+  karar: dosya güncelliği
+  görülen: AssertionError: senaryo hatası: şüpheli caride faturaya bağlı Kredi Kartına İade (T-11) — S25 (c) yalnız nakit / havale / POS sayar; kâhin susar (README bakım 5 Z8, KULLANICIYA SORULMALI 1)
+  beklenen nedenle mi: EVET
+
+FAIL test_s78_s39_kart_iade_supheli
+  karar: S39
+  görülen: AssertionError: senaryo hatası: şüpheli caride faturaya bağlı Kredi Kartına İade (T-11) — S25 (c) yalnız nakit / havale / POS sayar; kâhin susar (README bakım 5 Z8, KULLANICIYA SORULMALI 1)
+  beklenen nedenle mi: EVET
+
+FAIL test_s79_s40_geri_yuklenen_kasa_tutar_disi_alan
+  karar: S40
+  görülen: AssertionError: senaryo hatası: geri yüklenmiş, açılıştan önce tarihli Kasa kaydının tutar dışı alanı düzeltildi (['aciklama']) — S26 yalnız tutar; kâhin susar (README bakım 5 Z10, KULLANICIYA SORULMALI 2)
+  beklenen nedenle mi: EVET
+
+FAIL test_S39_kart_iade_s25_ile_ayni
+  karar: S39
+  görülen: AssertionError: senaryo hatası: şüpheli caride faturaya bağlı Kredi Kartına İade (T-11) — S25 (c) yalnız nakit / havale / POS sayar; kâhin susar (README bakım 5 Z8, KULLANICIYA SORULMALI 1)
+  beklenen nedenle mi: EVET
+
+FAIL test_S40_kapsam_disi_kahin_susar
+  karar: S40
+  görülen: AssertionError: senaryo hatası: geri yüklenmiş, açılıştan önce tarihli Kasa kaydının tutar dışı alanı düzeltildi (['cari']) — S26 yalnız tutar; kâhin susar (README bakım 5 Z10, KULLANICIYA SORULMALI 2)
+  beklenen nedenle mi: EVET
+
+kırmızı test: 5 (beklenen 5); hepsi beklenen nedenle: EVET
+özet: tests 140, pass 135, fail 5

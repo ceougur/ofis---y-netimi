@@ -728,10 +728,13 @@ hareketi bankadaki gibi reddedilir (banka bugün 409 bank-before-opening)". S8 (
 ### KULLANICIYA SORULMALI / KÂHİN SUSUYOR (kodlanmadı; para / kapama → ders 43)
 1. **S40 × parantezde sayılmayan tutar dışı alanlar (X11 a):** geri yüklenmiş, Kasa açılışından önce tarihli Kasa kaydının tarihi değişmeden fatura bağı ("Kapatılacak Fatura"), taksit kartı bağı ya da
    "Normal Cari Hesaba İşle" seçimi düzeltilirse. A (öneri): kabul (S40 ile aynı gerekçe — tarih değişmiyor; bağ G-7 ile yeniden türetilir, hangi borcun kapandığı değişir; Mutabakat uyarısı sürer).
-   B: T12 ile red (karar yalnız açıklama ve cariyi saydı). Kâhin: senaryo hatası (susar).
+   B: T12 ile red (karar yalnız açıklama ve cariyi saydı). C (uç durum — geri yüklenmiş + açılış öncesi + bağ düzeltmesi birlikte; SORU DÜZENİ 06.11 09:01): uç durum böyle
+   kalsın (BİLİNEN SINIR olarak yazılır; kâhin susmayı sürdürür, sürücü bu durumu kurmaz). Kâhin: senaryo hatası (susar).
 2. **Bağlı kaydın carisi (X11 b; geri yüklenmiş kayıtta sorulur, olağan kayıtta da aynı soru):** Kapatılacak Fatura ya da taksit kartıyla bağlı tahsilat / ödemenin carisi düzeltilirse bağ eski carinin
    faturasında / kartında kalamaz. A (öneri): düzeltme nedeni yazılarak reddedilir ("önce fatura / kart bağını kaldırın"; 2.4.4 KAYIT BAĞI kararı: bağ sessizce kopmaz; çıkmaz yok — bağ kaldırılıp
-   cari düzeltilebilir). B: bağ düşer, kayıt yeni caride bağsız alacak / borç olur (kendi gününde dağılır). Kâhin: geri yüklenmiş açılış öncesi Kasa kaydında senaryo hatası (susar).
+   cari düzeltilebilir). B: bağ düşer, kayıt yeni caride bağsız alacak / borç olur (kendi gününde dağılır). C (geri yüklenmiş açılış öncesi Kasa kaydı için uç durum; SORU DÜZENİ
+   06.11 09:01): uç durum böyle kalsın (BİLİNEN SINIR; kâhin susmayı sürdürür) — olağan kayıttaki aynı soru uç değildir, orada A / B seçilmelidir. Kâhin: geri yüklenmiş açılış öncesi Kasa
+   kaydında senaryo hatası (susar).
 3. Sürer: bakım 5'in 3'ü (dinî bayram tarihleri resmî kaynaktan — bu bakımda aranmadı); bakım 2 listesinin 3, 4, 5, 6, 7; bakım 3'ün 4'ü (program iletisi). Bakım 5'in 1 (S25 × Kredi Kartına İade
    → S39) ve 2 (S26 × tutar dışı alan → S40) bu bakımda kural oldu.
 
@@ -753,9 +756,10 @@ hareketi bankadaki gibi reddedilir (banka bugün 409 bank-before-opening)". S8 (
   yeni `senaryolar_elle.py` / `test_model.py`, not defterinde) 140 testten 5'i beklenen nedenle kırmızı (`docs/kanit/2026-11-06/kahin6-eski-model-kirmizi.*`, neden dökümü
   `kahin6-eski-model-neden.txt`): s78 ve `test_S39` KI'de bakım 5 Z8 susması ("senaryo hatası: şüpheli caride faturaya bağlı Kredi Kartına İade"), s79 (KY açıklama) ve `test_S40` (PY cari)
   bakım 5 Z10 susması ("tutar dışı alanı düzeltildi … S26 yalnız tutar"), dosya güncelliği (s78 dosyası üretilemiyor — aynı susma). Öbür 135 test eski modelde de yeşil.
-- Model commit'i (bu bakımın üçüncü commit'i): model (X1–X12), mutantlar (B60–B67, B52 / B52b metni), s78 / s79 senaryo ve beklenen dosyaları. Model değiştikten sonra ilk koşuda HİÇBİR
-  elle değer değişmedi (140 testten tek kırmızı dosya güncelliğiydi; dosyalar yeniden yazıldı). Kanıt: `kahin6-test-utc.*`, `kahin6-test-istanbul.*`, `kahin6-mutasyon.*`,
-  `kahin6-mutant-deger.*` (komut + commit kayıtların içinde).
+- 92d31b35: model (X1–X12), mutantlar (B60–B67, B52 / B52b metni), s78 / s79 senaryo ve beklenen dosyaları. Model değiştikten sonra ilk koşuda HİÇBİR elle değer değişmedi
+  (140 testten tek kırmızı dosya güncelliğiydi; dosyalar yeniden yazıldı). Kanıt (commit 92d31b35): `kahin6-test-utc.*`, `kahin6-test-istanbul.*` (140/140 iki saat diliminde),
+  `kahin6-mutasyon.*` (177/177 öldü), `kahin6-mutant-deger.*` (10/10 seçili mutant değerle), `kahin6-b-dal-degerleri.txt` (senaryo yorumlarındaki S39 B / S40 B sayılarının denetimi:
+  s78 B60 altında 3 SUPHELI_NORMAL_ASIM, 128|C1 15000; s79 B63 altında 6 red, Kasa 1400); betikler `kahin6-*-betik.py.txt`.
 
 ### Yeni senaryolar, testler ve mutasyonlar
 - Elle senaryolar (2, toplam 80): s78 (S39 — küçük iade tamamı 128 (11.05 ara mizanı ve şüpheli kaydı), tam toplam iki kısmı kapatır, fazla 2000 başka açık faturaya (F22) ve karşılık
