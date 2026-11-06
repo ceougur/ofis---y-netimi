@@ -130,9 +130,14 @@ Bkz. §1 (`server/routes/devir.mjs`). Hepsi ortak katmanda (`HUB_ONLY`'e `admin/
     (`test/devir-d2-eski-surum-250.mjs --eski <kopya>`).
 
 ## 10. Testler ve kanıt
-- `test/devir-d2-bakim-250.test.mjs` (7), `test/devir-d2-arsiv-250.test.mjs` (7), `test/devir-d2-yedek-250.test.mjs` (4); yardımcı `test/devir-d2-yardimci.mjs`,
-  işçi `test/fixtures/devir-d2-bakim-isci.mjs`; eski sürüm betiği `test/devir-d2-eski-surum-250.mjs`; mutasyon `test/devir-d2-250-mutasyon.mjs`;
-  hacim `test/devir-d2-hacim-250.mjs`. Kanıt `docs/kanit/2026-11-06/d2-*`.
+- `test/devir-d2-bakim-250.test.mjs` (8), `test/devir-d2-arsiv-250.test.mjs` (7), `test/devir-d2-yedek-250.test.mjs` (5); yardımcı `test/devir-d2-yardimci.mjs`,
+  işçi `test/fixtures/devir-d2-bakim-isci.mjs`; eski sürüm betiği `test/devir-d2-eski-surum-250.mjs`; mutasyon `test/devir-d2-250-mutasyon.mjs` (28 mutant; 6 numara
+  EŞDEĞER — iki kat koruma, 28 ikisini birlikte kaldırır); hacim `test/devir-d2-hacim-250.mjs`. Kanıt `docs/kanit/2026-11-06/d2-*`.
+- HACİM (100.000 Kasa hareketi, programın API'siyle; 5 arşiv; aynı taban kopyası, önce 3064bc41 / sonra 5259bffa): arşiv listesi 5–13 ms, Yedekler listesi 3–5 ms,
+  Devir Yedekleri listesi 5–23 ms, bakım kipi aç 9–36 ms, açılış taraması ≤ 1 ms, 5 arşivin bütünlük denetimi ~1 sn / olay döngüsü en çok ≤ 43 ms, devir yedeği
+  (823 MB) 2,2–3,3 sn / ≤ 42 ms. ARŞİV ÖRNEĞİ AÇILIŞI önce 3.069 ms / olay döngüsü 2.879 ms (kapının taban ölçümü bütün defteri tarıyordu) → sonra 227–247 ms /
+  8–11 ms (arşivde kapı kurulmaz; yazma ulaşmaz). Arşivde Kasa listesi isteği 2,6–3,1 sn / ~400 ms = canlı şirketteki aynı istek (2,6–3,2 sn / ~420–526 ms) —
+  arşive özgü yük yok; Kasa listesinin kendisi D2 dışı (BİLİNEN SINIR, canlıyla aynı).
 - WINDOWS'TA DOSYAYA DOKUNANLAR (ders 48): yarıda kesilme (SIGKILL + açık dosya), arşivin göçü (kopya + yeniden adlandırma + günlük kipi), devir yedeği (klasör
   yeniden adlandırma, kopya), ad değişikliğinde yedek klasörü taşıma, diskten kurma (bozuk kayıt dosyası), şirket kapanınca arşiv örneği (tutamak bırakma).
 
