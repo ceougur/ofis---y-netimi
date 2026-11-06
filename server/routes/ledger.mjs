@@ -447,9 +447,9 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     const user = auth.requirePermission(req, "system.manage");
     if (!period) throw new HttpError(503, "Dönem kilidi hazır değil.");
     const body = await readJson(req);
-    // Yanıt bütçesi (LOCK_WAIT_MS) bütün uca: bayat satır temizliği + arka iş (Ç3 tur 3 ORTA-1).
-    const started = Date.now();
-    const budget = () => Math.max(0, LOCK_WAIT_MS - (Date.now() - started));
+    // Yanıt bütçesi (LOCK_WAIT_MS) bütün uca: bayat satır temizliği + arka iş (Ç3 tur 3 ORTA-1). Süre ölçümü (iş saati değil): tekdüze saat.
+    const started = performance.now();
+    const budget = () => Math.max(0, LOCK_WAIT_MS - (performance.now() - started));
     // Sıra (Ç3 tur 2, dar kontrol DÜŞÜK-1): doğrula → ön adım (POS) → süren dondurmayı durdur → kilit + koşu (tek işlem). Reddedilecek istek (geçersiz / gelecek tarih 400,
     // POS 409) hiçbir şeye dokunmaz: süren dondurma sürer.
     const target = period.checkLock(body?.lockedUntil);
