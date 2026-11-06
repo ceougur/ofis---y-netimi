@@ -182,7 +182,7 @@ describe("2.5.0 Ç3 tur 1 — önbellek, aynı gün / başka gün yeniden kilit,
       assert.match(status.error, /9\.9\.9\) bu programda yok/, JSON.stringify(status));
       const scan = await must("tarama", admin.get("/api/workspace/ledger/integrity"));
       const snap = scan.checks.find(check => check.code === "ledger:snapshot");
-      assert.ok(snap && !snap.ok, JSON.stringify(scan.checks.filter(check => !check.ok)));
+      assert.ok(snap && !snap.ok, `bilinmeyen kuralın bekleyen koşusu Mutabakat Testi'nde görünmüyor: ${JSON.stringify(scan.checks.filter(check => !check.ok))}`);
       assert.equal(snap.name, "Donmuş Defter (Yok) · Dondurma Bekliyor");
       assert.match(snap.sample[0], /^Bekleyen Dondurmanın Kuralı Bu Programda Yok: 31\.12\.2026 ve öncesi 9\.9\.9 kuralıyla donacak/);
       // Raporlar o dönemi güncel kuralla okur (en iyi bilinen).
