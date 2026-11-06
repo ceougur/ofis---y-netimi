@@ -1,0 +1,1 @@
+Yol 1 imzasız sent=200, şirket işareti=VAR; kip şimdi=embedded; Yol 2 iletisine imzasız delivered=401 (yazılmaz); 13,5 sa sonra Yol 2 işi: expired; kişi önizlemede: gönderilecek

@@ -1,0 +1,76 @@
+TAP version 13
+# saat dilimi UTC
+(node:13384) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+not ok 1 - S33-01-yol-2-imzasiz-bildirim-isaret-koymaz-sure-dolmaz-ayni-donem-daha-once [hizli] (29 fark; davranış farkı 27; gösterim: G1-borclu-eki 2)
+  # elenen.T2: beklenen nesne, program '<YOK>'
+  # olusmadi: beklenen ['T2'], program []
+  # onceki_uyari.T2: beklenen nesne, program '<YOK>'
+  # durum_sayilari.Meta Kabul Etti: beklenen 2, program '<YOK>'
+  # meta.post.A: beklenen 1, program 2
+  # meta.post.B: beklenen 1, program 2
+  # meta.kabul.A: beklenen 1, program 2
+  # meta.kabul.B: beklenen 1, program 2
+  # meta.meta_ileti.A: beklenen 1, program 2
+  # meta.meta_ileti.B: beklenen 1, program 2
+  # meta.medya_yukleme.A: beklenen 1, program 2
+  # meta.medya_yukleme.B: beklenen 1, program 2
+not ok 2 - S33-02-yol-1-imzasiz-bildirim-kabul-isaret-ve-sure-dolumu-sahte-de-islenir [hizli] (3 fark; davranış farkı 0; gösterim: G1-borclu-eki 3)
+not ok 3 - S41-01-yol-2-uygulama-duzeyi-adres-imzali-islenir-imzasiz-duser [hizli] (34 fark; davranış farkı 32; gösterim: G1-borclu-eki 2)
+  # elenen.T2: beklenen nesne, program '<YOK>'
+  # onceki_uyari.T2: beklenen nesne, program '<YOK>'
+  # toplular.T2.is_sayisi: beklenen 1, program 3
+  # durum_sayilari.Süresi Doldu: beklenen 2, program 6
+  # durum_sayilari.Teslim Edildi: beklenen 2, program '<YOK>'
+  # meta.post.A: beklenen 1, program 2
+  # meta.post.B: beklenen 1, program 2
+  # meta.kabul.A: beklenen 1, program 2
+  # meta.kabul.B: beklenen 1, program 2
+  # meta.meta_ileti.A: beklenen 1, program 2
+  # meta.meta_ileti.B: beklenen 1, program 2
+  # meta.medya_yukleme.A: beklenen 1, program 2
+not ok 4 - S41-02-yol-1-uygulama-duzeyi-adres-imzasiz-kabul [hizli] (26 fark; davranış farkı 23; gösterim: G1-borclu-eki 3)
+  # elenen.T2: beklenen nesne, program '<YOK>'
+  # onceki_uyari.T2: beklenen nesne, program '<YOK>'
+  # toplular.T2.is_sayisi: beklenen 1, program 2
+  # durum_sayilari.Süresi Doldu: beklenen 2, program 4
+  # durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+  # meta.post.A: beklenen 1, program 2
+  # meta.kabul.A: beklenen 1, program 2
+  # meta.meta_ileti.A: beklenen 1, program 2
+  # meta.medya_yukleme.A: beklenen 1, program 2
+  # meta.medya_silme.A: beklenen 1, program 2
+  # meta.toplam_post: beklenen 3, program 4
+  # meta.toplam_kabul_program: beklenen 3, program 4
+not ok 5 - S43-01-yol-2-imzali-taninmayan-bildirim-isaret-koymaz-ayni-donem-daha-once [hizli] (29 fark; davranış farkı 27; gösterim: G1-borclu-eki 2)
+  # elenen.T2: beklenen nesne, program '<YOK>'
+  # olusmadi: beklenen ['T2'], program []
+  # onceki_uyari.T2: beklenen nesne, program '<YOK>'
+  # durum_sayilari.Meta Kabul Etti: beklenen 2, program '<YOK>'
+  # meta.post.A: beklenen 1, program 2
+  # meta.post.B: beklenen 1, program 2
+  # meta.kabul.A: beklenen 1, program 2
+  # meta.kabul.B: beklenen 1, program 2
+  # meta.meta_ileti.A: beklenen 1, program 2
+  # meta.meta_ileti.B: beklenen 1, program 2
+  # meta.medya_yukleme.A: beklenen 1, program 2
+  # meta.medya_yukleme.B: beklenen 1, program 2
+not ok 6 - S43-02-yol-1-imzasiz-taninmayan-bildirim-kabul-isaret-koymaz [hizli] (29 fark; davranış farkı 27; gösterim: G1-borclu-eki 2)
+  # elenen.T2: beklenen nesne, program '<YOK>'
+  # olusmadi: beklenen ['T2'], program []
+  # onceki_uyari.T2: beklenen nesne, program '<YOK>'
+  # durum_sayilari.Meta Kabul Etti: beklenen 2, program '<YOK>'
+  # meta.post.A: beklenen 1, program 2
+  # meta.post.B: beklenen 1, program 2
+  # meta.kabul.A: beklenen 1, program 2
+  # meta.kabul.B: beklenen 1, program 2
+  # meta.meta_ileti.A: beklenen 1, program 2
+  # meta.meta_ileti.B: beklenen 1, program 2
+  # meta.medya_yukleme.A: beklenen 1, program 2
+  # meta.medya_yukleme.B: beklenen 1, program 2
+not ok 7 - S43-03-yol-2-is-kimligiyle-taninan-bildirim-isaret-koyar-sure-dolar [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+1..7
+# tests 7
+# pass 0
+# fail 7
+# skipped 0
