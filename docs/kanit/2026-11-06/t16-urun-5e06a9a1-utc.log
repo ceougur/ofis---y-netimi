@@ -1,0 +1,19 @@
+(node:1429) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+1) ön koşul: ileti isteği sahte Meta'da kapıda (held 1), satır sending, deneme 1
+2) imzalı 'delivered' (iş kimliğiyle) uygulandı: applied 1 · satır delivered
+3) ileti isteği yanıtsız sonuçlandı (zaman aşımı) → satır uncertain · wamid wamid.SAHTE0001 · neden "Meta 1 saniyede yanıt vermedi; sonuç bilinmiyor."
+4) defter: deneme sonuçları [1:uncertain] · teslim satırı 1
+5) Bu Ay (teslim) 1
+6) yeni ekstre önizlemesi: Daha Önce Gönderildi · uncertainOpen -
+7) toplu iş done · ekranda iş "Sonucu Belirsiz" · neden "Meta 1 saniyede yanıt vermedi; sonuç bilinmiyor."
+8) Yine de Gönder (onaylı): HTTP 400 {"ok":false,"error":"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi — Daha Önce Gönderildi: 1). Bu kişilere bu dönem daha önce gönderildi; yeniden göndermek için yeni gönderimde \"Yine de Gönder
+   bakım turundan sonra satır uncertain
+9) sonraki imzasız 'read' (aynı wamid): applied 1 · satır read
+# tests 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# sonuç: ÜRÜN YARIŞI VAR — teslim bilgisi gelmiş satır zaman aşımında 'Sonucu Belirsiz'e döndü
