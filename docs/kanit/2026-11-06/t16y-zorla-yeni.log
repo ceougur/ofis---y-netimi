@@ -1,0 +1,11 @@
+# T16 yarış denemesi: 3 deneme, defter-teslimden sonra olay döngüsü kilidi 900 ms, TZ UTC, klasör /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-birlesim-ag
+deneme 1: çıkış 0 · YEŞİL · teslim +906 → kilit +909..+1810 → defter sonucu accepted (yazildi) +1821 (ön koşul OLUŞTU)
+deneme 2: çıkış 0 · YEŞİL · teslim +1037 → kilit +1040..+1940 → defter sonucu accepted (yazildi) +1966 (ön koşul OLUŞTU)
+deneme 3: çıkış 0 · YEŞİL · teslim +1094 → kilit +1098..+1998 → defter sonucu accepted (yazildi) +2012 (ön koşul OLUŞTU)
+# özet: 3/3 yeşil, 0 kırmızı; ön koşul oluşan deneme 3/3
+# tests 3
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
