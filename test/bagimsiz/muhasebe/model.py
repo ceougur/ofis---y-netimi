@@ -40,6 +40,9 @@ BAKIM 9 (06.11.2026, onuncu tur): ürün sahibinin 06.11 13:41 S72 (Ödeme Söz�
 kapsar), S79 (olağan bağlı kayıtta aynı düzeltmede bağ + cari S54 gibi kabul) kararları (A); S74–S78 = C (BİLİNEN SINIR, kâhin susar). README P1–P9.
 BAKIM 10 (06.11.2026, on birinci tur): ürün sahibinin 06.11 15:01 S80 (fatura formunda alınan peşin tahsilatın carisi düzeltilemez — FATURA_DUZENLENMELI) ve S81
 (olağan tahsilat düzeltmesi şüpheli kaydı açık carinin 120 bakiyesini aşarsa S56 gibi SUPHELI_NORMAL_ASIM) kararları (A). README L1–L10.
+BAKIM 11 (06.11.2026, on ikinci tur): ürün sahibinin 06.11 16:18 S83 (alış faturası formundaki peşin ödemenin carisi düzeltilemez — FATURA_DUZENLENMELI), S84
+(formdaki peşinin carisi aynı kalıp bağı değiştirilemez — FATURA_DUZENLENMELI) ve S85 (Normal Cari kaydın yalnız tutar / tarih düzeltmesi ya da geri yüklenmiş
+kayıtta yalnız cari düzeltmesi 120 bakiyesini aşarsa SUPHELI_NORMAL_ASIM, S56 ölçüsü) kararları (A). README Ö1–Ö10.
 Saf Python, yalnız standart kütüphane. Para kuruş tamsayı; miktar Fraction.
 
 Yapı:
@@ -2690,6 +2693,7 @@ class Model:
                 ilk = [x[0] for x in d.gecis().mod if x[3] == ("kasa",) and x[5] != k.id]
                 if ilk and dg["tarih"] > min(ilk):
                     raise Red("KASA_ACILIS_SONRA", f"ilk Kasa hareketi {min(ilk)}")
+        self._s83_susma(d, k, dg)                    # S83 A dışı (README bakım 11 Ö3, KULLANICIYA SORULMALI 1): kâhin susar
         s44_yolu = False
         if k.tur not in ("kasa_acilis", "devir_kasa"):   # S12 A + EK-2 §4 (8) (README bakım 3 T12): düzeltme de açılıştan önceye Kasa hareketi yazamaz
             yeni_t = dg.get("tarih", k.tarih)
@@ -2715,38 +2719,67 @@ class Model:
 
     @staticmethod
     def _s80_pesin(k, dg):
-        """S80 A (kullanıcı 06.11 15:01; README bakım 10 L1–L4): fatura FORMUNDA alınan peşin tahsilatın (`fatura_odemesi`) carisi düzeltmeyle değiştirilemez —
-        düzeltmenin TAMAMI FATURA_DUZENLENMELI ("faturayı düzenleyin") ile red; olağan kayıtta da geri yüklenmiş, açılış öncesi Kasa kaydında da (bakım 7 V3 (e),
-        bakım 8 U7 (b), bakım 9 P7 (c) susmalarının tahsilattaki cari kısmı kalktı). S79 formdaki peşine uygulanmaz (L2). Aynı carinin yeniden yazılması cari
-        düzeltmesi değil; carisi aynı peşinin tutarı / açıklaması bugünkü kuralla (L3). Alış faturası formundaki peşin ÖDEME karar metninde yok → kâhin susar
-        (L4, KULLANICIYA SORULMALI 1). Çağrı sırası (L2): kilit ve T12 / B11 önce (_o_duzenle), S45 / S57 BAG_KALDIRILMALI sonra."""
-        if not ("cari" in dg and dg["cari"] != k.v.get("cari") and k.v.get("fatura_odemesi")):
+        """S80 A (kullanıcı 06.11 15:01; README bakım 10 L1–L3): fatura FORMUNDA alınan peşin tahsilatın (`fatura_odemesi`) carisi düzeltmeyle değiştirilemez;
+        S83 A (kullanıcı 06.11 16:18; README bakım 11 Ö1, Ö2): alış faturası formunda yapılan peşin ÖDEMENİN carisi de (bakım 10 L4 susması kalktı); S84 A (Ö4, Ö5):
+        formdaki peşinin carisi aynı kalıp BAĞI (`fatura` / `taksit_karti`; başka fatura, kaldırma, karta çevirme) değiştirilemez — iki yönde ve iki yolda (bakım 7
+        V3 (e)'nin bağ kısmı kalktı). Hepsinde düzeltmenin TAMAMI FATURA_DUZENLENMELI ("faturayı düzenleyin") ile red; olağan kayıtta da geri yüklenmiş, açılış öncesi
+        Kasa kaydında da. S79 formdaki peşine uygulanmaz (L2). Aynı değerin yeniden yazılması (cari ya da bağ) düzeltme değil; cari ve bağ aynıyken tutar / açıklama /
+        tarih bugünkü kuralla (L3). Ödemede taksit kartı / Normal Cari model dilinde yok (V3 (f)). Satış iade formundaki ödemenin carisi _s83_susma'da (Ö3).
+        Çağrı sırası (L2 / K10-1): kilit ve T12 / B11 önce (_o_duzenle), S45 / S57 BAG_KALDIRILMALI ve S81 / S85 sınırı sonra."""
+        if not k.v.get("fatura_odemesi"):
             return
-        if k.tur == "tahsilat":
+        cari = "cari" in dg and dg["cari"] != k.v.get("cari")
+        bag = any(a in dg and dg[a] != k.v.get(a) for a in ("fatura", "taksit_karti"))
+        if not (cari or bag):
+            return
+        if k.tur == "odeme" and any(dg.get(a) for a in ("taksit_karti", "normal_cari")):
+            raise AssertionError("senaryo hatası: ödeme kaydında taksit kartı / Normal Cari (yalnız tahsilatta) — model dilinde yok (README bakım 7 V3 (f))")
+        if cari and k.tur == "tahsilat":
             raise Red("FATURA_DUZENLENMELI", "formdaki peşin tahsilatın carisi değiştirilemez — faturayı düzenleyin (S80 A)")
-        raise AssertionError("senaryo hatası: alış faturası formundaki peşin ödemenin (fatura_odemesi) carisi düzeltildi — S80 'alınan peşin tahsilat' der, ödeme "
-                             "yönü karar metninde yok; kâhin susar (README bakım 10 L4, KULLANICIYA SORULMALI 1)")
+        if cari:
+            raise Red("FATURA_DUZENLENMELI", "formdaki peşin ödemenin carisi değiştirilemez — faturayı düzenleyin (S83 A)")
+        raise Red("FATURA_DUZENLENMELI", "formdaki peşinin bağı değiştirilemez — faturayı düzenleyin (S84 A)")
+
+    @staticmethod
+    def _s83_susma(d, k, dg):
+        """S83 A (README bakım 11 Ö1, Ö3): karar ALIŞ faturası formundaki peşin ödemeyi söyler; S80 fatura formunda alınan peşin TAHSİLATI (her form). Başka bir fatura
+        formundaki peşin ÖDEMENİN (satış iade faturası — müşteriye iade bedeli; kitap F-12 T-01…T-08 sayar) carisi düzeltilince kâhin SUSAR (senaryo hatası;
+        KULLANICIYA SORULMALI 1). Bağ düzeltmesi S84'ün "formdaki peşin"idir (Ö4), susmaz."""
+        if not (k.tur == "odeme" and k.v.get("fatura_odemesi") and "cari" in dg and dg["cari"] != k.v.get("cari")):
+            return
+        f = d.kaynaklar.get(k.v.get("fatura"))
+        if f is None or f.tur != "alis_faturasi":
+            raise AssertionError(f"senaryo hatası: {f and f.tur} formundaki peşin ödemenin (fatura_odemesi) carisi düzeltildi — S83 'alış faturası formunda' der, "
+                                 "S80 'tahsilat'; kâhin susar (README bakım 11 Ö3, KULLANICIYA SORULMALI 1)")
 
     def _s81_sinir(self, d, k, dg):
         """S81 A (kullanıcı 06.11 15:01; README bakım 10 L5–L9): olağan tahsilatın düzeltmesi kaydı şüpheli kaydı açık bir carinin 120'sine ("Normal Cari Hesaba
         İşle" ya da o carinin faturası) alıyorsa plan §3.11b/2 sınırı S56 ile AYNI ölçüyle (_s44_sinir): 120'ye yazılacak kısım (Normal Cari: tutar; fatura bağı:
         S14 / S25 ile 120'de kapanan) > kaydın düzeltme sonrası günündeki 120 bakiyesi (kayıt hariç) → düzeltmenin TAMAMI SUPHELI_NORMAL_ASIM; eşitlik kabul.
         Tetik (L5): düzeltme cariyi ya da bağ / Normal Cari alanlarından birini (S44 alanları) değiştiriyor — (i) S79 düzeltmesi (bakım 9 P7 (d) susması kalktı),
-        (ii) bağsız kaydın carisi, (iii) aynı carinin kendi tahsilatı (bakım 8 U5 boşluğu). Tarih de değişiyorsa sınır YENİ günde (L7). Yalnız tutar / tarih /
-        açıklama düzeltmesi bugünkü gibi denetlenmez (L8, KULLANICIYA SORULMALI 3)."""
+        (ii) bağsız kaydın carisi, (iii) aynı carinin kendi tahsilatı (bakım 8 U5 boşluğu). Tarih de değişiyorsa sınır YENİ günde (L7). S85 A (kullanıcı 06.11 16:18;
+        README bakım 11 Ö7, Ö9): Normal Cari Hesaba İşle'li kaydın yalnız tutar / tarih düzeltmesi de aynı ölçüyle (bakım 10 L8 (a)'nın Normal Cari kısmı kalktı);
+        faturaya bağlı, Normal Cari seçilmemiş kaydın yalnız tutar / tarihi denetlenmez (Ö7: L9 gereği iki okuma aynı sonuç)."""
         if k.tur != "tahsilat":
             return
-        if not any(a in dg and dg[a] != k.v.get(a) for a in ("cari",) + S44_ALANLARI):
-            return
         v = dict(k.v, **{a: b for a, b in dg.items() if a != "tarih"})
+        s85 = self._s85_tetik(k, dg, v)              # S85 A (README bakım 11 Ö7): Normal Cari kaydın yalnız tutarı / tarihi
+        if not s85 and not any(a in dg and dg[a] != k.v.get(a) for a in ("cari",) + S44_ALANLARI):
+            return
         if v.get("normal_cari") or v.get("fatura"):
             self._s44_sinir(d, k, v, dg.get("tarih", k.tarih))
+
+    @staticmethod
+    def _s85_tetik(k, dg, v):
+        """S85 A (README bakım 11 Ö7): düzeltme SONRASI hâlde "Normal Cari Hesaba İşle"li (v) tahsilatın tutarı ya da tarihi değişiyor (aynı düzeltmede açıklama da
+        olabilir; cari / bağ / Normal Cari değişiyorsa zaten S81). Sınır _s44_sinir'de S56 ölçüsüyle; tarih değişirse yeni günde (K10-3)."""
+        return bool(v.get("normal_cari")) and any(a in dg and dg[a] != (k.tarih if a == "tarih" else k.v.get(a)) for a in ("tutar", "tarih"))
 
     def _s57_kapsam(self, d, k, dg):
         """S57 A (kullanıcı 06.11 12:06; README U6, U7): OLAĞAN kayıt (S44 / S45 kapsamı dışı) Kapatılacak Fatura ya da taksit kartıyla bağlıyken carisi BAŞKA cariye
         düzeltilirse düzeltmenin TAMAMI BAG_KALDIRILMALI ile red (S45 ile aynı). S79 A (kullanıcı 06.11 13:41; README bakım 9 P5–P7): AYNI düzeltmede bağ da
         değişiyorsa (kaldırma ya da yeni carinin belgesi / kartı) S54 gibi KABUL — bakım 8 U7 (a) susması kalktı; kayıt kendi gününde yeni alanlarıyla yeniden
-        türetilir (G-7; U2). Formdaki peşin ödemenin carisi ÖNCE: S80 A (bakım 10 L1, L2 — tahsilatta FATURA_DUZENLENMELI; ödeme yönünde kâhin susar, L4)."""
+        türetilir (G-7; U2). Formdaki peşinin carisi ya da bağı ÖNCE: S80 / S83 / S84 A (bakım 10 L1, L2; bakım 11 Ö1–Ö5 — iki yönde FATURA_DUZENLENMELI)."""
         self._s80_pesin(k, dg)
         if not ("cari" in dg and dg["cari"] != k.v.get("cari") and self._bagli(k)):
             return
@@ -2780,8 +2813,9 @@ class Model:
     def _s40_kapsam(k, dg):
         """S40 A + S44 A kapsamı (README X7, V1, V10): karar metinleri tutar dışı alan olarak açıklama, cari (S40) ve fatura bağı, taksit kartı bağı, Normal Cari
         Hesaba İşle (S44) sayar. Kâhinin sustuğu (senaryo hatası): (a) bu alanların dışındaki alan (banka, evrak, yol, kart … — bakım 6 X11 (a)'nın kalanı),
-        (c) carisiz Kasa kaydına cari ya da S44 alanı (kaydın türü değişir; model dilinde yok — X11 (c), V10), formdaki peşin ödemenin bağı / carisi (faturanın
-        düzenlenmesidir, F-14; V3 (e)). Bakım 6'nın X11 (b) susması kalktı: S45 (Model._s44_kapsam)."""
+        (c) carisiz Kasa kaydına cari ya da S44 alanı (kaydın türü değişir; model dilinde yok — X11 (c), V10), formdaki peşinde yalnız Normal Cari seçimi (V3 (e)'nin
+        kalanı — bakım 11 Ö6, KULLANICIYA SORULMALI 2; peşinin carisi S80 / S83, bağı S84 ile red — _s80_pesin). Bakım 6'nın X11 (b) susması kalktı: S45
+        (Model._s44_kapsam)."""
         disi = sorted(set(dg) - set(S26_S40_ALANLARI) - set(S44_ALANLARI))
         if disi:
             raise AssertionError(f"senaryo hatası: geri yüklenmiş, açılıştan önce tarihli Kasa kaydının karar metinlerinde sayılmayan alanı düzeltildi ({disi}) — "
@@ -2790,10 +2824,10 @@ class Model:
         if "cari" not in k.v and degisen & ({"cari"} | set(S44_ALANLARI)):
             raise AssertionError("senaryo hatası: carisiz Kasa kaydına cari / bağ / Normal Cari eklendi — kaydın türü değişir; model dilinde yok "
                                  "(README bakım 6 X11 (c), bakım 7 V10)")
-        Model._s80_pesin(k, dg)                      # S80 A (README bakım 10 L1, L2): formdaki peşinin carisi → FATURA_DUZENLENMELI (V3 (e)'nin cari kısmı kalktı)
-        if k.v.get("fatura_odemesi") and degisen & set(S44_ALANLARI):
-            raise AssertionError("senaryo hatası: formdaki peşin ödemenin (fatura_odemesi) bağı düzeltildi — faturanın düzenlenmesidir (F-14), kararların "
-                                 "konusu değil (README bakım 7 V3 (e); bakım 10 KULLANICIYA SORULMALI 2)")
+        Model._s80_pesin(k, dg)                      # S80 A / S83 A / S84 A (README bakım 10 L1, L2; bakım 11 Ö1–Ö5): formdaki peşinin carisi ya da bağı → FATURA_DUZENLENMELI
+        if k.v.get("fatura_odemesi") and "normal_cari" in degisen:
+            raise AssertionError("senaryo hatası: formdaki peşinde yalnız Normal Cari Hesaba İşle seçimi düzeltildi — S84 'BAĞI (Kapatılacak Fatura)' der; kâhin "
+                                 "susar (README bakım 7 V3 (e); bakım 11 Ö6, KULLANICIYA SORULMALI 2)")
 
     @staticmethod
     def _bagli(k):
@@ -2814,6 +2848,10 @@ class Model:
             if not any(a in dg and dg[a] != k.v.get(a) for a in ("fatura", "taksit_karti")):
                 raise Red("BAG_KALDIRILMALI", "önce fatura / taksit kartı bağını kaldırın (S45 A; bağ sessizce kopmaz)")
         if not any(a in dg and dg[a] != k.v.get(a) for a in S44_ALANLARI):
+            if k.tur == "tahsilat" and k.v.get("normal_cari") and any(a in dg and dg[a] != k.v.get(a) for a in ("cari", "tutar")):
+                # S85 A (kullanıcı 06.11 16:18; README bakım 11 Ö7–Ö9): Normal Cari Hesaba İşle'li geri yüklenmiş kaydın yalnız carisi (S40) ya da tutarı (S26) şüpheli
+                # kaydı açık carinin 120 bakiyesini aşarsa SUPHELI_NORMAL_ASIM (S56 ölçüsü; bakım 10 L8 (b) kalktı)
+                self._s44_sinir(d, k, dict(k.v, **{a: b for a, b in dg.items() if a != "tarih"}))   # S85 (b)
             return dg
         if k.tur not in ("tahsilat", "odeme") or (k.tur == "odeme" and any(dg.get(a) for a in ("taksit_karti", "normal_cari"))):
             raise AssertionError(f"senaryo hatası: {k.tur} kaydında S44 alanı (taksit kartı / Normal Cari yalnız tahsilatta) — model dilinde yok (README bakım 7 V3 (f))")
