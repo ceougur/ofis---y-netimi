@@ -1474,9 +1474,10 @@ S("s58-r9-kartli-fatura-sil-iptal", ["EK-2B 35", "karar (4)", "F-15", "R-04", "H
     "redler": ["FATURA_SIL_TAHSILATLI_KART"],
     # C1: tahsilatsız kartlı fatura silindi → kart faturayla kalkar; bakiye fatura öncesine (0); gecikmiş 0
     "g1/gecikmis": 0, "kt1": {}, "mz/satirlar/120|C1/bakiye": 0,
-    # C3: silme reddedildi; iptal → kart kalkar, kart tahsilatı P2 bağı çözülür, avans (−3000)
+    # C3: silme reddedildi; iptal → kart tahsilatı P2 bağı çözülür, avans (−3000). Bakım 4 (S15 "kart kapanır", README Y9): tahsilatı olan kart
+    # KAPALI görünür, açık taksiti yok (eski beklenti kt3 {} — kart kalkar)
     "ak3": [{"k": "tahsilat:P2", "tur": "tahsilat", "kalan": -3000, "vade": "2026-02-15", "tarih": "2026-02-15"}],
-    "g3/gecikmis": 0, "kt3": {}, "mz/satirlar/120|C3/bakiye": -3000,
+    "g3/gecikmis": 0, "kt3": {"TK2": {"kapali": True, "taksitler": []}}, "mz/satirlar/120|C3/bakiye": -3000,
     # C2: Mevcut Borç kartının tükettiği F3 iptal → kart alttaki borç (BY 2000) kadar kalır, 4000 en erken taksitten küçülür
     # (01.03 3000 → 0, 01.04 3000 → 2000)
     "g2a/gecikmis": 0, "g2b/gecikmis": 2000,
@@ -1751,3 +1752,297 @@ S("s65-m1f-vade-gunu", ["M1f", "B1", "S1", "H-03", "EK-1 §1 adım 5"], [
     # yıl dönümü: vade 31.12 → 31.12'de 0, 01.01'de 4000
     "g2a/gecikmis": 0, "g2b/gecikmis": 4000,
 }}, aciklama="M1f: vadesi bugün olan gecikmiş değildir, gecikme ertesi gün başlar (taksit, fatura, yıl dönümü, hatırlatma).")
+
+# ================================================================================================ KÂHİN BAKIMI 4 (06.11.2026)
+# Kaynak: kullanıcı kararı 06.11 04:50 UTC S14, S15, S18, S19, S20, S21 ("hepsine A"; iş listesi D, AYNEN). Beklenenler model DEĞİŞTİRİLMEDEN ÖNCE elle yazıldı
+# (README "Kâhin bakımı 4", Y1…Y23).
+
+# ------------------------------------------------------------------------------------------------ S66
+S("s66-s18-avans-evrak-karsiliksiz", ["S18", "S11", "EK-1 M1c", "Ç-07", "karar (1)", "M2", "G2"], [
+    o("satis_faturasi", "2026-11-01", id="F0", cari="C3", M=6000, K=0, vade="2026-11-30"),
+    # C1: çek kilitli dönemde alındı, o gün açık borç yok → L'de tamamı avans
+    o("tahsilat", "2026-11-10", id="P1", cari="C1", yol="cek", evrak="CK1", tutar=10000),
+    # C3: çek F0'ın 6000'ini kapattı (kilitli dönem), 4000 avans
+    o("tahsilat", "2026-11-10", id="P3", cari="C3", yol="cek", evrak="CK3", tutar=10000),
+    # C2: çek avans; karşılıksız anında hâlâ 4000'i dağılmamış olacak
+    o("tahsilat", "2026-11-12", id="P2", cari="C2", yol="cek", evrak="CK2", tutar=10000),
+    o("donem_kilitle", tarih="2026-12-31"),
+    # avanslar kilitten SONRA faturaları kapatır
+    o("satis_faturasi", "2027-01-05", id="F1", cari="C1", M=10000, K=0, vade="2027-03-31"),
+    o("satis_faturasi", "2027-01-06", id="F3", cari="C3", M=4000, K=0, vade="2027-03-31"),
+    o("satis_faturasi", "2027-01-07", id="F2", cari="C2", M=6000, K=0, vade="2027-03-31"),
+    o("evrak_karsiliksiz", "2027-01-10", id="KS1", evrak="CK1"),
+    o("evrak_karsiliksiz", "2027-01-10", id="KS3", evrak="CK3"),
+    o("evrak_karsiliksiz", "2027-01-10", id="KS2", evrak="CK2"),
+    R("g1a", "gecikmis", cari="C1", tarih="2027-01-10"), R("g1b", "gecikmis", cari="C1", tarih="2027-01-11"),
+    R("ak1", "acik_kalemler", cari="C1", tarih="2027-01-11"), R("af1", "acik_faturalar", cari="C1", tarih="2027-01-11"),
+    R("g3", "gecikmis", cari="C3", tarih="2027-01-11"), R("ak3", "acik_kalemler", cari="C3", tarih="2027-01-11"),
+    R("af3", "acik_faturalar", cari="C3", tarih="2027-01-11"),
+    R("g2", "gecikmis", cari="C2", tarih="2027-01-11"), R("ak2", "acik_kalemler", cari="C2", tarih="2027-01-11"),
+    R("hat", "hatirlatma", tarih="2027-01-11"),
+    MZ("mz", "2026-11-01", "2027-01-31"),
+    o("devir", K="2026-12-31", ad="devir"),
+    R("g1d", "gecikmis", cari="C1", tarih="2027-01-11"), R("g3d", "gecikmis", cari="C3", tarih="2027-01-11"),
+    R("g2d", "gecikmis", cari="C2", tarih="2027-01-11"), R("ak2d", "acik_kalemler", cari="C2", tarih="2027-01-11"),
+], {"A": {
+    # S18 A: kilitli dönemde alınmış çekin TAMAMI ayrı borç (vade karşılıksız günü); kilitten sonra kapattığı fatura AÇILMAZ; kâhin susmaz.
+    # C1: KS1 10000 vade 10.01 → 10.01'de vadesi bugün (M1f) 0; 11.01'de 10000; F1 Ödendi. (S18 B olsaydı F1 kendi vadesiyle (31.03) açılır → 0.)
+    "g1a/gecikmis": 0, "g1b/gecikmis": 10000, "g1b/kahin_susuyor": 0,
+    "ak1": [{"k": "karsiliksiz:KS1", "tur": "karsiliksiz", "kalan": 10000, "vade": "2027-01-10", "tarih": "2027-01-10"}],
+    "af1": [],
+    # C3: F0 (kilitten önce) ve F3 (kilitten sonra, avansla) kapalı kalır; KS3 10000 ayrı borç → 10000. (B: F3 4000 açılır + 6000 → 6000; S8 harfiyen:
+    # F0 6000 (vade 30.11, gecikmiş) + F3 4000 (vade 31.03) → 6000.)
+    "g3/gecikmis": 10000, "g3/kahin_susuyor": 0,
+    "ak3": [{"k": "karsiliksiz:KS3", "tur": "karsiliksiz", "kalan": 10000, "vade": "2027-01-10", "tarih": "2027-01-10"}],
+    "af3": [],
+    # C2: KS2 10000 ayrı borç; çekin hâlâ dağılmamış 4000'i (avans) kendi kuyruğunda ona uygulanır → açık 6000 (vade 10.01); bakiye −10000 + 6000 + 10000
+    "g2/gecikmis": 6000, "g2/kahin_susuyor": 0,
+    "ak2": [{"k": "karsiliksiz:KS2", "tur": "karsiliksiz", "kalan": 6000, "vade": "2027-01-10", "tarih": "2027-01-10"}],
+    "hat/otomatik": {"C1": 10000, "C2": 6000, "C3": 10000}, "hat/supheli_etiketli": [], "hat/elle": {},
+    "mz/satirlar/120|C1/bakiye": 10000, "mz/satirlar/120|C3/bakiye": 10000, "mz/satirlar/120|C2/bakiye": 6000,
+    "mz/satirlar/101.01/bakiye": 0, "mz/satirlar/600/bakiye": -26000,
+    # devirli = devirsiz: K'de avanslar devir net satırıyla (evraka bağlanmadan) taşınır; karşılıksızlar M1c ayrı kalem → aynı sayılar
+    "g1d/gecikmis": 10000, "g3d/gecikmis": 10000, "g2d/gecikmis": 6000,
+    "ak2d": [{"k": "karsiliksiz:KS2", "tur": "karsiliksiz", "kalan": 6000, "vade": "2027-01-10", "tarih": "2027-01-10"}],
+}}, aciklama="S18: kilitli dönemde alınıp kilit günü sonunda tamamen dağılmamış (avans) çek karşılıksız dönerse çekin tamamı ayrı borç; devirli = devirsiz.")
+
+# ------------------------------------------------------------------------------------------------ S67
+S("s67-s19-kilit-ilerletme", ["S19", "S11", "S8", "karar (2)", "karar (3)", "EK-2B 28", "M1c"], [
+    o("satis_faturasi", "2026-11-01", id="F1", cari="C1", M=10000, K=0, vade="2027-03-31"),
+    o("satis_faturasi", "2026-11-02", id="F3", cari="C3", M=10000, K=0, vade="2027-03-31"),
+    o("satis_faturasi", "2026-11-03", id="F2", cari="C2", M=10000, K=0, vade="2026-11-30"),
+    o("tahsilat", "2026-11-10", id="P3", cari="C3", yol="cek", evrak="CK3", tutar=10000, fatura="F3"),
+    o("donem_kilitle", tarih="2026-11-30"),                                                       # L1
+    o("satis_faturasi", "2026-12-05", id="F4", cari="C2", M=10000, K=0, vade="2027-03-31"),
+    o("tahsilat", "2026-12-20", id="P1", cari="C1", yol="cek", evrak="CK1", tutar=10000, fatura="F1"),
+    o("tahsilat", "2026-12-20", id="P2", cari="C2", yol="nakit", tutar=10000),                   # bağsız: o gün F2'yi kapatır
+    o("satis_faturasi", "2027-01-05", id="F5", cari="C2", M=10000, K=0),                         # vadesiz → vade 05.01
+    o("tahsilat", "2027-01-10", id="T2", cari="C2", yol="nakit", tutar=10000, fatura="F2"),       # bağ, L1 altında yazıldı
+    o("evrak_karsiliksiz", "2027-01-15", id="KS1", evrak="CK1"),                                  # L1 altında yazıldı
+    o("evrak_karsiliksiz", "2027-01-15", id="KS3", evrak="CK3"),                                  # L1 altında yazıldı
+    R("g1a", "gecikmis", cari="C1", tarih="2027-02-01"), R("ak1a", "acik_kalemler", cari="C1", tarih="2027-02-01"),
+    R("g3a", "gecikmis", cari="C3", tarih="2027-02-01"), R("ak3a", "acik_kalemler", cari="C3", tarih="2027-02-01"),
+    R("g2a", "gecikmis", cari="C2", tarih="2027-02-01"), R("ak2a", "acik_kalemler", cari="C2", tarih="2027-02-01"),
+    R("not2a", "kilit_bag_notu", cari="C2", tarih="2027-02-01"),
+    o("donem_kilitle", tarih="2026-12-31"),                                                       # kilit P1 / P2 günlerini kapsayacak biçimde ilerler
+    R("g1b", "gecikmis", cari="C1", tarih="2027-02-01"), R("g3b", "gecikmis", cari="C3", tarih="2027-02-01"),
+    R("g2b", "gecikmis", cari="C2", tarih="2027-02-01"), R("not2b", "kilit_bag_notu", cari="C2", tarih="2027-02-01"),
+    o("donem_kilitle", tarih="2027-01-31"),                                                       # karşılıksız ve bağ günlerini de kapsar
+    R("g1c", "gecikmis", cari="C1", tarih="2027-02-01"), R("ak1c", "acik_kalemler", cari="C1", tarih="2027-02-01"),
+    R("g3c", "gecikmis", cari="C3", tarih="2027-02-01"), R("ak3c", "acik_kalemler", cari="C3", tarih="2027-02-01"),
+    R("g2c", "gecikmis", cari="C2", tarih="2027-02-01"), R("ak2c", "acik_kalemler", cari="C2", tarih="2027-02-01"),
+    MZ("mz", "2026-11-01", "2027-02-28"),
+], {"A": {
+    # C1: KS1 yazılırken kilit 30.11; çek 20.12'de alındı (> kilit) → S8: P1 geri alınır, F1 kendi vadesiyle (31.03) açık → 01.02'de 0.
+    # Kilit 31.12'ye (çeki kapsayacak) ve 31.01'e ilerletilse de karar DEĞİŞMEZ (S19 A). (Güncel kilitle okunsaydı 31.12 kilidinde S11 → 10000.)
+    "g1a/gecikmis": 0, "g1b/gecikmis": 0, "g1c/gecikmis": 0,
+    "ak1a": [{"k": "fatura:F1", "tur": "fatura", "kalan": 10000, "vade": "2027-03-31", "tarih": "2026-11-01"}],
+    "ak1c": [{"k": "fatura:F1", "tur": "fatura", "kalan": 10000, "vade": "2027-03-31", "tarih": "2026-11-01"}],
+    # C3: KS3 yazılırken kilit 30.11 ve çek 10.11'de (≤ kilit) → S11: F3 kapalı, KS3 10000 ayrı borç (vade 15.01) → 10000. Kilit 31.01'e (karşılıksızı da
+    # kapsayacak) ilerletilse de S11 kalır. (Güncel kilitle okunsaydı 31.01 kilidinde S8 → F3 31.03 vadesiyle → 0.)
+    "g3a/gecikmis": 10000, "g3b/gecikmis": 10000, "g3c/gecikmis": 10000,
+    "ak3a": [{"k": "karsiliksiz:KS3", "tur": "karsiliksiz", "kalan": 10000, "vade": "2027-01-15", "tarih": "2027-01-15"}],
+    "ak3c": [{"k": "karsiliksiz:KS3", "tur": "karsiliksiz", "kalan": 10000, "vade": "2027-01-15", "tarih": "2027-01-15"}],
+    # C2 (R3, README Y12): T2 yazılırken kilit 30.11; P2'nin F2'yi kapatışı 20.12'de (> kilit) → karar (2): T2 F2'yi kapatır, P2 serbest kalır ve KENDİ
+    # gününde (20.12) F4'ü kapatır; F5 (vade 05.01) açık → 10000; kilit notu yok. Kilit 31.12'ye ilerlese de değişmez. (Güncel kilitle okunsaydı 31.12
+    # kilidinde R3: P2 F2'de kalır, T2 bağsız 10.01'de F5'i kapatır, F4 (31.03) açık → 0 + kilit notu.)
+    "g2a/gecikmis": 10000, "g2b/gecikmis": 10000, "g2c/gecikmis": 10000,
+    "ak2a": [{"k": "fatura:F5", "tur": "fatura", "kalan": 10000, "vade": "2027-01-05", "tarih": "2027-01-05"}],
+    "ak2c": [{"k": "fatura:F5", "tur": "fatura", "kalan": 10000, "vade": "2027-01-05", "tarih": "2027-01-05"}],
+    "not2a": [], "not2b": [],
+    # bakiyeler kilitten bağımsız (kuyruk kuralı; yevmiye aynı)
+    "mz/satirlar/120|C1/bakiye": 10000, "mz/satirlar/120|C3/bakiye": 10000, "mz/satirlar/120|C2/bakiye": 10000,
+    "mz/satirlar/100/bakiye": 20000, "mz/satirlar/101.01/bakiye": 0,
+}}, aciklama="S19: S11 / R3 kararı karşılıksızın (bağın) yazıldığı andaki kilide göre bir kez verilir; kilit sonradan ilerletilirse değişmez.")
+
+# ------------------------------------------------------------------------------------------------ S68
+S("s68-s14-supheli-caride-bagli-cek", ["S14", "K3", "§3.11b/2 (b)", "karar (2)", "J-01", "J-04", "J-06", "K6", "M13"], [
+    o("satis_faturasi", "2026-03-01", id="F1", cari="C1", M=10000, K=0, vade="2026-03-31"),
+    o("satis_faturasi", "2026-03-01", id="F4", cari="C3", M=10000, K=0, vade="2026-03-31"),
+    o("satis_faturasi", "2026-03-01", id="F6", cari="C2", M=6000, K=0, vade="2026-03-31"),
+    o("satis_faturasi", "2026-03-02", id="F5", cari="C3", M=10000, K=0, vade="2026-04-15"),
+    o("satis_faturasi", "2026-03-02", id="F7", cari="C2", M=3000, K=0, vade="2026-04-05"),
+    o("satis_faturasi", "2026-03-03", id="F8", cari="C2", M=2000, K=0, vade="2026-04-10"),
+    o("satis_faturasi", "2026-03-05", id="F2", cari="C1", M=8000, K=0, vade="2026-04-30"),
+    # C2: üç kayıt (SC → F6, SD → F7, SG → F8); SD Şüpheliden Çıkar ile döner
+    o("supheliye_al", "2026-04-01", id="SC", cari="C2", tutar=6000),
+    o("supheliye_al", "2026-04-05", id="SD", cari="C2", tutar=3000),
+    o("supheliye_al", "2026-04-06", id="SG", cari="C2", tutar=2000),
+    o("supheliden_cikar", "2026-04-10", cari="C2", kayit="SD"),
+    o("tahsilat", "2026-04-20", id="P4", cari="C2", yol="cek", evrak="CK4", tutar=3000, fatura="F7"),
+    o("tahsilat", "2026-04-22", id="P5", cari="C2", yol="senet", evrak="SN5", tutar=2000, fatura="F8"),
+    # C1: SA → F1; karşılık; kayıttan SONRA kesilen F3
+    o("supheliye_al", "2026-05-01", id="SA", cari="C1", tutar=10000),
+    # C3: SB 15000 → F4 10000 + F5'in 5000'i (F5 kısmen aktarıldı)
+    o("supheliye_al", "2026-05-01", id="SB", cari="C3", tutar=15000),
+    o("karsilik_ayir", "2026-05-02", cari="C1", tutar=4000, kayit="SA"),
+    o("satis_faturasi", "2026-05-10", id="F3", cari="C1", M=5000, K=0, vade="2026-06-30"),
+    o("tahsilat", "2026-05-15", id="P2", cari="C1", yol="senet", evrak="SN2", tutar=5000, fatura="F3"),
+    o("tahsilat", "2026-05-16", id="P1", cari="C1", yol="cek", evrak="CK1", tutar=10000, fatura="F1"),
+    o("tahsilat", "2026-05-20", id="P3", cari="C3", yol="cek", evrak="CK3", tutar=10000, fatura="F5"),
+    R("g1", "gecikmis", cari="C1", tarih="2026-06-01"), R("g3", "gecikmis", cari="C3", tarih="2026-06-01"),
+    R("g2", "gecikmis", cari="C2", tarih="2026-05-01"),
+    R("sk1", "supheli_kayitlari", cari="C1"), R("sk2", "supheli_kayitlari", cari="C2"), R("sk3", "supheli_kayitlari", cari="C3"),
+    R("hat", "hatirlatma", tarih="2026-06-01"),
+    R("yevP1", "yevmiye", bas="2026-05-16", son="2026-05-16"),
+    MZ("mz", "2026-03-01", "2026-06-30"),
+], {"A": {
+    # S14 A: bağlı çek / senet bağlı faturanın DURDUĞU hesaptan düşer. Eski kâhin (bağlı tahsilat her zaman 120, sınırıyla) P1, P3, P5'i
+    # SUPHELI_NORMAL_ASIM ile reddederdi; S14'te yalnız 120'ye kalan kısım sınıra girer → red yok.
+    "redler": [],
+    # C1: F1 SA ile şüpheliye aktarıldı → P1 A 128 10000 (SA); SA kalanı 0 → karşılık 4000 644'e (K6). F3 kayıttan SONRA kesildi → P2 A 120 5000.
+    # 120 = 10000 + 8000 + 5000 − 10000 (J-01) − 5000 (P2) = 8000 (F2); 128 0; 129 0. Gecikmiş 01.06: F2 (vade 30.04) 8000; şüpheli 0
+    "mz/satirlar/120|C1/bakiye": 8000, "mz/satirlar/128|C1/bakiye": 0, "mz/satirlar/129|C1/bakiye": 0,
+    "mz/satirlar/644/bakiye": -4000, "mz/satirlar/654/bakiye": 4000,
+    "g1/gecikmis": 8000, "g1/supheli": 0, "g1/kahin_susuyor": 0,
+    "sk1/0/id": "SA", "sk1/0/kalan": 0, "sk1/0/karsilik": 0,
+    "yevP1/0/kaynak": "P1", "yevP1/0/satirlar/0/h": "101.01", "yevP1/0/satirlar/0/b": 10000, "yevP1/0/satirlar/1/h": "128",
+    "yevP1/0/satirlar/1/c": "C1", "yevP1/0/satirlar/1/a": 10000, "yevP1/1/tur": "karsilik_cozulme", "yevP1/1/satirlar/1/h": "644",
+    # C3: F5 kısmen aktarıldı (5000 128'de, 5000 120'de); çek F5'in iki kısmının toplamı kadar (10000) → tek okuma: A 128 5000 (SB) + A 120 5000.
+    # 120 = 20000 − 15000 − 5000 = 0; 128 = 15000 − 5000 = 10000 (F4). Sınır: normal kısım 5000 = 120 bakiyesi 5000 → red yok
+    "mz/satirlar/120|C3/bakiye": 0, "mz/satirlar/128|C3/bakiye": 10000,
+    "g3/gecikmis": 0, "g3/supheli": 10000, "g3/kahin_susuyor": 0, "sk3/0/kalan": 10000,
+    # C2: SD Şüpheliden Çıkar ile döndü → F7 120'de → P4 A 120 3000 (açık kayıt SC, SG olsa da). F8 SG'de → P5 A 128 2000 SG'den (en eski açık kayıt
+    # SC'den DEĞİL). 120 = 11000 − 11000 + 3000 − 3000 = 0; 128 = 11000 − 3000 − 2000 = 6000 (SC: F6)
+    "mz/satirlar/120|C2/bakiye": 0, "mz/satirlar/128|C2/bakiye": 6000,
+    "g2/gecikmis": 0, "g2/supheli": 6000,
+    "sk2/0/id": "SC", "sk2/0/kalan": 6000, "sk2/1/id": "SD", "sk2/1/kalan": 0, "sk2/2/id": "SG", "sk2/2/kalan": 0,
+    # hatırlatma (S7 A): C1'in açık şüpheli kaydı yok → otomatik 8000; C2, C3 etiketli, şüphesiz gecikmiş yok
+    "hat/otomatik": {"C1": 8000}, "hat/supheli_etiketli": ["C2", "C3"], "hat/elle": {},
+    # evrak portföyü: CK1 10000 + CK4 3000 + CK3 10000; senet SN2 5000 + SN5 2000
+    "mz/satirlar/101.01/bakiye": 23000, "mz/satirlar/121.01/bakiye": 7000, "mz/satirlar/600/bakiye": -54000,
+}}, aciklama="S14: şüpheli alacaklı caride faturaya bağlı çek / senet bağlı faturanın durduğu hesaptan düşer (aktarılmış 128 — o kalemin kaydından; "
+             "sonradan kesilmiş ya da Şüpheliden Çıkar ile dönmüş 120); sınır yalnız normal kısma.")
+
+# ------------------------------------------------------------------------------------------------ S69
+S("s69-s15-kartli-fatura-iptal", ["S15", "S5", "EK-2B 35", "F-15", "G-7", "karar (1)", "H-01", "H-04"], [
+    o("satis_faturasi", "2026-01-05", id="F0", cari="C1", M=4000, K=0, vade="2026-01-31"),
+    o("satis_faturasi", "2026-01-10", id="F1", cari="C1", M=12000, K=0),
+    o("tahsilat", "2026-01-10", id="P0", cari="C1", yol="havale", banka="B1", tutar=3000, fatura="F1", fatura_odemesi=True),   # formdaki peşin
+    o("taksit_karti", "2026-01-10", id="TK1", cari="C1", kaynak="fatura", fatura="F1", toplam=9000,
+      taksitler=[{"vade": "2026-02-10", "tutar": 3000}, {"vade": "2026-03-10", "tutar": 3000}, {"vade": "2026-04-10", "tutar": 3000}]),
+    o("satis_faturasi", "2026-01-20", id="F2", cari="C3", M=6000, K=0),
+    o("taksit_karti", "2026-01-20", id="TK2", cari="C3", kaynak="fatura", fatura="F2", toplam=6000,
+      taksitler=[{"vade": "2026-02-20", "tutar": 3000}, {"vade": "2026-03-20", "tutar": 3000}]),
+    o("tahsilat", "2026-02-10", id="P1", cari="C1", yol="havale", banka="B1", tutar=3000, taksit_karti="TK1"),
+    o("tahsilat", "2026-02-20", id="P3", cari="C3", yol="havale", banka="B1", tutar=3000, taksit_karti="TK2"),
+    o("tahsilat", "2026-03-12", id="P2", cari="C1", yol="havale", banka="B1", tutar=1000, taksit_karti="TK1"),   # kısmi
+    R("g1a", "gecikmis", cari="C1", tarih="2026-03-15"), R("kt1a", "kartlar", cari="C1", tarih="2026-03-15"),
+    o("iptal", kaynak="F1"),
+    R("g1b", "gecikmis", cari="C1", tarih="2026-03-16"), R("ak1b", "acik_kalemler", cari="C1", tarih="2026-03-16"),
+    R("kt1b", "kartlar", cari="C1", tarih="2026-03-16"), R("af1b", "acik_faturalar", cari="C1", tarih="2026-03-16"),
+    o("donem_kilitle", tarih="2026-02-28"),
+    o("iptal", kaynak="F2"),                                                  # kilitli dönemdeki fatura → red
+    R("g3", "gecikmis", cari="C3", tarih="2026-03-21"), R("kt3", "kartlar", cari="C3", tarih="2026-03-21"),
+    R("durum_F1", "kaynak_durumu", kaynak="F1"), R("durum_F2", "kaynak_durumu", kaynak="F2"),
+    MZ("mz", "2026-01-01", "2026-04-30"),
+], {"A": {
+    # iptalden önce (15.03): F0 4000 (vade 31.01) + 2. taksitin kalanı 2000 (vade 10.03) → 6000
+    "g1a/gecikmis": 6000,
+    "kt1a": {"TK1": {"kapali": False, "taksitler": [{"vade": "2026-02-10", "tutar": 3000, "kalan": 0},
+                                                    {"vade": "2026-03-10", "tutar": 3000, "kalan": 2000},
+                                                    {"vade": "2026-04-10", "tutar": 3000, "kalan": 3000}]}},
+    # S15 A: iptal KABUL; formdaki peşin P0 faturayla düşer (S5); kart kapanır; P1 (10.02, 3000) ve P2 (12.03, 1000) carinin bağsız alacağı olur ve
+    # KENDİ günlerinde açık borcu (F0 4000, vade 31.01) kapatır (karar (1)) → açık kalem yok, gecikmiş 0, bakiye 0
+    "redler": ["KILITLI_DONEM"], "durum_F1": "iptal",
+    "g1b/gecikmis": 0, "ak1b": [], "af1b": [], "kt1b": {"TK1": {"kapali": True, "taksitler": []}},
+    "mz/satirlar/120|C1/bakiye": 0,
+    # C3: kilitli dönemdeki fatura iptal edilemez (F-15 / G-7) → kart sürer; 2. taksit (20.03) 3000 gecikmiş
+    "durum_F2": "aktif", "g3/gecikmis": 3000, "mz/satirlar/120|C3/bakiye": 3000,
+    "kt3": {"TK2": {"kapali": False, "taksitler": [{"vade": "2026-02-20", "tutar": 3000, "kalan": 0},
+                                                   {"vade": "2026-03-20", "tutar": 3000, "kalan": 3000}]}},
+    # banka: P1 3000 + P2 1000 + P3 3000 (P0 faturayla düştü); gelir yalnız F0 + F2
+    "mz/satirlar/102.B1/bakiye": 7000, "mz/satirlar/600/bakiye": -10000,
+}}, aciklama="S15: taksit kartında tahsilatı olan faturanın İptal Et'i kabul; kart kapanır, kart tahsilatları carinin bağsız alacağı (avans) olur; kilitli dönemde iptal yok.")
+
+# ------------------------------------------------------------------------------------------------ S70
+S("s70-s20-silinenlerden-geri-yukle-kasa", ["S20", "S12", "G-7", "R-04", "M-01", "EK-2B 33", "EK-2 §4 (8)"], [
+    o("kasa_giris", "2026-01-10", id="KG1", tutar=1000),                  # açılış yokken: kabul
+    o("kasa_cikis", "2026-01-12", id="KC1", tutar=200),
+    o("sil", kaynak="KG1"), o("sil", kaynak="KC1"),
+    o("kasa_acilis", "2026-01-15", id="KA", tutar=10000),                 # Kasa'da etkin hareket yok → kabul
+    o("geri_yukle", kaynak="KG1"),                                        # S20: aynen geri gelir (10.01 < açılış 15.01)
+    R("mu1", "mutabakat_uyarilari", tarih="2026-01-31"),
+    o("kasa_giris", "2026-01-11", tutar=500),                             # YENİ kayıt → red KASA_ACILIS_ONCE
+    o("geri_yukle", kaynak="KC1"),
+    o("kasa_giris", "2026-01-15", id="KG2", tutar=700),                   # açılış günü → kabul
+    o("duzenle", kaynak="KA", degisiklik={"tarih": "2026-01-16"}),        # R8: ilk Kasa hareketi (geri yüklenen KG1) 10.01 → red KASA_ACILIS_SONRA
+    R("mu2", "mutabakat_uyarilari", tarih="2026-01-31"),
+    MZ("mz", "2026-01-01", "2026-01-31"),
+    R("mod14", "moduller", tarih="2026-01-14"), R("mod15", "moduller", tarih="2026-01-15"),
+    R("durum_KG1", "kaynak_durumu", kaynak="KG1"),
+], {"A": {
+    "redler": ["KASA_ACILIS_ONCE", "KASA_ACILIS_SONRA"],
+    "mu1": [{"kod": "KASA_ACILIS_ONCESI_HAREKET", "kaynak": "KG1", "tarih": "2026-01-10", "acilis": "2026-01-15"}],
+    "mu2": [{"kod": "KASA_ACILIS_ONCESI_HAREKET", "kaynak": "KG1", "tarih": "2026-01-10", "acilis": "2026-01-15"},
+            {"kod": "KASA_ACILIS_ONCESI_HAREKET", "kaynak": "KC1", "tarih": "2026-01-12", "acilis": "2026-01-15"}],
+    # Kasa = 1000 − 200 + 10000 + 700 = 11500 (500'lük yeni giriş yok); 649.90 = 1000 + 700; 770.90 = 200
+    "mz/satirlar/100/bakiye": 11500, "mz/satirlar/649.90/bakiye": -1700, "mz/satirlar/770.90/bakiye": 200, "mz/satirlar/519/bakiye": -10000,
+    "mod14/kasa": 800, "mod15/kasa": 11500, "durum_KG1": "aktif",
+    # değişmez kasa_acilis_ilk: geri yüklenen kayıt hata DEĞİL (uyarı) — her senaryoda koşan değişmez denetimi temiz olmalı (README Y17)
+}}, aciklama="S20: Silinenler'den geri yüklenen, Kasa açılışından önce tarihli Kasa hareketi aynen gelir (G-7); S12 yalnız yeni kayıtta; Mutabakat Testi uyarı verir.")
+
+# ------------------------------------------------------------------------------------------------ S71
+S("s71-s20-yedekten-eski-veri-kasa", ["S20", "S12", "G-7", "M-01", "EK-2B 33"], [
+    # geri yüklenen yedekteki (eski sürümün yazdığı) kayıtlar: açılış 01.02, ondan önce tarihli iki Kasa hareketi
+    o("kasa_acilis", "2026-02-01", id="KA", tutar=10000, yedekten=True),
+    o("kasa_giris", "2026-01-20", id="KY", tutar=300, yedekten=True),
+    o("tahsilat", "2026-01-25", id="PY", cari="C1", yol="nakit", tutar=500, yedekten=True),
+    o("kasa_giris", "2026-01-26", tutar=400),                             # YENİ kayıt → red KASA_ACILIS_ONCE
+    o("kasa_giris", "2026-02-01", id="KG3", tutar=100),                   # açılış günü → kabul
+    o("duzenle", kaynak="KA", degisiklik={"tarih": "2026-02-02"}),        # R8 → red KASA_ACILIS_SONRA
+    R("mu1", "mutabakat_uyarilari", tarih="2026-02-28"),
+    MZ("mz", "2026-01-01", "2026-02-28"), R("mod31", "moduller", tarih="2026-01-31"),
+    o("duzenle", kaynak="KA", degisiklik={"tarih": "2026-01-19"}),        # öne alma serbest → uyarı kalkar
+    R("mu2", "mutabakat_uyarilari", tarih="2026-02-28"), R("mod31b", "moduller", tarih="2026-01-31"),
+    R("yev", "yevmiye", bas="2026-01-19", son="2026-01-19"),
+], {"A": {
+    "redler": ["KASA_ACILIS_ONCE", "KASA_ACILIS_SONRA"],
+    "mu1": [{"kod": "KASA_ACILIS_ONCESI_HAREKET", "kaynak": "KY", "tarih": "2026-01-20", "acilis": "2026-02-01"},
+            {"kod": "KASA_ACILIS_ONCESI_HAREKET", "kaynak": "PY", "tarih": "2026-01-25", "acilis": "2026-02-01"}],
+    # Kasa = 10000 + 300 + 500 + 100 = 10900; cari C1 −500; 649.90 = 300 + 100
+    "mz/satirlar/100/bakiye": 10900, "mz/satirlar/120|C1/bakiye": -500, "mz/satirlar/649.90/bakiye": -400, "mz/satirlar/519/bakiye": -10000,
+    "mod31/kasa": 800, "mod31/cari|C1": -500,
+    "mu2": [], "mod31b/kasa": 10800,
+    "yev/0/kaynak": "KA", "yev/0/sinif": 0, "yev/0/satirlar/0/h": "100", "yev/0/satirlar/0/b": 10000,
+}}, aciklama="S20: yedekten geri yüklenen eski sürüm verisindeki açılış öncesi Kasa hareketi aynen; yeni kayda S12; açılışı öne almak uyarıyı kaldırır.")
+
+# ------------------------------------------------------------------------------------------------ S72
+S("s72-s21-pos-valor-resmi-tatil", ["S21", "2429", "D-01", "D-04", "T-03", "KG-6", "N-11"], [
+    # 23 Nisan 2026 Perşembe (resmî tatil) → valör 24 Nisan Cuma; tatil günü yapılan POS iadesi "valörden önce" (108'den)
+    o("satis_faturasi", "2026-04-22", id="F1", cari="C1", M=50000, K=0),
+    o("tahsilat", "2026-04-22", id="P1", cari="C1", yol="pos", pos="POS1", tutar=50000, komisyon=1000, valor="2026-04-23"),
+    o("satis_iade_faturasi", "2026-04-23", id="I1", cari="C1", M=10000, K=0, asil_fatura="F1"),
+    o("pos_iade", "2026-04-23", tahsilat="P1", cari="C1", tutar=10000),
+    R("mod0423", "moduller", tarih="2026-04-23"), R("mod0424", "moduller", tarih="2026-04-24"),
+    R("yev0424", "yevmiye", bas="2026-04-24", son="2026-04-24"),
+    # 1 Mayıs 2026 Cuma (tatil) + hafta sonu → 4 Mayıs Pazartesi
+    o("satis_faturasi", "2026-04-30", id="F2", cari="C3", M=30000, K=0),
+    o("tahsilat", "2026-04-30", id="P2", cari="C3", yol="pos", pos="POS1", tutar=30000, komisyon=600, valor="2026-05-01"),
+    R("mod0503", "moduller", tarih="2026-05-03"), R("mod0504", "moduller", tarih="2026-05-04"),
+    # 29 Ekim 2026 Perşembe → 30 Ekim Cuma (çekim günü 28 Ekim yarım gün; kaydırma yolu ona değmez)
+    o("satis_faturasi", "2026-10-28", id="F4", cari="C3", M=10000, K=0),
+    o("tahsilat", "2026-10-28", id="P4", cari="C3", yol="pos", pos="POS1", tutar=10000, komisyon=200, valor="2026-10-29"),
+    R("mod1029", "moduller", tarih="2026-10-29"), R("mod1030", "moduller", tarih="2026-10-30"),
+    # 1 Ocak 2027 Cuma → 4 Ocak Pazartesi; K'den sonraya kalan bekleyen POS devirde açılır (N-11)
+    o("satis_faturasi", "2026-12-30", id="F3", cari="C1", M=20000, K=0),
+    o("tahsilat", "2026-12-30", id="P3", cari="C1", yol="pos", pos="POS1", tutar=20000, komisyon=400, valor="2027-01-01"),
+    MZ("mz", "2026-01-01", "2026-12-31"),
+    o("devir", K="2026-12-31", ad="devir"),
+    R("mod0103", "moduller", tarih="2027-01-03"), R("mod0104", "moduller", tarih="2027-01-04"),
+], {"A": {
+    # 23.04: valör henüz olmadı → POS bekleyen 50000 − 1000 (KG-6 komisyon çekim günü) − 10000 (iade 108'den) = 39000; banka 0
+    "mod0423/pos|POS1": 39000, "mod0423/banka|B1": 0,
+    # 24.04: 108 → 102 net 39000 (D-01, etkin valör günü)
+    "mod0424/pos|POS1": 0, "mod0424/banka|B1": 39000,
+    "yev0424/0/kaynak": "P1", "yev0424/0/tur": "pos_valor", "yev0424/0/satirlar/0/h": "102.B1", "yev0424/0/satirlar/0/b": 39000,
+    # 03.05 Pazar: P2 bekliyor 30000 − 600; 04.05: bankada
+    "mod0503/pos|POS1": 29400, "mod0503/banka|B1": 39000, "mod0504/pos|POS1": 0, "mod0504/banka|B1": 68400,
+    "mod1029/pos|POS1": 9800, "mod1029/banka|B1": 68400, "mod1030/pos|POS1": 0, "mod1030/banka|B1": 78200,
+    # K (31.12): P3 bekliyor 20000 − 400 = 19600; komisyon toplamı 1000 + 600 + 200 + 400
+    "mz/satirlar/102.B1/bakiye": 78200, "mz/satirlar/108.POS1/bakiye": 19600, "mz/satirlar/653/bakiye": 2200,
+    "mz/satirlar/120|C1/bakiye": 0, "mz/satirlar/120|C3/bakiye": 0, "mz/satirlar/610/bakiye": 10000, "mz/satirlar/600/bakiye": -110000,
+    "devir/yeni_acilis/108.POS1": 19600, "devir/yeni_acilis/102.B1": 78200,
+    # yeni yıl: 03.01 Pazar hâlâ bekliyor; 04.01'de bankada
+    "mod0103/pos|POS1": 19600, "mod0103/banka|B1": 78200, "mod0104/pos|POS1": 0, "mod0104/banka|B1": 97800,
+}}, aciklama="S21: POS valörü resmî tatile düşerse bir sonraki iş gününe kayar (tatil + hafta sonu zinciri, yıl dönümü); iade ve devir etkin valöre göre.")

@@ -327,17 +327,53 @@ class OlayMaddeleri(unittest.TestCase):
                                  o("degersiz_yaz", "2026-02-03", cari="C1", kayit="YOK")]))
         self.assertEqual([x["kod"] for x in r["redler"]], ["SUPHELI_YOK"])
 
-    # ---- kâhin bakımı 3 (beklenenler model değiştirilmeden ÖNCE elle yazıldı; README T1…T13)
-    def test_S11_avans_kahin_susar(self):
-        # T8 (a) / KULLANICIYA SORULMALI 1: çek kilitli dönemde alındı ama o gün açık borç yoktu (L'de 10000 avans); kilitten sonra F1'i kapattı;
-        # karşılıksız kilitten sonra → iki okuma, kâhin kural SAYMAZ: kahin_susuyor [("S11_AVANS", L'deki dağılmamış tutar 10000)].
-        # Tamamen dağılmış evrakta (s63) susmaz.
+    # ---- kâhin bakımı 4 (beklenenler model değiştirilmeden ÖNCE elle yazıldı; README Y1…Y23)
+    def test_S18_avans_evrak_tamami_ayri_borc(self):
+        # S18 A (README Y10; bakım 3'ün test_S11_avans_kahin_susar'ının YERİNE): çek kilitli dönemde alındı ama o gün açık borç yoktu (L'de 10000 avans);
+        # kilitten sonra F1'i kapattı; karşılıksız kilitten sonra → çekin TAMAMI ayrı borç (vade 10.01), F1 kapalı kalır; kâhin SUSMAZ.
+        # Eski beklenti: kahin_susuyor [("S11_AVANS", 10000)] (iki okuma, kural sayılmıyordu).
         r = M.kos(senaryo([o("tahsilat", "2026-11-10", id="P1", cari="C1", yol="cek", evrak="CK1", tutar=10000),
                            o("donem_kilitle", tarih="2026-12-31"),
                            o("satis_faturasi", "2027-01-05", id="F1", cari="C1", M=10000, K=0, vade="2027-03-31"),
-                           o("evrak_karsiliksiz", "2027-01-10", evrak="CK1"),
-                           E.R("g", "gecikmis", cari="C1", tarih="2027-01-11")]))
-        self.assertEqual([(x["neden"], x.get("tutar")) for x in r["raporlar"]["g"].get("kahin_susuyor", [])], [("S11_AVANS", 10000)])
+                           o("evrak_karsiliksiz", "2027-01-10", id="KS1", evrak="CK1"),
+                           E.R("g", "gecikmis", cari="C1", tarih="2027-01-11"), E.R("ak", "acik_kalemler", cari="C1", tarih="2027-01-11")]))
+        self.assertNotIn("kahin_susuyor", r["raporlar"]["g"])
+        self.assertEqual(r["raporlar"]["g"]["gecikmis"], 10000)
+        self.assertEqual([(a["k"], a["kalan"], a["vade"]) for a in r["raporlar"]["ak"]], [("karsiliksiz:KS1", 10000, "2027-01-10")])
+
+    def test_S14_kismi_kahin_susar(self):
+        # README Y5 / KULLANICIYA SORULMALI 2 (a): F5 kısmen aktarıldı (5000 128'de, 5000 120'de), bağlı çek 6000 < 10000 → hangi kısım önce, iki okuma:
+        # kâhin kural SAYMAZ: kahin_susuyor [("S14_KISMI", 6000)]. Çek iki kısmın toplamı kadarsa (s68 C3) susmaz; red yok (normal kısım ≤ 120)
+        r = M.kos(senaryo([o("satis_faturasi", "2026-03-01", id="F4", cari="C3", M=10000, K=0, vade="2026-03-31"),
+                           o("satis_faturasi", "2026-03-02", id="F5", cari="C3", M=10000, K=0, vade="2026-04-15"),
+                           o("supheliye_al", "2026-05-01", id="SB", cari="C3", tutar=15000),
+                           o("tahsilat", "2026-05-20", id="P3", cari="C3", yol="cek", evrak="CK3", tutar=6000, fatura="F5"),
+                           E.R("g", "gecikmis", cari="C3", tarih="2026-06-01")]))
+        self.assertEqual([(x["neden"], x.get("tutar")) for x in r["raporlar"]["g"].get("kahin_susuyor", [])], [("S14_KISMI", 6000)])
+        self.assertEqual(r["redler"], [])
+
+    def test_S21_tatil_takvimi(self):
+        # README Y19 / Y20 (S21 A): nominal valör tam gün resmî tatile (2429) ya da hafta sonuna (K3) düşerse ilk iş günü; tatil + hafta sonu zinciri
+        self.assertEqual(M.pos_etkin_valor("2026-04-23"), "2026-04-24")      # 23 Nisan Perşembe → Cuma
+        self.assertEqual(M.pos_etkin_valor("2026-05-01"), "2026-05-04")      # 1 Mayıs Cuma → Pazartesi
+        self.assertEqual(M.pos_etkin_valor("2026-05-19"), "2026-05-20")
+        self.assertEqual(M.pos_etkin_valor("2026-07-15"), "2026-07-16")
+        self.assertEqual(M.pos_etkin_valor("2026-08-30"), "2026-08-31")      # Pazar ve tatil
+        self.assertEqual(M.pos_etkin_valor("2026-10-29"), "2026-10-30")
+        self.assertEqual(M.pos_etkin_valor("2027-01-01"), "2027-01-04")      # yıl dönümü: Cuma → Pazartesi
+        self.assertEqual(M.pos_etkin_valor("2027-01-02"), "2027-01-04")      # Cumartesi
+        self.assertEqual(M.pos_etkin_valor("2026-04-24"), "2026-04-24")      # iş günü aynen
+        self.assertEqual(M.pos_etkin_valor("2026-04-23", tatil=False), "2026-04-23")   # 2.4.9 türetmesi: yalnız hafta sonu (Y22)
+        self.assertEqual([M.tatil_turu(x) for x in ("2026-04-23", "2026-10-28", "2026-05-27", "2026-04-24", "2028-04-23", "2028-06-01")],
+                         ["tam", "belirsiz", "belirsiz", None, "tam", "belirsiz"])
+
+    def test_S21_belirsiz_valor_kahin_susar(self):
+        # README Y21 / KULLANICIYA SORULMALI 4: yarım gün (28 Ekim, arife) ve doğrulanmamış dinî bayram — kâhin kural kurmaz (senaryo hatası)
+        for v in ("2026-10-28", "2026-05-27", "2026-03-19", "2026-05-23"):     # 23.05 Cumartesi → kaydırma yolu bayram penceresine (25.05) değer
+            with self.assertRaises(AssertionError, msg=v):
+                M.pos_etkin_valor(v)
+        with self.assertRaises(AssertionError):
+            M.kos(senaryo([o("tahsilat", "2026-10-27", cari="C1", yol="pos", pos="POS1", tutar=1000, valor="2026-10-28")]))
 
     def test_EK2_4_1_ayni_gun_yazim_sirasi_sonucu_degistirmez(self):
         # EK-2 §4 (1) (karar (1) ile): aynı gündeki kalemlerin yazım sırası ters çevrilince her carinin gecikmişi ve vade bazında açık
@@ -598,18 +634,21 @@ class SenaryoHijyeni(unittest.TestCase):
                 if x.get("yol") == "pos" and x.get("valor"):
                     self.assertLess(dt.date.fromisoformat(x["valor"]).weekday(), 5, s["ad"])
 
-    def test_pos_valoru_resmi_tatile_dusmez(self):
-        # kâhin bakımı 3 E1 (ana oturum K3): kitap D-01 valörün resmî tatilde ne olduğunu söylemez → hiçbir senaryoda valör (ve hafta sonu
-        # kaydırmasının geçtiği günler) resmî tatile düşmez; kural uydurulmaz (README KULLANICIYA SORULMALI 5)
+    def test_pos_valoru_belirsiz_gune_dusmez(self):
+        # kâhin bakımı 4 (S21 A; README Y21, Y23; bakım 3'ün test_pos_valoru_resmi_tatile_dusmez'inin YERİNE): sabit resmî tatile düşen valör artık
+        # SERBEST (model sonraki iş gününe kaydırır); valör, hafta sonu kaydırmasının geçtiği günler ve modelin kaydırma yolu BELİRSİZ güne (yarım gün /
+        # doğrulanmamış dinî bayram) düşmez — kâhin orada kural kurmaz. En az bir senaryoda valör sabit tatile düşer (S21 sınanır)
         import datetime as dt
-        n = 0
+        n = tatil = 0
         for s in self._hepsi():
             for x in s["olaylar"]:
                 if x.get("yol") == "pos" and x.get("valor"):
                     n += 1
-                    self.assertTrue(U.valor_tatilsiz(x["tarih"], dt.date.fromisoformat(x["valor"])), f"{s['ad']} {x.get('id')} {x['valor']}")
+                    self.assertTrue(U.valor_kesin(x["tarih"], dt.date.fromisoformat(x["valor"])), f"{s['ad']} {x.get('id')} {x['valor']}")
+                    tatil += M.tatil_turu(x["valor"]) == "tam"
         self.assertGreater(n, 10)
-        self.assertTrue(U.tatil_mi(dt.date(2026, 4, 23)) and U.tatil_mi(dt.date(2027, 1, 1)) and not U.tatil_mi(dt.date(2026, 4, 24)))
+        self.assertGreaterEqual(tatil, 4)
+        self.assertTrue(U.belirsiz_mi(dt.date(2026, 10, 28)) and U.belirsiz_mi(dt.date(2026, 5, 27)) and not U.belirsiz_mi(dt.date(2026, 4, 23)))
 
 
 # ------------------------------------------------------------------------------------------------ diskteki dosyalar (mutasyonda koşmaz)
