@@ -1,0 +1,14 @@
+# eski kâhin: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wk14-eski-549359b0-notr/kahin/kahin.py
+ok 1 - S22-01-sinirda-bekleyen-yine-de-gonder-supheli-acilir-atlanir-yeniden-basma-gider: bu kopyada AYNI (elle beklenenin bütün yolları)
+ok 2 - S22-02-duraklatildi-devam-et-atlanir-ayni-gun-yeni-is-belirsiz-yeniden-basma-gider: bu kopyada AYNI (elle beklenenin bütün yolları)
+ok 3 - S22-03-zincirdeki-yeniden-denemede-supheli-atlanir-yeni-gonderimde-elle-gider: bu kopyada AYNI (elle beklenenin bütün yolları)
+ok 4 - S22-04-kayit-gonderimden-once-kapanirsa-butun-gecikmisle-gider-acik-kalan-atlanir: bu kopyada AYNI (elle beklenenin bütün yolları)
+ok 5 - S22-05-ay-sonu-gece-yarisi-atlanir-yerel-gunle-yeniden-basma: bu kopyada AYNI (elle beklenenin bütün yolları)
+ok 6 - S22-06-meta-bekletti-ikinci-denemede-atlanir-yeniden-basma-gider: bu kopyada AYNI (elle beklenenin bütün yolları)
+1..6
+# tests 6
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

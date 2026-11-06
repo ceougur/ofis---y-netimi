@@ -1,0 +1,32 @@
+{
+  "ad": "wk14-eski-326-tam-sonuc-fark",
+  "komut": "python3 -I /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wk14-araclar/eski_tam_sonuc_fark.py /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wk14-eski-549359b0/kahin/senaryolar.json test/bagimsiz/whatsapp-248/kahin/senaryolar.json",
+  "commit": "a7b4ea9aec09c80cc0b2f932bfa3a80a6f294f1a",
+  "dal": "worktree-agent-a2556923bb61954d5",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T05:55:29.707Z",
+  "sure_sn": 0.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 326,
+    "gecen": 326,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wk14-kanit-son/2026-11-06/wk14-eski-326-tam-sonuc-fark.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a2556923bb61954d5",
+  "ham_cikti_sha256": "67dab00d76c47cd2ca24d894fd090ef8d9f37399b4672136d6c7bf26cbb62664",
+  "ham_cikti_bayt": 15545
+}
