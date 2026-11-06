@@ -21,7 +21,7 @@ import { buildXlsx } from "../lib/xlsx-write.mjs";
 import { VAT_RATES } from "../lib/invoice-math.mjs";
 import { systemClock } from "../lib/clock.mjs";
 import { IMPORT_SCOPES, createImportRequests } from "../lib/import-request.mjs";
-import { assertRowVersion, rowVersion } from "../lib/row-version.mjs";
+import { assertRowVersion, rowVersion, sameFields } from "../lib/row-version.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).getTime());
@@ -313,19 +313,25 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     const user = auth.requirePermission(req, "stock.manage");
     const opened = itemRow(params.id);
     const body = await readJson(req);
+    let wrote = false;
     const result = store.tx(() => {
       // Kart yazım işleminin İÇİNDE yeniden okunur (birleşik tur 1 deseni): gövde beklenirken kart değiştiyse denetimler ve gövdede olmayan alanlar GÜNCEL karttan;
       // silindiyse 404.
       const previous = itemRow(opened.id);
-      assertRowVersion(body, previous, ITEM_STALE);
       const input = itemInput({ ...previous, ...body }, previous);
+      // 2.5.0 BİRLEŞİK TUR 4 (tur 3 dar kontrolü ORTA-1; Kasa açılışındaki desen): "değişiklik yok" kısa yolu işlemin İÇİNDE, GÜNCEL kartla ve sürüm denetiminden
+      // ÖNCE — birleşmiş girdi kartta yazılacak her alanda güncel kartla aynıysa hiçbir şey yazılmaz, 200 + güncel kart. Önceden yanıtı kopan KENDİ kaydının yeniden
+      // gönderimi (aynı form, eski sürüm) 409 "değişikliğiniz kaydedilmedi" alıyordu (kaydedilmişti).
+      if (sameFields(previous, input, { texts: ["kind", "code", "name", "unit", "category", "vatRate", "note"], numbers: ["minQty", "unitPrice", "salePrice"] })) return detail(previous.id, user);
+      assertRowVersion(body, previous, ITEM_STALE);
+      wrote = true;
       if (store.get("SELECT 1 AS found FROM stock_items WHERE deleted_at IS NULL AND name = ? COLLATE NOCASE AND unit = ? COLLATE NOCASE AND id <> ?", input.name, input.unit, previous.id)) throw new HttpError(409, `“${input.name}” (${input.unit}) adlı başka bir ürün var.`);
       if (String(input.code).toLocaleLowerCase("tr-TR") !== String(previous.code || "").toLocaleLowerCase("tr-TR")) assertCodeFree(input.code, previous.id);
       store.run("UPDATE stock_items SET kind = ?, code = ?, name = ?, unit = ?, category = ?, min_qty = ?, unit_price = ?, sale_price = ?, vat_rate = ?, note = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.kind, input.code, input.name, input.unit, input.category, input.minQty, input.unitPrice, input.salePrice, input.vatRate ?? null, input.note, user.id, now(), previous.id);
       audit(user, "stock.item.updated", previous.id, { previous: { name: previous.name, minQty: previous.minQty, unitPrice: previous.unitPrice }, ...input });
       return detail(previous.id, user);
     });
-    changed(user, { itemId: opened.id });
+    if (wrote) changed(user, { itemId: opened.id });
     ok(res, result);
   });
   router.delete("/api/workspace/stock/:id", async ({ req, res, params }) => {
