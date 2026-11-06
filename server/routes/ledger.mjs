@@ -406,6 +406,8 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
       if (!still()) return;
       // YALNIZ TEST (test/donmus-defter-kilit-ucu-250.test.mjs K9): izi bütçeden uzun sürdürür (büyük şirket benzetimi). Üretimde kanca yok.
       await __testFreezeHook?.fn?.("trace", { lock: lockedUntil });
+      // Kapanış başladıysa iz iş parçacığı hiç açılmaz (dosya tutamağı; Windows'ta dosya takası).
+      if (!still()) return;
       const digest = await snapshots.digestOf(lockedUntil);
       if (still()) gate.adoptLock({ lock: lockedUntil, digest });
     })();
