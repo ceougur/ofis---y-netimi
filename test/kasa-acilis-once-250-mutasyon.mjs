@@ -83,5 +83,6 @@ for (const [no, ad, degisiklikler, neden] of MUTASYONLAR) {
     for (const [full, text] of asillar) writeFileSync(full, text);
   }
 }
-console.log(`SONUÇ: ${yakalanan}/${toplam} mutasyon yakalandı`);
+// tools/kanit.mjs özeti: "geçti" = yakalanan mutasyon, "kaldı" = yakalanmayan.
+console.log(`SONUÇ: ${yakalanan} geçti, ${toplam - yakalanan} kaldı (${toplam} mutasyonun ${yakalanan}'i yakalandı)`);
 process.exitCode = yakalanan === toplam ? 0 : 1;
