@@ -1,0 +1,2 @@
+{"toplam":367,"ok":27,"skip":0,"yalnizGosterim":223,"davranis":103,"w3Davranis":14}
+W-3 dışı davranış farkı olan 103 senaryonun 103'i eski kodda AYNI fark listesi

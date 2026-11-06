@@ -267,7 +267,8 @@ export async function startFakeGraph({ token, phoneNumberId, wabaId, appId = "15
         const custom = state.recipientErrors[sent.to];
         if (custom) return reply(custom.status || 400, custom.body);
         state.sent += 1;
-        const wamid = `wamid.SAHTE${String(state.sent).padStart(4, "0")}`;
+        // 2.5.0 W-3 (aynı el — kâhin DEĞİL): wamidOf(to, n) verilirse ileti kimliği ondan (KVKK sızıntı testi: Meta'nın gerçek wamid'i gibi alıcının numarasını base64 taşır).
+        const wamid = typeof state.wamidOf === "function" ? state.wamidOf(sent.to, state.sent) : `wamid.SAHTE${String(state.sent).padStart(4, "0")}`;
         state.messages.push({ to: sent.to, template: sent.template?.name, language: sent.template?.language?.code, params: bodyParams.map(item => item.text), document: doc ? { id: String(doc.id), filename: doc.filename } : null, opaque: sent.biz_opaque_callback_data || "", wamid });
         if (state.dropAfter && state.dropAfter.test(line)) return req.socket.destroy(); // işlendi, yanıt yok
         return reply(200, { messaging_product: "whatsapp", contacts: [{ input: sent.to, wa_id: String(sent.to || "").replace(/\D/g, "") }], messages: [{ id: wamid, message_status: "accepted" }] });

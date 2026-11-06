@@ -32,6 +32,7 @@
 //   POST /api/workspace/whatsapp/batches/:id/pause | resume | cancel | retry-failed
 //   POST /api/workspace/whatsapp/jobs/:id/send-anyway        Sonucu Belirsiz → "Yine de Gönder" { confirm: true }
 //   GET  /api/workspace/whatsapp/stats?month=YYYY-MM         "Bu Ay Gönderilen İleti Sayısı" (Meta Kabul Etti / Teslim Edilen (Ücretli) / yaklaşık ücret)
+//   POST /api/workspace/whatsapp/kvkk-erase                  2.5.0 W-3 KVKK silme talebi { accountId, confirm: true } — system.manage (lib/whatsapp/saklama.mjs)
 // 2.4.8 W4 (gönderim ekranı, client/assets/hof-whatsapp-api.js):
 //   GET  /api/workspace/whatsapp/sending-status              cari ekranının WhatsApp penceresi hangi yolu açacak: bağlantı (sınanmış mı), şablonların son denetimi,
 //                                                           lisans, kişinin yetkisi, onay, süren gönderimler, bu ay sayısı. accounts.view (wa.me yolunun yetkisi) —
@@ -449,6 +450,13 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
   router.get("/api/workspace/whatsapp/stats", async ({ req, res, url }) => {
     sendUser(req);
     ok(res, queue.monthStats(url.searchParams.get("month") || ""));
+  });
+  // 2.5.0 W-3 (KULLANICI KARARI S-W3 + S30–S32, S35–S38, S42; docs/erp/W3-SAKLAMA-TASARIM.md): KVKK silme talebi — carinin WhatsApp gönderim kayıtlarındaki ileti içeriği,
+  // telefon numarası ve PDF HEMEN silinir; tarih, dönem, cari kimliği, şablon ve sonuç anonim iz kalır. Yalnız yönetici (system.manage). { accountId, confirm: true }.
+  router.post("/api/workspace/whatsapp/kvkk-erase", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "system.manage");
+    const body = await readJson(req, { limit: 4096 });
+    ok(res, queue.eraseAccount(user, body.accountId, body));
   });
   return { connection, queue };
 }

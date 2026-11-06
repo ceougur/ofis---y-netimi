@@ -1,0 +1,644 @@
+TAP version 13
+# saat dilimi Europe/Istanbul
+(node:3269) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+not ok 1 - CIFT-02-yanitsiz-yine-de-gonder [hizli] (2 fark; davranış farkı 1; gösterim: G1-borclu-eki 1)
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 0, program 1
+not ok 2 - CIFT-09-basarisizlari-yeniden-dene [hizli] (3 fark; davranış farkı 1; gösterim: G1-borclu-eki 2)
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 2
+not ok 3 - CIFT-13-veri-tasindi [hizli] (13 fark; davranış farkı 1; gösterim: G1-borclu-eki 1, G2-toplu-gosterim 3, G3-gonderilmeyen-icerik 8)
+  # bu_ay.W1: beklenen nesne, program '<YOK>'
+not ok 4 - KAYIP-05-meta-ulasilamaz [hizli] (26 fark; davranış farkı 26)
+  # toplular.T1: beklenen nesne, program '<YOK>'
+  # durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+  # meta.post.A: beklenen 1, program '<YOK>'
+  # meta.kabul.A: beklenen 1, program '<YOK>'
+  # meta.meta_ileti.A: beklenen 1, program '<YOK>'
+  # meta.medya_yukleme.A: beklenen 1, program '<YOK>'
+  # meta.medya_silme.A: beklenen 1, program '<YOK>'
+  # meta.toplam_post: beklenen 1, program 0
+  # meta.toplam_kabul_program: beklenen 1, program 0
+  # meta.toplam_meta_ileti: beklenen 1, program 0
+  # meta.toplam_medya_yukleme: beklenen 1, program 0
+  # kontroller.K0.durum_sayilari.Bekliyor: beklenen 1, program '<YOK>'
+not ok 5 - KAYIP-06-meta-ulasilamaz-uc-kisi [hizli] (39 fark; davranış farkı 39)
+  # toplular.T1: beklenen nesne, program '<YOK>'
+  # durum_sayilari.Teslim Edildi: beklenen 3, program '<YOK>'
+  # meta.post.A: beklenen 1, program '<YOK>'
+  # meta.post.B: beklenen 1, program '<YOK>'
+  # meta.post.C: beklenen 1, program '<YOK>'
+  # meta.kabul.A: beklenen 1, program '<YOK>'
+  # meta.kabul.B: beklenen 1, program '<YOK>'
+  # meta.kabul.C: beklenen 1, program '<YOK>'
+  # meta.meta_ileti.A: beklenen 1, program '<YOK>'
+  # meta.meta_ileti.B: beklenen 1, program '<YOK>'
+  # meta.meta_ileti.C: beklenen 1, program '<YOK>'
+  # meta.medya_yukleme.A: beklenen 1, program '<YOK>'
+not ok 6 - KISI-10-silindi-kuyrukta [hizli] (1 fark; davranış farkı 1)
+  # SÜRÜCÜ HATASI
+  # Error: sil B: 409 {"ok":false,"error":"Bu carinin 1 cari hareketi var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).","code":"account-has-movements","counts":{"entries":1,"stock":0,"invoices":0,"offsets":0,"plans":0,"cheques":0,"doubtful":0,"vouchers":0},"passive":false} |     at sart (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9/test/bagimsiz/whatsapp-248/surucu.mjs:860:33) |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) |     at async olayIsle (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9/test/bagimsiz/whatsapp-248/surucu.mjs:1333:24)
+not ok 7 - ICERIK-04-turkce-emoji-satir-sonu [hizli] (3 fark; davranış farkı 2; gösterim: G1-borclu-eki 1)
+  # isler.T1/S.pdf.cari_ad: beklenen 'Şükrü Öğüt 😀 Çağ', program 'ŞükrüÖğüt   Çağ'
+  # isler.T1/S.dosya_adi.on_ek: beklenen 'Ekstre Şükrü Öğüt 😀 Çağ ', program 'Ekstre Şükrü Öğüt 😀   Çağ 01.10.2026-31.10.2026'
+not ok 8 - ICERIK-08-tum-hareketler [hizli] (3 fark; davranış farkı 2; gösterim: G1-borclu-eki 1)
+  # isler.T1/A.pdf.donem_bas: beklenen '2026-09-10', program None
+  # isler.T1/A.pdf.donem_son: beklenen '2026-10-30', program None
+not ok 9 - ICERIK-09-kuyrukta-bakiye-degisti [hizli] (4 fark; davranış farkı 3; gösterim: G1-borclu-eki 2)
+  # isler.T2/B.degiskenler: beklenen ['Mehmet Kaya', 'Deneme Ticaret Ltd. Şti.', '01.10.2026 – 31.10.2026', '2.000,00 TL'], program ['Mehmet Kaya', 'Deneme Ticaret Ltd. Şti.', '01.10.2026 – 31.10.2026', '3.000,00 TL']
+  # isler.T2/B.pdf.hareket_sayisi: beklenen 1, program 2
+  # isler.T2/B.pdf.donem_sonu_bakiye: beklenen '2000.00', program '3000.00'
+not ok 10 - HESAP-0 [hizli] (1 fark; davranış farkı 1)
+  # SÜRÜCÜ HATASI
+  # Error: sürücü bu olayı bilmiyor: yeniden_baglan |     at olayIsle (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9/test/bagimsiz/whatsapp-248/surucu.mjs:1564:13) |     at kos (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9/test/bagimsiz/whatsapp-248/surucu.mjs:1584:15) |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+not ok 11 - ALICI-131049-iki-kez [hizli] (2 fark; davranış farkı 1; gösterim: G1-borclu-eki 1)
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 0
+not ok 12 - SINIR-05-pencerede-sayili-alici [hizli] (4 fark; davranış farkı 1; gösterim: G1-borclu-eki 3)
+  # kontroller.K2.pencere_farkli_alici.W1: beklenen 2, program 1
+not ok 13 - GUV-09-sahte-gercek-wamid [hizli] (8 fark; davranış farkı 7; gösterim: G1-borclu-eki 1)
+  # durum_sayilari.Gönderildi: beklenen 1, program '<YOK>'
+  # meta.medya_silme.A: beklenen 0, program 1
+  # kontroller.K1.durum_sayilari.Gönderildi: beklenen 1, program '<YOK>'
+  # kontroller.K1.medya_silme: beklenen 0, program 1
+  # kontroller.K1.isler.T1/A: beklenen 'Gönderildi', program 'Teslim Edildi'
+  # isler.T1/A.durum: beklenen 'Gönderildi', program 'Teslim Edildi'
+  # isler.T1/A.medya_silme: beklenen 0, program 1
+not ok 14 - GUV-10-yetki-ve-baglanti-sirasi [hizli] (2 fark; davranış farkı 2)
+  # baslamadi.T1: beklenen 'bagli_degil', program 'lisans_salt_okunur'
+  # baslamadi.T2: beklenen 'bagli_degil', program 'lisans_salt_okunur'
+not ok 15 - GUV-11-yetki-lisans-onay-sirasi [hizli] (1 fark; davranış farkı 1)
+  # baslamadi.T1: beklenen 'yetki_yok', program 'lisans_salt_okunur'
+not ok 16 - K1-05-son-3-ay-7-gun [hizli] (6 fark; davranış farkı 2; gösterim: G1-borclu-eki 4, G4-liste-icinde-ozel-yaprak 3)
+  # isler.T2/Y.pdf.donem_bas: beklenen '2026-01-15', program None
+  # isler.T2/Y.pdf.donem_son: beklenen '2026-10-31', program None
+not ok 17 - K1-06-tum-hareketler-7-gun [hizli] (6 fark; davranış farkı 4; gösterim: G1-borclu-eki 2)
+  # isler.T1/Y.pdf.donem_bas: beklenen '2026-01-15', program None
+  # isler.T1/Y.pdf.donem_son: beklenen '2026-10-30', program None
+  # isler.T3/Y.pdf.donem_bas: beklenen '2026-01-15', program None
+  # isler.T3/Y.pdf.donem_son: beklenen '2026-11-07', program None
+not ok 18 - K2-02-tum-hareketler-bekleyen-yasi-yok-iptal-sonra [hizli] (10 fark; davranış farkı 4; gösterim: G1-borclu-eki 2, G3-gonderilmeyen-icerik 4)
+  # isler.T1/A.pdf.donem_bas: beklenen '2026-09-10', program None
+  # isler.T1/A.pdf.donem_son: beklenen '2026-10-30', program None
+  # isler.T3/Y.pdf.donem_bas: beklenen '2026-01-15', program None
+  # isler.T3/Y.pdf.donem_son: beklenen '2026-11-08', program None
+not ok 19 - K6-01-yeniden-denemesi-belirsiz-elenir [hizli] (2 fark; davranış farkı 1; gösterim: G1-borclu-eki 1)
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 0, program 1
+not ok 20 - K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi [hizli] (3 fark; davranış farkı 1; gösterim: G1-borclu-eki 2)
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 0, program 1
+not ok 21 - K6-04-hic-basarisiz-olmamis-belirsiz-aday-degil [hizli] (3 fark; davranış farkı 1; gösterim: G1-borclu-eki 2)
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 2
+not ok 22 - D3-02-yine-de-gonder-7-gun-yeni-gonderimden [hizli] (6 fark; davranış farkı 4; gösterim: G1-borclu-eki 2)
+  # isler.T1/A.pdf.donem_bas: beklenen '2026-09-10', program None
+  # isler.T1/A.pdf.donem_son: beklenen '2026-10-30', program None
+  # isler.T2/A.pdf.donem_bas: beklenen '2026-09-10', program None
+  # isler.T2/A.pdf.donem_son: beklenen '2026-11-07', program None
+not ok 23 - D6-03-asilmis-belirsiz-son-3-ay-7-gun [hizli] (3 fark; davranış farkı 1; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 2)
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 0
+not ok 24 - D8-01-tasinan-veride-dosyadaki-ileti-sayilir [hizli] (3 fark; davranış farkı 1; gösterim: G1-borclu-eki 2)
+  # bu_ay.W1: beklenen nesne, program '<YOK>'
+not ok 25 - D8-02-tasinan-veride-yine-de-gonder [hizli] (4 fark; davranış farkı 2; gösterim: G1-borclu-eki 2)
+  # bu_ay.W1.2026-10.teslim: beklenen 2, program 1
+  # bu_ay.W1.2026-10.yaklasik_usd: beklenen '0.0018', program '0.0009'
+not ok 26 - E1-01-dosyada-ve-defterde-belirsiz [hizli] (4 fark; davranış farkı 1; gösterim: G1-borclu-eki 3)
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 2
+not ok 27 - E2-03-yeniden-denemede-kuyrukta-once-belirsiz [hizli] (7 fark; davranış farkı 4; gösterim: G1-borclu-eki 3)
+  # kontroller.K1.isler.T2/A: beklenen 'Sınır Nedeniyle Bekliyor', program 'Teslim Edildi'
+  # kontroller.K1.isler.T2/B: beklenen 'Teslim Edildi', program 'Sınır Nedeniyle Bekliyor'
+  # yeniden.Y1.elenen.A: beklenen 'zaten_kuyrukta', program 'sonucu_belirsiz'
+  # yeniden.Y1.oneri: beklenen None, program 'yeni_gonderim'
+not ok 28 - E4-02-tum-hareketler-sonraki-teslim-7-gun [hizli] (3 fark; davranış farkı 2; gösterim: G1-borclu-eki 1)
+  # isler.T1/A.pdf.donem_bas: beklenen '2026-09-10', program None
+  # isler.T1/A.pdf.donem_son: beklenen '2026-10-30', program None
+not ok 29 - G3-03-tasinan-teslim-son-3-ay-7-gun [hizli] (3 fark; davranış farkı 1; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 2)
+  # bu_ay.W1.2026-10: beklenen nesne, program '<YOK>'
+not ok 30 - G3-04-tasinan-asil-isin-yine-de-gonder-siniri [hizli] (4 fark; davranış farkı 2; gösterim: G1-borclu-eki 2)
+  # bu_ay.W1.2026-10.teslim: beklenen 2, program 1
+  # bu_ay.W1.2026-10.yaklasik_usd: beklenen '0.0018', program '0.0009'
+not ok 31 - G4-01-sifirlama-meta-bekletti-sayilmaz [hizli] (14 fark; davranış farkı 14)
+  # toplular.T1: beklenen nesne, program '<YOK>'
+  # durum_sayilari.Durduruldu (Geri Yükleme): beklenen 1, program '<YOK>'
+  # meta.post.A: beklenen 2, program 1
+  # meta.kabul.A: beklenen 2, program 1
+  # meta.meta_ileti.A: beklenen 2, program 1
+  # meta.medya_yukleme.A: beklenen 2, program 1
+  # kontroller.K1.durum_sayilari.Durduruldu (Geri Yükleme): beklenen 1, program '<YOK>'
+  # kontroller.K1.toplular.T1: beklenen 'aktif', program '<YOK>'
+  # kontroller.K1.isler.T1/A: beklenen 'Durduruldu (Geri Yükleme)', program '<YOK>'
+  # isler.T1/A: beklenen nesne, program '<YOK>'
+  # isler.T2/A.degiskenler: beklenen ['Ayşe Yılmaz', 'Deneme Ticaret Ltd. Şti.', '01.10.2026 – 31.10.2026', '1.250,00 TL'], program ['Ayşe Yılmaz', 'Deneme Ticaret Ltd. Şti.', '01.10.2026 – 31.10.2026', '0,00 TL']
+  # isler.T2/A.pdf.devir: beklenen '1000.00', program '0.00'
+not ok 32 - G4-02-sifirlama-meta-bekletti-gec-teslim-sayilir [hizli] (8 fark; davranış farkı 8)
+  # toplular.T1: beklenen nesne, program '<YOK>'
+  # durum_sayilari: beklenen şunlardan biri (karar susuyor) [{'Durduruldu (Geri Yükleme)': 1}, {'Teslim Edildi': 1}], program {}
+  # meta.post.A: beklenen 1, program '<YOK>'
+  # meta.kabul.A: beklenen 1, program '<YOK>'
+  # meta.meta_ileti.A: beklenen 1, program '<YOK>'
+  # meta.medya_yukleme.A: beklenen 1, program '<YOK>'
+  # meta.medya_silme.A: beklenen 1, program '<YOK>'
+  # isler.T1/A: beklenen nesne, program '<YOK>'
+not ok 33 - G5-01-meta-bekletti-ikinci-deneme-belirsiz-elenir [hizli] (2 fark; davranış farkı 1; gösterim: G1-borclu-eki 1)
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 0, program 1
+not ok 34 - G6-01-son-3-ay-ozel-aralik-7-gun [hizli] (6 fark; davranış farkı 5; gösterim: G1-borclu-eki 1, G4-liste-icinde-ozel-yaprak 1)
+  # elenen.T2: beklenen nesne, program '<YOK>'
+  # olusmadi: beklenen ['T2'], program ['T3']
+  # onceki_uyari.T2: beklenen nesne, program '<YOK>'
+  # toplular.T3: beklenen nesne, program '<YOK>'
+  # isler.T3/Y: beklenen nesne, program '<YOK>'
+not ok 35 - G6-02-ozel-aralik-tum-hareketler-kisiye-gore [hizli] (5 fark; davranış farkı 2; gösterim: G1-borclu-eki 3)
+  # isler.T2/Z.pdf.donem_bas: beklenen '2026-02-10', program None
+  # isler.T2/Z.pdf.donem_son: beklenen '2026-10-30', program None
+not ok 36 - G6-04-tum-hareketler-belirsiz-ozel-aralik [hizli] (3 fark; davranış farkı 2; gösterim: G1-borclu-eki 1)
+  # isler.T1/Y.pdf.donem_bas: beklenen '2026-01-15', program None
+  # isler.T1/Y.pdf.donem_son: beklenen '2026-10-30', program None
+not ok 37 - G6-05-son-3-ay-yeniden-deneme-asil-isin-gunu [hizli] (16 fark; davranış farkı 15; gösterim: G1-borclu-eki 1, G4-liste-icinde-ozel-yaprak 1)
+  # elenen.T2: beklenen nesne, program '<YOK>'
+  # olusmadi: beklenen ['T2'], program []
+  # onceki_uyari.T2: beklenen nesne, program '<YOK>'
+  # durum_sayilari.Teslim Edildi: beklenen 1, program 2
+  # meta.post.Y: beklenen 2, program 3
+  # meta.kabul.Y: beklenen 1, program 2
+  # meta.meta_ileti.Y: beklenen 1, program 2
+  # meta.medya_yukleme.Y: beklenen 2, program 3
+  # meta.medya_silme.Y: beklenen 2, program 3
+  # meta.toplam_post: beklenen 2, program 3
+  # meta.toplam_kabul_program: beklenen 1, program 2
+  # meta.toplam_meta_ileti: beklenen 1, program 2
+not ok 38 - H2-02-tasima-gonderiliyor-gec-kanca [hizli] (13 fark; davranış farkı 10; gösterim: G1-borclu-eki 1, G2-toplu-gosterim 2)
+  # elenen.T2.B: beklenen 'daha_once_gonderildi', program 'sonucu_belirsiz'
+  # onceki_uyari.T2: beklenen nesne, program '<YOK>'
+  # durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+  # meta.kabul.B: beklenen 1, program 0
+  # meta.medya_silme.B: beklenen 1, program 0
+  # meta.toplam_kabul_program: beklenen 1, program 0
+  # bu_ay.W1: beklenen nesne, program '<YOK>'
+  # isler.T1/B.durum: beklenen 'Teslim Edildi', program 'Sonucu Belirsiz'
+  # isler.T1/B.kabul: beklenen 1, program 0
+  # isler.T1/B.medya_silme: beklenen 1, program 0
+not ok 39 - H3-01-geri-yukleme-dosyasiz-gec-kabul [hizli] (2 fark; davranış farkı 1; gösterim: G1-borclu-eki 1)
+  # meta.toplam_kabul_program: beklenen 1, program 2
+not ok 40 - J1-01-duraklatilmis-meta-bekletti-teslim-is-kapanir [hizli] (3 fark; davranış farkı 2; gösterim: G1-borclu-eki 1)
+  # kontroller.K1.durum_sayilari.Duraklatıldı: beklenen 1, program '<YOK>'
+  # kontroller.K1.isler.T1/A: beklenen 'Duraklatıldı', program 'Meta Bekletti (24 Saat Sonra Yeniden)'
+not ok 41 - J1-03-silinmis-sirket-gec-bildirim [hizli] (2 fark; davranış farkı 1; gösterim: G1-borclu-eki 1)
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 3, program 2
+not ok 42 - J1-04-asilmis-belirsiz-gec-teslim-iki-deneme [hizli] (3 fark; davranış farkı 2; gösterim: G1-borclu-eki 1)
+  # meta.toplam_kabul_program: beklenen 1, program 2
+  # kontroller.K1.toplam_kabul: beklenen 1, program 2
+not ok 43 - J1-05-asilmis-belirsiz-gec-teslim-yeni-deneme-basarisiz [hizli] (2 fark; davranış farkı 1; gösterim: G1-borclu-eki 1)
+  # meta.toplam_kabul_program: beklenen 1, program 2
+not ok 44 - J3-02-sifirlama-sonrasi-gec-failed-yeniden-gonderilir [hizli] (15 fark; davranış farkı 15)
+  # toplular.T1: beklenen nesne, program '<YOK>'
+  # durum_sayilari.Başarısız: beklenen 1, program '<YOK>'
+  # meta.post.B: beklenen 2, program 1
+  # meta.kabul.B: beklenen 2, program 1
+  # meta.meta_ileti.B: beklenen 2, program 1
+  # meta.medya_yukleme.B: beklenen 2, program 1
+  # meta.medya_silme.B: beklenen 2, program 1
+  # kontroller.K1.durum_sayilari.Başarısız: beklenen 1, program '<YOK>'
+  # kontroller.K1.medya_silme: beklenen 2, program 1
+  # kontroller.K1.toplular.T1: beklenen 'aktif', program '<YOK>'
+  # kontroller.K1.isler.T1/B: beklenen 'Başarısız', program '<YOK>'
+  # isler.T1/B: beklenen nesne, program '<YOK>'
+not ok 45 - J3-03-asilmis-belirsiz-gec-failed-kisi-almadi [hizli] (4 fark; davranış farkı 2; gösterim: G1-borclu-eki 2)
+  # meta.toplam_kabul_program: beklenen 2, program 3
+  # kontroller.K1.toplam_kabul: beklenen 2, program 3
+not ok 46 - J3-04-eski-denemenin-failed-i-simdiki-kabulu-bozmaz [hizli] (4 fark; davranış farkı 3; gösterim: G1-borclu-eki 1)
+  # meta.toplam_kabul_program: beklenen 1, program 2
+  # kontroller.K1.toplam_kabul: beklenen 1, program 2
+  # kontroller.K2.toplam_kabul: beklenen 1, program 2
+not ok 47 - J6-01-yanit-beklenirken-taninmayan-503-yineleme [hizli] (2 fark; davranış farkı 1; gösterim: G1-borclu-eki 1)
+  # kanca_yanitlari.503: beklenen 3, program 0
+not ok 48 - J8-01-tum-hareketler-bu-ay-ayni-gun [hizli] (7 fark; davranış farkı 4; gösterim: G1-borclu-eki 3, G4-liste-icinde-ozel-yaprak 1)
+  # isler.T1/P.pdf.donem_bas: beklenen '2026-11-01', program None
+  # isler.T1/P.pdf.donem_son: beklenen '2026-11-05', program None
+  # isler.T1/R.pdf.donem_bas: beklenen '2026-10-15', program None
+  # isler.T1/R.pdf.donem_son: beklenen '2026-11-05', program None
+not ok 49 - J8-02-tum-hareketler-gecen-ay-ayni-gun [hizli] (8 fark; davranış farkı 4; gösterim: G1-borclu-eki 4)
+  # isler.T1/Q.pdf.donem_bas: beklenen '2026-10-01', program None
+  # isler.T1/Q.pdf.donem_son: beklenen '2026-11-05', program None
+  # isler.T1/R.pdf.donem_bas: beklenen '2026-10-15', program None
+  # isler.T1/R.pdf.donem_son: beklenen '2026-11-05', program None
+not ok 50 - J8-03-tum-hareketler-kanon-sonraki-gun-bu-ay [hizli] (3 fark; davranış farkı 2; gösterim: G1-borclu-eki 1)
+  # isler.T1/S.pdf.donem_bas: beklenen '2026-11-01', program None
+  # isler.T1/S.pdf.donem_son: beklenen '2026-11-03', program None
+not ok 51 - J8-04-tum-hareketler-bekleyen-bu-ay-zaten-kuyrukta [hizli] (6 fark; davranış farkı 4; gösterim: G1-borclu-eki 2)
+  # isler.T1/P.pdf.donem_bas: beklenen '2026-11-01', program None
+  # isler.T1/P.pdf.donem_son: beklenen '2026-11-05', program None
+  # isler.T1/R.pdf.donem_bas: beklenen '2026-10-15', program None
+  # isler.T1/R.pdf.donem_son: beklenen '2026-11-05', program None
+not ok 52 - J8-05-ay-sonu-tum-sonra-gecen-ay-gece-yarisi [hizli] (3 fark; davranış farkı 2; gösterim: G1-borclu-eki 1)
+  # isler.T1/Q.pdf.donem_bas: beklenen '2026-10-01', program None
+  # isler.T1/Q.pdf.donem_son: beklenen '2026-10-31', program None
+not ok 53 - J10-01-a-yine-de-gonder-sinirda-eski-teslim-gitmez [hizli] (29 fark; davranış farkı 27; gösterim: G1-borclu-eki 2)
+  # durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # durum_sayilari.Teslim Edildi: beklenen 1, program 2
+  # meta.post.B: beklenen 1, program 2
+  # meta.kabul.B: beklenen 1, program 2
+  # meta.meta_ileti.B: beklenen 1, program 2
+  # meta.toplam_post: beklenen 2, program 3
+  # meta.toplam_kabul_program: beklenen 1, program 3
+  # meta.toplam_meta_ileti: beklenen 2, program 3
+  # kontroller.K1.isler.T1/A: beklenen 'Teslim Edildi', program 'Sınır Nedeniyle Bekliyor'
+  # kontroller.K1.isler.T1/B: beklenen 'Sınır Nedeniyle Bekliyor', program 'Teslim Edildi'
+  # kontroller.K2.durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # kontroller.K2.toplam_kabul: beklenen 1, program 2
+not ok 54 - J10-02-a-yine-de-gonder-duraklatilmis-eski-teslim-gitmez [hizli] (10 fark; davranış farkı 9; gösterim: G1-borclu-eki 1)
+  # meta.toplam_kabul_program: beklenen 0, program 1
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 0, program 1
+  # kontroller.K2.durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # kontroller.K2.toplam_kabul: beklenen 0, program 1
+  # kontroller.K2.pencere_farkli_alici.W1: beklenen 0, program 1
+  # kontroller.K2.medya_silme: beklenen 1, program 0
+  # kontroller.K2.isler.T1/B: beklenen 'Atlandı', program 'Duraklatıldı'
+  # kontroller.K3.toplam_kabul: beklenen 0, program 1
+  # kontroller.K3.pencere_farkli_alici.W1: beklenen 0, program 1
+not ok 55 - J10-03-c-belirsiz-zinciri-yeniden-deneme-eski-teslim-gitmez [hizli] (14 fark; davranış farkı 13; gösterim: G1-borclu-eki 1)
+  # meta.medya_yukleme.B: beklenen 1, program 2
+  # meta.medya_silme.B: beklenen 1, program 2
+  # meta.toplam_kabul_program: beklenen 0, program 1
+  # meta.toplam_medya_yukleme: beklenen 1, program 2
+  # kontroller.K1.toplam_kabul: beklenen 0, program 1
+  # kontroller.K2.durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # kontroller.K2.toplam_kabul: beklenen 0, program 1
+  # kontroller.K2.isler.T1/B: beklenen 'Atlandı', program 'Duraklatıldı'
+  # kontroller.K3.toplam_kabul: beklenen 0, program 1
+  # kontroller.K3.medya_silme: beklenen 1, program 2
+  # isler.T1/B.hata_kodu: beklenen None, program 131026
+  # isler.T1/B.medya_yukleme: beklenen 1, program 2
+not ok 56 - J10-04-c-duz-yeniden-deneme-eski-teslim-ikinci-kopya-gider [hizli] (2 fark; davranış farkı 1; gösterim: G1-borclu-eki 1)
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 0
+not ok 57 - J11-01-tum-hareketler-metni-acilis-gunu-sinirla-ertesi-gun [hizli] (6 fark; davranış farkı 4; gösterim: G1-borclu-eki 2)
+  # isler.T1/P.pdf.donem_bas: beklenen '2026-11-01', program None
+  # isler.T1/P.pdf.donem_son: beklenen '2026-11-05', program None
+  # isler.T1/R.pdf.donem_bas: beklenen '2026-10-15', program None
+  # isler.T1/R.pdf.donem_son: beklenen '2026-11-05', program None
+not ok 58 - J11-02-hareketsiz-cari-metni-ve-eslik [hizli] (5 fark; davranış farkı 4; gösterim: G4-liste-icinde-ozel-yaprak 1)
+  # isler.T1/N1.pdf.donem_bas: beklenen '2026-11-01', program None
+  # isler.T1/N1.pdf.donem_son: beklenen '2026-11-01', program None
+  # isler.T3/N2.pdf.donem_bas: beklenen '2026-11-05', program None
+  # isler.T3/N2.pdf.donem_son: beklenen '2026-11-05', program None
+not ok 59 - J11-03-ertesi-gune-kayan-kisi-acilis-gunuyle-eslesir [hizli] (7 fark; davranış farkı 4; gösterim: G1-borclu-eki 3)
+  # isler.T1/R.pdf.donem_bas: beklenen '2026-10-15', program None
+  # isler.T1/R.pdf.donem_son: beklenen '2026-11-05', program None
+  # isler.T1/U.pdf.donem_bas: beklenen '2026-11-01', program None
+  # isler.T1/U.pdf.donem_son: beklenen '2026-11-05', program None
+not ok 60 - J12-02-tum-hareketler-acilistan-sonra-tarihli-hareket-girmez [hizli] (5 fark; davranış farkı 4; gösterim: G1-borclu-eki 1)
+  # isler.T1/F2.pdf.donem_bas: beklenen '2026-10-05', program None
+  # isler.T1/F2.pdf.donem_son: beklenen '2026-10-30', program None
+  # isler.T1/G2.pdf.donem_bas: beklenen '2026-10-30', program None
+  # isler.T1/G2.pdf.donem_son: beklenen '2026-10-30', program None
+not ok 61 - J12-03-tum-hareketler-sinirla-ertesi-gun-kuyrukta-hareket [hizli] (6 fark; davranış farkı 4; gösterim: G1-borclu-eki 2)
+  # isler.T1/P.pdf.donem_bas: beklenen '2026-11-01', program None
+  # isler.T1/P.pdf.donem_son: beklenen '2026-11-05', program None
+  # isler.T1/R.pdf.donem_bas: beklenen '2026-10-15', program None
+  # isler.T1/R.pdf.donem_son: beklenen '2026-11-05', program None
+not ok 62 - SD1837-01-sure-dolunca-duraklar-yeniden-baglaninca-devam-yalniz-kalanlar [hizli] (1 fark; davranış farkı 1)
+  # SÜRÜCÜ HATASI
+  # Error: sürücü bu olayı bilmiyor: baglanti_suresi_doldu |     at olayIsle (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9/test/bagimsiz/whatsapp-248/surucu.mjs:1564:13) |     at kos (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9/test/bagimsiz/whatsapp-248/surucu.mjs:1584:15) |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+not ok 63 - SD1837-02-yeniden-baglanmadan-devam-et-ileti-gitmez [hizli] (1 fark; davranış farkı 1)
+  # SÜRÜCÜ HATASI
+  # Error: sürücü bu olayı bilmiyor: baglanti_suresi_doldu |     at olayIsle (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9/test/bagimsiz/whatsapp-248/surucu.mjs:1564:13) |     at kos (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9/test/bagimsiz/whatsapp-248/surucu.mjs:1584:15) |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+not ok 64 - SD1837-03-sure-dolunca-yeni-gonderim-baslamaz [hizli] (1 fark; davranış farkı 1)
+  # SÜRÜCÜ HATASI
+  # Error: sürücü bu olayı bilmiyor: baglanti_suresi_doldu |     at olayIsle (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9/test/bagimsiz/whatsapp-248/surucu.mjs:1564:13) |     at kos (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9/test/bagimsiz/whatsapp-248/surucu.mjs:1584:15) |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+not ok 65 - SD1915-01-ileti-isteginde-190-bekleyenlere-doner [hizli] (1 fark; davranış farkı 1)
+  # SÜRÜCÜ HATASI
+  # Error: sürücü bu olayı bilmiyor: yeniden_baglan |     at olayIsle (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9/test/bagimsiz/whatsapp-248/surucu.mjs:1564:13) |     at kos (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9/test/bagimsiz/whatsapp-248/surucu.mjs:1584:15) |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+not ok 66 - SD1915-02-pdf-yuklemesinde-190-bekleyenlere-doner [hizli] (1 fark; davranış farkı 1)
+  # SÜRÜCÜ HATASI
+  # Error: sürücü bu olayı bilmiyor: yeniden_baglan |     at olayIsle (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9/test/bagimsiz/whatsapp-248/surucu.mjs:1564:13) |     at kos (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9/test/bagimsiz/whatsapp-248/surucu.mjs:1584:15) |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+not ok 67 - SD1915-03-meta-bekletti-ikinci-deneme-190-ilk-ileti-teslim-is-kapanir [hizli] (1 fark; davranış farkı 1)
+  # SÜRÜCÜ HATASI
+  # Error: sürücü bu olayı bilmiyor: yeniden_baglan |     at olayIsle (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9/test/bagimsiz/whatsapp-248/surucu.mjs:1564:13) |     at kos (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9/test/bagimsiz/whatsapp-248/surucu.mjs:1584:15) |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+not ok 68 - SD1915-04-geri-yukleme-reddedilen-sayilmaz [hizli] (1 fark; davranış farkı 1)
+  # SÜRÜCÜ HATASI
+  # Error: sürücü bu olayı bilmiyor: yeniden_baglan |     at olayIsle (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9/test/bagimsiz/whatsapp-248/surucu.mjs:1564:13) |     at kos (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9/test/bagimsiz/whatsapp-248/surucu.mjs:1584:15) |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+not ok 69 - SD1915-05-tasima-reddedilen-sayilmaz-kod-0 [hizli] (1 fark; davranış farkı 1)
+  # SÜRÜCÜ HATASI
+  # Error: sürücü bu olayı bilmiyor: yeniden_baglan |     at olayIsle (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9/test/bagimsiz/whatsapp-248/surucu.mjs:1564:13) |     at kos (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9/test/bagimsiz/whatsapp-248/surucu.mjs:1584:15) |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+not ok 70 - SW4-01-kod-0-ayni-sirketin-oburu-toplu-isi-de-duraklar [hizli] (1 fark; davranış farkı 1)
+  # SÜRÜCÜ HATASI
+  # Error: sürücü bu olayı bilmiyor: yeniden_baglan |     at olayIsle (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9/test/bagimsiz/whatsapp-248/surucu.mjs:1564:13) |     at kos (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9/test/bagimsiz/whatsapp-248/surucu.mjs:1584:15) |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+not ok 71 - SW4-02-kod-0-pdf-yuklemesinde [hizli] (1 fark; davranış farkı 1)
+  # SÜRÜCÜ HATASI
+  # Error: sürücü bu olayı bilmiyor: yeniden_baglan |     at olayIsle (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9/test/bagimsiz/whatsapp-248/surucu.mjs:1564:13) |     at kos (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9/test/bagimsiz/whatsapp-248/surucu.mjs:1584:15) |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+not ok 72 - S7-01-supheli-alacakli-otomatik-listeye-girmez [hizli] (10 fark; davranış farkı 8; gösterim: G1-borclu-eki 2)
+  # elenen.T1: beklenen nesne, program '<YOK>'
+  # toplular.T1.is_sayisi: beklenen 2, program 4
+  # durum_sayilari.Teslim Edildi: beklenen 2, program 4
+  # meta.toplam_post: beklenen 2, program 4
+  # meta.toplam_kabul_program: beklenen 2, program 4
+  # meta.toplam_meta_ileti: beklenen 2, program 4
+  # bu_ay.W1.2026-10.teslim: beklenen 2, program 4
+  # bu_ay.W1.2026-10.yaklasik_usd: beklenen '0.0018', program '0.0036'
+not ok 73 - S7-02-supheli-alacakli-elle-secilir-suphelisiz-tutar [hizli] (4 fark; davranış farkı 2; gösterim: G1-borclu-eki 3, G4-liste-icinde-ozel-yaprak 1)
+  # isler.T1/SA.degiskenler: beklenen ['Seda Şüpheli', 'Deneme Ticaret Ltd. Şti.', '12.10.2026', '200,00 TL', {'plan_susuyor': "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"}], program ['Seda Şüpheli', 'Deneme Ticaret Ltd. Şti.', '05.10.2026', '500,00 TL', {'plan_susuyor': "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"}]
+  # isler.T2/SA.pdf.hareket_sayisi: beklenen 0, program 1
+not ok 74 - S7A-01-elle-supheli-suphesiz-gecikmis-yok-elenir [hizli] (11 fark; davranış farkı 10; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 1)
+  # elenen.T1: beklenen nesne, program '<YOK>'
+  # elenen.T2.SA2: beklenen 'gecikmis_borc_yok', program 'daha_once_gonderildi'
+  # toplular.T1.is_sayisi: beklenen 2, program 5
+  # durum_sayilari.Teslim Edildi: beklenen 2, program 5
+  # meta.toplam_post: beklenen 2, program 5
+  # meta.toplam_kabul_program: beklenen 2, program 5
+  # meta.toplam_meta_ileti: beklenen 2, program 5
+  # bu_ay.W1.2026-10.teslim: beklenen 2, program 5
+  # bu_ay.W1.2026-10.yaklasik_usd: beklenen '0.0018', program '0.0045'
+  # isler.T1/SB.degiskenler: beklenen ['Burcu Kısmi', 'Deneme Ticaret Ltd. Şti.', '12.10.2026', '150,00 TL', {'plan_susuyor': "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"}], program ['Burcu Kısmi', 'Deneme Ticaret Ltd. Şti.', '01.10.2026', '550,00 TL', {'plan_susuyor': "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"}]
+not ok 75 - S7A-02-elle-supheli-kuyrukta-suphesiz-kapanir-gonderimde-atlanir [hizli] (25 fark; davranış farkı 24; gösterim: G1-borclu-eki 4, G4-liste-icinde-ozel-yaprak 3)
+  # durum_sayilari.Atlandı: beklenen 2, program '<YOK>'
+  # durum_sayilari.Teslim Edildi: beklenen 2, program 4
+  # meta.post.SE: beklenen 0, program 1
+  # meta.post.SF: beklenen 0, program 1
+  # meta.kabul.SE: beklenen 0, program 1
+  # meta.kabul.SF: beklenen 0, program 1
+  # meta.meta_ileti.SE: beklenen 0, program 1
+  # meta.meta_ileti.SF: beklenen 0, program 1
+  # meta.toplam_post: beklenen 2, program 4
+  # meta.toplam_kabul_program: beklenen 2, program 4
+  # meta.toplam_meta_ileti: beklenen 2, program 4
+  # isler.T1/SE.durum: beklenen 'Atlandı', program 'Teslim Edildi'
+not ok 76 - S7A-03-gece-yarisi-suphesiz-vade-yerel-gun [hizli] (13 fark; davranış farkı 12; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 1)
+  # elenen.T1: beklenen nesne, program '<YOK>'
+  # toplular.T1.is_sayisi: beklenen 1, program 2
+  # durum_sayilari.Teslim Edildi: beklenen 2, program 3
+  # meta.post.SG: beklenen 1, program 2
+  # meta.kabul.SG: beklenen 1, program 2
+  # meta.meta_ileti.SG: beklenen 1, program 2
+  # meta.toplam_post: beklenen 2, program 3
+  # meta.toplam_kabul_program: beklenen 2, program 3
+  # meta.toplam_meta_ileti: beklenen 2, program 3
+  # bu_ay.W1.2026-10.teslim: beklenen 2, program 3
+  # bu_ay.W1.2026-10.yaklasik_usd: beklenen '0.0018', program '0.0027'
+  # isler.T2/SG.degiskenler: beklenen ['Gizem Gece', 'Deneme Ticaret Ltd. Şti.', '30.10.2026', '150,00 TL', {'plan_susuyor': "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"}], program ['Gizem Gece', 'Deneme Ticaret Ltd. Şti.', '01.10.2026', '550,00 TL', {'plan_susuyor': "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"}]
+not ok 77 - S7B-01-sinirda-supheli-acilan-atlanir-yeni-gonderimde-elle-gider [hizli] (38 fark; davranış farkı 34; gösterim: G1-borclu-eki 4)
+  # olusmadi: beklenen [], program ['T2']
+  # toplular.T2: beklenen nesne, program '<YOK>'
+  # durum_sayilari.Atlandı: beklenen 2, program '<YOK>'
+  # durum_sayilari.Teslim Edildi: beklenen 3, program 4
+  # meta.post.B7: beklenen 0, program 1
+  # meta.kabul.B7: beklenen 0, program 1
+  # meta.meta_ileti.B7: beklenen 0, program 1
+  # meta.toplam_post: beklenen 3, program 4
+  # meta.toplam_kabul_program: beklenen 3, program 4
+  # meta.toplam_meta_ileti: beklenen 3, program 4
+  # kontroller.K2.durum_sayilari.Atlandı: beklenen 2, program '<YOK>'
+  # kontroller.K2.isler.T1/B7: beklenen 'Atlandı', program 'Teslim Edildi'
+not ok 78 - S7B-02-duraklatmada-supheli-acilan-atlanir-elle-secilen-gider [hizli] (25 fark; davranış farkı 24; gösterim: G1-borclu-eki 3, G4-liste-icinde-ozel-yaprak 1)
+  # durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # durum_sayilari.Teslim Edildi: beklenen 2, program 3
+  # meta.post.X7: beklenen 0, program 1
+  # meta.kabul.X7: beklenen 0, program 1
+  # meta.meta_ileti.X7: beklenen 0, program 1
+  # meta.toplam_post: beklenen 2, program 3
+  # meta.toplam_kabul_program: beklenen 2, program 3
+  # meta.toplam_meta_ileti: beklenen 2, program 3
+  # kontroller.K2.durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # kontroller.K2.durum_sayilari.Teslim Edildi: beklenen 2, program 3
+  # kontroller.K2.toplam_post: beklenen 2, program 3
+  # kontroller.K2.toplam_kabul: beklenen 2, program 3
+not ok 79 - S7B-04-meta-bekletti-ikinci-denemede-supheli-atlanir [hizli] (18 fark; davranış farkı 16; gösterim: G1-borclu-eki 2)
+  # durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # meta.post.MB7: beklenen 1, program 2
+  # meta.kabul.MB7: beklenen 1, program 2
+  # meta.meta_ileti.MB7: beklenen 1, program 2
+  # meta.toplam_post: beklenen 2, program 3
+  # meta.toplam_kabul_program: beklenen 2, program 3
+  # meta.toplam_meta_ileti: beklenen 2, program 3
+  # kontroller.K2.durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # kontroller.K2.toplam_post: beklenen 2, program 3
+  # kontroller.K2.toplam_kabul: beklenen 2, program 3
+  # kontroller.K2.isler.T1/MB7: beklenen 'Atlandı', program 'Başarısız'
+  # isler.T1/MB7.durum: beklenen 'Atlandı', program 'Başarısız'
+not ok 80 - S7B-05-yeniden-denemede-supheli-atlanir-elle-isaret-tasinir [hizli] (25 fark; davranış farkı 23; gösterim: G1-borclu-eki 3, G4-liste-icinde-ozel-yaprak 1)
+  # durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # durum_sayilari.Teslim Edildi: beklenen 2, program 3
+  # meta.post.R7: beklenen 1, program 2
+  # meta.kabul.R7: beklenen 0, program 1
+  # meta.meta_ileti.R7: beklenen 0, program 1
+  # meta.toplam_post: beklenen 4, program 5
+  # meta.toplam_kabul_program: beklenen 2, program 3
+  # meta.toplam_meta_ileti: beklenen 2, program 3
+  # kontroller.K2.durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # kontroller.K2.durum_sayilari.Teslim Edildi: beklenen 2, program 3
+  # kontroller.K2.toplam_post: beklenen 4, program 5
+  # kontroller.K2.toplam_kabul: beklenen 2, program 3
+not ok 81 - S16-01-yine-de-gonder-supheli-acik-elle-sayilir-suphesiz-tutarla-gider [hizli] (5 fark; davranış farkı 3; gösterim: G1-borclu-eki 3, G4-liste-icinde-ozel-yaprak 1)
+  # yeniden.Y1.supheli_etiketi: beklenen ['U'], program '<YOK>'
+  # isler.T1/U.degiskenler: beklenen ['Ufuk Belirsiz', 'Deneme Ticaret Ltd. Şti.', '14.10.2026', '300,00 TL', {'plan_susuyor': "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"}], program ['Ufuk Belirsiz', 'Deneme Ticaret Ltd. Şti.', '06.10.2026', '700,00 TL', {'plan_susuyor': "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"}]
+  # isler.T2/EY.pdf.hareket_sayisi: beklenen 1, program 2
+not ok 82 - S16-02-yine-de-gonder-suphesiz-tutar-yok-elenir-ertesi-gun-gider [hizli] (25 fark; davranış farkı 24; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 1)
+  # durum_sayilari.Teslim Edildi: beklenen 2, program 1
+  # meta.post.X: beklenen 2, program 3
+  # meta.kabul.X: beklenen 1, program 2
+  # meta.meta_ileti.X: beklenen 2, program 3
+  # meta.toplam_post: beklenen 3, program 4
+  # meta.toplam_kabul_program: beklenen 2, program 3
+  # meta.toplam_meta_ileti: beklenen 3, program 4
+  # kontroller.K1.durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # kontroller.K1.durum_sayilari.Teslim Edildi: beklenen 1, program 2
+  # kontroller.K1.toplam_post: beklenen 2, program 3
+  # kontroller.K1.toplam_kabul: beklenen 1, program 2
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 2
+not ok 83 - S16-03-kayit-basmadan-once-kapanir-etiket-yok-butun-gecikmisle-gider [hizli] (2 fark; davranış farkı 1; gösterim: G1-borclu-eki 2)
+  # isler.T1/KB.degiskenler: beklenen ['Kaan Kapanan', 'Deneme Ticaret Ltd. Şti.', '15.10.2026', '250,00 TL', '250,00 TL'], program ['Kaan Kapanan', 'Deneme Ticaret Ltd. Şti.', '07.10.2026', '600,00 TL', '600,00 TL']
+not ok 84 - S16-04-s16-elle-isareti-zincirdeki-yeniden-denemeye-tasinir [hizli] (6 fark; davranış farkı 5; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 1)
+  # meta.toplam_kabul_program: beklenen 2, program 3
+  # kontroller.K1.toplam_kabul: beklenen 1, program 2
+  # kontroller.K2.toplam_kabul: beklenen 2, program 3
+  # yeniden.Y1.supheli_etiketi: beklenen ['ZR'], program '<YOK>'
+  # isler.T1/ZR.degiskenler: beklenen ['Zehra Zincir', 'Deneme Ticaret Ltd. Şti.', '16.10.2026', '400,00 TL', {'plan_susuyor': "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"}], program ['Zehra Zincir', 'Deneme Ticaret Ltd. Şti.', '04.10.2026', '900,00 TL', {'plan_susuyor': "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"}]
+not ok 85 - S17-01-elle-supheli-suphesiz-net-borcla-sinirlanir [hizli] (1 fark; davranış farkı 1)
+  # SÜRÜCÜ HATASI
+  # Error: kart SN1: 400 {"ok":false,"error":"Carinin taksitlendirilebilecek borcu 800,00 TL; toplam bundan büyük olamaz. Fazlası yeni borçsa ayrı kart açın ya da \"Yeni borç\" seçin.","code":"cover-exceeds","free":800} |     at sart (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9/test/bagimsiz/whatsapp-248/surucu.mjs:860:33) |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) |     at async vadeleriKur (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9/test/bagimsiz/whatsapp-248/surucu.mjs:942:20)
+not ok 86 - S17-02-gonderim-aninda-suphesiz-net-borc-yeniden-hesaplanir [hizli] (16 fark; davranış farkı 15; gösterim: G1-borclu-eki 3, G4-liste-icinde-ozel-yaprak 2)
+  # durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # durum_sayilari.Teslim Edildi: beklenen 2, program 3
+  # meta.post.SN7: beklenen 0, program 1
+  # meta.kabul.SN7: beklenen 0, program 1
+  # meta.meta_ileti.SN7: beklenen 0, program 1
+  # meta.toplam_post: beklenen 2, program 3
+  # meta.toplam_kabul_program: beklenen 2, program 3
+  # meta.toplam_meta_ileti: beklenen 2, program 3
+  # isler.T1/SN6.degiskenler: beklenen ['Oya Kuyruk', 'Deneme Ticaret Ltd. Şti.', '09.10.2026', '120,00 TL', {'plan_susuyor': "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"}], program ['Oya Kuyruk', 'Deneme Ticaret Ltd. Şti.', '02.10.2026', '550,00 TL', {'plan_susuyor': "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"}]
+  # isler.T1/SN7.durum: beklenen 'Atlandı', program 'Teslim Edildi'
+  # isler.T1/SN7.degiskenler: beklenen ['Ömer Ters', 'Deneme Ticaret Ltd. Şti.', '12.10.2026', '150,00 TL', {'plan_susuyor': "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"}], program ['Ömer Ters', 'Deneme Ticaret Ltd. Şti.', '03.10.2026', '350,00 TL', {'plan_susuyor': "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"}]
+  # isler.T1/SN7.post: beklenen 0, program 1
+not ok 87 - NB5-01-net-borc-siniri-bize-alacakli-elenir [hizli] (1 fark; davranış farkı 1)
+  # SÜRÜCÜ HATASI
+  # Error: kart P5: 400 {"ok":false,"error":"Carinin taksitlendirilebilecek borcu 400,00 TL; toplam bundan büyük olamaz. Fazlası yeni borçsa ayrı kart açın ya da \"Yeni borç\" seçin.","code":"cover-exceeds","free":400} |     at sart (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9/test/bagimsiz/whatsapp-248/surucu.mjs:860:33) |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) |     at async vadeleriKur (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9/test/bagimsiz/whatsapp-248/surucu.mjs:942:20)
+not ok 88 - NB5-02-gonderim-aninda-bize-alacakli-atlanir-tutar-yeniden [hizli] (16 fark; davranış farkı 15; gösterim: G1-borclu-eki 2)
+  # durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # durum_sayilari.Teslim Edildi: beklenen 2, program 3
+  # meta.post.V5: beklenen 0, program 1
+  # meta.kabul.V5: beklenen 0, program 1
+  # meta.meta_ileti.V5: beklenen 0, program 1
+  # meta.toplam_post: beklenen 2, program 3
+  # meta.toplam_kabul_program: beklenen 2, program 3
+  # meta.toplam_meta_ileti: beklenen 2, program 3
+  # isler.T1/V5.durum: beklenen 'Atlandı', program 'Teslim Edildi'
+  # isler.T1/V5.degiskenler: beklenen ['Veli Döndü', 'Deneme Ticaret Ltd. Şti.', '08.10.2026', '400,00 TL', '400,00 TL'], program ['Veli Döndü', 'Deneme Ticaret Ltd. Şti.', '08.10.2026', '400,00 TL', '100,00 TL (Alacaklı)']
+  # isler.T1/V5.post: beklenen 0, program 1
+  # isler.T1/V5.kabul: beklenen 0, program 1
+not ok 89 - S22-01-sinirda-bekleyen-yine-de-gonder-supheli-acilir-atlanir-yeniden-basma-gider [hizli] (31 fark; davranış farkı 29; gösterim: G1-borclu-eki 3, G4-liste-icinde-ozel-yaprak 1)
+  # durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # meta.post.SU: beklenen 2, program 3
+  # meta.kabul.SU: beklenen 1, program 2
+  # meta.meta_ileti.SU: beklenen 2, program 3
+  # meta.toplam_post: beklenen 4, program 5
+  # meta.toplam_kabul_program: beklenen 2, program 3
+  # meta.toplam_meta_ileti: beklenen 4, program 5
+  # kontroller.K1.toplam_post: beklenen 3, program 2
+  # kontroller.K1.isler.T1/A: beklenen 'Teslim Edildi', program 'Sınır Nedeniyle Bekliyor'
+  # kontroller.K1.isler.T1/SU: beklenen 'Sınır Nedeniyle Bekliyor', program 'Teslim Edildi'
+  # kontroller.K2.durum_sayilari.Atlandı: beklenen 2, program '<YOK>'
+  # kontroller.K2.toplam_post: beklenen 3, program 2
+not ok 90 - S22-02-duraklatildi-devam-et-atlanir-ayni-gun-yeni-is-belirsiz-yeniden-basma-gider [hizli] (35 fark; davranış farkı 33; gösterim: G1-borclu-eki 3, G4-liste-icinde-ozel-yaprak 1)
+  # elenen.T2.DS: beklenen 'sonucu_belirsiz', program 'daha_once_gonderildi'
+  # durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # durum_sayilari.Teslim Edildi: beklenen 2, program 3
+  # meta.post.DS: beklenen 1, program 2
+  # meta.kabul.DS: beklenen 0, program 1
+  # meta.meta_ileti.DS: beklenen 1, program 2
+  # meta.toplam_post: beklenen 4, program 5
+  # meta.toplam_kabul_program: beklenen 2, program 3
+  # meta.toplam_meta_ileti: beklenen 4, program 5
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 3
+  # kontroller.K2.durum_sayilari.Atlandı: beklenen 2, program '<YOK>'
+  # kontroller.K2.durum_sayilari.Teslim Edildi: beklenen 1, program 3
+not ok 91 - S22-03-zincirdeki-yeniden-denemede-supheli-atlanir-yeni-gonderimde-elle-gider [hizli] (31 fark; davranış farkı 28; gösterim: G1-borclu-eki 4, G4-liste-icinde-ozel-yaprak 1)
+  # durum_sayilari.Atlandı: beklenen 2, program '<YOK>'
+  # durum_sayilari.Teslim Edildi: beklenen 2, program 3
+  # meta.post.ZM: beklenen 2, program 3
+  # meta.kabul.ZM: beklenen 1, program 2
+  # meta.meta_ileti.ZM: beklenen 1, program 2
+  # meta.toplam_post: beklenen 6, program 7
+  # meta.toplam_kabul_program: beklenen 2, program 5
+  # meta.toplam_meta_ileti: beklenen 4, program 5
+  # kontroller.K1.toplam_kabul: beklenen 1, program 3
+  # kontroller.K2.durum_sayilari.Atlandı: beklenen 2, program '<YOK>'
+  # kontroller.K2.durum_sayilari.Teslim Edildi: beklenen 1, program 2
+  # kontroller.K2.toplam_post: beklenen 5, program 6
+not ok 92 - S22-04-kayit-gonderimden-once-kapanirsa-butun-gecikmisle-gider-acik-kalan-atlanir [hizli] (24 fark; davranış farkı 22; gösterim: G1-borclu-eki 3)
+  # durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # durum_sayilari.Teslim Edildi: beklenen 2, program 3
+  # meta.post.KA: beklenen 1, program 2
+  # meta.kabul.KA: beklenen 0, program 1
+  # meta.meta_ileti.KA: beklenen 1, program 2
+  # meta.toplam_post: beklenen 4, program 5
+  # meta.toplam_kabul_program: beklenen 2, program 3
+  # meta.toplam_meta_ileti: beklenen 4, program 5
+  # kontroller.K1.durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # kontroller.K1.durum_sayilari.Teslim Edildi: beklenen 2, program 3
+  # kontroller.K1.toplam_post: beklenen 4, program 5
+  # kontroller.K1.toplam_kabul: beklenen 2, program 3
+not ok 93 - S22-05-ay-sonu-gece-yarisi-atlanir-yerel-gunle-yeniden-basma [hizli] (11 fark; davranış farkı 10; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 1)
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 2
+  # kontroller.K2.durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # kontroller.K2.durum_sayilari.Teslim Edildi: beklenen 1, program 2
+  # kontroller.K2.toplam_post: beklenen 2, program 3
+  # kontroller.K2.toplam_kabul: beklenen 1, program 2
+  # kontroller.K2.pencere_farkli_alici.W1: beklenen 1, program 2
+  # kontroller.K2.isler.T1/GY: beklenen 'Atlandı', program 'Teslim Edildi'
+  # yeniden.Y2.alinan: beklenen ['GY'], program []
+  # yeniden.Y2.supheli_etiketi: beklenen ['GY'], program '<YOK>'
+  # isler.T1/GY.degiskenler: beklenen ['Gülay Gece', 'Deneme Ticaret Ltd. Şti.', '31.10.2026', '300,00 TL', {'plan_susuyor': "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"}], program ['Gülay Gece', 'Deneme Ticaret Ltd. Şti.', '05.10.2026', '400,00 TL', {'plan_susuyor': "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"}]
+not ok 94 - S22-06-meta-bekletti-ikinci-denemede-atlanir-yeniden-basma-gider [hizli] (10 fark; davranış farkı 9; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 1)
+  # kontroller.K2.durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # kontroller.K2.durum_sayilari.Teslim Edildi: beklenen 1, program 2
+  # kontroller.K2.toplam_post: beklenen 3, program 4
+  # kontroller.K2.toplam_kabul: beklenen 2, program 3
+  # kontroller.K2.pencere_farkli_alici.W1: beklenen 0, program 1
+  # kontroller.K2.isler.T1/MB: beklenen 'Atlandı', program 'Teslim Edildi'
+  # yeniden.Y2.alinan: beklenen ['MB'], program []
+  # yeniden.Y2.supheli_etiketi: beklenen ['MB'], program '<YOK>'
+  # isler.T1/MB.degiskenler: beklenen ['Melek Bekletilen', 'Deneme Ticaret Ltd. Şti.', '16.10.2026', '250,00 TL', {'plan_susuyor': "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"}], program ['Melek Bekletilen', 'Deneme Ticaret Ltd. Şti.', '06.10.2026', '650,00 TL', {'plan_susuyor': "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"}]
+not ok 95 - S23-01-sinirda-bekleyen-yeniden-basma-elle-sayilir-pencere-acilinca-gider [hizli] (25 fark; davranış farkı 23; gösterim: G1-borclu-eki 3, G4-liste-icinde-ozel-yaprak 1)
+  # durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # kontroller.K1.toplam_post: beklenen 3, program 2
+  # kontroller.K1.isler.T1/A: beklenen 'Teslim Edildi', program 'Sınır Nedeniyle Bekliyor'
+  # kontroller.K1.isler.T1/SR: beklenen 'Sınır Nedeniyle Bekliyor', program 'Teslim Edildi'
+  # kontroller.K2.toplam_post: beklenen 3, program 2
+  # kontroller.K2.isler.T1/A: beklenen 'Teslim Edildi', program 'Sınır Nedeniyle Bekliyor'
+  # kontroller.K2.isler.T1/SR: beklenen 'Sınır Nedeniyle Bekliyor', program 'Teslim Edildi'
+  # kontroller.K3.durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # kontroller.K3.durum_sayilari.Teslim Edildi: beklenen 2, program 1
+  # kontroller.K3.toplam_post: beklenen 4, program 2
+  # kontroller.K3.toplam_kabul: beklenen 2, program 1
+  # kontroller.K3.isler.T1/A: beklenen 'Teslim Edildi', program 'Sınır Nedeniyle Bekliyor'
+not ok 96 - S23-02-duraklatildi-yeniden-basma-elle-devam-et-ile-gider-kayitsiz-zaten-kuyrukta [hizli] (29 fark; davranış farkı 26; gösterim: G1-borclu-eki 4, G4-liste-icinde-ozel-yaprak 1)
+  # durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # durum_sayilari.Teslim Edildi: beklenen 3, program 4
+  # meta.post.DL: beklenen 1, program 2
+  # meta.kabul.DL: beklenen 0, program 1
+  # meta.meta_ileti.DL: beklenen 1, program 2
+  # meta.toplam_post: beklenen 6, program 7
+  # meta.toplam_kabul_program: beklenen 3, program 4
+  # meta.toplam_meta_ileti: beklenen 6, program 7
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 4
+  # kontroller.K2.pencere_farkli_alici.W1: beklenen 1, program 4
+  # kontroller.K3.durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # kontroller.K3.durum_sayilari.Teslim Edildi: beklenen 3, program 4
+not ok 97 - S23-03-zincirdeki-yeniden-deneme-beklerken-yeniden-basma-elle-gider [hizli] (8 fark; davranış farkı 7; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 1)
+  # meta.toplam_kabul_program: beklenen 2, program 3
+  # kontroller.K1.toplam_kabul: beklenen 1, program 2
+  # kontroller.K2.toplam_kabul: beklenen 1, program 2
+  # kontroller.K3.toplam_kabul: beklenen 2, program 3
+  # yeniden.Y3.supheli_etiketi: beklenen ['ZK'], program '<YOK>'
+  # yeniden.Y3.elle_sayilan: beklenen ['ZK'], program '<YOK>'
+  # isler.T1/ZK.degiskenler: beklenen ['Zeki Zincir', 'Deneme Ticaret Ltd. Şti.', '17.10.2026', '400,00 TL', {'plan_susuyor': "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"}], program ['Zeki Zincir', 'Deneme Ticaret Ltd. Şti.', '03.10.2026', '1.000,00 TL', {'plan_susuyor': "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"}]
+not ok 98 - S23-04-meta-bekletti-beklerken-yeniden-basma-ikinci-denemede-gider [hizli] (4 fark; davranış farkı 3; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 1)
+  # yeniden.Y2.supheli_etiketi: beklenen ['MK'], program '<YOK>'
+  # yeniden.Y2.elle_sayilan: beklenen ['MK'], program '<YOK>'
+  # isler.T1/MK.degiskenler: beklenen ['Mine Bekletilen', 'Deneme Ticaret Ltd. Şti.', '16.10.2026', '250,00 TL', {'plan_susuyor': "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"}], program ['Mine Bekletilen', 'Deneme Ticaret Ltd. Şti.', '06.10.2026', '650,00 TL', {'plan_susuyor': "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"}]
+not ok 99 - S23-05-yeniden-basmada-suphesiz-tutar-yok-iki-okuma-ileti-gitmez [hizli] (26 fark; davranış farkı 24; gösterim: G1-borclu-eki 2)
+  # durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # durum_sayilari.Teslim Edildi: beklenen 1, program 2
+  # meta.post.NZ: beklenen 1, program 2
+  # meta.kabul.NZ: beklenen 0, program 1
+  # meta.meta_ileti.NZ: beklenen 1, program 2
+  # meta.toplam_post: beklenen 2, program 3
+  # meta.toplam_kabul_program: beklenen 1, program 2
+  # meta.toplam_meta_ileti: beklenen 2, program 3
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 2
+  # kontroller.K2.durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # kontroller.K2.durum_sayilari.Teslim Edildi: beklenen 1, program 2
+  # kontroller.K2.toplam_post: beklenen 2, program 3
+not ok 100 - S29-01-yeniden-basmada-tutar-yok-ertesi-gun-devam-et-gonderim-anindaki-tutarla-gider [hizli] (29 fark; davranış farkı 27; gösterim: G1-borclu-eki 3, G4-liste-icinde-ozel-yaprak 1)
+  # durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # durum_sayilari.Teslim Edildi: beklenen 2, program 3
+  # meta.post.NY: beklenen 1, program 2
+  # meta.kabul.NY: beklenen 0, program 1
+  # meta.meta_ileti.NY: beklenen 1, program 2
+  # meta.toplam_post: beklenen 4, program 5
+  # meta.toplam_kabul_program: beklenen 2, program 3
+  # meta.toplam_meta_ileti: beklenen 4, program 5
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 3
+  # kontroller.K2.durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # kontroller.K2.durum_sayilari.Teslim Edildi: beklenen 2, program 3
+  # kontroller.K2.toplam_post: beklenen 4, program 5
+not ok 101 - S29-02-gece-yarisi-yerel-gun-tutar-dogar-utc-gunu-farkli [hizli] (5 fark; davranış farkı 4; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 1)
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 2
+  # yeniden.Y2.supheli_etiketi: beklenen ['GN'], program '<YOK>'
+  # yeniden.Y2.elle_sayilan: beklenen ['GN'], program '<YOK>'
+  # isler.T1/GN.degiskenler: beklenen ['Gece Nur', 'Deneme Ticaret Ltd. Şti.', '31.10.2026', '200,00 TL', {'plan_susuyor': "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"}], program ['Gece Nur', 'Deneme Ticaret Ltd. Şti.', '05.10.2026', '400,00 TL', {'plan_susuyor': "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"}]
+not ok 102 - S29-03-meta-bekletti-ikinci-denemede-tutar-dogar-net-borcla-sinirli [hizli] (1 fark; davranış farkı 1)
+  # SÜRÜCÜ HATASI
+  # Error: kart MZ: 400 {"ok":false,"error":"Carinin taksitlendirilebilecek borcu 600,00 TL; toplam bundan büyük olamaz. Fazlası yeni borçsa ayrı kart açın ya da \"Yeni borç\" seçin.","code":"cover-exceeds","free":600} |     at sart (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9/test/bagimsiz/whatsapp-248/surucu.mjs:860:33) |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) |     at async vadeleriKur (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9/test/bagimsiz/whatsapp-248/surucu.mjs:942:20)
+not ok 103 - S29-04-sinirda-yeni-gecikmis-kalem-eklenir-kayit-kapanirsa-butun-gecikmisle [hizli] (33 fark; davranış farkı 31; gösterim: G1-borclu-eki 3, G4-liste-icinde-ozel-yaprak 1)
+  # durum_sayilari.Teslim Edildi: beklenen 3, program 2
+  # meta.post.SK: beklenen 2, program 1
+  # meta.kabul.SK: beklenen 1, program 0
+  # meta.meta_ileti.SK: beklenen 2, program 1
+  # meta.toplam_post: beklenen 5, program 4
+  # meta.toplam_kabul_program: beklenen 3, program 2
+  # meta.toplam_meta_ileti: beklenen 5, program 4
+  # kontroller.K1.toplam_post: beklenen 3, program 2
+  # kontroller.K1.isler.T1/A: beklenen 'Teslim Edildi', program 'Sınır Nedeniyle Bekliyor'
+  # kontroller.K1.isler.T1/SQ: beklenen 'Sınır Nedeniyle Bekliyor', program 'Teslim Edildi'
+  # kontroller.K2.toplam_post: beklenen 3, program 2
+  # kontroller.K2.isler.T1/A: beklenen 'Teslim Edildi', program 'Sınır Nedeniyle Bekliyor'
+1..103
+# tests 103
+# pass 0
+# fail 103
+# skipped 0
