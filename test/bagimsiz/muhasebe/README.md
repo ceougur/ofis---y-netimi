@@ -629,7 +629,8 @@ hareketi bankadaki gibi reddedilir (banka bugün 409 bank-before-opening)". S8 (
 - Mutant B40e (S14 kısmi faturada kâhin susmaz) KALDIRILDI — S25 (a) ile susma yok; tersi B50c. Kodu taşınan eski mutantların metni yeni koda taşındı: B40c (`_s14_normal`),
   B44b (yarım gün iş günü koşulu); anlamları aynı.
 - Elle senaryolarda (s01–s72) ve tohumlu senaryolarda sayısal beklenti DEĞİŞMEDİ: `uret_beklenen.py` yeniden yazınca s01–s72 ve `rastgele-1/2/3` senaryo + beklenen dosyalarının
-  hiçbiri değişmedi (yalnız s73–s77 eklendi) — S25 (b) / (c), S26 ve 28 Ekim valörü eski senaryolarda ve tohumlarda tetiklenmiyor; S24 A bakım 4'ün davranışı.
+  hiçbiri değişmedi (yalnız s73–s77 eklendi) — S25 (c), S26 ve 28 Ekim valörü eski senaryolarda ve tohumlarda tetiklenmiyor; tohum 1'de faturanın açık kısmını aşan
+  bağlı şüpheli tahsilatı (S25 (b)) VAR ama eski kâhin de onu sınır içinde kabul ediyordu, sayı aynı (B51 bunu da yakalar: tohum 1 "beklenmeyen red"); S24 A bakım 4'ün davranışı.
 
 ### KULLANICIYA SORULMALI / KÂHİN SUSUYOR (kodlanmadı; para / kapama → ders 43)
 1. **S25 × Kredi Kartına İade (Z8):** şüpheli alacak kaydı açık caride faturaya bağlı T-11 Kredi Kartına İade (müşteri parayı şirket kartına iade etti). A (öneri): S14 ile aynı (şüpheli kısım
@@ -650,7 +651,8 @@ hareketi bankadaki gibi reddedilir (banka bugün 409 bank-before-opening)". S8 (
   `test_S25_kart` (eski kâhin reddediyor, susmuyor), `test_S26_tutar_disi` (eski kâhin reddediyor), `test_S25_a` (S14_KISMI), `test_S21_*` (28 Ekim belirsiz), hijyen (s77 valörü),
   dosya güncelliği. **s73 eski modelde YEŞİL** (0 anahtar farklı): S24 A, bakım 4'te Y14 olarak susarak sürdürülen davranışın KENDİSİ — kâhinde sayı değişmedi, yalnız kural
   oldu; testin dişi B55 / B55b mutantlarıyla gösterildi.
-- Model değiştikten sonra ilk koşuda HİÇBİR elle değer değişmedi (tek kırmızı dosya güncelliğiydi; s73–s77 senaryo / beklenen dosyaları yazıldı).
+- acefd13a: model (Z1–Z12), mutantlar, üretici yorumu, s73–s77 senaryo / beklenen dosyaları. Model değiştikten sonra ilk koşuda HİÇBİR elle değer değişmedi (tek kırmızı dosya
+  güncelliğiydi). Kanıt: `docs/kanit/2026-11-06/kahin5-test-utc.*`, `kahin5-test-istanbul.*` (138/138 iki saat diliminde), `kahin5-mutasyon.*`, `kahin5-mutant-deger.*`.
 
 ### Yeni senaryolar, testler ve mutasyonlar
 - Elle senaryolar (5, toplam 78): s73 (S24 — iş listesi C örneği aynen; C2 bağ, C3 K kilidiyle yazılmış karşılıksız; devirden önce / sonra gecikmiş, açık kalem, hatırlatma,

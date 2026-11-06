@@ -1,0 +1,79 @@
+== s73-s24-devir-k-kilidi
+   → 0 anahtar farklı; redler []
+== s74-s25-ab-kismi-ve-fazla
+   redler: beklenen [] ≠ model ['SUPHELI_NORMAL_ASIM']
+   g1/kahin_susuyor: beklenen 0 ≠ model [{'kaynak': 'PA1', 'neden': 'S14_KISMI', 'tutar': 3000}, {'kaynak': 'PA2', 'neden': 'S14_KISMI', 'tutar': 4000}]
+   mz/satirlar/128|C3/bakiye: beklenen 0 ≠ model 10000
+   mz/satirlar/129|C3/bakiye: beklenen 0 ≠ model -6000
+   mz/satirlar/120|C3/bakiye: beklenen -3000 ≠ model 0
+   mz/satirlar/644/bakiye: beklenen -6000 ≠ model '<KeyError: "mz/satirlar/644/bakiye: \'644\' yok">'
+   g3/supheli: beklenen 0 ≠ model 10000
+   ak3: beklenen [{'k': 'tahsilat:PB2', 'tur': 'tahsilat', 'kalan': -3000, 'vade': '2026-05-20', 'tarih': '2026-05-20'}] ≠ model []
+   sk3/0/kalan: beklenen 0 ≠ model 10000
+   sk3/0/karsilik: beklenen 0 ≠ model 6000
+   yevPB2/0/kaynak: beklenen 'PB2' ≠ model '<IndexError: list index out of range>'
+   yevPB2/0/satirlar/0/h: beklenen '101.01' ≠ model '<IndexError: list index out of range>'
+   yevPB2/0/satirlar/0/b: beklenen 13000 ≠ model '<IndexError: list index out of range>'
+   yevPB2/0/satirlar/1/h: beklenen '128' ≠ model '<IndexError: list index out of range>'
+   yevPB2/0/satirlar/1/c: beklenen 'C3' ≠ model '<IndexError: list index out of range>'
+   yevPB2/0/satirlar/1/a: beklenen 10000 ≠ model '<IndexError: list index out of range>'
+   yevPB2/0/satirlar/2/h: beklenen '120' ≠ model '<IndexError: list index out of range>'
+   yevPB2/0/satirlar/2/c: beklenen 'C3' ≠ model '<IndexError: list index out of range>'
+   yevPB2/0/satirlar/2/a: beklenen 3000 ≠ model '<IndexError: list index out of range>'
+   yevPB2/1/tur: beklenen 'karsilik_cozulme' ≠ model '<IndexError: list index out of range>'
+   yevPB2/1/satirlar/1/h: beklenen '644' ≠ model '<IndexError: list index out of range>'
+   yevPB2/1/satirlar/1/a: beklenen 6000 ≠ model '<IndexError: list index out of range>'
+   hat/supheli_etiketli: beklenen ['C1'] ≠ model ['C1', 'C3']
+   mz/satirlar/101.01/bakiye: beklenen 34000 ≠ model 21000
+   bil/pasif/III.D: beklenen 3000 ≠ model '<KeyError: "bil/pasif/III.D: \'III.D\' yok">'
+   bil/aktif/I.C: beklenen 22000 ≠ model 26000
+   bil/aktif/I.A: beklenen 34000 ≠ model 21000
+   → 27 anahtar farklı; redler ['SUPHELI_NORMAL_ASIM']
+== s75-s25-c-nakit-havale-pos
+   redler: beklenen [] ≠ model ['SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM']
+   mz/satirlar/128|C1/bakiye: beklenen 0 ≠ model 10000
+   mz/satirlar/129|C1/bakiye: beklenen 0 ≠ model -4000
+   mz/satirlar/644/bakiye: beklenen -4000 ≠ model '<KeyError: "mz/satirlar/644/bakiye: \'644\' yok">'
+   g1/supheli: beklenen 0 ≠ model 10000
+   sk1/0/kalan: beklenen 0 ≠ model 10000
+   sk1/0/karsilik: beklenen 0 ≠ model 4000
+   mz/satirlar/128|C2/bakiye: beklenen 8000 ≠ model 12000
+   mz/satirlar/120|C2/bakiye: beklenen 2000 ≠ model 1000
+   g2/gecikmis: beklenen 2000 ≠ model 1000
+   g2/supheli: beklenen 8000 ≠ model 12000
+   sk2/0/kalan: beklenen 8000 ≠ model 12000
+   ak2: beklenen [{'k': 'fatura:F52', 'tur': 'fatura', 'kalan': 2000, 'vade': '2026-04-15', 'tarih': '2026-03-02'}] ≠ model [{'k': 'fatura:F52', 'tur': 'fatura', 'kalan': 1000, 'vade': '2026-04-15', 'tarih': '2026-03-02'}]
+   mz/satirlar/128|C3/bakiye: beklenen 8000 ≠ model 20000
+   g3/supheli: beklenen 8000 ≠ model 20000
+   sk3/0/kalan: beklenen 8000 ≠ model 20000
+   yevPP/0/kaynak: beklenen 'PP' ≠ model '<IndexError: list index out of range>'
+   yevPP/0/satirlar/0/h: beklenen '108.POS1' ≠ model '<IndexError: list index out of range>'
+   yevPP/0/satirlar/0/b: beklenen 12000 ≠ model '<IndexError: list index out of range>'
+   yevPP/0/satirlar/1/h: beklenen '128' ≠ model '<IndexError: list index out of range>'
+   yevPP/0/satirlar/1/c: beklenen 'C3' ≠ model '<IndexError: list index out of range>'
+   yevPP/0/satirlar/1/a: beklenen 12000 ≠ model '<IndexError: list index out of range>'
+   yevPP/1/tur: beklenen 'pos_komisyon' ≠ model '<IndexError: list index out of range>'
+   yevPP/1/satirlar/0/h: beklenen '653' ≠ model '<IndexError: list index out of range>'
+   yevPP/1/satirlar/0/b: beklenen 240 ≠ model '<IndexError: list index out of range>'
+   mod0511/pos|POS1: beklenen 11760 ≠ model '<KeyError: "mod0511/pos|POS1: \'pos|POS1\' yok">'
+   mod0511/banka|B1: beklenen 10000 ≠ model '<KeyError: "mod0511/banka|B1: \'banka|B1\' yok">'
+   mod0512/banka|B1: beklenen 21760 ≠ model '<KeyError: "mod0512/banka|B1: \'banka|B1\' yok">'
+   hat/otomatik: beklenen {'C1': 6000} ≠ model {}
+   hat/supheli_etiketli: beklenen ['C2', 'C3'] ≠ model ['C1', 'C2', 'C3']
+   hat/elle: beklenen {'C2': 2000} ≠ model {'C1': 6000, 'C2': 1000}
+   mz/satirlar/100/bakiye: beklenen 6000 ≠ model 3000
+   mz/satirlar/102.B1/bakiye: beklenen 21760 ≠ model '<KeyError: "mz/satirlar/102.B1/bakiye: \'102.B1\' yok">'
+   mz/satirlar/653/bakiye: beklenen 240 ≠ model '<KeyError: "mz/satirlar/653/bakiye: \'653\' yok">'
+   → 34 anahtar farklı; redler ['SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM']
+== s76-s26-geri-yuklenen-kasa-tutar-duzelt
+   redler: beklenen ['KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE'] ≠ model ['KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE']
+   mod14/kasa: beklenen 2150 ≠ model 1800
+   mod14/cari|C1: beklenen -1000 ≠ model -900
+   mod14b/kasa: beklenen 1800 ≠ model 1500
+   mod31/kasa: beklenen 12160 ≠ model 11860
+   mz/satirlar/100/bakiye: beklenen 12160 ≠ model 11860
+   mz/satirlar/649.90/bakiye: beklenen -1560 ≠ model -1360
+   mz/satirlar/120|C1/bakiye: beklenen -1000 ≠ model -900
+   → 8 anahtar farklı; redler ['KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE']
+== s77-s27-pos-valor-yarim-gun
+   HATA (koşu): AssertionError: senaryo hatası: POS valörü 2026-10-28 belirsiz güne (2026-10-28: yarım gün / doğrulanmamış dinî bayram) değiyor — kâhin susar (README bakım 4 Y21)

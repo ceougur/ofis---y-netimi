@@ -1,0 +1,39 @@
+#!/usr/bin/env python3
+"""Kâhin bakımı 5 — yeni elle senaryoların modele karşı anahtar başına dökümü (eski modelde kırmızının NEDENİ, ders 38).
+Kullanım: python3 -I kahin5-neden.py <muhasebe klasörü> [senaryo adı öneki …]"""
+import copy
+import sys
+
+KLASOR = sys.argv[1]
+ONEK = sys.argv[2:] or ["s73", "s74", "s75", "s76", "s77"]
+sys.path.insert(0, KLASOR)
+import model as M  # noqa: E402
+import senaryolar_elle as E  # noqa: E402
+import test_model as T  # noqa: E402
+
+for s in E.SENARYOLAR:
+    if not any(s["ad"].startswith(p) for p in ONEK):
+        continue
+    x = dict(s)
+    x.update(copy.deepcopy(E.TANIM))
+    print(f"== {s['ad']}")
+    try:
+        r = M.kos(x)
+    except Exception as e:  # noqa: BLE001
+        print(f"   HATA (koşu): {type(e).__name__}: {e}")
+        continue
+    fark = 0
+    for yol, bek in s["elle"].get("A", {}).items():
+        try:
+            g = T.yol_al(r, yol, bek)
+        except Exception as e:  # noqa: BLE001
+            g = f"<{type(e).__name__}: {e}>"
+        if g != bek:
+            fark += 1
+            print(f"   {yol}: beklenen {bek!r} ≠ model {g!r}")
+    if not M.tumu_tuttu(r["degismezler"]):
+        print(f"   değişmez hatası: {r['degismezler']}")
+    for d in r["devirler"]:
+        if not M.tumu_tuttu(d["degismezler"]):
+            print(f"   devir değişmezi hatası: {d['degismezler']}")
+    print(f"   → {fark} anahtar farklı; redler {[y['kod'] for y in r['redler']]}")
