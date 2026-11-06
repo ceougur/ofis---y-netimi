@@ -12,8 +12,13 @@ import { createHash, randomBytes, randomInt } from "node:crypto";
 import { HttpError } from "../http.mjs";
 import { createSecretBox } from "../secret-box.mjs";
 import { META_D0, META_D0_W7, MetaGraphError, createMetaGraph, qualityLabel, splitMetaErrorMessage, tierInfo } from "./meta-graph.mjs";
+import { hookAppOf } from "./defter.mjs";
 
 export const SETTING_KEY = "whatsapp.meta";
+// Durum bildirimi yolunun son çalıştığı an (§7a 16; lib/whatsapp/queue.mjs applyStatuses yazar, maintain okur) ve 2.5.0 WhatsApp tur 2 (KULLANICI KARARI S58 = A): işaretin
+// konduğu andaki bağlantı kipi — kip değişince işaret sıfırlanır (save / saveEmbedded; bakım turu da kipi farklı işareti saymaz).
+export const HOOK_SEEN_KEY = "whatsapp.hookSeen";
+export const HOOK_SEEN_MODE_KEY = "whatsapp.hookSeenMode";
 // Deneme gönderiminden sonra aynı şirketten yeni deneme için bekleme (çift tık / iki sekme iki ileti göndermesin).
 export const SELF_TEST_COOLDOWN_MS = 15_000;
 
@@ -269,7 +274,7 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
       // Alan adı "token" DEĞİL: yanıtta belirteç adlı alan olmaz (test/whatsapp-w1-baglanti.test.mjs).
       tokenExpiry: tokenStatus(record),
       // 2.4.8 W9 / T2-3/4: durum bildirimi kaydı (WABA düzeyinde, makine defterinde; gizli yol ve belirteç YOK — yalnız durum).
-      ...hookView(record.wabaId),
+      ...hookView(record),
       // 2.4.8 W7: WhatsApp'ı Bağla — birlikte kullanım mı, Meta adımlarının sonucu (PIN ve belirteç YOK).
       ...(record.mode === "embedded" && record.embedded
         ? { embedded: { coex: Boolean(record.embedded.coex), event: String(record.embedded.olay || ""), at: record.embedded.at || null, steps: (Array.isArray(record.embedded.adimlar) ? record.embedded.adimlar : []).map(step => ({ name: String(step.ad || ""), ok: step.ok === true, message: String(step.ileti || ""), at: step.at || null })) } }
@@ -284,6 +289,20 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
     } catch {
       // ortak kayıt güncellenemese de bağlantı yazıldı; ortak katman açılışta yeniden tarar
     }
+  }
+
+  // 2.5.0 WhatsApp tur 2 — KULLANICI KARARI S58 = A (docs/erp/WA-TUR2-TASARIM.md §2): bağlantı yolu (kip) değişince "bildirim yolu çalışıyor" işareti sıfırlanır — kayıtla
+  // AYNI işlemde. İşaretin kipi (applyStatuses yazar) yoksa (2.5.0 tur 2'den önceki işaret) önceki bağlantının kipi sayılır; önceki bağlantı da yoksa (Bağlantıyı Kaldır sonrası
+  // yeniden bağlama) işaretin kipi BİLİNMİYOR → sıfırlanır (güvenli yön: teslim bilgisi gelmeyen iş Meta Kabul Etti'de kalır, kişi Daha Önce Gönderildi — ilke 2). Aynı kipte
+  // Bilgileri Değiştir işareti korur (karar yalnız kip der).
+  function writeWithMode(record, previous, userId) {
+    const seen = store.setting(HOOK_SEEN_KEY, "");
+    const markMode = store.setting(HOOK_SEEN_MODE_KEY, "") || previous?.mode || "";
+    const reset = Boolean(seen) && markMode !== record.mode;
+    store.tx(() => {
+      write(record, userId);
+      if (reset) store.run("DELETE FROM settings WHERE key IN (?, ?)", HOOK_SEEN_KEY, HOOK_SEEN_MODE_KEY);
+    });
   }
 
   function save(user, input = {}) {
@@ -318,7 +337,7 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
       // aynen taşınır (ör. Yol 2 belirteciyle Bilgileri Değiştir — 60 günlük süre sürer).
       ...(tokenChanged || !previous ? NO_TOKEN_FIELDS : tokenFieldsOf(previous)),
     };
-    write(record, user.id);
+    writeWithMode(record, previous, user.id);
     // İşlem geçmişine belirteç YAZILMAZ; yalnız değişip değişmediği.
     audit(user, "whatsapp.connection.saved", "whatsapp", { mode: "manual", phoneNumberId, wabaId, appId, tokenChanged, first: !previous });
     announce();
@@ -365,7 +384,7 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
       tokenVerifiedAt: at,
       tokenExpired: null,
     };
-    write(record, user.id);
+    writeWithMode(record, previous, user.id);
     audit(user, "whatsapp.connection.saved", "whatsapp", { mode: "embedded", phoneNumberId, wabaId, appId, coex, first: !previous, tokenExpiresAt: record.tokenExpiresAt, tokenExpirySource: record.tokenExpirySource });
     announce();
     return view();
@@ -421,7 +440,7 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
   async function removeNow(user, previous, stopSending) {
     const stopped = safeStop(stopSending);
     const meta = await unsubscribeAtMeta(previous);
-    if (meta.state === "removed") forgetHook(previous.wabaId);
+    if (meta.state === "removed") forgetHook(previous);
     const current = read();
     // Meta beklenirken bağlantı yeniden kurulduysa (başka pencerede yeni belirteç / kimlik) YENİSİ silinmez.
     const same = current && current.tokenSealed === previous.tokenSealed && current.wabaId === previous.wabaId && current.phoneNumberId === previous.phoneNumberId;
@@ -443,8 +462,9 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
   // Gizli yolun ve doğrulama belirtecinin karması korunur: Meta'nın kaldırmadan önce kuyruğa aldığı geç bildirimler (teslim) yine tanınır. Defter yazılamazsa kaldırma
   // sürer (eski kayıt kalır; bakım turu en geç saatte bir Meta'daki adresi okuyup yeniden kaydeder).
   const HOOK_REMOVED = "removed";
-  function forgetHook(wabaId) {
-    const hook = hooks ? hooks.hookOf(wabaId) : null;
+  // 2.5.0 WhatsApp tur 2 (S63): yalnız bu bağlantının UYGULAMASININ kaydı (Meta'da silinen abonelik o uygulamanındır; öbür uygulamanın adresi aynen).
+  function forgetHook(record) {
+    const hook = hooks ? hooks.hookOf(record.wabaId, hookAppOf(record.mode)) : null;
     if (!hook || hook.reason === HOOK_REMOVED) return;
     try {
       hooks.hookEvent({ ...hook, base: "", state: "failed", reason: HOOK_REMOVED, error: "Bağlantı kaldırıldı; durum bildirimi aboneliği Meta'dan silindi.", at: iso() });
@@ -642,7 +662,8 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
   // (plan §3; D0-17b) → kayıt da WABA başına tek ve ŞİRKET DOSYASININ DIŞINDA (makine defteri, hooks.hookEvent); gizli yol ve belirteç YALNIZ Meta'ya giden
   // istekte açık durur, saklanan yalnız SHA-256 karmaları. Aynı WABA'yı kullanan iki şirket aynı adresi paylaşır (bildirim wamid'le doğru şirkete gider —
   // lib/whatsapp/hook.mjs); Yedekten Geri Yükle / Şirket Verisini Sıfırla kaydı değiştirmez. Kayıt önce "Bekliyor" yazılır (Meta abonelik sırasında adresi
-  // doğrulayabilir), Meta kabul edince "Kayıtlı".
+  // doğrulayabilir), Meta kabul edince "Kayıtlı". 2.5.0 WhatsApp tur 2 (KULLANICI KARARI S63 = A): kayıt WABA + UYGULAMA başına (Meta'daki gibi) — aynı WABA'yı Elle Bağla
+  // ile kullanan şirket ve WhatsApp'ı Bağla ile kullanan şirket ayrı adres tutar, biri öbürünün adresini eskitmez; aynı uygulamayı kullananlar aynı adresi paylaşır.
   const lastCheck = new Map(); // WABA → son "Meta'daki adres" okuması (ISO; bakım turunda saatte en çok bir kez)
   const ms = value => Date.parse(value || "");
   const within = (value, span) => {
@@ -651,8 +672,10 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
   };
   // 2.4.9 UI tur B (ORTA-3): kaydedilemeyen Bildirim Yolunda kart nedeni Türkçe (cause) ve Meta'nın ham iletisini (metaMessage, metaCode) AYRI alır; at: son olayın
   // (kaydedilemediği) anı. Defterdeki kayıt (error) değişmez — eski kurulumun kaydı da aynı biçimde ayrılır.
-  function hookView(wabaId) {
-    const hook = hooks && wabaId ? hooks.hookOf(wabaId) : null;
+  // 2.5.0 WhatsApp tur 2 (KULLANICI KARARI S63 = A): kayıt WABA + UYGULAMA başına — bu bağlantının uygulaması kipinden (Elle Bağla = müşterinin uygulaması, WhatsApp'ı
+  // Bağla = DestekOfis uygulaması; lib/whatsapp/defter.mjs hookAppOf). Kart, kayıt, denetim ve kaldırma yalnız KENDİ uygulamasının kaydını okur / yazar.
+  function hookView(record) {
+    const hook = hooks && record?.wabaId ? hooks.hookOf(record.wabaId, hookAppOf(record.mode)) : null;
     // 2.5.0 W-2 (DÜŞÜK-3): Bağlantıyı Kaldır Meta'daki aboneliği sildi — adres kayıtlı değil ("Kayıtlı Değil"; bakım turu yeniden kaydeder).
     if (!hook || hook.reason === HOOK_REMOVED) return {};
     const view = { state: hook.state, at: hook.at || null, registeredAt: hook.registeredAt || null, error: hook.error || "" };
@@ -687,11 +710,12 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
     const graph = graphFor(record);
     const secret = randomBytes(32).toString("base64url");
     const verify = randomBytes(32).toString("base64url");
-    const pending = { wabaId: record.wabaId, pathHash: sha256(secret), verifyHash: sha256(verify), base, state: "pending", reason, error: "", at: iso() };
+    const app = hookAppOf(record.mode);
+    const pending = { wabaId: record.wabaId, app, pathHash: sha256(secret), verifyHash: sha256(verify), base, state: "pending", reason, error: "", at: iso() };
     hookEvent(pending);
     announce();
     const settle = (state, error = "") => {
-      if (hooks.hookOf(record.wabaId)?.pathHash !== pending.pathHash) return; // arada başka kayıt (başka şirket / pencere) yapıldı
+      if (hooks.hookOf(record.wabaId, app)?.pathHash !== pending.pathHash) return; // arada aynı uygulamada başka kayıt (başka şirket / pencere) yapıldı
       try {
         hooks.hookEvent({ ...pending, state, error, at: iso() });
       } catch {
@@ -736,7 +760,8 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
         return { failed: error.message };
       }
     };
-    const hook = hooks.hookOf(record.wabaId);
+    // 2.5.0 WhatsApp tur 2 (S63 = A): yalnız bu uygulamanın kaydı.
+    const hook = hooks.hookOf(record.wabaId, hookAppOf(record.mode));
     if (!hook || hook.base !== base) return register(force ? "manual" : "auto");
     if (hook.state === "pending" || hook.state === "failed") return !force && within(hook.at, HOOK_RETRY_MS) ? { skipped: "recent" } : register(force ? "manual" : "auto");
     if (!force && (hook.state === "conflict" || within(lastCheck.get(record.wabaId), HOOK_RETRY_MS) || within(hook.at, HOOK_RETRY_MS))) return { skipped: hook.state };
@@ -748,6 +773,9 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
       if (!(error instanceof MetaGraphError)) throw error;
       return { failed: error.message };
     }
+    // S63 = A "adres denetimi yalnız kendi uygulamasının satırı" (tasarım §3.4): Meta'nın listesinde (WABA'ya abone bütün uygulamalar ya da yalnız çağıranınki — DOĞRULANMADI) bu
+    // uygulamanın satırı, bu uygulamanın kaydındaki gizli yolu taşıyan satırdır: yol rastgele 32 bayttır ve Meta'ya yalnız bu uygulamanın belirteciyle yazılır — öbür uygulamanın
+    // satırı onu taşıyamaz. Bulunursa "Kayıtlı"; yoksa bu uygulamanın belirteciyle yeniden kaydedilir (öbür uygulamanın adresi değişmez).
     if (apps.some(app => sameHook(app.overrideUri, hook))) {
       if (hook.state === "conflict") hookEvent({ ...hook, state: "active", reason: "manual", error: "", at: iso() });
       return { verified: true };
@@ -768,11 +796,11 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
   function hookMatches(secret) {
     const record = read();
     const hook = hooks && record && HOOK_PATH.test(String(secret || "")) ? hooks.hookByPath(sha256(secret)) : null;
-    return Boolean(hook && hook.wabaId === record.wabaId);
+    return Boolean(hook && hook.wabaId === record.wabaId && hooks.hookOf(record.wabaId, hookAppOf(record.mode))?.pathHash === hook.pathHash);
   }
   function verifyMatches(token) {
     const record = read();
-    const hook = hooks && record ? hooks.hookOf(record.wabaId) : null;
+    const hook = hooks && record ? hooks.hookOf(record.wabaId, hookAppOf(record.mode)) : null;
     return Boolean(hook && token && hook.verifyHash === sha256(token));
   }
 

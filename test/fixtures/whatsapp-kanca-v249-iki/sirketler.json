@@ -1,0 +1,20 @@
+{
+  "companies": [
+    {
+      "id": "sirket-001",
+      "code": "001",
+      "name": "Şirket 1",
+      "dir": "",
+      "createdAt": "2026-11-06T13:09:21.189Z",
+      "createdBy": ""
+    },
+    {
+      "id": "sirket-aa3769a8-7dfd-463c-bb60-a379c33a6336",
+      "code": "002",
+      "name": "Deneme Şirketi",
+      "dir": "sirketler/002",
+      "createdAt": "2026-11-06T13:09:22.400Z",
+      "createdBy": "user-30b74227-7000-4120-b2eb-672f06e0c5c5"
+    }
+  ]
+}

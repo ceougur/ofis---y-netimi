@@ -29,7 +29,9 @@ Durum: KODDAN ÖNCE yazıldı (06.11.2026, tur 2 kod ajanı, taban 329d5d1b = Wh
      kabul edilen bildirimde çağırır (`hook.mjs:311`, aynen) → kip o an bilinir.
   2. `connection.mjs` `save` (Elle Bağla, `:289`) ve `saveEmbedded` (WhatsApp'ı Bağla, `:332`): yeni kip işaretin kipinden farklıysa işaret ve kipi silinir. İşaretin kipi yoksa
      (v2.4.9 / tur 1 verisi) önceki bağlantının kipi sayılır; önceki bağlantı da yoksa (Bağlantıyı Kaldır sonrası yeniden bağlama) kip BİLİNMİYOR → silinir (güvenli yön, ilke 2).
-  3. `maintain` işaretin kipi şimdiki kipten farklıysa işareti saymaz (geri yükleme / taşıma gibi `save` dışı yollara karşı ikinci kilit; bugün böyle bir yol bilinmiyor).
+  3. ~~`maintain` işaretin kipi şimdiki kipten farklıysa işareti saymaz~~ — UYGULAMADA KALDIRILDI (06.11, kodlama sırasında): kip yalnız `save` / `saveEmbedded`'de değişir; geri
+     yüklenen / taşınan dosyada işaret, kipi ve bağlantı birlikte gelir (tutarlı). Bu ikinci kilide giden bir yol yok → testle ölçülemeyen (mutantı yakalanamayan) savunma kodu
+     yazılmadı.
 - Her iki yön (Yol 1 → Yol 2, Yol 2 → Yol 1), geri dönüş (Yol 1 → Yol 2 → Yol 1: eski işaret DİRİLMEZ), aynı kipte Bilgileri Değiştir (işaret KALIR — karar yalnız kip der),
   Kaldır + başka kiple bağla (silinir), Kaldır + aynı kiple bağla (işaretin kipi kayıtlıysa KALIR; kip bilinmiyorsa silinir).
 - Kime kaç kez: işaretin silinmesi güvenli yöndür (iş "Meta Kabul Etti"de kalır, kişi "Daha Önce Gönderildi", R3 "Yine de Gönder" açık — ilke 2 + 4). Yeni yolun ilk tanınan

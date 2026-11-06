@@ -25,7 +25,7 @@ import { roundMoney } from "../money.mjs";
 import { dayText } from "../plans.mjs";
 import { statementData, statementFileName, statementPdf } from "../statement-pdf.mjs";
 import { e164Of, waPresetRange } from "./alici.mjs";
-import { isTokenRejectCode } from "./connection.mjs";
+import { HOOK_SEEN_KEY, HOOK_SEEN_MODE_KEY, isTokenRejectCode } from "./connection.mjs";
 import { allPeriodStartOf, localDayOf, periodKeyOf, periodKeysOf, queueKeysOf, rollingSinceOf, sameKeys, sentSinceOf } from "./donem.mjs";
 import { DAY_MS } from "./defter.mjs";
 import { META_D0, META_DEFAULT_TTL_SECONDS, MetaGraphError, classifyMetaCode, createMetaTemplates, neverReachedMeta, tierInfo } from "./meta-graph.mjs";
@@ -45,8 +45,8 @@ export const ACK_KEY = "whatsapp.ack";
 export const ACK_TEXT = "Aydınlatma metnimi okudum, carilerime ulaştıracağım.";
 export const ACK_VERSION = 1;
 export const SENDING_KEY = "whatsapp.sending";
-// Durum bildirimi yolunun son çalıştığı an (§7a 16): bu şirketin kancasına son bildirim.
-export const HOOK_SEEN_KEY = "whatsapp.hookSeen";
+// Durum bildirimi yolunun son çalıştığı an (§7a 16): bu şirketin kancasına son bildirim (anahtar lib/whatsapp/connection.mjs'te — 2.5.0 tur 2 S58: kip değişince orada sıfırlanır).
+export { HOOK_SEEN_KEY };
 // Türkiye utility ileti ücreti (Meta tarifesi 01.10.2026; plan §2.6) — yalnız "yaklaşık ücret" göstergesi; Meta faturası esastır.
 export const UTILITY_USD = 0.0009;
 export const MAX_RECIPIENTS = 5000;
@@ -202,9 +202,13 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   // ---------- Okuma ----------
   const batchRow = id => store.get("SELECT * FROM wa_batches WHERE id = ?", id);
   const jobRow = id => store.get("SELECT * FROM wa_jobs WHERE id = ?", id);
+  // 2.5.0 WhatsApp tur 2 (W-3 dk ORTA-2; tasarım §6): içeriği silinmiş işe (KVKK talebi / 1 yıl — params_json işareti '{') SONRADAN yazılan hata metni de 10+ haneli sayılardan
+  // (telefon) arındırılır — failJob / retryLater / applyStatuses / toparlama, hepsi buradan. Karar AYNI UPDATE'te (SQL CASE: satırın o anki işareti; ek okuma, yarış yok).
   const updateJob = (id, fields) => {
     const keys = Object.keys(fields);
-    store.run(`UPDATE wa_jobs SET ${keys.map(key => `${key} = ?`).join(", ")}, updated_at = ? WHERE id = ?`, ...keys.map(key => fields[key]), iso(), id);
+    const values = keys.flatMap(key => (key === "error_text" && fields[key] ? [scrubDigits(fields[key]), fields[key]] : [fields[key]]));
+    const sets = keys.map(key => (key === "error_text" && fields[key] ? "error_text = CASE WHEN params_json LIKE '{%' THEN ? ELSE ? END" : `${key} = ?`));
+    store.run(`UPDATE wa_jobs SET ${sets.join(", ")}, updated_at = ? WHERE id = ?`, ...values, iso(), id);
   };
   const updateBatch = (id, fields) => {
     const keys = Object.keys(fields);
@@ -990,7 +994,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
         }
       }),
     );
-    if (flush && out.erased) walCheckpoint(store.db);
+    if (flush && out.erased) flushStore();
     for (const id of out.jobIds) localDefer.delete(id);
     // Kapanan bekleyen iş bir daha denenmez: Meta Bekletti'nin bırakılmış denemesi R3'te sayılmaz (K7 düzeni; kâhin Y17-9). Yazılamazsa sayılır (güvenli yön: ikinci ileti yok).
     for (const id of stops) ledger.stopJob?.({ jobId: id, reason, at });
@@ -1002,9 +1006,17 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     withSecureDelete(store.db, () => {
       changed = Number(store.run(`UPDATE message_sends SET phone = '', body = '' WHERE (phone <> '' OR body <> '') AND ${where}`, ...args).changes) || 0;
     });
-    if (changed && flush) walCheckpoint(store.db);
+    if (changed && flush) flushStore();
     return changed;
   }
+  // 2.5.0 WhatsApp tur 2 (W-3 dk ORTA-3; tasarım §7): silmeden sonraki denetim noktası (WAL'daki / ana dosyadaki eski sayfalar) başka bağlantı dosyayı okurken düşer (200 ms
+  // bekleme — saklama.mjs checkpoint) → düştüyse bayrak; bakım turu bayrak varken yeniden dener (bayraksız turda denetim noktası YOK — W-3 §2 "yalnız bir şey silindiyse").
+  let flushPending = false;
+  const flushStore = () => {
+    const done = walCheckpoint(store.db);
+    flushPending = !done;
+    return done;
+  };
   // Silinen işler kapatılmış olabilir: süren toplu iş bitmişse Tamamlandı; ekran tazelenir.
   function settleErased(batchIds) {
     for (const id of batchIds) {
@@ -1013,14 +1025,50 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     }
   }
   // Makine defteri (telefon, wamid): yazılamazsa günlük; talep makinede kayıtlı olduğundan açılışta / sonraki turda yeniden denenir.
+  // 2.5.0 WhatsApp tur 2 (W-3 dk ORTA-1; tasarım §5): düşerse bayrak (ledgerRetry) — bakım turu bir sonraki turda talepleri deftere yeniden uygular (retryLedgerErasures).
+  let ledgerRetry = false;
   function anonymizeLedger(jobIds, { flush = true } = {}) {
     try {
       for (const part of chunked([...new Set(jobIds)], 2000)) ledger.anonymizeJobs?.(part, { flush });
       return true;
     } catch (error) {
+      ledgerRetry = true;
       log.warn?.(`WhatsApp gönderim defterinde telefon / ileti kimliği silinemedi (${error?.code || error?.message || error}); sonra yeniden denenecek.`);
       return false;
     }
+  }
+  /**
+   * W-3 dk ORTA-1: talebin DEFTER tarafı eşgüçlü yeniden uygulanır — talep anından önce açılmış dosya işleri (silinmiş olanlar dahil) ∪ defterde talep anından önce talebi olan
+   * işler; telefonu / wamid'i hâlâ açık kalanlar anonimleştirilir (toplu SQL — ders 47). request: { accountId, at }. Dönüş: başarılı mı (okunamadıysa / yazılamadıysa false).
+   */
+  function reapplyLedger(request) {
+    try {
+      const fileIds = store.all("SELECT id FROM wa_jobs WHERE account_id = ? AND created_at <= ?", request.accountId, request.at).map(row => row.id);
+      const ids = [...new Set([...fileIds, ...(ledger.accountJobsUntil?.(companyId, request.accountId, request.at) || [])])];
+      const open = ids.length ? ledger.plainJobs?.(ids) || [] : [];
+      return open.length ? anonymizeLedger(open) : true;
+    } catch (error) {
+      if (isLockError(error)) throw error;
+      ledgerRetry = true;
+      log.warn?.(`WhatsApp silme talebi gönderim defterine yeniden uygulanamadı (${error?.code || error?.message || error}); sonra yeniden denenecek.`);
+      return false;
+    }
+  }
+  /** Bakım turu: bütün talepler için defter tarafı (reapplyLedger); hepsi geçerse bayrak iner. */
+  function retryLedgerErasures() {
+    let list;
+    try {
+      list = ledger.erasureRequests?.(companyId) || [];
+    } catch (error) {
+      log.warn?.(`WhatsApp silme talepleri okunamadı (${error?.code || error?.message || error}); gönderim defterine yeniden uygulanamadı, sonra yeniden denenecek.`);
+      ledgerRetry = true;
+      return false;
+    }
+    ledgerRetry = false;
+    let ok = true;
+    for (const request of list) if (!reapplyLedger(request)) ok = false;
+    if (!ok) ledgerRetry = true;
+    return ok;
   }
   // S42 / S35: içeriği silinmiş iş bir yanıtla yeniden BEKLEYEN duruma geçtiyse (geçici hata, Bağlantı Bekleniyor, 190, 131049, açılışta "istek gitmedi") o anda Atlandı.
   function closeErasedWaiting(jobId) {
@@ -1060,6 +1108,28 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     return { at, jobs: result.erased, skipped: result.skipped, manual };
   }
   /**
+   * 2.5.0 WhatsApp tur 2 — W-3 dk ORTA-4 (BAŞ MİMAR KARARI A, 06.11.2026 12:33): Yönetim → WhatsApp → "Gönderim Kayıtları ve KVKK" araması için Silinenler'deki (deleted_at dolu)
+   * ve WhatsApp kaydı (otomatik gönderim işi ya da elle wa.me kaydı) OLAN cariler — KVKK talebi cari silindikten sonra da gelebilir. Eşleşme cari aramasının kuralıyla
+   * (routes/accounts.mjs rowMatches: ad / not / adres … küçük harf tr-TR içinde; telefon ve VKN/TCKN rakamla; Cari No tam). Tek SQL (EXISTS dizinli), eşleşme yalnız silinmiş + kaydı
+   * olan carilerde (ders 47). Yanıt: [{ id, name, refNo, deleted: true }] — telefon YANITA GİRMEZ; en çok `limit`.
+   */
+  function deletedErasable(q, { limit = 10 } = {}) {
+    const needle = String(q || "").toLocaleLowerCase("tr-TR").trim();
+    if (!needle) return [];
+    const numbers = needle.replace(/\D/g, "");
+    const rows = store.all(`SELECT a.id, a.ref_no AS refNo, a.name, a.phone, a.tax_no AS taxNo, a.note, a.address, a.city, a.district, a.tax_office AS taxOffice, a.email
+      FROM accounts a WHERE a.deleted_at IS NOT NULL
+        AND (EXISTS (SELECT 1 FROM wa_jobs j WHERE j.account_id = a.id) OR EXISTS (SELECT 1 FROM message_sends m WHERE m.account_id = a.id))
+      ORDER BY a.name COLLATE NOCASE`);
+    const digits = value => String(value || "").replace(/\D/g, "");
+    const matches = row => {
+      const hay = `${row.name} ${row.note || ""} ${row.address || ""} ${row.city || ""} ${row.district || ""} ${row.taxOffice || ""} ${row.email || ""}`.toLocaleLowerCase("tr-TR");
+      const phoneHit = numbers.length >= 3 && (digits(row.phone).includes(numbers) || (numbers.length >= 5 && String(row.taxNo || "").includes(numbers)));
+      return hay.includes(needle) || phoneHit || String(row.refNo || "").toLocaleLowerCase("tr-TR") === needle;
+    };
+    return rows.filter(matches).slice(0, limit).map(row => ({ id: row.id, name: row.name, refNo: row.refNo || "", deleted: true }));
+  }
+  /**
    * S32 / S38: makinedeki talepler şirket dosyasına (geri yüklenmiş / taşınmış olabilir) yeniden uygulanır — talep anından ÖNCE açılmış işlerin içeriği silinir (talepten sonra
    * açılan kalır). Açılışta (recover) toparlamadan SONRA. Talepler okunamazsa günlük (ders 4: "talep yok" sayılmaz; sonraki açılışta yeniden).
    */
@@ -1083,6 +1153,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
         anonymizeLedger(result.jobIds);
       }
       out.manual += eraseManual("account_id = ? AND created_at <= ?", [request.accountId, request.at]);
+      // 2.5.0 WhatsApp tur 2 (W-3 dk ORTA-1): dosyada daha önce silinmiş işlerin DEFTER tarafı da (talep anında defter yazılamamış olabilir) — eşgüçlü.
+      reapplyLedger(request);
     }
     settleErased(batches);
     return out;
@@ -1106,7 +1178,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const nowT = nowMs();
     if (!force && lastSweep !== null && nowT >= lastSweep && nowT - lastSweep < HOUR) return null;
     lastSweep = nowT;
-    const out = { jobs: expireWaiting(), manual: 0, ledger: 0 };
+    const out = { jobs: expireWaiting(), manual: 0, ledger: 0, digested: 0 };
     const bound = candidateBound(nowT);
     // Ölçüm (100.000 iş, docs/kanit/2026-11-06/w3-olcum-*): tek sorgu + 2.000'lik parça + parça başına WAL boşaltma olay döngüsünü ~1,3 sn tutuyordu; sayfalı sorgu da iş
     // yokken tabloyu TEK sorguda tarıyordu (~0,5 sn) → satır numarası (rowid) PENCERESİ: her sorgu en çok WINDOW satıra bakar, aralarda olay döngüsüne sıra; WAL turun sonunda
@@ -1115,9 +1187,23 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const batches = new Set();
     const lastJob = Number(store.get("SELECT COALESCE(MAX(rowid), 0) AS m FROM wa_jobs").m) || 0;
     for (let after = 0; after < lastJob; after += WINDOW) {
-      const due = store.all(`SELECT id, ${retentionStartSql("j")} AS start FROM wa_jobs j WHERE rowid > ? AND rowid <= ? AND params_json NOT LIKE '{%' AND ${retentionStartSql("j")} <= ?`, after, after + WINDOW, bound)
-        .filter(row => retentionDue(row.start, nowT))
-        .map(row => row.id);
+      // 2.5.0 WhatsApp tur 2 (W-3 dk ORTA-1; tasarım §5): AYNI pencere sorgusu içeriği silinmiş ama wamid'i ÖZET OLMAYAN satırları da getirir (tur 2'den önceki kodun S42
+      // yolunda yazdığı açık wamid) — özetlenir (geç bildirim özetle eşleşir; kime / kaç kez aynı). Tek tarama, ek pencere yok (ders 47).
+      const rows = store.all(
+        `SELECT id, ${retentionStartSql("j")} AS start, params_json LIKE '{%' AS erased, wamid FROM wa_jobs j WHERE rowid > ? AND rowid <= ?
+           AND ((params_json NOT LIKE '{%' AND ${retentionStartSql("j")} <= ?) OR (params_json LIKE '{%' AND wamid IS NOT NULL AND substr(wamid, 1, 2) <> 'h:'))`,
+        after,
+        after + WINDOW,
+        bound,
+      );
+      const plain = rows.filter(row => row.erased);
+      if (plain.length) {
+        withSecureDelete(store.db, () => store.tx(() => {
+          for (const row of plain) store.run("UPDATE wa_jobs SET wamid = ? WHERE id = ? AND wamid = ?", wamidDigest(row.wamid), row.id, row.wamid);
+        }));
+        out.digested += plain.length;
+      }
+      const due = rows.filter(row => !row.erased && retentionDue(row.start, nowT)).map(row => row.id);
       for (const part of chunked(due, 500)) {
         const result = eraseJobs(part, "sure", iso(), { flush: false });
         out.jobs += result.erased;
@@ -1136,7 +1222,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       if (due.length) out.manual += eraseManual(`id IN (${due.map(() => "?").join(",")})`, due, { flush: false });
       await yieldLoop();
     }
-    if (out.jobs || out.manual) walCheckpoint(store.db);
+    if (out.jobs || out.manual || out.digested) flushStore();
     try {
       const lastClaim = Number(ledger.lastClaimRow?.() || 0);
       for (let after = 0; after < lastClaim; after += WINDOW) {
@@ -1606,11 +1692,20 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     }
     // 2.5.0 W-3 (S42): istek sürerken içerik silindiyse kabulün izi wamid ÖZETİYLE yazılır (açık wamid dosyaya / deftere hiç girmez). Silme talebi denemenin talep telefonunu
     // AYNI ANDA anonimleştirir → bilgi DEFTERDEN okunur: şirket dosyası istek sürerken kapanmış olabilir (geri yükleme) ve defter yazımı dosyadan ÖNCE gelmelidir (İş T A7 / T35r).
+    // 2.5.0 WhatsApp tur 2 (W-3 dk ORTA-1): defter ∪ dosya — talep anında defter yazılamadıysa (anonimleştirme sonra yeniden denenir) dosyadaki işaret yine özeti seçtirir;
+    // dosya okunamazsa (istek sürerken kapandı) yalnız defter.
     let erasedInFlight = false;
     try {
       erasedInFlight = Boolean(ledger.jobAnonymized?.(job.id));
     } catch {
       erasedInFlight = false;
+    }
+    if (!erasedInFlight) {
+      try {
+        erasedInFlight = Boolean(erasedOf(jobRow(job.id)?.params_json));
+      } catch {
+        erasedInFlight = false;
+      }
     }
     if (erasedInFlight) sent = { ...sent, wamid: wamidDigest(sent.wamid) };
     // Önce makine defteri (kesinti olursa açılışta defterden kabul okunur), sonra şirket dosyası. Başarılı işin hata kodu temizlenir (§7a 32).
@@ -1935,12 +2030,16 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     settleUncertainFromLedger(); // İş U4: kabulü defterde kesin olan Sonucu Belirsiz satırlar
     // 2.5.0 W-3: 1 yıl süpürmesi (program saatiyle saatte bir; açılıştan sonraki ilk turda).
     const retention = await sweepRetention();
-    if (retention && (retention.jobs || retention.manual || retention.ledger)) out.retention = retention;
+    if (retention && (retention.jobs || retention.manual || retention.ledger || retention.digested)) out.retention = retention;
+    // 2.5.0 WhatsApp tur 2 (W-3 dk ORTA-1 / ORTA-3; tasarım §5, §7): talebin defter tarafı düştüyse sonraki turda, ayrıca saklama süpürmesiyle (saatte bir + açılıştan sonraki
+    // ilk tur) yeniden uygulanır (eşgüçlü); düşmüş denetim noktası (şirket dosyası / defter) bayrak varken yeniden denenir.
+    if (ledgerRetry || retention) retryLedgerErasures();
+    if (flushPending) flushStore();
+    if (ledger.flushPending?.()) ledger.flush?.();
     // Bildirim yolu çalışıyorsa (son 7 günde bu şirkete en az bir durum bildirimi geldi) teslim edilmeyen ileti TTL + 1 saatte "Süresi Doldu"; yoksa "Meta Kabul Etti"de kalır.
-    // T2-3/4: bildirim yolu WABA düzeyinde (makine defteri hook_seen; aynı WABA'yı kullanan şirketlerin hepsi için) ya da bu şirketin son bildirimi.
-    const seenWaba = Date.parse(ledger.hookSeenAt?.(connection.read()?.wabaId || "") || "");
-    const seenHere = Date.parse(store.setting(HOOK_SEEN_KEY, "") || "");
-    const seen = Math.max(Number.isFinite(seenWaba) ? seenWaba : -Infinity, Number.isFinite(seenHere) ? seenHere : -Infinity);
+    // 2.5.0 WhatsApp tur 2 — tur 1 dk ORTA-1 (tasarım §1): YALNIZ bu şirketin işareti; makine defterinin WABA düzeyi hook_seen'i (v2.4.9'un yazdığı — tanınmayan / imzasız /
+    // başka şirketin bildirimi de koyuyordu) OKUNMAZ. KULLANICI KARARI S58 = A (§2): kip değişince işaret connection.save / saveEmbedded'de silinir (kip yalnız orada değişir).
+    const seen = Date.parse(store.setting(HOOK_SEEN_KEY, "") || "");
     // TTL = Meta'nın şablon listesinde bildirdiği ileti ömrü, yoksa Meta'nın varsayılanı 30 gün (2.4.9 W-T: program şablona TTL yazmaz) — Meta'nın hâlâ teslim etmeye
     // çalıştığı iletiyi "Süresi Doldu" saymaz, PDF'ini önceden silmez. 2.4.9 W-KÖK: iş KABUL ANINDAKİ süreyle ölçülür (sonradan kısalan süre geriye işlemez; bilinmiyorsa
     // 30 gün; uzarsa uzun olan) — lib/whatsapp/templates.mjs deliveryTtlRules; teslim süresi günlüğü turda bir kez okunur, satır başına yalnız sayı karşılaştırması (ders 47).
@@ -2054,7 +2153,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     // silinmiş yetim satır da gider. Tarama küçük tabloda (açık işlerin PDF'leri), iş satırı birincil anahtarla okunur.
     // 2.5.0 W-3: silinen PDF'in baytları dosyada serbest sayfada kalmasın (secure_delete; KVKK).
     const prunedPdfs = withSecureDelete(store.db, () => Number(store.run(`DELETE FROM wa_job_pdfs WHERE NOT EXISTS (SELECT 1 FROM wa_jobs j WHERE j.id = wa_job_pdfs.job_id AND j.state IN (${OPEN_JOB.map(() => "?").join(",")}))`, ...OPEN_JOB).changes) || 0);
-    if (prunedPdfs) walCheckpoint(store.db);
+    if (prunedPdfs) flushStore();
     // Kabul yazımı düşmüş (disk dolu) ve 5 dakikadır "Gönderiliyor"da kalan iş (tek işçi; istek 15 sn'de biter): açılıştaki kuralla defterden çözülür.
     const stuck = store.all("SELECT * FROM wa_jobs WHERE state = 'sending' AND sending_at < ?", iso(nowMs() - 5 * 60_000));
     if (stuck.length) out.repaired = settleSending(stuck);
@@ -2284,6 +2383,9 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   }
   function applyStatuses(statuses = [], { phoneNumberId = "", signed = false } = {}) {
     const out = { applied: 0, ignored: 0, unknown: 0 };
+    // 2.5.0 WhatsApp tur 2 — KULLANICI KARARI S58 = A: işaretle birlikte o anki bağlantı kipi (yalnız değişince yazılır); kip değişince işaret sıfırlanır (connection.mjs).
+    const mode = connection.read()?.mode || "";
+    if (mode && store.setting(HOOK_SEEN_MODE_KEY, "") !== mode) store.setSetting(HOOK_SEEN_MODE_KEY, mode);
     store.setSetting(HOOK_SEEN_KEY, iso());
     for (const status of Array.isArray(statuses) ? statuses : []) {
       const wamid = String(status?.id || "").slice(0, 200);
@@ -2470,5 +2572,5 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     writeLock?.mark(companyId);
     syncLockNote();
   };
-  return { canWrite, markLocked, connected, preview, createBatch, list, detail, pause, resume, cancel, retryFailed, sendAnyway, next, step, recover, maintain, applyStatuses, movedOwnerOfWamid, monthStats, historyOf, setAck, ackView, ack, setSending, settings, judgeTemplate, forgetTemplates, stopForRemoval, eraseAccount, reapplyRequests, sweepRetention };
+  return { canWrite, markLocked, connected, preview, createBatch, list, detail, pause, resume, cancel, retryFailed, sendAnyway, next, step, recover, maintain, applyStatuses, movedOwnerOfWamid, monthStats, historyOf, setAck, ackView, ack, setSending, settings, judgeTemplate, forgetTemplates, stopForRemoval, eraseAccount, deletedErasable, reapplyRequests, sweepRetention };
 }
