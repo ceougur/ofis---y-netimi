@@ -456,9 +456,11 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     beforeLock(target, body?.force === true);
     const previous = period.lockedUntil();
     // 2.5.0 Ç3 (§4): başka güne süren dondurma durdurulur; bayat satırlar (geri çekilmiş dönem) kilitten önce parça parça silinir.
+    // Ç3 tur 4 (ORTA-1): kilit DEĞİŞMİYORSA (aynı güne yeniden kaydetme) bekleyen koşu — günü kilitten önce olsa da (yeniden donma planının ilk dilimi, ilerletilmiş kilitte
+    // eski kurallı koşu) — durdurulmaz; lockChanged onu sürdürür (aynı ayrım lockNeedsCleanup'ta).
     const waiting = snapshots.state().pending;
     let stopped = false;
-    if (waiting && waiting.through !== target) {
+    if (waiting && waiting.through !== target && target !== previous) {
       await snapshots.cancel();
       stopped = true;
     }
@@ -475,6 +477,9 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
       }
       // Kilit + donmuş defter koşusu aynı işlemde (kilit önce, donma arkasından; yarım durumda kilitli dönem bekleyen koşunun kuralıyla canlı okunur).
       lockedUntil = store.tx(() => {
+        // Kilidin İŞLEMDEKİ önceki değeri (Ç3 tur 4): yukarıdaki beklemelerde (durdurma, temizlik) başka bir istek kilidi değiştirmiş olabilir; lockChanged'in "kilit değişmedi"
+        // kararı (bekleyen koşu sürer) bayat değere dayanmaz.
+        const previous = period.lockedUntil();
         const value = period.setLock(target);
         snapshots.lockChanged({ previous, next: value, user, reason: "lock" });
         return value;
