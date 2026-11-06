@@ -2909,7 +2909,7 @@ def _hat(t, oto, soz=None, sus=None):
     return x
 
 
-S("s88-s52-odeme-sozu", ["S52", "B1", "S1", "M1f", "G-5", "S7", "W12", "W13", "W14"], [
+S("s88-s52-odeme-sozu", ["S52", "B1", "S1", "M1f", "G-5", "S7", "W12", "W13", "W14", "S72", "S73", "P1", "P2"], [
     o("satis_faturasi", "2026-02-01", id="F1", cari="C1", M=1000, K=0, vade="2026-03-01"),
     o("satis_faturasi", "2026-02-02", id="F2", cari="C2", M=800, K=0, vade="2026-03-01"),
     o("satis_faturasi", "2026-02-03", id="F3", cari="C3", M=500, K=0, vade="2026-02-15"),
@@ -2920,9 +2920,9 @@ S("s88-s52-odeme-sozu", ["S52", "B1", "S1", "M1f", "G-5", "S7", "W12", "W13", "W
     o("tahsilat", "2026-03-12", cari="C1", yol="nakit", tutar=400),
     R("hat1", "hatirlatma", tarih="2026-03-15"), R("g1", "gecikmis", cari="C1", tarih="2026-03-15"),
     R("hat2", "hatirlatma", tarih="2026-03-19"),   # C1: söz tarihi yarın
-    R("hat3", "hatirlatma", tarih="2026-03-20"),   # C1: söz günü (kâhin susar — KULLANICIYA SORULMALI 1)
+    R("hat3", "hatirlatma", tarih="2026-03-20"),   # C1: söz günü (bakım 9: S72 A — girmez)
     R("hat4", "hatirlatma", tarih="2026-03-21"),   # C1: söz dün geçti
-    R("hat5", "hatirlatma", tarih="2026-03-26"),   # C3: söz süresinde F4 gecikti (kâhin susar — KULLANICIYA SORULMALI 2)
+    R("hat5", "hatirlatma", tarih="2026-03-26"),   # C3: söz süresinde F4 gecikti (bakım 9: S73 A — söz bütün borcu kapsar)
     R("g3", "gecikmis", cari="C3", tarih="2026-03-26"),
     o("odeme_sozu", "2026-03-27", cari="C1", soz_tarihi="2026-04-05"),   # yeni söz öncekinin yerine
     R("hat6", "hatirlatma", tarih="2026-03-28"),
@@ -2932,16 +2932,18 @@ S("s88-s52-odeme-sozu", ["S52", "B1", "S1", "M1f", "G-5", "S7", "W12", "W13", "W
     # 15.03: C1 söz etkin (10.03 ≤ t < 20.03), gecikmiş F1 1000 − 400 = 600 (vade 01.03 < söz 10.03); C3 söz etkin, F3 500 (vade 15.02); C2 sözsüz
     "hat1": _hat("2026-03-15", {"C2": 800}, {"C1": 600, "C3": 500}), "g1/gecikmis": 600,
     "hat2": _hat("2026-03-19", {"C2": 800}, {"C1": 600, "C3": 500}),
-    "hat3": _hat("2026-03-20", {"C2": 800}, {"C3": 500}, [("C1", "S52_SOZ_GUNU")]),
+    # G3 (bakım 9, S72 A): 20.03 C1'in söz günü — eskiden kahin_susuyor S52_SOZ_GUNU; artık "Ödeme Sözü Var" 600
+    "hat3": _hat("2026-03-20", {"C2": 800}, {"C1": 600, "C3": 500}),
     "hat4": _hat("2026-03-21", {"C1": 600, "C2": 800}, {"C3": 500}),
-    # 26.03: C3'te F4 (vade 25.03 ≥ söz 10.03) gecikti → susar; gecikmiş 800 sayılır
-    "hat5": _hat("2026-03-26", {"C1": 600, "C2": 800}, None, [("C3", "S52_YENI_GECIKME")]), "g3/gecikmis": 800,
-    # 28.03: C1 yeni söz (27.03 → 05.04) etkin, F1 vade 01.03 < 27.03 → "Ödeme Sözü Var"; C3 susar
-    "hat6": _hat("2026-03-28", {"C2": 800}, {"C1": 600}, [("C3", "S52_YENI_GECIKME")]),
+    # 26.03: C3'te F4 (vade 25.03 ≥ söz 10.03) gecikti; gecikmiş 800 sayılır
+    # G3 (bakım 9, S73 A): eskiden kahin_susuyor S52_YENI_GECIKME; söz bütün borcu kapsar → "Ödeme Sözü Var" 500 + 300 = 800
+    "hat5": _hat("2026-03-26", {"C1": 600, "C2": 800}, {"C3": 800}), "g3/gecikmis": 800,
+    # 28.03: C1 yeni söz (27.03 → 05.04) etkin, F1 vade 01.03 < 27.03 → "Ödeme Sözü Var"; C3 söz sürüyor (G3, S73 A: eskiden susma) → 800
+    "hat6": _hat("2026-03-28", {"C2": 800}, {"C1": 600, "C3": 800}),
     "hat7": _hat("2026-03-09", {"C1": 1000, "C2": 800, "C3": 500}),
     "redler": [],
 }}, aciklama="S52: vadesi geçmiş borca ileri tarihli Ödeme Sözü — borç gecikmiş sayılır, söz tarihine kadar otomatik hatırlatmaya girmez ('Ödeme Sözü Var'); "
-             "söz günü ve söz süresinde yeni gecikme kâhinde susar.")
+             "S72 / S73 (bakım 9): söz günü de girmez, söz süresinde geciken kalem de sözün kapsamında.")
 
 # ------------------------------------------------------------------------------------------------ S89 / S90: S53 (kilitsiz / kilitli şirkette geçmiş yıl)
 _GOC53 = [
@@ -3284,3 +3286,151 @@ S("s100-s68-bagsiz-odeme-vade-sirasi", ["S68", "S2", "karar (1)", "T-05", "T-08"
     "mz/satirlar/770/bakiye": 2900, "mz/satirlar/770.90/bakiye": 500, "mz/satirlar/102.B1/bakiye": -600, "mz/satirlar/100/bakiye": -200,
     "mz/satirlar/101.01/bakiye": 0, "redler": [],
 }}, aciklama="S68: bizim bağlamadan yaptığımız ödeme (tedarikçiye, iade bedeli, ciro) vadesi en önce gelen alacak kalemini kapatır — S2'nin simetriği.")
+
+# ================================================================================================ kâhin bakımı 9 (S72, S73, S79; README P1–P9)
+# Elle değerler model DEĞİŞTİRİLMEDEN ÖNCE yazıldı (ders 40). S74–S78 = C: senaryo yok (BİLİNEN SINIR, kâhin susar).
+
+# ------------------------------------------------------------------------------------------------ S101: S72 (söz günü de otomatik listeye girmez)
+S("s101-s72-soz-gunu", ["S72", "S52", "M1f", "G-5", "W12", "W13", "P1", "P4"], [
+    o("satis_faturasi", "2026-02-01", id="F1", cari="C1", M=1000, K=0, vade="2026-03-01"),
+    o("satis_faturasi", "2026-02-02", id="F2", cari="C2", M=800, K=0, vade="2026-03-01"),
+    o("satis_faturasi", "2026-02-03", id="F3", cari="C3", M=500, K=0, vade="2026-03-01"),
+    o("odeme_sozu", "2026-03-10", cari="C1", soz_tarihi="2026-03-19"),
+    o("odeme_sozu", "2026-03-10", cari="C2", soz_tarihi="2026-03-20"),
+    o("odeme_sozu", "2026-03-10", cari="C3", soz_tarihi="2026-03-21"),
+    R("h10", "hatirlatma", tarih="2026-03-10"),    # sözlerin girildiği gün: üçü de etkin
+    R("h20", "hatirlatma", tarih="2026-03-20"),    # C1 söz dün · C2 söz bugün · C3 söz yarın
+    R("g2", "gecikmis", cari="C2", tarih="2026-03-20"),
+    R("h21", "hatirlatma", tarih="2026-03-21"),    # C2 söz dün (ertesi gün) · C3 söz bugün
+    R("h22", "hatirlatma", tarih="2026-03-22"),    # üç söz de geçti
+    R("h24", "hatirlatma", tarih="2026-03-24"),
+    o("odeme_sozu", "2026-03-25", cari="C1", soz_tarihi="2026-03-31"),   # söz geçtikten sonra yeni söz; söz günü ay sonu
+    R("h25", "hatirlatma", tarih="2026-03-25"),    # yeni söz girildiği gün etkin
+    R("h31", "hatirlatma", tarih="2026-03-31"),    # yeni sözün günü (ay sonu)
+    R("h01", "hatirlatma", tarih="2026-04-01"),    # ertesi gün, ay dönümü
+    MZ("mz", "2026-01-01", "2026-04-30"),
+], {"A": {
+    # gecikmiş (vade 01.03 < t): C1 1000, C2 800, C3 500 — söz değiştirmez (S52)
+    "h10": _hat("2026-03-10", {}, {"C1": 1000, "C2": 800, "C3": 500}),
+    # 20.03: C1 söz tarihi 19.03 geçti → girer; C2 söz günü → girmez (S72 A); C3 söz yarın → girmez
+    "h20": _hat("2026-03-20", {"C1": 1000}, {"C2": 800, "C3": 500}),
+    "g2": {"cari": "C2", "tarih": "2026-03-20", "gecikmis": 800, "supheli": 0, "detay": [{"kalem": "fatura:F2", "vade": "2026-03-01", "kalan": 800}]},
+    "h21": _hat("2026-03-21", {"C1": 1000, "C2": 800}, {"C3": 500}),
+    "h22": _hat("2026-03-22", {"C1": 1000, "C2": 800, "C3": 500}),
+    "h24": _hat("2026-03-24", {"C1": 1000, "C2": 800, "C3": 500}),
+    "h25": _hat("2026-03-25", {"C2": 800, "C3": 500}, {"C1": 1000}),
+    "h31": _hat("2026-03-31", {"C2": 800, "C3": 500}, {"C1": 1000}),
+    "h01": _hat("2026-04-01", {"C1": 1000, "C2": 800, "C3": 500}),
+    # söz defter olayı değil (G-5)
+    "mz/satirlar/120|C1/bakiye": 1000, "mz/satirlar/120|C2/bakiye": 800, "mz/satirlar/120|C3/bakiye": 500, "mz/satirlar/600/bakiye": -2300,
+    "redler": [],
+}}, aciklama="S72: Ödeme Sözü'nün günü de cari otomatik hatırlatma listesine girmez ('Ödeme Sözü Var'); söz geçince (ertesi gün) girer — söz dün / bugün / yarın, "
+             "girildiği gün, ay sonu sözü ve ay dönümü.")
+
+# ------------------------------------------------------------------------------------------------ S102: S73 (söz carinin bütün borcunu kapsar)
+S("s102-s73-soz-butun-borc", ["S73", "S72", "S52", "S2", "M1f", "G-5", "T-01", "P2", "P4"], [
+    o("satis_faturasi", "2026-02-01", id="F1", cari="C1", M=1000, K=0, vade="2026-03-01"),   # söz öncesi gecikmiş
+    o("satis_faturasi", "2026-02-02", id="F2", cari="C1", M=400, K=0, vade="2026-03-15"),    # söz sırasında gecikir
+    o("satis_faturasi", "2026-02-03", id="F5", cari="C1", M=300, K=0, vade="2026-04-05"),    # söz bittikten sonra gecikir
+    o("satis_faturasi", "2026-02-04", id="F3", cari="C2", M=600, K=0, vade="2026-03-10"),    # vade = sözün girildiği gün (söz anında gecikmemiş)
+    o("satis_faturasi", "2026-02-05", id="F4", cari="C2", M=200, K=0, vade="2026-03-01"),    # söz anında gecikmiş
+    o("satis_faturasi", "2026-02-06", id="F6", cari="C3", M=100, K=0, vade="2026-03-01"),    # sözsüz cari
+    o("odeme_sozu", "2026-03-10", cari="C1", soz_tarihi="2026-03-31"),
+    o("odeme_sozu", "2026-03-10", cari="C2", soz_tarihi="2026-03-20"),
+    R("h12", "hatirlatma", tarih="2026-03-12"),
+    R("h16", "hatirlatma", tarih="2026-03-16"), R("g16", "gecikmis", cari="C1", tarih="2026-03-16"),
+    o("tahsilat", "2026-03-18", cari="C1", yol="havale", banka="B1", tutar=1000),   # bağsız → S2: F1 kapanır; yalnız söz sırasında geciken F2 kalır
+    R("h20", "hatirlatma", tarih="2026-03-20"),
+    R("h21", "hatirlatma", tarih="2026-03-21"),
+    R("h31", "hatirlatma", tarih="2026-03-31"),
+    R("h01", "hatirlatma", tarih="2026-04-01"),
+    R("h06", "hatirlatma", tarih="2026-04-06"), R("g06", "gecikmis", cari="C1", tarih="2026-04-06"),
+    MZ("mz", "2026-01-01", "2026-04-30"),
+], {"A": {
+    # 12.03: C1 F1 1000 (F2 vadesi 15.03 gelmedi); C2 F4 200 + F3 600 (vade 10.03 < 12.03) = 800 — ikisi de söz kapsamında; C3 sözsüz 100
+    "h12": _hat("2026-03-12", {"C3": 100}, {"C1": 1000, "C2": 800}),
+    # 16.03: C1'de F2 söz sırasında gecikti → söz bütün borcu kapsar (S73 A), tutar 1000 + 400
+    "h16": _hat("2026-03-16", {"C3": 100}, {"C1": 1400, "C2": 800}),
+    "g16": {"cari": "C1", "tarih": "2026-03-16", "gecikmis": 1400, "supheli": 0,
+            "detay": [{"kalem": "fatura:F1", "vade": "2026-03-01", "kalan": 1000}, {"kalem": "fatura:F2", "vade": "2026-03-15", "kalan": 400}]},
+    # 20.03: C1'de yalnız söz sırasında geciken F2 400 kaldı — söz sürer; C2 söz günü (S72)
+    "h20": _hat("2026-03-20", {"C3": 100}, {"C1": 400, "C2": 800}),
+    "h21": _hat("2026-03-21", {"C2": 800, "C3": 100}, {"C1": 400}),
+    "h31": _hat("2026-03-31", {"C2": 800, "C3": 100}, {"C1": 400}),
+    # 01.04: C1 söz geçti → bütün gecikmiş borcuyla girer; 06.04: söz bittikten sonra geciken F5 de
+    "h01": _hat("2026-04-01", {"C1": 400, "C2": 800, "C3": 100}),
+    "h06": _hat("2026-04-06", {"C1": 700, "C2": 800, "C3": 100}),
+    "g06": {"cari": "C1", "tarih": "2026-04-06", "gecikmis": 700, "supheli": 0,
+            "detay": [{"kalem": "fatura:F2", "vade": "2026-03-15", "kalan": 400}, {"kalem": "fatura:F5", "vade": "2026-04-05", "kalan": 300}]},
+    # söz defter olayı değil (G-5): 120|C1 = 1000 + 400 + 300 − 1000
+    "mz/satirlar/120|C1/bakiye": 700, "mz/satirlar/120|C2/bakiye": 800, "mz/satirlar/120|C3/bakiye": 100, "mz/satirlar/102.B1/bakiye": 1000,
+    "mz/satirlar/600/bakiye": -2600, "redler": [],
+}}, aciklama="S73: Ödeme Sözü carinin bütün borcunu kapsar — söz öncesi ve söz sırasında geciken kalem söz bitene kadar cariyi otomatik listeye sokmaz; "
+             "söz bitince cari bütün gecikmiş borcuyla (sonra geciken dahil) girer.")
+
+# ------------------------------------------------------------------------------------------------ S103: S79 (olağan bağlı kayıtta aynı düzeltmede bağ + cari)
+S("s103-s79-olagan-bag-cari", ["S79", "S57", "S54", "S45", "U2", "G-7", "C-03", "T-01", "T-05", "H-04", "M1e", "karar (1)", "karar (2)", "S2", "P5", "P6"], [
+    o("kasa_acilis", "2026-01-01", id="KA", tutar=1000),
+    o("satis_faturasi", "2026-01-05", id="F1", cari="C1", M=1000, K=0, vade="2026-01-31"),
+    o("satis_faturasi", "2026-01-06", id="F3", cari="C3", M=500, K=0, vade="2026-01-20"),
+    o("satis_faturasi", "2026-01-06", id="F5", cari="C3", M=600, K=0, vade="2026-02-28"),
+    o("taksit_karti", "2026-01-07", id="TK1", cari="C1", kaynak="yeni_borc", toplam=300, taksitler=[{"vade": "2026-02-01", "tutar": 300}]),
+    o("taksit_karti", "2026-01-07", id="TK3", cari="C3", kaynak="yeni_borc", toplam=400, taksitler=[{"vade": "2026-02-01", "tutar": 400}]),
+    o("alis_faturasi", "2026-01-05", id="A1", cari="T1", fatura_turu="gider", gider_turu="genel", M=1000, K=0, vade="2026-01-31"),
+    o("alis_faturasi", "2026-01-05", id="A3", cari="T2", fatura_turu="gider", gider_turu="genel", M=800, K=0, vade="2026-02-28"),
+    o("alis_faturasi", "2026-01-06", id="A4", cari="T2", fatura_turu="gider", gider_turu="genel", M=500, K=0, vade="2026-02-15"),
+    # olağan (geri yüklenmemiş) bağlı kayıtlar
+    o("tahsilat", "2026-01-10", id="PA", cari="C1", yol="havale", banka="B1", tutar=300, fatura="F1"),
+    o("tahsilat", "2026-01-11", id="PB", cari="C1", yol="havale", banka="B1", tutar=200, fatura="F1"),
+    o("tahsilat", "2026-01-12", id="PC", cari="C1", yol="havale", banka="B1", tutar=100, fatura="F1"),
+    o("tahsilat", "2026-01-12", id="PD", cari="C1", yol="havale", banka="B1", tutar=50, fatura="F1"),
+    o("tahsilat", "2026-01-13", id="PT", cari="C1", yol="havale", banka="B1", tutar=300, taksit_karti="TK1"),
+    o("tahsilat", "2026-01-14", id="PK", cari="C1", yol="nakit", tutar=150, fatura="F1", yedekten=True),   # geri yüklenmiş ama açılıştan SONRA: olağan
+    o("odeme", "2026-01-15", id="OA", cari="T1", yol="havale", banka="B1", tutar=400, fatura="A1"),
+    R("g1a", "gecikmis", cari="C1", tarih="2026-02-02"), R("g3a", "gecikmis", cari="C3", tarih="2026-02-02"),
+    R("akt2a", "acik_kalemler", cari="T2", tarih="2026-01-16"),
+    o("duzenle", kaynak="PA", degisiklik={"cari": "C3", "fatura": "F5"}),                          # S79: yeni carinin (vadesi sonra gelen) faturasına
+    o("duzenle", kaynak="PB", degisiklik={"cari": "C3", "fatura": None, "taksit_karti": "TK3"}),   # S79: yeni carinin kartına
+    o("duzenle", kaynak="PC", degisiklik={"cari": "C2", "fatura": None}),                          # S79: bağ kaldırıldı + cari
+    o("duzenle", kaynak="PD", degisiklik={"cari": "C3"}),                       # bağ değişmedi → S57 BAG_KALDIRILMALI
+    o("duzenle", kaynak="PD", degisiklik={"cari": "C3", "fatura": "F1"}),       # aynı bağ yeniden yazıldı (değişmedi) → S57 BAG_KALDIRILMALI
+    o("duzenle", kaynak="PT", degisiklik={"cari": "C3", "taksit_karti": None, "fatura": "F3"}),   # S79: kart bağından yeni carinin faturasına
+    o("duzenle", kaynak="PK", degisiklik={"cari": "C3", "fatura": None, "tutar": 100, "aciklama": "doğru cari"}),   # S79 + tutar / açıklama (X10)
+    o("duzenle", kaynak="OA", degisiklik={"cari": "T2", "fatura": "A3"}),       # S79 ödemede: yeni carinin (vadesi sonra gelen) alış faturasına
+    MZ("mz", "2026-01-01", "2026-01-31"), R("mu", "mutabakat_uyarilari", tarih="2026-01-31"), R("mod", "moduller", tarih="2026-01-31"),
+    R("g1b", "gecikmis", cari="C1", tarih="2026-02-02"), R("g3b", "gecikmis", cari="C3", tarih="2026-02-02"), R("g2b", "gecikmis", cari="C2", tarih="2026-02-02"),
+    R("ak3", "acik_kalemler", cari="C3", tarih="2026-02-02"), R("kt3", "kartlar", cari="C3", tarih="2026-02-02"), R("kt1", "kartlar", cari="C1", tarih="2026-02-02"),
+    R("akt1", "acik_kalemler", cari="T1", tarih="2026-01-16"), R("akt2", "acik_kalemler", cari="T2", tarih="2026-01-16"),
+    R("hat", "hatirlatma", tarih="2026-02-02"),
+], {"A": {
+    # ÖNCE: F1 1000 − (300 + 200 + 100 + 50 + 150) = 200 açık (vade 31.01); TK1 taksiti PT ile kapalı → 02.02'de 200
+    #       C3: F3 500 (vade 20.01) + TK3 400 (vade 01.02) = 900 gecikmiş (F5 vadesi 28.02); T2: A4 500, A3 800 açık
+    "g1a/gecikmis": 200, "g3a/gecikmis": 900,
+    "akt2a": [{"k": "fatura:A4", "tur": "fatura", "kalan": -500, "vade": "2026-02-15", "tarih": "2026-01-06"},
+              {"k": "fatura:A3", "tur": "fatura", "kalan": -800, "vade": "2026-02-28", "tarih": "2026-01-05"}],
+    "redler": ["BAG_KALDIRILMALI", "BAG_KALDIRILMALI"],
+    # SONRA (kayıtlar kendi günlerinde yeni carileriyle yeniden türetilir, G-7):
+    #   PA 300 → C3 F5 (bağ; bağsız olsaydı vadesi önce gelen F3 kapanırdı): F5 300 açık · PB 200 → C3 TK3: taksit 200 açık
+    #   PT 300 → C3 F3: F3 200 · PK 100 (tutar düzeltildi) → C3 bağsız 14.01: S2 vadesi önce gelen F3 (20.01) → F3 100
+    #   PC 100 → C2 bağsız (borcu yok → avans) · PD 50 C1'de F1'e bağlı kaldı · OA 400 → T2 A3 (bağ): A3 400, A4 500 açık; T1 A1 1000 açık
+    #   C1: F1 1000 − 50 = 950 (vade 31.01) + TK1 300 yeniden açık (vade 01.02) → 02.02'de 1250
+    # Kasa 100 = 1000 + 100; 102.B1 = 300 + 200 + 100 + 50 + 300 − 400 = 550
+    "mz/satirlar/100/bakiye": 1100, "mz/satirlar/102.B1/bakiye": 550,
+    "mz/satirlar/120|C1/bakiye": 1250, "mz/satirlar/120|C3/bakiye": 600, "mz/satirlar/120|C2/bakiye": -100,
+    "mz/satirlar/320|T1/bakiye": -1000, "mz/satirlar/320|T2/bakiye": -900,
+    "mz/satirlar/600/bakiye": -2100, "mz/satirlar/600.90/bakiye": -700, "mz/satirlar/770/bakiye": 2300, "mz/satirlar/519/bakiye": -1000,
+    "mu": [], "mod/taksit_odenen|TK3": 200, "mod/taksit_odenen|TK1": 0,
+    "g1b": {"cari": "C1", "tarih": "2026-02-02", "gecikmis": 1250, "supheli": 0,
+            "detay": [{"kalem": "fatura:F1", "vade": "2026-01-31", "kalan": 950}, {"kalem": "kart:TK1", "vade": "2026-02-01", "kalan": 300}]},
+    "g3b/gecikmis": 300, "g2b/gecikmis": 0,
+    "ak3": [{"k": "fatura:F3", "tur": "fatura", "kalan": 100, "vade": "2026-01-20", "tarih": "2026-01-06"},
+            {"k": "kart:TK3", "tur": "taksit", "kalan": 200, "vade": "2026-02-01", "tarih": "2026-01-07"},
+            {"k": "fatura:F5", "tur": "fatura", "kalan": 300, "vade": "2026-02-28", "tarih": "2026-01-06"}],
+    "kt3": {"TK3": {"kapali": False, "taksitler": [{"vade": "2026-02-01", "tutar": 400, "kalan": 200}]}},
+    "kt1": {"TK1": {"kapali": False, "taksitler": [{"vade": "2026-02-01", "tutar": 300, "kalan": 300}]}},
+    "akt1": [{"k": "fatura:A1", "tur": "fatura", "kalan": -1000, "vade": "2026-01-31", "tarih": "2026-01-05"}],
+    "akt2": [{"k": "fatura:A4", "tur": "fatura", "kalan": -500, "vade": "2026-02-15", "tarih": "2026-01-06"},
+             {"k": "fatura:A3", "tur": "fatura", "kalan": -400, "vade": "2026-02-28", "tarih": "2026-01-05"}],
+    "hat": _hat("2026-02-02", {"C1": 1250, "C3": 300}),
+}}, aciklama="S79: olağan bağlı kayıtta aynı düzeltmede bağ + cari S54 gibi kabul — bağ yeni carinin faturasına / kartına ya da kaldırılır (tahsilat ve ödeme); "
+             "bağ değişmeden cari değişirse S57 red; geri yüklenmiş ama açılıştan sonra tarihli kayıt olağan.")
