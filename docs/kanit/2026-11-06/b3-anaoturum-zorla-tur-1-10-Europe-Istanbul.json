@@ -1,0 +1,32 @@
+{
+  "ad": "b3-anaoturum-zorla-tur-1-10-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning test/whatsapp-b3-buyume-zorla.mjs --tur 1,2,3,4,5,6,7,8,9,10",
+  "commit": "6304bc7fd73cedb012fc628510cc88f75b24e82f",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T01:34:04.577Z",
+  "sure_sn": 31.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 1,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b3-ana/kanit/2026-11-06/b3-anaoturum-zorla-tur-1-10-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "aa36c9da2e7936e2980718d9f1a199e0af0612fc023169dcd8ffe813af13a9f3",
+  "ham_cikti_bayt": 1952
+}

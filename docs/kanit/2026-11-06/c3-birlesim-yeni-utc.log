@@ -1,0 +1,202 @@
+TAP version 13
+# Subtest: 2.5.0 Ç3 — donmuş defter: kilit, ilerletme, geri çekme, kural değişikliği
+    # Subtest: F1: kilit konunca kilit gününe kadarki türetilmiş yevmiye satır satır donar; donmuş = canlı (madde madde, mizan yıl yıl); koşu başlığı kural sürümü ve kaynak iziyle
+    ok 1 - F1: kilit konunca kilit gününe kadarki türetilmiş yevmiye satır satır donar; donmuş = canlı (madde madde, mizan yıl yıl); koşu başlığı kural sürümü ve kaynak iziyle
+      ---
+      duration_ms: 300.292238
+      type: 'test'
+      ...
+    # Subtest: F2 / F3 / F4: kilit geri çekilince açılan dönemin donmuş satırları izle kalkar; değişen kayıtla yeniden kilitlenince yeniden donar; ilerletme ardışık iki koşu
+    ok 2 - F2 / F3 / F4: kilit geri çekilince açılan dönemin donmuş satırları izle kalkar; değişen kayıtla yeniden kilitlenince yeniden donar; ilerletme ardışık iki koşu
+      ---
+      duration_ms: 623.477028
+      type: 'test'
+      ...
+    # Subtest: F5: kural değişikliği benzetimi — kilitli dönemin Yevmiye Defteri ve Hesap Planı Mizanı DEĞİŞMEZ, açık dönem yeni kuralla; Mutabakat Testi ve Defter Mutabakatı 'Kural Değişikliği Farkı'; ruleDiff tutarları; yeni işlemler engellenmez
+    ok 3 - F5: kural değişikliği benzetimi — kilitli dönemin Yevmiye Defteri ve Hesap Planı Mizanı DEĞİŞMEZ, açık dönem yeni kuralla; Mutabakat Testi ve Defter Mutabakatı 'Kural Değişikliği Farkı'; ruleDiff tutarları; yeni işlemler engellenmez
+      ---
+      duration_ms: 92.97499
+      type: 'test'
+      ...
+    # Subtest: F5b: aralığın tamamı donmuş dönemdeyse Yevmiye Defteri canlı türetme yapmaz (yan kazanç); açık dönemi kapsayan aralıkta yapar
+    ok 4 - F5b: aralığın tamamı donmuş dönemdeyse Yevmiye Defteri canlı türetme yapmaz (yan kazanç); açık dönemi kapsayan aralıkta yapar
+      ---
+      duration_ms: 6.141734
+      type: 'test'
+      ...
+    # Subtest: F6: değişmezlik — donmuş satır değiştirilemez, kapsam içinde silinemez, REPLACE ile ezilemez, kapanmış koşuya satır eklenemez; koşu başlığı değiştirilemez / silinemez
+    ok 5 - F6: değişmezlik — donmuş satır değiştirilemez, kapsam içinde silinemez, REPLACE ile ezilemez, kapanmış koşuya satır eklenemez; koşu başlığı değiştirilemez / silinemez
+      ---
+      duration_ms: 3.2335
+      type: 'test'
+      ...
+    # Subtest: F8: kilit sırasında yazım (kilitli döneme 409, açık döneme 200) ve aynı anda iki kilit isteği → son kilit; tek bekleyen koşu yok, donmuş = canlı
+    ok 6 - F8: kilit sırasında yazım (kilitli döneme 409, açık döneme 200) ve aynı anda iki kilit isteği → son kilit; tek bekleyen koşu yok, donmuş = canlı
+      ---
+      duration_ms: 252.712998
+      type: 'test'
+      ...
+    # Subtest: F9: gün / yıl dönümü — 01.01.2027'ye kadar kilit 31.12 ve 01.01 maddelerini dondurur; 01.01 geri çekilince yalnız o gün açılır
+    ok 7 - F9: gün / yıl dönümü — 01.01.2027'ye kadar kilit 31.12 ve 01.01 maddelerini dondurur; 01.01 geri çekilince yalnız o gün açılır
+      ---
+      duration_ms: 457.943253
+      type: 'test'
+      ...
+    # Subtest: F10: kapanış fişi kilitle aynı işlemde (postAll lockThrough) — fiş donmuş defterde, koşu eşzamanlı ve tek işlemde; dondurma düşerse fiş de kilit de yok
+    ok 8 - F10: kapanış fişi kilitle aynı işlemde (postAll lockThrough) — fiş donmuş defterde, koşu eşzamanlı ve tek işlemde; dondurma düşerse fiş de kilit de yok
+      ---
+      duration_ms: 363.606741
+      type: 'test'
+      ...
+    # Subtest: F14: kaynak izi — kilitli dönemin kaynak satırı kapının görmediği bir yolla değişirse Mutabakat Testi 'Donmuş Defter' bulgusu verir; donmuş defter aynen kalır (düzeltme yok)
+    ok 9 - F14: kaynak izi — kilitli dönemin kaynak satırı kapının görmediği bir yolla değişirse Mutabakat Testi 'Donmuş Defter' bulgusu verir; donmuş defter aynen kalır (düzeltme yok)
+      ---
+      duration_ms: 198.274399
+      type: 'test'
+      ...
+    # Subtest: F13 / yetki: Şirket Verisini Sıfırla donmuş defteri ve koşuları siler, tetikleyiciler yeniden kurulu; Muhasebe rolü kilit koyamaz (403)
+    ok 10 - F13 / yetki: Şirket Verisini Sıfırla donmuş defteri ve koşuları siler, tetikleyiciler yeniden kurulu; Muhasebe rolü kilit koyamaz (403)
+      ---
+      duration_ms: 567.507912
+      type: 'test'
+      ...
+    1..10
+ok 1 - 2.5.0 Ç3 — donmuş defter: kilit, ilerletme, geri çekme, kural değişikliği
+  ---
+  duration_ms: 3609.172844
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç3 — 2.4.9 kural kopyası (dondurulmuş) ve kural tuzağı
+    # Subtest: kopya dosyaları sabit (sha256); kopya yalnız kendi klasörünü içe aktarır
+    ok 1 - kopya dosyaları sabit (sha256); kopya yalnız kendi klasörünü içe aktarır
+      ---
+      duration_ms: 2.241231
+      type: 'test'
+      ...
+    # Subtest: LOCK_SQL_VERSION kilit izinin en yeni girdisinin sürümüdür (koşunun kaynak izi = kapının kilit izi tanımı)
+    ok 2 - LOCK_SQL_VERSION kilit izinin en yeni girdisinin sürümüdür (koşunun kaynak izi = kapının kilit izi tanımı)
+      ---
+      duration_ms: 1.02089
+      type: 'test'
+      ...
+    # Subtest: kural tuzağı: güncel kural sürümü 2.5.0 iken güncel türetme = 2.4.9 kopyası (madde madde); Ç5 / Ç7 ilk kural değişikliğinde bu testi ve LEDGER_RULE_VERSION'ı bilerek değiştirir
+    ok 3 - kural tuzağı: güncel kural sürümü 2.5.0 iken güncel türetme = 2.4.9 kopyası (madde madde); Ç5 / Ç7 ilk kural değişikliğinde bu testi ve LEDGER_RULE_VERSION'ı bilerek değiştirir
+      ---
+      duration_ms: 693.068466
+      type: 'test'
+      ...
+    1..3
+ok 2 - 2.5.0 Ç3 — 2.4.9 kural kopyası (dondurulmuş) ve kural tuzağı
+  ---
+  duration_ms: 696.670978
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç3 tamamlama — büyük okumada sıkı satırlar (lib/lean-rows.mjs)
+    # Subtest: B1: leanAll / leanRows = store.all — aynı anahtarlar, aynı sıra, aynı değerler (metin, tamsayı, ondalık, NULL, BLOB, büyük tamsayı; konumlu ve adlı parametre); tutma sınırı aşılınca da
+    ok 1 - B1: leanAll / leanRows = store.all — aynı anahtarlar, aynı sıra, aynı değerler (metin, tamsayı, ondalık, NULL, BLOB, büyük tamsayı; konumlu ve adlı parametre); tutma sınırı aşılınca da
+      ---
+      duration_ms: 15.079255
+      type: 'test'
+      ...
+    # Subtest: B2: sıkı satırlar V8'in hızlı kipinde (ayrı süreç, --allow-natives-syntax: %HasFastProperties); store.all'ın satırı bilgi için ölçülür
+    ok 2 - B2: sıkı satırlar V8'in hızlı kipinde (ayrı süreç, --allow-natives-syntax: %HasFastProperties); store.all'ın satırı bilgi için ölçülür
+      ---
+      duration_ms: 76.942471
+      type: 'test'
+      ...
+    # Subtest: B5: 2.4.9 kural kopyasını çağıran her yer sıkı depoyla çağırır (kaynak taraması; kopyanın kendisi değişmez)
+    ok 3 - B5: 2.4.9 kural kopyasını çağıran her yer sıkı depoyla çağırır (kaynak taraması; kopyanın kendisi değişmez)
+      ---
+      duration_ms: 62.468841
+      type: 'test'
+      ...
+    1..3
+ok 3 - 2.5.0 Ç3 tamamlama — büyük okumada sıkı satırlar (lib/lean-rows.mjs)
+  ---
+  duration_ms: 155.743167
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç3 tamamlama — türetme ve donmuş defter sıkı satırlarla (eski sürüm verisi, güncel şema)
+    # Subtest: B3: Ana Defter türetmesi (güncel kural ve 2.4.9 kopyası) kaynak satırlarını store.all ile okumaz; çıktı store.all'lı türetmeyle BİREBİR; donmuş okuma ve Kural Değişikliği Farkı da store.all'sız
+    ok 1 - B3: Ana Defter türetmesi (güncel kural ve 2.4.9 kopyası) kaynak satırlarını store.all ile okumaz; çıktı store.all'lı türetmeyle BİREBİR; donmuş okuma ve Kural Değişikliği Farkı da store.all'sız
+      ---
+      duration_ms: 113.905755
+      type: 'test'
+      ...
+    # Subtest: B4: iş parçacığı kipi — donmuş satırlar parça parça üretilir (parça 7 satır: tam parçalar + eksik son parça); yazılan = türetilen (sayı, borç, alacak), donmuş = canlı; koşunun toplamları satırlarla aynı
+    ok 2 - B4: iş parçacığı kipi — donmuş satırlar parça parça üretilir (parça 7 satır: tam parçalar + eksik son parça); yazılan = türetilen (sayı, borç, alacak), donmuş = canlı; koşunun toplamları satırlarla aynı
+      ---
+      duration_ms: 255.42586
+      type: 'test'
+      ...
+    1..2
+ok 4 - 2.5.0 Ç3 tamamlama — türetme ve donmuş defter sıkı satırlarla (eski sürüm verisi, güncel şema)
+  ---
+  duration_ms: 892.351064
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç3 — donmuş defter: iki şirket, yedek → geri yükle
+    # Subtest: F13a: iki şirket karışmaz — 001'in kilidi yalnız 001'i dondurur; 002 kendi gününe kendi kuralıyla donar
+    ok 1 - F13a: iki şirket karışmaz — 001'in kilidi yalnız 001'i dondurur; 002 kendi gününe kendi kuralıyla donar
+      ---
+      duration_ms: 408.627331
+      type: 'test'
+      ...
+    # Subtest: F13b: 002 yedeği (kilitli) → kilidi geri çek → geri yükle: yedekteki kapsam, koşular, satırlar ve tetikleyiciler döner; donmuş = canlı
+    ok 2 - F13b: 002 yedeği (kilitli) → kilidi geri çek → geri yükle: yedekteki kapsam, koşular, satırlar ve tetikleyiciler döner; donmuş = canlı
+      ---
+      duration_ms: 260.490919
+      type: 'test'
+      ...
+    # Subtest: F13c: Tümünü Sıfırla donmuş defteri siler; sonra kilit yeniden donar
+    ok 3 - F13c: Tümünü Sıfırla donmuş defteri siler; sonra kilit yeniden donar
+      ---
+      duration_ms: 486.130307
+      type: 'test'
+      ...
+    1..3
+ok 5 - 2.5.0 Ç3 — donmuş defter: iki şirket, yedek → geri yükle
+  ---
+  duration_ms: 2279.386634
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç3 — donmuş defter: yarıda kesilme, disk dolu, eski sürüm, göç
+    # Subtest: F7a: dondurma sırasında süreç öldürülürse (ilk parça yazılmış, koşu açık) yarım koşu görünmez; açılışta sürer, sonuç kilit = kapsam, donmuş = canlı
+    ok 1 - F7a: dondurma sırasında süreç öldürülürse (ilk parça yazılmış, koşu açık) yarım koşu görünmez; açılışta sürer, sonuç kilit = kapsam, donmuş = canlı
+      ---
+      duration_ms: 1573.668105
+      type: 'test'
+      ...
+    # Subtest: F7b: disk dolu — kilit konur ama dondurma tamamlanamaz: yarım satırlar görünmez, raporlar canlı (doğru); yer açılınca tamamlanır
+    ok 2 - F7b: disk dolu — kilit konur ama dondurma tamamlanamaz: yarım satırlar görünmez, raporlar canlı (doğru); yer açılınca tamamlanır
+      ---
+      duration_ms: 2906.94771
+      type: 'test'
+      ...
+    # Subtest: F12: eski sürüm (BS-7 kapısını bilmez) kilidi ilerletir → açılışta aradaki dönem 2.4.9 kuralıyla donar; geri çeker → açılışta çözülür; Şirket Verisini Sıfırla (önce işlem geçmişi) donmuş satırları silebilir → açılışta tutarlı
+    ok 3 - F12: eski sürüm (BS-7 kapısını bilmez) kilidi ilerletir → açılışta aradaki dönem 2.4.9 kuralıyla donar; geri çeker → açılışta çözülür; Şirket Verisini Sıfırla (önce işlem geçmişi) donmuş satırları silebilir → açılışta tutarlı
+      ---
+      duration_ms: 1164.725791
+      type: 'test'
+      ...
+    # Subtest: F11 (benzetim): göç 47 — kilitli 46'lık dosyada bekleyen 2.4.9 koşusu yazılır, açılıştan sonra 2.4.9 kopyasıyla donar; kilitsiz dosyada koşu yok
+    ok 4 - F11 (benzetim): göç 47 — kilitli 46'lık dosyada bekleyen 2.4.9 koşusu yazılır, açılıştan sonra 2.4.9 kopyasıyla donar; kilitsiz dosyada koşu yok
+      ---
+      duration_ms: 1544.04333
+      type: 'test'
+      ...
+    1..4
+ok 6 - 2.5.0 Ç3 — donmuş defter: yarıda kesilme, disk dolu, eski sürüm, göç
+  ---
+  duration_ms: 7209.265628
+  type: 'suite'
+  ...
+1..6
+# tests 25
+# suites 6
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 15813.350384
