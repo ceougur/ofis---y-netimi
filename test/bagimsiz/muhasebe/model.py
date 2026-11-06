@@ -34,6 +34,8 @@ hatırlatma yok), S53 (kilitsiz geçmiş yıl yeni kuralla; Defter Mutabakatı b
 aktarmanın yerel günü), B6 (KG-16 Türkçe küçük harf + ç/ı/ş katlama), B11 (T12), B14 (alt defter kural farkı fişle düzeltilmez). Yorumlar README W1–W19.
 Ek kapsam (kullanıcı 06.11 12:06): S54 (aynı düzeltmede bağ + cari kabul), S55 (sonradan doğan hedefe bağ hedefin gününde), S56 (S44 düzeltmesinde
 SUPHELI_NORMAL_ASIM), S57 (olağan bağlı kaydın carisi BAG_KALDIRILMALI). Yorumlar README U1–U8.
+İkinci ek kapsam (kullanıcı 06.11 12:16): S65 (yalnız "Açılış…" ile başlayan aday — W5 aynen), S66 (formdan carisiz alınan evrakın karşılıksızı: seçilmezse
+B 649.90 / A 101), S67 (takvim — kâhin dilinde yok), S68 (bizim bağsız ödememiz vadesi önce gelen alacak kalemini kapatır — kuyruk iki yönde). README Q1–Q5.
 Saf Python, yalnız standart kütüphane. Para kuruş tamsayı; miktar Fraction.
 
 Yapı:
@@ -1080,17 +1082,20 @@ class Gecis:
 
     def _evrak_karsiliksiz(self, k):                 # Ç-07 / Ç-08
         e = self._ev(k)
-        sec = k.v.get("cari")                        # S48 A (README W6, W7): program cariyi sorar — seçilen cari (yoksa seçilmedi)
+        sec = k.v.get("cari")                        # S48 A (README W6, W7) / S66 A (Q2): program cariyi sorar — seçilen cari (yoksa seçilmedi)
         if e["cari"] is None:
-            if not e.get("acilis"):
-                raise AssertionError("senaryo hatası: formdan carisiz (açılış dışı) evrakın karşılıksızı / iadesi — karar metninde yok; kâhin susar "
-                                     "(README bakım 8 W9, KULLANICIYA SORULMALI 4)")
             if e["durum"] == "ciro":
-                raise AssertionError("senaryo hatası: ciro edilmiş carisiz açılış evrakının geri gelmesi (Ç-08) — kâhin susar (README bakım 8 W7, "
+                raise AssertionError("senaryo hatası: ciro edilmiş carisiz evrakın geri gelmesi (Ç-08) — kâhin susar (README bakım 8 W7, Q2, "
                                      "KULLANICIYA SORULMALI 3)")
-            if sec is None:                          # seçilmedi: açılış geri alınmış — B 519 / A 101 (2.4.9: B 770 / A 101)
-                karsi = ESKI_KARSILIKSIZ_ACILIS if self.kural == "2.4.9" else G
-                self.madde(k, k.tarih, 1, [Bo(karsi, e["tutar"]), Al(self._evrak_hesap(e), e["tutar"], evrak=k.v["evrak"])], tur="karsiliksiz_acilis")
+            if sec is None:
+                # seçilmedi — S48 A: açılış geri alınmış (B 519 / A 101); S66 A: formdan carisiz evrakta S49 geliri geri alınır (B 649.90 / A 101).
+                # 2.4.9: ikisi de B 770 / A 101 (açılış için iş listesi A Ç5 EK; form evrakı için DOĞRULANMADI — README Q2)
+                if self.kural == "2.4.9":
+                    karsi = ESKI_KARSILIKSIZ_ACILIS
+                else:
+                    karsi = G if e.get("acilis") else CARISIZ_EVRAK_ALINAN
+                self.madde(k, k.tarih, 1, [Bo(karsi, e["tutar"]), Al(self._evrak_hesap(e), e["tutar"], evrak=k.v["evrak"])],
+                           tur="karsiliksiz_acilis" if e.get("acilis") else "karsiliksiz_carisiz")
                 e["durum"] = "karsiliksiz"
                 return
             e["cari"] = sec                          # seçildi: Ç-07 aynen, seçilen cari borçlanır (ayrı borç kalemi, M1c)

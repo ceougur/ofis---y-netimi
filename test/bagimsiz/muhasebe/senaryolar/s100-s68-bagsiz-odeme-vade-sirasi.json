@@ -1,0 +1,250 @@
+{
+ "aciklama": "S68: bizim bağlamadan yaptığımız ödeme (tedarikçiye, iade bedeli, ciro) vadesi en önce gelen alacak kalemini kapatır — S2'nin simetriği.",
+ "ad": "s100-s68-bagsiz-odeme-vade-sirasi",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "ak1": [
+    {
+     "k": "fatura:A1",
+     "kalan": -1000,
+     "tarih": "2026-01-05",
+     "tur": "fatura",
+     "vade": "2026-03-31"
+    }
+   ],
+   "ak2": [
+    {
+     "k": "fatura:A3",
+     "kalan": -800,
+     "tarih": "2026-01-05",
+     "tur": "fatura",
+     "vade": "2026-04-30"
+    }
+   ],
+   "akc": [
+    {
+     "k": "alacak:AY1",
+     "kalan": -300,
+     "tarih": "2026-01-05",
+     "tur": "alacak_yaz",
+     "vade": "2026-03-31"
+    }
+   ],
+   "mz/satirlar/100/bakiye": -200,
+   "mz/satirlar/101.01/bakiye": 0,
+   "mz/satirlar/102.B1/bakiye": -600,
+   "mz/satirlar/120|C1/bakiye": -300,
+   "mz/satirlar/120|C3/bakiye": -500,
+   "mz/satirlar/320|T1/bakiye": -1000,
+   "mz/satirlar/320|T2/bakiye": -800,
+   "mz/satirlar/770.90/bakiye": 500,
+   "mz/satirlar/770/bakiye": 2900,
+   "redler": []
+  }
+ },
+ "kapsam": [
+  "S68",
+  "S2",
+  "karar (1)",
+  "T-05",
+  "T-08",
+  "T-09",
+  "F-05",
+  "C-02",
+  "Q4"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "K": 0,
+   "M": 1000,
+   "cari": "T1",
+   "fatura_turu": "gider",
+   "gider_turu": "genel",
+   "id": "A1",
+   "tarih": "2026-01-05",
+   "tur": "alis_faturasi",
+   "vade": "2026-03-31"
+  },
+  {
+   "K": 0,
+   "M": 600,
+   "cari": "T1",
+   "fatura_turu": "gider",
+   "gider_turu": "genel",
+   "id": "A2",
+   "tarih": "2026-02-01",
+   "tur": "alis_faturasi",
+   "vade": "2026-02-15"
+  },
+  {
+   "banka": "B1",
+   "cari": "T1",
+   "tarih": "2026-02-10",
+   "tur": "odeme",
+   "tutar": 600,
+   "yol": "havale"
+  },
+  {
+   "aciklama": "İndirim",
+   "cari": "C1",
+   "id": "AY1",
+   "tarih": "2026-01-05",
+   "tur": "alacak_yaz",
+   "tutar": 300,
+   "vade": "2026-03-31"
+  },
+  {
+   "aciklama": "İade bedeli",
+   "cari": "C1",
+   "id": "AY2",
+   "tarih": "2026-02-01",
+   "tur": "alacak_yaz",
+   "tutar": 200,
+   "vade": "2026-02-10"
+  },
+  {
+   "cari": "C1",
+   "tarih": "2026-02-15",
+   "tur": "odeme",
+   "tutar": 200,
+   "yol": "nakit"
+  },
+  {
+   "K": 0,
+   "M": 800,
+   "cari": "T2",
+   "fatura_turu": "gider",
+   "gider_turu": "genel",
+   "id": "A3",
+   "tarih": "2026-01-05",
+   "tur": "alis_faturasi",
+   "vade": "2026-04-30"
+  },
+  {
+   "K": 0,
+   "M": 500,
+   "cari": "T2",
+   "fatura_turu": "gider",
+   "gider_turu": "genel",
+   "id": "A4",
+   "tarih": "2026-01-20",
+   "tur": "alis_faturasi",
+   "vade": "2026-02-20"
+  },
+  {
+   "cari": "C3",
+   "evrak": "CK7",
+   "tarih": "2026-01-10",
+   "tur": "tahsilat",
+   "tutar": 500,
+   "yol": "cek"
+  },
+  {
+   "cari": "T2",
+   "evrak": "CK7",
+   "tarih": "2026-02-01",
+   "tur": "odeme",
+   "yol": "ciro"
+  },
+  {
+   "ad": "ak1",
+   "cari": "T1",
+   "rapor": "acik_kalemler",
+   "tarih": "2026-02-11",
+   "tur": "rapor"
+  },
+  {
+   "ad": "akc",
+   "cari": "C1",
+   "rapor": "acik_kalemler",
+   "tarih": "2026-02-16",
+   "tur": "rapor"
+  },
+  {
+   "ad": "ak2",
+   "cari": "T2",
+   "rapor": "acik_kalemler",
+   "tarih": "2026-02-02",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mz",
+   "bas": "2026-01-01",
+   "rapor": "mizan",
+   "son": "2026-02-28",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}
