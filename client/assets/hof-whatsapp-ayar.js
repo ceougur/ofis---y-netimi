@@ -196,9 +196,11 @@
       return;
     }
     try {
-      const rows = await HOF.api(`/api/workspace/accounts/search?q=${encodeURIComponent(q)}`);
-      list.innerHTML = rows.length
-        ? rows.slice(0, 10).map(row => `<div class="adm-inline" data-wa-kvkk-row="${esc(row.id)}"><span>${esc(row.name)}${row.refNo ? ` · ${esc(row.refNo)}` : ""}</span><button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-wa-kvkk-erase="${esc(row.id)}" data-wa-kvkk-name="${esc(row.name)}">Gönderim Kayıtlarını Sil (KVKK)</button></div>`).join("")
+      // 2.5.0 WhatsApp tur 2 (W-3 dk ORTA-4, BAŞ MİMAR KARARI A): Silinenler'deki ama WhatsApp kaydı olan cariler de (ayrı dar uç; kart açılmaz, yalnız silme talebi).
+      const [rows, deleted] = await Promise.all([HOF.api(`/api/workspace/accounts/search?q=${encodeURIComponent(q)}`), HOF.api(`/api/workspace/whatsapp/kvkk-deleted?q=${encodeURIComponent(q)}`)]);
+      const all = [...rows.slice(0, 10), ...(deleted || []).filter(row => !rows.some(item => item.id === row.id))];
+      list.innerHTML = all.length
+        ? all.map(row => `<div class="adm-inline" data-wa-kvkk-row="${esc(row.id)}"${row.deleted ? " data-wa-kvkk-deleted" : ""}><span>${esc(row.name)}${row.refNo ? ` · ${esc(row.refNo)}` : ""}${row.deleted ? ' <small class="adm-muted">(Silinenler\'de)</small>' : ""}</span><button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-wa-kvkk-erase="${esc(row.id)}" data-wa-kvkk-name="${esc(row.name)}">Gönderim Kayıtlarını Sil (KVKK)</button></div>`).join("")
         : '<p class="adm-muted">Eşleşen cari yok.</p>';
     } catch (error) {
       HOF.toastError(error);

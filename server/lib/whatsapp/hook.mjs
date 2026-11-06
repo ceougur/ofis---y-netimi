@@ -159,7 +159,9 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
       const connection = context?.whatsapp?.connection;
       const record = connection?.read?.();
       // Belirteçsiz kayıt ensureHook'ta atlanır (mühürlü belirtece yalnız bağlantı modülü dokunur — whatsapp-w1-baglanti kaynak taraması).
-      if (!record || record.wabaId !== wabaId) continue;
+      // 2.5.0 WhatsApp tur 2 — KULLANICI KARARI S63 = A: "S41 denetimi yalnız Elle Bağla şirketiyle" — uygulama düzeyi adres Elle Bağla'nın (müşterinin uygulamasının) panel
+      // ayarıdır; WhatsApp'ı Bağla şirketi (DestekOfis uygulaması) bu denetimi yapmaz (yalnız kendi uygulamasının adresini denetleyebilirdi — anlamsız Meta isteği).
+      if (!record || record.wabaId !== wabaId || record.mode === "embedded") continue;
       if (context.canWriteInBackground?.() === false) continue;
       if (context.license?.writable?.() === false) continue;
       if (connection.tokenStatus?.(record)?.state === "expired") continue;
@@ -168,7 +170,7 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
       log.info?.(`WhatsApp: durum bildirimi uygulama düzeyi adrese geldi; Meta'daki bildirim adresi yeniden denetlendi (${describe(result)}).`);
       return result;
     }
-    log.warn?.("WhatsApp: durum bildirimi uygulama düzeyi adrese geldi; Meta'daki bildirim adresini denetleyecek bağlı şirket bulunamadı (bakım turu yine dener).");
+    log.warn?.("WhatsApp: durum bildirimi uygulama düzeyi adrese geldi; Meta'daki bildirim adresini denetleyecek Elle Bağla şirketi bulunamadı (bakım turu yine dener).");
     return null;
   }
   // 2.5.0 WE: Elle Bağla'nın UYGULAMA DÜZEYİ webhook adresi (lib/whatsapp/app-webhook.mjs; Meta uygulama paneli → Configure Webhooks). GET: Meta'nın doğrulaması (bu kurulumun

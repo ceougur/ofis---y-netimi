@@ -1,0 +1,1 @@
+[F5] kaydı olmayan WABA: defter yazılabilirken=200, defter kilitliyken=200; kaydı olan WABA defter kilitliyken=503

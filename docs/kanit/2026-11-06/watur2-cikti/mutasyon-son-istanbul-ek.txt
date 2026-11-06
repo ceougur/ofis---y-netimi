@@ -1,0 +1,3 @@
+{"name":"M5b açılışta defter tarafı yeniden uygulanmaz","verdict":"YAKALANDI","exit":1,"tests":3,"pass":1,"fail":2,"failed":["T2-5b yeniden açılış: açılıştaki talep uygulaması (bakım turundan ","T2-5c tur 2'den ÖNCEKİ kodun GERÇEK verisi (whatsapp-kvkk-329d5d1b"]}
+{"name":"M7b defter denetim noktası yeniden denenmez","verdict":"YAKALANDI","exit":1,"tests":1,"pass":0,"fail":1,"failed":["T2-7 dış okuyucu (açık okuma işlemi) varken talep → WAL / dosyada"]}
+# mutasyon 2/2 yakalandı (TZ=Europe/Istanbul)

@@ -37,7 +37,9 @@ try {
   const a = await ctx.account("Ayşe Yılmaz", "0532 111 22 33", 500);
   const b = await ctx.account("Bora Demir", "0532 444 55 66", 300);
   const c = await ctx.account("Cem Telefonsuz", "0532 777 88 99", 200);
-  const first = await ctx.batch({ kind: "statement", ids: [a.id, b.id, c.id], preset: "thisMonth" });
+  // 2.5.0 WhatsApp tur 2 (W-3 dk ORTA-4, BAŞ MİMAR KARARI A): WhatsApp kaydı olan, sonra Silinenler'e giden cari — Yönetim → WhatsApp aramasında da bulunur.
+  const d = await ctx.account("Deniz Silinen", "0532 333 44 55", 0); // hareketsiz (hareketli cari silinmez — Pasife Al)
+  const first = await ctx.batch({ kind: "statement", ids: [a.id, b.id, c.id, d.id], preset: "thisMonth" });
   if (first.status !== 200) throw new Error(`toplu iş: ${first.status} ${JSON.stringify(first.data)}`);
   await ctx.drain();
   for (const job of await ctx.jobs(first.data.data.batch.id)) ctx.statuses([{ id: job.wamid, status: "delivered", timestamp: String(Math.floor(ctx.clock().getTime() / 1000)), recipient_id: "905" }]);
@@ -46,6 +48,8 @@ try {
   // C'nin kart telefonu silinir (kartta WhatsApp düğmesi kalmaz) — silme talebi Yönetim → WhatsApp'tan.
   const card = (await ctx.api.get(`/api/workspace/accounts/${c.id}`)).data.data;
   await ctx.api.put(`/api/workspace/accounts/${c.id}`, { ...card, phone: "" });
+  const removed = await ctx.api.del(`/api/workspace/accounts/${d.id}`);
+  if (removed.status !== 200) throw new Error(`cari silinemedi: ${removed.status} ${JSON.stringify(removed.data)}`);
   const contentOf = id => ctx.store.all("SELECT state, skip_reason AS reason, phone_e164 AS phone, account_name AS name, params_json AS params, pdf_name AS pdf FROM wa_jobs WHERE account_id = ? ORDER BY rowid", id);
   const erasedRow = row => row.phone === "" && row.name === "" && row.pdf === "" && row.params.startsWith("{");
 
@@ -131,6 +135,23 @@ try {
   await answer("yes", "K4 sorusu");
   await page.waitForSelector(".hof-toast", { state: "visible" });
   ok(contentOf(c.id).every(erasedRow), "C'nin işi silindi (kartta WhatsApp düğmesi olmadan)");
+
+  console.log("K4b Yönetim → WhatsApp: Silinenler'deki cari (WhatsApp kaydı var) da bulunur — kart açılmaz, yalnız silme talebi");
+  await page.fill("#adm-wa-kvkk [data-wa-kvkk-q]", "");
+  await page.click("#adm-wa-kvkk [data-wa-kvkk-q]");
+  await page.keyboard.type("Silinen", { delay: 40 });
+  await page.keyboard.press("Enter");
+  await page.waitForSelector(`#adm-wa-kvkk [data-wa-kvkk-erase="${d.id}"]`);
+  const deletedRow = `#adm-wa-kvkk [data-wa-kvkk-row="${d.id}"]`;
+  ok(Boolean(await page.$(`${deletedRow}[data-wa-kvkk-deleted]`)), "satır silinmiş cari olarak işaretli");
+  ok(/\(Silinenler'de\)/.test(await page.textContent(deletedRow)), "satırda (Silinenler'de) etiketi");
+  ok(!(await page.$(`${deletedRow} a`)), "silinmiş carinin kartına bağlantı yok");
+  await page.screenshot({ path: path.join(shots, "k4b-silinmis-cari.png") });
+  await page.click(`#adm-wa-kvkk [data-wa-kvkk-erase="${d.id}"]`);
+  await answer("yes", "K4b sorusu");
+  // Talep isteği yanıtı gelene dek veri tabanı yoklanır (ders 39: kareye bağlanmaz; en çok 10 sn).
+  for (const until = Date.now() + 10_000; Date.now() < until && !(contentOf(d.id).length && contentOf(d.id).every(erasedRow)); ) await page.waitForTimeout(100);
+  ok(contentOf(d.id).length > 0 && contentOf(d.id).every(erasedRow), "silinmiş carinin işi silindi");
 
   console.log("K5 Personel: düğme yok, uç 403");
   const staff = await createUser(ctx.server, ctx.api, { username: STAFF.username, password: STAFF.password });

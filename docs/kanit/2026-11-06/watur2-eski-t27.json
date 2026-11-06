@@ -1,0 +1,38 @@
+{
+  "ad": "watur2-eski-t27",
+  "komut": "node --test --test-name-pattern T2-7 test/whatsapp-tur2-kvkk-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T13:48:41.094Z",
+  "sure_sn": 3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 0,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 WhatsApp tur 2 — W-3 dk ORTA-3: denetim noktası düşerse bakım turu yeniden dener › T2-7 dış okuyucu (açık okuma işlemi) varken talep → WAL / dosyada iz kalır; okuyucu kapanınca BİR bakım turu sonra veri klasöründe silinen telefon 0",
+      "konum": "test/whatsapp-tur2-kvkk-250.test.mjs:299:3",
+      "hata": "okuyucular kapandıktan sonraki ilk bakım turunda iz kalmadı — şirket dosyası + defter, WAL dahil (eski kod: bir sonraki silmeye dek kalıyor) · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../watur2-kanit/2026-11-06/watur2-eski-t27.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b",
+  "ham_cikti_sha256": "9355cc729808acba6a8c7b5d1a286e58a9e416f65e2e95ae0a4f0baa99fbe199",
+  "ham_cikti_bayt": 2638
+}

@@ -1,0 +1,6 @@
+[C1] 5 eşzamanlı uygulama düzeyi bildirim: yanıtlar=[200,200,200,200,200]; Meta okuma=1, kayıt=1; iş=read
+[C2] Sına (190): 502; belirteç=expired; uygulama düzeyi delivered: 200; iş=delivered; sonrasında Meta'ya istek=0; günlük: ["warn WhatsApp: durum bildirimi uygulama düzeyi adrese geldi; Meta'daki bildirim adresini denetleyecek Elle Bağla şirketi bulunamadı (bakım turu yine dener)."]
+[C3] 1. açılış: 001 işi=accepted, 002 işi=accepted
+[C3] kapı=SCHEMA_AHEAD; 001 bildirimi=503, 002 bildirimi=200; Meta okuma=1, kayıt=1; 001 dosyası önce={"v":48,"audit":7,"settings":"4c4848d2a5d4"} sonra={"v":48,"audit":7,"settings":"4c4848d2a5d4"}; 002 denetim izleri=["whatsapp.hook.registered"]
+[C3] günlük: ["warn WhatsApp: durum bildirimi uygulama düzeyi adrese geldi; Meta'daki bildirim adresini denetleyecek Elle Bağla şirketi bulunamadı (bakım turu yine dener).","info WhatsApp: durum bildirimi uygulama düzeyi adrese geldi; Meta'daki bildirim adresi yeniden denetlendi (adres Meta'ya yeniden kaydedildi)."]
+[C4] bildirim=200; kapanıştan önce Meta'da tutulan denetim isteği=1; kapanış: kapanış bitti (624 ms); kapanış dönünce hâlâ Meta'da tutulan=1; bırakıldıktan sonraki günlük=["info WhatsApp: durum bildirimi uygulama düzeyi adrese geldi; Meta'daki bildirim adresi yeniden denetlendi (kaydedilemedi: statement has been finalized)."]; Meta kayıt isteği=1
