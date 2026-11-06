@@ -150,3 +150,18 @@ Bkz. §1 (`server/routes/devir.mjs`). Hepsi ortak katmanda (`HUB_ONLY`'e `admin/
 - K6 BAŞ MİMAR KARARI GEREKİYOR: devir sonrası yedeğin, devir geri alındıktan sonra geri yüklenmesi ENGELLENİR (`devir-sonrasi-yedek`; G5 yalnız devir öncesini
   söylüyordu). Öneri bu (yoksa K yılı hiçbir dosyada görünmez).
 - S1 KULLANICIYA BİLGİ (karar değil; G5 baş mimar kararının sonucu): devir yedeği şifreli ayarların anahtarını (secret.key) içerir — yedek klasörü korunmalı.
+
+## 12. D3–D6 için girdiler (D2'nin bıraktığı sözleşme)
+- D4 sırası: şirket ÖNCE açılır (bekleyen göçü koşar), SONRA bakıma alınır — bakımdayken ilk kez açılan ve göç bekleyen şirketin örneği açılmaz (bağlantı query_only;
+  göç yazamaz → 503 "açılamadı"). Önerilen akış: `maintenance.run(şirket, { reason: "devir", runId }, async () => { createDevirBackupFor → kopyalar → değişmezler → takas })`.
+- D4 takası: 002+ `closeCompany` (arşiv örnekleri de kapanır) → dosya değişimi → `addArchive` (+ `devir.years` yeni yıl dosyasında, `devir.archive` arşivde, arşiv DELETE
+  günlük kipinde, son şemada, kilitli + donmuş). 001: hazırlık (`stageRootRestore(..., { devirCheck: false })` deseni ya da ayrı hazırlık) + `addArchive` yeniden başlatmadan
+  ÖNCE. Devri Geri Al: `removeArchive` + arşiv klasörünü `arsiv/silinen/`'e taşı + devir yedeğinden dönüş `restoreCompany({ devirCheck: false, allowPaused: true })` (kipi kendisi tutan iş; öbür her yol bakımdaki şirkete 503).
+- Devri Yenile (G7) arşivi yazılabilir açacak: D2'nin `openArchive`'ı yalnız salt okunur; D4 yazılabilir arşiv örneğini bakım kipinde ayrıca kurar, bitince `updateArchive`
+  (yeni sha256) + `closeArchives`.
+- D5: arşiv şeridi / seçici (`?hofArchive=`), Devir Yedekleri'nden geri yükleme yok (Devri Geri Al akışı), yarıda kalan bakımın (`lastAborted`) ekranda gösterilmesi.
+- Belge temizliği arşivin başvurularını henüz görmüyor (G8, documents.mjs purge): D2'de arşiv üreten yol olmadığından risk yok; D4'ten önce eklenmeli (yoksa yeni yılda
+  silinen belge 30 gün sonra diskten gider, arşivin gösterdiği dosya da).
+- Yorum tutarsızlıkları (Ç1 / Ç2 dar kontrollerinden D2'ye bırakılan; DOKUNULMADI — dosyalar başka ajanlarda): `audit_events` D2'de ŞİRKET VERİSİ sayıldı (COMMON_TABLES'ta
+  yok, geri yüklemede aktarılmaz, 001 bakımında yazılamaz); `test/sema-kapisi-bs7.test.mjs` test 3'ün 001'de audit_events'i ortak katman gibi atlaması yalnız ölçüm kolaylığı —
+  yorum orada düzeltilmeli. `server/routes/ledger.mjs` ~186 "mahsup tablosuna yazım tam kapıya düşer" yorumu (Ç2 bulgusu) yasak dosya — ayrı küçük iş.

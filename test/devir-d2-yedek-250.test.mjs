@@ -145,6 +145,8 @@ describe("D2 kalıcı devir yedeği ve geri yüklemenin arşiv denetimi", () => 
       await server.app.maintenance.enter(second.id, { reason: "devir" });
       await assert.rejects(server.app.backups.restoreCompany({ file: afterDevir.path, target: company(), user: null }), error => error.status === 503 && error.extra?.code === "maintenance");
       assert.equal((await restore(admin, afterDevir, company())).status, 503, "bakımdayken uç da 503");
+      const holder = await server.app.backups.restoreCompany({ file: beforeDevir.path, target: company(), user: null, devirCheck: false, allowPaused: true });
+      assert.equal(holder.restored, true, "kipi tutan iş (Devri Geri Al yolu) bakımda geri yükleyebilir");
       await server.app.maintenance.exit(second.id);
       await must("Devri Geri Al'ın kendi yolu (devirCheck: false) engele takılmaz", server.app.backups.restoreCompany({ file: beforeDevir.path, target: company(), user: null, devirCheck: false }).then(value => ({ status: 200, data: { ok: true, data: value } })));
     } finally {

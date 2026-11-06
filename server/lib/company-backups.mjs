@@ -674,9 +674,10 @@ export function createCompanyBackups({ registry, dataDir, keep = 30, log = null,
    * Yedeği şirkete geri yükler (yetki, onay ve kimlik denetimi çağıranda: assertRestorable). 001 için hazırlar
    * ({ staged: true }; sunucu yeniden açılırken uygulanır); diğer şirketlerde hemen uygular ({ restored: true }).
    */
-  async function restoreCompany({ file, target, user, devirCheck = true }) {
+  // allowPaused: yalnız bakım kipini kendisi tutan iş (D4 Devri Geri Al) — öbür her yol bakımdaki şirkete 503.
+  async function restoreCompany({ file, target, user, devirCheck = true, allowPaused = false }) {
     if (isBusy(target.id)) throw new HttpError(409, busy.get(target.id) || "Bu şirkette başka bir işlem sürüyor; birkaç saniye sonra yeniden deneyin.");
-    if (isPaused(target.id)) throw new HttpError(503, `“${labelOf(target)}” şirketinde bakım (yıl sonu devri) sürüyor; bittikten sonra yeniden deneyin.`, { code: "maintenance" });
+    if (!allowPaused && isPaused(target.id)) throw new HttpError(503, `“${labelOf(target)}” şirketinde bakım (yıl sonu devri) sürüyor; bittikten sonra yeniden deneyin.`, { code: "maintenance" });
     assertNotShared(target, "geri yükleme");
     inspectBackup(file);
     // 2.5.0 D2 (G5): yedek arşiv kaydıyla tutarlı değilse (devirden önce alınmış / geri alınmış devrin sonrası) uygulanmaz — K yılı iki dosyada olmasın.

@@ -52,7 +52,7 @@ const MUTASYONLAR = [
   [23, "geri yükleme arşiv kaydını bilmez (002 ve 001 hazırlığı)", CB, "    if (devirCheck !== false) assertDevirConsistent({ file, archives: registry.archivesOf?.(target.id) || [], label: labelOf(target) });\n", "", [YEDEK], /not ok \d+ - Yedekten Geri Yükle \(002/],
   [24, "001 hazırlığı açılışta arşiv kaydıyla denetlenmez", CB, "    if (job.devirCheck !== false) assertDevirConsistent({ file: job.source, archives: archivesOnDisk(dataDir, ROOT_COMPANY_ID), label: \"001\" });\n", "", [YEDEK], /hazırlanmış geri yükleme uygulanmadı/],
   [25, "geri alınmış devrin sonrası yedeği engellenmez", CB, "  if (after.length) {", "  if (false) {", [YEDEK], /not ok \d+ - Yedekten Geri Yükle \(002/],
-  [26, "bakımdaki şirkete programdan geri yükleme", CB, "    if (isPaused(target.id)) throw", "    if (false) throw", [YEDEK], /not ok \d+ - Yedekten Geri Yükle \(002/],
+  [26, "bakımdaki şirkete programdan geri yükleme", CB, "    if (!allowPaused && isPaused(target.id)) throw", "    if (false) throw", [YEDEK], /not ok \d+ - Yedekten Geri Yükle \(002/],
   [27, "Tümünü Sıfırla devir işaretini siler (KEEP_SETTINGS)", APP, "    \"devir.\"];", "    ];", [YEDEK], /sıfırlamadan sonra çalışma dosyası devrini bilir/],
 ];
 // Çok noktalı mutant: [no, ad, [[dosya, eski, yeni], …], testler, neden].
