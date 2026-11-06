@@ -1,0 +1,17 @@
+{
+  "kod": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-taban",
+  "sinirBayt": 98528,
+  "icHata": "disk I/O error",
+  "icHatadanSonra": {
+    "depthIcinde": true,
+    "baglantidaIslem": false
+  },
+  "disHata": "cannot commit - no transaction is active",
+  "kalanSatir": {
+    "disOnce": 0,
+    "ic": 0,
+    "disSonra": 1,
+    "paraSonra": 1
+  },
+  "sondaBaglantidaIslem": false
+}

@@ -1,0 +1,33 @@
+repairOwnCards soğuk: 3848 ms
+KENDİ SÜRESİ:
+0.77 sn  all :0
+0.63 sn  (garbage collector) :0
+0.42 sn  post node:inspector:118
+0.37 sn  roundMoney server/lib/money.mjs:32
+0.30 sn  accountLedger server/lib/accounts.mjs:42
+0.23 sn  tlText server/lib/accounts.mjs:18
+0.20 sn  runSide server/lib/invoice-settle.mjs:324
+0.17 sn  (anonim) server/routes/invoices.mjs:726
+0.16 sn  settleLedger server/lib/invoice-settle.mjs:176
+0.12 sn  (anonim) server/lib/invoice-settle.mjs:561
+0.12 sn  ledgerPlansByAccount server/routes/plans.mjs:1450
+0.11 sn  all server/lib/db.mjs:356
+TOPLAM (server/ altı):
+3.22 sn  repairOwnCards server/routes/invoices.mjs:2099
+3.09 sn  allPaymentStates server/routes/invoices.mjs:761
+3.08 sn  allSettled server/routes/invoices.mjs:738
+1.47 sn  allLedgers server/routes/accounts.mjs:1619
+1.21 sn  settled server/routes/invoices.mjs:749
+0.93 sn  settleLedger server/lib/invoice-settle.mjs:176
+0.88 sn  all server/lib/db.mjs:356
+0.76 sn  accountLedger server/lib/accounts.mjs:42
+0.58 sn  passes server/lib/invoice-settle.mjs:559
+0.46 sn  runAll server/lib/invoice-settle.mjs:561
+0.46 sn  (anonim) server/lib/invoice-settle.mjs:561
+0.37 sn  roundMoney server/lib/money.mjs:32
+0.35 sn  settleTables server/routes/invoices.mjs:691
+0.33 sn  runSide server/lib/invoice-settle.mjs:324
+0.25 sn  inputOf server/routes/invoices.mjs:748
+0.25 sn  batchSettleInput server/routes/invoices.mjs:720
+0.23 sn  tlText server/lib/accounts.mjs:18
+0.21 sn  ledgerPlansByAccount server/routes/plans.mjs:1450

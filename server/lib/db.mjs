@@ -327,6 +327,20 @@ export function createStore(db) {
       // asıl hata yeniden fırlatılır
     }
   };
+  // 2.5.0 BS-6 (2.4.9 DB-TX KÖR NOKTA; yeniden üretildi: iç store.tx'te önbellek taşması WAL'a yazarken G/Ç hatası → SQLite işlemin TAMAMINI kendiliğinden
+  // geri aldı, derinlik 1 kaldı; hatayı yakalayıp süren kodun sonraki store.run yazımları işlemsiz (kendiliğinden kesinleşerek) diske gitti, dış işlem
+  // "cannot commit - no transaction is active" ile düştü — işlemin ilk yarısı geri alınmış, ikinci yarısı yazılmış). Derinlik > 0 iken bağlantıda işlem
+  // yoksa yazım YAPILMAZ: store.run / setSetting / iç store.tx (SAVEPOINT işlem dışında yeni işlem açar, RELEASE onu kesinleştirirdi) ve en dış COMMIT açık
+  // hata fırlatır; ileti işlemi bozan ilk hatayı söyler (ders 21: asıl hata ezilmez). isTransaction bilinmiyorsa (null; Node < 22.16) bugünkü yol.
+  let lostBy = null; // bu en dış işlemde, işlemi kendiliğinden geri aldıran ilk hata
+  const noteLost = error => {
+    if (depth > 0 && !lostBy && error?.code !== "ERR_TX_LOST" && openTx() === false) lostBy = error;
+  };
+  const lostTx = () =>
+    Object.assign(new Error(`Veri tabanı işlemi yarıda kesildi: SQLite işlemi kendiliğinden geri aldı${lostBy?.message ? ` (ilk hata: ${lostBy.message})` : ""}. Bu yazım yapılmadı; işlemin tamamı geri alındı, yeniden deneyin.`), { code: "ERR_TX_LOST", ...(lostBy ? { cause: lostBy } : {}) });
+  const assertLive = () => {
+    if (depth > 0 && openTx() === false) throw lostTx();
+  };
   const store = {
     /**
      * 2.4.8 İş P1 (lib/write-lock.mjs): dosya şimdi yazılabilir mi — SENKRON kısa sınama (busy_timeout ms; BEGIN IMMEDIATE + ROLLBACK), bitince busy_timeout
@@ -341,6 +355,7 @@ export function createStore(db) {
     get: (sql, ...args) => prepare(sql).get(...args),
     all: (sql, ...args) => prepare(sql).all(...args),
     run: (sql, ...args) => {
+      assertLive();
       const table = writesTo(sql);
       if (table && FINANCIAL.has(table) && !infoOnly(table, sql)) {
         if (depth === 0 && (guards.length || policy?.ledger.has(table))) return store.tx(() => store.run(sql, ...args));
@@ -350,7 +365,13 @@ export function createStore(db) {
       const scoped = Boolean(scope && depth > 0 && table && SCOPE_TABLES.has(table) && !infoOnly(table, sql));
       const before = scoped ? readBefore(table, sql, args) : null;
       if (watched) beforeLedgerWrite(table, sql, args, before);
-      const result = prepare(sql).run(...args);
+      let result;
+      try {
+        result = prepare(sql).run(...args);
+      } catch (error) {
+        noteLost(error);
+        throw error;
+      }
       trackedChanges += Number(result?.changes) || 0;
       if (watched) afterLedgerInsert(table, sql, result);
       if (scoped) afterScopedInsert(table, sql, result);
@@ -424,6 +445,7 @@ export function createStore(db) {
       if (depth === 0) {
         db.exec("BEGIN IMMEDIATE");
         dangling = false; // BEGIN geçti: önceden açık kalan işlem yok
+        lostBy = null;
         touched = new Set();
         touchedEvents = new Set();
         money = policy ? freshMoney() : null;
@@ -433,7 +455,11 @@ export function createStore(db) {
         const marksAt = performance.now();
         if (money) for (const table of policy.sources.keys()) money.marks.set(table, Number(prepare(`SELECT COALESCE(MAX(rowid), 0) AS m FROM ${table}`).get().m) || 0);
         txStats.marksMs = performance.now() - marksAt;
-      } else db.exec(`SAVEPOINT ${savepoint}`);
+      } else {
+        // BS-6: dış işlem kendiliğinden geri alındıysa SAVEPOINT yeni bir işlem açar, RELEASE onu kapısız kesinleştirirdi.
+        assertLive();
+        db.exec(`SAVEPOINT ${savepoint}`);
+      }
       // İç işlem (SAVEPOINT) geri alınırsa onun içinde görülen K6 ihlali de düşer.
       const violationsAt = money ? money.violations.length : 0;
       depth += 1;
@@ -459,6 +485,8 @@ export function createStore(db) {
         }
         depth -= 1;
         left = true;
+        // BS-6: işlem kendiliğinden geri alındıysa (yakalanıp yutulan hata) COMMIT / RELEASE "no transaction" iletisiyle asıl nedeni örtmesin.
+        if (openTx() === false) throw lostTx();
         if (depth === 0) {
           db.exec("COMMIT");
           money = null;
@@ -483,6 +511,7 @@ export function createStore(db) {
         } else {
           undo(`ROLLBACK TO ${savepoint}; RELEASE ${savepoint}`);
           if (money) money.violations.length = Math.min(money.violations.length, violationsAt);
+          noteLost(error);
         }
         throw error;
       }
@@ -492,6 +521,7 @@ export function createStore(db) {
       return row ? row.value : fallback;
     },
     setSetting(key, value, userId = null) {
+      assertLive();
       const result = prepare("INSERT INTO settings (key, value, updated_at, updated_by) VALUES (?, ?, ?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at, updated_by = excluded.updated_by")
         .run(key, String(value ?? ""), new Date().toISOString(), userId);
       trackedChanges += Number(result?.changes) || 0;

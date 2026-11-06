@@ -1616,17 +1616,22 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // dated (2.4.5 madde 6): yalnız Vade Tarihi ya da Beklenen Ödeme Tarihi girilmiş elle borç / alacak satırı olan cariler (takvim, zil, Vade Takip).
   const DATED_SQL = "SELECT DISTINCT account_id FROM account_entries WHERE source = '' AND kind IN ('debt', 'credit') AND (due_date <> '' OR expected_date <> '')";
   // İkisi birlikte (2.4.5 G8, routes/invoices.mjs allSettled): iki kümenin birleşimi tek geçişte; dated = vadeli satırı olan carilerin kümesi.
-  function allLedgers({ invoiced = false, dated = false } = {}) {
-    const scope = [invoiced ? "SELECT DISTINCT account_id FROM invoices" : "", dated ? DATED_SQL : ""].filter(Boolean).join(" UNION ");
+  // 2.5.0 AH (routes/invoices.mjs repairScreen): ids — yalnız bu carilerin defteri (açılış onarımı carileri parça parça okur: 1.000.000 satırda bütün
+  // carilerin defteri birden belleğe alınınca yığın aşılıyordu); plans — kart haritası (ledgerPlansByAccount) bir kez kurulup parçalara verilir. Satırlar,
+  // sıraları ve kural aynı (ids kümesi içindeki her carinin defteri, kümesiz çağrıdaki defteriyle birebir).
+  function allLedgers({ invoiced = false, dated = false, ids = null, plans: planMapIn = null } = {}) {
+    const list = Array.isArray(ids) ? JSON.stringify(ids.map(String)) : "";
+    const scope = list ? "SELECT value FROM json_each(?)" : [invoiced ? "SELECT DISTINCT account_id FROM invoices" : "", dated ? DATED_SQL : ""].filter(Boolean).join(" UNION ");
+    const args = list ? [list] : [];
     const only = scope ? ` AND a.id IN (${scope})` : "";
-    const rows = store.all(`${ACCOUNT_SQL} WHERE a.deleted_at IS NULL${only} ORDER BY a.name COLLATE NOCASE`).map(({ fieldsJson, ...row }) => row);
+    const rows = store.all(`${ACCOUNT_SQL} WHERE a.deleted_at IS NULL${only} ORDER BY a.name COLLATE NOCASE`, ...args).map(({ fieldsJson, ...row }) => row);
     const entries = new Map();
     // v2.0.22: yol ve "Kapatılacak Fatura" bağı da (Cari kartındaki defterle aynı satır; fatura kapamada kullanılır).
-    for (const entry of store.all(`SELECT e.id, e.account_id AS accountId, e.kind, e.amount, e.date, e.note, e.method, e.receipt_no AS receiptNo, e.source, e.source_id AS sourceId, e.invoice_id AS invoiceId, e.refund_of AS refundOf, e.created_at AS createdAt, ${STOCK_REASON_SQL} AS stockReason FROM account_entries e${scope ? ` WHERE e.account_id IN (${scope})` : ""} ORDER BY e.date, e.created_at, e.rowid`)) {
+    for (const entry of store.all(`SELECT e.id, e.account_id AS accountId, e.kind, e.amount, e.date, e.note, e.method, e.receipt_no AS receiptNo, e.source, e.source_id AS sourceId, e.invoice_id AS invoiceId, e.refund_of AS refundOf, e.created_at AS createdAt, ${STOCK_REASON_SQL} AS stockReason FROM account_entries e${scope ? ` WHERE e.account_id IN (${scope})` : ""} ORDER BY e.date, e.created_at, e.rowid`, ...args)) {
       if (!entries.has(entry.accountId)) entries.set(entry.accountId, []);
       entries.get(entry.accountId).push(entry);
     }
-    const planMap = plans()?.ledgerPlansByAccount ? plans().ledgerPlansByAccount() : new Map();
+    const planMap = planMapIn || (plans()?.ledgerPlansByAccount ? plans().ledgerPlansByAccount() : new Map());
     const lines = new Map();
     for (const row of rows) lines.set(row.id, accountLedger(entries.get(row.id) || [], planMap.get(row.id) || []).lines);
     return { accounts: rows, lines, ...(dated ? { dated: new Set(store.all(DATED_SQL).map(row => row.account_id)) } : {}) };

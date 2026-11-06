@@ -1,0 +1,17 @@
+tohum: 001 2500 işlem, 002 1000 işlem (46 sn)
+file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-v210/tools/kapi-olcum.mjs:191
+          statement.run(...columns.map(column => next[column] ?? null));
+                    ^
+
+Error: UNIQUE constraint failed: fin_events.id
+    at grow (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-v210/tools/kapi-olcum.mjs:191:21)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async fixture (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-v210/tools/kapi-olcum.mjs:231:36)
+    at async file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-v210/tools/kapi-olcum.mjs:380:25 {
+  code: 'ERR_SQLITE_ERROR',
+  errcode: 1555,
+  errstr: 'constraint failed'
+}
+
+Node.js v22.23.4
+cikis 1

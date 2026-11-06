@@ -1,0 +1,15 @@
+AH — 1.000.000 satırda İLK deneme (ara kod: eleme allPaymentStates ile, bütün carilerin defteri birden), 06.11.2026 ~06:28–06:34 UTC.
+Komut: flock olcum.lock node --expose-gc? (hayır, varsayılan) eski-maliyet-olc.mjs --kod <çalışma ağacı, ara kod> --veri c3-olcum-veri/n-1000000 (varsayılan yığın sınırı 2096 MB)
+Sonuç: çıkış 134 — açılışta (createApp; ~308 sn'de) V8 yığın taşması. Ham günlük ikinci denemenin aynı adlı dosyasıyla ezildi; aşağıdaki satırlar
+o koşunun izleme bildiriminden (oturum kaydı) AYNEN aktarıldı:
+
+[13153:0xb919000]   307828 ms: Scavenge 1953.7 (2078.1) -> 1947.7 (2079.1) MB, pooled: 0 MB, 9.32 / 0.00 ms  (average mu = 0.637, current mu = 0.588) allocation failure;
+[13153:0xb919000]   307937 ms: Scavenge 1958.3 (2082.6) -> 1952.3 (2099.6) MB, pooled: 0 MB, 14.46 / 0.00 ms  (average mu = 0.637, current mu = 0.588) allocation failure;
+FATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory
+cikis 134
+
+Okuma: toplu kapama (allPaymentStates → allLedgers bütün carilerin 1.022.380 hareketi + defter satırları JS nesnesi) açılışta yığını aştı; eski kod
+(aday başına okuma; bellek küçük) bu veride saatler sürüyor (Ç3: 22 dk'da bitmedi, durduruldu; çökme bildirilmedi; tahmin ~3,4 saat) → ara kod
+bir GERİLEME olurdu (yavaş açılış yerine açılmayan program). Düzeltme: repairScreen (yalnız adayların carileri,
+400'lük parçalar, kart haritası ve kapama tabloları bir kez). İkinci deneme (eski-maliyet-1m.json): açılış 150,7 sn tamamlandı, soğuk onarım 32,2 sn,
+tepe RSS 2.145 MB.

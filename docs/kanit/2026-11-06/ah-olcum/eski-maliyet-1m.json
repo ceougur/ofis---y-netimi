@@ -1,0 +1,48 @@
+{
+  "kod": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab0062d42feec8f21",
+  "veri": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-olcum-veri/n-1000000",
+  "cpu": 4,
+  "yiginSiniriMb": 2096,
+  "yukBasta": [
+    4.8,
+    6,
+    7.5
+  ],
+  "yeniAcilisMs": 150700,
+  "acilisTepeRssMb": 2082,
+  "yeniAcilisOlayDongusuMs": 150696,
+  "acilisOnarimi": {
+    "fixed": 0,
+    "locked": 0
+  },
+  "onarimOncesiYiginMb": 23,
+  "onarimOncesiRssMb": 2037,
+  "yeniOnarimSogukMs": 32172,
+  "onarimTepeRssMb": 2145,
+  "onarimSonrasiYiginMb": 1440,
+  "yeniOnarimOlayDongusuMs": 32168,
+  "yeniOnarim": {
+    "fixed": 0,
+    "locked": 0
+  },
+  "eski": {
+    "aday": 9486,
+    "geriOdemeliAday": 9486,
+    "ornek": 40,
+    "ornekGeriOdemeli": 40,
+    "refundsForOrtMs": 73.2,
+    "coverStateOrtMs": 1217.5,
+    "tahminiOnarimSn": 12243
+  },
+  "satir": {
+    "account_entries": 1022380,
+    "invoices": 338334,
+    "plans": 139128,
+    "cheque_events": 202368
+  },
+  "yukSonda": [
+    6.9,
+    6.5,
+    7.4
+  ]
+}
