@@ -648,7 +648,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       const early = cashBeforeOpening(store, money());
       if (early?.rows.length) {
         const opening = early.opening.split("-").reverse().join(".");
-        checks.push({ code: "cash:before-opening", name: "Kasa Açılışından Önce Tarihli Hareket", ok: false, count: early.rows.length, severity: "warning", opening: early.opening, hint: `Bu nakit hareketleri Kasa açılışından (${opening}) önce tarihli (geri yüklenen yedek, eski sürüm verisi ya da Silinenler'den geri gelen kayıt). Tarihi değişmeden düzeltilebilir; açılıştan önceye yeni hareket girilemez. Hareketler açılışın içinde değilse yönetici Kasa → Açılış Bakiyesi'nin tarihini öne alır; uyarı kalkar.`, sample: early.rows.slice(0, 5).map(item => item.sample) });
+        checks.push({ code: "cash:before-opening", name: "Kasa Açılışından Önce Tarihli Hareket", ok: false, count: early.rows.length, severity: "warning", opening: early.opening, hint: `Bu nakit hareketleri Kasa açılışından (${opening}) önce tarihli (geri yüklenen yedek, eski sürüm verisi ya da Silinenler'den geri gelen kayıt). Tarihi değişmeden düzeltilebilir; açılıştan önceye yeni hareket girilemez. Hareketler açılışın içinde değilse yönetici Kasa → Açılış Bakiyesi'nin tarihini öne alır; uyarı kalkar.`, sample: early.rows.slice(0, 5).map(item => item.sample), items: early.rows.slice(0, 100).map(({ source, id, date }) => ({ source, id, date })) });
       }
       lap("cash-opening");
     }

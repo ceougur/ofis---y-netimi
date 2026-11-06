@@ -833,6 +833,15 @@ for x_r, a, b, acik_r in rapor_sirasi:
         d = r.get("durum") or {}
         prg = ("silindi" if d.get("yok") else {"issued": "aktif", "draft": "aktif", "cancelled": "iptal"}.get(d.get("status"), d.get("status"))) if "status" in d or d.get("yok") else ("aktif" if d.get("satir_var") else "silindi" if "satir_var" in d else None)
         out["satirlar"] = [tyk_satir("durum", o["kaynak"], prg, kah, None, set(), ad)]
+    elif o["rapor"] == "mutabakat_uyarilari":
+        # Ç5-K (S20 = A; kâhin bakımı 4 Y17): Mutabakat Testi uyarısı [{kod KASA_ACILIS_ONCESI_HAREKET, kaynak, tarih, acilis}] ↔ programın cash:before-opening
+        # satırları (program kimliği → kâhin kimliği: program.mjs olay_kimlik). Satır başına "tarih|açılış"; programda olmayan satır SINIFLANMADI (bugün yok sayılmaz).
+        kah = (B["dallar"].get("A", {}).get("raporlar", {}) or {}).get(ad) or []
+        ters = {v: k for k, v in (r.get("olay_kimlik") or {}).items() if v}
+        u = r.get("uyarilar") or {}
+        prg = {ters.get(x.get("id"), "?" + str(x.get("id"))): f'{x.get("date")}|{u.get("acilis")}' for x in (u.get("satirlar") or [])}
+        km = {x["kaynak"]: f'{x["tarih"]}|{x["acilis"]}' for x in kah if x.get("kod") == "KASA_ACILIS_ONCESI_HAREKET"}
+        out["satirlar"] = [tyk_satir("kasa_acilis_oncesi", k, prg.get(k), km.get(k), "—", {"Ç5-K"}, ad) for k in sorted(set(prg) | set(km))]
     elif o["rapor"] == "kural_farki":
         kah = (B["dallar"].get("A", {}).get("raporlar", {}) or {}).get(ad) or {}
         kah_ana = defaultdict(int)
