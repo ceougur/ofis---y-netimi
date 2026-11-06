@@ -1108,3 +1108,53 @@ Pencere değişiklikleri P6 §4'ün "`pencere_farkli_alici` ailesindeki TTL fark
   S8 ortak gecikmiş tanımıyla birleşimi (Ç5 + muhasebe kâhini — `vadeler` girdisinin üretimi bu kâhinde değişmedi); Meta Bekletti işin 18:37 ile duraklatılıp Devam Et'te 24 saat beklemeden
   gönderilmesi (kâhinin eski Devam Et düzeni, senaryosuz); "Şirket Verisini Sıfırla"nın 190 / süre durumundaki etkisi (S-13 düzeni, senaryosuz).
 - **Bilgi (eski):** M5 ve M108 26003126'da da istisnayla (KeyError) yakalanıyordu; bu güncellemede değişmedi.
+
+## 17. Kâhin güncellemesi 12 — S7-a, S7-b (06.11.2026)
+
+### 17.1 Kaynak ve bağımsızlık
+Kaynak YALNIZ karar metinleri (AYNEN `kahin.KARARLAR` S7A, S7B): `docs/2.5.0-IS-LISTESI.md` D bölümü "KULLANICI KARARI 06.11 03:35 UTC (AYNEN: 'hepsi A')" satırının S7-a / S7-b
+maddeleri ve C bölümündeki iki seçenekli soru metni (SORULDU 05.11 21:56 → YANITLANDI 06.11 03:35); önceki S7 (05.11 21:08) ve 18:55 S3 kararları (`KARARLAR` S7, aynen); WhatsApp
+"kime kaç kez" genel ilkesi (CLAUDE.md "2.4.8 KARARLARI"; P6 §0). Okunan başka dosya: CLAUDE.md, `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`, bu README, `kahin/*`,
+`docs/erp/WHATSAPP-PAKETI-2.5.0-PLANI.md`, `docs/erp/WHATSAPP-API-PLANI-2.4.8.md` (§1, §6, §7a), `docs/2.5.0-IS-LISTESI.md` A, C ve D bölümleri; `surucu.mjs` içinde yalnız
+`supheli` / `şüpheli` (sonuç yok) ve `vadeler` araması (4 satır: `vadeleriKur` adı, kalan > 0 süzgeci, iki çağrı) — sürücünün S7 girdisini eşleyip eşlemediğini görmek için.
+`sahte-meta/` bu güncellemede okunmadı (S7 Meta davranışı değil). Program kodu (`server/`, `client/`, `bulut/`, `tools/`), program testleri, `docs/kanit/` (kendi kanıtı dışında),
+iş listesinin B ve E bölümleri, git geçmişi / farkı ve öbür ajanların raporları GÖRÜLMEDİ. Programa karşı KOŞULMADI. Eski kâhinle karşılaştırma git'ten değil, taban ağaçtaki
+(b12a03d6) `kahin/*` dosyalarının değişiklikten ÖNCE not defterine alınmış kopyasıyla. Bu bölümün 17.2–17.4'ü kodlamadan ÖNCE yazıldı ve ayrı commit'lendi (ders 40); 17.5–17.8 kodlamadan sonra.
+
+### 17.2 Yorumlar (kâhinde; her birinin kaynağı)
+| # | Yorum (kâhinde) | Kaynak |
+|---|---|---|
+| Y12-1 | **S7-a**: "şüphesiz gecikmiş borç" = Y11-19'daki küme: vade < bugün (YEREL gün, §7a 20 kâhin yorumu 5), kalan > 0, şüpheli alacak kaydına alınmamış (`supheli` işaretsiz) kalem. Elle seçilen şüpheli alacaklı caride bu küme BOŞSA cari "Gecikmiş Borç Yok" (`gecikmis_borc_yok`) ile ELENİR: ileti gitmez, POST 0, iş açılmaz; seçilenlerin hepsi elenirse toplu iş kaydı oluşmaz (§7a 31). Küme boş değilse S7 elle yolu aynen (Y11-19: {{3}} / {{4}} şüphesiz kalemlerden) | S7A + S7 + Y11-19 + §7a 20 |
+| Y12-2 | S7-a GÖNDERİM ANINDA da uygulanır: Ödeme Hatırlatma'nın eleme denetimi ve değişkenleri gönderim anında (§7a 1–2, Y9d-2; kâhinin §7a 20 elemesi zaten iki anda da). Başlatmada şüphesiz gecikmişi olan elle seçilmiş cari, kuyruktayken şüphesiz kalemi kapanır (kalan 0) ya da şüpheli kaydına alınırsa gönderim anında "Atlandı", neden `gecikmis_borc_yok`. Karar metni anı söylemiyor; kâhin yorumu (ileti gitmez yönü — ilke 1–4 ile çelişmez) | S7A + §7a 2 + Y9d-2 |
+| Y12-3 | **Elle ↔ otomatik seçim**: "elle seçim" S7'de "Şüpheli Alacağı Var" etiketli cari için tanımlı ("ekranda … etiketiyle görünür, istenirse elle seçilir"). Kâhin girdisi `baslat.supheli_elle` yalnız BAŞLATMA ANINDA açık şüpheli kaydı olan cariye uygulanır ve işe "elle" işareti yazılır. `secim`de olup `supheli_elle`de olmayan etiketli cari = otomatik liste → `supheli_alacak` (Y11-18 aynen). Başlatmada etiketi OLMAYAN cari `supheli_elle`de verilirse kâhin HATA verir (girdi tutarsız: etiketsiz cari için programda ayrı bir "elle seçim" yok — sürücü bunu üretemez; kâhin anlam uydurmaz) | S7 + S7B ("elle seçilmemiş müşteri") |
+| Y12-4 | **S7-b "kuyruktayken" / "gönderim anı" sınırı**: kuyruktayken = toplu iş açılıp iş yazıldıktan sonra, işçinin o kişinin isteğini göndermek için ele aldığı ana kadar (Bekliyor, Sınır Nedeniyle Bekliyor, Duraklatıldı → Devam Et, Lisans Nedeniyle Durdu / açılışta sorulan → Devam Et, Meta Bekletti → 24 sa sonraki 2. deneme). Gönderim anı = işçinin işi Hazırlanıyor'a almadan hemen önceki eleme denetimi (§7a 2 "Atlandı" ile aynı an: silindi / pasif / İstemiyor / numara denetimi). Bu andan SONRA (Hazırlanıyor / Gönderiliyor / Meta Kabul Etti …) açılan şüpheli kaydı etkisizdir (ileti gitti); kâhinde bu aralık sıfır uzunlukta — senaryosuz | S7B + §7a 1–2 + §6 W2 ("Gönderiliyor istekten önce") |
+| Y12-5 | **S7-b atlama**: elle işaretsiz işin carisinin gönderim anında açık şüpheli kaydı varsa iş "Atlandı", atlanma nedeni `supheli_alacak` ("Şüpheli Alacağı Var", karar metnindeki ad); POST yok, deneme açılmaz → R3'te ve "Zaten Kuyrukta"da SAYILMAZ (ilke 1: kesin almadı; Atlandı kuyrukta değildir). Gönderme yolu (ilke 4): yeni Ödeme Hatırlatma'da elle seçim — aynı gün de (Zaten Kuyrukta / Sonucu Belirsiz / R3 elemesi doğmaz). Meta Bekletti 2. denemesinde atlanan kişinin 1. iletisi K7 gereği "Daha Önce Gönderildi" sayılmaz (sonradan teslim gelirse J1 gereği sayılır — bugünkü düzen) | S7B + G0 (1, 4) + K7 + J1 |
+| Y12-6 | Gönderim anındaki sıra: silindi / pasif / İstemiyor → numara → `supheli_alacak` (S7-b: açık kayıt + elle işaretsiz) → `gecikmis_borc_yok` (§7a 20; S7-a dahil, şüphesiz kalemler). Başlatma sırası Y11-18 ile aynı. Hem kuyrukta şüpheli açılan hem şüphesiz gecikmişi kalmayan elle işaretsiz cari `supheli_alacak` (yalnız neden adı; ileti iki durumda da gitmez) | Y11-18 + S7B |
+| Y12-7 | **Elle seçilmiş müşterinin kuyrukta şüpheli olması**: elle işaretli iş (başlatmada etiketliydi) kuyruktayken YENİ bir şüpheli kalem açılsa da ya da kaydı kapanıp yeniden açılsa da elle kalır → S7 elle yolu: gönderim anındaki şüphesiz gecikmiş tutarla gider; şüphesiz gecikmiş kalmadıysa S7-a (Y12-2). Kuyrukta şüpheli kaydı KAPANAN (bütün şüpheli kalemlerin kalanı 0) cari artık etiketsizdir: S7 / S7-b dışında, bütün gecikmişiyle gider ({{5}} güncel bakiye; `plan_susuyor` S7S yalnız kayıt açıkken) | S7 + S7B + Y11-17 ("kaydı açık" = kalanı > 0) |
+| Y12-8 | **Elle işaretin taşınması**: Devam Et ve Başarısızları Yeniden Dene AYNI işin (aynı toplu işin kararıyla) yeniden gönderimidir; elle işareti işte kalır (K4 / K5 düzeni: asıl işin dönemi ve kararı yeniden denemeye taşınır). Başarısızları Yeniden Dene TOPLU bir işlemdir, elle seçim DEĞİLDİR: elle işaretsiz işte (kuyruktayken ya da Başarısız iken) açılan şüpheli kaydı gönderim anında S7-b ile atlatır; yol: yeni gönderimde elle seçim (K3: Başarısız deneme sayılmaz). Kâhin yorumu — ana oturum teyit etsin | S7B + K4 / K5 + K3 |
+| Y12-9 | S7 / S7-a / S7-b yalnız Ödeme Hatırlatma (Y11-17). Ekstre işinde kuyruktayken açılan şüpheli kaydı etkisiz; `supheli_elle` Ekstre başlatmasında anlamsız (yok sayılır — S7-02'deki Ekstre düzeni) | S7 + Y11-17 |
+| Y12-10 | **İlke denetimi (ders 45)**: S7-a elemesi §7a 20 "Gecikmiş Borç Yok" ile aynı türdendir (hatırlatılacak şüphesiz borç yok — çift işlem elemesi değil); şüphesiz borç doğunca hatırlatma, her zaman Ekstre yolu açık. S7-b atlamasının yolu Y12-5. İkisi de ilke (1)–(5) ile ÇELİŞMEZ: kimseye ikinci ileti doğurmaz, almamış kişi sayılmaz, elenen / atlanan kişinin yolu kalır; geri yüklenen / taşınan veride aynı kural (§7a 26 ile duran iş zaten durur). Çelişen tek yer 17.4 S7-c (KODLANMADI) | G0 (1)–(5) |
+
+### 17.3 Önceki güncellemelerle çelişen yerler (yeni KARAR geçer)
+- §16.4 "KULLANICIYA SORULMALI S7-a ★ / S7-b ★" (kâhin `ValueError`) → KAPANDI (S7A, S7B = A). §16.5'in "S7-a, S7-b … kâhinde hata veriyor" cümlesi ve kâhinin kendi testi I8'in aynı
+  denetimi tersine döner: artık hesaplanır ve A sonucunu verir (yeni denetim I9).
+- Y11-18 "istenirse elle seçilir … elle seçilen cari elenmez, gider" → S7-a ile daraldı: şüphesiz gecikmiş YOKSA elle seçilen de elenir. M183 ("elle seçilen de elenir") yine kararın tersidir —
+  yalnız şüphesiz gecikmişi OLAN caride (S7-02).
+- `supheli_elle` girdisi artık yalnız başlatmada etiketli cariye (Y12-3). Eski senaryolarda yalnız S7-02 kullanıyor (SA etiketli) — beklenti değişmez.
+
+### 17.4 KULLANICIYA SORULMALI / KÂHİN SUSUYOR (ana oturuma)
+**KULLANICIYA SORULMALI (kime / kaç kez — KODLANMADI; senaryo bu duruma girerse kâhin `ValueError` verir):**
+- **S7-c ★** Ödeme Hatırlatma işi Sonucu Belirsiz kaldı; işteki "Yine de Gönder" (ya da o belirsizlik zincirindeki Başarısızları Yeniden Dene — J10 c) basıldığında carinin şüpheli
+  alacak kaydı AÇIK ve iş elle işaretli DEĞİL (kayıt sonuç beklenirken açıldı). S7-b metni "toplu gönderim kuyruktayken" der; Sonucu Belirsiz iş kuyrukta değildir (D1) ve Yine de Gönder kişiye özel,
+  onaylı bir işlemdir — iki okuma:
+  A) Yine de Gönder ELLE SEÇİM sayılır → ileti şüphesiz gecikmiş tutarla gider (yoksa S7-a "Gecikmiş Borç Yok") — ÖNERİ: ilke (2)'nin "tek yol işteki onaylı Yine de Gönder" yolu açık kalır;
+     onay penceresinde "Şüpheli Alacağı Var" etiketi görünmeli.
+  B) S7-b gibi gönderim anında "Atlandı — Şüpheli Alacağı Var" → aynı gün yeni gönderimde de D1 + E3 gereği "Sonucu Belirsiz" ile elenir: o gün ÇIKMAZ (ilke 4), ertesi gün yeni gönderimde
+     elle seçimle gider.
+  (Elle işaretli işte Yine de Gönder Y12-8 gereği elle kalır → gider; soru yalnız elle işaretsiz iş.)
+
+**Bilgi / ana oturuma (kodlanmadı; kime kuralı, bu görevin kapsamı dışında):**
+- **(5) × S7**: 05.11 21:30 kararı (5) "gecikmiş tutar carinin net borcunu aşmaz … bize alacaklı kişiye hatırlatma gitmez" WhatsApp kâhininde YOK (girdi `vadeler` = açık kalemler; bakiyeyle
+  sınırlanmaz). (5) Ç5'in ortak gecikmiş tanımıyla programa girince Ödeme Hatırlatma'nın kime gideceği değişir → WK'ye ayrı bakım gerekir. Ayrıca elle seçilen şüpheli caride "şüphesiz gecikmiş
+  tutar"ın net borçla nasıl sınırlanacağı (min(şüphesiz gecikmiş, net borç) mı; net borçtan şüpheli kalemler düşülerek mi) karar metinlerinde yok → para / kime sorusu (ders 43). Bu güncellemenin
+  senaryolarında net borç (hareketlerden bakiye) ≥ şüphesiz gecikmiş — iki okuma ayrışmaz.
