@@ -115,61 +115,104 @@ export function clearVouchers(store) {
 }
 
 const CREATED_TRACE = "ledger.voucher.created";
-/** ISO zaman damgasının anı (ms; saat dilimi ekiyle ya da Z). Okunamazsa NaN (karşılaştırma yanlış döner → fiş kaldırılmaz). */
-const instantOf = value => (typeof value === "string" && value ? Date.parse(value) : Number.NaN);
+/** Kaldırılmayan (kuşkulu) izsiz fişin nedeni — Mutabakat Günlüğü kaydının metni (cümle düzeni). */
+const DOUBT_TEXT = Object.freeze({
+  "no-reset": "bu şirketin sıfırlama izi yok",
+  "reset-without-wipe": "sıfırlama izi işlem geçmişini silmemiş, izi duran bir fişten sonra yazılmış",
+  "after-traced": "izi duran bir fişten sonra yazılmış",
+  pair: "asıl fişi ya da ters kaydı kalıyor; çift birlikte kalır",
+});
+const KEPT_LIST = 50;
 
 /**
  * Açılış onarımı (BS-7 TASARIM GİRDİSİ): fiş defterini bilmeyen eski sürüm (≤ 2.4.9) bu dosyada Şirket Verisini Sıfırla yaptıysa hareketleri ve işlem geçmişini
  * siler, fişlere dokunamaz (tetikleyici) — fişler sıfırlanmış verinin üstünde artakalır. Her fiş yazımı aynı işlemde kendi izini (audit_events "ledger.voucher.created")
- * bırakır ve izler yalnız sıfırlamayla silinir; 2.5.0'ın sıfırlaması fişleri de siler. Bu yüzden izi olmayan fiş + BU ŞİRKETİN "company.reset" izinden önce yazılmış =
- * eski sürüm sıfırlamasından artakalan fiştir: aynı işlemde kaldırılır (sıfırlamanın yapacağı iş; eski sürümün sıfırlama öncesi yedeği fişleri taşır), Mutabakat Günlüğü'ne
- * ("repair") ve işlem geçmişine yazılır.
- * Ç2 tur 1 (dar kontrol DÜŞÜK-1, sakınca süzgeciyle ORTA — defter kaydı kaybı): onarım ŞİRKETE ve ZAMANA bağlıdır —
- *   - yalnız bu dosyanın şirketinin (companyId) sıfırlama izi sayılır: 001'in dosyası ortak katmandır, BAŞKA şirketin sıfırlaması oraya da "company.reset" (entity = o
- *     şirket) yazar; o iz 001'in fişini kaldırmaz;
- *   - yalnız o izden ÖNCE (ya da aynı anda) yazılmış fiş kaldırılır (an karşılaştırması, Date.parse; saat dilimi ekinden bağımsız). Sıfırlamadan SONRA yazılmış ama izi
- *     başka nedenle düşmüş fiş sıfırlamanın konusu değildir: dokunulmaz, günlüğe uyarı (kept). Zamanı okunamayan fiş / iz de kaldırılmaz.
- *   Aynı an (≤): yalnız sabit sahte saatte olur (gerçek saatte eski sürümün sıfırlaması ile 2.5.0'ın fişi arasında program yeniden açılır).
- * Sıfırlama izi yoksa fiş kaldırılmaz, yalnız günlüğe uyarı yazılır. Dönüş: { removed, ids (kaldırılanlar), kept (dokunulmayan izsiz fişler) } ya da null (izsiz fiş yok).
+ * bırakır ve izler yalnız sıfırlamayla silinir (programda işlem geçmişinden tek satır silen yol yok); 2.5.0'ın sıfırlaması fişleri de siler. Bu yüzden izi olmayan fiş +
+ * BU ŞİRKETİN "company.reset" izi + fiş o sıfırlamadan ÖNCE yazılmış = eski sürüm sıfırlamasından artakalan fiştir: aynı işlemde kaldırılır (sıfırlamanın yapacağı iş; eski
+ * sürümün sıfırlama öncesi yedeği fişleri taşır), Mutabakat Günlüğü'ne ("repair") ve işlem geçmişine yazılır.
+ * Ç2 tur 1 (dar kontrol DÜŞÜK-1): yalnız bu dosyanın şirketinin (companyId) sıfırlama izi sayılır — 001'in dosyası ortak katmandır, BAŞKA şirketin sıfırlaması oraya da
+ * "company.reset" (entity = o şirket) yazar; o iz 001'in fişini kaldırmaz.
+ * Ç2 tur 2 (dar kontrol B1, sakınca süzgeciyle ORTA): "önce" DUVAR SAATİYLE DEĞİL, YAZIM SIRASIYLA belirlenir (saat geri / ileri alınınca tur 1'in an karşılaştırması
+ * sıfırlamadan artakalan fişleri bırakıyor, ters kaydı kaldırılan asıl fişi yeniden etkin yapıyordu). Yazım sırası: aynı tablodaki rowid (bir satır silinmedikçe sonraki
+ * eklemenin rowid'i ondan büyüktür; ders 31). Eski sürümün sıfırlaması işlem geçmişini BÜTÜNÜYLE siler, sonra izini yazar — o yüzden:
+ *   - sıfırlama izi (bu şirketin, rowid'i en büyük olan) kalan her fiş izinden ÖNCE yazılmış olmalı; değilse iz işlem geçmişini silmemiştir ("reset-without-wipe"):
+ *     hiçbir izsiz fiş kaldırılmaz;
+ *   - izi duran ilk fiş (fiş tablosunda rowid'i en küçük izli fiş) sıfırlamadan SONRA yazılmıştır; ondan ÖNCE yazılmış izsiz fiş sıfırlamada izini yitirmiştir →
+ *     kaldırılır; ondan SONRA yazılmış izsiz fiş sıfırlamanın konusu değildir ("after-traced") → kalır. İzli fiş yoksa her izsiz fiş sıfırlamadan öncedir.
+ *   - ÇİFT KURALI İKİ YÖNLÜ (baş mimar kararı 5): asıl fiş ve ters kaydı birlikte kalır ya da birlikte kaldırılır; biri kalıyorsa (kuşkulu, izli) öbürü de kalır ("pair").
+ *     Tek yönlü kural ters kaydı kaldırıp asıl fişi yeniden etkin bırakıyordu.
+ *   - Kalan (kuşkulu) izsiz fiş SESSİZ kalmaz: Mutabakat Günlüğü'ne görünür "repair" kaydı (aynı küme için bir kez; her açılışta yinelenmez) + sunucu günlüğü.
+ * Dönüş: { removed, ids (kaldırılanlar), kept (dokunulmayan izsiz fişler), doubts ({ fiş kimliği: neden }) } ya da null (izsiz fiş yok).
  */
 export function repairLegacyReset({ store, now = systemClock, log = null, newId = () => `int-${randomUUID()}`, companyId = "" }) {
   if (!has(store, "ledger_vouchers") || !has(store, "audit_events")) return null;
-  const orphanRows = store.all(`SELECT v.id, v.created_at AS at FROM ledger_vouchers v WHERE NOT EXISTS (SELECT 1 FROM audit_events a WHERE a.entity_id = v.id AND a.type = '${CREATED_TRACE}') ORDER BY v.rowid`);
+  const traced = `EXISTS (SELECT 1 FROM audit_events a WHERE a.entity_id = v.id AND a.type = '${CREATED_TRACE}')`;
+  const orphanRows = store.all(`SELECT v.rowid AS seq, v.id, v.year, v.no FROM ledger_vouchers v WHERE NOT ${traced} ORDER BY v.rowid`);
   if (!orphanRows.length) return null;
-  // Bu şirketin en son sıfırlama izi (anı en büyük olan; eski sürüm işlem geçmişini silip yeniden yazdığı için rowid sırası güvenilmez). Şirket kimliği yoksa iz aranmaz.
-  let reset = null;
-  for (const row of companyId ? store.all("SELECT created_at AS at FROM audit_events WHERE type = 'company.reset' AND entity_id = ?", String(companyId)) : []) {
-    const t = instantOf(row.at);
-    if (Number.isFinite(t) && (!reset || t > reset.t)) reset = { at: row.at, t };
+  // Bu şirketin EN SON sıfırlama izi: yazım sırasıyla (rowid) en büyük. Sıfırlama işlem geçmişini sildiği için kalan satırların rowid sırası eklenme sırasıdır. Şirket
+  // kimliği yoksa iz aranmaz.
+  const reset = companyId ? store.get("SELECT rowid AS seq, created_at AS at FROM audit_events WHERE type = 'company.reset' AND entity_id = ? ORDER BY rowid DESC LIMIT 1", String(companyId)) : null;
+  const doubts = new Map();
+  if (!reset) for (const row of orphanRows) doubts.set(row.id, "no-reset");
+  else {
+    const firstTrace = store.get(`SELECT MIN(a.rowid) AS seq FROM audit_events a WHERE a.type = '${CREATED_TRACE}' AND EXISTS (SELECT 1 FROM ledger_vouchers v WHERE v.id = a.entity_id)`)?.seq ?? null;
+    const firstTraced = store.get(`SELECT MIN(v.rowid) AS seq FROM ledger_vouchers v WHERE ${traced}`)?.seq ?? null;
+    for (const row of orphanRows) {
+      if (firstTrace !== null && Number(firstTrace) < Number(reset.seq)) doubts.set(row.id, "reset-without-wipe");
+      else if (firstTraced !== null && Number(row.seq) > Number(firstTraced)) doubts.set(row.id, "after-traced");
+    }
   }
-  if (!reset) {
-    log?.warn?.(`Fiş defteri: işlem geçmişinde izi olmayan ${orphanRows.length} fiş var (bu şirketin sıfırlama izi yok; dokunulmadı).`);
-    return { removed: 0, ids: [], kept: orphanRows.map(row => row.id) };
+  // Çift kuralı İKİ YÖNLÜ (kapanış: biri kalıyorsa ikisi de kalır; zincir varsa her halkası).
+  const orphanIds = new Set(orphanRows.map(row => row.id));
+  const removing = new Set(orphanRows.filter(row => !doubts.has(row.id)).map(row => row.id));
+  const pairs = store.all("SELECT id, reversal_of AS of FROM ledger_vouchers WHERE reversal_of IS NOT NULL");
+  for (let changed = true; changed; ) {
+    changed = false;
+    for (const pair of pairs) {
+      if (removing.has(pair.id) === removing.has(pair.of)) continue;
+      for (const id of [pair.id, pair.of]) {
+        removing.delete(id);
+        if (orphanIds.has(id) && !doubts.has(id)) doubts.set(id, "pair");
+      }
+      changed = true;
+    }
   }
-  const removing = new Set(orphanRows.filter(row => instantOf(row.at) <= reset.t).map(row => row.id));
-  // Kalan bir ters kaydın asıl fişi kaldırılmaz (yabancı anahtar; asılsız ters kayıt bırakılmaz) — ihtiyatlı yön: kuşkuda fiş kalır.
-  for (const row of store.all("SELECT id, reversal_of AS of FROM ledger_vouchers WHERE reversal_of IS NOT NULL")) if (!removing.has(row.id)) removing.delete(row.of);
   const orphans = orphanRows.filter(row => removing.has(row.id)).map(row => row.id);
-  const kept = orphanRows.filter(row => !removing.has(row.id)).map(row => row.id);
-  if (kept.length) log?.warn?.(`Fiş defteri: sıfırlamadan (${reset.at}) sonra yazılmış ya da zamanı okunamayan, izi olmayan ${kept.length} fiş var (dokunulmadı).`);
-  if (!orphans.length) return { removed: 0, ids: [], kept };
+  const keptRows = orphanRows.filter(row => !removing.has(row.id));
+  const kept = keptRows.map(row => row.id);
+  const keptDoubts = Object.fromEntries(keptRows.map(row => [row.id, doubts.get(row.id)]));
+  // Görünür kayıt (kuşkulu fiş): içerik belirlenimci (zaman yok) → aynı küme için ikinci kez yazılmaz.
+  let keptLog = null;
+  if (kept.length && has(store, "integrity_log")) {
+    const detail = JSON.stringify({ kept: kept.slice(0, KEPT_LIST), keptCount: kept.length, doubts: Object.fromEntries(keptRows.slice(0, KEPT_LIST).map(row => [row.id, keptDoubts[row.id]])), resetAt: reset?.at || "" });
+    if (!store.get("SELECT 1 AS found FROM integrity_log WHERE action = 'repair' AND tables = 'ledger_vouchers' AND detail_json = ?", detail)) {
+      const reasons = [...new Set(keptRows.map(row => keptDoubts[row.id]))].map(reason => DOUBT_TEXT[reason]).join("; ");
+      const numbers = keptRows.slice(0, 10).map(row => voucherNoText(row.year, row.no)).join(", ") + (keptRows.length > 10 ? ` ve ${keptRows.length - 10} fiş daha` : "");
+      keptLog = { detail, summary: `Fiş defteri: işlem geçmişinde izi olmayan ${kept.length} fiş kaldırılmadı; eski sürümün Şirket Verisini Sıfırla'sından artakaldığı yazım sırasıyla kesinleşmedi (${reasons}). Kuşkuda fiş kalır: ${numbers}.` };
+    }
+  }
+  if (kept.length) log?.warn?.(`Fiş defteri: işlem geçmişinde izi olmayan ${kept.length} fiş kaldırılmadı (${[...new Set(Object.values(keptDoubts))].join(", ")}).`);
+  if (!orphans.length && !keptLog) return { removed: 0, ids: [], kept, doubts: keptDoubts };
   const at = now().toISOString();
   store.raw("ledger.vouchers.legacy-reset", () =>
     store.tx(() => {
-      withTriggersLifted(store, () => {
-        const list = JSON.stringify(orphans);
-        store.run("DELETE FROM ledger_voucher_lines WHERE voucher_id IN (SELECT value FROM json_each(?))", list);
-        // Ters kayıt asıl fişe bağlıdır (yabancı anahtar): önce ters kayıtlar.
-        store.run("DELETE FROM ledger_vouchers WHERE id IN (SELECT value FROM json_each(?)) AND reversal_of IS NOT NULL", list);
-        store.run("DELETE FROM ledger_vouchers WHERE id IN (SELECT value FROM json_each(?))", list);
-      });
-      const summary = `Eski sürümde yapılan Şirket Verisini Sıfırla'dan artakalan ${orphans.length} fiş kaldırıldı (sıfırlama ${reset.at}).`;
-      if (has(store, "integrity_log")) store.run("INSERT INTO integrity_log (id, at, action, tables, summary, detail_json) VALUES (?, ?, 'repair', 'ledger_vouchers', ?, ?)", newId(), at, summary.slice(0, 500), JSON.stringify({ ids: orphans, resetAt: reset.at, kept }).slice(0, 20000));
-      store.run("INSERT INTO audit_events (id, type, entity_id, actor_id, actor_name, payload_json, created_at) VALUES (?, 'ledger.vouchers.legacy-reset-removed', 'ledger', 'system', 'Sistem', ?, ?)", `event-${randomUUID()}`, JSON.stringify({ count: orphans.length, ids: orphans.slice(0, 200), resetAt: reset.at, kept: kept.length }), at);
+      if (orphans.length) {
+        withTriggersLifted(store, () => {
+          const list = JSON.stringify(orphans);
+          store.run("DELETE FROM ledger_voucher_lines WHERE voucher_id IN (SELECT value FROM json_each(?))", list);
+          // Ters kayıt asıl fişe bağlıdır (yabancı anahtar): önce ters kayıtlar.
+          store.run("DELETE FROM ledger_vouchers WHERE id IN (SELECT value FROM json_each(?)) AND reversal_of IS NOT NULL", list);
+          store.run("DELETE FROM ledger_vouchers WHERE id IN (SELECT value FROM json_each(?))", list);
+        });
+        const summary = `Eski sürümde yapılan Şirket Verisini Sıfırla'dan artakalan ${orphans.length} fiş kaldırıldı (sıfırlama ${reset.at}).`;
+        if (has(store, "integrity_log")) store.run("INSERT INTO integrity_log (id, at, action, tables, summary, detail_json) VALUES (?, ?, 'repair', 'ledger_vouchers', ?, ?)", newId(), at, summary.slice(0, 500), JSON.stringify({ ids: orphans, resetAt: reset.at, kept }).slice(0, 20000));
+        store.run("INSERT INTO audit_events (id, type, entity_id, actor_id, actor_name, payload_json, created_at) VALUES (?, 'ledger.vouchers.legacy-reset-removed', 'ledger', 'system', 'Sistem', ?, ?)", `event-${randomUUID()}`, JSON.stringify({ count: orphans.length, ids: orphans.slice(0, 200), resetAt: reset.at, kept: kept.length }), at);
+      }
+      if (keptLog) store.run("INSERT INTO integrity_log (id, at, action, tables, summary, detail_json) VALUES (?, ?, 'repair', 'ledger_vouchers', ?, ?)", newId(), at, keptLog.summary.slice(0, 500), keptLog.detail);
     }),
   );
-  log?.warn?.(`Fiş defteri: eski sürüm sıfırlamasından artakalan ${orphans.length} fiş kaldırıldı.`);
-  return { removed: orphans.length, ids: orphans, kept };
+  if (orphans.length) log?.warn?.(`Fiş defteri: eski sürüm sıfırlamasından artakalan ${orphans.length} fiş kaldırıldı.`);
+  return { removed: orphans.length, ids: orphans, kept, doubts: keptDoubts };
 }
 
 /** Yevmiye için fişler (routes/ledger.mjs rows; toplu tek sorgu, ders 47): [{ id, seq, date, cls, label, text, lines }]. */

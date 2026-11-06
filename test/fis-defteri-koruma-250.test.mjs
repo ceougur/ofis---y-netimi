@@ -7,6 +7,8 @@
 //   DÜŞÜK-3 dar kontrolün yaşayan dört mutasyonu (MA bugün tarihli fiş, MB kilit yalnız ileri, MC istek kimliği içeriğinde sınıf, MG yevmiyede alt hesap).
 //   madde 5 fişin açıklama / kaynak / not alanı nesne alırsa "[object Object]" KALICI saklanıyordu → 400.
 //   madde 6 postAll lockThrough PUT period-lock'un ön adımından (POS kalemleri; 409 bank-pending-before-lock, force) geçer.
+// Ç2 TUR 2 (dar kontrol 06.11 04:58 B1 / B2): onarımın "sıfırlamadan önce" kararı DUVAR SAATİYLE değil YAZIM SIRASIYLA (saat geri / ileri, iki şirket, geri yükleme, iki TZ);
+//   çift kuralı İKİ YÖNLÜ (asıl fiş ve ters kaydı birlikte kalır / gider; kuşkuda ikisi de kalır); kaldırılmayan kuşkulu fiş Mutabakat Günlüğü'nde görünür (bir kez).
 // Saat SAHTE ve sabit (ders 13, 22). İki saat diliminde koşulur (TZ=UTC, TZ=Europe/Istanbul). Gerçek dış servis yok (lisans adresi 127.0.0.1:9; ders 30).
 // WINDOWS (ders 48): K5 testleri kapalı sunucunun dosyasını ayrı bağlantıyla değiştirir ve 001'i yedekten geri yükler (dosya takası) — Windows CI'de ayrıca görülür.
 import assert from "node:assert/strict";
@@ -255,7 +257,69 @@ describe("Ç2 tur 1 — DÜŞÜK-2: \"kapanmış fiş\" tetikleyicisi doğrusal;
   });
 });
 
-describe("Ç2 tur 1 — DÜŞÜK-1 (ORTA): eski sürüm sıfırlamasının onarımı yalnız AYNI şirketin sıfırlama izinden önce yazılmış fişi kaldırır", () => {
+// ---- K5 (eski sürüm sıfırlamasının açılış onarımı) yardımcıları — tur 1 ve tur 2 ortak ----
+// Her açılış kendi finally'sinde kapanır: adım düşse de sunucu açık kalmaz (mutasyon taraması bir adım düşünce dosyanın asılı kaldığını gösterdi).
+const withServer = async (dirs, time, fn) => {
+  const server = await startTestServer({ now: { time, fixed: true }, ...dirs, maxCompanies: 2 });
+  try {
+    return await fn(server);
+  } finally {
+    await server.close();
+  }
+};
+const company = async (server, name) => {
+  const created = await must("002", (await loginAdmin(server)).post("/api/companies", { name, select: false }));
+  return created.company || created;
+};
+// Kapalı sunucunun dosyasında (ayrı bağlantı): fiş izleri "bilinmeyen nedenle" düşer ve / ya da eski sürümün sıfırlaması gibi bir "company.reset" izi yazılır.
+const raw = (file, sql, ...args) => {
+  const db = new DatabaseSync(file);
+  try {
+    db.prepare(sql).run(...args);
+  } finally {
+    db.close();
+  }
+};
+const dropTraces = file => raw(file, "DELETE FROM audit_events WHERE type = 'ledger.voucher.created'");
+const dropTrace = (file, id) => raw(file, "DELETE FROM audit_events WHERE type = 'ledger.voucher.created' AND entity_id = ?", id);
+// İşlem geçmişini SİLMEDEN eklenen sıfırlama izi (001'in dosyası ortak katmandır: 2.4.9'un rotası başka şirketin sıfırlamasını oraya da yazar).
+const writeReset = (file, entity, at) => raw(file, "INSERT INTO audit_events (id, type, entity_id, actor_id, actor_name, payload_json, created_at) VALUES (?, 'company.reset', ?, 'user-admin', 'Yönetici', '{\"mode\":\"movements\"}', ?)", `event-eski-${entity}-${at}`, entity, at);
+// 2.4.9'un resetData'sının fiş defterine dokunan kısmı (v2.4.9 server/app.mjs MOVEMENT_TABLES): işlem geçmişi ve Mutabakat Günlüğü BÜTÜNÜYLE silinir, aynı işlemde
+// "company.reset" izi yazılır; fiş tabloları listede yok. `at` sıfırlamanın DUVAR SAATİ (saat geri alınmış senaryolarda fişlerin saatinden önce).
+const legacyReset = (file, entity, at) => {
+  const db = new DatabaseSync(file);
+  try {
+    db.exec("BEGIN IMMEDIATE; DELETE FROM audit_events; DELETE FROM integrity_log;");
+    db.prepare("INSERT INTO audit_events (id, type, entity_id, actor_id, actor_name, payload_json, created_at) VALUES (?, 'company.reset', ?, 'user-admin', 'Yönetici', '{\"mode\":\"movements\"}', ?)").run(`event-eski-sifirlama-${entity}-${at}`, entity, at);
+    db.exec("COMMIT");
+  } finally {
+    db.close();
+  }
+};
+// Programın yolu dışında (ayrı bağlantı) yazılan iki satırlık fiş (590 / 519; ters kayıtta aynası); rowid verilirse o rowid'le (yazım sırası bozuk dosya), trace verilirse
+// fişle aynı işlemde "ledger.voucher.created" izi de.
+const rawVoucher = (file, { rowid, id, no, date, amount, at, reversalOf = "", trace = false }) => {
+  const db = new DatabaseSync(file);
+  try {
+    db.exec("BEGIN IMMEDIATE");
+    const cols = "id, year, no, date, type, journal_class, description, source, request_key, reversal_of, line_count, total_minor, created_by, created_at";
+    const vals = [id, 2027, no, date, reversalOf ? "reversal" : "opening-match", "opening", "", "", `koruma-elle-${id}`, reversalOf || null, 2, amount, "elle", at];
+    if (rowid === undefined) db.prepare(`INSERT INTO ledger_vouchers (${cols}) VALUES (${vals.map(() => "?").join(", ")})`).run(...vals);
+    else db.prepare(`INSERT INTO ledger_vouchers (rowid, ${cols}) VALUES (?, ${vals.map(() => "?").join(", ")})`).run(rowid, ...vals);
+    const [d590, c590] = reversalOf ? [0, amount] : [amount, 0];
+    db.prepare("INSERT INTO ledger_voucher_lines (voucher_id, seq, account, debit_minor, credit_minor) VALUES (?, 1, '590', ?, ?), (?, 2, '519', ?, ?)").run(id, d590, c590, id, c590, d590);
+    if (trace) db.prepare("INSERT INTO audit_events (id, type, entity_id, actor_id, actor_name, payload_json, created_at) VALUES (?, 'ledger.voucher.created', ?, 'elle', 'Elle', '{}', ?)").run(`event-elle-${id}`, id, at);
+    db.exec("COMMIT");
+  } finally {
+    db.close();
+  }
+};
+const idsOf = store => store.all("SELECT id FROM ledger_vouchers ORDER BY rowid").map(row => row.id);
+const trialOf = (app, code) => Math.round((app.ledger.check().trial.accounts.find(row => row.code === code)?.balance || 0) * 100);
+// Tur 2: kaldırılmayan (kuşkulu) izsiz fişin Mutabakat Günlüğü kaydı.
+const keptLogs = store => store.all("SELECT summary, detail_json AS detail FROM integrity_log WHERE action = 'repair' AND tables = 'ledger_vouchers' AND summary LIKE 'Fiş defteri:%' ORDER BY rowid");
+
+describe("Ç2 tur 1 — DÜŞÜK-1 (ORTA): eski sürüm sıfırlamasının onarımı yalnız AYNI şirketin sıfırlama izini sayar", () => {
   let root;
   before(() => {
     root = mkdtempSync(path.join(tmpdir(), "fis-koruma-k5-"));
@@ -266,31 +330,6 @@ describe("Ç2 tur 1 — DÜŞÜK-1 (ORTA): eski sürüm sıfırlamasının onar�
     n += 1;
     return { dataDir: path.join(root, `v${n}`, "data"), backupDir: path.join(root, `v${n}`, "backups") };
   };
-  // Her açılış kendi finally'sinde kapanır: adım düşse de sunucu açık kalmaz (mutasyon taraması bir adım düşünce dosyanın asılı kaldığını gösterdi).
-  const withServer = async (dirs, time, fn) => {
-    const server = await startTestServer({ now: { time, fixed: true }, ...dirs, maxCompanies: 2 });
-    try {
-      return await fn(server);
-    } finally {
-      await server.close();
-    }
-  };
-  const company = async (server, name) => {
-    const created = await must("002", (await loginAdmin(server)).post("/api/companies", { name, select: false }));
-    return created.company || created;
-  };
-  // Kapalı sunucunun dosyasında (ayrı bağlantı): fiş izleri "bilinmeyen nedenle" düşer ve / ya da eski sürümün sıfırlaması gibi bir "company.reset" izi yazılır.
-  const raw = (file, sql, ...args) => {
-    const db = new DatabaseSync(file);
-    try {
-      db.prepare(sql).run(...args);
-    } finally {
-      db.close();
-    }
-  };
-  const dropTraces = file => raw(file, "DELETE FROM audit_events WHERE type = 'ledger.voucher.created'");
-  const writeReset = (file, entity, at) => raw(file, "INSERT INTO audit_events (id, type, entity_id, actor_id, actor_name, payload_json, created_at) VALUES (?, 'company.reset', ?, 'user-admin', 'Yönetici', '{\"mode\":\"movements\"}', ?)", `event-eski-${entity}-${at}`, entity, at);
-  const idsOf = store => store.all("SELECT id FROM ledger_vouchers ORDER BY rowid").map(row => row.id);
 
   it("iki şirket (dar kontrol p5): 001'in izsiz fişi, 002 sıfırlanınca 001'in dosyasına düşen 'company.reset' (entity 002) yüzünden KALDIRILMAZ", async () => {
     const dirs = fresh();
@@ -314,42 +353,10 @@ describe("Ç2 tur 1 — DÜŞÜK-1 (ORTA): eski sürüm sıfırlamasının onar�
     });
   });
 
-  it("zaman: sıfırlama izinden ÖNCE yazılan izsiz fiş kaldırılır, SONRA yazılan (izi başka nedenle düşmüş) fiş kalır; günlükte kalan sayısı", async () => {
-    const dirs = fresh();
-    const { file, early } = await withServer(dirs, "2027-01-08T10:00:00+03:00", async server => ({
-      file: server.app.config.dbPath,
-      early: server.app.ledger.vouchers.post(USER, { type: "opening-match", date: "2027-01-07", requestKey: "koruma-k5-zaman-once", lines: pair(1100) }),
-    }));
-    const late = await withServer(dirs, NOW, async server => server.app.ledger.vouchers.post(USER, { type: "opening-match", date: "2027-01-09", requestKey: "koruma-k5-zaman-sonra", lines: pair(2200) }));
-    dropTraces(file);
-    writeReset(file, "sirket-001", "2027-01-09T07:00:00.000Z");
-    await withServer(dirs, NOW, async server => {
-      const repair = server.app.context.voucherRepair;
-      assert.deepEqual(idsOf(server.app.store), [late.id], `yalnız sıfırlamadan önceki fiş kaldırılmalı: ${JSON.stringify(repair)}`);
-      assert.deepEqual([repair?.removed, repair?.ids, repair?.kept], [1, [early.id], [late.id]]);
-      const log = server.app.store.get("SELECT summary, detail_json AS detail FROM integrity_log WHERE action = 'repair' AND tables = 'ledger_vouchers'");
-      assert.match(log?.summary || "", /artakalan 1 fiş kaldırıldı/);
-      assert.deepEqual(JSON.parse(log.detail).kept, [late.id]);
-      const scan = await must("Mutabakat Testi", (await loginAdmin(server)).get("/api/workspace/ledger/integrity"));
-      assert.equal(scan.ok, true, JSON.stringify(scan.checks.filter(item => !item.ok)));
-    });
-  });
-
-  it("saat dilimi eki: sıfırlama izi '+03:00' ekli (06:30Z) — 05:00Z'deki fiş kaldırılır, 07:00Z'deki kalır (an karşılaştırması; metin karşılaştırması 07:00Z'yi de silerdi)", async () => {
-    const dirs = fresh();
-    const { file, early } = await withServer(dirs, "2027-01-10T08:00:00+03:00", async server => ({
-      file: server.app.config.dbPath,
-      early: server.app.ledger.vouchers.post(USER, { type: "opening-match", date: "2027-01-09", requestKey: "koruma-k5-tz-once", lines: pair(1300) }),
-    }));
-    const late = await withServer(dirs, NOW, async server => server.app.ledger.vouchers.post(USER, { type: "opening-match", date: "2027-01-09", requestKey: "koruma-k5-tz-sonra", lines: pair(2400) }));
-    assert.equal(early.createdAt, "2027-01-10T05:00:00.000Z");
-    assert.equal(late.createdAt, "2027-01-10T07:00:00.000Z");
-    dropTraces(file);
-    writeReset(file, "sirket-001", "2027-01-10T09:30:00+03:00");
-    await withServer(dirs, NOW, async server => {
-      assert.deepEqual(idsOf(server.app.store), [late.id], JSON.stringify(server.app.context.voucherRepair));
-    });
-  });
+  // G3 (Ç2 tur 2, dar kontrol B1): tur 1'in "zaman" ve "saat dilimi eki" testleri kaldırıldı — ikisi de fişin sıfırlamadan SONRA yazıldığını yalnız DUVAR SAATİYLE kuruyordu
+  // (bütün izler düşürülüp sıfırlama izi fişlerden SONRA eklenmiş, created_at'i aralarına konmuştu). Kullanıcı / ana oturum KARARI (06.11 04:58): karar duvar saatinden
+  // bağımsız, YAZIM SIRASIYLA — o dosyada yazım sırasıyla iki fiş de sıfırlama izinden ÖNCE (taban 1e68ad05 de ikisini kaldırıyordu). Aynı iddianın yazım sırasıyla kurulan
+  // karşılıkları aşağıda (tur 2): "izi duran fişten sonra yazılan izsiz fiş kalır" ve "işlem geçmişini silmeyen sıfırlama izi fiş kaldırmaz"; saat dilimi iki TZ koşusuyla.
 
   it("geri yükleme: 002 sıfırlandıktan sonra alınan 001 yedeği (izsiz fiş + entity 002 sıfırlama izi) geri yüklenince 001'in fişi kalır; yedekten sonraki fiş gider", async () => {
     const dirs = fresh();
@@ -372,6 +379,206 @@ describe("Ç2 tur 1 — DÜŞÜK-1 (ORTA): eski sürüm sıfırlamasının onar�
       assert.deepEqual(idsOf(server.app.store), [kept.id], `geri yüklenen 001'de yalnız yedekteki fiş: ${JSON.stringify(server.app.context.voucherRepair)}`);
       const scan = await must("Mutabakat Testi", (await loginAdmin(server)).get("/api/workspace/ledger/integrity"));
       assert.equal(scan.ok, true, JSON.stringify(scan.checks.filter(item => !item.ok)));
+    });
+  });
+});
+
+describe("Ç2 tur 2 — B1: eski sürüm sıfırlamasının onarımı YAZIM SIRASIYLA (duvar saatinden bağımsız); çift kuralı iki yönlü; kuşkulu fiş görünür kayıtta", () => {
+  let root;
+  before(() => {
+    root = mkdtempSync(path.join(tmpdir(), "fis-koruma-t2-"));
+  });
+  after(() => removeTestDir(root));
+  let n = 0;
+  const fresh = () => {
+    n += 1;
+    return { dataDir: path.join(root, `v${n}`, "data"), backupDir: path.join(root, `v${n}`, "backups") };
+  };
+  const scanOk = async (server, query = "") => {
+    const scan = await must("Mutabakat Testi", (await loginAdmin(server)).get(`/api/workspace/ledger/integrity${query}`));
+    assert.equal(scan.ok, true, JSON.stringify(scan.checks.filter(item => !item.ok)));
+    return scan;
+  };
+
+  it("saat geri (dar kontrol k5-saat-ters): asıl fiş 10:00, saat geri alınıp ters kaydı 08:00, eski sürüm 09:00'da sıfırlar → asıl fiş ve ters kaydı BİRLİKTE kaldırılır; asıl fiş etkin kalmaz", async () => {
+    const dirs = fresh();
+    const { file, o, r } = await withServer(dirs, "2027-01-10T10:00:00+03:00", async server => {
+      const V = server.app.ledger.vouchers;
+      const o = V.post(USER, { type: "opening-match", date: "2027-01-06", description: "Asıl", requestKey: "koruma-t2-ters-o", lines: pair(45600) });
+      server.clock.set("2027-01-10T08:00:00+03:00");
+      return { file: server.app.config.dbPath, o, r: V.reverse(USER, o.id, { requestKey: "koruma-t2-ters-r" }) };
+    });
+    assert.deepEqual([o.createdAt, r.createdAt], ["2027-01-10T07:00:00.000Z", "2027-01-10T05:00:00.000Z"], "ön koşul: ters kaydın duvar saati asıl fişten önce");
+    legacyReset(file, "sirket-001", "2027-01-10T06:00:00.000Z");
+    await withServer(dirs, "2027-01-10T12:00:00+03:00", async server => {
+      const repair = server.app.context.voucherRepair;
+      assert.deepEqual([repair?.removed, repair?.ids, repair?.kept], [2, [o.id, r.id], []], `saat geri alınmış olsa da sıfırlamadan artakalan asıl fiş + ters kaydı birlikte kaldırılır (taban 2): ${JSON.stringify(repair)}`);
+      assert.deepEqual(idsOf(server.app.store), []);
+      assert.deepEqual([trialOf(server.app, "590"), trialOf(server.app, "519")], [0, 0], "ters kaydı kaldırılan asıl fiş etkin kalmadı (mizan)");
+      assert.match(server.app.store.get("SELECT summary FROM integrity_log WHERE action = 'repair' AND tables = 'ledger_vouchers'")?.summary || "", /artakalan 2 fiş kaldırıldı/);
+      assert.deepEqual(keptLogs(server.app.store), [], "kuşkulu fiş yok");
+      await scanOk(server);
+    });
+  });
+
+  for (const [mode, resetAt] of [["geri", "2027-01-10T06:00:00.000Z"], ["ileri", "2027-01-10T08:00:00.000Z"]]) {
+    it(`ikinci şirket (dar kontrol k5-002-v249), saat ${mode}: 002'nin fişleri (biri ters kayıtlı) 10:00'da, eski sürüm 002'yi ${mode === "geri" ? "09:00'da (saat geri)" : "11:00'de"} sıfırlar → 002'de 3 fiş kaldırılır; 001'in izli fişi kalır`, async () => {
+      const dirs = fresh();
+      const setup = await withServer(dirs, "2027-01-10T10:00:00+03:00", async server => {
+        const admin = await loginAdmin(server);
+        const second = await company(server, `Koruma Tur 2 ${mode}`);
+        await must("002 aç", admin.get(`/api/workspace/ledger?hofCompany=${encodeURIComponent(second.id)}`));
+        const child = server.app.openCompany(second.id);
+        const V = child.ledger.vouchers;
+        const a = V.post(USER, { type: "closing", date: "2027-01-06", requestKey: `koruma-t2-002-a-${mode}`, lines: pair(70000, "602", "690") });
+        V.reverse(USER, a.id, { requestKey: `koruma-t2-002-ar-${mode}` });
+        V.post(USER, { type: "opening-match", date: "2027-01-07", requestKey: `koruma-t2-002-b-${mode}`, lines: pair(12300) });
+        const own = server.app.ledger.vouchers.post(USER, { type: "opening-match", date: "2027-01-07", requestKey: `koruma-t2-001-${mode}`, lines: pair(500) });
+        return { second, own, file001: server.app.config.dbPath, file002: child.config.dbPath };
+      });
+      assert.notEqual(setup.file002, setup.file001);
+      legacyReset(setup.file002, setup.second.id, resetAt);
+      writeReset(setup.file001, setup.second.id, resetAt);
+      await withServer(dirs, "2027-01-10T12:00:00+03:00", async server => {
+        const admin = await loginAdmin(server);
+        await must("002 aç", admin.get(`/api/workspace/ledger?hofCompany=${encodeURIComponent(setup.second.id)}`));
+        const child = server.app.openCompany(setup.second.id);
+        const repair = child.context.voucherRepair;
+        assert.deepEqual([repair?.removed, repair?.kept], [3, []], `002, saat ${mode}: eski sürüm sıfırlamasından artakalan 3 fiş kaldırılır (taban 3): ${JSON.stringify(repair)}`);
+        assert.equal(countOf(child.store, "ledger_vouchers"), 0);
+        assert.deepEqual(child.ledger.build().filter(item => /voucher/.test(item.id)).map(item => item.id), [], "002'nin yevmiyesinde fiş maddesi yok");
+        assert.equal(server.app.context.voucherRepair, null, "001'in fişi izli: onarıma girmez");
+        assert.deepEqual(idsOf(server.app.store), [setup.own.id]);
+        await scanOk(server, `?hofCompany=${encodeURIComponent(setup.second.id)}`);
+      });
+    });
+  }
+
+  it("yazım sırası: eski sürüm sıfırlamasından SONRA yazılan fiş (saat geri: duvar saati sıfırlamadan önce) izini başka nedenle yitirirse KALIR; Mutabakat Günlüğü'nde görünür kayıt, açılışta yinelenmez", async () => {
+    const dirs = fresh();
+    const { file, v0 } = await withServer(dirs, "2027-01-10T08:00:00+03:00", async server => ({
+      file: server.app.config.dbPath,
+      v0: server.app.ledger.vouchers.post(USER, { type: "opening-match", date: "2027-01-07", requestKey: "koruma-t2-sonra-0", lines: pair(1100) }),
+    }));
+    legacyReset(file, "sirket-001", "2027-01-10T06:00:00.000Z");
+    const { v1, v2 } = await withServer(dirs, "2027-01-10T08:30:00+03:00", async server => {
+      const repair = server.app.context.voucherRepair;
+      assert.deepEqual([repair?.removed, repair?.ids], [1, [v0.id]], `sıfırlamadan önce yazılan fiş kaldırıldı: ${JSON.stringify(repair)}`);
+      const V = server.app.ledger.vouchers;
+      const v1 = V.post(USER, { type: "opening-match", date: "2027-01-08", requestKey: "koruma-t2-sonra-1", lines: pair(2200) });
+      server.clock.set("2027-01-10T08:40:00+03:00");
+      return { v1, v2: V.post(USER, { type: "opening-match", date: "2027-01-08", requestKey: "koruma-t2-sonra-2", lines: pair(3300) }) };
+    });
+    assert.ok(v2.createdAt < "2027-01-10T06:00:00.000Z", `ön koşul: fişin duvar saati sıfırlamadan önce (saat geri): ${v2.createdAt}`);
+    dropTrace(file, v2.id);
+    await withServer(dirs, NOW, async server => {
+      const repair = server.app.context.voucherRepair;
+      assert.deepEqual([repair?.removed, repair?.kept], [0, [v2.id]], `izi duran fişten sonra yazılan izsiz fiş kalmalı (yazım sırası, saat değil): ${JSON.stringify(repair)}`);
+      assert.deepEqual(repair.doubts, { [v2.id]: "after-traced" });
+      assert.deepEqual(idsOf(server.app.store), [v1.id, v2.id]);
+      const logs = keptLogs(server.app.store);
+      assert.equal(logs.length, 1, `kuşkulu fişin görünür kaydı: ${JSON.stringify(logs)}`);
+      assert.match(logs[0].summary, /izi olmayan 1 fiş kaldırılmadı/);
+      assert.match(logs[0].summary, /izi duran bir fişten sonra yazılmış/);
+      assert.ok(logs[0].summary.includes(v2.noText), `kayıt fiş numarasını taşır (${v2.noText}): ${logs[0].summary}`);
+      assert.deepEqual(JSON.parse(logs[0].detail).kept, [v2.id]);
+      const scan = await scanOk(server);
+      assert.ok(scan.log.some(row => row.summary === logs[0].summary), "kayıt Mutabakat Testi'nin günlüğünde görünür (sessiz değil)");
+    });
+    await withServer(dirs, NOW, async server => {
+      assert.deepEqual(server.app.context.voucherRepair?.kept, [v2.id]);
+      assert.equal(keptLogs(server.app.store).length, 1, "aynı kuşkulu fiş için kayıt her açılışta yinelenmez");
+    });
+  });
+
+  it("yazım sırası: işlem geçmişini SİLMEYEN sıfırlama izi (izi duran fişten sonra eklenmiş; duvar saati fişten sonra) izsiz fişi kaldırmaz; görünür kayıt", async () => {
+    const dirs = fresh();
+    const { file, a, b } = await withServer(dirs, NOW, async server => {
+      const V = server.app.ledger.vouchers;
+      return {
+        file: server.app.config.dbPath,
+        a: V.post(USER, { type: "opening-match", date: "2027-01-07", requestKey: "koruma-t2-silmeyen-a", lines: pair(1700) }),
+        b: V.post(USER, { type: "opening-match", date: "2027-01-07", requestKey: "koruma-t2-silmeyen-b", lines: pair(1800) }),
+      };
+    });
+    dropTrace(file, a.id);
+    writeReset(file, "sirket-001", "2027-01-10T08:00:00.000Z");
+    await withServer(dirs, NOW, async server => {
+      const repair = server.app.context.voucherRepair;
+      assert.deepEqual([repair?.removed, repair?.kept], [0, [a.id]], `işlem geçmişini silmeyen sıfırlama izi fiş kaldırmamalı: ${JSON.stringify(repair)}`);
+      assert.deepEqual(repair.doubts, { [a.id]: "reset-without-wipe" });
+      assert.deepEqual(idsOf(server.app.store), [a.id, b.id]);
+      assert.match(keptLogs(server.app.store)[0]?.summary || "", /sıfırlama izi işlem geçmişini silmemiş/);
+      await scanOk(server);
+    });
+  });
+
+  it("çift kuralı İKİ YÖNLÜ — asıl fiş kalıyorsa ters kaydı da kalır (yazım sırası bozuk dosya: ters kayıt izli fişten ÖNCE, asıl fiş SONRA görünüyor) → ikisi de kalır, asıl fiş tek başına etkin olmaz", async () => {
+    const dirs = fresh();
+    const { file } = await withServer(dirs, NOW, async server => ({
+      file: server.app.config.dbPath,
+      x: server.app.ledger.vouchers.post(USER, { type: "opening-match", date: "2027-01-05", requestKey: "koruma-t2-cift-x", lines: pair(100) }),
+    }));
+    legacyReset(file, "sirket-001", "2027-01-10T07:30:00.000Z");
+    const t = await withServer(dirs, NOW, async server => {
+      assert.equal(server.app.context.voucherRepair?.removed, 1, JSON.stringify(server.app.context.voucherRepair));
+      return server.app.ledger.vouchers.post(USER, { type: "closing", date: "2027-01-06", requestKey: "koruma-t2-cift-t", lines: pair(900, "602", "690") });
+    });
+    rawVoucher(file, { rowid: 1000, id: "lv-koruma-asil", no: 900, date: "2027-01-08", amount: 7700, at: "2027-01-10T08:00:00.000Z" });
+    rawVoucher(file, { rowid: -1, id: "lv-koruma-ters", no: 901, date: "2027-01-08", amount: 7700, reversalOf: "lv-koruma-asil", at: "2027-01-10T06:00:00.000Z" });
+    await withServer(dirs, NOW, async server => {
+      const repair = server.app.context.voucherRepair;
+      assert.deepEqual([repair?.removed, repair?.kept], [0, ["lv-koruma-ters", "lv-koruma-asil"]], `asıl fiş kalıyorsa ters kaydı da kalır (kuşkuda ikisi de): ${JSON.stringify(repair)}`);
+      assert.deepEqual(repair.doubts, { "lv-koruma-ters": "pair", "lv-koruma-asil": "after-traced" });
+      assert.deepEqual(idsOf(server.app.store), ["lv-koruma-ters", t.id, "lv-koruma-asil"]);
+      assert.equal(trialOf(server.app, "590"), 0, "asıl fiş tek başına etkin değil (590 net 0)");
+      assert.match(keptLogs(server.app.store)[0]?.summary || "", /çift birlikte kalır/);
+      await scanOk(server);
+    });
+  });
+
+  it("çift kuralı (baş mimar kararı 5) — ters kaydı kalıyorsa asıl fiş de kalır: sıfırlamadan önce yazılmış asıl fişin izli ters kaydı sıfırlamadan sonra yazılmış (ör. onarım o açılışta çalışmadı) → asıl fiş kaldırılmaz", async () => {
+    const dirs = fresh();
+    const { file, o } = await withServer(dirs, NOW, async server => ({
+      file: server.app.config.dbPath,
+      o: server.app.ledger.vouchers.post(USER, { type: "opening-match", date: "2027-01-06", requestKey: "koruma-t2-k5-asil", lines: pair(4400) }),
+    }));
+    legacyReset(file, "sirket-001", "2027-01-10T07:30:00.000Z");
+    rawVoucher(file, { id: "lv-koruma-ters-sonra", no: 50, date: "2027-01-06", amount: 4400, reversalOf: o.id, at: "2027-01-10T07:40:00.000Z", trace: true });
+    await withServer(dirs, NOW, async server => {
+      const repair = server.app.context.voucherRepair;
+      assert.deepEqual([repair?.removed, repair?.kept], [0, [o.id]], `ters kaydı kalan asıl fiş kaldırılmaz: ${JSON.stringify(repair)}`);
+      assert.deepEqual(idsOf(server.app.store), [o.id, "lv-koruma-ters-sonra"]);
+      assert.equal(trialOf(server.app, "590"), 0);
+      await scanOk(server);
+      // Tur 2: neden ve görünür kayıt.
+      assert.deepEqual(repair.doubts, { [o.id]: "pair" });
+      assert.match(keptLogs(server.app.store)[0]?.summary || "", /çift birlikte kalır/);
+    });
+  });
+
+  it("geri yükleme + saat geri: eski sürüm sıfırlaması (duvar saati fişlerden önce) → açılışta 3 fiş kaldırılır; sıfırlama öncesi yedek geri yüklenince fişler izleriyle döner, onarım yok", async () => {
+    const dirs = fresh();
+    const { file, backup, ids } = await withServer(dirs, NOW, async server => {
+      const V = server.app.ledger.vouchers;
+      const v1 = V.post(USER, { type: "opening-match", date: "2027-01-06", requestKey: "koruma-t2-gy-1", lines: pair(1500) });
+      const r1 = V.reverse(USER, v1.id, { requestKey: "koruma-t2-gy-1r" });
+      const v2 = V.post(USER, { type: "opening-match", date: "2027-01-07", requestKey: "koruma-t2-gy-2", lines: pair(2500) });
+      const admin = await loginAdmin(server);
+      const name = (await must("001 yedek", admin.post("/api/admin/backups", { scope: "one", companyId: "sirket-001" }))).backups[0].name;
+      return { file: server.app.config.dbPath, backup: name, ids: [v1.id, r1.id, v2.id] };
+    });
+    legacyReset(file, "sirket-001", "2027-01-10T06:00:00.000Z");
+    await withServer(dirs, "2027-01-10T12:00:00+03:00", async server => {
+      const repair = server.app.context.voucherRepair;
+      assert.deepEqual([repair?.removed, repair?.ids, repair?.kept], [3, ids, []], `saat geri alınmış olsa da artakalan 3 fiş kaldırılır: ${JSON.stringify(repair)}`);
+      await must("001 geri yükle", (await loginAdmin(server)).post("/api/admin/backups/restore", { name: backup, company: "sirket-001", confirm: "001", password: ADMIN_PASSWORD }));
+    });
+    await withServer(dirs, "2027-01-10T12:30:00+03:00", async server => {
+      assert.equal(server.app.context.voucherRepair, null, "yedekteki fişler izli: onarım yok");
+      assert.deepEqual(idsOf(server.app.store), ids);
+      assert.equal(trialOf(server.app, "590"), 2500);
+      await scanOk(server);
     });
   });
 });
