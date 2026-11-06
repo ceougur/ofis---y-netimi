@@ -1,0 +1,258 @@
+TAP version 13
+# Subtest: Ç2 tur 3 — YAN BULGU 2: banka açılış onarımının kaydı kesilmiş JSON olmaz (2.0.26'ya dönüp Tüm Hareketleri Sil → 600 iptal başlığı)
+    # Subtest: 600 tahsilat → GERÇEK 2.0.26 'Tüm Hareketleri Sil' → güncel açılış: 600 başlık iptal; kayıt geçerli JSON (ilk 50 + counts); Mutabakat Testi 200; ikinci açılışta kayıt yinelenmez
+    ok 1 - 600 tahsilat → GERÇEK 2.0.26 'Tüm Hareketleri Sil' → güncel açılış: 600 başlık iptal; kayıt geçerli JSON (ilk 50 + counts); Mutabakat Testi 200; ikinci açılışta kayıt yinelenmez
+      ---
+      duration_ms: 20728.350528
+      type: 'test'
+      ...
+    1..1
+ok 1 - Ç2 tur 3 — YAN BULGU 2: banka açılış onarımının kaydı kesilmiş JSON olmaz (2.0.26'ya dönüp Tüm Hareketleri Sil → 600 iptal başlığı)
+  ---
+  duration_ms: 20729.562006
+  type: 'suite'
+  ...
+# Subtest: store.run / store.tx — derinlik > 0 iken bağlantıda işlem yoksa yazım yok, açık hata (2.5.0 BS-6)
+    # Subtest: (k1) iç işlemde SQLite işlemi kendiliğinden geri alır, çağıran yakalayıp sürer → sonraki yazımlar ERR_TX_LOST, yarım yazım yok; Linux'ta gerçek G/Ç hatası
+    ok 1 - (k1) iç işlemde SQLite işlemi kendiliğinden geri alır, çağıran yakalayıp sürer → sonraki yazımlar ERR_TX_LOST, yarım yazım yok; Linux'ta gerçek G/Ç hatası
+      ---
+      duration_ms: 56.901332
+      type: 'test'
+      ...
+    # Subtest: (k2) işlem kayboldu ama sonra yazım yok → en dış COMMIT asıl nedeni söyler ("cannot commit - no transaction is active" değil); iç düzeyde RELEASE de
+    ok 2 - (k2) işlem kayboldu ama sonra yazım yok → en dış COMMIT asıl nedeni söyler ("cannot commit - no transaction is active" değil); iç düzeyde RELEASE de
+      ---
+      duration_ms: 18.747983
+      type: 'test'
+      ...
+    # Subtest: (k3) işlem canlıyken seçici yakalama bugünkü gibi: iç işlem geri alınır, dış işlem yazmayı sürdürür ve kesinleşir; işlem dışı yazım etkilenmez
+    ok 3 - (k3) işlem canlıyken seçici yakalama bugünkü gibi: iç işlem geri alınır, dış işlem yazmayı sürdürür ve kesinleşir; işlem dışı yazım etkilenmez
+      ---
+      duration_ms: 8.49365
+      type: 'test'
+      ...
+    1..3
+ok 2 - store.run / store.tx — derinlik > 0 iken bağlantıda işlem yoksa yazım yok, açık hata (2.5.0 BS-6)
+  ---
+  duration_ms: 85.364199
+  type: 'suite'
+  ...
+# Subtest: Ç2 tur 3 — boundedDetail: sınırlı, her zaman geçerli JSON (lib/log-detail.mjs)
+    # Subtest: listeler ilk 50 öğe; kökün sayıları ve alanları aynen; çıktı her uzunlukta geçerli JSON
+    ok 1 - listeler ilk 50 öğe; kökün sayıları ve alanları aynen; çıktı her uzunlukta geçerli JSON
+      ---
+      duration_ms: 4.346257
+      type: 'test'
+      ...
+    # Subtest: eşlem nesnesi (çok anahtarlı) liste gibi ilk 50 anahtar; az anahtarlı kayıt nesnesi kısaltılmaz
+    ok 2 - eşlem nesnesi (çok anahtarlı) liste gibi ilk 50 anahtar; az anahtarlı kayıt nesnesi kısaltılmaz
+      ---
+      duration_ms: 0.901665
+      type: 'test'
+      ...
+    # Subtest: sınır içinde metin aşılırsa liste ÖNCE kısaltılır (öğeler bozulmaz), kayıt nesnesinin alanları ve kökün 20 alanı korunur; asla ortadan kesmez
+    ok 3 - sınır içinde metin aşılırsa liste ÖNCE kısaltılır (öğeler bozulmaz), kayıt nesnesinin alanları ve kökün 20 alanı korunur; asla ortadan kesmez
+      ---
+      duration_ms: 1.687999
+      type: 'test'
+      ...
+    # Subtest: maxList Infinity: sığan değer JSON.stringify ile BAYT BAYT aynı (integrity.mjs eşdeğerliği; rastgele yapılar, uzun metin, 1.000 öğeli liste); aşan değer geçerli ve sınır içinde
+    ok 4 - maxList Infinity: sığan değer JSON.stringify ile BAYT BAYT aynı (integrity.mjs eşdeğerliği; rastgele yapılar, uzun metin, 1.000 öğeli liste); aşan değer geçerli ve sınır içinde
+      ---
+      duration_ms: 680.772546
+      type: 'test'
+      ...
+    # Subtest: ders 47: uzun listenin kesilen öğeleri hiç okunmaz (öğe başına stringify döngüsü yok)
+    ok 5 - ders 47: uzun listenin kesilen öğeleri hiç okunmaz (öğe başına stringify döngüsü yok)
+      ---
+      duration_ms: 11.066365
+      type: 'test'
+      ...
+    1..5
+ok 3 - Ç2 tur 3 — boundedDetail: sınırlı, her zaman geçerli JSON (lib/log-detail.mjs)
+  ---
+  duration_ms: 701.031761
+  type: 'suite'
+  ...
+# Subtest: Ç2 tur 3 — YAN BULGU 1: onarımın kaydı kesilmiş JSON olmaz (475+ fiş; kaldırılan + kaldırılmayan toplamı)
+    # Subtest: 600 fiş eski sürüm sıfırlamasından artakalır → hepsi kaldırılır; kayıt geçerli JSON (ilk 50 kimlik, removedCount 600); Mutabakat Testi 200 ve günlüğünde; Mutabakat Günlüğü raporu 200
+    ok 1 - 600 fiş eski sürüm sıfırlamasından artakalır → hepsi kaldırılır; kayıt geçerli JSON (ilk 50 kimlik, removedCount 600); Mutabakat Testi 200 ve günlüğünde; Mutabakat Günlüğü raporu 200
+      ---
+      duration_ms: 675.31071
+      type: 'test'
+      ...
+    # Subtest: kaldırılan 300 + kaldırılmayan 300 (izi duran fişten sonra yazılmış): iki kayıt da geçerli JSON — ilk 50 kimlik + removedCount 300 / keptCount 300; kuşku kaydı yinelenmez
+    ok 2 - kaldırılan 300 + kaldırılmayan 300 (izi duran fişten sonra yazılmış): iki kayıt da geçerli JSON — ilk 50 kimlik + removedCount 300 / keptCount 300; kuşku kaydı yinelenmez
+      ---
+      duration_ms: 627.078033
+      type: 'test'
+      ...
+    # Subtest: 50'den fazla kuşkulu fiş (sıfırlama izi yok, 60 fiş): kuşku kaydında ilk 50 kimlik + 50 neden + keptCount 60 — biçim tur 2'yle BAYT BAYT aynı (D5, D6)
+    ok 3 - 50'den fazla kuşkulu fiş (sıfırlama izi yok, 60 fiş): kuşku kaydında ilk 50 kimlik + 50 neden + keptCount 60 — biçim tur 2'yle BAYT BAYT aynı (D5, D6)
+      ---
+      duration_ms: 419.233681
+      type: 'test'
+      ...
+    1..3
+ok 4 - Ç2 tur 3 — YAN BULGU 1: onarımın kaydı kesilmiş JSON olmaz (475+ fiş; kaldırılan + kaldırılmayan toplamı)
+  ---
+  duration_ms: 1734.355883
+  type: 'suite'
+  ...
+# Subtest: Ç2 tur 3 — K5 test boşlukları (dar kontrol D1, D2, D3): onarım yazım sırasının uçlarını doğru okur
+    # Subtest: D1: işlem geçmişini SİLMEYEN İKİNCİ sıfırlama izi — EN SON iz sayılır: eski sürüm sıfırlaması (1. iz) → izli fiş → silmeyen 2. iz ⇒ izsiz fiş KALIR (reset-without-wipe)
+    ok 1 - D1: işlem geçmişini SİLMEYEN İKİNCİ sıfırlama izi — EN SON iz sayılır: eski sürüm sıfırlaması (1. iz) → izli fiş → silmeyen 2. iz ⇒ izsiz fiş KALIR (reset-without-wipe)
+      ---
+      duration_ms: 474.638455
+      type: 'test'
+      ...
+    # Subtest: D2: iki izli fiş ARASINA düşen izsiz fiş — İZLİ İLK fiş sayılır: sıfırlamadan önceki fiş kaldırılır, aradaki izsiz fiş KALIR (after-traced)
+    ok 2 - D2: iki izli fiş ARASINA düşen izsiz fiş — İZLİ İLK fiş sayılır: sıfırlamadan önceki fiş kaldırılır, aradaki izsiz fiş KALIR (after-traced)
+      ---
+      duration_ms: 463.744021
+      type: 'test'
+      ...
+    # Subtest: D3: sıfırlama izinden ÖNCE ve SONRA iz — İLK iz sayılır: sıfırlama izi bir izden sonra yazılmışsa işlem geçmişini silmemiştir ⇒ izsiz fiş KALIR (son iz sıfırlamadan sonra olsa da)
+    ok 3 - D3: sıfırlama izinden ÖNCE ve SONRA iz — İLK iz sayılır: sıfırlama izi bir izden sonra yazılmışsa işlem geçmişini silmemiştir ⇒ izsiz fiş KALIR (son iz sıfırlamadan sonra olsa da)
+      ---
+      duration_ms: 403.875618
+      type: 'test'
+      ...
+    1..3
+ok 5 - Ç2 tur 3 — K5 test boşlukları (dar kontrol D1, D2, D3): onarım yazım sırasının uçlarını doğru okur
+  ---
+  duration_ms: 1353.403712
+  type: 'suite'
+  ...
+# Subtest: Ç2 tur 3 — integrity.mjs: açılışta bulunan sapmanın kaydı ('baseline') sınırlı, sığan kayıtta eskisiyle BAYT BAYT aynı; her açılışta yinelenmez
+    # Subtest: 20.000'i aşan taban (5 × 6.000 karakterlik bozuk tarih): kayıt geçerli JSON ve sınır içinde, her sapma alanlarıyla; Mutabakat Testi 200; ikinci açılışta yeni satır yok
+    ok 1 - 20.000'i aşan taban (5 × 6.000 karakterlik bozuk tarih): kayıt geçerli JSON ve sınır içinde, her sapma alanlarıyla; Mutabakat Testi 200; ikinci açılışta yeni satır yok
+      ---
+      duration_ms: 743.597079
+      type: 'test'
+      ...
+    # Subtest: sığan taban (5 × 100 karakter): kayıt JSON.stringify(sapmalar) ile BAYT BAYT aynı (eski formül `.slice(0, 20000)` ile de); ikinci açılışta yeni satır yok
+    ok 2 - sığan taban (5 × 100 karakter): kayıt JSON.stringify(sapmalar) ile BAYT BAYT aynı (eski formül `.slice(0, 20000)` ile de); ikinci açılışta yeni satır yok
+      ---
+      duration_ms: 611.988326
+      type: 'test'
+      ...
+    # Subtest: G6 v2.4.9 GERÇEK kodu: v2.4.9'un yazdığı sığan taban kaydı güncel sürümde aynen kalır (yeni satır yok); kesik (20.000'i aşan) kayıttan sonra bir kez geçerli yeni kayıt, sonra yinelenmez
+    ok 3 - G6 v2.4.9 GERÇEK kodu: v2.4.9'un yazdığı sığan taban kaydı güncel sürümde aynen kalır (yeni satır yok); kesik (20.000'i aşan) kayıttan sonra bir kez geçerli yeni kayıt, sonra yinelenmez
+      ---
+      duration_ms: 1680.588185
+      type: 'test'
+      ...
+    1..3
+ok 6 - Ç2 tur 3 — integrity.mjs: açılışta bulunan sapmanın kaydı ('baseline') sınırlı, sığan kayıtta eskisiyle BAYT BAYT aynı; her açılışta yinelenmez
+  ---
+  duration_ms: 3050.947611
+  type: 'suite'
+  ...
+# Subtest: BS-7 şema sürüm kapısı
+    # Subtest: göç: yeni şemalı dosyada hiçbir göç adımı koşmaz (ensureBankSchema dahil), dosya aynen kalır
+    ok 1 - göç: yeni şemalı dosyada hiçbir göç adımı koşmaz (ensureBankSchema dahil), dosya aynen kalır
+      ---
+      duration_ms: 190.967559
+      type: 'test'
+      ...
+    # Subtest: 002 yeni şemalı, 001 normal: 002 yalnız görüntülenir, 001 çalışır; 002 dosyası bayt bayt aynı mantıksal içerikte kalır
+    ok 2 - 002 yeni şemalı, 001 normal: 002 yalnız görüntülenir, 001 çalışır; 002 dosyası bayt bayt aynı mantıksal içerikte kalır
+      ---
+      duration_ms: 1617.764788
+      type: 'test'
+      ...
+    # Subtest: 001 yeni şemalı, 002 normal: giriş ve okuma çalışır, 001'e veri yazılmaz; 002'ye geçilip çalışılır
+    ok 3 - 001 yeni şemalı, 002 normal: giriş ve okuma çalışır, 001'e veri yazılmaz; 002'ye geçilip çalışılır
+      ---
+      duration_ms: 1432.767702
+      type: 'test'
+      ...
+    # Subtest: geri yükleme + kapı: yeni şemalı 002 eski yedeğine döner (kapı kalkar); 001 eski yedeği yeniden açılışta uygulanır; daha yeni yedek reddedilir
+    ok 4 - geri yükleme + kapı: yeni şemalı 002 eski yedeğine döner (kapı kalkar); 001 eski yedeği yeniden açılışta uygulanır; daha yeni yedek reddedilir
+      ---
+      duration_ms: 1431.055787
+      type: 'test'
+      ...
+    1..4
+ok 7 - BS-7 şema sürüm kapısı
+  ---
+  duration_ms: 4674.854661
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 WE — Elle Bağla webhook bilgileri: program gösterir, kurulum başına, gizli
+    # Subtest: WE-1 yönetici: Callback URL = ofisin adresi + /wa/kanca/<43>, Verify token 43 karakter; yeniden sorulunca ve öbür şirkette AYNI (kurulum başına); WABA'nın bildirim adresinden farklı
+    ok 1 - WE-1 yönetici: Callback URL = ofisin adresi + /wa/kanca/<43>, Verify token 43 karakter; yeniden sorulunca ve öbür şirkette AYNI (kurulum başına); WABA'nın bildirim adresinden farklı
+      ---
+      duration_ms: 712.678469
+      type: 'test'
+      ...
+    # Subtest: WE-2 Meta doğrulaması: GET doğru belirteç → 200 challenge, yanlış / eksik → 403; POST 200 ama İŞLENMEZ (iş Meta Kabul Etti kalır, defterde teslim ve bildirim yolu işareti yok); WABA adresi aynen çalışır
+    ok 2 - WE-2 Meta doğrulaması: GET doğru belirteç → 200 challenge, yanlış / eksik → 403; POST 200 ama İŞLENMEZ (iş Meta Kabul Etti kalır, defterde teslim ve bildirim yolu işareti yok); WABA adresi aynen çalışır
+      ---
+      duration_ms: 477.371623
+      type: 'test'
+      ...
+    # Subtest: WE-3 yetkisiz kullanıcı (Personel) göremez (403); belirteç ve gizli yol yöneticinin öbür yanıtlarında da yok (bağlantı, gönderim durumu, onay, sayaç, işlem geçmişi)
+    ok 3 - WE-3 yetkisiz kullanıcı (Personel) göremez (403); belirteç ve gizli yol yöneticinin öbür yanıtlarında da yok (bağlantı, gönderim durumu, onay, sayaç, işlem geçmişi)
+      ---
+      duration_ms: 514.263545
+      type: 'test'
+      ...
+    # Subtest: WE-4 sızıntı yok: günlük, veri klasöründeki BÜTÜN dosyalar (şirket dosyası, makine defteri, WAL) ve yedek belirteci / gizli yolu AÇIK hâlde taşımaz; ayar yazılamazsa 503 + Türkçe ileti (değer yok)
+    ok 4 - WE-4 sızıntı yok: günlük, veri klasöründeki BÜTÜN dosyalar (şirket dosyası, makine defteri, WAL) ve yedek belirteci / gizli yolu AÇIK hâlde taşımaz; ayar yazılamazsa 503 + Türkçe ileti (değer yok)
+      ---
+      duration_ms: 376.547762
+      type: 'test'
+      ...
+    # Subtest: WE-5 kalıcılık: program yeniden açılınca ve Şirket Verisini Sıfırla'dan sonra AYNI değerler; secret.key değişince (veri başka bilgisayarda) yeni değerler, eski yol kapanır
+    ok 5 - WE-5 kalıcılık: program yeniden açılınca ve Şirket Verisini Sıfırla'dan sonra AYNI değerler; secret.key değişince (veri başka bilgisayarda) yeni değerler, eski yol kapanır
+      ---
+      duration_ms: 659.875667
+      type: 'test'
+      ...
+    # Subtest: WE-6 ofisin uzaktan adresi hazır değil: ready false, adres boş, neden Türkçe cümle; belirteç yine gösterilir (aynı)
+    ok 6 - WE-6 ofisin uzaktan adresi hazır değil: ready false, adres boş, neden Türkçe cümle; belirteç yine gösterilir (aynı)
+      ---
+      duration_ms: 357.506224
+      type: 'test'
+      ...
+    # Subtest: WE-7 001 yeni şemalı, çift YOK: 001'den ve 002'den sorulunca 200 + ready false + Türkçe neden, değer boş; 001'e webhook ayarı yazılmaz; kapı kalkınca çift üretilir (çıkmaz yok)
+    ok 7 - WE-7 001 yeni şemalı, çift YOK: 001'den ve 002'den sorulunca 200 + ready false + Türkçe neden, değer boş; 001'e webhook ayarı yazılmaz; kapı kalkınca çift üretilir (çıkmaz yok)
+      ---
+      duration_ms: 800.469572
+      type: 'test'
+      ...
+    # Subtest: WE-8 001 yeni şemalı, çift VAR: aynı değerler gösterilir (001 ve 002), Meta doğrulaması geçer, ayar satırı aynen; secret.key değişince yeni çift ÜRETİLMEZ (ready false + neden, satır aynen)
+    ok 8 - WE-8 001 yeni şemalı, çift VAR: aynı değerler gösterilir (001 ve 002), Meta doğrulaması geçer, ayar satırı aynen; secret.key değişince yeni çift ÜRETİLMEZ (ready false + neden, satır aynen)
+      ---
+      duration_ms: 811.946976
+      type: 'test'
+      ...
+    # Subtest: WE-9 001 yedekten geri yüklenir (yedek çift gösterilmeden ÖNCE alınmış): çift AYNI, Meta'ya girilmiş eski çiftle doğrulama 200
+    ok 9 - WE-9 001 yedekten geri yüklenir (yedek çift gösterilmeden ÖNCE alınmış): çift AYNI, Meta'ya girilmiş eski çiftle doğrulama 200
+      ---
+      duration_ms: 666.335036
+      type: 'test'
+      ...
+    # Subtest: WE-9 001 yedekten geri yüklenir (yedek çift gösterilmeden SONRA alınmış): çift AYNI, Meta'ya girilmiş eski çiftle doğrulama 200
+    ok 10 - WE-9 001 yedekten geri yüklenir (yedek çift gösterilmeden SONRA alınmış): çift AYNI, Meta'ya girilmiş eski çiftle doğrulama 200
+      ---
+      duration_ms: 630.75329
+      type: 'test'
+      ...
+    1..10
+ok 8 - 2.5.0 WE — Elle Bağla webhook bilgileri: program gösterir, kurulum başına, gizli
+  ---
+  duration_ms: 6010.098219
+  type: 'suite'
+  ...
+1..8
+# tests 32
+# suites 8
+# pass 32
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 40466.687534

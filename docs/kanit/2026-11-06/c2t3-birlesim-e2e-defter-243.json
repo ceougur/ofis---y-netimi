@@ -1,0 +1,32 @@
+{
+  "ad": "c2t3-birlesim-e2e-defter-243",
+  "komut": "npm run test:senaryo-defter-243",
+  "commit": "6fb882ca3a33fe0f489597a1d66f3acd73c30d8a",
+  "dal": "c2t3-birlesim",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T10:23:40.342Z",
+  "sure_sn": 25.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 24,
+    "gecen": 24,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../bekleyen-kanit/2026-11-06/2026-11-06/c2t3-birlesim-e2e-defter-243.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-birlesim-ag",
+  "ham_cikti_sha256": "c1a3bb71d1b15cbf9cbec433d3c32dd3a08701b9a6d96ad7594d20dd793760c5",
+  "ham_cikti_bayt": 2871
+}
