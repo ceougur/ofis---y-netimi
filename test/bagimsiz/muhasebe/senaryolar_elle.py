@@ -3520,3 +3520,193 @@ S("s105-s81-olagan-normal-cari-siniri", ["S81", "S56", "S79", "S57", "T-13", "K3
     "ak2": [],
 }}, aciklama="S81: olağan tahsilatın düzeltmesi kaydı şüpheli kaydı açık bir carinin 120'sine (Normal Cari ya da fatura bağı) alıp 120 bakiyesini aşarsa "
              "SUPHELI_NORMAL_ASIM, tamamı; bir kuruş altı ve eşitlik kabul; fatura bağında 128'den düşen kısım sayılmaz; bağsız kaydın carisi ve aynı carinin seçimi de.")
+
+# ------------------------------------------------------------------------------------------------ S106: S83 (alış faturası formundaki peşin ödemenin carisi)
+S("s106-s83-alis-formundaki-pesin-odeme-cari", ["S83", "S80", "F-12", "F-14", "G-7", "T-05", "S26", "S40", "S20", "T12", "B11", "X10", "Ö1", "Ö2"], [
+    o("kasa_acilis", "2026-01-08", id="KA", tutar=1000),
+    o("alis_faturasi", "2026-01-06", id="A2", cari="T1", fatura_turu="gider", gider_turu="genel", M=800, K=0, vade="2026-01-31"),
+    o("odeme", "2026-01-06", id="O2", cari="T1", yol="nakit", tutar=200, fatura="A2", fatura_odemesi=True, yedekten=True),   # geri yüklenmiş, açılıştan önce
+    o("alis_faturasi", "2026-01-09", id="A1", cari="T1", fatura_turu="gider", gider_turu="genel", M=1000, K=0, vade="2026-01-31"),
+    o("odeme", "2026-01-09", id="O1", cari="T1", yol="nakit", tutar=300, fatura="A1", fatura_odemesi=True),   # alış faturası formundaki peşin (olağan)
+    o("alis_faturasi", "2026-01-10", id="A3", cari="T2", fatura_turu="gider", gider_turu="genel", M=500, K=0, vade="2026-01-20"),
+    MZ("mz0", "2026-01-01", "2026-01-31"), R("ak1a", "acik_kalemler", cari="T1", tarih="2026-02-01"),
+    o("duzenle", kaynak="O1", degisiklik={"cari": "T2"}),                              # S83: FATURA_DUZENLENMELI (tek başına)
+    o("duzenle", kaynak="O1", degisiklik={"cari": "T2", "tutar": 250}),                # düzeltmenin TAMAMI red (tutar da yazılmaz)
+    o("duzenle", kaynak="O1", degisiklik={"cari": "T2", "fatura": "A3"}),              # S79 formdaki peşin ödemeye uygulanmaz: red
+    o("duzenle", kaynak="O1", degisiklik={"cari": "T2", "fatura": None}),              # bağ kaldırılsa da red
+    o("duzenle", kaynak="O1", degisiklik={"cari": "T2", "tarih": "2026-01-12"}),       # tarih de yazılmaz
+    o("duzenle", kaynak="O2", degisiklik={"cari": "T2"}),                              # geri yüklenmiş, açılış öncesi (S40 yolu): red
+    o("duzenle", kaynak="O2", degisiklik={"cari": "T2", "aciklama": "Yanlış cari"}),   # red (açıklama da yazılmaz)
+    o("duzenle", kaynak="O2", degisiklik={"cari": "T2", "tarih": "2026-01-07"}),       # tarih açılıştan önceki başka güne: T12 önce → KASA_ACILIS_ONCE
+    o("duzenle", kaynak="O2", degisiklik={"cari": "T2", "tarih": "2026-01-09"}),       # açılıştan sonraya alınsa da cari: red
+    MZ("mz1", "2026-01-01", "2026-01-31"), R("ak2b", "acik_kalemler", cari="T2", tarih="2026-02-01"),
+    o("duzenle", kaynak="O1", degisiklik={"tutar": 350, "aciklama": "Peşin düzeltme"}),   # carisi aynı: bugünkü kural (G-7) → kabul
+    o("duzenle", kaynak="O2", degisiklik={"tutar": 250}),                              # S26 → kabul (uyarı sürer)
+    o("duzenle", kaynak="O1", degisiklik={"cari": "T1", "aciklama": "Aynı cari"}),     # aynı cari: cari düzeltmesi değil → kabul
+    MZ("mz2", "2026-01-01", "2026-01-31"),
+    R("ak1", "acik_kalemler", cari="T1", tarih="2026-02-01"), R("ak2", "acik_kalemler", cari="T2", tarih="2026-02-01"),
+    R("mu", "mutabakat_uyarilari", tarih="2026-01-31"),
+], {"A": {
+    # ÖNCE: 320|T1 = −(800 + 1000) + 200 + 300 = −1300; 320|T2 −500; Kasa 1000 − 200 − 300 = 500. A2 800 − 200 = 600, A1 1000 − 300 = 700 açık (ikisi vade 31.01)
+    "mz0/satirlar/320|T1/bakiye": -1300, "mz0/satirlar/320|T2/bakiye": -500, "mz0/satirlar/100/bakiye": 500,
+    "ak1a": [{"k": "fatura:A2", "tur": "fatura", "kalan": -600, "vade": "2026-01-31", "tarih": "2026-01-06"},
+             {"k": "fatura:A1", "tur": "fatura", "kalan": -700, "vade": "2026-01-31", "tarih": "2026-01-09"}],
+    "redler": ["FATURA_DUZENLENMELI"] * 7 + ["KASA_ACILIS_ONCE", "FATURA_DUZENLENMELI"],
+    # redlerden sonra hiçbir şey değişmedi; A3 (T2) açık 500
+    "mz1/satirlar/320|T1/bakiye": -1300, "mz1/satirlar/320|T2/bakiye": -500, "mz1/satirlar/100/bakiye": 500,
+    "ak2b": [{"k": "fatura:A3", "tur": "fatura", "kalan": -500, "vade": "2026-01-20", "tarih": "2026-01-10"}],
+    # kabul: O1 350 (A1 650 açık), O2 250 (A2 550 açık); 320|T1 = −1800 + 600 = −1200; Kasa 1000 − 250 − 350 = 400; T2 değişmez
+    "mz2/satirlar/320|T1/bakiye": -1200, "mz2/satirlar/320|T2/bakiye": -500, "mz2/satirlar/100/bakiye": 400,
+    "ak1": [{"k": "fatura:A2", "tur": "fatura", "kalan": -550, "vade": "2026-01-31", "tarih": "2026-01-06"},
+            {"k": "fatura:A1", "tur": "fatura", "kalan": -650, "vade": "2026-01-31", "tarih": "2026-01-09"}],
+    "ak2": [{"k": "fatura:A3", "tur": "fatura", "kalan": -500, "vade": "2026-01-20", "tarih": "2026-01-10"}],
+    "mu": [{"kod": "KASA_ACILIS_ONCESI_HAREKET", "kaynak": "O2", "tarih": "2026-01-06", "acilis": "2026-01-08"}],
+}}, aciklama="S83: alış faturası formunda yapılan peşin ödemenin carisi düzeltmeyle değişmez — S80 ile aynı FATURA_DUZENLENMELI, düzeltmenin tamamı (olağan ve "
+             "geri yüklenmiş açılış öncesi kayıtta; S79 uygulanmaz; T12 önce); carisi aynı peşin ödemenin tutarı / açıklaması bugünkü kuralla kabul.")
+
+# ------------------------------------------------------------------------------------------------ S107: S84 (formdaki peşinin bağı, cari aynı)
+S("s107-s84-formdaki-pesin-bagi", ["S84", "S80", "S83", "F-12", "F-14", "G-7", "T-01", "T-05", "H-04", "M1e", "S26", "S44", "S20", "T12", "B11", "Ö4", "Ö5"], [
+    o("kasa_acilis", "2026-01-08", id="KA", tutar=1000),
+    o("satis_faturasi", "2026-01-05", id="F1", cari="C1", M=1000, K=0, vade="2026-01-31"),
+    o("tahsilat", "2026-01-05", id="P1", cari="C1", yol="havale", banka="B1", tutar=300, fatura="F1", fatura_odemesi=True),   # formdaki peşin (olağan)
+    o("satis_faturasi", "2026-01-06", id="F2", cari="C1", M=800, K=0, vade="2026-01-31"),
+    o("tahsilat", "2026-01-06", id="P2", cari="C1", yol="nakit", tutar=200, fatura="F2", fatura_odemesi=True, yedekten=True),  # geri yüklenmiş, açılıştan önce
+    o("satis_faturasi", "2026-01-07", id="F4", cari="C1", M=400, K=0, vade="2026-01-15"),
+    o("taksit_karti", "2026-01-07", id="TK1", cari="C1", kaynak="yeni_borc", toplam=100, taksitler=[{"vade": "2026-02-10", "tutar": 100}]),
+    o("alis_faturasi", "2026-01-09", id="A1", cari="T1", fatura_turu="gider", gider_turu="genel", M=1000, K=0, vade="2026-01-31"),
+    o("odeme", "2026-01-09", id="O1", cari="T1", yol="nakit", tutar=300, fatura="A1", fatura_odemesi=True),   # alış faturası formundaki peşin (olağan)
+    o("alis_faturasi", "2026-01-10", id="A4", cari="T1", fatura_turu="gider", gider_turu="genel", M=600, K=0, vade="2026-01-20"),
+    MZ("mz0", "2026-01-01", "2026-01-31"), R("g1a", "gecikmis", cari="C1", tarih="2026-02-01"),
+    o("duzenle", kaynak="P1", degisiklik={"fatura": "F4"}),                            # S84: başka faturaya → FATURA_DUZENLENMELI
+    o("duzenle", kaynak="P1", degisiklik={"fatura": None}),                            # bağ kaldırılır → red
+    o("duzenle", kaynak="P1", degisiklik={"fatura": None, "taksit_karti": "TK1"}),     # taksit kartına çevrilir → red
+    o("duzenle", kaynak="P1", degisiklik={"fatura": "F4", "tutar": 250, "aciklama": "x"}),   # düzeltmenin TAMAMI red
+    o("duzenle", kaynak="P1", degisiklik={"fatura": "F4", "cari": "C1"}),              # cari aynı yazılmış: yine S84 → red
+    o("duzenle", kaynak="P1", degisiklik={"fatura": None, "tarih": "2026-01-09"}),     # tarih de yazılmaz
+    o("duzenle", kaynak="P2", degisiklik={"fatura": "F4"}),                            # geri yüklenmiş, açılış öncesi (S44 yolu): red (V3 (e) susması kalktı)
+    o("duzenle", kaynak="P2", degisiklik={"fatura": None}),                            # red
+    o("duzenle", kaynak="P2", degisiklik={"fatura": "F4", "tarih": "2026-01-07"}),     # tarih açılıştan önceki başka güne: T12 önce → KASA_ACILIS_ONCE
+    o("duzenle", kaynak="P2", degisiklik={"fatura": None, "tarih": "2026-01-09"}),     # açılıştan sonraya alınsa da bağ: red
+    o("duzenle", kaynak="O1", degisiklik={"fatura": "A4"}),                            # ödeme yönü (alış formundaki peşin, Ö4): red
+    o("duzenle", kaynak="O1", degisiklik={"fatura": None}),                            # red
+    MZ("mz1", "2026-01-01", "2026-01-31"), R("g1", "gecikmis", cari="C1", tarih="2026-02-01"),
+    R("ak1", "acik_kalemler", cari="C1", tarih="2026-02-01"), R("akt1", "acik_kalemler", cari="T1", tarih="2026-02-01"),
+    o("duzenle", kaynak="P1", degisiklik={"fatura": "F1", "aciklama": "Aynı fatura"}),   # aynı bağ yeniden yazıldı: değişiklik değil → kabul
+    o("duzenle", kaynak="P2", degisiklik={"fatura": "F2", "tutar": 250}),              # aynı bağ + S26 tutarı → kabul (uyarı sürer)
+    o("duzenle", kaynak="O1", degisiklik={"fatura": "A1", "tutar": 350}),              # aynı bağ + tutar (G-7) → kabul
+    MZ("mz2", "2026-01-01", "2026-01-31"), R("g2", "gecikmis", cari="C1", tarih="2026-02-01"),
+    R("ak2", "acik_kalemler", cari="C1", tarih="2026-02-01"), R("akt2", "acik_kalemler", cari="T1", tarih="2026-02-01"),
+    R("mu", "mutabakat_uyarilari", tarih="2026-01-31"),
+], {"A": {
+    # ÖNCE: 120|C1 = 1000 + 800 + 400 + 100 − 300 − 200 = 1800; Kasa 1000 + 200 − 300 = 900; 102.B1 300; 320|T1 = −1600 + 300 = −1300
+    "mz0/satirlar/120|C1/bakiye": 1800, "mz0/satirlar/100/bakiye": 900, "mz0/satirlar/102.B1/bakiye": 300, "mz0/satirlar/320|T1/bakiye": -1300,
+    # 01.02'de gecikmiş (vade < 01.02): F1 700 + F2 600 + F4 400 = 1700 (TK1 taksidi 10.02)
+    "g1a/gecikmis": 1700,
+    "redler": ["FATURA_DUZENLENMELI"] * 8 + ["KASA_ACILIS_ONCE"] + ["FATURA_DUZENLENMELI"] * 3,
+    # redlerden sonra hiçbir şey değişmedi (bağlar aynı: F4 400, F1 700, F2 600, TK1 100 açık; A4 600, A1 700 açık)
+    "mz1/satirlar/120|C1/bakiye": 1800, "mz1/satirlar/100/bakiye": 900, "mz1/satirlar/102.B1/bakiye": 300, "mz1/satirlar/320|T1/bakiye": -1300,
+    "g1/gecikmis": 1700,
+    "ak1": [{"k": "fatura:F4", "tur": "fatura", "kalan": 400, "vade": "2026-01-15", "tarih": "2026-01-07"},
+            {"k": "fatura:F1", "tur": "fatura", "kalan": 700, "vade": "2026-01-31", "tarih": "2026-01-05"},
+            {"k": "fatura:F2", "tur": "fatura", "kalan": 600, "vade": "2026-01-31", "tarih": "2026-01-06"},
+            {"k": "kart:TK1", "tur": "taksit", "kalan": 100, "vade": "2026-02-10", "tarih": "2026-01-07"}],
+    "akt1": [{"k": "fatura:A4", "tur": "fatura", "kalan": -600, "vade": "2026-01-20", "tarih": "2026-01-10"},
+             {"k": "fatura:A1", "tur": "fatura", "kalan": -700, "vade": "2026-01-31", "tarih": "2026-01-09"}],
+    # kabul: P2 250 (F2 550 açık), O1 350 (A1 650 açık); 120|C1 1750; Kasa 1000 + 250 − 350 = 900; 320|T1 = −1600 + 350 = −1250
+    "mz2/satirlar/120|C1/bakiye": 1750, "mz2/satirlar/100/bakiye": 900, "mz2/satirlar/102.B1/bakiye": 300, "mz2/satirlar/320|T1/bakiye": -1250,
+    "g2/gecikmis": 1650,
+    "ak2": [{"k": "fatura:F4", "tur": "fatura", "kalan": 400, "vade": "2026-01-15", "tarih": "2026-01-07"},
+            {"k": "fatura:F1", "tur": "fatura", "kalan": 700, "vade": "2026-01-31", "tarih": "2026-01-05"},
+            {"k": "fatura:F2", "tur": "fatura", "kalan": 550, "vade": "2026-01-31", "tarih": "2026-01-06"},
+            {"k": "kart:TK1", "tur": "taksit", "kalan": 100, "vade": "2026-02-10", "tarih": "2026-01-07"}],
+    "akt2": [{"k": "fatura:A4", "tur": "fatura", "kalan": -600, "vade": "2026-01-20", "tarih": "2026-01-10"},
+             {"k": "fatura:A1", "tur": "fatura", "kalan": -650, "vade": "2026-01-31", "tarih": "2026-01-09"}],
+    "mu": [{"kod": "KASA_ACILIS_ONCESI_HAREKET", "kaynak": "P2", "tarih": "2026-01-06", "acilis": "2026-01-08"}],
+}}, aciklama="S84: formdaki peşinin carisi aynı kalıp bağı (başka fatura, kaldırma, taksit kartı) değiştirilmek istenirse FATURA_DUZENLENMELI, düzeltmenin tamamı — "
+             "olağan ve geri yüklenmiş açılış öncesi kayıtta, tahsilat ve alış formundaki ödemede; T12 önce; aynı bağın yeniden yazılması değişiklik değil.")
+
+# ------------------------------------------------------------------------------------------------ S108: S85 (Normal Cari kaydın yalnız tutar / tarih düzeltmesi, olağan)
+S("s108-s85-normal-cari-tutar-tarih", ["S85", "S56", "S81", "K10-3", "T-13", "K3", "J-01", "H-03", "H-04", "M1e", "§3.11b/2", "G-7", "Ö7", "Ö9"], [
+    o("satis_faturasi", "2026-01-02", id="F6", cari="C2", M=1000, K=0, vade="2026-01-31"),
+    o("supheliye_al", "2026-01-03", id="SA", cari="C2", tutar=900),                    # C2: 128 900, 120 100
+    o("satis_faturasi", "2026-01-04", id="F7", cari="C3", M=1000, K=0, vade="2026-01-31"),
+    o("supheliye_al", "2026-01-05", id="SB", cari="C3", tutar=800),                    # C3: 128 800, 120 200
+    o("satis_faturasi", "2026-01-05", id="F1", cari="C1", M=500, K=0, vade="2026-01-31"),
+    o("tahsilat", "2026-01-07", id="PC1", cari="C1", yol="havale", banka="B1", tutar=100, normal_cari=True),   # C1'de şüpheli kaydı yok
+    o("tahsilat", "2026-01-10", id="PN", cari="C2", yol="havale", banka="B1", tutar=50, normal_cari=True),     # C2: 120 50
+    o("tahsilat", "2026-01-11", id="PK", cari="C2", yol="havale", banka="B1", tutar=300),                      # Normal Cari değil: K3 → 128'den (600)
+    o("taksit_karti", "2026-01-12", id="TK3", cari="C3", kaynak="yeni_borc", toplam=300, taksitler=[{"vade": "2026-02-12", "tutar": 300}]),   # C3: 120 500
+    o("tahsilat", "2026-01-16", id="PT", cari="C3", yol="havale", banka="B1", tutar=300, normal_cari=True),    # 300 ≤ 500 → C3: 120 200
+    o("tahsilat", "2026-01-18", id="PKT", cari="C3", yol="havale", banka="B1", tutar=250, taksit_karti="TK3"), # kart (12.01) SB'den sonra → 120; C3: 120 −50
+    MZ("mz0", "2026-01-01", "2026-01-31"),
+    o("duzenle", kaynak="PN", degisiklik={"tutar": 101}),                              # 101 > 100 (PN hariç 10.01'de 120|C2): bir kuruş üstü → red
+    o("duzenle", kaynak="PN", degisiklik={"tutar": 99, "aciklama": "Düzeltme"}),       # bir kuruş altı (açıklama birlikte) → kabul (120|C2 1)
+    o("duzenle", kaynak="PN", degisiklik={"tutar": 100}),                              # eşit → kabul (120|C2 0)
+    o("duzenle", kaynak="PK", degisiklik={"tutar": 400}),                              # Normal Cari değil: S85 dışı → kabul (K3: 128 500)
+    o("duzenle", kaynak="PC1", degisiklik={"tutar": 500}),                             # şüpheli kaydı olmayan cari → kabul (120|C1 0)
+    MZ("mz1", "2026-01-01", "2026-01-31"),
+    o("duzenle", kaynak="PT", degisiklik={"tarih": "2026-01-10"}),                     # geri: 10.01'de 120|C3 (PT hariç) 200 < 300 → red
+    o("duzenle", kaynak="PT", degisiklik={"tarih": "2026-01-19"}),                     # ileri: 19.01'de 120|C3 (PT hariç) 500 − 250 = 250 < 300 → red
+    MZ("mz2", "2026-01-01", "2026-01-31"),
+    o("duzenle", kaynak="PT", degisiklik={"tarih": "2026-01-13"}),                     # 13.01'de 500 → kabul
+    o("duzenle", kaynak="PT", degisiklik={"tarih": "2026-01-19", "tutar": 250}),       # yeni günde 250 = 250 → kabul (sınır yeni günde, K10-3)
+    MZ("mz3", "2026-01-01", "2026-01-31"),
+    R("g2", "gecikmis", cari="C2", tarih="2026-02-01"), R("g3", "gecikmis", cari="C3", tarih="2026-02-15"),
+    R("ak2", "acik_kalemler", cari="C2", tarih="2026-02-01"), R("ak3", "acik_kalemler", cari="C3", tarih="2026-02-15"),
+], {"A": {
+    # ÖNCE: 120|C2 = 1000 − 900 − 50 = 50, 128|C2 = 900 − 300 = 600; 120|C3 = 1000 − 800 + 300 − 300 − 250 = −50, 128|C3 800; 120|C1 400; 102.B1 = 100 + 50 + 300 + 300 + 250
+    "mz0/satirlar/120|C2/bakiye": 50, "mz0/satirlar/128|C2/bakiye": 600, "mz0/satirlar/120|C3/bakiye": -50, "mz0/satirlar/128|C3/bakiye": 800,
+    "mz0/satirlar/120|C1/bakiye": 400, "mz0/satirlar/102.B1/bakiye": 1000,
+    "redler": ["SUPHELI_NORMAL_ASIM"] * 3,
+    # SONRA (C2 / C1): PN 100 → 120|C2 0; PK 400 → 128|C2 500; PC1 500 → 120|C1 0; 102.B1 = 500 + 100 + 400 + 300 + 250 = 1550
+    "mz1/satirlar/120|C2/bakiye": 0, "mz1/satirlar/128|C2/bakiye": 500, "mz1/satirlar/120|C1/bakiye": 0, "mz1/satirlar/102.B1/bakiye": 1550,
+    # iki tarih reddinden sonra C3 değişmedi
+    "mz2/satirlar/120|C3/bakiye": -50, "mz2/satirlar/128|C3/bakiye": 800, "mz2/satirlar/102.B1/bakiye": 1550,
+    # SONRA (C3): PT 250 (19.01): 120|C3 = 1000 − 800 + 300 − 250 − 250 = 0; 102.B1 = 500 + 100 + 400 + 250 + 250 = 1500
+    "mz3/satirlar/120|C3/bakiye": 0, "mz3/satirlar/128|C3/bakiye": 800, "mz3/satirlar/120|C2/bakiye": 0, "mz3/satirlar/128|C2/bakiye": 500,
+    "mz3/satirlar/102.B1/bakiye": 1500,
+    # F6'nın 120'deki 100'ü PN ile kapandı; F7'nin 120'deki 200'ü ve TK3 taksidi (PKT 250 + PT 50) kapandı
+    "g2/gecikmis": 0, "g2/supheli": 500, "g3/gecikmis": 0, "g3/supheli": 800,
+    "ak2": [], "ak3": [],
+}}, aciklama="S85: şüpheli kaydı açık caride Normal Cari Hesaba İşle'li kaydın yalnız tutarı / tarihi düzeltilip 120 bakiyesi aşılırsa SUPHELI_NORMAL_ASIM (S56 ölçüsü; "
+             "bir kuruş üstü red, altı ve eşitlik kabul); tarih değişirse sınır yeni günde (geri ve ileri red, aradaki gün kabul); Normal Cari olmayan ve şüphelisiz carinin kaydı kabul.")
+
+# ------------------------------------------------------------------------------------------------ S109: S85 (geri yüklenmiş, açılış öncesi Kasa kaydı — S26 tutarı, S40 yalnız cari)
+S("s109-s85-geri-yuklenmis-cari-tutar", ["S85", "S56", "S40", "S26", "S20", "T-13", "K3", "J-01", "§3.11b/2", "G-7", "Ö7", "Ö8", "Ö9"], [
+    o("kasa_acilis", "2026-01-20", id="KA", tutar=1000),
+    o("satis_faturasi", "2026-01-02", id="F6", cari="C2", M=1000, K=0, vade="2026-01-31"),
+    o("supheliye_al", "2026-01-03", id="SA", cari="C2", tutar=900),                    # C2: 128 900, 120 100
+    o("satis_faturasi", "2026-01-04", id="F1", cari="C1", M=500, K=0, vade="2026-01-31"),
+    o("satis_faturasi", "2026-01-05", id="F7", cari="C3", M=1000, K=0, vade="2026-01-31"),
+    o("supheliye_al", "2026-01-06", id="SB", cari="C3", tutar=920),                    # C3: 128 920, 120 80
+    o("tahsilat", "2026-01-08", id="PH", cari="C2", yol="nakit", tutar=20, normal_cari=True, yedekten=True),    # geri yüklenmiş, açılıştan önce
+    o("tahsilat", "2026-01-10", id="PG1", cari="C1", yol="nakit", tutar=90, normal_cari=True, yedekten=True),
+    o("tahsilat", "2026-01-12", id="PG2", cari="C1", yol="nakit", tutar=80, normal_cari=True, yedekten=True),
+    MZ("mz0", "2026-01-01", "2026-01-31"),
+    o("duzenle", kaynak="PH", degisiklik={"tutar": 101}),                              # S26 tutarı: 101 > 100 (PH hariç 08.01'de 120|C2) → red
+    o("duzenle", kaynak="PH", degisiklik={"tutar": 101, "aciklama": "x"}),             # düzeltmenin TAMAMI red
+    o("duzenle", kaynak="PG1", degisiklik={"cari": "C3"}),                             # S40 yalnız cari: 90 > 80 (10.01'de 120|C3) → red
+    o("duzenle", kaynak="PG1", degisiklik={"cari": "C3", "aciklama": "Yanlış cari"}),  # red (açıklama da yazılmaz)
+    MZ("mz1", "2026-01-01", "2026-01-31"),
+    o("duzenle", kaynak="PH", degisiklik={"tutar": 99}),                               # bir kuruş altı → kabul (120|C2 1)
+    o("duzenle", kaynak="PH", degisiklik={"tutar": 100}),                              # eşit → kabul (120|C2 0)
+    o("duzenle", kaynak="PG2", degisiklik={"cari": "C3"}),                             # 80 = 80 → kabul (120|C3 0)
+    o("duzenle", kaynak="PG1", degisiklik={"tutar": 95}),                              # C1'de şüpheli kaydı yok → kabul
+    MZ("mz2", "2026-01-01", "2026-01-31"),
+    R("g1", "gecikmis", cari="C1", tarih="2026-02-01"), R("g2", "gecikmis", cari="C2", tarih="2026-02-01"), R("g3", "gecikmis", cari="C3", tarih="2026-02-01"),
+    R("mu", "mutabakat_uyarilari", tarih="2026-01-31"),
+], {"A": {
+    # ÖNCE: 120|C2 = 1000 − 900 − 20 = 80; 120|C3 = 1000 − 920 = 80; 120|C1 = 500 − 90 − 80 = 330; Kasa 1000 + 20 + 90 + 80 = 1190
+    "mz0/satirlar/120|C2/bakiye": 80, "mz0/satirlar/128|C2/bakiye": 900, "mz0/satirlar/120|C3/bakiye": 80, "mz0/satirlar/128|C3/bakiye": 920,
+    "mz0/satirlar/120|C1/bakiye": 330, "mz0/satirlar/100/bakiye": 1190,
+    "redler": ["SUPHELI_NORMAL_ASIM"] * 4,
+    "mz1/satirlar/120|C2/bakiye": 80, "mz1/satirlar/120|C3/bakiye": 80, "mz1/satirlar/120|C1/bakiye": 330, "mz1/satirlar/100/bakiye": 1190,
+    # SONRA: PH 100 → 120|C2 0; PG2 C3'e → 120|C3 0; PG1 95 → 120|C1 = 500 − 95 = 405; Kasa 1000 + 100 + 95 + 80 = 1275; 128'ler değişmez
+    "mz2/satirlar/120|C2/bakiye": 0, "mz2/satirlar/128|C2/bakiye": 900, "mz2/satirlar/120|C3/bakiye": 0, "mz2/satirlar/128|C3/bakiye": 920,
+    "mz2/satirlar/120|C1/bakiye": 405, "mz2/satirlar/100/bakiye": 1275,
+    "g1/gecikmis": 405, "g2/gecikmis": 0, "g2/supheli": 900, "g3/gecikmis": 0, "g3/supheli": 920,
+    "mu": [{"kod": "KASA_ACILIS_ONCESI_HAREKET", "kaynak": "PH", "tarih": "2026-01-08", "acilis": "2026-01-20"},
+           {"kod": "KASA_ACILIS_ONCESI_HAREKET", "kaynak": "PG1", "tarih": "2026-01-10", "acilis": "2026-01-20"},
+           {"kod": "KASA_ACILIS_ONCESI_HAREKET", "kaynak": "PG2", "tarih": "2026-01-12", "acilis": "2026-01-20"}],
+}}, aciklama="S85: geri yüklenmiş, Kasa açılışından önce tarihli Normal Cari kaydında S26 tutarı ya da S40 yalnız cari düzeltmesi şüpheli kaydı açık carinin 120 "
+             "bakiyesini aşarsa SUPHELI_NORMAL_ASIM, tamamı; bir kuruş altı ve eşitlik kabul; Mutabakat Testi uyarısı sürer.")
