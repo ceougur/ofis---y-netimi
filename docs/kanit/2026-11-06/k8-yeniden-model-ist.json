@@ -1,0 +1,32 @@
+{
+  "ad": "k8-yeniden-model-ist",
+  "komut": "python3 -I test/bagimsiz/muhasebe/test_model.py",
+  "commit": "5502508a521e18d170a59eb5ca1ea30c75ed1434",
+  "dal": "k8-birlesim",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T13:38:35.341Z",
+  "sure_sn": 29.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 170,
+    "gecen": 170,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../k8-kanit/2026-11-06/k8-yeniden-model-ist.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k8-birlesim-ag",
+  "ham_cikti_sha256": "21025a6be82df87055543072c16acec138d26bb03034a222d18a5457c36bd051",
+  "ham_cikti_bayt": 323
+}
