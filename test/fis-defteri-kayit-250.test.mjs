@@ -79,39 +79,71 @@ describe("Ç2 tur 3 — boundedDetail: sınırlı, her zaman geçerli JSON (lib/
   });
 
   it("maxList Infinity: sığan değer JSON.stringify ile BAYT BAYT aynı (integrity.mjs eşdeğerliği; rastgele yapılar, uzun metin, 1.000 öğeli liste); aşan değer geçerli ve sınır içinde", () => {
+    // mulberry32 (32 bit tamsayı işlemleri; tohumlu, tekrarlanabilir). Önceki LCG `seed * 1103515245` 2^53'ü aşıp kesinlik yitiriyordu: dizi bozuluyor, uzun metin hemen hiç
+    // üretilmiyordu — "sığan değerde metin kısaltılır" mutantı (48) bu yüzden kaçtı.
     let seed = 20261106;
-    const rand = () => ((seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648);
+    const rand = () => {
+      seed = (seed + 0x6d2b79f5) | 0;
+      let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
     const pick = list => list[Math.floor(rand() * list.length)];
-    // Düğüm bütçesi (örnek başına en çok ~3.000 düğüm): derin ve geniş yapılar bellek taşırmasın.
+    // Düğüm bütçesi (örnek başına en çok ~3.000 düğüm): derin ve geniş yapılar bellek taşırmasın. Kapsama: örnekte 1.024'ten uzun metin / 50'den uzun liste var mı.
     let budget = 0;
+    let longText = false;
+    let longList = false;
     const make = depth => {
       budget -= 1;
       const leaf = depth > 3 || budget <= 0;
       const kind = leaf ? pick(["s", "n", "b", "z"]) : pick(["s", "n", "b", "z", "a", "o", "a", "o"]);
-      if (kind === "s") return pick(["", "ç ğ ı ö ş ü İ", "a\"b\\c\n", "x".repeat(Math.floor(rand() * 2000)), "😀"]);
+      if (kind === "s") {
+        const text = pick(["", "ç ğ ı ö ş ü İ", "a\"b\\c\n", "x".repeat(Math.floor(rand() * 2000)), "😀"]);
+        if (text.length > 1024) longText = true;
+        return text;
+      }
       if (kind === "n") return pick([0, -1.5, 1e21, Number.NaN, 12.345]);
       if (kind === "b") return rand() > 0.5;
       if (kind === "z") return pick([null, undefined]);
-      if (kind === "a") return Array.from({ length: Math.min(pick([0, 1, 5, 60, 1000]), Math.max(0, budget)) }, () => make(depth + 1));
+      if (kind === "a") {
+        const length = Math.min(pick([0, 1, 5, 60, 1000]), Math.max(0, budget));
+        if (length > 50) longList = true;
+        return Array.from({ length }, () => make(depth + 1));
+      }
       return Object.fromEntries(Array.from({ length: Math.min(pick([0, 3, 17, 70]), Math.max(0, budget)) }, (_, i) => [`k${i}`, make(depth + 1)]));
     };
-    let same = 0;
-    let bounded = 0;
-    for (let i = 0; i < 400; i += 1) {
+    const seen = { same: 0, bounded: 0, sameLongText: 0, sameLongList: 0 };
+    // Rastgele örneklere ek, sığan dalı kesin deneyen elle kurulmuş değerler: uzun liste (60–193 öğe), uzun metin (1.100–1.860 karakter, iç içe), çok anahtarlı (70) nesne.
+    const crafted = [
+      ...Array.from({ length: 20 }, (_, i) => () => {
+        longList = true;
+        return { ids: Array.from({ length: 60 + i * 7 }, (_, k) => `lv-${k}`), removedCount: 60 + i * 7 };
+      }),
+      ...Array.from({ length: 20 }, (_, i) => () => {
+        longText = true;
+        return { note: "x".repeat(1100 + i * 40), list: [i, { reason: "y".repeat(1500) }], n: i };
+      }),
+      ...Array.from({ length: 10 }, (_, i) => () => ({ doubts: Object.fromEntries(Array.from({ length: 70 }, (_, k) => [`lv-${i}-${k}`, "no-reset"])) })),
+    ];
+    for (let i = 0; i < 400 + crafted.length; i += 1) {
       budget = 3000;
-      const value = make(0);
+      longText = false;
+      longList = false;
+      const value = i < 400 ? make(0) : crafted[i - 400]();
       const plain = JSON.stringify(value) ?? "null";
       const text = boundedDetail(value, { maxList: Infinity, maxChars: 20_000 });
       if (plain.length <= 20_000) {
         assert.equal(text, plain, `örnek ${i}: sığan değer birebir olmalı`);
-        same += 1;
+        seen.same += 1;
+        if (longText) seen.sameLongText += 1;
+        if (longList) seen.sameLongList += 1;
       } else {
         assert.ok(text.length <= 20_000, `örnek ${i}: ${text.length}`);
         parsed(`örnek ${i}`, text);
-        bounded += 1;
+        seen.bounded += 1;
       }
     }
-    assert.ok(same > 50 && bounded > 20, `iki dal da denendi: birebir ${same}, kısaltılan ${bounded}`);
+    assert.ok(seen.same > 50 && seen.bounded > 20 && seen.sameLongText >= 10 && seen.sameLongList >= 10, `kapsama (birebir dalında uzun metin ve uzun liste de denendi): ${JSON.stringify(seen)}`);
   });
 
   it("ders 47: uzun listenin kesilen öğeleri hiç okunmaz (öğe başına stringify döngüsü yok)", () => {
@@ -378,6 +410,7 @@ describe("Ç2 tur 3 — integrity.mjs: açılışta bulunan sapmanın kaydı ('b
         assert.ok(rows[0].length <= 20_000, `${rows[0].length}`);
         const stored = parsed(`açılış ${turn}: taban kaydı`, rows[0]);
         assert.deepEqual(stored.map(item => [item.code, item.count]), failures.map(item => [item.code, item.count]), "her sapma kodu ve sayısıyla");
+        assert.deepEqual(stored.map(item => Object.keys(item)), JSON.parse(JSON.stringify(failures)).map(item => Object.keys(item)), "kayıt nesnelerinin alanları kısaltılmaz (örnek listesi dahil)");
         const sample = stored.find(item => item.code === "dates:format:account_entries")?.sample || [];
         assert.ok(sample.length >= 1 && sample.length < 5 && sample.every(item => item.length > 6000), `örnek listesi kısaldı, öğeler bozulmadı: ${sample.map(item => item.length)}`);
         const scan = await scanRaw(server);
