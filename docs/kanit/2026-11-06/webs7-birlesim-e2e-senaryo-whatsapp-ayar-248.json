@@ -1,0 +1,32 @@
+{
+  "ad": "webs7-birlesim-e2e-senaryo-whatsapp-ayar-248",
+  "komut": "npm run test:senaryo-whatsapp-ayar-248",
+  "commit": "51a462e17f2c6ff49863b49144b9bf2e2d0df6ed",
+  "dal": "webs7-birlesim",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T10:01:43.141Z",
+  "sure_sn": 63.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 153,
+    "gecen": 153,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../bekleyen-kanit/2026-11-06/2026-11-06/webs7-birlesim-e2e-senaryo-whatsapp-ayar-248.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/webs7-birlesim-ag",
+  "ham_cikti_sha256": "8819335a5f5ffd28d98a3d3aedc57ce93b090d0498f998161d5c9881c1cb158e",
+  "ham_cikti_bayt": 13867
+}

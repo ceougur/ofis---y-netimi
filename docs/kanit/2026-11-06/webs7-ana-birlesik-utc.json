@@ -1,0 +1,32 @@
+{
+  "ad": "webs7-ana-birlesik-utc",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-we-webhook-bilgisi-250.test.mjs test/sema-kapisi-bs7.test.mjs test/acilis-onarimi-hiz-250.test.mjs test/db-tx-kayip-250.test.mjs",
+  "commit": "86eed897ea954ea42d9d8de419f1882977da440e",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T10:03:13.456Z",
+  "sure_sn": 14.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 20,
+    "gecen": 20,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bekleyen-kanit/2026-11-06/2026-11-06/webs7-ana-birlesik-utc.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "59e3be84c4d3bb3e6c27f22ae889f3593c52952a70adbe625c03aa5899e88d94",
+  "ham_cikti_bayt": 9588
+}
