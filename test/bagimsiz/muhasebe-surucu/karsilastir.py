@@ -742,7 +742,7 @@ def tyk_karsilastir(o, r, an, rapor_adi):
         kim = kalem_kimligi(kah.get("detay")) | set(SENARYO_KIMLIK)
         out = [tyk_satir("gecikmis", o["cari"], p, kah["gecikmis"], bugun_gecikmis(kartlar, o["cari"], t), kim, rapor_adi)]
         if kah.get("kahin_susuyor"):
-            out.append({"alan": "kahin_susuyor", "anahtar": o["cari"], "kahin": kah["kahin_susuyor"], "sinif": "U", "kimlik": ["SORULDU-S11"], "aciklama": "kâhin susuyor (S8 ↔ kilit, kullanıcıya soruldu 22:57)"})
+            out.append({"alan": "kahin_susuyor", "anahtar": o["cari"], "kahin": kah["kahin_susuyor"], "sinif": "U", "kimlik": ["Ç5-S11"], "aciklama": "kâhin susuyor (S8 ↔ kilit) — KULLANICI KARARI 06.11 03:35 S11 = A (kilitli dönemdeki kapanış değişmez, karşılıksız ayrı borç, vadesi karşılıksız günü); program Ç5'te, kâhin bakımı 3'te kuracak"})
         return out
     if rr == "gecikmis_tumu":
         cariler = r.get("cariler") or {}
@@ -863,6 +863,27 @@ son_ufuk = P.get("saat")
 kb, _ = mk.bakiye(ufuk=son_ufuk)
 bb, et = mb.bakiye(ufuk=son_ufuk, ceviri=True)
 son = karsilastir_gorunum(prog_gorunum(P.get("son")) or {}, gorunumler(kb), gorunumler(bb), et, "son", acik_toplam=aciklanan_toplam(aciklanan))
+
+# KULLANICI KARARI 06.11 03:35 S12 = A ("Kasa açılışından ÖNCE tarihli yeni Kasa hareketi bankadaki gibi reddedilir"; program Ç5'te, kâhin bakımı 3'te).
+# Bugün ikisi de kabul eder (kâhin değişmezi kasa_acilis_ilk böyle hareketi HATA sayar) → programa uygulanmış her böyle hareket kimlikli U satırı.
+KASA_YOLU = {"kasa_giris", "kasa_cikis", "bankadan_kasaya", "kasadan_bankaya", "kayit_tahsilati"}
+kasa_acilis_gunu = None
+for x in P["olaylar"]:
+    if x.get("tur") == "kasa_acilis" and x.get("durum") == "yapildi":
+        kasa_acilis_gunu = kasa_acilis_gunu or olaylar[int(x["no"]) - 1]["tarih"]
+if kasa_acilis_gunu:
+    for x in P["olaylar"]:
+        if x.get("tur") == "gun" or x.get("durum") != "yapildi":
+            continue
+        o = olaylar[int(x["no"]) - 1]
+        nakit = o["tur"] in KASA_YOLU or (o["tur"] in ("tahsilat", "odeme", "vergi_odeme") and o.get("yol") == "nakit") or (o["tur"].startswith("stok_") and o.get("karsi") == "nakit")
+        if nakit and o.get("tarih") and o["tarih"] < kasa_acilis_gunu:
+            son.append({"alan": "kasa_acilistan_once", "anahtar": str(x["no"]), "program": "kabul", "kahin": "kabul (değişmez kasa_acilis_ilk hata)", "bugun": "kabul", "sinif": "U", "kimlik": ["Ç5-S12"],
+                        "aciklama": f"{o['tur']} {o['tarih']} < Kasa açılışı {kasa_acilis_gunu}: S12 = A ile reddedilecek (banka 409 bank-before-opening gibi)"})
+kahin_deg = (B["dallar"].get("A", {}).get("degismezler") or {})
+for dosya_adi, dd in (kahin_deg.items() if isinstance(kahin_deg, dict) else []):
+  if isinstance(dd, dict) and dd.get("kasa_acilis_ilk"):
+    son.append({"alan": "kahin_degismez", "anahtar": f"{dosya_adi}:kasa_acilis_ilk", "kahin": dd["kasa_acilis_ilk"], "sinif": "U", "kimlik": ["Ç5-S12"], "aciklama": "kâhin değişmezi Kasa açılışından önce hareket buldu (S12 = A, kâhin bakımı 3)"})
 degismez = {
     "program_her_adimda_dengeli": all(x.get("dengeli", True) for x in P["olaylar"] if "dengeli" in x),
     "program_her_adimda_mutabakat": all(x.get("mutabakat", True) for x in P["olaylar"] if "mutabakat" in x),
