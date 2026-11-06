@@ -701,7 +701,17 @@
           if (!data.firstDue) throw new Error("Eşit bölmek için ilk vadeyi seçin.");
           Object.assign(payload, { mode: "auto", count: data.count, firstDue: data.firstDue });
         }
-        const result = plan ? await HOF.api(`/api/workspace/plans/${encodeURIComponent(plan.id)}`, { method: "PUT", body: payload }) : await HOF.api("/api/workspace/plans", { method: "POST", body: payload });
+        // 2.5.0 BİRLEŞİK TUR 3 (3a; iyimser kilit, sunucu lib/row-version.mjs): düzenlemede formun AÇILDIĞI andaki kartın sürümü (updatedAt). Arada başka biri kartı
+        // değiştirdiyse 409 plan-stale: formdaki eski tutar / ad öbür kişinin düzeltmesini sessizce ezmez. İleti formda kalır, kart yenilenir; form kendiliğinden
+        // yeniden göndermez.
+        if (plan) payload.updatedAt = plan.updatedAt || "";
+        let result;
+        try {
+          result = plan ? await HOF.api(`/api/workspace/plans/${encodeURIComponent(plan.id)}`, { method: "PUT", body: payload }) : await HOF.api("/api/workspace/plans", { method: "POST", body: payload });
+        } catch (error) {
+          if (plan && ((error?.status === 409 && error?.data?.code === "plan-stale") || error?.status === 404) && modal) loadPlan(plan.id, { quiet: true }).catch(() => null);
+          throw error;
+        }
         await loadGroups();
         HOF.toast(plan ? "Kart güncellendi." : data.items === "manual" ? "Taksit kartı açıldı; şimdi taksitleri tek tek girin." : "Taksit kartı açıldı.", { type: "success" });
         view.planId = result.id;
@@ -746,7 +756,16 @@
       submitLabel: item ? "Kaydet" : "Taksiti Ekle",
       onSubmit: async data => {
         const url = `/api/workspace/plans/${encodeURIComponent(plan.id)}/items${item ? `/${encodeURIComponent(item.id)}` : ""}`;
-        const result = await HOF.api(url, { method: item ? "PUT" : "POST", body: data });
+        // 2.5.0 BİRLEŞİK TUR 3 (YAN-B; iyimser kilit, sunucu lib/row-version.mjs): düzeltmede formun AÇILDIĞI andaki taksitin sürümü (updatedAt). Arada başka biri
+        // taksiti düzelttiyse 409 plan-item-stale: formdaki eski tutar / vade öbür kişinin düzeltmesini sessizce ezmez. İleti formda kalır, kart yenilenir; form
+        // kendiliğinden yeniden göndermez.
+        let result;
+        try {
+          result = await HOF.api(url, { method: item ? "PUT" : "POST", body: item ? { ...data, updatedAt: item.updatedAt || "" } : data });
+        } catch (error) {
+          if (item && ((error?.status === 409 && error?.data?.code === "plan-item-stale") || error?.status === 404) && modal) loadPlan(plan.id, { quiet: true }).catch(() => null);
+          throw error;
+        }
         HOF.toast(item ? "Taksit düzeltildi." : "Taksit eklendi.", { type: "success" });
         applyPlan(result);
       },

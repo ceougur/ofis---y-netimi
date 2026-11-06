@@ -298,7 +298,16 @@
           }
           if (data.openingPay === "cash" && !(parseNumber(data.unitPrice) > 0)) throw new Error("Kasa’ya yansıtmak için birim fiyat girin (tutar = miktar × birim fiyat).");
         }
-        const result = item ? await HOF.api(`/api/workspace/stock/${encodeURIComponent(item.id)}`, { method: "PUT", body: data }) : await HOF.api("/api/workspace/stock", { method: "POST", body: data });
+        // 2.5.0 BİRLEŞİK TUR 3 (3a; iyimser kilit, sunucu lib/row-version.mjs): düzenlemede formun AÇILDIĞI andaki stok kartının sürümü (updatedAt). Arada başka biri
+        // kartı değiştirdiyse (alım hareketi Alış Fiyatı'nı güncellediyse de) 409 stock-item-stale: formdaki eski fiyat / ad öbür değişikliği sessizce ezmez. İleti
+        // formda kalır, kart yenilenir; form kendiliğinden yeniden göndermez.
+        let result;
+        try {
+          result = item ? await HOF.api(`/api/workspace/stock/${encodeURIComponent(item.id)}`, { method: "PUT", body: { ...data, updatedAt: item.updatedAt || "" } }) : await HOF.api("/api/workspace/stock", { method: "POST", body: data });
+        } catch (error) {
+          if (item && ((error?.status === 409 && error?.data?.code === "stock-item-stale") || error?.status === 404) && modal && view.mode === "card" && view.id === item.id) loadItem(item.id, { quiet: true }).catch(() => null);
+          throw error;
+        }
         if (!item && data.openingPay === "cash") HOF.emit("cash-changed");
         const noun = (data.kind || item?.kind) === "service" ? "Hizmet" : "Ürün";
         HOF.toast(item ? `${noun} güncellendi.` : data.openingQty ? `Ürün açıldı: ${qtyText(result.qty)} ${result.unit} stokta${data.openingPay === "cash" ? "; Kasa’ya stok ödemesi yazıldı" : ""}.` : `${noun} açıldı.`, { type: "success" });
@@ -437,21 +446,31 @@
           data.installments = { count: Math.trunc(parseNumber(data.planCount)), firstDue: data.planFirstDue, everyMonths: 1 };
         }
         ["planIt", "planCount", "planFirstDue"].forEach(key => delete data[key]);
+        // Hareket bu arada düzeltildi (409 stock-move-stale) ya da silindi (404): kart güncel hâle yenilenir, sunucunun iletisi ("… kaydedilmedi …") formda
+        // görünür; form kendiliğinden yeniden göndermez. 2.5.0 BİRLEŞİK TUR 3 (3b): "Stok Eksiye Düşecek" onayından SONRAKİ gönderimde de (onay penceresi açıkken
+        // başka biri hareketi düzeltebilir) — önceden ikinci gönderim bu yakalamanın dışındaydı, 409'da kart yenilenmiyordu.
+        const staleOrGone = error => move && ((error?.status === 409 && error?.data?.code === "stock-move-stale") || error?.status === 404);
+        const refreshCard = () => {
+          if (modal && view.mode === "card" && view.id === item.id) loadItem(item.id, { quiet: true }).catch(() => null);
+        };
         let result;
         try {
           result = await send(data);
         } catch (error) {
-          // Hareket bu arada düzeltildi (409 stock-move-stale) ya da silindi (404): kart güncel hâle yenilenir, sunucunun iletisi ("… kaydedilmedi …") formda
-          // görünür; form kendiliğinden yeniden göndermez.
-          if (move && ((error?.status === 409 && error?.data?.code === "stock-move-stale") || error?.status === 404)) {
-            if (modal && view.mode === "card" && view.id === item.id) loadItem(item.id, { quiet: true }).catch(() => null);
+          if (staleOrGone(error)) {
+            refreshCard();
             throw error;
           }
           // Stok eksiye düşecekse sorulur (sayım farkı olabilir); onaylanırsa kaydedilir.
           if (!/eksiye/.test(error.message) || /^(cash|bank)-/.test(String(error.data?.code || ""))) throw error;
           const ok = await HOF.confirm({ title: "Stok Eksiye Düşecek", message: `${error.message} Sayım farkı olabilir. Yine de kaydedilsin mi?`, confirmLabel: "Yine de Kaydet", danger: true });
           if (!ok) return true;
-          result = await send(data, true);
+          try {
+            result = await send(data, true);
+          } catch (again) {
+            if (staleOrGone(again)) refreshCard();
+            throw again;
+          }
         }
         applyItem(result);
         if (data.pay === "cash") HOF.emit("cash-changed");

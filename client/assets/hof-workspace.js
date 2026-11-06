@@ -559,7 +559,17 @@
       ],
       submitLabel: current ? "Düzeltmeyi Kaydet" : "Açılışı Kaydet",
       onSubmit: async data => {
-        const result = await HOF.api("/api/workspace/cash/opening", { method: "POST", body: data, requestId });
+        // 2.5.0 BİRLEŞİK TUR 3 (YAN-A; iyimser kilit, sunucu lib/row-version.mjs): formun AÇILDIĞI andaki açılış — kimliği ("" = açılış yoktu) ve sürümü (updatedAt;
+        // hiç düzeltilmemişse ""). Arada başka yönetici açılışı girdiyse, düzelttiyse ya da sildiyse 409 cash-opening-stale: formdaki eski tutar / tarih öbür kişinin
+        // kaydını sessizce ezmez. İleti formda kalır, Kasa listesi yenilenir; form kendiliğinden yeniden göndermez (formu kapatıp yeniden açınca güncel açılış gelir).
+        const body = { ...data, openingId: current?.id || "", updatedAt: current ? current.updatedAt || "" : "" };
+        let result;
+        try {
+          result = await HOF.api("/api/workspace/cash/opening", { method: "POST", body, requestId });
+        } catch (error) {
+          if (error?.status === 409 && error?.data?.code === "cash-opening-stale") after?.();
+          throw error;
+        }
         HOF.toast(result?.unchanged ? "Açılış bakiyesi aynı; değişiklik yok." : current ? "Kasa açılış bakiyesi düzeltildi." : "Kasa açılış bakiyesi kaydedildi.", { type: result?.unchanged ? "info" : "success" });
         HOF.emit("cash-changed");
         after?.();
