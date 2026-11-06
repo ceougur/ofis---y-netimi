@@ -1,0 +1,19 @@
+# B3 T1 ölçüm: [[1,1666,380928,271376,0,200,112,1554],[2,113,770048,550706,0,200,111,1556],[3,113,1146880,817796,0,200,114,1555],[4,113,1536000,1097126,0,200,112,1556],[5,110,1875968,1327496,0,200,100,1566],[6,95,2129920,1472186,0,200,83,1578],[7,86,2506752,1739284,0,200,108,1556],[8,112,2854912,1977814,0,200,108,1560],[9,97,3117056,2130664,0,200,79,1578],[10,80,3375104,2279434,0,200,80,1578]]
+# B3 tur süresi: ileti 200 · 6598 ms (başlangıçtan 6598 ms)
+# B3 tur süresi: ileti 400 · 2671 ms (başlangıçtan 9269 ms)
+# B3 tur süresi: ileti 600 · 2775 ms (başlangıçtan 12044 ms)
+# B3 tur süresi: ileti 800 · 2655 ms (başlangıçtan 14699 ms)
+# B3 tur süresi: ileti 1000 · 2922 ms (başlangıçtan 17621 ms)
+# B3 tur süresi: ileti 1200 · 3045 ms (başlangıçtan 20666 ms)
+# B3 tur süresi: ileti 1400 · 2870 ms (başlangıçtan 23536 ms)
+# B3 tur süresi: ileti 1600 · 2942 ms (başlangıçtan 26478 ms)
+# B3 tur süresi: ileti 1800 · 2808 ms (başlangıçtan 29286 ms)
+# B3 tur süresi: ileti 2000 · 2945 ms (başlangıçtan 32231 ms)
+# tests 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+AssertionError [ERR_ASSERTION]: wa_jobs sayfa içi boş %67.5 > %10 (2.17 MB, iş başına 1140 bayt) — kesinleşen işin PDF'i satırda boşluk bırakıyor
+[zorla] test/whatsapp-b3-buyume-249.test.mjs · sıçrama turları [] (iş 100) · ara bakımlı tur [] · artışı 0 tur [] · ön koşul BEKLENDİĞİ GİBİ · test KIRMIZI (çıkış 1)
