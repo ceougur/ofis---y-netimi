@@ -1,0 +1,32 @@
+{
+  "ad": "c3-tamam-e2e-senaryo-213",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-213.mjs",
+  "commit": "9d507460347ac764298d99875a2803c1239475b7",
+  "dal": "worktree-agent-ad96cd3b37191bfb1",
+  "kirli": 1,
+  "izlenmeyen": 61,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T01:57:56.979Z",
+  "sure_sn": 54.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 64,
+    "gecen": 64,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-06/c3-tamam-e2e-senaryo-213.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad96cd3b37191bfb1",
+  "ham_cikti_sha256": "b4a103ff85cb3c4b3bcb71dc18e4f10eba5d0cbb012a57b70931ee23622bbdd8",
+  "ham_cikti_bayt": 5154
+}

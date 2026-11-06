@@ -1,0 +1,32 @@
+{
+  "ad": "c3-tamam-olcum-100k-eski-40ad9bed",
+  "komut": "node --disable-warning=ExperimentalWarning test/donmus-defter-olcum-cekirdek-250.mjs --veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-olcum-veri/n-100000 --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-tamam-a1/son-100k-eski.json --kilit 2025-12-31 --parca 500 --esdeger",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T02:16:24.766Z",
+  "sure_sn": 22.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 1,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-06/c3-tamam-olcum-100k-eski-40ad9bed.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-tamam-a1/eski-40ad9bed",
+  "ham_cikti_sha256": "aa9e05284056733ab8c53aa608d43ccff515b615ce1f2251a60d12684aeb5c8f",
+  "ham_cikti_bayt": 1018
+}

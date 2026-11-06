@@ -1,0 +1,48 @@
+{
+ "veri": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-olcum-veri/n-100000",
+ "kilit": "2025-12-31",
+ "parca": 500,
+ "nodeSecenek": "--max-old-space-size=200 --disable-warning=ExperimentalWarning",
+ "node": "v22.23.4",
+ "cpu": 4,
+ "bellekGb": 16,
+ "anaYiginSiniriMb": 248,
+ "yuk": [
+  1.64,
+  1.75,
+  1.93
+ ],
+ "olcumler": {
+  "kilitVeDondurma": {
+   "ms": 2174,
+   "loopMaxMs": 146,
+   "tepeRssMb": 324,
+   "durum": {
+    "running": false,
+    "phase": "hata",
+    "done": 0,
+    "total": 0,
+    "run": 4,
+    "error": "Worker terminated due to reaching memory limit: JS heap out of memory",
+    "coverage": ""
+   },
+   "kapsam": "",
+   "donmusSatir": 0,
+   "bosluk50": 1,
+   "bosluklar": [
+    {
+     "ms": 146,
+     "at": 168,
+     "adim": "kilit"
+    }
+   ]
+  }
+ },
+ "satir": 226734,
+ "yukSonra": [
+  1.59,
+  1.74,
+  1.92
+ ],
+ "hata": "Error: dondurma tamamlanmadı: {\"running\":false,\"phase\":\"hata\",\"done\":0,\"total\":0,\"run\":4,\"error\":\"Worker terminated due to reaching memory limit: JS heap out of memory\",\"coverage\":\"\"}\n    at file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-tamam-a1/eski-40ad9bed/test/donmus-defter-olcum-cekirdek-250.mjs:109:43"
+}

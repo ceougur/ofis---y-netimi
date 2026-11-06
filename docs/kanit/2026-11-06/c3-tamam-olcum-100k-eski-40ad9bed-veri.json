@@ -1,0 +1,105 @@
+{
+ "veri": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-olcum-veri/n-100000",
+ "kilit": "2025-12-31",
+ "parca": 500,
+ "iscYiginMb": "varsayılan",
+ "node": "v22.23.4",
+ "cpu": 4,
+ "bellekGb": 16,
+ "anaYiginSiniriMb": 2096,
+ "yuk": [
+  2.65,
+  2.31,
+  1.95
+ ],
+ "olcumler": {
+  "canliTuretmeAnaIsParcacigi": {
+   "ms": 2775,
+   "loopMaxMs": 2771,
+   "tepeRssMb": 426,
+   "madde": 154328
+  },
+  "kilitVeDondurma": {
+   "ms": 7809,
+   "loopMaxMs": 22,
+   "tepeRssMb": 985,
+   "durum": {
+    "running": false,
+    "phase": "tamam",
+    "done": 274616,
+    "total": 274616,
+    "run": 4,
+    "error": "",
+    "coverage": "2025-12-31"
+   },
+   "kapsam": "2025-12-31",
+   "donmusSatir": 274616
+  },
+  "donmusYilOkuma": {
+   "ms": 443,
+   "loopMaxMs": 440,
+   "tepeRssMb": 495,
+   "madde": 39377
+  },
+  "donmusMizanIlk": {
+   "ms": 629,
+   "loopMaxMs": 625,
+   "tepeRssMb": 453
+  },
+  "donmusMizanOnbellek": {
+   "ms": 1,
+   "loopMaxMs": 0
+  },
+  "kuralFarki": {
+   "ms": 4665,
+   "loopMaxMs": 4661,
+   "tepeRssMb": 792,
+   "madde": 0,
+   "hesap": 0
+  },
+  "esdegerlik": {
+   "ms": 4420,
+   "tepeRssMb": 1191,
+   "yillar": [
+    {
+     "yil": "2022",
+     "donmusMadde": 7410,
+     "canliMadde": 7410,
+     "ayni": true
+    },
+    {
+     "yil": "2023",
+     "donmusMadde": 37908,
+     "canliMadde": 37908,
+     "ayni": true
+    },
+    {
+     "yil": "2024",
+     "donmusMadde": 38363,
+     "canliMadde": 38363,
+     "ayni": true
+    },
+    {
+     "yil": "2025",
+     "donmusMadde": 39377,
+     "canliMadde": 39377,
+     "ayni": true
+    }
+   ],
+   "hepsiAyni": true
+  },
+  "kilitGeriCek": {
+   "ms": 492,
+   "loopMaxMs": 45,
+   "tepeRssMb": 1154,
+   "silinen": 87807,
+   "kapsam": "2024-12-31"
+  }
+ },
+ "satir": 226734,
+ "yukSonra": [
+  2.85,
+  2.38,
+  1.98
+ ]
+}

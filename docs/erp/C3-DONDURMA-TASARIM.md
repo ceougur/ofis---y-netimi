@@ -200,3 +200,49 @@ raporların kilitli / açık okuma süresi önce / sonra.
   PUT period-lock'ta ileri kilitte (koşu), açılışta bekleyen koşu varsa (göç 47'nin 2.4.9 koşusu, yarım koşu, onarım), kilit geri çekilince ya da dondurma bitmeyince yalnız iz için
   (`digestOf`); (2) testlerde: F7a ayrı süreç (ana sunucu kapalıyken), yaşam testinin ham okuma / yazmaları (`new DatabaseSync`, sunucu kapandıktan sonra), eski sürüm / eşdeğerlik
   betiklerinin ham okumaları (sunucular kapalı). Eşzamanlı ikinci bağlantı yalnız (1)'de; iş parçacığı salt okunurdur (WAL kipi ayarlamaz).
+
+## 16. Ç3 tamamlama (06.11.2026): 1.000.000 satırda bellek taşması (ders 6, 15, 47)
+- BULGU (yeniden üretildi; docs/kanit/2026-11-06/c3-olcum-cekirdek-1000000*.log, c3-yeniden-uret-1m-oncesi): programın ürettiği 1.000.000 verisinde (001: 2.254.506 para satırı, ~4 M satır)
+  kilit konunca dondurma iş parçacığı Ana Defter'i türetirken yığın (~2 GB) doldu. Kimi koşuda bütün süreç `FATAL ERROR … StatementSync::All` ile çöktü (SIGABRT), kimi koşuda iş parçacığı
+  "Worker terminated due to reaching memory limit" ile düştü (süreç ayakta; aynı dosya, aynı kod — taşmanın yerli kodun içine mi JS'e mi denk geldiği). Kalan durum: kilit konmuş
+  (31.12.2025), koşu `pending`, 0 donmuş satır; açılışta bekleyen koşu sürdürülür (app.mjs runPending) → her açılışta aynı türetme, aynı sonuç (çökme döngüsü olabilir).
+  Kilitsiz canlı türetme de (raporlar, kapının tam taraması) ana iş parçacığında aynı yerde çöküyordu (41. sn) — Ç3'ten önce de (v2.4.9 aynı sorgular).
+- KÖK NEDEN (dosya:satır): routes/ledger.mjs:63 (rows() `all` yardımcısı → store.all) — node:sqlite'ın all()'ı her satırı SÖZLÜK KİPLİ nesne kurar (v8::Object::New + ad sözlüğü;
+  18 kolonlu cari satırı ~1.349 bayt, hızlı kipli kopyası ~615 bayt; deney c3-tamam-a1). 1M'de account_entries (1.022.380 satır, :85) tek başına 1.475 MB; çöküş stock_moves (:126)
+  sorgusunda. 2.4.9 kopyası (ledger-rule-249/ledger-rows.mjs) aynı sorgularla. Ek yükler: iş parçacığı bütün (from, through] satırlarını tek dizide kuruyordu; kilit izi (integrity.mjs
+  lockDigestOf) kilitli dönemin bütün kaynak satırlarını store.all ile okuyordu; donmuş okuma (entries) ve Kural Değişikliği Farkı (ruleDiff) bütün donmuş satırları dizi + nesne olarak.
+- DÜZELTME (davranış AYNEN): lib/lean-rows.mjs — leanRows / leanAll (iterate; aynı anahtar, sıra, değer; hızlı kipli düz nesne; kolon başına ≤ 65.536 farklı kısa metin tek kopya),
+  leanStore (2.4.9 kopyası değişmeden sıkı depoyla okur), eachRow (kopyasız akış). rows() leanAll; kural kayıt defteri ve iş parçacığı buildRule249(leanStore(store)); snapshotBatches
+  (iş parçacığı ve eşzamanlı kip satırları parça parça üretir); frozenEntries (donmuş okuma akışlı); ruleDiff donmuş tarafı akışlı (sonuç önceki uygulamayla birebir: B3 referans);
+  lockDigestOf eachRow. İş parçacığının yığın taşması "Bellek yetmedi: …" (süreç ayakta, koşu bekler).
+- EŞDEĞERLİK: 100.000 verisinde türetmenin sha256'sı store.all ↔ sıkı okuma, güncel kural ve 2.4.9 kopyası — 4 / 4 aynı (154.328 madde); 1M'de iki kural aynı sha256 (1.532.720 madde);
+  test/donmus-defter-bellek-250.test.mjs B1 / B3 (eski sürüm verisi, madde madde, bütün alanlar); donmuş = canlı yıl yıl 100k (4 yıl) ve 1M (2022–2025: 74.955 / 383.454 / 385.331 / 384.686
+  madde) — ölçüm aracı --esdeger; v2.4.9 eşdeğerliği 17/17, motor 12/12, zincir 48/48, kural değişikliği 14/14, eski sürüm 20/20, kâhin defter 176/176, kâhin cari 8698/8698.
+- ÖLÇÜM (flock; makine YÜK ALTINDA, yük 0,7–4,7 — süreler son adayda boş makinede yinelenir; bellek yükten etkilenmez): tepe RSS süreç geneli (ana + iş parçacığı), VmHWM, her adımdan
+  önce sıfırlanır (önceki adımın geri verilmemiş yığını sayılır). Son koşular c3-tamam-olcum-100k-yeni / -100k-eski-40ad9bed / -1m-yeni (+ -veri.json); yalnız dondurma
+  c3-olcum-cekirdek-1000000-yeni-dondurma (--canli-yok; temiz tepe).
+  | Yol | 100.000 eski (40ad9bed) | 100.000 yeni | 1.000.000 eski | 1.000.000 yeni |
+  |---|---|---|---|---|
+  | Canlı türetme (ana iş parçacığı) | 2,3–2,8 sn · 426 MB | 2,7–2,9 sn · 247 MB | ÇÖKTÜ (41. sn, yığın 2 GB) | 25,9–27,6 sn · 1.424–1.438 MB |
+  | Kilit + dondurma (yalnız) | 7,8–8,2 sn · döngü 22–29 ms · 985 MB | 8,1–8,5 sn · döngü 19–30 ms · 503–539 MB | ÇÖKTÜ / "memory limit" (~85 sn) | 83,5 sn · döngü 457 ms (*) · 1.744 MB · 2.741.312 satır |
+  | Kilit + dondurma (canlı türetmeden sonra) | — | — | — | 94,8 sn · döngü 305 ms (***) · 2.845 MB |
+  | Donmuş okuma, kilitli yıl (S.entries) | 443–477 ms · 453–495 MB | 505–570 ms · 311 MB | (ölçülemedi) | 5,4–7,3 sn (döngü aynı) · 384.686 madde |
+  | Hesap Planı Mizanı kilitli yıl (ilk) | 603–629 ms | 534–569 ms | — | 6,1–6,6 sn (sonra önbellek 1 ms) |
+  | Kural Değişikliği Farkı (canlı türetme dahil) | 4,7–5,2 sn · 796 MB | 4,7–5,1 sn · 418 MB | — | 55–58 sn · 1.827–1.858 MB |
+  | Kilidi geri çek | 484–492 ms · döngü 45–52 ms | 441–512 ms · döngü 45–49 ms | — | 4,6–5,8 sn · döngü 510–543 ms (**) |
+  (*) tek boşluk: kilit işleminin kendisi — yeni kopyalanmış 2,5 GB dosyada İLK yazım işlemi (WAL / fsync; c3-tamam-betikler/diag-kilit: ilk setLock 338 ms, ikinci 3 ms, lockChanged 2–4 ms);
+  dondurma boyunca 50 ms'yi aşan başka boşluk yok. (**) thaw()'ın geri çekilen dönem toplamı (tek SQL, ~900.000 satır; 100k'de 45–61 ms) — BİLİNEN SINIR / öneri aşağıda. (***) türetme
+  sürerken ana iş parçacığının 305 ms'lik duraklaması: önceki adımın (ölçüm aracının ana iş parçacığında kurduğu 1,5 M maddelik canlı türetme) çöpünün toplanması; yazım parçalarında 55–105 ms
+  (yük 4,1–4,7). Donmuş okuma 100k'de %14–20 yavaş (satır kopyası + tek kopya metin; bellek karşılığı).
+- BELLEK SINIRLI DENEME (dişli; c3-bellek-sinirli-200mb-100k-*): `node --max-old-space-size=200` (iş parçacığına da uygulanır) + 100.000 verisi: yeni kod dondurmayı tamamlar (274.616 satır,
+  tepe 290 MB), eski kod (40ad9bed) "Worker terminated due to reaching memory limit". Çökmüş 1M dosyası (kilit + bekleyen koşu) yeni kodla açılınca 95 sn'de tamamlandı (2.741.312 satır).
+- KANIT (docs/kanit/2026-11-06/c3-tamam-*; düzeltme 9d507460): yeni testler B1–B5 (test/donmus-defter-bellek-250.test.mjs) eski kodda (40ad9bed, ayrı kopya) 1/5 — B1 / B2 lean-rows yok,
+  B3 "güncel kural: kaynak sorguları store.all'a düşmemeli", B5 "buildRule249 sıkı depo olmadan çağrılıyor"; B4 eski kodda da geçer (parça parça yazım vardı) — iki saat diliminde; yeni
+  kodda 5/5. Mutasyon 23/23 (16 eski + 2 ve 7 yeni yerlerinde + 17–23: rows store.all, 2.4.9 kopyası iki yerde sıkı depo olmadan, donmuş okuma store.all, sıkı satır kopyalanmaz, kilit izi
+  store.all, akışlı fark denetiminin ikinci adımı). Komşular (G2: değişen dosyaları / uçlarını anan 242 dosya = öncülün 191'i + 51) UTC 2626/2626, Europe/Istanbul 2626/2626; e2e 9 senaryo
+  (sema-kapisi-bs7 12, senaryo-defter-243 24, senaryo-224 69, senaryo-226 22, senaryo-213 64, gg244 40, gg243 11, senaryo-220-yedek 37, senaryo-banka-210 424).
+- BİLİNEN SINIR / ÖNERİ: (1) türetme hâlâ bütün geçmişi bellekte kurar (iki kural kopyası AYNEN kalsın diye; 1M'de ~1,4 GB, yığın sınırının ~%70'i) — bundan büyük veride ya da az
+  bellekli bilgisayarda iş parçacığı yine taşabilir (süreç çoğunlukla ayakta, ama taşma yerli kodun içine denk gelirse V8 süreci düşürür); kalıcı çözüm parçalı türetme (Ç6, ölçümle).
+  (2) Kilidi geri çekme 1M'de olay döngüsünü ~0,5 sn tutar (öneri: geri çekilen dönemin toplamı işlemden önce iş parçacığında; ya da gün toplamları tablosu). (3) Raporlar ve tam tarama
+  ana iş parçacığında: 1M'de Yevmiye Defteri kilitli yıl 5,4 sn, Hesap Planı Mizanı ilk 6,6 sn, Kural Değişikliği Farkı (açılış taraması, Mutabakat Testi, Defter Mutabakatı) ~28 sn
+  akış + canlı türetme — plan §8 rapor bütçesi Ç6'nın işi (rapor iş parçacığı). (4) Büyük veride açılış (repairOwnCards) dakikalar — Ç3 dışı, AH.
