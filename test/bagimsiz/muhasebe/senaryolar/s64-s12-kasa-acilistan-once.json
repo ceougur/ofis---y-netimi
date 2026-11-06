@@ -1,0 +1,260 @@
+{
+ "aciklama": "S12: Kasa açılışından önce tarihli Kasa hareketi (yeni ya da düzeltme) reddedilir; aynı gün olur; açılışsız Kasa'da kural yok.",
+ "ad": "s64-s12-kasa-acilistan-once",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "mod19/kasa": 10050,
+   "mod20/kasa": 11250,
+   "mz/satirlar/100/bakiye": 16250,
+   "mz/satirlar/101.01/bakiye": 0,
+   "mz/satirlar/120|C1/bakiye": 1000,
+   "mz/satirlar/120|C3/bakiye": -4000,
+   "mz/satirlar/320|T1/bakiye": 0,
+   "mz/satirlar/519/bakiye": -10000,
+   "mz/satirlar/649.90/bakiye": -2250,
+   "redler": [
+    "KASA_ACILIS_SONRA",
+    "KASA_ACILIS_ONCE",
+    "KASA_ACILIS_ONCE",
+    "KASA_ACILIS_ONCE",
+    "KASA_ACILIS_ONCE",
+    "KASA_ACILIS_ONCE",
+    "KASA_ACILIS_ONCE"
+   ],
+   "yev/0/kaynak": "KA",
+   "yev/0/sinif": 0,
+   "yev/0/tarih": "2026-01-05",
+   "yev/1/satirlar/0/b": 50,
+   "yev/1/tarih": "2026-01-06",
+   "yev/1/tur": "kasa_giris",
+   "yev20/2/kaynak": "KG2"
+  }
+ },
+ "kapsam": [
+  "S12",
+  "M-01",
+  "EK-2B 33",
+  "EK-2 §4 (8)",
+  "G-4"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "id": "KG0",
+   "tarih": "2026-01-20",
+   "tur": "kasa_giris",
+   "tutar": 200
+  },
+  {
+   "id": "KG1",
+   "tarih": "2026-02-01",
+   "tur": "kasa_giris",
+   "tutar": 1000
+  },
+  {
+   "tarih": "2026-02-15",
+   "tur": "kasa_acilis",
+   "tutar": 10000
+  },
+  {
+   "id": "KA",
+   "tarih": "2026-01-20",
+   "tur": "kasa_acilis",
+   "tutar": 10000
+  },
+  {
+   "tarih": "2026-01-20",
+   "tur": "kasa_giris",
+   "tutar": 300
+  },
+  {
+   "tarih": "2026-01-19",
+   "tur": "kasa_giris",
+   "tutar": 400
+  },
+  {
+   "cari": "C1",
+   "tarih": "2026-01-10",
+   "tur": "tahsilat",
+   "tutar": 1000,
+   "yol": "nakit"
+  },
+  {
+   "cari": "T1",
+   "tarih": "2026-01-15",
+   "tur": "odeme",
+   "tutar": 500,
+   "yol": "nakit"
+  },
+  {
+   "K": 0,
+   "M": 1000,
+   "cari": "C1",
+   "id": "F1",
+   "tarih": "2026-01-10",
+   "tur": "satis_faturasi"
+  },
+  {
+   "cari": "C3",
+   "evrak": "CK1",
+   "id": "P1",
+   "tarih": "2026-01-12",
+   "tur": "tahsilat",
+   "tutar": 4000,
+   "yol": "cek"
+  },
+  {
+   "evrak": "CK1",
+   "tarih": "2026-01-18",
+   "tur": "evrak_tahsil",
+   "yol": "kasa"
+  },
+  {
+   "evrak": "CK1",
+   "tarih": "2026-01-25",
+   "tur": "evrak_tahsil",
+   "yol": "kasa"
+  },
+  {
+   "id": "KG2",
+   "tarih": "2026-02-10",
+   "tur": "kasa_giris",
+   "tutar": 700
+  },
+  {
+   "degisiklik": {
+    "tarih": "2026-01-19"
+   },
+   "kaynak": "KG2",
+   "tur": "duzenle"
+  },
+  {
+   "degisiklik": {
+    "tarih": "2026-01-20"
+   },
+   "kaynak": "KG2",
+   "tur": "duzenle"
+  },
+  {
+   "degisiklik": {
+    "tarih": "2026-01-05"
+   },
+   "kaynak": "KA",
+   "tur": "duzenle"
+  },
+  {
+   "tarih": "2026-01-06",
+   "tur": "kasa_giris",
+   "tutar": 50
+  },
+  {
+   "tarih": "2026-01-04",
+   "tur": "kasa_giris",
+   "tutar": 60
+  },
+  {
+   "ad": "mz",
+   "bas": "2026-01-01",
+   "rapor": "mizan",
+   "son": "2026-02-28",
+   "tur": "rapor"
+  },
+  {
+   "ad": "yev",
+   "bas": "2026-01-04",
+   "rapor": "yevmiye",
+   "son": "2026-01-06",
+   "tur": "rapor"
+  },
+  {
+   "ad": "yev20",
+   "bas": "2026-01-20",
+   "rapor": "yevmiye",
+   "son": "2026-01-20",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mod19",
+   "rapor": "moduller",
+   "tarih": "2026-01-19",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mod20",
+   "rapor": "moduller",
+   "tarih": "2026-01-20",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

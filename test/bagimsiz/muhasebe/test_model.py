@@ -327,6 +327,18 @@ class OlayMaddeleri(unittest.TestCase):
                                  o("degersiz_yaz", "2026-02-03", cari="C1", kayit="YOK")]))
         self.assertEqual([x["kod"] for x in r["redler"]], ["SUPHELI_YOK"])
 
+    # ---- kâhin bakımı 3 (beklenenler model değiştirilmeden ÖNCE elle yazıldı; README T1…T13)
+    def test_S11_avans_kahin_susar(self):
+        # T8 (a) / KULLANICIYA SORULMALI 1: çek kilitli dönemde alındı ama o gün açık borç yoktu (L'de 10000 avans); kilitten sonra F1'i kapattı;
+        # karşılıksız kilitten sonra → iki okuma, kâhin kural SAYMAZ: kahin_susuyor [("S11_AVANS", L'deki dağılmamış tutar 10000)].
+        # Tamamen dağılmış evrakta (s63) susmaz.
+        r = M.kos(senaryo([o("tahsilat", "2026-11-10", id="P1", cari="C1", yol="cek", evrak="CK1", tutar=10000),
+                           o("donem_kilitle", tarih="2026-12-31"),
+                           o("satis_faturasi", "2027-01-05", id="F1", cari="C1", M=10000, K=0, vade="2027-03-31"),
+                           o("evrak_karsiliksiz", "2027-01-10", evrak="CK1"),
+                           E.R("g", "gecikmis", cari="C1", tarih="2027-01-11")]))
+        self.assertEqual([(x["neden"], x.get("tutar")) for x in r["raporlar"]["g"].get("kahin_susuyor", [])], [("S11_AVANS", 10000)])
+
     def test_EK2_4_1_ayni_gun_yazim_sirasi_sonucu_degistirmez(self):
         # EK-2 §4 (1) (karar (1) ile): aynı gündeki kalemlerin yazım sırası ters çevrilince her carinin gecikmişi ve vade bazında açık
         # borç / alacak toplamları aynı (ders 31)
@@ -532,10 +544,15 @@ class DegismezDenetcileri(unittest.TestCase):
         self.assertTrue(M.devir_degismezleri(arsiv, yeni, "2026-12-31", None, did)["m27_net_satir"])
 
     def test_kasa_acilis_ilk_hareketten_sonra_yakalanir(self):
-        # EK-2 §4 (8): Kasa açılış tarihi ≤ ilk nakit hareketi; açılıştan önce tarihli hareket (KÂHİN SUSUYOR — kural yok) değişmezde görünür
+        # EK-2 §4 (8): Kasa açılış tarihi ≤ ilk nakit hareketi. Kâhin bakımı 3 (S12 A, README T10): açılıştan önce tarihli hareket artık
+        # REDDEDİLİR (eski: kabul + değişmez kırmızı, "KÂHİN SUSUYOR"); değişmezin dişi aynı durum modelin reddi atlanarak kurulunca görülür
         m = self._model([o("kasa_acilis", "2026-01-05", tutar=100), o("kasa_giris", "2026-01-03", tutar=10)])
+        self.assertEqual([x["kod"] for x in m.redler], ["KASA_ACILIS_ONCE"])
+        self.assertEqual(M.degismezler(m.canli, "2026-01-31")["kasa_acilis_ilk"], [])
+        m.canli.kaynak_ekle("kasa_giris", "2026-01-03", {"tutar": 10})
         self.assertTrue(M.degismezler(m.canli, "2026-01-31")["kasa_acilis_ilk"])
         m = self._model([o("kasa_acilis", "2026-01-05", tutar=100), o("kasa_giris", "2026-01-05", tutar=10)])
+        self.assertEqual(m.redler, [])
         self.assertEqual(M.degismezler(m.canli, "2026-01-31")["kasa_acilis_ilk"], [])
 
     def test_tumu_tuttu(self):
@@ -580,6 +597,19 @@ class SenaryoHijyeni(unittest.TestCase):
             for x in s["olaylar"]:
                 if x.get("yol") == "pos" and x.get("valor"):
                     self.assertLess(dt.date.fromisoformat(x["valor"]).weekday(), 5, s["ad"])
+
+    def test_pos_valoru_resmi_tatile_dusmez(self):
+        # kâhin bakımı 3 E1 (ana oturum K3): kitap D-01 valörün resmî tatilde ne olduğunu söylemez → hiçbir senaryoda valör (ve hafta sonu
+        # kaydırmasının geçtiği günler) resmî tatile düşmez; kural uydurulmaz (README KULLANICIYA SORULMALI 5)
+        import datetime as dt
+        n = 0
+        for s in self._hepsi():
+            for x in s["olaylar"]:
+                if x.get("yol") == "pos" and x.get("valor"):
+                    n += 1
+                    self.assertTrue(U.valor_tatilsiz(x["tarih"], dt.date.fromisoformat(x["valor"])), f"{s['ad']} {x.get('id')} {x['valor']}")
+        self.assertGreater(n, 10)
+        self.assertTrue(U.tatil_mi(dt.date(2026, 4, 23)) and U.tatil_mi(dt.date(2027, 1, 1)) and not U.tatil_mi(dt.date(2026, 4, 24)))
 
 
 # ------------------------------------------------------------------------------------------------ diskteki dosyalar (mutasyonda koşmaz)

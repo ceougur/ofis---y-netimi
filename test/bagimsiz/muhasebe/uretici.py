@@ -24,6 +24,29 @@ import model as M  # noqa: E402
 from senaryolar_elle import TANIM  # noqa: E402
 
 TOHUMLAR = (1, 2, 3)
+
+# Kâhin bakımı 3 (ana oturum K3; README E1): resmî tatiller (2429 sayılı Kanun) — sabit günler her yıl (28 Ekim yarım gün); dinî bayramlar (arife yarım
+# gün dahil) 2026–2027. Bayram tarihleri birincil takvimden DOĞRULANMADI → her pencere arifeden bir gün önce – bayramdan bir gün sonra (geniş). Kitap
+# D-01 valörün tatilde ne olduğunu söylemez (KULLANICIYA SORULMALI 5): üretici valörü bu günlere düşürmez — kural uydurmaz, durumdan kaçınır.
+RESMI_TATIL_SABIT = ("01-01", "04-23", "05-01", "05-19", "07-15", "08-30", "10-28", "10-29")
+DINI_BAYRAM_PENCERESI = (("2026-03-18", "2026-03-23"), ("2026-05-25", "2026-05-31"), ("2027-03-07", "2027-03-12"), ("2027-05-14", "2027-05-20"))
+
+
+def tatil_mi(g):
+    s = g.isoformat()
+    return s[5:] in RESMI_TATIL_SABIT or any(a <= s <= b for a, b in DINI_BAYRAM_PENCERESI)
+
+
+def valor_tatilsiz(t, valor):
+    """Valör resmî tatil değil ve hafta sonu kaydırmasının üstünden geçtiği günlerde (valörden önceki ardışık hafta sonu, çekim gününden sonra) tatil yok."""
+    if tatil_mi(valor):
+        return False
+    g, bas = valor - datetime.timedelta(days=1), datetime.date.fromisoformat(t)
+    while g > bas and g.weekday() >= 5:
+        if tatil_mi(g):
+            return False
+        g -= datetime.timedelta(days=1)
+    return True
 MUSTERI = ("C1", "C2", "C3", "C4", "C5")
 TEDARIKCI = ("T1", "T2", "T3")
 
@@ -77,6 +100,15 @@ class Uretici:
         while g.weekday() >= 5:
             g += datetime.timedelta(days=1)
         return g
+
+    def pos_valoru(self, t, gun):
+        """POS valörü = çekim + gun, hafta sonu → sonraki iş günü (ana oturum K3). Bakım 3 E1: valör resmî tatile ya da tatilin üstünden geçen
+        kaydırmaya düşerse öbür seçenekler (1, 2, 30 gün) sırayla denenir (rastgele sayı tüketmez); hiçbiri olmazsa None."""
+        for g_ in [gun] + [x for x in (1, 2, 30) if x != gun]:
+            aday = self.is_gunu(datetime.date.fromisoformat(t) + datetime.timedelta(days=g_))
+            if valor_tatilsiz(t, aday):
+                return aday
+        return None
 
     # -- olay türleri
     def acilislar(self, t):
@@ -168,6 +200,11 @@ class Uretici:
             tut = x[1]
             o["fatura"] = x[0]
         yol = self.r.choice(["nakit", "nakit", "havale", "havale", "pos", "cek", "senet"])
+        valor = None
+        if yol == "pos":
+            valor = self.pos_valoru(t, self.r.choice([1, 1, 2, 30]))
+            if valor is None:                                    # bakım 3 E1: hiçbir valör seçeneği tatilsiz değil → POS yerine havale
+                yol = "havale"
         o.update(yol=yol, tutar=tut)
         if yol == "havale":
             o["banka"] = self.r.choice(["B1", "B2"])
@@ -175,13 +212,11 @@ class Uretici:
         elif yol == "nakit":
             self.kasa += tut
         elif yol == "pos":
-            gun = self.r.choice([1, 1, 2, 30])
-            valor = self.is_gunu(datetime.date.fromisoformat(t) + datetime.timedelta(days=gun))
             o.update(pos="POS1", komisyon=self.oranla(tut, 2), valor=valor.isoformat())
         else:
             e = self.id("E")
             o["evrak"] = e
-            self.evrak[e] = {"durum": "portfoy", "yon": "alinan", "tutar": tut, "tur": yol}
+            self.evrak[e] = {"durum": "portfoy", "yon": "alinan", "tutar": tut, "tur": yol, "tarih": t}
         oid = self.id("P")
         self.ekle("tahsilat", t, id=oid, **o)
         if yol == "pos":
@@ -385,6 +420,16 @@ class Uretici:
             self.ekle("degersiz_yaz", t3, cari=c, kayit=kayit)
         self.cari[c] -= tut - tut // 3
 
+    def s11_karsiliksiz(self, K, t):
+        """Kâhin bakımı 3 (S11 A, README T6): K'den önce bir tahsilatla alınmış, portföyde / tahsilde duran evrak K'den sonra karşılıksız döner.
+        Devirsiz eş (L = K) S11 ile, devirli yeni yıl M1c ile aynı sonucu vermeli (gec_ocak / gec_son, değişmez m2). Rastgele sayı tüketmez."""
+        for e, v in sorted(self.evrak.items()):
+            if v["yon"] == "alinan" and v["durum"] in ("portfoy", "tahsilde") and v.get("tarih", "9999") <= K:
+                self.ekle("evrak_karsiliksiz", t, evrak=e)
+                v["durum"] = "karsiliksiz"
+                return e
+        return None
+
     def gunler(self, bas, son):
         g = datetime.date.fromisoformat(bas)
         bit = datetime.date.fromisoformat(son)
@@ -408,6 +453,7 @@ def uret(tohum, yil=2026, yogunluk=3):
     u.supheli_akisi(f"{yil}-07-01", f"{yil}-08-15", f"{yil}-11-20")
     u.gunler(f"{yil}-07-01", K)
     u.gunler(f"{yil + 1}-01-01", f"{yil + 1}-01-20")           # K sonrası, devirden önce girilen Ocak kayıtları
+    u.s11_karsiliksiz(K, f"{yil + 1}-01-20")                    # kâhin bakımı 3: kilitli dönemin evrakı kilitten sonra karşılıksız (S11)
     rap = [
         {"tur": "rapor", "ad": "gt_canli", "rapor": "gelir_tablosu", "bas": f"{yil}-01-01", "son": K},
         {"tur": "rapor", "ad": "bil_canli_K", "rapor": "bilanco", "tarih": K},

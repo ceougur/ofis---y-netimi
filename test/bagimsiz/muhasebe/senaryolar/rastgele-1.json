@@ -1995,7 +1995,7 @@
    "tarih": "2026-03-21",
    "tur": "tahsilat",
    "tutar": 297200,
-   "valor": "2026-03-23",
+   "valor": "2026-04-20",
    "yol": "pos"
   },
   {
@@ -7803,6 +7803,11 @@
    "yol": "cek"
   },
   {
+   "evrak": "E226",
+   "tarih": "2027-01-20",
+   "tur": "evrak_karsiliksiz"
+  },
+  {
    "ad": "gt_canli",
    "bas": "2026-01-01",
    "rapor": "gelir_tablosu",
@@ -8266,58 +8271,30 @@
    "tur": "ters"
   },
   {
-   "evrak": "E481",
+   "evrak": "E310",
    "tarih": "2027-02-07",
    "tur": "evrak_tahsil"
   },
   {
-   "K": 21580,
-   "M": 215800,
-   "cari": "C1",
-   "id": "F557",
-   "kalemler": [
-    {
-     "miktar": 6,
-     "urun": "U1"
-    }
-   ],
+   "cari": "C3",
+   "id": "P557",
+   "komisyon": 4676,
+   "pos": "POS1",
    "tarih": "2027-02-07",
-   "tur": "satis_faturasi"
-  },
-  {
-   "banka": "B1",
-   "karsi": "havale",
-   "miktar": 3,
-   "tarih": "2027-02-08",
-   "tur": "stok_giris",
-   "tutar": 6060,
-   "urun": "U1"
+   "tur": "tahsilat",
+   "tutar": 233800,
+   "valor": "2027-02-08",
+   "yol": "pos"
   },
   {
    "K": 0,
-   "M": 31400,
-   "cari": "C4",
-   "id": "F558",
-   "kalemler": [
-    {
-     "miktar": 1,
-     "urun": "U2"
-    }
-   ],
-   "tarih": "2027-02-09",
-   "tur": "satis_faturasi",
-   "vade": "2027-03-11"
-  },
-  {
-   "K": 14400,
-   "M": 72000,
-   "T": 2880,
-   "cari": "T3",
+   "M": 19210,
+   "cari": "T2",
    "fatura_turu": "stok",
-   "id": "A559",
+   "id": "A558",
    "kalemler": [
     {
-     "miktar": 30,
+     "miktar": 17,
      "urun": "U1"
     }
    ],
@@ -8325,32 +8302,9 @@
    "tur": "alis_faturasi"
   },
   {
-   "kart": "KK1",
-   "miktar": 2,
    "tarih": "2027-02-10",
-   "tur": "kart_harcama",
-   "tutar": 5000,
-   "urun": "U2"
-  },
-  {
-   "K": 62580,
-   "M": 312900,
-   "T": 31290,
-   "cari": "C1",
-   "id": "F560",
-   "tarih": "2027-02-10",
-   "tur": "satis_faturasi",
-   "vade": "2027-02-25"
-  },
-  {
-   "K": 19980,
-   "M": 199800,
-   "cari": "T1",
-   "fatura_turu": "gider",
-   "gider_turu": "genel",
-   "id": "A561",
-   "tarih": "2027-02-10",
-   "tur": "alis_faturasi"
+   "tur": "kasa_giris",
+   "tutar": 46200
   },
   {
    "ad": "yenile",

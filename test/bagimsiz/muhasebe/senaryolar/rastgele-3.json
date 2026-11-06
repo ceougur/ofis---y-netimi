@@ -2964,7 +2964,7 @@
    "tarih": "2026-05-21",
    "tur": "tahsilat",
    "tutar": 260782,
-   "valor": "2026-05-25",
+   "valor": "2026-05-22",
    "yol": "pos"
   },
   {
@@ -6988,6 +6988,11 @@
    "tutar": 42400
   },
   {
+   "evrak": "E280",
+   "tarih": "2027-01-20",
+   "tur": "evrak_karsiliksiz"
+  },
+  {
    "ad": "gt_canli",
    "bas": "2026-01-01",
    "rapor": "gelir_tablosu",
@@ -7043,7 +7048,7 @@
    "tutar": 28900
   },
   {
-   "evrak": "E340",
+   "evrak": "E386",
    "tarih": "2027-01-21",
    "tur": "evrak_karsiliksiz"
   },
@@ -7188,255 +7193,206 @@
    "yol": "havale"
   },
   {
-   "banka": "B1",
-   "evrak": "E447",
+   "banka": "B2",
+   "evrak": "E325",
    "tarih": "2027-01-31",
    "tur": "evrak_tahsile_ver"
   },
   {
-   "K": 0,
-   "M": 39440,
-   "cari": "T3",
-   "fatura_turu": "stok",
-   "id": "A468",
-   "kalemler": [
-    {
-     "miktar": 29,
-     "urun": "U2"
-    }
-   ],
+   "cari": "C1",
+   "evrak": "E468",
+   "id": "P469",
    "tarih": "2027-01-31",
-   "tur": "alis_faturasi"
+   "tur": "tahsilat",
+   "tutar": 157800,
+   "yol": "senet"
   },
   {
    "banka": "B1",
    "kart": "KK1",
    "tarih": "2027-01-31",
    "tur": "kart_borc_odeme",
-   "tutar": 15300
+   "tutar": 6600
   },
   {
    "ay": "2027-01",
    "tur": "kdv_mahsup"
   },
   {
-   "cari": "C2",
-   "evrak": "E469",
-   "fatura": "F444",
-   "id": "P470",
+   "cari": "T3",
+   "evrak": "E447",
    "tarih": "2027-02-01",
-   "tur": "tahsilat",
-   "tutar": 330990,
-   "yol": "senet"
+   "tur": "odeme",
+   "tutar": 58100,
+   "yol": "ciro"
   },
   {
-   "karsi": "nakit",
-   "miktar": 1,
-   "tarih": "2027-02-01",
-   "tur": "stok_musteri_iadesi",
-   "tutar": 2000,
-   "urun": "U2"
-  },
-  {
-   "banka": "B1",
-   "cari": "C3",
-   "id": "P471",
-   "tarih": "2027-02-01",
-   "tur": "tahsilat",
-   "tutar": 9840,
-   "yol": "havale"
+   "K": 0,
+   "M": 8880,
+   "cari": "T3",
+   "fatura_turu": "stok",
+   "id": "A470",
+   "kalemler": [
+    {
+     "miktar": 6,
+     "urun": "U2"
+    }
+   ],
+   "tarih": "2027-02-02",
+   "tur": "alis_faturasi"
   },
   {
    "banka": "B1",
    "cari": "T3",
-   "evrak": "V472",
-   "tarih": "2027-02-02",
+   "evrak": "V471",
+   "tarih": "2027-02-03",
    "tur": "odeme",
-   "tutar": 269012,
+   "tutar": 180352,
    "yol": "cek"
   },
   {
-   "tarih": "2027-02-02",
+   "tarih": "2027-02-03",
    "tur": "kasa_giris",
    "tutar": 17700
   },
   {
    "banka": "B2",
    "cari": "C1",
-   "id": "P473",
-   "tarih": "2027-02-02",
+   "id": "P472",
+   "tarih": "2027-02-03",
    "tur": "tahsilat",
    "tutar": 18400,
    "yol": "havale"
   },
   {
-   "cari": "C4",
-   "fatura": "F229",
-   "id": "P474",
-   "tarih": "2027-02-03",
+   "cari": "C3",
+   "id": "P473",
+   "tarih": "2027-02-04",
    "tur": "tahsilat",
-   "tutar": 251760,
+   "tutar": 9840,
    "yol": "nakit"
   },
   {
-   "K": 24230,
-   "M": 242300,
-   "cari": "C4",
-   "id": "F475",
+   "banka": "B2",
+   "evrak": "E468",
+   "tarih": "2027-02-04",
+   "tur": "evrak_tahsile_ver"
+  },
+  {
+   "aciklama": "Fark",
+   "cari": "C1",
+   "tarih": "2027-02-05",
+   "tur": "borc_yaz",
+   "tutar": 7100,
+   "vade": null
+  },
+  {
+   "tarih": "2027-02-05",
+   "tur": "kasa_cikis",
+   "tutar": 50600
+  },
+  {
+   "tarih": "2027-02-05",
+   "tur": "kasa_giris",
+   "tutar": 45100
+  },
+  {
+   "K": 22460,
+   "M": 112300,
+   "cari": "C1",
+   "id": "F474",
    "kalemler": [
     {
      "miktar": 8,
-     "urun": "U1"
-    }
-   ],
-   "tarih": "2027-02-03",
-   "tur": "satis_faturasi",
-   "vade": "2027-02-18"
-  },
-  {
-   "K": 60660,
-   "M": 303300,
-   "cari": "C1",
-   "id": "F476",
-   "kalemler": [
-    {
-     "miktar": 3,
-     "urun": "U2"
-    }
-   ],
-   "tarih": "2027-02-04",
-   "tur": "satis_faturasi",
-   "vade": "2027-03-06"
-  },
-  {
-   "cari": "C5",
-   "id": "P477",
-   "komisyon": 4038,
-   "pos": "POS1",
-   "tarih": "2027-02-04",
-   "tur": "tahsilat",
-   "tutar": 201900,
-   "valor": "2027-02-08",
-   "yol": "pos"
-  },
-  {
-   "tarih": "2027-02-04",
-   "tur": "kasa_cikis",
-   "tutar": 16400
-  },
-  {
-   "banka": "B1",
-   "karsi": "havale",
-   "miktar": 19,
-   "tarih": "2027-02-06",
-   "tur": "stok_giris",
-   "tutar": 27930,
-   "urun": "U3"
-  },
-  {
-   "K": 0,
-   "M": 160700,
-   "cari": "C2",
-   "id": "F478",
-   "kalemler": [
-    {
-     "miktar": 4,
-     "urun": "U3"
-    }
-   ],
-   "tarih": "2027-02-06",
-   "tur": "satis_faturasi"
-  },
-  {
-   "K": 9010,
-   "M": 45050,
-   "cari": "T2",
-   "fatura_turu": "stok",
-   "id": "A479",
-   "kalemler": [
-    {
-     "miktar": 17,
      "urun": "U3"
     }
    ],
    "tarih": "2027-02-07",
+   "tur": "satis_faturasi"
+  },
+  {
+   "banka": "B1",
+   "cari": "C4",
+   "id": "P475",
+   "tarih": "2027-02-08",
+   "tur": "tahsilat",
+   "tutar": 293300,
+   "yol": "havale"
+  },
+  {
+   "cari": "C2",
+   "taksit_karti": "TK196",
+   "tarih": "2027-02-08",
+   "tur": "tahsilat",
+   "tutar": 8200,
+   "yol": "nakit"
+  },
+  {
+   "K": 11220,
+   "M": 56100,
+   "cari": "T1",
+   "fatura_turu": "stok",
+   "id": "A476",
+   "kalemler": [
+    {
+     "miktar": 30,
+     "urun": "U2"
+    }
+   ],
+   "tarih": "2027-02-09",
+   "tur": "alis_faturasi"
+  },
+  {
+   "cari": "C5",
+   "id": "TK477",
+   "kaynak": "yeni_borc",
+   "taksitler": [
+    {
+     "tutar": 21333,
+     "vade": "2027-03-11"
+    },
+    {
+     "tutar": 21333,
+     "vade": "2027-04-10"
+    },
+    {
+     "tutar": 21334,
+     "vade": "2027-05-10"
+    }
+   ],
+   "tarih": "2027-02-09",
+   "toplam": 64000,
+   "tur": "taksit_karti"
+  },
+  {
+   "K": 0,
+   "M": 31290,
+   "cari": "T3",
+   "fatura_turu": "stok",
+   "id": "A478",
+   "kalemler": [
+    {
+     "miktar": 21,
+     "urun": "U3"
+    }
+   ],
+   "tarih": "2027-02-09",
    "tur": "alis_faturasi"
   },
   {
    "banka": "B1",
    "evrak": "V463",
-   "tarih": "2027-02-07",
+   "tarih": "2027-02-09",
    "tur": "verilen_evrak_ode"
   },
   {
    "banka": "B1",
-   "karsi": "havale",
-   "miktar": 9,
-   "tarih": "2027-02-07",
-   "tur": "stok_giris",
-   "tutar": 8280,
-   "urun": "U3"
-  },
-  {
-   "K": 0,
-   "M": 76800,
-   "cari": "T1",
-   "fatura_turu": "stok",
-   "id": "A480",
-   "kalemler": [
-    {
-     "miktar": 30,
-     "urun": "U3"
-    }
-   ],
-   "tarih": "2027-02-07",
-   "tur": "alis_faturasi"
-  },
-  {
-   "K": 0,
-   "M": 64680,
    "cari": "T3",
-   "fatura_turu": "stok",
-   "id": "A481",
-   "kalemler": [
-    {
-     "miktar": 22,
-     "urun": "U2"
-    }
-   ],
-   "tarih": "2027-02-08",
-   "tur": "alis_faturasi"
-  },
-  {
-   "banka": "B2",
-   "tarih": "2027-02-08",
-   "tur": "banka_diger_gelir",
-   "tutar": 4600
-  },
-  {
-   "tarih": "2027-02-09",
-   "tur": "kasa_cikis",
-   "tutar": 39100
-  },
-  {
-   "tarih": "2027-02-09",
-   "tur": "kasa_giris",
-   "tutar": 43000
-  },
-  {
-   "K": 0,
-   "M": 187200,
-   "cari": "C2",
-   "id": "F482",
-   "kalemler": [
-    {
-     "miktar": 3,
-     "urun": "U1"
-    }
-   ],
+   "fatura": "A238",
    "tarih": "2027-02-10",
-   "tur": "satis_faturasi",
-   "vade": "2027-03-12"
+   "tur": "odeme",
+   "tutar": 30264,
+   "yol": "havale"
   },
   {
    "ad": "yenile",
