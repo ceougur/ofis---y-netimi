@@ -359,30 +359,58 @@ class OlayMaddeleri(unittest.TestCase):
         self.assertEqual((mz["120|C3"]["bakiye"], mz["128|C3"]["bakiye"]), (4000, 10000))
         self.assertEqual(r["redler"], [])
 
-    def test_S25_kart_kahin_susar(self):
-        # README Z8 / KULLANICIYA SORULMALI 1 (kâhin bakımı 5): Kredi Kartına İade (T-11, yol kart) ile şüpheli caride faturaya bağlı tahsilat — karar (c) yalnız
-        # nakit / havale / POS sayar → kâhin kural kurmaz (senaryo hatası; ne ret ne kabul). Eski kâhin SUPHELI_NORMAL_ASIM ile reddediyordu (120 bakiyesi 0)
+    # ---- kâhin bakımı 6 (beklenenler model değiştirilmeden ÖNCE elle yazıldı; README X1…X13)
+    def test_S39_kart_iade_s25_ile_ayni(self):
+        # S39 A (README X1–X6; bakım 5'in test_S25_kart_kahin_susar'ının YERİNE — eski beklenti: açık şüpheli kaydında faturaya bağlı Kredi Kartına İade senaryo
+        # hatası, kâhin susar): F4 10000'in tamamı şüpheliye aktarıldı (SB); faturaya bağlı kart iadesi 1000 → S25 / S14 ile aynı: A 128 1000 (SB 10000 → 9000),
+        # faturanın 120'de kısmı yok; madde B 309.KK1 1000 / A 128 1000; red yok. S39 B (120 + sınır) olsaydı normal 1000 > 120 bakiyesi 0 → SUPHELI_NORMAL_ASIM
         bas = [o("satis_faturasi", "2026-03-01", id="F4", cari="C3", M=10000, K=0, vade="2026-03-31")]
-        with self.assertRaises(AssertionError):
-            M.kos(senaryo(bas + [o("supheliye_al", "2026-05-01", id="SB", cari="C3", tutar=10000),
-                                 o("tahsilat", "2026-05-10", cari="C3", yol="kart", kart="KK1", tutar=1000, fatura="F4")]))
-        # açık şüpheli kaydı yoksa kural var (T-11, bağlı tahsilat 120): susma yok
+        r = M.kos(senaryo(bas + [o("supheliye_al", "2026-05-01", id="SB", cari="C3", tutar=10000),
+                                 o("tahsilat", "2026-05-10", id="KI", cari="C3", yol="kart", kart="KK1", tutar=1000, fatura="F4"),
+                                 E.R("sk", "supheli_kayitlari", cari="C3"), E.R("yev", "yevmiye", bas="2026-05-10", son="2026-05-10"),
+                                 E.MZ("mz", "2026-01-01", "2026-06-30")]))
+        mz = r["raporlar"]["mz"]["satirlar"]
+        self.assertEqual(r["redler"], [])
+        self.assertEqual((mz["128|C3"]["bakiye"], mz.get("120|C3", {}).get("bakiye", 0), mz["309.KK1"]["bakiye"]), (9000, 0, 1000))
+        self.assertEqual(r["raporlar"]["sk"][0]["kalan"], 9000)
+        self.assertEqual([satirlar(m) for m in r["raporlar"]["yev"]], [{"309.KK1": 1000, "128|C3": -1000}])
+        # açık şüpheli kaydı yoksa bağlı kart iadesi 120'de (plan §3.11b/2 (b); DEĞİŞMEDİ)
         r = M.kos(senaryo(bas + [o("tahsilat", "2026-05-10", cari="C3", yol="kart", kart="KK1", tutar=1000, fatura="F4"),
                                  E.MZ("mz", "2026-01-01", "2026-06-30")]))
         self.assertEqual((r["redler"], r["raporlar"]["mz"]["satirlar"]["120|C3"]["bakiye"]), ([], 9000))
+        # bağsız kart iadesi şüpheli caride K3 genel kuralıyla önce 128 (EK-2 Soru 31 (b); DEĞİŞMEDİ)
+        r = M.kos(senaryo(bas + [o("supheliye_al", "2026-05-01", id="SB", cari="C3", tutar=6000),
+                                 o("tahsilat", "2026-05-10", cari="C3", yol="kart", kart="KK1", tutar=1000),
+                                 E.MZ("mz", "2026-01-01", "2026-06-30")]))
+        mz = r["raporlar"]["mz"]["satirlar"]
+        self.assertEqual((r["redler"], mz["128|C3"]["bakiye"], mz["120|C3"]["bakiye"]), ([], 5000, 4000))
 
-    def test_S26_tutar_disi_alan_kahin_susar(self):
-        # README Z10 / KULLANICIYA SORULMALI 2 (kâhin bakımı 5): geri yüklenmiş, açılıştan önce tarihli Kasa kaydının tarihi değişmeden TUTAR DIŞINDA bir alanı
-        # düzeltilirse (karar "yalnız tutarı", gerekçe "tarih değişmiyor") iki okuma → kâhin kural kurmaz (senaryo hatası). Yalnız tutar → kabul (S26 A).
-        # Eski kâhin: T12 ile hepsini reddederdi
-        bas = [o("kasa_acilis", "2026-02-01", id="KA", tutar=10000, yedekten=True),
-               o("tahsilat", "2026-01-25", id="PY", cari="C1", yol="nakit", tutar=500, yedekten=True)]
-        for dg in ({"cari": "C3"}, {"tutar": 600, "aciklama": "düzeltme"}):
-            with self.assertRaises(AssertionError, msg=str(dg)):
-                M.kos(senaryo(bas + [o("duzenle", kaynak="PY", degisiklik=dg)]))
-        r = M.kos(senaryo(bas + [o("duzenle", kaynak="PY", degisiklik={"tutar": 600}), E.MZ("mz", "2026-01-01", "2026-02-28")]))
-        self.assertEqual((r["redler"], r["raporlar"]["mz"]["satirlar"]["100"]["bakiye"]), ([], 10600))
+    def test_S40_kapsam_disi_kahin_susar(self):
+        # S40 A (README X7–X11; bakım 5'in test_S26_tutar_disi_alan_kahin_susar'ının YERİNE — eski beklenti: {"cari"} ve {"tutar", "aciklama"} senaryo hatası):
+        # geri yüklenmiş (yedekten), Kasa açılışından önce tarihli Kasa kaydının tarihi değişmeden carisi / açıklaması düzeltilirse KABUL; tutar + açıklama birlikte KABUL;
+        # Mutabakat uyarısı sürer. Kâhinin sustuğu (X11, KULLANICIYA SORULMALI 1–2): parantezde sayılmayan alan (fatura bağı, Normal Cari Hesaba İşle), BAĞLI kaydın
+        # carisi, carisiz Kasa kaydına cari → senaryo hatası
+        bas = [o("satis_faturasi", "2026-01-20", id="F1", cari="C1", M=1000, K=0),
+               o("kasa_acilis", "2026-02-01", id="KA", tutar=10000, yedekten=True),
+               o("kasa_giris", "2026-01-24", id="KY", tutar=200, yedekten=True),
+               o("tahsilat", "2026-01-25", id="PY", cari="C1", yol="nakit", tutar=500, yedekten=True),
+               o("tahsilat", "2026-01-26", id="PB", cari="C1", yol="nakit", tutar=300, fatura="F1", yedekten=True)]
+        for kaynak, dg in (("PY", {"fatura": "F1"}), ("PY", {"normal_cari": True}), ("PB", {"cari": "C3"}), ("KY", {"cari": "C1"})):
+            with self.assertRaises(AssertionError, msg=f"{kaynak} {dg}"):
+                M.kos(senaryo(bas + [o("duzenle", kaynak=kaynak, degisiklik=dg)]))
+        r = M.kos(senaryo(bas + [o("duzenle", kaynak="PY", degisiklik={"cari": "C3"}),
+                                 o("duzenle", kaynak="KY", degisiklik={"aciklama": "sayım farkı"}),
+                                 o("duzenle", kaynak="PB", degisiklik={"tutar": 400, "aciklama": "düzeltme"}),
+                                 E.R("mu", "mutabakat_uyarilari", tarih="2026-02-28"), E.MZ("mz", "2026-01-01", "2026-02-28")]))
+        # Kasa = 10000 + 200 + 500 + 400; 120|C1 = 1000 − 400 (PB, F1'e bağlı); 120|C3 = −500 (PY'nin carisi C3 oldu, C3'te açık borç yok → alacaklı); uyarı sürer
+        s = r["raporlar"]["mz"]["satirlar"]
+        self.assertEqual(r["redler"], [])
+        self.assertEqual((s["100"]["bakiye"], s["120|C1"]["bakiye"], s["120|C3"]["bakiye"]), (11100, 600, -500))
+        self.assertEqual([u["kaynak"] for u in r["raporlar"]["mu"]], ["KY", "PY", "PB"])
         self.assertTrue(M.tumu_tuttu(r["degismezler"]), r["degismezler"])
+        # tarih açılıştan önceki başka bir güne değişirse düzeltmenin TAMAMI T12 ile red (açıklama da yazılmaz)
+        r = M.kos(senaryo(bas + [o("duzenle", kaynak="PY", degisiklik={"aciklama": "x", "tarih": "2026-01-27"})]))
+        self.assertEqual([x["kod"] for x in r["redler"]], ["KASA_ACILIS_ONCE"])
 
     def test_S14_hedef_kalem_kapanir(self):
         # README Y3 (bakım 4'te mutant tasarımında görülüp SONRADAN elle eklendi: şüpheli kuyruğunda hangi kalemin kapandığını hiçbir senaryo ölçmüyordu):
