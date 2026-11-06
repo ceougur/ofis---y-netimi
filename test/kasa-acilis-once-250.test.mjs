@@ -147,54 +147,75 @@ describe("Ç5-K S12 = A: Kasa açılışından ÖNCE tarihli YENİ nakit hareket
     assert.equal(warningOf(integrity), null, "açılıştan önce satır yokken uyarı yok");
   });
 
-  it("B11 / T12: düzeltmeyle tarihi açılıştan önceye çekmek 409 (satır değişmez); açılış günü 200", async () => {
-    const card = await must("Kasa", api.get("/api/workspace/cash?method=all"));
-    const entry = card.entries.find(row => row.source === "manual" && row.kind === "in" && row.date === AFTER && !row.opening && !row.transferId);
-    assert.ok(entry, "ön koşul: sonra tarihli Kasa Giriş");
-    const res = await refused("Kasa Giriş tarihi önceye", api.put(`/api/workspace/cash/${entry.id}`, { kind: "in", amount: "100", date: BEFORE, description: "Kasaya giriş" }));
+});
+
+describe("Ç5-K B11 / T12 (düzeltme) — her test kendi kayıtlarıyla (eski kodda kırmızının nedeni S12'nin yokluğu)", () => {
+  let server;
+  let api;
+  let ctx;
+  const rows = {};
+  before(async () => {
+    server = await startTestServer({ now: { time: NOW, fixed: true } });
+    api = apiOf(await loginAdmin(server));
+    ctx = await setup(api);
+    await must("Kasa açılışı", api.post("/api/workspace/cash/opening", { amount: "100.000", date: OPEN }));
+    const store = server.app.store;
+    rows.cash = idOf(await must("Kasa Giriş", api.post("/api/workspace/cash", { kind: "in", amount: "100", date: AFTER, description: "Kasaya giriş", method: "cash" })));
+    rows.account = (await must("cari tahsilat", api.post(`/api/workspace/accounts/${ctx.customer}/entries`, { kind: "in", amount: "40", date: AFTER, method: "cash", note: "nakit" }))).entryId;
+    rows.wire = (await must("havale tahsilat (açılıştan önce, nakit değil)", api.post(`/api/workspace/accounts/${ctx.customer}/entries`, { kind: "in", amount: "40", date: BEFORE, method: "bank", bankAccountId: ctx.bankId, ...FORCE }))).entryId;
+    rows.payment = idOf(await must("kayıt tahsilatı", api.post("/api/workspace/cases/DOSYA-T12/payments", { amount: "15", date: AFTER, method: "cash", caseTitle: "T12" })));
+    await must("taksit tahsilatı", api.post(`/api/workspace/plans/${ctx.plan}/entries`, { kind: "in", amount: "25", date: AFTER, method: "cash" }));
+    rows.plan = store.get("SELECT id FROM plan_entries WHERE plan_id = ? AND date = ? AND opening = 0", ctx.plan, AFTER).id;
+    await must("stok", api.post(`/api/workspace/stock/${ctx.item}/moves`, { kind: "in", qty: "1", unitPrice: "10,00", pay: "cash", method: "cash", date: AFTER, note: "nakit alım", ...FORCE }));
+    rows.move = store.get("SELECT id FROM stock_moves WHERE item_id = ? AND date = ? AND pay = 'cash' AND kind = 'in'", ctx.item, AFTER).id;
+    rows.transfer = (await must("transfer", api.post("/api/workspace/cash/transfer", { direction: "to-cash", amount: "50", date: AFTER, bankAccountId: ctx.bankId, ...FORCE }))).id;
+  });
+  after(() => server?.close());
+
+  it("B11 / T12: düzeltmeyle tarihi açılıştan önceye çekmek 409 (satır değişmez); açılış günü 200 — Kasa Giriş, cari, kayıt, taksit, stok, transfer", async () => {
+    const store = server.app.store;
+    const res = await refused("Kasa Giriş tarihi önceye", api.put(`/api/workspace/cash/${rows.cash}`, { kind: "in", amount: "100", date: BEFORE, description: "Kasaya giriş" }));
     assert.equal(res.data?.change, true, "düzeltme reddi işaretli");
     assert.match(String(res.error || ""), /Düzeltmeyle hareketin tarihi \(09\.03\.2026\)/);
-    assert.equal(server.app.store.get("SELECT date FROM cash_entries WHERE id = ?", entry.id).date, AFTER, "satır değişmedi");
-    await must("açılış gününe", api.put(`/api/workspace/cash/${entry.id}`, { kind: "in", amount: "100", date: OPEN, description: "Kasaya giriş" }));
-    // Cari nakit tahsilat
-    const acc = await must("cari kartı", api.get(`/api/workspace/accounts/${ctx.customer}`));
-    const pay = acc.entries.find(row => row.kind === "in" && row.method === "cash" && row.date === AFTER && !row.source);
-    await refused("cari tahsilat tarihi önceye", api.put(`/api/workspace/accounts/${ctx.customer}/entries/${pay.id}`, { kind: "in", amount: "40", date: BEFORE, method: "cash", note: "nakit" }));
-    // Kayıt tahsilatı
-    const payment = server.app.store.get("SELECT id FROM payments WHERE case_key = 'DOSYA-NAKIT' AND date = ?", AFTER);
-    await refused("kayıt tahsilatı tarihi önceye", api.put(`/api/workspace/payments/${payment.id}`, { amount: "15", date: BEFORE, method: "cash" }));
-    // Taksit tahsilatı
-    const planEntry = server.app.store.get("SELECT id FROM plan_entries WHERE plan_id = ? AND date = ? AND opening = 0", ctx.plan, AFTER);
-    await refused("taksit tahsilatı tarihi önceye", api.put(`/api/workspace/plans/${ctx.plan}/entries/${planEntry.id}`, { kind: "in", amount: "25", date: BEFORE, method: "cash" }));
-    // Stok
-    const move = server.app.store.get("SELECT id FROM stock_moves WHERE item_id = ? AND date = ? AND pay = 'cash' AND kind = 'in'", ctx.item, AFTER);
-    await refused("stok hareketi tarihi önceye", api.put(`/api/workspace/stock/${ctx.item}/moves/${move.id}`, { kind: "in", qty: "1", unitPrice: "10,00", pay: "cash", method: "cash", date: BEFORE, note: "nakit alım", ...FORCE }));
-    // Kasa ↔ Banka transferi (nakit bacağı)
-    const transfer = server.app.store.get("SELECT id FROM cash_entries WHERE transfer_id <> '' AND method = 'cash' AND date = ? AND kind = 'in'", AFTER);
-    await refused("transfer tarihi önceye", api.put(`/api/workspace/cash/${transfer.id}`, { kind: "in", amount: "50", date: BEFORE, description: "Bankadan Kasaya Aktarım", ...FORCE }));
-    assert.equal(server.app.store.get("SELECT COUNT(*) AS n FROM cash_entries WHERE transfer_id = (SELECT transfer_id FROM cash_entries WHERE id = ?) AND date = ?", transfer.id, AFTER).n, 2, "transferin iki bacağı yerinde");
+    assert.equal(store.get("SELECT date FROM cash_entries WHERE id = ?", rows.cash).date, AFTER, "satır değişmedi");
+    await must("açılış gününe", api.put(`/api/workspace/cash/${rows.cash}`, { kind: "in", amount: "100", date: OPEN, description: "Kasaya giriş" }));
+    await refused("cari tahsilat tarihi önceye", api.put(`/api/workspace/accounts/${ctx.customer}/entries/${rows.account}`, { kind: "in", amount: "40", date: BEFORE, method: "cash", note: "nakit" }));
+    assert.equal(store.get("SELECT date FROM account_entries WHERE id = ?", rows.account).date, AFTER);
+    await refused("kayıt tahsilatı tarihi önceye", api.put(`/api/workspace/payments/${rows.payment}`, { amount: "15", date: BEFORE, method: "cash" }));
+    await refused("taksit tahsilatı tarihi önceye", api.put(`/api/workspace/plans/${ctx.plan}/entries/${rows.plan}`, { kind: "in", amount: "25", date: BEFORE, method: "cash" }));
+    await refused("stok hareketi tarihi önceye", api.put(`/api/workspace/stock/${ctx.item}/moves/${rows.move}`, { kind: "in", qty: "1", unitPrice: "10,00", pay: "cash", method: "cash", date: BEFORE, note: "nakit alım", ...FORCE }));
+    await refused("transfer tarihi önceye", api.put(`/api/workspace/cash/${rows.transfer}`, { kind: "in", amount: "50", date: BEFORE, description: "Bankadan Kasaya Aktarım", ...FORCE }));
+    assert.equal(store.get("SELECT COUNT(*) AS n FROM cash_entries WHERE transfer_id = (SELECT transfer_id FROM cash_entries WHERE id = ?) AND date = ?", rows.transfer, AFTER).n, 2, "transferin iki bacağı yerinde");
   });
 
   it("B11 / T12: açılıştan önce tarihli havale tahsilatını NAKDE çeviren düzeltme 409 (converted); havale olarak kalır", async () => {
-    const acc = await must("cari kartı", api.get(`/api/workspace/accounts/${ctx.customer}`));
-    const wire = acc.entries.find(row => row.kind === "in" && row.method === "bank" && row.date === BEFORE);
-    assert.ok(wire, "ön koşul: açılıştan önce havale tahsilatı (nakit değil, kabul edildi)");
-    const res = await refused("havale → nakit", api.put(`/api/workspace/accounts/${ctx.customer}/entries/${wire.id}`, { kind: "in", amount: "40", date: BEFORE, method: "cash", note: "nakde çevir" }));
+    const res = await refused("havale → nakit", api.put(`/api/workspace/accounts/${ctx.customer}/entries/${rows.wire}`, { kind: "in", amount: "40", date: BEFORE, method: "cash", note: "nakde çevir" }));
     assert.match(String(res.error || ""), /nakde \(Kasa'ya\) çevrilirse/);
-    assert.equal(server.app.store.get("SELECT method FROM account_entries WHERE id = ?", wire.id).method, "bank");
-    await must("havale → nakit, tarih açılış günü", api.put(`/api/workspace/accounts/${ctx.customer}/entries/${wire.id}`, { kind: "in", amount: "40", date: OPEN, method: "cash", note: "nakde çevir" }));
+    assert.equal(server.app.store.get("SELECT method FROM account_entries WHERE id = ?", rows.wire).method, "bank");
+    await must("havale → nakit, tarih açılış günü", api.put(`/api/workspace/accounts/${ctx.customer}/entries/${rows.wire}`, { kind: "in", amount: "40", date: OPEN, method: "cash", note: "nakde çevir" }));
   });
+});
 
-  it("R8: açılışı ilk nakit hareketinden sonraya almak düzeltmede de 409 (tarih ve tutar biçimleri); öne almak 200 ve kural yeni tarihle işler", async () => {
+describe("Ç5-K R8 (açılışın düzeltilmesi) — ayrı şirket verisi", () => {
+  let server;
+  let api;
+  before(async () => {
+    server = await startTestServer({ now: { time: NOW, fixed: true } });
+    api = apiOf(await loginAdmin(server));
+    await api.post("/api/workspace/bank/setup/dismiss", {});
+    await must("Kasa açılışı", api.post("/api/workspace/cash/opening", { amount: "100.000", date: OPEN }));
+    await must("açılış günü Kasa Giriş (ilk hareket)", api.post("/api/workspace/cash", { kind: "in", amount: "100", date: OPEN, description: "ilk", method: "cash" }));
+  });
+  after(() => server?.close());
+
+  it("R8: açılışı ilk nakit hareketinden sonraya almak düzeltmede de 409 (tarih ve tutar biçimleri); öne almak 200 ve kural yeni tarihle işler (önbellek bayatlamaz)", async () => {
     const opening = (await must("açılış", api.get("/api/workspace/cash/opening"))).opening;
     await refused("açılışı sonraya", api.post("/api/workspace/cash/opening", { amount: "100.000", date: AFTER }), 409, "cash-opening-after-first");
     await refused("Kasa satırından açılışı sonraya", api.put(`/api/workspace/cash/${opening.id}`, { kind: "in", amount: "100.000", date: AFTER, description: opening.description }), 409, "cash-opening-after-first");
     await must("yalnız tutar (tarih aynı)", api.post("/api/workspace/cash/opening", { amount: "90.000", date: OPEN }));
     await must("açılışı öne al", api.post("/api/workspace/cash/opening", { amount: "90.000", date: EARLY }));
-    // Önbellek bayatlamaz: yeni açılış tarihiyle karar (EARLY'den önce red, EARLY ile OPEN arası kabul).
     await refused("yeni açılıştan önce", api.post("/api/workspace/cash", { kind: "in", amount: "1", date: "2026-03-04", description: "x", method: "cash" }));
     await must("eski açılıştan önce, yeni açılıştan sonra", api.post("/api/workspace/cash", { kind: "in", amount: "1", date: BEFORE, description: "x", method: "cash" }));
-    await must("açılışı geri al (OPEN'a, ilk hareket BEFORE olduğu için olmaz)", api.post("/api/workspace/cash/opening", { amount: "90.000", date: EARLY }));
     await refused("açılışı ilk hareketin (09.03) sonrasına", api.post("/api/workspace/cash/opening", { amount: "90.000", date: OPEN }), 409, "cash-opening-after-first");
   });
 });
@@ -466,21 +487,22 @@ describe("Ç5-K gün dönümü ve iki şirket", () => {
   let server;
   let api;
   before(async () => {
-    server = await startTestServer({ now: { time: `${OPEN}T23:59:30`, fixed: true } });
+    server = await startTestServer({ now: { time: `${OPEN}T00:00:30`, fixed: true } });
     api = apiOf(await loginAdmin(server));
     await api.post("/api/workspace/bank/setup/dismiss", {});
   });
   after(() => server?.close());
 
-  it("tarihsiz giriş programın bugününe yazılır: açılış günü 23:59:30 aynı gün 200; önceki gün 23:59:30'da 409; gece yarısından sonra 200 (yerel saat, iki TZ)", async () => {
+  it("tarihsiz giriş programın bugününe yazılır: açılış günü 00:00:30 ve 23:59:30 aynı gün 200; dünü (açılıştan önce) 409; gece yarısından sonra ertesi gün 200 (yerel saat, iki TZ)", async () => {
     await must("açılış", api.post("/api/workspace/cash/opening", { amount: "1.000", date: OPEN }));
-    await must("açılış günü, gün sonu", api.post("/api/workspace/cash", { kind: "in", amount: "1", description: "gün sonu", method: "cash" }));
-    server.clock.set(`${BEFORE}T23:59:30`);
-    await refused("önceki gün, gün sonu (tarih verilmeden)", api.post("/api/workspace/cash", { kind: "in", amount: "1", description: "önceki gün", method: "cash" }));
-    server.clock.set(`${OPEN}T00:00:30`);
     await must("açılış günü, gün başı", api.post("/api/workspace/cash", { kind: "in", amount: "1", description: "gün başı", method: "cash" }));
+    await refused("gece yarısından hemen sonra dünün tarihiyle", api.post("/api/workspace/cash", { kind: "in", amount: "1", date: BEFORE, description: "dün", method: "cash" }));
+    server.clock.set(`${OPEN}T23:59:30`);
+    await must("açılış günü, gün sonu", api.post("/api/workspace/cash", { kind: "in", amount: "1", description: "gün sonu", method: "cash" }));
+    server.clock.set(`${AFTER}T00:00:30`);
+    await must("ertesi gün, gün başı", api.post("/api/workspace/cash", { kind: "in", amount: "1", description: "ertesi gün", method: "cash" }));
     const rows = server.app.store.all("SELECT date FROM cash_entries WHERE is_opening = 0 ORDER BY rowid").map(row => row.date);
-    assert.deepEqual(rows, [OPEN, OPEN], "iki giriş de açılış gününe yazıldı");
+    assert.deepEqual(rows, [OPEN, OPEN, AFTER], "girişler yerel güne yazıldı");
     server.clock.set(NOW);
   });
 
