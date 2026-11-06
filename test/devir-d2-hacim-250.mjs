@@ -30,6 +30,8 @@ async function measure(name, fn) {
   const started = performance.now();
   const value = await fn();
   const ms = Math.round(performance.now() - started);
+  // İşin sonundaki eşzamanlı blok, gecikmiş zamanlayıcı turu çalışmadan histogram kapanırsa SAYILMAZDI (ilk koşuda "önce" kodu 3,7 sn / 10 ms gösterdi): bir tur beklenir.
+  await new Promise(resolve => setTimeout(resolve, 25));
   histogram.disable();
   const loopMax = Math.round(histogram.max / 1e6);
   results[name] = { ms, loopMaxMs: loopMax };
