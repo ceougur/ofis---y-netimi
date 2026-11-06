@@ -1,0 +1,43 @@
+{
+  "ad": "d2t2-eski-bakim-yeni-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-name-pattern=bakımdaki şirketin arşivi|korumasının düşürdüğü test/devir-d2-bakim-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T16:48:27.971Z",
+  "sure_sn": 2.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 0,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "D2 bakım kipi (G1.1) › bakımdaki şirketin arşivi açılmaz (503 maintenance): 001 bakımda eski şemalı arşiv istenince dosya / klasör / kayıt değişmez; açılış sürerken kip açılırsa (özet alınırken, göç kopyası hazırken) iş durur; 002 bakımda açık arşiv örneğine de istek gitmez, closeCompany sonrası yeniden açılmaz; öbür şirketin arşivi açılır; kip kalkınca açılır",
+      "konum": "test/devir-d2-bakim-250.test.mjs:371:3",
+      "hata": "001 bakımda 001 arşivi: 200 {\"ok\":true,\"data\":{\"entries\":[{\"id\":\"cash-817a45b2-6565-467b-9bc7-3d6ef3a05654\",\"kind\":\"in\",\"source\":\"manual\",\"method\":\"cash\",\"amount\":563.57,\"date\":\"2025-07-04\",\"description\":\"Elden tahsilat\",\"caseKey\":\"\",\"caseTitle\":\"\",\"transferId\":\"\",\"ac · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "D2 bakım kipi (G1.1) › 001 bakımda veri tabanı korumasının düşürdüğü yazım 503 maintenance (görevlerini devrederek kullanıcı sil), veri değişmez, kip kalkınca 200; koruma ortak katman dışındaki HER tabloda",
+      "konum": "test/devir-d2-bakim-250.test.mjs:455:3",
+      "hata": "bakımda görevlerini devrederek kullanıcı sil: 500 {\"ok\":false,\"error\":\"Sunucu işlemi tamamlayamadı.\"} · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../d2t2-kanit/eski/2026-11-06/d2t2-eski-bakim-yeni-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t2-eski-6dc3e150",
+  "ham_cikti_sha256": "8f3dc8b3223493987d7357face0731d1b3a6827de564602584d5067a89fc562e",
+  "ham_cikti_bayt": 4417
+}

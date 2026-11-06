@@ -21,9 +21,14 @@ const AR = "server/lib/devir/archives.mjs";
 const AO = "server/lib/devir/archive-open.mjs";
 const MA = "server/lib/devir/maintenance.mjs";
 const DB = "server/lib/devir/devir-backups.mjs";
+const DR = "server/routes/devir.mjs";
+const SQ = "server/lib/db.mjs";
 const BAKIM = "test/devir-d2-bakim-250.test.mjs";
 const ARSIV = "test/devir-d2-arsiv-250.test.mjs";
 const YEDEK = "test/devir-d2-yedek-250.test.mjs";
+// 2.5.0 D2 tur 2 (dar kontrol 06.11): iki aşamalı arşiv göçü (ORTA-1), bakımdaki şirketin arşivi (ORTA-2), DESTEKOFIS_BAKIM → 503 (DÜŞÜK-1), yaşayan mutantlar D2 / A2 / B1 (DÜŞÜK-2).
+const GOC = "test/devir-d2-arsiv-goc-kesinti-250.test.mjs";
+const PRAGMA = "test/db-tx-kayip-pragma-250.test.mjs";
 // [no, ad, dosya, eski metin (dosyada TAM BİR KEZ), yeni metin, koşulacak testler, çıktıda beklenen neden (düzenli ifade)]
 const MUTASYONLAR = [
   [1, "bakım kipi istek kapısı yok", APP, "          assertNotInMaintenance(pathname);\n", "", [BAKIM], /001 bakımda[\s\S]*bakım kipi 503 değil/],
@@ -54,6 +59,21 @@ const MUTASYONLAR = [
   [25, "geri alınmış devrin sonrası yedeği engellenmez", CB, "  if (after.length) {", "  if (false) {", [YEDEK], /not ok \d+ - Yedekten Geri Yükle \(002/],
   [26, "bakımdaki şirkete programdan geri yükleme", CB, "    if (!allowPaused && isPaused(target.id)) throw", "    if (false) throw", [YEDEK], /not ok \d+ - Yedekten Geri Yükle \(002/],
   [27, "Tümünü Sıfırla devir işaretini siler (KEEP_SETTINGS)", APP, "    \"devir.\"];", "    ];", [YEDEK], /sıfırlamadan sonra çalışma dosyası devrini bilir/],
+  // ---- 2.5.0 D2 tur 2 ----
+  [29, "bekleyen göç özeti kabul edilmez (taşımadan sonra kesilen göç 'Değişmiş')", AO, "  if (entry.pendingSha256 && sha256 !== entry.sha256 && sha256 === entry.pendingSha256) return { state: \"ok\", pending: true, sha256, size: stats.size };\n", "", [GOC], /kesme "tasindi" \(kanca\) sonrası yeniden açılış|ara şemada kalmış göç açılır/],
+  [30, "önce taşıma, sonra bekleyen özet (eski sıra)", AO,
+    "    registry.updateArchive(company.id, entry.year, { pendingSha256: sha256, pendingFrom: from, pendingAt });\n    step?.(\"bekleyen-yazildi\");\n    // Asıl dosya hiç yazılabilir açılmaz (günlük dosyası olmaz); eskiden kalmış -wal / -shm yeni dosyaya uygulanmasın.\n    for (const suffix of [\"-wal\", \"-shm\"]) rmSync(`${file}${suffix}`, { force: true });\n    await moveIntoPlace(work, file, guard);\n    moved = true;\n",
+    "    for (const suffix of [\"-wal\", \"-shm\"]) rmSync(`${file}${suffix}`, { force: true });\n    await moveIntoPlace(work, file, guard);\n    moved = true;\n    step?.(\"bekleyen-yazildi\");\n    registry.updateArchive(company.id, entry.year, { pendingSha256: sha256, pendingFrom: from, pendingAt });\n",
+    [GOC], /kesme "bekleyen-yazildi" \(kanca\) sonrası yeniden açılış/],
+  [31, "bakımdaki şirketin arşivi açılır (openArchive bakım denetimi yok)", APP, "    if (refusal) return Promise.reject(refusal);\n", "", [BAKIM], /002 bakımda açık arşiv örneği: 200/],
+  [32, "arşivin özeti alınırken bakıma giren şirkette iş sürer (ilk bekleme denetimi yok)", AO, "  // 2.5.0 D2 tur 2 (dar kontrol ORTA-2): özet alınırken şirket bakıma girdiyse arşive ve kayda hiçbir şey yazılmaz.\n  guard?.();\n", "", [BAKIM], /özet alınırken bakıma giren şirkette arşiv dosyası, klasörü ve kaydı değişmedi/],
+  [33, "göç kopyası hazırken bakıma giren şirkette göç tamamlanır (ikinci bekleme denetimi yok)", AO, "    guard?.();\n    const pendingAt = new Date().toISOString();", "    const pendingAt = new Date().toISOString();", [BAKIM], /göç kopyası hazırken bakıma giren şirket/],
+  [34, "DESTEKOFIS_BAKIM 503 maintenance'a çevrilmez (500)", APP, "      if (isMaintenanceAbort(error)) {", "      if (false) {", [BAKIM], /bakımda görevlerini devrederek kullanıcı sil: 500/],
+  [35, "D2 (dar kontrol): her PRAGMA okuma sayılır (get / all ile PRAGMA ataması korunmaz)", SQ, "|^\\s*PRAGMA\\s+[\\w.]+\\s*(?:\\([^)]*\\))?\\s*;?\\s*$/i;", "|^\\s*PRAGMA\\b/i;", [PRAGMA], /YAZDI \(hata yok\)|dosyanın şeması değişti/],
+  [36, "A2 (dar kontrol): diskten tanımada devir çalışması denetlenmez", AR, "  if (facts.mark.runId && live.runId && facts.mark.runId !== live.runId) return { reason: \"devir çalışması çalışma dosyasındakiyle aynı değil\" };\n", "", [ARSIV], /yalnız aynı devir çalışmasının arşivi tanındı/],
+  [37, "B1 (dar kontrol): 001 korumasında görev tablosu yok", MA, "        if (skip.has(table)) continue;", "        if (skip.has(table) || table === \"tasks\") continue;", [BAKIM], /bakımda görevlerini devrederek kullanıcı sil: 200/],
+  [38, "diskten tanınan arşiv bekleyen özeti kayıt kopyasından almaz", AR, "recovered: true, ...pending }),", "recovered: true }),", [GOC], /kayıt defteri kaybından sonra yeniden açılış/],
+  [39, "Doğrula bekleyen özeti kesinleştirmez", DR, "    if (result.pending) commitPendingMigration(", "    if (false) commitPendingMigration(", [GOC], /Doğrula bekleyen özeti kesinleştirdi/],
 ];
 // Çok noktalı mutant: [no, ad, [[dosya, eski, yeni], …], testler, neden].
 const COKLU = [
@@ -70,7 +90,7 @@ const run = files => {
   return { status: r.status, out, pass: count("pass"), fail: count("fail") };
 };
 
-const taban = run([BAKIM, ARSIV, YEDEK]);
+const taban = run([BAKIM, ARSIV, YEDEK, GOC, PRAGMA]);
 console.log(`taban: ${taban.pass} geçti / ${taban.fail} kaldı (çıkış ${taban.status})`);
 if (taban.status !== 0 || taban.fail !== 0 || !(taban.pass > 0)) throw new Error("taban testi yeşil değil — mutasyon taraması anlamsız");
 let yakalanan = 0;

@@ -1,0 +1,88 @@
+TAP version 13
+# Subtest: D2 bakım kipi (G1.1)
+    # Subtest: bakımdaki şirketin arşivi açılmaz (503 maintenance): 001 bakımda eski şemalı arşiv istenince dosya / klasör / kayıt değişmez; açılış sürerken kip açılırsa (özet alınırken, göç kopyası hazırken) iş durur; 002 bakımda açık arşiv örneğine de istek gitmez, closeCompany sonrası yeniden açılmaz; öbür şirketin arşivi açılır; kip kalkınca açılır
+    not ok 1 - bakımdaki şirketin arşivi açılmaz (503 maintenance): 001 bakımda eski şemalı arşiv istenince dosya / klasör / kayıt değişmez; açılış sürerken kip açılırsa (özet alınırken, göç kopyası hazırken) iş durur; 002 bakımda açık arşiv örneğine de istek gitmez, closeCompany sonrası yeniden açılmaz; öbür şirketin arşivi açılır; kip kalkınca açılır
+      ---
+      duration_ms: 1178.707185
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t2-eski-6dc3e150/test/devir-d2-bakim-250.test.mjs:371:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        001 bakımda 001 arşivi: 200 {"ok":true,"data":{"entries":[{"id":"cash-817a45b2-6565-467b-9bc7-3d6ef3a05654","kind":"in","source":"manual","method":"cash","amount":563.57,"date":"2025-07-04","description":"Elden tahsilat","caseKey":"","caseTitle":"","transferId":"","ac
+        + actual - expected
+        
+          [
+        +   200,
+        +   undefined
+        -   503,
+        -   'maintenance'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 503
+        1: 'maintenance'
+      actual:
+        0: 200
+      operator: 'deepStrictEqual'
+      stack: |-
+        refusedWith (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t2-eski-6dc3e150/test/devir-d2-bakim-250.test.mjs:386:16)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t2-eski-6dc3e150/test/devir-d2-bakim-250.test.mjs:392:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 8)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: 001 bakımda veri tabanı korumasının düşürdüğü yazım 503 maintenance (görevlerini devrederek kullanıcı sil), veri değişmez, kip kalkınca 200; koruma ortak katman dışındaki HER tabloda
+    not ok 2 - 001 bakımda veri tabanı korumasının düşürdüğü yazım 503 maintenance (görevlerini devrederek kullanıcı sil), veri değişmez, kip kalkınca 200; koruma ortak katman dışındaki HER tabloda
+      ---
+      duration_ms: 434.627077
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t2-eski-6dc3e150/test/devir-d2-bakim-250.test.mjs:455:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bakımda görevlerini devrederek kullanıcı sil: 500 {"ok":false,"error":"Sunucu işlemi tamamlayamadı."}
+        + actual - expected
+        
+          [
+        +   500,
+        +   undefined
+        -   503,
+        -   'maintenance'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 503
+        1: 'maintenance'
+      actual:
+        0: 500
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t2-eski-6dc3e150/test/devir-d2-bakim-250.test.mjs:470:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - D2 bakım kipi (G1.1)
+  ---
+  duration_ms: 1615.687832
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t2-eski-6dc3e150/test/devir-d2-bakim-250.test.mjs:82:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2077.827181

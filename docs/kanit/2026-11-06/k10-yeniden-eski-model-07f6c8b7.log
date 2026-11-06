@@ -1,0 +1,255 @@
+.............F.............FF................................................................................................F..........................F......FFFF.................
+======================================================================
+FAIL: test_senaryo_ve_beklenen_dosyalari_guncel (__main__.Dosyalar.test_senaryo_ve_beklenen_dosyalari_guncel)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/test_model.py", line 1132, in test_senaryo_ve_beklenen_dosyalari_guncel
+    self.assertEqual(UB.main(denetle=True), 0, "python3 test/bagimsiz/muhasebe/uret_beklenen.py ile yeniden yazın")
+                     ~~~~~~~^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/uret_beklenen.py", line 54, in main
+    for yol, icerik in ((os.path.join(SEN, s["ad"] + ".json"), metin(s)), (os.path.join(BEK, s["ad"] + ".json"), metin(beklenen(s)))):
+                                                                                                                       ~~~~~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/uret_beklenen.py", line 41, in beklenen
+    r = M.kos(s, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 3861, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2562, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2588, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2709, in _o_duzenle
+    self._s57_kapsam(d, k, dg)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2721, in _s57_kapsam
+    raise AssertionError("senaryo hatası: formdaki peşin ödemenin (fatura_odemesi) carisi düzeltildi — faturanın düzenlenmesidir (F-14); kâhin susar "
+                         "(README bakım 8 U7 (b), bakım 9 P7 (c), KULLANICIYA SORULMALI 1)")
+AssertionError: senaryo hatası: formdaki peşin ödemenin (fatura_odemesi) carisi düzeltildi — faturanın düzenlenmesidir (F-14); kâhin susar (README bakım 8 U7 (b), bakım 9 P7 (c), KULLANICIYA SORULMALI 1)
+
+======================================================================
+FAIL: test_s104_s80_formdaki_pesin_cari (__main__.ElleSenaryolar.test_s104_s80_formdaki_pesin_cari)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/test_model.py", line 892, in test
+    r = M.kos(x, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 3861, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2562, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2588, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2709, in _o_duzenle
+    self._s57_kapsam(d, k, dg)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2721, in _s57_kapsam
+    raise AssertionError("senaryo hatası: formdaki peşin ödemenin (fatura_odemesi) carisi düzeltildi — faturanın düzenlenmesidir (F-14); kâhin susar "
+                         "(README bakım 8 U7 (b), bakım 9 P7 (c), KULLANICIYA SORULMALI 1)")
+AssertionError: senaryo hatası: formdaki peşin ödemenin (fatura_odemesi) carisi düzeltildi — faturanın düzenlenmesidir (F-14); kâhin susar (README bakım 8 U7 (b), bakım 9 P7 (c), KULLANICIYA SORULMALI 1)
+
+======================================================================
+FAIL: test_s105_s81_olagan_normal_cari_siniri (__main__.ElleSenaryolar.test_s105_s81_olagan_normal_cari_siniri)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/test_model.py", line 892, in test
+    r = M.kos(x, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 3861, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2562, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2588, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2709, in _o_duzenle
+    self._s57_kapsam(d, k, dg)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2724, in _s57_kapsam
+    self._s79_hedef(d, k, dg)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2758, in _s79_hedef
+    raise AssertionError("senaryo hatası: S79 düzeltmesi yeni carinin açık şüpheli kaydıyla plan §3.11b/2 (S56) sınırını aşıyor — olağan düzeltmede "
+                         "sınır iki okumalı; kâhin susar (README bakım 9 P7 (d), KULLANICIYA SORULMALI 2)") from None
+AssertionError: senaryo hatası: S79 düzeltmesi yeni carinin açık şüpheli kaydıyla plan §3.11b/2 (S56) sınırını aşıyor — olağan düzeltmede sınır iki okumalı; kâhin susar (README bakım 9 P7 (d), KULLANICIYA SORULMALI 2)
+
+======================================================================
+FAIL: test_EK2_4_1_ayni_gun_yazim_sirasi_sonucu_degistirmez (__main__.OlayMaddeleri.test_EK2_4_1_ayni_gun_yazim_sirasi_sonucu_degistirmez)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/test_model.py", line 800, in test_EK2_4_1_ayni_gun_yazim_sirasi_sonucu_degistirmez
+    self.assertEqual(ozet(x), ozet(y), s["ad"])
+                     ~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/test_model.py", line 780, in ozet
+    m.kos()
+    ~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2562, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2588, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2709, in _o_duzenle
+    self._s57_kapsam(d, k, dg)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2721, in _s57_kapsam
+    raise AssertionError("senaryo hatası: formdaki peşin ödemenin (fatura_odemesi) carisi düzeltildi — faturanın düzenlenmesidir (F-14); kâhin susar "
+                         "(README bakım 8 U7 (b), bakım 9 P7 (c), KULLANICIYA SORULMALI 1)")
+AssertionError: senaryo hatası: formdaki peşin ödemenin (fatura_odemesi) carisi düzeltildi — faturanın düzenlenmesidir (F-14); kâhin susar (README bakım 8 U7 (b), bakım 9 P7 (c), KULLANICIYA SORULMALI 1)
+
+======================================================================
+FAIL: test_S40_S44_S45_kapsam_ve_susma (__main__.OlayMaddeleri.test_S40_S44_S45_kapsam_ve_susma)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2695, in _o_duzenle
+    self._kasa_acilis_oncesi(d, dg.get("tarih", k.tarih), lambda dd: self._duzelt(dd.kaynaklar[k.id], dg))
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2619, in _kasa_acilis_oncesi
+    raise Red("KASA_ACILIS_ONCE", f"Kasa hareketi {min(once)} < Kasa açılışı {a0}")
+model.Red: KASA_ACILIS_ONCE: Kasa hareketi 2026-01-22 < Kasa açılışı 2026-02-01
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/test_model.py", line 434, in test_S40_S44_S45_kapsam_ve_susma
+    r = M.kos(senaryo(bas + [o("duzenle", kaynak="PP", degisiklik={"cari": "C3"}), E.MZ("mz", "2026-01-01", "2026-02-28")]))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 3861, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2562, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2588, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2705, in _o_duzenle
+    self._s40_kapsam(k, dg)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2776, in _s40_kapsam
+    raise AssertionError("senaryo hatası: formdaki peşin ödemenin (fatura_odemesi) bağı / carisi düzeltildi — faturanın düzenlenmesidir (F-14), kararların "
+                         "konusu değil (README bakım 7 V3 (e))")
+AssertionError: senaryo hatası: formdaki peşin ödemenin (fatura_odemesi) bağı / carisi düzeltildi — faturanın düzenlenmesidir (F-14), kararların konusu değil (README bakım 7 V3 (e))
+
+======================================================================
+FAIL: test_S79_olagan_kayit_bag_cari (__main__.OlayMaddeleri.test_S79_olagan_kayit_bag_cari)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/test_model.py", line 536, in test_S79_olagan_kayit_bag_cari
+    self.assertEqual([x["kod"] for x in kos(kaynak, dg)["redler"]], [kod], f"{kaynak} {dg}")
+                                        ~~~^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/test_model.py", line 519, in kos
+    return M.kos(senaryo(bas + [o("duzenle", kaynak=kaynak, degisiklik=dg)]))
+           ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 3861, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2562, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2588, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2709, in _o_duzenle
+    self._s57_kapsam(d, k, dg)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2721, in _s57_kapsam
+    raise AssertionError("senaryo hatası: formdaki peşin ödemenin (fatura_odemesi) carisi düzeltildi — faturanın düzenlenmesidir (F-14); kâhin susar "
+                         "(README bakım 8 U7 (b), bakım 9 P7 (c), KULLANICIYA SORULMALI 1)")
+AssertionError: senaryo hatası: formdaki peşin ödemenin (fatura_odemesi) carisi düzeltildi — faturanın düzenlenmesidir (F-14); kâhin susar (README bakım 8 U7 (b), bakım 9 P7 (c), KULLANICIYA SORULMALI 1)
+
+======================================================================
+FAIL: test_S80_formdaki_pesin_cari (__main__.OlayMaddeleri.test_S80_formdaki_pesin_cari)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/test_model.py", line 585, in test_S80_formdaki_pesin_cari
+    kodlar, s, r = kos(dg)
+                   ~~~^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/test_model.py", line 578, in kos
+    r = M.kos(senaryo(b + list(ek) + [o("duzenle", kaynak=kaynak, degisiklik=dg), E.MZ("mz", "2026-01-01", "2026-01-31"),
+                                      E.R("mu", "mutabakat_uyarilari", tarih="2026-01-31")]))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 3861, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2562, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2588, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2709, in _o_duzenle
+    self._s57_kapsam(d, k, dg)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2721, in _s57_kapsam
+    raise AssertionError("senaryo hatası: formdaki peşin ödemenin (fatura_odemesi) carisi düzeltildi — faturanın düzenlenmesidir (F-14); kâhin susar "
+                         "(README bakım 8 U7 (b), bakım 9 P7 (c), KULLANICIYA SORULMALI 1)")
+AssertionError: senaryo hatası: formdaki peşin ödemenin (fatura_odemesi) carisi düzeltildi — faturanın düzenlenmesidir (F-14); kâhin susar (README bakım 8 U7 (b), bakım 9 P7 (c), KULLANICIYA SORULMALI 1)
+
+======================================================================
+FAIL: test_S81_S56_ile_ayni (__main__.OlayMaddeleri.test_S81_S56_ile_ayni)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/test_model.py", line 677, in test_S81_S56_ile_ayni
+    r1, r2 = M.kos(kur(True)), M.kos(kur(False))
+             ~~~~~^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 3861, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2562, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2588, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2709, in _o_duzenle
+    self._s57_kapsam(d, k, dg)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2724, in _s57_kapsam
+    self._s79_hedef(d, k, dg)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2758, in _s79_hedef
+    raise AssertionError("senaryo hatası: S79 düzeltmesi yeni carinin açık şüpheli kaydıyla plan §3.11b/2 (S56) sınırını aşıyor — olağan düzeltmede "
+                         "sınır iki okumalı; kâhin susar (README bakım 9 P7 (d), KULLANICIYA SORULMALI 2)") from None
+AssertionError: senaryo hatası: S79 düzeltmesi yeni carinin açık şüpheli kaydıyla plan §3.11b/2 (S56) sınırını aşıyor — olağan düzeltmede sınır iki okumalı; kâhin susar (README bakım 9 P7 (d), KULLANICIYA SORULMALI 2)
+
+======================================================================
+FAIL: test_S81_olagan_duzeltme_siniri (__main__.OlayMaddeleri.test_S81_olagan_duzeltme_siniri)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/test_model.py", line 637, in test_S81_olagan_duzeltme_siniri
+    self.assertEqual(kos(kaynak, dg)[:2], (["SUPHELI_NORMAL_ASIM"], (100, 800)), f"{kaynak} {dg}")
+                     ~~~^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/test_model.py", line 628, in kos
+    r = M.kos(senaryo(bas + list(ek) + [o("duzenle", kaynak=kaynak, degisiklik=dg), E.MZ("mz", "2026-01-01", son),
+                                        E.R("ak", "acik_kalemler", cari="C2", tarih="2026-02-01")]))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 3861, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2562, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2588, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2709, in _o_duzenle
+    self._s57_kapsam(d, k, dg)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2724, in _s57_kapsam
+    self._s79_hedef(d, k, dg)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-eski-07f6c8b7/test/bagimsiz/muhasebe/model.py", line 2758, in _s79_hedef
+    raise AssertionError("senaryo hatası: S79 düzeltmesi yeni carinin açık şüpheli kaydıyla plan §3.11b/2 (S56) sınırını aşıyor — olağan düzeltmede "
+                         "sınır iki okumalı; kâhin susar (README bakım 9 P7 (d), KULLANICIYA SORULMALI 2)") from None
+AssertionError: senaryo hatası: S79 düzeltmesi yeni carinin açık şüpheli kaydıyla plan §3.11b/2 (S56) sınırını aşıyor — olağan düzeltmede sınır iki okumalı; kâhin susar (README bakım 9 P7 (d), KULLANICIYA SORULMALI 2)
+
+----------------------------------------------------------------------
+Ran 180 tests in 14.491s
+
+FAILED (failures=9)
+# tests 180
+# pass 171
+# fail 9
+# skipped 0

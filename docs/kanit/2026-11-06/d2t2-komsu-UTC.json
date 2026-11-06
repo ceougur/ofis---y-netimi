@@ -1,0 +1,32 @@
+{
+  "ad": "d2t2-komsu-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/kullanici-yetki-210.test.mjs test/auth.test.mjs test/sessions.test.mjs test/permissions.test.mjs test/backup.test.mjs test/banka-210-gg-geri-yukle.test.mjs test/createapp-acilis-geri-alma-249.test.mjs test/geri-yukleme-uyari-244.test.mjs test/guncelleme-217.test.mjs test/sema-kapisi-bs7.test.mjs test/yedek-220.test.mjs test/yedek-220-inceleme.test.mjs test/yedek-denetim-221.test.mjs test/isgecmisi-230-geri-yukleme-yetki.test.mjs test/sirketler-217.test.mjs test/sirket-siniri-225.test.mjs test/sirket-listesi-221.test.mjs test/whatsapp-w2-kaldir-250.test.mjs test/whatsapp-we-webhook-bilgisi-250.test.mjs test/yazim-duzeni.test.mjs test/platform-tasinabilirlik.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/banka-210-rapor-is-parcacigi-kapanis.test.mjs test/bs4-birlesik-rapor-250.test.mjs test/defter-turu-c4.test.mjs test/mobil-eslesme-247.test.mjs test/whatsapp-tur1-bildirim-yolu-250.test.mjs",
+  "commit": "5f7a596a37ccb4cd87c40ad5998313b9101183bc",
+  "dal": "worktree-agent-ab454f487823db74f",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T16:52:41.059Z",
+  "sure_sn": 276.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 257,
+    "gecen": 257,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t2-kanit/yeni/2026-11-06/d2t2-komsu-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab454f487823db74f",
+  "ham_cikti_sha256": "8f3ad12b049a571d0c13385282889aba079b0e90b04d2b25c8c9611fe4819d22",
+  "ham_cikti_bayt": 99548
+}

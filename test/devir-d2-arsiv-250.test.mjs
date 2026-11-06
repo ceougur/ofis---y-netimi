@@ -162,6 +162,31 @@ describe("D2 arşiv kayıt defteri ve salt okunur açma", () => {
     }
   });
 
+  // 2.5.0 D2 tur 2 (dar kontrol 06.11 DÜŞÜK-2, A2): diskten tanımanın "aynı devir çalışması" şartı sınanmıyordu (yaşayan mutant). Aynı yıl, FARKLI devir çalışması
+  // (ör. devir geri alınıp yeniden yapılmış; klasördeki arşiv eski çalışmanın) tanınmaz — tanınsaydı yeni yılın açılışları eski arşivle eşleşmezdi.
+  test("diskten tanıma: aynı yıl ama FARKLI devir çalışması (arşivin işareti ↔ çalışma dosyasının devir kaydı) tanınmaz, sahipsiz listesine girer; aynı çalışmanınki tanınır", async () => {
+    const dir = workDir();
+    let server = await start(dir);
+    try {
+      await loginAdmin(server);
+      await makeArchive(server.app, ROOT_COMPANY_ID, { year: "2023", runId: "devir-2023-a", register: false });
+      await makeArchive(server.app, ROOT_COMPANY_ID, { year: "2022", runId: "devir-2022-a", register: false });
+      const years = JSON.parse(server.app.store.setting(DEVIR_YEARS_KEY, "[]"));
+      server.app.store.setSetting(DEVIR_YEARS_KEY, JSON.stringify(years.map(item => (item.year === "2023" ? { ...item, runId: "devir-2023-b" } : item))));
+    } finally {
+      await server.app.close();
+    }
+    server = await start(dir);
+    try {
+      assert.deepEqual(archivesOf(server.app, ROOT_COMPANY_ID).map(item => [item.year, item.runId, item.recovered]), [["2022", "devir-2022-a", true]], "yalnız aynı devir çalışmasının arşivi tanındı");
+      const orphans = server.app.companies.orphanArchives?.() ?? [];
+      assert.deepEqual(orphans.map(item => [item.year, item.reason]), [["2023", "devir çalışması çalışma dosyasındakiyle aynı değil"]], "farklı çalışmanın arşivi sahipsiz");
+      assert.ok(existsSync(path.join(archiveDirOf(server.dataDir, "2023"), "destekofis.sqlite")), "sahipsiz arşivin dosyasına dokunulmadı");
+    } finally {
+      await server.close();
+    }
+  });
+
   test("salt okunur açma (002 ve 001): arşivde HER yazma ucu 403 archive-read-only, GET'ler 5xx vermez, arşiv dosyası bayt bayt aynı; canlı şirket yazmaya devam eder; arşiv kapanınca canlı şirketin WhatsApp kuyruğu işçiden çıkmaz", async () => {
     const dir = workDir();
     const server = await start(dir);
