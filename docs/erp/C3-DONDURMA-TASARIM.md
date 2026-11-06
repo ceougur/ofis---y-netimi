@@ -506,3 +506,124 @@ docs/kanit/2026-11-06/c3t2-* (OKU-BENI).
   - e2e 12 senaryo (c3t2-e2e-*): senaryo-donem-kilidi-ilerleme-250 22/22, senaryo-222 60/60 (istek sayısı), senaryo-213 64/64, senaryo-224 69/69, senaryo-226 22/22, gg243-banka-kart-aciklama
     11/11, gg244-numara-tarih-onay 40/40, senaryo-form-izolasyon-243 188/188, sema-kapisi-bs7 12/12, senaryo-defter-243 24/24, senaryo-220-yedek 37/37, senaryo-banka-210 424/424.
   - WINDOWS'A DUYARLI (ders 48; CI'nin Windows işlerinde görülmeli): K7 (dondurma + iz arkadayken kapanış, aynı dosyayı yeniden açma), yasam F7a / F13b (değişmedi; şimdi lockAndWait).
+
+## 19. Ç3 tur 3 (06.11.2026): birleşik Ç3 tur 1-2 dar kontrolünün bulguları + S46 = A + Ç3 küçük işler
+Kaynak: iş listesi E "06.11 09:49 BİRLEŞİK Ç3 TUR 1-2 DAR KONTROL BİTTİ" (YÜKSEK-1, ORTA-1, ORTA-2 → S46, DÜŞÜK-1; DÜŞÜK-2 → 2.5.1) ve KARAR (BAŞ MİMAR; DURMA KURALI). Taban 834cd0ad
+(sınama birleşimi: ana dal + Ç3 tur 2). Kanıt docs/kanit/2026-11-06/c3t3-* (her koşu tools/kanit.mjs kos). Bu bölüm §4 (bayat satırlar), §7 (eksik satırda yeniden donma kuralı) ve §8'deki
+"AÇIK (dosya sınırı)" notunun yerine geçer.
+
+### Yapılanlar
+- YÜKSEK-1 (dar kontrol p1 / p3 / p5; 100.000'de 20.500 satır kayıp): kök neden routes/ledger.mjs afterLock'taki koşulsuz `purgeStale()` — aynı güne yinelenen kilidin arka işi süren
+  dondurmanın yazdığı satırları "bayat" sayıp siliyordu (kapsamın üstündeki her satır), `complete()` satır sayısını kendi sayacından yazıyordu → donmuş defter eksik, rapor sessiz.
+  - Yazılan koşu korunur (lib/ledger-snapshots.mjs `writing`, `keptRun`): iş parçacığı kipinde koşunun bu denemedeki satırları yazılmaya başlayınca (denemenin kendi temizliğinden
+    sonra) koşu bekledikçe HİÇBİR silme yolu onlara dokunmaz. `purgeStale` tek döngüdür (çağıran sürenine katılır) ve HER parçadan önce yeniden bakar (döngü sürerken başlayan
+    dondurma da korunur); `purgeStaleInTx` aynı koşuyu dışlar; `lockNeedsCleanup` saymaz. Dayanak (göç 47 tetikleyicileri): koşu bekledikçe kapsamın üstündeki satırların hepsi
+    onundur (bayat satır varken freeze koşusu açılamaz, satır yalnız en son bekleyen koşuya eklenir) → yazılırken silinecek başka satır yoktur. Yazılmayan bekleyen koşunun satırları
+    önceki (yarıda kesilmiş) denemesinindir — her deneme baştan yazar (run_seq 1), silinir (BAŞ MİMAR uygulaması, aşağıda). Eşzamanlı kipte koşuyu devralan işlem (carryLock sync)
+    yarım satırları kendisi siler ve baştan yazar.
+  - Koşu tablo doğrulanmadan tamamlanmaz (`complete(…, table)`): tablodaki satır sayısı, borç, alacak ve ağırlık yazılan sayaçla tutmazsa koşu "tamam" OLMAZ — görünür hata
+    ("Donmuş defter: koşunun tabloda N satırı var, M satır yazılmıştı …; dondurma tamamlanmadı, yeniden denenecek"), koşu bekler, kapsam yerinde, kilitli dönem bekleyen koşunun
+    kuralıyla canlı okunur (K1); yeniden kilit / açılış baştan yazar. İş parçacığı kipinde ölçüm 20.000'lik run_seq aralıklarıyla, aralar olay döngüsüne bırakılarak (`runTotalsInParts`,
+    aşama "doğrulama"); eşzamanlı kipte işlemin içinde tek toplam.
+- ORTA-1 (dar kontrol p6: 1.000.000'da "Kilidi Aç → Yeniden Kilitle" 30.002 ms, istemci sınırı): kök neden PUT'taki bütçesiz `purgeStale()` (geri çekilen dönemin ~2,7 M bayat satırı).
+  KARAR seçenek (i): yanıt bütçesi (LOCK_WAIT_MS = 5 sn) bütün uca (temizlik + arka iş). Kilit yeni bir freeze koşusu açacaksa ve kapsamın üstünde (yazılan koşununkiler dışında)
+  satır varsa (`lockNeedsCleanup`; lockChanged'in kararlarıyla aynı — aynı gün ve eski kurallı koşunun ilerletilmesi koşu açmaz) temizlik bütçe kadar beklenir; bitmediyse
+  409 `ledger-cleanup-running` "Önceki dönemin defter temizliği sürüyor; temizlik bitince yeniden kilitleyin. İlerleme bu kartta görünür." (+ `freeze`), kilit ve koşular değişmez,
+  temizlik arkada sürer; durdurulan dondurma (başka güne istek) temizlikten sonra arkada sürer (K3 deseni). Kilit işleminin içinde büyük DELETE yok (ders 47). İlerleme
+  `status().cleanup` = { running, removed } → GET / PUT `freeze.cleanup`; `freeze.active` açılıştaki temizliği de sayar.
+- DÜŞÜK-1: "Kilitli dönemin defteri donduruldu." bildirimi yalnız kilit varken ve kapsam = kilit iken (client/assets/admin.js watchFreeze).
+- İstemci (KARAR (i)): dondurma ya da temizlik sürerken Kilitle PASİF; nedeni düğmenin altında görünür yazı (#adm-period-busy; düğmenin title'ı da): "Kilitle, kilitli dönemin defteri
+  dondurulurken kullanılamaz; dondurma bitince açılır." / "Kilitle, önceki dönemin defter temizliği sürerken kullanılamaz; temizlik bitince açılır."; form gönderimi (Enter, programatik)
+  kilit isteği göndermez, nedeni bildirir. Temizlik sürerken kart "… Önceki dönemin defter temizliği sürüyor (N satır silindi)…" yazar ve yoklar. Kilidi Kaldır açık kalır (geri çekme
+  temizlik istemez). 409 gelirse kart yenilenir. Kılavuz DEĞİŞMEDİ (kart kendisi anlatıyor).
+- ORTA-2 → S46 = A (KULLANICI KARARI 06.11, "a"): açılış onarımı eksilen / değişen donmuş dönemi, o dönemi donduran koşunun dondurma izi (`ledger.snapshot.frozen`) duruyorsa
+  koşunun KENDİ kuralıyla (eksilme eski sürüm DIŞI bir nedenle: dış silme, program hatası — ör. YÜKSEK-1'in eski kodu), iz yoksa (2.4.9'un Şirket Verisini Sıfırla'sı önce işlem
+  geçmişini siler) S13 gereği GAP_RULE ile yeniden dondurur. Uygulama: geri çekmeden ÖNCE görünen defterin koşu bileşimi (`composition`: her aralığı en son hangi tamamlanmış koşu
+  dondurdu; geri çekmeler keser) → yeniden donma planı (`repairPlan`; aynı kurallı ardışık dilimler birleşir) → planın ötesi (eski sürümün ilerlettiği kilit) GAP_RULE (S13) → ilk dilim
+  bekleyen koşu, kalan dilimler koşunun izinde (`ledger.snapshot.plan`), `continueAfter` sürdürür (ilerletme izi yeni koşuya taşınır). Kuralı bu programda olmayan dilim bekler
+  (tur 1 (b)).
+- Ç3 küçük işler: (a) routes/report-center.mjs Defter Mutabakatı alt başlığı artık denetimin kendi iletisi (`ruleDiffHint`; nedeni bilinmeyen ayrışmada tarafsız) + "Yeni işlemler
+  engellenmez (aşağıda “Kural Değişikliği Farkı”)." — "Defter kuralı program sürümüyle değişti" kalktı (§8 AÇIK notu kapandı). (b) routes/ledger.mjs `logRow`: Mutabakat Testi
+  günlüğünde geçersiz JSON ayrıntı (2.4.9'un 20.000 karakterde kesik kaydı) yanıtı düşürmez; satır `detail: null`, `detailUnreadable: true`, `detailNote: "Kayıt ayrıntısı okunamadı
+  (kesik ya da bozuk kayıt; N karakter)."` (ders 4: okunamayan boş değildir), öbür alanlar aynen. (c) admin.js: Mutabakat Testi çalışamazsa satır sessizce boşalmaz —
+  "Mutabakat Testi çalıştırılamadı: <neden>" (kırmızı).
+
+### Testler ve kırmızı / yeşil (ders 7, 38; her koşu tools/kanit.mjs kos; docs/kanit/2026-11-06/c3t3-*)
+- Yeni test/donmus-defter-tur3-250.test.mjs (11) + genişleyen K6 (test/donmus-defter-kilit-ucu-250.test.mjs: "donmuş = canlı" + "görünen satır = koşunun kayıtlı satırı", ön koşul kapıyla:
+  ikinci istekten önce koşunun satırları yazılmış, dondurma "batch" kancasında tutuluyor — süreye bağlı değil, ders 20). Son kod (2d42d493): 20/20 TZ=UTC ve TZ=Europe/Istanbul
+  (c3t3-son-yeni-utc / -istanbul).
+  | Test | Ne | Eski kod 834cd0ad (ayrı kopya, iki TZ aynı) |
+  |---|---|---|
+  | K6, T1 (p1), T2 (p5) | yazım adımında aynı güne kilit; eski kurallı açılış koşusu | "… arka işi süren koşunun yazdığı satırları sildi (0 / 5)", "(0 / 15)" — BEKLENEN NEDEN |
+  | T3 | dışarıdan eksilen satır → koşu tamamlanmaz | "eksik satırlı koşu tamamlandı (kapsam 2026-12-31 …)" — BEKLENEN NEDEN |
+  | T4, T4b | temizlik sürerken 409; açılıştaki temizlik süren iş | ön koşul ("temizliği sürüyor (tutuldu)": eski kodda temizlik kancası / alanı yok) — kanıt sayılmaz; dişi mutant 311–314 + 1.000.000 ölçümü |
+  | T5 | Defter Mutabakatı alt başlığı | "alt başlık nedeni bilinmeyen ayrışmayı "kural değişti" diye adlandırıyor: Defter kuralı program sürümüyle değişti …" — BEKLENEN NEDEN |
+  | T6b / T6 | kesik Mutabakat Günlüğü kaydı | "Mutabakat Testi kesik kayıtla düştü: 500" — BEKLENEN NEDEN; T6 (v2.4.9 + v2.0.26 GERÇEK kodu, etiketli) kopyada etiket olmadığı için atlanır → ayrı betik (c3t3-t6-eski-yeni-utc): v2.4.9 kendi Mutabakat Testi 500, eski 834cd0ad 500, yeni 200 (kesik satır 1: detail null, "… 20000 karakter") |
+  | U1, U3 | S46: izli dönem kendi kuralıyla; karışık plan | "eksilen 2.5.0 dönemi 2.4.9 kuralıyla yeniden dondu (S46 = A …)", "plan dilimleri kendi kurallarıyla donmalı …" — BEKLENEN NEDEN |
+  | U2 | izsiz → 2.4.9 | eski kodda da yeşil (davranış aynı; dişi mutant 352 + tur 1 testleri) |
+  Eski kod 9/19 (UTC ve İstanbul; c3t3-kirmizi-eski-834cd0ad-son-*).
+- e2e test/e2e/senaryo-donem-kilidi-ilerleme-250.mjs genişledi (dar kontrol p2 / p3 karşılıkları + temizlik + Ç3 küçük işler (c)): 1. adımda Kilitle pasif + neden + form gönderimi
+  istek göndermez; 2. adımda bitince açık; 5) dondurma sürerken Kilidi Kaldır → "donduruldu" bildirimi YOK; 6) temizlik sürerken kart "… temizliği sürüyor (N satır silindi)…",
+  Kilitle pasif + neden, yoklama, bitince açık ve yeniden Kilitle; 7) Mutabakat Testi 500 (sahte yanıt) → "Mutabakat Testi çalıştırılamadı: …" kırmızı. Yeni kod 39/39; eski kod
+  834cd0ad 29/39 (c3t3-kirmizi-eski-834cd0ad-e2e-utc): "dondurma sürerken Kilitle pasif ✗", "pasif düğmenin nedeni görünür ✗", "form gönderimi … (1 PUT) ✗", "kilit kaldırılınca
+  "donduruldu" bildirimi çıkmadı: [… "Kilitli dönemin defteri donduruldu."] ✗", "mutabakat satırı: "" ✗" — BEKLENEN NEDENLER (6. adımın temizlik metni eski kodda kancasız, ön koşul).
+- Dar kontrol betikleri yeni kodda (kendi kopyalarım, c3t3-betik): p1 TUTARLI (84 / 84 / 84; ikinci istekten sonra tabloda 15 satır kaldı — eskide 0), p5 TUTARLI (80; eskide 65 / 80).
+  p3 (ekrandan aynı güne Kilitle) yeni kodda yapılamaz (düğme pasif) — karşılığı e2e 1. adım.
+- G3: eski testlerin beklentisi DEĞİŞMEDİ (`git diff --diff-filter=M 834cd0ad..` test/'te: K6 adı + yeni denetimler; e2e yalnız eklenen adımlar; mutasyon dosyasında 15, 203, 206, 208,
+  209'un kaynak metni yeni koda göre — aynı hata, yeni yerinde).
+- Mutasyon (test/donmus-defter-250-mutasyon.mjs; e2e mutantları için betik kipi eklendi): koşu 1 (a430c4ee kopyası) var olan 55 mutantın 55'i + 301–304 (59/59) beklenen nedenle
+  yakalandı; koşu 2 (son kod 2d42d493 kopyası; T4b / U testlerinin kapanış düzeltmesinden sonra) 23/23: 15, 203, 206, 208, 209 (metni güncellenen) + 301–304, 311–314, 321–324, 331,
+  341, 342, 351–353 (c3t3-mutasyon-tur3). Koşu 1, mutant 314'ün T4b'yi asılı bırakacağı görülünce durduruldu (eski kodda da aynı: ilk sunucu kapanmadan denetim düşüyordu) →
+  test düzeltildi (closeOnce), koşu 2. Kapsam dışı / eşdeğer: purgeStaleInTx'in yazılan koşuyu dışlaması (işlem içi temizlik çağıranları önce koşuyu bırakır / tamamlar; savunma).
+
+### Windows'a duyarlı (ders 48; ilk gönderimde CI'nin Windows işlerinde görülmeli)
+test/donmus-defter-tur3-250.test.mjs T2, T4b, U1–U3 sunucuyu kapatır, dosyayı ham bağlantıyla (`DatabaseSync`) değiştirir (ayar, tetikleyici kaldır / kur, satır / iz silme) ve aynı
+dosyayı yeniden açar; T4b temizliği yarıda keser, kapatır, açılışta sürdürür. T6 2.4.9 / 2.0.26 / güncel kodu aynı klasörde sırayla açar (etiket yoksa atlanır). Dondurma ve kilit izi
+iş parçacıkları değişmedi (tablo doğrulaması ana iş parçacığındaki bağlantıda).
+
+### BAŞ MİMAR KARARI GEREKİYOR (uygulamada verilen yorumlar; ders 40 — gerekçeli, ana oturum değerlendirir)
+- B1 "Bekleyen koşunun satırları silinmez" yorumu: korunan, bu denemede YAZILAN koşudur (yazım bayrağı + hâlâ en son bekleyen). Yazılmayan bekleyen koşunun satırları önceki (yarıda
+  kesilmiş) denemesinindir ve silinir. Gerekçe: her deneme baştan yazar (run_seq 1); korunsalardı başka güne kilitte durdurulan koşunun satırları kilit işleminin İÇİNDE tek DELETE ile
+  silinirdi (KARAR: işlem içinde büyük DELETE yok) ve ilk denemenin artığı ikinci denemenin birincil anahtarıyla çakışırdı.
+- B2 Yanıt bütçesi (5 sn) bütün uca paylaştırıldı (temizlik + arka iş): temizlik bütçenin bir kısmını kullandıysa kısa dondurma da yanıttan sonra bitebilir (T2-2'nin "kısa işte eski
+  davranış" sözü yalnız temizlik gerekmeyen kilitte birebir). Gerekçe: KARAR "uç 5 sn bütçesini aşmaz".
+- B3 409 yalnız geri çekmenin temizliğinde değil, başka güne kilitte durdurulan dondurmanın artığı bütçede silinemezse de döner (aynı ileti); durdurulan koşu temizlikten sonra arkada
+  baştan sürer (K3 deseni). Ekrandan bu yol yok (Kilitle dondurma sürerken pasif); yalnız API.
+- B4 Dondurma / temizlik sürerken Kilidi Kaldır AÇIK kalır (geri çekme temizlik gerektirmez; KARAR yalnız Kilitle'yi pasif sayar).
+- B5 S46 = A'nın uygulaması: eksilen dönem koşu koşu ele alınır (dilim başına izi duran koşunun kendi kuralı, izsizi GAP_RULE); kuralı bu programda olmayan dilim bekler (tur 1 (b)).
+- B6 Kesik kayıt satırı atlanmaz, `detailUnreadable` ile görünür kalır (ders 4: okunamayan boş değildir); öbür alanlar aynen.
+
+### KULLANICIYA SORULMALI
+Yok. S46 yanıtlandı (A); yeni para / kapama / kural seçimi açılmadı.
+
+### BİLİNEN SINIR
+- Yeniden donma planı sürerken (açılış onarımından sonra, dondurma arkada) yönetici kilidi BAŞKA güne alırsa güncel kurallı plan dilimi lockChanged'in olağan kuralına düşer (koşu
+  bırakılır, (kapsam, hedef] güncel kuralla); planın kalan izsiz dilimleri de güncel kuralla donar. Bugün iki kural aynı sonucu verir (kural tuzağı testi); çok seyrek (eski sürüm +
+  eksik satır + plan sürerken kilit değişikliği). Ç5 kural değişikliğiyle anlam kazanır → Ç5 / D4 notu.
+- Plan sürerken (bekleyen koşunun gününden sonraki) izli eski kurallı dilimler bu arada güncel kuralla canlı okunur (bugün aynı sonuç).
+- 409'un iletisi başka güne kilitte durdurulan dondurmanın artığında da "Önceki dönemin defter temizliği sürüyor" der (B3).
+- Kartın yoklaması 5 kez üst üste düşerse Kilitle son görülen durumda (pasif) kalabilir; kart yeniden açılınca düzelir.
+- Tablo doğrulaması dondurmaya ek süre katar (ölçüm aşağıda).
+- DÜŞÜK-2 (kilit ilerletilince süren eski kurallı koşu baştan başlar; hız) → 2.5.1 (KARAR).
+
+### Komşular (G2, ders 10) ve e2e
+- test/ taraması (period-lock, ledger/lock, ledger/integrity, defter-mutabakati, ledger-snapshots, ledger.snapshots, routes/ledger.mjs, integrity_log, frozenThrough, lockAndWait,
+  waitForFreeze + admin.js / client/assets anan + kaynak tarayan genel testler) = 129 dosya (liste c3t3-ham/komsu-liste-tam.txt), TZ=UTC, 2d42d493: 1.471 / 1.473 (c3t3-komsu-utc).
+  İki kırmızı: (1) banka-210-saat statik taraması — kilit ucunun bütçe süresi `Date.now()` ile ölçülüyordu → `performance.now()` (76bc91b8; yeniden GEÇTİ, c3t3-komsu-saat-yeniden);
+  (2) sema-kapisi-bs7 "001'e … whatsapp.appWebhook" — tabanda (834cd0ad, ayrı kopya) AYNI iletiyle kırmızı (c3t3-taban-834cd0ad-sema-kapisi-bs7): ana daldaki WE gerilemesi, bu
+  turun değil.
+- Son kod 76bc91b8: yeni testler + K + banka-210-saat 32/32 UTC ve İstanbul (c3t3-final-yeni-*); donmuş defter 4 dosya + yazım / platform / lisans tarayıcıları İstanbul 54/54
+  (c3t3-donmus-istanbul); e2e senaryo-donem-kilidi-ilerleme-250 39/39 (c3t3-final-e2e-donem-kilidi), senaryo-222 60/60 ("toplam istek ≤ 50"), senaryo-defter-243 24/24.
+
+### Ölçüm (flock scratchpad/olcum.lock; programın kendi verisi scratchpad/c3-olcum-veri; makine yükü satırlarda; dar kontrolün betikleri kendi kopyalarımda — c3t3-ham/)
+| Yol | Eski 834cd0ad (dar kontrol p4 / p6) | Yeni |
+|---|---|---|
+| 100.000 — yazım sürerken aynı güne kilit (p4 A2; ön koşul: 1.000 satır yazılmışken) | HATA: 254.116 görünen / 274.616 kayıtlı (20.500 satır kayıp); yanıt 5.048 ms | TUTARLI 274.616 / 274.616 / 274.616 (canlı); yanıt 4.895 ms, döngü 215 ms (yük 8,7–9,2; eskide bitiş adımında 182 ms) |
+| 100.000 — Kilidi Aç → hemen Yeniden Kilitle (p4 B) | 4.497 ms / 5.006 ms 200 | Kilidi Aç 3.139 ms (temizlik bütçede bitti), Yeniden Kilitle 5.006 ms 200, TUTARLI (yük 8,7–11,2) |
+| 1.000.000 — Kilidi Aç (p6; 2.741.312 donmuş satır) | 5.034 ms | 5.005 ms (bütçe; temizlik arkada, 765.500 satır silinmiş) |
+| 1.000.000 — Yeniden Kilitle (hemen) | YOK: 30.002 ms "Sunucu zamanında yanıt vermedi" (yük 17) | 409 ledger-cleanup-running, 5.009 ms, döngü 64 ms (1.471.000 silinmiş); ilerleme GET 23 ms |
+| 1.000.000 — temizlik bitişi → Yeniden Kilitle | — | +7,8 s (2,74 M satır ~18 sn'de silindi); kilit 200 5.011 ms |
+| 1.000.000 — dondurma (iki kez) | 192,9 s / 215,7 s (yük 17–19) | 106,0 s / 93,8 s; görünen = kayıtlı = 2.741.312; TUTARLI (yük 4,7–5,3; komşu koşusu paralel) |
+| 1.000.000 — tablo doğrulaması (yeni adım) | — | 138 parça × 20.000 satır, parça en uzun 8 ms, toplam 543 ms |
+Olay döngüsü dondurma boyunca en çok 319 / 289 ms (1 M): doğrulama parçası ≤ 8 ms olduğundan kaynağı doğrulama değil; §16 / §18'deki aile (yük ve çöp toplama; eski p6'da 134 / 396 ms)
+— BİLİNEN SINIR (kalıcı çözüm rapor / defter iş parçacığı, Ç6). Süreler son adayda boş makinede yinelenir.
