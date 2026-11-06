@@ -1,0 +1,16 @@
+s46 tam UTC cikis=0
+s46u3 tam UTC cikis=0
+s46 kapanis UTC cikis=0
+s46u3 kapanis UTC cikis=0
+s46 aynigun UTC cikis=0
+s46u3 aynigun UTC cikis=0
+y1 UTC cikis=0
+y3 UTC cikis=0
+s46 tam Europe/Istanbul cikis=0
+s46u3 tam Europe/Istanbul cikis=0
+s46 kapanis Europe/Istanbul cikis=0
+s46u3 kapanis Europe/Istanbul cikis=0
+s46 aynigun Europe/Istanbul cikis=0
+s46u3 aynigun Europe/Istanbul cikis=0
+y1 Europe/Istanbul cikis=0
+y3 Europe/Istanbul cikis=0

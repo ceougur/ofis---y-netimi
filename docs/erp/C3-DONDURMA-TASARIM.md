@@ -627,3 +627,100 @@ Yok. S46 yanıtlandı (A); yeni para / kapama / kural seçimi açılmadı.
 | 1.000.000 — tablo doğrulaması (yeni adım) | — | 138 parça × 20.000 satır, parça en uzun 8 ms, toplam 543 ms |
 Olay döngüsü dondurma boyunca en çok 319 / 289 ms (1 M): doğrulama parçası ≤ 8 ms olduğundan kaynağı doğrulama değil; §16 / §18'deki aile (yük ve çöp toplama; eski p6'da 134 / 396 ms)
 — BİLİNEN SINIR (kalıcı çözüm rapor / defter iş parçacığı, Ç6). Süreler son adayda boş makinede yinelenir.
+
+## 20. Ç3 tur 4 (06.11.2026): Ç3 tur 3 dar kontrolünün bulguları (ORTA-1 S46 planı, DÜŞÜK-1 test dişi, DÜŞÜK-2 yorum)
+Kaynak: Ç3 tur 3 dar kontrolü (06.11 ~14:40; ORTA-1, DÜŞÜK-1, DÜŞÜK-2; DÜŞÜK-3 → 2.5.1) ve KARAR (BAŞ MİMAR; DURMA KURALI — yalnız bunlar). Taban f4a43cbd; ürün + test 16959ab7.
+Kanıt docs/kanit/2026-11-06/c3t4-* (her koşu tools/kanit.mjs kos; OKU-BENI). §19'daki "BİLİNEN SINIR" maddeleri sürer.
+
+### Yapılanlar
+- ORTA-1 (S46 = A AYNEN uygulanır; yeni kural yok). Kök neden: açılış onarımının yeniden donma planı (§19 S46) ilk dilimi bekleyen koşu, kalan dilimleri koşunun izinde (PLAN_TRACE)
+  tutar; ilk dilim GÜNCEL kurallıysa (bileşim: (…, 30.06] bu programın 2.5.0 koşusu, (30.06, 31.12] eski sürümün ilerlettiği kilidin GAP_RULE koşusu) koşunun günü kilitten önce
+  kalır ve iki yol onu "başka güne kilit" sayıyordu: (a) `repairOnOpen` yarıda kesilen koşuyu yalnız kuralı güncel değilse sürdürüyordu → bırakılıyor, plan düşüyor, bütün dönem
+  GAP_RULE ile donuyordu (2.4.9 / 2.4.9); (b) aynı güne yeniden kaydetme (`routes/ledger.mjs` PUT `cancel()`, `lockNeedsCleanup`, `lockChanged`) yalnız bekleyen koşunun gününe
+  bakıyordu → koşu bırakılıyor, (kapsam, kilit] güncel kuralla donuyordu (2.5.0 / 2.5.0). İlk dilim 2.4.9 iken (tur 3 U3) iki yol da "eski kurallı koşu" kolundan geçtiği için plan
+  korunuyordu — asimetri. Kartın hata durumundaki iki önerisi ("kilidi yeniden kaydedin", "programı yeniden açın") planı düşürüyordu.
+  - `repairOnOpen` (lib/ledger-snapshots.mjs): TAŞINAN koşu = kuralı güncel değil YA DA yeniden donma planı izi (PLAN_TRACE) YA DA koşunun gününün ötesinde ilerletme izi
+    (EXTENDED_TRACE) olan bekleyen koşu (dar kontrolün önerisi + ilerletme izi). Günü kilitten önceyse sürer, kalan dönemi `continueAfter` açar; günü kilidin ötesindeyse (eski sürüm
+    kilidi geri çekti) bırakılır, (kapsam, kilit] koşunun kuralıyla.
+  - `lockChanged({ previous, … })`: kilit DEĞİŞMİYORSA (hedef = önceki kilit; koşunun günü hedeften önce) bekleyen koşu — kuralı ne olursa olsun — izleriyle sürer. Eşzamanlı kipte
+    yol yok (`postAll(lockThrough)` kancayı yalnız kilit ilerleyince çağırır).
+  - `routes/ledger.mjs` PUT: kilit değişmiyorsa süren dondurma durdurulmaz (`cancel()` yok); `lockNeedsCleanup` aynı ayrımla `false` (temizlik beklenmez, 409 yok — bekleyen koşu
+    sürer, koşu açılmaz; denemenin artığını arka iş siler). `lockChanged`'e verilen `previous` İŞLEMİN İÇİNDE okunur (yukarıdaki beklemelerde — durdurma, temizlik — başka bir istek
+    kilidi değiştirmiş olabilir; "kilit değişmedi" kararı bayat değere dayanmaz). Savunma: bugünkü yollarda kilit değişmeyen istek beklemeye girmez (testte eşdeğer; mutant yok).
+  - Aynı kökün eşi (S13 = A): eski kurallı koşu sürerken ESKİ SÜRÜMÜN ilerlettiği kilit aynı güne yeniden kaydedilince `carryLock` "bu program kilidi ilerletti" izini yazıyordu →
+    eski sürümün ilerlettiği dönem güncel kuralla donuyordu. Şimdi kilit değişmediği için iz yazılmaz, dönem GAP_RULE (2.4.9) ile donar (test W1).
+- DÜŞÜK-1 (test dişi): koşu "before-done" (iş parçacığı bitti, tablo doğrulamasından önce) ve "doğrulama" (ilk parça özetlendi) pencerelerinde tutulup aynı güne PUT atılır.
+  Doğrulamanın penceresi için `runTotalsInParts`'a YALNIZ TEST kancası "verify" ({ run, low, upto }; her parçadan önce) ve kanca nesnesinin `verifyLines`'ı (küçük veride parça boyu)
+  eklendi. Üretimde kanca yok, parça 20.000 (değişmedi). Yazım bayrağı (`writing`) bu pencerelerde zaten duruyordu (eski kodda da yeşil); dişi mutant 901 / 902.
+- DÜŞÜK-2 (yalnız dış araçla; davranış DEĞİŞMEDİ): `complete()` yorumu "donmuş defter hiçbir zaman eksik satırla 'tamam' olmaz" yanlıştı → "programın kendi silme yolları yazılan
+  koşuya yazımdan tamamlanmaya kadar dokunmaz; tablo doğrulaması ölçmeden önce ya da henüz özetlenmemiş parçada eksilen satırı görür; parçası özetlendikten SONRA dış bir bağlantıyla
+  silinen satırı GÖRMEZ" (BİLİNEN SINIR, aşağıda).
+
+### Testler ve kırmızı / yeşil (ders 7, 38; her koşu tools/kanit.mjs kos)
+Yeni test/donmus-defter-tur4-250.test.mjs (13; ön koşullar kancayla tutulur — süreye bağlı değil, ders 20; her ön koşul ayrıca denetlenir). Yeni kod 16959ab7: G2 komşu koşusunda
+UTC 13/13 (c3t4-komsu-UTC), İstanbul 13/13 (c3t4-donmus-Europe-Istanbul). Eski kod f4a43cbd (`git worktree` ayrı kopya; yalnız yeni test dosyası kopyalandı — ders 23, 51): iki saat
+diliminde 4/13, aynı 9 kırmızı (c3t4-kirmizi-eski-f4a43cbd-UTC / -Europe-Istanbul).
+| Test | Ne | Eski kod f4a43cbd (iki TZ aynı) |
+|---|---|---|
+| V1 s46, X1 | plan sürerken kapanış → yeniden açılış (dar kontrol "kapanis"; X1 = v2.4.9 GERÇEK koduyla ilerletilmiş kilit) | "(…, 30.06] 2.4.9 kuralıyla dondu (S46 = A: 2.5.0)" — BEKLENEN NEDEN |
+| V2 s46, X2 | ilk dilim hata → aynı güne yeniden kaydetme (dar kontrol "aynigun") | "(30.06, 31.12] 2.5.0 kuralıyla dondu (S46 = A: 2.4.9)" — BEKLENEN NEDEN |
+| V3 s46, V3 u3 | ilk dilim yazılırken aynı güne yeniden kaydetme | "kilit değişmezken (aynı gün) planın dondurması durduruldu ya da baştan başladı" — BEKLENEN NEDEN (PUT `cancel()`) |
+| V4 s46 | ilk dilim hata, artık satırlar + temizlik tutulur → aynı gün | "kilit değişmezken (aynı gün) temizlik istendi: 409 ledger-cleanup-running" — BEKLENEN NEDEN (`lockNeedsCleanup`) |
+| W1 | eski kurallı koşu + eski sürüm ilerletmesi + hata + aynı gün (S13) | "eski sürümün ilerlettiği dönem (30.06, 31.12] 2.5.0 kuralıyla dondu (S13 = A: 2.4.9)" — BEKLENEN NEDEN |
+| V1 u3, V2 u3, V4 u3 | ilk dilim 2.4.9 (tur 3 U3) — gerileme denetimi | eski kodda da yeşil (plan bu sırada korunuyordu) |
+| D1 | "before-done" penceresinde aynı gün | eski kodda da yeşil (davranış doğruydu; dişi mutant 901) |
+| D2 | "doğrulama" penceresinde aynı gün | ön koşul ("verify" kancası eski kodda yok) — kanıt sayılmaz; dişi mutant 901 / 902 |
+- Dar kontrolün kendi betikleri (kendi kopyalarım; c3t4-ham): s46-plan.mjs tam / kapanis / aynigun, bileşim s46 ve SIRA=u3, iki TZ: 12/12 "S46A_uyuyor: true", görünen = kayıtlı =
+  canlı (84); y1-yollar.mjs Y1–Y7 iki TZ tutarlı (84 / 88); y3-409.mjs C1–C4 iki TZ tutarlı.
+- G3: eski testlerin beklentisi DEĞİŞMEDİ (mutasyon dosyasında yalnız 202'nin kaynak metni yeni koda göre — aynı hata, yeni yerinde; T4 tabana eklendi).
+
+### Mutasyon (test/donmus-defter-250-mutasyon.mjs; kopya `git archive 16959ab7`; c3t4-mutasyon)
+Taban 67 + e2e 39 yeşil; 79 / 79 mutant beklenen nedenle yakalandı (var olan 73 + bu turun 6'sı): 401 "taşınan koşu yalnız kurala bakar" (V1 s46), 402 "lockChanged kilit değişmezken
+bekleyen koşuyu bırakır" (V2 / W1), 403 "PUT kilit değişmezken de durdurur" (V3), 404 "lockNeedsCleanup kilit değişmezken de temizlik ister" (V4), 901 "yazım bayrağı iş parçacığı
+bitince, doğrulamadan önce kalkar" (dar kontrolün mutantı; D1, D2), 902 "yazım bayrağı doğrulama başlarken kalkar" (D2). Eşdeğer / kapsam dışı: PUT'un önceki kilidi işlemin içinde
+okuması (savunma; yukarıda).
+
+### Komşular (G2, ders 10) ve e2e
+- test/ taraması (period-lock, ledger/lock, lockChanged, lockNeedsCleanup, repairOnOpen, snapshotRepair, ledger-snapshots, ledger.snapshots, routes/ledger, frozenThrough, lockAndWait,
+  waitForFreeze, __testFreezeHook, ledger/integrity, defter-mutabakati, integrity_log, ledger_snapshot) ∪ tur 3 listesi = 132 dosya (c3t4-ham/komsu-birlesik.txt), TZ=UTC, 16959ab7:
+  1.501 / 1.501 (c3t4-komsu-UTC; banka-210-gg-kapi, banka-230-supheli-bozma, mutabakat-*, report-center, sema-kapisi-bs7, silinenler-donem-kilidi-244 dahil). TZ=Europe/Istanbul donmuş
+  defter + fiş defteri + dönem kilidi + mutabakat + kaynak tarayan genel testler (20 dosya): 204 / 204 (c3t4-donmus-Europe-Istanbul).
+- e2e (ders 28): senaryo-donem-kilidi-ilerleme-250 39/39, senaryo-duzeltme-kilidi-tur3-250 110/110, senaryo-defter-243 24/24, senaryo-222 60/60 ("toplam istek ≤ 50").
+
+### Windows'a duyarlı (ders 48; ilk gönderimde CI'nin Windows işlerinde görülmeli)
+test/donmus-defter-tur4-250.test.mjs V1–V4, X1–X2, W1: sunucuyu kapatır, dosyayı ham bağlantıyla (`DatabaseSync`) değiştirir (kilit ayarı, tetikleyici kaldır / kur, satır silme)
+ve aynı dosyayı yeniden açar; V1 / X1 / W1 dondurma iş parçacığı satır yazarken (kancada tutulu) kapatır. X1–X2 v2.4.9 GERÇEK kodunu aynı klasörde açar (etiket yoksa atlanır).
+Dondurma ve kilit izi iş parçacıkları değişmedi.
+
+### BAŞ MİMAR KARARI GEREKİYOR
+- B4-1 (uygulamada verilen yorum; ders 40): KARAR "kilit değişmiyorsa lockChanged bekleyen koşuyu sürdürür" bütün bekleyen koşulara (kuralı ne olursa olsun) uygulandı. Sonucu: eski
+  kurallı koşu + eski sürümün ilerlettiği kilit + aynı güne yeniden kaydetme → ilerletilen dönem GAP_RULE (S13 = A) — önceki davranış güncel kuraldı (W1). Gerekçe: aynı güne kaydetme
+  kilidi ilerletmez; ilerletme izi yalnız bu programın ilerlettiği günü kaydeder (§4). Bugün iki kural aynı sonucu verir (kural tuzağı testi).
+- B4-2 (YENİ KUŞKU, YENİDEN ÜRETİLDİ — KARAR VERİLMEDİ; kapsam dışı, önceden var): ilerletme izinin DEVAM koşusu. Sıra: eski sürüm kilidi 30.06 → açılış onarımının 2.4.9 koşusu →
+  bu program kilidi 30.09'a ilerletir (iz 30.09) → kesinti → eski sürüm kilidi 31.12'ye ilerletir → açılış: 2.4.9 koşusu tamamlanır, `continueAfter` (30.06, 30.09] güncel kurallı
+  koşu açar (izsiz; (30.09, 31.12] GAP_RULE'u ancak bu koşu tamamlanınca açılır) → bu koşu yazılırken kesinti → açılış: güncel kurallı, izsiz, günü kilitten önce → bırakılır,
+  (30.06, 31.12] GAP_RULE (beklenen (30.06, 30.09] 2.5.0). Betik c3t4-ham/v5-ilerletme-devami.mjs: yeni kod 16959ab7 ve eski kod f4a43cbd AYNI "FARKLI" (koşular 1 done 2.4.9 ·
+  2 abandoned 2.5.0 · 3 done 30.06→31.12 2.4.9). Aynı güne yeniden kaydetme yolu bu turda düzeldi (kilit değişmezken koşu sürer). Seçenekler: (a) öneri — `continueAfter` ilerletme
+  devamının kalanını (iz günü, kilit] GAP_RULE dilimi olarak devam koşusunun PLAN_TRACE'ine yazar (yeni kural yok; ORTA-1 düzeltmesi koşuyu taşınan sayar); (b) uç durum böyle kalsın
+  (BİLİNEN SINIR: eski sürümün iki kez kullanılması + iki kesinti; bugün iki kural aynı sonuç).
+
+### KULLANICIYA SORULMALI
+Yok (yeni para / kapama / kural seçimi açılmadı).
+
+### BİLİNEN SINIR
+- DÜŞÜK-2: iş parçacığı kipinde tablo doğrulaması, parçası özetlendikten SONRA dış bir bağlantıyla (programın dışında bir araç) silinen satırı görmez; koşu o satır olmadan "tamam"
+  olabilir. Mutabakat Testi "Donmuş Defterde Eksik Satır" (görünen ≠ kayıtlı) ile gösterir, açılış onarımı dönemi yeniden dondurur (§7). Programın kendi silme yolları dokunmaz.
+- DÜŞÜK-3 (kalıcı hata veren dondurma + başka güne kilit = 409 döngüsü) → 2.5.1 (KARAR).
+- §19'daki plan maddeleri sürer: plan sürerken kilit BAŞKA güne alınırsa güncel kurallı plan dilimi lockChanged'in olağan kuralına düşer; plan sürerken izli eski kurallı dilimler
+  güncel kuralla canlı okunur (bugün aynı sonuç).
+
+### Ölçüm (ders 47, 52; flock -x scratchpad/olcum.lock; programın kendi verisi — kapi-olcum-yama.mjs kopyam, --hedef 1000000 --yalniz-kur; taze kopya; /proc/loadavg satırlarda)
+Bu turun dondurma yoluna tek eki doğrulama parçası başına bir `await` (kancasız; 138 parça). 1.000.000 verisi (001: 2.741.312 donmuş satır), çekirdek kip (dar kontrol p6 ile aynı kurulum:
+gerçek routes/ledger.mjs uçları + yönlendirici + HTTP), kilit 31.12.2025 → dondurmanın bitişi; olay döngüsü 5 ms'lik yoklayıcı (c3t4-ham/olcum-1m-dondurma.mjs.txt).
+| Koşu | Yük (1 dk) ölçümden önce / sırasında | Kilit yanıtı | Dondurmanın bitişi (kilitten) | Olay döngüsü en çok (50 ms üstü boşluk) | Sonuç |
+|---|---|---|---|---|---|
+| 1 (16959ab7, 15:56) | 5,42 / 4,83–4,97 | 5.029 ms 200 (bütçe), döngü 21 ms | ~93,2 sn (5,0 + 0,2 + 88,0) | 172 ms (2) | TUTARLI 2.741.312 = 2.741.312 — GEÇERSİZ (yük > 2) |
+| 2 (16959ab7, 16:09) | 6,81 / 6,93–6,96 | 5.041 ms 200 (bütçe), döngü 50 ms | ~123,9 sn (5,0 + 0,2 + 118,7) | 338 ms (43) | TUTARLI — GEÇERSİZ (yük > 2) |
+İki deneme de GEÇERSİZ: makinede başka ajanların kilitsiz yükü (tam `npm test`, kâhin mutasyonu) sürdü; 1 dk ortalaması 2'nin altına inmedi. Yük ~5'te olay döngüsü 172 ms (tur 3:
+289–319 ms, yük 4,7–5,3; dar kontrol: 575 ms, yük 11–16 — §16 / §18 / §19 ailesi, kaynak yük ve çöp toplama). DOĞRULANMADI: boş makinede (yük ≤ 2) değer — son adayda yinelenir
+(komut c3t4-ham/kos-olcum.sh.txt; veri c3t4-ham/veri-kur-1m.sh.txt ile yeniden üretilir, ~8 dk).

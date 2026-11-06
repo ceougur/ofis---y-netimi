@@ -1,0 +1,54 @@
+// DAR KONTROL Ç3 tur 3 — betiklerin ortak yardımcıları. Kod kökü (yeni ağaç ya da eski kopya) ilk argüman; her şey o kökten içe aktarılır.
+import path from "node:path";
+import { DatabaseSync } from "node:sqlite";
+import { pathToFileURL } from "node:url";
+
+export const ROOT = path.resolve(process.argv[2] || ".");
+export const imp = rel => import(pathToFileURL(path.join(ROOT, rel)).href);
+export const NOW = "2027-01-10T10:00:00+03:00";
+export const LOCK = "2026-12-31";
+export const MID = "2026-06-30";
+export const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+export const ENV = { HUKUK_LICENSE_URL: "http://127.0.0.1:9" };
+
+export const must = async (label, promise) => {
+  const response = await promise;
+  if (response.status !== 200) throw new Error(`${label}: ${response.status} ${JSON.stringify(response.data).slice(0, 400)}`);
+  return response.data.data;
+};
+
+// Programın kendi API'siyle (test/donmus-defter-tur3-250.test.mjs seed ile aynı desen): 2026'nın her ayına Kasa girişleri + bir cari + 2027 başı.
+export async function seed(admin, count = 40) {
+  const customer = await must("cari", admin.post("/api/workspace/accounts", { name: "Ece Tan", registeredOn: "2026-01-03" }));
+  await must("açılış", admin.post(`/api/workspace/accounts/${customer.id}/entries`, { kind: "debt", amount: "700", date: "2026-01-03", note: "Açılış bakiyesi" }));
+  for (let i = 1; i <= count; i += 1) await must(`kasa ${i}`, admin.post("/api/workspace/cash", { kind: "in", amount: String(10 + i), date: `2026-${String(1 + (i % 12)).padStart(2, "0")}-1${i % 9}`, description: `Giriş ${i}` }));
+  await must("tahsilat", admin.post(`/api/workspace/accounts/${customer.id}/entries`, { kind: "in", amount: "150", date: "2026-11-20", method: "cash", note: "Tahsilat" }));
+  await must("yeni yıl", admin.post("/api/workspace/cash", { kind: "in", amount: "25", date: "2027-01-04", description: "Yeni yıl" }));
+  return customer;
+}
+
+export const runsOf = store => store.all("SELECT no, kind, state, from_date AS fromDate, through, rule_version AS rule, reason, line_count AS lines, state_lines AS stateLines FROM ledger_snapshot_runs ORDER BY no").map(row => ({ ...row }));
+export const rulesIn = (store, from, to) => store.get("SELECT GROUP_CONCAT(DISTINCT rule_version) AS v FROM ledger_snapshots WHERE date > ? AND date <= ?", from, to).v;
+export const traced = (store, no) => Boolean(store.get("SELECT 1 AS found FROM audit_events WHERE entity_id = ? AND type = 'ledger.snapshot.frozen'", `ledger-snapshot-run:${no}`));
+
+export function raw(dataDir, fn) {
+  const db = new DatabaseSync(path.join(dataDir, "destekofis.sqlite"));
+  try {
+    return fn(db);
+  } finally {
+    db.close();
+  }
+}
+export const setLockRaw = (dataDir, day) => raw(dataDir, db => db.prepare("INSERT INTO settings (key, value, updated_at, updated_by) VALUES ('ledger.lockedUntil', ?, ?, NULL) ON CONFLICT(key) DO UPDATE SET value = excluded.value").run(day, new Date().toISOString()));
+
+// Bütünlük: kapsam, görünen donmuş satır = son koşunun kayıtlı satırı = canlı türetme; madde madde donmuş = canlı.
+export function whole(server, lock = LOCK) {
+  const store = server.app.store;
+  const S = server.app.ledger.snapshots;
+  const last = store.get("SELECT no, rule_version, state_lines FROM ledger_snapshot_runs WHERE state = 'done' ORDER BY no DESC LIMIT 1");
+  const visible = store.get("SELECT COUNT(*) AS n FROM ledger_snapshots WHERE date <= ?", S.coverage()).n;
+  const live = server.app.ledger.build().filter(entry => entry.date <= lock);
+  const liveLines = live.reduce((n, entry) => n + entry.lines.length, 0);
+  const canon = entries => JSON.stringify(entries.map(entry => [entry.id, entry.date, entry.lines.map(line => [line.account, line.sub || "", line.party || "", line.debit, line.credit])]));
+  return { kapsam: S.coverage(), kilit: server.app.store.get("SELECT value FROM settings WHERE key = 'ledger.lockedUntil'")?.value || "", gorunen: visible, kayitli: Number(last?.state_lines), canli: liveLines, donmus_eq_canli: canon(S.entries()) === canon(live), tutarli: visible === Number(last?.state_lines) && visible === liveLines && canon(S.entries()) === canon(live) };
+}

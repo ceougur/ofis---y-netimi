@@ -1,0 +1,4 @@
+C1: kaldır→200 5003ms kilit=— | 2026-12-31→409/ledger-cleanup-running 5004ms kilit=— | 2026-12-31→200 635ms kilit=2026-12-31 || tutarlı=true (84/84/84, kapsam 2026-12-31)
+C2: 2026-03-31→200 5003ms kilit=2026-03-31 | 2026-12-31→409/ledger-cleanup-running 5003ms kilit=2026-03-31 | 2026-06-30→409/ledger-cleanup-running 5002ms kilit=2026-03-31 | 2026-01-31→200 5003ms kilit=2026-01-31 | 2026-02-28→409/ledger-cleanup-running 5003ms kilit=2026-01-31 | 2026-12-31→200 657ms kilit=2026-12-31 || tutarlı=true (84/84/84, kapsam 2026-12-31)
+C3: 2026-03-31→200 5002ms kilit=2026-03-31 | 2026-03-31→200 5003ms kilit=2026-03-31 || tutarlı=true (24/24/24, kapsam 2026-03-31)
+C4: 2026-11-30→409/ledger-cleanup-running 5003ms kilit=2026-12-31 | 2026-11-30→200 250ms kilit=2026-11-30 || tutarlı=true (78/78/78, kapsam 2026-11-30)
