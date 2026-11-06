@@ -1,0 +1,16 @@
+#!/bin/bash
+# Ç3 tur 2 — ders 20: 6000 ms zorlamanın ön koşulu GERÇEKTEN oluştu mu? Yalnız startTestServer kullanan 18 kilit komşusu (HOF_TEST_DONMA_GECIKME_MS yalnız orada
+# işler); her kilit PUT yanıtının freeze.active değeri onkosul-yukle.mjs ile sayılır (ONKOSUL_DOSYA).
+SP=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-ae037f9ed9ae9cefe
+cd "$W" || exit 1
+export KANIT_DIR=$SP/c3t2-kanit
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+export ONKOSUL_DOSYA=$SP/c3t2-not/onkosul-6000.jsonl
+rm -f "$ONKOSUL_DOSYA"
+mapfile -t KF < "$SP/c3t2-not/komsu-kilit-put-sts.txt"
+echo "startTestServer kilit komşusu: ${#KF[@]}"
+TZ=UTC HOF_TEST_DONMA_GECIKME_MS=6000 NODE_OPTIONS="--import=$SP/c3t2-betik/onkosul-yukle.mjs" timeout 7200 node tools/kanit.mjs kos c3t2-komsu-utc-gecikme6000-onkosul -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 "${KF[@]}" > "$SP/c3t2-not/komsu-gecikme6000-onkosul.out" 2>&1
+echo "onkosul cikis $?"
+echo "PUT sayısı: $(grep -c '' "$ONKOSUL_DOSYA")  active=true: $(grep -c '"active":true' "$ONKOSUL_DOSYA")  active=false: $(grep -c '"active":false' "$ONKOSUL_DOSYA")"
+echo bitti
