@@ -1,0 +1,93 @@
+{
+  "ad": "c3t1-kirmizi-eski-10ed14cf-UTC",
+  "komut": "env TZ=UTC node --disable-warning=ExperimentalWarning --test --test-concurrency=1 /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-eski-10ed14cf/test/donmus-defter-tur1-250.test.mjs",
+  "commit": "cd7ca1a3d498a0c84266df5a1897d754a805c022",
+  "dal": "worktree-agent-a247c14721558ab77",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T04:22:25.215Z",
+  "sure_sn": 18.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 12,
+    "gecen": 0,
+    "basarisiz": 12,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 12 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 Ç3 tur 1 — önbellek, aynı gün / başka gün yeniden kilit, iletiler, ara dilim › ORTA-1: Şirket Verisini Sıfırla + aynı güne yeniden kilitten sonra Hesap Planı Mizanı (uç ve Rapor Merkezi) YENİ verinin toplamını gösterir (önbellek son koşunun kimliğiyle)",
+      "konum": "test/donmus-defter-tur1-250.test.mjs:81:3",
+      "hata": "Şirket Verisini Sıfırla + aynı güne yeniden kilitten sonra mizan eski veriyi gösteriyor (önbellek): 1000 ≠ canlı 5000 · 1000 !== 5000 (beklenen 5000, gelen 1000)"
+    },
+    {
+      "ad": "2.5.0 Ç3 tur 1 — önbellek, aynı gün / başka gün yeniden kilit, iletiler, ara dilim › ORTA-3: göçün / onarımın bekleyen 2.4.9 koşusu varken AYNI güne yeniden kilit — koşu kendi kuralıyla (2.4.9) sürer, güncel kuralla yeni koşu açılmaz",
+      "konum": "test/donmus-defter-tur1-250.test.mjs:113:3",
+      "hata": "bekleyen 2.4.9 koşusu aynı güne yeniden kilitte bırakıldı: [{\"no\":1,\"kind\":\"freeze\",\"state\":\"abandoned\",\"fromDate\":\"\",\"through\":\"2026-12-31\",\"rule\":\"2.4.9\",\"reason\":\"repair\"},{\"no\":2,\"kind\":\"freeze\",\"state\":\"done\",\"fromDate\":\"\",\"through\":\"2026-12-31\",\"rule\":\"2.5.0\",\"reason\":\"lock\"}] · true !== false (beklenen false, gelen true)"
+    },
+    {
+      "ad": "2.5.0 Ç3 tur 1 — önbellek, aynı gün / başka gün yeniden kilit, iletiler, ara dilim › ORTA-3 ailesi: bekleyen 2.4.9 koşusu varken kilit İLERLETİLİNCE koşu 2.4.9 ile tamamlanır, kalan dönem güncel kuralla; GERİ ÇEKİLİNCE (koşunun içine) kısa koşu yine 2.4.9",
+      "konum": "test/donmus-defter-tur1-250.test.mjs:131:3",
+      "hata": "ilerletilen kilit eski kurallı dönemi güncel kurala geçirdi: [{\"no\":1,\"kind\":\"freeze\",\"state\":\"abandoned\",\"fromDate\":\"\",\"through\":\"2026-06-30\",\"rule\":\"2.4.9\",\"reason\":\"repair\"},{\"no\":2,\"kind\":\"freeze\",\"state\":\"done\",\"fromDate\":\"\",\"through\":\"2026-12-31\",\"rule\":\"2.5.0\",\"reason\":\"lock\"}] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç3 tur 1 — önbellek, aynı gün / başka gün yeniden kilit, iletiler, ara dilim › ORTA-3 ailesi (eşzamanlı): bekleyen 2.4.9 koşusu varken kapanış fişi kilidi ilerletir (postAll lockThrough) — koşu 2.4.9 ile, kalan dönem güncel kuralla, ikisi aynı işlemde",
+      "konum": "test/donmus-defter-tur1-250.test.mjs:157:3",
+      "hata": "eşzamanlı kilit eski kurallı dönemi güncel kurala geçirdi: [{\"no\":1,\"kind\":\"freeze\",\"state\":\"abandoned\",\"fromDate\":\"\",\"through\":\"2026-06-30\",\"rule\":\"2.4.9\",\"reason\":\"repair\"},{\"no\":2,\"kind\":\"freeze\",\"state\":\"done\",\"fromDate\":\"\",\"through\":\"2026-12-31\",\"rule\":\"2.5.0\",\"reason\":\"voucher-closing\"}] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç3 tur 1 — önbellek, aynı gün / başka gün yeniden kilit, iletiler, ara dilim › ORTA-3 ailesi: kuralı bu programda olmayan bekleyen koşu güncel kurala GEÇMEZ, yarım donmaz — ilerlemede ve Mutabakat Testi'nde görünür; eşzamanlı kilit düşer; kilit kaldırılınca bırakılır",
+      "konum": "test/donmus-defter-tur1-250.test.mjs:173:3",
+      "hata": "bilinmeyen kuralın bekleyen koşusu güncel kurala geçti: [{\"no\":1,\"kind\":\"freeze\",\"state\":\"abandoned\",\"fromDate\":\"\",\"through\":\"2026-12-31\",\"rule\":\"9.9.9\",\"reason\":\"lock\"},{\"no\":2,\"kind\":\"freeze\",\"state\":\"done\",\"fromDate\":\"\",\"through\":\"2026-12-31\",\"rule\":\"2.5.0\",\"reason\":\"lock\"}] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç3 tur 1 — önbellek, aynı gün / başka gün yeniden kilit, iletiler, ara dilim › K4: eksik donmuş satır ayrı iletiyle; 'Kural Değişikliği Farkı' nedeni bilinmeyende tarafsız, nedeni biliniyorsa onu söyler; denetim adları Yazım düzeninde",
+      "konum": "test/donmus-defter-tur1-250.test.mjs:210:3",
+      "hata": "Yazım düzeni (parantez içi): Donmuş Defter (31.12.2026 ve öncesi) (beklenen , gelen öncesi)"
+    },
+    {
+      "ad": "2.5.0 Ç3 tur 1 — önbellek, aynı gün / başka gün yeniden kilit, iletiler, ara dilim › §5 kural kayıt defteri: RULE_HISTORY'nin son öğesi güncel kural, önceki her kuralın kopyası (ledger-rule-<sürüm>/) ve kayıt defteri girdisi var; her kuralın bekleyen koşusu (iş parçacığında) kendi kuralıyla donar",
+      "konum": "test/donmus-defter-tur1-250.test.mjs:259:3",
+      "hata": "RULE_HISTORY yok (kural sürüm geçmişi) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.5.0 Ç3 tur 1 — önbellek, aynı gün / başka gün yeniden kilit, iletiler, ara dilim › DÜŞÜK-3 (ders 47): göç / onarım penceresinde ara dilim (2.4.9) koşu başına bir kez kurulur — çıktı önbelleksiz yolla birebir; yazım, kural farkı ve işlem içi okuma yeniden kurar; kilitli yılın Yevmiye Defteri güncel türetme kurmaz",
+      "konum": "test/donmus-defter-tur1-250.test.mjs:289:3",
+      "hata": "göç penceresinde kilitli yılın Yevmiye Defteri güncel türetme de kurdu (iki tam türetme) · 1 !== 0 (beklenen 0, gelen 1)"
+    },
+    {
+      "ad": "2.5.0 Ç3 tur 1 — ORTA-2 / ORTA-3 açılış (dosya kapatılıp ham bağlantıyla değiştirilir, yeniden açılır) › ORTA-2: eski sürüm donmuş satırları silip AYNI güne yeniden kilitlediyse açılış onarımı kapsamı indirir, kilitli yıl GAP_RULE (2.4.9) ile yeniden donar — Yevmiye Defteri ve Hesap Planı Mizanı dolu, Mutabakat Testi tutarlı",
+      "konum": "test/donmus-defter-tur1-250.test.mjs:421:3",
+      "hata": "kilitli yılın Yevmiye Defteri boş donmuş defterden okunuyor (0 satır, canlı 12) · 0 !== 12 (beklenen 12, gelen 0)"
+    },
+    {
+      "ad": "2.5.0 Ç3 tur 1 — ORTA-2 / ORTA-3 açılış (dosya kapatılıp ham bağlantıyla değiştirilir, yeniden açılır) › ORTA-2 (ileri kilit): eski sürüm satırları silip kilidi İLERLETTİYSE eski kapsamın satırları da yeniden donar (05.05 satırı kaybolmaz)",
+      "konum": "test/donmus-defter-tur1-250.test.mjs:446:3",
+      "hata": "eski kapsamın (30.06'ya kadar) satırı kayıp (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.5.0 Ç3 tur 1 — ORTA-2 / ORTA-3 açılış (dosya kapatılıp ham bağlantıyla değiştirilir, yeniden açılır) › ORTA-2 (sağlama noktası): yalnız son koşunun satırları silindiyse kapsam sağlam son koşunun gününe iner; önceki koşunun satırları (güncel kural) korunur, kalan dönem GAP_RULE ile donar",
+      "konum": "test/donmus-defter-tur1-250.test.mjs:471:3",
+      "hata": "son koşunun satırları eksik okunuyor (6 / 12) · 6 !== 12 (beklenen 12, gelen 6)"
+    },
+    {
+      "ad": "2.5.0 Ç3 tur 1 — ORTA-2 / ORTA-3 açılış (dosya kapatılıp ham bağlantıyla değiştirilir, yeniden açılır) › ORTA-3 ailesi (yarıda kesilme): bekleyen 2.4.9 koşusu sürerken kilit ilerletildi ve dondurma kesildi → açılışta koşu 2.4.9 ile sürer, kalan dönem (ilerletme izi) güncel kuralla donar",
+      "konum": "test/donmus-defter-tur1-250.test.mjs:502:3",
+      "hata": "bekleyen 2.4.9 koşusu ilerletilen kilitte bırakıldı: [{\"no\":1,\"kind\":\"freeze\",\"state\":\"abandoned\",\"fromDate\":\"\",\"through\":\"2026-06-30\",\"rule\":\"2.4.9\",\"reason\":\"repair\"},{\"no\":2,\"kind\":\"freeze\",\"state\":\"pending\",\"fromDate\":\"\",\"through\":\"2026-12-31\",\"rule\":\"2.5.0\",\"reason\":\"lock\"}] · 2 !== 1 (beklenen 1, gelen 2)"
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-kanit/kanit/2026-11-06/c3t1-kirmizi-eski-10ed14cf-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a247c14721558ab77",
+  "ham_cikti_sha256": "262f66de325734cb1e7098fdc1a35ae0930768aacd84e3452eb250a6edba6bd1",
+  "ham_cikti_bayt": 20624
+}

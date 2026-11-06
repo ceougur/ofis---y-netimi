@@ -1,0 +1,56 @@
+taban: 37 geçti / 0 kaldı (çıkış 0)
+ok 1 - kilitli dönemde güncel türetmeye düşme (karma okuma donmuş defteri okumaz): çıkış 1, 10 geçti / 3 kaldı
+ok 2 - donmuş satır kaybı (son parçadan bir satır düşer): çıkış 1, 4 geçti / 9 kaldı
+ok 3 - donmuş satır kaybı (okuma kapsam gününü atlar): çıkış 1, 5 geçti / 8 kaldı
+ok 4 - kilit günü donmaz (aralık kilit gününü dışlar): çıkış 1, 6 geçti / 7 kaldı
+ok 5 - kilit ile donma ayrışması (kanca önceki kilidi dondurur): çıkış 1, 7 geçti / 6 kaldı
+ok 6 - geri çekmede iz yok: çıkış 1, 12 geçti / 1 kaldı
+ok 7 - fark denetimi susuyor: çıkış 1, 12 geçti / 1 kaldı
+ok 8 - göçte 2.5.0 kuralı kullanılıyor: çıkış 1, 6 geçti / 1 kaldı
+ok 9 - UPDATE tetikleyicisi yok (satır): çıkış 1, 11 geçti / 2 kaldı
+ok 10 - DELETE tetikleyicisi yok (satır): çıkış 1, 12 geçti / 1 kaldı
+ok 11 - Şirket Verisini Sıfırla donmuş defteri silmez: çıkış 1, 18 geçti / 2 kaldı
+ok 12 - eski sürüm kilidinin açılış onarımı yok: çıkış 1, 6 geçti / 1 kaldı
+ok 13 - postAll lockThrough dondurmaz (kanca çağrılmaz): çıkış 1, 12 geçti / 1 kaldı
+ok 14 - kaynak izi denetimi yok: çıkış 1, 12 geçti / 1 kaldı
+ok 15 - bayat satırlar temizlenmez: çıkış 1, 12 geçti / 1 kaldı
+ok 16 - 2.4.9 kopyası değişti (649 yerine 642): çıkış 1, 16 geçti / 4 kaldı
+ok 17 - türetme kaynak satırlarını yine store.all ile okur (routes/ledger.mjs rows): çıkış 1, 4 geçti / 1 kaldı
+ok 18 - 2.4.9 kopyası ana iş parçacığında sıkı depo olmadan: çıkış 1, 3 geçti / 2 kaldı
+ok 19 - 2.4.9 kopyası iş parçacığında sıkı depo olmadan: çıkış 1, 4 geçti / 1 kaldı
+ok 20 - donmuş okuma yine store.all ile: çıkış 1, 4 geçti / 1 kaldı
+ok 21 - sıkı satırlar kopyalanmaz (sözlük kipli satır geçer): çıkış 1, 4 geçti / 1 kaldı
+ok 22 - kilit izi yine store.all ile (bütün kaynak satırları dizide): çıkış 1, 4 geçti / 1 kaldı
+ok 23 - akışlı fark denetimi yalnız güncelde olan maddeleri saymaz: çıkış 1, 4 geçti / 1 kaldı
+ok 24 - ORTA-1: donmuş mizan önbelleği yine koşu numarasıyla (sıfırlamada 1'den başlar): çıkış 1, 11 geçti / 1 kaldı
+ok 25 - ORTA-2: açılış onarımı eksik donmuş satırı görmez: çıkış 1, 9 geçti / 3 kaldı
+ok 26 - ORTA-2: onarımın geri çekmesi toplamı 'önceki − kaldırılan'la (satırlar zaten silinmiş): çıkış 1, 11 geçti / 1 kaldı
+ok 27 - ORTA-2: sağlama noktası yok (her zaman baştan): çıkış 1, 11 geçti / 1 kaldı
+ok 28 - ORTA-3 ailesi: eski kurallı bekleyen koşu başka güne kilitte güncel kurala geçer: çıkış 1, 8 geçti / 4 kaldı
+ok 29 - ORTA-3 ailesi: koşunun içine çekilen kilit güncel kuralla: çıkış 1, 11 geçti / 1 kaldı
+ok 30 - ORTA-3 ailesi (eşzamanlı): kalan dönem güncel kural yerine GAP_RULE: çıkış 1, 11 geçti / 1 kaldı
+ok 31 - ORTA-3 ailesi: ilerletme izi okunmaz (kalan dönem GAP_RULE): çıkış 1, 10 geçti / 2 kaldı
+ok 32 - ORTA-3 ailesi: iş parçacığı yolunda kalan dönem açılmaz: çıkış 1, 10 geçti / 2 kaldı
+ok 33 - ORTA-3 ailesi: bilinmeyen kuralın nedeni ilerlemede görünmez: çıkış 1, 11 geçti / 1 kaldı
+not ok 34 - ORTA-3 ailesi: bilinmeyen kural Mutabakat Testi'nde görünmez: çıkış 1, 11 geçti / 1 kaldı — beklenen neden görülmedi (/Bekleyen Dondurmanın Kuralı Bu Programda Yok|Dondurma Bekliyor/)
+    not ok 5 - ORTA-3 ailesi: kuralı bu programda olmayan bekleyen koşu güncel kurala GEÇMEZ, yarım donmaz — ilerlemede ve Mutabakat Testi'nde görünür; eşzamanlı kilit düşer; kilit kaldırılınca bırakılır
+      error: '[]'
+      name: 'AssertionError'
+not ok 1 - 2.5.0 Ç3 tur 1 — önbellek, aynı gün / başka gün yeniden kilit, iletiler, ara dilim
+  error: '1 subtest failed'
+ok 35 - ORTA-3 ailesi (açılış): kilit ötesindeki eski kurallı koşu bırakılır: çıkış 1, 11 geçti / 1 kaldı
+ok 36 - K4: nedeni bilinmeyen ayrışma yine 'kural değişti': çıkış 1, 11 geçti / 1 kaldı
+ok 37 - K4: eksik satır 'kural değişikliği' diye adlandırılır: çıkış 1, 11 geçti / 1 kaldı
+ok 38 - K4: denetim adı Yazım düzeni dışında: çıkış 1, 10 geçti / 2 kaldı
+ok 39 - §5: kural geçmişinden sürüm silinir: çıkış 1, 11 geçti / 1 kaldı
+ok 40 - §5: kayıt defterinden 2.4.9 kuralı düşer: çıkış 1, 3 geçti / 9 kaldı
+ok 41 - DÜŞÜK-3: ara dilim her okumada yeniden kurulur: çıkış 1, 11 geçti / 1 kaldı
+ok 42 - DÜŞÜK-3: 'aynı' bilgisi güncel dilimin parmak izi sınanmadan kullanılır: çıkış 1, 11 geçti / 1 kaldı
+ok 43 - DÜŞÜK-3: dondurmanın kendi yazımları önbellek anahtarını değiştirir: çıkış 1, 11 geçti / 1 kaldı
+ok 44 - DÜŞÜK-3: kilitli yılın Yevmiye Defteri güncel türetmeyi de kurar: çıkış 1, 11 geçti / 1 kaldı
+ok 45 - DÜŞÜK-3: ara dilim from'dan önce bitse de kurulur: çıkış 1, 11 geçti / 1 kaldı
+ok 46 - DÜŞÜK-3: işlem içinde okunan ara dilim saklanır (GG2): çıkış 1, 11 geçti / 1 kaldı
+
+# tests 46
+# pass 45
+# fail 1
