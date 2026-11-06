@@ -1,0 +1,32 @@
+{
+  "ad": "kahineski-defter-esdeger-249",
+  "komut": "python3 -I /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski-c5/araclar/esdeger_defter.py /home/user/ofis---y-netimi/.claude/worktrees/agent-a6cbbc7468dfd488a /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski-c5/eski",
+  "commit": "a22ebbf560d434d28fa56eb3d2a4a469b1ab5e4d",
+  "dal": "worktree-agent-a6cbbc7468dfd488a",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T12:06:16.355Z",
+  "sure_sn": 1.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 14,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "kahineski-defter-esdeger-249.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a6cbbc7468dfd488a",
+  "ham_cikti_sha256": "8f5627cc5002f99608d6a7a89c07ec4cbc8e0100d93828b394bbf4847de2fb1f",
+  "ham_cikti_bayt": 87
+}
