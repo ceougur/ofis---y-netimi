@@ -111,41 +111,50 @@ export function ruleDiffHint({ rowsBroken = false, sourceChanged = false } = {})
 function deepSame(a, b) {
   if (a === b) return true;
   if (typeof a !== "object" || typeof b !== "object" || a === null || b === null) return Number.isNaN(a) && Number.isNaN(b);
-  if (Array.isArray(a) !== Array.isArray(b)) return false;
-  const keys = Object.keys(a);
-  if (keys.length !== Object.keys(b).length) return false;
-  for (const key of keys) if (!Object.hasOwn(b, key) || !deepSame(a[key], b[key])) return false;
-  return true;
+  if (Array.isArray(a)) {
+    if (!Array.isArray(b) || a.length !== b.length) return false;
+    for (let index = 0; index < a.length; index += 1) if (!deepSame(a[index], b[index])) return false;
+    return true;
+  }
+  if (Array.isArray(b)) return false;
+  // Anahtar dizisi kurulmaz (1 M maddede ayırma yok): a'nın her anahtarı b'de aynı, b'de fazladan anahtar yok.
+  let count = 0;
+  for (const key in a) {
+    if (!Object.hasOwn(a, key)) continue;
+    count += 1;
+    if (!Object.hasOwn(b, key) || !deepSame(a[key], b[key])) return false;
+  }
+  for (const key in b) if (Object.hasOwn(b, key)) count -= 1;
+  return count === 0;
 }
 export const sameEntries = (a, b) => a.length === b.length && a.every((entry, index) => deepSame(entry, b[index]));
-/** Maddelerin parmak izi (FNV-1a, 32 bit; kimlik, tarih, işlem, açıklama, sıra, satırlar: hesap, alt hesap, cari, borç, alacak). Ara metin kurulmaz (1 M maddede ayırma yok). */
+/**
+ * Güncel dilimin parmak izi (FNV-1a, 32 bit), sıralı: madde ve satır sayısı, hesap kodu, alt hesap ve cari uzunluğu, borç, alacak — kural "hangi hesaba ne kadar"dır. Metin karakter
+ * karakter işlenmez (123.000 maddede ~0,6 sn sürüyordu). Yalnız "aynı" bilgisinin isabetinde, güncel kuralın aynı veride başka çıktı verip vermediğini sınar (üretimde kural çalışırken
+ * değişmez; YALNIZ TEST kancası değiştirir).
+ */
 export function printOf(entries) {
   let hash = 0x811c9dc5;
-  const text = value => {
-    const s = value === undefined || value === null ? "" : typeof value === "string" ? value : String(value);
-    for (let index = 0; index < s.length; index += 1) hash = Math.imul(hash ^ s.charCodeAt(index), 0x01000193) >>> 0;
-    hash = Math.imul(hash ^ 0x1f, 0x01000193) >>> 0;
-  };
-  const num = value => {
-    const n = Number(value) || 0;
-    hash = Math.imul(hash ^ (n | 0), 0x01000193) >>> 0;
-    hash = Math.imul(hash ^ (Math.floor(n / 4294967296) | 0), 0x01000193) >>> 0;
+  let lines = 0;
+  const mix = value => {
+    hash = Math.imul(hash ^ (value | 0), 0x01000193) >>> 0;
   };
   for (const entry of entries) {
-    text(entry.id);
-    text(entry.date);
-    text(entry.source);
-    text(entry.text);
-    num(entry.seq ?? -1);
+    mix(entry.lines.length);
     for (const line of entry.lines) {
-      text(line.account);
-      text(line.sub);
-      text(line.party);
-      num(line.debit);
-      num(line.credit);
+      lines += 1;
+      mix(Number(line.account) || -1);
+      mix(line.sub ? line.sub.length : 0);
+      mix(line.party ? line.party.length : 0);
+      const debit = Number(line.debit) || 0;
+      const credit = Number(line.credit) || 0;
+      mix(debit);
+      mix(debit / 4294967296);
+      mix(credit);
+      mix(credit / 4294967296);
     }
   }
-  return `${entries.length}:${hash.toString(16)}`;
+  return `${entries.length}:${lines}:${hash.toString(16)}`;
 }
 
 /**
