@@ -2787,7 +2787,8 @@ S("s85-s49-formdan-carisiz-evrak", ["S49", "KG-3", "K-02", "Ç-04", "Ç-06", "Ç
     # alınan: B 101.01 5000 / A 649.90; B 121.01 2000 / A 649.90 · verilen: B 770.90 3000 / A 103; B 770.90 1000 / A 321
     "mz0/satirlar/101.01/bakiye": 5000, "mz0/satirlar/121.01/bakiye": 2000, "mz0/satirlar/649.90/bakiye": -7000,
     "mz0/satirlar/770.90/bakiye": 4000, "mz0/satirlar/103/bakiye": -3000, "mz0/satirlar/321/bakiye": -1000,
-    "mz0/satirlar/519/bakiye": 0, "mz0/satirlar/602/bakiye": 0, "mz0/satirlar/770/bakiye": 0,
+    # dönem içinde 519 hareketi yok (banka açılışı 01.01 devirde; ilk yazımda "519/bakiye": 0 yanlıştı — mizan bakiyesi devri içerir)
+    "mz0/satirlar/519/alacak": 0, "mz0/satirlar/602/bakiye": 0, "mz0/satirlar/770/bakiye": 0,
     # sonra: SN5 T1'e ciro (B 320|T1 / A 121.01 2000), CK5 Kasa'dan tahsil (B 100 / A 101.01 5000), VC5 ödendi (B 103 / A 102.B1 3000)
     "mz/satirlar/102.B1/bakiye": 7000, "mz/satirlar/100/bakiye": 5000, "mz/satirlar/101.01/bakiye": 0, "mz/satirlar/121.01/bakiye": 0,
     "mz/satirlar/103/bakiye": 0, "mz/satirlar/321/bakiye": -1000, "mz/satirlar/320|T1/bakiye": 2000, "mz/satirlar/649.90/bakiye": -7000,

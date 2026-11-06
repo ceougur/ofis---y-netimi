@@ -49,19 +49,19 @@
    "bil/kesin_degil": [
     "TAMAMLANMAMIS_ACILIS"
    ],
-   "bil/pasif/V.G": 150000,
+   "bil/pasif/V.G": 200000,
    "bil0331/pasif/V.A": 150000,
    "fark/500": 150000,
-   "fark/519": -150000,
+   "fark/519": -200000,
    "fark/602": 30000,
-   "fark/602.90": -10000,
+   "fark/602.90": 40000,
    "fark/770": -20000,
-   "gt/kalemler/A": 200000,
-   "gt/kalemler/DNK": 200000,
+   "gt/kalemler/A": 150000,
+   "gt/kalemler/DNK": 150000,
    "gt/kalemler/E": 0,
    "mz/satirlar/500/bakiye": 0,
-   "mz/satirlar/519/bakiye": -150000,
-   "mz/satirlar/602.90/bakiye": -50000,
+   "mz/satirlar/519/bakiye": -200000,
+   "mz/satirlar/602.90/bakiye": 0,
    "mz/satirlar/602/bakiye": 0,
    "redler": [
     "KILITLI_DONEM"
@@ -140,7 +140,8 @@
    "id": "BY2",
    "tarih": "2026-01-02",
    "tur": "borc_yaz",
-   "tutar": 50000
+   "tutar": 50000,
+   "yedekten": true
   },
   {
    "K": 0,
@@ -175,6 +176,11 @@
    "id": "F2",
    "tarih": "2026-04-10",
    "tur": "satis_faturasi"
+  },
+  {
+   "karar": "onay",
+   "kaynak": "BY2",
+   "tur": "acilis_onayla"
   },
   {
    "tur": "kural_farki_duzelt"

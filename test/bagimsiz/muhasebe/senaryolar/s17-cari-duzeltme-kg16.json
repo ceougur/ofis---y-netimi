@@ -47,14 +47,14 @@
     "BY3",
     "BY4"
    ],
-   "gt/kalemler/A": 90000,
-   "gt/kalemler/DNK": 80000,
+   "gt/kalemler/A": 50000,
+   "gt/kalemler/DNK": 40000,
    "mz/satirlar/120|C1/bakiye": 80000,
    "mz/satirlar/120|C2/bakiye": 200000,
    "mz/satirlar/120|C3/bakiye": 30000,
    "mz/satirlar/320|T1/bakiye": -25000,
-   "mz/satirlar/519/bakiye": -205000,
-   "mz/satirlar/602.90/bakiye": -90000,
+   "mz/satirlar/519/bakiye": -245000,
+   "mz/satirlar/602.90/bakiye": -50000,
    "mz/satirlar/770.90/bakiye": 10000
   },
   "KG16=B": {
@@ -100,7 +100,8 @@
    "onay": true,
    "tarih": "2026-01-02",
    "tur": "borc_yaz",
-   "tutar": 30000
+   "tutar": 30000,
+   "yedekten": true
   },
   {
    "aciklama": "açılış farkı",
@@ -108,7 +109,8 @@
    "id": "BY4",
    "tarih": "2026-01-03",
    "tur": "borc_yaz",
-   "tutar": 40000
+   "tutar": 40000,
+   "yedekten": true
   },
   {
    "aciklama": "AÇILIŞ",
@@ -117,7 +119,8 @@
    "onay": true,
    "tarih": "2026-01-04",
    "tur": "alacak_yaz",
-   "tutar": 25000
+   "tutar": 25000,
+   "yedekten": true
   },
   {
    "aciklama": "Fark faturası",

@@ -1,0 +1,186 @@
+{
+ "ad": "s93-b14-alt-defter-kural-farki",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
+     "kdv_mahsup": [],
+     "kural_farki_yeni_kural": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "bil": {
+     "aktif": {
+      "I.A": 14000,
+      "I.C": 10000
+     },
+     "aktif_toplam": 24000,
+     "bilgi": [],
+     "bilgi_amacli": false,
+     "detay": {
+      "I.A": {
+       "100": 10000,
+       "101.01": 4000
+      },
+      "I.C": {
+       "128|C1": 10000
+      },
+      "III.D": {
+       "120|C1": 4000
+      },
+      "V.F": {
+       "Dönem Net Kârı (Hesaplanmış)": 10000
+      },
+      "V.G": {
+       "519": 10000
+      }
+     },
+     "donem_net_kari": 10000,
+     "fark": 0,
+     "gecmis_yillar_kapanmamis": 0,
+     "gecmis_yillar_kar": 0,
+     "gecmis_yillar_zarar": 0,
+     "kesin_degil": [
+      "KURAL_DEGISIKLIGI_FARKI",
+      "TAMAMLANMAMIS_ACILIS"
+     ],
+     "pasif": {
+      "III.D": 4000,
+      "V.F": 10000,
+      "V.G": 10000
+     },
+     "pasif_toplam": 24000,
+     "tarih": "2026-04-30"
+    },
+    "fark0": {
+     "120|C1": 4000,
+     "128|C1": -4000,
+     "500": 10000,
+     "519": -10000
+    },
+    "fark1": {
+     "120|C1": 4000,
+     "128|C1": -4000
+    },
+    "mz": {
+     "ana": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 10000,
+       "borc": 10000,
+       "devir": 0
+      },
+      "101": {
+       "alacak": 0,
+       "bakiye": 4000,
+       "borc": 4000,
+       "devir": 0
+      },
+      "120": {
+       "alacak": 14000,
+       "bakiye": -4000,
+       "borc": 10000,
+       "devir": 0
+      },
+      "128": {
+       "alacak": 0,
+       "bakiye": 10000,
+       "borc": 10000,
+       "devir": 0
+      },
+      "500": {
+       "alacak": 10000,
+       "bakiye": 0,
+       "borc": 10000,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 10000,
+       "bakiye": -10000,
+       "borc": 0,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 10000,
+       "bakiye": -10000,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "bas": "2026-01-01",
+     "satirlar": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 10000,
+       "borc": 10000,
+       "devir": 0
+      },
+      "101.01": {
+       "alacak": 0,
+       "bakiye": 4000,
+       "borc": 4000,
+       "devir": 0
+      },
+      "120|C1": {
+       "alacak": 14000,
+       "bakiye": -4000,
+       "borc": 10000,
+       "devir": 0
+      },
+      "128|C1": {
+       "alacak": 0,
+       "bakiye": 10000,
+       "borc": 10000,
+       "devir": 0
+      },
+      "500": {
+       "alacak": 10000,
+       "bakiye": 0,
+       "borc": 10000,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 10000,
+       "bakiye": -10000,
+       "borc": 0,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 10000,
+       "bakiye": -10000,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "son": "2026-04-30",
+     "toplam": {
+      "alacak": 44000,
+      "bakiye": 0,
+      "borc": 44000,
+      "devir": 0
+     }
+    }
+   },
+   "redler": [
+    {
+     "kod": "KURAL_FARKI_ALT_DEFTER",
+     "neden": "yalnız alt defter hesabında fark — fişle düzeltilmez; Kilidi Aç → Yeniden Kilitle (B14)",
+     "olay": 9,
+     "tur": "kural_farki_duzelt"
+    }
+   ]
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}
