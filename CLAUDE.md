@@ -417,7 +417,7 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   (ders 21, 48; list_workflow_runs + get_workflow_run_usage; kırmızıda list_workflow_jobs); kırmızıda ilgili iş durur.
   SIRADAKİ: Ç3 → Ç5 (+B1, P1, karşılıksız açılış çeki, KG-15 / 16, S7, S8, kararlar (1)(2)(3)(5)) ‖ Ç7a → Ç7b (+ (4)(6), KG-23) → Ç6 → MA → D2 (+ ledger.mjs ~186 yanlış yorum, audit_events yorum) →
   D3–D6 (D4: (7), K6 expected()'e fiş satırları, M4 sırası, 691 → 692, arşiv kendi Defter Türü, pruneVouchersThrough) → WK sürücüsü / W-3 / WE / WY / G1 / BS-1, BS-5, BS-6 → aday → paket.
-  ORTAM: 30 dk rapor CronCreate 57030f4a; ortam alarmı trig_01RE5MRmDjVDFH2SZEuo24ok (3 saatte bir :18; 21:18 "Ortam sağlam"); disk 26 GB, bellek 14 GB (21:43). Biten ajanların ağaçları ve kopyaları tam
+  ORTAM: 30 dk rapor CronCreate da3eb3f2 (06.11 00:46 kapsayıcı yeniden başladı; 57030f4a düştü, yeniden kuruldu); ortam alarmı trig_01RE5MRmDjVDFH2SZEuo24ok (3 saatte bir :18; 21:18 "Ortam sağlam"); disk 26 GB, bellek 14 GB (21:43). Biten ajanların ağaçları ve kopyaları tam
   yollarla silindi (önce node_modules bağı `rm <tam yol>/node_modules`, sonra `git worktree remove` + `git branch -d`). Playwright yolu ve imza anahtarı DURUM 22'deki gibi (aşağıdaki 2.5.0 PLANLAMA maddesinde).
   ESKİ OTURUM: dal claude/compassionate-galileo-f9kghg (PR #40, Meta / Tech Provider; CLAUDE.md'ye yazmaz) — PR #40 master'a birleşince master bu dala birleştirilir, DURUM 18/19 satırları korunur.
   W-1(b) (kendiliğinden yenileme) Meta App Review'da business_management izni gelince.
