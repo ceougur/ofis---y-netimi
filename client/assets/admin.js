@@ -1038,19 +1038,69 @@
 
   // ---------- Dönem kilidi ve mutabakat ----------
   const dayText = iso => (iso ? `${iso.slice(8, 10)}.${iso.slice(5, 7)}.${iso.slice(0, 4)}` : "");
+  // 2.5.0 Ç3 tur 2: kilit ucu kilitli dönemin defterinin dondurulmasını BEKLEMEZ (büyük şirkette dakikalar); dondurma sunucuda arkada sürer. Kart durumu
+  // GET /api/workspace/ledger/lock → freeze ile yazar (pending: bekleyen koşu, active: süren iş) ve sürerken ARKA PLAN isteğiyle yoklar; bitince durur.
+  const FREEZE_FIRST_POLL_MS = 500;
+  const FREEZE_POLL_MS = 1500;
+  const FREEZE_POLL_FAILURES = 5;
+  let freezeTimer = null;
+  let freezeLong = false; // bir yoklama dondurmayı sürerken gördü (kısa dondurmada "donduruldu" bildirimi çıkmaz)
+  let freezeFailures = 0;
+  function freezeText(freeze) {
+    if (!freeze?.pending) return "";
+    if (freeze.active) return `Kilitli dönemin defteri donduruluyor${freeze.phase === "yazım" && freeze.done ? ` (${Number(freeze.done).toLocaleString("tr-TR")} satır yazıldı)` : ""}… Bu sırada çalışmaya devam edebilirsiniz.`;
+    if (freeze.error && freeze.run === freeze.pending.no) return `Kilitli dönemin defteri dondurulamadı (${freeze.error}). Kilit yerinde; kilidi yeniden kaydedin ya da programı yeniden açın, dondurma yeniden denenir.`;
+    return "Kilitli dönemin defteri dondurulmayı bekliyor; kilidi yeniden kaydedin ya da programı yeniden açın.";
+  }
+  function renderLock({ lockedUntil, freeze }) {
+    const status = $("#adm-period-status");
+    const extra = lockedUntil ? freezeText(freeze) : "";
+    status.textContent = lockedUntil ? `${dayText(lockedUntil)} ve öncesi kilitli.${extra ? ` ${extra}` : ""}` : "Kilitli dönem yok; tüm geçmiş tarihlere hareket girilebilir.";
+    status.classList.toggle("adm-warn-text", Boolean(extra) && !freeze?.active);
+  }
+  function watchFreeze(freeze, delay = FREEZE_FIRST_POLL_MS) {
+    clearTimeout(freezeTimer);
+    freezeTimer = null;
+    if (!(freeze?.pending && freeze.active)) {
+      if (freezeLong) {
+        freezeLong = false;
+        if (!freeze?.pending) HOF.toast("Kilitli dönemin defteri donduruldu.", { type: "success" });
+      }
+      return;
+    }
+    freezeTimer = setTimeout(async () => {
+      freezeTimer = null;
+      try {
+        const view = await HOF.api("/api/workspace/ledger/lock", { background: true });
+        freezeFailures = 0;
+        if (view.freeze?.pending && view.freeze.active) freezeLong = true;
+        renderLock(view);
+        watchFreeze(view.freeze, FREEZE_POLL_MS);
+      } catch {
+        // Yoklama düştü (ağ, oturum): birkaç tur yeniden denenir, sonra durur (kart yeniden açılınca sürer).
+        freezeFailures += 1;
+        if (freezeFailures < FREEZE_POLL_FAILURES) watchFreeze(freeze, FREEZE_POLL_MS);
+      }
+    }, delay);
+  }
   async function loadPeriod() {
     const status = $("#adm-period-status");
-    const health = $("#adm-integrity-status");
     try {
-      const { lockedUntil, today } = await HOF.api("/api/workspace/ledger/lock");
+      const view = await HOF.api("/api/workspace/ledger/lock");
       const input = $("#adm-period-date");
-      input.max = today;
-      if (document.activeElement !== input) input.value = lockedUntil || "";
-      status.textContent = lockedUntil ? `${dayText(lockedUntil)} ve öncesi kilitli.` : "Kilitli dönem yok; tüm geçmiş tarihlere hareket girilebilir.";
-      $("#adm-period-clear").hidden = !lockedUntil;
+      input.max = view.today;
+      if (document.activeElement !== input) input.value = view.lockedUntil || "";
+      renderLock(view);
+      $("#adm-period-clear").hidden = !view.lockedUntil;
+      freezeFailures = 0;
+      watchFreeze(view.freeze);
     } catch (error) {
       status.textContent = error.message;
     }
+    await loadIntegrity();
+  }
+  async function loadIntegrity() {
+    const health = $("#adm-integrity-status");
     try {
       const result = await HOF.api("/api/workspace/ledger/integrity");
       const rolled = (result.log || []).filter(row => row.action === "rolled-back").length;
