@@ -1152,6 +1152,10 @@ async function raporOku(o) {
     } else if (kaynak.tur === "tahsilat" || kaynak.tur === "odeme") {
       const r = await api("GET", `/api/workspace/accounts/${ids.cari[kaynak.cari]}`, undefined, "rapor:kaynak");
       out.durum = { satir_var: (r.data?.entries || []).some(e => e.id === id) };
+    } else if (kaynak.tur === "kasa_giris" || kaynak.tur === "kasa_cikis") {
+      // Ç5-K (s70 S20 Silinenler'den geri yükleme): Kasa satırı Kasa penceresinde (bütün tarihler) var mı.
+      const r = await api("GET", "/api/workspace/cash", undefined, "rapor:kaynak");
+      out.durum = { satir_var: (r.data?.entries || []).some(e => e.id === id) };
     } else out.durum = { eslenmedi: kaynak.tur };
   }
   if (o.rapor === "mutabakat_uyarilari") {
