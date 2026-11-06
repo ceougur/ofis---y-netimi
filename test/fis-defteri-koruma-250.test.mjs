@@ -266,7 +266,19 @@ describe("Ç2 tur 1 — DÜŞÜK-1 (ORTA): eski sürüm sıfırlamasının onar�
     n += 1;
     return { dataDir: path.join(root, `v${n}`, "data"), backupDir: path.join(root, `v${n}`, "backups") };
   };
-  const open = (dirs, time = NOW, extra = {}) => startTestServer({ now: { time, fixed: true }, ...dirs, maxCompanies: 2, ...extra });
+  // Her açılış kendi finally'sinde kapanır: adım düşse de sunucu açık kalmaz (mutasyon taraması bir adım düşünce dosyanın asılı kaldığını gösterdi).
+  const withServer = async (dirs, time, fn) => {
+    const server = await startTestServer({ now: { time, fixed: true }, ...dirs, maxCompanies: 2 });
+    try {
+      return await fn(server);
+    } finally {
+      await server.close();
+    }
+  };
+  const company = async (server, name) => {
+    const created = await must("002", (await loginAdmin(server)).post("/api/companies", { name, select: false }));
+    return created.company || created;
+  };
   // Kapalı sunucunun dosyasında (ayrı bağlantı): fiş izleri "bilinmeyen nedenle" düşer ve / ya da eski sürümün sıfırlaması gibi bir "company.reset" izi yazılır.
   const raw = (file, sql, ...args) => {
     const db = new DatabaseSync(file);
@@ -282,47 +294,36 @@ describe("Ç2 tur 1 — DÜŞÜK-1 (ORTA): eski sürüm sıfırlamasının onar�
 
   it("iki şirket (dar kontrol p5): 001'in izsiz fişi, 002 sıfırlanınca 001'in dosyasına düşen 'company.reset' (entity 002) yüzünden KALDIRILMAZ", async () => {
     const dirs = fresh();
-    let server = await open(dirs);
-    let admin = await loginAdmin(server);
-    let second = await must("002", admin.post("/api/companies", { name: "Koruma İkinci", select: false }));
-    second = second.company || second;
-    const file = server.app.config.dbPath;
-    const voucher = server.app.ledger.vouchers.post(USER, { type: "opening-match", date: "2027-01-02", requestKey: "koruma-k5-p5-001", lines: pair(9900) });
-    await server.close();
+    const { file, second, voucher } = await withServer(dirs, NOW, async server => ({
+      file: server.app.config.dbPath,
+      second: await company(server, "Koruma İkinci"),
+      voucher: server.app.ledger.vouchers.post(USER, { type: "opening-match", date: "2027-01-02", requestKey: "koruma-k5-p5-001", lines: pair(9900) }),
+    }));
     dropTraces(file);
-    server = await open(dirs);
-    try {
+    await withServer(dirs, NOW, async server => {
       assert.deepEqual(server.app.context.voucherRepair?.removed, 0, JSON.stringify(server.app.context.voucherRepair));
-      admin = await loginAdmin(server);
+      const admin = await loginAdmin(server);
       await must("002 aç", admin.get(`/api/workspace/ledger?hofCompany=${encodeURIComponent(second.id)}`));
       await must("002 sıfırla", admin.post(`/api/companies/${second.id}/reset`, { mode: "movements", confirm: second.code, password: ADMIN_PASSWORD }));
-    } finally {
-      await server.close();
-    }
-    server = await open(dirs);
-    try {
+    });
+    await withServer(dirs, NOW, async server => {
       const repair = server.app.context.voucherRepair;
       assert.deepEqual(idsOf(server.app.store), [voucher.id], `başka şirketin sıfırlaması 001'in fişini kaldırmamalı: ${JSON.stringify(repair)}`);
       assert.equal(repair?.removed, 0);
       assert.deepEqual(repair?.kept, [voucher.id]);
-    } finally {
-      await server.close();
-    }
+    });
   });
 
   it("zaman: sıfırlama izinden ÖNCE yazılan izsiz fiş kaldırılır, SONRA yazılan (izi başka nedenle düşmüş) fiş kalır; günlükte kalan sayısı", async () => {
     const dirs = fresh();
-    let server = await open(dirs, "2027-01-08T10:00:00+03:00");
-    const file = server.app.config.dbPath;
-    const early = server.app.ledger.vouchers.post(USER, { type: "opening-match", date: "2027-01-07", requestKey: "koruma-k5-zaman-once", lines: pair(1100) });
-    await server.close();
-    server = await open(dirs);
-    const late = server.app.ledger.vouchers.post(USER, { type: "opening-match", date: "2027-01-10", requestKey: "koruma-k5-zaman-sonra", lines: pair(2200) });
-    await server.close();
+    const { file, early } = await withServer(dirs, "2027-01-08T10:00:00+03:00", async server => ({
+      file: server.app.config.dbPath,
+      early: server.app.ledger.vouchers.post(USER, { type: "opening-match", date: "2027-01-07", requestKey: "koruma-k5-zaman-once", lines: pair(1100) }),
+    }));
+    const late = await withServer(dirs, NOW, async server => server.app.ledger.vouchers.post(USER, { type: "opening-match", date: "2027-01-09", requestKey: "koruma-k5-zaman-sonra", lines: pair(2200) }));
     dropTraces(file);
     writeReset(file, "sirket-001", "2027-01-09T07:00:00.000Z");
-    server = await open(dirs);
-    try {
+    await withServer(dirs, NOW, async server => {
       const repair = server.app.context.voucherRepair;
       assert.deepEqual(idsOf(server.app.store), [late.id], `yalnız sıfırlamadan önceki fiş kaldırılmalı: ${JSON.stringify(repair)}`);
       assert.deepEqual([repair?.removed, repair?.ids, repair?.kept], [1, [early.id], [late.id]]);
@@ -331,63 +332,47 @@ describe("Ç2 tur 1 — DÜŞÜK-1 (ORTA): eski sürüm sıfırlamasının onar�
       assert.deepEqual(JSON.parse(log.detail).kept, [late.id]);
       const scan = await must("Mutabakat Testi", (await loginAdmin(server)).get("/api/workspace/ledger/integrity"));
       assert.equal(scan.ok, true, JSON.stringify(scan.checks.filter(item => !item.ok)));
-    } finally {
-      await server.close();
-    }
+    });
   });
 
   it("saat dilimi eki: sıfırlama izi '+03:00' ekli (06:30Z) — 05:00Z'deki fiş kaldırılır, 07:00Z'deki kalır (an karşılaştırması; metin karşılaştırması 07:00Z'yi de silerdi)", async () => {
     const dirs = fresh();
-    let server = await open(dirs, "2027-01-10T08:00:00+03:00");
-    const file = server.app.config.dbPath;
-    const early = server.app.ledger.vouchers.post(USER, { type: "opening-match", date: "2027-01-10", requestKey: "koruma-k5-tz-once", lines: pair(1300) });
-    await server.close();
-    server = await open(dirs);
-    const late = server.app.ledger.vouchers.post(USER, { type: "opening-match", date: "2027-01-10", requestKey: "koruma-k5-tz-sonra", lines: pair(2400) });
-    await server.close();
+    const { file, early } = await withServer(dirs, "2027-01-10T08:00:00+03:00", async server => ({
+      file: server.app.config.dbPath,
+      early: server.app.ledger.vouchers.post(USER, { type: "opening-match", date: "2027-01-09", requestKey: "koruma-k5-tz-once", lines: pair(1300) }),
+    }));
+    const late = await withServer(dirs, NOW, async server => server.app.ledger.vouchers.post(USER, { type: "opening-match", date: "2027-01-09", requestKey: "koruma-k5-tz-sonra", lines: pair(2400) }));
     assert.equal(early.createdAt, "2027-01-10T05:00:00.000Z");
     assert.equal(late.createdAt, "2027-01-10T07:00:00.000Z");
     dropTraces(file);
     writeReset(file, "sirket-001", "2027-01-10T09:30:00+03:00");
-    server = await open(dirs);
-    try {
+    await withServer(dirs, NOW, async server => {
       assert.deepEqual(idsOf(server.app.store), [late.id], JSON.stringify(server.app.context.voucherRepair));
-    } finally {
-      await server.close();
-    }
+    });
   });
 
   it("geri yükleme: 002 sıfırlandıktan sonra alınan 001 yedeği (izsiz fiş + entity 002 sıfırlama izi) geri yüklenince 001'in fişi kalır; yedekten sonraki fiş gider", async () => {
     const dirs = fresh();
-    let server = await open(dirs);
-    let admin = await loginAdmin(server);
-    let second = await must("002", admin.post("/api/companies", { name: "Koruma Geri Yükleme", select: false }));
-    second = second.company || second;
-    const file = server.app.config.dbPath;
-    const kept = server.app.ledger.vouchers.post(USER, { type: "opening-match", date: "2027-01-02", requestKey: "koruma-k5-gy-001", lines: pair(5100) });
-    await server.close();
+    const { file, second, kept } = await withServer(dirs, NOW, async server => ({
+      file: server.app.config.dbPath,
+      second: await company(server, "Koruma Geri Yükleme"),
+      kept: server.app.ledger.vouchers.post(USER, { type: "opening-match", date: "2027-01-02", requestKey: "koruma-k5-gy-001", lines: pair(5100) }),
+    }));
     dropTraces(file);
-    server = await open(dirs);
-    let backup;
-    try {
-      admin = await loginAdmin(server);
+    await withServer(dirs, NOW, async server => {
+      const admin = await loginAdmin(server);
       await must("002 aç", admin.get(`/api/workspace/ledger?hofCompany=${encodeURIComponent(second.id)}`));
       await must("002 sıfırla", admin.post(`/api/companies/${second.id}/reset`, { mode: "all", confirm: second.code, password: ADMIN_PASSWORD }));
       assert.ok(countOf(server.app.store, "audit_events", `type = 'company.reset' AND entity_id = '${second.id}'`) >= 1, "001'in dosyasında 002'nin sıfırlama izi");
-      backup = (await must("001 yedek", admin.post("/api/admin/backups", { scope: "one", companyId: "sirket-001" }))).backups[0].name;
+      const backup = (await must("001 yedek", admin.post("/api/admin/backups", { scope: "one", companyId: "sirket-001" }))).backups[0].name;
       server.app.ledger.vouchers.post(USER, { type: "opening-match", date: "2027-01-03", requestKey: "koruma-k5-gy-sonra", lines: pair(6200) });
       await must("001 geri yükle", admin.post("/api/admin/backups/restore", { name: backup, company: "sirket-001", confirm: "001", password: ADMIN_PASSWORD }));
-    } finally {
-      await server.close();
-    }
-    server = await open(dirs);
-    try {
+    });
+    await withServer(dirs, NOW, async server => {
       assert.deepEqual(idsOf(server.app.store), [kept.id], `geri yüklenen 001'de yalnız yedekteki fiş: ${JSON.stringify(server.app.context.voucherRepair)}`);
       const scan = await must("Mutabakat Testi", (await loginAdmin(server)).get("/api/workspace/ledger/integrity"));
       assert.equal(scan.ok, true, JSON.stringify(scan.checks.filter(item => !item.ok)));
-    } finally {
-      await server.close();
-    }
+    });
   });
 });
 

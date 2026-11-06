@@ -57,7 +57,8 @@ const MUTASYONLAR = [
 ];
 
 const run = files => {
-  const r = spawnSync(process.execPath, ["--disable-warning=ExperimentalWarning", "--test", "--test-concurrency=1", ...files], { cwd: COPY, encoding: "utf8", maxBuffer: 64 * 1024 * 1024, env: { ...process.env, HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
+  // Zaman sınırı (Ç2 tur 1): mutasyonla asılı kalan koşu taramayı durdurmasın — süre dolan koşu "kaçırdı" sayılır (özet yok → kırmızı sayılmaz; ihtiyatlı yön).
+  const r = spawnSync(process.execPath, ["--disable-warning=ExperimentalWarning", "--test", "--test-concurrency=1", ...files], { cwd: COPY, encoding: "utf8", maxBuffer: 64 * 1024 * 1024, timeout: 15 * 60_000, killSignal: "SIGKILL", env: { ...process.env, HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
   const out = `${r.stdout}\n${r.stderr}`;
   const count = key => Number((out.match(new RegExp(`^# ${key} (\\d+)$`, "m")) || [])[1] ?? NaN);
   return { status: r.status, out, pass: count("pass"), fail: count("fail") };
