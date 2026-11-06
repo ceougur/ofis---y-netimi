@@ -21,6 +21,10 @@ export const ARCHIVE_SIDECAR = "arsiv-kaydi.json";
 export const ARCHIVE_READ_ONLY_CODE = "archive-read-only";
 // Arşivin göçünden önceki hâli aynı klasörde tutulur (yalnız en son göçünki; eski sürüme dönüşte elle başvurulur).
 export const PRE_MIGRATION_PREFIX = "goc-oncesi-v";
+// 2.5.0 D2 tur 2 (dar kontrol ORTA-1): göç arşivin KOPYASINDA yapılır (lib/devir/archive-open.mjs migrateArchive); kopya bitince asıl dosyanın adına taşınır.
+// Yarıda kalan göçün kopyası bir sonraki göçte silinir; devir yedeğine girmez (geçici dosya).
+export const MIGRATION_WORK_FILE = "goc-calisma.sqlite";
+export const isArchiveTransient = name => String(name).startsWith(PRE_MIGRATION_PREFIX) || String(name).startsWith(MIGRATION_WORK_FILE);
 
 const YEAR = /^\d{4}$/;
 export const validYear = value => YEAR.test(String(value ?? "")) && Number(value) >= 2000 && Number(value) <= 2999;
@@ -29,14 +33,21 @@ export const archiveDirOf = (companyDataDir, year) => path.join(companyDataDir, 
 export const archiveFileOf = (companyDataDir, year) => resolveDbPath(archiveDirOf(companyDataDir, year));
 export const archiveKey = (companyId, year) => `${companyId}@arsiv-${year}`;
 
-/** Dosyanın SHA-256 özeti — akışla (olay döngüsü büyük dosyada kilitlenmez; ders 47). */
+/**
+ * Dosyanın SHA-256 özeti — akışla (olay döngüsü büyük dosyada kilitlenmez; ders 47). Sonuç dosya tutamağı KAPANDIKTAN sonra döner (2.5.0 D2 tur 2): ardından gelen
+ * yeniden adlandırma / silme Windows'ta açık tutamağa çarpmasın (ders 48).
+ */
 export function hashFile(file) {
   return new Promise((resolve, reject) => {
     const hash = createHash("sha256");
+    let digest = null;
     const stream = createReadStream(file, { highWaterMark: 1 << 20 });
     stream.on("data", chunk => hash.update(chunk));
     stream.on("error", reject);
-    stream.on("end", () => resolve(hash.digest("hex")));
+    stream.on("end", () => {
+      digest = hash.digest("hex");
+    });
+    stream.on("close", () => (digest === null ? reject(new Error(`Dosyanın özeti alınamadı: ${file}`)) : resolve(digest)));
   });
 }
 
@@ -107,7 +118,9 @@ export function scanArchiveDirs(companyDataDir) {
 }
 
 // Kayıt girdisinin dosyada tutulan alanları (sirketler.json ve yan dosya aynı biçim).
-export const ARCHIVE_FIELDS = ["year", "cutoff", "runId", "sha256", "size", "schemaVersion", "createdAt", "createdBy", "backup", "migratedAt", "migratedFrom", "previousSha256", "verifiedAt", "recovered"];
+// pending*: göçün kopyası hazır ve asıl dosyanın adına taşınmak üzere (2.5.0 D2 tur 2 — iki aşamalı göç; lib/devir/archive-open.mjs). Taşımadan sonra süreç ölürse
+// dosyanın özeti pendingSha256'yı tutar; açılışta / Doğrula'da kabul edilip kesinleştirilir.
+export const ARCHIVE_FIELDS = ["year", "cutoff", "runId", "sha256", "size", "schemaVersion", "createdAt", "createdBy", "backup", "migratedAt", "migratedFrom", "previousSha256", "verifiedAt", "recovered", "pendingSha256", "pendingFrom", "pendingAt"];
 export function cleanArchiveEntry(entry) {
   if (!entry || !validYear(entry.year)) return null;
   const out = {};
@@ -162,8 +175,11 @@ export function adoptionOf({ companyId, item, liveYears, recovered = false }) {
   if (!live) return { reason: "çalışma dosyasında bu yılın devri yok (yarım kalmış devir olabilir)" };
   if (facts.mark.runId && live.runId && facts.mark.runId !== live.runId) return { reason: "devir çalışması çalışma dosyasındakiyle aynı değil" };
   const sidecar = readSidecar(item.dir);
-  const sha = sidecar && sidecar.companyId === facts.mark.companyId && String(sidecar.year) === item.year && String(sidecar.runId || "") === facts.mark.runId ? String(sidecar.sha256 || "") : "";
+  const trusted = Boolean(sidecar && sidecar.companyId === facts.mark.companyId && String(sidecar.year) === item.year && String(sidecar.runId || "") === facts.mark.runId);
+  const sha = trusted ? String(sidecar.sha256 || "") : "";
+  // 2.5.0 D2 tur 2: yarıda kalan göçün bekleyen özeti de kaydın kopyasından gelir (kayıt defteri kaybı + taşımadan sonra kesilen göç — dosya bekleyen özeti tutar).
+  const pending = trusted && sidecar.pendingSha256 ? { pendingSha256: String(sidecar.pendingSha256), pendingFrom: sidecar.pendingFrom, pendingAt: sidecar.pendingAt } : {};
   return {
-    entry: cleanArchiveEntry({ year: item.year, cutoff: facts.mark.cutoff || live.cutoff, runId: facts.mark.runId, sha256: sha, size, schemaVersion: facts.schemaVersion, createdAt: facts.mark.createdAt, backup: sidecar?.backup, recovered: true }),
+    entry: cleanArchiveEntry({ year: item.year, cutoff: facts.mark.cutoff || live.cutoff, runId: facts.mark.runId, sha256: sha, size, schemaVersion: facts.schemaVersion, createdAt: facts.mark.createdAt, backup: sidecar?.backup, recovered: true, ...pending }),
   };
 }

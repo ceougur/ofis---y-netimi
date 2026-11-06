@@ -1,0 +1,947 @@
+TAP version 13
+# (node:28829) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç5-K S12 = A: Kasa açılışından ÖNCE tarihli YENİ nakit hareketi her yolda 409; aynı gün ve sonra 200
+    # Subtest: 1 Kasa Giriş: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    not ok 1 - 1 Kasa Giriş: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 45.438731
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        1 Kasa Giriş açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200  {"id":"cash-35da8ed9-ef4c-4235-b7f2-f05041c481a2"}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        refused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:47:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:128:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: 1b Kasa Çıkış: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    not ok 2 - 1b Kasa Çıkış: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 58.221893
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        1b Kasa Çıkış açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200  {"id":"cash-a11bdab0-67fa-4095-9a13-0b45610b38b3"}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        refused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:47:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:128:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 2 Bankadan Kasaya: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    not ok 3 - 2 Bankadan Kasaya: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 32.815391
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        2 Bankadan Kasaya açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200  {"id":"cash-17239884-cdc6-47cb-9bf7-ba98df585361","bankId":"cash-8accf8ea-54f4-47e8-9831-c66997b5072f","transferId":"trf-037a3ff0-6b13-4c8a-bc23-bb496d15cdb7","direction":"to-cash","amount":50,"date":"2026-03-09"}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        refused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:47:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:128:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 2b Kasadan Bankaya: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    not ok 4 - 2b Kasadan Bankaya: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 28.021582
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        2b Kasadan Bankaya açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200  {"id":"cash-4ea6c6f9-6f96-4312-8785-b8a8d25d979b","bankId":"cash-7fbe2059-4607-4655-ab6b-ccae68295a6b","transferId":"trf-b104d1e3-2159-42b3-a715-3d55da9f1f8b","direction":"to-bank","amount":5,"date":"2026-03-09"}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        refused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:47:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:128:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 3 Kasa'dan Vergi Ödemesi: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    not ok 5 - 3 Kasa'dan Vergi Ödemesi: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 31.473348
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        3 Kasa'dan Vergi Ödemesi açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200  {"way":"cash","id":"cash-3eff194d-4ce7-4e27-b343-08dd1311ee99"}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        refused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:47:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:128:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 4 cari nakit tahsilat: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    not ok 6 - 4 cari nakit tahsilat: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 58.382347
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        4 cari nakit tahsilat açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200  {"id":"account-ca7f845b-798c-4166-87d8-37bd1095e139","refNo":"1","type":"customer","name":"Ayşe Nakit","phone":"","email":"","address":"","registeredOn":"2026-01-01","groupId":null,"subgroupId":null,"note":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","me
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        refused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:47:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:128:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 4b cari nakit ödeme: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    not ok 7 - 4b cari nakit ödeme: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 29.451656
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        4b cari nakit ödeme açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200  {"id":"account-de6b61ae-3f57-4dda-ab4f-753efc835efd","refNo":"2","type":"supplier","name":"Tedarik Nakit","phone":"","email":"","address":"","registeredOn":"2026-01-01","groupId":null,"subgroupId":null,"note":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"",
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        refused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:47:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:128:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 5 satış faturası peşin nakit: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    not ok 8 - 5 satış faturası peşin nakit: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 109.538883
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        5 satış faturası peşin nakit açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200  {"id":"invoice-c954cd57-1eb4-44fc-ba27-dfbf491f0b6b","kind":"sale","kindLabel":"Satış Faturası","scenario":"service_sale","scenarioLabel":"Hizmet Satışı","status":"issued","statusLabel":"Kaydedildi","number":"FIS2026000000002","displayNo":"FIS2026000000002","internalNumber":false,"ettn":"864823aa-c8
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        refused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:47:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:128:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 5b satıştan iade nakit para iadesi: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    not ok 9 - 5b satıştan iade nakit para iadesi: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 133.911701
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        5b satıştan iade nakit para iadesi açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200  {"id":"invoice-1aebf21c-7718-4b6b-a69c-1744aabb3fab","kind":"sale_return","kindLabel":"Satıştan İade Faturası","scenario":"sale_return","scenarioLabel":"Satıştan İade","status":"issued","statusLabel":"Kaydedildi","number":"IAD2026000000001","displayNo":"IAD2026000000001","internalNumber":true,"ettn"
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        refused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:47:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:128:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 6 taksit tahsilatı nakit: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    not ok 10 - 6 taksit tahsilatı nakit: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 77.156958
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        6 taksit tahsilatı nakit açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200  {"id":"plan-322c3df4-e253-45a3-b9d0-2f2e7649982a","accountId":"account-ca7f845b-798c-4166-87d8-37bd1095e139","refNo":"1","registeredOn":"2026-01-02","caseKey":"","caseSource":"","caseTitle":"","groupId":null,"subgroupId":null,"name":"Ayşe Kartı","note":"","phone":"","total":10000,"status":"active","
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        refused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:47:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:128:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 7 kayıt tahsilatı: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    not ok 11 - 7 kayıt tahsilatı: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 75.928679
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        7 kayıt tahsilatı açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200  {"id":"payment-c936e423-15ed-4aa7-8c68-5b0b29424572"}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        refused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:47:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:128:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 9 çekin Kasa'dan tahsili: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    not ok 12 - 9 çekin Kasa'dan tahsili: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 118.016142
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        9 çekin Kasa'dan tahsili açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200  {"id":"cheque-d6b07cd0-e99a-4d32-8d82-c25b2028a282","direction":"in","instrument":"cheque","serialNo":"CI-1","bank":"Akbank","drawer":"Ayşe Nakit","accountId":"account-ca7f845b-798c-4166-87d8-37bd1095e139","planId":"","amount":300,"issueDate":"2026-03-01","dueDate":"2026-03-01","status":"collected",
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        refused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:47:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:128:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 9b verilen çekin nakit ödemesi: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    not ok 13 - 9b verilen çekin nakit ödemesi: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 112.139145
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        9b verilen çekin nakit ödemesi açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200  {"id":"cheque-0769b05e-1925-49d1-bacb-db563c4204d3","direction":"out","instrument":"cheque","serialNo":"CO-2","bank":"Ziraat Bankası · Vadesiz","drawer":"Biz","accountId":"account-de6b61ae-3f57-4dda-ab4f-753efc835efd","planId":"","amount":200,"issueDate":"2026-03-01","dueDate":"2026-03-01","status":
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        refused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:47:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:128:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 10 nakit stok alımı: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    not ok 14 - 10 nakit stok alımı: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 68.5298
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        10 nakit stok alımı açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200  {"id":"stock-14383957-fd5f-4c67-83eb-cdbd09471562","kind":"product","code":"K-1","name":"Kalem","unit":"Adet","category":"","minQty":0,"unitPrice":10,"salePrice":0,"vatRate":20,"note":"","createdBy":"user-5b6bc714-1229-4061-a619-624df4afdfa2","createdAt":"2026-03-20T09:00:00.000Z","updatedAt":"2026-
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        refused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:47:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:128:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 10b nakit stok satışı: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    not ok 15 - 10b nakit stok satışı: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 70.682966
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        10b nakit stok satışı açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200  {"id":"stock-14383957-fd5f-4c67-83eb-cdbd09471562","kind":"product","code":"K-1","name":"Kalem","unit":"Adet","category":"","minQty":0,"unitPrice":10,"salePrice":0,"vatRate":20,"note":"","createdBy":"user-5b6bc714-1229-4061-a619-624df4afdfa2","createdAt":"2026-03-20T09:00:00.000Z","updatedAt":"2026-
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        refused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:47:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:128:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: aynı işlemde eklenip hemen düzeltilen açılış öncesi nakit satırı YENİ harekettir (eklendiği hâli 'önceki hâl' sayılmaz — store düzeyi)
+    not ok 16 - aynı işlemde eklenip hemen düzeltilen açılış öncesi nakit satırı YENİ harekettir (eklendiği hâli 'önceki hâl' sayılmaz — store düzeyi)
+      ---
+      duration_ms: 10.214831
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:140:3'
+      failureType: 'testCodeFailure'
+      error: 'ilk denetim Kasa açılış kuralı'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:150:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: nakit OLMAYAN eşleri açılıştan önce de 200 (Kasa'ya dokunmaz)
+    ok 17 - nakit OLMAYAN eşleri açılıştan önce de 200 (Kasa'ya dokunmaz)
+      ---
+      duration_ms: 198.873544
+      type: 'test'
+      ...
+    # Subtest: Mutabakat Testi temiz (yeni kural uyarı üretmez: açılıştan önce satır yok)
+    ok 18 - Mutabakat Testi temiz (yeni kural uyarı üretmez: açılıştan önce satır yok)
+      ---
+      duration_ms: 18.042493
+      type: 'test'
+      ...
+    1..18
+not ok 1 - Ç5-K S12 = A: Kasa açılışından ÖNCE tarihli YENİ nakit hareketi her yolda 409; aynı gün ve sonra 200
+  ---
+  duration_ms: 3398.382705
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:112:1'
+  failureType: 'subtestsFailed'
+  error: '16 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç5-K B11 / T12 (düzeltme) — her test kendi kayıtlarıyla (eski kodda kırmızının nedeni S12'nin yokluğu)
+    # Subtest: B11 / T12: düzeltmeyle tarihi açılıştan önceye çekmek 409 (satır değişmez); açılış günü 200 — Kasa Giriş, cari, kayıt, taksit, stok, transfer
+    not ok 1 - B11 / T12: düzeltmeyle tarihi açılıştan önceye çekmek 409 (satır değişmez); açılış günü 200 — Kasa Giriş, cari, kayıt, taksit, stok, transfer
+      ---
+      duration_ms: 31.957112
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:189:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Kasa Giriş tarihi önceye: beklenen 409 cash-before-opening, gelen 200  {"id":"cash-c2715aaa-47b7-4ff8-89ea-1fbc30ab95f8"}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        refused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:47:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:191:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B11 / T12: açılıştan önce tarihli havale tahsilatını NAKDE çeviren düzeltme 409 (converted); havale olarak kalır
+    not ok 2 - B11 / T12: açılıştan önce tarihli havale tahsilatını NAKDE çeviren düzeltme 409 (converted); havale olarak kalır
+      ---
+      duration_ms: 60.47602
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:205:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        havale → nakit: beklenen 409 cash-before-opening, gelen 200  {"id":"account-04e1c276-a0d5-4cc2-8afb-253e2a0c3c09","refNo":"1","type":"customer","name":"Ayşe Nakit","phone":"","email":"","address":"","registeredOn":"2026-01-01","groupId":null,"subgroupId":null,"note":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","me
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        refused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:47:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:206:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 2 - Ç5-K B11 / T12 (düzeltme) — her test kendi kayıtlarıyla (eski kodda kırmızının nedeni S12'nin yokluğu)
+  ---
+  duration_ms: 1699.149251
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:166:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç5-K R8 (açılışın düzeltilmesi) — ayrı şirket verisi
+    # Subtest: R8: açılışı ilk nakit hareketinden sonraya almak düzeltmede de 409 (tarih ve tutar biçimleri); öne almak 200 ve kural yeni tarihle işler (önbellek bayatlamaz)
+    not ok 1 - R8: açılışı ilk nakit hareketinden sonraya almak düzeltmede de 409 (tarih ve tutar biçimleri); öne almak 200 ve kural yeni tarihle işler (önbellek bayatlamaz)
+      ---
+      duration_ms: 197.063622
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:225:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yeni açılıştan önce: beklenen 409 cash-before-opening, gelen 200  {"id":"cash-79e2ffbe-bd6b-4046-9294-804c08e73674"}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        refused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:47:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:231:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 3 - Ç5-K R8 (açılışın düzeltilmesi) — ayrı şirket verisi
+  ---
+  duration_ms: 1515.77895
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:213:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç5-K T11: açılışsız Kasa'da kural yok; açılış sonradan girilir
+    # Subtest: açılış yokken bütün yollar her tarihte 200; açılış (≤ ilk hareket) girilince kural işler; ilk hareketten sonraya açılış 409
+    not ok 1 - açılış yokken bütün yollar her tarihte 200; açılış (≤ ilk hareket) girilince kural işler; ilk hareketten sonraya açılış 409
+      ---
+      duration_ms: 996.812831
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:248:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        açılıştan önce Kasa Giriş: beklenen 409 cash-before-opening, gelen 200  {"id":"cash-9d3605f0-538d-44c0-b158-3d45ad66311b"}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        refused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:47:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:252:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 4 - Ç5-K T11: açılışsız Kasa'da kural yok; açılış sonradan girilir
+  ---
+  duration_ms: 2807.811488
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:237:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç5-K Z9 + S26 / S40 / S44: Silinenler'den geri alınan açılış öncesi kayıt aynen döner, tarihi değişmeden düzeltilir, uyarı sürer
+    # Subtest: Silinenler'den geri yükleme 200 (S12 uygulanmaz); Mutabakat Testi 'Kasa Açılışından Önce Tarihli Hareket' UYARI (5 satır), sapma yok
+    not ok 1 - Silinenler'den geri yükleme 200 (S12 uygulanmaz); Mutabakat Testi 'Kasa Açılışından Önce Tarihli Hareket' UYARI (5 satır), sapma yok
+      ---
+      duration_ms: 278.444559
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:286:3'
+      failureType: 'testCodeFailure'
+      error: 'Mutabakat Testi uyarısı var'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: ~
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:297:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: YENİ açılış öncesi hareket geri yüklemeden sonra da 409 (S12 yalnız yeni kayıtta)
+    not ok 2 - YENİ açılış öncesi hareket geri yüklemeden sonra da 409 (S12 yalnız yeni kayıtta)
+      ---
+      duration_ms: 60.828709
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:304:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yeni Kasa Giriş: beklenen 409 cash-before-opening, gelen 200  {"id":"cash-b243f5ac-86f8-483e-8c47-b6f637259ea7"}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        refused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:47:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:305:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S26 / S40: tarihi değişmeden tutar ve açıklama düzeltmesi 200; uyarı sürer (sayı aynı)
+    not ok 3 - S26 / S40: tarihi değişmeden tutar ve açıklama düzeltmesi 200; uyarı sürer (sayı aynı)
+      ---
+      duration_ms: 242.932093
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:308:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        uyarı sürer
+        
+        undefined !== 5
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 5
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:321:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S44: Kapatılacak Fatura bağı (ekle / kaldır) tarihi değişmeden 200
+    ok 4 - S44: Kapatılacak Fatura bağı (ekle / kaldır) tarihi değişmeden 200
+      ---
+      duration_ms: 168.33676
+      type: 'test'
+      ...
+    # Subtest: T12: aynı düzeltmede tarih açılıştan önceki BAŞKA güne → 409, tutar da yazılmaz (düzeltmenin tamamı)
+    not ok 5 - T12: aynı düzeltmede tarih açılıştan önceki BAŞKA güne → 409, tutar da yazılmaz (düzeltmenin tamamı)
+      ---
+      duration_ms: 39.707443
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:332:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Kasa Giriş tarih + tutar: beklenen 409 cash-before-opening, gelen 200  {"id":"cash-bca184d5-d728-4baa-bddc-afa6e52fe0b1"}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        refused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:47:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:333:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: açılıştan SONRAYA alınan kayıt kabul, uyarıdan çıkar; açılış öne alınınca uyarı kalkar
+    not ok 6 - açılıştan SONRAYA alınan kayıt kabul, uyarıdan çıkar; açılış öne alınınca uyarı kalkar
+      ---
+      duration_ms: 78.2515
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:340:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        undefined !== 4
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 4
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:342:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..6
+not ok 5 - Ç5-K Z9 + S26 / S40 / S44: Silinenler'den geri alınan açılış öncesi kayıt aynen döner, tarihi değişmeden düzeltilir, uyarı sürer
+  ---
+  duration_ms: 3002.356301
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:259:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç5-K önceki hâl eşlemesi — açılış öncesi (Silinenler'den geri yüklenmiş) kayıt tahsilatının Taksite Aktar / Geri Al'ı (aynı İşlem No) yeni hareket sayılmaz
+    # Subtest: ön koşul: geri yüklenen tahsilat açılıştan önce (uyarıda)
+    not ok 1 - ön koşul: geri yüklenen tahsilat açılıştan önce (uyarıda)
+      ---
+      duration_ms: 18.232551
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:376:3'
+      failureType: 'testCodeFailure'
+      error: 'uyarı var'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:378:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Taksite Aktar (aynı İşlem No ile karta taşınır) ve Geri Al 200 — yeni hareket sayılmaz; Kasa değişmez
+    ok 2 - Taksite Aktar (aynı İşlem No ile karta taşınır) ve Geri Al 200 — yeni hareket sayılmaz; Kasa değişmez
+      ---
+      duration_ms: 185.365013
+      type: 'test'
+      ...
+    1..2
+not ok 6 - Ç5-K önceki hâl eşlemesi — açılış öncesi (Silinenler'den geri yüklenmiş) kayıt tahsilatının Taksite Aktar / Geri Al'ı (aynı İşlem No) yeni hareket sayılmaz
+  ---
+  duration_ms: 1741.679724
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:350:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç5-K S20 = A: v2.4.9'un GERÇEK koduyla üretilmiş açılış öncesi nakit satırları — göç ve yedekten geri yükleme
+    # Subtest: göç (2.4.9 verisi 2.5.0 ile açılır): satırlar aynen, mizan 2.4.9 ile aynı, Mutabakat Testi UYARI (4 satır), sapma yok
+    not ok 1 - göç (2.4.9 verisi 2.5.0 ile açılır): satırlar aynen, mizan 2.4.9 ile aynı, Mutabakat Testi UYARI (4 satır), sapma yok
+      ---
+      duration_ms: 261.267426
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:453:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        null
+        
+        undefined !== 5
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 5
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:464:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S12 göçten sonra: yeni açılış öncesi nakit 409; aynı adlı öbür cariye de 409
+    not ok 2 - S12 göçten sonra: yeni açılış öncesi nakit 409; aynı adlı öbür cariye de 409
+      ---
+      duration_ms: 247.636254
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:468:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yeni Kasa Giriş: beklenen 409 cash-before-opening, gelen 200  {"id":"cash-f213a5e5-2774-453a-b178-13f0d8c7e7e9"}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        refused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:47:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:470:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S26 / S40 / S44 (eski sürüm verisi): tutar, açıklama, Kapatılacak Fatura (başka faturaya, kaldır), Normal Cari Hesaba İşle düzeltmesi 200; uyarı sürer
+    not ok 3 - S26 / S40 / S44 (eski sürüm verisi): tutar, açıklama, Kapatılacak Fatura (başka faturaya, kaldır), Normal Cari Hesaba İşle düzeltmesi 200; uyarı sürer
+      ---
+      duration_ms: 735.848834
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:476:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        uyarı sürer
+        
+        undefined !== 5
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 5
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:491:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: fatura Düzenle (eski sürüm verisi, peşin nakitli fatura açılıştan önce): yalnız not 200 (aynı İşlem No), peşin tutarı 200 (aynı fatura, aynı gün), tarihi açılıştan önceki başka güne 409
+    not ok 4 - fatura Düzenle (eski sürüm verisi, peşin nakitli fatura açılıştan önce): yalnız not 200 (aynı İşlem No), peşin tutarı 200 (aynı fatura, aynı gün), tarihi açılıştan önceki başka güne 409
+      ---
+      duration_ms: 265.756932
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:494:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        tarih açılıştan önceki başka güne: beklenen 409 cash-before-opening, gelen 200  {"id":"invoice-e09603f6-57db-4db6-bd5b-b1ba7d9939c3","kind":"sale","kindLabel":"Satış Faturası","scenario":"service_sale","scenarioLabel":"Hizmet Satışı","status":"issued","statusLabel":"Kaydedildi","number":"FIS2026000000004","displayNo":"FIS2026000000004","internalNumber":false,"ettn":"57326f33-bf
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        refused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:47:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:502:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T12 (eski sürüm verisi): tarih açılıştan önceki başka güne 409 — bağ ve tutar da değişmez
+    not ok 5 - T12 (eski sürüm verisi): tarih açılıştan önceki başka güne 409 — bağ ve tutar da değişmez
+      ---
+      duration_ms: 171.30133
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:506:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        PY tarih + bağ: beklenen 409 cash-before-opening, gelen 200  {"id":"account-e5a91ebe-facc-4d80-965a-cc95a548d5db","refNo":"1","type":"customer","name":"Mehmet Aynı","phone":"","email":"","address":"","registeredOn":"2026-01-01","groupId":null,"subgroupId":null,"note":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","m
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        refused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:47:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:510:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S45 / S54 / S57: programda cari hareketinin carisi düzeltilemez — gövdedeki accountId yok sayılır, bağlı satır carisinde kalır (red edilecek istek kurulamaz; S54'ün 'kabul'ü yeni Cari alanı ister — routes/accounts.mjs, tasarım §4 B-K1)
+    ok 6 - S45 / S54 / S57: programda cari hareketinin carisi düzeltilemez — gövdedeki accountId yok sayılır, bağlı satır carisinde kalır (red edilecek istek kurulamaz; S54'ün 'kabul'ü yeni Cari alanı ister — routes/accounts.mjs, tasarım §4 B-K1)
+      ---
+      duration_ms: 111.46473
+      type: 'test'
+      ...
+    # Subtest: S56 = A: S44 düzeltmesi şüpheli caride 'Normal Cari' sınırını aşarsa 409 doubtful-normal-exceeds (kâhin SUPHELI_NORMAL_ASIM); satır değişmez — Kasa açılış kuralından ÖNCE (routes/accounts.mjs:773, 2.3.0'dan)
+    ok 7 - S56 = A: S44 düzeltmesi şüpheli caride 'Normal Cari' sınırını aşarsa 409 doubtful-normal-exceeds (kâhin SUPHELI_NORMAL_ASIM); satır değişmez — Kasa açılış kuralından ÖNCE (routes/accounts.mjs:773, 2.3.0'dan)
+      ---
+      duration_ms: 99.382284
+      type: 'test'
+      ...
+    # Subtest: S55 = A (bağ hedefin doğduğu gün) — kapama kuralı Ç5-B'nin (lib/invoice-settle.mjs); Ç5-K yalnız Kasa denetiminin kayıttan SONRA tarihli faturaya bağı engellemediğini ölçer
+    ok 8 - S55 = A (bağ hedefin doğduğu gün) — kapama kuralı Ç5-B'nin (lib/invoice-settle.mjs); Ç5-K yalnız Kasa denetiminin kayıttan SONRA tarihli faturaya bağı engellemediğini ölçer
+      ---
+      duration_ms: 240.871416
+      type: 'test'
+      ...
+    # Subtest: yedekten geri yükleme: 2.4.9 yedeği 2.5.0'a geri yüklenir — silinen açılış öncesi satır aynen döner, uyarı yeniden 4
+    not ok 9 - yedekten geri yükleme: 2.4.9 yedeği 2.5.0'a geri yüklenir — silinen açılış öncesi satır aynen döner, uyarı yeniden 4
+      ---
+      duration_ms: 149.182157
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:537:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        undefined !== 4
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 4
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:540:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..9
+not ok 7 - Ç5-K S20 = A: v2.4.9'un GERÇEK koduyla üretilmiş açılış öncesi nakit satırları — göç ve yedekten geri yükleme
+  ---
+  duration_ms: 5503.371131
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:394:1'
+  failureType: 'subtestsFailed'
+  error: '6 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç5-K gün dönümü ve iki şirket
+    # Subtest: tarihsiz giriş programın bugününe yazılır: açılış günü 00:00:30 ve 23:59:30 aynı gün 200; dünü (açılıştan önce) 409; gece yarısından sonra ertesi gün 200 (yerel saat, iki TZ)
+    not ok 1 - tarihsiz giriş programın bugününe yazılır: açılış günü 00:00:30 ve 23:59:30 aynı gün 200; dünü (açılıştan önce) 409; gece yarısından sonra ertesi gün 200 (yerel saat, iki TZ)
+      ---
+      duration_ms: 60.377454
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:569:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        gece yarısından hemen sonra dünün tarihiyle: beklenen 409 cash-before-opening, gelen 200  {"id":"cash-93362752-4e35-4050-ad85-5104e4f5af66"}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        refused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:47:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:572:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iki şirket: 001'in açılışı 002'yi etkilemez (002 açılışsız, aynı tarih 200); 002'nin açılışı 001'e sızmaz
+    not ok 2 - iki şirket: 001'in açılışı 002'yi etkilemez (002 açılışsız, aynı tarih 200); 002'nin açılışı 001'e sızmaz
+      ---
+      duration_ms: 651.615467
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:582:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        002 kendi açılışından önce: beklenen 409 cash-before-opening, gelen 200  {"id":"cash-889a58b3-25ab-4444-850a-1ac4fbffd578"}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        refused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:47:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:592:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 8 - Ç5-K gün dönümü ve iki şirket
+  ---
+  duration_ms: 1863.80623
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-eski-f5903164/test/kasa-acilis-once-250.test.mjs:559:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..8
+# tests 41
+# suites 8
+# pass 7
+# fail 34
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 22209.670014

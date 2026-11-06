@@ -51,7 +51,13 @@ const gunAdi = iso => `${iso.slice(8, 10)}.${iso.slice(5, 7)}.${iso.slice(0, 4)}
 
 // ---------------------------------------------------------------- sunucu
 const loop = monitorEventLoopDelay({ resolution: 5 });
-const server = await startTestServer({
+// Ç5-K SÜRÜCÜ EŞLEMESİ (kâhin bakımı 4 "Sürücü için" S20, ders 17): `yedekten: true` olay = kayıt geri yüklenen yedekte / eski sürüm verisinde vardı. Sürücü
+// senaryonun son `yedekten` olayına KADARKİ bütün olayları ESKİ SÜRÜMÜN GERÇEK koduyla (varsayılan v2.4.9; test/guvenilirlik/surumler.mjs — etiketin ayrı kopyası,
+// ders 23) aynı veri klasörüne yazar, eski programı kapatır ve sınanan programı AYNI klasörle açar (eski sürüm verisinin göçü). Bu olayların kaydında
+// `surum` yazılır; eski sürüm 2.5.0'ın reddedeceği bir olayı kabul ederse karşılaştırıcı farkı gösterir (sürücünün kurulum sınırı, ders 6).
+const SON_YEDEK = s.olaylar.reduce((son, o, i) => (o.yedekten ? i + 1 : son), 0);
+const ESKI_SURUM = opt("--eski-surum", "v2.4.9");
+const sunucuAc = () => startTestServer({
   dataDir: path.join(VERI, "data"),
   backupDir: path.join(VERI, "backups"),
   now: { time: ilkTarih, fixed: true },
@@ -59,7 +65,18 @@ const server = await startTestServer({
   startLicenseTimers: false,
   esmmEnabled: true,
 });
-const client = server.client();
+let server;
+let client;
+if (SON_YEDEK) {
+  const { bootVersion } = await import(pathToFileURL(path.join(ROOT, "test", "guvenilirlik", "surumler.mjs")).href);
+  const { createClient } = await imp("test/helpers.mjs");
+  const eski = await bootVersion(ESKI_SURUM, { dataDir: path.join(VERI, "data"), backupDir: path.join(VERI, "backups"), now: { time: ilkTarih, fixed: true }, legacyCasePayments: true, legacyTableTransfer: true, esmmEnabled: true });
+  server = { app: eski.app, clock: eski.app.config.now, eski: ESKI_SURUM };
+  client = createClient(eski.base);
+} else {
+  server = await sunucuAc();
+  client = server.client();
+}
 const gunluk = [];
 const sureler = [];
 const unwrap = r => (r.data && typeof r.data === "object" && "ok" in r.data ? (r.data.ok ? r.data.data : r.data) : r.data);
@@ -339,6 +356,31 @@ const faturaKarti = {}; // kâhin kart kimliği → { fatura, planId }: faturan�
 function faturaKartOlayi(fatura) {
   return s.olaylar.find(x => x.tur === "taksit_karti" && x.kaynak === "fatura" && x.fatura === fatura.id && x.tarih === fatura.tarih && x.cari === fatura.cari);
 }
+// Ç5-K SÜRÜCÜ EŞLEMESİ (kâhin bakımı 5–7 "Sürücü için": S26 / S40 / S44 / S45): Kasa Giriş / Çıkış, cari tahsilat / ödeme ve taksit tahsilatının `duzenle`si
+// ekrandaki düzeltme formunun ucuna gider (Kasa satırı Düzenle; cari kartı hareketi Düzenle; taksit kartı tahsilatı Düzenle). Değişiklikler birikir (kâhin gibi:
+// her düzeltme kaydın son kabul edilen hâline). Programda YOLU OLMAYAN alanlar istek gönderilmeden api_yok: cari (cari hareketinin carisi düzeltilemez — S45 /
+// S54 / S57, Ç5-B'nin işi), taksit kartı bağı (cari tahsilatını karta / kartlar arası taşıyan tek kayıt düzeltmesi yok).
+const guncel = {};
+async function duzenleHareket(kaynak, degisiklik, fid) {
+  const once = guncel[kaynak.id] || kaynak;
+  const yeni = { ...once, ...degisiklik };
+  // Ana oturum kararı 06.11: cari hareketinin "Cari" alanı (S40 cari düzeltmesi kabul, S45 / S57 bağlıysa red, S54 bağ + cari) Ç5-B'de yazılacak → uygulanmadı (U).
+  if ("cari" in degisiklik && degisiklik.cari !== once.cari) return uygulanmadi("Ç5-B", "cari hareketinin carisi programda henüz düzeltilemez (S40 / S45 / S54 / S57 — routes/accounts.mjs PUT entries 'Cari' alanı Ç5-B'de)");
+  if ("taksit_karti" in degisiklik && (degisiklik.taksit_karti || "") !== (once.taksit_karti || "")) return apiYok("taksit kartı bağı programda tek kayıt düzeltmesi olarak yok", "Ç5-B");
+  let r;
+  if (kaynak.tur === "kasa_giris" || kaynak.tur === "kasa_cikis") {
+    r = await api("PUT", `/api/workspace/cash/${fid}`, { kind: kaynak.tur === "kasa_giris" ? "in" : "out", amount: tl(yeni.tutar), date: yeni.tarih, description: yeni.aciklama || (kaynak.tur === "kasa_giris" ? "Kasaya Giriş" : "Kasadan Çıkış"), ...benzer });
+  } else if (yeni.taksit_karti) {
+    r = await api("PUT", `/api/workspace/plans/${ids.taksit[yeni.taksit_karti]}/entries/${fid}`, { kind: kaynak.tur === "tahsilat" ? "in" : "out", amount: tl(yeni.tutar), date: yeni.tarih, method: YOL[yeni.yol] || "cash", note: yeni.aciklama || kaynak.id, ...benzer });
+  } else {
+    const giris = kaynak.tur === "tahsilat";
+    const yol = { method: YOL[yeni.yol] || "cash", ...(yeni.yol === "havale" ? { bankAccountId: await bankaId(yeni.banka || "B1") } : {}) };
+    const fatura = "fatura" in yeni ? { invoiceId: yeni.fatura ? ids.olay[yeni.fatura] || "" : "" } : {};
+    r = await api("PUT", `/api/workspace/accounts/${ids.cari[yeni.cari]}/entries/${fid}`, { kind: giris ? "in" : "out", amount: tl(yeni.tutar), date: yeni.tarih, note: yeni.aciklama || kaynak.id, ...yol, ...fatura, ...(giris ? { doubtfulSkip: yeni.normal_cari === true } : {}), ...benzer });
+  }
+  if (r.ok) guncel[kaynak.id] = yeni;
+  return sonuc(kaynak, r, { yol: `${kaynak.tur} Düzenle (${Object.keys(degisiklik).join(", ")})` });
+}
 async function uygula(o, no) {
   const v = o;
   switch (o.tur) {
@@ -539,6 +581,7 @@ async function uygula(o, no) {
       }
       const fid = ids.olay[v.kaynak];
       if (!kaynak || !fid) return apiYok("düzenlenecek kayıt programda yok");
+      if (["kasa_giris", "kasa_cikis", "tahsilat", "odeme"].includes(kaynak.tur)) return duzenleHareket(kaynak, v.degisiklik || {}, fid);
       const yeni = { ...kaynak, ...v.degisiklik };
       const kind = { satis_faturasi: "sale", alis_faturasi: "purchase", esmm: "smm", gelen_smm: "purchase" }[kaynak.tur];
       if (!kind) return apiYok(`düzenle: ${kaynak.tur} eşlenmedi`);
@@ -582,6 +625,8 @@ async function uygula(o, no) {
         const url = tablo === "plan_entries" ? `/api/workspace/plans/${ids.taksit[kaynak.taksit_karti]}/entries/${eid}` : `/api/workspace/accounts/${ids.cari[kaynak.cari]}/entries/${eid}`;
         return sonuc(o, await api("DELETE", url), { yol: tablo === "plan_entries" ? "taksit kartı satırı Sil" : "cari kartı satırı Sil" });
       }
+      // Ç5-K: Kasa Giriş / Çıkış Kasa penceresindeki satırdan silinir (Silinenler'e düşer).
+      if (kaynak && (kaynak.tur === "kasa_giris" || kaynak.tur === "kasa_cikis")) return sonuc(o, await api("DELETE", `/api/workspace/cash/${fid}?cashForce=1`), { yol: "Kasa satırı Sil" });
       if (kaynak && kaynak.tur !== "taslak" && !/faturasi|esmm|smm/.test(kaynak.tur)) return apiYok(`sil: ${kaynak.tur} için silme eşlemesi yazılmadı`);
       return sonuc(o, await api("DELETE", `/api/workspace/invoices/${fid}`));
     }
@@ -676,7 +721,12 @@ async function uygula(o, no) {
     // ---- kasa ve banka
     case "kasa_giris":
     case "kasa_cikis":
-      return sonuc(o, await api("POST", "/api/workspace/cash", { kind: o.tur === "kasa_giris" ? "in" : "out", amount: tl(v.tutar), method: "cash", date: v.tarih, description: o.tur === "kasa_giris" ? "Kasaya Giriş" : "Kasadan Çıkış", ...benzer }));
+    {
+      // Ç5-K: kimlik saklanır (Kasa hareketinin düzeltmesi, silinmesi ve Silinenler'den geri yüklenmesi; Mutabakat Testi uyarısındaki satır).
+      const r = await api("POST", "/api/workspace/cash", { kind: o.tur === "kasa_giris" ? "in" : "out", amount: tl(v.tutar), method: "cash", date: v.tarih, description: o.tur === "kasa_giris" ? "Kasaya Giriş" : "Kasadan Çıkış", ...benzer });
+      if (r.ok && o.id) ids.olay[o.id] = r.data?.id;
+      return sonuc(o, r);
+    }
     case "bankadan_kasaya":
     case "kasadan_bankaya":
       return sonuc(o, await api("POST", "/api/workspace/cash/transfer", { direction: o.tur === "bankadan_kasaya" ? "to-cash" : "to-bank", amount: tl(v.tutar), date: v.tarih, bankAccountId: await bankaId(v.banka), ...benzer }));
@@ -1102,7 +1152,19 @@ async function raporOku(o) {
     } else if (kaynak.tur === "tahsilat" || kaynak.tur === "odeme") {
       const r = await api("GET", `/api/workspace/accounts/${ids.cari[kaynak.cari]}`, undefined, "rapor:kaynak");
       out.durum = { satir_var: (r.data?.entries || []).some(e => e.id === id) };
+    } else if (kaynak.tur === "kasa_giris" || kaynak.tur === "kasa_cikis") {
+      // Ç5-K (s70 S20 Silinenler'den geri yükleme): Kasa satırı Kasa penceresinde (bütün tarihler) var mı.
+      const r = await api("GET", "/api/workspace/cash", undefined, "rapor:kaynak");
+      out.durum = { satir_var: (r.data?.entries || []).some(e => e.id === id) };
     } else out.durum = { eslenmedi: kaynak.tur };
+  }
+  if (o.rapor === "mutabakat_uyarilari") {
+    // Ç5-K (S20 = A): Mutabakat Testi'nin "Kasa Açılışından Önce Tarihli Hareket" uyarısı (cash:before-opening; satırlar program kimliğiyle — karşılaştırıcı kâhin
+    // kimliğine olay_kimlik ile çevirir).
+    const r = await api("GET", "/api/workspace/ledger/integrity", undefined, "rapor:mutabakat_uyarilari");
+    const c = (r.data?.checks || []).find(x => x.code === "cash:before-opening");
+    out.uyarilar = c ? { acilis: c.opening || "", sayi: c.count || 0, satirlar: c.items || [] } : null;
+    out.olay_kimlik = { ...ids.olay };
   }
   if (o.rapor === "kural_farki") {
     // Ç3: "Kural Değişikliği Farkı (Kilitli Dönem)" — donmuş defter ↔ güncel türetme (Mutabakat Testi tam taraması; ledger:rule-diff).
@@ -1177,7 +1239,7 @@ try {
     } catch (e) {
       r = { durum: "surucu_hatasi", ileti: String(e?.stack || e).slice(0, 600) };
     }
-    Object.assign(kayit, r, { ms: Math.round(performance.now() - t0), saat: program.saat });
+    Object.assign(kayit, r, { ms: Math.round(performance.now() - t0), saat: program.saat }, server.eski ? { surum: server.eski } : {});
     if (ADIM && (r.durum === "yapildi" || r.durum === "red" || r.durum === "faturada")) {
       const d = await durum(`olay:${no}`);
       kayit.delta = fark(sonOkunan.deger, d);
@@ -1186,13 +1248,26 @@ try {
       sonOkunan.deger = d;
     }
     olaylar.push(kayit);
+    if (server.eski && no === SON_YEDEK) {
+      // Eski sürüm kapanır, sınanan program aynı veri klasörüyle açılır (göç); saat kaldığı yerden.
+      await server.app.close();
+      server = await sunucuAc();
+      client = server.client();
+      if ((await client.login("admin", ADMIN_PASSWORD)).status !== 200) throw new Error("göçten sonra giriş olmadı");
+      saat(program.saat);
+      program.gecis = { no, eski: ESKI_SURUM };
+      if (ADIM) sonOkunan.deger = await durum(`gecis:${no}`);
+    }
   }
   await api("POST", "/api/workspace/bank/settle", {}, "pos-gun-sonu");
   await altHesaplariOku();
   program.son = await durum("son");
   program.son_tum = await durum("son-tum", "9999-12-31");
   const mt = await api("GET", "/api/workspace/ledger/integrity", undefined, "oku:integrity");
-  program.mutabakat_testi = mt.data?.ok ?? null;
+  // Ç5-K (S20 = A): düzey UYARI ("Kasa Açılışından Önce Tarihli Hareket" gibi; severity warning) Mutabakat Testi'ni geçersiz kılmaz — uyarı kâhinin beklentisidir
+  // (mutabakat_uyarilari raporunda ayrıca karşılaştırılır); uyarı dışı her sapma kırmızı kalır.
+  program.mutabakat_testi = mt.data ? mt.data.ok === true || (Array.isArray(mt.data.failures) && mt.data.failures.every(x => x.severity === "warning")) : null;
+  program.mutabakat_testi_uyarilari = (mt.data?.failures || []).filter(x => x.severity === "warning").map(x => `${x.code}:${x.count ?? ""}`);
   // Tutmayan denetimler + Ç3 donmuş defter denetimleri (ledger:snapshot / ledger:rule-diff: donmuş = güncel türetme mi — madde madde, tam taramada).
   program.mutabakat_denetimleri = (mt.data?.checks || []).filter(x => !x.ok || /^ledger:/.test(x.code || "")).map(x => ({ code: x.code, name: x.name, ok: x.ok, ...(x.count !== undefined ? { count: x.count } : {}), ...(x.breakdown ? { breakdown: x.breakdown } : {}), ...(x.sample ? { sample: x.sample } : {}) }));
   program.mutabakat_kodlari = (mt.data?.checks || []).map(x => `${x.code}:${x.ok ? 1 : 0}`);

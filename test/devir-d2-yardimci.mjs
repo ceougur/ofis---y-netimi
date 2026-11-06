@@ -5,7 +5,7 @@
 //   - makeArchive: D4'ün (devri yapan iş akışı) bırakacağı arşivin BENZETİMİ — şirket dosyasının tutarlı kopyası (VACUUM INTO) arsiv/<yıl>/'a, içine arşiv işareti,
 //     çalışma dosyasına devir yılı, kayıt defterine girdi (sha256). Devrin para / budama kuralı burada YOK (D3–D4).
 import { createHash } from "node:crypto";
-import { createReadStream, mkdirSync, readdirSync, readFileSync } from "node:fs";
+import { copyFileSync, createReadStream, mkdirSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { fileURLToPath } from "node:url";
@@ -21,6 +21,8 @@ export const ARCHIVE_SIDECAR = "arsiv-kaydi.json";
 export const MAINTENANCE_MARKER = "bakim-kipi.json";
 export const DEVIR_BACKUP_DIR = "devir-yedekleri";
 export const DEVIR_BACKUP_MANIFEST = "devir-yedegi.json";
+// 2.5.0 D2 tur 2: arşiv göçünün çalışma kopyası (server/lib/devir/archives.mjs MIGRATION_WORK_FILE; aynılığı test/devir-d2-arsiv-goc-kesinti-250.test.mjs denetler).
+export const MIGRATION_WORK_FILE = "goc-calisma.sqlite";
 export const archiveDirOf = (companyDataDir, year) => path.join(companyDataDir, "arsiv", String(year));
 export function hashFile(file) {
   return new Promise((resolve, reject) => {
@@ -173,4 +175,32 @@ export function writeSettingRaw(file, key, value) {
   } finally {
     db.close();
   }
+}
+
+/**
+ * 2.5.0 D2 tur 2: ESKİ ŞEMALI arşiv — GERÇEK eski sürüm koduyla üretilmiş fikstürün veri dosyası (ör. test/fixtures/surum-2.0.26-zincir; ders 17) arsiv/<yıl>/'a, içine
+ * arşiv işareti, günlük kipi DELETE (D4'ün bırakacağı biçim), kayıt defterine girdi (sha256 + şema). liveYears: çalışma dosyasına da aynı devir yılı (diskten tanıma için).
+ */
+export async function placeLegacyArchive(app, companyId, { source, year = "2025", cutoff = `${year}-12-31`, runId = `devir-${year}-eski`, liveYears = false, register = true } = {}) {
+  const company = companyOf(app, companyId);
+  const dir = archiveDirOf(app.companies.dirsOf(company).dataDir, year);
+  mkdirSync(dir, { recursive: true });
+  const file = path.join(dir, "destekofis.sqlite");
+  copyFileSync(source, file);
+  writeSettingRaw(file, ARCHIVE_MARK_KEY, JSON.stringify({ companyId, year, cutoff, runId }));
+  const db = new DatabaseSync(file);
+  try {
+    db.exec("PRAGMA journal_mode = DELETE");
+  } finally {
+    db.close();
+  }
+  if (liveYears) {
+    const live = companyId === app.companyId ? app.store : app.openCompany(companyId)?.store;
+    const years = JSON.parse(live.setting(DEVIR_YEARS_KEY, "") || "[]").filter(item => item.year !== year);
+    live.setSetting(DEVIR_YEARS_KEY, JSON.stringify([...years, { year, cutoff, runId, at: new Date().toISOString() }]));
+  }
+  const sha256 = await hashFile(file);
+  const schemaVersion = schemaOf(file);
+  if (register && app.companies.addArchive) app.companies.addArchive(companyId, { year, cutoff, runId, sha256, schemaVersion, createdAt: new Date().toISOString() });
+  return { file, dir, sha256, schemaVersion, year, runId };
 }

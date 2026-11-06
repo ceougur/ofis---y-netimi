@@ -14,7 +14,7 @@ import { cp } from "node:fs/promises";
 import path from "node:path";
 import { createBackup } from "../backup.mjs";
 import { HttpError } from "../http.mjs";
-import { ARCHIVE_ROOT, PRE_MIGRATION_PREFIX } from "./archives.mjs";
+import { ARCHIVE_ROOT, isArchiveTransient } from "./archives.mjs";
 
 export const DEVIR_BACKUP_DIR = "devir-yedekleri";
 export const DEVIR_BACKUP_MANIFEST = "devir-yedegi.json";
@@ -76,8 +76,9 @@ export async function createDevirBackup({ db, company, companyDataDir, backupDir
     for (const item of DEVIR_BACKUP_ITEMS) {
       const source = path.join(companyDataDir, item);
       if (!existsSync(source)) continue;
-      // Arşivin göç öncesi kopyaları (goc-oncesi-v*.sqlite) yedeğe girmez: arşivin kendisi yeter, yedek iki kat büyümesin.
-      await cp(source, path.join(partial, item), { recursive: true, errorOnExist: true, force: false, filter: src => !(item === ARCHIVE_ROOT && path.basename(src).startsWith(PRE_MIGRATION_PREFIX)) });
+      // Arşivin göç öncesi kopyaları (goc-oncesi-v*.sqlite) yedeğe girmez: arşivin kendisi yeter, yedek iki kat büyümesin. 2.5.0 D2 tur 2: yarıda kalmış göçün
+      // çalışma kopyası (goc-calisma.sqlite*) da girmez (geçici dosya; bir sonraki göç siler).
+      await cp(source, path.join(partial, item), { recursive: true, errorOnExist: true, force: false, filter: src => !(item === ARCHIVE_ROOT && isArchiveTransient(path.basename(src))) });
       included.push(item);
     }
     const files = await manifestFiles(partial);

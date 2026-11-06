@@ -170,3 +170,40 @@ Bkz. §1 (`server/routes/devir.mjs`). Hepsi ortak katmanda (`HUB_ONLY`'e `admin/
 - Yorum tutarsızlıkları (Ç1 / Ç2 dar kontrollerinden D2'ye bırakılan; DOKUNULMADI — dosyalar başka ajanlarda): `audit_events` D2'de ŞİRKET VERİSİ sayıldı (COMMON_TABLES'ta
   yok, geri yüklemede aktarılmaz, 001 bakımında yazılamaz); `test/sema-kapisi-bs7.test.mjs` test 3'ün 001'de audit_events'i ortak katman gibi atlaması yalnız ölçüm kolaylığı —
   yorum orada düzeltilmeli. `server/routes/ledger.mjs` ~186 "mahsup tablosuna yazım tam kapıya düşer" yorumu (Ç2 bulgusu) yasak dosya — ayrı küçük iş.
+
+## 13. Tur 2 (dar kontrol 06.11 ~16:30 bulguları; BAŞ MİMAR KARARI — DURMA KURALI, yalnız bunlar; taban 6dc3e150)
+### 13.1 ORTA-1 — arşiv göçü İKİ AŞAMALI (§4'teki "dosya kısa süre yazılabilir açılır" cümlesinin yerine)
+- Sorun: dosya YERİNDE göç ediyor, yeni özet kayda akışla özet (`hashFile`) bittikten SONRA yazılıyordu; arada SIGKILL → dosya son şemada / yeni özet, kayıt eski özet →
+  arşiv KALICI "Değişmiş" (uyarı, Doğrula `changed`); sonraki göçlü sürümde K2 (değişmiş + eski şema → 409) ile programdan hiç açılamaz. Doğrula kaydı düzeltmiyordu.
+- Çözüm (`server/lib/devir/archive-open.mjs` migrateArchive): göç öncesi kopya (aynen) → çalışma kopyası `goc-calisma.sqlite` (aynı klasör) yazılabilir açılır, göçler, günlük kipi
+  DELETE, kapanır → özeti → kayda BEKLEYEN özet (`pendingSha256`, `pendingFrom`, `pendingAt`; `ARCHIVE_FIELDS`, yan dosya da taşır) → çalışma kopyası asıl dosyanın adına
+  `rename` (atomik, hedefin yerine; Windows'ta açık tutamak yokken: `hashFile` artık tutamak KAPANINCA döner, olgu okuması ve göç bağlantısı kapalı; geçici EPERM / EBUSY /
+  EACCES'te olay döngüsünü tutmadan 6 deneme) → kayıt kesinleşir (yeni özet, son şema, göç bilgisi, önceki özet; bekleyen alanlar silinir).
+- Açılışta ve Doğrula'da AYNI kural (`verifyArchive` → `{ state: "ok", pending: true }`, `commitPendingMigration`): dosyanın özeti kayıttakini tutmuyor ama bekleyen özeti
+  tutuyorsa değişmiş SAYILMAZ, kayıt kesinleştirilir (önceki özet = kayıttaki, göç bilgisi bekleyen alanlardan); şema hâlâ eskiyse (önceki sürümün ara şemada kalmış göçü) göç sürer.
+  Kayıt defteri de kaybolduysa bekleyen özet arşiv klasöründeki kayıt kopyasından gelir (`adoptionOf`). Hem kaydı hem bekleyeni tutmayan dosya değişmiştir: K2 aynen.
+- Kesinti tablosu: kopya göç etti / özet alınırken → asıl dosya ve kayıt eski (tutar), sonraki açılış göçü baştan yapar (artık kopya silinir); bekleyen yazıldı / taşımadan ÖNCE →
+  aynı (bekleyen yeniden yazılır); taşındı / kesinleşmeden → dosya bekleyeni tutar → kabul. Hiçbir noktada kalıcı "Değişmiş" yok. Yeni kural yok (K1 tembel göç, K2 aynen).
+- Çalışma kopyası geçicidir: bir sonraki göç siler; devir yedeğine girmez (`isArchiveTransient`; `devir-backups.mjs` süzgeci göç öncesi kopyalarla birlikte).
+### 13.2 ORTA-2 — bakımdaki şirketin arşivi açılmaz
+- `server/app.mjs` openArchive: şirket bakımdaysa 503 `maintenance` ("“<kod · ad>” şirketinde <neden>; bu sırada şirketin <yıl> arşivi açılamaz. Birkaç dakika sonra yeniden
+  deneyin.", `retry-after` 30) — açık arşiv örneğine de istek gitmez (denetim örnek önbelleğinden ÖNCE). Açılış sürerken kip açılırsa her beklemeden sonra aynı denetim
+  (`prepareArchive` guard: arşivin özeti alındıktan sonra, göç kopyasının özeti alındıktan sonra, taşıma yeniden denemesinden önce): iş durur, arşiv dosyası / klasörü / kaydı
+  değişmez, çalışma kopyası silinir. `closeCompany` ile kapanan örnek bakım sürerken yeniden açılmaz.
+- D4 için (§12'ye ek): kipten ÖNCE açılmış arşiv örneklerini `closeCompany` kapatır — D4 arşive dokunmadan önce kip → `closeCompany` sırasını izler.
+### 13.3 DÜŞÜK-1 — DESTEKOFIS_BAKIM → 503
+- `server/app.mjs` handle(): 001'in geçici koruma tetikleyicisinin düşürdüğü yazım (`isMaintenanceAbort`: ileti ya da `cause`) 500 yerine 503 `maintenance` (+ `retry-after`) —
+  istek kapısının görmediği her yazıcı doğru ileti verir (ör. ortak katmandaki "görevlerini devrederek kullanıcı sil" şirketin `tasks` tablosuna yazar; işlem geri alınır, veri değişmez).
+  `maintenanceMessage` şirket adı yoksa da büyük harfle başlar.
+### 13.4 DÜŞÜK-2 — yaşayan mutantlar (yalnız test)
+- D2 (`db.mjs` READ_SQL — her PRAGMA okuma): `test/db-tx-kayip-pragma-250.test.mjs` (get / all ile PRAGMA ataması kayıptan sonra ERR_TX_LOST, şema değişmez).
+- A2 (`adoptionOf` devir çalışması): `test/devir-d2-arsiv-250.test.mjs` "aynı yıl ama FARKLI devir çalışması".
+- B1 (001 koruması): `test/devir-d2-bakim-250.test.mjs` "korumanın düşürdüğü yazım" — görev tablosu + ortak katman dışındaki HER tabloya ekleme DESTEKOFIS_BAKIM.
+### 13.5 Testler ve mutasyon
+- Yeni: `test/devir-d2-arsiv-goc-kesinti-250.test.mjs` (6; işçi `test/fixtures/devir-d2-arsiv-goc-isci.mjs` — göçün kesme noktasında SIGKILL; kesme noktaları `__testArchiveStep`,
+  yalnız test oluşturucusundan; kancası olmayan eski kodda aynı pencere yoklamayla), `test/db-tx-kayip-pragma-250.test.mjs` (1); bakım testine 2, arşiv testine 1 hücre;
+  yardımcı `placeLegacyArchive`. Mutasyon `test/devir-d2-250-mutasyon.mjs` 39 mutant (29–39 bu tur; 6 yine eşdeğer).
+- WINDOWS'TA DOSYAYA DOKUNANLAR (ders 48; CI'de görülecek): çalışma kopyasının asıl dosyanın yerine `rename`'i (hedef var), SIGKILL'den sonra yarım çalışma kopyasının silinmesi,
+  bakımda durdurulan göçün kopyasını silmesi, `hashFile`'ın tutamak kapanınca dönmesi.
+- BİLİNEN SINIR: taşımanın yeniden denemesi (Windows antivirüs / kısa süreli tutamak) yalnız gerçek Windows'ta oluşur — Linux'ta zorla üretilmedi. Göç sırasında üç kopya
+  (asıl, göç öncesi, çalışma) kısa süre birlikte durur (disk); disk dolarsa kopya düşer, asıl dosya değişmez.

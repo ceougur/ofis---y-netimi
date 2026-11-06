@@ -1,0 +1,68 @@
+- 1 Kasa Giriş: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03
+    NEDEN: 1 Kasa Giriş açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200  {"id":"cash-337a5365-a623-4dd4-99b4-850a5060220d"}  200 !== 409  code: 'ERR_ASSERTION'
+- 1b Kasa Çıkış: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-0
+    NEDEN: 1b Kasa Çıkış açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200  {"id":"cash-5b59afc9-513b-4d94-96e2-212087ef2de0"}  200 !== 409  code: 'ERR_ASSERTION'
+- 2 Bankadan Kasaya: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 20
+    NEDEN: 2 Bankadan Kasaya açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200  {"id":"cash-8e227366-e499-45f6-bd46-ea1d8d8db7f4","bankId":"cash-ca7ec0ff-de59-483b-be2c-b00db08b93f0","transferId":"trf-d6d3e3dc-4bc1-4cd0-b3ce-ba6df539920e","direction":"to-cash","amount":50,"date":"2026-03-09"}  200 !== 409  code: 'ERR_ASSERTION'
+- 2b Kasadan Bankaya: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2
+    NEDEN: 2b Kasadan Bankaya açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200  {"id":"cash-df21d795-7385-4bd2-816b-dfdd822fca37","bankId":"cash-e234bff1-1066-448c-bf0a-930263f8635c","transferId":"trf-1263e47c-3f8a-4e07-a4af-eec75f7e1178","direction":"to-bank","amount":5,"date":"2026-03-09"}  200 !== 409  code: 'ERR_ASSERTION'
+- 3 Kasa'dan Vergi Ödemesi: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 
+    NEDEN: 3 Kasa'dan Vergi Ödemesi açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200  {"way":"cash","id":"cash-fc23058c-2ae9-4f1c-9182-f6027d3de942"}  200 !== 409  code: 'ERR_ASSERTION'
+- 4 cari nakit tahsilat: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200
+    NEDEN: 4 cari nakit tahsilat açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200  {"id":"account-e8b34e8e-b8bd-4157-a6ab-134f99d50bb2","refNo":"1","type":"customer","name":"Ayşe Nakit","phone":"","email":"","address":"","registeredOn":"2026-01-01","groupId":null,"subgroupId":null,"note":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","me  200 !==
+- 4b cari nakit ödeme: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 
+    NEDEN: 4b cari nakit ödeme açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200  {"id":"account-d86454fe-bb62-44e0-a64c-151c701fc34c","refNo":"2","type":"supplier","name":"Tedarik Nakit","phone":"","email":"","address":"","registeredOn":"2026-01-01","groupId":null,"subgroupId":null,"note":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"",  200 !== 4
+- 5 satış faturası peşin nakit: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün
+    NEDEN: 5 satış faturası peşin nakit açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200  {"id":"invoice-771bdd4f-69d1-4300-9c6d-641a9cded2a7","kind":"sale","kindLabel":"Satış Faturası","scenario":"service_sale","scenarioLabel":"Hizmet Satışı","status":"issued","statusLabel":"Kaydedildi","number":"FIS2026000000002","displayNo":"FIS2026000000002","internalNumber":false,"ettn":"1fec6c51-1f  
+- 5b satıştan iade nakit para iadesi: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (ay
+    NEDEN: 5b satıştan iade nakit para iadesi açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200  {"id":"invoice-e6e752b2-9574-4405-a48d-4d459e48a88b","kind":"sale_return","kindLabel":"Satıştan İade Faturası","scenario":"sale_return","scenarioLabel":"Satıştan İade","status":"issued","statusLabel":"Kaydedildi","number":"IAD2026000000001","displayNo":"IAD2026000000001","internalNumber":true,"e
+- 6 taksit tahsilatı nakit: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 
+    NEDEN: 6 taksit tahsilatı nakit açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200  {"id":"plan-7b7fe909-ea7e-4aac-99ec-2d2bbef1479d","accountId":"account-e8b34e8e-b8bd-4157-a6ab-134f99d50bb2","refNo":"1","registeredOn":"2026-01-02","caseKey":"","caseSource":"","caseTitle":"","groupId":null,"subgroupId":null,"name":"Ayşe Kartı","note":"","phone":"","total":10000,"status":"active","  200 
+- 7 kayıt tahsilatı: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 20
+    NEDEN: 7 kayıt tahsilatı açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200  {"id":"payment-d518229f-57b5-4c18-8e81-afe855634e8f"}  200 !== 409  code: 'ERR_ASSERTION'
+- 9 çekin Kasa'dan tahsili: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 
+    NEDEN: 9 çekin Kasa'dan tahsili açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200  {"id":"cheque-f9c0537a-0b3a-4d74-a1a3-840d9b4c9ba8","direction":"in","instrument":"cheque","serialNo":"CI-1","bank":"Akbank","drawer":"Ayşe Nakit","accountId":"account-e8b34e8e-b8bd-4157-a6ab-134f99d50bb2","planId":"","amount":300,"issueDate":"2026-03-01","dueDate":"2026-03-01","status":"collected",  200 
+- 9b verilen çekin nakit ödemesi: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı g
+    NEDEN: 9b verilen çekin nakit ödemesi açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200  {"id":"cheque-adff7544-d319-4701-997f-db3afc0f67d1","direction":"out","instrument":"cheque","serialNo":"CO-2","bank":"Ziraat Bankası · Vadesiz","drawer":"Biz","accountId":"account-d86454fe-bb62-44e0-a64c-151c701fc34c","planId":"","amount":200,"issueDate":"2026-03-01","dueDate":"2026-03-01","status":
+- 10 nakit stok alımı: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 
+    NEDEN: 10 nakit stok alımı açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200  {"id":"stock-9daf3533-0bff-4030-84e8-1acd02340c48","kind":"product","code":"K-1","name":"Kalem","unit":"Adet","category":"","minQty":0,"unitPrice":10,"salePrice":0,"vatRate":20,"note":"","createdBy":"user-4473d61e-d715-4509-a5af-ec63930dd548","createdAt":"2026-03-20T12:00:00.000Z","updatedAt":"2026-  200 !== 4
+- 10b nakit stok satışı: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200
+    NEDEN: 10b nakit stok satışı açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200  {"id":"stock-9daf3533-0bff-4030-84e8-1acd02340c48","kind":"product","code":"K-1","name":"Kalem","unit":"Adet","category":"","minQty":0,"unitPrice":10,"salePrice":0,"vatRate":20,"note":"","createdBy":"user-4473d61e-d715-4509-a5af-ec63930dd548","createdAt":"2026-03-20T12:00:00.000Z","updatedAt":"2026-  200 !==
+- aynı işlemde eklenip hemen düzeltilen açılış öncesi nakit satırı YENİ harekettir (eklendiği hâli 'önceki hâl' 
+    NEDEN: ilk denetim Kasa açılış kuralı
+- B11 / T12: düzeltmeyle tarihi açılıştan önceye çekmek 409 (satır değişmez); açılış günü 200 — Kasa Giriş, cari
+    NEDEN: Kasa Giriş tarihi önceye: beklenen 409 cash-before-opening, gelen 200  {"id":"cash-74e0304d-5566-4781-add3-bbb6c3303a64"}  200 !== 409  code: 'ERR_ASSERTION'
+- B11 / T12: açılıştan önce tarihli havale tahsilatını NAKDE çeviren düzeltme 409 (converted); havale olarak kal
+    NEDEN: havale → nakit: beklenen 409 cash-before-opening, gelen 200  {"id":"account-8329e340-0781-47d7-8d47-31829513ef5e","refNo":"1","type":"customer","name":"Ayşe Nakit","phone":"","email":"","address":"","registeredOn":"2026-01-01","groupId":null,"subgroupId":null,"note":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","me  200 !== 409  code: 'ERR_ASSERTION'
+- R8: açılışı ilk nakit hareketinden sonraya almak düzeltmede de 409 (tarih ve tutar biçimleri); öne almak 200 v
+    NEDEN: yeni açılıştan önce: beklenen 409 cash-before-opening, gelen 200  {"id":"cash-72ece5e9-60c4-4c86-90f1-6e2456d1dfab"}  200 !== 409  code: 'ERR_ASSERTION'
+- açılış yokken bütün yollar her tarihte 200; açılış (≤ ilk hareket) girilince kural işler; ilk hareketten sonra
+    NEDEN: açılıştan önce Kasa Giriş: beklenen 409 cash-before-opening, gelen 200  {"id":"cash-de356128-a669-4e92-ba9d-d6cdecd898f2"}  200 !== 409  code: 'ERR_ASSERTION'
+- Silinenler'den geri yükleme 200 (S12 uygulanmaz); Mutabakat Testi 'Kasa Açılışından Önce Tarihli Hareket' UYAR
+    NEDEN: Mutabakat Testi uyarısı var
+- YENİ açılış öncesi hareket geri yüklemeden sonra da 409 (S12 yalnız yeni kayıtta)
+    NEDEN: yeni Kasa Giriş: beklenen 409 cash-before-opening, gelen 200  {"id":"cash-8068a82e-0adb-44d9-983f-4f4ec6d71d60"}  200 !== 409  code: 'ERR_ASSERTION'
+- S26 / S40: tarihi değişmeden tutar ve açıklama düzeltmesi 200; uyarı sürer (sayı aynı)
+    NEDEN: uyarı sürer  undefined !== 5  code: 'ERR_ASSERTION'
+- T12: aynı düzeltmede tarih açılıştan önceki BAŞKA güne → 409, tutar da yazılmaz (düzeltmenin tamamı)
+    NEDEN: Kasa Giriş tarih + tutar: beklenen 409 cash-before-opening, gelen 200  {"id":"cash-57e78f18-c4f6-4f75-8a00-950b8c4deaeb"}  200 !== 409  code: 'ERR_ASSERTION'
+- açılıştan SONRAYA alınan kayıt kabul, uyarıdan çıkar; açılış öne alınınca uyarı kalkar
+    NEDEN: Expected values to be strictly equal:  undefined !== 4  code: 'ERR_ASSERTION'
+- ön koşul: geri yüklenen tahsilat açılıştan önce (uyarıda)
+    NEDEN: uyarı var
+- göç (2.4.9 verisi 2.5.0 ile açılır): satırlar aynen, mizan 2.4.9 ile aynı, Mutabakat Testi UYARI (4 satır), sa
+    NEDEN: null  undefined !== 5  code: 'ERR_ASSERTION'
+- S12 göçten sonra: yeni açılış öncesi nakit 409; aynı adlı öbür cariye de 409
+    NEDEN: yeni Kasa Giriş: beklenen 409 cash-before-opening, gelen 200  {"id":"cash-863cb025-36c0-4c09-9594-8e72946c4140"}  200 !== 409  code: 'ERR_ASSERTION'
+- S26 / S40 / S44 (eski sürüm verisi): tutar, açıklama, Kapatılacak Fatura (başka faturaya, kaldır), Normal Cari
+    NEDEN: uyarı sürer  undefined !== 5  code: 'ERR_ASSERTION'
+- fatura Düzenle (eski sürüm verisi, peşin nakitli fatura açılıştan önce): yalnız not 200 (aynı İşlem No), peşin
+    NEDEN: tarih açılıştan önceki başka güne: beklenen 409 cash-before-opening, gelen 200  {"id":"invoice-0892270d-ab46-443f-8fdb-1a46c819df7d","kind":"sale","kindLabel":"Satış Faturası","scenario":"service_sale","scenarioLabel":"Hizmet Satışı","status":"issued","statusLabel":"Kaydedildi","number":"FIS2026000000004","displayNo":"FIS2026000000004","internalNumber":false,"ettn":"99771f46-99  200 !== 409  code:
+- T12 (eski sürüm verisi): tarih açılıştan önceki başka güne 409 — bağ ve tutar da değişmez
+    NEDEN: PY tarih + bağ: beklenen 409 cash-before-opening, gelen 200  {"id":"account-0da81a80-dba4-46ef-8de2-a8c6766a6405","refNo":"1","type":"customer","name":"Mehmet Aynı","phone":"","email":"","address":"","registeredOn":"2026-01-01","groupId":null,"subgroupId":null,"note":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","m  200 !== 409  code: 'ERR_ASSERTION'
+- yedekten geri yükleme: 2.4.9 yedeği 2.5.0'a geri yüklenir — silinen açılış öncesi satır aynen döner, uyarı yen
+    NEDEN: Expected values to be strictly equal:  undefined !== 4  code: 'ERR_ASSERTION'
+- tarihsiz giriş programın bugününe yazılır: açılış günü 00:00:30 ve 23:59:30 aynı gün 200; dünü (açılıştan önce
+    NEDEN: gece yarısından hemen sonra dünün tarihiyle: beklenen 409 cash-before-opening, gelen 200  {"id":"cash-c2effd7a-95c7-4f40-91ac-db1b7790e2c4"}  200 !== 409  code: 'ERR_ASSERTION'
+- iki şirket: 001'in açılışı 002'yi etkilemez (002 açılışsız, aynı tarih 200); 002'nin açılışı 001'e sızmaz
+    NEDEN: 002 kendi açılışından önce: beklenen 409 cash-before-opening, gelen 200  {"id":"cash-09a61730-62f4-4d34-9576-eb0ae48a5534"}  200 !== 409  code: 'ERR_ASSERTION'

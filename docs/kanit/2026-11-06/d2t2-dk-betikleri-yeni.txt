@@ -1,0 +1,50 @@
+== p3 goc
+kur: arşiv şema 19 (son 47), boy 1757184, kayıt sha a94f9e7a0105
+[çıkış 0]
+kes: önce kayıt sha a94f9e7a0105 şema 19; dosya şema 19
+kes: göç bitti (dosya şema 47, -wal yok), kayıt sha ba72d5ceb8e4 şema 47 — SÜREÇ ŞİMDİ ÖLÜYOR (tur 278)
+[çıkış 137]
+bak: dosya şema 47, dosya sha ba72d5ceb8e4, kayıt sha ba72d5ceb8e4 şema 47 previousSha a94f9e7a0105; goc-oncesi: goc-oncesi-v19.sqlite
+bak: arşiv okuma 200 
+bak: arşive yazma 403 uyarı: ""
+bak: Doğrula 200 durum ok
+bak: Yönetim listesi durum ok (Doğrulandı)
+[çıkış 0]
+== p3 yok
+kur: arşiv şema 19 (son 47), boy 1757184, kayıt sha 55b764626e82
+[çıkış 0]
+kes: önce kayıt sha 55b764626e82 şema 19; dosya şema 19
+kes(yok): yanıt 200; kayıt sha 372987522da2 şema 47; dosya şema 47
+[çıkış 0]
+bak: dosya şema 47, dosya sha 372987522da2, kayıt sha 372987522da2 şema 47 previousSha 55b764626e82; goc-oncesi: goc-oncesi-v19.sqlite
+bak: arşiv okuma 200 
+bak: arşive yazma 403 uyarı: ""
+bak: Doğrula 200 durum ok
+bak: Yönetim listesi durum ok (Doğrulandı)
+[çıkış 0]
+== p3b (bakimgoc)
+kur: arşiv şema 19 (son 47), boy 1757184, kayıt sha 27c9bf53ff62
+[çıkış 0]
+bakimgoc: 001 bakımda arşiv okuma 503; arşiv dosyası şema 19; dosya değişti: false; kayıt şema 19; goc-oncesi: yok
+[çıkış 0]
+== p4
+002 bakımda: canlı okuma 200; arşiv okuma 503; açık arşiv örnekleri: []
+closeCompany(002) sonrası açık arşiv örnekleri: []
+bakım sürerken sıradaki arşiv isteği 503; açık arşiv örnekleri: []
+[çıkış 0]
+== p2
+görev → gorevli1: 200  
+görev → gorevli2: 200  
+açık görev (önce): 2
+---- 001 BAKIMDA ----
+kullanıcı ekle: 200  
+kullanıcı rol değiştir: 200  
+rol ekle: 400  Kullanıcı, sistem ve lisans yönetimi ile ANLIK DURUM kartı yalnız yönetici rolündedir; özel role verilemez.
+parola sıfırla: 200  
+kurtarma anahtarı: 200  
+kullanıcı sil (görevleri yöneticiye devret): 503 maintenance “001 · P2” şirketinde yıl sonu devri yapılıyor; bu sırada kayıt girilemez. Birkaç dakika sonra yeniden deneyin.
+kullanıcı sil (görevler kalsın): 200  
+açık görev (bakımda): 2; u1 silindi mi: false
+---- BAKIM BİTTİ ----
+kullanıcı sil (görevleri yöneticiye devret) — kip sonrası: 200  
+[çıkış 0]

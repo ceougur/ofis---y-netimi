@@ -23,7 +23,11 @@ export const UPDATE_HOLD_TTL_MS = 30 * 60_000;
 const RENEW_MS = 5 * 60_000;
 const REASONS = { devir: "yıl sonu devri yapılıyor", "devri-yenile": "devir yenileniyor", "devri-geri-al": "devir geri alınıyor" };
 export const reasonText = reason => REASONS[reason] || "bakım yapılıyor";
-export const maintenanceMessage = entry => `${entry?.label ? `“${entry.label}” şirketinde ` : ""}${reasonText(entry?.reason)}; bu sırada kayıt girilemez. Birkaç dakika sonra yeniden deneyin.`;
+// Cümle düzeni: şirket adı yoksa cümle büyük harfle başlar (Türkçe büyük harf).
+const sentence = value => value.charAt(0).toLocaleUpperCase("tr-TR") + value.slice(1);
+export const maintenanceMessage = entry => sentence(`${entry?.label ? `“${entry.label}” şirketinde ` : ""}${reasonText(entry?.reason)}; bu sırada kayıt girilemez. Birkaç dakika sonra yeniden deneyin.`);
+// 2.5.0 D2 tur 2 (dar kontrol ORTA-2): bakımdaki şirketin arşivi açılmaz (devir arşive dokunur — Devri Yenile, Devri Geri Al; Windows'ta açık tutamak taşımayı düşürür).
+export const archiveMaintenanceMessage = (entry, { companyLabel = "", year = "" } = {}) => `“${companyLabel || entry?.label || ""}” şirketinde ${reasonText(entry?.reason)}; bu sırada şirketin ${year ? `${year} ` : ""}arşivi açılamaz. Birkaç dakika sonra yeniden deneyin.`;
 
 const publicEntry = entry => ({ companyId: entry.companyId, label: entry.label || "", reason: entry.reason, reasonText: reasonText(entry.reason), runId: entry.runId || "", since: entry.since, by: entry.by || null, updateHold: Boolean(entry.hold?.held) });
 
@@ -185,6 +189,8 @@ export function createMaintenance({ dataDir, log = null, supervisorLink = () => 
 // (COMMON_SETTINGS) yazılabilir kalır: geri yüklemedeki gibi takasta canlıdan aktarılırlar. Öbür her tabloya INSERT / UPDATE / DELETE "DESTEKOFIS_BAKIM" ile düşer.
 // Tetikleyiciler TEMP'tir: yalnız bu bağlantıda, dosyaya yazılmaz; bağlantı kapanınca (süreç ölünce) kendiliğinden kalkar.
 export const MAINTENANCE_ABORT = "DESTEKOFIS_BAKIM";
+// 2.5.0 D2 tur 2 (dar kontrol DÜŞÜK-1): korumanın düşürdüğü yazım (server/app.mjs handle() bunu 503 maintenance'a çevirir; veri değişmedi). Sarılmış hata da (cause) görülür.
+export const isMaintenanceAbort = (error, depth = 0) => Boolean(error) && depth < 4 && (String(error.message || "").includes(MAINTENANCE_ABORT) || isMaintenanceAbort(error.cause, depth + 1));
 const TRIGGER_PREFIX = "destekofis_bakim_";
 const quoteName = value => `"${String(value).replace(/"/g, '""')}"`;
 export function applyWriteGuard(db, on, { commonTables = [], commonSettingsSql = "0" } = {}) {

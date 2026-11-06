@@ -7,8 +7,8 @@
 //   GET  /api/admin/maintenance             bakım kipindeki şirketler + önceki çalışmada yarıda kalan kip
 import path from "node:path";
 import { HttpError, ok, readJson, text } from "../lib/http.mjs";
-import { archiveFileOf, archiveKey, validYear } from "../lib/devir/archives.mjs";
-import { verifyArchive } from "../lib/devir/archive-open.mjs";
+import { archiveFileOf, archiveKey, readArchiveFacts, validYear } from "../lib/devir/archives.mjs";
+import { commitPendingMigration, verifyArchive } from "../lib/devir/archive-open.mjs";
 import { devirBackupRoot, verifyDevirBackup } from "../lib/devir/devir-backups.mjs";
 
 const BACKUP_DIR_NAME = /^\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}-\d{3}Z-[a-z0-9-]+$/;
@@ -38,10 +38,13 @@ export function registerDevirRoutes(router, { auth, companies, backups, maintena
     if (!validYear(year)) throw new HttpError(400, "Arşiv yılı dört haneli olmalı (ör. 2026).");
     const entry = companies.archiveOf(company.id, year);
     if (!entry) throw new HttpError(404, `${year} arşivi bulunamadı.`, { code: "archive-not-found" });
-    const result = await verifyArchive({ file: archiveFileOf(companies.dirsOf(company).dataDir, year), entry, cache: archiveCache(), key: archiveKey(company.id, year) });
+    const file = archiveFileOf(companies.dirsOf(company).dataDir, year);
+    const result = await verifyArchive({ file, entry, cache: archiveCache(), key: archiveKey(company.id, year) });
     // Diskten tanınmış (özeti olmayan) arşivin özeti ilk doğrulamada kayda girer (açılıştaki kuralla aynı).
     if (result.state === "recovered") companies.updateArchive(company.id, year, { sha256: result.sha256, size: result.size, verifiedAt: new Date().toISOString() });
-    else if (result.state === "ok") companies.updateArchive(company.id, year, { verifiedAt: new Date().toISOString() });
+    // 2.5.0 D2 tur 2: taşımadan sonra kesilen göç (dosya bekleyen özeti tutuyor) — açılıştaki kuralla aynı, kayıt kesinleştirilir.
+    if (result.pending) commitPendingMigration({ registry: companies, company, entry, integrity: result, schemaVersion: readArchiveFacts(file)?.schemaVersion ?? entry.schemaVersion });
+    if (result.state === "ok") companies.updateArchive(company.id, year, { verifiedAt: new Date().toISOString() });
     ok(res, { company: company.id, year, state: result.state === "recovered" ? "ok" : result.state, sha256: result.sha256, size: result.size });
   });
 
