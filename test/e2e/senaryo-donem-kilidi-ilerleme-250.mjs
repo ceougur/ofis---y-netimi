@@ -1,10 +1,10 @@
 // 2.5.0 Ç3 TUR 2 — Yönetim → Sistem → Dönem Kilidi ve Mutabakat EKRANDAN (docs/erp/C3-DONDURMA-TASARIM.md §18; plan §8 "1.000.000: hedef ≤ 2 dk, İLERLEME").
-// Kilit ucu artık dondurmanın bitmesini beklemez: Kilitle'ye basınca kilit hemen konur, kilitli dönemin defteri sunucuda arkada donar. Kart:
+// Kilit ucu uzun dondurmayı beklemez: kilit konar, kısa dondurma (küçük şirket) yanıttan önce biter, uzunu (en çok 5 sn beklendikten sonra) sunucuda arkada sürer. Kart:
 //   (1) dondurma sürerken "… ve öncesi kilitli. Kilitli dönemin defteri donduruluyor (N satır yazıldı)… Bu sırada çalışmaya devam edebilirsiniz." yazar ve GET .../ledger/lock'u
 //       yoklar (büyük şirkette dakikalar; istemcinin 30 sn sınırına takılmaz — önceden "Sunucu zamanında yanıt vermedi");
 //   (2) bitince "… ve öncesi kilitli." + "Kilitli dönemin defteri donduruldu." bildirimi; yoklama DURUR (sonraki 4 sn'de yeni istek yok);
 //   (3) dondurma düşerse (disk dolu benzetimi) "dondurulamadı (…)" sarı uyarı, yoklama durur; kilit yerinde; yeniden Kilitle → tamamlanır;
-//   (4) küçük şirkette (dondurma kısa) "donduruldu" bildirimi ÇIKMAZ (yalnız kaydetme bildirimi).
+//   (4) kancasız (kısa) dondurmada kart hemen temiz, yoklama yok.
 // Dondurmayı uzatmak / düşürmek için YALNIZ TEST kancası (__testFreezeHook; ürün davranışı değişmez). Saat sahte ve sabit (ders 13). Lisans servisi yok (ders 30).
 // Çalıştırma: node --disable-warning=ExperimentalWarning test/e2e/senaryo-donem-kilidi-ilerleme-250.mjs
 import { mkdtempSync, rmSync } from "node:fs";

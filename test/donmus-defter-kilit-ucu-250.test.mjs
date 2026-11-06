@@ -2,10 +2,11 @@
 // İLERLEME; olay döngüsü ≤ 50 ms").
 //   K1–K3 (Ç3 dar kontrol DÜŞÜK-1 → ORTA, sakınca süzgeci: defter): sıra DOĞRULA → ÖN ADIM (POS) → SÜREN DONDURMAYI DURDUR → KİLİT + KOŞU (tek işlem). Reddedilen istek (geçersiz /
 //     gelecek tarih 400, POS ön adımı 409) süren dondurmayı durdurmaz, POS ön adımını çalıştırmaz; durdurduktan sonra kilit yazılamazsa (kapı / disk) durdurulan koşu sahipsiz kalmaz.
-//   K4–K7 (PUT bekleme / İLERLEME; 1.000.000 satırda dondurma ~85 sn, istemci sınırı 30 sn — kanıt docs/kanit/2026-11-06/c3t2-yeniden-uret-1m-eski): uç kilit + bekleyen koşu yazılınca
-//     yanıt verir, dondurma arkada sürer; bu arada kilitli dönem bekleyen koşunun kuralıyla canlı okunur (K1 kararı), kilitli döneme yazım 409, açık döneme 200; ilerleme GET .../lock
-//     → freeze (pending, active, phase, done); bitince durur; geri çekmede bayat satırlar ve kapının izi arkada; kapanış süren işi bitirir (kapalı bağlantıya çarpan iş yok);
-//     aynı güne yinelenen istek süren dondurmayı durdurmaz.
+//   K4–K9 (PUT bekleme / İLERLEME; 1.000.000 satırda dondurma ~85 sn, istemci sınırı 30 sn — kanıt docs/kanit/2026-11-06/c3t2-yeniden-uret-1m-eski): uç arka işi (kapının kilit izi
+//     ‖ dondurma) EN ÇOK 5 sn bekler (T2-2; kısa işte eski davranış — F1); uzun dondurma arkada sürer, kapının izi bütçe içinde gelir; bu arada kilitli dönem bekleyen koşunun kuralıyla
+//     canlı okunur (K1 kararı), kilitli döneme yazım 409, açık döneme 200; ilerleme GET .../lock → freeze (pending, active, phase, done); geri çekmede bayat satırlar ve iz arkada;
+//     kapanış süren işi bitirir (kapalı bağlantıya çarpan iş yok); aynı güne yinelenen istek süren dondurmayı durdurmaz; kilitli fişin Ters Kaydet'i dondurma sürerken 200 (K8); iz de
+//     bütçeden uzunsa yanıt ~5 sn'de (K9).
 // Gerçek program (startTestServer), sahte sabit saat (2027-01-10 10:00 +03:00; ders 13, 22), iki saat diliminde aynı yerel gün. Dondurmayı uzatmak için YALNIZ TEST kancası
 // (__testFreezeHook: parça başına ya da bitişten önce bekleme; ürün davranışı değişmez, yalnız süre). Eski kodda (40473f17) K1 "reddedilen istek süren dondurmayı durdurdu",
 // K3 "durdurulan koşu sahipsiz kaldı", K4 "uç dondurmayı bekledi" nedeniyle kırmızıdır (ders 7, 38).
@@ -194,7 +195,7 @@ describe("2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada do
     }
   });
 
-  it("K4: uç dondurmayı BEKLEMEZ — kilit + koşu yazılınca yanıt; ilerleme GET ile; arada kilitli dönem canlı okunur (raporlar aynı), kilitli döneme 409, açık döneme 200; bitince durum temiz", async () => {
+  it("K4: uç uzun dondurmayı BEKLEMEZ — en çok 5 sn sonra yanıt, kilit izi yanıttan önce; ilerleme GET ile; arada kilitli dönem canlı okunur (raporlar aynı), kilitli döneme 409, açık döneme 200; bitince durum temiz", async () => {
     await unlockAll();
     const reference = { journal: (await must("yevmiye", admin.get("/api/workspace/report-center/yevmiye?from=2026-01-01&to=2026-12-31"))).rows, trial: (await must("mizan", admin.get("/api/workspace/report-center/hesap-mizani?from=2026-01-01&to=2026-12-31"))).rows };
     let release = null;

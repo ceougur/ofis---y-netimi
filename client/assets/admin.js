@@ -1038,7 +1038,7 @@
 
   // ---------- Dönem kilidi ve mutabakat ----------
   const dayText = iso => (iso ? `${iso.slice(8, 10)}.${iso.slice(5, 7)}.${iso.slice(0, 4)}` : "");
-  // 2.5.0 Ç3 tur 2: kilit ucu kilitli dönemin defterinin dondurulmasını BEKLEMEZ (büyük şirkette dakikalar); dondurma sunucuda arkada sürer. Kart durumu
+  // 2.5.0 Ç3 tur 2: kilit ucu kilitli dönemin defterinin UZUN dondurulmasını beklemez (en çok 5 sn; büyük şirkette dakikalar); dondurma sunucuda arkada sürer. Kart durumu
   // GET /api/workspace/ledger/lock → freeze ile yazar (pending: bekleyen koşu, active: süren iş) ve sürerken ARKA PLAN isteğiyle yoklar; bitince durur.
   const FREEZE_FIRST_POLL_MS = 500;
   const FREEZE_POLL_MS = 1500;
