@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Ç3 tur 4 — mutasyon taraması (test/donmus-defter-250-mutasyon.mjs; bütün mutantlar: mevcut + 401–404, 901, 902), kopya c3t4-mut-16959ab7, yük kilidi (flock -s; ders 52).
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-a8eba3f64140fc5f1
+cd "$W" || exit 1
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 NODE_NO_WARNINGS=1 TZ=UTC KANIT_DIR="$S/c3t4-kanit" PLAYWRIGHT_BROWSERS_PATH="$S/pw-1194"
+echo "basla $(date -u +%H:%M:%S) yuk $(cat /proc/loadavg)"
+flock -s "$S/olcum.lock" node tools/kanit.mjs kos c3t4-mutasyon -- node --disable-warning=ExperimentalWarning test/donmus-defter-250-mutasyon.mjs --kopya "$S/c3t4-mut-16959ab7" ${YALNIZ:+--yalniz "$YALNIZ"}
+code=$?
+echo "bitis $(date -u +%H:%M:%S) cikis=$code yuk $(cat /proc/loadavg)"
+exit $code

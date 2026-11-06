@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Ç3 tur 4 — G2 e2e (ders 10, 28): dönem kilidi ilerleme, düzeltme kilidi tur 3, defter 243, 222 ("toplam istek ≤ 50"); yük kilidi (flock -s; ders 52).
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-a8eba3f64140fc5f1
+cd "$W" || exit 1
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 NODE_NO_WARNINGS=1 TZ=UTC KANIT_DIR="$S/c3t4-kanit" PLAYWRIGHT_BROWSERS_PATH="$S/pw-1194"
+rc=0
+for e in senaryo-donem-kilidi-ilerleme-250 senaryo-duzeltme-kilidi-tur3-250 senaryo-defter-243 senaryo-222; do
+  flock -s "$S/olcum.lock" timeout 1800 node tools/kanit.mjs kos "c3t4-e2e-$e" -- node --disable-warning=ExperimentalWarning "test/e2e/$e.mjs"
+  code=$?
+  echo "$e cikis=$code $(date -u +%H:%M:%S)"
+  [ "$code" = 0 ] || rc=1
+done
+exit $rc

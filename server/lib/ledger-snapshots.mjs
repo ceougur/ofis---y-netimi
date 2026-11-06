@@ -215,7 +215,8 @@ function startFreezeWorker(data, { onBatch, timeoutMs = 30 * 60_000 }) {
 
 /**
  * İç API (routes/ledger.mjs kurar; context.ledger.snapshots). build: güncel kuralın türetmesi (yevmiye, bütün geçmiş). integrity: () => kapı (adoptLock). hook: YALNIZ TEST
- * kancası ({ fn(phase, info) }; "sync" | "batch" | "before-done"). dbPath yoksa (bellek içi, araçlar) iş parçacığı yerine aynı işlemde dondurulur.
+ * kancası ({ fn(phase, info), verifyLines }; "sync" | "batch" | "before-done" | "verify" | "purge" | "middle"; verifyLines: tablo doğrulamasının parça boyu — küçük veride
+ * doğrulamayı parçalara bölüp parçalar arasında tutmak için). dbPath yoksa (bellek içi, araçlar) iş parçacığı yerine aynı işlemde dondurulur.
  */
 export function createLedgerSnapshots({ store, period = null, now = systemClock, build, integrity = () => null, events = null, log = null, dbPath = "", batchLines = 2000, hook = null, canWrite = () => true }) {
   const ready = () => has(store, "ledger_snapshot_runs") && has(store, "ledger_snapshots");
@@ -501,13 +502,19 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
   const totalsOfRow = row => ({ lines: Number(row.lines), debit: Number(row.debit), credit: Number(row.credit), weight: Number(row.weight) });
   /** İşlemin içinde (eşzamanlı kip: satırlar aynı işlemde yazıldı): tek toplam. */
   const runTotalsInTx = no => totalsOfRow(store.get(RUN_TOTALS, no, 0));
-  /** İş parçacığı kipi: koşunun satırları 20.000'lik run_seq aralıklarıyla, aralar olay döngüsüne bırakılarak (1.000.000 satırlık şirkette ~2,7 M satır; ders 47). */
+  /**
+   * İş parçacığı kipi: koşunun satırları 20.000'lik run_seq aralıklarıyla, aralar olay döngüsüne bırakılarak (1.000.000 satırlık şirkette ~2,7 M satır; ders 47). Doğrulama boyunca
+   * yazım bayrağı (writing) DURUR: aynı güne yinelenen kilidin arka işi (purgeStale) bu pencerede de koşunun satırlarına dokunmaz (Ç3 tur 4, dar kontrol DÜŞÜK-1).
+   */
   async function runTotalsInParts(no, upto) {
     const sum = { lines: 0, debit: 0, credit: 0, weight: 0 };
-    for (let low = 0; ; low += VERIFY_CHUNK) {
+    const chunk = Math.max(1, Math.floor(Number(hook?.verifyLines) || VERIFY_CHUNK));
+    for (let low = 0; ; low += chunk) {
+      // YALNIZ TEST: doğrulama penceresinde (parçalar arasında) tutar.
+      await callHook("verify", { run: no, low, upto });
       if (halted()) throw new Cancelled("program kapanıyor");
-      const last = low + VERIFY_CHUNK >= upto;
-      const part = totalsOfRow(last ? store.get(RUN_TOTALS, no, low) : store.get(`${RUN_TOTALS} AND run_seq <= ?`, no, low, low + VERIFY_CHUNK));
+      const last = low + chunk >= upto;
+      const part = totalsOfRow(last ? store.get(RUN_TOTALS, no, low) : store.get(`${RUN_TOTALS} AND run_seq <= ?`, no, low, low + chunk));
       sum.lines += part.lines;
       sum.debit += part.debit;
       sum.credit += part.credit;
@@ -518,7 +525,10 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
   }
 
   // table: koşunun tablodaki satırlarının toplamları (verilmezse işlemin içinde ölçülür). Yazılan sayaçla (totals) tutmuyorsa koşu TAMAMLANMAZ (görünür hata; koşu bekler,
-  // sonraki denemede baştan yazılır) — donmuş defter hiçbir zaman eksik satırla "tamam" olmaz (Ç3 tur 3 YÜKSEK-1).
+  // sonraki denemede baştan yazılır; Ç3 tur 3 YÜKSEK-1). Programın kendi silme yolları (bayat satır temizliği, geri çekme, işlem içi temizlik) yazılan koşunun satırlarına
+  // yazımdan tamamlanmaya kadar (tablo doğrulaması dahil) dokunmaz. Doğrulamanın gördüğü: ölçmeden önce ya da henüz özetlenmemiş parçada eksilen / değişen satır. GÖRMEDİĞİ
+  // (Ç3 tur 4, dar kontrol DÜŞÜK-2; BİLİNEN SINIR, tasarım notu §20): iş parçacığı kipinde parçası ÖZETLENDİKTEN SONRA dış bir bağlantıyla (programın dışında bir araç) silinen
+  // satır — koşu o satır olmadan "tamam" olabilir. Mutabakat Testi bunu "Donmuş Defterde Eksik Satır" diye gösterir (görünen ≠ kayıtlı), açılış onarımı dönemi yeniden dondurur (§7).
   function complete(run, totals, digest, user, table = runTotalsInTx(run.no)) {
     if (!(table.lines === totals.lines && table.debit === totals.debit && table.credit === totals.credit && table.weight === totals.weight)) {
       throw new Error(`Donmuş defter: koşunun tabloda ${table.lines} satırı var, ${totals.lines} satır yazılmıştı (eksik ya da değişmiş satır); dondurma tamamlanmadı, yeniden denenecek`);
@@ -538,7 +548,7 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
    * Kilit kancası — kilidi değiştiren işlemin İÇİNDE çağrılır (PUT period-lock, vouchers.postAll lockThrough). sync: aynı işlemde dondur (bayat satırlar da aynı işlemde silinir).
    * Dönüş: { action: "none" | "freeze" | "thaw", run }.
    */
-  function lockChanged({ next = "", user = null, reason = "lock", sync = false } = {}) {
+  function lockChanged({ previous = undefined, next = "", user = null, reason = "lock", sync = false } = {}) {
     if (!ready()) return { action: "none" };
     if (!store.inTransaction) throw new Error("Donmuş defter kilit kancası yalnız kilidi değiştiren işlemin içinde çağrılır (store.tx).");
     const target = String(next || "");
@@ -546,6 +556,12 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
     // Aynı güne yinelenen kilit: bekleyen koşu — KURALI NE OLURSA OLSUN (göçün / onarımın 2.4.9 koşusu, bu programın bilmediği kural dahil; Ç3 tur 1 ORTA-3, plan §4 "göçte
     // 2.4.9 KURALIYLA") — aynı aralığı donduruyorsa sürer (iş kaldığı yerden).
     if (pending && pending.through === target && !sync) return { action: "freeze", run: pending };
+    // Kilit DEĞİŞMEDİ (aynı güne yeniden kaydetme; Dönem Kilidi kartının hata durumundaki önerisi "kilidi yeniden kaydedin"; previous = işlemin içinde okunan önceki kilit) ama
+    // bekleyen koşunun günü kilitten önce: açılış onarımının yeniden donma planının ilk dilimi (PLAN_TRACE; S46 = A) ya da kilidi ilerletilmiş eski kurallı koşu. Koşu kuralı ve
+    // izleriyle sürer; kalan dönemi continueAfter açar (Ç3 tur 4, dar kontrol ORTA-1). Önceden güncel kurallı plan dilimi bırakılıyor, (kapsam, kilit] güncel kuralla donuyordu
+    // (plan düşüyordu); eski kurallı koşuda carryLock kilidi "bu program ilerletti" diye işaretliyordu (eski sürümün ilerlettiği dönem GAP_RULE yerine güncel kuralla donardı — S13).
+    // Eşzamanlı kipte bu yol yok: postAll(lockThrough) kancayı yalnız kilit ilerleyince çağırır.
+    if (pending && !sync && previous !== undefined && target === String(previous || "") && pending.through < target) return { action: "freeze", run: pending };
     const cover = coverage();
     // Eski kurallı bekleyen koşu (göç / onarım ya da bilinmeyen kural) kilit başka güne gidince de güncel kurala GEÇMEZ (aile; tasarım notu §4, §5).
     if (pending && pending.rule_version !== LEDGER_RULE_VERSION && target > cover) return carryLock(pending, { target, cover, user, reason, sync });
@@ -671,6 +687,8 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
     if (!(target > cover)) return false;
     const pending = pendingRun();
     if (pending && pending.through === target) return false;
+    // Kilit değişmiyor (aynı güne yeniden kaydetme): bekleyen koşu sürer, koşu açılmaz (lockChanged; Ç3 tur 4 ORTA-1). Çağıran (PUT) kilidi yazmadan ÖNCE sorar.
+    if (pending && target === lockNow() && pending.through < target) return false;
     if (pending && pending.rule_version !== LEDGER_RULE_VERSION && target >= pending.through) return false;
     return Boolean(store.get(`SELECT 1 AS found FROM ledger_snapshots WHERE date > ${COVERAGE_SQL} AND run <> ? LIMIT 1`, keptRun()));
   }
@@ -913,8 +931,10 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
       const cover = coverage();
       // Eski kurallı koşu (göç / onarım ya da bilinmeyen kural) güncel kurala geçmez (ORTA-3 ailesi): kilit ötesindeyse koşu sürer (tamamlanınca kalan dönem continueAfter'la:
       // bu programın ilerlettiği güne kadar güncel kural, ötesi GAP_RULE); kilit gerisine çekildiyse (kapsam, kilit] AYNI kuralla yeniden açılır. Güncel kurallı koşu (bu programın
-      // kilidi) önceki davranışla: bırakılır, (kapsam, kilit] aşağıda GAP_RULE ile.
-      const carried = Boolean(pending && pending.rule_version !== LEDGER_RULE_VERSION);
+      // kilidi) önceki davranışla: bırakılır, (kapsam, kilit] aşağıda GAP_RULE ile. Ç3 tur 4 (dar kontrol ORTA-1; S46 = A): yeniden donma planının (PLAN_TRACE) ya da ilerletme
+      // izinin (EXTENDED_TRACE) koşusu da TAŞINAN koşudur — kuralı güncel olsa da (planın ilk dilimi güncel kurallıysa) bırakılmaz; yoksa yarıda kesilen planın kalanı yeniden
+      // açılışta düşer, bütün dönem GAP_RULE ile donardı.
+      const carried = Boolean(pending && (pending.rule_version !== LEDGER_RULE_VERSION || planOf(pending.no).length || extendedOf(pending.no).through > pending.through));
       if (pending && pending.through !== lock && !(carried && pending.through < lock)) {
         abandon(pending);
         if (carried && lock > cover) {
