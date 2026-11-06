@@ -1,0 +1,32 @@
+{
+  "ad": "b3-tamam-dis-mutb3-tur4-7",
+  "komut": "node /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b3-tamam-aa3c/mut-b3/test/whatsapp-b3-buyume-zorla.mjs test/whatsapp-b3-buyume-249.test.mjs --tur 4,7",
+  "commit": "5e03d611ee459cf0ae1a7a00cdb3db2e96d983b0",
+  "dal": "worktree-agent-aa3ca71af78d16c3b",
+  "kirli": 1,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T01:12:40.196Z",
+  "sure_sn": 35.6,
+  "cikis_kodu": 2,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 0,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 2; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-06/b3-tamam-dis-mutb3-tur4-7.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa3ca71af78d16c3b",
+  "ham_cikti_sha256": "9ed2b453ece24de2bd3437e173200ebf1cfa7df1385543395e5da59734364117",
+  "ham_cikti_bayt": 1595
+}
