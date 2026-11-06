@@ -1,0 +1,32 @@
+{
+  "ad": "w3a-yeni-utc",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-w3-saklama-250.test.mjs",
+  "commit": "a34904866f1bee4b4f7bb63089951e32f7a7739a",
+  "dal": "w3-birlesim",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T11:32:41.488Z",
+  "sure_sn": 29.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 14,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../w3-ana-kanit/2026-11-06/w3a-yeni-utc.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-birlesim-ag",
+  "ham_cikti_sha256": "eef11e1822424a91760ed6e8854168eb8437b9b2539d5b83fe5b0e4c7a2b39eb",
+  "ham_cikti_bayt": 7829
+}

@@ -1,0 +1,392 @@
+TAP version 13
+# Subtest: 2.5.0 W-3 — saklama süresi (1 yıl + anonim iz) ve KVKK silme talebi
+    # Subtest: S-W3 + S35: talep → içerik, telefon, PDF, ad, wamid HEMEN silinir, iz kalır; bekleyen (Duraklatıldı) iş 'Atlandı — Silme Talebi'; aynı dönem 'Daha Önce Gönderildi', R3 Yine de Gönder yeni içerikle gider; öbür cari ve kart değişmez; yetki / onay
+    not ok 1 - S-W3 + S35: talep → içerik, telefon, PDF, ad, wamid HEMEN silinir, iz kalır; bekleyen (Duraklatıldı) iş 'Atlandı — Silme Talebi'; aynı dönem 'Daha Önce Gönderildi', R3 Yine de Gönder yeni içerikle gider; öbür cari ve kart değişmez; yetki / onay
+      ---
+      duration_ms: 2219.026943
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:107:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yönetici olmayan silemez
+        
+        404 !== 403
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 403
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:122:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: S-W3 1 yıl (yerel saat; gece yarısı yerel ≠ UTC) + Y17-6: sınırdan 1 sa önce içerik durur, sınırda silinir (bakım turu); 1 yılını dolduran bekleyen iş DOLUM ANINDA 'Atlandı — Saklama Süresi' (önce 'Zaten Kuyrukta' eler, sonra elemez); aynı dönem iz eler
+    not ok 2 - S-W3 1 yıl (yerel saat; gece yarısı yerel ≠ UTC) + Y17-6: sınırdan 1 sa önce içerik durur, sınırda silinir (bakım turu); 1 yılını dolduran bekleyen iş DOLUM ANINDA 'Atlandı — Saklama Süresi' (önce 'Zaten Kuyrukta' eler, sonra elemez); aynı dönem iz eler
+      ---
+      duration_ms: 1395.639837
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:174:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        dolum anında: B kuyrukta değil (Y17-6), A iz ile elenir (S-W3)
+        + actual - expected
+        
+          {
+        +   'account-6e8b9c3e-f308-4698-80c0-647d0a110d57': 'Zaten Kuyrukta',
+        -   'account-6e8b9c3e-f308-4698-80c0-647d0a110d57': 'gönderilecek',
+            'account-8ba160fa-ff3b-4f4a-93d9-fbac13a59718': 'Daha Önce Gönderildi'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        account-8ba160fa-ff3b-4f4a-93d9-fbac13a59718: 'Daha Önce Gönderildi'
+        account-6e8b9c3e-f308-4698-80c0-647d0a110d57: 'gönderilecek'
+      actual:
+        account-8ba160fa-ff3b-4f4a-93d9-fbac13a59718: 'Daha Önce Gönderildi'
+        account-6e8b9c3e-f308-4698-80c0-647d0a110d57: 'Zaten Kuyrukta'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:196:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S-W3 29 Şubat (yerel gün; İstanbul'da UTC'nin bir gün gerisi): 29.02.2028 01:00'de gönderilen ekstrenin içeriği 28.02.2029 00:00'da durur, 01:00'de silinir; aynı anda açılan bekleyen iş 00:59'da kuyrukta, 01:00'de 'Atlandı — Saklama Süresi'
+    not ok 3 - S-W3 29 Şubat (yerel gün; İstanbul'da UTC'nin bir gün gerisi): 29.02.2028 01:00'de gönderilen ekstrenin içeriği 28.02.2029 00:00'da durur, 01:00'de silinir; aynı anda açılan bekleyen iş 00:59'da kuyrukta, 01:00'de 'Atlandı — Saklama Süresi'
+      ---
+      duration_ms: 1445.900855
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:209:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        28.02.2029 01:00: bekleyen iş kapandı (29 Şubat → 28 Şubat, yerel)
+        + actual - expected
+        
+          {
+        +   'account-a7e606db-f4f2-43d5-b373-52c53c211663': 'Zaten Kuyrukta'
+        -   'account-a7e606db-f4f2-43d5-b373-52c53c211663': 'gönderilecek'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        account-a7e606db-f4f2-43d5-b373-52c53c211663: 'gönderilecek'
+      actual:
+        account-a7e606db-f4f2-43d5-b373-52c53c211663: 'Zaten Kuyrukta'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:228:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S-W3 takvim yılı ≠ 365 gün: 15.06.2027 10:00'da gönderilen ekstre (araya 29.02.2028 girer) 14.06.2028 10:30'da (365 gün + 30 dk) DURUR, 15.06.2028 10:00'da silinir
+    not ok 4 - S-W3 takvim yılı ≠ 365 gün: 15.06.2027 10:00'da gönderilen ekstre (araya 29.02.2028 girer) 14.06.2028 10:30'da (365 gün + 30 dk) DURUR, 15.06.2028 10:00'da silinir
+      ---
+      duration_ms: 1381.963148
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:237:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        takvim yılı doldu: silindi
+        + actual - expected
+        
+          {
+        +   erased: false,
+        +   params: 4,
+        -   erased: true,
+        -   params: 0,
+            pdfBytes: 0,
+        +   pdfName: 'Ekstre Ayşe Yılmaz 01.06.2027-15.06.2027.pdf',
+        +   phone: '+905321112233'
+        -   pdfName: '',
+        -   phone: ''
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        phone: ''
+        params: 0
+        pdfName: ''
+        pdfBytes: 0
+        erased: true
+      actual:
+        phone: '+905321112233'
+        params: 4
+        pdfName: 'Ekstre Ayşe Yılmaz 01.06.2027-15.06.2027.pdf'
+        pdfBytes: 0
+        erased: false
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:249:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S42: talep anında iş Gönderiliyor — içerik + telefon (dosya + defter) hemen silinir; kabul → wamid özetle iz; geçici hata → yeniden gönderilmez, 'Atlandı — Silme Talebi'; yanıt yok → Sonucu Belirsiz izi
+    not ok 5 - S42: talep anında iş Gönderiliyor — içerik + telefon (dosya + defter) hemen silinir; kabul → wamid özetle iz; geçici hata → yeniden gönderilmez, 'Atlandı — Silme Talebi'; yanıt yok → Sonucu Belirsiz izi
+      ---
+      duration_ms: 1983.058534
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:255:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        KVKK silme talebi ucu (geldi 404 {"ok":false,"error":"Endpoint bulunamadı."})
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        eraseOk (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:56:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async inFlight (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:270:24)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:280:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S35 + K7 düzeni: Meta Bekletti (131049) iş talep anında Atlandı — 24 sa sonraki deneme GİTMEZ, bırakılmış deneme 'Daha Önce' saymaz (aynı dönem yeni gönderim gider); geç teslim sayılır, sonra 'Daha Önce'
+    not ok 6 - S35 + K7 düzeni: Meta Bekletti (131049) iş talep anında Atlandı — 24 sa sonraki deneme GİTMEZ, bırakılmış deneme 'Daha Önce' saymaz (aynı dönem yeni gönderim gider); geç teslim sayılır, sonra 'Daha Önce'
+      ---
+      duration_ms: 1251.671064
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:302:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        KVKK silme talebi ucu (geldi 404 {"ok":false,"error":"Endpoint bulunamadı."})
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        eraseOk (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:56:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:312:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S31 + S36 (Ekstre): silinmiş Başarısız → Başarısızları Yeniden Dene 'İçeriği Silindi' (öbürü alınır); silinmiş Sonucu Belirsiz → Yine de Gönder 'İçeriği Silindi' + neden; aynı dönem 'Sonucu Belirsiz' eler (Yine de Gönder bayrağı da), sonraki dönem gider; yeni gönderim (Başarısız) gider
+    not ok 7 - S31 + S36 (Ekstre): silinmiş Başarısız → Başarısızları Yeniden Dene 'İçeriği Silindi' (öbürü alınır); silinmiş Sonucu Belirsiz → Yine de Gönder 'İçeriği Silindi' + neden; aynı dönem 'Sonucu Belirsiz' eler (Yine de Gönder bayrağı da), sonraki dönem gider; yeni gönderim (Başarısız) gider
+      ---
+      duration_ms: 2382.819689
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:327:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        KVKK silme talebi ucu (geldi 404 {"ok":false,"error":"Endpoint bulunamadı."})
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        eraseOk (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:56:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:345:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S37 = B (Ödeme Hatırlatma): silinmiş Başarısız → Yeniden Dene ve silinmiş Sonucu Belirsiz → Yine de Gönder karttan YENİ içerikle gider; kart telefonu da silindiyse 'Telefon yok'
+    not ok 8 - S37 = B (Ödeme Hatırlatma): silinmiş Başarısız → Yeniden Dene ve silinmiş Sonucu Belirsiz → Yine de Gönder karttan YENİ içerikle gider; kart telefonu da silindiyse 'Telefon yok'
+      ---
+      duration_ms: 2315.560455
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:371:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        KVKK silme talebi ucu (geldi 404 {"ok":false,"error":"Endpoint bulunamadı."})
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        eraseOk (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:56:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:390:36)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S32 (002, geri yükleme hemen): talepten ÖNCE alınmış yedek → silinmiş içerik / telefon GELMEZ; talepten SONRA açılan iş kalır; talepten sonraki yedek: o içerik durur
+    not ok 9 - S32 (002, geri yükleme hemen): talepten ÖNCE alınmış yedek → silinmiş içerik / telefon GELMEZ; talepten SONRA açılan iş kalır; talepten sonraki yedek: o içerik durur
+      ---
+      duration_ms: 2389.31629
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:409:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        KVKK silme talebi ucu (geldi 404 {"ok":false,"error":"Endpoint bulunamadı."})
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        eraseOk (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:56:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:420:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S32 (001, geri yükleme yeniden açılışta) + S38 (taşıma: gönderim defteri yok, talep dosyası veri klasöründe) + zincirleme taşıma + yeni bilgisayarda yeni talep: talepten önceki yedek içeriği GELMEZ
+    not ok 10 - S32 (001, geri yükleme yeniden açılışta) + S38 (taşıma: gönderim defteri yok, talep dosyası veri klasöründe) + zincirleme taşıma + yeni bilgisayarda yeni talep: talepten önceki yedek içeriği GELMEZ
+      ---
+      duration_ms: 1386.033953
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:444:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        KVKK silme talebi ucu (geldi 404 {"ok":false,"error":"Endpoint bulunamadı."})
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        eraseOk (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:56:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:465:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: İki şirket: 002'deki talep yalnız 002'nin carisini siler (001'de aynı adlı / telefonlu cari etkilenmez); talep kaydı şirket kimliğiyle
+    not ok 11 - İki şirket: 002'deki talep yalnız 002'nin carisini siler (001'de aynı adlı / telefonlu cari etkilenmez); talep kaydı şirket kimliğiyle
+      ---
+      duration_ms: 1921.69914
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:499:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        KVKK silme talebi ucu (geldi 404 {"ok":false,"error":"Endpoint bulunamadı."})
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        eraseOk (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:56:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:509:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: KVKK sızıntı denetimi: talepten sonra günlükte, veri klasöründeki BÜTÜN dosyalarda (şirket dosyası, WAL, makine defteri, talep dosyası) ve yeni yedekte silinen telefon, ad, ileti metni ve numarayı taşıyan wamid YOK
+    not ok 12 - KVKK sızıntı denetimi: talepten sonra günlükte, veri klasöründeki BÜTÜN dosyalarda (şirket dosyası, WAL, makine defteri, talep dosyası) ve yeni yedekte silinen telefon, ad, ileti metni ve numarayı taşıyan wamid YOK
+      ---
+      duration_ms: 1862.016097
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:520:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        KVKK silme talebi ucu (geldi 404 {"ok":false,"error":"Endpoint bulunamadı."})
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        eraseOk (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:56:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:557:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Makine defteri 'yalnız eklenir' kalır, tek istisna KVKK anonimleştirmesi: eski (2.4.9) tetikli defter açılınca yükseltilir; telefon → 'silinmis:<iş>' ve wamid → özet geçer, öbür her UPDATE / DELETE düşer
+    not ok 13 - Makine defteri 'yalnız eklenir' kalır, tek istisna KVKK anonimleştirmesi: eski (2.4.9) tetikli defter açılınca yükseltilir; telefon → 'silinmis:<iş>' ve wamid → özet geçer, öbür her UPDATE / DELETE düşer
+      ---
+      duration_ms: 428.890582
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:574:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        telefonun anonimleştirilmesi geçer (yükseltilmiş tetik)
+        + actual - expected
+        
+        + 'reddedildi'
+        - 'geçti'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'geçti'
+      actual: 'reddedildi'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:601:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Yarıda kesilme: talep makineye yazılamazsa 503 ve HİÇBİR şey silinmez; talep yazılıp şirket dosyası yazılamazsa açılışta tamamlanır
+    not ok 14 - Yarıda kesilme: talep makineye yazılamazsa 503 ve HİÇBİR şey silinmez; talep yazılıp şirket dosyası yazılamazsa açılışta tamamlanır
+      ---
+      duration_ms: 1450.925158
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:624:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        talep yazılamadı → 503 (geldi 404)
+        
+        404 !== 503
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 503
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:640:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..14
+not ok 1 - 2.5.0 W-3 — saklama süresi (1 yıl + anonim iz) ve KVKK silme talebi
+  ---
+  duration_ms: 23817.888042
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9-ana/test/whatsapp-w3-saklama-250.test.mjs:106:1'
+  failureType: 'subtestsFailed'
+  error: '14 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 14
+# suites 1
+# pass 0
+# fail 14
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 24382.751464
