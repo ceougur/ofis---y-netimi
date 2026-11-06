@@ -1,0 +1,18 @@
+taban: 46 geçti / 0 kaldı (çıkış 0)
+ok 14 - eski sürüm sıfırlamasının açılış onarımı yok · KIRMIZI (1 başarısız) · beklenen neden /not ok \d+ - izi olmayan fiş/ görüldü
+ok 23 - K5 şirket denetimi yok (her şirketin sıfırlama izi sayılır) · KIRMIZI (2 başarısız) · beklenen neden /başka şirketin sıfırlaması 001'in fişini kaldırmamalı/ görüldü
+ok 24 - K5 yazım sırası denetimi yok (izi duran fişten sonra yazılan izsiz fiş de kaldırılır) · KIRMIZI (2 başarısız) · beklenen neden /izi duran fişten sonra yazılan izsiz fiş kalmalı/ görüldü
+ok 25 - K5 duvar saati geri gelir (yazım sırası yerine fişin anı ↔ sıfırlamanın anı) · KIRMIZI (4 başarısız) · beklenen neden /saat geri alınmış olsa da sıfırlamadan artakalan asıl fiş \+ ters kaydı birlikte kaldırılır/ görüldü
+ok 31 - B2 K5 çift kuralı yok (asıl fiş ile ters kaydı ayrı ayrı değerlendirilir; baş mimar kararı 5) · KIRMIZI (2 başarısız) · beklenen neden /ters kaydı kalan asıl fiş kaldırılmaz/ görüldü
+ok 32 - B1 K5 çift kuralı tek yöne döner (yalnız kalan ters kaydın asıl fişi korunur; tur 1 kuralı) · KIRMIZI (1 başarısız) · beklenen neden /asıl fiş kalıyorsa ters kaydı da kalır/ görüldü
+ok 33 - B1 K5 sıfırlama izinin işlem geçmişini sildiği denetlenmez (izli fişten sonra eklenmiş iz de sayılır) · KIRMIZI (1 başarısız) · beklenen neden /işlem geçmişini silmeyen sıfırlama izi fiş kaldırmamalı/ görüldü
+ok 34 - B1 kuşkulu fiş Mutabakat Günlüğü'ne yazılmaz (sessiz) · KIRMIZI (4 başarısız) · beklenen neden /kuşkulu fişin görünür kaydı/ görüldü
+ok 35 - B1 kuşkulu fişin kaydı her açılışta yinelenir (tekilleştirme yok) · KIRMIZI (1 başarısız) · beklenen neden /aynı kuşkulu fiş için kayıt her açılışta yinelenmez/ görüldü
+1..9
+# tests 9
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+9/9 mutasyon beklenen nedenle yakalandı

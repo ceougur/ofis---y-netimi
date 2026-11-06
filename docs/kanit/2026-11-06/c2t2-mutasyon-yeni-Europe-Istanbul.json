@@ -1,0 +1,32 @@
+{
+  "ad": "c2t2-mutasyon-yeni-Europe-Istanbul",
+  "komut": "node test/fis-defteri-250-mutasyon.mjs --kopya /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-mut-9ed4b0d6 --yalniz 14,23,24,25,31,32,33,34,35",
+  "commit": "9ed4b0d62d2367f77930ef81eed57c7a4e63bf96",
+  "dal": "worktree-agent-a12ba6b14c23f5029",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T05:59:10.046Z",
+  "sure_sn": 343.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 9,
+    "gecen": 9,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-kanit/2026-11-06/c2t2-mutasyon-yeni-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a12ba6b14c23f5029",
+  "ham_cikti_sha256": "cdb125534527516c501bc933aa043af9e9430d14db10db522f3e1620c47e891d",
+  "ham_cikti_bayt": 2006
+}
