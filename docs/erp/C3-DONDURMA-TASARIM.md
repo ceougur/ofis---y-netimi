@@ -1,6 +1,6 @@
 # Ç3 — Kilitli Dönemin Defterini Dondurma: Tasarım Notu (2.5.0)
 
-Durum: KOD AJANI TASARIMI (05.11.2026). Kaynak: `docs/erp/MUHASEBE-CEKIRDEGI-PLANI.md` §0, §1, §4 (aynen), §8, §9, §13, §14; `docs/erp/C2-FIS-DEFTERI-TASARIM.md` §5, §8, §11;
+Durum: KOD AJANI TASARIMI (05.11.2026); Ç3 TUR 1 (06.11.2026; dar kontrol ORTA-1/2/3, K4, DÜŞÜK-3, kural sürümü kuralı — §4, §5, §7, §8, §9, §11, §12, §17). Kaynak: `docs/erp/MUHASEBE-CEKIRDEGI-PLANI.md` §0, §1, §4 (aynen), §8, §9, §13, §14; `docs/erp/C2-FIS-DEFTERI-TASARIM.md` §5, §8, §11;
 kural kitabı KG-15 ve EK-1 M7; `docs/devir/DEVIR-PLANI.md` G0, G1, G3, G6, G7; `docs/BANKA-MODULU-PLAN.md` §3.11/4 ve §3.11a. Kod: `server/lib/ledger-snapshots.mjs` (çekirdek),
 `server/lib/ledger-freeze-worker.mjs` (iş parçacığı), `server/lib/ledger-rule-249/` (2.4.9 kural kopyası), göç 47 (`server/lib/migrations.mjs`), `routes/ledger.mjs` (kilit kancası,
 karma okuma), `lib/integrity.mjs` (fark denetimi, `adoptLock`), `routes/report-center.mjs` (Yevmiye Defteri, Hesap Planı Mizanı, Defter Mutabakatı).
@@ -45,6 +45,12 @@ değişiklik yok, düzeltme yok — düzeltme fişi Ç5'in işi, KG-15 A / EK-1 
     bittikten sonra); ilerleme `ledger.freeze.progress` olayıyla ve `GET /api/workspace/ledger/lock` (`freeze`) ile.
 - GERİ (next < kapsam): bekleyen koşu `abandoned`; `thaw` koşusu (through = next, `done`) kilitle aynı işlemde; bayat satırlar (date > next) parça parça silinir (görünmezler).
   İz: `ledger.snapshot.thawed` (işlem geçmişi) + kilidin kendi izi (`ledger.period.unlocked/locked`).
+- ESKİ KURALLI BEKLEYEN KOŞU (tur 1, ORTA-3 ve ailesi; plan §4 "göçte 2.4.9 KURALIYLA"): göçün / onarımın 2.4.9 koşusu ya da bu programın bilmediği kuralın koşusu güncel kurala
+  HİÇBİR yolda geçmez. Aynı güne yeniden kilit → koşu sürer (kuralı ne olursa olsun). Kilit koşunun içine çekilir (kapsam < hedef < koşunun günü) → koşu bırakılır, (kapsam, hedef]
+  AYNI kuralla. Kilit ilerletilir → koşu sürer, iz `ledger.snapshot.extended` ({ through }) bu programın ilerlettiği günü kaydeder; koşu tamamlanınca AYNI işlemde (koşunun günü, iz
+  günü] güncel kuralla yeni bekleyen koşu (`continueAfter`); kilit iz gününün de ötesindeyse (eski sürüm ilerletti) kalanı GAP_RULE. Eşzamanlı kipte (postAll lockThrough) koşu ve
+  kalan dönem aynı işlemde donar; kuralı bilinmeyen koşu eşzamanlı dondurulamaz → işlem düşer (kilit + fiş yazılmaz). Güncel kurallı bekleyen koşu önceki davranışla (bırakılır,
+  yenisi). Kilit kapsamın altına çekilirse her koşu bırakılır (thaw).
 - ATOMİKLİK (BAŞ MİMAR KARARI önerisi K1): iş parçacığı kipinde kilit önce konur, donma arkasından gelir. Her an: donmuş ≤ kapsam ≤ kilit; (kapsam, kilit] kilitli ama donmamış
   dönem bekleyen koşunun kuralıyla CANLI okunur (aynı kural, aynı veri → donunca aynı satırlar). Kilitli dönemin kaynağı kilit konduğu anda bütün yazma yollarında kapalıdır
   (period, kapının kilit izi). Yarım durumda okuma hiçbir zaman yanlış değildir; çökme / kapanma → bekleyen koşu açılışta sürdürülür (§7). Gerekçe: 1.000.000 satırda satırları kilitle
@@ -63,6 +69,12 @@ değişiklik yok, düzeltme yok — düzeltme fişi Ç5'in işi, KG-15 A / EK-1 
   yükseltir. Kural tuzağı testi: güncel kural "2.5.0" iken güncel türetme = 2.4.9 kopyası (tutarda; Ç1'in 770 adı hariç) — Ç5'in ilk kural değişikliği bu testi bilerek değiştirir.
 - Kullanım: YALNIZ göç (§6) ve eski sürümün ileri götürdüğü kilit (§7). BİLİNEN SINIR (kullanıcıya söylenir): 2.4.9'dan önceki kural değişiklikleri (ör. senet 121/321, 2.3.0) geri
   alınmaz; donma 2.4.9 sonucudur.
+- KURAL SÜRÜMÜ KURALI (tur 1): `LEDGER_RULE_VERSION` yükselince ÖNCEKİ güncel kural silinmez. Önceki kuralın türetmesi `server/lib/ledger-rule-<sürüm, noktasız>/` klasörüne AYNEN
+  kopyalanır (2.4.9 deseni: sha256 sabit, eşdeğerlik o sürümün gerçek koduyla). Kopya kayıt defterine eklenir: `createLedgerSnapshots` `rules` ve dondurma iş parçacığının kural
+  seçimi. Yeni sürüm `RULE_HISTORY`'nin sonuna eklenir (`lib/ledger-snapshots.mjs`; eskiden yeniye, son öğe güncel kural, öğe silinmez). Gerekçe: o sürümde açılmış bekleyen koşu
+  (göç, onarım, yarım dondurma) ve kilitli dönemin yeniden donması kendi kuralını bulmalı. Bulamazsa koşu bekler, görünür bulgu olur (§7). Denetim (test/donmus-defter-tur1-250.test.mjs
+  "§5 kural kayıt defteri"): (1) son öğe = `LEDGER_RULE_VERSION`; (2) bilinen önek ["2.4.9", "2.5.0"] korunur; (3) her önceki sürümün kopya klasörü var; (4) kayıt defteri = geçmiş;
+  (5) her sürümün bekleyen koşusu iş parçacığında kendi kuralıyla donar.
 
 ## 6. Göç 47 ve büyük veri
 - Göç: iki tablo + indeks + tetikleyiciler; kilit varsa (`ledger.lockedUntil`) BEKLEYEN koşu (from '', through = kilit, kural "2.4.9", neden migration). Türetme göçte YAPILMAZ.
@@ -74,8 +86,16 @@ değişiklik yok, düzeltme yok — düzeltme fişi Ç5'in işi, KG-15 A / EK-1 
 
 ## 7. Açılış onarımı (eski sürüm, yarım koşu)
 Sıra: göçlerden ve Ç2 onarımından sonra, kapıdan önce; BS-7 yeni şemalı dosyada koşmaz.
-- Bekleyen koşu var → iş parçacığında sürdürülür (bayat satırlar önce silinir; koşunun kuralı kayıt defterinde yoksa koşu bırakılır, güncel kuralla yenisi açılır).
-- Kilit > kapsam, bekleyen yok (yalnız eski sürüm yapabilir: 2.5.0 kilit koyunca koşu açar) → BEKLEYEN koşu, kural "2.4.9" (KULLANICIYA SORULMALI S1; §12), neden repair.
+- (tur 1, ORTA-2) EKSİK / DEĞİŞMİŞ DONMUŞ SATIR ÖNCE: görünen donmuş satırların sayısı, borcu, alacağı ve ağırlığı son tamamlanan koşunun kayıtlı toplamlarıyla (`state_*`) karşılaştırılır.
+  2.4.9'un Şirket Verisini Sıfırla'sı satırları siler, koşuları bilmez; eski kodda kilit aynı güne / ileri konunca kilitli yıl boş donmuş defterden okunuyordu. Tutmuyorsa kapsam
+  SAĞLAMA NOKTASINA iner (thaw, neden repair). Sağlama noktası, toplamları bugün de tutan, kendinden sonraki hiçbir geri çekmenin altına inmediği en son tamamlanmış koşunun günüdür;
+  yoksa baştan. Geri çekmenin toplamı ölçülen değerdir ("önceki − kaldırılan" değil; satırlar zaten silinmiş). Kilit kapsamın ötesindeyse dönem aşağıdaki maddeyle GAP_RULE kuralıyla
+  yeniden donar (KULLANICI KARARI 06.11 03:35 S13 = A). Bedeli: her açılışta donmuş satırlar üzerinde tek toplam sorgusu (ölçüm §17).
+- Bekleyen koşu var → iş parçacığında sürdürülür (bayat satırlar önce silinir). Kuralı kayıt defterinde yoksa (tur 1) koşu BEKLER, güncel kurala geçirilmez ve yarım dondurulmaz. Neden
+  ilerlemede (`status().error`) ve Mutabakat Testi'nde ("Bekleyen Dondurmanın Kuralı Bu Programda Yok", ad "· Dondurma Bekliyor") görünür; raporlar o dönemi güncel kuralla okur.
+- Eski kurallı bekleyen koşu (tur 1) ile eski sürüm kilidi değiştirdiyse: kilit koşunun ötesindeyse koşu sürer (kalan dönem §4 `continueAfter`); gerisindeyse (kapsam, kilit] aynı
+  kuralla. Güncel kurallı bekleyen koşuda önceki davranış: bırakılır, (kapsam, kilit] GAP_RULE.
+- Kilit > kapsam, bekleyen yok (yalnız eski sürüm yapabilir: 2.5.0 kilit koyunca koşu açar) → BEKLEYEN koşu, kural GAP_RULE = "2.4.9" (KULLANICI KARARI S13 = A; §12), neden repair.
 - Kilit < kapsam (eski sürüm kilidi açtı ya da sıfırladı) → thaw koşusu (neden repair), bayat satırlar temizlenir.
 - Kilit = kapsam ama kaynak izi tutmuyor (eski sürüm kilidi açıp değiştirip aynı güne yeniden kilitledi; dış yazım) → yalnız bulgu ("Donmuş Dönemin Kaynağı Değişti"); otomatik düzeltme
   yok. Çözüm: Kilidi Aç → Yeniden Kilitle (güncel kuralla yeniden donar).
@@ -88,6 +108,17 @@ Sıra: göçlerden ve Ç2 onarımından sonra, kapıdan önce; BS-7 yeni şemal�
   sırası karşılaştırılmaz — VACUUM INTO rowid'i değiştirebilir). Fiş maddeleri (voucher-*) saklanan satırdır: donmuş kopyayla karşılaştırılır, yeniden türetilmez (Ç2 §11). Fark: sayı
   (madde) + yıl / hesap / alt hesap / cari bazında tutar (`ruleDiff()`; Ç5'in Kural Farkı Düzeltme Fişi bunu okur). Düzey "uyarı" (`severity: warning`, ok false): yeni işlemleri
   ENGELLEMEZ (kapının tabanında; kural sürümle değişir, kullanıcının işi değil).
+- İLETİLER (tur 1, K4; `ruleDiffHint`). Nedeni bilinmeyen ayrışma "kural değişti" diye adlandırılmaz. Kaynak izinin kapsamadığı türetme alanları da (account_entries.note, is_opening, …)
+  aynı farkı doğurur. Açıklama nedene göre:
+  - eksik / değişmiş donmuş satır: "Fark donmuş defterdeki eksik ya da değişmiş satırlardan (Donmuş Defter denetimi); kural değişikliği değildir. …";
+  - kaynak izi değişti: "Kilitli dönemin kaynak kayıtları dondurmadan sonra değişti …; fark bundan ya da defter kuralının değişmesinden olabilir. …";
+  - neden bilinmiyor (tarafsız): "Kilitli dönemin donmuş defteri güncel türetmeden farklı: neden defter kuralının program sürümüyle değişmesi ya da kilitli dönemin kaynak verisinin
+    kapının görmediği bir yolla değişmesi olabilir. …".
+  Eksik satır `ledger:snapshot`'ta ayrı iletiyle çıkar: "Donmuş Defterde Eksik Satır: GG.AA.YYYY ve öncesinde N satır görünüyor, M satır donmuştu (…); program yeniden açılınca kilitli
+  dönem yeniden donar" (değişmişse "Donmuş Defterin Satırları Değişmiş: …"). Denetim adları Yazım düzeninde; parantez içindeki ad parçaları da büyük harfle: "Donmuş Defter
+  (31.12.2026 ve Öncesi)" / "(Yok)" · "Dondurma Sürüyor" / "Dondurma Bekliyor"; "Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2026 ve Öncesi)".
+  AÇIK (dosya sınırı): `routes/report-center.mjs:719` Defter Mutabakatı alt başlığı hâlâ "Defter kuralı program sürümüyle değişti …" cümlesini taşıyor (yalnız kural farkı varken).
+  Bu tur yalnız ledger-snapshots.mjs'e dokunur; cümle Ç3 tur 2'de ya da report-center'a dokunan işte tarafsızlaşır (ana oturuma bildirildi).
 - Nerede: açılış (`integrity.start` taban), Mutabakat Testi, 15 dakikalık arka plan taraması (iş parçacığı), Defter Mutabakatı raporu. COMMIT kapısında YOK (BAŞ MİMAR KARARI önerisi
   K3: kural yalnız sürümle değişir; kilitli dönemin kaynağını COMMIT'te LOCK_SQL korur; 100.000 satırda her yazıma ~yüzlerce ms eklerdi).
 - Görünürlük: donmuş koşu hiç yoksa iki denetim de görünmez (kilitsiz şirketin denetim listesi ve sayısı 2.4.9 ile aynı).
@@ -107,6 +138,17 @@ Sıra: göçlerden ve Ç2 onarımından sonra, kapıdan önce; BS-7 yeni şemal�
 | Büyük Defter, Gelir Tablosu, Bilanço (Ç6) | KARMA (`ledger.book`) kullanacak |
 Yan kazanç (BAŞ MİMAR KARARI önerisi K8): yalnız aralığı tamamen donmuş dönemdeki rapor (ör. geçen yılın Yevmiye Defteri) canlı türetme yapmaz. Açık dönemi kapsayan raporda canlı
 türetme bütün geçmişi kurmaya devam eder: şüpheli alacak ayırması ve kart kapanışı carinin TAM geçmişini ister; kısmi türetme Ç6'da ölçümle (plan §8).
+- DONMUŞ MİZAN ÖNBELLEĞİ (tur 1, ORTA-1): anahtar = son TAMAMLANAN koşunun kimliği (`id`, rastgele) | kapsam | data_version | from | üst sınır. Her dondurma, geri çekme ve Şirket
+  Verisini Sıfırla'dan sonraki her koşu yeni kimlik alır. Önceki anahtar (kapsam | MAX(no) | data_version) sıfırlamada bozuluyordu: no 1'den başlar, data_version aynı bağlantının
+  yazımında değişmez. Sıfırla + aynı güne yeniden kilitten sonra Hesap Planı Mizanı eski verinin toplamını gösteriyordu.
+- ARA DİLİM (tur 1, DÜŞÜK-3, ders 47). Göç / onarım penceresi = bekleyen eski kurallı koşu sürerken. (kapsam, koşunun günü] o kuralla okunur; bu, rapor başına İKİNCİ tam türetmedir.
+  - Aralığın sonu koşunun dönemindeyse (geçen yılın Yevmiye Defteri) yalnız o kuralla türetilir, güncel türetme kurulmaz.
+  - Aralık koşunun gününden sonra başlıyorsa ara dilim okunmaz.
+  - Öbür okumalarda ara dilim koşu başına bir kez kurulur. Anahtar: koşunun kimliği | data_version | bu nesnenin DIŞINDAKİ yazımların total_changes'ı. Dondurma parçalarının yazımı
+    anahtarı değiştirmez; işlem içinde saklanmaz (GG2).
+  - İki kural bu dönemde aynı maddeleri veriyorsa yalnız "aynı" bilgisi ve güncel dilimin parmak izi saklanır (bellek yok; isabette parmak iziyle yeniden sınanır). Farklıysa dilimin
+    kendisi saklanır (en çok 200.000 madde; üstü saklanmaz).
+  - Çıktı önbelleksiz yolla birebir.
 
 ## 10. Sıfırlama, geri yükleme, iki şirket
 - Şirket Verisini Sıfırla (iki kip): `clearSnapshots` (tetikleyiciler kaldırılır, iki tablo silinir, tetikleyiciler kurulur); kilit zaten sıfırlamada kalkar ("ledger." KEEP_SETTINGS'te
@@ -126,15 +168,37 @@ türetme bütün geçmişi kurmaya devam eder: şüpheli alacak ayırması ve ka
 - D4 notları: arşiv kopyasında `freezeSync` iş parçacığının KENDİ bağlantısında (bakım kipi); yeni yıl dosyasında kapsam K (arşivin donmuş satırları yeni yılda YOK — G3: ≤K budanır;
   `pruneThrough` D4'ün dar işlevi, tetikleyici kaldırma deseniyle). Ç2'nin satır tetikleyicisi (`ledger_voucher_lines_closed`) her eklemede COUNT(*) yapar: binlerce satırlı devir
   açılış fişinde karesel — D4 ölçmeli.
+- D4'E KISITLAR (tur 1; dar kontrol E kaydı 06.11 03:08, karar (7) A):
+  (1) Geri çekme tarih bazındadır. Devri Yenile arşivin kilidini açarsa (thaw) arşivin BÜTÜN donmuş satırları kalkar. Yeniden donarken o anın kuralıyla türetilir: arşiv yılı sessizce
+      yeni kurala geçer. D4 ya yalnız voucher-* satırlarını değiştiren dar bir işlev kurar (kapanış / açılış fişlerini siler-yazar, öbür donmuş satırlara dokunmaz) ya da arşivin kendi
+      kuralı kayıt defterinde tutulur ve yeniden donma `freezeSync({ rule })` ile o kuralla yapılır.
+  (2) Yeni yıl dosyasında ≤ K budaması (`pruneThrough`) koşu başlıklarının durum toplamlarını (`state_*`) güncellemezse açılış onarımı (§7, tur 1) satırları "eksik" görür. Kapsamı
+      indirir, dönemi GAP_RULE ile yeniden dondurmaya kalkar (ORTA-2'nin boş okuma deseninin tersi). Budama ya yeni bir thaw / özet koşusuyla toplamları yazar ya da ≤ K'yi kapsam dışı
+      bırakır.
+  (3) `freezeSync` bekleyen koşuyu kuralına bakmadan bırakır (D4'ün açık API'si). Bekleyen eski kurallı koşu (göç 2.4.9) varken D4 bunu çağırırsa göç dönemi verilen kuralla donar. D4
+      önce bekleyen koşunun bitmesini bekler (`runPending`) ya da `rule`'ü bekleyen koşunun kuralından seçer.
+  (4) Karar (3) / Ç5 bunları Ç3 açısından olanaksız kılmıyor; ruleDiff farkı yakalar.
 
 ## 12. BAŞ MİMAR KARARI önerileri (ders 40) ve KULLANICIYA SORULMALI
 - K1 Kilit önce, donma arkasından (§4). K2 Göçte bekleyen koşu, donma açılıştan sonra (§6). K3 Fark denetimi yalnız tam taramada (§8). K4 "Kural Değişikliği Farkı" uyarı düzeyinde,
   işlemleri engellemez. K5 Donmuş tablolar FINANCIAL / LOCK_SQL / integrity-scope dışında (§8). K6 Silme tetikleyicisi dondurma izine bağlı (§3). K7 Geri çekme mantıksal, fiziksel
   silme parça parça (§4). K8 Yan kazanç sınırlı (§9). K9 Kural sürümü etiketi + 2.4.9 kopyası kayıt defterinde (§5). K10 Karma okuma yalnız defter raporlarında; mutabakat canlı (§9).
   K11 Kaynak izi koşuda saklanır, tutmazsa yalnız bulgu (§7). K12 Kilit ucu tam taramayı (integrity.start) ana iş parçacığında koşmaz (§4).
-- KULLANICIYA SORULMALI S1 (ders 43 — hangi kural sürümünün donduracağı, hesap sınıflamasını belirler): eski sürüm (≤ 2.4.9; BS-7 kapısını bilmez) 2.5.0 dosyasında kilidi İLERİ
-  götürdüyse aradaki dönem hangi kuralla donsun? (A, öneri) 2.4.9 kopyasıyla — kilidi koyan programın kuralı, kullanıcı kilitlerken o raporları gördü; (B) güncel kuralla. Ç3'ün
-  kodunda iki seçenek bugün AYNI sonucu verir (güncel kural = 2.4.9 tutarda); seçim tek sabittir (`GAP_RULE`), Ç5'ten önce kesinleşmeli.
+- S1 / S13 — KULLANICI KARARI 06.11 03:35: A (2.4.9 kopyası). Soru (ders 43; hangi kural sürümünün donduracağı hesap sınıflamasını belirler): eski sürüm (≤ 2.4.9; BS-7 kapısını
+  bilmez) 2.5.0 dosyasında kilidi İLERİ götürdüyse aradaki dönem hangi kuralla donsun? (A) 2.4.9 kopyasıyla: kilidi koyan programın kuralı, kullanıcı kilitlerken o raporları gördü;
+  (B) güncel kuralla. Kapsam (dar kontrol ORTA-2): eski sürüm dosyayı SIFIRLAYIP yeniden kilitlediyse yeniden donan dönem de bu kuralla. Seçim tek sabittir: `GAP_RULE = RULE_249`
+  (lib/ledger-snapshots.mjs). Kullanıldığı yerler: açılış onarımı (kilit > kapsam; eksik satırdan sonra yeniden donma), `continueAfter` (eski sürümün ilerlettiği kalan dönem).
+- K1 — BAŞ MİMAR KARARI (dar kontrol 06.11 03:08, kullanıcıya gösterilecek; ders 40). "Kilit önce, donma arkasından", planın §4 "kilit ile donmuş satırlar TUTARLI ve ATOMİK yazılır"
+  sözünden SAPMADIR, ama mantıksal olarak atomiktir. Kapsam tek işlemde döner (koşu `pending → done`). (kapsam, kilit] arası kilitli ama donmamış dönem bekleyen koşunun kuralıyla
+  canlı okunur ve doğrudur. Kaynağı kilitle aynı anda bütün yazma yollarında kapanır. Yarıda kesilme açılışta sürer. Gerekçe: 1 M satırda kilitle aynı işlemde yazmak olay döngüsünü
+  dakikaya yakın kilitlerdi (ders 47).
+- Tur 1 BAŞ MİMAR KARARLARI (ders 40; kullanıcıya gösterilecek; hiçbiri yeni para kuralı değildir):
+  (a) Eski kurallı bekleyen koşunun dönemi, kilit başka güne gidince de koşunun kuralıyla donar (§4). Bu programın ilerlettiği kalan dönem güncel kuralla donar. Dayanak: plan §4
+      "göçte 2.4.9 KURALIYLA" ve S13 A'nın gerekçesi "kilidi koyan programın kuralı". Güncel kurallı bekleyen koşuda davranış DEĞİŞMEDİ.
+  (b) Bilinmeyen kuralın bekleyen koşusu bekler, görünür bulgu olur (dar kontrol "görünür bulgu, yarım donmuş defter yok").
+  (c) Eksik satırda sağlama noktası: kapsam baştan değil, sağlam son koşunun gününe iner. Önceki koşuların satırları kendi kurallarıyla korunur; yalnız eksik dönem GAP_RULE ile yeniden
+      donar (S13 kapsamı).
+  (d) Ara dilim önbelleği (§9): çıktı birebir, yalnız hız.
 - Kural kitabı sorusu YOK: Ç3 para kuralı değiştirmez; KG-15 A (kullanıcı kararı 05.11 "hepsi A") gösterimi ve düzeltme fişini zaten kararlaştırdı.
 
 ## 12a. Uygulamada netleşenler (05.11 gece)
@@ -246,3 +310,112 @@ raporların kilitli / açık okuma süresi önce / sonra.
   (2) Kilidi geri çekme 1M'de olay döngüsünü ~0,5 sn tutar (öneri: geri çekilen dönemin toplamı işlemden önce iş parçacığında; ya da gün toplamları tablosu). (3) Raporlar ve tam tarama
   ana iş parçacığında: 1M'de Yevmiye Defteri kilitli yıl 5,4 sn, Hesap Planı Mizanı ilk 6,6 sn, Kural Değişikliği Farkı (açılış taraması, Mutabakat Testi, Defter Mutabakatı) ~28 sn
   akış + canlı türetme — plan §8 rapor bütçesi Ç6'nın işi (rapor iş parçacığı). (4) Büyük veride açılış (repairOwnCards) dakikalar — Ç3 dışı, AH.
+
+## 17. Ç3 tur 1 (06.11.2026): dar kontrol bulgularının düzeltmesi — kanıt
+Kaynak: iş listesi E "06.11 03:08 Ç3 DAR KONTROLÜ BİTTİ" (YÜKSEK 0, ORTA 3, DÜŞÜK 3) ve KARAR. Taban 10ed14cf (Ç3 2ba5ac0b'de birleşik). Dosya sınırı: yalnız lib/ledger-snapshots.mjs + testler
++ bu not; routes/ledger.mjs, app.mjs, ledger-vouchers.mjs, migrations.mjs (Ç2 tur 1) ve kilit ucu (DÜŞÜK-1, PUT bekleme / ilerleme: Ç3 tur 2) dokunulmadı. Commit'ler 1f9ffb69
+(düzeltme + testler), 2b0e57f1 / cd7ca1a3 (ara dilim karşılaştırmasının hızı), 8523e126 (test iletisi). Kanıtlar docs/kanit/2026-11-06/c3t1-* (her koşu tools/kanit.mjs kos).
+
+### Yapılanlar
+- ORTA-1 (§9): donmuş mizan önbelleği son tamamlanan koşunun kimliğiyle (`frozenTrial`).
+- ORTA-2 (§7): açılış onarımı önce görünen donmuş satırları kayıtlı toplamlarla karşılaştırır (`damagedFrom`). Tutmazsa kapsam sağlama noktasına iner; geri çekmenin toplamı ölçülür.
+  Kilitli dönem GAP_RULE ile yeniden donar (S13 = A). Eksik satır iletisi ayrı (§8).
+- ORTA-3 + aile (§4, §7):
+  - Aynı güne yeniden kilitte bekleyen koşu kuralı ne olursa olsun sürer.
+  - Eski kurallı bekleyen koşu kilit başka güne gidince de güncel kurala geçmez (`carryLock`, `continueAfter`, `ledger.snapshot.extended`). Eşzamanlı kip de aynı kuralla.
+  - Açılış onarımı eski kurallı koşuyu korur.
+  - Bilinmeyen kuralın koşusu bekler; görünür bulgu olur ("Dondurma Bekliyor"); eşzamanlı kilit düşer.
+- K4 (§8): `ruleDiffHint` nedene göre / tarafsız; denetim adları Yazım düzeninde.
+- DÜŞÜK-3 (§9): kilitli yılın Yevmiye Defteri bekleyen kuralla tek türetme; ara dilim koşu başına bir kez (veri sürümü + kendi yazımları hariç total_changes); "aynı" bilgisi parmak
+  iziyle; işlem içinde saklanmaz.
+- §5 kural sürümü kuralı + `RULE_HISTORY` + kayıt defteri denetimi.
+
+### Testler ve kırmızı / yeşil (ders 7, 38)
+- test/donmus-defter-tur1-250.test.mjs (12).
+  - Eski kod 10ed14cf (ayrı kopya): UTC 0/12, Europe/Istanbul 0/12 (c3t1-kirmizi-eski-10ed14cf-*). İletilerdeki nedenler:
+    - "mizan eski veriyi gösteriyor (önbellek): 1000 ≠ canlı 5000";
+    - "bekleyen 2.4.9 koşusu aynı güne yeniden kilitte bırakıldı";
+    - "ilerletilen / eşzamanlı kilit eski kurallı dönemi güncel kurala geçirdi";
+    - "bilinmeyen kuralın bekleyen koşusu güncel kurala geçti";
+    - "Yazım düzeni (parantez içi)";
+    - "RULE_HISTORY yok" (varlık; diş mutasyon 39 / 40'ta);
+    - "göç penceresinde kilitli yılın Yevmiye Defteri güncel türetme de kurdu";
+    - "kilitli yılın Yevmiye Defteri boş donmuş defterden okunuyor (0 satır, canlı 12)";
+    - "eski kapsamın satırı kayıp";
+    - "son koşunun satırları eksik okunuyor (6 / 12)";
+    - "bekleyen 2.4.9 koşusu ilerletilen kilitte bırakıldı".
+  - Yeni kod: 12/12, iki saat diliminde.
+- test/donmus-defter-eski-sifirla-250.mjs (v2.4.9 GERÇEK kodu, `git archive v2.4.9`; dar kontrolün p5 / p5b'si; G6).
+  - Eski kod: 6/18; ön koşullar geçer, 12 kırmızı (Yevmiye 0 / 2 satır, Kasa yok, Mutabakat Testi "Donmuş satırlar eksik").
+  - Yeni kod: 18/18 UTC ve Europe/Istanbul.
+- Dar kontrol betikleri yeniden üretildi (iki TZ).
+  - Eski kod: p1 "1000 ≠ 5000", p10 "2.5.0 kuralıyla dondu", p5 / p5b "HATA".
+  - Yeni kod: p1 tutarlı, p10 "2.4.9 kuralıyla dondu", p5 / p5b "raporlar dolu" (Yevmiye 2 satır, Kasa 7.777, Mutabakat Testi tutarlı).
+- Mevcut testler, yeni kodda (c3t1-yeni-*): tur1 + donmus-defter-250 + yaşam + bellek 37/37, iki TZ. Ayrıca:
+  - eski sürüm v2.4.9 20/20;
+  - kural değişikliği (gerçek kod kopyası) 14/14;
+  - v2.4.9 eşdeğerliği 17/17 (G6; v2.4.9 dökümü önceki turun eski.json'u), motor 12/12, zincir 48/48;
+  - kaynak tarayan genel testler 67/67.
+- Komşular (G2): Ç3 tamamlamanın 242 dosyası + yeni test = 243 dosya. test/ taraması (ledger-snapshots, period-lock, hesap-mizani, yevmiye, defter-mutabakati, ledger/integrity,
+  ledger_snapshot, donmus-defter-*, fis-defteri-*, sema-kapisi-bs7, kaynak tarayan genel testler) 109 dosya çıkardı, hepsi listede. Sonuç UTC 2639/2639, Europe/Istanbul 2639/2639
+  (c3t1-komsu-*).
+- e2e (cd7ca1a3, 13 senaryo, hepsi GEÇTİ — c3t1-e2e-*):
+
+  | Senaryo | Adım |
+  |---|---|
+  | sema-kapisi-bs7 | 12 |
+  | senaryo-defter-243 | 24 |
+  | senaryo-224 | 69 |
+  | senaryo-226 | 22 |
+  | senaryo-213 | 64 |
+  | gg244-numara-tarih-onay | 40 |
+  | gg243-banka-kart-aciklama | 11 |
+  | senaryo-220-yedek | 37 |
+  | senaryo-banka-210 | 424 |
+  | gg244-secilenleri-gonder | 45 |
+  | gg243-tumunu-gonder | 17 |
+  | senaryo-fatura-243 | 61 |
+  | gg243-dar2-ekran | 21 |
+
+  İlk 9'u Ç3'ün listesi; son 4'ü dönem kilidini anan senaryolar.
+- G3: eski testlerin beklentisi DEĞİŞMEDİ (`git diff --diff-filter=M 10ed14cf..` test/'te yalnız mutasyon betiği: 24–46 ve TUR1 tabana eklendi).
+- Mutasyon (test/donmus-defter-250-mutasyon.mjs; 24–46 eklendi, taban dört dosya):
+  - 1f9ffb69 kopyasında 46'nın 45'i. Kaçan 34'tü: test yakaladı ama iletisi nedeni adlandırmıyordu ("[]"); ileti düzeltildi.
+  - Son kod cd7ca1a3 kopyasında 24–46: 23/23.
+  - 1–23'ün hedefleri bu turda değişmedi.
+
+### Ölçüm (flock, aynı veri kopyası: c3-olcum-veri; ders 15, 47)
+Önce = 10ed14cf, sonra = cd7ca1a3. Göç / onarım penceresi: kilit 31.12.2025 eski sürümden, bekleyen 2.4.9 koşusu, dondurma çalışmıyor. Olay döngüsü en çok = monitorEventLoopDelay
+ile 10 ms setInterval'ın büyüğü (ısınmalı); çağrılar eşzamanlı olduğundan ≈ süre. Makine yük altında (yük 2,6–7,2; JSON'da). Çıktının sha256'sı önce = sonra.
+
+| Yol | 100.000 önce | 100.000 sonra | 1.000.000 önce | 1.000.000 sonra |
+|---|---|---|---|---|
+| Hesap Planı Mizanı 2025 — 1. okuma | 5,2 sn | 6,4 sn (yük 6,9) | 78,5 sn | 68,3 sn |
+| Hesap Planı Mizanı 2025 — 2. okuma | 5,5 sn | 3,4 sn | 62,1 sn | 29,8 sn |
+| Yevmiye Defteri 2025 — 1. okuma | 5,0 sn | 3,2 sn | 70,7 sn | 27,8 sn |
+| Yevmiye Defteri 2025 — 2. okuma | 4,8 sn | 3,4 sn | 62,2 sn | 28,4 sn |
+| Tepe RSS | 375–834 MB | 375–821 MB | 2.118–2.161 MB | 1.798–2.147 MB |
+| Dondurma (iş parçacığı) | 8,8 sn · döngü 46 ms | 9,2 sn · döngü 79 ms | 77,3 sn · döngü 142 ms | 96,7 sn · döngü 300 ms |
+| Açılış onarımı (tutarlı defter) | 0 ms | 150–289 ms | 0–1 ms | 1.613–1.662 ms |
+
+- Kilitsiz tek türetme 1 M'de: mizan 27,9 sn, Yevmiye 25,3 sn (dar kontrol p8). Penceredeki 2. okumalar ve Yevmiye'nin 1. okuması tek türetmeye indi.
+- Mizanın 1. okuması iki türetmeyi kurar (ara dilim kurulur). Karşılaştırma maliyeti 100.000'de: sameEntries 0,25 sn, parmak izi 0,11 sn (profil-karsilastir). 1. okumadaki fark yük
+  gürültüsü içinde.
+- Dondurma kodu değişmedi (iş parçacığı aynı; ana iş parçacığında yalnız yazım sayacı). 77 / 97 sn ve 142 / 300 ms yük ve önceki adımın çöpü (§16 (***)) içinde; §16'da 83,5–94,8 sn.
+- Açılış onarımının bedeli `damagedFrom`'un tek toplam sorgusudur: 2.741.312 donmuş satırda 1,6 sn, ana iş parçacığında, açılışta. BİLİNEN SINIR / ÖNERİ aşağıda.
+
+### Windows'a duyarlı (ders 48)
+test/donmus-defter-tur1-250.test.mjs "ORTA-2 / ORTA-3 açılış" bölümü (4 test) sunucuyu kapatır, dosyayı ham bağlantıyla (`DatabaseSync`) değiştirir (audit_events + ledger_snapshots
+silme, kilit ayarı), yeniden açar. Açılış onarımı satırları aynı işlemde siler ve yeniden yazar. "Yarıda kesilme" testi dondurma iş parçacığını parça yazımında keser (kanca), sunucuyu
+kapatıp yeniden açar. İlk gönderimde CI'nin Windows işlerinde görülmeli. test/donmus-defter-eski-sifirla-250.mjs CI'de koşmaz (--eski kopya ister).
+
+### BAŞ MİMAR KARARLARI, KULLANICIYA SORULMALI, BİLİNEN SINIR
+- BAŞ MİMAR KARARLARI: §12 "Tur 1" (a)–(d) ve K1 notu.
+- KULLANICIYA SORULMALI: yok. S13 yanıtlandı (A); yeni para / kapama / kural seçimi açılmadı.
+- BİLİNEN SINIR:
+  - Penceredeki ilk mizan okuması hâlâ iki türetme (1 M ~68–78 sn, olay döngüsü kilitli). Kalıcı çözüm rapor iş parçacığı (Ç6, plan §8).
+  - Farklı kurallı ara dilim 200.000 maddeden büyükse saklanmaz.
+  - Açılış onarımının toplam sorgusu 1 M'de 1,6 sn. Öneri (2.5.1): açılışta yalnız sayım; tam toplam 15 dakikalık taramada.
+  - Eksik satır onarımı ilerletme izini bırakır: eksik dönemin tamamı GAP_RULE ile donar (S13 kapsamı).
+  - Bilinmeyen kuralın koşusu bekledikçe o dönem güncel kuralla okunur (görünür bulgu).
+  - routes/report-center.mjs:719 alt başlığı hâlâ "Defter kuralı program sürümüyle değişti" diyor (dosya sınırı; §8).

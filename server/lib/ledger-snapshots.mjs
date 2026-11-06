@@ -107,7 +107,7 @@ export function ruleDiffHint({ rowsBroken = false, sourceChanged = false } = {})
   return `Kilitli dönemin donmuş defteri güncel türetmeden farklı: neden defter kuralının program sürümüyle değişmesi ya da kilitli dönemin kaynak verisinin kapının görmediği bir yolla değişmesi olabilir. ${read} Kural farkı Kural Farkı Düzeltme Fişi ile ilk açık güne alınır.`;
 }
 
-/** İki değer birebir mi (düz nesne / dizi / ilkel; anahtar kümesi ve sırası dahil değil, değerleri). Ara dilim önbelleğinin "iki kural aynı" sınaması (ders 47). */
+/** İki değer birebir mi (düz nesne / dizi / ilkel; anahtar kümesi ve değerler aynı, anahtar sırası önemsiz). Ara dilim önbelleğinin "iki kural aynı" sınaması (ders 47). */
 function deepSame(a, b) {
   if (a === b) return true;
   if (typeof a !== "object" || typeof b !== "object" || a === null || b === null) return Number.isNaN(a) && Number.isNaN(b);
