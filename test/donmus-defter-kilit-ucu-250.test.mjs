@@ -191,8 +191,8 @@ describe("2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada do
       assert.equal(put.frozenThrough, "", `uç dondurmayı bekledi (yanıtta kapsam ${put.frozenThrough}; ${answered} ms)`);
       assert.equal(put.freeze?.pending?.through, LOCK, `yanıtta bekleyen koşu: ${JSON.stringify(put.freeze)}`);
       assert.equal(put.freeze?.active, true, "yanıtta süren iş");
-      // Kapının kilit izi dondurmanın anlık görüntüsünden gelir: dondurma bitmeden "bekliyor" (kilitli döneme dokunan yazım 409; bugün tarihli düzeltme etkilenmez — K8).
-      assert.equal(server.app.context.integrity.lockPending(LOCK), true, "kilit izi dondurmayla gelir (yanıtta bekliyor)");
+      // Kapının kilit izi YANITTAN ÖNCE (ayrı iş parçacığında, dondurmayı beklemeden): tam kapının iz karşılaştırması (ikinci katman) dondurma sürerken de çalışır (D8).
+      assert.equal(server.app.context.integrity.lockPending(LOCK), false, "kilit izi yanıttan önce benimsendi (dondurma sürerken)");
       // İlerleme görünür: süren iş, aşama, yazılan satır.
       let view = null;
       for (let i = 0; i < 400; i += 1) {
@@ -310,9 +310,10 @@ describe("2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada do
   });
 });
 
-// K8 — dondurma sürerken (kapının kilit izi henüz "bekliyor") kilitli dönemdeki banka fişinin Ters Kaydet'i (bugün tarihli ayna fiş; test/banka-210-ters-kayit) kilitten HEMEN
-// sonra 200 alır: bugün tarihli düzeltme kapsam süzgecinin "kilitli döneme dokunan" sınıfında değildir, iz beklemesi onu engellemez (yeniden üretildi: iz bekliyorken 200). Uç artık
-// dondurmayı (ve onun izini) beklemediği için aynı kullanıcı bu pencerede çalışır; düzeltmenin yolu açık kalmalı (gerileme koruması). Kilit izi değişmez; dondurma sonra tamamlanır.
+// K8 — dondurma sürerken kilitli dönemdeki banka fişinin Ters Kaydet'i (bugün tarihli ayna fiş; test/banka-210-ters-kayit) kilitten HEMEN sonra 200 alır; kilitli tarihe Düzelt
+// 409. Uç dondurmayı beklemediği için aynı kullanıcı bu pencerede çalışır; düzeltmenin yolu açık kalmalı (gerileme koruması). Kilit izi değişmez; dondurma sonra tamamlanır.
+// (Yeniden üretildi: iz "bekliyor"ken de 200 — bugün tarihli düzeltme kapsam süzgecinin kilit sınıfında değil.)
+// K9 — büyük şirket benzetimi: iz bütçeden (5 sn) uzun sürerse uç bütçe dolunca yanıt verir (sınırsız beklemez: 1.000.000'da iz ~29 sn); iz arkada gelir (BİLİNEN SINIR penceresi).
 describe("2.5.0 Ç3 tur 2 — dondurma sürerken kilitli fişin Ters Kaydet'i", () => {
   let ctx;
   const hook = { fn: null };
@@ -343,7 +344,7 @@ describe("2.5.0 Ç3 tur 2 — dondurma sürerken kilitli fişin Ters Kaydet'i", 
       const put = await ctx.api.put("/api/admin/period-lock", { lockedUntil: "2026-10-03" });
       assert.equal(put.status, 200, JSON.stringify(put.data));
       const digest = lockDigestOf(ctx.store, "2026-10-03");
-      assert.equal(ctx.app.context.integrity.lockPending("2026-10-03"), true, "ön koşul: dondurma sürüyor, kapının kilit izi bekliyor");
+      assert.equal(put.data.freeze?.active, true, "ön koşul: dondurma arkada sürüyor");
       const reversed = await ctx.api.post(`${BANK}/events/${old.id}/reverse`, {});
       assert.equal(reversed.status, 200, `kilitli fişin Ters Kaydet'i kilitten hemen sonra: ${reversed.status} ${JSON.stringify(reversed.data).slice(0, 300)}`);
       assert.equal(reversed.data.reversal.date, "2026-10-08", "ters fiş bugün tarihli");
@@ -359,7 +360,37 @@ describe("2.5.0 Ç3 tur 2 — dondurma sürerken kilitli fişin Ters Kaydet'i", 
     const view = await waitForFreeze(ctx.api.client);
     assert.equal(view.frozenThrough, "2026-10-03");
     assert.equal(view.freeze.pending, null);
-    assert.equal(ctx.app.context.integrity.lockPending("2026-10-03"), false, "kilit izi dondurmayla geldi");
+    assert.equal(ctx.app.context.integrity.lockPending("2026-10-03"), false, "kilit izi geldi");
     assert.equal((await ctx.api.get("/api/workspace/ledger/integrity")).data.ok, true, "Mutabakat Testi temiz");
+  });
+
+  it("K9 (büyük şirket benzetimi): iz bütçeden (5 sn) uzun sürerse uç bütçe dolunca yanıt verir — sınırsız beklemez; iz ve dondurma arkada gelir", async () => {
+    await ctx.api.put("/api/admin/period-lock", { lockedUntil: "" });
+    await waitForFreeze(ctx.api.client);
+    let release = null;
+    const held = new Promise(resolve => {
+      release = resolve;
+    });
+    const fallback = setTimeout(() => release(), 12000);
+    // İz de dondurma da (dondurmanın kendi izi) tutulur: büyük şirkette ikisi de bütçeden uzun.
+    hook.fn = async phase => {
+      if (phase === "trace" || phase === "before-done") await held;
+    };
+    try {
+      const started = Date.now();
+      const put = await ctx.api.put("/api/admin/period-lock", { lockedUntil: "2026-10-03" });
+      const answered = Date.now() - started;
+      assert.equal(put.status, 200, JSON.stringify(put.data));
+      assert.ok(answered >= 4500 && answered < 9000, `iz bütçesi dolunca yanıt (~5 sn; ${answered} ms)`);
+      assert.equal(ctx.app.context.integrity.lockPending("2026-10-03"), true, "yanıtta iz henüz gelmedi (arkada)");
+      assert.equal(put.data.freeze?.active, true, "dondurma arkada sürüyor");
+    } finally {
+      clearTimeout(fallback);
+      release();
+      hook.fn = null;
+    }
+    const view = await waitForFreeze(ctx.api.client);
+    assert.equal(view.frozenThrough, "2026-10-03");
+    assert.equal(ctx.app.context.integrity.lockPending("2026-10-03"), false, "iz arkada geldi");
   });
 });
