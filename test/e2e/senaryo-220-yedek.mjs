@@ -112,8 +112,12 @@ try {
   await page.waitForFunction(() => /Her şirketin yedeği kendi klasöründe/.test(document.querySelector("#adm-backup-where")?.textContent || ""), null, { timeout: 15000 });
   const where = await page.textContent("#adm-backup-where");
   ok(/backups.001 - Şirket 1/.test(where) && /backups.002 - Şirket 2/.test(where), `açıklama: ${where.trim()}`);
-  const heads = await page.$$eval('.adm-panel[data-panel="backups"] thead th', nodes => nodes.map(node => node.textContent.trim()));
+  // 2.5.0 D2 (DEVIR-PLANI G5): panelde ikinci tablo "Devir Yedekleri" — yedek listesinin kolonları kendi tablosundan okunur (beklenti aynı), devir yedekleri ayrıca.
+  const heads = await page.$$eval('.adm-panel[data-panel="backups"] table:has(#adm-backups) thead th', nodes => nodes.map(node => node.textContent.trim()));
   ok(heads.join("|") === "Şirket|Yedek Dosyası|Tarih|Boyut|İşlemler" && heads.every(head => titleCase(head) === head), `kolonlar: ${heads.join(", ")}`);
+  await page.waitForFunction(() => /Henüz devir yedeği yok/.test(document.querySelector("#adm-devir-backups-body")?.textContent || ""), null, { timeout: 15000 });
+  const devirHeads = await page.$$eval("#adm-devir-backups thead th", nodes => nodes.map(node => node.textContent.trim()));
+  ok(devirHeads.join("|") === "Şirket|Devir Yedeği|Tarih|Boyut|Durum|İşlemler" && devirHeads.every(head => titleCase(head) === head) && titleCase(await page.textContent("#adm-devir-backups-title")) === "Devir Yedekleri", `Devir Yedekleri bölümü ve kolonları: ${devirHeads.join(", ")}`);
   // 2.1.0 (kullanıcı kararı 10.10.2026): Drive'a yedek kaldırıldı — Yedekler ekranında Drive bölümü, sözcüğü ve ayar kutusu yok.
   const panelText = await page.$eval('.adm-panel[data-panel="backups"]', node => node.innerText);
   const pageText = await page.evaluate(() => document.body.textContent);

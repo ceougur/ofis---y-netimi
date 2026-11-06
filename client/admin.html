@@ -16,6 +16,7 @@
   <script defer src="/assets/hof-whatsapp-ayar.js"></script>
   <script defer src="/assets/hof-whatsapp-sablon.js"></script>
   <script defer src="/assets/hof-whatsapp-aydinlatma.js"></script>
+  <script defer src="/assets/hof-devir-yedekleri.js"></script>
   <script defer src="/assets/admin.js"></script>
 </head>
 <body class="adm-body">
@@ -72,6 +73,11 @@
       <div class="adm-card adm-backup-pending" id="adm-backup-pending" hidden></div>
       <div class="adm-card adm-backup-audit" id="adm-backup-audit-out" hidden></div>
       <div class="adm-card"><div class="adm-table-wrap"><table class="hof-table"><thead><tr><th>Şirket</th><th>Yedek Dosyası</th><th>Tarih</th><th class="adm-right">Boyut</th><th class="adm-right">İşlemler</th></tr></thead><tbody id="adm-backups"></tbody></table></div></div>
+      <section class="adm-card adm-devir-backups" id="adm-devir-backups" aria-labelledby="adm-devir-backups-title">
+        <h2 id="adm-devir-backups-title">Devir Yedekleri</h2>
+        <p class="adm-muted">Yıl sonu devrinden, Devri Yenile'den ve Devri Geri Al'dan önce alınır ve hiçbir zaman kendiliğinden silinmez. Veri dosyasıyla birlikte arşivleri, belgeleri, mesaj arşivini ve şifreli ayarların anahtarını içerir; bu yüzden yedek klasörünü yalnız yetkili kişilerin açabileceği bir yerde tutun.</p>
+        <div class="adm-table-wrap"><table class="hof-table"><thead><tr><th>Şirket</th><th>Devir Yedeği</th><th>Tarih</th><th class="adm-right">Boyut</th><th>Durum</th><th class="adm-right">İşlemler</th></tr></thead><tbody id="adm-devir-backups-body"><tr><td colspan="6">Yükleniyor…</td></tr></tbody></table></div>
+      </section>
     </section>
 
     <section class="adm-panel" data-panel="audit" role="tabpanel" hidden>

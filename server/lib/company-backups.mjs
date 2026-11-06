@@ -24,6 +24,8 @@ import { resolveDbPath } from "./db-path.mjs";
 import { createStore, openDatabase } from "./db.mjs";
 import { HttpError } from "./http.mjs";
 import { LATEST_VERSION, runMigrations } from "./migrations.mjs";
+import { readDevirYears } from "./devir/archives.mjs";
+import { createDevirBackup, listDevirBackups } from "./devir/devir-backups.mjs";
 
 export const RESTORE_MARKER = "geri-yukleme.json";
 const RESTORE_STAGE_DIR = "geri-yukleme";
@@ -264,6 +266,8 @@ export function applyStagedRestore({ dataDir, backupRoot, dbPath, keep = 30, log
     const identity = readBackupIdentity(job.source);
     if (identity && identity.id !== ROOT_COMPANY_ID) throw new Error(`Yedek “${identity.code} · ${identity.name}” şirketine ait; ilk şirkete yüklenmedi.`);
     inspectBackup(job.source);
+    // 2.5.0 D2 (G5): hazırlandıktan sonra devir yapılmış olabilir — uygulama anında da arşiv kaydıyla karşılaştırılır (Devri Geri Al'ın kendi hazırlığı devirCheck: false).
+    if (job.devirCheck !== false) assertDevirConsistent({ file: job.source, archives: archivesOnDisk(dataDir, ROOT_COMPANY_ID), label: "001" });
     // Güncellemenin deneme açılışında (canlı veri henüz yeni sürüme göç etmemişken) uygulanmaz: ortak katman eski
     // biçimde aktarılır ve deneme başarısız olursa geri dönüş geri yüklemeyi sessizce bozardı.
     if (existsSync(dbPath)) {
@@ -310,8 +314,16 @@ export function applyStagedRestore({ dataDir, backupRoot, dbPath, keep = 30, log
  *   closeCompany — şirket örneğini kapatır (geri yüklemede dosya değişmeden önce)
  */
 // usageRowsFor (2.4.7 E4): şirketin e-Belge kullanım defteri satırları — yedeğe kopyalanır; onRestored: geri yüklemeden sonra (defter birleştirmesi).
-export function createCompanyBackups({ registry, dataDir, keep = 30, log = null, withDb, busy = new Map(), closeCompany = async () => false, usageRowsFor = () => null, onRestored = () => {} }) {
+// paused (2.5.0 D2): şirket bakım kipinde mi (lib/devir/maintenance.mjs) — otomatik yedek o şirketi atlar.
+export function createCompanyBackups({ registry, dataDir, keep = 30, log = null, withDb, busy = new Map(), closeCompany = async () => false, usageRowsFor = () => null, onRestored = () => {}, paused = () => false }) {
   const isBusy = id => busy.has(id);
+  const isPaused = id => {
+    try {
+      return Boolean(paused(id));
+    } catch {
+      return false;
+    }
+  };
   const backupRoot = () => registry.dirsOf(registry.get(ROOT_COMPANY_ID) || { id: ROOT_COMPANY_ID, code: "001", name: "", dir: "" }).backupRoot;
   const folderOf = company => registry.dirsOf(company).backupDir;
   const dirsFor = company => {
@@ -567,7 +579,7 @@ export function createCompanyBackups({ registry, dataDir, keep = 30, log = null,
     }
     return registry
       .list()
-      .filter(company => !isBusy(company.id) && !registry.sharesRoot?.(company))
+      .filter(company => !isBusy(company.id) && !isPaused(company.id) && !registry.sharesRoot?.(company))
       .map(company => ({ backupDir: folderOf(company), label: labelOf(company), run: () => backup(company), changedAt: () => changedAt(company) }));
   }
 
@@ -632,13 +644,14 @@ export function createCompanyBackups({ registry, dataDir, keep = 30, log = null,
   // 001 geri yüklemesi sunucu yeniden açılırken uygulanır. Seçilen yedek hemen veri klasörüne kopyalanır (aradaki
   // otomatik yedeklerin eski dosyaları budaması seçilen yedeği silemesin).
   const markerPath = () => path.join(dataDir, RESTORE_MARKER);
-  function stageRootRestore(user, file) {
+  // devirCheck (2.5.0 D2): false yalnız Devri Geri Al'ın kendi hazırlığında (D4; devir öncesi yedeğe dönüş o akışın işidir).
+  function stageRootRestore(user, file, { devirCheck = true } = {}) {
     const dir = path.join(dataDir, RESTORE_STAGE_DIR);
     rmSync(dir, { recursive: true, force: true });
     mkdirSync(dir, { recursive: true });
     const copy = path.join(dir, path.basename(file));
     copyFileSync(file, copy);
-    const job = { source: copy, name: path.basename(file), from: file, companyId: ROOT_COMPANY_ID, by: user?.id || "", byName: user?.display_name || user?.username || "", at: new Date().toISOString() };
+    const job = { source: copy, name: path.basename(file), from: file, companyId: ROOT_COMPANY_ID, by: user?.id || "", byName: user?.display_name || user?.username || "", at: new Date().toISOString(), ...(devirCheck === false ? { devirCheck: false } : {}) };
     const tmp = `${markerPath()}.tmp`;
     writeFileSync(tmp, JSON.stringify(job, null, 2));
     renameSync(tmp, markerPath());
@@ -663,12 +676,16 @@ export function createCompanyBackups({ registry, dataDir, keep = 30, log = null,
    * Yedeği şirkete geri yükler (yetki, onay ve kimlik denetimi çağıranda: assertRestorable). 001 için hazırlar
    * ({ staged: true }; sunucu yeniden açılırken uygulanır); diğer şirketlerde hemen uygular ({ restored: true }).
    */
-  async function restoreCompany({ file, target, user }) {
+  // allowPaused: yalnız bakım kipini kendisi tutan iş (D4 Devri Geri Al) — öbür her yol bakımdaki şirkete 503.
+  async function restoreCompany({ file, target, user, devirCheck = true, allowPaused = false }) {
     if (isBusy(target.id)) throw new HttpError(409, busy.get(target.id) || "Bu şirkette başka bir işlem sürüyor; birkaç saniye sonra yeniden deneyin.");
+    if (!allowPaused && isPaused(target.id)) throw new HttpError(503, `“${labelOf(target)}” şirketinde bakım (yıl sonu devri) sürüyor; bittikten sonra yeniden deneyin.`, { code: "maintenance" });
     assertNotShared(target, "geri yükleme");
     inspectBackup(file);
+    // 2.5.0 D2 (G5): yedek arşiv kaydıyla tutarlı değilse (devirden önce alınmış / geri alınmış devrin sonrası) uygulanmaz — K yılı iki dosyada olmasın.
+    if (devirCheck !== false) assertDevirConsistent({ file, archives: registry.archivesOf?.(target.id) || [], label: labelOf(target) });
     if (target.id === ROOT_COMPANY_ID) {
-      const job = stageRootRestore(user, file);
+      const job = stageRootRestore(user, file, { devirCheck });
       log?.info?.(`Geri yükleme hazırlandı (${labelOf(target)}): ${job.name}; sunucu yeniden açılınca uygulanacak.`);
       return { staged: true, name: job.name };
     }
@@ -728,5 +745,64 @@ export function createCompanyBackups({ registry, dataDir, keep = 30, log = null,
     }
   }
 
-  return { root: backupRoot, folderOf, listFor, list, latestFor, backup, backupMany, find, locate, assertRestorable, restoreCompany, migrate, scheduleTargets, storage, stageRootRestore, pendingRestore, cancelRestore, accessible, assertNotShared };
+  // 2.5.0 D2 (G5): kalıcı devir yedeği — ayrı sınıf, ayrı kuyruk (şirketin yedek klasöründe devir-yedekleri/; budanmaz). Veri tabanı kopyası withDb'den
+  // (bakımdaki ya da yeni şemalı şirkette kısa süreli salt okunur bağlantı); arşiv, belgeler, mesaj arşivi ve gizli anahtar şirketin veri klasöründen.
+  async function createDevirBackupFor(company, { label, year, runId = "", by = null } = {}) {
+    if (registry.sharesRoot?.(company)) throw new HttpError(409, `“${labelOf(company)}” ilk şirketin (001) veri dosyasını gösteriyor; devir yedeği alınmaz. Önce Yönetim → Şirketler → Ayır.`, { code: "company-shared" });
+    const usageRows = (() => {
+      try {
+        return usageRowsFor(company);
+      } catch {
+        return null;
+      }
+    })();
+    const companyDataDir = registry.dirsOf(company).dataDir;
+    // VACUUM INTO bağlantı açıkken (eşzamanlı) alınır; dosya kopyalamaları sonra, olay döngüsünü kilitlemeden (ders 47).
+    let started = null;
+    const result = withDb(company, db => {
+      started = createDevirBackup({ db, company: identityOf(company), companyDataDir, backupDir: folderOf(company), label, year, runId, by, usageRows });
+      return true;
+    });
+    if (!result || !started) throw new HttpError(404, `“${labelOf(company)}” şirketinin veri dosyası bulunamadı.`);
+    return started;
+  }
+  const listDevirBackupsFor = company => listDevirBackups(folderOf(company)).map(item => ({ ...item, companyId: company.id, companyLabel: labelOf(company) }));
+
+  return { root: backupRoot, folderOf, listFor, list, latestFor, backup, backupMany, find, locate, assertRestorable, restoreCompany, migrate, scheduleTargets, storage, stageRootRestore, pendingRestore, cancelRestore, accessible, assertNotShared, createDevirBackupFor, listDevirBackupsFor };
+}
+
+// ---------- 2.5.0 D2: ortak katman kümesi ve "Yedekten Geri Yükle"nin arşiv denetimi (docs/devir/D2-ALTYAPI-TASARIM.md §5.2, §7) ----------
+/** Ortak katmanın tabloları ve ayar süzgeci (bakım kipinde 001'in bağlantı koruması bunları yazılabilir bırakır; geri yüklemedeki aktarımla AYNI küme). */
+export const commonLayer = () => ({ tables: [...COMMON_TABLES], settingsSql: COMMON_SETTINGS });
+
+/** Kayıt defteri dosyasından (sunucu açılmadan önce: 001'in bekleyen geri yüklemesi) şirketin arşiv girdileri. */
+export function archivesOnDisk(dataDir, companyId) {
+  const registry = readRegistryFile(path.join(dataDir, "sirketler.json")) || readRegistryFile(path.join(dataDir, REGISTRY_COPY));
+  const company = registry?.companies.find(item => item.id === companyId);
+  return Array.isArray(company?.archives) ? company.archives.filter(item => item && /^\d{4}$/.test(String(item.year))) : [];
+}
+
+/**
+ * Yedekteki devir yılları (DEVIR_YEARS_KEY) ↔ şirketin arşiv kaydı. Tutmazsa 409:
+ *   - devir-oncesi-yedek: kayıttaki bir arşivin yılı yedekte devredilmiş değil (yedek devirden ÖNCE alınmış) → geri yüklenirse o yıl hem arşivde hem çalışma dosyasında;
+ *   - devir-sonrasi-yedek: yedek, kayıtta olmayan bir yılın devrinden SONRA alınmış (devir geri alınmış) → geri yüklenirse o yılın kesime kadarki kayıtları hiçbir dosyada görünmez.
+ * Aynı yıl farklı devir çalışmasıyla (runId) devredilmişse de tutmaz (Devri Yenile / Geri Al + yeniden devir).
+ */
+export function assertDevirConsistent({ file, archives = [], label = "" }) {
+  const inBackup = new Map(readDevirYears(file).map(item => [item.year, item]));
+  const registered = new Map(archives.map(item => [String(item.year), item]));
+  const before = [...registered.values()].filter(item => {
+    const found = inBackup.get(String(item.year));
+    return !found || (item.runId && found.runId && String(item.runId) !== found.runId);
+  });
+  if (before.length) {
+    const years = before.map(item => String(item.year));
+    throw new HttpError(409, `Bu yedek ${years.join(", ")} yıl sonu devrinden önce alınmış${label ? ` (${label})` : ""}; geri yüklenirse ${years.join(", ")} yılının kayıtları hem arşivde hem çalışma dosyasında olur. Devri geri almak için Yıl Sonu Devri → Devri Geri Al'ı kullanın.`, { code: "devir-oncesi-yedek", years });
+  }
+  const after = [...inBackup.values()].filter(item => !registered.has(item.year));
+  if (after.length) {
+    const years = after.map(item => item.year);
+    throw new HttpError(409, `Bu yedek ${years.join(", ")} yıl sonu devrinden sonra alınmış, ama o devrin arşivi artık kayıtlı değil (devir geri alınmış olabilir)${label ? ` (${label})` : ""}; geri yüklenirse ${years.join(", ")} yılının kesime kadarki kayıtları hiçbir dosyada görünmez.`, { code: "devir-sonrasi-yedek", years });
+  }
+  return true;
 }
