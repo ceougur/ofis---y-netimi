@@ -924,7 +924,7 @@ Kural seti `2.5.0` = `2.4.9` + bu bölüm. `--kural 2.4.9` 2.4.9 beklentilerini 
   "Mevcut borcu taksitlendir" kartı madde yazmaz (kitap H-02). Geri Al kartı ve maddesini kaldırır. Aktarım artık mizan denetimini kapatmaz. (Taksitler'den açılan Yeni Borç kartı — `kart_ac
   {mevcut: false}` — kitap H-03 / KG-2'dir, Ç7b'de; mizanı DEĞİŞMEDİ.) Etiket KULLANICI.
 - **C13.3 S49 formdan carisiz evrak** [KULLANICI S49 = A]: `evrak {cari: null}` (faturasız) alınan çek / senet B 101|121 / A 649 (649.90). Carisiz evrakın karşılıksızı kararda yok (SK-2) → o
-  senaryoda mizan denetlenmez, `belirsiz`'e yazılır. Etiket KULLANICI.
+  senaryoda mizan denetlenmez, `belirsiz`'e yazılır. Etiket KULLANICI. (Bakım 2: S66 = A — karşılıksızı §14 C14.3.)
 - **C13.4 TEK YÜKÜMLÜLÜK KUYRUĞU (TYK) — kapama sırası** [KULLANICI S50 = A ("kart seçilmeden alınan tahsilat ayrı taksit kartının vadesi gelmiş taksitini de kapatır (tek yükümlülük kuyruğu);
   Taksitler, zil ve takvim bunu gösterir"); KULLANICI S2 = A ("vadesi en önce gelen", TBK 102); KULLANICI S1 = A (vadesiz kalem = belge günü); KULLANICI 05.11 21:30 (1) = A ("Ödeme Günündeki Borcu
   Kapatsın"), (2) = A ("bağ hedefini her durumda kapatır"); BAŞ MİMAR M1a, M1e, M1f (EK-1 §6, kullanıcıya gösterildi); EK-1 §1; EK-2B 23, 24] — 2.4.5'teki S1'in "kayıt tarihi + yazım sırası,
@@ -949,6 +949,7 @@ Kural seti `2.5.0` = `2.4.9` + bu bölüm. `--kural 2.4.9` 2.4.9 beklentilerini 
   9. İki taraf AYRI (KS2 aynen; (5) A "faturaların Açık / Ödendi durumu yalnız Mahsup Et ile"): carinin ALACAK tarafı (alış faturası, elle Alacak, alacaklı Açılış; bağsız Ödeme, ciro,
      alış iadesi) 3–4 kurallarıyla ayrı kuyrukta; iki taraf birbirini kapatmaz. Bu taraftaki SIRA kararda yok (S2 müşterinin ödemesi için verildi; 2.4.5 S1 "simetrik" + K-b "kayıt tarihi") →
      **SK-4**: kâhin iki dalı hesaplar (A vade sırası / B kayıt tarihi + yazım sırası), ayrışan her denetim ÇATAL (etiket YAYGIN; tarih sıralı alanda iki dal aynı).
+     (Bakım 2: S68 = A — vade sırası, ÇATAL kalktı; §14 C14.1.)
      (Kod yazılırken görüldü: c13 S7'de vade 18.06'lı elle Alacak ile aynı gün iade notu — program koşulmadan, karar metni okunarak; ders 40, 43.)
   10. KS8 / KS9 (2.4.6, AYNEN) bu kuyruğun içinde: K-b'nin "tek FIFO"su 2'deki sıra + 4'teki zaman; KS8.1'in ikinci aşaması (artan para → kapatıcı iadenin geri ödemesi, en eski iade önce) zaman
       çizelgesinin SONUNDA kalan bağsız paradan. Aynı anda birden çok bağsız kaynak bekliyorsa öncelik 2.4.9'daki gibi: satış iadesinin artanı → öbür bağsız kapatıcılar (stok iadesi, değersiz, bağ
@@ -961,7 +962,7 @@ Kural seti `2.5.0` = `2.4.9` + bu bölüm. `--kural 2.4.9` 2.4.9 beklentilerini 
   "gecikmiş tutar carinin net borcunu aşmaz"; BAŞ MİMAR M1e, M1f; EK-1 §1 adım 5]: `kontrol {gecikmis: true}` → `<k>:cari:<ad>:gecikmis` = min(max(0, bakiye), Σ kuyruk kalanı {v < bugün}).
   Ödeme Sözü gecikmişi DEĞİŞTİRMEZ; vade günü gecikmiş değildir (M1f); vadesiz kalem ertesi gün gecikmiştir (S1); kartın tükettiği kalem sayılmaz, taksitleri sayılır (M1e); tedarikçi / bize alacaklı
   cari 0. Otomatik hatırlatmanın elemesi ("Ödeme Sözü Var", S7 ailesi) WhatsApp kâhininde / Ç5-C'de — burada YOK. Şüpheli kaydı olan cari tanımsız (M13 şüpheli kuyruğu; denetlenmez). Etiket KULLANICI.
-- **C13.6 S52 ↔ takvim kalemi** (SK-3): elle kaydın vadesi geçmiş (ya da vadesiz, belge günü geçmiş) ve Beklenen Ödeme Tarihi bugün ya da sonra ise takvim / zil kaleminin `state`'i ve `days`'i
+- **C13.6 S52 ↔ takvim kalemi** (SK-3 — bakım 2'de S67 = A ile §14 C14.2 YERİNE GEÇTİ): elle kaydın vadesi geçmiş (ya da vadesiz, belge günü geçmiş) ve Beklenen Ödeme Tarihi bugün ya da sonra ise takvim / zil kaleminin `state`'i ve `days`'i
   ÇATAL (K6.3 söz günü ↔ S52 "gecikmiş"); öbür alanlar (tutar, tarih = Beklenen, etiket "(Ödeme Sözü)") K6.3 aynen.
 
 ### Dil ekleri (/3, 2.5.0)
@@ -992,7 +993,7 @@ kartı da madde yazar · 204 S49 B: carisiz evrak 519'a · 205 S50 B: kart seçi
 sonradan doğan borca kayar) · 208 M1e B: Mevcut Borç kartı alttaki borcu tüketmez (çift sayım) · 209 S52 B: ileri tarihli Ödeme Sözü varken gecikmiş sayılmaz · 210 S1 B: vadesiz kalem gecikmez ·
 211 M1f B: vade günü gecikmiş · 212 (5) B: gecikmiş net borçla sınırlanmaz · 213 (2) B: bağ hedefi önceden bağsız kapanmışsa bağ bağsız olur ("ilk gelen kazanır").
 
-### KULLANICIYA SORULMALI (kâhin bu durumları KURMAZ)
+### KULLANICIYA SORULMALI (kâhin bu durumları KURMAZ) — SK-2 / SK-3 / SK-4 YANITLANDI 06.11 12:16 UTC (S66 / S67 / S68 = A; kural §14 — C13.3 / C13.6 / C13.4 (9)'un yerine)
 - **SK-2 (S48 ↔ S49 arası; para):** formdan girilmiş CARİSİZ (açılış değil) alınan evrak karşılıksız dönerse? **A (öneri):** S48 gibi program cariyi sorar; seçilirse cari borçlanır (B CH / A 101),
   seçilmezse alışın tersi B 649.90 / A 101 (gelir geri alınır). **B:** seçilmezse B 770.90 / A 101 (gider). **C:** uç durum böyle kalsın (BİLİNEN SINIR).
 - **SK-3 (S52 ↔ takvim kalemi; sunum, UÇ):** vadesi geçmiş borca ileri tarihli Ödeme Sözü varken Tahsilat Takvimi / zil kaleminin durumu ve gün sayısı? **A (öneri):** kalem söz gününde durur, durumu
@@ -1028,3 +1029,80 @@ sonradan doğan borca kayar) · 208 M1e B: Mevcut Borç kartı alttaki borcu tü
 - `uretici.py` rastgele senaryoları `kural 2.4.9` modeliyle üretir (bağlı tahsilat tutarının üst sınırı); senaryolar bayt bayt aynı kalır, 2.5.0 kâhini onları kendi kuralıyla değerlendirir.
 - **Ana oturuma:** mobil yazma kâhininin `kabul.json`'undaki `cari_model_sha256` bu `model.py` için yeniden üretilmeli (o dosya bu ajanın okuma alanı dışında — okunmadı, değiştirilmedi;
   mobil kâhin `kural 2.4.6` kullanıyorsa kabul kümesi aynı kalır, eşdeğerlik aşağıda).
+
+## 14. 2.5.0 Ç5 bakımı 2 — S65–S68 (06.11.2026; eski kâhinler bakımı 2 — kodu görmeyen AYRI el) — kural seti `2.5.0` = §13 + bu bölüm
+
+`--kural 2.4.9` (ve 2.4.6 / 2.4.5 / `--legacy`) AYNEN — bakım 1'in modeliyle (`a5a89a1f`) bayt bayt eşdeğerlik kanıtta. Bu dal ana dala Ç5-A ile birlikte girer.
+
+### C00g Temiz oda (bakım 2)
+- **Karar metni:** KULLANICI KARARI 06.11 12:16 UTC (AYNEN "önerilerini uygula"; `git show a4ef1268:docs/2.5.0-IS-LISTESI.md` D "S65–S68 = A", sorular C S65–S68):
+  S66 = A "formdan carisiz (açılış değil) alınan evrak karşılıksız dönerse program cariyi sorar; seçilirse cari borçlanır, seçilmezse B 649.90 / A 101 (S49 geliri geri alınır)." ·
+  S67 = A "vadesi geçmiş borca ileri tarihli Ödeme Sözü varken takvim kalemi söz gününde durur, durumu 'Gecikmiş', gün sayısı vadeden." ·
+  S68 = A "bizim bağlamadan yaptığımız ödeme (tedarikçiye, iade bedeli, ciro) vadesi en önce gelen kalemi kapatır (S2'nin simetriği; tek yükümlülük kuyruğu iki yönde)." ·
+  S65 bu kâhinin dilinde yok (göç / "Açılış Olabilir" — defter kâhini D6′).
+- **Okunan / okunmayan:** bakım 1'in alanıyla aynı (C00f); tam liste ajan raporunda. Program koşulmadı, programın davranışı aranmadı.
+
+### Kurallar
+- **C14.1 S68 = A — borç tarafında da vade sırası (SK-4 kapandı; C13.4 (9)'un sıra cümlesinin YERİNE):** carinin ALACAK tarafı kuyruğu (alış faturası, elle Alacak, alacaklı Açılış, müşteriye iade
+  kaleminin AÇIK notu) C13.4 (2)–(4) ile AYNI kuralla kapanır: sıra vade → belge tarihi → yazım sırası (vadesiz kalemde v = d — S1 A; iade notunun vadesi iadenin günü); bağlar önce (3);
+  ANINDA (4). Kapatanlar: bağsız Ödeme (tedarikçiye; müşteriye iade bedeli — KS8), ciro (K-e), alış iadesi (KS9). Kuyruğun sırası KALEMİN özelliğidir, kaynağa göre ayrı sıra yoktur
+  (C13.4 (2)'deki yapı; metin "tek yükümlülük kuyruğu iki yönde"). Kaynaklar arası öncelik (alış iadesi → Ödeme / ciro) C13.4 (10) aynen (kararda yok — değişmedi). İkinci dal (2.4.5 K-b kayıt
+  tarihi + yazım sırası) ARTIK HESAPLANMAZ: ÇATAL ve "yalnız A dalında tanımlı denetimi silme" kalktı. KS8.1 ikinci aşaması ("en eski iade önce") aynen — iade kaleminin vadesi belge günü,
+  vadesi en önce gelen = en eski. **Etiket:** `ks8_sinif`'in "açık not ile karşı taraf yükümlülüğü AYNI tarihte (olay sınıfı sırası kararda yok — kâhin yazım sırası)" YAYGIN nedeni 2.5.0'da
+  DÜŞER — eşit vadede sıra EK-1 §1 adım 4 (M1a, BAŞ MİMAR, kullanıcıya gösterildi; S2 A + S68 A ile iki yönde) belge tarihi → yazım sırası; öbür YAYGIN nedenleri (iki yönde iade,
+  açık notun öbür kaynaklardan ayrılamaması, ikinci aşamada birden çok borç) aynen. Denetimlerin etiketi 2.4.9 düzeninde (BAŞ MİMAR / PLAN / KULLANICI — BULGU sınıfı); ÇATAL'ın YAYGIN'ı kalktı.
+- **C14.2 S67 = A — takvim kalemi (SK-3 kapandı; C13.6'nın YERİNE):** elle kayıt / Açılış kalemi (K6.3), vadesi v < bugün (vadesizse v = belge günü — S1 A; vade günü gecikmiş değil — M1f) ve
+  Beklenen Ödeme Tarihi > bugün → kalem `dueDate` = Beklenen (K6.3 aynen, "söz gününde durur"), `state` = "overdue", `days` = v − bugün (eksi; K6.3'ün "dueDate − bugün" işaret düzeni);
+  `amount` / `label` / `direction` / `person` K6.3 aynen. **Yorum (harfiyen):** iki yön (Tahsil Edilecek Borç / Ödenecek Borç) — metin "vadesi geçmiş borç" yön ayırmıyor, K6.3'te iki kalem de
+  "Borç". Vade Takip ve projeksiyon satırı (`{amount, date, direction}`) değişmez. ÇATAL kalktı.
+  - **SK-5 sınırı (KULLANICIYA SORULMALI, aşağıda):** v < bugün ve v < Beklenen ≤ bugün (söz günü BUGÜN ya da söz GEÇMİŞ) — "ileri tarihli" bugüne göre mi (K6.3: bugün → "today" / 0, geçmiş →
+    "overdue" / sözden) vadeye göre mi (S67: "overdue" / vadeden): kâhin ÇATAL {K6.3, S67}, etiket YAYGIN. Beklenen ≤ v (söz vadeden önce ya da vade günü) iki okumada da "ileri tarihli"
+    değildir → K6.3 aynen (kesin).
+- **C14.3 S66 = A — carisiz evrakın karşılıksızı (SK-2 kapandı; C13.3'e ek):** `karsiliksiz {evrak, cari?, tarih?}` formdan carisiz (S49) alınan evrakta:
+  - **cari seçilirse** cari borçlanır: bakiye + tutar; mizan B 120 (müşteri) | 320 (tedarikçi) (kitap G-2) / A 101|121; S49'un A 649'u YERİNDE (karardaki "(S49 geliri geri alınır)" yalnız seçilmeyen
+    dalda). Tek yükümlülük kuyruğunda AYRI borç kalemi: belge günü ve vade = karşılıksız günü (S1 A "karşılıksız çıkan çek / senet" vadesiz borç → ertesi gün gecikmiş; EK-1 M1(c) A; S11 / S18
+    "karşılıksız tutar ayrı borç (vadesi karşılıksız günü)"); ANINDA (4) — o gün bekleyen avans kapatır, sonraki bağsız para S2 sırasıyla; B1 gecikmişe girer (C13.5).
+  - **cari seçilmezse** B 649 / A 101|121 (S49 geliri geri alınır); kimse borçlanmaz.
+  - SK-2'nin `belirsiz` kaydı ve "mizan denetlenmez" kalktı. Carili evrakta `cari` verilmez (program sormaz — senaryo hatası). 2.5.0 öncesi kural setlerinde `cari` yok sayılır (eşdeğerlik).
+  - C1 (2.4.9): seçilen cariye bağlanan karşılıksız evrak o carinin hareketidir (H11, C1.1 "alınan evrakın carisi").
+  - Tanımsız (kâhin yazmaz): seçilen carinin `acikToplam` / `acikEsitBakiye`, görünüm toplamları ve projeksiyon toplamı — karşılıksız borcun açık kalem listelerindeki yeri kararda yok (K6.3 yalnız
+    elle kayıt / Açılış, fatura, portföy evrakı sayar). Takvim / Vade Takip'te bu kalem için denetim yok.
+  - Kilitli dönem: bu kâhinin dilinde dönem kilidi yalnız vade alanlarını kilitler (K6.5 (b)); kilitli dönemde alınmış evrakın kilitten sonraki karşılıksızı kümülatif mizanda aynı (senaryoda);
+    kilit İÇİNDE tarihli karşılıksızın reddi (kitap G-7) ve donmuş alış maddesi defter kâhininde (`test/bagimsiz/defter` g8).
+
+### Dil ekleri (/3, bakım 2)
+`karsiliksiz {evrak, cari?, tarih?}` — carisiz evrakta programın "cari seç" sorusuna verilen yanıt; `tarih` C14.3 kaleminin günü (yoksa `bugun`). `elleCatal` SK-5 dallarını taşır.
+
+### C8g Nasıl bozulur? (bakım 2 — önce yazıldı; senaryo karşılıkları)
+| # | Bozulma | Senaryo |
+|---|---|---|
+| Z39 | Borç tarafında bağsız Ödeme / ciro / iade bedeli kayıt tarihine göre kapatır (2.4.5 K-b): kısa vadeli alış faturası açık kalır, uzun vadeli eski Alacak kapanır; aynı gün iade notu yerine uzun vadeli Alacak kapanır | d9 |
+| Z40 | Borç tarafında tarih sırası yalnız Ödeme'de değişir, ciro / alış iadesi eski sırada kalır (iki sıra) | d9 (ciro), c12 / c8 (G3 dökümü) |
+| Z41 | Vadesi geçmiş borca ileri tarihli sözde kalem "Yaklaşan", gün sayısı söze göre; kalem söz gününden kayar; tutar Kalan değil; Ödenecek Borç tarafı unutulur; vadesiz borç (S1) unutulur | d10 |
+| Z42 | Söz günü / söz geçmiş / söz vadeden önce sınırında kâhin değer uydurur | d10 (ÇATAL SK-5; vadeden önceki söz kesin) |
+| Z43 | Carisiz evrak karşılıksızında cari seçilse de borçlanmaz ya da 649 yerine 770 / 519; seçilen carinin borcu kuyruğa girmez (avans kapatmaz, gecikmiş sayılmaz); seçilmeyen dalda kimse borçlanır | d11 |
+| Z44 | S68 düzeltmesi müşteri tarafının (S2) sırasını bozar (komşu, ders 10) | d5, d6, c6 (G3 dökümü: değişmedi) |
+
+### C10g Mutantlar (bakım 2)
+214 S68 B: borç tarafında kayıt tarihi + yazım sırası (2.4.5 K-b; bakım 1'in "B dalı") · 215 S67 B: ileri tarihli sözde kalemin durumu ve gün sayısı söz tarihine göre (K6.3) · 216 S66 B: cari seçilmezse
+gider (B 770 / A 101) · 217 S66: cari seçilse de borçlanmaz (B 649 / A 101) · 218 S66: seçilen carinin karşılıksız borcu tek yükümlülük kuyruğunda kalem değil (avans kapatmaz, gecikmiş değil).
+
+### KULLANICIYA SORULMALI (bakım 2; kâhin ÇATAL — seçilmeyen dal kanıt sayılmaz)
+- **SK-5 (S67 sınırı; sunum — seyrek DEĞİL: her sözün günü gelir):** vadesi geçmiş borçta Ödeme Sözü'nün günü geldiğinde (Beklenen = bugün) ve söz geçip ödeme gelmediğinde (Beklenen < bugün)
+  takvim / zil kaleminin durumu ve gün sayısı ne olsun? Örnek: vade 05.06, söz 15.06 — 15.06'da **A:** "Gecikmiş, 10 gün" · **B:** "Bugün, 0 gün"; 16.06'da **A:** "Gecikmiş, 11 gün" · **B:** "Gecikmiş,
+  1 gün". **A (öneri):** "ileri tarihli" vadeye göre okunur — söz vadeden sonraysa kalem söz gününde, her zaman "Gecikmiş", gün sayısı vadeden (S52 "borç gecikmiş sayılır" ve S67 ile tutarlı;
+  gün sayısı söz günü sıfırlanmaz, ertesi gün geri düşmez). **B:** "ileri tarihli" bugüne göre — S67 yalnız söz yarın ve sonrası; söz günü "Bugün" (0), söz geçince bugünkü gibi sözden sayılır.
+
+### C12g DENENMEYEN (bakım 2; neden)
+- WhatsApp elemesi (S52 "Ödeme Sözü Var", S7 ailesi) — WhatsApp kâhininde / Ç5-C.
+- Seçilen carinin karşılıksız borcunun takvim / Vade Takip / projeksiyon kalemi ve açık toplamları (kararda yok — yazılmaz).
+- Kilit içinde tarihli karşılıksız — bu kâhinin dilinde kilit karşılıksızı denetlemez (defter kâhini g8).
+- Tedarikçide alış iadesi + bağsız Ödeme + vadeli alış faturası birlikte (kaynaklar arası öncelik 2.4.9 — kararda yok; d9'da alış iadesi yok).
+- Program koşulmadı (görev: CI ayrışmayı Ç5-A ile görür).
+
+### C0g Değişen eski beklentiler (G3; bakım 1 ↔ bakım 2 kâhin çıktısı, `2.5.0`) — dökümü kod commit'inde (aşağıya eklenir)
+
+### Eşleme notları (Ç5-A / Ç5-B kod ajanı için; `kos.mjs`)
+- `karsiliksiz {evrak, cari}` (carisiz evrakta cari seçimi): gövde alanı Ç5-A'da verilir — `kos.mjs` `KARSILIKSIZ_CARI` eşlemesi (verilene kadar adım GÖNDERİLMEZ, okuma hatası yazılır; sonuç yeşil
+  sayılmaz). Cari seçilmeyen karşılıksız bugünkü `bounce` eşlemesiyle gider.
+- **Ana oturuma:** `model.py` değişti — mobil yazma kâhininin `kabul.json`'undaki `cari_model_sha256` yeniden üretilmeli (o dosya okunmadı, değiştirilmedi).

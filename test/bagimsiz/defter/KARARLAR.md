@@ -82,7 +82,7 @@ satış (B CH T / A 600; B 519 P / A CH P) · 22 S47 B: onay bekleyen aday 602 /
 33 B11 B: açılıştan önceye alınan düzeltme kabul · 34 EK-2B 33 B: Kasa açılışı ilk hareketten sonraya kabul. `kos.mjs` "tam senaryo" mutasyonu 14–21, 32, 33'ü `senaryo.json`'da; `oz-test.py`
 hepsini (14–34) bütün senaryolarda (`mutasyon` alanı hariç değerle) dener.
 
-### KULLANICIYA SORULMALI (kâhin bu durumları KURMAZ — senaryoda görülürse hata verir)
+### KULLANICIYA SORULMALI (kâhin bu durumları KURMAZ — senaryoda görülürse hata verir) — SK-1 ve SK-2 YANITLANDI 06.11 12:16 (S65 = A, S66 = A; aşağıda "2.5.0 Ç5 bakımı 2")
 - **SK-1 (KG-16 kapsamı; UÇ):** açıklamasında "açılış" ORTADA geçen eski Borç / Alacak Yaz ("2025 açılış farkı") listeye girsin mi? **A (öneri):** hayır — KG-16 metni "Açılış…" (açıklama bununla
   başlar); sıradan Borç / Alacak Yaz (602 / 770). **B:** evet, içinde geçen de aday (onaya kadar 519). **C:** uç durum böyle kalsın (BİLİNEN SINIR).
 - **SK-2 (S48 ↔ S49 arası; para):** formdan girilmiş CARİSİZ (açılış değil) alınan evrak karşılıksız dönerse? **A (öneri):** S48 gibi program cariyi sorar; seçilirse cari borçlanır (B CH / A 101),
@@ -107,3 +107,61 @@ hepsini (14–34) bütün senaryolarda (`mutasyon` alanı hariç değerle) dener
 - UÇ ADI VERİLMEDİ (`UCLAR` null → olay ATLANAN, sonuç yeşil sayılmaz): `acilis_evrak` (Excel açılış portföyü), açılış evrakının `karsiliksiz`'inde cari seçimi, `excel_taksit_karti`
   (Tablodan Aktar / plan içe aktarımı; eski anahtar `legacyTableTransfer` gerekebilir), `kasa_duzelt` (Kasa hareketi tarih düzeltmesi). `kasa_gider {beklenen: "ret"}` reddedilirse başarı,
   kabul edilirse fark.
+
+## 2.5.0 Ç5 bakımı 2 (06.11.2026; eski kâhinler bakımı 2 — kodu görmeyen AYRI el; bakım 1'in KULLANICIYA SORULMALI'ları yanıtlandı)
+
+Kural seti adı değişmedi: **`2.5.0`** varsayılan = bakım 1 + bu bölüm; **`--kural 2.4.9`** AYNEN (bayt bayt; eski kâhinle eşdeğerlik kanıtta). Bu dal da ana dala Ç5-A ile birlikte girer.
+
+### Kaynak (temiz oda; ders 5, 40)
+- **Karar metni:** KULLANICI KARARI 06.11 12:16 UTC (AYNEN "önerilerini uygula"; iş listesi `a4ef1268` D "S65–S68 = A", sorular C S65–S68):
+  S65 = A "'Açılış Olabilir' listesine yalnız açıklaması 'Açılış…' ile BAŞLAYAN eski kayıt girer; ortada geçen girmez." ·
+  S66 = A "formdan carisiz (açılış değil) alınan evrak karşılıksız dönerse program cariyi sorar; seçilirse cari borçlanır, seçilmezse B 649.90 / A 101 (S49 geliri geri alınır)." ·
+  S67 / S68 bu kâhinin konusu değil (takvim kalemi ve kapama sırası cari kâhininde — `test/bagimsiz/cari/KARARLAR.md` §14).
+- **Okunan / okunmayan:** bakım 1'in alanıyla aynı (yukarıda "Temiz oda"); tam liste ajan raporunda. Program koşulmadı, programın davranışı aranmadı.
+
+### Kurallar (bakım 1'in D4 / D6'sına ek; kaynak her satırda)
+- **D6′ — S65 = A (SK-1 kapandı):** KG-16 adayı yalnız açıklaması "Açılış" ile BAŞLAYAN eski Borç / Alacak Yaz'dır; başlangıç B6 katlamasıyla okunur (Türkçe küçük harf + ç/ı/ş):
+  "Açılış", "AÇILIŞ", "açılış farkı", "Acilis" ADAY; "2025 açılış farkı", "Yeniden açılış", "Devir açılış farkı" (ortada geçen) ADAY DEĞİL → sıradan C-01 / C-02 (602 / 770; KG-4 A).
+  Silinenler'den geri alınan böyle eski kayıt da (B8) aday değil. Kâhin bu durumda artık hata vermez. **Yorum (ders 40):** S65 yalnız 2.5.0 listesini söyler; aynı açıklamalı kaydın
+  DONMUŞ dönemdeki 2.4.9 karşılığı (D7 "tanımsız eski davranış") kararda hâlâ yok → D7 aynen (kâhin kurmaz).
+- **D4′ — S66 = A (SK-2 kapandı):** formdan girilmiş CARİSİZ ALINAN evrak (S49: B 101|121 / A 649) karşılıksız dönünce program cariyi sorar — `karsiliksiz {cek, tarih, cari?}` (`cari` = programın
+  sorusuna verilen yanıt; yoksa seçilmedi):
+  - **seçilirse** cari borçlanır: B CH (120 müşteri / 320 tedarikçi — G-2) / A 101|121; cari bakiyesi + tutar, yaşlandırmada cari kalemi (MM5). S49'un A 649'u YERİNDE kalır — kararın
+    "(S49 geliri geri alınır)" parantezi yalnız seçilmeyen dala bağlıdır (Ç-07 "müşteri yeniden borçlanır" düzeni; bakım 1'in S48 D4'üyle aynı biçim).
+  - **seçilmezse** B 649 (649.90) / A 101|121 — S49 geliri geri alınır; kimse borçlanmaz.
+  - Madde tarihi = karşılıksız işleminin tarihi (G-4).
+  - **Yorum Y1 (harfiyen):** kilitli dönemde 2.4.9 kuralıyla donmuş (B 101 / A 602) ESKİ carisiz evrak kilitten SONRA karşılıksız dönerse de seçilmeyen dal B 649.90 / A 101'dir — karar metni hesabı
+    açıkça veriyor; donmuş alış maddesi 602'de kalır (602 ↔ 649 sınıflama farkı KG-15 Kural Farkı Düzeltme Fişi'nin konusu — D8). Önceki mali yılda alınmış evrakta 649 bu yılda borç
+    yazılır (karar metni yıl ayırmıyor; M7'nin 671 / 681'i yalnız kural farkı fişine özgü). Yeni para kuralı değil (S66 metni) → soru değil.
+  - **Yorum Y2 (kitap G-7):** KİLİTLİ DÖNEM içinde tarihli karşılıksız (tarih ≤ L) REDDEDİLİR — "kilitli dönemde kaynak değişmez (409) ve kilitli dönemin maddeleri donmuştur"; madde
+    yazılmaz, cari değişmez, olay `retler`'de (bakım 1'in kilitli kaynak `kayit_sil` reddiyle aynı düzen; HTTP kodu denetlenmez). S66'ya özgü değil, bütün karşılıksızlara uygulanır; kâhinde
+    kilit yalnız göçte (`goc {kilit}`) var → yalnız göç senaryolarında görülür.
+  - VERİLEN carisiz evrak karşılıksız dönmez (kararda yok) → kâhin kurmaz (hata).
+
+### Senaryolar (bakım 2)
+- `senaryolar/g6-s65-acilis-basi` (göç, yalnız model): "Açılış" / "AÇILIŞ" / "açılış farkı" / "Acilis" aday; "2025 açılış farkı" / "Yeniden açılış" / "Devir açılış farkı" aday değil; listede
+  olmayan kaydın onayı ret; adayın reddi → 602; göç öncesi silinip göçten sonra geri alınan ortada-açılışlı kayıt aday değil (B8 × S65).
+- `senaryolar/g7-s66-carisiz-karsiliksiz` (göçsüz; programla da koşulabilir — cari seçimi uç adı yok, ATLANAN): carisiz çek cari seçilerek, carisiz senet cari seçilmeden karşılıksız;
+  portföyde kalan carisiz çek; cari bakiyesi + yaşlandırma.
+- `senaryolar/g8-s66-kilitli-donem` (göç + kilit, yalnız model): donmuş eski carisiz evrakın kilitten sonra karşılıksızı (Y1), kilitsiz eski evrakın karşılıksızı cari seçilerek, kilitli
+  dönem içinde tarihli karşılıksız ret (Y2).
+
+### Mutantlar (bakım 2; değerle yakalanmalı — `oz-test.py`)
+35 S65 B: ortada geçen "açılış" da aday · 36 S66 B: cari seçilmezse gidere (B 770 / A 101) · 37 S66: cari seçilse de cari borçlanmaz (B 649 / A 101) · 38 G-7 B: kilitli dönem içinde tarihli
+karşılıksız kabul (madde donmuş döneme yazılır). `kos.mjs` "tam senaryo" listesine EKLENMEDİ (olayları `senaryo.json`'da değil — 22–31, 34 gibi elle senaryolarda).
+
+### Değişen eski beklentiler (G3)
+YOK — eski senaryolarda ortada geçen açılış açıklaması ve carisiz evrak karşılıksızı yoktu (bakım 1 kâhini bu durumlarda HATA veriyordu); `senaryo.json` ve g1–g5'in 2.5.0 çıktısı bayt bayt
+aynı kalmalı (kanıtta), `--kural 2.4.9` bayt bayt aynı.
+
+### Eşleme notları (Ç5-A kod ajanı için; `kos.mjs`)
+- S66 cari seçimi bakım 1'in S48 eşlemesini kullanır: `karsiliksiz {cek, tarih, cari}` → `UCLAR.karsiliksiz_cari` (uç adı Ç5-A'da verilir; verilene kadar olay ATLANAN, sonuç yeşil sayılmaz);
+  cari seçilmeyen karşılıksız bugünkü `bounce` eşlemesiyle gider (açılış evrakı ve formdan carisiz evrak aynı). `kos.mjs`'te yalnız açıklama satırları güncellenir.
+
+### KULLANICIYA SORULMALI (bakım 2)
+YOK (S65 / S66 metni bu kâhinin durumlarını çözdü; Y1 / Y2 yorumdur — yukarıda gerekçeli, BAŞ MİMAR'a gösterilir).
+
+### DENENMEYEN (bakım 2; neden)
+- g6 / g8 programla koşulamaz (göç — bakım 1 ile aynı neden); g7'nin cari seçimi olayı uç adı verilene kadar ATLANAN.
+- Kural Farkı fişinin karşılıksız dönmüş donmuş evrakla birlikte ön izlemesi (fiş yalnız alış maddesinin eski ↔ yeni farkını alır; ekran ön izlemesi bu kâhinin çıktısında yok).
+- Karşılıksızdan sonra aynı evrakın yeniden işlem görmesi (karşılıksız evrakın tahsili / cirosu) — kararda yok.
