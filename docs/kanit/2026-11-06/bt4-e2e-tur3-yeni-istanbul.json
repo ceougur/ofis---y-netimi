@@ -1,0 +1,32 @@
+{
+  "ad": "bt4-e2e-tur3-yeni-istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-duzeltme-kilidi-tur3-250.mjs",
+  "commit": "ccbf781250ace68169e882d99849dac774ebe79f",
+  "dal": "worktree-agent-a8e6f2114d96e812f",
+  "kirli": 4,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T06:57:06.851Z",
+  "sure_sn": 125.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 110,
+    "gecen": 110,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt4-kanit/2026-11-06/bt4-e2e-tur3-yeni-istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a8e6f2114d96e812f",
+  "ham_cikti_sha256": "b1904d8c1af2dbaa20d54bb1e5b06bd35854165329f3ab0f3103db8d90bc930e",
+  "ham_cikti_bayt": 12549
+}

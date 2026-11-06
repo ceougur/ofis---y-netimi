@@ -18,7 +18,7 @@ import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { methodInput } from "../lib/pay-method.mjs";
 import { systemClock } from "../lib/clock.mjs";
 import { IMPORT_SCOPES, createImportRequests } from "../lib/import-request.mjs";
-import { assertRowVersion, rowVersion } from "../lib/row-version.mjs";
+import { assertRowVersion, rowVersion, sameFields } from "../lib/row-version.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 // v2.0.26 (G6): toplu aktarımda bir satırın iç işlemini geri alıp nedeniyle atlamak için (kapanmış dönem).
@@ -610,13 +610,20 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     const user = auth.requirePermission(req, "plans.manage");
     const opened = planRow(params.id);
     const body = await readJson(req);
+    let wrote = false;
     const result = store.tx(() => {
       // Kart yazım işleminin İÇİNDE yeniden okunur (birleşik tur 1 deseni): gövde beklenirken kart değiştiyse denetimler ve gövdede olmayan alanlar GÜNCEL karttan;
       // silindiyse 404.
       const previous = planRow(opened.id);
-      assertRowVersion(body, previous, PLAN_STALE);
       const input = planInput({ ...previous, ...body }, user, previous);
       const status = body.status === undefined ? previous.status : body.status === "closed" ? "closed" : "active";
+      // 2.5.0 BİRLEŞİK TUR 4 (tur 3 dar kontrolü ORTA-1; Kasa açılışındaki desen): "değişiklik yok" kısa yolu işlemin İÇİNDE, GÜNCEL kartla ve sürüm denetiminden
+      // ÖNCE — birleşmiş girdi kartta yazılacak her alanda güncel kartla aynıysa hiçbir şey yazılmaz, 200 + güncel kart. Önceden yanıtı kopan KENDİ kaydının yeniden
+      // gönderimi (aynı form, eski sürüm) 409 "değişikliğiniz kaydedilmedi" alıyordu (kaydedilmişti). Carisiz eski kart (ilk düzenlemede cari açılır) kısa yola girmez.
+      const sameAccount = Boolean(previous.accountId) && (input.accountId || previous.accountId) === previous.accountId;
+      if (sameAccount && status === previous.status && sameFields(previous, input, { texts: ["name", "phone", "note", "refNo", "registeredOn", "caseKey", "caseSource", "caseTitle", "groupId", "subgroupId"], numbers: ["total"] })) return detail(previous.id, user);
+      assertRowVersion(body, previous, PLAN_STALE);
+      wrote = true;
       // v2.0.23 (gözden geçirme): faturanın kendi taksit kartının tutarı ve carisi faturadan gelir; burada değişince fatura ile
       // kart ayrışıyordu (fatura 3.000 açık, kart 2.000). Ad, grup, not ve kapatma burada serbest.
       if (previous.invoiceId && (roundMoney(input.total) !== roundMoney(Number(previous.total) || 0) || (input.accountId && input.accountId !== previous.accountId))) {
@@ -659,8 +666,10 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       audit(user, "plan.updated", previous.id, { previous: { name: previous.name, total: previous.total, status: previous.status, accountId: previous.accountId }, ...input, accountId, status });
       return detail(previous.id, user);
     });
-    changed(user, { planId: opened.id });
-    changed(user, { kind: "accounts", accountId: result.accountId || "" });
+    if (wrote) {
+      changed(user, { planId: opened.id });
+      changed(user, { kind: "accounts", accountId: result.accountId || "" });
+    }
     ok(res, result);
   });
 
@@ -761,18 +770,23 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     // Erken doğrulama (alan iletileri); karar aşağıda işlemin İÇİNDE güncel taksitle yinelenir.
     const early = itemInput({ ...opened, ...body }, plan);
     if (!(early.amount > 0)) throw new HttpError(400, "Taksit tutarı sıfırdan büyük olmalı.");
-    store.tx(() => {
+    const wrote = store.tx(() => {
       const live = planRow(plan.id); // assertPlanLive: gövde beklenirken kart silindiyse 404
       // 2.5.0 BS-3 (g): gövde beklenirken TAKSİT silinirse 404 (kart denetimiyle aynı desen; önceden UPDATE 0 satır, 200 ve "taksit düzeltildi" geçmişi).
       // BİRLEŞİK TUR 3: taksit işlemin içinde GÜNCEL hâliyle okunur; sürüm denetimi, gövdede olmayan alanlar ve Değişiklik Geçmişi'nin "önceki"si ondan.
       const previous = itemOf(plan.id, opened.id);
-      assertRowVersion(body, rowVersion(store, "plan_items", previous.id), ITEM_STALE);
       const input = itemInput({ ...previous, ...body }, live);
       if (!(input.amount > 0)) throw new HttpError(400, "Taksit tutarı sıfırdan büyük olmalı.");
+      // 2.5.0 BİRLEŞİK TUR 4 (tur 3 dar kontrolü ORTA-1; Kasa açılışındaki desen): "değişiklik yok" kısa yolu burada — işlemin İÇİNDE, GÜNCEL taksitle, sürüm
+      // denetiminden ÖNCE. Vade, tutar ve açıklama güncel taksitle aynıysa hiçbir şey yazılmaz (200 + güncel kart): yanıtı kopan kendi düzeltmesinin yeniden
+      // gönderimi 409 "düzeltmeniz kaydedilmedi" almaz (kaydedilmişti); öbür kişi aynı değeri girmişse de 409 yok. Farklı içerikte sürüm denetimi aynen.
+      if (sameFields(previous, input, { texts: ["dueDate", "note"], numbers: ["amount"] })) return false;
+      assertRowVersion(body, rowVersion(store, "plan_items", previous.id), ITEM_STALE);
       store.run("UPDATE plan_items SET due_date = ?, amount = ?, note = ?, updated_at = ? WHERE id = ?", input.dueDate, input.amount, input.note, now(), previous.id);
       audit(user, "plan.item.updated", previous.id, { planId: plan.id, previous, ...input });
+      return true;
     });
-    changed(user, { planId: plan.id });
+    if (wrote) changed(user, { planId: plan.id });
     ok(res, detail(plan.id, user));
   });
   router.delete("/api/workspace/plans/:id/items/:itemId", async ({ req, res, params }) => {
