@@ -617,7 +617,7 @@ class OlayMaddeleri(unittest.TestCase):
         # W5 (BAŞ MİMAR KARARI B6): baştaki boşluk + Türkçe küçük harf + ç / ı / ş katlama; "Devir" / "Devreden" ve ortadaki "açılış" girmez
         for s in ("AÇILIŞ", "Açilis farkı", "ACILIS", "  açılış", "Açılışlar", "acilis bakiyesi", "AÇİLİŞ"):
             self.assertTrue(M.kg16_aciklamasi(s), s)
-        for s in ("Devir bakiyesi", "Devreden", "Yeniden açılış", "Kapanış", "", None, "Aç ılış"):
+        for s in ("Devir bakiyesi", "Devreden", "Yeniden açılış", "Kapanış", "", None, "Aç ılış", "2025 açılış farkı"):   # S65 A: ortada geçen girmez
             self.assertFalse(M.kg16_aciklamasi(s), s)
         self.assertFalse(M.acilis_aciklamasi("Acilis"))            # donmuş 2.4.9 türetmesinin açıklamadan tanıması aynen (W5)
 
@@ -653,8 +653,8 @@ class OlayMaddeleri(unittest.TestCase):
         ac = o("evrak_acilis", "2026-01-01", evrak="CK1", evrak_turu="cek", yon="alinan", durum="portfoy", tutar=500)
         ce = o("carisiz_evrak", "2026-01-02", evrak="CE1", evrak_turu="cek", yon="alinan", tutar=300)
         cv = o("carisiz_evrak", "2026-01-02", evrak="CV1", evrak_turu="cek", yon="verilen", tutar=200, banka="B1")
-        for ols in ([ce, o("evrak_karsiliksiz", "2026-01-05", evrak="CE1", cari="C1")],
-                    [ce, o("odeme", "2026-01-03", cari="T1", yol="ciro", evrak="CE1"), o("evrak_karsiliksiz", "2026-01-05", evrak="CE1")],
+        # bakım 8 ikinci ek (S66 A, README Q2, G3 Q5): formdan carisiz alınan evrakın karşılıksızı artık KURAL (s99) — susma listesinden çıktı
+        for ols in ([ce, o("odeme", "2026-01-03", cari="T1", yol="ciro", evrak="CE1"), o("evrak_karsiliksiz", "2026-01-05", evrak="CE1")],
                     [cv, o("verilen_evrak_geri_al", "2026-01-05", evrak="CV1")],
                     [ac, o("odeme", "2026-01-03", cari="T1", yol="ciro", evrak="CK1"), o("evrak_karsiliksiz", "2026-01-05", evrak="CK1", cari="C1")],
                     [dict(ac, cari="C2"), o("evrak_karsiliksiz", "2026-01-05", evrak="CK1", cari="C1")]):
