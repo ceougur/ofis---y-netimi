@@ -15,11 +15,11 @@
 // değişmeyen düzeltme reddedilir; havale → nakit çevirme geçer; fatura Düzenle / Taksite Aktar "yeni" sayılır; Silinenler reddedilir; yedek / göç satırı bozulur ya da
 // uyarı yok / kırmızı; önbellek bayatlar (açılış öne alınınca eski tarih); iki şirket karışır; ret yarım yazım bırakır; gün dönümünde yanlış gün.
 import assert from "node:assert/strict";
-import { mkdtempSync, rmSync } from "node:fs";
+import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { after, before, describe, it } from "node:test";
-import { ADMIN_PASSWORD, loginAdmin, startTestServer } from "./helpers.mjs";
+import { ADMIN_PASSWORD, loginAdmin, removeTestDir, startTestServer } from "./helpers.mjs";
 import { CURRENT, bootVersion, tagsAvailable } from "./guvenilirlik/surumler.mjs";
 
 process.env.HUKUK_LICENSE_URL ||= "http://127.0.0.1:9";
@@ -445,7 +445,7 @@ describe("Ç5-K S20 = A: v2.4.9'un GERÇEK koduyla üretilmiş açılış önces
   });
   after(async () => {
     await server?.close();
-    rmSync(root, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
+    removeTestDir(root); // Windows: dosya bir an daha tutulabilir — test/helpers.mjs yeniden dener, olmazsa uyarıyla bırakır (ders 21, 48)
   });
   // Güncel kodun oturumu (bu dosyanın apiOf'u: hata kodu ve iletisi yanıttan okunur).
   const login = async () => apiOf((await server.login()).client);
