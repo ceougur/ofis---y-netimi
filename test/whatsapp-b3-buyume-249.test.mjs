@@ -9,7 +9,8 @@
 // işlerinin PDF'lerini siler; kalan PDF'ler o sayfaları kullanır → o turda page_count artmaz (0), sonraki tur havuzu geri doldurur (≈ 2 tur). Ürün doğru (wa_jobs bayt
 // bayt aynı, toplam artış doğrusal); tek tur page_count artışı gerçek saate bağlıydı. Ölçütler bu yüzden (G3 gerekçesi): canlı veri (page_count − freelist_count, tur
 // SONU bakımından sonra; PDF havuzunun anlık doluluğundan bağımsız) tur başına ve geçmişle; dosya büyümesi (havuzun yeniden kullanımı) BİRİKİMLİ; boş liste tur başına.
-// Ara bakım ölçüm satırında 6. alan (o tur içinde silinen PDF sayısı) olarak görünür.
+// Eşiklerin ölçeği tur 1 artışı değil PDF baytlarından HAVUZ (ara bakım tur 1'e de düşebilir). Ara bakım ölçüm satırında 6. alan (o tur içinde silinen PDF sayısı).
+// Zorla (belirlenimci): node test/whatsapp-b3-buyume-zorla.mjs --tur 4,8 (CI #1008 deseni) · --tur 1 · --tur 1,2,…,10 (test/fixtures/bakim-sicrama.mjs).
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { startWa } from "./whatsapp-248-ortak.mjs";
@@ -38,11 +39,12 @@ describe("2.4.9 B3 T1 — toplu gönderimler şirket dosyasında kalıcı boşlu
         assert.equal(res.status, 200, JSON.stringify(res.data).slice(0, 300));
         // drain() = runOnce() döngüsü + sonda bakım; burada ikiye ayrılır ki tur İÇİNDE (gerçek saatle 60 sn dolunca) koşan ara bakım ölçülsün (silinen PDF sayısı).
         const ran = await ctx.drain({ max: 100_000, maintain: false });
-        const midDeleted = pdfTable() ? PEOPLE - g("SELECT COUNT(*) AS n FROM wa_job_pdfs").n : null;
+        const held = pdfTable() ? g("SELECT COUNT(*) AS n, COALESCE(SUM(length(pdf)), 0) AS bytes FROM wa_job_pdfs") : { n: 0, bytes: 0 };
+        const midDeleted = pdfTable() ? PEOPLE - held.n : null;
         await ctx.wa.scheduler.maintain();
         const jobs = g("SELECT SUM(pgsize) AS bytes, SUM(unused) AS unused FROM dbstat WHERE name = 'wa_jobs'");
         const after = count();
-        rounds.push({ round, ran, growth: after.pages - before.pages, usedGrowth: after.used - before.used, free: after.free, midDeleted, jobsBytes: jobs.bytes, jobsUnused: jobs.unused, pdfRows: pdfTable() ? g("SELECT COUNT(*) AS n FROM wa_job_pdfs").n : null, accepted: g("SELECT COUNT(*) AS n FROM wa_jobs WHERE state = 'accepted'").n });
+        rounds.push({ round, ran, growth: after.pages - before.pages, usedGrowth: after.used - before.used, free: after.free, midDeleted, pdfAvg: held.n ? held.bytes / held.n : null, jobsBytes: jobs.bytes, jobsUnused: jobs.unused, pdfRows: pdfTable() ? g("SELECT COUNT(*) AS n FROM wa_job_pdfs").n : null, accepted: g("SELECT COUNT(*) AS n FROM wa_jobs WHERE state = 'accepted'").n });
         before = after;
         ctx.clock.advance(60_000);
       }
@@ -54,21 +56,29 @@ describe("2.4.9 B3 T1 — toplu gönderimler şirket dosyasında kalıcı boşlu
       assert.deepEqual(rounds.map(r => r.ran), Array(ROUNDS).fill(PEOPLE), "ön koşul: her turda 200 iş yürüdü");
       assert.equal(last.accepted, ROUNDS * PEOPLE, "ön koşul: 2.000 ileti kabul");
       assert.ok(ratio <= 0.1, `wa_jobs sayfa içi boş %${(ratio * 100).toFixed(1)} > %10 (${(last.jobsUnused / 1048576).toFixed(2)} MB, iş başına ${Math.round(perJob)} bayt) — kesinleşen işin PDF'i satırda boşluk bırakıyor`);
-      // "Tur başına artış sabit" (tur 1 = 200 PDF'in ilk yeri; tek tek turlar iş kimliği dizininin rastgele UUID bölünmesiyle oynar):
-      // (a) tur 2–10'un HER birinde bakımdan sonra kalan canlı veri artışı tur 1'in %10'undan küçük = kesinleşen işin PDF'i (ya da yeri) canlı kalmıyor;
-      // (b) tur 2–10'da dosya (page_count) toplam artışı tur başına ortalama tur 1'in %10'undan küçük = boşalan PDF sayfaları yeniden kullanılıyor — BİRİKİMLİ, çünkü tek tur artışı
-      //     ara bakımın (gerçek saat) o turun ortasına düşüp düşmemesine bağlı (0 / ≈ 2 tur; yukarıdaki KÖK NEDEN);
-      // (c) her turun sonunda boş liste tur 1'inkinden en çok tur 1 artışının %10'u kadar büyük = boşalan sayfalar birikmiyor (her tur yeniden kullanılıyor);
+      // "Tur başına artış sabit" (tek tek turlar iş kimliği dizininin rastgele UUID bölünmesiyle oynar). HAVUZ = bir turun 200 PDF'inin sayfa sayısı, PDF baytlarından
+      // (wa_job_pdfs, bakımdan önce; tablo yoksa — B3 öncesi ürün — tur 1 artışı). 2.5.0: tur 1 artışı havuz yerine KULLANILMAZ, çünkü ara bakım tur 1'in ortasına düşerse
+      // (tur 1 > 60 sn gerçek saat; zorla: --tur 1) tur 1 havuzun yarısını, tur 2 öbür yarısını alır (856 + 860) ve tur 1'e bağlı eşikler kırmızı verirdi.
+      // (a) tur 2–10'un HER birinde bakımdan sonra kalan canlı veri artışı havuzun %10'undan küçük = kesinleşen işin PDF'i (ya da yeri) canlı kalmıyor;
+      // (b) 10 turun BİRİKİMLİ dosya (page_count) artışından bir havuz çıkınca tur başına kalan havuzun %10'undan küçük = boşalan PDF sayfaları yeniden kullanılıyor (dosya bir
+      //     havuzdan fazla büyümüyor) — birikimli, çünkü tek tur artışı ara bakımın (gerçek saat) o turun ortasına düşüp düşmemesine bağlı (0 / ≈ 2 tur; KÖK NEDEN);
+      // (c) hiçbir turun sonunda boş liste havuzun 1,1 katını aşmıyor = boşalan sayfalar birikmiyor (her tur yeniden kullanılıyor);
       // (d) canlı veri artışında son üç turun ortalaması ilk üç kararlı turun ≤ 1,5 katı = artış geçmişle büyümüyor.
-      const first = rounds[0].growth;
+      // NOT (dişi): B3 hatası (v2.4.8: PDF işin satırında) bu düzenekte canlı veri artışını tur başına ~48'den ~110 sayfaya çıkarır — (a)–(d) eşiklerinin ALTINDA; hatayı
+      // yakalayan "sayfa içi boş ≤ %10" denetimidir (v2.4.8'de %67,5). (a)–(d) PDF sayfalarının yeniden kullanılmadığı / biriktiği hataları yakalar.
+      const pageSize = g("PRAGMA page_size").page_size;
+      const avg = Math.max(0, ...rounds.map(r => r.pdfAvg || 0));
+      const pool = avg ? Math.ceil((PEOPLE * avg) / pageSize) : rounds[0].growth;
+      console.log(`# B3 T1 havuz: ${pool} sayfa (${avg ? `PDF ortalaması ${Math.round(avg)} bayt × ${PEOPLE} / ${pageSize}` : "wa_job_pdfs yok → tur 1 artışı"})`);
       const steady = rounds.slice(1);
       const mean = list => list.reduce((sum, n) => sum + n, 0) / list.length;
       const used = steady.map(r => r.usedGrowth);
-      const growth = steady.map(r => r.growth);
-      assert.ok(Math.max(...used) < 0.1 * first, `kesinleşen işlerin PDF yeri bakımdan sonra canlı kalıyor (tur 1 artışı: ${first}, tur 2–${ROUNDS} canlı artış: ${used.join(", ")})`);
-      assert.ok(mean(growth) < 0.1 * first, `PDF sayfaları yeniden kullanılmıyor (tur 1: ${first}, tur 2–${ROUNDS}: ${growth.join(", ")})`);
-      assert.ok(Math.max(...steady.map(r => r.free)) <= rounds[0].free + 0.1 * first, `boşalan sayfalar birikiyor (boş liste tur 1: ${rounds[0].free}, tur 2–${ROUNDS}: ${steady.map(r => r.free).join(", ")})`);
-      assert.ok(mean(used.slice(-3)) <= 1.5 * mean(used.slice(0, 3)), `tur başına canlı veri artışı geçmişle büyüyor (tur 2–${ROUNDS}: ${used.join(", ")}; page_count: ${growth.join(", ")})`);
+      const growth = rounds.map(r => r.growth);
+      const total = growth.reduce((sum, n) => sum + n, 0);
+      assert.ok(Math.max(...used) < 0.1 * pool, `kesinleşen işlerin PDF yeri bakımdan sonra canlı kalıyor (havuz ${pool} sayfa, tur 2–${ROUNDS} canlı artış: ${used.join(", ")})`);
+      assert.ok((total - pool) / ROUNDS < 0.1 * pool, `PDF sayfaları yeniden kullanılmıyor (havuz ${pool} sayfa, tur 1–${ROUNDS} artış: ${growth.join(", ")}; toplam ${total})`);
+      assert.ok(Math.max(...rounds.map(r => r.free)) <= 1.1 * pool, `boşalan sayfalar birikiyor (havuz ${pool} sayfa, boş liste tur 1–${ROUNDS}: ${rounds.map(r => r.free).join(", ")})`);
+      assert.ok(mean(used.slice(-3)) <= 1.5 * mean(used.slice(0, 3)), `tur başına canlı veri artışı geçmişle büyüyor (tur 2–${ROUNDS}: ${used.join(", ")}; page_count tur 1–${ROUNDS}: ${growth.join(", ")})`);
       assert.deepEqual(rounds.map(r => r.pdfRows), Array(ROUNDS).fill(0), "her bakımdan sonra wa_job_pdfs boş (null = tablo yok)");
     } finally {
       await ctx.close();
