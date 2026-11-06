@@ -3343,3 +3343,184 @@ Kullanıcı kararı 31.10.2026 13:40 UTC ("tamam, teslimden sonra kısalt"). Aş
   DİSK / BELLEK: ~9 GB / ~12 GB boş (ajan başına ~600 MB; < 5 GB UYARI). Büyük klasörler: scratchpad/c3-olcum-veri 3,1 GB (Ç3 tur 3 1 M ölçümü bitince silinebilir), scratchpad/dk-c3t12-a232 (~5 GB; Ç3 tur 3 betik + kanıtı okuyor — tur 3 bitince silinebilir).
   AKIŞ (her ajan): rapor → ana oturum KENDİSİ koşar (iki TZ, eski kod kırmızısı kendi ayrı kopyasında + nedeni okunur, G2 komşu = ajan listesi ∪ test/ grep; ortak katman / ayar / yedek yazan değişiklikte sema-kapisi-bs7 + geri yükleme testleri) → ayrı sınama ağacı (scratchpad/<ad>-birlesim-ag) → birleştir → kod sınananla birebir mi diff → kanıtla gönder → DAR KONTROL (xhigh, yeni ajan; küçük düzeltmeler birleşik turda toplanır) → YÜKSEK / ORTA + süzgeçten geçemeyen DÜŞÜK yeni ajanla; kodu görmeyende önce bağımsızlık denetimi (scratchpad/denetim-wk250/arac-kaydi.py); bitince ağaç / kopya HEMEN silinir.
   ORTAM (06.11): 30 dk rapor görevi CronCreate da3eb3f2 ("7,37 * * * *"; istem aşağıda 2.5.0 ESASLAR ORTAM'da), ortam alarmı trig_01RE5MRmDjVDFH2SZEuo24ok (3 saatte bir :18); disk ajan başına ~600 MB (< 5 GB UYARI); ölçüm kilidi scratchpad/olcum.lock, tam npm test kilidi scratchpad/tam-npm-test.lock; docs/kilavuz/*.pdf .gitignore'da → client/kilavuz'dan kopyala; kayıt betikleri scratchpad/kayit-*.py (SAAT KURALI `T=$(date -u +%H:%M)`, heredoc tırnaklı: <<'EOF').
+
+## Arşiv 06.11.2026 (5) — Dersler 1–52 tam metin (CLAUDE.md'de kısa kurala indirildi; kullanıcı 06.11.2026 14:27 UTC "önerini uygula"; AYNEN)
+
+### Geçmiş test hatalarından dersler (kullanıcı, 10.10.2026: "bundan sonraki testlerde geçmişte yapılan hatalardan ders alalım")
+Her test planı bu listeden geçirilerek yazılır; teslimdeki DENENEN/DENENMEYEN bölümü hangi maddelerin uygulandığını söyler.
+Yeni bir test hatası yaşanınca buraya madde eklenir (kaynağıyla). Liste bir yasaktır, öneri değil.
+1. YALNIZ LİNUX "GEÇTİ" DEĞİLDİR. CI'nin BÜTÜN işleri (Linux, Windows × Node 22/24, e2e, paket) ana oturumca okunur; biri kırmızı
+   ya da sürüyorsa "doğrulandı" denmez. (Windows 34 koşu kırmızı kaldı, 08–10.10; `test/platform-tasinabilirlik.test.mjs`.)
+2. ÇIKIŞ KODU VE SAYI. Sonuç, komutun gerçek çıkış kodu + `# tests/pass/fail/cancelled/skipped/todo` satırlarından okunur; boru
+   (`| tail`) arkasındaki `$?` kuyruğun kodudur, kanıt değil (çıktı dosyaya yazılır, kod ayrıca alınır). tests = 0, cancelled > 0,
+   yarıda kalan koşu = BAŞARISIZ/BELİRSİZ, "geçti" yazılmaz. ARAÇ: `node tools/kanit.mjs kos <ad> -- <komut>` (çıkış kodu + sayılar +
+   ham çıktı + commit/platform → `docs/kanit/<gün>/`; çıkış ile özet çelişirse ÇELİŞKİ), `node tools/kanit.mjs ci <commit>` (CI'nin
+   bütün işleri; biri sürüyor/atlanmış/kırmızıysa yeşil DEĞİL), `node tools/kanit.mjs ozet` (biri geçmediyse çıkış 1).
+3. REDDEDİLEN İSTEK BAŞARI DEĞİLDİR. Her adımda yanıt kodu + gövdesi + veri tabanındaki sayı okunur. (Excel denetimi 04.10: salt
+   okunur lisansla hiçbir kayıt girilmedi, test "✅" saydı, uydurma mali rapor teslim edildi.)
+4. OKUNAMAYAN VERİ "BOŞ" DEĞİLDİR. Günlük/dosya okunamadıysa tablo "bilinmiyor" der; boş sonuç başarı sayılmaz. (10.10: CI günlüğü
+   403 → boş başarısızlık tablosu üretildi.)
+5. KÂHİN BAĞIMSIZ OLUR. Beklenen sayı programın kodundan ya da onu yazan elden türetilmez (Canlı Hata 2: mutabakat modeli programla
+   aynı yanlış formülü taşıyıp hatayı 3 sürüm gizledi). Programın kendi "Mutabakat Testi tamam" demesi de kanıt değildir
+   (Taksite Aktar → sil → geri al → geri yükle: Kasa çift, Mutabakat Testi "tamam").
+6. UYUŞMAZLIK ÖNCE HATADIR. Fark çıkınca "bilinen sınır/kural farkı" demeden önce yeniden üretilir, eski sürümün gerçek koduyla
+   karşılaştırılır, kök neden yazılır. (Mutabakat tohum 1 önce "K8 sınırı" sanıldı; Canlı Hata 2 çıktı, 2.0.24–26'da canlı.)
+7. TESTİN DİŞİ. Her yeni test eski kodda kırmızı görülür; kırmızısı görülmeyen test kanıt sayılmaz. Para çekirdeğinde mutasyon.
+8. BÜTÜN SENARYOLAR KOŞULUR. CI'de olmayan arayüz senaryosu elle koşulur, sonucu yazılır; atlanan senaryo adıyla DENENMEYEN'e
+   yazılır. (senaryo-213 CI'de olmadığı için 2.0.21'den beri kırıktı; 2.0.26'da senaryo-whatsapp/ui-ux-217 koşulmadı.)
+9. DEĞİŞEN KODUN BÜTÜN YOLLARI. Kod kaldırılınca/değişince o koda dokunan her arayüz yolu (toplu yükleme, Excel/Sheets, toplu
+   işlem, geri yükleme) koşulur. (2.0.18 Tablodan Al kalkınca Excel cari yükleme ReferenceError → 2.0.19.)
+10. DÜZELTMENİN KOMŞULARI. Düzeltmeden sonra aynı formülü kullanan komşu senaryolar da denenir (2.0.24 G1: iade düzeltmesi
+    paralı iadede kartı küçültmeye başladı; Canlı Hata 2 de G1 düzeltmesinin gerilemesiydi). (22.10.2026: madde 5b "Kalan" önceliğini ORTAK sütun
+    seçicisinde (dues.mjs classifyColumns) yaptı; ödeme sözü/vade/nakit akışı tutarları da Toplam Borç'tan Kalan Borç'a geçti, Tablodaki Kişiler eski
+    kuralda kaldı — komşular denenmemişti; v2.4.3 verisiyle göç karşılaştırması (madde 30) yakaladı. Ortak yardımcı değişince onu kullanan HER yol.)
+    (06.11.2026: WhatsApp WE ortak katmana (001 ayarı) yazdı, yeniden koşunun komşu listesi yalnız WhatsApp dosyalarından seçildi → şema kapısı testi (sema-kapisi-bs7) seçilmedi, BS-7 gerilemesi ana dala girdi.
+    Ortak katmana / ayara / yedeğe yazan her değişiklikte şema kapısı ve geri yükleme testleri komşudur.)
+11. HER SÜZGEÇ, HER SEÇENEK. Rapor yalnız varsayılan süzgeçle açılmaz; her süzgeç seçeneği ve toplam = satırlar. (Banka ve POS
+    "Yol" süzgeci 2.0.17'den 2.0.23'e hiç çalışmadı; senaryo yalnız varsayılanı açıyordu.)
+12. İNSAN HIZI VE KLAVYE. Form testleri gerçek tıklama + Tab + insan hızında yazımla da koşulur; "veri bozulmaz" iddiası kayıttan
+    sonra veri tabanı okunarak verilir. (Fatura ödeme alanı: Tab ile girilen senet sessizce kayboluyordu; ilk raporda "veri
+    bozulmaz" yanlış yazıldı.)
+13. TARİHE BAĞLI TEST YOK. Göreli tarih + sahte saat (`config.now`); ayın 1'i, ay sonu, yıl dönümü, hafta sonu/bayram ayrıca.
+    (2.0.13: ayın 1'inde kırılan senaryolar. 16.10.2026: e2e örnek Excel'i "Ödeme Sözü"nü sabit 15.10.2026 taşıyordu; o gün geçince ana e2e
+    kırmızı — CI #751; 2.3.0 kodunda da. Örnek dosyadaki tarih artık koşu gününe göre: test/fixtures/goreli-tarih.mjs.)
+14. TEST ORTAMI ≠ GERÇEK KURULUM. Testte kapatılan/değiştirilen ayar (lisans, saat, vekil sunucu) bulgu yazılmadan önce gerçek
+    kurulum koşuluyla denenir. (Excel denetimi Bulgu 6 "salt okunur uyarı" testin kendi lisans ayarıydı.)
+15. ÖLÇÜMLER TEK TEK. Aynı makinede iki ölçüm/yük koşusu aynı anda çalışmaz (`flock`); önce/sonra aynı veri kopyasıyla.
+    (2.0.22: iki ölçüm üst üste koştu, sayılar atıldı.)
+16. AJAN ONAYI KANIT DEĞİL. Ajan "geçti" derse ana oturum ham çıktıyı/CI'yi kendisi okur; ajanlar arası onay bağımsız doğrulama
+    sayılmaz; ajan raporu ↔ CI çelişirse sonuç BAŞARISIZ'dır, çelişki giderilene kadar.
+17. SIRA VE GEÇMİŞ VERİ. Şirket/yedek/sil-geri yükle gibi durumlu işler rastgele sırayla ve eski sürümlerin gerçek verisiyle
+    denenir. (2.0.20 gözden geçirmesi 2.0.17'den kalan "iki şirket aynı veri dosyası" hatasını buldu; tek sıralı testler görmedi.)
+18. BENZETİM GERÇEK PLATFORM DEĞİLDİR. Platforma özgü bir hatanın düzeltmesi, o platformun gerçek koşusunda (Windows → GitHub
+    CI) en az iki koşuda yeşil görülmeden "düzeldi" diye yazılmaz. (10.10: launcher EACCES'i Linux'ta EADDRINUSE benzetimiyle
+    "düzeldi" dendi — 12ade2d; gerçek Windows'ta koşu 488'de tekrarladı: Windows TCP portlarını SIRAYLA verir, yeniden deneme
+    UDP'de dışlanmış aynı blokta dolaştı. Kök neden ancak gerçek günlükle bulundu.)
+19. ZİNCİRDE HATA DURDURUR. Birden çok adımı tek komutta zincirlerken `set -euo pipefail`; bir adım düşerse commit/push/rapor
+    yapılmaz. (10.10: belge betiği düştü, commit yine çalıştı ve iletisi yapılmamış işi "yapıldı" diye yazdı — d2f9ddc.)
+    DİKKAT (22.10.2026, denendi): Claude Code Bash aracında `set -e` ETKİSİZ (`set -euo pipefail; false | tail -1; echo x` → x yazar); zincirde `&&` ya da her
+    adımdan sonra `|| exit 1` kullanılır. (Aday 3'te tam npm test kırmızıyken e2e döngüsü sürdü.)
+    (05.11.2026, YİNE: iş listesi betiği (python heredoc) AssertionError ile düştü, sonraki satırdaki commit + push çalıştı, ileti yazılmamış kaydı "yazıldı" dedi — 2ecf62cb. Heredoc'lu
+    betikte ilk satıra `|| exit 1`; commit / push ondan sonraki satırda değil, aynı zincirde.)
+20. ARA SIRA KIRMIZI ZORLA ÜRETİLİR. "Ara sıra" kırmızı adım yeniden deneme ya da bekleme süresi uzatmayla geçiştirilmez: yarışın
+    ön koşulu zorla oluşturulan bir betikle (ör. olayı gecikmenin içine denk getir, CPU yavaşlat) önce kırmızı üretilir; düzeltmenin
+    yeşili yalnız ön koşulun GERÇEKTEN oluştuğu denemelerde sayılır; düşen isteğin kimin olduğu (kullanıcı/arka plan) kayıttan okunur.
+    (10.10: senaryo-222 CI'de 2/~12 kırmızı; ürün sanıldı, testin kendi yarışıydı — `test/e2e/senaryo-222-yaris.mjs`.)
+21. HER PUSH'UN CI'Sİ AYRI OKUNUR. Sonraki commit'in yeşili öncekinin kırmızısını kapatmaz; kod değişmese de (yalnız belge) aynı testler
+    başka sonuç verebilir. Push edilen her commit için `node tools/kanit.mjs ci <commit> --bekle <dk>` (koşu henüz oluşmadıysa da bekler)
+    ve sonuç okunmadan "yeşil" denmez. Başarısız testin adı kısa günlükte okunur: araç başarısız testleri çıktının SONUNA ve kapı
+    özetine yazar (tam günlük bu ortamda ağ politikasıyla indirilemiyor). Temizlik (finally) hatası asıl hatayı ezmez.
+    (10.10: CI 514 85a7b50 yalnız CLAUDE.md değişmişken Windows Node 22 kırmızı — supervisor.test.mjs EBUSY, asıl hata gizli —
+    yarım saat okunmadı; sonraki push'ların CI'si izlendi.)
+22. UZUN KOŞU GÜN SINIRINI GEÇER. "Bugün"ü başta bir kez okuyan model/test, koşu gece yarısını geçince programla ayrışır; sunucu sahte saatle
+    (motorNow(): yerel bugün 06:00'dan akar) başlatılır ve motor koşu sonunda gün değiştiyse sonucu GEÇERSİZ sayar. (11.10: CI 565 c8d596b
+    mutabakat-cekirdek tohum 2 23:59:56 UTC'de başlayıp 00:00:00'da kırmızı; program doğruydu — ters kaydı yeni günle yazdı; zorla
+    `test/mutabakat-gece-yarisi.mjs` ile üretildi.)
+    (31.10.2026: CI #941 df238b99 Windows Node 24 banka-210-altin 23:58 UTC'de başladı — test TODAY'i dosya yüklenirken bir kez okuyor, config.now'suz v2.0.26 açılıyor, gün dönünce
+    fatura kronoloji 400; tarama asama0-226 ve rapor-220'de aynı kalıbı buldu. Düzeltme: test/fixtures/surec-saati-sabah.mjs İLK içe aktarım; zorla: test/gece-yarisi-zorla.mjs <dosya> <sn>.)
+23. ESKİ KOD AYRI KOPYADA. Kırmızı kanıt için eski kod çalışma ağacında `git checkout <eski> -- dosya` ile denenmez: dosya hazırlık
+    alanına girer, sonraki commit'e karışır ve aynı ağaçta koşan öbür testler eski kodu görür. Eski kod `git archive <eski> | tar -x` ya da
+    `git worktree` kopyasında koşulur. (11.10: e372a00 kanıt commit'ine eski hof-workspace.js girdi ve gönderildi — ca966fb ile geri alındı;
+    o arada başlatılan arka plan koşuları durduruldu, kanıtları silinip ayrı kopyada yeniden koşuldu.)
+24. DOLU DİSKTEKİ KOŞU GEÇERSİZDİR. Uzun koşu/e2e başlatmadan önce `df -h /` okunur (en az ~5 GB boş); bitmiş ölçümlerin veri kopyaları
+    (sqlite, profil) kanıtı depoya alındıktan sonra silinir. Dolu diskte kırmızı → önce disk, sonra ürün; yeşil de geçersiz (yarım yazılmış dosya).
+    (11.10: / %100, 261 MB — /tmp/kapi-olcum 5,2 GB, scratchpad 4,7 GB; senaryo-210 "Page crashed", 211 "Failed to fetch dynamically imported
+    module"; kayıtlar docs/kanit/2026-10-11/son-aday-e2e-2/gecersiz-disk-dolu, yer açılıp yeniden koşuldu.)
+
+25. ORTAK NOT DEFTERİ ÇAKIŞIR. Paralel ajanlar aynı scratchpad'i paylaşır; eski kod kopyası ve ara dosyalar BENZERSİZ adlı klasörde
+    (ör. `<iz>-eski-<commit>`) açılır, başka ajanın klasörü kullanılmaz. (12.10: İz 1 ajanının eski kod kopyasının üzerine başka ajan yazdı;
+    kırmızı kanıtlar benzersiz klasörde yeniden alındı.)
+26. BELGEYİ TEK TEK GÖNDERME. Her push 6 işlik CI başlatır; belge değişiklikleri biriktirilip kodla birlikte gönderilir. (12.10: 14 belge
+    push'u CI kuyruğunu 35+ dk tıkadı.) (17.10: yine ihlal — 25 dk'da 6 belge push'u; BELGE_YOLLARI dışındaki iş listesi / aday bulgu / kanıt
+    belgeleri tam CI başlattı (#821–#823, 18 iş) ve Uzun Doğrulama'yla kuyruk paylaştı. Yalnız belge değişikliği kodla birlikte gönderilir.)
+    AÇIKLAMA (22.10.2026, kullanıcının 5 dk yetkisiyle önerilen uygulandı — GÖZDEN GEÇİRME 4 (1)): BELGE_YOLLARI içindeki belge (CLAUDE.md, iş listesi, devam notu…) tek
+    başına gönderilebilir, CI başlatmaz (13.10 kararı); dışındaki (docs/kanit, testin okuduğu plan/kılavuz belgesi) kodla birlikte gönderilir.
+
+27. KAYNAK TARAYAN TEST CRLF'Yİ BİLİR. Windows'ta git dosyaları CRLF ile çıkarır; satır bölme `/\r?\n/`, `.` "\r"yi kapsamaz. (12.10: e908e38
+    "Kurumsal Kart" metin denetimi Linux'ta yeşil, Windows'ta yorumları ayıklayamayıp kırmızı; yerel koşu görmedi.)
+28. BEKLENTİ DEĞİŞEN SENARYO KOŞULUR. Bir arayüz senaryosunun beklentisini "bilerek güncellendi" diye değiştiren, o senaryoyu koşup yeşilini görür;
+    koşulmayan beklenti değişikliği teslim edilmez. (12.10: Tahsile Ver T4 düzeltmesi senaryo-banka-210 adım 45'i "5 satır" yaptı, koşmadı; o şirkette çek
+    yoktu → CI 12b82c2 e2e kırmızı. İş akışı ajanlarına "değiştirdiğin e2e'yi koş" yazılır.)
+29. node_modules GENEL KLASÖRE BAĞLANMAZ. Depoda `node_modules` → `/opt/node22/lib/node_modules` sembolik bağı kurulup `npm ci` koşulursa npm
+    bağın HEDEFİNİ siler (genel npm + playwright gitti). Playwright depoya `npm ci` ile gelir; genel araç gerekirse `NODE_PATH` kullanılır.
+    (12–13.10: npm tarball'dan, playwright `npm install -g --force` ile geri kuruldu; paket `node tools/build-windows.mjs` ile doğrudan derlendi.)
+30. TEST GERÇEK LİSANS SERVİSİNE ULAŞMAZ. Gerçek programı ayrı süreçte açan her test/araç (supervisor, bootstrap.mjs, server.mjs; sahte sürüm paketleri
+    dahil) `HUKUK_LICENSE_URL=http://127.0.0.1:9` verir; program açılıştan 3 sn sonra kendiliğinden deneme başlatır ve GitHub koşucusundan GERÇEK Operatör
+    Merkezi'ne sahte "ofis" düşer. Denetim `test/lisans-servisi-izolasyonu.test.mjs` (kaynak tarar). (15.10: Operatör Merkezi'nde "Sürüm 9.0.0 · Denemede"
+    kayıtları — 30.09, 12.10, 15.10; hepsi Azure/GitHub Actions adresi; lisans.installations/events'ten doğrulandı; update-flow/supervisor/yedek/packaging
+    testleri adresi vermiyordu.)
+
+31. AYNI TARİHLİ KAYITLAR KİMLİKLE SIRALANMAZ. Rastgele UUID'ye göre sıralama rastgele sıradır; iki yükleyici farklı anahtar kullanınca (kapı
+    'account:<id>', yevmiye '<id>#<satır>') aynı veriden farklı sonuç çıkar ve kapı "sapma" der. Aynı tarihte sıra: olay sınıfı (plan/kâhin dili
+    kuralı) → yazım sırası (rowid/seq); sınıf içi sıranın toplamları değiştirmediği gösterilir. (15.10: be53818 kayıt sırası, 4d4da18 değersiz/tahsilat
+    sırası — Uzun Doğrulama #199/#213 7 tohum kırmızı; birim test anahtarları ters çevirerek üretir.)
+
+32. SON ADAY, PARA ÇEKİRDEĞİNE SON DOKUNUŞTAN SONRA BAĞIMSIZ GÖZ GÖRMEDEN İLAN EDİLMEZ. Yargıç/eleştirmen turu bir commit'te koşar; ondan sonra
+    para çekirdeğine giren her değişiklik (düzeltme dahil) dar kapsamlı bir kontrol turu görür; kâhin ve motor yeni kuralı aynı elden aldıysa
+    kâhin sayılmaz (ders 5). (15.10: 469d547 turundan sonra dört değişiklik girdi; kullanıcı sorunca başlatılan kontrol turu K1 YÜKSEK buldu —
+    "mevcut borcu taksitlendir" kartı yeni satış sayılıp taksiti 128'den düşmüyordu; kâhin dili ve motor aynı eksik kuralı taşıyordu.)
+
+33. DOSYA ADI WINDOWS'TA AÇILMALI. Depoya giren dosya adında < > : " | ? * ya da sonda boşluk/nokta olmaz (npm betik adı "test:…" dosya adına
+    konmaz, "_" ile). Windows'ta git checkout düşer, CI'nin Windows işleri hiç başlamaz. Denetim test/platform-tasinabilirlik.test.mjs (5. kalıp).
+    (17.10: taban kanıtı "ilk-test:banka-210-….txt" → CI #825 221482c Windows 22+24 kırmızı; Linux'ta görünmedi.)
+
+34. TESTİ GEÇİREN YARDIMCI ÜRÜN DAVRANIŞINI GİZLEMEZ. Soru/onay penceresini kendiliğinden yanıtlayan test yardımcısı (ör. esc-kapat.mjs "Kaydetmeden
+    Kapat") her yanıtı nedeniyle günlüğe yazar ve beklenen "soru var/yok" bildirilir; yanıtlanan her soru meşru mu yanlış mı sınıflanır. (18.10: 2.4.3
+    çekirdeğinde escClose 46 e2e'de soruyu sessizce geçiyordu; kaydedilmiş/temiz formda çıkan yanlış soru yeşil testlerin arkasında kalırdı.)
+
+35. PAKET TAM TESTİ BİTMEDEN BİRLEŞMEZ. Düzeltme paketi ana dala ancak kendi tam `npm test`'i (+ değiştirdiği davranışa dokunan bütün e2e'ler) yeşil
+    görüldükten sonra alınır; "CI zaten koşar" denip birleştirilmez. (18.10: UI/UX A paketi tam test koşmadan birleşti → CI #834 4 kırmızı (cari-243,
+    banka-210-altin), #835 e2e form-izolasyon D2 kırmızı — hepsi UX1/UI7/UI9'un bilinçli değişikliğine uymayan eski beklentiler; ürün hatası değil.)
+36. AJAN BAŞKASININ SÜRECİNİ ÖLDÜRMEZ. Paylaşılan makinede `pkill -f <desen>` / `killall` kullanılmaz; yalnız kendi başlattığı pid'ler (çalışma dizini ile
+    doğrulanarak) durdurulur. (18.10: A paketi ajanı `pkill -f "test/e2e/"` ile kendi kabuğunu ve olası başka ajan koşularını kesti.)
+    Dosya için de aynı: joker desenle silme yok, yalnız kendi oluşturduğu tam yol silinir. (22.10: f1-rapor ajanı `rm -rf /tmp/kahin-cari-*` ile başka ajanların geçici kâhin
+    çıktılarını sildi; o anda koşan kâhin yoktu, kalıcı kanıt depodaydı — zarar yok.)
+
+37. ADAYIN E2E LİSTESİ TAHMİNLE SEÇİLMEZ. Birleştirme adayında (ders 35) "dokunulan" e2e'ler tahminle seçilirse genel davranışı ölçen senaryolar (yenileme/istek
+    sayısı, odak, bildirim) dışarıda kalır; adayda ci.yml'nin BÜTÜN e2e listesi koşulur (CI dışı senaryolar madde 30'da). (22.10.2026: aday 2'de 9 e2e seçildi, senaryo-222
+    "toplam istek ≤ 50" seçilmedi → CI #858 f6e265b e2e KIRMIZI 55/50; aday 2'deki bir paket arka plan yenilemesini artırmıştı.)
+38. KIRMIZININ NEDENİ OKUNUR. Kırmızı kanıt (ders 7) ancak başarısız denetimin iletisinde beklenen neden (iddia edilen davranışın yokluğu) görülünce sayılır;
+    test yanlış öğeyi okuyorsa eski kodda da kırmızıdır ama kanıt değildir; yeni kodda yeşil görülmeden kırmızı tek başına sayılmaz. (22.10: Fatura Ayarları kaşe
+    açıklaması e2e'si `[data-stamp-field] small` ile önizleme kutusundaki "Kaşe / imza yok" yazısını okudu; eski kodda "kırmızı", yeni kodda da kırmızı çıkınca görüldü.)
+39. PENCERE SEÇİCİSİ KONUMA VE KAREYE BAĞLANMAZ. En üstteki pencere `:last-of-type` ile seçilmez: pencereden sonra body'ye eklenen bir div (bildirim kabı, Hızlı
+    Arama paneli, açılır menü) onu boşa düşürür → `${MODAL}:nth-last-child(1 of ${MODAL})`. Pencere açılınca okuma, `is-visible`'ı içeren bir beklemeden sonra yapılır
+    (sınıf bir kare sonra gelir, içerik ondan önce hazırdır); beklenen soru `if (varsa)` ile atlanmaz, beklenir (ders 34). Zorla üretme: test/e2e/pencere-yaris-zorla.mjs.
+    (22.10: CI #861 senaryo-personel-244 12/23, yerelde 64/64; iki ön koşul da aynı imzayı verdi; öbür 33 e2e dosyasında aynı kalıp — iş listesi 7d.)
+40. KÂHİN PROGRAMA UYDURULMAZ. Kâhin ile program ayrışınca kâhinin kuralı, programın davranışı görüldükten SONRA "netleştirilirse" bu aynı el riskidir (ders 5): her netleştirme yalnız
+    ürün sahibinin kararından ya da önceden yazılmış karar metninden türetilir; baş mimarın verdiği netleştirme "BAŞ MİMAR KARARI" diye iş listesinde ve teslim notunda listelenir, kullanıcıya
+    gösterilir; programın davranışı "doğru" diye kabul edilen her netleştirmenin gerekçesi (yaygın uygulama, veri kaybı yok) yazılır. (23.10: aday 17–20'de beş netleştirme — aynı içerikli satır,
+    Devamı güncellemesi, çok satırlı kişi, takvim kalemi çatalı, aylık ücret — programın davranışına bakılarak verildi; gerekçeleri yazıldı, GÖZDEN GEÇİRME 6'da listelendi.)
+41. BÜYÜK YAPISAL DEĞİŞİKLİK TAM KAPIYI BEKLEMEZ. Yeni bir çekirdek modül ya da para/yükleme yoluna giren yapısal değişiklik adaya girince, son dalga kuralına (GÖZDEN GEÇİRME 5) rağmen o adayda BİR KEZ tam `npm test` (yalnız birim/API, ~30 dk; e2e son dalgada) koşulur; dar testler yalnız değişen alanın dosyalarını seçer, kaynak tarayan genel kuralları (K6 statik, yazım, platform) görmez. (23.10: B1 dataset-bonds.mjs aday 17'de girdi, aday 15–24 yalnız dar koştu; K6 statik "para tablosuna yazan her yer bank.post içinde" testi ancak aday 24 tam kapısında kırmızı — 3438/3439 — bir tam kapı boşa gitti; düzeltme aday 25.)
+42. KILAVUZ PDF'İ KAYNAKLA BİRLİKTE ÜRETİLİR. Kılavuz HTML'i değişen sürümde PDF (`docs/kilavuz/pdf-uret.mjs` → `client/kilavuz/`) aynı adayda yeniden üretilir ve `docs/kilavuz/pdf-denetle.mjs`
+    ile denetlenir; güncelleme zip'i ve kurulum `client/` klasörünü taşır, CI yalnız HTML'i denetler. (25.10.2026: 2.4.5'te HTML 2.4.5'e güncellendi, PDF "Sürüm 2.4.4" kaldı; tam kapı ve
+    CI #871 yeşildi — paket ajanı imzalamadan önce yakaladı; yeniden üretildi, pdf-denetle 39/39.)
+43. FARK GÖRÜLDÜKTEN SONRA PARA KURALI KULLANICIYA SORULUR. Kâhin ile program ayrıştıktan sonra para / kapama sırasını belirleyen bir netleştirme gerekiyorsa baş mimar karar vermez;
+    soruyu kullanıcıya iki seçenekli (öneriyle) yazar, yanıt gelene kadar o kural ne kâhinde ne kodda kesinleşir; 5 dk yetkisi bu sorulara uygulanmaz. (25.10.2026: K-c yanlış okunup
+    kâhinin beklentisi iki kez değiştirildi — KS8.3 üretildi, geri alındı; kullanıcı "anayasamızı ve derslerimize göz at" deyince öz denetimde görüldü, kullanıcı "önerini uygula".)
+44. ORTAK AĞAÇTA COMMIT YALNIZ KENDİ YOLLARINLA. Başka ajanın çalıştığı ağaçta `git add -u` / `git add -A` / `commit -a` kullanılmaz; commit'e yalnız adı verilen
+    yollar girer (`git add <yol>`), önce `git status -s` okunur. (30.10.2026: ana oturumun iki belge commit'i 4a3aba3b, 98cd83f1 K0 kâhin ajanının yarım dosyalarını alıp
+    gönderdi; son içerik aynı çıktı, zarar yok — ders 23'ün commit karışması ailesi.)
+45. "KİME KAÇ KEZ" İLKESİ PLANDA YAZILIR. Dış servise bağlı ve durum tutan her özellikte (WhatsApp, e-Belge gönderimi, ödeme, bildirim…) "kime kaç kez" ve "çift işlem" ilkesi
+    (kesin almadıysa sayılmaz / almış olabilirse elenir + onaylı tek yol / aldıysa aynı dönemde elenir, şüphede aynı / çıkmaz yok / taşınan-geri yüklenen veride aynı kural) PLAN aşamasında
+    yazılır ve kullanıcıya onaylatılır; kâhin bu ilkeyle kurulur. Son aday aşamasında yeni kural GİRMEZ (ilkeyle de olsa); çok seyrek çift işlem yolları BİLİNEN SINIR olarak sonraki sürüme.
+    (31.10.2026, kullanıcı "ekle": 2.4.8'de kurallar son adayda tek tek verildi — 15 soru, dar kontrol 3→10 = 8 tur; baş mimarın dondurmadan sonra İLKEYLE eklediği L5 dk10 DÜŞÜK-1'i doğurdu.)
+46. DÜZELTME AJANI TUR BAŞINA YENİ BAŞLAR. Aynı düzeltme ajanı art arda turlarda sürdürülmez (bağlam şişer, sıkıştırılır, önceki turun nedenleri kaybolur, her yama komşusunu bozar); her düzeltme turu temiz bağlamlı yeni ajanla, tasarım notu + önceki turların karar/kanıt özetiyle başlar. Dış servise bağlı ve durum tutan çekirdekte (WhatsApp gönderim/bildirim, e-Belge gönderimi, ödeme) düzeltme ajanının eforu xhigh. Aynı aileden iki dar kontrol üst üste gerileme verirse kullanıcıya hemen sorulur. (01.11.2026, kullanıcı "modeli mi düşük tutuyoruz, bu kadar gerileme olmazdı" → "böyle yapalım ve kısır döngüye girmeyelim": 2.4.8'de tek düzeltme ajanı İş J–Y'yi ~760 bin tokenle yürüttü; dk17 4, dk18 3 gerileme.)
+    (06.11.2026, kullanıcı "işleri bağlamı temiz yeni ajanlara veriyorsun doğru mu?" → "önerini uygula": ÇALIŞAN AJANA EK KAPSAM GÖNDERİLMEZ. Kullanıcı yeni bir karar verince karar, süren ajana SendMessage ile eklenmez; bir sonraki temiz ajana (yeni bakım / yeni tur) verilir. Süren ajana yalnız "bitir ve raporla" ya da kapsamı DARALTAN bildirim gider. Sebep: kâhin bakımı 8'e S54–S57 ve S65–S68, Ç5-K'ye S54–S57, Ç3 tur 3'e S46 sonradan eklendi; bağlam büyür, sıkıştırılır, ayrıntı kaybolur. Önceden eklenmiş kapsam ajan raporunda ayrıca sıkı denetlenir; eksik / karışık çıkan yeni ajana verilir.)
+47. TOPLU İŞTE ÖĞE BAŞINA AĞIR OKUMA YOK; YENİ TOPLU YOL BÜYÜK VERİDE ERKEN ÖLÇÜLÜR. Liste, rapor, önizleme ya da toplu iş hazırlayan kod öğe başına ağır okuma yapmaz (tam cari kartı,
+    bütün hareketlerin JS nesnesine çevrilmesi, öğe başına alt sorgu); yalnız gereken alanlar toplu SQL ile okunur, toplam/devir SQL'de hesaplanır. SQLite eşzamanlı çalışır: tek ağır istek
+    olay döngüsünü kilitler, ofisteki BÜTÜN kullanıcılar bekler → ölçümde yanıt süresinin yanında "olay döngüsü en çok" süresi de okunur. Yeni toplu/rapor yolu planda hacim bütçesiyle yazılır
+    (ör. 2.000 cari ≤ 2 sn) ve son adayı beklemeden, geliştirme sırasında bir kez programın kendi ürettiği büyük veride ölçülür; dar kontrol ve gözden geçirme bu deseni ayrıca arar. Hız
+    düzeltmesi: davranış aynen — eşdeğerlik testi (eski ↔ yeni çıktı birebir) + aynı veri kopyasıyla önce/sonra ölçüm (ders 15); atomik yazma yolunda (ör. "Zaten Kuyrukta" denetimi + iş
+    açma) olay döngüsüne sıra verilmez (eşzamanlı iki istek denetimi birlikte geçer). (01.11.2026, kullanıcı "daha önceki sürümde de böyle bir kod değişikliği ile süreyi kısaltmıştık; bu
+    konuyu da derslere taşıyalım": 2.1.0'da (11.10) banka raporları her açılışta bütün para satırlarını JS'e çeviriyordu — 100.000 satırda 10 kişide p95 12 sn, olay döngüsü 6 sn; SQL toplamla
+    düzeltildi. 2.4.8'de (01.11) WhatsApp önizleme/başlatma her cari için tam kart okuyordu — 2.000 caride 23–26 sn, olay döngüsü kilitli (İş Z); elle toplu gönderim alıcı listesi 2.4.7'den beri
+    aynı desen (2.4.9). İkisi de ancak son adayın ölçek testinde görüldü.)
+48. DOSYAYA DOKUNAN TEST WINDOWS'TA ERKEN KOŞAR. Dosyayı silen / yeniden adlandıran / kilitleyen / bozan yeni test (ve bunu yapan ürün yolu) son adayı beklemeden, yazıldığı
+    gün çalışma dalına itilip GitHub CI'nin Windows işlerinde görülür; ayrı iş dallarında CI yok, yerel kapı yalnız Linux — Linux açık dosyanın silinmesine/adının değişmesine
+    izin verir, Windows vermez. "Program açmayı denedi → sonra dosya değiştirildi" sırası (bozuk/kilitli dosyadan kurtarma) ayrıca denenir; açılış hata verince bağlantı kapanıyor mu
+    Linux'ta /proc/self/fd ile ölçülür. (02.11.2026, kullanıcı "bu hatalar en başından beri varsa neden daha önce çıkmadı": CI #943/#944 Windows'ta İş V/X'in 01.11'de eklenen 7 hücresi —
+    5'i testte beklenmeyen async closeCompany, 2'si 1.x'ten beri üründe openDatabase'in bozuk dosyada bağlantıyı kapatmaması; 31.10 08:31'den beri çalışma dalında CI koşmamıştı.)
+49. İŞ AKIŞI DOSYASI ELLE BİRLEŞİMDEN SONRA AYRIŞTIRILIR. ci.yml / release.yml çakışması elle çözülünce `python3 -I -c "import yaml,sys; yaml.safe_load(open(sys.argv[1]))" <dosya>` ile her iş akışı dosyası ayrıştırılır; ci-kapi-listesi testi geçmesi YETMEZ (satırı metin olarak okur). Gönderimden sonra koşunun İŞ listesi boş ve açılış = kapanış anıysa iş akışı dosyası bozuktur. (06.11.2026: Ç3 birleşiminde kapı listesi birleştirilirken satır sonu taşıyan öğe listeyi iki satıra böldü — 9967cc3b; CI #1045–#1048 hiç iş başlatmadan "failure", ~20 dk dört push CI'siz kaldı; ci-kapi-listesi 54/54 geçmişti.)
+50. SÜRELİ ARKA PLAN İŞİ BEKLEMEZ; ZİNCİR KİLİTLE KURULUR. Süre sınırlı arka plan işine (2 saat) başka işi bekleyen döngü konmaz: bekleme süresi sınırı yer, asıl koşu yarıda kesilir. Sıra `flock <kilit>` ile kurulur ya da iş, öncekinin bildirimi gelince ayrı başlatılır; başka işin çıktısındaki metin işaretine (ör. "BITTI") bağlanan döngü o iş öldürülünce SONSUZA kadar bekler. (06.11.2026: D2 betiği Ç3 koşusunu bekledi, tam npm test 50 dk koştuktan sonra 2 saat sınırında öldü — sonuç yok; birleşik tur 5 betiği D2'nin "BITTI"sini bekleyip asılı kaldı, elle durduruldu; ~1 saat boşa.)
+51. DÜZELTME TESTİN KENDİSİNDEYSE ESKİ KOPYAYA ESKİ TEST GİRER. Kırmızı kanıtta (ders 7, 38) eski kod kopyasına yalnız YENİ eklenen yardımcı (ön yükleme, zorlama betiği) kopyalanır; düzeltmenin yapıldığı test dosyası eski hâliyle kalır — yoksa "eski kod" yeni testi koşar, yeşil verir, kırmızı görülmez. (06.11.2026: banka-230 ön koşul yarışı düzeltmesi testin içindeydi; ana oturum yeni testi eski kopyaya koydu, eski de 37/37 çıktı; yeşilden şüphelenilip eski testle yeniden koşuldu → 31/1, beklenen neden.)
+52. ÖLÇÜM SIRASINDA YÜK BAŞLAMAZ. Tam npm test, e2e yığını, mutasyon da yüktür (ders 15); ölçüm koşusu `flock -x scratchpad/olcum.lock`, yük koşusu `flock -s scratchpad/olcum.lock` ile başlatılır (ölçüm sürerken yük bekler, yükler birbirini beklemez). Ölçüm raporu ölçüm anındaki yük ortalamasını (/proc/loadavg) yazar; yük > çekirdek sayısının yarısıysa ölçüm geçersiz, yinelenir. (06.11.2026: Ç5-K'nin 100.000 nakit satırı ölçümü D2'nin tam npm testiyle aynı anda koştu — yük ~12; yalnız ölçümler olcum.lock alıyordu.)
