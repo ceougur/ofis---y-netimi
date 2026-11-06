@@ -15,6 +15,7 @@ import { trialBalance } from "../server/lib/general-ledger.mjs";
 import { lockDigestOf } from "../server/lib/integrity.mjs";
 import { LATEST_VERSION } from "../server/lib/migrations.mjs";
 import { ADMIN_PASSWORD, createUser, loginAdmin, startTestServer } from "./helpers.mjs";
+import { lockAndWait, waitForFreeze } from "./fixtures/donma-bekle.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const NOW = "2027-01-10T10:00:00+03:00";
@@ -71,7 +72,12 @@ describe("2.5.0 Ç3 — donmuş defter: kilit, ilerletme, geri çekme, kural de�
   const S = () => server.app.ledger?.snapshots;
   const L = () => server.app.ledger;
   const count = (table, where = "") => store.get(`SELECT COUNT(*) AS n FROM ${table}${where ? ` WHERE ${where}` : ""}`).n;
-  const lock = async date => must(`kilit ${date}`, admin.put("/api/admin/period-lock", { lockedUntil: date }));
+  // Ç3 tur 2: uç dondurmayı beklemez (kilit + koşu yazılınca yanıt); donmuş defteri okuyan adımlar dondurmanın bitmesini bekler (test/fixtures/donma-bekle.mjs).
+  // Dönüş: bitmiş görünüm (frozenThrough, freeze) + ucun kendi yanıtı (put).
+  const lock = async date => {
+    const { put, view } = await lockAndWait(admin, date);
+    return { lockedUntil: put.lockedUntil, frozenThrough: view.frozenThrough, freeze: view.freeze, put };
+  };
   before(async () => {
     server = await startTestServer({ now: { time: NOW, fixed: true }, __testLedgerRule: rule, __testFreezeHook: hook });
     admin = await loginAdmin(server);
@@ -86,8 +92,15 @@ describe("2.5.0 Ç3 — donmuş defter: kilit, ilerletme, geri çekme, kural de�
     const live = L().build();
     const result = await lock(LOCK_2026);
     assert.equal(result.lockedUntil, LOCK_2026);
-    assert.equal(result.frozenThrough, LOCK_2026, `uç dondurma bittikten sonra yanıt verir: ${JSON.stringify(result)}`);
+    // Ç3 tur 2 (G3 — beklenti BİLEREK değişti; plan §8 İLERLEME, tasarım notu §18): uç kilit + bekleyen koşu yazılınca yanıt verir, dondurmayı beklemez. Önceden bu satır
+    // "uç dondurma bittikten sonra yanıt verir" (frozenThrough = kilit) diyordu; 1.000.000 satırda istemcinin 30 sn sınırını aşıyordu (kanıt c3t2-yeniden-uret-1m-eski).
+    assert.equal(result.put.frozenThrough, "", `uç yanıtı dondurmadan önce: ${JSON.stringify(result.put)}`);
+    assert.equal(result.put.freeze?.pending?.through, LOCK_2026, "yanıtta bekleyen koşu (arkada donar)");
+    assert.equal(result.put.freeze?.active, true, "yanıtta süren iş");
+    assert.equal(result.frozenThrough, LOCK_2026, `dondurma bitti: ${JSON.stringify(result)}`);
     assert.equal(result.freeze?.running, false);
+    assert.equal(result.freeze?.pending, null);
+    assert.equal(result.freeze?.active, false);
     const state = S().state();
     assert.equal(state.coverage, LOCK_2026);
     assert.equal(state.lock, LOCK_2026);
@@ -261,6 +274,7 @@ describe("2.5.0 Ç3 — donmuş defter: kilit, ilerletme, geri çekme, kural de�
     const [one, two] = await Promise.all([admin.put("/api/admin/period-lock", { lockedUntil: MID_2026 }), admin.put("/api/admin/period-lock", { lockedUntil: LOCK_2026 })]);
     assert.equal(one.status, 200, JSON.stringify(one.data));
     assert.equal(two.status, 200, JSON.stringify(two.data));
+    await waitForFreeze(admin);
     const state = S().state();
     assert.equal(state.coverage, state.lock, `kapsam = kilit: ${JSON.stringify(state)}`);
     assert.equal(state.pending, null);
