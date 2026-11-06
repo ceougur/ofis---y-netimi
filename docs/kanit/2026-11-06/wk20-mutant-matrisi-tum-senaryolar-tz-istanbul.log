@@ -1,0 +1,24 @@
+ok 1 - M263: değerle 9 senaryo ['S35-01-talep-a', 'S59-01-talep-a', 'S59-02-teslim-', 'S70-01-meta-be', 'S70-02-hatirla', 'S70-03-zincir-', 'S70-04-s42-met', 'S70-05-j10-dah', 'S70-06-telefon']; istisnayla 0 []
+ok 2 - M264: değerle 9 senaryo ['S35-01-talep-a', 'S59-01-talep-a', 'S59-02-teslim-', 'S70-01-meta-be', 'S70-02-hatirla', 'S70-03-zincir-', 'S70-04-s42-met', 'S70-05-j10-dah', 'S70-06-telefon']; istisnayla 0 []
+ok 3 - M278: değerle 6 senaryo ['S70-01-meta-be', 'S70-02-hatirla', 'S70-03-zincir-', 'S70-04-s42-met', 'S70-05-j10-dah', 'S70-06-telefon']; istisnayla 0 []
+ok 4 - M279: değerle 3 senaryo ['S70-03-zincir-', 'S70-04-s42-met', 'S70-05-j10-dah']; istisnayla 0 []
+ok 5 - M280: değerle 5 senaryo ['S70-01-meta-be', 'S70-02-hatirla', 'S70-03-zincir-', 'S70-05-j10-dah', 'S70-06-telefon']; istisnayla 0 []
+ok 6 - M281: değerle 9 senaryo ['S35-01-talep-a', 'S59-01-talep-a', 'S59-02-teslim-', 'S70-01-meta-be', 'S70-02-hatirla', 'S70-03-zincir-', 'S70-04-s42-met', 'S70-05-j10-dah', 'S70-06-telefon']; istisnayla 0 []
+ok 7 - M282: değerle 3 senaryo ['S70-01-meta-be', 'S70-02-hatirla', 'S70-03-zincir-']; istisnayla 0 []
+ok 8 - M283: değerle 1 senaryo ['S70-05-j10-dah']; istisnayla 0 []
+ok 9 - M284: değerle 2 senaryo ['S71-01-hatirla', 'S71-02-telefon']; istisnayla 0 []
+ok 10 - M285: değerle 1 senaryo ['S71-01-hatirla']; istisnayla 0 []
+ok 11 - M286: değerle 1 senaryo ['S71-02-telefon']; istisnayla 0 []
+ok 12 - M287: değerle 2 senaryo ['S71-01-hatirla', 'S71-02-telefon']; istisnayla 0 []
+ok 13 - M288: değerle 1 senaryo ['S71-01-hatirla']; istisnayla 0 []
+ok 14 - M289: değerle 4 senaryo ['SW3-03-silme-t', 'S61-02-telefon', 'S70-06-telefon', 'R3T-01-telefon']; istisnayla 0 []
+ok 15 - M290: değerle 4 senaryo ['SW3-03-silme-t', 'S61-02-telefon', 'S70-06-telefon', 'R3T-01-telefon']; istisnayla 0 []
+ok 16 - M291: değerle 1 senaryo ['R3T-01-telefon']; istisnayla 0 []
+ok 17 - M292: değerle 3 senaryo ['S61-02-telefon', 'S70-06-telefon', 'R3T-01-telefon']; istisnayla 0 []
+1..17
+# tests 17
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

@@ -1,0 +1,24 @@
+WK 20 (2.5.0) — WhatsApp kâhini güncellemesi 20: S70 (S59-a = A), S71 (S61-a = A), R3T (BAŞ MİMAR KARARI 06.11 12:33 DÜŞÜK-2)
+Kâhin: test/bagimsiz/whatsapp-248/ (README §25). Kod commit'i e42cc3d8; bütün koşular e42cc3d8'de, ağaç temiz (kanit.mjs satırında "commit e42cc3d", değişmiş dosya yok).
+Taban (eski kâhin): 39d6c28d — kahin/* değişiklikten ÖNCE not defterine alınmış kopya (kahin.py sha256 1b2ea87b27772ba8…); nötr kopya notr_kopya.py ile üretildi.
+Program koduna, sürücüye (surucu.mjs) ve sahte Meta'ya DOKUNULMADI; programa karşı KOŞULMADI.
+
+Dosyalar (her koşu: .log ham çıktı, .json kanit.mjs özeti — çıkış kodu + sayılar + commit + platform):
+- wk20-senaryolar (TZ=UTC), wk20-senaryolar-tz-istanbul (TZ=Europe/Istanbul): senaryolar.py — 398/398 elle beklenen = model; senaryolar.json iki koşuda aynı (sha256 e2f30a78a4a60642…).
+- wk20-kahin (TZ=UTC), wk20-kahin-tz-istanbul: kahin_test.py — 431/431 (F mutasyon 291/291; I17 yeni).
+- wk20-eski-kahinle-ham, -ham-tz-istanbul: yeni 9 + değişen 2 senaryo ESKİ kâhinle (aynen) — 11/11 önceden yazılmış beklentiyle
+  (S70-01…06 "KULLANICIYA SORULMALI S59-a", S71-01/02 "KULLANICIYA SORULMALI S61-a" istisnası; R3T-01, SW3-03, S61-02 değerle — onceki_uyari).
+- wk20-eski-kahinle-notr, -notr-tz-istanbul: aynı 11 senaryo eski kâhinin NÖTR kopyasıyla (yalnız iki hata satırı etkisiz, kural yok) — 11/11 beklenen nedenle değerle kırmızı.
+- wk20-eski-389-tam-sonuc-fark: eski 389 senaryonun tam sonucu eski ↔ yeni senaryolar.json — 387 bayt bayt aynı + 2 beklenen G3 (SW3-03, S61-02); sıra korunuyor; üstte yalnız kararlar + S70/S71/R3T.
+- wk20-mutant-matrisi (yeni + değişen 11 senaryo), wk20-mutant-matrisi-tum-senaryolar-tz-istanbul (398 senaryo): M263, M264, M278–M292 — hepsi değerle, istisnayla 0.
+- wk20-on-tarama.txt: kodlamadan ÖNCE eski kâhin üzerinde dışarıdan sarmalayıcıyla tarama (on_tarama.py; kanit.mjs'siz düz çıktı): hangi eski senaryolar S70 / S71 / R3T durumlarına giriyor.
+- wk20-araclar/: on_tarama.py, eski_kahinle.py, notr_kopya.py, eski_tam_fark.py, mutant_matrisi.py (kâhinin dışında; yalnız kâhin dosyalarını okur).
+
+Yeniden koşma (depo kökünden; eski kâhin kopyası: git archive 39d6c28d test/bagimsiz/whatsapp-248/kahin | tar -x -C <klasör>):
+  TZ=UTC node tools/kanit.mjs kos wk20-senaryolar -- python3 -I test/bagimsiz/whatsapp-248/kahin/senaryolar.py
+  TZ=UTC node tools/kanit.mjs kos wk20-kahin -- python3 -I test/bagimsiz/whatsapp-248/kahin/kahin_test.py
+  python3 -I docs/kanit/2026-11-06/wk20-araclar/notr_kopya.py <eski>/test/bagimsiz/whatsapp-248/kahin <notr klasörü>
+  python3 -I docs/kanit/2026-11-06/wk20-araclar/eski_kahinle.py <eski>/test/bagimsiz/whatsapp-248/kahin test/bagimsiz/whatsapp-248/kahin ham
+  python3 -I docs/kanit/2026-11-06/wk20-araclar/eski_kahinle.py <notr klasörü> test/bagimsiz/whatsapp-248/kahin notr
+  python3 -I docs/kanit/2026-11-06/wk20-araclar/eski_tam_fark.py <eski>/test/bagimsiz/whatsapp-248/kahin/senaryolar.json test/bagimsiz/whatsapp-248/kahin/senaryolar.json
+  TZ=Europe/Istanbul python3 -I docs/kanit/2026-11-06/wk20-araclar/mutant_matrisi.py test/bagimsiz/whatsapp-248/kahin [tum]
