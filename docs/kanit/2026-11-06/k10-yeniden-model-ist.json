@@ -1,0 +1,32 @@
+{
+  "ad": "k10-yeniden-model-ist",
+  "komut": "python3 -I test/bagimsiz/muhasebe/test_model.py",
+  "commit": "d83ccf1c6c3d81498165b0d3fb1a7b71afa230d0",
+  "dal": "k10-birlesim",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T15:59:27.754Z",
+  "sure_sn": 23.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 180,
+    "gecen": 180,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../k10-kanit/2026-11-06/k10-yeniden-model-ist.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-birlesim-ag",
+  "ham_cikti_sha256": "a2ec4923939b7caba11e0aabdc3fee02b0816b425ea45bdf536c19f8a2344329",
+  "ham_cikti_bayt": 333
+}
