@@ -4,7 +4,7 @@
 // ertelenmiş, Şimdi Güncelle, indirme sürerken kip açılması, tutma süresinin dolması); bakım açıkken süreç ölümü.
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { existsSync, mkdtempSync, readFileSync, readdirSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, readdirSync, utimesSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -394,7 +394,10 @@ describe("D2 bakım kipi (G1.1)", () => {
       assert.deepEqual(openIds(), [], "arşiv örneği açılmadı");
       await server.app.maintenance.exit(ROOT_COMPANY_ID, { runId: "a-1" });
       const company = server.app.companies.get(ROOT_COMPANY_ID);
-      // (2) açılış sürerken (arşivin özeti alınırken — ilk bekleme) kip açılır: iş durur, hiçbir şey yazılmaz.
+      // (2) açılış sürerken (arşivin özeti alınırken — ilk bekleme) kip açılır: iş durur, hiçbir şey yazılmaz. Ön koşul (ders 20): özet GERÇEKTEN dosyadan okunur — özet önbelleği
+      // (boy + değişme zamanı) dosyanın zamanı ilerletilerek soğutulur, içerik aynı (önbellek ısınmışsa doğrulama beklemesiz geçer, kip ondan sonra açılırdı).
+      const touched = new Date(Date.now() + 60_000);
+      utimesSync(legacy.file, touched, touched);
       let settled = false;
       const first = server.app.openArchive(company, "2024").finally(() => (settled = true));
       await server.app.maintenance.enter(ROOT_COMPANY_ID, { reason: "devri-yenile", runId: "a-2", label: "001 · Arşiv" });
