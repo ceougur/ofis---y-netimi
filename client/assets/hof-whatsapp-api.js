@@ -225,7 +225,15 @@
         b.state === "stopped" && b.pauseReason ? `<p class="hof-wa-api-wait is-warn"><b>Durduruldu:</b> ${esc(b.pauseReason)}</p>` : "",
       ].join("");
       const writable = state.info?.writable !== false;
-      const rows = (b.jobs || []).map(job => `<tr data-wa-job="${esc(job.id)}" data-wa-job-state="${esc(job.state)}"><td>${esc(job.accountName || "—")}</td><td>${esc(tail(job.phone))}</td><td><span class="hof-wa-api-tag is-${TONE[job.state] || "info"}">${esc(job.stateLabel)}</span></td><td class="hof-wa-api-reason">${esc(job.reason || "")}</td><td>${job.state === "uncertain" && writable ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-wa-api-anyway="${esc(job.id)}">Yine de Gönder</button>` : ""}</td></tr>`).join("");
+      // 2.5.0 W-3: içeriği silinmiş iş (KVKK / 1 yıl) — neden satırda; silinmiş EKSTRE aynı iş üzerinden yeniden gönderilmez (S31), düğme pasif + neden.
+      const erasedStatement = job => Boolean(job.contentErased) && b.kind === "statement";
+      const anyway = job => {
+        if (job.state !== "uncertain" || !writable) return "";
+        if (erasedStatement(job)) return `<button type="button" class="hof-button hof-button-small hof-button-ghost" disabled title="İçeriği silindi; aynı ekstre yeniden gönderilemez. Gerekirse yeni Ekstre gönderimi başlatın." data-wa-api-anyway-off>Yine de Gönder</button>`;
+        return `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-wa-api-anyway="${esc(job.id)}">Yine de Gönder</button>`;
+      };
+      const reasonOf = job => [job.reason || "", job.contentErased ? job.contentErased.text : ""].filter(Boolean).join(" ");
+      const rows = (b.jobs || []).map(job => `<tr data-wa-job="${esc(job.id)}" data-wa-job-state="${esc(job.state)}"${job.contentErased ? " data-wa-job-erased" : ""}><td>${esc(job.accountName || "—")}</td><td>${esc(tail(job.phone))}</td><td><span class="hof-wa-api-tag is-${TONE[job.state] || "info"}">${esc(job.stateLabel)}</span></td><td class="hof-wa-api-reason">${esc(reasonOf(job))}</td><td>${anyway(job)}</td></tr>`).join("");
       const actions = [
         b.state === "running" ? '<button type="button" class="hof-button hof-button-ghost" data-wa-api-act="pause">Duraklat</button>' : "",
         b.state === "paused" && writable ? '<button type="button" class="hof-button" data-wa-api-act="resume">Devam Et</button>' : "",

@@ -101,6 +101,10 @@ const ATLAMA = new Map([
   // S-7 (kâhin güncellemesi 2, K6): Başarısızları Yeniden Dene'de önceki iletisi Sonucu Belirsiz kalan kişi; S-9 (güncelleme 3, D1): yeni toplu işin başlatma özetinde de.
   // "Zaten Kuyrukta" / "Daha Önce Gönderildi" yeniden deneme yanıtında da aynı adla (S-9, D5).
   ["Sonucu Belirsiz", "sonucu_belirsiz"],
+  // S-68 / S-70 / S-76 (README §21.11, §22.13; W-3 programı): KVKK silme talebi / 1 yıl dolumuyla kapanan bekleyen iş ve içeriği silinmiş Ekstre'nin yeniden gönderim elemesi.
+  ["Silme Talebi", "silme_talebi"],
+  ["Saklama Süresi", "saklama_suresi"],
+  ["İçeriği Silindi", "icerik_silindi"],
 ]);
 // S-8: sürücü eşlemelerine bilerek hata (yalnız --mutasyon / --mutasyon-denetimi; programa dokunmaz). null = mutasyon yok.
 let MUTASYON = null;
@@ -447,6 +451,7 @@ async function kos(sen, uc, secenek) {
   const sirketSorgu = s => (s === KOK ? "" : `hofCompany=${encodeURIComponent(sirketKimligi[s])}`);
   const ekle = (url, s) => (sirketSorgu(s) ? `${url}${url.includes("?") ? "&" : "?"}${sirketSorgu(s)}` : url);
   const toplular = {}; // etiket → { sirket, batchIds: [], ilk }
+  const dosyadanDusen = {}; // S-71 / S-80 (W-3): geri yüklemede dosyadan düşen etiket → toplu iş (sonraki geri yüklemede dönebilir)
   const batchEtiket = {}; // program toplu iş kimliği → etiket
   const sonuc = { baslamadi: {}, elenen: {}, olusmadi: [], ayni_istek: {}, onceki_uyari: {}, kontroller: {}, yeniden: {}, listeler: {} };
   const yedekler = {}; // S-5: kâhin yedek adı → programın yedek dosyası adı
@@ -1092,6 +1097,18 @@ async function kos(sen, uc, secenek) {
     // S-5: geri yüklemeden sonra yedekten SONRA açılmış toplu işler şirket dosyasında yoktur (programın ayrıntı ucu 404): izlenen listeden çıkarılır (adıyla notta).
     // Program 404 dışında bir yanıt verirse sürücü durur (okunamayan veri boş sayılmaz, ders 4).
     async function dosyadakiTopluIsler(neden) {
+      // S-71 / S-80 (W-3; README §21.11, §22.13): Y0 → Y1 gibi art arda geri yüklemede önceki yedekte olmayan toplu iş sonraki yedekle DOSYAYA DÖNER — dosyadan düşen etiket
+      // saklanır ve her geri yüklemede yeniden aranır (önceki eşleme düşeni bir daha okumuyordu).
+      for (const [etiket, tp] of Object.entries(dosyadanDusen)) {
+        if (toplular[etiket] || mut("W3-donen-toplu-okunmaz")) continue;
+        const donen = [];
+        for (const id of tp.batchIds) if ((await api(program.admin, "GET", ekle(`/api/workspace/whatsapp/batches/${id}`, tp.sirket))).status === 200) donen.push(id);
+        if (donen.length) {
+          toplular[etiket] = { ...tp, batchIds: donen };
+          delete dosyadanDusen[etiket];
+          notlar.push(`${neden}: ${etiket} toplu işi şirket dosyasına geri döndü`);
+        }
+      }
       for (const [etiket, tp] of Object.entries(toplular)) {
         const kalan = [];
         for (const id of tp.batchIds) {
@@ -1101,7 +1118,10 @@ async function kos(sen, uc, secenek) {
           else throw new Error(`${neden}: ${etiket} toplu işi okunamadı: ${r.status} ${JSON.stringify(r.data).slice(0, 200)}`);
         }
         if (kalan.length) tp.batchIds = kalan;
-        else delete toplular[etiket];
+        else {
+          dosyadanDusen[etiket] = { ...tp, batchIds: [...tp.batchIds] };
+          delete toplular[etiket];
+        }
       }
     }
     // S-3 / S-4: Başarısızları Yeniden Dene / Yine de Gönder yanıtı → kâhinin yeniden.<etiket> = { elenen: {cari: neden}, alinan: [cari], oneri }.
@@ -1153,7 +1173,9 @@ async function kos(sen, uc, secenek) {
         liste.forEach((batch, bi) => {
           for (const job of batch.jobs) {
             if (bi === 0 && elenen.has(job.accountId)) continue; // başlatmada elendi: iş değil
-            if (bi > 0 && job.state === "skipped" && !job.attempt && !job.params?.length && !job.acceptedAt) continue; // yeni toplu işte başlatmada elenen
+            // S-68 / S-76 (W-3): KVKK talebi / 1 yıl dolumuyla kapanan iş ("Silme Talebi" / "Saklama Süresi") başlatmada elenen DEĞİLDİR — içeriği silindiği için params boş görünür.
+            const silmeyleKapandi = /^(Silme Talebi|Saklama Süresi)/.test(String(job.reason || "")) && !mut("W3-silme-kapanisi-elenen-sayilir");
+            if (bi > 0 && job.state === "skipped" && !job.attempt && !job.params?.length && !job.acceptedAt && !silmeyleKapandi) continue; // yeni toplu işte başlatmada elenen
             const anahtar = `${etiket}/${programCari[job.accountId] || job.accountId}`;
             if (!out.has(anahtar)) out.set(anahtar, []);
             out.get(anahtar).push({ job, batch });
@@ -1221,6 +1243,38 @@ async function kos(sen, uc, secenek) {
         _toplu_neden: Object.fromEntries(Object.keys(okuma || {}).map(e => [e, topluDurum(okuma[e]).neden])),
       };
       if (!g.ozet_cikti) k.isler = Object.fromEntries([...Object.entries(isDurumlari)].sort(([a], [b]) => (a < b ? -1 : 1)));
+      // S-62 (README §20.9; W-3 programı): kontrol {icerik: true} — o anki içerik görünümü. Silinmişse (programın iş ayrıntısı contentErased) alanlar null + icerik_silindi;
+      // değilse son sonuçtaki kaynaklar (telefon programdan, değişkenler Meta'ya giden son istekten, PDF / dosya adı Meta'ya giden kopyadan — programın PDF'i kabulden sonra
+      // saklanmaz, 2.4.9 B3). ÇEVİRİ (adlandırma): kâhinin "programın sakladığı PDF"i yerine Meta'ya giden kopya.
+      if (o.icerik) {
+        for (const m of kayit.mesajlar) if (m.medyaId && m.opaque) medyaIs.set(String(m.medyaId), m.opaque);
+        for (const s of sirketler) for (const row of db(s)?.all("SELECT id, media_id FROM wa_jobs WHERE media_id IS NOT NULL") || []) medyaIs.set(String(row.media_id), row.id);
+        k.icerik = {};
+        for (const [anahtar, liste] of [...isler].sort(([a], [b]) => (a < b ? -1 : 1))) {
+          const son = liste.at(-1);
+          if (son.job.contentErased && !mut("W3-icerik-silindi-okunmaz")) {
+            k.icerik[anahtar] = { telefon: null, degiskenler: null, pdf: null, dosya_adi: null, icerik_silindi: true };
+            continue;
+          }
+          const icerikli = [...liste].reverse().find(x => x.job.params?.length) || null;
+          const sablon = son.batch.template;
+          const sonMedya = [...liste].reverse().map(x => [...medyaIs].filter(([, j]) => j === x.job.id).map(([m]) => m).at(-1)).find(Boolean) || null;
+          const pdfKayit = sonMedya ? meta.meta.medyalar.get(String(sonMedya)) : null;
+          const c = g.cariler.find(x => x.id === anahtar.split("/")[1]);
+          let dosya = null;
+          if (icerikli?.job.pdfName) {
+            const on = `Ekstre ${String(icerikli.job.accountName || c?.ad || "").replace(/\s+/g, " ").trim()} `;
+            const ad = icerikli.job.pdfName;
+            dosya = { on_ek: ad.startsWith(on) ? on : ad.replace(/\.pdf$/i, ""), son_ek: ad.slice(-4) };
+          }
+          k.icerik[anahtar] = {
+            telefon: isTelefonu(liste),
+            degiskenler: govdeDegiskenleri(kayit.istekler, new Set(liste.map(x => x.job.id))) || (icerikli ? icerikli.job.params : null),
+            pdf: sablon === "destekofis_ekstre" && pdfKayit ? ekstreOku(pdfText(pdfKayit.icerik)) : null,
+            dosya_adi: sablon === "destekofis_ekstre" ? dosya : null,
+          };
+        }
+      }
       sonuc.kontroller[o.ad] = k;
     }
     function programIsi(etiket, cid, { asil = false } = {}) {
@@ -1409,6 +1463,15 @@ async function kos(sen, uc, secenek) {
         for (const ad of fs.readdirSync(dataDir)) if (ad.startsWith("whatsapp-gonderim.sqlite")) fs.renameSync(path.join(dataDir, ad), path.join(kok, `eski-makine-${ad}`));
         if (acikti) await programAc();
         else notlar.push("TAŞIMA program kapalıyken (açılış sonraki \"ac\" olayında)");
+        return;
+      }
+      if (tur === "kvkk_sil") {
+        // S-61 (README §20.9; W-3 programı): programın KVKK silme talebi ucu (Cari kartı → WhatsApp → Gönderim Kayıtlarını Sil (KVKK); yönetici) O ANDA. Kart telefonu ayrı olay.
+        const p = cariProgram[o.id];
+        if (!p) throw new Error(`EŞLEME BELİRSİZ: kvkk_sil ${o.id} carisi programda yok`);
+        const r = await api(program.admin, "POST", ekle("/api/workspace/whatsapp/kvkk-erase", p.sirket), { accountId: p.id, confirm: true });
+        if (r.status === 200) notlar.push(`KVKK silme talebi ${o.id}: iş ${r.data.data.jobs}, atlanan ${r.data.data.skipped}, elle ${r.data.data.manual}`);
+        else gecersiz.push(`kvkk_sil ${o.id}: silme talebi oluşmadı (${r.status} ${r.data?.code || ""} ${r.data?.error || ""}) — S-61`);
         return;
       }
       if (tur === "sahte_kanca") {
@@ -1683,6 +1746,9 @@ async function kos(sen, uc, secenek) {
         medya_silme: say(medyaSilme),
         atlanma_nedeni: atlandiGonderimde ? atlamaKodu(son.job.reason) : null,
       };
+      // S-62 (README §20.9; W-3 programı): programın iş ayrıntısında içeriği silinmiş (contentErased) son iş → içerik alanları null + icerik_silindi. Meta'ya giden kopya
+      // (gidenDegiskenler, sahte Meta'daki PDF) silinmiş içeriğin yerine GEÇMEZ.
+      if (son.job.contentErased && !mut("W3-icerik-silindi-okunmaz")) Object.assign(isSonucu[anahtar], { telefon: null, degiskenler: null, pdf: null, dosya_adi: null, icerik_silindi: true });
       for (const k of Object.keys(toplam)) toplam[k][cari] = (toplam[k][cari] || 0) + isSonucu[anahtar][k];
       void etiket;
     }
@@ -1875,6 +1941,8 @@ const NORMALLESTIRMELER = [
   // G1 — artı bakiye metninin "(Borçlu)" eki (program balanceText; plan §7a 22 yalnız eksiyi "(Alacaklı)" diye tanımlar, §8 "1.250,00 TL"). Aynı tutar, ek farkı.
   ["G1-borclu-eki", p => {
     for (const v of Object.values(p.isler || p.isler_ornek || {})) if (Array.isArray(v.degiskenler)) v.degiskenler = v.degiskenler.map(x => (typeof x === "string" && x.endsWith(BORCLU) ? x.slice(0, -BORCLU.length) : x));
+    // S-62 (W-3): kontrol {icerik: true} görünümündeki değişkenler de aynı gösterim.
+    for (const k of Object.values(p.kontroller || {})) for (const v of Object.values(k.icerik || {})) if (Array.isArray(v.degiskenler)) v.degiskenler = v.degiskenler.map(x => (typeof x === "string" && x.endsWith(BORCLU) ? x.slice(0, -BORCLU.length) : x));
     return p;
   }],
   // G2 — toplu iş düzeyi gösterim: program geri yükleme/taşınmada toplu işi "Durduruldu", lisans/24 saat sorusunda "Duraklatıldı" yapar; kâhinde toplu iş "aktif"
@@ -2122,6 +2190,10 @@ const MUTASYONLAR = [
   ["S30-tum-araligi-okunmaz", "J11-01*,J11-02*,ICERIK-08*,J12-02*", "S-30 Tüm Hareketler PDF dönemi okunur"],
   ["S32-degiskenler-programdan", "ICERIK-09*,J12-01*,J12-03*", "S-32 değişkenler Meta'ya gidenden"],
   ["SW-teslim-suresi-verilmez", "W1-03*,TARIH-02*,W2-02*", "S-33 Meta'nın şablon listesindeki teslim süresi (teslim_suresi_sn → message_send_ttl_seconds) sahte Meta'ya verilir"],
+  // W-3 (2.5.0; README §20.9 S-61/S-62, §21.11 S-68/S-71, §22.13 S-76/S-80): içerik silindi okuması, silmeyle kapanan işin elenen sayılmaması, art arda geri yüklemede dönen toplu iş.
+  ["W3-icerik-silindi-okunmaz", "SW3-01*,SW3-03*,S31-01*", "S-62 programın contentErased'i → içerik alanları null + icerik_silindi"],
+  ["W3-silme-kapanisi-elenen-sayilir", "S30-01*,S35-01*", "S-68 / S-76 Silme Talebi / Saklama Süresi ile kapanan iş başlatmada elenen değildir"],
+  ["W3-donen-toplu-okunmaz", "S32-01*,S38-01*", "S-71 / S-80 art arda geri yüklemede (Y0 → Y1) dosyaya dönen toplu iş"],
 ];
 
 const sonuclar = [];
