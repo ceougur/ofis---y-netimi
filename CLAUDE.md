@@ -402,8 +402,8 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
       İLERLEME), önce 1 M'de yeniden üretim; ledger-snapshots.mjs'e dokunmaz). Ç3 tur 1 + tur 2 birleşince BİRLEŞİK Ç3 TUR 1-2 DAR KONTROL.
   (3) BİRLEŞİK TUR 3 (a0712b8dfbfc9c5d9; high; taban 3360687f; YAN-A, YAN-B, taksit / stok kartı PUT sürümü (önce yeniden üret), hof-stock.js:450, e2e PUT sayımı (DÜŞÜK-3); ledger dosyalarına dokunmaz).
   (4) Ç2 TUR 1 DAR KONTROL (ac32450bbb47e5f23; xhigh; fark 1e68ad05..f4763430; G4 expected() every-kipi çağıranları, göç 46 yerinde değişim).
-  SORULDU, YANIT BEKLİYOR (C; hepsinde öneri A; para / kapama / kime → 5 dk yetkisi YOK): S14 (R4 faturaya bağlı çek şüpheli caride hangi hesap), S15 (R5 kartlı faturanın İptal Et'i), S16 (S7-c Sonucu Belirsiz +
-  şüpheli + Yine de Gönder), S17 (S7 × (5) tutar sınırı), S18 (S11 avans evrak), S19 (kilit ilerletme), S20 (S12 × geri yükleme), S21 (POS valörü resmî tatil). Yanıtlar D'ye AYNEN; kâhin + Ç5 / Ç7 atamaları.
+  YANITLANDI 06.11 04:50 (kullanıcı "benden beklediğin cevapların hepsine A yap"; hepsi A, tam metin D): S14 (R4 faturaya bağlı çek şüpheli caride hangi hesap), S15 (R5 kartlı faturanın İptal Et'i), S16 (S7-c Sonucu Belirsiz +
+  şüpheli + Yine de Gönder), S17 (S7 × (5) tutar sınırı), S18 (S11 avans evrak), S19 (kilit ilerletme), S20 (S12 × geri yükleme), S21 (POS valörü resmî tatil). → KÂHİN BAKIMI 4 (S14, S15, S18–S21) + WK 13 (S16, S17), Ç5 / Ç7 atamaları D'de.
   BEKLEYEN: bekleyen kanıt not defterinde bekleyen-kanit/2026-11-06/2026-11-06/ (c2t1-birlesim-komsu-utc) → sonraki kod birleşimiyle docs/kanit'e. AH (repairOwnCards 100 bin 101,7 sn; veri c3-olcum-veri) kod ajanı
   yeri açılınca. WK bakımı (karar (5) "bize alacaklı kişiye hatırlatma gitmez" WK'de yok) Ç5 öncesi. Kilit iletisi (S11 sunumu) Ç5'te baş mimar.
   SIRADAKİ: Ç3 tur 1/2 + dar kontrol → Ç5 (+B1, P1, KG-15/16, S7/S7-a/b, S8, S11, S12, kararlar (1)(2)(3)(5); S14/S16/S17/S18/S19/S20 yanıtları) ‖ Ç7a → Ç7b (+(4)(6), KG-23, P5, ALT-90, S15, S21) → Ç6 → MA →
