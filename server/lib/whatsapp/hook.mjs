@@ -14,6 +14,9 @@
 //   GET  ?hub.mode=subscribe&hub.verify_token=…&hub.challenge=… → 200 challenge (düz metin) | 403
 //   POST { object, entry[].changes[] { field: "messages", value: { metadata.phone_number_id, statuses[] } } } → 200 (durumlar yazılır; gelen ileti / öbür alanlar
 //        SAKLANMAZ — kapsam dışı)
+// 2.5.0 WhatsApp tur 1 (KULLANICI KARARLARI S33, S41, S43 = A — 06.11.2026; tasarım docs/erp/WA-TUR1-TASARIM.md): "bildirim yolu çalışıyor" işareti yalnız ŞİRKET düzeyinde ve
+// şirketin kipine göre (Yol 2'de yalnız imzalı, tanınan bildirim) — WABA düzeyinde işaret konmaz (deliver açıklaması). Elle Bağla'nın uygulama düzeyi adresine gelen bildirim
+// (Meta'da alternatif adres yokken) kaydı olan WABA'nınsa AYNI işleme yolundan geçer ve Meta'daki adres hemen yeniden denetlenir (appLevel).
 import { PROBE_CLOSED, isLockError } from "../db.mjs";
 import { HOOK_PATH, sha256 } from "./connection.mjs";
 import { META_D0 } from "./meta-graph.mjs";
@@ -50,12 +53,12 @@ async function readBody(req, max) {
 
 /**
  * @param {object} o
- * @param {object} o.hooks makine defteri (lib/whatsapp/defter.mjs: hookByPath, companyOfWamid, companyOfJob, hookSeen)
+ * @param {object} o.hooks makine defteri (lib/whatsapp/defter.mjs: hookByPath, hookOf, companyOfWamid, companyOfJob, pendingClaims)
  * @param {(id: string) => object|null} o.companyOf şirket kimliği → şirket kaydı
  * @param {(company: object) => object} o.appFor şirketin program örneği (app.mjs appFor; meşgulse HttpError 503 atar)
  * @param {(req) => { ok: boolean, signed?: boolean }} o.verifyMark kapıcı işareti (lib/mobile-sync.mjs kancaIsareti)
  * @param {(companyId: string, wabaId: string) => "manual"|"embedded"|null} o.modeOf şirketin o WABA'daki bağlantı kipi, dosyası açılamazken de (lib/whatsapp/hub.mjs modeOf)
- * @param {object|null} o.appWebhook Elle Bağla'nın uygulama düzeyi webhook adresi (lib/whatsapp/app-webhook.mjs matchesPath / matchesVerify)
+ * @param {object|null} o.appWebhook Elle Bağla'nın uygulama düzeyi webhook adresi (lib/whatsapp/app-webhook.mjs matchesPath / matchesVerify / rechecks)
  */
 export function createWhatsappHook({ hooks, companyOf, companies = () => [], appFor, verifyMark = () => ({ ok: true, signed: false }), modeOf = () => null, appWebhook = null, log = console, maxBytes = HOOK_MAX_BYTES, now = () => new Date() }) {
   // 2.5.0 WY (2.4.8 dar kontrol 18 DÜŞÜK "Yol 2'de imzasız bildirim 503 yolunda deftere yazılıyor"; plan docs/erp/WHATSAPP-PAKETI-2.5.0-PLANI.md §1 WY): Yol 2 ("WhatsApp'ı
@@ -115,16 +118,101 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
       else out.ignored += 1;
     }
   }
+  // ---------- 2.5.0 WhatsApp tur 1: S41 = A (uygulama düzeyi adres) — tasarım docs/erp/WA-TUR1-TASARIM.md §3 ----------
+  // "Bu kurulumda kaydı olan WABA": makine defterinde Bildirim Yolu kaydı olan (kaldırılmış kayıt dahil — alternatif adresin geç bildirimleri de böyle kabul edilir) ya da bir
+  // şirketin o WABA'daki kipi bilinen WABA. Kaydı olmayan WABA'nın bildirimi uygulama düzeyi adreste düşer (200; işlenmez, saklanmaz).
+  function registeredWaba(wabaId) {
+    if (!wabaId) return false;
+    if (hooks?.hookOf?.(wabaId)) return true;
+    return (companies() || []).some(company => company?.id && modeOf(company.id, wabaId));
+  }
+  const hasStatuses = entries => entries.some(entry => (Array.isArray(entry?.changes) ? entry.changes : []).some(change => change?.field === META_D0.hookEnvelope.field && Array.isArray(change?.value?.statuses) && change.value.statuses.length));
+  const describe = result => {
+    if (!result) return "sonuç yok";
+    if (result.verified) return "adres Meta'da kayıtlı";
+    if (result.registered) return "adres Meta'ya yeniden kaydedildi";
+    if (result.conflict) return "çakışma";
+    if (result.failed) return `kaydedilemedi: ${String(result.failed).slice(0, 300)}`;
+    return `atlandı: ${result.skipped || "?"}`;
+  };
+  // "Meta'daki adres hemen yeniden denetlenir": o WABA'ya bağlı bir şirketin Bağlantıyı Sına yolu (connection.ensureHook force — Meta'daki kayıtlı alternatif adres okunur,
+  // programınki değilse / yoksa yeniden kaydedilir). Şirket: önce bildirimin sahipleri, sonra o WABA'da kipi bilinenler; kaydı o WABA'da, arka planda yazılabilir
+  // (BS-7 şema kapısı + yazma kilidi: kapılı şirkete hiç yazılmaz), lisans yazılabilir, belirteç süresi dolmamış İLK şirket. Sıklık app-webhook.mjs rechecks'te.
+  async function recheckAddress(wabaId, entries) {
+    const ids = [];
+    for (const entry of entries)
+      for (const change of Array.isArray(entry?.changes) ? entry.changes : [])
+        for (const status of Array.isArray(change?.value?.statuses) ? change.value.statuses : []) {
+          const owner = hooks.companyOfWamid?.(String(status?.id || "").slice(0, 200));
+          if (owner?.wabaId === wabaId) ids.push(String(owner.companyId));
+        }
+    for (const company of companies() || []) if (company?.id && modeOf(company.id, wabaId)) ids.push(String(company.id));
+    for (const id of [...new Set(ids)]) {
+      const company = companyOf(id);
+      if (!company) continue;
+      let context;
+      try {
+        context = appFor(company)?.context;
+      } catch {
+        continue; // açılamayan şirket (geri yükleme sürüyor, bozuk dosya…) atlanır
+      }
+      const connection = context?.whatsapp?.connection;
+      const record = connection?.read?.();
+      // Belirteçsiz kayıt ensureHook'ta atlanır (mühürlü belirtece yalnız bağlantı modülü dokunur — whatsapp-w1-baglanti kaynak taraması).
+      if (!record || record.wabaId !== wabaId) continue;
+      if (context.canWriteInBackground?.() === false) continue;
+      if (context.license?.writable?.() === false) continue;
+      if (connection.tokenStatus?.(record)?.state === "expired") continue;
+      const result = await connection.ensureHook(context.mobileRemote?.publicUrl?.() || "", { force: true });
+      if (result?.skipped === "no-connection") continue; // belirteçsiz kayıt: sıradaki şirket
+      log.info?.(`WhatsApp: durum bildirimi uygulama düzeyi adrese geldi; Meta'daki bildirim adresi yeniden denetlendi (${describe(result)}).`);
+      return result;
+    }
+    log.warn?.("WhatsApp: durum bildirimi uygulama düzeyi adrese geldi; Meta'daki bildirim adresini denetleyecek bağlı şirket bulunamadı (bakım turu yine dener).");
+    return null;
+  }
   // 2.5.0 WE: Elle Bağla'nın UYGULAMA DÜZEYİ webhook adresi (lib/whatsapp/app-webhook.mjs; Meta uygulama paneli → Configure Webhooks). GET: Meta'nın doğrulaması (bu kurulumun
-  // belirteci → hub.challenge, yoksa 403). POST: 200 ile kabul — İŞLENMEZ, SAKLANMAZ, bildirim yolu işareti (hookSeen) konmaz (durum bildirimi WABA'nın alternatif adresine gelir).
-  async function appLevel(req, res, url, method) {
+  // belirteci → hub.challenge, yoksa 403). POST (S41 = A): entry.id'si kaydı olan WABA'nın bildirimleri alternatif adresin AYNI işleme yolundan (deliver) geçer; kaydı olmayan
+  // WABA'nınki düşer. Kaydı olan WABA'nın durum bildirimi geldiyse Meta'daki adres arka planda (yanıt beklemeden) yeniden denetlenir.
+  async function appLevel(req, res, url, method, mark) {
     if (method === "GET") {
       const token = url.searchParams.get("hub.verify_token") || "";
       if (url.searchParams.get("hub.mode") !== "subscribe" || !appWebhook.matchesVerify(token)) return failure(res, 403, "whatsapp-hook-verify", "Doğrulama belirteci geçersiz.");
       return reply(res, 200, String(url.searchParams.get("hub.challenge") || "").slice(0, 200), "text/plain; charset=utf-8");
     }
-    if (!(await readBody(req, maxBytes))) return failure(res, 413, "whatsapp-hook-large", "İstek çok büyük.");
-    return reply(res, 200, { ok: true });
+    const payload = await readPayload(req, res);
+    if (payload === undefined) return;
+    const batches = new Map(); // WABA (entry.id) → entry[]
+    for (const entry of Array.isArray(payload?.entry) ? payload.entry : []) {
+      const wabaId = String(entry?.id ?? "").slice(0, 64);
+      if (!registeredWaba(wabaId)) continue;
+      batches.set(wabaId, [...(batches.get(wabaId) || []), entry]);
+    }
+    if (!batches.size) return reply(res, 200, { ok: true });
+    for (const [wabaId, entries] of batches) {
+      if (!hasStatuses(entries)) continue;
+      appWebhook.rechecks?.request(wabaId, () =>
+        recheckAddress(wabaId, entries).catch(error => {
+          log.warn?.(`WhatsApp: Meta'daki bildirim adresi yeniden denetlenemedi (${error?.code || error?.message || error}); bakım turu yine dener.`);
+          return null;
+        }),
+      );
+    }
+    return deliver(res, batches, mark.signed === true);
+  }
+  /** Gövdeyi okur ve ayrıştırır; olmazsa yanıtı yazar ve undefined döner. */
+  async function readPayload(req, res) {
+    const body = await readBody(req, maxBytes);
+    if (!body) {
+      failure(res, 413, "whatsapp-hook-large", "İstek çok büyük.");
+      return undefined;
+    }
+    try {
+      return JSON.parse(body.toString("utf8"));
+    } catch {
+      failure(res, 400, "whatsapp-hook-json", "İstek okunamadı.");
+      return undefined;
+    }
   }
   async function handle(req, res) {
     const url = new URL(String(req.url || "/"), "http://kanca.invalid");
@@ -135,7 +223,7 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
     const mark = verifyMark(req);
     if (!mark?.ok) return failure(res, 401, "whatsapp-hook-mark", "İstek kapıcıdan gelmedi.");
     const hook = hooks?.hookByPath(sha256(secret)) || null;
-    if (!hook && appWebhook?.matchesPath(secret)) return appLevel(req, res, url, method);
+    if (!hook && appWebhook?.matchesPath(secret)) return appLevel(req, res, url, method, mark);
     if (!hook) return failure(res, 404, "whatsapp-hook-missing", "Bu adres uzaktan erişime açık değil.");
     if (method === "GET") {
       const token = url.searchParams.get("hub.verify_token") || "";
@@ -143,43 +231,50 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
       if (!ok) return failure(res, 403, "whatsapp-hook-verify", "Doğrulama belirteci geçersiz.");
       return reply(res, 200, String(url.searchParams.get("hub.challenge") || "").slice(0, 200), "text/plain; charset=utf-8");
     }
-    const body = await readBody(req, maxBytes);
-    if (!body) return failure(res, 413, "whatsapp-hook-large", "İstek çok büyük.");
-    let payload;
-    try {
-      payload = JSON.parse(body.toString("utf8"));
-    } catch {
-      return failure(res, 400, "whatsapp-hook-json", "İstek okunamadı.");
-    }
-    const signed = mark.signed === true;
+    const payload = await readPayload(req, res);
+    if (payload === undefined) return;
+    return deliver(res, new Map([[hook.wabaId, Array.isArray(payload?.entry) ? payload.entry : []]]), mark.signed === true);
+  }
+  /**
+   * TEK işleme yolu — WABA'nın alternatif adresi ve (S41) uygulama düzeyi adres. batches: WABA → entry[] (alternatif adreste WABA gizli yolun kaydından, uygulama düzeyinde
+   * entry.id'den). signed: kapıcı Meta imzasını DestekOfis uygulama sırrıyla doğruladı ("wa1").
+   * BİLDİRİM YOLU İŞARETİ (KULLANICI KARARLARI S33 = A, S43 = A; tasarım §2 — işaret kipe göre, ŞİRKET + İMZA düzeyinde): WABA düzeyinde işaret (makine defteri hook_seen)
+   * KONMAZ — 3fe5a92d'ye dek her POST, imza ve tanınma denetiminden önce koyuyordu. İşaret yalnız şirket düzeyinde: aşağıda şirketin işlemesine verilen (sahibi bu kurulumun o
+   * şirketi, WABA'sı bildirimin WABA'sı; Yol 2'de YALNIZ imzalı) bildirim queue.applyStatuses'ta koyar. Tanınmayan (bu kurulumun göndermediği) wamid, Yol 2'de imzasız
+   * bildirim ve başka şirketin bildirimi bir şirketi işaretlemez. Tanınma: wamid → (yalnız imzalı) iş kimliği → taşınan veride dosya.
+   */
+  async function deliver(res, batches, signed) {
     // 2.4.8 İş P1 (c2): makine defteri başka süreçte kilitliyse (kısa sınama) durumlar 10 sn beklemeden yazılmaz → 503, Meta yeniden dener (P3 ile aynı yanıt).
     const ledgerWritable = hooks.probeWritable?.();
     if (ledgerWritable === false || ledgerWritable === PROBE_CLOSED) return failure(res, 503, "whatsapp-hook-busy", "Şirket şu anda açılamıyor; bildirim yeniden denenecek.");
-    hooks.hookSeen?.(hook.wabaId, now().toISOString());
-    // Durumlar şirkete göre toplanır (wamid → kabulü yazan şirket; imzalı olayda iş kimliği → talebi yazan şirket). Aynı WABA'nın olayı değilse düşer.
-    const groups = new Map(); // şirket → [{ phoneNumberId, statuses[] }]
+    // Durumlar şirket + WABA'ya göre toplanır (wamid → kabulü yazan şirket; imzalı olayda iş kimliği → talebi yazan şirket). Aynı WABA'nın olayı değilse düşer.
+    const groups = new Map(); // `${şirket}|${WABA}` → [{ phoneNumberId, status, owner }]
     const out = { applied: 0, ignored: 0, unknown: 0, unsigned: 0 }; // unsigned (2.5.0 WY): Yol 2'de imzası doğrulanamadığı için yazılmayan
-    let unowned = 0; // İş T A6: hiçbir şirkette sahibi bulunamayan bildirim
+    const unowned = new Map(); // İş T A6: WABA → hiçbir şirkette sahibi bulunamayan bildirim sayısı
     const lookup = { busy: false }; // İş U6: dosya araması sırasında geçici olarak açılamayan şirket var mı
-    for (const entry of Array.isArray(payload?.entry) ? payload.entry : []) {
-      for (const change of Array.isArray(entry?.changes) ? entry.changes : []) {
-        if (change?.field !== META_D0.hookEnvelope.field || !Array.isArray(change?.value?.statuses)) continue; // D0-18
-        const phoneNumberId = String(change.value.metadata?.phone_number_id || "");
-        for (const status of change.value.statuses) {
-          const wamid = String(status?.id || "").slice(0, 200);
-          const owner = hooks.companyOfWamid(wamid) || (signed ? hooks.companyOfJob(String(status?.biz_opaque_callback_data || "").slice(0, 120)) : null) || movedOwnerOf(wamid, lookup);
-          if (!owner || owner.wabaId !== hook.wabaId) {
-            out.unknown += 1;
-            if (!owner) unowned += 1;
-            continue;
+    for (const [wabaId, entries] of batches) {
+      for (const entry of entries) {
+        for (const change of Array.isArray(entry?.changes) ? entry.changes : []) {
+          if (change?.field !== META_D0.hookEnvelope.field || !Array.isArray(change?.value?.statuses)) continue; // D0-18
+          const phoneNumberId = String(change.value.metadata?.phone_number_id || "");
+          for (const status of change.value.statuses) {
+            const wamid = String(status?.id || "").slice(0, 200);
+            const owner = hooks.companyOfWamid(wamid) || (signed ? hooks.companyOfJob(String(status?.biz_opaque_callback_data || "").slice(0, 120)) : null) || movedOwnerOf(wamid, lookup);
+            if (!owner || owner.wabaId !== wabaId) {
+              out.unknown += 1;
+              if (!owner) unowned.set(wabaId, (unowned.get(wabaId) || 0) + 1);
+              continue;
+            }
+            const key = `${owner.companyId}|${wabaId}`;
+            const list = groups.get(key) || [];
+            list.push({ phoneNumberId, status, owner });
+            groups.set(key, list);
           }
-          const list = groups.get(owner.companyId) || [];
-          list.push({ phoneNumberId, status, owner });
-          groups.set(owner.companyId, list);
         }
       }
     }
-    for (const [companyId, items] of groups) {
+    for (const items of groups.values()) {
+      const { companyId, wabaId } = items[0].owner;
       const company = companyOf(companyId);
       if (!company) {
         ledgerOnly(items, items[0].owner, signed, out); // İş U (a): silinmiş şirket → yalnız defter
@@ -208,10 +303,11 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
       if (app?.context?.canWriteInBackground?.() === false) return failure(res, 503, "whatsapp-hook-busy", "Şirket şu anda açılamıyor; bildirim yeniden denenecek.");
       const wa = app?.context?.whatsapp;
       const record = wa?.connection?.read?.();
-      if (!wa?.queue || !record || record.wabaId !== hook.wabaId) {
+      if (!wa?.queue || !record || record.wabaId !== wabaId) {
         out.ignored += items.length;
         continue;
       }
+      // Yol 2'de imzasız bildirim şirketin işine verilmez → queue.applyStatuses çağrılmaz → bildirim yolu işareti de konmaz (S33 = A).
       if (record.mode === "embedded" && !signed) {
         out.unsigned += items.length;
         continue;
@@ -230,12 +326,14 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
     // PENDING_MS içinde) varsa bildirim o isteğin olabilir (Meta durumu yanıttan önce yollayabilir) → 503, Meta yeniden dener; yanıt işlenince tanınır. Pencere SINIRLI:
     // daha eski sonuçsuz talep toparlamada "Sonucu Belirsiz" olur; pencere dışında ya da bekleyen talep yokken 200 (yabancı iletiler — aynı WABA'yı başka araçla kullanan
     // müşteri — Meta'yı sonsuz yeniden denemeye itmez). BİLİNEN SINIR: pencere içinde yabancı iletilerin durumları da 503 alır; sayısı günlüğe yazılır.
-    if (unowned && lookup.busy) {
-      log.warn?.(`WhatsApp durum bildirimi: ${unowned} bildirim tanınmadı, bir şirket şu an açılamıyor → 503 (Meta yeniden deneyecek).`);
+    const unownedCount = [...unowned.values()].reduce((sum, n) => sum + n, 0);
+    if (unownedCount && lookup.busy) {
+      log.warn?.(`WhatsApp durum bildirimi: ${unownedCount} bildirim tanınmadı, bir şirket şu an açılamıyor → 503 (Meta yeniden deneyecek).`);
       return failure(res, 503, "whatsapp-hook-busy", "Şirket şu anda açılamıyor; bildirim yeniden denenecek.");
     }
-    if (unowned && hooks.pendingClaims?.(hook.wabaId, new Date(now().getTime() - PENDING_MS).toISOString()) > 0) {
-      log.warn?.(`WhatsApp durum bildirimi: ${unowned} bildirim tanınmadı, yanıtı beklenen istek var → 503 (Meta yeniden deneyecek).`);
+    const since = new Date(now().getTime() - PENDING_MS).toISOString();
+    if ([...unowned].some(([wabaId, n]) => n > 0 && hooks.pendingClaims?.(wabaId, since) > 0)) {
+      log.warn?.(`WhatsApp durum bildirimi: ${unownedCount} bildirim tanınmadı, yanıtı beklenen istek var → 503 (Meta yeniden deneyecek).`);
       return failure(res, 503, "whatsapp-hook-pending", "Bildirim henüz eşleşmedi; yeniden denenecek.");
     }
     if (out.applied || out.unknown) log.info?.(`WhatsApp durum bildirimi: ${out.applied} yazıldı, ${out.unknown} tanınmadı, ${out.ignored} değişmedi.`);

@@ -1,8 +1,9 @@
 // 2.5.0 WE — "Elle Bağla"nın UYGULAMA DÜZEYİ webhook bilgileri (Callback URL + Verify token) programda (plan docs/erp/WHATSAPP-PAKETI-2.5.0-PLANI.md §1 WE; 2.4.9 teslim notu (d)).
 // Hedef (plandan / görev metninden): program iki değeri kendisi gösterir — kurulum başına üretilen belirteç (yalnız yöneticiye görünür) ve kapıcıdan geçen adres; kılavuzdaki
 // "DestekOfis desteğinden alın" kalkar. Belirteç gizli bilgidir: günlüğe, yedeğe / dosyaya (açık hâli), hata iletisine, başka uçların yanıtına girmez; yetkisiz kullanıcı göremez.
-// Meta'nın "Verify and save" doğrulaması (GET hub.verify_token → hub.challenge) bu adreste geçer; adrese düşen POST kabul edilir ama İŞLENMEZ (teslim / sayaç / bildirim yolu
-// işareti değişmez — "kime kaç kez" kuralları aynen).
+// Meta'nın "Verify and save" doğrulaması (GET hub.verify_token → hub.challenge) bu adreste geçer. Adrese düşen POST — 2.5.0 WhatsApp tur 1, KULLANICI KARARI S41 = A (06.11.2026;
+// eski "İŞLENMEZ" beklentisinin yerine): kaydı olan WABA'nın bildirimi alternatif adresle AYNI kurallarla işlenir (Yol 1 imzasız kabul); ayrıntılı hücreler
+// test/whatsapp-tur1-bildirim-yolu-250.test.mjs.
 // Düzenek: GERÇEK program + yerel sahte Meta (aynı el — kâhin DEĞİL, ders 5) + programın uzak dinleyicisi (kapıcının geçirdiği istek; kapıcı yokken işaret denetimi yok).
 // Ders 30: lisans servisi yerel ölü adres. Ders 13: sahte saat. TZ=UTC ve TZ=Europe/Istanbul. Eski kodda (taban f5b34f31) uç yok → 404 (beklenen neden: program göstermiyor).
 // Ders 48 (Windows): bir hücre secret.key'i DEĞİŞTİRİR (program kapalıyken; veri başka bilgisayara taşındı benzetimi).
@@ -107,7 +108,7 @@ describe("2.5.0 WE — Elle Bağla webhook bilgileri: program gösterir, kurulum
     }
   });
 
-  it("WE-2 Meta doğrulaması: GET doğru belirteç → 200 challenge, yanlış / eksik → 403; POST 200 ama İŞLENMEZ (iş Meta Kabul Etti kalır, defterde teslim ve bildirim yolu işareti yok); WABA adresi aynen çalışır", { timeout: 120_000 }, async () => {
+  it("WE-2 Meta doğrulaması: GET doğru belirteç → 200 challenge, yanlış / eksik → 403; POST (S41 = A) kaydı olan WABA'nınsa İŞLENİR (Yol 1: iş Teslim Edildi, defterde teslim; WABA düzeyinde işaret yok — tur 1); WABA adresi aynen çalışır", { timeout: 120_000 }, async () => {
     const ctx = await startWa({ maxCompanies: 2, env: DEAD });
     try {
       ctx.server.app.mobileRemote.setPublicUrl(PUBLIC);
@@ -140,8 +141,9 @@ describe("2.5.0 WE — Elle Bağla webhook bilgileri: program gösterir, kurulum
       const before = ledger();
       const post = await raw(base, "POST", `/wa/kanca/${appPath}`, statusEvent([{ id: job.wamid, status: "delivered", timestamp: String(Math.floor(ctx.clock().getTime() / 1000)), recipient_id: "905334445580" }]));
       assert.deepEqual([post.status, post.text], [200, '{"ok":true}'], "uygulama düzeyi adrese POST kabul edilir");
-      assert.equal((await ctx.jobs(batch.data.data.batch.id))[0].state, "accepted", "POST işlenmedi: iş Meta Kabul Etti");
-      assert.deepEqual(ledger(), before, "defterde teslim ve bildirim yolu işareti değişmedi");
+      assert.equal((await ctx.jobs(batch.data.data.batch.id))[0].state, "delivered", "S41 = A: POST işlendi (Yol 1 imzasız kabul) — iş Teslim Edildi");
+      assert.deepEqual(ledger(), { teslim: before.teslim + 1, isaret: before.isaret }, "defterde teslim +1; WABA düzeyinde bildirim yolu işareti yok (tur 1: işaret şirket düzeyinde)");
+      await ctx.wa.appWebhook.rechecks?.settled(); // arka plandaki adres denetimi bitsin (sunucu kapanmadan)
       const hookGet = await raw(base, "GET", `/wa/kanca/${new URL(sub.override_callback_uri).pathname.split("/").pop()}?hub.mode=subscribe&hub.verify_token=${encodeURIComponent(sub.verify_token)}&hub.challenge=77`);
       assert.deepEqual([hookGet.status, hookGet.text], [200, "77"], "WABA'nın bildirim adresi aynen doğrulanır");
       // Uygulama düzeyi belirteç WABA adresini doğrulamaz; WABA belirteci uygulama düzeyi adresi doğrulamaz.

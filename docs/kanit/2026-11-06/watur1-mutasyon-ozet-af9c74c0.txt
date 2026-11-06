@@ -1,0 +1,46 @@
+uygulandı M1-her-post-waba-isareti → server/lib/whatsapp/hook.mjs
+geri alındı M1-her-post-waba-isareti
+M1-her-post-waba-isareti cikis=1 pass=20 fail=6 kirmizi: T1-1 T1-3 T1-5 T1-7 T1-8 WE-2 
+uygulandı M2-imzasiz-waba-isareti → server/lib/whatsapp/hook.mjs
+geri alındı M2-imzasiz-waba-isareti
+M2-imzasiz-waba-isareti cikis=1 pass=23 fail=3 kirmizi: T1-1 T1-7 WE-2 
+uygulandı M3-imzali-waba-isareti → server/lib/whatsapp/hook.mjs
+geri alındı M3-imzali-waba-isareti
+M3-imzali-waba-isareti cikis=1 pass=25 fail=1 kirmizi: T1-8 
+uygulandı M4-taninmayan-isaret → server/lib/whatsapp/hook.mjs
+geri alındı M4-taninmayan-isaret
+M4-taninmayan-isaret cikis=1 pass=23 fail=3 kirmizi: T1-1 T1-3 T1-5 
+uygulandı M5-yalniz-wamid-tanima → server/lib/whatsapp/hook.mjs
+geri alındı M5-yalniz-wamid-tanima
+M5-yalniz-wamid-tanima cikis=1 pass=25 fail=1 kirmizi: T1-4 
+uygulandı M6-uygulama-duzeyi-islenmez → server/lib/whatsapp/hook.mjs
+geri alındı M6-uygulama-duzeyi-islenmez
+M6-uygulama-duzeyi-islenmez cikis=1 pass=21 fail=5 kirmizi: T1-9 T1-10 T1-12 T1-13 WE-2 
+uygulandı M7-uygulama-duzeyi-imza-yok → server/lib/whatsapp/hook.mjs
+geri alındı M7-uygulama-duzeyi-imza-yok
+M7-uygulama-duzeyi-imza-yok cikis=1 pass=25 fail=1 kirmizi: T1-10 
+uygulandı M8-adres-denetimi-yok → server/lib/whatsapp/hook.mjs
+geri alındı M8-adres-denetimi-yok
+M8-adres-denetimi-yok cikis=1 pass=23 fail=3 kirmizi: T1-9 T1-10 T1-12 
+uygulandı M9-siklik-siniri-yok → server/lib/whatsapp/app-webhook.mjs
+geri alındı M9-siklik-siniri-yok
+M9-siklik-siniri-yok cikis=1 pass=23 fail=3 kirmizi: T1-10 T1-12 T1-16 
+uygulandı M10-lisans-denetimi-yok → server/lib/whatsapp/hook.mjs
+geri alındı M10-lisans-denetimi-yok
+M10-lisans-denetimi-yok cikis=1 pass=25 fail=1 kirmizi: T1-13 
+uygulandı M11-yazilabilirlik-denetimi-yok → server/lib/whatsapp/hook.mjs
+geri alındı M11-yazilabilirlik-denetimi-yok
+M11-yazilabilirlik-denetimi-yok cikis=1 pass=25 fail=1 kirmizi: T1-13 
+uygulandı M12-kayit-denetimi-yok → server/lib/whatsapp/hook.mjs
+geri alındı M12-kayit-denetimi-yok
+M12-kayit-denetimi-yok cikis=0 pass=26 fail=0 kirmizi: 
+uygulandı M13-kip-waba-yok → server/lib/whatsapp/hub.mjs
+geri alındı M13-kip-waba-yok
+M13-kip-waba-yok cikis=1 pass=24 fail=2 kirmizi: T1-14 T1-15 
+uygulandı M15-force-yok → server/lib/whatsapp/hook.mjs
+geri alındı M15-force-yok
+M15-force-yok cikis=1 pass=23 fail=3 kirmizi: T1-9 T1-10 T1-12 
+uygulandı M14-bos-belirtec-gorunur → client/assets/hof-whatsapp-ayar.js
+geri alındı M14-bos-belirtec-gorunur
+M14-bos-belirtec-gorunur cikis=1 154 geçti, 3 kaldı kirmizi: 3
+geri alma tamam

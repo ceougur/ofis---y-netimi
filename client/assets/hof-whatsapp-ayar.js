@@ -391,16 +391,19 @@
       return;
     }
     const row = (key, label, value) => `<div data-wa-webhook="${key}"><dt>${esc(label)}</dt><dd><code data-wa-webhook-value="${key}">${esc(value)}</code></dd></div>`;
+    // BAŞ MİMAR KARARI (WE + BS-7 dar kontrolü sonrası): belirteç boşsa (001 şema kapısında, çift yok — ready false) boş "Verify Token" satırı ve boş değer kopyalayan
+    // "Belirteci Kopyala" gösterilmez; neden metni kalır.
+    const hasVerify = Boolean(info.verifyToken);
     const body = `
       <p class="adm-muted">Meta uygulamanızın WhatsApp ayarlarında Configure Webhooks'a bu iki değeri girip Verify and save'e basın; sonra Webhook fields'ta yalnız messages alanına abone olun. Doğrulama belirteci gizlidir: kimseyle paylaşmayın, e-postayla ya da mesajla göndermeyin.</p>
       ${info.ready ? "" : `<p class="adm-wa-why" data-wa-webhook-why>${esc(info.reason)}</p>`}
       <dl class="adm-license-facts" data-wa-webhook-facts>
         ${info.ready ? row("callback", "Callback URL (Bildirim Adresi)", info.callbackUrl) : ""}
-        ${row("verify", "Verify Token (Doğrulama Belirteci)", info.verifyToken)}
+        ${hasVerify ? row("verify", "Verify Token (Doğrulama Belirteci)", info.verifyToken) : ""}
       </dl>
       <div class="adm-inline">
         ${info.ready ? '<button type="button" class="hof-button" data-wa-webhook-copy="callback">Adresi Kopyala</button>' : ""}
-        <button type="button" class="hof-button hof-button-ghost" data-wa-webhook-copy="verify">Belirteci Kopyala</button>
+        ${hasVerify ? '<button type="button" class="hof-button hof-button-ghost" data-wa-webhook-copy="verify">Belirteci Kopyala</button>' : ""}
       </div>`;
     const modal = HOF.modal({ title: "Webhook Bilgileri", eyebrow: "WHATSAPP · ELLE BAĞLA", body, size: "wide" });
     const dialog = modal?.dialog;

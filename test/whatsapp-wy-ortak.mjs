@@ -23,7 +23,7 @@ const MACHINE = "0123456789abcdef0123456789abcdef";
 const APP_SECRET = "destekofis-uygulama-sirri-WY-SAHTE-0123456789";
 const EMBEDDED_EVENT = "FINISH_WHATSAPP_BUSINESS_APP_ONBOARDING";
 const sign = body => `sha256=${createHmac("sha256", APP_SECRET).update(body).digest("hex")}`;
-const statusEvent = statuses => JSON.stringify({ object: "whatsapp_business_account", entry: [{ id: WABA, changes: [{ field: "messages", value: { messaging_product: "whatsapp", metadata: { display_phone_number: "902125550102", phone_number_id: PNID }, statuses } }] }] });
+const statusEvent = (statuses, entryId = WABA) => JSON.stringify({ object: "whatsapp_business_account", entry: [{ id: entryId, changes: [{ field: "messages", value: { messaging_product: "whatsapp", metadata: { display_phone_number: "902125550102", phone_number_id: PNID }, statuses } }] }] });
 const skipOf = data => (data?.people || []).map(person => person.skip || "gönderilecek");
 
 function raw(base, method, pathAndQuery, { body = null, headers = {} } = {}) {
@@ -149,6 +149,16 @@ export async function kurulum({ root = "manual", second = "embedded" } = {}) {
       post: (statuses, { signed = false } = {}) => {
         const body = statusEvent(statuses);
         return raw(kapi.base, "POST", `/wa/kanca/${secret}`, { body, headers: { host, ...(signed ? { "x-hub-signature-256": sign(body) } : {}) } });
+      },
+      /**
+       * 2.5.0 WhatsApp tur 1 (S41): Meta'nın bildirimi Elle Bağla'nın UYGULAMA DÜZEYİ adresine (Webhook Bilgileri'ndeki Callback URL; kapıcıdan, ofisin telefon adresiyle).
+       * entryId: zarftaki WABA kimliği (varsayılan bağlı WABA).
+       */
+      postApp: async (statuses, { signed = false, entryId = WABA } = {}) => {
+        const info = await ok(await api.get("/api/workspace/whatsapp/app-webhook"), "webhook bilgileri");
+        assert.equal(info.ready, true, `ön koşul: uygulama düzeyi adres hazır (${info.reason})`);
+        const body = statusEvent(statuses, entryId);
+        return raw(kapi.base, "POST", `/wa/kanca/${new URL(info.callbackUrl).pathname.split("/").pop()}`, { body, headers: { host, ...(signed ? { "x-hub-signature-256": sign(body) } : {}) } });
       },
       job: async batchId => (await ok(await api.get(`${URLS.batches}/${batchId}${q}`), "toplu iş")).jobs[0],
       /** 002'de bir cariye ekstre: kabul edilmiş iş { batchId, job, accountId }. */
