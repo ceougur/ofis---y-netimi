@@ -1,0 +1,2 @@
+hatırlatma içeren senaryo: 22
+etkilenen (senaryo, an, cari): 0

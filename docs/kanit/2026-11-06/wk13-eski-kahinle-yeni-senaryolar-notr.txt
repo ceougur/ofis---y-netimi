@@ -1,0 +1,45 @@
+eski kahin: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wk13-arac/eski-kahin-notr/kahin.py
+KIRMIZI S16-01-yine-de-gonder-supheli-acik-elle-sayilir-suphesiz-tutarla-gider (7 fark)
+    S16-01-yine-de-gonder-supheli-acik-elle-sayilir-suphesiz-tutarla-gider * [{}…] yeniden.Y1: elle {"elenen": {}, "alinan": ["U"], "oneri": null, "supheli_etiketi": ["U"]} ≠ model {"elenen": {}, "alinan": ["U"], "oneri": null}
+    S16-01-yine-de-gonder-supheli-acik-elle-sayilir-suphesiz-tutarla-gider * [{}…] kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/U": "Teslim Edildi", "T2/EY": "Teslim Edildi"} ≠ model {"T1/A": "Teslim Edildi", "T1/U": "Atlandı", "T2/EY": "Teslim Edildi"}
+    S16-01-yine-de-gonder-supheli-acik-elle-sayilir-suphesiz-tutarla-gider * [{}…] isler.T1/U.degiskenler: elle ["Ufuk Belirsiz", "Deneme Ticaret Ltd. Şti.", "14.10.2026", "300,00 TL", {"plan_susuyor": "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel ba ≠ model ["Ufuk Belirsiz", "Deneme Ticaret Ltd. Şti.", "06.10.
+    S16-01-yine-de-gonder-supheli-acik-elle-sayilir-suphesiz-tutarla-gider * [{}…] isler.T1/U.post: elle 2 ≠ model 1
+    S16-01-yine-de-gonder-supheli-acik-elle-sayilir-suphesiz-tutarla-gider * [{}…] isler.T1/U.atlanma_nedeni: elle null ≠ model "supheli_alacak"
+    S16-01-yine-de-gonder-supheli-acik-elle-sayilir-suphesiz-tutarla-gider * [{}…] meta.post: elle {"A": 1, "EY": 2, "U": 2} ≠ model {"A": 1, "EY": 2, "U": 1}
+KIRMIZI S16-02-yine-de-gonder-suphesiz-tutar-yok-elenir-ertesi-gun-gider (9 fark)
+    S16-02-yine-de-gonder-suphesiz-tutar-yok-elenir-ertesi-gun-gider * [{}…] yeniden.Y1: elle {"elenen": {"secenek": [{"X": "gecikmis_borc_yok"}, {}], "susuyor": "S16 'yoksa elenir': elemenin işteki Yine de Gönder basıldığı anda mı (yanıtta elenir, iş So ≠ model {"elenen": {}, "alinan": ["X"], "oneri": null}
+    S16-02-yine-de-gonder-suphesiz-tutar-yok-elenir-ertesi-gun-gider * [{}…] kontroller.K1.isler.T1/X: elle {"secenek": ["Sonucu Belirsiz", "Atlandı"], "susuyor": "S16 'yoksa elenir': elemenin işteki Yine de Gönder basıldığı anda mı (yanıtta elenir, iş Sonucu Belirsiz ≠ model "Atlandı"
+    S16-02-yine-de-gonder-suphesiz-tutar-yok-elenir-ertesi-gun-gider * [{}…] yeniden.Y2: elle {"elenen": {}, "alinan": ["X"], "oneri": null, "supheli_etiketi": ["X"]} ≠ model {"elenen": {}, "alinan": ["X"], "oneri": null}
+    S16-02-yine-de-gonder-suphesiz-tutar-yok-elenir-ertesi-gun-gider * [{}…] kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/X": "Teslim Edildi"} ≠ model {"T1/A": "Teslim Edildi", "T1/X": "Atlandı"}
+    S16-02-yine-de-gonder-suphesiz-tutar-yok-elenir-ertesi-gun-gider * [{}…] isler.T1/X.degiskenler: elle ["Nazlı Vadeli", "Deneme Ticaret Ltd. Şti.", "30.10.2026", "150,00 TL", {"plan_susuyor": "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bak ≠ model ["Nazlı Vadeli", "Deneme Ticaret Ltd. Şti.", "10.10.2026", 
+    S16-02-yine-de-gonder-suphesiz-tutar-yok-elenir-ertesi-gun-gider * [{}…] isler.T1/X.post: elle 2 ≠ model 1
+AYNI    S16-03-kayit-basmadan-once-kapanir-etiket-yok-butun-gecikmisle-gider
+KIRMIZI S16-04-s16-elle-isareti-zincirdeki-yeniden-denemeye-tasinir (6 fark)
+    S16-04-s16-elle-isareti-zincirdeki-yeniden-denemeye-tasinir * [{}…] yeniden.Y1: elle {"elenen": {}, "alinan": ["ZR"], "oneri": null, "supheli_etiketi": ["ZR"]} ≠ model {"elenen": {}, "alinan": ["ZR"], "oneri": null}
+    S16-04-s16-elle-isareti-zincirdeki-yeniden-denemeye-tasinir * [{}…] kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/ZR": "Başarısız"} ≠ model {"T1/A": "Teslim Edildi", "T1/ZR": "Atlandı"}
+    S16-04-s16-elle-isareti-zincirdeki-yeniden-denemeye-tasinir * [{}…] yeniden.Y2: elle {"elenen": {}, "alinan": ["ZR"], "oneri": null} ≠ model {"elenen": {}, "alinan": [], "oneri": null}
+    S16-04-s16-elle-isareti-zincirdeki-yeniden-denemeye-tasinir * [{}…] kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/ZR": "Teslim Edildi"} ≠ model {"T1/A": "Teslim Edildi", "T1/ZR": "Atlandı"}
+    S16-04-s16-elle-isareti-zincirdeki-yeniden-denemeye-tasinir * [{}…] isler.T1/ZR.degiskenler: elle ["Zehra Zincir", "Deneme Ticaret Ltd. Şti.", "16.10.2026", "400,00 TL", {"plan_susuyor": "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bak ≠ model ["Zehra Zincir", "Deneme Ticaret Ltd. Şti.", "04.10.2026", "900
+    S16-04-s16-elle-isareti-zincirdeki-yeniden-denemeye-tasinir * [{}…] meta.post: elle {"A": 1, "ZR": 3} ≠ model {"A": 1, "ZR": 1}
+KIRMIZI S17-01-elle-supheli-suphesiz-net-borcla-sinirlanir (5 fark)
+    S17-01-elle-supheli-suphesiz-net-borcla-sinirlanir * [{}…] elenen: elle {"T1": {"SN2": {"secenek": ["gecikmis_borc_yok", "net_borc_yok"], "susuyor": "karar (5) / S17 net borç elemesinin adı karar metninde yok ('Gecikmiş Borç Yok' ya ≠ model {}
+    S17-01-elle-supheli-suphesiz-net-borcla-sinirlanir * [{}…] toplular.T1.is_sayisi: elle 3 ≠ model 6
+    S17-01-elle-supheli-suphesiz-net-borcla-sinirlanir * [{}…] isler.T1/SN1.degiskenler: elle ["Nuri Sınırlı", "Deneme Ticaret Ltd. Şti.", "12.10.2026", "200,00 TL", {"plan_susuyor": "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bak ≠ model ["Nuri Sınırlı", "Deneme Ticaret Ltd. Şti.", "12.10.2026", "300,00 TL",
+    S17-01-elle-supheli-suphesiz-net-borcla-sinirlanir * [{}…] isler.T1/SN3.degiskenler: elle ["Nevin Gelecek", "Deneme Ticaret Ltd. Şti.", "13.10.2026", "250,00 TL", {"plan_susuyor": "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel ba ≠ model ["Nevin Gelecek", "Deneme Ticaret Ltd. Şti.", "13.10.2026", "300,00 TL"
+    S17-01-elle-supheli-suphesiz-net-borcla-sinirlanir * [{}…] meta.post: elle {"A": 1, "SN1": 1, "SN3": 1} ≠ model {"A": 1, "SN1": 1, "SN2": 1, "SN3": 1, "SN4": 1, "SN5": 1}
+KIRMIZI S17-02-gonderim-aninda-suphesiz-net-borc-yeniden-hesaplanir (4 fark)
+    S17-02-gonderim-aninda-suphesiz-net-borc-yeniden-hesaplanir * [{}…] isler.T1/SN6.degiskenler: elle ["Oya Kuyruk", "Deneme Ticaret Ltd. Şti.", "09.10.2026", "120,00 TL", {"plan_susuyor": "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiy ≠ model ["Oya Kuyruk", "Deneme Ticaret Ltd. Şti.", "09.10.2026", "250,
+    S17-02-gonderim-aninda-suphesiz-net-borc-yeniden-hesaplanir * [{}…] isler.T1/SN7.durum: elle "Atlandı" ≠ model "Teslim Edildi"
+    S17-02-gonderim-aninda-suphesiz-net-borc-yeniden-hesaplanir * [{}…] isler.T1/SN7.atlanma_nedeni: elle {"secenek": ["gecikmis_borc_yok", "net_borc_yok"], "susuyor": "karar (5) / S17 net borç elemesinin adı karar metninde yok ('Gecikmiş Borç Yok' ya da ayrı 'Net B ≠ model null
+    S17-02-gonderim-aninda-suphesiz-net-borc-yeniden-hesaplanir * [{}…] meta.post: elle {"A": 1, "SN6": 1, "SN7": 0} ≠ model {"A": 1, "SN6": 1, "SN7": 1}
+KIRMIZI NB5-01-net-borc-siniri-bize-alacakli-elenir (4 fark)
+    NB5-01-net-borc-siniri-bize-alacakli-elenir * [{}…] elenen: elle {"T1": {"C": "gecikmis_borc_yok", "Q5": {"secenek": ["gecikmis_borc_yok", "net_borc_yok"], "susuyor": "karar (5) / S17 net borç elemesinin adı karar metninde yo ≠ model {"T1": {"C": "gecikmis_borc_yok"}}
+    NB5-01-net-borc-siniri-bize-alacakli-elenir * [{}…] toplular.T1.is_sayisi: elle 3 ≠ model 5
+    NB5-01-net-borc-siniri-bize-alacakli-elenir * [{}…] isler.T1/P5.degiskenler: elle ["Pelin Netleşen", "Deneme Ticaret Ltd. Şti.", "05.10.2026", "400,00 TL", "400,00 TL"] ≠ model ["Pelin Netleşen", "Deneme Ticaret Ltd. Şti.", "05.10.2026", "700,00 TL", "400,00 TL"]
+    NB5-01-net-borc-siniri-bize-alacakli-elenir * [{}…] meta.post: elle {"A": 1, "P5": 1, "Q5": 1, "S5": 1} ≠ model {"A": 1, "P5": 1, "Q5": 2, "R5": 1, "S5": 1}
+KIRMIZI NB5-02-gonderim-aninda-bize-alacakli-atlanir-tutar-yeniden (4 fark)
+    NB5-02-gonderim-aninda-bize-alacakli-atlanir-tutar-yeniden * [{}…] isler.T1/V5.durum: elle "Atlandı" ≠ model "Teslim Edildi"
+    NB5-02-gonderim-aninda-bize-alacakli-atlanir-tutar-yeniden * [{}…] isler.T1/V5.atlanma_nedeni: elle {"secenek": ["gecikmis_borc_yok", "net_borc_yok"], "susuyor": "karar (5) / S17 net borç elemesinin adı karar metninde yok ('Gecikmiş Borç Yok' ya da ayrı 'Net B ≠ model null
+    NB5-02-gonderim-aninda-bize-alacakli-atlanir-tutar-yeniden * [{}…] isler.T1/W5.degiskenler: elle ["Gül Azalan", "Deneme Ticaret Ltd. Şti.", "07.10.2026", "150,00 TL", "150,00 TL"] ≠ model ["Gül Azalan", "Deneme Ticaret Ltd. Şti.", "07.10.2026", "300,00 TL", "150,00 TL"]
+    NB5-02-gonderim-aninda-bize-alacakli-atlanir-tutar-yeniden * [{}…] meta.post: elle {"A": 1, "V5": 0, "W5": 1} ≠ model {"A": 1, "V5": 1, "W5": 1}
+yeni senaryo: 8; KIRMIZI 7; AYNI 1
