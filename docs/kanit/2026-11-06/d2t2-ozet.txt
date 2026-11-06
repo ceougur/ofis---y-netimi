@@ -1,0 +1,33 @@
+# D2 TUR 2 (dar kontrol 06.11 ~16:30: ORTA-1, ORTA-2, DÜŞÜK-1, DÜŞÜK-2) — kanıt özeti. Taban 6dc3e150; kod 5f7a596a + test ön koşulu fbe53780.
+# Her koşu tools/kanit.mjs kos ile (çıkış kodu + sayılar + ham çıktı: aynı adlı .json / .log). Program açan her koşu HUKUK_LICENSE_URL=http://127.0.0.1:9 (ders 30).
+
+YENİ KOD (fbe53780)
+  d2t2-d2-kume-son-UTC / -Istanbul        36/36 + 36/36   devir-d2-arsiv-250 (8), devir-d2-bakim-250 (10), devir-d2-yedek-250 (5), devir-d2-arsiv-goc-kesinti-250 (6),
+                                                           db-tx-kayip-pragma-250 (1), db-tx-kayip-250 (6)
+  d2t2-komsu-Istanbul                     257/257         komşular (ders 10; test/ taraması — aşağıda); UTC koşusu 5f7a596a'da 257/257 (fark yalnız bakım testinin ön koşulu)
+  d2t2-bakim-onkosul-UTC                  1/1             ön koşul düzeltmesinden sonra arşiv bakım hücresi
+YENİ KOD (5f7a596a)
+  d2t2-d2-kume-UTC / -Istanbul            36/36 + 36/36
+  d2t2-komsu-UTC                          257/257
+  d2t2-eski-surum-v249-UTC                24/24           v2.4.9'un GERÇEK koduyla üretilen veri (test/devir-d2-eski-surum-250.mjs --eski <git archive v2.4.9>)
+  d2t2-e2e-senaryo-220-yedek              38/38           (Devir Yedekleri bölümü)
+  d2t2-e2e-senaryo-yedeksiz-sil-249       33/33
+  d2t2-e2e-sema-kapisi-bs7                12/12
+  d2t2-dk-betikleri-yeni.txt              dar kontrolün betikleri (kendi klasörüme kopyalandı) yeni kodda: p3 goc → bak "ok / Doğrulandı"; p3b → 503, arşiv dosyası değişmedi (şema 19,
+                                          göç öncesi kopya yok); p4 → 002 bakımda arşiv 503, closeCompany sonrası istek 503, açık örnek yok; p2 → görevlerini devrederek sil 503 maintenance
+ESKİ KOD (6dc3e150; yalnız yeni testler + yeni yardımcılar kopyalandı)
+  d2t2-eski-goc-UTC                       0/6  KIRMIZI    ORTA-1: kesme sonrası uyarı "değişmiş", Doğrula changed, liste changed; ara şemada 409 archive-changed
+  d2t2-eski-bakim-yeni-2-UTC              0/2  KIRMIZI    ORTA-2: "001 bakımda 001 arşivi: 200"; DÜŞÜK-1: "500 Sunucu işlemi tamamlayamadı."
+  d2t2-eski-yeni-hucreler-Istanbul        2/10 (8 KIRMIZI aynı nedenler; 2 yeşil: A2, PRAGMA — davranış eski kodda var, dişleri mutasyonla)
+  d2t2-eski-a2-pragma-UTC                 2/2  YEŞİL      (beklenen)
+  nedenler: d2t2-eski-kirmizi-nedenleri.txt
+MUTASYON (test/devir-d2-250-mutasyon.mjs --kopya <git archive HEAD>; 39 mutant, 6 eşdeğer beklenir)
+  d2t2-mutasyon-5f7a596a                  37/39           M6 eşdeğer (beklenen); M31 test KIRMIZI ama beklenen neden değil — (1) adımında reddedilen istek özet önbelleğini ısıtıp (2)'nin
+                                                          ön koşulunu değiştiriyordu (d2t2-m31-tani.log) → fbe53780: (2) özeti dosyadan okutur (dosyanın zamanı ilerletilir, içerik aynı)
+  d2t2-mutasyon-fbe53780                  38/39           taban 30/30; yalnız M6 KAÇTI (eşdeğer, beklenen); 1–28 (D2) yine yakalandı; 29–39 (bu tur + dar kontrolün D2 / A2 / B1) YAKALANDI.
+                                                          Betiğin çıkışı 0; kanit.mjs hükmü "BELİRSİZ (özet satırı tanınmadı)" — betik node:test özeti basmaz, sonuç "SONUÇ:" satırında.
+
+KOMŞULAR (komut satırındaki liste): kullanici-yetki-210, auth, sessions, permissions, backup, banka-210-gg-geri-yukle, createapp-acilis-geri-alma-249, geri-yukleme-uyari-244,
+  guncelleme-217, sema-kapisi-bs7, yedek-220, yedek-220-inceleme, yedek-denetim-221, isgecmisi-230-geri-yukleme-yetki, sirketler-217, sirket-siniri-225, sirket-listesi-221,
+  whatsapp-w2-kaldir-250, whatsapp-we-webhook-bilgisi-250, yazim-duzeni, platform-tasinabilirlik, lisans-servisi-izolasyonu, banka-210-rapor-is-parcacigi-kapanis,
+  bs4-birlesik-rapor-250, defter-turu-c4, mobil-eslesme-247, whatsapp-tur1-bildirim-yolu-250.

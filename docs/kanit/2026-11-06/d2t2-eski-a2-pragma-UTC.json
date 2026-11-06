@@ -1,0 +1,32 @@
+{
+  "ad": "d2t2-eski-a2-pragma-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-name-pattern=FARKLI devir çalışması|PRAGMA ataması test/devir-d2-arsiv-250.test.mjs test/db-tx-kayip-pragma-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T16:48:38.571Z",
+  "sure_sn": 1.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 2,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../d2t2-kanit/eski/2026-11-06/d2t2-eski-a2-pragma-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t2-eski-6dc3e150",
+  "ham_cikti_sha256": "53b9fb05d0df844000943328e8d64c96dd88e516e26fa7145e4cd187cc89e672",
+  "ham_cikti_bayt": 1394
+}

@@ -1,0 +1,25 @@
+# D2 tur 2 — ESKİ KOD (6dc3e150; git archive kopyası, yalnız yeni testler + yeni yardımcılar kopyalandı — ders 23, 25, 51) kırmızı nedenleri (ders 7 / 38).
+# Beklenen nedenler: ORTA-1 hücreleri 'Değişmiş' (uyarı dolu, Doğrula changed, liste changed; dosya şema 47, kayıt eski özet) ve ara şemada 409 archive-changed;
+# ORTA-2 '001 bakımda 001 arşivi: 200'; DÜŞÜK-1 '500 Sunucu işlemi tamamlayamadı.'. Eski kodda kesme noktası kancası yok: işçi aynı pencereyi yoklamayla keser ("yoklama" —
+# dosya yerinde göç etti, kayıt yazılmadı; dar kontrol p3'ün kesmesi).
+# A2 / PRAGMA hücreleri eski kodda YEŞİL (davranış 6dc3e150'de var; DÜŞÜK-2 yalnız test): dişleri mutasyonla — M35 (D2), M36 (A2), M37 (B1) YAKALANDI.
+=== d2t2-eski-goc-UTC (BAŞARISIZ çıkış 1 {'bicim': 'node:test', 'toplam': 6, 'gecen': 0, 'basarisiz': 6, 'iptal': 0, 'atlanan': 0})
+    # Subtest: kesme "kopya-goc-etti" (SIGKILL): yeniden açılışta arşiv uyarısız açılır, Doğrula ok, liste Doğrulandı; kayıt kesinleşir, geçici dosya kalmaz
+        kesme "kopya-goc-etti" (yoklama) sonrası yeniden açılış — ara durum {"dosyaSema":47,"dosyaEski":false,"kayitEski":true,"bekleyen":"yok","calismaKopyasi":false}
+        kesme "bekleyen-yazildi" (yoklama) sonrası yeniden açılış — ara durum {"dosyaSema":47,"dosyaEski":false,"kayitEski":true,"bekleyen":"yok","calismaKopyasi":false}
+        kesme "tasindi" (yoklama) sonrası yeniden açılış — ara durum {"dosyaSema":47,"dosyaEski":false,"kayitEski":true,"bekleyen":"yok","calismaKopyasi":false}
+          (fark: dogrula 'changed' / beklenen 'ok'; liste 'changed' / 'ok'; uyari "2025 arşivinin dosyası devirden sonra değişmiş görünüyor (bütünlük özeti tutmuyor); kayıtlar yalnız
+           görüntülenir. Yönetici Devir Yedekleri'ni denetlemeli." / beklenen '' — d2t2-eski-goc-UTC.log)
+        kayıt defteri kaybından sonra yeniden açılış
+        ara şemada kalmış göç açılır (K2'ye düşmez): 409 {"ok":false,"error":"“001 · Şirket 1” şirketinin 2025 arşivi devirden sonra değişmiş görünüyor (bütünlük özeti tutmuyor); programın bu sürümüne taşınmadı. Yönetici Devir Yedekleri'nden geri yükleyebilir.","code":"archive-changed"}
+        (sözleşme hücresi) Expected values to be strictly equal: undefined — eski kodda MIGRATION_WORK_FILE yok
+=== d2t2-eski-bakim-yeni-2-UTC (BAŞARISIZ çıkış 1 {'bicim': 'node:test', 'toplam': 2, 'gecen': 0, 'basarisiz': 2, 'iptal': 0, 'atlanan': 0})
+    # Subtest: bakımdaki şirketin arşivi açılmaz (503 maintenance): …
+        001 bakımda 001 arşivi: 200 {"ok":true,"data":{"entries":[{"id":"cash-817a45b2-…","kind":"in","source":"manual","method":"cash","amount":563.57,"date":"2025-07-04", …
+    # Subtest: 001 bakımda veri tabanı korumasının düşürdüğü yazım 503 maintenance (görevlerini devrederek kullanıcı sil), …
+        bakımda görevlerini devrederek kullanıcı sil: 500 {"ok":false,"error":"Sunucu işlemi tamamlayamadı."}
+=== d2t2-eski-yeni-hucreler-Istanbul (TZ=Europe/Istanbul; BAŞARISIZ çıkış 1 {'bicim': 'node:test', 'toplam': 10, 'gecen': 2, 'basarisiz': 8, 'iptal': 0, 'atlanan': 0})
+    aynı 8 kırmızı, aynı nedenler (yukarıdaki iki koşunun birleşimi); 2 yeşil: PRAGMA ataması, FARKLI devir çalışması (beklenen — davranış eski kodda var).
+=== d2t2-eski-a2-pragma-UTC (GEÇTİ çıkış 0 {'bicim': 'node:test', 'toplam': 2, 'gecen': 2, 'basarisiz': 0, 'iptal': 0, 'atlanan': 0})
+    # Subtest: kayıptan sonra get / all ile PRAGMA ataması ERR_TX_LOST, dosyanın şeması değişmez; atamasız PRAGMA okuması çalışır
+    # Subtest: diskten tanıma: aynı yıl ama FARKLI devir çalışması (arşivin işareti ↔ çalışma dosyasının devir kaydı) tanınmaz, sahipsiz listesine girer; aynı çalışmanınki tanınır
