@@ -1,0 +1,44 @@
+#!/usr/bin/env python3
+"""Kâhin bakımı 5 — yeni mutantların DEĞERLE (elle beklenen / birim değeri) yakalandığını gösterir; yalnız değişmezle yakalanan mutant "YALNIZ DEĞİŞMEZ" yazılır.
+Kullanım: python3 -I kahin5-mut-deger.py <muhasebe klasörü> <mutant adı öneki …>"""
+import contextlib
+import io
+import sys
+import unittest
+
+KLASOR = sys.argv[1]
+ONEK = tuple(sys.argv[2:]) or ("B5",)
+sys.path.insert(0, KLASOR)
+import mutasyon as MU  # noqa: E402
+
+src = open(MU.MODEL, encoding="utf-8").read()
+cikis = 0
+toplam = olen = 0
+for ad, degisiklikler in MU.MUTANTLAR:
+    if not ad.startswith(ONEK):
+        continue
+    tm = MU.yukle(MU.mutant_kaynak(src, degisiklikler))
+    suite = unittest.TestSuite()
+    for sinif in (tm.OlayMaddeleri, tm.ElleSenaryolar, tm.Rastgele, tm.DegismezDenetcileri):
+        suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(sinif))
+    with contextlib.redirect_stderr(io.StringIO()), contextlib.redirect_stdout(io.StringIO()):
+        r = unittest.TextTestRunner(stream=io.StringIO(), verbosity=0).run(suite)
+    deger, degismez = [], []
+    for t, iz in r.failures + r.errors:
+        n = t.id().split(".")[-1]
+        son = iz.strip().splitlines()[-1]
+        (degismez if ("değişmez" in son or "degismez" in son) else deger).append((n, son[:160]))
+    durum = "DEĞERLE ÖLDÜ" if deger else ("YALNIZ DEĞİŞMEZ" if degismez else "SAĞ KALDI")
+    toplam += 1
+    if durum != "DEĞERLE ÖLDÜ":
+        cikis = 1
+    else:
+        olen += 1
+    print(f"{ad}\n   {durum}: değer {len(deger)}, değişmez {len(degismez)}")
+    for n, son in deger[:4]:
+        print(f"     - {n}: {son}")
+MU.yukle(src)
+print(f"# tests {toplam}")
+print(f"# pass {olen}")
+print(f"# fail {toplam - olen}")
+sys.exit(1 if cikis or not toplam else 0)

@@ -17,6 +17,10 @@ BAKIM 4 (06.11.2026, beşinci tur): ürün sahibinin 06.11 04:50 S14 (şüpheli 
 faturanın İptal Et'i kabul, kart kapanır, tahsilatlar avans), S18 (kilitli dönemin avans çeki karşılıksızsa tamamı ayrı borç), S19 (S11 / R3 kararı yazılış
 anındaki kilide göre bir kez), S20 (geri yükleme veriyi aynen getirir; S12 yalnız yeni kayıtta; Mutabakat uyarısı) ve S21 (POS valörü resmî tatilde sonraki
 iş günü) kararları (A). Yorumlar README Y1–Y23.
+BAKIM 5 (06.11.2026, altıncı tur): ürün sahibinin 06.11 06:26 S24 (devirden önce K'den geride yazılmış karşılıksız / bağ devirde K kilidiyle; Devir
+Raporu listeler), S25 (kısmen aktarılmış faturaya küçük çek önce 128; çekin fazlası bağsız alacak 120; nakit / havale / POS S14 ile aynı), S26 (geri
+yüklenmiş açılış öncesi Kasa kaydının yalnız tutar düzeltmesi kabul) ve S27 (yarım gün iş günü; dinî bayram günleri tam gün tatil — tarihler resmî
+kaynaktan) kararları (A). Yorumlar README Z1–Z12.
 Saf Python, yalnız standart kütüphane. Para kuruş tamsayı; miktar Fraction.
 
 Yapı:
@@ -140,6 +144,10 @@ BILANCO_KALEMLERI = {
 }
 GT_SIRA = ("A", "B", "C", "D", "BSK", "E", "FK", "F", "G", "H", "OK", "I", "J", "DK", "K", "DNK")
 
+# S14 A (çek / senet) + S25 (c) A (nakit / havale / POS; README Z7): şüpheli caride faturaya bağlı tahsilat faturanın durduğu hesaptan düşer.
+# Kredi Kartına İade (yol kart) kararda yok → kâhin susar (README Z8).
+S14_YOLLARI = ("cek", "senet", "nakit", "havale", "pos")
+
 ACILIS_TURLERI = {"kasa_acilis", "cari_acilis", "banka_acilis", "kart_acilis", "kredi_acilis", "stok_acilis", "evrak_acilis",
                   "taksit_excel", "devir_kasa", "devir_cari", "devir_banka", "devir_kart", "devir_kredi",
                   "devir_stok", "devir_evrak", "devir_pos", "devir_yoldaki", "devir_supheli", "devir_taksit"}
@@ -169,35 +177,40 @@ def yil(s):
 
 
 # S21 A (kullanıcı 06.11 04:50; README Y19–Y23): POS valörü resmî tatile düşerse bir sonraki iş gününe kayar; hafta sonu da (ana oturum K3).
-# 2429 sayılı Kanun md. 1–2 (kâhinin bilgisi; birincil metin bu oturumda açılamadı). Tam gün tatiller her yıl; YARIM GÜN (28 Ekim 13:00'ten, bayram arifesi
-# 13:00'ten) ve dinî bayramlar (tarihleri DOĞRULANMADI) "belirsiz" — kâhin orada kural kurmaz (KULLANICIYA SORULMALI 4). Bayram takvimi yalnız 2026–2027;
-# öbür yıllarda tam gün olmayan her gün belirsiz sayılır (bayram bilinmez). Pencere: arifeden bir gün önce – bayramdan bir gün sonra (geniş).
+# S27 A (kullanıcı 06.11 06:26; README Z11, Z12): YARIM GÜN (28 Ekim 13:00'ten, bayram arifesi 13:00'ten) İŞ GÜNÜ — valör kaymaz; dinî bayram günleri tam gün
+# tatil, atlanır — tarihleri YALNIZ resmî kaynaktan okunmuşsa (Diyanet / Resmî Gazete). 2429 sayılı Kanun md. 1–2 (kâhinin bilgisi; birincil metin bu bakımda
+# da açılamadı — mevzuat.gov.tr zaman aşımı). Bu bakımda resmî kaynak bayram tarihi VERMEDİ → dinî bayram pencereleri (arife dahil; arifeden bir gün önce –
+# bayramdan bir gün sonra) "belirsiz" kalır, kâhin orada kural kurmaz. Bayram takvimi yalnız 2026–2027; öbür yıllarda sabit tam gün tatil dışındaki her gün
+# belirsiz (bayram bilinmez — 28 Ekim dahil).
 RESMI_TATIL_TAM = ("01-01", "04-23", "05-01", "05-19", "07-15", "08-30", "10-29")
-RESMI_TATIL_YARIM = ("10-28",)
+RESMI_TATIL_YARIM = ("10-28",)                  # S27 A: iş günü (13:00'e kadar açık)
 DINI_BAYRAM_YILLARI = ("2026", "2027")
 DINI_BAYRAM_DOGRULANMADI = (("2026-03-18", "2026-03-23"), ("2026-05-25", "2026-05-31"), ("2027-03-07", "2027-03-12"), ("2027-05-14", "2027-05-20"))
 
 
 def tatil_turu(s):
-    """"tam" (2429 tam gün resmî tatil) · "belirsiz" (yarım gün / doğrulanmamış dinî bayram / bayram takvimi bilinmeyen yıl) · None (tatil değil)."""
+    """"tam" (2429 tam gün resmî tatil) · "yarim" (S27 A: yarım gün — İŞ GÜNÜ) · "belirsiz" (doğrulanmamış dinî bayram penceresi, arife dahil / bayram
+    takvimi bilinmeyen yıl) · None (tatil değil)."""
     if s[5:] in RESMI_TATIL_TAM:
         return "tam"
-    if s[5:] in RESMI_TATIL_YARIM or s[:4] not in DINI_BAYRAM_YILLARI or any(a <= s <= b for a, b in DINI_BAYRAM_DOGRULANMADI):
+    if s[:4] not in DINI_BAYRAM_YILLARI or any(a <= s <= b for a, b in DINI_BAYRAM_DOGRULANMADI):
         return "belirsiz"
+    if s[5:] in RESMI_TATIL_YARIM:
+        return "yarim"
     return None
 
 
 def pos_etkin_valor(valor, tatil=True):
-    """D-01 + S21: nominal valörden başlayarak ilk iş günü (hafta sonu da tam gün resmî tatil de değil). tatil=False: yalnız hafta sonu (donmuş 2.4.9
-    türetmesi, README Y22). Yol belirsiz güne değerse senaryo hatası (kâhin susar)."""
+    """D-01 + S21 + S27: nominal valörden başlayarak ilk iş günü (hafta sonu da tam gün resmî tatil de değil; yarım gün İŞ GÜNÜ). tatil=False: yalnız hafta
+    sonu (donmuş 2.4.9 türetmesi, README Y22). Yol belirsiz güne değerse senaryo hatası (kâhin susar)."""
     g = gun(valor)
     while True:
         s = g.isoformat()
         tt = tatil_turu(s) if tatil else None
         if tt == "belirsiz":
-            raise AssertionError(f"senaryo hatası: POS valörü {valor} belirsiz güne ({s}: yarım gün / doğrulanmamış dinî bayram) değiyor — "
-                                 "kâhin susar (README bakım 4 Y21)")
-        if g.weekday() < 5 and tt is None:
+            raise AssertionError(f"senaryo hatası: POS valörü {valor} belirsiz güne ({s}: doğrulanmamış dinî bayram / bayram takvimi bilinmeyen yıl) "
+                                 "değiyor — kâhin susar (README bakım 4 Y21, bakım 5 Z12)")
+        if g.weekday() < 5 and tt in (None, "yarim"):
             return s
         g += datetime.timedelta(days=1)
 
@@ -410,13 +423,14 @@ class Gecis:
         return n
 
     def _s14_aday_mi(self, k, c, yol):
-        """S14 A (README Y1): faturaya bağlı çek / senet, carinin tahsilat günü açık şüpheli kaydı var."""
-        return bool(k.v.get("fatura")) and yol in ("cek", "senet") and any(
+        """S14 A (README Y1) + S25 (c) A (README Z7): faturaya bağlı çek / senet / nakit / havale / POS, carinin tahsilat günü açık şüpheli kaydı var."""
+        return bool(k.v.get("fatura")) and yol in S14_YOLLARI and any(
             r["kalan"] > 0 and r["tarih"] <= k.tarih for r in self.supheli.get(c, []))
 
     def _s14_dus(self, k, c, t):
-        """S14 A (README Y2–Y4): bağlı faturanın şüpheli kuyruğundaki kısmı kadar A 128 — o kalemi TAŞIYAN kayıttan (plan: Dosya.gecis'in yakınsattığı
-        tahsilat anı ölçümü); kalan A 120 (bağ faturanın 120'deki kısmını kapatır; fazlası plan §3.11b/2 (b) aynen)."""
+        """S14 A (README Y2–Y4) + S25 (a), (b) A (README Z5, Z6): bağlı faturanın şüpheli kuyruğundaki kısmı kadar ÖNCE A 128 — o kalemi TAŞIYAN kayıttan
+        (plan: Dosya.gecis'in yakınsattığı tahsilat anı ölçümü); kalan A 120: bağ faturanın 120'deki kısmını kapatır, faturanın açık kısmını aşan fazlası
+        carinin BAĞSIZ alacağıdır (TYK'da kendi gününde açık borçlara, yoksa avans; SUPHELI_NORMAL_ASIM'e girmez — Model._s14_normal)."""
         hedef = "fatura:" + k.v["fatura"]
         self.s14_aday.append((k.tarih, k.seq, c, k.id, hedef, t))
         sat, cozulme, kalan = [], [], t
@@ -1276,7 +1290,7 @@ class Kuyruk:
         self.kartlar = {}
         self.kilit = kilit
         self.kilit_of = kilit_of                     # S19 A (README Y11, Y12): kaynak kimliği → yazılış anındaki (etkin) kilit
-        self.s14_olcum = {}                          # S14 (README Y2): tahsilat → [(kayıt, bağlı faturanın şüpheli kuyruğundaki kalanı)] tahsilat anında
+        self.s14_olcum = {}                          # S14 / S25 (README Y2, Z5): tahsilat → {olc [(kayıt, şüpheli kuyruğundaki kalan)], ch, tutar} tahsilat anında
         self.susulan_ek = []
         self.fg = fatura_gorunumu
         self.rez_idx = defaultdict(dict)             # öğe id → {bağ olayı: ayrılan}
@@ -1560,14 +1574,12 @@ class Kuyruk:
             self.net()
 
     def s14_olc(self, tid, hedef, tut):
-        """S14 (README Y2, Y5): tahsilat anında bağlı faturanın şüpheli kuyruğundaki kalemleri (kayıt başına); fatura iki hesapta duruyor ve çek ikisinin
-        toplamından küçükse kâhin susar (S14_KISMI)."""
+        """S14 (README Y2) + S25 (a) A (README Z5): tahsilat anında bağlı faturanın şüpheli kuyruğundaki kalemleri (kayıt başına, en eski kayıt önce) ve CH'deki
+        kısmı (bağın kapatabildiği: açık + bağsız kapanmış, karar (2)). Fatura iki hesapta duruyor ve tahsilat ikisinin toplamından küçükse ÖNCE şüpheli kısım
+        (Dosya._s14_plani) — bakım 4'ün "S14_KISMI" susması kalktı."""
         olc = [(x.get("kayit"), x["kalan"]) for x in sorted(self.supheli, key=s2_anahtari) if x["k"] == hedef and x["kalan"] > 0]
-        self.s14_olcum[tid] = olc
-        ps = sum(n for _, n in olc)
         pch = sum(o["kalan"] + sum(r["n"] for r in o["tahsis"] if r["rev"]) for o in self.kmap.get(hedef, []) if o["taraf"] == "b")
-        if ps and pch and tut < ps + pch:
-            self.susulan_ek.append({"kaynak": tid, "neden": "S14_KISMI", "tutar": tut})
+        self.s14_olcum[tid] = {"olc": olc, "ch": pch, "tutar": tut}
 
     def supheli_kapat(self, tutar=None, kayit=None, hedef=None):  # J-03 / K3 / J-05 (değersiz): o kaydın kalemlerini kapatır (S14: hedef önce)
         for x in sorted((x for x in self.supheli if kayit is None or x.get("kayit") == kayit), key=lambda x: (x["k"] != hedef,) + s2_anahtari(x)):
@@ -1666,10 +1678,12 @@ class Dosya:
         return self._g
 
     def _s14_plani(self):
+        """S14 + S25 (a) A (README Z5): bağlı tahsilat ÖNCE faturanın şüpheli kısmını (128, kayıt başına) düşer; kalan 120 (Gecis._s14_dus)."""
         plan = {}
         for (tarih, _, c, tid, _h, tut) in self._g.s14_aday:
-            kalan, p = tut, []
-            for kayit, n in self.kuyruk(c, tarih).s14_olcum.get(tid, []):
+            olcum = self.kuyruk(c, tarih).s14_olcum.get(tid, {})
+            kalan, p = tut, []                        # S25 (a) A: önce şüpheli kısım
+            for kayit, n in olcum.get("olc", []):
                 m = min(n, kalan)
                 if m > 0:
                     p.append((kayit, m))
@@ -2394,8 +2408,11 @@ class Model:
                 raise Red("SUPHELI_YOK")
         if tur == "tahsilat" and (v.get("normal_cari") or v.get("fatura")):   # plan §3.11b/2 (a)–(b) SINIR
             acik = [r for r in d.gecis().supheli.get(v["cari"], []) if r["kalan"] > 0 and r["tarih"] <= tarih]
+            if acik and v.get("fatura") and v.get("yol") == "kart":
+                raise AssertionError("senaryo hatası: şüpheli caride faturaya bağlı Kredi Kartına İade (T-11) — S25 (c) yalnız nakit / havale / POS sayar; "
+                                     "kâhin susar (README bakım 5 Z8, KULLANICIYA SORULMALI 1)")
             bak = d.bakiyeler(tarih).get((d.cari_hesap(v["cari"]), v["cari"]), 0)
-            normal = v["tutar"] - (self._s14_payi(d, tarih, v) if acik else 0)   # S14 A (README Y4): 128'den düşen kısım normal değil
+            normal = self._s14_normal(d, tarih, v) if acik else v["tutar"]   # S14 / S25 A (README Y4, Z6): 128 kısmı ve fazla normal değil
             if acik and normal > bak:
                 raise Red("SUPHELI_NORMAL_ASIM", f"{normal} > 120 bakiyesi {bak}")
         if tur in EVRAK_ISLEMLERI and tur != "odeme":
@@ -2411,15 +2428,19 @@ class Model:
                 raise Red("EVRAK_DURUMU")
 
     @staticmethod
-    def _s14_payi(d, tarih, v):
-        """S14 A: faturaya bağlı çek / senedin 128'den düşecek kısmı — kaydı kopyaya uygulayıp türetilmiş plandan okur (asıl dosya değişmez)."""
-        if not (v.get("fatura") and v.get("yol") in ("cek", "senet")):
-            return 0
+    def _s14_normal(d, tarih, v):
+        """S14 + S25 A (README Y4, Z6): şüpheli caride faturaya bağlı tahsilatın SUPHELI_NORMAL_ASIM sınırına giren kısmı = bağla faturanın 120'deki kısmını
+        kapattığı tutar. 128'den düşen kısım (S14 / S25 (a), (c)) ve faturanın açık kısmını aşan FAZLA (S25 (b): carinin bağsız alacağı, avans) sınıra girmez.
+        Bağsız ("Normal Cari Hesaba İşle") ya da S14 yolu olmayan tahsilatta tutarın tamamı. Kaydı kopyaya uygulayıp türetilmiş kuyruktan okur (asıl dosya
+        değişmez)."""
+        if not (v.get("fatura") and v.get("yol") in S14_YOLLARI):
+            return v["tutar"]
         dd = d.kopya()
         dd.sayac = Sayac()
         dd.sayac.n = d.sayac.n
         kid = dd.kaynak_ekle("tahsilat", tarih, copy.deepcopy(v)).id
-        return sum(n for _, n in dd.gecis().s14.get(kid, []))
+        bag = sum(o["bagla"] for o in dd.kuyruk(v["cari"], tarih).ogeler if o["kaynak"] == kid and o["taraf"] == "a")
+        return bag
 
     # -- düzenle / iptal / sil (G-7)
     def _hedef(self, o, d):
@@ -2439,9 +2460,26 @@ class Model:
                 if ilk and dg["tarih"] > min(ilk):
                     raise Red("KASA_ACILIS_SONRA", f"ilk Kasa hareketi {min(ilk)}")
         if k.tur not in ("kasa_acilis", "devir_kasa"):   # S12 A + EK-2 §4 (8) (README bakım 3 T12): düzeltme de açılıştan önceye Kasa hareketi yazamaz
-            self._kasa_acilis_oncesi(d, dg.get("tarih", k.tarih), lambda dd: self._duzelt(dd.kaynaklar[k.id], dg))
+            yeni_t = dg.get("tarih", k.tarih)
+            try:
+                self._kasa_acilis_oncesi(d, dg.get("tarih", k.tarih), lambda dd: self._duzelt(dd.kaynaklar[k.id], dg))
+            except Red:
+                # S26 A (kullanıcı 06.11 06:26; README Z9): geri yüklenmiş (yedekten / Silinenler'den), açılıştan önce tarihli Kasa kaydının tarihi değişmeden
+                # YALNIZ tutarı düzeltilirse kabul — Mutabakat Testi uyarısı sürer (kayıt geri yüklenmiş kalır). Tarih değişiyorsa ya da kayıt geri yüklenmemişse
+                # ya da düzeltme öncesi açılıştan önce Kasa hareketi değilse T12 aynen
+                if not (k.geri and self._kasa_once_mi(d, k) and yeni_t == k.tarih):
+                    raise
+                if set(dg) - {"tarih", "tutar"}:
+                    raise AssertionError(f"senaryo hatası: geri yüklenmiş, açılıştan önce tarihli Kasa kaydının tutar dışı alanı düzeltildi "
+                                         f"({sorted(set(dg) - {'tarih', 'tutar'})}) — S26 yalnız tutar; kâhin susar (README bakım 5 Z10, KULLANICIYA SORULMALI 2)")
         self._duzelt(k, dg)
         d.degisti()
+
+    @staticmethod
+    def _kasa_once_mi(d, k):
+        """Kayıt (düzeltmeden önce) Kasa açılışından önce tarihli Kasa hareketi yazıyor mu (S12 / S20 / S26; Mutabakat uyarısının konusu)."""
+        a0 = min((x.tarih for x in d.kaynaklar.values() if x.tur in ("kasa_acilis", "devir_kasa") and x.durum == "aktif"), default=None)
+        return a0 is not None and any(anah == ("kasa",) and t < a0 for (t, anah, _) in d.gecis()._modk.get(k.id, []))
 
     @staticmethod
     def _duzelt(k, dg):
@@ -2672,6 +2710,19 @@ class Model:
         kayit["degismezler"] = devir_degismezleri(arsiv, yeni, K, yedek, did, devirsiz=kilitli_kopya(yedek, yeni.kilit), kapanis=kapanis,
                                                   acilis=acilis)
         self.raporlar[o.get("ad", did)] = self._devir_raporu(kayit, arsiv, yeni)
+
+    @staticmethod
+    def _s24_harfiyen(arsiv, yeni, s19):
+        """YALNIZ mutasyon B55 içindir (S24 B: "S19 harfiyen — yazıldığı andaki sonuç (fatura yeniden açık) kalır, devir açık faturayı taşır"; karşılıksız
+        tarafı: yazılış kilidinde S8 olan karşılıksızın yeni yıldaki kalemi faturanın KENDİ vadesini alır). Kâhinin kuralı bu DEĞİL — S24 A (README Z2)."""
+        for kid in s19:
+            k = yeni.kaynaklar[kid]
+            if k.tur != "evrak_karsiliksiz":
+                continue
+            p = arsiv.kaynaklar.get((arsiv.gecis().evrak.get(k.v["evrak"]) or {}).get("kaynak") or "")
+            f = arsiv.kaynaklar.get(p.v.get("fatura") or "") if p is not None else None
+            if f is not None and (k.kilit is None or p.tarih > k.kilit):
+                k.v["_s24_vade"] = f.v.get("vade") or f.tarih
 
     def _devir_raporu(self, kayit, arsiv, yeni, onceki=None):
         K = kayit["K"]
@@ -3031,7 +3082,8 @@ S19_BAG_TURLERI = ("tahsilat", "odeme", "satis_iade_faturasi", "alis_iade_fatura
 
 
 def s19_devir_kayitlari(d, K):
-    """README Y14 / KULLANICIYA SORULMALI 1: devirden ÖNCE (kilit < K iken) yazılmış K sonrası karşılıksız / bağ kayıtları (S19 × devir; kâhin kural kurmaz)."""
+    """S24 A (kullanıcı 06.11 06:26; README Z1, Z3; bakım 4 Y14): devirden ÖNCE (kilit < K iken ya da kilit yokken) yazılmış K sonrası karşılıksız / bağ
+    kayıtları — Devir Raporu bunları listeler (devir hepsini K kilidiyle değerlendirir: kilide_cek). Kilit = K iken yazılmış kayıt listede yok."""
     out = []
     for k in d.kaynaklar.values():
         if k.tarih <= K or (k.kilit is not None and k.kilit >= K) or k.durum != "aktif":
@@ -3044,7 +3096,8 @@ def s19_devir_kayitlari(d, K):
 
 
 def kilide_cek(d, K):
-    """README Y14 (bakım 2 / 3 davranışı; S19 × devir KULLANICIYA SORULMALI 1): devir, K sonrası kayıtları K kilidiyle değerlendirir."""
+    """S24 A (kullanıcı 06.11 06:26; README Z2; bakım 4'te Y14 olarak susarak sürdürülen davranış artık KURAL): devir, K sonrası kayıtları K kilidiyle
+    değerlendirir — S11 / R3 kararı yeni yılda K kilidiyle (fatura kapalı, karşılıksız ayrı borç; ≤ K bağsız kapanış geri alınmaz)."""
     for k in d.kaynaklar.values():
         if k.tarih > K and (k.kilit is None or k.kilit < K):
             k.kilit = K

@@ -1,0 +1,187 @@
+Kâhin bakımı 5 — S27 dinî bayram tarihleri / 2429 metni için birincil kaynak denemesi (06.11.2026; kayıt 07:10 UTC)
+Ortam: ajan vekili; ana oturum ağ ayarına vakithesaplama.diyanet.gov.tr, www.mevzuat.gov.tr, www.resmigazete.gov.tr ekledi.
+
+1) https://vakithesaplama.diyanet.gov.tr/dini_gunler.php → HTTP 403 (sunucu yanıtı: 'Forbidden — You don't have permission to access this resource'); WebFetch → ENOTFOUND.
+   Başka istemci kimliğiyle (tarayıcı User-Agent) deneme ortamın erişim kuralınca REDDEDİLDİ; yapılmadı.
+2) https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=2429&MevzuatTur=1&MevzuatTertip=5 → 30 sn zaman aşımı, 0 bayt.
+   https://www.mevzuat.gov.tr/MevzuatMetin/1.5.2429.pdf ve .../mevzuatmetin/1.5.2429.pdf → 90 sn zaman aşımı, 0 bayt.
+3) https://www.resmigazete.gov.tr/ → 200 (ana sayfa); /arsiv/2025/ → 404; /arsiv/17284.pdf → zaman aşımı; /fihrist?tarih=2026-10-27&mukerrer=1 → bağlantı sıfırlandı.
+   Günlük fihristler /eskiler/2026/MM/2026MMDD.htm denendi (Şubat 1–28, Mart 1–28, Mayıs 1–25; çoğu zaman aşımı / bağlantı sıfırlandı).
+   OKUNABİLEN günler: 20260208.htm, 20260209.htm, 20260218.htm, 20260219.htm, 20260314.htm, 20260316.htm, 20260501.htm, 20260502.htm, 20260504.htm, 20260506.htm, 20260507.htm, 20260508.htm, 20260509.htm, 20260510.htm, 20260511.htm, 20260513.htm, 20260514.htm, 20260517.htm, 20260519.htm, 20260520.htm, 20260523.htm, 20260525.htm
+   Bu sayfalarda 'Bayram', 'idari izin', 'tatil' geçmiyor; tek 'Genelge' 2026-05-02 (2026/4 Aile ve Nüfus On Yılı) — bayramla ilgisiz.
+
+SONUÇ: dinî bayram tarihleri ve 2429 metni birincil kaynaktan DOĞRULANMADI → kâhin bayram pencerelerini (arife dahil) 'belirsiz' tutar (README Z12).
+Haber sitesi tarihleri kâhine girmedi.
+
+Ham deneme çıktıları (curl satırları hariç):
+--- bu13v7jk5
+20260201.htm 000 0
+20260201.htm HATA
+20260202.htm 000 0
+20260202.htm HATA
+20260203.htm 000 0
+20260203.htm HATA
+20260204.htm 000 0
+20260204.htm HATA
+20260205.htm 000 0
+20260205.htm HATA
+20260206.htm 000 0
+20260206.htm HATA
+20260207.htm 000 0
+20260207.htm HATA
+20260208.htm 200 6892
+20260209.htm 200 7050
+20260210.htm 000 0
+20260210.htm HATA
+20260211.htm 000 0
+20260211.htm HATA
+20260212.htm 000 0
+20260212.htm HATA
+20260213.htm 000 0
+20260213.htm HATA
+20260214.htm 000 0
+20260214.htm HATA
+20260215.htm 000 0
+20260215.htm HATA
+20260216.htm 000 0
+20260216.htm HATA
+20260217.htm 000 0
+20260217.htm HATA
+20260218.htm 200 10706
+20260219.htm 200 8466
+20260220.htm 000 0
+20260220.htm HATA
+20260221.htm 000 0
+20260221.htm HATA
+20260222.htm 000 0
+20260222.htm HATA
+20260223.htm 000 0
+20260223.htm HATA
+20260224.htm 000 0
+20260224.htm HATA
+20260225.htm 000 0
+20260225.htm HATA
+20260226.htm 000 0
+20260226.htm HATA
+20260227.htm 000 0
+20260227.htm HATA
+20260228.htm 000 0
+20260228.htm HATA
+20260301.htm 000 0
+20260301.htm HATA
+20260302.htm 000 0
+20260302.htm HATA
+20260303.htm 000 0
+20260303.htm HATA
+20260304.htm 000 0
+20260304.htm HATA
+20260305.htm 000 0
+20260305.htm HATA
+20260306.htm 000 0
+20260306.htm HATA
+20260307.htm 000 0
+20260307.htm HATA
+20260308.htm 000 0
+20260308.htm HATA
+20260309.htm 000 0
+20260309.htm HATA
+20260310.htm 000 0
+20260310.htm HATA
+20260311.htm 000 0
+20260311.htm HATA
+20260312.htm 000 0
+20260312.htm HATA
+20260313.htm 000 0
+20260313.htm HATA
+20260314.htm 200 13139
+20260315.htm 000 0
+20260315.htm HATA
+20260316.htm 200 12185
+20260317.htm 000 0
+20260317.htm HATA
+20260318.htm 000 0
+20260318.htm HATA
+20260319.htm 000 0
+20260319.htm HATA
+20260320.htm 000 0
+20260320.htm HATA
+20260321.htm 000 0
+20260321.htm HATA
+20260322.htm 000 0
+20260322.htm HATA
+20260323.htm 000 0
+20260323.htm HATA
+20260324.htm 000 0
+20260324.htm HATA
+20260325.htm 000 0
+20260325.htm HATA
+20260326.htm 000 0
+20260326.htm HATA
+20260327.htm 000 0
+20260327.htm HATA
+20260328.htm 000 0
+20260328.htm HATA
+20260501.htm 000 0
+20260501.htm HATA
+20260502.htm 200 9310
+20260503.htm 000 0
+20260503.htm HATA
+20260504.htm 200 9149
+
+[killed]
+--- bancvn1h4
+20260525.htm 000 0
+20260525.htm 200 11064
+20260524.htm 000 0
+20260524.htm 000 0
+20260524.htm 000 0
+20260523.htm 000 0
+20260523.htm 200 9062
+20260522.htm 000 0
+20260522.htm 000 0
+20260522.htm 000 0
+20260521.htm 000 0
+20260521.htm 000 0
+20260521.htm 000 0
+20260520.htm 200 6762
+20260519.htm 200 14915
+20260518.htm 000 0
+20260518.htm 000 0
+20260518.htm 000 0
+20260517.htm 000 0
+20260517.htm 000 0
+20260517.htm 200 6756
+20260516.htm 000 0
+20260516.htm 000 0
+20260516.htm 000 0
+20260515.htm 000 0
+20260515.htm 000 0
+20260515.htm 000 0
+20260514.htm 200 10188
+20260513.htm 200 9438
+20260512.htm 000 0
+20260512.htm 000 0
+20260512.htm 000 0
+20260511.htm 000 0
+20260511.htm 000 0
+20260511.htm 200 7918
+20260510.htm 000 0
+20260510.htm 000 0
+20260510.htm 200 7813
+20260509.htm 200 9453
+20260508.htm 200 14298
+20260507.htm 200 10222
+20260506.htm 200 7362
+20260505.htm 000 0
+20260505.htm 000 0
+20260505.htm 000 0
+20260504.htm 200 9149
+20260503.htm 000 0
+20260503.htm 000 0
+20260503.htm 000 0
+20260502.htm 200 9310
+20260501.htm 000 0
+20260501.htm 000 0
+20260501.htm 200 19972
+
+[exited with code 0]

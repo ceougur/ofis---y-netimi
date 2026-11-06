@@ -341,16 +341,48 @@ class OlayMaddeleri(unittest.TestCase):
         self.assertEqual(r["raporlar"]["g"]["gecikmis"], 10000)
         self.assertEqual([(a["k"], a["kalan"], a["vade"]) for a in r["raporlar"]["ak"]], [("karsiliksiz:KS1", 10000, "2027-01-10")])
 
-    def test_S14_kismi_kahin_susar(self):
-        # README Y5 / KULLANICIYA SORULMALI 2 (a): F5 kısmen aktarıldı (5000 128'de, 5000 120'de), bağlı çek 6000 < 10000 → hangi kısım önce, iki okuma:
-        # kâhin kural SAYMAZ: kahin_susuyor [("S14_KISMI", 6000)]. Çek iki kısmın toplamı kadarsa (s68 C3) susmaz; red yok (normal kısım ≤ 120)
+    def test_S25_a_kismi_once_supheli(self):
+        # S25 (a) A (kâhin bakımı 5, README Z5; bakım 4'ün test_S14_kismi_kahin_susar'ının YERİNE — eski beklenti: kahin_susuyor [("S14_KISMI", 6000)], iki okuma):
+        # F5 kısmen aktarıldı (5000 128'de, 5000 120'de), bağlı çek 6000 < 10000 → ÖNCE şüpheli kısım: A 128 5000 (SB), kalan A 120 1000; F5'in 120 kısmı 4000 açık
+        # (vade 15.04). 128 = 15000 − 5000 = 10000 (F4); 120 = 20000 − 15000 − 1000 = 4000; 01.06'da gecikmiş 4000, şüpheli 10000; kâhin SUSMAZ, red yok
         r = M.kos(senaryo([o("satis_faturasi", "2026-03-01", id="F4", cari="C3", M=10000, K=0, vade="2026-03-31"),
                            o("satis_faturasi", "2026-03-02", id="F5", cari="C3", M=10000, K=0, vade="2026-04-15"),
                            o("supheliye_al", "2026-05-01", id="SB", cari="C3", tutar=15000),
                            o("tahsilat", "2026-05-20", id="P3", cari="C3", yol="cek", evrak="CK3", tutar=6000, fatura="F5"),
-                           E.R("g", "gecikmis", cari="C3", tarih="2026-06-01")]))
-        self.assertEqual([(x["neden"], x.get("tutar")) for x in r["raporlar"]["g"].get("kahin_susuyor", [])], [("S14_KISMI", 6000)])
+                           E.R("g", "gecikmis", cari="C3", tarih="2026-06-01"), E.R("ak", "acik_kalemler", cari="C3", tarih="2026-06-01"),
+                           E.MZ("mz", "2026-01-01", "2026-06-30")]))
+        g = r["raporlar"]["g"]
+        self.assertNotIn("kahin_susuyor", g)
+        self.assertEqual((g["gecikmis"], g["supheli"]), (4000, 10000))
+        self.assertEqual(r["raporlar"]["ak"], [{"k": "fatura:F5", "tur": "fatura", "kalan": 4000, "vade": "2026-04-15", "tarih": "2026-03-02"}])
+        mz = r["raporlar"]["mz"]["satirlar"]
+        self.assertEqual((mz["120|C3"]["bakiye"], mz["128|C3"]["bakiye"]), (4000, 10000))
         self.assertEqual(r["redler"], [])
+
+    def test_S25_kart_kahin_susar(self):
+        # README Z8 / KULLANICIYA SORULMALI 1 (kâhin bakımı 5): Kredi Kartına İade (T-11, yol kart) ile şüpheli caride faturaya bağlı tahsilat — karar (c) yalnız
+        # nakit / havale / POS sayar → kâhin kural kurmaz (senaryo hatası; ne ret ne kabul). Eski kâhin SUPHELI_NORMAL_ASIM ile reddediyordu (120 bakiyesi 0)
+        bas = [o("satis_faturasi", "2026-03-01", id="F4", cari="C3", M=10000, K=0, vade="2026-03-31")]
+        with self.assertRaises(AssertionError):
+            M.kos(senaryo(bas + [o("supheliye_al", "2026-05-01", id="SB", cari="C3", tutar=10000),
+                                 o("tahsilat", "2026-05-10", cari="C3", yol="kart", kart="KK1", tutar=1000, fatura="F4")]))
+        # açık şüpheli kaydı yoksa kural var (T-11, bağlı tahsilat 120): susma yok
+        r = M.kos(senaryo(bas + [o("tahsilat", "2026-05-10", cari="C3", yol="kart", kart="KK1", tutar=1000, fatura="F4"),
+                                 E.MZ("mz", "2026-01-01", "2026-06-30")]))
+        self.assertEqual((r["redler"], r["raporlar"]["mz"]["satirlar"]["120|C3"]["bakiye"]), ([], 9000))
+
+    def test_S26_tutar_disi_alan_kahin_susar(self):
+        # README Z10 / KULLANICIYA SORULMALI 2 (kâhin bakımı 5): geri yüklenmiş, açılıştan önce tarihli Kasa kaydının tarihi değişmeden TUTAR DIŞINDA bir alanı
+        # düzeltilirse (karar "yalnız tutarı", gerekçe "tarih değişmiyor") iki okuma → kâhin kural kurmaz (senaryo hatası). Yalnız tutar → kabul (S26 A).
+        # Eski kâhin: T12 ile hepsini reddederdi
+        bas = [o("kasa_acilis", "2026-02-01", id="KA", tutar=10000, yedekten=True),
+               o("tahsilat", "2026-01-25", id="PY", cari="C1", yol="nakit", tutar=500, yedekten=True)]
+        for dg in ({"cari": "C3"}, {"tutar": 600, "aciklama": "düzeltme"}):
+            with self.assertRaises(AssertionError, msg=str(dg)):
+                M.kos(senaryo(bas + [o("duzenle", kaynak="PY", degisiklik=dg)]))
+        r = M.kos(senaryo(bas + [o("duzenle", kaynak="PY", degisiklik={"tutar": 600}), E.MZ("mz", "2026-01-01", "2026-02-28")]))
+        self.assertEqual((r["redler"], r["raporlar"]["mz"]["satirlar"]["100"]["bakiye"]), ([], 10600))
+        self.assertTrue(M.tumu_tuttu(r["degismezler"]), r["degismezler"])
 
     def test_S14_hedef_kalem_kapanir(self):
         # README Y3 (bakım 4'te mutant tasarımında görülüp SONRADAN elle eklendi: şüpheli kuyruğunda hangi kalemin kapandığını hiçbir senaryo ölçmüyordu):
@@ -378,16 +410,37 @@ class OlayMaddeleri(unittest.TestCase):
         self.assertEqual(M.pos_etkin_valor("2027-01-02"), "2027-01-04")      # Cumartesi
         self.assertEqual(M.pos_etkin_valor("2026-04-24"), "2026-04-24")      # iş günü aynen
         self.assertEqual(M.pos_etkin_valor("2026-04-23", tatil=False), "2026-04-23")   # 2.4.9 türetmesi: yalnız hafta sonu (Y22)
-        self.assertEqual([M.tatil_turu(x) for x in ("2026-04-23", "2026-10-28", "2026-05-27", "2026-04-24", "2028-04-23", "2028-06-01")],
-                         ["tam", "belirsiz", "belirsiz", None, "tam", "belirsiz"])
+        # kâhin bakımı 5 (S27 A, README Z11): 28 Ekim yarım gün → "yarim" (İŞ GÜNÜ; eski beklenti "belirsiz", bakım 4 Y21); bayram takvimi bilinmeyen yılda 28 Ekim
+        # belirsiz kalır (Z12)
+        self.assertEqual([M.tatil_turu(x) for x in ("2026-04-23", "2026-10-28", "2026-05-27", "2026-04-24", "2028-04-23", "2028-06-01", "2027-10-28",
+                                                    "2028-10-28")],
+                         ["tam", "yarim", "belirsiz", None, "tam", "belirsiz", "yarim", "belirsiz"])
+        self.assertEqual(M.pos_etkin_valor("2026-10-28"), "2026-10-28")      # yarım gün Çarşamba: kaymaz
+        self.assertEqual(M.pos_etkin_valor("2027-10-28"), "2027-10-28")      # yarım gün Perşembe: kaymaz
+        self.assertEqual(M.pos_etkin_valor("2027-10-29"), "2027-11-01")      # 29 Ekim Cuma (tam) + hafta sonu → Pazartesi
+        self.assertEqual(M.pos_etkin_valor("2026-10-28", tatil=False), "2026-10-28")
 
     def test_S21_belirsiz_valor_kahin_susar(self):
-        # README Y21 / KULLANICIYA SORULMALI 4: yarım gün (28 Ekim, arife) ve doğrulanmamış dinî bayram — kâhin kural kurmaz (senaryo hatası)
-        for v in ("2026-10-28", "2026-05-27", "2026-03-19", "2026-05-23"):     # 23.05 Cumartesi → kaydırma yolu bayram penceresine (25.05) değer
+        # README Y21 + kâhin bakımı 5 (S27, Z12): doğrulanmamış dinî bayram penceresi (arife dahil) — kâhin kural kurmaz (senaryo hatası). 28 Ekim artık
+        # BELİRSİZ DEĞİL (S27 A: yarım gün iş günü; eski listede "2026-10-28" vardı ve M.kos örneği 28 Ekim valörüyle hata veriyordu)
+        for v in ("2026-05-27", "2026-03-19", "2026-05-23", "2026-05-26", "2027-03-08", "2028-10-28"):   # 23.05 Cumartesi → kaydırma yolu pencereye (25.05) değer
             with self.assertRaises(AssertionError, msg=v):
                 M.pos_etkin_valor(v)
         with self.assertRaises(AssertionError):
-            M.kos(senaryo([o("tahsilat", "2026-10-27", cari="C1", yol="pos", pos="POS1", tutar=1000, valor="2026-10-28")]))
+            M.kos(senaryo([o("tahsilat", "2026-05-25", cari="C1", yol="pos", pos="POS1", tutar=1000, valor="2026-05-26")]))
+        r = M.kos(senaryo([o("tahsilat", "2026-10-27", cari="C1", yol="pos", pos="POS1", tutar=1000, valor="2026-10-28"),
+                           E.R("m", "moduller", tarih="2026-10-28")]))
+        self.assertEqual(r["raporlar"]["m"].get("banka|B1"), 1000)
+
+    def test_S27_bayram_tarihleri(self):
+        # README Z12 (kâhin bakımı 5): dinî bayram tarihleri yalnız resmî kaynaktan OKUNURSA kural olur. Bu bakımda Diyanet (vakithesaplama.diyanet.gov.tr: 403) ve
+        # Resmî Gazete (arşiv sayfaları çoğunlukla zaman aşımı; okunan günlük fihristlerde bayram genelgesi yok) birincil tarih VERMEDİ, mevzuat.gov.tr açılmadı
+        # → pencereler (arifeden bir gün önce – bayramdan bir gün sonra) BELİRSİZ kalır; pencere dışı aynen (iş günü). Haber sitesi tarihleri kullanılmadı.
+        for s in ("2026-03-18", "2026-03-19", "2026-03-22", "2026-03-23", "2026-05-25", "2026-05-26", "2026-05-30", "2026-05-31",
+                  "2027-03-07", "2027-03-08", "2027-03-12", "2027-05-14", "2027-05-15", "2027-05-20"):
+            self.assertEqual(M.tatil_turu(s), "belirsiz", s)
+        for s in ("2026-03-17", "2026-03-24", "2026-05-22", "2026-06-01", "2027-03-05", "2027-03-15", "2027-05-13", "2027-05-21"):
+            self.assertIsNone(M.tatil_turu(s), s)
 
     def test_EK2_4_1_ayni_gun_yazim_sirasi_sonucu_degistirmez(self):
         # EK-2 §4 (1) (karar (1) ile): aynı gündeki kalemlerin yazım sırası ters çevrilince her carinin gecikmişi ve vade bazında açık
@@ -662,7 +715,8 @@ class SenaryoHijyeni(unittest.TestCase):
                     tatil += M.tatil_turu(x["valor"]) == "tam"
         self.assertGreater(n, 10)
         self.assertGreaterEqual(tatil, 4)
-        self.assertTrue(U.belirsiz_mi(dt.date(2026, 10, 28)) and U.belirsiz_mi(dt.date(2026, 5, 27)) and not U.belirsiz_mi(dt.date(2026, 4, 23)))
+        # kâhin bakımı 5 (S27 A, README Z11): 28 Ekim yarım gün artık belirsiz DEĞİL (iş günü); doğrulanmamış dinî bayram belirsiz kalır (Z12)
+        self.assertTrue(not U.belirsiz_mi(dt.date(2026, 10, 28)) and U.belirsiz_mi(dt.date(2026, 5, 27)) and not U.belirsiz_mi(dt.date(2026, 4, 23)))
 
 
 # ------------------------------------------------------------------------------------------------ diskteki dosyalar (mutasyonda koşmaz)
