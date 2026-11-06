@@ -1,0 +1,7507 @@
+{
+ "kod": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-taban",
+ "bugun": "2026-11-06",
+ "fikstur": "surum-2.0.26-onarim-250",
+ "dokum": {
+  "repair": {
+   "fixed": [
+    {
+     "invoiceId": "invoice-cadc6573-4215-4ab9-a4c7-25cae959028f",
+     "number": "FIS2026000000002",
+     "planId": "plan-66f1024e-dc87-4d89-ba5b-fee1f63d4544",
+     "from": 800,
+     "to": 100
+    },
+    {
+     "invoiceId": "invoice-4d829619-0fd4-4d47-88a1-0e94837a583b",
+     "number": "FIS2026000000003",
+     "planId": "plan-6e6830e4-6d40-4f68-840d-4245e57864fd",
+     "from": 150,
+     "to": 0
+    },
+    {
+     "invoiceId": "invoice-e47ebe9a-1673-4a0f-a36f-494eac59e58f",
+     "number": "FIS2026000000009",
+     "planId": "plan-b97b0aa9-230c-48d7-9d64-b0df0591fa52",
+     "from": 125,
+     "to": 0
+    },
+    {
+     "invoiceId": "invoice-cb9fa732-1651-4700-8dd9-e0841f818a7c",
+     "number": "FIS2026000000012",
+     "planId": "plan-f25fa943-233b-4928-af6a-46ba2dfdaa60",
+     "from": 1000,
+     "to": 400
+    },
+    {
+     "invoiceId": "invoice-ecc408a4-75d0-46bc-9001-fcf490c3fd16",
+     "number": "FIS2026000000017",
+     "planId": "plan-3522c410-8434-4dfb-9f1e-bafd4c7a300e",
+     "from": 300,
+     "to": 225
+    },
+    {
+     "invoiceId": "invoice-3a65da7a-24d7-4db4-aab0-8cd9dd61d230",
+     "number": "FIS2026000000018",
+     "planId": "plan-f738b6a3-3ff3-43db-8638-fac5b807ee36",
+     "from": 600,
+     "to": 100
+    },
+    {
+     "invoiceId": "invoice-f7336c36-a6ce-4210-8336-30c2808c870e",
+     "number": "FIS2026000000020",
+     "planId": "plan-ae6600a7-4c46-45d7-b7cb-52159401ef26",
+     "from": 150,
+     "to": 0
+    },
+    {
+     "invoiceId": "invoice-c0aa6ed5-37da-4805-978f-634f5082cfa2",
+     "number": "FIS2026000000021",
+     "planId": "plan-51357ade-c323-46a8-acf8-3d940a23bf0d",
+     "from": 750,
+     "to": 300
+    },
+    {
+     "invoiceId": "invoice-1ef9fba4-4dff-4d91-8b36-0bb19501bbb2",
+     "number": "FIS2026000000026",
+     "planId": "plan-75baecd6-27e9-40c9-bfd6-f63535a0d866",
+     "from": 525,
+     "to": 75
+    },
+    {
+     "invoiceId": "invoice-487e94e9-1dd6-4678-971f-a676d21adb42",
+     "number": "FIS2026000000030",
+     "planId": "plan-759c6151-39ec-4482-b84f-2ec5543ccc80",
+     "from": 525,
+     "to": 75
+    },
+    {
+     "invoiceId": "invoice-57a550ff-12a4-4b96-ba55-32b2847e0aca",
+     "number": "FIS2026000000031",
+     "planId": "plan-062d0271-7256-40f8-99a8-4a19c0e097e1",
+     "from": 100,
+     "to": 0
+    },
+    {
+     "invoiceId": "invoice-390eb4e2-e0bc-4c0f-aa73-29d14d9d3989",
+     "number": "FIS2026000000037",
+     "planId": "plan-e4b9bc60-6d70-4a0f-8ba6-f9c0b92e69a2",
+     "from": 750,
+     "to": 0
+    },
+    {
+     "invoiceId": "invoice-f85c69d0-2da1-441a-8aa3-a773c32996d5",
+     "number": "FIS2026000000040",
+     "planId": "plan-412c31f4-8870-402b-a8db-6e89bb8d485a",
+     "from": 1250,
+     "to": 500
+    },
+    {
+     "invoiceId": "invoice-37888a3c-cf06-492d-92c0-dfde12737b1e",
+     "number": "FIS2026000000041",
+     "planId": "plan-51bf8d9d-42b9-49d7-9877-6d514b324cb0",
+     "from": 750,
+     "to": 600
+    },
+    {
+     "invoiceId": "invoice-d0421693-a360-4bee-8af1-8c732d264d12",
+     "number": "FIS2026000000047",
+     "planId": "plan-876b34af-a665-4093-8f1e-4e78a64108fc",
+     "from": 1300,
+     "to": 1250
+    },
+    {
+     "invoiceId": "invoice-1ca14cbb-642f-418c-9f52-c90d9f5e0e55",
+     "number": "FIS2026000000059",
+     "planId": "plan-a2e0cabe-029b-477a-9433-ad5870343369",
+     "from": 1000,
+     "to": 800
+    },
+    {
+     "invoiceId": "invoice-79481bf0-9162-4b3d-bdcf-e45afb7bc52d",
+     "number": "FIS2026000000062",
+     "planId": "plan-1989028b-dbdc-458d-a41a-c1f2bce1b870",
+     "from": 700,
+     "to": 300
+    },
+    {
+     "invoiceId": "invoice-0c26f54b-3df7-4bb8-bee6-168fcd19cf73",
+     "number": "FIS2026000000065",
+     "planId": "plan-33306f26-2efa-4e1d-9a73-32b09a14e5f1",
+     "from": 900,
+     "to": 0
+    },
+    {
+     "invoiceId": "invoice-2b94af98-8efb-4024-875b-bf895172db3d",
+     "number": "FIS2026000000067",
+     "planId": "plan-403718a6-1f62-4e21-adef-d939e08022f7",
+     "from": 300,
+     "to": 0
+    },
+    {
+     "invoiceId": "invoice-013a4186-3d43-4e09-b778-e11d93f037f1",
+     "number": "FIS2026000000071",
+     "planId": "plan-2c9602db-06df-4ca3-8dfb-96ffa1542206",
+     "from": 125,
+     "to": 0
+    },
+    {
+     "invoiceId": "invoice-73bb3b5f-3a06-4ab8-80fd-ca7a509c6598",
+     "number": "FIS2026000000072",
+     "planId": "plan-53ad3b77-6ab5-4fb7-a6ab-b4114ee19276",
+     "from": 250,
+     "to": 0
+    },
+    {
+     "invoiceId": "invoice-f072aca3-cb1c-4a65-9325-c54348827360",
+     "number": "FIS2026000000077",
+     "planId": "plan-ff246797-3548-4526-a7ee-1079bc7f2ae0",
+     "from": 1000,
+     "to": 750
+    },
+    {
+     "invoiceId": "invoice-aec57011-e93b-4aa0-b96c-442f536ebb4c",
+     "number": "FIS2026000000081",
+     "planId": "plan-f46de828-4384-4d65-98fc-c5aa5f1f059f",
+     "from": 300,
+     "to": 0
+    },
+    {
+     "invoiceId": "invoice-18850da4-4d03-4d81-a56a-eec478ebe526",
+     "number": "FIS2026000000082",
+     "planId": "plan-904d0a9b-755d-4988-9b20-701ca4db1e16",
+     "from": 900,
+     "to": 120
+    },
+    {
+     "invoiceId": "invoice-9f6376ca-36f6-43ce-a4ff-87d481a4efb4",
+     "number": "FIS2026000000088",
+     "planId": "plan-e4e4f7b9-9ba3-415d-a61c-b822d87c41cb",
+     "from": 250,
+     "to": 0
+    },
+    {
+     "invoiceId": "invoice-27d22c17-b30f-43a4-871e-21f78987cf70",
+     "number": "FIS2026000000093",
+     "planId": "plan-648ae985-615d-4c61-b275-635010add762",
+     "from": 1000,
+     "to": 0
+    }
+   ],
+   "locked": [
+    {
+     "invoiceId": "invoice-0a4cd424-edb3-44d5-8370-0655d1945e97",
+     "number": "FIS2026000000028",
+     "planId": "plan-6a7ea793-b887-42d9-9c12-c8e1439d40ff",
+     "left": 875,
+     "target": 125
+    },
+    {
+     "invoiceId": "invoice-5b3a9052-8291-48a4-b82d-2fbd85417036",
+     "number": "FIS2026000000039",
+     "planId": "plan-ef39ddd1-76e1-47d3-9ee1-0731ef7a1ae7",
+     "left": 100,
+     "target": 0
+    },
+    {
+     "invoiceId": "invoice-0fbb1612-e5b4-4639-9173-28753f0d2b63",
+     "number": "FIS2026000000042",
+     "planId": "plan-11e3eef6-d9dc-4b37-b37a-44a2fe4a70ff",
+     "left": 100,
+     "target": 0
+    }
+   ]
+  },
+  "izler": [
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-66f1024e-dc87-4d89-ba5b-fee1f63d4544",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-94452b9a-b236-46eb-a28e-336093bb441e",
+     "from": 1000,
+     "to": 900,
+     "reason": "İade IAD2026000000002"
+    },
+    "createdAt": "2026-11-06T06:04:59.081Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-6e6830e4-6d40-4f68-840d-4245e57864fd",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-94452b9a-b236-46eb-a28e-336093bb441e",
+     "from": 750,
+     "to": 600,
+     "reason": "İade IAD2026000000004"
+    },
+    "createdAt": "2026-11-06T06:04:59.183Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-b97b0aa9-230c-48d7-9d64-b0df0591fa52",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-8d1527aa-c7f7-4f40-afaa-a3f0644ab0ef",
+     "from": 1250,
+     "to": 1125,
+     "reason": "İade IAD2026000000012"
+    },
+    "createdAt": "2026-11-06T06:04:59.679Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-3522c410-8434-4dfb-9f1e-bafd4c7a300e",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-58946265-7c20-436d-a87e-45fc96321e73",
+     "from": 750,
+     "to": 525,
+     "reason": "İade IAD2026000000021"
+    },
+    "createdAt": "2026-11-06T06:05:00.098Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-f738b6a3-3ff3-43db-8638-fac5b807ee36",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-58946265-7c20-436d-a87e-45fc96321e73",
+     "from": 750,
+     "to": 600,
+     "reason": "İade IAD2026000000023"
+    },
+    "createdAt": "2026-11-06T06:05:00.172Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-f738b6a3-3ff3-43db-8638-fac5b807ee36",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-58946265-7c20-436d-a87e-45fc96321e73",
+     "from": 650,
+     "to": 600,
+     "reason": "Taksit tahsilatı değişti"
+    },
+    "createdAt": "2026-11-06T06:05:00.225Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-ae6600a7-4c46-45d7-b7cb-52159401ef26",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-f5dcb62f-a44b-4eb3-a42c-80422b9df924",
+     "from": 1050,
+     "to": 0,
+     "reason": "İade IAD2026000000026"
+    },
+    "createdAt": "2026-11-06T06:05:00.359Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-39f6a346-ac1b-4d1e-8160-5d6ea53e645c",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-564f7f4e-388b-4d9f-8c2c-8cb730c0e211",
+     "from": 500,
+     "to": 0,
+     "reason": "İade IAD2026000000030"
+    },
+    "createdAt": "2026-11-06T06:05:00.483Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-39f6a346-ac1b-4d1e-8160-5d6ea53e645c",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-564f7f4e-388b-4d9f-8c2c-8cb730c0e211",
+     "from": 400,
+     "to": 0,
+     "reason": "İade iptali IAD2026000000031"
+    },
+    "createdAt": "2026-11-06T06:05:00.514Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-620873a8-436b-4640-8940-017313dce8fe",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-4bf1aa1b-578e-4f12-bbe8-61da33ee7518",
+     "from": 2500,
+     "to": 750,
+     "reason": "İade IAD2026000000034"
+    },
+    "createdAt": "2026-11-06T06:05:00.639Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-75baecd6-27e9-40c9-bfd6-f63535a0d866",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-4bf1aa1b-578e-4f12-bbe8-61da33ee7518",
+     "from": 750,
+     "to": 675,
+     "reason": "İade IAD2026000000036"
+    },
+    "createdAt": "2026-11-06T06:05:00.739Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-75baecd6-27e9-40c9-bfd6-f63535a0d866",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-4bf1aa1b-578e-4f12-bbe8-61da33ee7518",
+     "from": 750,
+     "to": 675,
+     "reason": "İade iptali IAD2026000000037"
+    },
+    "createdAt": "2026-11-06T06:05:00.790Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-9905238b-b150-46f9-95f8-a994ade092a4",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-4bf1aa1b-578e-4f12-bbe8-61da33ee7518",
+     "from": 2500,
+     "to": 1625,
+     "reason": "İade IAD2026000000038"
+    },
+    "createdAt": "2026-11-06T06:05:00.829Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-6a7ea793-b887-42d9-9c12-c8e1439d40ff",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-269c9d6a-1b00-41a5-a9df-0c53aa201ec1",
+     "from": 1250,
+     "to": 1125,
+     "reason": "İade IAD2026000000040"
+    },
+    "createdAt": "2026-11-06T06:05:00.922Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-759c6151-39ec-4482-b84f-2ec5543ccc80",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-b18a3594-39a3-4ec6-ad80-0260b8dbc1ff",
+     "from": 750,
+     "to": 675,
+     "reason": "İade IAD2026000000042"
+    },
+    "createdAt": "2026-11-06T06:05:01.038Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-062d0271-7256-40f8-99a8-4a19c0e097e1",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-f0faabad-d031-4fc5-a975-6c288c3b5232",
+     "from": 1000,
+     "to": 700,
+     "reason": "İade IAD2026000000044"
+    },
+    "createdAt": "2026-11-06T06:05:01.130Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-062d0271-7256-40f8-99a8-4a19c0e097e1",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-f0faabad-d031-4fc5-a975-6c288c3b5232",
+     "from": 700,
+     "to": 600,
+     "reason": "İade IAD2026000000045"
+    },
+    "createdAt": "2026-11-06T06:05:01.147Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-47a31e26-1b3a-4096-975e-e51bb3946216",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-f0faabad-d031-4fc5-a975-6c288c3b5232",
+     "from": 1250,
+     "to": 0,
+     "reason": "İade IAD2026000000046"
+    },
+    "createdAt": "2026-11-06T06:05:01.209Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-b84c91fb-75fb-4bac-9326-68fa98efdca6",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-f0faabad-d031-4fc5-a975-6c288c3b5232",
+     "from": 2500,
+     "to": 2250,
+     "reason": "İade IAD2026000000047"
+    },
+    "createdAt": "2026-11-06T06:05:01.244Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-73f18644-7b43-4867-8071-fe76f70926d3",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-c49663c1-76b2-4135-8420-aed0a44d3613",
+     "from": 1400,
+     "to": 0,
+     "reason": "İade IAD2026000000049"
+    },
+    "createdAt": "2026-11-06T06:05:01.461Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-8cbcebc7-8173-4e9d-92e1-8fd0f8f04c6b",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-c5b8a0a8-17ae-4b1a-b7f5-92ba5e5420e7",
+     "from": 1400,
+     "to": 700,
+     "reason": "İade IAD2026000000052"
+    },
+    "createdAt": "2026-11-06T06:05:01.638Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-ef39ddd1-76e1-47d3-9ee1-0731ef7a1ae7",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-c5b8a0a8-17ae-4b1a-b7f5-92ba5e5420e7",
+     "from": 500,
+     "to": 400,
+     "reason": "İade IAD2026000000053"
+    },
+    "createdAt": "2026-11-06T06:05:01.711Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-ef39ddd1-76e1-47d3-9ee1-0731ef7a1ae7",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-c5b8a0a8-17ae-4b1a-b7f5-92ba5e5420e7",
+     "from": 400,
+     "to": 200,
+     "reason": "İade IAD2026000000054"
+    },
+    "createdAt": "2026-11-06T06:05:01.740Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-412c31f4-8870-402b-a8db-6e89bb8d485a",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-c5b8a0a8-17ae-4b1a-b7f5-92ba5e5420e7",
+     "from": 1750,
+     "to": 1250,
+     "reason": "İade IAD2026000000055"
+    },
+    "createdAt": "2026-11-06T06:05:01.786Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-51bf8d9d-42b9-49d7-9877-6d514b324cb0",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-a316e03a-dad4-4fd9-bb1d-1aadf7b7bc84",
+     "from": 750,
+     "to": 600,
+     "reason": "İade IAD2026000000056"
+    },
+    "createdAt": "2026-11-06T06:05:01.839Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-11e3eef6-d9dc-4b37-b37a-44a2fe4a70ff",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-a316e03a-dad4-4fd9-bb1d-1aadf7b7bc84",
+     "from": 700,
+     "to": 100,
+     "reason": "İade IAD2026000000059"
+    },
+    "createdAt": "2026-11-06T06:05:01.916Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-2a652960-5aca-40b0-a827-2cd0afecdc13",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-a2842b15-f8cf-41af-896f-eb316ad43d11",
+     "from": 2000,
+     "to": 800,
+     "reason": "İade IAD2026000000062"
+    },
+    "createdAt": "2026-11-06T06:05:02.079Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-876b34af-a665-4093-8f1e-4e78a64108fc",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-ca49c205-ac48-4ab7-8a7a-c61240bb8f3d",
+     "from": 2000,
+     "to": 1300,
+     "reason": "İade IAD2026000000066"
+    },
+    "createdAt": "2026-11-06T06:05:02.332Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-876b34af-a665-4093-8f1e-4e78a64108fc",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-ca49c205-ac48-4ab7-8a7a-c61240bb8f3d",
+     "from": 1350,
+     "to": 1300,
+     "reason": "Taksit tahsilatı değişti"
+    },
+    "createdAt": "2026-11-06T06:05:02.366Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-43c9386c-3a0d-42ad-ab23-9601abb4c4a1",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-7f0bee18-1e73-4300-9020-ae6ec1785e0b",
+     "from": 2000,
+     "to": 1800,
+     "reason": "İade IAD2026000000070"
+    },
+    "createdAt": "2026-11-06T06:05:02.751Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-19213fe0-b405-4a5b-bf74-bda51f17bba4",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-ab9b1779-12a0-408d-9bc0-8157270d9f39",
+     "from": 2500,
+     "to": 1625,
+     "reason": "İade IAD2026000000074"
+    },
+    "createdAt": "2026-11-06T06:05:03.022Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-64882d40-7493-407a-87ae-0be81603295d",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-e3b78212-208d-4560-89a3-77271e15db10",
+     "from": 1050,
+     "to": 150,
+     "reason": "İade IAD2026000000086"
+    },
+    "createdAt": "2026-11-06T06:05:03.757Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-1989028b-dbdc-458d-a41a-c1f2bce1b870",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-e3b78212-208d-4560-89a3-77271e15db10",
+     "from": 1000,
+     "to": 700,
+     "reason": "İade IAD2026000000087"
+    },
+    "createdAt": "2026-11-06T06:05:03.883Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-1989028b-dbdc-458d-a41a-c1f2bce1b870",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-e3b78212-208d-4560-89a3-77271e15db10",
+     "from": 900,
+     "to": 700,
+     "reason": "İade iptali IAD2026000000088"
+    },
+    "createdAt": "2026-11-06T06:05:03.955Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-57ff2a47-ccc4-413c-a0dc-40ef64725d15",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-4b0ab6f6-b08f-41d9-b72b-7ae7c4cede14",
+     "from": 2000,
+     "to": 1900,
+     "reason": "İade IAD2026000000089"
+    },
+    "createdAt": "2026-11-06T06:05:04.101Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-55966405-9312-43f7-8389-13f523a8a24b",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-4b0ab6f6-b08f-41d9-b72b-7ae7c4cede14",
+     "from": 1250,
+     "to": 875,
+     "reason": "İade IAD2026000000091"
+    },
+    "createdAt": "2026-11-06T06:05:04.270Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-403718a6-1f62-4e21-adef-d939e08022f7",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-87e50c66-e32a-4c0c-9b31-6f465e6e18c1",
+     "from": 500,
+     "to": 0,
+     "reason": "İade IAD2026000000093"
+    },
+    "createdAt": "2026-11-06T06:05:04.373Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-e9a33827-7fe9-4566-9f06-3c92c9ac73c0",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-87e50c66-e32a-4c0c-9b31-6f465e6e18c1",
+     "from": 1250,
+     "to": 1000,
+     "reason": "İade IAD2026000000096"
+    },
+    "createdAt": "2026-11-06T06:05:04.488Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-49a17e6d-ab21-49b9-810b-1e18101217ef",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-87e50c66-e32a-4c0c-9b31-6f465e6e18c1",
+     "from": 1000,
+     "to": 800,
+     "reason": "İade IAD2026000000097"
+    },
+    "createdAt": "2026-11-06T06:05:04.558Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-b9b51f0c-6ede-4018-8ec1-39a6cc1a6043",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-e30c7b31-c421-4015-b259-a618fa3d9336",
+     "from": 1500,
+     "to": 1350,
+     "reason": "İade IAD2026000000098"
+    },
+    "createdAt": "2026-11-06T06:05:04.735Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-2c9602db-06df-4ca3-8dfb-96ffa1542206",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-e30c7b31-c421-4015-b259-a618fa3d9336",
+     "from": 1250,
+     "to": 0,
+     "reason": "İade IAD2026000000099"
+    },
+    "createdAt": "2026-11-06T06:05:04.783Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-53ad3b77-6ab5-4fb7-a6ab-b4114ee19276",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-e30c7b31-c421-4015-b259-a618fa3d9336",
+     "from": 2500,
+     "to": 500,
+     "reason": "İade IAD2026000000101"
+    },
+    "createdAt": "2026-11-06T06:05:04.993Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-53ad3b77-6ab5-4fb7-a6ab-b4114ee19276",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-e30c7b31-c421-4015-b259-a618fa3d9336",
+     "from": 900,
+     "to": 750,
+     "reason": "Taksit tahsilatı değişti"
+    },
+    "createdAt": "2026-11-06T06:05:05.186Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-fe4e8a9d-316e-42fe-b660-f783c2c55472",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-7319d742-56a9-47d0-89aa-3f19ae62900a",
+     "from": 1000,
+     "to": 0,
+     "reason": "İade IAD2026000000104"
+    },
+    "createdAt": "2026-11-06T06:05:05.503Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-76c2303e-10be-42fe-9e3c-fea1b2cef103",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-7319d742-56a9-47d0-89aa-3f19ae62900a",
+     "from": 500,
+     "to": 150,
+     "reason": "İade IAD2026000000105"
+    },
+    "createdAt": "2026-11-06T06:05:05.594Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-81f07565-a3a7-4dce-81b6-27ebce179af4",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-5553f9e9-7ec9-4e55-b80c-53dbfd952944",
+     "from": 500,
+     "to": 350,
+     "reason": "İade IAD2026000000110"
+    },
+    "createdAt": "2026-11-06T06:05:06.026Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-5f0f99b5-2c0c-49d5-bd30-9d906e4536b9",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-5553f9e9-7ec9-4e55-b80c-53dbfd952944",
+     "from": 1000,
+     "to": 950,
+     "reason": "İade IAD2026000000112"
+    },
+    "createdAt": "2026-11-06T06:05:06.121Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-f46de828-4384-4d65-98fc-c5aa5f1f059f",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-fd12da0d-9c2f-445b-9533-6ad6e5e2adc9",
+     "from": 2000,
+     "to": 1000,
+     "reason": "İade IAD2026000000113"
+    },
+    "createdAt": "2026-11-06T06:05:06.218Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-f46de828-4384-4d65-98fc-c5aa5f1f059f",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-fd12da0d-9c2f-445b-9533-6ad6e5e2adc9",
+     "from": 1350,
+     "to": 1300,
+     "reason": "Taksit tahsilatı değişti"
+    },
+    "createdAt": "2026-11-06T06:05:06.285Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-904d0a9b-755d-4988-9b20-701ca4db1e16",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-c2e43a56-dd08-4879-a282-2d983a1eaa62",
+     "from": 1400,
+     "to": 1080,
+     "reason": "İade IAD2026000000115"
+    },
+    "createdAt": "2026-11-06T06:05:06.415Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-e3be60ba-cf72-4da9-af65-599318a0996b",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-1890e8c1-82c1-4c7f-9f6a-2968d2d561e9",
+     "from": 1000,
+     "to": 500,
+     "reason": "İade IAD2026000000119"
+    },
+    "createdAt": "2026-11-06T06:05:06.693Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-e4e4f7b9-9ba3-415d-a61c-b822d87c41cb",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-98bab342-2722-4f7b-aebe-421324cdd80c",
+     "from": 750,
+     "to": 450,
+     "reason": "İade IAD2026000000123"
+    },
+    "createdAt": "2026-11-06T06:05:06.916Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-5f34f9c4-3668-4968-b261-e6be2e9210a8",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-98bab342-2722-4f7b-aebe-421324cdd80c",
+     "from": 1050,
+     "to": 525,
+     "reason": "İade IAD2026000000124"
+    },
+    "createdAt": "2026-11-06T06:05:07.035Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-d5b8f0d5-e559-4638-989a-ca7a0fd9aa86",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-98bab342-2722-4f7b-aebe-421324cdd80c",
+     "from": 1400,
+     "to": 1000,
+     "reason": "İade IAD2026000000126"
+    },
+    "createdAt": "2026-11-06T06:05:07.188Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-0818ffe2-4f2f-4b75-8984-d4c24f3c8cce",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-5793753c-def4-4081-a269-fd158c9e4cf8",
+     "from": 2000,
+     "to": 1400,
+     "reason": "İade IAD2026000000130"
+    },
+    "createdAt": "2026-11-06T06:05:07.442Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-648ae985-615d-4c61-b275-635010add762",
+    "actorId": "user-d7ad762c-5720-47ad-ab29-f8e632323220",
+    "payload": {
+     "accountId": "account-5793753c-def4-4081-a269-fd158c9e4cf8",
+     "from": 1000,
+     "to": 900,
+     "reason": "İade IAD2026000000131"
+    },
+    "createdAt": "2026-11-06T06:05:07.495Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-66f1024e-dc87-4d89-ba5b-fee1f63d4544",
+    "actorId": "system",
+    "payload": {
+     "accountId": "account-94452b9a-b236-46eb-a28e-336093bb441e",
+     "from": 1000,
+     "to": 300,
+     "reason": "Açılış onarımı (2.1.0): iade geri ödemesi kartı büyütmüştü · FIS2026000000002"
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.repaired",
+    "entityId": "plan-66f1024e-dc87-4d89-ba5b-fee1f63d4544",
+    "actorId": "system",
+    "payload": {
+     "invoiceId": "invoice-cadc6573-4215-4ab9-a4c7-25cae959028f",
+     "number": "FIS2026000000002",
+     "reason": "iade-geri-odeme",
+     "previous": {
+      "total": 1000,
+      "left": 800,
+      "items": [
+       {
+        "dueDate": "2026-11-28",
+        "amount": 1000
+       }
+      ]
+     },
+     "total": 300,
+     "left": 100,
+     "cut": 700
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-6e6830e4-6d40-4f68-840d-4245e57864fd",
+    "actorId": "system",
+    "payload": {
+     "accountId": "account-94452b9a-b236-46eb-a28e-336093bb441e",
+     "from": 750,
+     "to": 600,
+     "reason": "Açılış onarımı (2.1.0): iade geri ödemesi kartı büyütmüştü · FIS2026000000003"
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.repaired",
+    "entityId": "plan-6e6830e4-6d40-4f68-840d-4245e57864fd",
+    "actorId": "system",
+    "payload": {
+     "invoiceId": "invoice-4d829619-0fd4-4d47-88a1-0e94837a583b",
+     "number": "FIS2026000000003",
+     "reason": "iade-geri-odeme",
+     "previous": {
+      "total": 750,
+      "left": 150,
+      "items": [
+       {
+        "dueDate": "2026-11-07",
+        "amount": 375
+       },
+       {
+        "dueDate": "2026-12-07",
+        "amount": 375
+       }
+      ]
+     },
+     "total": 600,
+     "left": 0,
+     "cut": 150
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-b97b0aa9-230c-48d7-9d64-b0df0591fa52",
+    "actorId": "system",
+    "payload": {
+     "accountId": "account-8d1527aa-c7f7-4f40-afaa-a3f0644ab0ef",
+     "from": 1250,
+     "to": 1125,
+     "reason": "Açılış onarımı (2.1.0): iade geri ödemesi kartı büyütmüştü · FIS2026000000009"
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.repaired",
+    "entityId": "plan-b97b0aa9-230c-48d7-9d64-b0df0591fa52",
+    "actorId": "system",
+    "payload": {
+     "invoiceId": "invoice-e47ebe9a-1673-4a0f-a36f-494eac59e58f",
+     "number": "FIS2026000000009",
+     "reason": "iade-geri-odeme",
+     "previous": {
+      "total": 1250,
+      "left": 125,
+      "items": [
+       {
+        "dueDate": "2026-12-11",
+        "amount": 1250
+       }
+      ]
+     },
+     "total": 1125,
+     "left": 0,
+     "cut": 125
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-f25fa943-233b-4928-af6a-46ba2dfdaa60",
+    "actorId": "system",
+    "payload": {
+     "accountId": "account-38d2697f-8ec5-49cf-a728-eb22c09aec7c",
+     "from": 1000,
+     "to": 400,
+     "reason": "Açılış onarımı (2.1.0): iade geri ödemesi kartı büyütmüştü · FIS2026000000012"
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.repaired",
+    "entityId": "plan-f25fa943-233b-4928-af6a-46ba2dfdaa60",
+    "actorId": "system",
+    "payload": {
+     "invoiceId": "invoice-cb9fa732-1651-4700-8dd9-e0841f818a7c",
+     "number": "FIS2026000000012",
+     "reason": "iade-geri-odeme",
+     "previous": {
+      "total": 1000,
+      "left": 1000,
+      "items": [
+       {
+        "dueDate": "2026-12-03",
+        "amount": 500
+       },
+       {
+        "dueDate": "2027-01-03",
+        "amount": 500
+       }
+      ]
+     },
+     "total": 400,
+     "left": 400,
+     "cut": 600
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-3522c410-8434-4dfb-9f1e-bafd4c7a300e",
+    "actorId": "system",
+    "payload": {
+     "accountId": "account-58946265-7c20-436d-a87e-45fc96321e73",
+     "from": 525,
+     "to": 450,
+     "reason": "Açılış onarımı (2.1.0): iade geri ödemesi kartı büyütmüştü · FIS2026000000017"
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.repaired",
+    "entityId": "plan-3522c410-8434-4dfb-9f1e-bafd4c7a300e",
+    "actorId": "system",
+    "payload": {
+     "invoiceId": "invoice-ecc408a4-75d0-46bc-9001-fcf490c3fd16",
+     "number": "FIS2026000000017",
+     "reason": "iade-geri-odeme",
+     "previous": {
+      "total": 525,
+      "left": 300,
+      "items": [
+       {
+        "dueDate": "2026-10-25",
+        "amount": 250
+       },
+       {
+        "dueDate": "2026-11-25",
+        "amount": 250
+       },
+       {
+        "dueDate": "2026-12-25",
+        "amount": 25
+       }
+      ]
+     },
+     "total": 450,
+     "left": 225,
+     "cut": 75
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-f738b6a3-3ff3-43db-8638-fac5b807ee36",
+    "actorId": "system",
+    "payload": {
+     "accountId": "account-58946265-7c20-436d-a87e-45fc96321e73",
+     "from": 650,
+     "to": 150,
+     "reason": "Açılış onarımı (2.1.0): iade geri ödemesi kartı büyütmüştü · FIS2026000000018"
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.repaired",
+    "entityId": "plan-f738b6a3-3ff3-43db-8638-fac5b807ee36",
+    "actorId": "system",
+    "payload": {
+     "invoiceId": "invoice-3a65da7a-24d7-4db4-aab0-8cd9dd61d230",
+     "number": "FIS2026000000018",
+     "reason": "iade-geri-odeme",
+     "previous": {
+      "total": 650,
+      "left": 600,
+      "items": [
+       {
+        "dueDate": "2026-12-12",
+        "amount": 250
+       },
+       {
+        "dueDate": "2027-01-12",
+        "amount": 250
+       },
+       {
+        "dueDate": "2027-02-12",
+        "amount": 150
+       }
+      ]
+     },
+     "total": 150,
+     "left": 100,
+     "cut": 500
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-ae6600a7-4c46-45d7-b7cb-52159401ef26",
+    "actorId": "system",
+    "payload": {
+     "accountId": "account-f5dcb62f-a44b-4eb3-a42c-80422b9df924",
+     "from": 150,
+     "to": 0,
+     "reason": "Açılış onarımı (2.1.0): iade geri ödemesi kartı büyütmüştü · FIS2026000000020"
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.repaired",
+    "entityId": "plan-ae6600a7-4c46-45d7-b7cb-52159401ef26",
+    "actorId": "system",
+    "payload": {
+     "invoiceId": "invoice-f7336c36-a6ce-4210-8336-30c2808c870e",
+     "number": "FIS2026000000020",
+     "reason": "iade-geri-odeme",
+     "previous": {
+      "total": 150,
+      "left": 150,
+      "items": [
+       {
+        "dueDate": "2026-11-06",
+        "amount": 150
+       }
+      ]
+     },
+     "total": 0,
+     "left": 0,
+     "cut": 150
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-51357ade-c323-46a8-acf8-3d940a23bf0d",
+    "actorId": "system",
+    "payload": {
+     "accountId": "account-564f7f4e-388b-4d9f-8c2c-8cb730c0e211",
+     "from": 750,
+     "to": 300,
+     "reason": "Açılış onarımı (2.1.0): iade geri ödemesi kartı büyütmüştü · FIS2026000000021"
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.repaired",
+    "entityId": "plan-51357ade-c323-46a8-acf8-3d940a23bf0d",
+    "actorId": "system",
+    "payload": {
+     "invoiceId": "invoice-c0aa6ed5-37da-4805-978f-634f5082cfa2",
+     "number": "FIS2026000000021",
+     "reason": "iade-geri-odeme",
+     "previous": {
+      "total": 750,
+      "left": 750,
+      "items": [
+       {
+        "dueDate": "2026-10-08",
+        "amount": 750
+       }
+      ]
+     },
+     "total": 300,
+     "left": 300,
+     "cut": 450
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-75baecd6-27e9-40c9-bfd6-f63535a0d866",
+    "actorId": "system",
+    "payload": {
+     "accountId": "account-4bf1aa1b-578e-4f12-bbe8-61da33ee7518",
+     "from": 675,
+     "to": 225,
+     "reason": "Açılış onarımı (2.1.0): iade geri ödemesi kartı büyütmüştü · FIS2026000000026"
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.repaired",
+    "entityId": "plan-75baecd6-27e9-40c9-bfd6-f63535a0d866",
+    "actorId": "system",
+    "payload": {
+     "invoiceId": "invoice-1ef9fba4-4dff-4d91-8b36-0bb19501bbb2",
+     "number": "FIS2026000000026",
+     "reason": "iade-geri-odeme",
+     "previous": {
+      "total": 675,
+      "left": 525,
+      "items": [
+       {
+        "dueDate": "2026-11-25",
+        "amount": 250
+       },
+       {
+        "dueDate": "2026-12-25",
+        "amount": 250
+       },
+       {
+        "dueDate": "2027-01-25",
+        "amount": 175
+       }
+      ]
+     },
+     "total": 225,
+     "left": 75,
+     "cut": 450
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-759c6151-39ec-4482-b84f-2ec5543ccc80",
+    "actorId": "system",
+    "payload": {
+     "accountId": "account-b18a3594-39a3-4ec6-ad80-0260b8dbc1ff",
+     "from": 750,
+     "to": 300,
+     "reason": "Açılış onarımı (2.1.0): iade geri ödemesi kartı büyütmüştü · FIS2026000000030"
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.repaired",
+    "entityId": "plan-759c6151-39ec-4482-b84f-2ec5543ccc80",
+    "actorId": "system",
+    "payload": {
+     "invoiceId": "invoice-487e94e9-1dd6-4678-971f-a676d21adb42",
+     "number": "FIS2026000000030",
+     "reason": "iade-geri-odeme",
+     "previous": {
+      "total": 750,
+      "left": 525,
+      "items": [
+       {
+        "dueDate": "2026-12-04",
+        "amount": 750
+       }
+      ]
+     },
+     "total": 300,
+     "left": 75,
+     "cut": 450
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-062d0271-7256-40f8-99a8-4a19c0e097e1",
+    "actorId": "system",
+    "payload": {
+     "accountId": "account-f0faabad-d031-4fc5-a975-6c288c3b5232",
+     "from": 900,
+     "to": 800,
+     "reason": "Açılış onarımı (2.1.0): iade geri ödemesi kartı büyütmüştü · FIS2026000000031"
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.repaired",
+    "entityId": "plan-062d0271-7256-40f8-99a8-4a19c0e097e1",
+    "actorId": "system",
+    "payload": {
+     "invoiceId": "invoice-57a550ff-12a4-4b96-ba55-32b2847e0aca",
+     "number": "FIS2026000000031",
+     "reason": "iade-geri-odeme",
+     "previous": {
+      "total": 900,
+      "left": 100,
+      "items": [
+       {
+        "dueDate": "2026-12-11",
+        "amount": 333.33
+       },
+       {
+        "dueDate": "2027-01-11",
+        "amount": 566.67
+       }
+      ]
+     },
+     "total": 800,
+     "left": 0,
+     "cut": 100
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-e4b9bc60-6d70-4a0f-8ba6-f9c0b92e69a2",
+    "actorId": "system",
+    "payload": {
+     "accountId": "account-5c6d262e-6e8c-4d06-8cd8-19d84f6d1c9e",
+     "from": 750,
+     "to": 0,
+     "reason": "Açılış onarımı (2.1.0): iade geri ödemesi kartı büyütmüştü · FIS2026000000037"
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.repaired",
+    "entityId": "plan-e4b9bc60-6d70-4a0f-8ba6-f9c0b92e69a2",
+    "actorId": "system",
+    "payload": {
+     "invoiceId": "invoice-390eb4e2-e0bc-4c0f-aa73-29d14d9d3989",
+     "number": "FIS2026000000037",
+     "reason": "iade-geri-odeme",
+     "previous": {
+      "total": 750,
+      "left": 750,
+      "items": [
+       {
+        "dueDate": "2026-11-21",
+        "amount": 375
+       },
+       {
+        "dueDate": "2026-12-21",
+        "amount": 375
+       }
+      ]
+     },
+     "total": 0,
+     "left": 0,
+     "cut": 750
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-412c31f4-8870-402b-a8db-6e89bb8d485a",
+    "actorId": "system",
+    "payload": {
+     "accountId": "account-c5b8a0a8-17ae-4b1a-b7f5-92ba5e5420e7",
+     "from": 1250,
+     "to": 500,
+     "reason": "Açılış onarımı (2.1.0): iade geri ödemesi kartı büyütmüştü · FIS2026000000040"
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.repaired",
+    "entityId": "plan-412c31f4-8870-402b-a8db-6e89bb8d485a",
+    "actorId": "system",
+    "payload": {
+     "invoiceId": "invoice-f85c69d0-2da1-441a-8aa3-a773c32996d5",
+     "number": "FIS2026000000040",
+     "reason": "iade-geri-odeme",
+     "previous": {
+      "total": 1250,
+      "left": 1250,
+      "items": [
+       {
+        "dueDate": "2026-12-09",
+        "amount": 583.33
+       },
+       {
+        "dueDate": "2027-01-09",
+        "amount": 583.33
+       },
+       {
+        "dueDate": "2027-02-09",
+        "amount": 83.34
+       }
+      ]
+     },
+     "total": 500,
+     "left": 500,
+     "cut": 750
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-51bf8d9d-42b9-49d7-9877-6d514b324cb0",
+    "actorId": "system",
+    "payload": {
+     "accountId": "account-a316e03a-dad4-4fd9-bb1d-1aadf7b7bc84",
+     "from": 750,
+     "to": 600,
+     "reason": "Açılış onarımı (2.1.0): iade geri ödemesi kartı büyütmüştü · FIS2026000000041"
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.repaired",
+    "entityId": "plan-51bf8d9d-42b9-49d7-9877-6d514b324cb0",
+    "actorId": "system",
+    "payload": {
+     "invoiceId": "invoice-37888a3c-cf06-492d-92c0-dfde12737b1e",
+     "number": "FIS2026000000041",
+     "reason": "iade-geri-odeme",
+     "previous": {
+      "total": 750,
+      "left": 750,
+      "items": [
+       {
+        "dueDate": "2026-11-02",
+        "amount": 375
+       },
+       {
+        "dueDate": "2026-12-02",
+        "amount": 375
+       }
+      ]
+     },
+     "total": 600,
+     "left": 600,
+     "cut": 150
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-876b34af-a665-4093-8f1e-4e78a64108fc",
+    "actorId": "system",
+    "payload": {
+     "accountId": "account-ca49c205-ac48-4ab7-8a7a-c61240bb8f3d",
+     "from": 1350,
+     "to": 1300,
+     "reason": "Açılış onarımı (2.1.0): iade geri ödemesi kartı büyütmüştü · FIS2026000000047"
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.repaired",
+    "entityId": "plan-876b34af-a665-4093-8f1e-4e78a64108fc",
+    "actorId": "system",
+    "payload": {
+     "invoiceId": "invoice-d0421693-a360-4bee-8af1-8c732d264d12",
+     "number": "FIS2026000000047",
+     "reason": "iade-geri-odeme",
+     "previous": {
+      "total": 1350,
+      "left": 1300,
+      "items": [
+       {
+        "dueDate": "2026-09-19",
+        "amount": 666.66
+       },
+       {
+        "dueDate": "2026-10-19",
+        "amount": 683.34
+       }
+      ]
+     },
+     "total": 1300,
+     "left": 1250,
+     "cut": 50
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-a2e0cabe-029b-477a-9433-ad5870343369",
+    "actorId": "system",
+    "payload": {
+     "accountId": "account-f49d61c5-3dc1-4894-8f79-4d6d95dfc826",
+     "from": 1000,
+     "to": 800,
+     "reason": "Açılış onarımı (2.1.0): iade geri ödemesi kartı büyütmüştü · FIS2026000000059"
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.repaired",
+    "entityId": "plan-a2e0cabe-029b-477a-9433-ad5870343369",
+    "actorId": "system",
+    "payload": {
+     "invoiceId": "invoice-1ca14cbb-642f-418c-9f52-c90d9f5e0e55",
+     "number": "FIS2026000000059",
+     "reason": "iade-geri-odeme",
+     "previous": {
+      "total": 1000,
+      "left": 1000,
+      "items": [
+       {
+        "dueDate": "2026-10-09",
+        "amount": 333.33
+       },
+       {
+        "dueDate": "2026-11-09",
+        "amount": 333.33
+       },
+       {
+        "dueDate": "2026-12-09",
+        "amount": 333.34
+       }
+      ]
+     },
+     "total": 800,
+     "left": 800,
+     "cut": 200
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-1989028b-dbdc-458d-a41a-c1f2bce1b870",
+    "actorId": "system",
+    "payload": {
+     "accountId": "account-e3b78212-208d-4560-89a3-77271e15db10",
+     "from": 700,
+     "to": 300,
+     "reason": "Açılış onarımı (2.1.0): iade geri ödemesi kartı büyütmüştü · FIS2026000000062"
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.repaired",
+    "entityId": "plan-1989028b-dbdc-458d-a41a-c1f2bce1b870",
+    "actorId": "system",
+    "payload": {
+     "invoiceId": "invoice-79481bf0-9162-4b3d-bdcf-e45afb7bc52d",
+     "number": "FIS2026000000062",
+     "reason": "iade-geri-odeme",
+     "previous": {
+      "total": 700,
+      "left": 700,
+      "items": [
+       {
+        "dueDate": "2026-11-08",
+        "amount": 333.33
+       },
+       {
+        "dueDate": "2026-12-08",
+        "amount": 333.33
+       },
+       {
+        "dueDate": "2027-01-08",
+        "amount": 33.34
+       }
+      ]
+     },
+     "total": 300,
+     "left": 300,
+     "cut": 400
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-33306f26-2efa-4e1d-9a73-32b09a14e5f1",
+    "actorId": "system",
+    "payload": {
+     "accountId": "account-4b0ab6f6-b08f-41d9-b72b-7ae7c4cede14",
+     "from": 2000,
+     "to": 1100,
+     "reason": "Açılış onarımı (2.1.0): iade geri ödemesi kartı büyütmüştü · FIS2026000000065"
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.repaired",
+    "entityId": "plan-33306f26-2efa-4e1d-9a73-32b09a14e5f1",
+    "actorId": "system",
+    "payload": {
+     "invoiceId": "invoice-0c26f54b-3df7-4bb8-bee6-168fcd19cf73",
+     "number": "FIS2026000000065",
+     "reason": "iade-geri-odeme",
+     "previous": {
+      "total": 2000,
+      "left": 900,
+      "items": [
+       {
+        "dueDate": "2026-12-09",
+        "amount": 1000
+       },
+       {
+        "dueDate": "2027-01-09",
+        "amount": 1000
+       }
+      ]
+     },
+     "total": 1100,
+     "left": 0,
+     "cut": 900
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-403718a6-1f62-4e21-adef-d939e08022f7",
+    "actorId": "system",
+    "payload": {
+     "accountId": "account-87e50c66-e32a-4c0c-9b31-6f465e6e18c1",
+     "from": 300,
+     "to": 0,
+     "reason": "Açılış onarımı (2.1.0): iade geri ödemesi kartı büyütmüştü · FIS2026000000067"
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.repaired",
+    "entityId": "plan-403718a6-1f62-4e21-adef-d939e08022f7",
+    "actorId": "system",
+    "payload": {
+     "invoiceId": "invoice-2b94af98-8efb-4024-875b-bf895172db3d",
+     "number": "FIS2026000000067",
+     "reason": "iade-geri-odeme",
+     "previous": {
+      "total": 300,
+      "left": 300,
+      "items": [
+       {
+        "dueDate": "2026-11-06",
+        "amount": 300
+       }
+      ]
+     },
+     "total": 0,
+     "left": 0,
+     "cut": 300
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-2c9602db-06df-4ca3-8dfb-96ffa1542206",
+    "actorId": "system",
+    "payload": {
+     "accountId": "account-e30c7b31-c421-4015-b259-a618fa3d9336",
+     "from": 225,
+     "to": 100,
+     "reason": "Açılış onarımı (2.1.0): iade geri ödemesi kartı büyütmüştü · FIS2026000000071"
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.repaired",
+    "entityId": "plan-2c9602db-06df-4ca3-8dfb-96ffa1542206",
+    "actorId": "system",
+    "payload": {
+     "invoiceId": "invoice-013a4186-3d43-4e09-b778-e11d93f037f1",
+     "number": "FIS2026000000071",
+     "reason": "iade-geri-odeme",
+     "previous": {
+      "total": 225,
+      "left": 125,
+      "items": [
+       {
+        "dueDate": "2026-11-06",
+        "amount": 225
+       }
+      ]
+     },
+     "total": 100,
+     "left": 0,
+     "cut": 125
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-53ad3b77-6ab5-4fb7-a6ab-b4114ee19276",
+    "actorId": "system",
+    "payload": {
+     "accountId": "account-e30c7b31-c421-4015-b259-a618fa3d9336",
+     "from": 900,
+     "to": 650,
+     "reason": "Açılış onarımı (2.1.0): iade geri ödemesi kartı büyütmüştü · FIS2026000000072"
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.repaired",
+    "entityId": "plan-53ad3b77-6ab5-4fb7-a6ab-b4114ee19276",
+    "actorId": "system",
+    "payload": {
+     "invoiceId": "invoice-73bb3b5f-3a06-4ab8-80fd-ca7a509c6598",
+     "number": "FIS2026000000072",
+     "reason": "iade-geri-odeme",
+     "previous": {
+      "total": 900,
+      "left": 250,
+      "items": [
+       {
+        "dueDate": "2026-10-18",
+        "amount": 900
+       }
+      ]
+     },
+     "total": 650,
+     "left": 0,
+     "cut": 250
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-ff246797-3548-4526-a7ee-1079bc7f2ae0",
+    "actorId": "system",
+    "payload": {
+     "accountId": "account-853c15d9-2a6d-43d5-948a-a99e89dd57f3",
+     "from": 1250,
+     "to": 1000,
+     "reason": "Açılış onarımı (2.1.0): iade geri ödemesi kartı büyütmüştü · FIS2026000000077"
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.repaired",
+    "entityId": "plan-ff246797-3548-4526-a7ee-1079bc7f2ae0",
+    "actorId": "system",
+    "payload": {
+     "invoiceId": "invoice-f072aca3-cb1c-4a65-9325-c54348827360",
+     "number": "FIS2026000000077",
+     "reason": "iade-geri-odeme",
+     "previous": {
+      "total": 1250,
+      "left": 1000,
+      "items": [
+       {
+        "dueDate": "2026-11-23",
+        "amount": 625
+       },
+       {
+        "dueDate": "2026-12-23",
+        "amount": 625
+       }
+      ]
+     },
+     "total": 1000,
+     "left": 750,
+     "cut": 250
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-f46de828-4384-4d65-98fc-c5aa5f1f059f",
+    "actorId": "system",
+    "payload": {
+     "accountId": "account-fd12da0d-9c2f-445b-9533-6ad6e5e2adc9",
+     "from": 1350,
+     "to": 1050,
+     "reason": "Açılış onarımı (2.1.0): iade geri ödemesi kartı büyütmüştü · FIS2026000000081"
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.repaired",
+    "entityId": "plan-f46de828-4384-4d65-98fc-c5aa5f1f059f",
+    "actorId": "system",
+    "payload": {
+     "invoiceId": "invoice-aec57011-e93b-4aa0-b96c-442f536ebb4c",
+     "number": "FIS2026000000081",
+     "reason": "iade-geri-odeme",
+     "previous": {
+      "total": 1350,
+      "left": 300,
+      "items": [
+       {
+        "dueDate": "2026-12-13",
+        "amount": 1350
+       }
+      ]
+     },
+     "total": 1050,
+     "left": 0,
+     "cut": 300
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-904d0a9b-755d-4988-9b20-701ca4db1e16",
+    "actorId": "system",
+    "payload": {
+     "accountId": "account-c2e43a56-dd08-4879-a282-2d983a1eaa62",
+     "from": 1280,
+     "to": 500,
+     "reason": "Açılış onarımı (2.1.0): iade geri ödemesi kartı büyütmüştü · FIS2026000000082"
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.repaired",
+    "entityId": "plan-904d0a9b-755d-4988-9b20-701ca4db1e16",
+    "actorId": "system",
+    "payload": {
+     "invoiceId": "invoice-18850da4-4d03-4d81-a56a-eec478ebe526",
+     "number": "FIS2026000000082",
+     "reason": "iade-geri-odeme",
+     "previous": {
+      "total": 1280,
+      "left": 900,
+      "items": [
+       {
+        "dueDate": "2026-11-13",
+        "amount": 466.66
+       },
+       {
+        "dueDate": "2026-12-13",
+        "amount": 466.66
+       },
+       {
+        "dueDate": "2027-01-13",
+        "amount": 346.68
+       }
+      ]
+     },
+     "total": 500,
+     "left": 120,
+     "cut": 780
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-e4e4f7b9-9ba3-415d-a61c-b822d87c41cb",
+    "actorId": "system",
+    "payload": {
+     "accountId": "account-98bab342-2722-4f7b-aebe-421324cdd80c",
+     "from": 750,
+     "to": 500,
+     "reason": "Açılış onarımı (2.1.0): iade geri ödemesi kartı büyütmüştü · FIS2026000000088"
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.repaired",
+    "entityId": "plan-e4e4f7b9-9ba3-415d-a61c-b822d87c41cb",
+    "actorId": "system",
+    "payload": {
+     "invoiceId": "invoice-9f6376ca-36f6-43ce-a4ff-87d481a4efb4",
+     "number": "FIS2026000000088",
+     "reason": "iade-geri-odeme",
+     "previous": {
+      "total": 750,
+      "left": 250,
+      "items": [
+       {
+        "dueDate": "2026-11-12",
+        "amount": 375
+       },
+       {
+        "dueDate": "2026-12-12",
+        "amount": 375
+       }
+      ]
+     },
+     "total": 500,
+     "left": 0,
+     "cut": 250
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.trimmed",
+    "entityId": "plan-648ae985-615d-4c61-b275-635010add762",
+    "actorId": "system",
+    "payload": {
+     "accountId": "account-5793753c-def4-4081-a269-fd158c9e4cf8",
+     "from": 1000,
+     "to": 0,
+     "reason": "Açılış onarımı (2.1.0): iade geri ödemesi kartı büyütmüştü · FIS2026000000093"
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "type": "plan.repaired",
+    "entityId": "plan-648ae985-615d-4c61-b275-635010add762",
+    "actorId": "system",
+    "payload": {
+     "invoiceId": "invoice-27d22c17-b30f-43a4-871e-21f78987cf70",
+     "number": "FIS2026000000093",
+     "reason": "iade-geri-odeme",
+     "previous": {
+      "total": 1000,
+      "left": 1000,
+      "items": [
+       {
+        "dueDate": "2026-10-22",
+        "amount": 333.33
+       },
+       {
+        "dueDate": "2026-11-22",
+        "amount": 333.33
+       },
+       {
+        "dueDate": "2026-12-22",
+        "amount": 333.34
+       }
+      ]
+     },
+     "total": 0,
+     "left": 0,
+     "cut": 1000
+    },
+    "createdAt": "2026-11-06T09:00:00.000Z"
+   }
+  ],
+  "kartlar": [
+   {
+    "id": "plan-0098be65-a415-429b-b0af-af94e9dafdaf",
+    "accountId": "account-0ba1c225-dc24-4c1d-9805-ac273b2405c1",
+    "total": 2000,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:07.631Z"
+   },
+   {
+    "id": "plan-062d0271-7256-40f8-99a8-4a19c0e097e1",
+    "accountId": "account-f0faabad-d031-4fc5-a975-6c288c3b5232",
+    "total": 800,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "plan-079c68f2-5e73-4b8c-bbf2-8d036da2933d",
+    "accountId": "account-909cbe41-e21c-49dc-96cc-fb659a05d201",
+    "total": 1400,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:03.289Z"
+   },
+   {
+    "id": "plan-0818ffe2-4f2f-4b75-8984-d4c24f3c8cce",
+    "accountId": "account-5793753c-def4-4081-a269-fd158c9e4cf8",
+    "total": 1400,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:07.442Z"
+   },
+   {
+    "id": "plan-117419d1-8ffc-4e5c-8df7-606ec302c361",
+    "accountId": "account-909cbe41-e21c-49dc-96cc-fb659a05d201",
+    "total": 700,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:03.360Z"
+   },
+   {
+    "id": "plan-11e3eef6-d9dc-4b37-b37a-44a2fe4a70ff",
+    "accountId": "account-a316e03a-dad4-4fd9-bb1d-1aadf7b7bc84",
+    "total": 100,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:01.916Z"
+   },
+   {
+    "id": "plan-12183724-b1f7-4f29-94bb-fa43eda31842",
+    "accountId": "account-909cbe41-e21c-49dc-96cc-fb659a05d201",
+    "total": 1500,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:03.236Z"
+   },
+   {
+    "id": "plan-19213fe0-b405-4a5b-bf74-bda51f17bba4",
+    "accountId": "account-ab9b1779-12a0-408d-9bc0-8157270d9f39",
+    "total": 1625,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:03.022Z"
+   },
+   {
+    "id": "plan-19355c6d-90d2-4bd3-9bc3-764f27880c26",
+    "accountId": "account-ab9b1779-12a0-408d-9bc0-8157270d9f39",
+    "total": 2500,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:03.081Z"
+   },
+   {
+    "id": "plan-1989028b-dbdc-458d-a41a-c1f2bce1b870",
+    "accountId": "account-e3b78212-208d-4560-89a3-77271e15db10",
+    "total": 300,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "plan-1c080a4d-0c7f-4b96-bfee-c6f389285a9c",
+    "accountId": "account-a2842b15-f8cf-41af-896f-eb316ad43d11",
+    "total": 1000,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:01.980Z"
+   },
+   {
+    "id": "plan-1c6b0d06-4839-4f97-abad-c86829ebf6c3",
+    "accountId": "account-c49663c1-76b2-4135-8420-aed0a44d3613",
+    "total": 600,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:01.288Z"
+   },
+   {
+    "id": "plan-1d9fb381-565d-4890-9323-d44777b0ed15",
+    "accountId": "account-5553f9e9-7ec9-4e55-b80c-53dbfd952944",
+    "total": 1000,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:05.904Z"
+   },
+   {
+    "id": "plan-1f331daf-1b28-46cf-aa4f-a07fa836b424",
+    "accountId": "account-9b0545c1-f5c5-4116-bf20-6e14e4a15ec7",
+    "total": 2500,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:04:59.922Z"
+   },
+   {
+    "id": "plan-2a652960-5aca-40b0-a827-2cd0afecdc13",
+    "accountId": "account-a2842b15-f8cf-41af-896f-eb316ad43d11",
+    "total": 800,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:02.079Z"
+   },
+   {
+    "id": "plan-2c9602db-06df-4ca3-8dfb-96ffa1542206",
+    "accountId": "account-e30c7b31-c421-4015-b259-a618fa3d9336",
+    "total": 100,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "plan-33306f26-2efa-4e1d-9a73-32b09a14e5f1",
+    "accountId": "account-4b0ab6f6-b08f-41d9-b72b-7ae7c4cede14",
+    "total": 1100,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "plan-3522c410-8434-4dfb-9f1e-bafd4c7a300e",
+    "accountId": "account-58946265-7c20-436d-a87e-45fc96321e73",
+    "total": 450,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "plan-355f0eaf-009f-4ef9-8365-8373d179aff9",
+    "accountId": "account-e67e0d37-a733-4e33-8c71-31f3bad886e7",
+    "total": 1000,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:04:59.303Z"
+   },
+   {
+    "id": "plan-39f6a346-ac1b-4d1e-8160-5d6ea53e645c",
+    "accountId": "account-564f7f4e-388b-4d9f-8c2c-8cb730c0e211",
+    "total": 0,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:00.514Z"
+   },
+   {
+    "id": "plan-403718a6-1f62-4e21-adef-d939e08022f7",
+    "accountId": "account-87e50c66-e32a-4c0c-9b31-6f465e6e18c1",
+    "total": 0,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "plan-412c31f4-8870-402b-a8db-6e89bb8d485a",
+    "accountId": "account-c5b8a0a8-17ae-4b1a-b7f5-92ba5e5420e7",
+    "total": 500,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "plan-43c9386c-3a0d-42ad-ab23-9601abb4c4a1",
+    "accountId": "account-7f0bee18-1e73-4300-9020-ae6ec1785e0b",
+    "total": 1800,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:02.751Z"
+   },
+   {
+    "id": "plan-47a31e26-1b3a-4096-975e-e51bb3946216",
+    "accountId": "account-f0faabad-d031-4fc5-a975-6c288c3b5232",
+    "total": 0,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:01.209Z"
+   },
+   {
+    "id": "plan-495bad3b-c122-4041-a444-88d2284d5afb",
+    "accountId": "account-b18a3594-39a3-4ec6-ad80-0260b8dbc1ff",
+    "total": 1250,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:00.964Z"
+   },
+   {
+    "id": "plan-49a17e6d-ab21-49b9-810b-1e18101217ef",
+    "accountId": "account-87e50c66-e32a-4c0c-9b31-6f465e6e18c1",
+    "total": 800,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:04.558Z"
+   },
+   {
+    "id": "plan-51357ade-c323-46a8-acf8-3d940a23bf0d",
+    "accountId": "account-564f7f4e-388b-4d9f-8c2c-8cb730c0e211",
+    "total": 300,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "plan-51bf8d9d-42b9-49d7-9877-6d514b324cb0",
+    "accountId": "account-a316e03a-dad4-4fd9-bb1d-1aadf7b7bc84",
+    "total": 600,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "plan-53ad3b77-6ab5-4fb7-a6ab-b4114ee19276",
+    "accountId": "account-e30c7b31-c421-4015-b259-a618fa3d9336",
+    "total": 650,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "plan-55966405-9312-43f7-8389-13f523a8a24b",
+    "accountId": "account-4b0ab6f6-b08f-41d9-b72b-7ae7c4cede14",
+    "total": 875,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:04.270Z"
+   },
+   {
+    "id": "plan-57ff2a47-ccc4-413c-a0dc-40ef64725d15",
+    "accountId": "account-4b0ab6f6-b08f-41d9-b72b-7ae7c4cede14",
+    "total": 1900,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:04.101Z"
+   },
+   {
+    "id": "plan-5ec5b87a-be46-4ee7-bbc5-8dfc07c87316",
+    "accountId": "account-853c15d9-2a6d-43d5-948a-a99e89dd57f3",
+    "total": 600,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:05.677Z"
+   },
+   {
+    "id": "plan-5f0f99b5-2c0c-49d5-bd30-9d906e4536b9",
+    "accountId": "account-5553f9e9-7ec9-4e55-b80c-53dbfd952944",
+    "total": 950,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:06.121Z"
+   },
+   {
+    "id": "plan-5f34f9c4-3668-4968-b261-e6be2e9210a8",
+    "accountId": "account-98bab342-2722-4f7b-aebe-421324cdd80c",
+    "total": 525,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:07.035Z"
+   },
+   {
+    "id": "plan-5f8412f1-a4f6-47c5-b005-22e8863239f5",
+    "accountId": "account-021ebd3c-c564-42ba-861e-105f909a62d0",
+    "total": 2000,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:02.420Z"
+   },
+   {
+    "id": "plan-6135064d-4f3c-4069-9615-9793f790bf68",
+    "accountId": "account-4ab90932-3173-4165-9457-b663812a78cf",
+    "total": 1000,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:04:59.422Z"
+   },
+   {
+    "id": "plan-616e3536-063b-40bf-9fe1-49d95aadda99",
+    "accountId": "account-94452b9a-b236-46eb-a28e-336093bb441e",
+    "total": 500,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:04:58.943Z"
+   },
+   {
+    "id": "plan-620873a8-436b-4640-8940-017313dce8fe",
+    "accountId": "account-4bf1aa1b-578e-4f12-bbe8-61da33ee7518",
+    "total": 750,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:00.639Z"
+   },
+   {
+    "id": "plan-6220375d-a804-41c5-a6b3-ad1f5c97fbc4",
+    "accountId": "account-95c5e226-02d7-4dc7-98f9-669471048c48",
+    "total": 750,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:00.541Z"
+   },
+   {
+    "id": "plan-64882d40-7493-407a-87ae-0be81603295d",
+    "accountId": "account-e3b78212-208d-4560-89a3-77271e15db10",
+    "total": 300,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:03.785Z"
+   },
+   {
+    "id": "plan-648ae985-615d-4c61-b275-635010add762",
+    "accountId": "account-5793753c-def4-4081-a269-fd158c9e4cf8",
+    "total": 0,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "plan-66f1024e-dc87-4d89-ba5b-fee1f63d4544",
+    "accountId": "account-94452b9a-b236-46eb-a28e-336093bb441e",
+    "total": 300,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "plan-6a7ea793-b887-42d9-9c12-c8e1439d40ff",
+    "accountId": "account-269c9d6a-1b00-41a5-a9df-0c53aa201ec1",
+    "total": 1125,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:00.922Z"
+   },
+   {
+    "id": "plan-6d2724dd-dfb7-46df-ad1e-fac74c1c76b8",
+    "accountId": "account-0ba1c225-dc24-4c1d-9805-ac273b2405c1",
+    "total": 750,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:07.693Z"
+   },
+   {
+    "id": "plan-6e6830e4-6d40-4f68-840d-4245e57864fd",
+    "accountId": "account-94452b9a-b236-46eb-a28e-336093bb441e",
+    "total": 600,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "plan-73f18644-7b43-4867-8071-fe76f70926d3",
+    "accountId": "account-c49663c1-76b2-4135-8420-aed0a44d3613",
+    "total": 0,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:01.461Z"
+   },
+   {
+    "id": "plan-759c6151-39ec-4482-b84f-2ec5543ccc80",
+    "accountId": "account-b18a3594-39a3-4ec6-ad80-0260b8dbc1ff",
+    "total": 300,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "plan-75baecd6-27e9-40c9-bfd6-f63535a0d866",
+    "accountId": "account-4bf1aa1b-578e-4f12-bbe8-61da33ee7518",
+    "total": 225,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "plan-76c2303e-10be-42fe-9e3c-fea1b2cef103",
+    "accountId": "account-7319d742-56a9-47d0-89aa-3f19ae62900a",
+    "total": 150,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:05.594Z"
+   },
+   {
+    "id": "plan-79921298-4340-4b48-a9d9-060bb1ff576c",
+    "accountId": "account-7f0bee18-1e73-4300-9020-ae6ec1785e0b",
+    "total": 2000,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:02.504Z"
+   },
+   {
+    "id": "plan-81f07565-a3a7-4dce-81b6-27ebce179af4",
+    "accountId": "account-5553f9e9-7ec9-4e55-b80c-53dbfd952944",
+    "total": 350,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:06.026Z"
+   },
+   {
+    "id": "plan-830f134c-3a55-407c-8708-9c06404438ce",
+    "accountId": "account-9b0545c1-f5c5-4116-bf20-6e14e4a15ec7",
+    "total": 2500,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:04:59.996Z"
+   },
+   {
+    "id": "plan-8373aed8-799b-43c8-a4b4-4e80e9637808",
+    "accountId": "account-c49663c1-76b2-4135-8420-aed0a44d3613",
+    "total": 500,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:01.306Z"
+   },
+   {
+    "id": "plan-8623a135-b151-4279-8b81-1dbe2548154c",
+    "accountId": "account-02ba885c-251c-45a7-ae63-d31a3ea0b626",
+    "total": 500,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:06.821Z"
+   },
+   {
+    "id": "plan-876b34af-a665-4093-8f1e-4e78a64108fc",
+    "accountId": "account-ca49c205-ac48-4ab7-8a7a-c61240bb8f3d",
+    "total": 1300,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "plan-8aec00ad-a402-429e-8e9d-60912bed3895",
+    "accountId": "account-4ab90932-3173-4165-9457-b663812a78cf",
+    "total": 500,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:04:59.488Z"
+   },
+   {
+    "id": "plan-8c59c0d3-273b-4ddf-9d07-a024263cd1ca",
+    "accountId": "account-02ba885c-251c-45a7-ae63-d31a3ea0b626",
+    "total": 1000,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:06.767Z"
+   },
+   {
+    "id": "plan-8cbcebc7-8173-4e9d-92e1-8fd0f8f04c6b",
+    "accountId": "account-c5b8a0a8-17ae-4b1a-b7f5-92ba5e5420e7",
+    "total": 700,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:01.638Z"
+   },
+   {
+    "id": "plan-8d2e3b9b-c914-40e4-bae7-0eb41278c51e",
+    "accountId": "account-1890e8c1-82c1-4c7f-9f6a-2968d2d561e9",
+    "total": 600,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:06.546Z"
+   },
+   {
+    "id": "plan-8de6a4a0-a0b1-4e5c-b13e-6997849d3238",
+    "accountId": "account-1890e8c1-82c1-4c7f-9f6a-2968d2d561e9",
+    "total": 1000,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:06.565Z"
+   },
+   {
+    "id": "plan-8efb39c1-9fac-4635-8ff0-4a4a40435608",
+    "accountId": "account-ca49c205-ac48-4ab7-8a7a-c61240bb8f3d",
+    "total": 2500,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:02.130Z"
+   },
+   {
+    "id": "plan-904d0a9b-755d-4988-9b20-701ca4db1e16",
+    "accountId": "account-c2e43a56-dd08-4879-a282-2d983a1eaa62",
+    "total": 500,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "plan-918f6e2f-c85c-41e5-8e52-5cd64ebd8cfe",
+    "accountId": "account-e67e0d37-a733-4e33-8c71-31f3bad886e7",
+    "total": 2000,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:04:59.363Z"
+   },
+   {
+    "id": "plan-94089e34-bb10-43ed-ab64-3ee17ccdc6d4",
+    "accountId": "account-ab9b1779-12a0-408d-9bc0-8157270d9f39",
+    "total": 600,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:02.924Z"
+   },
+   {
+    "id": "plan-9905238b-b150-46f9-95f8-a994ade092a4",
+    "accountId": "account-4bf1aa1b-578e-4f12-bbe8-61da33ee7518",
+    "total": 1625,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:00.829Z"
+   },
+   {
+    "id": "plan-a2355c3e-1210-4cf5-9bd1-defb573256e0",
+    "accountId": "account-9b0545c1-f5c5-4116-bf20-6e14e4a15ec7",
+    "total": 2500,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:04:59.956Z"
+   },
+   {
+    "id": "plan-a2e0cabe-029b-477a-9433-ad5870343369",
+    "accountId": "account-f49d61c5-3dc1-4894-8f79-4d6d95dfc826",
+    "total": 800,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "plan-a31276d5-3494-4d98-9d1f-d50185875cf6",
+    "accountId": "account-0ba1c225-dc24-4c1d-9805-ac273b2405c1",
+    "total": 600,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:07.599Z"
+   },
+   {
+    "id": "plan-a8489b68-bad3-492d-9443-dc3397232351",
+    "accountId": "account-f5dcb62f-a44b-4eb3-a42c-80422b9df924",
+    "total": 500,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:00.308Z"
+   },
+   {
+    "id": "plan-ae6600a7-4c46-45d7-b7cb-52159401ef26",
+    "accountId": "account-f5dcb62f-a44b-4eb3-a42c-80422b9df924",
+    "total": 0,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "plan-b84c91fb-75fb-4bac-9326-68fa98efdca6",
+    "accountId": "account-f0faabad-d031-4fc5-a975-6c288c3b5232",
+    "total": 2250,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:01.244Z"
+   },
+   {
+    "id": "plan-b97b0aa9-230c-48d7-9d64-b0df0591fa52",
+    "accountId": "account-8d1527aa-c7f7-4f40-afaa-a3f0644ab0ef",
+    "total": 1125,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "plan-b9b51f0c-6ede-4018-8ec1-39a6cc1a6043",
+    "accountId": "account-e30c7b31-c421-4015-b259-a618fa3d9336",
+    "total": 1350,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:04.735Z"
+   },
+   {
+    "id": "plan-bb4e30d2-8f8d-48a7-b04b-69e6e9147090",
+    "accountId": "account-490f8642-2de4-4d5c-8c27-5dde3af45b86",
+    "total": 1400,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:04:59.741Z"
+   },
+   {
+    "id": "plan-bcbf8c1a-1188-4248-afe0-62563ecc36dd",
+    "accountId": "account-4b0ab6f6-b08f-41d9-b72b-7ae7c4cede14",
+    "total": 600,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:04.030Z"
+   },
+   {
+    "id": "plan-c015f0f6-85d5-46c3-9d03-e4861d96cbe4",
+    "accountId": "account-4bf1aa1b-578e-4f12-bbe8-61da33ee7518",
+    "total": 600,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:00.612Z"
+   },
+   {
+    "id": "plan-c969de77-ccd4-441e-a557-5ed7fd630024",
+    "accountId": "account-e3b78212-208d-4560-89a3-77271e15db10",
+    "total": 2000,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:03.624Z"
+   },
+   {
+    "id": "plan-c970f585-f923-479f-b826-2a59320acfc3",
+    "accountId": "account-7319d742-56a9-47d0-89aa-3f19ae62900a",
+    "total": 1000,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:05.341Z"
+   },
+   {
+    "id": "plan-cffc67c8-dcf5-47a4-9842-82ecce544709",
+    "accountId": "account-7f0bee18-1e73-4300-9020-ae6ec1785e0b",
+    "total": 2500,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:02.779Z"
+   },
+   {
+    "id": "plan-d53ab4d9-03f8-463c-b03a-de0e18f4f767",
+    "accountId": "account-38d2697f-8ec5-49cf-a728-eb22c09aec7c",
+    "total": 1000,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:04:59.784Z"
+   },
+   {
+    "id": "plan-d5b8f0d5-e559-4638-989a-ca7a0fd9aa86",
+    "accountId": "account-98bab342-2722-4f7b-aebe-421324cdd80c",
+    "total": 1000,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:07.188Z"
+   },
+   {
+    "id": "plan-d8790f2b-0dc7-468e-866a-35bbbde379b3",
+    "accountId": "account-58946265-7c20-436d-a87e-45fc96321e73",
+    "total": 600,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:00.061Z"
+   },
+   {
+    "id": "plan-df39c546-6b55-4f48-abd1-45b5f8f8031b",
+    "accountId": "account-8d1527aa-c7f7-4f40-afaa-a3f0644ab0ef",
+    "total": 600,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:04:59.615Z"
+   },
+   {
+    "id": "plan-e3be60ba-cf72-4da9-af65-599318a0996b",
+    "accountId": "account-1890e8c1-82c1-4c7f-9f6a-2968d2d561e9",
+    "total": 500,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:06.693Z"
+   },
+   {
+    "id": "plan-e3e43374-c506-4cd2-8ffa-93bceb40791a",
+    "accountId": "account-ab9b1779-12a0-408d-9bc0-8157270d9f39",
+    "total": 1000,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:02.937Z"
+   },
+   {
+    "id": "plan-e4b9bc60-6d70-4a0f-8ba6-f9c0b92e69a2",
+    "accountId": "account-5c6d262e-6e8c-4d06-8cd8-19d84f6d1c9e",
+    "total": 0,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "plan-e4e4f7b9-9ba3-415d-a61c-b822d87c41cb",
+    "accountId": "account-98bab342-2722-4f7b-aebe-421324cdd80c",
+    "total": 500,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "plan-e9a33827-7fe9-4566-9f06-3c92c9ac73c0",
+    "accountId": "account-87e50c66-e32a-4c0c-9b31-6f465e6e18c1",
+    "total": 1000,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:04.488Z"
+   },
+   {
+    "id": "plan-ec93cfb9-167a-4404-92af-101773eeee46",
+    "accountId": "account-a2842b15-f8cf-41af-896f-eb316ad43d11",
+    "total": 600,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:01.964Z"
+   },
+   {
+    "id": "plan-ef39ddd1-76e1-47d3-9ee1-0731ef7a1ae7",
+    "accountId": "account-c5b8a0a8-17ae-4b1a-b7f5-92ba5e5420e7",
+    "total": 200,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:01.740Z"
+   },
+   {
+    "id": "plan-f25fa943-233b-4928-af6a-46ba2dfdaa60",
+    "accountId": "account-38d2697f-8ec5-49cf-a728-eb22c09aec7c",
+    "total": 400,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "plan-f46de828-4384-4d65-98fc-c5aa5f1f059f",
+    "accountId": "account-fd12da0d-9c2f-445b-9533-6ad6e5e2adc9",
+    "total": 1050,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "plan-f53a1d81-028b-4f2e-9ae7-ef68540b93cb",
+    "accountId": "account-5793753c-def4-4081-a269-fd158c9e4cf8",
+    "total": 1250,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:07.237Z"
+   },
+   {
+    "id": "plan-f738b6a3-3ff3-43db-8638-fac5b807ee36",
+    "accountId": "account-58946265-7c20-436d-a87e-45fc96321e73",
+    "total": 150,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "plan-fe4e8a9d-316e-42fe-b660-f783c2c55472",
+    "accountId": "account-7319d742-56a9-47d0-89aa-3f19ae62900a",
+    "total": 0,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T06:05:05.503Z"
+   },
+   {
+    "id": "plan-ff246797-3548-4526-a7ee-1079bc7f2ae0",
+    "accountId": "account-853c15d9-2a6d-43d5-948a-a99e89dd57f3",
+    "total": 1000,
+    "status": "active",
+    "deletedAt": null,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   }
+  ],
+  "taksitler": [
+   {
+    "id": "item-02bda72e-eb6f-4c18-a4f5-c5bb63d04b4f",
+    "planId": "plan-d5b8f0d5-e559-4638-989a-ca7a0fd9aa86",
+    "seq": 1,
+    "dueDate": "2026-10-13",
+    "amount": 466.66,
+    "updatedAt": "2026-11-06T06:05:07.161Z"
+   },
+   {
+    "id": "item-03fa1bfe-fd43-45ad-afaa-ec66eb794526",
+    "planId": "plan-49a17e6d-ab21-49b9-810b-1e18101217ef",
+    "seq": 1,
+    "dueDate": "2026-11-19",
+    "amount": 333.33,
+    "updatedAt": "2026-11-06T06:05:04.514Z"
+   },
+   {
+    "id": "item-04be4b4f-9b21-4b79-9759-c89470ccac59",
+    "planId": "plan-c969de77-ccd4-441e-a557-5ed7fd630024",
+    "seq": 1,
+    "dueDate": "2026-10-21",
+    "amount": 666.66,
+    "updatedAt": "2026-11-06T06:05:03.624Z"
+   },
+   {
+    "id": "item-051de63f-7362-4a6c-bf3b-f346363da1a4",
+    "planId": "plan-1f331daf-1b28-46cf-aa4f-a07fa836b424",
+    "seq": 1,
+    "dueDate": "2026-10-24",
+    "amount": 1250,
+    "updatedAt": "2026-11-06T06:04:59.922Z"
+   },
+   {
+    "id": "item-056dd3cf-a66c-4e0d-b406-26ac108cb244",
+    "planId": "plan-43c9386c-3a0d-42ad-ab23-9601abb4c4a1",
+    "seq": 1,
+    "dueDate": "2026-10-10",
+    "amount": 1800,
+    "updatedAt": "2026-11-06T06:05:02.751Z"
+   },
+   {
+    "id": "item-0960a3c1-833c-4235-9f28-9fcb460de84f",
+    "planId": "plan-6a7ea793-b887-42d9-9c12-c8e1439d40ff",
+    "seq": 1,
+    "dueDate": "2026-10-01",
+    "amount": 1125,
+    "updatedAt": "2026-11-06T06:05:00.922Z"
+   },
+   {
+    "id": "item-0b097d79-3c55-4222-a640-7ee28e22ff27",
+    "planId": "plan-e3e43374-c506-4cd2-8ffa-93bceb40791a",
+    "seq": 3,
+    "dueDate": "2027-01-22",
+    "amount": 333.34,
+    "updatedAt": "2026-11-06T06:05:02.937Z"
+   },
+   {
+    "id": "item-111578ad-9a17-42f9-b21a-c53f06b074b2",
+    "planId": "plan-1d9fb381-565d-4890-9323-d44777b0ed15",
+    "seq": 3,
+    "dueDate": "2027-01-23",
+    "amount": 333.34,
+    "updatedAt": "2026-11-06T06:05:05.904Z"
+   },
+   {
+    "id": "item-114079f0-5758-47bc-b369-79d2ea8aaca0",
+    "planId": "plan-66f1024e-dc87-4d89-ba5b-fee1f63d4544",
+    "seq": 1,
+    "dueDate": "2026-11-28",
+    "amount": 300,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "item-12728984-9b2b-46f2-8cd3-d66479681dfd",
+    "planId": "plan-19355c6d-90d2-4bd3-9bc3-764f27880c26",
+    "seq": 1,
+    "dueDate": "2026-11-10",
+    "amount": 833.33,
+    "updatedAt": "2026-11-06T06:05:03.081Z"
+   },
+   {
+    "id": "item-144be118-8bc1-482f-83f1-5ac42f94fc34",
+    "planId": "plan-8c59c0d3-273b-4ddf-9d07-a024263cd1ca",
+    "seq": 2,
+    "dueDate": "2026-10-23",
+    "amount": 333.33,
+    "updatedAt": "2026-11-06T06:05:06.767Z"
+   },
+   {
+    "id": "item-194123ef-6fe4-4948-a7c7-7f42f530fcb6",
+    "planId": "plan-bcbf8c1a-1188-4248-afe0-62563ecc36dd",
+    "seq": 2,
+    "dueDate": "2026-12-06",
+    "amount": 300,
+    "updatedAt": "2026-11-06T06:05:04.030Z"
+   },
+   {
+    "id": "item-19df6640-7961-4a24-8b1b-7e3a3f3f1a46",
+    "planId": "plan-f738b6a3-3ff3-43db-8638-fac5b807ee36",
+    "seq": 1,
+    "dueDate": "2026-12-12",
+    "amount": 150,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "item-1adf9c0b-5aef-4ed2-9cdd-71f324372764",
+    "planId": "plan-cffc67c8-dcf5-47a4-9842-82ecce544709",
+    "seq": 1,
+    "dueDate": "2026-12-15",
+    "amount": 1250,
+    "updatedAt": "2026-11-06T06:05:02.779Z"
+   },
+   {
+    "id": "item-1c018fdd-a619-4cd3-a2e1-0e4133e54b60",
+    "planId": "plan-57ff2a47-ccc4-413c-a0dc-40ef64725d15",
+    "seq": 2,
+    "dueDate": "2026-11-13",
+    "amount": 666.66,
+    "updatedAt": "2026-11-06T06:05:04.052Z"
+   },
+   {
+    "id": "item-1e04b03f-fd75-4469-ac3b-ad1fd894ebd1",
+    "planId": "plan-117419d1-8ffc-4e5c-8df7-606ec302c361",
+    "seq": 1,
+    "dueDate": "2026-09-27",
+    "amount": 700,
+    "updatedAt": "2026-11-06T06:05:03.360Z"
+   },
+   {
+    "id": "item-1e18de90-75fe-45f1-99f1-7a36893bbfdd",
+    "planId": "plan-1c080a4d-0c7f-4b96-bfee-c6f389285a9c",
+    "seq": 1,
+    "dueDate": "2026-10-26",
+    "amount": 1000,
+    "updatedAt": "2026-11-06T06:05:01.980Z"
+   },
+   {
+    "id": "item-1eea5581-c57b-4d42-a315-fb8449dfb169",
+    "planId": "plan-51357ade-c323-46a8-acf8-3d940a23bf0d",
+    "seq": 1,
+    "dueDate": "2026-10-08",
+    "amount": 300,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "item-21035e9f-be0d-4cf4-8d36-387271254921",
+    "planId": "plan-79921298-4340-4b48-a9d9-060bb1ff576c",
+    "seq": 1,
+    "dueDate": "2026-10-27",
+    "amount": 2000,
+    "updatedAt": "2026-11-06T06:05:02.504Z"
+   },
+   {
+    "id": "item-23d97e1a-9d78-428e-b521-906a11d80c9a",
+    "planId": "plan-2a652960-5aca-40b0-a827-2cd0afecdc13",
+    "seq": 2,
+    "dueDate": "2026-10-26",
+    "amount": 133.34,
+    "updatedAt": "2026-11-06T06:05:02.079Z"
+   },
+   {
+    "id": "item-24ec7686-d23d-4a98-b885-10908023d5eb",
+    "planId": "plan-55966405-9312-43f7-8389-13f523a8a24b",
+    "seq": 2,
+    "dueDate": "2026-11-05",
+    "amount": 250,
+    "updatedAt": "2026-11-06T06:05:04.270Z"
+   },
+   {
+    "id": "item-259b7573-3101-432f-941b-43ab552198ae",
+    "planId": "plan-81f07565-a3a7-4dce-81b6-27ebce179af4",
+    "seq": 1,
+    "dueDate": "2026-09-19",
+    "amount": 350,
+    "updatedAt": "2026-11-06T06:05:06.026Z"
+   },
+   {
+    "id": "item-25fd9098-859a-4097-a1b1-de7323a9784f",
+    "planId": "plan-76c2303e-10be-42fe-9e3c-fea1b2cef103",
+    "seq": 1,
+    "dueDate": "2026-11-01",
+    "amount": 150,
+    "updatedAt": "2026-11-06T06:05:05.594Z"
+   },
+   {
+    "id": "item-29583c5b-f80a-49df-ae78-dffcea91734a",
+    "planId": "plan-75baecd6-27e9-40c9-bfd6-f63535a0d866",
+    "seq": 1,
+    "dueDate": "2026-11-25",
+    "amount": 225,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "item-2aac5eb0-d81d-4a01-9d13-388df67870a7",
+    "planId": "plan-759c6151-39ec-4482-b84f-2ec5543ccc80",
+    "seq": 1,
+    "dueDate": "2026-12-04",
+    "amount": 300,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "item-2cd761e7-8136-417a-8d83-54e2bdf973b9",
+    "planId": "plan-19213fe0-b405-4a5b-bf74-bda51f17bba4",
+    "seq": 1,
+    "dueDate": "2026-10-13",
+    "amount": 1625,
+    "updatedAt": "2026-11-06T06:05:03.022Z"
+   },
+   {
+    "id": "item-2e66efd3-4a43-4b79-97ff-b371ef886121",
+    "planId": "plan-f53a1d81-028b-4f2e-9ae7-ef68540b93cb",
+    "seq": 2,
+    "dueDate": "2027-01-14",
+    "amount": 625,
+    "updatedAt": "2026-11-06T06:05:07.237Z"
+   },
+   {
+    "id": "item-319897b2-6f36-4be8-ab5a-596d50463f67",
+    "planId": "plan-19355c6d-90d2-4bd3-9bc3-764f27880c26",
+    "seq": 3,
+    "dueDate": "2027-01-10",
+    "amount": 833.34,
+    "updatedAt": "2026-11-06T06:05:03.081Z"
+   },
+   {
+    "id": "item-33b87598-7196-42df-9d4a-8094f5af3df8",
+    "planId": "plan-f25fa943-233b-4928-af6a-46ba2dfdaa60",
+    "seq": 1,
+    "dueDate": "2026-12-03",
+    "amount": 400,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "item-3540c1dd-1a1c-4dc0-b031-d3feadbc8898",
+    "planId": "plan-3522c410-8434-4dfb-9f1e-bafd4c7a300e",
+    "seq": 2,
+    "dueDate": "2026-11-25",
+    "amount": 200,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "item-361f3f47-f988-4405-ac2e-c272edec0b8d",
+    "planId": "plan-df39c546-6b55-4f48-abd1-45b5f8f8031b",
+    "seq": 1,
+    "dueDate": "2026-09-26",
+    "amount": 300,
+    "updatedAt": "2026-11-06T06:04:59.615Z"
+   },
+   {
+    "id": "item-3722495b-d5bb-4a7f-a9ed-3ab96e6d384e",
+    "planId": "plan-6d2724dd-dfb7-46df-ad1e-fac74c1c76b8",
+    "seq": 1,
+    "dueDate": "2026-10-24",
+    "amount": 375,
+    "updatedAt": "2026-11-06T06:05:07.693Z"
+   },
+   {
+    "id": "item-37643d2c-8906-4baa-b9ed-f29b70c66918",
+    "planId": "plan-8aec00ad-a402-429e-8e9d-60912bed3895",
+    "seq": 3,
+    "dueDate": "2027-01-16",
+    "amount": 166.68,
+    "updatedAt": "2026-11-06T06:04:59.489Z"
+   },
+   {
+    "id": "item-38ad8903-673d-4ae5-8eab-ce6365b1e1ca",
+    "planId": "plan-1f331daf-1b28-46cf-aa4f-a07fa836b424",
+    "seq": 2,
+    "dueDate": "2026-11-24",
+    "amount": 1250,
+    "updatedAt": "2026-11-06T06:04:59.922Z"
+   },
+   {
+    "id": "item-3d52e5b9-a6d7-4c66-ac8f-e0f671d7426c",
+    "planId": "plan-e4e4f7b9-9ba3-415d-a61c-b822d87c41cb",
+    "seq": 2,
+    "dueDate": "2026-12-12",
+    "amount": 125,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "item-3d81979a-e006-4e9d-9475-12c798de282b",
+    "planId": "plan-ef39ddd1-76e1-47d3-9ee1-0731ef7a1ae7",
+    "seq": 1,
+    "dueDate": "2026-10-06",
+    "amount": 200,
+    "updatedAt": "2026-11-06T06:05:01.740Z"
+   },
+   {
+    "id": "item-3d946295-55a8-49c5-b58b-8659ff7c7b21",
+    "planId": "plan-e3e43374-c506-4cd2-8ffa-93bceb40791a",
+    "seq": 2,
+    "dueDate": "2026-12-22",
+    "amount": 333.33,
+    "updatedAt": "2026-11-06T06:05:02.937Z"
+   },
+   {
+    "id": "item-3f4eeafe-5cf9-4f35-b6a0-0d81c66d1dec",
+    "planId": "plan-cffc67c8-dcf5-47a4-9842-82ecce544709",
+    "seq": 2,
+    "dueDate": "2027-01-15",
+    "amount": 1250,
+    "updatedAt": "2026-11-06T06:05:02.779Z"
+   },
+   {
+    "id": "item-41af7ee0-2e71-4860-8579-0b0ed3eab0ff",
+    "planId": "plan-55966405-9312-43f7-8389-13f523a8a24b",
+    "seq": 1,
+    "dueDate": "2026-10-05",
+    "amount": 625,
+    "updatedAt": "2026-11-06T06:05:04.248Z"
+   },
+   {
+    "id": "item-41b0010a-4b43-4594-9875-db32c4c5f376",
+    "planId": "plan-11e3eef6-d9dc-4b37-b37a-44a2fe4a70ff",
+    "seq": 1,
+    "dueDate": "2026-10-06",
+    "amount": 100,
+    "updatedAt": "2026-11-06T06:05:01.916Z"
+   },
+   {
+    "id": "item-431cc1d2-f9f9-47f3-b837-4cf5d951f58f",
+    "planId": "plan-8efb39c1-9fac-4635-8ff0-4a4a40435608",
+    "seq": 1,
+    "dueDate": "2026-11-20",
+    "amount": 1250,
+    "updatedAt": "2026-11-06T06:05:02.130Z"
+   },
+   {
+    "id": "item-437ae674-0086-41c7-b02a-58bc0b15b9b3",
+    "planId": "plan-0818ffe2-4f2f-4b75-8984-d4c24f3c8cce",
+    "seq": 2,
+    "dueDate": "2026-11-07",
+    "amount": 400,
+    "updatedAt": "2026-11-06T06:05:07.442Z"
+   },
+   {
+    "id": "item-44b8a178-2fe2-4457-9d9b-29f9384cefcb",
+    "planId": "plan-830f134c-3a55-407c-8708-9c06404438ce",
+    "seq": 1,
+    "dueDate": "2026-11-06",
+    "amount": 833.33,
+    "updatedAt": "2026-11-06T06:04:59.996Z"
+   },
+   {
+    "id": "item-44e763fa-9d13-44aa-9996-8ec07ab8cfdc",
+    "planId": "plan-2a652960-5aca-40b0-a827-2cd0afecdc13",
+    "seq": 1,
+    "dueDate": "2026-09-26",
+    "amount": 666.66,
+    "updatedAt": "2026-11-06T06:05:02.057Z"
+   },
+   {
+    "id": "item-46d70794-2564-4ad4-a145-3c3909b3cab0",
+    "planId": "plan-5f8412f1-a4f6-47c5-b005-22e8863239f5",
+    "seq": 2,
+    "dueDate": "2027-01-04",
+    "amount": 1000,
+    "updatedAt": "2026-11-06T06:05:02.420Z"
+   },
+   {
+    "id": "item-4958b53b-f3a2-4abd-aa5a-f8c09d5ca3d2",
+    "planId": "plan-8373aed8-799b-43c8-a4b4-4e80e9637808",
+    "seq": 2,
+    "dueDate": "2026-12-25",
+    "amount": 166.66,
+    "updatedAt": "2026-11-06T06:05:01.306Z"
+   },
+   {
+    "id": "item-4a46d35e-f757-45da-81af-3d6794a2706b",
+    "planId": "plan-94089e34-bb10-43ed-ab64-3ee17ccdc6d4",
+    "seq": 1,
+    "dueDate": "2026-10-12",
+    "amount": 300,
+    "updatedAt": "2026-11-06T06:05:02.924Z"
+   },
+   {
+    "id": "item-4b527e40-a757-459d-94bb-9759e14feaf3",
+    "planId": "plan-1d9fb381-565d-4890-9323-d44777b0ed15",
+    "seq": 1,
+    "dueDate": "2026-11-23",
+    "amount": 333.33,
+    "updatedAt": "2026-11-06T06:05:05.904Z"
+   },
+   {
+    "id": "item-4cd19dcd-53cb-4f46-b864-060d29ea2691",
+    "planId": "plan-49a17e6d-ab21-49b9-810b-1e18101217ef",
+    "seq": 3,
+    "dueDate": "2027-01-19",
+    "amount": 133.34,
+    "updatedAt": "2026-11-06T06:05:04.558Z"
+   },
+   {
+    "id": "item-4e3a42e4-7047-45f2-a0ab-da927aa25d98",
+    "planId": "plan-51bf8d9d-42b9-49d7-9877-6d514b324cb0",
+    "seq": 2,
+    "dueDate": "2026-12-02",
+    "amount": 225,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "item-4f8e2e6d-b3c9-47da-aeec-e104442d77e9",
+    "planId": "plan-d53ab4d9-03f8-463c-b03a-de0e18f4f767",
+    "seq": 1,
+    "dueDate": "2026-12-03",
+    "amount": 500,
+    "updatedAt": "2026-11-06T06:04:59.784Z"
+   },
+   {
+    "id": "item-54329ec9-55bc-4e3c-b2e5-c5e9483e1b97",
+    "planId": "plan-64882d40-7493-407a-87ae-0be81603295d",
+    "seq": 1,
+    "dueDate": "2026-11-16",
+    "amount": 300,
+    "updatedAt": "2026-11-06T06:05:03.785Z"
+   },
+   {
+    "id": "item-55e83344-f232-41d3-b606-2d24bc390d6e",
+    "planId": "plan-5ec5b87a-be46-4ee7-bbc5-8dfc07c87316",
+    "seq": 2,
+    "dueDate": "2026-12-01",
+    "amount": 300,
+    "updatedAt": "2026-11-06T06:05:05.677Z"
+   },
+   {
+    "id": "item-56d3096e-b803-463c-9754-40fd6dd419a6",
+    "planId": "plan-8cbcebc7-8173-4e9d-92e1-8fd0f8f04c6b",
+    "seq": 1,
+    "dueDate": "2026-10-26",
+    "amount": 700,
+    "updatedAt": "2026-11-06T06:05:01.638Z"
+   },
+   {
+    "id": "item-58b765fa-1cef-439e-8266-d0d9f4a4b52d",
+    "planId": "plan-ec93cfb9-167a-4404-92af-101773eeee46",
+    "seq": 1,
+    "dueDate": "2026-11-14",
+    "amount": 300,
+    "updatedAt": "2026-11-06T06:05:01.964Z"
+   },
+   {
+    "id": "item-5f7afb2b-1534-4294-a1f6-ea65c5dd1a06",
+    "planId": "plan-e3be60ba-cf72-4da9-af65-599318a0996b",
+    "seq": 1,
+    "dueDate": "2026-11-30",
+    "amount": 500,
+    "updatedAt": "2026-11-06T06:05:06.661Z"
+   },
+   {
+    "id": "item-5f7b5764-e00e-47c4-9ba4-6c81d6288ced",
+    "planId": "plan-8de6a4a0-a0b1-4e5c-b13e-6997849d3238",
+    "seq": 1,
+    "dueDate": "2026-09-30",
+    "amount": 500,
+    "updatedAt": "2026-11-06T06:05:06.565Z"
+   },
+   {
+    "id": "item-5f7f9748-feb0-4f47-be19-e2ced91bd76b",
+    "planId": "plan-5f0f99b5-2c0c-49d5-bd30-9d906e4536b9",
+    "seq": 1,
+    "dueDate": "2026-10-10",
+    "amount": 333.33,
+    "updatedAt": "2026-11-06T06:05:06.057Z"
+   },
+   {
+    "id": "item-5f94e532-280c-4131-b3f0-c8c413b4de8b",
+    "planId": "plan-57ff2a47-ccc4-413c-a0dc-40ef64725d15",
+    "seq": 1,
+    "dueDate": "2026-10-13",
+    "amount": 666.66,
+    "updatedAt": "2026-11-06T06:05:04.052Z"
+   },
+   {
+    "id": "item-61882322-dbba-424b-80cc-0c28f7026aed",
+    "planId": "plan-1c6b0d06-4839-4f97-abad-c86829ebf6c3",
+    "seq": 2,
+    "dueDate": "2026-12-01",
+    "amount": 300,
+    "updatedAt": "2026-11-06T06:05:01.288Z"
+   },
+   {
+    "id": "item-62eb42d0-423c-44a0-9962-46eb06e605a2",
+    "planId": "plan-8d2e3b9b-c914-40e4-bae7-0eb41278c51e",
+    "seq": 1,
+    "dueDate": "2026-11-07",
+    "amount": 300,
+    "updatedAt": "2026-11-06T06:05:06.546Z"
+   },
+   {
+    "id": "item-63d23eb4-f4a0-4ecf-9af7-ed8da18ebdde",
+    "planId": "plan-079c68f2-5e73-4b8c-bbf2-8d036da2933d",
+    "seq": 1,
+    "dueDate": "2026-10-04",
+    "amount": 700,
+    "updatedAt": "2026-11-06T06:05:03.290Z"
+   },
+   {
+    "id": "item-6644543c-fc66-47a2-9413-8ca8f287565b",
+    "planId": "plan-c015f0f6-85d5-46c3-9d03-e4861d96cbe4",
+    "seq": 1,
+    "dueDate": "2026-09-23",
+    "amount": 300,
+    "updatedAt": "2026-11-06T06:05:00.612Z"
+   },
+   {
+    "id": "item-6666e47e-2a47-4721-a9aa-3dff362fa0b7",
+    "planId": "plan-e9a33827-7fe9-4566-9f06-3c92c9ac73c0",
+    "seq": 1,
+    "dueDate": "2026-11-22",
+    "amount": 625,
+    "updatedAt": "2026-11-06T06:05:04.423Z"
+   },
+   {
+    "id": "item-68f5cd76-9eb9-42eb-b4bb-4e1883fa7845",
+    "planId": "plan-6220375d-a804-41c5-a6b3-ad1f5c97fbc4",
+    "seq": 2,
+    "dueDate": "2026-11-09",
+    "amount": 250,
+    "updatedAt": "2026-11-06T06:05:00.541Z"
+   },
+   {
+    "id": "item-6a1d0b76-81b9-40a4-b2a1-1730833f20ad",
+    "planId": "plan-bcbf8c1a-1188-4248-afe0-62563ecc36dd",
+    "seq": 1,
+    "dueDate": "2026-11-06",
+    "amount": 300,
+    "updatedAt": "2026-11-06T06:05:04.030Z"
+   },
+   {
+    "id": "item-6bc18b6c-8b7a-4fcb-9a2b-a00208c6c9ef",
+    "planId": "plan-33306f26-2efa-4e1d-9a73-32b09a14e5f1",
+    "seq": 1,
+    "dueDate": "2026-12-09",
+    "amount": 1000,
+    "updatedAt": "2026-11-06T06:05:04.141Z"
+   },
+   {
+    "id": "item-6bd8a622-55eb-409d-882f-fb2ec7a30583",
+    "planId": "plan-df39c546-6b55-4f48-abd1-45b5f8f8031b",
+    "seq": 2,
+    "dueDate": "2026-10-26",
+    "amount": 300,
+    "updatedAt": "2026-11-06T06:04:59.615Z"
+   },
+   {
+    "id": "item-6c57cce2-e8ce-489e-941e-3405a97172c6",
+    "planId": "plan-6220375d-a804-41c5-a6b3-ad1f5c97fbc4",
+    "seq": 3,
+    "dueDate": "2026-12-09",
+    "amount": 250,
+    "updatedAt": "2026-11-06T06:05:00.541Z"
+   },
+   {
+    "id": "item-6dce28ef-f784-424f-8384-41942a5d90f8",
+    "planId": "plan-904d0a9b-755d-4988-9b20-701ca4db1e16",
+    "seq": 2,
+    "dueDate": "2026-12-13",
+    "amount": 33.34,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "item-7038aa62-a3ae-417c-b517-2fa53c0edeca",
+    "planId": "plan-062d0271-7256-40f8-99a8-4a19c0e097e1",
+    "seq": 2,
+    "dueDate": "2027-01-11",
+    "amount": 466.67,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "item-72f43e57-5905-4351-a2e9-9b51557a1fe7",
+    "planId": "plan-1d9fb381-565d-4890-9323-d44777b0ed15",
+    "seq": 2,
+    "dueDate": "2026-12-23",
+    "amount": 333.33,
+    "updatedAt": "2026-11-06T06:05:05.904Z"
+   },
+   {
+    "id": "item-73d02ebf-4a4a-4060-9511-a35ba84835bd",
+    "planId": "plan-12183724-b1f7-4f29-94bb-fa43eda31842",
+    "seq": 1,
+    "dueDate": "2026-10-31",
+    "amount": 1500,
+    "updatedAt": "2026-11-06T06:05:03.236Z"
+   },
+   {
+    "id": "item-73d541cd-1a37-4898-92da-2c98af9a4035",
+    "planId": "plan-b84c91fb-75fb-4bac-9326-68fa98efdca6",
+    "seq": 2,
+    "dueDate": "2026-10-25",
+    "amount": 1000,
+    "updatedAt": "2026-11-06T06:05:01.244Z"
+   },
+   {
+    "id": "item-76667e59-cb31-4b97-acfb-8bdba2fc9ee9",
+    "planId": "plan-a8489b68-bad3-492d-9443-dc3397232351",
+    "seq": 1,
+    "dueDate": "2026-12-03",
+    "amount": 166.66,
+    "updatedAt": "2026-11-06T06:05:00.308Z"
+   },
+   {
+    "id": "item-77403c6c-553b-44b0-a512-9a4c5a1f0d1c",
+    "planId": "plan-355f0eaf-009f-4ef9-8365-8373d179aff9",
+    "seq": 1,
+    "dueDate": "2026-10-05",
+    "amount": 333.33,
+    "updatedAt": "2026-11-06T06:04:59.303Z"
+   },
+   {
+    "id": "item-79229b6c-47ee-4f3b-9610-4b0913ef6ac4",
+    "planId": "plan-8623a135-b151-4279-8b81-1dbe2548154c",
+    "seq": 2,
+    "dueDate": "2026-10-30",
+    "amount": 166.66,
+    "updatedAt": "2026-11-06T06:05:06.821Z"
+   },
+   {
+    "id": "item-7cd227b8-9a18-4a0f-bccb-a8073ad8f315",
+    "planId": "plan-b9b51f0c-6ede-4018-8ec1-39a6cc1a6043",
+    "seq": 2,
+    "dueDate": "2026-12-18",
+    "amount": 600,
+    "updatedAt": "2026-11-06T06:05:04.735Z"
+   },
+   {
+    "id": "item-7cfcae35-ea9a-4c22-b5d9-2e94f70d1825",
+    "planId": "plan-8aec00ad-a402-429e-8e9d-60912bed3895",
+    "seq": 2,
+    "dueDate": "2026-12-16",
+    "amount": 166.66,
+    "updatedAt": "2026-11-06T06:04:59.489Z"
+   },
+   {
+    "id": "item-7de87632-0f72-417f-95fb-a4e097e19d55",
+    "planId": "plan-b84c91fb-75fb-4bac-9326-68fa98efdca6",
+    "seq": 1,
+    "dueDate": "2026-09-25",
+    "amount": 1250,
+    "updatedAt": "2026-11-06T06:05:01.222Z"
+   },
+   {
+    "id": "item-7e6730c6-c49e-4f89-a7d0-95defa1adb1d",
+    "planId": "plan-6220375d-a804-41c5-a6b3-ad1f5c97fbc4",
+    "seq": 1,
+    "dueDate": "2026-10-09",
+    "amount": 250,
+    "updatedAt": "2026-11-06T06:05:00.541Z"
+   },
+   {
+    "id": "item-7edaa804-0530-4b68-a971-068ae025221a",
+    "planId": "plan-b97b0aa9-230c-48d7-9d64-b0df0591fa52",
+    "seq": 1,
+    "dueDate": "2026-12-11",
+    "amount": 1125,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "item-807ce577-a992-4480-b471-edaeac753fc7",
+    "planId": "plan-c970f585-f923-479f-b826-2a59320acfc3",
+    "seq": 2,
+    "dueDate": "2026-11-30",
+    "amount": 333.33,
+    "updatedAt": "2026-11-06T06:05:05.341Z"
+   },
+   {
+    "id": "item-81a174bf-dcc9-41ac-9f37-7b780032038b",
+    "planId": "plan-6135064d-4f3c-4069-9615-9793f790bf68",
+    "seq": 1,
+    "dueDate": "2026-11-01",
+    "amount": 333.33,
+    "updatedAt": "2026-11-06T06:04:59.426Z"
+   },
+   {
+    "id": "item-81c353ae-3203-492b-8ed3-512c784ba1aa",
+    "planId": "plan-d5b8f0d5-e559-4638-989a-ca7a0fd9aa86",
+    "seq": 3,
+    "dueDate": "2026-12-13",
+    "amount": 66.68,
+    "updatedAt": "2026-11-06T06:05:07.188Z"
+   },
+   {
+    "id": "item-8478a737-04b3-4a6b-8a4b-cfa6aea1c725",
+    "planId": "plan-620873a8-436b-4640-8940-017313dce8fe",
+    "seq": 1,
+    "dueDate": "2026-11-01",
+    "amount": 750,
+    "updatedAt": "2026-11-06T06:05:00.639Z"
+   },
+   {
+    "id": "item-85c6c903-5800-4601-8a43-cc945a065419",
+    "planId": "plan-062d0271-7256-40f8-99a8-4a19c0e097e1",
+    "seq": 1,
+    "dueDate": "2026-12-11",
+    "amount": 333.33,
+    "updatedAt": "2026-11-06T06:05:01.096Z"
+   },
+   {
+    "id": "item-87ebc645-f47f-489a-9749-26a1c73acbbd",
+    "planId": "plan-6e6830e4-6d40-4f68-840d-4245e57864fd",
+    "seq": 2,
+    "dueDate": "2026-12-07",
+    "amount": 225,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "item-880ad756-3344-44e6-a176-cc959cc89cf6",
+    "planId": "plan-5f0f99b5-2c0c-49d5-bd30-9d906e4536b9",
+    "seq": 3,
+    "dueDate": "2026-12-10",
+    "amount": 283.34,
+    "updatedAt": "2026-11-06T06:05:06.121Z"
+   },
+   {
+    "id": "item-8820890f-4567-4f3c-907d-6d5a4e2713c8",
+    "planId": "plan-0098be65-a415-429b-b0af-af94e9dafdaf",
+    "seq": 1,
+    "dueDate": "2026-12-06",
+    "amount": 1000,
+    "updatedAt": "2026-11-06T06:05:07.631Z"
+   },
+   {
+    "id": "item-88faff75-d688-42ec-b8a4-6ba67aae54ac",
+    "planId": "plan-3522c410-8434-4dfb-9f1e-bafd4c7a300e",
+    "seq": 1,
+    "dueDate": "2026-10-25",
+    "amount": 250,
+    "updatedAt": "2026-11-06T06:05:00.073Z"
+   },
+   {
+    "id": "item-8a9e86aa-3d59-4a61-92d5-f1d1ae5a20e9",
+    "planId": "plan-c015f0f6-85d5-46c3-9d03-e4861d96cbe4",
+    "seq": 2,
+    "dueDate": "2026-10-23",
+    "amount": 300,
+    "updatedAt": "2026-11-06T06:05:00.612Z"
+   },
+   {
+    "id": "item-8cf474c4-6c6a-4a39-9e34-cf967e165068",
+    "planId": "plan-1c6b0d06-4839-4f97-abad-c86829ebf6c3",
+    "seq": 1,
+    "dueDate": "2026-11-01",
+    "amount": 300,
+    "updatedAt": "2026-11-06T06:05:01.288Z"
+   },
+   {
+    "id": "item-8ddacf26-044f-46d7-8bd5-19e0c6055183",
+    "planId": "plan-c969de77-ccd4-441e-a557-5ed7fd630024",
+    "seq": 2,
+    "dueDate": "2026-11-21",
+    "amount": 666.66,
+    "updatedAt": "2026-11-06T06:05:03.624Z"
+   },
+   {
+    "id": "item-90263e3a-9727-478d-88a5-d9e33277231d",
+    "planId": "plan-8c59c0d3-273b-4ddf-9d07-a024263cd1ca",
+    "seq": 1,
+    "dueDate": "2026-09-23",
+    "amount": 333.33,
+    "updatedAt": "2026-11-06T06:05:06.767Z"
+   },
+   {
+    "id": "item-93016c7d-0383-4d08-a365-dfc530facb77",
+    "planId": "plan-495bad3b-c122-4041-a444-88d2284d5afb",
+    "seq": 2,
+    "dueDate": "2026-10-25",
+    "amount": 416.66,
+    "updatedAt": "2026-11-06T06:05:00.964Z"
+   },
+   {
+    "id": "item-9345f86a-3d01-419c-b1f1-ea7cd277555d",
+    "planId": "plan-ff246797-3548-4526-a7ee-1079bc7f2ae0",
+    "seq": 2,
+    "dueDate": "2026-12-23",
+    "amount": 375,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "item-93c51c11-cfdd-4e1a-9d96-7c27eaedb0ea",
+    "planId": "plan-6135064d-4f3c-4069-9615-9793f790bf68",
+    "seq": 2,
+    "dueDate": "2026-12-01",
+    "amount": 333.33,
+    "updatedAt": "2026-11-06T06:04:59.426Z"
+   },
+   {
+    "id": "item-96df812e-f227-4ec4-8234-2f214cf3fa7a",
+    "planId": "plan-a2e0cabe-029b-477a-9433-ad5870343369",
+    "seq": 3,
+    "dueDate": "2026-12-09",
+    "amount": 133.34,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "item-998d5c97-1589-447c-bf03-910d5c038531",
+    "planId": "plan-6d2724dd-dfb7-46df-ad1e-fac74c1c76b8",
+    "seq": 2,
+    "dueDate": "2026-11-24",
+    "amount": 375,
+    "updatedAt": "2026-11-06T06:05:07.693Z"
+   },
+   {
+    "id": "item-99c0f1ef-08e3-483b-9e4f-ead30adf3bfe",
+    "planId": "plan-49a17e6d-ab21-49b9-810b-1e18101217ef",
+    "seq": 2,
+    "dueDate": "2026-12-19",
+    "amount": 333.33,
+    "updatedAt": "2026-11-06T06:05:04.514Z"
+   },
+   {
+    "id": "item-99fd140c-51d5-4439-95ee-469d2831e096",
+    "planId": "plan-830f134c-3a55-407c-8708-9c06404438ce",
+    "seq": 2,
+    "dueDate": "2026-12-06",
+    "amount": 833.33,
+    "updatedAt": "2026-11-06T06:04:59.996Z"
+   },
+   {
+    "id": "item-9c0ddd02-9086-403f-b6ba-ae8584415478",
+    "planId": "plan-876b34af-a665-4093-8f1e-4e78a64108fc",
+    "seq": 1,
+    "dueDate": "2026-09-19",
+    "amount": 666.66,
+    "updatedAt": "2026-11-06T06:05:02.285Z"
+   },
+   {
+    "id": "item-9c18d64c-e901-4f55-86a6-4edbe10062bb",
+    "planId": "plan-5ec5b87a-be46-4ee7-bbc5-8dfc07c87316",
+    "seq": 1,
+    "dueDate": "2026-11-01",
+    "amount": 300,
+    "updatedAt": "2026-11-06T06:05:05.677Z"
+   },
+   {
+    "id": "item-a83586f7-54de-4363-a90d-cc785c51a617",
+    "planId": "plan-2c9602db-06df-4ca3-8dfb-96ffa1542206",
+    "seq": 1,
+    "dueDate": "2026-11-06",
+    "amount": 100,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "item-ac78f701-7c4e-4c0d-8c92-340f557add67",
+    "planId": "plan-5f34f9c4-3668-4968-b261-e6be2e9210a8",
+    "seq": 1,
+    "dueDate": "2026-12-16",
+    "amount": 525,
+    "updatedAt": "2026-11-06T06:05:07.035Z"
+   },
+   {
+    "id": "item-b0696a45-f5ba-4f09-ab6e-06b253e6b84e",
+    "planId": "plan-8aec00ad-a402-429e-8e9d-60912bed3895",
+    "seq": 1,
+    "dueDate": "2026-11-16",
+    "amount": 166.66,
+    "updatedAt": "2026-11-06T06:04:59.489Z"
+   },
+   {
+    "id": "item-b14f950b-8b38-48f5-8df4-fae3750b55a7",
+    "planId": "plan-495bad3b-c122-4041-a444-88d2284d5afb",
+    "seq": 3,
+    "dueDate": "2026-11-25",
+    "amount": 416.68,
+    "updatedAt": "2026-11-06T06:05:00.964Z"
+   },
+   {
+    "id": "item-b1539903-240b-4e08-9a72-3876913dcf59",
+    "planId": "plan-94089e34-bb10-43ed-ab64-3ee17ccdc6d4",
+    "seq": 2,
+    "dueDate": "2026-11-12",
+    "amount": 300,
+    "updatedAt": "2026-11-06T06:05:02.924Z"
+   },
+   {
+    "id": "item-b2a5b0f1-1c9c-4452-8462-f74118deca7f",
+    "planId": "plan-0098be65-a415-429b-b0af-af94e9dafdaf",
+    "seq": 2,
+    "dueDate": "2027-01-06",
+    "amount": 1000,
+    "updatedAt": "2026-11-06T06:05:07.631Z"
+   },
+   {
+    "id": "item-b2d19494-7e93-4a3a-997c-8c2ab095081e",
+    "planId": "plan-6e6830e4-6d40-4f68-840d-4245e57864fd",
+    "seq": 1,
+    "dueDate": "2026-11-07",
+    "amount": 375,
+    "updatedAt": "2026-11-06T06:04:59.147Z"
+   },
+   {
+    "id": "item-b384d9a4-5262-4d1e-9938-47c3bab60ad7",
+    "planId": "plan-e3e43374-c506-4cd2-8ffa-93bceb40791a",
+    "seq": 1,
+    "dueDate": "2026-11-22",
+    "amount": 333.33,
+    "updatedAt": "2026-11-06T06:05:02.937Z"
+   },
+   {
+    "id": "item-b546f177-e84b-4df9-9053-adb148b2c0fc",
+    "planId": "plan-8de6a4a0-a0b1-4e5c-b13e-6997849d3238",
+    "seq": 2,
+    "dueDate": "2026-10-30",
+    "amount": 500,
+    "updatedAt": "2026-11-06T06:05:06.565Z"
+   },
+   {
+    "id": "item-b5a8b3b8-1686-4d66-bfad-dd0f5559be04",
+    "planId": "plan-8373aed8-799b-43c8-a4b4-4e80e9637808",
+    "seq": 1,
+    "dueDate": "2026-11-25",
+    "amount": 166.66,
+    "updatedAt": "2026-11-06T06:05:01.306Z"
+   },
+   {
+    "id": "item-b6801621-061e-49cc-b8a2-ddb01abc8f77",
+    "planId": "plan-d53ab4d9-03f8-463c-b03a-de0e18f4f767",
+    "seq": 2,
+    "dueDate": "2027-01-03",
+    "amount": 500,
+    "updatedAt": "2026-11-06T06:04:59.784Z"
+   },
+   {
+    "id": "item-b8255ac7-49ae-4b19-bd41-f7f29d157960",
+    "planId": "plan-830f134c-3a55-407c-8708-9c06404438ce",
+    "seq": 3,
+    "dueDate": "2027-01-06",
+    "amount": 833.34,
+    "updatedAt": "2026-11-06T06:04:59.996Z"
+   },
+   {
+    "id": "item-ba227b0b-503a-42fb-9b60-d66674d95ba4",
+    "planId": "plan-53ad3b77-6ab5-4fb7-a6ab-b4114ee19276",
+    "seq": 1,
+    "dueDate": "2026-10-18",
+    "amount": 650,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "item-bc0cbe4e-bc2b-4a8b-9f8c-e51ced39a801",
+    "planId": "plan-a2e0cabe-029b-477a-9433-ad5870343369",
+    "seq": 1,
+    "dueDate": "2026-10-09",
+    "amount": 333.33,
+    "updatedAt": "2026-11-06T06:05:03.537Z"
+   },
+   {
+    "id": "item-bf6bc9e8-d82a-4bb4-b07d-790fadde79ab",
+    "planId": "plan-c970f585-f923-479f-b826-2a59320acfc3",
+    "seq": 1,
+    "dueDate": "2026-10-30",
+    "amount": 333.33,
+    "updatedAt": "2026-11-06T06:05:05.341Z"
+   },
+   {
+    "id": "item-c361fff7-06f7-46fd-bd50-619e97594deb",
+    "planId": "plan-a31276d5-3494-4d98-9d1f-d50185875cf6",
+    "seq": 1,
+    "dueDate": "2026-10-20",
+    "amount": 300,
+    "updatedAt": "2026-11-06T06:05:07.599Z"
+   },
+   {
+    "id": "item-c6de9f5b-747b-4ad4-9572-b2407213096f",
+    "planId": "plan-ec93cfb9-167a-4404-92af-101773eeee46",
+    "seq": 2,
+    "dueDate": "2026-12-14",
+    "amount": 300,
+    "updatedAt": "2026-11-06T06:05:01.964Z"
+   },
+   {
+    "id": "item-c701d1f1-7813-424f-ae4e-0231ccd844f0",
+    "planId": "plan-e4e4f7b9-9ba3-415d-a61c-b822d87c41cb",
+    "seq": 1,
+    "dueDate": "2026-11-12",
+    "amount": 375,
+    "updatedAt": "2026-11-06T06:05:06.893Z"
+   },
+   {
+    "id": "item-c8a60220-1519-42ed-bac9-0d4901522478",
+    "planId": "plan-412c31f4-8870-402b-a8db-6e89bb8d485a",
+    "seq": 1,
+    "dueDate": "2026-12-09",
+    "amount": 500,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "item-c8fd0133-c3a5-4024-933b-7389c95da331",
+    "planId": "plan-bb4e30d2-8f8d-48a7-b04b-69e6e9147090",
+    "seq": 1,
+    "dueDate": "2026-12-06",
+    "amount": 1400,
+    "updatedAt": "2026-11-06T06:04:59.741Z"
+   },
+   {
+    "id": "item-caca29c3-19ee-41d5-b8a0-7fcddc9c8b45",
+    "planId": "plan-8c59c0d3-273b-4ddf-9d07-a024263cd1ca",
+    "seq": 3,
+    "dueDate": "2026-11-23",
+    "amount": 333.34,
+    "updatedAt": "2026-11-06T06:05:06.767Z"
+   },
+   {
+    "id": "item-cbba8e7f-0f8d-47e8-823c-5f259e7ef8a8",
+    "planId": "plan-918f6e2f-c85c-41e5-8e52-5cd64ebd8cfe",
+    "seq": 1,
+    "dueDate": "2026-10-29",
+    "amount": 666.66,
+    "updatedAt": "2026-11-06T06:04:59.363Z"
+   },
+   {
+    "id": "item-ccff10a8-42b1-4557-9cbd-682ab56b514e",
+    "planId": "plan-e9a33827-7fe9-4566-9f06-3c92c9ac73c0",
+    "seq": 2,
+    "dueDate": "2026-12-22",
+    "amount": 375,
+    "updatedAt": "2026-11-06T06:05:04.488Z"
+   },
+   {
+    "id": "item-cea53f2d-b136-4d9b-8109-a2bf12f526ae",
+    "planId": "plan-918f6e2f-c85c-41e5-8e52-5cd64ebd8cfe",
+    "seq": 3,
+    "dueDate": "2026-12-29",
+    "amount": 666.68,
+    "updatedAt": "2026-11-06T06:04:59.363Z"
+   },
+   {
+    "id": "item-cf987845-011d-4657-bc6b-b5c23238ab8c",
+    "planId": "plan-a31276d5-3494-4d98-9d1f-d50185875cf6",
+    "seq": 2,
+    "dueDate": "2026-11-20",
+    "amount": 300,
+    "updatedAt": "2026-11-06T06:05:07.599Z"
+   },
+   {
+    "id": "item-d008f3a2-9b53-4760-bf83-d820458660a0",
+    "planId": "plan-355f0eaf-009f-4ef9-8365-8373d179aff9",
+    "seq": 2,
+    "dueDate": "2026-11-05",
+    "amount": 333.33,
+    "updatedAt": "2026-11-06T06:04:59.303Z"
+   },
+   {
+    "id": "item-d01ad21f-1a7c-4327-82cc-c21848190fa9",
+    "planId": "plan-33306f26-2efa-4e1d-9a73-32b09a14e5f1",
+    "seq": 2,
+    "dueDate": "2027-01-09",
+    "amount": 100,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "item-d0a0e9c9-382e-465d-b289-6ea624c49b73",
+    "planId": "plan-51bf8d9d-42b9-49d7-9877-6d514b324cb0",
+    "seq": 1,
+    "dueDate": "2026-11-02",
+    "amount": 375,
+    "updatedAt": "2026-11-06T06:05:01.822Z"
+   },
+   {
+    "id": "item-d0e401c5-31c7-45dd-b8f9-6a08cab6947a",
+    "planId": "plan-8623a135-b151-4279-8b81-1dbe2548154c",
+    "seq": 3,
+    "dueDate": "2026-11-30",
+    "amount": 166.68,
+    "updatedAt": "2026-11-06T06:05:06.821Z"
+   },
+   {
+    "id": "item-d1577998-404b-47ea-9834-d081a8936cd2",
+    "planId": "plan-0818ffe2-4f2f-4b75-8984-d4c24f3c8cce",
+    "seq": 1,
+    "dueDate": "2026-10-07",
+    "amount": 1000,
+    "updatedAt": "2026-11-06T06:05:07.380Z"
+   },
+   {
+    "id": "item-d325ca18-b892-419c-871c-1285fe0d6444",
+    "planId": "plan-f46de828-4384-4d65-98fc-c5aa5f1f059f",
+    "seq": 1,
+    "dueDate": "2026-12-13",
+    "amount": 1050,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "item-dbc735e8-b988-402c-9117-438a7cecfe2e",
+    "planId": "plan-904d0a9b-755d-4988-9b20-701ca4db1e16",
+    "seq": 1,
+    "dueDate": "2026-11-13",
+    "amount": 466.66,
+    "updatedAt": "2026-11-06T06:05:06.365Z"
+   },
+   {
+    "id": "item-dcf77abc-3f57-483a-a9b7-83b97b1e9109",
+    "planId": "plan-5f8412f1-a4f6-47c5-b005-22e8863239f5",
+    "seq": 1,
+    "dueDate": "2026-12-04",
+    "amount": 1000,
+    "updatedAt": "2026-11-06T06:05:02.420Z"
+   },
+   {
+    "id": "item-dd486dfb-0b58-4ece-9ccf-2d9c3cd45513",
+    "planId": "plan-a8489b68-bad3-492d-9443-dc3397232351",
+    "seq": 3,
+    "dueDate": "2027-02-03",
+    "amount": 166.68,
+    "updatedAt": "2026-11-06T06:05:00.308Z"
+   },
+   {
+    "id": "item-de31f8c4-3fa9-4e64-876e-0b2d1ccdcadc",
+    "planId": "plan-8373aed8-799b-43c8-a4b4-4e80e9637808",
+    "seq": 3,
+    "dueDate": "2027-01-25",
+    "amount": 166.68,
+    "updatedAt": "2026-11-06T06:05:01.306Z"
+   },
+   {
+    "id": "item-e19544a7-4578-4564-96ed-7b1147fbcafd",
+    "planId": "plan-6135064d-4f3c-4069-9615-9793f790bf68",
+    "seq": 3,
+    "dueDate": "2027-01-01",
+    "amount": 333.34,
+    "updatedAt": "2026-11-06T06:04:59.426Z"
+   },
+   {
+    "id": "item-e27f795a-2986-4f92-8874-be4ba633bee5",
+    "planId": "plan-355f0eaf-009f-4ef9-8365-8373d179aff9",
+    "seq": 3,
+    "dueDate": "2026-12-05",
+    "amount": 333.34,
+    "updatedAt": "2026-11-06T06:04:59.303Z"
+   },
+   {
+    "id": "item-e2ad7c44-f6ba-4ab8-a79d-f231962f9bc4",
+    "planId": "plan-8efb39c1-9fac-4635-8ff0-4a4a40435608",
+    "seq": 2,
+    "dueDate": "2026-12-20",
+    "amount": 1250,
+    "updatedAt": "2026-11-06T06:05:02.130Z"
+   },
+   {
+    "id": "item-e3e828ca-93d0-4353-81fa-9cd8bbeacc4d",
+    "planId": "plan-876b34af-a665-4093-8f1e-4e78a64108fc",
+    "seq": 2,
+    "dueDate": "2026-10-19",
+    "amount": 633.34,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "item-e5872f9a-f433-4af5-94fb-beeb0a2af190",
+    "planId": "plan-a2e0cabe-029b-477a-9433-ad5870343369",
+    "seq": 2,
+    "dueDate": "2026-11-09",
+    "amount": 333.33,
+    "updatedAt": "2026-11-06T06:05:03.537Z"
+   },
+   {
+    "id": "item-e6a3442e-9869-4b1e-8a09-665c3b885a70",
+    "planId": "plan-f53a1d81-028b-4f2e-9ae7-ef68540b93cb",
+    "seq": 1,
+    "dueDate": "2026-12-14",
+    "amount": 625,
+    "updatedAt": "2026-11-06T06:05:07.237Z"
+   },
+   {
+    "id": "item-e740fa59-75af-49df-bfa3-49f93135e234",
+    "planId": "plan-a8489b68-bad3-492d-9443-dc3397232351",
+    "seq": 2,
+    "dueDate": "2027-01-03",
+    "amount": 166.66,
+    "updatedAt": "2026-11-06T06:05:00.308Z"
+   },
+   {
+    "id": "item-e8606839-6101-42c6-8e3d-55edd05d0db5",
+    "planId": "plan-616e3536-063b-40bf-9fe1-49d95aadda99",
+    "seq": 1,
+    "dueDate": "2026-10-29",
+    "amount": 500,
+    "updatedAt": "2026-11-06T06:04:58.943Z"
+   },
+   {
+    "id": "item-ea492f48-552a-4f9a-9f0b-076f4c49763e",
+    "planId": "plan-079c68f2-5e73-4b8c-bbf2-8d036da2933d",
+    "seq": 2,
+    "dueDate": "2026-11-04",
+    "amount": 700,
+    "updatedAt": "2026-11-06T06:05:03.290Z"
+   },
+   {
+    "id": "item-eb5ea0c3-c636-4f1c-b0ed-059763879241",
+    "planId": "plan-d8790f2b-0dc7-468e-866a-35bbbde379b3",
+    "seq": 2,
+    "dueDate": "2026-11-20",
+    "amount": 300,
+    "updatedAt": "2026-11-06T06:05:00.061Z"
+   },
+   {
+    "id": "item-ecb22680-77e6-4ada-b220-b4cfa27925fb",
+    "planId": "plan-c970f585-f923-479f-b826-2a59320acfc3",
+    "seq": 3,
+    "dueDate": "2026-12-30",
+    "amount": 333.34,
+    "updatedAt": "2026-11-06T06:05:05.341Z"
+   },
+   {
+    "id": "item-ed5f9b1a-07aa-4207-8300-9d78a2e5aff0",
+    "planId": "plan-d8790f2b-0dc7-468e-866a-35bbbde379b3",
+    "seq": 1,
+    "dueDate": "2026-10-20",
+    "amount": 300,
+    "updatedAt": "2026-11-06T06:05:00.061Z"
+   },
+   {
+    "id": "item-edf15da3-5e20-4386-9816-031d4607ae01",
+    "planId": "plan-8623a135-b151-4279-8b81-1dbe2548154c",
+    "seq": 1,
+    "dueDate": "2026-09-30",
+    "amount": 166.66,
+    "updatedAt": "2026-11-06T06:05:06.821Z"
+   },
+   {
+    "id": "item-ef968cc1-54da-4782-adce-6912935356ef",
+    "planId": "plan-1989028b-dbdc-458d-a41a-c1f2bce1b870",
+    "seq": 1,
+    "dueDate": "2026-11-08",
+    "amount": 300,
+    "updatedAt": "2026-11-06T09:00:00.000Z"
+   },
+   {
+    "id": "item-f260f371-9c1d-47dc-ab68-fd2f27bb41eb",
+    "planId": "plan-c969de77-ccd4-441e-a557-5ed7fd630024",
+    "seq": 3,
+    "dueDate": "2026-12-21",
+    "amount": 666.68,
+    "updatedAt": "2026-11-06T06:05:03.624Z"
+   },
+   {
+    "id": "item-f2722f14-4f31-4257-8a23-6fe610f19d96",
+    "planId": "plan-8d2e3b9b-c914-40e4-bae7-0eb41278c51e",
+    "seq": 2,
+    "dueDate": "2026-12-07",
+    "amount": 300,
+    "updatedAt": "2026-11-06T06:05:06.546Z"
+   },
+   {
+    "id": "item-f35175c1-9a2b-4a01-94e8-c32053e4ab97",
+    "planId": "plan-b9b51f0c-6ede-4018-8ec1-39a6cc1a6043",
+    "seq": 1,
+    "dueDate": "2026-11-18",
+    "amount": 750,
+    "updatedAt": "2026-11-06T06:05:04.700Z"
+   },
+   {
+    "id": "item-f371de22-432e-4de9-9ab4-9d51f3889211",
+    "planId": "plan-19355c6d-90d2-4bd3-9bc3-764f27880c26",
+    "seq": 2,
+    "dueDate": "2026-12-10",
+    "amount": 833.33,
+    "updatedAt": "2026-11-06T06:05:03.081Z"
+   },
+   {
+    "id": "item-f3b0fc31-cb24-4314-983b-131a8f92f616",
+    "planId": "plan-ff246797-3548-4526-a7ee-1079bc7f2ae0",
+    "seq": 1,
+    "dueDate": "2026-11-23",
+    "amount": 625,
+    "updatedAt": "2026-11-06T06:05:05.721Z"
+   },
+   {
+    "id": "item-f3c59340-f236-45f2-94d5-969a5a508f9c",
+    "planId": "plan-495bad3b-c122-4041-a444-88d2284d5afb",
+    "seq": 1,
+    "dueDate": "2026-09-25",
+    "amount": 416.66,
+    "updatedAt": "2026-11-06T06:05:00.964Z"
+   },
+   {
+    "id": "item-f71b7873-ac5e-4483-910a-304a6d8dbcc9",
+    "planId": "plan-a2355c3e-1210-4cf5-9bd1-defb573256e0",
+    "seq": 1,
+    "dueDate": "2026-09-28",
+    "amount": 2500,
+    "updatedAt": "2026-11-06T06:04:59.956Z"
+   },
+   {
+    "id": "item-fb52797e-94f4-461f-85f4-51d4733af510",
+    "planId": "plan-5f0f99b5-2c0c-49d5-bd30-9d906e4536b9",
+    "seq": 2,
+    "dueDate": "2026-11-10",
+    "amount": 333.33,
+    "updatedAt": "2026-11-06T06:05:06.057Z"
+   },
+   {
+    "id": "item-fbb00002-a021-4831-8610-592e3b76fe4f",
+    "planId": "plan-9905238b-b150-46f9-95f8-a994ade092a4",
+    "seq": 1,
+    "dueDate": "2026-10-26",
+    "amount": 1625,
+    "updatedAt": "2026-11-06T06:05:00.829Z"
+   },
+   {
+    "id": "item-fc3e8d90-4b24-4032-9df7-5aa6b9b8065b",
+    "planId": "plan-d5b8f0d5-e559-4638-989a-ca7a0fd9aa86",
+    "seq": 2,
+    "dueDate": "2026-11-13",
+    "amount": 466.66,
+    "updatedAt": "2026-11-06T06:05:07.161Z"
+   },
+   {
+    "id": "item-fdd23b3b-593d-4cf4-a224-038d3cf318bf",
+    "planId": "plan-57ff2a47-ccc4-413c-a0dc-40ef64725d15",
+    "seq": 3,
+    "dueDate": "2026-12-13",
+    "amount": 566.68,
+    "updatedAt": "2026-11-06T06:05:04.101Z"
+   },
+   {
+    "id": "item-fddfb6f7-48b2-4773-8506-12c2d101c252",
+    "planId": "plan-918f6e2f-c85c-41e5-8e52-5cd64ebd8cfe",
+    "seq": 2,
+    "dueDate": "2026-11-29",
+    "amount": 666.66,
+    "updatedAt": "2026-11-06T06:04:59.363Z"
+   }
+  ],
+  "faturaDurumlari": [
+   [
+    "invoice-013a4186-3d43-4e09-b778-e11d93f037f1",
+    {
+     "payable": 2500,
+     "paid": 2500,
+     "open": 0,
+     "excess": 225,
+     "state": "paid",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-03b2a812-8356-4e8c-86d8-028ee8cad49e",
+    {
+     "payable": 2250,
+     "paid": 2250,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-03ebcbe7-50bc-47e9-b2bd-929607da71f8",
+    {
+     "payable": 400,
+     "paid": 400,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-0556efe5-f541-4450-8e00-0774663663ef",
+    {
+     "payable": 200,
+     "paid": 200,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-05d8eec2-54ff-4d72-8fa5-9e3c5eb2d4ac",
+    {
+     "payable": 200,
+     "paid": 200,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-0a4cd424-edb3-44d5-8370-0655d1945e97",
+    {
+     "payable": 2500,
+     "paid": 2375,
+     "open": 125,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-0c26f54b-3df7-4bb8-bee6-168fcd19cf73",
+    {
+     "payable": 2000,
+     "paid": 2000,
+     "open": 0,
+     "excess": 100,
+     "state": "paid",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-0caf71a1-63c8-404d-869c-6bea45b7ada3",
+    {
+     "payable": 400,
+     "paid": 400,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-0ce19990-84c9-4f08-a197-e46b911204cb",
+    {
+     "payable": 2500,
+     "paid": 2000,
+     "open": 500,
+     "excess": 0,
+     "state": "installment",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-0e21ef69-3f1e-43db-a88d-020304212863",
+    {
+     "payable": 400,
+     "paid": 400,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-0e88699a-f457-43e3-9663-45b92b216f10",
+    {
+     "payable": 1000,
+     "paid": 100,
+     "open": 900,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-0ef2c4a5-1ee2-498e-a861-c2ab2655dd1d",
+    {
+     "payable": 300,
+     "paid": 300,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-0ef36f49-d857-41a6-b2d0-e26480b3cf75",
+    {
+     "payable": 600,
+     "paid": 600,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-0fbb1612-e5b4-4639-9173-28753f0d2b63",
+    {
+     "payable": 1000,
+     "paid": 1000,
+     "open": 0,
+     "excess": 200,
+     "state": "paid",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-139f09ce-1457-4720-ab30-78372b6c606c",
+    {
+     "payable": 2000,
+     "paid": 1000,
+     "open": 1000,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-13f1ec40-b820-410f-ba22-8a7b8872e07e",
+    {
+     "payable": 1200,
+     "paid": 1200,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-14223dd4-aefd-4682-9d5d-574ea63278ef",
+    {
+     "payable": 500,
+     "paid": 500,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-14966363-6ea2-411f-825b-d123c81bc633",
+    {
+     "payable": 1000,
+     "paid": 1000,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-14e4bc49-a0cd-492a-a60b-8a1cd4a844d7",
+    {
+     "payable": 1000,
+     "paid": 0,
+     "open": 1000,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {
+      "plan-1c6b0d06-4839-4f97-abad-c86829ebf6c3": 600
+     }
+    }
+   ],
+   [
+    "invoice-153d9b31-74c8-443e-8f93-105ab7892421",
+    {
+     "payable": 2500,
+     "paid": 875,
+     "open": 1625,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-16675be1-af7e-4282-bbcd-1ccdca3249e0",
+    {
+     "payable": 400,
+     "paid": 0,
+     "open": 0,
+     "excess": 0,
+     "state": "cancelled",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-1707eef0-0154-433d-9c2e-ec8fda4f7689",
+    {
+     "payable": 1500,
+     "paid": 150,
+     "open": 1350,
+     "excess": 0,
+     "state": "installment",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-18850da4-4d03-4d81-a56a-eec478ebe526",
+    {
+     "payable": 2000,
+     "paid": 1880,
+     "open": 120,
+     "excess": 0,
+     "state": "installment",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-18914bfe-1103-4563-8da6-15a1babab067",
+    {
+     "payable": 1000,
+     "paid": 0,
+     "open": 0,
+     "excess": 0,
+     "state": "cancelled",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-1be3c6ac-474d-4643-b1bc-c2e4caaa5068",
+    {
+     "payable": 450,
+     "paid": 450,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-1be66af1-74e3-47fb-8b6a-98735b35897e",
+    {
+     "payable": 1000,
+     "paid": 0,
+     "open": 1000,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {
+      "plan-c015f0f6-85d5-46c3-9d03-e4861d96cbe4": 600
+     }
+    }
+   ],
+   [
+    "invoice-1c4e3261-ee4b-40ba-bc37-1218e13e25fe",
+    {
+     "payable": 200,
+     "paid": 200,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-1ca14cbb-642f-418c-9f52-c90d9f5e0e55",
+    {
+     "payable": 2000,
+     "paid": 1200,
+     "open": 800,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-1ef9fba4-4dff-4d91-8b36-0bb19501bbb2",
+    {
+     "payable": 1500,
+     "paid": 1425,
+     "open": 75,
+     "excess": 0,
+     "state": "installment",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-22daacaa-a8e7-4559-a5ab-68e3076cc41c",
+    {
+     "payable": 600,
+     "paid": 500,
+     "open": 100,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-23346bdf-dae3-40a3-9d37-c5dfcabce182",
+    {
+     "payable": 1400,
+     "paid": 1400,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-23ae35b4-4027-4973-8338-27d45cce4fb0",
+    {
+     "payable": 1000,
+     "paid": 1000,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-240652bf-d57c-4d17-910d-19ef130322b6",
+    {
+     "payable": 1000,
+     "paid": 500,
+     "open": 500,
+     "excess": 0,
+     "state": "installment",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-24e7a3e9-5430-48e6-a338-02ef4ec5f93f",
+    {
+     "payable": 300,
+     "paid": 300,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-2648928c-7aee-435d-90b4-e24f088311b0",
+    {
+     "payable": 1000,
+     "paid": 1000,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-265cb5fc-712d-4b14-88c7-58546e2302b5",
+    {
+     "payable": 1600,
+     "paid": 1600,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-27d22c17-b30f-43a4-871e-21f78987cf70",
+    {
+     "payable": 2000,
+     "paid": 2000,
+     "open": 0,
+     "excess": 0,
+     "state": "paid",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-2a765cb5-f185-4c0c-9914-3b23b780826b",
+    {
+     "payable": 300,
+     "paid": 300,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-2ad7a06c-3c91-4c5d-9cdf-319e3bc7b5da",
+    {
+     "payable": 900,
+     "paid": 900,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-2b94af98-8efb-4024-875b-bf895172db3d",
+    {
+     "payable": 1000,
+     "paid": 1000,
+     "open": 0,
+     "excess": 200,
+     "state": "paid",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-2c936ed2-1209-429a-96a7-59118150f98f",
+    {
+     "payable": 1000,
+     "paid": 1000,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-2f66d6c8-0b5a-4af4-81b5-c50351d93500",
+    {
+     "payable": 100,
+     "paid": 100,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-2f8306e5-8272-4d82-94b9-27eb0727d114",
+    {
+     "payable": 300,
+     "paid": 300,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-3194ce0f-0faa-448f-a34d-112540d9184f",
+    {
+     "payable": 100,
+     "paid": 100,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-319f1c67-d18f-4786-b886-2252c6d3e017",
+    {
+     "payable": 1750,
+     "paid": 1750,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-320906b4-36ad-4434-b1c7-11152c3e5623",
+    {
+     "payable": 1400,
+     "paid": 1400,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-36ea3e71-a152-494e-aa80-a03da15e6d63",
+    {
+     "payable": 1000,
+     "paid": 1000,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-37888a3c-cf06-492d-92c0-dfde12737b1e",
+    {
+     "payable": 1500,
+     "paid": 900,
+     "open": 600,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-38052480-4270-4367-8f20-24c4695719e0",
+    {
+     "payable": 2000,
+     "paid": 2000,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-38d12bb0-d7bc-4e65-8c19-b0c6d2d5e4d2",
+    {
+     "payable": 500,
+     "paid": 500,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-390eb4e2-e0bc-4c0f-aa73-29d14d9d3989",
+    {
+     "payable": 1500,
+     "paid": 1500,
+     "open": 0,
+     "excess": 0,
+     "state": "paid",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-3a609f2f-0b06-4799-a787-ed6631e5f602",
+    {
+     "payable": 600,
+     "paid": 600,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-3a65da7a-24d7-4db4-aab0-8cd9dd61d230",
+    {
+     "payable": 1500,
+     "paid": 1400,
+     "open": 100,
+     "excess": 0,
+     "state": "installment",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-3b833ca0-f800-4d5f-bd74-4672c10b0f2f",
+    {
+     "payable": 200,
+     "paid": 200,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-3bc81ac1-5a7e-42f9-936b-bdae7ad50cb8",
+    {
+     "payable": 200,
+     "paid": 200,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-3be9cbd9-0238-4ab2-bfd0-24aff95888b5",
+    {
+     "payable": 1000,
+     "paid": 0,
+     "open": 1000,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {
+      "plan-8d2e3b9b-c914-40e4-bae7-0eb41278c51e": 600
+     }
+    }
+   ],
+   [
+    "invoice-4185dab0-a07b-4396-832f-eb2bfe1b5281",
+    {
+     "payable": 1600,
+     "paid": 1600,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-419165a7-5705-460f-a4be-7436c5d2e47d",
+    {
+     "payable": 2000,
+     "paid": 2000,
+     "open": 0,
+     "excess": 1000,
+     "state": "paid",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-41ea5806-21cb-4952-ac77-d9581910eeb8",
+    {
+     "payable": 450,
+     "paid": 0,
+     "open": 450,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-43affc7c-75b0-48af-9433-01fd37dc9514",
+    {
+     "payable": 2500,
+     "paid": 2500,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-4660c91c-c495-4c10-9672-357c96ce0177",
+    {
+     "payable": 1000,
+     "paid": 540,
+     "open": 460,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-466a133d-226f-471f-9218-c5641cd2050a",
+    {
+     "payable": 450,
+     "paid": 450,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-46975a44-4453-4985-810d-236a4347614f",
+    {
+     "payable": 1000,
+     "paid": 200,
+     "open": 800,
+     "excess": 0,
+     "state": "installment",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-470a5034-c4cd-4099-a34b-6a93a8e1a879",
+    {
+     "payable": 2500,
+     "paid": 2500,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-47936300-6cc0-4a0f-b925-84079d182716",
+    {
+     "payable": 1400,
+     "paid": 1400,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-487e94e9-1dd6-4678-971f-a676d21adb42",
+    {
+     "payable": 1500,
+     "paid": 1425,
+     "open": 75,
+     "excess": 0,
+     "state": "installment",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-49105eb9-ed67-4e68-aff7-d4dafac968ca",
+    {
+     "payable": 2500,
+     "paid": 0,
+     "open": 2500,
+     "excess": 0,
+     "state": "installment",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-49c7f32d-fbea-4580-ab58-3210afce3137",
+    {
+     "payable": 600,
+     "paid": 600,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-4ac83b4a-82a2-499f-9511-5dbf08cbfa80",
+    {
+     "payable": 2000,
+     "paid": 600,
+     "open": 1400,
+     "excess": 0,
+     "state": "installment",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-4cab2b6b-482c-4a21-a2f6-91d075f771d6",
+    {
+     "payable": 2000,
+     "paid": 600,
+     "open": 1400,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-4d47ea57-b0ba-429f-bbf9-9b5383e380ad",
+    {
+     "payable": 1000,
+     "paid": 500,
+     "open": 500,
+     "excess": 0,
+     "state": "installment",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-4d829619-0fd4-4d47-88a1-0e94837a583b",
+    {
+     "payable": 1500,
+     "paid": 1500,
+     "open": 0,
+     "excess": 300,
+     "state": "paid",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-4ea9caa2-b3b9-454d-9655-cabfed036556",
+    {
+     "payable": 200,
+     "paid": 200,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-507d8870-dd3f-4b51-8e74-1e03b2dd6499",
+    {
+     "payable": 1500,
+     "paid": 1500,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-50843e37-dd77-45f0-9a98-ce006cc1d752",
+    {
+     "payable": 800,
+     "paid": 300,
+     "open": 500,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-51d3e0fe-6bad-4d4a-814c-5fdacf728e40",
+    {
+     "payable": 2500,
+     "paid": 2500,
+     "open": 0,
+     "excess": 1250,
+     "state": "paid",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-52151155-e3a2-46dc-8869-7421e4ec2b9a",
+    {
+     "payable": 2000,
+     "paid": 700,
+     "open": 1300,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-528f2750-60cd-4fb1-ace5-021fee04df81",
+    {
+     "payable": 750,
+     "paid": 750,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-54d30c15-a9d9-41e4-a534-a30312e640ee",
+    {
+     "payable": 1400,
+     "paid": 1400,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-55741695-8d49-40b4-b044-4fe394eadefe",
+    {
+     "payable": 2000,
+     "paid": 0,
+     "open": 2000,
+     "excess": 0,
+     "state": "installment",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-56df3dec-7737-47a5-8fdd-0c8ba1bbd05a",
+    {
+     "payable": 600,
+     "paid": 600,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-57a550ff-12a4-4b96-ba55-32b2847e0aca",
+    {
+     "payable": 1000,
+     "paid": 1000,
+     "open": 0,
+     "excess": 200,
+     "state": "paid",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-57c04e9c-a526-47e0-8411-f03114ee9896",
+    {
+     "payable": 250,
+     "paid": 250,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-59b91220-2e39-4b7e-9fee-4830bc93b253",
+    {
+     "payable": 2500,
+     "paid": 2500,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-59e29439-030b-4a15-aa07-b4499b5a9fae",
+    {
+     "payable": 1000,
+     "paid": 0,
+     "open": 1000,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {
+      "plan-94089e34-bb10-43ed-ab64-3ee17ccdc6d4": 600
+     }
+    }
+   ],
+   [
+    "invoice-59f17b95-9f52-4cac-8e1d-12eee18dc586",
+    {
+     "payable": 1400,
+     "paid": 1400,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-5a5eece3-4737-42a5-a129-cf262f69b36c",
+    {
+     "payable": 250,
+     "paid": 125,
+     "open": 125,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-5b319faf-cbe8-4257-9960-d428e8e4fb9a",
+    {
+     "payable": 200,
+     "paid": 0,
+     "open": 0,
+     "excess": 0,
+     "state": "cancelled",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-5b3a9052-8291-48a4-b82d-2fbd85417036",
+    {
+     "payable": 1000,
+     "paid": 1000,
+     "open": 0,
+     "excess": 500,
+     "state": "paid",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-5b777e22-669b-4391-a6f4-f13478480328",
+    {
+     "payable": 1750,
+     "paid": 1750,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-5c848360-5f71-494c-9fd5-abe8189573a7",
+    {
+     "payable": 400,
+     "paid": 400,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-5fca4716-9e8d-4ea4-ad67-f38b3bb335bc",
+    {
+     "payable": 500,
+     "paid": 500,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-641a6132-f05d-4971-a017-65d78d718622",
+    {
+     "payable": 800,
+     "paid": 800,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-64643d47-c489-427e-a70d-658f6f05faa2",
+    {
+     "payable": 1000,
+     "paid": 1000,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-64ae1417-3a8c-4fd1-8c37-3e80300064b4",
+    {
+     "payable": 300,
+     "paid": 0,
+     "open": 0,
+     "excess": 0,
+     "state": "cancelled",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-671383f3-b399-4bc3-978e-ce9f60b8b629",
+    {
+     "payable": 600,
+     "paid": 300,
+     "open": 300,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-677170b5-3cbc-4fd2-997c-d8ec1d8a87f5",
+    {
+     "payable": 1000,
+     "paid": 100,
+     "open": 900,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {
+      "plan-bcbf8c1a-1188-4248-afe0-62563ecc36dd": 600
+     }
+    }
+   ],
+   [
+    "invoice-684a1897-103a-4979-be6a-f3de9d12ffa0",
+    {
+     "payable": 900,
+     "paid": 700,
+     "open": 200,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-68601943-8720-439d-8ef4-5fcdba1ab206",
+    {
+     "payable": 750,
+     "paid": 475,
+     "open": 275,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-6bae58dd-281d-4938-927f-5b6bfd93d6f2",
+    {
+     "payable": 800,
+     "paid": 800,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-6de2ddc5-c594-40fd-bdbc-98d659cde61d",
+    {
+     "payable": 750,
+     "paid": 750,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-6e36718d-b810-4af9-8229-0aa04213d9a2",
+    {
+     "payable": 1000,
+     "paid": 0,
+     "open": 1000,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {
+      "plan-ec93cfb9-167a-4404-92af-101773eeee46": 600
+     }
+    }
+   ],
+   [
+    "invoice-702df89e-caf0-44d0-9ba6-890736bc4aae",
+    {
+     "payable": 2000,
+     "paid": 800,
+     "open": 1200,
+     "excess": 0,
+     "state": "installment",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-7224130a-b6cb-41fe-abfe-0df0933796a3",
+    {
+     "payable": 2500,
+     "paid": 1500,
+     "open": 1000,
+     "excess": 0,
+     "state": "installment",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-729f7963-9318-473c-b6a9-8f39d8d536ef",
+    {
+     "payable": 2000,
+     "paid": 1000,
+     "open": 1000,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-73bb3b5f-3a06-4ab8-80fd-ca7a509c6598",
+    {
+     "payable": 2500,
+     "paid": 2500,
+     "open": 0,
+     "excess": 400,
+     "state": "paid",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-76106091-ef65-491e-913e-0fb30cfd7ee4",
+    {
+     "payable": 600,
+     "paid": 600,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-76f9bd5a-25b8-44d4-b0eb-a30d330ee39f",
+    {
+     "payable": 900,
+     "paid": 700,
+     "open": 200,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-78fa2366-c2a2-47fc-9e3c-2de6bbba13d1",
+    {
+     "payable": 1000,
+     "paid": 0,
+     "open": 1000,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-79481bf0-9162-4b3d-bdcf-e45afb7bc52d",
+    {
+     "payable": 2000,
+     "paid": 1700,
+     "open": 300,
+     "excess": 0,
+     "state": "installment",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-7acd090e-ad8d-425f-b7ea-3573edf1796b",
+    {
+     "payable": 2500,
+     "paid": 500,
+     "open": 2000,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-7b1fd2f5-53d6-4cf0-ae25-48c905ee2cb7",
+    {
+     "payable": 1000,
+     "paid": 600,
+     "open": 400,
+     "excess": 0,
+     "state": "installment",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-7b87b65b-ecc9-42b5-b062-938fe0f98195",
+    {
+     "payable": 300,
+     "paid": 300,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-7cff93d6-c8a4-48d2-b07a-8144e97a7ba5",
+    {
+     "payable": 200,
+     "paid": 200,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-7e85ff6f-1e6c-4002-9b12-cb60427eb16b",
+    {
+     "payable": 2500,
+     "paid": 875,
+     "open": 1625,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-7ed14985-a819-489d-9ddd-e81ca459a599",
+    {
+     "payable": 2000,
+     "paid": 1000,
+     "open": 1000,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-823c51c3-7c45-4e7a-a8a8-e2ae298a821d",
+    {
+     "payable": 1350,
+     "paid": 1350,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-83676a18-8e37-41ce-bc3a-0310b3bd4d8d",
+    {
+     "payable": 1000,
+     "paid": 0,
+     "open": 1000,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-84aae75c-511f-4198-ab40-47830cd66798",
+    {
+     "payable": 1500,
+     "paid": 1400,
+     "open": 100,
+     "excess": 0,
+     "state": "installment",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-889038bf-c368-44bf-b1ab-bdafe1f16abe",
+    {
+     "payable": 2500,
+     "paid": 2500,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-89ea2e33-a0c5-4340-8c62-9ca58398fe80",
+    {
+     "payable": 1050,
+     "paid": 1050,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-8a64dbf4-c8c3-4e8d-add4-5fbd2382b583",
+    {
+     "payable": 300,
+     "paid": 300,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-8b6824c6-ac17-46a7-b150-535e8effee2e",
+    {
+     "payable": 1350,
+     "paid": 1350,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-8cd61cc8-fb5c-4f74-ba51-b273006a04d0",
+    {
+     "payable": 2000,
+     "paid": 2000,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-8d8579a3-1e2e-4236-ad33-75c489637068",
+    {
+     "payable": 2000,
+     "paid": 350,
+     "open": 1650,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-9074dd08-a5fa-4e9c-9e4f-4c9ca6f8f089",
+    {
+     "payable": 2000,
+     "paid": 600,
+     "open": 1400,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-91caaedd-4efa-4744-b51a-7b128396ca04",
+    {
+     "payable": 2500,
+     "paid": 250,
+     "open": 2250,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-92498fcf-8bd0-4e01-b3ad-b23063a5caad",
+    {
+     "payable": 1500,
+     "paid": 1500,
+     "open": 0,
+     "excess": 725,
+     "state": "paid",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-9251e491-a481-4577-a948-e5dba98592bf",
+    {
+     "payable": 600,
+     "paid": 600,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-94ed7ae0-1410-4d56-bdad-fec8f02d83f6",
+    {
+     "payable": 900,
+     "paid": 900,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-97fecd3c-d7b6-470d-8007-2924d741633d",
+    {
+     "payable": 750,
+     "paid": 0,
+     "open": 0,
+     "excess": 0,
+     "state": "cancelled",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-9bd28f6f-4496-40e3-83e3-768d6182c995",
+    {
+     "payable": 2500,
+     "paid": 1250,
+     "open": 1250,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-9c308379-99d5-4833-a55d-844381095c29",
+    {
+     "payable": 1000,
+     "paid": 500,
+     "open": 500,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-9d38ab71-abbb-4408-b152-5bdec9fdf9de",
+    {
+     "payable": 1500,
+     "paid": 100,
+     "open": 1400,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-9d3f01dc-d935-4a1d-b9e7-6dac3e0ed5b9",
+    {
+     "payable": 2000,
+     "paid": 2000,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-9f6376ca-36f6-43ce-a4ff-87d481a4efb4",
+    {
+     "payable": 1500,
+     "paid": 1500,
+     "open": 0,
+     "excess": 200,
+     "state": "paid",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-a03241c0-31a9-4ac0-8de6-cf8950b1bee4",
+    {
+     "payable": 1000,
+     "paid": 1000,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-a06ba5f4-2a55-4dca-b62b-0dfbb9af346e",
+    {
+     "payable": 200,
+     "paid": 200,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-a0c8e3f3-bbd7-4fec-8f06-a94cf512d244",
+    {
+     "payable": 150,
+     "paid": 150,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-a1001817-c02f-400c-a8b2-7134757a9e6f",
+    {
+     "payable": 2000,
+     "paid": 0,
+     "open": 0,
+     "excess": 0,
+     "state": "cancelled",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-a2596271-247f-4283-bf9d-834e9b15ec60",
+    {
+     "payable": 300,
+     "paid": 300,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-a2cd3af3-0a79-4f50-9e9b-3784cf627c7f",
+    {
+     "payable": 900,
+     "paid": 600,
+     "open": 300,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-a445759a-97c1-48f4-8a7a-1fd7f5a860d4",
+    {
+     "payable": 1500,
+     "paid": 750,
+     "open": 750,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-a66e8d8d-e31d-42ed-8c98-010287fe3a4e",
+    {
+     "payable": 1500,
+     "paid": 0,
+     "open": 0,
+     "excess": 0,
+     "state": "cancelled",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-a74bf165-8e25-41a5-93f1-1277f8ae59f9",
+    {
+     "payable": 1350,
+     "paid": 1050,
+     "open": 300,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-a82c7f23-1b85-440a-8d21-bdca4fd2a041",
+    {
+     "payable": 1000,
+     "paid": 375,
+     "open": 625,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {
+      "plan-df39c546-6b55-4f48-abd1-45b5f8f8031b": 600
+     }
+    }
+   ],
+   [
+    "invoice-ac191649-1b96-4aeb-9792-2253a661797b",
+    {
+     "payable": 1000,
+     "paid": 500,
+     "open": 500,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-ac5eb924-0cd8-4039-b266-12e9c770959d",
+    {
+     "payable": 2500,
+     "paid": 1250,
+     "open": 1250,
+     "excess": 0,
+     "state": "installment",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-ad92a3b2-e93f-44d8-92d5-c195c099bf9b",
+    {
+     "payable": 1500,
+     "paid": 1500,
+     "open": 0,
+     "excess": 800,
+     "state": "paid",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-aec57011-e93b-4aa0-b96c-442f536ebb4c",
+    {
+     "payable": 2000,
+     "paid": 2000,
+     "open": 0,
+     "excess": 550,
+     "state": "paid",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-b39d587e-bebc-4a82-8611-6f29d5cad7a9",
+    {
+     "payable": 800,
+     "paid": 800,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-b56292b2-d5b0-4397-b298-22b43394d6e2",
+    {
+     "payable": 2000,
+     "paid": 2000,
+     "open": 0,
+     "excess": 1300,
+     "state": "paid",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-b63ba8f8-1ebe-46fa-8aa2-41b756d2bc82",
+    {
+     "payable": 250,
+     "paid": 250,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-b6dea1de-1524-4c3c-b733-e21f06f62fa5",
+    {
+     "payable": 300,
+     "paid": 300,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-b964ea31-24e3-4d95-80ce-1ca723e378df",
+    {
+     "payable": 1000,
+     "paid": 1000,
+     "open": 0,
+     "excess": 0,
+     "state": "paid",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-bc326db6-837b-4c8c-98cc-283d8da2c46b",
+    {
+     "payable": 2500,
+     "paid": 0,
+     "open": 2500,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-bc5cc4d2-88b1-4e6f-a95f-0138f1c43a94",
+    {
+     "payable": 1000,
+     "paid": 50,
+     "open": 950,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-bf8ac39e-958d-43d5-aa8e-f1644a63ebd5",
+    {
+     "payable": 1750,
+     "paid": 1750,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-c0aa6ed5-37da-4805-978f-634f5082cfa2",
+    {
+     "payable": 1500,
+     "paid": 1200,
+     "open": 300,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-c1b0f6b3-f0c2-4f9f-9399-70ce7b571631",
+    {
+     "payable": 1000,
+     "paid": 1000,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-c39f1610-e46f-4292-925e-d9984daa650b",
+    {
+     "payable": 1000,
+     "paid": 0,
+     "open": 1000,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {
+      "plan-5ec5b87a-be46-4ee7-bbc5-8dfc07c87316": 600
+     }
+    }
+   ],
+   [
+    "invoice-c493b0da-e9ca-4644-97e5-5f210c0fcaad",
+    {
+     "payable": 1050,
+     "paid": 1050,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-c4a21a71-0fde-4549-bac3-c7328b707ba3",
+    {
+     "payable": 1000,
+     "paid": 200,
+     "open": 800,
+     "excess": 0,
+     "state": "installment",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-c53fe75a-e508-4e40-b010-8602ce39c82f",
+    {
+     "payable": 2000,
+     "paid": 1000,
+     "open": 1000,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-c67b579b-9f38-4e35-8c7f-8f46f553ac42",
+    {
+     "payable": 1000,
+     "paid": 0,
+     "open": 1000,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {
+      "plan-a31276d5-3494-4d98-9d1f-d50185875cf6": 600
+     }
+    }
+   ],
+   [
+    "invoice-c6df7ccf-81c3-42b1-8823-07735fb83446",
+    {
+     "payable": 1800,
+     "paid": 1800,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-c7f57804-66fa-40e1-afa2-29bfd88aa09b",
+    {
+     "payable": 100,
+     "paid": 0,
+     "open": 100,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-c8df5d85-db8e-4966-a927-96945c3add2f",
+    {
+     "payable": 200,
+     "paid": 200,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-c9391b5a-ea37-4e70-9244-8d34313adfed",
+    {
+     "payable": 2000,
+     "paid": 600,
+     "open": 1400,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-c950746b-b3a1-412f-8473-ed709a86c0e4",
+    {
+     "payable": 2250,
+     "paid": 2250,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-c9c1745e-f8de-4e04-91b3-b26c75fc99c0",
+    {
+     "payable": 1000,
+     "paid": 1000,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-cadc6573-4215-4ab9-a4c7-25cae959028f",
+    {
+     "payable": 2000,
+     "paid": 1900,
+     "open": 100,
+     "excess": 0,
+     "state": "installment",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-cb9fa732-1651-4700-8dd9-e0841f818a7c",
+    {
+     "payable": 2000,
+     "paid": 1600,
+     "open": 400,
+     "excess": 0,
+     "state": "installment",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-cbc68ae0-2beb-4742-824b-1990e9aa2435",
+    {
+     "payable": 750,
+     "paid": 750,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-cc29fa10-4d3a-42bc-8102-0a87beddfdf9",
+    {
+     "payable": 2500,
+     "paid": 0,
+     "open": 2500,
+     "excess": 0,
+     "state": "installment",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-cc4bfecf-2156-45b4-81b7-63eeef526736",
+    {
+     "payable": 2500,
+     "paid": 1750,
+     "open": 750,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-cc8a4688-3941-470c-8aa7-b9a6d8438a62",
+    {
+     "payable": 600,
+     "paid": 500,
+     "open": 100,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-cc9cb0b7-f0b9-4721-b639-068523a430ee",
+    {
+     "payable": 2000,
+     "paid": 1250,
+     "open": 750,
+     "excess": 0,
+     "state": "installment",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-cda18e72-21a6-4e61-b5f5-b113c892e461",
+    {
+     "payable": 400,
+     "paid": 400,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-ce9cef46-becf-4fe1-97c8-957f552eadce",
+    {
+     "payable": 1000,
+     "paid": 1000,
+     "open": 0,
+     "excess": 650,
+     "state": "paid",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-ce9fc5f4-8f41-4514-95c3-a6449f49096e",
+    {
+     "payable": 300,
+     "paid": 300,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-cec370cc-e546-45b3-a64a-b6b914deca10",
+    {
+     "payable": 400,
+     "paid": 400,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-d0421693-a360-4bee-8af1-8c732d264d12",
+    {
+     "payable": 2000,
+     "paid": 750,
+     "open": 1250,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-d07a5931-61a9-4a88-bab5-f59e9b5df86c",
+    {
+     "payable": 500,
+     "paid": 500,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-d11a336d-6211-4305-9575-d924f13efaa3",
+    {
+     "payable": 400,
+     "paid": 400,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-d396d35b-c7db-46d4-83d0-af2cf2cf8fb8",
+    {
+     "payable": 1000,
+     "paid": 800,
+     "open": 200,
+     "excess": 0,
+     "state": "installment",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-d3db86f9-0e97-4c7e-ba2e-fdc4410e0838",
+    {
+     "payable": 1750,
+     "paid": 1750,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-d45ed36c-7a4a-4e3f-a6b8-6f051085a881",
+    {
+     "payable": 700,
+     "paid": 500,
+     "open": 200,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-d51ee8fa-bb19-4ea9-8fb4-5c7f7e11ae26",
+    {
+     "payable": 200,
+     "paid": 200,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-d52442ad-1df5-499e-8bb6-450c6a2ee718",
+    {
+     "payable": 2000,
+     "paid": 2000,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-d52d96b8-ed2d-4abb-90f5-d0addabe9310",
+    {
+     "payable": 1000,
+     "paid": 1000,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-d59e0f38-bab6-4e32-b8ea-a71fd1a01622",
+    {
+     "payable": 1600,
+     "paid": 1600,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-d6c6181c-0fd1-40d9-8c95-66b5b5fa3ac5",
+    {
+     "payable": 1800,
+     "paid": 1800,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-d7005cd3-a55e-4abb-9e85-389c7da8538e",
+    {
+     "payable": 2500,
+     "paid": 1250,
+     "open": 1250,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-d7e7e334-22ee-4d10-b066-e8eb5b2b4e37",
+    {
+     "payable": 250,
+     "paid": 250,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-d7fbe462-16be-4edc-a3d1-1b1e472e31bd",
+    {
+     "payable": 1250,
+     "paid": 1150,
+     "open": 100,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-d9eff91a-0288-4b87-8d41-23e21cb5fe55",
+    {
+     "payable": 600,
+     "paid": 600,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-df12d761-99a4-4a1a-979c-1d7e2b29754c",
+    {
+     "payable": 1000,
+     "paid": 1000,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-df797cdf-d673-46e1-9837-0796e51d33a1",
+    {
+     "payable": 900,
+     "paid": 900,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-df93f053-9b83-4fcf-8699-aec110ea6a80",
+    {
+     "payable": 750,
+     "paid": 750,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-dfe6d59a-0df7-443a-bf3f-19280b19bb7f",
+    {
+     "payable": 250,
+     "paid": 250,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-e1696c42-c929-4258-8e20-5a4730cc68c6",
+    {
+     "payable": 300,
+     "paid": 300,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-e1f973dc-9b50-4f70-95c6-e6a432bfd73d",
+    {
+     "payable": 450,
+     "paid": 450,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-e201f510-bc9f-41b0-9d53-0ce6749ce9aa",
+    {
+     "payable": 1000,
+     "paid": 650,
+     "open": 350,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-e2e7079f-0ec2-4d9b-bd0b-0c4c737c86cf",
+    {
+     "payable": 150,
+     "paid": 150,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-e47ebe9a-1673-4a0f-a36f-494eac59e58f",
+    {
+     "payable": 2500,
+     "paid": 2500,
+     "open": 0,
+     "excess": 375,
+     "state": "paid",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-e601e187-e0a2-42de-9132-87493dd8f58c",
+    {
+     "payable": 1250,
+     "paid": 1250,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-e6298b13-6a47-402e-962d-60f29ff38c32",
+    {
+     "payable": 1350,
+     "paid": 550,
+     "open": 800,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-e65cc23e-c408-41e5-a265-e44125ba67c5",
+    {
+     "payable": 1000,
+     "paid": 0,
+     "open": 1000,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {
+      "plan-d8790f2b-0dc7-468e-866a-35bbbde379b3": 600
+     }
+    }
+   ],
+   [
+    "invoice-e6607b0e-2373-4757-98ac-712a9b0d9e57",
+    {
+     "payable": 2000,
+     "paid": 300,
+     "open": 1700,
+     "excess": 0,
+     "state": "installment",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-e787498e-d4f8-45d9-8de6-92c1f5cacb46",
+    {
+     "payable": 1000,
+     "paid": 1000,
+     "open": 0,
+     "excess": 100,
+     "state": "paid",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-eb148116-e7af-4754-84a9-ae8f536f13e6",
+    {
+     "payable": 2500,
+     "paid": 50,
+     "open": 2450,
+     "excess": 0,
+     "state": "installment",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-ecc408a4-75d0-46bc-9001-fcf490c3fd16",
+    {
+     "payable": 1500,
+     "paid": 1275,
+     "open": 225,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-ecfe3dc3-c55b-444d-b8c3-db8154eb3036",
+    {
+     "payable": 600,
+     "paid": 600,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-ed3f3df2-445e-4b60-be4f-4b47306618a7",
+    {
+     "payable": 450,
+     "paid": 0,
+     "open": 0,
+     "excess": 0,
+     "state": "cancelled",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-edd3a556-8c3d-4e2b-9f17-e1f0e8e67ade",
+    {
+     "payable": 2000,
+     "paid": 400,
+     "open": 1600,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-eedd81fc-0520-4530-9c5e-6d0512241bcf",
+    {
+     "payable": 2000,
+     "paid": 200,
+     "open": 1800,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-ef78b7c4-2f1e-4746-a310-ddbdd00367fc",
+    {
+     "payable": 1000,
+     "paid": 1000,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-f072aca3-cb1c-4a65-9325-c54348827360",
+    {
+     "payable": 2500,
+     "paid": 1750,
+     "open": 750,
+     "excess": 0,
+     "state": "installment",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-f2bf2b10-674d-421b-9dd5-aecf5e0ebfab",
+    {
+     "payable": 150,
+     "paid": 150,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-f5d41ab7-a18e-40d3-bc39-e26dba538b3c",
+    {
+     "payable": 1000,
+     "paid": 350,
+     "open": 650,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-f647f648-76d3-4cc7-88ad-016c9a0dba9a",
+    {
+     "payable": 2000,
+     "paid": 2000,
+     "open": 0,
+     "excess": 0,
+     "state": "paid",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-f6a8a2ae-9476-4794-adab-3692b3e8542e",
+    {
+     "payable": 300,
+     "paid": 300,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-f6ec92d3-0ff8-42fb-b164-f2e3a6e5b2a0",
+    {
+     "payable": 2000,
+     "paid": 1200,
+     "open": 800,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-f7336c36-a6ce-4210-8336-30c2808c870e",
+    {
+     "payable": 1500,
+     "paid": 1500,
+     "open": 0,
+     "excess": 300,
+     "state": "paid",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-f85c69d0-2da1-441a-8aa3-a773c32996d5",
+    {
+     "payable": 2500,
+     "paid": 2000,
+     "open": 500,
+     "excess": 0,
+     "state": "installment",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-f93c438d-5854-4b45-95c3-505abf6f804b",
+    {
+     "payable": 2250,
+     "paid": 1850,
+     "open": 400,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-f9c89d73-1941-4a4e-8b12-851ab799a230",
+    {
+     "payable": 1000,
+     "paid": 500,
+     "open": 500,
+     "excess": 0,
+     "state": "installment",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-fa911869-d766-4c54-a7d4-d92a8f131368",
+    {
+     "payable": 300,
+     "paid": 300,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-fb321a59-877a-4a04-ae84-9277e80fcb37",
+    {
+     "payable": 300,
+     "paid": 300,
+     "open": 0,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-fd77943a-aff3-47d1-8570-10dccdc5e114",
+    {
+     "payable": 1200,
+     "paid": 950,
+     "open": 250,
+     "excess": 0,
+     "state": "return",
+     "coveredBy": {}
+    }
+   ],
+   [
+    "invoice-ff866d1e-0d53-4092-b721-c1422a95ada4",
+    {
+     "payable": 2500,
+     "paid": 1625,
+     "open": 875,
+     "excess": 0,
+     "state": "overdue",
+     "coveredBy": {}
+    }
+   ]
+  ],
+  "aday": 83,
+  "cariler": [
+   {
+    "id": "account-94452b9a-b236-46eb-a28e-336093bb441e",
+    "debit": 7650,
+    "credit": 7350,
+    "balance": 300,
+    "planRemaining": 600,
+    "overdue": 500
+   },
+   {
+    "id": "account-e67e0d37-a733-4e33-8c71-31f3bad886e7",
+    "debit": 4400,
+    "credit": 2000,
+    "balance": 2400,
+    "planRemaining": 2400,
+    "overdue": 733.32
+   },
+   {
+    "id": "account-4ab90932-3173-4165-9457-b663812a78cf",
+    "debit": 3400,
+    "credit": 2000,
+    "balance": 1400,
+    "planRemaining": 1400,
+    "overdue": 233.33
+   },
+   {
+    "id": "account-8d1527aa-c7f7-4f40-afaa-a3f0644ab0ef",
+    "debit": 4300,
+    "credit": 3675,
+    "balance": 625,
+    "planRemaining": 600,
+    "overdue": 600
+   },
+   {
+    "id": "account-490f8642-2de4-4d5c-8c27-5dde3af45b86",
+    "debit": 2000,
+    "credit": 600,
+    "balance": 1400,
+    "planRemaining": 1400,
+    "overdue": 0
+   },
+   {
+    "id": "account-38d2697f-8ec5-49cf-a728-eb22c09aec7c",
+    "debit": 4600,
+    "credit": 3400,
+    "balance": 1200,
+    "planRemaining": 1200,
+    "overdue": 0
+   },
+   {
+    "id": "account-9b0545c1-f5c5-4116-bf20-6e14e4a15ec7",
+    "debit": 12500,
+    "credit": 5500,
+    "balance": 7000,
+    "planRemaining": 7000,
+    "overdue": 3250
+   },
+   {
+    "id": "account-58946265-7c20-436d-a87e-45fc96321e73",
+    "debit": 5200,
+    "credit": 3875,
+    "balance": 1325,
+    "planRemaining": 925,
+    "overdue": 325
+   },
+   {
+    "id": "account-f5dcb62f-a44b-4eb3-a42c-80422b9df924",
+    "debit": 3650,
+    "credit": 3450,
+    "balance": 200,
+    "planRemaining": 500,
+    "overdue": 0
+   },
+   {
+    "id": "account-564f7f4e-388b-4d9f-8c2c-8cb730c0e211",
+    "debit": 3400,
+    "credit": 3200,
+    "balance": 200,
+    "planRemaining": 300,
+    "overdue": 300
+   },
+   {
+    "id": "account-95c5e226-02d7-4dc7-98f9-669471048c48",
+    "debit": 3000,
+    "credit": 2250,
+    "balance": 750,
+    "planRemaining": 750,
+    "overdue": 250
+   },
+   {
+    "id": "account-4bf1aa1b-578e-4f12-bbe8-61da33ee7518",
+    "debit": 9950,
+    "credit": 6500,
+    "balance": 3450,
+    "planRemaining": 3050,
+    "overdue": 2975
+   },
+   {
+    "id": "account-269c9d6a-1b00-41a5-a9df-0c53aa201ec1",
+    "debit": 3375,
+    "credit": 3250,
+    "balance": 125,
+    "planRemaining": 875,
+    "overdue": 875
+   },
+   {
+    "id": "account-b18a3594-39a3-4ec6-ad80-0260b8dbc1ff",
+    "debit": 6150,
+    "credit": 4825,
+    "balance": 1325,
+    "planRemaining": 1325,
+    "overdue": 833.32
+   },
+   {
+    "id": "account-f0faabad-d031-4fc5-a975-6c288c3b5232",
+    "debit": 6550,
+    "credit": 5750,
+    "balance": 800,
+    "planRemaining": 2250,
+    "overdue": 2250
+   },
+   {
+    "id": "account-c49663c1-76b2-4135-8420-aed0a44d3613",
+    "debit": 5300,
+    "credit": 4100,
+    "balance": 1200,
+    "planRemaining": 800,
+    "overdue": 300
+   },
+   {
+    "id": "account-5c6d262e-6e8c-4d06-8cd8-19d84f6d1c9e",
+    "debit": 2250,
+    "credit": 2250,
+    "balance": 0,
+    "planRemaining": 0,
+    "overdue": 0
+   },
+   {
+    "id": "account-c5b8a0a8-17ae-4b1a-b7f5-92ba5e5420e7",
+    "debit": 6850,
+    "credit": 8150,
+    "balance": -1300,
+    "planRemaining": 600,
+    "overdue": 100
+   },
+   {
+    "id": "account-a316e03a-dad4-4fd9-bb1d-1aadf7b7bc84",
+    "debit": 3950,
+    "credit": 3550,
+    "balance": 400,
+    "planRemaining": 700,
+    "overdue": 475
+   },
+   {
+    "id": "account-a2842b15-f8cf-41af-896f-eb316ad43d11",
+    "debit": 6100,
+    "credit": 3300,
+    "balance": 2800,
+    "planRemaining": 2400,
+    "overdue": 1800
+   },
+   {
+    "id": "account-ca49c205-ac48-4ab7-8a7a-c61240bb8f3d",
+    "debit": 5800,
+    "credit": 2100,
+    "balance": 3700,
+    "planRemaining": 3700,
+    "overdue": 1250
+   },
+   {
+    "id": "account-021ebd3c-c564-42ba-861e-105f909a62d0",
+    "debit": 4000,
+    "credit": 2300,
+    "balance": 1700,
+    "planRemaining": 1700,
+    "overdue": 0
+   },
+   {
+    "id": "account-7f0bee18-1e73-4300-9020-ae6ec1785e0b",
+    "debit": 10200,
+    "credit": 4250,
+    "balance": 5950,
+    "planRemaining": 5950,
+    "overdue": 3450
+   },
+   {
+    "id": "account-ab9b1779-12a0-408d-9bc0-8157270d9f39",
+    "debit": 12175,
+    "credit": 7500,
+    "balance": 4675,
+    "planRemaining": 4275,
+    "overdue": 1925
+   },
+   {
+    "id": "account-909cbe41-e21c-49dc-96cc-fb659a05d201",
+    "debit": 8850,
+    "credit": 5590,
+    "balance": 3260,
+    "planRemaining": 3260,
+    "overdue": 3260
+   },
+   {
+    "id": "account-f49d61c5-3dc1-4894-8f79-4d6d95dfc826",
+    "debit": 3800,
+    "credit": 3000,
+    "balance": 800,
+    "planRemaining": 800,
+    "overdue": 333.33
+   },
+   {
+    "id": "account-e3b78212-208d-4560-89a3-77271e15db10",
+    "debit": 7950,
+    "credit": 6850,
+    "balance": 1100,
+    "planRemaining": 1900,
+    "overdue": 266.66
+   },
+   {
+    "id": "account-4b0ab6f6-b08f-41d9-b72b-7ae7c4cede14",
+    "debit": 9275,
+    "credit": 6300,
+    "balance": 2975,
+    "planRemaining": 2675,
+    "overdue": 875
+   },
+   {
+    "id": "account-87e50c66-e32a-4c0c-9b31-6f465e6e18c1",
+    "debit": 6500,
+    "credit": 4950,
+    "balance": 1550,
+    "planRemaining": 1750,
+    "overdue": 0
+   },
+   {
+    "id": "account-e30c7b31-c421-4015-b259-a618fa3d9336",
+    "debit": 7025,
+    "credit": 6300,
+    "balance": 725,
+    "planRemaining": 1350,
+    "overdue": 0
+   },
+   {
+    "id": "account-7319d742-56a9-47d0-89aa-3f19ae62900a",
+    "debit": 5000,
+    "credit": 6650,
+    "balance": -1650,
+    "planRemaining": 0,
+    "overdue": 0
+   },
+   {
+    "id": "account-853c15d9-2a6d-43d5-948a-a99e89dd57f3",
+    "debit": 6050,
+    "credit": 4300,
+    "balance": 1750,
+    "planRemaining": 1350,
+    "overdue": 300
+   },
+   {
+    "id": "account-5553f9e9-7ec9-4e55-b80c-53dbfd952944",
+    "debit": 5100,
+    "credit": 3400,
+    "balance": 1700,
+    "planRemaining": 1700,
+    "overdue": 683.33
+   },
+   {
+    "id": "account-fd12da0d-9c2f-445b-9533-6ad6e5e2adc9",
+    "debit": 2300,
+    "credit": 2850,
+    "balance": -550,
+    "planRemaining": 0,
+    "overdue": 0
+   },
+   {
+    "id": "account-c2e43a56-dd08-4879-a282-2d983a1eaa62",
+    "debit": 2900,
+    "credit": 2780,
+    "balance": 120,
+    "planRemaining": 120,
+    "overdue": 0
+   },
+   {
+    "id": "account-1890e8c1-82c1-4c7f-9f6a-2968d2d561e9",
+    "debit": 5600,
+    "credit": 3100,
+    "balance": 2500,
+    "planRemaining": 2100,
+    "overdue": 1000
+   },
+   {
+    "id": "account-02ba885c-251c-45a7-ae63-d31a3ea0b626",
+    "debit": 3200,
+    "credit": 1700,
+    "balance": 1500,
+    "planRemaining": 1500,
+    "overdue": 999.98
+   },
+   {
+    "id": "account-98bab342-2722-4f7b-aebe-421324cdd80c",
+    "debit": 5450,
+    "credit": 5375,
+    "balance": 75,
+    "planRemaining": 1000,
+    "overdue": 466.66
+   },
+   {
+    "id": "account-5793753c-def4-4081-a269-fd158c9e4cf8",
+    "debit": 11000,
+    "credit": 9100,
+    "balance": 1900,
+    "planRemaining": 1900,
+    "overdue": 1000
+   },
+   {
+    "id": "account-0ba1c225-dc24-4c1d-9805-ac273b2405c1",
+    "debit": 8300,
+    "credit": 5200,
+    "balance": 3100,
+    "planRemaining": 2700,
+    "overdue": 300
+   }
+  ],
+  "kasa": {
+   "in": 257870,
+   "out": 72550,
+   "balance": 185320
+  },
+  "adayKartlar": [
+   {
+    "planId": "plan-2c9602db-06df-4ca3-8dfb-96ffa1542206",
+    "total": 100,
+    "paid": 100,
+    "remaining": 0,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-6a7ea793-b887-42d9-9c12-c8e1439d40ff",
+    "total": 1125,
+    "paid": 250,
+    "remaining": 875,
+    "overdue": 875
+   },
+   {
+    "planId": "plan-33306f26-2efa-4e1d-9a73-32b09a14e5f1",
+    "total": 1100,
+    "paid": 1100,
+    "remaining": 0,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-f53a1d81-028b-4f2e-9ae7-ef68540b93cb",
+    "total": 1250,
+    "paid": 750,
+    "remaining": 500,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-6135064d-4f3c-4069-9615-9793f790bf68",
+    "total": 1000,
+    "paid": 100,
+    "remaining": 900,
+    "overdue": 233.33
+   },
+   {
+    "planId": "plan-11e3eef6-d9dc-4b37-b37a-44a2fe4a70ff",
+    "total": 100,
+    "paid": 0,
+    "remaining": 100,
+    "overdue": 100
+   },
+   {
+    "planId": "plan-8de6a4a0-a0b1-4e5c-b13e-6997849d3238",
+    "total": 1000,
+    "paid": 0,
+    "remaining": 1000,
+    "overdue": 1000
+   },
+   {
+    "planId": "plan-19213fe0-b405-4a5b-bf74-bda51f17bba4",
+    "total": 1625,
+    "paid": 0,
+    "remaining": 1625,
+    "overdue": 1625
+   },
+   {
+    "planId": "plan-b9b51f0c-6ede-4018-8ec1-39a6cc1a6043",
+    "total": 1350,
+    "paid": 0,
+    "remaining": 1350,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-904d0a9b-755d-4988-9b20-701ca4db1e16",
+    "total": 500,
+    "paid": 380,
+    "remaining": 120,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-a2e0cabe-029b-477a-9433-ad5870343369",
+    "total": 800,
+    "paid": 0,
+    "remaining": 800,
+    "overdue": 333.33
+   },
+   {
+    "planId": "plan-75baecd6-27e9-40c9-bfd6-f63535a0d866",
+    "total": 225,
+    "paid": 150,
+    "remaining": 75,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-e3be60ba-cf72-4da9-af65-599318a0996b",
+    "total": 500,
+    "paid": 0,
+    "remaining": 500,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-648ae985-615d-4c61-b275-635010add762",
+    "total": 0,
+    "paid": 0,
+    "remaining": 0,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-403718a6-1f62-4e21-adef-d939e08022f7",
+    "total": 0,
+    "paid": 0,
+    "remaining": 0,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-51bf8d9d-42b9-49d7-9877-6d514b324cb0",
+    "total": 600,
+    "paid": 0,
+    "remaining": 600,
+    "overdue": 375
+   },
+   {
+    "planId": "plan-e4b9bc60-6d70-4a0f-8ba6-f9c0b92e69a2",
+    "total": 0,
+    "paid": 0,
+    "remaining": 0,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-f738b6a3-3ff3-43db-8638-fac5b807ee36",
+    "total": 150,
+    "paid": 50,
+    "remaining": 100,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-fe4e8a9d-316e-42fe-b660-f783c2c55472",
+    "total": 0,
+    "paid": 0,
+    "remaining": 0,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-117419d1-8ffc-4e5c-8df7-606ec302c361",
+    "total": 700,
+    "paid": 240,
+    "remaining": 460,
+    "overdue": 460
+   },
+   {
+    "planId": "plan-d53ab4d9-03f8-463c-b03a-de0e18f4f767",
+    "total": 1000,
+    "paid": 200,
+    "remaining": 800,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-759c6151-39ec-4482-b84f-2ec5543ccc80",
+    "total": 300,
+    "paid": 225,
+    "remaining": 75,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-830f134c-3a55-407c-8708-9c06404438ce",
+    "total": 2500,
+    "paid": 0,
+    "remaining": 2500,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-079c68f2-5e73-4b8c-bbf2-8d036da2933d",
+    "total": 1400,
+    "paid": 0,
+    "remaining": 1400,
+    "overdue": 1400
+   },
+   {
+    "planId": "plan-8aec00ad-a402-429e-8e9d-60912bed3895",
+    "total": 500,
+    "paid": 0,
+    "remaining": 500,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-6e6830e4-6d40-4f68-840d-4245e57864fd",
+    "total": 600,
+    "paid": 600,
+    "remaining": 0,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-47a31e26-1b3a-4096-975e-e51bb3946216",
+    "total": 0,
+    "paid": 0,
+    "remaining": 0,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-0098be65-a415-429b-b0af-af94e9dafdaf",
+    "total": 2000,
+    "paid": 0,
+    "remaining": 2000,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-062d0271-7256-40f8-99a8-4a19c0e097e1",
+    "total": 800,
+    "paid": 800,
+    "remaining": 0,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-ef39ddd1-76e1-47d3-9ee1-0731ef7a1ae7",
+    "total": 200,
+    "paid": 100,
+    "remaining": 100,
+    "overdue": 100
+   },
+   {
+    "planId": "plan-57ff2a47-ccc4-413c-a0dc-40ef64725d15",
+    "total": 1900,
+    "paid": 700,
+    "remaining": 1200,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-e9a33827-7fe9-4566-9f06-3c92c9ac73c0",
+    "total": 1000,
+    "paid": 0,
+    "remaining": 1000,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-d5b8f0d5-e559-4638-989a-ca7a0fd9aa86",
+    "total": 1000,
+    "paid": 0,
+    "remaining": 1000,
+    "overdue": 466.66
+   },
+   {
+    "planId": "plan-53ad3b77-6ab5-4fb7-a6ab-b4114ee19276",
+    "total": 650,
+    "paid": 650,
+    "remaining": 0,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-355f0eaf-009f-4ef9-8365-8373d179aff9",
+    "total": 1000,
+    "paid": 0,
+    "remaining": 1000,
+    "overdue": 666.66
+   },
+   {
+    "planId": "plan-1989028b-dbdc-458d-a41a-c1f2bce1b870",
+    "total": 300,
+    "paid": 0,
+    "remaining": 300,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-1f331daf-1b28-46cf-aa4f-a07fa836b424",
+    "total": 2500,
+    "paid": 500,
+    "remaining": 2000,
+    "overdue": 750
+   },
+   {
+    "planId": "plan-1d9fb381-565d-4890-9323-d44777b0ed15",
+    "total": 1000,
+    "paid": 600,
+    "remaining": 400,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-9905238b-b150-46f9-95f8-a994ade092a4",
+    "total": 1625,
+    "paid": 0,
+    "remaining": 1625,
+    "overdue": 1625
+   },
+   {
+    "planId": "plan-8c59c0d3-273b-4ddf-9d07-a024263cd1ca",
+    "total": 1000,
+    "paid": 0,
+    "remaining": 1000,
+    "overdue": 666.66
+   },
+   {
+    "planId": "plan-6d2724dd-dfb7-46df-ad1e-fac74c1c76b8",
+    "total": 750,
+    "paid": 650,
+    "remaining": 100,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-79921298-4340-4b48-a9d9-060bb1ff576c",
+    "total": 2000,
+    "paid": 350,
+    "remaining": 1650,
+    "overdue": 1650
+   },
+   {
+    "planId": "plan-0818ffe2-4f2f-4b75-8984-d4c24f3c8cce",
+    "total": 1400,
+    "paid": 0,
+    "remaining": 1400,
+    "overdue": 1000
+   },
+   {
+    "planId": "plan-b84c91fb-75fb-4bac-9326-68fa98efdca6",
+    "total": 2250,
+    "paid": 0,
+    "remaining": 2250,
+    "overdue": 2250
+   },
+   {
+    "planId": "plan-5f34f9c4-3668-4968-b261-e6be2e9210a8",
+    "total": 525,
+    "paid": 575,
+    "remaining": 0,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-616e3536-063b-40bf-9fe1-49d95aadda99",
+    "total": 500,
+    "paid": 0,
+    "remaining": 500,
+    "overdue": 500
+   },
+   {
+    "planId": "plan-12183724-b1f7-4f29-94bb-fa43eda31842",
+    "total": 1500,
+    "paid": 100,
+    "remaining": 1400,
+    "overdue": 1400
+   },
+   {
+    "planId": "plan-e4e4f7b9-9ba3-415d-a61c-b822d87c41cb",
+    "total": 500,
+    "paid": 500,
+    "remaining": 0,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-6220375d-a804-41c5-a6b3-ad1f5c97fbc4",
+    "total": 750,
+    "paid": 0,
+    "remaining": 750,
+    "overdue": 250
+   },
+   {
+    "planId": "plan-8623a135-b151-4279-8b81-1dbe2548154c",
+    "total": 500,
+    "paid": 0,
+    "remaining": 500,
+    "overdue": 333.32
+   },
+   {
+    "planId": "plan-19355c6d-90d2-4bd3-9bc3-764f27880c26",
+    "total": 2500,
+    "paid": 1250,
+    "remaining": 1250,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-64882d40-7493-407a-87ae-0be81603295d",
+    "total": 300,
+    "paid": 500,
+    "remaining": 0,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-f46de828-4384-4d65-98fc-c5aa5f1f059f",
+    "total": 1050,
+    "paid": 1050,
+    "remaining": 0,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-8cbcebc7-8173-4e9d-92e1-8fd0f8f04c6b",
+    "total": 700,
+    "paid": 700,
+    "remaining": 0,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-c970f585-f923-479f-b826-2a59320acfc3",
+    "total": 1000,
+    "paid": 1000,
+    "remaining": 0,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-5f0f99b5-2c0c-49d5-bd30-9d906e4536b9",
+    "total": 950,
+    "paid": 0,
+    "remaining": 950,
+    "overdue": 333.33
+   },
+   {
+    "planId": "plan-51357ade-c323-46a8-acf8-3d940a23bf0d",
+    "total": 300,
+    "paid": 0,
+    "remaining": 300,
+    "overdue": 300
+   },
+   {
+    "planId": "plan-e3e43374-c506-4cd2-8ffa-93bceb40791a",
+    "total": 1000,
+    "paid": 200,
+    "remaining": 800,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-1c080a4d-0c7f-4b96-bfee-c6f389285a9c",
+    "total": 1000,
+    "paid": 0,
+    "remaining": 1000,
+    "overdue": 1000
+   },
+   {
+    "planId": "plan-918f6e2f-c85c-41e5-8e52-5cd64ebd8cfe",
+    "total": 2000,
+    "paid": 600,
+    "remaining": 1400,
+    "overdue": 66.66
+   },
+   {
+    "planId": "plan-66f1024e-dc87-4d89-ba5b-fee1f63d4544",
+    "total": 300,
+    "paid": 200,
+    "remaining": 100,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-f25fa943-233b-4928-af6a-46ba2dfdaa60",
+    "total": 400,
+    "paid": 0,
+    "remaining": 400,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-cffc67c8-dcf5-47a4-9842-82ecce544709",
+    "total": 2500,
+    "paid": 0,
+    "remaining": 2500,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-620873a8-436b-4640-8940-017313dce8fe",
+    "total": 750,
+    "paid": 0,
+    "remaining": 750,
+    "overdue": 750
+   },
+   {
+    "planId": "plan-49a17e6d-ab21-49b9-810b-1e18101217ef",
+    "total": 800,
+    "paid": 50,
+    "remaining": 750,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-76c2303e-10be-42fe-9e3c-fea1b2cef103",
+    "total": 150,
+    "paid": 150,
+    "remaining": 0,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-876b34af-a665-4093-8f1e-4e78a64108fc",
+    "total": 1300,
+    "paid": 50,
+    "remaining": 1250,
+    "overdue": 1250
+   },
+   {
+    "planId": "plan-8373aed8-799b-43c8-a4b4-4e80e9637808",
+    "total": 500,
+    "paid": 300,
+    "remaining": 200,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-495bad3b-c122-4041-a444-88d2284d5afb",
+    "total": 1250,
+    "paid": 0,
+    "remaining": 1250,
+    "overdue": 833.32
+   },
+   {
+    "planId": "plan-81f07565-a3a7-4dce-81b6-27ebce179af4",
+    "total": 350,
+    "paid": 0,
+    "remaining": 350,
+    "overdue": 350
+   },
+   {
+    "planId": "plan-b97b0aa9-230c-48d7-9d64-b0df0591fa52",
+    "total": 1125,
+    "paid": 1125,
+    "remaining": 0,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-5f8412f1-a4f6-47c5-b005-22e8863239f5",
+    "total": 2000,
+    "paid": 300,
+    "remaining": 1700,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-39f6a346-ac1b-4d1e-8160-5d6ea53e645c",
+    "total": 0,
+    "paid": 0,
+    "remaining": 0,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-3522c410-8434-4dfb-9f1e-bafd4c7a300e",
+    "total": 450,
+    "paid": 225,
+    "remaining": 225,
+    "overdue": 25
+   },
+   {
+    "planId": "plan-c969de77-ccd4-441e-a557-5ed7fd630024",
+    "total": 2000,
+    "paid": 400,
+    "remaining": 1600,
+    "overdue": 266.66
+   },
+   {
+    "planId": "plan-43c9386c-3a0d-42ad-ab23-9601abb4c4a1",
+    "total": 1800,
+    "paid": 0,
+    "remaining": 1800,
+    "overdue": 1800
+   },
+   {
+    "planId": "plan-ff246797-3548-4526-a7ee-1079bc7f2ae0",
+    "total": 1000,
+    "paid": 250,
+    "remaining": 750,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-73f18644-7b43-4867-8071-fe76f70926d3",
+    "total": 0,
+    "paid": 0,
+    "remaining": 0,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-2a652960-5aca-40b0-a827-2cd0afecdc13",
+    "total": 800,
+    "paid": 0,
+    "remaining": 800,
+    "overdue": 800
+   },
+   {
+    "planId": "plan-ae6600a7-4c46-45d7-b7cb-52159401ef26",
+    "total": 0,
+    "paid": 0,
+    "remaining": 0,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-412c31f4-8870-402b-a8db-6e89bb8d485a",
+    "total": 500,
+    "paid": 0,
+    "remaining": 500,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-a8489b68-bad3-492d-9443-dc3397232351",
+    "total": 500,
+    "paid": 0,
+    "remaining": 500,
+    "overdue": 0
+   },
+   {
+    "planId": "plan-55966405-9312-43f7-8389-13f523a8a24b",
+    "total": 875,
+    "paid": 0,
+    "remaining": 875,
+    "overdue": 875
+   }
+  ],
+  "mutabakat": {
+   "ok": true,
+   "failures": []
+  }
+ }
+}
