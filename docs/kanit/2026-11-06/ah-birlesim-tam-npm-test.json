@@ -1,0 +1,38 @@
+{
+  "ad": "ah-birlesim-tam-npm-test",
+  "komut": "npm test",
+  "commit": "a6e63b6618124562b1aeb9d67bb4302402d68b32",
+  "dal": "ah-birlesim",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T08:01:19.702Z",
+  "sure_sn": 5121.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4882,
+    "gecen": 4881,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "BS-7 şema sürüm kapısı › 001 yeni şemalı, 002 normal: giriş ve okuma çalışır, 001'e veri yazılmaz; 002'ye geçilip çalışılır",
+      "konum": "test/sema-kapisi-bs7.test.mjs:218:3",
+      "hata": "001'de yalnız ortak katman ayarı yazılabilir; değişen: company.user.user-3b1426c3-c64f-4298-b289-e1e3cf0122fb, license.local, whatsapp.appWebhook (beklenen , gelen whatsapp.appWebhook)"
+    }
+  ],
+  "ham_cikti": "../bekleyen-kanit/2026-11-06/2026-11-06/ah-birlesim-tam-npm-test.log.gz",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-birlesim-ag",
+  "ham_cikti_sha256": "a1bdb479acfa30423b515552b29112a5e8d7f84c97e74aa40802fdad82c192ca",
+  "ham_cikti_bayt": 1854171
+}
