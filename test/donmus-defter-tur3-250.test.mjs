@@ -56,6 +56,12 @@ const until = async (cond, what, tries = 1000) => {
   for (let i = 0; i < tries && !cond(); i += 1) await sleep(10);
   assert.ok(cond(), `ön koşul: ${what}`);
 };
+// Sunucu bir kez kapanır: denetim kapanıştan ÖNCE düşerse finally de kapatır (açık sunucu test sürecini bitirmez — eski kodda / mutantta kırmızı koşu asılı kalmasın).
+const closeOnce = async server => {
+  if (!server || server.closedOnce) return;
+  server.closedOnce = true;
+  await server.app.close();
+};
 
 // Programın kendi API'siyle: 2026'nın her ayına Kasa girişleri + bir cari (açılış, tahsilat) + 2027 başı.
 async function seed(admin, count = 40) {
@@ -256,7 +262,7 @@ describe("2.5.0 Ç3 tur 3 — YÜKSEK-1 (p5): açılışta süren eski kurallı 
     let second = null;
     try {
       await seed(await loginAdmin(first));
-      await first.app.close();
+      await closeOnce(first);
       // Eski sürümün kilidi (2.4.9 BS-7 kapısını bilmez; koşu açmadan ayar yazar).
       const raw = new DatabaseSync(path.join(dirs.dataDir, "destekofis.sqlite"));
       raw.prepare("INSERT INTO settings (key, value, updated_at, updated_by) VALUES ('ledger.lockedUntil', ?, ?, NULL) ON CONFLICT(key) DO UPDATE SET value = excluded.value").run(LOCK, new Date().toISOString());
@@ -285,6 +291,7 @@ describe("2.5.0 Ç3 tur 3 — YÜKSEK-1 (p5): açılışta süren eski kurallı 
     } finally {
       held.open();
       if (second) await second.close();
+      await closeOnce(first).catch(() => {});
       removeTestDir(first.root);
     }
   });
@@ -315,7 +322,7 @@ describe("2.5.0 Ç3 tur 3 — ORTA-1: program temizlik bitmeden kapanırsa temiz
       // Temizlik yarıda kalır, program kapanır (kalan bayat satırlar dosyada).
       cut = true;
       held.open();
-      await first.app.close();
+      await closeOnce(first);
       cut = false;
       const stale = new DatabaseSync(path.join(dirs.dataDir, "destekofis.sqlite"), { readOnly: true });
       const left = stale.prepare("SELECT COUNT(*) AS n FROM ledger_snapshots WHERE date > ''").get().n;
@@ -341,6 +348,7 @@ describe("2.5.0 Ç3 tur 3 — ORTA-1: program temizlik bitmeden kapanırsa temiz
       held.open();
       hook.fn = null;
       if (second) await second.close();
+      await closeOnce(first).catch(() => {});
       removeTestDir(first.root);
     }
   });
@@ -392,7 +400,7 @@ describe("2.5.0 Ç3 tur 3 — S46 = A: eksilen donmuş dönem izi duruyorsa kend
       await lockAndWait(admin, LOCK);
       const frozen = first.app.store.get("SELECT no, rule_version AS rule FROM ledger_snapshot_runs WHERE state = 'done' ORDER BY no DESC LIMIT 1");
       assert.equal(frozen.rule, LEDGER_RULE_VERSION, "ön koşul: dönem güncel kuralla dondu");
-      await first.app.close();
+      await closeOnce(first);
       assert.ok(wipe(dirs, { after: "2026-03-31" }) > 0, "ön koşul: donmuş satırlar silindi");
       assert.ok(raw(dirs, db => db.prepare("SELECT 1 AS found FROM audit_events WHERE entity_id = ? AND type = 'ledger.snapshot.frozen'").get(`ledger-snapshot-run:${frozen.no}`)), "ön koşul: dondurma izi duruyor");
       server = await reopen(dirs);
@@ -404,6 +412,7 @@ describe("2.5.0 Ç3 tur 3 — S46 = A: eksilen donmuş dönem izi duruyorsa kend
       assertWhole(server, "U1");
     } finally {
       if (server) await server.close();
+      await closeOnce(first).catch(() => {});
       removeTestDir(first.root);
     }
   });
@@ -416,7 +425,7 @@ describe("2.5.0 Ç3 tur 3 — S46 = A: eksilen donmuş dönem izi duruyorsa kend
       const admin = await loginAdmin(first);
       await seed(admin);
       await lockAndWait(admin, LOCK);
-      await first.app.close();
+      await closeOnce(first);
       assert.ok(wipe(dirs, { traces: false }) > 0, "ön koşul: izler ve satırlar silindi");
       server = await reopen(dirs);
       const refrozen = runsOf(server.app.store).filter(run => run.kind === "freeze" && run.reason === "repair" && run.state === "done");
@@ -424,6 +433,7 @@ describe("2.5.0 Ç3 tur 3 — S46 = A: eksilen donmuş dönem izi duruyorsa kend
       assertWhole(server, "U2");
     } finally {
       if (server) await server.close();
+      await closeOnce(first).catch(() => {});
       removeTestDir(first.root);
     }
   });
@@ -435,7 +445,7 @@ describe("2.5.0 Ç3 tur 3 — S46 = A: eksilen donmuş dönem izi duruyorsa kend
     let server = null;
     try {
       await seed(await loginAdmin(first));
-      await first.app.close();
+      await closeOnce(first);
       // Eski sürümün kilidi (30.06): açılış onarımı 2.4.9 koşusu açar ve dondurur (izli).
       raw(dirs, db => db.prepare("INSERT INTO settings (key, value, updated_at, updated_by) VALUES ('ledger.lockedUntil', ?, ?, NULL) ON CONFLICT(key) DO UPDATE SET value = excluded.value").run(MID, new Date().toISOString()));
       middle = await reopen(dirs);
@@ -455,6 +465,7 @@ describe("2.5.0 Ç3 tur 3 — S46 = A: eksilen donmuş dönem izi duruyorsa kend
     } finally {
       if (middle) await middle.app.close();
       if (server) await server.close();
+      await closeOnce(first).catch(() => {});
       removeTestDir(first.root);
     }
   });
