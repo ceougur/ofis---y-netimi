@@ -1,0 +1,344 @@
+{
+ "ad": "s106-s83-alis-formundaki-pesin-odeme-cari",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "ak1": [
+     {
+      "k": "fatura:A2",
+      "kalan": -550,
+      "tarih": "2026-01-06",
+      "tur": "fatura",
+      "vade": "2026-01-31"
+     },
+     {
+      "k": "fatura:A1",
+      "kalan": -650,
+      "tarih": "2026-01-09",
+      "tur": "fatura",
+      "vade": "2026-01-31"
+     }
+    ],
+    "ak1a": [
+     {
+      "k": "fatura:A2",
+      "kalan": -600,
+      "tarih": "2026-01-06",
+      "tur": "fatura",
+      "vade": "2026-01-31"
+     },
+     {
+      "k": "fatura:A1",
+      "kalan": -700,
+      "tarih": "2026-01-09",
+      "tur": "fatura",
+      "vade": "2026-01-31"
+     }
+    ],
+    "ak2": [
+     {
+      "k": "fatura:A3",
+      "kalan": -500,
+      "tarih": "2026-01-10",
+      "tur": "fatura",
+      "vade": "2026-01-20"
+     }
+    ],
+    "ak2b": [
+     {
+      "k": "fatura:A3",
+      "kalan": -500,
+      "tarih": "2026-01-10",
+      "tur": "fatura",
+      "vade": "2026-01-20"
+     }
+    ],
+    "mu": [
+     {
+      "acilis": "2026-01-08",
+      "kaynak": "O2",
+      "kod": "KASA_ACILIS_ONCESI_HAREKET",
+      "tarih": "2026-01-06"
+     }
+    ],
+    "mz0": {
+     "ana": {
+      "100": {
+       "alacak": 500,
+       "bakiye": 500,
+       "borc": 1000,
+       "devir": 0
+      },
+      "320": {
+       "alacak": 2300,
+       "bakiye": -1800,
+       "borc": 500,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 1000,
+       "bakiye": -1000,
+       "borc": 0,
+       "devir": 0
+      },
+      "770": {
+       "alacak": 0,
+       "bakiye": 2300,
+       "borc": 2300,
+       "devir": 0
+      }
+     },
+     "bas": "2026-01-01",
+     "satirlar": {
+      "100": {
+       "alacak": 500,
+       "bakiye": 500,
+       "borc": 1000,
+       "devir": 0
+      },
+      "320|T1": {
+       "alacak": 1800,
+       "bakiye": -1300,
+       "borc": 500,
+       "devir": 0
+      },
+      "320|T2": {
+       "alacak": 500,
+       "bakiye": -500,
+       "borc": 0,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 1000,
+       "bakiye": -1000,
+       "borc": 0,
+       "devir": 0
+      },
+      "770": {
+       "alacak": 0,
+       "bakiye": 2300,
+       "borc": 2300,
+       "devir": 0
+      }
+     },
+     "son": "2026-01-31",
+     "toplam": {
+      "alacak": 3800,
+      "bakiye": 0,
+      "borc": 3800,
+      "devir": 0
+     }
+    },
+    "mz1": {
+     "ana": {
+      "100": {
+       "alacak": 500,
+       "bakiye": 500,
+       "borc": 1000,
+       "devir": 0
+      },
+      "320": {
+       "alacak": 2300,
+       "bakiye": -1800,
+       "borc": 500,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 1000,
+       "bakiye": -1000,
+       "borc": 0,
+       "devir": 0
+      },
+      "770": {
+       "alacak": 0,
+       "bakiye": 2300,
+       "borc": 2300,
+       "devir": 0
+      }
+     },
+     "bas": "2026-01-01",
+     "satirlar": {
+      "100": {
+       "alacak": 500,
+       "bakiye": 500,
+       "borc": 1000,
+       "devir": 0
+      },
+      "320|T1": {
+       "alacak": 1800,
+       "bakiye": -1300,
+       "borc": 500,
+       "devir": 0
+      },
+      "320|T2": {
+       "alacak": 500,
+       "bakiye": -500,
+       "borc": 0,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 1000,
+       "bakiye": -1000,
+       "borc": 0,
+       "devir": 0
+      },
+      "770": {
+       "alacak": 0,
+       "bakiye": 2300,
+       "borc": 2300,
+       "devir": 0
+      }
+     },
+     "son": "2026-01-31",
+     "toplam": {
+      "alacak": 3800,
+      "bakiye": 0,
+      "borc": 3800,
+      "devir": 0
+     }
+    },
+    "mz2": {
+     "ana": {
+      "100": {
+       "alacak": 600,
+       "bakiye": 400,
+       "borc": 1000,
+       "devir": 0
+      },
+      "320": {
+       "alacak": 2300,
+       "bakiye": -1700,
+       "borc": 600,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 1000,
+       "bakiye": -1000,
+       "borc": 0,
+       "devir": 0
+      },
+      "770": {
+       "alacak": 0,
+       "bakiye": 2300,
+       "borc": 2300,
+       "devir": 0
+      }
+     },
+     "bas": "2026-01-01",
+     "satirlar": {
+      "100": {
+       "alacak": 600,
+       "bakiye": 400,
+       "borc": 1000,
+       "devir": 0
+      },
+      "320|T1": {
+       "alacak": 1800,
+       "bakiye": -1200,
+       "borc": 600,
+       "devir": 0
+      },
+      "320|T2": {
+       "alacak": 500,
+       "bakiye": -500,
+       "borc": 0,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 1000,
+       "bakiye": -1000,
+       "borc": 0,
+       "devir": 0
+      },
+      "770": {
+       "alacak": 0,
+       "bakiye": 2300,
+       "borc": 2300,
+       "devir": 0
+      }
+     },
+     "son": "2026-01-31",
+     "toplam": {
+      "alacak": 3900,
+      "bakiye": 0,
+      "borc": 3900,
+      "devir": 0
+     }
+    }
+   },
+   "redler": [
+    {
+     "kod": "FATURA_DUZENLENMELI",
+     "neden": "formdaki peşin ödemenin carisi değiştirilemez — faturayı düzenleyin (S83 A)",
+     "olay": 9,
+     "tur": "duzenle"
+    },
+    {
+     "kod": "FATURA_DUZENLENMELI",
+     "neden": "formdaki peşin ödemenin carisi değiştirilemez — faturayı düzenleyin (S83 A)",
+     "olay": 10,
+     "tur": "duzenle"
+    },
+    {
+     "kod": "FATURA_DUZENLENMELI",
+     "neden": "formdaki peşin ödemenin carisi değiştirilemez — faturayı düzenleyin (S83 A)",
+     "olay": 11,
+     "tur": "duzenle"
+    },
+    {
+     "kod": "FATURA_DUZENLENMELI",
+     "neden": "formdaki peşin ödemenin carisi değiştirilemez — faturayı düzenleyin (S83 A)",
+     "olay": 12,
+     "tur": "duzenle"
+    },
+    {
+     "kod": "FATURA_DUZENLENMELI",
+     "neden": "formdaki peşin ödemenin carisi değiştirilemez — faturayı düzenleyin (S83 A)",
+     "olay": 13,
+     "tur": "duzenle"
+    },
+    {
+     "kod": "FATURA_DUZENLENMELI",
+     "neden": "formdaki peşin ödemenin carisi değiştirilemez — faturayı düzenleyin (S83 A)",
+     "olay": 14,
+     "tur": "duzenle"
+    },
+    {
+     "kod": "FATURA_DUZENLENMELI",
+     "neden": "formdaki peşin ödemenin carisi değiştirilemez — faturayı düzenleyin (S83 A)",
+     "olay": 15,
+     "tur": "duzenle"
+    },
+    {
+     "kod": "KASA_ACILIS_ONCE",
+     "neden": "Kasa hareketi 2026-01-07 < Kasa açılışı 2026-01-08",
+     "olay": 16,
+     "tur": "duzenle"
+    },
+    {
+     "kod": "FATURA_DUZENLENMELI",
+     "neden": "formdaki peşin ödemenin carisi değiştirilemez — faturayı düzenleyin (S83 A)",
+     "olay": 17,
+     "tur": "duzenle"
+    }
+   ]
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

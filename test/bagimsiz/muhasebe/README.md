@@ -21,11 +21,11 @@ Program (JavaScript) ayrı bir sürücü ajanıyla bu senaryolara karşı koşul
 | Dosya | Ne |
 |---|---|
 | `model.py` | Model: hesap planı (§2 + 671 / 681), olay → madde (§3), mizan, büyük defter, gelir tablosu (MSUGT, 7/A), bilanço (ters bakiye brütleştirme, hesaplanmış satırlar, Kesin Değil), dönem sonu değerleme (§5), **Tek Yükümlülük Kuyruğu** (EK-1 §1: açık kalemler, gecikmiş, hatırlatma, şüpheli kuyruğu), kapanış (Önceki Yıl Sonucu Fişleri + N-01…N-07), devir açılışları (N-09…N-13; M2/M3/M12/M13), Devri Yenile (N-14, M9), Devri Geri Al (N-15), dönem kilidi + 2.4.9 donmuş defter + Kural Farkı Düzeltme Fişi (Ç3, KG-15, M7), KDV dönem etiketi (M8, S4), şüpheli kayıtları (K3), değişmezler |
-| `senaryolar_elle.py` | 106 elle doğrulanabilir senaryo (s01…s105; s26 iki seçenekli; bakım 10 itibarıyla); her birinde ELLE hesaplanmış beklenenler ("elle", hesap yorumda) |
+| `senaryolar_elle.py` | 110 elle doğrulanabilir senaryo (s01…s109; s26 iki seçenekli; bakım 11 itibarıyla); her birinde ELLE hesaplanmış beklenenler ("elle", hesap yorumda) |
 | `uretici.py` | Tohumlu rastgele üretici: bir yıl (~800 olay) + K sonrası Ocak (+ zorla S11: K'den önce alınmış evrak 20.01'de karşılıksız) + devir + devirden sonra kayıt + Devri Yenile; tohum 1, 2, 3 |
 | `uret_beklenen.py` | `senaryolar/<ad>.json` (kendi kendine yeten senaryo: tanımlar + olaylar + dallar + elle) ve `senaryolar/beklenen/<ad>.json` (her dal için modelin tam çıktısı) yazar / `--denetle` |
-| `test_model.py` | 180 test (bakım 10 itibarıyla): yardımcılar, olay → madde birim testleri, 106 elle senaryo (her dal + bütün değişmezler), 3 rastgele tohum (devirli = AYNI kilitli devirsiz dahil), değişmez denetçilerinin dişi, senaryo hijyeni (VUK sıra-tarih, K-14 tarihi, POS valörü iş günü ve belirsiz güne — doğrulanmamış bayram penceresi — düşmez; bakım 4'ten beri sabit resmî tatile düşebilir, model kaydırır; bakım 5'ten beri 28 Ekim yarım gün iş günü), dosya güncelliği |
-| `mutasyon.py` | 263 metin mutantı (bakım 10 itibarıyla; model.py kaynağında tek kural bozulur); her biri en az bir testte KIRMIZI olmalı |
+| `test_model.py` | 187 test (bakım 11 itibarıyla): yardımcılar, olay → madde birim testleri, 110 elle senaryo (her dal + bütün değişmezler), 3 rastgele tohum (devirli = AYNI kilitli devirsiz dahil), değişmez denetçilerinin dişi, senaryo hijyeni (VUK sıra-tarih, K-14 tarihi, POS valörü iş günü ve belirsiz güne — doğrulanmamış bayram penceresi — düşmez; bakım 4'ten beri sabit resmî tatile düşebilir, model kaydırır; bakım 5'ten beri 28 Ekim yarım gün iş günü), dosya güncelliği |
+| `mutasyon.py` | 277 metin mutantı (bakım 11 itibarıyla; model.py kaynağında tek kural bozulur); her biri en az bir testte KIRMIZI olmalı |
 
 ## Çalıştırma
 ```
@@ -60,7 +60,7 @@ içinde tarih sırasıyla girilir (VUK müteselsil sıra-tarih; `SenaryoHijyeni`
 | duzenle {kaynak, degisiklik{}} / iptal {kaynak} / sil / geri_yukle | kaydedilmiş fatura Silinenler'den geri yüklenince ETKİSİZ ("İptal Edildi"); öbür kayıtlar ve taslak etkin döner | F-14, F-15, D-03, R-04, C-03, G-7 |
 | mahsup | fatura1, fatura2, tutar (madde yok) | F-16 |
 | tahsilat | cari, yol nakit/havale/pos/cek/senet/kart, tutar, banka, pos+komisyon+valor (NOMİNAL; etkin = sonraki iş günü, S21), evrak, fatura (+fatura_odemesi = formdaki peşin), taksit_karti, normal_cari ("Normal Cari Hesaba İşle"; `supheliden` geriye uyum için kabul edilir, artık varsayılan) | T-01…T-04, T-10…T-13, H-04, J-03, K3 |
-| odeme | cari, yol nakit/havale/kart/cek/senet/ciro, tutar, banka, kart, evrak, fatura, taksit_karti | T-05…T-09, H-05 |
+| odeme | cari, yol nakit/havale/kart/cek/senet/ciro, tutar, banka, kart, evrak, fatura (+fatura_odemesi = alış faturası formundaki peşin; bakım 11 S83 / S84), taksit_karti | T-05…T-09, H-05 |
 | kayit_tahsilati / kasa_giris / kasa_cikis | tutar | T-14, K-01, K-02 |
 | bankadan_kasaya / kasadan_bankaya | banka, tutar | K-03, K-04 |
 | banka_transfer | gonderen, alici, tutar, ucret, bsmv, valor | K-05, K-06, K-07 |
@@ -1374,3 +1374,63 @@ KULLANICIYA SORULMALI (S54–S57 eki; SORU DÜZENİ 06.11 09:01):
 3. Sürer: bakım 10'un 1 / 2 / 3'ü kural oldu (S83 / S84 / S85 = A); bakım 9'un KS 3'ü ve öncesi aynen.
 - BAŞ MİMAR değerlendirir (kâhin yorumu, kodlandı): Ö4 (S84 iki yönde — alış formundaki peşin ödemenin bağı da red), Ö7 (S85'te açıklama da aynı düzeltmede olabilir; geri yüklenmiş kayıtta
   S26 tutarı da S85'in konusu), Ö9 (ölçü düzeltme sonrası hâl; tutar azaltma da aynı ölçüyle).
+
+### Önceki beklentilerle çelişen yerler (eski → yeni, nedeni; G3)
+- `test_S80_formdaki_pesin_cari`: O1 {cari T2}, {cari T2, fatura A3}, {cari T2, fatura null} (alış faturası formundaki peşin ödeme) senaryo hatası (L4) → RED `FATURA_DUZENLENMELI`
+  (S83; Ö1, Ö2), 102.B1 100 / 120|C1 700 / 120|C3 500 değişmez. P2 {fatura: null} (geri yüklenmiş açılış öncesi formdaki peşinin bağı) senaryo hatası (V3 (e), bakım 10 KS 2) → RED
+  `FATURA_DUZENLENMELI` (S84; Ö4, Ö5), Kasa 1200 / 120|C1 800 / 120|C3 500 değişmez, uyarı [P2] sürer.
+- `test_S40_S44_S45_kapsam_ve_susma`: PP {fatura: null} (V3 (e), bakım 10 KS 2) senaryo hatası listesinden çıktı → RED `FATURA_DUZENLENMELI` (S84); aynı denetime PP {fatura: F1} (başka faturaya)
+  eklendi; PP {cari: C3} (bakım 10 G3) aynen. 120|C1 1000 / 120|C3 600 değişmez.
+- Model: `_s80_pesin` ödeme yönünde de red (S83; L4 susması kalktı) ve carisi aynı peşinin bağında red (S84); satış iade formundaki ödemenin carisi `_s83_susma`'da susar (Ö3);
+  `_s40_kapsam`'ın V3 (e) susması yalnız Normal Cari seçiminde (Ö6); `_s81_sinir` S85 tetiğiyle (`_s85_tetik`: Normal Cari kaydın tutarı / tarihi); `_s44_kapsam` S44 alanı değişmeyen
+  düzeltmede Normal Cari kaydın carisi / tutarı için sınır (S85 (b)). Tahsilattaki S80 iletisi metni aynen korundu (s104 beklenen dosyası bayt bayt aynı).
+- Mutantlar: B105g (L4 ödeme yönü susma dişi) KALKTI — S83 A ile modelin kendisi oldu. Metni değişen (anlam aynı): B105 (tahsilat iletisi ayrı satırda), B105c / B105d / B105f (`cari` /
+  `bag` değişkenleri), B106c / B106f (satırın başına S85 tetiği). B105b'nin anlamı genişledi (aynı satır: geri yüklenmiş açılış öncesi kayıtta S80 / S83 / S84 yok). B78 / B106b / B106d
+  ortak `_s44_sinir` / `_s81_sinir` üzerinden artık S85'i de bozar; s108 / s109 ikisini de değerle öldürür.
+- Elle senaryolarda s01–s105'in ve `rastgele-1/2/3`'ün senaryo + beklenen dosyalarının HİÇBİRİ değişmedi (model adımından sonra `uret_beklenen.py` + `git status`: yalnız yeni s106–s109
+  dosyaları; ilk denemede s104 beklenen dosyasında yalnız red İLETİSİ metni değişmişti — kod ve değerler aynı — ileti eski metnine döndürüldü).
+
+### Elle beklenenlerin yazılış sırası (bakım 11)
+- 00ed5d2b: yorum Ö1–Ö10 + KULLANICIYA SORULMALI 1–2 + bakım 8 / 9 / 10 satırlarına işaretler + red kodu listesi — kod, senaryo ve testten önce, AYRI commit (ders 40).
+- 1a847417: s106–s109, birim testleri (`test_S83_S84_formdaki_pesin`, `test_S85_tutar_tarih_siniri`, `test_S85_iki_yolda_ayni`) ve G3 model DEĞİŞTİRİLMEDEN ÖNCE. 7f0aa5e7: s108'e ara mizanlar
+  (mza, mzb, mzc) — eski kâhinle ilk neden dökümünde s108'in S85 redleri yalnız `redler` anahtarında ayrışıyordu (sonraki kabul düzeltmeleri kaydın son hâlini aynı yapıyor); değerler elle,
+  model yine değişmemişti. Eski kâhin (d83ccf1c kopyası + yeni dosyalar) 187 testten 11'i kırmızı (`kahin11-eski-model-kirmizi.*`), hepsi beklenen nedenle: s106, `test_S80`, `test_S83_S84`,
+  `test_EK2_4_1` (bütün elle senaryoları koşar → s106) ve `Dosyalar` (üretici s106'da düşer) L4 susması ("ödeme yönü karar metninde yok"); s107 ve `test_S40_S44_S45` V3 (e) bağ susması;
+  s108, s109, `test_S85_tutar_tarih_siniri`, `test_S85_iki_yolda_ayni` S85 yokluğu (beklenen red yerine kabul). NEDEN dökümü `kahin11-eski-model-neden.txt` (betiği `kahin11-eski-model-neden.py`):
+  susan düzeltmeler atlanınca s106'da 1 anahtar (redler; 8 FATURA_DUZENLENMELI yok), s107'de 10 (redler; P1'in bağları kabul → 120|C1 1850, 102.B1 250, gecikmiş 1850 / 1700, açık kalemler;
+  P2'nin iki bağ düzeltmesi susar → uyarı listesi boş), s108'de 7 (redler; mza 120|C2 −1, mzb 120|C3 200, mzc 120|C3 500 ve 102.B1'ler), s109'da 8 (redler; 120|C2 −1, 120|C3 −10 / −95,
+  120|C1, Kasa, gecikmiş). Düzeltme ÖNCESİ raporlarda (mz0, ak1a, g1a) fark 0 — değişmeyen kurallar için elle hesap eski kâhinle aynı. Eski modelde YEŞİL kalan yeni senaryo / test yok.
+- Model + mutantlar (bu bölümle aynı commit): ilk koşuda elle değerlerin HİÇBİRİ değişmedi (186/187; tek kırmızı dosya güncelliği → `uret_beklenen.py`). İlk yeni mutant koşusunda B108 ve
+  B105b s107'yi değerle değil `_s40_kapsam`'ın artık V3 (e) susmasıyla düşürüyordu; o denetim yalnız Normal Cari seçimine daraltıldı (A modelinde davranış aynı: bağ değişimi önce red) —
+  ikisi artık s107'nin DEĞERİYLE ölüyor.
+
+### Yeni senaryolar, testler ve mutasyonlar
+- Elle senaryolar (4, toplam 110): s106 (S83: alış formundaki peşin ödemenin carisi tek başına / tutarla / yeni carinin alış faturasına / bağ kaldırılarak / tarihle → red; geri yüklenmiş
+  açılış öncesi peşin ödeme → red, açıklamayla red, tarih açılıştan önceki başka güne → KASA_ACILIS_ONCE, açılıştan sonraya → red; carisi aynı tutar + açıklama, S26 tutarı, aynı cari → kabul),
+  s107 (S84: olağan peşin başka faturaya / kaldırma / taksit kartına / tutar + açıklamayla / cari aynı yazılmış / tarihle → red; geri yüklenmiş açılış öncesi peşin başka faturaya / kaldırma → red,
+  tarih açılıştan önceye → KASA_ACILIS_ONCE, sonraya → red; alış formundaki peşin ödemenin bağı → red; aynı bağın yeniden yazılması + açıklama / S26 tutarı / tutar → kabul), s108 (S85 olağan:
+  tutar 101 / 99 / 100 — bir kuruş üstü red, altı ve eşit kabul; Normal Cari olmayan K3 tahsilatının ve şüphelisiz carinin tutarı kabul; tarih geri 10.01 ve ileri 19.01 red, 13.01 kabul,
+  19.01 + 250 yeni günde eşit kabul), s109 (S85 geri yüklenmiş: S26 tutarı 101 red, 99 / 100 kabul; S40 yalnız cari 90 > 80 red, 80 = 80 kabul; açıklama birlikte red; uyarılar sürer).
+- Birim (187 test): `test_S83_S84_formdaki_pesin` (Ö1–Ö6: iki yol, iki yön, kilit önce, T12 önce, aynı değer kabul, Ö3 / V3 (f) susar, Ö6 bugünkü), `test_S85_tutar_tarih_siniri` (Ö7, Ö9:
+  üstü / eşit / altı / azaltma, T12 önce, yeni günde kabul ve red), `test_S85_iki_yolda_ayni` (Ö10).
+- Mutantlar: 15 yeni, 1 kalktı → liste 277. Öldüren testler (`kahin11-yeni-mutantlar-oldurenler.txt`, betiği `kahin11-yeni-mutantlar.py`): B107 / B107b / B107c — s106 ve birim; B107d (Ö3 susma
+  dişi) — yalnız birim; B108 / B108c / B108d — s107 ve birim; B108b — s107 ve birim (susma); B109 / B109d / B109e / B109f — s108 (ve birim); B109b / B109c / B109g — s109 (ve birim).
+  Her kararın B seçeneği (B107, B108, B109 / B109b) ve sınır kayması (B107b, B108d; S85 eşitlik B109c, B78, B106b) en az bir elle senaryonun DEĞERİYLE yakalanıyor.
+
+### Sürücü için (programla karşılaştırmadan önce)
+- **S83:** alış faturası formunda yapılan peşin ödemenin carisi düzeltilince — olağan kayıtta ve geri yüklenmiş, Kasa açılışından önce tarihli Kasa kaydında — `FATURA_DUZENLENMELI`
+  (S80'in kodu), düzeltmenin tamamı; carisi aynı tutar / açıklama kabul. Kurulmayan: satış iade faturası formundaki ödemenin carisi (KS 1; program bu yolu sunmuyorsa soru düşer).
+- **S84:** formdaki peşinin (tahsilat VE alış formundaki ödeme — Ö4, BAŞ MİMAR değerlendirir) carisi aynı kalıp bağı (başka fatura, kaldırma, taksit kartı) değiştirilince `FATURA_DUZENLENMELI`,
+  iki yolda. Program yalnız tahsilatta reddediyorsa fark önce hatadır (ders 6), sonra Ö4 kullanıcıya gösterilir. Kurulmayan: formdaki peşinde yalnız "Normal Cari Hesaba İşle" seçimi (KS 2).
+- **S85:** `SUPHELI_NORMAL_ASIM` Normal Cari kaydın yalnız tutar / tarih düzeltmesinde (olağan) ve geri yüklenmiş açılış öncesi Kasa kaydında S26 tutarı / S40 yalnız cari düzeltmesinde;
+  sınır kaydın düzeltme SONRASI gününde (kayıt hariç), eşitlik kabul. s108 PKT kart tahsilatı (kart SB'den sonra açıldı → 120'den; taksidi aşan 50 avans) ileri tarihin reddini kurar.
+  Kurulmayan: faturaya bağlı ama Normal Cari seçilmemiş kaydın yalnız tutar / tarihi (Ö7: iki okuma aynı sonuç).
+
+### DENENMEYEN (bu bakım)
+- Programla karşılaştırma (sürücü güncellemesi ayrı iş; kod Ç5-B).
+- S83 / S84: iptal edilmiş ya da silinmiş faturanın peşini (F-15); faturanın düzenlenmesiyle cari / bağ değişimi (peşin birlikte — kâhinde modellenmedi); devirle gelen peşin; çek / senet / POS
+  ile alınmış peşin (yol `havale` / `nakit` denendi); alış iade faturası formundaki tahsilat (S80'in "her form"u; senaryo yok); KS 1 / KS 2 durumları yalnız susma / bugünkü davranış olarak.
+- S85: karşılığı ayrılmış şüpheli kayıt; iki şüpheli kaydı olan cari; bağlı Normal Cari kaydının tutar düzeltmesi (S14 / S25 payı; L9 gereği aşılamaz); tutar azaltma yalnız birimde; şüpheli
+  kaydından ÖNCEKİ güne alınan Normal Cari kaydı (yeniden türetmede şüpheliye alma tutarı carinin bakiyesini aşabilir — kurulmadı); kilitli dönem; devirle gelen kayıt; sınırın yalnız kaydın
+  KENDİ gününde ölçülmesi yüzünden sonraki günlerde 120'nin eksiye düşmesi (Ö10; S56 ölçüsü — senaryolar kurmaz).
+- Dinî bayram tarihleri (bu bakımda aranmadı; Z12 aynen).
