@@ -85,11 +85,16 @@ describe("2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada do
       const first = admin.put("/api/admin/period-lock", { lockedUntil: LOCK });
       await untilWriting();
       const callsBefore = posCalls;
+      const runNo = S().status().run;
+      let lastDone = S().status().done;
       for (const [value, pattern] of [["2099-01-01", /Gelecekteki bir dönem kilitlenemez/], ["31.12.2026", /geçerli bir tarih/], ["abc", /geçerli bir tarih/]]) {
         const bad = await admin.put("/api/admin/period-lock", { lockedUntil: value });
         assert.equal(bad.status, 400, `${value}: ${bad.status} ${JSON.stringify(bad.data)}`);
         assert.match(bad.data.error, pattern);
-        assert.equal(S().status().running, true, `${value} reddedildikten sonra dondurma sürüyor (reddedilen istek süren dondurmayı durdurdu: ${JSON.stringify(S().status())})`);
+        // Süren dondurma DURMADI ve BAŞTAN BAŞLAMADI (durdurulup yeniden açılsa yazılan satır sayısı sıfırlanırdı — boşa iş; kurtarma yolu bunu gizlerdi).
+        const now = S().status();
+        assert.ok(now.running && now.run === runNo && now.done >= lastDone, `${value} reddedildikten sonra dondurma sürüyor (reddedilen istek süren dondurmayı durdurdu: önce ${lastDone} satır, şimdi ${JSON.stringify(now)})`);
+        lastDone = now.done;
       }
       assert.equal(posCalls, callsBefore, "reddedilen istek POS ön adımını çalıştırmadı");
       assert.equal((await first).status, 200);
