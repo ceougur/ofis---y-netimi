@@ -46,6 +46,11 @@ GÜNCELLEME 12 (2.5.0, KULLANICI KARARI 06.11.2026 03:35 UTC "hepsi A" — metin
 S7-a elle seçilen şüpheli alacaklı caride şüphesiz gecikmiş borç yoksa "Gecikmiş Borç Yok" ile elenir (başlatmada ve gönderim anında); S7-b toplu gönderim kuyruktayken
 şüpheli alacak kaydı açılan, elle işaretsiz cari gönderim anında "Atlandı — Şüpheli Alacağı Var" (Devam Et, Başarısızları Yeniden Dene, Meta Bekletti 2. denemesi dahil);
 elle işareti yalnız başlatmada etiketli cariye ve işte kalır. İşteki Yine de Gönder + kuyrukta açılan şüpheli kaydı (S7-c) KULLANICIYA SORULMALI — kâhin hata verir.
+GÜNCELLEME 13 (2.5.0, KULLANICI KARARI 06.11.2026 04:50 UTC "hepsine A" S16, S17 + 05.11 21:30 karar (5) — metinler AYNEN KARARLAR S16, S17, NB5; yorumlar README §18, kodlamadan önce
+yazıldı ve ayrı commit'lendi): S16 işteki Yine de Gönder basıldığı anda şüpheli kaydı açık Ödeme Hatırlatma işi elle seçim sayılır (onay penceresinde "Şüpheli Alacağı Var" —
+`yeniden.<etiket>.supheli_etiketi`), şüphesiz tutarla gider, yoksa elenir (anı karar metninde yok → `s16_an` iki okuma, `secenek`); (5) Ödeme Hatırlatma {{4}} net borcu aşmaz, net borcu
+≤ 0 olan elenir (ad karar metninde yok → `secenek` gecikmis_borc_yok / net_borc_yok); S17 elle seçilen şüpheli alacaklıda sınır şüpheli kalemler HARİÇ net borç. S7-c hatası daraldı:
+basma anında kaydı YOKKEN sonra açılan (S7-d) KULLANICIYA SORULMALI — kâhin hata verir.
 
 KÂHİN GÜNCELLEMESİ 8 (31.10.2026): H1 (kullanıcı) — Yine de Gönder ile açılan iş kabul/teslim edilince KAYNAK Sonucu Belirsiz deneme o kişi için artık
 elemez (kişi "Daha Önce Gönderildi"; yol R3 Yine de Gönder); açılan iş başarısız/belirsiz kalırsa kaynak elemeye devam eder. H2–H4 (baş mimar, G0 İLKEYLE):
@@ -126,6 +131,9 @@ DURDU_BAGLANTI = "Durduruldu (Bağlantı)"              # yalnız M189 (P6 §3 m
 SUPHELI = "supheli_alacak"                            # S7 (Y11-18): elenme nedeni ("Şüpheli Alacağı Var" etiketi)
 BELIRTEC_KODLARI = {190, 0}                           # SD1915 (190) + SW4 (0 "190 gibi"); 102 kararın DIŞINDA (Y11-15)
 DEVAM_OKUMALARI = ("ret", "bekle", "dene")            # yeniden bağlanmadan Devam Et'in üç okuması (README §16.4) — ilki model, öbürleri seçenek
+S16_OKUMALARI = ("basma", "gonderim")                 # güncelleme 13 (README §18.4 Y13-3): S16 "yoksa elenir"in anı — ilki model, öbürü seçenek
+OKUMALAR = {"devam_sd": DEVAM_OKUMALARI, "s16_an": S16_OKUMALARI}
+NET_BORC_YOK = "net_borc_yok"                         # güncelleme 13 (Y13-7): karar (5) "bize alacaklı" / S17 net sınırı elemesinin olası ikinci adı (karar metninde ad yok)
 TANINMAYAN_503 = 5 * 60 * 1000                        # J6: yanıt beklenirken tanınmayan bildirime en çok 5 dk 503
 SAYFA = 30                                            # K8: Gönderimler listesi 30'ar
 SECIMLER = ("bu_ay", "gecen_ay", "son_3_ay", "tum")   # K1: hazır dönem seçimleri (özel aralık = {"bas", "son"})
@@ -385,6 +393,18 @@ MUTASYONLAR = {
     "M196": "S7B (Y12-5, ilke 1/4): 'Şüpheli Alacağı Var' ile atlanan iş 'Zaten Kuyrukta' sayılır — yeni gönderimde elle seçilen de elenir (çıkmaz)",
     "M197": "S7B (Y12-6): gönderim anında 'Gecikmiş Borç Yok' denetimi şüpheli denetiminden ÖNCE (başlatma sırasının tersi)",
     "M198": "S7A + §7a 20 (Y12-1): 'vadesi geçmiş' bugünü UTC günüyle (yerel gün değil)",
+    # ---- kâhin güncellemesi 13 (2.5.0, 06.11.2026 04:50 UTC: S16, S17 + 05.11 21:30 karar (5) = NB5) ----
+    "M199": "S16'nın tersi (B seçeneği): işteki Yine de Gönder elle seçim sayılmaz — şüpheli kaydı açık kişi gönderim anında 'Atlandı — Şüpheli Alacağı Var' (o gün yol kalmaz)",
+    "M200": "S16 'yoksa elenir'in tersi: Yine de Gönder ile elle sayılan caride şüphesiz tutar yokken de iş alınır ve ileti gider (gecikmiş denetimi atlanır)",
+    "M201": "S16: Yine de Gönder onay penceresinde 'Şüpheli Alacağı Var' etiketi yok",
+    "M202": "S17'nin tersi (B seçeneği): elle seçilen şüpheli alacaklı caride sınır carinin TOPLAM net borcu (şüpheli kalemler dahil)",
+    "M203": "S17 (Y13-8): net borçtan yalnız vadesi geçmiş şüpheli kalemler düşülür (vadesi gelmemiş şüpheli kalem net borçta kalır)",
+    "M204": "NB5'in tersi (eski §7a 20): gecikmiş tutar net borçla sınırlanmaz, bize alacaklı kişi elenmez",
+    "M205": "NB5 (Y13-7): yalnız net borç < 0 elenir — net borcu 0 olan kişiye 0,00 TL'lik hatırlatma gider",
+    "M206": "NB5 (Y13-6/7): net borç yalnız başlatmada denetlenir — kuyrukta bize alacaklı olan kişiye gönderim anında yine gider",
+    "M207": "NB5 (Y13-7 sırası): net denetimi §7a 20 kalem denetiminden ÖNCE — vadesi geçmiş kalemi olmayan alacaklı kişi de net adıyla elenir",
+    "M208": "S16 tetiği (Y13-1): basma anında kalanı 0 olan (kapanmış) şüpheli kalem de 'Şüpheli Alacağı Var' sayılır (etiket + elle)",
+    "M209": "S16 (Y13-4 + Y12-9): onay penceresinin etiketi Ekstre işinde de görünür",
 }
 
 # Kâhin güncellemesi 2'nin kaynak karar metinleri (AYNEN; CLAUDE.md "Açık iş" + docs/2.4.8-IS-LISTESI.md, 31.10.2026). "kaynak_turu": kullanıcı kararı mı,
@@ -606,6 +626,25 @@ KARARLAR = {
                       "İŞ ATAMASI: S7-a, S7-b → Ç5 (B1 ortak gecikmiş / S7) + WK kâhin bakımı; …",
                       "soru (iş listesi C, SORULDU 05.11 21:56 → YANITLANDI 06.11 03:35 \"hepsi A\"): S7-b: toplu gönderim kuyruktayken şüpheli alacak kaydı açılan, elle seçilmemiş "
                       "müşteri — A öneri gönderim anında atlansın (\"Şüpheli Alacağı Var\") / B başlatmadaki seçimle gitsin."]},
+    # ---- kâhin güncellemesi 13 (2.5.0; docs/2.5.0-IS-LISTESI.md D "KULLANICI KARARI 06.11 04:50 UTC" + C soru metni, D "KULLANICI KARARLARI 05.11 (21:30 …)" (5) — AYNEN) ----
+    "S16": {"kaynak_turu": "kullanıcı (06.11.2026 04:50 UTC, 'benden beklediğin cevapların hepsine A yap'; iş listesi D + C, aynen) — WK güncellemesi 12'nin KULLANICIYA SORULMALI S7-c'si (README §17.4)",
+            "metin": ["KULLANICI KARARI 06.11 04:50 UTC (AYNEN: \"benden beklediğin cevapların hepsine A yap\"; sorular C bölümünde, öneriyle soruldu):",
+                      "S16 = A: Sonucu Belirsiz iş beklerken şüpheli alacak kaydı açıldıysa \"Yine de Gönder\" elle seçim sayılır; ileti şüphesiz tutarla gider (yoksa elenir); onay penceresinde "
+                      "\"Şüpheli Alacağı Var\".",
+                      "İŞ ATAMASI: … S16, S17 → Ç5 (WhatsApp elemesi) + WK güncellemesi 13.",
+                      "soru (iş listesi C, SORULDU 06.11 04:05 → YANITLANDI 06.11 04:50 \"hepsine A\"): S16 (S7-c): Ödeme Hatırlatma işi Sonucu Belirsiz; beklerken carinin şüpheli alacak "
+                      "kaydı açıldı; iş elle seçilmemişti; \"Yine de Gönder\" basılırsa — A öneri: elle seçim sayılır, ileti şüphesiz tutarla gider (şüphesiz tutar yoksa elenir), onay "
+                      "penceresinde \"Şüpheli Alacağı Var\" yazar / B: \"Atlandı — Şüpheli Alacağı Var\" (o gün gönderim yolu kalmaz)."]},
+    "S17": {"kaynak_turu": "kullanıcı (06.11.2026 04:50 UTC, 'hepsine A'; iş listesi D + C, aynen) — WK güncellemesi 12'nin bilgi notu '(5) × S7' (README §17.4)",
+            "metin": ["KULLANICI KARARI 06.11 04:50 UTC (AYNEN: \"benden beklediğin cevapların hepsine A yap\"; sorular C bölümünde, öneriyle soruldu):",
+                      "S17 = A: elle seçilen şüpheli alacaklı caride iletideki şüphesiz gecikmiş tutar, şüpheli kalemler HARİÇ net borçla sınırlanır.",
+                      "soru (iş listesi C, SORULDU 06.11 04:05 → YANITLANDI 06.11 04:50 \"hepsine A\"): S17 (S7 × karar (5)): elle seçilen şüpheli alacaklı caride iletideki gecikmiş tutar — "
+                      "A öneri: şüphesiz gecikmiş tutar, şüpheli kalemler HARİÇ net borçla sınırlanır / B: carinin toplam net borcuyla sınırlanır."]},
+    "NB5": {"kaynak_turu": "kullanıcı (05.11.2026, 21:30 UTC'de işlendi; 7 soruya 'önerilerini uygula' → A; iş listesi D, aynen) — karar (5); eleme adı karar metninde yok (README §18 Y13-7)",
+            "metin": ["KULLANICI KARARLARI 05.11 (21:30 UTC'de işlendi; sohbette sorulan 7 soruya yanıt, AYNEN: \"önerilerini uygula\" → yedisi de A).",
+                      "(5) 2B-S4 / S9 = A \"Bakiyeden Netleşsin\": gecikmiş tutar carinin net borcunu aşmaz (alış faturası düşülür); bize alacaklı kişiye hatırlatma gitmez; faturaların Açık / "
+                      "Ödendi durumu yalnız Mahsup Et ile.",
+                      "İŞ ATAMASI: (1)(2)(3)(5) → Ç5 (B1 ortak gecikmiş / kapama) + kâhin bakımı 2; …"]},
     "K8": {"kaynak_turu": "kullanıcı (08:20 'şimdi yap'); en yeni önce / yerel gün / iki uç dahil / ters aralık ret ana oturum görev metni",
            "metin": ["KARAR (kullanıcı, 31.10.2026 ~08:20 UTC: \"şimdi yap\"): WhatsApp Gönderimleri ekranına 2.4.8'de \"Daha Fazla Göster\" (30'ar, imleçli) + "
                      "Başlangıç/Bitiş tarih süzgeci (eski gönderimlere erişim)."]},
@@ -1270,6 +1309,8 @@ class Benzetim:
         """Yeniden deneme / Yine de Gönder: iş yeniden gönderime alınır. K4: dönem asıl işten taşınır (M87/M88 bunu bozar)."""
         if j.asil_durum is None:
             j.asil_durum = j.durum
+        if j.durum == ATLANDI:
+            j.elendi_neden = None                                        # güncelleme 13 (S16 'gonderim' okuması): Atlandı işin asıl işten yeniden gönderimi — eski atlanma nedeni kalkar
         j.son_kayit = None
         j.yeniden = True
         j.yine_kaynak = ()
@@ -1349,12 +1390,26 @@ class Benzetim:
         açılıştan sonra başka işle aynı kişiye aynı dönem giden varsa elenir. K6: bu yol Sonucu Belirsiz elemesine takılmaz (onaylı yol)."""
         j = self.isler[f'{o["toplu"]}/{o["cari"]}']
         tp = self.toplular[o["toplu"]]
-        sonuc = {"elenen": {}, "alinan": [], "oneri": None}
+        sonuc = {"elenen": {}, "alinan": [], "oneri": None, "supheli_etiketi": []}
         # İLKEYLE G0 (4) + D6 "her seferinde onaylı Yine de Gönder": asıl işte belirsiz kalan deneme (hedef "asil") de Yine de Gönder ile gönderilebilir — çıkmaz yok
         asil_belirsiz = o.get("hedef") == "asil" and j.asil_durum == BELIRSIZ and "M128" not in self.mut
         if j.durum == BELIRSIZ or asil_belirsiz:
             ctx = (j.anahtar_donem, j.tarih_donem, j.kanon_donem, j.tarihler_donem)
-            if "M111" not in self.mut and self.kuyrukta(j.cari, tp.sablon, ctx, tp.sirket, t):
+            c = self.cariler[j.cari]
+            hat = tp.sablon == "hatirlatma"
+            # S16 (Y13-1): basma ANINDA şüpheli kaydı açık Ödeme Hatırlatma carisi (M208: kapanmış kalem de açık sayılır)
+            acik = hat and (self.supheli_acik(c) or ("M208" in self.mut and any(v.get("supheli") for v in c.get("vadeler", []))))
+            if (acik or ("M209" in self.mut and not hat and self.supheli_acik(c))) and "M201" not in self.mut:
+                sonuc["supheli_etiketi"].append(j.cari)                    # Y13-4: onay penceresinde "Şüpheli Alacağı Var" (yanıttan önce — elense de görünür)
+            s16 = acik and "M199" not in self.mut                           # S16: Yine de Gönder elle seçim sayılır (M199: B seçeneği)
+            s16_engel = None
+            if s16 and "M200" not in self.mut:
+                s16_engel = self.hatirlatma_engeli(c, t)                    # S16 "yoksa elenir" + S7A + S17 / NB5 sınırı (Y13-3, Y13-8)
+                if s16_engel is not None:
+                    self.okuma_izi.add("s16_an")                           # README §18.4: elemenin anı karar metninde yok → iki okuma
+            if s16_engel is not None and self.okuma.get("s16_an", S16_OKUMALARI[0]) == "basma":
+                sonuc["elenen"][j.cari] = s16_engel                         # (a) basma anında elenir; iş Sonucu Belirsiz kalır (ilke 2)
+            elif "M111" not in self.mut and self.kuyrukta(j.cari, tp.sablon, ctx, tp.sirket, t):
                 sonuc["elenen"][j.cari] = "zaten_kuyrukta"                  # E2 + F1: işteki Yine de Gönder'de de bekleyen ileti eler
             elif "M118" in self.mut and self.belirsiz_kaynagi(j.cari, tp.sablon, ctx, tp.sirket, t, haric=j.son_kayit):
                 sonuc["elenen"][j.cari] = BELIRSIZ_NEDEN                    # M118: F1'in tersi (başka denemenin belirsizi eler)
@@ -1366,6 +1421,12 @@ class Benzetim:
                 self.tasi(j, tp, t)
                 j.yine_kaynak = kaynak
                 j.belirsiz_onay = True                                          # J10 (07:11 a): belirsizlik onayı izi (yeniden denemeye taşınır — c)
+                if s16:
+                    j.supheli_elle = True                                       # S16 (Y13-2): elle seçim sayılır — işte kalır (Y12-7 / Y12-8)
+                if s16_engel is not None:
+                    j.s16_bos = True                                            # (b) 'gonderim' okuması: basma anında şüphesiz tutar yoktu (gönderim anında Atlandı beklenir)
+                if "M200" in self.mut and acik and "M199" not in self.mut:
+                    j.m200 = True
                 tp.durum = "aktif"; tp.bas = 0
                 sonuc["alinan"].append(j.cari)
         if o.get("etiket"):
@@ -1424,6 +1485,44 @@ class Benzetim:
         """S7 (Y11-17): carinin açık şüpheli alacak kaydı var mı (kalanı > 0 olan {"supheli": true} kalem; vadesine bakılmaz).
         S7B (Y12-7): kuyrukta kapanan kayıt (bütün şüpheli kalemlerin kalanı 0) açık DEĞİL (M194 kalanına bakmaz)."""
         return any(v.get("supheli") and ("M194" in self.mut or Decimal(str(v["kalan"])) > 0) for v in c.get("vadeler", []))
+
+    def net_borc(self, c, t):
+        """NB5 (Y13-6): net borç = hareketlerden bakiye (borç − alacak; alış faturası alacak tarafında), {{5}} ile aynı kesim (tarih ≤ bugün, yerel gün).
+        S17 (Y13-8): şüpheli kalemler HARİÇ — açık şüpheli kalemlerin (kalanı > 0; vadesine bakılmaz) kalanı düşülür; kayıt kapalıysa düşülecek yok (formül (5)'e iner).
+        M202 (S17 B): düşülmez (toplam net borç); M182 (şüpheli dahil tutar): düşülmez; M203: yalnız vadesi geçmiş şüpheli kalem düşülür."""
+        bugun = tarih(t, self.tz)
+        bakiye = sum((Decimal(str(h.get("borc", 0))) - Decimal(str(h.get("alacak", 0))) for h in c["hareketler"] if h["tarih"] <= bugun), Decimal("0"))
+        if "M202" in self.mut or "M182" in self.mut:
+            return bakiye
+        sup = sum((Decimal(str(v["kalan"])) for v in c.get("vadeler", [])
+                   if v.get("supheli") and Decimal(str(v["kalan"])) > 0 and ("M203" not in self.mut or v["vade"] < bugun)), Decimal("0"))
+        return bakiye - sup
+
+    def hatirlatma_tutari(self, c, t):
+        """§7a 20 + NB5 + S17: (vadesi geçmiş şüphesiz kalemler, {{4}} tutarı = min(kalemlerin toplamı, şüphesiz net borç)) — kalem yoksa (kalemler, None).
+        M182: toplam şüpheli kalemleri de içerir (sınır da şüpheli dahil); M204: net sınırı yok (eski §7a 20)."""
+        gec = self.gecikmis(c, t)
+        if not gec:
+            return gec, None
+        kalemler = self.gecikmis(c, t, supheli_dahil=True) if "M182" in self.mut else gec
+        toplam = sum((Decimal(str(v["kalan"])) for v in kalemler), Decimal("0"))
+        if "M204" in self.mut:
+            return gec, toplam
+        return gec, min(toplam, self.net_borc(c, t))
+
+    def hatirlatma_engeli(self, c, t, gonderim=False):
+        """§7a 20 + S7A + NB5 + S17 (Y13-3, Y13-7, Y13-8): Ödeme Hatırlatma'da hatırlatılacak tutar yoksa eleme adı, varsa None.
+        Sıra: vadesi geçmiş (şüphesiz) kalem kümesi boş → 'gecikmis_borc_yok' (eski ad aynen); sınırlanmış tutar ≤ 0 → ad karar metninde yok → secenek (NET_ENGEL)."""
+        if "M207" in self.mut and self.net_borc(c, t) <= 0:
+            return self.NET_ENGEL
+        gec, tutar = self.hatirlatma_tutari(c, t)
+        if not gec:
+            return "gecikmis_borc_yok"
+        if "M204" in self.mut or (gonderim and "M206" in self.mut):
+            return None
+        if tutar < 0 or (tutar == 0 and "M205" not in self.mut):
+            return self.NET_ENGEL
+        return None
 
     def baslat(self, o, t):
         etiket = o["etiket"]; sirket = o.get("sirket", "A"); sablon = o.get("sablon", "ekstre")
@@ -1487,8 +1586,10 @@ class Benzetim:
             elif elle:
                 # Y12-3: "elle seçim" S7'de etiketli cari için tanımlı — başlatmada açık şüpheli kaydı olmayan cari için kâhin anlam uydurmaz
                 raise ValueError("girdi tutarsız (README §17 Y12-3): supheli_elle yalnız başlatmada 'Şüpheli Alacağı Var' etiketli cariye verilir — " + cid)
-            if sablon == "hatirlatma" and not self.gecikmis(c, t) and "M44" not in self.mut and not s7_b_secenegi:
-                elenen[cid] = "gecikmis_borc_yok"; continue               # §7a 20 (+ S7A: şüphesiz kalemler)
+            if sablon == "hatirlatma" and "M44" not in self.mut and not s7_b_secenegi:
+                engel = self.hatirlatma_engeli(c, t)                      # §7a 20 (+ S7A: şüphesiz kalemler; + NB5 / S17: net borç ≤ 0 — Y13-7, Y13-8)
+                if engel is not None:
+                    elenen[cid] = engel; continue
             ctx = self.kisi_ctx(coz, cid)                                  # J8: Tüm Hareketler'de kişiye özel kanon
             neden = None                                                  # E2: TEK neden, sıra Zaten Kuyrukta → Sonucu Belirsiz → Daha Önce Gönderildi
             for k in (("belirsiz", "kuyruk") if "M112" in self.mut else ("kuyruk", "belirsiz")):
@@ -1579,10 +1680,9 @@ class Benzetim:
             }
         bugun = tarih(t, self.tz)
         bakiye = sum((d for tr, d in hareketler if tr <= bugun), Decimal("0"))
-        gec = self.gecikmis(c, t)                                       # S7 (Y11-19): şüphesiz kalemler — {{3}} ve {{4}} aynı kalemlerden
+        gec, toplam = self.hatirlatma_tutari(c, t)                      # S7 (Y11-19): şüphesiz kalemler — {{3}} ve {{4}} aynı kalemlerden; NB5 / S17: {{4}} net borçla sınırlı (Y13-6, Y13-8)
         if gec:
-            toplam = sum((Decimal(str(v["kalan"])) for v in (self.gecikmis(c, t, supheli_dahil=True) if "M182" in self.mut else gec)), Decimal("0"))
-            vade, tutar = tr_tarih(gec[0]["vade"]), para(toplam, self.mut)
+            vade, tutar = tr_tarih(gec[0]["vade"]), para(toplam, self.mut)   # Y13-6: {{3}} en eski vadesi geçmiş açık kalem (netleşme kalemi kapatmaz)
         else:
             vade, tutar = {"plan_susuyor": "gecikmiş borç yok (yalnız M44'te)"}, {"plan_susuyor": "gecikmiş borç yok"}
         bak = {"plan_susuyor": self.S7_BAKIYE_SUSUYOR} if self.supheli_acik(c) else para(bakiye, self.mut)
@@ -1708,13 +1808,20 @@ class Benzetim:
                         elle_is = getattr(j, "supheli_elle", False)
                         sup = (acik and not elle_is and "M192" not in self.mut
                                and not ("M195" in self.mut and j.durum == BEKLEME_131049))
-                        if sup and getattr(j, "belirsiz_onay", False):
-                            raise ValueError("KULLANICIYA SORULMALI S7-c (README §17.4): Sonucu Belirsiz işteki Yine de Gönder (ya da o zincirdeki yeniden deneme) "
-                                             "sırasında şüpheli alacak kaydı açık, iş elle işaretsiz — kodlanmadı")
-                        # §7a 20 + S7A (Y12-2): şüphesiz gecikmiş borç gönderim anında da (M191: elle şüpheli caride yalnız başlatmada)
-                        gec_yok = (not self.gecikmis(c, t) and "M44" not in self.mut
-                                   and not ("M191" in self.mut and elle_is and acik))
-                        sira = (("gecikmis_borc_yok", gec_yok), (SUPHELI, sup)) if "M197" in self.mut else ((SUPHELI, sup), ("gecikmis_borc_yok", gec_yok))
+                        if sup and getattr(j, "belirsiz_onay", False) and "M199" not in self.mut:
+                            # S16 basma anında kaydı açık olanı elle yapar (Y13-2); burada kayıt basmadan SONRA açıldı → S7-d (README §18.4)
+                            raise ValueError("KULLANICIYA SORULMALI S7-d (README §18.4): işteki Yine de Gönder basıldığında şüpheli kaydı yoktu, iş belirsizlik onayıyla "
+                                             "gönderilecekken kayıt açıldı (elle işaretsiz) — kodlanmadı")
+                        # §7a 20 + S7A (Y12-2) + NB5 / S17 (Y13-7, Y13-8): hatırlatılacak tutar gönderim anında da (M191: elle şüpheli caride yalnız başlatmada; M206: net yalnız başlatmada)
+                        engel = (None if ("M44" in self.mut or ("M191" in self.mut and elle_is and acik) or getattr(j, "m200", False))
+                                 else self.hatirlatma_engeli(c, t, gonderim=True))
+                        if getattr(j, "s16_bos", False):
+                            j.s16_bos = False
+                            if engel is None and not sup:
+                                # README §18.4: 'gonderim' okumasında basmada elenecek kişiye ileti gidecek — iki okuma kime / kaç kez ayrışıyor
+                                raise ValueError("KULLANICIYA SORULMALI (README §18.4, S16 elemenin anı): basma anında şüphesiz tutar yoktu, gönderim anında doğdu — "
+                                                 "basma okumasında elenir, gönderim okumasında gider; kodlanmadı")
+                        sira = ((engel, engel is not None), (SUPHELI, sup)) if "M197" in self.mut else ((SUPHELI, sup), (engel, engel is not None))
                         neden_ = next((n_ for n_, v_ in sira if v_), None)           # Y12-6: sıra başlatmadaki gibi (Y11-18)
                         if neden_ is not None:
                             self.atla(j, neden_, t)
@@ -2451,6 +2558,12 @@ class Benzetim:
     BELIRTEC_NEDEN_SUSUYOR = "190 / 0 ile duran toplu işin neden adı (hata kodu ya da 'Bağlantı Süresi Doldu') karar metninde yok"
     BELIRTEC_KOD_SUSUYOR = "190 / 0 alıp bekleyenlere dönen işin hata kodu karar metninde yok ('kalan kişilerle bekler')"
     S7_BAKIYE_SUSUYOR = "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"
+    # README §18.4 (güncelleme 13): kime / kaç kez DEĞİŞMEYEN, karar metninin sustuğu yerler
+    S16_AN_SUSUYOR = ("S16 'yoksa elenir': elemenin işteki Yine de Gönder basıldığı anda mı (yanıtta elenir, iş Sonucu Belirsiz kalır) yoksa gönderim anında mı (iş alınır, "
+                      "'Atlandı') yapıldığı karar metninde yok — iki okumada da ileti gitmez")
+    NET_ADI_SUSUYOR = ("karar (5) / S17 net borç elemesinin adı karar metninde yok ('Gecikmiş Borç Yok' ya da ayrı 'Net Borcu Yok') — ileti iki adda da gitmez")
+    NET_ENGEL = {"secenek": ["gecikmis_borc_yok", NET_BORC_YOK], "susuyor": NET_ADI_SUSUYOR}
+    OKUMA_SUSUYOR = {"devam_sd": DEVAM_SD_SUSUYOR, "s16_an": S16_AN_SUSUYOR}
 
     def belirtec_bekliyor(self, j):
         return j.kod is not None and j.kod == getattr(j, "belirtec_kodu", None) and j.durum not in SIRA and j.durum not in KESIN
@@ -2557,7 +2670,8 @@ class Benzetim:
             "degismez": dict(self.degismez),
         }
         if self.yeniden_sonuc:                                 # K4–K6: yeniden deneme / Yine de Gönder yanıtı (yalnız etiketli olaylar)
-            sonuc["yeniden"] = {k: {"elenen": dict(sorted(v["elenen"].items())), "alinan": v["alinan"], "oneri": v["oneri"]}
+            sonuc["yeniden"] = {k: {"elenen": dict(sorted(v["elenen"].items())), "alinan": v["alinan"], "oneri": v["oneri"],
+                                    **({"supheli_etiketi": v["supheli_etiketi"]} if v.get("supheli_etiketi") else {})}   # Y13-4: yalnız boş değilse (eski çıktılar değişmez)
                                 for k, v in sorted(self.yeniden_sonuc.items())}
         if self.listeler:                                      # K8
             sonuc["listeler"] = dict(sorted(self.listeler.items()))
@@ -2634,16 +2748,35 @@ def secenek_birlestir(degerler, neden):
     return {"secenek": secenekler, "susuyor": " + ".join(nedenler)}
 
 
+def okuma_birlesimleri(anahtarlar):
+    """OKUMALAR'daki anahtarların bütün birleşimleri, hepsi ilk (model) okumada olan birleşim HARİÇ; sıra: itertools.product (ilk anahtar en yavaş değişir)."""
+    adlar = sorted(anahtarlar)
+    for degerler in itertools.product(*[OKUMALAR[a] for a in adlar]):
+        okuma = dict(zip(adlar, degerler))
+        if any(okuma[a] != OKUMALAR[a][0] for a in adlar):
+            yield okuma
+
+
 def hesapla_tek(sen, kismi=None, mut=frozenset()):
     """İki zaman ucu (birleştirme {"biri"}); güncelleme 11: koşu karar metninin sustuğu bir duruma düştüyse (yeniden bağlanmadan Devam Et) öbür okumalar da koşulur,
-    ayrışan yapraklar {"secenek"} (README §16.4)."""
+    ayrışan yapraklar {"secenek"} (README §16.4). Güncelleme 13: okumalar genel (OKUMALAR: devam_sd, s16_an — README §18.4); koşuda karşılaşılan her okuma anahtarının
+    bütün birleşimleri koşulur (yeni anahtar çıkarsa küme genişler)."""
     sonuclar = []
     for zaman in ZAMANLAR:
         b = Benzetim(sen, tam_secim(kismi or {}), zaman, mut)
         r = b.calistir()
-        if "devam_sd" in b.okuma_izi:
-            r = secenek_birlestir([r] + [Benzetim(sen, tam_secim(kismi or {}), zaman, mut, okuma={"devam_sd": o}).calistir() for o in DEVAM_OKUMALARI[1:]],
-                                  Benzetim.DEVAM_SD_SUSUYOR)
+        izi = set(b.okuma_izi)
+        if izi:
+            while True:
+                tum = [r]; genis = set(izi)
+                for okuma in okuma_birlesimleri(izi):
+                    b2 = Benzetim(sen, tam_secim(kismi or {}), zaman, mut, okuma=okuma)
+                    tum.append(b2.calistir())
+                    genis |= b2.okuma_izi
+                if genis == izi:
+                    break
+                izi = genis
+            r = secenek_birlestir(tum, " + ".join(Benzetim.OKUMA_SUSUYOR[a] for a in sorted(izi)))
         sonuclar.append(r)
     return birlestir(sonuclar)
 
