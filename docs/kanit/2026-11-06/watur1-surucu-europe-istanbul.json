@@ -1,0 +1,68 @@
+{
+  "ad": "watur1-surucu-europe-istanbul",
+  "komut": "node test/bagimsiz/whatsapp-248/surucu.mjs --senaryo S33-01-yol-2-imzasiz-bildirim-isaret-koymaz-sure-dolmaz-ayni-donem-daha-once,S33-02-yol-1-imzasiz-bildirim-kabul-isaret-ve-sure-dolumu-sahte-de-islenir,S41-01-yol-2-uygulama-duzeyi-adres-imzali-islenir-imzasiz-duser,S41-02-yol-1-uygulama-duzeyi-adres-imzasiz-kabul,S43-01-yol-2-imzali-taninmayan-bildirim-isaret-koymaz-ayni-donem-daha-once,S43-02-yol-1-imzasiz-taninmayan-bildirim-kabul-isaret-koymaz,S43-03-yol-2-is-kimligiyle-taninan-bildirim-isaret-koyar-sure-dolar --uc hizli --kip yol2 --tz Europe/Istanbul --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur1-kanit/son-surucu-ist",
+  "commit": "e9b4540031e0474316d2d1d7bb8e3ea4e71ef4c8",
+  "dal": "worktree-agent-a4f37145169a88f67",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T11:04:14.743Z",
+  "sure_sn": 14.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 7,
+    "gecen": 0,
+    "basarisiz": 7,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 7 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "S33-01-yol-2-imzasiz-bildirim-isaret-koymaz-sure-dolmaz-ayni-donem-daha-once [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "S33-02-yol-1-imzasiz-bildirim-kabul-isaret-ve-sure-dolumu-sahte-de-islenir [hizli] (3 fark; davranış farkı 0; gösterim: G1-borclu-eki 3)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "S41-01-yol-2-uygulama-duzeyi-adres-imzali-islenir-imzasiz-duser [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "S41-02-yol-1-uygulama-duzeyi-adres-imzasiz-kabul [hizli] (3 fark; davranış farkı 0; gösterim: G1-borclu-eki 3)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "S43-01-yol-2-imzali-taninmayan-bildirim-isaret-koymaz-ayni-donem-daha-once [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "S43-02-yol-1-imzasiz-taninmayan-bildirim-kabul-isaret-koymaz [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "S43-03-yol-2-is-kimligiyle-taninan-bildirim-isaret-koyar-sure-dolar [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur1-kanit/son/2026-11-06/watur1-surucu-europe-istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a4f37145169a88f67",
+  "ham_cikti_sha256": "00967aef68f1f2dc5011ff81e8d7f21e973e98add55f2ee50a1fac388459a176",
+  "ham_cikti_bayt": 1267
+}

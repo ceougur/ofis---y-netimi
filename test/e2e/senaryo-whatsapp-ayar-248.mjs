@@ -14,6 +14,7 @@
 //       Türkçe, hücrede yalnız "Kaydedilemedi · <tarih>", Meta'nın ham iletisi ayrı satırda; düzelince yeşil bildirim aynen. (A2: App ID yardımı Ekstre şablonunu söyler — D8.)
 //   A4d (2.5.0 BS-1) Meta yalnız hata kodu döndürünce (ileti yok) kod neden satırında "(Meta hata kodu 100)"; Meta iletisi satırı yok.
 //   A4e (2.5.0 WE) Webhook Bilgileri: Callback URL + Verify Token pencerede, Kopyala; değerler sunucununkiyle aynı; pencere kapanınca sayfada yok. A6: Personel 403.
+//   A4f (2.5.0 WhatsApp tur 1) kapıda belirteç yok (ready false): boş Verify Token satırı ve Belirteci Kopyala gizli, neden metni görünür.
 //   A5 Bağlantıyı Kaldır (onay penceresi) → "Bağlı Değil"; ayar satırı silindi.
 //   A5b (2.5.0 W-2) Meta abonelik silmeyi reddederse bağlantı yine kaldırılır; uyarı "Meta tarafında kaldırılamadı" + Veri Silme Adımları düğmesi.
 //   A5c (2.5.0 W-1(a)) Yol 2 bağlantısı 53. gün: uyarı satırı, Bağlantı Süresi, Yeniden Bağla; ana ekranda günde bir bildirim; 60. gün Süresi Doldu, Kendime Deneme Gönder
@@ -467,6 +468,28 @@ await step("A4e Webhook Bilgileri: pencerede Callback URL (ofisin adresi + /wa/k
   await page.waitForFunction(() => !document.querySelector("[data-wa-webhook-value]"), null, { timeout: 15000 });
   ok(!(await page.content()).includes(verify), "pencere kapanınca sayfada belirteç yok");
   server.app.mobileRemote.setPublicUrl("");
+});
+
+// 2.5.0 WhatsApp tur 1 — BAŞ MİMAR KARARI (WE + BS-7 dar kontrolü sonrası): 001 şema kapısında ve çift yokken sunucu ready false + boş belirteç + neden döner (sunucu tarafı
+// test/whatsapp-we-webhook-bilgisi-250.test.mjs WE-7). Ekranda boş "Verify Token" satırı ve boş değer kopyalayan "Belirteci Kopyala" GÖRÜNMEZ; neden metni görünür. Sunucunun
+// bu yanıtı yönlendirmeyle verilir (kapıyı bu senaryoda kurmak 001'i yeni şemaya alıp programı yeniden açmayı ister — o yol WE-7'de).
+await step("A4f Webhook Bilgileri · kapıda belirteç yok: boş Verify Token satırı ve Belirteci Kopyala gizli, neden metni görünür, Adresi Kopyala yok", async () => {
+  const reason = "001 şirketinin verisi programın daha yeni bir sürümüyle açıldığı için webhook bilgileri hazırlanamıyor; programı güncelleyince burada görünür.";
+  const route = /\/api\/workspace\/whatsapp\/app-webhook(\?|$)/; // sorgu (şirket seçimi) olsa da
+  await page.route(route, request => request.fulfill({ status: 200, contentType: "application/json; charset=utf-8", body: JSON.stringify({ ok: true, data: { ready: false, callbackUrl: "", verifyToken: "", reason } }) }));
+  try {
+    await page.click('[data-wa-action="webhook"]');
+    const modal = await topModal();
+    ok((await text(`${modal} [data-wa-webhook-why]`)) === reason, "neden metni görünür (Türkçe cümle)");
+    ok((await page.locator(`${modal} [data-wa-webhook="verify"]`).count()) === 0, "boş Verify Token satırı yok");
+    ok((await page.locator(`${modal} [data-wa-webhook-copy="verify"]`).count()) === 0, "Belirteci Kopyala yok (boş değer kopyalanmaz)");
+    ok((await page.locator(`${modal} [data-wa-webhook-copy]`).count()) === 0 && (await page.locator(`${modal} [data-wa-webhook]`).count()) === 0, "pencerede hiçbir değer satırı / kopyala düğmesi yok");
+    await shot("05g-webhook-bilgileri-kapida");
+    await page.keyboard.press("Escape");
+    await page.waitForFunction(() => !document.querySelector("[data-wa-webhook-why]"), null, { timeout: 15000 });
+  } finally {
+    await page.unroute(route);
+  }
 });
 
 const unsubscribes = () => fake.requests.filter(item => item.method === "DELETE" && /\/subscribed_apps$/.test(item.path)).length;

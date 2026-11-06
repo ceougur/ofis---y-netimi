@@ -64,6 +64,8 @@ export function createWhatsappHub({ dataDir, store = null, now = () => new Date(
     appWebhook,
     async close() {
       await scheduler.stop();
+      // 2.5.0 WhatsApp tur 1 (S41): uygulama düzeyi bildirimin başlattığı adres denetimi (arka planda) defter kapanmadan biter.
+      await appWebhook?.rechecks?.settled();
       ledger.close();
     },
   };

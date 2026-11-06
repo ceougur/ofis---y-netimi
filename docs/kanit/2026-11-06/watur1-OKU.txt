@@ -1,0 +1,58 @@
+2.5.0 WHATSAPP KÜÇÜK İŞLER TUR 1 — KANIT (06.11.2026, tur 1 kod ajanı; dal worktree-agent-a4f37145169a88f67, taban 3fe5a92d)
+
+Kararlar (AYNEN, docs/2.5.0-IS-LISTESI.md D): S33 = A, S41 = A, S43 = A (+ Y18-13 kâhin okuması); dar kontrol DÜŞÜK-2; BAŞ MİMAR KARARI (WE + BS-7 sonrası) kapıda boş Verify Token gizli.
+Tasarım (koddan önce): docs/erp/WA-TUR1-TASARIM.md (commit 39023a11). Kod: af9c74c0 + e9b45400. Koşular e9b45400'da (ağaç temiz; yalnız node_modules bağı izlenmiyor).
+Node v22.23.4, linux x64; lisans servisi 127.0.0.1:9 (ders 30); gerçek Meta YOK (test/whatsapp-sahte-graph.mjs; sürücüde kâhinin sahte Meta'sı); Yol 2 hücrelerinde GERÇEK kapıcı (yerel).
+Bütün koşular tools/kanit.mjs kos ile (KANIT_DIR = not defteri; buraya kopyalandı). Eski kod: git archive 3fe5a92d → ayrı kopya (ders 23, 25), yeni testler kopyaya alındı.
+
+1) watur1-yeni-utc / watur1-yeni-europe-istanbul — yeni + değişen testler, son kod e9b45400
+   node --test --test-concurrency=1 test/whatsapp-tur1-bildirim-yolu-250.test.mjs test/whatsapp-we-webhook-bilgisi-250.test.mjs
+   UTC 26/26, Europe/Istanbul 26/26 (tur 1 16 hücre + WE 10 hücre; WE-2 beklentisi S41 = A ile değişti — ders 28).
+
+2) watur1-eski-3fe5a92d-utc / -europe-istanbul — AYNI testler ESKİ kodda: 15/26 geçti, 11 kırmızı (iki dilimde aynı). Kırmızıların iletisi (ders 38, beklenen neden):
+   T1-1 "imzasız bildirim hiçbir düzeyde işaret koymadı" (WABA işareti 1), T1-3 "tanınmayan bildirim işaret koymadı", T1-5 / T1-7 "WABA düzeyinde işaret yok",
+   T1-8 "yalnız 002 işaretli", T1-9 "uygulama düzeyi bildirim işlendi" (eski: accepted), T1-10 "Yol 2 yalnız imzalı (geldi 200)", T1-12 "ilk bildirimde hemen okundu"
+   (eski: Meta'ya istek yok), T1-13 "bildirim işlendi", T1-16 "adres denetimi sıklık izleyicisi var", WE-2 "POST işlendi … Teslim Edildi" (eski: accepted).
+   Eskide de YEŞİL (6): T1-2 (S33 karşı yüzü), T1-4 (Y18-13 — eski her POST'ta işaret koyuyordu), T1-6 (Yol 1 aynen), T1-11 (kaydı olmayan WABA — eski hiçbir şeyi işlemiyordu),
+   T1-14 / T1-15 (DÜŞÜK-2: kod zaten doğruydu, eksik olan testti) → bunların dişi 3) mutasyonla.
+
+3) watur1-mutasyon-ozet-e9b45400.txt (son kod) ve -af9c74c0.txt (ilk kod; aynı sonuç) — araç watur1-araclar/mut.mjs + mut-kos.sh (mutasyon kopyası ayrı, her mutasyon geri alındı):
+   15 mutasyonun 14'ü yakalandı: M1 her POST WABA işareti (6 kırmızı), M2 imzasız WABA işareti (S33 B; 3), M3 imzalı WABA işareti (işaret WABA düzeyine döner; T1-8), M4 tanınmayan
+   işaret (S43 B; 3), M5 tanıma yalnız wamid (Y18-13 karşıtı; T1-4), M6 uygulama düzeyi işlenmez (S41 B; 5), M7 uygulama düzeyinde imza aranmaz (T1-10), M8 adres denetimi yok (3),
+   M9 sıklık sınırı yok (3), M10 lisans denetimi yok (T1-13), M11 yazılabilirlik denetimi yok (T1-13), M13 kip WABA'ya bağlı değil (dar kontrol m5; T1-14, T1-15),
+   M15 force yok (3), M14 istemci boş belirteç görünür (e2e A4f 3 kırmızı).
+   YAŞAYAN: M12 (kayıt denetimi yok) — EŞDEĞER: kaydı olmayan WABA'nın bildirimi deliver'da sahip WABA'sı uyuşmadığı için yine düşer, adres denetimine aday şirket bulunmaz;
+   gözlenen fark yalnız günlük satırı ve bellekteki sıklık izine bir anahtar (savunma). Testle ayırt edilemez.
+
+4) watur1-e2e-* — BÜTÜN WhatsApp e2e'leri son kodda (TZ=UTC): ayar-248 157/157 (yeni A4f dahil), donem-248 37/37, gonder-248 189/189, sablon-248 50/50, senaryo-whatsapp 45/45.
+   watur1-e2e-ayar-eski-3fe5a92d.txt: aynı e2e eski istemciyle 154/157 — A4f'nin 3 denetimi kırmızı ("boş Verify Token satırı yok", "Belirteci Kopyala yok", "hiçbir değer satırı yok").
+
+5) watur1-surucu-* — kâhin sürücüsü (test/bagimsiz/whatsapp-248/surucu.mjs; kâhine dokunulmadı, sürücüye yalnız S-81 / S-82 / S-89 eşlemeleri) S33-01, S33-02, S41-01, S41-02,
+   S43-01, S43-02, S43-03 × Europe/Istanbul + UTC, --uc hizli, --kip yol2 (senaryonun ayar.baglanti_yolu'su varsa o): 14 koşuda DAVRANIŞ FARKI 0. Kalan farklar yalnız sürücünün
+   bilinen gösterim sınıfı G1-borclu-eki (programın artı bakiyeye "(Borçlu)" eki — her senaryoda eskiden beri); sürücü her farkı "not ok" yazdığından kanit çıkışı 1 (BİLİNÇLİ).
+   Ayrıntı watur1-surucu-karsilastirma-*.json (fark, sınıf, notlar). Sürücünün kendi testi 40/40.
+   watur1-surucu-eski-3fe5a92d-utc.txt: AYNI sürücü ESKİ kodda — S33-01, S41-01, S41-02, S43-01, S43-02 AYRIŞIR (davranış farkı 23–32; aynı dönemde İKİNCİ İLETİ: meta.post.A/B
+   beklenen 1, program 2); S33-02 ve S43-03 eskide de aynı (eski her bildirimde işaret koyuyordu; Yol 1 zaten kabul).
+   İlk koşuda (eşleme S-89'dan önce) S43-02'de "kanca_yanitlari.200 beklenen 1, program 0" vardı: sürücü S-20 gereği imzasız yanıtı saymıyordu; README §23.9 S-89 Yol 1'de kabulü
+   kanca_yanitlari ile okur → eşleme eklendi (kural kâhinin metninden, programın davranışından DEĞİL); program o istekte 200 döndürüyordu.
+
+6) watur1-komsu-utc — G2 komşular (ders 10 + 06.11 eki): test/whatsapp*.test.mjs (90) + createapp-acilis-geri-alma-249, license, mobil-deneme-bitis-247, tunel-yonetici-247,
+   sema-kapisi-bs7, update-flow, yedek-220, yedek-220-inceleme, yedek-denetim-221, sirket-yedek-klasor-210, geri-yukleme-uyari-244, sirket-yedeksiz-sil-249, mobil-247
+   (liste watur1-araclar/komsu-liste.txt; T6_KOK benzersiz klasör): 745/745. İlk koşu (af9c74c0) 744/745 — whatsapp-w1-baglanti kaynak taraması "tokenSealed'e yalnız
+   connection.mjs dokunur": hook.mjs'in adres denetimi kaydın tokenSealed alanını okuyordu → e9b45400'da kaldırıldı (belirteçsiz kayıt ensureHook'ta atlanır).
+
+7) Dar kontrol betikleri (scratchpad dk-wkucuk-betik, kopyası) yeni ↔ eski:
+   watur1-s5-*: 001 Yol 1 + 002 Yol 2 aynı WABA, 001'in imzasız teslimi; 30 gün + 2 sa sonra 002'nin işi — yeni accepted, eski expired.
+   watur1-s3-*: uygulama düzeyi adrese delivered — yeni iş delivered, 13 sa sonra "Daha Önce Gönderildi"; eski iş sent → expired → "gönderilecek".
+   (s5'in önizleme satırı iki kodda da "okunamadı": düzenekteki lisans 30 günde salt okunur olur — ölçüm iş durumundan.)
+
+8) watur1-yan-olcum-salt-okunur.txt (araç watur1-araclar/yan-olcum-salt-okunur.mjs; KOD DEĞİŞMEDİ): salt okunur lisansta (A etkinleştirilmemiş, B 31 gün sonra doğrulanamadı)
+   Webhook Bilgileri'nin ilk GET'i çifti ÜRETİP 001'e YAZIYOR (satır önce YOK, sonra VAR; ikinci GET aynı satır / aynı değer). Lisans kuralı (server/lib/license.mjs
+   assertWritable) yalnız GET dışı istekleri ve /api/admin/ dışını keser; GET yolundan yazım kuralın dışında kalıyor. → rapor: BAŞ MİMAR KARARI GEREKİYOR.
+
+9) watur1-s7-* (araç watur1-araclar/s7-yol-degisimi.mjs): YOL DEĞİŞİMİ — 002 Yol 1'de kendi iletisinin imzasız sent'i şirket işaretini koyar, Yol 2'ye geçer; Yol 2 iletisine
+   imzalı bildirim hiç gelmez, şablonun teslim süresi 12 sa: 13,5 sa sonra Yol 2 işi expired, kişi "gönderilecek" — yeni ve eski kodda AYNI (önceden de vardı; düzeltme queue.mjs /
+   connection.mjs ister — bu turda yazılamaz). Etki yalnız teslim süresi 7 günden kısa şablonda (Meta'nın varsayılanı 30 gün).
+
+DENENMEYEN: gerçek Meta (uygulama düzeyi adrese gerçekten gönderip göndermediği — DOĞRULANMADI); Windows (CI); gerçek salt okunur lisans ve gerçek şema kapısıyla ADRES DENETİMİ
+(T1-13 lisansın writable'ını ve canWriteInBackground'u değiştirerek — sürücü düzeni); süresi dolmuş belirteçte adres denetiminin atlanması (dal var, hücre yok); tam npm test (görev gereği).

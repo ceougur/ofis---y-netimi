@@ -1,0 +1,45 @@
+TAP version 13
+ok 1 - S-18 iş anahtarı önce
+ok 2 - S-18 iş anahtarı yoksa cari, n'inci ileti
+ok 3 - S-18 carinin n'inci planı yoksa boş
+ok 4 - S-18 iş ve cari yoksa *
+ok 5 - S-19 gec_kabul +10s
+ok 6 - S-19 gec_kabul +1m30s
+ok 7 - S-19 öbür yanıtlar gecikmeli değil
+ok 8 - S-19 10 sn < 15 sn geçerli
+ok 9 - S-19 20 sn ≥ 15 sn GEÇERSİZ
+ok 10 - S-19 sınırda (= zaman aşımı) GEÇERSİZ
+ok 11 - S-22 A silinirse kök B
+ok 12 - S-22 silme yoksa kök A
+ok 13 - S-22 B silinirse kök A
+ok 14 - S-22 tek şirket siliniyorsa eşlenemez
+ok 15 - S-24 defter onarımı → onarim_bekleyen_kabul
+ok 16 - S-24 kabul iletili whatsapp-ledger → onarim_bekleyen_kabul
+ok 17 - S-24 kilit notlu whatsapp-ledger (onarım deftere taşınamadı) → onarim_bekleyen_kabul
+ok 18 - S-24 defter açılamadı (disk dolu) onarım değil
+ok 19 - başlatma reddi: lisans
+ok 20 - eleme nedenleri tablosu
+ok 21 - S-30 özel aralık
+ok 22 - S-30 Tüm Hareketler aralığı okunur
+ok 23 - S-30 aralıksız Tüm Hareketler null + tanı
+ok 24 - S-30 mutasyonu çıktıyı değiştirir (dişi)
+ok 25 - S-23 J7 defterde kabulü olmayan kabul edilmiş deneme bulunur
+ok 26 - S-23 J7 hepsi defterdeyse eksik yok
+ok 27 - S-23 gerçek saat: benzetim 5 dk, gerçek 1 sn → işaret + 0,5 sn'ye dek beklenir
+ok 28 - S-23 gerçek saat: benzetim 5 sn ilerledi → yalnız 5 sn'ye dek
+ok 29 - S-23 gerçek saat: benzetim ilerlemedi → bekleme yok
+ok 30 - S-23 gerçek saat: gerçek saat zaten yetişti → bekleme yok
+ok 31 - İş telefonu: gönderilmiş deneme + son iş Atlandı → telefon
+ok 32 - İş telefonu: hiç gönderilmeden Atlandı → yok
+ok 33 - İş telefonu: gönderimde → telefon
+ok 34 - S-32 işin SON giden isteği
+ok 35 - S-32 hiç gitmediyse null
+ok 36 - S-23 kilitsiz dosya yazılabilir
+ok 37 - S-23 kilit doğrulanır
+ok 38 - S-23 kilitliyken başka bağlantı yazamaz
+ok 39 - S-23 kilitliyken okuma sürer (WAL)
+ok 40 - S-23 kilit bırakılınca yazılabilir
+1..40
+# tests 40
+# pass 40
+# fail 0
