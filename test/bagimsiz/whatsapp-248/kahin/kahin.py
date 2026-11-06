@@ -42,6 +42,10 @@ farklı alıcı penceresinde sayılmaz; bağlantının süresi dolunca (`baglant
 (`yeniden_baglan`) yalnız Devam Et ile kalanlara gider; Meta 190 / 0 reddinde o anda iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenlere döner (bağlantı Süresi Doldu); kod 102
 bugünkü gibi; şüpheli alacak kaydı açık müşteri Ödeme Hatırlatma'da `supheli_alacak` ile elenir, elle seçilirse ({{4}} şüphesiz gecikmiş tutarla) gider. Yeniden bağlanmadan
 Devam Et karar metninde yok → üç okuma koşulur, ayrışan yapraklar {"secenek"} (kime / kaç kez üçünde aynı).
+GÜNCELLEME 12 (2.5.0, KULLANICI KARARI 06.11.2026 03:35 UTC "hepsi A" — metinler AYNEN KARARLAR S7A, S7B; yorumlar README §17, kodlamadan önce yazıldı ve ayrı commit'lendi):
+S7-a elle seçilen şüpheli alacaklı caride şüphesiz gecikmiş borç yoksa "Gecikmiş Borç Yok" ile elenir (başlatmada ve gönderim anında); S7-b toplu gönderim kuyruktayken
+şüpheli alacak kaydı açılan, elle işaretsiz cari gönderim anında "Atlandı — Şüpheli Alacağı Var" (Devam Et, Başarısızları Yeniden Dene, Meta Bekletti 2. denemesi dahil);
+elle işareti yalnız başlatmada etiketli cariye ve işte kalır. İşteki Yine de Gönder + kuyrukta açılan şüpheli kaydı (S7-c) KULLANICIYA SORULMALI — kâhin hata verir.
 
 KÂHİN GÜNCELLEMESİ 8 (31.10.2026): H1 (kullanıcı) — Yine de Gönder ile açılan iş kabul/teslim edilince KAYNAK Sonucu Belirsiz deneme o kişi için artık
 elemez (kişi "Daha Önce Gönderildi"; yol R3 Yine de Gönder); açılan iş başarısız/belirsiz kalırsa kaynak elemeye devam eder. H2–H4 (baş mimar, G0 İLKEYLE):
@@ -371,6 +375,16 @@ MUTASYONLAR = {
     "M187": "SW2: Süresi Doldu olan alıcı pencereden tümüyle düşer (aynı alıcının sayılan başka kabulü olsa da)",
     "M188": "SD1915: 190 / 0 ile reddedilen deneme 'Daha Önce Gönderildi' sayılır (kesin gitmedi sayılmaz)",
     "M189": "SD1837 öncesi plan notu (P6 §3 madde 3): süre dolunca bekleyen işler 'Durduruldu', Devam Et ile sürmez",
+    # ---- kâhin güncellemesi 12 (2.5.0, 06.11.2026 03:35 UTC: S7A, S7B) ----
+    "M190": "S7A'nın tersi (S7-a B seçeneği): elle seçilen şüpheli alacaklı caride şüphesiz gecikmiş borç yokken başlatmada elenmez, ileti yine gider",
+    "M191": "S7A (Y12-2): elle seçilen şüpheli caride şüphesiz gecikmiş borç yalnız başlatmada denetlenir — kuyrukta kapanırsa gönderim anında ileti yine gider",
+    "M192": "S7B'nin tersi (S7-b B seçeneği): kuyruktayken şüpheli alacak kaydı açılan elle seçilmemiş cari başlatmadaki seçimle gider (şüphesiz tutarla)",
+    "M193": "S7B (Y12-8): elle işareti Devam Et / Başarısızları Yeniden Dene'ye taşınmaz — elle seçilmiş şüpheli cari de gönderim anında atlanır",
+    "M194": "S7B (Y12-7, Y11-17): şüpheli işaretli kalem kalanı 0 olsa da kayıt açık sayılır (kuyrukta kapanan kayıt da atlatır)",
+    "M195": "S7B (Y12-4): Meta Bekletti 2. denemesi gönderim anı sayılmaz — kuyrukta şüpheli açılan cariye 2. deneme gider",
+    "M196": "S7B (Y12-5, ilke 1/4): 'Şüpheli Alacağı Var' ile atlanan iş 'Zaten Kuyrukta' sayılır — yeni gönderimde elle seçilen de elenir (çıkmaz)",
+    "M197": "S7B (Y12-6): gönderim anında 'Gecikmiş Borç Yok' denetimi şüpheli denetiminden ÖNCE (başlatma sırasının tersi)",
+    "M198": "S7A + §7a 20 (Y12-1): 'vadesi geçmiş' bugünü UTC günüyle (yerel gün değil)",
 }
 
 # Kâhin güncellemesi 2'nin kaynak karar metinleri (AYNEN; CLAUDE.md "Açık iş" + docs/2.4.8-IS-LISTESI.md, 31.10.2026). "kaynak_turu": kullanıcı kararı mı,
@@ -579,6 +593,19 @@ KARARLAR = {
                      "(kâhin bakımı 2) + WK.",
                      "soru (iş listesi C): S7 (EK-2 Soru 29: şüpheli alacağı olan müşteriye otomatik Ödeme Hatırlatma — A öneri \"otomatik listeye girmesin\" / B \"şüphelisiz kısım gitsin\")",
                      "18:55 S3: \"Şüpheli alacağa alınmış borç otomatik Ödeme Hatırlatma'ya girsin mi\" → \"Hayır, elle seçilebilir\""]},
+    # ---- kâhin güncellemesi 12 (2.5.0; docs/2.5.0-IS-LISTESI.md D "KULLANICI KARARI 06.11 03:35 UTC" + C soru metni — AYNEN) ----
+    "S7A": {"kaynak_turu": "kullanıcı (06.11.2026 03:35 UTC, 'hepsi A'; iş listesi D + C, aynen) — WK güncellemesi 11'in KULLANICIYA SORULMALI S7-a'sı (README §16.4)",
+            "metin": ["KULLANICI KARARI 06.11 03:35 UTC (AYNEN: \"hepsi A\"; sorular C bölümünde, öneriyle soruldu):",
+                      "S7-a = A: şüpheli alacak kaydı açık müşteri ELLE seçilse de şüphesiz gecikmiş borcu yoksa \"Gecikmiş Borç Yok\" ile elenir (ileti gitmez).",
+                      "İŞ ATAMASI: S7-a, S7-b → Ç5 (B1 ortak gecikmiş / S7) + WK kâhin bakımı; …",
+                      "soru (iş listesi C, SORULDU 05.11 21:56 → YANITLANDI 06.11 03:35 \"hepsi A\"): S7-a: şüpheli alacak kaydı açık müşteri ELLE seçildi ama şüphesiz gecikmiş borcu yok — "
+                      "A öneri \"Gecikmiş Borç Yok\" ile elensin / B ileti yine gitsin."]},
+    "S7B": {"kaynak_turu": "kullanıcı (06.11.2026 03:35 UTC, 'hepsi A'; iş listesi D + C, aynen) — WK güncellemesi 11'in KULLANICIYA SORULMALI S7-b'si (README §16.4)",
+            "metin": ["KULLANICI KARARI 06.11 03:35 UTC (AYNEN: \"hepsi A\"; sorular C bölümünde, öneriyle soruldu):",
+                      "S7-b = A: toplu gönderim kuyruktayken şüpheli alacak kaydı açılan, elle seçilmemiş müşteri gönderim anında atlanır (\"Şüpheli Alacağı Var\").",
+                      "İŞ ATAMASI: S7-a, S7-b → Ç5 (B1 ortak gecikmiş / S7) + WK kâhin bakımı; …",
+                      "soru (iş listesi C, SORULDU 05.11 21:56 → YANITLANDI 06.11 03:35 \"hepsi A\"): S7-b: toplu gönderim kuyruktayken şüpheli alacak kaydı açılan, elle seçilmemiş "
+                      "müşteri — A öneri gönderim anında atlansın (\"Şüpheli Alacağı Var\") / B başlatmadaki seçimle gitsin."]},
     "K8": {"kaynak_turu": "kullanıcı (08:20 'şimdi yap'); en yeni önce / yerel gün / iki uç dahil / ters aralık ret ana oturum görev metni",
            "metin": ["KARAR (kullanıcı, 31.10.2026 ~08:20 UTC: \"şimdi yap\"): WhatsApp Gönderimleri ekranına 2.4.8'de \"Daha Fazla Göster\" (30'ar, imleçli) + "
                      "Başlangıç/Bitiş tarih süzgeci (eski gönderimlere erişim)."]},
@@ -1009,6 +1036,8 @@ class Benzetim:
                 for j in tp.isler:
                     if j.durum in (DURAKLATILDI, SORULUYOR, LISANS):
                         self.durum(j, BEKLIYOR, t); j.next_at = t
+                        if "M193" in self.mut:
+                            j.supheli_elle = False                       # Y12-8'in tersi: elle işareti Devam Et'e taşınmaz
                     elif "M177" in self.mut and j.durum in (KABUL, GONDERILDI):   # SD1837 "kimseye ikinci ileti gitmez"in tersi
                         self.durum(j, BEKLIYOR, t); j.next_at = t
             else:
@@ -1114,7 +1143,8 @@ class Benzetim:
         for j in self.isler.values():
             if yalniz is not None and j is not yalniz:
                 continue
-            if j.sirket != sirket or j.cari != cid or j.durum not in durumlar or self.toplular[j.toplu].sablon != sablon:
+            m196 = "M196" in self.mut and j.durum == ATLANDI and j.elendi_neden == SUPHELI   # Y12-5'in tersi: S7-b ile atlanan iş kuyrukta sayılır
+            if j.sirket != sirket or j.cari != cid or (j.durum not in durumlar and not m196) or self.toplular[j.toplu].sablon != sablon:
                 continue
             if sablon == "hatirlatma":
                 if "M105" in self.mut and j.anahtar_donem != ctx[0]:
@@ -1243,6 +1273,8 @@ class Benzetim:
         j.son_kayit = None
         j.yeniden = True
         j.yine_kaynak = ()
+        if "M193" in self.mut:
+            j.supheli_elle = False                                       # Y12-8'in tersi: elle işareti yeniden denemeye taşınmaz
         if "M87" in self.mut:
             j.coz_ozel = donem_coz(tp.donem, t, self.tz, tp.sablon, self.mut)
             j.anahtar_donem, j.tarih_donem, j.kanon_donem, j.tarihler_donem = self.kisi_ctx(j.coz_ozel, j.cari)
@@ -1382,14 +1414,16 @@ class Benzetim:
 
     def gecikmis(self, c, t, supheli_dahil=False):
         """§7a 20: vadesi geçmiş açık kalemler (girdi: cari 'vadeler' [{vade, kalan, supheli?}]; gecikmiş = vade < bugün — kâhin yorumu).
-        S7 (Y11-19): şüpheli alacak kaydına alınmış kalem ({"supheli": true}) Ödeme Hatırlatma'nın gecikmiş tutarına GİRMEZ (supheli_dahil yalnız M182)."""
-        bugun = tarih(t, self.tz)
+        S7 (Y11-19): şüpheli alacak kaydına alınmış kalem ({"supheli": true}) Ödeme Hatırlatma'nın gecikmiş tutarına GİRMEZ (supheli_dahil yalnız M182).
+        S7A (Y12-1): şüpheli alacaklı caride "şüphesiz gecikmiş borç" = bu küme (yerel gün; M198 UTC günü)."""
+        bugun = tarih(t, timezone.utc if "M198" in self.mut else self.tz)
         return sorted((v for v in c.get("vadeler", []) if v["vade"] < bugun and Decimal(str(v["kalan"])) > 0 and (supheli_dahil or not v.get("supheli"))),
                       key=lambda v: v["vade"])
 
     def supheli_acik(self, c):
-        """S7 (Y11-17): carinin açık şüpheli alacak kaydı var mı (kalanı > 0 olan {"supheli": true} kalem; vadesine bakılmaz)."""
-        return any(v.get("supheli") and Decimal(str(v["kalan"])) > 0 for v in c.get("vadeler", []))
+        """S7 (Y11-17): carinin açık şüpheli alacak kaydı var mı (kalanı > 0 olan {"supheli": true} kalem; vadesine bakılmaz).
+        S7B (Y12-7): kuyrukta kapanan kayıt (bütün şüpheli kalemlerin kalanı 0) açık DEĞİL (M194 kalanına bakmaz)."""
+        return any(v.get("supheli") and ("M194" in self.mut or Decimal(str(v["kalan"])) > 0) for v in c.get("vadeler", []))
 
     def baslat(self, o, t):
         etiket = o["etiket"]; sirket = o.get("sirket", "A"); sablon = o.get("sablon", "ekstre")
@@ -1442,15 +1476,19 @@ class Benzetim:
                 elenen[cid] = "sabit_hat"; continue                       # §7a 6 (K1): sabit hat / yurt dışı ELENMEZ
             if tel in telefonlar and "M54" in self.mut:
                 elenen[cid] = "ayni_telefon"; continue                    # §7a 8 (K2): aynı telefon iki cari → iki ileti
-            elle = cid in (o.get("supheli_elle") or ())
+            elle = sablon == "hatirlatma" and cid in (o.get("supheli_elle") or ())   # Y12-9: elle seçim yalnız Ödeme Hatırlatma'da anlamlı
+            s7_b_secenegi = False
             if sablon == "hatirlatma" and self.supheli_acik(c):
                 # S7 (Y11-18): şüpheli alacak kaydı açık müşteri otomatik listeye girmez ("Şüpheli Alacağı Var"); elle seçilirse şüphesiz gecikmiş tutarla gider
                 if "M183" in self.mut or (not elle and "M181" not in self.mut):
                     elenen[cid] = SUPHELI; continue
-                if not self.gecikmis(c, t) and "M181" not in self.mut:
-                    raise ValueError("KULLANICIYA SORULMALI S7-a (README §16.4): elle seçilen şüpheli alacaklı caride şüphesiz gecikmiş borç yok — kodlanmadı")
-            if sablon == "hatirlatma" and not self.gecikmis(c, t) and "M44" not in self.mut:
-                elenen[cid] = "gecikmis_borc_yok"; continue               # §7a 20
+                # S7A (Y12-1): elle seçilse de şüphesiz gecikmiş borcu yoksa aşağıdaki §7a 20 denetimiyle "Gecikmiş Borç Yok" (M190: B seçeneği — ileti yine gider)
+                s7_b_secenegi = "M190" in self.mut and elle
+            elif elle:
+                # Y12-3: "elle seçim" S7'de etiketli cari için tanımlı — başlatmada açık şüpheli kaydı olmayan cari için kâhin anlam uydurmaz
+                raise ValueError("girdi tutarsız (README §17 Y12-3): supheli_elle yalnız başlatmada 'Şüpheli Alacağı Var' etiketli cariye verilir — " + cid)
+            if sablon == "hatirlatma" and not self.gecikmis(c, t) and "M44" not in self.mut and not s7_b_secenegi:
+                elenen[cid] = "gecikmis_borc_yok"; continue               # §7a 20 (+ S7A: şüphesiz kalemler)
             ctx = self.kisi_ctx(coz, cid)                                  # J8: Tüm Hareketler'de kişiye özel kanon
             neden = None                                                  # E2: TEK neden, sıra Zaten Kuyrukta → Sonucu Belirsiz → Daha Önce Gönderildi
             for k in (("belirsiz", "kuyruk") if "M112" in self.mut else ("kuyruk", "belirsiz")):
@@ -1664,14 +1702,23 @@ class Benzetim:
                     if tel is None:
                         self.atla(j, tur_, t)
                         continue
-                    if tp.sablon == "hatirlatma" and self.supheli_acik(c) and "M181" not in self.mut:
-                        if not getattr(j, "supheli_elle", False):
-                            raise ValueError("KULLANICIYA SORULMALI S7-b (README §16.4): kuyruktayken şüpheli alacak kaydı açılan, elle seçilmemiş cari — kodlanmadı")
-                        if not self.gecikmis(c, t):
-                            raise ValueError("KULLANICIYA SORULMALI S7-a (README §16.4): elle seçilen şüpheli alacaklı caride şüphesiz gecikmiş borç yok — kodlanmadı")
-                    if tp.sablon == "hatirlatma" and not self.gecikmis(c, t) and "M44" not in self.mut:
-                        self.atla(j, "gecikmis_borc_yok", t)
-                        continue
+                    if tp.sablon == "hatirlatma":
+                        # S7B (Y12-4/5): gönderim anında açık şüpheli kaydı + elle işaretsiz iş → "Atlandı — Şüpheli Alacağı Var" (Meta Bekletti 2. denemesi dahil)
+                        acik = self.supheli_acik(c) and "M181" not in self.mut
+                        elle_is = getattr(j, "supheli_elle", False)
+                        sup = (acik and not elle_is and "M192" not in self.mut
+                               and not ("M195" in self.mut and j.durum == BEKLEME_131049))
+                        if sup and getattr(j, "belirsiz_onay", False):
+                            raise ValueError("KULLANICIYA SORULMALI S7-c (README §17.4): Sonucu Belirsiz işteki Yine de Gönder (ya da o zincirdeki yeniden deneme) "
+                                             "sırasında şüpheli alacak kaydı açık, iş elle işaretsiz — kodlanmadı")
+                        # §7a 20 + S7A (Y12-2): şüphesiz gecikmiş borç gönderim anında da (M191: elle şüpheli caride yalnız başlatmada)
+                        gec_yok = (not self.gecikmis(c, t) and "M44" not in self.mut
+                                   and not ("M191" in self.mut and elle_is and acik))
+                        sira = (("gecikmis_borc_yok", gec_yok), (SUPHELI, sup)) if "M197" in self.mut else ((SUPHELI, sup), ("gecikmis_borc_yok", gec_yok))
+                        neden_ = next((n_ for n_, v_ in sira if v_), None)           # Y12-6: sıra başlatmadaki gibi (Y11-18)
+                        if neden_ is not None:
+                            self.atla(j, neden_, t)
+                            continue
                     j.telefon = tel[1:] if "M16" in self.mut else tel
                     hazir = getattr(j, "hazir", None)
                     if tp.sablon == "ekstre" and hazir is not None:          # J12: açılışta hazırlanan ekstre — gönderim ertesi güne kaysa / yeniden gönderilse de AYNI

@@ -1,0 +1,34 @@
+WK kâhin güncellemesi 12 (S7-a, S7-b) — ESKİ kâhin, YALNIZ üç "KULLANICIYA SORULMALI S7-a / S7-b" hata satırı bellekte etkisiz kılınarak (bilgi; ders 38)
+Tarih: 2026-11-06T04:00Z (date -u). Yeni senaryolar: commit 9ce64b4c senaryolar.json. Dosyaya yazılmadı: eski kopya bellekte değiştirildi (araç "notr" kipi).
+Komut: python3 -I docs/kanit/2026-11-06/wk12-araclar/eski_kahinle_yeni.py <taban kahin klasörü> test/bagimsiz/whatsapp-248/kahin/senaryolar.json notr
+Çıkış kodu: 0
+Okuma: nötr kopya = karar yokken düşülecek yol: başlatmada §7a 20 "Gecikmiş Borç Yok" (= S7-a'nın A'sı), gönderim anında şüpheli denetimi yok (= S7-b'nin B'si).
+  S7A-01/02/03 AYNI → S7-a'nın A'sı §7a 20 düzeninin doğal devamı; S7A'nın B'ye karşı dişi M190 / M191 (F mutasyon).
+  S7B-01/02/04/05 KIRMIZI, beklenen nedenle: kuyrukta kaydı açılan elle işaretsiz cari gidiyor (X7 / R7 POST 1 → 2, MB7 2. deneme gidiyor, D7 T1'de gidip T2'de "Daha Önce Gönderildi").
+---
+notr kopya: 3 hata satırı etkisiz kılındı
+AYNI    S7A-01-elle-supheli-suphesiz-gecikmis-yok-elenir
+AYNI    S7A-02-elle-supheli-kuyrukta-suphesiz-kapanir-gonderimde-atlanir
+AYNI    S7A-03-gece-yarisi-suphesiz-vade-yerel-gun
+KIRMIZI S7B-01-sinirda-supheli-acilan-atlanir-yeni-gonderimde-elle-gider: 8 fark
+    elenen: elle {} ≠ eski {"T2": {"D7": "daha_once_gonderildi"}}
+    olusmadi: elle [] ≠ eski ["T2"]
+    kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/B7": "Atlandı", "T1/C7": "Teslim Edildi", "T1/D7": "Atlandı"} ≠ eski {"T1/A": "Teslim Edildi", "T1/B7": "Atlandı", "T1/C7": "Sınır Nedeniyle Bekliyor", "T1/D7": "Teslim Edildi"}
+    kontroller.K3.isler.T2/D7: elle "Sınır Nedeniyle Bekliyor" ≠ eski "<YOK>"
+    isler.T1/B7.atlanma_nedeni: elle "supheli_alacak" ≠ eski "gecikmis_borc_yok"
+    isler.T1/D7.atlanma_nedeni: elle "supheli_alacak" ≠ eski null
+KIRMIZI S7B-02-duraklatmada-supheli-acilan-atlanir-elle-secilen-gider: 3 fark
+    kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/SE7": "Teslim Edildi", "T1/X7": "Atlandı"} ≠ eski {"T1/A": "Teslim Edildi", "T1/SE7": "Teslim Edildi", "T1/X7": "Teslim Edildi"}
+    isler.T1/X7.atlanma_nedeni: elle "supheli_alacak" ≠ eski null
+    meta.post: elle {"A": 1, "SE7": 1, "X7": 0} ≠ eski {"A": 1, "SE7": 1, "X7": 1}
+AYNI    S7B-03-kuyrukta-acilan-kayit-kapanirsa-gider
+KIRMIZI S7B-04-meta-bekletti-ikinci-denemede-supheli-atlanir: 4 fark
+    kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/MB7": "Atlandı"} ≠ eski {"T1/A": "Teslim Edildi", "T1/MB7": "Başarısız"}
+    isler.T1/MB7.atlanma_nedeni: elle "supheli_alacak" ≠ eski null
+    isler.T1/MB7.post: elle 1 ≠ eski 2
+    meta.post: elle {"A": 1, "MB7": 1} ≠ eski {"A": 1, "MB7": 2}
+KIRMIZI S7B-05-yeniden-denemede-supheli-atlanir-elle-isaret-tasinir: 3 fark
+    kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/R7": "Atlandı", "T1/RE7": "Teslim Edildi"} ≠ eski {"T1/A": "Teslim Edildi", "T1/R7": "Teslim Edildi", "T1/RE7": "Teslim Edildi"}
+    isler.T1/R7.atlanma_nedeni: elle "supheli_alacak" ≠ eski null
+    meta.post: elle {"A": 1, "R7": 1, "RE7": 2} ≠ eski {"A": 1, "R7": 2, "RE7": 2}
+# yeni senaryo 8: KIRMIZI 4, AYNI 4

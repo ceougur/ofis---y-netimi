@@ -1,0 +1,16 @@
+WK kâhin güncellemesi 12 (S7-a, S7-b) — ESKİ kâhin (taban b12a03d6, değişiklikten önce alınmış kopya) yeni 8 senaryoyla (testin dişi, ders 7 / 38)
+Tarih: 2026-11-06T04:00Z (date -u). Yeni senaryolar: commit 9ce64b4c senaryolar.json (girdi + elle beklenen).
+Komut: python3 -I docs/kanit/2026-11-06/wk12-araclar/eski_kahinle_yeni.py <taban kahin klasörü> test/bagimsiz/whatsapp-248/kahin/senaryolar.json
+Çıkış kodu: 0 (araç her durumda 0 verir; hüküm son satırdadır)
+Okuma: KIRMIZI'ların hepsinde neden = eski kâhinin "KULLANICIYA SORULMALI S7-a / S7-b … kodlanmadı" hatası (kural YOKTU — beklenen neden).
+  AYNI: S7B-03 (gönderim anında kayıt kapalı; eski kâhin de bütün gecikmişle gönderiyordu — kural değişmedi, M194 içindir).
+---
+KIRMIZI S7A-01-elle-supheli-suphesiz-gecikmis-yok-elenir: eski kâhin hata verdi — ValueError: KULLANICIYA SORULMALI S7-a (README §16.4): elle seçilen şüpheli alacaklı caride şüphesiz gecikmiş borç yok — kodlanmadı
+KIRMIZI S7A-02-elle-supheli-kuyrukta-suphesiz-kapanir-gonderimde-atlanir: eski kâhin hata verdi — ValueError: KULLANICIYA SORULMALI S7-a (README §16.4): elle seçilen şüpheli alacaklı caride şüphesiz gecikmiş borç yok — kodlanmadı
+KIRMIZI S7A-03-gece-yarisi-suphesiz-vade-yerel-gun: eski kâhin hata verdi — ValueError: KULLANICIYA SORULMALI S7-a (README §16.4): elle seçilen şüpheli alacaklı caride şüphesiz gecikmiş borç yok — kodlanmadı
+KIRMIZI S7B-01-sinirda-supheli-acilan-atlanir-yeni-gonderimde-elle-gider: eski kâhin hata verdi — ValueError: KULLANICIYA SORULMALI S7-b (README §16.4): kuyruktayken şüpheli alacak kaydı açılan, elle seçilmemiş cari — kodlanmadı
+KIRMIZI S7B-02-duraklatmada-supheli-acilan-atlanir-elle-secilen-gider: eski kâhin hata verdi — ValueError: KULLANICIYA SORULMALI S7-b (README §16.4): kuyruktayken şüpheli alacak kaydı açılan, elle seçilmemiş cari — kodlanmadı
+AYNI    S7B-03-kuyrukta-acilan-kayit-kapanirsa-gider
+KIRMIZI S7B-04-meta-bekletti-ikinci-denemede-supheli-atlanir: eski kâhin hata verdi — ValueError: KULLANICIYA SORULMALI S7-b (README §16.4): kuyruktayken şüpheli alacak kaydı açılan, elle seçilmemiş cari — kodlanmadı
+KIRMIZI S7B-05-yeniden-denemede-supheli-atlanir-elle-isaret-tasinir: eski kâhin hata verdi — ValueError: KULLANICIYA SORULMALI S7-b (README §16.4): kuyruktayken şüpheli alacak kaydı açılan, elle seçilmemiş cari — kodlanmadı
+# yeni senaryo 8: KIRMIZI 7, AYNI 1
