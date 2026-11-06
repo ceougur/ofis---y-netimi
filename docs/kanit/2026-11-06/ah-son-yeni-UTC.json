@@ -1,0 +1,32 @@
+{
+  "ad": "ah-son-yeni-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/acilis-onarimi-hiz-250.test.mjs test/db-tx-kayip-250.test.mjs test/iade-210-onarim.test.mjs test/db-tx-commit-hata-249.test.mjs test/kapama-tek-gecis-245.test.mjs",
+  "commit": "33b2c2932934c37fe95975ba670e3b61af519b1a",
+  "dal": "worktree-agent-ab0062d42feec8f21",
+  "kirli": 0,
+  "izlenmeyen": 16,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T07:20:19.770Z",
+  "sure_sn": 10.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 26,
+    "gecen": 26,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-kanit/2026-11-06/ah-son-yeni-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab0062d42feec8f21",
+  "ham_cikti_sha256": "863d581dbc9075e0805841b1270203c53be42e732f12f7857a812c358538c1aa",
+  "ham_cikti_bayt": 11690
+}

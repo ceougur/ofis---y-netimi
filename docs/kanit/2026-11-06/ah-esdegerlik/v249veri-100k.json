@@ -1,0 +1,125 @@
+{
+  "eski": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-taban",
+  "yeni": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab0062d42feec8f21",
+  "bugun": "2026-10-08",
+  "acilisMs": {
+    "eski": 157875,
+    "yeni": 18636
+  },
+  "aday": 970,
+  "onarim": {
+    "eski": {
+      "fixed": 0,
+      "locked": 0
+    },
+    "yeni": {
+      "fixed": 0,
+      "locked": 0
+    }
+  },
+  "bolumler": {
+    "izler": 10,
+    "kartlar": 11737,
+    "taksitler": 42195,
+    "faturaDurumlari": 37248,
+    "aday": 970,
+    "cariler": 1164,
+    "kasa": 3,
+    "adayKartlar": 970,
+    "mutabakat": 2
+  },
+  "eleme": {
+    "aday": 970,
+    "farkli": 0,
+    "ornek": []
+  },
+  "farklar": [],
+  "sonuc": "AYNI",
+  "dokum": {
+    "eski": {
+      "repair": {
+        "fixed": [],
+        "locked": []
+      },
+      "izler": {
+        "n": 10,
+        "sha256": "c147def095ad2a1e8b38e629fe5aec964a70e8ab414c5541ee63557b963effda"
+      },
+      "kartlar": {
+        "n": 11737,
+        "sha256": "3df90075c54c66fed31f798d8fa1ad125d2f87a32472036b0ca064b5272a28c9"
+      },
+      "taksitler": {
+        "n": 42195,
+        "sha256": "f6b339032ee938e7af8b29ecc86b026f506af6de58b41e90ac81169687e2752e"
+      },
+      "faturaDurumlari": {
+        "n": 37248,
+        "sha256": "2fb8e67bcfc3d5ee570c905374d175cbcaaaf363391c413ce51c071cf5dcd3af"
+      },
+      "aday": 970,
+      "cariler": {
+        "n": 1164,
+        "sha256": "99a0d92d2cfb4b5c64a60a8ce71167a119934c34bfa30a6bc9a059571144dab2"
+      },
+      "kasa": {
+        "in": 217696249.31,
+        "out": 201053338.51,
+        "balance": 16642910.8
+      },
+      "adayKartlar": {
+        "n": 970,
+        "sha256": "d1664b3baf1adb6a3a86fe6e6b5e4426f310a41c509fe44fa4bde30c83fe2ae6"
+      },
+      "mutabakat": {
+        "ok": true,
+        "failures": []
+      }
+    },
+    "yeni": {
+      "repair": {
+        "fixed": [],
+        "locked": []
+      },
+      "izler": {
+        "n": 10,
+        "sha256": "c147def095ad2a1e8b38e629fe5aec964a70e8ab414c5541ee63557b963effda"
+      },
+      "kartlar": {
+        "n": 11737,
+        "sha256": "3df90075c54c66fed31f798d8fa1ad125d2f87a32472036b0ca064b5272a28c9"
+      },
+      "taksitler": {
+        "n": 42195,
+        "sha256": "f6b339032ee938e7af8b29ecc86b026f506af6de58b41e90ac81169687e2752e"
+      },
+      "faturaDurumlari": {
+        "n": 37248,
+        "sha256": "2fb8e67bcfc3d5ee570c905374d175cbcaaaf363391c413ce51c071cf5dcd3af"
+      },
+      "aday": 970,
+      "eleme": {
+        "aday": 970,
+        "farkli": 0,
+        "ornek": []
+      },
+      "cariler": {
+        "n": 1164,
+        "sha256": "99a0d92d2cfb4b5c64a60a8ce71167a119934c34bfa30a6bc9a059571144dab2"
+      },
+      "kasa": {
+        "in": 217696249.31,
+        "out": 201053338.51,
+        "balance": 16642910.8
+      },
+      "adayKartlar": {
+        "n": 970,
+        "sha256": "d1664b3baf1adb6a3a86fe6e6b5e4426f310a41c509fe44fa4bde30c83fe2ae6"
+      },
+      "mutabakat": {
+        "ok": true,
+        "failures": []
+      }
+    }
+  }
+}

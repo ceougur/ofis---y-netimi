@@ -1,0 +1,38 @@
+{
+  "eski": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-taban",
+  "yeni": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab0062d42feec8f21",
+  "bugun": "2026-10-08",
+  "acilisMs": {
+    "eski": 157875,
+    "yeni": 18636
+  },
+  "aday": 970,
+  "onarim": {
+    "eski": {
+      "fixed": 0,
+      "locked": 0
+    },
+    "yeni": {
+      "fixed": 0,
+      "locked": 0
+    }
+  },
+  "bolumler": {
+    "izler": 10,
+    "kartlar": 11737,
+    "taksitler": 42195,
+    "faturaDurumlari": 37248,
+    "aday": 970,
+    "cariler": 1164,
+    "kasa": 3,
+    "adayKartlar": 970,
+    "mutabakat": 2
+  },
+  "eleme": {
+    "aday": 970,
+    "farkli": 0,
+    "ornek": []
+  },
+  "farklar": [],
+  "sonuc": "AYNI"
+}

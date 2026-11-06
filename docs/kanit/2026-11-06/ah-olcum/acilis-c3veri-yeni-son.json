@@ -1,0 +1,70 @@
+{
+  "kod": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab0062d42feec8f21",
+  "veri": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-veri/n-100000",
+  "now": "2026-10-08T12:00:00+03:00",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "yukBasta": [
+    5.1,
+    6.1,
+    7.2
+  ],
+  "acilislar": [
+    {
+      "sira": 1,
+      "createAppMs": 13314,
+      "olayDongusuEnCokMs": 13310,
+      "yuk": [
+        5.8,
+        6.2,
+        7.2
+      ],
+      "acilisOnarimi": {
+        "fixed": 0,
+        "locked": 0
+      }
+    },
+    {
+      "sira": 2,
+      "createAppMs": 12569,
+      "olayDongusuEnCokMs": 12569,
+      "yuk": [
+        6.5,
+        6.3,
+        7.2
+      ],
+      "acilisOnarimi": {
+        "fixed": 0,
+        "locked": 0
+      }
+    }
+  ],
+  "onarimlar": [
+    {
+      "sira": 1,
+      "ms": 3259,
+      "olayDongusuEnCokMs": 3255,
+      "fixed": 0,
+      "locked": 0
+    }
+  ],
+  "aday": {
+    "fatura": 954,
+    "cari": 636,
+    "userVersion": 47
+  },
+  "satir": {
+    "account_entries": 102820,
+    "invoices": 34026,
+    "plans": 13992,
+    "cheque_events": 20352,
+    "cash_entries": 11554
+  },
+  "tabanTaramasiMs": 9643,
+  "tabanOk": false,
+  "yukSonda": [
+    7,
+    6.5,
+    7.2
+  ]
+}
