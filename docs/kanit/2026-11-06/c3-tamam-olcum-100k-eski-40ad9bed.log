@@ -1,0 +1,13 @@
+canliTuretmeAnaIsParcacigi: 2321 ms, olay döngüsü en çok 2316 ms, tepe RSS 427 MB · 154328 madde
+kilitVeDondurma: 8240 ms, olay döngüsü en çok 29 ms, tepe RSS 986 MB · 274616 donmuş satır · 50 ms'yi aşan boşluk 0
+donmusYilOkuma: 477 ms, olay döngüsü en çok 474 ms, tepe RSS 453 MB · 39377 madde
+donmusMizanIlk: 603 ms, olay döngüsü en çok 598 ms, tepe RSS 454 MB
+donmusMizanOnbellek: 1 ms, olay döngüsü en çok 2 ms, tepe RSS - MB
+kuralFarki: 5215 ms, olay döngüsü en çok 5210 ms, tepe RSS 796 MB · 0 madde
+esdegerlik: 4483 ms, olay döngüsü en çok - ms, tepe RSS 1181 MB · donmuş = canlı EVET (2022 7410/7410, 2023 37908/37908, 2024 38363/38363, 2025 39377/39377)
+kilitGeriCek: 484 ms, olay döngüsü en çok 52 ms, tepe RSS 1147 MB · 50 ms'yi aşan boşluk 1 (en büyükler: 52 ms @kilit işlemi (thaw))
+para satırı 226734 · ana yığın sınırı 2096 MB · node --disable-warning=ExperimentalWarning · yük 3.42 2.54 2.38 → 4.18 2.80 2.47
+
+# tests 1
+# pass 1
+# fail 0

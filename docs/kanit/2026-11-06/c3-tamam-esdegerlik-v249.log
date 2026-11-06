@@ -1,0 +1,21 @@
+ok 1 - eski döküm eski koddan, yeni döküm yeni koddan
+ok 2 - şirket sayısı (1 / 1)
+ok 3 - şirket 001: kilitli (2026-08-31) ve kilit göçte aynı
+ok 4 - şirket 001: göç 47 bekleyen 2.4.9 koşusu ([{"kind":"freeze","state":"pending","rule":"2.4.9","reason":"migration","fromDate":"","through":"2026-08-31"}])
+ok 5 - şirket 001: şema 47
+ok 6 - şirket 001: donunca kapsam = kilit, bekleyen yok ({"coverage":"2026-08-31","lock":"2026-08-31","pending":null,"runs":1,"freeze":{"running":false,"phase":"tamam","done":1913,"total":1913,"run":1,"error":"","coverage":"2026-08-31"}})
+ok 7 - şirket 001: tek koşu, 2.4.9 kuralıyla, 1913 satır
+ok 8 - şirket 001: donmuş defter = v2.4.9 GERÇEK kodunun türetmesi (kilit gününe kadar; 836 / 836 madde)
+ok 9 - şirket 001: 2.4.9 kopyası = v2.4.9 GERÇEK kodu (bütün geçmiş, 1142 / 1142 madde)
+ok 10 - şirket 001: güncel türetme = v2.4.9 (bütün geçmiş; kural sürümü 2.5.0, Ç1 yalnız ad)
+ok 11 - şirket 001: karma yevmiye (donmadan önce 2.4.9 koşusunun kuralıyla, donduktan sonra tablodan) = v2.4.9
+ok 12 - şirket 001: Yevmiye Defteri önizleme ucu 200
+ok 13 - şirket 001: kilitli yılın Yevmiye Defteri raporu göçten önce / sonra birebir (1359 satır, tam; özet [["Madde","594"],["Satır","1359"]])
+ok 14 - şirket 001: kilit gününe kadar bütün Yevmiye Defteri raporu göçten önce / sonra birebir (1913 satır, tam; özet [["Madde","836"],["Satır","1913"]])
+ok 15 - şirket 001: kilitli yılın Hesap Planı Mizanı birebir (32 hesap; ad farkı yalnız 770)
+ok 16 - şirket 001: kilit gününe kadar bütün zamanların Hesap Planı Mizanı birebir (32 hesap; ad farkı yalnız 770)
+ok 17 - şirket 001: Mutabakat Testi tutarlı (yeni kod; {"ok":true,"basarisiz":[]})
+
+# tests 17
+# pass 17
+# fail 0

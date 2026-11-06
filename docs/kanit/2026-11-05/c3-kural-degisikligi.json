@@ -1,0 +1,32 @@
+{
+  "ad": "c3-kural-degisikligi",
+  "komut": "node test/donmus-defter-kural-250.mjs --kopya /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-kural-kopya",
+  "commit": "4a07278679f69aad3748ae8d136d96aa97b1e90c",
+  "dal": "worktree-agent-af0fd5a610216d3a2",
+  "kirli": 1,
+  "izlenmeyen": 16,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T22:27:33.889Z",
+  "sure_sn": 2.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 14,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/c3-kural-degisikligi.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-af0fd5a610216d3a2",
+  "ham_cikti_sha256": "0403b75d31e4a7400136503dcdac7220bb353b65ea4043ba8d8aa20bad6157aa",
+  "ham_cikti_bayt": 3672
+}

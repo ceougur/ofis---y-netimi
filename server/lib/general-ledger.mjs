@@ -12,6 +12,13 @@ import { DOCUMENT_GL, documentGl, mainOfSub } from "./cheque-gl.mjs";
 import { DOUBTFUL_CHART, DOUBTFUL_GL, applyDoubtfulToJournal, doubtfulSkipOf } from "./doubtful-gl.mjs";
 import { roundMoney } from "./money.mjs";
 
+/**
+ * Türetme kuralının sürümü (2.5.0 Ç3; docs/erp/C3-DONDURMA-TASARIM.md §5): kilit konunca donan satırlar bu etiketle saklanır (ledger_snapshots.rule_version). Bir olayın
+ * HANGİ hesaba / hangi tarihe / hangi tutarla yazıldığını değiştiren her türetme değişikliği (Ç5, Ç7a, Ç7b …) bu sürümü yükseltir; kural tuzağı testi
+ * (test/donmus-defter-250.test.mjs) "2.5.0" iken güncel türetmenin 2.4.9 kopyasıyla (lib/ledger-rule-249) aynı olduğunu denetler. Ad değişikliği (Ç1: 770) kural değildir.
+ */
+export const LEDGER_RULE_VERSION = "2.5.0";
+
 // ---------- Hesap planı ve sınıflama (2.5.0 Ç1) ----------
 // Kaynak: docs/erp/MUHASEBELESTIRME-KURAL-KITABI.md §2 (hesap planı), §7 (MSUGT bilanço / gelir tablosu kalemleri, ters bakiye); docs/erp/MUHASEBE-CEKIRDEGI-PLANI.md
 // §2, §13. Her hesabın TEK kaydı ACCOUNT_PLAN'dadır (ad + sınıflama); CHART (kod → ad) ondan türetilir ve eski okuyucular (raporlar, Banka Ayarları, İşlem Kartı)

@@ -1,0 +1,26 @@
+
+<--- Last few GCs --->
+
+[7094:0x29394000]   119985 ms: Mark-Compact (reduce) 2047.2 (2082.9) -> 2047.2 (2083.9) MB, pooled: 0 MB, 651.21 / 0.00 ms  (+ 2.0 ms in 0 steps since start of marking, biggest step 0.0 ms, walltime since start of marking 695 ms) (average mu = 0.417, curr[7094:0x29394000]   121766 ms: Mark-Compact (reduce) 2048.3 (2083.9) -> 2048.3 (2084.9) MB, pooled: 0 MB, 1473.86 / 0.00 ms  (+ 4.6 ms in 0 steps since start of marking, biggest step 0.0 ms, walltime since start of marking 1490 ms) (average mu = 0.297, cu
+
+<--- JS stacktrace --->
+
+FATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory
+----- Native stack trace -----
+
+ 1: 0xe48bbe node::OOMErrorHandler(char const*, v8::OOMDetails const&) [node]
+ 2: 0x1248d00 v8::Utils::ReportOOMFailure(v8::internal::Isolate*, char const*, v8::OOMDetails const&) [node]
+ 3: 0x1248fd7 v8::internal::V8::FatalProcessOutOfMemory(v8::internal::Isolate*, char const*, v8::OOMDetails const&) [node]
+ 4: 0x1477ee5  [node]
+ 5: 0x1491779 v8::internal::Heap::CollectGarbage(v8::internal::AllocationSpace, v8::internal::GarbageCollectionReason, v8::GCCallbackFlags) [node]
+ 6: 0x1465e78 v8::internal::HeapAllocator::AllocateRawWithLightRetrySlowPath(int, v8::internal::AllocationType, v8::internal::AllocationOrigin, v8::internal::AllocationAlignment) [node]
+ 7: 0x1466da5 v8::internal::HeapAllocator::AllocateRawWithRetryOrFailSlowPath(int, v8::internal::AllocationType, v8::internal::AllocationOrigin, v8::internal::AllocationAlignment) [node]
+ 8: 0x143f0ce v8::internal::Factory::AllocateRaw(int, v8::internal::AllocationType, v8::internal::AllocationAlignment) [node]
+ 9: 0x142d45a v8::internal::FactoryBase<v8::internal::Factory>::AllocateRawArray(int, v8::internal::AllocationType, v8::internal::AllocationAlignment) [node]
+10: 0x142d5b6 v8::internal::FactoryBase<v8::internal::Factory>::NewFixedArrayWithFiller(v8::internal::Handle<v8::internal::Map>, int, v8::internal::Handle<v8::internal::HeapObject>, v8::internal::AllocationType) [node]
+11: 0x1754278 v8::internal::Handle<v8::internal::NameDictionary> v8::internal::HashTable<v8::internal::NameDictionary, v8::internal::NameDictionaryShape>::New<v8::internal::Isolate>(v8::internal::Isolate*, int, v8::internal::AllocationType, v8::internal::MinimumCapacity) [node]
+12: 0x1755699 v8::internal::Handle<v8::internal::NameDictionary> v8::internal::BaseNameDictionary<v8::internal::NameDictionary, v8::internal::NameDictionaryShape>::New<v8::internal::Isolate>(v8::internal::Isolate*, int, v8::internal::AllocationType, v8::internal::MinimumCapacity) [node]
+13: 0x1755719 v8::internal::Handle<v8::internal::NameDictionary> v8::internal::NameDictionary::New<v8::internal::Isolate>(v8::internal::Isolate*, int, v8::internal::AllocationType, v8::internal::MinimumCapacity) [node]
+14: 0x1265835 v8::Object::New(v8::Isolate*, v8::Local<v8::Value>, v8::Local<v8::Name>*, v8::Local<v8::Value>*, unsigned long) [node]
+15: 0x1166149 node::sqlite::StatementSync::All(v8::FunctionCallbackInfo<v8::Value> const&) [node]
+16: 0x7fbeb6dcf5e2 

@@ -1,0 +1,32 @@
+{
+  "ad": "c3-tamam-e2e-senaryo-220-yedek",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-220-yedek.mjs",
+  "commit": "9d507460347ac764298d99875a2803c1239475b7",
+  "dal": "worktree-agent-ad96cd3b37191bfb1",
+  "kirli": 1,
+  "izlenmeyen": 67,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T01:59:50.845Z",
+  "sure_sn": 12.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 37,
+    "gecen": 37,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-06/c3-tamam-e2e-senaryo-220-yedek.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad96cd3b37191bfb1",
+  "ham_cikti_sha256": "b56a71b2a4855fde6a69b3175a81e5518a91a15724f10b2c3455c2de15d528cf",
+  "ham_cikti_bayt": 3886
+}

@@ -1,0 +1,134 @@
+{
+ "kod": "/home/user/ofis---y-netimi/.claude/worktrees/agent-af0fd5a610216d3a2",
+ "veri": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-olcum-veri/n-100000-v46",
+ "now": "2026-10-08T12:00:00+03:00",
+ "kilit": "2025-12-31",
+ "tur": 3,
+ "node": "v22.23.4",
+ "cpu": 4,
+ "yuk": [
+  0.89,
+  1.87,
+  3.05
+ ],
+ "olcumler": {
+  "once.yevmiyeKilitliYil": {
+   "msMedyan": 2542,
+   "loopMaxMs": 2593,
+   "ms": [
+    2532,
+    2600,
+    2542
+   ]
+  },
+  "once.yevmiyeAcikDonem": {
+   "msMedyan": 2229,
+   "loopMaxMs": 2430,
+   "ms": [
+    2223,
+    2436,
+    2229
+   ]
+  },
+  "once.hesapMizaniKilitliYil": {
+   "msMedyan": 3561,
+   "loopMaxMs": 3640,
+   "ms": [
+    3648,
+    3457,
+    3561
+   ]
+  },
+  "once.ledgerTumu": {
+   "msMedyan": 3428,
+   "loopMaxMs": 3447,
+   "ms": [
+    3428,
+    3206,
+    3453
+   ]
+  },
+  "kilit": {
+   "ms": 8015,
+   "loopMaxMs": 69,
+   "yanit": {
+    "lockedUntil": "2025-12-31",
+    "frozenThrough": "2025-12-31",
+    "freeze": {
+     "running": false,
+     "phase": "tamam",
+     "done": 274616,
+     "total": 274616,
+     "run": 1,
+     "error": "",
+     "coverage": "2025-12-31"
+    }
+   }
+  },
+  "sonra.yevmiyeKilitliYil": {
+   "msMedyan": 755,
+   "loopMaxMs": 826,
+   "ms": [
+    755,
+    834,
+    694
+   ]
+  },
+  "sonra.yevmiyeAcikDonem": {
+   "msMedyan": 2393,
+   "loopMaxMs": 2639,
+   "ms": [
+    2645,
+    2336,
+    2393
+   ]
+  },
+  "sonra.hesapMizaniKilitliYil": {
+   "msMedyan": 3598,
+   "loopMaxMs": 3876,
+   "ms": [
+    3885,
+    3598,
+    3426
+   ]
+  },
+  "sonra.ledgerTumu": {
+   "msMedyan": 3452,
+   "loopMaxMs": 4014,
+   "ms": [
+    4023,
+    3394,
+    3452
+   ]
+  },
+  "yazimKilittenSonra": {
+   "ms": 32,
+   "loopMaxMs": 26,
+   "status": 200
+  },
+  "kilitGeriCek": {
+   "ms": 2270,
+   "loopMaxMs": 53,
+   "status": 200
+  }
+ },
+ "acilisMs": 102301,
+ "paraSatiri": 226734,
+ "donmus": {
+  "kapsam": "2025-12-31",
+  "satir": 274616,
+  "kosu": [
+   {
+    "kind": "freeze",
+    "state": "done",
+    "lines": 274616,
+    "entries": 123058
+   }
+  ]
+ },
+ "yukSonra": [
+  1.82,
+  1.82,
+  2.81
+ ]
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "c3-eski-surum-v249",
+  "komut": "node test/donmus-defter-eski-surum-250.mjs --eski /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-v249-ccf0b0ca",
+  "commit": "26935fe57f1efd4ca5997213618770752b74d1e3",
+  "dal": "worktree-agent-af0fd5a610216d3a2",
+  "kirli": 1,
+  "izlenmeyen": 38,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T00:15:46.479Z",
+  "sure_sn": 3.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 20,
+    "gecen": 20,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-06/c3-eski-surum-v249.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-af0fd5a610216d3a2",
+  "ham_cikti_sha256": "205e9acde8130a3730bcf6c145648afa9b80170be7a71de4eabe55d3f5729b87",
+  "ham_cikti_bayt": 2211
+}

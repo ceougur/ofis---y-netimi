@@ -1,0 +1,10 @@
+kilitVeDondurma: 8450 ms, olay döngüsü en çok 170 ms, tepe RSS 290 MB · 274616 donmuş satır · 50 ms'yi aşan boşluk 1 (en büyükler: 170 ms @kilit)
+donmusYilOkuma: 566 ms, olay döngüsü en çok 562 ms, tepe RSS 166 MB · 39377 madde
+donmusMizanIlk: 598 ms, olay döngüsü en çok 593 ms, tepe RSS 166 MB
+donmusMizanOnbellek: 1 ms, olay döngüsü en çok 0 ms, tepe RSS - MB
+kilitGeriCek: 523 ms, olay döngüsü en çok 52 ms, tepe RSS 166 MB · 50 ms'yi aşan boşluk 1 (en büyükler: 52 ms @kilit işlemi (thaw))
+para satırı 226734 · ana yığın sınırı 248 MB · node --max-old-space-size=200 --disable-warning=ExperimentalWarning · yük 1.59 1.74 1.93 → 1.64 1.75 1.93
+
+# tests 1
+# pass 1
+# fail 0

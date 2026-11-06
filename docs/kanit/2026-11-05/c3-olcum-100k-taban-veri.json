@@ -1,0 +1,112 @@
+{
+ "kod": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-eski-a2796dd4",
+ "veri": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-olcum-veri/n-100000-v46",
+ "now": "2026-10-08T12:00:00+03:00",
+ "kilit": "2025-12-31",
+ "tur": 3,
+ "node": "v22.23.4",
+ "cpu": 4,
+ "yuk": [
+  5.49,
+  5.37,
+  4.51
+ ],
+ "olcumler": {
+  "once.yevmiyeKilitliYil": {
+   "msMedyan": 2542,
+   "loopMaxMs": 2597,
+   "ms": [
+    2603,
+    2527,
+    2542
+   ]
+  },
+  "once.yevmiyeAcikDonem": {
+   "msMedyan": 2245,
+   "loopMaxMs": 2339,
+   "ms": [
+    2245,
+    2346,
+    2235
+   ]
+  },
+  "once.hesapMizaniKilitliYil": {
+   "msMedyan": 3323,
+   "loopMaxMs": 3433,
+   "ms": [
+    3439,
+    3230,
+    3323
+   ]
+  },
+  "once.ledgerTumu": {
+   "msMedyan": 3136,
+   "loopMaxMs": 3484,
+   "ms": [
+    3136,
+    3031,
+    3490
+   ]
+  },
+  "kilit": {
+   "ms": 9491,
+   "loopMaxMs": 9485,
+   "yanit": {
+    "lockedUntil": "2025-12-31"
+   }
+  },
+  "sonra.yevmiyeKilitliYil": {
+   "msMedyan": 2280,
+   "loopMaxMs": 2373,
+   "ms": [
+    2185,
+    2380,
+    2280
+   ]
+  },
+  "sonra.yevmiyeAcikDonem": {
+   "msMedyan": 2537,
+   "loopMaxMs": 2564,
+   "ms": [
+    2299,
+    2537,
+    2570
+   ]
+  },
+  "sonra.hesapMizaniKilitliYil": {
+   "msMedyan": 3175,
+   "loopMaxMs": 3224,
+   "ms": [
+    3127,
+    3175,
+    3234
+   ]
+  },
+  "sonra.ledgerTumu": {
+   "msMedyan": 3354,
+   "loopMaxMs": 3367,
+   "ms": [
+    3354,
+    3373,
+    3261
+   ]
+  },
+  "yazimKilittenSonra": {
+   "ms": 39,
+   "loopMaxMs": 28,
+   "status": 200
+  },
+  "kilitGeriCek": {
+   "ms": 8981,
+   "loopMaxMs": 8973,
+   "status": 200
+  }
+ },
+ "acilisMs": 99083,
+ "paraSatiri": 226734,
+ "yukSonra": [
+  2.28,
+  3.87,
+  4.08
+ ]
+}

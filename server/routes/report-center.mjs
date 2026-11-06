@@ -654,7 +654,8 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
       preset: "thisYear",
       build(query) {
         const range = rangeOf(query, "thisYear");
-        const { trial, reconciliation } = ledger().check({ from: range.from, to: range.to });
+        // 2.5.0 Ç3: mizan karma yevmiyeden (kilitli dönem donmuş defterden; kural değişse de aynı), "Mutabakat tutarlı / farklı" canlı türetmeyle.
+        const { trial, reconciliation } = ledger().check({ from: range.from, to: range.to, book: true });
         return {
           subtitle: `${rangeText(range)} · ${trial.balanced ? "Borç = Alacak" : "DENGESİZ KAYIT VAR"} · Mutabakat ${reconciliation.ok ? "tutarlı" : "farklı"}`,
           headers: ["Hesap", "Hesap Adı", "Devir", "Borç", "Alacak", "Bakiye", "Yön"],
@@ -676,7 +677,8 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
         const rows = [];
         // MM8 (2.4.3): özetteki madde sayısı gerçek madde (fiş) sayısıdır — önceden satır / 2 ("Madde 2,5": üç satırlı POS gün sonu maddesi yarım sayılıyordu).
         let entries = 0;
-        for (const entry of ledger().build()) {
+        // 2.5.0 Ç3: kilitli dönem donmuş defterden (aralığın sonu kilitli dönemdeyse canlı türetme yapılmaz); açık dönem canlı.
+        for (const entry of ledger().book({ from: range.from, to: range.to })) {
           if ((range.from && entry.date < range.from) || (range.to && entry.date > range.to)) continue;
           entries += 1;
           // Alt hesap (102.01, 101.02 …) varsa o yazılır (doğrulama T3: Bankaya Tahsile Ver maddesi "101 / 101" görünüyordu; evrakın 101.01'den
@@ -708,13 +710,19 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
         const onlyLegacy = !ok && reconciliation.ok && extra.filter(check => !check.ok).every(legacyOnly);
         // 2. gözden geçirme İ8: eski satırda ne yapılacağı (ör. çek/senette Düzenle ile alış tarihini gerçek güne çekmek).
         const hints = extra.filter(check => legacyOnly(check) && check.hint).map(check => check.hint).join(" ");
+        // 2.5.0 Ç3: Kural Değişikliği Farkı (uyarı; kilitli dönemin raporları donmuş defterden okunur, değişmez). Hesap bazında satırlar: Ana Defter = donmuş defter, Alt
+        // Defter = güncel kuralla türetme (fark doğuran maddelerin tutarları; Ç5'in Kural Farkı Düzeltme Fişi bunlardan).
+        const ruleDiff = extra.find(check => check.code === "ledger:rule-diff" && !check.ok);
+        const onlyRule = !ok && reconciliation.ok && extra.filter(check => !check.ok).every(check => check.code === "ledger:rule-diff" || legacyOnly(check));
+        const ruleRows = ruleDiff ? (ruleDiff.breakdown || []).map(row => [row.account, `${CHART[row.account] || row.account} — Kilitli Dönem (Donmuş Defter / Güncel Kural)`, money(row.frozenMinor / 100), money(row.liveMinor / 100), money(row.differenceMinor / 100), "Kural Değişikliği Farkı"]) : [];
         return {
-          subtitle: `${ok ? "Tüm hesaplar tutarlı; borç toplamı alacak toplamına eşit. Her kayıt yazılmadan önce bu denetimden geçer." : onlyLegacy ? "Eski sürümden kalan satır var (aşağıda “Eski Sürümden Kalan”). Yeni işlemler engellenmez ve bu satırları büyütemez." : "Fark bulunan hesap var; yöneticiye bildirin. Yeni işlemler bu farkı büyütemez."}${hints ? ` ${hints}` : ""}`,
+          subtitle: `${ok ? "Tüm hesaplar tutarlı; borç toplamı alacak toplamına eşit. Her kayıt yazılmadan önce bu denetimden geçer." : ruleDiff && onlyRule ? "Defter kuralı program sürümüyle değişti (aşağıda “Kural Değişikliği Farkı”). Kilitli dönemin raporları donmuş defterden okunur, değişmez; yeni işlemler engellenmez. Fark Kural Farkı Düzeltme Fişi ile ilk açık güne alınır." : onlyLegacy ? "Eski sürümden kalan satır var (aşağıda “Eski Sürümden Kalan”). Yeni işlemler engellenmez ve bu satırları büyütemez." : "Fark bulunan hesap var; yöneticiye bildirin. Yeni işlemler bu farkı büyütemez."}${hints ? ` ${hints}` : ""}`,
           headers: ["Hesap", "Hesap Adı", "Ana Defter", "Alt Defter", "Fark", "Durum"],
           types: ["", "", "money", "money", "money", ""],
           rows: [
             ...reconciliation.checks.map(check => [check.code, check.name, money(check.ledger), money(check.subledger), money(check.difference), check.ok ? "Tutarlı" : "Fark Var"]),
-            ...extra.map(check => ["Denetim", check.name, "", "", check.ok ? "" : `${check.count} satır`, check.ok ? "Tutarlı" : legacyOnly(check) ? "Eski Sürümden Kalan" : "Fark Var"]),
+            ...extra.map(check => ["Denetim", check.name, "", "", check.ok ? "" : `${check.count} ${check.code === "ledger:rule-diff" ? "madde" : "satır"}`, check.ok ? "Tutarlı" : check.code === "ledger:rule-diff" ? "Kural Değişikliği Farkı" : legacyOnly(check) ? "Eski Sürümden Kalan" : "Fark Var"]),
+            ...ruleRows,
           ],
           summary: [["Çift Yönlü Denge", reconciliation.balanced ? "Borç = Alacak" : "Dengesiz"], ["Sonuç", ok ? "Tutarlı" : "Fark Var"]],
           footer: false, // farklı hesapların (Kasa, Banka, Cari…) bakiyeleri toplanmaz

@@ -1,0 +1,275 @@
+TAP version 13
+# Subtest: 2.5.0 Ç3 tamamlama — büyük okumada sıkı satırlar (lib/lean-rows.mjs)
+    # Subtest: B1: leanAll / leanRows = store.all — aynı anahtarlar, aynı sıra, aynı değerler (metin, tamsayı, ondalık, NULL, BLOB, büyük tamsayı; konumlu ve adlı parametre); tutma sınırı aşılınca da
+    not ok 1 - B1: leanAll / leanRows = store.all — aynı anahtarlar, aynı sıra, aynı değerler (metin, tamsayı, ondalık, NULL, BLOB, büyük tamsayı; konumlu ve adlı parametre); tutma sınırı aşılınca da
+      ---
+      duration_ms: 2.202219
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-tamam-a1/eski-40ad9bed/test/donmus-defter-bellek-250.test.mjs:92:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot find module '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-tamam-a1/eski-40ad9bed/server/lib/lean-rows.mjs' imported from /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-tamam-a1/eski-40ad9bed/test/donmus-defter-bellek-250.test.mjs"
+      code: 'ERR_MODULE_NOT_FOUND'
+      stack: |-
+        finalizeResolution (node:internal/modules/esm/resolve:275:11)
+        moduleResolve (node:internal/modules/esm/resolve:865:10)
+        defaultResolve (node:internal/modules/esm/resolve:989:11)
+        #cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+        ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+        ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+        onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:680:36)
+        TracingChannel.tracePromise (node:diagnostics_channel:350:14)
+        ModuleLoader.import (node:internal/modules/esm/loader:679:21)
+        defaultImportModuleDynamicallyForModule (node:internal/modules/esm/utils:222:31)
+      ...
+    # Subtest: B2: sıkı satırlar V8'in hızlı kipinde (ayrı süreç, --allow-natives-syntax: %HasFastProperties); store.all'ın satırı bilgi için ölçülür
+    not ok 2 - B2: sıkı satırlar V8'in hızlı kipinde (ayrı süreç, --allow-natives-syntax: %HasFastProperties); store.all'ın satırı bilgi için ölçülür
+      ---
+      duration_ms: 51.747137
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-tamam-a1/eski-40ad9bed/test/donmus-defter-bellek-250.test.mjs:112:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        
+        node:internal/modules/esm/resolve:275
+            throw new ERR_MODULE_NOT_FOUND(
+                  ^
+        
+        Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-tamam-a1/eski-40ad9bed/server/lib/lean-rows.mjs' imported from /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-tamam-a1/eski-40ad9bed/[eval1]
+            at finalizeResolution (node:internal/modules/esm/resolve:275:11)
+            at moduleResolve (node:internal/modules/esm/resolve:865:10)
+            at defaultResolve (node:internal/modules/esm/resolve:989:11)
+            at #cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+            at ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+            at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+            at ModuleJob._link (node:internal/modules/esm/module_job:182:49) {
+          code: 'ERR_MODULE_NOT_FOUND',
+          url: 'file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-tamam-a1/eski-40ad9bed/server/lib/lean-rows.mjs'
+        }
+        
+        Node.js v22.23.4
+        
+        
+        1 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 1
+      operator: 'strictEqual'
+      stack: |-
+        finalizeResolution (node:internal/modules/esm/resolve:275:11)
+        moduleResolve (node:internal/modules/esm/resolve:865:10)
+        defaultResolve (node:internal/modules/esm/resolve:989:11)
+        #cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+        ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+        ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+        ModuleJob._link (node:internal/modules/esm/module_job:182:49) {
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-tamam-a1/eski-40ad9bed/test/donmus-defter-bellek-250.test.mjs:130:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: B5: 2.4.9 kural kopyasını çağıran her yer sıkı depoyla çağırır (kaynak taraması; kopyanın kendisi değişmez)
+    not ok 3 - B5: 2.4.9 kural kopyasını çağıran her yer sıkı depoyla çağırır (kaynak taraması; kopyanın kendisi değişmez)
+      ---
+      duration_ms: 68.303636
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-tamam-a1/eski-40ad9bed/test/donmus-defter-bellek-250.test.mjs:136:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        buildRule249 sıkı depo olmadan çağrılıyor: [{"file":"server/lib/ledger-freeze-worker.mjs","line":31,"arg":"store"},{"file":"server/lib/ledger-snapshots.mjs","line":136,"arg":"store"}]
+        + actual - expected
+        
+        + [
+        +   {
+        +     arg: 'store',
+        +     file: 'server/lib/ledger-freeze-worker.mjs',
+        +     line: 31
+        +   },
+        +   {
+        +     arg: 'store',
+        +     file: 'server/lib/ledger-snapshots.mjs',
+        +     line: 136
+        +   }
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0:
+          file: 'server/lib/ledger-freeze-worker.mjs'
+          line: 31
+          arg: 'store'
+        1:
+          file: 'server/lib/ledger-snapshots.mjs'
+          line: 136
+          arg: 'store'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-tamam-a1/eski-40ad9bed/test/donmus-defter-bellek-250.test.mjs:155:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 1 - 2.5.0 Ç3 tamamlama — büyük okumada sıkı satırlar (lib/lean-rows.mjs)
+  ---
+  duration_ms: 124.149591
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-tamam-a1/eski-40ad9bed/test/donmus-defter-bellek-250.test.mjs:91:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 Ç3 tamamlama — türetme ve donmuş defter sıkı satırlarla (eski sürüm verisi, güncel şema)
+    # Subtest: B3: Ana Defter türetmesi (güncel kural ve 2.4.9 kopyası) kaynak satırlarını store.all ile okumaz; çıktı store.all'lı türetmeyle BİREBİR; donmuş okuma ve Kural Değişikliği Farkı da store.all'sız
+    not ok 1 - B3: Ana Defter türetmesi (güncel kural ve 2.4.9 kopyası) kaynak satırlarını store.all ile okumaz; çıktı store.all'lı türetmeyle BİREBİR; donmuş okuma ve Kural Değişikliği Farkı da store.all'sız
+      ---
+      duration_ms: 11.501179
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-tamam-a1/eski-40ad9bed/test/donmus-defter-bellek-250.test.mjs:190:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        güncel kural: kaynak sorguları store.all'a düşmemeli
+        + actual - expected
+        
+        + [
+        +   'SELECT id, p.rowid AS seq, amount, date, note, method, p.fin_ref AS ref FROM payments p',
+        +   'SELECT c.id, c.rowid AS seq, c.kind, c.amount, c.date, c.description, c.method, c.transfer_id AS transferId, c.is_opening AS isOpening, c.tax_json AS taxJson, c.fin_ref AS ref,\n' +
+        +     "              CASE WHEN c.transfer_id <> '' THEN COALESCE((SELECT t.fin_ref FROM cash_entries t WHERE t.transfer_id = c.transfer_id AND t.id <> c.id LIMIT 1), '') ELSE '' END AS bankRef\n" +
+        +     '       FROM cash_entries c',
+        +   'SELECT e.id, e.rowid AS seq, e.kind, e.amount, e.date, e.note, e.source, e.source_id AS sourceId, e.method, e.fin_ref AS ref, a.type AS accountType, e.account_id AS party,\n' +
+        +     "                COALESCE(c.direction, '') AS chequeDirection, COALESCE(c.instrument, '') AS chequeInstrument, COALESCE(m.reason, '') AS moveReason, CASE WHEN e.source = 'cheque' AND e.kind = 'debt' AND c.direction = 'in' AND e.account_id = c.account_id AND EXISTS (SELECT 1 FROM cheque_collections k WHERE k.cheque_id = c.id AND k.status = 'returned') THEN 1 ELSE 0 END AS bankReturned,\n" +
+        +     '                e.invoice_id AS invoiceId, e.doubtful_skip AS doubtfulSkip\n' +
+        +     '         FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL\n' +
+        +     "           LEFT JOIN cheques c ON e.source = 'cheque' AND c.id = e.source_id\n" +
+        +     "           LEFT JOIN stock_moves m ON e.source = 'stock' AND m.id = e.source_id",
+        +   "SELECT p.id, p.rowid AS seq, p.total, p.status, p.covers_balance AS coversBalance, COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) AS date, COALESCE(p.closed_at, substr(p.updated_at, 1, 10)) AS closedOn,\n" +
+        +     "                COALESCE(a.type, '') AS accountType, COALESCE(a.id, '') AS party,\n" +
+        +     "                COALESCE((SELECT SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END) FROM plan_entries e WHERE e.plan_id = p.id), 0) AS paid\n" +
+        +     '         FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE p.deleted_at IS NULL',
+        +   "SELECT e.id, e.rowid AS seq, e.plan_id AS planId, e.kind, e.amount, e.date, e.note, e.method, e.fin_ref AS ref, e.cheque_id AS chequeId, CASE WHEN e.cheque_id <> '' THEN COALESCE((SELECT x.instrument FROM cheques x WHERE x.id = e.cheque_id), '') ELSE '' END AS chequeInstrument, e.opening, COALESCE(a.type, '') AS accountType, COALESCE(a.id, '') AS party, CASE WHEN e.kind = 'out' AND e.cheque_id <> '' AND EXISTS (SELECT 1 FROM cheque_collections k WHERE k.cheque_id = e.cheque_id AND k.status = 'returned') THEN 1 ELSE 0 END AS bankReturned,\n" +
+        +     "                COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) AS planDate, p.covers_balance AS planCovers\n" +
+        +     '         FROM plan_entries e JOIN plans p ON p.id = e.plan_id AND p.deleted_at IS NULL LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL',
+        +   'SELECT i.id, i.rowid AS seq, i.kind, i.issue_date AS date, i.number, i.gl_json AS glJson, i.try_vat AS tryVat, i.try_withheld AS tryWithheld, i.try_stoppage AS tryStoppage,\n' +
+        +     '                i.try_payable AS tryPayable, a.type AS accountType, a.id AS party\n' +
+        +     "         FROM invoices i JOIN accounts a ON a.id = i.account_id AND a.deleted_at IS NULL WHERE i.status = 'issued'",
+        +   "SELECT m.id, m.rowid AS seq, m.kind, m.amount, m.date, m.note, m.pay, m.method, m.reason, m.fin_ref AS ref FROM stock_moves m WHERE m.pay = 'cash' AND m.amount > 0",
+        +   "SELECT m.id, m.rowid AS seq, m.qty, m.unit_price AS unitPrice, m.date, m.note, COALESCE(i.name, '') AS itemName, COALESCE(i.unit, '') AS unit FROM stock_moves m LEFT JOIN stock_items i ON i.id = m.item_id\n" +
+        +     "         WHERE m.is_opening = 1 AND m.kind = 'in' AND m.pay = 'none'",
+        +   'SELECT l.event_id AS eventId, e.rowid AS eventSeq, l.seq, l.gl, l.sub, l.side, l.try_minor AS tryMinor, e.date, e.no, e.description FROM bank_lines l JOIN fin_events e ON e.id = l.event_id ORDER BY e.date, l.event_id, l.seq',
+        +   "SELECT ev.id, ev.rowid AS seq, ev.kind, ev.amount, ev.date, ev.note, ev.method, ev.fin_ref AS ref, ev.event_id AS eventId, CASE WHEN ev.kind = 'collect' AND ev.event_id <> '' AND EXISTS (SELECT 1 FROM cheque_collections k WHERE k.cheque_id = ev.cheque_id AND k.status = 'collected' AND k.close_event_id = ev.event_id) THEN 1 ELSE 0 END AS closesDeposit, c.instrument AS instrument FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id AND c.deleted_at IS NULL WHERE ev.kind IN ('collect', 'pay')",
+        +   'SELECT c.id, c.rowid AS seq, c.direction, c.instrument, c.amount, c.issue_date AS date, c.status, c.serial_no AS serialNo,\n' +
+        +     "                (SELECT ev.date FROM cheque_events ev WHERE ev.cheque_id = c.id AND ev.kind = 'bounce' ORDER BY ev.created_at DESC LIMIT 1) AS bouncedOn,\n" +
+        +     "                EXISTS (SELECT 1 FROM cheque_collections k WHERE k.cheque_id = c.id AND k.status = 'returned') AS bankReturned,\n" +
+        +     '                EXISTS (SELECT 1 FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL\n' +
+        +     "                        WHERE e.source = 'cheque' AND e.source_id = c.id AND e.account_id = c.account_id AND e.kind = 'debt') AS hasDebt\n" +
+        +     '         FROM cheques c\n' +
+        +     '         WHERE c.deleted_at IS NULL\n' +
+        +     '           AND NOT EXISTS (SELECT 1 FROM plan_entries pe JOIN plans p ON p.id = pe.plan_id AND p.deleted_at IS NULL WHERE pe.cheque_id = c.id)\n' +
+        +     '           AND NOT EXISTS (SELECT 1 FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL\n' +
+        +     "                           WHERE e.source = 'cheque' AND e.source_id = c.id AND e.account_id = c.account_id\n" +
+        +     "                             AND e.kind = CASE WHEN c.direction = 'in' THEN 'credit' ELSE 'debt' END)",
+        +   'SELECT k.id, k.rowid AS seq, k.status, k.given_date AS givenDate, k.closed_date AS closedDate, k.close_event_id AS closeEventId, c.serial_no AS serialNo, c.instrument AS instrument,\n' +
+        +     '                COALESCE(NULLIF((SELECT f.try_minor FROM fin_events f WHERE f.id = k.event_id), 0), CAST(ROUND(c.amount * 100) AS INTEGER)) AS amountMinor,\n' +
+        +     "                CASE WHEN k.status = 'collected' AND k.close_event_id <> '' AND EXISTS (SELECT 1 FROM cheque_events ev WHERE ev.cheque_id = k.cheque_id AND +ev.kind = 'collect' AND ev.event_id = k.close_event_id) THEN 1 ELSE 0 END AS closedByCollect\n" +
+        +     '         FROM cheque_collections k JOIN cheques c ON c.id = k.cheque_id AND c.deleted_at IS NULL'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'SELECT id, p.rowid AS seq, amount, date, note, method, p.fin_ref AS ref FROM payments p'
+        1: |-
+          SELECT c.id, c.rowid AS seq, c.kind, c.amount, c.date, c.description, c.method, c.transfer_id AS transferId, c.is_opening AS isOpening, c.tax_json AS taxJson, c.fin_ref AS ref,
+                        CASE WHEN c.transfer_id <> '' THEN COALESCE((SELECT t.fin_ref FROM cash_entries t WHERE t.transfer_id = c.transfer_id AND t.id <> c.id LIMIT 1), '') ELSE '' END AS bankRef
+                 FROM cash_entries c
+        2: |-
+          SELECT e.id, e.rowid AS seq, e.kind, e.amount, e.date, e.note, e.source, e.source_id AS sourceId, e.method, e.fin_ref AS ref, a.type AS accountType, e.account_id AS party,
+                          COALESCE(c.direction, '') AS chequeDirection, COALESCE(c.instrument, '') AS chequeInstrument, COALESCE(m.reason, '') AS moveReason, CASE WHEN e.source = 'cheque' AND e.kind = 'debt' AND c.direction = 'in' AND e.account_id = c.account_id AND EXISTS (SELECT 1 FROM cheque_collections k WHERE k.cheque_id = c.id AND k.status = 'returned') THEN 1 ELSE 0 END AS bankReturned,
+                          e.invoice_id AS invoiceId, e.doubtful_skip AS doubtfulSkip
+                   FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
+                     LEFT JOIN cheques c ON e.source = 'cheque' AND c.id = e.source_id
+                     LEFT JOIN stock_moves m ON e.source = 'stock' AND m.id = e.source_id
+        3: |-
+          SELECT p.id, p.rowid AS seq, p.total, p.status, p.covers_balance AS coversBalance, COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) AS date, COALESCE(p.closed_at, substr(p.updated_at, 1, 10)) AS closedOn,
+                          COALESCE(a.type, '') AS accountType, COALESCE(a.id, '') AS party,
+                          COALESCE((SELECT SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END) FROM plan_entries e WHERE e.plan_id = p.id), 0) AS paid
+                   FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE p.deleted_at IS NULL
+        4: |-
+          SELECT e.id, e.rowid AS seq, e.plan_id AS planId, e.kind, e.amount, e.date, e.note, e.method, e.fin_ref AS ref, e.cheque_id AS chequeId, CASE WHEN e.cheque_id <> '' THEN COALESCE((SELECT x.instrument FROM cheques x WHERE x.id = e.cheque_id), '') ELSE '' END AS chequeInstrument, e.opening, COALESCE(a.type, '') AS accountType, COALESCE(a.id, '') AS party, CASE WHEN e.kind = 'out' AND e.cheque_id <> '' AND EXISTS (SELECT 1 FROM cheque_collections k WHERE k.cheque_id = e.cheque_id AND k.status = 'returned') THEN 1 ELSE 0 END AS bankReturned,
+                          COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) AS planDate, p.covers_balance AS planCovers
+                   FROM plan_entries e JOIN plans p ON p.id = e.plan_id AND p.deleted_at IS NULL LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL
+        5: |-
+          SELECT i.id, i.rowid AS seq, i.kind, i.issue_date AS date, i.number, i.gl_json AS glJson, i.try_vat AS tryVat, i.try_withheld AS tryWithheld, i.try_stoppage AS tryStoppage,
+                          i.try_payable AS tryPayable, a.type AS accountType, a.id AS party
+                   FROM invoices i JOIN accounts a ON a.id = i.account_id AND a.deleted_at IS NULL WHERE i.status = 'issued'
+        6: "SELECT m.id, m.rowid AS seq, m.kind, m.amount, m.date, m.note, m.pay, m.method, m.reason, m.fin_ref AS ref FROM stock_moves m WHERE m.pay = 'cash' AND m.amount > 0"
+        7: |-
+          SELECT m.id, m.rowid AS seq, m.qty, m.unit_price AS unitPrice, m.date, m.note, COALESCE(i.name, '') AS itemName, COALESCE(i.unit, '') AS unit FROM stock_moves m LEFT JOIN stock_items i ON i.id = m.item_id
+                   WHERE m.is_opening = 1 AND m.kind = 'in' AND m.pay = 'none'
+        8: 'SELECT l.event_id AS eventId, e.rowid AS eventSeq, l.seq, l.gl, l.sub, l.side, l.try_minor AS tryMinor, e.date, e.no, e.description FROM bank_lines l JOIN fin_events e ON e.id = l.event_id ORDER BY e.date, l.event_id, l.seq'
+        9: "SELECT ev.id, ev.rowid AS seq, ev.kind, ev.amount, ev.date, ev.note, ev.method, ev.fin_ref AS ref, ev.event_id AS eventId, CASE WHEN ev.kind = 'collect' AND ev.event_id <> '' AND EXISTS (SELECT 1 FROM cheque_collections k WHERE k.cheque_id = ev.cheque_id AND k.status = 'collected' AND k.close_event_id = ev.event_id) THEN 1 ELSE 0 END AS closesDeposit, c.instrument AS instrument FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id AND c.deleted_at IS NULL WHERE ev.kind IN ('collect', 'pay')"
+        10: |-
+          SELECT c.id, c.rowid AS seq, c.direction, c.instrument, c.amount, c.issue_date AS date, c.status, c.serial_no AS serialNo,
+                          (SELECT ev.date FROM cheque_events ev WHERE ev.cheque_id = c.id AND ev.kind = 'bounce' ORDER BY ev.created_at DESC LIMIT 1) AS bouncedOn,
+                          EXISTS (SELECT 1 FROM cheque_collections k WHERE k.cheque_id = c.id AND k.status = 'returned') AS bankReturned,
+                          EXISTS (SELECT 1 FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
+                                  WHERE e.source = 'cheque' AND e.source_id = c.id AND e.account_id = c.account_id AND e.kind = 'debt') AS hasDebt
+                   FROM cheques c
+                   WHERE c.deleted_at IS NULL
+                     AND NOT EXISTS (SELECT 1 FROM plan_entries pe JOIN plans p ON p.id = pe.plan_id AND p.deleted_at IS NULL WHERE pe.cheque_id = c.id)
+                     AND NOT EXISTS (SELECT 1 FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
+                                     WHERE e.source = 'cheque' AND e.source_id = c.id AND e.account_id = c.account_id
+                                       AND e.kind = CASE WHEN c.direction = 'in' THEN 'credit' ELSE 'debt' END)
+        11: |-
+          SELECT k.id, k.rowid AS seq, k.status, k.given_date AS givenDate, k.closed_date AS closedDate, k.close_event_id AS closeEventId, c.serial_no AS serialNo, c.instrument AS instrument,
+                          COALESCE(NULLIF((SELECT f.try_minor FROM fin_events f WHERE f.id = k.event_id), 0), CAST(ROUND(c.amount * 100) AS INTEGER)) AS amountMinor,
+                          CASE WHEN k.status = 'collected' AND k.close_event_id <> '' AND EXISTS (SELECT 1 FROM cheque_events ev WHERE ev.cheque_id = k.cheque_id AND +ev.kind = 'collect' AND ev.event_id = k.close_event_id) THEN 1 ELSE 0 END AS closedByCollect
+                   FROM cheque_collections k JOIN cheques c ON c.id = k.cheque_id AND c.deleted_at IS NULL
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-tamam-a1/eski-40ad9bed/test/donmus-defter-bellek-250.test.mjs:194:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B4: iş parçacığı kipi — donmuş satırlar parça parça üretilir (parça 7 satır: tam parçalar + eksik son parça); yazılan = türetilen (sayı, borç, alacak), donmuş = canlı; koşunun toplamları satırlarla aynı
+    ok 2 - B4: iş parçacığı kipi — donmuş satırlar parça parça üretilir (parça 7 satır: tam parçalar + eksik son parça); yazılan = türetilen (sayı, borç, alacak), donmuş = canlı; koşunun toplamları satırlarla aynı
+      ---
+      duration_ms: 353.86295
+      type: 'test'
+      ...
+    1..2
+not ok 2 - 2.5.0 Ç3 tamamlama — türetme ve donmuş defter sıkı satırlarla (eski sürüm verisi, güncel şema)
+  ---
+  duration_ms: 688.30947
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-tamam-a1/eski-40ad9bed/test/donmus-defter-bellek-250.test.mjs:159:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 5
+# suites 2
+# pass 1
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1092.234463

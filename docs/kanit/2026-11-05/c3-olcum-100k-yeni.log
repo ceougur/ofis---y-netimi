@@ -1,0 +1,20 @@
+(node:15167) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:15167) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+once.yevmiyeKilitliYil: 2542 ms, olay döngüsü en çok 2593 ms
+once.yevmiyeAcikDonem: 2229 ms, olay döngüsü en çok 2430 ms
+once.hesapMizaniKilitliYil: 3561 ms, olay döngüsü en çok 3640 ms
+once.ledgerTumu: 3428 ms, olay döngüsü en çok 3447 ms
+kilit: 8015 ms, olay döngüsü en çok 69 ms
+sonra.yevmiyeKilitliYil: 755 ms, olay döngüsü en çok 826 ms
+sonra.yevmiyeAcikDonem: 2393 ms, olay döngüsü en çok 2639 ms
+sonra.hesapMizaniKilitliYil: 3598 ms, olay döngüsü en çok 3876 ms
+sonra.ledgerTumu: 3452 ms, olay döngüsü en çok 4014 ms
+yazimKilittenSonra: 32 ms, olay döngüsü en çok 26 ms
+kilitGeriCek: 2270 ms, olay döngüsü en çok 53 ms
+para satırı 226734 · açılış 102301 ms · donmuş 274616 satır (kapsam 2025-12-31) · yük 0.89 1.87 3.05
+
+# tests 1
+# pass 1
+# fail 0

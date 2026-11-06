@@ -1,0 +1,136 @@
+{
+ "veri": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-olcum-veri/n-1000000",
+ "kilit": "2025-12-31",
+ "parca": 500,
+ "nodeSecenek": "--disable-warning=ExperimentalWarning",
+ "node": "v22.23.4",
+ "cpu": 4,
+ "bellekGb": 16,
+ "anaYiginSiniriMb": 2096,
+ "yuk": [
+  4.12,
+  2.86,
+  2.49
+ ],
+ "olcumler": {
+  "canliTuretmeAnaIsParcacigi": {
+   "ms": 25899,
+   "loopMaxMs": 25895,
+   "tepeRssMb": 1438,
+   "madde": 1532720
+  },
+  "kilitVeDondurma": {
+   "ms": 94782,
+   "loopMaxMs": 305,
+   "tepeRssMb": 2845,
+   "durum": {
+    "running": false,
+    "phase": "tamam",
+    "done": 2741312,
+    "total": 2741312,
+    "run": 4,
+    "error": "",
+    "coverage": "2025-12-31"
+   },
+   "kapsam": "2025-12-31",
+   "donmusSatir": 2741312,
+   "bosluk50": 4,
+   "bosluklar": [
+    {
+     "ms": 305,
+     "at": 32704,
+     "adim": "türetme 0"
+    },
+    {
+     "ms": 105,
+     "at": 53917,
+     "adim": "yazım 500"
+    },
+    {
+     "ms": 90,
+     "at": 66196,
+     "adim": "yazım 797500"
+    },
+    {
+     "ms": 55,
+     "at": 54695,
+     "adim": "yazım 11000"
+    }
+   ]
+  },
+  "donmusYilOkuma": {
+   "ms": 7287,
+   "loopMaxMs": 7286,
+   "tepeRssMb": 1394,
+   "madde": 384686
+  },
+  "donmusMizanIlk": {
+   "ms": 6619,
+   "loopMaxMs": 6614,
+   "tepeRssMb": 444
+  },
+  "donmusMizanOnbellek": {
+   "ms": 1,
+   "loopMaxMs": 0
+  },
+  "kuralFarki": {
+   "ms": 58329,
+   "loopMaxMs": 58325,
+   "tepeRssMb": 1827,
+   "madde": 0,
+   "hesap": 0
+  },
+  "esdegerlik": {
+   "ms": 54620,
+   "tepeRssMb": 1793,
+   "yillar": [
+    {
+     "yil": "2022",
+     "donmusMadde": 74955,
+     "canliMadde": 74955,
+     "ayni": true
+    },
+    {
+     "yil": "2023",
+     "donmusMadde": 383454,
+     "canliMadde": 383454,
+     "ayni": true
+    },
+    {
+     "yil": "2024",
+     "donmusMadde": 385331,
+     "canliMadde": 385331,
+     "ayni": true
+    },
+    {
+     "yil": "2025",
+     "donmusMadde": 384686,
+     "canliMadde": 384686,
+     "ayni": true
+    }
+   ],
+   "hepsiAyni": true
+  },
+  "kilitGeriCek": {
+   "ms": 5816,
+   "loopMaxMs": 510,
+   "tepeRssMb": 1721,
+   "silinen": 857820,
+   "kapsam": "2024-12-31",
+   "bosluk50": 1,
+   "bosluklar": [
+    {
+     "ms": 510,
+     "at": 531,
+     "adim": "kilit işlemi (thaw)"
+    }
+   ]
+  }
+ },
+ "satir": 2254506,
+ "yukSonra": [
+  4.68,
+  4.15,
+  3.16
+ ]
+}
