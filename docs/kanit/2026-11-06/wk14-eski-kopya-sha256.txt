@@ -1,0 +1,5 @@
+ab15109316f11de619feced57aec03a808665974991ef2b76bfa015cccee87cc  <not defteri>/wk14-eski-549359b0/kahin/kahin.py
+4cb01b05baa8afff5e41d3cde4f42c47e7f47e54258976c652f0a967326ecb48  <not defteri>/wk14-eski-549359b0/kahin/kahin_test.py
+273612c5cba7c7bc4f6b91630f45c599e21e61f499ba8c7227b820410502f1f5  <not defteri>/wk14-eski-549359b0/kahin/senaryolar.json
+bdd8d5747e7c48ff1b4329e27a7b24a11c394dcc34e04b43f6b754b943fabe2d  <not defteri>/wk14-eski-549359b0/kahin/senaryolar.py
+31304de2de57d69f7117ab75dbcf5f9dd1c8754023f12d01db859dfd133d449a  <not defteri>/wk14-eski-549359b0-notr/kahin/kahin.py

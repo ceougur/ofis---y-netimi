@@ -1,0 +1,78 @@
+# kâhin: /home/user/ofis---y-netimi/.claude/worktrees/agent-a2556923bb61954d5/test/bagimsiz/whatsapp-248/kahin/kahin.py
+ok 1 - M210 (S22'nin tersi (B seçeneği): işteki Yine de Gönder kişiye özel onaylı seçim — basmada kayıt yokken sonra açılan): 6/6 senaryoda değerle
+  # S22-01: DEĞERLE — kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/SU": "Atlandı", "T1/SV": "Atlandı"} ≠ mutant {"T1/A": "Teslim Edildi", "T1/SU": "Teslim Edildi", "T1/SV": "Atlandı"
+  # S22-02: DEĞERLE — kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/DR": "Atlandı", "T1/DS": "Atlandı"} ≠ mutant {"T1/A": "Teslim Edildi", "T1/DR": "Teslim Edildi", "T1/DS": "Teslim E
+  # S22-03: DEĞERLE — kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/ZM": "Atlandı", "T1/ZN": "Atlandı"} ≠ mutant {"T1/A": "Teslim Edildi", "T1/ZM": "Atlandı", "T1/ZN": "Teslim Edildi"
+  # S22-04: DEĞERLE — kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/KA": "Atlandı", "T1/KQ": "Teslim Edildi" ≠ mutant {"T1/A": "Teslim Edildi", "T1/KA": "Teslim Edildi", "T1/KQ": "Teslim E
+  # S22-05: DEĞERLE — kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/GY": "Atlandı"} ≠ mutant {"T1/A": "Teslim Edildi", "T1/GY": "Teslim Edildi"}
+  # S22-06: DEĞERLE — kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/MB": "Atlandı"} ≠ mutant {"T1/A": "Teslim Edildi", "T1/MB": "Teslim Edildi"}
+ok 2 - M211 (S22 (Y14-2): atlama etiketi yanlış ad — belirsizlik onayı işinde 'Şüpheli Alacağı Var' yerine J10'un 'Daha Önc): 4/6 senaryoda değerle
+  # S22-01: DEĞERLE — isler.T1/SV.atlanma_nedeni: elle "supheli_alacak" ≠ mutant "daha_once_gonderildi"
+  # S22-02: DEĞERLE — isler.T1/DS.atlanma_nedeni: elle "supheli_alacak" ≠ mutant "daha_once_gonderildi"
+  # S22-03: DEĞERLE — isler.T1/ZN.atlanma_nedeni: elle "supheli_alacak" ≠ mutant "daha_once_gonderildi"
+  # S22-04: DEĞERLE — isler.T1/KA.atlanma_nedeni: elle "supheli_alacak" ≠ mutant "daha_once_gonderildi"
+  # S22-05: yakalamadı
+  # S22-06: yakalamadı
+ok 3 - M212 (S22 yolu (Y14-4): Atlandı — Şüpheli Alacağı Var işin asıl işten yeniden Yine de Gönder'inde S16 uygulanmaz (el): 4/6 senaryoda değerle
+  # S22-01: DEĞERLE — kontroller.K3.isler: elle {"T1/A": "Teslim Edildi", "T1/SU": "Teslim Edildi", "T1/SV": "Atlandı" ≠ mutant {"T1/A": "Teslim Edildi", "T1/SU": "Atlandı", "T1/SV": "Atlandı"}
+  # S22-02: DEĞERLE — kontroller.K3.isler: elle {"T1/A": "Teslim Edildi", "T1/DR": "Teslim Edildi", "T1/DS": "Atlandı" ≠ mutant {"T1/A": "Teslim Edildi", "T1/DR": "Atlandı", "T1/DS": "Atlandı"}
+  # S22-03: yakalamadı
+  # S22-04: yakalamadı
+  # S22-05: DEĞERLE — kontroller.K3.isler: elle {"T1/A": "Teslim Edildi", "T1/GY": "Teslim Edildi"} ≠ mutant {"T1/A": "Teslim Edildi", "T1/GY": "Atlandı"}
+  # S22-06: DEĞERLE — kontroller.K3.isler: elle {"T1/A": "Teslim Edildi", "T1/MB": "Teslim Edildi"} ≠ mutant {"T1/A": "Teslim Edildi", "T1/MB": "Atlandı"}
+ok 4 - M194 (S7B (Y12-7, Y11-17): şüpheli işaretli kalem kalanı 0 olsa da kayıt açık sayılır (kuyrukta kapanan kayıt da atl): 1/6 senaryoda değerle
+  # S22-01: yakalamadı
+  # S22-02: yakalamadı
+  # S22-03: yakalamadı
+  # S22-04: DEĞERLE — kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/KA": "Atlandı", "T1/KQ": "Teslim Edildi" ≠ mutant {"T1/A": "Teslim Edildi", "T1/KA": "Atlandı", "T1/KQ": "Atlandı"}
+  # S22-05: yakalamadı
+  # S22-06: yakalamadı
+ok 5 - M195 (S7B (Y12-4): Meta Bekletti 2. denemesi gönderim anı sayılmaz — kuyrukta şüpheli açılan cariye 2. deneme gider): 1/6 senaryoda değerle
+  # S22-01: yakalamadı
+  # S22-02: yakalamadı
+  # S22-03: yakalamadı
+  # S22-04: yakalamadı
+  # S22-05: yakalamadı
+  # S22-06: DEĞERLE — kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/MB": "Atlandı"} ≠ mutant {"T1/A": "Teslim Edildi", "T1/MB": "Teslim Edildi"}
+ok 6 - M196 (S7B (Y12-5, ilke 1/4): 'Şüpheli Alacağı Var' ile atlanan iş 'Zaten Kuyrukta' sayılır — yeni gönderimde elle se): 5/6 senaryoda değerle
+  # S22-01: DEĞERLE — yeniden.Y3: elle {"alinan": ["SU"], "elenen": {}, "oneri": null, "supheli_etiketi": ["S ≠ mutant {"alinan": [], "elenen": {"SU": "zaten_kuyrukta"}, "oneri": null, "sup
+  # S22-02: DEĞERLE — yeniden.Y3: elle {"alinan": ["DR"], "elenen": {}, "oneri": null, "supheli_etiketi": ["D ≠ mutant {"alinan": [], "elenen": {"DR": "zaten_kuyrukta"}, "oneri": null, "sup
+  # S22-03: DEĞERLE — elenen: elle {} ≠ mutant {"T2": {"ZN": "zaten_kuyrukta"}}
+  # S22-04: yakalamadı
+  # S22-05: DEĞERLE — yeniden.Y2: elle {"alinan": ["GY"], "elenen": {}, "oneri": null, "supheli_etiketi": ["G ≠ mutant {"alinan": [], "elenen": {"GY": "zaten_kuyrukta"}, "oneri": null, "sup
+  # S22-06: DEĞERLE — yeniden.Y2: elle {"alinan": ["MB"], "elenen": {}, "oneri": null, "supheli_etiketi": ["M ≠ mutant {"alinan": [], "elenen": {"MB": "zaten_kuyrukta"}, "oneri": null, "sup
+ok 7 - M198 (S7A + §7a 20 (Y12-1): 'vadesi geçmiş' bugünü UTC günüyle (yerel gün değil)): 1/6 senaryoda değerle
+  # S22-01: yakalamadı
+  # S22-02: yakalamadı
+  # S22-03: yakalamadı
+  # S22-04: yakalamadı
+  # S22-05: DEĞERLE — yeniden.Y2: elle {"alinan": ["GY"], "elenen": {}, "oneri": null, "supheli_etiketi": ["G ≠ mutant {"alinan": {"secenek": [[], ["GY"]], "susuyor": "S16 'yoksa elenir': e
+  # S22-06: yakalamadı
+ok 8 - M199 (S16'nın tersi (B seçeneği): işteki Yine de Gönder elle seçim sayılmaz — şüpheli kaydı açık kişi gönderim anınd): 4/6 senaryoda değerle
+  # S22-01: DEĞERLE — kontroller.K3.isler: elle {"T1/A": "Teslim Edildi", "T1/SU": "Teslim Edildi", "T1/SV": "Atlandı" ≠ mutant {"T1/A": "Teslim Edildi", "T1/SU": "Atlandı", "T1/SV": "Atlandı"}
+  # S22-02: DEĞERLE — kontroller.K3.isler: elle {"T1/A": "Teslim Edildi", "T1/DR": "Teslim Edildi", "T1/DS": "Atlandı" ≠ mutant {"T1/A": "Teslim Edildi", "T1/DR": "Atlandı", "T1/DS": "Atlandı"}
+  # S22-03: yakalamadı
+  # S22-04: yakalamadı
+  # S22-05: DEĞERLE — kontroller.K3.isler: elle {"T1/A": "Teslim Edildi", "T1/GY": "Teslim Edildi"} ≠ mutant {"T1/A": "Teslim Edildi", "T1/GY": "Atlandı"}
+  # S22-06: DEĞERLE — kontroller.K3.isler: elle {"T1/A": "Teslim Edildi", "T1/MB": "Teslim Edildi"} ≠ mutant {"T1/A": "Teslim Edildi", "T1/MB": "Atlandı"}
+ok 9 - M201 (S16: Yine de Gönder onay penceresinde 'Şüpheli Alacağı Var' etiketi yok): 4/6 senaryoda değerle
+  # S22-01: DEĞERLE — yeniden.Y3: elle {"alinan": ["SU"], "elenen": {}, "oneri": null, "supheli_etiketi": ["S ≠ mutant {"alinan": ["SU"], "elenen": {}, "oneri": null}
+  # S22-02: DEĞERLE — yeniden.Y3: elle {"alinan": ["DR"], "elenen": {}, "oneri": null, "supheli_etiketi": ["D ≠ mutant {"alinan": ["DR"], "elenen": {}, "oneri": null}
+  # S22-03: yakalamadı
+  # S22-04: yakalamadı
+  # S22-05: DEĞERLE — yeniden.Y2: elle {"alinan": ["GY"], "elenen": {}, "oneri": null, "supheli_etiketi": ["G ≠ mutant {"alinan": ["GY"], "elenen": {}, "oneri": null}
+  # S22-06: DEĞERLE — yeniden.Y2: elle {"alinan": ["MB"], "elenen": {}, "oneri": null, "supheli_etiketi": ["M ≠ mutant {"alinan": ["MB"], "elenen": {}, "oneri": null}
+ok 10 - M192 (S7B'nin tersi (S7-b B seçeneği): kuyruktayken şüpheli alacak kaydı açılan elle seçilmemiş cari başlatmadaki se): 6/6 senaryoda değerle
+  # S22-01: DEĞERLE — kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/SU": "Atlandı", "T1/SV": "Atlandı"} ≠ mutant {"T1/A": "Teslim Edildi", "T1/SU": "Teslim Edildi", "T1/SV": "Atlandı"
+  # S22-02: DEĞERLE — kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/DR": "Atlandı", "T1/DS": "Atlandı"} ≠ mutant {"T1/A": "Teslim Edildi", "T1/DR": "Teslim Edildi", "T1/DS": "Teslim E
+  # S22-03: DEĞERLE — kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/ZM": "Atlandı", "T1/ZN": "Atlandı"} ≠ mutant {"T1/A": "Teslim Edildi", "T1/ZM": "Atlandı", "T1/ZN": "Teslim Edildi"
+  # S22-04: DEĞERLE — kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/KA": "Atlandı", "T1/KQ": "Teslim Edildi" ≠ mutant {"T1/A": "Teslim Edildi", "T1/KA": "Teslim Edildi", "T1/KQ": "Teslim E
+  # S22-05: DEĞERLE — kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/GY": "Atlandı"} ≠ mutant {"T1/A": "Teslim Edildi", "T1/GY": "Teslim Edildi"}
+  # S22-06: DEĞERLE — kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/MB": "Atlandı"} ≠ mutant {"T1/A": "Teslim Edildi", "T1/MB": "Teslim Edildi"}
+1..10
+# tests 10
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
