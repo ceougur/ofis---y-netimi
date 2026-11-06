@@ -1,0 +1,95 @@
+KIRMIZI S23-05-yeniden-basmada-suphesiz-tutar-yok-iki-okuma-ileti-gitmez: 2 elle yaprağı farklı (değerle)
+    yeniden.Y2: elle {"elenen": {}, "alinan": [], "oneri": null, "supheli_etiketi": ["NZ"], "elle_sayilan": ["NZ"]} ≠ eski {"elenen": {"secenek": [{}, {"NZ": "gecikmis_borc_yok"}], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar metnin
+    isler.T1/NZ.atlanma_nedeni: elle "gecikmis_borc_yok" ≠ eski {"secenek": ["gecikmis_borc_yok", "supheli_alacak"], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar metninde yo
+KIRMIZI SW3-05-silme-talebinden-once-alinan-yedek-geri-yuklenir-icerik-susuyor-r3-kesin: 1 elle yaprağı farklı (değerle)
+    kontroller.K2.icerik: elle {"T1/A": {"telefon": null, "degiskenler": null, "pdf": null, "dosya_adi": null, "icerik_silindi": true}, "T1/B": {"telefon": "+905332223344", "degiske ≠ eski {"T1/A": {"telefon": {"plan_susuyor": "silme talebinden ÖNCE alınmış yedek geri yüklenince silinen içerik / telefon / PDF'in geri gelip gelmediği (tal
+KIRMIZI S29-01-yeniden-basmada-tutar-yok-ertesi-gun-devam-et-gonderim-anindaki-tutarla-gider: 9 elle yaprağı farklı (değerle)
+    yeniden.Y3: elle {"elenen": {}, "alinan": [], "oneri": null, "supheli_etiketi": ["NZ2"], "elle_sayilan": ["NZ2"]} ≠ eski {"elenen": {"secenek": [{}, {"NZ2": "gecikmis_borc_yok"}], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar metni
+    yeniden.Y4: elle {"elenen": {}, "alinan": [], "oneri": null, "supheli_etiketi": ["NY"], "elle_sayilan": ["NY"]} ≠ eski {"elenen": {"secenek": [{}, {"NY": "gecikmis_borc_yok"}], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar metnin
+    kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/NY": "Atlandı", "T1/NZ2": "Teslim Edildi"} ≠ eski {"T1/A": "Teslim Edildi", "T1/NY": "Atlandı", "T1/NZ2": {"secenek": ["Teslim Edildi", "Atlandı"], "susuyor": "S23 yeniden basmasında şüphesiz tutar yo
+    isler.T1/NZ2.degiskenler: elle ["Nil Ertesi", "Deneme Ticaret Ltd. Şti.", "30.10.2026", "150,00 TL", {"plan_susuyor": "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} gü ≠ eski ["Nil Ertesi", "Deneme Ticaret Ltd. Şti.", {"secenek": ["30.10.2026", "08.10.2026"], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa
+    isler.T1/NZ2.post: elle 2 ≠ eski {"secenek": [2, 1], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar metninde yok — bekleyen iş elle sayılıp gönd
+    isler.T1/NZ2.atlanma_nedeni: elle null ≠ eski {"secenek": [null, "supheli_alacak"], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar metninde yok — bekleyen iş
+    isler.T1/NY.atlanma_nedeni: elle "gecikmis_borc_yok" ≠ eski {"secenek": ["gecikmis_borc_yok", "supheli_alacak"], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar metninde yo
+    meta.post: elle {"A": 1, "NY": 1, "NZ2": 2} ≠ eski {"A": 1, "NY": 1, "NZ2": {"secenek": [2, 1], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar metninde yok — bekl
+KIRMIZI S29-02-gece-yarisi-yerel-gun-tutar-dogar-utc-gunu-farkli: 7 elle yaprağı farklı (değerle)
+    yeniden.Y2: elle {"elenen": {}, "alinan": [], "oneri": null, "supheli_etiketi": ["GN"], "elle_sayilan": ["GN"]} ≠ eski {"elenen": {"secenek": [{}, {"GN": "gecikmis_borc_yok"}], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar metnin
+    kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/GN": "Teslim Edildi"} ≠ eski {"T1/A": "Teslim Edildi", "T1/GN": {"secenek": ["Teslim Edildi", "Atlandı"], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'
+    isler.T1/GN.degiskenler: elle ["Gece Nur", "Deneme Ticaret Ltd. Şti.", "31.10.2026", "200,00 TL", {"plan_susuyor": "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} günc ≠ eski ["Gece Nur", "Deneme Ticaret Ltd. Şti.", {"secenek": ["31.10.2026", "05.10.2026"], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa e
+    isler.T1/GN.post: elle 2 ≠ eski {"secenek": [2, 1], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar metninde yok — bekleyen iş elle sayılıp gönd
+    isler.T1/GN.atlanma_nedeni: elle null ≠ eski {"secenek": [null, "supheli_alacak"], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar metninde yok — bekleyen iş
+    meta.post: elle {"A": 1, "GN": 2} ≠ eski {"A": 1, "GN": {"secenek": [2, 1], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar metninde yok — bekleyen iş el
+    bu_ay: elle {"W1": {"2026-10": {"teslim": 1, "yaklasik_usd": "0.0009"}, "2026-11": {"teslim": 1, "yaklasik_usd": "0.0009"}}} ≠ eski {"W1": {"secenek": [{"2026-10": {"teslim": 1, "yaklasik_usd": "0.0009"}, "2026-11": {"teslim": 1, "yaklasik_usd": "0.0009"}}, {"2026-10": {"teslim": 1
+KIRMIZI S29-03-meta-bekletti-ikinci-denemede-tutar-dogar-net-borcla-sinirli: 7 elle yaprağı farklı (değerle)
+    yeniden.Y2: elle {"elenen": {}, "alinan": [], "oneri": null, "supheli_etiketi": ["MZ"], "elle_sayilan": ["MZ"]} ≠ eski {"elenen": {"secenek": [{}, {"MZ": "gecikmis_borc_yok"}], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar metnin
+    kontroller.K3.isler: elle {"T1/A": "Teslim Edildi", "T1/MZ": "Teslim Edildi"} ≠ eski {"T1/A": "Teslim Edildi", "T1/MZ": {"secenek": ["Teslim Edildi", "Atlandı"], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'
+    isler.T1/MZ.degiskenler: elle ["Mert Bekleme", "Deneme Ticaret Ltd. Şti.", "30.10.2026", "200,00 TL", {"plan_susuyor": "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}}  ≠ eski ["Mert Bekleme", "Deneme Ticaret Ltd. Şti.", {"secenek": ["30.10.2026", "06.10.2026"], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yok
+    isler.T1/MZ.post: elle 3 ≠ eski {"secenek": [3, 2], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar metninde yok — bekleyen iş elle sayılıp gönd
+    isler.T1/MZ.atlanma_nedeni: elle null ≠ eski {"secenek": [null, "supheli_alacak"], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar metninde yok — bekleyen iş
+    meta.post: elle {"A": 1, "MZ": 3} ≠ eski {"A": 1, "MZ": {"secenek": [3, 2], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar metninde yok — bekleyen iş el
+    bu_ay: elle {"W1": {"2026-10": {"teslim": 2, "yaklasik_usd": "0.0018"}}} ≠ eski {"W1": {"2026-10": {"teslim": {"secenek": [2, 1], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar metninde yok —
+KIRMIZI S29-04-sinirda-yeni-gecikmis-kalem-eklenir-kayit-kapanirsa-butun-gecikmisle: 7 elle yaprağı farklı (değerle)
+    yeniden.Y3: elle {"elenen": {}, "alinan": [], "oneri": null, "supheli_etiketi": ["SQ"], "elle_sayilan": ["SQ"]} ≠ eski {"elenen": {"secenek": [{}, {"SQ": "gecikmis_borc_yok"}], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar metnin
+    yeniden.Y4: elle {"elenen": {}, "alinan": [], "oneri": null, "supheli_etiketi": ["SK"], "elle_sayilan": ["SK"]} ≠ eski {"elenen": {"secenek": [{}, {"SK": "gecikmis_borc_yok"}], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar metnin
+    kontroller.K3.isler: elle {"T1/A": "Teslim Edildi", "T1/SK": "Sınır Nedeniyle Bekliyor", "T1/SQ": "Teslim Edildi"} ≠ eski {"T1/A": "Teslim Edildi", "T1/SK": {"secenek": ["Sınır Nedeniyle Bekliyor", "Teslim Edildi"], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S
+    isler.T1/SQ.degiskenler: elle ["Sena Yeni", "Deneme Ticaret Ltd. Şti.", "20.10.2026", "200,00 TL", {"plan_susuyor": "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} gün ≠ eski ["Sena Yeni", "Deneme Ticaret Ltd. Şti.", {"secenek": ["20.10.2026", "07.10.2026"], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa 
+    isler.T1/SQ.post: elle 2 ≠ eski {"secenek": [2, 1], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar metninde yok — bekleyen iş elle sayılıp gönd
+    meta.post: elle {"A": 1, "SK": 2, "SQ": 2} ≠ eski {"A": 1, "SK": 2, "SQ": {"secenek": [2, 1], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar metninde yok — bekle
+    bu_ay: elle {"W1": {"2026-10": {"teslim": 2, "yaklasik_usd": "0.0018"}, "2026-11": {"teslim": 1, "yaklasik_usd": "0.0009"}}} ≠ eski {"W1": {"secenek": [{"2026-10": {"teslim": 2, "yaklasik_usd": "0.0018"}, "2026-11": {"teslim": 1, "yaklasik_usd": "0.0009"}}, {"2026-10": {"teslim": 2
+KIRMIZI S30-01-talep-duraklatildi-meta-bekletti-zincir-gonderilmez-belirsiz-iz-eler: 21 elle yaprağı farklı (değerle)
+    kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/E": {"secenek": ["Atlandı", "Duraklatıldı"], "susuyor": "S30 'bekleyen iş gönderilmez': silme talebi / 1 yıl dolumu anın ≠ eski {"T1/A": "Teslim Edildi", "T1/E": "Duraklatıldı", "T2/B": "Duraklatıldı", "T3/D": "Meta Bekletti (24 Saat Sonra Yeniden)"}
+    kontroller.K3.isler: elle {"T1/A": "Teslim Edildi", "T1/E": "Atlandı", "T2/B": "Atlandı", "T3/D": "Atlandı"} ≠ eski {"T1/A": "Teslim Edildi", "T1/E": "Teslim Edildi", "T2/B": "Teslim Edildi", "T3/D": "Teslim Edildi"}
+    elenen: elle {"T4": {"E": "sonucu_belirsiz"}} ≠ eski {"T4": {"B": "daha_once_gonderildi", "D": "daha_once_gonderildi", "E": "daha_once_gonderildi"}}
+    olusmadi: elle [] ≠ eski ["T4"]
+    onceki_uyari: elle {} ≠ eski {"T4": {"sayi": 3, "son": "2026-10-31"}}
+    toplular.T4.is_sayisi: elle 2 ≠ eski "<YOK>"
+    yeniden.Y2: elle {"elenen": {"E": "icerik_silindi"}, "alinan": [], "oneri": null} ≠ eski {"elenen": {"E": "daha_once_gonderildi"}, "alinan": [], "oneri": null}
+    isler.T1/E.atlanma_nedeni: elle "silme_talebi" ≠ eski null
+KIRMIZI S30-02-talep-sinir-lisans-gonderilmez-belirsiz-hatirlatma-ayni-gun-elenir-ertesi-gun-gider: 13 elle yaprağı farklı (değerle)
+    kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/BE": "Sonucu Belirsiz", "T1/LS": {"secenek": ["Atlandı", "Lisans Nedeniyle Durdu"], "susuyor": "S30 'bekleyen iş gönderi ≠ eski {"T1/A": "Teslim Edildi", "T1/BE": "Sonucu Belirsiz", "T1/LS": "Lisans Nedeniyle Durdu", "T1/SB": "Lisans Nedeniyle Durdu", "T1/XN": "Teslim Edildi"}
+    kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/BE": "Sonucu Belirsiz", "T1/LS": "Atlandı", "T1/SB": "Atlandı", "T1/XN": "Teslim Edildi"} ≠ eski {"T1/A": "Teslim Edildi", "T1/BE": "Sonucu Belirsiz", "T1/LS": "Sınır Nedeniyle Bekliyor", "T1/SB": "Sınır Nedeniyle Bekliyor", "T1/XN": "Teslim Edild
+    isler.T1/SB.atlanma_nedeni: elle "silme_talebi" ≠ eski null
+    isler.T1/LS.atlanma_nedeni: elle "silme_talebi" ≠ eski null
+    isler.T1/SB.post: elle 0 ≠ eski 1
+    isler.T1/LS.post: elle 0 ≠ eski 1
+    elenen: elle {"T2": {"BE": "sonucu_belirsiz"}} ≠ eski {"T2": {"BE": "sonucu_belirsiz", "LS": "zaten_kuyrukta", "SB": "zaten_kuyrukta"}}
+    olusmadi: elle [] ≠ eski ["T2"]
+KIRMIZI S30-03-bir-yil-dolumu-bekleyen-isler-gonderilmez-belirsiz-iz-eler: 12 elle yaprağı farklı (değerle)
+    kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T2/B": {"secenek": ["Atlandı", "Duraklatıldı"], "susuyor": "S30 'bekleyen iş gönderilmez': silme talebi / 1 yıl dolumu anın ≠ eski {"T1/A": "Teslim Edildi", "T2/B": "Duraklatıldı", "T3/HC": "Duraklatıldı", "T4/D": "Sonucu Belirsiz"}
+    kontroller.K2.icerik: elle {"T1/A": {"telefon": null, "degiskenler": null, "pdf": null, "dosya_adi": null, "icerik_silindi": true}, "T2/B": {"telefon": null, "degiskenler": null ≠ eski {"T1/A": {"telefon": null, "degiskenler": null, "pdf": null, "dosya_adi": null, "icerik_silindi": true}, "T2/B": {"telefon": null, "degiskenler": null
+    kontroller.K3.isler: elle {"T1/A": "Teslim Edildi", "T2/B": "Atlandı", "T3/HC": "Atlandı", "T4/D": "Sonucu Belirsiz"} ≠ eski {"T1/A": "Teslim Edildi", "T2/B": "Teslim Edildi", "T3/HC": "Teslim Edildi", "T4/D": "Sonucu Belirsiz"}
+    isler.T2/B.atlanma_nedeni: elle "saklama_suresi" ≠ eski null
+    isler.T3/HC.atlanma_nedeni: elle "saklama_suresi" ≠ eski null
+    isler.T2/B.post: elle 0 ≠ eski 1
+    isler.T3/HC.post: elle 0 ≠ eski 1
+    elenen: elle {"T5": {"A": "daha_once_gonderildi", "D": "sonucu_belirsiz"}} ≠ eski {"T5": {"A": "daha_once_gonderildi", "B": "daha_once_gonderildi", "D": "sonucu_belirsiz"}, "T6": {"HC": "daha_once_gonderildi"}}
+KIRMIZI S31-01-talep-sonrasi-basarisizlari-yeniden-dene-silinmis-ekstre-elenir-yeni-gonderim-gider: 11 elle yaprağı farklı (değerle)
+    yeniden.Y1: elle {"elenen": {"A": "icerik_silindi"}, "alinan": ["B"], "oneri": null} ≠ eski {"elenen": {}, "alinan": ["A", "B"], "oneri": null}
+    kontroller.K2.isler: elle {"T1/A": "Başarısız", "T1/B": "Teslim Edildi", "T1/C": "Teslim Edildi"} ≠ eski {"T1/A": "Teslim Edildi", "T1/B": "Teslim Edildi", "T1/C": "Teslim Edildi"}
+    elenen: elle {} ≠ eski {"T2": {"A": "daha_once_gonderildi"}}
+    olusmadi: elle [] ≠ eski ["T2"]
+    onceki_uyari: elle {} ≠ eski {"T2": {"sayi": 1, "son": "2026-10-30"}}
+    kontroller.K3.icerik.T2/A: elle {"telefon": "+905321112233", "degiskenler": ["Ayşe Yılmaz", "Deneme Ticaret Ltd. Şti.", "01.10.2026 – 31.10.2026", "1.250,00 TL"], "pdf": {"cari_ad":  ≠ eski "<YOK>"
+    kontroller.K3.icerik.T1/A: elle {"telefon": null, "degiskenler": null, "pdf": null, "dosya_adi": null, "icerik_silindi": true} ≠ eski {"telefon": "+905321112233", "degiskenler": ["Ayşe Yılmaz", "Deneme Ticaret Ltd. Şti.", "01.10.2026 – 31.10.2026", "1.250,00 TL"], "pdf": {"cari_ad": 
+    isler.T1/A.durum: elle "Başarısız" ≠ eski "Teslim Edildi"
+KIRMIZI S31-02-bir-yil-sonra-silinmis-ekstre-yeniden-dene-ve-yine-de-gonder-kapali: 10 elle yaprağı farklı (değerle)
+    yeniden.Y1: elle {"elenen": {"A": "icerik_silindi"}, "alinan": [], "oneri": null} ≠ eski {"elenen": {}, "alinan": ["A"], "oneri": null}
+    yeniden.Y2: elle {"elenen": {"B": "icerik_silindi"}, "alinan": [], "oneri": null} ≠ eski {"elenen": {}, "alinan": ["B"], "oneri": null}
+    elenen: elle {"T2": {"B": "sonucu_belirsiz"}} ≠ eski {"T2": {"A": "daha_once_gonderildi", "B": "daha_once_gonderildi"}}
+    olusmadi: elle [] ≠ eski ["T2"]
+    onceki_uyari: elle {} ≠ eski {"T2": {"sayi": 2, "son": "2027-11-02"}}
+    isler.T1/A.durum: elle "Başarısız" ≠ eski "Teslim Edildi"
+    isler.T1/B.durum: elle "Sonucu Belirsiz" ≠ eski "Teslim Edildi"
+    isler.T2/A.degiskenler: elle ["Ayşe Yılmaz", "Deneme Ticaret Ltd. Şti.", "01.10.2026 – 31.10.2026", "1.250,00 TL"] ≠ eski "<YOK>"
+KIRMIZI S32-01-talepten-once-ve-sonra-alinan-iki-yedek-icerik-gelmez-sonraki-icerik-kalir: 1 elle yaprağı farklı (değerle)
+    kontroller.K1.icerik: elle {"T1/A": {"telefon": null, "degiskenler": null, "pdf": null, "dosya_adi": null, "icerik_silindi": true}, "T1/B": {"telefon": "+905332223344", "degiske ≠ eski {"T1/A": {"telefon": {"plan_susuyor": "silme talebinden ÖNCE alınmış yedek geri yüklenince silinen içerik / telefon / PDF'in geri gelip gelmediği (tal
+KIRMIZI S32-02-talepten-once-yedekte-basarisiz-ve-belirsiz-geri-yukleme-sonrasi-silinmis: 11 elle yaprağı farklı (değerle)
+    kontroller.K1.icerik: elle {"T1/B": {"telefon": "+905332223344", "degiskenler": ["Mehmet Kaya", "Deneme Ticaret Ltd. Şti.", "01.10.2026 – 31.10.2026", "2.000,00 TL"], "pdf": {"c ≠ eski {"T1/B": {"telefon": "+905332223344", "degiskenler": ["Mehmet Kaya", "Deneme Ticaret Ltd. Şti.", "01.10.2026 – 31.10.2026", "2.000,00 TL"], "pdf": {"c
+    yeniden.Y1: elle {"elenen": {"C": "icerik_silindi"}, "alinan": [], "oneri": null} ≠ eski {"elenen": {}, "alinan": ["C"], "oneri": null}
+    yeniden.Y2: elle {"elenen": {"D": "icerik_silindi"}, "alinan": [], "oneri": null} ≠ eski {"elenen": {}, "alinan": ["D"], "oneri": null}
+    elenen: elle {"T2": {"D": "sonucu_belirsiz"}} ≠ eski {"T2": {"C": "daha_once_gonderildi", "D": "daha_once_gonderildi"}}
+    olusmadi: elle [] ≠ eski ["T2"]
+    isler.T2/C.durum: elle "Teslim Edildi" ≠ eski "<YOK>"
+    isler.T2/C.degiskenler: elle ["Zeynep Demir", "Deneme Ticaret Ltd. Şti.", "01.10.2026 – 31.10.2026", "0,00 TL"] ≠ eski "<YOK>"
+    isler.T1/C.post: elle 1 ≠ eski 2
+# nötr kopya: KIRMIZI 13, AYNI 0
