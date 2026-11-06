@@ -14,6 +14,8 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { describe, it } from "node:test";
+import { resolveDbPath } from "../server/lib/db-path.mjs";
+import { LATEST_VERSION } from "../server/lib/migrations.mjs";
 import { ADMIN_PASSWORD, createUser, removeTestDir } from "./helpers.mjs";
 import { PNID, URLS, WABA, startWa } from "./whatsapp-248-ortak.mjs";
 
@@ -46,6 +48,40 @@ async function info(ctx, q = "") {
   return res.data.data;
 }
 const pathOf = callbackUrl => new URL(callbackUrl).pathname.split("/").pop();
+// 2.5.0 WE + BS-7 gerileme düzeltmesi: 001 yeni şemalıyken (şema sürüm kapısı) çift üretilmez; neden metni görev metnindeki karardan (cümle düzeni), koddan alınmaz.
+const SCHEMA_AHEAD = "001 şirketinin verisi programın daha yeni bir sürümüyle açıldığı için webhook bilgileri hazırlanamıyor; programı güncelleyince burada görünür.";
+const KEY = "whatsapp.appWebhook";
+// Kapalı sunucuda 001 dosyasının şema numarası (BS-7 "yeni sürüm" benzetimi: LATEST + 1; geri alma: LATEST).
+function setSchema(file, version) {
+  const db = new DatabaseSync(file);
+  try {
+    db.exec(`PRAGMA user_version = ${version}`);
+  } finally {
+    db.close();
+  }
+}
+// 001 dosyasındaki webhook ayar satırı (kapalı sunucuda): değer + yazım zamanı; yoksa null.
+function webhookRow(file) {
+  const db = new DatabaseSync(file, { readOnly: true });
+  try {
+    const row = db.prepare("SELECT value, updated_at FROM settings WHERE key = ?").get(KEY);
+    return row ? `${row.value}|${row.updated_at}` : null;
+  } finally {
+    db.close();
+  }
+}
+// Yeni hücrelerde sunucu yeniden açılır (kapalı sunucuda dosya değiştirilir): kapatma bir kez yapılır, finally'deki ikinci çağrı aynı sözü döner.
+async function startOnce(options) {
+  const ctx = await startWa(options);
+  const close = ctx.close.bind(ctx);
+  let closing = null;
+  ctx.close = () => (closing ||= close());
+  return ctx;
+}
+async function remoteOf(ctx) {
+  return `http://127.0.0.1:${(await ctx.server.app.listenRemote(0, "127.0.0.1")).port}`;
+}
+const verifyGet = (base, info, challenge) => raw(base, "GET", `/wa/kanca/${pathOf(info.callbackUrl)}?hub.mode=subscribe&hub.verify_token=${encodeURIComponent(info.verifyToken)}&hub.challenge=${challenge}`);
 
 describe("2.5.0 WE — Elle Bağla webhook bilgileri: program gösterir, kurulum başına, gizli", () => {
   it("WE-1 yönetici: Callback URL = ofisin adresi + /wa/kanca/<43>, Verify token 43 karakter; yeniden sorulunca ve öbür şirkette AYNI (kurulum başına); WABA'nın bildirim adresinden farklı", { timeout: 120_000 }, async () => {
@@ -226,4 +262,125 @@ describe("2.5.0 WE — Elle Bağla webhook bilgileri: program gösterir, kurulum
       await ctx.close();
     }
   });
+
+  // ---------- 2.5.0 WE + BS-7 gerileme düzeltmesi (baş mimar kararı (1)): kapılı (kendinden yeni şemalı) 001'e WE HİÇ yazmaz ----------
+  // Nasıl bozulur: çift hiç üretilmemişken 001 yeni şemalı açılır (001'den ve 002'den sorulur); çift varken (okunur, gösterilir, Meta doğrulaması geçer); çift var ama bu bilgisayarda
+  // açılamıyor (secret.key değişti — yeniden üretim yazma olurdu); kapı kalkınca çıkmaz yok (çift üretilir). Ders 48: hücreler program kapalıyken 001 dosyasının şema numarasını ve secret.key'i değiştirir.
+  it("WE-7 001 yeni şemalı, çift YOK: 001'den ve 002'den sorulunca 200 + ready false + Türkçe neden, değer boş; 001'e webhook ayarı yazılmaz; kapı kalkınca çift üretilir (çıkmaz yok)", { timeout: 180_000 }, async () => {
+    const root = mkdtempSync(path.join(tmpdir(), "destekofis-we-"));
+    const dataDir = path.join(root, "data");
+    const backupDir = path.join(root, "backups");
+    const rootFile = resolveDbPath(dataDir);
+    let ctx = await startOnce({ dataDir, backupDir, maxCompanies: 2, env: DEAD });
+    try {
+      const created = await ctx.api.post("/api/companies", { name: "Deneme Şirketi", select: false });
+      assert.equal(created.status, 200, JSON.stringify(created.data));
+      const second = created.data.data.company || created.data.data;
+      await ctx.close();
+      assert.equal(webhookRow(rootFile), null, "ön koşul: çift hiç üretilmedi");
+      setSchema(rootFile, LATEST_VERSION + 1);
+      ctx = await startOnce({ dataDir, backupDir, maxCompanies: 2, env: DEAD, connect: false, ack: false, office: null });
+      assert.equal(ctx.server.app.schemaGate?.version, LATEST_VERSION + 1, "ön koşul: 001 kapıda");
+      ctx.server.app.mobileRemote.setPublicUrl(PUBLIC);
+      for (const q of ["", `?hofCompany=${encodeURIComponent(second.id)}`]) {
+        const gated = await info(ctx, q);
+        assert.deepEqual([gated.ready, gated.callbackUrl, gated.verifyToken, gated.reason], [false, "", "", SCHEMA_AHEAD], `kapıda çift üretilmez (${q || "001"})`);
+      }
+      assert.equal(ctx.store.setting(KEY, null), null, "çalışırken de 001'de webhook ayarı yok");
+      await ctx.close();
+      assert.equal(webhookRow(rootFile), null, "001 dosyasına webhook ayarı yazılmadı");
+      // Kapı kalkar (program güncellendi benzetimi): çift üretilir, Meta doğrulaması geçer.
+      setSchema(rootFile, LATEST_VERSION);
+      ctx = await startOnce({ dataDir, backupDir, maxCompanies: 2, env: DEAD, connect: false, ack: false, office: null });
+      assert.equal(ctx.server.app.schemaGate ?? null, null);
+      ctx.server.app.mobileRemote.setPublicUrl(PUBLIC);
+      const made = await info(ctx);
+      assert.equal(made.ready, true);
+      assert.match(made.verifyToken, /^[A-Za-z0-9_-]{43}$/);
+      const res = await verifyGet(await remoteOf(ctx), made, 4242);
+      assert.deepEqual([res.status, res.text], [200, "4242"]);
+    } finally {
+      await ctx.close();
+      removeTestDir(root);
+    }
+  });
+
+  it("WE-8 001 yeni şemalı, çift VAR: aynı değerler gösterilir (001 ve 002), Meta doğrulaması geçer, ayar satırı aynen; secret.key değişince yeni çift ÜRETİLMEZ (ready false + neden, satır aynen)", { timeout: 180_000 }, async () => {
+    const root = mkdtempSync(path.join(tmpdir(), "destekofis-we-"));
+    const dataDir = path.join(root, "data");
+    const backupDir = path.join(root, "backups");
+    const rootFile = resolveDbPath(dataDir);
+    let ctx = await startOnce({ dataDir, backupDir, maxCompanies: 2, env: DEAD });
+    try {
+      ctx.server.app.mobileRemote.setPublicUrl(PUBLIC);
+      const first = await info(ctx);
+      const created = await ctx.api.post("/api/companies", { name: "Deneme Şirketi", select: false });
+      assert.equal(created.status, 200, JSON.stringify(created.data));
+      const second = created.data.data.company || created.data.data;
+      await ctx.close();
+      const rowBefore = webhookRow(rootFile);
+      assert.ok(rowBefore, "ön koşul: çift üretildi");
+      setSchema(rootFile, LATEST_VERSION + 1);
+      ctx = await startOnce({ dataDir, backupDir, maxCompanies: 2, env: DEAD, connect: false, ack: false, office: null });
+      assert.equal(ctx.server.app.schemaGate?.version, LATEST_VERSION + 1, "ön koşul: 001 kapıda");
+      ctx.server.app.mobileRemote.setPublicUrl(PUBLIC);
+      assert.deepEqual(await info(ctx), first, "var olan çift okunur, aynen gösterilir (001)");
+      assert.deepEqual(await info(ctx, `?hofCompany=${encodeURIComponent(second.id)}`), first, "002'den de aynı");
+      const res = await verifyGet(await remoteOf(ctx), first, 515);
+      assert.deepEqual([res.status, res.text], [200, "515"], "Meta'nın doğrulaması kapıda da geçer (okuma)");
+      await ctx.close();
+      assert.equal(webhookRow(rootFile), rowBefore, "001'deki webhook ayarı değişmedi");
+      // Veri başka bilgisayara taşındı (secret.key farklı): yeniden üretim YAZMA olurdu → kapıda üretilmez.
+      writeFileSync(path.join(dataDir, "secret.key"), randomBytes(32).toString("base64"));
+      ctx = await startOnce({ dataDir, backupDir, maxCompanies: 2, env: DEAD, connect: false, ack: false, office: null });
+      ctx.server.app.mobileRemote.setPublicUrl(PUBLIC);
+      const moved = await info(ctx);
+      assert.deepEqual([moved.ready, moved.callbackUrl, moved.verifyToken, moved.reason], [false, "", "", SCHEMA_AHEAD], "açılamayan çift kapıda yeniden üretilmez");
+      await ctx.close();
+      assert.equal(webhookRow(rootFile), rowBefore, "secret.key değişse de 001'deki webhook ayarı aynen");
+    } finally {
+      await ctx.close();
+      removeTestDir(root);
+    }
+  });
+
+  // ---------- 2.5.0 WE dar kontrol DÜŞÜK-1 (baş mimar kararı (2)): 001 geri yüklemesi kurulum başına çifti korur (company-backups.mjs COMMON_SETTINGS) ----------
+  // Nasıl bozulur: yedek çift ilk gösterilmeden ÖNCE alınmış (yedekte satır yok) → geri yükleme satırı siler → yeni çift, Meta'daki eski adres 404. Ters sıra (yedek SONRA) da denenir.
+  // Ders 48: 001 geri yüklemesi yeniden açılışta dosya takası yapar (applyStagedRestore: kopyala, -wal/-shm sil, yeniden adlandır).
+  for (const order of ["ÖNCE", "SONRA"]) {
+    it(`WE-9 001 yedekten geri yüklenir (yedek çift gösterilmeden ${order} alınmış): çift AYNI, Meta'ya girilmiş eski çiftle doğrulama 200`, { timeout: 180_000 }, async () => {
+      const root = mkdtempSync(path.join(tmpdir(), "destekofis-we-"));
+      const dataDir = path.join(root, "data");
+      const backupDir = path.join(root, "backups");
+      let ctx = await startOnce({ dataDir, backupDir, env: DEAD });
+      try {
+        ctx.server.app.mobileRemote.setPublicUrl(PUBLIC);
+        let backupName = "";
+        const takeBackup = async () => {
+          const backup = await ctx.api.post("/api/admin/backups", { scope: "one", companyId: "sirket-001" });
+          assert.equal(backup.status, 200, JSON.stringify(backup.data));
+          backupName = backup.data.data.name;
+        };
+        if (order === "ÖNCE") await takeBackup();
+        const first = await info(ctx);
+        if (order === "SONRA") await takeBackup();
+        const restore = await ctx.api.post("/api/admin/backups/restore", { name: backupName, company: "sirket-001", confirm: "001", password: ADMIN_PASSWORD });
+        assert.equal(restore.status, 200, JSON.stringify(restore.data));
+        await ctx.close();
+        ctx = await startOnce({ dataDir, backupDir, env: DEAD, connect: false, ack: false });
+        const applied = JSON.parse(ctx.store.setting("backup.lastRestore", "{}") || "{}");
+        assert.deepEqual([applied.ok, applied.name], [true, backupName], `ön koşul: geri yükleme uygulandı (${JSON.stringify(applied)})`);
+        ctx.server.app.mobileRemote.setPublicUrl(PUBLIC);
+        const base = await remoteOf(ctx);
+        const early = await verifyGet(base, first, 61);
+        assert.deepEqual([early.status, early.text], [200, "61"], "geri yüklemeden sonra (yeniden gösterimden önce) eski çiftle doğrulama");
+        assert.deepEqual(await info(ctx), first, "geri yüklemeden sonra aynı değerler");
+        const late = await verifyGet(base, first, 62);
+        assert.deepEqual([late.status, late.text], [200, "62"], "yeniden gösterimden sonra da eski çiftle doğrulama");
+      } finally {
+        await ctx.close();
+        removeTestDir(root);
+      }
+    });
+  }
 });

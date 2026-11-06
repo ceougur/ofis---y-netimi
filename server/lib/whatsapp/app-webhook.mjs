@@ -7,18 +7,23 @@
 // KURULUM BAŞINA tek çift (bütün şirketler, bütün Meta uygulamaları aynı değerleri girebilir): ortak katmanın (001) ayarında "whatsapp.appWebhook", ikisi de secret-box ile
 // MÜHÜRLÜ (anahtar veri klasöründe secret.key — yedeğe girmez) + SHA-256 karmaları (gelen istek karmayla karşılaştırılır; açık değer yalnız yöneticinin ekranında açılır).
 // GİZLİ BİLGİ (plan 2.4.8 §4 "kanca gizli yolu ve verify_token belirteç gibi saklanır"): günlüğe, işlem geçmişine, hata iletisine, başka dosyaya girmez; yalnız
-// system.manage (yönetici) görür. Şirket Verisini Sıfırla'da korunur (KEEP_SETTINGS "whatsapp"). Mühür bu bilgisayarda açılamıyorsa (veri başka bilgisayardan taşındı) yeni çift
+// system.manage (yönetici) görür. Şirket Verisini Sıfırla'da (KEEP_SETTINGS "whatsapp") ve 001'in yedekten geri yüklenmesinde (company-backups.mjs COMMON_SETTINGS) korunur. Mühür bu bilgisayarda açılamıyorsa (veri başka bilgisayardan taşındı) yeni çift
 // üretilir — Meta'da yeniden girilir.
 // Bu adrese gelen istek (lib/whatsapp/hook.mjs): GET doğrulaması (hub.verify_token → hub.challenge); POST 200 ile kabul edilir, İŞLENMEZ ve SAKLANMAZ (durum bildirimi
 // WABA'nın alternatif adresine gelir; uygulama düzeyindeki adrese düşen bildirim — ör. alternatif adres kaydedilemediyse — teslim / sayaç / bildirim yolu işaretini etkilemez:
 // "kime kaç kez" kuralları değişmez).
 import { randomBytes } from "node:crypto";
 import { createSecretBox } from "../secret-box.mjs";
+import { isSchemaAhead } from "../migrations.mjs";
 import { HOOK_PATH, hookBase, sha256, usableBase } from "./connection.mjs";
 
 export const APP_WEBHOOK_KEY = "whatsapp.appWebhook";
 const HASH = /^[0-9a-f]{64}$/;
 export const APP_WEBHOOK_NOT_READY = "Ofisin uzaktan bağlantı adresi henüz hazır değil; Yönetim → Mobil Cihazlar'da uzaktan bağlantı açılınca bildirim adresi burada görünür.";
+// 2.5.0 WE + BS-7 (gerileme düzeltmesi; docs/2.5.0-IS-LISTESI.md): ortak katmanın (001) veri dosyası programın daha yeni bir sürümüyle açılmışsa (şema sürüm kapısı,
+// app.mjs schemaGate) o dosyaya YAZILMAZ — çift yoksa ya da bu bilgisayarda açılamıyorsa üretilmez, yanıt ready false + bu neden. Var olan çift okunur ve gösterilir
+// (okuma yazma değildir). Kapının ortak katman istisnası yalnız giriş / lisans / şirket seçimidir; webhook çifti ona girmez.
+export const APP_WEBHOOK_SCHEMA_AHEAD = "001 şirketinin verisi programın daha yeni bir sürümüyle açıldığı için webhook bilgileri hazırlanamıyor; programı güncelleyince burada görünür.";
 
 /**
  * @param {object} o
@@ -27,6 +32,9 @@ export const APP_WEBHOOK_NOT_READY = "Ofisin uzaktan bağlantı adresi henüz ha
  */
 export function createAppWebhook({ store, dataDir, now = () => new Date() }) {
   let box = null;
+  // Kapı: deponun kendi dosyasının şema numarası (app.mjs schemaGate ile aynı ölçüt: migrations.mjs isSchemaAhead). Her üretimden ÖNCE okunur; okunamazsa hata
+  // yukarı çıkar (uç 503 "hazırlanamadı" der) — yazmaya düşülmez.
+  const schemaAhead = () => Boolean(store.db) && isSchemaAhead(Number(store.db.prepare("PRAGMA user_version").get()?.user_version));
   const secrets = () => (box ||= createSecretBox(dataDir || "."));
   function record() {
     let raw = null;
@@ -56,14 +64,17 @@ export function createAppWebhook({ store, dataDir, now = () => new Date() }) {
     return Boolean(row && token && sha256(token) === row.verifyHash);
   }
   /**
-   * Yöneticinin ekranı için açık değerler (yoksa ya da bu bilgisayarda açılamıyorsa üretilir). publicUrl: ofisin uzaktan adresi. Dönüş:
-   * { ready, callbackUrl ("" — adres hazır değil), verifyToken, reason }.
+   * Yöneticinin ekranı için açık değerler (yoksa ya da bu bilgisayarda açılamıyorsa üretilir; 001 şema kapısındaysa ÜRETİLMEZ). publicUrl: ofisin uzaktan adresi. Dönüş:
+   * { ready, callbackUrl ("" — adres hazır değil), verifyToken ("" — kapıda üretilemedi), reason }.
    */
   function reveal(publicUrl) {
     const row = record();
     let path = row ? secrets().open(row.pathSealed) : "";
     let verify = row ? secrets().open(row.verifySealed) : "";
-    if (!HOOK_PATH.test(String(path || "")) || !verify || sha256(path) !== row?.pathHash || sha256(verify) !== row?.verifyHash) ({ path, verify } = create());
+    if (!HOOK_PATH.test(String(path || "")) || !verify || sha256(path) !== row?.pathHash || sha256(verify) !== row?.verifyHash) {
+      if (schemaAhead()) return { ready: false, callbackUrl: "", verifyToken: "", reason: APP_WEBHOOK_SCHEMA_AHEAD };
+      ({ path, verify } = create());
+    }
     const base = hookBase(publicUrl);
     const ready = usableBase(base);
     return { ready, callbackUrl: ready ? `${base}/wa/kanca/${path}` : "", verifyToken: verify, reason: ready ? "" : APP_WEBHOOK_NOT_READY };

@@ -35,7 +35,9 @@ const COMMON_TABLES = ["users", "roles", "sessions", "mobile_access", "mobile_co
 // v2.1.0 (gözden geçirme B3/B4): "meta.bank.%" (eski satır işareti, açılış onarımı raporu, K6 günlüğü, İşlem No sayacı) ve "meta.schema.%"
 // (göç damgaları) geri yüklenen dosyanın KENDİ verisinin parçasıdır: canlıdan aktarılmaz. Önceden sıfırlanmış canlı dosyanın işareti geri
 // yüklenen dosyaya yazılıyor, güncelleme öncesi satırlar "eski sürümün yeni yazdığı olaysız para satırı" sayılıyordu.
-const COMMON_SETTINGS = "(key LIKE 'license.%' OR (key LIKE 'meta.%' AND key NOT LIKE 'meta.bank.%' AND key NOT LIKE 'meta.schema.%') OR key LIKE 'auth.%' OR key LIKE 'company.%' OR key = 'backup.cloud' OR key = 'office.name')";
+// 2.5.0 WE (dar kontrol DÜŞÜK-1): Elle Bağla'nın uygulama düzeyi webhook çifti (lib/whatsapp/app-webhook.mjs APP_WEBHOOK_KEY) KURULUM başınadır, şirket verisi değil:
+// Meta panelinde girilmiş adres + belirteç eski yedekle değişmez (yedek çiftten önce alınmışsa geri yüklemede çift silinip yenisi üretiliyordu, eski adres 404).
+const COMMON_SETTINGS = "(key LIKE 'license.%' OR (key LIKE 'meta.%' AND key NOT LIKE 'meta.bank.%' AND key NOT LIKE 'meta.schema.%') OR key LIKE 'auth.%' OR key LIKE 'company.%' OR key = 'backup.cloud' OR key = 'office.name' OR key = 'whatsapp.appWebhook')";
 // İşlem No sayacı (lib/bank/event-no.mjs): geri yüklemede canlı ile yedeğin BÜYÜĞÜ (numara hiçbir zaman ikinci kez verilmez); 001 ve 002 aynı.
 const EVENT_COUNTERS = "key LIKE 'meta.bank.seq.%'";
 const maxCounterSql = schema => `INSERT INTO main.settings (key, value, updated_at) SELECT key, value, updated_at FROM ${schema}.settings WHERE ${EVENT_COUNTERS} AND true
