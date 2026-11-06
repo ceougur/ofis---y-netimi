@@ -26,6 +26,7 @@
 // tam denetim reddederse işlem 500 "gate-equivalence" ile kırılır. Tam tarama (açılış, Mutabakat Testi, 15 dakikada bir) değişmedi.
 import { createHash } from "node:crypto";
 import { HttpError } from "./http.mjs";
+import { eachRow } from "./lean-rows.mjs";
 import { UNASSIGNED_SUBS, partyBalances, subBalances } from "./general-ledger.mjs";
 import { byEntity, createBankChecks } from "./bank/checks.mjs";
 import { collectionProblems } from "./bank/collections.mjs";
@@ -250,7 +251,8 @@ export function lockDigestOf(store, lock, { version = "" } = {}) {
     const { requires, sql, since = "" } = typeof entry === "string" ? { requires: [name], sql: entry } : entry;
     if (version && since && compareVersions(since, version) > 0) continue;
     if (!requires.every(has)) continue;
-    for (const row of store.all(sql, lock)) hash.update(`${name}|${Object.values(row).join("|")}\n`);
+    // 2.5.0 Ç3 tamamlama (ders 47; lib/lean-rows.mjs): kilitli dönemin bütün kaynak satırları dizi kurulmadan, birer birer — iz aynı (aynı satırlar, aynı sıra, aynı değerler).
+    for (const row of eachRow(store, sql, [lock])) hash.update(`${name}|${Object.values(row).join("|")}\n`);
   }
   return hash.digest("hex");
 }

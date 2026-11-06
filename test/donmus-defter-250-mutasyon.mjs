@@ -18,15 +18,19 @@ const MIG = "server/lib/migrations.mjs";
 const WORKER = "server/lib/ledger-freeze-worker.mjs";
 const MAIN = "test/donmus-defter-250.test.mjs";
 const LIFE = "test/donmus-defter-yasam-250.test.mjs";
+const NEW = "test/donmus-defter-bellek-250.test.mjs";
+const LEAN = "server/lib/lean-rows.mjs";
 // [no, ad, dosya, eski metin (dosyada TAM BİR KEZ), yeni metin, koşulacak testler, çıktıda beklenen neden (düzenli ifade)]
 const MUTASYONLAR = [
   [1, "kilitli dönemde güncel türetmeye düşme (karma okuma donmuş defteri okumaz)", LS, "    if (!ready()) return live || build();\n    const cover = coverage();\n    if (cover && to && to <= cover)", "    return live || build();\n    const cover = coverage();\n    if (cover && to && to <= cover)", [MAIN], /kilitli yılın Yevmiye Defteri aynı/],
-  [2, "donmuş satır kaybı (iş parçacığı son parçadan bir satır düşürür)", WORKER, "const part = rows.slice(at, at + size);", "const part = rows.slice(at, Math.min(at + size, rows.length - 1));", [MAIN], /uç dondurma bittikten sonra yanıt verir/],
+  // 2 (Ç3 tamamlama): satırlar artık parça parça üretilir (snapshotBatches) — aynı hata, yeni yerinde: son parçadan bir satır düşer.
+  [2, "donmuş satır kaybı (son parçadan bir satır düşer)", LS, "  if (part.length) yield part;\n}", "  if (part.length) yield part.slice(0, -1);\n}", [MAIN], /uç dondurma bittikten sonra yanıt verir/],
   [3, "donmuş satır kaybı (okuma kapsam gününü atlar)", LS, "FROM ledger_snapshots WHERE date <= ? AND date >= ? ORDER BY date, run, run_seq", "FROM ledger_snapshots WHERE date < ? AND date >= ? ORDER BY date, run, run_seq", [MAIN], /donmuş maddeler = canlı türetme/],
   [4, "kilit günü donmaz (aralık kilit gününü dışlar)", LS, "if (!(entry.date > from && entry.date <= through)) continue;", "if (!(entry.date > from && entry.date < through)) continue;", [MAIN], /donmuş maddeler = canlı türetme \(kilit günü dahil\)/],
   [5, "kilit ile donma ayrışması (kanca önceki kilidi dondurur)", "server/routes/ledger.mjs", "snapshots.lockChanged({ previous, next: value, user, reason: \"lock\" });", "snapshots.lockChanged({ previous, next: previous, user, reason: \"lock\" });", [MAIN], /uç dondurma bittikten sonra yanıt verir|kapsam = kilit/],
   [6, "geri çekmede iz yok", LS, "    trace(THAWED_TRACE, run.no, user, { from: cover, through: next, reason });\n", "", [MAIN], /geri çekme izi/],
-  [7, "fark denetimi susuyor", LS, "if (a && b && contentOf(a) === contentOf(b)) continue;", "continue;", [MAIN], /Kural Değişikliği Farkı görünür/],
+  // 7 (Ç3 tamamlama): fark denetimi akışlı (differ) — aynı hata, yeni yerinde.
+  [7, "fark denetimi susuyor", LS, "if (a && b && contentOf(a) === contentOf(b)) return;", "return;", [MAIN], /Kural Değişikliği Farkı görünür/],
   [8, "göçte 2.5.0 kuralı kullanılıyor", MIG, "VALUES (1, ?, 'freeze', 'pending', '', ?, '2.4.9', 'migration', 'system', ?)", "VALUES (1, ?, 'freeze', 'pending', '', ?, '2.5.0', 'migration', 'system', ?)", [LIFE], /not ok \d+ - F11[\s\S]*rule: '2\.5\.0'/],
   [9, "UPDATE tetikleyicisi yok (satır)", MIG, "  CREATE TRIGGER IF NOT EXISTS ledger_snapshots_no_update BEFORE UPDATE ON ledger_snapshots BEGIN SELECT RAISE(ABORT, 'ledger_snapshots değiştirilemez: donmuş defter'); END;\n", "", [MAIN], /Missing expected exception \(UPDATE satır\)|UPDATE satır/],
   [10, "DELETE tetikleyicisi yok (satır)", MIG, "    BEGIN SELECT RAISE(ABORT, 'ledger_snapshots silinemez: donmuş defter (kilit geri çekilmeden)'); END;", "    BEGIN SELECT 1; END;", [MAIN], /DELETE satır \(kapsam içi, izli\)/],
@@ -36,6 +40,14 @@ const MUTASYONLAR = [
   [14, "kaynak izi denetimi yok", LS, "if (last.kind === \"freeze\" && last.through === cover && last.source_digest &&", "if (false && last.kind === \"freeze\" && last.through === cover && last.source_digest &&", [MAIN], /Donmuş Defter bulgusu/],
   [15, "bayat satırlar temizlenmez", LS, "      if (halted()) return removed;\n      const n = store.tx(", "      return removed;\n      const n = store.tx(", [MAIN], /açılan dönemin donmuş satırları kalktı/],
   [16, "2.4.9 kopyası değişti (649 yerine 642)", "server/lib/ledger-rule-249/general-ledger.mjs", "moneyOf(row), \"649\", row.amount);", "moneyOf(row), \"642\", row.amount);", [MAIN, LIFE], /v2\.4\.9 kopyası değişti/],
+  // Ç3 tamamlama (1.000.000 satırda bellek taşması; tasarım notu §16): sıkı okumanın her yeri.
+  [17, "türetme kaynak satırlarını yine store.all ile okur (routes/ledger.mjs rows)", "server/routes/ledger.mjs", "(query ? leanAll(store, sql, ", "(query ? store.all(sql, ", [NEW], /güncel kural: kaynak sorguları store\.all'a düşmemeli/],
+  [18, "2.4.9 kopyası ana iş parçacığında sıkı depo olmadan", LS, "[RULE_249]: () => buildRule249(leanStore(store))", "[RULE_249]: () => buildRule249(store)", [NEW], /sıkı depo olmadan çağrılıyor|dondurma \(2\.4\.9 kuralı, ana iş parçacığı\)/],
+  [19, "2.4.9 kopyası iş parçacığında sıkı depo olmadan", WORKER, "entries = buildRule249(leanStore(store));", "entries = buildRule249(store);", [NEW], /sıkı depo olmadan çağrılıyor/],
+  [20, "donmuş okuma yine store.all ile", LS, "    for (const row of leanRows(\n      store,\n", "    for (const row of ((s, sql, args) => s.all(sql, ...args))(\n      store,\n", [NEW], /donmuş okuma ve fark denetimi store\.all'a düşmemeli/],
+  [21, "sıkı satırlar kopyalanmaz (sözlük kipli satır geçer)", LEAN, "    yield out;\n", "    yield row;\n", [NEW], /sıkı satırlar hızlı kipte olmalı/],
+  [22, "kilit izi yine store.all ile (bütün kaynak satırları dizide)", "server/lib/integrity.mjs", "for (const row of eachRow(store, sql, [lock]))", "for (const row of store.all(sql, lock))", [NEW], /dondurma \(2\.4\.9 kuralı, ana iş parçacığı\): kaynak sorguları store\.all'a düşmemeli/],
+  [23, "akışlı fark denetimi yalnız güncelde olan maddeleri saymaz", LS, "    for (const b of current.values()) differ(undefined, b);\n", "", [NEW], /akışlı fark denetimi = önceki/],
 ];
 
 const run = files => {
@@ -45,7 +57,7 @@ const run = files => {
   return { status: r.status, out, pass: count("pass"), fail: count("fail") };
 };
 
-const taban = run([MAIN, LIFE]);
+const taban = run([MAIN, LIFE, NEW]);
 console.log(`taban: ${taban.pass} geçti / ${taban.fail} kaldı (çıkış ${taban.status})`);
 if (taban.status !== 0) {
   console.log(taban.out.slice(-4000));

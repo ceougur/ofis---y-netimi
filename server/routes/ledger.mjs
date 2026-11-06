@@ -9,6 +9,7 @@ import { systemClock } from "../lib/clock.mjs";
 import { HttpError, ok, readJson, text } from "../lib/http.mjs";
 import { VOUCHER_TYPES, createLedgerVouchers, voucherJournalRows } from "../lib/ledger-vouchers.mjs";
 import { createLedgerSnapshots } from "../lib/ledger-snapshots.mjs";
+import { leanAll } from "../lib/lean-rows.mjs";
 import { roundMoney } from "../lib/money.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -59,8 +60,9 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     // Aynı nedenle süzgeçte durum kolonlarının indeksi kapatılır (tekli +: değer aynı, yalnız indeks seçilmez): i.status = 'issued'
     // indeksi, kimlik kümesinin birincil anahtarından önce seçiliyordu (100.000 satırda ~55 ms).
     const X = filter ? "+" : "";
-    // Yalnız sorguda geçen adlı parametreler verilir (node:sqlite bilinmeyen adı reddeder).
-    const all = (sql, query = true) => (query ? store.all(sql, Object.fromEntries(Object.entries(params).filter(([name]) => sql.includes(`:${name})`)))) : []);
+    // Yalnız sorguda geçen adlı parametreler verilir (node:sqlite bilinmeyen adı reddeder). 2.5.0 Ç3 tamamlama (ders 47; lib/lean-rows.mjs): bütün geçmişin kaynak satırları
+    // sıkı nesnelerle okunur (store.all'ın sözlük kipli satırı ~1,35 KB; 1.000.000 satırda yalnız bunlar yığını doldurup programı çökertiyordu). Değerler aynı.
+    const all = (sql, query = true) => (query ? leanAll(store, sql, Object.fromEntries(Object.entries(params).filter(([name]) => sql.includes(`:${name})`)))) : []);
     const wanted = (...values) => !filter || values.some(Boolean);
     out.payments = all(`SELECT id, p.rowid AS seq, amount, date, note, method, ${refOf("payments", "p")} AS ref FROM payments p${where("p", [[set?.payments, own("m_payments")]])}`, wanted(set?.payments));
     // Kasa ↔ Banka transferinin nakit bacağı banka bacağının hesabını (ikiz satırın fin_ref'i) taşır: madde tek, banka tarafı onun hesabıdır.

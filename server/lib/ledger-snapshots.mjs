@@ -19,6 +19,7 @@ import { roundMoney } from "./money.mjs";
 import { HttpError } from "./http.mjs";
 import { LOCK_SQL_VERSION, lockDigestOf } from "./integrity.mjs";
 import { RULE_249, buildRule249 } from "./ledger-rule-249/index.mjs";
+import { leanRows, leanStore } from "./lean-rows.mjs";
 import { LEDGER_SNAPSHOT_TRIGGERS_V47, LEDGER_SNAPSHOT_TRIGGER_NAMES } from "./migrations.mjs";
 
 /** Eski sürümün (≤ 2.4.9; BS-7 kapısını bilmez) ileri götürdüğü kilidin aradaki dönemini donduran kural (KULLANICIYA SORULMALI S1; öneri A = 2.4.9 kopyası). */
@@ -43,27 +44,41 @@ const yieldTick = () => new Promise(resolve => setImmediate(resolve));
 class Cancelled extends Error {}
 
 /**
- * Yevmiye maddelerinden (from, through] aralığının donmuş satırları (yevmiye sırasıyla): [entryId, lineNo, date, cls, seq, account, sub, party, debit, credit, source, text]
- * + toplamlar. İşlemin, iş parçacığının ve göçün ortak işlevi.
+ * Yevmiye maddelerinden (from, through] aralığının donmuş satırları, yevmiye sırasıyla ve parça parça (en çok `size` satırlık diziler): her satır [entryId, lineNo, date, cls,
+ * seq, account, sub, party, debit, credit, source, text]. totals (verilen nesne) satırlar üretildikçe dolar; son parçadan sonra tamdır. İşlemin ve iş parçacığının ortak işlevi.
+ * 2.5.0 Ç3 tamamlama (ders 47): bütün aralığın satırları tek dizide kurulmaz (1.000.000 satırlık şirkette yüz MB'larca ek yığın).
  */
-export function snapshotRowsOf(entries, { from = "", through }) {
-  const rows = [];
-  const totals = { lines: 0, entries: 0, debit: 0, credit: 0, weight: 0 };
+export function* snapshotBatches(entries, { from = "", through, size = 2000, totals = { lines: 0, entries: 0, debit: 0, credit: 0, weight: 0 } }) {
+  const limit = Math.max(1, Math.floor(Number(size) || 2000));
+  let part = [];
   for (const entry of entries) {
     if (!(entry.date > from && entry.date <= through)) continue;
     totals.entries += 1;
     const cls = classOf(entry.id);
     const seq = Number.isSafeInteger(entry.seq) ? entry.seq : null;
-    entry.lines.forEach((line, index) => {
+    for (let index = 0; index < entry.lines.length; index += 1) {
+      const line = entry.lines[index];
       const debit = Number(line.debit) || 0;
       const credit = Number(line.credit) || 0;
-      rows.push([String(entry.id), index + 1, entry.date, cls, seq, String(line.account), line.sub ? String(line.sub) : "", line.party ? String(line.party) : "", debit, credit, index === 0 ? String(entry.source || "") : "", index === 0 ? String(entry.text || "") : ""]);
+      part.push([String(entry.id), index + 1, entry.date, cls, seq, String(line.account), line.sub ? String(line.sub) : "", line.party ? String(line.party) : "", debit, credit, index === 0 ? String(entry.source || "") : "", index === 0 ? String(entry.text || "") : ""]);
       totals.lines += 1;
       totals.debit += debit;
       totals.credit += credit;
       totals.weight += weightOf(line.account, debit, credit);
-    });
+      if (part.length >= limit) {
+        yield part;
+        part = [];
+      }
+    }
   }
+  if (part.length) yield part;
+}
+
+/** Donmuş satırların tamamı tek dizide + toplamlar (küçük veri ve testler için; büyük yol snapshotBatches). */
+export function snapshotRowsOf(entries, { from = "", through }) {
+  const totals = { lines: 0, entries: 0, debit: 0, credit: 0, weight: 0 };
+  const rows = [];
+  for (const part of snapshotBatches(entries, { from, through, totals })) rows.push(...part);
   return { rows, totals };
 }
 
@@ -133,7 +148,8 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
   const batch = Math.max(1, Math.floor(Number(batchLines) || 2000));
   const useWorker = Boolean(dbPath) && dbPath !== ":memory:";
   const lockNow = () => period?.lockedUntil?.() || "";
-  const rules = { [LEDGER_RULE_VERSION]: () => build(), [RULE_249]: () => buildRule249(store) };
+  // 2.4.9 kopyası (değiştirilemez) sıkı satırlı depoyla okur (lib/lean-rows.mjs; ders 47) — çıktı aynı.
+  const rules = { [LEDGER_RULE_VERSION]: () => build(), [RULE_249]: () => buildRule249(leanStore(store)) };
   const ruleKnown = rule => Object.hasOwn(rules, rule);
   const callHook = (phase, info) => hook?.fn?.(phase, info);
   // shut: kapanış (kalıcı); stopping: süren işin durdurulması (sıfırlama, başka güne kilit; iş bitince kalkar). İkisinden biri → yazım adımı atılmaz.
@@ -166,30 +182,34 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
   }
   const status = () => ({ ...progress, coverage: coverage() });
 
-  /** Donmuş maddeler (yevmiye biçimi, dondurma anındaki sıra): from ≤ tarih ≤ min(to, kapsam). */
-  function entries({ from = "", to = "" } = {}) {
+  /**
+   * Donmuş maddeler birer birer (yevmiye biçimi, dondurma anındaki sıra): from ≤ tarih ≤ min(to, kapsam). Satırlar tek tek okunur (lib/lean-rows.mjs; ders 47 — store.all
+   * 1.000.000 satırlık şirketin donmuş satırlarını sözlük kipli nesnelerle yığına yığıp programı çökertirdi). Yalnız eşzamanlı tüketilir (okuma arasında yazım yok).
+   */
+  function* frozenEntries({ from = "", to = "" } = {}) {
     const cover = coverage();
-    if (!cover) return [];
+    if (!cover) return;
     const upper = to && to < cover ? to : cover;
-    const out = [];
     let entry = null;
-    for (const row of store.all(
+    for (const row of leanRows(
+      store,
       "SELECT entry_id AS id, line_no AS lineNo, date, seq, account, sub, party, debit_minor AS debit, credit_minor AS credit, source, text FROM ledger_snapshots WHERE date <= ? AND date >= ? ORDER BY date, run, run_seq",
-      upper,
-      from || "",
+      [upper, from || ""],
     )) {
       if (!entry || row.lineNo === 1 || row.id !== entry.id) {
+        if (entry) yield entry;
         entry = { id: row.id, date: row.date, source: row.source, text: row.text, lines: [] };
         if (row.seq !== null && row.seq !== undefined) entry.seq = Number(row.seq);
-        out.push(entry);
       }
       const line = { account: row.account, debit: Number(row.debit), credit: Number(row.credit) };
       if (row.sub) line.sub = row.sub;
       if (row.party) line.party = row.party;
       entry.lines.push(line);
     }
-    return out;
+    if (entry) yield entry;
   }
+  /** Donmuş maddeler (dizi). */
+  const entries = ({ from = "", to = "" } = {}) => Array.from(frozenEntries({ from, to }));
 
   /**
    * Karma yevmiye: ≤ kapsam donmuş; (kapsam, bekleyen koşunun günü] bekleyen koşunun kuralıyla; sonrası güncel kuralla. live: aynı çağrıda kurulmuş güncel türetme (ikinci kez
@@ -329,8 +349,11 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
   function freezeInTx(run, user) {
     callHook("sync", { run: run.no });
     if (!ruleKnown(run.rule_version)) throw new Error(`Donmuş defter: ${run.rule_version} kuralı programda yok.`);
-    const { rows, totals } = snapshotRowsOf(rules[run.rule_version](), { from: run.from_date, through: run.through });
-    rows.forEach((row, index) => store.run(INSERT_LINE, run.no, index + 1, ...row, run.rule_version));
+    const totals = { lines: 0, entries: 0, debit: 0, credit: 0, weight: 0 };
+    let seq = 0;
+    for (const part of snapshotBatches(rules[run.rule_version](), { from: run.from_date, through: run.through, size: batch, totals })) {
+      for (const row of part) store.run(INSERT_LINE, run.no, (seq += 1), ...row, run.rule_version);
+    }
     complete(run, totals, lockDigestOf(store, run.through, { version: LOCK_SQL_VERSION }), user);
     return run;
   }
@@ -476,7 +499,9 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
     } catch (error) {
       if (error instanceof Cancelled || halted()) progress.phase = "durdu";
       else {
-        progress.error = /full/i.test(String(error?.message)) ? `Disk dolu: ${error.message}` : String(error?.message || error);
+        // İş parçacığının yığını dolarsa (ERR_WORKER_OUT_OF_MEMORY) süreç ayakta kalır, koşu bekler; neden Türkçe (ders 47, tasarım notu §16).
+        const memory = error?.code === "ERR_WORKER_OUT_OF_MEMORY" || /memory limit|heap out of memory/i.test(String(error?.message));
+        progress.error = /full/i.test(String(error?.message)) ? `Disk dolu: ${error.message}` : memory ? `Bellek yetmedi: ${error.message}` : String(error?.message || error);
         progress.phase = "hata";
         log?.warn?.(`Donmuş defter: ${run.through} dondurulamadı (${progress.error}); koşu bekliyor, sonraki denemede sürer.`);
       }
@@ -561,19 +586,22 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
   function ruleDiff({ live = null } = {}) {
     const through = coverage();
     if (!through) return { through, count: 0, sample: [], balances: [] };
-    const keyed = list => {
-      const out = new Map();
+    // Madde anahtarı: kimlik + kimliğin kaçıncı geçişi (aynı kimlikli iki madde ayrı karşılaştırılır).
+    const keyer = () => {
       const seen = new Map();
-      for (const entry of list) {
-        if (entry.date > through || String(entry.id).startsWith("voucher")) continue;
+      return entry => {
+        if (entry.date > through || String(entry.id).startsWith("voucher")) return null;
         const n = (seen.get(entry.id) || 0) + 1;
         seen.set(entry.id, n);
-        out.set(`${entry.id}#${n}`, entry);
-      }
-      return out;
+        return `${entry.id}#${n}`;
+      };
     };
-    const frozen = keyed(entries());
-    const current = keyed(live || build());
+    const current = new Map();
+    const currentKey = keyer();
+    for (const entry of live || build()) {
+      const key = currentKey(entry);
+      if (key) current.set(key, entry);
+    }
     const sums = new Map();
     const add = (entry, sign, side) => {
       if (!entry) return;
@@ -586,15 +614,24 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
     };
     let count = 0;
     const sample = [];
-    for (const key of new Set([...frozen.keys(), ...current.keys()])) {
-      const a = frozen.get(key);
-      const b = current.get(key);
-      if (a && b && contentOf(a) === contentOf(b)) continue;
+    const differ = (a, b) => {
+      if (a && b && contentOf(a) === contentOf(b)) return;
       count += 1;
       if (sample.length < 5) sample.push(`${(a || b).id} (${dayText((a || b).date)})${a ? "" : " · donmuş defterde yok"}${b ? "" : " · güncel türetmede yok"}`);
       add(a, 1, "frozen");
       add(b, 1, "live");
+    };
+    // Donmuş maddeler birer birer (dizi kurulmaz; ders 47), dondurma sırasıyla; eşi bulunan güncel madde listeden düşer. Sonra yalnız güncel türetmede olanlar, türetme
+    // sırasıyla — sıra (örnekler) önceki birleşik küme sırasıyla aynı: önce donmuş anahtarlar, sonra yalnız güncelde olanlar.
+    const frozenKey = keyer();
+    for (const a of frozenEntries()) {
+      const key = frozenKey(a);
+      if (!key) continue;
+      const b = current.get(key);
+      if (b) current.delete(key);
+      differ(a, b);
     }
+    for (const b of current.values()) differ(undefined, b);
     const balances = [];
     for (const [key, row] of sums) {
       if (row.frozen === row.live) continue;
