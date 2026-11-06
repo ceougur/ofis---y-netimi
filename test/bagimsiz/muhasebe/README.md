@@ -1403,6 +1403,10 @@ KULLANICIYA SORULMALI (S54–S57 eki; SORU DÜZENİ 06.11 09:01):
 - Model + mutantlar (bu bölümle aynı commit): ilk koşuda elle değerlerin HİÇBİRİ değişmedi (186/187; tek kırmızı dosya güncelliği → `uret_beklenen.py`). İlk yeni mutant koşusunda B108 ve
   B105b s107'yi değerle değil `_s40_kapsam`'ın artık V3 (e) susmasıyla düşürüyordu; o denetim yalnız Normal Cari seçimine daraltıldı (A modelinde davranış aynı: bağ değişimi önce red) —
   ikisi artık s107'nin DEĞERİYLE ölüyor.
+- Kanıt (`docs/kanit/2026-11-06/kahin11-*`; ölçülen commit e0d6cf53, kirli 0): `kahin11-test-utc.*`, `kahin11-test-istanbul.*` (187/187 iki saat diliminde), `kahin11-mutasyon.*` (277/277 öldü;
+  temel 181 test yeşil; `flock -s scratchpad/olcum.lock`, `timeout 7000`, 1736 sn, makine başka ajanlarla yüklüydü), yeni mutantların öldürenleri (`kahin11-yeni-mutantlar-oldurenler.txt`, betiği
+  `kahin11-yeni-mutantlar.py`), eski model kırmızı kaydı (`kahin11-eski-model-kirmizi.*`, ölçülen commit 7f0aa5e7: d83ccf1c kâhini + yeni senaryo / test dosyaları; 176/187, 11 kırmızı) ve neden
+  dökümü (`kahin11-eski-model-neden.*`).
 
 ### Yeni senaryolar, testler ve mutasyonlar
 - Elle senaryolar (4, toplam 110): s106 (S83: alış formundaki peşin ödemenin carisi tek başına / tutarla / yeni carinin alış faturasına / bağ kaldırılarak / tarihle → red; geri yüklenmiş

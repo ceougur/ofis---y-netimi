@@ -1,0 +1,192 @@
+temel: 14 test, 0 kırmızı []
+
+B78 V3 (d) / S56 sınır: şüpheli-normal aşım sınırında eşitlik de aşım (bakım 8: eşitlikte de SUPHELI_NORMAL_ASIM reddi)
+  ÖLDÜ (6/14)
+   test_s105_s81_olagan_normal_cari_siniri [elle (değer)]:    'SUPHELI_NORMAL_ASIM'] : s105-s81-olagan-normal-cari-siniri [A] redler
+   test_s108_s85_normal_cari_tutar_tarih [elle (değer)]: -  'SUPHELI_NORMAL_ASIM'] : s108-s85-normal-cari-tutar-tarih [A] redler
+   test_s109_s85_geri_yuklenmis_cari_tutar [elle (değer)]:    'SUPHELI_NORMAL_ASIM'] : s109-s85-geri-yuklenmis-cari-tutar [A] redler
+   test_S40_S44_S45_kapsam_ve_susma [birim]: -   'tur': 'duzenle'}]
+   test_S81_olagan_duzeltme_siniri [birim]: + ([], (0, 800))
+   test_S85_tutar_tarih_siniri [birim]: + ([], (200, 900, 1100))
+
+B97 U5 S56 B: S44 düzeltmesi şüpheli-normal sınırını aşsa da kabul
+  ÖLDÜ (9/14)
+   test_s105_s81_olagan_normal_cari_siniri [elle (değer)]: +  'SUPHELI_NORMAL_ASIM'] : s105-s81-olagan-normal-cari-siniri [A] redler
+   test_s108_s85_normal_cari_tutar_tarih [elle (değer)]: + ['SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM'] : s108-s85-normal-cari-tutar-tarih [A] redler
+   test_s109_s85_geri_yuklenmis_cari_tutar [elle (değer)]: +  'SUPHELI_NORMAL_ASIM'] : s109-s85-geri-yuklenmis-cari-tutar [A] redler
+   test_S40_S44_S45_kapsam_ve_susma [birim]: + ['SUPHELI_NORMAL_ASIM']
+   test_S79_olagan_kayit_bag_cari [birim]: + ['SUPHELI_NORMAL_ASIM'] : PB {'cari': 'C2', 'fatura': None, 'normal_cari': True}
+   test_S81_olagan_duzeltme_siniri [birim]: + (['SUPHELI_NORMAL_ASIM'], (100, 800)) : PB {'cari': 'C2', 'fatura': None, 'normal_cari': True}
+   test_S81_S56_ile_ayni [birim]: + (['SUPHELI_NORMAL_ASIM'], ['SUPHELI_NORMAL_ASIM'])
+   test_S85_tutar_tarih_siniri [birim]: + (['SUPHELI_NORMAL_ASIM'], (250, 900, 1050)) : {'tutar': 101}
+   test_S85_iki_yolda_ayni [birim]: +  ['SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM'])
+
+B105 L1 / L2 S80 B: formdaki peşinin carisi S79 gibi (bağ + cari kabul; bağ değişmeden S57 red)
+  ÖLDÜ (5/14)
+   test_s104_s80_formdaki_pesin_cari [elle (değer)]: -  'BAG_KALDIRILMALI'] : s104-s80-formdaki-pesin-cari [A] redler
+   test_S40_S44_S45_kapsam_ve_susma [birim]: + ['FATURA_DUZENLENMELI'] : {'cari': 'C3'}
+   test_S79_olagan_kayit_bag_cari [birim]: + ['FATURA_DUZENLENMELI'] : PP {'cari': 'C1'}
+   test_S80_formdaki_pesin_cari [birim]:  : {'cari': 'C3'}
+   test_S81_olagan_duzeltme_siniri [birim]: + ['FATURA_DUZENLENMELI']
+
+B105b L1 S80 sınır: yalnız olağan kayıtta — geri yüklenmiş açılış öncesi kayıtta S80 yok (S45 / S54 kuralları; bakım 11: S83 / S84 de yok)
+  ÖLDÜ (6/14)
+   test_s104_s80_formdaki_pesin_cari [elle (değer)]:    'FATURA_DUZENLENMELI'] : s104-s80-formdaki-pesin-cari [A] redler
+   test_s106_s83_alis_formundaki_pesin_odeme_cari [elle (değer)]:    'FATURA_DUZENLENMELI'] : s106-s83-alis-formundaki-pesin-odeme-cari [A] redler
+   test_s107_s84_formdaki_pesin_bagi [elle (değer)]:    'FATURA_DUZENLENMELI'] : s107-s84-formdaki-pesin-bagi [A] redler
+   test_S40_S44_S45_kapsam_ve_susma [birim]: + ['FATURA_DUZENLENMELI'] : {'cari': 'C3'}
+   test_S80_formdaki_pesin_cari [birim]:  : {'cari': 'C3'}
+   test_S83_S84_formdaki_pesin [birim]:    [('fatura:A2', -600), ('fatura:A1', -900)]) : O2 {'cari': 'T2'}
+
+B105c L2 S80 sınır: yalnız tek başına cari düzeltmesi red (cari + başka alan S79 / S57 kurallarıyla)
+  ÖLDÜ (4/14)
+   test_s104_s80_formdaki_pesin_cari [elle (değer)]: +  'FATURA_DUZENLENMELI'] : s104-s80-formdaki-pesin-cari [A] redler
+   test_s106_s83_alis_formundaki_pesin_odeme_cari [elle (değer)]: +  'FATURA_DUZENLENMELI'] : s106-s83-alis-formundaki-pesin-odeme-cari [A] redler
+   test_S80_formdaki_pesin_cari [birim]:  : {'cari': 'C3', 'tutar': 250}
+   test_S83_S84_formdaki_pesin [birim]:    [('fatura:A2', -600), ('fatura:A1', -800)]) : O1 {'cari': 'T2', 'tutar': 150}
+
+B105d L1 S80 sınır: aynı carinin yeniden yazılması da red
+  ÖLDÜ (4/14)
+   test_s104_s80_formdaki_pesin_cari [elle (değer)]:    'FATURA_DUZENLENMELI'] : s104-s80-formdaki-pesin-cari [A] redler
+   test_s106_s83_alis_formundaki_pesin_odeme_cari [elle (değer)]:    'FATURA_DUZENLENMELI'] : s106-s83-alis-formundaki-pesin-odeme-cari [A] redler
+   test_S80_formdaki_pesin_cari [birim]: + ([], {'102.B1': 100, '120|C1': 700, '120|C3': 500})
+   test_S83_S84_formdaki_pesin [birim]: ?                                       ^^
+
+B105e L2 S80 sırası: FATURA_DUZENLENMELI T12 / B11'den önce (açılıştan önceki başka güne alınan peşinde de)
+  ÖLDÜ (5/14)
+   test_s104_s80_formdaki_pesin_cari [elle (değer)]:    'FATURA_DUZENLENMELI'] : s104-s80-formdaki-pesin-cari [A] redler
+   test_s106_s83_alis_formundaki_pesin_odeme_cari [elle (değer)]:    'FATURA_DUZENLENMELI'] : s106-s83-alis-formundaki-pesin-odeme-cari [A] redler
+   test_s107_s84_formdaki_pesin_bagi [elle (değer)]:    'FATURA_DUZENLENMELI'] : s107-s84-formdaki-pesin-bagi [A] redler
+   test_S80_formdaki_pesin_cari [birim]:  : {'cari': 'C3', 'tarih': '2026-01-07'}
+   test_S83_S84_formdaki_pesin [birim]:    [('fatura:A2', -600), ('fatura:A1', -900)]) : O2 {'cari': 'T2', 'tarih': '2026-01-07'}
+
+B105f L3 S80 genişletme: formdaki peşinin her düzeltmesi red (carisi aynı tutar / açıklama da)
+  ÖLDÜ (5/14)
+   test_s104_s80_formdaki_pesin_cari [elle (değer)]:    'FATURA_DUZENLENMELI'] : s104-s80-formdaki-pesin-cari [A] redler
+   test_s106_s83_alis_formundaki_pesin_odeme_cari [elle (değer)]:    'FATURA_DUZENLENMELI'] : s106-s83-alis-formundaki-pesin-odeme-cari [A] redler
+   test_s107_s84_formdaki_pesin_bagi [elle (değer)]:    'FATURA_DUZENLENMELI'] : s107-s84-formdaki-pesin-bagi [A] redler
+   test_S80_formdaki_pesin_cari [birim]: ?                  ^             ^^
+   test_S83_S84_formdaki_pesin [birim]: ?                                       ^^
+
+B106 L5 S81 B: olağan düzeltmede sınır yok (aşsa da kabul)
+  ÖLDÜ (7/14)
+   test_s105_s81_olagan_normal_cari_siniri [elle (değer)]: +  'SUPHELI_NORMAL_ASIM'] : s105-s81-olagan-normal-cari-siniri [A] redler
+   test_s108_s85_normal_cari_tutar_tarih [elle (değer)]: + ['SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM'] : s108-s85-normal-cari-tutar-tarih [A] redler
+   test_S79_olagan_kayit_bag_cari [birim]: + ['SUPHELI_NORMAL_ASIM'] : PB {'cari': 'C2', 'fatura': None, 'normal_cari': True}
+   test_S81_olagan_duzeltme_siniri [birim]: + (['SUPHELI_NORMAL_ASIM'], (100, 800)) : PB {'cari': 'C2', 'fatura': None, 'normal_cari': True}
+   test_S81_S56_ile_ayni [birim]: + (['SUPHELI_NORMAL_ASIM'], ['SUPHELI_NORMAL_ASIM'])
+   test_S85_tutar_tarih_siniri [birim]: + (['SUPHELI_NORMAL_ASIM'], (250, 900, 1050)) : {'tutar': 101}
+   test_S85_iki_yolda_ayni [birim]: +  ['SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM'])
+
+B106b L6 S81 sınır kayması: eşitlik de aşım (120'ye yazılan bir kuruş fazla sayılır)
+  ÖLDÜ (4/14)
+   test_s105_s81_olagan_normal_cari_siniri [elle (değer)]:    'SUPHELI_NORMAL_ASIM'] : s105-s81-olagan-normal-cari-siniri [A] redler
+   test_s108_s85_normal_cari_tutar_tarih [elle (değer)]: -  'SUPHELI_NORMAL_ASIM'] : s108-s85-normal-cari-tutar-tarih [A] redler
+   test_S81_olagan_duzeltme_siniri [birim]: + ([], (0, 800))
+   test_S85_tutar_tarih_siniri [birim]: + ([], (200, 900, 1100))
+
+B106c L5 S81 kapsam: yalnız S79 düzeltmesi (cari + bağ birlikte); bağsız kaydın carisi ve aynı carinin seçimi denetlenmez
+  ÖLDÜ (3/14)
+   test_s105_s81_olagan_normal_cari_siniri [elle (değer)]: +  'SUPHELI_NORMAL_ASIM'] : s105-s81-olagan-normal-cari-siniri [A] redler
+   test_S81_olagan_duzeltme_siniri [birim]: + (['SUPHELI_NORMAL_ASIM'], (100, 800)) : PN {'cari': 'C2'}
+   test_S85_iki_yolda_ayni [birim]: +  ['SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM'])
+
+B106d L7 S81 tarih: sınır kaydın ESKİ gününde ölçülür
+  ÖLDÜ (3/14)
+   test_s108_s85_normal_cari_tutar_tarih [elle (değer)]: -  'SUPHELI_NORMAL_ASIM'] : s108-s85-normal-cari-tutar-tarih [A] redler
+   test_S81_olagan_duzeltme_siniri [birim]: + ([], (499, 800))
+   test_S85_tutar_tarih_siniri [birim]: + ([], (199, 900, 1101))
+
+B106e L6 / L9 S81 fatura bağı: tutarın tamamı sayılır (128'den düşen ve fazla da)
+  ÖLDÜ (3/14)
+   test_s105_s81_olagan_normal_cari_siniri [elle (değer)]:    'SUPHELI_NORMAL_ASIM'] : s105-s81-olagan-normal-cari-siniri [A] redler
+   test_S79_olagan_kayit_bag_cari [birim]: + [] : PB {'cari': 'C2', 'fatura': 'F6'}
+   test_S81_olagan_duzeltme_siniri [birim]: + ([], (100, 699))
+
+B106f L5 (iii) S81 kapsam: cari değişmeli — aynı carinin kendi tahsilatında Normal Cari / bağ denetlenmez (U5 boşluğu açık)
+  ÖLDÜ (1/14)
+   test_s105_s81_olagan_normal_cari_siniri [elle (değer)]:    'SUPHELI_NORMAL_ASIM'] : s105-s81-olagan-normal-cari-siniri [A] redler
+
+B106g L6 S81 sırası: sınır S57 / S80 redlerinden önce
+  ÖLDÜ (1/14)
+   test_S81_olagan_duzeltme_siniri [birim]: + ['FATURA_DUZENLENMELI']
+
+B107 Ö2 S83 B: alış formundaki peşin ödemenin carisi S79 / S57 kurallarıyla (bağ + cari kabul; bağ değişmeden BAG_KALDIRILMALI)
+  ÖLDÜ (3/14)
+   test_s106_s83_alis_formundaki_pesin_odeme_cari [elle (değer)]: -  'BAG_KALDIRILMALI'] : s106-s83-alis-formundaki-pesin-odeme-cari [A] redler
+   test_S80_formdaki_pesin_cari [birim]:  : O1 {'cari': 'T2'}
+   test_S83_S84_formdaki_pesin [birim]:    [('fatura:A2', -600), ('fatura:A1', -800)]) : O1 {'cari': 'T2'}
+
+B107b Ö1 S83 sınır: ödemede aynı carinin yeniden yazılması da red
+  ÖLDÜ (2/14)
+   test_s106_s83_alis_formundaki_pesin_odeme_cari [elle (değer)]:    'FATURA_DUZENLENMELI'] : s106-s83-alis-formundaki-pesin-odeme-cari [A] redler
+   test_S83_S84_formdaki_pesin [birim]: ?                                       ^^
+
+B107c Ö1 S83 kapsam: yalnız olağan kayıtta — geri yüklenmiş açılış öncesi peşin ödemede S83 / S84 yok (S45 / S54 kuralları)
+  ÖLDÜ (2/14)
+   test_s106_s83_alis_formundaki_pesin_odeme_cari [elle (değer)]:    'FATURA_DUZENLENMELI'] : s106-s83-alis-formundaki-pesin-odeme-cari [A] redler
+   test_S83_S84_formdaki_pesin [birim]:    [('fatura:A2', -600), ('fatura:A1', -900)]) : O2 {'cari': 'T2'}
+
+B107d Ö3 S83 genişletme: satış iade formundaki ödemenin carisi de red (kâhin susmaz)
+  ÖLDÜ (1/14)
+   test_S83_S84_formdaki_pesin [birim]: AssertionError: AssertionError not raised
+
+B108 Ö5 S84 B: formdaki peşinin bağı (cari aynı) değişebilir — kabul
+  ÖLDÜ (4/14)
+   test_s107_s84_formdaki_pesin_bagi [elle (değer)]: +  'FATURA_DUZENLENMELI'] : s107-s84-formdaki-pesin-bagi [A] redler
+   test_S40_S44_S45_kapsam_ve_susma [birim]: + ['FATURA_DUZENLENMELI'] : {'fatura': None}
+   test_S80_formdaki_pesin_cari [birim]: ?   +++++++++++++++++++++
+   test_S83_S84_formdaki_pesin [birim]:    [('fatura:A2', -600), ('fatura:A1', -800)]) : P1 {'fatura': 'F2'}
+
+B108b Ö4 S84 kapsam: yalnız olağan kayıtta — geri yüklenmiş açılış öncesi kayıtta V3 (e) bağ susması sürer
+  ÖLDÜ (4/14)
+   test_s107_s84_formdaki_pesin_bagi [elle (değer) — susma]: AssertionError: mutant: V3 (e) bağ susması
+   test_S40_S44_S45_kapsam_ve_susma [birim — susma]: AssertionError: mutant: V3 (e) bağ susması
+   test_S80_formdaki_pesin_cari [birim — susma]: AssertionError: mutant: V3 (e) bağ susması
+   test_S83_S84_formdaki_pesin [birim — susma]: AssertionError: mutant: V3 (e) bağ susması
+
+B108c Ö4 S84 kapsam: yalnız tahsilatta — alış formundaki peşin ödemenin bağı kabul
+  ÖLDÜ (2/14)
+   test_s107_s84_formdaki_pesin_bagi [elle (değer)]:    'FATURA_DUZENLENMELI'] : s107-s84-formdaki-pesin-bagi [A] redler
+   test_S83_S84_formdaki_pesin [birim]:  : O1 {'fatura': 'A2'}
+
+B108d Ö4 S84 sınır: aynı bağın yeniden yazılması da red
+  ÖLDÜ (2/14)
+   test_s107_s84_formdaki_pesin_bagi [elle (değer)]:    'FATURA_DUZENLENMELI'] : s107-s84-formdaki-pesin-bagi [A] redler
+   test_S83_S84_formdaki_pesin [birim]: ?                                       ^^
+
+B109 Ö7 S85 B: olağan kayıtta Normal Cari kaydın yalnız tutar / tarih düzeltmesi denetlenmez (bugünkü)
+  ÖLDÜ (3/14)
+   test_s108_s85_normal_cari_tutar_tarih [elle (değer)]: + ['SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM'] : s108-s85-normal-cari-tutar-tarih [A] redler
+   test_S85_tutar_tarih_siniri [birim]: + (['SUPHELI_NORMAL_ASIM'], (250, 900, 1050)) : {'tutar': 101}
+   test_S85_iki_yolda_ayni [birim]: +  ['SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM'])
+
+B109b Ö8 S85 (b) B: geri yüklenmiş kayıtta yalnız cari (S40) düzeltmesi denetlenmez
+  ÖLDÜ (2/14)
+   test_s109_s85_geri_yuklenmis_cari_tutar [elle (değer)]: +  'SUPHELI_NORMAL_ASIM'] : s109-s85-geri-yuklenmis-cari-tutar [A] redler
+   test_S85_iki_yolda_ayni [birim]: +  ['SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM'])
+
+B109c Ö9 S85 (b) sınır kayması: geri yüklenmiş kayıtta eşitlik de aşım (bir kuruş fazla sayılır)
+  ÖLDÜ (1/14)
+   test_s109_s85_geri_yuklenmis_cari_tutar [elle (değer)]:    'SUPHELI_NORMAL_ASIM'] : s109-s85-geri-yuklenmis-cari-tutar [A] redler
+
+B109d Ö7 S85 kapsam: yalnız tutar — tarih düzeltmesi denetlenmez
+  ÖLDÜ (1/14)
+   test_s108_s85_normal_cari_tutar_tarih [elle (değer)]: + ['SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM'] : s108-s85-normal-cari-tutar-tarih [A] redler
+
+B109e Ö7 S85 kapsam: yalnız tarih — tutar düzeltmesi denetlenmez
+  ÖLDÜ (3/14)
+   test_s108_s85_normal_cari_tutar_tarih [elle (değer)]:  : s108-s85-normal-cari-tutar-tarih [A] redler
+   test_S85_tutar_tarih_siniri [birim]: + (['SUPHELI_NORMAL_ASIM'], (250, 900, 1050)) : {'tutar': 101}
+   test_S85_iki_yolda_ayni [birim]: +  ['SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM'])
+
+B109f Ö7 S85 genişletme: Normal Cari şartı yok — bağsız her tahsilatın tutar / tarihi Normal Cari sayılarak sınırda (K3 yolu da)
+  ÖLDÜ (1/14)
+   test_s108_s85_normal_cari_tutar_tarih [elle (değer)]: -  'SUPHELI_NORMAL_ASIM'] : s108-s85-normal-cari-tutar-tarih [A] redler
+
+B109g Ö7 / Ö8 S85 kapsam: geri yüklenmiş kayıtta S26 tutarı denetlenmez (yalnız cari)
+  ÖLDÜ (2/14)
+   test_s109_s85_geri_yuklenmis_cari_tutar [elle (değer)]: +  'SUPHELI_NORMAL_ASIM'] : s109-s85-geri-yuklenmis-cari-tutar [A] redler
+   test_S85_iki_yolda_ayni [birim]: +  ['SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM'])
+
+# sağ kalan 0
