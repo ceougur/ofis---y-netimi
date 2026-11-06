@@ -1,0 +1,14 @@
+WK kâhin güncellemesi 12 (S7-a, S7-b; KULLANICI KARARI 06.11.2026 03:35 UTC "hepsi A") — kanıt dosyaları
+Kâhin commit'i: 9ce64b4c (yorumlar önce: de9c6950 — README §17.1–17.4, kodlamadan ÖNCE). Taban: b12a03d6. Program kodu görülmedi; programa karşı koşulmadı.
+
+| Dosya | Komut | Sonuç |
+|---|---|---|
+| wk12-senaryolar.{log,json} | node tools/kanit.mjs kos wk12-senaryolar -- python3 -I test/bagimsiz/whatsapp-248/kahin/senaryolar.py | GEÇTİ, çıkış 0, 318/318 elle = model |
+| wk12-kahin.{log,json} | TZ=UTC node tools/kanit.mjs kos wk12-kahin -- python3 -I test/bagimsiz/whatsapp-248/kahin/kahin_test.py | GEÇTİ, çıkış 0, 343/343; F mutasyon 197/197 |
+| wk12-kahin-tz-istanbul.{log,json} | TZ=Europe/Istanbul node tools/kanit.mjs kos wk12-kahin-tz-istanbul -- (aynı komut) | GEÇTİ, çıkış 0, 343/343; F mutasyon 197/197 |
+| wk12-eski-310-tam-sonuc-fark.txt | wk12-araclar/fark_eski_310.py | eski 310 senaryo bayt bayt AYNI; yalnız kararlar'a S7A, S7B eklendi |
+| wk12-eski-kahinle-yeni-senaryolar.txt | wk12-araclar/eski_kahinle_yeni.py | eski kâhinle yeni 8: KIRMIZI 7 (neden: S7-a / S7-b kodlanmamıştı), AYNI 1 (S7B-03) |
+| wk12-eski-kahinle-yeni-senaryolar-notr.txt | aynı araç, "notr" | bilgi: S7A AYNI (A = §7a 20 düzeni), S7B 4 KIRMIZI beklenen nedenle |
+
+Kanıt koşuları KANIT_DIR=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wk12-temiz (ve wk12-temiz-ist) ile alındı, buraya kopyalandı
+(json'daki ham_cikti yolu not defterini gösterir; ham_cikti_sha256 buradaki .log ile aynı). Geliştirme sırasındaki ilk koşular (kirli ağaç, aynı sayılar) not defterinde kaldı.
