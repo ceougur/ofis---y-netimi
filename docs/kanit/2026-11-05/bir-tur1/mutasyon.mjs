@@ -41,6 +41,8 @@ for (const mutant of MUTANTS) {
   writeFileSync(target, source.replace(mutant.from, mutant.to));
   const run = spawnSync(process.execPath, ["--disable-warning=ExperimentalWarning", "--test", "--test-concurrency=1", mutant.test], { cwd: copy, env: { ...process.env, HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
   const text = `${run.stdout}\n${run.stderr}`;
+  // Kırmızının nedeni okunsun (ders 38): ham çıktının hata satırları ayrı dosyaya.
+  writeFileSync(`${OUT}.${mutant.id}.log`, text.split(/\r?\n/).filter(line => /not ok|error:|^\s{8}\S/.test(line)).slice(0, 80).join("\n"));
   const num = key => Number((text.match(new RegExp(`^# ${key} (\\d+)`, "m")) || [])[1] ?? NaN);
   const failed = [...text.matchAll(/^\s*not ok \d+ - (.+)$/gm)].map(match => match[1]).filter(name => !/^2\.5\.0 /.test(name) || true);
   const verdict = run.status !== 0 && num("fail") > 0 ? "YAKALANDI" : run.status === 0 && num("fail") === 0 ? "YAŞADI" : "BELİRSİZ";
