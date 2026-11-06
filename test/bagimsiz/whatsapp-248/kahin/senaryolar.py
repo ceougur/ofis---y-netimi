@@ -26,7 +26,11 @@ kâhin güncellemesi 15 (2.5.0, KULLANICI KARARI 06.11.2026 06:03 UTC "a" + 05.1
   (SW3, 5) — README §20;
 kâhin güncellemesi 16 (2.5.0, KULLANICI KARARI 06.11.2026 06:52 UTC "a" — S29–S32 hepsi A): S29 (eski S23-a) yeniden basmada şüphesiz tutar yoksa da iş elle sayılır, gönderim anındaki
   tutarla gider (S29, 4); S30 (S-W3-a) silme talebi / 1 yıl dolumu anında bekleyen iş gönderilmez, belirsiz iz eler (S30, 3); S31 (S-W3-b) içeriği silinmiş Ekstre işi yeniden gönderilemez
-  (S31, 2); S32 (S-W3-c) talep kaydı makinede, geri yüklemede yeniden uygulanır (S32, 2); S23-05 ve SW3-05'in beklentisi kesinleşti — README §21.
+  (S31, 2); S32 (S-W3-c) talep kaydı makinede, geri yüklemede yeniden uygulanır (S32, 2); S23-05 ve SW3-05'in beklentisi kesinleşti — README §21;
+kâhin güncellemesi 17 (2.5.0, KULLANICI KARARLARI 06.11.2026 08:06 S34–S38, 07:00 S33, 08:08 S41): S34 2, S35 2, S36 2, S37 2, S38 2, S33 2, S41 2 — README §22;
+kâhin güncellemesi 18 (2.5.0, KULLANICI KARARI 06.11.2026 08:54 UTC "a" — S42, S43; BAŞ MİMAR KARARI 08:52 Y17-6): S42 Gönderiliyor işte silme talebi — içerik / telefon hemen silinir, yanıt ize
+  yazılır, yeniden gönderim gerektiren yanıtta o anda "Atlandı — Silme Talebi" (S42, 4: kabul, yanıt yok, yeniden gönderim / kesin olumsuz, yerel gün dönümü); S43 wamid'i tanınmayan bildirim
+  işareti koymaz (S43, 3: Yol 2 imzalı, Yol 1 imzasız, iş kimliğiyle tanınan sınır) — README §23. Yeni girdi: gecikmeli Meta yanıtı {"gec": süre, "yanit": …}.
 
 Her senaryo: GİRDİ (cariler, seçim, saat, sahte Meta davranışı, olaylar) + ELLE yazılmış beklenen (yalnız plandan, kâhinin modelinden
 bağımsız hesaplanmış anahtar sayılar). `python3 -I senaryolar.py` modeli koşar; elle beklenen ile model AYNI değilse dosya YAZILMAZ,
@@ -38,6 +42,7 @@ Zaman ifadeleri: "+5s", "+2h", "+3d", "cokme+10m" (çökmeye göre). Sahte Meta 
   mesaj: {cari | "*": [yanıt1, yanıt2, …] | yanıt}  — o alıcının n. POST'u (sahte sunucu kuralı: yol messages + to + deneme n)
          yanıt ∈ "kabul" | "yanitsiz_kabul" (Meta aldı, yanıt kayboldu: koptu "sonra" / gecikme / işlenmiş gövdesiz 5xx)
                  | "yanitsiz_red" (Meta almadı, yanıt yok: koptu "once" / işlenmemiş gövdesiz 5xx) | {"hata": kod} | {"sinir": true}
+                 | {"gec_kabul": süre} (J6) | {"gec": süre, "yanit": yukarıdakilerden biri} (güncelleme 18: yanıt programa GECİKMELİ gelir, o süre "Gönderiliyor")
   medya: [yanıt1, …]  — GENEL sıra (sahte sunucu medya isteğinde alıcı bilmez): "kabul" | "yanitsiz"
   kanca: {cari | "*": [[durum, gecikme, {kod, tekrar, varis}], …] | {"<n. ileti>": [...]}}  — Meta'nın o iletiye göndereceği (İMZALI) durum kancaları
   sahte_kanca olayı: imzasız (imzali yok) olay — kapıcıda imza doğrulanamaz (§7a 3).
@@ -2151,7 +2156,7 @@ BKS = "190 / 0 alıp bekleyenlere dönen işin hata kodu karar metninde yok ('ka
 S7S = "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"
 TASINAN_D = "Taşınan Veri — Durduruldu"
 YENI_250 = ("SW1", "SW2", "SD1837", "SD1915", "SW4", "S7", "S7A", "S7B", "S16", "S17", "NB5", "S22", "S23", "SW3", "S29", "S30", "S31", "S32",
-            "S34", "S35", "S36", "S37", "S38", "S33", "S41")   # kahin_test I4: bu başlıklar "eski senaryo" değil (S7A, S7B: güncelleme 12; S16, S17, NB5: 13; S22: 14; S23, SW3: 15; S29–S32: 16; S33–S38, S41: 17)
+            "S34", "S35", "S36", "S37", "S38", "S33", "S41", "S42", "S43")   # kahin_test I4: bu başlıklar "eski senaryo" değil (S7A, S7B: güncelleme 12; S16, S17, NB5: 13; S22: 14; S23, SW3: 15; S29–S32: 16; S33–S38, S41: 17; S42, S43: 18)
 
 
 def SA_(**kw):
@@ -3486,6 +3491,151 @@ S("S41-02-yol-1-uygulama-duzeyi-adres-imzasiz-kabul", "S41",
    "elenen": {"T2": {"A": DO}}, "olusmadi": [], "onceki_uyari": {"T2": {"sayi": 1, "son": "2026-10-30"}}, "toplular.T2.is_sayisi": 1,
    "meta.post": {"A": 1, "B": 2}, "bu_ay": {"W1": {"2026-10": ay_kova(1)}}},
   ayar={"baglanti_yolu": "yol1"}, meta=META_12SA, meta_davranis={"kanca": {"A": [["sent", "+1s", UYG], ["delivered", "+5s", UYG]], "B": [["sent", "+1s"]]}})
+
+
+# ======================================================================== kâhin güncellemesi 18 (2.5.0, KULLANICI KARARI 06.11.2026 08:54 UTC "a" — S42, S43; README §23)
+# Elle beklenen YALNIZ karar metinlerinden (kahin.KARARLAR S42, S43; BAŞ MİMAR KARARI 08:52 Y17-6) ve README §23.2–23.3 yorumlarından (kodlamadan önce yazıldı, ayrı commit). Yeni girdi: gecikmeli
+# Meta yanıtı {"gec": süre, "yanit": "kabul" | "yanitsiz_kabul" | "yanitsiz_red" | {"hata": kod} | {"sinir": true}} (README §23 Y18-9) — program o süre "Gönderiliyor"da bekler; talep o aralıkta.
+# Aralık iki zaman ucunda da açık seçildi: k. iş (0'dan) gönderime k × (adım + gecikme)'de girer, yanıtı (k + 1) × (adım + gecikme)'de gelir (adım 0,5 sn / 5 sn). Yeni olay YOK.
+def _ys(gec, yanit):
+    return {"gec": gec, "yanit": yanit}
+
+
+GEC_K = [["sent", "+1s", {"varis": "+1m"}], ["delivered", "+5s", {"varis": "+1m"}]]   # gecikmeli kabulün bildirimleri yanıttan SONRA ulaşır (J6 503 penceresi dışı)
+
+
+# ---- S42: silme talebi anında iş Gönderiliyor → içerik / telefon hemen silinir; yanıt ize yazılır; yeniden gönderim gerektiren yanıtta iş o anda "Atlandı — Silme Talebi" ----
+S("S42-01-gonderiliyor-talep-kabul-gonderildi-izi-ayni-donem-daha-once", "S42",
+  "Ekim ekstresi A, B: A'nın isteğine Meta'nın yanıtı 10 sn gecikir (Gönderiliyor); 5. saniyede A silme talebinde bulunur → içerik ve telefon HEMEN silinir, iş Gönderiliyor'da kalır (B işçiyi "
+  "bekler); yanıt KABUL → 'gönderildi' izi, iş Meta Kabul Etti, sonra Teslim Edildi (içerik silinmiş kalır); 1. saatte aynı dönem A ve B 'Daha Önce Gönderildi' (R3, son 30.10); 2. saatte R3 "
+  "'Yine de Gönder' ile A'ya karttaki telefonla, yeni içerikle gider (İLKEYLE WK 15)",
+  "S42 (Y18-1/2/3) + SW3 (Y15-10/12) + R3 + J6", [A(), B()],
+  [baslat("+0s", "T1", "AB"), olay("+5s", "kvkk_sil", id="A"), kontrol_ic("+7s", "K1"), kontrol_ic("+2m", "K2"),
+   baslat("+1h", "T2", "AB"), baslat("+2h", "T3", "A", onceki="gonder"), kontrol_ic("+2h5m", "K3")],
+  {"kontroller.K1.isler": {"T1/A": "Gönderiliyor", "T1/B": "Bekliyor"}, "kontroller.K1.icerik.T1/A": SIL, "kontroller.K1.toplam_post": 1,
+   "kontroller.K1.durum_sayilari": {"Bekliyor": 1, "Gönderiliyor": 1},
+   "kontroller.K2.isler": {"T1/A": "Teslim Edildi", "T1/B": "Teslim Edildi"}, "kontroller.K2.icerik": {"T1/A": SIL, "T1/B": B_EKIM},
+   "elenen": {"T2": {"A": DO, "B": DO}}, "olusmadi": ["T2"], "onceki_uyari.T2": {"sayi": 2, "son": "2026-10-30"},
+   "kontroller.K3.icerik.T3/A": A_EKIM, "kontroller.K3.icerik.T1/A": SIL, "isler.T3/A.durum": "Teslim Edildi",
+   "isler.T1/A.durum": "Teslim Edildi", "isler.T1/A.telefon": None, "isler.T1/A.icerik_silindi": True, "isler.T1/A.post": 1, "isler.T1/A.kabul": 1, "isler.T1/A.atlanma_nedeni": None,
+   "meta.post": {"A": 2, "B": 1}, "bu_ay": {"W1": {"2026-10": ay_kova(3)}}},
+  meta_davranis={"mesaj": {"A": [_ys("+10s", "kabul"), "kabul"]}, "kanca": {"T1/A": {"1": GEC_K, "*": K_STD}, "*": K_STD}})
+
+S("S42-02-gonderiliyor-talep-yanit-yok-belirsiz-iz-ayni-donem-elenir", "S42",
+  "Ekim ekstresi A, B ve Ödeme Hatırlatma HY: üç isteğe de yanıt gelmez (zaman aşımı 15 sn; Meta iletiyi aldı); her biri Gönderiliyor iken silme talebi → içerik / telefon hemen silinir, zaman "
+  "aşımında iş ve deneme Sonucu Belirsiz (iz KALIR); 1. saatte aynı dönem A, B ve aynı YEREL gün HY 'Sonucu Belirsiz' ile elenir; 90. dakikada A'nın işteki Yine de Gönder'i 'içerik silindi' "
+  "(Ekstre — S31 / S36), HY'ninki ALINIR ve karttan hazırlanan içerikle gider (S37); 2. saatte B'nin iletisine Meta'nın imzalı geç bildirimi gelir → iş Teslim Edildi (H1 / J1); 3. saatte "
+  "aynı dönem A 'Sonucu Belirsiz', B 'Daha Önce Gönderildi'; 3. gün Kasım ekstresi A'ya gider",
+  "S42 (Y18-1/2/4) + S30 + D1 + E2 + E3 + H1 + J1 + S31 + S36 + S37", [A(), B(),
+   cari_h("HY", "Hülya Yanıtsız", "0550 100 20 30", [_h("2026-09-01", 300, 0)], vadeler=[_v("2026-10-10", 300)])],
+  [baslat("+0s", "T1", "AB"), olay("+5s", "kvkk_sil", id="A"), olay("+25s", "kvkk_sil", id="B"),
+   baslat("+1m", "T2", ["HY"], sablon="hatirlatma"), olay("+65s", "kvkk_sil", id="HY"), kontrol_ic("+2m", "K1"),
+   baslat("+1h", "T3", "AB"), baslat("+1h", "T4", ["HY"], sablon="hatirlatma"),
+   olay("+90m", "yine_de_gonder", toplu="T1", cari="A", etiket="Y1"), olay("+90m", "yine_de_gonder", toplu="T2", cari="HY", etiket="Y2"), kontrol_ic("+100m", "K2"),
+   baslat("+3h", "T5", "AB"), baslat("+3d", "T6", "A", donem={"bas": "2026-11-01", "son": "2026-11-30"})],
+  {"kontroller.K1.isler": {"T1/A": "Sonucu Belirsiz", "T1/B": "Sonucu Belirsiz", "T2/HY": "Sonucu Belirsiz"},
+   "kontroller.K1.icerik": {"T1/A": SIL, "T1/B": SIL, "T2/HY": SIL},
+   "elenen": {"T3": {"A": "sonucu_belirsiz", "B": "sonucu_belirsiz"}, "T4": {"HY": "sonucu_belirsiz"}, "T5": {"A": "sonucu_belirsiz", "B": DO}},
+   "olusmadi": ["T3", "T4", "T5"], "onceki_uyari": {"T5": {"sayi": 1, "son": "2026-10-30"}},
+   "yeniden.Y1": {"elenen": {"A": IS}, "alinan": [], "oneri": None}, "yeniden.Y2": {"elenen": {}, "alinan": ["HY"], "oneri": None},
+   "kontroller.K2.isler.T2/HY": "Teslim Edildi", "kontroller.K2.icerik.T2/HY": _hat("+905501002030", "Hülya Yanıtsız", "10.10.2026", "300,00 TL"),
+   "isler.T1/A.durum": "Sonucu Belirsiz", "isler.T1/A.icerik_silindi": True, "isler.T1/A.post": 1,
+   "isler.T1/B.durum": "Teslim Edildi", "isler.T1/B.icerik_silindi": True, "isler.T1/B.telefon": None, "isler.T2/HY.post": 2, "isler.T6/A.durum": "Teslim Edildi",
+   "meta.post": {"A": 2, "B": 1, "HY": 2}, "bu_ay": {"W1": {"2026-10": ay_kova(2), "2026-11": ay_kova(1)}}},
+  meta_davranis={"mesaj": {"A": [_ys("+15s", "yanitsiz_kabul"), "kabul"], "B": [_ys("+15s", "yanitsiz_kabul")], "HY": [_ys("+15s", "yanitsiz_kabul"), "kabul"]},
+                 "kanca": {"T1/A": {"1": [], "*": K_STD}, "T1/B": {"1": [["sent", "+1s", {"varis": "+2h"}], ["delivered", "+5s", {"varis": "+2h"}]]},
+                           "T2/HY": {"1": [], "*": K_STD}, "*": K_STD}})
+
+S("S42-03-gonderiliyor-talep-yeniden-gonderim-gerektiren-yanit-atlandi-kesin-olumsuz-basarisiz", "S42",
+  "Ayrı toplu işlerde Ekim ekstresi; Meta'nın yanıtı 10 sn gecikir ve her biri Gönderiliyor iken silme talebi gelir: G geçici hata (131000) → yeniden gönderim gerekir → o anda 'Atlandı — "
+  "Silme Talebi'; M 131049 → Meta Bekletti yerine o anda Atlandı; R alıcı hatası (131021, kesin) → Başarısız (iz Başarısız; yeniden gönderim gerektirmez); S sınır hatası → WABA 24 saat bloklanır "
+  "(öbür etkiler aynen) ve S o anda Atlandı; N (talep YOK) geçici hata → 30 sn sonra yeniden gönderilir, gider. 6. dakikada R'ye Başarısızları Yeniden Dene 'içerik silindi' (S31); 10. dakikada aynı "
+  "dönem G, M, R, S yeni işle (karttaki telefonla) ALINIR (Atlandı / Başarısız iz sayılmaz) ama WABA bloğu yüzünden 24 saat Sınır'da bekler, sonra gider",
+  "S42 (Y18-1/2/5/6/7) + S35 (Y17-8) + S31 + K3 + §7a 12–15, 30", [
+   cari("G", "Gül Geçici", "0551 100 20 30", [("2026-10-05", 400, 0)]), cari("M", "Mert Bekletti", "0551 200 30 40", [("2026-10-06", 500, 0)]),
+   cari("R", "Rıfat Ret", "0551 300 40 50", [("2026-10-07", 600, 0)]), cari("N", "Nur Normal", "0551 400 50 60", [("2026-10-08", 700, 0)]),
+   cari("S", "Sena Sınır", "0551 500 60 70", [("2026-10-09", 800, 0)])],
+  [baslat("+0s", "T1", ["G"]), olay("+5s", "kvkk_sil", id="G"), baslat("+1m", "T2", ["M"]), olay("+65s", "kvkk_sil", id="M"),
+   baslat("+2m", "T3", ["R"]), olay("+125s", "kvkk_sil", id="R"), baslat("+3m", "T4", ["N"]), kontrol("+200s", "K1"),
+   baslat("+4m", "T5", ["S"]), olay("+245s", "kvkk_sil", id="S"), kontrol_ic("+5m", "K2"),
+   olay("+6m", "basarisizlari_yeniden_dene", toplu="T3", etiket="Y1"), baslat("+10m", "T6", ["G", "M", "R", "S"]), kontrol("+1h", "K3"), kontrol("+25h", "K4")],
+  {"kontroller.K1.isler": {"T1/G": "Atlandı", "T2/M": "Atlandı", "T3/R": "Başarısız", "T4/N": "Bekliyor"},
+   "kontroller.K2.isler": {"T1/G": "Atlandı", "T2/M": "Atlandı", "T3/R": "Başarısız", "T4/N": "Teslim Edildi", "T5/S": "Atlandı"},
+   "kontroller.K2.icerik": {"T1/G": SIL, "T2/M": SIL, "T3/R": SIL, "T5/S": SIL,
+                            "T4/N": _ek("Nur Normal", "+905514005060", DON, "2026-10-01", "2026-10-31", "0.00", 1, "700.00", "700,00 TL")},
+   "isler.T1/G.atlanma_nedeni": "silme_talebi", "isler.T2/M.atlanma_nedeni": "silme_talebi", "isler.T5/S.atlanma_nedeni": "silme_talebi",
+   "isler.T3/R.durum": "Başarısız", "isler.T3/R.hata_kodu": 131021, "isler.T3/R.icerik_silindi": True, "isler.T3/R.atlanma_nedeni": None,
+   "isler.T1/G.post": 1, "isler.T2/M.post": 1, "isler.T3/R.post": 1, "isler.T5/S.post": 1, "isler.T4/N.post": 2,
+   "yeniden.Y1": {"elenen": {"R": IS}, "alinan": [], "oneri": None}, "elenen": {}, "olusmadi": [], "toplular.T6.is_sayisi": 4,
+   "kontroller.K3.isler": {"T1/G": "Atlandı", "T2/M": "Atlandı", "T3/R": "Başarısız", "T4/N": "Teslim Edildi", "T5/S": "Atlandı",
+                           "T6/G": SINIR_B, "T6/M": SINIR_B, "T6/R": SINIR_B, "T6/S": SINIR_B},
+   "kontroller.K4.isler": {"T1/G": "Atlandı", "T2/M": "Atlandı", "T3/R": "Başarısız", "T4/N": "Teslim Edildi", "T5/S": "Atlandı",
+                           "T6/G": "Teslim Edildi", "T6/M": "Teslim Edildi", "T6/R": "Teslim Edildi", "T6/S": "Teslim Edildi"},
+   "isler.T6/G.degiskenler": ["Gül Geçici", FIRMA, DON, "400,00 TL"], "isler.T6/G.telefon": "+905511002030",
+   "meta.post": {"G": 2, "M": 2, "N": 2, "R": 2, "S": 2}, "bu_ay": {"W1": {"2026-10": ay_kova(5)}}},
+  meta_davranis={"mesaj": {"G": [_ys("+10s", {"hata": 131000}), "kabul"], "M": [_ys("+10s", {"hata": 131049}), "kabul"], "R": [_ys("+10s", {"hata": 131021}), "kabul"],
+                           "N": [_ys("+10s", {"hata": 131000}), "kabul"], "S": [_ys("+10s", {"sinir": True}), "kabul"]}, "kanca": {"*": K_STD}})
+
+S("S42-04-gonderiliyor-talep-gece-yarisi-yerel-gun-iz-gonderim-aninda", "S42",
+  "31.10 23:59:50 (yerel; UTC 20:59:50) Ödeme Hatırlatma GB: istek 23:59:5x'te gider, yanıt gelmez (zaman aşımı 01.11'de); 23:59:56'da silme talebi → içerik silinir, iş Sonucu Belirsiz (iz "
+  "GÖNDERİM ANINDA, 31.10); 01.11 00:24:50'de yeni hatırlatma GB'ye GİDER (yerel gün değişti — E3; UTC'de aynı gün). 01.11 23:59:50'de GK: istek gider, Meta'nın kabulü 10 sn gecikir (02.11'de "
+  "gelir); 23:59:56'da talep → içerik silinir, kabul ize yazılır (iz 01.11), teslim 02.11; 02.11 00:24:50'de yeni hatırlatma GK'ye GİDER (aynı gün değil — D2 a), 00:44:50'de aynı gün "
+  "'Daha Önce Gönderildi' (son 02.11)",
+  "S42 (Y18-2/3/4/8) + K5 + D2 + E3 + Y14-9 + §7a 19", [
+   cari_h("GB", "Gonca Belirsiz", "0552 100 20 30", [_h("2026-09-01", 300, 0)], vadeler=[_v("2026-10-10", 300)]),
+   cari_h("GK", "Gani Kabul", "0552 200 30 40", [_h("2026-09-01", 400, 0)], vadeler=[_v("2026-10-12", 400)])],
+  [baslat("+0s", "T1", ["GB"], sablon="hatirlatma"), olay("+6s", "kvkk_sil", id="GB"), kontrol_ic("+8s", "K1"), kontrol("+1m", "K2"),
+   baslat("+25m", "T2", ["GB"], sablon="hatirlatma"),
+   baslat("+24h", "T3", ["GK"], sablon="hatirlatma"), olay("+24h6s", "kvkk_sil", id="GK"), kontrol_ic("+24h8s", "K3"), kontrol("+24h2m", "K4"),
+   baslat("+24h25m", "T4", ["GK"], sablon="hatirlatma"), baslat("+24h45m", "T5", ["GK"], sablon="hatirlatma")],
+  {"kontroller.K1.isler": {"T1/GB": "Gönderiliyor"}, "kontroller.K1.icerik.T1/GB": SIL, "kontroller.K1.t": "2026-10-31T23:59:58+03:00",
+   "kontroller.K2.isler": {"T1/GB": "Sonucu Belirsiz"},
+   "isler.T1/GB.durum": "Sonucu Belirsiz", "isler.T1/GB.icerik_silindi": True, "isler.T1/GB.post": 1,
+   "isler.T2/GB.durum": "Teslim Edildi", "isler.T2/GB.degiskenler": ["Gonca Belirsiz", FIRMA, "10.10.2026", "300,00 TL", "300,00 TL"], "isler.T2/GB.telefon": "+905521002030",
+   "kontroller.K3.isler.T3/GK": "Gönderiliyor", "kontroller.K3.icerik.T3/GK": SIL, "kontroller.K3.t": "2026-11-01T23:59:58+03:00",
+   "kontroller.K4.isler.T3/GK": "Teslim Edildi", "isler.T3/GK.icerik_silindi": True, "isler.T3/GK.telefon": None,
+   "isler.T4/GK.durum": "Teslim Edildi", "isler.T4/GK.degiskenler": ["Gani Kabul", FIRMA, "12.10.2026", "400,00 TL", "400,00 TL"],
+   "elenen": {"T5": {"GK": DO}}, "olusmadi": ["T5"], "onceki_uyari": {"T5": {"sayi": 1, "son": "2026-11-02"}},
+   "meta.post": {"GB": 2, "GK": 2}, "bu_ay": {"W1": {"2026-11": ay_kova(3)}}},
+  baslangic="2026-10-31T23:59:50+03:00",
+  meta_davranis={"mesaj": {"GB": [_ys("+15s", "yanitsiz_kabul"), "kabul"], "GK": [_ys("+10s", "kabul"), "kabul"]},
+                 "kanca": {"T1/GB": {"1": []}, "T3/GK": {"1": [["sent", "+20s"], ["delivered", "+30s"]]}, "*": K_STD}})
+
+
+# ---- S43: wamid'i tanınmayan (bu kurulumun göndermediği) bildirim "bildirim yolu çalışıyor" işaretini KOYMAZ (Yol 2 imzalı, Yol 1 imzasız kabul); iş kimliğiyle tanınan koyar ----
+S("S43-01-yol-2-imzali-taninmayan-bildirim-isaret-koymaz-ayni-donem-daha-once", "S43",
+  "Yol 2, teslim süresi 12 sa: A ve B'nin iletisi Meta Kabul Etti, Meta'dan bu iletilere hiç bildirim gelmez; 1. saatte wamid'i tanınmayan (başka uygulamanın) İMZALI 'delivered', 6. saatte "
+  "İMZALI 'read' gelir → kabul edilir (200) ama işareti KOYMAZ → 14. saatte iki iş de Meta Kabul Etti (Süresi Doldu olmaz); 15. saatte aynı dönem ikisi 'Daha Önce Gönderildi'",
+  "S43 (Y18-12/14/15/16) + §7a 16 + J6 + W1 + G0 (2)", [A(), B()],
+  [baslat("+0s", "T1", "AB"), olay("+1h", "sahte_kanca", wamid="wamid.BASKA-KURULUM-1", durum="delivered", imzali=True),
+   olay("+6h", "sahte_kanca", wamid="wamid.BASKA-KURULUM-2", durum="read", imzali=True), kontrol("+14h", "K1"), baslat("+15h", "T2", "AB")],
+  {"kontroller.K1.isler": {"T1/A": "Meta Kabul Etti", "T1/B": "Meta Kabul Etti"}, "isler.T1/A.durum": "Meta Kabul Etti", "isler.T1/B.durum": "Meta Kabul Etti",
+   "elenen": {"T2": {"A": DO, "B": DO}}, "olusmadi": ["T2"], "onceki_uyari": {"T2": {"sayi": 2, "son": "2026-10-30"}},
+   "kanca_yanitlari": {"200": 2, "503": 0}, "meta.post": {"A": 1, "B": 1}, "bu_ay": {}},
+  ayar={"baglanti_yolu": "yol2"}, meta=META_12SA, kanca_yanit_cikti=True, meta_davranis={"kanca": {"*": []}})
+
+S("S43-02-yol-1-imzasiz-taninmayan-bildirim-kabul-isaret-koymaz", "S43",
+  "Yol 1 (Elle Bağla — imzasız bildirim kabul), teslim süresi 12 sa: A ve B'nin iletisi Meta Kabul Etti, Meta'dan bildirim gelmez; 1. saatte wamid'i tanınmayan İMZASIZ 'delivered' gelir → Yol 1'de "
+  "kabul edilir (200) ama işareti KOYMAZ → 14. saatte iki iş de Meta Kabul Etti; 15. saatte aynı dönem ikisi 'Daha Önce Gönderildi' (S33'ün Yol 2'de kapattığı yol Yol 1'de de kapalı)",
+  "S43 (Y18-12/14/15/16) + S41 (Y17-26) + §7a 16 + W1 + G0 (2)", [A(), B()],
+  [baslat("+0s", "T1", "AB"), olay("+1h", "sahte_kanca", wamid="wamid.BASKA-KURULUM-1", durum="delivered"), kontrol("+14h", "K1"), baslat("+15h", "T2", "AB")],
+  {"kontroller.K1.isler": {"T1/A": "Meta Kabul Etti", "T1/B": "Meta Kabul Etti"},
+   "elenen": {"T2": {"A": DO, "B": DO}}, "olusmadi": ["T2"], "onceki_uyari": {"T2": {"sayi": 2, "son": "2026-10-30"}},
+   "kanca_yanitlari": {"200": 1, "503": 0}, "meta.post": {"A": 1, "B": 1}, "bu_ay": {}},
+  ayar={"baglanti_yolu": "yol1"}, meta=META_12SA, kanca_yanit_cikti=True, meta_davranis={"kanca": {"*": []}})
+
+S("S43-03-yol-2-is-kimligiyle-taninan-bildirim-isaret-koyar-sure-dolar", "S43",
+  "Yol 2, teslim süresi 12 sa: A'nın iletisi Meta Kabul Etti (bildirimi yok); C'nin isteğine yanıt gelmez (Sonucu Belirsiz — wamid'i programda yok); 1. saatte Meta'nın C iletisine İMZALI 'sent' "
+  "bildirimi gelir → bu kurulumun iletisi, iş kimliğiyle TANINIR (tanınmayan sınıfına girmez): C çözülür (Gönderildi) ve işaret KONUR → 14. saatte A ve C Süresi Doldu; 15. saatte aynı dönem ikisine "
+  "yeniden gider (Süresi Doldu sayılmaz — K3)",
+  "S43 (Y18-13) + §5 yorum 4 + §7a 16 + H1 + K3 + W1", [A(), C()],
+  [baslat("+0s", "T1", "AC"), kontrol("+2h", "K1"), kontrol("+14h", "K2"), baslat("+15h", "T2", "AC")],
+  {"kontroller.K1.isler": {"T1/A": "Meta Kabul Etti", "T1/C": "Gönderildi"}, "kontroller.K2.isler": {"T1/A": "Süresi Doldu", "T1/C": "Süresi Doldu"},
+   "elenen": {}, "olusmadi": [], "onceki_uyari": {}, "toplular.T2.is_sayisi": 2,
+   "isler.T2/A.durum": "Süresi Doldu", "isler.T2/C.durum": "Süresi Doldu",          # işaret (1. saat) 7 gün geçerli → yeni iletiler de 15 + 13 = 28. saatte Süresi Doldu (ufuk 10 gün)
+   "meta.post": {"A": 2, "C": 2}, "bu_ay": {}},
+  ayar={"baglanti_yolu": "yol2"}, meta=META_12SA,
+  meta_davranis={"mesaj": {"C": ["yanitsiz_kabul", "kabul"]}, "kanca": {"T1/C": {"1": [["sent", "+1s", {"varis": "+1h"}]]}, "*": []}})
 
 
 # ======================================================================== üretim / denetim

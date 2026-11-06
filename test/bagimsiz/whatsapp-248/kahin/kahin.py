@@ -75,6 +75,11 @@ README §22, kodlamadan önce yazıldı ve ayrı commit'lendi): S34 (S29-a) KAPA
 gönderilir, içerik gönderim anında karttan. S38 (S32-a) — silme talebi kayıtları taşımada yeni bilgisayara gider ve orada uygulanır. S33 / S41 — yeni girdi `ayar.baglanti_yolu` (yol1 / yol2;
 yoksa yol2) ve kanca `adres` (alternatif / uygulama): Yol 2'de işareti ve işlemeyi yalnız imzalı bildirim, Yol 1'de imzasız bildirim kabul; uygulama düzeyi adrese gelen bildirim aynı kurallarla.
 Gönderiliyor anında talep (S35-a) ve tanınmayan iletiye ait bildirimin işareti (S33-a) KULLANICIYA SORULMALI.
+GÜNCELLEME 18 (2.5.0, KULLANICI KARARI 06.11.2026 08:54 UTC "a" — S42, S43; BAŞ MİMAR KARARI 08:52 Y17-6; metinler AYNEN KARARLAR S42, S43; yorumlar README §23, kodlamadan önce yazıldı ve
+ayrı commit'lendi): S42 (S35-a) KAPANDI — silme talebi anında iş Gönderiliyor (istek gitti, yanıt bekleniyor) ise içerik + telefon HEMEN silinir; yanıt talep yokmuş gibi işlenip ize yazılır
+(kabul → "gönderildi" izi, yanıt yok → Sonucu Belirsiz izi, kesin olumsuz → Başarısız); yanıt yeniden gönderim gerektirirse (iş S30 bekleyen kümesine dönerse) iş o anda "Atlandı — Silme
+Talebi" (1 yıl dolumunda `saklama_suresi`). Yeni girdi: gecikmeli Meta yanıtı `{"gec": süre, "yanit": …}` (README §23 Y18-9). S43 (S33-a) KAPANDI — wamid'i tanınmayan (bu kurulumun
+göndermediği) bildirim "bildirim yolu çalışıyor" işaretini KOYMAZ: kâhinin 2.4.8 yorum 4'ü aynen (hesap değişmez; karar kaynağı + senaryo + mutant).
 
 KÂHİN GÜNCELLEMESİ 8 (31.10.2026): H1 (kullanıcı) — Yine de Gönder ile açılan iş kabul/teslim edilince KAYNAK Sonucu Belirsiz deneme o kişi için artık
 elemez (kişi "Daha Önce Gönderildi"; yol R3 Yine de Gönder); açılan iş başarısız/belirsiz kalırsa kaynak elemeye devam eder. H2–H4 (baş mimar, G0 İLKEYLE):
@@ -481,6 +486,16 @@ MUTASYONLAR = {
     "M248": "S41'in tersi (B seçeneği): uygulama düzeyi adrese gelen bildirim işlenmez (200, yok sayılır) — teslim bilgisi kaybolur",
     "M249": "S41 'aynı kurallar'ın tersi: uygulama düzeyi adreste imza aranmaz — Yol 2'de imzasız bildirim de işlenir",
     "M250": "Yol 1 'imzasız kabul'ün tersi (S41 metni): Yol 1'de de imzasız bildirim düşer (§7a 3) — Meta'nın bildirimleri işlenmez",
+    # ---- kâhin güncellemesi 18 (README §23): S42 (S35-a), S43 (S33-a) — her kararın karşı seçeneği + sınır kaymaları
+    "M251": "S42'nin tersi (B seçeneği): Gönderiliyor işte talep iş kendi yoluyla sürer — telefon / içerik gönderim bitene kadar durur, yeniden gönderim karttaki bilgiyle gider",
+    "M252": "S42 (Y18-3/5) zaman sınırı: Gönderiliyor iş talep ANINDA 'Atlandı — Silme Talebi' — yanıt beklenmez, isteğin sonucu ize yazılmaz (kabul / Meta'nın bildirdiği sınır kaybolur)",
+    "M253": "S42 (Y18-6) sınıf sınırı: yeniden gönderim gerektirmeyen kesin olumsuz yanıt (alıcı hatası, sınıfsız kod) da 'Atlandı — Silme Talebi' olur (iz Başarısız değil)",
+    "M254": "S42 'yanıt yok → Sonucu Belirsiz izi kalır'ın tersi: yanıtsız istek de 'Atlandı — Silme Talebi' — belirsiz iz kalmaz, aynı dönemde ikinci ileti uyarısız gider",
+    "M255": "S42 (Y18-8) zaman sınırı: isteğin sonucu izin tarihini yanıt anına taşır (gönderim anı değil) — gece yarısını geçen istekte 'aynı gün' eşliği kayar",
+    "M256": "S42 (Y18-5) sınıf sınırı: 131049 (Meta Bekletti) yanıtı yeniden gönderim sayılmaz — iş kendi yoluyla, 24 sa sonra 2. deneme karttaki bilgiyle gider",
+    "M257": "S43'ün tersi (B seçeneği): kabul edilen her bildirim (Yol 2'de imzalı, Yol 1'de imzasız) wamid'i tanınmasa da 'bildirim yolu çalışıyor' işaretini koyar — TTL + 1 sa'te Süresi Doldu",
+    "M258": "S43 (Y18-14) kapsam sınırı: kural yalnız imzalı bildirime — Yol 1'de imzasız kabul edilen tanınmayan bildirim işareti koyar",
+    "M259": "S43 (Y18-13) tanıma sınırı: tanıma yalnız programın wamid kaydıyla — iş kimliğiyle tanınan (yanıtı kaybolmuş, bu kurulumun gönderdiği) iletinin bildirimi işareti koymaz",
 }
 
 # Kâhin güncellemesi 2'nin kaynak karar metinleri (AYNEN; CLAUDE.md "Açık iş" + docs/2.4.8-IS-LISTESI.md, 31.10.2026). "kaynak_turu": kullanıcı kararı mı,
@@ -829,6 +844,25 @@ KARARLAR = {
                       "kurulumda kaydı olan WABA'nın bildirimi alternatif adresle AYNI kurallarla işlenir (Yol 1 imzasız kabul, Yol 2 yalnız imzalı) + Meta'daki adres hemen yeniden denetlenir / "
                       "B: bugünkü gibi işlenmez, BİLİNEN SINIR.",
                       "ana oturum iletisi (WK 17'ye ekleme, 06.11.2026): teslim bilgisi kaybolmaz, \"Süresi Doldu\" yüzünden aynı dönemde ikinci ileti gitmez."]},
+    # ---- kâhin güncellemesi 18 (2.5.0; docs/2.5.0-IS-LISTESI.md D "KULLANICI KARARI 06.11 08:54 UTC" (S42, S43) + "BAŞ MİMAR KARARI 06.11 08:52" + C soru metinleri — AYNEN) ----
+    "S42": {"kaynak_turu": "kullanıcı (06.11.2026 08:54 UTC, 'a'; iş listesi D + C, aynen) — WK güncellemesi 17'nin KULLANICIYA SORULMALI S35-a'sı (README §22.9); 1 yıl dolumu BAŞ MİMAR KARARI "
+                           "06.11 08:52 (Y17-6) + WK 18 görev metni",
+            "metin": ["KULLANICI KARARI 06.11 08:54 UTC (AYNEN: \"a\"; sorular C bölümünde S42–S43, öneriyle soruldu):",
+                      "S42 = A: silme talebi anında iş \"Gönderiliyor\" ise içerik ve telefon HEMEN silinir; isteğin sonucu ize yazılır (kabul → \"gönderildi\" izi, yanıt yok → Sonucu Belirsiz izi "
+                      "kalır, aynı dönem elenir); yanıt yeniden gönderim gerektirirse iş o anda \"Atlandı — Silme Talebi\".",
+                      "soru (iş listesi C, SORULDU 06.11 08:52 → YANITLANDI 06.11 08:54 \"a\"): S42 (S35-a ★): silme talebi anında iş \"Gönderiliyor\" (istek Meta'ya gitti, yanıt bekleniyor) — A öneri: "
+                      "içerik ve telefon HEMEN silinir; isteğin sonucu ize yazılır (kabul → \"gönderildi\" izi, yanıt yok → Sonucu Belirsiz izi kalır, aynı dönem elenir); yanıt yeniden gönderim "
+                      "gerektirirse iş o anda \"Atlandı — Silme Talebi\" / B: iş kendi yoluyla sürer (telefon / içerik gönderim bitene kadar durur).",
+                      "BAŞ MİMAR KARARI 06.11 08:52 (ders 40; WK 17 Y17-6, kâhin kodu görmedi, programla karşılaştırmadan ÖNCE): S35 \"talep anında kapanır\" kuralı 1 YIL DOLUMUNDA da uygulanır "
+                      "(bekleyen iş dolum anında \"Atlandı — Saklama Süresi\").",
+                      "WK 18 görev metni (ana oturum): 1 yıl dolumunda \"Gönderiliyor\" iş için de aynı an (Y17-6 BAŞ MİMAR KARARI)."]},
+    "S43": {"kaynak_turu": "kullanıcı (06.11.2026 08:54 UTC, 'a'; iş listesi D + C, aynen) — WK güncellemesi 17'nin KULLANICIYA SORULMALI S33-a'sı (README §22.9); kâhinin 2.4.8 yorum 4'ü",
+            "metin": ["KULLANICI KARARI 06.11 08:54 UTC (AYNEN: \"a\"; sorular C bölümünde S42–S43, öneriyle soruldu):",
+                      "S43 = A: wamid'i tanınmayan (bu kurulumun göndermediği) bildirim \"bildirim yolu çalışıyor\" işaretini KOYMAZ.",
+                      "soru (iş listesi C, SORULDU 06.11 08:52 → YANITLANDI 06.11 08:54 \"a\"): S43 (S33-a ★): wamid'i TANINMAYAN (bu kurulumun göndermediği) bir bildirim \"bildirim yolu çalışıyor\" "
+                      "işaretini koysun mu — A öneri: koymaz (kâhinin 2.4.8'den beri yorumu) / B: kabul edilen her bildirim koyar (Yol 1'de bugünkü program davranışı; B'de teslim bilgisi gelmeyen iş "
+                      "TTL + 1 sa sonra \"Süresi Doldu\" → aynı dönem ikinci ileti mümkün).",
+                      "İŞ ATAMASI (iş listesi D): S43 → WhatsApp küçük işler tur 1 (kâhin 2.4.8'den beri A ile; WK 18 doğrular)."]},
     "K8": {"kaynak_turu": "kullanıcı (08:20 'şimdi yap'); en yeni önce / yerel gün / iki uç dahil / ters aralık ret ana oturum görev metni",
            "metin": ["KARAR (kullanıcı, 31.10.2026 ~08:20 UTC: \"şimdi yap\"): WhatsApp Gönderimleri ekranına 2.4.8'de \"Daha Fazla Göster\" (30'ar, imleçli) + "
                      "Başlangıç/Bitiş tarih süzgeci (eski gönderimlere erişim)."]},
@@ -1169,6 +1203,8 @@ class Benzetim:
         self.kvkk = {}; self.silinen_tel = {}
         # kâhin güncellemesi 16 (S32, Y16-20): talep kaydı makinede (şirket + cari → an); yedekteki kayıt yalnız M234. Güncelleme 17 (S38, Y17-20): taşımada yeni bilgisayara gider
         self.yedek_kvkk = {}
+        # kâhin güncellemesi 18 (S42, README §23): yalnız M251 (S42'nin B'si) — talebi ertelenen işler (gönderim bitince içerik silinir)
+        self.s42_b = []
         # kâhin güncellemesi 17 (S33 / S41, README §22 Y17-24): bağlantı yolu — Yol 2 (WhatsApp'ı Bağla; imza kapıcıda doğrulanır — eski senaryoların düzeni) / Yol 1 (Elle Bağla; imzasız kabul)
         self.yol = self.ayar.get("baglanti_yolu") or BAGLANTI_YOLLARI[0]
         if self.yol not in BAGLANTI_YOLLARI:
@@ -1221,6 +1257,9 @@ class Benzetim:
             self.saklama_isle(t)                                          # S-W3 (Y15-13/14): 1 yılı dolan gönderim kaydının içeriği silinir (program açıkken)
             if self.lisans and self.isci_bos <= t:
                 self.isci(t)
+        for j in [x for x in self.s42_b if x.durum not in KUYRUKTA]:    # yalnız M251 (S42'nin B'si): gönderim bitince (iş kuyruktan çıkınca) içerik / telefon silinir
+            self.s42_b.remove(j)
+            self.icerik_sil(j, t, j.s42_b)
         for o in simdi:
             if o[2]["tur"] == "kontrol":
                 self.olaylar.remove(o)
@@ -1796,10 +1835,20 @@ class Benzetim:
         S30 = A (KULLANICI KARARI 06.11.2026 06:52 UTC; README §21 Y16-8…14): BEKLEYEN iş (S30_BEKLEYEN; zincir dahil) GÖNDERİLMEZ; Sonucu Belirsiz iş iz olarak KALIR (aynı dönem eler —
         belirsiz_kaynagi). S35 = A (KULLANICI KARARI 06.11.2026 08:06 UTC; README §22 Y17-6…8): bekleyen iş talep (ve 1 yıl dolumu) ANINDA kapanır — "Atlandı — Silme Talebi"
         (`silme_talebi` / `saklama_suresi`), kuyrukta değil (güncelleme 16'nın `s30_an` iki okuması kalktı; 'gonderimde' okuması M238 / M240). Gönderiliyor (istek gitti, yanıt bekleniyor)
-        modellenmedi — S35 "bekleyen iş" der (README §22.9 S35-a ★)."""
-        if j.durum == GONDERILIYOR:
-            raise ValueError("KULLANICIYA SORULMALI S35-a (README §22.9; WK 16 KÂHİN SUSUYOR §21.7, Y16-9): " + ("silme talebi" if neden == "talep" else "1 yıllık saklama süresinin dolması")
-                             + f" anında iş Gönderiliyor (istek gitti, yanıt bekleniyor — {j.anahtar}) — S35 yalnız bekleyen işi söyler; kodlanmadı")
+        modellenmedi — S35 "bekleyen iş" der (README §22.9 S35-a ★).
+        S42 = A (KULLANICI KARARI 06.11.2026 08:54 UTC; README §23 Y18-1…8): Gönderiliyor (istek gitti, yanıt bekleniyor) işte içerik + telefon HEMEN silinir, iş Gönderiliyor'da kalır;
+        yanıt gelince talep yokmuş gibi işlenip ize yazılır, yeniden gönderim gerektirirse o anda "Atlandı — Silme Talebi" (yanit_gel; 1 yıl dolumunda `saklama_suresi` — BAŞ MİMAR KARARI
+        08:52 Y17-6). Yanıtı beklenmeyen Gönderiliyor iş (yedekten dönen — Y18-11) KÂHİN SUSUYOR. M251 (B): iş kendi yoluyla sürer; M252: talep anında kapanır, yanıt ize yazılmaz."""
+        s42 = j.durum == GONDERILIYOR
+        if s42:
+            if j.anahtar not in self.yanit_bekleyen:
+                raise ValueError("KÂHİN SUSUYOR (README §23.5, Y18-11): " + ("silme talebi" if neden == "talep" else "1 yıllık saklama süresinin dolması")
+                                 + f" anında yanıtı beklenmeyen 'Gönderiliyor' iş ({j.anahtar}; yedekten dönen) — modellenmedi")
+            if "M251" in self.mut:                                               # S42'nin B'si: iş kendi yoluyla sürer — içerik / telefon gönderim bitene kadar durur
+                if j not in self.s42_b:
+                    self.s42_b.append(j)
+                j.s42_b = neden
+                return
         bekleyen = j.durum in S30_BEKLEYEN and not ("M225" in self.mut                                       # S30'un B seçeneği: kartla gider
                                                     or ("M227" in self.mut and j.durum == BEKLEME_131049)
                                                     or ("M228" in self.mut and j.durum in (DURAKLATILDI, LISANS, SORULUYOR)))
@@ -1816,6 +1865,12 @@ class Benzetim:
             for r in j.kayitlar:
                 if self.kayitlar[r]["son_durum"] == BELIRSIZ:
                     self.kayitlar[r]["belirsiz_silindi"] = True          # M226: S30 'Sonucu Belirsiz izi kalır'ın tersi
+        if s42:
+            if "M252" in self.mut:
+                self.atla(j, SILME_NEDEN[neden], t)                      # M252: talep anında kapanır — yanıt beklenmez (yanit_gel Gönderiliyor olmayan işi yok sayar)
+            else:
+                j.s42 = (j.son_kayit, neden)                             # S42 (Y18-3…5): yanıt BU denemeye gelince ize yazılır; yeniden gönderim gerekirse o anda Atlandı
+            return
         if bekleyen:
             ad = SILME_NEDEN[neden]
             if "M238" in self.mut or ("M240" in self.mut and neden == "sure"):
@@ -2388,13 +2443,19 @@ class Benzetim:
             return self.baglanti_yok(j, tp, ts)
         y = self.meta_yanit_mesaj(j, self.post_hedef.get(j.telefon, 0) + 1)
         self.post_say(j, tp, ts)
-        if isinstance(y, dict) and "gec_kabul" in y:        # J6/J7: Meta kabul etti, HTTP yanıtı (zaman aşımından önce) gecikmeli — program "Gönderiliyor"da bekler
-            self.meta_ileti(j, ts, programa=False)
-            varis = zaman_ayristir(y["gec_kabul"], ts)
+        if isinstance(y, dict) and ("gec_kabul" in y or "gec" in y):
+            # J6/J7: Meta kabul etti, HTTP yanıtı (zaman aşımından önce) gecikmeli — program "Gönderiliyor"da bekler. Güncelleme 18 (README §23 Y18-9): genel gecikmeli yanıt
+            # {"gec": süre, "yanit": "kabul" | "yanitsiz_kabul" | "yanitsiz_red" | {"hata": kod} | {"sinir": true}} — yanıt gelince gonder()'deki AYNI kurallarla işlenir (yanit_gel)
+            ic = "kabul" if "gec_kabul" in y else y.get("yanit")
+            if not (ic in ("kabul", "yanitsiz_kabul", "yanitsiz_red") or (isinstance(ic, dict) and ("hata" in ic or ic.get("sinir")))):
+                raise ValueError(f"senaryo gecikmeli yanıtı modellenmedi: {y}")
+            if ic in ("kabul", "yanitsiz_kabul"):
+                self.meta_ileti(j, ts, programa=False)          # ileti Meta'da (yanıt gecikmeli / kayıp)
+            varis = zaman_ayristir(y["gec_kabul"] if "gec_kabul" in y else y["gec"], ts)
             self.yanit_bekleyen.add(j.anahtar)
             self.isci_bos = max(self.isci_bos, varis)
             self.ic_sira += 1
-            self.olaylar.append([varis, self.ic_sira, {"tur": "_yanit", "is": j.anahtar, "rid": j.son_kayit,
+            self.olaylar.append([varis, self.ic_sira, {"tur": "_yanit", "is": j.anahtar, "rid": j.son_kayit, "yanit": ic,
                                                        "wamid": f"wamid.{j.anahtar}#{j.meta_sayi}"}])
             return
         if y == "kabul":
@@ -2403,9 +2464,13 @@ class Benzetim:
                 self.kesinlesti(j, ts)
             tp.gecici = 0; j.gecici_deneme = 0               # §7a 15: sayaç başarılı gönderimle sıfırlanır
             return
+        if y == "yanitsiz_kabul":
+            self.meta_ileti(j, ts, programa=False)
+        self.yanit_sonucu(j, tp, waba, y, ts)
+
+    def yanit_sonucu(self, j, tp, waba, y, ts):
+        """Meta'nın kabul DIŞI yanıtı (yanıtsız / sınır / hata) — gonder()'den aynen taşındı; güncelleme 18'de gecikmeli yanıt (yanit_gel) da bu yoldan (README §23 Y18-3…6)."""
         if y in ("yanitsiz_kabul", "yanitsiz_red"):
-            if y == "yanitsiz_kabul":
-                self.meta_ileti(j, ts, programa=False)
             if "M3" in self.mut:
                 self.durum(j, BEKLIYOR, ts); j.next_at = ts + GECICI_DIZI[0]
                 return
@@ -2713,10 +2778,25 @@ class Benzetim:
         if j is None or not self.acik or j.durum != GONDERILIYOR or j.son_kayit != o["rid"]:
             return
         tp = self.toplular[j.toplu]
-        self.programa_kabul(j, o["wamid"], t)
-        tp.gecici = 0; j.gecici_deneme = 0
-        if self.defter_kilit:                                # J7 (Y9e-1): iş dosyada Meta Kabul Etti, kabul gönderim defterine YAZILAMADI → onarım bekler
-            self.kayitlar[o["rid"]]["onarim"] = True
+        ic = o.get("yanit", "kabul")
+        if ic == "kabul":
+            self.programa_kabul(j, o["wamid"], t)
+            tp.gecici = 0; j.gecici_deneme = 0
+            if self.defter_kilit:                            # J7 (Y9e-1): iş dosyada Meta Kabul Etti, kabul gönderim defterine YAZILAMADI → onarım bekler
+                self.kayitlar[o["rid"]]["onarim"] = True
+        else:
+            self.yanit_sonucu(j, tp, self.wabalar[tp.sirket], ic, t)   # güncelleme 18 (Y18-9): gecikmeli yanıtsız / sınır / hata — gonder() ile AYNI kurallar
+        s42 = getattr(j, "s42", None)
+        if s42 is not None and s42[0] == o["rid"]:
+            # S42 = A (KULLANICI KARARI 06.11.2026 08:54 UTC; README §23 Y18-3…8): talep bu istek sürerken geldi — yanıt yukarıda AYNEN işlendi ve ize yazıldı (kabul / Sonucu Belirsiz /
+            # Başarısız); yanıt yeniden gönderim gerektirirse (iş S30 bekleyen kümesine döndüyse — geçici hata, 131056, 131049, sınır, 190 / 0) iş O ANDA "Atlandı — Silme Talebi"
+            # (1 yıl dolumunda `saklama_suresi`); yanıtın öbür etkileri (toplu sayaç, WABA bloğu, bağlantı Süresi Doldu) aynen (Y18-7)
+            j.s42 = None
+            if "M255" in self.mut:
+                self.kayitlar[o["rid"]]["t"] = t                 # M255: izin tarihi yanıt anı (Y18-8'in tersi)
+            yeniden = (j.durum in S30_BEKLEYEN and not ("M256" in self.mut and j.durum == BEKLEME_131049))
+            if yeniden or ("M253" in self.mut and j.durum == BASARISIZ) or ("M254" in self.mut and j.durum == BELIRSIZ):
+                self.atla(j, SILME_NEDEN[s42[1]], t)
 
     def sirket_sil(self, sirket):
         """Y9-4: şirket kalıcı silinir — toplu işleri ve işleri şirket dosyasıyla gider; makine defteri, "Bu Ay", sınır penceresi, Meta'daki iletiler kalır."""
@@ -2755,9 +2835,17 @@ class Benzetim:
                 if w_ is not None:
                     self.son_kanca[w_] = t
             return                                           # §7a 3 + S33 (Y17-25): Yol 2'de imzasız olay düşer ve işareti koymaz (GUV-06)
+        # §7a 16 + §5 yorum 4 + S43 = A (KULLANICI KARARI 06.11.2026 08:54 UTC; README §23 Y18-12…14): işareti yalnız bu kurulumun gönderdiği (wamid ya da iş kimliğiyle tanınan) iletinin
+        # kabul edilmiş bildirimi koyar; wamid'i tanınmayan (bu kurulumun göndermediği) bildirim — Yol 2'de imzalı, Yol 1'de imzasız kabul edilmiş olsa da — KOYMAZ (2.4.8'den beri; hesap aynen)
         sahibi = self.meta_mesajlari.get(wamid) or self.wamid_is.get(wamid)
+        if "M259" in self.mut:
+            sahibi = self.wamid_is.get(wamid)                # M259: tanıma yalnız programın wamid kaydıyla — iş kimliğiyle tanınan (yanıtı kaybolmuş) iletinin bildirimi işaret koymaz
         if sahibi is not None and ek.get("imzali"):
             self.son_kanca[self.wabalar[sahibi.sirket]] = t   # §7a 16: kanca yolu çalışıyor
+        elif sahibi is None and ek.get("imzali") and ("M257" in self.mut or ("M258" in self.mut and ek.get("yol1_imzasiz"))):
+            w_ = self.wabalar.get(ek.get("sirket", "A"))      # M257 (S43'ün B'si) / M258 (yalnız Yol 1'in imzasız kabulünde): tanınmayan bildirim de işaret koyar
+            if w_ is not None:
+                self.son_kanca[w_] = t
         olay_t = ek.get("olay_t", t)
         teslim_olayi = durum in ("delivered", "read")
         j = self.wamid_is.get(wamid)

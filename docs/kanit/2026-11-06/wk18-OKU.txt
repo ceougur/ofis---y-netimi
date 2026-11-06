@@ -1,0 +1,22 @@
+WK 18 (2.5.0) — WhatsApp kâhini güncellemesi 18: S42 (S35-a), S43 (S33-a). KODU GÖRMEYEN ajan; kaynak yalnız karar metinleri (iş listesi C + D, 06.11.2026 08:52 / 08:54 UTC).
+Yorumlar: test/bagimsiz/whatsapp-248/README.md §23.1–23.5 (kodlamadan ÖNCE, commit e2ed4039); sonuçlar §23.6–23.10.
+Kod commit'leri: 36de6046 (kâhin + senaryolar + kendi testi), f3de90a4 (S42-04 açıklama saati + README sayıları). BÜTÜN koşular f3de90a4'te, ağaç temiz ("kirli": 0).
+Ham çıktılar not defterinde üretilip buraya kopyalandı (json'daki "ham_cikti" yolu not defterini gösterir; .log dosyasının sha256'sı json'daki "ham_cikti_sha256" ile aynı olmalı).
+Eski kâhin = taban 75f1aad9'un kahin/* dosyalarının değişiklikten ÖNCE alınmış kopyası (kahin.py sha256 d054e986f00ead1fd297ff3d73d26138ea05c487d12d89f5c2316c65a627ec16,
+senaryolar.json sha256 9da42a83f42b73d8f840e1437d6896bf20e257121e64a07b58e1b3381ed6c5cc) — git'ten değil.
+
+Koşular (komutlar wk18-araclar/kos.sh; depo kökünden, KANIT_DIR=<not defteri>/wk18-kanit):
+  wk18-senaryolar                              TZ=UTC              374/374 elle = model; senaryolar.json sha256 47f09c3eedfff7ebc40f5d68d8f784b42a8fdac31f81ca7dde95ee889fd98d90
+  wk18-senaryolar-tz-istanbul                  TZ=Europe/Istanbul  374/374; senaryolar.json aynı sha256
+  wk18-kahin                                   TZ=UTC              405/405 (F mutasyon 258/258; I14 (i) Yol 1 = Yol 2: 363 senaryo; I15 (d) gec ≡ gec_kabul: 3 senaryo)
+  wk18-kahin-tz-istanbul                       TZ=Europe/Istanbul  405/405
+  wk18-eski-kahinle-ham[-tz-istanbul]          eski kâhin aynen — beklenen (önceden yazıldı, --bekle): S42 4 değerle KIRMIZI (ZAYIF neden: gecikmeli yanıt girdisi tanınmıyor), S43 3 AYNI → 7/7
+  wk18-eski-kahinle-uyarlanmis[-tz-istanbul]   eski kâhin + YALNIZ girdi düzeneği (eski gonder() satırları aynen) — S42 4 KIRMIZI "KULLANICIYA SORULMALI S35-a … kodlanmadı" (BEKLENEN neden), S43 3 AYNI → 7/7
+  wk18-eski-kahinle-notr[-tz-istanbul]         uyarlanmış + S35-a satırı etkisiz (kural yok) — S42-03 değerle KIRMIZI (yeniden gönderim karttan gider), S42-01/02/04 + S43 AYNI → 7/7
+  wk18-eski-367-tam-sonuc-fark                 367 eski senaryonun bütün kaydı (girdi, elle, tam beklenen, başlık, açıklama, kaynak) bayt bayt aynı, sıra korunuyor; kararlar'a yalnız S42, S43 eklendi → 367/367
+  wk18-mutant-matrisi                          M251–M259 yeni 7 senaryoda: hepsi DEĞERLE yakalanıyor (M251 3, M252 4, M253 1, M254 2, M255 1, M256 1, M257 2, M258 1, M259 1; istisna 0) → 9/9
+  wk18-mutant-matrisi-tum-senaryolar-tz-istanbul  aynı matris bütün 374 senaryoda (aynı sayılar) → 9/9
+
+Araçlar (wk18-araclar/): eski_kahinle.py (ham / uyarlanmis / notr; geçici kopya kendi benzersiz klasöründe, iş bitince yalnız o tam yol silinir), eski_sonuc_fark.py, mutant_matrisi.py,
+goster.py (yeni senaryoların tam sonucunun kısa dökümü), kos.sh (bütün koşular; düşen adım sayısı = çıkış).
+Sahte Meta (sahte-meta/) ve sürücü (surucu.mjs) bu güncellemede AÇILMADI ve koşulmadı; programa karşı koşulmadı.

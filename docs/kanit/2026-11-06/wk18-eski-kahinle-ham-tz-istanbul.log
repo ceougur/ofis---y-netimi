@@ -1,0 +1,38 @@
+KIRMIZI (değer, 10 yaprak) S42-01-gonderiliyor-talep-kabul-gonderildi-izi-ayni-donem-daha-once
+    * [{}…] kontroller.K1.isler: elle {"T1/A": "Gönderiliyor", "T1/B": "Bekliyor"} ≠ model {"T1/A": "Başarısız", "T1/B": {"biri": ["Meta Kabul Etti", "Teslim Edildi"]}}
+    * [{}…] kontroller.K1.toplam_post: elle 1 ≠ model 2
+    * [{}…] kontroller.K1.durum_sayilari: elle {"Bekliyor": 1, "Gönderiliyor": 1} ≠ model {"Başarısız": 1, "Teslim Edildi": {"biri": ["<YOK>", 1]}, "Meta Kabul Etti": {"biri": ["<YOK>", 1]}}
+    * [{}…] kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "Teslim Edildi"} ≠ model {"T1/A": "Başarısız", "T1/B": "Teslim Edildi"}
+KIRMIZI (değer, 13 yaprak) S42-02-gonderiliyor-talep-yanit-yok-belirsiz-iz-ayni-donem-elenir
+    * [{}…] kontroller.K1.isler: elle {"T1/A": "Sonucu Belirsiz", "T1/B": "Sonucu Belirsiz", "T2/HY": "Sonucu Belirsiz"} ≠ model {"T1/A": "Başarısız", "T1/B": "Başarısız", "T2/HY": "Başarısız"}
+    * [{}…] elenen: elle {"T3": {"A": "sonucu_belirsiz", "B": "sonucu_belirsiz"}, "T4": {"HY": "sonucu_belirsiz"}, "T5": {"A": "sonucu_belirsiz", "B": "daha_once_gonderildi"}} ≠ model {"T5": {"A": "daha_once_gonderildi", "B": "daha_once_gonderi
+    * [{}…] olusmadi: elle ["T3", "T4", "T5"] ≠ model ["T5"]
+    * [{}…] onceki_uyari: elle {"T5": {"sayi": 1, "son": "2026-10-30"}} ≠ model {"T5": {"sayi": 2, "son": "2026-10-30"}}
+KIRMIZI (değer, 11 yaprak) S42-03-gonderiliyor-talep-yeniden-gonderim-gerektiren-yanit-atlandi-kesin-olumsuz-basarisiz
+    * [{}…] kontroller.K1.isler: elle {"T1/G": "Atlandı", "T2/M": "Atlandı", "T3/R": "Başarısız", "T4/N": "Bekliyor"} ≠ model {"T1/G": "Başarısız", "T2/M": "Başarısız", "T3/R": "Başarısız", "T4/N": "Başarısız"}
+    * [{}…] kontroller.K2.isler: elle {"T1/G": "Atlandı", "T2/M": "Atlandı", "T3/R": "Başarısız", "T4/N": "Teslim Edildi", "T5/S": "Atlandı"} ≠ model {"T1/G": "Başarısız", "T2/M": "Başarısız", "T3/R": "Başarısız", "T4/N": "Başarısız", "T5/S": "
+    * [{}…] isler.T1/G.atlanma_nedeni: elle "silme_talebi" ≠ model null
+    * [{}…] isler.T2/M.atlanma_nedeni: elle "silme_talebi" ≠ model null
+KIRMIZI (değer, 6 yaprak) S42-04-gonderiliyor-talep-gece-yarisi-yerel-gun-iz-gonderim-aninda
+    * [{}…] kontroller.K1.isler: elle {"T1/GB": "Gönderiliyor"} ≠ model {"T1/GB": "Başarısız"}
+    * [{}…] kontroller.K2.isler: elle {"T1/GB": "Sonucu Belirsiz"} ≠ model {"T1/GB": "Başarısız"}
+    * [{}…] isler.T1/GB.durum: elle "Sonucu Belirsiz" ≠ model "Başarısız"
+    * [{}…] kontroller.K3.isler.T3/GK: elle "Gönderiliyor" ≠ model "Başarısız"
+AYNI S43-01-yol-2-imzali-taninmayan-bildirim-isaret-koymaz-ayni-donem-daha-once
+AYNI S43-02-yol-1-imzasiz-taninmayan-bildirim-kabul-isaret-koymaz
+AYNI S43-03-yol-2-is-kimligiyle-taninan-bildirim-isaret-koyar-sure-dolar
+# kip ham: KIRMIZI 4, AYNI 3
+ok 1 - S42-01-gonderiliyor-talep-kabul-gonderildi-izi-ayni-donem-daha-once — beklenen deger, gözlenen deger
+ok 2 - S42-02-gonderiliyor-talep-yanit-yok-belirsiz-iz-ayni-donem-elenir — beklenen deger, gözlenen deger
+ok 3 - S42-03-gonderiliyor-talep-yeniden-gonderim-gerektiren-yanit-atlandi-kesin-olumsuz-basarisiz — beklenen deger, gözlenen deger
+ok 4 - S42-04-gonderiliyor-talep-gece-yarisi-yerel-gun-iz-gonderim-aninda — beklenen deger, gözlenen deger
+ok 5 - S43-01-yol-2-imzali-taninmayan-bildirim-isaret-koymaz-ayni-donem-daha-once — beklenen ayni, gözlenen ayni
+ok 6 - S43-02-yol-1-imzasiz-taninmayan-bildirim-kabul-isaret-koymaz — beklenen ayni, gözlenen ayni
+ok 7 - S43-03-yol-2-is-kimligiyle-taninan-bildirim-isaret-koyar-sure-dolar — beklenen ayni, gözlenen ayni
+1..7
+# tests 7
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
