@@ -526,7 +526,7 @@ function buildApp(overrides, opening) {
   // kapı kurulmadan kaldırılır (iz: Mutabakat Günlüğü "repair" + işlem geçmişi). Başarısız olsa da program açılır.
   if (!schemaGate) {
     try {
-      context.voucherRepair = repairLegacyReset({ store, now: config.now, log });
+      context.voucherRepair = repairLegacyReset({ store, now: config.now, log, companyId });
     } catch (error) {
       log.error?.("Fiş defteri açılış onarımı çalışmadı", error);
     }

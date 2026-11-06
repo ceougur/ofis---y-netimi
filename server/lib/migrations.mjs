@@ -1674,6 +1674,10 @@ export const LEDGER_VOUCHERS_SCHEMA_V46 = `
 // çalıştırmadan değiştirir (recursive_triggers kapalı) — bu yüzden ekleme de denetlenir: aynı kimlik / istek kimliği / numarayla başlık eklenemez, başlığın satır sayısı
 // dolduktan sonra satır eklenemez (kapanmış fişe satır eklenmez; satırlar başlıkla aynı işlemde yazılır). Tetikleyicileri yalnız şirket sıfırlaması ve eski sürüm
 // sıfırlamasının açılış onarımı aynı işlemde kaldırıp yeniden kurar (lib/ledger-vouchers.mjs withTriggersLifted).
+// Ç2 tur 1 (dar kontrol DÜŞÜK-2, ders 47; 2.5.0 yayımlanmadığı için göç 46 YERİNDE değişti): "kapanmış fiş" denetimi satır sayımı (her eklemede fişin bütün satırlarını
+// COUNT(*) — n satırlık fişte O(n²): 16.000 satır 4 sn, 100.000 satır ≈ 2,5 dk olay döngüsü kilidi) yerine iki birincil anahtar aramasıyla: satırın sırası (seq) başlığın
+// satır sayısını aşamaz (fiş yoksa 0) ve aynı (fiş, sıra) ikinci kez eklenemez (INSERT OR REPLACE / UPSERT / OR IGNORE). Satırlar 1..line_count yazıldığından tam fişte
+// her yeni satır ya sırası aşan ya da var olan sıradır → eski kuralla aynı sonuç (12 atlatma denemesi; test/fis-defteri-koruma-250.test.mjs).
 export const LEDGER_VOUCHER_TRIGGER_NAMES = Object.freeze(["ledger_vouchers_no_update", "ledger_vouchers_no_delete", "ledger_vouchers_no_replace", "ledger_voucher_lines_no_update", "ledger_voucher_lines_no_delete", "ledger_voucher_lines_closed"]);
 export const LEDGER_VOUCHER_TRIGGERS_V46 = `
   CREATE TRIGGER IF NOT EXISTS ledger_vouchers_no_update BEFORE UPDATE ON ledger_vouchers BEGIN SELECT RAISE(ABORT, 'ledger_vouchers değiştirilemez: düzeltme ters kayıt fişiyle'); END;
@@ -1684,7 +1688,8 @@ export const LEDGER_VOUCHER_TRIGGERS_V46 = `
   CREATE TRIGGER IF NOT EXISTS ledger_voucher_lines_no_update BEFORE UPDATE ON ledger_voucher_lines BEGIN SELECT RAISE(ABORT, 'ledger_voucher_lines değiştirilemez: düzeltme ters kayıt fişiyle'); END;
   CREATE TRIGGER IF NOT EXISTS ledger_voucher_lines_no_delete BEFORE DELETE ON ledger_voucher_lines BEGIN SELECT RAISE(ABORT, 'ledger_voucher_lines silinemez: düzeltme ters kayıt fişiyle'); END;
   CREATE TRIGGER IF NOT EXISTS ledger_voucher_lines_closed BEFORE INSERT ON ledger_voucher_lines
-    WHEN (SELECT COUNT(*) FROM ledger_voucher_lines WHERE voucher_id = NEW.voucher_id) >= COALESCE((SELECT line_count FROM ledger_vouchers WHERE id = NEW.voucher_id), 0)
+    WHEN NEW.seq > COALESCE((SELECT line_count FROM ledger_vouchers WHERE id = NEW.voucher_id), 0)
+      OR EXISTS (SELECT 1 FROM ledger_voucher_lines WHERE voucher_id = NEW.voucher_id AND seq = NEW.seq)
     BEGIN SELECT RAISE(ABORT, 'ledger_voucher_lines: fiş kapalı (satır sayısı dolu ya da fiş yok)'); END;
 `;
 // routes/accounts.mjs OPENING_NOTE ile aynı (programın açılış satırına yazdığı açıklama; v35 göçü yalnız eski satırları işaretlerken okur).

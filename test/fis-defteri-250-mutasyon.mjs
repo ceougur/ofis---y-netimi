@@ -18,6 +18,8 @@ const MIG = "server/lib/migrations.mjs";
 const GL = "server/lib/general-ledger.mjs";
 const MAIN = "test/fis-defteri-250.test.mjs";
 const LIFE = "test/fis-defteri-yasam-250.test.mjs";
+// Ç2 tur 1 korumaları (test/fis-defteri-koruma-250.test.mjs).
+const KORUMA = "test/fis-defteri-koruma-250.test.mjs";
 // [no, ad, dosya, eski metin (dosyada TAM BİR KEZ), yeni metin, koşulacak testler, çıktıda beklenen neden (düzenli ifade)]
 // Not (3): aynalanmayan ters kaydı önce KAPI geri alır (tam taramanın "Fiş Defteri" denetimi: "ters kayıt asıl fişin aynası değil") — iki katman; beklenen neden kapınınki.
 const MUTASYONLAR = [
@@ -34,9 +36,24 @@ const MUTASYONLAR = [
   [11, "aynı fişin ikinci ters kaydı denetlenmez (yalnız indeks kalır)", LV, "if (original.reversedBy) throw", "if (false && original.reversedBy) throw", [MAIN], /beklenen 409, gelen undefined/],
   [12, "Şirket Verisini Sıfırla fişleri silmez", "server/app.mjs", "      Object.assign(counts, clearVouchers(store));\n", "", [LIFE], /sıfırlama raporu fiş sayısını taşır/],
   [13, "sıfırlama tetikleyicileri geri kurmaz", LV, "  const result = fn();\n  store.exec(LEDGER_VOUCHER_TRIGGERS_V46);", "  const result = fn();", [LIFE], /not ok \d+ - N17/],
-  [14, "eski sürüm sıfırlamasının açılış onarımı yok", "server/app.mjs", "      context.voucherRepair = repairLegacyReset({ store, now: config.now, log });", "      context.voucherRepair = null;", [LIFE], /not ok \d+ - izi olmayan fiş/],
+  [14, "eski sürüm sıfırlamasının açılış onarımı yok", "server/app.mjs", "      context.voucherRepair = repairLegacyReset({ store, now: config.now, log, companyId });", "      context.voucherRepair = null;", [LIFE], /not ok \d+ - izi olmayan fiş/],
   [15, "kilit izinde fiş girdisi yok", "server/lib/integrity.mjs", "    requires: [\"ledger_vouchers\", \"ledger_voucher_lines\"],\n    since: \"2.5.0\",", "    requires: [\"ledger_vouchers_yok\"],\n    since: \"2.5.0\",", [MAIN], /kapanmış dönem sapması/],
   [16, "fiş tabloları kapıda değil (FINANCIAL)", "server/lib/db.mjs", '    "ledger_vouchers", "ledger_voucher_lines"]);', "    ]);", [MAIN], /not ok \d+ - N21/],
+  // ---- Ç2 TUR 1 (dar kontrol 05.11 22:00): DÜŞÜK-3'ün yaşayan dört mutasyonu (MA, MB, MC, MG) ve tur 1 düzeltmelerinin her biri ----
+  [17, "MA bugün tarihli fiş reddedilir (> yerine >=)", LV, "if (item.date > today()) throw", "if (item.date >= today()) throw", [KORUMA], /not ok \d+ - MA:[\s\S]*İleri tarihli fiş yazılamaz/],
+  [18, "MB kilit geri gidebilir (yinelenen kapanış kilidi önceki güne çeker)", LV, "if (!previous || lockThrough > previous) {", "if (true) {", [KORUMA], /kilit geri gitmedi/],
+  [19, "MC istek kimliğinin içerik karşılaştırmasında sınıf yok", LV, "JSON.stringify([item.type, item.cls, item.date,", "JSON.stringify([item.type, item.date,", [KORUMA], /not ok \d+ - MC:[\s\S]*Missing expected exception/],
+  [20, "MG yevmiyede fiş satırının alt hesabı düşer", GL, "...(line.sub ? { sub: String(line.sub) } : {}), ...(line.party", "...(line.party", [KORUMA], /not ok \d+ - MG:/],
+  [21, "K6 alt defter koruması yok (fiş denetimi atlanır; yalnız kapı)", LV, "    assertNotSubledger(lines);\n", "", [KORUMA, MAIN], /KABUL edildi \(K6 iddiası\): 121/],
+  [22, "K6 listesi kullanıma bağlı (every kipi senet satırını açmaz)", "server/routes/ledger.mjs", "if (every || Number(sums.notes)) {", "if (Number(sums.notes)) {", [KORUMA], /KABUL edildi \(K6 iddiası\): 121/],
+  [23, "K5 şirket denetimi yok (her şirketin sıfırlama izi sayılır)", LV, "WHERE type = 'company.reset' AND entity_id = ?\", String(companyId))", "WHERE type = 'company.reset'\")", [KORUMA], /başka şirketin sıfırlaması 001'in fişini kaldırmamalı/],
+  [24, "K5 zaman denetimi yok (izsiz her fiş kaldırılır)", LV, "orphanRows.filter(row => instantOf(row.at) <= reset.t)", "orphanRows.filter(() => true)", [KORUMA], /yalnız sıfırlamadan önceki fiş kaldırılmalı/],
+  [25, "K5 an yerine metin karşılaştırması (saat dilimi eki)", LV, "orphanRows.filter(row => instantOf(row.at) <= reset.t)", "orphanRows.filter(row => row.at <= reset.at)", [KORUMA], /not ok \d+ - saat dilimi eki/],
+  [26, "kapanmış fiş tetikleyicisi yeniden COUNT(*) (O(n²))", MIG, "    WHEN NEW.seq > COALESCE((SELECT line_count FROM ledger_vouchers WHERE id = NEW.voucher_id), 0)\n      OR EXISTS (SELECT 1 FROM ledger_voucher_lines WHERE voucher_id = NEW.voucher_id AND seq = NEW.seq)\n", "    WHEN (SELECT COUNT(*) FROM ledger_voucher_lines WHERE voucher_id = NEW.voucher_id) >= COALESCE((SELECT line_count FROM ledger_vouchers WHERE id = NEW.voucher_id), 0)\n", [KORUMA], /O\(n²\)/],
+  [27, "kapanmış fiş tetikleyicisi aynı sırayı denetlemez (INSERT OR REPLACE satır geçer)", MIG, "\n      OR EXISTS (SELECT 1 FROM ledger_voucher_lines WHERE voucher_id = NEW.voucher_id AND seq = NEW.seq)", "", [KORUMA, MAIN], /atlatan deneme: INSERT OR REPLACE satır/],
+  [28, "metin alanı nesne alır ([object Object] saklanır)", LV, "  if (value !== null && value !== undefined && typeof value !== \"string\" && typeof value !== \"number\") throw bad(400, `${label} metin olmalı.`, \"voucher-text\", { field: label });\n", "", [KORUMA], /not ok \d+ - ters kayıt ucu: açıklama nesne/],
+  [29, "postAll lockThrough kilit öncesi adımı (POS) çağırmaz", LV, "if (beforeLock && (!current || lockThrough > current)) beforeLock(lockThrough, force === true);", "", [KORUMA], /not ok \d+ - Elle Onay kipi/],
+  [30, "fiş defterine kilit öncesi adım bağlanmaz (routes)", "server/routes/ledger.mjs", "ownedAccounts: subledgerAccounts, beforeLock });", "ownedAccounts: subledgerAccounts });", [KORUMA], /not ok \d+ - Elle Onay kipi/],
 ];
 
 const run = files => {
@@ -46,7 +63,7 @@ const run = files => {
   return { status: r.status, out, pass: count("pass"), fail: count("fail") };
 };
 
-const taban = run([MAIN, LIFE]);
+const taban = run([MAIN, LIFE, KORUMA]);
 console.log(`taban: ${taban.pass} geçti / ${taban.fail} kaldı (çıkış ${taban.status})`);
 if (taban.status !== 0 || taban.fail !== 0 || !(taban.pass > 0)) throw new Error("taban testi yeşil değil — mutasyon taraması anlamsız");
 let yakalanan = 0;
@@ -71,7 +88,7 @@ for (const [no, ad, dosya, eski, yeni, testler, neden] of MUTASYONLAR) {
   console.log(`${kirmizi && nedenli ? "ok" : "not ok"} ${no} - ${ad} · ${kirmizi ? `KIRMIZI (${r.fail} başarısız)` : "YEŞİL — kaçırdı"} · beklenen neden ${neden} ${nedenli ? "görüldü" : "GÖRÜLMEDİ"}`);
   if (!nedenli) console.log(r.out.split("\n").filter(line => /not ok|error:|Error|beklenen|expected/i.test(line)).slice(0, 20).join("\n"));
 }
-const son = run([MAIN, LIFE]);
+const son = run([MAIN, LIFE, KORUMA]);
 if (son.status !== 0) throw new Error("mutasyonlardan sonra kopya geri yazılamadı (taban kırmızı)");
 console.log(`1..${toplam}\n# tests ${toplam}\n# pass ${yakalanan}\n# fail ${toplam - yakalanan}\n# cancelled 0\n# skipped 0\n# todo 0`);
 console.log(`${yakalanan}/${toplam} mutasyon beklenen nedenle yakalandı`);

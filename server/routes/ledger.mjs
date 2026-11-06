@@ -194,8 +194,8 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     // yüklenmez: mahsup tablosuna yazım tam kapıya düşer (integrity-scope "kapsam dışı").
     if (!filter && has("vat_offsets")) out.vatOffsets = store.all("SELECT id, rowid AS seq, month, date, out_minor AS outMinor, in_minor AS inMinor, carry_in_minor AS carryInMinor, carry_out_minor AS carryOutMinor, payable_minor AS payableMinor, status FROM vat_offsets ORDER BY date, created_at, rowid");
     // 2.5.0 Ç2: saklanan fiş defteri (lib/ledger-vouchers.mjs; tek toplu sorgu). Süzgeçli kurulumda yüklenmez (KDV mahsubu gibi): fiş yazımı her zaman tam kapıya
-    // düşer (integrity-scope FULL_TABLES). Fiş satırı cari taşırsa yalnız tam kapıda görünür — kontrol hesabına (120 / 320 / 336 / 127 / 128) yazan fiş alt defterin
-    // beklenenini değiştirmez, Defter Mutabakatı farkı verir ve kapıda geri alınır (bilerek; C2-FIS-DEFTERI-TASARIM.md §4).
+    // düşer (integrity-scope FULL_TABLES). Alt defter hesabına (beklenen bakiyesi olan her hesap: cari kontrol hesapları dahil) fiş yazılmaz — Ç2 tur 1: fiş denetiminde
+    // 400 (aşağıda subledgerAccounts); kapı ikinci katman (C2-FIS-DEFTERI-TASARIM.md §11).
     if (!filter) out.vouchers = voucherJournalRows(store);
     return out;
   }
@@ -229,12 +229,14 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
   // kullanmayan kurulumun Defter Mutabakatı ve Mutabakat Testi'nin denetim listesi 2.0.26 ile aynı kalır. Tanınmayan yol hiçbir beklenene
   // girmez (yevmiye onu 100'e yazar; fark 2.0.26'daki gibi görünür ve money:method yakalar).
   const groupsOf = () => (money ? money.groups() : []);
-  function expected(accountList = null, groups = groupsOf()) {
+  // every (2.5.0 Ç2 tur 1): yalnız kullanılınca açılan satırlar (309, 300, 121 / 321, 190, 128 / 129) de açılır — "bu kurulumda hangi hesaplar bir alt defterin hesabıdır"
+  // sorusunun yanıtı (subledgerAccounts; fiş koruması). Tutarlar every kipinde kullanılmaz (accountList ve groups boş verilir). Mutabakat her zaman every'siz çağırır.
+  function expected(accountList = null, groups = groupsOf(), { every = false } = {}) {
     const way = name => groups.filter(group => group.way === name).reduce((sum, group) => sum + Number(group.cents), 0);
     const used = kind => has("bank_accounts") && Boolean(store.get("SELECT 1 AS found FROM bank_accounts WHERE kind = ? LIMIT 1", kind));
     const out = { 100: roundMoney(way("cash") / 100), 102: roundMoney(way("bank") / 100), 108: roundMoney(way("card") / 100), 120: 0, 320: 0, 336: 0 };
-    if (used("card") || groups.some(group => group.way === "ccard")) out[309] = roundMoney(way("ccard") / 100);
-    if (used("loan") || groups.some(group => group.way === "loan")) out[300] = roundMoney(way("loan") / 100);
+    if (every || used("card") || groups.some(group => group.way === "ccard")) out[309] = roundMoney(way("ccard") / 100);
+    if (every || used("loan") || groups.some(group => group.way === "loan")) out[300] = roundMoney(way("loan") / 100);
     const list = accountList || (accounts()?.list ? accounts().list({ id: "ledger", role: "admin", permissions: [] }, { status: "all" }).accounts : []);
     for (const account of list) {
       const code = { customer: "120", supplier: "320", other: "336" }[account.type] || "120";
@@ -255,7 +257,7 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
       );
       out[101] = roundMoney(sums.c101);
       out[103] = -roundMoney(sums.c103);
-      if (Number(sums.notes)) {
+      if (every || Number(sums.notes)) {
         out[121] = roundMoney(sums.c121);
         out[321] = -roundMoney(sums.c321);
       }
@@ -304,7 +306,7 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
       const paid = store.get("SELECT COALESCE(SUM(CAST(json_extract(tax_json, '$.taxMinor') AS INTEGER)), 0) AS n FROM cash_entries WHERE tax_json <> '' AND kind = 'out' AND json_valid(tax_json)").n;
       if (paid) out[360] = roundMoney((out[360] || 0) + paid / 100);
     }
-    if (has("vat_offsets") && store.get("SELECT 1 AS found FROM vat_offsets LIMIT 1")) {
+    if (has("vat_offsets") && (every || store.get("SELECT 1 AS found FROM vat_offsets LIMIT 1"))) {
       const v = store.get("SELECT COALESCE(SUM(out_minor), 0) AS o, COALESCE(SUM(in_minor), 0) AS i, COALESCE(SUM(carry_out_minor - carry_in_minor), 0) AS c, COALESCE(SUM(payable_minor), 0) AS p FROM vat_offsets WHERE status = 'active'");
       out[391] = roundMoney((out[391] || 0) + v.o / 100);
       out[191] = roundMoney((out[191] || 0) - v.i / 100);
@@ -319,7 +321,7 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     // Şüpheli Ticari Alacaklar (2.3.0 İz 1; plan §3.11b/4 "128 = Σ etkin şüpheli − kapananlar; 129 = Σ karşılık − çözülen"): ikinci yükleyici
     // (SQL alacak satırları + aynı ayırma kuralı; lib/bank/doubtful.mjs). Carinin kontrol hesabı (120/320/336) kalan şüpheli kadar düşer (cari
     // kartı bakiyesi değişmez: 120 + 128 = kart). 128/129 satırı yalnız şüpheli alacak kullanılmışsa açılır (300/309, 121/321 kuralı).
-    if (doubtfulUsed(store)) {
+    if (every || doubtfulUsed(store)) {
       const d = doubtfulExpected(store);
       for (const [control, minor] of d.byControl) out[control] = roundMoney((out[control] || 0) - minor / 100);
       out[DOUBTFUL_GL.doubtful] = roundMoney(d.openMinor / 100);
@@ -347,6 +349,16 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     const reconciliation = reconcile(from || to || useBook ? trialBalance(entries) : trial, expected(accountList, groups));
     return { entries, trial, reconciliation, groups };
   }
+  // Alt defterlerin hesapları (2.5.0 Ç2 tur 1; fiş koruması, lib/ledger-vouchers.mjs ownedAccounts): Defter Mutabakatı'nın beklenen bakiyelerinin anahtarları, modül
+  // kullanılmış olsun olmasın (every). Elle yazılmış ikinci liste yok: expected()'e yeni alt defter satırı eklenince fiş koruması da onu kapsar. Anahtarlar yalnız şemaya
+  // bağlıdır (tutarlar every kipinde boş veriyle hesaplanır) → örnek başına bir kez.
+  let owned = null;
+  const subledgerAccounts = () => (owned ??= new Set(Object.keys(expected([], [], { every: true }))));
+  // Kilitten önceki adım (2.2.0, plan §4.4/6) — PUT period-lock ve vouchers.postAll lockThrough AYNI işlev (Ç2 tur 1, madde 6): kilitlenecek döneme düşen vadesi gelmiş
+  // POS kalemleri önce bankaya aktarılır; hâlâ bekleyen varsa 409 bank-pending-before-lock + liste (uyarı; "Yine de Kilitle" = force).
+  const beforeLock = (target, force = false) => {
+    if (target) pos()?.beforeLock?.(String(target), force === true);
+  };
   router.get("/api/workspace/ledger", async ({ req, res, url }) => {
     auth.requirePermission(req, "overview.view");
     const from = text(url.searchParams.get("from"));
@@ -365,9 +377,7 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     if (!period) throw new HttpError(503, "Dönem kilidi hazır değil.");
     const body = await readJson(req);
     const previous = period.lockedUntil();
-    // 2.2.0 (plan §4.4/6): kilitlenecek döneme düşen vadesi gelmiş POS kalemleri önce bankaya aktarılır; hâlâ bekleyen varsa 409
-    // bank-pending-before-lock + liste (uyarı; "Yine de Kilitle" = force).
-    if (body?.lockedUntil) pos()?.beforeLock?.(String(body.lockedUntil), body.force === true);
+    beforeLock(body?.lockedUntil, body?.force === true);
     // 2.5.0 Ç3 (docs/erp/C3-DONDURMA-TASARIM.md §4): başka güne süren dondurma durdurulur; bayat satırlar (geri çekilmiş dönem) kilitten önce parça parça silinir.
     const target = String(body?.lockedUntil ?? "").trim();
     const waiting = snapshots.state().pending;
@@ -401,7 +411,7 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
   // fiş girişi YOK (2.5.1). Fişler Yevmiye Defteri ve Hesap Planı Mizanı'nda görünür (ayrı ekran 2.5.1). Uçlar dönem kilidini koyabilen yetkiyle (system.manage):
   //   GET  /api/admin/ledger/vouchers?from=&to=&type=   → fişler (satırlarıyla)
   //   POST /api/admin/ledger/vouchers/:id/reverse        → ters kayıt fişi (R-03); gövde { date?, description?, requestId } ya da başlık x-hof-request
-  const vouchers = createLedgerVouchers({ store, period, now, onLockChanged: change => snapshots.lockChanged({ ...change, sync: true }) });
+  const vouchers = createLedgerVouchers({ store, period, now, onLockChanged: change => snapshots.lockChanged({ ...change, sync: true }), ownedAccounts: subledgerAccounts, beforeLock });
   router.get("/api/admin/ledger/vouchers", async ({ req, res, url }) => {
     auth.requirePermission(req, "system.manage");
     const from = text(url.searchParams.get("from"));
