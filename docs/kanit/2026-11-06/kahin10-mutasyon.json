@@ -1,0 +1,32 @@
+{
+  "ad": "kahin10-mutasyon",
+  "komut": "python3 -I test/bagimsiz/muhasebe/mutasyon.py",
+  "commit": "90a3a44ee6db709035edcb2f821b4122a56f587a",
+  "dal": "worktree-agent-a3ef640e50508078a",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T15:39:15.998Z",
+  "sure_sn": 1008.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 263,
+    "gecen": 263,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin10-kanit/2026-11-06/kahin10-mutasyon.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a3ef640e50508078a",
+  "ham_cikti_sha256": "fc6a48a410143e175cc446db657d9702580b694a269dd9017d52762f93a46e2e",
+  "ham_cikti_bayt": 52444
+}

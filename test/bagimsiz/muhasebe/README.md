@@ -21,11 +21,11 @@ Program (JavaScript) ayrı bir sürücü ajanıyla bu senaryolara karşı koşul
 | Dosya | Ne |
 |---|---|
 | `model.py` | Model: hesap planı (§2 + 671 / 681), olay → madde (§3), mizan, büyük defter, gelir tablosu (MSUGT, 7/A), bilanço (ters bakiye brütleştirme, hesaplanmış satırlar, Kesin Değil), dönem sonu değerleme (§5), **Tek Yükümlülük Kuyruğu** (EK-1 §1: açık kalemler, gecikmiş, hatırlatma, şüpheli kuyruğu), kapanış (Önceki Yıl Sonucu Fişleri + N-01…N-07), devir açılışları (N-09…N-13; M2/M3/M12/M13), Devri Yenile (N-14, M9), Devri Geri Al (N-15), dönem kilidi + 2.4.9 donmuş defter + Kural Farkı Düzeltme Fişi (Ç3, KG-15, M7), KDV dönem etiketi (M8, S4), şüpheli kayıtları (K3), değişmezler |
-| `senaryolar_elle.py` | 101 elle doğrulanabilir senaryo (s01…s100; s26 iki seçenekli); her birinde ELLE hesaplanmış beklenenler ("elle", hesap yorumda) |
+| `senaryolar_elle.py` | 106 elle doğrulanabilir senaryo (s01…s105; s26 iki seçenekli; bakım 10 itibarıyla); her birinde ELLE hesaplanmış beklenenler ("elle", hesap yorumda) |
 | `uretici.py` | Tohumlu rastgele üretici: bir yıl (~800 olay) + K sonrası Ocak (+ zorla S11: K'den önce alınmış evrak 20.01'de karşılıksız) + devir + devirden sonra kayıt + Devri Yenile; tohum 1, 2, 3 |
 | `uret_beklenen.py` | `senaryolar/<ad>.json` (kendi kendine yeten senaryo: tanımlar + olaylar + dallar + elle) ve `senaryolar/beklenen/<ad>.json` (her dal için modelin tam çıktısı) yazar / `--denetle` |
-| `test_model.py` | 170 test: yardımcılar, olay → madde birim testleri, 83 elle senaryo (her dal + bütün değişmezler), 3 rastgele tohum (devirli = AYNI kilitli devirsiz dahil), değişmez denetçilerinin dişi, senaryo hijyeni (VUK sıra-tarih, K-14 tarihi, POS valörü iş günü ve belirsiz güne — doğrulanmamış bayram penceresi — düşmez; bakım 4'ten beri sabit resmî tatile düşebilir, model kaydırır; bakım 5'ten beri 28 Ekim yarım gün iş günü), dosya güncelliği |
-| `mutasyon.py` | 241 metin mutantı (model.py kaynağında tek kural bozulur); her biri en az bir testte KIRMIZI olmalı |
+| `test_model.py` | 180 test (bakım 10 itibarıyla): yardımcılar, olay → madde birim testleri, 106 elle senaryo (her dal + bütün değişmezler), 3 rastgele tohum (devirli = AYNI kilitli devirsiz dahil), değişmez denetçilerinin dişi, senaryo hijyeni (VUK sıra-tarih, K-14 tarihi, POS valörü iş günü ve belirsiz güne — doğrulanmamış bayram penceresi — düşmez; bakım 4'ten beri sabit resmî tatile düşebilir, model kaydırır; bakım 5'ten beri 28 Ekim yarım gün iş günü), dosya güncelliği |
+| `mutasyon.py` | 263 metin mutantı (bakım 10 itibarıyla; model.py kaynağında tek kural bozulur); her biri en az bir testte KIRMIZI olmalı |
 
 ## Çalıştırma
 ```
@@ -1270,6 +1270,42 @@ KULLANICIYA SORULMALI (S54–S57 eki; SORU DÜZENİ 06.11 09:01):
 4. Sürer: bakım 9'un KS 3'ü (bakım 8'in 3–8'i ve öncesi); bakım 9'un 1 / 2'si kural oldu (S80 / S81 = A).
 - BAŞ MİMAR değerlendirir (kâhin yorumu, kodlandı): L2 (red sırası), L5 (iii) (aynı carinin kendi tahsilatı — U5 boşluğu), L7 (tarih de değişirse sınır yeni günde).
 
+### Önceki beklentilerle çelişen yerler (eski → yeni, nedeni; G3)
+- `test_S40_S44_S45_kapsam_ve_susma`: PP {cari C3} (geri yüklenmiş açılış öncesi formdaki peşin) senaryo hatası (V3 (e)) → RED `FATURA_DUZENLENMELI` (S80; L1), 120|C1 1000 / 120|C3 600
+  değişmez. PP {fatura: null} susması aynen (KS 2).
+- `test_S79_olagan_kayit_bag_cari`: PP {cari C1} ve PP {cari C1, fatura F1} (P7 (c)) senaryo hatası → RED `FATURA_DUZENLENMELI` (S80); PB {cari C2, fatura null, normal_cari} (P7 (d); 400 > C2'nin
+  120 bakiyesi 100) senaryo hatası → RED `SUPHELI_NORMAL_ASIM` (S81). P7 (a) / (b) susmaları aynen.
+- Model: `_s57_kapsam`'daki formdaki peşin susması → `_s80_pesin` (tahsilatta red, ödemede susma — L4); `_s40_kapsam`'ın V3 (e) susması yalnız BAĞ düzeltmesinde (cari kısmı `_s80_pesin`'e);
+  `_s79_hedef`'in P7 (d) sınır / susma bloğu → `_s81_sinir` (S57 / S79 denetiminden SONRA); `_s44_sinir` kaydın düzeltme sonrası gününü (`gun`) alır (S44 yolunda tarih değişmez → aynı).
+  Bilinçli davranış değişikliği (elle senaryoların hiçbirinde yoktu): olağan kayıtta bağsız Normal Cari kaydın carisi şüpheli cariye ve aynı carinin kendi tahsilatında Normal Cari / bağ
+  seçimi sınırı aşınca bakım 9'da KABUL ediliyordu (120 eksiye, şüpheli kaydı açıkken) → RED (L5 (ii), (iii)).
+- Mutantlar: B104e (P7 (d) susma dişi) KALKTI — susma S81 ile kural oldu. B78 (S56 eşitlik kayması) ve B97 (S56 B) ortak `_s44_sinir` üzerinden artık S81'i de bozar; ikisini s105 de değerle öldürür.
+- Elle senaryolarda s01–s103'ün ve `rastgele-1/2/3`'ün senaryo + beklenen dosyalarının HİÇBİRİ değişmedi (model adımından sonra `uret_beklenen.py` + `git status`: yalnız yeni s104 / s105
+  dosyaları).
+
+### Elle beklenenlerin yazılış sırası (bakım 10)
+- 31bddfbc: yorum L1–L10 + KULLANICIYA SORULMALI 1–3 + bakım 8 / 9 satırlarına işaretler + red kodu listesi — kod, senaryo ve testten önce, AYRI commit (ders 40).
+- ac6c8eaf: s104–s105, birim testleri (`test_S80_formdaki_pesin_cari`, `test_S81_olagan_duzeltme_siniri`, `test_S81_S56_ile_ayni`) ve G3 model DEĞİŞTİRİLMEDEN ÖNCE. Eski kâhin (c076e9c0
+  kopyası + yeni dosyalar) 180 testten 9'u kırmızı (`kahin10-eski-model-kirmizi.*`), hepsi beklenen nedenle: s104 ve `test_S80`, `test_S79`, `test_EK2_4_1` (bütün elle senaryoları koşar →
+  s104) U7 (b) / P7 (c) susması; `test_S40_S44_S45` V3 (e) susması; s105, `test_S81_olagan_duzeltme_siniri` ve `test_S81_S56_ile_ayni` P7 (d) susması; `Dosyalar` (yeni dosyalar yazılmamıştı).
+  NEDEN dökümü `kahin10-eski-model-neden.txt` (betiği `kahin10-eski-model-neden.py`): susan düzeltmeler atlanınca s104'te 1 anahtar (redler — 8 FATURA_DUZENLENMELI yok), s105'te 7 anahtar
+  (redler; PN ve PK eski modelde KABUL — 120|C2 −800, 128|C2 9000, 120|C1 29999, açık kalemde iki avans). Eski modelde YEŞİL kalan yeni senaryo / test yok.
+- 90a3a44e: model (L1–L9) + mutantlar. İlk koşuda elle değerlerin HİÇBİRİ değişmedi (179/180; tek kırmızı dosya güncelliği → `uret_beklenen.py`). Aynı commit'te `test_S81_olagan_duzeltme_siniri`'ye
+  iki sıra denetimi eklendi (PP2 150 formdaki peşin → FATURA_DUZENLENMELI, PB {cari, tutar 150} → BAG_KALDIRILMALI; 150 > 100 olsa da L6'nın sırası) — beklenen L6 metninden; B106g'nin dişi.
+- Kanıt (`docs/kanit/2026-11-06/kahin10-*`; ölçülen commit 90a3a44e, kirli 0): `kahin10-test-utc.*`, `kahin10-test-istanbul.*` (180/180 iki saat diliminde), `kahin10-mutasyon.*` (263/263 öldü;
+  temel 174 test yeşil; `flock -s scratchpad/olcum.lock`, `timeout 7000`, 1009 sn), yeni mutantların öldürenleri, eski model kırmızı kaydı + neden dökümü ve betikleri.
+
+### Yeni senaryolar, testler ve mutasyonlar
+- Elle senaryolar (2, toplam 106): s104 (S80: olağan peşinin carisi tek başına / tutarla / yeni carinin faturasına / bağ kaldırılarak / tarihle → red; geri yüklenmiş açılış öncesi peşin →
+  red, tarih açılıştan önceki başka güne → KASA_ACILIS_ONCE, açılıştan sonraya → red; carisi aynı peşinin tutar + açıklaması, S26 tutarı, aynı cari → kabul), s105 (S81: S79 düzeltmesinde
+  10001 / 9999 / 1 — bir kuruş üstü red, altı ve eşit kabul; düzeltmenin tamamı; S57 önce; fatura bağında 128'den düşen 4000 sayılmaz, 120'de kapanan 1000 = 1000 kabul; bağsız Normal Cari
+  kaydın carisi ve aynı carinin kendi tahsilatı → red).
+- Birim (180 test): `test_S80_formdaki_pesin_cari` (L1–L4: iki yol, kilit önce, T12 önce, kabul vakaları, ödeme yönü susar, peşinin bağı V3 (e) aynen), `test_S81_olagan_duzeltme_siniri` (L5–L7:
+  üç yol, eşitlik, fatura bağı, şüphelisiz cari, tarih iki yönde, S57 / S80 sırası), `test_S81_S56_ile_ayni` (L10).
+- Mutantlar: 14 yeni, 1 kalktı → liste 263. Öldüren testler (`kahin10-yeni-mutantlar-oldurenler.txt`, betiği `kahin10-yeni-mutantlar.py`): B105 / B105b / B105c / B105d / B105e / B105f — s104 ve birim;
+  B106 / B106b / B106c / B106e / B106f — s105 ve birim; B105g (ödeme yönü susma dişi), B106d (L7 tarih), B106g (L6 sırası) — yalnız birim (değerle: red kodu + bakiye). Her kararın B seçeneği
+  (B105, B106) ve sınır kayması (B105c / B105d; B106b, B78) en az bir elle senaryonun DEĞERİYLE yakalanıyor.
+
 ### Sürücü için (programla karşılaştırmadan önce)
 - **S80:** yeni red kodu `FATURA_DUZENLENMELI` (programın "faturayı düzenleyin" 4xx iletisiyle eşlenir). Formdaki peşinin (satış faturası formunda alınan tahsilat) carisi düzeltilince — olağan
   kayıtta ve geri yüklenmiş, açılıştan önce tarihli Kasa kaydında — düzeltmenin tamamı red; tutar / açıklama kabul. Kurulmayan (kâhin susar ya da karar dışı): alış faturası formundaki peşin
@@ -1277,9 +1313,10 @@ KULLANICIYA SORULMALI (S54–S57 eki; SORU DÜZENİ 06.11 09:01):
 - **S81:** olağan düzeltmede `SUPHELI_NORMAL_ASIM` (S56 ile aynı sınır, eşitlik kabul). s105: PA 10001 / PB 9999 / PC 1 (üstü / altı / eşit), PD fatura bağı (eşitlik; 128'den düşen sayılmaz), PN (bağsız
   Normal Cari kaydın carisi), PK (aynı carinin kendi tahsilatı). Tarih de değişirse sınır yeni günde (L7). Kurulmayan: KS 3 durumları.
 
-### DENENMEYEN (bu bakım; plan — bitişte güncellenir)
+### DENENMEYEN (bu bakım)
 - Programla karşılaştırma (sürücü güncellemesi ayrı iş; kod Ç5-B).
-- S80: iptal edilmiş ya da silinmiş faturanın peşini (F-15: ödemeleri yok sayılır); faturanın düzenlenmesiyle cari değişimi (peşin birlikte); devirle gelen peşin; satış iade faturası formundaki ödeme.
-- S81: fatura bağının hedefi kayıttan sonra doğuyorsa (S55 × S81; aradaki dönem S77 = C); karşılığı ayrılmış şüpheli kayıt; iki şüpheli kaydı olan cari; POS / çek / senet yolları (S14 yolları aynı formül);
-  kilitli dönem; devirle gelen kayıt.
+- S80: iptal edilmiş ya da silinmiş faturanın peşini (F-15: ödemeleri yok sayılır); faturanın düzenlenmesiyle cari değişimi (peşin birlikte — kâhinde modellenmedi); devirle gelen peşin; satış
+  iade faturası formundaki ödeme; ödeme yönü (L4 susar) ve peşinin bağı (KS 2) yalnız susma / bugünkü davranış olarak.
+- S81: fatura bağının hedefi kayıttan sonra doğuyorsa (S55 × S81; aradaki dönem S77 = C); karşılığı ayrılmış şüpheli kayıt; iki şüpheli kaydı olan cari; POS / çek / senet / Kredi Kartına İade
+  yolları (S14 yolları aynı formül, ayrı senaryo yok); kilitli dönem; devirle gelen kayıt; L7 (tarih) yalnız birimde; fatura bağı yolunda red (L9: kâhinde oluşmaz); KS 3 durumları.
 - Dinî bayram tarihleri (bu bakımda aranmadı; Z12 aynen).
