@@ -307,19 +307,23 @@ describe("2.5.0 WhatsApp tur 2 — W-3 dk ORTA-3: denetim noktası düşerse bak
       const dataDir = ctx.server.dataDir;
       const scan = () => hitsIn(dataDir, ["+905321112233"]);
       assert.ok(scan().length > 0, "ön koşul: telefon dosyada");
-      const reader = new DatabaseSync(path.join(dataDir, "destekofis.sqlite"), { readOnly: true });
+      // Dış okuyucular: şirket dosyası VE makine defteri (açık okuma işlemi — denetim noktası TRUNCATE'i bekletir).
+      const readers = ["destekofis.sqlite", "whatsapp-gonderim.sqlite"].map(name => new DatabaseSync(path.join(dataDir, name), { readOnly: true }));
       try {
-        reader.exec("BEGIN");
-        reader.prepare("SELECT COUNT(*) AS n FROM wa_jobs").get();
+        for (const reader of readers) {
+          reader.exec("BEGIN");
+          reader.prepare("SELECT COUNT(*) AS n FROM sqlite_master").get();
+        }
         assert.equal((await ctx.api.post(ERASE, { accountId: a.id, confirm: true })).status, 200, "talep");
-        assert.ok(scan().length > 0, "ön koşul (ders 20): okuyucu açıkken denetim noktası DÜŞTÜ — telefon WAL / ana dosyada");
-        reader.exec("COMMIT");
+        const during = scan();
+        assert.ok(during.some(hit => hit.includes("destekofis.sqlite")) && during.some(hit => hit.includes("whatsapp-gonderim.sqlite")), `ön koşul (ders 20): okuyucular açıkken denetim noktası DÜŞTÜ — telefon şirket dosyasında ve defterde (${JSON.stringify(during)})`);
+        for (const reader of readers) reader.exec("COMMIT");
       } finally {
-        reader.close();
+        for (const reader of readers) reader.close();
       }
       ctx.clock.advance(60_000);
       await ctx.server.app.context.whatsapp.queue.maintain();
-      assert.deepEqual(scan(), [], "okuyucu kapandıktan sonraki ilk bakım turunda iz kalmadı (eski kod: bir sonraki silmeye dek kalıyor)");
+      assert.deepEqual(scan(), [], "okuyucular kapandıktan sonraki ilk bakım turunda iz kalmadı — şirket dosyası + defter, WAL dahil (eski kod: bir sonraki silmeye dek kalıyor)");
       assert.equal(ctx.store.get("SELECT phone_e164 FROM wa_jobs WHERE account_id = ?", b.id).phone_e164, "+905334445566", "talep edilmeyen kişinin kaydı aynen");
     } finally {
       await ctx.close();
