@@ -20,6 +20,8 @@ const MAIN = "test/donmus-defter-250.test.mjs";
 const LIFE = "test/donmus-defter-yasam-250.test.mjs";
 const NEW = "test/donmus-defter-bellek-250.test.mjs";
 const LEAN = "server/lib/lean-rows.mjs";
+// Ç3 tur 1 (dar kontrol ORTA-1/2/3, K4, DÜŞÜK-3, §5 kural kayıt defteri; tasarım notu §17).
+const TUR1 = "test/donmus-defter-tur1-250.test.mjs";
 // [no, ad, dosya, eski metin (dosyada TAM BİR KEZ), yeni metin, koşulacak testler, çıktıda beklenen neden (düzenli ifade)]
 const MUTASYONLAR = [
   [1, "kilitli dönemde güncel türetmeye düşme (karma okuma donmuş defteri okumaz)", LS, "    if (!ready()) return live || build();\n    const cover = coverage();\n    if (cover && to && to <= cover)", "    return live || build();\n    const cover = coverage();\n    if (cover && to && to <= cover)", [MAIN], /kilitli yılın Yevmiye Defteri aynı/],
@@ -48,6 +50,30 @@ const MUTASYONLAR = [
   [21, "sıkı satırlar kopyalanmaz (sözlük kipli satır geçer)", LEAN, "    yield out;\n", "    yield row;\n", [NEW], /sıkı satırlar hızlı kipte olmalı/],
   [22, "kilit izi yine store.all ile (bütün kaynak satırları dizide)", "server/lib/integrity.mjs", "for (const row of eachRow(store, sql, [lock]))", "for (const row of store.all(sql, lock))", [NEW], /dondurma \(2\.4\.9 kuralı, ana iş parçacığı\): kaynak sorguları store\.all'a düşmemeli/],
   [23, "akışlı fark denetimi yalnız güncelde olan maddeleri saymaz", LS, "    for (const b of current.values()) differ(undefined, b);\n", "", [NEW], /akışlı fark denetimi = önceki/],
+  // Ç3 tur 1.
+  [24, "ORTA-1: donmuş mizan önbelleği yine koşu numarasıyla (sıfırlamada 1'den başlar)", LS, "const key = `${lastDone()?.id || \"\"}|${cover}|${version}|${from}|${upper}`;", "const key = `${cover}|${store.get(\"SELECT COALESCE(MAX(no), 0) AS n FROM ledger_snapshot_runs\").n}|${version}|${from}|${upper}`;", [TUR1], /mizan eski veriyi gösteriyor \(önbellek\)/],
+  [25, "ORTA-2: açılış onarımı eksik donmuş satırı görmez", LS, "    if (totalsMatch(seen, last)) return null;\n", "    return null;\n", [TUR1], /boş donmuş defterden okunuyor/],
+  [26, "ORTA-2: onarımın geri çekmesi toplamı 'önceki − kaldırılan'la (satırlar zaten silinmiş)", LS, "thaw({ next: damaged.through, user: null, reason: \"repair\", known: visibleTotals(damaged.through) });", "thaw({ next: damaged.through, user: null, reason: \"repair\" });", [TUR1], /Donmuş Defterde Eksik Satır/],
+  [27, "ORTA-2: sağlama noktası yok (her zaman baştan)", LS, "totalsMatch(visibleTotals(run.through), run)) return { ...found, through: run.through };", "totalsMatch(visibleTotals(run.through), run)) return { ...found, through: \"\" };", [TUR1], /sağlama noktası 30\.06 olmalı/],
+  [28, "ORTA-3 ailesi: eski kurallı bekleyen koşu başka güne kilitte güncel kurala geçer", LS, "if (pending && pending.rule_version !== LEDGER_RULE_VERSION && target > cover) return carryLock(", "if (false && pending && pending.rule_version !== LEDGER_RULE_VERSION && target > cover) return carryLock(", [TUR1], /ilerletilen kilit eski kurallı dönemi güncel kurala geçirdi/],
+  [29, "ORTA-3 ailesi: koşunun içine çekilen kilit güncel kuralla", LS, "through: target, rule, reason: pending.reason, user });", "through: target, rule: LEDGER_RULE_VERSION, reason: pending.reason, user });", [TUR1], /koşunun içine çekilen kilit güncel kurala geçti/],
+  [30, "ORTA-3 ailesi (eşzamanlı): kalan dönem güncel kural yerine GAP_RULE", LS, "from: pending.through, through: target, rule: LEDGER_RULE_VERSION, reason, user });\n    freezeInTx(run, user);", "from: pending.through, through: target, rule: GAP_RULE, reason, user });\n    freezeInTx(run, user);", [TUR1], /eşzamanlı kilit eski kurallı dönemi güncel kurala geçirdi/],
+  [31, "ORTA-3 ailesi: ilerletme izi okunmaz (kalan dönem GAP_RULE)", LS, "if (extended.through > run.through) return insertRun(", "if (false && extended.through > run.through) return insertRun(", [TUR1], /ilerletilen kilit eski kurallı dönemi güncel kurala geçirdi/],
+  [32, "ORTA-3 ailesi: iş parçacığı yolunda kalan dönem açılmaz", LS, "          continueAfter(run);\n        });\n        // Kapının", "        });\n        // Kapının", [TUR1], /ilerletilen kilit eski kurallı dönemi güncel kurala geçirdi/],
+  [33, "ORTA-3 ailesi: bilinmeyen kuralın nedeni ilerlemede görünmez", LS, "if (!ruleKnown(run.rule_version)) throw new Error(`bekleyen dondurmanın kuralı", "if (false) throw new Error(`bekleyen dondurmanın kuralı", [TUR1], /not ok \d+ - ORTA-3 ailesi: kuralı bu programda olmayan/],
+  [34, "ORTA-3 ailesi: bilinmeyen kural Mutabakat Testi'nde görünmez", LS, "    if (unknownRule) {\n", "    if (false) {\n", [TUR1], /bilinmeyen kuralın bekleyen koşusu Mutabakat Testi'nde görünmüyor/],
+  [35, "ORTA-3 ailesi (açılış): kilit ötesindeki eski kurallı koşu bırakılır", LS, "      if (pending && pending.through !== lock && !(carried && pending.through < lock)) {", "      if (pending && pending.through !== lock) {", [TUR1], /not ok \d+ - ORTA-3 ailesi \(yarıda kesilme\)/],
+  [36, "K4: nedeni bilinmeyen ayrışma yine 'kural değişti'", LS, "  return `Kilitli dönemin donmuş defteri güncel türetmeden farklı: neden", "  return `Defter kuralı program sürümüyle değişti. Kilitli dönemin donmuş defteri güncel türetmeden farklı: neden", [TUR1], /nedeni bilinmeyen ayrışma "kural değişti" diye adlandırılıyor/],
+  [37, "K4: eksik satır 'kural değişikliği' diye adlandırılır", LS, "  if (rowsBroken) return", "  if (false) return", [TUR1], /eksik satır "kural değişikliği" diye adlandırılıyor/],
+  [38, "K4: denetim adı Yazım düzeni dışında", LS, "ve Öncesi` : \"Yok\"}", "ve öncesi` : \"yok\"}", [TUR1], /Yazım düzeni/],
+  [39, "§5: kural geçmişinden sürüm silinir", LS, "export const RULE_HISTORY = Object.freeze([\"2.4.9\", \"2.5.0\"]);", "export const RULE_HISTORY = Object.freeze([\"2.5.0\"]);", [TUR1], /kural geçmişinden sürüm silindi/],
+  [40, "§5: kayıt defterinden 2.4.9 kuralı düşer", LS, ", [RULE_249]: () => buildRule249(leanStore(store)) };", " };", [TUR1], /kayıt defteri = kural geçmişi/],
+  [41, "DÜŞÜK-3: ara dilim her okumada yeniden kurulur", LS, "    if (key && middleCache?.key === key) {\n", "    if (false) {\n", [TUR1], /ara dilim her okumada yeniden kuruluyor/],
+  [42, "DÜŞÜK-3: 'aynı' bilgisi güncel dilimin parmak izi sınanmadan kullanılır", LS, "      if (middleCache.print === printOf(freshRange)) return freshRange;\n", "      return freshRange;\n", [TUR1], /kural farkında ara dilim 2\.4\.9'dan/],
+  [43, "DÜŞÜK-3: dondurmanın kendi yazımları önbellek anahtarını değiştirir", LS, "    ownChanges += Number(result?.changes) || 0;\n", "", [TUR1], /dondurma parçaları yazılırken ara dilim her parçada yeniden kuruldu/],
+  [44, "DÜŞÜK-3: kilitli yılın Yevmiye Defteri güncel türetmeyi de kurar", LS, "    if (carried && to && to <= carried.through) return", "    if (false && carried && to && to <= carried.through) return", [TUR1], /iki tam türetme/],
+  [45, "DÜŞÜK-3: ara dilim from'dan önce bitse de kurulur", LS, "    if (from && from > pending.through) return tail;\n", "", [TUR1], /from > bekleyen gün/],
+  [46, "DÜŞÜK-3: işlem içinde okunan ara dilim saklanır (GG2)", LS, "    if (store.inTransaction) return \"\";\n    try {\n      const counters", "    try {\n      const counters", [TUR1], /işlem içinde okunan ara dilim saklanmamalı/],
 ];
 
 const run = files => {
@@ -57,7 +83,7 @@ const run = files => {
   return { status: r.status, out, pass: count("pass"), fail: count("fail") };
 };
 
-const taban = run([MAIN, LIFE, NEW]);
+const taban = run([MAIN, LIFE, NEW, TUR1]);
 console.log(`taban: ${taban.pass} geçti / ${taban.fail} kaldı (çıkış ${taban.status})`);
 if (taban.status !== 0) {
   console.log(taban.out.slice(-4000));

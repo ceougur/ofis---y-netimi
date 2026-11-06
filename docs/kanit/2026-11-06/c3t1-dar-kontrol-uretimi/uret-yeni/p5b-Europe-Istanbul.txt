@@ -1,0 +1,8 @@
+1) yeni kod: kapsam 2026-06-30 donmuş satır 2
+2) eski kod sonrası: kilit 2026-12-31 koşular [{"no":1,"kind":"freeze","state":"done","through":"2026-06-30"}] donmuş satır 0
+3) yeni kod: onarım {"action":"freeze","pending":true,"damaged":true} durum {"coverage":"2026-12-31","lock":"2026-12-31","pending":null,"runs":3}
+   Yevmiye Defteri 2026 satır sayısı: 2 | satırlar: [["05.05.2026","Kasa","Sıfırlamadan sonraki gerçek veri","100","7.777,00 TL",""],["05.05.2026","Kasa","Sıfırlamadan sonraki gerçek veri","649","","7.777,00 TL"]]
+   Hesap Planı Mizanı 2026 Kasa satırı: ["100","Kasa (Nakit)","0,00 TL","7.777,00 TL","0,00 TL","7.777,00 TL","Borç"] | alt başlık: 01.01.2026 – 31.12.2026 · Borç = Alacak · Mutabakat tutarlı
+   canlı türetme 2026 madde sayısı: 1 | kasa: [777700]
+   Mutabakat Testi ok: true | sorunlu: []
+SONUÇ: raporlar dolu

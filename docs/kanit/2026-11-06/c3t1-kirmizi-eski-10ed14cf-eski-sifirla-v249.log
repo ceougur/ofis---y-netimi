@@ -1,0 +1,22 @@
+ok 1 - A (aynı gün): yeni kod 2026-12-31'e kadar dondurdu (2 satır)
+ok 2 - A (aynı gün): eski kod dosyayı göç ettirmedi (şema 47)
+ok 3 - A (aynı gün): ön koşul — eski kod donmuş satırları sildi, koşuyu bilmedi ([{"no":1,"kind":"freeze","state":"done","through":"2026-12-31"}])
+not ok 4 - A (aynı gün): açılış onarımı eksik satırı gördü ({"action":"none","pending":false})
+not ok 5 - A (aynı gün): kilitli yılın Yevmiye Defteri = canlı (0 / 2 satır; [])
+not ok 6 - A (aynı gün): Hesap Planı Mizanı Kasa 7.777 (undefined · 01.01.2026 – 31.12.2026 · Borç = Alacak · Mutabakat tutarlı)
+not ok 7 - A (aynı gün): donmuş = canlı, kapsam = kilit
+not ok 8 - A (aynı gün): yeniden donan dönem GAP_RULE (2.4.9; S13 = A)
+not ok 9 - A (aynı gün): Mutabakat Testi tutarlı ([{"code":"ledger:snapshot","sample":["Donmuş satırlar eksik ya da değişmiş (görünen 0 satır, borç 0, alacak 0; kayıtlı 2 satır)","Donmuş Dönemin Kaynağı Değişti: 31.12.2026 ve öncesinin kaynak kayıtları dondurmadan sonra kapının görmediği bir yolla (eski sürüm, dış yazım) değişti; Kilidi Aç → Yeniden Kilitle ile güncel veri donar"]},{"code":"ledger:rule-diff","sample":["cash:cash-e0fc9a2a-3fbb-43d3-af2d-2f73d032929e (05.05.2026) · donmuş defterde yok"]}])
+ok 10 - B (ileri kilit): yeni kod 2026-06-30'e kadar dondurdu (2 satır)
+ok 11 - B (ileri kilit): eski kod dosyayı göç ettirmedi (şema 47)
+ok 12 - B (ileri kilit): ön koşul — eski kod donmuş satırları sildi, koşuyu bilmedi ([{"no":1,"kind":"freeze","state":"done","through":"2026-06-30"}])
+not ok 13 - B (ileri kilit): açılış onarımı eksik satırı gördü ({"action":"freeze","pending":true})
+not ok 14 - B (ileri kilit): kilitli yılın Yevmiye Defteri = canlı (0 / 2 satır; [])
+not ok 15 - B (ileri kilit): Hesap Planı Mizanı Kasa 7.777 (undefined · 01.01.2026 – 31.12.2026 · Borç = Alacak · Mutabakat tutarlı)
+not ok 16 - B (ileri kilit): donmuş = canlı, kapsam = kilit
+not ok 17 - B (ileri kilit): yeniden donan dönem GAP_RULE (2.4.9; S13 = A)
+not ok 18 - B (ileri kilit): Mutabakat Testi tutarlı ([{"code":"ledger:snapshot","sample":["Donmuş satırlar eksik ya da değişmiş (görünen 0 satır, borç 0, alacak 0; kayıtlı 2 satır)"]},{"code":"ledger:rule-diff","sample":["cash:cash-f53b6ee4-083c-4802-b1e0-c63d794e2482 (05.05.2026) · donmuş defterde yok"]}])
+
+# tests 18
+# pass 6
+# fail 12

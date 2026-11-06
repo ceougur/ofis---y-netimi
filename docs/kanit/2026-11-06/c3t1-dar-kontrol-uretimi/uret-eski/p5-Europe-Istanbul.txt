@@ -1,0 +1,8 @@
+1) yeni kod: kapsam 2026-12-31 donmuş satır 2
+2) eski kod sonrası: kilit 2026-12-31 koşular [{"no":1,"kind":"freeze","state":"done","through":"2026-12-31"}] donmuş satır 0
+3) yeni kod: onarım {"action":"none","pending":false} durum {"coverage":"2026-12-31","lock":"2026-12-31","pending":null,"runs":1}
+   Yevmiye Defteri 2026 satır sayısı: 0 | satırlar: []
+   Hesap Planı Mizanı 2026 Kasa satırı: null | alt başlık: 01.01.2026 – 31.12.2026 · Borç = Alacak · Mutabakat tutarlı
+   canlı türetme 2026 madde sayısı: 1 | kasa: [777700]
+   Mutabakat Testi ok: false | sorunlu: [{"code":"ledger:snapshot","name":"Donmuş Defter (31.12.2026 ve öncesi)","severity":"warning","sample":["Donmuş satırlar eksik ya da değişmiş (görünen 0 satır, borç 0, alacak 0; kayıtlı 2 satır)","Donmuş Dönemin Kaynağı Değişti: 31.12.2026 ve öncesinin kaynak kayıtları dondurmadan sonra kapının görmediği bir yolla (eski sürüm, dış yazım) değişti; Kilidi Aç → Yeniden Kilitle ile güncel veri donar"]},{"code":"ledger:rule-diff","name":"Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2026 ve öncesi)","severity":"warning","sample":["cash:cash-a1c6c670-f485-49a5-ba6d-16368f84580b (05.05.2026) · donmuş defterde yok"]}]
+SONUÇ: HATA — kilitli yılın Yevmiye Defteri / Hesap Planı Mizanı boş donmuş defterden (veri canlıda var)

@@ -1,0 +1,70 @@
+(node:18496) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:18496) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ok 1 - şirket 001 (kilit 2026-10-05, göç koşusu 2.4.9) ilk: kapsam = kilit
+ok 2 - şirket 001 (kilit 2026-10-05, göç koşusu 2.4.9) ilk: donmuş = canlı (360 / 360 madde)
+ok 3 - şirket 001 (kilit 2026-10-05, göç koşusu 2.4.9) ilk: karma = canlı (430 madde)
+ok 4 - şirket 001 (kilit 2026-10-05, göç koşusu 2.4.9) ilk: mizan yıl yıl (2025 2026) ve bütün zaman aynı
+ok 5 - şirket 001 (kilit 2026-10-05, göç koşusu 2.4.9) ilk: karma mizanın SQL yolu (snapshots.trial) = canlı mizan (yıl yıl, kilit günü, bütün zaman)
+ok 6 - şirket 001 (kilit 2026-10-05, göç koşusu 2.4.9): Mutabakat Testi'nde donmuş defter bulgusu yok ([])
+(node:18496) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ok 7 - şirket 001 (kilit 2026-10-05, göç koşusu 2.4.9): geri çek (2025-12-31) ve yeniden kilitle
+ok 8 - şirket 001 (kilit 2026-10-05, göç koşusu 2.4.9) yeniden: kapsam = kilit
+ok 9 - şirket 001 (kilit 2026-10-05, göç koşusu 2.4.9) yeniden: donmuş = canlı (360 / 360 madde)
+ok 10 - şirket 001 (kilit 2026-10-05, göç koşusu 2.4.9) yeniden: karma = canlı (430 madde)
+ok 11 - şirket 001 (kilit 2026-10-05, göç koşusu 2.4.9) yeniden: mizan yıl yıl (2025 2026) ve bütün zaman aynı
+ok 12 - şirket 001 (kilit 2026-10-05, göç koşusu 2.4.9) yeniden: karma mizanın SQL yolu (snapshots.trial) = canlı mizan (yıl yıl, kilit günü, bütün zaman)
+(node:18496) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ok 13 - şirket 002 (kilit 2026-09-30) ilk: kapsam = kilit
+ok 14 - şirket 002 (kilit 2026-09-30) ilk: donmuş = canlı (202 / 202 madde)
+ok 15 - şirket 002 (kilit 2026-09-30) ilk: karma = canlı (344 madde)
+ok 16 - şirket 002 (kilit 2026-09-30) ilk: mizan yıl yıl (2025 2026) ve bütün zaman aynı
+ok 17 - şirket 002 (kilit 2026-09-30) ilk: karma mizanın SQL yolu (snapshots.trial) = canlı mizan (yıl yıl, kilit günü, bütün zaman)
+ok 18 - şirket 002 (kilit 2026-09-30): Mutabakat Testi'nde donmuş defter bulgusu yok ([])
+(node:18496) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ok 19 - şirket 002 (kilit 2026-09-30): geri çek (2025-12-31) ve yeniden kilitle
+ok 20 - şirket 002 (kilit 2026-09-30) yeniden: kapsam = kilit
+ok 21 - şirket 002 (kilit 2026-09-30) yeniden: donmuş = canlı (202 / 202 madde)
+ok 22 - şirket 002 (kilit 2026-09-30) yeniden: karma = canlı (344 madde)
+ok 23 - şirket 002 (kilit 2026-09-30) yeniden: mizan yıl yıl (2025 2026) ve bütün zaman aynı
+ok 24 - şirket 002 (kilit 2026-09-30) yeniden: karma mizanın SQL yolu (snapshots.trial) = canlı mizan (yıl yıl, kilit günü, bütün zaman)
+(node:18496) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ok 25 - şirket 003 (kilit 2026-09-30) ilk: kapsam = kilit
+ok 26 - şirket 003 (kilit 2026-09-30) ilk: donmuş = canlı (210 / 210 madde)
+ok 27 - şirket 003 (kilit 2026-09-30) ilk: karma = canlı (211 madde)
+ok 28 - şirket 003 (kilit 2026-09-30) ilk: mizan yıl yıl (2025 2026) ve bütün zaman aynı
+ok 29 - şirket 003 (kilit 2026-09-30) ilk: karma mizanın SQL yolu (snapshots.trial) = canlı mizan (yıl yıl, kilit günü, bütün zaman)
+ok 30 - şirket 003 (kilit 2026-09-30): Mutabakat Testi'nde donmuş defter bulgusu yok ([])
+(node:18496) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ok 31 - şirket 003 (kilit 2026-09-30): geri çek (2025-12-31) ve yeniden kilitle
+ok 32 - şirket 003 (kilit 2026-09-30) yeniden: kapsam = kilit
+ok 33 - şirket 003 (kilit 2026-09-30) yeniden: donmuş = canlı (210 / 210 madde)
+ok 34 - şirket 003 (kilit 2026-09-30) yeniden: karma = canlı (211 madde)
+ok 35 - şirket 003 (kilit 2026-09-30) yeniden: mizan yıl yıl (2025 2026) ve bütün zaman aynı
+ok 36 - şirket 003 (kilit 2026-09-30) yeniden: karma mizanın SQL yolu (snapshots.trial) = canlı mizan (yıl yıl, kilit günü, bütün zaman)
+(node:18496) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ok 37 - şirket 004 (kilit 2026-09-30) ilk: kapsam = kilit
+ok 38 - şirket 004 (kilit 2026-09-30) ilk: donmuş = canlı (62 / 62 madde)
+ok 39 - şirket 004 (kilit 2026-09-30) ilk: karma = canlı (62 madde)
+ok 40 - şirket 004 (kilit 2026-09-30) ilk: mizan yıl yıl (2026) ve bütün zaman aynı
+ok 41 - şirket 004 (kilit 2026-09-30) ilk: karma mizanın SQL yolu (snapshots.trial) = canlı mizan (yıl yıl, kilit günü, bütün zaman)
+ok 42 - şirket 004 (kilit 2026-09-30): Mutabakat Testi'nde donmuş defter bulgusu yok ([])
+(node:18496) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ok 43 - şirket 004 (kilit 2026-09-30): geri çek (2025-12-31) ve yeniden kilitle
+ok 44 - şirket 004 (kilit 2026-09-30) yeniden: kapsam = kilit
+ok 45 - şirket 004 (kilit 2026-09-30) yeniden: donmuş = canlı (62 / 62 madde)
+ok 46 - şirket 004 (kilit 2026-09-30) yeniden: karma = canlı (62 madde)
+ok 47 - şirket 004 (kilit 2026-09-30) yeniden: mizan yıl yıl (2026) ve bütün zaman aynı
+ok 48 - şirket 004 (kilit 2026-09-30) yeniden: karma mizanın SQL yolu (snapshots.trial) = canlı mizan (yıl yıl, kilit günü, bütün zaman)
+
+# tests 48
+# pass 48
+# fail 0

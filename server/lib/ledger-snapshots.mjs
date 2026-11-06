@@ -22,10 +22,21 @@ import { RULE_249, buildRule249 } from "./ledger-rule-249/index.mjs";
 import { leanRows, leanStore } from "./lean-rows.mjs";
 import { LEDGER_SNAPSHOT_TRIGGERS_V47, LEDGER_SNAPSHOT_TRIGGER_NAMES } from "./migrations.mjs";
 
-/** Eski sürümün (≤ 2.4.9; BS-7 kapısını bilmez) ileri götürdüğü kilidin aradaki dönemini donduran kural (KULLANICIYA SORULMALI S1; öneri A = 2.4.9 kopyası). */
+/**
+ * Eski sürümün (≤ 2.4.9; BS-7 kapısını bilmez) değiştirdiği dönemi donduran kural: kilidi ilerlettiyse aradaki dönem, dosyayı sıfırlayıp yeniden kilitlediyse (donmuş satırları
+ * silindi) yeniden donan dönem. KULLANICI KARARI 06.11.2026 03:35 (S13 = A): 2.4.9 kopyası.
+ */
 export const GAP_RULE = RULE_249;
 export const FROZEN_TRACE = "ledger.snapshot.frozen";
 export const THAWED_TRACE = "ledger.snapshot.thawed";
+/** Eski kurallı (göç / onarım) bekleyen koşu sürerken bu programın kilidi ilerlettiği gün (yük { through, reason }): koşu tamamlanınca kalan dönem o güne kadar güncel kuralla donar. */
+export const EXTENDED_TRACE = "ledger.snapshot.extended";
+/**
+ * Defter kuralının sürüm geçmişi, eskiden yeniye (tasarım notu §5). Son öğe güncel kuraldır (LEDGER_RULE_VERSION). Kural yükselince önceki güncel kural silinmez: türetmesi
+ * server/lib/ledger-rule-<sürüm, noktasız>/ klasörüne AYNEN kopyalanır, kayıt defterine (createLedgerSnapshots rules ve dondurma iş parçacığı) eklenir, bu listeye yenisi
+ * eklenir — eski sürümde açılmış bekleyen koşu (göç, onarım) kendi kuralıyla donar. test/donmus-defter-tur1-250.test.mjs (kayıt defteri denetimi) eksiği yakalar.
+ */
+export const RULE_HISTORY = Object.freeze(["2.4.9", "2.5.0"]);
 const ENTITY = no => `ledger-snapshot-run:${no}`;
 // Ağırlık sağlaması (Σ hesap kodu × (borç − alacak), satır başına mod P): hesaplar arası para kaymasını sayı / toplam değişmeden de görür; SQL ve JS aynı (tamsayı, kesme).
 const WEIGHT_MOD = 1_000_000_007;
@@ -84,6 +95,67 @@ export function snapshotRowsOf(entries, { from = "", through }) {
 
 /** Maddenin karşılaştırılabilir içeriği: tarih + sıralı satırlar (hesap, alt hesap, cari, borç, alacak). Yazım sırası ve satır sırası karşılaştırılmaz. */
 const contentOf = entry => `${entry.date}|${entry.lines.map(line => `${line.account}/${line.sub || ""}/${line.party || ""}/${line.debit}/${line.credit}`).sort().join(";")}`;
+
+/**
+ * "Kural Değişikliği Farkı"nın açıklaması (Ç3 tur 1 K4): nedeni bilinmeyen ayrışma "kural değişti" diye adlandırılmaz — tarafsız; neden biliniyorsa (eksik / değişmiş donmuş satır,
+ * kaynak izi) o söylenir.
+ */
+export function ruleDiffHint({ rowsBroken = false, sourceChanged = false } = {}) {
+  const read = "Kilitli dönemin raporları donmuş defterden okunur, değişmez.";
+  if (rowsBroken) return `Fark donmuş defterdeki eksik ya da değişmiş satırlardan (Donmuş Defter denetimi); kural değişikliği değildir. ${read} Program yeniden açılınca kilitli dönem yeniden donar.`;
+  if (sourceChanged) return `Kilitli dönemin kaynak kayıtları dondurmadan sonra değişti (Donmuş Defter denetimi); fark bundan ya da defter kuralının değişmesinden olabilir. ${read} Yönetici kilidi açıp yeniden kilitleyince güncel veri donar.`;
+  return `Kilitli dönemin donmuş defteri güncel türetmeden farklı: neden defter kuralının program sürümüyle değişmesi ya da kilitli dönemin kaynak verisinin kapının görmediği bir yolla değişmesi olabilir. ${read} Kural farkı Kural Farkı Düzeltme Fişi ile ilk açık güne alınır.`;
+}
+
+/** İki değer birebir mi (düz nesne / dizi / ilkel; anahtar kümesi ve değerler aynı, anahtar sırası önemsiz). Ara dilim önbelleğinin "iki kural aynı" sınaması (ders 47). */
+function deepSame(a, b) {
+  if (a === b) return true;
+  if (typeof a !== "object" || typeof b !== "object" || a === null || b === null) return Number.isNaN(a) && Number.isNaN(b);
+  if (Array.isArray(a)) {
+    if (!Array.isArray(b) || a.length !== b.length) return false;
+    for (let index = 0; index < a.length; index += 1) if (!deepSame(a[index], b[index])) return false;
+    return true;
+  }
+  if (Array.isArray(b)) return false;
+  // Anahtar dizisi kurulmaz (1 M maddede ayırma yok): a'nın her anahtarı b'de aynı, b'de fazladan anahtar yok.
+  let count = 0;
+  for (const key in a) {
+    if (!Object.hasOwn(a, key)) continue;
+    count += 1;
+    if (!Object.hasOwn(b, key) || !deepSame(a[key], b[key])) return false;
+  }
+  for (const key in b) if (Object.hasOwn(b, key)) count -= 1;
+  return count === 0;
+}
+export const sameEntries = (a, b) => a.length === b.length && a.every((entry, index) => deepSame(entry, b[index]));
+/**
+ * Güncel dilimin parmak izi (FNV-1a, 32 bit), sıralı: madde ve satır sayısı, hesap kodu, alt hesap ve cari uzunluğu, borç, alacak — kural "hangi hesaba ne kadar"dır. Metin karakter
+ * karakter işlenmez (123.000 maddede ~0,6 sn sürüyordu). Yalnız "aynı" bilgisinin isabetinde, güncel kuralın aynı veride başka çıktı verip vermediğini sınar (üretimde kural çalışırken
+ * değişmez; YALNIZ TEST kancası değiştirir).
+ */
+export function printOf(entries) {
+  let hash = 0x811c9dc5;
+  let lines = 0;
+  const mix = value => {
+    hash = Math.imul(hash ^ (value | 0), 0x01000193) >>> 0;
+  };
+  for (const entry of entries) {
+    mix(entry.lines.length);
+    for (const line of entry.lines) {
+      lines += 1;
+      mix(Number(line.account) || -1);
+      mix(line.sub ? line.sub.length : 0);
+      mix(line.party ? line.party.length : 0);
+      const debit = Number(line.debit) || 0;
+      const credit = Number(line.credit) || 0;
+      mix(debit);
+      mix(debit / 4294967296);
+      mix(credit);
+      mix(credit / 4294967296);
+    }
+  }
+  return `${entries.length}:${lines}:${hash.toString(16)}`;
+}
 
 /**
  * Şirket Verisini Sıfırla (iki kip): donmuş satırlar ve koşular silinir; tetikleyiciler aynı işlemde kaldırılıp yeniden kurulur (DDL işlemsel). Dönüş: silinen sayılar.
@@ -159,14 +231,36 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
   let current = null;
   let activeHandle = null;
   let progress = { running: false, phase: "", done: 0, total: 0, run: 0, error: "" };
+  // Bu nesnenin kendi yazımları (donmuş satırlar, koşular, izler): ara dilim önbelleğinin anahtarı (middleKey) yalnız BAŞKA yazımlarla değişir — dondurma parçaları yazılırken düşmez.
+  let ownChanges = 0;
+  const write = (sql, ...args) => {
+    const result = store.run(sql, ...args);
+    ownChanges += Number(result?.changes) || 0;
+    return result;
+  };
 
   const lastDone = () => store.get("SELECT * FROM ledger_snapshot_runs WHERE state = 'done' ORDER BY no DESC LIMIT 1");
   const pendingRun = () => store.get("SELECT * FROM ledger_snapshot_runs WHERE state = 'pending' ORDER BY no DESC LIMIT 1");
   const coverage = () => (ready() ? lastDone()?.through || "" : "");
+  // Bekleyen koşu güncel kuraldan başka, programın bildiği bir kuralla mı (göç / onarım: 2.4.9) — kapsamın sonrası o koşunun gününe kadar onun kuralıyla okunur.
+  const carriedPending = () => {
+    const pending = ready() ? pendingRun() : null;
+    return pending && pending.rule_version !== LEDGER_RULE_VERSION && ruleKnown(pending.rule_version) ? pending : null;
+  };
   const userOf = user => ({ id: String(user?.id || "system"), name: String(user?.display_name || user?.name || "Sistem") });
   const trace = (type, no, user, payload) => {
     const actor = userOf(user);
-    store.run("INSERT INTO audit_events (id, type, entity_id, actor_id, actor_name, payload_json, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)", `event-${randomUUID()}`, type, ENTITY(no), actor.id, actor.name, JSON.stringify(payload), now().toISOString());
+    write("INSERT INTO audit_events (id, type, entity_id, actor_id, actor_name, payload_json, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)", `event-${randomUUID()}`, type, ENTITY(no), actor.id, actor.name, JSON.stringify(payload), now().toISOString());
+  };
+  /** Koşunun en son "kilit ilerletildi" izinin günü (yoksa ''). */
+  const extendedOf = no => {
+    const row = store.get("SELECT payload_json FROM audit_events WHERE entity_id = ? AND type = ? ORDER BY rowid DESC LIMIT 1", ENTITY(no), EXTENDED_TRACE);
+    try {
+      const payload = JSON.parse(row?.payload_json || "{}");
+      return { through: String(payload.through || ""), reason: String(payload.reason || "lock") };
+    } catch {
+      return { through: "", reason: "lock" };
+    }
   };
   const nextNo = () => Number(store.get("SELECT COALESCE(MAX(no), 0) AS n FROM ledger_snapshot_runs").n) + 1;
 
@@ -213,25 +307,54 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
 
   /**
    * Karma yevmiye: ≤ kapsam donmuş; (kapsam, bekleyen koşunun günü] bekleyen koşunun kuralıyla; sonrası güncel kuralla. live: aynı çağrıda kurulmuş güncel türetme (ikinci kez
-   * kurulmaz). to ≤ kapsam ise canlı türetme yapılmaz; from verilirse donmuş satırlar yalnız from'dan okunur (dönem raporu; mizan için trial()).
+   * kurulmaz). to ≤ kapsam ise canlı türetme yapılmaz; to bekleyen eski kurallı koşunun dönemindeyse yalnız o kuralla türetilir (güncel türetme kurulmaz). from verilirse
+   * from'dan önceki maddeler eksik olabilir (donmuş satırlar from'dan okunur; ara dilim from'dan önce biterse okunmaz) — dönem raporu; mizan için trial().
    */
   function book({ from = "", to = "", live = null } = {}) {
     if (!ready()) return live || build();
     const cover = coverage();
     if (cover && to && to <= cover) return entries({ from, to });
     const frozen = cover ? entries({ from }) : [];
-    return [...frozen, ...afterCoverage(cover, live || build())];
+    // Göç / onarım penceresi (DÜŞÜK-3, ders 47): aralığın sonu bekleyen eski kurallı koşunun dönemindeyse ikinci tam türetme (güncel kural) yok.
+    const carried = live ? null : carriedPending();
+    if (carried && to && to <= carried.through) return [...frozen, ...rules[carried.rule_version]().filter(entry => entry.date > cover && entry.date <= carried.through)];
+    return [...frozen, ...afterCoverage(cover, live || build(), { from })];
   }
-  /** Kapsamın sonrası: (kapsam, bekleyen koşunun günü] bekleyen koşunun kuralıyla (2.4.9 göç koşusu), sonrası güncel türetme. */
-  function afterCoverage(cover, fresh) {
-    const pending = pendingRun();
-    let middle = [];
-    let tail = cover ? fresh.filter(entry => entry.date > cover) : fresh;
-    if (pending && pending.rule_version !== LEDGER_RULE_VERSION && ruleKnown(pending.rule_version)) {
-      middle = rules[pending.rule_version]().filter(entry => entry.date > cover && entry.date <= pending.through);
-      tail = tail.filter(entry => entry.date > pending.through);
+  /** Kapsamın sonrası: (kapsam, bekleyen koşunun günü] bekleyen koşunun kuralıyla (2.4.9 göç / onarım koşusu; middleOf), sonrası güncel türetme. */
+  function afterCoverage(cover, fresh, { from = "" } = {}) {
+    const after = cover ? fresh.filter(entry => entry.date > cover) : fresh;
+    const pending = carriedPending();
+    if (!pending) return after;
+    const tail = after.filter(entry => entry.date > pending.through);
+    if (from && from > pending.through) return tail;
+    return [...middleOf(pending, cover, after.filter(entry => entry.date <= pending.through)), ...tail];
+  }
+  // Ara dilim (göç / onarım penceresi; Ç3 tur 1 DÜŞÜK-3, ders 47): bekleyen eski kurallı koşunun dönemi o kuralla türetilir — rapor başına İKİNCİ tam türetme. Sonuç koşunun kimliği
+  // ve veri sürümüyle (data_version + bu nesnenin DIŞINDAKİ yazımların total_changes'ı; dondurma parçalarının yazımı anahtarı değiştirmez) saklanır, işlemin içinde saklanmaz
+  // (GG2). İki kural bu dönemde aynı maddeleri veriyorsa yalnız "aynı" bilgisi ve güncel dilimin parmak izi saklanır (bellek yok; isabette güncel dilim parmak iziyle yeniden
+  // sınanır); farklıysa dilimin kendisi (en çok MIDDLE_LIMIT madde; üstü saklanmaz). Çıktı önbelleksiz yolla birebir (test/donmus-defter-tur1-250.test.mjs).
+  const MIDDLE_LIMIT = 200_000;
+  let middleCache = null;
+  function middleKey(pending) {
+    if (store.inTransaction) return "";
+    try {
+      const counters = store.changeCounters?.();
+      return counters ? `${pending.id}|${counters.version}|${Number(counters.total) - ownChanges}` : "";
+    } catch {
+      return "";
     }
-    return [...middle, ...tail];
+  }
+  function middleOf(pending, cover, freshRange) {
+    const key = middleKey(pending);
+    if (key && middleCache?.key === key) {
+      if (middleCache.middle) return middleCache.middle;
+      if (middleCache.print === printOf(freshRange)) return freshRange;
+    }
+    callHook("middle", { run: pending.no, rule: pending.rule_version });
+    const middle = rules[pending.rule_version]().filter(entry => entry.date > cover && entry.date <= pending.through);
+    const equal = sameEntries(middle, freshRange);
+    middleCache = !key ? null : equal ? { key, middle: null, print: printOf(freshRange) } : middle.length <= MIDDLE_LIMIT ? { key, middle, print: "" } : null;
+    return equal ? freshRange : middle;
   }
 
   /**
@@ -246,8 +369,9 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
     const tail = cover && to && to <= cover ? [] : afterCoverage(cover, live || build());
     return trialOf(rows, unbalanced, { from, to }, tail);
   }
-  // Donmuş dönemin mizan toplamları (100.000 satırda ~0,5 sn): donmuş satırlar değişmez — sonuç koşu durumu (son koşu, kapsam) ve bağlantının data_version'ıyla (başka bağlantının
-  // yazımı) anahtarlanıp saklanır; kilit değişince ya da dış yazımda anahtar değişir. En çok 16 aralık.
+  // Donmuş dönemin mizan toplamları (100.000 satırda ~0,5 sn): donmuş satırlar değişmez — sonuç son TAMAMLANAN koşunun kimliği (rastgele; her dondurma, geri çekme ve Şirket
+  // Verisini Sıfırla'dan sonraki her koşuda yenisi — Ç3 tur 1 ORTA-1: sıfırlamada koşu numarası 1'den başlar, aynı güne yeniden kilitte numara ve kapsam aynı kalıyordu) ve
+  // bağlantının data_version'ıyla (başka bağlantının yazımı) anahtarlanıp saklanır. En çok 16 aralık.
   const trialCache = new Map();
   function frozenTrial(cover, from, upper) {
     let version = "";
@@ -256,7 +380,7 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
     } catch {
       version = "";
     }
-    const key = `${cover}|${store.get("SELECT COALESCE(MAX(no), 0) AS n FROM ledger_snapshot_runs").n}|${version}|${from}|${upper}`;
+    const key = `${lastDone()?.id || ""}|${cover}|${version}|${from}|${upper}`;
     if (version && trialCache.has(key)) return trialCache.get(key);
     const value = {
       rows: store.all(
@@ -316,27 +440,29 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
     const no = nextNo();
     const actor = userOf(user);
     const t = totals || {};
-    store.run(
+    write(
       `INSERT INTO ledger_snapshot_runs (no, id, kind, state, from_date, through, rule_version, reason, state_lines, state_debit, state_credit, state_weight, created_by, created_at, finished_at)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       no, `lsr-${randomUUID()}`, kind, runState, from, through, rule, reason, t.lines || 0, t.debit || 0, t.credit || 0, t.weight || 0, actor.id, now().toISOString(), runState === "done" ? now().toISOString() : "",
     );
     return store.get("SELECT * FROM ledger_snapshot_runs WHERE no = ?", no);
   }
-  const abandon = run => store.run("UPDATE ledger_snapshot_runs SET state = 'abandoned', finished_at = ? WHERE no = ? AND state = 'pending'", now().toISOString(), run.no);
+  const abandon = run => write("UPDATE ledger_snapshot_runs SET state = 'abandoned', finished_at = ? WHERE no = ? AND state = 'pending'", now().toISOString(), run.no);
   const staleExists = () => Boolean(store.get(`SELECT 1 AS found FROM ledger_snapshots WHERE date > ${COVERAGE_SQL} LIMIT 1`));
-  const purgeStaleInTx = () => store.run(`DELETE FROM ledger_snapshots WHERE date > ${COVERAGE_SQL}`);
+  const purgeStaleInTx = () => write(`DELETE FROM ledger_snapshots WHERE date > ${COVERAGE_SQL}`);
   /** Görünen donmuş satırların toplamları (kapsam içi). */
   const visibleTotals = (upper = coverage()) => {
     const row = store.get(`SELECT COUNT(*) AS lines, COALESCE(SUM(debit_minor), 0) AS debit, COALESCE(SUM(credit_minor), 0) AS credit, ${WEIGHT_SQL} AS weight FROM ledger_snapshots WHERE date <= ?`, upper);
     return { lines: Number(row.lines), debit: Number(row.debit), credit: Number(row.credit), weight: Number(row.weight) };
   };
 
-  function thaw({ next, user, reason }) {
+  // known: geri çekilen günün görünen toplamları zaten ölçüldüyse (açılış onarımı: satırlar silinmişken "önceki − kaldırılan" yanlış olur).
+  function thaw({ next, user, reason, known = null }) {
     const cover = coverage();
     const prev = lastDone();
     let totals = { lines: 0, debit: 0, credit: 0, weight: 0 };
-    if (next) {
+    if (known) totals = known;
+    else if (next) {
       const removed = store.get(`SELECT COUNT(*) AS lines, COALESCE(SUM(debit_minor), 0) AS debit, COALESCE(SUM(credit_minor), 0) AS credit, ${WEIGHT_SQL} AS weight FROM ledger_snapshots WHERE date > ? AND date <= ?`, next, cover);
       totals = { lines: Number(prev?.state_lines || 0) - Number(removed.lines), debit: Number(prev?.state_debit || 0) - Number(removed.debit), credit: Number(prev?.state_credit || 0) - Number(removed.credit), weight: Number(prev?.state_weight || 0) - Number(removed.weight) };
     }
@@ -352,7 +478,7 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
     const totals = { lines: 0, entries: 0, debit: 0, credit: 0, weight: 0 };
     let seq = 0;
     for (const part of snapshotBatches(rules[run.rule_version](), { from: run.from_date, through: run.through, size: batch, totals })) {
-      for (const row of part) store.run(INSERT_LINE, run.no, (seq += 1), ...row, run.rule_version);
+      for (const row of part) write(INSERT_LINE, run.no, (seq += 1), ...row, run.rule_version);
     }
     complete(run, totals, lockDigestOf(store, run.through, { version: LOCK_SQL_VERSION }), user);
     return run;
@@ -361,7 +487,7 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
   function complete(run, totals, digest, user) {
     const prev = lastDone();
     const state = { lines: Number(prev?.state_lines || 0) + totals.lines, debit: Number(prev?.state_debit || 0) + totals.debit, credit: Number(prev?.state_credit || 0) + totals.credit, weight: Number(prev?.state_weight || 0) + totals.weight };
-    const changed = store.run(
+    const changed = write(
       `UPDATE ledger_snapshot_runs SET state = 'done', line_count = ?, entry_count = ?, debit_minor = ?, credit_minor = ?, state_lines = ?, state_debit = ?, state_credit = ?, state_weight = ?,
          source_digest = ?, digest_version = ?, finished_at = ? WHERE no = ? AND state = 'pending'`,
       totals.lines, totals.entries, totals.debit, totals.credit, state.lines, state.debit, state.credit, state.weight, digest, LOCK_SQL_VERSION, now().toISOString(), run.no,
@@ -379,10 +505,13 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
     if (!store.inTransaction) throw new Error("Donmuş defter kilit kancası yalnız kilidi değiştiren işlemin içinde çağrılır (store.tx).");
     const target = String(next || "");
     const pending = pendingRun();
-    // Aynı güne yinelenen kilit: bekleyen koşu güncel kuralla aynı aralığı donduruyorsa sürer (iş kaldığı yerden).
-    if (pending && pending.through === target && pending.rule_version === LEDGER_RULE_VERSION && !sync) return { action: "freeze", run: pending };
-    if (pending) abandon(pending);
+    // Aynı güne yinelenen kilit: bekleyen koşu — KURALI NE OLURSA OLSUN (göçün / onarımın 2.4.9 koşusu, bu programın bilmediği kural dahil; Ç3 tur 1 ORTA-3, plan §4 "göçte
+    // 2.4.9 KURALIYLA") — aynı aralığı donduruyorsa sürer (iş kaldığı yerden).
+    if (pending && pending.through === target && !sync) return { action: "freeze", run: pending };
     const cover = coverage();
+    // Eski kurallı bekleyen koşu (göç / onarım ya da bilinmeyen kural) kilit başka güne gidince de güncel kurala GEÇMEZ (aile; tasarım notu §4, §5).
+    if (pending && pending.rule_version !== LEDGER_RULE_VERSION && target > cover) return carryLock(pending, { target, cover, user, reason, sync });
+    if (pending) abandon(pending);
     if (target === cover) return { action: "none" };
     if (target > cover) {
       if (staleExists()) purgeStaleInTx();
@@ -393,6 +522,50 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
     const run = thaw({ next: target, user, reason });
     if (sync) purgeStaleInTx();
     return { action: "thaw", run };
+  }
+
+  /**
+   * Eski kurallı bekleyen koşu (pending; kural ≠ güncel) varken kilit kapsamın üstünde başka bir güne gitti. Her dönem onu kilitleyenin kuralıyla donar:
+   *  - kilit bekleyen dönemin İÇİNE çekildi (kapsam < hedef < koşunun günü): koşu bırakılır, (kapsam, hedef] AYNI kuralla yeni koşu;
+   *  - kilit ilerletildi (hedef > koşunun günü): koşu sürer; iz (EXTENDED_TRACE) bu programın ilerlettiği günü kaydeder — koşu tamamlanınca (koşunun günü, hedef] güncel kuralla
+   *    donar (continueAfter). Eşzamanlı kipte (postAll lockThrough) ikisi bu işlemde.
+   * Kuralı bu programda olmayan koşu eşzamanlı dondurulamaz: işlem düşer (kilit + fişler yazılmaz; görünür hata).
+   */
+  function carryLock(pending, { target, cover, user, reason, sync }) {
+    const rule = pending.rule_version;
+    if (sync && !ruleKnown(rule)) throw new Error(`Donmuş defter: bekleyen dondurmanın kuralı (${rule}) bu programda yok; kilit bu işlemde dondurulamaz.`);
+    if (target < pending.through) {
+      abandon(pending);
+      if (staleExists()) purgeStaleInTx();
+      const run = insertRun({ kind: "freeze", state: "pending", from: cover, through: target, rule, reason: pending.reason, user });
+      if (sync) freezeInTx(run, user);
+      return { action: "freeze", run };
+    }
+    if (!sync) {
+      trace(EXTENDED_TRACE, pending.no, user, { through: target, reason });
+      return { action: "freeze", run: pending };
+    }
+    // Eşzamanlı: süren iş parçacığının yazdığı yarım satırlar (bayat) önce silinir; koşu kendi kuralıyla, kalan dönem güncel kuralla bu işlemde donar.
+    if (staleExists()) purgeStaleInTx();
+    freezeInTx(pending, user);
+    if (target === pending.through) return { action: "freeze", run: pending };
+    const run = insertRun({ kind: "freeze", state: "pending", from: pending.through, through: target, rule: LEDGER_RULE_VERSION, reason, user });
+    freezeInTx(run, user);
+    return { action: "freeze", run };
+  }
+
+  /**
+   * Koşu tamamlandı ama kilit onun ötesinde (eski kurallı koşu sürerken kilit ilerletildi): kalan dönem için yeni bekleyen koşu, AYNI işlemde. Bu programın ilerlettiği güne kadar
+   * güncel kural (EXTENDED_TRACE); ötesi (eski sürümün ilerlettiği) GAP_RULE. Dönüş: yeni koşu ya da null.
+   */
+  function continueAfter(run) {
+    const lock = lockNow();
+    if (!(lock > run.through)) return null;
+    const extended = extendedOf(run.no);
+    if (staleExists()) purgeStaleInTx();
+    if (extended.through > run.through) return insertRun({ kind: "freeze", state: "pending", from: run.through, through: extended.through < lock ? extended.through : lock, rule: LEDGER_RULE_VERSION, reason: extended.reason });
+    log?.warn?.(`Donmuş defter: kilit (${lock}) ${run.through} gününün ötesinde (eski sürüm); aradaki dönem ${GAP_RULE} kuralıyla dondurulacak.`);
+    return insertRun({ kind: "freeze", state: "pending", from: run.through, through: lock, rule: GAP_RULE, reason: "repair" });
   }
 
   /**
@@ -418,7 +591,7 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
     let removed = 0;
     for (;;) {
       if (halted()) return removed;
-      const n = store.tx(() => Number(store.run(`DELETE FROM ledger_snapshots WHERE (run, run_seq) IN (SELECT run, run_seq FROM ledger_snapshots WHERE date > ${COVERAGE_SQL} LIMIT ?)`, batch).changes) || 0);
+      const n = store.tx(() => Number(write(`DELETE FROM ledger_snapshots WHERE (run, run_seq) IN (SELECT run, run_seq FROM ledger_snapshots WHERE date > ${COVERAGE_SQL} LIMIT ?)`, batch).changes) || 0);
       removed += n;
       if (n < batch) return removed;
       await yieldTick();
@@ -437,21 +610,15 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
     try {
       await purgeStale();
       if (halted() || !stillPending(run.no)) throw new Cancelled("koşu değişti");
-      if (!ruleKnown(run.rule_version)) {
-        // Kuralı bu programda olmayan (eski bir sürümün açtığı) bekleyen koşu: bırakılır, aynı aralık güncel kuralla yeniden açılır.
-        log?.warn?.(`Donmuş defter: ${run.rule_version} kuralı programda yok; ${run.through} güncel kuralla dondurulacak.`);
-        store.tx(() => {
-          abandon(run);
-          if (staleExists()) purgeStaleInTx();
-          insertRun({ kind: "freeze", state: "pending", from: coverage(), through: run.through, rule: LEDGER_RULE_VERSION, reason: run.reason });
-        });
-        throw new Cancelled("kural yeniden seçildi");
-      }
+      // Kuralı bu programda olmayan bekleyen koşu (daha yeni bir sürümün açtığı; Ç3 tur 1 ORTA-3 ailesi): güncel kurala GEÇİRİLMEZ, yarım dondurulmaz — koşu bekler, neden
+      // ilerlemede ve Mutabakat Testi'nde ("Donmuş Defter") görünür; dönem o kuralı bilen sürümle açılınca donar. O zamana kadar raporlar o dönemi güncel kuralla okur.
+      if (!ruleKnown(run.rule_version)) throw new Error(`bekleyen dondurmanın kuralı (${run.rule_version}) bu programda yok; ${dayText(run.through)} ve öncesi bu kuralı bilen sürümle açılınca donar`);
       if (!useWorker) {
         progress.phase = "yazım";
         store.tx(() => {
           if (!stillPending(run.no)) throw new Cancelled("koşu değişti");
           freezeInTx(run, null);
+          continueAfter(run);
         });
       } else {
         progress.phase = "türetme";
@@ -467,7 +634,7 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
               if (!stillPending(run.no)) throw new Cancelled("koşu değişti");
               for (const row of rows) {
                 seq += 1;
-                store.run(INSERT_LINE, run.no, seq, ...row, run.rule_version);
+                write(INSERT_LINE, run.no, seq, ...row, run.rule_version);
                 if (row[1] === 1 || row[0] !== lastEntry) own.entries += 1;
                 lastEntry = row[0];
                 own.lines += 1;
@@ -490,6 +657,7 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
         store.tx(() => {
           if (!stillPending(run.no)) throw new Cancelled("koşu değişti");
           complete(run, { ...own, entries: Number(done.entries) || own.entries }, done.digest, null);
+          continueAfter(run);
         });
         // Kapının kilit izi: dondurmanın anlık görüntüsünden (kilit o günse).
         if (lockNow() === run.through) integrity()?.adoptLock?.({ lock: run.through, digest: done.digest });
@@ -550,32 +718,74 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
     }
   }
 
+  const totalsMatch = (seen, run) => seen.lines === Number(run.state_lines) && seen.debit === Number(run.state_debit) && seen.credit === Number(run.state_credit) && seen.weight === Number(run.state_weight);
   /**
-   * Açılış onarımı (göçlerden sonra, kapıdan önce; BS-7 yeni şemalı dosyada çağrılmaz): eski sürüm kilidi değiştirdiyse kapsam kilide getirilir (ileri: bekleyen koşu GAP_RULE
-   * kuralıyla; geri: thaw), yarım / bayat koşu sürdürülmek üzere bırakılır. Dönüş: { action, pending } ya da null.
+   * Görünen donmuş satırlar son tamamlanan koşunun kayıtlı toplamlarıyla (state_*) tutuyor mu (Ç3 tur 1 ORTA-2: 2.4.9'un Şirket Verisini Sıfırla'sı donmuş satırları siler, koşuları
+   * bilmez). Tutuyorsa null. Tutmuyorsa satırların hâlâ sağlam olduğu en son gün (sağlama noktası): toplamları bugün de tutan, kendinden sonra hiçbir geri çekme gününün altına
+   * inmediği tamamlanmış koşunun günü; hiçbiri yoksa '' (baştan).
+   */
+  function damagedFrom() {
+    const done = store.all("SELECT no, kind, through, state_lines, state_debit, state_credit, state_weight FROM ledger_snapshot_runs WHERE state = 'done' ORDER BY no DESC");
+    if (!done.length) return null;
+    const [last] = done;
+    const seen = visibleTotals(last.through);
+    if (totalsMatch(seen, last)) return null;
+    const found = { lines: seen.lines, expected: Number(last.state_lines) };
+    // floor: kendinden sonraki geri çekmelerin en küçük günü — günü bunun üstündeki eski koşunun toplamları artık o güne kadarki satırları anlatmaz.
+    let floor = last.kind === "thaw" ? last.through : null;
+    for (const run of done.slice(1)) {
+      if (run.through < last.through && (floor === null || run.through <= floor) && totalsMatch(visibleTotals(run.through), run)) return { ...found, through: run.through };
+      if (run.kind === "thaw" && (floor === null || run.through < floor)) floor = run.through;
+    }
+    return { ...found, through: "" };
+  }
+  /**
+   * Açılış onarımı (göçlerden sonra, kapıdan önce; BS-7 yeni şemalı dosyada çağrılmaz). Sıra:
+   *  1) donmuş satırlar kayıtlı toplamlarla tutmuyorsa (eski sürümün sıfırlaması, dış silme) kapsam sağlam son güne iner (thaw, neden repair) — satırı eksik dönem boş donmuş
+   *     defterden okunmaz; kilit varsa aşağıda yeniden donar (GAP_RULE; S13 = A);
+   *  2) eski sürüm kilidi bekleyen koşunun gerisine çektiyse koşu bırakılır, (kapsam, kilit] AYNI kuralla yeniden açılır; ilerlettiyse koşu sürer, tamamlanınca kalan dönem
+   *     donar (continueAfter: bu programın ilerlettiği güne kadar güncel kural, ötesi GAP_RULE);
+   *  3) bekleyen koşu yoksa: kilit > kapsam → bekleyen koşu GAP_RULE kuralıyla; kilit < kapsam → thaw.
+   * Dönüş: { action, pending, damaged } ya da null.
    */
   function repairOnOpen() {
     if (!ready() || !canWrite()) return null;
     return store.tx(() => {
       const lock = lockNow();
       let pending = pendingRun();
-      const cover = coverage();
       let action = "none";
-      if (pending && pending.through !== lock) {
-        abandon(pending);
+      const damaged = damagedFrom();
+      if (damaged) {
+        if (pending) abandon(pending);
         pending = null;
+        thaw({ next: damaged.through, user: null, reason: "repair", known: visibleTotals(damaged.through) });
+        action = "thaw";
+        log?.warn?.(`Donmuş defter: görünen donmuş satırlar kayıtlı toplamlarla tutmuyor (${damaged.lines} / ${damaged.expected} satır; eski sürümün Şirket Verisini Sıfırla'sı ya da dış silme); kapsam ${damaged.through || "başa"} indirildi, kilitli dönem yeniden donacak.`);
       }
-      if (!pending && lock > cover) {
+      const cover = coverage();
+      // Eski kurallı koşu (göç / onarım ya da bilinmeyen kural) güncel kurala geçmez (ORTA-3 ailesi): kilit ötesindeyse koşu sürer (tamamlanınca kalan dönem continueAfter'la:
+      // bu programın ilerlettiği güne kadar güncel kural, ötesi GAP_RULE); kilit gerisine çekildiyse (kapsam, kilit] AYNI kuralla yeniden açılır. Güncel kurallı koşu (bu programın
+      // kilidi) önceki davranışla: bırakılır, (kapsam, kilit] aşağıda GAP_RULE ile.
+      const carried = Boolean(pending && pending.rule_version !== LEDGER_RULE_VERSION);
+      if (pending && pending.through !== lock && !(carried && pending.through < lock)) {
+        abandon(pending);
+        if (carried && lock > cover) {
+          if (staleExists()) purgeStaleInTx();
+          insertRun({ kind: "freeze", state: "pending", from: cover, through: lock, rule: pending.rule_version, reason: pending.reason });
+          action = "freeze";
+        }
+      }
+      if (!pendingRun() && lock > cover) {
         if (staleExists()) purgeStaleInTx();
         insertRun({ kind: "freeze", state: "pending", from: cover, through: lock, rule: GAP_RULE, reason: "repair" });
         action = "freeze";
         log?.warn?.(`Donmuş defter: kilit (${lock}) donmuş dönemin (${cover || "yok"}) ötesinde (eski sürüm); aradaki dönem ${GAP_RULE} kuralıyla dondurulacak.`);
-      } else if (lock < cover) {
+      } else if (!pendingRun() && lock < cover) {
         thaw({ next: lock, user: null, reason: "repair" });
         action = "thaw";
         log?.warn?.(`Donmuş defter: kilit (${lock || "yok"}) donmuş dönemin (${cover}) gerisinde (eski sürüm); kapsam kilide indirildi.`);
       }
-      return { action, pending: Boolean(pendingRun()) };
+      return { action, pending: Boolean(pendingRun()), damaged: Boolean(damaged) };
     });
   }
 
@@ -651,26 +861,46 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
     const cover = coverage();
     const lock = lockNow();
     const pending = pendingRun();
+    const unknownRule = Boolean(pending && !ruleKnown(pending.rule_version));
     const problems = [];
-    if (cover !== lock && !(pending && pending.through === lock)) problems.push(`Donmuş dönem (${dayText(cover) || "yok"}) dönem kilidiyle (${dayText(lock) || "yok"}) uyuşmuyor`);
+    if (unknownRule) {
+      problems.push(`Bekleyen Dondurmanın Kuralı Bu Programda Yok: ${dayText(pending.through)} ve öncesi ${pending.rule_version} kuralıyla donacak; dönem bu kuralı bilen sürümle açılınca donar, o zamana kadar raporlar bu dönemi güncel kuralla okur`);
+    } else if (cover !== lock && !(pending && pending.through > cover && pending.through <= lock)) {
+      problems.push(`Donmuş dönem (${dayText(cover) || "yok"}) dönem kilidiyle (${dayText(lock) || "yok"}) uyuşmuyor`);
+    }
+    // Nedeni bilinen ayrışmalar (Ç3 tur 1 K4): eksik / değişmiş donmuş satır ve kaynak izi — "Kural Değişikliği Farkı" bunları kural değişikliği diye adlandırmaz.
+    let rowsBroken = false;
+    let sourceChanged = false;
     const last = lastDone();
     if (last) {
       const seen = visibleTotals(cover);
-      if (seen.lines !== Number(last.state_lines) || seen.debit !== Number(last.state_debit) || seen.credit !== Number(last.state_credit) || seen.weight !== Number(last.state_weight)) {
-        problems.push(`Donmuş satırlar eksik ya da değişmiş (görünen ${seen.lines} satır, borç ${seen.debit / 100}, alacak ${seen.credit / 100}; kayıtlı ${last.state_lines} satır)`);
+      if (!totalsMatch(seen, last)) {
+        rowsBroken = true;
+        const tl = minor => roundMoney(minor / 100);
+        problems.push(seen.lines < Number(last.state_lines)
+          ? `Donmuş Defterde Eksik Satır: ${dayText(cover) || "kilitli dönem"} ve öncesinde ${seen.lines} satır görünüyor, ${last.state_lines} satır donmuştu (eski sürümün Şirket Verisini Sıfırla'sı ya da dış silme); program yeniden açılınca kilitli dönem yeniden donar`
+          : `Donmuş Defterin Satırları Değişmiş: ${dayText(cover) || "kilitli dönem"} ve öncesinde ${seen.lines} satır (borç ${tl(seen.debit)}, alacak ${tl(seen.credit)}) görünüyor, donan ${last.state_lines} satır (borç ${tl(Number(last.state_debit))}, alacak ${tl(Number(last.state_credit))}) (dış yazım); program yeniden açılınca kilitli dönem yeniden donar`);
       }
       if (last.kind === "freeze" && last.through === cover && last.source_digest && lockDigestOf(store, cover, { version: last.digest_version || LOCK_SQL_VERSION }) !== last.source_digest) {
+        sourceChanged = true;
         problems.push(`Donmuş Dönemin Kaynağı Değişti: ${dayText(cover)} ve öncesinin kaynak kayıtları dondurmadan sonra kapının görmediği bir yolla (eski sürüm, dış yazım) değişti; Kilidi Aç → Yeniden Kilitle ile güncel veri donar`);
       }
     }
     // Uyarı düzeyi: bu denetim kapıda (COMMIT) koşmaz, yeni işlemleri engellemez; çözümü kullanıcının elindedir (Kilidi Aç → Yeniden Kilitle).
     const items = [{
       code: "ledger:snapshot",
-      name: `Donmuş Defter (${cover ? `${dayText(cover)} ve öncesi` : "yok"})${pending ? " · Dondurma Sürüyor" : ""}`,
+      name: `Donmuş Defter (${cover ? `${dayText(cover)} ve Öncesi` : "Yok"})${pending ? (unknownRule ? " · Dondurma Bekliyor" : " · Dondurma Sürüyor") : ""}`,
       ok: problems.length === 0,
       count: problems.length,
       sample: problems.slice(0, 5),
-      ...(problems.length ? { severity: "warning", hint: "Kilitli dönemin raporları donmuş defterden okunur. Kaynak kayıtlar kilitliyken değiştiyse (eski sürüm, dış yazım) yönetici kilidi açıp yeniden kilitleyince güncel veri donar." } : {}),
+      ...(problems.length
+        ? {
+            severity: "warning",
+            hint: rowsBroken
+              ? "Kilitli dönemin donmuş defterinde eksik ya da değişmiş satır var; o dönemin raporları eksik görünebilir. Program yeniden açılınca kilitli dönem yeniden donar; yönetici kilidi açıp yeniden kilitleyerek de dondurabilir."
+              : "Kilitli dönemin raporları donmuş defterden okunur. Kaynak kayıtlar kilitliyken değiştiyse (eski sürüm, dış yazım) yönetici kilidi açıp yeniden kilitleyince güncel veri donar.",
+          }
+        : {}),
     }];
     if (cover) {
       const diff = ruleDiff({ live });
@@ -684,13 +914,13 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
       }
       items.push({
         code: "ledger:rule-diff",
-        name: `Kural Değişikliği Farkı (Kilitli Dönem: ${dayText(cover)} ve öncesi)`,
+        name: `Kural Değişikliği Farkı (Kilitli Dönem: ${dayText(cover)} ve Öncesi)`,
         ok: diff.count === 0,
         count: diff.count,
         difference: [...byAccount.values()].reduce((sum, row) => sum + Math.abs(row.differenceMinor), 0) / 200,
         sample: diff.sample,
         breakdown: [...byAccount.values()].filter(row => row.differenceMinor),
-        ...(diff.count ? { severity: "warning", hint: "Defter kuralı program sürümüyle değişti. Kilitli dönemin raporları donmuş defterden okunur, değişmez; fark Kural Farkı Düzeltme Fişi ile ilk açık güne alınır." } : {}),
+        ...(diff.count ? { severity: "warning", hint: ruleDiffHint({ rowsBroken, sourceChanged }) } : {}),
       });
     }
     return items.filter(item => includeHidden || !item.ok);
@@ -710,7 +940,7 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
     if (current) await current.catch(() => {});
   }
 
-  return { state, status, entries, book, trial, lockChanged, freezeSync, purgeStale, runPending, digestOf, repairOnOpen, ruleDiff, checks, cancel, close, coverage, journalOrder };
+  return { state, status, entries, book, trial, lockChanged, freezeSync, purgeStale, runPending, digestOf, repairOnOpen, ruleDiff, checks, cancel, close, coverage, journalOrder, ruleVersions: () => Object.keys(rules) };
 }
 
 /** İç API hata biçimi (uçlar için). */

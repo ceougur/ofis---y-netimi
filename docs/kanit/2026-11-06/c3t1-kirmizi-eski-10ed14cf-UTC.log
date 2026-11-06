@@ -1,0 +1,390 @@
+TAP version 13
+# Subtest: 2.5.0 Ç3 tur 1 — önbellek, aynı gün / başka gün yeniden kilit, iletiler, ara dilim
+    # Subtest: ORTA-1: Şirket Verisini Sıfırla + aynı güne yeniden kilitten sonra Hesap Planı Mizanı (uç ve Rapor Merkezi) YENİ verinin toplamını gösterir (önbellek son koşunun kimliğiyle)
+    not ok 1 - ORTA-1: Şirket Verisini Sıfırla + aynı güne yeniden kilitten sonra Hesap Planı Mizanı (uç ve Rapor Merkezi) YENİ verinin toplamını gösterir (önbellek son koşunun kimliğiyle)
+      ---
+      duration_ms: 1858.36072
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-eski-10ed14cf/test/donmus-defter-tur1-250.test.mjs:81:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Şirket Verisini Sıfırla + aynı güne yeniden kilitten sonra mizan eski veriyi gösteriyor (önbellek): 1000 ≠ canlı 5000
+        
+        1000 !== 5000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 5000
+      actual: 1000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-eski-10ed14cf/test/donmus-defter-tur1-250.test.mjs:99:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: ORTA-3: göçün / onarımın bekleyen 2.4.9 koşusu varken AYNI güne yeniden kilit — koşu kendi kuralıyla (2.4.9) sürer, güncel kuralla yeni koşu açılmaz
+    not ok 2 - ORTA-3: göçün / onarımın bekleyen 2.4.9 koşusu varken AYNI güne yeniden kilit — koşu kendi kuralıyla (2.4.9) sürer, güncel kuralla yeni koşu açılmaz
+      ---
+      duration_ms: 1423.156657
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-eski-10ed14cf/test/donmus-defter-tur1-250.test.mjs:113:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bekleyen 2.4.9 koşusu aynı güne yeniden kilitte bırakıldı: [{"no":1,"kind":"freeze","state":"abandoned","fromDate":"","through":"2026-12-31","rule":"2.4.9","reason":"repair"},{"no":2,"kind":"freeze","state":"done","fromDate":"","through":"2026-12-31","rule":"2.5.0","reason":"lock"}]
+        
+        true !== false
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      actual: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-eski-10ed14cf/test/donmus-defter-tur1-250.test.mjs:119:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ORTA-3 ailesi: bekleyen 2.4.9 koşusu varken kilit İLERLETİLİNCE koşu 2.4.9 ile tamamlanır, kalan dönem güncel kuralla; GERİ ÇEKİLİNCE (koşunun içine) kısa koşu yine 2.4.9
+    not ok 3 - ORTA-3 ailesi: bekleyen 2.4.9 koşusu varken kilit İLERLETİLİNCE koşu 2.4.9 ile tamamlanır, kalan dönem güncel kuralla; GERİ ÇEKİLİNCE (koşunun içine) kısa koşu yine 2.4.9
+      ---
+      duration_ms: 1495.823521
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-eski-10ed14cf/test/donmus-defter-tur1-250.test.mjs:131:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ilerletilen kilit eski kurallı dönemi güncel kurala geçirdi: [{"no":1,"kind":"freeze","state":"abandoned","fromDate":"","through":"2026-06-30","rule":"2.4.9","reason":"repair"},{"no":2,"kind":"freeze","state":"done","fromDate":"","through":"2026-12-31","rule":"2.5.0","reason":"lock"}]
+        + actual - expected
+        
+          [
+            {
+              from: '',
+        -     no: 1,
+        -     reason: 'repair',
+        -     rule: '2.4.9',
+        -     through: '2026-06-30'
+        -   },
+        -   {
+        -     from: '2026-06-30',
+              no: 2,
+              reason: 'lock',
+              rule: '2.5.0',
+              through: '2026-12-31'
+            }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          no: 1
+          from: ''
+          through: '2026-06-30'
+          rule: '2.4.9'
+          reason: 'repair'
+        1:
+          no: 2
+          from: '2026-06-30'
+          through: '2026-12-31'
+          rule: '2.5.0'
+          reason: 'lock'
+      actual:
+        0:
+          no: 2
+          from: ''
+          through: '2026-12-31'
+          rule: '2.5.0'
+          reason: 'lock'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-eski-10ed14cf/test/donmus-defter-tur1-250.test.mjs:137:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ORTA-3 ailesi (eşzamanlı): bekleyen 2.4.9 koşusu varken kapanış fişi kilidi ilerletir (postAll lockThrough) — koşu 2.4.9 ile, kalan dönem güncel kuralla, ikisi aynı işlemde
+    not ok 4 - ORTA-3 ailesi (eşzamanlı): bekleyen 2.4.9 koşusu varken kapanış fişi kilidi ilerletir (postAll lockThrough) — koşu 2.4.9 ile, kalan dönem güncel kuralla, ikisi aynı işlemde
+      ---
+      duration_ms: 1411.88278
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-eski-10ed14cf/test/donmus-defter-tur1-250.test.mjs:157:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        eşzamanlı kilit eski kurallı dönemi güncel kurala geçirdi: [{"no":1,"kind":"freeze","state":"abandoned","fromDate":"","through":"2026-06-30","rule":"2.4.9","reason":"repair"},{"no":2,"kind":"freeze","state":"done","fromDate":"","through":"2026-12-31","rule":"2.5.0","reason":"voucher-closing"}]
+        + actual - expected
+        
+          [
+            {
+              from: '',
+        -     no: 1,
+        -     reason: 'repair',
+        -     rule: '2.4.9',
+        -     through: '2026-06-30'
+        -   },
+        -   {
+        -     from: '2026-06-30',
+              no: 2,
+              reason: 'voucher-closing',
+              rule: '2.5.0',
+              through: '2026-12-31'
+            }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          no: 1
+          from: ''
+          through: '2026-06-30'
+          rule: '2.4.9'
+          reason: 'repair'
+        1:
+          no: 2
+          from: '2026-06-30'
+          through: '2026-12-31'
+          rule: '2.5.0'
+          reason: 'voucher-closing'
+      actual:
+        0:
+          no: 2
+          from: ''
+          through: '2026-12-31'
+          rule: '2.5.0'
+          reason: 'voucher-closing'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-eski-10ed14cf/test/donmus-defter-tur1-250.test.mjs:164:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ORTA-3 ailesi: kuralı bu programda olmayan bekleyen koşu güncel kurala GEÇMEZ, yarım donmaz — ilerlemede ve Mutabakat Testi'nde görünür; eşzamanlı kilit düşer; kilit kaldırılınca bırakılır
+    not ok 5 - ORTA-3 ailesi: kuralı bu programda olmayan bekleyen koşu güncel kurala GEÇMEZ, yarım donmaz — ilerlemede ve Mutabakat Testi'nde görünür; eşzamanlı kilit düşer; kilit kaldırılınca bırakılır
+      ---
+      duration_ms: 1460.28324
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-eski-10ed14cf/test/donmus-defter-tur1-250.test.mjs:173:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bilinmeyen kuralın bekleyen koşusu güncel kurala geçti: [{"no":1,"kind":"freeze","state":"abandoned","fromDate":"","through":"2026-12-31","rule":"9.9.9","reason":"lock"},{"no":2,"kind":"freeze","state":"done","fromDate":"","through":"2026-12-31","rule":"2.5.0","reason":"lock"}]
+        + actual - expected
+        
+          [
+            [
+              1,
+        +     'abandoned',
+        -     'pending',
+              '9.9.9'
+            ],
+        +   [
+        +     2,
+        +     'done',
+        +     '2.5.0'
+        +   ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 1
+          1: 'pending'
+          2: '9.9.9'
+      actual:
+        0:
+          0: 1
+          1: 'abandoned'
+          2: '9.9.9'
+        1:
+          0: 2
+          1: 'done'
+          2: '2.5.0'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-eski-10ed14cf/test/donmus-defter-tur1-250.test.mjs:180:14)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: K4: eksik donmuş satır ayrı iletiyle; 'Kural Değişikliği Farkı' nedeni bilinmeyende tarafsız, nedeni biliniyorsa onu söyler; denetim adları Yazım düzeninde
+    not ok 6 - K4: eksik donmuş satır ayrı iletiyle; 'Kural Değişikliği Farkı' nedeni bilinmeyende tarafsız, nedeni biliniyorsa onu söyler; denetim adları Yazım düzeninde
+      ---
+      duration_ms: 1505.145111
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-eski-10ed14cf/test/donmus-defter-tur1-250.test.mjs:210:3'
+      failureType: 'testCodeFailure'
+      error: 'Yazım düzeni (parantez içi): Donmuş Defter (31.12.2026 ve öncesi)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'öncesi'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-eski-10ed14cf/test/donmus-defter-tur1-250.test.mjs:219:135)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: §5 kural kayıt defteri: RULE_HISTORY'nin son öğesi güncel kural, önceki her kuralın kopyası (ledger-rule-<sürüm>/) ve kayıt defteri girdisi var; her kuralın bekleyen koşusu (iş parçacığında) kendi kuralıyla donar
+    not ok 7 - §5 kural kayıt defteri: RULE_HISTORY'nin son öğesi güncel kural, önceki her kuralın kopyası (ledger-rule-<sürüm>/) ve kayıt defteri girdisi var; her kuralın bekleyen koşusu (iş parçacığında) kendi kuralıyla donar
+      ---
+      duration_ms: 1.128198
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-eski-10ed14cf/test/donmus-defter-tur1-250.test.mjs:259:3'
+      failureType: 'testCodeFailure'
+      error: 'RULE_HISTORY yok (kural sürüm geçmişi)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-eski-10ed14cf/test/donmus-defter-tur1-250.test.mjs:261:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: DÜŞÜK-3 (ders 47): göç / onarım penceresinde ara dilim (2.4.9) koşu başına bir kez kurulur — çıktı önbelleksiz yolla birebir; yazım, kural farkı ve işlem içi okuma yeniden kurar; kilitli yılın Yevmiye Defteri güncel türetme kurmaz
+    not ok 8 - DÜŞÜK-3 (ders 47): göç / onarım penceresinde ara dilim (2.4.9) koşu başına bir kez kurulur — çıktı önbelleksiz yolla birebir; yazım, kural farkı ve işlem içi okuma yeniden kurar; kilitli yılın Yevmiye Defteri güncel türetme kurmaz
+      ---
+      duration_ms: 1224.842774
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-eski-10ed14cf/test/donmus-defter-tur1-250.test.mjs:289:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        göç penceresinde kilitli yılın Yevmiye Defteri güncel türetme de kurdu (iki tam türetme)
+        
+        1 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 1
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-eski-10ed14cf/test/donmus-defter-tur1-250.test.mjs:308:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..8
+not ok 1 - 2.5.0 Ç3 tur 1 — önbellek, aynı gün / başka gün yeniden kilit, iletiler, ara dilim
+  ---
+  duration_ms: 10383.207647
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-eski-10ed14cf/test/donmus-defter-tur1-250.test.mjs:64:1'
+  failureType: 'subtestsFailed'
+  error: '8 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 Ç3 tur 1 — ORTA-2 / ORTA-3 açılış (dosya kapatılıp ham bağlantıyla değiştirilir, yeniden açılır)
+    # Subtest: ORTA-2: eski sürüm donmuş satırları silip AYNI güne yeniden kilitlediyse açılış onarımı kapsamı indirir, kilitli yıl GAP_RULE (2.4.9) ile yeniden donar — Yevmiye Defteri ve Hesap Planı Mizanı dolu, Mutabakat Testi tutarlı
+    not ok 1 - ORTA-2: eski sürüm donmuş satırları silip AYNI güne yeniden kilitlediyse açılış onarımı kapsamı indirir, kilitli yıl GAP_RULE (2.4.9) ile yeniden donar — Yevmiye Defteri ve Hesap Planı Mizanı dolu, Mutabakat Testi tutarlı
+      ---
+      duration_ms: 1720.377629
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-eski-10ed14cf/test/donmus-defter-tur1-250.test.mjs:421:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kilitli yılın Yevmiye Defteri boş donmuş defterden okunuyor (0 satır, canlı 12)
+        
+        0 !== 12
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 12
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-eski-10ed14cf/test/donmus-defter-tur1-250.test.mjs:434:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ORTA-2 (ileri kilit): eski sürüm satırları silip kilidi İLERLETTİYSE eski kapsamın satırları da yeniden donar (05.05 satırı kaybolmaz)
+    not ok 2 - ORTA-2 (ileri kilit): eski sürüm satırları silip kilidi İLERLETTİYSE eski kapsamın satırları da yeniden donar (05.05 satırı kaybolmaz)
+      ---
+      duration_ms: 1974.062944
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-eski-10ed14cf/test/donmus-defter-tur1-250.test.mjs:446:3'
+      failureType: 'testCodeFailure'
+      error: "eski kapsamın (30.06'ya kadar) satırı kayıp"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-eski-10ed14cf/test/donmus-defter-tur1-250.test.mjs:461:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ORTA-2 (sağlama noktası): yalnız son koşunun satırları silindiyse kapsam sağlam son koşunun gününe iner; önceki koşunun satırları (güncel kural) korunur, kalan dönem GAP_RULE ile donar
+    not ok 3 - ORTA-2 (sağlama noktası): yalnız son koşunun satırları silindiyse kapsam sağlam son koşunun gününe iner; önceki koşunun satırları (güncel kural) korunur, kalan dönem GAP_RULE ile donar
+      ---
+      duration_ms: 1744.161113
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-eski-10ed14cf/test/donmus-defter-tur1-250.test.mjs:471:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        son koşunun satırları eksik okunuyor (6 / 12)
+        
+        6 !== 12
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 12
+      actual: 6
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-eski-10ed14cf/test/donmus-defter-tur1-250.test.mjs:490:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ORTA-3 ailesi (yarıda kesilme): bekleyen 2.4.9 koşusu sürerken kilit ilerletildi ve dondurma kesildi → açılışta koşu 2.4.9 ile sürer, kalan dönem (ilerletme izi) güncel kuralla donar
+    not ok 4 - ORTA-3 ailesi (yarıda kesilme): bekleyen 2.4.9 koşusu sürerken kilit ilerletildi ve dondurma kesildi → açılışta koşu 2.4.9 ile sürer, kalan dönem (ilerletme izi) güncel kuralla donar
+      ---
+      duration_ms: 1371.599766
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-eski-10ed14cf/test/donmus-defter-tur1-250.test.mjs:502:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bekleyen 2.4.9 koşusu ilerletilen kilitte bırakıldı: [{"no":1,"kind":"freeze","state":"abandoned","fromDate":"","through":"2026-06-30","rule":"2.4.9","reason":"repair"},{"no":2,"kind":"freeze","state":"pending","fromDate":"","through":"2026-12-31","rule":"2.5.0","reason":"lock"}]
+        
+        2 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 2
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-eski-10ed14cf/test/donmus-defter-tur1-250.test.mjs:516:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 2 - 2.5.0 Ç3 tur 1 — ORTA-2 / ORTA-3 açılış (dosya kapatılıp ham bağlantıyla değiştirilir, yeniden açılır)
+  ---
+  duration_ms: 6942.783357
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-eski-10ed14cf/test/donmus-defter-tur1-250.test.mjs:373:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 12
+# suites 2
+# pass 0
+# fail 12
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 18057.388055

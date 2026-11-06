@@ -1,0 +1,6 @@
+ÖNCE: kasa(100) 2026 bakiye = 1000 koşular [{"no":1,"kind":"freeze","state":"done","through":"2026-12-31"}]
+SONRA: koşular [{"no":1,"kind":"freeze","state":"done","through":"2026-12-31"}]
+SONRA: donmuş satırlar [{"account":"100","debit_minor":500000,"credit_minor":0},{"account":"649","debit_minor":0,"credit_minor":500000}]
+SONRA: API mizanı kasa(100) = 1000 | canlı türetme kasa(100) = 5000
+RAPOR (varsa): ["100","Kasa (Nakit)","0,00 TL","1.000,00 TL","0,00 TL","1.000,00 TL","Borç"]
+SONUÇ: HATA — mizan önbellekten eski şirket verisini döndürdü (1000 ≠ 5000)
