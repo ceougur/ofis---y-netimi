@@ -47,9 +47,9 @@ export async function dumpRepair(app, { hash = false, screen = false, password =
   const candidates = store.all(CANDIDATE_SQL);
   out.aday = candidates.length;
   if (screen) {
-    // Toplu yol: 8'den çok carili satır listesi (BATCH_ACCOUNTS) → allPaymentStates; bütün faturalar.
-    if (new Set(all.map(row => row.accountId)).size <= 8) throw new Error("eleme denetimi için 8'den çok carili veri gerekir");
-    const batch = invoices.paymentStates(all);
+    // Onarımın elemesi (repairScreen: adayların carileri, parça parça, toplu kapama kuralı) ↔ cari başına yol (paymentStates([satır]); eski onarımın okuması).
+    if (!invoices.repairScreen) throw new Error("eleme denetimi yeni kod ister (repairScreen yok)");
+    const batch = invoices.repairScreen(candidates.map(row => row.id));
     let differ = 0;
     const samples = [];
     for (const row of candidates) {

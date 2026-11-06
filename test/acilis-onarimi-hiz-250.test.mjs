@@ -96,4 +96,23 @@ describe("2.5.0 AH — açılış onarımı: öğe başına ağır okuma yok, ç
     if (!expected.mutabakat.ok) problems.push("beklenen dökümde Mutabakat Testi tutarsız");
     assert.deepEqual(problems, [], problems.join("\n"));
   });
+
+  it("parça parça eleme: carileri 7'şerli parçalarla okuyan eleme, tek parçalık elemeyle ve cari başına yolla her adayda aynı (parça sınırında cari düşmez)", () => {
+    const invoices = app.context.invoices;
+    const ids = app.store.all(CANDIDATE_SQL).map(row => row.id);
+    const accounts = new Set(app.store.all(CANDIDATE_SQL).map(row => row.accountId));
+    assert.ok(accounts.size > 14, `en az üç parça için 14'ten çok cari gerekir (${accounts.size})`);
+    const whole = invoices.repairScreen(ids);
+    const parts = invoices.repairScreen(ids, { chunk: 7 });
+    const problems = [];
+    if (whole.size !== ids.length || parts.size !== ids.length) problems.push(`durum sayısı: tek parça ${whole.size}, 7'şerli ${parts.size}, aday ${ids.length}`);
+    for (const row of app.store.all(CANDIDATE_SQL)) {
+      const exact = invoices.paymentStates([row]).get(row.id);
+      for (const [label, map] of [["tek parça", whole], ["7'şerli", parts]]) {
+        const got = map.get(row.id);
+        if (Number(got?.open) !== Number(exact?.open) || Number(got?.excess || 0) !== Number(exact?.excess || 0)) problems.push(`${label} ${row.id}: ${JSON.stringify({ open: got?.open, excess: got?.excess })} ↔ cari başına ${JSON.stringify({ open: exact?.open, excess: exact?.excess })}`);
+      }
+    }
+    assert.deepEqual(problems, [], problems.slice(0, 10).join("\n"));
+  });
 });
