@@ -802,9 +802,12 @@
         // K8: 409 plan-paid / plan-overpay → yetkili "Fazlasını Avans Yaz" derse overpay:true ile (istek kimliği aynı; bayrak içerik sayılmaz) yeniden
         // gönderilir ve Benzer İşlem / eksi bakiye soruları (withConfirms) sürer. Vazgeç ya da yetkisiz: sunucunun metni formda kalır.
         let overpay = false;
+        // 2.5.0 BİRLEŞİK TUR 2 (iyimser kilit; sunucu lib/row-version.mjs): düzeltmede formun AÇILDIĞI andaki hareketin sürümü (updatedAt; hiç düzeltilmemişse
+        // ""). Arada başka biri aynı hareketi düzelttiyse 409 plan-entry-stale: formdaki eski tutar öbür kişinin düzeltmesini sessizce ezmez.
+        const version = entry ? { updatedAt: entry.updatedAt || "" } : {};
         const send = async flags => {
           try {
-            return await HOF.api(url, { method: entry ? "PUT" : "POST", body: { ...body, ...flags, ...(overpay ? { overpay: true } : {}) }, requestId });
+            return await HOF.api(url, { method: entry ? "PUT" : "POST", body: { ...body, ...flags, ...(overpay ? { overpay: true } : {}), ...version }, requestId });
           } catch (error) {
             const code = error?.data?.code;
             if ((code === "plan-paid" || code === "plan-overpay") && !overpay && canManage()) {
@@ -816,7 +819,15 @@
             throw error;
           }
         };
-        const result = HOF.bank?.withConfirms ? await HOF.bank.withConfirms(send) : await send({});
+        let result;
+        try {
+          result = HOF.bank?.withConfirms ? await HOF.bank.withConfirms(send) : await send({});
+        } catch (error) {
+          // Hareket bu arada düzeltildi (409) ya da silindi (404): kart güncel hâle yenilenir, sunucunun iletisi ("… kaydedilmedi …") formda görünür; form
+          // kendiliğinden yeniden göndermez.
+          if (entry && ((error?.status === 409 && error?.data?.code === "plan-entry-stale") || error?.status === 404) && modal) loadPlan(plan.id, { quiet: true }).catch(() => null);
+          throw error;
+        }
         if (result.replayed) {
           applyPlan(result);
           HOF.toast("Bu işlem zaten kaydedildi; ikinci kez yazılmadı.", { type: "info" });
