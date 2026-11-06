@@ -1,0 +1,396 @@
+TAP version 13
+# (node:29404) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 BİRLEŞİK TUR 3 — YAN-A Kasa Açılış Bakiyesi formu
+    # Subtest: A formu açar, B açılışı 5.000 → 4.000 düzeltir, A yalnız tarihi değiştirip formdaki 5.000'le kaydeder → 409 cash-opening-stale; açılış 4.000 / B'nin tarihi, A yazmadı
+    not ok 1 - A formu açar, B açılışı 5.000 → 4.000 düzeltir, A yalnız tarihi değiştirip formdaki 5.000'le kaydeder → 409 cash-opening-stale; açılış 4.000 / B'nin tarihi, A yazmadı
+      ---
+      duration_ms: 127.493954
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:148:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        A'nın eskimiş formu 409 almalı (gelen 200 {"id":"cash-399aff1c-7ae5-451a-9224-932ad7cf321e","created":false,"opening":{"kind":"in","amount":5000,"date":"2026-08-31","description":"Açılış Bakiyesi","method":"cash","id":"cash-399aff1c-7ae5-451a); veri tabanında [{"id":"cash-399aff1c-7ae5-451a-9224-932ad7cf321e","amount":5000,"date":"2026-08-31","updatedBy":"user-50ef7245-d817-4bc5-a07c-4d7c96ea4871"}]
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:158:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: açılış YOKKEN açılan form: B arada 3.000 girer, A 7.000 gönderir → 409; tek açılış 3.000
+    not ok 2 - açılış YOKKEN açılan form: B arada 3.000 girer, A 7.000 gönderir → 409; tek açılış 3.000
+      ---
+      duration_ms: 77.930882
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:165:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        açılışsız açılan eskimiş form 409 almalı (gelen 200); veri tabanında [{"id":"cash-0ef06fc5-233b-4b58-a50f-4a81edd21634","amount":7000,"date":"2026-09-01","updatedBy":"user-50ef7245-d817-4bc5-a07c-4d7c96ea4871"}]
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:172:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: form açılışla açıldı, B açılışı SİLDİ, A kaydeder → 409; yeni açılış açılmaz
+    not ok 3 - form açılışla açıldı, B açılışı SİLDİ, A kaydeder → 409; yeni açılış açılmaz
+      ---
+      duration_ms: 97.712759
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:177:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        silinmiş açılışın eskimiş formu 409 almalı (gelen 200); veri tabanında [{"id":"cash-7d2667cf-9e66-4abd-b9b4-b03c79640039","amount":2500,"date":"2026-09-01","updatedBy":null}]
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:183:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Kasa Engelle: eskimiş form açılışı düşürüp Kasa'yı eksiye düşürecek olsa da önce 409 cash-opening-stale (yanıltıcı Kasa iletisi önce çıkmaz)
+    not ok 4 - Kasa Engelle: eskimiş form açılışı düşürüp Kasa'yı eksiye düşürecek olsa da önce 409 cash-opening-stale (yanıltıcı Kasa iletisi önce çıkmaz)
+      ---
+      duration_ms: 106.00132
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:188:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        eskimiş formda önce sürüm iletisi (gelen cash-blocked: Bu tahsilat 6.000,00 TL'den 1,00 TL'ye düzeltilince Nakit Kasa'dan 5.999,00 TL düşer; Nakit Kasa 100,00 TL iken -5.899,00 TL olur. Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi).)
+        + actual - expected
+        
+        + 'cash-blocked'
+        - 'cash-opening-stale'
+                ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'cash-opening-stale'
+      actual: 'cash-blocked'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:202:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: GERİLEME: sürüm göndermeyen istemci eskisi gibi yazar; güncel formla düzeltme 200, kendi kaydından sonra ardışık ikinci düzeltme de 200; değişmeyen gövde 'değişiklik yok'
+    not ok 5 - GERİLEME: sürüm göndermeyen istemci eskisi gibi yazar; güncel formla düzeltme 200, kendi kaydından sonra ardışık ikinci düzeltme de 200; değişmeyen gövde 'değişiklik yok'
+      ---
+      duration_ms: 82.479386
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:206:3'
+      failureType: 'testCodeFailure'
+      error: 'ön koşul: kendi düzeltmesi sürümü ilerletti'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: ''
+      operator: 'notStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:219:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: İKİNCİ SÜREÇ: dış bağlantı yazım kilidini tutarken açılışı 8.000 yapar; A'nın düzeltmesi kilit alındıktan sonra GÜNCEL sürümü görür → 409, 8.000 durur
+    not ok 6 - İKİNCİ SÜREÇ: dış bağlantı yazım kilidini tutarken açılışı 8.000 yapar; A'nın düzeltmesi kilit alındıktan sonra GÜNCEL sürümü görür → 409, 8.000 durur
+      ---
+      duration_ms: 803.020606
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:228:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kilitten sonra güncel sürüm okunmalı (gelen 200 ); veri tabanında [{"id":"cash-44c589af-d3c9-4484-b5c7-d62366428c39","amount":5500,"date":"2026-09-01","updatedBy":"user-50ef7245-d817-4bc5-a07c-4d7c96ea4871"}]
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:237:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..6
+not ok 1 - 2.5.0 BİRLEŞİK TUR 3 — YAN-A Kasa Açılış Bakiyesi formu
+  ---
+  duration_ms: 2575.850332
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:141:1'
+  failureType: 'subtestsFailed'
+  error: '6 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 3 — YAN-B taksit düzelt (plan_items)
+    # Subtest: A formu açar, B taksiti 500 → 300 yapar, A yalnız vadeyi değiştirip formdaki 500'le kaydeder → 409 plan-item-stale; taksit 300 / eski vade
+    not ok 1 - A formu açar, B taksiti 500 → 300 yapar, A yalnız vadeyi değiştirip formdaki 500'le kaydeder → 409 plan-item-stale; taksit 300 / eski vade
+      ---
+      duration_ms: 43.231488
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:250:3'
+      failureType: 'testCodeFailure'
+      error: 'taksitin sürümü kart yanıtında (items[].updatedAt)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:253:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: GÖVDE YOLDAYKEN: A'nın düzeltmesinin gövdesi beklenirken B taksiti düzeltir → karar işlemin içinde güncel taksitle: 409
+    not ok 2 - GÖVDE YOLDAYKEN: A'nın düzeltmesinin gövdesi beklenirken B taksiti düzeltir → karar işlemin içinde güncel taksitle: 409
+      ---
+      duration_ms: 381.097561
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:264:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        gövde yoldayken değişen taksit 409 (gelen 200); veri tabanında {"amount":500,"dueDate":"2026-11-04"}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:275:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: GERİLEME: sürümsüz (eski istemci) 200; güncel sürümle 200; kendi kaydından sonra ardışık ikinci düzeltme 200; silinmiş taksit 404
+    not ok 3 - GERİLEME: sürümsüz (eski istemci) 200; güncel sürümle 200; kendi kaydından sonra ardışık ikinci düzeltme 200; silinmiş taksit 404
+      ---
+      duration_ms: 73.059219
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:280:3'
+      failureType: 'testCodeFailure'
+      error: 'ön koşul: kendi düzeltmesi sürümü ilerletti'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      operator: 'notStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:288:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 2 - 2.5.0 BİRLEŞİK TUR 3 — YAN-B taksit düzelt (plan_items)
+  ---
+  duration_ms: 1715.700827
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:243:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 3 — 3a taksit kartı (plans) ve stok kartı (stock_items)
+    # Subtest: Taksit kartı: B tutarı 1.000 → 1.200 yapar, A yalnız notu değiştirip formdaki 1.000'le kaydeder → 409 plan-stale; kart 1.200, not boş
+    not ok 1 - Taksit kartı: B tutarı 1.000 → 1.200 yapar, A yalnız notu değiştirip formdaki 1.000'le kaydeder → 409 plan-stale; kart 1.200, not boş
+      ---
+      duration_ms: 77.942848
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:306:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        A'nın eskimiş formu 409 almalı (gelen 200); veri tabanında {"total":1000,"note":"A'nın notu"}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:312:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Taksit kartı: kart adı cari adıyla aynıyken cari yeniden adlandırılır (kartın adı da değişir, sürüm ilerler) → eskimiş kart formu 409; kartın yeni adı durur
+    not ok 2 - Taksit kartı: kart adı cari adıyla aynıyken cari yeniden adlandırılır (kartın adı da değişir, sürüm ilerler) → eskimiş kart formu 409; kartın yeni adı durur
+      ---
+      duration_ms: 69.485597
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:318:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kartın adı değişti; eskimiş form (eski adla) 409 almalı (gelen 200); kartın adı Tur3 Ortak Ad 3
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:328:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Taksit kartı GÖVDE YOLDAYKEN: B kartı düzeltir → karar işlemin içinde güncel kartla: 409 (kart isteğin başında okunan hâliyle denetlenmez)
+    not ok 3 - Taksit kartı GÖVDE YOLDAYKEN: B kartı düzeltir → karar işlemin içinde güncel kartla: 409 (kart isteğin başında okunan hâliyle denetlenmez)
+      ---
+      duration_ms: 380.107927
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:333:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        gövde yoldayken değişen kart 409 (gelen 200); veri tabanında {"total":1000,"note":"A yolda"}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:343:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Taksit kartı GERİLEME: sürümsüz 200; güncel sürümle 200 ve ardışık ikinci 200; Kartı Kapat (yalnız status, sürümsüz) 200; tahsilat kartın sürümünü ilerletmez
+    ok 4 - Taksit kartı GERİLEME: sürümsüz 200; güncel sürümle 200 ve ardışık ikinci 200; Kartı Kapat (yalnız status, sürümsüz) 200; tahsilat kartın sürümünü ilerletmez
+      ---
+      duration_ms: 156.368056
+      type: 'test'
+      ...
+    # Subtest: Stok kartı: B Satış Fiyatı'nı 15 → 20 yapar, A yalnız notu değiştirip kaydeder → 409 stock-item-stale; 20 durur
+    not ok 5 - Stok kartı: B Satış Fiyatı'nı 15 → 20 yapar, A yalnız notu değiştirip kaydeder → 409 stock-item-stale; 20 durur
+      ---
+      duration_ms: 43.11672
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:362:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        A'nın eskimiş formu 409 almalı (gelen 200); veri tabanında {"salePrice":15,"note":"A'nın notu"}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:368:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Stok kartı: form açıkken B fiyatlı ALIM girer (Alış Fiyatı 10 → 12) → A'nın eskimiş formu 409; Alış Fiyatı 12 durur
+    not ok 6 - Stok kartı: form açıkken B fiyatlı ALIM girer (Alış Fiyatı 10 → 12) → A'nın eskimiş formu 409; Alış Fiyatı 12 durur
+      ---
+      duration_ms: 47.859179
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:374:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        gelen 200; Alış Fiyatı 10
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:380:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Stok kartı GÖVDE YOLDAYKEN: B kartı düzeltir → 409 (güncel kartla)
+    not ok 7 - Stok kartı GÖVDE YOLDAYKEN: B kartı düzeltir → 409 (güncel kartla)
+      ---
+      duration_ms: 360.13514
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:385:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        gelen 200; veri tabanında {"salePrice":15,"note":"A yolda"}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:395:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Stok kartı GERİLEME: sürümsüz 200; güncel sürümle 200 ve ardışık ikinci 200; silinmiş ürün 404
+    ok 8 - Stok kartı GERİLEME: sürümsüz 200; güncel sürümle 200 ve ardışık ikinci 200; silinmiş ürün 404
+      ---
+      duration_ms: 94.326903
+      type: 'test'
+      ...
+    1..8
+not ok 3 - 2.5.0 BİRLEŞİK TUR 3 — 3a taksit kartı (plans) ve stok kartı (stock_items)
+  ---
+  duration_ms: 2575.825827
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-eski-3360687f/test/birlesik-tur3-yaris-250.test.mjs:299:1'
+  failureType: 'subtestsFailed'
+  error: '6 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..3
+# tests 17
+# suites 3
+# pass 2
+# fail 15
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7365.980594
