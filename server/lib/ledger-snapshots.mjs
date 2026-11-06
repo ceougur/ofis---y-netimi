@@ -31,6 +31,8 @@ export const FROZEN_TRACE = "ledger.snapshot.frozen";
 export const THAWED_TRACE = "ledger.snapshot.thawed";
 /** Eski kurallı (göç / onarım) bekleyen koşu sürerken bu programın kilidi ilerlettiği gün (yük { through, reason }): koşu tamamlanınca kalan dönem o güne kadar güncel kuralla donar. */
 export const EXTENDED_TRACE = "ledger.snapshot.extended";
+/** Açılış onarımının yeniden donma planı (yük { segments: [{ through, rule }] } — bu koşudan SONRAKİ dilimler; KULLANICI KARARI 06.11 S46 = A): continueAfter sürdürür. */
+export const PLAN_TRACE = "ledger.snapshot.plan";
 /**
  * Defter kuralının sürüm geçmişi, eskiden yeniye (tasarım notu §5). Son öğe güncel kuraldır (LEDGER_RULE_VERSION). Kural yükselince önceki güncel kural silinmez: türetmesi
  * server/lib/ledger-rule-<sürüm, noktasız>/ klasörüne AYNEN kopyalanır, kayıt defterine (createLedgerSnapshots rules ve dondurma iş parçacığı) eklenir, bu listeye yenisi
@@ -231,6 +233,11 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
   let current = null;
   let activeHandle = null;
   let progress = { running: false, phase: "", done: 0, total: 0, run: 0, error: "" };
+  // Ç3 tur 3 (YÜKSEK-1): bu denemede satırları YAZILAN koşu (iş parçacığı kipi; denemenin kendi temizliğinden sonra, ilk satırdan tamamlanana / durana kadar). Bu koşu bekledikçe
+  // satırlarını hiçbir silme yolu silmez (purgeStale, purgeStaleInTx). Bayat satır temizliği tek döngüdür (cleanup; çağıran sürenine katılır), ilerlemesi status().cleanup.
+  let writing = 0;
+  let cleanup = null;
+  let cleanupRemoved = 0;
   // Bu nesnenin kendi yazımları (donmuş satırlar, koşular, izler): ara dilim önbelleğinin anahtarı (middleKey) yalnız BAŞKA yazımlarla değişir — dondurma parçaları yazılırken düşmez.
   let ownChanges = 0;
   const write = (sql, ...args) => {
@@ -274,7 +281,8 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
       runs: Number(store.get("SELECT COUNT(*) AS n FROM ledger_snapshot_runs").n),
     };
   }
-  const status = () => ({ ...progress, coverage: coverage() });
+  // cleanup: bayat satır temizliği (geri çekilmiş dönem, bırakılmış / yarıda kesilmiş koşu) sürüyor mu, bu döngüde kaç satır silindi (Dönem Kilidi kartı; ORTA-1).
+  const status = () => ({ ...progress, coverage: coverage(), cleanup: { running: Boolean(cleanup), removed: cleanupRemoved } });
 
   /**
    * Donmuş maddeler birer birer (yevmiye biçimi, dondurma anındaki sıra): from ≤ tarih ≤ min(to, kapsam). Satırlar tek tek okunur (lib/lean-rows.mjs; ders 47 — store.all
@@ -449,7 +457,10 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
   }
   const abandon = run => write("UPDATE ledger_snapshot_runs SET state = 'abandoned', finished_at = ? WHERE no = ? AND state = 'pending'", now().toISOString(), run.no);
   const staleExists = () => Boolean(store.get(`SELECT 1 AS found FROM ledger_snapshots WHERE date > ${COVERAGE_SQL} LIMIT 1`));
-  const purgeStaleInTx = () => write(`DELETE FROM ledger_snapshots WHERE date > ${COVERAGE_SQL}`);
+  // Yazılan koşu hâlâ en son bekleyen koşu mu (öyleyse satırları korunur; bırakıldıysa / tamamlandıysa satırları bayattır ya da kapsam içindedir).
+  const keptRun = () => (writing && stillPending(writing) ? writing : 0);
+  // İşlemin içinde (kilit kancası, eşzamanlı kip): çağıranlar önce bekleyen koşuyu bırakır ya da tamamlar; yine de yazılan koşunun satırları (bekledikçe) silinmez (YÜKSEK-1).
+  const purgeStaleInTx = () => write(`DELETE FROM ledger_snapshots WHERE date > ${COVERAGE_SQL} AND run <> ?`, keptRun());
   /** Görünen donmuş satırların toplamları (kapsam içi). */
   const visibleTotals = (upper = coverage()) => {
     const row = store.get(`SELECT COUNT(*) AS lines, COALESCE(SUM(debit_minor), 0) AS debit, COALESCE(SUM(credit_minor), 0) AS credit, ${WEIGHT_SQL} AS weight FROM ledger_snapshots WHERE date <= ?`, upper);
@@ -484,7 +495,34 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
     return run;
   }
 
-  function complete(run, totals, digest, user) {
+  // Koşunun tablodaki satırlarının toplamları (birincil anahtar (run, run_seq) aralığı; Ç3 tur 3 YÜKSEK-1): koşu "tamam" sayılmadan önce yazılan sayaçla karşılaştırılır.
+  const RUN_TOTALS = `SELECT COUNT(*) AS lines, COALESCE(SUM(debit_minor), 0) AS debit, COALESCE(SUM(credit_minor), 0) AS credit, ${WEIGHT_SQL} AS weight FROM ledger_snapshots WHERE run = ? AND run_seq > ?`;
+  const VERIFY_CHUNK = 20_000;
+  const totalsOfRow = row => ({ lines: Number(row.lines), debit: Number(row.debit), credit: Number(row.credit), weight: Number(row.weight) });
+  /** İşlemin içinde (eşzamanlı kip: satırlar aynı işlemde yazıldı): tek toplam. */
+  const runTotalsInTx = no => totalsOfRow(store.get(RUN_TOTALS, no, 0));
+  /** İş parçacığı kipi: koşunun satırları 20.000'lik run_seq aralıklarıyla, aralar olay döngüsüne bırakılarak (1.000.000 satırlık şirkette ~2,7 M satır; ders 47). */
+  async function runTotalsInParts(no, upto) {
+    const sum = { lines: 0, debit: 0, credit: 0, weight: 0 };
+    for (let low = 0; ; low += VERIFY_CHUNK) {
+      if (halted()) throw new Cancelled("program kapanıyor");
+      const last = low + VERIFY_CHUNK >= upto;
+      const part = totalsOfRow(last ? store.get(RUN_TOTALS, no, low) : store.get(`${RUN_TOTALS} AND run_seq <= ?`, no, low, low + VERIFY_CHUNK));
+      sum.lines += part.lines;
+      sum.debit += part.debit;
+      sum.credit += part.credit;
+      sum.weight += part.weight;
+      if (last) return sum;
+      await yieldTick();
+    }
+  }
+
+  // table: koşunun tablodaki satırlarının toplamları (verilmezse işlemin içinde ölçülür). Yazılan sayaçla (totals) tutmuyorsa koşu TAMAMLANMAZ (görünür hata; koşu bekler,
+  // sonraki denemede baştan yazılır) — donmuş defter hiçbir zaman eksik satırla "tamam" olmaz (Ç3 tur 3 YÜKSEK-1).
+  function complete(run, totals, digest, user, table = runTotalsInTx(run.no)) {
+    if (!(table.lines === totals.lines && table.debit === totals.debit && table.credit === totals.credit && table.weight === totals.weight)) {
+      throw new Error(`Donmuş defter: koşunun tabloda ${table.lines} satırı var, ${totals.lines} satır yazılmıştı (eksik ya da değişmiş satır); dondurma tamamlanmadı, yeniden denenecek`);
+    }
     const prev = lastDone();
     const state = { lines: Number(prev?.state_lines || 0) + totals.lines, debit: Number(prev?.state_debit || 0) + totals.debit, credit: Number(prev?.state_credit || 0) + totals.credit, weight: Number(prev?.state_weight || 0) + totals.weight };
     const changed = write(
@@ -545,8 +583,9 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
       trace(EXTENDED_TRACE, pending.no, user, { through: target, reason });
       return { action: "freeze", run: pending };
     }
-    // Eşzamanlı: süren iş parçacığının yazdığı yarım satırlar (bayat) önce silinir; koşu kendi kuralıyla, kalan dönem güncel kuralla bu işlemde donar.
-    if (staleExists()) purgeStaleInTx();
+    // Eşzamanlı: süren iş parçacığının yazdığı yarım satırlar (bayat) önce silinir; koşu kendi kuralıyla, kalan dönem güncel kuralla bu işlemde donar. Koşuyu bu işlem
+    // devralır (aynı işlemde tamamlanır; iş parçacığı sonraki parçasında "koşu değişti" ile durur) → yazılan koşunun satırları da silinir, baştan yazılır.
+    if (staleExists()) write(`DELETE FROM ledger_snapshots WHERE date > ${COVERAGE_SQL}`);
     freezeInTx(pending, user);
     if (target === pending.through) return { action: "freeze", run: pending };
     const run = insertRun({ kind: "freeze", state: "pending", from: pending.through, through: target, rule: LEDGER_RULE_VERSION, reason, user });
@@ -563,6 +602,9 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
     if (!(lock > run.through)) return null;
     const extended = extendedOf(run.no);
     if (staleExists()) purgeStaleInTx();
+    // Açılış onarımının yeniden donma planı (S46 = A): sıradaki dilim kendi kuralıyla; ilerletme izi (varsa) yeni koşuya taşınır (plan bitince güncel kuralla sürer).
+    const plan = planTo(planOf(run.no), lock);
+    if (plan.length) return insertPlanned(plan, run.through, { extended: extended.through > run.through ? extended : null });
     if (extended.through > run.through) return insertRun({ kind: "freeze", state: "pending", from: run.through, through: extended.through < lock ? extended.through : lock, rule: LEDGER_RULE_VERSION, reason: extended.reason });
     log?.warn?.(`Donmuş defter: kilit (${lock}) ${run.through} gününün ötesinde (eski sürüm); aradaki dönem ${GAP_RULE} kuralıyla dondurulacak.`);
     return insertRun({ kind: "freeze", state: "pending", from: run.through, through: lock, rule: GAP_RULE, reason: "repair" });
@@ -585,17 +627,52 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
     return freezeInTx(insertRun({ kind: "freeze", state: "pending", from: cover, through, rule, reason, user }), user);
   }
 
-  /** Bayat satırlar (kapsamın üstü: geri çekilmiş dönem, yarım koşu) parça parça silinir; her parça ayrı küçük işlem. */
-  async function purgeStale() {
-    if (!ready()) return 0;
-    let removed = 0;
-    for (;;) {
-      if (halted()) return removed;
-      const n = store.tx(() => Number(write(`DELETE FROM ledger_snapshots WHERE (run, run_seq) IN (SELECT run, run_seq FROM ledger_snapshots WHERE date > ${COVERAGE_SQL} LIMIT ?)`, batch).changes) || 0);
-      removed += n;
-      if (n < batch) return removed;
-      await yieldTick();
-    }
+  /**
+   * Bayat satırlar (kapsamın üstü: geri çekilmiş dönem, bırakılmış ya da yarıda kesilmiş koşu) parça parça silinir; her parça ayrı küçük işlem. TEK döngü: süren varsa çağıran
+   * ona katılır (aynı söz). Dönüş: bu döngüde silinen satır.
+   * Ç3 tur 3 (YÜKSEK-1; dar kontrol: aynı güne yinelenen kilidin arka işi süren dondurmanın yazdığı satırları siliyordu — donmuş defter eksik, mizan sessizce yanlış): YAZILAN
+   * koşunun satırları silinmez. Her parçadan ÖNCE yeniden bakılır (tek seferlik "dondurma sürüyor mu" yetmez: döngü sürerken başlayan dondurma da korunur). Koşu bekledikçe
+   * kapsamın üstündeki satırların hepsi onundur (göç 47 tetikleyicisi: bayat satır varken freeze koşusu açılamaz; satır yalnız en son bekleyen koşuya eklenir) → yazılırken
+   * silinecek başka satır yoktur, döngü durur. Yazılmayan bekleyen koşunun satırları önceki (yarıda kesilmiş) denemesinindir: her deneme baştan yazar (run_seq 1'den), silinir.
+   */
+  function purgeStale() {
+    if (!ready()) return Promise.resolve(0);
+    if (cleanup) return cleanup;
+    cleanupRemoved = 0;
+    const loop = (async () => {
+      let removed = 0;
+      for (;;) {
+        if (halted()) return removed;
+        if (keptRun()) return removed;
+        const n = store.tx(() => Number(write(`DELETE FROM ledger_snapshots WHERE (run, run_seq) IN (SELECT run, run_seq FROM ledger_snapshots WHERE date > ${COVERAGE_SQL} AND run <> ? LIMIT ?)`, keptRun(), batch).changes) || 0);
+        removed += n;
+        cleanupRemoved = removed;
+        if (n < batch) return removed;
+        // YALNIZ TEST: temizliği tutar (büyük şirket benzetimi; ORTA-1).
+        await callHook("purge", { removed });
+        await yieldTick();
+      }
+    })();
+    const tracked = loop.finally(() => {
+      if (cleanup === tracked) cleanup = null;
+    });
+    cleanup = tracked;
+    return tracked;
+  }
+  /**
+   * Kilit bu güne konunca kilit kancası yeni bir freeze koşusu açacak ve kapsamın üstünde (yazılan koşununkiler dışında) satır var mı — açılış tetikleyicisi bayat satıra izin
+   * vermez; temizlik kilit işleminden ÖNCE parça parça yapılır (işlem içinde tek büyük DELETE yok; ders 47). lockChanged'in kararlarıyla aynı (aynı gün, eski kurallı koşunun
+   * ilerletilmesi → koşu açılmaz).
+   */
+  function lockNeedsCleanup(next) {
+    if (!ready()) return false;
+    const target = String(next || "");
+    const cover = coverage();
+    if (!(target > cover)) return false;
+    const pending = pendingRun();
+    if (pending && pending.through === target) return false;
+    if (pending && pending.rule_version !== LEDGER_RULE_VERSION && target >= pending.through) return false;
+    return Boolean(store.get(`SELECT 1 AS found FROM ledger_snapshots WHERE date > ${COVERAGE_SQL} AND run <> ? LIMIT 1`, keptRun()));
   }
 
   const stillPending = no => {
@@ -608,7 +685,9 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
     let handle = null;
     const publish = () => events?.publish?.("ledger.freeze", { run: run.no, phase: progress.phase, done: progress.done, total: progress.total, through: run.through });
     try {
+      // Önceki (yarıda kesilmiş) denemenin satırları: her deneme baştan yazar. Temizlik başka çağıranla paylaşıldıysa ve o arada bitmişse kalan için yeniden.
       await purgeStale();
+      while (!halted() && staleExists()) await purgeStale();
       if (halted() || !stillPending(run.no)) throw new Cancelled("koşu değişti");
       // Kuralı bu programda olmayan bekleyen koşu (daha yeni bir sürümün açtığı; Ç3 tur 1 ORTA-3 ailesi): güncel kurala GEÇİRİLMEZ, yarım dondurulmaz — koşu bekler, neden
       // ilerlemede ve Mutabakat Testi'nde ("Donmuş Defter") görünür; dönem o kuralı bilen sürümle açılınca donar. O zamana kadar raporlar o dönemi güncel kuralla okur.
@@ -626,6 +705,8 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
         let seq = 0;
         const own = { lines: 0, entries: 0, debit: 0, credit: 0, weight: 0 };
         let lastEntry = null;
+        // Bu denemenin satırları bundan sonra yazılır: koşu bekledikçe hiçbir silme yolu onlara dokunmaz (YÜKSEK-1).
+        writing = run.no;
         handle = activeHandle = startFreezeWorker({ dbPath, time: now().toISOString(), batchLines: batch, run: { no: run.no, from: run.from_date, through: run.through, rule: run.rule_version } }, {
           onBatch: async rows => {
             if (halted()) throw new Cancelled("program kapanıyor");
@@ -654,9 +735,12 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
         if (done.lines !== own.lines || done.debit !== own.debit || done.credit !== own.credit) throw new Error(`Donmuş defter: yazılan satırlar türetmeyle tutmuyor (${own.lines}/${done.lines})`);
         await callHook("before-done", { run: run.no });
         if (halted()) throw new Cancelled("program kapanıyor");
+        // Tablodaki satırlar yazılan sayaçla karşılaştırılır (YÜKSEK-1: sayaç tek başına "tamam" demez); parça parça, olay döngüsü kilitlenmez.
+        progress.phase = "doğrulama";
+        const table = await runTotalsInParts(run.no, seq);
         store.tx(() => {
           if (!stillPending(run.no)) throw new Cancelled("koşu değişti");
-          complete(run, { ...own, entries: Number(done.entries) || own.entries }, done.digest, null);
+          complete(run, { ...own, entries: Number(done.entries) || own.entries }, done.digest, null, table);
           continueAfter(run);
         });
         // Kapının kilit izi: dondurmanın anlık görüntüsünden (kilit o günse).
@@ -674,6 +758,7 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
         log?.warn?.(`Donmuş defter: ${run.through} dondurulamadı (${progress.error}); koşu bekliyor, sonraki denemede sürer.`);
       }
     } finally {
+      writing = 0;
       progress.running = false;
       handle?.terminate();
       activeHandle = null;
@@ -748,6 +833,67 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
    *  3) bekleyen koşu yoksa: kilit > kapsam → bekleyen koşu GAP_RULE kuralıyla; kilit < kapsam → thaw.
    * Dönüş: { action, pending, damaged } ya da null.
    */
+  /**
+   * Görünen donmuş defterin koşu bileşimi: her tarih aralığını en son hangi tamamlanmış freeze koşusu dondurdu ([{ from, through, no, rule }], artan, ardışık); geri çekmeler keser.
+   */
+  function composition() {
+    let segments = [];
+    for (const run of store.all("SELECT no, kind, from_date, through, rule_version FROM ledger_snapshot_runs WHERE state = 'done' ORDER BY no")) {
+      if (run.kind === "thaw") segments = segments.filter(segment => segment.from < run.through).map(segment => (segment.through > run.through ? { ...segment, through: run.through } : segment));
+      else segments.push({ from: run.from_date, through: run.through, no: run.no, rule: run.rule_version });
+    }
+    return segments;
+  }
+  /**
+   * Eksilen / değişen donmuş dönemin (floor, upper] yeniden donma planı ([{ through, rule }], artan; aynı kurallı ardışık dilimler birleşir). KULLANICI KARARI 06.11 S46 = A: o dönemi
+   * donduran koşunun dondurma izi (ledger.snapshot.frozen) duruyorsa (bu program dondurmuştu; eksilme eski sürüm DIŞI bir nedenle: dış silme, program hatası) koşunun KENDİ
+   * kuralıyla; iz yoksa (2.4.9'un Şirket Verisini Sıfırla'sı önce işlem geçmişini siler) S13 gereği GAP_RULE (2.4.9 kopyası).
+   */
+  function repairPlan(floor, upper) {
+    const plan = [];
+    for (const segment of composition()) {
+      if (segment.through <= floor || segment.from >= upper) continue;
+      const through = segment.through < upper ? segment.through : upper;
+      const traced = Boolean(store.get("SELECT 1 AS found FROM audit_events WHERE entity_id = ? AND type = ? LIMIT 1", ENTITY(segment.no), FROZEN_TRACE));
+      const rule = traced ? segment.rule : GAP_RULE;
+      if (plan.length && plan.at(-1).rule === rule) plan.at(-1).through = through;
+      else plan.push({ through, rule });
+    }
+    return plan;
+  }
+  /** Plan kilide göre: kilidin ötesindeki dilimler düşer, kilidi aşan dilim kilitte kesilir; gap: planın sonundan kilide kadar GAP_RULE dilimi eklenir (açılış onarımı). */
+  function planTo(plan, lock, { gap = false } = {}) {
+    const out = [];
+    for (const segment of plan) {
+      if (out.length && out.at(-1).through >= lock) break;
+      out.push({ through: segment.through < lock ? segment.through : lock, rule: segment.rule });
+    }
+    const end = out.length ? out.at(-1).through : "";
+    if (gap && lock > end) {
+      if (out.length && out.at(-1).rule === GAP_RULE) out.at(-1).through = lock;
+      else out.push({ through: lock, rule: GAP_RULE });
+    }
+    return out;
+  }
+  /** Koşunun kalan yeniden donma planı (PLAN_TRACE; yoksa []). */
+  const planOf = no => {
+    const row = store.get("SELECT payload_json FROM audit_events WHERE entity_id = ? AND type = ? ORDER BY rowid DESC LIMIT 1", ENTITY(no), PLAN_TRACE);
+    try {
+      const segments = JSON.parse(row?.payload_json || "{}").segments;
+      return Array.isArray(segments) ? segments.filter(segment => segment && typeof segment.through === "string" && typeof segment.rule === "string") : [];
+    } catch {
+      return [];
+    }
+  };
+  /** Planın ilk dilimiyle bekleyen koşu (from = kapsam); kalan dilimler koşunun izinde (continueAfter sürdürür). Dönüş: koşu. */
+  function insertPlanned(plan, from, { extended = null } = {}) {
+    const [first, ...rest] = plan;
+    const run = insertRun({ kind: "freeze", state: "pending", from, through: first.through, rule: first.rule, reason: "repair" });
+    if (rest.length) trace(PLAN_TRACE, run.no, null, { segments: rest });
+    if (extended && extended.through > run.through) trace(EXTENDED_TRACE, run.no, null, extended);
+    return run;
+  }
+
   function repairOnOpen() {
     if (!ready() || !canWrite()) return null;
     return store.tx(() => {
@@ -755,6 +901,8 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
       let pending = pendingRun();
       let action = "none";
       const damaged = damagedFrom();
+      // S46 = A: yeniden donma planı geri çekmeden ÖNCE (koşu bileşimi geri çekmeyle kesilir).
+      const plan = damaged ? repairPlan(damaged.through, coverage()) : [];
       if (damaged) {
         if (pending) abandon(pending);
         pending = null;
@@ -777,9 +925,11 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
       }
       if (!pendingRun() && lock > cover) {
         if (staleExists()) purgeStaleInTx();
-        insertRun({ kind: "freeze", state: "pending", from: cover, through: lock, rule: GAP_RULE, reason: "repair" });
+        // Eksilen dönem planla (S46 = A: izi duran koşunun kendi kuralı, izsiz GAP_RULE); planın ötesi (eski sürümün ilerlettiği kilit) GAP_RULE (S13 = A).
+        const planned = planTo(plan, lock, { gap: true });
+        insertPlanned(planned, cover);
         action = "freeze";
-        log?.warn?.(`Donmuş defter: kilit (${lock}) donmuş dönemin (${cover || "yok"}) ötesinde (eski sürüm); aradaki dönem ${GAP_RULE} kuralıyla dondurulacak.`);
+        log?.warn?.(`Donmuş defter: kilit (${lock}) donmuş dönemin (${cover || "yok"}) ötesinde (eski sürüm ya da eksik satır); dönem yeniden dondurulacak: ${planned.map(segment => `${segment.through} ${segment.rule}`).join(", ")}.`);
       } else if (!pendingRun() && lock < cover) {
         thaw({ next: lock, user: null, reason: "repair" });
         action = "thaw";
@@ -938,9 +1088,10 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
   async function close() {
     shut = true;
     if (current) await current.catch(() => {});
+    if (cleanup) await cleanup.catch(() => {});
   }
 
-  return { state, status, entries, book, trial, lockChanged, freezeSync, purgeStale, runPending, digestOf, repairOnOpen, ruleDiff, checks, cancel, close, coverage, journalOrder, ruleVersions: () => Object.keys(rules) };
+  return { state, status, entries, book, trial, lockChanged, lockNeedsCleanup, freezeSync, purgeStale, runPending, digestOf, repairOnOpen, ruleDiff, checks, cancel, close, coverage, journalOrder, ruleVersions: () => Object.keys(rules) };
 }
 
 /** İç API hata biçimi (uçlar için). */

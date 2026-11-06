@@ -300,7 +300,9 @@ describe("2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada do
     assert.equal(server.app.context.integrity.lockPending("2026-06-30"), false, "iz arkada geldi");
   });
 
-  it("K6: aynı güne yinelenen istek süren dondurmayı durdurmaz (koşu kaldığı yerden sürer, yenisi açılmaz)", async () => {
+  // Ç3 tur 3 (birleşik Ç3 tur 1-2 dar kontrolü YÜKSEK-1): K6 "donmuş = canlı" ve "görünen satır = koşunun kayıtlı satırı" denetlemiyordu — aynı güne yinelenen isteğin arka işi
+  // (bayat satır temizliği) süren koşunun yazdığı satırları siliyor, koşu kendi sayacıyla "tamam" oluyordu (eksik donmuş defter, sessiz). Ön koşul kapıyla tutulur (ders 20).
+  it("K6: aynı güne yinelenen istek süren dondurmayı durdurmaz (koşu kaldığı yerden sürer, yenisi açılmaz); yazılan satırları silinmez — sonunda donmuş = canlı, görünen satır = koşunun kayıtlı satırı", async () => {
     await unlockAll();
     const before = runs().length;
     try {
@@ -308,10 +310,14 @@ describe("2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada do
       const first = await must("kilit", admin.put("/api/admin/period-lock", { lockedUntil: LOCK }));
       await untilWriting();
       const runNo = S().status().run;
+      const written = server.app.store.get("SELECT COUNT(*) AS n FROM ledger_snapshots WHERE run = ?", runNo).n;
+      assert.ok(written > 0, `ön koşul: ikinci istekten önce koşunun satırları yazılmış (${written})`);
       const again = await must("aynı gün", admin.put("/api/admin/period-lock", { lockedUntil: LOCK }));
       assert.equal(again.freeze.pending.no, first.freeze.pending.no, "aynı bekleyen koşu");
       const now = S().status();
       assert.ok(now.running && now.run === runNo && now.done > 0, `dondurma sürüyor, baştan başlamadı: ${JSON.stringify(now)}`);
+      const kept = server.app.store.get("SELECT COUNT(*) AS n FROM ledger_snapshots WHERE run = ?", runNo).n;
+      assert.ok(kept >= written, `aynı güne yinelenen isteğin arka işi süren koşunun yazdığı satırları sildi (${kept} / ${written})`);
     } finally {
       releaseBatches();
       hook.fn = null;
@@ -319,6 +325,10 @@ describe("2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada do
     const view = await waitForFreeze(admin);
     assert.equal(view.frozenThrough, LOCK);
     assert.deepEqual(runs().slice(before).map(run => `${run.kind}:${run.state}`), ["freeze:done"]);
+    const last = server.app.store.get("SELECT state_lines FROM ledger_snapshot_runs WHERE state = 'done' ORDER BY no DESC LIMIT 1");
+    const visible = server.app.store.get("SELECT COUNT(*) AS n FROM ledger_snapshots WHERE date <= ?", LOCK).n;
+    assert.equal(visible, Number(last.state_lines), `görünen donmuş satır = koşunun kayıtlı satırı (${visible} / ${last.state_lines}; süren koşunun satırları silindi)`);
+    assert.deepEqual(canon(S().entries()), canon(upTo(server.app.ledger.build(), LOCK)), "donmuş = canlı");
   });
 
   it("K7: kapanış (app.close) dondurma arkada sürerken süren işi bitirir — kapalı bağlantıya çarpan iş / uyarı yok; yeniden açılışta bekleyen koşu sürer, kapsam = kilit", async () => {

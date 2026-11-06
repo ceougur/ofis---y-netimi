@@ -17,6 +17,18 @@ const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const FREE_SEQ = 1e15;
 // İstemcinin istek kimliği (lib/idempotency.mjs FORMAT ile aynı): fişin istek kimliği "api:<kimlik>".
 const REQUEST_ID = /^[A-Za-z0-9_-]{16,100}$/;
+/**
+ * Mutabakat Günlüğü satırı (Mutabakat Testi yanıtı). 2.4.9 ve öncesi kaydın ayrıntısını 20.000 karakterde KESİYORDU (bank/repair: 2.0.26 "Tüm Hareketleri Sil" sonrası yüzlerce
+ * iptal başlığı; integrity taban kaydı): geçersiz JSON bütün yanıtı (HTTP 500) düşürmesin (Ç3 tur 3, Ç3 küçük işler (b)). Okunamayan ayrıntı BOŞ sayılmaz (ders 4): detail null,
+ * detailUnreadable true ve neden; satırın öbür alanları aynen.
+ */
+export function logRow(row) {
+  try {
+    return { ...row, detail: JSON.parse(row.detail || "[]") };
+  } catch {
+    return { ...row, detail: null, detailUnreadable: true, detailNote: `Kayıt ayrıntısı okunamadı (kesik ya da bozuk kayıt; ${String(row.detail || "").length} karakter).` };
+  }
+}
 
 export function registerLedgerRoutes(router, { store, auth, audit = () => {}, events = null, period = null, now = systemClock, cash = () => null, accounts = () => null, integrity = () => null, money = null, pos = () => null, config = {}, log = null, canWriteInBackground = () => true, schemaGate = null, __testLedgerRule = null, __testFreezeHook = null, freezeBatchLines = 0 }) {
   const has = table => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table));
@@ -388,10 +400,11 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
         resolve();
       });
     });
+  // active: süren iş (dondurma, bayat satır temizliği — açılıştaki de, kilit izi). cleanup: temizlik ilerlemesi (Ç3 tur 3 ORTA-1; kart gösterir, sürerken Kilitle pasif).
   function freezeView() {
     const status = snapshots.status();
     const waiting = snapshots.state().pending;
-    return { ...status, pending: waiting ? { no: waiting.no, from: waiting.from, through: waiting.through, rule: waiting.rule } : null, active: Boolean(status.running || lockJobs.size) };
+    return { ...status, pending: waiting ? { no: waiting.no, from: waiting.from, through: waiting.through, rule: waiting.rule } : null, active: Boolean(status.running || status.cleanup?.running || lockJobs.size) };
   }
   /**
    * Kilitten sonraki iki iş, PARALEL (job; uç yanıtı bunu LOCK_WAIT_MS kadar bekler): (1) kapının kilit izi ayrı iş parçacığında (digestOf); (2) bayat satırlar → bekleyen koşu
@@ -434,6 +447,9 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     const user = auth.requirePermission(req, "system.manage");
     if (!period) throw new HttpError(503, "Dönem kilidi hazır değil.");
     const body = await readJson(req);
+    // Yanıt bütçesi (LOCK_WAIT_MS) bütün uca: bayat satır temizliği + arka iş (Ç3 tur 3 ORTA-1).
+    const started = Date.now();
+    const budget = () => Math.max(0, LOCK_WAIT_MS - (Date.now() - started));
     // Sıra (Ç3 tur 2, dar kontrol DÜŞÜK-1): doğrula → ön adım (POS) → süren dondurmayı durdur → kilit + koşu (tek işlem). Reddedilecek istek (geçersiz / gelecek tarih 400,
     // POS 409) hiçbir şeye dokunmaz: süren dondurma sürer.
     const target = period.checkLock(body?.lockedUntil);
@@ -448,7 +464,15 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     }
     let lockedUntil;
     try {
-      if (!snapshots.status().running) await snapshots.purgeStale();
+      // Ç3 tur 3 (ORTA-1; dar kontrol: 1.000.000 satırda "Kilidi Aç → Yeniden Kilitle" geri çekilen dönemin ~2,7 M bayat satırını kilitten önce bütçesiz siliyordu → istemcinin
+      // 30 sn sınırı). Yeni koşu açılacaksa ve kapsamın üstünde satır varsa temizlik (tek döngü; arkada sürüyorsa ona katılır) bütçe kadar beklenir; bitmediyse 409 + neden,
+      // temizlik arkada sürer, kart ilerlemesini gösterir. Kilit işleminin içinde büyük DELETE yok (ders 47). Gerekmiyorsa (geri çekme, aynı gün) hiç beklenmez.
+      if (snapshots.lockNeedsCleanup(target)) {
+        await settleWithin(snapshots.purgeStale().catch(error => log?.warn?.(`Donmuş defter: bayat satır temizliği tamamlanamadı (${error?.message || error}).`)), budget());
+        if (snapshots.lockNeedsCleanup(target)) {
+          throw new HttpError(409, "Önceki dönemin defter temizliği sürüyor; temizlik bitince yeniden kilitleyin. İlerleme bu kartta görünür.", { code: "ledger-cleanup-running", freeze: freezeView() });
+        }
+      }
       // Kilit + donmuş defter koşusu aynı işlemde (kilit önce, donma arkasından; yarım durumda kilitli dönem bekleyen koşunun kuralıyla canlı okunur).
       lockedUntil = store.tx(() => {
         const value = period.setLock(target);
@@ -466,8 +490,8 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     const gate = integrity();
     if (gate?.adoptLock) gate.adoptLock({ lock: lockedUntil, digest: null });
     else gate?.start?.();
-    // Yanıt arka iş (iz ‖ dondurma) bitince — en çok LOCK_WAIT_MS; uzun işte iş arkada sürer.
-    await settleWithin(afterLock(lockedUntil).job, LOCK_WAIT_MS);
+    // Yanıt arka iş (iz ‖ dondurma) bitince — bütçenin kalanı kadar (en çok LOCK_WAIT_MS); uzun işte iş arkada sürer.
+    await settleWithin(afterLock(lockedUntil).job, budget());
     ok(res, { lockedUntil, frozenThrough: snapshots.coverage(), freeze: freezeView() });
   });
   // 2.5.0 Ç2 — saklanan fiş defteri (lib/ledger-vouchers.mjs). Kapanış / açılış / eşleştirme fişlerini Ç3, Ç5 ve D4 iç API'yle (vouchers) yazar; kullanıcıya serbest
@@ -500,7 +524,7 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     if (!service) throw new HttpError(503, "Mutabakat katmanı hazır değil.");
     // v2.1.0 (§3.11): Mutabakat Testi tam taramadır — kapının görmediği yeni sapma integrity_log'a ("scan") ve zile yazılır.
     const result = service.scan ? service.scan().result : service.run();
-    ok(res, { ...result, log: service.recent(50).map(row => ({ ...row, detail: JSON.parse(row.detail || "[]") })) });
+    ok(res, { ...result, log: service.recent(50).map(logRow) });
   });
   // Gözden geçirme B8 (Aşama 2): carinin yevmiyedeki kontrol hesabı (120/320/336) bakiyesi — partyBalances(journal(rows({ parties })))
   // ile AYNI kural, SQL toplamıyla (kuruş tamsayısı). Mutabakat kapısının süzgeci hareketi çok (binlerce satır) olan carilerde bunu

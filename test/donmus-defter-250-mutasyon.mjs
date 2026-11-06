@@ -25,6 +25,11 @@ const TUR1 = "test/donmus-defter-tur1-250.test.mjs";
 // Ç3 tur 2 (kilit ucu: sıra + arkada dondurma; tasarım notu §18).
 const ROUTE = "server/routes/ledger.mjs";
 const KU = "test/donmus-defter-kilit-ucu-250.test.mjs";
+// Ç3 tur 3 (birleşik Ç3 tur 1-2 dar kontrolünün bulguları + Ç3 küçük işler + S46; tasarım notu §19).
+const T3 = "test/donmus-defter-tur3-250.test.mjs";
+const E2E = "test/e2e/senaryo-donem-kilidi-ilerleme-250.mjs";
+const RC = "server/routes/report-center.mjs";
+const ADMIN = "client/assets/admin.js";
 const T2_ORDER_BEFORE = [
   "    beforeLock(target, body?.force === true);\n",
   "    const previous = period.lockedUntil();\n",
@@ -57,7 +62,8 @@ const MUTASYONLAR = [
   [12, "eski sürüm kilidinin açılış onarımı yok", "server/app.mjs", "      context.snapshotRepair = context.ledger.snapshots.repairOnOpen();", "      context.snapshotRepair = null;", [LIFE], /not ok \d+ - F12/],
   [13, "postAll lockThrough dondurmaz (kanca çağrılmaz)", "server/lib/ledger-vouchers.mjs", "          onLockChanged?.({ previous, next: lockThrough, user, reason: \"voucher-closing\" });\n", "", [MAIN], /kapsam aynı işlemde kilide geldi/],
   [14, "kaynak izi denetimi yok", LS, "if (last.kind === \"freeze\" && last.through === cover && last.source_digest &&", "if (false && last.kind === \"freeze\" && last.through === cover && last.source_digest &&", [MAIN], /Donmuş Defter bulgusu/],
-  [15, "bayat satırlar temizlenmez", LS, "      if (halted()) return removed;\n      const n = store.tx(", "      return removed;\n      const n = store.tx(", [MAIN], /açılan dönemin donmuş satırları kalktı/],
+  // 15 (Ç3 tur 3): temizlik tek döngü + yazılan koşu koruması — aynı hata, yeni yerinde.
+  [15, "bayat satırlar temizlenmez", LS, "        if (halted()) return removed;\n        if (keptRun()) return removed;\n        const n = store.tx(", "        return removed;\n        const n = store.tx(", [MAIN], /açılan dönemin donmuş satırları kalktı/],
   [16, "2.4.9 kopyası değişti (649 yerine 642)", "server/lib/ledger-rule-249/general-ledger.mjs", "moneyOf(row), \"649\", row.amount);", "moneyOf(row), \"642\", row.amount);", [MAIN, LIFE], /v2\.4\.9 kopyası değişti/],
   // Ç3 tamamlama (1.000.000 satırda bellek taşması; tasarım notu §16): sıkı okumanın her yeri.
   [17, "türetme kaynak satırlarını yine store.all ile okur (routes/ledger.mjs rows)", "server/routes/ledger.mjs", "(query ? leanAll(store, sql, ", "(query ? store.all(sql, ", [NEW], /güncel kural: kaynak sorguları store\.all'a düşmemeli/],
@@ -94,23 +100,53 @@ const MUTASYONLAR = [
   // Ç3 tur 2 (201–207; tur 1'in numaralarıyla çakışmasın diye 200'lü): kilit ucu sırası (DÜŞÜK-1 → ORTA) ve arkada dondurma (plan §8 İLERLEME).
   [201, "sıra: doğrulama iptalden sonra (geçersiz istek süren dondurmayı durdurur)", ROUTE, "    const target = period.checkLock(body?.lockedUntil);\n", "    const target = String(body?.lockedUntil ?? \"\").trim();\n", [KU], /reddedilen istek süren dondurmayı durdurdu/],
   [202, "sıra: iptal POS ön adımından önce (ön adımı reddedilen istek süren dondurmayı durdurur)", ROUTE, T2_ORDER_BEFORE, T2_ORDER_AFTER, [KU], /ön adımı reddedilen istekten sonra dondurma sürüyor/],
-  [203, "bütçe yok (uç dondurmanın bitmesini sınırsız bekler; 1 M'de 30 sn sınırı)", ROUTE, "    await settleWithin(afterLock(lockedUntil).job, LOCK_WAIT_MS);\n", "    await afterLock(lockedUntil).job;\n", [KU], /uç dondurmayı bekledi/],
-  [208, "uç arka işi hiç beklemez (iz bekliyorken tam kapının ikinci katmanı yok — D8; kısa kilitte de yanıttan sonra yazım)", ROUTE, "    await settleWithin(afterLock(lockedUntil).job, LOCK_WAIT_MS);\n", "    afterLock(lockedUntil);\n", [KU], /kilit izi yanıttan önce benimsendi/],
-  [209, "uç yalnız izi bekler (kısa dondurma da yanıttan sonra biter; kilitten hemen sonraki sayım fotoğrafı bozulur)", ROUTE, "    await settleWithin(afterLock(lockedUntil).job, LOCK_WAIT_MS);\n", "    await settleWithin(afterLock(lockedUntil).traced, LOCK_WAIT_MS);\n", [MAIN], /uç dondurma bittikten sonra yanıt verir/],
+  // 203 / 208 / 209 (Ç3 tur 3): bekleme bütçesi bütün uca (bayat satır temizliği + arka iş) → budget(); aynı hatalar, yeni metinde.
+  [203, "bütçe yok (uç dondurmanın bitmesini sınırsız bekler; 1 M'de 30 sn sınırı)", ROUTE, "    await settleWithin(afterLock(lockedUntil).job, budget());\n", "    await afterLock(lockedUntil).job;\n", [KU], /uç dondurmayı bekledi/],
+  [208, "uç arka işi hiç beklemez (iz bekliyorken tam kapının ikinci katmanı yok — D8; kısa kilitte de yanıttan sonra yazım)", ROUTE, "    await settleWithin(afterLock(lockedUntil).job, budget());\n", "    afterLock(lockedUntil);\n", [KU], /kilit izi yanıttan önce benimsendi/],
+  [209, "uç yalnız izi bekler (kısa dondurma da yanıttan sonra biter; kilitten hemen sonraki sayım fotoğrafı bozulur)", ROUTE, "    await settleWithin(afterLock(lockedUntil).job, budget());\n", "    await settleWithin(afterLock(lockedUntil).traced, budget());\n", [MAIN], /uç dondurma bittikten sonra yanıt verir/],
   [204, "durdurulan koşu sahipsiz kalır (kilit yazılamayınca önceki koşu sürdürülmez)", ROUTE, "      if (stopped) afterLock(period.lockedUntil());\n", "", [KU], /durdurulan koşu sahipsiz kaldı/],
   [205, "kapanış arka işi beklemez (iş kapalı bağlantıya çarpar)", ROUTE, "      closing = true;\n      await snapshots.close();\n      await Promise.allSettled([...lockJobs]);\n", "      await snapshots.close();\n", [KU], /kapanıştan sonra arka iş kapalı bağlantıya çarpmadı/],
-  [206, "ilerleme görünümü arka işi saymaz (temizlik / iz sırasında 'bitti' görünür)", ROUTE, "active: Boolean(status.running || lockJobs.size)", "active: Boolean(status.running)", [KU, MAIN], /yanıtta süren iş/],
+  [206, "ilerleme görünümü arka işi saymaz (temizlik / iz sırasında 'bitti' görünür)", ROUTE, "active: Boolean(status.running || status.cleanup?.running || lockJobs.size)", "active: Boolean(status.running)", [KU, MAIN], /yanıtta süren iş/],
   [207, "gelecek tarih denetimi yok (kilit ucu yazmadan önce denetlemez)", "server/lib/period.mjs", "    if (date && date > today()) throw new HttpError(400, \"Gelecekteki bir dönem kilitlenemez.\");\n    return date;\n  }", "    return date;\n  }", [KU], /2099-01-01: 200|2099-01-01: \d+/],
+  // Ç3 tur 3 (300'lü; tasarım notu §19): YÜKSEK-1 (yazılan koşunun satırları silinmez; koşu tablo doğrulanmadan tamamlanmaz), ORTA-1 (temizlik bütçesi + 409), DÜŞÜK-1 ve
+  // Ç3 küçük işler (istemci: E2E), S46 = A (açılış onarımının yeniden donma kuralı).
+  [301, "YÜKSEK-1: yazılan koşu korunmaz (temizlik süren koşunun satırlarını siler)", LS, "  const keptRun = () => (writing && stillPending(writing) ? writing : 0);", "  const keptRun = () => 0;", [KU, T3], /süren koşunun yazdığı satırları sildi|süren koşunun satırlarını sildi/],
+  [302, "YÜKSEK-1: yazım bayrağı konmaz (temizlik süren koşuyu görmez)", LS, "        writing = run.no;\n", "", [KU, T3], /süren koşunun yazdığı satırları sildi|süren koşunun satırlarını sildi/],
+  [303, "YÜKSEK-1: koşu sayaçla tamamlanır (tablo doğrulaması yok)", LS, "    if (!(table.lines === totals.lines && table.debit === totals.debit && table.credit === totals.credit && table.weight === totals.weight)) {", "    if (false) {", [T3], /eksik satırlı koşu tamamlandı/],
+  [304, "YÜKSEK-1: iş parçacığı yolunda tablo yerine sayaç ölçülür", LS, "        const table = await runTotalsInParts(run.no, seq);", "        const table = { ...own };", [T3], /eksik satırlı koşu tamamlandı/],
+  [311, "ORTA-1: temizlik bütçesiz beklenir (1 M'de 30 sn sınırı)", ROUTE, "), budget());\n        if (snapshots.lockNeedsCleanup(target)) {", "), 24 * 60 * 60 * 1000);\n        if (snapshots.lockNeedsCleanup(target)) {", [T3], /uç 5 sn bütçesini aştı/],
+  [312, "ORTA-1: temizlik denetimi yok (kilit işleminin içinde büyük DELETE, 409 yok)", ROUTE, "      if (snapshots.lockNeedsCleanup(target)) {\n        await settleWithin", "      if (false) {\n        await settleWithin", [T3], /yeniden kilit 409 almalı/],
+  [313, "ORTA-1: açılıştaki temizlik süren iş sayılmaz (kart 'bitti' görür, Kilitle açılır)", ROUTE, "active: Boolean(status.running || status.cleanup?.running || lockJobs.size)", "active: Boolean(status.running || lockJobs.size)", [T3], /açılıştaki temizlik süren iş sayılmıyor/],
+  [314, "ORTA-1: temizliğin ilerlemesi görünmez", LS, "cleanup: { running: Boolean(cleanup), removed: cleanupRemoved }", "cleanup: { running: false, removed: 0 }", [T3], /temizliği sürüyor \(tutuldu\)|temizlik tutuluyor|açılışta temizlik sürüyor/],
+  [321, "DÜŞÜK-1: kilit kaldırılınca da 'donduruldu' bildirimi", ADMIN, "if (!freeze?.pending && view?.lockedUntil && view.frozenThrough === view.lockedUntil) HOF.toast(", "if (!freeze?.pending) HOF.toast(", [E2E], /✗ kilit kaldırılınca "donduruldu"/],
+  [322, "Kilitle dondurma / temizlik sürerken pasif değil", ADMIN, "    save.disabled = lockSaving || Boolean(lockBusy);", "    save.disabled = lockSaving;", [E2E], /✗ dondurma sürerken Kilitle pasif/],
+  [323, "Ç3 küçük işler (c): Mutabakat Testi hatasında satır sessizce boşalır", ADMIN, "      health.textContent = `Mutabakat Testi çalıştırılamadı: ${error?.message || String(error)}`;", "      health.textContent = \"\";", [E2E], /✗ mutabakat satırı/],
+  [324, "pasif düğmenin nedeni yazılmaz", ADMIN, "      note.textContent = lockBusy;", "      note.textContent = \"\";", [E2E], /✗ pasif düğmenin nedeni görünür|✗ temizlik sürerken Kilitle pasif, nedeni görünür/],
+  [331, "Ç3 küçük işler (a): alt başlık yine 'Defter kuralı program sürümüyle değişti'", RC, "`${ruleDiff.hint || \"Kilitli dönemin donmuş defteri güncel türetmeden farklı.\"} Yeni işlemler engellenmez (aşağıda “Kural Değişikliği Farkı”).`", "\"Defter kuralı program sürümüyle değişti (aşağıda “Kural Değişikliği Farkı”). Kilitli dönemin raporları donmuş defterden okunur, değişmez; yeni işlemler engellenmez.\"", [T3], /"kural değişti" diye adlandırıyor/],
+  [341, "Ç3 küçük işler (b): kesik kayıt Mutabakat Testi'ni düşürür (500)", ROUTE, "log: service.recent(50).map(logRow) });", "log: service.recent(50).map(row => ({ ...row, detail: JSON.parse(row.detail || \"[]\") })) });", [T3], /Mutabakat Testi kesik kayıtla düştü: 500/],
+  [342, "Ç3 küçük işler (b): okunamayan ayrıntı boş sayılır (ders 4)", ROUTE, "detail: null, detailUnreadable: true, detailNote:", "detail: [], detailNote:", [T3], /okunamadı diye işaretli|boş dizi değil/],
+  [351, "S46 karşı seçenek B: eksilen dönem her durumda 2.4.9 kopyasıyla", LS, "      const rule = traced ? segment.rule : GAP_RULE;", "      const rule = GAP_RULE;", [T3], /kuralıyla yeniden dondu \(S46 = A/],
+  [352, "S46: izsiz dönem de koşunun kendi kuralıyla (S13 çiğnenir)", LS, "      const rule = traced ? segment.rule : GAP_RULE;", "      const rule = segment.rule;", [T3, TUR1], /izsiz dönem GAP_RULE ile donmalı|yeniden donan dönem GAP_RULE \(S13 = A\)/],
+  [353, "S46: yeniden donma planı sürdürülmez (kalan dilimler GAP_RULE)", LS, "    if (plan.length) return insertPlanned(plan, run.through, { extended: extended.through > run.through ? extended : null });\n", "", [T3], /plan dilimleri kendi kurallarıyla donmalı/],
 ];
 
+// E2E (tarayıcı; PLAYWRIGHT_BROWSERS_PATH ve kopyada node_modules gerekir): betik olarak koşulur, çıktısında ✗ satırları ve "# fail" sayısı okunur.
 const run = files => {
-  const r = spawnSync(process.execPath, ["--disable-warning=ExperimentalWarning", "--test", "--test-concurrency=1", ...files], { cwd: COPY, encoding: "utf8", maxBuffer: 64 * 1024 * 1024, env: { ...process.env, HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
+  const script = files.length === 1 && files[0].startsWith("test/e2e/");
+  const args = script ? ["--disable-warning=ExperimentalWarning", files[0]] : ["--disable-warning=ExperimentalWarning", "--test", "--test-concurrency=1", ...files];
+  const r = spawnSync(process.execPath, args, { cwd: COPY, encoding: "utf8", maxBuffer: 64 * 1024 * 1024, env: { ...process.env, HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
   const out = `${r.stdout}\n${r.stderr}`;
   const count = key => Number((out.match(new RegExp(`^# ${key} (\\d+)$`, "m")) || [])[1] ?? NaN);
   return { status: r.status, out, pass: count("pass"), fail: count("fail") };
 };
 
-const taban = run([MAIN, LIFE, NEW, TUR1, KU]);
+const taban = run([MAIN, LIFE, NEW, TUR1, KU, T3]);
+const tabanE2E = ONLY && ![...ONLY].some(no => MUTASYONLAR.find(item => item[0] === no)?.[5].includes(E2E)) ? null : run([E2E]);
+console.log(`taban e2e: ${tabanE2E ? `${tabanE2E.pass} geçti / ${tabanE2E.fail} kaldı (çıkış ${tabanE2E.status})` : "koşulmadı (seçilen mutantlarda e2e yok)"}`);
+if (tabanE2E && tabanE2E.status !== 0) {
+  console.log(tabanE2E.out.slice(-4000));
+  throw new Error("e2e tabanı kırmızı — istemci mutasyonları anlamsız");
+}
 console.log(`taban: ${taban.pass} geçti / ${taban.fail} kaldı (çıkış ${taban.status})`);
 if (taban.status !== 0) {
   console.log(taban.out.slice(-4000));
