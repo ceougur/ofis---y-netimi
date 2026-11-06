@@ -333,6 +333,50 @@ describe("Ç5-K Z9 + S26 / S40 / S44: Silinenler'den geri alınan açılış ön
   });
 });
 
+describe("Ç5-K önceki hâl eşlemesi — açılış öncesi (Silinenler'den geri yüklenmiş) kayıt tahsilatının Taksite Aktar / Geri Al'ı (aynı İşlem No) yeni hareket sayılmaz", () => {
+  let server;
+  let api;
+  let ctx;
+  const ids = {};
+  before(async () => {
+    server = await startTestServer({ now: { time: NOW, fixed: true } });
+    api = apiOf(await loginAdmin(server));
+    ctx = await setup(api);
+    const matrix = [["Ad Soyad", "Telefon", "Mart 2026 taksiti", "Nisan 2026 taksiti", "Toplam", "Ödenen"], ["Veli Taksit", "0532 111 22 44", "1.000", "1.000", "2.000", ""]];
+    const staged = await must("tablo yükle", api.post("/api/workspace/dataset/stage", { kind: "excel", fileName: "okul.xlsx", sheets: [{ name: "Okul", matrix }] }));
+    await must("tablo onayla", api.post("/api/workspace/dataset/commit", { stageId: staged.stageId, mode: "replace" }));
+    const rows = (await api.client.get(`/api/trpc/sheets.getRows?input=${encodeURIComponent(JSON.stringify({ json: {} }))}`)).data.result.data.json.rows;
+    ids.key = rows.find(row => row["Ad Soyad"] === "Veli Taksit").__hofKey;
+    // Açılış yokken açılıştan önceki güne yazılır, silinir; açılış (OPEN) girilir; Silinenler'den geri alınır (Z9) → açılış öncesi satır.
+    ids.payment = idOf(await must("kayıt nakit tahsilatı", api.post(`/api/workspace/cases/${encodeURIComponent(ids.key)}/payments`, { amount: "500", date: EARLY, method: "cash", note: "nakit", caseTitle: "Veli Taksit" })));
+    await must("tahsilatı sil", api.del(`/api/workspace/payments/${ids.payment}`));
+    await must("Kasa açılışı", api.post("/api/workspace/cash/opening", { amount: "1.000", date: OPEN }));
+    const listed = await must("Silinenler", api.get("/api/admin/trash"));
+    const items = Array.isArray(listed) ? listed : listed.items || [];
+    const item = items.find(row => row.ref === ids.payment);
+    assert.ok(item, "Silinenler'de tahsilat");
+    await must("geri yükle", api.post("/api/admin/trash/restore", { id: item.id }));
+  });
+  after(() => server?.close());
+
+  it("ön koşul: geri yüklenen tahsilat açılıştan önce (uyarıda)", async () => {
+    assert.equal(server.app.store.get("SELECT date FROM payments WHERE id = ?", ids.payment).date, EARLY);
+    assert.ok((warningOf(await integrityOf(api))?.count || 0) >= 1, "uyarı var");
+  });
+
+  it("Taksite Aktar (aynı İşlem No ile karta taşınır) ve Geri Al 200 — yeni hareket sayılmaz; Kasa değişmez", async () => {
+    const kasa = await cashBalance(api);
+    const preview = await must("ön izleme", api.get("/api/workspace/plans/from-table"));
+    const result = await must("Taksite Aktar", api.post("/api/workspace/plans/from-table", { keys: [ids.key], fingerprint: preview.fingerprint }));
+    assert.equal(result.paymentsMoved, 1);
+    assert.equal(server.app.store.get("SELECT COUNT(*) AS n FROM plan_entries e JOIN plans p ON p.id = e.plan_id WHERE p.import_id = ? AND e.opening = 0 AND e.date = ?", result.importId, EARLY).n, 1, "taşınan satır açılıştan önce tarihli");
+    assert.equal(await cashBalance(api), kasa, "Kasa aynı");
+    await must("Geri Al", api.post(`/api/workspace/plans/imports/${result.importId}/undo`, {}));
+    assert.equal(server.app.store.get("SELECT date FROM payments WHERE id = ?", ids.payment).date, EARLY);
+    assert.equal(await cashBalance(api), kasa, "Kasa aynı");
+  });
+});
+
 describe("Ç5-K S20 = A: v2.4.9'un GERÇEK koduyla üretilmiş açılış öncesi nakit satırları — göç ve yedekten geri yükleme", { skip: !tagsAvailable(["v2.4.9"]) && "v2.4.9 etiketi bu depoda yok (git fetch --tags)" }, () => {
   const root = mkdtempSync(path.join(tmpdir(), "c5k-s20-"));
   const dataDir = path.join(root, "data");
@@ -367,11 +411,14 @@ describe("Ç5-K S20 = A: v2.4.9'un GERÇEK koduyla üretilmiş açılış önces
       const py = await v.post(`/api/workspace/accounts/${ids.c1}/entries`, { kind: "in", amount: "500", date: "2026-01-25", method: "cash", note: "bağlı tahsilat", invoiceId: ids.f1 });
       const pb = await v.post(`/api/workspace/accounts/${ids.c2}/entries`, { kind: "in", amount: "200", date: "2026-01-26", method: "cash", note: "şüpheli caride tahsilat" });
       const pk = await v.post("/api/workspace/cases/DOSYA-249/payments", { amount: "100", date: "2026-01-27", method: "cash", caseTitle: "Eski Dosya" });
-      for (const [name, res] of Object.entries({ ky, py, pb, pk })) assert.equal(res.status, 200, `2.4.9 ${name} açılıştan önce kabul edilmeli (S12 yok): ${res.status} ${JSON.stringify(res.data).slice(0, 200)}`);
+      // Peşin nakitli fatura (fatura Düzenle peşin satırını silip yeniden yazar — önceki hâl eşlemesi).
+      const f4 = await v.post("/api/workspace/invoices", { kind: "sale", accountId: ids.c1, issueDate: "2026-01-28", lines: [{ name: "Hizmet", qty: 1, unitPrice: "300,00", vatRate: 0 }], payment: { cash: [{ amount: "300,00", method: "cash", lineKey: "p1" }], rest: "open" }, force: true, cashForce: true });
+      for (const [name, res] of Object.entries({ ky, py, pb, pk, f4 })) assert.equal(res.status, 200, `2.4.9 ${name} açılıştan önce kabul edilmeli (S12 yok): ${res.status} ${JSON.stringify(res.data).slice(0, 200)}`);
       ids.ky = idOf(ky.data);
       ids.py = py.data?.entryId;
       ids.pb = pb.data?.entryId;
       ids.pk = idOf(pk.data);
+      ids.f4 = idOf(f4.data);
       const ledger = await v.get("/api/workspace/ledger");
       old249 = Object.fromEntries(ledger.data.trial.accounts.map(row => [String(row.code), Math.round(row.balance * 100)]));
       const backup = await v.post("/api/admin/backups", { scope: "one", companyId: "sirket-001" });
@@ -400,7 +447,7 @@ describe("Ç5-K S20 = A: v2.4.9'un GERÇEK koduyla üretilmiş açılış önces
     const integrity = (await v.get("/api/workspace/ledger/integrity")).data;
     assertIntegrity(integrity, "göç");
     const warning = warningOf(integrity);
-    assert.equal(warning?.count, 4, JSON.stringify(warning));
+    assert.equal(warning?.count, 5, JSON.stringify(warning));
     assert.equal(warning.opening, "2026-02-01");
   });
 
@@ -427,7 +474,19 @@ describe("Ç5-K S20 = A: v2.4.9'un GERÇEK koduyla üretilmiş açılış önces
     await must("PK tutar", v.put(`/api/workspace/payments/${ids.pk}`, { amount: "110", date: "2026-01-27", method: "cash" }));
     const integrity = (await v.get("/api/workspace/ledger/integrity")).data;
     assertIntegrity(integrity, "düzeltmeler");
-    assert.equal(warningOf(integrity)?.count, 4, "uyarı sürer");
+    assert.equal(warningOf(integrity)?.count, 5, "uyarı sürer");
+  });
+
+  it("fatura Düzenle (eski sürüm verisi, peşin nakitli fatura açılıştan önce): yalnız not 200 (aynı İşlem No), peşin tutarı 200 (aynı fatura, aynı gün), tarihi açılıştan önceki başka güne 409", async () => {
+    const v = await login();
+    const body = (amount, date = "2026-01-28", note = "") => ({ kind: "sale", accountId: ids.c1, issueDate: date, note, lines: [{ name: "Hizmet", qty: 1, unitPrice: amount, vatRate: 0 }], payment: { cash: [{ amount, method: "cash", lineKey: "p1" }], rest: "open" }, force: true, cashForce: true, similarOk: true });
+    const peşin = () => server.app.store.all("SELECT amount, date FROM account_entries WHERE source = 'invoice' AND source_id = ? AND kind = 'in'", ids.f4).map(row => [row.amount, row.date]);
+    assert.deepEqual(peşin(), [[300, "2026-01-28"]], "ön koşul: 2.4.9'dan gelen peşin satırı");
+    await must("yalnız not", v.post(`/api/workspace/invoices/${ids.f4}/edit`, body("300,00", "2026-01-28", "not düzeltildi")));
+    await must("peşin tutarı", v.post(`/api/workspace/invoices/${ids.f4}/edit`, body("350,00")));
+    assert.deepEqual(peşin(), [[350, "2026-01-28"]]);
+    await refused("tarih açılıştan önceki başka güne", v.post(`/api/workspace/invoices/${ids.f4}/edit`, body("350,00", "2026-01-29")));
+    assert.deepEqual(peşin(), [[350, "2026-01-28"]], "fatura değişmedi");
   });
 
   it("T12 (eski sürüm verisi): tarih açılıştan önceki başka güne 409 — bağ ve tutar da değişmez", async () => {
@@ -464,7 +523,7 @@ describe("Ç5-K S20 = A: v2.4.9'un GERÇEK koduyla üretilmiş açılış önces
   it("yedekten geri yükleme: 2.4.9 yedeği 2.5.0'a geri yüklenir — silinen açılış öncesi satır aynen döner, uyarı yeniden 4", async () => {
     const v = await login();
     await must("KY'yi sil", apiOf(v.client).del(`/api/workspace/cash/${ids.ky}`));
-    assert.equal(warningOf((await v.get("/api/workspace/ledger/integrity")).data)?.count, 3);
+    assert.equal(warningOf((await v.get("/api/workspace/ledger/integrity")).data)?.count, 4);
     const restore = await must("2.4.9 yedeğini geri yükle", v.post("/api/admin/backups/restore", { name: ids.backup, company: "sirket-001", confirm: "001", password: ADMIN_PASSWORD }));
     // 001 ortak dosyadır: geri yükleme yeniden başlatmada uygulanır (staged) — gerçek kurulum gibi sunucu kapatılıp aynı klasörlerle yeniden açılır.
     if (restore.staged) {
@@ -477,7 +536,7 @@ describe("Ç5-K S20 = A: v2.4.9'un GERÇEK koduyla üretilmiş açılış önces
     assert.deepEqual(back && { amount: back.amount, date: back.date }, { amount: 300, date: "2026-01-20" }, `yedekteki satır aynen (Kasa satırları: ${JSON.stringify(listed.map(row => [row.id, row.date, row.amount, row.source])).slice(0, 600)})`);
     const integrity = (await fresh.get("/api/workspace/ledger/integrity")).data;
     assertIntegrity(integrity, "yedekten geri yükleme");
-    assert.equal(warningOf(integrity)?.count, 4);
+    assert.equal(warningOf(integrity)?.count, 5);
     await refused("geri yüklemeden sonra yeni açılış öncesi", apiOf(fresh.client).post("/api/workspace/cash", { kind: "in", amount: "1", date: "2026-01-20", description: "yeni", method: "cash" }));
     await must("geri yüklenen KY tutar düzeltmesi", apiOf(fresh.client).put(`/api/workspace/cash/${ids.ky}`, { kind: "in", amount: "301", date: "2026-01-20", description: "eski" }));
   });
