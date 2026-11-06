@@ -23,7 +23,10 @@ Bölümler:
      Teslim + Okundu ≤ Σ "Bu Ay" ≤ Meta'daki ileti (J5: "Bu Ay" teslim edilen DENEMEyi sayar)
   I8 (güncelleme 11, 2.5.0: SW1, SW2, SD1837, SD1915, SW4, S7): secenek_birlestir birim denetimi; yeniden bağlanmadan Devam Et'in üç okuması kime / kaç kez
      alanlarında (kabul, Meta'daki ileti, "Bu Ay", elenen, oluşmayan) AYNI; belirteç kodları (190, 0; 102 değil); n3 artık BİLİNEN SINIR işaretli değil;
-     karar dışı durumlar (S7-a / S7-b, Süresi Doldu bağlantıda Yine de Gönder) kâhinde hata verir (kodlanmadı)
+     karar dışı durum (Süresi Doldu bağlantıda Yine de Gönder) kâhinde hata verir (kodlanmadı)
+  I9 (güncelleme 12, 2.5.0: S7A, S7B): güncelleme 11'de hata veren S7-a / S7-b durumları artık hesaplanır ve A sonucunu verir; S7-c (işteki Yine de Gönder + kuyrukta açılan
+     şüpheli kaydı, elle işaretsiz iş) ve girdi tutarsızlığı (başlatmada etiketsiz cariye `supheli_elle`) hata verir; elle işaretli işte Yine de Gönder hesaplanır;
+     Ekstre başlatmasında `supheli_elle` yok sayılır
 """
 import copy
 import json
@@ -392,6 +395,11 @@ MUTASYON_IPUCU = {
     "M185": "SD1915-01-ileti-isteginde-190-bekleyenlere-doner", "M186": "SD1915-03-meta-bekletti-ikinci-deneme-190-ilk-ileti-teslim-is-kapanir",
     "M187": "SW2-02-ayni-aliciya-sayilan-baska-kabul-varsa-sayilir", "M188": "SD1915-04-geri-yukleme-reddedilen-sayilmaz",
     "M189": "SD1837-01-sure-dolunca-duraklar-yeniden-baglaninca-devam-yalniz-kalanlar",
+    "M190": "S7A-01-elle-supheli-suphesiz-gecikmis-yok-elenir", "M191": "S7A-02-elle-supheli-kuyrukta-suphesiz-kapanir-gonderimde-atlanir",
+    "M192": "S7B-01-sinirda-supheli-acilan-atlanir-yeni-gonderimde-elle-gider", "M193": "S7B-02-duraklatmada-supheli-acilan-atlanir-elle-secilen-gider",
+    "M194": "S7B-03-kuyrukta-acilan-kayit-kapanirsa-gider", "M195": "S7B-04-meta-bekletti-ikinci-denemede-supheli-atlanir",
+    "M196": "S7B-01-sinirda-supheli-acilan-atlanir-yeni-gonderimde-elle-gider", "M197": "S7B-01-sinirda-supheli-acilan-atlanir-yeni-gonderimde-elle-gider",
+    "M198": "S7A-03-gece-yarisi-suphesiz-vade-yerel-gun",
 }
 
 
@@ -548,7 +556,7 @@ def _i2():
     h = []
     for k in ("K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "E1", "E2", "E3", "E4", "N6", "F1", "F2", "G0", "G1", "G2", "G3", "G4", "G5", "G6", "H1", "H2", "H3", "H4",
               "J1", "J2", "J3", "J4", "J5", "J6", "J7", "J8", "J9", "J10", "J11", "J12", "W1", "W2", "W3",
-              "SW1", "SW2", "SD1837", "SD1915", "SW4", "S7"):
+              "SW1", "SW2", "SD1837", "SD1915", "SW4", "S7", "S7A", "S7B"):
         if not kahin.KARARLAR.get(k, {}).get("metin"):
             h.append(f"{k}: karar metni yok")
         n = sum(1 for s in TUM if s["baslik"] == k or f"{k} " in s["kaynak"] or s["kaynak"].startswith(k) or f", {k}" in s["kaynak"] or f"+ {k}" in s["kaynak"])
@@ -699,23 +707,7 @@ def _i8():
                         h.append(f"{s['ad']} [{zaman}] okuma {o}: meta.{alan} ayrışıyor (kime / kaç kez)")
     if n == 0:
         h.append("yeniden bağlanmadan Devam Et hiçbir senaryoda yok")
-    # karar dışı / kodlanmamış durumlar sessizce geçmez (KULLANICIYA SORULMALI / KÂHİN SUSUYOR — README §16.4)
-    s7 = next(x for x in TUM if x["ad"].startswith("S7-02"))
-    for ad, degistir in (("S7-a", lambda g: g["cariler"].__setitem__(1, {**g["cariler"][1], "vadeler": [{"vade": "2026-10-05", "kalan": 300, "supheli": True}]})),
-                         ("S7-b", lambda g: (g["olaylar"].__setitem__(0, {**g["olaylar"][0], "supheli_elle": []}),
-                                             g["cariler"].__setitem__(1, {**g["cariler"][1], "vadeler": [{"vade": "2026-10-12", "kalan": 200}]}),
-                                             g["olaylar"].insert(1, {"t": "+0s", "tur": "duraklat", "toplu": "T1"}),
-                                             g["olaylar"].insert(2, {"t": "+1m", "tur": "cari", "id": "SA", "vadeler": [{"vade": "2026-10-05", "kalan": 300, "supheli": True},
-                                                                                                                       {"vade": "2026-10-12", "kalan": 200}]}),
-                                             g["olaylar"].insert(3, {"t": "+2m", "tur": "devam", "toplu": "T1"})))):
-        g = copy.deepcopy(senaryolar.girdi(s7))
-        degistir(g)
-        try:
-            kahin.hesapla(g)
-            h.append(f"{ad}: KULLANICIYA SORULMALI durumu sessizce hesaplandı")
-        except ValueError as e:
-            if "KULLANICIYA SORULMALI" not in str(e):
-                h.append(f"{ad}: beklenmeyen hata {e}")
+    # karar dışı / kodlanmamış durumlar sessizce geçmez (KÂHİN SUSUYOR — README §16.4; S7-a / S7-b güncelleme 12'de KAPANDI → I9)
     g = copy.deepcopy(senaryolar.girdi(next(x for x in TUM if x["ad"].startswith("SD1915-01"))))
     g["olaylar"].append({"t": "+40m", "tur": "basarisizlari_yeniden_dene", "toplu": "T1"})
     try:
@@ -725,6 +717,75 @@ def _i8():
         if "KÂHİN SUSUYOR" not in str(e):
             h.append(f"yeniden deneme: beklenmeyen hata {e}")
     return h + bilgi + [f"bilgi: üç okumalı koşu {n} (senaryo × zaman ucu)"]
+
+
+@test("I güncelleme 12 (S7A, S7B): güncelleme 11'in S7-a / S7-b hata yolları A sonucunu verir; S7-c ve girdi tutarsızlığı hata verir; elle işaretli Yine de Gönder ve Ekstre'de supheli_elle hesaplanır")
+def _i9():
+    h = []
+    s7 = next(x for x in TUM if x["ad"].startswith("S7-02"))
+    # (a) güncelleme 11'in S7-a hata yolu: elle seçilen SA'nın bütün gecikmişi şüpheli → "Gecikmiş Borç Yok" (Y12-1)
+    g = copy.deepcopy(senaryolar.girdi(s7))
+    g["cariler"][1] = {**g["cariler"][1], "vadeler": [{"vade": "2026-10-05", "kalan": 300, "supheli": True}]}
+    try:
+        r = kahin.hesapla(g)[0]["sonuc"]
+        if r["elenen"].get("T1", {}).get("SA") != "gecikmis_borc_yok" or "T1/SA" in r["isler"]:
+            h.append(f"S7-a: SA 'Gecikmiş Borç Yok' ile elenmedi: {r['elenen']}")
+    except ValueError as e:
+        h.append(f"S7-a: hâlâ hata veriyor: {e}")
+    # (b) güncelleme 11'in S7-b hata yolu: duraklatılmışken şüpheli kaydı açılan, elle seçilmemiş SA → Devam Et'te gönderim anında Atlandı (Y12-4/5)
+    g = copy.deepcopy(senaryolar.girdi(s7))
+    g["olaylar"][0] = {**g["olaylar"][0], "supheli_elle": []}
+    g["cariler"][1] = {**g["cariler"][1], "vadeler": [{"vade": "2026-10-12", "kalan": 200}]}
+    g["olaylar"].insert(1, {"t": "+0s", "tur": "duraklat", "toplu": "T1"})
+    g["olaylar"].insert(2, {"t": "+1m", "tur": "cari", "id": "SA", "vadeler": [{"vade": "2026-10-05", "kalan": 300, "supheli": True}, {"vade": "2026-10-12", "kalan": 200}]})
+    g["olaylar"].insert(3, {"t": "+2m", "tur": "devam", "toplu": "T1"})
+    try:
+        r = kahin.hesapla(g)[0]["sonuc"]
+        j = r["isler"].get("T1/SA") or {}
+        if j.get("durum") != kahin.ATLANDI or j.get("atlanma_nedeni") != kahin.SUPHELI or j.get("post") != 0:
+            h.append(f"S7-b: SA atlanmadı: {j}")
+    except ValueError as e:
+        h.append(f"S7-b: hâlâ hata veriyor: {e}")
+    # (c) S7-c (README §17.4): Sonucu Belirsiz işte Yine de Gönder + sonuç beklenirken açılan şüpheli kaydı, iş elle işaretsiz → KULLANICIYA SORULMALI (kodlanmadı)
+    s5 = next(x for x in TUM if x["ad"].startswith("S7B-05"))
+
+    def belirsiz_girdi(cid):
+        g_ = copy.deepcopy(senaryolar.girdi(s5))
+        g_["meta_davranis"] = {"mesaj": {cid: ["yanitsiz_kabul", "kabul"]}, "kanca": {cid: [], "*": [["sent", "+1s"], ["delivered", "+5s"]]}}
+        g_["olaylar"] = [o for o in g_["olaylar"] if o["tur"] not in ("basarisizlari_yeniden_dene", "kontrol")]
+        g_["olaylar"].append({"t": "+2h", "tur": "yine_de_gonder", "toplu": "T1", "cari": cid})
+        return g_
+    try:
+        kahin.hesapla(belirsiz_girdi("R7"))
+        h.append("S7-c: işteki Yine de Gönder + şüpheli kaydı (elle işaretsiz) sessizce hesaplandı")
+    except ValueError as e:
+        if "KULLANICIYA SORULMALI S7-c" not in str(e):
+            h.append(f"S7-c: beklenmeyen hata {e}")
+    # (d) elle işaretli işte Yine de Gönder elle kalır (Y12-8) → hesaplanır, ikinci POST gider
+    try:
+        r = kahin.hesapla(belirsiz_girdi("RE7"))[0]["sonuc"]
+        if r["isler"]["T1/RE7"]["post"] != 2 or r["isler"]["T1/RE7"]["atlanma_nedeni"] is not None:
+            h.append(f"elle işaretli Yine de Gönder: {r['isler']['T1/RE7']}")
+    except ValueError as e:
+        h.append(f"elle işaretli Yine de Gönder hata verdi: {e}")
+    # (e) girdi tutarsızlığı (Y12-3): başlatmada etiketsiz cariye supheli_elle → hata
+    g = copy.deepcopy(senaryolar.girdi(s7))
+    g["olaylar"][0] = {**g["olaylar"][0], "supheli_elle": ["SA", "A"]}
+    try:
+        kahin.hesapla(g)
+        h.append("etiketsiz cariye supheli_elle sessizce kabul edildi")
+    except ValueError as e:
+        if "girdi tutarsız" not in str(e):
+            h.append(f"girdi tutarsızlığı: beklenmeyen hata {e}")
+    # (f) Ekstre başlatmasında supheli_elle yok sayılır (Y12-9)
+    g = copy.deepcopy(senaryolar.girdi(s7))
+    g["olaylar"][1] = {**g["olaylar"][1], "supheli_elle": ["SA"]}
+    try:
+        if not senaryolar._esit(kahin.hesapla(g), beklenen(s7)):
+            h.append("Ekstre başlatmasında supheli_elle sonucu değiştirdi")
+    except ValueError as e:
+        h.append(f"Ekstre başlatmasında supheli_elle hata verdi: {e}")
+    return h
 
 
 # ---- H -----------------------------------------------------------------------------------------------------------------------
