@@ -1,0 +1,179 @@
+{
+ "ad": "s101-s72-soz-gunu",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "g2": {
+     "cari": "C2",
+     "detay": [
+      {
+       "kalan": 800,
+       "kalem": "fatura:F2",
+       "vade": "2026-03-01"
+      }
+     ],
+     "gecikmis": 800,
+     "supheli": 0,
+     "tarih": "2026-03-20"
+    },
+    "h01": {
+     "elle": {},
+     "otomatik": {
+      "C1": 1000,
+      "C2": 800,
+      "C3": 500
+     },
+     "supheli_etiketli": [],
+     "tarih": "2026-04-01"
+    },
+    "h10": {
+     "elle": {},
+     "odeme_sozu_var": {
+      "C1": 1000,
+      "C2": 800,
+      "C3": 500
+     },
+     "otomatik": {},
+     "supheli_etiketli": [],
+     "tarih": "2026-03-10"
+    },
+    "h20": {
+     "elle": {},
+     "odeme_sozu_var": {
+      "C2": 800,
+      "C3": 500
+     },
+     "otomatik": {
+      "C1": 1000
+     },
+     "supheli_etiketli": [],
+     "tarih": "2026-03-20"
+    },
+    "h21": {
+     "elle": {},
+     "odeme_sozu_var": {
+      "C3": 500
+     },
+     "otomatik": {
+      "C1": 1000,
+      "C2": 800
+     },
+     "supheli_etiketli": [],
+     "tarih": "2026-03-21"
+    },
+    "h22": {
+     "elle": {},
+     "otomatik": {
+      "C1": 1000,
+      "C2": 800,
+      "C3": 500
+     },
+     "supheli_etiketli": [],
+     "tarih": "2026-03-22"
+    },
+    "h24": {
+     "elle": {},
+     "otomatik": {
+      "C1": 1000,
+      "C2": 800,
+      "C3": 500
+     },
+     "supheli_etiketli": [],
+     "tarih": "2026-03-24"
+    },
+    "h25": {
+     "elle": {},
+     "odeme_sozu_var": {
+      "C1": 1000
+     },
+     "otomatik": {
+      "C2": 800,
+      "C3": 500
+     },
+     "supheli_etiketli": [],
+     "tarih": "2026-03-25"
+    },
+    "h31": {
+     "elle": {},
+     "odeme_sozu_var": {
+      "C1": 1000
+     },
+     "otomatik": {
+      "C2": 800,
+      "C3": 500
+     },
+     "supheli_etiketli": [],
+     "tarih": "2026-03-31"
+    },
+    "mz": {
+     "ana": {
+      "120": {
+       "alacak": 0,
+       "bakiye": 2300,
+       "borc": 2300,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 2300,
+       "bakiye": -2300,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "bas": "2026-01-01",
+     "satirlar": {
+      "120|C1": {
+       "alacak": 0,
+       "bakiye": 1000,
+       "borc": 1000,
+       "devir": 0
+      },
+      "120|C2": {
+       "alacak": 0,
+       "bakiye": 800,
+       "borc": 800,
+       "devir": 0
+      },
+      "120|C3": {
+       "alacak": 0,
+       "bakiye": 500,
+       "borc": 500,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 2300,
+       "bakiye": -2300,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "son": "2026-04-30",
+     "toplam": {
+      "alacak": 2300,
+      "bakiye": 0,
+      "borc": 2300,
+      "devir": 0
+     }
+    }
+   },
+   "redler": []
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

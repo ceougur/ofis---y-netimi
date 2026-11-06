@@ -1159,8 +1159,8 @@ KULLANICIYA SORULMALI (S54–S57 eki; SORU DÜZENİ 06.11 09:01):
    A (öneri): peşin faturanın parçasıdır — carisi tek başına düzeltilmez, red ("faturayı düzenleyin"; cari değişikliği yalnız faturanın düzenlenmesiyle, fatura ve peşini birlikte; 2.4.4 "bağ sessizce
    kopmaz"). B: S79 gibi kabul (peşin yeni cariye geçer; bağ kaldırılır ya da yeni carinin faturasına bağlanır). C: uç durum böyle kalsın (BİLİNEN SINIR; kâhin susar).
 2. **S79 × S56 sınırı (P7 d; UÇ; bakım 8 U5'in olağan düzeltme DENENMEYEN'ini de kapsar):** olağan tahsilat aynı düzeltmede şüpheli kaydı açık bir carinin faturasına bağlanıyor (ya da "Normal
-   Cari Hesaba İşle" seçiliyor) ve 120'ye yazılacak kısım carinin 120 bakiyesini aşıyor (örnek: C2'nin 1.000 faturasının 900'ü şüpheliye alınmış, 120'de 100; 400'lük tahsilat C2'nin
-   faturasına). A (öneri): S56 ile aynı — `SUPHELI_NORMAL_ASIM` ile red, düzeltmenin tamamı (aynı tahsilat girişte de reddedilirdi; plan §3.11b/2 sınırı her yolda). B: sınır yalnız
+   Cari Hesaba İşle" seçiliyor) ve 120'ye yazılacak kısım carinin 120 bakiyesini aşıyor (örnek: C2'nin 1.000 faturasının 900'ü şüpheliye alınmış, 120'de 100; C1'in F1'e bağlı 400'lük
+   olağan tahsilatı tek düzeltmede bağı kaldırılıp C2'ye "Normal Cari Hesaba İşle" ile alınıyor — 400 > 100; fatura bağında yalnız S14 / S25 ile 120'de kapanan kısım sayılır). A (öneri): S56 ile aynı — `SUPHELI_NORMAL_ASIM` ile red, düzeltmenin tamamı (aynı tahsilat girişte de reddedilirdi; plan §3.11b/2 sınırı her yolda). B: sınır yalnız
    geri yüklenmiş kaydın (S44) düzeltmesinde — olağan düzeltme kabul. C: uç durum böyle kalsın (BİLİNEN SINIR; kâhin susar).
 3. Sürer: bakım 8'in 6 / 7'si artık S77 / S78 = C (BİLİNEN SINIR), 3 / 4 / 5'i S74 / S75 / S76 = C (BİLİNEN SINIR); bakım 8'in 1 / 2 / 8'i kural oldu (S72 / S73 / S79 = A);
    bakım 7 ve öncesinin kalanları aynen (bakım 8 KS 6. madde).

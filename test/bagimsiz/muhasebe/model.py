@@ -36,6 +36,8 @@ Ek kapsam (kullanıcı 06.11 12:06): S54 (aynı düzeltmede bağ + cari kabul), 
 SUPHELI_NORMAL_ASIM), S57 (olağan bağlı kaydın carisi BAG_KALDIRILMALI). Yorumlar README U1–U8.
 İkinci ek kapsam (kullanıcı 06.11 12:16): S65 (yalnız "Açılış…" ile başlayan aday — W5 aynen), S66 (formdan carisiz alınan evrakın karşılıksızı: seçilmezse
 B 649.90 / A 101), S67 (takvim — kâhin dilinde yok), S68 (bizim bağsız ödememiz vadesi önce gelen alacak kalemini kapatır — kuyruk iki yönde). README Q1–Q5.
+BAKIM 9 (06.11.2026, onuncu tur): ürün sahibinin 06.11 13:41 S72 (Ödeme Sözü'nün günü de otomatik hatırlatmaya girmez), S73 (söz carinin bütün borcunu
+kapsar), S79 (olağan bağlı kayıtta aynı düzeltmede bağ + cari S54 gibi kabul) kararları (A); S74–S78 = C (BİLİNEN SINIR, kâhin susar). README P1–P9.
 Saf Python, yalnız standart kütüphane. Para kuruş tamsayı; miktar Fraction.
 
 Yapı:
@@ -2418,22 +2420,19 @@ class Dosya:
         return ss[-1] if ss else None
 
     def soz_durumu(self, c, t, g):
-        """S52 A (README W13, W14): None (söz yok / geçti), "soz" (etkin: sözün tarihi ≤ t < söz tarihi, gecikmiş söz anında da gecikmiş), "S52_SOZ_GUNU"
-        (t = söz tarihi — iki okuma, kâhin susar), "S52_YENI_GECIKME" (söz verildiği gün vadesi geçmemiş kalem gecikti — iki okuma, kâhin susar)."""
+        """S52 A (README W13) + S72 A + S73 A (kullanıcı 06.11 13:41; README bakım 9 P1–P3): None (söz yok / geçti / gecikmiş yok) ya da "soz" (etkin:
+        sözün girildiği gün ≤ t ≤ söz tarihi — söz günü DAHİL, S72; söz carinin BÜTÜN borcunu kapsar, söz süresinde geciken kalem dahil, S73). Bakım 8'in
+        W14 susmaları (S52_SOZ_GUNU, S52_YENI_GECIKME) kalktı."""
         s = self.etkin_soz(c, t)
         if s is None or g["gecikmis"] <= 0 or t > s["soz_tarihi"]:
             return None
-        if t == s["soz_tarihi"]:
-            return "S52_SOZ_GUNU"
-        if any(x["vade"] >= s["tarih"] for x in g["detay"]):
-            return "S52_YENI_GECIKME"
         return "soz"
 
     def hatirlatma(self, t):
         """Ödeme Hatırlatma seçimi (S3 A + S7 A, kullanıcı 21:08): şüpheli kaydı AÇIK (128 > 0) cari otomatik listeye girmez; "Şüpheli
         Alacağı Var" etiketiyle görünür, elle seçilirse iletide şüphelisiz gecikmiş tutar (elle).
-        S52 A (README W13): etkin Ödeme Sözü olan cari otomatik listeye girmez, "Ödeme Sözü Var" (odeme_sozu_var {cari: gecikmiş}); borç gecikmiş sayılır.
-        W14: söz günü ve söz süresinde yeni gecikme → kahin_susuyor (KULLANICIYA SORULMALI 1, 2)."""
+        S52 A (README W13) + S72 / S73 A (bakım 9 P1, P2): etkin Ödeme Sözü olan cari (söz günü dahil) otomatik listeye girmez, "Ödeme Sözü Var"
+        (odeme_sozu_var {cari: bütün gecikmiş}); borç gecikmiş sayılır. S55 susması (U4) sözden önce."""
         oto, sup, elle, soz, sus = {}, [], {}, {}, []
         for c in sorted(self.tanim["cariler"]):
             g = self.gecikmis(c, t)
@@ -2449,8 +2448,6 @@ class Dosya:
             durum = self.soz_durumu(c, t, g)
             if durum == "soz":
                 soz[c] = g["gecikmis"]
-            elif durum:
-                sus.append({"cari": c, "neden": durum})
             elif g["gecikmis"] > 0:
                 oto[c] = g["gecikmis"]
         out = {"tarih": t, "otomatik": oto, "supheli_etiketli": sup, "elle": elle}
@@ -2709,23 +2706,57 @@ class Model:
                 dg = self._s44_kapsam(d, k, dg)
                 s44_yolu = True
         if not s44_yolu:
-            self._s57_kapsam(k, dg)
+            self._s57_kapsam(d, k, dg)
         self._duzelt(k, dg)
         d.degisti()
 
-    def _s57_kapsam(self, k, dg):
+    def _s57_kapsam(self, d, k, dg):
         """S57 A (kullanıcı 06.11 12:06; README U6, U7): OLAĞAN kayıt (S44 / S45 kapsamı dışı) Kapatılacak Fatura ya da taksit kartıyla bağlıyken carisi BAŞKA cariye
-        düzeltilirse düzeltmenin TAMAMI BAG_KALDIRILMALI ile red (S45 ile aynı). Kâhinin sustuğu: aynı düzeltmede bağ da değişiyor (KULLANICIYA SORULMALI 8),
-        formdaki peşin ödemenin carisi (faturanın düzenlenmesi — V3 (e))."""
+        düzeltilirse düzeltmenin TAMAMI BAG_KALDIRILMALI ile red (S45 ile aynı). S79 A (kullanıcı 06.11 13:41; README bakım 9 P5–P7): AYNI düzeltmede bağ da
+        değişiyorsa (kaldırma ya da yeni carinin belgesi / kartı) S54 gibi KABUL — bakım 8 U7 (a) susması kalktı; kayıt kendi gününde yeni alanlarıyla yeniden
+        türetilir (G-7; U2). Kâhinin sustuğu: formdaki peşin ödemenin carisi (faturanın düzenlenmesi — V3 (e), U7 (b), bakım 9 P7 (c))."""
         if not ("cari" in dg and dg["cari"] != k.v.get("cari") and self._bagli(k)):
             return
         if k.v.get("fatura_odemesi"):
             raise AssertionError("senaryo hatası: formdaki peşin ödemenin (fatura_odemesi) carisi düzeltildi — faturanın düzenlenmesidir (F-14); kâhin susar "
-                                 "(README bakım 8 U7 (b))")
+                                 "(README bakım 8 U7 (b), bakım 9 P7 (c), KULLANICIYA SORULMALI 1)")
         if any(a in dg and dg[a] != k.v.get(a) for a in ("fatura", "taksit_karti")):
-            raise AssertionError("senaryo hatası: olağan bağlı kayıtta AYNI düzeltmede bağ + cari — S57 harfiyen red mi, S54 gibi kabul mü; kâhin susar "
-                                 "(README bakım 8 U7 (a), KULLANICIYA SORULMALI 8)")
+            self._s79_hedef(d, k, dg)
+            return
         raise Red("BAG_KALDIRILMALI", "önce fatura / taksit kartı bağını kaldırın (S57 A; olağan kayıt, S45 ile aynı)")
+
+    def _s79_hedef(self, d, k, dg):
+        """S79 A (README bakım 9 P5–P7): "S54 gibi" — yeni bağın hedefi düzeltmeden SONRAKİ carinin ETKİN belgesi / kartı olmalı (U2 / V3 (c) aynen; değilse
+        kâhin susar, P7 (a)); ödemede taksit kartı ya da tahsilat / ödeme dışı kayıt model dilinde yok (V3 (f), P7 (b)). Yeni carinin açık şüpheli kaydı varken
+        yeni hâl plan §3.11b/2 sınırını (S56'nın sınırı) aşıyorsa "S54 gibi"nin S56'yı da içerip içermediği iki okumalı → kâhin susar (P7 (d); sınır aşılmıyorsa
+        iki okuma aynı: kabul). Tarih de değişiyorsa sınır yeni günde ölçülemez (kayıt kopyası eski günde) → yeni carinin o günde açık şüpheli kaydı varsa susar."""
+        if k.tur not in ("tahsilat", "odeme") or (k.tur == "odeme" and any(dg.get(a) for a in ("taksit_karti", "normal_cari"))):
+            raise AssertionError(f"senaryo hatası: {k.tur} kaydında S79 bağı (taksit kartı / Normal Cari yalnız tahsilatta) — model dilinde yok "
+                                 "(README bakım 7 V3 (f), bakım 9 P7 (b))")
+        v = dict(k.v, **{a: b for a, b in dg.items() if a != "tarih"})
+        c = v["cari"]
+        if v.get("fatura"):
+            f = d.kaynaklar.get(v["fatura"])
+            tur = "satis_faturasi" if k.tur == "tahsilat" else "alis_faturasi"
+            if f is None or f.durum != "aktif" or f.tur != tur or f.v.get("cari") != c:
+                raise AssertionError(f"senaryo hatası: S79 bağ hedefi {v['fatura']} yeni carinin ({c}) etkin {tur} kaydı değil — model dilinde yok "
+                                     "(README bakım 7 V3 (c), bakım 9 P7 (a))")
+        if v.get("taksit_karti"):
+            t = d.kaynaklar.get(v["taksit_karti"])
+            if t is None or t.durum != "aktif" or t.tur not in ("taksit_karti", "taksit_excel") or t.v.get("cari") != c:
+                raise AssertionError(f"senaryo hatası: S79 taksit kartı {v['taksit_karti']} yeni carinin ({c}) etkin kartı değil — model dilinde yok "
+                                     "(README bakım 7 V3 (c), bakım 9 P7 (a))")
+        if k.tur == "tahsilat" and (v.get("normal_cari") or v.get("fatura")):
+            yeni_t = dg.get("tarih", k.tarih)
+            try:
+                if yeni_t != k.tarih:
+                    if d.bakiyeler(yeni_t).get(("128", c), 0) > 0:
+                        raise Red("SUPHELI_NORMAL_ASIM", "tarih de değişiyor")
+                else:
+                    self._s44_sinir(d, k, v)
+            except Red:
+                raise AssertionError("senaryo hatası: S79 düzeltmesi yeni carinin açık şüpheli kaydıyla plan §3.11b/2 (S56) sınırını aşıyor — olağan düzeltmede "
+                                     "sınır iki okumalı; kâhin susar (README bakım 9 P7 (d), KULLANICIYA SORULMALI 2)") from None
 
     @staticmethod
     def _s40_kapsam(k, dg):
@@ -3585,7 +3616,7 @@ def tyk_degismezleri(d, t):
     for tt in tarihler:
         bal = d.bakiyeler(tt)
         hat = d.hatirlatma(tt)
-        sozlu = set(hat.get("odeme_sozu_var", {})) | {x["cari"] for x in hat.get("kahin_susuyor", [])}   # S52 (README W13, W14)
+        sozlu = set(hat.get("odeme_sozu_var", {})) | {x["cari"] for x in hat.get("kahin_susuyor", [])}   # S52 / S72 / S73 (W13, P1, P2); susma yalnız S55
         for c in sorted(d.tanim["cariler"]):
             b = bal.get((d.cari_hesap(c), c), 0)
             q = d.kuyruk(c, tt)
