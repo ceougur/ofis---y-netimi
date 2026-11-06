@@ -367,17 +367,18 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     const { entries, trial, reconciliation } = check({ from, to, book: true });
     ok(res, { trial, reconciliation, entryCount: entries.length });
   });
-  // 2.5.0 Ç3 tur 2 (docs/erp/C3-DONDURMA-TASARIM.md §18; plan §8 "1.000.000: hedef ≤ 2 dk, İLERLEME"): kilit ucu dondurmanın bitmesini BEKLEMEZ — kilit + bekleyen koşu (tek
-  // işlem) yazılıp kapının kilit izi (ayrı iş parçacığı, dondurmayla paralel) gelince — en çok LOCK_TRACE_WAIT_MS — yanıt verir; bayat satır temizliği → bekleyen koşu ARKADA sürer
-  // (lockJobs). 1.000.000 satırda dondurma ~85 sn: beklense istemcinin 30 sn sınırı (hof-core.js sendApi) başarılı kilidi "Sunucu zamanında yanıt vermedi" diye gösterirdi. Bu
-  // arada kilitli dönem bekleyen koşunun kuralıyla canlı okunur (K1). İlerleme: GET /api/workspace/ledger/lock → freeze (pending: bekleyen koşu, active: süren iş var).
+  // 2.5.0 Ç3 tur 2 (docs/erp/C3-DONDURMA-TASARIM.md §18; plan §8 "1.000.000: hedef ≤ 2 dk, İLERLEME"): kilit ucu dondurmanın bitmesini SINIRSIZ BEKLEMEZ — kilit + bekleyen koşu
+  // (tek işlem) yazılınca arka iş (kapının kilit izi ayrı iş parçacığında ‖ bayat satırlar → dondurma; lockJobs) başlar, yanıt en çok LOCK_WAIT_MS bekler. 1.000.000 satırda dondurma
+  // ~85 sn: beklense istemcinin 30 sn sınırı (hof-core.js sendApi) başarılı kilidi "Sunucu zamanında yanıt vermedi" diye gösterirdi. Bu arada kilitli dönem bekleyen koşunun kuralıyla
+  // canlı okunur (K1). İlerleme: GET /api/workspace/ledger/lock → freeze (pending: bekleyen koşu, active: süren iş var).
   const lockJobs = new Set();
   let closing = false;
-  // Kilit izinin yanıttan önce beklenme bütçesi (ms). NEDEN iz yanıttan önce: iz "bekliyor"ken tam kapı kilitli dönemin iz karşılaştırmasını (ikinci katman) yapamaz — kilitli
-  // satırı kapsam süzgecinin kilit nedeni dışından değiştiren yazım kabul edilir ve kendi (değişmiş) izini benimser (test/banka-210-gg-kapi D8: kilitli satırın kimliğini değiştir →
-  // 409 beklenir; iz beklemeden yanıt verilince 200). 100.000 satırda iz dondurmayla paralel ~2,6 sn (ölçüm §18): küçük ve orta şirkette yanıt izle (eski güvence aynen);
-  // 1.000.000'da (iz ~29 sn) bütçe dolar, yanıt ~5 sn'de, iz arkada (pencere BİLİNEN SINIR §18).
-  const LOCK_TRACE_WAIT_MS = 5000;
+  // Yanıtın arka işi bekleme bütçesi (ms; BAŞ MİMAR KARARI önerisi T2-2). Kısa iş (küçük / orta şirket) bütçe içinde biter: yanıt dondurma + iz bittikten sonra — eski davranış aynen
+  // (yanıttan sonra veri tabanına arka iş yazmaz: dondurma izi, satırlar; test/banka-230-supheli-bozma I/J "hiçbir şey yazılmaz" kilitten hemen sonra sayıların fotoğrafını çeker).
+  // Uzun iş (1.000.000) bütçe dolunca yanıt, dondurma arkada, kart ilerlemeyi gösterir. Kapının kilit izi dondurmayla PARALEL ölçülür: iz "bekliyor"ken tam kapı kilitli dönemin
+  // iz karşılaştırmasını (ikinci katman) yapamaz — kilitli satırı kapsam süzgecinin kilit nedeni dışından değiştiren yazım kabul edilir ve kendi (değişmiş) izini benimser
+  // (test/banka-210-gg-kapi D8). 100.000 satırda iz ~2,6 sn → bütçe içinde (dondurma ~8 sn arkada); 1.000.000'da iz ~29 sn → pencere BİLİNEN SINIR §18.
+  const LOCK_WAIT_MS = 5000;
   const settleWithin = (promise, ms) =>
     new Promise(resolve => {
       const timer = setTimeout(resolve, ms);
@@ -393,7 +394,7 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     return { ...status, pending: waiting ? { no: waiting.no, from: waiting.from, through: waiting.through, rule: waiting.rule } : null, active: Boolean(status.running || lockJobs.size) };
   }
   /**
-   * Kilitten sonraki iki iş, PARALEL: (1) kapının kilit izi ayrı iş parçacığında (digestOf) — uç yanıtı bunu bütçe kadar bekler (traced); (2) bayat satırlar → bekleyen koşu
+   * Kilitten sonraki iki iş, PARALEL (job; uç yanıtı bunu LOCK_WAIT_MS kadar bekler): (1) kapının kilit izi ayrı iş parçacığında (digestOf); (2) bayat satırlar → bekleyen koşu
    * (dondurma; onun izi de gelince freezeRun adoptLock karşılaştırır, fark Mutabakat Günlüğü'ne). Bu arada kilit başka güne alındıysa (başka istek) iz o kilidin izi değildir,
    * benimsenmez. İz gelene kadar kapı "bekliyor"dur: kilitli döneme dokunan yazım (kapsam süzgecinin kilit nedeni) 409; bugün tarihli düzeltmeler (kilitli fişin Ters Kaydet'i)
    * bu sınıfta değildir (test K8). Hata yanıtı düşürmez: günlüğe yazılır; koşu bekler ve sonraki kilitte / açılışta sürer.
@@ -463,8 +464,8 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     const gate = integrity();
     if (gate?.adoptLock) gate.adoptLock({ lock: lockedUntil, digest: null });
     else gate?.start?.();
-    // Dondurma arkada; yanıt kilit izi gelince (en çok LOCK_TRACE_WAIT_MS; büyük şirkette iz de arkada sürer).
-    await settleWithin(afterLock(lockedUntil).traced, LOCK_TRACE_WAIT_MS);
+    // Yanıt arka iş (iz ‖ dondurma) bitince — en çok LOCK_WAIT_MS; uzun işte iş arkada sürer.
+    await settleWithin(afterLock(lockedUntil).job, LOCK_WAIT_MS);
     ok(res, { lockedUntil, frozenThrough: snapshots.coverage(), freeze: freezeView() });
   });
   // 2.5.0 Ç2 — saklanan fiş defteri (lib/ledger-vouchers.mjs). Kapanış / açılış / eşleştirme fişlerini Ç3, Ç5 ve D4 iç API'yle (vouchers) yazar; kullanıcıya serbest
