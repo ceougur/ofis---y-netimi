@@ -51,6 +51,10 @@ yazıldı ve ayrı commit'lendi): S16 işteki Yine de Gönder basıldığı anda
 `yeniden.<etiket>.supheli_etiketi`), şüphesiz tutarla gider, yoksa elenir (anı karar metninde yok → `s16_an` iki okuma, `secenek`); (5) Ödeme Hatırlatma {{4}} net borcu aşmaz, net borcu
 ≤ 0 olan elenir (ad karar metninde yok → `secenek` gecikmis_borc_yok / net_borc_yok); S17 elle seçilen şüpheli alacaklıda sınır şüpheli kalemler HARİÇ net borç. S7-c hatası daraldı:
 basma anında kaydı YOKKEN sonra açılan (S7-d) KULLANICIYA SORULMALI — kâhin hata verir.
+GÜNCELLEME 14 (2.5.0, KULLANICI KARARI 06.11.2026 05:30 UTC "a" — S22, metin AYNEN KARARLAR S22; yorumlar README §19, kodlamadan önce yazıldı ve ayrı commit'lendi): S7-d KAPANDI —
+işteki Yine de Gönder (ya da o zincirdeki Başarısızları Yeniden Dene) ile gönderime alınmış, basma anında şüpheli kaydı OLMAYAN (elle işaretsiz) Ödeme Hatırlatma işinde gönderim anında
+kayıt açıksa S7-b gibi "Atlandı — Şüpheli Alacağı Var" (`supheli_alacak`; Sınır, Devam Et, zincirdeki yeniden deneme, Meta Bekletti 2. denemesi); yol: kayıt açıkken asıl işte yeniden
+Yine de Gönder → S16 (elle, şüphesiz tutarla). Bekleyen ileti varken kayıt açıkken yeniden basma (S7-e: S22 ↔ F1) KULLANICIYA SORULMALI — kâhin hata verir.
 
 KÂHİN GÜNCELLEMESİ 8 (31.10.2026): H1 (kullanıcı) — Yine de Gönder ile açılan iş kabul/teslim edilince KAYNAK Sonucu Belirsiz deneme o kişi için artık
 elemez (kişi "Daha Önce Gönderildi"; yol R3 Yine de Gönder); açılan iş başarısız/belirsiz kalırsa kaynak elemeye devam eder. H2–H4 (baş mimar, G0 İLKEYLE):
@@ -405,6 +409,10 @@ MUTASYONLAR = {
     "M207": "NB5 (Y13-7 sırası): net denetimi §7a 20 kalem denetiminden ÖNCE — vadesi geçmiş kalemi olmayan alacaklı kişi de net adıyla elenir",
     "M208": "S16 tetiği (Y13-1): basma anında kalanı 0 olan (kapanmış) şüpheli kalem de 'Şüpheli Alacağı Var' sayılır (etiket + elle)",
     "M209": "S16 (Y13-4 + Y12-9): onay penceresinin etiketi Ekstre işinde de görünür",
+    # ---- kâhin güncellemesi 14 (2.5.0, 06.11.2026 05:30 UTC: S22 = eski S7-d) ----
+    "M210": "S22'nin tersi (B seçeneği): işteki Yine de Gönder kişiye özel onaylı seçim — basmada kayıt yokken sonra açılan işte de elle sayılır, gönderim anında şüphesiz tutarla gider",
+    "M211": "S22 (Y14-2): atlama etiketi yanlış ad — belirsizlik onayı işinde 'Şüpheli Alacağı Var' yerine J10'un 'Daha Önce Gönderildi'si",
+    "M212": "S22 yolu (Y14-4): Atlandı — Şüpheli Alacağı Var işin asıl işten yeniden Yine de Gönder'inde S16 uygulanmaz (elle sayılmaz) — kayıt açık kişi yine atlanır (çıkmaz)",
 }
 
 # Kâhin güncellemesi 2'nin kaynak karar metinleri (AYNEN; CLAUDE.md "Açık iş" + docs/2.4.8-IS-LISTESI.md, 31.10.2026). "kaynak_turu": kullanıcı kararı mı,
@@ -645,6 +653,15 @@ KARARLAR = {
                       "(5) 2B-S4 / S9 = A \"Bakiyeden Netleşsin\": gecikmiş tutar carinin net borcunu aşmaz (alış faturası düşülür); bize alacaklı kişiye hatırlatma gitmez; faturaların Açık / "
                       "Ödendi durumu yalnız Mahsup Et ile.",
                       "İŞ ATAMASI: (1)(2)(3)(5) → Ç5 (B1 ortak gecikmiş / kapama) + kâhin bakımı 2; …"]},
+    # ---- kâhin güncellemesi 14 (2.5.0; docs/2.5.0-IS-LISTESI.md D "KULLANICI KARARI 06.11 05:30 UTC" + C soru metni — AYNEN) ----
+    "S22": {"kaynak_turu": "kullanıcı (06.11.2026 05:30 UTC, 'a'; iş listesi D + C, aynen) — WK güncellemesi 13'ün KULLANICIYA SORULMALI S7-d'si (README §18.4)",
+            "metin": ["KULLANICI KARARI 06.11 05:30 UTC (AYNEN: \"a\"; soru C bölümünde S22, öneriyle soruldu):",
+                      "S22 = A: işteki Yine de Gönder basıldığında şüpheli kaydı yoktu, iş gönderim beklerken kayıt açıldı → S7-b gibi gönderim anında \"Atlandı — Şüpheli Alacağı Var\"; "
+                      "yol kalır (kayıt açıkken yeniden Yine de Gönder basılırsa S16 ile şüphesiz tutarla gider). İŞ ATAMASI: Ç5 (WhatsApp elemesi) + WK güncellemesi 14.",
+                      "soru (iş listesi C, SORULDU 06.11 05:29 → YANITLANDI 06.11 05:30 \"a\"): S22 (S7-d ★): işteki Yine de Gönder basıldığında carinin şüpheli kaydı YOKTU; iş gönderim "
+                      "beklerken (Sınır, Duraklatıldı → Devam Et ya da zincirdeki yeniden deneme) şüpheli kayıt açıldı — A öneri: S7-b gibi gönderim anında \"Atlandı — Şüpheli Alacağı Var\"; "
+                      "yol kalır (kayıt açıkken yeniden Yine de Gönder basılırsa S16 ile şüphesiz tutarla gider) / B: Yine de Gönder kişiye özel onaylı seçimdir, elle sayılır, şüphesiz "
+                      "tutarla gider."]},
     "K8": {"kaynak_turu": "kullanıcı (08:20 'şimdi yap'); en yeni önce / yerel gün / iki uç dahil / ters aralık ret ana oturum görev metni",
            "metin": ["KARAR (kullanıcı, 31.10.2026 ~08:20 UTC: \"şimdi yap\"): WhatsApp Gönderimleri ekranına 2.4.8'de \"Daha Fazla Göster\" (30'ar, imleçli) + "
                      "Başlangıç/Bitiş tarih süzgeci (eski gönderimlere erişim)."]},
@@ -1310,7 +1327,7 @@ class Benzetim:
         if j.asil_durum is None:
             j.asil_durum = j.durum
         if j.durum == ATLANDI:
-            j.elendi_neden = None                                        # güncelleme 13 (S16 'gonderim' okuması): Atlandı işin asıl işten yeniden gönderimi — eski atlanma nedeni kalkar
+            j.elendi_neden = None                                        # güncelleme 13 (S16 'gonderim' okuması) + 14 (S22 yolu, Y14-4): Atlandı işin asıl işten yeniden gönderimi — eski atlanma nedeni kalkar
         j.son_kayit = None
         j.yeniden = True
         j.yine_kaynak = ()
@@ -1399,9 +1416,15 @@ class Benzetim:
             hat = tp.sablon == "hatirlatma"
             # S16 (Y13-1): basma ANINDA şüpheli kaydı açık Ödeme Hatırlatma carisi (M208: kapanmış kalem de açık sayılır)
             acik = hat and (self.supheli_acik(c) or ("M208" in self.mut and any(v.get("supheli") for v in c.get("vadeler", []))))
+            if acik and j.durum in KUYRUKTA and getattr(j, "belirsiz_onay", False) and not getattr(j, "supheli_elle", False):
+                # README §19.4 S7-e: belirsizlik onayıyla bekleyen elle işaretsiz işin gönderim anı GELMEDEN kayıt açıkken yeniden basma — S22 "kayıt açıkken yeniden Yine de
+                # Gönder basılırsa S16 ile gider" ↔ F1 "kişide bekleyen ileti varsa Zaten Kuyrukta" çatışır (kime / kaç kez)
+                raise ValueError("KULLANICIYA SORULMALI S7-e (README §19.4): belirsizlik onayıyla bekleyen (elle işaretsiz) işte gönderim anı gelmeden şüpheli kaydı açıkken "
+                                 "yeniden Yine de Gönder — S22 ↔ F1, kodlanmadı")
             if (acik or ("M209" in self.mut and not hat and self.supheli_acik(c))) and "M201" not in self.mut:
                 sonuc["supheli_etiketi"].append(j.cari)                    # Y13-4: onay penceresinde "Şüpheli Alacağı Var" (yanıttan önce — elense de görünür)
-            s16 = acik and "M199" not in self.mut                           # S16: Yine de Gönder elle seçim sayılır (M199: B seçeneği)
+            s16 = (acik and "M199" not in self.mut                          # S16: Yine de Gönder elle seçim sayılır (M199: B seçeneği)
+                   and not ("M212" in self.mut and j.durum == ATLANDI and j.elendi_neden == SUPHELI))   # M212: S22 yolunda (Y14-4) yeniden basmada S16 yok
             s16_engel = None
             if s16 and "M200" not in self.mut:
                 s16_engel = self.hatirlatma_engeli(c, t)                    # S16 "yoksa elenir" + S7A + S17 / NB5 sınırı (Y13-3, Y13-8)
@@ -1808,10 +1831,13 @@ class Benzetim:
                         elle_is = getattr(j, "supheli_elle", False)
                         sup = (acik and not elle_is and "M192" not in self.mut
                                and not ("M195" in self.mut and j.durum == BEKLEME_131049))
-                        if sup and getattr(j, "belirsiz_onay", False) and "M199" not in self.mut:
-                            # S16 basma anında kaydı açık olanı elle yapar (Y13-2); burada kayıt basmadan SONRA açıldı → S7-d (README §18.4)
-                            raise ValueError("KULLANICIYA SORULMALI S7-d (README §18.4): işteki Yine de Gönder basıldığında şüpheli kaydı yoktu, iş belirsizlik onayıyla "
-                                             "gönderilecekken kayıt açıldı (elle işaretsiz) — kodlanmadı")
+                        # S22 (eski S7-d, README §19 Y14-1/2): belirsizlik onayıyla (işteki Yine de Gönder ya da o zincirdeki yeniden deneme) bekleyen, basma anında kaydı
+                        # OLMAYAN (elle işaretsiz) iş; kayıt gönderim beklerken açıldı → S7-b gibi gönderim anında "Atlandı — Şüpheli Alacağı Var" (S16 basma anında kaydı açık olanı
+                        # zaten elle yapar — Y13-2); yol: kayıt açıkken asıl işte yeniden Yine de Gönder → S16 (Y14-4)
+                        s22 = sup and getattr(j, "belirsiz_onay", False)
+                        if s22 and "M210" in self.mut:
+                            j.supheli_elle = elle_is = True; sup = s22 = False     # S22'nin tersi (B seçeneği): Yine de Gönder elle sayılır, şüphesiz tutarla gider
+                        sup_ad = DAHA_ONCE if (s22 and "M211" in self.mut) else SUPHELI   # M211: yanlış etiket
                         # §7a 20 + S7A (Y12-2) + NB5 / S17 (Y13-7, Y13-8): hatırlatılacak tutar gönderim anında da (M191: elle şüpheli caride yalnız başlatmada; M206: net yalnız başlatmada)
                         engel = (None if ("M44" in self.mut or ("M191" in self.mut and elle_is and acik) or getattr(j, "m200", False))
                                  else self.hatirlatma_engeli(c, t, gonderim=True))
@@ -1821,7 +1847,7 @@ class Benzetim:
                                 # README §18.4: 'gonderim' okumasında basmada elenecek kişiye ileti gidecek — iki okuma kime / kaç kez ayrışıyor
                                 raise ValueError("KULLANICIYA SORULMALI (README §18.4, S16 elemenin anı): basma anında şüphesiz tutar yoktu, gönderim anında doğdu — "
                                                  "basma okumasında elenir, gönderim okumasında gider; kodlanmadı")
-                        sira = ((engel, engel is not None), (SUPHELI, sup)) if "M197" in self.mut else ((SUPHELI, sup), (engel, engel is not None))
+                        sira = ((engel, engel is not None), (sup_ad, sup)) if "M197" in self.mut else ((sup_ad, sup), (engel, engel is not None))
                         neden_ = next((n_ for n_, v_ in sira if v_), None)           # Y12-6: sıra başlatmadaki gibi (Y11-18)
                         if neden_ is not None:
                             self.atla(j, neden_, t)
