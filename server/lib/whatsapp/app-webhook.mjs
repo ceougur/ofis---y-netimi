@@ -9,9 +9,10 @@
 // GİZLİ BİLGİ (plan 2.4.8 §4 "kanca gizli yolu ve verify_token belirteç gibi saklanır"): günlüğe, işlem geçmişine, hata iletisine, başka dosyaya girmez; yalnız
 // system.manage (yönetici) görür. Şirket Verisini Sıfırla'da (KEEP_SETTINGS "whatsapp") ve 001'in yedekten geri yüklenmesinde (company-backups.mjs COMMON_SETTINGS) korunur. Mühür bu bilgisayarda açılamıyorsa (veri başka bilgisayardan taşındı) yeni çift
 // üretilir — Meta'da yeniden girilir.
-// Bu adrese gelen istek (lib/whatsapp/hook.mjs): GET doğrulaması (hub.verify_token → hub.challenge); POST 200 ile kabul edilir, İŞLENMEZ ve SAKLANMAZ (durum bildirimi
-// WABA'nın alternatif adresine gelir; uygulama düzeyindeki adrese düşen bildirim — ör. alternatif adres kaydedilemediyse — teslim / sayaç / bildirim yolu işaretini etkilemez:
-// "kime kaç kez" kuralları değişmez).
+// Bu adrese gelen istek (lib/whatsapp/hook.mjs): GET doğrulaması (hub.verify_token → hub.challenge). POST — KULLANICI KARARI S41 = A (06.11.2026; baş mimar kararı (5)
+// "uygulama düzeyi POST işlenmez" bu durum için KALKTI): Meta'da WABA'nın alternatif adresi yokken bildirim buraya gelir; bu kurulumda kaydı olan WABA'nın bildirimi
+// alternatif adresle AYNI kurallarla işlenir (Yol 1 imzasız kabul, Yol 2 yalnız imzalı; kaydı olmayan WABA'nınki düşer) ve Meta'daki adres hemen yeniden denetlenir
+// (aşağıda rechecks: WABA başına tek uçuş + en çok APP_LEVEL_RECHECK_MS'de bir; tasarım docs/erp/WA-TUR1-TASARIM.md §3).
 import { randomBytes } from "node:crypto";
 import { createSecretBox } from "../secret-box.mjs";
 import { isSchemaAhead } from "../migrations.mjs";
@@ -24,6 +25,9 @@ export const APP_WEBHOOK_NOT_READY = "Ofisin uzaktan bağlantı adresi henüz ha
 // app.mjs schemaGate) o dosyaya YAZILMAZ — çift yoksa ya da bu bilgisayarda açılamıyorsa üretilmez, yanıt ready false + bu neden. Var olan çift okunur ve gösterilir
 // (okuma yazma değildir). Kapının ortak katman istisnası yalnız giriş / lisans / şirket seçimidir; webhook çifti ona girmez.
 export const APP_WEBHOOK_SCHEMA_AHEAD = "001 şirketinin verisi programın daha yeni bir sürümüyle açıldığı için webhook bilgileri hazırlanamıyor; programı güncelleyince burada görünür.";
+// S41 = A: uygulama düzeyi adrese bildirim gelince Meta'daki alternatif adresin yeniden denetlenme sıklığı (WABA başına). Meta her durum için ayrı POST gönderir; her POST'ta
+// Meta'ya istek gitmez. Bellekte tutulur (program yeniden açılınca ilk bildirimde yine hemen); bakım turunun saatlik denetimi ayrıca sürer.
+export const APP_LEVEL_RECHECK_MS = 15 * 60_000;
 
 /**
  * @param {object} o
@@ -79,5 +83,27 @@ export function createAppWebhook({ store, dataDir, now = () => new Date() }) {
     const ready = usableBase(base);
     return { ready, callbackUrl: ready ? `${base}/wa/kanca/${path}` : "", verifyToken: verify, reason: ready ? "" : APP_WEBHOOK_NOT_READY };
   }
-  return { matchesPath, matchesVerify, reveal };
+  // S41 = A — "Meta'daki adres hemen yeniden denetlenir": denetimin kendisi kancada (lib/whatsapp/hook.mjs; bağlı şirketin connection.ensureHook'u). Burada yalnız sıklık:
+  // WABA başına tek uçuş + en çok APP_LEVEL_RECHECK_MS'de bir (programın saatiyle; saat geri giderse beklenmez). settled(): süren denetimlerin bitişi (testler ve kapanış).
+  const lastRecheck = new Map(); // WABA → son denetimin başladığı an (ms)
+  const flying = new Map(); // WABA → süren denetim
+  const rechecks = {
+    /** task: () => Promise. Denetim başlatıldıysa true; aynı WABA'da süren denetim varsa ya da son denetim APP_LEVEL_RECHECK_MS'den yeniyse false. Görev hatası yutulur. */
+    request(wabaId, task) {
+      const key = String(wabaId || "");
+      if (!key || flying.has(key)) return false;
+      const at = now().getTime();
+      const previous = lastRecheck.get(key);
+      if (Number.isFinite(previous) && at >= previous && at - previous < APP_LEVEL_RECHECK_MS) return false;
+      lastRecheck.set(key, at);
+      const run = Promise.resolve()
+        .then(task)
+        .catch(() => null)
+        .finally(() => flying.delete(key));
+      flying.set(key, run);
+      return true;
+    },
+    settled: () => Promise.allSettled([...flying.values()]),
+  };
+  return { matchesPath, matchesVerify, reveal, rechecks };
 }
