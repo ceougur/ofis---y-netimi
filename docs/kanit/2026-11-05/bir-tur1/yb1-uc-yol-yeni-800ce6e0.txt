@@ -1,0 +1,26 @@
+S) stok hareketi (peşin alım) — Kasa Engelle
+  başlangıç Kasa 500
+  yarışsız 100 → 650: 409 cash-blocked
+  arada muhasebe 100 → 10: 200, Kasa 590
+  yöneticinin 650 düzeltmesi: 409 cash-blocked Bu ödeme 10,00 TL'den 650,00 TL'ye düzeltilince Nakit Kasa'dan 640,00 TL düşer; Nakit Kasa 590,00 TL iken -50,00 TL olur. Bu hesapta eksi bakiyeye izi
+  SONUÇ S: hareket tutarı 10, Kasa 590 (Engelle; 0'ın altı olmamalı)
+P) taksit iadesi — Kasa Engelle
+  başlangıç Kasa 500
+  yarışsız 100 → 650: 409 cash-blocked
+  arada muhasebe 100 → 10: 200, Kasa 590
+  yöneticinin 650 düzeltmesi: 409 cash-blocked Bu ödeme 10,00 TL'den 650,00 TL'ye düzeltilince Nakit Kasa'dan 640,00 TL düşer; Nakit Kasa 590,00 TL iken -50,00 TL olur. Bu hesapta eksi bakiyeye izi
+  SONUÇ P: iade tutarı 10, Kasa 590 (Engelle; 0'ın altı olmamalı)
+P2) taksit tahsilatı — K8 kartın kalanı (Fazlasını Avans Yaz sorusu)
+  arada muhasebe 600 → 100 + yeni 700: 200/200
+  yöneticinin 500 düzeltmesi: 409 plan-overpay Tutar kartın kalanını aşıyor: kalan 300,00 TL, girilen 500,00 TL, fazlası 200,00 TL; tahsilat tutarı büyütülmez. Kalan kadar yazın; fazlasını sonraki 
+  SONUÇ P2: kartın net tahsilatı 800 / toplam 1000 (aşan kısım "Fazlasını Avans Yaz" onayı olmadan yazıldıysa > 1000)
+K) Kasa hareketi (ödeme) — Kasa Engelle
+  başlangıç Kasa 500
+  yarışsız 100 → 650: 409 cash-blocked
+  arada muhasebe 100 → 10: 200, Kasa 590
+  yöneticinin 650 düzeltmesi: 409 cash-blocked Bu ödeme 10,00 TL'den 650,00 TL'ye düzeltilince Nakit Kasa'dan 640,00 TL düşer; Nakit Kasa 590,00 TL iken -50,00 TL olur. Bu hesapta eksi bakiyeye izi
+  SONUÇ K: hareket tutarı 10, Kasa 590 (Engelle; 0'ın altı olmamalı)
+A2) cari hareketi — gövdede yalnız tutar; arada açıklama değişir
+  arada not değişti: 200; tutar düzeltmesi: 200  
+  SONUÇ A2: tutar 350, açıklama “muhasebenin notu” (öbür kullanıcının notu kalmalı)
+  Değişiklik Geçmişi "önceki": {"amount":300,"note":"muhasebenin notu"}

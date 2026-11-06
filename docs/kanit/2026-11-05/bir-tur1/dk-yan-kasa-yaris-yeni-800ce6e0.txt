@@ -1,0 +1,1 @@
+K1 Kasa hareketi düzeltmesi: arada silme 200; yanıt 404 {"ok":false,"error":"Kasa hareketi bulunamadı. Başka biri silmiş olabilir."}; satır 0; cash.entry.updated izi 0; değişen tablolar: yok
