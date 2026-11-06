@@ -266,6 +266,7 @@ Yeni bir test hatası yaşanınca buraya madde eklenir (kaynağıyla). Liste bir
     izin verir, Windows vermez. "Program açmayı denedi → sonra dosya değiştirildi" sırası (bozuk/kilitli dosyadan kurtarma) ayrıca denenir; açılış hata verince bağlantı kapanıyor mu
     Linux'ta /proc/self/fd ile ölçülür. (02.11.2026, kullanıcı "bu hatalar en başından beri varsa neden daha önce çıkmadı": CI #943/#944 Windows'ta İş V/X'in 01.11'de eklenen 7 hücresi —
     5'i testte beklenmeyen async closeCompany, 2'si 1.x'ten beri üründe openDatabase'in bozuk dosyada bağlantıyı kapatmaması; 31.10 08:31'den beri çalışma dalında CI koşmamıştı.)
+49. İŞ AKIŞI DOSYASI ELLE BİRLEŞİMDEN SONRA AYRIŞTIRILIR. ci.yml / release.yml çakışması elle çözülünce `python3 -I -c "import yaml,sys; yaml.safe_load(open(sys.argv[1]))" <dosya>` ile her iş akışı dosyası ayrıştırılır; ci-kapi-listesi testi geçmesi YETMEZ (satırı metin olarak okur). Gönderimden sonra koşunun İŞ listesi boş ve açılış = kapanış anıysa iş akışı dosyası bozuktur. (06.11.2026: Ç3 birleşiminde kapı listesi birleştirilirken satır sonu taşıyan öğe listeyi iki satıra böldü — 9967cc3b; CI #1045–#1048 hiç iş başlatmadan "failure", ~20 dk dört push CI'siz kaldı; ci-kapi-listesi 54/54 geçmişti.)
 ### Verimlilik (kullanıcı, 12.10.2026: "geçmişte yaptığın hatalardan aldığın dersleri göz önüne al; gereksiz zaman ve kullanım limitimi
 harcayacak işlemlerden uzak dur!")
 - Dersler 1–24 her işte uygulanır; ama kanıt için GEREKEN kadar koşulur, fazlası değil: geliştirme sırasında yalnız değişen alanın testleri;
