@@ -335,6 +335,14 @@ async function kos(sen, uc, secenek) {
   const ceviriler = {};
   const cevir = ad => (ceviriler[ad] = (ceviriler[ad] || 0) + 1);
   const ayar = { bagli: true, onay: true, gunluk_ust_sinir: null, lisans_yazilabilir: true, ...(g.ayar || {}) };
+  // S-81 (README §22.13; eşleme — 2.5.0 WhatsApp tur 1): ayar.baglanti_yolu senaryonun bağlantı yoludur, komut satırındaki --kip'in yerine geçer ("yol1" = Elle Bağla,
+  // kapıcı her kancayı "wa0" geçirir; "yol2" = WhatsApp'ı Bağla, imzalı "wa1" / imzasız 401). Alan yoksa --kip aynen.
+  if (ayar.baglanti_yolu !== undefined) {
+    if (!["yol1", "yol2"].includes(ayar.baglanti_yolu)) throw new Error(`EŞLEME BELİRSİZ: ayar.baglanti_yolu ${ayar.baglanti_yolu}`);
+    secenek = { ...secenek, kip: ayar.baglanti_yolu };
+    notlar.push(`BAĞLANTI YOLU (S-81): ${ayar.baglanti_yolu} (--kip yerine)`);
+    cevir("S-81 baglanti_yolu");
+  }
   const kullanicilar = g.kullanicilar || { yonetici: { "whatsapp.send": true } };
   const firmalar = g.firmalar || { A: "Deneme Ticaret Ltd. Şti." };
   const wabalar = g.wabalar || { A: "W1" };
@@ -691,10 +699,24 @@ async function kos(sen, uc, secenek) {
         const ek = k[2] || {};
         const olayT = zaman(k[1], m.kabulT);
         const varis = ek.varis ? zaman(ek.varis, m.kabulT) : olayT;
-        kancalar.push({ t: varis, olayT, wamid: m.wamid, durum: k[0], kod: ek.kod ?? null, tekrar: Number(ek.tekrar || 1), sira: ++kancaSira });
+        if (ek.adres !== undefined && ek.adres !== "uygulama" && ek.adres !== "alternatif") throw new Error(`EŞLEME BELİRSİZ: kanca adresi ${ek.adres}`);
+        kancalar.push({ t: varis, olayT, wamid: m.wamid, durum: k[0], kod: ek.kod ?? null, tekrar: Number(ek.tekrar || 1), adres: ek.adres || "alternatif", sira: ++kancaSira });
       }
     }
     kancalar.sort((a, b) => a.t - b.t || a.sira - b.sira);
+  }
+  // S-82 (README §22.13; eşleme — 2.5.0 WhatsApp tur 1): kanca "adres": "uygulama" → sahte Meta bildirimi WABA'nın alternatif adresine DEĞİL, programın uygulama düzeyi adresine
+  // (Elle Bağla'nın Webhook Bilgileri'ndeki Callback URL; ofisin adresi → alıcı → programın /wa/kanca/<yol>) gönderir. Adres programın kendi ucundan okunur (bir kez).
+  let uygulamaAdresiDegeri = null;
+  async function kancaUrl(adres) {
+    if (adres !== "uygulama") return {};
+    if (!uygulamaAdresiDegeri) {
+      const r = await api(program.admin, "GET", "/api/workspace/whatsapp/app-webhook");
+      if (r.status !== 200 || !r.data?.data?.ready) throw new Error(`EŞLEME: uygulama düzeyi adres okunamadı (${r.status} ${JSON.stringify(r.data).slice(0, 200)})`);
+      uygulamaAdresiDegeri = r.data.data.callbackUrl;
+      cevir("S-82 uygulama düzeyi adres");
+    }
+    return { url: uygulamaAdresiDegeri };
   }
 
   // ---- ALICI (kapıcının yerine) ----
@@ -746,7 +768,9 @@ async function kos(sen, uc, secenek) {
     }
     kancaKaydi.push({ t: simdi, http: yanit.ok ? yanit.status : 0, isaret, wamidler, imzali });
     // S-20: programa ULAŞAN İMZALI (Meta'nın) bildirimin HTTP yanıtı sayılır; kapıcıda 503 (program/tünel kapalı) ve imzasız olay sayılmaz.
-    if ((imzali || mut("S20-imzasiz-da-sayilir")) && yanit.ok && !(mut("S20-503-sayilmaz") && yanit.status === 503)) kancaYanit[String(yanit.status)] = (kancaYanit[String(yanit.status)] || 0) + 1;
+    // S-89 (README §23.9; eşleme — 2.5.0 WhatsApp tur 1): Yol 1'de (Elle Bağla) bildirim imzasız KABUL edilir (S41, Y17-26) → kabul edildiği kanca_yanitlari ile okunur: Yol 1
+    // kipinde imzasız bildirimin yanıtı da sayılır (Yol 2 / imzalı kip aynen).
+    if ((imzali || secenek.kip === "yol1" || mut("S20-imzasiz-da-sayilir")) && yanit.ok && !(mut("S20-503-sayilmaz") && yanit.status === 503)) kancaYanit[String(yanit.status)] = (kancaYanit[String(yanit.status)] || 0) + 1;
     res.writeHead(yanit.ok ? yanit.status : 502);
     res.end(yanit.ok ? yanit.body : undefined);
   }
@@ -1015,7 +1039,7 @@ async function kos(sen, uc, secenek) {
         meta.saat(simdi);
         if (k && k.t <= sonrakiT && (!ol || k.t <= ol.t)) {
           kancalar.shift();
-          await meta.durumGonder({ wamid: k.wamid, durum: k.durum, hataKodu: k.kod ?? undefined, tekrar: k.tekrar, timestamp: Math.floor(k.olayT / 1000) });
+          await meta.durumGonder({ wamid: k.wamid, durum: k.durum, hataKodu: k.kod ?? undefined, tekrar: k.tekrar, timestamp: Math.floor(k.olayT / 1000), ...(await kancaUrl(k.adres)) });
         } else {
           olaylar.splice(olaylar.indexOf(ol), 1);
           await olayIsle(ol.o);
@@ -1428,7 +1452,8 @@ async function kos(sen, uc, secenek) {
         if (o.durum === "failed") st.errors = [{ code: o.kod ?? 131000, title: "Sahte", message: "Sahte", error_data: { details: "Sahte" } }];
         const govde = durumGovdesi({ wabaId: WABA_ID[w], gorunenNumara: "902125550000", numaraKimligi: PN_ID[w], durumlar: [st] });
         meta.saat(simdi);
-        await meta.meta.hamKancaGonder({ url: meta.meta.kancaAdresi(PN_ID[w]), govde, imzala: Boolean(o.imzali) });
+        if (o.adres !== undefined && o.adres !== "uygulama" && o.adres !== "alternatif") throw new Error(`EŞLEME BELİRSİZ: sahte kanca adresi ${o.adres}`);
+        await meta.meta.hamKancaGonder({ url: (await kancaUrl(o.adres)).url || meta.meta.kancaAdresi(PN_ID[w]), govde, imzala: Boolean(o.imzali) }); // S-82: adres "uygulama"
         return;
       }
       if (tur === "sirket_sil") {
@@ -1524,7 +1549,7 @@ async function kos(sen, uc, secenek) {
       while (kancalar.length && kancalar[0].t <= simdi) {
         const k = kancalar.shift();
         meta.saat(simdi);
-        await meta.durumGonder({ wamid: k.wamid, durum: k.durum, hataKodu: k.kod ?? undefined, tekrar: k.tekrar, timestamp: Math.floor(k.olayT / 1000) });
+        await meta.durumGonder({ wamid: k.wamid, durum: k.durum, hataKodu: k.kod ?? undefined, tekrar: k.tekrar, timestamp: Math.floor(k.olayT / 1000), ...(await kancaUrl(k.adres)) });
       }
       let ilerledi = false;
       if (program) {

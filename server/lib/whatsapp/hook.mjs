@@ -136,7 +136,7 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
     return `atlandı: ${result.skipped || "?"}`;
   };
   // "Meta'daki adres hemen yeniden denetlenir": o WABA'ya bağlı bir şirketin Bağlantıyı Sına yolu (connection.ensureHook force — Meta'daki kayıtlı alternatif adres okunur,
-  // programınki değilse / yoksa yeniden kaydedilir). Şirket: önce bildirimin sahipleri, sonra o WABA'da kipi bilinenler; kaydı o WABA'da + belirteçli, arka planda yazılabilir
+  // programınki değilse / yoksa yeniden kaydedilir). Şirket: önce bildirimin sahipleri, sonra o WABA'da kipi bilinenler; kaydı o WABA'da, arka planda yazılabilir
   // (BS-7 şema kapısı + yazma kilidi: kapılı şirkete hiç yazılmaz), lisans yazılabilir, belirteç süresi dolmamış İLK şirket. Sıklık app-webhook.mjs rechecks'te.
   async function recheckAddress(wabaId, entries) {
     const ids = [];
@@ -158,11 +158,13 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
       }
       const connection = context?.whatsapp?.connection;
       const record = connection?.read?.();
-      if (!record || record.wabaId !== wabaId || !record.tokenSealed) continue;
+      // Belirteçsiz kayıt ensureHook'ta atlanır (mühürlü belirtece yalnız bağlantı modülü dokunur — whatsapp-w1-baglanti kaynak taraması).
+      if (!record || record.wabaId !== wabaId) continue;
       if (context.canWriteInBackground?.() === false) continue;
       if (context.license?.writable?.() === false) continue;
       if (connection.tokenStatus?.(record)?.state === "expired") continue;
       const result = await connection.ensureHook(context.mobileRemote?.publicUrl?.() || "", { force: true });
+      if (result?.skipped === "no-connection") continue; // belirteçsiz kayıt: sıradaki şirket
       log.info?.(`WhatsApp: durum bildirimi uygulama düzeyi adrese geldi; Meta'daki bildirim adresi yeniden denetlendi (${describe(result)}).`);
       return result;
     }
