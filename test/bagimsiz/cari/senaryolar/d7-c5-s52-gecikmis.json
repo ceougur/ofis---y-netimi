@@ -1,0 +1,28 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "d7-c5-s52-gecikmis",
+ "aciklama": "2.5.0 C13.5 B1 gecikmiş tutarı (bugün 15.06): A — vadesi geçmiş (31.05) borca ileri tarihli Ödeme Sözü (20.06, takvim ufku içinde): gecikmiş 1.000 (S52 A; söz gecikmişi silmez) — takvim kalemi söz gününde, durumu ÇATAL (SK-3, C13.6). B — vadesiz Borç 500 (01.06): ertesi günden gecikmiş (S1 A). C — vade günü bugün (15.06): gecikmiş değil (M1f). D — vadesi geçmiş Borç 800, aynı caride elle Alacak 600 (KS2: kapamaz): gecikmiş net borçla sınırlı 200 ((5) A). E — Açılış 900'ü Mevcut Borç kartı tüketir (M1e); gecikmiş yalnız vadesi geçen 1. taksit 300 (kart ile açılış birlikte sayılmaz).",
+ "dayanak": "KARARLAR.md §13 C13.5, C13.6",
+ "bugun": "2026-06-15",
+ "adimlar": [
+  {"id": "ca", "islem": "cari_ac", "ad": "A", "isim": "Aylin Söz", "tarih": "2026-04-01"},
+  {"id": "a1", "islem": "borc", "cari": "A", "tutar": "1000", "tarih": "2026-05-01", "vade": "2026-05-31", "beklenen": "2026-06-20"},
+  {"id": "cb", "islem": "cari_ac", "ad": "B", "isim": "Burak Vadesiz", "tarih": "2026-04-01"},
+  {"id": "b1", "islem": "borc", "cari": "B", "tutar": "500", "tarih": "2026-06-01"},
+  {"id": "cc", "islem": "cari_ac", "ad": "C", "isim": "Ceren Vadegünü", "tarih": "2026-04-01"},
+  {"id": "c1", "islem": "borc", "cari": "C", "tutar": "400", "tarih": "2026-05-01", "vade": "2026-06-15"},
+  {"id": "cd", "islem": "cari_ac", "ad": "D", "isim": "Deniz Net", "tarih": "2026-04-01"},
+  {"id": "d1", "islem": "borc", "cari": "D", "tutar": "800", "tarih": "2026-05-01", "vade": "2026-05-10"},
+  {"id": "d2", "islem": "alacak", "cari": "D", "tutar": "600", "tarih": "2026-05-02"},
+  {"id": "ce", "islem": "cari_ac", "ad": "E", "isim": "Ece Kart", "tarih": "2026-05-01", "acilis": "900", "acilisVade": "2026-05-05"},
+  {"id": "ke", "islem": "kart_ac", "ad": "KE", "cari": "E", "tutar": "900", "taksit": 3, "ilkVade": "2026-06-01", "tarih": "2026-05-08", "mevcut": true},
+  {"id": "k1", "islem": "kontrol", "gecikmis": true}
+ ],
+ "elleBeklenen": {
+  "k1:cari:A:gecikmis": 100000, "k1:cari:B:gecikmis": 50000, "k1:cari:C:gecikmis": 0, "k1:cari:D:gecikmis": 20000, "k1:cari:E:gecikmis": 30000,
+  "k1:cari:D:bakiye": 20000, "k1:cari:E:bakiye": 90000
+ },
+ "elleCatal": {
+  "k1:takvim:hareket:a1": {"state": ["overdue", "upcoming"], "days": [-15, 5], "dueDate": "2026-06-20", "amount": 100000}
+ }
+}

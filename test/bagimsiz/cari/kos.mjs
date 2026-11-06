@@ -51,10 +51,13 @@ let dosyalar = argv.filter((a, i) => a.endsWith(".json") && argv[i - 1] !== "--c
 // Bağımsız çağrı (dosya ve tohum verilmeden): bütün elle senaryolar + rastgele tohum 1–2 × 60 işlem (UX18 /2 ve S1 /3; --legacy'de rastgele yok).
 const LEGACY = argv.includes("--legacy");
 // Kural seti: --legacy → 2.4.4; değilse --kural (varsayılan 2.4.9; 2.4.6 / 2.4.5 karşılaştırma için)
-const KURAL = LEGACY ? "2.4.4" : opt("--kural") || "2.4.9";
-if (!["2.4.4", "2.4.5", "2.4.6", "2.4.9"].includes(KURAL)) throw new Error(`kural seti bilinmiyor: ${KURAL}`);
-// "<KURAL> kararıyla değişen beklenti" sınıfı: bir önceki kural setinin kâhin çıktısıyla fark (2.4.6 ↔ 2.4.5, 2.4.9 ↔ 2.4.6)
-const ONCEKI = { "2.4.6": "2.4.5", "2.4.9": "2.4.6" }[KURAL] || null;
+// 2.5.0 (06.11.2026; KARARLAR.md §13): kural seti "2.5.0" VARSAYILAN — 2.4.9 + Ç5 (açılış 519, KG-5, S49, tek yükümlülük kuyruğu, B1 gecikmiş); `--kural 2.4.9` eski beklentiler
+const KURAL = LEGACY ? "2.4.4" : opt("--kural") || "2.5.0";
+if (!["2.4.4", "2.4.5", "2.4.6", "2.4.9", "2.5.0"].includes(KURAL)) throw new Error(`kural seti bilinmiyor: ${KURAL}`);
+// "<KURAL> kararıyla değişen beklenti" sınıfı: bir önceki kural setinin kâhin çıktısıyla fark (2.4.6 ↔ 2.4.5, 2.4.9 ↔ 2.4.6, 2.5.0 ↔ 2.4.9)
+const ONCEKI = { "2.4.6": "2.4.5", "2.4.9": "2.4.6", "2.5.0": "2.4.9" }[KURAL] || null;
+// 2.5.0 C13.5: carinin B1 gecikmiş tutarını cari kartı yanıtından okuyan eşleme — Ç5-B kod ajanı verir (ör. r => r.totals?.overdue); null → "okunamadı"
+const GECIKMIS_ALAN = null;
 const VARSAYILAN = !dosyalar.length && !opt("--tohum");
 if (VARSAYILAN) dosyalar = readdirSync(path.join(HERE, "senaryolar")).filter(f => f.endsWith(".json")).sort().map(f => path.join(HERE, "senaryolar", f));
 const TOHUM = opt("--tohum") || (VARSAYILAN ? "1-2" : null);
@@ -781,6 +784,8 @@ async function kos(senaryo) {
             P[`${k}:cari:${ad}:silinebilir`] = typeof r.data.deleteBlock === "string" ? r.data.deleteBlock === "" : "okunamadı";
             P[`${k}:cari:${ad}:pasif`] = r.data.status === "passive" ? true : r.data.status === "active" ? false : `durum:${r.data.status}`;
             ham[`${k}:cari:${ad}:deleteBlock`] = r.data.deleteBlock; // ders 38: nedenin metni
+            // 2.5.0 C13.5 (KARARLAR.md §13): B1 gecikmiş tutarı — alan adı Ç5-B'nin ortak yardımcısında verilir (GECIKMIS_ALAN); verilene kadar "okunamadı" (ders 4)
+            if (a.gecikmis) P[`${k}:cari:${ad}:gecikmis`] = GECIKMIS_ALAN ? kurus(GECIKMIS_ALAN(r.data)) : "okunamadı";
           }
           for (const [ad, id] of Object.entries(ids.fatura)) {
             if (!id) continue;
@@ -1185,7 +1190,7 @@ if (!argv.includes("--mutasyonsuz")) {
   const kipler = d => {
     if (gecersizMi(d)) return ["2.4.4"];
     const ana = KURAL === "2.4.4" ? "2.4.5" : KURAL;
-    if (JSON.parse(readFileSync(d, "utf8")).dil === "destekofis-cari/3") return ["2.4.9", "2.4.6", "2.4.5"]; // her kipte üç kural seti (2.4.9 / 2.4.6 mutantları --legacy / --kural 2.4.5'te de)
+    if (JSON.parse(readFileSync(d, "utf8")).dil === "destekofis-cari/3") return ["2.5.0", "2.4.9", "2.4.6", "2.4.5"]; // her kipte dört kural seti (2.5.0 Ç5 mutantları 200–213 yalnız 2.5.0'da; 2.4.9 / 2.4.6 mutantları --legacy / --kural 2.4.5'te de)
     return [ana, "2.4.4"];
   };
   // Tek Python sürecinde (model.py --mutasyon-tara): her mutant için ilk 3 yakalayan (dosya, kip) — 100+ mutant × 40+ dosya × 1–2 kip, süreç başlatma maliyeti yok
@@ -1210,6 +1215,7 @@ if (!LEGACY) console.log(`\nGEÇERSİZ DENETİM (2.4.5 kararıyla; --legacy'de k
 console.log(`\nATLANAN (${LEGACY ? "/3 — yalnız varsayılan kipte koşar" : "2.4.5 kararıyla geçersiz — --legacy ile koşar"}): ${ATLANAN.length}${ATLANAN.length ? ` — ${ATLANAN.join(", ")}` : ""}`);
 if (KURAL === "2.4.6") console.log(`\n2.4.6 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §9 C0b): ${DEGISEN.reduce((t, x) => t + x.adet, 0)} denetim, ${DEGISEN.filter(x => x.adet).length} senaryo · programla farkların ${SINIF.ic}'i bu sınıfta, ${SINIF.ks9}'i KS9 (madde 10: faturasız Alış İadesi yolu 2.4.5'te yok), ${SINIF.dis}'i SINIF DIŞI`);
 if (KURAL === "2.4.9") console.log(`\n2.4.9 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §12; 2.4.6 kâhinine göre): ${DEGISEN.reduce((t, x) => t + x.adet, 0)} denetim, ${DEGISEN.filter(x => x.adet).length} senaryo · programla farkların ${SINIF.ic}'i bu sınıfta, ${SINIF.dis}'i SINIF DIŞI`);
+if (KURAL === "2.5.0") console.log(`\n2.5.0 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §13; 2.4.9 kâhinine göre): ${DEGISEN.reduce((t, x) => t + x.adet, 0)} denetim, ${DEGISEN.filter(x => x.adet).length} senaryo · programla farkların ${SINIF.ic}'i bu sınıfta, ${SINIF.dis}'i SINIF DIŞI`);
 console.log(`\nÖZET [${LEGACY ? "legacy" : KURAL}]: ${dosyalar.length} senaryo, ${genelToplam} denetim, ${genelFark} fark (BULGU ${ozet.reduce((s, o) => s + o.bulgu, 0)}), ${genelBilinen} bilinen sınır (BILINEN.json; başarısız sayılmaz), ${okumaHatasi} okuma hatası, ${kacan} yakalanmayan mutasyon, ${ATLANAN.length} atlanan senaryo. Ham çıktı: ${OUT}`);
 if (genelBilinen) console.log(`BİLİNEN SINIRLAR (${genelBilinen}): ${bilinenHepsi.map(b => `${b.senaryo} ${b.anahtar}`).join("; ")}`);
 // "geçti" sayısı bilinen sınırları içerir (başarısız sayılmaz — CI kapısı); ayrıntısı yukarıdaki BİLİNEN satırlarında ve ozet.json "bilinen" alanında

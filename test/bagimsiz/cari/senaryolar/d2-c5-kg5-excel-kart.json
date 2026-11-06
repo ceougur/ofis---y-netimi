@@ -1,0 +1,24 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "d2-c5-kg5-excel-kart",
+ "aciklama": "2.5.0 C13.2 (KG-5 A, B5): anahtar açık sunucuda Tablodan Aktar. Kemal'in borcu yok → kart YENİ BORÇ (B1.4 D ≤ 0): tek madde B 120 1.000 / A 519 (gelir değil). Leyla'nın açılışı 900 ≥ 600 → 'mevcut borcu taksitlendir' kartı: madde yazmaz (kitap H-02). Geri Al kartı ve maddesini kaldırır: 519 yalnız Leyla'nın açılışı.",
+ "dayanak": "KARARLAR.md §13 C13.2",
+ "bugun": "2026-06-15",
+ "anahtar": {"legacyTableTransfer": true},
+ "adimlar": [
+  {"id": "t", "islem": "tablo_yukle", "sekmeler": [{"ad": "Taksitler", "tur": "taksit", "kayitlar": [
+   {"no": "M-1", "isim": "Kemal Kart", "taksitler": [["2026-07-01", "500"], ["2026-08-01", "500"]]},
+   {"no": "M-2", "isim": "Leyla Mevcut", "taksitler": [["2026-07-01", "300"], ["2026-08-01", "300"]]}]}]},
+  {"id": "ck", "islem": "cari_ac", "ad": "K", "isim": "Kemal Kart", "kayit": "M-1", "tarih": "2026-05-01"},
+  {"id": "cl", "islem": "cari_ac", "ad": "L", "isim": "Leyla Mevcut", "kayit": "M-2", "tarih": "2026-05-01", "acilis": "900"},
+  {"id": "x1", "islem": "aktar", "ad": "X1", "kayitlar": ["M-1", "M-2"], "hesapIci": false, "mevcutBorc": true},
+  {"id": "k1", "islem": "kontrol"},
+  {"id": "g1", "islem": "geri_al", "aktar": "X1"},
+  {"id": "k2", "islem": "kontrol"}
+ ],
+ "elleBeklenen": {
+  "k1:mizan:120": 190000, "k1:mizan:519": -190000, "k1:mizan:500": 0, "k1:mizan:600": 0,
+  "k1:cari:K:bakiye": 100000, "k1:cari:L:bakiye": 90000, "k1:kart:M-1:mevcutBorc": false, "k1:kart:M-2:mevcutBorc": true,
+  "k2:mizan:120": 90000, "k2:mizan:519": -90000, "k2:mizan:600": 0, "k2:cari:K:bakiye": 0
+ }
+}

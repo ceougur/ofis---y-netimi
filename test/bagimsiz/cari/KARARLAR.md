@@ -947,7 +947,9 @@ Kural seti `2.5.0` = `2.4.9` + bu bölüm. `--kural 2.4.9` 2.4.9 beklentilerini 
      ödenmemiş taksitleri (kartına ödeme ulaşmadıysa 2.4.9'daki gibi tutarın tamamı). Takvim / Vade Takip tutarı (K6.5) = kuyruk kalanı.
   8. Karşılıksız (S8 = A, K-1): bağsız evrak karşılıksız dönünce alacak kalemi kalkar, kapattığı kalemler kendi vadeleriyle açılır (kâhinde B2.2'den beri: karşılıksız evrak kapatıcı değil).
   9. İki taraf AYRI (KS2 aynen; (5) A "faturaların Açık / Ödendi durumu yalnız Mahsup Et ile"): carinin ALACAK tarafı (alış faturası, elle Alacak, alacaklı Açılış; bağsız Ödeme, ciro,
-     alış iadesi) aynı 2–4 kurallarıyla ayrı kuyrukta; iki taraf birbirini kapatmaz.
+     alış iadesi) 3–4 kurallarıyla ayrı kuyrukta; iki taraf birbirini kapatmaz. Bu taraftaki SIRA kararda yok (S2 müşterinin ödemesi için verildi; 2.4.5 S1 "simetrik" + K-b "kayıt tarihi") →
+     **SK-4**: kâhin iki dalı hesaplar (A vade sırası / B kayıt tarihi + yazım sırası), ayrışan her denetim ÇATAL (etiket YAYGIN; tarih sıralı alanda iki dal aynı).
+     (Kod yazılırken görüldü: c13 S7'de vade 18.06'lı elle Alacak ile aynı gün iade notu — program koşulmadan, karar metni okunarak; ders 40, 43.)
   10. KS8 / KS9 (2.4.6, AYNEN) bu kuyruğun içinde: K-b'nin "tek FIFO"su 2'deki sıra + 4'teki zaman; KS8.1'in ikinci aşaması (artan para → kapatıcı iadenin geri ödemesi, en eski iade önce) zaman
       çizelgesinin SONUNDA kalan bağsız paradan. Aynı anda birden çok bağsız kaynak bekliyorsa öncelik 2.4.9'daki gibi: satış iadesinin artanı → öbür bağsız kapatıcılar (stok iadesi, değersiz, bağ
       fazlası; borç tarafında alış iadesi) → tahsilat / evrak (borç tarafında Ödeme / ciro); kaynak içinde tarih → yazım sırası. (Kaynaklar arası öncelik kararda yok — 2.4.9 korundu; (1) gereği
@@ -964,7 +966,12 @@ Kural seti `2.5.0` = `2.4.9` + bu bölüm. `--kural 2.4.9` 2.4.9 beklentilerini 
 
 ### Dil ekleri (/3, 2.5.0)
 `kontrol {gecikmis: true}` · `evrak {cari: null}` (faturasız; S49) · `kart_ac`'ın `tarih`'i kuyruk tarihidir (2.4.9'da yalnız gövdedeydi) · `aktar`'ın tarihi yoksa `bugun`. Yeni çıktı anahtarı:
-`<k>:cari:<ad>:gecikmis`.
+`<k>:cari:<ad>:gecikmis`. 2.5.0'da her mizan denetiminde 500 ve 519 da (sıfır olsa da) yazılır. Senaryo dosyasında yalnız `oz-test.py`'nin okuduğu `elleBeklenen` (elle hesaplanmış
+beklenenler, kuruş), `elleCatal` (ÇATAL dalları), `elleYok` (tanımsız — kâhinin yazmaması gereken anahtarlar).
+
+### Öz denetim (`oz-test.py`, program AÇILMAZ)
+Elle tablolar (d1–d8) · mutantlar 200–213 (değerle) · tek yükümlülük kuyruğunun SAF (model.py'den ayrı yazılmış) zaman çizelgesi simülasyonuyla çapraz denetimi (fatura / elle Borç / Açılış /
+tahsilat / evrak olan carilerde; elle /3 + rastgele s1 / ux18 tohum 1–3) · tarih sıralı alanda (vadesiz, kartsız) 2.5.0 = 2.4.9.
 
 ### C8f Nasıl bozulur? (2.5.0 — önce yazıldı; senaryo karşılıkları)
 | # | Bozulma | Senaryo |
@@ -977,6 +984,7 @@ Kural seti `2.5.0` = `2.4.9` + bu bölüm. `--kural 2.4.9` 2.4.9 beklentilerini 
 | Z35 | Bağsız ödeme sonradan doğan erken vadeli borca kayar (HAVUZ), kapanmış fatura yeniden açılır ("hayalet") | d6-c5-aninda |
 | Z36 | Ödeme Sözü gecikmişi siler; vade günü gecikmiş sayılır; vadesiz kalem hiç gecikmez; gecikmiş net borcu aşar; Mevcut Borç kartıyla çift sayım | d7-c5-s52-gecikmis |
 | Z37 | Açılış önce / hareket önce sıra; kart açılmadan önceki tahsilat karta sayılır | d4, d6 |
+| Z38 | Kararın çözmediği durumda kâhin değer uydurur (Mevcut Borç kartı iki kalemi tüketir; taksitli faturanın iadesi) | d8 |
 
 ### C10f Mutantlar (2.5.0)
 200–213 (`model.py --mutasyonlar`; "Ç5" önekli): 200 açılış karşı hesabı 500 (30.10 B) · 201 alacaklı açılışın karşılığı ters yönde · 202 KG-5 B: Excel kartı gelir (B 120 / A 600) · 203 KG-5: Mevcut Borç
@@ -989,6 +997,10 @@ sonradan doğan borca kayar) · 208 M1e B: Mevcut Borç kartı alttaki borcu tü
   seçilmezse alışın tersi B 649.90 / A 101 (gelir geri alınır). **B:** seçilmezse B 770.90 / A 101 (gider). **C:** uç durum böyle kalsın (BİLİNEN SINIR).
 - **SK-3 (S52 ↔ takvim kalemi; sunum, UÇ):** vadesi geçmiş borca ileri tarihli Ödeme Sözü varken Tahsilat Takvimi / zil kaleminin durumu ve gün sayısı? **A (öneri):** kalem söz gününde durur, durumu
   "Gecikmiş" (borç gecikmiş sayılır — S52), gün sayısı vadeden. **B:** durum ve gün sayısı söz tarihine göre (bugünkü). **C:** uç durum böyle kalsın (BİLİNEN SINIR). Kâhin ÇATAL.
+- **SK-4 (kapama sırası — ders 43; borç tarafı):** BİZİM cariye bağlamadan yaptığımız ödeme (tedarikçiye Ödeme, müşteriye iade bedeli, ciro) birden çok açık alacağı (alış faturası, elle Alacak,
+  alacaklı Açılış, iade notu) varken önce hangisini kapatsın? Örnek: 01.06'da müşteriye elle Alacak 300 (vade 18.06) ve aynı gün stok iadesi 300 (açık not); aynı gün Ödeme 300 — **A (öneri):** S2'nin
+  simetriği, vadesi en önce gelen (iade notu → Alacak 300 açık kalır; tek yükümlülük kuyruğu iki tarafta aynı kural). **B:** bugünkü gibi kayıt tarihi + yazım sırası (2.4.5 K-b; Alacak önce
+  yazıldıysa Alacak kapanır). Kâhin ÇATAL.
 
 ### C12f DENENMEYEN (2.5.0; neden)
 - Açılış evrakı (S48, M-08 / M-09), KG-16 / S47 / S51 göç listesi, Kural Farkı fişi (KG-15), kilitli dönem eski kuralla (Ç3 / S13), S12 / B11 Kasa: defter kâhininde (`test/bagimsiz/defter/KARARLAR.md`);
@@ -997,6 +1009,17 @@ sonradan doğan borca kayar) · 208 M1e B: Mevcut Borç kartı alttaki borcu tü
 - KG-5'in tarihi (B5) ve "tek madde": kümülatif mizanda görünmez.
 - WhatsApp elemesi (S7, S52'nin hatırlatma kısmı "Ödeme Sözü Var"): WhatsApp kâhininde / Ç5-C.
 - Taksitli faturanın iadesinde kart küçülmesi ((4), Ç7b); Kartı Kapat kalanı ((6), Ç7b); kilit sınırında bağ (2B-S2 / (3)) — cari kâhininin dilinde kilitli bağ yok.
+
+### C0f Değişen eski beklentiler (G3; 2.4.9 ↔ 2.5.0 kâhin çıktısı, elle senaryolar d* hariç + rastgele tohum 1–3) — kararla ilgisiz eski beklenti DEĞİŞMEDİ
+- **C13.1 (30.10 / M-02):** b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5c-rapor — `mizan:500` (açılış) → 0, `mizan:519` eklendi (10 denetim); bütün mizanlı /3 senaryolarında `mizan:500` = 0 ve
+  `mizan:519` yazılır (84 + 94 yeni denetim — 36 senaryo).
+- **C13.2 (KG-5) + C13.1:** c2-tablodan-aktar-kapisi, c6c-mevcut-borc-karti, c14f-c1-geri-al-y2 — aktarım artık mizanı kapatmıyor: bütün mizan denetimleri YENİ (80; c6c Mevcut Borç kartı maddesiz,
+  c2 / c14f yeni borç kartı B 120 / A 519).
+- **C13.4 (S2 vade sırası + S1 vadesiz = belge günü):** c6-cari-vade-fifo (131: Kalan 38, fatura açığı 2, takvim / Vade Takip / projeksiyon kalemleri), c10-ks10-projeksiyon-cari-vade (69 + 5),
+  c7-ks7-bagsiz-kapaticilar (20; senaryo açıklamasındaki "Açılış 400 kalır" 2.4.9 beklentisi — 2.5.0'da önce fatura (vadesiz → 20.05), Açılış (vade 31.05) sonra), rastgele s1 tohum 1–3 (310 + 9 kalkan).
+  Elle tabloyla doğrulandı: c6 k1–k10 (ör. k1: fatura 800 + Açılış 400 kapanır → Açılış 600; 2.4.9: Açılış 0, b1 300, fatura 800), c10 G / H, c7 k2 / k4.
+- **SK-4 ÇATAL:** c13-ks83-ayni-gun-sira S7 (8: elle Alacak 300 vade 18.06 ↔ aynı gün iade notu — A dalında Alacak açık, B dalında kapalı; senaryonun "yazım sırası" denetimi B dalında aynen).
+- rastgele ux18 tohum 1–3: yalnız `mizan:500` / `519` eklendi (açık / Kalan değerleri 2.4.9 ile AYNI — vadesiz alanda ANINDA = HAVUZ, bağlar önce = 2.4.9 kapaması).
 
 ### Eşleme notları (Ç5-A / Ç5-B kod ajanı için; `kos.mjs`)
 - Kural seti listesine `2.5.0` (varsayılan), "<KURAL> kararıyla değişen" için önceki `2.4.9`; mutasyon taraması /3 dosyalarında dört kip (2.5.0 + 2.4.9 + 2.4.6 + 2.4.5).

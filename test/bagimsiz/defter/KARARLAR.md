@@ -48,13 +48,25 @@ programla ayrışma BEKLENİR (açılış karşı hesabı, açılış tanıma, a
   tarihi yüklemenin (plan_imports.created_at) YEREL günü; P maddesiz. Gelir değildir.
 - **D10 Kasa açılışından önce tarihli Kasa hareketi** [KULLANICI S12 = A ("bankadaki gibi reddedilir"); BAŞ MİMAR B11 (açılıştan önceye alınan DÜZELTME de red, T12)]: `kasa_gider`
   (Kasa açılışından önce tarihli) ve `kasa_duzelt {hareket, tarih}` (tarihi açılıştan önceye) REDDEDİLİR, madde yazılmaz / değişmez; beklenen ret `retler` listesinde. HTTP kodu kararda yok
-  ("bankadaki gibi" — denetlenmez). Açılış tarihine eşit ya da sonrası kabul.
+  ("bankadaki gibi" — denetlenmez). Açılış tarihine eşit ya da sonrası kabul. Kasa hareketi: Kasa gideri, nakit tahsilat / ödeme. Kod yazılırken eklendi (program koşulmadan,
+  karar metninden): **EK-2B madde 33 (TÜRETİLDİ; BAŞ MİMAR KARARI olarak gösterildi)** — Kasa açılışının tarihi Kasa'nın açılış dışı ilk hareketinden SONRA olamaz (aynı gün olur) → `kasa_acilis` ret.
 
 ### Senaryo dili ekleri (2.5.0)
 `borc_yaz` / `alacak_yaz {tarih, cari, tutar, aciklama}` · `cek_carisiz {tarih, yon: alinan|verilen, evrak: cek|senet, tutar, no, vade}` · `acilis_evrak {tarih, yon, evrak, tutar, no, vade}` ·
 `karsiliksiz {cek, tarih, cari?}` (açılış evrakında `cari` = programın sorusuna verilen yanıt; yoksa seçilmedi) · `excel_taksit_karti {tarih, cari, toplam, odenen}` ·
 `kasa_gider {…, beklenen: "ret"}` · `kasa_duzelt {hareket, tarih}` · göç (yalnız model; sürücüde yol yok): `goc {tarih, kilit?}` (önceki olaylar 2.4.9'un yazdığı ESKİ kayıtlardır), `acilis_onay {kayit, karar}`,
 `kayit_sil {kayit}`, `kayit_geri_al {kayit}`, `kural_farki_fisi {tarih?}`. Çıktıya `retler` (beklenen reddedilen olaylar) ve `acilisOlabilir` (onay bekleyen liste) eklendi.
+Senaryo dosyasında `elleBeklenenTL` (elle hesaplanmış beklenenler, TL; `kismi` ise yalnız yazılan hesaplar) — yalnız `oz-test.py` okur.
+
+### Senaryolar
+- `senaryo.json` (programla koşar): 2.4.3 olayları + BY1…KDZ2 (D2 Türkçe büyük harf / ASCII "Acilis" / küçük harf açıklamalar, "Devir bakiyesi"; D5 alınan çek / senet, verilen çek; D3 açılış portföyü
+  alınan çek / senet, verilen çek; D4 karşılıksız — cari seçilmedi / seçildi; D9 Excel kartı; D10 açılıştan önce tarihli gider ret, açılış günü kabul, önceye düzeltme ret, sonraya kabul).
+  K_SON için KISMİ elle tablo (519, 500, 101, 121, 103, 602, 649, retler).
+- `senaryolar/g1-goc-kilitsiz` (D6: S53, KG-16, S47, B6 katlama "AÇILIŞ FARKI", "Devreden bakiye" aday değil, onay / red), `g2-goc-kilitli` (D7 + D8: kilitli dönem eski kuralla, B16 fiş
+  pasif, kilitli kaynak silinemez, M7 671 / 681; fiş sonrası 519 = yeni kuralla baştan kurulmuş defter), `g3-s51-b8-geri-alma` (B8 göç öncesi silinen eski satır geri alınınca aday; S51 açılış
+  → sil → yeni açılış → geri al → liste, red → 602), `g4-yeni-kayitlar` (D1–D5, D9, D10 tam elle tablo; programla da koşulabilir), `g5-kasa-hareket-once` (sınır "hareket önce / açılış önce":
+  EK-2B 33 + S12; programla da koşulabilir). g1–g3 yalnız model (göç).
+- Aynı adlı iki cari: defter kâhininin cari çıktısı ADA göre (2.4.3'ten) → kurulmadı (DENENMEYEN; cari kâhininde d1 / d5).
 
 ### Değişen eski beklentiler (G3; hepsi D1'den, kararla ilgisiz eski beklenti DEĞİŞMEDİ)
 `senaryo.json`'un her kontrol noktasında **500** → 0 ve **519** = açılışlar toplamı (KASA0 10.000 + B 50.000 + P1 stoğu 5.000 + M1A 5.000 + M5A 2.000 + M4A 5.000 − T1A 8.000; işaretli alacak).
@@ -67,7 +79,8 @@ carisiz açılış evrakı gidere (770.90) · 18 S48: cari seçilse de 519 (cari
 satış (B CH T / A 600; B 519 P / A CH P) · 22 S47 B: onay bekleyen aday 602 / 770'te · 23 KG-16 B: liste yok (onay etkisiz, aday 602 / 770) · 24 B6 katlama yok (yalnız "Açılış" tam yazımı aday) ·
 25 B6: "Devir" / "Devreden" de aday · 26 S51 B: geri alma reddedilir · 27 S53 B: göçte son tamamlanmış yılın 31 Aralık'ına kendiliğinden kilit · 28 Ç3 yok: kilitli dönem de yeni kurala geçer ·
 29 KG-15 B: Kural Farkı fişi yazılmaz · 30 M7 B: önceki yılın farkı da 602 / 770'e · 31 B16 B: onay bekleyen aday varken fiş yazılır · 32 S12 B: açılıştan önce tarihli Kasa hareketi kabul ·
-33 B11 B: açılıştan önceye alınan düzeltme kabul.
+33 B11 B: açılıştan önceye alınan düzeltme kabul · 34 EK-2B 33 B: Kasa açılışı ilk hareketten sonraya kabul. `kos.mjs` "tam senaryo" mutasyonu 14–21, 32, 33'ü `senaryo.json`'da; `oz-test.py`
+hepsini (14–34) bütün senaryolarda (`mutasyon` alanı hariç değerle) dener.
 
 ### KULLANICIYA SORULMALI (kâhin bu durumları KURMAZ — senaryoda görülürse hata verir)
 - **SK-1 (KG-16 kapsamı; UÇ):** açıklamasında "açılış" ORTADA geçen eski Borç / Alacak Yaz ("2025 açılış farkı") listeye girsin mi? **A (öneri):** hayır — KG-16 metni "Açılış…" (açıklama bununla
@@ -88,6 +101,9 @@ satış (B CH T / A 600; B 519 P / A CH P) · 22 S47 B: onay bekleyen aday 602 /
 - `cari_acilis` artık AÇILIŞ İŞARETLİ gönderilir: cari açılırken `openingBalance` + `openingSide` (`auto` borçlu / `credit` alacaklı), `registeredOn` = açılış tarihi (cari kâhininin
   `cari_ac {acilis}` eşlemesiyle aynı alanlar). Açıklamalı Borç Yaz (eski eşleme) artık `borc_yaz` olayıdır.
 - `borc_yaz` / `alacak_yaz`: `POST /accounts/:id/entries {kind: debt|credit, note: aciklama}` (eski `cari_acilis` eşlemesi). `cek_carisiz`: `POST /cheques` `accountId` olmadan.
+- `beklenen: "ret"` olayı reddedilirse gönderilmiş sayılır ve `program.son.retler`'e yazılır (karşılaştırıcı "beklenen retler" denetimi; kabul edilirse mizan ve retler farkı).
+  `kasa_gider` yanıtındaki kimlik saklanır (`kasa_duzelt` için). Senaryo yolu isteğe bağlı argüman (`node test/bagimsiz/defter/kos.mjs senaryolar/g4-…json`; göçsüz senaryolar).
+  `karsilastir.mjs` ZORUNLU hesaplara 519 eklendi. `MUTASYONLAR`'a 14–21, 32, 33 eklendi (kahin.py `MUTASYONLAR_250`).
 - UÇ ADI VERİLMEDİ (`UCLAR` null → olay ATLANAN, sonuç yeşil sayılmaz): `acilis_evrak` (Excel açılış portföyü), açılış evrakının `karsiliksiz`'inde cari seçimi, `excel_taksit_karti`
   (Tablodan Aktar / plan içe aktarımı; eski anahtar `legacyTableTransfer` gerekebilir), `kasa_duzelt` (Kasa hareketi tarih düzeltmesi). `kasa_gider {beklenen: "ret"}` reddedilirse başarı,
   kabul edilirse fark.
