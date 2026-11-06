@@ -1,0 +1,32 @@
+{
+  "ad": "wk19-eski-374-tam-sonuc-fark",
+  "komut": "python3 -I /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wk19-araclar/fark.py /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wk19-eski-eaa29f94/senaryolar.json test/bagimsiz/whatsapp-248/kahin/senaryolar.json S30-01-talep-duraklatildi-meta-bekletti-zincir-gonderilmez-belirsiz-iz-eler,S35-01-talep-aninda-kapanir-ayni-donem-yeni-gonderim-gider-meta-bekletti-gec-teslim,S37-01-talep-sonrasi-hatirlatma-yeniden-dene-ve-yine-de-gonder-karttan-gider,S42-03-gonderiliyor-talep-yeniden-gonderim-gerektiren-yanit-atlandi-kesin-olumsuz-basarisiz",
+  "commit": "5433178b72cd30d1063560a31e2ed8053cec3e08",
+  "dal": "worktree-agent-a26c98e4457370605",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T12:54:02.635Z",
+  "sure_sn": 0.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 376,
+    "gecen": 376,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wk19-kanit/2026-11-06/wk19-eski-374-tam-sonuc-fark.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a26c98e4457370605",
+  "ham_cikti_sha256": "f0df3e3be1bbf45edbab21a08eb28929a8f52ca9f7b70a3d9e2bf8db380d4f47",
+  "ham_cikti_bayt": 52097
+}

@@ -12,7 +12,7 @@ madde K0) bağımsız kâhinidir:
    aşağıda "Kâhin yorumları"nda (teyit gerekir). §7a'nın **revizyonu R1–R3** (30.10.2026 15:18 UTC, plan §7a sonu "REVİZYON ÖNERİSİ" + KARAR, programın
    davranışı görülmeden) da sabit: R1 Meta'ya hiç ulaşılamıyorsa "Bağlantı Bekleniyor", R2 kategori her 100 iletide / en geç 10 dakikada, R3 daha önce
    gönderilmiş dönem uyarısı (varsayılan Bunları Çıkar).
-3. **Senaryo kümesi** (`kahin/senaryolar.py` → `kahin/senaryolar.json`) — 374 senaryo (güncelleme 18 ile; aşağıdaki döküm 291'e kadar, + **güncelleme 18** 7: S42 4, S43 3 — §23; + **güncelleme 17** 14: S34 2, S35 2, S36 2, S37 2, S38 2, S33 2, S41 2 — §22; + **güncelleme 16** 11: S29 4, S30 3, S31 2, S32 2 — §21; + W3 1 + **güncelleme 11** 18: SW1 3, SW2 2, SD1837 3, SD1915 5, SW4 3, S7 2 — §16 + **güncelleme 12** 8: S7A 3, S7B 5 — §17 + **güncelleme 13** 8: S16 4, S17 2, NB5 2 — §18 + **güncelleme 14** 6: S22 6 — §19 + **güncelleme 15** 10: S23 5, SW3 5 — §20): 145 (plan §8 "Nasıl bozulur?" başlıklarının hepsi + §7a kararlarının ve R1–R3'ün her biri)
+3. **Senaryo kümesi** (`kahin/senaryolar.py` → `kahin/senaryolar.json`) — 389 senaryo (güncelleme 19 ile; aşağıdaki döküm 291'e kadar, + **güncelleme 19** 15: S58 3, S59 2, S60 2, S61 2, S62 3, S63 3 — §24; + **güncelleme 18** 7: S42 4, S43 3 — §23; + **güncelleme 17** 14: S34 2, S35 2, S36 2, S37 2, S38 2, S33 2, S41 2 — §22; + **güncelleme 16** 11: S29 4, S30 3, S31 2, S32 2 — §21; + W3 1 + **güncelleme 11** 18: SW1 3, SW2 2, SD1837 3, SD1915 5, SW4 3, S7 2 — §16 + **güncelleme 12** 8: S7A 3, S7B 5 — §17 + **güncelleme 13** 8: S16 4, S17 2, NB5 2 — §18 + **güncelleme 14** 6: S22 6 — §19 + **güncelleme 15** 10: S23 5, SW3 5 — §20): 145 (plan §8 "Nasıl bozulur?" başlıklarının hepsi + §7a kararlarının ve R1–R3'ün her biri)
    + 34 **kâhin güncellemesi 2** (31.10.2026, ürün sahibi kararları K1–K8; §7) + 19 **kâhin güncellemesi 3** (★ soruların yanıtları D1–D8; §8) + 12 **kâhin güncellemesi 4** (N2–N5 yanıtları E1–E4 + N6; §9) + 5 **güncelleme 5** (P1/P2 → F1/F2; §10) + 16 **güncelleme 6** (G0 ilke + G1–G5; §11) + 5 **güncelleme 7** (G6; §12) + 8 **güncelleme 8** (H1–H4; §13) + 29 **güncelleme 9** (01.11.2026 kullanıcı onaylı 8 davranış J1–J8 + n3 BİLİNEN SINIR J9; §14) + 8 **güncelleme 9b** (S9-1 / S9-2 kararları J10–J11; §14.10–14.12) + 3 **güncelleme 9c** (ekstre içeriği açılışta, J12; §14.13–14.14) + 7 **güncelleme 10** (2.4.9 W: teslim süresi 30 gün W1 + W-KÖK W2; §15).
 
 **Bağımsızlık.** Programın kodu (`server/`, `client/`, `bulut/`) GÖRÜLMEDEN yazıldı (KANIT KURALI 2, ders 5). Okunanlar: CLAUDE.md, plan, iş listesi,
@@ -22,7 +22,7 @@ implementation / tech-provider onboarding / versions, pricing) ve bu klasörün 
 Plan §6 K0 klasör olarak `test/sahte-meta/` yazıyor; görev bu klasörü (`test/bagimsiz/whatsapp-248/`) verdi.
 
 **Bağımsızlığın sınırı.** Elle beklenen ile model aynı elden (bu kâhin) çıktı: bağımsızlık PROGRAMA göredir. Kendi içindeki dişi: (a) elle beklenen ↔ model
-iki ayrı türetme, (b) mutasyon testi (164 bilerek hata — 30'u §7a kararlarının ya da R1–R3'ün tersi, 30'u K1–K8'in (M68–M97), 11'i D1–D8'in (M98–M108), 9'u E1–E4 + N6'nın (M109–M117), 2'si F1/F2'nin (M118–M119), 9'u G0–G5'in (M120–M128), 2'si G6'nın (M129–M130), 6'sı H1–H4'ün (M131–M136), 16'sı J1–J9'un (M137–M153; M149 güncelleme 9b'de kalktı) 9'u J10–J11'in (M154–M162) 2'si J12'nin (M163–M164), 1'i J7 düzeltmesinin (M165) ve 5'i W1/W2'nin (M166–M170; M7 de W1'e göre TERSİNE çevrildi), 1'i W3'ün (M171) ve 18'i güncelleme 11'in (M172–M189; M151 artık SW1'in tersi), 9'u güncelleme 12'nin (M190–M198), 11'i güncelleme 13'ün (M199–M209), 3'ü güncelleme 14'ün (M210–M212), 10'u güncelleme 15'in (M213–M222), 13'ü güncelleme 16'nın (M223–M235), 15'i güncelleme 17'nin (M236–M250), 9'u güncelleme 18'in (M251–M259) tersi — toplam 258, her biri en az bir senaryoda yakalanıyor), (c) değişmezler (ör. "Bu Ay"
+iki ayrı türetme, (b) mutasyon testi (164 bilerek hata — 30'u §7a kararlarının ya da R1–R3'ün tersi, 30'u K1–K8'in (M68–M97), 11'i D1–D8'in (M98–M108), 9'u E1–E4 + N6'nın (M109–M117), 2'si F1/F2'nin (M118–M119), 9'u G0–G5'in (M120–M128), 2'si G6'nın (M129–M130), 6'sı H1–H4'ün (M131–M136), 16'sı J1–J9'un (M137–M153; M149 güncelleme 9b'de kalktı) 9'u J10–J11'in (M154–M162) 2'si J12'nin (M163–M164), 1'i J7 düzeltmesinin (M165) ve 5'i W1/W2'nin (M166–M170; M7 de W1'e göre TERSİNE çevrildi), 1'i W3'ün (M171) ve 18'i güncelleme 11'in (M172–M189; M151 artık SW1'in tersi), 9'u güncelleme 12'nin (M190–M198), 11'i güncelleme 13'ün (M199–M209), 3'ü güncelleme 14'ün (M210–M212), 10'u güncelleme 15'in (M213–M222), 13'ü güncelleme 16'nın (M223–M235), 15'i güncelleme 17'nin (M236–M250), 9'u güncelleme 18'in (M251–M259), 18'i güncelleme 19'un (M260–M277) tersi — toplam 276, her biri en az bir senaryoda yakalanıyor), (c) değişmezler (ör. "Bu Ay"
 teslim = Teslim + Okundu iş sayısı, başarılı işte hata kodu yok, metin bakiyesi = PDF bakiyesi), (d) beklenen şablon metinleri plan dosyasından okunup
 karşılaştırılır (H).
 
@@ -36,7 +36,7 @@ karşılaştırılır (H).
 | `sahte-meta/sunucu.test.mjs` | Sahte sunucunun kendi testleri (node --test, 35) |
 | `sahte-meta/mutasyon.mjs` | Testlerin dişi: sunucuya 19 bilerek hata, her biri ayrı geçici kopyada; her biri en az bir testi kırmızı yapmalı |
 | `kahin/kahin.py` | Model + komut satırı (`hesapla`, `karsilastir`) |
-| `kahin/senaryolar.py` | 374 senaryo (girdi + ELLE beklenen); modelle karşılaştırır, aynıysa `senaryolar.json` yazar |
+| `kahin/senaryolar.py` | 389 senaryo (girdi + ELLE beklenen); modelle karşılaştırır, aynıysa `senaryolar.json` yazar |
 | `kahin/senaryolar.json` | Her senaryo: girdi, elle beklenen, modelin bütün beklenen sonucu; üstte `sablonlar` (programın açması beklenen 2 şablonun metni, §7a 23 + W5) |
 | `kahin/kahin_test.py` | Kâhinin kendi testi (A–H) + mutasyon; TAP + `# tests/pass/fail` |
 
@@ -92,7 +92,7 @@ durum/kategori), `meta_davranis` (`mesaj` alıcı başına n. POST yanıtı; `me
 (`baslat` [etiket, seçim SIRASIYLA, şablon, dönem, kullanıcı, `istek` = istek kimliği, `onceki` = R3 uyarısındaki seçim "cikar" (varsayılan) / "gonder"], `kontrol`, `cari` [telefon / istemiyor / silindi / pasif / ad /
 hareket_ekle / vadeler], `kapat`, `ac`, `cokme` [o carinin isteği anında süreç ölür, `istek_ulasti`], `tunel`, `kanca_kuyrugu`, `lisans`, `duraklat`/`devam`/
 `iptal`, `basarisizlari_yeniden_dene`, `yine_de_gonder`, `geri_yukle`/`sifirla`/`tasindi`, `meta_basamak`, `meta_sablon` [durum / kategori], `meta_kapali`,
-`sahte_kanca` [İMZASIZ olay: `wamid` ya da `is` (gerçek işin wamid'i), `durum`, `kod`, `opaque`]; güncelleme 18: yeni olay yok, yeni girdi `meta_davranis.mesaj` gecikmeli yanıtı
+`sahte_kanca` [İMZASIZ olay: `wamid` ya da `is` (gerçek işin wamid'i), `durum`, `kod`, `opaque`]; güncelleme 19: yeni olaylar `yol_degisti {sirket, yol}` (S58) ve `kanca_kaydi {sirket}` (S63), yeni girdi `ayar.baglanti_yollari {şirket: yol1 | yol2}` (S63) — §24; güncelleme 18: yeni olay yok, yeni girdi `meta_davranis.mesaj` gecikmeli yanıtı
 `{"gec": süre, "yanit": …}` (program o süre "Gönderiliyor"da bekler) — §23; güncelleme 17: yeni olay yok, yeni girdi `ayar.baglanti_yolu` (yol1 / yol2) ve kanca `adres` (alternatif / uygulama) — §22; güncelleme 16: yeni olay yok, `kvkk_sil` S30 / S32 ile genişledi — §21; güncelleme 11: `baglanti_suresi_doldu` / `yeniden_baglan` {`sirket`},
 `baslat.supheli_elle`, `vadeler[].supheli` — §16; güncelleme 13: `hareketler[].belge` ("alis_faturasi"; kâhin yalnız tutarı okur) — §18; güncelleme 15: `kvkk_sil {id}` (KVKK silme talebi), `kontrol {icerik: true}` (içerik görünümü) — §20), `ozet_cikti`. `meta_davranis.kanca` olayları Meta'nındır
 (kapıcıda imzası doğrulanmış sayılır, §7a 3).
@@ -2172,3 +2172,99 @@ süpürmesi; sürücü tetikler); Y19-30 (aynı kipli iki şirkette işaret ayr�
 
 **Bilgi (senaryosuz):** Y19-1 (aynı kiple yeniden bağlanma sıfırlamaz); Y19-6 (kip değişiminin öbür etkileri); Y19-18 (PDF'i silinmiş Meta Bekletti iletisinin geç teslimi); Y19-23 (b), (c); Y19-28 (iki ayrı Elle Bağla
 uygulaması); Y19-32 (Meta yapılandırma denetimleri). Dinî bayram tarihleri ARANMADI (görev metni; WhatsApp kâhininde tatil kuralı yok).
+
+### 24.10 Kâhinde (kodlama) — senaryolar (15) ve mutasyonlar (18)
+Kod: `KARARLAR` S58, S59, S60, S61, S62, S63 (AYNEN; S60'a BAŞ MİMAR 11:33 (6), (8), S63'e BAŞ MİMAR 11:27 (1) metinleri). **S58:** `yol_degisti` olayı (geçersiz kip girdi hatası); `sirket_yolu()` şirketin
+o anki kipi (`ayar.baglanti_yollari` → `ayar.baglanti_yolu`); kip değişince `son_kanca[şirket]` silinir (aynı kip değişim değil); M260 / M261 / M262 dalları. **S59:** `kanca_isle`'de Atlandı işe yeni teslim:
+`elendi_neden` silme / saklama + işin son denemesi + Meta Bekletti denemesi → J2 düzeni (deneme teslim, §7a 32 kod temizlenir, atlanma nedeni null, Teslim Edildi / Okundu, `teslim_yaz`, `kesinlesti`);
+öbür sıralar `KULLANICIYA SORULMALI S59-a` `ValueError`'ı; M263 eski yol (Atlandı kalır), M264 `gec_gorunur()` ile İptal düzeni. **S60:** `s60_sil()` — S35 (talep / dolum anında `atla`) ve S42 (`yanit_gel`)
+yollarında Atlandı + içerik silinmiş işin yüklenmiş medyası `kesinlesti` ile (Y10-7 aynen); program kapalıysa açılışta (`ac`); Sonucu Belirsiz'e uygulanmaz; önce Atlandı sonra silinen iş `s60_susuyor` →
+`pdf_susuyor` (ayrı metin `S60_SUSUYOR`; İptal metni AYNEN); M265–M268 dalları. **S61:** `yeniden_dene`'de S31'den sonra, E2'den ÖNCE: Ödeme Hatırlatma + içerik silinmiş + kart telefonu boş → `elenen`
+`telefonsuz`, iş durumu değişmez; `yine_de_gonder`'de aynı durum `KULLANICIYA SORULMALI S61-a` `ValueError`'ı; M269–M272 dalları. **S62:** hesap AYNEN (talep lisansa bakmıyordu); `kvkk_sil`'de
+yalnız M273 / M274 dalları. **S63:** `isaret_koy()` işareti ŞİRKET başına koyar (`yol_calisiyor` şirkete bakar), `kanca_kaydi` olayı (A: etkisiz; `kayit_kaybi()` yalnız M275 / M276), Meta bildiriminin
+imzası `kanca_al`'da varış anındaki şirket kipine göre (`ek["meta"]`); M277 WABA başına. Yeni girdi: `ayar.baglanti_yollari`; yeni olaylar: `yol_degisti`, `kanca_kaydi`; yeni çıktı alanı YOK.
+
+| Karar | Senaryo | Ne | Sınır | Mutasyon (yakalayan; değerle) |
+|---|---|---|---|---|
+| S58 | S58-01 | Yol 1, 12 sa: A Teslim (işaret), B'ye bildirim yok; 2. saatte Yol 2 → işaret sıfırlanır; 14. saatte B Meta Kabul Etti; 15. saatte aynı dönem A, B "Daha Önce" | değişim teslim süresinden ÖNCE | M260 |
+| S58 | S58-02 | Yol 2: B 13. saatte Süresi Doldu; 15. saatte Yol 1 → B Süresi Doldu KALIR; C (16. sa, bildirim yok) 30. saatte Meta Kabul Etti; 31. saatte E'nin imzasız bildirimi (yeni yolun ilki) → C o anda Süresi Doldu; 33. saatte B, C yeniden gider, A, E "Daha Önce" | değişim SONRA; yeni yolun ilk bildirimi; Yol 2 → Yol 1 yönü | M260, M261 |
+| S58 | S58-03 | Yol 1 → Yol 2 (1. sa) → Yol 1 (2. sa): eski işaret geri gelmez; 14. saatte B Meta Kabul Etti; aynı dönem "Daha Önce" | geri dönüş | M260, M262 |
+| S59 | S59-01 | D, E Meta Bekletti; E İptal; D talep → Atlandı (PDF silinir); 3. saatte iki geç teslim: D "Teslim Edildi" (POST 1, kod / atlanma nedeni null), E İptal / Teslim Edildi seçenekli; D'ye geç failed yok sayılır; aynı dönem ikisi "Daha Önce" | İptal ile karşılaştırma, geç failed | M263, M264 |
+| S59 | S59-02 | 31.10 21:00 yerel: D talep (22:00) → Atlandı, 1. iletisi 01.11 22:00'de (2. deneme anından sonra) teslim → Teslim Edildi; B'nin teslimi 23:30'da (J2) talepten ÖNCE → Teslim Edildi kalır; "Bu Ay" Ekim 1 + Kasım 1 | iki sıra; ay dönümü yerel ≠ UTC; 24 sa | M263, M264 (+ M265, M266 — PDF sayısı) |
+| S60 | S60-01 | G (S42: istek sürerken talep, geçici hata yanıtı) ve D (Meta Bekletti, talep) Atlandı → PDF silinir (3. saatte 2); U, V Sonucu Belirsiz (içerik silinmiş) → PDF durur; 4. saatte V'ye imzalı geç teslim → kesinleşir, 3; U ufukta 0 | S35 ↔ S42 yolu; Atlandı ↔ Sonucu Belirsiz; bakım turu ≥ 1 sa | M265, M266, M267, M268 |
+| S60 | S60-02 | W'nin Meta Bekletti iletisi talepten ÖNCE teslim (J2, PDF bir kez); X İptal + talep → PDF `plan_susuyor` (eskisi gibi); Y talep → Atlandı → PDF silinir | İptal; teslim sonra talep (bir kez) | M265, M266 |
+| S61 | S61-01 | Ödeme Hatırlatma: TY, TK Başarısız + talep + kart telefonları silinir → Yeniden Dene'de ikisi `telefonsuz`, işler Başarısız; Ekstre TE `icerik_silindi`; aynı anda yeni hatırlatma TY'yi `telefonsuz` eler; TK'nin telefonu yeniden girilince Yeniden Dene TK'yi alır ve gider | Ekstre ile karşılaştırma; yeni gönderimle aynı ad; telefon girilince yol | M269, M271, M272 |
+| S61 | S61-02 | RS (aynı gün başka işi Sonucu Belirsiz) ve RD (aynı gün başka işi Teslim) Başarısız + talep + telefon silinir → Yeniden Dene'de ikisi `telefonsuz` (E2'den ÖNCE); yeni hatırlatma da `telefonsuz` | sıra: telefon ↔ E2 (Sonucu Belirsiz / Daha Önce) | M269, M270, M272 |
+| S62 | S62-01 | B talebi geçerli lisansta, A / U / D talepleri SALT OKUNURDA: içerikler silinir, D (Lisans Nedeniyle Durdu) Atlandı (PDF silinir), U Belirsiz kalır; Devam Et D'yi göndermez; talepten önceki yedek geri yüklenince içerik gelmez (S32); aynı dönem A, B "Daha Önce", U "Sonucu Belirsiz", D gider | salt okunur ↔ geçerli lisans; geri yükleme | M273, M274 (+ M265, M266, M268) |
+| S62 | S62-02 | Ödeme Hatırlatma, sınır 1: SB (Sınır → Lisans) ve BH (Belirsiz) salt okunurda talep → SB Atlandı; salt okunurda yeni hatırlatma BAŞLAMAZ; lisans dönünce SB yeni işle sınır açılınca gider, BH aynı gün elenir | "yeni iş üretmez"; §7a 29 | M273, M274 |
+| S62 | S62-03 | 02.11.2026: A gider, B duraklatılır; 200. günde salt okunur; 1 yılda süpürme sürer (A içerik silinir, B Atlandı `saklama_suresi`); lisans dönünce A "Daha Önce", B gider | 1 yıl ±2 sa, salt okunur | — (S62 hesabı eski kâhinle aynı; süpürme bilgisi) |
+| S63 | S63-01 | Aynı WABA: A Yol 1, B Yol 2 (iki uygulama); A kaydolur, B sonra kaydolur; A2'nin bildirimi A'ya gelir (Teslim); B1 (bildirim yok) A'nın bildirimleriyle Süresi Doldu OLMAZ; aynı dönem ikisi "Daha Önce" | kayıt sırası A → B; işaret şirket başına | M275, M276, M277 |
+| S63 | S63-02 | Kayıt sırası ters (B → A): B2'nin bildirimi B'ye gelir; A1 Meta Kabul Etti kalır | sıra değişimi | M275, M276, M277 |
+| S63 | S63-03 | İki şirket de Yol 2 (aynı uygulama, tek kayıt): A2'nin bildirimi gelir; B1 Meta Kabul Etti kalır (BAŞ MİMAR 11:27 (1)) | aynı uygulama | M276, M277 |
+
+Mutasyonlar (`kahin.MUTASYONLAR`): M260 S58 C (sıfırlanmaz), M261 yalnız Yol 1 → Yol 2 yönünde, M262 geri dönüşte eski işaret geri gelir, M263 S59 B (Atlandı kalır — eski Y17-9), M264 İptal düzeni
+(ekran seçenekli), M265 S60 B (bakım turunda silinmez), M266 tur yalnız açılışta, M267 S42 yolunda silinmez, M268 Sonucu Belirsiz'de de silinir, M269 S61 B (alınır, gönderim anında Atlandı — eski
+Y17-17), M270 telefon E2'den sonra, M271 Ekstre'ye de, M272 neden görünmez, M273 S62 B (salt okunurda talep reddedilir), M274 salt okunurda yalnız içerik silinir, M275 S63 C (WABA başına tek kayıt),
+M276 kayıt şirket başına (aynı uygulama da düşer), M277 işaret WABA başına (eski kâhin). Hepsi DEĞERLE (elle beklenen) yakalanıyor — matris (`wk19-mutant-matrisi`, 15 yeni + 4 değişen senaryo;
+bütün 389 senaryoda `wk19-mutant-matrisi-tum-senaryolar-tz-istanbul`): M260 3, M261 1, M262 1, M263 3, M264 3, M265 4, M266 4, M267 1, M268 2, M269 3, M270 1, M271 1, M272 3, M273 2, M274 2, M275 2,
+M276 3, M277 3; istisnayla 0 — bütün senaryolarda aynı sayılar, yalnız M273 / M274 3'er (+ S30-02: eski senaryonun salt okunurdaki LS talebi). İstisnayla yakalanan yine yalnız M5, M108 (eskiden beri). Kâhinin kendi testine **I16** eklendi: (a) S59-a iki sırası (zincirin eski belirsiz iletisine geç teslim;
+İstemiyor ile atlanan Meta Bekletti'nin 1. iletisine geç teslim) `KULLANICIYA SORULMALI S59-a`, M263 ile S35-01 hesaplanır (Atlandı kalır); (b) S61-a (işteki Yine de Gönder, asıl işte de) hata verir;
+(c) `baglanti_yollari` / `yol_degisti` girdi denetimi; (d) aynı kiple `yol_degisti` sıfırlamaz (sonuç M260 ile birebir); (e) önce İstemiyor ile Atlandı sonra talep → `medya_silme` `plan_susuyor`
+(`S60_SUSUYOR`), talepsiz → 0; (f) S62-01 lisans olayları çıkarılınca talepten sonraki içerik / iş durumu / eleme / sayaç sonuçları aynı; (g) yeni girdiler yalnız S58 / S63 başlıklarında, her yeni başlık ≥ 2.
+Eski testlerin başlık listeleri genişledi (G3 gerekçesi: yeni karar başlıkları): I2 S58–S63, I4 `senaryolar.YENI_250`, I12 (g) içerik alanları S59–S62, I13 (j) `silme_talebi` / `saklama_suresi` S60 / S62 ve
+`icerik_silindi` elemesi S61, I14 (j) `baglanti_yolu` S58, I15 (g) `gec` S60; F ipuçlarına M260–M277. I14 (i) "gerçek bildirimlerde Yol 1 = Yol 2" artık 375 senaryo (S63'ün şirkete özel kipi genel kipin önüne geçer).
+
+### 24.11 Eski kâhinle karşılaştırma (taban eaa29f94, değişiklikten ÖNCE alınmış kopya; `kahin.py` sha256 8cb556e5…)
+Yeni 15 + değişen 4 senaryo, iki kip, iki saat dilimi (sonuçlar iki dilimde aynı; araç `wk19-araclar/eski_kahinle.py`, beklenen sınıf ÖNCEDEN yazıldı — TAP, 19/19 beklenen gibi):
+- **ham** (eski dosya aynen; `wk19-eski-kahinle-ham`): S58 3 ve S63 3 KIRMIZI istisnayla — "bilinmeyen olay: yol_degisti / kanca_kaydi" (ZAYIF neden, ders 38); S59 2, S60 2, S61 2 KIRMIZI DEĞERLE ve neden
+  BEKLENEN (S59: D "Atlandı" kalıyor — S59-02'de ayrıca K3 D Atlandı / atlanma nedeni silme_talebi; S60: Atlandı işin PDF'i silinmiyor — K1 0 ↔ 2; S61: TY / TK yeniden denemeye ALINIYOR); S62-01 KIRMIZI değerle
+  ama yalnız S60'tan (K3 medya 2 ↔ 3; S62 hesabı aynı), S62-02 / 03 AYNI (S62 = A eski hesapla aynı — Y19-25; dişi M273 / M274); değişen 4: S35-01 / S37-01 elle değerle, S30-01 / S42-03 tam sonuç
+  (medya_silme) değerle.
+- **nötr** (eski dosya + YALNIZ girdi düzeneği: `yol_degisti` kipi değiştirir ama işaret SIFIRLANMAZ, `kanca_kaydi` etkisiz, `baglanti_yollari` şirkete özel imza kuralı — işaret WABA başına; kural EKLENMEDİ;
+  `wk19-araclar/notr_kopya.py`, `wk19-eski-kahinle-notr`): S58 3 KIRMIZI değerle, neden BEKLENEN (B 13. saatte eski yolun işaretiyle Süresi Doldu = S58'in C'si); S63 3 KIRMIZI değerle, neden BEKLENEN (B1 / A1
+  öbür şirketin bildirimiyle Süresi Doldu = işaret WABA başına, M277 yönü); öbürleri ham ile aynı. S63'ün "kayıt kaybettirmez" yüzü eski kâhinde zaten öyleydi (kayıt modeli yoktu) — dişi M275 / M276.
+
+### 24.12 Değişen eski beklentiler
+374 eski senaryonun 370'i bayt bayt aynı (girdi + elle + TAM model sonucu + başlık / açıklama / kaynak; sıra korunuyor — taban eaa29f94'ün değişiklikten önce alınmış `senaryolar.json` kopyasıyla,
+`wk19-eski-374-tam-sonuc-fark`: 376/376 — 374 senaryo + sıra + üst alanlar). Değişen 4 (G3 gerekçesi; yaprak farkı aynı dosyada):
+| Senaryo | Değişen | Neden (KARAR) |
+|---|---|---|
+| S30-01 | yalnız tam sonuç: `isler.T1/E.medya_silme` 0 → 1, `isler.T3/D.medya_silme` 0 → 1, `meta.medya_silme` D 1 → 2 / E 0 → 1, `kontroller.K2/K3/K4.medya_silme` +2 | S60 (Y19-15/16): talep anında Atlandı olan zincir (E) ve Meta Bekletti (D) işlerinin PDF'i |
+| S35-01 | elle + tam sonuç: `kontroller.K3.isler.T3/D` "Atlandı" → "Teslim Edildi", `isler.T3/D` durum → Teslim Edildi / atlanma nedeni → null / hata kodu 131049 → null / medya_silme 0 → 1, durum sayıları, `medya_silme` sayaçları; açıklama + kaynak (ad tarihsel) | S59 (Y19-10) + S60 (Y19-16) |
+| S37-01 | elle + tam sonuç: `yeniden.Y1` {elenen {}, alinan [RF, RT]} → {elenen {RT: telefonsuz}, alinan [RF]}, `kontroller.K2.isler.T1/RT` ve `isler.T1/RT.durum` "Atlandı" → "Başarısız", atlanma nedeni telefonsuz → null, durum sayıları; açıklama + kaynak | S61 (Y19-21) |
+| S42-03 | yalnız tam sonuç: `isler.T1/G`, `T2/M`, `T5/S` `medya_silme` 0 → 1, `meta.medya_silme` G / M / S +1, `kontroller.K1…K4.medya_silme` +3 | S60 (Y19-15): S42 yanıtıyla Atlandı olan işlerin PDF'i |
+Üst alanlardan yalnız `kararlar`'a S58, S59, S60, S61, S62, S63 eklendi (eski kararlar değişmedi).
+
+### 24.13 Sürücü için (S-91 … S-98; programa karşı koşmadan önce gereken eşlemeler)
+- **S-91 `yol_degisti {sirket, yol}`:** programda şirketin bağlantısını öbür kiple kurmak (Elle Bağla ↔ WhatsApp'ı Bağla; programın kip değiştirme yolu ya da Bağlantıyı Kaldır + yeniden bağla — W-2 etkisi
+  senaryolarda yok, değişim anında bekleyen iş yok); sahte Meta değişimden SONRA gelen bildirimleri yeni kipe göre gönderir (Yol 2 imzalı, Yol 1 doğrulanamaz imzayla — S-81). "Bildirim yolu çalışıyor"
+  işareti programda okunabiliyorsa okunur, okunamıyorsa esas TTL + 1 sa sonucu (Süresi Doldu OLMAMALI). Aynı kiple yeniden bağlanma senaryosu yok (Y19-1).
+- **S-92 S58-02 "yeni yolun ilk bildirimi":** E'nin bildirimi gelince süresi çoktan geçmiş C'nin o anda (ya da programın bir sonraki TTL turunda — denetim 1 sa sonra) Süresi Doldu olması programın TTL'yi
+  sürekli denetlemesine bağlı; program TTL'yi yalnız bir kez (kabul + TTL + 1 sa anında) denetliyorsa C Meta Kabul Etti kalır → OKUMA FARKI (Y19-3, ana oturum teyidi; kime / kaç kez: 33. saatte C'ye
+  ikinci ileti gider mi).
+- **S-93 S59:** sahte Meta'da 131049'dan sonra aynı wamid'e GEÇ `delivered` (`varis` +3 sa / +25 sa; S-76 düzeni — sahte Meta kipi gerekir, yoksa adım GEÇERSİZ); ekranda "Teslim Edildi" ve "Silme Talebi"
+  nedeninin görünmemesi (`atlanma_nedeni` null; program durdurma nedenini içte tutuyorsa — job_stops — ekran esas); E (İptal) ekranı `secenek`; S59-01'de D'ye geç `failed` (131026, +5 sa) yok sayılmalı.
+- **S-94 S60:** Meta'daki PDF silmesi sahte Meta kaydında `DELETE /<MEDIA_ID>` (medya silme sayısı — Y10-7: 30 günü dolmamış); "bir sonraki bakım turu": sürücü her denetimden önce programın bakım
+  (süpürme) turunu sahte saatle tetikler (S-63 düzeni); tetiklenemiyorsa denetim Atlandı'dan ≥ 1 sa sonra (BAŞ MİMAR 11:33 (6)); S60-02 X (İptal) `plan_susuyor` — denetlenmez; S60-01 G gecikmeli yanıt S-84.
+- **S-95 S61:** kart telefonunun silinmesi `cari {telefon: null}`, yeniden girilmesi `cari {telefon: "…"}` (kullanıcı girer); Başarısızları Yeniden Dene yanıtında / ekranda "Telefon Yok" → `telefonsuz`
+  (okunamazsa "okunamadı" — ders 4); iş Başarısız kalmalı, o kişi için POST artmamalı; S61-02'de aynı gün başka işin Sonucu Belirsiz / Teslim olması neden sırasını sınar.
+- **S-96 S62:** `lisans {yazilabilir: false}` = programın salt okunur lisans kipi (S-… §6 "lisansı salt okunur yapma"); KVKK silme yolu (S-61) salt okunurda da tetiklenmeli — program reddederse (bugün 403
+  — C metni) ayrışma S62 = A'ya aykırıdır (WhatsApp tur 2 / W-3 düzeltmesi öncesi BEKLENİR).
+- **S-97 S63:** iki şirket aynı WABA; şirket A Elle Bağla (kullanıcının kendi Meta uygulaması — sahte Meta'da İKİNCİ uygulama), şirket B WhatsApp'ı Bağla (DestekOfis uygulaması); `kanca_kaydi {sirket}` =
+  o şirketin bildirim kaydı (subscribed_apps / alternatif adres, programın Bağlantıyı Sına / kayıt yolu); bildirimler iletinin şirketinin uygulamasına gider. Sahte Meta'da iki uygulamalı vekil yoksa
+  (S64: WhatsApp tur 2'de eklenecek) senaryo GEÇERSİZ (fark sayılmaz) — sahte Meta bu güncellemede açılmadı.
+- **S-98 W-3 / WhatsApp tur 2 öncesi:** program S58 / S63'ü (tur 2) ya da S59–S62'yi (W-3 düzeltmesi / tur 2) henüz uygulamıyorsa bu 15 senaryoda (ve değişen 4'te) ayrışma BEKLENİR (S-90 düzeni) — kod
+  birleşince yeniden koşulur.
+
+### 24.14 Kanıt ve DENENMEYEN
+- **Kanıt** (`docs/kanit/2026-11-06/wk19-*`, OKU: `wk19-OKU.txt`; kod commit'i 5433178b, koşular 5433178b'de, ağaç temiz): senaryolar **389/389** elle = model (`wk19-senaryolar`, `TZ=UTC`;
+  `wk19-senaryolar-tz-istanbul` 389/389, `senaryolar.json` iki koşuda aynı sha256 fc79cee7…); kâhinin kendi testi **421/421**, F mutasyon **276/276** (`wk19-kahin`, `TZ=UTC`; `wk19-kahin-tz-istanbul` 421/421;
+  I14 (i) Yol 1 = Yol 2 denetimi 375 senaryo); eski kâhinle yeni / değişen 19 senaryo (ham / nötr × iki TZ, hepsi önceden yazılmış beklentiyle 19/19); 374 eski senaryonun tam sonuç farkı (370 aynı + 4 G3);
+  mutant matrisi (yeni + değişen senaryolar; bütün senaryolar); ön tarama (`wk19-on-tarama.txt`); araçlar `wk19-araclar/`. Sahte Meta'ya ve sürücüye DOKUNULMADI (açılmadı, aranmadı, testleri koşulmadı).
+- **DENENMEYEN:** programa karşı sürücü koşusu (görev gereği; S-91…S-98 yazılmadı); S59-a ve S61-a sıraları (KULLANICIYA SORULMALI — kâhin hata verir; yalnız I16); S59'da read → Okundu (senaryosuz);
+  1 yıl dolumunda (`saklama_suresi`) Atlandı olan Meta Bekletti işine geç teslim (Meta'nın teslim süresi içinde olamaz — senaryosuz); S60 program kapalıyken bakım turu (açılışta — kodda, senaryosuz),
+  S60 (c) önce başka nedenle Atlandı sonra içeriği silinen iş (`plan_susuyor`; yalnız I16 e), S60 × 30 günden eski medya, S60 × S38 taşıma; S61 içeriği silinmemiş işte boş kart telefonu (Y19-23 b — bilgi),
+  kartta geçersiz numara, `hedef: "asil"` ile Başarısızları Yeniden Dene; S58 aynı kiple yeniden bağlanma (yalnız I16 d), kip değişimi sırasında bekleyen / Gönderiliyor iş, kip değişimi × iki şirket, Meta'nın
+  yeniden denediği eski bildirimin değişimden sonra gelmesi (Y19-7); S62 salt okunurda Gönderiliyor iş (S42) ve taşıma (S38); S63 iki ayrı Elle Bağla uygulaması, tanınmayan bildirimin hangi şirkete geldiği,
+  S41 "yalnız Elle Bağla şirketiyle" denetimi ve "adres denetimi yalnız kendi uygulamasının satırı" (kapsam dışı — Meta yapılandırması), S63 × kip değişimi (S58); 29 Şubat; dinî bayram tarihleri (aranmadı —
+  görev metni).

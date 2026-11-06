@@ -1,0 +1,24 @@
+WK 19 (2.5.0) — WhatsApp kâhini güncellemesi 19: S58, S59, S60, S61, S62, S63 (KULLANICI KARARI 06.11.2026 12:06 UTC "ÖNERİLERİNİ UYGULA" → hepsi A)
+Ayrıntı: test/bagimsiz/whatsapp-248/README.md §24 (24.1–24.9 kodlamadan ÖNCE, commit 3d6f076b; kod 5433178b; sonuç + kanıt ayrı commit).
+Bütün koşular 5433178b'de, ağaç temiz, `KANIT_DIR=<not defteri> node tools/kanit.mjs kos <ad> -- <komut>` ile alındı; ham çıktılar buraya kopyalandı.
+
+DOSYALAR
+- wk19-senaryolar(.log/.json)              TZ=UTC            python3 -I test/bagimsiz/whatsapp-248/kahin/senaryolar.py → 389/389 elle = model; senaryolar.json sha256 fc79cee7…
+- wk19-senaryolar-tz-istanbul               TZ=Europe/Istanbul aynı komut → 389/389; senaryolar.json aynı sha256 (fc79cee72876c219…)
+- wk19-kahin                                TZ=UTC            python3 -I test/bagimsiz/whatsapp-248/kahin/kahin_test.py → 421/421 (F mutasyon 276/276; I16 yeni)
+- wk19-kahin-tz-istanbul                    TZ=Europe/Istanbul aynı → 421/421
+- wk19-eski-kahinle-ham(-tz-istanbul)       eski kâhin (taban eaa29f94, değişiklikten ÖNCE alınmış kopya; kahin.py sha256 8cb556e5…) ile yeni 15 + değişen 4 senaryo — önceden yazılmış beklenen sınıfla 19/19
+- wk19-eski-kahinle-notr(-tz-istanbul)      eski kâhinin NÖTR kopyası (yalnız girdi düzeneği: yol_degisti kipi değiştirir ama işaret sıfırlanmaz, kanca_kaydi etkisiz, baglanti_yollari şirket kipi; kural yok;
+                                            wk19-araclar/notr_kopya.py; kopya sha256 a309cb95…) — 19/19 beklenen gibi
+- wk19-eski-374-tam-sonuc-fark              eski 374 senaryonun TAM sonucu (girdi + elle + model + başlık / açıklama / kaynak) — 370 bayt bayt aynı, 4 değişen (S30-01, S35-01, S37-01, S42-03 — G3), sıra korunuyor, üst
+                                            alanlarda yalnız kararlar'a S58–S63 eklendi; yaprak farkları dosyada
+- wk19-mutant-matrisi                       TZ=UTC: 18 yeni mutant (M260–M277) × yeni + değişen senaryolar — hepsi DEĞERLE yakalanıyor, istisna 0
+- wk19-mutant-matrisi-tum-senaryolar-tz-istanbul  aynı, bütün 389 senaryo — aynı sayılar (M273 / M274 + S30-02)
+- wk19-on-tarama.txt                        kodlamadan önce eski kâhinin KENDİ kodu üzerinde sarmalayıcıyla tarama (hangi eski senaryolar S59 / S60 / S61 / S62 / S63 durumuna giriyor) — program kodu yok
+- wk19-araclar/                             tarama.py, matris.py, fark.py, eski_kahinle.py, notr_kopya.py (yalnız standart kütüphane; python3 -I)
+
+BAĞIMSIZLIK: program kodu (server/, client/, bulut/, tools/ — kanit.mjs yalnız çalıştırıldı), surucu.mjs, sahte-meta/, program testleri, başka ajanların docs/kanit dosyaları, iş listesinin A / B / E bölümleri
+AÇILMADI. Okunan dosyaların tam listesi README §24.1'de. Programa karşı KOŞULMADI.
+
+KULLANICIYA SORULMALI (UÇ DURUM; kime / kaç kez DEĞİL — kâhin bu sıralarda hata verir): S59-a (silme talebiyle Atlandı zincir işinin eski iletisine / başka nedenle atlanan Meta Bekletti'nin 1. iletisine geç
+teslimin ekranı), S61-a (içeriği + kart telefonu silinmiş Ödeme Hatırlatma'da işteki Yine de Gönder). Ayrıntı README §24.9.
