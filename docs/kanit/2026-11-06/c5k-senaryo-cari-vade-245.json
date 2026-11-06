@@ -1,0 +1,32 @@
+{
+  "ad": "c5k-senaryo-cari-vade-245",
+  "komut": "npm run test:senaryo-cari-vade-245",
+  "commit": "b340a271b60edbc77d7d339ff9b1f9382aaa1c8e",
+  "dal": "worktree-agent-a6f19e17f6fe2a037",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T14:33:27.073Z",
+  "sure_sn": 34.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 39,
+    "gecen": 39,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5k-is/kanit/2026-11-06/c5k-senaryo-cari-vade-245.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a6f19e17f6fe2a037",
+  "ham_cikti_sha256": "95debe53a7eae26a1ea56b939ad3eb60f6c3da90a27679bc6fef7fb343bd7eed",
+  "ham_cikti_bayt": 4828
+}
