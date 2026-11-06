@@ -34,7 +34,9 @@ DILLER = ("destekofis-cari/1", "destekofis-cari/2", DIL)
 # kartı (C13.2), S49 carisiz evrak (C13.3), TEK YÜKÜMLÜLÜK KUYRUĞU (S50 + S2 vade sırası + (1) ANINDA + (2) bağlar önce + M1e — C13.4; `_taraf_250`), B1 gecikmiş tutarı (S52 — C13.5),
 # S52 ↔ takvim ÇATAL (C13.6). "--kural 2.4.9" 2.4.9 beklentilerini bayt bayt verir.
 # 2.5.0 Ç5 bakımı 2 (06.11.2026; kodu görmeyen AYRI el — KARARLAR.md §14): KULLANICI S68 = A borç tarafında da vade sırası (C14.1; SK-4 ÇATAL kalktı, ikinci dal hesaplanmaz),
-# S67 = A ileri tarihli sözde takvim kalemi "Gecikmiş", gün sayısı vadeden (C14.2; SK-5 sınırı — söz günü / söz geçmiş — ÇATAL), S66 = A carisiz evrakın karşılıksızı (C14.3).
+# S67 = A ileri tarihli sözde takvim kalemi "Gecikmiş", gün sayısı vadeden (C14.2; SK-5 sınırı — söz günü / söz geçmiş — ÇATAL; bakım 3'te kalktı), S66 = A carisiz evrakın karşılıksızı (C14.3).
+# 2.5.0 Ç5 bakımı 3 (06.11.2026; kodu görmeyen AYRI el — KARARLAR.md §15): KULLANICI S69 = A söz günü ve söz geçmiş de "Gecikmiş", gün sayısı vadeden (C15.1; SK-5 ÇATAL kalktı;
+# söz vadeden önce / vade günü K6.3 kesin — C15.2).
 KURALLAR = ("2.4.4", "2.4.5", "2.4.6", "2.4.9", "2.5.0")
 VARSAYILAN_KURAL = "2.5.0"
 BIRINCIL = {"KULLANICI", "PLAN", "GIB", "EDM", "BAŞ MİMAR"}
@@ -246,6 +248,12 @@ MUTASYONLAR = {
     216: "Ç5 C14.3 (S66 B): carisiz evrakın karşılıksızı, cari seçilmezse gidere (B 770 / A 101)",
     217: "Ç5 C14.3 (S66): cari seçilse de cari borçlanmaz (B 649 / A 101)",
     218: "Ç5 C14.3 (S66): seçilen carinin karşılıksız borcu tek yükümlülük kuyruğunda kalem değil (avans kapatmaz, gecikmiş sayılmaz)",
+    # 2.5.0 Ç5 bakımı 3 (KARARLAR.md §15; KULLANICI S69 = A — B seçeneği + sınır kaymaları; değerle yakalanmalı — oz-test.py)
+    219: "Ç5 C15.1 (S69 B): söz günü kalem 'Bugün, 0', söz geçince gün sayısı sözden (K6.3)",
+    220: "Ç5 C15.1 sınırı: S69 yalnız söz GEÇMİŞSE — söz günü (Beklenen = bugün) K6.3 'today' 0",
+    221: "Ç5 C15.2 (a) sınırı: söz vadeden ÖNCE iken de durum Gecikmiş, gün sayısı vadeden",
+    222: "Ç5 C15.1 sınırı: gün sayısı vade ERTESİNDEN (bir gün eksik)",
+    223: "Ç5 C15.2 (b) / C14.2 sınırı (M1f B): vade günü vadesi geçmiş sayılır (v ≤ bugün)",
 }
 # 2.4.9 C1.6: silinmiş cariye yazılamayan para adımları (hedef cari adımın `cari`'si) ve carisi silinmişken yapılamayan Silinenler geri yüklemeleri (hedef kaydın carisi)
 C1_YAZIM = ("tahsilat", "odeme", "borc", "alacak", "fatura", "evrak", "kart_ac", "stok_iade", "alis_iade", "stok_satis_hesap", "supheli_al", "ciro")
@@ -2896,8 +2904,12 @@ class Model:
             kalem_d, et_t = kalem, et_k
             vade_etkin = h["vade"] or h["tarih"]
             ek_k = ""
-            if self.k250 and kalem != "yok" and h["beklenen"] and tarih == h["beklenen"] and vade_etkin < self.bugun and h["beklenen"] > vade_etkin:
-                gec = dict(kalem, state="overdue", days=(self._gun(vade_etkin) - bugun).days)
+            # bakım 3 sınır mutantları: 223 (M1f B) vade günü vadesi geçmiş sayılır (v ≤ bugün); 221 söz vadeden önce de (Beklenen ≤ v dahil) gün sayısı vadeden
+            v_gecmis = vade_etkin <= self.bugun if self.mut == 223 else vade_etkin < self.bugun
+            soz_vadeden_sonra = True if self.mut == 221 else (h["beklenen"] or "") > vade_etkin
+            if self.k250 and kalem != "yok" and h["beklenen"] and tarih == h["beklenen"] and v_gecmis and soz_vadeden_sonra:
+                # mutant 222: gün sayısı vade ERTESİNDEN (bir gün eksik)
+                gec = dict(kalem, state="overdue", days=(self._gun(vade_etkin) - bugun).days + (1 if self.mut == 222 else 0))
                 if h["beklenen"] > self.bugun:
                     # C14.2 [KULLANICI S67 A, 06.11 12:16 — SK-3 kapandı]: vadesi geçmiş (vade < bugün; vadesiz → belge günü, S1 A; vade günü gecikmiş değil, M1f) borca ileri tarihli
                     # Ödeme Sözü varken kalem söz gününde durur (dueDate = Beklenen, K6.3), durumu "Gecikmiş", gün sayısı vadeden (v − bugün). İki yön (metin yön ayırmıyor).
@@ -2906,9 +2918,13 @@ class Model:
                         kalem_d, et_t = gec, (et_k if et_k in ("AJAN", "YAYGIN") else "KULLANICI")
                         ek_k = " · C14.2 S67 A: vadesi geçmiş borca ileri tarihli sözde durum Gecikmiş, gün sayısı vadeden"
                 else:
-                    # SK-5 (KULLANICIYA SORULMALI — §14): söz günü bugün ya da söz geçmiş (vade < Beklenen ≤ bugün) — "ileri tarihli" bugüne mi (K6.3) vadeye mi (S67) göre: ÇATAL
-                    kalem_d, et_t = {"catal": [kalem, gec]}, "YAYGIN"
-                    ek_k = " · ÇATAL SK-5: söz günü / söz geçmiş — K6.3 (söze göre) ya da S67 (Gecikmiş, vadeden) kararda yok"
+                    # C15.1 [KULLANICI S69 A, 06.11 13:09 — SK-5 kapandı]: söz günü (Beklenen = bugün) ve söz geçmiş (vade < Beklenen < bugün) — kalem söz gününde, her zaman "Gecikmiş",
+                    # gün sayısı VADEDEN (vade 05.06, söz 15.06 → 15.06'da −10, 16.06'da −11). Kapsam söz > vade (Y3-1: S69 "S67'nin sınırı"; SK-5 A "söz vadeden sonraysa");
+                    # Beklenen ≤ vade ve vade ≥ bugün K6.3 aynen (C15.2). Mutant 219 (S69 B): söz günü "today" 0, söz geçince sözden (K6.3); mutant 220 (söz günü sınırı kayar):
+                    # yalnız söz GEÇMİŞSE S69, söz günü K6.3 "today" 0.
+                    if self.mut != 219 and not (self.mut == 220 and h["beklenen"] == self.bugun):
+                        kalem_d, et_t = gec, (et_k if et_k in ("AJAN", "YAYGIN") else "KULLANICI")
+                        ek_k = " · C15.1 S69 A: vadesi geçmiş borçta söz günü / söz geçmiş — durum Gecikmiş, gün sayısı vadeden"
             self.d("%s:takvim:hareket:%s" % (k, hn), kalem_d, et_t, "K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan"
                    + (" − Mevcut Borç kartının açık kapsamı (K6.5)" if kartlar_c else "") + "; ufuk geçmiş + 7 gün" + ek_k)
             if kalem != "yok" and tarih <= vt_ufuk:

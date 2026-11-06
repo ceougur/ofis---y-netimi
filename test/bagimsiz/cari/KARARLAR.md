@@ -1072,7 +1072,7 @@ sonradan doğan borca kayar) · 208 M1e B: Mevcut Borç kartı alttaki borcu tü
     kilit İÇİNDE tarihli karşılıksızın reddi (kitap G-7) ve donmuş alış maddesi defter kâhininde (`test/bagimsiz/defter` g8).
 
 ### Dil ekleri (/3, bakım 2)
-`karsiliksiz {evrak, cari?, tarih?}` — carisiz evrakta programın "cari seç" sorusuna verilen yanıt; `tarih` C14.3 kaleminin günü (yoksa `bugun`). `elleCatal` SK-5 dallarını taşır.
+`karsiliksiz {evrak, cari?, tarih?}` — carisiz evrakta programın "cari seç" sorusuna verilen yanıt; `tarih` C14.3 kaleminin günü (yoksa `bugun`). `elleCatal` SK-5 dallarını taşır. (Bakım 3: SK-5 kalktı — d10'unki `elleBeklenen`'e geçti; hiçbir senaryoda `elleCatal` kalmadı, `oz-test.py` okumayı sürdürür.)
 
 ### C8g Nasıl bozulur? (bakım 2 — önce yazıldı; senaryo karşılıkları)
 | # | Bozulma | Senaryo |
@@ -1169,3 +1169,57 @@ Toplam 895 denetim satırı (elle 34, rastgele s1 861, rastgele ux18 0); döküm
 | Z50 | Vade günü vadesi geçmiş sayılır (M1f sınırı) — vade bugün, söz ileride kalem "overdue" 0 |
 | Z51 | Ödenecek Borç / Açılış / vadesiz (S1) / kısmi tahsilatlı kalem kuralın dışında kalır |
 | Z52 | S69 tutarı, tarihi ya da etiketi değiştirir (`dueDate` vadeye kayar, `amount` tutar olur, "(Ödeme Sözü)" düşer); gecikmiş tutarı (C13.5) söz gününde değişir |
+
+Senaryo karşılıkları (kod commit'i): Z45 / Z46 → d12 A (söz bugün −10), d13 A (ertesi gün −11), d10 C / D, c10 bh2; Z47 → d12 A ↔ B (mutant 220); Z48 → d12 G / F2, d13 F2 / G (mutant 221); Z49 → d12 D
+(vade dün, söz bugün −1), bütün S69 kalemleri (mutant 222); Z50 → d12 V, d10 F (mutant 223); Z51 → d12 / d13 T, T2 (Ödenecek Borç), K (Açılış), E / E2 (vadesiz), H (kısmi tahsilat, Kalan 500);
+Z52 → d12 / d13 `amount` / `dueDate` / `label`, `gecikmis` (16 cari), `vadeTakip` / `projeksiyon` satırları.
+
+### Senaryolar (bakım 3)
+- **`d12-c5-s69-soz-gunu-ve-gecmis`** (bugün 15.06; elle tablo, 38 beklenen): A kararın örneği (vade 05.06, söz 15.06 = bugün) −10 · B söz dün −10 · C söz geçen hafta (08.06; vade 01.06) −14 ·
+  D vade dün, söz bugün −1 · E vadesiz (belge 05.06 = vade, S1) söz bugün −10 · E2 vadesiz söz geçmiş −14 · H kısmi tahsilatlı (800 − 300 = Kalan 500; vade 20.05, söz 10.06) −26 · T Ödenecek Borç
+  söz bugün −21 · T2 Ödenecek Borç söz geçmiş −14 · K Açılış Bakiyesi (vade 15.05, söz 12.06) −31 — hepsi "overdue". KESİN K6.3 (C15.2): F vade = söz = bugün "today" 0 · F2 vade bugün, söz
+  vadeden önce (10.06) "overdue" −5 · G söz vadeden ÖNCE, ikisi geçmiş (vade 10.06, söz 05.06) "overdue" −10 (sözden; Y3-1) · G2 söz = vade (05.06) −10 (iki okuma aynı) · E3 vadesiz belge bugün,
+  söz bugün "today" 0 · V vade bugün, söz 17.06 "upcoming" +2. Ayrıca `cariKalemSayisi` 16, `hareket:h1:kalan` 50.000, `vadeTakip` a1 / t1, `projeksiyon` a1 / c1 ve 16 carinin `gecikmis`'i
+  (C13.5 — sözden bağımsız; vade bugün olan F / F2 / E3 / V 0, tedarikçi 0).
+- **`d13-c5-s69-soz-ertesi-gun`** (aynı adımlar, bugün 16.06): A −11 (kararın "16.06'da 11"i; S69 B'de −1) ve bütün S69 kalemleri bir gün daha geride (geri düşmez); V artık C14.2 (vade 15.06 geçti,
+  söz yarın) "overdue" −1; F (söz = vade) −1 ve F2 (söz vadeden önce) −6 K6.3; gecikmiş F / F2 / E3 / V artık dolu.
+- **`d10-c5-s67-soz-takvim`**: bakım 2'nin ÇATAL'ı (`elleCatal`) kalktı → `elleBeklenen`: C söz bugün "overdue" −10, D söz dün "overdue" −10 (açıklama güncellendi).
+- Elle beklenenler kâhin koşulmadan yazıldı (d13'ünkü küçük bir betikle d12'den, değerler betikte elle — kanıt klasöründe `kahineski3-arac/d13-uret.py`); ilk koşuda 38 + 38 + 24 elle beklenenin
+  hepsi kâhinle aynı çıktı (hiçbir elle değer kâhine göre düzeltilmedi).
+
+### C10h Mutantlar (bakım 3; `oz-test.py` DEĞERLE — çökmeden, elle tablo kırmızı)
+219 S69 B: söz günü "Bugün, 0", söz geçince sözden (K6.3) · 220 söz günü sınırı kayar: S69 yalnız söz GEÇMİŞSE (söz günü K6.3 "today" 0) · 221 söz vadeden ÖNCE iken de gün sayısı vadeden
+(C15.2 (a)) · 222 gün sayısı vade ERTESİNDEN (bir gün eksik) · 223 vade günü vadesi geçmiş sayılır (M1f B; C15.2 (b) / C14.2 sınırı). Hepsi elle senaryolarda değerle yakalanır (219: d10 / d12 / d13;
+220: d10 / d12; 221: d10 / d12 / d13; 222: d10 / d12 / d13 / c6; 223: d10 F / d12 V); kos.mjs düzenindeki tarama (`model.py --mutasyon-tara`, 67 dosya × kipler) 190/190.
+
+### Öz denetim (`oz-test.py`; program AÇILMAZ)
+Bakım 2'nin denetimlerine ek: her /3 senaryoda "SK-5 ÇATAL yok" ve 219–223'ün değerle yakalanması. Sayılar kanıtta (iki saat dilimi).
+
+### KULLANICIYA SORULMALI (bakım 3)
+YOK. S69 bu kâhinin durumlarını çözdü; Y3-1 (söz vadeden önce → K6.3) ve Y3-2 yorumdur — kaynakları yukarıda, BAŞ MİMAR'a gösterilir. Uç durumda başka iki okuma görülmedi.
+
+### C12h DENENMEYEN (bakım 3; neden)
+- Program koşulmadı (görev: CI ayrışmayı Ç5-A ile görür; kod tarafı Ç5-B). Bugünkü programın söz günü / söz geçmiş kalemi bu kâhinle ayrışabilir (K6.3 davranışı) — BEKLENEN ayrışma.
+- Zil (bildirim) ekranının ayrı alanı — kâhin yalnız `/dues` kalemini (`state`, `days`) denetler (K6.3'teki gibi); zil metni / sayacı kâhinin dilinde yok.
+- Mevcut Borç kartı kapsamlı caride (K6.5 (a)) söz geçmiş kalem — d12 / d13'te kart yok (tutar K6.5'ten, durum / gün C15.1'den — iki kural birbirine dokunmuyor; ayrı senaryo yazılmadı).
+- Göç / eski sürüm verisindeki Beklenen alanı (K6.4 — v2.4.4 verisi gerekir; C12'deki neden aynen).
+- WhatsApp elemesi (S52 "Ödeme Sözü Var") — WhatsApp kâhininde / Ç5-C.
+
+### C0h Değişen eski beklentiler (G3; bakım 2 `d6a7b0d5` ↔ bakım 3 kâhin çıktısı, `2.5.0`; bütün elle senaryolar + rastgele s1 / ux18 tohum 1–10 × 120) — kararla ilgisiz eski beklenti DEĞİŞMEDİ
+Toplam 84 değişen denetim, HEPSİ `takvim:hareket` kalemi ve HEPSİ "SK-5 ÇATAL → S69" sınıfı: eski değer {"catal": [K6.3, S67-değeri]}, yeni değer = ikinci dal (S67 / S69: "overdue", gün sayısı vadeden),
+etiket YAYGIN → KULLANICI; BEKLENMEYEN 0 (dökümü kanıtta `kahineski3-esdeger-cari-*`). Senaryo senaryo:
+- **Bakım 2'de SK-5 ÇATAL'ına dönen eski denetimler (42 + 19 + 1 = 62) → S69 değeri:** c10-ks10-projeksiyon-cari-vade 4 (k1 / k2 / k3 / k5 `bh2`: K6.3 dalı −3 düştü, −34 kaldı) · rastgele s1 58
+  (tohum 2: 18, 4: 10, 5: 4, 6: 4, 8: 8, 9: 11, 10: 3; tohum 1 / 3 / 7 ve rastgele ux18: 0) — 57 söz geçmiş (bakım 2'nin 38'i + SK-4 ile birlikte değen 19'u) + 1 söz bugün (rastgele-s1-2 `k1:s001`
+  "today" 0 → "overdue" −98).
+- **Bakım 2'nin kendi senaryosu:** d10-c5-s67-soz-takvim 2 (c1 söz bugün, d1 söz dün — ÇATAL → −10 / −10).
+- **Yeni senaryolar:** d12 10 + d13 10 (bakım 2 kâhininde hepsi ÇATAL SK-5 — beklenen NEDEN; öbür 28 + 28 elle beklenen bakım 2'de de aynı: K6.3 kesin kalemler, gecikmiş, Vade Takip, projeksiyon).
+- **DEĞİŞMEYEN (komşu — ders 10):** C14.2 (söz yarın ve sonrası) kalemleri, K6.3 kesin kalemler (söz vadeden önce / vade günü / vade ileride), Kalan, B1 gecikmiş, mizan, Vade Takip, projeksiyon,
+  kapama sırası — 84 dışında hiçbir denetim değişmedi; `belirsiz` listeleri aynı. `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`: 348/348 bayt bayt aynı (elle 67 + rastgele 20 senaryo × kipler);
+  üretici 20/20 aynı dizi.
+
+### Eşleme notları (Ç5-B kod ajanı için; `kos.mjs`)
+- YENİ EŞLEME YOK: `takvim:hareket` kalemi bugün de `/dues` `items[]`'ın `state` ve `days` alanından okunuyor (kos.mjs satır 206–207); S69 yalnız bu iki alanın değerini değiştirir. `kos.mjs`
+  değişmedi.
+- Ç5-B'nin göreceği ayrışma: söz günü (Beklenen = bugün) ve söz geçmiş (vade < Beklenen < bugün) kalemlerinde program bugün K6.3 ile "today" 0 / sözden gün sayısı veriyorsa d10 C / D, d12 (10
+  kalem), d13 (10 kalem), c10 bh2 ve rastgele s1 tohum 2 / 4 / 5 / 6 / 8 / 9 / 10 kırmızı olur — S69 kod tarafı bunu kapatır.
+- **Ana oturuma:** `model.py` değişti — mobil yazma kâhininin `kabul.json`'undaki `cari_model_sha256` yeniden üretilmeli (o dosya okunmadı, değiştirilmedi).

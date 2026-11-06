@@ -1,7 +1,7 @@
 {
  "dil": "destekofis-cari/3",
  "ad": "d10-c5-s67-soz-takvim",
- "aciklama": "2.5.0 bakım 2 C14.2 (KULLANICI S67 = A, 06.11 12:16): vadesi geçmiş borca İLERİ TARİHLİ Ödeme Sözü varken takvim kalemi söz gününde durur, durumu Gecikmiş (overdue), gün sayısı vadeden (bugün 15.06). A söz 20.06 (vade 31.05 → −15); B söz YARIN 16.06 (vade 01.06 → −14); E vadesiz Borç (01.06 = vade, S1) söz 20.06 → −14; H kısmi tahsilatlı (Kalan 500) → −26; T Ödenecek Borç (tedarikçi; metin yön ayırmıyor) → −21; K Açılış Bakiyesi (vade 15.05, söz 21.06) → −31; L söz 30.06 ufkun dışında → kalem yok (ufuk söz gününe göre, K6.3). SINIR: F vade bugün (gecikmiş değil, M1f) → K6.3 'upcoming' +5; G söz vadeden ÖNCE (05.06 < 10.06) → K6.3 'overdue' −10 (iki okumada da ileri tarihli değil). SK-5 (KULLANICIYA SORULMALI, ÇATAL): C söz BUGÜN (K6.3 'today' 0 ↔ S67 'overdue' −10), D söz DÜN (K6.3 'overdue' −1 ↔ S67 'overdue' −10). Gecikmiş tutarı (C13.5) sözden bağımsız.",
+ "aciklama": "2.5.0 bakım 2 C14.2 (KULLANICI S67 = A, 06.11 12:16): vadesi geçmiş borca İLERİ TARİHLİ Ödeme Sözü varken takvim kalemi söz gününde durur, durumu Gecikmiş (overdue), gün sayısı vadeden (bugün 15.06). A söz 20.06 (vade 31.05 → −15); B söz YARIN 16.06 (vade 01.06 → −14); E vadesiz Borç (01.06 = vade, S1) söz 20.06 → −14; H kısmi tahsilatlı (Kalan 500) → −26; T Ödenecek Borç (tedarikçi; metin yön ayırmıyor) → −21; K Açılış Bakiyesi (vade 15.05, söz 21.06) → −31; L söz 30.06 ufkun dışında → kalem yok (ufuk söz gününe göre, K6.3). SINIR: F vade bugün (gecikmiş değil, M1f) → K6.3 'upcoming' +5; G söz vadeden ÖNCE (05.06 < 10.06) → K6.3 'overdue' −10 (iki okumada da ileri tarihli değil). SK-5 → bakım 3 KULLANICI S69 = A (06.11 13:09; §15 C15.1; bakım 2'de ÇATAL'dı): C söz BUGÜN → 'overdue' −10 (vadeden; S69 B / K6.3 'today' 0), D söz DÜN → 'overdue' −10 (S69 B / K6.3 −1). Gecikmiş tutarı (C13.5) sözden bağımsız.",
  "dayanak": "KARARLAR.md §14 C14.2",
  "bugun": "2026-06-15",
  "adimlar": [
@@ -42,10 +42,8 @@
   "k1:hareket:h1:kalan": 50000,
   "k1:cari:A:gecikmis": 100000, "k1:cari:B:gecikmis": 60000, "k1:cari:C:gecikmis": 40000, "k1:cari:D:gecikmis": 30000, "k1:cari:E:gecikmis": 20000,
   "k1:cari:F:gecikmis": 0, "k1:cari:G:gecikmis": 25000, "k1:cari:H:gecikmis": 50000, "k1:cari:K:gecikmis": 90000, "k1:cari:L:gecikmis": 15000, "k1:cari:T:gecikmis": 0,
-  "k1:takvim:cariKalemSayisi": 10
- },
- "elleCatal": {
-  "k1:takvim:hareket:c1": {"state": ["today", "overdue"], "days": [0, -10], "dueDate": "2026-06-15", "amount": 40000},
-  "k1:takvim:hareket:d1": {"state": ["overdue", "overdue"], "days": [-1, -10], "dueDate": "2026-06-14", "amount": 30000}
+  "k1:takvim:cariKalemSayisi": 10,
+  "k1:takvim:hareket:c1": {"amount": 40000, "dueDate": "2026-06-15", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -10, "cari": "C", "person": "Cem Bugün"},
+  "k1:takvim:hareket:d1": {"amount": 30000, "dueDate": "2026-06-14", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -10, "cari": "D", "person": "Derya Dün"}
  }
 }

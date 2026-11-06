@@ -5,8 +5,9 @@
   python3 -I test/bagimsiz/cari/oz-test.py
 
 1. Elle tablolar: senaryolar/*.json içindeki `elleBeklenen` (elle hesaplanmış beklenenler, kuruş) ↔ 2.5.0 kâhininin çıktısı; `elleCatal`: ÇATAL denetimlerin dalları.
-   Bakım 2 (§14): hiçbir denetim SK-4 ÇATAL'ı taşımaz (S68 = A — ikinci dal yok).
-2. Mutantlar 200–218 (kâhinin dişi): her biri en az bir elle senaryoda 2.5.0 çıktısını DEĞERLE değiştirmeli (çökme de yakalandı sayılır — kos.mjs düzeni).
+   Bakım 2 (§14): hiçbir denetim SK-4 ÇATAL'ı taşımaz (S68 = A — ikinci dal yok). Bakım 3 (§15): hiçbir denetim SK-5 ÇATAL'ı taşımaz (S69 = A).
+2. Mutantlar 200–223 (kâhinin dişi): her biri en az bir elle senaryoda 2.5.0 çıktısını DEĞERLE değiştirmeli (çökme de yakalandı sayılır — kos.mjs düzeni).
+   Bakım 3 mutantları 219–223 (S69 B + sınır kaymaları) daha sıkı: çökmeden, bir `elleBeklenen` değerini değiştirerek yakalanmalı (elle tablo kırmızı).
 3. Çapraz denetim: tek yükümlülük kuyruğu (C13.4 (2)(3)(4)) "saf" bir zaman çizelgesi simülasyonuyla — yalnız fatura / elle Borç / borçlu Açılış / tahsilat (bağlı ya da bağsız)
    olan carilerde (kart, iade, evrak, kapatıcı, ödeme, şüpheli YOK) — model.py'nin açık / Kalan değerleri bire bir aynı olmalı. Senaryolar: elle /3 dosyaları + uretici.py
    rastgele s1 ve ux18 (tohum 1–3 × 60).
@@ -143,9 +144,29 @@ def main():
             denetle("%s %s ÇATAL" % (ad, k), ok, json.dumps(g, ensure_ascii=False)[:300])
         sk4 = [k for k, v in out.items() if "ÇATAL SK-4" in v.get("k", "")]
         denetle("%s SK-4 ÇATAL yok (S68 = A)" % ad, not sk4, ",".join(sk4[:5]))
-    # 2. mutantlar 200–213
+        sk5 = [k for k, v in out.items() if "ÇATAL SK-5" in v.get("k", "")]
+        denetle("%s SK-5 ÇATAL yok (S69 = A)" % ad, not sk5, ",".join(sk5[:5]))
+    # 2. mutantlar 200–223
     for n, ad in M.MUTASYONLAR.items():
         if n < 200:
+            continue
+        if n >= 219:
+            # bakım 3: değerle — çökmeden, elle hesaplanmış bir beklenen kırmızıya döner
+            degerle = []
+            for p in v3:
+                sen = yukle(p)
+                if p not in tabanlar or not sen.get("elleBeklenen"):
+                    continue
+                try:
+                    _m, out = calistir(sen, n)
+                except Exception as e:  # noqa: BLE001 — çökme değerle yakalama sayılmaz
+                    denetle("mutasyon %d çökmedi (%s)" % (n, os.path.basename(p)), False, repr(e)[:200])
+                    continue
+                kirmizi = [k for k, b in sen["elleBeklenen"].items() if out.get(k, {}).get("b", "ANAHTAR YOK") != b]
+                if kirmizi:
+                    degerle.append("%s:%s" % (os.path.basename(p), kirmizi[0]))
+            denetle("mutasyon %d DEĞERLE yakalandı (elle tablo)" % n, bool(degerle), ad)
+            print("  mutasyon %d (%s): %s" % (n, ad, ("DEĞERLE YAKALANDI (%d elle senaryo; ilk: %s)" % (len(degerle), degerle[0])) if degerle else "YAKALANMADI"))
             continue
         yakalayan = []
         for p in v3:
