@@ -1,0 +1,1332 @@
+TAP version 13
+# Subtest: kâhin ayrı mı (bağımsız inceleme H7): eski yol hiçbir raporda yeni moneyLines'ı çağırmaz
+    # Subtest: Banka Bakiye/Hareket/Masraf, Banka ve POS, Kasa, Alt Hesap Mizanı — eski yolda yeni moneyLines çağrısı 0
+    ok 1 - Banka Bakiye/Hareket/Masraf, Banka ve POS, Kasa, Alt Hesap Mizanı — eski yolda yeni moneyLines çağrısı 0
+      ---
+      duration_ms: 501.032919
+      type: 'test'
+      ...
+    1..1
+ok 1 - kâhin ayrı mı (bağımsız inceleme H7): eski yol hiçbir raporda yeni moneyLines'ı çağırmaz
+  ---
+  duration_ms: 502.180832
+  type: 'suite'
+  ...
+# Subtest: hız düzeltmesi eşdeğerliği — tohum 21 (300 motor işlemi + elle banka işlemleri)
+    # Subtest: veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)
+    ok 1 - veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)
+      ---
+      duration_ms: 3.681875
+      type: 'test'
+      ...
+    # Subtest: Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)
+    ok 2 - Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)
+      ---
+      duration_ms: 12369.723679
+      type: 'test'
+      ...
+    # rapor karşılaştırması 670 (iş parçacığında 111), karşılaştırılan satır 5197
+    # Subtest: moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)
+    ok 3 - moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)
+      ---
+      duration_ms: 449.553512
+      type: 'test'
+      ...
+    # moneyLines denetimi 493
+    # Subtest: cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı
+    ok 4 - cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı
+      ---
+      duration_ms: 657.044154
+      type: 'test'
+      ...
+    # cari arama denetimi 189
+    # Subtest: saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir
+    ok 5 - saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir
+      ---
+      duration_ms: 1577.27251
+      type: 'test'
+      ...
+    # +15 gün: rapor karşılaştırması 559, satır 5448, moneyLines denetimi 493
+    1..5
+ok 2 - hız düzeltmesi eşdeğerliği — tohum 21 (300 motor işlemi + elle banka işlemleri)
+  ---
+  duration_ms: 23511.970405
+  type: 'suite'
+  ...
+# Subtest: hız düzeltmesi eşdeğerliği — tohum 22 (300 motor işlemi + elle banka işlemleri)
+    # Subtest: veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)
+    ok 1 - veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)
+      ---
+      duration_ms: 3.481745
+      type: 'test'
+      ...
+    # Subtest: Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)
+    ok 2 - Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)
+      ---
+      duration_ms: 12254.928819
+      type: 'test'
+      ...
+    # rapor karşılaştırması 670 (iş parçacığında 111), karşılaştırılan satır 4964
+    # Subtest: moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)
+    ok 3 - moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)
+      ---
+      duration_ms: 403.725252
+      type: 'test'
+      ...
+    # moneyLines denetimi 493
+    # Subtest: cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı
+    ok 4 - cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı
+      ---
+      duration_ms: 651.756673
+      type: 'test'
+      ...
+    # cari arama denetimi 189
+    # Subtest: saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir
+    ok 5 - saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir
+      ---
+      duration_ms: 1447.493132
+      type: 'test'
+      ...
+    # +15 gün: rapor karşılaştırması 559, satır 5145, moneyLines denetimi 493
+    1..5
+ok 3 - hız düzeltmesi eşdeğerliği — tohum 22 (300 motor işlemi + elle banka işlemleri)
+  ---
+  duration_ms: 22316.6616
+  type: 'suite'
+  ...
+# Subtest: createClock — çalışıyor mu
+    # Subtest: gerçek saat: her çağrıda Date'i okur (taklit edilebilir), bugün yerel gün
+    ok 1 - gerçek saat: her çağrıda Date'i okur (taklit edilebilir), bugün yerel gün
+      ---
+      duration_ms: 1.416385
+      type: 'test'
+      ...
+    # Subtest: sabit sahte saat: set, advance (gün), freeze/resume; ISO damgası
+    ok 2 - sabit sahte saat: set, advance (gün), freeze/resume; ISO damgası
+      ---
+      duration_ms: 0.815766
+      type: 'test'
+      ...
+    # Subtest: akan sahte saat: verilen andan gerçek zamanla ilerler; yalnız tarih verilirse yerel öğlen
+    ok 3 - akan sahte saat: verilen andan gerçek zamanla ilerler; yalnız tarih verilirse yerel öğlen
+      ---
+      duration_ms: 71.826243
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: bozuk zaman TypeError; sahte saat dışarıdan dondurulamaz (Date döndürür, kopyası)
+    ok 4 - nasıl bozarım: bozuk zaman TypeError; sahte saat dışarıdan dondurulamaz (Date döndürür, kopyası)
+      ---
+      duration_ms: 1.123707
+      type: 'test'
+      ...
+    1..4
+ok 4 - createClock — çalışıyor mu
+  ---
+  duration_ms: 76.429999
+  type: 'suite'
+  ...
+# Subtest: Sunucu sahte saatle (startTestServer({ now }))
+    # Subtest: sunucunun saati paylaşılır: server.clock = app.config.now = context.now
+    ok 1 - sunucunun saati paylaşılır: server.clock = app.config.now = context.now
+      ---
+      duration_ms: 0.49798
+      type: 'test'
+      ...
+    # Subtest: çalışıyor mu: tarihsiz Kasa hareketi, kayıt tahsilatı, cari hareketi, taksit kartı/tahsilatı, stok, çek ve fatura sahte günü alır
+    ok 2 - çalışıyor mu: tarihsiz Kasa hareketi, kayıt tahsilatı, cari hareketi, taksit kartı/tahsilatı, stok, çek ve fatura sahte günü alır
+      ---
+      duration_ms: 255.74033
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: sahte günden bir gün sonrası ileri tarih (400); saat ilerleyince o gün girilir, kapı engellemez
+    ok 3 - nasıl bozarım: sahte günden bir gün sonrası ileri tarih (400); saat ilerleyince o gün girilir, kapı engellemez
+      ---
+      duration_ms: 48.560797
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: saat 30 gün ileri — oturum düşmez (oturum süresi gerçek saatle), işlem yine sahte günle
+    ok 4 - nasıl bozarım: saat 30 gün ileri — oturum düşmez (oturum süresi gerçek saatle), işlem yine sahte günle
+      ---
+      duration_ms: 21.63333
+      type: 'test'
+      ...
+    # Subtest: çocuk şirket (002) aynı saati kullanır
+    ok 5 - çocuk şirket (002) aynı saati kullanır
+      ---
+      duration_ms: 194.365703
+      type: 'test'
+      ...
+    1..5
+ok 5 - Sunucu sahte saatle (startTestServer({ now }))
+  ---
+  duration_ms: 971.9534
+  type: 'suite'
+  ...
+# Subtest: Gerçek saat (now verilmezse) davranış değişmez
+    # Subtest: bugün = gerçek yerel gün; app.config.now gerçek saat
+    ok 1 - bugün = gerçek yerel gün; app.config.now gerçek saat
+      ---
+      duration_ms: 334.833934
+      type: 'test'
+      ...
+    1..1
+ok 6 - Gerçek saat (now verilmezse) davranış değişmez
+  ---
+  duration_ms: 335.067655
+  type: 'suite'
+  ...
+# Subtest: Statik tarama: iş modüllerinde saat tek kaynaktan
+    # Subtest: tarayıcı kendini sınar: sızıntıyı yakalar, işaretli satırı ve yorumu geçer
+    ok 1 - tarayıcı kendini sınar: sızıntıyı yakalar, işaretli satırı ve yorumu geçer
+      ---
+      duration_ms: 0.746941
+      type: 'test'
+      ...
+    # Subtest: iş modüllerinde `new Date()` / `Date.now()` yok (yalnız context.now)
+    ok 2 - iş modüllerinde `new Date()` / `Date.now()` yok (yalnız context.now)
+      ---
+      duration_ms: 37.102398
+      type: 'test'
+      ...
+    1..2
+ok 7 - Statik tarama: iş modüllerinde saat tek kaynaktan
+  ---
+  duration_ms: 37.996149
+  type: 'suite'
+  ...
+# Subtest: 2.3.0 K8 — çekle sayılan taksit tahsilatı kartın kalanına bakar
+    # Subtest: ödenmiş karta çek → 409 plan-paid; kart, cari ve 101 değişmez; evrak yazılmaz
+    ok 1 - ödenmiş karta çek → 409 plan-paid; kart, cari ve 101 değişmez; evrak yazılmaz
+      ---
+      duration_ms: 129.019706
+      type: 'test'
+      ...
+    # Subtest: kalanı aşan çek → 409 plan-overpay (kalan/fazla ek alanda); kalan kadar çek → 200, kart kapanır
+    ok 2 - kalanı aşan çek → 409 plan-overpay (kalan/fazla ek alanda); kalan kadar çek → 200, kart kapanır
+      ---
+      duration_ms: 76.502672
+      type: 'test'
+      ...
+    # Subtest: ödenmiş taksite seçili çek → 409 installment-paid; açık taksite → 200; karşılıksızda ters kayıt kurala girmez (yeniden açılır)
+    ok 3 - ödenmiş taksite seçili çek → 409 installment-paid; açık taksite → 200; karşılıksızda ters kayıt kurala girmez (yeniden açılır)
+      ---
+      duration_ms: 113.306601
+      type: 'test'
+      ...
+    1..3
+ok 8 - 2.3.0 K8 — çekle sayılan taksit tahsilatı kartın kalanına bakar
+  ---
+  duration_ms: 735.771266
+  type: 'suite'
+  ...
+# Subtest: K8 taksit kuralı — nakit yolu (N1, N2, N4, N5)
+    # Subtest: N4+N1: kısmi 300 + kalan 700 → 200; ödenmiş karta 0,01 → 409 plan-paid; kart, Kasa ve cari değişmez; metin yol gösterir
+    ok 1 - N4+N1: kısmi 300 + kalan 700 → 200; ödenmiş karta 0,01 → 409 plan-paid; kart, Kasa ve cari değişmez; metin yol gösterir
+      ---
+      duration_ms: 113.995792
+      type: 'test'
+      ...
+    # Subtest: N2: kuruş sınırı — kalan 0,01 iken 0,02 → plan-overpay (kalan/fazla ek alanda), 0,01 → 200; 1.000'e 1.000,01 → plan-overpay, 1.000,00 → 200
+    ok 2 - N2: kuruş sınırı — kalan 0,01 iken 0,02 → plan-overpay (kalan/fazla ek alanda), 0,01 → 200; 1.000'e 1.000,01 → plan-overpay, 1.000,00 → 200
+      ---
+      duration_ms: 103.443739
+      type: 'test'
+      ...
+    # Subtest: N5: iade sonrası yeniden — iade kadar 200; iadeyi aşan plan-overpay; sonra 1 kuruş plan-paid
+    ok 3 - N5: iade sonrası yeniden — iade kadar 200; iadeyi aşan plan-overpay; sonra 1 kuruş plan-paid
+      ---
+      duration_ms: 86.297752
+      type: 'test'
+      ...
+    1..3
+ok 9 - K8 taksit kuralı — nakit yolu (N1, N2, N4, N5)
+  ---
+  duration_ms: 768.114313
+  type: 'suite'
+  ...
+# Subtest: K8 taksit kuralı — eşzamanlı, taksit seçimi, istek kimliği (N3, N11, N13)
+    # Subtest: N3: aynı karta iki eşzamanlı 500 (farklı istek kimliği) → biri 200, biri 409 plan-paid; tek hareket; Kasa +500
+    ok 1 - N3: aynı karta iki eşzamanlı 500 (farklı istek kimliği) → biri 200, biri 409 plan-paid; tek hareket; Kasa +500
+      ---
+      duration_ms: 51.555533
+      type: 'test'
+      ...
+    # Subtest: N3b: aynı taksite iki eşzamanlı 500 (kartta 2 taksit) → biri 200, biri 409 installment-paid
+    ok 2 - N3b: aynı taksite iki eşzamanlı 500 (kartta 2 taksit) → biri 200, biri 409 installment-paid
+      ---
+      duration_ms: 34.384346
+      type: 'test'
+      ...
+    # Subtest: N11: ödenmiş taksite seçili tahsilat → 409 installment-paid (taksit no metinde); açık taksite → 200; taksitsiz (en eski açık) → 200
+    ok 3 - N11: ödenmiş taksite seçili tahsilat → 409 installment-paid (taksit no metinde); açık taksite → 200; taksitsiz (en eski açık) → 200
+      ---
+      duration_ms: 81.622865
+      type: 'test'
+      ...
+    # Subtest: N13: aynı istek kimliğiyle yineleme ödenmiş kartta replayed (409 değil); 409'dan sonra aynı kimlik + overpay:true → 200
+    ok 4 - N13: aynı istek kimliğiyle yineleme ödenmiş kartta replayed (409 değil); 409'dan sonra aynı kimlik + overpay:true → 200
+      ---
+      duration_ms: 52.494997
+      type: 'test'
+      ...
+    1..4
+ok 10 - K8 taksit kuralı — eşzamanlı, taksit seçimi, istek kimliği (N3, N11, N13)
+  ---
+  duration_ms: 558.469847
+  type: 'suite'
+  ...
+# Subtest: K8 taksit kuralı — banka ve POS yolu, Benzer İşlem sırası (N6)
+    # Subtest: N6a: havale 1.000 ile ödenen karta aynı gün aynı tutar ikinci havale → 409 plan-paid (bank-similar DEĞİL; K8 Benzer İşlem'den önce); similarOk da geçmez; hesap bakiyesi değişmez
+    ok 1 - N6a: havale 1.000 ile ödenen karta aynı gün aynı tutar ikinci havale → 409 plan-paid (bank-similar DEĞİL; K8 Benzer İşlem'den önce); similarOk da geçmez; hesap bakiyesi değişmez
+      ---
+      duration_ms: 61.125688
+      type: 'test'
+      ...
+    # Subtest: N6b: kalanı olan kartta aynı gün aynı tutar → 409 bank-similar, similarOk ile 200; kalan dolunca similarOk'lu dördüncü → plan-paid
+    ok 2 - N6b: kalanı olan kartta aynı gün aynı tutar → 409 bank-similar, similarOk ile 200; kalan dolunca similarOk'lu dördüncü → plan-paid
+      ---
+      duration_ms: 98.007563
+      type: 'test'
+      ...
+    # Subtest: N6c: POS yolu — 2.000 karta POS 2.000,01 → plan-overpay (POS satışı açılmaz); POS 2.000 → 200; POS 100 → plan-paid; yönetici overpay POS 100 → 200 ve POS satışı
+    ok 3 - N6c: POS yolu — 2.000 karta POS 2.000,01 → plan-overpay (POS satışı açılmaz); POS 2.000 → 200; POS 100 → plan-paid; yönetici overpay POS 100 → 200 ve POS satışı
+      ---
+      duration_ms: 77.275722
+      type: 'test'
+      ...
+    1..3
+ok 11 - K8 taksit kuralı — banka ve POS yolu, Benzer İşlem sırası (N6)
+  ---
+  duration_ms: 678.765641
+  type: 'suite'
+  ...
+# Subtest: K8 taksit kuralı — yetki, avans, mevcut fazla tahsilat (N10, N7)
+    # Subtest: N10: personel ödenmiş karta → plan-paid 'yöneticinize'; personel overpay:true → 403 plan-overpay-permission; yönetici overpay:true → 200, extra, cari alacak; avans yer açmaz
+    ok 1 - N10: personel ödenmiş karta → plan-paid 'yöneticinize'; personel overpay:true → 403 plan-overpay-permission; yönetici overpay:true → 200, extra, cari alacak; avans yer açmaz
+      ---
+      duration_ms: 80.946707
+      type: 'test'
+      ...
+    # Subtest: N10b: kalanı aşan tutar personelde plan-overpay (403 değil, bayraksız); overpay:true personelde 403; yönetici overpay:true 200 (kalan kadar + fazlası)
+    ok 2 - N10b: kalanı aşan tutar personelde plan-overpay (403 değil, bayraksız); overpay:true personelde 403; yönetici overpay:true 200 (kalan kadar + fazlası)
+      ---
+      duration_ms: 54.641141
+      type: 'test'
+      ...
+    # Subtest: N7: kartın toplamı tahsilatın altına indirilince mevcut fazla okunur ve gösterilir; yeni tahsilat plan-paid; iade serbest; kalan açılınca tahsilat 200
+    ok 3 - N7: kartın toplamı tahsilatın altına indirilince mevcut fazla okunur ve gösterilir; yeni tahsilat plan-paid; iade serbest; kalan açılınca tahsilat 200
+      ---
+      duration_ms: 97.789429
+      type: 'test'
+      ...
+    1..3
+ok 12 - K8 taksit kuralı — yetki, avans, mevcut fazla tahsilat (N10, N7)
+  ---
+  duration_ms: 697.185524
+  type: 'suite'
+  ...
+# Subtest: K8 taksit kuralı — Silinenler'den geri yükleme ve düzeltme (N8, N9)
+    # Subtest: N8: 1.000 tahsilat sil → yeniden 1.000 → silineni geri yükle: 409 plan-paid; overpay:true → 200 (extra 1.000)
+    ok 1 - N8: 1.000 tahsilat sil → yeniden 1.000 → silineni geri yükle: 409 plan-paid; overpay:true → 200 (extra 1.000)
+      ---
+      duration_ms: 121.045045
+      type: 'test'
+      ...
+    # Subtest: N8b: 1.000 sil → 600 → geri yükle: 409 plan-overpay (kalan 400, fazlası 600); overpay:true → 200
+    ok 2 - N8b: 1.000 sil → 600 → geri yükle: 409 plan-overpay (kalan 400, fazlası 600); overpay:true → 200
+      ---
+      duration_ms: 100.238839
+      type: 'test'
+      ...
+    # Subtest: N9: düzeltmede tutar büyütüp kalanı aşmak → plan-overpay; küçültmek / aynı tutarla tarih → 200; overpay:true → 200; iade düzeltmesi kural dışı
+    ok 3 - N9: düzeltmede tutar büyütüp kalanı aşmak → plan-overpay; küçültmek / aynı tutarla tarih → 200; overpay:true → 200; iade düzeltmesi kural dışı
+      ---
+      duration_ms: 193.82156
+      type: 'test'
+      ...
+    1..3
+ok 13 - K8 taksit kuralı — Silinenler'den geri yükleme ve düzeltme (N8, N9)
+  ---
+  duration_ms: 810.62846
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 1 YB-1 — eşzamanlı düzeltmede korumalar işlemin içindeki GÜNCEL satırla (dört uç)
+    # Subtest: Kasa Engelle: yöneticinin 100 → 650 düzeltmesi yoldayken muhasebe aynı hareketi 100 → 10 yapar → 409 cash-blocked (güncel satırla), Kasa 590 kalır
+    ok 1 - Kasa Engelle: yöneticinin 100 → 650 düzeltmesi yoldayken muhasebe aynı hareketi 100 → 10 yapar → 409 cash-blocked (güncel satırla), Kasa 590 kalır
+      ---
+      duration_ms: 1698.124999
+      type: 'test'
+      ...
+    # Subtest: Kasa Uyar: aynı yarışta soru GÜNCEL satırla sorulur (409 cash-negative); "Yine de Kaydet" (cashForce) yazar, Kasa −50, Değişiklik Geçmişi'nin önceki tutarı 10
+    ok 2 - Kasa Uyar: aynı yarışta soru GÜNCEL satırla sorulur (409 cash-negative); "Yine de Kaydet" (cashForce) yazar, Kasa −50, Değişiklik Geçmişi'nin önceki tutarı 10
+      ---
+      duration_ms: 1655.924542
+      type: 'test'
+      ...
+    # Subtest: silinmiş hareket (Kasa Uyar): gövde yoldayken silinirse doğrudan 404 + BS-3 iletisi — önce yanıltıcı Kasa sorusu yok; hiçbir tablo yazılmaz
+    ok 3 - silinmiş hareket (Kasa Uyar): gövde yoldayken silinirse doğrudan 404 + BS-3 iletisi — önce yanıltıcı Kasa sorusu yok; hiçbir tablo yazılmaz
+      ---
+      duration_ms: 1567.308938
+      type: 'test'
+      ...
+    # Subtest: taksit K8: tahsilat 600 → 500 düzeltmesi yoldayken muhasebe aynı tahsilatı 600 → 100 yapıp 700 tahsilat ekler → 409 plan-overpay (Fazlasını Avans Yaz sorusu); overpay ile yazılır
+    ok 4 - taksit K8: tahsilat 600 → 500 düzeltmesi yoldayken muhasebe aynı tahsilatı 600 → 100 yapıp 700 tahsilat ekler → 409 plan-overpay (Fazlasını Avans Yaz sorusu); overpay ile yazılır
+      ---
+      duration_ms: 441.942785
+      type: 'test'
+      ...
+    # Subtest: kayıp güncelleme: gövdede yalnız tutar varken arada öbür kullanıcının açıklama düzeltmesi KORUNUR; Değişiklik Geçmişi'nin önceki hâli güncel satır
+    ok 5 - kayıp güncelleme: gövdede yalnız tutar varken arada öbür kullanıcının açıklama düzeltmesi KORUNUR; Değişiklik Geçmişi'nin önceki hâli güncel satır
+      ---
+      duration_ms: 1183.348229
+      type: 'test'
+      ...
+    # Subtest: iyimser kilit (gövdede updatedAt): form açıldıktan sonra öbür kullanıcı düzeltirse 409 <uç>-stale, hiçbir tablo yazılmaz; satır öbür kullanıcının değerinde
+    ok 6 - iyimser kilit (gövdede updatedAt): form açıldıktan sonra öbür kullanıcı düzeltirse 409 <uç>-stale, hiçbir tablo yazılmaz; satır öbür kullanıcının değerinde
+      ---
+      duration_ms: 1583.321522
+      type: 'test'
+      ...
+    # Subtest: iyimser kilit sürüm biçimleri: boş / null / createdAt hiç düzeltilmemiş satırda geçer; düzeltilmiş satırda boş, createdAt ve eski sürüm 409; updatedAt yoksa denetim yok (bugünkü davranış)
+    ok 7 - iyimser kilit sürüm biçimleri: boş / null / createdAt hiç düzeltilmemiş satırda geçer; düzeltilmiş satırda boş, createdAt ve eski sürüm 409; updatedAt yoksa denetim yok (bugünkü davranış)
+      ---
+      duration_ms: 809.418798
+      type: 'test'
+      ...
+    # Subtest: gerileme — yarışsız düzeltme her uçta aynen: Kontrol Yok yazar; Uyar sorar + Yine de Kaydet yazar; Engelle onayla da yazmaz; yinelenen istek ikinci kez yazmaz
+    ok 8 - gerileme — yarışsız düzeltme her uçta aynen: Kontrol Yok yazar; Uyar sorar + Yine de Kaydet yazar; Engelle onayla da yazmaz; yinelenen istek ikinci kez yazmaz
+      ---
+      duration_ms: 1339.843434
+      type: 'test'
+      ...
+    # Subtest: gerileme — eksi stok sorusu (stok) ve kart iadesi sınırı (taksit) yarışsız aynen; silinmiş harekete doğrudan düzeltme 404
+    ok 9 - gerileme — eksi stok sorusu (stok) ve kart iadesi sınırı (taksit) yarışsız aynen; silinmiş harekete doğrudan düzeltme 404
+      ---
+      duration_ms: 211.318053
+      type: 'test'
+      ...
+    1..9
+ok 14 - 2.5.0 BİRLEŞİK TUR 1 YB-1 — eşzamanlı düzeltmede korumalar işlemin içindeki GÜNCEL satırla (dört uç)
+  ---
+  duration_ms: 11047.735891
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 1 YB-2 — Kasa ↔ Banka transferi: gövde yoldayken silinir ya da öbür tarafı yok olursa 404, hiçbir tablo yazılmaz
+    # Subtest: transfer gövde yoldayken silinir: 404 Kasa iletisi; tablolar silmeden sonraki hâliyle aynı (sahte cash.transfer.updated yok)
+    ok 1 - transfer gövde yoldayken silinir: 404 Kasa iletisi; tablolar silmeden sonraki hâliyle aynı (sahte cash.transfer.updated yok)
+      ---
+      duration_ms: 340.465337
+      type: 'test'
+      ...
+    # Subtest: transferin yalnız öbür tarafı yok (eski / bozuk veri benzetimi, doğrudan silme): 404 "Transferin öbür tarafı bulunamadı"; tablolar değişmez
+    ok 2 - transferin yalnız öbür tarafı yok (eski / bozuk veri benzetimi, doğrudan silme): 404 "Transferin öbür tarafı bulunamadı"; tablolar değişmez
+      ---
+      duration_ms: 324.806004
+      type: 'test'
+      ...
+    1..2
+ok 15 - 2.5.0 BİRLEŞİK TUR 1 YB-2 — Kasa ↔ Banka transferi: gövde yoldayken silinir ya da öbür tarafı yok olursa 404, hiçbir tablo yazılmaz
+  ---
+  duration_ms: 1140.847087
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 1 YB-2 — transfer düzeltmesi yarışsız aynen (gerileme)
+    # Subtest: transfer düzeltmesi iki tarafı birlikte günceller; iyimser kilit transferde de çalışır
+    ok 1 - transfer düzeltmesi iki tarafı birlikte günceller; iyimser kilit transferde de çalışır
+      ---
+      duration_ms: 40.688605
+      type: 'test'
+      ...
+    1..1
+ok 16 - 2.5.0 BİRLEŞİK TUR 1 YB-2 — transfer düzeltmesi yarışsız aynen (gerileme)
+  ---
+  duration_ms: 444.747633
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 BS-3 — düzeltme gövdesi yoldayken kayıt silinirse 404 + kayıt bulunamadı iletisi; hiçbir tablo yazılmaz
+    # Subtest: (d) stok hareketi düzeltmesi: hareket silinmişse 404 "Stok hareketi bulunamadı. Başka biri silmiş olabilir." (önceden 409 ledger-integrity)
+    ok 1 - (d) stok hareketi düzeltmesi: hareket silinmişse 404 "Stok hareketi bulunamadı. Başka biri silmiş olabilir." (önceden 409 ledger-integrity)
+      ---
+      duration_ms: 402.809065
+      type: 'test'
+      ...
+    # Subtest: (f) taksit kartı tahsilatı düzeltmesi: tahsilat silinmişse 404 "Hareket bulunamadı. Başka biri silmiş olabilir." (önceden 200)
+    ok 2 - (f) taksit kartı tahsilatı düzeltmesi: tahsilat silinmişse 404 "Hareket bulunamadı. Başka biri silmiş olabilir." (önceden 200)
+      ---
+      duration_ms: 380.881593
+      type: 'test'
+      ...
+    # Subtest: (g) taksit düzeltmesi: taksit silinmişse 404 "Taksit bulunamadı. Başka biri silmiş olabilir." (önceden 200)
+    ok 3 - (g) taksit düzeltmesi: taksit silinmişse 404 "Taksit bulunamadı. Başka biri silmiş olabilir." (önceden 200)
+      ---
+      duration_ms: 344.444131
+      type: 'test'
+      ...
+    # Subtest: yarış yokken aynı üç düzeltme yazar; silinmiş kayda doğrudan düzeltme de aynı 404 iletisini alır (isteğin başındaki denetim)
+    ok 4 - yarış yokken aynı üç düzeltme yazar; silinmiş kayda doğrudan düzeltme de aynı 404 iletisini alır (isteğin başındaki denetim)
+      ---
+      duration_ms: 144.898653
+      type: 'test'
+      ...
+    1..4
+ok 17 - 2.5.0 BS-3 — düzeltme gövdesi yoldayken kayıt silinirse 404 + kayıt bulunamadı iletisi; hiçbir tablo yazılmaz
+  ---
+  duration_ms: 1748.529205
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 C1 TUR 1 — taksit kartı yarışı (zorla): gövde yoldayken kart silinirse hiçbir şey yazılmaz (404)
+    # Subtest: Y1 kart tahsilatı ve iadesi (POST …/entries; mobil taksit tahsilatı da bu uç): silinmiş karta satır, makbuz numarası, işlem başlığı yazılmaz; Kasa aynı
+    ok 1 - Y1 kart tahsilatı ve iadesi (POST …/entries; mobil taksit tahsilatı da bu uç): silinmiş karta satır, makbuz numarası, işlem başlığı yazılmaz; Kasa aynı
+      ---
+      duration_ms: 762.076391
+      type: 'test'
+      ...
+    # Subtest: Y2 kart tahsilatını düzeltme (PUT …/entries/:id): silinmiş kartın tahsilatı değişmez
+    ok 2 - Y2 kart tahsilatını düzeltme (PUT …/entries/:id): silinmiş kartın tahsilatı değişmez
+      ---
+      duration_ms: 364.99338
+      type: 'test'
+      ...
+    # Subtest: Y3 taksit ekleme (POST …/items): silinmiş karta taksit eklenmez
+    ok 3 - Y3 taksit ekleme (POST …/items): silinmiş karta taksit eklenmez
+      ---
+      duration_ms: 356.984955
+      type: 'test'
+      ...
+    # Subtest: Y4 taksit düzeltme (PUT …/items/:id): silinmiş kartın taksiti değişmez
+    ok 4 - Y4 taksit düzeltme (PUT …/items/:id): silinmiş kartın taksiti değişmez
+      ---
+      duration_ms: 346.139195
+      type: 'test'
+      ...
+    # Subtest: Y5 yarış yokken aynı uçlar yazar (düzeltme olağan yolu bozmaz)
+    ok 5 - Y5 yarış yokken aynı uçlar yazar (düzeltme olağan yolu bozmaz)
+      ---
+      duration_ms: 119.006498
+      type: 'test'
+      ...
+    # Subtest: D3 Silinenler'deki cari notu (C1 TUR 2 DÜŞÜK-2): tek cümle — eski sürümde hareketiyle silinmiş cari için hareketler ve Kasa da anılır ("varsa")
+    ok 6 - D3 Silinenler'deki cari notu (C1 TUR 2 DÜŞÜK-2): tek cümle — eski sürümde hareketiyle silinmiş cari için hareketler ve Kasa da anılır ("varsa")
+      ---
+      duration_ms: 32.210258
+      type: 'test'
+      ...
+    1..6
+ok 18 - 2.4.9 C1 TUR 1 — taksit kartı yarışı (zorla): gövde yoldayken kart silinirse hiçbir şey yazılmaz (404)
+  ---
+  duration_ms: 2418.418415
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 C1 TUR 1 — stok hareketi yarışı (zorla): gövde yoldayken ürün silinirse hiçbir şey yazılmaz (404)
+    # Subtest: S1 stok satışı (POST …/moves; açık hesap ve peşin): silinmiş ürüne hareket, cari borcu, Kasa girişi yazılmaz
+    ok 1 - S1 stok satışı (POST …/moves; açık hesap ve peşin): silinmiş ürüne hareket, cari borcu, Kasa girişi yazılmaz
+      ---
+      duration_ms: 670.110281
+      type: 'test'
+      ...
+    # Subtest: S2 stok hareketi düzeltme (PUT …/moves/:id): silinmiş ürünün hareketi ve cari borcu değişmez
+    ok 2 - S2 stok hareketi düzeltme (PUT …/moves/:id): silinmiş ürünün hareketi ve cari borcu değişmez
+      ---
+      duration_ms: 363.326343
+      type: 'test'
+      ...
+    # Subtest: S4 yalnız miktar stok girişi (pay: "none"; mobil stok girişi bu gövdeyi gönderir): silinmiş ürüne hareket, stok, Değişiklik Geçmişi yazılmaz
+    ok 3 - S4 yalnız miktar stok girişi (pay: "none"; mobil stok girişi bu gövdeyi gönderir): silinmiş ürüne hareket, stok, Değişiklik Geçmişi yazılmaz
+      ---
+      duration_ms: 323.868574
+      type: 'test'
+      ...
+    # Subtest: S3 yarış yokken aynı uçlar yazar (düzeltme olağan yolu bozmaz)
+    ok 4 - S3 yarış yokken aynı uçlar yazar (düzeltme olağan yolu bozmaz)
+      ---
+      duration_ms: 59.037748
+      type: 'test'
+      ...
+    1..4
+ok 19 - 2.4.9 C1 TUR 1 — stok hareketi yarışı (zorla): gövde yoldayken ürün silinirse hiçbir şey yazılmaz (404)
+  ---
+  duration_ms: 1731.476713
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 C1 TUR 2 — taksit kartı tahsilatı düzeltmesi yarışı (zorla): küçülen tutar ve nakit → POS; gövde yoldayken kart silinirse 404, hiçbir şey yazılmaz
+    # Subtest: Y6 küçülen tutar (500 → 300), yol değişimi (nakit → POS) ve ikisi birlikte: silinmiş kartın tahsilatı değişmez; geri yüklenince 500 nakit döner
+    ok 1 - Y6 küçülen tutar (500 → 300), yol değişimi (nakit → POS) ve ikisi birlikte: silinmiş kartın tahsilatı değişmez; geri yüklenince 500 nakit döner
+      ---
+      duration_ms: 1143.390786
+      type: 'test'
+      ...
+    # Subtest: Y7 yarış yokken küçülen tutar ve nakit → POS düzeltmesi yazar (düzeltme olağan yolu bozmaz)
+    ok 2 - Y7 yarış yokken küçülen tutar ve nakit → POS düzeltmesi yazar (düzeltme olağan yolu bozmaz)
+      ---
+      duration_ms: 82.793078
+      type: 'test'
+      ...
+    1..2
+ok 20 - 2.4.9 C1 TUR 2 — taksit kartı tahsilatı düzeltmesi yarışı (zorla): küçülen tutar ve nakit → POS; gövde yoldayken kart silinirse 404, hiçbir şey yazılmaz
+  ---
+  duration_ms: 1625.081818
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 C1 TUR 1 — hareket sayacı H14 (banka fişi): POS kaydı yalnız POS İptal İadesi fişinde aranır; fatura kapaması silme engelini hesaplamaz
+    # Subtest: E1 eşdeğerlik: her carinin banka fişi sayısı düzeltmeden önceki tanımla birebir aynı (POS İptal İadesi fişli cari, masraf fişli banka carisi dahil)
+    ok 1 - E1 eşdeğerlik: her carinin banka fişi sayısı düzeltmeden önceki tanımla birebir aynı (POS İptal İadesi fişli cari, masraf fişli banka carisi dahil)
+      ---
+      duration_ms: 1.904258
+      type: 'test'
+      ...
+    # Subtest: E3 fatura listesi (ödeme durumu: cari defteri, withRemaining: false) hareket sayacını çalıştırmaz; cari kartının Sil nedeni aynen
+    ok 2 - E3 fatura listesi (ödeme durumu: cari defteri, withRemaining: false) hareket sayacını çalıştırmaz; cari kartının Sil nedeni aynen
+      ---
+      duration_ms: 10.069396
+      type: 'test'
+      ...
+    # Subtest: E2 satırsız KDV'li masraf başlığı POS kaydına bakılmadan sayılmaz (tarama yalnız POS İptal İadesi fişinde — ders 47); son test: ham satır
+    ok 3 - E2 satırsız KDV'li masraf başlığı POS kaydına bakılmadan sayılmaz (tarama yalnız POS İptal İadesi fişinde — ders 47); son test: ham satır
+      ---
+      duration_ms: 1.364931
+      type: 'test'
+      ...
+    1..3
+ok 21 - 2.4.9 C1 TUR 1 — hareket sayacı H14 (banka fişi): POS kaydı yalnız POS İptal İadesi fişinde aranır; fatura kapaması silme engelini hesaplamaz
+  ---
+  duration_ms: 656.500511
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 BS-3 ailesi — cari hareketi düzeltmesi: gövde yoldayken hareket silinirse 404 + ileti; hiçbir tablo yazılmaz
+    # Subtest: (a) Borç Yaz ve nakit tahsilat: gövde yoldayken silinirse 404 "Hareket bulunamadı. Başka biri silmiş olabilir." (önceden 200, satır yok)
+    ok 1 - (a) Borç Yaz ve nakit tahsilat: gövde yoldayken silinirse 404 "Hareket bulunamadı. Başka biri silmiş olabilir." (önceden 200, satır yok)
+      ---
+      duration_ms: 728.443932
+      type: 'test'
+      ...
+    # Subtest: (b) silinmemiş harekette düzeltme AYNEN yazar: 200, tutar / açıklama / vade, bakiye ve ekstre doğru; silinmiş harekete doğrudan düzeltme 404
+    ok 2 - (b) silinmemiş harekette düzeltme AYNEN yazar: 200, tutar / açıklama / vade, bakiye ve ekstre doğru; silinmiş harekete doğrudan düzeltme 404
+      ---
+      duration_ms: 98.976451
+      type: 'test'
+      ...
+    # Subtest: (c) iki kullanıcı: kart yüklendikten sonra muhasebe kullanıcısı siler, yöneticinin düzeltmesi 404 alır; yeniden yüklenen kartta hareket yok
+    ok 3 - (c) iki kullanıcı: kart yüklendikten sonra muhasebe kullanıcısı siler, yöneticinin düzeltmesi 404 alır; yeniden yüklenen kartta hareket yok
+      ---
+      duration_ms: 457.55189
+      type: 'test'
+      ...
+    # Subtest: (d) bağlı hareketler: Kapatılacak Fatura'ya bağlı tahsilat ve vadeli Borç Yaz — gövde yoldayken silinirse 404, fatura ve vade izi değişmez
+    ok 4 - (d) bağlı hareketler: Kapatılacak Fatura'ya bağlı tahsilat ve vadeli Borç Yaz — gövde yoldayken silinirse 404, fatura ve vade izi değişmez
+      ---
+      duration_ms: 734.949466
+      type: 'test'
+      ...
+    1..4
+ok 22 - 2.5.0 BS-3 ailesi — cari hareketi düzeltmesi: gövde yoldayken hareket silinirse 404 + ileti; hiçbir tablo yazılmaz
+  ---
+  duration_ms: 2436.18055
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 C1 — hareket tanımı (H1–H14), silme ucu, kart, yarış (bankasız şirket)
+    # Subtest: T1 bugün silinebilen her hareket türü tek başına cariyi korur (tahsilat, ödeme, havale, Borç/Alacak Yaz, açılış, stok, taslak/iptal/e-SMM, yetim satır, mahsup)
+    ok 1 - T1 bugün silinebilen her hareket türü tek başına cariyi korur (tahsilat, ödeme, havale, Borç/Alacak Yaz, açılış, stok, taslak/iptal/e-SMM, yetim satır, mahsup)
+      ---
+      duration_ms: 451.21994
+      type: 'test'
+      ...
+    # Subtest: T2 zaten korunan türler aynı kurala ve tek koda geçer (kayıtlı fatura, peşinli fatura, mahsup, çek, ciro alan cari, taksit kartı açık/kapalı/kalemsiz, şüpheli alacak)
+    ok 2 - T2 zaten korunan türler aynı kurala ve tek koda geçer (kayıtlı fatura, peşinli fatura, mahsup, çek, ciro alan cari, taksit kartı açık/kapalı/kalemsiz, şüpheli alacak)
+      ---
+      duration_ms: 358.075563
+      type: 'test'
+      ...
+    # Subtest: T3 hareketsiz cari silinir — not, telefon, WhatsApp gönderim izi, değişiklik geçmişi hareket değil; Silinenler'deki kayıt sayılmaz (S1 A)
+    ok 3 - T3 hareketsiz cari silinir — not, telefon, WhatsApp gönderim izi, değişiklik geçmişi hareket değil; Silinenler'deki kayıt sayılmaz (S1 A)
+      ---
+      duration_ms: 288.898017
+      type: 'test'
+      ...
+    # Subtest: T4 eski sürümde silinmiş hareketli cari (S3 A) Silinenler'den geri yüklenir, Kasa geri gelir; bir daha silinemez
+    ok 4 - T4 eski sürümde silinmiş hareketli cari (S3 A) Silinenler'den geri yüklenir, Kasa geri gelir; bir daha silinemez
+      ---
+      duration_ms: 58.794029
+      type: 'test'
+      ...
+    # Subtest: T5 aynı adlı iki cari: yalnız hareketsiz olan silinir; pasif hareketli caride ileti pasif sürümü
+    ok 5 - T5 aynı adlı iki cari: yalnız hareketsiz olan silinir; pasif hareketli caride ileti pasif sürümü
+      ---
+      duration_ms: 87.797828
+      type: 'test'
+      ...
+    # Subtest: T6 kartın neden yazısı = silme iletisi; parçalar elle sayımla; yetkisiz kullanıcıya neden gitmez
+    ok 6 - T6 kartın neden yazısı = silme iletisi; parçalar elle sayımla; yetkisiz kullanıcıya neden gitmez
+      ---
+      duration_ms: 199.984085
+      type: 'test'
+      ...
+    # Subtest: T7 Taksit aktarımını Geri Al: aktarımın açtığı cari yalnız gerçekten boşsa kalıcı silinir (taslak fatura, Silinenler'deki tahsilat ve fatura cariyi tutar)
+    ok 7 - T7 Taksit aktarımını Geri Al: aktarımın açtığı cari yalnız gerçekten boşsa kalıcı silinir (taslak fatura, Silinenler'deki tahsilat ve fatura cariyi tutar)
+      ---
+      duration_ms: 133.2627
+      type: 'test'
+      ...
+    # Subtest: T7 yarıda kesilme (§8/8): Geri Al ikinci carinin hareket sayımında kesilirse hiçbir şey değişmez (kartlar, cariler, aktarım); kesinti kalkınca Geri Al tamamlanır
+    ok 8 - T7 yarıda kesilme (§8/8): Geri Al ikinci carinin hareket sayımında kesilirse hiçbir şey değişmez (kartlar, cariler, aktarım); kesinti kalkınca Geri Al tamamlanır
+      ---
+      duration_ms: 36.557097
+      type: 'test'
+      ...
+    # Subtest: T8 yarış (§9, zorla): tahsilatın gövdesi yoldayken hareketsiz cari silinirse tahsilat YAZILMAZ (404), Kasa değişmez
+    ok 9 - T8 yarış (§9, zorla): tahsilatın gövdesi yoldayken hareketsiz cari silinirse tahsilat YAZILMAZ (404), Kasa değişmez
+      ---
+      duration_ms: 336.134924
+      type: 'test'
+      ...
+    1..9
+ok 23 - 2.4.9 C1 — hareket tanımı (H1–H14), silme ucu, kart, yarış (bankasız şirket)
+  ---
+  duration_ms: 2357.204117
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 C1 — kaynağı olmayan (yetim) satırlar da hareket
+    # Subtest: T1 faturası olmayan cari satırı ve faturası olmayan mahsup fişi tek başına cariyi korur
+    ok 1 - T1 faturası olmayan cari satırı ve faturası olmayan mahsup fişi tek başına cariyi korur
+      ---
+      duration_ms: 41.476512
+      type: 'test'
+      ...
+    1..1
+ok 24 - 2.4.9 C1 — kaynağı olmayan (yetim) satırlar da hareket
+  ---
+  duration_ms: 368.344435
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 C1 — banka ve POS: hesaba bağlı tahsilat, POS İptal İadesi fişi (H14)
+    # Subtest: T2 banka hesabına bağlı tahsilat: aynı kural, tek kod
+    ok 1 - T2 banka hesabına bağlı tahsilat: aynı kural, tek kod
+      ---
+      duration_ms: 44.030064
+      type: 'test'
+      ...
+    # Subtest: T1 POS'lu faturası silinmiş (Müşteriye İade Edildi) caride yalnız POS İptal İadesi fişi kalır: yine hareket (İLKEYLE H14)
+    ok 2 - T1 POS'lu faturası silinmiş (Müşteriye İade Edildi) caride yalnız POS İptal İadesi fişi kalır: yine hareket (İLKEYLE H14)
+      ---
+      duration_ms: 74.744592
+      type: 'test'
+      ...
+    1..2
+ok 25 - 2.4.9 C1 — banka ve POS: hesaba bağlı tahsilat, POS İptal İadesi fişi (H14)
+  ---
+  duration_ms: 480.746956
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 C1 — kilitli dönem ve iki şirket
+    # Subtest: T5 iki şirket: 002'deki hareketli cari silinmez, 001'deki aynı adlı hareketsiz cari silinir
+    ok 1 - T5 iki şirket: 002'deki hareketli cari silinmez, 001'deki aynı adlı hareketsiz cari silinir
+      ---
+      duration_ms: 222.643337
+      type: 'test'
+      ...
+    # Subtest: T5 kilitli dönem: hareketli cari kilitliyken de account-has-movements (kilidi açmak silmeye yetmez); hareketsiz cari kilitliyken silinir
+    ok 2 - T5 kilitli dönem: hareketli cari kilitliyken de account-has-movements (kilidi açmak silmeye yetmez); hareketsiz cari kilitliyken silinir
+      ---
+      duration_ms: 80.866892
+      type: 'test'
+      ...
+    1..2
+ok 26 - 2.4.9 C1 — kilitli dönem ve iki şirket
+  ---
+  duration_ms: 647.546022
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 C1 — gerçek eski sürüm verisi (v2.4.7 kodu; S3 A): orada silinmiş hareketli cari geri yüklenir, sonra silinemez
+    # Subtest: T4 v2.4.7'de silinen tahsilatlı cari güncel kodda Silinenler'de; geri yüklenince Kasa geri gelir; yeniden silme 409
+    ok 1 - T4 v2.4.7'de silinen tahsilatlı cari güncel kodda Silinenler'de; geri yüklenince Kasa geri gelir; yeniden silme 409
+      ---
+      duration_ms: 831.792836
+      type: 'test'
+      ...
+    1..1
+ok 27 - 2.4.9 C1 — gerçek eski sürüm verisi (v2.4.7 kodu; S3 A): orada silinmiş hareketli cari geri yüklenir, sonra silinemez
+  ---
+  duration_ms: 832.018112
+  type: 'suite'
+  ...
+# Subtest: tahsilat düzeltme/silme ve kasa (v2.0.1)
+    # Subtest: Türkçe tutarları doğru okur (binlik nokta)
+    ok 1 - Türkçe tutarları doğru okur (binlik nokta)
+      ---
+      duration_ms: 1.192561
+      type: 'test'
+      ...
+    # Subtest: işlem geçmişi eskiden yeniye sıralanır; yeni eklenen en altta
+    ok 2 - işlem geçmişi eskiden yeniye sıralanır; yeni eklenen en altta
+      ---
+      duration_ms: 23.221718
+      type: 'test'
+      ...
+    # Subtest: kişi kendi tahsilatını düzeltip silebilir, başkasınınkini değiştiremez; kasa yetkisi herkesinkini değiştirir
+    ok 3 - kişi kendi tahsilatını düzeltip silebilir, başkasınınkini değiştiremez; kasa yetkisi herkesinkini değiştirir
+      ---
+      duration_ms: 99.054084
+      type: 'test'
+      ...
+    # Subtest: kasa: detay kartı tahsilatları + elle tahsilat/ödeme, bakiye ve dönem
+    ok 4 - kasa: detay kartı tahsilatları + elle tahsilat/ödeme, bakiye ve dönem
+      ---
+      duration_ms: 116.062678
+      type: 'test'
+      ...
+    1..4
+ok 28 - tahsilat düzeltme/silme ve kasa (v2.0.1)
+  ---
+  duration_ms: 936.563998
+  type: 'suite'
+  ...
+# Subtest: 2.4.7 çek / senet girişinde istek kimliği (tek sunucu)
+    # Subtest: aynı kimlik + aynı gövde (yanıt kayboldu, yeniden gönderildi) → tek evrak, tek cari etkisi, 101 bir kez; ikinci yanıt ilk evrak (replayed)
+    ok 1 - aynı kimlik + aynı gövde (yanıt kayboldu, yeniden gönderildi) → tek evrak, tek cari etkisi, 101 bir kez; ikinci yanıt ilk evrak (replayed)
+      ---
+      duration_ms: 104.767416
+      type: 'test'
+      ...
+    # Subtest: aynı kimlik + farklı gövde → 409 request-id-reused; yeni evrak yok (öbür uçlarla aynı)
+    ok 2 - aynı kimlik + farklı gövde → 409 request-id-reused; yeni evrak yok (öbür uçlarla aynı)
+      ---
+      duration_ms: 39.851694
+      type: 'test'
+      ...
+    # Subtest: aynı anda iki istek (aynı kimlik, Promise.all) → tek evrak; ikisi de aynı evrakı döndürür
+    ok 3 - aynı anda iki istek (aynı kimlik, Promise.all) → tek evrak; ikisi de aynı evrakı döndürür
+      ---
+      duration_ms: 41.722619
+      type: 'test'
+      ...
+    # Subtest: kimliksiz istek eskisi gibi serbest (geriye uyum): aynı gövdeyle iki istek iki evrak (no'suz evrakta gerçekten iki evrak olabilir)
+    ok 4 - kimliksiz istek eskisi gibi serbest (geriye uyum): aynı gövdeyle iki istek iki evrak (no'suz evrakta gerçekten iki evrak olabilir)
+      ---
+      duration_ms: 76.932123
+      type: 'test'
+      ...
+    # Subtest: biçimsiz kimlik → 400 (öbür uçlarla aynı); evrak yazılmaz
+    ok 5 - biçimsiz kimlik → 400 (öbür uçlarla aynı); evrak yazılmaz
+      ---
+      duration_ms: 19.91927
+      type: 'test'
+      ...
+    # Subtest: taksite sayılan evrak: aynı kimlikle ikinci gönderim taksiti ikinci kez ödemez (tek plan satırı, kalan bir kez düşer)
+    ok 6 - taksite sayılan evrak: aynı kimlikle ikinci gönderim taksiti ikinci kez ödemez (tek plan satırı, kalan bir kez düşer)
+      ---
+      duration_ms: 55.876587
+      type: 'test'
+      ...
+    # Subtest: seri no'lu evrak: yanıt kaybolunca yeniden gönderim 'zaten kayıtlı' sorusuna düşmez, ilk evrak döner; allowDuplicate yolu da tek evrak
+    ok 7 - seri no'lu evrak: yanıt kaybolunca yeniden gönderim 'zaten kayıtlı' sorusuna düşmez, ilk evrak döner; allowDuplicate yolu da tek evrak
+      ---
+      duration_ms: 50.878027
+      type: 'test'
+      ...
+    # Subtest: reddedilen istek (ileri tarih) kimlik bırakmaz; düzeltilip aynı kimlikle gönderilince kaydedilir
+    ok 8 - reddedilen istek (ileri tarih) kimlik bırakmaz; düzeltilip aynı kimlikle gönderilince kaydedilir
+      ---
+      duration_ms: 36.496596
+      type: 'test'
+      ...
+    # Subtest: evrak silindikten sonra aynı kimlikle yeniden gönderim yeni evrak açmaz (silinen evrak geri gelmez, ikinci evrak doğmaz)
+    ok 9 - evrak silindikten sonra aynı kimlikle yeniden gönderim yeni evrak açmaz (silinen evrak geri gelmez, ikinci evrak doğmaz)
+      ---
+      duration_ms: 52.770995
+      type: 'test'
+      ...
+    # Subtest: başka kullanıcının aynı kimliği ayrı anahtardır (sonuç sızmaz); aynı kullanıcının yeniden gönderimi tek evrak
+    ok 10 - başka kullanıcının aynı kimliği ayrı anahtardır (sonuç sızmaz); aynı kullanıcının yeniden gönderimi tek evrak
+      ---
+      duration_ms: 195.309174
+      type: 'test'
+      ...
+    1..10
+ok 29 - 2.4.7 çek / senet girişinde istek kimliği (tek sunucu)
+  ---
+  duration_ms: 1066.933168
+  type: 'suite'
+  ...
+# Subtest: 2.4.7 çek / senet istek kimliği: yeniden başlatma, şirketler, yedekten geri yükleme
+    # Subtest: sunucu yeniden başlasa da aynı kimlik + aynı gövde → ilk evrak; farklı gövde → 409
+    ok 1 - sunucu yeniden başlasa da aynı kimlik + aynı gövde → ilk evrak; farklı gövde → 409
+      ---
+      duration_ms: 140.7055
+      type: 'test'
+      ...
+    # Subtest: şirketler ayrı: 001'deki kimlik 002'de yeni evrak; her şirkette yeniden gönderim tek evrak; yedekten geri yükleme request_keys'i de geri getirir
+    ok 2 - şirketler ayrı: 001'deki kimlik 002'de yeni evrak; her şirkette yeniden gönderim tek evrak; yedekten geri yükleme request_keys'i de geri getirir
+      ---
+      duration_ms: 459.472801
+      type: 'test'
+      ...
+    1..2
+ok 30 - 2.4.7 çek / senet istek kimliği: yeniden başlatma, şirketler, yedekten geri yükleme
+  ---
+  duration_ms: 900.085869
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 R2 — taksit kartının iade kesintisi toplu yolda cari başına yeniden taranmaz (kural aynen)
+    # Subtest: YAPI: elle alıcı listesi, otomatik önizleme ve cari kartı döngüsü iade faturalarını cari başına yeniden taramaz (istek başına en çok 1)
+    ok 1 - YAPI: elle alıcı listesi, otomatik önizleme ve cari kartı döngüsü iade faturalarını cari başına yeniden taramaz (istek başına en çok 1)
+      ---
+      duration_ms: 53.704338
+      type: 'test'
+      ...
+    # iade taraması: {"elleTumune":0,"elleSecili":1,"onizleme":1,"kartDongusu":0} (cari 16)
+    # Subtest: EŞDEĞERLİK: her kartın kesintisi eski kuralla ve kâhinle birebir — kısmi / tam iade, iki kart, tek iadede iki kart, iptal, taslak, satışa yazılmış, aynı ad, taşınan kart
+    ok 2 - EŞDEĞERLİK: her kartın kesintisi eski kuralla ve kâhinle birebir — kısmi / tam iade, iki kart, tek iadede iki kart, iptal, taslak, satışa yazılmış, aynı ad, taşınan kart
+      ---
+      duration_ms: 7.175886
+      type: 'test'
+      ...
+    # Subtest: BAYATLIK — API: iade düzenlenince, silinince, iptal edilince saklanan kesinti kullanılmaz (hemen güncel)
+    ok 3 - BAYATLIK — API: iade düzenlenince, silinince, iptal edilince saklanan kesinti kullanılmaz (hemen güncel)
+      ---
+      duration_ms: 64.830061
+      type: 'test'
+      ...
+    # Subtest: BAYATLIK — doğrudan yazım, eski / bozuk biçimli satır, başka bağlantının yazması, geri alınan işlem: kesinti eski kuralla birebir
+    ok 4 - BAYATLIK — doğrudan yazım, eski / bozuk biçimli satır, başka bağlantının yazması, geri alınan işlem: kesinti eski kuralla birebir
+      ---
+      duration_ms: 14.024043
+      type: 'test'
+      ...
+    1..4
+ok 31 - 2.4.9 R2 — taksit kartının iade kesintisi toplu yolda cari başına yeniden taranmaz (kural aynen)
+  ---
+  duration_ms: 1576.156351
+  type: 'suite'
+  ...
+# Subtest: 2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemleri
+    # Subtest: vadeli elle Borç: Vade Tarihi'nde giriş kalemi (Cari (vadeli), Tahsil Edilecek Borç); faturasız cari alacağı olarak ikinci kez yok; carinin Σ = bakiye
+    ok 1 - vadeli elle Borç: Vade Tarihi'nde giriş kalemi (Cari (vadeli), Tahsil Edilecek Borç); faturasız cari alacağı olarak ikinci kez yok; carinin Σ = bakiye
+      ---
+      duration_ms: 103.888711
+      type: 'test'
+      ...
+    # Subtest: Beklenen Ödeme Tarihi girilmişse kalem o gündedir (Ödeme Sözü), Vade Tarihi'nde değil; Beklenen Ödeme Vade'den önce de olabilir (K6.5 (4))
+    ok 2 - Beklenen Ödeme Tarihi girilmişse kalem o gündedir (Ödeme Sözü), Vade Tarihi'nde değil; Beklenen Ödeme Vade'den önce de olabilir (K6.5 (4))
+      ---
+      duration_ms: 53.369762
+      type: 'test'
+      ...
+    # Subtest: FIFO kalanı: kısmi tahsilat kalemi küçültür; tahsilat silinince kalem büyür ve vadesiz borcun kalanı KENDİ gününde faturasız alacak olur; tam tahsilatta kalem yok
+    ok 3 - FIFO kalanı: kısmi tahsilat kalemi küçültür; tahsilat silinince kalem büyür ve vadesiz borcun kalanı KENDİ gününde faturasız alacak olur; tam tahsilatta kalem yok
+      ---
+      duration_ms: 128.714707
+      type: 'test'
+      ...
+    # Subtest: tedarikçideki elle Alacak ve alacak yönlü Açılış Bakiyesi: vadesinde ÇIKIŞ (Ödenecek Borç); ödeme kalemi küçültür
+    ok 4 - tedarikçideki elle Alacak ve alacak yönlü Açılış Bakiyesi: vadesinde ÇIKIŞ (Ödenecek Borç); ödeme kalemi küçültür
+      ---
+      duration_ms: 104.116927
+      type: 'test'
+      ...
+    # Subtest: KS2: müşterideki vadeli elle Alacak çıkış kalemidir, müşterinin borcundan düşülmez; bakiyede ikinci kez düşülmez (carinin net = bakiye)
+    ok 5 - KS2: müşterideki vadeli elle Alacak çıkış kalemidir, müşterinin borcundan düşülmez; bakiyede ikinci kez düşülmez (carinin net = bakiye)
+      ---
+      duration_ms: 89.5577
+      type: 'test'
+      ...
+    # Subtest: K6.5 (1): Mevcut Borç kartının kapsadığı kısım kartın taksitleriyle BİR kez; kapsanmayan kalan cari kalemidir
+    ok 6 - K6.5 (1): Mevcut Borç kartının kapsadığı kısım kartın taksitleriyle BİR kez; kapsanmayan kalan cari kalemidir
+      ---
+      duration_ms: 98.141369
+      type: 'test'
+      ...
+    # Subtest: karışık kuyruk: vadeli borç + vadeli satış faturası + tahsilat → fatura açığı ve borç kalanı kendi vadelerinde; Σ = bakiye, faturasız alacak yok
+    ok 7 - karışık kuyruk: vadeli borç + vadeli satış faturası + tahsilat → fatura açığı ve borç kalanı kendi vadelerinde; Σ = bakiye, faturasız alacak yok
+      ---
+      duration_ms: 99.74641
+      type: 'test'
+      ...
+    # Subtest: toplam = kalemler, her süzgeç: 7/30/60/90 gün, aralık + başlangıca kadar beklenen, gecikmişleri başlangıca ekle, gün / hafta / ay toplamları
+    ok 8 - toplam = kalemler, her süzgeç: 7/30/60/90 gün, aralık + başlangıca kadar beklenen, gecikmişleri başlangıca ekle, gün / hafta / ay toplamları
+      ---
+      duration_ms: 132.280266
+      type: 'test'
+      ...
+    # Subtest: PDF ve Excel aynı satırları yazar: 'Cari (vadeli)' kaynaklı kalem Nakit Akışı ve Gecikmiş sayfalarında, tutarıyla
+    ok 9 - PDF ve Excel aynı satırları yazar: 'Cari (vadeli)' kaynaklı kalem Nakit Akışı ve Gecikmiş sayfalarında, tutarıyla
+      ---
+      duration_ms: 92.463379
+      type: 'test'
+      ...
+    # Subtest: ortak yardımcı: projeksiyonun cari kalemleri = Vade Takip'in cari kalemleri (aynı aralık) = zil / takvim kalemleri (7 gün); kimlik, gün, yön, etiket, tutar
+    ok 10 - ortak yardımcı: projeksiyonun cari kalemleri = Vade Takip'in cari kalemleri (aynı aralık) = zil / takvim kalemleri (7 gün); kimlik, gün, yön, etiket, tutar
+      ---
+      duration_ms: 91.228938
+      type: 'test'
+      ...
+    # Subtest: yetki: Finans Raporları (overview.view) yoksa 403 (ekran, PDF, Excel); cari kalemi yalnız Cari görüntüleme (accounts.view) yetkisi olana — yoksa aynı borç bir kez, faturasız alacakta
+    ok 11 - yetki: Finans Raporları (overview.view) yoksa 403 (ekran, PDF, Excel); cari kalemi yalnız Cari görüntüleme (accounts.view) yetkisi olana — yoksa aynı borç bir kez, faturasız alacakta
+      ---
+      duration_ms: 244.656623
+      type: 'test'
+      ...
+    # Subtest: bir kez: Σ (cari kalemi + faturasız cari alacağı + kartın taksitleri) = carilerin açık bakiyesi; vadeli borç faturasız alacakta YOK, vadesiz borç orada
+    ok 12 - bir kez: Σ (cari kalemi + faturasız cari alacağı + kartın taksitleri) = carilerin açık bakiyesi; vadeli borç faturasız alacakta YOK, vadesiz borç orada
+      ---
+      duration_ms: 170.831354
+      type: 'test'
+      ...
+    # Subtest: bir kez (açık alış faturası; 2.4.3 MM5'ten kalan çift sayım): alış faturası kendi vadesinde çıkış, faturasız alacakta ikinci kez düşülmez; tedarikçinin vadesiz borcu kaybolmaz
+    ok 13 - bir kez (açık alış faturası; 2.4.3 MM5'ten kalan çift sayım): alış faturası kendi vadesinde çıkış, faturasız alacakta ikinci kez düşülmez; tedarikçinin vadesiz borcu kaybolmaz
+      ---
+      duration_ms: 176.277546
+      type: 'test'
+      ...
+    # Subtest: gecikmiş vadeli kalem takvimdeki gibi görünür: 'Vadesi geçmiş, kapanmamış' listesinde (gün, tutar, kimlik takvimle aynı); 'başlangıca ekle' ile başlangıca girer
+    ok 14 - gecikmiş vadeli kalem takvimdeki gibi görünür: 'Vadesi geçmiş, kapanmamış' listesinde (gün, tutar, kimlik takvimle aynı); 'başlangıca ekle' ile başlangıca girer
+      ---
+      duration_ms: 66.000024
+      type: 'test'
+      ...
+    # Subtest: pencere iki ucu kapalı (K-P1): son gündeki kalem dahil, ertesi gün değil; aralığın ilk günündeki kalem dahil
+    ok 15 - pencere iki ucu kapalı (K-P1): son gündeki kalem dahil, ertesi gün değil; aralığın ilk günündeki kalem dahil
+      ---
+      duration_ms: 99.572976
+      type: 'test'
+      ...
+    # Subtest: cari silinince kalemi de faturasız alacağı da yok; geri yüklenince döner
+    ok 16 - cari silinince kalemi de faturasız alacağı da yok; geri yüklenince döner
+      ---
+      duration_ms: 80.50514
+      type: 'test'
+      ...
+    # Subtest: 002 şirketi: boş veri (satır yok, toplamlar 0); kalemler şirkete ayrı
+    ok 17 - 002 şirketi: boş veri (satır yok, toplamlar 0); kalemler şirkete ayrı
+      ---
+      duration_ms: 238.376895
+      type: 'test'
+      ...
+    1..17
+ok 32 - 2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemleri
+  ---
+  duration_ms: 2526.19104
+  type: 'suite'
+  ...
+# Subtest: 2.4.6 madde 11: ay sonu, yıl dönümü ve gün değişimi (sahte saat)
+    # Subtest: bugün vadeli kalem aralıktadır (gecikmiş değil); yarın (yeni yıl) aralıkta; ay sonu (31 Ocak) 30 günlükte değil 60 günlükte; gün değişince bugünkü kalem gecikmişe geçer
+    ok 1 - bugün vadeli kalem aralıktadır (gecikmiş değil); yarın (yeni yıl) aralıkta; ay sonu (31 Ocak) 30 günlükte değil 60 günlükte; gün değişince bugünkü kalem gecikmişe geçer
+      ---
+      duration_ms: 81.410711
+      type: 'test'
+      ...
+    1..1
+ok 33 - 2.4.6 madde 11: ay sonu, yıl dönümü ve gün değişimi (sahte saat)
+  ---
+  duration_ms: 412.602033
+  type: 'suite'
+  ...
+# Subtest: Çoklu şirket: ayrı veri, ortak lisans/kullanıcı; göç, yetki, sıfırlama, birleşik rapor, silme
+    # Subtest: göç: mevcut veri 001 kodlu ilk şirkettir, sayılar aynı; /api/auth/me şirketi söyler
+    ok 1 - göç: mevcut veri 001 kodlu ilk şirkettir, sayılar aynı; /api/auth/me şirketi söyler
+      ---
+      duration_ms: 16.040746
+      type: 'test'
+      ...
+    # Subtest: yeni şirket 002: sıfırdan; aynı adlı cari iki şirkette; birinde tahsilat öbürünü değiştirmez
+    ok 2 - yeni şirket 002: sıfırdan; aynı adlı cari iki şirkette; birinde tahsilat öbürünü değiştirmez
+      ---
+      duration_ms: 223.745674
+      type: 'test'
+      ...
+    # Subtest: sayfalar şirkete aittir: 001'de sayfa adı değişir, 002'de görünmez
+    ok 3 - sayfalar şirkete aittir: 001'de sayfa adı değişir, 002'de görünmez
+      ---
+      duration_ms: 21.177869
+      type: 'test'
+      ...
+    # Subtest: yetki: personel yetkisiz şirketi göremez/seçemez (403); yönetici yetki verince seçer; yönetici daraltılamaz
+    ok 4 - yetki: personel yetkisiz şirketi göremez/seçemez (403); yönetici yetki verince seçer; yönetici daraltılamaz
+      ---
+      duration_ms: 124.785784
+      type: 'test'
+      ...
+    # Subtest: şirket kodu/adı değişir; kod tekil ve üç hane; 001 silinemez
+    ok 5 - şirket kodu/adı değişir; kod tekil ve üç hane; 001 silinemez
+      ---
+      duration_ms: 24.321369
+      type: 'test'
+      ...
+    # Subtest: birleşik rapor: seçilen şirketler yan yana + toplam; PDF ve Excel iner; yetkisiz şirket rapora girmez
+    ok 6 - birleşik rapor: seçilen şirketler yan yana + toplam; PDF ve Excel iner; yetkisiz şirket rapora girmez
+      ---
+      duration_ms: 50.159429
+      type: 'test'
+      ...
+    # Subtest: şirket verisini sıfırla: zorunlu yedek, onay (kod + parola); hareketler silinir, kartlar kalır; lisans ve öbür şirket aynı; kullanıcı girer
+    ok 7 - şirket verisini sıfırla: zorunlu yedek, onay (kod + parola); hareketler silinir, kartlar kalır; lisans ve öbür şirket aynı; kullanıcı girer
+      ---
+      duration_ms: 328.060792
+      type: 'test'
+      ...
+    # Subtest: şirket silme: onay + parola, önce yedek, klasör silinen-sirketler altına; seçmiş kullanıcılar 001'e döner
+    ok 8 - şirket silme: onay + parola, önce yedek, klasör silinen-sirketler altına; seçmiş kullanıcılar 001'e döner
+      ---
+      duration_ms: 132.935873
+      type: 'test'
+      ...
+    1..8
+ok 34 - Çoklu şirket: ayrı veri, ortak lisans/kullanıcı; göç, yetki, sıfırlama, birleşik rapor, silme
+  ---
+  duration_ms: 1398.833831
+  type: 'suite'
+  ...
+# Subtest: Sayfalar (madde 13): öbür sayfanın tarih uyarıları zile/takvime girer; Ödendi Say o sayfaya yazılır
+    # Subtest: ikinci sayfadaki yarın vadeli kalem, ilk sayfa açıkken /api/workspace/dues içinde sayfa adıyla (foreign) gelir
+    ok 1 - ikinci sayfadaki yarın vadeli kalem, ilk sayfa açıkken /api/workspace/dues içinde sayfa adıyla (foreign) gelir
+      ---
+      duration_ms: 109.153292
+      type: 'test'
+      ...
+    1..1
+ok 35 - Sayfalar (madde 13): öbür sayfanın tarih uyarıları zile/takvime girer; Ödendi Say o sayfaya yazılır
+  ---
+  duration_ms: 402.027593
+  type: 'suite'
+  ...
+# Subtest: Takvim kalemi kaynağı — sunucu ↔ istemci dalları (kaynak tarama)
+    # Subtest: sunucu taraması boş değil: taksit, çek / senet, fatura ve planlı banka kaynakları bulundu (ders 4)
+    ok 1 - sunucu taraması boş değil: taksit, çek / senet, fatura ve planlı banka kaynakları bulundu (ders 4)
+      ---
+      duration_ms: 0.939434
+      type: 'test'
+      ...
+    # Subtest: Tahsilat Takvimi pil kartı (hof-promises.js) sunucunun her takvim kaynağı için ayrı dal taşır
+    ok 2 - Tahsilat Takvimi pil kartı (hof-promises.js) sunucunun her takvim kaynağı için ayrı dal taşır
+      ---
+      duration_ms: 2.374448
+      type: 'test'
+      ...
+    # Subtest: zil (hof-alerts.js) pil kartının yardımcısını kullanır ya da her kaynak için kendi dalını taşır; kalemi kendi başına workspace.payment'a göndermez
+    ok 3 - zil (hof-alerts.js) pil kartının yardımcısını kullanır ya da her kaynak için kendi dalını taşır; kalemi kendi başına workspace.payment'a göndermez
+      ---
+      duration_ms: 1.584708
+      type: 'test'
+      ...
+    # Subtest: madde 3: tablo kaleminin Tahsilat Gir'i (pil kartı ve zil) tutar ve tablo borcu taşımaz
+    ok 4 - madde 3: tablo kaleminin Tahsilat Gir'i (pil kartı ve zil) tutar ve tablo borcu taşımaz
+      ---
+      duration_ms: 1.401386
+      type: 'test'
+      ...
+    # Subtest: Vade Takip openRef (hof-overview.js) sunucunun Vade Takip satırlarındaki her kaynak türünü açar
+    ok 5 - Vade Takip openRef (hof-overview.js) sunucunun Vade Takip satırlarındaki her kaynak türünü açar
+      ---
+      duration_ms: 1.753406
+      type: 'test'
+      ...
+    1..5
+ok 36 - Takvim kalemi kaynağı — sunucu ↔ istemci dalları (kaynak tarama)
+  ---
+  duration_ms: 9.187471
+  type: 'suite'
+  ...
+# Subtest: Takvim kalemi kaynağı — ortak yardımcının düğmeleri (pil kartı = zil = Vade Takip)
+    # Subtest: sunucunun her kaynağı (ve sözleşmedeki account) için bu testte bir örnek var
+    ok 1 - sunucunun her kaynağı (ve sözleşmedeki account) için bu testte bir örnek var
+      ---
+      duration_ms: 0.322603
+      type: 'test'
+      ...
+    # Subtest: satış faturası: Fatura Kartını Aç + Tahsilat Gir faturanın kendi formu; Ödendi Say yok; seçili kayda gitmez
+    ok 2 - satış faturası: Fatura Kartını Aç + Tahsilat Gir faturanın kendi formu; Ödendi Say yok; seçili kayda gitmez
+      ---
+      duration_ms: 1.454948
+      type: 'test'
+      ...
+    # Subtest: alış faturası: Ödeme Gir (yetki: accounts.manage); tahsilat yetkisi yetmez
+    ok 3 - alış faturası: Ödeme Gir (yetki: accounts.manage); tahsilat yetkisi yetmez
+      ---
+      duration_ms: 1.779432
+      type: 'test'
+      ...
+    # Subtest: planlı banka işlemi: yalnız Planlı İşlemleri Aç (tahsilat formu ve Ödendi Say yok)
+    ok 4 - planlı banka işlemi: yalnız Planlı İşlemleri Aç (tahsilat formu ve Ödendi Say yok)
+      ---
+      duration_ms: 1.225271
+      type: 'test'
+      ...
+    # Subtest: tablodaki kayıt (madde 3): Tahsilat Gir kaydın carisine — tutar ve tablo borcu YOK, kişi/telefon/not var; Ödendi Say ve Söz İptal var
+    ok 5 - tablodaki kayıt (madde 3): Tahsilat Gir kaydın carisine — tutar ve tablo borcu YOK, kişi/telefon/not var; Ödendi Say ve Söz İptal var
+      ---
+      duration_ms: 1.161086
+      type: 'test'
+      ...
+    # Subtest: kayıt anahtarı boş tablo kalemi seçili kayda düşmez: Tahsilat Gir ve Kayda Git yok
+    ok 6 - kayıt anahtarı boş tablo kalemi seçili kayda düşmez: Tahsilat Gir ve Kayda Git yok
+      ---
+      duration_ms: 0.442007
+      type: 'test'
+      ...
+    # Subtest: öbür sayfanın tablo kalemi: tahsilat o sayfada; Kayda Git sayfa adıyla o sayfaya geçer; Ödendi Say çalışır
+    ok 7 - öbür sayfanın tablo kalemi: tahsilat o sayfada; Kayda Git sayfa adıyla o sayfaya geçer; Ödendi Say çalışır
+      ---
+      duration_ms: 0.359573
+      type: 'test'
+      ...
+    # Subtest: taksit ve çek / senet bugünkü yollarında
+    ok 8 - taksit ve çek / senet bugünkü yollarında
+      ---
+      duration_ms: 0.58213
+      type: 'test'
+      ...
+    # Subtest: carinin vadeli borcu (madde 6, K6.3): Cariyi Aç + Tahsilat Gir / Ödeme Gir carinin formu, tutar = Kalan
+    ok 9 - carinin vadeli borcu (madde 6, K6.3): Cariyi Aç + Tahsilat Gir / Ödeme Gir carinin formu, tutar = Kalan
+      ---
+      duration_ms: 0.512574
+      type: 'test'
+      ...
+    # Subtest: tanınmayan kaynak tablo kaydı gibi işlenmez: hiçbir düğme yok
+    ok 10 - tanınmayan kaynak tablo kaydı gibi işlenmez: hiçbir düğme yok
+      ---
+      duration_ms: 0.381843
+      type: 'test'
+      ...
+    # Subtest: Vade Takip openRef aynı yolu açar: fatura → Fatura Kartı, planlı banka → Planlı İşlemler, cari, taksit, çek; kayıt ve Kasa hof-overview'da kalır
+    ok 11 - Vade Takip openRef aynı yolu açar: fatura → Fatura Kartı, planlı banka → Planlı İşlemler, cari, taksit, çek; kayıt ve Kasa hof-overview'da kalır
+      ---
+      duration_ms: 0.595225
+      type: 'test'
+      ...
+    1..11
+ok 37 - Takvim kalemi kaynağı — ortak yardımcının düğmeleri (pil kartı = zil = Vade Takip)
+  ---
+  duration_ms: 9.414605
+  type: 'suite'
+  ...
+# Subtest: Vekil sunucu: program uçları ve EDM trafiği
+    # Subtest: Ağ Bağlantısı ayarı: varsayılan Otomatik; elle adres kaydedilir; parola ekrana ve işlem kaydına çıkmaz, boş bırakılınca korunur
+    ok 1 - Ağ Bağlantısı ayarı: varsayılan Otomatik; elle adres kaydedilir; parola ekrana ve işlem kaydına çıkmaz, boş bırakılınca korunur
+      ---
+      duration_ms: 30.72455
+      type: 'test'
+      ...
+    # Subtest: Yetkisiz kullanıcı ağ ayarını göremez ve değiştiremez
+    ok 2 - Yetkisiz kullanıcı ağ ayarını göremez ve değiştiremez
+      ---
+      duration_ms: 150.698818
+      type: 'test'
+      ...
+    # Subtest: EDM: Bağlantıyı Test Et istekleri vekil sunucudan geçer; vekil kapatılınca aynı adrese ulaşılamaz
+    ok 3 - EDM: Bağlantıyı Test Et istekleri vekil sunucudan geçer; vekil kapatılınca aynı adrese ulaşılamaz
+      ---
+      duration_ms: 78.283468
+      type: 'test'
+      ...
+    # Subtest: Bağlantıyı Dene: kaydedilmiş ayarla güncelleme sunucusuna gidilir, yol ve süre yazılır
+    ok 4 - Bağlantıyı Dene: kaydedilmiş ayarla güncelleme sunucusuna gidilir, yol ve süre yazılır
+      ---
+      duration_ms: 340.589407
+      type: 'test'
+      ...
+    # Subtest: İkinci şirket aynı (makine geneli) ayarı görür
+    ok 5 - İkinci şirket aynı (makine geneli) ayarı görür
+      ---
+      duration_ms: 194.444572
+      type: 'test'
+      ...
+    1..5
+ok 38 - Vekil sunucu: program uçları ve EDM trafiği
+  ---
+  duration_ms: 1257.366649
+  type: 'suite'
+  ...
+# Subtest: Vekil sunucu: bağlantılar (kaynak denetimi)
+    # Subtest: servis yöneticisi güncelleyiciye vekil fetch'i verir ve uygulamaya aynı ayar dosyasını geçirir
+    ok 1 - servis yöneticisi güncelleyiciye vekil fetch'i verir ve uygulamaya aynı ayar dosyasını geçirir
+      ---
+      duration_ms: 0.706154
+      type: 'test'
+      ...
+    # Subtest: lisans, E-Tablolar ve entegratör programın (vekil) fetch'ini kullanır
+    ok 2 - lisans, E-Tablolar ve entegratör programın (vekil) fetch'ini kullanır
+      ---
+      duration_ms: 3.624201
+      type: 'test'
+      ...
+    1..2
+ok 39 - Vekil sunucu: bağlantılar (kaynak denetimi)
+  ---
+  duration_ms: 5.036156
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş Z — WhatsApp önizlemesi kartın eleme çekirdeğiyle (davranış aynen)
+    # Subtest: eleme çekirdeği (waFacts) ↔ tam cari kartı (detail): her cari sınıfında plan()'ın okuduğu alanlar birebir aynı; cari kartındaki taksit özeti kartın kendi ayrıntısıyla aynı
+    ok 1 - eleme çekirdeği (waFacts) ↔ tam cari kartı (detail): her cari sınıfında plan()'ın okuduğu alanlar birebir aynı; cari kartındaki taksit özeti kartın kendi ayrıntısıyla aynı
+      ---
+      duration_ms: 809.764395
+      type: 'test'
+      ...
+    # Subtest: önizlemenin eleme nedenleri sınıf tanımından; önizleme ve açma kişi başı tam kart OKUMAZ, gönderim anı okur; 'Zaten Kuyrukta' tek sorgu (süren VE duraklatılmış iş)
+    ok 2 - önizlemenin eleme nedenleri sınıf tanımından; önizleme ve açma kişi başı tam kart OKUMAZ, gönderim anı okur; 'Zaten Kuyrukta' tek sorgu (süren VE duraklatılmış iş)
+      ---
+      duration_ms: 732.165974
+      type: 'test'
+      ...
+    # Subtest: makine defteri: 'Tüm Hareketler' R3 sorgusunun planında claim_keys kişi anahtarlarıyla tek tek yoklanmaz; Tüm ↔ Özel aralık eşliği sonuç olarak aynen
+    ok 3 - makine defteri: 'Tüm Hareketler' R3 sorgusunun planında claim_keys kişi anahtarlarıyla tek tek yoklanmaz; Tüm ↔ Özel aralık eşliği sonuç olarak aynen
+      ---
+      duration_ms: 603.648382
+      type: 'test'
+      ...
+    1..3
+ok 40 - 2.4.8 İş Z — WhatsApp önizlemesi kartın eleme çekirdeğiyle (davranış aynen)
+  ---
+  duration_ms: 2147.076143
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 100.65511
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 8.169359
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 3.02295
+      type: 'test'
+      ...
+    # Subtest: Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+    ok 4 - Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+      ---
+      duration_ms: 9.273587
+      type: 'test'
+      ...
+    # Subtest: mobil görünümde (client/mobil) kurala uymayan ad yok
+    ok 5 - mobil görünümde (client/mobil) kurala uymayan ad yok
+      ---
+      duration_ms: 5.518335
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 6 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 46.870156
+      type: 'test'
+      ...
+    1..6
+ok 41 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 175.06571
+  type: 'suite'
+  ...
+1..41
+# tests 171
+# suites 41
+# pass 171
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 98971.448342

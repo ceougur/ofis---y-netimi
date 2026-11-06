@@ -18,6 +18,7 @@ import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { methodInput } from "../lib/pay-method.mjs";
 import { systemClock } from "../lib/clock.mjs";
 import { IMPORT_SCOPES, createImportRequests } from "../lib/import-request.mjs";
+import { assertRowVersion, rowVersion } from "../lib/row-version.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 // v2.0.26 (G6): toplu aktarımda bir satırın iç işlemini geri alıp nedeniyle atlamak için (kapanmış dönem).
@@ -786,6 +787,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     if (!entry) throw new HttpError(404, "Hareket bulunamadı. Başka biri silmiş olabilir.");
     return entry;
   };
+  // 2.5.0 BİRLEŞİK TUR 1 (YB-1): hareket düzeltmesinde iyimser kilit (lib/row-version.mjs; gövdede updatedAt varsa).
+  const ENTRY_STALE = { code: "plan-entry-stale", message: "Bu taksit hareketi siz açtıktan sonra başka biri tarafından değiştirildi; düzeltmeniz kaydedilmedi. Kartı yenileyip yeniden deneyin." };
   const requireEntryRight = (user, entry) => {
     if (entry.chequeId) throw new HttpError(409, "Bu tahsilat bir çek/senetten geldi; Çek/Senet'teki evraktan düzeltin (karşılıksız, geri al ya da sil).", { code: "cheque-linked", chequeId: entry.chequeId });
     if (entry.opening && !canUser(user, "plans.manage")) throw new HttpError(403, "Açılış (devir) kaydını yalnızca yönetici, uzman ve muhasebe değiştirebilir.");
@@ -903,35 +906,49 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   router.put("/api/workspace/plans/:id/entries/:entryId", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "plans.collect");
     const plan = planRow(params.id);
-    const previous = entryOf(plan.id, params.entryId);
-    requireEntryRight(user, previous);
-    period?.assertOpen(previous.date, "Bu taksit hareketi");
+    // Gövde okunmadan önceki denetimler yalnız erken yanıt içindir (yok / yetkisiz / kilitli dönem); karar aşağıda işlemin İÇİNDE güncel satırla yinelenir.
+    const opened = entryOf(plan.id, params.entryId);
+    requireEntryRight(user, opened);
+    period?.assertOpen(opened.date, "Bu taksit hareketi");
     assertCloseOpen(plan.id, "Kartın tahsilatı ve iadesi değiştirilemez.");
     const body = await readJson(req);
-    const input = entryInput({ ...previous, ...body, kind: previous.kind }, plan.id);
-    assertNetPaid(plan.id, previous.kind === "in" ? input.amount : -input.amount, previous.id);
-    cash?.guardChange?.(previous, input, body.cashForce === true);
-    // Açılış (devir) satırı para satırı değildir: hesaba bağlanmaz.
-    const moved = (previous.method || "cash") !== input.method || Math.abs(Number(previous.amount) - input.amount) > 0.004 || previous.date !== input.date;
-    const finRef = previous.opening ? "" : banking.ref({ method: input.method, value: body.bankAccountId, date: input.date, previous: { method: previous.method || "cash", finRef: previous.finRef }, changed: moved, posId: body.posId, posRefundOf: body.posRefundOf });
-    if (finRef !== (previous.finRef || "")) banking.requireOut(user, previous.kind === "out", finRef);
-    const k7 = banking.negative([previous.finRef, finRef], previous.date < input.date ? previous.date : input.date, banking.forced(body));
+    // 2.5.0 BİRLEŞİK TUR 1 (YB-1; routes/accounts.mjs PUT entries ile aynı): kartın net tahsilatı, K8 kalanı, Kasa ve banka (K7) denetimleri, gövdeyle
+    // birleştirme ve Değişiklik Geçmişi'nin "önceki"si yazım işleminin İÇİNDE yeniden okunan güncel hareketten (önceden isteğin başındaki okuma gövde beklenirken
+    // eskiyordu: arada başka kullanıcı aynı hareketi düzeltirse Kasa "Engelle" atlanıyor, küçülen tahsilat "büyümüyor" sayılıp K8 sorusu atlanıyordu). Gövdede
+    // updatedAt varsa iyimser kilit: hareket form açıldıktan sonra değiştiyse 409.
+    const current = []; // bank.post'un "prev"i: prepare güncel satırı koyar (adım 3 ondan sonra okur)
+    let step = null;
     const result = bank.post({
       user,
       module: "plan",
       op: "update",
-      prev: previous,
+      prev: current,
       requestId: banking.requestId(req, body),
       scope: "plan.entry.update",
-      body: { ...body, entryId: previous.id },
+      body: { ...body, entryId: opened.id },
       // K8 (2.3.0, plan §3.10/3 update): yalnız tutarı BÜYÜYEN tahsilat düzeltmesinde kartın kalanı (bu satır hariç) işlemin içinde yeniden okunur.
       prepare: () => {
         assertPlanLive(plan.id);
         // 2.5.0 BS-3 (f): gövde beklenirken TAHSİLAT silinirse 404 (kart denetimiyle aynı desen; önceden UPDATE 0 satır, 200 ve "düzeltildi" geçmişi).
-        entryOf(plan.id, previous.id);
+        const previous = entryOf(plan.id, opened.id);
+        assertRowVersion(body, rowVersion(store, "plan_entries", previous.id), ENTRY_STALE);
+        requireEntryRight(user, previous);
+        period?.assertOpen(previous.date, "Bu taksit hareketi");
+        assertCloseOpen(plan.id, "Kartın tahsilatı ve iadesi değiştirilemez.");
+        const input = entryInput({ ...previous, ...body, kind: previous.kind }, plan.id);
+        assertNetPaid(plan.id, previous.kind === "in" ? input.amount : -input.amount, previous.id);
+        cash?.guardChange?.(previous, input, body.cashForce === true);
+        // Açılış (devir) satırı para satırı değildir: hesaba bağlanmaz.
+        const moved = (previous.method || "cash") !== input.method || Math.abs(Number(previous.amount) - input.amount) > 0.004 || previous.date !== input.date;
+        const finRef = previous.opening ? "" : banking.ref({ method: input.method, value: body.bankAccountId, date: input.date, previous: { method: previous.method || "cash", finRef: previous.finRef }, changed: moved, posId: body.posId, posRefundOf: body.posRefundOf });
+        if (finRef !== (previous.finRef || "")) banking.requireOut(user, previous.kind === "out", finRef);
+        const k7 = banking.negative([previous.finRef, finRef], previous.date < input.date ? previous.date : input.date, banking.forced(body));
+        current.push(previous);
+        step = { previous, input, finRef, k7 };
         if (previous.kind === "in" && !previous.opening && toMinor(input.amount) > toMinor(Number(previous.amount) || 0)) assertRoom(user, plan.id, input.amount, { overpay: body.overpay === true, exceptId: previous.id, op: "update" });
       },
       write: () => {
+        const { previous, input, finRef, k7 } = step;
         k7.capture();
         // Açılış (opening) satırı para satırı değildir: olay almaz; eski (olaysız) tahsilat düzeltilince olay alır.
         const eventId = bank.eventFor("plan_entries", { kind: previous.kind, date: input.date, method: input.method, opening: previous.opening ? 1 : 0, cheque_id: previous.chequeId || "", fin_ref: finRef, event_id: previous.eventId, pos: finRef ? posMetaOf(body) : null });
@@ -940,9 +957,9 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
         syncInvoiceCard(user, plan.id);
         return { id: previous.id };
       },
-      guard: k7.guard,
+      guard: (outcome, ctx) => step?.k7.guard?.(outcome, ctx),
     });
-    k7.prime(result);
+    step?.k7.prime(result);
     changed(user, { planId: plan.id });
     changed(user, { kind: "cash" });
     touchedCase(user, plan);

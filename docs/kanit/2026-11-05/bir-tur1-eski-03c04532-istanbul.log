@@ -1,0 +1,597 @@
+TAP version 13
+# Subtest: 2.5.0 BİRLEŞİK TUR 1 YB-1 — eşzamanlı düzeltmede korumalar işlemin içindeki GÜNCEL satırla (dört uç)
+    # Subtest: Kasa Engelle: yöneticinin 100 → 650 düzeltmesi yoldayken muhasebe aynı hareketi 100 → 10 yapar → 409 cash-blocked (güncel satırla), Kasa 590 kalır
+    not ok 1 - Kasa Engelle: yöneticinin 100 → 650 düzeltmesi yoldayken muhasebe aynı hareketi 100 → 10 yapar → 409 cash-blocked (güncel satırla), Kasa 590 kalır
+      ---
+      duration_ms: 1725.630168
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-a7f3/eski-03c04532/test/birlesik-tur1-yaris-250.test.mjs:174:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        cari: yöneticinin düzeltmesi güncel satırla engellenmeli (409 cash-blocked) — yanıt 200  | cari: Kasa -50 (beklenen 590; Engelle politikasında eksiye düşmez) | cari: hareket 650 (beklenen öbür kullanıcının 10'u) | stok: yöneticinin düzeltmesi güncel satırla engellenmeli (409 cash-blocked) — yanıt 200  | stok: Kasa -50 (beklenen 590; Engelle politikasında eksiye düşmez) | stok: hareket 650 (beklenen öbür kullanıcının 10'u) | taksit: yöneticinin düzeltmesi güncel satırla engellenmeli (409 cash-blocked) — yanıt 200  | taksit: Kasa -50 (beklenen 590; Engelle politikasında eksiye düşmez) | taksit: hareket 650 (beklenen öbür kullanıcının 10'u) | kasa: yöneticinin düzeltmesi güncel satırla engellenmeli (409 cash-blocked) — yanıt 200  | kasa: Kasa -50 (beklenen 590; Engelle politikasında eksiye düşmez) | kasa: hareket 650 (beklenen öbür kullanıcının 10'u)
+        + actual - expected
+        
+        + [
+        +   'cari: yöneticinin düzeltmesi güncel satırla engellenmeli (409 cash-blocked) — yanıt 200 ',
+        +   'cari: Kasa -50 (beklenen 590; Engelle politikasında eksiye düşmez)',
+        +   "cari: hareket 650 (beklenen öbür kullanıcının 10'u)",
+        +   'stok: yöneticinin düzeltmesi güncel satırla engellenmeli (409 cash-blocked) — yanıt 200 ',
+        +   'stok: Kasa -50 (beklenen 590; Engelle politikasında eksiye düşmez)',
+        +   "stok: hareket 650 (beklenen öbür kullanıcının 10'u)",
+        +   'taksit: yöneticinin düzeltmesi güncel satırla engellenmeli (409 cash-blocked) — yanıt 200 ',
+        +   'taksit: Kasa -50 (beklenen 590; Engelle politikasında eksiye düşmez)',
+        +   "taksit: hareket 650 (beklenen öbür kullanıcının 10'u)",
+        +   'kasa: yöneticinin düzeltmesi güncel satırla engellenmeli (409 cash-blocked) — yanıt 200 ',
+        +   'kasa: Kasa -50 (beklenen 590; Engelle politikasında eksiye düşmez)',
+        +   "kasa: hareket 650 (beklenen öbür kullanıcının 10'u)"
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'cari: yöneticinin düzeltmesi güncel satırla engellenmeli (409 cash-blocked) — yanıt 200 '
+        1: 'cari: Kasa -50 (beklenen 590; Engelle politikasında eksiye düşmez)'
+        2: "cari: hareket 650 (beklenen öbür kullanıcının 10'u)"
+        3: 'stok: yöneticinin düzeltmesi güncel satırla engellenmeli (409 cash-blocked) — yanıt 200 '
+        4: 'stok: Kasa -50 (beklenen 590; Engelle politikasında eksiye düşmez)'
+        5: "stok: hareket 650 (beklenen öbür kullanıcının 10'u)"
+        6: 'taksit: yöneticinin düzeltmesi güncel satırla engellenmeli (409 cash-blocked) — yanıt 200 '
+        7: 'taksit: Kasa -50 (beklenen 590; Engelle politikasında eksiye düşmez)'
+        8: "taksit: hareket 650 (beklenen öbür kullanıcının 10'u)"
+        9: 'kasa: yöneticinin düzeltmesi güncel satırla engellenmeli (409 cash-blocked) — yanıt 200 '
+        10: 'kasa: Kasa -50 (beklenen 590; Engelle politikasında eksiye düşmez)'
+        11: "kasa: hareket 650 (beklenen öbür kullanıcının 10'u)"
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-a7f3/eski-03c04532/test/birlesik-tur1-yaris-250.test.mjs:200:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Kasa Uyar: aynı yarışta soru GÜNCEL satırla sorulur (409 cash-negative); "Yine de Kaydet" (cashForce) yazar, Kasa −50, Değişiklik Geçmişi'nin önceki tutarı 10
+    not ok 2 - Kasa Uyar: aynı yarışta soru GÜNCEL satırla sorulur (409 cash-negative); "Yine de Kaydet" (cashForce) yazar, Kasa −50, Değişiklik Geçmişi'nin önceki tutarı 10
+      ---
+      duration_ms: 1728.462093
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-a7f3/eski-03c04532/test/birlesik-tur1-yaris-250.test.mjs:203:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        cari: soru sorulmalı (409 cash-negative) — yanıt 200  | cari: Değişiklik Geçmişi önceki tutar 650 (beklenen 10) | stok: soru sorulmalı (409 cash-negative) — yanıt 200  | stok: Değişiklik Geçmişi önceki tutar 650 (beklenen 10) | taksit: soru sorulmalı (409 cash-negative) — yanıt 200  | taksit: Değişiklik Geçmişi önceki tutar 650 (beklenen 10) | kasa: soru sorulmalı (409 cash-negative) — yanıt 200  | kasa: Değişiklik Geçmişi önceki tutar 650 (beklenen 10)
+        + actual - expected
+        
+        + [
+        +   'cari: soru sorulmalı (409 cash-negative) — yanıt 200 ',
+        +   'cari: Değişiklik Geçmişi önceki tutar 650 (beklenen 10)',
+        +   'stok: soru sorulmalı (409 cash-negative) — yanıt 200 ',
+        +   'stok: Değişiklik Geçmişi önceki tutar 650 (beklenen 10)',
+        +   'taksit: soru sorulmalı (409 cash-negative) — yanıt 200 ',
+        +   'taksit: Değişiklik Geçmişi önceki tutar 650 (beklenen 10)',
+        +   'kasa: soru sorulmalı (409 cash-negative) — yanıt 200 ',
+        +   'kasa: Değişiklik Geçmişi önceki tutar 650 (beklenen 10)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'cari: soru sorulmalı (409 cash-negative) — yanıt 200 '
+        1: 'cari: Değişiklik Geçmişi önceki tutar 650 (beklenen 10)'
+        2: 'stok: soru sorulmalı (409 cash-negative) — yanıt 200 '
+        3: 'stok: Değişiklik Geçmişi önceki tutar 650 (beklenen 10)'
+        4: 'taksit: soru sorulmalı (409 cash-negative) — yanıt 200 '
+        5: 'taksit: Değişiklik Geçmişi önceki tutar 650 (beklenen 10)'
+        6: 'kasa: soru sorulmalı (409 cash-negative) — yanıt 200 '
+        7: 'kasa: Değişiklik Geçmişi önceki tutar 650 (beklenen 10)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-a7f3/eski-03c04532/test/birlesik-tur1-yaris-250.test.mjs:230:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: silinmiş hareket (Kasa Uyar): gövde yoldayken silinirse doğrudan 404 + BS-3 iletisi — önce yanıltıcı Kasa sorusu yok; hiçbir tablo yazılmaz
+    not ok 3 - silinmiş hareket (Kasa Uyar): gövde yoldayken silinirse doğrudan 404 + BS-3 iletisi — önce yanıltıcı Kasa sorusu yok; hiçbir tablo yazılmaz
+      ---
+      duration_ms: 1549.375564
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-a7f3/eski-03c04532/test/birlesik-tur1-yaris-250.test.mjs:233:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        cari: 404 olmalı — yanıt 409 cash-negative Bu tahsilat 1.000,00 TL'den 500,00 TL'ye düzeltilince Nakit Kasa'dan 500,00 TL düşer; Nakit Kasa -800,00 TL iken -1.300, | stok: 404 olmalı — yanıt 409 cash-negative Bu tahsilat 1.000,00 TL'den 500,00 TL'ye düzeltilince Nakit Kasa'dan 500,00 TL düşer; Nakit Kasa -800,00 TL iken -1.300, | taksit: 404 olmalı — yanıt 409 cash-negative Bu tahsilat 1.000,00 TL'den 500,00 TL'ye düzeltilince Nakit Kasa'dan 500,00 TL düşer; Nakit Kasa -800,00 TL iken -1.300, | kasa: 404 olmalı — yanıt 409 cash-negative Bu tahsilat 1.000,00 TL'den 500,00 TL'ye düzeltilince Nakit Kasa'dan 500,00 TL düşer; Nakit Kasa -800,00 TL iken -1.300,
+        + actual - expected
+        
+        + [
+        +   "cari: 404 olmalı — yanıt 409 cash-negative Bu tahsilat 1.000,00 TL'den 500,00 TL'ye düzeltilince Nakit Kasa'dan 500,00 TL düşer; Nakit Kasa -800,00 TL iken -1.300,",
+        +   "stok: 404 olmalı — yanıt 409 cash-negative Bu tahsilat 1.000,00 TL'den 500,00 TL'ye düzeltilince Nakit Kasa'dan 500,00 TL düşer; Nakit Kasa -800,00 TL iken -1.300,",
+        +   "taksit: 404 olmalı — yanıt 409 cash-negative Bu tahsilat 1.000,00 TL'den 500,00 TL'ye düzeltilince Nakit Kasa'dan 500,00 TL düşer; Nakit Kasa -800,00 TL iken -1.300,",
+        +   "kasa: 404 olmalı — yanıt 409 cash-negative Bu tahsilat 1.000,00 TL'den 500,00 TL'ye düzeltilince Nakit Kasa'dan 500,00 TL düşer; Nakit Kasa -800,00 TL iken -1.300,"
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: "cari: 404 olmalı — yanıt 409 cash-negative Bu tahsilat 1.000,00 TL'den 500,00 TL'ye düzeltilince Nakit Kasa'dan 500,00 TL düşer; Nakit Kasa -800,00 TL iken -1.300,"
+        1: "stok: 404 olmalı — yanıt 409 cash-negative Bu tahsilat 1.000,00 TL'den 500,00 TL'ye düzeltilince Nakit Kasa'dan 500,00 TL düşer; Nakit Kasa -800,00 TL iken -1.300,"
+        2: "taksit: 404 olmalı — yanıt 409 cash-negative Bu tahsilat 1.000,00 TL'den 500,00 TL'ye düzeltilince Nakit Kasa'dan 500,00 TL düşer; Nakit Kasa -800,00 TL iken -1.300,"
+        3: "kasa: 404 olmalı — yanıt 409 cash-negative Bu tahsilat 1.000,00 TL'den 500,00 TL'ye düzeltilince Nakit Kasa'dan 500,00 TL düşer; Nakit Kasa -800,00 TL iken -1.300,"
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-a7f3/eski-03c04532/test/birlesik-tur1-yaris-250.test.mjs:262:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: taksit K8: tahsilat 600 → 500 düzeltmesi yoldayken muhasebe aynı tahsilatı 600 → 100 yapıp 700 tahsilat ekler → 409 plan-overpay (Fazlasını Avans Yaz sorusu); overpay ile yazılır
+    not ok 4 - taksit K8: tahsilat 600 → 500 düzeltmesi yoldayken muhasebe aynı tahsilatı 600 → 100 yapıp 700 tahsilat ekler → 409 plan-overpay (Fazlasını Avans Yaz sorusu); overpay ile yazılır
+      ---
+      duration_ms: 421.814102
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-a7f3/eski-03c04532/test/birlesik-tur1-yaris-250.test.mjs:265:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        güncel satır 100 → 500 büyüyor: 409 plan-overpay olmalı — yanıt 200 ; kartın net tahsilatı 1200 | kartın net tahsilatı 1200 (beklenen 800)
+        + actual - expected
+        
+        + [
+        +   'güncel satır 100 → 500 büyüyor: 409 plan-overpay olmalı — yanıt 200 ; kartın net tahsilatı 1200',
+        +   'kartın net tahsilatı 1200 (beklenen 800)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'güncel satır 100 → 500 büyüyor: 409 plan-overpay olmalı — yanıt 200 ; kartın net tahsilatı 1200'
+        1: 'kartın net tahsilatı 1200 (beklenen 800)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-a7f3/eski-03c04532/test/birlesik-tur1-yaris-250.test.mjs:292:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kayıp güncelleme: gövdede yalnız tutar varken arada öbür kullanıcının açıklama düzeltmesi KORUNUR; Değişiklik Geçmişi'nin önceki hâli güncel satır
+    not ok 5 - kayıp güncelleme: gövdede yalnız tutar varken arada öbür kullanıcının açıklama düzeltmesi KORUNUR; Değişiklik Geçmişi'nin önceki hâli güncel satır
+      ---
+      duration_ms: 1153.637994
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-a7f3/eski-03c04532/test/birlesik-tur1-yaris-250.test.mjs:298:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        cari: açıklama “ilk not” (beklenen öbür kullanıcının “muhasebenin notu”su — bayat satır gövdeyle birleşip sildi) | cari: Değişiklik Geçmişi önceki açıklama “ilk not” (beklenen güncel satırın “muhasebenin notu”su) | stok: açıklama “ilk not” (beklenen öbür kullanıcının “muhasebenin notu”su — bayat satır gövdeyle birleşip sildi) | stok: Değişiklik Geçmişi önceki açıklama “ilk not” (beklenen güncel satırın “muhasebenin notu”su) | taksit: açıklama “ilk not” (beklenen öbür kullanıcının “muhasebenin notu”su — bayat satır gövdeyle birleşip sildi) | taksit: Değişiklik Geçmişi önceki açıklama “ilk not” (beklenen güncel satırın “muhasebenin notu”su)
+        + actual - expected
+        
+        + [
+        +   'cari: açıklama “ilk not” (beklenen öbür kullanıcının “muhasebenin notu”su — bayat satır gövdeyle birleşip sildi)',
+        +   'cari: Değişiklik Geçmişi önceki açıklama “ilk not” (beklenen güncel satırın “muhasebenin notu”su)',
+        +   'stok: açıklama “ilk not” (beklenen öbür kullanıcının “muhasebenin notu”su — bayat satır gövdeyle birleşip sildi)',
+        +   'stok: Değişiklik Geçmişi önceki açıklama “ilk not” (beklenen güncel satırın “muhasebenin notu”su)',
+        +   'taksit: açıklama “ilk not” (beklenen öbür kullanıcının “muhasebenin notu”su — bayat satır gövdeyle birleşip sildi)',
+        +   'taksit: Değişiklik Geçmişi önceki açıklama “ilk not” (beklenen güncel satırın “muhasebenin notu”su)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'cari: açıklama “ilk not” (beklenen öbür kullanıcının “muhasebenin notu”su — bayat satır gövdeyle birleşip sildi)'
+        1: 'cari: Değişiklik Geçmişi önceki açıklama “ilk not” (beklenen güncel satırın “muhasebenin notu”su)'
+        2: 'stok: açıklama “ilk not” (beklenen öbür kullanıcının “muhasebenin notu”su — bayat satır gövdeyle birleşip sildi)'
+        3: 'stok: Değişiklik Geçmişi önceki açıklama “ilk not” (beklenen güncel satırın “muhasebenin notu”su)'
+        4: 'taksit: açıklama “ilk not” (beklenen öbür kullanıcının “muhasebenin notu”su — bayat satır gövdeyle birleşip sildi)'
+        5: 'taksit: Değişiklik Geçmişi önceki açıklama “ilk not” (beklenen güncel satırın “muhasebenin notu”su)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-a7f3/eski-03c04532/test/birlesik-tur1-yaris-250.test.mjs:321:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iyimser kilit (gövdede updatedAt): form açıldıktan sonra öbür kullanıcı düzeltirse 409 <uç>-stale, hiçbir tablo yazılmaz; satır öbür kullanıcının değerinde
+    not ok 6 - iyimser kilit (gövdede updatedAt): form açıldıktan sonra öbür kullanıcı düzeltirse 409 <uç>-stale, hiçbir tablo yazılmaz; satır öbür kullanıcının değerinde
+      ---
+      duration_ms: 1587.550359
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-a7f3/eski-03c04532/test/birlesik-tur1-yaris-250.test.mjs:324:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        cari: 409 account-entry-stale olmalı — yanıt 200  | cari: hiçbir tablo yazılmamalı — account_entries 4:a73504e9a2b569fe → 4:576582fe4fd9d37e; audit_events 127:693fba70c4824870 → 128:92e052eac036f4fd; fin_events 29:b3180dfbded51cdc → 29:4d607a657ac7d75d | cari: satır 650 (beklenen 10) | stok: 409 stock-move-stale olmalı — yanıt 200  | stok: hiçbir tablo yazılmamalı — audit_events 133:dce666f3776a3251 → 134:a8583346190ac8c8; fin_events 30:d6ca643949149e48 → 30:3612290d9bc46ea6; stock_moves 9:325b1c8baefba0a6 → 9:ed70847fedaac955 | stok: satır 650 (beklenen 10) | taksit: 409 plan-entry-stale olmalı — yanıt 200  | taksit: hiçbir tablo yazılmamalı — audit_events 140:7ab3752eba708ca2 → 141:5a84d859ce858fa2; fin_events 31:0f3a1bf4ed28ac42 → 31:51e81b6a7194317d; plan_entries 8:c686571e9cf53ecd → 8:89afd062a22d14db | taksit: satır 650 (beklenen 10) | kasa: 409 cash-entry-stale olmalı — yanıt 200  | kasa: hiçbir tablo yazılmamalı — audit_events 145:6a1a76af8c8fba65 → 146:ab701bc9c6660e9e; cash_entries 12:68d6c82407e8cce5 → 12:58f13ac09ec922f2; fin_events 32:db4e733bf48379dd → 32:b39827e9d5f0df54 | kasa: satır 650 (beklenen 10)
+        + actual - expected
+        
+        + [
+        +   'cari: 409 account-entry-stale olmalı — yanıt 200 ',
+        +   'cari: hiçbir tablo yazılmamalı — account_entries 4:a73504e9a2b569fe → 4:576582fe4fd9d37e; audit_events 127:693fba70c4824870 → 128:92e052eac036f4fd; fin_events 29:b3180dfbded51cdc → 29:4d607a657ac7d75d',
+        +   'cari: satır 650 (beklenen 10)',
+        +   'stok: 409 stock-move-stale olmalı — yanıt 200 ',
+        +   'stok: hiçbir tablo yazılmamalı — audit_events 133:dce666f3776a3251 → 134:a8583346190ac8c8; fin_events 30:d6ca643949149e48 → 30:3612290d9bc46ea6; stock_moves 9:325b1c8baefba0a6 → 9:ed70847fedaac955',
+        +   'stok: satır 650 (beklenen 10)',
+        +   'taksit: 409 plan-entry-stale olmalı — yanıt 200 ',
+        +   'taksit: hiçbir tablo yazılmamalı — audit_events 140:7ab3752eba708ca2 → 141:5a84d859ce858fa2; fin_events 31:0f3a1bf4ed28ac42 → 31:51e81b6a7194317d; plan_entries 8:c686571e9cf53ecd → 8:89afd062a22d14db',
+        +   'taksit: satır 650 (beklenen 10)',
+        +   'kasa: 409 cash-entry-stale olmalı — yanıt 200 ',
+        +   'kasa: hiçbir tablo yazılmamalı — audit_events 145:6a1a76af8c8fba65 → 146:ab701bc9c6660e9e; cash_entries 12:68d6c82407e8cce5 → 12:58f13ac09ec922f2; fin_events 32:db4e733bf48379dd → 32:b39827e9d5f0df54',
+        +   'kasa: satır 650 (beklenen 10)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'cari: 409 account-entry-stale olmalı — yanıt 200 '
+        1: 'cari: hiçbir tablo yazılmamalı — account_entries 4:a73504e9a2b569fe → 4:576582fe4fd9d37e; audit_events 127:693fba70c4824870 → 128:92e052eac036f4fd; fin_events 29:b3180dfbded51cdc → 29:4d607a657ac7d75d'
+        2: 'cari: satır 650 (beklenen 10)'
+        3: 'stok: 409 stock-move-stale olmalı — yanıt 200 '
+        4: 'stok: hiçbir tablo yazılmamalı — audit_events 133:dce666f3776a3251 → 134:a8583346190ac8c8; fin_events 30:d6ca643949149e48 → 30:3612290d9bc46ea6; stock_moves 9:325b1c8baefba0a6 → 9:ed70847fedaac955'
+        5: 'stok: satır 650 (beklenen 10)'
+        6: 'taksit: 409 plan-entry-stale olmalı — yanıt 200 '
+        7: 'taksit: hiçbir tablo yazılmamalı — audit_events 140:7ab3752eba708ca2 → 141:5a84d859ce858fa2; fin_events 31:0f3a1bf4ed28ac42 → 31:51e81b6a7194317d; plan_entries 8:c686571e9cf53ecd → 8:89afd062a22d14db'
+        8: 'taksit: satır 650 (beklenen 10)'
+        9: 'kasa: 409 cash-entry-stale olmalı — yanıt 200 '
+        10: 'kasa: hiçbir tablo yazılmamalı — audit_events 145:6a1a76af8c8fba65 → 146:ab701bc9c6660e9e; cash_entries 12:68d6c82407e8cce5 → 12:58f13ac09ec922f2; fin_events 32:db4e733bf48379dd → 32:b39827e9d5f0df54'
+        11: 'kasa: satır 650 (beklenen 10)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-a7f3/eski-03c04532/test/birlesik-tur1-yaris-250.test.mjs:357:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iyimser kilit sürüm biçimleri: boş / null / createdAt hiç düzeltilmemiş satırda geçer; düzeltilmiş satırda boş, createdAt ve eski sürüm 409; updatedAt yoksa denetim yok (bugünkü davranış)
+    not ok 7 - iyimser kilit sürüm biçimleri: boş / null / createdAt hiç düzeltilmemiş satırda geçer; düzeltilmiş satırda boş, createdAt ve eski sürüm 409; updatedAt yoksa denetim yok (bugünkü davranış)
+      ---
+      duration_ms: 1004.585047
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-a7f3/eski-03c04532/test/birlesik-tur1-yaris-250.test.mjs:360:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        cari boş, düzeltilmiş: 200  (beklenen 409 account-entry-stale) | cari createdAt, düzeltilmiş: 200  (beklenen 409 account-entry-stale) | cari eski sürüm: 200 (beklenen 409) | stok boş, düzeltilmiş: 200  (beklenen 409 stock-move-stale) | stok createdAt, düzeltilmiş: 200  (beklenen 409 stock-move-stale) | stok eski sürüm: 200 (beklenen 409) | taksit boş, düzeltilmiş: 200  (beklenen 409 plan-entry-stale) | taksit createdAt, düzeltilmiş: 200  (beklenen 409 plan-entry-stale) | taksit eski sürüm: 200 (beklenen 409) | kasa boş, düzeltilmiş: 200  (beklenen 409 cash-entry-stale) | kasa createdAt, düzeltilmiş: 200  (beklenen 409 cash-entry-stale) | kasa eski sürüm: 200 (beklenen 409)
+        + actual - expected
+        
+        + [
+        +   'cari boş, düzeltilmiş: 200  (beklenen 409 account-entry-stale)',
+        +   'cari createdAt, düzeltilmiş: 200  (beklenen 409 account-entry-stale)',
+        +   'cari eski sürüm: 200 (beklenen 409)',
+        +   'stok boş, düzeltilmiş: 200  (beklenen 409 stock-move-stale)',
+        +   'stok createdAt, düzeltilmiş: 200  (beklenen 409 stock-move-stale)',
+        +   'stok eski sürüm: 200 (beklenen 409)',
+        +   'taksit boş, düzeltilmiş: 200  (beklenen 409 plan-entry-stale)',
+        +   'taksit createdAt, düzeltilmiş: 200  (beklenen 409 plan-entry-stale)',
+        +   'taksit eski sürüm: 200 (beklenen 409)',
+        +   'kasa boş, düzeltilmiş: 200  (beklenen 409 cash-entry-stale)',
+        +   'kasa createdAt, düzeltilmiş: 200  (beklenen 409 cash-entry-stale)',
+        +   'kasa eski sürüm: 200 (beklenen 409)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'cari boş, düzeltilmiş: 200  (beklenen 409 account-entry-stale)'
+        1: 'cari createdAt, düzeltilmiş: 200  (beklenen 409 account-entry-stale)'
+        2: 'cari eski sürüm: 200 (beklenen 409)'
+        3: 'stok boş, düzeltilmiş: 200  (beklenen 409 stock-move-stale)'
+        4: 'stok createdAt, düzeltilmiş: 200  (beklenen 409 stock-move-stale)'
+        5: 'stok eski sürüm: 200 (beklenen 409)'
+        6: 'taksit boş, düzeltilmiş: 200  (beklenen 409 plan-entry-stale)'
+        7: 'taksit createdAt, düzeltilmiş: 200  (beklenen 409 plan-entry-stale)'
+        8: 'taksit eski sürüm: 200 (beklenen 409)'
+        9: 'kasa boş, düzeltilmiş: 200  (beklenen 409 cash-entry-stale)'
+        10: 'kasa createdAt, düzeltilmiş: 200  (beklenen 409 cash-entry-stale)'
+        11: 'kasa eski sürüm: 200 (beklenen 409)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-a7f3/eski-03c04532/test/birlesik-tur1-yaris-250.test.mjs:392:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: gerileme — yarışsız düzeltme her uçta aynen: Kontrol Yok yazar; Uyar sorar + Yine de Kaydet yazar; Engelle onayla da yazmaz; yinelenen istek ikinci kez yazmaz
+    ok 8 - gerileme — yarışsız düzeltme her uçta aynen: Kontrol Yok yazar; Uyar sorar + Yine de Kaydet yazar; Engelle onayla da yazmaz; yinelenen istek ikinci kez yazmaz
+      ---
+      duration_ms: 1433.453874
+      type: 'test'
+      ...
+    # Subtest: gerileme — eksi stok sorusu (stok) ve kart iadesi sınırı (taksit) yarışsız aynen; silinmiş harekete doğrudan düzeltme 404
+    ok 9 - gerileme — eksi stok sorusu (stok) ve kart iadesi sınırı (taksit) yarışsız aynen; silinmiş harekete doğrudan düzeltme 404
+      ---
+      duration_ms: 179.185137
+      type: 'test'
+      ...
+    1..9
+not ok 1 - 2.5.0 BİRLEŞİK TUR 1 YB-1 — eşzamanlı düzeltmede korumalar işlemin içindeki GÜNCEL satırla (dört uç)
+  ---
+  duration_ms: 11348.793354
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-a7f3/eski-03c04532/test/birlesik-tur1-yaris-250.test.mjs:165:1'
+  failureType: 'subtestsFailed'
+  error: '7 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 1 YB-2 — Kasa ↔ Banka transferi: gövde yoldayken silinir ya da öbür tarafı yok olursa 404, hiçbir tablo yazılmaz
+    # Subtest: transfer gövde yoldayken silinir: 404 Kasa iletisi; tablolar silmeden sonraki hâliyle aynı (sahte cash.transfer.updated yok)
+    not ok 1 - transfer gövde yoldayken silinir: 404 Kasa iletisi; tablolar silmeden sonraki hâliyle aynı (sahte cash.transfer.updated yok)
+      ---
+      duration_ms: 354.571041
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-a7f3/eski-03c04532/test/birlesik-tur1-yaris-250.test.mjs:469:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        404 “Kasa hareketi bulunamadı. Başka biri silmiş olabilir.” olmalı — 200 {"ok":true,"data":{"id":"cash-624a4b29-c568-4890-9424-7cf0a652e76b"}} | hiçbir tablo yazılmamalı — audit_events 5:8d0a294d638af3ee → 6:1e07498e644168b9 | Değişiklik Geçmişi'ne silinmiş transfer için "düzeltildi" yazıldı
+        + actual - expected
+        
+        + [
+        +   '404 “Kasa hareketi bulunamadı. Başka biri silmiş olabilir.” olmalı — 200 {"ok":true,"data":{"id":"cash-624a4b29-c568-4890-9424-7cf0a652e76b"}}',
+        +   'hiçbir tablo yazılmamalı — audit_events 5:8d0a294d638af3ee → 6:1e07498e644168b9',
+        +   `Değişiklik Geçmişi'ne silinmiş transfer için "düzeltildi" yazıldı`
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: '404 “Kasa hareketi bulunamadı. Başka biri silmiş olabilir.” olmalı — 200 {"ok":true,"data":{"id":"cash-624a4b29-c568-4890-9424-7cf0a652e76b"}}'
+        1: 'hiçbir tablo yazılmamalı — audit_events 5:8d0a294d638af3ee → 6:1e07498e644168b9'
+        2: `Değişiklik Geçmişi'ne silinmiş transfer için "düzeltildi" yazıldı`
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-a7f3/eski-03c04532/test/birlesik-tur1-yaris-250.test.mjs:487:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: transferin yalnız öbür tarafı yok (eski / bozuk veri benzetimi, doğrudan silme): 404 "Transferin öbür tarafı bulunamadı"; tablolar değişmez
+    not ok 2 - transferin yalnız öbür tarafı yok (eski / bozuk veri benzetimi, doğrudan silme): 404 "Transferin öbür tarafı bulunamadı"; tablolar değişmez
+      ---
+      duration_ms: 337.429218
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-a7f3/eski-03c04532/test/birlesik-tur1-yaris-250.test.mjs:490:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        404 olmalı — 409 {"ok":false,"error":"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (102 Bankalar (Havale / EFT): -350,00 TL fark). Hiçbir değişiklik yazılmadı | hiçbir tablo yazılmamalı — integrity_log 0:e3b0c44298fc1c14 → 1:8146f10a7bf56361
+        + actual - expected
+        
+        + [
+        +   '404 olmalı — 409 {"ok":false,"error":"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (102 Bankalar (Havale / EFT): -350,00 TL fark). Hiçbir değişiklik yazılmadı',
+        +   'hiçbir tablo yazılmamalı — integrity_log 0:e3b0c44298fc1c14 → 1:8146f10a7bf56361'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: '404 olmalı — 409 {"ok":false,"error":"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (102 Bankalar (Havale / EFT): -350,00 TL fark). Hiçbir değişiklik yazılmadı'
+        1: 'hiçbir tablo yazılmamalı — integrity_log 0:e3b0c44298fc1c14 → 1:8146f10a7bf56361'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-a7f3/eski-03c04532/test/birlesik-tur1-yaris-250.test.mjs:506:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 2 - 2.5.0 BİRLEŞİK TUR 1 YB-2 — Kasa ↔ Banka transferi: gövde yoldayken silinir ya da öbür tarafı yok olursa 404, hiçbir tablo yazılmaz
+  ---
+  duration_ms: 1159.249529
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-a7f3/eski-03c04532/test/birlesik-tur1-yaris-250.test.mjs:456:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 1 YB-2 — transfer düzeltmesi yarışsız aynen (gerileme)
+    # Subtest: transfer düzeltmesi iki tarafı birlikte günceller; iyimser kilit transferde de çalışır
+    not ok 1 - transfer düzeltmesi iki tarafı birlikte günceller; iyimser kilit transferde de çalışır
+      ---
+      duration_ms: 51.159037
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-a7f3/eski-03c04532/test/birlesik-tur1-yaris-250.test.mjs:517:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   200,
+        +   undefined
+        -   409,
+        -   'cash-entry-stale'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 409
+        1: 'cash-entry-stale'
+      actual:
+        0: 200
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-a7f3/eski-03c04532/test/birlesik-tur1-yaris-250.test.mjs:524:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 3 - 2.5.0 BİRLEŞİK TUR 1 YB-2 — transfer düzeltmesi yarışsız aynen (gerileme)
+  ---
+  duration_ms: 511.78758
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-a7f3/eski-03c04532/test/birlesik-tur1-yaris-250.test.mjs:510:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 BS-4 — veri dosyası kayıp ya da açılamayan şirket varken Birleşik Rapor üretilmez (409; ekran = PDF = Excel), dosya yaratılmaz
+    # Subtest: veri dosyası silinmiş: 409 company-data-missing, ileti kod + ad + ne yapılacağı; klasörde dosya yaratılmaz; açık tanıtıcı kalmaz
+    ok 1 - veri dosyası silinmiş: 409 company-data-missing, ileti kod + ad + ne yapılacağı; klasörde dosya yaratılmaz; açık tanıtıcı kalmaz
+      ---
+      duration_ms: 16.771588
+      type: 'test'
+      ...
+    # Subtest: veri klasörü tamamen silinmiş: aynı 409; klasör yeniden yaratılmaz
+    ok 2 - veri klasörü tamamen silinmiş: aynı 409; klasör yeniden yaratılmaz
+      ---
+      duration_ms: 9.699282
+      type: 'test'
+      ...
+    # Subtest: kayıp şirket seçilmeden (yalnız 001) rapor eskisi gibi 200 ve yalnız 001'i toplar
+    ok 3 - kayıp şirket seçilmeden (yalnız 001) rapor eskisi gibi 200 ve yalnız 001'i toplar
+      ---
+      duration_ms: 36.089256
+      type: 'test'
+      ...
+    1..3
+ok 4 - 2.5.0 BS-4 — veri dosyası kayıp ya da açılamayan şirket varken Birleşik Rapor üretilmez (409; ekran = PDF = Excel), dosya yaratılmaz
+  ---
+  duration_ms: 849.251492
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 BS-4 — veri dosyası bozuk (açılış hata verir): 409 company-unavailable; yarım açılmış bağlantı kalmaz, dosya sonra silinebilir (ders 48)
+    # Subtest: bozuk dosya: 409, ileti kod + ad + neden; açık tanıtıcı yok; açmayı denedikten sonra dosya silinip yerine yenisi yazılabilir
+    ok 1 - bozuk dosya: 409, ileti kod + ad + neden; açık tanıtıcı yok; açmayı denedikten sonra dosya silinip yerine yenisi yazılabilir
+      ---
+      duration_ms: 15.678529
+      type: 'test'
+      ...
+    1..1
+ok 5 - 2.5.0 BS-4 — veri dosyası bozuk (açılış hata verir): 409 company-unavailable; yarım açılmış bağlantı kalmaz, dosya sonra silinebilir (ders 48)
+  ---
+  duration_ms: 686.769869
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 BS-4 — meşgul şirket (geri yükleme / silme sürüyor) varken Birleşik Rapor 503 + retryAfter döner (ekran = PDF = Excel); meşguliyet kalkınca 200
+    # Subtest: meşgul 002: 503, ileti meşgul iletisi, retryAfter 5 ve Retry-After başlığı; yalnız 001 seçilince 200; meşguliyet kalkınca iki şirketle 200
+    ok 1 - meşgul 002: 503, ileti meşgul iletisi, retryAfter 5 ve Retry-After başlığı; yalnız 001 seçilince 200; meşguliyet kalkınca iki şirketle 200
+      ---
+      duration_ms: 44.388495
+      type: 'test'
+      ...
+    1..1
+ok 6 - 2.5.0 BS-4 — meşgul şirket (geri yükleme / silme sürüyor) varken Birleşik Rapor 503 + retryAfter döner (ekran = PDF = Excel); meşguliyet kalkınca 200
+  ---
+  duration_ms: 693.275308
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç4 Defter Türü
+    # Subtest: varsayılan Seçilmedi; seçenekler yazım düzeninde; Kişi Türü / VKN uzunluğundan tür uydurulmaz; kaydedilir ve yeniden okunur
+    ok 1 - varsayılan Seçilmedi; seçenekler yazım düzeninde; Kişi Türü / VKN uzunluğundan tür uydurulmaz; kaydedilir ve yeniden okunur
+      ---
+      duration_ms: 560.149264
+      type: 'test'
+      ...
+    # Subtest: geçersiz değer 400 ve hiçbir ayar yazılmaz (aynı gövdedeki firma bilgisi de)
+    ok 2 - geçersiz değer 400 ve hiçbir ayar yazılmaz (aynı gövdedeki firma bilgisi de)
+      ---
+      duration_ms: 356.345991
+      type: 'test'
+      ...
+    # Subtest: yetki: yönetici ve muhasebe değiştirir; avukat ve personel 403 (ayar değişmez)
+    ok 3 - yetki: yönetici ve muhasebe değiştirir; avukat ve personel 403 (ayar değişmez)
+      ---
+      duration_ms: 647.760851
+      type: 'test'
+      ...
+    # Subtest: Şirket Verisini Sıfırla: Tüm Hareketleri Sil ve Tümünü Sıfırla ayarı KORUR; dönem kilidi (ledger.) kalkar
+    ok 4 - Şirket Verisini Sıfırla: Tüm Hareketleri Sil ve Tümünü Sıfırla ayarı KORUR; dönem kilidi (ledger.) kalkar
+      ---
+      duration_ms: 612.288733
+      type: 'test'
+      ...
+    # Subtest: iki şirket ayrı ayar; yedek → değiştir → geri yükle: 002 hemen, 001 yeniden açılışta geri gelir; öbür şirket etkilenmez
+    ok 5 - iki şirket ayrı ayar; yedek → değiştir → geri yükle: 002 hemen, 001 yeniden açılışta geri gelir; öbür şirket etkilenmez
+      ---
+      duration_ms: 956.279656
+      type: 'test'
+      ...
+    # Subtest: BS-7 kapılı (yeni şemalı) şirkette Defter Türü yazımı 409 SCHEMA_AHEAD; okuma çalışır, dosya değişmez
+    ok 6 - BS-7 kapılı (yeni şemalı) şirkette Defter Türü yazımı 409 SCHEMA_AHEAD; okuma çalışır, dosya değişmez
+      ---
+      duration_ms: 717.679431
+      type: 'test'
+      ...
+    # Subtest: Değişiklik Geçmişi: üç ayar türü 'Ayarlar' süzgecinde; Defter Türü satırı eski → yeni ekran adlarını taşır; istemcide Türkçe adları var
+    ok 7 - Değişiklik Geçmişi: üç ayar türü 'Ayarlar' süzgecinde; Defter Türü satırı eski → yeni ekran adlarını taşır; istemcide Türkçe adları var
+      ---
+      duration_ms: 379.517771
+      type: 'test'
+      ...
+    # Subtest: Değişiklik Geçmişi süzgeci: constructor / toString / __proto__ / hasOwnProperty / valueOf değerleri 200 + 0 satır (kendi önekleri); gruplar aynen
+    not ok 8 - Değişiklik Geçmişi süzgeci: constructor / toString / __proto__ / hasOwnProperty / valueOf değerleri 200 + 0 satır (kendi önekleri); gruplar aynen
+      ---
+      duration_ms: 392.229798
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-a7f3/eski-03c04532/test/defter-turu-c4.test.mjs:266:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        constructor: 500 {"ok":false,"error":"Sunucu işlemi tamamlayamadı."} | toString: 500 {"ok":false,"error":"Sunucu işlemi tamamlayamadı."} | __proto__: 500 {"ok":false,"error":"Sunucu işlemi tamamlayamadı."} | hasOwnProperty: 500 {"ok":false,"error":"Sunucu işlemi tamamlayamadı."} | valueOf: 500 {"ok":false,"error":"Sunucu işlemi tamamlayamadı."} | isPrototypeOf: 500 {"ok":false,"error":"Sunucu işlemi tamamlayamadı."}
+        + actual - expected
+        
+        + [
+        +   'constructor: 500 {"ok":false,"error":"Sunucu işlemi tamamlayamadı."}',
+        +   'toString: 500 {"ok":false,"error":"Sunucu işlemi tamamlayamadı."}',
+        +   '__proto__: 500 {"ok":false,"error":"Sunucu işlemi tamamlayamadı."}',
+        +   'hasOwnProperty: 500 {"ok":false,"error":"Sunucu işlemi tamamlayamadı."}',
+        +   'valueOf: 500 {"ok":false,"error":"Sunucu işlemi tamamlayamadı."}',
+        +   'isPrototypeOf: 500 {"ok":false,"error":"Sunucu işlemi tamamlayamadı."}'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'constructor: 500 {"ok":false,"error":"Sunucu işlemi tamamlayamadı."}'
+        1: 'toString: 500 {"ok":false,"error":"Sunucu işlemi tamamlayamadı."}'
+        2: '__proto__: 500 {"ok":false,"error":"Sunucu işlemi tamamlayamadı."}'
+        3: 'hasOwnProperty: 500 {"ok":false,"error":"Sunucu işlemi tamamlayamadı."}'
+        4: 'valueOf: 500 {"ok":false,"error":"Sunucu işlemi tamamlayamadı."}'
+        5: 'isPrototypeOf: 500 {"ok":false,"error":"Sunucu işlemi tamamlayamadı."}'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-a7f3/eski-03c04532/test/defter-turu-c4.test.mjs:279:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: okuyucu bookTypeOf: store, ham değer, bozuk / bilinmeyen değer → unset; okunamayan store → unset
+    ok 9 - okuyucu bookTypeOf: store, ham değer, bozuk / bilinmeyen değer → unset; okunamayan store → unset
+      ---
+      duration_ms: 1.635881
+      type: 'test'
+      ...
+    1..9
+not ok 7 - 2.5.0 Ç4 Defter Türü
+  ---
+  duration_ms: 4626.11812
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-a7f3/eski-03c04532/test/defter-turu-c4.test.mjs:48:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..7
+# tests 26
+# suites 7
+# pass 15
+# fail 11
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 21066.764051

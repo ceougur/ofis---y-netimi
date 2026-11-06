@@ -1,0 +1,47 @@
+    not ok 1 - meşgul 002: 503, ileti meşgul iletisi, retryAfter 5 ve Retry-After başlığı; yalnız 001 seçilince 200; meşguliyet kalkınca iki şirketle 200
+      error: |-
+        ekran: 503 olmalı — yanıt 409 company-unavailable “002 · Kayıp Veri Ltd.” şirketinin verisi açılamadı (beklenmeyen hata: “002 · Kayıp Veri Ltd.” yedekten geri yükleniyor; birkaç saniye sonra | ekran: ileti ““002 · Kayıp Veri Ltd.” şirketinin verisi açılamadı (beklenmeyen hata: “002 · Kayıp Veri Ltd.” yedekten geri yükleniyor; birkaç saniye sonra yeniden deneyin.); birleşik rapor üretilmedi. Yönetim → Yedekler'den şirketi geri yükleyin ya da raporu bu şirketi seçmeden alın.” (beklenen meşgul iletisi) | ekran: gövdede retryAfter undefined (beklenen 5) | ekran: Retry-After başlığı null (beklenen 5) | ekran (yalnız 002): 503 olmalı — yanıt 409 company-unavailable “002 · Kayıp Veri Ltd.” şirketinin verisi açılamadı (beklenmeyen hata: “002 · Kayıp Veri Ltd.” yedekten geri yükleniyor; birkaç saniye sonra | ekran (yalnız 002): ileti ““002 · Kayıp Veri Ltd.” şirketinin verisi açılamadı (beklenmeyen hata: “002 · Kayıp Veri Ltd.” yedekten geri yükleniyor; birkaç saniye sonra yeniden deneyin.); birleşik rapor üretilmedi. Yönetim → Yedekler'den şirketi geri yükleyin ya da raporu bu şirketi seçmeden alın.” (beklenen meşgul iletisi) | ekran (yalnız 002): gövdede retryAfter undefined (beklenen 5) | ekran (yalnız 002): Retry-After başlığı null (beklenen 5) | PDF: 503 olmalı — yanıt 409 company-unavailable “002 · Kayıp Veri Ltd.” şirketinin verisi açılamadı (beklenmeyen hata: “002 · Kayıp Veri Ltd.” yedekten geri yükleniyor; birkaç saniye sonra | PDF: ileti ““002 · Kayıp Veri Ltd.” şirketinin verisi açılamadı (beklenmeyen hata: “002 · Kayıp Veri Ltd.” yedekten geri yükleniyor; birkaç saniye sonra yeniden deneyin.); birleşik rapor üretilmedi. Yönetim → Yedekler'den şirketi geri yükleyin ya da raporu bu şirketi seçmeden alın.” (beklenen meşgul iletisi) | PDF: gövdede retryAfter undefined (beklenen 5) | PDF: Retry-After başlığı null (beklenen 5) | Excel: 503 olmalı — yanıt 409 company-unavailable “002 · Kayıp Veri Ltd.” şirketinin verisi açılamadı (beklenmeyen hata: “002 · Kayıp Veri Ltd.” yedekten geri yükleniyor; birkaç saniye sonra | Excel: ileti ““002 · Kayıp Veri Ltd.” şirketinin verisi açılamadı (beklenmeyen hata: “002 · Kayıp Veri Ltd.” yedekten geri yükleniyor; birkaç saniye sonra yeniden deneyin.); birleşik rapor üretilmedi. Yönetim → Yedekler'den şirketi geri yükleyin ya da raporu bu şirketi seçmeden alın.” (beklenen meşgul iletisi) | Excel: gövdede retryAfter undefined (beklenen 5) | Excel: Retry-After başlığı null (beklenen 5)
+        + actual - expected
+        + [
+        +   'ekran: 503 olmalı — yanıt 409 company-unavailable “002 · Kayıp Veri Ltd.” şirketinin verisi açılamadı (beklenmeyen hata: “002 · Kayıp Veri Ltd.” yedekten geri yükleniyor; birkaç saniye sonra',
+        +   "ekran: ileti ““002 · Kayıp Veri Ltd.” şirketinin verisi açılamadı (beklenmeyen hata: “002 · Kayıp Veri Ltd.” yedekten geri yükleniyor; birkaç saniye sonra yeniden deneyin.); birleşik rapor üretilmedi. Yönetim → Yedekler'den şirketi geri yükleyin ya da raporu bu şirketi seçmeden alın.” (beklenen meşgul iletisi)",
+        +   'ekran: gövdede retryAfter undefined (beklenen 5)',
+        +   'ekran: Retry-After başlığı null (beklenen 5)',
+        +   'ekran (yalnız 002): 503 olmalı — yanıt 409 company-unavailable “002 · Kayıp Veri Ltd.” şirketinin verisi açılamadı (beklenmeyen hata: “002 · Kayıp Veri Ltd.” yedekten geri yükleniyor; birkaç saniye sonra',
+        +   "ekran (yalnız 002): ileti ““002 · Kayıp Veri Ltd.” şirketinin verisi açılamadı (beklenmeyen hata: “002 · Kayıp Veri Ltd.” yedekten geri yükleniyor; birkaç saniye sonra yeniden deneyin.); birleşik rapor üretilmedi. Yönetim → Yedekler'den şirketi geri yükleyin ya da raporu bu şirketi seçmeden alın.” (beklenen meşgul iletisi)",
+        +   'ekran (yalnız 002): gövdede retryAfter undefined (beklenen 5)',
+        +   'ekran (yalnız 002): Retry-After başlığı null (beklenen 5)',
+        +   'PDF: 503 olmalı — yanıt 409 company-unavailable “002 · Kayıp Veri Ltd.” şirketinin verisi açılamadı (beklenmeyen hata: “002 · Kayıp Veri Ltd.” yedekten geri yükleniyor; birkaç saniye sonra',
+        +   "PDF: ileti ““002 · Kayıp Veri Ltd.” şirketinin verisi açılamadı (beklenmeyen hata: “002 · Kayıp Veri Ltd.” yedekten geri yükleniyor; birkaç saniye sonra yeniden deneyin.); birleşik rapor üretilmedi. Yönetim → Yedekler'den şirketi geri yükleyin ya da raporu bu şirketi seçmeden alın.” (beklenen meşgul iletisi)",
+        +   'PDF: gövdede retryAfter undefined (beklenen 5)',
+        +   'PDF: Retry-After başlığı null (beklenen 5)',
+        +   'Excel: 503 olmalı — yanıt 409 company-unavailable “002 · Kayıp Veri Ltd.” şirketinin verisi açılamadı (beklenmeyen hata: “002 · Kayıp Veri Ltd.” yedekten geri yükleniyor; birkaç saniye sonra',
+        +   "Excel: ileti ““002 · Kayıp Veri Ltd.” şirketinin verisi açılamadı (beklenmeyen hata: “002 · Kayıp Veri Ltd.” yedekten geri yükleniyor; birkaç saniye sonra yeniden deneyin.); birleşik rapor üretilmedi. Yönetim → Yedekler'den şirketi geri yükleyin ya da raporu bu şirketi seçmeden alın.” (beklenen meşgul iletisi)",
+        +   'Excel: gövdede retryAfter undefined (beklenen 5)',
+        +   'Excel: Retry-After başlığı null (beklenen 5)'
+        + ]
+        - []
+        0: 'ekran: 503 olmalı — yanıt 409 company-unavailable “002 · Kayıp Veri Ltd.” şirketinin verisi açılamadı (beklenmeyen hata: “002 · Kayıp Veri Ltd.” yedekten geri yükleniyor; birkaç saniye sonra'
+        1: "ekran: ileti ““002 · Kayıp Veri Ltd.” şirketinin verisi açılamadı (beklenmeyen hata: “002 · Kayıp Veri Ltd.” yedekten geri yükleniyor; birkaç saniye sonra yeniden deneyin.); birleşik rapor üretilmedi. Yönetim → Yedekler'den şirketi geri yükleyin ya da raporu bu şirketi seçmeden alın.” (beklenen meşgul iletisi)"
+        2: 'ekran: gövdede retryAfter undefined (beklenen 5)'
+        3: 'ekran: Retry-After başlığı null (beklenen 5)'
+        4: 'ekran (yalnız 002): 503 olmalı — yanıt 409 company-unavailable “002 · Kayıp Veri Ltd.” şirketinin verisi açılamadı (beklenmeyen hata: “002 · Kayıp Veri Ltd.” yedekten geri yükleniyor; birkaç saniye sonra'
+        5: "ekran (yalnız 002): ileti ““002 · Kayıp Veri Ltd.” şirketinin verisi açılamadı (beklenmeyen hata: “002 · Kayıp Veri Ltd.” yedekten geri yükleniyor; birkaç saniye sonra yeniden deneyin.); birleşik rapor üretilmedi. Yönetim → Yedekler'den şirketi geri yükleyin ya da raporu bu şirketi seçmeden alın.” (beklenen meşgul iletisi)"
+        6: 'ekran (yalnız 002): gövdede retryAfter undefined (beklenen 5)'
+        7: 'ekran (yalnız 002): Retry-After başlığı null (beklenen 5)'
+        8: 'PDF: 503 olmalı — yanıt 409 company-unavailable “002 · Kayıp Veri Ltd.” şirketinin verisi açılamadı (beklenmeyen hata: “002 · Kayıp Veri Ltd.” yedekten geri yükleniyor; birkaç saniye sonra'
+        9: "PDF: ileti ““002 · Kayıp Veri Ltd.” şirketinin verisi açılamadı (beklenmeyen hata: “002 · Kayıp Veri Ltd.” yedekten geri yükleniyor; birkaç saniye sonra yeniden deneyin.); birleşik rapor üretilmedi. Yönetim → Yedekler'den şirketi geri yükleyin ya da raporu bu şirketi seçmeden alın.” (beklenen meşgul iletisi)"
+        10: 'PDF: gövdede retryAfter undefined (beklenen 5)'
+        11: 'PDF: Retry-After başlığı null (beklenen 5)'
+        12: 'Excel: 503 olmalı — yanıt 409 company-unavailable “002 · Kayıp Veri Ltd.” şirketinin verisi açılamadı (beklenmeyen hata: “002 · Kayıp Veri Ltd.” yedekten geri yükleniyor; birkaç saniye sonra'
+        13: "Excel: ileti ““002 · Kayıp Veri Ltd.” şirketinin verisi açılamadı (beklenmeyen hata: “002 · Kayıp Veri Ltd.” yedekten geri yükleniyor; birkaç saniye sonra yeniden deneyin.); birleşik rapor üretilmedi. Yönetim → Yedekler'den şirketi geri yükleyin ya da raporu bu şirketi seçmeden alın.” (beklenen meşgul iletisi)"
+        14: 'Excel: gövdede retryAfter undefined (beklenen 5)'
+        15: 'Excel: Retry-After başlığı null (beklenen 5)'
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-a7f3/mut/M7/test/bs4-birlesik-rapor-250.test.mjs:177:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+not ok 3 - 2.5.0 BS-4 — meşgul şirket (geri yükleme / silme sürüyor) varken Birleşik Rapor 503 + retryAfter döner (ekran = PDF = Excel); meşguliyet kalkınca 200
+  error: '1 subtest failed'

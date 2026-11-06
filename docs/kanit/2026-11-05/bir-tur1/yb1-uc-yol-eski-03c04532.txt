@@ -1,0 +1,26 @@
+S) stok hareketi (peşin alım) — Kasa Engelle
+  başlangıç Kasa 500
+  yarışsız 100 → 650: 409 cash-blocked
+  arada muhasebe 100 → 10: 200, Kasa 590
+  yöneticinin 650 düzeltmesi: 200  
+  SONUÇ S: hareket tutarı 650, Kasa -50 (Engelle; 0'ın altı olmamalı)
+P) taksit iadesi — Kasa Engelle
+  başlangıç Kasa 500
+  yarışsız 100 → 650: 409 cash-blocked
+  arada muhasebe 100 → 10: 200, Kasa 590
+  yöneticinin 650 düzeltmesi: 200  
+  SONUÇ P: iade tutarı 650, Kasa -50 (Engelle; 0'ın altı olmamalı)
+P2) taksit tahsilatı — K8 kartın kalanı (Fazlasını Avans Yaz sorusu)
+  arada muhasebe 600 → 100 + yeni 700: 200/200
+  yöneticinin 500 düzeltmesi: 200  
+  SONUÇ P2: kartın net tahsilatı 1200 / toplam 1000 (aşan kısım "Fazlasını Avans Yaz" onayı olmadan yazıldıysa > 1000)
+K) Kasa hareketi (ödeme) — Kasa Engelle
+  başlangıç Kasa 500
+  yarışsız 100 → 650: 409 cash-blocked
+  arada muhasebe 100 → 10: 200, Kasa 590
+  yöneticinin 650 düzeltmesi: 200  
+  SONUÇ K: hareket tutarı 650, Kasa -50 (Engelle; 0'ın altı olmamalı)
+A2) cari hareketi — gövdede yalnız tutar; arada açıklama değişir
+  arada not değişti: 200; tutar düzeltmesi: 200  
+  SONUÇ A2: tutar 350, açıklama “ilk not” (öbür kullanıcının notu kalmalı)
+  Değişiklik Geçmişi "önceki": {"amount":300,"note":"ilk not"}
