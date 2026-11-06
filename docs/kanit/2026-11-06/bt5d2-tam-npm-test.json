@@ -1,0 +1,38 @@
+{
+  "ad": "bt5d2-tam-npm-test",
+  "komut": "npm test",
+  "commit": "12113c8a66c1af3c4b2f8b9724e790587e5ee6d7",
+  "dal": "bt5d2-birlesim",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T14:20:28.467Z",
+  "sure_sn": 5754.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5048,
+    "gecen": 5047,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "mantık denetimi: kural öğrenme › 200 bin satırda makul sürede biter",
+      "konum": "test/reasoning.test.mjs:109:3",
+      "hata": "6362 ms (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../bt5d2-kanit/2026-11-06/bt5d2-tam-npm-test.log.gz",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt5d2-birlesim-ag",
+  "ham_cikti_sha256": "df683821d0239b3a34e21d9ea719569d4476e5ced6cbcb3f2bf3cd3608d950bd",
+  "ham_cikti_bayt": 1926841
+}

@@ -1,0 +1,58 @@
+
+■ Kurulum: 002 açılır, cari girilir, veri dosyasının users kök sayfası bozulur
+  ✓ 002 açıldı (200)
+  ✓ 002'ye cari girildi (200)
+2026-11-06T12:18:15.928Z [ERROR] Şirket açılamadı (002 · Bozuk Dosyalı Şirket) Error: database disk image is malformed
+    at Object.run (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2-birlesim-ag/server/lib/db.mjs:370:31)
+    at file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2-birlesim-ag/server/lib/companies.mjs:566:18
+    at Object.tx (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2-birlesim-ag/server/lib/db.mjs:468:24)
+    at mirrorUsers (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2-birlesim-ag/server/lib/companies.mjs:565:16)
+    at buildApp (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2-birlesim-ag/server/app.mjs:322:44)
+    at createApp (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2-birlesim-ag/server/app.mjs:120:17)
+    at appFor (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2-birlesim-ag/server/app.mjs:857:15)
+    at dispatchApp (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2-birlesim-ag/server/app.mjs:1002:14)
+    at dispatch (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2-birlesim-ag/server/app.mjs:933:12)
+    at Server.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2-birlesim-ag/server/app.mjs:1032:5)
+  ✓ ön koşul: bozuk şirket açılmıyor (durum 503)
+
+■ A. Şirketi Sil → yedek alınamadı → ikinci, açık onay
+  ✓ listede iki şirket
+  ✓ Şirketi Sil · 002: kod kutusu “002”, parola odakta (true)
+  ✓ ikinci onay açıldı: başlık “Yedeksiz Sil · 002 · Bozuk Dosyalı Şirket”
+  ✓ neden Türkçe: “Yedek alınamadı (veri dosyası bozuk). Veri klasörü silinmez; silinen-sirketler klasöründe …”
+  ✓ “Veri klasörü silinmez; silinen-sirketler klasöründe saklanır (destek ile geri getirilebilir).” yazıyor
+  ✓ eski metin yok
+  ✓ düğme “Yedeksiz Sil”, tehlikeli eylem rengi (true)
+  ✓ odak güvenli düğmede (Vazgeç)
+  ✓ ilk pencere arkada açık (iki pencere)
+
+■ B. Vazgeç → silinmez, ilk pencere nedenle açık kalır
+  ✓ ilk pencerede neden: “Silme öncesi yedek alınamadı; şirket silinmedi (veri dosyası bozuk).…”
+  ✓ veri dosyası yerinde, dokunulmadı
+  ✓ şirket kayıtta, audit yok, silinen-sirketler'de değil
+
+■ B2. (D4) Vazgeç'ten sonra Esc: "Kaydedilmemiş Değişiklik" sorulmaz, pencere kapanır
+  ✓ B2 Vazgeç sonrası Esc: “Kaydedilmemiş Değişiklik” sorulmadı
+  ✓ B2 Vazgeç sonrası Esc: Şirketi Sil penceresi kapandı
+
+■ C. Yeniden Şirketi Sil → Yedeksiz Sil
+  ✓ Şirketi Sil · 002: kod kutusu “002”, parola odakta (true)
+  ✓ ikinci onay yeniden açıldı
+  ✓ bildirim ““002 · Bozuk Dosyalı Şirket” yedek alınmadan silindi; veri klasörü silinen-sirketler altında.×”
+  ✓ pencereler kapandı
+  ✓ listede tek şirket
+  ✓ klasör silinen-sirketler/002-2026-11-06T12-18-21-442Z altında, eski yerinde yok
+  ✓ taşınan veri dosyası bayt bayt aynı
+  ✓ audit: {"code":"002","name":"Bozuk Dosyalı Şirket","backup":"","archivedTo":"/tmp/destekofis-s1-249-1zzq5F/data/silinen-sirketler/002-2026-11-06T12-18-21-442Z","withou
+
+■ D. Sağlam şirket: ikinci onay çıkmaz, yedek alınır
+  ✓ D0 parola yazılı, gönderilmeden Esc: “Kaydedilmemiş Değişiklik” sorulmadı
+  ✓ D0 parola yazılı, gönderilmeden Esc: Şirketi Sil penceresi kapandı
+  ✓ D0: şirket silinmedi, audit yok
+  ✓ Şirketi Sil · 002: kod kutusu “002”, parola odakta (true)
+  ✓ yedek alındı ve diskte: destekofis-002-2026-11-06T12-18-25-100Z-silme-oncesi-002.sqlite
+  ✓ “Yedeksiz Sil” onayı çıkmadı
+  ✓ audit'te withoutBackup yok, yedek destekofis-002-2026-11-06T12-18-25-100Z-silme-oncesi-002.sqlite
+  ✓ sayfa hatası yok
+
+Senaryo 2.4.9 S1 (yedeksiz sil): 33 geçti, 0 kaldı. Ekranlar: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2-birlesim-ag/test/e2e/artifacts/senaryo-yedeksiz-sil-249

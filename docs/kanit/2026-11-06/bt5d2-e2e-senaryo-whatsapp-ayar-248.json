@@ -1,0 +1,32 @@
+{
+  "ad": "bt5d2-e2e-senaryo-whatsapp-ayar-248",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-whatsapp-ayar-248.mjs",
+  "commit": "12113c8a66c1af3c4b2f8b9724e790587e5ee6d7",
+  "dal": "bt5d2-birlesim",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T14:18:30.624Z",
+  "sure_sn": 83.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 157,
+    "gecen": 157,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../bt5d2-kanit/2026-11-06/bt5d2-e2e-senaryo-whatsapp-ayar-248.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt5d2-birlesim-ag",
+  "ham_cikti_sha256": "5dbf32a72358891828d76600b2e4a6e37bb2ffc1bd8ce5f3ad195a7b59ad62db",
+  "ham_cikti_bayt": 14084
+}
