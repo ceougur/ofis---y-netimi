@@ -1,0 +1,15 @@
+UPDATE başlık: ENGELLENDİ — ledger_vouchers değiştirilemez: düzeltme ters kayıt fişiyle
+UPDATE OR REPLACE başlık: ENGELLENDİ — ledger_vouchers değiştirilemez: düzeltme ters kayıt fişiyle
+UPDATE satır: ENGELLENDİ — ledger_voucher_lines değiştirilemez: düzeltme ters kayıt fişiyle
+DELETE başlık: ENGELLENDİ — ledger_vouchers silinemez: düzeltme ters kayıt fişiyle
+DELETE satır: ENGELLENDİ — ledger_voucher_lines silinemez: düzeltme ters kayıt fişiyle
+DELETE tüm tablo (truncate): ENGELLENDİ — ledger_voucher_lines silinemez: düzeltme ters kayıt fişiyle
+REPLACE INTO başlık (aynı id): ENGELLENDİ — ledger_vouchers: aynı fiş ikinci kez yazılamaz
+INSERT OR REPLACE başlık (yeni id, aynı yıl+no): ENGELLENDİ — ledger_vouchers: aynı fiş ikinci kez yazılamaz
+INSERT OR REPLACE satır (aynı PK): ENGELLENDİ — ledger_voucher_lines: fiş kapalı (satır sayısı dolu ya da fiş yok)
+UPSERT satır: ENGELLENDİ — ledger_voucher_lines: fiş kapalı (satır sayısı dolu ya da fiş yok)
+UPSERT başlık: ENGELLENDİ — ledger_vouchers: aynı fiş ikinci kez yazılamaz
+INSERT OR IGNORE satır (yeni seq 3): ENGELLENDİ — ledger_voucher_lines: fiş kapalı (satır sayısı dolu ya da fiş yok)
+fiş verisi değişti mi: hayır
+dış bağlantı yarım fiş (3 satırlık başlık, 2 satır): yazıldı
+tam tarama ledger:vouchers ok=false örnek=["Fiş 2027-000050: 2/3 satır, borç 10, alacak 10, başlık 10"]

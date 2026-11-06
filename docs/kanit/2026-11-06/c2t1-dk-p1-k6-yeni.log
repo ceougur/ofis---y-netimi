@@ -1,0 +1,22 @@
+100: RED 400 1. satır: 100 Kasa (Nakit) hesabının bakiyesi kendi modülünün kayıtlarından gelir; fişle y
+101: RED 400 1. satır: 101 Alınan Çekler hesabının bakiyesi kendi modülünün kayıtlarından gelir; fişle 
+102: RED 400 1. satır: 102 Bankalar (Havale / EFT) hesabının bakiyesi kendi modülünün kayıtlarından gel
+103: RED 400 1. satır: 103 Verilen Çekler ve Ödeme Emirleri (−) hesabının bakiyesi kendi modülünün kayı
+108: RED 400 1. satır: 108 Kredi Kartı Tahsilatları (POS) hesabının bakiyesi kendi modülünün kayıtların
+120: RED 400 1. satır: 120 Alıcılar (Müşteri Carileri) hesabının bakiyesi kendi modülünün kayıtlarından
+121: RED 400 1. satır: 121 Alacak Senetleri hesabının bakiyesi kendi modülünün kayıtlarından gelir; fiş
+127: RED 400 1. satır: 127 Carisiz Taksit Kartları hesabının bakiyesi kendi modülünün kayıtlarından gel
+128: RED 400 1. satır: 128 Şüpheli Ticari Alacaklar hesabının bakiyesi kendi modülünün kayıtlarından ge
+129: RED 400 1. satır: 129 Şüpheli Ticari Alacaklar Karşılığı (−) hesabının bakiyesi kendi modülünün ka
+153: KABUL (fiş Fiş 2027-000001) — ters kayıt 200
+190: RED 400 1. satır: 190 Devreden KDV hesabının bakiyesi kendi modülünün kayıtlarından gelir; fişle y
+191: RED 400 1. satır: 191 İndirilecek KDV hesabının bakiyesi kendi modülünün kayıtlarından gelir; fişl
+193: RED 400 1. satır: 193 Peşin Ödenen Vergiler (Stopaj) hesabının bakiyesi kendi modülünün kayıtların
+300: RED 400 1. satır: 300 Banka Kredileri hesabının bakiyesi kendi modülünün kayıtlarından gelir; fişl
+309: RED 400 1. satır: 309 Diğer Mali Borçlar (Kredi Kartları) hesabının bakiyesi kendi modülünün kayıt
+320: RED 400 1. satır: 320 Satıcılar (Tedarikçi Carileri) hesabının bakiyesi kendi modülünün kayıtların
+321: RED 400 1. satır: 321 Borç Senetleri hesabının bakiyesi kendi modülünün kayıtlarından gelir; fişle
+336: RED 400 1. satır: 336 Diğer Cariler (Personel vb.) hesabının bakiyesi kendi modülünün kayıtlarında
+360: RED 400 1. satır: 360 Ödenecek Vergi ve Fonlar (Tevkifat, Stopaj) hesabının bakiyesi kendi modülün
+391: RED 400 1. satır: 391 Hesaplanan KDV hesabının bakiyesi kendi modülünün kayıtlarından gelir; fişle
+KABUL: 1 / 21

@@ -1,0 +1,22 @@
+100: RED 409 İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (100 Kasa (Nakit): 10,00 T
+101: RED 409 İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (101 Alınan Çekler: 10,00 
+102: RED 409 İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (102 Bankalar (Havale / EF
+103: RED 409 İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (103 Verilen Çekler ve Öde
+108: RED 409 İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (108 Kredi Kartı Tahsilatl
+120: RED 409 İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (120 Alıcılar (Müşteri Car
+121: KABUL (fiş Fiş 2027-000001) — ters kayıt 200
+127: RED 409 İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (127 Carisiz Taksit Kartla
+128: KABUL (fiş Fiş 2027-000003) — ters kayıt 200
+129: KABUL (fiş Fiş 2027-000005) — ters kayıt 200
+153: KABUL (fiş Fiş 2027-000007) — ters kayıt 200
+190: KABUL (fiş Fiş 2027-000009) — ters kayıt 200
+191: RED 409 İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (191 İndirilecek KDV: 10,0
+193: RED 409 İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (193 Peşin Ödenen Vergiler
+300: RED 409 İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Alt Hesap Toplamı (102, 1
+309: RED 409 İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Alt Hesap Toplamı (102, 1
+320: RED 409 İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (320 Satıcılar (Tedarikçi 
+321: KABUL (fiş Fiş 2027-000011) — ters kayıt 200
+336: RED 409 İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (336 Diğer Cariler (Person
+360: RED 409 İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (360 Ödenecek Vergi ve Fon
+391: RED 409 İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (391 Hesaplanan KDV: 10,00
+KABUL: 6 / 21

@@ -263,7 +263,8 @@ describe("2.5.0 Ç2 — N11 süreç öldürme / disk dolu ve N5 eşzamanlı iki 
     try {
       const store = createStore(db);
       const now = createClock({ time: NOW, fixed: true });
-      const V = createLedgerVouchers({ store, period: createPeriod({ store, now }), now });
+      // Ç2 tur 1: alt defter hesapları (ownedAccounts) zorunlu; bu test yalnız 590 / 519 yazar ve sunucusuz kurar → boş küme.
+      const V = createLedgerVouchers({ store, period: createPeriod({ store, now }), now, ownedAccounts: () => new Set() });
       const pages = db.prepare("PRAGMA page_count").get().page_count;
       db.exec(`PRAGMA max_page_count = ${pages + 1}`);
       const big = { type: "opening-match", date: "2027-01-05", requestKey: "yasam-n11-disk-dolu", lines: Array.from({ length: 3000 }, (_, i) => ({ account: i % 2 ? "519" : "590", debit: i % 2 ? 0 : 100, credit: i % 2 ? 100 : 0, note: `uzun açıklama ${"x".repeat(200)} ${i}` })) };

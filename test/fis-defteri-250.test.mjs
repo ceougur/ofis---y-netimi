@@ -248,11 +248,18 @@ describe("2.5.0 Ç2 — saklanan fiş defteri", () => {
     assert.ok(opening602 !== 0, "602'nin 2027 devri 31.12 kapanışını içerir");
   });
 
-  it("N21: kontrol (alt defter) hesabına yazan fiş kapıda geri alınır (Defter Mutabakatı farkı); numara tüketilmez", () => {
+  it("N21: kontrol (alt defter) hesabına yazan fiş reddedilir — fiş denetiminde 400 (Ç2 tur 1, K6 yeni kuralı); kapı ikinci katman (korumasız kurulan modülde 409); numara tüketilmez", async () => {
     assert.ok(V?.post, "fiş defteri yok");
     const before = count("ledger_vouchers");
     const lastNo = store.get("SELECT MAX(no) AS n FROM ledger_vouchers WHERE year = 2027").n;
-    rejects(() => V.post(USER, { type: "opening-match", date: "2027-01-08", requestKey: key("n21"), lines: [{ account: "100", debit: 500 }, { account: "519", credit: 500 }] }), 409, "", /geri alındı/);
+    const lines = [{ account: "100", debit: 500 }, { account: "519", credit: 500 }];
+    // G3 (beklenti değişikliği, gerekçe: Ç2 dar kontrolü ORTA-1 kararı 05.11 22:00 — alt defter hesabı modül kullanılmış olsun olmasın fiş denetiminde reddedilir): önceden 409 kapı.
+    rejects(() => V.post(USER, { type: "opening-match", date: "2027-01-08", requestKey: key("n21"), lines }), 400, "voucher-subledger-account", /fişle yazılmaz/);
+    // Eski beklenti ikinci katman olarak durur: koruması boş kurulan modül (yalnız test) aynı fişi yazmaya kalkarsa kapı geri alır.
+    // Göreli içe aktarım (dosyanın başında değil: fiş defteri olmayan eski kodda öbür testler kendi nedenleriyle kırmızı kalsın — ders 38).
+    const { createLedgerVouchers } = await import("../server/lib/ledger-vouchers.mjs");
+    const bare = createLedgerVouchers({ store, period: server.app.period, now: server.app.config.now, ownedAccounts: () => new Set() });
+    rejects(() => bare.post(USER, { type: "opening-match", date: "2027-01-08", requestKey: key("n21"), lines }), 409, "", /geri alındı/);
     assert.equal(count("ledger_vouchers"), before);
     const next = V.post(USER, { type: "opening-match", date: "2027-01-08", requestKey: key("n21"), lines: pair(10, "590", "519") });
     assert.equal(next.no, lastNo + 1);

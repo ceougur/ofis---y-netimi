@@ -72,7 +72,7 @@ BULGU olarak raporlandı.
 | Silinenler | Fiş silinmez → Silinenler'e girmez; cari silinirse fiş satırının cari boyutu durur (kontrol hesabına fiş zaten kapıda reddedilir, §11) |
 | Göç | Yalnız ekleyici; eski sürüm fikstürleri ve v2.4.9 verisi 46'ya çıkar, kilit izi ve yevmiye aynı (§9 N12, N19) |
 | Devri Geri Al | D4: dosya takası (G1, G7) — fiş tablosuna silme gitmez |
-| Eski sürüm (BS-7, 2.4.9 göç etmiş 46 dosyayı yazılabilir açar) | Fişlere UPDATE / DELETE yapamaz (tetikleyici). Kendi Şirket Verisini Sıfırla'sı hareketleri ve işlem geçmişini siler, fişlere dokunamaz → fişler sıfırlanmış verinin üstünde artakalır. 2.5.0 açılışında `repairLegacyReset`: izi ("ledger.voucher.created") olmayan fiş + işlem geçmişinde "company.reset" → aynı işlemde kaldırılır, Mutabakat Günlüğü'ne "repair" ve işlem geçmişine yazılır (eski sürümün sıfırlama öncesi yedeği fişleri taşır). Sıfırlama izi yoksa dokunulmaz, yalnız günlükte uyarı |
+| Eski sürüm (BS-7, 2.4.9 göç etmiş 46 dosyayı yazılabilir açar) | Fişlere UPDATE / DELETE yapamaz (tetikleyici). Kendi Şirket Verisini Sıfırla'sı hareketleri ve işlem geçmişini siler, fişlere dokunamaz → fişler sıfırlanmış verinin üstünde artakalır. 2.5.0 açılışında `repairLegacyReset`: izi ("ledger.voucher.created") olmayan fiş + işlem geçmişinde BU ŞİRKETİN "company.reset" izi ve fiş o izden ÖNCE (ya da aynı anda) yazılmış (tur 1, §11) → aynı işlemde kaldırılır, Mutabakat Günlüğü'ne "repair" ve işlem geçmişine yazılır (eski sürümün sıfırlama öncesi yedeği fişleri taşır). Sıfırlama izi yoksa, iz başka şirketinse ya da fiş izden sonra yazılmışsa dokunulmaz, yalnız günlükte uyarı (`kept`) |
 | Eski sürüm kilidi açıp kapanış fişinin altındaki veriyi değiştirirse | BİLİNEN SINIR (2.5.0'ın kendisinde de kilit açılınca aynı): kapanış fişi bayatlar; Ç3 (donmuş defter ↔ güncel türetme farkı, "Kural Değişikliği Farkı") görünür kılar |
 
 ## 9. Nasıl bozulur? (önce yazıldı; testler bu listeden — test/fis-defteri-250.test.mjs, test/fis-defteri-yasam-250.test.mjs)
@@ -112,8 +112,11 @@ hesabına fiş → kapı 409 · N22 store dışı silme → tam tarama "Kapanmı
   veriyle döner). İşlem No'dan (dışarıya basılan, hiç yeniden kullanılmayan) bilerek farklı.
 - K4 İleri tarihli fiş yok (programın genel hareket kuralı). Ters kayıt tarihi verilmezse asıl fişin tarihi (KDV mahsubu Geri Al ile aynı gün kuralı).
 - K5 Eski sürüm sıfırlamasından artakalan fiş açılışta kaldırılır (kullanıcının sıfırlama iradesinin tamamlanması; iz + Mutabakat Günlüğü; sıfırlama izi yoksa dokunulmaz).
+  TUR 1'DE DARALDI (§11): yalnız aynı şirketin sıfırlama izinden önce yazılmış fiş.
 - K6 Cari boyutlu fiş satırı yalnız cari hesaplarında; kontrol / alt defter hesaplarına (100, 101, 102, 103, 108, 120, 121, 127, 128, 129, 190, 191, 193, 300, 309, 320, 321, 336,
   360, 391) yazan fiş Defter Mutabakatı farkı verir ve kapıda geri alınır — beklenen bakiyeler (expected) fişleri OKUMAZ (alt defter değiştirmeyen fiş o hesaba yazılmaz).
+  TUR 1'DE DEĞİŞTİ (dar kontrol ORTA-1: "kapıda geri alınır" iddiası 121 / 128 / 129 / 190 / 321 için yanlıştı; §11): bu hesaplar fiş denetiminde, modül kullanılmış olsun
+  olmasın 400 ile reddedilir; liste expected()'den türetilir; kapı ikinci katman.
 - K7 Fiş yazımı tam kapıdan geçer (seyrek iş; 2.1.0 ölçümüyle 100.000 satırda ~3 sn olay döngüsü — kilit koyma ile aynı sınıf).
 - K8 Fiş numarası yazılışı "Fiş 2026-000003"; tür adları: Kapanış Fişi, Açılış Fişi, Açılış Eşleştirme Fişi, Ters Kayıt Fişi, Önceki Yıl Sonucu Fişi, Kural Farkı Düzeltme Fişi,
   Mahsup Fişi (yazım düzeni).
@@ -133,9 +136,57 @@ hesabına fiş → kapı 409 · N22 store dışı silme → tam tarama "Kapanmı
   (routes/tax.mjs monthFigures) yevmiyeden okunur — 01.01 açılış fişindeki 191 / 391 satırı Ocak'ın KDV hareketi sayılır (açılış fişi orada dışlanmalı ya da KDV 190 ile
   devredilmeli). Devri Yenile (N-14 "önceki devir maddesi kalmaz") ile
   G-6 "silinemez, düzeltme ters kayıtla" ÇELİŞİR: (a) önceki devir fişleri ters kaydedilip yenileri yazılır (iz kalır, mizan sütun toplamları büyür) ya da (b) yalnız devir
-  kaynaklı fişleri silen dar bir yol (tetikleyici kaldırma, aynı işlem, iz) — Ç2 (b)'yi KURMADI; karar D4'ten önce (öneri a; KULLANICIYA SORULMALI listesinde). Devri Geri Al
-  dosya takasıyla: fiş numaraları devir öncesi dosyanınkinden sürer (K3).
+  kaynaklı fişleri silen dar bir yol (tetikleyici kaldırma, aynı işlem, iz). KARAR (KULLANICI 05.11 21:30, (7) A, aynen): "Devri Yenile'de yalnız devrin ürettiği kapanış /
+  açılış fişleri silinip yeniden yazılır (dar yol: bakım kipi, aynı işlem, iz Değişiklik Geçmişi'nde); yevmiyede tek açılış fişi." → (7) A = (b). Yolu D4 kurar (Ç2 ve tur 1
+  KURMADI); D4'ün dört kısıtı aşağıda (tur 1). Devri Geri Al dosya takasıyla: fiş numaraları devir öncesi dosyanınkinden sürer (K3).
 - D2 / D4 (G3 tablo sınıflaması): `ledger_vouchers` / `ledger_voucher_lines` G3 listesine girer (öneri: "≤K SİLİNİR, yeni yılda AÇILIŞ" — ≤K fişler arşivde kalır, yeni yıl
   dosyasında N-13 açılışıyla çift sayılmasın diye budanır). Tetikleyiciler DELETE'i reddeder → budama yalnız Ç2'nin tetikleyici kaldırma yoluyla (`withTriggersLifted`, şimdi
   modül içi) ve yalnız bakım kipindeki KOPYADA yapılmalı; D4 bunun için dar, dışa açık bir işlev ekler (ör. `pruneVouchersThrough(store, K)`, aynı işlem, iz). D4 fişleri iç API
   dışından yazmamalı: her fişin izi (`ledger.voucher.created`) eski sürüm onarımının dayanağıdır (izsiz fiş + "company.reset" = artakalan fiş).
+
+## 11a. Ç2 TUR 1 (06.11.2026; dar kontrol 05.11 22:00 bulguları — DURMA KURALI + SAKINCA SÜZGECİ; kanıt docs/kanit/2026-11-06/c2t1-*)
+- K6 YENİ KURALI (ORTA-1): alt defterin sahip olduğu hesaplara (Kasa, Banka, Cari, Çek / Senet, carisiz Taksit, KDV ve vergi, Şüpheli Alacak) yazan fiş, modül kullanılmış olsun
+  olmasın fiş denetiminde 400 `voucher-subledger-account` ile reddedilir (önce kabul edilen 121 / 128 / 129 / 190 / 321 dahil; alt hesap ve cari boyutu da). Liste koddan
+  TÜRETİLİR: `routes/ledger.mjs` `subledgerAccounts()` = Defter Mutabakatı'nın beklenen bakiyelerinin (`expected()`) anahtarları, `every` kipinde (yalnız kullanılınca açılan
+  309 / 300 / 121 / 321 / 190 / 128 / 129 satırları da açık); elle yazılmış ikinci liste yok — expected()'e yeni alt defter satırı eklenince koruma onu da kapsar. Bugün 20 hesap
+  (§10 K6 listesiyle birebir). `createLedgerVouchers` `ownedAccounts` verilmeden KURULMAZ (sessiz atlama yok; sunucusuz test araçları açıkça boş küme verir). Kapı ikinci
+  katman (N21). Ters kayıt bu denetimden geçmez (asıl fiş geçtiyse aynası da geçer; asılsız düzeltme yolu kapanmasın).
+  BAŞ MİMAR KARARI önerisi: 153 (Ticari Mallar) kapsam DIŞI — dönemsel envanterde stokun beklenen bakiyesi yok (Mutabakat'ta satırı yok, kalıcı fark doğmaz) ve kural kitabı
+  N-01 (dönem sonu stok değerlemesi) 153'e fişle yazar.
+- D4 KISITI (K6'dan): devir açılış fişi (N-13) alt defter hesaplarına (ör. EK-1 "190, 191, 391, 360 K bakiyeleri AYNEN") fişle yazamaz. D4 ya (a) o hesabın açılışını kendi alt
+  defterinde yazar (Kasa / banka / cari / evrak açılışı) ya da (b) expected()'e o hesabın fiş satırlarını ekler (bank_lines 360 / 193 deseni) VE yalnız o tür + hesap için
+  koruma istisnası kurar (ownedAccounts'tan türetilmiş; elle liste değil). Bu turda devir izni KURULMADI. AYNI KISIT Ç5'e: Kural Farkı Düzeltme Fişi (KG-15) farkı bir alt defter
+  hesabında çıkarsa (ör. senet 101 → 121 / 321 türü bir kural değişikliği) fişle yazamaz; Ç5 farkın hesaplarını tasarım notunda yazar, alt defter hesabıysa (b) yolunu kurar.
+- D4'ün DÖRT KISITI ((7) A = (b) yolu; dar kontrol E kaydı): (1) silme yolu modül içinde kalır — `withTriggersLifted` dışa açılmaz, D4 dar ve dışa açık tek işlev ekler (ör.
+  devir fişlerini kaynağıyla silip yeniden yazan; aynı işlem, iz Değişiklik Geçmişi'nde); (2) canlı dosyada "kilit '' → sil → postAll(K)" kapıda 409 (Kapanmış dönem değişemez;
+  dar kontrol p10) → kopyada üret + doğrula + takas ya da kapıya açık, izli devir izni; (3) yeniden yazılan fiş o yılın en büyük + 1 numarasını alır (silinen numaralar boşluk
+  bırakır ya da yeniden verilir — numara politikası D4'te yazılı karara bağlanır); (4) `withTriggersLifted` yalnız göç 46 tetikleyicilerini adlarıyla kaldırıp yeniden kurar
+  (Ç3'ün donmuş defter tetikleyicileri ayrı adlıdır, etkilenmez).
+- postAll lockThrough (madde 6, yeniden üretildi: Elle Onay kipinde PUT 409 bank-pending-before-lock verirken postAll 200 + kalem kilit + 1'e Gecikmeli Aktarım; Otomatik kipte PUT
+  kalemi 12.10'a aktarırken postAll aktarmıyordu): kilit İLERLEYECEKSE PUT period-lock ile AYNI ön adım (`routes/ledger.mjs` `beforeLock` → `pos.beforeLock`; 409
+  bank-pending-before-lock, `force` geçer) fiş işleminin DIŞINDA, ÖNCE çağrılır. Ön adımın yazımları (vadesi gelmiş POS kalemlerinin aktarımı) kendi işlemlerindedir; fiş işlemi
+  sonra düşerse onlar kalır (PUT'ta da öyle). Kilit ilerlemiyorsa (yinelenen kapanış) çağrılmaz. Ç3'ün ortak kilit kancası (`lockChanged`, eşzamanlı kip) korundu.
+- K3 SONUCU → 2.5.1 BİLİNEN SINIR: geri yüklemeden sonra, yedekten sonra verilmiş fiş numarası başka fişe yeniden verilir (numara verinin kendisinden; İşlem No kuralıyla
+  tutarsız). Fiş numarası ekrana / çıktıya girince (2.5.1) geri yükleme numara kuralı + uyarı; numara politikası mali müşavir + kullanıcı.
+- K5 DARALDI (DÜŞÜK-1, sakınca süzgeciyle ORTA — defter kaydı kaybı): açılış onarımı yalnız BU ŞİRKETİN (companyId) "company.reset" izini sayar (001'in dosyası ortak katmandır,
+  başka şirketin sıfırlaması oraya da iz yazar) ve yalnız o izden ÖNCE ya da aynı anda yazılmış izsiz fişi kaldırır (an karşılaştırması; saat dilimi ekinden bağımsız); sonra
+  yazılmış izsiz fiş, zamanı okunamayan fiş ve kalan bir ters kaydın asıl fişi KALIR (günlükte uyarı, `kept`). Aynı an: yalnız sabit sahte saatte (N18 ve 2.4.9 gerçek kod betiği).
+- Metin alanları (madde 5, yeniden üretildi: ters kayıt ucunda nesne açıklama "[object Object]", dizi "a,b" olarak saklanıyordu): açıklama / kaynak / satır notu yalnız metin ya da
+  sayı; aksi 400 `voucher-text` (fiş değişmez → yanlış metin kalıcı olurdu).
+- Göç 46 YERİNDE değişti (DÜŞÜK-2, ders 47; 2.5.0 yayımlanmadı): `ledger_voucher_lines_closed` her satırda fişin bütün satırlarını saymıyor (COUNT(*)), iki birincil anahtar araması
+  yapıyor (sıra ≤ başlığın satır sayısı; aynı (fiş, sıra) yok). Tam fişte sonuç eski kuralla aynı (dar kontrolün 12 atlatma denemesi + yarım fişin eksik sırası). Fikstürlerde eski
+  tetikleyiciyle üretilmiş dosya YOK (104 SQLite fikstürü, en yüksek şema 30; whatsapp-pdf-v248 44). Geliştirme sırasında 46'ya çıkmış dosyalar (yalnız geliştirme / test
+  makineleri) eski metni taşır; Şirket Verisini Sıfırla ve onarım tetikleyicileri yeni metinle kurar.
+- KANIT (docs/kanit/2026-11-06/c2t1-*): yeniden üretim (ders 6; taban 2ba5ac0b) — K6 6 / 21 kabul (121, 128, 129, 153, 190, 321), K5 p5 001'in fişi kaldırıldı, "[object Object]" saklandı, postAll
+  POS ön adımını atladı (c2t1-betik r5 / r6 / p1 / p5). Kırmızı (eski kod ayrı kopyada, yeni testlerle): 12 / 31 beklenen nedenle (K6 iddiası listesi, 400 ≠ 409, nesne 200, O(n²)
+  7,3 sn, K5 ×4, POS ×2); MA / MB / MC / MG testleri eski kodda yeşil (davranış doğruydu; dişleri mutasyonla). Yeşil 40 / 40 (fis-defteri-250 + yaşam + koruma) TZ=UTC ve
+  TZ=Europe/Istanbul. Mutasyon 30 / 30 beklenen nedenle (Ç2'nin 16'sı + yeni 14: MA, MB, MC, MG, K6 ×2, K5 ×3, tetikleyici ×2, metin, POS ×2). Dar kontrolün 12 atlatma denemesi yeni
+  ve eski kodda 12 / 12 engelli. G6: v2.4.9 GERÇEK koduyla üretilen veri (tohum 11, 1.500 işlem) eski ↔ yeni kodla yevmiye / mizan / Defter Mutabakatı 14 / 14 aynı; yeni kodla
+  açılış 8 / 8 (göç 46 + 47, yeni tetikleyici metni, kilit izi 2.4.9 = güncel, 121 fişi 400, 8.000 satırlık fiş, Mutabakat). 2.4.9 gerçek kodu eski sürüm betiği 17 / 17
+  (şema beklentisi 46 → LATEST_VERSION, G3; taban kodda da 2 / 17 kırmızıydı), Ç3'ün eski sürüm betiği 20 / 20. G2 komşular (203 dosya: değişen dosyaları / API yollarını anan
+  testler + kaynak tarayan testler; Ç3'ün donmus-defter-250 / -yasam-250 / -bellek-250, fis-defteri-*, sema-kapisi-bs7 dahil) 2.177 / 2.177 TZ=UTC ve TZ=Europe/Istanbul. e2e 8 / 8
+  (sema-kapisi-bs7 12, senaryo-defter-243 24, gg243-banka-kart-aciklama 11, gg244-numara-tarih-onay 40, senaryo-224 69, senaryo-226 22, CI dışı senaryo-213 64, senaryo-banka-210
+  424). Kâhin defter 176 / 176, kâhin cari 8.698 / 8.698.
+  ÖLÇÜM (aynı girdi, flock; makine yükü 4,5 — başka ajanlar): program yolu (denetim + tam kapı + yazım; eşzamanlı) 16.000 satır 3.669 → 314 ms (olay döngüsü en çok 3.672 → 315 ms),
+  8.000 satır 964 → 166 ms, 100.000 satır (yalnız yeni) 1.853 ms (kapı 742 ms; olay döngüsü 1.858 ms); yalnız tetikleyiciler 16.000 satır 3.174 → 57 ms, 100.000 satır 428 ms.
+  BİLİNEN SINIR: MAX_LINES (100.000) satırlık tek fiş ~1,9 sn olay döngüsünü tutar (yazım bilerek eşzamanlı — ders 47 son cümle; K7 "kilit koyma ile aynı sınıf").

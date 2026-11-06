@@ -45,7 +45,10 @@ const pad = (value, size) => String(value).padStart(size, "0");
 export const voucherNoText = (year, no) => `Fiş ${year}-${pad(no, 6)}`;
 const dayText = iso => `${iso.slice(8, 10)}.${iso.slice(5, 7)}.${iso.slice(0, 4)}`;
 const bad = (status, message, code, extra = {}) => new HttpError(status, message, { code, ...extra });
+// Ç2 tur 1: fiş değişmez — açıklama / kaynak / satır notu yalnız metin (ya da sayı) olur. Nesne ve dizi "[object Object]" / "a,b" diye KALICI saklanıyordu (ters kayıt ucu
+// gövdeyi olduğu gibi veriyor); artık 400.
 const textOf = (value, max, label) => {
+  if (value !== null && value !== undefined && typeof value !== "string" && typeof value !== "number") throw bad(400, `${label} metin olmalı.`, "voucher-text", { field: label });
   const text = String(value ?? "").trim();
   if (text.length > max) throw bad(400, `${label} en çok ${max} karakter olabilir.`, "voucher-text", { field: label });
   return text;
@@ -112,23 +115,44 @@ export function clearVouchers(store) {
 }
 
 const CREATED_TRACE = "ledger.voucher.created";
+/** ISO zaman damgasının anı (ms; saat dilimi ekiyle ya da Z). Okunamazsa NaN (karşılaştırma yanlış döner → fiş kaldırılmaz). */
+const instantOf = value => (typeof value === "string" && value ? Date.parse(value) : Number.NaN);
 
 /**
  * Açılış onarımı (BS-7 TASARIM GİRDİSİ): fiş defterini bilmeyen eski sürüm (≤ 2.4.9) bu dosyada Şirket Verisini Sıfırla yaptıysa hareketleri ve işlem geçmişini
  * siler, fişlere dokunamaz (tetikleyici) — fişler sıfırlanmış verinin üstünde artakalır. Her fiş yazımı aynı işlemde kendi izini (audit_events "ledger.voucher.created")
- * bırakır ve izler yalnız sıfırlamayla silinir; 2.5.0'ın sıfırlaması fişleri de siler. Bu yüzden izi olmayan fiş + işlem geçmişinde "company.reset" = eski sürüm
- * sıfırlamasından artakalan fiştir: aynı işlemde kaldırılır (sıfırlamanın yapacağı iş; eski sürümün sıfırlama öncesi yedeği fişleri taşır), Mutabakat Günlüğü'ne
- * ("repair") ve işlem geçmişine yazılır. Sıfırlama izi yoksa fiş kaldırılmaz, yalnız günlüğe uyarı yazılır. Dönüş: { removed, ids } ya da null.
+ * bırakır ve izler yalnız sıfırlamayla silinir; 2.5.0'ın sıfırlaması fişleri de siler. Bu yüzden izi olmayan fiş + BU ŞİRKETİN "company.reset" izinden önce yazılmış =
+ * eski sürüm sıfırlamasından artakalan fiştir: aynı işlemde kaldırılır (sıfırlamanın yapacağı iş; eski sürümün sıfırlama öncesi yedeği fişleri taşır), Mutabakat Günlüğü'ne
+ * ("repair") ve işlem geçmişine yazılır.
+ * Ç2 tur 1 (dar kontrol DÜŞÜK-1, sakınca süzgeciyle ORTA — defter kaydı kaybı): onarım ŞİRKETE ve ZAMANA bağlıdır —
+ *   - yalnız bu dosyanın şirketinin (companyId) sıfırlama izi sayılır: 001'in dosyası ortak katmandır, BAŞKA şirketin sıfırlaması oraya da "company.reset" (entity = o
+ *     şirket) yazar; o iz 001'in fişini kaldırmaz;
+ *   - yalnız o izden ÖNCE (ya da aynı anda) yazılmış fiş kaldırılır (an karşılaştırması, Date.parse; saat dilimi ekinden bağımsız). Sıfırlamadan SONRA yazılmış ama izi
+ *     başka nedenle düşmüş fiş sıfırlamanın konusu değildir: dokunulmaz, günlüğe uyarı (kept). Zamanı okunamayan fiş / iz de kaldırılmaz.
+ *   Aynı an (≤): yalnız sabit sahte saatte olur (gerçek saatte eski sürümün sıfırlaması ile 2.5.0'ın fişi arasında program yeniden açılır).
+ * Sıfırlama izi yoksa fiş kaldırılmaz, yalnız günlüğe uyarı yazılır. Dönüş: { removed, ids (kaldırılanlar), kept (dokunulmayan izsiz fişler) } ya da null (izsiz fiş yok).
  */
-export function repairLegacyReset({ store, now = systemClock, log = null, newId = () => `int-${randomUUID()}` }) {
+export function repairLegacyReset({ store, now = systemClock, log = null, newId = () => `int-${randomUUID()}`, companyId = "" }) {
   if (!has(store, "ledger_vouchers") || !has(store, "audit_events")) return null;
-  const orphans = store.all(`SELECT v.id FROM ledger_vouchers v WHERE NOT EXISTS (SELECT 1 FROM audit_events a WHERE a.entity_id = v.id AND a.type = '${CREATED_TRACE}') ORDER BY v.rowid`).map(row => row.id);
-  if (!orphans.length) return null;
-  const reset = store.get("SELECT created_at AS at FROM audit_events WHERE type = 'company.reset' ORDER BY rowid DESC LIMIT 1");
-  if (!reset) {
-    log?.warn?.(`Fiş defteri: işlem geçmişinde izi olmayan ${orphans.length} fiş var (sıfırlama izi yok; dokunulmadı).`);
-    return { removed: 0, ids: orphans };
+  const orphanRows = store.all(`SELECT v.id, v.created_at AS at FROM ledger_vouchers v WHERE NOT EXISTS (SELECT 1 FROM audit_events a WHERE a.entity_id = v.id AND a.type = '${CREATED_TRACE}') ORDER BY v.rowid`);
+  if (!orphanRows.length) return null;
+  // Bu şirketin en son sıfırlama izi (anı en büyük olan; eski sürüm işlem geçmişini silip yeniden yazdığı için rowid sırası güvenilmez). Şirket kimliği yoksa iz aranmaz.
+  let reset = null;
+  for (const row of companyId ? store.all("SELECT created_at AS at FROM audit_events WHERE type = 'company.reset' AND entity_id = ?", String(companyId)) : []) {
+    const t = instantOf(row.at);
+    if (Number.isFinite(t) && (!reset || t > reset.t)) reset = { at: row.at, t };
   }
+  if (!reset) {
+    log?.warn?.(`Fiş defteri: işlem geçmişinde izi olmayan ${orphanRows.length} fiş var (bu şirketin sıfırlama izi yok; dokunulmadı).`);
+    return { removed: 0, ids: [], kept: orphanRows.map(row => row.id) };
+  }
+  const removing = new Set(orphanRows.filter(row => instantOf(row.at) <= reset.t).map(row => row.id));
+  // Kalan bir ters kaydın asıl fişi kaldırılmaz (yabancı anahtar; asılsız ters kayıt bırakılmaz) — ihtiyatlı yön: kuşkuda fiş kalır.
+  for (const row of store.all("SELECT id, reversal_of AS of FROM ledger_vouchers WHERE reversal_of IS NOT NULL")) if (!removing.has(row.id)) removing.delete(row.of);
+  const orphans = orphanRows.filter(row => removing.has(row.id)).map(row => row.id);
+  const kept = orphanRows.filter(row => !removing.has(row.id)).map(row => row.id);
+  if (kept.length) log?.warn?.(`Fiş defteri: sıfırlamadan (${reset.at}) sonra yazılmış ya da zamanı okunamayan, izi olmayan ${kept.length} fiş var (dokunulmadı).`);
+  if (!orphans.length) return { removed: 0, ids: [], kept };
   const at = now().toISOString();
   store.raw("ledger.vouchers.legacy-reset", () =>
     store.tx(() => {
@@ -140,12 +164,12 @@ export function repairLegacyReset({ store, now = systemClock, log = null, newId 
         store.run("DELETE FROM ledger_vouchers WHERE id IN (SELECT value FROM json_each(?))", list);
       });
       const summary = `Eski sürümde yapılan Şirket Verisini Sıfırla'dan artakalan ${orphans.length} fiş kaldırıldı (sıfırlama ${reset.at}).`;
-      if (has(store, "integrity_log")) store.run("INSERT INTO integrity_log (id, at, action, tables, summary, detail_json) VALUES (?, ?, 'repair', 'ledger_vouchers', ?, ?)", newId(), at, summary.slice(0, 500), JSON.stringify({ ids: orphans, resetAt: reset.at }).slice(0, 20000));
-      store.run("INSERT INTO audit_events (id, type, entity_id, actor_id, actor_name, payload_json, created_at) VALUES (?, 'ledger.vouchers.legacy-reset-removed', 'ledger', 'system', 'Sistem', ?, ?)", `event-${randomUUID()}`, JSON.stringify({ count: orphans.length, ids: orphans.slice(0, 200), resetAt: reset.at }), at);
+      if (has(store, "integrity_log")) store.run("INSERT INTO integrity_log (id, at, action, tables, summary, detail_json) VALUES (?, ?, 'repair', 'ledger_vouchers', ?, ?)", newId(), at, summary.slice(0, 500), JSON.stringify({ ids: orphans, resetAt: reset.at, kept }).slice(0, 20000));
+      store.run("INSERT INTO audit_events (id, type, entity_id, actor_id, actor_name, payload_json, created_at) VALUES (?, 'ledger.vouchers.legacy-reset-removed', 'ledger', 'system', 'Sistem', ?, ?)", `event-${randomUUID()}`, JSON.stringify({ count: orphans.length, ids: orphans.slice(0, 200), resetAt: reset.at, kept: kept.length }), at);
     }),
   );
   log?.warn?.(`Fiş defteri: eski sürüm sıfırlamasından artakalan ${orphans.length} fiş kaldırıldı.`);
-  return { removed: orphans.length, ids: orphans };
+  return { removed: orphans.length, ids: orphans, kept };
 }
 
 /** Yevmiye için fişler (routes/ledger.mjs rows; toplu tek sorgu, ders 47): [{ id, seq, date, cls, label, text, lines }]. */
@@ -220,9 +244,27 @@ export function voucherProblems(store) {
  */
 // onLockChanged (2.5.0 Ç3; lib/ledger-snapshots.mjs lockChanged): lockThrough kilidi ilerletince AYNI işlemde çağrılır — donmuş defter kapanış fişleriyle birlikte donar
 // (kilit + fişler + donmuş satırlar tek işlem; biri düşerse hiçbiri yok).
-export function createLedgerVouchers({ store, period = null, now = systemClock, newId = () => `lv-${randomUUID()}`, onLockChanged = null }) {
+// ownedAccounts (Ç2 tur 1, dar kontrol ORTA-1; ZORUNLU): () => Set — bakiyesi bir ALT DEFTERDEN türetilen hesaplar (Kasa, Banka, Cari, Çek / Senet, carisiz Taksit, KDV ve
+// vergi, Şüpheli Alacak). routes/ledger.mjs bunu Defter Mutabakatı'nın beklenen bakiyelerinden (expected(), every kipi: modül kullanılmış olsun olmasın her satır)
+// türetir; elle yazılmış ikinci liste YOK. Bu hesaplara yazan fiş, modül kullanılmış olsun olmasın 400 voucher-subledger-account ile reddedilir (önceden koruma kapının
+// beklenen listesine dayanıyordu; liste 121 / 128 / 129 / 190 / 321'i modül kullanılmadan açmadığından boş kurulumda fiş kabul ediliyor, modül sonradan kullanılınca
+// Mutabakat Testi kalıcı fark veriyordu). Kapı ikinci katman olarak kalır. Verilmezse modül kurulmaz (sessiz atlama yok).
+// beforeLock (Ç2 tur 1, madde 6): (lockThrough, force) — PUT period-lock'un kilitten ÖNCEKİ adımı (POS: kilitlenecek döneme düşen vadesi gelmiş kalemler bankaya aktarılır;
+// kalan varsa 409 bank-pending-before-lock, force geçer). postAll lockThrough kilidi ilerletecekse aynı adımı fiş işleminden ÖNCE, işlemin DIŞINDA çağırır (PUT ile aynı sıra).
+export function createLedgerVouchers({ store, period = null, now = systemClock, newId = () => `lv-${randomUUID()}`, onLockChanged = null, ownedAccounts = null, beforeLock = null }) {
+  if (typeof ownedAccounts !== "function") throw new Error("Fiş defteri: alt defter hesapları (ownedAccounts) verilmeden kurulmaz.");
   const today = () => period?.today?.() || now.today?.() || now().toISOString().slice(0, 10);
   const lockedUntil = () => period?.lockedUntil?.() || "";
+
+  /** Alt defterin hesabına yazan satır → 400 (hesap ya da alt hesabı; modül kullanılmış olsun olmasın). */
+  function assertNotSubledger(lines) {
+    const owned = ownedAccounts();
+    if (!(owned instanceof Set)) throw new Error("Fiş defteri: alt defter hesapları okunamadı.");
+    for (const line of lines) {
+      if (!owned.has(line.account)) continue;
+      throw bad(400, `${line.seq}. satır: ${line.account} ${ACCOUNT_PLAN[line.account]?.ad || ""} hesabının bakiyesi kendi modülünün kayıtlarından gelir; fişle yazılmaz.`.replace(/ {2}/g, " "), "voucher-subledger-account", { line: line.seq, account: line.account });
+    }
+  }
 
   function normalize(input) {
     const type = String(input?.type ?? "");
@@ -235,6 +277,7 @@ export function createLedgerVouchers({ store, period = null, now = systemClock, 
     const requestKey = String(input?.requestKey ?? "").trim();
     if (!KEY.test(requestKey)) throw bad(400, "Fişin istek kimliği gerekli (8–200 harf, rakam ya da _ . : -).", "request-id-invalid");
     const { lines, total } = assertVoucherLines(input?.lines);
+    assertNotSubledger(lines);
     return { type, cls, date, description: textOf(input?.description, 300, "Açıklama"), source: textOf(input?.source, 200, "Kaynak"), requestKey, reversalOf: "", lines, total };
   }
 
@@ -283,7 +326,7 @@ export function createLedgerVouchers({ store, period = null, now = systemClock, 
     return { ...get(id), replayed: false };
   }
 
-  function postAll(user, inputs, { lockThrough = "" } = {}) {
+  function postAll(user, inputs, { lockThrough = "", force = false } = {}) {
     if (!Array.isArray(inputs) || !inputs.length) throw bad(400, "Yazılacak fiş yok.", "voucher-line");
     // Denetim işlemden önce (saf); yazım tek işlemde ve eşzamanlı.
     const items = inputs.map(normalize);
@@ -296,6 +339,10 @@ export function createLedgerVouchers({ store, period = null, now = systemClock, 
         if (!CLOSING_TYPES.has(item.type)) throw bad(400, `${VOUCHER_TYPES[item.type].label} kilitle aynı işlemde yazılmaz (yalnız kapanış akışı).`, "voucher-type", { type: item.type });
         if (item.date > lockThrough) throw bad(400, `Fiş tarihi (${dayText(item.date)}) konacak kilitten (${dayText(lockThrough)}) sonra.`, "date-invalid", { field: "lockThrough" });
       }
+      // Ç2 tur 1 (madde 6): kilit ilerleyecekse PUT period-lock'un ön adımı (POS kalemleri; 409 bank-pending-before-lock, force geçer) — işlemin DIŞINDA, ÖNCE. Ön adımın
+      // yazımları (POS aktarımı) kendi işlemlerindedir; fiş işlemi sonra düşerse onlar kalır (PUT'ta kilit sonra düşerse de öyle; vadesi gelmiş kalemin kendi aktarımıdır).
+      const current = lockedUntil();
+      if (beforeLock && (!current || lockThrough > current)) beforeLock(lockThrough, force === true);
     }
     return store.tx(() => {
       const out = items.map(item => write(user, item));

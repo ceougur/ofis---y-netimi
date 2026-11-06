@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // 2.5.0 Ç2 — BS-7 TASARIM GİRDİSİ kanıtı (docs/erp/C2-FIS-DEFTERI-TASARIM.md §8): başarısız 2.5.0 güncellemesinden sonra ESKİ SÜRÜM (2.4.9'un GERÇEK kodu, `git archive`
-// kopyası; ders 23) göç etmiş (46) dosyayı yazılabilir açar. Senaryo programın kendi API'leriyle:
+// kopyası; ders 23) göç etmiş (46 ve sonrası; şimdi 47) dosyayı yazılabilir açar. Senaryo programın kendi API'leriyle:
 //   1) yeni kod: fiş + ters kaydı + Kasa hareketi yazılır;
-//   2) eski kod: dosyayı açar (şema 46 > 45: göç yok), Kasa hareketi yazar, Mutabakat Testi koşar — fişler bozulmaz (tetikleyici, iz);
+//   2) eski kod: dosyayı açar (şema ≥ 46 > 45: göç yok), Kasa hareketi yazar, Mutabakat Testi koşar — fişler bozulmaz (tetikleyici, iz);
 //   3) yeni kod: fişler aynen, onarım YOK;
 //   4) eski kod: Şirket Verisini Sıfırla (Tüm Hareketleri Sil) — fiş tablosunu bilmez, fişler artakalır;
 //   5) yeni kod: açılış onarımı artakalan fişleri kaldırır (Mutabakat Günlüğü "repair"), Mutabakat tutarlı.
@@ -22,6 +22,7 @@ const root = mkdtempSync(path.join(tmpdir(), "fis-eski-surum-"));
 const dirs = { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups") };
 const helpersOf = async code => import(pathToFileURL(path.join(code, "test/helpers.mjs")).href);
 const neu = await helpersOf(NEW);
+const { LATEST_VERSION: LATEST } = await import(pathToFileURL(path.join(NEW, "server/lib/migrations.mjs")).href);
 const old = await helpersOf(OLD);
 const USER = { id: "eski-surum", display_name: "Eski Sürüm Kanıtı" };
 let tests = 0;
@@ -50,12 +51,13 @@ V.reverse(USER, a.id, { requestKey: "eski-surum-ters-1" });
 check((await admin.post("/api/workspace/cash", { kind: "in", amount: "125", date: "2027-01-06", description: "Yeni kod kasa" })).status === 200, "yeni kod: Kasa hareketi");
 const version = server.app.store.get("PRAGMA user_version").user_version;
 await server.close();
-check(version === 46 && vouchers().length === 2, `yeni kod: şema ${version}, fiş ${vouchers().length}`);
+// G3 (Ç2 tur 1): beklenen şema programın son göçü (LATEST_VERSION) — Ç3 göç 47 (2ba5ac0b) birleşince betik hâlâ 46 bekliyordu (taban kodda da 2/17 kırmızı).
+check(version === LATEST && vouchers().length === 2, `yeni kod: şema ${version} (son göç ${LATEST}), fiş ${vouchers().length}`);
 
 // 2) eski kod (2.4.9) — normal iş
 server = await old.startTestServer({ ...dirs, now: { time: NOW, fixed: true } });
 admin = await old.loginAdmin(server);
-check(server.app.store.get("PRAGMA user_version").user_version === 46, "eski kod dosyayı göç ettirmedi (şema 46 kaldı)");
+check(server.app.store.get("PRAGMA user_version").user_version === LATEST, `eski kod dosyayı göç ettirmedi (şema ${LATEST} kaldı)`);
 check((await admin.post("/api/workspace/cash", { kind: "in", amount: "33", date: "2027-01-07", description: "Eski kod kasa" })).status === 200, "eski kod: Kasa hareketi yazdı");
 const oldScan = await admin.get("/api/workspace/ledger/integrity");
 check(oldScan.status === 200 && oldScan.data.data.ok === true, `eski kod: Mutabakat Testi ${oldScan.status} ${oldScan.data?.data?.ok}`);

@@ -15,7 +15,8 @@ const db = openDatabase(dbPath);
 const store = createStore(db);
 const now = createClock({ time: "2027-01-10T10:00:00+03:00", fixed: true });
 const period = createPeriod({ store, now });
-const vouchers = createLedgerVouchers({ store, period, now });
+// Ç2 tur 1: alt defter hesapları (ownedAccounts) zorunlu; işçi yalnız 590 / 519 yazar ve sunucusuz açılır (beklenen bakiyeleri routes/ledger.mjs kurar) → boş küme.
+const vouchers = createLedgerVouchers({ store, period, now, ownedAccounts: () => new Set() });
 const user = { id: `isci-${process.pid}`, display_name: "İşçi" };
 const input = { type: "opening-match", date: "2027-01-05", description: "Ayrı süreç", requestKey, lines: [{ account: "590", debit: 4321 }, { account: "519", credit: 4321 }] };
 
