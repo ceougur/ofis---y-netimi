@@ -405,7 +405,8 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   yeniden üretim GEÇTİ; e2e whatsapp-ayar, pdf-denetle, eski f5b34f31, komşu 116 sürüyor) → geçince ANA DALA `git merge --no-ff worktree-agent-a7c02d003909b3c2a` (kod sınanan ağaçla birebir mi diff ile bak) → kanıtla
   gönder → sınama ağacını sil (`git branch -D wkucuk-birlesim`) → DAR KONTROL → WHATSAPP KÜÇÜK İŞLER TUR 1 (+ S33 = A). Bekleyen kanıt: scratchpad/bekleyen-kanit/2026-11-06/2026-11-06/ → sonraki kod gönderimiyle docs/kanit'e.
   SIRADA (kod ajanı yeri açılınca, en çok 4): BS-5 (kılavuz; WhatsApp küçük işler birleştikten sonra — aynı kılavuz dosyası); W-3 KVKK saklama (xhigh; WK 16 birleştikten sonra; S-W3, S30–S32); Ç2 tur 3; WhatsApp
-  küçük işler tur 1; report-center:719. Ç5 Ç3 tur 1-2 dar kontrolünden sonra (zincir: Ç5 ‖ Ç7a → Ç7b → Ç6 → MA → D2–D6 → WK / muhasebe sürücüsü yeniden koşusu → aday → paket).
+  küçük işler tur 1; report-center:719. Ç5 Ç3 tur 1-2 dar kontrolünden sonra (zincir 06.11 BAŞ MİMAR KARARIYLA: Ç5 ‖ Ç7a → Ç7b → Ç6-HESAP → MA → D3 → D4 → D5 → D6; D2 Ç5'ten itibaren paralel; Ç6-EKRAN D'ye paralel ve kesme çizgisinde;
+  → WK / muhasebe sürücüsü yeniden koşusu → aday → paket).
   BAŞ MİMAR KARARLARI (kullanıcıya gösterildi / gösterilecek; iş listesi E): birleşik tur 3 (1)–(4); Ç3 tur 1 (a)–(d); Ç2 tur 2 (b)(c); WhatsApp küçük işler (1)–(6); WK 13 "Net Borcu Yok" adı önerisi (Ç5'te);
   kâhin 4 Y12 (S19'da R3 bağ üzerinden) Ç5'te değerlendirilir. İLKEYLE (WK 15): silinmiş kayıtta R3 Yine de Gönder açık; kapanmış işin belirsiz izi eler.
   ORTAM: 30 dk rapor CronCreate da3eb3f2 ("7,37 * * * *"); ortam alarmı trig_01RE5MRmDjVDFH2SZEuo24ok (06:18 "Ortam sağlam", kapsayıcı 00:46'dan beri); disk ~11 GB, bellek ~11 GB (06:51). PLAYWRIGHT_BROWSERS_PATH=
