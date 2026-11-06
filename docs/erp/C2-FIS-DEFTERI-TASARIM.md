@@ -72,7 +72,7 @@ BULGU olarak raporlandı.
 | Silinenler | Fiş silinmez → Silinenler'e girmez; cari silinirse fiş satırının cari boyutu durur (kontrol hesabına fiş zaten kapıda reddedilir, §11) |
 | Göç | Yalnız ekleyici; eski sürüm fikstürleri ve v2.4.9 verisi 46'ya çıkar, kilit izi ve yevmiye aynı (§9 N12, N19) |
 | Devri Geri Al | D4: dosya takası (G1, G7) — fiş tablosuna silme gitmez |
-| Eski sürüm (BS-7, 2.4.9 göç etmiş 46 dosyayı yazılabilir açar) | Fişlere UPDATE / DELETE yapamaz (tetikleyici). Kendi Şirket Verisini Sıfırla'sı hareketleri ve işlem geçmişini siler, fişlere dokunamaz → fişler sıfırlanmış verinin üstünde artakalır. 2.5.0 açılışında `repairLegacyReset`: izi ("ledger.voucher.created") olmayan fiş + işlem geçmişinde BU ŞİRKETİN "company.reset" izi ve fiş o izden ÖNCE (ya da aynı anda) yazılmış (tur 1, §11) → aynı işlemde kaldırılır, Mutabakat Günlüğü'ne "repair" ve işlem geçmişine yazılır (eski sürümün sıfırlama öncesi yedeği fişleri taşır). Sıfırlama izi yoksa, iz başka şirketinse ya da fiş izden sonra yazılmışsa dokunulmaz, yalnız günlükte uyarı (`kept`) |
+| Eski sürüm (BS-7, 2.4.9 göç etmiş 46 dosyayı yazılabilir açar) | Fişlere UPDATE / DELETE yapamaz (tetikleyici). Kendi Şirket Verisini Sıfırla'sı hareketleri ve işlem geçmişini siler, fişlere dokunamaz → fişler sıfırlanmış verinin üstünde artakalır. 2.5.0 açılışında `repairLegacyReset`: izi ("ledger.voucher.created") olmayan fiş + işlem geçmişinde BU ŞİRKETİN "company.reset" izi (tur 1, §11a) ve fiş o sıfırlamadan ÖNCE yazılmış — YAZIM SIRASIYLA, duvar saatiyle değil (tur 2, §11b) → asıl fiş ve ters kaydı birlikte, aynı işlemde kaldırılır, Mutabakat Günlüğü'ne "repair" ve işlem geçmişine yazılır (eski sürümün sıfırlama öncesi yedeği fişleri taşır). Kuşkuda (sıfırlama izi yok ya da başka şirketin; iz işlem geçmişini silmemiş; fiş izi duran bir fişten sonra yazılmış; çiftin öbürü kalıyor) dokunulmaz; Mutabakat Günlüğü'nde görünür "repair" kaydı (aynı küme için bir kez) + sunucu günlüğü (`kept`, `doubts`) |
 | Eski sürüm kilidi açıp kapanış fişinin altındaki veriyi değiştirirse | BİLİNEN SINIR (2.5.0'ın kendisinde de kilit açılınca aynı): kapanış fişi bayatlar; Ç3 (donmuş defter ↔ güncel türetme farkı, "Kural Değişikliği Farkı") görünür kılar |
 
 ## 9. Nasıl bozulur? (önce yazıldı; testler bu listeden — test/fis-defteri-250.test.mjs, test/fis-defteri-yasam-250.test.mjs)
@@ -112,7 +112,8 @@ hesabına fiş → kapı 409 · N22 store dışı silme → tam tarama "Kapanmı
   veriyle döner). İşlem No'dan (dışarıya basılan, hiç yeniden kullanılmayan) bilerek farklı.
 - K4 İleri tarihli fiş yok (programın genel hareket kuralı). Ters kayıt tarihi verilmezse asıl fişin tarihi (KDV mahsubu Geri Al ile aynı gün kuralı).
 - K5 Eski sürüm sıfırlamasından artakalan fiş açılışta kaldırılır (kullanıcının sıfırlama iradesinin tamamlanması; iz + Mutabakat Günlüğü; sıfırlama izi yoksa dokunulmaz).
-  TUR 1'DE DARALDI (§11): yalnız aynı şirketin sıfırlama izinden önce yazılmış fiş.
+  TUR 1'DE DARALDI (§11a): yalnız aynı şirketin sıfırlama izinden önce yazılmış fiş. TUR 2'DE (§11b): "önce" yazım sırasıyla (duvar saati değil); asıl fiş ve ters kaydı
+  birlikte kalır ya da gider, kuşkuda ikisi de kalır; kalan kuşkulu fiş Mutabakat Günlüğü'nde görünür.
 - K6 Cari boyutlu fiş satırı yalnız cari hesaplarında; kontrol / alt defter hesaplarına (100, 101, 102, 103, 108, 120, 121, 127, 128, 129, 190, 191, 193, 300, 309, 320, 321, 336,
   360, 391) yazan fiş Defter Mutabakatı farkı verir ve kapıda geri alınır — beklenen bakiyeler (expected) fişleri OKUMAZ (alt defter değiştirmeyen fiş o hesaba yazılmaz).
   TUR 1'DE DEĞİŞTİ (dar kontrol ORTA-1: "kapıda geri alınır" iddiası 121 / 128 / 129 / 190 / 321 için yanlıştı; §11): bu hesaplar fiş denetiminde, modül kullanılmış olsun
@@ -143,6 +144,9 @@ hesabına fiş → kapı 409 · N22 store dışı silme → tam tarama "Kapanmı
   dosyasında N-13 açılışıyla çift sayılmasın diye budanır). Tetikleyiciler DELETE'i reddeder → budama yalnız Ç2'nin tetikleyici kaldırma yoluyla (`withTriggersLifted`, şimdi
   modül içi) ve yalnız bakım kipindeki KOPYADA yapılmalı; D4 bunun için dar, dışa açık bir işlev ekler (ör. `pruneVouchersThrough(store, K)`, aynı işlem, iz). D4 fişleri iç API
   dışından yazmamalı: her fişin izi (`ledger.voucher.created`) eski sürüm onarımının dayanağıdır (izsiz fiş + "company.reset" = artakalan fiş).
+- D4 KISITI (tur 2, §11b — onarım YAZIM SIRASINA dayanır): (1) kalan fişlerin izleri (`ledger.voucher.created`) budanmaz; işlem geçmişi kopyaya taşınırken fişlerle birlikte
+  taşınır; (2) fiş tabloları kopyaya ya da yeni yıl dosyasına aktarılırken rowid sırası korunur (`INSERT … SELECT … ORDER BY rowid`; açık rowid vermeden) — sıra bozulursa
+  onarım kuşkuya düşer (ikisi de kalır, görünür kayıt; §11b); (3) devrin kendi "company.reset" benzeri bir izi YOKTUR (yazılırsa izsiz fişler için sıfırlama sayılır).
 
 ## 11a. Ç2 TUR 1 (06.11.2026; dar kontrol 05.11 22:00 bulguları — DURMA KURALI + SAKINCA SÜZGECİ; kanıt docs/kanit/2026-11-06/c2t1-*)
 - K6 YENİ KURALI (ORTA-1): alt defterin sahip olduğu hesaplara (Kasa, Banka, Cari, Çek / Senet, carisiz Taksit, KDV ve vergi, Şüpheli Alacak) yazan fiş, modül kullanılmış olsun
@@ -171,6 +175,8 @@ hesabına fiş → kapı 409 · N22 store dışı silme → tam tarama "Kapanmı
 - K5 DARALDI (DÜŞÜK-1, sakınca süzgeciyle ORTA — defter kaydı kaybı): açılış onarımı yalnız BU ŞİRKETİN (companyId) "company.reset" izini sayar (001'in dosyası ortak katmandır,
   başka şirketin sıfırlaması oraya da iz yazar) ve yalnız o izden ÖNCE ya da aynı anda yazılmış izsiz fişi kaldırır (an karşılaştırması; saat dilimi ekinden bağımsız); sonra
   yazılmış izsiz fiş, zamanı okunamayan fiş ve kalan bir ters kaydın asıl fişi KALIR (günlükte uyarı, `kept`). Aynı an: yalnız sabit sahte saatte (N18 ve 2.4.9 gerçek kod betiği).
+  → TUR 2'DE DEĞİŞTİ (§11b): şirket kuralı aynen kaldı; "önce / sonra" artık an karşılaştırması DEĞİL, yazım sırası (dar kontrol B1: saat geri / ileri alınınca an karşılaştırması
+  sıfırlamadan artakalan fişi bırakıyordu).
 - Metin alanları (madde 5, yeniden üretildi: ters kayıt ucunda nesne açıklama "[object Object]", dizi "a,b" olarak saklanıyordu): açıklama / kaynak / satır notu yalnız metin ya da
   sayı; aksi 400 `voucher-text` (fiş değişmez → yanlış metin kalıcı olurdu).
 - Göç 46 YERİNDE değişti (DÜŞÜK-2, ders 47; 2.5.0 yayımlanmadı): `ledger_voucher_lines_closed` her satırda fişin bütün satırlarını saymıyor (COUNT(*)), iki birincil anahtar araması
@@ -190,3 +196,51 @@ hesabına fiş → kapı 409 · N22 store dışı silme → tam tarama "Kapanmı
   ÖLÇÜM (aynı girdi, flock; makine yükü 4,5 — başka ajanlar): program yolu (denetim + tam kapı + yazım; eşzamanlı) 16.000 satır 3.669 → 314 ms (olay döngüsü en çok 3.672 → 315 ms),
   8.000 satır 964 → 166 ms, 100.000 satır (yalnız yeni) 1.853 ms (kapı 742 ms; olay döngüsü 1.858 ms); yalnız tetikleyiciler 16.000 satır 3.174 → 57 ms, 100.000 satır 428 ms.
   BİLİNEN SINIR: MAX_LINES (100.000) satırlık tek fiş ~1,9 sn olay döngüsünü tutar (yazım bilerek eşzamanlı — ders 47 son cümle; K7 "kilit koyma ile aynı sınıf").
+
+## 11b. Ç2 TUR 2 (06.11.2026; dar kontrol 06.11 04:58 B1 + B2 — DURMA KURALI; ana oturum KARARI: çift kuralı iki yönlü, kuşkuda ikisi de kalır, zaman karşılaştırması duvar saatinden bağımsız)
+- SORUN (B1, sakınca süzgeciyle ORTA; 2.4.9 gerçek koduyla yeniden üretildi, eski kod a7118763): onarımın "fiş sıfırlamadan önce mi" kararı fişin ve sıfırlama izinin `created_at` anını
+  karşılaştırıyordu. Saat geri alınınca (asıl fiş 10:00, ters kaydı saat geri alınıp 08:00'de, eski sürüm 09:00'da sıfırlıyor) ters kayıt kaldırılıp asıl fiş KALIYOR ve yeniden etkin
+  oluyordu (mizan 590 = 456, Mutabakat Testi ok = true — sessiz); 002'de sıfırlamanın saati fişlerden önce görünürse 3 artakalan fiş kalıyordu (taban 1e68ad05 üçünü de kaldırıyordu).
+  Çift kuralı tek yönlüydü (yalnız "kalan ters kaydın asıl fişi kalır").
+- KURAL (yazım sırası; `server/lib/ledger-vouchers.mjs` `repairLegacyReset`): yazım sırası aynı tablodaki rowid'dir (satır silinmedikçe sonraki eklemenin rowid'i büyüktür; journal()
+  da aynı günü bununla sıralar — ders 31). Eski sürümün sıfırlaması işlem geçmişini BÜTÜNÜYLE siler, sonra izini yazar; programda işlem geçmişinden tek satır silen yol yoktur. Buna göre:
+  1. Bu şirketin EN SON (rowid'i en büyük) "company.reset" izi kalan her fiş izinden ÖNCE yazılmış olmalı; değilse iz işlem geçmişini silmemiştir → hiçbir izsiz fiş kaldırılmaz
+     (`reset-without-wipe`).
+  2. İzi duran ilk fiş (fiş tablosunda rowid'i en küçük izli fiş) sıfırlamadan SONRA yazılmıştır. Ondan ÖNCE yazılmış izsiz fiş sıfırlamada izini yitirmiştir → kaldırılır; ondan SONRA
+     yazılmış izsiz fiş sıfırlamanın konusu değildir → kalır (`after-traced`). İzli fiş yoksa her izsiz fiş sıfırlamadan öncedir (taban davranışı).
+  3. ÇİFT KURALI İKİ YÖNLÜ: asıl fiş ve ters kaydı birlikte kalır ya da birlikte kaldırılır; biri kalıyorsa (kuşkulu ya da izli) öbürü de kalır (`pair`; zincir varsa her halkası, sabit
+     noktaya kadar). Yazım sırası doğruyken (ters kayıt asıl fişten sonra) 2. kural iki yönü zaten tutarlı verir; iki yönlü kapanış, sıra bozuk dosyada (elle rowid) ikinci emniyettir.
+  4. Şirket kuralı (tur 1) aynen: yalnız bu dosyanın şirketinin (companyId) sıfırlama izi sayılır; yoksa hiçbir fiş kaldırılmaz (`no-reset`).
+- KUŞKU DURUMU — sessiz değil: kaldırılmayan her izsiz fiş Mutabakat Günlüğü'ne "repair" kaydı (ledger_vouchers; "Fiş defteri: işlem geçmişinde izi olmayan N fiş kaldırılmadı;
+  … kesinleşmedi (neden). Kuşkuda fiş kalır: Fiş 2027-000002."; ayrıntıda kimlikler ve nedenler) olarak düşer; içerik belirlenimci olduğundan aynı küme için ikinci kez yazılmaz (her
+  açılışta yinelenmez). Kayıt Mutabakat Testi yanıtının günlüğünde ve Mutabakat Günlüğü raporunda ("Açılış Onarımı") görünür. Mutabakat Testi'nin ok'u değişmez (kalan fiş kullanıcının
+  silebileceği bir şey değildir; ters kayıtla etkisizleştirilir — kalıcı kırmızı çıkmaz olurdu).
+- SAAT BAĞIMSIZLIĞI: kararda hiçbir zaman damgası okunmaz (`instantOf` kalktı); saat geri / ileri, saat dilimi eki ve TZ kararı değiştirmez. Zaman yalnız kayıt metninde (sıfırlama anı) görünür.
+- BAŞ MİMAR KARARI önerisi (ders 40; kullanıcıya gösterilecek): tur 1'in duvar saatiyle verdiği "sıfırlamadan sonra yazılmış, izi BAŞKA nedenle düşmüş fiş kalır" ayrımı, yazım
+  sırasında dayanağı yoksa (izi duran önceki fiş yok) korunamaz: bütün izleri DIŞARIDAN (programın yolu olmadan) silinmiş fiş, eski sürüm sıfırlamasından artakalan fişten ayırt
+  edilemez → kaldırılır (taban davranışı). Gerekçe: programda işlem geçmişinden tek satır silen yol yok; gerçek ürün yolunda (2.4.9 sıfırlaması) duvar saati ayrımı artakalan fişi
+  bırakıyordu (B1). Ayrımın tek dayanağı duvar saati olduğundan KARAR (saatten bağımsız) bunu dışarıda bırakır. G3: tur 1'in "zaman" ve "saat dilimi eki" testleri bu yüzden kalktı
+  (ikisinde de sıfırlama izi yazım sırasıyla fişlerden SONRA eklenmişti; yalnız created_at aralarına konmuştu); aynı iddianın yazım sırasıyla kurulan karşılıkları tur 2 testlerinde.
+- BİLİNEN SINIR: (a) yukarıdaki dışarıdan iz silme senaryosu; (b) fiş tablosunun rowid sırası dışarıdan bozulursa (elle rowid) karar kuşkuya düşer — fiş kalır, görünür kayıt (veri
+  kaybı yok); (c) VACUUM rowid'leri sırayı koruyarak yeniden numaralayabilir (açık INTEGER PRIMARY KEY yok) — sıra korunduğundan karar değişmez.
+
+## 11c. Ç2 TUR 2 KANITI (docs/kanit/2026-11-06/c2t2-*; her koşu tools/kanit.mjs kos; betikler c2t2-betik/)
+- YENİDEN ÜRETİM (ders 6; eski kod a7118763 ayrı kopyada, 2.4.9'un GERÇEK kodu `git archive v2.4.9`; dar kontrolün betikleri k5-saat-ters.mjs, k5-002-v249.mjs; TZ=UTC ve
+  TZ=Europe/Istanbul): saat-ters removed 1 / kept 1 (asıl fiş), mizan 590 = 456 / 519 = −456, Mutabakat Testi ok = true (sessiz); 002 saat geri kept 3 / removed 0; 002 saat ileri
+  removed 3. YENİ KODDA aynı betikler: saat-ters removed 2 / kept 0, mizan boş; 002 geri removed 3; 002 ileri removed 3 (taban 1e68ad05 ile aynı sayılar) — iki TZ.
+- KIRMIZI (ders 7, 38; eski kod a7118763 ayrı kopyada, yeni test dosyası): fis-defteri-koruma-250 16 / 23 — 7 yeni test beklenen nedenle kırmızı, iki TZ: saat geri (removed 1,
+  kept [asıl fiş]); 002 saat geri (kept 3); yazım sırası "sonra yazılan kalır" (eski kod duvar saatiyle kaldırdı); işlem geçmişini silmeyen iz (eski kod kaldırdı); çift iki yönlü
+  (eski kod ters kaydı kaldırıp asıl fişi bıraktı); geri yükleme + saat geri (kept 3); baş mimar kararı 5 yönü (çekirdek iddia eski kodda da doğru — yön tur 1'de vardı — kırmızı
+  yalnız tur 2'nin nedeni / görünür kaydı; dişi mutasyon 31). 002 saat ileri (koruma örneği) ve tur 1'in iki K5 testi eski kodda da yeşil.
+- YEŞİL: fis-defteri-250 + fis-defteri-yasam-250 + fis-defteri-koruma-250 46 / 46 TZ=UTC ve TZ=Europe/Istanbul (tur 1: 40; −2 kalkan duvar saati testi, +8 tur 2 testi).
+- MUTASYON (test/fis-defteri-250-mutasyon.mjs, `git archive 9ed4b0d6` kopyası): 35 / 35 beklenen nedenle (UTC); yeni ve değişen 9'u (14, 23, 24, 25, 31–35) TZ=Europe/Istanbul'da da
+  9 / 9. B2: 31 = baş mimar kararı 5'in çift kuralı (dar kontrolün mut-k5cift.mjs'inin karşılığı; o betiğin sildiği satır tur 2'de yok — kural iki yönlü döngüye taşındı); B1: 32 çift
+  tek yöne döner, 25 duvar saati geri gelir, 24 yazım sırası denetimi yok, 33 işlem geçmişini silmeyen iz, 34 görünür kayıt yok, 35 kayıt yinelenir.
+- G6 (2.4.9 gerçek kodu): fis-defteri-eski-surum-250 17 / 17 ve donmus-defter-eski-surum-250 20 / 20, iki TZ.
+- G2 KOMŞULAR: 128 test dosyası (test/ taranarak: ledger-vouchers / fiş uçları / voucherRepair, şirket sıfırlama / geri yükleme / company.reset, integrity_log / Mutabakat Günlüğü / ledger/integrity anan testler + kaynak tarayan genel testler + fis-defteri-*, donmus-defter-*, sema-kapisi-bs7): TZ=UTC 1.454 / 1.454; TZ=Europe/Istanbul 1.453 / 1.454 — tek kırmızı banka-210-rapor-is-parcacigi-kapanis H2 ("sorgusu süren iş parçacığı yuvada: 0"; rapor iş parçacığının zamanlama testi, fiş defterine dokunmaz; makine yükü 8–11): dosya tek başına yeni kodda ve eski kodda (a7118763) iki TZ 5 / 5 yeşil (c2t2-rapor-is-parcacigi-*) — ilgisiz zamanlama kırmızısı, zorla üretilmedi (DOĞRULANMADI).
+- e2e: sema-kapisi-bs7 12 / 12.
+- WINDOWS (ders 48): yeni K5 testleri kapalı sunucunun dosyasını ayrı bağlantıyla değiştirir (işlem geçmişi silme, elle fiş / iz ekleme, açık rowid) ve 001'i yedekten geri yükler
+  (dosya takası) — ilk gönderimde CI'nin Windows işlerinde görülmeli.
+- YAN BULGU (kapsam dışı, DEĞİŞTİRİLMEDİ — c2t2-yan-onarim-detay-kesik): onarımın "kaldırıldı" kaydının ayrıntısı `JSON.stringify(...).slice(0, 20000)` ile kesiliyor; ~470'ten çok
+  fiş birlikte kaldırılınca (600 ile üretildi) geçersiz JSON kalır ve Mutabakat Testi HTTP 500 verir (routes/ledger.mjs günlüğü JSON.parse eder; kayıt son 50 günlük satırı arasında
+  kaldıkça). Satır Ç2'den (9569ff76) beri aynı; tur 2'nin yeni "kaldırılmadı" kaydı listeyi 50 kimlikle sınırlar (geçerli JSON).

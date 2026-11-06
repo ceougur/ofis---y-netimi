@@ -1,0 +1,32 @@
+{
+  "ad": "c2t2-rapor-is-parcacigi-eski-a711-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-210-rapor-is-parcacigi-kapanis.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T06:35:40.413Z",
+  "sure_sn": 5.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 5,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../c2t2-kanit/2026-11-06/c2t2-rapor-is-parcacigi-eski-a711-Europe-Istanbul.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711",
+  "ham_cikti_sha256": "6cea8e9f7c3eab037c5b8291fb7c38b4ec75587ba40d8058a7abb125c1887a2e",
+  "ham_cikti_bayt": 2619
+}

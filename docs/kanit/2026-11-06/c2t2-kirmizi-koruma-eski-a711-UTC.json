@@ -1,0 +1,68 @@
+{
+  "ad": "c2t2-kirmizi-koruma-eski-a711-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/fis-defteri-koruma-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T05:40:57.357Z",
+  "sure_sn": 26.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 23,
+    "gecen": 16,
+    "basarisiz": 7,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 7 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Ç2 tur 2 — B1: eski sürüm sıfırlamasının onarımı YAZIM SIRASIYLA (duvar saatinden bağımsız); çift kuralı iki yönlü; kuşkulu fiş görünür kayıtta › saat geri (dar kontrol k5-saat-ters): asıl fiş 10:00, saat geri alınıp ters kaydı 08:00, eski sürüm 09:00'da sıfırlar → asıl fiş ve ters kaydı BİRLİKTE kaldırılır; asıl fiş etkin kalmaz",
+      "konum": "test/fis-defteri-koruma-250.test.mjs:403:3",
+      "hata": "saat geri alınmış olsa da sıfırlamadan artakalan asıl fiş + ters kaydı birlikte kaldırılır (taban 2): {\"removed\":1,\"ids\":[\"lv-1c7f6683-3c40-4d69-ba5d-ffacd9aa2558\"],\"kept\":[\"lv-99d5edba-c04e-492e-b720-d5565bac7363\"]} · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç2 tur 2 — B1: eski sürüm sıfırlamasının onarımı YAZIM SIRASIYLA (duvar saatinden bağımsız); çift kuralı iki yönlü; kuşkulu fiş görünür kayıtta › ikinci şirket (dar kontrol k5-002-v249), saat geri: 002'nin fişleri (biri ters kayıtlı) 10:00'da, eski sürüm 002'yi 09:00'da (saat geri) sıfırlar → 002'de 3 fiş kaldırılır; 001'in izli fişi kalır",
+      "konum": "test/fis-defteri-koruma-250.test.mjs:425:5",
+      "hata": "002, saat geri: eski sürüm sıfırlamasından artakalan 3 fiş kaldırılır (taban 3): {\"removed\":0,\"ids\":[],\"kept\":[\"lv-065a38ba-d54f-4520-9964-ba75bbd05591\",\"lv-23f83ec5-a675-4d5b-b296-8b0ca1bcbba7\",\"lv-894b5529-a29a-4c0c-8932-6e6c6b612266\"]} · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç2 tur 2 — B1: eski sürüm sıfırlamasının onarımı YAZIM SIRASIYLA (duvar saatinden bağımsız); çift kuralı iki yönlü; kuşkulu fiş görünür kayıtta › yazım sırası: eski sürüm sıfırlamasından SONRA yazılan fiş (saat geri: duvar saati sıfırlamadan önce) izini başka nedenle yitirirse KALIR; Mutabakat Günlüğü'nde görünür kayıt, açılışta yinelenmez",
+      "konum": "test/fis-defteri-koruma-250.test.mjs:457:3",
+      "hata": "izi duran fişten sonra yazılan izsiz fiş kalmalı (yazım sırası, saat değil): {\"removed\":1,\"ids\":[\"lv-1a92d482-f187-4b15-822a-89f93720922d\"],\"kept\":[]} · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç2 tur 2 — B1: eski sürüm sıfırlamasının onarımı YAZIM SIRASIYLA (duvar saatinden bağımsız); çift kuralı iki yönlü; kuşkulu fiş görünür kayıtta › yazım sırası: işlem geçmişini SİLMEYEN sıfırlama izi (izi duran fişten sonra eklenmiş; duvar saati fişten sonra) izsiz fişi kaldırmaz; görünür kayıt",
+      "konum": "test/fis-defteri-koruma-250.test.mjs:494:3",
+      "hata": "işlem geçmişini silmeyen sıfırlama izi fiş kaldırmamalı: {\"removed\":1,\"ids\":[\"lv-321fd099-5aeb-4ff8-955b-c33594ed9125\"],\"kept\":[]} · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç2 tur 2 — B1: eski sürüm sıfırlamasının onarımı YAZIM SIRASIYLA (duvar saatinden bağımsız); çift kuralı iki yönlü; kuşkulu fiş görünür kayıtta › çift kuralı İKİ YÖNLÜ — asıl fiş kalıyorsa ters kaydı da kalır (yazım sırası bozuk dosya: ters kayıt izli fişten ÖNCE, asıl fiş SONRA görünüyor) → ikisi de kalır, asıl fiş tek başına etkin olmaz",
+      "konum": "test/fis-defteri-koruma-250.test.mjs:516:3",
+      "hata": "asıl fiş kalıyorsa ters kaydı da kalır (kuşkuda ikisi de): {\"removed\":1,\"ids\":[\"lv-koruma-ters\"],\"kept\":[\"lv-koruma-asil\"]} · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç2 tur 2 — B1: eski sürüm sıfırlamasının onarımı YAZIM SIRASIYLA (duvar saatinden bağımsız); çift kuralı iki yönlü; kuşkulu fiş görünür kayıtta › çift kuralı (baş mimar kararı 5) — ters kaydı kalıyorsa asıl fiş de kalır: sıfırlamadan önce yazılmış asıl fişin izli ters kaydı sıfırlamadan sonra yazılmış (ör. onarım o açılışta çalışmadı) → asıl fiş kaldırılmaz",
+      "konum": "test/fis-defteri-koruma-250.test.mjs:540:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + undefined"
+    },
+    {
+      "ad": "Ç2 tur 2 — B1: eski sürüm sıfırlamasının onarımı YAZIM SIRASIYLA (duvar saatinden bağımsız); çift kuralı iki yönlü; kuşkulu fiş görünür kayıtta › geri yükleme + saat geri: eski sürüm sıfırlaması (duvar saati fişlerden önce) → açılışta 3 fiş kaldırılır; sıfırlama öncesi yedek geri yüklenince fişler izleriyle döner, onarım yok",
+      "konum": "test/fis-defteri-koruma-250.test.mjs:560:3",
+      "hata": "saat geri alınmış olsa da artakalan 3 fiş kaldırılır: {\"removed\":0,\"ids\":[],\"kept\":[\"lv-af11ef3a-9479-4028-8380-7845fd3e2c8b\",\"lv-efdb8f09-42c2-459f-9640-c715896506c4\",\"lv-283644c0-0a11-4d62-ace2-334db5640051\"]} · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../c2t2-kanit/2026-11-06/c2t2-kirmizi-koruma-eski-a711-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711",
+  "ham_cikti_sha256": "0745879dcf39c70eb85b736afb1337cad45af0190ecd128804302e6a67df2fdc",
+  "ham_cikti_bayt": 24058
+}

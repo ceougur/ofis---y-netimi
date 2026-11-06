@@ -1,0 +1,443 @@
+TAP version 13
+# Subtest: Ç2 tur 1 — ORTA-1: alt defter hesabına fiş yazılmaz (boş kurulum; modül kullanılmış olsun olmasın)
+    # Subtest: boş kurulumda alt defterin 20 hesabının her birine (hesap ya da alt hesabıyla) yazan fiş 400 voucher-subledger-account; hiçbir fiş yazılmaz, numara tüketilmez
+    ok 1 - boş kurulumda alt defterin 20 hesabının her birine (hesap ya da alt hesabıyla) yazan fiş 400 voucher-subledger-account; hiçbir fiş yazılmaz, numara tüketilmez
+      ---
+      duration_ms: 28.637848
+      type: 'test'
+      ...
+    # Subtest: alt defter dışındaki hesaplar (153 dahil: N-01 dönem sonu stok değerlemesi) fişle yazılır
+    ok 2 - alt defter dışındaki hesaplar (153 dahil: N-01 dönem sonu stok değerlemesi) fişle yazılır
+      ---
+      duration_ms: 314.940406
+      type: 'test'
+      ...
+    # Subtest: dar kontrol p1b / p1c: boş kurulumda 121 fişi reddedilir → ilk senet girişi 200 → dönem kilidi 200 → Mutabakat Testi tutarlı (kalıcı fark yok)
+    ok 3 - dar kontrol p1b / p1c: boş kurulumda 121 fişi reddedilir → ilk senet girişi 200 → dönem kilidi 200 → Mutabakat Testi tutarlı (kalıcı fark yok)
+      ---
+      duration_ms: 345.917111
+      type: 'test'
+      ...
+    1..3
+ok 1 - Ç2 tur 1 — ORTA-1: alt defter hesabına fiş yazılmaz (boş kurulum; modül kullanılmış olsun olmasın)
+  ---
+  duration_ms: 1667.379733
+  type: 'suite'
+  ...
+# Subtest: Ç2 tur 1 — DÜŞÜK-3: MA bugün tarihli fiş, MB kilit yalnız ileri, MC istek kimliğinde sınıf, MG yevmiyede alt hesap
+    # Subtest: MA: bugün tarihli fiş yazılır (yalnız yarın ve sonrası 400)
+    ok 1 - MA: bugün tarihli fiş yazılır (yalnız yarın ve sonrası 400)
+      ---
+      duration_ms: 14.50862
+      type: 'test'
+      ...
+    # Subtest: MB: yinelenen kapanış kilidi geri çekmez — kilit sonradan ileri alındıysa aynı kapanışın yinelenmesi kilidi ve izi değiştirmez
+    ok 2 - MB: yinelenen kapanış kilidi geri çekmez — kilit sonradan ileri alındıysa aynı kapanışın yinelenmesi kilidi ve izi değiştirmez
+      ---
+      duration_ms: 261.86632
+      type: 'test'
+      ...
+    # Subtest: MC: aynı istek kimliği, yalnız sınıfı farklı (closing ↔ period-end) → 409 request-id-reused (yeni fiş yok)
+    ok 3 - MC: aynı istek kimliği, yalnız sınıfı farklı (closing ↔ period-end) → 409 request-id-reused (yeni fiş yok)
+      ---
+      duration_ms: 8.87531
+      type: 'test'
+      ...
+    # Subtest: MG: fiş satırının alt hesabı yevmiyede (Ana Defter maddesi ve Yevmiye Defteri raporu) aynen görünür
+    ok 4 - MG: fiş satırının alt hesabı yevmiyede (Ana Defter maddesi ve Yevmiye Defteri raporu) aynen görünür
+      ---
+      duration_ms: 23.373081
+      type: 'test'
+      ...
+    1..4
+ok 2 - Ç2 tur 1 — DÜŞÜK-3: MA bugün tarihli fiş, MB kilit yalnız ileri, MC istek kimliğinde sınıf, MG yevmiyede alt hesap
+  ---
+  duration_ms: 1319.902981
+  type: 'suite'
+  ...
+# Subtest: Ç2 tur 1 — madde 5: fişin metin alanları nesne / dizi almaz ([object Object] kalıcı saklanmaz)
+    # Subtest: ters kayıt ucu: açıklama nesne ya da dizi → 400 voucher-text, ters kayıt yazılmaz; metin açıklama saklanır
+    ok 1 - ters kayıt ucu: açıklama nesne ya da dizi → 400 voucher-text, ters kayıt yazılmaz; metin açıklama saklanır
+      ---
+      duration_ms: 44.078014
+      type: 'test'
+      ...
+    # Subtest: iç API: açıklama, kaynak ya da satır notu nesne → 400 voucher-text
+    ok 2 - iç API: açıklama, kaynak ya da satır notu nesne → 400 voucher-text
+      ---
+      duration_ms: 0.591073
+      type: 'test'
+      ...
+    1..2
+ok 3 - Ç2 tur 1 — madde 5: fişin metin alanları nesne / dizi almaz ([object Object] kalıcı saklanmaz)
+  ---
+  duration_ms: 1492.638797
+  type: 'suite'
+  ...
+# Subtest: Ç2 tur 1 — DÜŞÜK-2: "kapanmış fiş" tetikleyicisi doğrusal; 12 atlatma denemesi yine engelli
+    # Subtest: dar kontrolün 12 atlatma denemesi (programın dosyasında, ayrı bağlantı) engelli; fiş verisi değişmez; dış bağlantının yarım fişi yalnız eksik sırasıyla tamamlanır
+    ok 1 - dar kontrolün 12 atlatma denemesi (programın dosyasında, ayrı bağlantı) engelli; fiş verisi değişmez; dış bağlantının yarım fişi yalnız eksik sırasıyla tamamlanır
+      ---
+      duration_ms: 1959.009918
+      type: 'test'
+      ...
+    # Subtest: 24.000 satırlık fişin satırları (yalnız tetikleyiciler, bellek içi) 2 sn'den kısa sürede yazılır — eski kural (her satırda COUNT(*)) O(n²): 16.000 satır ≈ 4 sn ölçüldü
+    ok 2 - 24.000 satırlık fişin satırları (yalnız tetikleyiciler, bellek içi) 2 sn'den kısa sürede yazılır — eski kural (her satırda COUNT(*)) O(n²): 16.000 satır ≈ 4 sn ölçüldü
+      ---
+      duration_ms: 124.093302
+      type: 'test'
+      ...
+    1..2
+ok 4 - Ç2 tur 1 — DÜŞÜK-2: "kapanmış fiş" tetikleyicisi doğrusal; 12 atlatma denemesi yine engelli
+  ---
+  duration_ms: 2083.318547
+  type: 'suite'
+  ...
+# Subtest: Ç2 tur 1 — DÜŞÜK-1 (ORTA): eski sürüm sıfırlamasının onarımı yalnız AYNI şirketin sıfırlama izini sayar
+    # Subtest: iki şirket (dar kontrol p5): 001'in izsiz fişi, 002 sıfırlanınca 001'in dosyasına düşen 'company.reset' (entity 002) yüzünden KALDIRILMAZ
+    ok 1 - iki şirket (dar kontrol p5): 001'in izsiz fişi, 002 sıfırlanınca 001'in dosyasına düşen 'company.reset' (entity 002) yüzünden KALDIRILMAZ
+      ---
+      duration_ms: 2107.348223
+      type: 'test'
+      ...
+    # Subtest: geri yükleme: 002 sıfırlandıktan sonra alınan 001 yedeği (izsiz fiş + entity 002 sıfırlama izi) geri yüklenince 001'in fişi kalır; yedekten sonraki fiş gider
+    ok 2 - geri yükleme: 002 sıfırlandıktan sonra alınan 001 yedeği (izsiz fiş + entity 002 sıfırlama izi) geri yüklenince 001'in fişi kalır; yedekten sonraki fiş gider
+      ---
+      duration_ms: 2928.834589
+      type: 'test'
+      ...
+    1..2
+ok 5 - Ç2 tur 1 — DÜŞÜK-1 (ORTA): eski sürüm sıfırlamasının onarımı yalnız AYNI şirketin sıfırlama izini sayar
+  ---
+  duration_ms: 5167.675503
+  type: 'suite'
+  ...
+# Subtest: Ç2 tur 2 — B1: eski sürüm sıfırlamasının onarımı YAZIM SIRASIYLA (duvar saatinden bağımsız); çift kuralı iki yönlü; kuşkulu fiş görünür kayıtta
+    # Subtest: saat geri (dar kontrol k5-saat-ters): asıl fiş 10:00, saat geri alınıp ters kaydı 08:00, eski sürüm 09:00'da sıfırlar → asıl fiş ve ters kaydı BİRLİKTE kaldırılır; asıl fiş etkin kalmaz
+    not ok 1 - saat geri (dar kontrol k5-saat-ters): asıl fiş 10:00, saat geri alınıp ters kaydı 08:00, eski sürüm 09:00'da sıfırlar → asıl fiş ve ters kaydı BİRLİKTE kaldırılır; asıl fiş etkin kalmaz
+      ---
+      duration_ms: 1032.243366
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711/test/fis-defteri-koruma-250.test.mjs:403:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        saat geri alınmış olsa da sıfırlamadan artakalan asıl fiş + ters kaydı birlikte kaldırılır (taban 2): {"removed":1,"ids":["lv-1c7f6683-3c40-4d69-ba5d-ffacd9aa2558"],"kept":["lv-99d5edba-c04e-492e-b720-d5565bac7363"]}
+        + actual - expected
+        
+          [
+        +   1,
+        -   2,
+            [
+        -     'lv-99d5edba-c04e-492e-b720-d5565bac7363',
+              'lv-1c7f6683-3c40-4d69-ba5d-ffacd9aa2558'
+            ],
+        +   [
+        +     'lv-99d5edba-c04e-492e-b720-d5565bac7363'
+        +   ]
+        -   []
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 2
+        1:
+          0: 'lv-99d5edba-c04e-492e-b720-d5565bac7363'
+          1: 'lv-1c7f6683-3c40-4d69-ba5d-ffacd9aa2558'
+        2:
+      actual:
+        0: 1
+        1:
+          0: 'lv-1c7f6683-3c40-4d69-ba5d-ffacd9aa2558'
+        2:
+          0: 'lv-99d5edba-c04e-492e-b720-d5565bac7363'
+      operator: 'deepStrictEqual'
+      stack: |-
+        file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711/test/fis-defteri-koruma-250.test.mjs:415:14
+        withServer (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711/test/fis-defteri-koruma-250.test.mjs:265:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711/test/fis-defteri-koruma-250.test.mjs:413:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ikinci şirket (dar kontrol k5-002-v249), saat geri: 002'nin fişleri (biri ters kayıtlı) 10:00'da, eski sürüm 002'yi 09:00'da (saat geri) sıfırlar → 002'de 3 fiş kaldırılır; 001'in izli fişi kalır
+    not ok 2 - ikinci şirket (dar kontrol k5-002-v249), saat geri: 002'nin fişleri (biri ters kayıtlı) 10:00'da, eski sürüm 002'yi 09:00'da (saat geri) sıfırlar → 002'de 3 fiş kaldırılır; 001'in izli fişi kalır
+      ---
+      duration_ms: 1896.815538
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711/test/fis-defteri-koruma-250.test.mjs:425:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        002, saat geri: eski sürüm sıfırlamasından artakalan 3 fiş kaldırılır (taban 3): {"removed":0,"ids":[],"kept":["lv-065a38ba-d54f-4520-9964-ba75bbd05591","lv-23f83ec5-a675-4d5b-b296-8b0ca1bcbba7","lv-894b5529-a29a-4c0c-8932-6e6c6b612266"]}
+        + actual - expected
+        
+          [
+        +   0,
+        +   [
+        +     'lv-065a38ba-d54f-4520-9964-ba75bbd05591',
+        +     'lv-23f83ec5-a675-4d5b-b296-8b0ca1bcbba7',
+        +     'lv-894b5529-a29a-4c0c-8932-6e6c6b612266'
+        +   ]
+        -   3,
+        -   []
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 3
+        1:
+      actual:
+        0: 0
+        1:
+          0: 'lv-065a38ba-d54f-4520-9964-ba75bbd05591'
+          1: 'lv-23f83ec5-a675-4d5b-b296-8b0ca1bcbba7'
+          2: 'lv-894b5529-a29a-4c0c-8932-6e6c6b612266'
+      operator: 'deepStrictEqual'
+      stack: |-
+        file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711/test/fis-defteri-koruma-250.test.mjs:447:16
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async withServer (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711/test/fis-defteri-koruma-250.test.mjs:265:12)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711/test/fis-defteri-koruma-250.test.mjs:442:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ikinci şirket (dar kontrol k5-002-v249), saat ileri: 002'nin fişleri (biri ters kayıtlı) 10:00'da, eski sürüm 002'yi 11:00'de sıfırlar → 002'de 3 fiş kaldırılır; 001'in izli fişi kalır
+    ok 3 - ikinci şirket (dar kontrol k5-002-v249), saat ileri: 002'nin fişleri (biri ters kayıtlı) 10:00'da, eski sürüm 002'yi 11:00'de sıfırlar → 002'de 3 fiş kaldırılır; 001'in izli fişi kalır
+      ---
+      duration_ms: 2042.304449
+      type: 'test'
+      ...
+    # Subtest: yazım sırası: eski sürüm sıfırlamasından SONRA yazılan fiş (saat geri: duvar saati sıfırlamadan önce) izini başka nedenle yitirirse KALIR; Mutabakat Günlüğü'nde görünür kayıt, açılışta yinelenmez
+    not ok 4 - yazım sırası: eski sürüm sıfırlamasından SONRA yazılan fiş (saat geri: duvar saati sıfırlamadan önce) izini başka nedenle yitirirse KALIR; Mutabakat Günlüğü'nde görünür kayıt, açılışta yinelenmez
+      ---
+      duration_ms: 1231.9507
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711/test/fis-defteri-koruma-250.test.mjs:457:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        izi duran fişten sonra yazılan izsiz fiş kalmalı (yazım sırası, saat değil): {"removed":1,"ids":["lv-1a92d482-f187-4b15-822a-89f93720922d"],"kept":[]}
+        + actual - expected
+        
+          [
+        +   1,
+        +   []
+        -   0,
+        -   [
+        -     'lv-1a92d482-f187-4b15-822a-89f93720922d'
+        -   ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 0
+        1:
+          0: 'lv-1a92d482-f187-4b15-822a-89f93720922d'
+      actual:
+        0: 1
+        1:
+      operator: 'deepStrictEqual'
+      stack: |-
+        file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711/test/fis-defteri-koruma-250.test.mjs:476:14
+        withServer (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711/test/fis-defteri-koruma-250.test.mjs:265:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711/test/fis-defteri-koruma-250.test.mjs:474:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: yazım sırası: işlem geçmişini SİLMEYEN sıfırlama izi (izi duran fişten sonra eklenmiş; duvar saati fişten sonra) izsiz fişi kaldırmaz; görünür kayıt
+    not ok 5 - yazım sırası: işlem geçmişini SİLMEYEN sıfırlama izi (izi duran fişten sonra eklenmiş; duvar saati fişten sonra) izsiz fişi kaldırmaz; görünür kayıt
+      ---
+      duration_ms: 1364.053889
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711/test/fis-defteri-koruma-250.test.mjs:494:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        işlem geçmişini silmeyen sıfırlama izi fiş kaldırmamalı: {"removed":1,"ids":["lv-321fd099-5aeb-4ff8-955b-c33594ed9125"],"kept":[]}
+        + actual - expected
+        
+          [
+        +   1,
+        +   []
+        -   0,
+        -   [
+        -     'lv-321fd099-5aeb-4ff8-955b-c33594ed9125'
+        -   ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 0
+        1:
+          0: 'lv-321fd099-5aeb-4ff8-955b-c33594ed9125'
+      actual:
+        0: 1
+        1:
+      operator: 'deepStrictEqual'
+      stack: |-
+        file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711/test/fis-defteri-koruma-250.test.mjs:508:14
+        withServer (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711/test/fis-defteri-koruma-250.test.mjs:265:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711/test/fis-defteri-koruma-250.test.mjs:506:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: çift kuralı İKİ YÖNLÜ — asıl fiş kalıyorsa ters kaydı da kalır (yazım sırası bozuk dosya: ters kayıt izli fişten ÖNCE, asıl fiş SONRA görünüyor) → ikisi de kalır, asıl fiş tek başına etkin olmaz
+    not ok 6 - çift kuralı İKİ YÖNLÜ — asıl fiş kalıyorsa ters kaydı da kalır (yazım sırası bozuk dosya: ters kayıt izli fişten ÖNCE, asıl fiş SONRA görünüyor) → ikisi de kalır, asıl fiş tek başına etkin olmaz
+      ---
+      duration_ms: 1299.672311
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711/test/fis-defteri-koruma-250.test.mjs:516:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        asıl fiş kalıyorsa ters kaydı da kalır (kuşkuda ikisi de): {"removed":1,"ids":["lv-koruma-ters"],"kept":["lv-koruma-asil"]}
+        + actual - expected
+        
+          [
+        +   1,
+        -   0,
+            [
+        -     'lv-koruma-ters',
+              'lv-koruma-asil'
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 0
+        1:
+          0: 'lv-koruma-ters'
+          1: 'lv-koruma-asil'
+      actual:
+        0: 1
+        1:
+          0: 'lv-koruma-asil'
+      operator: 'deepStrictEqual'
+      stack: |-
+        file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711/test/fis-defteri-koruma-250.test.mjs:531:14
+        withServer (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711/test/fis-defteri-koruma-250.test.mjs:265:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711/test/fis-defteri-koruma-250.test.mjs:529:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: çift kuralı (baş mimar kararı 5) — ters kaydı kalıyorsa asıl fiş de kalır: sıfırlamadan önce yazılmış asıl fişin izli ters kaydı sıfırlamadan sonra yazılmış (ör. onarım o açılışta çalışmadı) → asıl fiş kaldırılmaz
+    not ok 7 - çift kuralı (baş mimar kararı 5) — ters kaydı kalıyorsa asıl fiş de kalır: sıfırlamadan önce yazılmış asıl fişin izli ters kaydı sıfırlamadan sonra yazılmış (ör. onarım o açılışta çalışmadı) → asıl fiş kaldırılmaz
+      ---
+      duration_ms: 1103.915958
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711/test/fis-defteri-koruma-250.test.mjs:540:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + undefined
+        - {
+        -   'lv-ca518fac-fb82-46b7-b523-b1060f6e1421': 'pair'
+        - }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        lv-ca518fac-fb82-46b7-b523-b1060f6e1421: 'pair'
+      operator: 'deepStrictEqual'
+      stack: |-
+        file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711/test/fis-defteri-koruma-250.test.mjs:555:14
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async withServer (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711/test/fis-defteri-koruma-250.test.mjs:265:12)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711/test/fis-defteri-koruma-250.test.mjs:548:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: geri yükleme + saat geri: eski sürüm sıfırlaması (duvar saati fişlerden önce) → açılışta 3 fiş kaldırılır; sıfırlama öncesi yedek geri yüklenince fişler izleriyle döner, onarım yok
+    not ok 8 - geri yükleme + saat geri: eski sürüm sıfırlaması (duvar saati fişlerden önce) → açılışta 3 fiş kaldırılır; sıfırlama öncesi yedek geri yüklenince fişler izleriyle döner, onarım yok
+      ---
+      duration_ms: 1375.927369
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711/test/fis-defteri-koruma-250.test.mjs:560:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        saat geri alınmış olsa da artakalan 3 fiş kaldırılır: {"removed":0,"ids":[],"kept":["lv-af11ef3a-9479-4028-8380-7845fd3e2c8b","lv-efdb8f09-42c2-459f-9640-c715896506c4","lv-283644c0-0a11-4d62-ace2-334db5640051"]}
+        + actual - expected
+        
+          [
+        +   0,
+        +   [],
+        -   3,
+            [
+              'lv-af11ef3a-9479-4028-8380-7845fd3e2c8b',
+              'lv-efdb8f09-42c2-459f-9640-c715896506c4',
+              'lv-283644c0-0a11-4d62-ace2-334db5640051'
+            ],
+        -   []
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 3
+        1:
+          0: 'lv-af11ef3a-9479-4028-8380-7845fd3e2c8b'
+          1: 'lv-efdb8f09-42c2-459f-9640-c715896506c4'
+          2: 'lv-283644c0-0a11-4d62-ace2-334db5640051'
+        2:
+      actual:
+        0: 0
+        1:
+        2:
+          0: 'lv-af11ef3a-9479-4028-8380-7845fd3e2c8b'
+          1: 'lv-efdb8f09-42c2-459f-9640-c715896506c4'
+          2: 'lv-283644c0-0a11-4d62-ace2-334db5640051'
+      operator: 'deepStrictEqual'
+      stack: |-
+        file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711/test/fis-defteri-koruma-250.test.mjs:574:14
+        withServer (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711/test/fis-defteri-koruma-250.test.mjs:265:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711/test/fis-defteri-koruma-250.test.mjs:572:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..8
+not ok 6 - Ç2 tur 2 — B1: eski sürüm sıfırlamasının onarımı YAZIM SIRASIYLA (duvar saatinden bağımsız); çift kuralı iki yönlü; kuşkulu fiş görünür kayıtta
+  ---
+  duration_ms: 11660.045864
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t2-eski-a711/test/fis-defteri-koruma-250.test.mjs:386:1'
+  failureType: 'subtestsFailed'
+  error: '7 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç2 tur 1 — madde 6: postAll lockThrough PUT period-lock'un ön adımından (POS) geçer
+    # Subtest: Elle Onay kipi: valörü gelmiş bekleyen kalem varken 409 bank-pending-before-lock (fiş ve kilit yok); force → kilit konur, kalem kilit + 1'e Gecikmeli Aktarım (PUT 'Yine de Kilitle' ile aynı)
+    ok 1 - Elle Onay kipi: valörü gelmiş bekleyen kalem varken 409 bank-pending-before-lock (fiş ve kilit yok); force → kilit konur, kalem kilit + 1'e Gecikmeli Aktarım (PUT 'Yine de Kilitle' ile aynı)
+      ---
+      duration_ms: 1256.141222
+      type: 'test'
+      ...
+    # Subtest: Otomatik kip: vadesi gelmiş kalem kilitten ÖNCE kendi valör gününe (12.10) aktarılır (PUT period-lock ile aynı), sonra fiş + kilit
+    ok 2 - Otomatik kip: vadesi gelmiş kalem kilitten ÖNCE kendi valör gününe (12.10) aktarılır (PUT period-lock ile aynı), sonra fiş + kilit
+      ---
+      duration_ms: 1635.128965
+      type: 'test'
+      ...
+    1..2
+ok 7 - Ç2 tur 1 — madde 6: postAll lockThrough PUT period-lock'un ön adımından (POS) geçer
+  ---
+  duration_ms: 2891.833909
+  type: 'suite'
+  ...
+1..7
+# tests 23
+# suites 7
+# pass 16
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 26705.937263
