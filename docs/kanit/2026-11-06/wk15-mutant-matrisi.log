@@ -1,0 +1,128 @@
+== M213: S23'ün tersi (B seçeneği): F1 aynen — kayıt açıkken bekleyen işte yeniden basma 'Zaten Kuyrukta' ile elenir, iş elle sayılmaz; gönderim anında S22 ile 'Atlandı — Şüpheli Alacağı Var'
+   DEĞER   S23-01-sinirda-bekleyen-yeniden-basma-elle-sayilir-pencere-acilinca-gider: 8 fark — * [{}…] yeniden.Y3: elle {"elenen": {}, "alinan": [], "oneri": null, "supheli_etiketi": ["SR"], "elle_sayilan": ["SR"]} ≠ model {"elenen": {"SR": "zaten_kuyrukta"}, "alinan": [], "oneri": null, "suphe
+   DEĞER   S23-02-duraklatildi-yeniden-basma-elle-devam-et-ile-gider-kayitsiz-zaten-kuyrukta: 7 fark — * [{}…] yeniden.Y4: elle {"elenen": {}, "alinan": [], "oneri": null, "supheli_etiketi": ["DK"], "elle_sayilan": ["DK"]} ≠ model {"elenen": {"DK": "zaten_kuyrukta"}, "alinan": [], "oneri": null, "suphe
+   DEĞER   S23-03-zincirdeki-yeniden-deneme-beklerken-yeniden-basma-elle-gider: 7 fark — * [{}…] yeniden.Y3: elle {"elenen": {}, "alinan": [], "oneri": null, "supheli_etiketi": ["ZK"], "elle_sayilan": ["ZK"]} ≠ model {"elenen": {"ZK": "zaten_kuyrukta"}, "alinan": [], "oneri": null, "suphe
+   DEĞER   S23-04-meta-bekletti-beklerken-yeniden-basma-ikinci-denemede-gider: 7 fark — * [{}…] yeniden.Y2: elle {"elenen": {}, "alinan": [], "oneri": null, "supheli_etiketi": ["MK"], "elle_sayilan": ["MK"]} ≠ model {"elenen": {"MK": "zaten_kuyrukta"}, "alinan": [], "oneri": null, "suphe
+   DEĞER   S23-05-yeniden-basmada-suphesiz-tutar-yok-iki-okuma-ileti-gitmez: 2 fark — * [{}…] yeniden.Y2: elle {"elenen": {"secenek": [{}, {"NZ": "gecikmis_borc_yok"}], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar metninde yok — b ≠ model {"elen
+   aynı    SW3-01-bir-yil-siniri-iki-yani-sure-dolunca-ayni-donem-daha-once-gonderildi
+   aynı    SW3-02-gece-yarisi-yerel-gun-utc-farkli-bir-yil-siniri
+   aynı    SW3-03-silme-talebi-ayni-donem-elenir-sonraki-donem-gider-silinen-telefon-kullanilmaz
+   aynı    SW3-04-geri-yukleme-bir-yildan-eski-icerik-donunce-silinir
+   aynı    SW3-05-silme-talebinden-once-alinan-yedek-geri-yuklenir-icerik-susuyor-r3-kesin
+   → değerle 5, istisnayla 0, 10 senaryodan
+== M214: S23 'yeni iş açılmaz'ın tersi: yeniden basma asıl işten yeni bir iş açar (elle) ve bekleyen iş de elle sayılır — ikisi de gider (aynı kişiye ikinci ileti)
+   DEĞER   S23-01-sinirda-bekleyen-yeniden-basma-elle-sayilir-pencere-acilinca-gider: 5 fark — * [{}…] yeniden.Y3: elle {"elenen": {}, "alinan": [], "oneri": null, "supheli_etiketi": ["SR"], "elle_sayilan": ["SR"]} ≠ model {"elenen": {}, "alinan": ["SR"], "oneri": null, "supheli_etiketi": ["SR"
+   DEĞER   S23-02-duraklatildi-yeniden-basma-elle-devam-et-ile-gider-kayitsiz-zaten-kuyrukta: 5 fark — * [{}…] yeniden.Y4: elle {"elenen": {}, "alinan": [], "oneri": null, "supheli_etiketi": ["DK"], "elle_sayilan": ["DK"]} ≠ model {"elenen": {}, "alinan": ["DK"], "oneri": null, "supheli_etiketi": ["DK"
+   DEĞER   S23-03-zincirdeki-yeniden-deneme-beklerken-yeniden-basma-elle-gider: 5 fark — * [{}…] yeniden.Y3: elle {"elenen": {}, "alinan": [], "oneri": null, "supheli_etiketi": ["ZK"], "elle_sayilan": ["ZK"]} ≠ model {"elenen": {}, "alinan": ["ZK"], "oneri": null, "supheli_etiketi": ["ZK"
+   DEĞER   S23-04-meta-bekletti-beklerken-yeniden-basma-ikinci-denemede-gider: 5 fark — * [{}…] yeniden.Y2: elle {"elenen": {}, "alinan": [], "oneri": null, "supheli_etiketi": ["MK"], "elle_sayilan": ["MK"]} ≠ model {"elenen": {}, "alinan": ["MK"], "oneri": null, "supheli_etiketi": ["MK"
+   DEĞER   S23-05-yeniden-basmada-suphesiz-tutar-yok-iki-okuma-ileti-gitmez: 6 fark — * [{}…] yeniden.Y2: elle {"elenen": {"secenek": [{}, {"NZ": "gecikmis_borc_yok"}], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar metninde yok — b ≠ model {"elen
+   aynı    SW3-01-bir-yil-siniri-iki-yani-sure-dolunca-ayni-donem-daha-once-gonderildi
+   aynı    SW3-02-gece-yarisi-yerel-gun-utc-farkli-bir-yil-siniri
+   aynı    SW3-03-silme-talebi-ayni-donem-elenir-sonraki-donem-gider-silinen-telefon-kullanilmaz
+   aynı    SW3-04-geri-yukleme-bir-yildan-eski-icerik-donunce-silinir
+   aynı    SW3-05-silme-talebinden-once-alinan-yedek-geri-yuklenir-icerik-susuyor-r3-kesin
+   → değerle 5, istisnayla 0, 10 senaryodan
+== M215: S-W3 'anonim iz kalır'ın tersi (B seçeneği): silinen kaydın izi de silinir — R3 / Sonucu Belirsiz görmez, aynı dönemde ikinci ileti uyarısız gider
+   aynı    S23-01-sinirda-bekleyen-yeniden-basma-elle-sayilir-pencere-acilinca-gider
+   aynı    S23-02-duraklatildi-yeniden-basma-elle-devam-et-ile-gider-kayitsiz-zaten-kuyrukta
+   aynı    S23-03-zincirdeki-yeniden-deneme-beklerken-yeniden-basma-elle-gider
+   aynı    S23-04-meta-bekletti-beklerken-yeniden-basma-ikinci-denemede-gider
+   aynı    S23-05-yeniden-basmada-suphesiz-tutar-yok-iki-okuma-ileti-gitmez
+   DEĞER   SW3-01-bir-yil-siniri-iki-yani-sure-dolunca-ayni-donem-daha-once-gonderildi: 6 fark — * [{}…] elenen: elle {"T2": {"A": "daha_once_gonderildi", "B": "daha_once_gonderildi"}} ≠ model {}
+   DEĞER   SW3-02-gece-yarisi-yerel-gun-utc-farkli-bir-yil-siniri: 5 fark — * [{}…] elenen: elle {"T2": {"A": "daha_once_gonderildi"}} ≠ model {}
+   DEĞER   SW3-03-silme-talebi-ayni-donem-elenir-sonraki-donem-gider-silinen-telefon-kullanilmaz: 6 fark — * [{}…] elenen: elle {"T2": {"A": "daha_once_gonderildi", "B": "daha_once_gonderildi", "C": "telefonsuz"}, "T4": {"C": "telefonsuz"}} ≠ model {"T2": {"B": "daha_once_gonderildi", "C": "telefonsuz"}, "
+   DEĞER   SW3-04-geri-yukleme-bir-yildan-eski-icerik-donunce-silinir: 5 fark — * [{}…] elenen: elle {"T2": {"A": "daha_once_gonderildi"}} ≠ model {}
+   DEĞER   SW3-05-silme-talebinden-once-alinan-yedek-geri-yuklenir-icerik-susuyor-r3-kesin: 5 fark — * [{}…] elenen: elle {"T2": {"A": "daha_once_gonderildi", "B": "daha_once_gonderildi"}} ≠ model {"T2": {"B": "daha_once_gonderildi"}}
+   → değerle 5, istisnayla 0, 10 senaryodan
+== M216: S-W3 (Y15-13): saklama sınırı bir gün geç (1 yıl + 1 gün)
+   aynı    S23-01-sinirda-bekleyen-yeniden-basma-elle-sayilir-pencere-acilinca-gider
+   aynı    S23-02-duraklatildi-yeniden-basma-elle-devam-et-ile-gider-kayitsiz-zaten-kuyrukta
+   aynı    S23-03-zincirdeki-yeniden-deneme-beklerken-yeniden-basma-elle-gider
+   aynı    S23-04-meta-bekletti-beklerken-yeniden-basma-ikinci-denemede-gider
+   aynı    S23-05-yeniden-basmada-suphesiz-tutar-yok-iki-okuma-ileti-gitmez
+   DEĞER   SW3-01-bir-yil-siniri-iki-yani-sure-dolunca-ayni-donem-daha-once-gonderildi: 4 fark — * [{}…] kontroller.K2.icerik: elle {"T1/A": {"telefon": null, "degiskenler": null, "pdf": null, "dosya_adi": null, "icerik_silindi": true}, "T1/B": {"telefon": null, "degiskenler": null, "pdf": n ≠ mo
+   DEĞER   SW3-02-gece-yarisi-yerel-gun-utc-farkli-bir-yil-siniri: 2 fark — * [{}…] kontroller.K2.icerik: elle {"T1/A": {"telefon": null, "degiskenler": null, "pdf": null, "dosya_adi": null, "icerik_silindi": true}} ≠ model {"T1/A": {"telefon": "+905321112233", "degiskenler":
+   aynı    SW3-03-silme-talebi-ayni-donem-elenir-sonraki-donem-gider-silinen-telefon-kullanilmaz
+   DEĞER   SW3-04-geri-yukleme-bir-yildan-eski-icerik-donunce-silinir: 3 fark — * [{}…] kontroller.K1.icerik: elle {"T1/A": {"telefon": null, "degiskenler": null, "pdf": null, "dosya_adi": null, "icerik_silindi": true}} ≠ model {"T1/A": {"telefon": "+905321112233", "degiskenler":
+   aynı    SW3-05-silme-talebinden-once-alinan-yedek-geri-yuklenir-icerik-susuyor-r3-kesin
+   → değerle 3, istisnayla 0, 10 senaryodan
+== M217: S-W3 (Y15-13): saklama sınırı bir gün erken (1 yıl − 1 gün)
+   aynı    S23-01-sinirda-bekleyen-yeniden-basma-elle-sayilir-pencere-acilinca-gider
+   aynı    S23-02-duraklatildi-yeniden-basma-elle-devam-et-ile-gider-kayitsiz-zaten-kuyrukta
+   aynı    S23-03-zincirdeki-yeniden-deneme-beklerken-yeniden-basma-elle-gider
+   aynı    S23-04-meta-bekletti-beklerken-yeniden-basma-ikinci-denemede-gider
+   aynı    S23-05-yeniden-basmada-suphesiz-tutar-yok-iki-okuma-ileti-gitmez
+   DEĞER   SW3-01-bir-yil-siniri-iki-yani-sure-dolunca-ayni-donem-daha-once-gonderildi: 1 fark — * [{}…] kontroller.K1.icerik: elle {"T1/A": {"telefon": "+905321112233", "degiskenler": ["Ayşe Yılmaz", "Deneme Ticaret Ltd. Şti.", "01.10.2026 – 31.10.2026", "1.250,00 TL"], "pdf": {"cari_ad": " ≠ mo
+   DEĞER   SW3-02-gece-yarisi-yerel-gun-utc-farkli-bir-yil-siniri: 1 fark — * [{}…] kontroller.K1.icerik: elle {"T1/A": {"telefon": "+905321112233", "degiskenler": ["Ayşe Yılmaz", "Deneme Ticaret Ltd. Şti.", "01.10.2026 – 31.10.2026", "1.250,00 TL"], "pdf": {"cari_ad": " ≠ mo
+   aynı    SW3-03-silme-talebi-ayni-donem-elenir-sonraki-donem-gider-silinen-telefon-kullanilmaz
+   aynı    SW3-04-geri-yukleme-bir-yildan-eski-icerik-donunce-silinir
+   aynı    SW3-05-silme-talebinden-once-alinan-yedek-geri-yuklenir-icerik-susuyor-r3-kesin
+   → değerle 2, istisnayla 0, 10 senaryodan
+== M218: S-W3 (Y15-16): silinen telefon yeniden kullanılır — kart telefonu boşsa kişinin silinmiş gönderim kaydındaki telefona gider
+   aynı    S23-01-sinirda-bekleyen-yeniden-basma-elle-sayilir-pencere-acilinca-gider
+   aynı    S23-02-duraklatildi-yeniden-basma-elle-devam-et-ile-gider-kayitsiz-zaten-kuyrukta
+   aynı    S23-03-zincirdeki-yeniden-deneme-beklerken-yeniden-basma-elle-gider
+   aynı    S23-04-meta-bekletti-beklerken-yeniden-basma-ikinci-denemede-gider
+   aynı    S23-05-yeniden-basmada-suphesiz-tutar-yok-iki-okuma-ileti-gitmez
+   aynı    SW3-01-bir-yil-siniri-iki-yani-sure-dolunca-ayni-donem-daha-once-gonderildi
+   aynı    SW3-02-gece-yarisi-yerel-gun-utc-farkli-bir-yil-siniri
+   DEĞER   SW3-03-silme-talebi-ayni-donem-elenir-sonraki-donem-gider-silinen-telefon-kullanilmaz: 5 fark — * [{}…] elenen: elle {"T2": {"A": "daha_once_gonderildi", "B": "daha_once_gonderildi", "C": "telefonsuz"}, "T4": {"C": "telefonsuz"}} ≠ model {"T2": {"A": "daha_once_gonderildi", "B": "daha_once_gonde
+   aynı    SW3-04-geri-yukleme-bir-yildan-eski-icerik-donunce-silinir
+   aynı    SW3-05-silme-talebinden-once-alinan-yedek-geri-yuklenir-icerik-susuyor-r3-kesin
+   → değerle 1, istisnayla 0, 10 senaryodan
+== M219: S-W3 (Y15-15): silme talebi içeriği / telefonu / PDF'i silmez (yalnız süre dolunca silinir)
+   aynı    S23-01-sinirda-bekleyen-yeniden-basma-elle-sayilir-pencere-acilinca-gider
+   aynı    S23-02-duraklatildi-yeniden-basma-elle-devam-et-ile-gider-kayitsiz-zaten-kuyrukta
+   aynı    S23-03-zincirdeki-yeniden-deneme-beklerken-yeniden-basma-elle-gider
+   aynı    S23-04-meta-bekletti-beklerken-yeniden-basma-ikinci-denemede-gider
+   aynı    S23-05-yeniden-basmada-suphesiz-tutar-yok-iki-okuma-ileti-gitmez
+   aynı    SW3-01-bir-yil-siniri-iki-yani-sure-dolunca-ayni-donem-daha-once-gonderildi
+   aynı    SW3-02-gece-yarisi-yerel-gun-utc-farkli-bir-yil-siniri
+   DEĞER   SW3-03-silme-talebi-ayni-donem-elenir-sonraki-donem-gider-silinen-telefon-kullanilmaz: 4 fark — * [{}…] kontroller.K1.icerik: elle {"T1/A": {"telefon": null, "degiskenler": null, "pdf": null, "dosya_adi": null, "icerik_silindi": true}, "T1/B": {"telefon": "+905332223344", "degiskenler": ["M ≠ mo
+   aynı    SW3-04-geri-yukleme-bir-yildan-eski-icerik-donunce-silinir
+   DEĞER   SW3-05-silme-talebinden-once-alinan-yedek-geri-yuklenir-icerik-susuyor-r3-kesin: 1 fark — * [{}…] kontroller.K1.icerik: elle {"T1/A": {"telefon": null, "degiskenler": null, "pdf": null, "dosya_adi": null, "icerik_silindi": true}, "T1/B": {"telefon": "+905332223344", "degiskenler": ["M ≠ mo
+   → değerle 2, istisnayla 0, 10 senaryodan
+== M220: S-W3 (Y15-13): 1 yıl UTC gününe göre — kaydın UTC günü + 1 yıl, o UTC gününün başında silinir (yerel an değil)
+   aynı    S23-01-sinirda-bekleyen-yeniden-basma-elle-sayilir-pencere-acilinca-gider
+   aynı    S23-02-duraklatildi-yeniden-basma-elle-devam-et-ile-gider-kayitsiz-zaten-kuyrukta
+   aynı    S23-03-zincirdeki-yeniden-deneme-beklerken-yeniden-basma-elle-gider
+   aynı    S23-04-meta-bekletti-beklerken-yeniden-basma-ikinci-denemede-gider
+   aynı    S23-05-yeniden-basmada-suphesiz-tutar-yok-iki-okuma-ileti-gitmez
+   DEĞER   SW3-01-bir-yil-siniri-iki-yani-sure-dolunca-ayni-donem-daha-once-gonderildi: 1 fark — * [{}…] kontroller.K1.icerik: elle {"T1/A": {"telefon": "+905321112233", "degiskenler": ["Ayşe Yılmaz", "Deneme Ticaret Ltd. Şti.", "01.10.2026 – 31.10.2026", "1.250,00 TL"], "pdf": {"cari_ad": " ≠ mo
+   DEĞER   SW3-02-gece-yarisi-yerel-gun-utc-farkli-bir-yil-siniri: 1 fark — * [{}…] kontroller.K1.icerik: elle {"T1/A": {"telefon": "+905321112233", "degiskenler": ["Ayşe Yılmaz", "Deneme Ticaret Ltd. Şti.", "01.10.2026 – 31.10.2026", "1.250,00 TL"], "pdf": {"cari_ad": " ≠ mo
+   aynı    SW3-03-silme-talebi-ayni-donem-elenir-sonraki-donem-gider-silinen-telefon-kullanilmaz
+   aynı    SW3-04-geri-yukleme-bir-yildan-eski-icerik-donunce-silinir
+   aynı    SW3-05-silme-talebinden-once-alinan-yedek-geri-yuklenir-icerik-susuyor-r3-kesin
+   → değerle 2, istisnayla 0, 10 senaryodan
+== M221: S-W3 (Y15-17): silme talebinden sonra o kişinin teslimleri 'Bu Ay'dan düşer
+   aynı    S23-01-sinirda-bekleyen-yeniden-basma-elle-sayilir-pencere-acilinca-gider
+   aynı    S23-02-duraklatildi-yeniden-basma-elle-devam-et-ile-gider-kayitsiz-zaten-kuyrukta
+   aynı    S23-03-zincirdeki-yeniden-deneme-beklerken-yeniden-basma-elle-gider
+   aynı    S23-04-meta-bekletti-beklerken-yeniden-basma-ikinci-denemede-gider
+   aynı    S23-05-yeniden-basmada-suphesiz-tutar-yok-iki-okuma-ileti-gitmez
+   aynı    SW3-01-bir-yil-siniri-iki-yani-sure-dolunca-ayni-donem-daha-once-gonderildi
+   aynı    SW3-02-gece-yarisi-yerel-gun-utc-farkli-bir-yil-siniri
+   DEĞER   SW3-03-silme-talebi-ayni-donem-elenir-sonraki-donem-gider-silinen-telefon-kullanilmaz: 1 fark — * [{}…] bu_ay: elle {"W1": {"2026-11": {"teslim": 4, "yaklasik_usd": "0.0036"}, "2026-12": {"teslim": 2, "yaklasik_usd": "0.0018"}}} ≠ model {"W1": {"2026-11": {"teslim": 2, "yaklasik_usd": "0.0018"},
+   aynı    SW3-04-geri-yukleme-bir-yildan-eski-icerik-donunce-silinir
+   DEĞER   SW3-05-silme-talebinden-once-alinan-yedek-geri-yuklenir-icerik-susuyor-r3-kesin: 1 fark — * [{}…] bu_ay: elle {"W1": {"2026-11": {"teslim": 3, "yaklasik_usd": "0.0027"}}} ≠ model {"W1": {"2026-11": {"teslim": 2, "yaklasik_usd": "0.0018"}}}
+   → değerle 2, istisnayla 0, 10 senaryodan
+== M222: S-W3 (Y15-18, ilke 5): geri yüklenen işe saklama kuralı uygulanmaz — 1 yıldan eski içerik yedekten geri gelir ve kalır
+   aynı    S23-01-sinirda-bekleyen-yeniden-basma-elle-sayilir-pencere-acilinca-gider
+   aynı    S23-02-duraklatildi-yeniden-basma-elle-devam-et-ile-gider-kayitsiz-zaten-kuyrukta
+   aynı    S23-03-zincirdeki-yeniden-deneme-beklerken-yeniden-basma-elle-gider
+   aynı    S23-04-meta-bekletti-beklerken-yeniden-basma-ikinci-denemede-gider
+   aynı    S23-05-yeniden-basmada-suphesiz-tutar-yok-iki-okuma-ileti-gitmez
+   aynı    SW3-01-bir-yil-siniri-iki-yani-sure-dolunca-ayni-donem-daha-once-gonderildi
+   aynı    SW3-02-gece-yarisi-yerel-gun-utc-farkli-bir-yil-siniri
+   aynı    SW3-03-silme-talebi-ayni-donem-elenir-sonraki-donem-gider-silinen-telefon-kullanilmaz
+   DEĞER   SW3-04-geri-yukleme-bir-yildan-eski-icerik-donunce-silinir: 2 fark — * [{}…] kontroller.K2.icerik: elle {"T1/A": {"telefon": null, "degiskenler": null, "pdf": null, "dosya_adi": null, "icerik_silindi": true}} ≠ model {"T1/A": {"telefon": "+905321112233", "degiskenler":
+   aynı    SW3-05-silme-talebinden-once-alinan-yedek-geri-yuklenir-icerik-susuyor-r3-kesin
+   → değerle 1, istisnayla 0, 10 senaryodan
+değerle yakalanan mutant 10/10
+1..10
+# tests 10
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

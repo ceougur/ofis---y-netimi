@@ -1,0 +1,37 @@
+WK 15 — WhatsApp kâhini güncellemesi 15 (2.5.0): S23 (eski S7-e) = A + S-W3 "1 yıl + anonim iz" — KANIT (06.11.2026)
+
+Kâhin: test/bagimsiz/whatsapp-248/kahin/* (kodu görmeyen ajan; README §20). Yorum commit'i 4cc5d73e (kodlamadan önce, ders 40), kod commit'i fe04bc67.
+Bütün koşular kod commit'i fe04bc67'de (kayıtlarda "kirli": 0; "+1 izlenmeyen" = bu klasördeki wk15-araclar/, koşudan sonra bu Kanıt commit'iyle depoya girdi).
+Her koşu `KANIT_DIR=<not defteri> node tools/kanit.mjs kos <ad> -- <komut>` ile alındı; .log ham çıktı, .json kayıt (ham_cikti_sha256 = buradaki .log'un sha256'sı; kayıttaki
+ham_cikti yolu koşu anındaki not defteri yoludur, dosya buraya bayt bayt kopyalandı).
+
+DOSYALAR
+- wk15-senaryolar (.log/.json)              TZ=UTC: python3 -I test/bagimsiz/whatsapp-248/kahin/senaryolar.py → 342/342 elle beklenen = model, senaryolar.json yazıldı
+- wk15-senaryolar-tz-istanbul               TZ=Europe/Istanbul: aynı komut → 342/342; iki koşunun ham çıktısı ve senaryolar.json aynı
+                                            (senaryolar.json sha256 d4ae79d71dcfce754004574191f21aa6732ff18d4d29e22281f4eed2b6587168 iki koşuda da)
+- wk15-kahin                                 TZ=UTC: python3 -I test/bagimsiz/whatsapp-248/kahin/kahin_test.py → 370/370 (F mutasyon 221/221; I12 yeni)
+- wk15-kahin-tz-istanbul                     TZ=Europe/Istanbul: aynı → 370/370 (ham çıktı UTC koşusuyla bayt bayt aynı, sha256 55b1380a…)
+- wk15-eski-kahinle-yeni-senaryolar          yeni 10 senaryo (S23 5, SW3 5) ESKİ kâhinle (taban b91d82b9'ın değişiklikten ÖNCE not defterine alınmış kopyası; kahin.py sha256
+                                             35efc96ff0a22863d5c260d1a75697011fb92dc85a2961749ee740cddc287dc4) → 10/10 KIRMIZI. Bu araçta "pass" = eski kâhinde KIRMIZI (beklenen).
+                                             Nedenler: S23-01…05 "KULLANICIYA SORULMALI S7-e (README §19.4) … kodlanmadı" (kural yoktu — görev metnindeki "S7-d kodlanmadı" bu tabanda S7-e'dir;
+                                             S7-d güncelleme 14'te kapandı); SW3-01/02/04 değerle (içerik silinmiyor); SW3-03/05 "bilinmeyen olay: kvkk_sil" (zayıf neden — nötr kopyaya bakın).
+- wk15-notr-kopya                            eski kâhinin NÖTR kopyası (ders 38): YALNIZ S7-e koşulu etkisiz, kvkk_sil tanınır ama etkisiz, kontrol {icerik} gözlemi — kural eklenmedi
+                                             (wk15-araclar/notr_kopya.py; nötr kahin.py sha256 2d11f47defcd24037b840c3b4c3bd26856f1365fdb62c17340367ce4d1323347)
+- wk15-eski-kahinle-yeni-senaryolar-notr     yeni 10 senaryo nötr kopyayla → 10/10 KIRMIZI, hepsi DEĞERLE ve beklenen nedenle: S23'lerde karar yokken düşülecek F1 yolu (yeniden basma
+                                             "Zaten Kuyrukta", iş gönderim anında S22 "Atlandı — Şüpheli Alacağı Var", POST bir eksik — S23'ün B seçeneği); SW3'lerde içerik silinmiyor
+                                             (R3 / "Bu Ay" / elenen yaprakları nötr kopyada AYNI — anonim iz eski davranışın kime / kaç kez yüzünü korur; dişi M215 / M221).
+- wk15-eski-332-tam-sonuc-fark               332 eski senaryonun TAM kaydı (girdi + elle + modelin bütün sonucu) eski kopyanın senaryolar.json'ı (sha256 3d5d0aac…) ile bayt bayt aynı,
+                                             sıra korunuyor (333/333 = 332 + sıra); üst alanlardan yalnız kararlar'a S23, SW3 eklendi
+- wk15-mutant-matrisi                        yeni mutantlar M213–M222 × yeni 10 senaryo → 10/10 mutant DEĞERLE yakalanıyor (istisnayla 0)
+- wk15-araclar/                              eski_kahinle.py, notr_kopya.py, eski_tam_sonuc_fark.py, mutant_matrisi.py (koşulan sürümleri)
+
+YENİDEN ÜRETMEK (depo kökünden; eski kopya: `git archive b91d82b9 test/bagimsiz/whatsapp-248/kahin | tar -x -C <boş klasör>` ile alınabilir — sha256'lar yukarıda)
+  TZ=UTC node tools/kanit.mjs kos wk15-senaryolar -- python3 -I test/bagimsiz/whatsapp-248/kahin/senaryolar.py
+  TZ=UTC node tools/kanit.mjs kos wk15-kahin -- python3 -I test/bagimsiz/whatsapp-248/kahin/kahin_test.py
+  python3 -I docs/kanit/2026-11-06/wk15-araclar/eski_kahinle.py <eski kahin klasörü> test/bagimsiz/whatsapp-248/kahin
+  python3 -I docs/kanit/2026-11-06/wk15-araclar/notr_kopya.py <eski kahin.py> <nötr klasör>
+  python3 -I docs/kanit/2026-11-06/wk15-araclar/eski_tam_sonuc_fark.py <eski senaryolar.json> test/bagimsiz/whatsapp-248/kahin/senaryolar.json
+  python3 -I docs/kanit/2026-11-06/wk15-araclar/mutant_matrisi.py test/bagimsiz/whatsapp-248/kahin
+
+BAĞIMSIZLIK: program kodu (server/, client/, bulut/, tools/ — kanit.mjs yalnız çalıştırıldı), program testleri, test/bagimsiz/whatsapp-248/surucu.mjs ve sahte-meta/, docs/kanit/
+altındaki başka ajanların dosyaları ve iş listesinin A, B, E bölümleri AÇILMADI. Programa karşı KOŞULMADI. Sahte Meta'ya ve sürücüye dokunulmadı.

@@ -12,7 +12,7 @@ madde K0) bağımsız kâhinidir:
    aşağıda "Kâhin yorumları"nda (teyit gerekir). §7a'nın **revizyonu R1–R3** (30.10.2026 15:18 UTC, plan §7a sonu "REVİZYON ÖNERİSİ" + KARAR, programın
    davranışı görülmeden) da sabit: R1 Meta'ya hiç ulaşılamıyorsa "Bağlantı Bekleniyor", R2 kategori her 100 iletide / en geç 10 dakikada, R3 daha önce
    gönderilmiş dönem uyarısı (varsayılan Bunları Çıkar).
-3. **Senaryo kümesi** (`kahin/senaryolar.py` → `kahin/senaryolar.json`) — 332 senaryo (güncelleme 14 ile; aşağıdaki döküm 291'e kadar, + W3 1 + **güncelleme 11** 18: SW1 3, SW2 2, SD1837 3, SD1915 5, SW4 3, S7 2 — §16 + **güncelleme 12** 8: S7A 3, S7B 5 — §17 + **güncelleme 13** 8: S16 4, S17 2, NB5 2 — §18 + **güncelleme 14** 6: S22 6 — §19): 145 (plan §8 "Nasıl bozulur?" başlıklarının hepsi + §7a kararlarının ve R1–R3'ün her biri)
+3. **Senaryo kümesi** (`kahin/senaryolar.py` → `kahin/senaryolar.json`) — 342 senaryo (güncelleme 15 ile; aşağıdaki döküm 291'e kadar, + W3 1 + **güncelleme 11** 18: SW1 3, SW2 2, SD1837 3, SD1915 5, SW4 3, S7 2 — §16 + **güncelleme 12** 8: S7A 3, S7B 5 — §17 + **güncelleme 13** 8: S16 4, S17 2, NB5 2 — §18 + **güncelleme 14** 6: S22 6 — §19 + **güncelleme 15** 10: S23 5, SW3 5 — §20): 145 (plan §8 "Nasıl bozulur?" başlıklarının hepsi + §7a kararlarının ve R1–R3'ün her biri)
    + 34 **kâhin güncellemesi 2** (31.10.2026, ürün sahibi kararları K1–K8; §7) + 19 **kâhin güncellemesi 3** (★ soruların yanıtları D1–D8; §8) + 12 **kâhin güncellemesi 4** (N2–N5 yanıtları E1–E4 + N6; §9) + 5 **güncelleme 5** (P1/P2 → F1/F2; §10) + 16 **güncelleme 6** (G0 ilke + G1–G5; §11) + 5 **güncelleme 7** (G6; §12) + 8 **güncelleme 8** (H1–H4; §13) + 29 **güncelleme 9** (01.11.2026 kullanıcı onaylı 8 davranış J1–J8 + n3 BİLİNEN SINIR J9; §14) + 8 **güncelleme 9b** (S9-1 / S9-2 kararları J10–J11; §14.10–14.12) + 3 **güncelleme 9c** (ekstre içeriği açılışta, J12; §14.13–14.14) + 7 **güncelleme 10** (2.4.9 W: teslim süresi 30 gün W1 + W-KÖK W2; §15).
 
 **Bağımsızlık.** Programın kodu (`server/`, `client/`, `bulut/`) GÖRÜLMEDEN yazıldı (KANIT KURALI 2, ders 5). Okunanlar: CLAUDE.md, plan, iş listesi,
@@ -22,7 +22,7 @@ implementation / tech-provider onboarding / versions, pricing) ve bu klasörün 
 Plan §6 K0 klasör olarak `test/sahte-meta/` yazıyor; görev bu klasörü (`test/bagimsiz/whatsapp-248/`) verdi.
 
 **Bağımsızlığın sınırı.** Elle beklenen ile model aynı elden (bu kâhin) çıktı: bağımsızlık PROGRAMA göredir. Kendi içindeki dişi: (a) elle beklenen ↔ model
-iki ayrı türetme, (b) mutasyon testi (164 bilerek hata — 30'u §7a kararlarının ya da R1–R3'ün tersi, 30'u K1–K8'in (M68–M97), 11'i D1–D8'in (M98–M108), 9'u E1–E4 + N6'nın (M109–M117), 2'si F1/F2'nin (M118–M119), 9'u G0–G5'in (M120–M128), 2'si G6'nın (M129–M130), 6'sı H1–H4'ün (M131–M136), 16'sı J1–J9'un (M137–M153; M149 güncelleme 9b'de kalktı) 9'u J10–J11'in (M154–M162) 2'si J12'nin (M163–M164), 1'i J7 düzeltmesinin (M165) ve 5'i W1/W2'nin (M166–M170; M7 de W1'e göre TERSİNE çevrildi), 1'i W3'ün (M171) ve 18'i güncelleme 11'in (M172–M189; M151 artık SW1'in tersi), 9'u güncelleme 12'nin (M190–M198), 11'i güncelleme 13'ün (M199–M209), 3'ü güncelleme 14'ün (M210–M212) tersi — toplam 211, her biri en az bir senaryoda yakalanıyor), (c) değişmezler (ör. "Bu Ay"
+iki ayrı türetme, (b) mutasyon testi (164 bilerek hata — 30'u §7a kararlarının ya da R1–R3'ün tersi, 30'u K1–K8'in (M68–M97), 11'i D1–D8'in (M98–M108), 9'u E1–E4 + N6'nın (M109–M117), 2'si F1/F2'nin (M118–M119), 9'u G0–G5'in (M120–M128), 2'si G6'nın (M129–M130), 6'sı H1–H4'ün (M131–M136), 16'sı J1–J9'un (M137–M153; M149 güncelleme 9b'de kalktı) 9'u J10–J11'in (M154–M162) 2'si J12'nin (M163–M164), 1'i J7 düzeltmesinin (M165) ve 5'i W1/W2'nin (M166–M170; M7 de W1'e göre TERSİNE çevrildi), 1'i W3'ün (M171) ve 18'i güncelleme 11'in (M172–M189; M151 artık SW1'in tersi), 9'u güncelleme 12'nin (M190–M198), 11'i güncelleme 13'ün (M199–M209), 3'ü güncelleme 14'ün (M210–M212), 10'u güncelleme 15'in (M213–M222) tersi — toplam 221, her biri en az bir senaryoda yakalanıyor), (c) değişmezler (ör. "Bu Ay"
 teslim = Teslim + Okundu iş sayısı, başarılı işte hata kodu yok, metin bakiyesi = PDF bakiyesi), (d) beklenen şablon metinleri plan dosyasından okunup
 karşılaştırılır (H).
 
@@ -36,7 +36,7 @@ karşılaştırılır (H).
 | `sahte-meta/sunucu.test.mjs` | Sahte sunucunun kendi testleri (node --test, 35) |
 | `sahte-meta/mutasyon.mjs` | Testlerin dişi: sunucuya 19 bilerek hata, her biri ayrı geçici kopyada; her biri en az bir testi kırmızı yapmalı |
 | `kahin/kahin.py` | Model + komut satırı (`hesapla`, `karsilastir`) |
-| `kahin/senaryolar.py` | 332 senaryo (girdi + ELLE beklenen); modelle karşılaştırır, aynıysa `senaryolar.json` yazar |
+| `kahin/senaryolar.py` | 342 senaryo (girdi + ELLE beklenen); modelle karşılaştırır, aynıysa `senaryolar.json` yazar |
 | `kahin/senaryolar.json` | Her senaryo: girdi, elle beklenen, modelin bütün beklenen sonucu; üstte `sablonlar` (programın açması beklenen 2 şablonun metni, §7a 23 + W5) |
 | `kahin/kahin_test.py` | Kâhinin kendi testi (A–H) + mutasyon; TAP + `# tests/pass/fail` |
 
@@ -93,7 +93,7 @@ durum/kategori), `meta_davranis` (`mesaj` alıcı başına n. POST yanıtı; `me
 hareket_ekle / vadeler], `kapat`, `ac`, `cokme` [o carinin isteği anında süreç ölür, `istek_ulasti`], `tunel`, `kanca_kuyrugu`, `lisans`, `duraklat`/`devam`/
 `iptal`, `basarisizlari_yeniden_dene`, `yine_de_gonder`, `geri_yukle`/`sifirla`/`tasindi`, `meta_basamak`, `meta_sablon` [durum / kategori], `meta_kapali`,
 `sahte_kanca` [İMZASIZ olay: `wamid` ya da `is` (gerçek işin wamid'i), `durum`, `kod`, `opaque`]; güncelleme 11: `baglanti_suresi_doldu` / `yeniden_baglan` {`sirket`},
-`baslat.supheli_elle`, `vadeler[].supheli` — §16; güncelleme 13: `hareketler[].belge` ("alis_faturasi"; kâhin yalnız tutarı okur) — §18), `ozet_cikti`. `meta_davranis.kanca` olayları Meta'nındır
+`baslat.supheli_elle`, `vadeler[].supheli` — §16; güncelleme 13: `hareketler[].belge` ("alis_faturasi"; kâhin yalnız tutarı okur) — §18; güncelleme 15: `kvkk_sil {id}` (KVKK silme talebi), `kontrol {icerik: true}` (içerik görünümü) — §20), `ozet_cikti`. `meta_davranis.kanca` olayları Meta'nındır
 (kapıcıda imzası doğrulanmış sayılır, §7a 3).
 
 **Çıktı** (beklenen; `[{secimler: [{}], sonuc}]` — serbest seçim kalmadığından TEK grup): `baslamadi` (etiket → neden: `bagli_degil` / `yetki_yok` /
@@ -1423,3 +1423,149 @@ kopyasıyla); üst alanlardan yalnız `kararlar`'a S22 eklendi (`wk14-eski-326-t
   Yine de Gönder (Y14-5, bilgi); Lisans Nedeniyle Durdu / açılışta sorulan → Devam Et yolu (Y14-3 e; Duraklatıldı ile aynı yol); kayıt kapanıp gönderim anından önce yeniden açılması (Y14-6 —
   gönderim anındaki durum); S22 ile atlanan işin eski iletisine geç teslim (19.4 bilgi); geri yükleme / taşıma ile S22; iki şirket; yeniden basmada şüphesiz tutar olmaması (S16 "yoksa elenir" —
   S16-02 düzeni, `s16_an`; S22 senaryolarında hep tutar var); Ekstre işinde Yine de Gönder'den sonra açılan kayıt (Y14-7 — Y12-9 aynen, senaryosuz).
+
+## 20. Kâhin güncellemesi 15 — S23 (S7-e) + S-W3 (W-3 saklama süresi ve KVKK silme) (06.11.2026)
+
+### 20.1 Kaynak ve bağımsızlık
+Kaynak YALNIZ karar metinleri (AYNEN `kahin.KARARLAR` S23, SW3): `docs/2.5.0-IS-LISTESI.md` D bölümü "KULLANICI KARARI 06.11 06:03 UTC (AYNEN: 'a')" satırı ve C bölümündeki iki seçenekli soru metni
+(SORULDU 06.11 06:01 → YANITLANDI 06:03); D bölümü "KULLANICI KARARLARI (05.11 ~16:48, WhatsApp, aynen)" satırının S-W3 kısmı; `docs/erp/WHATSAPP-PAKETI-2.5.0-PLANI.md` §0, §1 W-3 satırı, §3 madde 6–7,
+§4 S-W3, §4a S-W3 sorusu (A / B seçenekleri); önceki S7 / S7-a / S7-b / S16 / S17 / (5) / S22 ve kâhinde zaten olan F1, E2, E3, D1, D6, D7, D8, H1, J1, J3, J5, J10, J12, K6, R3 metinleri (aynen);
+WhatsApp "kime kaç kez" genel ilkesi (CLAUDE.md "2.4.8 KARARLARI"; P6 §0). Okunan başka dosya: CLAUDE.md, `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`, bu README (tamamı), `kahin/*`,
+`docs/2.5.0-IS-LISTESI.md` YALNIZ C ve D bölümleri. `surucu.mjs` ve `sahte-meta/` bu güncellemede açılmadı ve aranmadı (yeni olay `kvkk_sil` ve yeni denetim alanı sürücü notunda, 20.9).
+Program kodu (`server/`, `client/`, `bulut/`, `tools/` — `kanit.mjs` yalnız çalıştırıldı), program testleri, `docs/kanit/` (kendi kanıtı dışında), iş listesinin A, B ve E bölümleri ve öbür ajanların
+raporları GÖRÜLMEDİ; git'ten yalnız tabana hızlı ileri birleştirmenin ekrana düşen dosya adı / satır sayısı listesi (içerik değil) ve son commit iletileri (biçim için) göründü. Programa karşı KOŞULMADI.
+Eski kâhinle karşılaştırma git'ten değil, taban ağaçtaki (b91d82b9) `kahin/*` dosyalarının değişiklikten ÖNCE not defterine alınmış kopyasıyla (`kahin.py` sha256 35efc96f…). Bu bölümün
+20.1–20.5'i kodlamadan ÖNCE yazıldı ve ayrı commit'lendi (ders 40); 20.6–20.10 kodlamadan sonra.
+
+### 20.2 Yorumlar — S23 (eski S7-e) (kâhinde; her birinin kaynağı)
+| # | Yorum (kâhinde) | Kaynak |
+|---|---|---|
+| Y15-1 | **S23 tetiği**: Ödeme Hatırlatma işi işteki Yine de Gönder ile (ya da o belirsizlik zincirindeki Başarısızları Yeniden Dene ile — J10 c, belirsizlik onayı izi) gönderime alınmış; o basmada şüpheli kaydı YOKTU (iş elle işaretsiz, etiket görünmedi — Y13-5); iş GÖNDERİM ANINDAN ÖNCE beklerken (Bekliyor, Sınır Nedeniyle Bekliyor, Duraklatıldı, Lisans Nedeniyle Durdu / açılışta sorulan, Meta Bekletti, zincirdeki yeniden deneme beklerken) carinin şüpheli kaydı açıldı (Y11-17: kalanı > 0 `supheli` kalem) ve kullanıcı ASIL işte (`hedef: "asil"`) kayıt AÇIKKEN Yine de Gönder'e yeniden bastı. Hazırlanıyor / Gönderiliyor (gönderim anı geçti, Y12-4) S23 dışındadır: F1 aynen "Zaten Kuyrukta" (kâhinde bu aralık sıfıra yakın — senaryosuz). Yeniden basma anında kayıt kapalıysa (bütün şüpheli kalemlerin kalanı 0) tetik yok: F1 aynen "Zaten Kuyrukta", iş elle işaretsiz kalır | S23 + Y12-4 + Y13-1 / Y13-5 + Y14-1 + F1 |
+| Y15-2 | **"bekleyen iş S16 ile elle sayılır"** = bekleyen işe elle işareti yazılır (Y13-2 / Y12-3'teki işaret) ve işte kalır (Y12-7 / Y12-8: Devam Et, zincirdeki yeniden deneme, kayıt kapanıp açılsa da); onay penceresinde "Şüpheli Alacağı Var" görünür (S16 + Y13-4: `yeniden.<etiket>.supheli_etiketi` = [cari]). Yanıtta yeni çıktı alanı `yeniden.<etiket>.elle_sayilan` = [cari] (S23 tetiğinde anahtar VAR — eski çıktılarda yok); kişi `alinan`'a girmez (yeni iş / yeni deneme yok), `elenen`'e girmez ("Zaten Kuyrukta" uygulanmaz) | S23 + S16 + Y13-2 / Y13-4 |
+| Y15-3 | **"yeni iş açılmaz"** = yeni deneme (talep) açılmaz, POST yok, işin durumu ve bekleme anı DEĞİŞMEZ: Sınır'daki iş pencere açılınca, Duraklatıldı Devam Et'le, Meta Bekletti 24 saat sonraki 2. denemede, zincirdeki yeniden deneme kendi sırasında gider — gönderim anı bekleyen işin kendi anıdır. Kişiye ikinci ileti doğmaz (F1'in amacı korunur) | S23 ("yeni iş açılmaz") + soru metni A + G0 (3) |
+| Y15-4 | **"F1 'Zaten Kuyrukta' bu duruma uygulanmaz"** YALNIZ S23 tetiğinde (kayıt açık + elle işaretsiz + belirsizlik onaylı bekleyen iş). İş zaten elle işaretliyse (başlatmada elle seçildi, ilk basmada kayıt açıktı — S16, ya da S23 ile işaretlendi) yeniden basma F1 aynen: "Zaten Kuyrukta" (etiket görünür; işaret ve bekleme değişmez — iş zaten şüphesiz tutarla gidecek, kime / kaç kez aynı). Kayıt kapalıyken de F1 aynen | S23 + F1 + Y13-2 |
+| Y15-5 | **"gönderim anında şüphesiz tutarla gider"** = gönderim anında S7 elle yolu: {{3}} / {{4}} şüphesiz vadesi geçmiş kalemlerden, S17 sınırıyla (şüphesiz net borç); {{5}} `plan_susuyor` S7S (kayıt açıkken); gönderim anında şüphesiz tutar yoksa S7-a / (5) / S17 gereği "Atlandı" (Y12-2; ad `gecikmis_borc_yok` ya da net elemesinde `secenek` — Y13-7). Kayıt gönderim anından önce kapanırsa iş elle kalır (Y12-7) ve bütün gecikmişle gider | S23 + S7 + S7A + S17 + Y12-2 / Y12-7 |
+| Y15-6 | **Yeniden basma anında şüphesiz tutar YOKSA**: S16'nın "(yoksa elenir)" anı karar metninde yok (README §18.4 `s16_an`); S23 "gönderim anında" der ama "S16 ile" de der → iki okuma birlikte koşulur: (a) `basma` — yanıtta elenir (`elenen` = gecikmis_borc_yok / net), iş işaretsiz kalır → gönderim anında (kayıt hâlâ açıksa) S22 "Atlandı — Şüpheli Alacağı Var"; (b) `gonderim` — iş elle sayılır, gönderim anında S7-a "Atlandı — Gecikmiş Borç Yok". İkisinde de ileti gitmez → ayrışan yapraklar (yanıt, atlanma nedeni) `secenek`. Basmadan sonra gönderim anına kadar şüphesiz tutar DOĞARSA (kayıt açıkken) okumalar ayrışır (a: Atlandı, b: gider) → 20.5 **S23-a ★** (KODLANMADI; kâhin hata verir) | S23 + S16 + §18.4 |
+| Y15-7 | J10 (S9-1) aynen: S23 ile elle sayılan bekleyen işin ESKİ (belirsiz) iletisine imzalı teslim gelirse yeni ileti gitmez ("Atlandı — Daha Önce Gönderildi", J10 a) — belirsizlik onayı izi işte kalır | J10 + S23 |
+| Y15-8 | **Zincir yolu**: zincirdeki yeniden deneme beklerken (1. iletinin geç "teslim edilemedi"si gelmiştir — K6, J3) asıl işte Yine de Gönder düğmesinin programda görünüp görünmediği karar metninde yok (Y14-5 bilgisi aynen); S23 sorusunun metni bu yolu açıkça saydı ("zincirdeki yeniden deneme beklerken … asıl işte Yine de Gönder'e YENİDEN bastı") → kâhin hesaplar (asıl iş Sonucu Belirsiz tutulur). Program düğmeyi o anda göstermiyorsa o adım GEÇERSİZ (sürücü 20.9) | S23 soru metni + Y14-5 + J10 c |
+| Y15-9 | **İlke denetimi (ders 45)**: (1) yeni deneme açılmaz, almamış kişi sayılmaz; (2) eski deneme belirsiz — tek yol işteki onaylı Yine de Gönder AÇIK ve S23 o yolu kullanır; (3) bu duruma girmez (kesin alan yok); (4) çıkmaz yok — şüphesiz tutar yoksa §7a 20 türünden eleme, Ekstre her zaman açık; (5) geri yükleme / taşıma ile duran bekleyen iş §7a 26 ile durur. İkinci ileti doğmaz. Çelişen tek yer 20.5 S23-a | G0 (1)–(5) |
+
+### 20.3 Yorumlar — S-W3 (W-3 saklama süresi + KVKK silme) (kâhinde; her birinin kaynağı)
+| # | Yorum (kâhinde) | Kaynak |
+|---|---|---|
+| Y15-10 | **Silinen alanlar**: gönderim kaydının İÇERİĞİ (ileti değişkenleri; ekstre PDF'i ve kâhinin PDF özeti; PDF dosya adı — ad / bakiye / hareket taşırlar; Ekstre'nin açılışta hazırlanan içeriği — J12) ve TELEFON. Kâhin çıktısında silinmiş işin `telefon`, `degiskenler`, `pdf`, `dosya_adi` → null ve yeni alan `icerik_silindi: true` (YALNIZ silinmiş işte — eski çıktılar değişmez); `kontrol {icerik: true}` denetimi anlık içerik görünümünü verir (yeni, isteğe bağlı) | SW3 + P6 §1 W-3 ("wa_jobs, wa_job_pdfs, makine defteri") + J12 |
+| Y15-11 | **Kalan anonim iz**: tarih (gönderim denemesinin anı — programın saati; R3 uyarısındaki "son tarih", Son 3 Ay / Tüm'ün 7 günü ve hatırlatmanın "aynı gün"ü buradan), dönem (eşlik anahtarı ve tarihleri), cari kimliği, şablon adı; kâhin yorumu: + denemenin SONUCU (kabul / teslim / başarısız / süresi doldu / belirsiz) ve iş durumu / sayaçlar (POST, kabul, Meta'daki ileti, "Bu Ay") — kişisel veri değildir ve P6'nın "'gönderildi' izi" bunlardan oluşur. İz yalnız GÜNÜ tutuyorsa 7 günlük pencere gün hassasiyetine düşer — senaryolar 7 gün sınırına yaklaşmaz (bilgi) | SW3 + P6 §1 W-3 |
+| Y15-12 | **Kime / kaç kez**: anonim iz R3 / D1 / D6 / H1 / D7 / D8'de silinmemiş kayıtla AYNI çalışır → silinen kişi aynı dönemde "Daha Önce Gönderildi" (uyarı, varsayılan Bunları Çıkar) — P6 §4a A "aynı kişiye aynı dönemde ikinci ileti gitmez" (B'nin "yeniden gidebilir"inin karşıtı); R3 "Yine de Gönder" silinmiş kayıtta da açık — **İLKEYLE G0 (4)** (çıkmaz yok; iz silinmemiş kayıttan DAHA katı değil); sonraki dönem uyarısız gider. Kapanmış işteki Sonucu Belirsiz deneme izi (aşılmış belirsiz) aynen eler — **İLKEYLE G0 (2)** (iz sonucu taşımasaydı almış olabilecek kişiye ikinci ileti uyarısız giderdi) | SW3 + P6 §1 W-3 + §4a A + R3 + G0 (2, 3, 4) |
+| Y15-13 | **"1 yıl" başlangıcı**: işin SON gönderim denemesinin anı (Gönderiliyor — içeriğin ve telefonun son kullanıldığı an); denemesi yoksa toplu işin açılış anı. Süre TAKVİM yılıyla: programın YEREL saat diliminde aynı tarih ve saat bir sonraki yıl (29 Şubat → 28 Şubat), an hassasiyetinde (gün yuvarlaması yok) — sınırdan ÖNCE içerik durur, sınırda ve SONRA silinir. Öbür başlangıç okumaları (toplu işin açılışı, kesinleşme / teslim anı) kâhin senaryolarında aynı sonucu verir (aralarında < 1 saat, denetimler sınırdan ±1–2 saat) — bilgi; senaryoların yılında 29 Şubat yok → 365 gün ↔ takvim yılı aynı | SW3 ("1 yıl sonra") |
+| Y15-14 | **Silinme anı**: süre dolduğu an (program açıkken); program kapalıysa açılışta. Program silmeyi periyodik bir temizlik turunda yapıyorsa sürücü o turu sahte saatle denetimden önce tetikler; sınırdan sonra ±1 gün içinde başka anda siliniyorsa OKUMA FARKI (içerik alanı; kime / kaç kez değil) | SW3 |
+| Y15-15 | **Silme talebi (KVKK)**: yeni olay `kvkk_sil {id}` — o anda o carinin (o şirkette) şirket dosyasındaki bütün işlerinin içeriği, telefonu ve PDF'i silinir; makine defterindeki denemeler kâhinde zaten içeriksizdir (yalnız iz). Talep CARİ başına (K2: aynı telefonlu başka cari etkilenmez — bilgi). Carinin kendisi (kart, telefon, hareketler, vadeler) DEĞİŞMEZ; talepte kartın telefonu da silindiyse ayrı `cari {telefon: null}` olayı | SW3 + P6 §3 madde 6 |
+| Y15-16 | **Silmeden sonra yeni gönderim**: telefon GÖNDERİM ANINDA karttan okunur (§7a 1, 6) — silinen telefon hiçbir yolla (eski iş, makine defteri, önbellek) yeniden kullanılmaz; kart telefonu boşsa kişi "Telefonsuz" elenir (R3 denetiminden önce — başlatma sırası). İçerik yeni işte yeniden hazırlanır (yeni iş = yeni kayıt; J12 aynı iş içindir) | SW3 + §7a 1, 6 + J12 |
+| Y15-17 | **"Bu Ay"** (J5): silinen işin teslimi sayılmaya devam eder (iz sonucu taşır; J1 "her durumda") — silme ne "Bu Ay"ı ne R3'ü azaltır | J5 + J1 + Y15-11 |
+| Y15-18 | **Geri yükleme (ilke 5)**: yedekten dönen işe aynı süre kuralı — dönen işin başlangıcı 1 yıldan eskiyse içeriği DÖNDÜĞÜ ANDA silinir (dosyadan gelen içerik "1 yıl sonra" koşulunu taşır). R3 dosyadaki ya da defterdeki izle aynen (D7). Silme TALEBİNDEN ÖNCE alınmış yedek geri yüklenince talebin yeniden uygulanıp uygulanmadığı karar metninde yok → 20.5 **S-W3-c** (KVKK; kime / kaç kez DEĞİL): kâhin o işlerin içerik alanlarını denetlemez (`plan_susuyor`), R3 kesin | SW3 + G0 (5) + D7 |
+| Y15-19 | **Taşıma** (defter boş): dosyadaki iz R3'te (D8) aynen; silinmiş içerik taşınan dosyada da yoktur — senaryosuz | SW3 + D8 + G0 (5) |
+| Y15-20 | **Süre dolan / silinen iş bekliyorsa ya da Sonucu Belirsiz ise** (Bekliyor, Sınır, Duraklatıldı, Meta Bekletti, Lisans, açılışta sorulan, Hazırlanıyor / Gönderiliyor, Sonucu Belirsiz): karar metninde yok → 20.5 **S-W3-a ★** (KODLANMADI; kâhin hata verir). Kesin ya da kapanmış işte (Teslim / Okundu / Başarısız / Süresi Doldu / İptal / Atlandı / Durduruldu / Taşınan) ve teslimi beklenen işte (Meta Kabul Etti / Gönderildi — kancasız yol, §7a 16) silme kime / kaç kez'i değiştirmez: iz "gönderildi" olarak sayılır, geç teslim / failed ize yazılır (J1 / J3) | SW3 + G0 + §7a 16 + J1 / J3 |
+| Y15-21 | **Silinmiş işin yeniden gönderimi** (Başarısızları Yeniden Dene / asıl işte Yine de Gönder): Ödeme Hatırlatma'da içerik ve telefon zaten gönderim anında okunur (Y9d-2) → yeniden gönderilir (yeni içerik işe yazılır, `icerik_silindi` kalkar); Ekstre'de içerik açılışta hazırlanmıştı (J12) ve silindi → 20.5 **S-W3-b ★** (KODLANMADI; kâhin hata verir) | SW3 + J12 + Y9d-2 |
+| Y15-22 | Sınır penceresi (24 saatte farklı alıcı, telefonla — §6 W2): silme pencere sayacını azaltmaz (sayaç makine düzeyinde, 24 saatlik) — bilgi, senaryosuz | SW3 + §6 W2 + SW2 |
+| Y15-23 | **İlke denetimi (ders 45)**: (1) silme ileti doğurmaz, kesin almamış kişi sayılmaz; (2) belirsiz iz eler (İLKEYLE); (3) aldıysa aynı dönemde elenir — iz bunun için kalır; (4) elenen kişinin yolu R3 "Yine de Gönder" (İLKEYLE) ve sonraki dönem; (5) geri yüklenen / taşınan veride aynı kural (Y15-18 / Y15-19). Çelişen yerler 20.5 | G0 (1)–(5) |
+
+### 20.4 Önceki güncellemelerle çelişen yerler (yeni KARAR geçer)
+- §19.4 "KULLANICIYA SORULMALI S7-e ★" (kâhin `ValueError`) → KAPANDI (S23 = A). Kâhinin `yine_de_gonder`'deki S7-e hatası KALKAR; kâhinin kendi testi I11 (d) tersine döner (aynı girdi hesaplanır:
+  bekleyen iş elle sayılır, Devam Et'te şüphesiz tutarla gider) — yeni denetim I12. §19.8 S-57 "S7-e sırası kurulmaz (kâhin hata verir)" → geçersiz.
+- F1 ("kişide bekleyen ileti varsa 'Zaten Kuyrukta' yine eler") → S23 tetiğinde uygulanmaz (Y15-4); öbür her durumda aynen.
+- §2 / §7.1 "makine defteri ∪ şirket dosyası" kayıtları süresiz sayılıyordu → içerik + telefon + PDF 1 yıl sonra ya da talepte silinir; iz (Y15-11) R3'te aynen (kime / kaç kez değişmez).
+- I10 (e) "`supheli_etiketi` yalnız S16 / S22" → S23 senaryolarında da (onay penceresi, Y15-2).
+
+### 20.5 KULLANICIYA SORULMALI / KÂHİN SUSUYOR (ana oturuma)
+**KULLANICIYA SORULMALI (kime / kaç kez — KODLANMADI; senaryo bu duruma girerse kâhin `ValueError` verir):**
+- **S23-a ★** (S23 × S16 anı): yeniden basmada şüphesiz tutar yoktu (ör. şüphesiz kalemin vadesi bugün), gönderim anına kadar doğdu (ertesi gün gecikmiş) ve kayıt hâlâ açık —
+  A) (ÖNERİ) iş S23 ile elle sayıldı → gönderim anında şüphesiz tutarla gider (S23 "gönderim anında şüphesiz tutarla"); B) basmada "Gecikmiş Borç Yok" ile reddedilmiş sayılır, iş işaretsiz
+  kalır → gönderim anında S22 "Atlandı — Şüpheli Alacağı Var" (bir basış daha gerekir). Kime / kaç kez: A'da ileti gider, B'de gitmez.
+- **S-W3-a ★** (silme / süre dolumu × bekleyen ya da belirsiz iş): silme talebi geldiğinde (ya da 1 yıl dolduğunda) kişinin bekleyen (Bekliyor / Sınır / Duraklatıldı / Meta Bekletti / Lisans /
+  açılışta sorulan) ya da Sonucu Belirsiz işi varsa — A) (ÖNERİ) bekleyen iş gönderilmez ("Atlandı — Silme Talebi"; ilke 1: almadı, sayılmaz; yol: yeni gönderim), Sonucu Belirsiz denemenin
+  izi kalır ve aynı dönemde eler (ilke 2; yol işteki Yine de Gönder — Ödeme Hatırlatma'da içerik gönderim anında, Ekstre'de S-W3-b'ye bağlı); B) bekleyen iş gönderim anında kart bilgisiyle
+  gider (silme yalnız geçmiş kayıtları kapsar). Kime / kaç kez: A'da o ileti gitmez, B'de gider.
+- **S-W3-b ★** (içeriği silinmiş Ekstre işinin yeniden gönderimi — Başarısızları Yeniden Dene / asıl işte Yine de Gönder): A) (ÖNERİ) bu yolla yeniden gönderilemez (düğme pasif + neden); yol yeni
+  gönderim (Başarısız deneme R3'te sayılmaz → uyarısız gider); B) içerik açılış günü verisiyle yeniden üretilir ve iş gider. Kime / kaç kez: o yolla A'da gitmez, B'de gider.
+
+**KULLANICIYA SORULMALI (KVKK uyumu — kime / kaç kez DEĞİL; kâhin içerik alanlarını `plan_susuyor` bırakır, R3 kesin):**
+- **S-W3-c**: silme talebinden ÖNCE alınmış yedek geri yüklenince silinen içerik / telefon / PDF — A) (ÖNERİ) program talebi (anonim: cari kimliği + tarih) makine düzeyinde tutar ve geri yüklenen
+  dosyada yeniden uygular; B) yedekteki hâli gelir (yedeklerin ayrıca silinmesi gerekir).
+
+**KÂHİN SUSUYOR — `secenek` yaprağı:** Y15-6 (S23'te yeniden basmada şüphesiz tutar yokken yanıtın ve atlanma nedeninin iki okuması — ileti iki okumada da gitmez).
+
+**Bilgi (senaryosuz):** Y15-1 Hazırlanıyor / Gönderiliyor anında yeniden basma (F1); Y15-8 zincirde düğmenin görünmesi; Y15-11 izin gün / an hassasiyeti; Y15-13 başlangıç okumaları ve 29 Şubat;
+Y15-14 silme anı; Y15-15 K2 (aynı telefonlu öbür cari); Y15-19 taşıma; Y15-22 sınır penceresi. **İLKEYLE** (ana oturum iş listesine yazsın): Y15-12'nin iki maddesi (R3 Yine de Gönder
+silinmiş kayıtta açık — G0 4; belirsiz iz eler — G0 2).
+
+### 20.6 Kâhinde (kodlama) — senaryolar (10) ve mutasyonlar (10)
+Kod: `KARARLAR` S23, SW3 (AYNEN). **S23:** `yine_de_gonder`'deki S7-e `ValueError` KALKTI → `s23` tetiği (iş `S23_BEKLEYEN` = Bekliyor / Sınır / Duraklatıldı / Lisans / açılışta sorulan /
+Meta Bekletti; belirsizlik onayı; elle işaretsiz; kayıt açık; asıl işte) → `s23_yeniden_bas()`: elle işareti, yanıtta `elle_sayilan`, etiket; işin durumu, bekleme anı ve denemesi DEĞİŞMEZ;
+basmada şüphesiz tutar yoksa `s23_an` iki okuma (`S23_OKUMALARI` = `gonderim` (model), `basma`), `isci`'de `s23_bos` — okumalar kime / kaç kez ayrışırsa (gönderim anında tutar doğdu, kayıt
+açık) S23-a `ValueError`. Hazırlanıyor / Gönderiliyor ve elle işaretli iş eski yoldan (F1 "Zaten Kuyrukta"). **S-W3:** `yil_sonra()` (takvim yılı, yerel an, 29 Şubat → 28 Şubat),
+`saklama_baslangici()` (son deneme; yoksa toplu işin açılışı), `saklama_bitisi()`, `saklama_zamani()` / `saklama_isle()` (benzetim çizelgesinde, program açıkken; ufku 1 yıldan kısa senaryoda
+hiç bakılmaz — `saklama_alt`), `icerik_sil()` (bekleyen / Sonucu Belirsiz işte S-W3-a `ValueError`), `kvkk_sil` olayı, `kart_telefonu()` (başlatma + gönderim anı), `icerik_gorunum()` (sonuç +
+`kontrol {icerik}`; talepten önceki yedekten dönen içerik `plan_susuyor` — S-W3-c), `tasi`: silinmiş Ekstre'de S-W3-b `ValueError`; Ödeme Hatırlatma yeniden gönderilince yeni içerik yazılır,
+`icerik_silindi` kalkar (`icerik_t`). Yeni çıktı alanları YALNIZ yeni durumlarda: `yeniden.<etiket>.elle_sayilan` (S23 tetiği), `isler.<iş>.icerik_silindi` (silinmiş iş),
+`kontroller.<ad>.icerik` (istenirse). Yeni olay: `kvkk_sil {id}`.
+
+| Karar | Senaryo | Ne | Sınır | Mutasyon (yakalayan; değerle) |
+|---|---|---|---|---|
+| S23 | S23-01 | günlük sınır 1: SR / SV Yine de Gönder (kayıt yok) → sınırda; kayıtlar açılır; SR'ye kayıt açıkken yeniden basma → elle sayılır, iş SINIRDA kalır (POST 3 aynen); ikinci basma (artık elle) F1 "Zaten Kuyrukta"; ertesi gün SR 15.10.2026 / 300,00 TL (800 − 500) gider, SV S22 "Atlandı" | 24 sa sınır, ikinci basma | M213, M214 |
+| S23 | S23-02 | Yine de Gönder + duraklatma; DK (kayıt açık) yeniden basma → elle, Devam Et'te 18.10.2026 / 300,00 TL; DT (kayıt YOK) yeniden basma → F1 "Zaten Kuyrukta", bütün gecikmişle 12.10.2026 / 400,00 TL / 400,00 TL; DL S22 "Atlandı" | kayıt var / yok | M213, M214 |
+| S23 | S23-03 | zincir: Yine de Gönder 131021 → 1. iletinin geç failed'ı → Başarısızları Yeniden Dene + duraklatma → kayıt açılır → asıl işte yeniden basma → elle, Devam Et'te 17.10.2026 / 400,00 TL, POST 3 | Y15-8 | M213, M214 |
+| S23 | S23-04 | Yine de Gönder iletisi Meta Bekletti; kayıt açılır; 2. denemeden ÖNCE yeniden basma → elle; 24 sa sonraki 2. deneme 16.10.2026 / 250,00 TL ile gider, POST 3 | 24 sa (Meta Bekletti) | M213, M214 |
+| S23 | S23-05 | yeniden basmada şüphesiz tutar yok (öbür kalemin vadesi BUGÜN): `s23_an` iki okuma — yanıt (`elle_sayilan` / `elenen`) ve atlanma nedeni (`gecikmis_borc_yok` / `supheli_alacak`) `secenek`; aynı gün Devam Et: iki okumada da Atlandı, ileti gitmez | vade = bugün | M213, M214 |
+| SW3 | SW3-01 | 02.11.2026 Geçen Ay → A, B; +364 g 22 sa içerik durur, +365 g 2 sa silinmiş (durum Teslim Edildi kalır); aynı dönem (özel Ekim 2026) "Daha Önce Gönderildi" (son 02.11.2026), toplu iş oluşmaz; R3 Yine de Gönder ile A'ya gider; Ekim 2027 B'ye gider | 1 yıl ±2 sa | M215, M216, M217, M220 |
+| SW3 | SW3-02 | 01.11.2026 00:30 yerel (UTC 31.10); 31.10.2027 23:30 yerel durur, 01.11.2027 01:30 yerel silinmiş (UTC'de iki denetim de 31.10); aynı dönem "Daha Önce Gönderildi" (son 01.11.2026); "Bu Ay" Kasım 2026 + Kasım 2027 | gece yarısı yerel ≠ UTC, 1 yıl ±1 sa | M215, M216, M217, M220 |
+| SW3 | SW3-03 | A ve C silme talebi (C'nin kart telefonu da silinir): içerik hemen silinir, B'ninki durur; aynı dönem: A, B "Daha Önce Gönderildi", C "Telefonsuz"; R3 Yine de Gönder ile A'ya yeni içerikle; Kasım'da A, B gider, C "Telefonsuz"; "Bu Ay" 4 + 2 | talep anı, sonraki dönem | M215, M218, M219, M221 |
+| SW3 | SW3-04 | 1 yıl dolunca silinir; 1 yıl önce alınmış yedek geri yüklenir → dönen içerik DÖNDÜĞÜ ANDA silinir (ilke 5); aynı dönem "Daha Önce Gönderildi" | geri yükleme, 1 yıl | M215, M216, M222 |
+| SW3 | SW3-05 | talep → talepten ÖNCEKİ yedek geri yüklenir: A'nın içerik alanları `plan_susuyor` (S-W3-c); aynı dönem A, B "Daha Önce Gönderildi" (kesin); R3 Yine de Gönder ile A'ya; "Bu Ay" 3 | geri yükleme + talep | M215, M219, M221 |
+
+Mutasyonlar (`kahin.MUTASYONLAR`): M213 S23'ün B seçeneği (F1 "Zaten Kuyrukta", gönderim anında S22), M214 "yeni iş açılmaz"ın tersi (yeni iş + bekleyen iş, ikinci ileti), M215 S-W3'ün B seçeneği
+(anonim iz de silinir), M216 / M217 saklama sınırı ±1 gün, M218 silinen telefon yeniden kullanılır (kart boşsa), M219 silme talebi içeriği silmez, M220 1 yıl UTC gününe göre, M221 silme talebi
+"Bu Ay"ı düşürür, M222 geri yüklenen işe saklama kuralı uygulanmaz. Hepsi DEĞERLE (elle beklenen) yakalanıyor; matris (`wk15-mutant-matrisi`): M213 5, M214 5, M215 5, M216 3, M217 2, M218 1,
+M219 2, M220 2, M221 2, M222 1 senaryoda. İstisnayla yakalanan yine yalnız M5, M108 (eskiden beri). Kâhinin kendi testine **I12** eklendi: I11'in eski (d) S7-e girdisi artık hesaplanıyor
+(elle, 14.10.2026 / 300,00 TL, POST 2) ve M213 ile aynı girdide "Atlandı" (A ↔ B ayrışır); `s23_an` iki okumasında kime / kaç kez alanları AYNI, okuma başına `elle_sayilan` ∩ (elenen ∪ alınan)
+= ∅; S23-a (tutar ertesi gün doğar) hata veriyor; `yil_sonra` birim denetimi; S-W3-a (bekleyen işte talep, belirsiz işte talep, 1 yıl dolarken bekleyen iş) ve S-W3-b (silinmiş Ekstre'nin yeniden
+denemesi) hata veriyor; silinmiş Ödeme Hatırlatma'nın yeniden denemesi karttan hesaplanıyor (yeni içerik, `icerik_silindi` yok); yeni alanlar yalnız S23 / SW3'te. I11 (d) kalktı (I12'ye tersine
+taşındı), I11 (e)'ye "S22'de S23 tetiği yok"; I10 (e) etiket S16 + S22 + S23; I2'ye S23, SW3; I4'e başlıklar (`senaryolar.YENI_250`); C'nin telefon denetimi `plan_susuyor` yaprağını atlar;
+F ipuçlarına M213–M222.
+
+### 20.7 Eski kâhinle karşılaştırma (taban b91d82b9, değişiklikten ÖNCE alınmış kopya; `kahin.py` sha256 35efc96f…)
+Yeni 10 senaryo: **10 KIRMIZI, 0 AYNI** (`wk15-eski-kahinle-yeni-senaryolar`). S23-01…05: eski kâhinin "KULLANICIYA SORULMALI S7-e (README §19.4) … kodlanmadı" hatası (beklenen neden — kural
+yoktu; görev metnindeki "S7-d kodlanmadı" bu tabanda S7-e'dir: S7-d güncelleme 14'te kapandı). SW3-01 / 02 / 04: değerle (içerik silinmiyor: `isler.T1/A.telefon` dolu, `icerik_silindi`
+yok, `kontrol {icerik}` gözlemi yok). SW3-03 / 05: "bilinmeyen olay: kvkk_sil" (zayıf neden, ders 38). Ek (ders 38): eski kâhinin nötr kopyasında (YALNIZ S7-e koşulu etkisiz, `kvkk_sil` tanınır
+ama etkisiz, `kontrol {icerik}` gözlemi — kural eklenmedi; `wk15-araclar/notr_kopya.py`) **10/10 değerle KIRMIZI** ve nedenler beklenen (`wk15-eski-kahinle-yeni-senaryolar-notr`): S23'lerde
+karar yokken düşülecek yol F1'dir — yeniden basma "Zaten Kuyrukta", iş gönderim anında S22 ile "Atlandı — Şüpheli Alacağı Var", POST bir eksik (= S23'ün B seçeneği, M213); SW3'lerde içerik
+silinmiyor. Nötr kopyada SW3'lerin R3 / "Bu Ay" / elenen yaprakları AYNI: anonim iz eski davranışın (kayıtlar hiç silinmiyordu) kime / kaç kez yüzünü korur — dişi M215 ve M221.
+
+### 20.8 Değişen eski beklentiler
+YOK: 332 eski senaryonun girdi + elle + TAM model sonucu (başlık / kaynak / açıklama dahil) bayt bayt aynı, sıra korunuyor (taban b91d82b9'ın değişiklikten önce alınmış `senaryolar.json`
+kopyasıyla); üst alanlardan yalnız `kararlar`'a S23, SW3 eklendi (`wk15-eski-332-tam-sonuc-fark`). Eski senaryoların hiçbiri S7-e durumuna (girseydi eski kâhin hata verirdi) ve 1 yıl sınırına
+(en uzun ufuk +31 gün) girmiyor, `kvkk_sil` kullanmıyor.
+
+### 20.9 Sürücü için (S-59 … S-66; programa karşı koşmadan önce gereken eşlemeler)
+- **S-59 S23 yeniden basma:** `yine_de_gonder {hedef: "asil"}` iş gönderim anından ÖNCE beklerken (Sınır, Duraklatıldı, Meta Bekletti, zincirdeki yeniden deneme) ve kayıt açıkken; §19.8 S-57'nin
+  "S7-e sırası kurulmaz" notu GEÇERSİZ. Okunacaklar: yanıtta kişinin elle seçim olarak işaretlendiği → `elle_sayilan` (program bunu ayrı göstermiyorsa "okunamadı" — boş sayılmaz, ders 4);
+  onay penceresindeki etiket → `supheli_etiketi` (S-48); işin durumu DEĞİŞMEMELİ, yeni iş / deneme açılmamalı (programın Gönderimler / iş listesinde yeni satır çıkarsa M214 düzeni — ayrışma).
+  S23-03'te zincirdeki yeniden deneme beklerken asıl işte Yine de Gönder düğmesi programda yoksa o adım GEÇERSİZ (Y15-8).
+- **S-60 S23-05:** `secenek` yaprakları `kahin.py karsilastir`'da (sürücü değişikliği gerekmez).
+- **S-61 `kvkk_sil {id}`:** programın KVKK silme yolu (W-3 kodu; arayüzü / ucu kâhinde bilinmiyor) o carinin gönderim kayıtları için O ANDA tetiklenmeli; oluşmadıysa senaryo GEÇERSİZ. Kart
+  telefonunun silinmesi ayrı `cari {telefon: null}` olayıdır (SW3-03 C).
+- **S-62 `kontrol {icerik: true}`:** o anda programın iş ayrıntısından telefon, değişkenler, PDF (programın sakladığı PDF — sahte Meta'daki kopya değil; özetini sürücü PDF metninden üretir) ve
+  dosya adı okunur; silinmişse alanlar `null` + `icerik_silindi: true` (programın "silindi" gösterimi kâhinde yok — alanların boş olması esas; anonim iz alanları — durum, sayaçlar — dolu kalmalı).
+- **S-63 zaman:** SW3-01 / 02 / 04 sahte saatle ~365 gün ileri sarılır (program ve sahte Meta aynı saatte); program saklama temizliğini periyodik yapıyorsa sürücü denetimden önce o turu tetikler
+  (Y15-14); SW3-02 gece yarısı (yerel ≠ UTC) — iki koşu `TZ=Europe/Istanbul` ve `TZ=UTC` (ders 13, 22).
+- **S-64 geri yükleme:** SW3-04 (1 yıl sonra, 1 yıl önce alınmış yedek — dönen içerik o anda silinmeli), SW3-05 (talepten önceki yedek; `T1/A` içerik alanları `plan_susuyor`, denetlenmez — R3 kesin).
+- **S-65 Meta medya ömrü:** 1 yıllık senaryolarda sahte Meta medyayı 30 günde siler (§1); kâhinin `medya_silme`'si (Meta'da silinen) teslim anında kesinleşmeyle sayılır (Y10-7 aynen).
+- **S-66 Ç5 / W-3 öncesi:** program S23'ü (Ç5) ya da S-W3'ü (W-3) henüz uygulamıyorsa bu 10 senaryoda ayrışma BEKLENİR (S-46 / S-53 / S-58 düzeni) — kod birleşince yeniden koşulur.
+
+### 20.10 Kanıt ve DENENMEYEN
+- **Kanıt** (`docs/kanit/2026-11-06/wk15-*`, OKU: `wk15-OKU.txt`): senaryolar **342/342** elle = model (`wk15-senaryolar`, `TZ=UTC`; `wk15-senaryolar-tz-istanbul` 342/342, `senaryolar.json` iki
+  koşuda aynı sha256); kâhinin kendi testi **370/370**, F mutasyon **221/221** (`wk15-kahin`, `TZ=UTC`; `wk15-kahin-tz-istanbul` 370/370); eski kâhinle yeni 10 senaryo (ham + nötr kopya);
+  332 eski senaryonun tam sonuç farkı; mutant matrisi; araçlar `wk15-araclar/`. Sahte Meta'ya ve sürücüye DOKUNULMADI (açılmadı, testleri koşulmadı).
+- **DENENMEYEN:** programa karşı sürücü koşusu (görev gereği; S-59…S-66 yazılmadı); S23-a, S-W3-a, S-W3-b (KULLANICIYA SORULMALI — kâhin hata verir, yalnız I12'de); S-W3-c (`plan_susuyor`);
+  29 Şubat'ı geçen saklama süresi; başlangıç okumalarının (son deneme / açılış / teslim) ayrıştığı uzun bekleme; taşıma + silme (Y15-19); K2 — aynı telefonlu öbür cari (Y15-15); sınır penceresi +
+  silme (Y15-22); Lisans Nedeniyle Durdu / açılışta sorulan → Devam Et yolunda S23 (Duraklatıldı ile aynı yol); Hazırlanıyor / Gönderiliyor anında yeniden basma (Y15-1); S23 ile elle sayılan işin
+  eski iletisine geç teslim (Y15-7, J10 aynen); silinmiş Ödeme Hatırlatma'nın yeniden gönderimi (yalnız I12, senaryosuz); silmeden sonra aşılmış Sonucu Belirsiz izinin elemesi (Y15-12 İLKEYLE —
+  senaryosuz); iki şirket.

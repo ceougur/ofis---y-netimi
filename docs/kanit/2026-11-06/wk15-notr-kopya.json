@@ -1,0 +1,32 @@
+{
+  "ad": "wk15-notr-kopya",
+  "komut": "python3 -I docs/kanit/2026-11-06/wk15-araclar/notr_kopya.py /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wk15-b91d82b9/eski/kahin.py /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wk15-b91d82b9/eski-notr",
+  "commit": "fe04bc67cb8640e9355b74f87d27d825b4776385",
+  "dal": "worktree-agent-ac1490584d66fd4b6",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T06:45:29.242Z",
+  "sure_sn": 0,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 3,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wk15-b91d82b9/kanit/2026-11-06/wk15-notr-kopya.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac1490584d66fd4b6",
+  "ham_cikti_sha256": "75a283ef518b5838d8e2f037b91e1dde884853a2f61bc6e3c63dbf28518d82f8",
+  "ham_cikti_bayt": 211
+}
