@@ -154,7 +154,7 @@ jobs:
       - run: node tools/kanit.mjs kos e2e-senaryo-defter-turu-250 npm run test:senaryo-defter-turu-250
       # 2.5.0 BİRLEŞİK TUR 2: dört düzeltme formu (cari, stok, taksit, Kasa / transfer) açıldığı andaki sürümü gönderir; arada başka kullanıcı düzeltince 409 formda, veri ezilmez.
       - run: node tools/kanit.mjs kos e2e-senaryo-duzeltme-kilidi-250 npm run test:senaryo-duzeltme-kilidi-250
-      # 2.5.0 Ç3 tur 2: Dönem Kilidi kartı — kilit dondurmayı beklemeden konur; kart dondurma sürerken ilerlemeyi yazar ve yoklar, bitince / düşünce durur.
+      # 2.5.0 Ç3 tur 2: Dönem Kilidi kartı — kilit yanıtı dondurmayı en çok 5 sn bekler; uzun dondurmada kart ilerlemeyi yazar ve yoklar, bitince / düşünce durur.
       - run: node tools/kanit.mjs kos e2e-senaryo-donem-kilidi-ilerleme-250 npm run test:senaryo-donem-kilidi-ilerleme-250
       # 2.4.8 W1: Yönetim → WhatsApp (Elle Bağla, Bağlantıyı Sına, Kendime Deneme Gönder); Meta yerine yerel sahte Graph sunucusu.
       - run: node tools/kanit.mjs kos e2e-senaryo-whatsapp-ayar-248 npm run test:senaryo-whatsapp-ayar-248
