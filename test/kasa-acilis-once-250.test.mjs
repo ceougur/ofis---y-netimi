@@ -137,6 +137,20 @@ describe("Ç5-K S12 = A: Kasa açılışından ÖNCE tarihli YENİ nakit hareket
     });
   }
 
+  it("aynı işlemde eklenip hemen düzeltilen açılış öncesi nakit satırı YENİ harekettir (eklendiği hâli 'önceki hâl' sayılmaz — store düzeyi)", () => {
+    const store = server.app.store;
+    const before_ = snapshot(store);
+    // Bir yazım yolunun satırı ekleyip aynı işlemde açıklamasını / numarasını düzeltmesi (ör. fatura numarasının açıklamalara yazılması) kuralı aşmamalı.
+    const id = `cash-c5k-${Date.now()}`;
+    const run = () =>
+      store.tx(() => {
+        store.run("INSERT INTO cash_entries (id, kind, amount, date, description, method, created_by, created_at) VALUES (?, 'in', 5, ?, 'eklenip düzeltilen', 'cash', 'test', ?)", id, BEFORE, NOW);
+        store.run("UPDATE cash_entries SET description = 'düzeltildi' WHERE id = ?", id);
+      });
+    assert.throws(run, error => error?.extra?.code === "cash-before-opening" || error?.code === "cash-before-opening" || /Kasa açılışından/.test(String(error?.message)), "ilk denetim Kasa açılış kuralı");
+    assert.equal(snapshot(store), before_, "hiçbir şey yazılmadı");
+  });
+
   it("nakit OLMAYAN eşleri açılıştan önce de 200 (Kasa'ya dokunmaz)", async () => {
     for (const [name, run] of NON_CASH) await must(`${name} ${BEFORE}`, run(api, ctx, BEFORE));
   });
