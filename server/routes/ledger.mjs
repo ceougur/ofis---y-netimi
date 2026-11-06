@@ -368,9 +368,9 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     ok(res, { trial, reconciliation, entryCount: entries.length });
   });
   // 2.5.0 Ç3 tur 2 (docs/erp/C3-DONDURMA-TASARIM.md §18; plan §8 "1.000.000: hedef ≤ 2 dk, İLERLEME"): kilit ucu dondurmanın bitmesini BEKLEMEZ — kilit + bekleyen koşu (tek
-  // işlem) yazılıp kapının kilit izi (ayrı iş parçacığı) benimsenince yanıt verir; bayat satır temizliği → bekleyen koşu ARKADA sürer (lockJobs). 1.000.000 satırda dondurma ~85 sn:
-  // beklense istemcinin 30 sn sınırı (hof-core.js sendApi) başarılı kilidi "Sunucu zamanında yanıt vermedi" diye gösterirdi. Bu arada kilitli dönem bekleyen koşunun kuralıyla canlı
-  // okunur (K1). İlerleme: GET /api/workspace/ledger/lock → freeze (pending: bekleyen koşu, active: süren iş var).
+  // işlem) yazılınca yanıt verir; bayat satır temizliği → bekleyen koşu → kilit izi ARKADA sürer (lockJobs). 1.000.000 satırda dondurma ~85 sn: beklense istemcinin 30 sn sınırı
+  // (hof-core.js sendApi) başarılı kilidi "Sunucu zamanında yanıt vermedi" diye gösterirdi. Bu arada kilitli dönem bekleyen koşunun kuralıyla canlı okunur (K1), kapının izi
+  // "bekliyor"dur (kilitli döneme dokunan yazım 409). İlerleme: GET /api/workspace/ledger/lock → freeze (pending: bekleyen koşu, active: süren iş var).
   const lockJobs = new Set();
   let closing = false;
   function freezeView() {
@@ -379,33 +379,25 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     return { ...status, pending: waiting ? { no: waiting.no, from: waiting.from, through: waiting.through, rule: waiting.rule } : null, active: Boolean(status.running || lockJobs.size) };
   }
   /**
-   * Kilitten sonraki iki iş, PARALEL: (1) kapının kilit izi ayrı iş parçacığında (digestOf; dondurmanın izi gelmeden) — uç YANITI bunu bekler (traced); (2) bayat satırlar →
-   * bekleyen koşu (dondurma) ARKADA. Neden iz önce: iz "bekliyor"ken kilitli döneme dokunan İZİNLİ yazım (ör. kilitli banka fişinin Ters Kaydet'i — bugün tarihli ayna fiş) kapıda
-   * karşılaştıracak iz bulamaz, "dönem kilidi yeni kondu" diye 409 alır; eski uç izi dondurmayla bekleyip öyle yanıt verdiği için aynı kullanıcı bu pencereyi görmüyordu (Ç3 tur 2,
-   * test/banka-210-ters-kayit). İz dondurmadan çok kısadır (yalnız kilitli dönemin kaynak satırlarının özeti; ölçüm §18). Bu arada kilit başka güne alındıysa (başka istek) iz
-   * o kilidin izi değildir, benimsenmez. Hata yanıtı düşürmez: günlüğe yazılır; iz yine dondurmanın anlık görüntüsünden gelir, koşu bekler ve sonraki kilitte / açılışta sürer.
+   * Kilitten sonraki arka iş (bayat satırlar → bekleyen koşu → kilit izi). Kapının izi dondurmanın anlık görüntüsünden gelir (freezeRun adoptLock); kilit geri çekildiyse (ya da
+   * dondurma tamamlanamadıysa) iz ayrı iş parçacığında ölçülür (digestOf). Bu arada kilit başka güne alındıysa (başka istek) iz o kilidin izi değildir, benimsenmez. İz gelene kadar
+   * kapı "bekliyor"dur: kilitli döneme dokunan yazım (kapsam süzgecinin kilit nedeni) 409 — kilitli fişin Ters Kaydet'i gibi bugün tarihli düzeltmeler bu sınıfta DEĞİLDİR
+   * (test K8; yeniden üretildi). Hata yanıtı etkilemez (yanıt verildi): günlüğe yazılır; koşu bekler ve sonraki kilitte / açılışta sürer.
    */
   function afterLock(lockedUntil) {
-    const gate = integrity();
-    const still = () => !closing && Boolean(lockedUntil) && period.lockedUntil() === lockedUntil && Boolean(gate?.adoptLock) && Boolean(gate.lockPending?.(lockedUntil));
-    const traced = (async () => {
-      if (!still()) return;
-      const digest = await snapshots.digestOf(lockedUntil);
-      if (still()) gate.adoptLock({ lock: lockedUntil, digest });
-    })();
-    const frozen = (async () => {
+    const job = (async () => {
       if (closing) return;
       await snapshots.purgeStale();
       await snapshots.runPending();
-    })();
-    const job = Promise.allSettled([traced, frozen]).then(results => {
-      for (const [index, result] of results.entries()) {
-        if (result.status === "rejected") log?.warn?.(`Dönem kilidinden sonraki ${index ? "dondurma" : "kilit izi"} tamamlanamadı (${result.reason?.message || result.reason}); koşu bekliyor, sonraki kilitte ya da açılışta sürer.`);
-      }
-    });
+      const gate = integrity();
+      const still = () => !closing && Boolean(lockedUntil) && period.lockedUntil() === lockedUntil && Boolean(gate?.adoptLock) && Boolean(gate.lockPending?.(lockedUntil));
+      if (!still()) return;
+      const digest = await snapshots.digestOf(lockedUntil);
+      if (still()) gate.adoptLock({ lock: lockedUntil, digest });
+    })().catch(error => log?.warn?.(`Dönem kilidinden sonraki dondurma / iz tamamlanamadı (${error?.message || error}); koşu bekliyor, sonraki kilitte ya da açılışta sürer.`));
     const tracked = job.finally(() => lockJobs.delete(tracked));
     lockJobs.add(tracked);
-    return { job: tracked, traced: traced.catch(() => {}) };
+    return tracked;
   }
   // Dönem kilidi (v2.0.13): kilitli tarih ve öncesine hareket eklenemez/düzeltilemez/silinemez. Yalnız yönetici değiştirir.
   router.get("/api/workspace/ledger/lock", async ({ req, res }) => {
@@ -448,8 +440,8 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     const gate = integrity();
     if (gate?.adoptLock) gate.adoptLock({ lock: lockedUntil, digest: null });
     else gate?.start?.();
-    // Dondurma arkada; yanıt kilit izi benimsenince (afterLock: iz önce, ayrı iş parçacığında).
-    await afterLock(lockedUntil).traced;
+    // Dondurma ve kilit izi arkada; yanıt şimdi (kilit + koşu yazıldı).
+    afterLock(lockedUntil);
     ok(res, { lockedUntil, frozenThrough: snapshots.coverage(), freeze: freezeView() });
   });
   // 2.5.0 Ç2 — saklanan fiş defteri (lib/ledger-vouchers.mjs). Kapanış / açılış / eşleştirme fişlerini Ç3, Ç5 ve D4 iç API'yle (vouchers) yazar; kullanıcıya serbest
