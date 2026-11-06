@@ -388,7 +388,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   KAYNAK: docs/2.5.0-IS-LISTESI.md (başta SAAT KURALI: saat elle yazılmaz, kaydı yazan komut `date -u` / `stat -L` / `git log` ile üretir; A kapsam + durum, B 2.5.1, C sorular, D kararlar, E zaman sıralı
   kayıt) + docs/erp/MUHASEBELESTIRME-KURAL-KITABI.md + EK-1 + EK-2 (başındaki notla: 23/24/28/32/33/35/K-2/K-3 EK-2B'den) + EK-2B + docs/erp/MUHASEBE-CEKIRDEGI-PLANI.md + docs/erp/C2-FIS-DEFTERI-TASARIM.md
   (§10 K1–K8, §11 Ç3 / Ç5 / D4 notları) + docs/devir/DEVIR-PLANI.md (G) + docs/erp/WHATSAPP-PAKETI-2.5.0-PLANI.md. Sıkıştırmadan sonra her karar bu belgelerden yeniden okunur.
-  YENİ KULLANICI KARARLARI (tam metin iş listesi D): 21:08 "hepsi A" — S-W4 Meta kod 0 = 190 (süre doldu, kişi bekleyenlere döner); S7 şüpheli alacak kaydı açık müşteri otomatik hatırlatmaya girmez;
+  YENİ KULLANICI KARARLARI (tam metin iş listesi D): 06.11 03:35 "hepsi A" — S7-a (elle seçilen şüpheli alacaklı, şüphesiz gecikmişi yok → elenir), S7-b (kuyruktayken şüpheli
+  alacak açılan → gönderimde atlanır), S11 (kilitli dönemde kapanan fatura çek karşılıksız dönünce yeniden açılmaz, ayrı borç), S12 (Kasa açılışından önceki Kasa hareketi reddedilir), S13 (GAP_RULE = 2.4.9 kopyası).
+  21:08 "hepsi A" — S-W4 Meta kod 0 = 190 (süre doldu, kişi bekleyenlere döner); S7 şüpheli alacak kaydı açık müşteri otomatik hatırlatmaya girmez;
   S8 karşılıksız evrakla yeniden açılan fatura kendi vadesiyle gecikir. 21:30 "önerilerini uygula" (7 soru A): (1) bağsız ödeme kendi tarihindeki açık borçlara; (2) bağ hedefi kapatır, bağsız ödeme serbest
   kalır; (3) kilitli dönemde kapanış değişmez; (4) kart küçülmesi en erken vadeli açık taksitten; (5) gecikmiş net borcu aşmaz; (6) Kartı Kapat kalanı BORÇTA kalır (bugünkü 689 davranışı DEĞİŞİR);
   (7) Devri Yenile'de yalnız devir fişleri silinip yeniden yazılır. Atama: (1)(2)(3)(5) + S7 + S8 → Ç5; (4)(6) → Ç7b; (7) → D4; hepsi kâhin bakımı 2'de. Ayrıca: 20:57 ortam alarmı zaten kurulu
