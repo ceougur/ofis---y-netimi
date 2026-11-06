@@ -243,4 +243,60 @@ hesabına fiş → kapı 409 · N22 store dışı silme → tam tarama "Kapanmı
   (dosya takası) — ilk gönderimde CI'nin Windows işlerinde görülmeli.
 - YAN BULGU (kapsam dışı, DEĞİŞTİRİLMEDİ — c2t2-yan-onarim-detay-kesik): onarımın "kaldırıldı" kaydının ayrıntısı `JSON.stringify(...).slice(0, 20000)` ile kesiliyor; ~470'ten çok
   fiş birlikte kaldırılınca (600 ile üretildi) geçersiz JSON kalır ve Mutabakat Testi HTTP 500 verir (routes/ledger.mjs günlüğü JSON.parse eder; kayıt son 50 günlük satırı arasında
-  kaldıkça). Satır Ç2'den (9569ff76) beri aynı; tur 2'nin yeni "kaldırılmadı" kaydı listeyi 50 kimlikle sınırlar (geçerli JSON).
+  kaldıkça). Satır Ç2'den (9569ff76) beri aynı; tur 2'nin yeni "kaldırılmadı" kaydı listeyi 50 kimlikle sınırlar (geçerli JSON). → TUR 3'TE DÜZELDİ (§11d).
+
+## 11d. Ç2 TUR 3 (06.11.2026; Ç2 tur 2 dar kontrolünün yan bulguları + DÜŞÜK-3 test boşlukları — DURMA KURALI; kural DEĞİŞMEDİ, yalnız kaydın biçimi + testler)
+- SORUN (yan bulgu 1, sakınca süzgeciyle ORTA — mutabakat sessizce görünmez): fiş onarımının "kaldırıldı" kaydı `JSON.stringify({ ids, resetAt, kept }).slice(0, 20000)`; 475+ fişte (kaldırılan +
+  kaldırılmayan toplamı da) metin ortasından kesilir, geçersiz JSON kalır; Mutabakat Testi (`routes/ledger.mjs` günlüğün son 50 satırını JSON.parse eder) HTTP 500. YAN BULGU 2 (aynı aile, ORTA;
+  v2.4.9 üretim kodunda da): banka açılış onarımı (`lib/bank/repair.mjs`) — 2.0.26'ya dönülüp "Tüm Hareketleri Sil" yapılınca (2.0.26 işlem başlıklarını bilmez) güncel açılış 600 başlığı iptal
+  eder, kayıt 20.000'de kesik → 500. Aynı kalıp `lib/integrity.mjs`'in günlük yazımında (taban / geri alınan / tarama) — eski sürümden uzun bozuk tarih (5 × 6.000 karakter) tabanı 30.900
+  karaktere çıkarınca yine 500 (dar kontrol örnekler en çok 5 olduğundan 20.000'i aşamamıştı; tur 3 bozuk tarihle aştı).
+- KURAL (sınırlı kayıt ayrıntısı; `server/lib/log-detail.mjs` `boundedDetail(value, { maxList = 50, maxChars = 20000 })`): kayıt ayrıntısı HİÇBİR ZAMAN kesilmiş JSON olmaz.
+  1. Listeler ilk `maxList` öğe: diziler ve kök dışındaki çok anahtarlı (> 16) düz nesneler (eşlem: { fiş kimliği: neden }). Tam sayıları çağıran yanına yazar (removedCount, keptCount, counts).
+  2. Kökün alanları ve az anahtarlı kayıt nesneleri ({ code, name, count, sample } gibi) kısaltılmaz — sayılar kaybolmaz.
+  3. Sonuç `maxChars`'ı aşarsa diziler yarıya (en az 1 öğe), sonra metinler, sonra diziler boş; son çare kökün yalnız sayıları. Hiçbir aşamada metin ortasından kesilmez (JSON.stringify'ın
+     değiştiricisi; kesilen öğeler hiç okunmaz — ders 47).
+  4. `maxList: Infinity` + sığan değer → JSON.stringify ile BAYT BAYT aynı (değiştirici her değeri olduğu gibi döndürür).
+- UYGULANDIĞI YERLER: `ledger-vouchers.mjs` kaldırma kaydı `{ ids (ilk 50), removedCount, resetAt, kept (ilk 50), keptCount }`; kuşku kaydı `{ kept (ilk 50), keptCount, doubts (ilk 50), resetAt }` —
+  tur 2'nin biçimiyle bayt bayt aynı (aynı küme için kayıt yinelenmez; tekilleştirme `detail_json = ?` aynen); `bank/repair.mjs` `{ ...rapor (diziler ilk 50), counts: { dizi adı: tam sayı } }`
+  (Hesabı Belirsiz'in sayısı zaten `unassigned`; `unassignedIds` önceki gibi yazılmaz; tam rapor meta.bank.repair ayarında değişmedi — o ayar her açılışta o açılışın raporudur);
+  `integrity.mjs` `detailOf = boundedDetail(failures, { maxList: Infinity })` — yazım (:803) ve taban karşılaştırması (:833). Sığan kayıtta eski formül `JSON.stringify(x).slice(0, 20000)` ile
+  birebir (v2.4.9'un yazdığı taban kaydı güncel sürümde aynen kalır, yeni satır yok — G6 testi).
+- DOKUNULMAYAN: işlem geçmişi izi `ledger.vouchers.legacy-reset-removed` (`ids` ilk 200, kesilmez, geçerli JSON); `routes/ledger.mjs:440`'ın bozuk tek satırda bütün yanıtı düşürmesi ve admin.js'in
+  hatada Mutabakat satırını sessizce boşaltması (Ç3 tur 2 birleştikten sonra AYRI küçük iş).
+- TEST BOŞLUKLARI (dar kontrol DÜŞÜK-3; D3 sakınca süzgecinden geçemedi — veri kaybı korumasının dişi; `test/fis-defteri-kayit-250.test.mjs`): D1 işlem geçmişini silmeyen İKİNCİ sıfırlama izi
+  (eski sürüm sıfırlaması → izli fiş → silmeyen 2. iz: en son iz sayılır, izsiz fiş kalır); D2 iki izli fiş arasına düşen izsiz fiş (izli ilk fiş sayılır: önceki kaldırılır, aradaki kalır);
+  D3 sıfırlama izinden önce ve sonra iz (ilk iz sayılır: iz işlem geçmişini silmemiş, fiş kalır); D5 / D6 60 kuşkulu fiş (ilk 50 + keptCount 60, tur 2 biçimi); D8 600 ve 300 + 300 fişlik
+  kaldırma (geçerli JSON, sayılar, Mutabakat Testi 200). D7 (çift kuralının sabit nokta döngüsü tek geçişe iner) EŞDEĞER mutant: ters kaydın ters kaydı yapılamaz (409) → zincir tek halka.
+  Mutasyon 36–55 (`test/fis-defteri-250-mutasyon.mjs`); taban artık atlanan testi kabul etmez ve eski sürüm etiketlerini okuyabilsin diye bu deponun git klasörünü (GIT_DIR, yalnız okuma) verir.
+  Eşdeğere yakın: integrity'nin `maxList: Infinity` → 50 (sapma listesi 50'den kısa, örnekler en çok 5); birebirliği bozan liste sınırı 4 ile denendi (55).
+- BİLİNEN SINIR / BAŞ MİMAR KARARI GEREKİR (ölçüldü, c2t3-v249-kesik): (a) 2.4.9'un ZATEN KESİK kaydı (onarım ya da taban) güncel sürümde durur; son 50 satır arasında kaldıkça Mutabakat Testi 500
+  sürer (routes/ledger.mjs:440 ayrı iş). (b) `integrity.mjs:832` son taban kaydını `ORDER BY at DESC` ile seçer: v2.4.9'un kesik taban kaydından sonra güncel sürüm DAHA GEÇ saatte açılınca bir
+  kez geçerli yeni satır yazılır, sonra yinelenmez; AYNI anda ya da DAHA ERKEN saatte (saat geri) açılırsa her açılışta yeni taban satırı yazılır (eski kod yinelemiyordu: kesik = kesik). İki
+  seyrek koşulun birlikte olması gerekir (20.000'i aşan eski taban + saat geri); veri kaybı yok, günlük büyür. Önerilen tek satır: `ORDER BY rowid DESC` (yazım sırası; S28 ilkesi) — kapsam
+  dışı olduğu için değiştirilmedi.
+
+## 11e. Ç2 TUR 3 KANITI (docs/kanit/2026-11-06/c2t3-*; her koşu tools/kanit.mjs kos; betikler c2t3-betik/, ölçüm çıktıları c2t3-olcum-*)
+- YENİDEN ÜRETİM (ders 6; eski kod bc495a1c ve v2.4.9 ayrı kopyada, 2.0.26'nın GERÇEK sıfırlaması): banka 600 iptal başlığı → kayıt 20.000'de kesik, geçersiz, Mutabakat Testi 500 (bc495a1c ve v2.4.9;
+  c2t3-olcum-banka-iptal-eski.log); taban 5 × 6.000 bozuk tarih → bc495a1c 30.900 → 20.000 kesik, 500 (c2t3-olcum-taban-kesik.txt). YENİ KODDA: banka kaydı 2.286 karakter, geçerli, counts.cancelledEvents
+  600, 200; taban 12.630 karakter, geçerli, üç açılışta tek satır, 200; sığan taban (5 × 100) 1.400 karakter, JSON.stringify ile birebir — eski ve yeni kodda aynı.
+- KIRMIZI (ders 7, 38; eski kod bc495a1c ayrı kopyada, yeni iki test dosyası, iki TZ aynı): 15 testten 4 geçen / 6 başarısız / 5 iptal — iptal 5 = yardımcı testleri ("Cannot find module
+  log-detail.mjs"; yardımcı yok); başarısız: banka, 600 fiş, 300 + 300 fiş, taban > 20.000 (dördü "kayıt ayrıntısı geçerli JSON değil (20000 karakter …)"), G6 v2.4.9 6.000 ("taban satırı 1,
+  beklenen 2": geçerli yeni kayıt yazılmıyor), D2 (yalnız yeni alanlar removedCount / keptCount yok; karar eski kodda da doğru). Geçen 4: 60 kuşkulu fiş (biçim tur 2 ile aynı — dişi mutasyon 39,
+  40), D1, D3 (karar eski kodda doğru — dişleri mutasyon 36, 38; D2'ninki 37), sığan taban birebir (eşdeğerlik iddiası; dişi 55). v2.4.9 üretim kodu, banka testi iki TZ 0 / 1 (aynı neden).
+- YEŞİL: fis-defteri-kayit-250 (14) + banka-onarim-kayit-250 (1) + Ç2 tur 1-2 dosyaları (46) = 61 / 61, TZ=UTC ve TZ=Europe/Istanbul (5a2c2844).
+- MUTASYON (test/fis-defteri-250-mutasyon.mjs, `git archive 5a2c2844` kopyası): 55 / 55 beklenen nedenle (UTC); yeni 36–55 TZ=Europe/Istanbul'da da 20 / 20 (c2t3-mutasyon-yeni-ist). İlk koşu
+  (3f662426) 53 / 55: 47 ve 48 kırmızıydı ama beklenen nedenle değil (47 kayıt nesnesinin `sample` alanını kesiyor, kod / sayı kaldığı için iddia yakalamıyordu; 48'i rastgele yapı testi
+  yakalamıyordu — LCG `seed * 1103515245` 2^53'ü aşıp kesinlik yitiriyor, uzun metin hemen hiç üretilmiyordu) → test düzeltildi (5a2c2844: mulberry32 + elle kurulmuş sığan değerler + kapsama
+  sayaçları; "kayıt nesnelerinin alanları kısaltılmaz" iddiası); ilk koşunun kaydı c2t3-mutasyon-utc-ilk-3f662426.
+- G6 (v2.4.9 gerçek kodu): fis-defteri-eski-surum-250 17 / 17, donmus-defter-eski-surum-250 20 / 20, iki TZ; kayıt testinin G6 bölümü (v2.4.9'un yazdığı sığan taban aynen kalır, kesik tabandan sonra
+  bir kez geçerli yeni kayıt).
+- G2 KOMŞULAR (test/ taranarak, c2t3-betik/g2-liste.mjs: değişen dosyaları / API yollarını / Mutabakat Testi / Mutabakat Günlüğü / integrity_log'u anan + fis-defteri-*, donmus-defter-*, *onarim* +
+  kaynak tarayan 27 genel test; 117 dosya): 1.400 / 1.400, TZ=UTC ve TZ=Europe/Istanbul (3f662426; 5a2c2844 yalnız iki test dosyasını değiştirdi).
+- e2e: sema-kapisi-bs7 12 / 12, senaryo-defter-243 24 / 24.
+- ÖLÇÜM (ders 47; ölçüm kilidiyle, makine yükü 11,6 / 4 çekirdek — başka ajanlar): yardımcı 475 / 600 / 5.000 / 10.200 kimlikte 0,019 / 0,017 / 0,007 / 0,007 ms (eski kesme 0,043 / 0,039 / 0,49 / 0,62
+  ms); banka raporu (n başlık + n "Onarım Bekliyor") eski 0,40 / 0,58 / 5,4 / 15,0 ms → yeni 0,055 / 0,039 / 0,040 / 0,040 ms; kuşku eşlemi (n anahtar; nesneyi kurmak dahil) 0,21 / 0,22 / 1,8 / 4,1 ms.
+  Uçtan uca onarım (aynı veri kopyası, eski ↔ yeni): 600 fiş 24 → 39 ms, 5.000 fiş 88 → 108 ms (gürültü düzeyinde; ikisi de ~0,1 sn). Yapısal: 100.000 öğeli listeden ≤ 100 öğe okunur (vekil
+  liste testi; mutasyon 49).
+- WINDOWS (ders 48): yeni testler kapalı sunucunun dosyasını ayrı bağlantıyla değiştirir (iz silme, elle fiş / iz, tarih bozma), aynı veri klasörünü iki sürümle açar (v2.0.26 sıfırlaması zorunlu yedek
+  alır; v2.4.9) — ilk gönderimde CI'nin Windows işlerinde görülmeli.

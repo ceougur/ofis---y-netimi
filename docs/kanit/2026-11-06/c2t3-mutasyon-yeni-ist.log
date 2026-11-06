@@ -1,0 +1,29 @@
+taban: 61 geçti / 0 kaldı / 0 atlandı (çıkış 0)
+ok 36 - D1 K5 en son yerine EN ESKİ sıfırlama izi · KIRMIZI (1 başarısız) · beklenen neden /en son sıfırlama izi işlem geçmişini silmemiş: izsiz fiş kalmalı/ görüldü
+ok 37 - D2 K5 izli ilk yerine izli SON fiş · KIRMIZI (1 başarısız) · beklenen neden /izli İLK fişten sonra yazılan izsiz fiş kalmalı/ görüldü
+ok 38 - D3 K5 'işlem geçmişi silinmemiş' denetimi ilk yerine SON izle · KIRMIZI (1 başarısız) · beklenen neden /ilk iz sıfırlama izinden önce: iz işlem geçmişini silmemiş, fiş kalmalı/ görüldü
+ok 39 - D5 kuşku kaydında keptCount yazılmaz · KIRMIZI (2 başarısız) · beklenen neden /kuşku kaydının ayrıntısı \(Ç2 tur 2 biçimi\)/ görüldü
+ok 40 - D6 kuşku kaydında 50 sınırı kalkar · KIRMIZI (2 başarısız) · beklenen neden /kuşku kaydının ayrıntısı \(Ç2 tur 2 biçimi\)/ görüldü
+ok 41 - kaldırma kaydında removedCount yazılmaz · KIRMIZI (3 başarısız) · beklenen neden /ilk 50 kimlik \(yazım sırasıyla\) \+ tam sayılar/ görüldü
+ok 42 - kaldırma kaydında 50 sınırı kalkar · KIRMIZI (2 başarısız) · beklenen neden /ilk 50 kimlik \(yazım sırasıyla\) \+ tam sayılar/ görüldü
+ok 43 - D8 kaldırma kaydı 200 karakterde kesilir · KIRMIZI (2 başarısız) · beklenen neden /kaldırma kaydı \(600\): kayıt ayrıntısı geçerli JSON değil/ görüldü
+ok 44 - yan bulgu 1 geri gelir (kaldırma kaydı JSON.stringify(...).slice(0, 20000)) · KIRMIZI (3 başarısız) · beklenen neden /kaldırma kaydı \(600\): kayıt ayrıntısı geçerli JSON değil/ görüldü
+ok 45 - boundedDetail boyut aşınca listeyi kısaltmaz (yalnız metni keser) · KIRMIZI (2 başarısız) · beklenen neden /liste kısaldı/ görüldü
+ok 46 - boundedDetail kökün alanlarını da kısaltır (sayılar kaybolabilir) · KIRMIZI (1 başarısız) · beklenen neden /kökün 20 alanı/ görüldü
+ok 47 - boundedDetail kayıt nesnesinin alanlarını keser (az anahtarlı nesne de liste sayılır) · KIRMIZI (1 başarısız) · beklenen neden /kayıt nesnelerinin alanları kısaltılmaz/ görüldü
+ok 48 - boundedDetail sığan değerde de metni kısaltır (JSON.stringify ile birebir değil) · KIRMIZI (2 başarısız) · beklenen neden /sığan değer birebir olmalı/ görüldü
+ok 49 - boundedDetail listenin bütün öğelerini okur (öğe başına iş; ders 47) · KIRMIZI (1 başarısız) · beklenen neden /100\.000 öğeli listeden \d+ öğe okundu/ görüldü
+ok 50 - yan bulgu 2 geri gelir (banka onarımı kaydı JSON.stringify(...).slice(0, 20000)) · KIRMIZI (1 başarısız) · beklenen neden /onarım kaydının ayrıntısı geçerli JSON değil/ görüldü
+ok 51 - banka onarımı kaydında tam sayılar (counts) yazılmaz · KIRMIZI (1 başarısız) · beklenen neden /tam sayılar/ görüldü
+ok 52 - banka onarımı kaydında 50 sınırı kalkar · KIRMIZI (1 başarısız) · beklenen neden /kayıtta ilk 50 başlık/ görüldü
+ok 53 - integrity günlük yazımı yine kesilir (JSON.stringify(...).slice(0, 20000)) · KIRMIZI (2 başarısız) · beklenen neden /açılış 1: taban kaydı: kayıt ayrıntısı geçerli JSON değil/ görüldü
+ok 54 - integrity taban karşılaştırması sınırsız JSON'la (her açılışta yeni satır) · KIRMIZI (2 başarısız) · beklenen neden /açılış 2: tek taban kaydı/ görüldü
+ok 55 - integrity günlük ayrıntısına liste sınırı girer (sığan kayıt birebir değil) · KIRMIZI (2 başarısız) · beklenen neden /sığan kayıt birebir/ görüldü
+1..20
+# tests 20
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+20/20 mutasyon beklenen nedenle yakalandı

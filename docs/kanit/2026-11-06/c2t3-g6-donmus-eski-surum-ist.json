@@ -1,0 +1,32 @@
+{
+  "ad": "c2t3-g6-donmus-eski-surum-ist",
+  "komut": "node --disable-warning=ExperimentalWarning test/donmus-defter-eski-surum-250.mjs --eski /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-v249",
+  "commit": "3f66242640f2f2cc7a61e08fe8511fc79eb482c8",
+  "dal": "worktree-agent-a7280bb16b4491d5b",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T07:54:07.671Z",
+  "sure_sn": 5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 20,
+    "gecen": 20,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-kanit/2026-11-06/c2t3-g6-donmus-eski-surum-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a7280bb16b4491d5b",
+  "ham_cikti_sha256": "42ae34923f68a6fa08132f4b03d8c3fec5e6700fa2a920d8fd5d22a745bdea05",
+  "ham_cikti_bayt": 1371
+}

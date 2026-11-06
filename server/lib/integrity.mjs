@@ -27,6 +27,7 @@
 import { createHash } from "node:crypto";
 import { HttpError } from "./http.mjs";
 import { eachRow } from "./lean-rows.mjs";
+import { boundedDetail } from "./log-detail.mjs";
 import { UNASSIGNED_SUBS, partyBalances, subBalances } from "./general-ledger.mjs";
 import { byEntity, createBankChecks } from "./bank/checks.mjs";
 import { collectionProblems } from "./bank/collections.mjs";
@@ -794,13 +795,16 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
   let baseline = new Set();
   let pending = null;
   let pendingDecision = null;
+  // 2.5.0 Ç2 tur 3: günlük ayrıntısı hiçbir zaman kesilmiş JSON olmaz (lib/log-detail.mjs). Liste sınırı YOK (Infinity): ≤ 20.000 karakterde çıktı JSON.stringify ile bayt bayt
+  // aynı (eski kayıtlarla "taban değişti mi" karşılaştırması aynı kalır); aşan ayrıntı (ör. eski sürümden uzun bozuk tarih) kesilmek yerine listeleri kısaltılmış geçerli JSON.
+  const detailOf = failures => boundedDetail(failures, { maxList: Infinity, maxChars: 20_000 });
   const write = (action, tables, failures) => {
     // BS-7: yeni şemalı (yalnız görüntülenen) şirkette günlük de yazılmaz (açılış tabanı, Mutabakat Testi).
     if (!canWrite()) return;
     try {
       store.run(
         "INSERT INTO integrity_log (id, at, action, tables, summary, detail_json) VALUES (?, ?, ?, ?, ?, ?)",
-        newId(), now().toISOString(), action, [...tables].join(","), failures.map(item => item.name).join("; ").slice(0, 500), JSON.stringify(failures).slice(0, 20000),
+        newId(), now().toISOString(), action, [...tables].join(","), failures.map(item => item.name).join("; ").slice(0, 500), detailOf(failures),
       );
     } catch {
       // Günlük yazılamasa da (eski şema) işlem kararı değişmez.
@@ -830,7 +834,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     if (result.failures.length) {
       log?.warn?.(`Mutabakat: güncelleme öncesinden kalan ${result.failures.length} sapma var (${result.failures.map(item => item.name).join("; ")}). Yeni işlemler bu sapmayı büyütemez.`);
       const last = has("integrity_log") ? store.get("SELECT detail_json AS detail FROM integrity_log WHERE action = 'baseline' ORDER BY at DESC LIMIT 1") : null;
-      if (last?.detail !== JSON.stringify(result.failures).slice(0, 20000)) write("baseline", [], result.failures);
+      if (last?.detail !== detailOf(result.failures)) write("baseline", [], result.failures);
     }
     const remove = store.addCommitGuard({
       check({ tables, events: touched, scope: capture }) {

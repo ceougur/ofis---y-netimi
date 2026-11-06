@@ -18,6 +18,7 @@ import { randomUUID } from "node:crypto";
 import { systemClock } from "./clock.mjs";
 import { ACCOUNT_PLAN, PARTY_ACCOUNTS } from "./general-ledger.mjs";
 import { HttpError } from "./http.mjs";
+import { boundedDetail } from "./log-detail.mjs";
 import { LEDGER_VOUCHER_TRIGGERS_V46, LEDGER_VOUCHER_TRIGGER_NAMES } from "./migrations.mjs";
 import { isIsoDate } from "./period.mjs";
 
@@ -122,7 +123,9 @@ const DOUBT_TEXT = Object.freeze({
   "after-traced": "izi duran bir fişten sonra yazılmış",
   pair: "asıl fişi ya da ters kaydı kalıyor; çift birlikte kalır",
 });
+// Kayıt ayrıntısında listelerin ilk kaç kimliği (tam sayılar removedCount / keptCount alanlarında). Ç2 tur 3: kaldırma kaydı da bu sınırla (önceden kesilmiş JSON — §11d).
 const KEPT_LIST = 50;
+const DETAIL_CHARS = 20_000;
 
 /**
  * Açılış onarımı (BS-7 TASARIM GİRDİSİ): fiş defterini bilmeyen eski sürüm (≤ 2.4.9) bu dosyada Şirket Verisini Sıfırla yaptıysa hareketleri ve işlem geçmişini
@@ -184,7 +187,8 @@ export function repairLegacyReset({ store, now = systemClock, log = null, newId 
   // Görünür kayıt (kuşkulu fiş): içerik belirlenimci (zaman yok) → aynı küme için ikinci kez yazılmaz.
   let keptLog = null;
   if (kept.length && has(store, "integrity_log")) {
-    const detail = JSON.stringify({ kept: kept.slice(0, KEPT_LIST), keptCount: kept.length, doubts: Object.fromEntries(keptRows.slice(0, KEPT_LIST).map(row => [row.id, keptDoubts[row.id]])), resetAt: reset?.at || "" });
+    // Ç2 tur 3: ortak sınırlı ayrıntı (kept ve doubts ilk 50 kimlik, tam sayı keptCount); biçim tur 2 ile bayt bayt aynı (aynı küme için kayıt yinelenmez).
+    const detail = boundedDetail({ kept, keptCount: kept.length, doubts: keptDoubts, resetAt: reset?.at || "" }, { maxList: KEPT_LIST, maxChars: DETAIL_CHARS });
     if (!store.get("SELECT 1 AS found FROM integrity_log WHERE action = 'repair' AND tables = 'ledger_vouchers' AND detail_json = ?", detail)) {
       const reasons = [...new Set(keptRows.map(row => keptDoubts[row.id]))].map(reason => DOUBT_TEXT[reason]).join("; ");
       const numbers = keptRows.slice(0, 10).map(row => voucherNoText(row.year, row.no)).join(", ") + (keptRows.length > 10 ? ` ve ${keptRows.length - 10} fiş daha` : "");
@@ -205,7 +209,10 @@ export function repairLegacyReset({ store, now = systemClock, log = null, newId 
           store.run("DELETE FROM ledger_vouchers WHERE id IN (SELECT value FROM json_each(?))", list);
         });
         const summary = `Eski sürümde yapılan Şirket Verisini Sıfırla'dan artakalan ${orphans.length} fiş kaldırıldı (sıfırlama ${reset.at}).`;
-        if (has(store, "integrity_log")) store.run("INSERT INTO integrity_log (id, at, action, tables, summary, detail_json) VALUES (?, ?, 'repair', 'ledger_vouchers', ?, ?)", newId(), at, summary.slice(0, 500), JSON.stringify({ ids: orphans, resetAt: reset.at, kept }).slice(0, 20000));
+        // Ç2 tur 3 (yan bulgu, ORTA): ayrıntı kesilmiş JSON OLMAZ — `JSON.stringify(...).slice(0, 20000)` 475+ fişte geçersiz JSON bırakıyor, Mutabakat Testi HTTP 500
+        // veriyordu. Listeler ilk 50 kimlik; tam sayılar removedCount / keptCount.
+        const removedDetail = boundedDetail({ ids: orphans, removedCount: orphans.length, resetAt: reset.at, kept, keptCount: kept.length }, { maxList: KEPT_LIST, maxChars: DETAIL_CHARS });
+        if (has(store, "integrity_log")) store.run("INSERT INTO integrity_log (id, at, action, tables, summary, detail_json) VALUES (?, ?, 'repair', 'ledger_vouchers', ?, ?)", newId(), at, summary.slice(0, 500), removedDetail);
         store.run("INSERT INTO audit_events (id, type, entity_id, actor_id, actor_name, payload_json, created_at) VALUES (?, 'ledger.vouchers.legacy-reset-removed', 'ledger', 'system', 'Sistem', ?, ?)", `event-${randomUUID()}`, JSON.stringify({ count: orphans.length, ids: orphans.slice(0, 200), resetAt: reset.at, kept: kept.length }), at);
       }
       if (keptLog) store.run("INSERT INTO integrity_log (id, at, action, tables, summary, detail_json) VALUES (?, ?, 'repair', 'ledger_vouchers', ?, ?)", newId(), at, keptLog.summary.slice(0, 500), keptLog.detail);

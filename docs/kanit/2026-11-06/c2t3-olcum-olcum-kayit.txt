@@ -1,0 +1,7 @@
+yük 11.6 10.9 10.9
+yardımcı n=475: {"kaldirmaEskiMs":0.043,"kaldirmaYeniMs":0.019,"karisikYeniMs":0.026,"kuskuYeniMs":0.206,"bankaEskiMs":0.401,"bankaYeniMs":0.055,"bankaYeniUzunluk":11771}
+yardımcı n=600: {"kaldirmaEskiMs":0.039,"kaldirmaYeniMs":0.017,"karisikYeniMs":0.031,"kuskuYeniMs":0.221,"bankaEskiMs":0.577,"bankaYeniMs":0.039,"bankaYeniUzunluk":11771}
+yardımcı n=5000: {"kaldirmaEskiMs":0.49,"kaldirmaYeniMs":0.007,"karisikYeniMs":0.013,"kuskuYeniMs":1.826,"bankaEskiMs":5.431,"bankaYeniMs":0.04,"bankaYeniUzunluk":11773}
+yardımcı n=10200: {"kaldirmaEskiMs":0.62,"kaldirmaYeniMs":0.007,"karisikYeniMs":0.013,"kuskuYeniMs":4.055,"bankaEskiMs":14.981,"bankaYeniMs":0.04,"bankaYeniUzunluk":11775}
+onarım uçtan uca n=600: {"eski":{"ms":24,"removed":600,"kayitUzunluk":20000,"gecerli":false},"yeni":{"ms":39,"removed":600,"kayitUzunluk":2189,"gecerli":true}} · yük 11.6 10.9 10.9
+onarım uçtan uca n=5000: {"eski":{"ms":88,"removed":5000,"kayitUzunluk":20000,"gecerli":false},"yeni":{"ms":108,"removed":5000,"kayitUzunluk":2190,"gecerli":true}} · yük 11.6 10.9 10.9
