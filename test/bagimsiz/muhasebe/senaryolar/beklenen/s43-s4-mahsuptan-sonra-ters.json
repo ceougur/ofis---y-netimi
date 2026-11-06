@@ -63,9 +63,9 @@
     "bil2": {
      "aktif": {
       "I.A": 100000,
-      "I.C": 86000
+      "I.C": 96000
      },
-     "aktif_toplam": 186000,
+     "aktif_toplam": 196000,
      "bilgi": [],
      "bilgi_amacli": false,
      "detay": {
@@ -73,7 +73,7 @@
        "102.B1": 100000
       },
       "I.C": {
-       "120|C1": 86000
+       "120|C1": 96000
       },
       "III.F": {
        "360": 14000
@@ -82,13 +82,13 @@
        "391": 2000
       },
       "V.F": {
-       "Dönem Net Kârı (Hesaplanmış)": 70000
+       "Dönem Net Kârı (Hesaplanmış)": 80000
       },
       "V.G": {
        "519": 100000
       }
      },
-     "donem_net_kari": 70000,
+     "donem_net_kari": 80000,
      "fark": 0,
      "gecmis_yillar_kapanmamis": 0,
      "gecmis_yillar_kar": 0,
@@ -100,10 +100,10 @@
      "pasif": {
       "III.F": 14000,
       "III.I": 2000,
-      "V.F": 70000,
+      "V.F": 80000,
       "V.G": 100000
      },
-     "pasif_toplam": 186000,
+     "pasif_toplam": 196000,
      "tarih": "2026-04-30"
     },
     "mz": {

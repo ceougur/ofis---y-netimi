@@ -1025,7 +1025,8 @@ S("s43-s4-mahsuptan-sonra-ters", ["S4", "M8-6", "V-01", "R-01", "K-09", "KG-18"]
     o("satis_faturasi", "2026-04-20", id="F2", cari="C1", M=20000, K=4000),
     o("kdv_mahsup", ay="2026-04"),
     MZ("mz", "2026-01-01", "2026-04-30"), BIL("bil", "2026-04-30"),
-    o("duzenle", kaynak="F1", degisiklik={"K": 12000}),
+    # bakım 3 (ana oturum K6): eski {"K": 12000} 50.000 matraha %24 KDV'ydi (geçerli oranlar %0 / %1 / %10 / %20) → faturanın kendi oranıyla (%20)
+    o("duzenle", kaynak="F1", degisiklik={"M": 60000, "K": 12000}),
     BIL("bil2", "2026-04-30"),
 ], {"A": {
     # Mart: H 10000, İ 2000 → A 360 8000. Ters kayıt (04-05) 191'i 2000 alacaklandırır → KENDİ ayına (Nisan) etiketlenir.
@@ -1726,3 +1727,27 @@ S("s64-s12-kasa-acilistan-once", ["S12", "M-01", "EK-2B 33", "EK-2 §4 (8)", "G-
     # Kasa 19.01 = 10000 + 50; 20.01 = + 200 + 300 + 700
     "mod19/kasa": 10050, "mod20/kasa": 11250,
 }}, aciklama="S12: Kasa açılışından önce tarihli Kasa hareketi (yeni ya da düzeltme) reddedilir; aynı gün olur; açılışsız Kasa'da kural yok.")
+
+# ------------------------------------------------------------------------------------------------ S65
+S("s65-m1f-vade-gunu", ["M1f", "B1", "S1", "H-03", "EK-1 §1 adım 5"], [
+    o("taksit_karti", "2026-03-01", id="TK", cari="C1", kaynak="yeni_borc", toplam=9000,
+      taksitler=[{"vade": "2026-04-01", "tutar": 3000}, {"vade": "2026-04-02", "tutar": 3000}, {"vade": "2026-04-03", "tutar": 3000}]),
+    o("satis_faturasi", "2026-03-10", id="F1", cari="C3", M=5000, K=0, vade="2026-04-02"),
+    o("satis_faturasi", "2026-12-01", id="F2", cari="C2", M=4000, K=0, vade="2026-12-31"),
+    R("g1a", "gecikmis", cari="C1", tarih="2026-04-01"), R("g1b", "gecikmis", cari="C1", tarih="2026-04-02"),
+    R("g1c", "gecikmis", cari="C1", tarih="2026-04-03"), R("g1d", "gecikmis", cari="C1", tarih="2026-04-04"),
+    R("g3a", "gecikmis", cari="C3", tarih="2026-04-02"), R("g3b", "gecikmis", cari="C3", tarih="2026-04-03"),
+    R("h1", "hatirlatma", tarih="2026-04-02"), R("h2", "hatirlatma", tarih="2026-04-03"),
+    R("g2a", "gecikmis", cari="C2", tarih="2026-12-31"), R("g2b", "gecikmis", cari="C2", tarih="2027-01-01"),
+], {"A": {
+    # M1f: gecikmiş ⇔ vade < bugün. 01.04: ilk taksitin vadesi BUGÜN → 0; 02.04: 01.04'lük taksit DÜN → 3000 (02.04'lük bugün, sayılmaz);
+    # 03.04: 6000; 04.04: 9000
+    "g1a/gecikmis": 0, "g1b/gecikmis": 3000, "g1b/detay": [{"kalem": "kart:TK", "vade": "2026-04-01", "kalan": 3000}],
+    "g1c/gecikmis": 6000, "g1d/gecikmis": 9000,
+    # fatura da aynı: vade 02.04 → 02.04'te 0, 03.04'te 5000
+    "g3a/gecikmis": 0, "g3b/gecikmis": 5000,
+    # hatırlatma = gecikmiş: 02.04'te yalnız C1 3000 (C3'ün faturası vade gününde); 03.04'te C1 6000, C3 5000
+    "h1/otomatik": {"C1": 3000}, "h2/otomatik": {"C1": 6000, "C3": 5000},
+    # yıl dönümü: vade 31.12 → 31.12'de 0, 01.01'de 4000
+    "g2a/gecikmis": 0, "g2b/gecikmis": 4000,
+}}, aciklama="M1f: vadesi bugün olan gecikmiş değildir, gecikme ertesi gün başlar (taksit, fatura, yıl dönümü, hatırlatma).")

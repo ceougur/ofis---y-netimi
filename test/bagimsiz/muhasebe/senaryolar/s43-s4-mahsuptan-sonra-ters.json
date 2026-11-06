@@ -136,7 +136,8 @@
   },
   {
    "degisiklik": {
-    "K": 12000
+    "K": 12000,
+    "M": 60000
    },
    "kaynak": "F1",
    "tur": "duzenle"

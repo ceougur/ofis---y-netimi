@@ -98,6 +98,7 @@ MUTANTLAR = [
     ("M31 bağ (Kapatılacak Fatura / iade / kart) hedefini kapatmaz (EK-1 §1 adım 3)",
      [('if o["link"]:\n                        q.bagla(o, q.hedefler(o["link"]))', 'if False:\n                        q.bagla(o, q.hedefler(o["link"]))')]),
     ("M32 vadesi bugün olan gecikmiş sayılır (M1f)", [('if o["vade"] < t:', 'if o["vade"] <= t:')]),
+    ("M32b vadesi dün olan gecikmiş sayılmaz — gecikme ertesi gün değil iki gün sonra (M1f; bakım 3 E3)", [('if o["vade"] < t:', 'if o["vade"] < onceki(t):')]),
     ("M35 KG-7 A'da KDV indirim dönemi alanı yok sayılır",
      [('ia = e.get("indirim_ayi") if (s["h"] == "191" and kg7 == "A") else None', "ia = None")]),
     ("M38 kural farkı düzeltme fişi ters yönde (KG-15 A, N-16)",

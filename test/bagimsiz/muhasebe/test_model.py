@@ -598,6 +598,19 @@ class SenaryoHijyeni(unittest.TestCase):
                 if x.get("yol") == "pos" and x.get("valor"):
                     self.assertLess(dt.date.fromisoformat(x["valor"]).weekday(), 5, s["ad"])
 
+    def test_pos_valoru_resmi_tatile_dusmez(self):
+        # kâhin bakımı 3 E1 (ana oturum K3): kitap D-01 valörün resmî tatilde ne olduğunu söylemez → hiçbir senaryoda valör (ve hafta sonu
+        # kaydırmasının geçtiği günler) resmî tatile düşmez; kural uydurulmaz (README KULLANICIYA SORULMALI 5)
+        import datetime as dt
+        n = 0
+        for s in self._hepsi():
+            for x in s["olaylar"]:
+                if x.get("yol") == "pos" and x.get("valor"):
+                    n += 1
+                    self.assertTrue(U.valor_tatilsiz(x["tarih"], dt.date.fromisoformat(x["valor"])), f"{s['ad']} {x.get('id')} {x['valor']}")
+        self.assertGreater(n, 10)
+        self.assertTrue(U.tatil_mi(dt.date(2026, 4, 23)) and U.tatil_mi(dt.date(2027, 1, 1)) and not U.tatil_mi(dt.date(2026, 4, 24)))
+
 
 # ------------------------------------------------------------------------------------------------ diskteki dosyalar (mutasyonda koşmaz)
 class Dosyalar(unittest.TestCase):

@@ -21,11 +21,11 @@ Program (JavaScript) ayrı bir sürücü ajanıyla bu senaryolara karşı koşul
 | Dosya | Ne |
 |---|---|
 | `model.py` | Model: hesap planı (§2 + 671 / 681), olay → madde (§3), mizan, büyük defter, gelir tablosu (MSUGT, 7/A), bilanço (ters bakiye brütleştirme, hesaplanmış satırlar, Kesin Değil), dönem sonu değerleme (§5), **Tek Yükümlülük Kuyruğu** (EK-1 §1: açık kalemler, gecikmiş, hatırlatma, şüpheli kuyruğu), kapanış (Önceki Yıl Sonucu Fişleri + N-01…N-07), devir açılışları (N-09…N-13; M2/M3/M12/M13), Devri Yenile (N-14, M9), Devri Geri Al (N-15), dönem kilidi + 2.4.9 donmuş defter + Kural Farkı Düzeltme Fişi (Ç3, KG-15, M7), KDV dönem etiketi (M8, S4), şüpheli kayıtları (K3), değişmezler |
-| `senaryolar_elle.py` | 65 elle doğrulanabilir senaryo (s01…s64; s26 iki seçenekli); her birinde ELLE hesaplanmış beklenenler ("elle", hesap yorumda) |
+| `senaryolar_elle.py` | 66 elle doğrulanabilir senaryo (s01…s65; s26 iki seçenekli); her birinde ELLE hesaplanmış beklenenler ("elle", hesap yorumda) |
 | `uretici.py` | Tohumlu rastgele üretici: bir yıl (~800 olay) + K sonrası Ocak (+ zorla S11: K'den önce alınmış evrak 20.01'de karşılıksız) + devir + devirden sonra kayıt + Devri Yenile; tohum 1, 2, 3 |
 | `uret_beklenen.py` | `senaryolar/<ad>.json` (kendi kendine yeten senaryo: tanımlar + olaylar + dallar + elle) ve `senaryolar/beklenen/<ad>.json` (her dal için modelin tam çıktısı) yazar / `--denetle` |
-| `test_model.py` | 117 test: yardımcılar, olay → madde birim testleri, 65 elle senaryo (her dal + bütün değişmezler), 3 rastgele tohum (devirli = AYNI kilitli devirsiz dahil), değişmez denetçilerinin dişi, senaryo hijyeni (VUK sıra-tarih, K-14 tarihi, POS valörü iş günü), dosya güncelliği |
-| `mutasyon.py` | 135 metin mutantı (model.py kaynağında tek kural bozulur); her biri en az bir testte KIRMIZI olmalı |
+| `test_model.py` | 119 test: yardımcılar, olay → madde birim testleri, 66 elle senaryo (her dal + bütün değişmezler), 3 rastgele tohum (devirli = AYNI kilitli devirsiz dahil), değişmez denetçilerinin dişi, senaryo hijyeni (VUK sıra-tarih, K-14 tarihi, POS valörü iş günü ve resmî tatile düşmez), dosya güncelliği |
+| `mutasyon.py` | 136 metin mutantı (model.py kaynağında tek kural bozulur); her biri en az bir testte KIRMIZI olmalı |
 
 ## Çalıştırma
 ```
@@ -231,7 +231,8 @@ gecikmiş tutarı (iki tarihte) aynı.
 - Zincirleme ikinci yıl devri ve "yalnız EN SON arşiv yenilenir" kuralı senaryoda yok; arşivlenmiş yıldaki kural farkının yeni yıla taşınması (M7 son cümlesi) senaryoda yok.
 - Devri Geri Al'ın kesim sonrası kayıtları taşıması 2.5.1 (model: devirden sonraki kayıtlar kaybolur, s29 BİLİNEN SINIR olarak gösterir).
 - M8: KDV İndirim Dönemi üst sınırı (KDVK 29/3), M14: KDVK 30 indirilemeyecek KDV, VUK 313 haddi — modellenmedi.
-- POS valörü üreticide yalnız hafta sonu kaydırması (resmî tatil yok); banka transfer valörü kaydırılmaz.
+- POS valörü üreticide yalnız hafta sonu kaydırması; resmî tatil kuralı YOK (kitap susuyor) — bakım 3'ten beri üretici valörü resmî tatile hiç düşürmez (E1, KULLANICIYA SORULMALI 5);
+  banka transfer valörü kaydırılmaz.
 - K3: kabul §2 C / F / G / I–Y satırlarının çoğu (süreç, yetki, istek kimliği, eski sürüm) modelde yok; şüpheli caride borç satırları (ödeme / H-05) K3'e girmez.
 - F-17, S-08 modellenmedi (yukarıda).
 
@@ -383,6 +384,16 @@ hareketi bankadaki gibi reddedilir (banka bugün 409 bank-before-opening)". S8 (
    senaryo yok; değişmez `kasa_acilis_ilk` bu durumu HATA sayar.
 4. Kâhinin ölçmediği sunum (para değil, baş mimar): karar (3) "program bunu kayıtta yazar" der; S11 için bir ileti ("Bu fatura kilitli dönemde kapanmış; karşılıksız tutar ayrı borç olarak
    yazıldı") karar metninde yok → kâhin ölçmez (`kilit_bag_notu` yalnız R3'ün bağları).
+5. **POS valörü resmî tatile (ya da hafta sonu kaydırması bir tatilin üstünden) denk gelirse (para tarihi: 108 → 102 geçişi, KG-6 komisyon tarihi değişmez):** kitap D-01 ve okunan karar
+   metinleri susuyor. A: hafta sonu gibi sonraki iş günü (banka tatil takvimiyle). B: kullanıcının / POS ayarının verdiği valör aynen. Kâhin kural kurmaz; üretici bu günlerden kaçınır
+   (E1), hiçbir senaryo ölçmez.
+
+### Ana oturumun ek maddeleri (06.11.2026; yalnız kitap / mevzuat / kapsam dayanaklı)
+| # | Madde | Kâhin yorumu | Senaryo / test | Mutant |
+|---|---|---|---|---|
+| E1 | K3 POS valörü resmî tatile düşebiliyor (ör. rastgele-2'de 2026-04-23) | Kitap D-01 ve kâhinin okuduğu karar metinleri valörün resmî tatilde ne olduğunu SÖYLEMEZ (yalnız ana oturum K3: hafta sonu → sonraki iş günü). Kural UYDURULMAZ: üretici valörü (ve hafta sonu kaydırmasının geçtiği günleri) resmî tatile hiç düşürmez — önce öbür valör seçenekleri (1, 2, 30 gün) denenir, hiçbiri olmazsa o tahsilat POS değil havale (B1) olur. Resmî tatiller (2429 sayılı Kanun): 1 Ocak, 23 Nisan, 1 Mayıs, 19 Mayıs, 15 Temmuz, 30 Ağustos, 28 Ekim (yarım gün) ve 29 Ekim + dinî bayramlar (arife yarım gün dahil). Dinî bayram tarihleri birincil takvimden DOĞRULANMADI (kâhinin bilgisi: Ramazan 2026-03-20..22, Kurban 2026-05-27..30, Ramazan 2027-03-09..11, Kurban 2027-05-16..19) → pencereler arifeden bir gün önce – bayramdan bir gün sonra genişletildi (kaçınma; kural değil). Durum KULLANICIYA SORULMALI 5 | hijyen `test_pos_valoru_resmi_tatile_dusmez` (elle + tohumlu) | — (üretici / hijyen; model değişmedi) |
+| E2 | K6 s43 10. olay %24 KDV | Geçerli KDV oranları %0, %1, %10, %20 (KDVK; kâhin mevzuat bilgisi, birincil metin bu turda açılmadı). Olay "mahsubu yapılmış ayın kaydı düzenlendi" uyarısını sınar; amaç korunarak düzeltme faturanın kendi oranıyla (%20): `{"K": 12000}` → `{"M": 60000, "K": 12000}`. Elle beklenen (`bil2/kesin_degil`) DEĞİŞMEZ; beklenen dosyası yeniden üretilir. Bütün elle ve tohumlu senaryolarda K / M taraması: başka geçersiz oran yok | s43 | — |
+| E3 | Vade günü sınırı (kapsam) | EK-1 M1f / §1 adım 5: gecikmiş ⇔ vade < bugün — vadesi BUGÜN olan gecikmiş değildir, gecikme ERTESİ GÜN başlar; vadesi DÜN olan gecikmiştir (S1 A: vadesiz kalemde vade = belge günü). Ayrı senaryo: taksit kartının üç taksiti (vade 01.04 / 02.04 / 03.04) ve iki fatura (vade 02.04; yıl dönümü 31.12) — her biri vade günü, ertesi gün ve hatırlatma | s65 | M32 (vadesi bugün olan gecikmiş — zaten vardı), M32b (yeni: vadesi dün olan gecikmiş değil) |
 
 ### Elle beklenenlerin yazılış sırası (bakım 3)
 - cb57123f: yorum (yukarıdaki T1–T13), s63, s64, `test_S11_avans_kahin_susar` ve `test_kasa_acilis_ilk_hareketten_sonra_yakalanir`'ın yeni beklentisi model DEĞİŞTİRİLMEDEN ÖNCE
@@ -393,10 +404,13 @@ hareketi bankadaki gibi reddedilir (banka bugün 409 bank-before-opening)". S8 (
 ### Yeni senaryolar, testler ve mutasyonlar
 - Elle senaryolar: s63 (S11 — C1 iki bağlı çek, biri ciro; C2 kilit günü / L+1; C3 kısmi kapanış + kilitli dönemde dönen çek (S8); T1 ciro dönüşü; devirden önce ve sonra aynı
   değerler), s64 (S12 — açılışsız Kasa, R8, açılış günü, bir gün önce, nakit tahsilat / ödeme, çekin Kasa'dan tahsili, düzeltme, öne alınan açılış).
-- Birim: `test_S11_avans_kahin_susar` (yeni), `test_kasa_acilis_ilk_hareketten_sonra_yakalanir` (S12 reddi + değişmezin dişi doğrudan eklemeyle). Toplam 117 test (114 + s63 + s64 + 1).
+- Birim: `test_S11_avans_kahin_susar` (yeni), `test_kasa_acilis_ilk_hareketten_sonra_yakalanir` (S12 reddi + değişmezin dişi doğrudan eklemeyle). S11 / S12 için 117 test (114 + s63 + s64 + 1).
+- Ana oturumun ek maddeleri (E1–E3): s65 (vade günü), hijyen `test_pos_valoru_resmi_tatile_dusmez`; s43 verisi düzeltildi (elle beklenen aynı). Toplam 119 test. E1'in kırmızı
+  kanıtı: yeni hijyen kuralı eski üreticinin (71ee26f) tohumlarında 3 / 3 kırmızı (tohum 1 P132 valör 2026-03-23, tohum 2 P89 2026-04-23 ve P159 2026-06-01 (kaydırma bayramın
+  üstünden), tohum 3 P186 2026-05-25; `docs/kanit/2026-11-06/kahin3-pos-tatil-eski-uretici-kirmizi.*`). Üretici değişti → tohumlu senaryolar yeniden üretildi.
 - Üretici: her tohumda K'den önce tahsilatla alınmış ilk portföy / tahsilde evrak 20.01'de karşılıksız (tohum 1 C4, 2 C2, 3 C2; üçünde de evrak L'de tamamen dağılmış → S11 kuralı,
   susma yok); devirli (M1c) = devirsiz L = K (S11) `gec_ocak` / `gec_son` ve değişmez m2 ile karşılaştırılır.
-- Mutantlar (9 yeni, liste 135): B31 (S11 yok — S8 harfiyen), B31b (kilit günü dahil değil), B31c (tedarikçi tarafı S8'le geri alınır), B31d (avansta susmaz), B32 (M1c ayrı borç hiç
+- Mutantlar (10 yeni, liste 136): M32b (E3: vadesi dün olan gecikmiş sayılmaz; vadesi bugün olanı gecikmiş sayan M32 zaten vardı), B31 (S11 yok — S8 harfiyen), B31b (kilit günü dahil değil), B31c (tedarikçi tarafı S8'le geri alınır), B31d (avansta susmaz), B32 (M1c ayrı borç hiç
   gecikmez), B33 (S12 yok), B33b (açılış günü de red), B33c (düzeltmede S12 yok), B33d (yalnız Kasa Giriş / Çıkış Kasa hareketi). Kodu değişen eski mutant: B11'in metni (`dg["tarih"]`).
 
 ### Sürücü için (programla karşılaştırmadan önce)

@@ -24,6 +24,29 @@ import model as M  # noqa: E402
 from senaryolar_elle import TANIM  # noqa: E402
 
 TOHUMLAR = (1, 2, 3)
+
+# Kâhin bakımı 3 (ana oturum K3; README E1): resmî tatiller (2429 sayılı Kanun) — sabit günler her yıl (28 Ekim yarım gün); dinî bayramlar (arife yarım
+# gün dahil) 2026–2027. Bayram tarihleri birincil takvimden DOĞRULANMADI → her pencere arifeden bir gün önce – bayramdan bir gün sonra (geniş). Kitap
+# D-01 valörün tatilde ne olduğunu söylemez (KULLANICIYA SORULMALI 5): üretici valörü bu günlere düşürmez — kural uydurmaz, durumdan kaçınır.
+RESMI_TATIL_SABIT = ("01-01", "04-23", "05-01", "05-19", "07-15", "08-30", "10-28", "10-29")
+DINI_BAYRAM_PENCERESI = (("2026-03-18", "2026-03-23"), ("2026-05-25", "2026-05-31"), ("2027-03-07", "2027-03-12"), ("2027-05-14", "2027-05-20"))
+
+
+def tatil_mi(g):
+    s = g.isoformat()
+    return s[5:] in RESMI_TATIL_SABIT or any(a <= s <= b for a, b in DINI_BAYRAM_PENCERESI)
+
+
+def valor_tatilsiz(t, valor):
+    """Valör resmî tatil değil ve hafta sonu kaydırmasının üstünden geçtiği günlerde (valörden önceki ardışık hafta sonu, çekim gününden sonra) tatil yok."""
+    if tatil_mi(valor):
+        return False
+    g, bas = valor - datetime.timedelta(days=1), datetime.date.fromisoformat(t)
+    while g > bas and g.weekday() >= 5:
+        if tatil_mi(g):
+            return False
+        g -= datetime.timedelta(days=1)
+    return True
 MUSTERI = ("C1", "C2", "C3", "C4", "C5")
 TEDARIKCI = ("T1", "T2", "T3")
 
@@ -77,6 +100,15 @@ class Uretici:
         while g.weekday() >= 5:
             g += datetime.timedelta(days=1)
         return g
+
+    def pos_valoru(self, t, gun):
+        """POS valörü = çekim + gun, hafta sonu → sonraki iş günü (ana oturum K3). Bakım 3 E1: valör resmî tatile ya da tatilin üstünden geçen
+        kaydırmaya düşerse öbür seçenekler (1, 2, 30 gün) sırayla denenir (rastgele sayı tüketmez); hiçbiri olmazsa None."""
+        for g_ in [gun] + [x for x in (1, 2, 30) if x != gun]:
+            aday = self.is_gunu(datetime.date.fromisoformat(t) + datetime.timedelta(days=g_))
+            if valor_tatilsiz(t, aday):
+                return aday
+        return None
 
     # -- olay türleri
     def acilislar(self, t):
@@ -168,6 +200,11 @@ class Uretici:
             tut = x[1]
             o["fatura"] = x[0]
         yol = self.r.choice(["nakit", "nakit", "havale", "havale", "pos", "cek", "senet"])
+        valor = None
+        if yol == "pos":
+            valor = self.pos_valoru(t, self.r.choice([1, 1, 2, 30]))
+            if valor is None:                                    # bakım 3 E1: hiçbir valör seçeneği tatilsiz değil → POS yerine havale
+                yol = "havale"
         o.update(yol=yol, tutar=tut)
         if yol == "havale":
             o["banka"] = self.r.choice(["B1", "B2"])
@@ -175,8 +212,6 @@ class Uretici:
         elif yol == "nakit":
             self.kasa += tut
         elif yol == "pos":
-            gun = self.r.choice([1, 1, 2, 30])
-            valor = self.is_gunu(datetime.date.fromisoformat(t) + datetime.timedelta(days=gun))
             o.update(pos="POS1", komisyon=self.oranla(tut, 2), valor=valor.isoformat())
         else:
             e = self.id("E")
