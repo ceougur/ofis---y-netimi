@@ -1,0 +1,7 @@
+== yeni-utc: [kanit] c2t2-birlesim-yeni-utc: GEÇTİ · çıkış 0 · 46/46 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit ccbf781 · linux 6.18.44-fc-v242 x64 · Node v22.23.4
+== yeni-ist: [kanit] c2t2-birlesim-yeni-istanbul: GEÇTİ · çıkış 0 · 46/46 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit ccbf781 · linux 6.18.44-fc-v242 x64 · Node v22.23.4
+== k5-saat-ters: 2) 2.4.9 sıfırlama 200 3) onarım (yeni): {"removed":2,"kept":0}; kalan []; mizan []; Mutabakat Testi ok=true; ledger:vouchers sorunları [] 
+== k5-002-geri: SONUC kip=geri kalan=0 kaldirilan=3
+== k5-002-ileri: SONUC kip=ileri kalan=0 kaldirilan=3
+== g6-fis: [kanit] c2t2-birlesim-g6-fis: GEÇTİ · çıkış 0 · 17/17 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit ccbf781 · linux 6.18.44-fc-v242 x64 · Node v22.23.4
+== g6-donmus: [kanit] c2t2-birlesim-g6-donmus: GEÇTİ · çıkış 0 · 20/20 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit ccbf781 · linux 6.18.44-fc-v242 x64 · Node v22.23.4
