@@ -1,0 +1,38 @@
+{
+  "ad": "c5by-tek-c5b-mutabakat-yil-donumu",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/mutabakat-yil-donumu.test.mjs",
+  "commit": "30e12c204530161486f05739587b2f6147d86c6a",
+  "dal": "c5b-birlesim",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T12:42:48.762Z",
+  "sure_sn": 43.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 1,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "mutabakat motoru yıl dönümü (2.4.8 MZ; sahte saat 22.01.2027, çizelge 15.12.2026 → 22.01.2027) › tohum 39: geçen yıl tarihli, geçen yılın serisinde daha geç belgesi olmayan kronoloji denemesi ret beklemez; her işlem ve iki yılın numara sırası tutarlı",
+      "konum": "test/mutabakat-yil-donumu.test.mjs:48:3",
+      "hata": "[ · { · \"at\": \"işlem 445 (taksit-tahsil, 2027-01-12)\", (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../c5by-kanit/2026-11-10/c5by-tek-c5b-mutabakat-yil-donumu.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-birlesim-ag",
+  "ham_cikti_sha256": "2b094b573bc12e645a1da106a5736587c1a04785d151f976eaa8a1dd9216f370",
+  "ham_cikti_bayt": 3283
+}

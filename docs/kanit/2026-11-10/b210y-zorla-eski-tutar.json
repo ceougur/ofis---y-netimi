@@ -1,0 +1,133 @@
+{
+  "ad": "b210y-zorla-eski-tutar",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/banka-210-arama-yaris.mjs --kip tutar --deneme 20",
+  "commit": "28a253d57d26ceaafe2e39df1e59a0dbca7a50f7",
+  "dal": "b210-birlesim",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T13:27:20.125Z",
+  "sure_sn": 120.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 20,
+    "gecen": 0,
+    "basarisiz": 20,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 20 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "deneme 1 (ön koşul: odak alandayken, son tuştan 74 ms sonra yeniden çizim; o an kutuda \"10\"): yazılan \"10\"; kutu \"\", odak kayboldu (BODY), liste 4 satır [BNK-2026-000004, BNK-2026-000003, BNK-2026-000002, …], beklenen 4 satır, Süzgeçleri Temizle YOK — yazılan metin kayboldu / liste süzülmedi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 2 (ön koşul: odak alandayken, son tuştan 56 ms sonra yeniden çizim; o an kutuda \"10\"): yazılan \"10\"; kutu \"\", odak kayboldu (BODY), liste 4 satır [BNK-2026-000004, BNK-2026-000003, BNK-2026-000002, …], beklenen 4 satır, Süzgeçleri Temizle YOK — yazılan metin kayboldu / liste süzülmedi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 3 (ön koşul: odak alandayken, son tuştan 54 ms sonra yeniden çizim; o an kutuda \"10\"): yazılan \"10\"; kutu \"\", odak kayboldu (BODY), liste 4 satır [BNK-2026-000004, BNK-2026-000003, BNK-2026-000002, …], beklenen 4 satır, Süzgeçleri Temizle YOK — yazılan metin kayboldu / liste süzülmedi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 4 (ön koşul: odak alandayken, son tuştan 62 ms sonra yeniden çizim; o an kutuda \"10\"): yazılan \"10\"; kutu \"\", odak kayboldu (BODY), liste 4 satır [BNK-2026-000004, BNK-2026-000003, BNK-2026-000002, …], beklenen 4 satır, Süzgeçleri Temizle YOK — yazılan metin kayboldu / liste süzülmedi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 5 (ön koşul: odak alandayken, son tuştan 59 ms sonra yeniden çizim; o an kutuda \"10\"): yazılan \"10\"; kutu \"\", odak kayboldu (BODY), liste 4 satır [BNK-2026-000004, BNK-2026-000003, BNK-2026-000002, …], beklenen 4 satır, Süzgeçleri Temizle YOK — yazılan metin kayboldu / liste süzülmedi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 6 (ön koşul: odak alandayken, son tuştan 61 ms sonra yeniden çizim; o an kutuda \"10\"): yazılan \"10\"; kutu \"\", odak kayboldu (BODY), liste 4 satır [BNK-2026-000004, BNK-2026-000003, BNK-2026-000002, …], beklenen 4 satır, Süzgeçleri Temizle YOK — yazılan metin kayboldu / liste süzülmedi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 7 (ön koşul: odak alandayken, son tuştan 65 ms sonra yeniden çizim; o an kutuda \"10\"): yazılan \"10\"; kutu \"\", odak kayboldu (BODY), liste 4 satır [BNK-2026-000004, BNK-2026-000003, BNK-2026-000002, …], beklenen 4 satır, Süzgeçleri Temizle YOK — yazılan metin kayboldu / liste süzülmedi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 8 (ön koşul: odak alandayken, son tuştan 52 ms sonra yeniden çizim; o an kutuda \"10\"): yazılan \"10\"; kutu \"\", odak kayboldu (BODY), liste 4 satır [BNK-2026-000004, BNK-2026-000003, BNK-2026-000002, …], beklenen 4 satır, Süzgeçleri Temizle YOK — yazılan metin kayboldu / liste süzülmedi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 9 (ön koşul: odak alandayken, son tuştan 58 ms sonra yeniden çizim; o an kutuda \"10\"): yazılan \"10\"; kutu \"\", odak kayboldu (BODY), liste 4 satır [BNK-2026-000004, BNK-2026-000003, BNK-2026-000002, …], beklenen 4 satır, Süzgeçleri Temizle YOK — yazılan metin kayboldu / liste süzülmedi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 10 (ön koşul: odak alandayken, son tuştan 59 ms sonra yeniden çizim; o an kutuda \"10\"): yazılan \"10\"; kutu \"\", odak kayboldu (BODY), liste 4 satır [BNK-2026-000004, BNK-2026-000003, BNK-2026-000002, …], beklenen 4 satır, Süzgeçleri Temizle YOK — yazılan metin kayboldu / liste süzülmedi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 11 (ön koşul: odak alandayken, son tuştan 64 ms sonra yeniden çizim; o an kutuda \"10\"): yazılan \"10\"; kutu \"\", odak kayboldu (BODY), liste 4 satır [BNK-2026-000004, BNK-2026-000003, BNK-2026-000002, …], beklenen 4 satır, Süzgeçleri Temizle YOK — yazılan metin kayboldu / liste süzülmedi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 12 (ön koşul: odak alandayken, son tuştan 55 ms sonra yeniden çizim; o an kutuda \"10\"): yazılan \"10\"; kutu \"\", odak kayboldu (BODY), liste 4 satır [BNK-2026-000004, BNK-2026-000003, BNK-2026-000002, …], beklenen 4 satır, Süzgeçleri Temizle YOK — yazılan metin kayboldu / liste süzülmedi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 13 (ön koşul: odak alandayken, son tuştan 54 ms sonra yeniden çizim; o an kutuda \"10\"): yazılan \"10\"; kutu \"\", odak kayboldu (BODY), liste 4 satır [BNK-2026-000004, BNK-2026-000003, BNK-2026-000002, …], beklenen 4 satır, Süzgeçleri Temizle YOK — yazılan metin kayboldu / liste süzülmedi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 14 (ön koşul: odak alandayken, son tuştan 64 ms sonra yeniden çizim; o an kutuda \"10\"): yazılan \"10\"; kutu \"\", odak kayboldu (BODY), liste 4 satır [BNK-2026-000004, BNK-2026-000003, BNK-2026-000002, …], beklenen 4 satır, Süzgeçleri Temizle YOK — yazılan metin kayboldu / liste süzülmedi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 15 (ön koşul: odak alandayken, son tuştan 61 ms sonra yeniden çizim; o an kutuda \"10\"): yazılan \"10\"; kutu \"\", odak kayboldu (BODY), liste 4 satır [BNK-2026-000004, BNK-2026-000003, BNK-2026-000002, …], beklenen 4 satır, Süzgeçleri Temizle YOK — yazılan metin kayboldu / liste süzülmedi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 16 (ön koşul: odak alandayken, son tuştan 54 ms sonra yeniden çizim; o an kutuda \"10\"): yazılan \"10\"; kutu \"\", odak kayboldu (BODY), liste 4 satır [BNK-2026-000004, BNK-2026-000003, BNK-2026-000002, …], beklenen 4 satır, Süzgeçleri Temizle YOK — yazılan metin kayboldu / liste süzülmedi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 17 (ön koşul: odak alandayken, son tuştan 59 ms sonra yeniden çizim; o an kutuda \"10\"): yazılan \"10\"; kutu \"\", odak kayboldu (BODY), liste 4 satır [BNK-2026-000004, BNK-2026-000003, BNK-2026-000002, …], beklenen 4 satır, Süzgeçleri Temizle YOK — yazılan metin kayboldu / liste süzülmedi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 18 (ön koşul: odak alandayken, son tuştan 67 ms sonra yeniden çizim; o an kutuda \"10\"): yazılan \"10\"; kutu \"\", odak kayboldu (BODY), liste 4 satır [BNK-2026-000004, BNK-2026-000003, BNK-2026-000002, …], beklenen 4 satır, Süzgeçleri Temizle YOK — yazılan metin kayboldu / liste süzülmedi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 19 (ön koşul: odak alandayken, son tuştan 52 ms sonra yeniden çizim; o an kutuda \"10\"): yazılan \"10\"; kutu \"\", odak kayboldu (BODY), liste 4 satır [BNK-2026-000004, BNK-2026-000003, BNK-2026-000002, …], beklenen 4 satır, Süzgeçleri Temizle YOK — yazılan metin kayboldu / liste süzülmedi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 20 (ön koşul: odak alandayken, son tuştan 57 ms sonra yeniden çizim; o an kutuda \"10\"): yazılan \"10\"; kutu \"\", odak kayboldu (BODY), liste 4 satır [BNK-2026-000004, BNK-2026-000003, BNK-2026-000002, …], beklenen 4 satır, Süzgeçleri Temizle YOK — yazılan metin kayboldu / liste süzülmedi",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../b210y-kanit/2026-11-10/b210y-zorla-eski-tutar.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b210-birlesim-ag",
+  "ham_cikti_sha256": "054c06026f2fc989ad6a81610e6ba30d9596e226a55805e0aeb6c7756826c590",
+  "ham_cikti_bayt": 9589
+}

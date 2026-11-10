@@ -1,0 +1,32 @@
+{
+  "ad": "c5bd-komsu-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=2 test/banka-210-altin.test.mjs test/banka-210-gg-cari.test.mjs test/banka-210-gg2-hiz.test.mjs test/banka-210-hiz-esdegerlik.test.mjs test/banka-220-pos-hesap.test.mjs test/fatura-model.test.mjs test/mutabakat-cekirdek.test.mjs test/mutabakat-yil-donumu.test.mjs test/banka-210-ariza.test.mjs test/banka-210-gg-turler.test.mjs test/banka-210-goc-zinciri.test.mjs test/banka-210-goc.test.mjs test/banka-210-mutabakat-araci.test.mjs test/guvenilirlik-221-ariza.test.mjs test/guvenilirlik-221-goc.test.mjs test/guvenilirlik-221-rastgele.test.mjs test/guvenilirlik-221-tatbikat.test.mjs test/tyk-250.test.mjs test/tyk-api-250.test.mjs test/tyk-goc-249-250.test.mjs test/tyk-kilit-taksitli-250.test.mjs test/kapama-ks7-245.test.mjs test/kapama-tek-gecis-245.test.mjs test/cari-vade-245.test.mjs test/projeksiyon-vade-246.test.mjs test/iade-geri-odeme-246.test.mjs test/fatura-217.test.mjs test/iade-210.test.mjs test/iade-210-fazla-tahsilat.test.mjs test/iade-210-onarim.test.mjs test/bulgu-223.test.mjs test/goc-245-cari-vade.test.mjs test/cheques-overview.test.mjs test/defter-243-raporlar.test.mjs test/raporlar-209.test.mjs test/banka-230-46-iade-iptal.test.mjs test/banka-230-supheli-ekran.test.mjs test/whatsapp-onizleme-olcek-248.test.mjs test/kasa-acilis-once-250.test.mjs",
+  "commit": "2bc7a78c090e04983b5ee6ca89addabd2078c979",
+  "dal": "worktree-agent-acb431b717a5f6ae0",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T13:17:34.298Z",
+  "sure_sn": 219.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 474,
+    "gecen": 474,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bd-kanit/2026-11-10/c5bd-komsu-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-acb431b717a5f6ae0",
+  "ham_cikti_sha256": "135131544cc294f59c3513994f3077355ca552be04ec08675abc4d363ec85b8f",
+  "ham_cikti_bayt": 189655
+}

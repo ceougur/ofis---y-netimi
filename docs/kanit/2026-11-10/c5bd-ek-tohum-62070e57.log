@@ -1,0 +1,77 @@
+TAP version 13
+# Subtest: mutabakat yıl dönümü ek tohumlar (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bd-ana)
+    # Subtest: tohum 1
+    ok 1 - tohum 1
+      ---
+      duration_ms: 22416.002263
+      type: 'test'
+      ...
+    # Subtest: tohum 2
+    ok 2 - tohum 2
+      ---
+      duration_ms: 21732.759393
+      type: 'test'
+      ...
+    # Subtest: tohum 3
+    ok 3 - tohum 3
+      ---
+      duration_ms: 19482.84302
+      type: 'test'
+      ...
+    # Subtest: tohum 5
+    ok 4 - tohum 5
+      ---
+      duration_ms: 22109.592574
+      type: 'test'
+      ...
+    # Subtest: tohum 7
+    ok 5 - tohum 7
+      ---
+      duration_ms: 21032.286489
+      type: 'test'
+      ...
+    # Subtest: tohum 11
+    ok 6 - tohum 11
+      ---
+      duration_ms: 19588.887652
+      type: 'test'
+      ...
+    # Subtest: tohum 13
+    ok 7 - tohum 13
+      ---
+      duration_ms: 19769.738591
+      type: 'test'
+      ...
+    # Subtest: tohum 17
+    ok 8 - tohum 17
+      ---
+      duration_ms: 18547.398696
+      type: 'test'
+      ...
+    # Subtest: tohum 23
+    ok 9 - tohum 23
+      ---
+      duration_ms: 19851.378044
+      type: 'test'
+      ...
+    # Subtest: tohum 31
+    ok 10 - tohum 31
+      ---
+      duration_ms: 20355.870047
+      type: 'test'
+      ...
+    1..10
+ok 1 - mutabakat yıl dönümü ek tohumlar (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bd-ana)
+  ---
+  duration_ms: 204888.924802
+  type: 'suite'
+  ...
+1..1
+# tests 10
+# suites 1
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 205449.284029

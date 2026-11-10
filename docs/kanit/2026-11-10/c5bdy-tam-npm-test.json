@@ -1,0 +1,32 @@
+{
+  "ad": "c5bdy-tam-npm-test",
+  "komut": "npm test",
+  "commit": "2bc7a78c090e04983b5ee6ca89addabd2078c979",
+  "dal": "c5b-birlesim",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T13:29:45.539Z",
+  "sure_sn": 2791.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5191,
+    "gecen": 5191,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../c5bdy-kanit/2026-11-10/c5bdy-tam-npm-test.log.gz",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-birlesim-ag",
+  "ham_cikti_sha256": "9ba4ae821101ef7c8fd9d46306daff7d1d515fda29296dc313c772a9f87715b5",
+  "ham_cikti_bayt": 1989995
+}

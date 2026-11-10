@@ -1,0 +1,128 @@
+{
+  "ad": "c5by-eski-yeni-ist",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=2 test/tyk-250.test.mjs test/tyk-api-250.test.mjs test/tyk-goc-249-250.test.mjs",
+  "commit": "62070e571f3ded1ec425de1105518fce40d9487e",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 3,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T07:49:04.621Z",
+  "sure_sn": 1.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 20,
+    "gecen": 1,
+    "basarisiz": 19,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 19 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "test/tyk-250.test.mjs",
+      "konum": "test/tyk-250.test.mjs:1:1",
+      "hata": "test failed"
+    },
+    {
+      "ad": "2.5.0 Ç5-B — Tek Yükümlülük Kuyruğu (API) › B1: bütün ekranlar aynı sayı (cari kartı = liste = Anlık Durum = mobil cari listesi = Vade Takip = zil; fatura durumu) › cari kartı: Gecikmiş Borç 1.100 (3 kalem), bakiye 1.400; eski alan (taksit) ayrı",
+      "konum": "test/tyk-api-250.test.mjs:68:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç5-B — Tek Yükümlülük Kuyruğu (API) › B1: bütün ekranlar aynı sayı (cari kartı = liste = Anlık Durum = mobil cari listesi = Vade Takip = zil; fatura durumu) › cari listesi satırı ve 'Gecikmiş Borcu Olan' süzgeci aynı sayı; sıralama TYK'ya göre",
+      "konum": "test/tyk-api-250.test.mjs:73:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç5-B — Tek Yükümlülük Kuyruğu (API) › B1: bütün ekranlar aynı sayı (cari kartı = liste = Anlık Durum = mobil cari listesi = Vade Takip = zil; fatura durumu) › Anlık Durum alacak gecikmişi = cari listesinin toplamı (bu sunucuda tek gecikmiş cari bu)",
+      "konum": "test/tyk-api-250.test.mjs:78:5",
+      "hata": "The expression evaluated to a falsy value: · assert.ok(overview.receivable.overdue >= 1100) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.5.0 Ç5-B — Tek Yükümlülük Kuyruğu (API) › B1: bütün ekranlar aynı sayı (cari kartı = liste = Anlık Durum = mobil cari listesi = Vade Takip = zil; fatura durumu) › Vade Takip: carinin vadesi geçmiş kalemleri toplamı = gecikmiş; aynı borç bir kez (fatura 500, borç 300, taksit 300)",
+      "konum": "test/tyk-api-250.test.mjs:92:5",
+      "hata": "Expected values to be strictly equal: · 80000 !== 110000 (beklenen 110000, gelen 80000)"
+    },
+    {
+      "ad": "2.5.0 Ç5-B — Tek Yükümlülük Kuyruğu (API) › B1: bütün ekranlar aynı sayı (cari kartı = liste = Anlık Durum = mobil cari listesi = Vade Takip = zil; fatura durumu) › zil / takvim: aynı kalemler (ufuk +7 gün); fatura durumu Vadesi Geçti, Kalan 500",
+      "konum": "test/tyk-api-250.test.mjs:99:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç5-B — Tek Yükümlülük Kuyruğu (API) › B1: bütün ekranlar aynı sayı (cari kartı = liste = Anlık Durum = mobil cari listesi = Vade Takip = zil; fatura durumu) › S50: taksit kartı ekranı taksit kalanını kuyruktan gösterir; kartın kendi hesabı (Kalan 600) değişmez",
+      "konum": "test/tyk-api-250.test.mjs:107:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç5-B — Tek Yükümlülük Kuyruğu (API) › S50 = A: kart seçilmeden alınan tahsilat ayrı kartın vadesi gelmiş taksitini kapatır; Taksitler ve zil bunu gösterir",
+      "konum": "test/tyk-api-250.test.mjs:114:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç5-B — Tek Yükümlülük Kuyruğu (API) › S52 / S72 / S73: Ödeme Sözü gecikmişi değiştirmez; söz günü DAHİL 'Ödeme Sözü Var'; söz geçince düşer",
+      "konum": "test/tyk-api-250.test.mjs:127:3",
+      "hata": "söz günü (S72): gecikmiş sayılır, söz etkin · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç5-B — Tek Yükümlülük Kuyruğu (API) › düzeltmede cari değişimi (S54 / S57 / S79 / S80 / S81 / S83 / S84 / S85; sıra K10-1) › S57: bağlı (Kapatılacak Fatura) kaydın carisi bağ değişmeden düzeltilmez → 409 entry-link-first; kayıt değişmez",
+      "konum": "test/tyk-api-250.test.mjs:142:5",
+      "hata": "Expected values to be strictly equal: · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.5.0 Ç5-B — Tek Yükümlülük Kuyruğu (API) › düzeltmede cari değişimi (S54 / S57 / S79 / S80 / S81 / S83 / S84 / S85; sıra K10-1) › S79 = A (S54 gibi): aynı düzeltmede cari + bağ değişirse kabul — bağ yeni carinin belgesine; eski fatura yeniden açılır",
+      "konum": "test/tyk-api-250.test.mjs:153:5",
+      "hata": "cari + bağ: 404 {\"ok\":false,\"error\":\"Kapatılacak fatura bu caride bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.5.0 Ç5-B — Tek Yükümlülük Kuyruğu (API) › düzeltmede cari değişimi (S54 / S57 / S79 / S80 / S81 / S83 / S84 / S85; sıra K10-1) › bağsız kaydın carisi düzeltilir (S57 uygulanmaz); iki carinin bakiyesi ve kuyruğu yeniden kurulur",
+      "konum": "test/tyk-api-250.test.mjs:169:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç5-B — Tek Yükümlülük Kuyruğu (API) › düzeltmede cari değişimi (S54 / S57 / S79 / S80 / S81 / S83 / S84 / S85; sıra K10-1) › S80 / S83 / S84 = A: fatura formunda alınan / yapılan peşinin carisi ya da bağı → 409 invoice-payment-edit ('faturayı düzenleyin')",
+      "konum": "test/tyk-api-250.test.mjs:178:5",
+      "hata": "S80 carisi · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç5-B — Tek Yükümlülük Kuyruğu (API) › düzeltmede cari değişimi (S54 / S57 / S79 / S80 / S81 / S83 / S84 / S85; sıra K10-1) › K10-1: kilitli dönemdeki peşinin carisi → önce KILITLI_DONEM (409 period-locked)",
+      "konum": "test/tyk-api-250.test.mjs:196:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç5-B — Tek Yükümlülük Kuyruğu (API) › düzeltmede cari değişimi (S54 / S57 / S79 / S80 / S81 / S83 / S84 / S85; sıra K10-1) › S81 = A: Normal Cari tahsilat aynı düzeltmede şüpheli kaydı açık bir cariye alınıp 120 bakiyesini aşarsa red (doubtful-normal-exceeds)",
+      "konum": "test/tyk-api-250.test.mjs:207:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç5-B — Tek Yükümlülük Kuyruğu (API) › düzeltmede cari değişimi (S54 / S57 / S79 / S80 / S81 / S83 / S84 / S85; sıra K10-1) › S85 = A (K10-3): Normal Cari kaydın yalnız TARİHİ 120'nin küçük olduğu güne alınırsa sınır yeni günde ölçülür → red",
+      "konum": "test/tyk-api-250.test.mjs:222:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç5-B — Tek Yükümlülük Kuyruğu (API) › artımlı önbellek (tasarım §5): yazımdan sonra yalnız dokunulan cari yeniden kurulur; her carinin sonucu cari başına baştan kurulumla aynı",
+      "konum": "test/tyk-api-250.test.mjs:236:3",
+      "hata": "inv.allObligations is not a function"
+    },
+    {
+      "ad": "2.5.0 Ç5-B — Tek Yükümlülük Kuyruğu (API) › mutabakat kapısının list()'i (iç kimlik 'ledger' / 'integrity', ids) TYK hesaplamaz",
+      "konum": "test/tyk-api-250.test.mjs:275:3",
+      "hata": "kullanıcı listesi TYK'yı okur · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.5.0 Ç5-B — v2.4.9 verisi güncel kodun kuyruğunda › v2.4.9: iki fatura (vade belge sırasına ters) + bağsız tahsilat + Yeni Borç kartı + bağsız tahsilat + vadesiz Borç Yaz → güncel kod TYK sayıları",
+      "konum": "test/tyk-goc-249-250.test.mjs:23:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../c5by-kanit/2026-11-10/c5by-eski-yeni-ist.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5by-eski",
+  "ham_cikti_sha256": "3d4013b4666137e0fa78231e899c3a68a432372784cce40919cc29158f894aa9",
+  "ham_cikti_bayt": 29589
+}

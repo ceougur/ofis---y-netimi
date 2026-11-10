@@ -1,0 +1,232 @@
+TAP version 13
+# Subtest: mutabakat yıl dönümü ek tohumlar (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bd-birlesim)
+    # Subtest: tohum 1
+    ok 1 - tohum 1
+      ---
+      duration_ms: 21063.001766
+      type: 'test'
+      ...
+    # Subtest: tohum 2
+    ok 2 - tohum 2
+      ---
+      duration_ms: 23806.165344
+      type: 'test'
+      ...
+    # Subtest: tohum 3
+    ok 3 - tohum 3
+      ---
+      duration_ms: 19854.688928
+      type: 'test'
+      ...
+    # Subtest: tohum 5
+    ok 4 - tohum 5
+      ---
+      duration_ms: 20496.880791
+      type: 'test'
+      ...
+    # Subtest: tohum 7
+    not ok 5 - tohum 7
+      ---
+      duration_ms: 6538.411249
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bd-iz/tohumlar.test.mjs:16:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        [
+         {
+          "at": "işlem 250 (cari, 2026-12-30)",
+          "problems": [
+           "Taksitli fatura SMM2026000000001: açık 55.52 ≠ imzalı açık hedefi 0,00 (geri ödenen 0,00) · kapatanlar 2026-12-18:105.92:Tahsilat | 2026-12-18:96.52:Tahsilat | 2026-12-18:45.8:Çek / Senet | 2026-12-18:18.7:Çek / Senet"
+          ]
+         }
+        ]
+        + actual - expected
+        
+        + [
+        +   {
+        +     at: 'işlem 250 (cari, 2026-12-30)',
+        +     problems: [
+        +       'Taksitli fatura SMM2026000000001: açık 55.52 ≠ imzalı açık hedefi 0,00 (geri ödenen 0,00) · kapatanlar 2026-12-18:105.92:Tahsilat | 2026-12-18:96.52:Tahsilat | 2026-12-18:45.8:Çek / Senet | 2026-12-18:18.7:Çek / Senet'
+        +     ]
+        +   }
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0:
+          at: 'işlem 250 (cari, 2026-12-30)'
+          problems:
+            0: 'Taksitli fatura SMM2026000000001: açık 55.52 ≠ imzalı açık hedefi 0,00 (geri ödenen 0,00) · kapatanlar 2026-12-18:105.92:Tahsilat | 2026-12-18:96.52:Tahsilat | 2026-12-18:45.8:Çek / Senet | 2026-12-18:18.7:Çek / Senet'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bd-iz/tohumlar.test.mjs:21:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tohum 11
+    not ok 6 - tohum 11
+      ---
+      duration_ms: 12510.686471
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bd-iz/tohumlar.test.mjs:16:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        [
+         {
+          "at": "işlem 430 (fatura-acid, 2027-01-11)",
+          "problems": [
+           "Taksitli fatura FIS2026000000005: açık 6278.77 ≠ imzalı açık hedefi 2964,17 (geri ödenen 0,00) · kapatanlar "
+          ]
+         }
+        ]
+        + actual - expected
+        
+        + [
+        +   {
+        +     at: 'işlem 430 (fatura-acid, 2027-01-11)',
+        +     problems: [
+        +       'Taksitli fatura FIS2026000000005: açık 6278.77 ≠ imzalı açık hedefi 2964,17 (geri ödenen 0,00) · kapatanlar '
+        +     ]
+        +   }
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0:
+          at: 'işlem 430 (fatura-acid, 2027-01-11)'
+          problems:
+            0: 'Taksitli fatura FIS2026000000005: açık 6278.77 ≠ imzalı açık hedefi 2964,17 (geri ödenen 0,00) · kapatanlar '
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bd-iz/tohumlar.test.mjs:21:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tohum 13
+    not ok 7 - tohum 13
+      ---
+      duration_ms: 11780.839068
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bd-iz/tohumlar.test.mjs:16:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        [
+         {
+          "at": "işlem 440 (fatura-taslak, 2027-01-11)",
+          "problems": [
+           "Taksitli fatura FIS2027000000001: açık 997.56 ≠ imzalı açık hedefi 0,00 (geri ödenen 0,00) · kapatanlar ",
+           "Taksitli fatura FIS2027000000008: açık 592.13 ≠ imzalı açık hedefi 173,37 (geri ödenen 0,00) · kapatanlar 2027-01-07:61.17:Tahsilat | 2027-01-07:601.73:Tahsilat | 2027-01-07:35.03:Çek / Senet"
+          ]
+         }
+        ]
+        + actual - expected
+        
+        + [
+        +   {
+        +     at: 'işlem 440 (fatura-taslak, 2027-01-11)',
+        +     problems: [
+        +       'Taksitli fatura FIS2027000000001: açık 997.56 ≠ imzalı açık hedefi 0,00 (geri ödenen 0,00) · kapatanlar ',
+        +       'Taksitli fatura FIS2027000000008: açık 592.13 ≠ imzalı açık hedefi 173,37 (geri ödenen 0,00) · kapatanlar 2027-01-07:61.17:Tahsilat | 2027-01-07:601.73:Tahsilat | 2027-01-07:35.03:Çek / Senet'
+        +     ]
+        +   }
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0:
+          at: 'işlem 440 (fatura-taslak, 2027-01-11)'
+          problems:
+            0: 'Taksitli fatura FIS2027000000001: açık 997.56 ≠ imzalı açık hedefi 0,00 (geri ödenen 0,00) · kapatanlar '
+            1: 'Taksitli fatura FIS2027000000008: açık 592.13 ≠ imzalı açık hedefi 173,37 (geri ödenen 0,00) · kapatanlar 2027-01-07:61.17:Tahsilat | 2027-01-07:601.73:Tahsilat | 2027-01-07:35.03:Çek / Senet'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bd-iz/tohumlar.test.mjs:21:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tohum 17
+    not ok 8 - tohum 17
+      ---
+      duration_ms: 15651.274921
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bd-iz/tohumlar.test.mjs:16:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        [
+         {
+          "at": "işlem 560 (kilit-ihlali, 2027-01-19)",
+          "problems": [
+           "Taksitli fatura FIS2026000000003: açık 669.22 ≠ imzalı açık hedefi 0,00 (geri ödenen 51202,99) · kapatanlar 2026-12-20:19729.79:Tahsilat | 2026-12-20:30803.98:Çek / Senet | 2027-01-19:6300.01:Taksit Tahsilatı | 2026-12-21:47239.35:Fatura"
+          ]
+         }
+        ]
+        + actual - expected
+        
+        + [
+        +   {
+        +     at: 'işlem 560 (kilit-ihlali, 2027-01-19)',
+        +     problems: [
+        +       'Taksitli fatura FIS2026000000003: açık 669.22 ≠ imzalı açık hedefi 0,00 (geri ödenen 51202,99) · kapatanlar 2026-12-20:19729.79:Tahsilat | 2026-12-20:30803.98:Çek / Senet | 2027-01-19:6300.01:Taksit Tahsilatı | 2026-12-21:47239.35:Fatura'
+        +     ]
+        +   }
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0:
+          at: 'işlem 560 (kilit-ihlali, 2027-01-19)'
+          problems:
+            0: 'Taksitli fatura FIS2026000000003: açık 669.22 ≠ imzalı açık hedefi 0,00 (geri ödenen 51202,99) · kapatanlar 2026-12-20:19729.79:Tahsilat | 2026-12-20:30803.98:Çek / Senet | 2027-01-19:6300.01:Taksit Tahsilatı | 2026-12-21:47239.35:Fatura'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bd-iz/tohumlar.test.mjs:21:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tohum 23
+    ok 9 - tohum 23
+      ---
+      duration_ms: 19207.228222
+      type: 'test'
+      ...
+    # Subtest: tohum 31
+    ok 10 - tohum 31
+      ---
+      duration_ms: 20156.069665
+      type: 'test'
+      ...
+    1..10
+not ok 1 - mutabakat yıl dönümü ek tohumlar (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bd-birlesim)
+  ---
+  duration_ms: 171067.534059
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bd-iz/tohumlar.test.mjs:14:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 10
+# suites 1
+# pass 6
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 171411.899521

@@ -1,0 +1,32 @@
+{
+  "ad": "c5bd-tyk-ilk",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/tyk-250.test.mjs test/tyk-api-250.test.mjs test/tyk-goc-249-250.test.mjs",
+  "commit": "30e12c204530161486f05739587b2f6147d86c6a",
+  "dal": "worktree-agent-acb431b717a5f6ae0",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T13:04:46.158Z",
+  "sure_sn": 2.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 52,
+    "gecen": 52,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bd-kanit/2026-11-10/c5bd-tyk-ilk.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-acb431b717a5f6ae0",
+  "ham_cikti_sha256": "ad194860000decf7c311be176391494ea5f5869212a0e1d00665e07dd24701d6",
+  "ham_cikti_bayt": 20428
+}

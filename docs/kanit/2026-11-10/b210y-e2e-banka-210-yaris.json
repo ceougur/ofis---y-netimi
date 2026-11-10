@@ -1,0 +1,32 @@
+{
+  "ad": "b210y-e2e-banka-210-yaris",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/banka-210-yaris.mjs",
+  "commit": "28a253d57d26ceaafe2e39df1e59a0dbca7a50f7",
+  "dal": "b210-birlesim",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T13:45:43.960Z",
+  "sure_sn": 57.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 10,
+    "gecen": 10,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../b210y-kanit/2026-11-10/b210y-e2e-banka-210-yaris.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b210-birlesim-ag",
+  "ham_cikti_sha256": "365af178b2ef212780a076f8fb9dd960ab25854452f0f04eadecfc055e4f27aa",
+  "ham_cikti_bayt": 4706
+}
