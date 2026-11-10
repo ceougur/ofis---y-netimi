@@ -1009,6 +1009,32 @@ try {
       return list.length === 1 && list[0].dataset.no === no;
     }, feeNo);
     ok(true, `İşlem No ile arama: yalnız ${feeNo}`);
+    // 2.5.0 (CI #864 / #1056: bu adımın ara sıra kırmızısı — arama kutusu boş, liste süzülmemiş; zorla: test/e2e/banka-210-arama-yaris.mjs).
+    // Kök neden üründe: arka plan yenilemesi (adım 14'teki kaydın canlı olayı) pencereyi yeniden çizince odak süzgeç alanından düşüyordu.
+    // fill iki adımdır (sayfada odak → ayrı çağrıyla metin); yeniden çizim araya girince metin hiçbir yere yazılmıyordu. Sıra burada her koşuda
+    // zorla kurulur: odak → canlı olay → yeniden çizim → metin. Beklenen: odak kutuda kalır, yazılan kutuya girer ve liste süzülür.
+    const redrawBank = async () => {
+      const before = await admin.evaluateHandle(() => document.querySelector(".hof-bank-modal [data-mv-filters]"));
+      await admin.evaluate(() => window.HOF.emit("live:overview.changed", { kinds: ["bank"] }));
+      await admin.waitForFunction(old => ![null, old].includes(document.querySelector(".hof-bank-modal [data-mv-filters]")), before, { timeout: 10000 });
+      await before.dispose();
+    };
+    const focusedFilter = () => admin.evaluate(() => document.activeElement?.dataset?.mv || document.activeElement?.tagName || "");
+    await admin.fill(`${bankWin} [data-mv="q"]`, "");
+    await waitMoves(admin, () => document.querySelectorAll(".hof-bank-modal .hof-bank-moves tbody tr[data-event]").length === 8);
+    await admin.focus(`${bankWin} [data-mv="q"]`);
+    await redrawBank();
+    ok((await focusedFilter()) === "q", `arka plan yenilemesi pencereyi yeniden çizince odak arama kutusunda kalır (odak: ${await focusedFilter()})`);
+    await admin.keyboard.insertText(feeNo);
+    await waitMoves(admin, no => {
+      const list = [...document.querySelectorAll(".hof-bank-modal .hof-bank-moves tbody tr[data-event]")];
+      return list.length === 1 && list[0].dataset.no === no && document.querySelector('.hof-bank-modal [data-mv="q"]').value === no;
+    }, feeNo);
+    ok(true, `yeniden çizimden hemen sonra yazılan İşlem No kutuya girer ve liste süzülür: yalnız ${feeNo}`);
+    // Enter'a basılmamış (süzgece girmemiş) tutar da yeniden çizimde kaybolmaz: alan yazılanı taşır, odak alanda kalır.
+    await admin.fill(`${bankWin} [data-mv="min"]`, "100");
+    await redrawBank();
+    ok((await admin.inputValue(`${bankWin} [data-mv="min"]`)) === "100" && (await focusedFilter()) === "min", `yeniden çizim Enter'a basılmamış tutarı ve odağı korur (kutu "${await admin.inputValue(`${bankWin} [data-mv="min"]`)}", odak: ${await focusedFilter()})`);
     await admin.fill(`${bankWin} [data-mv="q"]`, "");
     await admin.fill(`${bankWin} [data-mv="min"]`, "100");
     await admin.press(`${bankWin} [data-mv="min"]`, "Enter");

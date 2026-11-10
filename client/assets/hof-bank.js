@@ -1574,6 +1574,7 @@
     // 2.3.0 İz 5.1: PDF / Excel bağları süzgeçle birlikte yenilenir (süzgeç değişince yalnız liste çizilir).
     const exportBar = state.key === "main" ? root()?.querySelector("[data-mv-export]") : null;
     if (exportBar) exportBar.outerHTML = movesExportHtml(state);
+    if (state.key === "main") showClear();
   }
   /** Hareket satırları: tarih, İşlem No, tür (durum rozetiyle), [hesap], açıklama (cari, açıklama, referans, fatura), tutar, [bakiye]. */
   // debt (GG2 düşük): kurumsal kart ve kredi hesabında yürüyen bakiye "Borç" kolonunda artı gösterilir (başlıktaki Borç ve Açılıştaki Borç gibi).
@@ -1706,9 +1707,18 @@
     }
     if (!changed) return;
     moves.cursor = null;
-    const clear = root()?.querySelector('[data-act="mv-clear"]');
-    if (!clear && filtered(moves)) root()?.querySelector("[data-mv-filters]")?.insertAdjacentHTML("beforeend", '<button type="button" class="hof-link-button" data-act="mv-clear">Süzgeçleri Temizle</button>');
+    showClear();
     loadMoves(moves);
+  }
+  /**
+   * Süzgeç varken "Süzgeçleri Temizle" görünür. Liste çizilirken de çağrılır (2.5.0, CI #864 / #1056): pencere yeniden çizilirken odaktaki
+   * değişmiş alan DOM'dan kalkınca tarayıcı "change" verir, süzgeç o anda uygulanır ama düğme sökülmekte olan eski çubuğa eklenmiş olur —
+   * yeni çubukta (eski süzgeçle üretilmişti) düğme yoktu.
+   */
+  function showClear() {
+    const bar = root()?.querySelector("[data-mv-filters]");
+    if (!bar || moves.planned || !filtered(moves) || bar.querySelector('[data-act="mv-clear"]')) return;
+    bar.insertAdjacentHTML("beforeend", '<button type="button" class="hof-link-button" data-act="mv-clear">Süzgeçleri Temizle</button>');
   }
   /** Hareketler sekmesini (ya da Planlı İşlemler'i) bir hesapla açar. */
   function openMovements({ account = moves.filter.account, planned = false, pos = "" } = {}) {
