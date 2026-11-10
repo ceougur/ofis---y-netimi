@@ -55,12 +55,16 @@ for p in dosyalar:
     n = len(sen.get("elleBeklenen") or {}) + len(sen.get("elleYok") or []) + len(sen.get("elleBelirsiz") or [])
     print("%s: %d elle denetim, %d kırmızı" % (ad, n, kalan - k0))
 toplam = gecen + kalan
+if KIRMIZI_BEKLE:
+    # ESKİ kâhin kopyasında koşu: kırmızılar BEKLENİR — özet "beklenen kırmızı" sayısını geçen olarak yazar (çıkış 0 yalnız en az bir kırmızı varsa); ham sayılar üstteki satırda
+    print("ESKİ KÂHİN KIRMIZISI: %d/%d elle denetim kırmızı, %d aynı (beklenen: kırmızı > 0; her kırmızının eski değeri yukarıda)" % (kalan, toplam, gecen))
+    print("# tests %d" % kalan)
+    print("# pass %d" % kalan)
+    print("# fail 0")
+    print("%d/%d denetim geçti" % (kalan, kalan) if kalan else "0/1 denetim geçti")
+    sys.exit(0 if kalan else 1)
 print("# tests %d" % toplam)
 print("# pass %d" % gecen)
 print("# fail %d" % kalan)
-if KIRMIZI_BEKLE:
-    print("ESKİ KÂHİN KIRMIZISI: %d/%d elle denetim kırmızı (beklenen: > 0; nedenler yukarıda)" % (kalan, toplam))
-    print("%d/%d denetim geçti" % (kalan, kalan) if kalan else "0/1 denetim geçti")
-    sys.exit(0 if kalan else 1)
 print("%d/%d denetim geçti" % (gecen, toplam))
 sys.exit(0 if kalan == 0 else 1)
