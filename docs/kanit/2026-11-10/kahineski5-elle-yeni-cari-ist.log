@@ -1,0 +1,14 @@
+d17-c5-s93-verilen-avans.json: 43 elle denetim, 0 kırmızı
+d18-c5-s93-avans-ertesi-gun.json: 13 elle denetim, 0 kırmızı
+d19-c5-s92-okuma-ayrisan.json: 43 elle denetim, 0 kırmızı
+d20-c5-s95-netlesme-sonrasi-odeme.json: 59 elle denetim, 0 kırmızı
+d21-c5-s95-ertesi-ay.json: 9 elle denetim, 0 kırmızı
+d22-c5-s96-avans-kalemi.json: 44 elle denetim, 0 kırmızı
+d23-c5-s96-avans-ertesi-gun.json: 6 elle denetim, 0 kırmızı
+d24-c5-s97-ayni-gun.json: 39 elle denetim, 0 kırmızı
+d25-c5-s98-avans-sirasi.json: 23 elle denetim, 0 kırmızı
+d26-c5-bakim5-susan.json: 40 elle denetim, 0 kırmızı
+# tests 319
+# pass 319
+# fail 0
+319/319 denetim geçti

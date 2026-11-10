@@ -1643,3 +1643,54 @@ kurulmuyor (…; Y5-7)", "cari <ad> fatura belge durumu tanımsız (2.5.0 C17): 
   `account` değil) gösteriyorsa koşucu "yok" okur → fark; önce hata sayılır (ders 6), kimlik biçimi koşucuya eşleme olarak eklenir (yalnız eşleme; kural değişmez).
 - `GECIKMIS_ALAN` ve `KARSILIKSIZ_CARI` hâlâ `null` — programın alan adını bilmeyi gerektirir (Ç5-B / Ç5-A verir); bu kâhin VERMEZ.
 - **Ana oturuma:** `model.py` değişti — mobil yazma kâhininin `cari_model_sha256`'sı yeniden üretilmeli (o dosya okunmadı).
+
+### KULLANICIYA SORULMALI — özet (bakım 5; hepsi UÇ DURUM, öneri + "Uç durum böyle kalsın")
+SK-9 (K1 ↔ K2), SK-10 (verilen avansın kalemle kapanışı geri alınır mı), SK-11 (alınan avans ↔ karşı borcumuz — Ödeme'nin sırası), SK-12 (açık alış iadesi alacağı ↔ verilen avans), SK-13
+(avanslı caride satış faturasının belge durumu) — metinleri yukarıda (Yorumlar'ın altında). Kâhin bu durumlarda değer yazmaz (d26). Ayrıca Y5-1 sıçraması (aynı gün ↔ ertesi gün tahsilat)
+KARAR METNİNİN HARFİ sayıldı; baş mimar kullanıcıya göstermeli (d24 A1 ↔ A3).
+
+### C12j DENENMEYEN (bakım 5; neden)
+- Program koşulmadı (görev: programla karşılaştırmayı ana oturum yapar). Programın Y5-1 sıçramasında, SK-9 … SK-13'te ve Y5-7'de ne yaptığı bilinmiyor.
+- İLERİ tarihli Ödeme (avans kaleminin vadesi bugünden sonra — "upcoming"): programın ileri tarihli nakit Ödeme'yi kabul edip etmediği bilinmiyor → senaryo yazılmadı (kural aynı: gün = ödeme günü).
+- Ciro avansının kalem başına denetimi (kalem kimliği evrakta; sayaçta belirsiz üye). Ciro carisinin görünüm toplamı (§13'ten beri tanımsız — portföy / ciro evrakı) aynen yazılmıyor.
+- Yalın olmayan caride (kart, taksitli fatura, fatura iadesi, şüpheli / değersiz, KS8 / KS9, kart tahsilatı, tablo bağı, iki yönde iade) karşı yönlü kalemle net görünüm — karar yok, susar
+  (§16 aynen). Y5-7: yalın olmayan caride S98'in tek taraflı kuyrukta kurulması — kurulmadı (koruma: susar).
+- Zil (bildirim) metni, WhatsApp elemesi (tedarikçiye avans hatırlatması gitmez — Ç5-C), Mahsup Et (dilde yok) — §16 aynen.
+- Müşterinin bize verdiği avansın "Ödenecek Borç" kalemi olmadığı (değişmedi) — ayrı anahtarla denetlenmiyor (sayaç ve görünüm toplamı üzerinden).
+
+### C0j Değişen eski beklentiler (G3; bakım 4 `14e3f4bb` ↔ bakım 5 kâhin çıktısı, `2.5.0`; eski kopyanın 73 elle senaryosu + rastgele s1 / ux18 tohum 1–10 × 120) — kararla ilgisiz eski beklenti DEĞİŞMEDİ
+Toplam 1.612 denetim satırı (eski 42.653 → yeni 43.855 denetim); her satır o KONTROL anındaki iki modelin izinden sınıflandı, **BEKLENMEYEN 0**, değeri aynı kalıp etiketi değişen 0
+(dökümü `docs/kanit/2026-11-10/kahineski5-g3-dokum.json`, özet `kahineski5-esdeger-cari-*.log`; iki saat diliminde bayt bayt aynı). **Türev sayaçlar dışında değeri değişen denetim YOK** — bakım 4'ün
+yazdığı her değer (okumaların birleştiği yerler) bakım 5'te de aynı. Sınıflar:
+- **S96-kalem (yeni) 1.230:** Ödeme hareketlerinin `takvim | vadeTakip | projeksiyon:hareket:<ödeme>` denetimi (410 × 3) — 117'si avans kalemi, 1.113'ü "yok" (kalemi kapatmış / silinmiş Ödeme).
+- **S96-gorunum (yeni) 54:** avanslı carinin görünüm toplamları (`takvim | vadeTakip | projeksiyon:cariToplam`, 14 × 3) ve o carinin `vadeTakip | projeksiyon:fatura` kalemleri (6 × 2) — d17, d18, d19.
+- **geri-kazanilan (yeni) 102:** bakım 4'te okumalar ayrıştığı (SK-6 / SK-8) için tanımsız olan caride artık değer — d19 53 (N1, N2, N3, N5, N6), rastgele s1-10 22, s1-4 12, c12 10 (B4: Borç +
+  Alacak netleştikten sonra stok iadesi), c8 5. Anahtarlar: Kalan 19, takvim / Vade Takip / projeksiyon kalemi 19 / 15 / 19, fatura kalemi 7, görünüm toplamı 6, açık toplam 12, gecikmiş 5.
+- **Y5-7 (kalkan) 190:** yalın olmayan (KS8 müşteri) caride verilen avanstan sonra gelen bağsız alacak satırı S98 sırasını değiştirebiliyor — rastgele s1-4 84, s1-5 68, s1-6 38: belge durumu
+  `fatura:acik` 52, fatura takvim kalemi 26, Kalan 28, elle kayıt takvim / Vade Takip / projeksiyon kalemi 28 × 3. **Bir ZAYIFLAMADIR** (bakım 4 bunları tek taraflı kuyruktan yazıyordu; S98 = A ile
+  o kuyruk avansı kalem saymadığı için bu caride geçersiz; kâhin S98'i yalın olmayan caride kurmaz). İlk (kaba) korumayla 704 olacaktı; C17.6'daki inceltmeyle 190.
+- **sayac** — değişen 22 (ÇATAL → daralan / kesin: Ödeme avansı artık kesin üye — c14a, c14e, d17, d18, s1-7), yeni 10 (sayacı tanımsız cari yüzünden yazılmayan kontrolde cari artık tanımlı — c8,
+  c12, s1-4, s1-10), kalkan 4 (s1-4: net görünümü tanımsız caride Ödeme var — sayaç bilinmiyor; C17.7 kâhin düzeltmesi).
+- **S95-S97-S98 / S98-tek / SK-9-12 / SK-13 (değişen ya da kalkan): 0** — bakım 4'ün yazdığı hiçbir net görünüm değeri karar okunuşuyla değişmedi, hiçbiri yeni okumaların ayrışmasıyla kalkmadı
+  (yeni susmalar yalnız bakım 4'ün de sustuğu ya da elle senaryolardaki yerlerde).
+- Senaryo senaryo: c10 S96-kalem 15 · c11 6 · c12 S96-kalem 9 + geri-kazanilan 10 + sayaç 2 · c13 9 · c14a 9 + sayaç 6 · c14e 9 + sayaç 6 · c6 36 · c8 69 + geri-kazanilan 5 + sayaç 2 · c8b 3 ·
+  d17 S96-gorunum 24 + S96-kalem 24 + sayaç 2 · d18 aynı · d19 S96-gorunum 6 + S96-kalem 6 + geri-kazanilan 53 · d9 18 · s1-1 27 · s1-10 36 + 22 + sayaç 2 · s1-2 30 · s1-3 138 · s1-4 276 + Y5-7 84
+  + 12 + sayaç 8 · s1-5 9 + Y5-7 68 · s1-6 72 + Y5-7 38 · s1-7 246 + sayaç 6 · s1-8 48 · s1-9 111. Rastgele ux18 ve öbür elle senaryolar: 0.
+- **Hâlâ kalkık (bakım 4'ün S92-tanımsız 2.163'ü):** bakım 4'ün dökümü bakım 3 çıktısıyla yapılmıştı; bu bakım bakım 3 kopyasını açmadı (görev metni yalnız `14e3f4bb` kopyasını verir) — sayım
+  cari-kesim düzeyinde (`kahineski5-susan-say-*`, aynı küme, 1.438 cari-kesim): **bakım 4** net görünüm tanımsız: okumalar ayrışıyor 21 (o carilerde 166 etkin kayıt / Ödeme, 56 fatura), tanım alanı
+  dışı 69 (818 / 342) · **bakım 5**: okumalar ayrışıyor 11 (139 / 53; ayrışan okuma SK-9 11, SK-10 10, SK-12 10 — aynı cari-kesimlerde birlikte), tanım alanı dışı 69 (818 / 342 — AYNEN; karar yok),
+  Y5-7 5 (35 / 26) + belge durumu Y5-7 8 (52 fatura). Yani geri kazanılan: okuma ayrışmasından çıkan 10 cari-kesim (G3'te 102 denetim); kalkık kalanın büyük kısmı tanım alanı dışı (KS8 / KS9
+  etkileşimi, kart, iade …) — S95–S98 bunlar için kural getirmedi.
+- `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`: **372/372 bayt bayt aynı** (73 elle + 20 rastgele × 4 kip); üretici 20/20 aynı dizi.
+- **Yeni elle tablolar ESKİ (bakım 4) kâhinde — beklenen NEDENLE kırmızı (ders 7, 38):** 319 elle denetimin 189'u (d17 13, d18 2, d19 25, d20 45, d21 9, d22 25, d23 4, d24 32, d25 18, d26 16;
+  dökümü `kahineski5-kirmizi-eski-cari-*.log`): eski kâhin SK-6 / SK-8 carilerinde susuyor (Kalan, takvim, gecikmiş "ANAHTAR YOK" — d19 N1…N6, d20 P1–P4 / P6, d24, d25 R1 / R2 / R4, d22 V5),
+  avans kalemi / görünüm toplamı yazmıyor (S96 — d17, d18, d22, d23), sayaçlar ÇATAL (d17 0…6 → 6), bakım 5'in sustuğu yerde değer yazıyor (d26 S10 gecikmiş 0 / S10F belge 0, G2 Kalan 300, d25
+  R3F belge 0) ve yeni `belirsiz` kayıtları yok. Kalan 130'u iki kâhinde aynı (bakiye, belge durumu, tek yönlü carilerin değerleri).
+
+### Kanıt (bakım 5; iki saat dilimi — UTC ve Europe/Istanbul çıktıları bayt bayt aynı; kâhin `aa24db97` (sayım `cd47c8d0`), temiz ağaç; `docs/kanit/2026-11-10/kahineski5-*`, araçlar `kahineski5-arac/`)
+cari öz test **2.972/2.972** (`-cari-oz-*`: elle tablolar 80 senaryo, mutantlar 200–240, saf TYK 172 kalem, bakım 4 + 5 çapraz denetimi: saf net 115 kalem karşı yönlü kalemli caride + 519 tek
+yönde, avans 248 cari, (ii) 300, gecikmiş (i) 382; susulan okuma ayrışan 7, tanım alanı dışı 20; S98 ile kendi tarafından ayrışan 10 cari) · defter öz test **171/171** (defter DEĞİŞMEDİ) · mutasyon
+taraması **207/207** (`-cari-mutasyon-*`; kos.mjs düzeni, 80 dosya × kipler) · eşdeğerlik + G3 **393/393** (`-esdeger-cari-*`) · yeni / güncellenen elle tablolar **319/319** (`-elle-yeni-cari-*`) ·
+ESKİ kâhinde **189 kırmızı** / 319 (`-kirmizi-eski-cari-*`) · geniş tarama **1.583/1.583** (`-genis-tarama-*`: s1 tohum 1–30 × 120, 390 kontrol kesimi — saf net 518 + 516, tek yön = kendi
+tarafı 1.750, (ii) 390, gecikmiş (i) 484; susulan: okuma ayrışan 30, tanım alanı dışı 215 — Y5-7 dahil) · susulan sayımı **1/1** (`-susan-say-*`). Mutasyon ve geniş tarama `flock -s -n …/olcum.lock`
+ile koşuldu (ders 52). Program açılmadı.

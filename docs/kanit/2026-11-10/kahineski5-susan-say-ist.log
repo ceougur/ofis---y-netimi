@@ -1,0 +1,6 @@
+BAKIM 4 (14e3f4bb) (eski): cari-kesim 1438 · net-tanimsiz:okumalar-ayrisiyor 21 · net-tanimsiz:okumalar-ayrisiyor:fatura 56 · net-tanimsiz:okumalar-ayrisiyor:kayit 166 · net-tanimsiz:tanim-alani-disi 69 · net-tanimsiz:tanim-alani-disi:fatura 342 · net-tanimsiz:tanim-alani-disi:kayit 818
+BAKIM 5 (yeni): belge-tanimsiz:Y5-7 8 · belge-tanimsiz:Y5-7:fatura 52 · cari-kesim 1438 · net-tanimsiz:Y5-7 5 · net-tanimsiz:Y5-7:fatura 26 · net-tanimsiz:Y5-7:kayit 35 · net-tanimsiz:okumalar-ayrisiyor 11 · net-tanimsiz:okumalar-ayrisiyor:fatura 53 · net-tanimsiz:okumalar-ayrisiyor:kayit 139 · net-tanimsiz:tanim-alani-disi 69 · net-tanimsiz:tanim-alani-disi:fatura 342 · net-tanimsiz:tanim-alani-disi:kayit 818 · okuma-ayrisan-soru:SK-10 10 · okuma-ayrisan-soru:SK-12 10 · okuma-ayrisan-soru:SK-9 11
+# tests 1
+# pass 1
+# fail 0
+1/1 denetim geçti
