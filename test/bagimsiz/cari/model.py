@@ -3309,13 +3309,17 @@ class Model:
                 acik = 0
             if nd[0] == "tanimsiz":
                 continue  # C16.2: karşı yönlü kalemli caride net görünüm kurulamıyor — fatura kalemi yazılmaz (belge durumu yukarıda / kontrol'de yazılır)
+            netlesti = False
             if nd[0] == "net" and f["durum"] == "kesildi":
-                acik = nd[1]["kalan"].get(fad, 0)  # C16.2 (2) [KULLANICI S92 A; Y4-3]: takvim kaleminin tutarı NET kalan (belge durumu `fatura:acik` ayrı)
+                # C16.2 (2) [KULLANICI S92 A; Y4-3]: takvim kaleminin tutarı NET kalan (belge durumu `fatura:acik` ayrı). Etiket: tutarı S92 belirliyorsa (net ≠ belge açığı)
+                # KULLANICI; net = belge açığı ise fatura kaleminin kendisi eskisi gibi [YAYGIN]
+                netlesti = nd[1]["kalan"].get(fad, 0) != acik
+                acik = nd[1]["kalan"].get(fad, 0)
             if acik > 0 and f["tarih"] <= ufuk:
                 v = {"amount": acik, "direction": "in" if f["tur"] == "satis" else "out"}
             else:
                 v = "yok"
-            self.d("%s:takvim:fatura:%s" % (k, fad), v, "KULLANICI" if nd[0] == "net" else "YAYGIN",
+            self.d("%s:takvim:fatura:%s" % (k, fad), v, "KULLANICI" if netlesti else "YAYGIN",
                    "madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık)"
                    + (" · C16.2 S92 A: karşı yönlü kalemli caride tutar NET kalan (kendi belge tarihinde netleşme)" if nd[0] == "net" else ""))
         if a.get("uyari"):
@@ -3504,7 +3508,10 @@ class Model:
                 kal_ = next((x for x in out if x[3] == "fatura" and x[4] == f), None)
                 v = {"amount": abs(kal_[1]), "direction": "in" if kal_[1] > 0 else "out"} if kal_ else "yok"
                 net = self.k250 and self.net_durum(cad)[0] == "net"
-                et = "BAŞ MİMAR" if kartli else ("KULLANICI" if net else "YAYGIN")
+                # C16.2: tutarı S92 belirliyorsa (net kalan ≠ belge açığı) KULLANICI; değilse fatura kalemi eskisi gibi [YAYGIN]
+                belge = (self.aciklar(cad) if fa["tur"] == "satis" else self.kuyruk_borc(cad)).get(f, 0)
+                netlesti = net and self.net_durum(cad)[1]["kalan"].get(f, 0) != belge
+                et = "BAŞ MİMAR" if kartli else ("KULLANICI" if netlesti else "YAYGIN")
                 for gorunum in (("takvim", "vadeTakip", "projeksiyon") if kartli else ("vadeTakip", "projeksiyon")):
                     self.d("%s:%s:fatura:%s" % (k, gorunum, f), v, et, "K6.5 (1): kartlı caride fatura kalemi NET (açık − kartın açık kapsamı), kapsanan borç kartın taksitleriyle bir kez"
                            if kartli else "fatura kalemi açık tutarıyla (belge tarihinde, geçmiş — her görünümde)"
