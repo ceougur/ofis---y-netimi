@@ -240,6 +240,28 @@ describe("TYK — taksit kartları (S50, M1a, M1e, K8-3)", () => {
     assert.equal(open(r, "F"), 1200, "taksitli faturanın açığı = kartın kendi kalanı");
     assert.equal(gecikmis(r, "2026-02-25"), 300, "net: 1. taksit cari tahsilatıyla kapandı, G (15.02) 300 gecikmiş");
   });
+  // Ç5-B birleşim düzeltmesi (Ç5-B ana dalla birleşince 30e12c20'de mutabakat yıl dönümü tohum 39 + ek tohum 7 / 11 / 13 / 17 kırmızı): fatura durumunda (G2) taksitli faturanın kendi kartı yalnız BAĞLI ödemeyle kapanır
+  // (v2.0.23 Bulgu 2, v2.0.24 "taksitli faturanın açığı = kartın kalanı") — G2'de bağsız kapanışı yoktur, karar (3)'ün kilit ölçümü onu "kilitli dönemde bağsız kapanmış" sayamaz.
+  // Net görünümde (G1; S50, M1a) karar (3) aynen: kilitten önce bağsız avansın kapattığı taksit kilitten sonraki kart tahsilatıyla yeniden açılmaz, tahsilat bağsız dağılır.
+  // Elle hesap: avans 1.500 (01.01) · F 1.200 (05.01; kendi kartı, taksit 01.02 / 01.03 × 600) · kilit 15.01'e (20.01'de konuldu) · kart tahsilatı 1.200 (25.01).
+  //   G2: kart tahsilatı faturaya bağlı ödemedir → F açık 0, kapatanlar kart tahsilatı 600 + 600 (Bağlı). Tahsilattan ÖNCE F açık 1.200 (kart tahsilatı yok — v2.0.24).
+  //   G1: taksitler avansla kapalı (cari tahsilatıyla 600 + 600); kart tahsilatı serbest → açık alacak kalemleri avans 300 + kart artanı 1.200 → Σ kalem = bakiye −1.500.
+  it("karar (3) × v2.0.24: kilitten önceki bağsız avans varken kilitten sonraki kart tahsilatı taksitli faturayı KAPATIR (fatura durumu); net görünümde karar (3) aynen", () => {
+    const history = lockHistory([{ type: "ledger.period.locked", at: "2026-01-20T10:00:00.000Z", payload: { lockedUntil: "2026-01-15" } }]);
+    const f = sale("F", "2026-01-05", 1200, "", { planId: "K", planTotal: 1200 });
+    const schedules = new Map([["K", [{ id: "t1", seq: 1, dueDate: "2026-02-01", amount: 600 }, { id: "t2", seq: 2, dueDate: "2026-03-01", amount: 600 }]]]);
+    const avans = { ...tahsilat("P", "2026-01-01", 1500), at: "2026-01-01T09:00:00.000Z" };
+    const kart = { ...planIn("e1", "K", "2026-01-25", 1200), at: "2026-01-25T09:00:00.000Z" };
+    const once = build({ docs: [f], lines: [avans], schedules, lockAt: lockAtOf(history), today: "2026-01-21" });
+    assert.deepEqual([open(once, "F"), state(once, "F")], [1200, "installment"], "kart tahsilatından önce: açık = kartın kalanı 1.200 (bağsız avans taksitli faturayı kapatmaz — v2.0.24)");
+    const r = build({ docs: [f], lines: [avans, kart], schedules, lockAt: lockAtOf(history), today: "2026-01-26" });
+    assert.deepEqual([open(r, "F"), state(r, "F")], [0, "paid"], "kart tahsilatı taksitli faturayı kapatır: açık = kartın kalanı 0");
+    assert.deepEqual(r.invoices.get("F").closers.map(c => [c.id, c.mode, c.amount]), [["plan-entry:e1", "linked", 600], ["plan-entry:e1", "linked", 600]], "kapatanlar: kart tahsilatı (Bağlı)");
+    const inst = r.installments.get("K");
+    assert.deepEqual([inst.get("t1").remaining, inst.get("t2").remaining, inst.get("t1").byAccount, inst.get("t2").byAccount], [0, 0, 600, 600], "net: taksitler kilitten önce avansla kapandı (karar (3) — yeniden açılmaz)");
+    assert.equal(r.items.reduce((s, i) => s + (i.side === "receivable" ? i.remaining : -i.remaining), 0), -1500, "net: Σ kalem = bakiye (1.200 − 1.500 − 1.200)");
+    assert.deepEqual(r.items.filter(i => i.side === "payable").map(i => [i.lineId, i.remaining]).sort(), [["P", 300], ["plan-excess:K", 1200]], "net: avans artanı 300 + kart tahsilatı bağsız 1.200");
+  });
 });
 
 describe("TYK — netleşme (karar (5)) ve fatura durumu", () => {

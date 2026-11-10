@@ -44,6 +44,11 @@ const MUTANTS = [
   ["M22", "kart kapsamı B — kartın anındaki bilinen satırlar okunmaz (sonraki karşılıksız kapsamı değiştirir)", "  const forced = coverForcing(input, mode, pieces);", "  const forced = null;"],
   ["M23", "kart açılışı gün sınıfı B — aynı gün karttan önce yazılan ödeme karttan sonra sayılır", "events.push({ type: \"cover\", card, date: card.date, cls: 2,", "events.push({ type: \"cover\", card, date: card.date, cls: 1,"],
   ["M24", "gecikmiş B — yalnız yükümlülük rolü (netleşmemiş bağsız ödeme açık borç kalemi sayılmaz)", "item => item.side === \"receivable\" && item.vade < day", "item => item.due && item.side === \"receivable\" && item.vade < day"],
+  // Ç5-B birleşim düzeltmesi (mutabakat yıl dönümü tohum 39): fatura durumunda karar (3)'ün kilit ölçümü taksitli faturanın kendi kartını "bağsız kapanmış" saymaz.
+  ["M25", "birleşim düzeltmesi geri — G2 kilit ölçümü taksitli faturanın kendi kartının bağsız kapanışını sayar (kart tahsilatı faturayı kapatmaz)", "const closedByL = target && !(mode === \"side\" && target.ownCard) ?", "const closedByL = target ?"],
+  ["M26", "istisna iki görünümde — net görünümde de karar (3) kart tahsilatını kesmez (taksit yeniden açılır)", "const closedByL = target && !(mode === \"side\" && target.ownCard) ?", "const closedByL = target && !target.ownCard ?"],
+  ["M27", "istisna ters görünümde — yalnız net görünümde", "const closedByL = target && !(mode === \"side\" && target.ownCard) ?", "const closedByL = target && !(mode === \"net\" && target.ownCard) ?"],
+  ["M28", "v2.0.24 B — fatura durumu taksitli faturanın bağsız kapanışını da sayar (açık ≠ kartın kalanı)", "const linkedLeft = item => Math.max(0, item.amount - item.closures.filter(c => !c.reverse && c.mode !== \"auto\" && c.mode !== \"locked\").reduce((sum, c) => sum + c.amount, 0));", "const linkedLeft = item => Math.max(0, item.left);"],
 ];
 rmSync(base, { recursive: true, force: true });
 let killed = 0;

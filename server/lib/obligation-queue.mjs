@@ -178,7 +178,10 @@ function runQueue(input, mode, pieces) {
     const caps = new Map();
     for (const link of state.lockLinks) {
       const target = probe.itemByKey.get(link.targetKey);
-      const closedByL = target ? target.freeClosures.filter(c => c.date <= link.lock).reduce((sum, c) => sum + c.amount, 0) : 0;
+      // FATURA DURUMU (G2, "side"): taksitli faturanın kendi kartı ve peşin kısmı yalnız BAĞLI ödemeyle kapanmış sayılır (assemble linkedLeft; v2.0.23 Bulgu 2, v2.0.24
+      // "taksitli faturanın açığı = kartın kalanı") — G2'de bağsız kapanışları YOKTUR, karar (3)'ün koruyacağı "kilitli dönemde bağsız kapanmış" kısım da yoktur. Sayılsaydı
+      // kart tahsilatı kilitten önceki bağsız avans yüzünden bağsız dağılır, fatura açık kalırdı (kart ödenmişken; mutabakat yıl dönümü tohum 39). NET görünüm (G1) aynen.
+      const closedByL = target && !(mode === "side" && target.ownCard) ? target.freeClosures.filter(c => c.date <= link.lock).reduce((sum, c) => sum + c.amount, 0) : 0;
       caps.set(link.id, closedByL);
     }
     return queueOnce(input, mode, caps, { pieces, forced });
