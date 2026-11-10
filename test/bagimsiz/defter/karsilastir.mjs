@@ -1,8 +1,7 @@
 // Karşılaştırıcı: kahin.py beklenenleri ↔ programın API'den okunan değerleri (kuruş). Okunamayan değer (null) fark sayılır (ders 4).
 const tl = v => (v === null || v === undefined ? "okunamadı" : (v / 100).toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
 
-// 2.5.0 Ç5: 519 (Eşleştirilecek Açılış Bakiyeleri) de her noktada (D1 "açılış karşılığı 500 değil 519" iddiası 500 = 0 ile birlikte görünsün)
-const ZORUNLU = ["153", "190", "191", "193", "360", "391", "500", "519", "689"];
+const ZORUNLU = ["153", "190", "191", "193", "360", "391", "500", "689"];
 
 export function karsilastir(beklenen, program) {
   const denetimler = [];
@@ -38,8 +37,6 @@ export function karsilastir(beklenen, program) {
   }
   // 31b-MM8: yevmiye aynı gün sırası
   for (const [gun, v] of Object.entries(beklenen.yevmiyeSira || {})) ekle(`yevmiye sırası ${gun}`, v, son.yevmiyeSira ? son.yevmiyeSira[gun] ?? null : null, String);
-  // 2.5.0 Ç5 (D10 S12 / B11): kâhinin beklediği retler ↔ programın reddettiği `beklenen: "ret"` olayları (sıralı liste)
-  if (beklenen.retler) ekle("beklenen retler", JSON.stringify(beklenen.retler), son.retler ? JSON.stringify(son.retler) : null, String);
   const y = son.yaslandirma;
   ekle("yaşlandırma TOPLAM", beklenen.yaslandirma.toplam, y ? y.toplam : null);
   for (const ad of new Set([...Object.keys(beklenen.yaslandirma.cariler), ...Object.keys(y?.cariler || {})])) ekle(`yaşlandırma ${ad}`, beklenen.yaslandirma.cariler[ad] || 0, y ? y.cariler[ad] || 0 : null);

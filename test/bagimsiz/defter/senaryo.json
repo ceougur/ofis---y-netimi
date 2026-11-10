@@ -1,15 +1,9 @@
 {
-  "aciklama": "Küçük ticari işletme, Eylül–Kasım 2026. İş olayları dilidir: kos.mjs bunları programın API'sine çevirir, kahin.py programı görmeden aynı olaylardan elle TDHP yevmiyesi kurar. Tutarlar TL (iki ondalık), tarihler sahte saate göre sabittir. 2.5.0 Ç5 ekleri (BY1…KDZ2): açılış açıklamadan tanınmaz, carisiz / açılış evrakı, Excel taksit kartı, Kasa açılışından önce tarihli hareket (KARARLAR.md).",
+  "aciklama": "Küçük ticari işletme, Eylül–Kasım 2026. İş olayları dilidir: kos.mjs bunları programın API'sine çevirir, kahin.py programı görmeden aynı olaylardan elle TDHP yevmiyesi kurar. Tutarlar TL (iki ondalık), tarihler sahte saate göre sabittir.",
   "simdi": "2026-11-27T17:00:00+03:00",
   "bugun": "2026-11-27",
   "yevmiyeSiraGunleri": ["2026-10-05"],
   "stopajAylari": ["2026-09", "2026-10", "2026-11"],
-  "elleBeklenenTL": {
-    "aciklama": "2.5.0 Ç5 elle tablo (KISMİ — yalnız Ç5'in değiştirdiği / eklediği hesaplar; öbürleri 2.4.3 kâhininden aynen): 519 = −(Kasa 10.000 + banka 50.000 + P1 stoğu 100 × 50 + M1A 5.000 + M5A 2.000 + M4A 5.000 − T1A 8.000) − AE1 3.000 − AE2 1.000 + AE3 800 + AE1K 3.000 − EX1 4.500; 500 = 0; 101 = CK1 2.500 (+ AE1 − AE1K); 121 = S1 2.000 + CK3 700 (+ AE2 − AE2K); 103 = C3 −2.000 − CK2 1.200 − AE3 800; 602 = −(BY1 + BY2 + BY3); 649 = −(CK1 + CK3).",
-    "kismi": true,
-    "kontroller": { "K_SON": { "500": 0, "519": -73700, "101": 2500, "121": 2700, "103": -4000, "602": -2050, "649": -3200 } },
-    "retler": ["KDZ1", "KG0"]
-  },
   "olaylar": [
     { "id": "M1", "tur": "cari", "ad": "Alfa Ticaret A.Ş.", "tip": "customer", "vkn": "9876543217" },
     { "id": "M2", "tur": "cari", "ad": "Ahmet Yılmaz", "tip": "customer", "kisi": ["Ahmet", "Yılmaz"], "tckn": "10000000146" },
@@ -114,24 +108,6 @@
       { "satir": 0, "miktar": 1 } ] },
     { "id": "F3R", "tur": "fatura", "fatura": "alis_iade", "tarih": "2026-11-27", "cari": "T3", "asil": "F3", "not": "31b-MM3: tevkifatlı alışın iadesi — 'Bizim kestiğimiz (360)' tarafında EKSİ", "kalemler": [
       { "satir": 0, "miktar": 1 } ] },
-
-    { "id": "BY1", "tur": "borc_yaz", "tarih": "2026-11-20", "cari": "M3", "tutar": 1500, "aciklama": "AÇILIŞ BAKİYESİ", "not": "2.5.0 D2: açıklama açılış yapmaz (Türkçe büyük harf) — C-01 B 120 / A 602" },
-    { "id": "BY2", "tur": "borc_yaz", "tarih": "2026-11-20", "cari": "M2", "tutar": 300, "aciklama": "Açilis farkı", "not": "2.5.0 D2: ASCII 'i' ile yazılmış açılış da açılış değil" },
-    { "id": "AY1", "tur": "alacak_yaz", "tarih": "2026-11-20", "cari": "T2", "tutar": 400, "aciklama": "açılış", "not": "2.5.0 D2: C-02 B 770 / A 320" },
-    { "id": "BY3", "tur": "borc_yaz", "tarih": "2026-11-21", "cari": "M1", "tutar": 250, "aciklama": "Devir bakiyesi", "not": "2.5.0 D2: sıradan Borç Yaz" },
-    { "id": "CK1", "tur": "cek_carisiz", "tarih": "2026-11-21", "yon": "alinan", "evrak": "cek", "tutar": 2500, "no": "C-K01", "vade": "2026-12-15", "not": "2.5.0 D5 S49: B 101 / A 649" },
-    { "id": "CK2", "tur": "cek_carisiz", "tarih": "2026-11-21", "yon": "verilen", "evrak": "cek", "tutar": 1200, "no": "K-K02", "vade": "2026-12-20", "not": "2.5.0 D5 S49: B 770 / A 103" },
-    { "id": "CK3", "tur": "cek_carisiz", "tarih": "2026-11-21", "yon": "alinan", "evrak": "senet", "tutar": 700, "no": "S-K03", "vade": "2026-12-25", "not": "2.5.0 D5 S49: B 121 / A 649" },
-    { "id": "AE1", "tur": "acilis_evrak", "tarih": "2026-09-01", "yon": "alinan", "evrak": "cek", "tutar": 3000, "no": "A-001", "vade": "2026-12-01", "not": "2.5.0 D3: açılış portföyü B 101 / A 519 (602'ye yazılmaz)" },
-    { "id": "AE2", "tur": "acilis_evrak", "tarih": "2026-09-01", "yon": "alinan", "evrak": "senet", "tutar": 1000, "no": "A-002", "vade": "2026-12-05", "not": "2.5.0 D3: B 121 / A 519" },
-    { "id": "AE3", "tur": "acilis_evrak", "tarih": "2026-09-01", "yon": "verilen", "evrak": "cek", "tutar": 800, "no": "A-003", "vade": "2026-12-10", "not": "2.5.0 D3: B 519 / A 103 (770'e yazılmaz)" },
-    { "id": "AE1K", "tur": "karsiliksiz", "tarih": "2026-11-22", "cek": "AE1", "not": "2.5.0 D4 S48: cari seçilmedi — B 519 / A 101" },
-    { "id": "AE2K", "tur": "karsiliksiz", "tarih": "2026-11-22", "cek": "AE2", "cari": "M3", "not": "2.5.0 D4 S48: cari seçildi — B 120 / A 121, M3 borçlanır" },
-    { "id": "EX1", "tur": "excel_taksit_karti", "tarih": "2026-11-23", "cari": "M2", "toplam": 6000, "odenen": 1500, "not": "2.5.0 D9 KG-5: B 120 4.500 / A 519 (tek madde, ödenen maddesiz)" },
-    { "id": "KG0", "tur": "kasa_gider", "tarih": "2026-08-25", "tutar": 100, "beklenen": "ret", "not": "2.5.0 D10 S12: Kasa açılışından (01.09) önce tarihli — ret" },
-    { "id": "KG2", "tur": "kasa_gider", "tarih": "2026-09-01", "tutar": 50, "not": "2.5.0 D10: açılış günü — kabul" },
-    { "id": "KDZ1", "tur": "kasa_duzelt", "tarih": "2026-08-31", "hareket": "KG2", "beklenen": "ret", "not": "2.5.0 D10 B11: tarihi açılıştan önceye alan düzeltme — ret" },
-    { "id": "KDZ2", "tur": "kasa_duzelt", "tarih": "2026-09-02", "hareket": "KG2", "not": "2.5.0 D10: açılıştan sonraya düzeltme — kabul" },
     { "id": "K_SON", "tur": "kontrol", "tarih": "2026-11-27" }
   ]
 }

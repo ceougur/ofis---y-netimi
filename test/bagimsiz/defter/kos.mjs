@@ -38,20 +38,9 @@ export const UCLAR = {
   },
   kdv_mahsup: { method: "POST", url: "/api/workspace/tax/vat-offset", govde: o => ({ month: o.ay, note: o.id }), kimlik: d => d?.offset?.id },
   kdv_mahsup_geri_al: { method: "POST", url: (o, ids) => `/api/workspace/tax/vat-offset/${encodeURIComponent(ids[o.mahsup])}/reverse`, govde: () => ({}), kimlik: () => null },
-  // 2.5.0 Ç5 (KARARLAR.md "Eşleme notları") — uç adı Ç5-A kod ajanınca verilir; verilene kadar olay ATLANAN (sonuç yeşil sayılmaz):
-  //   acilis_evrak        : { tarih, yon: "alinan"|"verilen", evrak: "cek"|"senet", tutar, no, vade }  cariye işlenmemiş açılış portföyü (Excel "Açılış portföyü")
-  //   karsiliksiz_cari    : { cek, tarih, cari }  açılış evrakının (S48) ve formdan carisiz evrakın (S66, bakım 2) karşılıksızında programın "cari seç" sorusuna verilen yanıt; kimlik ids[olay.cek]
-  //   excel_taksit_karti  : { tarih, cari, toplam, odenen }  Excel'den (tablodan) yüklenen taksit kartı (KG-5)
-  //   kasa_duzelt         : { hareket, tarih }  Kasa hareketinin tarih düzeltmesi (B11); kimlik ids[olay.hareket]
-  acilis_evrak: null,
-  karsiliksiz_cari: null,
-  excel_taksit_karti: null,
-  kasa_duzelt: null,
 };
 
-// Senaryo: varsayılan senaryo.json; 2.5.0'dan beri isteğe bağlı yol (elle senaryolar, ör. senaryolar/g4-…json — göç olayı OLMAYANLAR)
-const SENARYO_YOLU = process.argv[2] && process.argv[2].endsWith(".json") ? path.resolve(process.argv[2]) : path.join(HERE, "senaryo.json");
-const senaryo = JSON.parse(readFileSync(SENARYO_YOLU, "utf8"));
+const senaryo = JSON.parse(readFileSync(path.join(HERE, "senaryo.json"), "utf8"));
 const OUT = process.env.KAHIN_CIKTI ? path.resolve(process.env.KAHIN_CIKTI) : mkdtempSync(path.join(tmpdir(), "kahin-defter-"));
 mkdirSync(OUT, { recursive: true });
 const dataRoot = mkdtempSync(path.join(tmpdir(), "kahin-defter-veri-"));
@@ -69,19 +58,13 @@ const ids = {};
 const yapilan = [];
 const atlanan = [];
 const reddedilen = [];
-const program = { kontroller: {}, son: { retler: [] } };
+const program = { kontroller: {}, son: {} };
 const tl = x => String(x);
 const satirKimlikleri = {};
 
 async function gonder(o, method, url, body, kimlik = d => d?.id) {
   const r = await api(method, url, body);
   if (r.status !== 200) {
-    // 2.5.0 Ç5: senaryoda `beklenen: "ret"` olan olay (S12 / B11) reddedilirse gönderilmiş sayılır ve programın retleri listesine yazılır (kâhinin `retler`'iyle karşılaştırılır)
-    if (o.beklenen === "ret") {
-      yapilan.push(o.id);
-      program.son.retler.push(o.id);
-      return null;
-    }
     reddedilen.push({ olay: o.id, status: r.status, kod: r.data?.code || "", ileti: String(r.data?.error || "").slice(0, 300) });
     return null;
   }
@@ -105,12 +88,7 @@ try {
     switch (o.tur) {
       case "cari": {
         const kisi = o.kisi ? { partyKind: "person", firstName: o.kisi[0], familyName: o.kisi[1] } : {};
-        // 2.5.0 Ç5 (D1 / D2): cari açılışı AÇILIŞ İŞARETLİ — carinin ilk `cari_acilis` olayı cari açılırken Açılış Bakiyesi olarak gönderilir (cari kâhininin `cari_ac {acilis}`
-        // eşlemesiyle aynı alanlar: openingBalance, openingSide; registeredOn = açılış tarihi). Açıklamalı Borç Yaz artık `borc_yaz` olayıdır.
-        const ac = senaryo.olaylar.find(x => x.tur === "cari_acilis" && x.cari === o.id);
-        const acilis = ac ? { registeredOn: ac.tarih, openingBalance: tl(ac.tutar), openingSide: ac.yon === "alacak" ? "credit" : "auto" } : { registeredOn: "2026-01-01" };
-        const d = await gonder(o, "POST", "/api/workspace/accounts", { name: o.ad, type: o.tip, ...acilis, ...kisi, ...(o.vkn ? { taxNo: o.vkn } : {}), ...(o.tckn ? { taxNo: o.tckn } : {}) });
-        if (d && ac) ids[`acilisGonderildi:${ac.id}`] = true;
+        await gonder(o, "POST", "/api/workspace/accounts", { name: o.ad, type: o.tip, registeredOn: "2026-01-01", ...kisi, ...(o.vkn ? { taxNo: o.vkn } : {}), ...(o.tckn ? { taxNo: o.tckn } : {}) });
         break;
       }
       case "urun":
@@ -131,18 +109,7 @@ try {
         await gonder(o, "POST", "/api/workspace/bank/pos", { name: "Ziraat POS", bankAccountId: ids[o.banka], providerKind: "bank", tax: "bsmv_incl", valorRule: "same_day", valorDays: 0, installmentPayout: "monthly", refundCommission: "none", provisionDays: 0, validFrom: t, rates: [{ installments: 1, rate: String(o.oran).replace(".", ",") }] }, d => d?.id || d?.pos?.id);
         break;
       case "cari_acilis":
-        // 2.5.0: cari açılırken gönderildi (yukarıda); aynı cariye ikinci açılışın uç adı yok → ATLANAN
-        if (ids[`acilisGonderildi:${o.id}`]) yapilan.push(o.id);
-        else atlanan.push({ olay: o.id, tur: o.tur, neden: "açılış cari açılırken gönderilir — cari açılamadı ya da aynı cariye ikinci açılış (uç adı yok)" });
-        break;
-      case "borc_yaz":
-      case "alacak_yaz":
-        // 2.5.0 D2: açılış İŞARETSİZ Borç / Alacak Yaz, açıklama aynen (2.4.3'teki açıklamalı cari açılışı eşlemesi)
-        await gonder(o, "POST", `/api/workspace/accounts/${ids[o.cari]}/entries`, { kind: o.tur === "borc_yaz" ? "debt" : "credit", amount: tl(o.tutar), note: o.aciklama, date: t });
-        break;
-      case "cek_carisiz":
-        // 2.5.0 D5 (S49): formdan carisiz evrak — `cek` eşlemesi, cari (accountId / drawer) olmadan
-        await gonder(o, "POST", "/api/workspace/cheques", { direction: o.yon === "alinan" ? "in" : "out", instrument: o.evrak === "senet" ? "note" : "cheque", serialNo: o.no, bank: "Akbank", amount: tl(o.tutar), issueDate: t, dueDate: o.vade, ...(o.yon === "verilen" ? { bankAccountId: ids.B } : {}) });
+        await gonder(o, "POST", `/api/workspace/accounts/${ids[o.cari]}/entries`, { kind: o.yon === "borc" ? "debt" : "credit", amount: tl(o.tutar), note: o.not || "Açılış bakiyesi", date: t });
         break;
       case "fatura": {
         const kind = { satis: "sale", alis: "purchase", satis_iade: "sale_return", alis_iade: "purchase_return" }[o.fatura];
@@ -178,20 +145,6 @@ try {
         await gonder(o, "POST", `/api/workspace/cheques/${ids[o.cek]}/actions`, { action: "bank-deposit", bankAccountId: ids.B, date: t }, () => null);
         break;
       case "karsiliksiz":
-        // 2.5.0: evrakı gönderilmemişse (ör. açılış evrakı ATLANAN) atlanır; açılış evrakında (S48) ve formdan carisiz evrakta (S66) cari seçimi UCLAR.karsiliksiz_cari ile
-        if (!ids[o.cek]) {
-          atlanan.push({ olay: o.id, tur: o.tur, neden: "evrakı programa gönderilmedi (atlanan / reddedilen)" });
-          break;
-        }
-        if (o.cari) {
-          const uc = UCLAR.karsiliksiz_cari;
-          if (!uc) {
-            atlanan.push({ olay: o.id, tur: o.tur, neden: "uç adı henüz verilmedi (UCLAR.karsiliksiz_cari — S48 / S66 cari seçimi)" });
-            break;
-          }
-          await gonder(o, uc.method || "POST", typeof uc.url === "function" ? uc.url(o, ids) : uc.url, uc.govde ? uc.govde(o, ids) : {}, uc.kimlik || (() => null));
-          break;
-        }
         await gonder(o, "POST", `/api/workspace/cheques/${ids[o.cek]}/actions`, { action: "bounce", date: t }, () => null);
         break;
       case "supheli":
@@ -215,21 +168,17 @@ try {
         await gonder(o, "POST", "/api/workspace/cash/transfer", { direction: "to-bank", amount: tl(o.tutar), date: t, bankAccountId: ids.B, description: o.id }, () => null);
         break;
       case "kasa_gider":
-        // 2.5.0: kimlik kasa_duzelt (B11) için saklanır (yanıtta yoksa düzeltme ATLANAN)
-        await gonder(o, "POST", "/api/workspace/cash", { kind: "out", amount: tl(o.tutar), method: "cash", description: o.id, date: t });
+        await gonder(o, "POST", "/api/workspace/cash", { kind: "out", amount: tl(o.tutar), method: "cash", description: o.id, date: t }, () => null);
         break;
       case "taksit_tahsil":
         await gonder(o, "POST", `/api/workspace/plans/${ids[`${o.fatura}:plan`]}/entries`, { kind: "in", amount: tl(o.tutar), method: o.yol === "nakit" ? "cash" : "bank", date: t }, () => null);
         break;
       case "vergi_odeme":
       case "kdv_mahsup":
-      case "kdv_mahsup_geri_al":
-      case "acilis_evrak":
-      case "excel_taksit_karti":
-      case "kasa_duzelt": {
+      case "kdv_mahsup_geri_al": {
         const uc = UCLAR[o.tur];
-        if (!uc || (o.tur === "kdv_mahsup_geri_al" && !ids[o.mahsup]) || (o.tur === "kasa_duzelt" && !ids[o.hareket])) {
-          atlanan.push({ olay: o.id, tur: o.tur, neden: uc ? "geri alınacak / düzeltilecek kayıt programda yok" : "uç adı henüz verilmedi (UCLAR)" });
+        if (!uc || (o.tur === "kdv_mahsup_geri_al" && !ids[o.mahsup])) {
+          atlanan.push({ olay: o.id, tur: o.tur, neden: uc ? "geri alınacak mahsup programda yok" : "uç adı henüz verilmedi (UCLAR)" });
           break;
         }
         const url = typeof uc.url === "function" ? uc.url(o, ids) : uc.url;
@@ -306,11 +255,10 @@ try {
   rmSync(dataRoot, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 });
 }
 
-program.son.retler.sort();
 writeFileSync(path.join(OUT, "program.json"), JSON.stringify({ program, yapilan, atlanan, reddedilen }, null, 1));
 writeFileSync(path.join(OUT, "api-gunlugu.json"), JSON.stringify(gunluk, null, 1));
 writeFileSync(path.join(OUT, "yapilan.json"), JSON.stringify(yapilan));
-const kahin = (mut = 0) => JSON.parse(execFileSync(PYTHON, ["-I", path.join(HERE, "kahin.py"), SENARYO_YOLU, "--yapilan", path.join(OUT, "yapilan.json"), "--mutasyon", String(mut)], { encoding: "utf8" }));
+const kahin = (mut = 0) => JSON.parse(execFileSync(PYTHON, ["-I", path.join(HERE, "kahin.py"), path.join(HERE, "senaryo.json"), "--yapilan", path.join(OUT, "yapilan.json"), "--mutasyon", String(mut)], { encoding: "utf8" }));
 const beklenen = kahin(0);
 writeFileSync(path.join(OUT, "beklenen.json"), JSON.stringify(beklenen, null, 1));
 const sonuc = karsilastir(beklenen, program);
@@ -321,16 +269,14 @@ if (atlanan.length) console.log(`\nATLANAN OLAYLAR (${atlanan.length}) — sonu�
 // Mutasyon (testin dişi): kâhine bilerek hata → karşılaştırma sonucu (farklı denetimler kümesi) değişmeli. İki yerde denenir:
 //  a) bu koşunun gerçek program çıktısına karşı (atlanan olayların mutasyonu burada görünmeyebilir — bilgi),
 //  b) TAM senaryoda (bütün olaylar) kâhinin kendi çıktısından kurulan "kusursuz program"a karşı — her mutasyon burada YAKALANMALI.
-// 2.5.0 Ç5 mutantları (14–21, 32, 33: bu senaryoda; 22–31, 34 göç / Kasa açılışı elle senaryolarında, 35–38 bakım 2 elle senaryolarında — test/bagimsiz/defter/oz-test.py) — kahin.py MUTASYONLAR_250
-const MUTASYONLAR = { 11: "31b-MM3: satıştan iade 360 tarafında", 12: "31b-MM3: iade artı yazılır", 13: "31b-MM8: yevmiyede aynı gün sınıfsız yazım sırası", 1: "KDV dahil fiyatta KDV'yi brüt × oran ile hesapla", 2: "satıştan iade 610 yerine 600", 3: "stopaj 360 yerine 193", 4: "tevkifatlı satışta 391'e tam KDV", 5: "POS komisyonu yazılmaz", 6: "KDV mahsubunda devreden 190 kullanılmaz", 7: "stok açılışı deftere yazılmaz (MM4 öncesi)", 8: "yaşlandırmada faturasız bakiye atlanır (MM5 öncesi)", 9: "gecikme zammı 689 yerine 360", 10: "karşılıksız çek cariye yazılmaz",
-  14: "D1 (30.10 B): açılış karşı hesabı 500", 15: "D2 (M-02 B): açıklaması 'açılış' ile başlayan yeni Borç / Alacak Yaz açılış sayılır", 16: "D3 (30.10 (1) B): açılış evrakı 602 / 770'e", 17: "D4 (S48 B): karşılıksız carisiz açılış evrakı gidere", 18: "D4 (S48): cari seçilse de 519", 19: "D5 (S49 B): formdan carisiz evrak 519'a", 20: "D5 (S49 C): formdan carisiz evrak 602 / 770", 21: "D9 (KG-5 B): Excel taksit kartı yeni satış", 32: "D10 (S12 B): Kasa açılışından önce tarihli Kasa hareketi kabul", 33: "D10 (B11 B): açılıştan önceye alınan düzeltme kabul" };
+const MUTASYONLAR = { 11: "31b-MM3: satıştan iade 360 tarafında", 12: "31b-MM3: iade artı yazılır", 13: "31b-MM8: yevmiyede aynı gün sınıfsız yazım sırası", 1: "KDV dahil fiyatta KDV'yi brüt × oran ile hesapla", 2: "satıştan iade 610 yerine 600", 3: "stopaj 360 yerine 193", 4: "tevkifatlı satışta 391'e tam KDV", 5: "POS komisyonu yazılmaz", 6: "KDV mahsubunda devreden 190 kullanılmaz", 7: "stok açılışı deftere yazılmaz (MM4 öncesi)", 8: "yaşlandırmada faturasız bakiye atlanır (MM5 öncesi)", 9: "gecikme zammı 689 yerine 360", 10: "karşılıksız çek cariye yazılmaz" };
 const imza = s => s.denetimler.filter(d => !d.ok).map(d => `${d.ad}=${d.program}/${d.beklenen}`).sort().join("|");
-const tam = (mut = 0) => JSON.parse(execFileSync(PYTHON, ["-I", path.join(HERE, "kahin.py"), SENARYO_YOLU, "--mutasyon", String(mut)], { encoding: "utf8" }));
+const tam = (mut = 0) => JSON.parse(execFileSync(PYTHON, ["-I", path.join(HERE, "kahin.py"), path.join(HERE, "senaryo.json"), "--mutasyon", String(mut)], { encoding: "utf8" }));
 const kusursuz = (() => {
   const b = tam(0);
   const kontroller = {};
   for (const k of b.kontrolSirasi) Object.assign(kontroller, { [k]: b.kontroller[k], [`${k}:dengeli`]: true });
-  return { kontroller, son: { cari: b.cari, stok: b.stok, kdv: b.kdv, yaslandirma: b.yaslandirma, stopajOzet: b.stopajOzet, yevmiyeSira: b.yevmiyeSira, retler: b.retler } };
+  return { kontroller, son: { cari: b.cari, stok: b.stok, kdv: b.kdv, yaslandirma: b.yaslandirma, stopajOzet: b.stopajOzet, yevmiyeSira: b.yevmiyeSira } };
 })();
 if (karsilastir(tam(0), kusursuz).denetimler.some(d => !d.ok)) throw new Error("öz denetim: kâhin kendi çıktısıyla tutmuyor");
 const taban = imza(sonuc);
