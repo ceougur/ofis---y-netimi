@@ -1,0 +1,32 @@
+{
+  "ad": "b210-e2e-yeni-senaryo-banka-rapor-243",
+  "komut": "npm run test:senaryo-banka-rapor-243",
+  "commit": "62070e571f3ded1ec425de1105518fce40d9487e",
+  "dal": "worktree-agent-a1db9e811ce60f59a",
+  "kirli": 3,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T13:01:30.193Z",
+  "sure_sn": 41.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 38,
+    "gecen": 38,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b210b-kanit/2026-11-10/b210-e2e-yeni-senaryo-banka-rapor-243.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1db9e811ce60f59a",
+  "ham_cikti_sha256": "57aaf115c02fa6b2ed519c831582d4b55c8ebb32a251c532b537eabc1de44c66",
+  "ham_cikti_bayt": 5237
+}
