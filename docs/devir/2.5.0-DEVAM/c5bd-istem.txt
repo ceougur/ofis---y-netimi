@@ -1,0 +1,33 @@
+Sen DestekOfis projesinde Ç5-B BİRLEŞİM DÜZELTME ajanısın (2.5.0 — Ç5-B Tek Yükümlülük Kuyruğu ana dalla birleştirilince tam `npm test` 5187/5189; iki kırmızı). PARA ÇEKİRDEĞİ — eforun xhigh. Kendi dalında commit edersin, PUSH YAPMAZSIN. Yanıtın Türkçe.
+
+## Hazırlık
+1. Worktree'de `git reset --hard 30e12c20` (yerel dal `c5b-birlesim`: çalışma dalı 62070e57 + Ç5-B + kılavuz PDF + defter kâhini ana daldaki hâlinde; dalında kendi commit'in yoksa). `ln -s /home/user/ofis---y-netimi/node_modules node_modules` (`npm ci` YOK).
+2. ÖNCE oku: `CLAUDE.md` (dersler 1–52; özellikle 5, 6, 7, 10, 17, 23, 31, 34, 38, 40, 43, 44, 50, 51, 52); `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`; `docs/erp/C5B-TYK-TASARIM.md` (Ç5-B tasarım notu; bu dalda var); `docs/2.5.0-IS-LISTESI.md` D bölümünde S50, S54, S55, S57, S79 KULLANICI KARARI satırları ve "BAŞ MİMAR KARARI 06.11 12:09" (S54 / S55 / S57 → Ç5-B); test/mutabakat/motor.mjs :415–430 (v2.0.24 değişmezi + K1 IADE-KAPAMA açıklaması).
+
+## Olay 1 — PARA: mutabakat yıl dönümü tohum 39 (ana oturum iki kez yeniden üretti)
+`HUKUK_LICENSE_URL=http://127.0.0.1:9 node --disable-warning=ExperimentalWarning --test test/mutabakat-yil-donumu.test.mjs`
+- 30e12c20 (Ç5-B'li): 1/2 — "tohum 39 …" :48 → `işlem 445 (taksit-tahsil, 2027-01-12)`: `Taksitli fatura FIS2026000000011: açık 169.03 ≠ imzalı açık hedefi 0,00 (geri ödenen 0,00) · kapatanlar ` (kapatan listesi BOŞ).
+- Ana dal (Ç5-B'siz; `claude/epic-thompson-w0lc2l` = 7f8b8934, kod 62070e57): 2/2 yeşil.
+Yani Ç5-B'den sonra kart tahsilatı taksitli faturanın açığını kapatmıyor görünüyor (değişmez: taksitli faturanın açığı = kendi kartının kalanı; motor.mjs:416). Ç5-B'nin sunucu farkı: server/lib/obligation-queue.mjs (yeni), server/routes/{invoices,plans,accounts,overview}.mjs, server/lib/accounts.mjs (`git diff 62070e57 30e12c20 -- server`).
+YAPILACAK:
+1. Kök nedeni BUL (ders 6): tohum 39'un o faturaya / karta dokunan işlem dizisini çıkar, en küçük betikle GERÇEK programda yeniden üret; aynı diziyi ana dal kopyasında (`git archive 62070e57 | tar -x` → `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bd-<kısa>/`; ders 23, 25) koş; iki çıktıyı sayılarıyla yan yana yaz (fatura open / paid / closers, kart totals, cari bakiye).
+2. ÜRÜN HATASIYSA (Ç5-B bir kapama / açık hesabı yolunu bozmuşsa): en küçük düzeltme + yeni test (30e12c20'de kırmızı, nedeni iletide okunur — ders 38; iki TZ). Düzeltme para yolundaysa en az 3 mutant (değerle yakalanmalı).
+3. Fark bir KULLANICI KARARININ sonucuysa (ör. S50 / S55 kuralı gereği fatura açığının anlamı değiştiyse): mutabakat modeline / değişmeze DOKUNMA ve programa UYDURMA (ders 5, 40, 43) — kararı satırıyla göster, iki okumayı sayılarıyla yaz, KULLANICIYA SORULMALI (iki seçenek + öneri; uç durumsa üçüncü seçenek "Uç durum böyle kalsın (BİLİNEN SINIR)"). Ana oturum karar verir.
+4. G2 komşu (ders 10; tahminle değil taramayla): `grep -rl "mutabakat/motor" test` ile motoru kullanan bütün testler + `test/tyk-*.test.mjs` + kapama testleri (kapama-ks7-245, kapama-tek-gecis-245, cari-vade-245, projeksiyon-vade-246, iade-geri-odeme-246, fatura-217, iade-210) iki TZ; ayrıca aynı motoru birkaç ek tohumla (en az 5 farklı tohum; mutabakat-yil-donumu'nun koşu işlevi tohum alıyorsa onunla) 30e12c20'de ve düzeltmeden sonra koş — başka tohumda da kırmızı var mı sayıyla yaz.
+
+## Olay 2 — test beklentisi: test/kasa-acilis-once-250.test.mjs :514 (Ç5-K testi; Ç5-B'den önce yazıldı)
+"S45 / S54 / S57: programda cari hareketinin carisi düzeltilemez — gövdedeki accountId yok sayılır …" → 30e12c20'de `409 !== 200`; yanıt gövdesi (ana oturum okudu): `{"code":"entry-link-first","field":"invoiceId"}` (server/routes/accounts.mjs:1161). Ana dalda 41/41. Neden: Ç5-B S57 = A'yı kodladı (kullanıcı kararı: bağlı kaydın carisi bağ değişmeden düzeltilmez → red "önce bağı kaldırın"; Ç5-B'nin kendi testi test/tyk-api-250.test.mjs:142); Ç5-K testi "gövdedeki accountId yok sayılır" günkü davranışı ölçüyordu.
+YAPILACAK: beklentiyi KARARA getir (gevşetme değil): 409 + code `entry-link-first` + kayıt değişmedi (cari, bağ, tutar, tarih); başlığı güncelle. Bu dosyadaki S54 "kabul" (geri yüklenen / açılış öncesi satırda aynı düzeltmede bağ da cari de değişir) ve S45 reddi artık kurulabiliyor mu denetle: mevcut veri kurulumuyla kurulabiliyorsa bu dosyaya ekle (Kasa açılış kuralıyla birlikte: açılıştan önceki nakit satırında cari düzeltmesi Kasa'yı değiştirmez → S20 / S44 çizgisinde beklenen ne? KARAR METNİNDEN; iki okuma kalırsa kodlama, KULLANICIYA SORULMALI); kurulamıyorsa nedenini raporla. Eski beklentinin değiştiği G3 gerekçesiyle rapora.
+
+## Kurallar
+- Yazabileceğin: Olay 1 ürün hatasıysa yalnız Ç5-B'nin dokunduğu sunucu dosyaları + yeni / ilgili test; Olay 2'de yalnız test/kasa-acilis-once-250.test.mjs. `test/bagimsiz/**` ve test/mutabakat/** YAZILMAZ (gerekiyorsa DUR ve raporla). Kapsam dışı bulgu düzeltilmez, raporlanır.
+- Program başlatan her koşu `HUKUK_LICENSE_URL=http://127.0.0.1:9`. Koşular `KANIT_DIR=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bd-kanit node tools/kanit.mjs kos c5bd-<ad> -- <komut>`; yük koşuları `flock -s -n /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock` (ders 52; kilit doluysa bekleme döngüsü kurma — ders 50). Uzun koşu baştan 2 saat sınırla.
+- Tam `npm test` YOK (ana oturum koşar). `pkill` / joker `rm` YOK; iş bitince yalnız kendi tam yollarını sil. Commit'e yalnız kendi yolların (ders 44; `git add <yol>`).
+- Kendi arka plan işin sürerken turunu rapor vermeden BİTİRME; sonucu bekle, sonra raporla.
+- Commit iletisi sonunda tam olarak:
+  Co-Authored-By: Claude <noreply@anthropic.com>
+  Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og
+  (model adı YOK).
+
+## Rapor
+Olay 1: kök neden (dosya:satır), en küçük yeniden üretim betiği + iki koddaki sayılar, düzeltme farkı, yeni testin 30e12c20'de kırmızı nedeni + yeşili (iki TZ), mutantlar, ek tohum sonuçları, komşu sayıları. Olay 2: değişen beklenti + gerekçe, eklenen / eklenemeyen S54 / S45 durumları. Ana oturumun yeniden koşacağı komutlar + beklenen sayılar; KULLANICIYA SORULMALI; DOĞRULANMADI; DENENMEYEN.
