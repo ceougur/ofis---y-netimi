@@ -175,6 +175,8 @@ harcayacak işlemlerden uzak dur!")
   soru medium ve xhigh iki ajana verildi; oturum kaydında her ajanın turunda `"effort"` / `"perTurnEffort"` = verilen düzey (medium / xhigh). Küçük soruda
   davranış farkı ölçülemedi (ikisi de doğru yanıt, ~85 bin token bağlam). Kuşku olursa aynı deneme tekrarlanır (kayıt: not defteri tasks/<ajan>.output).
 
+- AJAN MODELİ (kullanıcı, 10.11.2026 08:00 UTC: yeni başlayacak ajanların modeli soruldu, baş mimar önerisi onaylandı): yeni ajanlar oturumun o an çalıştığı modeli miras ALMAZ; Agent aracının `model` parametresiyle bu oturumun KURULUŞ modelinin sınıfıyla başlatılır (sınıf `get_session` → `configured_model` alanından okunur; 06.11'e kadarki bütün ajanlar bu sınıftaydı). Efor kuralı (AJAN EFORU) aynen. Çalışan ajan model değişsin diye durdurulmaz. Daha küçük model sınıfına inilmez (para çekirdeği / bağımsız doğrulama). Model adı bu belgeye ve commit'lere YAZILMAZ (Güvenlik ve süreç kuralı) — ad yalnız sohbette söylenir; yeni oturumda kuşku olursa kullanıcıya sorulur. Gerekçe: kullanım limiti (ajanlar harcamanın büyük kısmı).
+
 ## Dil (kullanıcı, 10.10.2026: "türkçe yaz", "türkçe yaz bildirimlerini")
 - Kullanıcıya giden HER yanıt, durum bildirimi ve liste Türkçe yazılır (İngilizce ara rapor yok).
 
