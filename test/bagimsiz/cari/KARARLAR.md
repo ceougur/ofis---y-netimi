@@ -1884,3 +1884,35 @@ kartlı caride "— eksik kısım avansla kapanmış borçtan karşılanmıyor (
 - Avans sonradan gelince (kart açıldıktan sonra) kartın taksitleri — S50 (§13) aynen; yeni senaryo yazılmadı.
 - Aynı GÜN doğan taksitli ve taksitsiz faturaya bekleyen avansın sırası (Y6-6 — olay / yazım sırası; senaryolar farklı günlerle).
 - KS8 / KS9 etkileşimli, şüpheli / değersiz, fatura iadeli, iki yönde iadeli, tabloya bağlı cariler ve karşı yönlü kalemli kartlı cari — karar yok, susar (§16–§17 aynen; Y6-10).
+
+### C0k Değişen eski beklentiler (G3; bakım 5 `1ab2d1de` ↔ bakım 6 kâhin çıktısı, `2.5.0`; eski kopyanın 80 elle senaryosu + rastgele s1 / ux18 tohum 1–10 × 120) — kararla ilgisiz eski beklenti DEĞİŞMEDİ
+Toplam 604 denetim satırı (eski 44.742 → yeni 45.346 denetim); her satır o KONTROL anındaki iki modelin izinden sınıflandı, **BEKLENMEYEN 0**, **değeri değişen 0, kalkan 0**, değeri aynı kalıp
+etiketi değişen 0 (dökümü `docs/kanit/2026-11-10/kahineski6-g3-dokum.json`, özet `kahineski6-esdeger-cari-*.log`; iki saat diliminde bayt bayt aynı). **Bakım 5'in yazdığı hiçbir değer
+değişmedi** — bütün farklar bakım 5'in SUSTUĞU yerde yeni değer:
+- **S102-S105 (geri kazanılan) 576:** bakım 5'te okumalar ayrıştığı için (SK-9 … SK-12) net görünümü tanımsız caride artık değer — d26 45 (S9 / S10 / S11 / S12), rastgele s1-2 67, s1-4 70, s1-5 79,
+  s1-8 281, s1-10 34 (Kalan, takvim / Vade Takip / projeksiyon kalemleri, avans kalemi, belge durumu, gecikmiş, açık toplamı).
+- **SK-13←S99 (geri kazanılan) 6:** bakım 5'te faturanın belge durumu tanımsız caride (verilen avans + satış faturası) `fatura:acik`, `acikToplam`, `acikEsitBakiye` — d25 R3 3, d26 S13 3.
+- **sayac (yeni) 22:** sayacı tanımsız cari yüzünden yazılmayan kontrolde cariler artık tanımlı — s1-2 4, s1-4 2, s1-5 4, s1-8 10, s1-10 2.
+- **S99-taksitli / S101 / SK-14 / SK-15 / SK-17: 0** — eski kümede taksitli faturalı cari yalnız b2-ux18-retler ve d8 B'de (iadesi var — C13.4 (11) aynen), avansla kapanmış borca açılmış Mevcut Borç kartı
+  yok, karşı yönlü kalemli taksitli caride bakım 5'in yazdığı değer yok; bu sınıflar yalnız yeni elle senaryolarda (aşağıda ESKİ kâhin kırmızısı).
+- **Hâlâ kalkık (susulan sayımı `kahineski6-susan-say-*`, aynı küme, 1.482 cari-kesim):** bakım 5 → bakım 6 — okumalar ayrışıyor 15 → **0** (146 etkin kayıt / Ödeme, 55 fatura geri kazanıldı; ayrışan
+  soru SK-9 15, SK-10 13, SK-11 3, SK-12 11 — aynı carilerde birlikte; boyut ilk okumayla konum konum karşılaştırılarak) · belge durumu SK-13 3 → **0** · Y5-7 (KS8 müşterisi, S98 tek taraflı kuyrukta) net görünüm 6 → 6 (37 kayıt / 26 fatura) ve
+  belge durumu 9 → 9 (52 fatura) — **bakım 5'in Y5-7 ile kalkan 190 denetiminin 0'ı geri kazanıldı** (hepsi KS8 × S98; karar yok — Y6-10) · tanım alanı dışı 69 → 69 (KS9 59, KS8 9, karşı yönlü
+  kalemli kartlı cari 1 — karar yok) · C13.4 (11) 2 → 2 (Mevcut Borç kartı birden çok kalemi tüketti 1, taksitli faturanın iadesi 1).
+- **Yeni elle kümede (d25–d33, 47 cari-kesim; `kahineski6-susan-say-yeni-elle-*`):** EK-2B 32 12 → 2 (Q6 kart borçtan büyük, Q7 iadeyle kapanmış — S101 kurulmaz) + SK-14 0 → 1 (Q5) · belge SK-13
+  5 → 0 · Y5-7 4 → 1 (G2 — KS8) · okumalar ayrışıyor 9 → 1 (T17 — SK-17) · taksitli + karşı yönlü 1 → 1 (P5 — artık SK-15 ile faturaların belge durumu da yazılmaz).
+- `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`: **428/428 bayt bayt aynı** (87 elle — 80 eski + 7 bakım 6 — ve 20 rastgele × 4 kip); üretici 20/20 aynı dizi; eski elle senaryoların adımları değişmedi.
+- **Yeni / değişen elle tablolar ESKİ (bakım 5) kâhinde — beklenen NEDENLE kırmızı (ders 7, 38):** 335 elle denetimin 165'i (d25 3, d26 48, d27 18, d28 9, d29 9, d30 30, d31 10, d32 10, d33 28;
+  dökümü `kahineski6-kirmizi-eski-cari-*.log`): eski kâhin SK-9 … SK-13 carilerinde susuyor ("ANAHTAR YOK" — d26 S9–S13, d25 R3, d33 T10c / T11b / T11c / T12b / T13c), taksitli faturalı + verilen
+  avanslı caride Y5-7 ile susuyor (d27 / d28 / d29 P3) ve taksitli carinin açık toplamını yazmıyor (P1 / P2 / P4a), avansla kapanmış borca açılan kartlı carilerde EK-2B 32 ile susuyor (d30 Q1–Q4,
+  Q8a; d31 / d32), SK-15 carisinde faturaların belge durumunu yazıyor (P5F 90.000, P5A 40.000) ve yeni `belirsiz` kayıtları (SK-14, SK-15, SK-17) yok. Kalan 170'i iki kâhinde aynı (bakiye, kart
+  tutarı, Q6 / Q7 susmaları, tek yönlü cariler, taksitli faturanın S99 örneği — §13'ün kuyruğu zaten A'yı veriyordu).
+
+### Kanıt (bakım 6; iki saat dilimi — UTC ve Europe/Istanbul çıktıları bayt bayt aynı; kâhin `9af62b3a`, araçlar `92ba2471` (sayım aracı düzeltmesi `f909a0f5`), temiz ağaç; `docs/kanit/2026-11-10/kahineski6-*`, araçlar `kahineski6-arac/`)
+cari öz test **3.607/3.607** (`-cari-oz-*`: elle tablolar 87 senaryo, mutantlar 200–250 — 219–250 değerle, saf TYK 173 kalem, bakım 4–6 çapraz denetimi: saf net 138 kalem karşı yönlü kalemli
+caride + 576 tek yönde (26 taksit), saf belge durumu 94 fatura, avans 270 cari, (ii) 328, gecikmiş (i) 419; susulan okuma ayrışan 1 (SK-17), tanım alanı dışı 21; S98 ile kendi tarafından ayrışan
+21 cari) · defter öz test **171/171** (defter DEĞİŞMEDİ) · mutasyon taraması **217/217** (`-cari-mutasyon-*`; kos.mjs düzeni, 87 dosya × kipler) · eşdeğerlik + G3 **529/529** (`-esdeger-cari-*`) ·
+yeni / güncellenen elle tablolar **335/335** (`-elle-yeni-cari-*`) · ESKİ kâhinde **165 kırmızı** / 335 (`-kirmizi-eski-cari-*`) · geniş tarama **2.201/2.201** (`-genis-tarama-*`: s1 tohum 1–30 × 120,
+390 kontrol kesimi — saf net 677 + 516, saf belge durumu 386, tek yön = kendi tarafı 1.750, (ii) 420, gecikmiş (i) 513; susulan: okuma ayrışan **0** (bakım 5: 30), tanım alanı dışı 215 — aynen) ·
+susulan sayımı **1/1** + **1/1** (`-susan-say-*`, `-susan-say-yeni-elle-*`). Mutasyon, eşdeğerlik, geniş tarama ve susulan sayımı `flock -s -n …/olcum.lock` ile koşuldu (ders 52). Program
+açılmadı.

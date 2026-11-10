@@ -1,0 +1,13 @@
+d25-c5-s98-avans-sirasi.json: 23 elle denetim, 0 kırmızı
+d26-c5-bakim5-susan.json: 69 elle denetim, 0 kırmızı
+d27-c5-s99-taksitli-avans.json: 43 elle denetim, 0 kırmızı
+d28-c5-s99-taksit-vade-gunu.json: 17 elle denetim, 0 kırmızı
+d29-c5-s99-taksit-ertesi-gun.json: 17 elle denetim, 0 kırmızı
+d30-c5-s101-bitti-kart.json: 62 elle denetim, 0 kırmızı
+d31-c5-s101-taksit-vade-gunu.json: 14 elle denetim, 0 kırmızı
+d32-c5-s101-taksit-ertesi-gun.json: 14 elle denetim, 0 kırmızı
+d33-c5-s102-s105-sinirlar.json: 76 elle denetim, 0 kırmızı
+# tests 335
+# pass 335
+# fail 0
+335/335 denetim geçti
