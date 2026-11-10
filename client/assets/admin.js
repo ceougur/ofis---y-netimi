@@ -1136,14 +1136,20 @@
       // v2.0.26 (2. gözden geçirme İ8): yalnız eski sürümden kalan satır varsa (yeni işlem engellenmez) kırmızı hata değil sarı uyarı
       // ve ne yapılacağı (sunucunun hint'i, ör. çek/senette Düzenle ile alış tarihini gerçek güne çekmek).
       const legacyOnly = item => item.legacy && item.legacy >= item.count;
-      const onlyLegacy = !result.ok && result.failures.every(legacyOnly);
-      health.textContent = result.ok
-        ? `Mutabakat: ${result.checks.length} denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı.${rolled ? ` Son kayıtlarda ${rolled} işlem sapma yaratacağı için geri alındı (Raporlar › Mutabakat Günlüğü).` : ""}`
+      // 2.5.0 Ç5-K tur 2 (dar kontrol ORTA-1; S20 = A "Mutabakat Testi uyarı verir"): sunucunun "uyarı" işaretli denetimi (notice; Kasa Açılışından Önce Tarihli Hareket)
+      // sapma değildir — sarı, ne yapılacağı (hint) yazılı; başka sapma yoksa "N denetim tamam" bilgisi aynen kalır (uyarı ayrı cümle). Gerçek sapma varsa yine kırmızı.
+      const notices = (result.failures || []).filter(item => item.notice);
+      const failures = (result.failures || []).filter(item => !item.notice);
+      const clean = !failures.length;
+      const onlyLegacy = !clean && failures.every(legacyOnly);
+      const noticeText = notices.length ? ` Uyarı (yeni işlemleri engellemez): ${notices.map(item => `${item.name} — ${item.count} hareket. ${item.hint || ""}`).join(" ")}`.replace(/\s+/g, " ").trimEnd() : "";
+      health.textContent = (clean
+        ? `Mutabakat: ${result.checks.length - notices.length} denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı.${rolled ? ` Son kayıtlarda ${rolled} işlem sapma yaratacağı için geri alındı (Raporlar › Mutabakat Günlüğü).` : ""}`
         : onlyLegacy
-          ? `Mutabakat: ${result.failures.length} denetimde eski sürümden kalan satır var; yeni işlemler engellenmez (${result.failures.map(item => `${item.name}: ${item.legacy} satır`).join(", ")}). ${result.failures.map(item => item.hint || "").filter(Boolean).join(" ")} Raporlar › Defter Mutabakatı'nda ayrıntıyı görün.`.replace(/\s+/g, " ")
-          : `Mutabakat: ${result.failures.length} denetimde sapma var (${result.failures.map(item => (legacyOnly(item) ? `${item.name} — eski sürümden kalan ${item.legacy} satır; yeni işlemler engellenmez` : item.name)).join(", ")}). Raporlar › Defter Mutabakatı'nda ayrıntıyı görün.`;
-      health.classList.toggle("adm-error-text", !result.ok && !onlyLegacy);
-      health.classList.toggle("adm-warn-text", onlyLegacy);
+          ? `Mutabakat: ${failures.length} denetimde eski sürümden kalan satır var; yeni işlemler engellenmez (${failures.map(item => `${item.name}: ${item.legacy} satır`).join(", ")}). ${failures.map(item => item.hint || "").filter(Boolean).join(" ")} Raporlar › Defter Mutabakatı'nda ayrıntıyı görün.`.replace(/\s+/g, " ")
+          : `Mutabakat: ${failures.length} denetimde sapma var (${failures.map(item => (legacyOnly(item) ? `${item.name} — eski sürümden kalan ${item.legacy} satır; yeni işlemler engellenmez` : item.name)).join(", ")}). Raporlar › Defter Mutabakatı'nda ayrıntıyı görün.`) + noticeText;
+      health.classList.toggle("adm-error-text", !clean && !onlyLegacy);
+      health.classList.toggle("adm-warn-text", clean ? notices.length > 0 : onlyLegacy);
     } catch (error) {
       // Ç3 tur 3 (Ç3 küçük işler (c)): Mutabakat Testi çalışamazsa satır sessizce boşalmaz — neden görünür (ders 4: okunamayan boş değildir).
       health.textContent = `Mutabakat Testi çalıştırılamadı: ${error?.message || String(error)}`;

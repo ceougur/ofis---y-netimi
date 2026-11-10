@@ -99,25 +99,16 @@ const guardStates = new WeakMap();
  *     tarihi önceye alan ya da açılıştan önce tarihli kaydı nakde çeviren).
  *   - P yoksa (yeni hareket): Silinenler'den geri yükleme kapsamındaysa KABUL (Z9; restoringCash), değilse 409 cash-before-opening (S12).
  * Aynı gün olur (açılış günün başı); açılış yoksa kural yok; silme reddedilmez. Bu işlemde eklenip sonra düzeltilen satırın "önceki hâli" (scope.before'daki eklendiği
- * hâl) önceki hâl SAYILMAZ: satırın rowid'i son COMMIT'teki en büyük rowid'den büyükse satır bu işlemde eklenmiştir.
+ * hâl) önceki hâl SAYILMAZ: işlem kapsamı (lib/db.mjs) böyle önceki hâlleri kesin olarak işaretler (scope.born — eklendiği işlemde yakalanan önceki hâl).
+ * 2.5.0 Ç5-K tur 2 (dar kontrol DÜŞÜK-1): önceden "son COMMIT'teki en büyük rowid'den büyük" sezgisiydi; başka bağlantı yazınca (data_version) bilinmez sayılıp KABUL
+ * yönünde kapanıyordu (aynı işlemde ekle + düzelt yapan bir yol olsaydı açılıştan önce tarihli YENİ satır geçerdi). Artık dış yazım sonucu değiştirmez.
  */
 export function installCashOpeningGuard(store) {
   if (!store || typeof store.addCommitGuard !== "function") return null;
   const known = guardStates.get(store);
   if (known) return known;
   const counters = () => (typeof store.changeCounters === "function" ? store.changeCounters() : null);
-  const state = { restoring: 0, opening: null, openingTouched: false, max: new Map(), maxVersion: null };
-  const readMax = () => {
-    for (const table of CASH_TABLES) {
-      try {
-        state.max.set(table, Number(store.get(`SELECT COALESCE(MAX(rowid), 0) AS m FROM ${table}`)?.m) || 0);
-      } catch {
-        state.max.delete(table);
-      }
-    }
-    state.maxVersion = counters()?.version ?? null;
-  };
-  readMax();
+  const state = { restoring: 0, opening: null, openingTouched: false };
   // Açılış tarihinin önbelleği: başka bağlantı yazınca (data_version) ya da store dışı yazımda (total − tracked) geçersiz; açılış satırına dokunan işlem
   // kendi içinde yeniden okur ve COMMIT'ten sonra önbelleği düşürür.
   function openingDate(fresh) {
@@ -128,9 +119,9 @@ export function installCashOpeningGuard(store) {
     state.opening = fresh || !stamp ? null : { stamp, date };
     return date;
   }
-  // Satır bu işlemde mi eklendi (son COMMIT'teki en büyük rowid'den büyük). Başka bağlantı yazdıysa bilinmez → eklenmemiş sayılır (kabul yönünde).
-  const insertedHere = (table, rowid) => counters()?.version === state.maxVersion && state.max.has(table) && Number(rowid) > state.max.get(table);
   function priorIndex(scope) {
+    // Önceki hâl bu işlemde eklenen satırın eklendiği hâli mi (lib/db.mjs işlem kapsamının kesin izi; dış yazımdan bağımsız).
+    const insertedHere = (table, rowid) => Boolean(scope.born?.get(table)?.has(Number(rowid)));
     const byId = new Map();
     const byEvent = new Map();
     const byInvoice = new Map();
@@ -198,10 +189,9 @@ export function installCashOpeningGuard(store) {
         throw beforeOpeningError({ date, opening, table, id: row.id });
       }
     },
-    after({ tables } = {}) {
+    after() {
       if (state.openingTouched) state.opening = null;
       state.openingTouched = false;
-      if ([...(tables || [])].some(table => CASH_TABLE_SET.has(table))) readMax();
     },
     rolledBack() {
       state.openingTouched = false;

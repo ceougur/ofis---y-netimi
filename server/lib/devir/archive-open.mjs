@@ -10,16 +10,26 @@
 // Taşımadan sonra kesilen göç: dosyanın özeti kaydın bekleyen özetini tutar → değişmiş SAYILMAZ, kayıt kesinleştirilir (açılışta ve Doğrula'da aynı kural —
 // commitPendingMigration). Değişmiş arşiv (göç gerekmiyorsa) salt okunur açılır, uyarı taşır. Kayıtta özet yoksa (diskten tanınmış arşiv) ilk doğrulamada özet kayda
 // yazılır (BİLİNEN SINIR: ilk kullanımda güven). Sonuç: { file, state, warning, schemaVersion, migrated }.
+// 2.5.0 D2 tur 3 (dar kontrol ORTA-2): yanında boş olmayan -wal / -journal (işlenmemiş günlük) olan arşiv DEĞİŞMİŞTİR (K2 aynen) — göç etmez, yan dosya silinmez; boş
+// yan dosya yalnız göçün sonucu yerine geçerken silinir. Okunamayan (sıcak -journal) arşiv de yan dosyası varsa 409 archive-changed.
 import { copyFileSync, existsSync, readdirSync, renameSync, rmSync, statSync } from "node:fs";
 import path from "node:path";
 import { createStore, openDatabase } from "../db.mjs";
 import { HttpError } from "../http.mjs";
 import { LATEST_VERSION, runMigrations } from "../migrations.mjs";
-import { MIGRATION_WORK_FILE, PRE_MIGRATION_PREFIX, archiveDirOf, archiveFileOf, hashFile, readArchiveFacts } from "./archives.mjs";
+import { MIGRATION_WORK_FILE, PRE_MIGRATION_PREFIX, archiveDirOf, archiveFileOf, archiveSideFile, clearEmptySideFiles, hashFile, readArchiveFacts } from "./archives.mjs";
 
 const label = company => `${company.code} · ${company.name}`;
+// 2.5.0 D2 tur 3: değişmiş arşivin nedeni (iletide; yan dosya varsa adıyla).
+const changedReason = (file, side) => (side ? `yanında işlenmemiş günlük dosyası var: ${path.basename(file)}${side}` : "bütünlük özeti tutmuyor");
+const changedArchive = (company, entry, file, side = "") =>
+  new HttpError(409, `“${label(company)}” şirketinin ${entry.year} arşivi devirden sonra değişmiş görünüyor (${changedReason(file, side)}); programın bu sürümüne taşınmadı. Yönetici Devir Yedekleri'nden geri yükleyebilir.`, { code: "archive-changed", ...(side ? { side } : {}) });
 
-/** Bütünlük durumu: { state: "ok" | "changed" | "recovered", pending?, sha256, size } — önbellek: anahtar → { size, mtimeMs, sha256 }. */
+/**
+ * Bütünlük durumu: { state: "ok" | "changed" | "recovered", pending?, side?, sha256, size } — önbellek: anahtar → { size, mtimeMs, sha256 }.
+ * 2.5.0 D2 tur 3 (dar kontrol ORTA-2): yanında boş olmayan -wal / -journal olan arşiv özeti tutsa da "changed" (side: sonek) — özet yalnız ana dosyanındır, işlenmemiş
+ * günlükteki kayıt onda yok (lib/devir/archives.mjs archiveSideFile).
+ */
 export async function verifyArchive({ file, entry, cache = new Map(), key = file }) {
   let stats;
   try {
@@ -30,6 +40,8 @@ export async function verifyArchive({ file, entry, cache = new Map(), key = file
   const cached = cache.get(key);
   const sha256 = cached && cached.size === stats.size && cached.mtimeMs === stats.mtimeMs ? cached.sha256 : await hashFile(file);
   cache.set(key, { size: stats.size, mtimeMs: stats.mtimeMs, sha256 });
+  const side = archiveSideFile(file);
+  if (side) return { state: "changed", side, sha256, size: stats.size };
   if (!entry?.sha256) return { state: "recovered", sha256, size: stats.size };
   // 2.5.0 D2 tur 2: taşımadan sonra kesilen göç — dosya programın kendi göç sonucunun özetini (bekleyen özet) tutuyor: değişmiş değildir, kayıt kesinleştirilir.
   if (entry.pendingSha256 && sha256 !== entry.sha256 && sha256 === entry.pendingSha256) return { state: "ok", pending: true, sha256, size: stats.size };
@@ -44,6 +56,8 @@ export function archiveStatus({ file, entry, cache, key }) {
   } catch {
     return { state: "missing", label: "Dosya Yok" };
   }
+  // 2.5.0 D2 tur 3: yanında işlenmemiş günlük olan arşiv listede de "Değişmiş" (açılış ve Doğrula ile aynı kural; yalnız dosya boyu okunur).
+  if (archiveSideFile(file)) return { state: "changed", label: "Değişmiş", size: stats.size };
   const cached = cache?.get(key);
   if (!cached || cached.size !== stats.size || cached.mtimeMs !== stats.mtimeMs) return { state: entry?.sha256 ? "unverified" : "recovered", label: entry?.sha256 ? "Denetlenmedi" : "Diskten Tanındı", size: stats.size };
   if (!entry?.sha256) return { state: "recovered", label: "Diskten Tanındı", size: stats.size };
@@ -128,8 +142,15 @@ async function migrateArchive({ file, dir, company, entry, previousSha256, from,
     const pendingAt = new Date().toISOString();
     registry.updateArchive(company.id, entry.year, { pendingSha256: sha256, pendingFrom: from, pendingAt });
     step?.("bekleyen-yazildi");
-    // Asıl dosya hiç yazılabilir açılmaz (günlük dosyası olmaz); eskiden kalmış -wal / -shm yeni dosyaya uygulanmasın.
-    for (const suffix of ["-wal", "-shm"]) rmSync(`${file}${suffix}`, { force: true });
+    // Asıl dosya hiç yazılabilir açılmaz (günlük dosyası olmaz). 2.5.0 D2 tur 3 (dar kontrol ORTA-2): yanındaki yan dosyalar KÖRÜ KÖRÜNE silinmez — önceden -wal / -shm
+    // burada siliniyordu, -wal'da kesinleşmiş kayıt sessizce kayboluyordu. Boş olmayan -wal / -journal (bu arada belirmiş işlenmemiş günlük) → taşınmaz, silinmez
+    // (değişmiş arşiv, K2: 409); yalnız boş olanlar, yeni dosyaya uygulanmasın diye silinir.
+    const side = clearEmptySideFiles(file);
+    if (side) {
+      // Göç olmadı: kayıttaki bekleyen özet de geri alınır (kayıt göçten önceki hâlinde kalır).
+      registry.updateArchive(company.id, entry.year, { pendingSha256: "", pendingFrom: "", pendingAt: "" });
+      throw changedArchive(company, entry, file, side);
+    }
     await moveIntoPlace(work, file, guard);
     moved = true;
     step?.("tasindi");
@@ -154,7 +175,12 @@ export async function prepareArchive({ company, entry, registry, log = null, now
   const file = archiveFileOf(companyDataDir, entry.year);
   if (!existsSync(file)) throw new HttpError(503, `“${label(company)}” şirketinin ${entry.year} arşivinin dosyası bulunamadı (silinmiş ya da taşınmış olabilir). Yönetici Yönetim → Yedekler → Devir Yedekleri'nden geri yükleyebilir.`, { code: "archive-missing" });
   const facts = readArchiveFacts(file);
-  if (!facts) throw new HttpError(503, `“${label(company)}” şirketinin ${entry.year} arşivi açılamadı (dosya bozuk olabilir). Yönetici Devir Yedekleri'nden geri yükleyebilir.`, { code: "archive-unreadable" });
+  if (!facts) {
+    // 2.5.0 D2 tur 3: yarıda kalmış yazımın günlüğü (-journal) yanındaysa salt okunur bağlantı dosyayı okuyamaz (geri alma yazım ister) — değişmiş arşivdir, dokunulmaz.
+    const side = archiveSideFile(file);
+    if (side) throw changedArchive(company, entry, file, side);
+    throw new HttpError(503, `“${label(company)}” şirketinin ${entry.year} arşivi açılamadı (dosya bozuk olabilir). Yönetici Devir Yedekleri'nden geri yükleyebilir.`, { code: "archive-unreadable" });
+  }
   const integrity = await verifyArchive({ file, entry, cache, key });
   // 2.5.0 D2 tur 2 (dar kontrol ORTA-2): özet alınırken şirket bakıma girdiyse arşive ve kayda hiçbir şey yazılmaz.
   guard?.();
@@ -165,11 +191,11 @@ export async function prepareArchive({ company, entry, registry, log = null, now
   }
   if (integrity.pending) commitPendingMigration({ registry, company, entry, integrity, schemaVersion: facts.schemaVersion, log });
   if (integrity.state === "changed") {
-    if (facts.schemaVersion < LATEST_VERSION) {
-      throw new HttpError(409, `“${label(company)}” şirketinin ${entry.year} arşivi devirden sonra değişmiş görünüyor (bütünlük özeti tutmuyor); programın bu sürümüne taşınmadı. Yönetici Devir Yedekleri'nden geri yükleyebilir.`, { code: "archive-changed" });
-    }
-    warning = `${entry.year} arşivinin dosyası devirden sonra değişmiş görünüyor (bütünlük özeti tutmuyor); kayıtlar yalnız görüntülenir. Yönetici Devir Yedekleri'ni denetlemeli.`;
-    log?.warn?.(`${label(company)} ${entry.year} arşivinin bütünlük özeti tutmuyor (kayıt ${String(entry.sha256).slice(0, 12)}…, dosya ${integrity.sha256.slice(0, 12)}…).`);
+    if (facts.schemaVersion < LATEST_VERSION) throw changedArchive(company, entry, file, integrity.side);
+    warning = `${entry.year} arşivinin dosyası devirden sonra değişmiş görünüyor (${changedReason(file, integrity.side)}); kayıtlar yalnız görüntülenir. Yönetici Devir Yedekleri'ni denetlemeli.`;
+    log?.warn?.(integrity.side
+      ? `${label(company)} ${entry.year} arşivinin yanında işlenmemiş günlük dosyası var (${path.basename(file)}${integrity.side}); arşiv değişmiş sayıldı, göç edilmedi, yan dosyaya dokunulmadı.`
+      : `${label(company)} ${entry.year} arşivinin bütünlük özeti tutmuyor (kayıt ${String(entry.sha256).slice(0, 12)}…, dosya ${integrity.sha256.slice(0, 12)}…).`);
   }
   let migrated = false;
   let schemaVersion = facts.schemaVersion;

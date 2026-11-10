@@ -207,3 +207,32 @@ Bkz. §1 (`server/routes/devir.mjs`). Hepsi ortak katmanda (`HUB_ONLY`'e `admin/
   bakımda durdurulan göçün kopyasını silmesi, `hashFile`'ın tutamak kapanınca dönmesi.
 - BİLİNEN SINIR: taşımanın yeniden denemesi (Windows antivirüs / kısa süreli tutamak) yalnız gerçek Windows'ta oluşur — Linux'ta zorla üretilmedi. Göç sırasında üç kopya
   (asıl, göç öncesi, çalışma) kısa süre birlikte durur (disk); disk dolarsa kopya düşer, asıl dosya değişmez.
+
+## 14. Tur 3 (dar kontrol 10.11 ~12:45 bulgusu ORTA-2 + DÜŞÜK-4; BAŞ MİMAR KARARI 10.11 "D4'e bırakılmaz" — DURMA KURALI, yalnız bunlar; taban ad9f8769 = kod 78855096)
+### 14.1 ORTA-2 — iki aşamalı göç arşivin yanındaki işlenmemiş günlüğü yok sayıp siliyordu (veri kaybı ailesi)
+- Sorun: `migrateArchive` yalnız ANA dosyayı kopyalıyor (göç öncesi kopya + çalışma kopyası), taşımadan önce asıl dosyanın `-wal` / `-shm`'ini siliyordu; bütünlük özeti de yalnız
+  ana dosyanındı → WAL kipinde KESİNLEŞMİŞ ama ana dosyaya işlenmemiş kayıt göçte sessizce kayboluyordu (dar kontrol p5: Kasa 56 → 55; WAL'daki satır yok). Bugün arşiv üreten
+  ürün yolu yok (D4) — karar: yine de şimdi.
+- Çözüm (`server/lib/devir/archives.mjs` archiveSideFile / clearEmptySideFiles, `archive-open.mjs`): arşivin yanında BOŞ OLMAYAN `-wal` ya da `-journal` varsa arşiv
+  "değişmiş"tir — K2 AYNEN: eski şema → 409 `archive-changed` ("… değişmiş görünüyor (yanında işlenmemiş günlük dosyası var: destekofis.sqlite-wal) …"), son şema → uyarıyla
+  salt okunur ("… kayıtlar yalnız görüntülenir"). GÖÇ ETMEZ (göç öncesi kopya / çalışma kopyası oluşmaz), yan dosya SİLİNMEZ, kayıt değişmez. Aynı kural açılışta
+  (`verifyArchive`), Doğrula'da ("changed") ve Yönetim listesinde (`archiveStatus` "Değişmiş"; yalnız dosya boyu okunur). Boş (0 bayt) `-wal` / `-journal` ve `-shm`
+  zararsızdır (DELETE kipli dosyanın yanındaki boş `-wal` salt okunur açılışı bozmaz — denendi). Okunamayan (sıcak `-journal`: salt okunur bağlantı geri alamaz, "attempt to
+  write a readonly database") arşiv yan dosyası varsa 409 `archive-changed` (önceden 503 "dosya bozuk olabilir").
+- Körü körüne silme kalktı: taşımadan hemen önce `clearEmptySideFiles` — yalnız BOŞ yan dosyaları siler (göçün sonucu yerine geçerken eski boş günlük yeni dosyaya uygulanmasın);
+  bu arada boş olmayan günlük belirdiyse taşıma yapılmaz, hiçbir şey silinmez, kayıttaki bekleyen özet geri alınır, 409 `archive-changed`. Çalışma kopyasının kendi
+  günlüğü (programın ürettiği, göç bağlantısı DELETE kipine alınıp kapanınca) bu kurala girmez.
+- Ölçülen bugünkü davranış (son şema + işlenmemiş `-wal`): arşiv örneğinin salt okunur bağlantısı WAL'daki kesinleşmiş kaydı OKUR (Kasa listesinde görünür), dosyaya işlemez;
+  ana dosya ve `-wal` değişmez (yalnız `-shm` okuyucu işareti). Önceden (tur 2) aynı arşiv UYARISIZ açılıyordu.
+- D4 SÖZLEŞMESİ (§12'ye ek): arşiv yan dosyasız bırakılır (checkpoint + DELETE günlük kipi + bağlantı kapalı), özet ONDAN SONRA alınır. Yan dosyalı arşiv yukarıdaki kuralla
+  "değişmiş" sayılır.
+### 14.2 DÜŞÜK-4 — yaşayan mutantlar (yalnız test)
+- D13 (devir yedeği süzgeci): ürün yolundan — göç "bekleyen-yazildi" adımında SIGKILL (çalışma kopyası + göç öncesi kopya diskte), `createDevirBackupFor` yedeğinde ikisi de yok.
+- D10 (taşımadan önce boş yan dosya temizliği): tur 3 karşılığı — boş `-wal` + `-shm` kalıntısıyla göç eder, sonra yan dosya kalmaz. D9 (`hashFile` "close") yalnız Windows'ta
+  fark eder (açık tutamağa taşıma) — Linux'ta EŞDEĞER; CI Windows işlerinde göç testleri yolu koşar.
+### 14.3 Testler ve mutasyon
+- Yeni: `test/devir-arsiv-wal-250.test.mjs` (6: eski şema + WAL → 409, dosyalar / kayıt / WAL'daki satır aynı; son şema + WAL → uyarı, satır görünür; sıcak `-journal` → 409;
+  boş yan dosya (D10); taşıma öncesi beliren WAL (`__testArchiveStep` "bekleyen-yazildi") → 409, bekleyen özet geri alındı; D13 ürün yolundan), işçi
+  `test/fixtures/devir-arsiv-wal-isci.mjs` (yazar, bağlantıyı kapatmadan SIGKILL). Mutasyon `test/devir-d2-250-mutasyon.mjs` 40–47 (30 çok noktalı oldu).
+- WINDOWS'TA DOSYAYA DOKUNANLAR (ders 48; CI'de görülecek): yan dosyanın boyunu okuma, boş yan dosyaların silinmesi (taşımadan önce), SIGKILL'li işçinin bıraktığı `-wal` /
+  `-shm` / `-journal` yanında arşivi açma denemesi. Testte her bağlantı dosyaya dokunulmadan önce kapanır.
