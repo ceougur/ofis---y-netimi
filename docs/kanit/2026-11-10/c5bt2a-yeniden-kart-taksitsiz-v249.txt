@@ -1,0 +1,55 @@
+{
+ "a_taksitSayisi": 0,
+ "a": {
+  "bakiye": 1000,
+  "eskiGeciken": 0,
+  "gecikmisListe": 0,
+  "vade": [],
+  "vadeGecikmis": 0,
+  "zil": [],
+  "kalan": [],
+  "faturalar": [],
+  "kartlar": [
+   {
+    "state": "active",
+    "items": [],
+    "own": 1000
+   }
+  ]
+ },
+ "b_taksitEkle": [
+  200,
+  200,
+  "{\"id\":\"plan-179c67be-cc08-4324-8035-0b9267ef54e7\",\"accountId\":\"account-a78e3a1b-c84a-43e3-8943-1c2df9b6ae37\",\"refNo\":\"2\",\"registeredOn\":\"2026-09-30\",\"caseKey\":\""
+ ],
+ "b": {
+  "bakiye": 1000,
+  "eskiGeciken": 300,
+  "gecikmisListe": 300,
+  "vade": [
+   "plan:1. taksit:300@2026-10-10",
+   "plan:2. taksit:300@2026-11-09"
+  ],
+  "vadeGecikmis": 300,
+  "zil": [
+   "plan:1. taksit:300:overdue"
+  ],
+  "kalan": [],
+  "faturalar": [],
+  "kartlar": [
+   {
+    "state": "overdue",
+    "items": [
+     300,
+     300
+    ],
+    "own": 1000
+   }
+  ]
+ },
+ "mutabakat": {
+  "status": 200,
+  "ok": true,
+  "bad": []
+ }
+}

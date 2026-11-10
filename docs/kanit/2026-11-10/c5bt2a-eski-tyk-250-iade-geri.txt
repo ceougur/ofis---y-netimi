@@ -1,0 +1,118 @@
+TAP version 13
+# Subtest: TYK tur 2a — 'Hangi Taksite' bağı (karar (2)) ve O-3 kart kalemleri
+    # Subtest: bağlı tahsilattan çok iade / karşılıksız ters kaydı bağlı payı EN YENİ taksitten geriye geri alır (Taksit İadesi kalemi değil)
+    not ok 1 - bağlı tahsilattan çok iade / karşılıksız ters kaydı bağlı payı EN YENİ taksitten geriye geri alır (Taksit İadesi kalemi değil)
+      ---
+      duration_ms: 7.47783
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2a-eski/test/tyk-250.test.mjs:469:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bağlı paydan artan iade Taksit İadesi kalemi
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            [
+              300,
+              0
+            ],
+        ...
+            ],
+        +   undefined
+        -   200
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 300
+          1: 0
+        1:
+          0: 300
+          1: 0
+        2: 200
+      actual:
+        0:
+          0: 300
+          1: 0
+        1:
+          0: 300
+          1: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2a-eski/test/tyk-250.test.mjs:477:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: rastgele kartlar (tohum 21–23 × 150): kuyruğun taksit kalanları = kartın kendi hesabı (allocate)
+    not ok 2 - rastgele kartlar (tohum 21–23 × 150): kuyruğun taksit kalanları = kartın kendi hesabı (allocate)
+      ---
+      duration_ms: 1.983214
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2a-eski/test/tyk-250.test.mjs:481:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        tohum 21 kart 0: [{"id":"e0","itemId":"","kind":"in","amount":50,"date":"2026-02-10"},{"id":"e1","itemId":"","kind":"in","amount":250,"date":"2026-02-11"},{"id":"e2","itemId":"t3","kind":"in","amount":150,"date":"2026-02-12"},{"id":"e3","itemId":"t4","kind":"in","amount":400,"date":"2026-03-13"},{"id":"e4","itemId":"t4","kind":"in","amount":200,"date":"2026-03-14"}]
+        + actual - expected
+        
+          [
+            0,
+        -   100,
+        -   50,
+            0,
+        +   0,
+        +   150
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 0
+        1: 100
+        2: 50
+        3: 0
+      actual:
+        0: 0
+        1: 0
+        2: 0
+        3: 150
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2a-eski/test/tyk-250.test.mjs:502:16)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 4)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..2
+not ok 1 - TYK tur 2a — 'Hangi Taksite' bağı (karar (2)) ve O-3 kart kalemleri
+  ---
+  duration_ms: 10.64805
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2a-eski/test/tyk-250.test.mjs:426:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 117.364159

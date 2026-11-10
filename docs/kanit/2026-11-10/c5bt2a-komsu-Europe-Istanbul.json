@@ -1,0 +1,38 @@
+{
+  "ad": "c5bt2a-komsu-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/accounts-stock.test.mjs test/backup.test.mjs test/banka-210-altin.test.mjs test/banka-210-asama5-cari.test.mjs test/banka-210-gg-cari.test.mjs test/banka-210-gg-geri-yukle.test.mjs test/banka-210-gg2-hiz.test.mjs test/banka-210-hiz-esdegerlik.test.mjs test/banka-210-kapi-plan.test.mjs test/banka-210-kurumsal-kart.test.mjs test/banka-210-nakit-akis-k10.test.mjs test/banka-210-planli.test.mjs test/banka-220-hesap-kart.test.mjs test/banka-220-kredi-karti-metin.test.mjs test/banka-220-pos-hesap.test.mjs test/banka-230-46-iade-iptal.test.mjs test/banka-230-k8-taksit.test.mjs test/banka-230-supheli-ayni-gun.test.mjs test/banka-230-supheli-bozma.test.mjs test/banka-230-supheli-ekran.test.mjs test/banka-230-supheli.test.mjs test/bs2-kart-iade-ekstre-250.test.mjs test/bulgu-223.test.mjs test/cari-243.test.mjs test/cari-bilgi-222.test.mjs test/cari-duzeltme-yaris-250.test.mjs test/cari-hareket-249.test.mjs test/cari-tur-222.test.mjs test/cari-vade-245.test.mjs test/cheques-overview.test.mjs test/ci-kapi-listesi.test.mjs test/db-acilis-kilit-250.test.mjs test/defter-243-stok-acilis.test.mjs test/donmus-defter-kilit-ucu-250.test.mjs test/dues.test.mjs test/ebelge-244-efatura-belirsiz-iptal.test.mjs test/efatura-portali-244.test.mjs test/einvoice-240-resmi-gorunum.test.mjs test/einvoice-240-taslak.test.mjs test/einvoice-edm.test.mjs test/eksi-stok-217.test.mjs test/fatura-215.test.mjs test/fatura-216.test.mjs test/fatura-217.test.mjs test/fatura-230-ayarlar-banka.test.mjs test/fatura-243-stok-kdv.test.mjs test/fatura-244-numara-tarih-onay.test.mjs test/fatura-buyuk-tutar-210.test.mjs test/fatura-durum-222.test.mjs test/fatura-liste-243-fark.test.mjs test/fatura-model.test.mjs test/geri-yukleme-uyari-244.test.mjs test/gg243-dar-kontrol-stok.test.mjs test/gg243-dar2-iade-sira.test.mjs test/gg243-dar3-stok.test.mjs test/gg243-stok-excel.test.mjs test/goc-243-iade-ref.test.mjs test/goc-243-stok-acilis.test.mjs test/goc-243-stok-kdv.test.mjs test/goc-245-cari-vade.test.mjs test/goc-246-iade-bagi.test.mjs test/hesap-plani-sinif-250.test.mjs test/hiz-243-arka-plan.test.mjs test/iade-210-fazla-tahsilat.test.mjs test/iade-210-onarim.test.mjs test/iade-210.test.mjs test/iade-224.test.mjs test/iade-geri-odeme-246.test.mjs test/iade-kapama-k1.test.mjs test/iade-kesinti-tarama-249.test.mjs test/isgecmisi-230-geri-yukleme-yetki.test.mjs test/kanit-araci.test.mjs test/kapali-kart-ekstre-tarihi-250.test.mjs test/kapama-ks7-245.test.mjs test/kapama-rastgele-223.test.mjs test/kapama-tek-gecis-245.test.mjs test/kart-iade-musteri-249.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/mobil-ozet-247.test.mjs test/mobil-ozet-olcek-247.test.mjs test/mutabakat-cekirdek.test.mjs test/mutabakat-yil-donumu.test.mjs test/nakit-akis-ileri-tarihli-yol.test.mjs test/nakit-akis-kasa-mm6.test.mjs test/nakit-akis-sekme-30e.test.mjs test/plan-case-link.test.mjs test/plan-transfer.test.mjs test/plans.test.mjs test/platform-tasinabilirlik.test.mjs test/projeksiyon-vade-246.test.mjs test/sema-kapisi-bs7.test.mjs test/stok-alis-iadesi-246.test.mjs test/stopaj-tevkifat-iade-244.test.mjs test/supheli-230-ayni-gun-degersiz.test.mjs test/supheli-230-elestirmen.test.mjs test/supheli-230-karar.test.mjs test/supheli-230-kontrol2.test.mjs test/supheli-230-sil-cakisma.test.mjs test/supheli-230-yargic.test.mjs test/supheli-240-k4-iptal.test.mjs test/tyk-250.test.mjs test/tyk-api-250.test.mjs test/tyk-goc-249-250.test.mjs test/tyk-kilit-taksitli-250.test.mjs test/tyk-onbellek-250.test.mjs test/tyk-tur2a-250.test.mjs test/ux18-cek-fatura-244.test.mjs test/vade-takip-kaynak-yetki-210.test.mjs test/whatsapp-dk11-kilit-248.test.mjs test/whatsapp-dk12-kilit-bakim-sayac-248.test.mjs test/whatsapp-dk13-arka-plan-kilit-248.test.mjs test/whatsapp-dk8-bekletti-geri-yukleme-248.test.mjs test/whatsapp-onizleme-olcek-248.test.mjs test/write-lock-248.test.mjs test/yazim-duzeni.test.mjs",
+  "commit": "eff8283c9cf33a3a86d35cea0c600f8b4ba0696d",
+  "dal": "worktree-agent-ad0fa5bd8c34963f1",
+  "kirli": 11,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T23:15:22.100Z",
+  "sure_sn": 775.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1064,
+    "gecen": 1063,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "G8 tek geçiş: fatura durumları ve vadeli elle satırların Kalan'ı aynı kapama geçişinden; sonuç cari başına yolla aynı › tek geçiş: yazımdan sonra iki harita için carilerin defteri en çok BİR KEZ kurulur; ikinci çağrılar önbellekten",
+      "konum": "test/kapama-tek-gecis-245.test.mjs:114:3",
+      "hata": "ters sırada allLedgers 0 kez (1 beklenir) · 0 !== 1 (beklenen 1, gelen 0)"
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2a-kanit/2026-11-10/c5bt2a-komsu-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad0fa5bd8c34963f1",
+  "ham_cikti_sha256": "635fa22373e6126a00a0c1a2f710d94a2ad2f3496ef2255134c08fe88f133183",
+  "ham_cikti_bayt": 411593
+}

@@ -1,0 +1,167 @@
+{
+ "a_duzeltme": 200,
+ "a_sonra": {
+  "items": [
+   [
+    1,
+    0,
+    0
+   ],
+   [
+    2,
+    0,
+    300
+   ]
+  ],
+  "state": "done",
+  "queue": 0
+ },
+ "b_yeni": 200,
+ "b_sonra": {
+  "items": [
+   [
+    1,
+    0,
+    300
+   ],
+   [
+    2,
+    0,
+    0
+   ]
+  ],
+  "state": "done",
+  "queue": 0
+ },
+ "c_duzeltme": 200,
+ "c_sonra": {
+  "items": [
+   [
+    1,
+    0,
+    0
+   ],
+   [
+    2,
+    0,
+    300
+   ]
+  ],
+  "state": "done",
+  "queue": 0
+ },
+ "d_yeni": 200,
+ "d_sonra": {
+  "items": [
+   [
+    1,
+    0,
+    300
+   ],
+   [
+    2,
+    0,
+    0
+   ]
+  ],
+  "state": "done",
+  "queue": 0
+ },
+ "a_gecikmis": 0,
+ "b_gecikmis": 0,
+ "c_gecikmis": 0,
+ "d_gecikmis": 0,
+ "e_duzeltme": [
+  200,
+  "{\"id\":\"invoice-7e3a2ce6-05ba-43c8-a1cf-a7e67d71f5db\",\"kind\":\"sale_return\",\"kindLabel\":\"Satıştan İade Faturası\",\"scenario\":\"sale_return\",\"scenarioLabel\":\"Satışta"
+ ],
+ "e_sonra": {
+  "bakiye": 180,
+  "gecikmisKart": 180,
+  "gecikmisKartAdet": 1,
+  "eskiGeciken": 0,
+  "gecikmisListe": 180,
+  "vade": [
+   "invoice:Satış faturası FIS2026000000003 (kalan):180@2026-09-15"
+  ],
+  "vadeGecikmis": 180,
+  "zil": [
+   "invoice:Tahsil Edilecek Fatura FIS2026000000003:180:overdue"
+  ],
+  "kalan": [],
+  "faturalar": [
+   {
+    "no": "FIS2026000000001",
+    "state": "paid",
+    "open": 0,
+    "closers": [
+     "Otomatik (vadesi en önce gelen):300@2026-09-05"
+    ]
+   },
+   {
+    "no": "FIS2026000000003",
+    "state": "overdue",
+    "open": 180,
+    "closers": [
+     "Bağsız (kilitli dönemde kapanmıştı):120@2026-10-15"
+    ]
+   },
+   {
+    "no": "IAD2026000000001",
+    "state": "return",
+    "open": 0,
+    "closers": [
+     "Bağsız (kilitli dönemde kapanmıştı):120@2026-09-15"
+    ]
+   }
+  ],
+  "kartlar": []
+ },
+ "f_sonra": {
+  "bakiye": 180,
+  "gecikmisKart": 180,
+  "gecikmisKartAdet": 1,
+  "eskiGeciken": 0,
+  "gecikmisListe": 180,
+  "vade": [
+   "invoice:Satış faturası FIS2026000000004 (kalan):180@2026-09-15"
+  ],
+  "vadeGecikmis": 180,
+  "zil": [
+   "invoice:Tahsil Edilecek Fatura FIS2026000000004:180:overdue"
+  ],
+  "kalan": [],
+  "faturalar": [
+   {
+    "no": "FIS2026000000002",
+    "state": "paid",
+    "open": 0,
+    "closers": [
+     "Otomatik (vadesi en önce gelen):300@2026-09-05"
+    ]
+   },
+   {
+    "no": "FIS2026000000004",
+    "state": "overdue",
+    "open": 180,
+    "closers": [
+     "Bağsız (kilitli dönemde kapanmıştı):120@2026-10-15"
+    ]
+   },
+   {
+    "no": "IAD2026000000002",
+    "state": "return",
+    "open": 0,
+    "closers": [
+     "Bağsız (kilitli dönemde kapanmıştı):120@2026-09-15"
+    ]
+   }
+  ],
+  "kartlar": []
+ },
+ "mutabakat": {
+  "status": 200,
+  "ok": true,
+  "bad": []
+ }
+}

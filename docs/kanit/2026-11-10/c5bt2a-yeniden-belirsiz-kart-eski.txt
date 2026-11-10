@@ -1,0 +1,40 @@
+{
+ "sonuc": {
+  "bakiye": 1500,
+  "gecikmisKart": 1500,
+  "gecikmisKartAdet": 2,
+  "eskiGeciken": 300,
+  "gecikmisListe": 1500,
+  "vade": [
+   "account:Tahsil Edilecek Borç:900@2026-09-20",
+   "invoice:Satış faturası FIS2026000000001:600@2026-08-21"
+  ],
+  "vadeGecikmis": 1500,
+  "zil": [
+   "account:Tahsil Edilecek Borç:900:overdue",
+   "invoice:Tahsil Edilecek Fatura FIS2026000000001:600:overdue"
+  ],
+  "kalan": [],
+  "faturalar": [
+   {
+    "no": "FIS2026000000001",
+    "state": "overdue",
+    "open": 600,
+    "closers": []
+   }
+  ],
+  "kartlar": [
+   {
+    "state": "done",
+    "items": [
+     0,
+     0,
+     0
+    ],
+    "own": 900,
+    "queue": 0,
+    "accountPaid": 0
+   }
+  ]
+ }
+}
