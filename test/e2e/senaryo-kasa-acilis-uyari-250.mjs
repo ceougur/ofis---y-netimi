@@ -166,7 +166,8 @@ try {
     app.db.prepare("INSERT INTO cash_entries (id, kind, amount, date, description, method, created_by, created_at) VALUES ('cash-e2e-yol', 'in', 10, ?, 'x', 'bitcoin', 'x', ?)").run(AFTER, new Date().toISOString());
     const line = await systemLine("3-sapma-ve-uyari");
     ok(line.error && !line.warn, `kırmızı (sarı ${line.warn}, kırmızı ${line.error})`);
-    ok(/denetimde sapma var \(/.test(line.text) && /Tanınmayan ödeme yolu/.test(line.text) && !line.text.includes(`sapma var (${NAME}`), `sapma listesinde gerçek sapma var, uyarı yok: "${line.text.slice(0, 220)}"`);
+    const listed = /denetimde sapma var \((.*)\)\. Raporlar › Defter Mutabakatı'nda ayrıntıyı görün\./.exec(line.text)?.[1] || "";
+    ok(/Tanınmayan ödeme yolu/.test(listed) && !listed.includes(NAME), `sapma listesinde gerçek sapma var, uyarı yok: "${listed.slice(0, 220)}"`);
     ok(line.text.includes(`Uyarı (yeni işlemleri engellemez): ${NAME} — 1 hareket.`), "uyarı cümlesi yine yazılı");
     const view = await ledgerReport("3-sapma-ve-uyari");
     ok(view.summary["Sonuç"] === "Fark Var", `Sonuç: ${view.summary["Sonuç"]}`);
