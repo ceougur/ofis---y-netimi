@@ -4,6 +4,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { buildObligations, calendarState, lockAtOf, lockHistory } from "../server/lib/obligation-queue.mjs";
+import { allocate } from "../server/lib/plans.mjs";
 
 let seq = 0;
 const at = (date, n = 0) => `${date}T09:${String(10 + (n % 50)).padStart(2, "0")}:00.000Z`;
@@ -349,6 +350,274 @@ describe("TYK — değişmezler (tohumlu rastgele, 500 olay × 4 tohum)", () => 
       }
       assert.deepEqual(res.items.map(i => [i.key, i.remaining]), rev.items.map(i => [i.key, i.remaining]), "girdi sırası ters: aynı kalemler");
       assert.deepEqual([...res.invoices].sort().map(([k, v]) => [k, v.open]), [...rev.invoices].sort().map(([k, v]) => [k, v.open]), "fatura durumu aynı");
+    });
+  }
+});
+
+// ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 2.5.0 Ç5-B tur 2a (dar kontrol DK-C5B; beklenenler ELLE — v2.4.9'un gerçek kodu ve karar metinlerinden, programın çıktısından DEĞİL; ders 5, 40). Mutantlar:
+// test/tyk-mutasyon-250.mjs (Y1-*, O1-*, T-*, B-*, N02, N06).
+describe("TYK tur 2a — Y-1: Kayıt Tarihi borçtan ÖNCE olan Mevcut Borç kartı borcu tüketir (v2.4.9; M1e)", () => {
+  const T = n => `2026-10-20T09:${String(10 + n).padStart(2, "0")}:00.000Z`;
+  const cover = (planId, date, total, n) => ({ id: `plan:${planId}`, origin: "plan", planId, kind: "plan", covers: true, coverTotal: total, date, at: T(n), debit: 0, credit: 0 });
+  const stock = (id, date, amount, n) => ({ id, origin: "stock", kind: "debt", sourceId: `m-${id}`, stockReason: "", date, at: T(n), debit: amount, credit: 0 });
+  const sched = (planId, rows) => new Map([[planId, rows.map(([dueDate, amount], i) => ({ id: `${planId}-${i + 1}`, seq: i + 1, dueDate, amount }))]]);
+  const inst = (r, planId) => [...r.installments.get(planId).entries()].filter(([k]) => k !== "rest" && k !== "back").map(([, v]) => v.remaining);
+  const sigma = r => Math.round(r.items.reduce((s, i) => s + (i.side === "receivable" ? i.remaining : -i.remaining), 0) * 100) / 100;
+  // ELLE (dar kontrol betiği stok-kart; v2.4.9 çıktısı): stoktan veresiye satış 1.000 (30.09), kart Kayıt Tarihi carinin Kayıt Tarihi 15.09.2025, 2 × 500 (10.10, 10.11).
+  // Kart satışı tüketir → taksitler 500 / 500, satış kalemi yok; bugün 20.10: 1. taksit gecikmiş → gecikmiş 500 (1 kalem); Σ kalem = bakiye 1.000.
+  it("stoktan veresiye satış → taksitlendir (kartın Kayıt Tarihi carinin Kayıt Tarihi): taksitler 500 / 500, gecikmiş 500 (önceden kart 'Bitti', gecikmiş 1.000)", () => {
+    const r = buildObligations({ lines: [stock("S", "2026-09-30", 1000, 1), cover("K", "2025-09-15", 1000, 2)], invoices: [], schedules: sched("K", [["2026-10-10", 500], ["2026-11-10", 500]]), today: "2026-10-20" });
+    assert.deepEqual(inst(r, "K"), [500, 500]);
+    assert.deepEqual([r.overdue("2026-10-20").amount, r.overdue("2026-10-20").count], [500, 1]);
+    assert.equal(r.items.some(i => i.lineId === "S"), false, "satış kartın içinde (aynı borç bir kez)");
+    assert.equal(sigma(r), 1000, "Σ kalem = bakiye");
+  });
+  it("elle geriye tarihli kart (Kayıt Tarihi Borç Yaz'dan önce) aynı; Kayıt Tarihi borçtan SONRA olan kart (kontrol) aynı sonuç", () => {
+    const debt = { id: "B", origin: "account", kind: "debt", date: "2026-09-30", at: T(1), debit: 1000, credit: 0 };
+    const s = sched("K", [["2026-10-10", 500], ["2026-11-10", 500]]);
+    for (const date of ["2026-09-20", "2026-10-01"]) {
+      const r = buildObligations({ lines: [debt, cover("K", date, 1000, 2)], invoices: [], schedules: s, today: "2026-10-20" });
+      assert.deepEqual([inst(r, "K"), r.overdue("2026-10-20").amount, r.entries.get("B").remaining, r.entries.get("B").covered], [[500, 500], 500, 1000, 1000], `kart ${date}`);
+    }
+  });
+  // ELLE: karttan SONRA yazılan tahsilat 300 (05.10) kartın açılışından (30.09 — tükettiği satışın günü) sonradır → S50 + M1e: vadesi ilk gelen taksit (10.10) 300 → [200, 500].
+  it("karttan sonra yazılan tahsilat taksiti kapatır (kartın açılış günü tükettiği borcun günü): [200, 500], gecikmiş 200", () => {
+    const pay = { id: "P", origin: "account", kind: "in", date: "2026-10-05", at: T(3), debit: 0, credit: 300 };
+    const r = buildObligations({ lines: [stock("S", "2026-09-30", 1000, 1), cover("K", "2025-09-15", 1000, 2), pay], invoices: [], schedules: sched("K", [["2026-10-10", 500], ["2026-11-10", 500]]), today: "2026-10-20" });
+    assert.deepEqual([inst(r, "K"), r.overdue("2026-10-20").amount, sigma(r)], [[200, 500], 200, 700]);
+  });
+  // ELLE: kartın anında bilinen avans 200 (25.09) satışın (30.09) bir kısmını kapatmış; kart açılan an açık 800'ü tüketir (v2.4.9 kapsamı: bilinen satırların son durumu) →
+  // taksitler 400 / 400 tam; satış avans + kartla kapalı; gecikmiş 400 (10.10). Önceden kart Kayıt Tarihi'nde (2025) borç bulamıyor, satışın 800'ü gecikmiş kalıyordu.
+  it("kartın anında bilinen avans: kart açıldığı an açık kalanı (800) tüketir → taksitler 400 / 400, gecikmiş 400", () => {
+    const avans = { id: "A", origin: "account", kind: "in", date: "2026-09-25", at: T(0), debit: 0, credit: 200 };
+    const r = buildObligations({ lines: [avans, stock("S", "2026-09-30", 1000, 1), cover("K", "2025-09-15", 800, 2)], invoices: [], schedules: sched("K", [["2026-10-10", 400], ["2026-11-10", 400]]), today: "2026-10-20" });
+    assert.deepEqual([inst(r, "K"), r.overdue("2026-10-20").amount, sigma(r)], [[400, 400], 400, 800]);
+  });
+});
+
+describe("TYK tur 2a — O-1: karar (3) bağın KURULDUĞU andaki kilitle (düzeltmeyle kurulan bağ = yeni kayıtla kurulan)", () => {
+  // ELLE (dar kontrol betiği k3-duzelt): F1 300 (01.08) · P1 300 bağsız (05.08; F1'i kapatır) · F2 300 (10.08, vade 01.12) · F3 300 (15.08, vade 15.08) · P2 300 (10.10)
+  // F1'e bağlı. Kilit 20.08'e 15.09'da konuldu. Bağ kilitten SONRA kuruldu (P2 kilitten önce yazıldı, 20.09'da düzeltilip F1'e bağlandı) → karar (3): F1 kilitli dönemde
+  // bağsız kapanmış, açılmaz; P2 bağsız gibi dağılır → S2: F3 (vade 15.08) kapanır ("kilitli dönemde kapanmıştı"), F2 açık (vadesi gelmedi) → gecikmiş 0.
+  // Bağ kilitten ÖNCE kurulduysa (düzeltme yok) bağ geçerli: F1 P2'yle, P1 serbest → F2'yi kapatır → F3 300 gecikmiş.
+  const history = lockHistory([{ type: "ledger.period.locked", at: "2026-09-15T10:00:00.000Z", payload: { lockedUntil: "2026-08-20" } }]);
+  const mk = (id, date, amount, dueDate) => ({ inv: { id, kind: "sale", status: "issued", payable: amount, dueDate, planId: "" }, line: { id: `l-${id}`, origin: "invoice", kind: "debt", sourceId: id, date, at: `${date}T09:00:00.000Z`, debit: amount, credit: 0 } });
+  const docs = [mk("F1", "2026-08-01", 300, "2026-08-01"), mk("F2", "2026-08-10", 300, "2026-12-01"), mk("F3", "2026-08-15", 300, "2026-08-15")];
+  const lines = [...docs.map(d => d.line), { id: "P1", origin: "account", kind: "in", date: "2026-08-05", at: "2026-08-05T09:00:00.000Z", debit: 0, credit: 300 }, { id: "P2", origin: "account", kind: "in", date: "2026-10-10", at: "2026-09-01T10:00:00.000Z", debit: 0, credit: 300 }];
+  const run = linkTimes => buildObligations({ lines, invoices: docs.map(d => d.inv), links: new Map([["P2", "F1"]]), lockAt: lockAtOf(history), linkTimes, today: "2026-10-20" });
+  it("bağ kilitten sonra düzeltmeyle kuruldu → kilit uygulanır: gecikmiş 0, F3 'kilitli dönemde kapanmıştı'", () => {
+    const r = run(new Map([["P2", "2026-09-20T10:00:00.000Z"]]));
+    assert.equal(r.overdue("2026-10-20").amount, 0);
+    assert.deepEqual(r.invoices.get("F3").closers.map(c => [c.id, c.mode, c.amount]), [["P2", "locked", 300]]);
+    assert.deepEqual(r.invoices.get("F1").closers.map(c => [c.id, c.mode]), [["P1", "auto"]], "F1 kilitli dönemdeki bağsız kapanışıyla kalır");
+  });
+  it("bağ kilitten önce kuruldu (düzeltme yok) → bağ geçerli: F3 300 gecikmiş", () => {
+    const r = run(new Map());
+    assert.equal(r.overdue("2026-10-20").amount, 300);
+    assert.deepEqual(r.invoices.get("F1").closers.map(c => [c.id, c.mode]), [["P2", "linked"]]);
+  });
+  it("lockAtOf: kilitle AYNI anda yazılan kayıt kilidi görür (B12; durağan saat — yaşayan mutant N02)", () => {
+    const at = lockAtOf(lockHistory([{ type: "ledger.period.locked", at: "2026-09-15T10:00:00.000Z", payload: { lockedUntil: "2026-08-20" } }]));
+    assert.deepEqual([at("2026-09-15T09:59:59.999Z"), at("2026-09-15T10:00:00.000Z"), at("2026-09-15T10:00:00.001Z")], ["", "2026-08-20", "2026-08-20"]);
+  });
+});
+
+describe("TYK tur 2a — 'Hangi Taksite' bağı (karar (2)) ve O-3 kart kalemleri", () => {
+  const card = (planId, date, total) => ({ id: `plan:${planId}`, origin: "plan", planId, kind: "plan", covers: false, coverTotal: 0, date, at: `${date}T08:00:00.000Z`, debit: total, credit: 0 });
+  const pin = (id, planId, date, amount, itemId = "", at = `${date}T09:00:00.000Z`) => ({ id: `plan-entry:${id}`, origin: "plan", planId, kind: "plan-in", itemId, date, at, debit: 0, credit: amount });
+  const pout = (id, planId, date, amount) => ({ id: `plan-entry:${id}`, origin: "plan", planId, kind: "plan-out", date, at: `${date}T09:00:00.000Z`, debit: amount, credit: 0 });
+  const schedules = new Map([["K", [{ id: "t1", seq: 1, dueDate: "2026-01-20", amount: 300 }, { id: "t2", seq: 2, dueDate: "2026-02-20", amount: 300 }]]]);
+  const rem = r => [r.installments.get("K").get("t1"), r.installments.get("K").get("t2")].map(v => [v.remaining, v.byAccount]);
+  // ELLE: kart 600 (10.01; 20.01 / 20.02 × 300) · 2. taksite bağlı tahsilat 300 (25.01) → 2. taksit kapanır, 1. açık (lib/plans.mjs allocate ile aynı).
+  it("bağlı tahsilat önce KENDİ taksitini kapatır; taksitini aşan kısmı vade sırasıyla (kartın kendi hesabıyla aynı)", () => {
+    const r = buildObligations({ lines: [card("K", "2026-01-10", 600), pin("e1", "K", "2026-01-25", 300, "t2")], invoices: [], schedules, today: "2026-02-25" });
+    assert.deepEqual(rem(r), [[300, 0], [0, 0]]);
+    assert.equal(r.overdue("2026-02-25").amount, 300);
+    const over = buildObligations({ lines: [card("K", "2026-01-10", 600), pin("e1", "K", "2026-01-25", 400, "t2")], invoices: [], schedules, today: "2026-02-25" });
+    assert.deepEqual(rem(over), [[200, 0], [0, 0]], "artan 100 vade sırasıyla 1. taksite");
+  });
+  // ELLE (karar (3)): bağsız avans 300 (15.01) 1. taksiti (vade 20.01) kilitli dönemde kapattı; kilit 31.01'e 01.02'de; kilitten SONRA 1. taksite bağlı tahsilat 300 (05.02) →
+  // 1. taksit açılmaz (avansla kalır), tahsilat bağsız gibi → 2. taksit. Bağın anı düzeltmeyle değiştiyse (kilitten önce yazılmış, sonra 1. taksite çevrilmiş) aynı.
+  it("karar (3): kilitten sonra kurulan / düzeltilen 'Hangi Taksite' bağı kilitli dönemde bağsız kapanmış taksiti yeniden açmaz", () => {
+    const history = lockHistory([{ type: "ledger.period.locked", at: "2026-02-01T10:00:00.000Z", payload: { lockedUntil: "2026-01-31" } }]);
+    const avans = { id: "P", origin: "account", kind: "in", date: "2026-01-15", at: "2026-01-15T09:00:00.000Z", debit: 0, credit: 300 };
+    const fresh = buildObligations({ lines: [card("K", "2026-01-10", 600), avans, pin("e3", "K", "2026-02-05", 300, "t1", "2026-02-05T09:00:00.000Z")], invoices: [], schedules, lockAt: lockAtOf(history), today: "2026-02-25" });
+    assert.deepEqual(rem(fresh), [[0, 300], [0, 0]], "1. taksit avansla, 2. taksit kart tahsilatıyla");
+    const edited = buildObligations({ lines: [card("K", "2026-01-10", 600), avans, pin("e3", "K", "2026-02-05", 300, "t1", "2026-01-25T09:00:00.000Z")], invoices: [], schedules, lockAt: lockAtOf(history), linkTimes: new Map([["plan-entry:e3", "2026-02-05T09:00:00.000Z"]]), today: "2026-02-25" });
+    assert.deepEqual(rem(edited), [[0, 300], [0, 0]], "düzeltmeyle kurulan bağ = yeni kayıt");
+  });
+  // ELLE (O-3, S91 = A): taksitsiz Yeni Borç kartı 1.000 (20.09) → kalan tek kalem, vade kart günü; 2 × 300 taksitli 1.000'lik kartta kalan 400. Taksit İadesi: kart tahsilatı 100,
+  // iade 300 → kartın borcu 200 (vade iade günü). Hepsi kuyruğun kart kalemi (installments haritasında "rest" / "back") — takvim / zil / Vade Takip / nakit akışı bunları okur.
+  it("O-3: taksitlere bölünmemiş kalan ('rest') ve Taksit İadesi ('back') kart kalemi olarak — vade ve kalanla", () => {
+    const bare = buildObligations({ lines: [card("K", "2026-09-20", 1000)], invoices: [], schedules: new Map(), today: "2026-10-20" });
+    assert.deepEqual([bare.installments.get("K").get("rest").remaining, bare.installments.get("K").get("rest").vade, bare.overdue("2026-10-20").amount], [1000, "2026-09-20", 1000]);
+    const part = buildObligations({ lines: [card("K", "2026-09-20", 1000)], invoices: [], schedules: new Map([["K", [{ id: "t1", seq: 1, dueDate: "2026-10-10", amount: 300 }, { id: "t2", seq: 2, dueDate: "2026-11-09", amount: 300 }]]]), today: "2026-10-20" });
+    assert.deepEqual([part.installments.get("K").get("rest").remaining, part.overdue("2026-10-20").amount], [400, 700]);
+    const back = buildObligations({ lines: [card("K", "2026-09-20", 600), pin("e1", "K", "2026-09-25", 100), pout("e2", "K", "2026-09-28", 300)], invoices: [], schedules: new Map([["K", [{ id: "t1", seq: 1, dueDate: "2026-11-10", amount: 600 }]]]), today: "2026-10-20" });
+    assert.deepEqual([back.installments.get("K").get("back")?.remaining, back.installments.get("K").get("back")?.vade, back.overdue("2026-10-20").amount], [200, "2026-09-28", 200]);
+  });
+  // ELLE (M13, yaşayan mutant N06): şüpheli kayıt 15.01 1.000 — kayıt gününe kadar DOĞMUŞ kalem F1 (01.01, vade 01.06) önce; sonra doğan F2 (01.02, vade 10.02) ilk geçişte
+  // alınmaz → F2 600 gecikmiş (01.03).
+  it("M13: şüpheli kuyruğu önce kayıt gününe kadar doğmuş kalemlerden — sonra doğan erken vadeli kalem ilk geçişte alınmaz (N06)", () => {
+    const r = build({ docs: [sale("N6-F1", "2026-01-01", 1000, "2026-06-01"), sale("N6-F2", "2026-02-01", 600, "2026-02-10")], doubtfulRecords: [{ date: "2026-01-15", remainingMinor: 100000 }], today: "2026-03-01" });
+    assert.deepEqual([gecikmis(r, "2026-03-01"), r.items.find(i => i.invoiceId === "N6-F2").doubtful, r.items.find(i => i.invoiceId === "N6-F1").doubtful], [600, 0, 1000]);
+  });
+  // ELLE (komşu cheques-overview "karşılıksız çek taksiti yeniden açar"; lib/plans.mjs allocate kural 3): kart 600 (20.01 / 20.02 × 300) · 1. taksite bağlı tahsilat 300 (25.01,
+  // ör. çek) · ters kaydı 300 (05.02, karşılıksız / iade) → kartın havuzu −300 → bağlı pay geri alınır: 1. taksit yeniden açık, Taksit İadesi kalemi YOK, 25.02'de gecikmiş 600.
+  // İki bağlı tahsilat (1. ve 2. taksite × 300) + iade 300 → EN YENİ taksitten geriye: 2. taksit açılır, 1. kapalı kalır.
+  it("bağlı tahsilattan çok iade / karşılıksız ters kaydı bağlı payı EN YENİ taksitten geriye geri alır (Taksit İadesi kalemi değil)", () => {
+    const r = buildObligations({ lines: [card("K", "2026-01-10", 600), pin("e1", "K", "2026-01-25", 300, "t1"), pout("e2", "K", "2026-02-05", 300)], invoices: [], schedules, today: "2026-02-25" });
+    assert.deepEqual(rem(r), [[300, 0], [300, 0]]);
+    assert.equal(r.installments.get("K").get("back"), undefined, "Taksit İadesi kalemi yok");
+    assert.equal(r.overdue("2026-02-25").amount, 600);
+    const two = buildObligations({ lines: [card("K", "2026-01-10", 600), pin("e1", "K", "2026-01-25", 300, "t1"), pin("e2", "K", "2026-01-26", 300, "t2"), pout("e3", "K", "2026-02-05", 300)], invoices: [], schedules, today: "2026-02-25" });
+    assert.deepEqual(rem(two), [[0, 0], [300, 0]], "en yeni taksit önce açılır");
+    const more = buildObligations({ lines: [card("K", "2026-01-10", 600), pin("e1", "K", "2026-01-25", 300, "t2"), pout("e2", "K", "2026-02-05", 500)], invoices: [], schedules, today: "2026-02-25" });
+    assert.deepEqual([...rem(more), more.installments.get("K").get("back")?.remaining], [[300, 0], [300, 0], 200], "bağlı paydan artan iade Taksit İadesi kalemi");
+  });
+  // Kartın kendi hesabı (lib/plans.mjs allocate; kart ekranı, yazım yanıtı) ile kuyruk aynı taksiti açık / kapalı görmeli (O-2): yalnız kart hareketli rastgele kartlar —
+  // bağlı / bağsız tahsilat, iade, aynı taksite iki bağ, taksitini aşan bağ; taksit kalanları kuruşu kuruşuna eşit.
+  it("rastgele kartlar (tohum 21–23 × 150): kuyruğun taksit kalanları = kartın kendi hesabı (allocate)", () => {
+    for (const seed of [21, 22, 23]) {
+      const r = (s => () => ((s = (s * 1103515245 + 12345) % 2147483648) / 2147483648))(seed);
+      for (let n = 0; n < 150; n += 1) {
+        const count = 1 + Math.floor(r() * 4);
+        const items = Array.from({ length: count }, (_, i) => ({ id: `t${i + 1}`, seq: i + 1, dueDate: `2026-0${i + 2}-15`, amount: 100 * (1 + Math.floor(r() * 5)) }));
+        const total = items.reduce((s, i) => s + i.amount, 0);
+        const entries = [];
+        const moves = Math.floor(r() * 6);
+        for (let m = 0; m < moves; m += 1) {
+          const date = `2026-0${2 + Math.floor(m / 3)}-${String(10 + m).padStart(2, "0")}`;
+          const amount = 50 * (1 + Math.floor(r() * 8));
+          const out = r() < 0.3;
+          const itemId = !out && r() < 0.6 ? items[Math.floor(r() * count)].id : "";
+          entries.push({ id: `e${m}`, itemId, kind: out ? "out" : "in", amount, date });
+        }
+        const lines = [card("K", "2026-01-10", total), ...entries.map(e => (e.kind === "out" ? pout(e.id, "K", e.date, e.amount) : pin(e.id, "K", e.date, e.amount, e.itemId)))];
+        const queue = buildObligations({ lines, invoices: [], schedules: new Map([["K", items]]), today: "2026-08-01" });
+        const own = allocate({ total }, items, entries, { today: "2026-08-01" });
+        const got = items.map(i => queue.installments.get("K").get(i.id).remaining);
+        const want = own.items.sort((a, b) => a.seq - b.seq).map(i => i.remaining);
+        assert.deepEqual(got, want, `tohum ${seed} kart ${n}: ${JSON.stringify(entries)}`);
+      }
+    }
+  });
+});
+
+// Değişmez (C5 §2.10 madde 9, EK-1 §4): Σ açık borç kalemi − Σ açık alacak kalemi = cari bakiyesi — KARTLI rastgele carilerde (DK-C5B kararı (4): mutabakat motoru TYK'yi ölçmüyordu).
+// Üretici şu sınıfları da üretir: kartın Kayıt Tarihi borçtan önce, stoktan taksitlendir (stok borcu + Mevcut Borç kartı), taksitsiz kart, eksik taksitli kart, "Hangi Taksite"
+// bağlı tahsilat, Taksit İadesi, taksitli fatura, Kapatılacak Fatura. DIŞARIDA BIRAKILAN SINIFLAR (sessizce değil — adı, nedeni ve sayısı çıktıda):
+//   S101 — borcu avansla kapanmışken açılan Mevcut Borç kartı + kart tahsilatı (kart kırpıldı ve tahsilatı var): kullanıcı kararı S101 = A, kodu Ç5-B tur 2b.
+//   S99  — bağsız avans + taksitli fatura + taksitsiz fatura aynı caride: kullanıcı kararı S99 = A (fatura durumu tek kuyruktan), kodu Ç5-B tur 2b.
+describe("TYK tur 2a — değişmez: kalemler toplamı = cari bakiyesi (kartlı, tohumlu rastgele)", () => {
+  const rng = seed => () => ((seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648);
+  const day = n => new Date(Date.UTC(2026, 0, 1 + n)).toISOString().slice(0, 10);
+  for (const seed of [11, 12, 13]) {
+    it(`tohum ${seed}: 200 cari × 22 olay — Σ kalem = bakiye (S99 / S101 adıyla dışarıda)`, () => {
+      const r = rng(seed);
+      const counts = { checked: 0, S101: 0, S101fark: 0, S99: 0, S99fark: 0, coverBefore: 0, stockCover: 0, bare: 0, partial: 0, targeted: 0, back: 0, own: 0 };
+      for (let a = 0; a < 200; a += 1) {
+        const lines = [];
+        const invoices = [];
+        const schedules = new Map();
+        const links = new Map();
+        const cards = [];
+        const flags = { avans: false, own: false, plainSale: false };
+        let n = 0;
+        const at = () => `2026-12-01T${String(Math.floor(n / 60)).padStart(2, "0")}:${String((n += 1) % 60).padStart(2, "0")}:00.000Z`;
+        const two = (planId, total, first) => schedules.set(planId, [{ id: `${planId}-1`, seq: 1, dueDate: first, amount: Math.floor(total / 2) }, { id: `${planId}-2`, seq: 2, dueDate: day(Math.floor(r() * 330)), amount: total - Math.floor(total / 2) }]);
+        for (let i = 0; i < 22; i += 1) {
+          const d = day(Math.floor(r() * 300));
+          const amount = 10 * (1 + Math.floor(r() * 100));
+          const p = r();
+          const id = `${seed}-${a}-${i}`;
+          if (p < 0.16) {
+            const own = r() < 0.12;
+            const line = { id: `l-F${id}`, origin: "invoice", kind: "debt", sourceId: `F${id}`, date: d, at: at(), debit: amount, credit: 0 };
+            const inv = { id: `F${id}`, kind: "sale", status: "issued", payable: amount, dueDate: r() < 0.5 ? day(Math.floor(r() * 330)) : "", planId: own ? `O${id}` : "", issuedAt: line.at };
+            if (own) {
+              inv.planTotal = amount;
+              two(inv.planId, amount, day(Math.floor(r() * 330)));
+              cards.push({ planId: inv.planId, own: true });
+              flags.own = true;
+              counts.own += 1;
+            } else flags.plainSale = true;
+            invoices.push(inv);
+            lines.push(line);
+          } else if (p < 0.24) {
+            lines.push({ id: `S${id}`, origin: "stock", kind: "debt", sourceId: `m${id}`, stockReason: "", date: d, at: at(), debit: amount, credit: 0 });
+            if (r() < 0.6) {
+              const planId = `C${id}`; // stoktan taksitlendir: kartın Kayıt Tarihi carinin Kayıt Tarihi (borçtan önce), tutar satış
+              lines.push({ id: `plan:${planId}`, origin: "plan", planId, kind: "plan", covers: true, coverTotal: amount, date: "2025-06-01", at: at(), debit: 0, credit: 0 });
+              two(planId, amount, d);
+              cards.push({ planId, cover: true });
+              counts.stockCover += 1;
+            }
+          } else if (p < 0.4) {
+            lines.push({ id: `P${id}`, origin: "account", kind: "in", date: d, at: at(), debit: 0, credit: amount });
+            flags.avans = true;
+          } else if (p < 0.46) lines.push({ id: `O${id}x`, origin: "account", kind: "out", date: d, at: at(), debit: amount, credit: 0 });
+          else if (p < 0.56) lines.push({ id: `B${id}`, origin: "account", kind: "debt", date: d, at: at(), debit: amount, credit: 0 });
+          else if (p < 0.62) lines.push({ id: `Y${id}`, origin: "account", kind: "credit", date: d, at: at(), debit: 0, credit: amount });
+          else if (p < 0.7) {
+            const bal = lines.reduce((s, l) => s + l.debit - l.credit, 0);
+            if (bal > 20) {
+              const planId = `M${id}`; // Mevcut Borç kartı: Kayıt Tarihi borçtan önce ya da sonra; tutar ≤ o anki bakiye
+              const before = r() < 0.5;
+              const total = Math.floor(bal * (0.3 + r() * 0.7));
+              lines.push({ id: `plan:${planId}`, origin: "plan", planId, kind: "plan", covers: true, coverTotal: total, date: before ? "2025-06-01" : d, at: at(), debit: 0, credit: 0 });
+              two(planId, total, d);
+              cards.push({ planId, cover: true });
+              if (before) counts.coverBefore += 1;
+            }
+          } else if (p < 0.78) {
+            const planId = `N${id}`; // Yeni Borç kartı: tam / eksik / taksitsiz
+            const shape = r();
+            lines.push({ id: `plan:${planId}`, origin: "plan", planId, kind: "plan", covers: false, coverTotal: 0, date: d, at: at(), debit: amount, credit: 0 });
+            if (shape < 0.25) counts.bare += 1;
+            else if (shape < 0.5) {
+              schedules.set(planId, [{ id: `${planId}-1`, seq: 1, dueDate: d, amount: Math.floor(amount / 3) }]);
+              counts.partial += 1;
+            } else two(planId, amount, d);
+            cards.push({ planId });
+          } else if (p < 0.92 && cards.length) {
+            const c = cards[Math.floor(r() * cards.length)];
+            const items = schedules.get(c.planId) || [];
+            const out = r() < 0.15;
+            const target = !out && items.length && r() < 0.35 ? items[Math.floor(r() * items.length)].id : "";
+            if (target) counts.targeted += 1;
+            if (out) counts.back += 1;
+            lines.push({ id: `plan-entry:E${id}`, origin: "plan", planId: c.planId, kind: out ? "plan-out" : "plan-in", itemId: target, date: d, at: at(), debit: out ? amount : 0, credit: out ? 0 : amount });
+            c.paid = true;
+          } else {
+            const inv = invoices.find(x => !x.planId);
+            if (inv) {
+              links.set(`P${id}`, inv.id); // Kapatılacak Fatura
+              lines.push({ id: `P${id}`, origin: "account", kind: "in", date: d, at: at(), debit: 0, credit: amount });
+            }
+          }
+        }
+        const res = buildObligations({ lines, invoices, links, schedules, today: day(320) });
+        const balance = Math.round(lines.reduce((s, l) => s + l.debit - l.credit, 0) * 100);
+        const sum = Math.round(res.items.reduce((s, i) => s + (i.side === "receivable" ? i.remaining : -i.remaining), 0) * 100);
+        // S101 sınıfı (adıyla): tükettiği borçtan büyük Mevcut Borç kartı (kapsam < tüketebileceği — kartın anında borç avansla kapanmış / kart borçtan büyük) + kart tahsilatı.
+        const cut = [...res.coverage.values()].some(c => c.paid && c.consumed < c.capacity - 0.005);
+        if (cut) {
+          counts.S101 += 1;
+          if (sum !== balance) counts.S101fark += 1;
+          continue;
+        }
+        if (flags.avans && flags.own && flags.plainSale) {
+          counts.S99 += 1;
+          if (sum !== balance) counts.S99fark += 1;
+          continue;
+        }
+        counts.checked += 1;
+        assert.equal(sum, balance, `tohum ${seed} cari ${a}: Σ kalem ${sum / 100} ≠ bakiye ${balance / 100}`);
+      }
+      console.log(`# tohum ${seed}: ${JSON.stringify(counts)} — dışarıda bırakılan: S101 ${counts.S101} (borcu avansla kapanmışken açılan kart + kart tahsilatı; tur 2b), S99 ${counts.S99} (bağsız avans + taksitli + taksitsiz fatura; tur 2b)`);
+      assert.ok(counts.checked >= 60 && counts.coverBefore > 0 && counts.stockCover > 0 && counts.bare > 0 && counts.targeted > 0 && counts.back > 0, `sınıflar üretildi: ${JSON.stringify(counts)}`);
     });
   }
 });

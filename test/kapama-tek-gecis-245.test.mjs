@@ -110,7 +110,10 @@ describe("G8 tek geçiş: fatura durumları ve vadeli elle satırların Kalan'ı
   after(async () => server?.close());
 
   // 2.5.0 Ç5-B (bilerek güncellendi; C5B-TYK-TASARIM §5): önbellekten sonra izi değişen cariler TEK TEK kurulur (bütün carilerin defteri 0 kez — before'daki yazımlar
-  // işlem içinde okunduğu için ilk çağrıda bunlar), izi görünmeyen yazımda (burada: aynı değerle güncelleme) bütün cariler BİR kez — güvenli yön. Artımlı yol tyk-api-250'de.
+  // işlem içinde okunduğu için ilk çağrıda bunlar). Artımlı yol tyk-api-250'de.
+  // 2.5.0 Ç5-B tur 2a (bilerek güncellendi; DK-C5B Y-3, C5B-TYK-TASARIM §10): izi görünmeyen yazımda (burada: aynı değerle güncelleme) önbellek KORUNUR — bütün carilerin
+  // defteri 0 kez (Ç5-B'de 1 kez baştan kuruluyordu: 1.000 carili kopyada her yazımda tam kurulum). Beklenti daraldı (≤ 1 → 0); doğruluk aşağıdaki "toplu yol = cari başına
+  // yol" ve "bayatlık" alt testlerinde ve izin bütün girdileri kapsadığı test/tyk-onbellek-250'nin eşdeğerlik koşusunda.
   it("tek geçiş: yazımdan sonra iki harita için carilerin defteri en çok BİR KEZ kurulur; ikinci çağrılar önbellekten", () => {
     write();
     const start = ledgerCalls;
@@ -122,7 +125,7 @@ describe("G8 tek geçiş: fatura durumları ve vadeli elle satırların Kalan'ı
     inv().paymentStates(allRows());
     inv().allEntryStates();
     inv().allEntryStates();
-    assert.equal(ledgerCalls - again, 1, `ters sırada allLedgers ${ledgerCalls - again} kez (1 beklenir)`);
+    assert.equal(ledgerCalls - again, 0, `izi değişmeyen yazımdan sonra ters sırada allLedgers ${ledgerCalls - again} kez (0 beklenir — önbellek korunur)`);
   });
 
   it("toplu yol = cari başına yol: her fatura durumu ve her vadeli carinin her satırı (D1 olayları dahil)", () => {

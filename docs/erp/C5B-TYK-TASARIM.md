@@ -160,3 +160,28 @@ döner; 29 düzeltmede cari değişimi (S54, S57, S79, S80, S81, S83–S85), red
   zilde vadesiz her Borç Yaz ertesi gün "Tahsilat alınmadı" olur → KULLANICIYA SORULMALI (A: kalem — kodlanan / B: 2.4.5 K6.3 aynen, vadesiz yalnız gecikmişte).
 - **Kapatan adı:** CLOSER_MODES.auto "Otomatik (vadesi en önce gelen)" (C5-ACILIS §2.10 madde 3). Rapor Merkezi "Fatura ve Banka Hareketleri"nin kendi bağ türü adı
   (report-center.mjs:1425 "Otomatik (En Eski)") ve çek formundaki "Otomatik (En Eski Açık Fatura)" (hof-cheques.js:325) bu işin dosyaları değil — ana oturuma.
+
+## 10. Tur 2a (10.11.2026; dar kontrol DK-C5B'nin YÜKSEK / ORTA bulguları — S101 ve S95–S99 hariç, onlar tur 2b)
+- **Y-1 (Kayıt Tarihi borçtan önce olan Mevcut Borç kartı):** kart, Kayıt Tarihi'nde kapasitesini dolduramıyor VE kartın anında bilinen, Kayıt Tarihi'nden sonra tarihli borç satırı
+  varsa (`lateCovers`) ön geçişte BİLİNEN SATIRLARIN SONUNDA açılır (v2.4.9'da kapsam bilinen satırların son durumuydu); asıl geçişte açılış günü (ve taksitlerin doğduğu gün)
+  Kayıt Tarihi ile tükettiği kalemlerin en geç doğduğu günün büyüğüdür. Hesapta (göçsüz; eski verideki kartlar kendiliğinden düzelir). Kayıt Tarihi'nde kapasitesini dolduran
+  kartın davranışı değişmez. Kayıt yolu (stoktan taksitlendir / toplu taksitlendirme kartın Kayıt Tarihi'ne carinin Kayıt Tarihi'ni yazıyor — v2.0.12) DEĞİŞMEDİ.
+  **KULLANICI KARARI BEKLİYOR:** kartın anında açık borç kart tutarından fazlaysa HANGİ borç tükenir — S2 sırası (bu notun §9'u) ↔ kartın kendi (en son kaydedilen) borcu
+  (v2.4.9; test/bulgu-223 #4). İki okuma farklı kalem seçiyorsa (`ambiguous`) kart kaydırılmaz (bugünkü davranış), karar gelince tek satırda değişir.
+  Durağan saatte (bütün damgalar eşit) "karttan sonra yazılan" ayırt edilemez — eşit damga "bilinen" sayılır (v2.0.23'ten beri; BİLİNEN SINIR, ders 31).
+- **Y-3 (önbellek):** iz (`accountPrints`) kuyruğun okuduğu bütün kolonları satır kimliğiyle karışık asal modül özetle kapsar; hiçbir carinin izi değişmediyse önbellek korunur
+  (önceden bütün cariler baştan kuruluyordu). Kilit izi SQL'e NUL'lu kimlikle bağlandığı için HİÇ yazılmıyordu (yaşayan mutant N09'un nedeni) — JS'te anahtarlanır. Eşdeğerlik:
+  test/tyk-onbellek-250.test.mjs. Kök şirketin yedekten geri yüklemesi yeniden açılışta uygulanır (yeni süreç, boş önbellek); öbür şirket yeni örnekle açılır.
+- **O-1 (karar (3) × düzeltme):** bağın anı = bağı değiştiren son düzeltmenin denetim izindeki anı (account.entry.updated önceki ↔ yeni invoiceId; plan.entry.updated önceki ↔ yeni
+  itemId), yoksa kaydın anı (`linkTimesOf`, `linkedAt`). Tutar / tarih düzeltmesi bağın anını değiştirmez (bağ aynı) — tutar büyütmesi KULLANICIYA SORULMALI listesinde.
+- **"Hangi Taksite" bağı (O-2'nin kök nedeni):** bağlı kart tahsilatı önce KENDİ taksitini kapatır (karar (2); lib/plans.mjs allocate ile aynı sıra), artanı vade sırasıyla;
+  kilitli dönemde bağsız kapanmış taksiti yeniden açmaz (bağlı tahsilat varken kartın kilitli dönemdeki bütün taksitleri ölçüme yazılır). Kartın tahsilat havuzu eksiye
+  düşerse (iade ya da karşılıksız çekin ters kaydı bağlı tahsilattan çok) bağlı paylar EN YENİ taksitten geriye geri alınır (allocate kural 3); kalan eksi Taksit İadesi
+  kalemidir (komşu test/cheques-overview "karşılıksız çek taksiti yeniden açar" bu kuralın ilk hâlinde kırmızıydı). Eşdeğerlik: tyk-250 "kuyruğun taksit kalanları = kartın
+  kendi hesabı (allocate)", yalnız kart hareketli rastgele kartlarda.
+- **O-2:** taksit kartının bütün yazım yanıtları (açma, düzenleme / durum, Otomatik Dağıt, taksit ekle / düzelt / sil, tahsilat / iade ekle / düzelt / sil) okumayla aynı
+  görünümü (detailView) işlem kesinleştikten sonra döndürür.
+- **O-3 (S91 = A):** kuyruğun taksit olmayan kart kalemleri — taksitlere bölünmemiş kalan (`rest`, "Taksitlendirilmemiş Kalan", vade kartın açılış günü) ve Taksit İadesi (`back`,
+  vade son İADENİN günü) — takvim / zil / Vade Takip / nakit akışı kalemidir (routes/plans.mjs queueExtras); kartın durumu ve taksit gecikmişi taksitlerden (değişmedi).
+- **Değişmez:** "Σ kalem = cari bakiyesi" kartlı rastgele carilerde (tyk-250 tur 2a); S101 (kart kırpıldı + kart tahsilatı) ve S99 adıyla dışarıda, sayıları çıktıda. Tanı alanı
+  `coverage` (kart başına tükettiği ↔ tüketebileceği).

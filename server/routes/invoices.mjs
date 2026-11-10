@@ -782,9 +782,32 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       if (row.dueDate) dueDates.set(row.id, row.dueDate);
       if (row.expectedDate) promises.set(row.id, row.expectedDate);
     }
-    return { schedules, dueDates, promises, doubtful: doubtfulRecordsOf(accountId ? [accountId] : null), lockAt: lockResolver() };
+    const lockAt = lockResolver();
+    return { schedules, dueDates, promises, doubtful: doubtfulRecordsOf(accountId ? [accountId] : null), lockAt, linkTimes: lockAt.active ? linkTimesOf(accountId) : new Map() };
   }
-  const withExtras = (input, extras, accountId) => ({ ...input, schedules: extras.schedules, dueDates: extras.dueDates, promises: extras.promises, doubtfulRecords: extras.doubtful.get(accountId) || [], lockAt: extras.lockAt });
+  // Ç5-B tur 2a (O-1, karar (3) — "kilitten sonraki bağ"): bağın KURULDUĞU an. Bağ (Kapatılacak Fatura, "Hangi Taksite") kaydın düzeltilmesiyle kurulduysa / değiştiyse an,
+  // bağı değiştiren son düzeltmenin denetim izindeki anıdır (account.entry.updated: önceki ↔ yeni invoiceId; plan.entry.updated: önceki ↔ yeni itemId); değişmediyse kaydın
+  // oluşturulma anı (bugünkü kural). Önceden kilit yalnız oluşturulma anına göre okunuyordu: kilitten ÖNCE yazılmış, kilitten SONRA düzeltmeyle kilitli dönemdeki faturaya bağlanan
+  // tahsilat kilidi aşıyor, kilitli dönemde bağsız kapanmış faturanın kapatanı serbest kalıp başka kalemi kapatıyordu (dar kontrol DK-C5B O-1; yeni kayıtla kurulan aynı bağ
+  // doğruydu). Tutar / tarih düzeltmesi bağın anını değiştirmez (bağ aynı). Kilit izi yoksa okunmaz. Dönüş: satır kimliği (defterdeki) → an.
+  function linkTimesOf(accountId = null) {
+    const out = new Map();
+    const rows = (type, entityIn, previousKey, nextKey, prefix) => {
+      try {
+        for (const row of store.all(
+          `SELECT entity_id AS id, MAX(created_at) AS at FROM audit_events WHERE type = ? AND entity_id IN (${entityIn})
+             AND COALESCE(json_extract(payload_json, '$.previous.${previousKey}'), '') <> COALESCE(json_extract(payload_json, '$.${nextKey}'), '') GROUP BY entity_id`,
+          type, ...(accountId ? [accountId] : []),
+        )) if (row.id && row.at) out.set(`${prefix}${row.id}`, row.at);
+      } catch {
+        // denetim izi okunamadı (göç öncesi veri): oluşturulma anı
+      }
+    };
+    rows("account.entry.updated", `SELECT id FROM account_entries WHERE invoice_id <> ''${accountId ? " AND account_id = ?" : ""}`, "invoiceId", "invoiceId", "");
+    rows("plan.entry.updated", `SELECT e.id FROM plan_entries e JOIN plans p ON p.id = e.plan_id WHERE COALESCE(e.item_id, '') <> ''${accountId ? " AND p.account_id = ?" : ""}`, "itemId", "itemId", "plan-entry:");
+    return out;
+  }
+  const withExtras = (input, extras, accountId) => ({ ...input, schedules: extras.schedules, dueDates: extras.dueDates, promises: extras.promises, doubtfulRecords: extras.doubtful.get(accountId) || [], lockAt: extras.lockAt, linkTimes: extras.linkTimes });
   let settledCache = { key: "", pay: null, entries: null, tyk: null };
   function allSettled() {
     const day = today();
@@ -800,9 +823,16 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       const changed = new Set();
       for (const [id, print] of prints) if (previous.prints.get(id) !== print) changed.add(id);
       for (const id of previous.prints.keys()) if (!prints.has(id)) changed.add(id);
-      // Dönem kilidinin izi (karar (3), S11, S19) bütün carilerin girdisidir: değişince bütün cariler yeniden kurulur. Yazım oldu (anahtar değişti) ama hiçbir carinin izi
-      // değişmediyse değişiklik izde görünmüyor olabilir (ör. durağan saatte aynı anlı bağ değişimi) — güvenli yön: bütün cariler (bugünkü davranış).
-      if (changed.size && !changed.has(LOCK_PRINT) && changed.size <= INCREMENTAL_MAX) {
+      // Dönem kilidinin izi (karar (3), S11, S19) bütün carilerin girdisidir: değişince bütün cariler yeniden kurulur.
+      // Ç5-B tur 2a (Y-3, ders 47): iz kuyruğun BÜTÜN girdilerini kapsar (accountPrints: her satırın kuyruğun okuduğu kolonları, satır kimliğiyle karışık özet) — hiçbir
+      // carinin izi değişmediyse yazım kuyruğa dokunmamıştır (stok girişi, oturum açma, cari notu …): önbellek korunur, yalnız anahtar yenilenir. Önceden bu durumda bütün
+      // cariler baştan kuruluyordu (100 bin satırda ~7 sn ana iş parçacığı; dar kontrol DK-C5B Y-3). Eşdeğerlik: test/tyk-onbellek-250.test.mjs (her yazım türünden sonra
+      // önbellekli sonuç = baştan kurulan; rastgele sıra).
+      if (!changed.size) {
+        settledCache = { ...previous, key };
+        return settledCache;
+      }
+      if (!changed.has(LOCK_PRINT) && changed.size <= INCREMENTAL_MAX) {
         const tyk = new Map(previous.tyk);
         const pay = new Map(previous.pay);
         const entries = new Map(previous.entries);
@@ -851,31 +881,58 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (!inTx) settledCache = out;
     return out;
   }
-  // Cari başına parmak izi: cari satırları, faturalar, kartlar, kart hareketleri, taksitler, çek olayları (evrakın carisi, ciro edilen, olayın carisi), mahsup fişleri,
-  // şüpheli kayıtları ve carinin silinmesi — her biri GROUP BY ile tek sorgu. Tablo yoksa (göç öncesi veri) null → bütün cariler.
+  // Cari başına parmak izi: cari satırları (+ stok hareketinin nedeni), faturalar, kartlar, kart hareketleri, taksitler, çek olayları (evrakın carisi, ciro edilen, olayın
+  // carisi), mahsup fişleri, şüpheli kayıtları ve carinin silinmesi — her biri GROUP BY ile tek sorgu. Tablo yoksa (göç öncesi veri) null → bütün cariler.
+  // Ç5-B tur 2a (Y-3): iz kuyruğun okuduğu BÜTÜN kolonları kapsar ve "hiçbir carinin izi değişmedi → önbellek korunur" kuralı buna dayanır (allSettled). Her satırdan kolonların
+  // tamsayı özeti (tutar kuruş, gün / an, kısa ad kümesi, bağ kimliğinin son altı karakteri + uzunluğu) satır kimliğiyle (rowid) çarpılıp asal modülde toplanır: bir satırın
+  // herhangi bir kolonu değişince ya da iki satırın değerleri yer değiştirince toplam değişir (yalnız toplam / damga okuyan önceki iz durağan saatte bunları göremiyordu — eski
+  // kural "yazım oldu, iz değişmedi → bütün cariler"di). Damga (updated_at) da özetin içinde: aynı değere geri dönen düzeltme de görünür (bağın anı — karar (3), O-1). Kalan
+  // açık: modül çakışması (~1 / 2³¹) ve aynı uzunlukta, son altı karakteri aynı iki bağ kimliği (BİLİNEN SINIR; gün dönünce bütün cariler yeniden kurulur).
   const INCREMENTAL_MAX = 200;
   const LOCK_PRINT = "\u0000kilit";
+  const PRINT_MOD = 2147483629;
+  const printSql = (() => {
+    const num = col => `CAST(ROUND(COALESCE(${col}, 0) * 100) AS INTEGER)`;
+    const day = col => `COALESCE(CAST(julianday(NULLIF(${col}, '')) * 86400000 AS INTEGER), 0)`;
+    const word = (col, list) => `(instr('|${list.join("|")}|', '|' || COALESCE(${col}, '') || '|') * 64 + length(COALESCE(${col}, '')))`;
+    const id = col => `(CASE WHEN COALESCE(${col}, '') = '' THEN 0 ELSE (length(${col}) * 16777216 + COALESCE(unicode(substr(${col}, -1)), 0) * 65536 + COALESCE(unicode(substr(${col}, -2, 1)), 0) * 256 + COALESCE(unicode(substr(${col}, -3, 1)), 0)) * 16777216 + COALESCE(unicode(substr(${col}, -4, 1)), 0) * 65536 + COALESCE(unicode(substr(${col}, -5, 1)), 0) * 256 + COALESCE(unicode(substr(${col}, -6, 1)), 0) END)`;
+    const hash = (rowid, parts) => `SUM(((${rowid} % 1000003) + 1) * (${parts.reduce((acc, part) => `((${acc}) * 131 + ((${part}) % ${PRINT_MOD})) % ${PRINT_MOD}`, "7")}) % ${PRINT_MOD})`;
+    const head = (tag, rowid) => `'${tag}' || COUNT(*) || '/' || COALESCE(MAX(${rowid}), 0) || '/' || `;
+    const KINDS = ["debt", "credit", "in", "out"];
+    const SOURCES = ["stock", "cheque", "invoice", "bank", "doubtful"];
+    const METHODS = ["cash", "bank", "card", "pos", "cheque", "note", "transfer"];
+    return {
+      entries: `SELECT account_id AS id, ${head("e", "rowid")}${hash("rowid", [word("kind", KINDS), num("amount"), day("date"), word("source", SOURCES), id("source_id"), id("invoice_id"), id("refund_of"), day("due_date"), day("expected_date"), day("created_at"), day("updated_at"), "COALESCE(is_opening, 0)", "COALESCE(doubtful_skip, 0)", word("method", METHODS), "length(COALESCE(note, ''))"])} AS f FROM account_entries GROUP BY account_id`,
+      moves: `SELECT account_id AS id, ${head("m", "rowid")}${hash("rowid", [word("reason", ["return", "preturn"]), num("amount"), day("date")])} AS f FROM stock_moves WHERE COALESCE(account_id, '') <> '' GROUP BY account_id`,
+      invoices: `SELECT account_id AS id, ${head("i", "rowid")}${hash("rowid", [word("kind", ["sale", "purchase", "sale_return", "purchase_return", "smm"]), word("status", ["draft", "issued", "cancelled"]), num("try_payable"), id("original_id"), day("due_date"), id("plan_id"), day("issued_at"), day("issue_date"), day("created_at"), day("updated_at")])} AS f FROM invoices GROUP BY account_id`,
+      plans: `SELECT account_id AS id, ${head("p", "rowid")}${hash("rowid", [num("total"), word("status", ["active", "closed"]), day("registered_on"), "COALESCE(covers_balance, 0)", day("closed_at"), day("created_at"), day("updated_at"), day("deleted_at"), id("invoice_id")])} AS f FROM plans GROUP BY account_id`,
+      planEntries: `SELECT p.account_id AS id, ${head("k", "e.rowid")}${hash("e.rowid", ["p.rowid", id("e.item_id"), word("e.kind", KINDS), num("e.amount"), day("e.date"), "COALESCE(e.opening, 0)", id("e.cheque_id"), day("e.created_at"), day("e.updated_at"), word("e.method", METHODS), "length(COALESCE(e.note, ''))"])} AS f FROM plan_entries e JOIN plans p ON p.id = e.plan_id GROUP BY p.account_id`,
+      planItems: `SELECT p.account_id AS id, ${head("t", "i.rowid")}${hash("i.rowid", ["p.rowid", "COALESCE(i.seq, 0)", day("i.due_date"), num("i.amount"), day("i.updated_at")])} AS f FROM plan_items i JOIN plans p ON p.id = i.plan_id GROUP BY p.account_id`,
+      cheques: column => `SELECT ${column} AS id, ${head("c", "ev.rowid")}${hash("ev.rowid", ["c.rowid", word("ev.kind", ["receive", "issue", "endorse", "bounce", "collect", "pay", "return", "cancel"]), id("ev.invoice_id"), day("ev.date"), num("ev.amount"), "length(COALESCE(ev.effects_json, ''))", id("ev.effects_json"), id("c.invoice_id"), day("c.updated_at")])} AS f FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id GROUP BY ${column}`,
+      offsets: `SELECT account_id AS id, ${head("o", "rowid")}${hash("rowid", [id("invoice_id"), word("counter_type", ["invoice", "entry"]), id("counter_id"), num("amount"), day("date"), day("created_at"), "length(COALESCE(note, ''))"])} AS f FROM invoice_offsets GROUP BY account_id`,
+      doubtful: `SELECT account_id AS id, ${head("d", "rowid")}${hash("rowid", [word("status", ["open", "closed", "cancelled", "written_off"]), "COALESCE(amount_minor, 0)", day("date"), day("created_at"), day("updated_at")])} AS f FROM doubtful_receivables GROUP BY account_id`,
+    };
+  })();
   function accountPrints() {
     const prints = new Map();
     const fold = rows => {
       for (const row of rows) if (row.id) prints.set(row.id, `${prints.get(row.id) || ""}|${row.f}`);
     };
+    const has = name => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", name));
     try {
-      fold(store.all("SELECT ? AS id, COUNT(*) || '/' || COALESCE(MAX(rowid), 0) AS f FROM audit_events WHERE entity_id = 'period' AND type IN ('ledger.period.locked', 'ledger.period.unlocked')", LOCK_PRINT));
-      // İz yalnız damgaya güvenmez (durağan / geri giden saat): kuyruğun okuduğu tarih ve bağ kolonları da toplanır — gün sayısı toplamı ve kimliğin uzunluğu + son iki karakteri.
-      const sig = col => `TOTAL(length(COALESCE(${col}, '')) * 65536 + COALESCE(unicode(substr(COALESCE(${col}, ''), -1)), 0) * 256 + COALESCE(unicode(substr(COALESCE(${col}, ''), -2, 1)), 0))`;
-      const days = col => `TOTAL(COALESCE(julianday(NULLIF(${col}, '')), 0))`;
+      // Kilit izi JS'te anahtarlanır: "\u0000kilit" SQL'e bağlanıp geri okununca NUL'da kesiliyor (boş kimlik → iz HİÇ yazılmıyordu; kilit değişimi yalnız eski "iz
+      // değişmedi → bütün cariler" kuralıyla görülüyordu — Ç5-B tur 2a'da bulundu, yaşayan mutant N09'un nedeni).
+      prints.set(LOCK_PRINT, `|${store.get("SELECT COUNT(*) || '/' || COALESCE(MAX(rowid), 0) AS f FROM audit_events WHERE entity_id = 'period' AND type IN ('ledger.period.locked', 'ledger.period.unlocked')").f}`);
       fold(store.all("SELECT id, 'a' || COALESCE(deleted_at, '') AS f FROM accounts"));
-      fold(store.all(`SELECT account_id AS id, COUNT(*) || '/' || MAX(rowid) || '/' || TOTAL(amount) || '/' || COALESCE(MAX(COALESCE(updated_at, created_at)), '') || '/' || ${days("date")} || '/' || ${days("due_date")} || '/' || ${days("expected_date")} || '/' || ${sig("invoice_id")} || '/' || ${sig("refund_of")} || '/' || ${sig("kind")} || '/' || ${sig("source")} || '/' || TOTAL(is_opening) || '/' || TOTAL(doubtful_skip) AS f FROM account_entries GROUP BY account_id`));
-      fold(store.all(`SELECT account_id AS id, 'i' || COUNT(*) || '/' || MAX(rowid) || '/' || TOTAL(try_payable) || '/' || COALESCE(MAX(updated_at), '') || '/' || ${days("issue_date")} || '/' || ${days("due_date")} || '/' || ${sig("status")} || '/' || ${sig("plan_id")} || '/' || ${sig("kind")} || '/' || ${sig("original_id")} AS f FROM invoices GROUP BY account_id`));
-      fold(store.all(`SELECT account_id AS id, 'p' || COUNT(*) || '/' || MAX(rowid) || '/' || TOTAL(total) || '/' || COALESCE(MAX(updated_at), '') || '/' || COUNT(deleted_at) || '/' || ${sig("status")} || '/' || TOTAL(covers_balance) || '/' || ${sig("invoice_id")} AS f FROM plans GROUP BY account_id`));
-      fold(store.all(`SELECT p.account_id AS id, 'e' || COUNT(*) || '/' || MAX(e.rowid) || '/' || TOTAL(e.amount) || '/' || COALESCE(MAX(COALESCE(e.updated_at, e.created_at)), '') || '/' || ${days("e.date")} || '/' || ${sig("e.kind")} || '/' || ${sig("e.item_id")} AS f FROM plan_entries e JOIN plans p ON p.id = e.plan_id GROUP BY p.account_id`));
-      fold(store.all(`SELECT p.account_id AS id, 't' || COUNT(*) || '/' || MAX(i.rowid) || '/' || TOTAL(i.amount) || '/' || COALESCE(MAX(i.updated_at), '') || '/' || ${days("i.due_date")} AS f FROM plan_items i JOIN plans p ON p.id = i.plan_id GROUP BY p.account_id`));
-      for (const column of ["c.account_id", "c.endorse_account_id", "ev.account_id"]) fold(store.all(`SELECT ${column} AS id, 'c' || COUNT(*) || '/' || MAX(ev.rowid) || '/' || ${sig("ev.invoice_id")} || '/' || COALESCE(MAX(c.updated_at), '') || '/' || ${days("ev.date")} || '/' || ${sig("ev.kind")} || '/' || TOTAL(ev.amount) AS f FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id GROUP BY ${column}`));
-      if (store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'invoice_offsets'")) fold(store.all(`SELECT account_id AS id, 'o' || COUNT(*) || '/' || MAX(rowid) || '/' || TOTAL(amount) || '/' || ${days("date")} AS f FROM invoice_offsets GROUP BY account_id`));
-      if (store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'doubtful_receivables'")) {
-        fold(store.all(`SELECT account_id AS id, 'd' || COUNT(*) || '/' || MAX(rowid) || '/' || COALESCE(MAX(COALESCE(updated_at, created_at)), '') || '/' || ${sig("status")} || '/' || TOTAL(amount_minor) || '/' || ${days("date")} AS f FROM doubtful_receivables GROUP BY account_id`));
-      }
+      fold(store.all(printSql.entries));
+      if (has("stock_moves")) fold(store.all(printSql.moves));
+      fold(store.all(printSql.invoices));
+      fold(store.all(printSql.plans));
+      fold(store.all(printSql.planEntries));
+      fold(store.all(printSql.planItems));
+      for (const column of ["c.account_id", "c.endorse_account_id", "ev.account_id"]) fold(store.all(printSql.cheques(column)));
+      if (has("invoice_offsets")) fold(store.all(printSql.offsets));
+      if (has("doubtful_receivables")) fold(store.all(printSql.doubtful));
     } catch {
       return null;
     }
