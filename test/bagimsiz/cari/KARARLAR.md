@@ -1231,7 +1231,8 @@ etiket YAYGIN → KULLANICI; BEKLENMEYEN 0 (dökümü kanıtta `kahineski3-esdeg
 
 `--kural 2.4.9` (ve 2.4.6 / 2.4.5 / `--legacy`) AYNEN — bakım 3'ün modeliyle (`2aa1e733`) bayt bayt eşdeğerlik kanıtta. Bu dal ana dala Ç5-B / Ç5-A ile birlikte girer (ana oturum birleştirir).
 Defter kâhininin (`test/bagimsiz/defter/`) dilinde takvim / zil / Vade Takip / Kalan / gecikmiş yok (kendi KARARLAR.md'si, bakım 2: "S67 / S68 bu kâhinin konusu değil") → defter kâhini DEĞİŞMEDİ.
-**Bu bölümün ilk commit'i yalnız YORUMDUR (ders 40 — önce kural, sonra kod); senaryo / mutant / G3 sayıları kod ve kanıt commit'lerinde eklenir.**
+**Bu bölümün ilk commit'i yalnız YORUMDUR (ders 40 — önce kural, sonra kod); senaryo / mutant / G3 sayıları kod ve kanıt commit'lerinde eklendi.** Commit'ler: yorum `82e65fe5` → kod +
+senaryolar `a35123a8` (+ etiket inceltmesi `f49f9d97`) → kanıt araçları `e89200d7`, `a17d84f3` → kanıt (bu bölümün sayıları). Kod yazılırken yoruma eklenenler: Y4-6 ve C16.4'ün iki alt maddesi.
 
 ### C00i Temiz oda (bakım 4)
 - **Karar metni (AYNEN; `git show ddd8be64:docs/2.5.0-IS-LISTESI.md` D):** "KULLANICI KARARI 06.11 19:33 UTC (AYNEN: 'önerini uygula'; sorular C'de S91–S93): S91 = A (vadesiz kayıt kayıt gününde vadeli
@@ -1420,6 +1421,47 @@ kesimi) kanıtta — aşağıda "Kanıt".
 - Zil (bildirim) metni ('Tahsilat alınmadı') — kâhin yalnız `/dues` kalemini denetler (C12h aynen). WhatsApp elemesi (tedarikçiye Ödeme Hatırlatma gitmez) — WhatsApp kâhini / Ç5-C.
 - Faturanın VADESİ bu kâhinin dilinde yok (fatura kalemi belge gününde — [YAYGIN], değişmedi): kararın örneğindeki "satış vade 31.03" elle Borç ile (d16 M1), faturalı hâli vadesiz (M2).
 - Mahsup Et (dilde yok): karşı yönlü kalemler Mahsup Et'le kapatıldıktan sonra net görünüm ve belge durumu.
+
+### C0i Değişen eski beklentiler (G3; bakım 3 `2aa1e733` ↔ bakım 4 kâhin çıktısı, `2.5.0`; 67 eski elle senaryo + rastgele s1 / ux18 tohum 1–10 × 120) — kararla ilgisiz eski beklenti DEĞİŞMEDİ
+Toplam 3.112 denetim satırı (eski 44.071 → yeni 41.771 denetim); her satır o KONTROL anındaki durumdan sınıflandı, **BEKLENMEYEN 0** (dökümü `docs/kanit/2026-11-06/kahineski4-g3-dokum.json`,
+özet `kahineski4-esdeger-cari-*.log`). Sınıflar: **S91** vadesiz kayıt kalem oldu — 393 değişen ("yok" → kalem) + 23 yeni (`projeksiyon:cariToplam`: vadesiz kayıtlı temiz caride K-P2 bekçisi) ·
+**S92-net** karşı yönlü kalemli yalın caride net görünüm — 251 değişen · **S92-tanımsız** karşı yönlü kalemli ama tanım alanı dışı / okumaları ayrışan caride net görünüm denetimi KALKTI —
+2.163 (bir ZAYIFLAMADIR: bakım 3 bu denetimleri "iki taraf ayrı" (KS2) okumasıyla yazıyordu; S92 = A o okumayı kaldırdı, yerine tek okumayla konabilecek değer yok — C16.2 tanım alanı,
+SK-6 / SK-8) · **sayaç** (türev: `takvim:cariKalemSayisi`, `projeksiyon:cari`) — 122 değişen (yeni kalem / ÇATAL belirsiz üye) + 160 kalkan (aynı kontrolde tanımsız cari). Senaryo senaryo:
+- **c10-ks10-projeksiyon-cari-vade:** S91 3 (bg5 vadesiz Borç 100, 03.06 — takvim / Vade Takip / projeksiyon "yok" → kalem) + sayaç 2 (2 → 3, 8 → 9).
+- **c6-cari-vade-fifo:** S91 6 (b3 vadesiz Borç 200, iki kontrol) + sayaç 4. **c7b-supheli-kalan:** S91 6 (`acilis:D` vadesiz Açılış 2.500) + sayaç 4. **d2-c5-kg5-excel-kart:** S91 6
+  (`acilis:L`) + sayaç 4. **d9-c5-s68-borc-tarafi-vade:** S91 3 (al6 vadesiz Alacak 100 — "Ödenecek Borç" kalemi) + sayaç 2.
+- **c14a-c1-hareket-turleri:** S91 27 + 9 yeni (a-ha vadesiz Alacak, `acilis:HAC`, b-hb × üç kontrol; `projeksiyon:cariToplam` HA / HAC / HB) + sayaç 6 (0 → ÇATAL 3…6: üç kalem kesin, üç belirsiz
+  üye). **c14b:** S91 3 + 1 yeni + sayaç 2. **c14d:** S91 9 + 3 yeni + sayaç 6. **c14e:** S91 9 + 3 yeni + sayaç 6 (ÇATAL 1…2).
+- **d1-c5-acilis-519:** S91 15 + 5 yeni (A–E vadesiz Açılışlar; B alacaklı Açılış "Ödenecek Borç") + sayaç 2 (0 → 5).
+- **d7-c5-s52-gecikmis:** S91 3 + 1 yeni (b1 vadesiz Borç 500) + **S92-net 5** (D: Borç 800 ↔ Alacak 600 → Kalan 200 / 0, takvim / Vade Takip / projeksiyon 800 → 200; **gecikmiş 200 AYNI**) + sayaç 2.
+- **c6b-cari-vade-dogrulama:** S92-net 16 (E: ea Alacak 150 ↔ eb Borç 400 → Kalan 0 / 250; "Ödenecek Borç" kalemi kalktı, "Tahsil Edilecek" 400 → 250; iki kontrol) + sayaç 4 (5 → 4).
+- **c7-ks7-bagsiz-kapaticilar:** S92-net 5 (tedarikçi S, k6: stok veresiye 450 alış F2 400 + Alacak a1 300 ile netleşir → a1 Kalan 300 → 250, `takvim:fatura:F2` 400 → yok; belge durumu F2 Açık
+  400 AYNEN). Senaryonun açıklamasındaki "fatura 400 ve Alacak 300 AÇIK" bakım 3'e kadarki (KS7.1 + KS2) beklentidir — belge durumu için hâlâ doğru, Kalan / takvim için S92 ile değişti.
+- **c8-ks8-iade-geri-odemesi:** S92-net 5 (E, k1 — iade ve Ödeme'den ÖNCE: satış FE1 500 + elle Alacak ae1 300 → FE1 takvim kalemi 500 → 200, ae1 Kalan 300 → 0) + S92-tanımsız 25 kalkan (sonraki
+  kontroller: aynı caride iade + Ödeme — KS8 etkileşimi) + sayaç 2 değişen, 10 kalkan.
+- **c12-ks81-sb-kalan-dagilimi:** S92-tanımsız 20 kalkan (B4: k1'de Borç 200 + Alacak 150 netleştikten sonra stok iadesi 300 — okumalar ayrışıyor (SK-6); k2'de + Ödeme — KS8) + sayaç 4 kalkan.
+- **c13-ks83-ayni-gun-sira:** S92-tanımsız 60 kalkan (S1 / S2 / S3 / S6: satış + elle Alacak + stok iadesi + Ödeme — KS8 etkileşimi; S9: alış + Alış İadesi + elle Borç + Tahsilat — KS9) + sayaç 2
+  kalkan. `fatura:*:acik` (belge durumu), bakiye, adım durumları AYNEN yazılıyor.
+- **d11-c5-s66-carisiz-karsiliksiz:** sayaç 2 (0 → ÇATAL 0…3: üç karşılıksız borç kalemi belirsiz üye). Gecikmiş değerleri AYNI.
+- **rastgele s1 tohum 1–10:** S91 303 + 1 yeni · S92-net 220 · S92-tanımsız 2.058 kalkan (tedarikçi S: alış + Alacak + alacaklı Açılış + stok veresiye çoğu kontrolde Alış İadesi + geri tahsilatla
+  birlikte — KS9; kalanı okuma ayrışması) · sayaç 74 değişen + 144 kalkan. **rastgele ux18 tohum 1–10:** 0.
+- **DEĞİŞMEYEN (komşu — ders 10):** hiçbir eski senaryoda `gecikmis` değeri değişmedi (d4, d7, d8, d10–d13); `fatura:*:acik` (belge durumu), bakiye, mizan, Kasa, kart ödenenleri, adım durumları, söz
+  kuralları (C14.2 / C15), tek yönde yükümlülüğü olan carilerin Kalan'ları — 3.112 dışında hiçbir denetim değişmedi; eski senaryoların `elleBeklenen`'lerinin HEPSİ aynen geçiyor (hiçbiri
+  düzeltilmedi). Değeri aynı kalıp yalnız etiketi değişen 573 denetim: karşı yönlü kalemli yalın caride Kalan / takvim / Vade Takip / projeksiyon kalemi BAŞ MİMAR → KULLANICI (S92 A; ikisi de
+  BULGU sınıfı). `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`: 348/348 bayt bayt aynı (67 elle + 20 rastgele senaryo × 4 kip); üretici 20/20 aynı dizi.
+- **Yeni senaryolar eski (bakım 3) kâhinde — beklenen NEDENLE kırmızı (ders 7, 38):** 286 elle denetimin 142'si: d14 35 + d15 21 (vadesiz kalem "yok", görünüm toplamı yazılmıyor, sayaç 1) ·
+  d16 40 (iki taraf ayrı Kalan / takvim; M3 gecikmiş 9.000, M7 gecikmiş 400) · d17 7 + d18 7 (avans gecikmiş 0) · d19 32 (eski kâhin tanımsız durumlara değer yazıyor, `belirsiz` kaydı yok).
+  Kalan 144'ü iki kâhinde aynı (bakiye, belge durumu, vadeli komşular, kapalı kalemler, değişmeyen gecikmişler).
+
+### Kanıt (bakım 4; iki saat dilimi — UTC ve Europe/Istanbul çıktıları bayt bayt aynı; kâhin `f49f9d97`, temiz ağaç; `docs/kanit/2026-11-06/kahineski4-*`, araçlar `kahineski4-arac/`)
+cari öz test **2.478/2.478** (`-cari-oz-*`: elle tablolar + mutantlar 200–233 + saf TYK 170 kalem + bakım 4 çapraz denetimi: saf net 68 kalem karşı yönlü kalemli caride, 495 kalem tek yönde,
+avans 205 cari, (ii) 256 cari, gecikmiş (i) 337 cari) · defter öz test **171/171** (`-defter-oz-*`; defter DEĞİŞMEDİ) · mutasyon taraması **200/200** (`-cari-mutasyon-*`; kos.mjs düzeni, 73 dosya
+× kipler) · eşdeğerlik + G3 **369/369** (`-esdeger-cari-*`: üretici 20/20, eşdeğerlik 348/348, G3 3.112 / BEKLENMEYEN 0) · yeni elle tablolar yeni kâhinde **286/286** (`-elle-yeni-cari-*`) ·
+ESKİ kâhinde (`2aa1e733`, ayrı kopya) aynı tablolar **142 kırmızı** / 286 (`-kirmizi-eski-cari-*`; her kırmızının eski değeri dökümde) · S9 dökümü: eski kâhin 7/20 değer karar metniyle aynı
+(13 farklı — `-s9-eski-*`), yeni kâhin 20/20 (`-s9-yeni-*`) · geniş tarama **1.545/1.545** (`-genis-tarama-*`: s1 tohum 1–30 × 120, 390 kontrol kesimi — saf net 481 + 516 kalem, tek yön =
+kendi tarafı 1.750 kalem, (ii) 379, gecikmiş (i) 479; susulan: okuma ayrışan 41, tanım alanı dışı 190 cari-kesim). Araçlar: `karsilastir.py` (eşdeğerlik + G3 sınıflama),
+`elle-karsilastir.py`, `mutasyon-tara.py`, `genis-tarama.py`, `s9-yokla.py`. Mutasyon ve geniş tarama `flock -s …/olcum.lock` ile koşuldu (ders 52).
 
 ### Eşleme notları (Ç5-B kod ajanı / ana oturum için; `kos.mjs`)
 - YENİ ANAHTAR YOK, YENİ ADIM YOK, YENİ EŞLEME YOK: bütün denetimler bugünkü anahtarlardan (`hareket:*:kalan`, `takvim | vadeTakip | projeksiyon:hareket | fatura | cariToplam`,
