@@ -1,0 +1,48 @@
+Sen DestekOfis projesinde ARAÇ / CI DÜZELTME ajanısın (2.5.0 — S100 = A: cari kâhini ↔ program adımında "YAPIM AŞAMASI" listesi). Birden çok modül (kâhin koşucusu, paket aracı, CI) — eforun high. Kendi dalında commit edersin, PUSH YAPMAZSIN. Yanıtın Türkçe.
+
+## Neden
+CI #1058 (05226cee) "Uçtan uca (Chromium)" işi `kahin-cari` adımında düştü (532 fark + 3 okuma hatası) ve adım düşünce aynı işteki ekran senaryoları KOŞMADI. Neden: Ç5 dört pakette (K, B, A, C) ana dala giriyor; cari kâhini kullanıcı kararlarının TAMAMINI bekliyor, program paket paket yetişiyor (Ç5-A ve Ç5-B tur 2 henüz kodlanmadı). KULLANICI KARARI 10.11 (S100 = A, AYNEN `docs/2.5.0-IS-LISTESI.md` D): bugünkü farklar kararı / bekleyen paketiyle etiketlenip SABİTLENİR; CI listede olmayan YENİ farkta, değeri DEĞİŞEN farkta ve KAPANDIĞI hâlde listede duran kayıtta kırmızı (liste yalnız küçülür); kâhinin beklentisi DEĞİŞMEZ; yayın adayında liste BOŞ olmak zorunda (paket aracı boş değilse imzalı paket üretmez). Kullanıcının ERTELEDİĞİ farkların listesi (BILINEN.json) AYRI kalır.
+
+## Hazırlık
+1. Worktree'de `git merge --ff-only claude/epic-thompson-w0lc2l` (çalışma dalı ucu); olmazsa ve kendi commit'in yoksa `git reset --hard claude/epic-thompson-w0lc2l`. `ln -s /home/user/ofis---y-netimi/node_modules node_modules` (`npm ci` YOK).
+2. ÖNCE oku: `CLAUDE.md` (dersler 1–52; özellikle 2, 4, 5, 6, 7, 19, 27, 33, 38, 40, 44, 49); `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`; iş listesi D'de "KULLANICI KARARI 10.11 … S100" ve C'de S100; `test/bagimsiz/cari/kos.mjs` içinde BİLİNEN SINIR düzeneği (~:1055–1220: bilinenYukle, bilinenAyir, ÖZET, çıkış kodu) — yeni liste AYNI katılıkta (tam ad, joker yok, bayat / çift kayıt hatası) kurulur; `tools/release.mjs` + `tools/kanit.mjs` releaseGate; `.github/workflows/ci.yml` uçtan uca işi.
+
+## İş
+### 1. Cari kâhini bakım 4'ü al (ana oturum doğruladı: öz test, eski kâhin kırmızısı, mutasyon)
+`git merge --no-ff worktree-agent-a312f00ba9e5edd7b` (uç 14e3f4bb; yalnız `test/bagimsiz/cari/**` + `docs/kanit/2026-11-06/kahineski4-*` gelmeli). Birleşimden sonra DENETLE: `git diff HEAD^1 HEAD --stat` içinde `test/bagimsiz/defter/**`, `server/**`, `client/**` YOK (defter kâhininin yeni hâli Ç5-A ile girecek — baş mimar kararı; gelirse DUR ve raporla). `test/bagimsiz/cari/model.py` değişti → mobil yazma kâhininin `test/bagimsiz/mobil-yazma/kabul.json` içindeki `cari_model_sha256` alanı kâhinin KENDİ betiğiyle yeniden üretilir (elle yazma; betik yoksa nasıl üretildiğini `kahin_test.py` / `senaryolar.py`'den oku) ve mobil yazma kâhininin öz testi + `npm run test:kahin-mobil-yazma` koşulur.
+KÂHİNE DOKUNMA: `model.py`, `oz-test.py`, `uretici.py`, `senaryolar/**`, `KARARLAR.md`, `BILINEN.json` bu işte DEĞİŞMEZ (birleşimle gelen hâli aynen).
+
+### 2. "YAPIM AŞAMASI" listesi (`test/bagimsiz/cari/YAPIM-ASAMASI.json` + `kos.mjs`)
+- Kayıt alanları: `senaryo`, `anahtar`, `beklenen` (kâhin), `program` (bugünkü değer; okuma hatası "okunamadı"), `sinif` (koşucunun yazdığı sınıf etiketi), `kural` (koşucunun yazdığı kural / gerekçe metni), `paket` (bekleyen iş: "Ç5-A" | "Ç5-B tur 2" | "Ç5-C" | "eşleme" | "AYRIŞTIRILMADI"), isteğe bağlı `not`. `paket` TAHMİNLE doldurulmaz: kural metni açıkça gösteriyorsa (ör. açılış karşılığı 519 / carisiz evrak S49 → Ç5-A; S91–S99 / S95–S98 → Ç5-B tur 2; koşucudaki boş eşleme GECIKMIS_ALAN / KARSILIKSIZ_CARI → eşleme) yazılır, göstermiyorsa "AYRIŞTIRILMADI" (raporda sayısı verilir — ana oturum ayrıştırır).
+- Koşucu davranışı (fark = senaryo + anahtar + beklenen + program dördüyle TAM eşleşir):
+  a) listedeki farkla birebir eşleşen fark → "YAPIM AŞAMASI" diye ayrı sayılır, başarısız SAYILMAZ;
+  b) listede OLMAYAN fark → başarısız (bugünkü gibi);
+  c) listede olup değeri (beklenen ya da program) DEĞİŞMİŞ fark → başarısız ("değer değişti: liste … / şimdi …");
+  d) listede olup artık fark OLMAYAN kayıt (kapandı ya da senaryo / anahtar yok) → başarısız ("kapandı — listeden silin"); bayat / çift / jokerli kayıt → başarısız;
+  e) ÖZET satırına "N yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: …)" eklenir; kanit.mjs'in okuduğu geçti / başarısız sayıları (a)'yı GEÇTİ saymaz, ayrı sayar — sayım düzenini bugünkü BİLİNEN ile aynı tut ve raporda yaz.
+  f) `--kural 2.4.9` / `--legacy` vb. eski kural setlerinde liste UYGULANMAZ (o koşularda bugünkü davranış bayt bayt aynı kalır — denetle).
+  g) Listeyi ÜRETEN bir kip: `node test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz` (yalnız geliştirici kullanır; CI çağırmaz) bugünkü farklardan dosyayı yazar; rastgele senaryolar tohumlu olduğundan iki ardışık koşu AYNI dosyayı üretmeli (denetle; üretmiyorsa DUR ve raporla).
+- Mutantlar ve mutasyon taraması: koşucunun kendi "yakalanmayan mutasyon" denetimi listeyle zayıflamamalı (mutant koşularında liste nasıl davranıyor — bugünkü BİLİNEN ile aynı ilke; raporda yaz).
+
+### 3. Yayın kapısı
+`tools/release.mjs` (releaseGate ile aynı yerde): `test/bagimsiz/cari/YAPIM-ASAMASI.json` kayıt listesi BOŞ değilse imzalı paket ÜRETİLMEZ; ileti Türkçe ve sayıyı / paket dağılımını söyler. Testi: `test/` altına yeni dosya (ör. `test/yapim-asamasi-kapisi.test.mjs`): dolu liste → kapı reddeder; boş liste → geçer; dosya yok / bozuk JSON → reddeder (ders 4: okunamayan "boş" sayılmaz). Kaynak tarayan / dosya okuyan test CRLF'yi bilir (ders 27); dosya adı Windows'ta açılır (ders 33).
+
+### 4. CI
+`ci.yml` DEĞİŞMEZ (adım aynı komut; liste sayesinde yeşile döner). Değiştirmen gerekirse ayrıştır (ders 49) ve raporla.
+
+## Kanıt
+- Mekanizmanın dişi (ders 7, 38) — geçici liste kopyasıyla (`KAHIN_YAPIM_ASAMASI=<yol>` gibi yalnız deneme için ortam değişkeni; BİLİNEN'deki emsal gibi): (i) bir kayıt silinir → kırmızı, iletide o fark; (ii) bir kaydın `program` değeri değiştirilir → kırmızı "değer değişti"; (iii) var olmayan bir fark eklenir → kırmızı "kapandı / bayat"; (iv) tam liste → çıkış 0. Dördünün çıktısı kanıta.
+- `npm run test:kahin-cari` çıkış 0 (TZ=UTC ve TZ=Europe/Istanbul; iki koşuda aynı sayılar); `npm run test:kahin-defter` değişmedi; cari öz test + defter öz test (`python3 -I -B …/oz-test.py`) iki TZ; mobil yazma kâhini; yeni kapı testi; kaynak tarayanlar (`test/kanit-araci.test.mjs`, `test/ci-kapi-listesi.test.mjs`, `test/platform-tasinabilirlik.test.mjs`, `test/yazim-duzeni.test.mjs`, `test/lisans-servisi-izolasyonu.test.mjs`) + `tools/release.mjs`'i kullanan testler (taramayla — ders 10).
+- Koşular `HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ya-kanit node tools/kanit.mjs kos ya-<ad> -- <komut>`; yük koşuları `flock -s -n /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock` (kilit doluysa bekleme döngüsü yok — ders 50).
+
+## Kurallar
+- Program (server/, client/) DEĞİŞMEZ; kâhin beklentisi DEĞİŞMEZ (ders 40). Fark sayısı ana oturumun ölçümüyle (bakım 4 kâhini: 354 fark + 7 okuma hatası = 361) uyuşmuyorsa nedenini bul ve yaz.
+- Tam `npm test` YOK. `pkill` / joker `rm` YOK; yalnız kendi tam yolların. Commit'e yalnız kendi yolların (ders 44).
+- Kendi arka plan işin sürerken turunu rapor vermeden BİTİRME.
+- Commit iletisi sonunda tam olarak:
+  Co-Authored-By: Claude <noreply@anthropic.com>
+  Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og
+  (model adı YOK).
+
+## Rapor
+Birleşimin getirdiği yollar; listenin kayıt sayısı + sınıf ve paket dağılımı (AYRIŞTIRILMADI sayısı ve örnekleri); koşucu davranışı (a–g) + sayım düzeni; dört diş denemesinin çıktısı; test sayıları (iki TZ); yayın kapısı; değişen dosya:satır; ana oturumun yeniden koşacağı komutlar + beklenen sayılar; DOĞRULANMADI; DENENMEYEN.
