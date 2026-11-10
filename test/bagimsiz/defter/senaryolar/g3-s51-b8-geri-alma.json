@@ -1,0 +1,29 @@
+{
+  "aciklama": "2.5.0 Ç5 D6 (S51 A, B8, S47 A): (1) eski 'Açılış bakiyesi' açıklamalı Borç Yaz göçten ÖNCE silinmiş, göçten sonra Silinenler'den geri alınıyor → aday (B8), onaya kadar 519. (2) 2.5.0'da carinin açılışı silinip carıye başka açılış giriliyor, sonra eski açılış Silinenler'den geri alınıyor → 'Açılış Olabilir' listesine (S51 A), onaya kadar 519; reddedilince C-01 (B 120 / A 602). Sıra: açılış → sil → yeni açılış → geri al. Yalnız model.",
+  "simdi": "2026-03-10T17:00:00+03:00",
+  "bugun": "2026-03-10",
+  "olaylar": [
+    { "id": "M1", "tur": "cari", "ad": "Geri Alfa Ltd.", "tip": "customer" },
+    { "id": "M2", "tur": "cari", "ad": "Geri Beta Ltd.", "tip": "customer" },
+    { "id": "E1", "tur": "borc_yaz", "tarih": "2026-01-10", "cari": "M2", "tutar": 500, "aciklama": "Açılış bakiyesi" },
+    { "id": "ES", "tur": "kayit_sil", "kayit": "E1" },
+    { "id": "G", "tur": "goc", "tarih": "2026-02-01" },
+    { "id": "EG", "tur": "kayit_geri_al", "kayit": "E1" },
+    { "id": "M1A", "tur": "cari_acilis", "tarih": "2026-03-01", "cari": "M1", "yon": "borc", "tutar": 1000 },
+    { "id": "KS", "tur": "kayit_sil", "kayit": "M1A" },
+    { "id": "M1B", "tur": "cari_acilis", "tarih": "2026-03-02", "cari": "M1", "yon": "borc", "tutar": 1200 },
+    { "id": "KG", "tur": "kayit_geri_al", "kayit": "M1A" },
+    { "id": "K1", "tur": "kontrol", "tarih": "2026-03-05" },
+    { "id": "O1", "tur": "acilis_onay", "kayit": "M1A", "karar": "red" },
+    { "id": "K2", "tur": "kontrol", "tarih": "2026-03-10" }
+  ],
+  "elleBeklenenTL": {
+    "kontroller": {
+      "K1": { "120": 2700, "519": -2700 },
+      "K2": { "120": 2700, "519": -1700, "602": -1000 }
+    },
+    "retler": [],
+    "acilisOlabilir": ["E1"],
+    "cari": { "Geri Alfa Ltd.": 2200, "Geri Beta Ltd.": 500 }
+  }
+}

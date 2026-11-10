@@ -72,7 +72,8 @@ describe("göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebi
           for (const [id, expected] of Object.entries(before.companies)) {
             assert.equal((await api.post("/api/companies/select", { id })).status, 200, `${expected.code} seçilemedi`);
             const facts = await ledgerFacts(api);
-            k1[id] = { facts, ...(await k1Check(legacyStates[id], api)) };
+            // 2.5.0 Ç5-B: K1'in sınırı kapama defteri kuralında (ekran durumu Tek Yükümlülük Kuyruğu görünümü — S2 / S50 / M1e ile iadesi olmayan caride de bilerek değişir).
+            k1[id] = { facts, ...(await k1Check(legacyStates[id], api, { ledgerStates: ids => (current.app.openCompany(id) || current.app).context.invoices.repairScreen(ids) })) };
           }
           await api.post("/api/companies/select", { id: "sirket-001" });
         } finally {

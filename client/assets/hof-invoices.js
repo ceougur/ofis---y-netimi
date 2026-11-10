@@ -2791,7 +2791,7 @@
     HOF.formModal({
       title: sale ? "Tahsilat Ekle" : "Ödeme Yap",
       eyebrow: docTitle(doc),
-      intro: `Açık tutar ${money(doc.open)}. Kayıt cariye ve Kasa'ya yazılır; bu faturaya bağlı kapatılır (fazlası carinin en eski açık faturasına gider).`,
+      intro: `Açık tutar ${money(doc.open)}. Kayıt cariye ve Kasa'ya yazılır; bu faturaya bağlı kapatılır (fazlası carinin vadesi en önce gelen açık borcuna gider).`,
       fields: [
         { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", value: amountText(doc.open), autofocus: true },
         { name: "date", label: "Tarih", type: "date", required: true, value: todayIso(), max: "today" },
@@ -2805,7 +2805,7 @@
         // 2.7: seçicide bakiye (tahsilat hesaba girer; ödeme hesaptan / kredi kartından çıkar).
         const picker = HOF.bank?.attachPicker ? HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", card: sale ? null : {}, direction: sale ? "in" : "out" }) : null;
         // m4 (10.10.2026): açıklama seçilen YOLA göre (cari formundaki metin; önceden yol ne olursa olsun "Kasa'ya yazılır").
-        const help = () => HOF.accounts?.syncEntryHelp?.(dialog, sale ? "in" : "out", text => `Açık tutar ${money(doc.open)}. ${text} Bu faturaya bağlı kapatılır (fazlası carinin en eski açık faturasına gider).`);
+        const help = () => HOF.accounts?.syncEntryHelp?.(dialog, sale ? "in" : "out", text => `Açık tutar ${money(doc.open)}. ${text} Bu faturaya bağlı kapatılır (fazlası carinin vadesi en önce gelen açık borcuna gider).`);
         dialog.querySelector("form")?.addEventListener("change", help);
         help();
         Promise.resolve(picker).then(help).catch(() => null);

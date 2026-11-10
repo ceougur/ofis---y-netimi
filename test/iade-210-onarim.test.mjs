@@ -84,7 +84,10 @@ describe("2.1.0 Canlı Hata 2 — v2.0.26 verisinde yanlış büyümüş taksit 
     assert.deepEqual([row(cases.C.name), row(cases.B.name), row(cases.J.name), row(cases.D.name), row(cases.E.name), row(cases.KILIT.name)], [0, 0, 0, 1000, 500, 0]);
     // Gecikmiş (ANLIK DURUM, taksit kartından): D (1.000, vade T−20), E (500, T−20), KILIT (500, T−40; kilitli kart). C'nin 500'ü (T−20) v2.0.26'da gecikmiş görünüyordu.
     const overview = await must("ANLIK DURUM", api.get("/api/workspace/overview"));
-    assert.equal(overview.receivable.overdue, 2000);
+    // 2.5.0 Ç5-B (bilerek güncellendi; B1 tek gecikmiş tanımı, EK-1 §1 değişmez (i) "0 ≤ gecikmiş ≤ max(0, cari bakiyesi)"): ANLIK DURUM gecikmişi Tek Yükümlülük
+    // Kuyruğu'ndan — KILIT'in carisi kapalı (bakiye 0; kilitli kartın 500'ü carinin alacağıyla netleşir) → gecikmiş 0. D 1.000 + E 500 = 1.500 (önceden taksit
+    // kartlarının toplamı 2.000). Taksit kartının kendi gecikmişi cari kartında eski alanda (aşağıda) ve Geciken Taksitler raporunda.
+    assert.equal(overview.receivable.overdue, 1500);
     const late = await must("Geciken Taksitler", api.get("/api/workspace/report-center/geciken-taksitler"));
     assert.equal((late.rows || []).some(r => JSON.stringify(r).includes(cases.C.name)), false, "C geciken listesinde yok");
     for (const key of ["C", "B", "J"]) {

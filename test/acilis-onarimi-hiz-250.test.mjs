@@ -107,7 +107,8 @@ describe("2.5.0 AH — açılış onarımı: öğe başına ağır okuma yok, ç
     const problems = [];
     if (whole.size !== ids.length || parts.size !== ids.length) problems.push(`durum sayısı: tek parça ${whole.size}, 7'şerli ${parts.size}, aday ${ids.length}`);
     for (const row of app.store.all(CANDIDATE_SQL)) {
-      const exact = invoices.paymentStates([row]).get(row.id);
+      // 2.5.0 Ç5-B: cari başına yol = onarımın kendi okuması (coverState → cardLedgerState; kart / bağ defteri), TYK görünümü değil.
+      const exact = invoices.cardLedgerState ? invoices.cardLedgerState(row) : invoices.paymentStates([row]).get(row.id);
       for (const [label, map] of [["tek parça", whole], ["7'şerli", parts]]) {
         const got = map.get(row.id);
         if (Number(got?.open) !== Number(exact?.open) || Number(got?.excess || 0) !== Number(exact?.excess || 0)) problems.push(`${label} ${row.id}: ${JSON.stringify({ open: got?.open, excess: got?.excess })} ↔ cari başına ${JSON.stringify({ open: exact?.open, excess: exact?.excess })}`);

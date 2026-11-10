@@ -353,7 +353,9 @@ describe("G — bağ türü verisi (eşleme 290; Fatura ve Banka Hareketleri rap
       const auto = await must("bağsız tahsilat", ctx.api.post(`/api/workspace/accounts/${abc.id}/entries`, { kind: "in", method: "bank", amount: "500", date: TODAY, bankAccountId: acc.ziraat.id, similarOk: true }));
       assert.equal(ctx.store.get("SELECT invoice_id AS invoiceId FROM account_entries WHERE id = ?", auto.entryId).invoiceId, "", "Otomatik: invoice_id boş");
       const doc1 = await must("fatura 1", ctx.api.get(`${INV}/${open1.id}`));
-      assert.deepEqual([doc1.payState, doc1.closers.map(c => [c.mode, c.modeLabel])], ["paid", [["auto", "Otomatik (en eski)"]]]);
+      // 2.5.0 Ç5-B (bilerek güncellendi; S2 "vadesi en önce gelen", C5-ACILIS-TASARIM §2.10 madde 3): kapatan adı "Otomatik (en eski)" → "Otomatik (vadesi en önce gelen)".
+      // Fatura ve Banka Hareketleri raporunun kendi bağ türü adı (report-center "Otomatik (En Eski)") ayrı eşlemedir, değişmedi.
+      assert.deepEqual([doc1.payState, doc1.closers.map(c => [c.mode, c.modeLabel])], ["paid", [["auto", "Otomatik (vadesi en önce gelen)"]]]);
       // 4) Komisyon Kesintisi (Bağlı): KDV kipi gün fişi kesinti satırı source=bank; aylık komisyon faturası kaydedilince invoice_id ona bağlanır.
       await must("POS'lu fatura", posInvoice(ctx.api, { accountId: abc.id, itemId: item.id, qty: 10, unitPrice: 1000, date: TODAY }));
       ctx.server.clock.set("2026-10-12T09:00:00+03:00");

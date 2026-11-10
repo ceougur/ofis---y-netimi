@@ -20,6 +20,7 @@
 //      Alacak kaydı (Beklenen Ödeme Tarihli) → "Ödenecek Borç (Ödeme Sözü)" → Ödeme Gir → "Ödeme" formu, tutar = Kalan → ödeme (out) tedarikçiye, pil kalkar.
 //      Vade Takip'te cari satırı tıklanınca o carinin kartı açılır.
 // Çıkış: "N geçti, M kaldı" (kaldıysa çıkış kodu 1).
+// 2.5.0 Ç5-B: bilgi notu metni bilerek güncellendi (kullanıcı kararları S2 "vadesi en önce gelen", (1) "kendi tarihinde").
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -477,7 +478,9 @@ try {
     // Ali Veli No 2'nin (twin) S3'teki tahsilatı faturaya bağlıydı ve fatura kapandı; elle Borç (2.000, Vade dün) kuyruğun tek açık kalemi (S1 FIFO).
     await must("Borç Yaz (vadeli)", api.post(`/api/workspace/accounts/${twin.id}/entries`, { kind: "debt", amount: "2000", date: day(-3), dueDate: day(-1), note: "Pil vadeli borç" }));
     debtId = lastEntry(twin.id, "debt");
-    await must("Alacak Yaz (sözlü)", api.post(`/api/workspace/accounts/${supplier.id}/entries`, { kind: "credit", amount: "450", date: day(-2), expectedDate: day(1), note: "Pil tedarikçi alacağı" }));
+    // 2.5.0 Ç5-B (bilerek güncellendi; S1 + S67 = A, cari kâhini C14.2 "ya da vadesiz, belge günü geçmiş"): Vade Tarihi'siz kaydın vadesi kayıt günüdür — ileri tarihli
+    // söz durumu "Gecikmiş" yapar. Bu adım "yaklaşan ödeme" yolunu sınar: Vade Tarihi ileri (bugün+3), söz yarın.
+    await must("Alacak Yaz (sözlü)", api.post(`/api/workspace/accounts/${supplier.id}/entries`, { kind: "credit", amount: "450", date: day(-2), dueDate: day(3), expectedDate: day(1), note: "Pil tedarikçi alacağı" }));
     creditId = lastEntry(supplier.id, "credit");
     const item = await accountItem(debtId);
     ok(item?.source === "account" && item?.accountId === twin.id && item?.direction === "in" && item?.amount === 2000 && item?.state === "overdue" && item?.label === "Tahsil Edilecek Borç", `takvim kalemi: ${JSON.stringify(item && { id: item.id, accountId: item.accountId, direction: item.direction, amount: item.amount, state: item.state, label: item.label })}`);
@@ -548,7 +551,7 @@ try {
     ok(form.note.startsWith("Tahsil Edilecek Borç · "), `not kalemden: “${form.note}”`);
     // 2.4.5 (kullanıcı kararı "sadece bilgi notu"): pilden açılan tahsilat formunda da en eski açık borç notu.
     const fifo = await page.$eval(`${TOP} [data-fifo-note]`, node => (node.hidden ? "" : node.textContent.trim())).catch(() => "");
-    ok(fifo === "Bu tahsilat carinin en eski açık borcundan başlayarak kapatır.", `bilgi notu: “${fifo}”`);
+    ok(fifo === "Bu tahsilat carinin vadesi en önce gelen açık borcundan (fatura, taksit, borç kaydı) başlayarak kapatır; kendi tarihinde açık olan borçlara dağılır.", `bilgi notu: “${fifo}”`);
     if (!right) {
       await closeAll(page);
       throw new Error("yanlış form açıldı; kaydedilmedi");
@@ -592,7 +595,7 @@ try {
     const right = ok(form.title === "Ödeme" && form.eyebrow.includes(`No ${supplier.refNo}`) && amountOf(form.amount) === 450, `tedarikçinin ödeme formu: “${form.title}” · “${form.eyebrow}” · ${form.amount}`);
     // 2.4.5 DB2: tedarikçiye Ödeme bizim borcumuzu kapatır → bilgi notu VAR (müşteriye Ödeme'de yok: senaryo-ekstre-ayrinti-245).
     const fifo = await page.$eval(`${TOP} [data-fifo-note]`, node => (node.hidden ? "" : node.textContent.trim())).catch(() => "");
-    ok(fifo === "Bu ödeme carinin en eski açık borcundan başlayarak kapatır.", `bilgi notu: “${fifo}”`);
+    ok(fifo === "Bu ödeme carinin vadesi en önce gelen açık borcundan (fatura, taksit, borç kaydı) başlayarak kapatır; kendi tarihinde açık olan borçlara dağılır.", `bilgi notu: “${fifo}”`);
     if (!right) {
       await closeAll(page);
       throw new Error("yanlış form açıldı; kaydedilmedi");

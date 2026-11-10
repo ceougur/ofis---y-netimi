@@ -1,0 +1,32 @@
+{
+  "aciklama": "2.5.0 Ç5 D6 (KG-16 A, S47 A, B6, S53 A): kilitsiz şirkette 2.4.9 → 2.5.0 göçü. Eski açılışlar (Kasa, banka, cari) 500'den 519'a geçer (S53 A); 'Açılış…' açıklamalı eski Borç / Alacak Yaz 'Açılış Olabilir' listesine girer ve onaya kadar 519'da (S47 A); 'AÇILIŞ FARKI' Türkçe katlamayla aday (B6), 'Devreden bakiye' aday DEĞİL (B6). Onaylanan 519'da kalır, reddedilen C-02 (B 770 / A 320). Göç senaryosu: yalnız model (sürücüde eski sürüm yolu yok).",
+  "simdi": "2026-02-10T17:00:00+03:00",
+  "bugun": "2026-02-10",
+  "olaylar": [
+    { "id": "M1", "tur": "cari", "ad": "Göç Alfa Ltd.", "tip": "customer" },
+    { "id": "M2", "tur": "cari", "ad": "Göç Beta Ltd.", "tip": "customer" },
+    { "id": "T1", "tur": "cari", "ad": "Göç Tedarik A.Ş.", "tip": "supplier" },
+    { "id": "KASA0", "tur": "kasa_acilis", "tarih": "2025-01-01", "tutar": 10000 },
+    { "id": "BH", "tur": "banka_hesap", "tarih": "2025-01-01", "ad": "Göç TL Hesabı", "acilis": 20000 },
+    { "id": "M1A", "tur": "cari_acilis", "tarih": "2025-01-01", "cari": "M1", "yon": "borc", "tutar": 3000 },
+    { "id": "E1", "tur": "borc_yaz", "tarih": "2025-03-01", "cari": "M2", "tutar": 4000, "aciklama": "Açılış bakiyesi" },
+    { "id": "E2", "tur": "alacak_yaz", "tarih": "2025-03-01", "cari": "T1", "tutar": 1500, "aciklama": "Açılış bakiyesi (tedarikçi)" },
+    { "id": "E3", "tur": "borc_yaz", "tarih": "2025-04-01", "cari": "M1", "tutar": 600, "aciklama": "Hizmet farkı" },
+    { "id": "E4", "tur": "borc_yaz", "tarih": "2025-05-01", "cari": "M2", "tutar": 800, "aciklama": "Devreden bakiye" },
+    { "id": "E5", "tur": "borc_yaz", "tarih": "2026-01-15", "cari": "M1", "tutar": 900, "aciklama": "AÇILIŞ FARKI" },
+    { "id": "G", "tur": "goc", "tarih": "2026-02-01" },
+    { "id": "K1", "tur": "kontrol", "tarih": "2026-02-01" },
+    { "id": "O1", "tur": "acilis_onay", "kayit": "E1", "karar": "onay" },
+    { "id": "O2", "tur": "acilis_onay", "kayit": "E2", "karar": "red" },
+    { "id": "K2", "tur": "kontrol", "tarih": "2026-02-10" }
+  ],
+  "elleBeklenenTL": {
+    "kontroller": {
+      "K1": { "100": 10000, "102": 20000, "120": 9300, "320": -1500, "519": -36400, "602": -1400 },
+      "K2": { "100": 10000, "102": 20000, "120": 9300, "320": -1500, "519": -37900, "602": -1400, "770": 1500 }
+    },
+    "retler": [],
+    "acilisOlabilir": ["E5"],
+    "cari": { "Göç Alfa Ltd.": 4500, "Göç Beta Ltd.": 4800, "Göç Tedarik A.Ş.": -1500 }
+  }
+}

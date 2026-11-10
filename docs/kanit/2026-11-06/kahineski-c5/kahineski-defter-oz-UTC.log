@@ -1,0 +1,25 @@
+  mutasyon 14 (D1 (30.10 B): açılış karşı hesabı 500): YAKALANDI (senaryo.json, g1-goc-kilitsiz.json, g2-goc-kilitli.json)
+  mutasyon 15 (D2 (M-02 B): açıklaması 'açılış' ile başlayan yeni Borç / Alacak Yaz açılış sayılır): YAKALANDI (senaryo.json, g3-s51-b8-geri-alma.json, g4-yeni-kayitlar.json)
+  mutasyon 16 (D3 (30.10 (1) B): açılış evrakı 602 / 770'e): YAKALANDI (senaryo.json, g2-goc-kilitli.json, g4-yeni-kayitlar.json)
+  mutasyon 17 (D4 (S48 B): karşılıksız carisiz açılış evrakı gidere (770)): YAKALANDI (senaryo.json, g4-yeni-kayitlar.json)
+  mutasyon 18 (D4 (S48): cari seçilse de 519 (cari borçlanmaz)): YAKALANDI (senaryo.json, g4-yeni-kayitlar.json)
+  mutasyon 19 (D5 (S49 B): formdan carisiz evrak 519'a): YAKALANDI (senaryo.json, g4-yeni-kayitlar.json)
+  mutasyon 20 (D5 (S49 C): formdan carisiz evrak 602 / 770 (bugünkü)): YAKALANDI (senaryo.json, g4-yeni-kayitlar.json)
+  mutasyon 21 (D9 (KG-5 B): Excel taksit kartı yeni satış (B CH T / A 600 T; B 519 P / A CH P)): YAKALANDI (senaryo.json, g4-yeni-kayitlar.json)
+  mutasyon 22 (D6 (S47 B): onay bekleyen aday 602 / 770'te): YAKALANDI (g1-goc-kilitsiz.json, g3-s51-b8-geri-alma.json)
+  mutasyon 23 (D6 (KG-16 B): 'Açılış Olabilir' listesi yok (aday sessizce 602 / 770, onay etkisiz)): YAKALANDI (g1-goc-kilitsiz.json, g2-goc-kilitli.json, g3-s51-b8-geri-alma.json)
+  mutasyon 24 (D6 (B6 B): Türkçe katlama yok (yalnız 'Açılış' tam yazımı aday)): YAKALANDI (g1-goc-kilitsiz.json)
+  mutasyon 25 (D6 (B6 B): 'Devir' / 'Devreden' de aday): YAKALANDI (g1-goc-kilitsiz.json)
+  mutasyon 26 (D6 (S51 B): Silinenler'den geri alınan açılış (carinin başka açılışı varken) reddedilir): YAKALANDI (g3-s51-b8-geri-alma.json)
+  mutasyon 27 (D6 (S53 B): göçte son tamamlanmış yılın 31 Aralık'ına kendiliğinden kilit (eski kuralla donar)): YAKALANDI (g1-goc-kilitsiz.json)
+  mutasyon 28 (D7 (Ç3 yok): kilitli dönemin maddeleri de göçte yeni kurala geçer): YAKALANDI (g2-goc-kilitli.json)
+  mutasyon 29 (D8 (KG-15 B): Kural Farkı Düzeltme Fişi yazılmaz): YAKALANDI (g2-goc-kilitli.json)
+  mutasyon 30 (D8 (M7 B): önceki mali yılın farkı da 602 / 770'e (671 / 681 yok)): YAKALANDI (g2-goc-kilitli.json)
+  mutasyon 31 (D8 (B16 B): onay bekleyen aday varken Kural Farkı fişi yazılır): YAKALANDI (g2-goc-kilitli.json)
+  mutasyon 32 (D10 (S12 B): Kasa açılışından önce tarihli Kasa hareketi kabul): YAKALANDI (senaryo.json, g4-yeni-kayitlar.json, g5-kasa-hareket-once.json)
+  mutasyon 33 (D10 (B11 B): Kasa hareketinin tarihini açılıştan önceye alan düzeltme kabul): YAKALANDI (senaryo.json, g4-yeni-kayitlar.json)
+  mutasyon 34 (D10 (EK-2B 33 B): Kasa açılışının tarihi Kasa'nın ilk hareketinden sonra olabilir): YAKALANDI (g5-kasa-hareket-once.json)
+# tests 121
+# pass 121
+# fail 0
+121/121 denetim geçti

@@ -106,12 +106,15 @@ describe("Raporlar penceresi uçları (tam yığın)", () => {
     assert.equal(response.status, 200, JSON.stringify(response.data));
     const data = response.data.data;
     const bySource = source => data.rows.filter(row => row.source === source);
-    assert.equal(bySource("plan").find(row => row.state === "overdue")?.amount, 1000, "20 gün önceki taksit gecikmiş");
+    // 2.5.0 Ç5-B (bilerek güncellendi; S50 + M1a, EK-1 §1 "tahsilat (her yol, çek / senet alma dahil)"): Ali Veli (2)'den karta bağlanmadan alınan senet 700 vadesi
+    // en önce gelen kalemi — 20 gün önceki 1. taksiti — kapatır: kalan 300 (önceden kart "kendi defteri"ydi, 1.000).
+    assert.equal(bySource("plan").find(row => row.state === "overdue")?.amount, 300, "20 gün önceki taksit gecikmiş: 1.000 − bağsız senet 700");
     assert.equal(bySource("cheque").length, 2, "alınan ve verilen çek (30 gün)");
     assert.equal(bySource("note").length, 0, "45 gün sonraki senet 30 günlük aralıkta yok");
     assert.equal(bySource("cash")[0]?.amount, 4000);
     assert.equal(bySource("promise")[0]?.amount, 1200, "tablodaki ödeme sözü");
-    assert.equal(data.totals.out.total.amount, 4800, "kira + verilen çek");
+    // 2.5.0 Ç5-B (S1 + S68): Tedarik'in vadesiz Alacak Yaz'ı (2.000 − verilen çek 800 = 1.200) kayıt gününde "Ödenecek Borç" kalemi.
+    assert.equal(data.totals.out.total.amount, 6000, "kira 4.000 + verilen çek 800 + Tedarik'in kalan alacağı 1.200");
     assert.equal(data.totals.in.total.amount, round(data.rows.filter(row => row.direction === "in" && row.amount !== null).reduce((sum, row) => sum + row.amount, 0)));
     const ninety = (await admin.get("/api/workspace/overview/vade-takip?preset=next90")).data.data;
     assert.ok(ninety.rows.some(row => row.source === "note" && row.amount === 700), "90 gün: senet");
@@ -123,13 +126,13 @@ describe("Raporlar penceresi uçları (tam yığın)", () => {
     const open = (await admin.get("/api/workspace/overview/vade-takip?preset=open")).data.data.rows;
     for (const item of calendar.items.filter(entry => !entry.source && entry.amount > 0)) assert.ok(open.some(row => row.date === item.due && row.amount === item.amount), `takvim kalemi raporda: ${item.label} ${item.due}`);
     const out = (await admin.get("/api/workspace/overview/vade-takip?preset=next30&direction=out")).data.data;
-    assert.deepEqual(out.rows.map(row => row.amount).sort(), [4000, 800]);
+    assert.deepEqual(out.rows.map(row => row.amount).sort(), [1200, 4000, 800], "ödenecek: kira, verilen çek, Tedarik'in kalan alacağı (S1)");
     const onlyPlan = (await admin.get("/api/workspace/overview/vade-takip?preset=open&sources=plan")).data.data;
     assert.ok(onlyPlan.rows.length === 3 && onlyPlan.rows.every(row => row.source === "plan"), "kaynak süzgeci");
     const byPhone = (await admin.get(`/api/workspace/overview/vade-takip?preset=open&q=${encodeURIComponent("0533 222 11 00")}`)).data.data;
     assert.ok(byPhone.rows.length >= 1 && byPhone.rows.every(row => /Deniz Ay/.test(row.party)), "tablodaki kişi telefonla bulunur");
     const chequeByPhone = (await admin.get("/api/workspace/overview/vade-takip?preset=open&q=0312555")).data.data;
-    assert.deepEqual(chequeByPhone.rows.map(row => row.amount), [800], "carinin telefonuyla verilen çek bulunur");
+    assert.deepEqual(chequeByPhone.rows.map(row => row.amount).sort(), [1200, 800], "carinin telefonuyla verilen çek ve kalan alacağı (S1) bulunur");
     const late = (await admin.get("/api/workspace/overview/vade-takip?preset=late")).data.data;
     assert.ok(late.rows.length && late.rows.every(row => row.state === "overdue"), "gecikmiş");
     const noLate = (await admin.get(`/api/workspace/overview/vade-takip?from=${TODAY}&to=${shift(30)}&late=0`)).data.data;

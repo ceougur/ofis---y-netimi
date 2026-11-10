@@ -44,7 +44,13 @@ describe("2.5.0 BİRLEŞİK TUR 5 — açılış onarımının savunma kurallar�
     rawRun(ctx.db, "UPDATE plan_items SET amount = ? WHERE plan_id = ?", amount, planId);
     rawRun(ctx.db, "UPDATE plans SET total = ? WHERE id = ?", amount, planId);
   };
-  const exactOpen = inv => Number(ctx.app.context.invoices.paymentStates([{ id: inv.id, accountId: inv.accountId }]).get(inv.id)?.open);
+  // 2.5.0 Ç5-B: cari başına yol = onarımın kendi okuması (coverState → cardLedgerState; kart / bağ defteri, lib/invoice-settle.mjs) — ekrandaki fatura durumu artık
+  // Tek Yükümlülük Kuyruğu görünümü (paymentStates) ve onarımın kararını vermez. Eski kodda (cardLedgerState yok) paymentStates aynı kuraldır.
+  const exactOpen = inv => {
+    const invoices = ctx.app.context.invoices;
+    const row = { id: inv.id, accountId: inv.accountId };
+    return Number((invoices.cardLedgerState ? invoices.cardLedgerState(row) : invoices.paymentStates([row]).get(inv.id))?.open);
+  };
   // Onarımın toplu okumasını bayatlatır: accountId'nin defter satırları change(satırlar) ile döner (yalnız bu açılış onarımı koşusunda).
   async function withStaleLedger(accountId, change, fn) {
     const accounts = ctx.app.context.accounts;

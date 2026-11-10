@@ -160,18 +160,19 @@ describe("2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi,
     await refused("açılışsız caride Düzenle", api.put(`/api/workspace/accounts/${plain.id}`, { name: p.name, type: p.type, registeredOn: p.registeredOn, updatedAt: p.updatedAt, openingDueDate: day(3) }), 400, "openingDueDate", "opening-missing");
   });
 
-  it("S1 FIFO: aynı gün iki borç + tahsilat → önce yazılan kapanır (yazım sırası); Vade Tarihi sırayı değiştirmez", async () => {
+  // 2.5.0 Ç5-B (bilerek güncellendi; kullanıcı kararı S2 05.11 "vadesi en önce gelen", TBK md. 102; C5-ACILIS-TASARIM §2.10 madde 3): bağsız ödeme vadesi en
+  // önce gelen borçtan kapatır — 2.4.5'teki "kayıt tarihi + yazım sırası; Vade Tarihi sırayı değiştirmez" kuralının YERİNE. Beklenen sayılar karar metninden elle.
+  it("S2: bağsız tahsilat vadesi en önce gelen borçtan kapatır (Vade Tarihi sırayı belirler; kayıt tarihi değil)", async () => {
     const acc = await account("FIFO");
-    // İkinci borcun vadesi daha YAKIN: sıra yine kayıt tarihi + yazım sırası.
     const first = await entry(acc, { kind: "debt", amount: "1.000", date: day(-10), dueDate: day(6) });
     const second = await entry(acc, { kind: "debt", amount: "500", date: day(-10), dueDate: day(1) });
     const third = await entry(acc, { kind: "debt", amount: "300", date: day(-12), dueDate: day(2) });
     await entry(acc, { kind: "in", amount: "1.200", date: day(-5) });
-    assert.equal((await rowOf(acc, third.id)).remaining, 0, "en eski tarihli borç önce kapanır");
-    assert.equal((await rowOf(acc, first.id)).remaining, 100, "aynı günde önce yazılan: 1.000 − (1.200 − 300) = 100");
-    assert.equal((await rowOf(acc, second.id)).remaining, 500, "aynı günde sonra yazılan açık kalır");
+    assert.equal((await rowOf(acc, second.id)).remaining, 0, "vadesi en yakın (bugün+1) önce kapanır");
+    assert.equal((await rowOf(acc, third.id)).remaining, 0, "sonra bugün+2");
+    assert.equal((await rowOf(acc, first.id)).remaining, 600, "en son vadeli: 1.000 − (1.200 − 500 − 300) = 600");
     const items = (await accountItems()).filter(row => row.accountId === acc.id);
-    assert.deepEqual(items.map(row => [row.entryId, row.amount]).sort(), [[first.id, 100], [second.id, 500]].sort(), "kalanı olan iki kayıt takvimde, kapanan yok");
+    assert.deepEqual(items.map(row => [row.entryId, row.amount]), [[first.id, 600]], "kalanı olan tek kayıt takvimde, kapananlar yok");
   });
 
   it("S1 karışık kuyruk: vadeli borç + taksitsiz satış faturası tarih sırasıyla; faturanın açığı aynı kuraldan", async () => {
@@ -198,18 +199,26 @@ describe("2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi,
     assert.equal((await must("fatura", api.get(`/api/workspace/invoices/${invoice.id}`))).open, 0, "bağlı fatura kapandı");
   });
 
-  it("KS2: müşterideki elle Alacak karşı taraf yükümlülüğüdür — müşterinin borcuna mahsup EDİLMEZ; vadesi varsa \"Ödenecek Borç\" kalemi", async () => {
+  // 2.5.0 Ç5-B (bilerek güncellendi; kullanıcı kararı (5) "Bakiyeden Netleşsin", C5-ACILIS-TASARIM §2.10 madde 7): müşterideki elle Alacak satış borcuna KENDİ
+  // tarihinde uygulanır (kalem / gecikmiş / Vade Takip görünümü); 2.4.5 KS2'deki "mahsup EDİLMEZ, ayrı Ödenecek Borç kalemi" bu görünümde kalktı. Fatura
+  // durumu (iki yönlü kapama) değişmedi — tyk-250 karar (5) testleri. Beklenen sayılar karar metninden elle.
+  it("karar (5): müşterideki elle Alacak müşterinin borcuyla kendi tarihinde netleşir; sonraki bağsız ödeme kalemi kapatmaz, bakiyeye yazılır", async () => {
     const acc = await account("KS2");
     const debt = await entry(acc, { kind: "debt", amount: "1.000", date: day(-20), dueDate: day(2) });
     const credit = await entry(acc, { kind: "credit", amount: "300", date: day(-10), dueDate: day(3) });
-    assert.equal((await rowOf(acc, debt.id)).remaining, 1000, "elle Alacak ödeme değildir: müşterinin borcu açık kalır");
-    assert.equal((await rowOf(acc, credit.id)).remaining, 300, "elle Alacak kendi kalanıyla");
+    assert.equal((await rowOf(acc, debt.id)).remaining, 700, "elle Alacak borçtan düşer: 1.000 − 300 = 700");
+    assert.equal((await rowOf(acc, credit.id)).remaining, 0, "elle Alacak netleşti");
     assert.equal((await card(acc)).totals.balance, 700, "bakiye net (değişmez)");
     const items = (await accountItems()).filter(row => row.accountId === acc.id);
-    assert.deepEqual(items.map(row => [row.entryId, row.direction, row.label, row.amount]).sort(), [[debt.id, "in", "Tahsil Edilecek Borç", 1000], [credit.id, "out", "Ödenecek Borç", 300]].sort());
+    assert.deepEqual(items.map(row => [row.entryId, row.direction, row.label, row.amount]), [[debt.id, "in", "Tahsil Edilecek Borç", 700]], "tek kalem: net borç");
     await entry(acc, { kind: "out", amount: "300", date: day(-1) });
-    assert.equal((await rowOf(acc, credit.id)).remaining, 0, "müşteriye yapılan ödeme elle Alacak'ı kapatır");
-    assert.equal((await rowOf(acc, debt.id)).remaining, 1000, "ödeme müşterinin borcunu açmaz / kapatmaz");
+    assert.equal((await rowOf(acc, credit.id)).remaining, 0, "elle Alacak kapalı kalır");
+    assert.equal((await rowOf(acc, debt.id)).remaining, 700, "bağsız ödeme borç kalemini açmaz / kapatmaz");
+    assert.equal((await card(acc)).totals.balance, 1000, "ödeme bakiyeye yazıldı");
+    // EK-1 §1 (T-09 "müşteriye para iadesi" borç kalemi): netleşmemiş bağsız ödeme kendi gününde açık borç kalemidir (Tahsil Edilecek) — kalem toplamı = bakiye.
+    const paid = (await card(acc)).entries.find(row => row.kind === "out");
+    const after_ = (await accountItems()).filter(row => row.accountId === acc.id);
+    assert.deepEqual(after_.map(row => [row.entryId, row.direction, row.amount]).sort(), [[debt.id, "in", 700], [paid.id, "in", 300]].sort(), "borç 700 + müşteriye ödeme 300 = bakiye 1.000");
   });
 
   it("S1 taksit kartı: ayrı kartın tahsilatı borç kaydını kapatmaz; Mevcut Borç kartının kapsadığı borç takvimden düşer (taksitlerle bir kez)", async () => {
@@ -285,22 +294,32 @@ describe("2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi,
     assert.deepEqual([b.label, b.dueDate, b.days, b.state], ["Tahsil Edilecek Borç (Ödeme Sözü)", day(1), 1, "upcoming"], "Beklenen Ödeme Tarihi varsa o gün");
     const c = items.find(row => row.entryId === owed.id);
     assert.deepEqual([c.direction, c.label, c.dueDate, c.days, c.state, c.amount], ["out", "Ödenecek Borç", day(-1), -1, "overdue", 900], "alacak yönlü (carinin alacağı) → Ödenecek Borç");
-    const todayItem = await entry(acc, { kind: "credit", amount: "75", date: day(-1), expectedDate: TODAY });
-    const t = (await accountItems()).find(row => row.entryId === todayItem.id);
+    // 2.5.0 Ç5-B (bilerek güncellendi; karar (5)): müşterideki elle Alacak artık müşterinin borcuyla netleşir (kalem olmaz) — sözlü "Ödenecek Borç" kalemi tedarikçide denenir.
+    // S1 + S69 (2.5.0): vadesiz kaydın vadesi kayıt günüdür; vadesi geçmiş kalemde söz günü durumu "Gecikmiş" yapmaz-bozmaz — sözün "bugün" görünmesi için vade gelmemiş olmalı.
+    const todayItem = await entry(supplier, { kind: "credit", amount: "75", date: day(-1), dueDate: day(3), expectedDate: TODAY });
+    const lateItem = await entry(supplier, { kind: "credit", amount: "60", date: day(-1), expectedDate: TODAY });
+    const all = await accountItems();
+    const t = all.find(row => row.entryId === todayItem.id);
     assert.deepEqual([t.label, t.state, t.days, t.direction], ["Ödenecek Borç (Ödeme Sözü)", "today", 0, "out"]);
+    const l = all.find(row => row.entryId === lateItem.id);
+    assert.deepEqual([l.label, l.dueDate, l.state, l.days], ["Ödenecek Borç (Ödeme Sözü)", TODAY, "overdue", -1], "vadesiz + söz bugün: kalem söz gününde, vade (kayıt günü) geçti → Gecikmiş, gün sayısı vadeden (S1, S67 / S69 = A)");
   });
 
-  it("K6.3 ufuk: geçmişin tamamı + bugünden 7 gün (8. gün yok); tarihsiz borç kalem değildir", async () => {
+  // 2.5.0 Ç5-B (bilerek güncellendi; kullanıcı kararı S1 05.11 "Evet, ertesi gün gecikmiş" — vade = belge / işlem günü, TBK md. 90): vadesiz borç da kalemdir,
+  // vadesi kayıt günü (2.4.5'teki "tarihsiz borç kalem değildir" kuralının YERİNE).
+  it("K6.3 ufuk: geçmişin tamamı + bugünden 7 gün (8. gün yok); vadesiz borç kayıt gününde vadeli kalemdir (S1)", async () => {
     const acc = await account("Ufuk");
     const seven = await entry(acc, { kind: "debt", amount: "10", date: day(-1), dueDate: day(7) });
     const eight = await entry(acc, { kind: "debt", amount: "10", date: day(-1), dueDate: day(8) });
     const old = await entry(acc, { kind: "debt", amount: "10", date: day(-399), dueDate: day(-390) });
     const plain = await entry(acc, { kind: "debt", amount: "10", date: day(-1) });
-    const ids = new Set((await accountItems()).map(row => row.entryId));
+    const items = await accountItems();
+    const ids = new Set(items.map(row => row.entryId));
     assert.ok(ids.has(seven.id), "7 gün sonra vadeli kalem var");
     assert.equal(ids.has(eight.id), false, "8 gün sonra vadeli kalem yok");
     assert.ok(ids.has(old.id), "çok eski vadesi geçmiş kalem var");
-    assert.equal(ids.has(plain.id), false, "Vade / Beklenen Ödeme Tarihi girilmemiş borç kalem değil");
+    const p = items.find(row => row.entryId === plain.id);
+    assert.deepEqual(p && [p.dueDate, p.state, p.days, p.amount], [day(-1), "overdue", -1, 10], "vadesiz borç: vade = kayıt günü, ertesi gün gecikmiş");
   });
 
   it("K6.3 Vade Takip aynı kalemleri gösterir (kaynak 'account', tarih, tutar, etiket); aralık dışı (8. gün) Vade Takip'te 30 günlükte var", async () => {

@@ -1,0 +1,7 @@
+rastgele-s1-1.json: 56 değişti, 0 eklendi, 0 kalktı — değişti fatura:acik ×6, değişti hareket:kalan ×8, değişti projeksiyon:cari ×6, değişti projeksiyon:hareket ×8, değişti takvim:cariKalemSayisi ×6, değişti takvim:fatura ×6, değişti takvim:hareket ×8, değişti vadeTakip:hareket ×8
+rastgele-s1-2.json: 97 değişti, 0 eklendi, 0 kalktı — değişti fatura:acik ×6, değişti hareket:kalan ×25, değişti projeksiyon:cari ×5, değişti projeksiyon:hareket ×17, değişti takvim:cariKalemSayisi ×5, değişti takvim:fatura ×6, değişti takvim:hareket ×19, değişti vadeTakip:hareket ×14
+rastgele-s1-3.json: 157 değişti, 0 eklendi, 9 kalktı — değişti fatura:acik ×19, değişti hareket:kalan ×34, değişti projeksiyon:cari ×6, değişti projeksiyon:hareket ×29, değişti takvim:cariKalemSayisi ×6, değişti takvim:fatura ×19, değişti takvim:hareket ×26, değişti vadeTakip:hareket ×18, kalktı vadeTakip:hareket ×9
+rastgele-ux18-1.json: 0 değişti, 14 eklendi, 0 kalktı — eklendi mizan:500 ×7, eklendi mizan:519 ×7
+rastgele-ux18-2.json: 0 değişti, 14 eklendi, 0 kalktı — eklendi mizan:500 ×7, eklendi mizan:519 ×7
+rastgele-ux18-3.json: 0 değişti, 14 eklendi, 0 kalktı — eklendi mizan:500 ×7, eklendi mizan:519 ×7
+GENEL: değişti fatura:acik ×31, değişti hareket:kalan ×67, değişti projeksiyon:cari ×17, değişti projeksiyon:hareket ×54, değişti takvim:cariKalemSayisi ×17, değişti takvim:fatura ×31, değişti takvim:hareket ×53, değişti vadeTakip:hareket ×40, eklendi mizan:500 ×21, eklendi mizan:519 ×21, kalktı vadeTakip:hareket ×9

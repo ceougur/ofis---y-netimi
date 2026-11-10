@@ -112,7 +112,9 @@ describe("Şüpheli Alacaklar — ekranın okuduğu veri (liste, kart, ANLIK DUR
     const data = await must("vade takip", ctx.api.get("/api/workspace/overview/vade-takip?preset=next30"));
     assert.equal(data.doubtful.amount, 1000);
     assert.equal(data.doubtful.accountCount, 1);
-    assert.equal(data.totals.in.total.amount, 0, "vade kalemi yok: şüpheli alacak vade kalemi değildir");
+    // 2.5.0 Ç5-B (bilerek güncellendi; kullanıcı kararı S1 05.11 "vadesiz borç ertesi gün gecikmiş", vade = belge günü): ABC'nin vadesiz 10.000'lik borcu
+    // artık vade kalemidir — kalan 7.000'in şüpheli kuyruğundaki 1.000'i HARİÇ (M13, S3): Tahsil Edilecek 6.000. Önceden vadesiz borç kalem değildi (0).
+    assert.equal(data.totals.in.total.amount, 6000, "vade kalemi: 7.000 − şüpheli 1.000 (şüpheli alacak vade kalemi değildir)");
     const out = await must("ödenecek", ctx.api.get("/api/workspace/overview/vade-takip?preset=next30&direction=out"));
     assert.equal(out.doubtful.amount, 0);
     const pdf = await ctx.api.raw("GET", "/api/workspace/overview/vade-takip.pdf?preset=next30");

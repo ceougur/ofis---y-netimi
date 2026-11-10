@@ -1,0 +1,20 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "d8-c5-tanimsiz",
+ "aciklama": "2.5.0 C13.4 (11) tanımsız durumlar — kâhin karar metninin çözmediği yerde değer KURMAZ (denetim yok, `belirsiz`'e not): A — 'Carinin Mevcut Borcu' kartı (1.200) iki kalemi tüketir (Açılış 1.000 + Borç 200 / 500): kart ödeneninin kalemlere dağılımı kararda yok → Kalan / kart ödeneni denetlenmez; bakiye ve kart tutarı denetlenir. B — taksitli faturanın iadesi (kartın küçülmesi (4) / 2B-S3 Ç7b'de) → fatura açığı denetlenmez.",
+ "dayanak": "KARARLAR.md §13 C13.4 (11)",
+ "bugun": "2026-06-15",
+ "adimlar": [
+  {"id": "ca", "islem": "cari_ac", "ad": "A", "isim": "Ayla İkikalem", "tarih": "2026-05-01", "acilis": "1000"},
+  {"id": "b1", "islem": "borc", "cari": "A", "tutar": "500", "tarih": "2026-05-02"},
+  {"id": "ka", "islem": "kart_ac", "ad": "KA", "cari": "A", "tutar": "1200", "taksit": 2, "ilkVade": "2026-06-01", "tarih": "2026-05-10", "mevcut": true},
+  {"id": "cb", "islem": "cari_ac", "ad": "B", "isim": "Bora Taksitİade", "tarih": "2026-05-01"},
+  {"id": "f1", "islem": "fatura", "ad": "F1", "cari": "B", "tutar": "600", "tarih": "2026-05-03", "taksit": {"sayi": 2, "ilkVade": "2026-06-01"}},
+  {"id": "i1", "islem": "iade", "ad": "I1", "fatura": "F1", "tarih": "2026-05-20"},
+  {"id": "k1", "islem": "kontrol", "gecikmis": true}
+ ],
+ "elleBeklenen": {
+  "k1:cari:A:bakiye": 150000, "k1:kart:KA:toplam": 120000, "k1:cari:B:bakiye": 0
+ },
+ "elleYok": ["k1:hareket:b1:kalan", "k1:hareket:acilis:A:kalan", "k1:kart:KA:odenen", "k1:cari:A:gecikmis", "k1:fatura:F1:acik", "k1:cari:B:gecikmis"]
+}
