@@ -584,8 +584,10 @@ async function kos(senaryo) {
           break;
         }
         case "kart_tahsilat": {
-          const planlar = (await api("GET", "/api/workspace/plans")).data?.plans || [];
-          const pl = planlar.find(x => x.caseKey === ids.anahtar[a.kayit]);
+          // bakım 6 eşlemesi (yalnız eşleme): Taksitler'den açılan kartın (kart_ac) Taksit Tahsilatı — kart kimliği ids.kart'tan; Tablodan Aktar kartı kayıt anahtarıyla (eskisi gibi)
+          const kartId = ids.kart[a.kayit]?.id;
+          const planlar = kartId ? [] : (await api("GET", "/api/workspace/plans")).data?.plans || [];
+          const pl = kartId ? { id: kartId } : planlar.find(x => x.caseKey === ids.anahtar[a.kayit]);
           durum(a, await api("POST", `/api/workspace/plans/${pl?.id}/entries`, { kind: "in", amount: tlMetin(kurusOf(a.tutar)), date: t, method: "cash", cashForce: true, similarOk: true }));
           break;
         }

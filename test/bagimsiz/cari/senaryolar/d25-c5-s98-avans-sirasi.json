@@ -1,7 +1,7 @@
 {
  "dil": "destekofis-cari/3",
  "bugun": "2026-03-15",
- "aciklama": "2.5.0 bakım 5 C17 (KULLANICI S98 = A, 10.11 13:20; bugün 15.03): avans da kalemdir, vade (= ödeme günü) sırasına girer. R1 kararın örneği: Ödeme 200 (01.03), Borç 100 (vade 20.03), tahsilat 150 → avans 50 + Borç 100 açık. R2 sınır: Borç vadesi 02.03 (avanstan bir gün SONRA) → yine önce avans. R3 aynı örnek satış faturasıyla: takvim / gecikmiş net, faturanın BELGE durumu YAZILMAZ (SK-13). R4 vadesiz Borç avanstan ÖNCE (20.02) → önce Borç kapanır, avans 150.",
+ "aciklama": "2.5.0 bakım 5 C17 (KULLANICI S98 = A, 10.11 13:20; bugün 15.03): avans da kalemdir, vade (= ödeme günü) sırasına girer. R1 kararın örneği: Ödeme 200 (01.03), Borç 100 (vade 20.03), tahsilat 150 → avans 50 + Borç 100 açık. R2 sınır: Borç vadesi 02.03 (avanstan bir gün SONRA) → yine önce avans. R3 aynı örnek satış faturasıyla: takvim / gecikmiş net; faturanın BELGE durumu bakım 5'te yazılmıyordu (SK-13) — bakım 6: S99 A ile fatura listesi takvimle AYNI (Açık 100, avans 50). R4 vadesiz Borç avanstan ÖNCE (20.02) → önce Borç kapanır, avans 150.",
  "dayanak": "KARARLAR.md §17 Y5-2, Y5-6; S98 A",
  "elleBeklenen": {
   "k1:cari:R1:bakiye": 15000,
@@ -23,12 +23,11 @@
   "k1:hareket:r4b:kalan": 0,
   "k1:takvim:hareket:r4o": {"amount": 15000, "dueDate": "2026-03-01", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -14, "cari": "R4", "person": "Rüya Önce"},
   "k1:cari:R4:gecikmis": 15000,
-  "k1:takvim:cariKalemSayisi": 6
+  "k1:takvim:cariKalemSayisi": 6,
+  "k1:fatura:R3F:acik": 10000,
+  "k1:cari:R3:acikToplam": 10000,
+  "k1:cari:R3:acikEsitBakiye": false
  },
- "elleYok": ["k1:fatura:R3F:acik", "k1:cari:R3:acikToplam"],
- "elleBelirsiz": [
-  ["cari R3 fatura belge durumu tanımsız", "SK-13"]
- ],
  "adimlar": [
   {"id": "cr1", "islem": "cari_ac", "ad": "R1", "isim": "Rana Örnek", "tarih": "2026-02-01"},
   {"id": "r1o", "islem": "odeme", "cari": "R1", "tutar": "200", "tarih": "2026-03-01"},

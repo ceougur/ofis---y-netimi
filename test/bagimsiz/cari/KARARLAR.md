@@ -1,6 +1,7 @@
 # Bağımsız CARİ / EVRAK kâhini — kurallar ve kararlar (2.4.4 madde 31a, B1–B2)
 
-Kural seti (06.11.2026): **`2.5.0`** varsayılan (2.4.9 + Ç5: açılış 519, KG-5, S49, tek yükümlülük kuyruğu S50 / S2 / ANINDA, B1 gecikmiş S52 — §13; bakım 2: S68 borç tarafı vade sırası, S67 takvim kalemi, S66 carisiz evrakın karşılıksızı — §14; bakım 3: S69 söz günü / söz geçmiş takvim kalemi — §15; bakım 4 (10.11.2026): S91 vadesiz kayıt kayıt gününde kalem, S92 net görünüm — karşı yönlü kalemler kendi belge tarihinde netleşir, S93 verilen avans gecikmişte — §16); (03.11.2026): **`2.4.9`** (2.4.6 + C1 hareketli cari silinemez — §12); 25.10.2026: **`2.4.6`** (2.4.5 + KS8–KS10 — §9; dil `/3` aynı, iki ek: `iade {geri}`, adımda `catal`); `--kural 2.4.5` 2.4.5 beklentilerini bayt bayt verir,
+Kural seti (06.11.2026): **`2.5.0`** varsayılan (2.4.9 + Ç5: açılış 519, KG-5, S49, tek yükümlülük kuyruğu S50 / S2 / ANINDA, B1 gecikmiş S52 — §13; bakım 2: S68 borç tarafı vade sırası, S67 takvim kalemi, S66 carisiz evrakın karşılıksızı — §14; bakım 3: S69 söz günü / söz geçmiş takvim kalemi — §15; bakım 4 (10.11.2026): S91 vadesiz kayıt kayıt gününde kalem, S92 net görünüm — karşı yönlü kalemler kendi belge tarihinde netleşir, S93 verilen avans gecikmişte — §16; bakım 5–6 (10.11.2026): S95–S98 iki yönlü tek kuyruğun birlikte okunuşu, verilen avans kalemi — §17; S99 taksitli fatura / belge durumu tek kuyruktan,
+S101 avansla "Bitti" kart, S102–S105 kalan okumalar — §18); (03.11.2026): **`2.4.9`** (2.4.6 + C1 hareketli cari silinemez — §12); 25.10.2026: **`2.4.6`** (2.4.5 + KS8–KS10 — §9; dil `/3` aynı, iki ek: `iade {geri}`, adımda `catal`); `--kural 2.4.5` 2.4.5 beklentilerini bayt bayt verir,
 `--legacy` 2.4.4. Dil: **`destekofis-cari/3`** (24.10.2026, 2.4.5 kuralları — §8; `/1` `/2` senaryoları değişmeden koşar ya da 2.4.5 kararıyla geçersiz diye atlanır — §8 C0) · `/2`: 23.10.2026, B3–B5 · İlk yazıldığı gün: 22.10.2026 · Kâhin: `model.py` (Python 3, yalnız standart kütüphane, `python3 -I`) ·
 Koşucu: `kos.mjs` · Rastgele üretici: `uretici.py` · Elle senaryolar: `senaryolar/*.json` · Komut: `node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs` (npm betiği `test:kahin-cari`, iş akışına eklenirken açılır: test/ci-kapi-listesi.test.mjs her test:kahin-* betiğinin ci.yml ya da uzun-dogrulama.yml'de koşmasını ister).
 
@@ -1807,3 +1808,79 @@ değiştirmez). **Bu bölümün ilk commit'i yalnız YORUMDUR (ders 40 — önce
 - **SK-17 (S104'ün kapsamı — Y6-8):** müşterinin bizdeki avansı (fazla ödemesi) ile ona borcumuz (alış faturası / Alacak) birlikte açıkken yeni SATIŞ (ya da Borç Yaz) gelirse önce hangisinden düşülür?
   Örnek: 01.03 tahsilat 500 (borcu yok) · 05.03 aynı kişiden alış 300 · 10.03 satış 600. **A (öneri, S104 gibi vade sırası):** önce avans (01.03): satış kapanır (500 avans + 100 alış), alış 200 açık
   ("Ödenecek Borç 200"), avans 0 / **B (önce yükümlülük):** önce alış: satış kapanır (300 alış + 300 avans), alış 0, müşterinin avansı 200 / **C:** uç durum böyle kalsın (BİLİNEN SINIR).
+
+### Kurallar (kod commit'i; yorumların `model.py`'deki karşılığı)
+- **C18.1 (Y6-1) tek okuma — `_okumalar5`:** biçim K2 (S102), verilen avansın kapanışı kesin (S103), iade-önce (S105); gelen borç yönlü ÖDEME'nin sırası `_anah5` ile 's2' (S104). Kalan tek boyut:
+  gelen borç yönlü KALEM × alınan avans + alacak yönlü kalem {s2, yukumluluk, odeme} (SK-17) — yalnız alacak yönlü kalem + alacak yönlü ödeme satırı + borç yönlü kalem olan caride açılır.
+  Ayrışırsa `belirsiz` "okumalar ayrışıyor (…) — gelen borç yönlü kalem × alınan avans: KULLANICIYA SORULMALI SK-17 (§18)".
+- **C18.2 (Y6-2) belge durumu — `belge250`:** yalın caride `fatura:<ad>:acik` (satış, taksitli satış, alış) = net250 "belge" görünümü (verilen avans kalem, iki yükümlülük kalemi netleşmeden);
+  `belge_tanimsiz` yalın caride yalnız belge görünümü SK-17 okumasına bağlıysa neden verir. Yalın olmayan caride §13 tek taraflı kuyruk ve bakım 5'in `_s98_iki`'si AYNEN. `kontrol_acik_toplam`
+  aynı belge değerlerini kullanır.
+- **C18.3 (Y6-3) taksitli fatura:** `_net_uygun` "taksitli fatura"yı yalnız karşı yönlü kalemle yalın olmama nedeni sayar ("… SK-15"); `_net_satirlar` taksitli faturanın taksitlerini borç yönlü
+  kalem satırları olarak ekler (`_taksit_plani` — `_alacak_tarafi_250` ile aynı plan; satır `taksit_of` = fatura); belge açığı = taksitlerin toplamı. SK-15 carisinde (taksitli + karşı yönlü
+  kalem) o carinin faturalarının belge durumu yazılmaz (B okumasında alış da net görünürdü). `kontrol_acik_toplam` 2.5.0'da taksitli faturalı cariyi atlamaz (S99 "Σ fatura açığı = cari
+  bakiyesi"; ≤ 2.4.9 aynen atlar). Taksitli faturanın takvim / Vade Takip / projeksiyon kalemi ve o carinin görünüm toplamı yazılmaz (`_cari_kalemleri` aynen None).
+- **C18.4 (Y6-4 / Y6-5) S101 — `_tyk(s101=…)`, `_alacak_tarafi_250` → `_alacak_govde250`:** Mevcut Borç kartlı caride tüketim açık borçtan büyükse eksik, borç kalemlerinin bağsız PARAYLA kapanmış kısmından
+  (önceki kartların ödenmiş saydığı kısım düşülerek) karşılanıyorsa kartın o kadarı ödenmiş sayılır — vadesi en önce gelen taksitten; karşılanmıyorsa EK-2B 32 (C13.4 (11)) AYNEN. İki okuma: R1
+  (S101'in harfi — kart tahsilatının bağı avansla ödenmiş sayılan kısmı kapatamaz; `tahmin` ile kararlı olana dek yeniden hesap) ve R2 ((2) A — bağ önce, önceden kapatan avans kartın gününde
+  serbest); sonuçlar (açıklar, kart ödenenleri, kuyruk kalanları, artan para) ayrışırsa C13.4 (11) nedeni "… KULLANICIYA SORULMALI SK-14 (§18)". Defter kalanı (C13.4 (7)) avansla ödenmiş sayılan kısmı
+  kartın ödeneninden düşer. Kart anahtarları (`kart:<no>:odenen | kalan | taksitN:odenen`) yazılır.
+- `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`: hiçbir yol değişmedi (bütün yeni dallar `k250` ya da mutant).
+
+### C8k Nasıl bozulur? (bakım 6 — kod commit'inde, senaryolarla birlikte yazıldı)
+| # | Bozulma | Senaryo |
+|---|---|---|
+| Z78 | Bağsız avans taksitli faturanın taksitlerini kapatmaz (S99 B — 2.4.9): fatura listesinde taksitsiz fatura kapanır, taksitli açık | d27 P1 / P3, d28 / d29 (mutant 241) |
+| Z79 | Taksitler kuyruğa faturanın gününde girer (vade sırası bozulur: aradaki vadeli Borç sonra kapanır) | d27 P2, d28 / d29 P2 (mutant 242) |
+| Z80 | Verilen avanslı caride taksitli faturanın belge durumu / gecikmişi tek taraflı kuyruktan (S98 taksitlere uygulanmaz) ya da susulur | d27 P3 (mutant 249, 237) |
+| Z81 | Avansla kapanmış borca açılan kart açık kalır / kart tahsilatı karta yazılır, avans serbest kalır (S101 B) | d30 Q1, Q3 (mutant 243) |
+| Z82 | Kısmen avanslı borca kartta ödenmiş kısım son taksitten sayılır (vadesi geçmiş 1. taksit açık görünür) | d30 Q2 / Q4, d31 / d32 (mutant 244) |
+| Z83 | Kart borçtan büyükken (ya da borç iadeyle kapanmışken) kâhin S101'i uydurur | d30 Q6 / Q7 |
+| Z84 | S101 × (2) A'nın ayrıştığı yerde kâhin değer uydurur | d30 Q5 (SK-14) |
+| Z85 | Netleşme tarih sırasıyla yeniden kurulur — aynı günün netleşmesi bozulur (S102 B) | d26 S9 (mutant 245); d33 T9a / T9b sınırları |
+| Z86 | Verilen avansın alışla kapanışı sonraki tedarikçi tahsilatıyla geri alınır (S103 B) | d26 S10, d33 T10c (mutant 246); T10b aynı gün |
+| Z87 | Bağsız Ödeme önce Alacak'ı kapatır, alınan avans durur (S104 B) ya da avansın günü kayar | d26 S11, d33 T11b / T11c (mutantlar 247, 250) |
+| Z88 | Gelen alış önce verilen avanstan düşülür (S105 B) | d26 S12, d33 T12b (mutant 248); T12c iade önce |
+| Z89 | Avanslı caride satış faturasının listesi takvimden ayrışır (SK-13 B) | d25 R3, d26 S13, d33 T13c (mutant 249); T13b fatura önce |
+| Z90 | Taksitli satış + alış, ya da alınan avans + alış + yeni satış durumunda kâhin değer uydurur | d27 P5 (SK-15), d33 T17 (SK-17) |
+| Z91 | Aynı adlı iki carinin avansı birbirinin taksitine / kartına sayılır | d27 P4, d30 Q8 |
+
+### Senaryolar (bakım 6; elle tablolar — kâhin koşulmadan karar metinlerinden elle; toplam 335 elle denetim (d25 23, d26 69, d27–d33 243). İLK koşuda bütün elle denetimler kâhinle aynıydı)
+- **`d27-c5-s99-taksitli-avans`** (bugün 15.06; 43): P1 kararın örneği · P2 taksitler farklı vadelerde, avans kısmen kapatır, aradaki vadeli Borç, sonraki tahsilat vade sırasıyla · P3 verilen avans +
+  taksitli fatura (S98 × S99) · P4 aynı adlı iki cari · P5 SK-15 susar · sayaçlar 0 / 0.
+- **`d28-c5-s99-taksit-vade-gunu`** (bugün 20.06 — 2. taksitin vade günü; 17) · **`d29-c5-s99-taksit-ertesi-gun`** (bugün 21.06 — GÜN DÖNÜMÜ; 17): P2 gecikmiş 0 → 100.
+- **`d30-c5-s101-bitti-kart`** (bugün 15.06; 62): Q1 kararın örneği · Q2 kısmen avanslı borca kart · Q3 / Q4 kart tahsilatı açık kısmı aşıyor / aşmıyor · Q5 SK-14 susar · Q6 EK-2B 32 · Q7 iadeyle
+  kapanmış borç · Q8 aynı adlı iki cari.
+- **`d31-c5-s101-taksit-vade-gunu`** (bugün 01.07; 14) · **`d32-c5-s101-taksit-ertesi-gun`** (bugün 02.07 — GÜN DÖNÜMÜ; 14): Q2 / Q4 gecikmiş 0 / 0 → 200 / 100.
+- **`d33-c5-s102-s105-sinirlar`** (bugün 15.06; 76): T9a / T9b (S102), T10b / T10c (S103), T11b / T11c (S104), T12b / T12c (S105), T13b / T13c (SK-13), T17 SK-17 susar; sayaçlar ÇATAL 8…9 (T12b'nin
+  açık alış iadesi alacağı belirsiz üye — §17 aynen).
+- **Kararla DEĞİŞEN eski elle tablolar (C0k):** d25 R3 (SK-13 → S99 A: `fatura:R3F:acik` 10.000, `acikToplam` 10.000 / `acikEsitBakiye` false; `elleYok` / `elleBelirsiz`'den çıktı) · d26 S9–S13
+  (S102–S105 A, SK-13 ← S99 A: 13 `elleYok` + 5 `elleBelirsiz` → 48 değer). G1 / G2 (Y5-7, KS8) aynen. Yeni değerler kâhin koşulmadan elle yazıldı (betik
+  `docs/kanit/2026-11-10/kahineski6-arac/guncelle-d25-d26.py`, `yeni-senaryolar.py` — değerler betikte elle).
+
+### C10k Mutantlar (bakım 6; `oz-test.py` DEĞERLE — çökmeden, elle tablo kırmızı)
+241 S99 B (taksitli faturanın taksitleri bağsız parayla kapanmaz) · 242 S99 sınırı (taksitler faturanın gününde vadeli) · 243 S101 B (kart kendi borcunu taşır, avans serbest) · 244 S101 sınırı
+(ödenmiş kısım son taksitten) · 245 S102 B (K1) · 246 S103 B (avans kapanışı geri alınır) · 247 S104 B (Ödeme önce yükümlülük) · 248 S105 B (vade sırası) · 249 SK-13 B (belge tek taraflı
+kuyruktan) · 250 S104 sınırı (alınan avansın sıradaki vadesi ertesi gün). Eski mutantlar 234–240 tek okumalı motorda da (Y5-1).
+
+### Dil ekleri (/3, bakım 6)
+Yeni adım YOK; yeni çıktı anahtarı YOK. `kart_tahsilat {kayit}` artık Taksitler'den açılan karta (`kart_ac`'ın `ad`'ı) da girilebilir (modelde zaten öyleydi — koşucuya eşleme eklendi, aşağıda).
+Yeni `belirsiz` kayıtları: "… okumalar ayrışıyor (…) — gelen borç yönlü kalem × alınan avans: KULLANICIYA SORULMALI SK-17 (§18)", "… faturanın belge durumu okumaya bağlı (… SK-17 …)", "cari <ad>
+faturaların belge durumu tanımsız (2.5.0 C18): taksitli fatura + karşı yönlü kalem — KULLANICIYA SORULMALI SK-15 (§18)", C13.4 (11) nedeni "S101 × (2) A … SK-14 (§18)"; EK-2B 32 nedeni Mevcut Borç
+kartlı caride "— eksik kısım avansla kapanmış borçtan karşılanmıyor (S101 kurulmaz)" ekiyle.
+
+### Eşleme notları (Ç5-B kod ajanı / ana oturum için; `kos.mjs`)
+- **`kos.mjs` DEĞİŞTİ — yalnız eşleme:** `kart_tahsilat` adımı `kayit` bir `kart_ac` kartının adıysa kartın kimliği `ids.kart[...]` ile alınır (`POST /api/workspace/plans/<id>/entries`, gövde
+  aynen); öbür durumda eskisi gibi kayıt anahtarıyla. Okunan satırlar: 573–600 (kart_ac / kart_tahsilat adımları), 240–275 (görünüm okumaları), 805–835 (fatura / kart okumaları).
+- Yeni anahtar YOK. Faturanın KENDİ kartı (taksitli fatura) koşucuda okunmuyor — S99'un "kart" sayısı bu yüzden denetlenmiyor (eşleme önerisi: fatura kimliğiyle bağlı planın `totals.remaining`'i
+  `fatura:<ad>:kartKalan` anahtarına okunursa kâhin `fatura:<ad>:acik` ile aynı değeri verir — bu bakımda EKLENMEDİ, programın uç / alan adı bilinmiyor).
+- `GECIKMIS_ALAN` ve `KARSILIKSIZ_CARI` hâlâ `null` (§16 aynen).
+- **Ana oturuma:** `model.py` değişti — mobil yazma kâhininin `cari_model_sha256`'sı yeniden üretilmeli (o dosya okunmadı).
+
+### C12k DENENMEYEN (bakım 6; neden)
+- Program koşulmadı (görev: programla karşılaştırmayı ana oturum yapar). Programın SK-14 … SK-17 durumlarındaki davranışı bilinmiyor.
+- Tablodan Aktar'ın mevcut borç kartında S101 (aynı kod yolu; elle senaryo yazılmadı — Taksitler'den açılan kartla denendi).
+- Taksitli faturanın kendi kartının sayısı ("kart" — koşucuda anahtar yok) ve takvim / Vade Takip kalemleri, o carinin görünüm toplamı (C18.3).
+- Avans sonradan gelince (kart açıldıktan sonra) kartın taksitleri — S50 (§13) aynen; yeni senaryo yazılmadı.
+- Aynı GÜN doğan taksitli ve taksitsiz faturaya bekleyen avansın sırası (Y6-6 — olay / yazım sırası; senaryolar farklı günlerle).
+- KS8 / KS9 etkileşimli, şüpheli / değersiz, fatura iadeli, iki yönde iadeli, tabloya bağlı cariler ve karşı yönlü kalemli kartlı cari — karar yok, susar (§16–§17 aynen; Y6-10).
