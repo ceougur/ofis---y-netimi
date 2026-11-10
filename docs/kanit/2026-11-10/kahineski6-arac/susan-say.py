@@ -93,10 +93,18 @@ def iz(Taban, etiket):
                     if s == "tanim-alani-disi":
                         s += ":" + yalin_neden_kisa(yneden)
                     if s == "okumalar-ayrisiyor":
-                        ayr = nd[1].split("↔", 1)[1] if "↔" in nd[1] else ""
-                        for sk, iz_ in (("SK-9", "K1/"), ("SK-10", "avans-geri"), ("SK-11/SK-17", "/yukumluluk"), ("SK-11/SK-17", "/odeme"), ("SK-12", "iade-once")):
-                            if iz_ in ayr:
-                                SAY[etiket]["okuma-ayrisan-soru:" + sk] += 1
+                        # okuma adı "biçim/avans/a/b": ilk okumayla hangi BOYUTTA ayrıştığı (konum karşılaştırması — sabit okumanın adı sayılmaz)
+                        govde = nd[1].split("(", 1)[1].split(")", 1)[0] if "(" in nd[1] else ""
+                        ilk, _, ayr = govde.partition(" ↔ ")
+                        ilk_p = ilk.split("/")
+                        boyut = set()
+                        for o in ayr.split(", "):
+                            op = o.split("/")
+                            for i_, sk in enumerate(("SK-9", "SK-10", "SK-12", "SK-11/SK-17")):
+                                if len(op) == 4 and len(ilk_p) == 4 and op[i_] != ilk_p[i_]:
+                                    boyut.add(sk)
+                        for sk in sorted(boyut):
+                            SAY[etiket]["okuma-ayrisan-soru:" + sk] += 1
                     SAY[etiket]["net-tanimsiz:" + s] += 1
                     SAY[etiket]["net-tanimsiz:" + s + ":kayit"] += kayit
                     SAY[etiket]["net-tanimsiz:" + s + ":fatura"] += fat
