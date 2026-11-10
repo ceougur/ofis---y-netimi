@@ -1,0 +1,36 @@
+Sen DestekOfis projesinde bağımsız DAR KONTROL incelemecisisin (2.5.0 — Ç5-B Tek Yükümlülük Kuyruğu "TYK" + birleşim düzeltmesi). Yalnız HATA ararsın. Düzeltme, commit ve push YAPMAZSIN. Para çekirdeği — eforun xhigh. Yanıtın Türkçe.
+
+## Hazırlık
+1. Worktree'de `git merge --ff-only 05226cee` (çalışma dalı; Ç5-B birleşimi fd310c0a + kanıt); olmazsa ve kendi commit'in yoksa `git reset --hard 05226cee`.
+2. `ln -s /home/user/ofis---y-netimi/node_modules node_modules` (`npm ci` YOK). Tarayıcı: `PLAYWRIGHT_BROWSERS_PATH=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/pw-1194`.
+3. ÖNCE oku: `CLAUDE.md` (dersler 1–52; özellikle 3, 5, 6, 7, 9, 10, 11, 17, 20, 23, 31, 36, 38, 43, 47, 50, 52); `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`; `docs/erp/C5B-TYK-TASARIM.md` (tamamı); `docs/erp/C5-ACILIS-TASARIM.md` §2.10 ve §4'ün Ç5-B maddeleri; `docs/2.5.0-IS-LISTESI.md` D'de para kuralları (05.11 "hepsi A": karar (1)–(6)), S1, S2, S3, S8, S9, S45, S50, S52, S54, S55, S57, S68, S79, S91, S92, S93 KULLANICI KARARI satırları + Ç5-B ile ilgili BAŞ MİMAR KARARLARI (B1-W, B12 iz, Rapor Merkezi eski anlam, "BAŞ MİMAR KARARI 10.11 … Ç5-B BİRLEŞİM DÜZELTMESİ"); KAYIT `docs/2.5.0-IS-LISTESI-KAYIT.md` içinde "Ç5-B BİTTİ" ve 10.11 tarihli "Ç5-B BİRLEŞİM DÜZELTME" kayıtları.
+
+## Kapsam (DURMA KURALI — yalnız bu fark)
+`git diff fd310c0a^1 fd310c0a -- server client test ':!test/bagimsiz'` — ürün: server/lib/obligation-queue.mjs (yeni çekirdek modül), server/routes/{accounts,invoices,plans,overview}.mjs, server/lib/accounts.mjs, istemci değişiklikleri, kılavuz; testler (tyk-*, güncellenen komşular, kasa-acilis-once-250).
+BİLİNEN, bu turda YENİDEN YAZMA (yalnız yeni bir yüzü varsa bildir):
+- S99 = A (KARAR VERİLDİ, kod Ç5-B tur 2'de): bağsız avans varken taksitli + taksitsiz faturada FATURA DURUMU tek kuyruktan gelmiyor (örnek: avans 500 → taksitli 300 → taksitsiz 500: iki fatura da 300 açık, Σ 600 ≠ bakiye 300). Birleşim düzeltmesindeki kilit istisnası bu kuralla yeniden değerlendirilecek.
+- S95–S98 = A (KARAR VERİLDİ; karşı yönlü kalemlerde netleşmeden sonra gelen bağsız ödeme, verilen avansın ayrı kalem olması, aynı gün sırası, avansın vade sırasına girmesi): kod tarafı kâhin karşılaştırmasından sonra tur 2'de. Bu dört durumda programın BUGÜN ne yaptığını sayıyla yaz (tur 2 ajanına girdi), "bulgu" sayma.
+- Rapor Merkezi 'Geciken' kolonu / süzgeci eski anlamda (sonraki Ç3 turu); Cari alanı ekranı + eski adlar + carisiz evrak (Ç5-A); WhatsApp alıcı tutarları (Ç5-C / WhatsApp tur 3); defter kâhini ana daldaki hâlinde (Ç5-A ile); cari kâhini ↔ program karşılaştırması ve muhasebe sürücüsü (ana oturum koşacak); ölçüm kopyaları ana oturumda.
+
+## Ne ara
+- KUYRUK DOĞRULUĞU: her kararın B seçeneği yönünde sapma var mı — vade sırası (S2 / S68), aynı gün sırası (karar (1)), kilitli dönem (karar (3)) × her tahsilat yolu (cari tahsilatı, kart tahsilatı, fatura peşini, çek / senet tahsili, iade, mahsup, geri alma, silme → Silinenler'den geri alma), bağlı ↔ bağsız, kısmi, fazla ödeme (avans), şüpheli (S3 / M13), Ödeme Sözü (S52), vadesiz kayıt (S1 / S91), karşı yönlü kalemler (S92), verilen avans (S93).
+- İKİ GÖRÜNÜMÜN TUTARLILIĞI: aynı cari için net görünüm (kart kalanı, takvim, zil, Vade Takip, nakit akışı, cari kartındaki gecikmiş) ↔ fatura durumu (fatura listesi / kartı, kapatanlar) ↔ cari bakiyesi ↔ Mutabakat Testi. Σ kalemler = bakiye tutmayan her kurgu (S99 dışındakiler) bulgudur. HER ekran / rapor / süzgeç seçeneği (ders 9, 11): hangi ekranlar TYK'yi okuyor, hangisi eski hesabı — tarayarak listele, ikisi aynı caride farklı sayı veriyorsa yaz.
+- GÖÇ / ESKİ VERİ (ders 17): v2.4.9 GERÇEK koduyla üretilmiş veride (etiket v2.4.9; `git archive v2.4.9`) güncellemeden önce / sonra: fatura durumları, kart kalanları, cari gecikmişleri, takvim kalemleri — değişen her sayı karar metniyle açıklanabiliyor mu? Açıklanamayan fark bulgudur. Geri yüklenen yedek + silinip geri alınan kayıt + aynı adlı iki cari + iki şirket.
+- CARİ DEĞİŞİMİ (S45 / S54 / S57 / S79): kaydın carisini değiştiren yol bütün kayıt türlerinde (tahsilat, ödeme, Borç / Alacak Yaz, bağlı, kartlı, çek / senetli, şüpheli, kilitli dönemde); yarım yazım, bağın sessiz kopması, iki carinin bakiyesi, Kasa / banka satırı, yevmiye.
+- HIZ (ders 47): TYK her liste / özet çağrısında bütün carilerin kuyruğunu mu kuruyor? 2.000 cari / 100.000 satırlı şirkette kart listesi, takvim, zil, Vade Takip, cari listesi, tek tahsilat kaydı — önce (fd310c0a^1) / sonra aynı veri kopyasıyla yanıt süresi + olay döngüsü en çok; `flock -x /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock`; /proc/loadavg yaz; yük > 2 ise "GEÇERSİZ" (kilit doluysa bekleme döngüsü kurma — ders 50; DENENMEYEN'e yaz). Hazır veri kopyaları: `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-olcum/` (OKUNUR; kendi kopyanı al, üzerine yazma).
+- İŞLEM İÇİ DAL: işlem sürerken kuyruğun kullanılmadığı (kartın kendi hesabına dönülen) yollar — aynı istekte iki farklı sayı / yanlış ret üretir mi.
+- BİRLEŞİM DÜZELTMESİ: kilit ölçümündeki istisna (fatura durumu geçişinde kendi kartlı kalem) — kilitli dönemde kapanmış TAKSİTSİZ faturanın kapanışını geriye dönük değiştiriyor mu (kilitli dönemin sayıları kilitten sonra değişmemeli — karar (3)); iade → taksitli fatura bağı yolu.
+- TEST DİŞİ: ajanların eski kod kırmızıları ve mutasyonları (28/28) — kendi kopyanda en az 6 yeni mutant (ajanınkilerden farklı) + mutabakat motorunun (test/mutabakat) TYK'yi gerçekten ölçüp ölçmediği (aynı el riski — ders 5: motor programla aynı varsayımı taşıyorsa yaz).
+- G2 komşu: obligation-queue'nun bütün çağıranları (test/ ve server/ taramasıyla — ders 10).
+
+## Yöntem (prensip §3)
+- Her bulgu betikle GERÇEK programda üretilir; çıktıda sayı olur. Program başlatırken `HUKUK_LICENSE_URL=http://127.0.0.1:9`. Üretilemeyen kuşku "DOĞRULANMADI"ya.
+- Eski kod `git archive fd310c0a^1` (ve v2.4.9) ile ayrı kopyada `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/dk-c5b-<kısa>` (ders 23, 25, 51). İş bitince yalnız kendi tam yollarını sil.
+- Uzun koşu baştan 2 saat sınırla, içinde bekleme döngüsü olmadan (ders 50); yük koşuları `flock -s -n …/olcum.lock` (ders 52).
+- `pkill` / joker `rm` YOK. Tam `npm test` YOK. Koşular `KANIT_DIR=<kendi not defteri klasörün> node tools/kanit.mjs kos dkc5b-<ad> -- <komut>`. Çıktılar depoya commit EDİLMEZ.
+- PARA KURALI AYRIŞMASI (ders 43): iki okumaya açık bir kural bulursan düzeltme önerme — KULLANICIYA SORULMALI (iki seçenek + öneri; uç durumsa üçüncü seçenek "Uç durum böyle kalsın (BİLİNEN SINIR)").
+- SAKINCA SÜZGECİ: her DÜŞÜK için yaz — yanlış para / bakiye, veri kaybı, defter, KVKK ya da gerileme mi? Öyleyse ORTA say.
+- Kendi arka plan işin sürerken turunu rapor vermeden BİTİRME; sonucu bekle, sonra raporla.
+
+## Rapor (prensip §3 biçimi)
+Her bulgu: sınıf (YÜKSEK / ORTA / DÜŞÜK), dosya:satır, betik + çıktı (sayılarla), kök neden, en küçük düzeltme önerisi, GERİLEME mi (2.4.9'a göre); S95–S98 durumlarında programın bugünkü sayıları; hangi ekran hangi hesabı okuyor tablosu; ölçüm sonucu (loadavg ile); baş mimar kararlarının değerlendirmesi; KULLANICIYA SORULMALI; DOĞRULANMADI; DENENMEYEN.
