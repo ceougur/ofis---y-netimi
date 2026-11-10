@@ -114,6 +114,9 @@ export function familyOf(code) {
   if (code.startsWith("invoice:")) return "invoice";
   if (code.startsWith("dates:format:")) return `rows:${code.slice(13)}`;
   if (code.startsWith("dates:future:") || code === "money:method" || code === "money:report" || code === "money:event" || code.startsWith("bank:event")) return null;
+  // 2.5.0 Ç5-K tur 2 (dar kontrol ORTA-1): "Kasa Açılışından Önce Tarihli Hareket" yalnız tam taramada üretilen UYARIDIR (lib/integrity.mjs notice), kapının denetimi
+  // değil — tabanda görünse de tam kapıyı tetiklemez (önceden "all": açılıştan sonraki ilk yazım tam kapıya düşüyordu; 105.000 satırda 13 ms → 1.221 ms).
+  if (code === "cash:before-opening") return null;
   // Aşama 3: açılış kuralı ve fiş dengesi hesap/olay bazında; süzgeç dokunulan hesap ve olaylarda kendisi denetler (eski sapmaya dokunan yazım
   // bulgu verir → tam kapı imzayla karar verir).
   if (code.startsWith("bank:opening") || code.startsWith("bank:voucher") || code.startsWith("bank:transfer") || code.startsWith("bank:carry") || code.startsWith("bank:ref")) return null;

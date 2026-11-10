@@ -644,11 +644,15 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     // 2.5.0 Ç5-K (S20 = A; lib/cash-opening.mjs): Kasa açılışından önce tarihli nakit hareketi — geri yüklenen yedek, eski sürüm verisi ya da Silinenler'den aynen
     // gelen satır (yeni hareket COMMIT'te 409 cash-before-opening). Düzey UYARI, YALNIZ tam taramada (açılış, Mutabakat Testi, arka plan taraması, Defter Mutabakatı;
     // COMMIT kapısında yok — geri yükleme ve tarihi değişmeyen düzeltme engellenmez). Açılış ya da böyle satır yoksa denetim listede yok (liste 2.4.9 ile aynı).
+    // 2.5.0 Ç5-K tur 2 (dar kontrol ORTA-1; BAŞ MİMAR 10.11 — S20 = A "Mutabakat Testi uyarı verir"): bu denetim SAPMA DEĞİL UYARIDIR — notice: true. Sonuçta
+    // görünür (ok false, failures içinde; gizlenmez), ama sapma sayılmaz: Yönetim › Sistem'de sarı + hint ("N denetim tamam" bozulmaz), Defter Mutabakatı'nda durum
+    // "Uyarı" (Sonuç bu satır yüzünden "Fark Var" olmaz), kapının tabanına / alanına girmez (integrity-scope familyOf → null), tarama "yeni sapma" kaydı ve zili
+    // üretmez (settleScan), açılış "sapma var" günlüğü yazmaz (start). Sayı artsa da uyarıdır (yeni satırı S12 zaten reddeder).
     if (!touched && has("cash_entries")) {
       const early = cashBeforeOpening(store, money());
       if (early?.rows.length) {
         const opening = early.opening.split("-").reverse().join(".");
-        checks.push({ code: "cash:before-opening", name: "Kasa Açılışından Önce Tarihli Hareket", ok: false, count: early.rows.length, severity: "warning", opening: early.opening, hint: `Bu nakit hareketleri Kasa açılışından (${opening}) önce tarihli (geri yüklenen yedek, eski sürüm verisi ya da Silinenler'den geri gelen kayıt). Tarihi değişmeden düzeltilebilir; açılıştan önceye yeni hareket girilemez. Hareketler açılışın içinde değilse yönetici Kasa → Açılış Bakiyesi'nin tarihini öne alır; uyarı kalkar.`, sample: early.rows.slice(0, 5).map(item => item.sample), items: early.rows.slice(0, 100).map(({ source, id, date }) => ({ source, id, date })) });
+        checks.push({ code: "cash:before-opening", name: "Kasa Açılışından Önce Tarihli Hareket", ok: false, count: early.rows.length, severity: "warning", notice: true, opening: early.opening, hint: `Bu nakit hareketleri Kasa açılışından (${opening}) önce tarihli (geri yüklenen yedek, eski sürüm verisi ya da Silinenler'den geri gelen kayıt). Tarihi değişmeden düzeltilebilir; açılıştan önceye yeni hareket girilemez. Hareketler açılışın içinde değilse yönetici Kasa → Açılış Bakiyesi'nin tarihini öne alır; uyarı kalkar.`, sample: early.rows.slice(0, 5).map(item => item.sample), items: early.rows.slice(0, 100).map(({ source, id, date }) => ({ source, id, date })) });
       }
       lap("cash-opening");
     }
@@ -834,7 +838,9 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     legacyMethod = measureLegacyMethod();
     measureLegacyBank();
     const result = run();
-    baseline = new Set(result.failures.map(signature));
+    // 2.5.0 Ç5-K tur 2: uyarı (notice) sapma değildir — taban, açılış günlüğü ve sunucu günlüğü yalnız sapmaları taşır.
+    const drifts = result.failures.filter(item => !item.notice);
+    baseline = new Set(drifts.map(signature));
     baselineFamilies = familiesOf(baseline);
     legacyRows = measureLegacyRows(baseline);
     legacyCheques = new Set(drift);
@@ -843,10 +849,10 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     const lock = period()?.lockedUntil?.() || "";
     lockState = { lock, digest: lockDigest(lock) };
     syncCounters();
-    if (result.failures.length) {
-      log?.warn?.(`Mutabakat: güncelleme öncesinden kalan ${result.failures.length} sapma var (${result.failures.map(item => item.name).join("; ")}). Yeni işlemler bu sapmayı büyütemez.`);
+    if (drifts.length) {
+      log?.warn?.(`Mutabakat: güncelleme öncesinden kalan ${drifts.length} sapma var (${drifts.map(item => item.name).join("; ")}). Yeni işlemler bu sapmayı büyütemez.`);
       const last = has("integrity_log") ? store.get("SELECT detail_json AS detail FROM integrity_log WHERE action = 'baseline' ORDER BY at DESC LIMIT 1") : null;
-      if (last?.detail !== detailOf(result.failures)) write("baseline", [], result.failures);
+      if (last?.detail !== detailOf(drifts)) write("baseline", [], drifts);
     }
     const remove = store.addCommitGuard({
       check({ tables, events: touched, scope: capture }) {
@@ -961,8 +967,10 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       result.failures.push(item);
       result.ok = false;
     }
-    const current = new Set(result.failures.map(signature));
-    const findings = result.failures.filter(item => !known.has(signature(item)));
+    // 2.5.0 Ç5-K tur 2: uyarı (notice; "Kasa Açılışından Önce Tarihli Hareket") yeni sapma sayılmaz — günlük ("scan") ve zil (integrity.alert) yok; sayı artsa da.
+    const drifts = result.failures.filter(item => !item.notice);
+    const current = new Set(drifts.map(signature));
+    const findings = drifts.filter(item => !known.has(signature(item)));
     known = current;
     if (findings.length) {
       write("scan", [], findings);

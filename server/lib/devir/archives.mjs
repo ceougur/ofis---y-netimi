@@ -9,7 +9,7 @@
 // Bütünlük: kayıttaki sha256 ↔ dosyanın özeti; yanında arsiv-kaydi.json (kaydın kopyası — kayıt defteri kaybolunca özet buradan geri gelir).
 // Bu dosya yalnız dosya düzeyi yardımcıları taşır; HTTP / uygulama düzeyi açılış lib/devir/archive-open.mjs'de.
 import { createHash } from "node:crypto";
-import { createReadStream, existsSync, readFileSync, readdirSync, renameSync, statSync, writeFileSync } from "node:fs";
+import { createReadStream, existsSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { resolveDbPath } from "../db-path.mjs";
@@ -25,6 +25,33 @@ export const PRE_MIGRATION_PREFIX = "goc-oncesi-v";
 // Yarıda kalan göçün kopyası bir sonraki göçte silinir; devir yedeğine girmez (geçici dosya).
 export const MIGRATION_WORK_FILE = "goc-calisma.sqlite";
 export const isArchiveTransient = name => String(name).startsWith(PRE_MIGRATION_PREFIX) || String(name).startsWith(MIGRATION_WORK_FILE);
+
+// 2.5.0 D2 tur 3 (dar kontrol ORTA-2; BAŞ MİMAR 10.11): arşivin YANINDA işlenmemiş günlük. Boş olmayan -wal: WAL kipinde kesinleşmiş ama ana dosyaya işlenmemiş kayıt
+// (özet yalnız ana dosyanındır; kopya / göç onu görmez); boş olmayan -journal: yarıda kalmış yazım (salt okunur bağlantı geri alamaz). Böyle arşiv "değişmiş" sayılır
+// (K2 aynen: eski şema → 409 archive-changed, son şema → uyarıyla salt okunur), GÖÇ ETMEZ ve yan dosya SİLİNMEZ. Boş (0 bayt) -wal / -journal ve -shm zararsızdır.
+// D4 sözleşmesi: arşiv yan dosyasız bırakılır (checkpoint + DELETE günlük kipi + kapalı), özet ondan sonra alınır.
+export const ARCHIVE_JOURNALS = Object.freeze(["-wal", "-journal"]);
+/** Arşivin yanındaki boş olmayan günlük dosyasının soneki ("-wal" | "-journal"), yoksa "". Okunamayan (yok dışında hata) yan dosya varmış sayılır. */
+export function archiveSideFile(file) {
+  for (const suffix of ARCHIVE_JOURNALS) {
+    try {
+      if (statSync(`${file}${suffix}`).size > 0) return suffix;
+    } catch (error) {
+      if (error?.code !== "ENOENT") return suffix;
+    }
+  }
+  return "";
+}
+/**
+ * Yalnız BOŞ yan dosyaları siler (0 bayt -wal / -journal; işlenmemiş günlük yoksa -shm) — göçün sonucu asıl dosyanın yerine geçmeden önce, eski boş günlük yeni
+ * dosyaya uygulanmasın. Boş olmayan -wal / -journal varsa HİÇBİR ŞEY silinmez, soneki döner (değişmiş arşiv).
+ */
+export function clearEmptySideFiles(file) {
+  const side = archiveSideFile(file);
+  if (side) return side;
+  for (const suffix of [...ARCHIVE_JOURNALS, "-shm"]) rmSync(`${file}${suffix}`, { force: true });
+  return "";
+}
 
 const YEAR = /^\d{4}$/;
 export const validYear = value => YEAR.test(String(value ?? "")) && Number(value) >= 2000 && Number(value) <= 2999;

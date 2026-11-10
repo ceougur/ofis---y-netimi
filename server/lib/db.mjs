@@ -233,11 +233,15 @@ export function createStore(db) {
   const SCOPE_TABLES = new Set([...FINANCIAL, "invoices", "invoice_lines", "invoice_offsets"]);
   let scope = null;
   let trackedChanges = 0;
-  const freshScope = () => ({ rows: new Map(), before: new Map(), unknown: "" });
-  const scopeRows = table => {
-    if (!scope.rows.has(table)) scope.rows.set(table, new Set());
-    return scope.rows.get(table);
+  // 2.5.0 Ç5-K tur 2 (dar kontrol DÜŞÜK-1): inserted = bu işlemde EKLENEN satırların rowid'i; born = önceki hâli (before) bu işlemde eklenmiş satırın hâli olan
+  // rowid'ler (işlem ÖNCESİ hâl değil — lib/cash-opening.mjs "önceki hâl" eşlemesi bunları saymaz). Kesin iz: önceden cash-opening "son COMMIT'teki en büyük rowid"
+  // sezgisiyle buluyordu; başka bağlantı yazınca (data_version) sezgi kabul yönünde kapanıyordu.
+  const freshScope = () => ({ rows: new Map(), before: new Map(), inserted: new Map(), born: new Map(), unknown: "" });
+  const setIn = (map, table) => {
+    if (!map.has(table)) map.set(table, new Set());
+    return map.get(table);
   };
+  const scopeRows = table => setIn(scope.rows, table);
   const UPSERT = /\bOR\s+REPLACE\b|^\s*REPLACE\s+INTO|\bON\s+CONFLICT\b/i;
   function readBefore(table, sql, args) {
     let parsed;
@@ -260,7 +264,10 @@ export function createStore(db) {
       if (!scope.before.has(table)) scope.before.set(table, new Map());
       const before = scope.before.get(table);
       for (const row of rows) {
-        if (!before.has(row.__rowid)) before.set(row.__rowid, row);
+        if (!before.has(row.__rowid)) {
+          before.set(row.__rowid, row);
+          if (scope.inserted.get(table)?.has(row.__rowid)) setIn(scope.born, table).add(row.__rowid);
+        }
         if (parsed.verb === "UPDATE") scopeRows(table).add(row.__rowid);
       }
       return rows;
@@ -273,8 +280,12 @@ export function createStore(db) {
     if (!/^\s*(INSERT|REPLACE)/i.test(sql)) return;
     const changes = Number(result?.changes) || 0;
     const last = Number(result?.lastInsertRowid) || 0;
-    if (changes > 0 && last > 0) for (let k = 0; k < changes; k += 1) scopeRows(table).add(last - changes + 1 + k);
-    else if (changes > 0) scope.unknown ||= `${table}: eklenen satır kimliği yok`;
+    if (changes > 0 && last > 0) {
+      for (let k = 0; k < changes; k += 1) {
+        scopeRows(table).add(last - changes + 1 + k);
+        setIn(scope.inserted, table).add(last - changes + 1 + k);
+      }
+    } else if (changes > 0) scope.unknown ||= `${table}: eklenen satır kimliği yok`;
   }
   function afterLedgerInsert(table, sql, result) {
     if (!policy.sources.has(table) || !/^\s*(INSERT|REPLACE)/i.test(sql)) return;

@@ -28,6 +28,8 @@ const ARSIV = "test/devir-d2-arsiv-250.test.mjs";
 const YEDEK = "test/devir-d2-yedek-250.test.mjs";
 // 2.5.0 D2 tur 2 (dar kontrol 06.11): iki aşamalı arşiv göçü (ORTA-1), bakımdaki şirketin arşivi (ORTA-2), DESTEKOFIS_BAKIM → 503 (DÜŞÜK-1), yaşayan mutantlar D2 / A2 / B1 (DÜŞÜK-2).
 const GOC = "test/devir-d2-arsiv-goc-kesinti-250.test.mjs";
+// 2.5.0 D2 tur 3 (dar kontrol 10.11): arşivin yanında işlenmemiş günlük (ORTA-2), boş yan dosya temizliği (D10), devir yedeği süzgeci ürün yolundan (D13).
+const WAL = "test/devir-arsiv-wal-250.test.mjs";
 const PRAGMA = "test/db-tx-kayip-pragma-250.test.mjs";
 // [no, ad, dosya, eski metin (dosyada TAM BİR KEZ), yeni metin, koşulacak testler, çıktıda beklenen neden (düzenli ifade)]
 const MUTASYONLAR = [
@@ -61,10 +63,7 @@ const MUTASYONLAR = [
   [27, "Tümünü Sıfırla devir işaretini siler (KEEP_SETTINGS)", APP, "    \"devir.\"];", "    ];", [YEDEK], /sıfırlamadan sonra çalışma dosyası devrini bilir/],
   // ---- 2.5.0 D2 tur 2 ----
   [29, "bekleyen göç özeti kabul edilmez (taşımadan sonra kesilen göç 'Değişmiş')", AO, "  if (entry.pendingSha256 && sha256 !== entry.sha256 && sha256 === entry.pendingSha256) return { state: \"ok\", pending: true, sha256, size: stats.size };\n", "", [GOC], /kesme "tasindi" \(kanca\) sonrası yeniden açılış|ara şemada kalmış göç açılır/],
-  [30, "önce taşıma, sonra bekleyen özet (eski sıra)", AO,
-    "    registry.updateArchive(company.id, entry.year, { pendingSha256: sha256, pendingFrom: from, pendingAt });\n    step?.(\"bekleyen-yazildi\");\n    // Asıl dosya hiç yazılabilir açılmaz (günlük dosyası olmaz); eskiden kalmış -wal / -shm yeni dosyaya uygulanmasın.\n    for (const suffix of [\"-wal\", \"-shm\"]) rmSync(`${file}${suffix}`, { force: true });\n    await moveIntoPlace(work, file, guard);\n    moved = true;\n",
-    "    for (const suffix of [\"-wal\", \"-shm\"]) rmSync(`${file}${suffix}`, { force: true });\n    await moveIntoPlace(work, file, guard);\n    moved = true;\n    step?.(\"bekleyen-yazildi\");\n    registry.updateArchive(company.id, entry.year, { pendingSha256: sha256, pendingFrom: from, pendingAt });\n",
-    [GOC], /kesme "bekleyen-yazildi" \(kanca\) sonrası yeniden açılış/],
+  // (30 — "önce taşıma, sonra bekleyen özet" — tur 3'te taşıma öncesi yan dosya denetimi araya girdiği için çok noktalı oldu: COKLU'da.)
   [31, "bakımdaki şirketin arşivi açılır (openArchive bakım denetimi yok)", APP, "    if (refusal) return Promise.reject(refusal);\n", "", [BAKIM], /002 bakımda açık arşiv örneği: 200/],
   [32, "arşivin özeti alınırken bakıma giren şirkette iş sürer (ilk bekleme denetimi yok)", AO, "  // 2.5.0 D2 tur 2 (dar kontrol ORTA-2): özet alınırken şirket bakıma girdiyse arşive ve kayda hiçbir şey yazılmaz.\n  guard?.();\n", "", [BAKIM], /özet alınırken bakıma giren şirkette arşiv dosyası, klasörü ve kaydı değişmedi/],
   [33, "göç kopyası hazırken bakıma giren şirkette göç tamamlanır (ikinci bekleme denetimi yok)", AO, "    guard?.();\n    const pendingAt = new Date().toISOString();", "    const pendingAt = new Date().toISOString();", [BAKIM], /göç kopyası hazırken bakıma giren şirket/],
@@ -74,6 +73,15 @@ const MUTASYONLAR = [
   [37, "B1 (dar kontrol): 001 korumasında görev tablosu yok", MA, "        if (skip.has(table)) continue;", "        if (skip.has(table) || table === \"tasks\") continue;", [BAKIM], /bakımda görevlerini devrederek kullanıcı sil: 200/],
   [38, "diskten tanınan arşiv bekleyen özeti kayıt kopyasından almaz", AR, "recovered: true, ...pending }),", "recovered: true }),", [GOC], /kayıt defteri kaybından sonra yeniden açılış/],
   [39, "Doğrula bekleyen özeti kesinleştirmez", DR, "    if (result.pending) commitPendingMigration(", "    if (false) commitPendingMigration(", [GOC], /Doğrula bekleyen özeti kesinleştirdi/],
+  // ---- 2.5.0 D2 tur 3 (dar kontrol 10.11 ORTA-2 + DÜŞÜK-4) — test/devir-arsiv-wal-250.test.mjs ----
+  [40, "işlenmemiş günlüklü arşiv bütünlükte 'değişmiş' sayılmaz (verifyArchive yan dosya denetimi yok)", AO, "  const side = archiveSideFile(file);\n  if (side) return { state: \"changed\", side, sha256, size: stats.size };\n", "", [WAL], /not ok \d+ - (eski şemalı arşiv \+ işlenmemiş -wal|son şemalı arşiv \+ işlenmemiş -wal)/],
+  [41, "taşımadan önce beliren işlenmemiş günlük yok sayılır (taşıma sürer)", AO, "    if (side) {\n      // Göç olmadı", "    if (false) {\n      // Göç olmadı", [WAL], /not ok \d+ - göç sürerken/],
+  [42, "göçün sonucu yerine geçerken boş yan dosyalar silinmez (dar kontrol D10'un tur 3 karşılığı)", AO, "    const side = clearEmptySideFiles(file);", "    const side = archiveSideFile(file);", [WAL], /not ok \d+ - BOŞ \(0 bayt\)/],
+  [43, "Yönetim listesi işlenmemiş günlüklü arşivi 'Değişmiş' göstermez (archiveStatus)", AO, "  if (archiveSideFile(file)) return { state: \"changed\", label: \"Değişmiş\", size: stats.size };\n", "", [WAL], /not ok \d+ - (eski şemalı arşiv \+ işlenmemiş -wal|sıcak -journal)/],
+  [44, "sıcak -journal'lı (okunamayan) arşiv 503 'bozuk' (değişmiş değil)", AO, "    if (side) throw changedArchive(company, entry, file, side);\n    throw new HttpError(503", "    throw new HttpError(503", [WAL], /not ok \d+ - sıcak -journal/],
+  [45, "BOŞ -wal da işlenmemiş günlük sayılır (0 bayt sınırı yok)", AR, "      if (statSync(`${file}${suffix}`).size > 0) return suffix;", "      if (statSync(`${file}${suffix}`).size >= 0) return suffix;", [WAL], /not ok \d+ - BOŞ \(0 bayt\)/],
+  [46, "taşıma öncesi retten sonra kayıtta bekleyen özet kalır", AO, "      registry.updateArchive(company.id, entry.year, { pendingSha256: \"\", pendingFrom: \"\", pendingAt: \"\" });\n      throw changedArchive", "      throw changedArchive", [WAL], /not ok \d+ - göç sürerken/],
+  [47, "devir yedeği süzgeci yalnız göç öncesi kopyayı atlar (çalışma kopyası yedeğe girer; dar kontrol D13)", DB, "filter: src => !(item === ARCHIVE_ROOT && isArchiveTransient(path.basename(src)))", "filter: src => !(item === ARCHIVE_ROOT && path.basename(src).startsWith(\"goc-oncesi-v\"))", [WAL], /not ok \d+ - göç 'bekleyen-yazildi' adımında SIGKILL/],
 ];
 // Çok noktalı mutant: [no, ad, [[dosya, eski, yeni], …], testler, neden].
 const COKLU = [
@@ -81,6 +89,10 @@ const COKLU = [
     [APP, "const canWriteInBackground = () => !writeGate && !inMaintenance() && writeLock.guard(companyId, store);", "const canWriteInBackground = () => !writeGate && writeLock.guard(companyId, store);"],
     [APP, "    guard: (key, target) => (key === companyId && inMaintenance() ? false : baseWriteLock.guard(key, target)),", "    guard: (key, target) => baseWriteLock.guard(key, target),"],
   ], [BAKIM], /arka plan yazamaz/],
+  [30, "önce taşıma, sonra bekleyen özet (eski sıra)", [
+    [AO, "    registry.updateArchive(company.id, entry.year, { pendingSha256: sha256, pendingFrom: from, pendingAt });\n    step?.(\"bekleyen-yazildi\");\n", ""],
+    [AO, "    moved = true;\n", "    moved = true;\n    step?.(\"bekleyen-yazildi\");\n    registry.updateArchive(company.id, entry.year, { pendingSha256: sha256, pendingFrom: from, pendingAt });\n"],
+  ], [GOC], /kesme "bekleyen-yazildi" \(kanca\) sonrası yeniden açılış/],
 ];
 
 const run = files => {

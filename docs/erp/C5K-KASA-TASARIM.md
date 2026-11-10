@@ -179,3 +179,43 @@ aynı). Düzey uyarı: Mutabakat Testi ok = false (gizlenmez, G4 / dates:future 
 - **B-K5 (sürücü bakımı):** `karsilastir.py` son bölümündeki BUGÜN sezgisi (S12'den önce yazılmış "Kasa açılışından önce kabul edilen nakit = Ç5-S12 U") artık eski:
   geri yüklenen / açılıştan önce girilip açılışı öne alınan satırları da U sayıyor; asıl S12 karşılaştırması `redler`'de (hepsi AYNI). Görev metni sürücüye yalnız eşleme
   eklemeye izin verdiği için kaldırılmadı; kaldırılması ana oturum onayıyla.
+
+## 10. Tur 2 (dar kontrol 10.11 bulguları; BAŞ MİMAR KARARI 10.11 "DK-D2C5K" — DURMA KURALI, yalnız bunlar; taban ad9f8769 = kod 78855096)
+### 10.1 ORTA-1 (GERİLEME) — uyarı "sapma / Fark Var" gibi görünüyordu, ilk yazımı tam kapıya düşürüyordu
+- Sorun: `cash:before-opening` (§3) `ok:false, severity:"warning"` dönüyordu ama ekran (admin.js) ve Defter Mutabakatı yalnız `legacy` alanına bakıyordu → Yönetim › Sistem'de
+  kırmızı "1 denetimde sapma var", raporda "Fark Var" + "yöneticiye bildirin"; `familyOf` kodu tanımıyor → "all" → açılıştan sonraki ilk nakit yazımı TAM KAPI (105.000 satırda
+  13 ms → 1.221 ms); geri yüklemeden sonraki tarama "kapının görmediği yeni sapma" günlüğü + zil. 2.4.9'da aynı veri "N denetim tamam"dı.
+- KARAR (S20 = A "Mutabakat Testi uyarı verir"; sunum, para kuralı değil): denetim SAPMA DEĞİL UYARIDIR. Seçilen yol: denetime `notice: true` işareti (YENİ alan; `ok:false`,
+  `severity:"warning"`, `failures` içinde kalır — gizlenmez, API biçimi ve `ok` anlamı değişmez). `legacy` düzeneği yeniden KULLANILMADI — gerekçe: (1) `legacy` hem
+  ekranda hem raporda "eski sürümden kalan" metnini ve Sonuç'ta "Fark Var"ı getirir (Silinenler'den geri alınan satır için yanlış; raporun Sonuç'u legacy'de de "Fark Var");
+  (2) kapı / tarama `legacy`'yi imzada `gateCount` olarak okur, ilk görünüşte yine "yeni sapma" sayılırdı. Yani `legacy` ile de aynı dört tüketici (ekran, rapor, kapı alanı,
+  tarama) değişecekti; ayrı işaret daha az yer değiştirir ve anlamı tektir.
+- Kime ne görünür:
+  - Yönetim › Sistem (client/assets/admin.js): uyarılar sapma listesinden ayrılır. Başka sapma yoksa metin 2.4.9'daki gibi "Mutabakat: N denetim tamam — …" (N = uyarı hariç
+    denetim sayısı = 2.4.9'daki sayı), ardından "Uyarı (yeni işlemleri engellemez): Kasa Açılışından Önce Tarihli Hareket — K hareket. <sunucunun hint'i>"; renk SARI
+    (adm-warn-text). Gerçek sapma varsa kırmızı "… denetimde sapma var (…)" (uyarı listede YOK) + aynı uyarı cümlesi. Eski sürümden kalan satır (legacy) davranışı aynen.
+  - Defter Mutabakatı (ekran / PDF / Excel aynı veri): satırın durumu "Uyarı"; Sonuç bu satır yüzünden "Fark Var" OLMAZ ("Tutarlı"); alt başlık 2.4.9'daki cümleden sonra
+    "Uyarı (yeni işlemleri engellemez): … — K hareket (aşağıda “Uyarı”)." + hint; "yöneticiye bildirin" yalnız gerçek farkta.
+  - Kapı (lib/integrity-scope.mjs familyOf): "cash:before-opening" → null (alanı yok; tam kapıyı tetiklemez). Ayrıca lib/integrity.mjs start(): taban, açılış günlüğü
+    ("baseline") ve sunucu günlüğü yalnız sapmaları taşır (uyarı "güncelleme öncesinden kalan … sapma" yazılmaz) — iki kat koruma.
+  - Tarama (settleScan; Mutabakat Testi ve iş parçacığı): uyarı "yeni sapma" sayılmaz — integrity_log "scan" ve zil (integrity.alert) yok; sayı artsa da (yeni satırı S12 reddeder).
+- Kılavuz: Defter Mutabakatı cümlesine "Uyarı yazan satır fark değildir, ne yapılacağı raporun üstünde yazar" eklendi (HTML + PDF, pdf-denetle 39/39).
+### 10.2 DÜŞÜK-1 — "bu işlemde eklendi" sezgisi (§9 (e)) dış yazımda kabul yönünde kapanıyordu
+- Sorun: önceki hâl eşlemesi, bu işlemde EKLENİP düzeltilen satırın eklendiği hâlini "son COMMIT'teki en büyük rowid'den büyük" diye tanıyordu; başka bağlantı yazınca
+  (data_version) "bilinmez → eklenmemiş" sayılıyordu (p12: RED → dış yazımdan sonra KABUL → RED). Bugün 19 API yolunun hiçbiri ekleyip aynı işlemde düzeltmiyor (ulaşılamaz),
+  ama tetiklenirse açılıştan önce tarihli YENİ nakit kabul edilirdi (yanlış para) — sakınca süzgeci: bu turda kapatıldı.
+- Çözüm (ortak katmana en az dokunan): lib/db.mjs işlem kapsamı iki küme daha tutar — `scope.inserted` (bu işlemde eklenen rowid'ler; eklemede) ve `scope.born` (önceki hâli
+  YAKALANDIĞI ANDA bu işlemde eklenmiş satırın hâli olan rowid'ler; sil + aynı rowid'le yeniden ekle durumunda önceki hâl işlem öncesi satırdır, born DEĞİL). cash-opening
+  `insertedHere` = `scope.born`. Dış yazım sonucu değiştirmez; COMMIT'ten sonraki MAX(rowid) okumaları (6 tablo) kalktı. Kapının (integrity-scope) okuduğu `rows` / `before`
+  aynen.
+### 10.3 DÜŞÜK-3 — yaşayan mutantlara test (yalnız test)
+- K5 (açılış silinince önbellek), K6 (olaysız satırın Taksite Aktar'la taşınması — ön koşul bugün ürün yolundan kurulamaz: olay 2.1.0, Kasa açılışı 2.2.0, ilk hareketten
+  sonraya açılış 409, Silinenler'den dönen olaysız satır yeni olay alır → satır 2.0.26 biçiminde yazılıp açılış taramasıyla benimsenir; kalan adımlar ürün yolu), K8 (başka
+  bağlantı / store dışı yazım açılışı değiştirince önbellek; 002 + yedekten geri yükleme), K14 (uyarının örnek metni). K7 EŞDEĞER: "|| same[0]" yokken de aynı 409
+  cash-before-opening (yalnız ileti / change alanı farklı).
+### 10.4 Testler ve mutasyon
+- `test/kasa-acilis-uyari-250.test.mjs` (7: temiz veri; denetim alanları + K14; tarama günlüğü / zil (iş parçacığı dahil, sayı artınca); Defter Mutabakatı ekran / PDF / Excel;
+  familyOf; yeniden açılış — günlük + ilk yazımın kapı yolu `scoped`; gerçek sapmayla birlikte), `test/kasa-acilis-iz-250.test.mjs` (10: p12 dört adım; işlem kapsamı
+  sözleşmesi; 19 yol × (dış yazım yok / var) 409 + aynı gün 200; K5; K6; K8 × 3), `test/e2e/senaryo-kasa-acilis-uyari-250.mjs` (Yönetim › Sistem + Raporlar ekranı;
+  ci.yml + release.yml + kapı listesi). `test/kasa-acilis-once-250.test.mjs` DEĞİŞMEDİ (41/41).
+- Mutasyon: `test/kasa-acilis-tur2-250-mutasyon.mjs` (U1–U9 bu turun ürün değişiklikleri, K5–K8, K14; K7 eşdeğer). Ölçüm: ana oturum sakin makinede (görev metni).

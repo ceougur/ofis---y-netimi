@@ -1,0 +1,21 @@
+taban: 41 geçti / 0 kaldı (çıkış 0)
+M1 YAKALANDI — S12 B: denetim hiç kurulmaz (bugünkü 2.4.9 davranışı) (9 geçti / 32 kaldı; neden "/beklenen 409 cash-before-opening, gelen 200/" var) ilk hata: AssertionError' expected: 409
+M2 YAKALANDI — T9 kapsam: çek / senet olayı (cheque_events) denetim dışı (38 geçti / 3 kaldı; neden "/9 çekin Kasa'dan tahsili açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200/" var) ilk hata: AssertionError' expected: 409
+M3 YAKALANDI — T9 kapsam: stok hareketi (stock_moves) denetim dışı (37 geçti / 4 kaldı; neden "/10 nakit stok alımı açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200/" var) ilk hata: AssertionError' expected: 409
+M4 YAKALANDI — T9 kapsam: kayıt tahsilatı (payments) denetim dışı (36 geçti / 5 kaldı; neden "/7 kayıt tahsilatı açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200/" var) ilk hata: AssertionError' expected: 409
+M5 YAKALANDI — T9 kapsam: yalnız Kasa Giriş / Çıkış (kâhin B33d) (22 geçti / 19 kaldı; neden "/4 cari nakit tahsilat açılıştan bir gün önce: beklenen 409 cash-before-opening, gelen 200/" var) ilk hata: AssertionError' expected: 409
+M6 YAKALANDI — T10 sınır: aynı gün de reddedilir (kâhin B33b) (20 geçti / 20 kaldı; neden "/aynı gün: 409 cash-before-opening/" var) ilk hata: AssertionError' expected: 200
+M7 YAKALANDI — T10 sınır: bir gün önce kabul (yalnız iki gün ve öncesi reddedilir) (15 geçti / 26 kaldı; neden "/beklenen 409 cash-before-opening, gelen 200/" var) ilk hata: AssertionError' expected: 409
+M8 YAKALANDI — B11 B: düzeltmede S12 yok (tarihi önceye çeken düzeltme geçer; kâhin B33c) (36 geçti / 5 kaldı; neden "/Kasa Giriş tarihi önceye: beklenen 409 cash-before-opening, gelen 200/" var) ilk hata: AssertionError' expected: 409
+M9 YAKALANDI — S26 / S40 / S44 B: tarihi değişmeyen düzeltme de reddedilir (önceki hâl yok sayılır) (30 geçti / 11 kaldı; neden "/Kasa Giriş tutar \+ açıklama: 409 cash-before-opening/" var) ilk hata: AssertionError' expected: true
+M10 YAKALANDI — Z9 B: Silinenler'den geri yükleme de reddedilir (geri yükleme kapsamı yok) (34 geçti / 5 kaldı; neden "/geri yükle [^:\n]*: 409 cash-before-opening/" var) ilk hata: AssertionError' expected: 200
+M11 YAKALANDI — önceki hâl (b): aynı İşlem No eşlenmez (Taksite Aktar / Geri Al yeni hareket sayılır) (40 geçti / 1 kaldı; neden "/Taksite Aktar: 409 cash-before-opening/" var) ilk hata: AssertionError' expected: 200
+M12 YAKALANDI — önceki hâl (c): fatura peşini aynı faturayla eşlenmez (peşin tutarı düzeltmesi yeni hareket sayılır) (40 geçti / 1 kaldı; neden "/peşin tutarı: 409 cash-before-opening/" var) ilk hata: AssertionError' expected: 200
+M13 YAKALANDI — önceki hâl: bu işlemde eklenip düzeltilen satırın eklendiği hâli önceki hâl sayılır (rowid sınırı yok) (40 geçti / 1 kaldı; neden "/ilk denetim Kasa açılış kuralı/" var) ilk hata: AssertionError' stack: |-
+M14 YAKALANDI — önbellek: açılış değişince düşmez (açılış öne alınınca eski tarihle karar) (34 geçti / 7 kaldı; neden "/eski açılıştan önce, yeni açılıştan sonra: 409 cash-before-opening/" var) ilk hata: AssertionError' expected: 200
+M15 YAKALANDI — S20 B: Mutabakat Testi uyarısı yok (34 geçti / 7 kaldı; neden "/Mutabakat Testi uyarısı var'/" var) ilk hata: AssertionError' expected: true
+M16 YAKALANDI — S20: uyarı COMMIT kapısında da (geri yükleme ve düzeltme kapıda reddedilir) (28 geçti / 11 kaldı; neden "/geri yükle [^:\n]*: (?:500 gate-equivalence|409 ledger-integrity)[^\n]*cash:before-opening/" var) ilk hata: AssertionError' expected: 200
+M17 YAKALANDI — S20 sınır: uyarı açılış GÜNÜNÜ de sayar (açılışın kendisi ve aynı gün hareketi) (33 geçti / 8 kaldı; neden "/6 !== 5/" var) ilk hata: AssertionError' expected: true
+M18 YAKALANDI — S56 B: Normal Cari sınırı aşan düzeltme kabul (assertNormalRoom kapalı) (40 geçti / 1 kaldı; neden "/Normal Cari sınırı aşımı: (?:beklenen 409 doubtful-normal-exceeds, gelen 200|kod ledger-integrity \(beklenen doubtful-normal-exceeds\))/" var) ilk hata: AssertionError' expected: 'doubtful-normal-exceeds'
+M19 YAKALANDI — T11 B: açılışsız Kasa'da nakit hareketi reddedilir (31 geçti / 2 kaldı; neden "/\(açılışsız\): 409 cash-before-opening/" var) ilk hata: AssertionError' expected: 200
+SONUÇ: 19 geçti, 0 kaldı (19 mutasyonun 19'i yakalandı)
