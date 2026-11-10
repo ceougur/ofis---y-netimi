@@ -1,0 +1,32 @@
+{
+  "ad": "ya-testler-europeistanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/yapim-asamasi-kapisi.test.mjs test/kanit-araci.test.mjs test/ci-kapi-listesi.test.mjs test/platform-tasinabilirlik.test.mjs test/yazim-duzeni.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/edm-gercek-duzenek.test.mjs",
+  "commit": "e0f6806b3acba7513e935c1f02ff6e5b3372d153",
+  "dal": "worktree-agent-ad614648682496b49",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T18:28:15.683Z",
+  "sure_sn": 56.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 95,
+    "gecen": 95,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ya-kanit/2026-11-10/ya-testler-europeistanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad614648682496b49",
+  "ham_cikti_sha256": "3f30841527c25be836ad532105dcacaa9e30aa9fe90fb19abec878ac10c35977",
+  "ham_cikti_bayt": 29992
+}

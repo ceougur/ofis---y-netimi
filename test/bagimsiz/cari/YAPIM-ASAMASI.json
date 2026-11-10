@@ -1,0 +1,2471 @@
+{
+ "aciklama": "Cari kâhini ↔ program YAPIM AŞAMASI listesi (S100 = A, KULLANICI KARARI 10.11.2026 17:54 UTC; docs/2.5.0-IS-LISTESI.md D). Ç5 paket paket ana dala girerken bugünkü farklar kararı / bekleyen paketiyle sabitlenir; kâhinin beklentisi DEĞİŞMEZ. Listede OLMAYAN fark, değeri DEĞİŞEN fark ve KAPANDIĞI hâlde listede duran kayıt kırmızıdır (liste yalnız küçülür). Yayın adayında liste BOŞ olmalı (tools/release.mjs). BİLİNEN.json'dan (kullanıcının ERTELEDİĞİ farklar) AYRIDIR.",
+ "kural": "2.5.0",
+ "uretim": "node test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz (varsayılan koşu: bütün elle senaryolar + rastgele tohum 1–2 × 60 işlem)",
+ "paketler": [
+  "Ç5-A",
+  "Ç5-B tur 2",
+  "Ç5-C",
+  "eşleme",
+  "AYRIŞTIRILMADI"
+ ],
+ "kayitlar": [
+  {
+   "senaryo": "b2-ux18-karsiliksiz",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-karsiliksiz",
+   "anahtar": "k1:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-karsiliksiz",
+   "anahtar": "k2:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-karsiliksiz",
+   "anahtar": "k2:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-karsiliksiz",
+   "anahtar": "k3:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-karsiliksiz",
+   "anahtar": "k3:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-karsiliksiz",
+   "anahtar": "k4:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-karsiliksiz",
+   "anahtar": "k4:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-karsiliksiz",
+   "anahtar": "k5:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-karsiliksiz",
+   "anahtar": "k5:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-karsiliksiz",
+   "anahtar": "k6:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-karsiliksiz",
+   "anahtar": "k6:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-retler",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-retler",
+   "anahtar": "k1:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-retler",
+   "anahtar": "k2:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-retler",
+   "anahtar": "k2:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-retler",
+   "anahtar": "k3:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-retler",
+   "anahtar": "k3:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-sira",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-sira",
+   "anahtar": "k1:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-sira",
+   "anahtar": "k2:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-sira",
+   "anahtar": "k2:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-sira",
+   "anahtar": "k3:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-sira",
+   "anahtar": "k3:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-sira",
+   "anahtar": "k4:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-sira",
+   "anahtar": "k4:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-sira",
+   "anahtar": "k5:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-sira",
+   "anahtar": "k5:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-temel",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-temel",
+   "anahtar": "k1:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-temel",
+   "anahtar": "k2:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-temel",
+   "anahtar": "k2:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-temel",
+   "anahtar": "k3:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-temel",
+   "anahtar": "k3:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-temel",
+   "anahtar": "k4:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-temel",
+   "anahtar": "k4:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-temel",
+   "anahtar": "k5:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-temel",
+   "anahtar": "k5:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-temel",
+   "anahtar": "k6:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-temel",
+   "anahtar": "k6:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-temel",
+   "anahtar": "k7:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-temel",
+   "anahtar": "k7:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-temel",
+   "anahtar": "k8:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-temel",
+   "anahtar": "k8:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-temel",
+   "anahtar": "k9:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b2-ux18-temel",
+   "anahtar": "k9:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3b-k1-k4-donem-raporlar",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3b-k1-k4-donem-raporlar",
+   "anahtar": "k1:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3c-k2-donem-ayni-no",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3c-k2-donem-ayni-no",
+   "anahtar": "k1:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3d-c3-kisi-gruplama",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3d-c3-kisi-gruplama",
+   "anahtar": "k1:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3e-vergi-sutunu",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3e-vergi-sutunu",
+   "anahtar": "k1:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3k-vergi-tek-kolon",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3k-vergi-tek-kolon",
+   "anahtar": "k1:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3n-borc-kolonu-kisi-ozniteligi",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3n-borc-kolonu-kisi-ozniteligi",
+   "anahtar": "k1:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3o-seyrek-kalan",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3o-seyrek-kalan",
+   "anahtar": "k1:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3q-takvim-kalemi",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3q-takvim-kalemi",
+   "anahtar": "k1:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3r-kalan-sifir-eksi",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3r-kalan-sifir-eksi",
+   "anahtar": "k1:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3s-soz-tutari-kalemi",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3s-soz-tutari-kalemi",
+   "anahtar": "k1:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3t-sozlesme-tutari",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3t-sozlesme-tutari",
+   "anahtar": "k1:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3u-sozlesme-tarihi-soz-basliklari",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3u-sozlesme-tarihi-soz-basliklari",
+   "anahtar": "k1:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3v-taahhut-soz-miktari",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3v-taahhut-soz-miktari",
+   "anahtar": "k1:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3w-yalniz-soz-tutari",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3w-yalniz-soz-tutari",
+   "anahtar": "k1:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3x-yalin-soz-ve-tutar",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3x-yalin-soz-ve-tutar",
+   "anahtar": "k1:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3y-taahhut-alacak-bakiye",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b3y-taahhut-alacak-bakiye",
+   "anahtar": "k1:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b5-u1-nihai-tuketici",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "b5-u1-nihai-tuketici",
+   "anahtar": "k1:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c1-kayit-tahsilat-kapisi",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c1-kayit-tahsilat-kapisi",
+   "anahtar": "k1:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c1-kayit-tahsilat-kapisi",
+   "anahtar": "k2:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c1-kayit-tahsilat-kapisi",
+   "anahtar": "k2:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c1-kayit-tahsilat-kapisi",
+   "anahtar": "k3:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c1-kayit-tahsilat-kapisi",
+   "anahtar": "k3:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c1-kayit-tahsilat-kapisi",
+   "anahtar": "k4:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c1-kayit-tahsilat-kapisi",
+   "anahtar": "k4:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c1-kayit-tahsilat-kapisi",
+   "anahtar": "k5:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c1-kayit-tahsilat-kapisi",
+   "anahtar": "k5:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c10-ks10-projeksiyon-cari-vade",
+   "anahtar": "k1:takvim:cariKalemSayisi",
+   "beklenen": 3,
+   "program": 4,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.3 takvimdeki cari kalemlerinin sayısı",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "c10-ks10-projeksiyon-cari-vade",
+   "anahtar": "k1:takvim:hareket:bg4",
+   "beklenen": "yok",
+   "program": {
+    "amount": 15000,
+    "cari": "G",
+    "days": -13,
+    "direction": "in",
+    "dueDate": "2026-07-15",
+    "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "person": "Gül Vadeli",
+    "state": "overdue"
+   },
+   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
+   "kural": "K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "c14c-c1-silinmis-cariye-yazim",
+   "anahtar": "k0:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c14c-c1-silinmis-cariye-yazim",
+   "anahtar": "k0:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c14c-c1-silinmis-cariye-yazim",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c14c-c1-silinmis-cariye-yazim",
+   "anahtar": "k1:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c14c-c1-silinmis-cariye-yazim",
+   "anahtar": "k2:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c14c-c1-silinmis-cariye-yazim",
+   "anahtar": "k2:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c14c-c1-silinmis-cariye-yazim",
+   "anahtar": "k3:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c14c-c1-silinmis-cariye-yazim",
+   "anahtar": "k3:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c14f-c1-geri-al-y2",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c14f-c1-geri-al-y2",
+   "anahtar": "k1:mizan:519",
+   "beklenen": -1200000,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c14f-c1-geri-al-y2",
+   "anahtar": "k1:mizan:602",
+   "beklenen": 0,
+   "program": -1200000,
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "B2.6 kâhinin yazmadığı hesap",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "c14f-c1-geri-al-y2",
+   "anahtar": "k2:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c14f-c1-geri-al-y2",
+   "anahtar": "k2:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c14f-c1-geri-al-y2",
+   "anahtar": "k3:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c14f-c1-geri-al-y2",
+   "anahtar": "k3:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c14g-c1-kayit-tahsilati",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c14g-c1-kayit-tahsilati",
+   "anahtar": "k1:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c14g-c1-kayit-tahsilati",
+   "anahtar": "k2:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c14g-c1-kayit-tahsilati",
+   "anahtar": "k2:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c2-tablodan-aktar-kapisi",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c2-tablodan-aktar-kapisi",
+   "anahtar": "k1:mizan:519",
+   "beklenen": -300000,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c2-tablodan-aktar-kapisi",
+   "anahtar": "k1:mizan:602",
+   "beklenen": 0,
+   "program": -300000,
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "B2.6 kâhinin yazmadığı hesap",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "c2-tablodan-aktar-kapisi",
+   "anahtar": "k2:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c2-tablodan-aktar-kapisi",
+   "anahtar": "k2:mizan:519",
+   "beklenen": -300000,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c2-tablodan-aktar-kapisi",
+   "anahtar": "k2:mizan:602",
+   "beklenen": 0,
+   "program": -300000,
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "B2.6 kâhinin yazmadığı hesap",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "c2-tablodan-aktar-kapisi",
+   "anahtar": "k3:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c2-tablodan-aktar-kapisi",
+   "anahtar": "k3:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c2-tablodan-aktar-kapisi",
+   "anahtar": "k4:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c2-tablodan-aktar-kapisi",
+   "anahtar": "k4:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c4-uyari-kapisi",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c4-uyari-kapisi",
+   "anahtar": "k1:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c6c-mevcut-borc-karti",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": -500000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c6c-mevcut-borc-karti",
+   "anahtar": "k1:mizan:519",
+   "beklenen": -500000,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c6c-mevcut-borc-karti",
+   "anahtar": "k2:mizan:500",
+   "beklenen": 0,
+   "program": -500000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c6c-mevcut-borc-karti",
+   "anahtar": "k2:mizan:519",
+   "beklenen": -500000,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c6c-mevcut-borc-karti",
+   "anahtar": "k3:mizan:500",
+   "beklenen": 0,
+   "program": -500000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c6c-mevcut-borc-karti",
+   "anahtar": "k3:mizan:519",
+   "beklenen": -500000,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "c7-ks7-bagsiz-kapaticilar",
+   "anahtar": "k3:projeksiyon:hareket:acilis:D",
+   "beklenen": {
+    "amount": 100000,
+    "date": "2026-05-31",
+    "direction": "in"
+   },
+   "program": {
+    "amount": 30000,
+    "date": "2026-05-31",
+    "direction": "in"
+   },
+   "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
+   "kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "c7-ks7-bagsiz-kapaticilar",
+   "anahtar": "k3:takvim:fatura:F1",
+   "beklenen": {
+    "amount": 20000,
+    "direction": "in"
+   },
+   "program": "yok",
+   "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
+   "kural": "madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "c7-ks7-bagsiz-kapaticilar",
+   "anahtar": "k3:takvim:hareket:acilis:D",
+   "beklenen": {
+    "amount": 100000,
+    "cari": "D",
+    "days": -15,
+    "direction": "in",
+    "dueDate": "2026-05-31",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Dilek Değersiz",
+    "state": "overdue"
+   },
+   "program": {
+    "amount": 30000,
+    "cari": "D",
+    "days": -15,
+    "direction": "in",
+    "dueDate": "2026-05-31",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Dilek Değersiz",
+    "state": "overdue"
+   },
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "c7-ks7-bagsiz-kapaticilar",
+   "anahtar": "k3:vadeTakip:hareket:acilis:D",
+   "beklenen": {
+    "amount": 100000,
+    "date": "2026-05-31",
+    "direction": "in"
+   },
+   "program": {
+    "amount": 30000,
+    "date": "2026-05-31",
+    "direction": "in"
+   },
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d1-c5-acilis-519",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": -130000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "d1-c5-acilis-519",
+   "anahtar": "k1:mizan:519",
+   "beklenen": -130000,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "d10-c5-s67-soz-takvim",
+   "anahtar": "k1:takvim:cariKalemSayisi",
+   "beklenen": 10,
+   "program": 11,
+   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
+   "kural": "K6.3 takvimdeki cari kalemlerinin sayısı",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d10-c5-s67-soz-takvim",
+   "anahtar": "k1:takvim:hareket:l1",
+   "beklenen": "yok",
+   "program": {
+    "amount": 15000,
+    "cari": "L",
+    "days": -36,
+    "direction": "in",
+    "dueDate": "2026-06-30",
+    "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "person": "Lale Uzak",
+    "state": "overdue"
+   },
+   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
+   "kural": "K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "OKUMA HATASI: x1: karşılıksızda cari seçimi eşlemesi yok (KARSILIKSIZ_CARI — Ç5-A verir) — adım gönderilmedi",
+   "beklenen": null,
+   "program": "okunamadı",
+   "sinif": "OKUMA HATASI OKUMA",
+   "kural": "okuma hatası (ders 4)",
+   "paket": "eşleme"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "OKUMA HATASI: x4: karşılıksızda cari seçimi eşlemesi yok (KARSILIKSIZ_CARI — Ç5-A verir) — adım gönderilmedi",
+   "beklenen": null,
+   "program": "okunamadı",
+   "sinif": "OKUMA HATASI OKUMA",
+   "kural": "okuma hatası (ders 4)",
+   "paket": "eşleme"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "OKUMA HATASI: x5: karşılıksızda cari seçimi eşlemesi yok (KARSILIKSIZ_CARI — Ç5-A verir) — adım gönderilmedi",
+   "beklenen": null,
+   "program": "okunamadı",
+   "sinif": "OKUMA HATASI OKUMA",
+   "kural": "okuma hatası (ders 4)",
+   "paket": "eşleme"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "adim:e1:durum",
+   "beklenen": "ok",
+   "program": "ret",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "adım kabul edilir",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "adim:e2:durum",
+   "beklenen": "ok",
+   "program": "ret",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "adım kabul edilir",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "adim:e3:durum",
+   "beklenen": "ok",
+   "program": "ret",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "adım kabul edilir",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "adim:e4:durum",
+   "beklenen": "ok",
+   "program": "ret",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "adım kabul edilir",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "adim:e5:durum",
+   "beklenen": "ok",
+   "program": "ret",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "adım kabul edilir",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "adim:e6:durum",
+   "beklenen": "ok",
+   "program": "ret",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "adım kabul edilir",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "adim:x1:durum",
+   "beklenen": "ok",
+   "program": "okunamadı",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "adım kabul edilir",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "adim:x2:durum",
+   "beklenen": "ok",
+   "program": "ret",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "adım kabul edilir",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "adim:x4:durum",
+   "beklenen": "ok",
+   "program": "okunamadı",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "adım kabul edilir",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "adim:x5:durum",
+   "beklenen": "ok",
+   "program": "okunamadı",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "adım kabul edilir",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "adim:x6:durum",
+   "beklenen": "ok",
+   "program": "ret",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "adım kabul edilir",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "k0:mizan:101",
+   "beklenen": 200000,
+   "program": 0,
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "B2.6 §3.11a yevmiye",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "k0:mizan:121",
+   "beklenen": 30000,
+   "program": 0,
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "B2.6 §3.11a yevmiye",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "k0:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "k0:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "k0:mizan:649",
+   "beklenen": -230000,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "k1:cari:A:bakiye",
+   "beklenen": 50000,
+   "program": -20000,
+   "sinif": "BULGU PLAN · 2.5.0 kararıyla değişen",
+   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "k1:cari:A:gecikmis",
+   "beklenen": 50000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
+   "paket": "Ç5-B tur 2"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "k1:cari:B:bakiye",
+   "beklenen": 90000,
+   "program": 40000,
+   "sinif": "BULGU PLAN · 2.5.0 kararıyla değişen",
+   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "k1:cari:B:gecikmis",
+   "beklenen": 90000,
+   "program": 40000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
+   "paket": "Ç5-B tur 2"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "k1:cari:T:bakiye",
+   "beklenen": 25000,
+   "program": 0,
+   "sinif": "BULGU PLAN · 2.5.0 kararıyla değişen",
+   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "k1:cari:T:gecikmis",
+   "beklenen": 25000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
+   "paket": "Ç5-B tur 2"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "k1:mizan:101",
+   "beklenen": 40000,
+   "program": 0,
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "B2.6 §3.11a yevmiye",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "k1:mizan:120",
+   "beklenen": 140000,
+   "program": 20000,
+   "sinif": "BULGU PLAN · 2.5.0 kararıyla değişen",
+   "kural": "B2.6 §3.11a yevmiye",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "k1:mizan:320",
+   "beklenen": 25000,
+   "program": 0,
+   "sinif": "BULGU PLAN · 2.5.0 kararıyla değişen",
+   "kural": "B2.6 §3.11a yevmiye",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "k1:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "anahtar": "k1:mizan:649",
+   "beklenen": -185000,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "d14-c5-s91-vadesiz-kayit-gunu",
+   "anahtar": "OKUMA HATASI: x1: karşılıksızda cari seçimi eşlemesi yok (KARSILIKSIZ_CARI — Ç5-A verir) — adım gönderilmedi",
+   "beklenen": null,
+   "program": "okunamadı",
+   "sinif": "OKUMA HATASI OKUMA",
+   "kural": "okuma hatası (ders 4)",
+   "paket": "eşleme"
+  },
+  {
+   "senaryo": "d14-c5-s91-vadesiz-kayit-gunu",
+   "anahtar": "OKUMA HATASI: x2: karşılıksızda cari seçimi eşlemesi yok (KARSILIKSIZ_CARI — Ç5-A verir) — adım gönderilmedi",
+   "beklenen": null,
+   "program": "okunamadı",
+   "sinif": "OKUMA HATASI OKUMA",
+   "kural": "okuma hatası (ders 4)",
+   "paket": "eşleme"
+  },
+  {
+   "senaryo": "d14-c5-s91-vadesiz-kayit-gunu",
+   "anahtar": "adim:e1:durum",
+   "beklenen": "ok",
+   "program": "ret",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "adım kabul edilir",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d14-c5-s91-vadesiz-kayit-gunu",
+   "anahtar": "adim:e2:durum",
+   "beklenen": "ok",
+   "program": "ret",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "adım kabul edilir",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d14-c5-s91-vadesiz-kayit-gunu",
+   "anahtar": "adim:x1:durum",
+   "beklenen": "ok",
+   "program": "okunamadı",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "adım kabul edilir",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d14-c5-s91-vadesiz-kayit-gunu",
+   "anahtar": "adim:x2:durum",
+   "beklenen": "ok",
+   "program": "okunamadı",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "adım kabul edilir",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d14-c5-s91-vadesiz-kayit-gunu",
+   "anahtar": "k1:cari:Q2:bakiye",
+   "beklenen": 35000,
+   "program": 0,
+   "sinif": "BULGU PLAN · 2.5.0 kararıyla değişen",
+   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d14-c5-s91-vadesiz-kayit-gunu",
+   "anahtar": "k1:cari:Q:bakiye",
+   "beklenen": 60000,
+   "program": 0,
+   "sinif": "BULGU PLAN · 2.5.0 kararıyla değişen",
+   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d14-c5-s91-vadesiz-kayit-gunu",
+   "anahtar": "k1:cari:Q:gecikmis",
+   "beklenen": 60000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
+   "paket": "Ç5-B tur 2"
+  },
+  {
+   "senaryo": "d14-c5-s91-vadesiz-kayit-gunu",
+   "anahtar": "k1:projeksiyon:cariToplam:Q",
+   "beklenen": 60000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d14-c5-s91-vadesiz-kayit-gunu",
+   "anahtar": "k1:projeksiyon:cariToplam:Q2",
+   "beklenen": 35000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d14-c5-s91-vadesiz-kayit-gunu",
+   "anahtar": "k1:takvim:cariToplam:Q",
+   "beklenen": 60000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d14-c5-s91-vadesiz-kayit-gunu",
+   "anahtar": "k1:takvim:cariToplam:Q2",
+   "beklenen": 35000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d14-c5-s91-vadesiz-kayit-gunu",
+   "anahtar": "k1:vadeTakip:cariToplam:Q",
+   "beklenen": 60000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin vadeTakip kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d14-c5-s91-vadesiz-kayit-gunu",
+   "anahtar": "k1:vadeTakip:cariToplam:Q2",
+   "beklenen": 35000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin vadeTakip kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d15-c5-s91-vadesiz-ertesi-gun",
+   "anahtar": "OKUMA HATASI: x1: karşılıksızda cari seçimi eşlemesi yok (KARSILIKSIZ_CARI — Ç5-A verir) — adım gönderilmedi",
+   "beklenen": null,
+   "program": "okunamadı",
+   "sinif": "OKUMA HATASI OKUMA",
+   "kural": "okuma hatası (ders 4)",
+   "paket": "eşleme"
+  },
+  {
+   "senaryo": "d15-c5-s91-vadesiz-ertesi-gun",
+   "anahtar": "OKUMA HATASI: x2: karşılıksızda cari seçimi eşlemesi yok (KARSILIKSIZ_CARI — Ç5-A verir) — adım gönderilmedi",
+   "beklenen": null,
+   "program": "okunamadı",
+   "sinif": "OKUMA HATASI OKUMA",
+   "kural": "okuma hatası (ders 4)",
+   "paket": "eşleme"
+  },
+  {
+   "senaryo": "d15-c5-s91-vadesiz-ertesi-gun",
+   "anahtar": "adim:e1:durum",
+   "beklenen": "ok",
+   "program": "ret",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "adım kabul edilir",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d15-c5-s91-vadesiz-ertesi-gun",
+   "anahtar": "adim:e2:durum",
+   "beklenen": "ok",
+   "program": "ret",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "adım kabul edilir",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d15-c5-s91-vadesiz-ertesi-gun",
+   "anahtar": "adim:x1:durum",
+   "beklenen": "ok",
+   "program": "okunamadı",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "adım kabul edilir",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d15-c5-s91-vadesiz-ertesi-gun",
+   "anahtar": "adim:x2:durum",
+   "beklenen": "ok",
+   "program": "okunamadı",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "adım kabul edilir",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d15-c5-s91-vadesiz-ertesi-gun",
+   "anahtar": "k1:cari:Q2:bakiye",
+   "beklenen": 35000,
+   "program": 0,
+   "sinif": "BULGU PLAN · 2.5.0 kararıyla değişen",
+   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d15-c5-s91-vadesiz-ertesi-gun",
+   "anahtar": "k1:cari:Q2:gecikmis",
+   "beklenen": 35000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
+   "paket": "Ç5-B tur 2"
+  },
+  {
+   "senaryo": "d15-c5-s91-vadesiz-ertesi-gun",
+   "anahtar": "k1:cari:Q:bakiye",
+   "beklenen": 60000,
+   "program": 0,
+   "sinif": "BULGU PLAN · 2.5.0 kararıyla değişen",
+   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d15-c5-s91-vadesiz-ertesi-gun",
+   "anahtar": "k1:cari:Q:gecikmis",
+   "beklenen": 60000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
+   "paket": "Ç5-B tur 2"
+  },
+  {
+   "senaryo": "d15-c5-s91-vadesiz-ertesi-gun",
+   "anahtar": "k1:projeksiyon:cariToplam:Q",
+   "beklenen": 60000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d15-c5-s91-vadesiz-ertesi-gun",
+   "anahtar": "k1:projeksiyon:cariToplam:Q2",
+   "beklenen": 35000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d15-c5-s91-vadesiz-ertesi-gun",
+   "anahtar": "k1:takvim:cariToplam:Q",
+   "beklenen": 60000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d15-c5-s91-vadesiz-ertesi-gun",
+   "anahtar": "k1:takvim:cariToplam:Q2",
+   "beklenen": 35000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d15-c5-s91-vadesiz-ertesi-gun",
+   "anahtar": "k1:vadeTakip:cariToplam:Q",
+   "beklenen": 60000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin vadeTakip kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d15-c5-s91-vadesiz-ertesi-gun",
+   "anahtar": "k1:vadeTakip:cariToplam:Q2",
+   "beklenen": 35000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin vadeTakip kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d2-c5-kg5-excel-kart",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": -90000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "d2-c5-kg5-excel-kart",
+   "anahtar": "k1:mizan:519",
+   "beklenen": -190000,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "d2-c5-kg5-excel-kart",
+   "anahtar": "k1:mizan:602",
+   "beklenen": 0,
+   "program": -100000,
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "B2.6 kâhinin yazmadığı hesap",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d2-c5-kg5-excel-kart",
+   "anahtar": "k2:mizan:500",
+   "beklenen": 0,
+   "program": -90000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "d2-c5-kg5-excel-kart",
+   "anahtar": "k2:mizan:519",
+   "beklenen": -90000,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "d3-c5-carisiz-evrak",
+   "anahtar": "adim:e1:durum",
+   "beklenen": "ok",
+   "program": "ret",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "adım kabul edilir",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d3-c5-carisiz-evrak",
+   "anahtar": "adim:e2:durum",
+   "beklenen": "ok",
+   "program": "ret",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "adım kabul edilir",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d3-c5-carisiz-evrak",
+   "anahtar": "adim:h1:durum",
+   "beklenen": "ok",
+   "program": "ret",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "adım kabul edilir",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d3-c5-carisiz-evrak",
+   "anahtar": "k1:mizan:101",
+   "beklenen": 90000,
+   "program": 20000,
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "B2.6 §3.11a yevmiye",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d3-c5-carisiz-evrak",
+   "anahtar": "k1:mizan:121",
+   "beklenen": 30000,
+   "program": 0,
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "B2.6 §3.11a yevmiye",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d3-c5-carisiz-evrak",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "d3-c5-carisiz-evrak",
+   "anahtar": "k1:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "d3-c5-carisiz-evrak",
+   "anahtar": "k1:mizan:649",
+   "beklenen": -100000,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "d3-c5-carisiz-evrak",
+   "anahtar": "k2:kasa",
+   "beklenen": 70000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · SINIF DIŞI",
+   "kural": "B1.2 Kasa değişmez / tahsilatlar Kasa'da",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d3-c5-carisiz-evrak",
+   "anahtar": "k2:kasaRapor:giris",
+   "beklenen": 70000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · SINIF DIŞI",
+   "kural": "B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d3-c5-carisiz-evrak",
+   "anahtar": "k2:mizan:100",
+   "beklenen": 70000,
+   "program": 0,
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "B2.6 §3.11a yevmiye",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d3-c5-carisiz-evrak",
+   "anahtar": "k2:mizan:121",
+   "beklenen": 30000,
+   "program": 0,
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "B2.6 §3.11a yevmiye",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d3-c5-carisiz-evrak",
+   "anahtar": "k2:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "d3-c5-carisiz-evrak",
+   "anahtar": "k2:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "d3-c5-carisiz-evrak",
+   "anahtar": "k2:mizan:649",
+   "beklenen": -100000,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "d4-c5-s50-tek-kuyruk",
+   "anahtar": "k1:kart:K1:kalan",
+   "beklenen": 150000,
+   "program": 300000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d4-c5-s50-tek-kuyruk",
+   "anahtar": "k1:kart:K1:odenen",
+   "beklenen": 150000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d4-c5-s50-tek-kuyruk",
+   "anahtar": "k1:kart:K1:taksit1:odenen",
+   "beklenen": 100000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d4-c5-s50-tek-kuyruk",
+   "anahtar": "k1:kart:K1:taksit2:odenen",
+   "beklenen": 50000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d4-c5-s50-tek-kuyruk",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": -500000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "d4-c5-s50-tek-kuyruk",
+   "anahtar": "k1:mizan:519",
+   "beklenen": -500000,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "rastgele-s1-1",
+   "anahtar": "k5:takvim:hareket:s042",
+   "beklenen": "yok",
+   "program": {
+    "amount": 470000,
+    "cari": "D",
+    "days": -3,
+    "direction": "in",
+    "dueDate": "2026-08-16",
+    "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "person": "Rastgele Delta 1",
+    "state": "overdue"
+   },
+   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
+   "kural": "K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "rastgele-s1-1",
+   "anahtar": "k6:takvim:hareket:s042",
+   "beklenen": "yok",
+   "program": {
+    "amount": 470000,
+    "cari": "D",
+    "days": -3,
+    "direction": "in",
+    "dueDate": "2026-08-16",
+    "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "person": "Rastgele Delta 1",
+    "state": "overdue"
+   },
+   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
+   "kural": "K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "rastgele-s1-1",
+   "anahtar": "kson:takvim:hareket:s042",
+   "beklenen": "yok",
+   "program": {
+    "amount": 470000,
+    "cari": "D",
+    "days": -3,
+    "direction": "in",
+    "dueDate": "2026-08-16",
+    "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "person": "Rastgele Delta 1",
+    "state": "overdue"
+   },
+   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
+   "kural": "K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "rastgele-ux18-1",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "rastgele-ux18-1",
+   "anahtar": "k1:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "rastgele-ux18-1",
+   "anahtar": "k2:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "rastgele-ux18-1",
+   "anahtar": "k2:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "rastgele-ux18-1",
+   "anahtar": "k3:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "rastgele-ux18-1",
+   "anahtar": "k3:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "rastgele-ux18-1",
+   "anahtar": "k4:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "rastgele-ux18-1",
+   "anahtar": "k4:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "rastgele-ux18-1",
+   "anahtar": "k5:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "rastgele-ux18-1",
+   "anahtar": "k5:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "rastgele-ux18-1",
+   "anahtar": "k6:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "rastgele-ux18-1",
+   "anahtar": "k6:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "rastgele-ux18-1",
+   "anahtar": "kson:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "rastgele-ux18-1",
+   "anahtar": "kson:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "rastgele-ux18-2",
+   "anahtar": "k1:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "rastgele-ux18-2",
+   "anahtar": "k1:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "rastgele-ux18-2",
+   "anahtar": "k2:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "rastgele-ux18-2",
+   "anahtar": "k2:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "rastgele-ux18-2",
+   "anahtar": "k3:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "rastgele-ux18-2",
+   "anahtar": "k3:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "rastgele-ux18-2",
+   "anahtar": "k4:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "rastgele-ux18-2",
+   "anahtar": "k4:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "rastgele-ux18-2",
+   "anahtar": "k5:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "rastgele-ux18-2",
+   "anahtar": "k5:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "rastgele-ux18-2",
+   "anahtar": "k6:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "rastgele-ux18-2",
+   "anahtar": "k6:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "rastgele-ux18-2",
+   "anahtar": "kson:mizan:500",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  },
+  {
+   "senaryo": "rastgele-ux18-2",
+   "anahtar": "kson:mizan:519",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A)",
+   "paket": "Ç5-A"
+  }
+ ]
+}

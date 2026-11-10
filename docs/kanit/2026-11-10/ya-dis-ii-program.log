@@ -1,0 +1,22 @@
+d4-c5-s50-tek-kuyruk: 48/54 tuttu · YAPIM AŞAMASI 5 (AYRIŞTIRILMADI 3, Ç5-A 2)
+  2.5.0 kararıyla değişen beklenti: 8 denetim · farkların 1/1'i bu sınıfta
+  ✗ [YAPIM AŞAMASI DEĞİŞTİ KULLANICI] k1:kart:K1:odenen: program 0 · kâhin 150000 (C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50) · değer değişti: liste program "DEGISTI-deneme" / kâhin 150000 (AYRIŞTIRILMADI) — şimdi program 0 / kâhin 150000)
+  liste mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  liste mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  liste mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  liste mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  liste mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  yapım aşaması listesi mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  yapım aşaması listesi mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  yapım aşaması listesi mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+
+GEÇERSİZ DENETİM (2.4.5 kararıyla; --legacy'de koşar — KARARLAR.md §8 C0): 0 denetim, 0 senaryo
+
+ATLANAN (2.4.5 kararıyla geçersiz — --legacy ile koşar): 0
+
+2.5.0 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §13; 2.4.9 kâhinine göre): 8 denetim, 1 senaryo · programla farkların 1'i bu sınıfta, 0'i SINIF DIŞI
+
+ÖZET [2.5.0]: 1 senaryo, 54 denetim, 1 fark (BULGU 0), 0 bilinen sınır (BILINEN.json; başarısız sayılmaz), 5 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: AYRIŞTIRILMADI 3, Ç5-A 2; 5 denetim + 0 okuma hatası; geçti de başarısız da sayılmaz — yayın adayında liste BOŞ olmalı), 0 okuma hatası, 0 yakalanmayan mutasyon, 0 atlanan senaryo. Ham çıktı: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ya-kos/dis-ii-program
+48/49 denetim geçti (5 yapım aşaması ayrı sayıldı — geçti sayılmadı)

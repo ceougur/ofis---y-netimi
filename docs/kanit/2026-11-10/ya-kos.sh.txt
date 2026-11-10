@@ -1,0 +1,29 @@
+# S100 yapım aşaması listesi — kanıt koşuları (sırayla; tek flock -s altında)
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-ad614648682496b49
+cd $W || exit 1
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=$S/ya-kanit
+K="node tools/kanit.mjs kos"
+D4=test/bagimsiz/cari/senaryolar/d4-c5-s50-tek-kuyruk.json
+# 1) tam liste ile varsayılan koşu, iki saat dilimi (diş iv)
+TZ=UTC $K ya-kahin-cari-utc -- npm run test:kahin-cari -- --cikti $S/ya-kos/cari-utc; echo "== cari utc $?"
+TZ=Europe/Istanbul $K ya-kahin-cari-ist -- npm run test:kahin-cari -- --cikti $S/ya-kos/cari-ist; echo "== cari ist $?"
+# 2) diş denemeleri (i–iii + bozuk liste) — yalnız d4 senaryosu, mutasyonsuz; beklenen: çıkış 1, iletide neden
+for d in i-sil ii-program iii-olmayan v-bozuk; do
+  TZ=UTC KAHIN_YAPIM_ASAMASI=$S/ya-dis/$d.json $K ya-dis-$d -- node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs $D4 --mutasyonsuz --cikti $S/ya-kos/dis-$d; echo "== dis $d $?"
+done
+# tam listeyle aynı tek senaryo (karşılaştırma tabanı)
+TZ=UTC $K ya-dis-iv-tam-d4 -- node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs $D4 --mutasyonsuz --cikti $S/ya-kos/dis-iv; echo "== dis iv-d4 $?"
+# 3) öbür kâhinler ve testler (iki TZ)
+for tz in UTC Europe/Istanbul; do
+  t=$(echo $tz | tr -d '/' | tr 'A-Z' 'a-z')
+  TZ=$tz $K ya-kahin-defter-$t -- npm run test:kahin-defter; echo "== defter $tz $?"
+  TZ=$tz $K ya-oz-cari-$t -- python3 -I -B test/bagimsiz/cari/oz-test.py; echo "== oz cari $tz $?"
+  TZ=$tz $K ya-oz-defter-$t -- python3 -I -B test/bagimsiz/defter/oz-test.py; echo "== oz defter $tz $?"
+  TZ=$tz $K ya-mobil-yazma-oz-$t -- python3 -I -B test/bagimsiz/mobil-yazma/kahin_test.py; echo "== mobil oz $tz $?"
+  TZ=$tz $K ya-kahin-mobil-yazma-$t -- npm run test:kahin-mobil-yazma -- --haric E02-es-havale-pos-mobil,E02-es-havale-pos-masaustu; echo "== mobil yazma $tz $?"
+  TZ=$tz $K ya-testler-$t -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/yapim-asamasi-kapisi.test.mjs test/kanit-araci.test.mjs test/ci-kapi-listesi.test.mjs test/platform-tasinabilirlik.test.mjs test/yazim-duzeni.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/edm-gercek-duzenek.test.mjs; echo "== testler $tz $?"
+done
+# 4) (f) eski kiplerde bayt bayt aynılık
+bash $S/ya-eski/kos.sh
+echo "== HEPSI BITTI"

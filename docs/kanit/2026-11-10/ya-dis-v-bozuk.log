@@ -1,0 +1,28 @@
+d4-c5-s50-tek-kuyruk: 48/54 tuttu
+  2.5.0 kararıyla değişen beklenti: 8 denetim · farkların 6/6'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:kart:K1:kalan: program 300000 · kâhin 150000 (C13.4)
+  ✗ [BULGU KULLANICI] k1:kart:K1:odenen: program 0 · kâhin 150000 (C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50))
+  ✗ [BULGU KULLANICI] k1:kart:K1:taksit1:odenen: program 0 · kâhin 100000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)
+  ✗ [BULGU KULLANICI] k1:kart:K1:taksit2:odenen: program 0 · kâhin 50000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)
+  ✗ [BULGU KULLANICI] k1:mizan:500: program -500000 · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin -500000 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  liste mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  liste mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  liste mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  liste mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  liste mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+  ✗ [YAPIM AŞAMASI LİSTESİ] YAPIM-ASAMASI.json okunamadı (v-bozuk.json: Unexpected end of JSON input) — liste boş SAYILMAZ (ders 4)
+  yapım aşaması listesi mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  yapım aşaması listesi mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  yapım aşaması listesi mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  yapım aşaması listesi mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+
+GEÇERSİZ DENETİM (2.4.5 kararıyla; --legacy'de koşar — KARARLAR.md §8 C0): 0 denetim, 0 senaryo
+
+ATLANAN (2.4.5 kararıyla geçersiz — --legacy ile koşar): 0
+
+2.5.0 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §13; 2.4.9 kâhinine göre): 8 denetim, 1 senaryo · programla farkların 6'i bu sınıfta, 0'i SINIF DIŞI
+
+ÖZET [2.5.0]: 1 senaryo, 54 denetim, 7 fark (BULGU 6), 0 bilinen sınır (BILINEN.json; başarısız sayılmaz), 0 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: yok; 0 denetim + 0 okuma hatası; geçti de başarısız da sayılmaz — yayın adayında liste BOŞ olmalı), 0 okuma hatası, 0 yakalanmayan mutasyon, 0 atlanan senaryo. Ham çıktı: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ya-kos/dis-v-bozuk
+47/54 denetim geçti

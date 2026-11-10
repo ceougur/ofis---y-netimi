@@ -1,0 +1,22 @@
+d4-c5-s50-tek-kuyruk: 47/54 tuttu · YAPIM AŞAMASI 6 (AYRIŞTIRILMADI 4, Ç5-A 2)
+  2.5.0 kararıyla değişen beklenti: 8 denetim · farkların 0/1'i bu sınıfta — SINIF DIŞI 1
+  ✗ [YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:cari:YOK:olmayan-fark: program "denetim yok" · kâhin 1 (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program 2))
+  liste mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  liste mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  liste mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  liste mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  liste mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  yapım aşaması listesi mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  yapım aşaması listesi mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  yapım aşaması listesi mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+
+GEÇERSİZ DENETİM (2.4.5 kararıyla; --legacy'de koşar — KARARLAR.md §8 C0): 0 denetim, 0 senaryo
+
+ATLANAN (2.4.5 kararıyla geçersiz — --legacy ile koşar): 0
+
+2.5.0 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §13; 2.4.9 kâhinine göre): 8 denetim, 1 senaryo · programla farkların 0'i bu sınıfta, 1'i SINIF DIŞI
+
+ÖZET [2.5.0]: 1 senaryo, 54 denetim, 1 fark (BULGU 0), 0 bilinen sınır (BILINEN.json; başarısız sayılmaz), 6 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: AYRIŞTIRILMADI 4, Ç5-A 2; 6 denetim + 0 okuma hatası; geçti de başarısız da sayılmaz — yayın adayında liste BOŞ olmalı), 0 okuma hatası, 0 yakalanmayan mutasyon, 0 atlanan senaryo. Ham çıktı: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ya-kos/dis-iii-olmayan
+47/48 denetim geçti (6 yapım aşaması ayrı sayıldı — geçti sayılmadı)

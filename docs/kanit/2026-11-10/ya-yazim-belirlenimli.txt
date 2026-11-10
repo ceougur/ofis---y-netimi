@@ -1,0 +1,9 @@
+cikis1 0
+cikis2 0
+AYNI
+fdaa7d7aaa238372908f32750f103101ad2ac918d37318e539f3961f8bbb9444  /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ya-yaz/liste1.json
+fdaa7d7aaa238372908f32750f103101ad2ac918d37318e539f3961f8bbb9444  /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ya-yaz/liste2.json
+YAPIM-ASAMASI.json YAZILDI (test/bagimsiz/cari/YAPIM-ASAMASI.json): 256 kayıt (7 okuma hatası) — paketlere göre: Ç5-A 172, AYRIŞTIRILMADI 71, eşleme 7, Ç5-B tur 2 6. Bu bir denetim sonucu DEĞİLDİR; liste varsayılan koşuyla denetlenir.
+YAPIM-ASAMASI.json YAZILDI (test/bagimsiz/cari/YAPIM-ASAMASI.json): 256 kayıt (7 okuma hatası) — paketlere göre: Ç5-A 172, AYRIŞTIRILMADI 71, eşleme 7, Ç5-B tur 2 6. Bu bir denetim sonucu DEĞİLDİR; liste varsayılan koşuyla denetlenir.
+
+[exited with code 0]

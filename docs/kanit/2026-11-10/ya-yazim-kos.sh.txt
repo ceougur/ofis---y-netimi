@@ -1,0 +1,10 @@
+cd /home/user/ofis---y-netimi/.claude/worktrees/agent-ad614648682496b49 || exit 1
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+TZ=UTC node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz --mutasyonsuz --cikti $S/ya-yaz/c1 > $S/ya-yaz/yaz1.log 2>&1; echo "cikis1 $?"
+cp test/bagimsiz/cari/YAPIM-ASAMASI.json $S/ya-yaz/liste1.json || exit 1
+TZ=UTC node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz --mutasyonsuz --cikti $S/ya-yaz/c2 > $S/ya-yaz/yaz2.log 2>&1; echo "cikis2 $?"
+cp test/bagimsiz/cari/YAPIM-ASAMASI.json $S/ya-yaz/liste2.json || exit 1
+cmp $S/ya-yaz/liste1.json $S/ya-yaz/liste2.json && echo AYNI || echo FARKLI
+sha256sum $S/ya-yaz/liste1.json $S/ya-yaz/liste2.json
+tail -1 $S/ya-yaz/yaz1.log; tail -1 $S/ya-yaz/yaz2.log

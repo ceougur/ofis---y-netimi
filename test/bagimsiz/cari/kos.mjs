@@ -19,6 +19,7 @@
 // satırlarından, yanıt biçimi kara kutu yoklamasından (not defteri yokla3.mjs).
 //
 //   node test/bagimsiz/cari/kos.mjs [senaryo.json …] [--tohum 1-3 --islem 60] [--tur ux18|s1] [--cikti <klasör>] [--mutasyonsuz] [--legacy | --kural 2.4.5|2.4.6]
+//   node test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz [--mutasyonsuz]   (S100: YAPIM-ASAMASI.json'u bugünkü farklardan yazar — aşağıda "YAPIM AŞAMASI listesi")
 //
 // Ne yapar:
 //   1. Her senaryoyu ayrı, boş bir programda koşar (test/helpers.mjs startTestServer; sahte saat = senaryonun "bugun"ü 09:00'dan akar;
@@ -1111,6 +1112,112 @@ function bilinenMutantlari() {
 }
 const BILINEN = bilinenYukle();
 
+// ───────── YAPIM AŞAMASI listesi (S100 = A, KULLANICI KARARI 10.11.2026 17:54 UTC; docs/2.5.0-IS-LISTESI.md D): Ç5 paket paket (K, B, A, C) ana dala giriyor, kâhin
+// kullanıcı kararlarının TAMAMINI bekliyor. Bugünkü farklar kararı / bekleyen paketiyle etiketlenip SABİTLENİR (YAPIM-ASAMASI.json); kâhinin beklentisi DEĞİŞMEZ. BİLİNEN'den
+// (kullanıcının ERTELEDİĞİ farklar) AYRI dosyadır, aynı katılıkta: TAM ad (senaryo + denetim anahtarı; joker yok), fark = senaryo + anahtar + beklenen + program dördüyle
+// TAM eşleşir. Listedeki fark "YAPIM AŞAMASI" diye ayrı sayılır (geçti de başarısız da SAYILMAZ: "N/M denetim geçti" satırında payda ve paydan düşülür); listede OLMAYAN
+// fark, değeri (beklenen ya da program) DEĞİŞEN fark ve KAPANDIĞI hâlde listede duran kayıt BAŞARISIZ (liste yalnız küçülür). Okuma hatası da kayıt olabilir
+// (anahtar "OKUMA HATASI: <ileti>", beklenen null, program "okunamadı"). Yalnız varsayılan kural setinde (2.5.0) uygulanır; --legacy / --kural <eski> koşuları
+// bugünkü gibi (liste okunmaz, çıktıya satır eklenmez). Yayın adayında liste BOŞ olmalı: tools/release.mjs dolu listeyle imzalı paket üretmez (kanit.mjs yapimAsamasiGate).
+//   node test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz [--mutasyonsuz]   # yalnız geliştirici: bugünkü farklardan listeyi yazar (CI çağırmaz)
+const YAPIM_UYGULANIR = !LEGACY && KURAL === "2.5.0";
+const YAPIM_YAZ = argv.includes("--yapim-asamasi-yaz");
+if (YAPIM_YAZ && !(YAPIM_UYGULANIR && VARSAYILAN)) throw new Error("--yapim-asamasi-yaz yalnız varsayılan koşuda (senaryo / tohum / --kural / --legacy verilmeden) çalışır");
+const YAPIM_YOLU = process.env.KAHIN_YAPIM_ASAMASI || path.join(HERE, "YAPIM-ASAMASI.json"); // KAHIN_YAPIM_ASAMASI: yalnız mekanizmanın kendi denemesi için başka liste
+const YAPIM_PAKETLER = ["Ç5-A", "Ç5-B tur 2", "Ç5-C", "eşleme", "AYRIŞTIRILMADI"];
+const OKUMA_ONEKI = "OKUMA HATASI: ";
+const YAPIM_ALANLAR = ["senaryo", "anahtar", "beklenen", "program", "sinif", "kural", "paket"];
+function yapimYukle() {
+  if (!YAPIM_UYGULANIR || YAPIM_YAZ) return { kayitlar: [], hatalar: [] };
+  let ham;
+  try {
+    ham = JSON.parse(readFileSync(YAPIM_YOLU, "utf8"));
+  } catch (e) {
+    return { kayitlar: [], hatalar: [`YAPIM-ASAMASI.json okunamadı (${path.basename(YAPIM_YOLU)}: ${e.code || e.message}) — liste boş SAYILMAZ (ders 4)`] };
+  }
+  const kayitlar = Array.isArray(ham?.kayitlar) ? ham.kayitlar : [];
+  const hatalar = Array.isArray(ham?.kayitlar) ? [] : ["YAPIM-ASAMASI.json: \"kayitlar\" dizisi yok"];
+  const gorulen = new Set();
+  const elleAdlar = new Set(readdirSync(path.join(HERE, "senaryolar")).filter(f => f.endsWith(".json")).map(f => f.replace(/\.json$/, "")));
+  for (const [i, e] of kayitlar.entries()) {
+    for (const alan of YAPIM_ALANLAR) if (!e || typeof e !== "object" || !(alan in e)) hatalar.push(`YAPIM-ASAMASI.json kayıt ${i}: "${alan}" alanı yok`);
+    if (!e || typeof e !== "object") continue;
+    if (typeof e.senaryo !== "string" || typeof e.anahtar !== "string") hatalar.push(`YAPIM-ASAMASI.json kayıt ${i}: senaryo / anahtar metin olmalı`);
+    const okuma = String(e.anahtar).startsWith(OKUMA_ONEKI);
+    // joker / kalıp karakteri yasak (tam ad gerekir); okuma hatası kaydında ileti metni serbesttir ama TAM eşleşir (alt dizgi yok)
+    if (/[*?\[\]]/.test(`${e.senaryo}${okuma ? "" : e.anahtar}`)) hatalar.push(`YAPIM-ASAMASI.json kayıt ${i}: joker / kalıp karakteri yasak (tam ad gerekir): ${e.senaryo} ${e.anahtar}`);
+    if (okuma && (e.beklenen !== null || e.program !== "okunamadı")) hatalar.push(`YAPIM-ASAMASI.json kayıt ${i}: okuma hatası kaydında beklenen null, program "okunamadı" olmalı: ${e.senaryo} ${e.anahtar}`);
+    if (!elleAdlar.has(e.senaryo) && !String(e.senaryo).startsWith("rastgele-")) hatalar.push(`YAPIM-ASAMASI.json kayıt ${i}: senaryo yok (bayat kayıt): ${e.senaryo}`);
+    if (!YAPIM_PAKETLER.includes(e.paket)) hatalar.push(`YAPIM-ASAMASI.json kayıt ${i}: paket bilinmiyor (${JSON.stringify(e.paket)}; geçerli: ${YAPIM_PAKETLER.join(", ")}): ${e.senaryo} ${e.anahtar}`);
+    const ad = `${e.senaryo}|${e.anahtar}`;
+    if (gorulen.has(ad)) hatalar.push(`YAPIM-ASAMASI.json kayıt ${i}: çift kayıt ${ad}`);
+    gorulen.add(ad);
+  }
+  return { kayitlar, hatalar };
+}
+// Okuma hataları liste karşılaştırması için fark biçimine çevrilir (aynı ileti bir senaryoda iki kez görünürse ikincisi " #2" alır — tam ad korunur)
+function okumaFarklari(hatalar) {
+  const sayac = new Map();
+  return hatalar.map(h => {
+    const n = (sayac.get(h) || 0) + 1;
+    sayac.set(h, n);
+    return { anahtar: `${OKUMA_ONEKI}${h}${n > 1 ? ` #${n}` : ""}`, beklenen: null, program: "okunamadı", etiket: "OKUMA", kural: "okuma hatası (ders 4)", sinif: "OKUMA HATASI", okuma: true, metin: h };
+  });
+}
+// mut (yalnız liste mutantları için; BİLİNEN mutantlarıyla aynı ilke): 1 senaryo adı yok sayılır · 2 alt dizgi eşleşmesi (joker) · 3 program değeri karşılaştırılmaz ·
+// 4 kapanan kayıt denetlenmez · 5 kâhin beklentisi karşılaştırılmaz. BİLİNEN değişti / kapandı satırları listeyle eşleşmez (yalnız gerçek farklar ve okuma hataları).
+function yapimAyir(senaryoAd, denetimler, farklar, liste, mut = 0) {
+  const eslesir = (e, f) => (mut === 1 || e.senaryo === senaryoAd) && (mut === 2 ? f.anahtar.includes(e.anahtar) : e.anahtar === f.anahtar);
+  const aday = f => !String(f.sinif).startsWith("BİLİNEN");
+  const kalan = [], yapim = [];
+  for (const f of farklar) {
+    const e = aday(f) ? liste.find(x => eslesir(x, f)) : null;
+    if (!e) { kalan.push(f); continue; }
+    if ((mut === 3 || esit(f.program, e.program)) && (mut === 5 || esit(f.beklenen, e.beklenen))) yapim.push({ ...f, paket: e.paket });
+    else kalan.push({ ...f, okuma: false, sinif: "YAPIM AŞAMASI DEĞİŞTİ", kural: `${f.kural} · değer değişti: liste program ${JSON.stringify(e.program)} / kâhin ${JSON.stringify(e.beklenen)} (${e.paket}) — şimdi program ${JSON.stringify(f.program)} / kâhin ${JSON.stringify(f.beklenen)}` });
+  }
+  if (mut !== 4) {
+    for (const e of liste.filter(x => (mut === 1 || x.senaryo === senaryoAd))) {
+      if (farklar.some(f => aday(f) && eslesir(e, f))) continue;
+      kalan.push({ anahtar: e.anahtar, beklenen: e.beklenen, program: e.anahtar in denetimler ? "tuttu" : String(e.anahtar).startsWith(OKUMA_ONEKI) ? "okuma hatası yok" : "denetim yok", etiket: "YAPIM AŞAMASI",
+        sinif: "YAPIM AŞAMASI KAPANDI", kural: `YAPIM AŞAMASI KAPANDI — listeden silin (${e.paket}; liste program ${JSON.stringify(e.program)})` });
+    }
+  }
+  return { kalan, yapim };
+}
+// Liste mutantlarının dişi: sentetik durumlarda doğru eşleştirici ile her mutant en az bir durumda farklı sonuç vermeli (ders 7)
+function yapimMutantlari() {
+  const L = [{ senaryo: "S", anahtar: "k1:kalem:2026/101", beklenen: 1, program: 2, paket: "Ç5-A" }, { senaryo: "S", anahtar: "k1:acilis:X", beklenen: 5, program: 6, paket: "Ç5-B tur 2" },
+    { senaryo: "S", anahtar: `${OKUMA_ONEKI}k1 mizan okunamadı (500)`, beklenen: null, program: "okunamadı", paket: "eşleme" }];
+  const F = (anahtar, beklenen, program) => ({ anahtar, beklenen, program, etiket: "KULLANICI", kural: "deneme", sinif: "BULGU" });
+  const O = metin => okumaFarklari([metin])[0];
+  const durumlar = [
+    ["S", { "k1:kalem:2026/101": {}, "k1:kalem:2026/1012": {}, "k1:acilis:X": {} }, [F("k1:kalem:2026/101", 1, 2), F("k1:kalem:2026/1012", 1, 2), F("k1:acilis:X", 5, 6), O("k1 mizan okunamadı (500)"), O("k1 mizan okunamadı (5001)")]],
+    ["T", { "k1:kalem:2026/101": {} }, [F("k1:kalem:2026/101", 1, 2)]],
+    ["S", { "k1:kalem:2026/101": {}, "k1:acilis:X": {} }, [F("k1:kalem:2026/101", 1, 3), F("k1:acilis:X", 5, 6), O("k1 mizan okunamadı (500)")]],
+    ["S", { "k1:kalem:2026/101": {}, "k1:acilis:X": {} }, [F("k1:acilis:X", 5, 6)]],
+    ["S", { "k1:kalem:2026/101": {}, "k1:acilis:X": {} }, [F("k1:kalem:2026/101", 9, 2), F("k1:acilis:X", 5, 6), O("k1 mizan okunamadı (500)")]],
+    ["S", { "k1:kalem:2026/101": {} }, [{ ...F("k1:kalem:2026/101", 1, 2), sinif: "BİLİNEN KAPANDI" }, F("k1:acilis:X", 5, 6), O("k1 mizan okunamadı (500)")]],
+  ];
+  const imza = mut => JSON.stringify(durumlar.map(([s, d, f]) => { const r = yapimAyir(s, d, f, L, mut); return [r.yapim.map(x => x.anahtar), r.kalan.map(x => `${x.anahtar}:${x.sinif}`)]; }));
+  const dogru = imza(0);
+  const adlar = { 1: "senaryo adı yok sayılır", 2: "alt dizgi (joker) eşleşmesi", 3: "program değeri karşılaştırılmaz", 4: "kapanan kayıt denetlenmez", 5: "kâhin beklentisi karşılaştırılmaz" };
+  return Object.entries(adlar).map(([n, ad]) => ({ n, ad, yakalandi: imza(Number(n)) !== dogru }));
+}
+// Paket etiketi (yalnız --yapim-asamasi-yaz): kural / ileti metni AÇIKÇA gösteriyorsa; göstermiyorsa ya da birden çok pakete işaret ediyorsa "AYRIŞTIRILMADI"
+// (tahminle doldurulmaz — ana oturum ayrıştırır). Ölçütler görev metninden (ya-listesi-istem.txt §2): açılış karşılığı 519 / carisiz evrak S49 → Ç5-A;
+// S91–S99 → Ç5-B tur 2; koşucudaki boş eşleme (KARSILIKSIZ_CARI; GECIKMIS_ALAN boşsa okunamayan değer) → eşleme.
+function yapimPaketi(f) {
+  const metin = `${f.kural ?? ""} ${f.okuma ? f.anahtar : ""}`;
+  const isaret = new Set();
+  if (/KARSILIKSIZ_CARI|GECIKMIS_ALAN/.test(metin)) isaret.add("eşleme");
+  if (/açılış karşılığı 519|\bS49\b/.test(metin)) isaret.add("Ç5-A");
+  if (/\bS9[1-9]\b/.test(metin)) isaret.add("Ç5-B tur 2");
+  if (/\bÇ5-C\b/.test(metin)) isaret.add("Ç5-C");
+  return isaret.size === 1 ? { paket: [...isaret][0] } : { paket: "AYRIŞTIRILMADI", not: isaret.size ? `kural metni birden çok pakete işaret ediyor: ${[...isaret].join(", ")}` : "kural metni paketi göstermiyor" };
+}
+const YAPIM = yapimYukle();
+
 const GECERSIZ_DENETIM = [];
 const DEGISEN = [];          // <KURAL> kararıyla değişen beklenti (senaryo başına; 2.4.6 ↔ 2.4.5, 2.4.9 ↔ 2.4.6)
 const SINIF = { ic: 0, ks9: 0, dis: 0 }; // programla farkların bu sınıfta / KS9 madde 10 yolunda (yalnız 2.4.6) / dışında olanları
@@ -1119,11 +1226,15 @@ let genelToplam = 0;
 let genelFark = 0;
 let okumaHatasi = 0;
 let genelBilinen = 0;
+let genelYapim = 0;          // YAPIM AŞAMASI kayıtlarıyla eşleşen farklar + okuma hataları (geçti de başarısız da sayılmaz)
+let genelYapimDenetim = 0;   // bunların denetim olanları (okuma hatası olmayanlar) — "N/M denetim geçti" satırında payda ve paydan düşülür
+const yapimHepsi = [];
+const yapimYazilacak = [];
 const bilinenHepsi = [];
 const ozet = [];
 for (const dosya of dosyalar) {
   const senaryo = JSON.parse(readFileSync(dosya, "utf8"));
-  const { program, hatalar, gunluk, ham } = await kos(senaryo);
+  const { program, hatalar: okumaHatalari, gunluk, ham } = await kos(senaryo);
   writeFileSync(path.join(OUT, `${senaryo.ad}.ham.json`), JSON.stringify(ham, null, 1));
   const beklenen = model(dosya);
   // 2.4.5 kararıyla geçersiz DENETİMLER (K4.1, C0): varsayılan kipte /1 /2 senaryosunda 2.4.4 kural setinin yazıp 2.4.5'in yazmadığı denetimler (yalnız --legacy'de koşar)
@@ -1158,17 +1269,34 @@ for (const dosya of dosyalar) {
     }
   }
   // /3: BILINEN kaydının `kural` alanı varsa yalnız o kural setinde uygulanır (2.4.5'te konusu kalkan Takvim / Açılış Bakiyesi kayıtları "2.4.4")
-  const { kalan: farklar, bilinen } = bilinenAyir(senaryo.ad, beklenen.denetimler, tumFarklar, BILINEN.kayitlar.filter(e => !e.kural || e.kural === KURAL));
+  const { kalan: bilinenSonrasi, bilinen } = bilinenAyir(senaryo.ad, beklenen.denetimler, tumFarklar, BILINEN.kayitlar.filter(e => !e.kural || e.kural === KURAL));
+  // YAPIM AŞAMASI (yalnız 2.5.0 varsayılan kural seti; öbür kiplerde farklar ve okuma hataları aynen geçer — çıktı bugünkü gibi)
+  let farklar = bilinenSonrasi;
+  let hatalar = okumaHatalari;
+  let yapim = [];
+  if (YAPIM_UYGULANIR) {
+    const ayrim = yapimAyir(senaryo.ad, beklenen.denetimler, [...bilinenSonrasi, ...okumaFarklari(okumaHatalari)], YAPIM.kayitlar);
+    yapim = ayrim.yapim;
+    farklar = ayrim.kalan.filter(f => !f.okuma);
+    hatalar = ayrim.kalan.filter(f => f.okuma).map(f => f.metin);
+    // --yapim-asamasi-yaz: liste bugünkü farklardan (BİLİNEN değişti / kapandı satırları hariç — onlar BİLİNEN listesinin sorunu, yazım reddedilir)
+    if (YAPIM_YAZ) for (const f of ayrim.kalan) yapimYazilacak.push({ senaryo: senaryo.ad, f, sinif246: f.sinif246 });
+  }
+  const yapimDenetim = yapim.filter(y => !y.okuma).length;
   genelToplam += toplam;
   genelFark += farklar.length;
   genelBilinen += bilinen.length;
+  genelYapim += yapim.length;
+  genelYapimDenetim += yapimDenetim;
   bilinenHepsi.push(...bilinen.map(b => ({ senaryo: senaryo.ad, ...b })));
+  yapimHepsi.push(...yapim.map(y => ({ senaryo: senaryo.ad, anahtar: y.anahtar, paket: y.paket })));
   okumaHatasi += hatalar.length;
   writeFileSync(path.join(OUT, `${senaryo.ad}.program.json`), JSON.stringify(program, null, 1));
   writeFileSync(path.join(OUT, `${senaryo.ad}.kahin.json`), JSON.stringify(beklenen, null, 1));
   writeFileSync(path.join(OUT, `${senaryo.ad}.api-gunlugu.json`), JSON.stringify(gunluk, null, 1));
-  writeFileSync(path.join(OUT, `${senaryo.ad}.fark.json`), JSON.stringify({ toplam, farklar, bilinen, hatalar }, null, 1));
-  console.log(`${senaryo.ad}: ${toplam - farklar.length - bilinen.length}/${toplam} tuttu${bilinen.length ? ` · BİLİNEN ${bilinen.length}` : ""}${hatalar.length ? ` · OKUMA HATASI ${hatalar.length}: ${hatalar.join("; ")}` : ""}`);
+  writeFileSync(path.join(OUT, `${senaryo.ad}.fark.json`), JSON.stringify({ toplam, farklar, bilinen, hatalar, ...(YAPIM_UYGULANIR ? { yapimAsamasi: yapim } : {}) }, null, 1));
+  const paketDagilimi = liste => Object.entries(liste.reduce((s, y) => ({ ...s, [y.paket]: (s[y.paket] || 0) + 1 }), {})).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)).map(([p, n]) => `${p} ${n}`).join(", ");
+  console.log(`${senaryo.ad}: ${toplam - farklar.length - bilinen.length - yapimDenetim}/${toplam} tuttu${bilinen.length ? ` · BİLİNEN ${bilinen.length}` : ""}${yapim.length ? ` · YAPIM AŞAMASI ${yapim.length} (${paketDagilimi(yapim)})` : ""}${hatalar.length ? ` · OKUMA HATASI ${hatalar.length}: ${hatalar.join("; ")}` : ""}`);
   for (const b of bilinen) console.log(`  ≈ [BİLİNEN] ${b.anahtar}: program ${JSON.stringify(b.program)} · kâhin ${JSON.stringify(b.beklenen)} (${b.kaynak})`);
   if (degisen) {
     const ic = farklar.filter(f => f.sinif246 === SINIF_ADI).length;
@@ -1217,14 +1345,49 @@ for (const m of bilinenMutantlari()) {
   if (!m.yakalandi) kacan += 1;
   console.log(`  liste mutasyonu ${m.n} (${m.ad}): ${m.yakalandi ? "YAKALANDI" : "YAKALANMADI"}`);
 }
-writeFileSync(path.join(OUT, "ozet.json"), JSON.stringify({ kip: LEGACY ? "legacy (2.4.4 kuralları, anahtarlar açık)" : KURAL, ozet, oncekiKural: ONCEKI, degisen: DEGISEN, farkSinifi: ONCEKI ? SINIF : null, genelToplam, genelFark, okumaHatasi, kacan, bilinen: genelBilinen, bilinenKayitlar: bilinenHepsi, bilinenListesiHatalari: BILINEN.hatalar, atlanan: ATLANAN, gecersizDenetim: GECERSIZ_DENETIM }, null, 1));
+// YAPIM AŞAMASI listesi: geçersiz kayıt / okunamayan dosya BAŞARISIZ; liste mutantları (yalnız uygulandığı kipte — öbür kiplerde çıktı bugünkü gibi)
+if (YAPIM_UYGULANIR) {
+  for (const h of YAPIM.hatalar) console.log(`  ✗ [YAPIM AŞAMASI LİSTESİ] ${h}`);
+  genelFark += YAPIM.hatalar.length;
+  for (const m of yapimMutantlari()) {
+    if (!m.yakalandi) kacan += 1;
+    console.log(`  yapım aşaması listesi mutasyonu ${m.n} (${m.ad}): ${m.yakalandi ? "YAKALANDI" : "YAKALANMADI"}`);
+  }
+}
+writeFileSync(path.join(OUT, "ozet.json"), JSON.stringify({ kip: LEGACY ? "legacy (2.4.4 kuralları, anahtarlar açık)" : KURAL, ozet, oncekiKural: ONCEKI, degisen: DEGISEN, farkSinifi: ONCEKI ? SINIF : null, genelToplam, genelFark, okumaHatasi, kacan, bilinen: genelBilinen, bilinenKayitlar: bilinenHepsi, bilinenListesiHatalari: BILINEN.hatalar, atlanan: ATLANAN, gecersizDenetim: GECERSIZ_DENETIM, ...(YAPIM_UYGULANIR ? { yapimAsamasi: genelYapim, yapimAsamasiDenetim: genelYapimDenetim, yapimAsamasiKayitlar: yapimHepsi, yapimAsamasiListesiHatalari: YAPIM.hatalar } : {}) }, null, 1));
+// --yapim-asamasi-yaz: listeyi bugünkü farklardan yazar (sıralı, zaman damgasız — iki ardışık koşu aynı dosyayı üretmeli). BİLİNEN listesi sorunluysa YAZMAZ.
+if (YAPIM_YAZ) {
+  const bilinenSorun = yapimYazilacak.filter(({ f }) => String(f.sinif).startsWith("BİLİNEN"));
+  if (bilinenSorun.length || BILINEN.hatalar.length) {
+    console.log(`\n✗ YAPIM-ASAMASI.json YAZILMADI: BİLİNEN listesinde ${bilinenSorun.length + BILINEN.hatalar.length} sorun (değişti / kapandı / geçersiz kayıt) — önce BILINEN.json incelenir`);
+    process.exit(1);
+  }
+  const sirala = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
+  const kayitlar = yapimYazilacak.map(({ senaryo, f, sinif246 }) => {
+    const { paket, not } = yapimPaketi(f);
+    return { senaryo, anahtar: f.anahtar, beklenen: f.beklenen, program: f.program, sinif: `${f.sinif} ${f.etiket}${sinif246 ? ` · ${sinif246}` : ""}`, kural: f.kural, paket, ...(not ? { not } : {}) };
+  }).sort((a, b) => sirala(a.senaryo, b.senaryo) || sirala(a.anahtar, b.anahtar));
+  const dosya = {
+    aciklama: "Cari kâhini ↔ program YAPIM AŞAMASI listesi (S100 = A, KULLANICI KARARI 10.11.2026 17:54 UTC; docs/2.5.0-IS-LISTESI.md D). Ç5 paket paket ana dala girerken bugünkü farklar kararı / bekleyen paketiyle sabitlenir; kâhinin beklentisi DEĞİŞMEZ. Listede OLMAYAN fark, değeri DEĞİŞEN fark ve KAPANDIĞI hâlde listede duran kayıt kırmızıdır (liste yalnız küçülür). Yayın adayında liste BOŞ olmalı (tools/release.mjs). BİLİNEN.json'dan (kullanıcının ERTELEDİĞİ farklar) AYRIDIR.",
+    kural: KURAL,
+    uretim: "node test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz (varsayılan koşu: bütün elle senaryolar + rastgele tohum 1–2 × 60 işlem)",
+    paketler: YAPIM_PAKETLER,
+    kayitlar,
+  };
+  writeFileSync(YAPIM_YOLU, `${JSON.stringify(dosya, null, 1)}\n`);
+  const dag = Object.entries(kayitlar.reduce((s, k) => ({ ...s, [k.paket]: (s[k.paket] || 0) + 1 }), {})).map(([p, n]) => `${p} ${n}`).join(", ");
+  console.log(`\nYAPIM-ASAMASI.json YAZILDI (${path.relative(ROOT, YAPIM_YOLU) || YAPIM_YOLU}): ${kayitlar.length} kayıt (${kayitlar.filter(k => k.anahtar.startsWith(OKUMA_ONEKI)).length} okuma hatası) — paketlere göre: ${dag || "yok"}. Bu bir denetim sonucu DEĞİLDİR; liste varsayılan koşuyla denetlenir.`);
+  process.exit(0);
+}
 if (!LEGACY) console.log(`\nGEÇERSİZ DENETİM (2.4.5 kararıyla; --legacy'de koşar — KARARLAR.md §8 C0): ${GECERSIZ_DENETIM.reduce((t, x) => t + x.adet, 0)} denetim, ${GECERSIZ_DENETIM.length} senaryo${GECERSIZ_DENETIM.length ? ` — ${GECERSIZ_DENETIM.map(x => `${x.senaryo} ${x.adet}`).join(", ")}` : ""}`);
 console.log(`\nATLANAN (${LEGACY ? "/3 — yalnız varsayılan kipte koşar" : "2.4.5 kararıyla geçersiz — --legacy ile koşar"}): ${ATLANAN.length}${ATLANAN.length ? ` — ${ATLANAN.join(", ")}` : ""}`);
 if (KURAL === "2.4.6") console.log(`\n2.4.6 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §9 C0b): ${DEGISEN.reduce((t, x) => t + x.adet, 0)} denetim, ${DEGISEN.filter(x => x.adet).length} senaryo · programla farkların ${SINIF.ic}'i bu sınıfta, ${SINIF.ks9}'i KS9 (madde 10: faturasız Alış İadesi yolu 2.4.5'te yok), ${SINIF.dis}'i SINIF DIŞI`);
 if (KURAL === "2.4.9") console.log(`\n2.4.9 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §12; 2.4.6 kâhinine göre): ${DEGISEN.reduce((t, x) => t + x.adet, 0)} denetim, ${DEGISEN.filter(x => x.adet).length} senaryo · programla farkların ${SINIF.ic}'i bu sınıfta, ${SINIF.dis}'i SINIF DIŞI`);
 if (KURAL === "2.5.0") console.log(`\n2.5.0 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §13; 2.4.9 kâhinine göre): ${DEGISEN.reduce((t, x) => t + x.adet, 0)} denetim, ${DEGISEN.filter(x => x.adet).length} senaryo · programla farkların ${SINIF.ic}'i bu sınıfta, ${SINIF.dis}'i SINIF DIŞI`);
-console.log(`\nÖZET [${LEGACY ? "legacy" : KURAL}]: ${dosyalar.length} senaryo, ${genelToplam} denetim, ${genelFark} fark (BULGU ${ozet.reduce((s, o) => s + o.bulgu, 0)}), ${genelBilinen} bilinen sınır (BILINEN.json; başarısız sayılmaz), ${okumaHatasi} okuma hatası, ${kacan} yakalanmayan mutasyon, ${ATLANAN.length} atlanan senaryo. Ham çıktı: ${OUT}`);
+const yapimDagilimi = Object.entries(yapimHepsi.reduce((s, y) => ({ ...s, [y.paket]: (s[y.paket] || 0) + 1 }), {})).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)).map(([p, n]) => `${p} ${n}`).join(", ");
+console.log(`\nÖZET [${LEGACY ? "legacy" : KURAL}]: ${dosyalar.length} senaryo, ${genelToplam} denetim, ${genelFark} fark (BULGU ${ozet.reduce((s, o) => s + o.bulgu, 0)}), ${genelBilinen} bilinen sınır (BILINEN.json; başarısız sayılmaz), ${YAPIM_UYGULANIR ? `${genelYapim} yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: ${yapimDagilimi || "yok"}; ${genelYapimDenetim} denetim + ${genelYapim - genelYapimDenetim} okuma hatası; geçti de başarısız da sayılmaz — yayın adayında liste BOŞ olmalı), ` : ""}${okumaHatasi} okuma hatası, ${kacan} yakalanmayan mutasyon, ${ATLANAN.length} atlanan senaryo. Ham çıktı: ${OUT}`);
 if (genelBilinen) console.log(`BİLİNEN SINIRLAR (${genelBilinen}): ${bilinenHepsi.map(b => `${b.senaryo} ${b.anahtar}`).join("; ")}`);
-// "geçti" sayısı bilinen sınırları içerir (başarısız sayılmaz — CI kapısı); ayrıntısı yukarıdaki BİLİNEN satırlarında ve ozet.json "bilinen" alanında
-console.log(`${Math.max(0, genelToplam - genelFark - okumaHatasi - kacan)}/${genelToplam} denetim geçti${genelBilinen ? ` (${genelBilinen} bilinen sınır dahil)` : ""}`);
+// "geçti" sayısı bilinen sınırları içerir (başarısız sayılmaz — CI kapısı); ayrıntısı yukarıdaki BİLİNEN satırlarında ve ozet.json "bilinen" alanında.
+// YAPIM AŞAMASI kayıtları (S100) "geçti" SAYILMAZ: payda ve paydan düşülür (başarısız da sayılmaz; kanit.mjs başarısız = payda − pay = fark + okuma hatası + yakalanmayan mutasyon)
+console.log(`${Math.max(0, genelToplam - genelFark - okumaHatasi - kacan - genelYapim)}/${genelToplam - genelYapim} denetim geçti${genelBilinen ? ` (${genelBilinen} bilinen sınır dahil)` : ""}${genelYapim ? ` (${genelYapim} yapım aşaması ayrı sayıldı — geçti sayılmadı)` : ""}`);
 process.exitCode = genelFark || okumaHatasi || kacan ? 1 : 0;

@@ -509,6 +509,26 @@ export function releaseGate({ gitFn = gitIn(ROOT), ciFn = ciState } = {}) {
   return { ok: problems.length === 0, problems, ci };
 }
 
+// YAPIM AŞAMASI kapısı (S100 = A, KULLANICI KARARI 10.11.2026 17:54 UTC; docs/2.5.0-IS-LISTESI.md D): cari kâhini ↔ program adımının YAPIM AŞAMASI listesi
+// (test/bagimsiz/cari/YAPIM-ASAMASI.json) yayın adayında BOŞ olmak zorunda — dolu listeyle imzalı paket üretilmez. Okunamayan / bozuk / "kayitlar" dizisi olmayan
+// dosya BOŞ SAYILMAZ (ders 4). Atlatma seçeneği yoktur; `yol` yalnız testler içindir (tools/release.mjs varsayılanla çağırır).
+export const YAPIM_ASAMASI_YOLU = path.join(ROOT, "test", "bagimsiz", "cari", "YAPIM-ASAMASI.json");
+export function yapimAsamasiGate(yol = YAPIM_ASAMASI_YOLU) {
+  let ham;
+  try {
+    ham = JSON.parse(readFileSync(yol, "utf8"));
+  } catch (error) {
+    return { ok: false, problems: [`YAPIM AŞAMASI listesi okunamadı (${path.basename(yol)}: ${error.code || error.message}) — okunamayan liste boş sayılmaz`], sayi: null, paketler: {} };
+  }
+  if (!ham || !Array.isArray(ham.kayitlar)) return { ok: false, problems: [`YAPIM AŞAMASI listesinde "kayitlar" dizisi yok (${path.basename(yol)}) — boş sayılmaz`], sayi: null, paketler: {} };
+  const paketler = {};
+  for (const k of ham.kayitlar) paketler[k?.paket ?? "paketsiz"] = (paketler[k?.paket ?? "paketsiz"] || 0) + 1;
+  const n = ham.kayitlar.length;
+  if (!n) return { ok: true, problems: [], sayi: 0, paketler };
+  const dagilim = Object.entries(paketler).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)).map(([p, s]) => `${p} ${s}`).join(", ");
+  return { ok: false, problems: [`YAPIM AŞAMASI listesi boş değil: ${n} kayıt (paketlere göre: ${dagilim}) — cari kâhini ↔ program farkları kapanmadan yayın adayı olmaz (S100; test/bagimsiz/cari/YAPIM-ASAMASI.json)`], sayi: n, paketler };
+}
+
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const [cmd, ...rest] = process.argv.slice(2);
   const opt = name => {
