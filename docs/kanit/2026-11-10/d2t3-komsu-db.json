@@ -1,0 +1,32 @@
+{
+  "ad": "d2t3-komsu-db",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/db-acilis-kilit-250.test.mjs test/db-tx-commit-hata-249.test.mjs test/db-tx-kayip-250.test.mjs test/db-tx-kayip-pragma-250.test.mjs test/db-bozuk-dosya-tutamak-248.test.mjs",
+  "commit": "8e9c510489b8491058a9530fdcfcb1314d023e8f",
+  "dal": "worktree-agent-aed304ef071f4244c",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T17:47:30.229Z",
+  "sure_sn": 30.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 27,
+    "gecen": 27,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-kanit/2026-11-10/d2t3-komsu-db.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aed304ef071f4244c",
+  "ham_cikti_sha256": "c972a8845838d16bb257895c9f8f87fa8ed404c57a08ca349989c77b0dcc43b1",
+  "ham_cikti_bayt": 12571
+}

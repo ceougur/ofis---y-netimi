@@ -1,0 +1,32 @@
+{
+  "ad": "d2t3-komsu-geri-yukleme",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/sema-kapisi-bs7.test.mjs test/banka-210-gg-geri-yukle.test.mjs test/yedek-220.test.mjs test/yedek-220-inceleme.test.mjs test/geri-yukleme-uyari-244.test.mjs test/createapp-acilis-geri-alma-249.test.mjs test/guvenilirlik-221-tatbikat.test.mjs test/acilis-isareti-246.test.mjs",
+  "commit": "8e9c510489b8491058a9530fdcfcb1314d023e8f",
+  "dal": "worktree-agent-aed304ef071f4244c",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T17:48:55.718Z",
+  "sure_sn": 72.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 83,
+    "gecen": 83,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-kanit/2026-11-10/d2t3-komsu-geri-yukleme.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aed304ef071f4244c",
+  "ham_cikti_sha256": "f87d31a44c27839205816326fa1b4c26288c1c9079378fbeea983c85da01b66b",
+  "ham_cikti_bayt": 33723
+}

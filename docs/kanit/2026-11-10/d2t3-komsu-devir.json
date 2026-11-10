@@ -1,0 +1,32 @@
+{
+  "ad": "d2t3-komsu-devir",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/devir-d2-arsiv-250.test.mjs test/devir-d2-arsiv-goc-kesinti-250.test.mjs test/devir-d2-bakim-250.test.mjs test/devir-d2-yedek-250.test.mjs",
+  "commit": "8e9c510489b8491058a9530fdcfcb1314d023e8f",
+  "dal": "worktree-agent-aed304ef071f4244c",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T17:48:01.035Z",
+  "sure_sn": 27.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 29,
+    "gecen": 29,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-kanit/2026-11-10/d2t3-komsu-devir.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aed304ef071f4244c",
+  "ham_cikti_sha256": "80d0ee2eb54b1d9a8f09a509b311406f87f4ea59a2c73194ec6a220850116e79",
+  "ham_cikti_bayt": 15362
+}
