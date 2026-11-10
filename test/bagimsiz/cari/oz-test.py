@@ -22,6 +22,8 @@
 7. Bakım 6 (§18; S99 / S101 / S102–S105 + SK-13): saf simülasyon S102 A ile (önceki günlerin netleşmesi en yeniden geri alınır, açılan karşı kalem o gün yeniden uygulanır) ve taksitli
    faturanın taksitleriyle; faturanın belge durumu saf simülasyonun netleşmesiz koşusuyla (S99 A — SK-13); hiçbir senaryoda SK-9 … SK-13 susması kalmaz; mutantlar 241–250 DEĞERLE;
    `elleYok` / `elleBelirsiz` SK-14 … SK-17 susmaları.
+8. Bakım 7 (§19; G1 / G2): bütün elle senaryolarda seriden numara alan belgeler (satış faturası — taslak dahil — ve iade) senaryo içinde tarih sırasıyla (Y7-1); elle Mevcut Borç kartının
+   reddi (Y7-3) yalnız 2.5.0'da — 2.4.9'da aynı adım kabul; mutantlar 251–255 DEĞERLE; `elleYok` / `elleBelirsiz` SK-18 susması.
 Çıktı: TAP benzeri sayılar + son satır "N/M denetim geçti". Çıkış 0 yalnız hepsi geçerse.
 """
 import importlib.util
@@ -432,6 +434,27 @@ def main():
           " gecikmiş (i) %d cari · susulan: okuma ayrışan (SK-17) %d, tanım alanı dışı %d · S98 ile kendi tarafından ayrışan %d cari"
           % (say["net"], say["tek"], say["taksit"], say["belge"], say["avans"], say["ii"], say["gecikmis"], say["ayrisan"], say["disarida"], say["s98"]))
     denetle("bakım 4 çapraz denetim boş değil (karşı yönlü kalemli caride saf net kalemi var)", say["net"] > 0 and say["tek"] > 0 and say["gecikmis"] > 0, json.dumps(say))
+    # 8. bakım 7 (§19 Y7-1, G1): elle senaryolarda seriden numara alan belgeler (satış faturası — taslak dahil — ve iade) senaryo içinde tarih sırasıyla (eşit / artan); tarih yoksa `bugun`
+    seri_say = 0
+    for p in elle:
+        sen = yukle(p)
+        en_buyuk, ihlal = None, []
+        for a in sen["adimlar"]:
+            if a["islem"] == "iade" or (a["islem"] == "fatura" and a.get("tur", "satis") != "alis"):
+                t = a.get("tarih") or sen["bugun"]
+                seri_say += 1
+                if en_buyuk is not None and t < en_buyuk:
+                    ihlal.append("%s %s < %s" % (a["id"], t, en_buyuk))
+                en_buyuk = t if en_buyuk is None or t > en_buyuk else en_buyuk
+        denetle("%s G1 seriden numara alan belgeler tarih sırasıyla" % os.path.basename(p), not ihlal, "; ".join(ihlal))
+    print("  G1 (bakım 7): %d elle senaryo, %d seriden numara alan belge adımı tarih sırasıyla denetlendi" % (len(elle), seri_say))
+    # 9. bakım 7 (§19 Y7-3): elle Mevcut Borç kartının reddi yalnız 2.5.0'da; 2.4.9'da aynı senaryo kartı kabul eder (≤ 2.4.9 AYNEN)
+    for p in v3:
+        sen = yukle(p)
+        ret250 = [k for k, v in tabanlar.get(p, {}).items() if k.startswith("adim:") and k.endswith(":durum") and v["b"] == "ret" and v["e"] == "BAŞ MİMAR" and "C19 Y7-3" in v["k"]]
+        if ret250:
+            _m249, out249 = calistir(sen, 0, "2.4.9")
+            denetle("%s Y7-3 reddi yalnız 2.5.0'da (2.4.9 kabul)" % os.path.basename(p), all(out249.get(k, {}).get("b") == "ok" for k in ret250), ",".join(ret250))
     toplam = gecen + kalan
     if satirlar:
         print("BAŞARISIZ:")
