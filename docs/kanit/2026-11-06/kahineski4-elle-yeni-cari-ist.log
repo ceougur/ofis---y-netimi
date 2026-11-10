@@ -1,0 +1,10 @@
+d14-c5-s91-vadesiz-kayit-gunu.json: 70 elle denetim, 0 kırmızı
+d15-c5-s91-vadesiz-ertesi-gun.json: 39 elle denetim, 0 kırmızı
+d16-c5-s92-net-gorunum.json: 81 elle denetim, 0 kırmızı
+d17-c5-s93-verilen-avans.json: 37 elle denetim, 0 kırmızı
+d18-c5-s93-avans-ertesi-gun.json: 12 elle denetim, 0 kırmızı
+d19-c5-s92-okuma-ayrisan.json: 47 elle denetim, 0 kırmızı
+# tests 286
+# pass 286
+# fail 0
+286/286 denetim geçti
