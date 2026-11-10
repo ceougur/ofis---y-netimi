@@ -1,0 +1,38 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "d11-c5-s66-carisiz-karsiliksiz",
+ "aciklama": "2.5.0 bakım 2 C14.3 (KULLANICI S66 = A, 06.11 12:16): formdan CARİSİZ alınan evrak (S49: B 101|121 / A 649) karşılıksız dönünce program cariyi sorar. E1 çek 700 — A SEÇİLDİ (05.06): A borçlanır, kuyrukta ayrı borç kalemi (vade 05.06, S1); A'nın 20.05'teki avansı 200 o gün kapatır → gecikmiş 500. E2 senet 300 — SEÇİLMEDİ: B 649 / A 121 (S49 geliri geri alınır). E4 çek 500 — faturalı B seçildi (10.06): F1 1.000 (01.05) + karşılıksız borç 500; 12.06 bağsız tahsilat 600 vadesi önce gelen F1'i kapatır → F1 400, gecikmiş 900. E5 çek 250 — TEDARİKÇİ T seçildi: B 320 / A 101 (G-2), T borçlanır. Kilitli dönem: E6 çek 150 kilitli dönemde alındı (10.05; kilit 31.05), kilitten sonra (08.06) seçilmeden karşılıksız → B 649 / A 101 (kümülatif mizan aynı). E3 portföyde. Mizan 101 = 400, 121 = 0, 649 = −1.850, 120 = 1.400, 320 = 250.",
+ "dayanak": "KARARLAR.md §14 C14.3",
+ "bugun": "2026-06-15",
+ "adimlar": [
+  {"id": "ca", "islem": "cari_ac", "ad": "A", "isim": "Ayla Seçilen", "tarih": "2026-04-01"},
+  {"id": "cb", "islem": "cari_ac", "ad": "B", "isim": "Bora Faturalı", "tarih": "2026-04-01"},
+  {"id": "ct", "islem": "cari_ac", "ad": "T", "isim": "Tekin Tedarik", "tur": "tedarikci", "tarih": "2026-04-01"},
+  {"id": "f1", "islem": "fatura", "ad": "F1", "cari": "B", "tutar": "1000", "tarih": "2026-05-01"},
+  {"id": "e6", "islem": "evrak", "ad": "E6", "cari": null, "tur": "cek", "tutar": "150", "tarih": "2026-05-10"},
+  {"id": "t0", "islem": "tahsilat", "cari": "A", "tutar": "200", "tarih": "2026-05-20"},
+  {"id": "dk", "islem": "donem_kilitle", "tarih": "2026-05-31"},
+  {"id": "e1", "islem": "evrak", "ad": "E1", "cari": null, "tur": "cek", "tutar": "700", "tarih": "2026-06-01"},
+  {"id": "e2", "islem": "evrak", "ad": "E2", "cari": null, "tur": "senet", "tutar": "300", "tarih": "2026-06-02"},
+  {"id": "e3", "islem": "evrak", "ad": "E3", "cari": null, "tur": "cek", "tutar": "400", "tarih": "2026-06-03"},
+  {"id": "e4", "islem": "evrak", "ad": "E4", "cari": null, "tur": "cek", "tutar": "500", "tarih": "2026-06-04"},
+  {"id": "e5", "islem": "evrak", "ad": "E5", "cari": null, "tur": "cek", "tutar": "250", "tarih": "2026-06-04"},
+  {"id": "k0", "islem": "kontrol"},
+  {"id": "x1", "islem": "karsiliksiz", "evrak": "E1", "cari": "A", "tarih": "2026-06-05"},
+  {"id": "x2", "islem": "karsiliksiz", "evrak": "E2", "tarih": "2026-06-06"},
+  {"id": "x6", "islem": "karsiliksiz", "evrak": "E6", "tarih": "2026-06-08"},
+  {"id": "x4", "islem": "karsiliksiz", "evrak": "E4", "cari": "B", "tarih": "2026-06-10"},
+  {"id": "x5", "islem": "karsiliksiz", "evrak": "E5", "cari": "T", "tarih": "2026-06-11"},
+  {"id": "tb", "islem": "tahsilat", "cari": "B", "tutar": "600", "tarih": "2026-06-12"},
+  {"id": "k1", "islem": "kontrol", "gecikmis": true, "acikToplam": true}
+ ],
+ "elleBeklenen": {
+  "k0:mizan:101": 200000, "k0:mizan:121": 30000, "k0:mizan:649": -230000, "k0:mizan:100": 20000, "k0:mizan:120": 80000, "k0:mizan:600": -100000, "k0:mizan:500": 0, "k0:mizan:519": 0,
+  "k1:mizan:101": 40000, "k1:mizan:121": 0, "k1:mizan:649": -185000, "k1:mizan:120": 140000, "k1:mizan:320": 25000, "k1:mizan:100": 80000, "k1:mizan:600": -100000,
+  "k1:mizan:500": 0, "k1:mizan:519": 0, "k1:kasa": 80000,
+  "k1:cari:A:bakiye": 50000, "k1:cari:B:bakiye": 90000, "k1:cari:T:bakiye": 25000,
+  "k1:cari:A:gecikmis": 50000, "k1:cari:B:gecikmis": 90000, "k1:cari:T:gecikmis": 25000,
+  "k1:fatura:F1:acik": 40000
+ },
+ "elleYok": ["k1:cari:A:acikToplam", "k1:cari:B:acikToplam", "k1:cari:T:acikToplam"]
+}

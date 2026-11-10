@@ -43,7 +43,10 @@ export async function dumpRepair(app, { hash = false, screen = false, password =
   const invoices = app.context.invoices;
   const all = store.all("SELECT id, account_id AS accountId, try_payable AS tryPayable FROM invoices ORDER BY id");
   // Yalnız kararlı alanlar (sonraki sürümlerin eklediği alan dökümü kırmasın): tutar, ödenen, açık, fazla, durum, kart payı.
-  put("faturaDurumlari", [...invoices.paymentStates(all)].sort((a, b) => (a[0] < b[0] ? -1 : 1)).map(([id, s]) => [id, { payable: s.payable, paid: s.paid, open: s.open, excess: s.excess ?? 0, state: s.state, coveredBy: s.coveredBy || {} }]));
+  // 2.5.0 Ç5-B: onarımın okuduğu durum KART / BAĞ DEFTERİdir (lib/invoice-settle.mjs; routes/invoices.mjs settledFor = cardLedgerState, toplu yolu repairScreen) — ekrandaki
+  // fatura durumu artık Tek Yükümlülük Kuyruğu görünümü (paymentStates) ve bilerek değişti (S2, karar (1), S50). Eski kodda (cardLedgerState yok) paymentStates aynı kuraldır.
+  const ledgerStates = invoices.cardLedgerState && invoices.repairScreen ? invoices.repairScreen(all.map(row => row.id)) : invoices.paymentStates(all);
+  put("faturaDurumlari", [...ledgerStates].sort((a, b) => (a[0] < b[0] ? -1 : 1)).map(([id, s]) => [id, { payable: s.payable, paid: s.paid, open: s.open, excess: s.excess ?? 0, state: s.state, coveredBy: s.coveredBy || {} }]));
   const candidates = store.all(CANDIDATE_SQL);
   out.aday = candidates.length;
   if (screen) {
@@ -53,7 +56,7 @@ export async function dumpRepair(app, { hash = false, screen = false, password =
     let differ = 0;
     const samples = [];
     for (const row of candidates) {
-      const exact = invoices.paymentStates([row]).get(row.id);
+      const exact = invoices.cardLedgerState ? invoices.cardLedgerState(row) : invoices.paymentStates([row]).get(row.id);
       const a = batch.get(row.id);
       const same = Number(a?.open) === Number(exact?.open) && Number(a?.excess || 0) === Number(exact?.excess || 0);
       if (!same) {
@@ -75,14 +78,16 @@ export async function dumpRepair(app, { hash = false, screen = false, password =
   const accounts = await get("/api/workspace/accounts?status=all&limit=100000");
   const rows = accounts.accounts || accounts.items || [];
   if (!rows.length) throw new Error("cari listesi boş okundu (ders 4)");
-  put("cariler", rows.map(row => ({ id: row.id, debit: row.debit, credit: row.credit, balance: row.balance, planRemaining: row.planRemaining, overdue: row.overdue })));
+  // 2.5.0 Ç5-B: listenin `overdue`'su Tek Yükümlülük Kuyruğu'nun gecikmiş borcu oldu (B1, bilerek); onarım eşdeğerliği eski anlamlı alanı okur (overdueInstallments; eski kodda overdue).
+  put("cariler", rows.map(row => ({ id: row.id, debit: row.debit, credit: row.credit, balance: row.balance, planRemaining: row.planRemaining, overdue: row.overdueInstallments ?? row.overdue })));
   const cash = await get("/api/workspace/cash");
   if (!cash?.totals) throw new Error("Kasa okunamadı (ders 4)");
   out.kasa = plain({ in: cash.totals.in, out: cash.totals.out, balance: cash.totals.balance });
   const cards = [];
   for (const row of candidates) {
     const t = (await get(`/api/workspace/plans/${row.planId}`)).totals || {};
-    cards.push({ planId: row.planId, total: t.total, paid: t.paid, remaining: t.remaining, overdue: t.overdue ?? 0 });
+    // 2.5.0 Ç5-B: kartın `overdue`'su kuyruk kalanından (S50); onarım eşdeğerliği kartın kendi hesabını okur (ownOverdue; eski kodda overdue).
+    cards.push({ planId: row.planId, total: t.total, paid: t.paid, remaining: t.remaining, overdue: t.ownOverdue ?? t.overdue ?? 0 });
   }
   put("adayKartlar", cards);
   const integrity = await get("/api/workspace/ledger/integrity");

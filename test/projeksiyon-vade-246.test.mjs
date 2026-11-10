@@ -107,7 +107,8 @@ describe("2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemle
     await must("tahsilatı sil", t.api.del(`/api/workspace/accounts/${acc.id}/entries/${paid.id}`));
     mine = t.mine(await t.flow("preset=next30"), acc);
     const sorted = list => [...list].sort((a, b) => a.join("|").localeCompare(b.join("|")));
-    assert.deepEqual(sorted(mine.map(row => [row.source, row.date, row.amount])), sorted([["account", day(15), 1000], ["unbilled", day(-30), 300]]), `vadesiz 300 kendi kayıt gününde (vadeli kaydın günü ${TODAY} değil): ${show(mine)}`);
+    // 2.5.0 Ç5-B (bilerek güncellendi; kullanıcı kararı S1 — vadesiz borcun vadesi belge günü): vadesiz 300 artık "Faturasız Cari Alacağı" değil, kayıt gününde cari kalemi.
+    assert.deepEqual(sorted(mine.map(row => [row.source, row.date, row.amount])), sorted([["account", day(15), 1000], ["account", day(-30), 300]]), `vadesiz 300 kendi kayıt gününde (vadeli kaydın günü ${TODAY} değil): ${show(mine)}`);
     assert.equal(net(mine), (await t.card(acc)).totals.balance);
     await t.entry(acc, { kind: "in", amount: "1.300", date: day(-1) });
     mine = t.mine(await t.flow("preset=next30"), acc);
@@ -131,19 +132,20 @@ describe("2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemle
     assert.equal(net(mine), (await t.card(opening)).totals.balance, "tedarikçinin net tutarı = bakiyesi (eksi)");
   });
 
-  it("KS2: müşterideki vadeli elle Alacak çıkış kalemidir, müşterinin borcundan düşülmez; bakiyede ikinci kez düşülmez (carinin net = bakiye)", async () => {
+  // 2.5.0 Ç5-B (bilerek güncellendi; kullanıcı kararı (5) "Bakiyeden Netleşsin" + S1): müşterideki elle Alacak müşterinin borcuyla KENDİ tarihinde netleşir — ayrı çıkış
+  // kalemi olmaz (2.4.5 KS2'nin yerine); vadesiz borcun kalanı kayıt gününde cari kalemi. Beklenen sayılar karar metninden elle.
+  it("karar (5): müşterideki elle Alacak müşterinin borcuyla netleşir (çıkış kalemi yok); net borç kendi vadesinde; carinin net = bakiye", async () => {
     const acc = await t.account("KS2");
-    await t.entry(acc, { kind: "debt", amount: "1.000", date: day(-15) });
-    const credit = await t.entry(acc, { kind: "credit", amount: "300", date: day(-10), dueDate: day(6) });
+    const debt = await t.entry(acc, { kind: "debt", amount: "1.000", date: day(-15) });
+    await t.entry(acc, { kind: "credit", amount: "300", date: day(-10), dueDate: day(6) });
     let mine = t.mine(await t.flow("preset=next30"), acc);
-    assert.deepEqual(mine.filter(row => row.source === "account").map(row => [row.date, row.direction, row.amount, row.ref?.entryId]), [[day(6), "out", 300, credit.id]], `vadeli elle Alacak çıkış kalemi: ${show(mine)}`);
-    assert.deepEqual(mine.filter(row => row.source === "unbilled").map(row => [row.date, row.amount]), [[day(-15), 1000]], `müşterinin vadesiz borcu (1.000) kayıt gününde, 300 düşülmeden: ${show(mine)}`);
+    assert.deepEqual(mine.map(row => [row.source, row.date, row.direction, row.amount, row.ref?.entryId]), [["account", day(-15), "in", 700, debt.id]], `net borç 700 kayıt gününde (S1): ${show(mine)}`);
     assert.equal(net(mine), 700, "net = bakiye 700 (300 iki kez düşülmez)");
     const both = await t.account("KS2 Iki Vade");
     await t.entry(both, { kind: "debt", amount: "1.000", date: day(-15), dueDate: day(9) });
     await t.entry(both, { kind: "credit", amount: "300", date: day(-10), dueDate: day(6) });
     mine = t.mine(await t.flow("preset=next30"), both);
-    assert.deepEqual(mine.map(row => [row.source, row.date, row.direction, row.amount]).sort(), [["account", day(6), "out", 300], ["account", day(9), "in", 1000]].sort(), show(mine));
+    assert.deepEqual(mine.map(row => [row.source, row.date, row.direction, row.amount]), [["account", day(9), "in", 700]], show(mine));
     assert.equal(net(mine), (await t.card(both)).totals.balance);
   });
 
@@ -172,7 +174,9 @@ describe("2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemle
     const late = await t.entry(acc, { kind: "debt", amount: "500", date: day(-10), dueDate: day(3) });
     await t.entry(acc, { kind: "in", amount: "1.500", date: day(-5) });
     const mine = t.mine(await t.flow("preset=next30"), acc, [invoice.id]);
-    assert.deepEqual(mine.map(row => [row.source, row.date, row.amount]).sort(), [["account", day(3), 500], ["invoice", day(25), 1500]].sort(), `${show(mine)} (late ${late.id})`);
+    // 2.5.0 Ç5-B (bilerek güncellendi; kullanıcı kararı S2 "vadesi en önce gelen"): 1.500 tahsilat önce vadesi geçmiş 1.000'i, sonra vadesi bugün+3 olan 500'ü kapatır;
+    // fatura (vade bugün+25) açık kalır. 2.4.5'te kayıt tarihi sırasıyla faturanın 500'ü kapanıyordu.
+    assert.deepEqual(mine.map(row => [row.source, row.date, row.amount]).sort(), [["invoice", day(25), 2000]].sort(), `${show(mine)} (late ${late.id})`);
     assert.equal(net(mine), (await t.card(acc)).totals.balance);
   });
 
@@ -304,8 +308,10 @@ describe("2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemle
     const unbilled = rows.filter(row => row.source === "unbilled");
     assert.equal(net(rows), balances, `Σ projeksiyon = Σ cari açık (${balances}) — bir kez; satırlar ${show(rows)} (faturasız alacak toplamı ${sum(unbilled, "in")})`);
     for (const entry of vadeli) assert.equal(rows.filter(row => row.ref?.entryId === entry.id).length <= 1, true, "her vadeli kayıt en çok bir satır");
-    assert.deepEqual(unbilled.map(row => [row.party, row.date, row.amount]).sort(), [[a.name, day(-35), 250], [c.name, day(-2), 90]].sort(), `faturasız alacakta yalnız vadesiz borçlar, kendi günleriyle: ${show(unbilled)}`);
-    assert.deepEqual(rows.filter(row => row.source === "account").map(row => [row.party, row.date, row.amount]).sort(), [[a.name, day(10), 400], [b.name, day(-6), 2000], [b.name, day(14), 700], [c.name, day(3), 700]].sort(), "vadeli kalemler (A: 600 tahsilat en eski 1.000'i kapatır → 400; C'de kartın kapsadığı 500 düşülmüş)");
+    // 2.5.0 Ç5-B (bilerek güncellendi; S1 + S2): vadesiz borçlar da kayıt gününde cari kalemidir (faturasız alacak kalmaz); A'nın 600 tahsilatı vadesi en önce gelen
+    // vadesiz 250'yi (vade = kayıt günü, bugün−35), sonra 1.000'in 350'sini kapatır → 650. C'nin karttan sonra yazılan 90'ı kartın kapsamında değil (v2.0.23).
+    assert.deepEqual(unbilled.map(row => [row.party, row.date, row.amount]).sort(), [], `faturasız alacak yok (vadesiz borçlar cari kalemi): ${show(unbilled)}`);
+    assert.deepEqual(rows.filter(row => row.source === "account").map(row => [row.party, row.date, row.amount]).sort(), [[a.name, day(10), 650], [b.name, day(-6), 2000], [b.name, day(14), 700], [c.name, day(3), 700], [c.name, day(-2), 90]].sort(), "cari kalemleri (A: 600 tahsilat önce vadesiz 250'yi, sonra 1.000'in 350'sini kapatır → 650; C'de kart 500'ü tüketti → 700; C'nin karttan sonraki vadesiz 90'ı kendi gününde)");
     assert.deepEqual(rows.filter(row => row.source === "plan").map(row => [row.date, row.amount]), [[day(20), 500]], "kartın kapsadığı kısım kartın taksidiyle bir kez");
   });
 
@@ -319,14 +325,16 @@ describe("2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemle
     const p1 = await purchase(customer, "AL-246-1", 300, day(-15), day(16));
     let mine = t.mine(await t.flow("preset=next30"), customer, [p1.id]);
     assert.equal(net(mine), (await t.card(customer)).totals.balance, `müşteri carisinde net = bakiye (alış faturası bir kez): ${show(mine)}`);
-    assert.deepEqual(rowsOf(mine), sorted([["invoice", day(16), "out", 300], ["unbilled", day(-19), "in", 1000]]), show(mine));
+    // 2.5.0 Ç5-B (bilerek güncellendi; karar (5) + S1): alış faturası müşterinin borcuyla kendi tarihinde netleşir — net borç 700 kayıt gününde cari kalemi, alış çıkışı yok.
+    assert.deepEqual(rowsOf(mine), sorted([["account", day(-19), "in", 700]]), show(mine));
     // Tedarikçi: açık vadeli alış 1.000 + vadesiz elle Borç 200 (tedarikçinin bize borcu) → bakiye −800; faturasız alacak 200 artık kaybolmaz.
     const supplier = await t.account("Karma Tedarikci", { type: "supplier" });
     const p2 = await purchase(supplier, "AL-246-2", 1000, day(-12), day(20));
     await t.entry(supplier, { kind: "debt", amount: "200", date: day(-5) });
     mine = t.mine(await t.flow("preset=next30"), supplier, [p2.id]);
     assert.equal(net(mine), (await t.card(supplier)).totals.balance, `tedarikçide net = bakiye: ${show(mine)}`);
-    assert.deepEqual(rowsOf(mine), sorted([["invoice", day(20), "out", 1000], ["unbilled", day(-5), "in", 200]]), show(mine));
+    // karar (5): tedarikçinin bize borcu (200) alış faturasından düşer → fatura 800 kendi vadesinde çıkış.
+    assert.deepEqual(rowsOf(mine), sorted([["invoice", day(20), "out", 800]]), show(mine));
     // İkisi birlikte: vadesiz Borç 500 + açık alış 100 + vadeli elle Alacak 50 → bakiye 350; çıkışlar 100 + 50, faturasız alacak 500.
     const both = await t.account("Karma Iki Cikis");
     await t.entry(both, { kind: "debt", amount: "500", date: day(-10) });
@@ -334,7 +342,8 @@ describe("2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemle
     await t.entry(both, { kind: "credit", amount: "50", date: day(-8), dueDate: day(5) });
     mine = t.mine(await t.flow("preset=next30"), both, [p3.id]);
     assert.equal(net(mine), (await t.card(both)).totals.balance, `alış + vadeli elle Alacak birlikte: net = bakiye: ${show(mine)}`);
-    assert.deepEqual(rowsOf(mine), sorted([["account", day(5), "out", 50], ["invoice", day(10), "out", 100], ["unbilled", day(-10), "in", 500]]), show(mine));
+    // karar (5): alış 100 ve elle Alacak 50 borçtan düşer → net borç 350 kayıt gününde.
+    assert.deepEqual(rowsOf(mine), sorted([["account", day(-10), "in", 350]]), show(mine));
   });
 
   it("gecikmiş vadeli kalem takvimdeki gibi görünür: 'Vadesi geçmiş, kapanmamış' listesinde (gün, tutar, kimlik takvimle aynı); 'başlangıca ekle' ile başlangıca girer", async () => {
@@ -357,7 +366,8 @@ describe("2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemle
     const last = await t.entry(acc, { kind: "debt", amount: "30", date: day(-1), dueDate: day(30) });
     const next = await t.entry(acc, { kind: "debt", amount: "31", date: day(-1), dueDate: day(31) });
     const first = await t.entry(acc, { kind: "debt", amount: "12", date: day(-1), dueDate: day(12) });
-    const today = await t.entry(acc, { kind: "credit", amount: "5", date: day(-1), expectedDate: TODAY });
+    // 2.5.0 Ç5-B (bilerek güncellendi; karar (5) + S1): aynı caride elle Alacak borçla netleşirdi, vadesiz olsa vadesi dün olurdu — bugünkü sözlü kalem ayrı tedarikçide, vadeli.
+    const today = await t.entry(await t.account("Pencere Tedarikci", { type: "supplier" }), { kind: "credit", amount: "5", date: day(-1), dueDate: day(3), expectedDate: TODAY });
     const at = (data, entry) => (data.rows.some(row => row.ref?.entryId === entry.id) ? "aralık" : data.overdue.some(row => row.ref?.entryId === entry.id) ? "gecikmiş" : data.carried.in || data.carried.out ? "dışarıda/başlangıca kadar" : "yok");
     const next30 = await t.flow("preset=next30");
     assert.equal(next30.to, day(30));

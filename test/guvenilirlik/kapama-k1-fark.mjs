@@ -26,11 +26,28 @@ export async function invoiceStates(api) {
 
 /**
  * before: K1 öncesi kuralla okunan durumlar (invoiceStates), api: güncel kuralla açılmış sunucu (aynı veri, aynı şirket seçili).
+ * ledgerStates (2.5.0 Ç5-B): ekrandaki fatura durumu artık Tek Yükümlülük Kuyruğu görünümüdür (S2, karar (1), S50, M1e — iadesi olmayan caride de BİLEREK değişir);
+ * K1'in sınırı KAPAMA DEFTERİ kuralında (lib/invoice-settle.mjs, Ç5-B'de değişmedi) denetlenir: verilirse (fatura kimlikleri → durum haritası, ör. sunucunun
+ * invoices.repairScreen'i) güncel durum oradan okunur; ekran durumu ayrıca yalnız tutarlılık için (ödenen + açık = ödenecek, açık aralıkta) denetlenir.
  * Dönüş: { changed: [{ number, kind, before, after }], problems: [metin] }.
  */
-export async function k1Check(before, api) {
-  const after = await invoiceStates(api);
+export async function k1Check(before, api, { ledgerStates = null } = {}) {
+  const screen = await invoiceStates(api);
+  const after = new Map(screen);
+  if (ledgerStates) {
+    const states = ledgerStates([...screen.keys()]);
+    for (const [id, doc] of screen) {
+      const state = states.get(id);
+      if (state) after.set(id, { ...doc, payState: state.state, paid: cents(state.paid), open: cents(state.open) });
+    }
+  }
   const problems = [];
+  if (ledgerStates) {
+    for (const doc of screen.values()) {
+      if (doc.paid + doc.open !== doc.payable) problems.push(`${doc.number}: ekranda ödenen ${doc.paid} + açık ${doc.open} ≠ ${doc.payable} (kuruş)`);
+      if (doc.open < 0 || doc.open > doc.payable) problems.push(`${doc.number}: ekranda açık ${doc.open} aralık dışı`);
+    }
+  }
   const changed = [];
   const withReturns = new Set([...after.values()].filter(doc => doc.kind === "sale_return" || doc.kind === "purchase_return").map(doc => doc.accountId));
   if (before.size !== after.size) problems.push(`kaydedilmiş belge sayısı ${before.size} ≠ ${after.size}`);

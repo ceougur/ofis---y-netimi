@@ -81,7 +81,10 @@ describe("2.4.5 madde 6 göç: v2.4.4 verisi güncel kodla (Vade Tarihi / Beklen
       assert.equal(before.open, 2000, "fatura dokunulmadı (tahsilat daha eski borçları kapattı)");
       assert.equal((await ok("tedarikçi", api.get(`/api/workspace/accounts/${ids.supplier}`))).totals.balance, before.supplierBalance);
       const dues = await ok("takvim", api.get("/api/workspace/dues"));
-      assert.equal(dues.items.some(row => row.source === "account"), false, "tarih girilmeden kalem yok");
+      // 2.5.0 Ç5-B (bilerek güncellendi; kullanıcı kararı S1 — vadesiz borcun vadesi belge günü): göçle gelen vadesiz satırlar da kayıt gününde kalemdir (2.4.5'te
+      // "tarih girilmeden kalem yok"). Müşteri: eski borcun kalanı 300 (−40); tedarikçi: açılış 700 (kayıt günü −60). Kapanmış açılış (Kalan 0) kalem değil.
+      const accountRows = dues.items.filter(row => row.source === "account").map(row => [row.accountId, row.direction, row.amount, row.state]).sort();
+      assert.deepEqual(accountRows, [[ids.customer, "in", 300, "overdue"], [ids.supplier, "out", 700, "overdue"]].sort(), "vadesiz kalemler kayıt gününde (S1)");
       // v2.4.4'te silinen borç: yükünde vade alanı yok → boş tarihlerle döner.
       const trash = await ok("Silinenler", api.get("/api/admin/trash"));
       await ok("geri yükle", api.post("/api/admin/trash/restore", { id: trash.find(row => row.kind === "account-entry" && row.ref === ids.doomed).id }));
@@ -90,7 +93,7 @@ describe("2.4.5 madde 6 göç: v2.4.4 verisi güncel kodla (Vade Tarihi / Beklen
       // Eski borca Beklenen Ödeme Tarihi verilince kalem doğar (Kalan 300).
       await ok("söz", api.put(`/api/workspace/accounts/${ids.customer}/entries/${debt.id}`, { kind: "debt", amount: "600", date: day(-40), expectedDate: day(2) }));
       const after_ = await ok("takvim 2", api.get("/api/workspace/dues"));
-      const item = after_.items.find(row => row.source === "account");
+      const item = after_.items.find(row => row.source === "account" && row.entryId === debt.id);
       assert.deepEqual([item.entryId, item.amount, item.dueDate, item.label], [debt.id, 300, day(2), "Tahsil Edilecek Borç (Ödeme Sözü)"]);
       // Tedarikçinin eski açılışına Düzenle'den vade.
       const supplier = await ok("tedarikçi kart", api.get(`/api/workspace/accounts/${ids.supplier}`));

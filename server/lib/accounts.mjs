@@ -15,7 +15,10 @@
 import { roundMoney } from "./money.mjs";
 
 const EPS = 0.005;
-const tlText = value => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)} TL`;
+// 2.5.0 Ç5-B: biçimleyici bir kez kurulur (Tek Yükümlülük Kuyruğu'nun artımlı önbelleği değişen carinin defterini — taksit kartı satırlarıyla — yeniden okur; tutar başına
+// yeni Intl.NumberFormat kurulmaz — 2.4.9 whatsapp-elle-alici YAPI denetimi, tasarım notu §9 KÖR NOKTA).
+const TL_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const tlText = value => `${TL_FORMAT.format(value)} TL`;
 // Dar kontrol 3 (2.4.3, B-3): programın açılış stoku hareketine yazdığı açıklamalar — göç v30 (lib/migrations.mjs) eski veride açılışı bunlardan tanır;
 // stok hareketi kaydı/düzenlemesi aynı tanımı kullanır (aynılık test/gg243-dar3-stok.test.mjs).
 export const STOCK_OPENING_NOTES = Object.freeze(["Açılış stoku", "Açılış stoku (Excel)"]);

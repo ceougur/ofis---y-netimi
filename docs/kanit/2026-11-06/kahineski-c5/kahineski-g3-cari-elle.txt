@@ -1,0 +1,43 @@
+b1-5a-bayat-ve-yeniden.json: 3 değişti, 3 eklendi, 0 kalktı — değişti mizan:500 ×3, eklendi mizan:519 ×3
+b1-5a-tasima.json: 4 değişti, 4 eklendi, 0 kalktı — değişti mizan:500 ×4, eklendi mizan:519 ×4
+b1-5c-rapor.json: 3 değişti, 3 eklendi, 0 kalktı — değişti mizan:500 ×3, eklendi mizan:519 ×3
+b2-ux18-karsiliksiz.json: 0 değişti, 12 eklendi, 0 kalktı — eklendi mizan:500 ×6, eklendi mizan:519 ×6
+b2-ux18-retler.json: 0 değişti, 6 eklendi, 0 kalktı — eklendi mizan:500 ×3, eklendi mizan:519 ×3
+b2-ux18-sira.json: 0 değişti, 10 eklendi, 0 kalktı — eklendi mizan:500 ×5, eklendi mizan:519 ×5
+b2-ux18-temel.json: 0 değişti, 18 eklendi, 0 kalktı — eklendi mizan:500 ×9, eklendi mizan:519 ×9
+b3b-k1-k4-donem-raporlar.json: 0 değişti, 2 eklendi, 0 kalktı — eklendi mizan:500 ×1, eklendi mizan:519 ×1
+b3c-k2-donem-ayni-no.json: 0 değişti, 2 eklendi, 0 kalktı — eklendi mizan:500 ×1, eklendi mizan:519 ×1
+b3d-c3-kisi-gruplama.json: 0 değişti, 2 eklendi, 0 kalktı — eklendi mizan:500 ×1, eklendi mizan:519 ×1
+b3e-vergi-sutunu.json: 0 değişti, 2 eklendi, 0 kalktı — eklendi mizan:500 ×1, eklendi mizan:519 ×1
+b3f-kayit-anahtari.json: 0 değişti, 8 eklendi, 0 kalktı — eklendi mizan:500 ×4, eklendi mizan:519 ×4
+b3g-tablo-bag-surekliligi.json: 0 değişti, 8 eklendi, 0 kalktı — eklendi mizan:500 ×4, eklendi mizan:519 ×4
+b3h-dosya-no-ve-devam.json: 0 değişti, 8 eklendi, 0 kalktı — eklendi mizan:500 ×4, eklendi mizan:519 ×4
+b3i-devam-ayni-icerik.json: 0 değişti, 4 eklendi, 0 kalktı — eklendi mizan:500 ×2, eklendi mizan:519 ×2
+b3j-ayni-ad-takas.json: 0 değişti, 4 eklendi, 0 kalktı — eklendi mizan:500 ×2, eklendi mizan:519 ×2
+b3k-vergi-tek-kolon.json: 0 değişti, 2 eklendi, 0 kalktı — eklendi mizan:500 ×1, eklendi mizan:519 ×1
+b3m-dosya-no-degisimi.json: 0 değişti, 6 eklendi, 0 kalktı — eklendi mizan:500 ×3, eklendi mizan:519 ×3
+b3n-borc-kolonu-kisi-ozniteligi.json: 0 değişti, 2 eklendi, 0 kalktı — eklendi mizan:500 ×1, eklendi mizan:519 ×1
+b3o-seyrek-kalan.json: 0 değişti, 2 eklendi, 0 kalktı — eklendi mizan:500 ×1, eklendi mizan:519 ×1
+b3p-ayni-ad-telefon.json: 0 değişti, 6 eklendi, 0 kalktı — eklendi mizan:500 ×3, eklendi mizan:519 ×3
+b3q-takvim-kalemi.json: 0 değişti, 2 eklendi, 0 kalktı — eklendi mizan:500 ×1, eklendi mizan:519 ×1
+b3r-kalan-sifir-eksi.json: 0 değişti, 2 eklendi, 0 kalktı — eklendi mizan:500 ×1, eklendi mizan:519 ×1
+b3s-soz-tutari-kalemi.json: 0 değişti, 2 eklendi, 0 kalktı — eklendi mizan:500 ×1, eklendi mizan:519 ×1
+b3t-sozlesme-tutari.json: 0 değişti, 2 eklendi, 0 kalktı — eklendi mizan:500 ×1, eklendi mizan:519 ×1
+b3u-sozlesme-tarihi-soz-basliklari.json: 0 değişti, 2 eklendi, 0 kalktı — eklendi mizan:500 ×1, eklendi mizan:519 ×1
+b3v-taahhut-soz-miktari.json: 0 değişti, 2 eklendi, 0 kalktı — eklendi mizan:500 ×1, eklendi mizan:519 ×1
+b3w-yalniz-soz-tutari.json: 0 değişti, 2 eklendi, 0 kalktı — eklendi mizan:500 ×1, eklendi mizan:519 ×1
+b3x-yalin-soz-ve-tutar.json: 0 değişti, 2 eklendi, 0 kalktı — eklendi mizan:500 ×1, eklendi mizan:519 ×1
+b3y-taahhut-alacak-bakiye.json: 0 değişti, 2 eklendi, 0 kalktı — eklendi mizan:500 ×1, eklendi mizan:519 ×1
+b5-u1-nihai-tuketici.json: 0 değişti, 2 eklendi, 0 kalktı — eklendi mizan:500 ×1, eklendi mizan:519 ×1
+c1-kayit-tahsilat-kapisi.json: 0 değişti, 10 eklendi, 0 kalktı — eklendi mizan:500 ×5, eklendi mizan:519 ×5
+c10-ks10-projeksiyon-cari-vade.json: 69 değişti, 5 eklendi, 0 kalktı — değişti hareket:kalan ×26, değişti projeksiyon:hareket ×20, değişti takvim:cariKalemSayisi ×5, değişti takvim:hareket ×9, değişti vadeTakip:hareket ×9, eklendi vadeTakip:hareket ×5
+c13-ks83-ayni-gun-sira.json: 8 değişti, 0 eklendi, 0 kalktı — değişti cari:acikEsitBakiye ×1, değişti cari:acikToplam ×1, değişti hareket:kalan ×1, değişti projeksiyon:cari ×1, değişti projeksiyon:hareket ×1, değişti takvim:cariKalemSayisi ×1, değişti takvim:hareket ×1, değişti vadeTakip:hareket ×1
+c14c-c1-silinmis-cariye-yazim.json: 0 değişti, 8 eklendi, 0 kalktı — eklendi mizan:500 ×4, eklendi mizan:519 ×4
+c14f-c1-geri-al-y2.json: 0 değişti, 24 eklendi, 0 kalktı — eklendi mizan:100 ×3, eklendi mizan:101 ×3, eklendi mizan:120 ×3, eklendi mizan:121 ×3, eklendi mizan:320 ×3, eklendi mizan:500 ×3, eklendi mizan:519 ×3, eklendi mizan:600 ×3
+c14g-c1-kayit-tahsilati.json: 0 değişti, 4 eklendi, 0 kalktı — eklendi mizan:500 ×2, eklendi mizan:519 ×2
+c2-tablodan-aktar-kapisi.json: 0 değişti, 32 eklendi, 0 kalktı — eklendi mizan:100 ×4, eklendi mizan:101 ×4, eklendi mizan:120 ×4, eklendi mizan:121 ×4, eklendi mizan:320 ×4, eklendi mizan:500 ×4, eklendi mizan:519 ×4, eklendi mizan:600 ×4
+c4-uyari-kapisi.json: 0 değişti, 2 eklendi, 0 kalktı — eklendi mizan:500 ×1, eklendi mizan:519 ×1
+c6-cari-vade-fifo.json: 131 değişti, 0 eklendi, 0 kalktı — değişti fatura:acik ×2, değişti hareket:kalan ×38, değişti projeksiyon:cari ×1, değişti projeksiyon:hareket ×28, değişti takvim:cariKalemSayisi ×1, değişti takvim:fatura ×2, değişti takvim:hareket ×31, değişti vadeTakip:hareket ×28
+c6c-mevcut-borc-karti.json: 0 değişti, 24 eklendi, 0 kalktı — eklendi mizan:100 ×3, eklendi mizan:101 ×3, eklendi mizan:120 ×3, eklendi mizan:121 ×3, eklendi mizan:320 ×3, eklendi mizan:500 ×3, eklendi mizan:519 ×3, eklendi mizan:600 ×3
+c7-ks7-bagsiz-kapaticilar.json: 20 değişti, 0 eklendi, 0 kalktı — değişti fatura:acik ×3, değişti hareket:kalan ×3, değişti projeksiyon:cari ×1, değişti projeksiyon:hareket ×3, değişti takvim:cariKalemSayisi ×1, değişti takvim:fatura ×3, değişti takvim:hareket ×3, değişti vadeTakip:hareket ×3
+GENEL: değişti cari:acikEsitBakiye ×1, değişti cari:acikToplam ×1, değişti fatura:acik ×5, değişti hareket:kalan ×68, değişti mizan:500 ×10, değişti projeksiyon:cari ×3, değişti projeksiyon:hareket ×52, değişti takvim:cariKalemSayisi ×8, değişti takvim:fatura ×5, değişti takvim:hareket ×44, değişti vadeTakip:hareket ×41, eklendi mizan:100 ×10, eklendi mizan:101 ×10, eklendi mizan:120 ×10, eklendi mizan:121 ×10, eklendi mizan:320 ×10, eklendi mizan:500 ×84, eklendi mizan:519 ×94, eklendi mizan:600 ×10, eklendi vadeTakip:hareket ×5

@@ -194,7 +194,8 @@ try {
     // "+ Tahsilat" önce Taksite Yaz / Taksit Dışı sorabilir (kartı yok: doğrudan form); form başlığı Tahsilat.
     // 2.4.5 (kullanıcı kararı "sadece bilgi notu"): Kapatılacak Fatura seçilmemişken (bu caride açık fatura yok) bilgi notu görünür.
     const fifo = await page.$eval(`${TOP} [data-fifo-note]`, node => (node.hidden ? "" : node.textContent.trim())).catch(() => "");
-    ok(fifo === "Bu tahsilat carinin en eski açık borcundan başlayarak kapatır.", `bilgi notu: “${fifo}”`);
+    // 2.5.0 Ç5-B (bilerek güncellendi; kullanıcı kararları S2 "vadesi en önce gelen" ve (1) "kendi tarihinde"): bilgi notu yeni kapama sırasını anlatır.
+    ok(fifo === "Bu tahsilat carinin vadesi en önce gelen açık borcundan (fatura, taksit, borç kaydı) başlayarak kapatır; kendi tarihinde açık olan borçlara dağılır.", `bilgi notu: “${fifo}”`);
     await typeAmount("500");
     await page.click(`${TOP} button[type="submit"]`);
     await page.waitForSelector(`${TOP} input[name="amount"]`, { state: "detached", timeout: 8000 }).catch(() => null);
@@ -321,6 +322,35 @@ try {
     await page.$eval(`${TOP} .hof-rep-src.is-account`, node => node.scrollIntoView({ block: "center" })).catch(() => null);
     await page.waitForTimeout(400);
     await shot("nakit-akis-cari-vade");
+    await closeAll();
+  });
+
+  // 2.5.0 Ç5-B (B1 "tek gecikmiş tanımı"; EK-1 §1 değişmez (iii), C5-ACILIS §4 madde 20): aynı carinin gecikmiş borcu cari kartında, cari listesinde (süzgeç "Gecikmiş
+  // Borcu Olanlar", satırdaki "Gecikmiş" etiketi) ve Vade Takip'te AYNI sayı — ekrandan okunur, API ile karşılaştırılır. Beklenen: V8'in 300'lük vadesi geçmiş borcu.
+  await step("V9 Ç5-B: gecikmiş borç bütün ekranlarda aynı (cari kartı = cari listesi = Vade Takip = API)", async () => {
+    const late = one("SELECT id FROM accounts WHERE name = 'Vade Gecikmiş Müşteri'");
+    const card = await must("kart", api.get(`/api/workspace/accounts/${late.id}`));
+    ok(card.totals.overdueDebt === 300 && card.totals.overdueDebtCount === 1, `API cari kartı: gecikmiş 300, 1 kalem (${card.totals.overdueDebt}, ${card.totals.overdueDebtCount})`);
+    const list = await must("liste", api.get("/api/workspace/accounts?status=all&balance=overdue&limit=500"));
+    ok(list.accounts.find(item => item.id === late.id)?.overdue === 300, "API cari listesi (Gecikmiş Borcu Olanlar): aynı cari 300");
+    const vade = await must("vade takip", api.get("/api/workspace/overview/vade-takip?preset=late"));
+    const vadeSum = vade.rows.filter(row => row.party === "Vade Gecikmiş Müşteri").reduce((sum, row) => sum + row.amount, 0);
+    ok(vadeSum === 300, `Vade Takip (vadesi geçmiş) aynı cari 300 (${vadeSum})`);
+    await page.evaluate(id => window.HOF.accounts.open(id), late.id);
+    await page.waitForSelector(`${ACC} [data-acc-overdue]`);
+    const kpi = await textOf(`${ACC} [data-acc-overdue]`);
+    ok(/300,00/.test(kpi) && kpi.includes("Gecikmiş Borç · 1 kalem"), `ekranda cari kartı: “${kpi}”`);
+    await shot("v9-kart-gecikmis");
+    await closeAll();
+    await page.evaluate(() => window.HOF.accounts.open());
+    await page.waitForSelector(`${MODAL} select[data-filter="balance"]`);
+    await page.selectOption(`${MODAL} select[data-filter="balance"]`, "overdue");
+    await page.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible tr[data-account]")].length > 0 && [...document.querySelectorAll(".hof-modal-backdrop.is-visible tr[data-account]")].every(row => /Gecikmiş/.test(row.textContent)), null, { timeout: 10000 }).catch(() => null);
+    const rows = await page.$$eval(`${MODAL} tr[data-account]`, nodes => nodes.map(node => ({ id: node.getAttribute("data-account"), text: node.textContent.replace(/\s+/g, " ").trim() })));
+    const mine = rows.find(row => row.id === late.id);
+    ok(Boolean(mine) && /Gecikmiş ₺?300,00/.test(mine.text), `ekranda cari listesi (Gecikmiş Borcu Olanlar): “${mine?.text?.slice(0, 160) || JSON.stringify(rows.map(row => row.text.slice(0, 60)))}”`);
+    ok(rows.length === list.accounts.length, `ekrandaki satır sayısı = API (${rows.length} / ${list.accounts.length})`);
+    await shot("v9-liste-gecikmis");
     await closeAll();
   });
 } catch (error) {

@@ -1,0 +1,7 @@
+üretici: 6/6 bayt bayt aynı
+eşdeğerlik (eski ↔ yeni, 2.4.9 / 2.4.6 / 2.4.5 / legacy): 240/240 bayt bayt aynı
+2.5.0 kâhini çökmeden: 68/68
+# tests 314
+# pass 314
+# fail 0
+314/314 denetim geçti

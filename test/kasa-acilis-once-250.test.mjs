@@ -5,9 +5,9 @@
 //   S20 = A  yedekte / eski sürüm verisinde açılıştan önceki nakit satırı AYNEN gelir; Mutabakat Testi uyarı ("Kasa Açılışından Önce Tarihli Hareket").
 //   S26 / S40 / S44 = A  böyle kaydın tarihi değişmeden tutarı, açıklaması, carisi, fatura / taksit bağı, "Normal Cari Hesaba İşle" seçimi düzeltilebilir; uyarı sürer.
 //   Z9       (BAŞ MİMAR 07:59) Silinenler'den geri alınan da aynı.
-//   S45 = A  bağlıysa carisinin düzeltilmesi "önce bağı kaldırın" ile red — programda cari hareketinin carisini değiştiren yol YOK (tasarım §4): gösterilir.
+//   S45 = A  bağlıysa carisinin düzeltilmesi "önce bağı kaldırın" ile red (409 entry-link-first) — cari değişimini Ç5-B kodladı (S45 / S54 / S57; routes/accounts.mjs PUT entries).
 //   R8 / EK-2B 33  Kasa açılışı ilk nakit hareketinden sonraya düzeltmede de 409 (bugünkü kod; tasarım §5).
-//   S54–S57  SORULDU, yanıt yok: bugünkü davranış ölçülür, "S5x yanıtı bekleniyor" diye işaretli.
+//   S54 = A  aynı düzeltmede bağ + cari değişirse kabul (bağ yeni carinin belgesine); Kasa ve uyarı aynı. S55 = A (Ç5-B kapama), S56 = A (doubtful-normal-exceeds).
 // Eski sürüm verisi v2.4.9'un GERÇEK koduyla (test/guvenilirlik/surumler.mjs, etiketin ayrı kopyası — ders 17, 23) üretilir; göç ve yedekten geri yükleme ayrı.
 // Sahte saat (config.now; ders 13, 22); iki saat diliminde koşulur (TZ=UTC, TZ=Europe/Istanbul). Lisans servisi yerel ölü adres (ders 30).
 //
@@ -511,11 +511,42 @@ describe("Ç5-K S20 = A: v2.4.9'un GERÇEK koduyla üretilmiş açılış önces
     assert.deepEqual({ ...store.get("SELECT amount, date, invoice_id AS i, note FROM account_entries WHERE id = ?", ids.py) }, before_);
   });
 
-  it("S45 / S54 / S57: programda cari hareketinin carisi düzeltilemez — gövdedeki accountId yok sayılır, bağlı satır carisinde kalır (red edilecek istek kurulamaz; S54'ün 'kabul'ü yeni Cari alanı ister — routes/accounts.mjs, tasarım §4 B-K1)", async () => {
+  // S45 = A (KULLANICI 06.11 09:09) / S57 = A (12:06): bağlı kaydın carisi bağ DEĞİŞMEDEN düzeltilmez — "önce bağı kaldırın" (409 entry-link-first; Ç5-B routes/accounts.mjs
+  // PUT entries; olağan kayıt test/tyk-api-250). S54 = A (12:06): geri yüklenmiş / eski sürümden gelen, Kasa açılışından önce tarihli kayıtta AYNI düzeltmede bağ da cari de
+  // değişirse KABUL, bağ yeni carinin belgesine. S40 = A: tarih değişmeden cari düzeltmesi kabul, Mutabakat Testi uyarısı SÜRER (S20); tutar / tarih / yöntem aynı → Kasa aynı.
+  // G3: Ç5-K bu testi yazdığında programda cari değişimi YOKTU (gövdedeki accountId yok sayılıyordu: 200 + cari aynı); Ç5-B S45 / S54 / S57'yi kodladı — beklenti karara getirildi.
+  it("S45 / S57: bağlı açılış öncesi kaydın carisi bağ değişmeden düzeltilirse 409 entry-link-first, kayıt değişmez; S54: aynı düzeltmede bağ yeni carinin faturasına → 200, Kasa ve uyarı aynı", async () => {
     const v = await login();
-    const res = await v.put(`/api/workspace/accounts/${ids.c1}/entries/${ids.py}`, { kind: "in", amount: "500", date: "2026-01-25", method: "cash", note: "bağlı", invoiceId: ids.f1, accountId: ids.c2 });
-    assert.equal(res.status, 200);
-    assert.equal(server.app.store.get("SELECT account_id AS a FROM account_entries WHERE id = ?", ids.py).a, ids.c1, "cari değişmedi");
+    const store = server.app.store;
+    const row = () => ({ ...store.get("SELECT account_id AS a, invoice_id AS i, amount, date, method, note FROM account_entries WHERE id = ?", ids.py) });
+    const original = row();
+    assert.deepEqual([original.a, original.i, original.amount, original.date, original.method], [ids.c1, ids.f1, 500, "2026-01-25", "cash"], "ön koşul: 2.4.9'dan gelen, açılıştan önce tarihli, F1'e bağlı nakit tahsilat");
+    const f3 = store.get("SELECT id FROM invoices WHERE account_id = ? AND kind = 'sale' AND status = 'issued'", ids.c2).id;
+    const body = extra => ({ kind: "in", amount: "500", date: "2026-01-25", method: "cash", note: original.note, ...extra });
+    const balances = async api => [(await must("C1", api.get(`/api/workspace/accounts/${ids.c1}`))).totals.balance, (await must("C2", api.get(`/api/workspace/accounts/${ids.c2}`))).totals.balance];
+    const kasa = await cashBalance(v);
+    const warn = warningOf(await integrityOf(v))?.count;
+    assert.equal(warn, 5, "ön koşul: uyarıda 5 satır");
+    const [c1Before, c2Before] = await balances(v);
+    // S45 / S57: bağ aynı (gövdede) ya da bağ alanı hiç gönderilmeden (bağ değişmiyor) → red; kayıt değişmez.
+    await refused("bağ aynı, cari C2", v.put(`/api/workspace/accounts/${ids.c1}/entries/${ids.py}`, body({ invoiceId: ids.f1, accountId: ids.c2 })), 409, "entry-link-first");
+    await refused("bağ alanı yok, cari C2", v.put(`/api/workspace/accounts/${ids.c1}/entries/${ids.py}`, body({ accountId: ids.c2 })), 409, "entry-link-first");
+    assert.deepEqual(row(), original, "red: kayıt değişmedi (cari, bağ, tutar, tarih, yöntem, açıklama)");
+    // S54: cari + bağ aynı düzeltmede (bağ yeni carinin faturasına) → kabul.
+    const moved = await must("S54 cari + bağ", v.put(`/api/workspace/accounts/${ids.c1}/entries/${ids.py}`, body({ invoiceId: f3, accountId: ids.c2 })));
+    assert.equal(moved.movedFrom, ids.c1, "yanıt yeni carinin kartı (taşındığı cari yazılı)");
+    assert.deepEqual(row(), { ...original, a: ids.c2, i: f3 }, "kayıt C2'de, bağı C2'nin faturasında; tutar, tarih, yöntem aynı");
+    assert.equal(await cashBalance(v), kasa, "Kasa değişmedi (tarih ve tutar aynı)");
+    const afterMove = await integrityOf(v);
+    assertIntegrity(afterMove, "S54 cari değişimi");
+    assert.equal(warningOf(afterMove)?.count, warn, "S40 / S20: Mutabakat Testi uyarısı sürer (aynı satır sayısı)");
+    assert.deepEqual(await balances(v), [c1Before + 500, c2Before - 500], "tahsilat C1'den C2'ye geçti");
+    // Geri (aynı kural, ters yön): C2 → C1, bağ yeniden F1'e — kayıt ilk hâline döner.
+    await must("S54 geri", v.put(`/api/workspace/accounts/${ids.c2}/entries/${ids.py}`, body({ invoiceId: ids.f1, accountId: ids.c1 })));
+    assert.deepEqual(row(), original, "kayıt ilk hâlinde");
+    assert.equal(await cashBalance(v), kasa, "Kasa değişmedi");
+    assert.equal(warningOf(await integrityOf(v))?.count, warn, "uyarı sürer");
+    assert.deepEqual(await balances(v), [c1Before, c2Before], "bakiyeler ilk hâlinde");
   });
 
   it("S56 = A: S44 düzeltmesi şüpheli caride 'Normal Cari' sınırını aşarsa 409 doubtful-normal-exceeds (kâhin SUPHELI_NORMAL_ASIM); satır değişmez — Kasa açılış kuralından ÖNCE (routes/accounts.mjs:773, 2.3.0'dan)", async () => {

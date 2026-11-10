@@ -1,0 +1,32 @@
+{
+  "ad": "c5b-kilavuz-pdf-son",
+  "komut": "node docs/kilavuz/pdf-denetle.mjs",
+  "commit": "25c449d9cf51d43a46f03ea9cea2f4767378ecbd",
+  "dal": "worktree-agent-ae5136939616adbab",
+  "kirli": 40,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T18:58:39.454Z",
+  "sure_sn": 13.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 39,
+    "gecen": 39,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-kanit/2026-11-06/c5b-kilavuz-pdf-son.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ae5136939616adbab",
+  "ham_cikti_sha256": "c4f4f34feb14b8517482a7d35f99b403966cf72693d05b68c64b6fa6535e52f5",
+  "ham_cikti_bayt": 2211
+}

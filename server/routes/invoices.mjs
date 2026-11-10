@@ -28,7 +28,9 @@ import { bodyHash, createIdempotency } from "../lib/idempotency.mjs";
 import { invoicePdf } from "../lib/invoice-pdf.mjs";
 import { jpegInfo } from "../lib/pdf-write.mjs";
 import { CURRENCIES, EXEMPTIONS, EXPENSES, INVOICE_KINDS, InvoiceInputError, SCENARIOS, STOPPAGE_DEFAULT, VAT_RATES, WITHHOLDING, amountInWords, cents, computeInvoice, exclusiveParts, lineAccount, priceForNetFee, toTry, typeCode } from "../lib/invoice-math.mjs";
-import { CLOSER_MODES, PAY_STATES, settleInvoices, settleLedger } from "../lib/invoice-settle.mjs";
+import { PAY_STATES, settleInvoices } from "../lib/invoice-settle.mjs";
+import { CLOSER_MODES, buildObligations, lockAtOf, lockHistory } from "../lib/obligation-queue.mjs";
+import { doubtfulState } from "../lib/bank/doubtful.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { METHODS, METHODS_IN, METHODS_OUT, methodLabel, methodInput } from "../lib/pay-method.mjs";
 import { bankForm, negativeConfirmed } from "../lib/bank/module-ref.mjs";
@@ -734,31 +736,155 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // settleLedger (invoices + entries aynı sonuçtan). Önceden ikisi aynı kuyruğu ayrı ayrı kuruyordu. Önbellek ve bayatlık kuralı değişmedi (settleKey;
   // işlem içinde okunmaz, yazılmaz). Sonuçlar iki ayrı geçişin çıktısıyla bayt bayt aynıdır (tools/kapama-tek-gecis-esdegerlik.mjs; toplu ↔ cari başına
   // yol: test/kapama-tek-gecis-245.test.mjs). config.legacyClosing (yalnız testler) fatura durumlarını kendi kuralıyla ayrıca hesaplar.
-  let settledCache = { key: "", pay: null, entries: null };
+  // ---------- 2.5.0 Ç5-B: Tek Yükümlülük Kuyruğu (lib/obligation-queue.mjs; docs/erp/C5B-TYK-TASARIM.md) ----------
+  // Kapamanın girdisine TYK'nın ekleri: bütün kartların taksit takvimi (S50, M1e), elle satırın Vade Tarihi (S1: yoksa belge günü) ve Beklenen Ödeme Tarihi (S52 / S67 /
+  // S69 takvim kalemi), açık şüpheli kayıtların kalanı (M13), kilit izi (karar (3), S11, S19 — yazım anındaki kilit; B12 göç yerine denetim izinden).
+  const groupInto = (map, key, value) => {
+    if (!map.has(key)) map.set(key, []);
+    map.get(key).push(value);
+  };
+  let lockCache = { key: "", at: null };
+  function lockResolver() {
+    const key = settleKey("");
+    if (!store.inTransaction && lockCache.key === key && lockCache.at) return lockCache.at;
+    let rows = [];
+    try {
+      rows = store.all("SELECT type, payload_json AS payload, created_at AS at FROM audit_events WHERE entity_id = 'period' AND type IN ('ledger.period.locked', 'ledger.period.unlocked') ORDER BY rowid");
+    } catch {
+      rows = [];
+    }
+    const at = lockAtOf(lockHistory(rows));
+    if (!store.inTransaction) lockCache = { key, at };
+    return at;
+  }
+  function doubtfulRecordsOf(parties = null) {
+    const out = new Map();
+    try {
+      if (!store.get("SELECT 1 AS found FROM doubtful_receivables LIMIT 1")) return out;
+      const { records, state } = doubtfulState(store, parties ? { parties } : {});
+      for (const record of records) {
+        const s = state.get(record.id);
+        if (s && s.remaining > 0) groupInto(out, record.party, { date: record.date, remainingMinor: s.remaining });
+      }
+    } catch {
+      return out; // şüpheli tabloları yoksa (göç öncesi veri)
+    }
+    return out;
+  }
+  function obligationExtras(accountId = null) {
+    const only = accountId ? " AND p.account_id = ?" : "";
+    const args = accountId ? [accountId] : [];
+    const schedules = new Map();
+    for (const row of store.all(`SELECT i.id, i.plan_id AS planId, i.seq, i.due_date AS dueDate, i.amount FROM plan_items i JOIN plans p ON p.id = i.plan_id AND p.deleted_at IS NULL WHERE 1 = 1${only} ORDER BY i.due_date, i.seq`, ...args)) groupInto(schedules, row.planId, { id: row.id, seq: row.seq, dueDate: row.dueDate, amount: row.amount });
+    const dueDates = new Map();
+    const promises = new Map();
+    for (const row of store.all(`SELECT id, account_id AS accountId, due_date AS dueDate, expected_date AS expectedDate FROM account_entries WHERE source = '' AND kind IN ('debt', 'credit') AND (due_date <> '' OR expected_date <> '')${accountId ? " AND account_id = ?" : ""}`, ...args)) {
+      if (row.dueDate) dueDates.set(row.id, row.dueDate);
+      if (row.expectedDate) promises.set(row.id, row.expectedDate);
+    }
+    return { schedules, dueDates, promises, doubtful: doubtfulRecordsOf(accountId ? [accountId] : null), lockAt: lockResolver() };
+  }
+  const withExtras = (input, extras, accountId) => ({ ...input, schedules: extras.schedules, dueDates: extras.dueDates, promises: extras.promises, doubtfulRecords: extras.doubtful.get(accountId) || [], lockAt: extras.lockAt });
+  let settledCache = { key: "", pay: null, entries: null, tyk: null };
   function allSettled() {
     const day = today();
     const inTx = store.inTransaction;
     const key = settleKey(day);
     if (!inTx && settledCache.key === key && settledCache.pay) return settledCache;
-    const both = accounts()?.allLedgers ? accounts().allLedgers({ invoiced: true, dated: true }) : null;
+    // Ç5-B: TYK bütün carilerin defteriyle (gecikmiş cari listesinde, Anlık Durum'da, Vade Takip'te ve zilde her cari için).
+    // Ç5-B (tasarım §5, ders 47): yazımdan sonra yalnız parmak izi değişen carilerin kuyruğu yeniden kurulur (gün aynıysa; en çok INCREMENTAL_MAX cari) —
+    // öbür carilerin sonucu önceki önbellekten. Gün dönünce ya da çok cari değişince bütün cariler.
+    const prints = legacyClosing ? null : accountPrints();
+    const previous = settledCache;
+    if (!inTx && prints && previous.prints && previous.day === day && previous.tyk) {
+      const changed = new Set();
+      for (const [id, print] of prints) if (previous.prints.get(id) !== print) changed.add(id);
+      for (const id of previous.prints.keys()) if (!prints.has(id)) changed.add(id);
+      // Dönem kilidinin izi (karar (3), S11, S19) bütün carilerin girdisidir: değişince bütün cariler yeniden kurulur. Yazım oldu (anahtar değişti) ama hiçbir carinin izi
+      // değişmediyse değişiklik izde görünmüyor olabilir (ör. durağan saatte aynı anlı bağ değişimi) — güvenli yön: bütün cariler (bugünkü davranış).
+      if (changed.size && !changed.has(LOCK_PRINT) && changed.size <= INCREMENTAL_MAX) {
+        const tyk = new Map(previous.tyk);
+        const pay = new Map(previous.pay);
+        const entries = new Map(previous.entries);
+        for (const id of changed) {
+          const old = tyk.get(id);
+          if (old) {
+            for (const invoiceId of old.invoices.keys()) pay.delete(invoiceId);
+            for (const entryId of old.entries.keys()) entries.delete(entryId);
+          }
+          tyk.delete(id);
+          for (const row of store.all("SELECT id FROM invoices WHERE account_id = ?", id)) pay.delete(row.id);
+          let ledger = null;
+          try {
+            ledger = accounts()?.detail ? accounts().detail(id, AUDITOR, { withRemaining: false }).ledger || [] : null;
+          } catch {
+            ledger = null; // silinmiş cari: kuyruğu yok, faturaları (varsa) açık sayılır (toplu yolla aynı)
+          }
+          const result = obligationsFor(id, ledger || [], day);
+          if (ledger) {
+            tyk.set(id, result);
+            for (const [entryId, state] of result.entries) entries.set(entryId, state);
+          }
+          for (const [invoiceId, state] of result.invoices) pay.set(invoiceId, state);
+        }
+        const out = { key, pay, entries, tyk, prints, day };
+        settledCache = out;
+        return out;
+      }
+    }
+    const both = accounts()?.allLedgers ? accounts().allLedgers({}) : null;
     const ledgers = both ? both.lines : new Map();
-    const dated = both?.dated || new Set();
     const tables = settleTables();
-    const results = new Map();
+    const extras = obligationExtras();
+    const tyk = new Map();
     const inputOf = accountId => batchSettleInput(accountId, ledgers.get(accountId) || [], tables, day);
-    const settled = accountId => {
-      if (!results.has(accountId)) results.set(accountId, settleLedger(inputOf(accountId)));
-      return results.get(accountId);
+    const queue = accountId => {
+      if (!tyk.has(accountId)) tyk.set(accountId, buildObligations(withExtras(inputOf(accountId), extras, accountId)));
+      return tyk.get(accountId);
     };
+    for (const accountId of ledgers.keys()) queue(accountId);
     const pay = new Map();
-    for (const accountId of tables.invoicesOf.keys()) for (const [id, state] of legacyClosing ? settle(inputOf(accountId)) : settled(accountId).invoices) pay.set(id, state);
+    for (const accountId of tables.invoicesOf.keys()) for (const [id, state] of legacyClosing ? settle(inputOf(accountId)) : queue(accountId).invoices) pay.set(id, state);
     const entries = new Map();
-    for (const accountId of ledgers.keys()) if (dated.has(accountId)) for (const [id, state] of settled(accountId).entries) entries.set(id, state);
-    const out = { key, pay, entries };
+    for (const [accountId, result] of tyk) if (ledgers.has(accountId)) for (const [id, state] of result.entries) entries.set(id, state);
+    const out = { key, pay, entries, tyk, prints, day };
     if (!inTx) settledCache = out;
     return out;
   }
+  // Cari başına parmak izi: cari satırları, faturalar, kartlar, kart hareketleri, taksitler, çek olayları (evrakın carisi, ciro edilen, olayın carisi), mahsup fişleri,
+  // şüpheli kayıtları ve carinin silinmesi — her biri GROUP BY ile tek sorgu. Tablo yoksa (göç öncesi veri) null → bütün cariler.
+  const INCREMENTAL_MAX = 200;
+  const LOCK_PRINT = "\u0000kilit";
+  function accountPrints() {
+    const prints = new Map();
+    const fold = rows => {
+      for (const row of rows) if (row.id) prints.set(row.id, `${prints.get(row.id) || ""}|${row.f}`);
+    };
+    try {
+      fold(store.all("SELECT ? AS id, COUNT(*) || '/' || COALESCE(MAX(rowid), 0) AS f FROM audit_events WHERE entity_id = 'period' AND type IN ('ledger.period.locked', 'ledger.period.unlocked')", LOCK_PRINT));
+      // İz yalnız damgaya güvenmez (durağan / geri giden saat): kuyruğun okuduğu tarih ve bağ kolonları da toplanır — gün sayısı toplamı ve kimliğin uzunluğu + son iki karakteri.
+      const sig = col => `TOTAL(length(COALESCE(${col}, '')) * 65536 + COALESCE(unicode(substr(COALESCE(${col}, ''), -1)), 0) * 256 + COALESCE(unicode(substr(COALESCE(${col}, ''), -2, 1)), 0))`;
+      const days = col => `TOTAL(COALESCE(julianday(NULLIF(${col}, '')), 0))`;
+      fold(store.all("SELECT id, 'a' || COALESCE(deleted_at, '') AS f FROM accounts"));
+      fold(store.all(`SELECT account_id AS id, COUNT(*) || '/' || MAX(rowid) || '/' || TOTAL(amount) || '/' || COALESCE(MAX(COALESCE(updated_at, created_at)), '') || '/' || ${days("date")} || '/' || ${days("due_date")} || '/' || ${days("expected_date")} || '/' || ${sig("invoice_id")} || '/' || ${sig("refund_of")} || '/' || ${sig("kind")} || '/' || ${sig("source")} || '/' || TOTAL(is_opening) || '/' || TOTAL(doubtful_skip) AS f FROM account_entries GROUP BY account_id`));
+      fold(store.all(`SELECT account_id AS id, 'i' || COUNT(*) || '/' || MAX(rowid) || '/' || TOTAL(try_payable) || '/' || COALESCE(MAX(updated_at), '') || '/' || ${days("issue_date")} || '/' || ${days("due_date")} || '/' || ${sig("status")} || '/' || ${sig("plan_id")} || '/' || ${sig("kind")} || '/' || ${sig("original_id")} AS f FROM invoices GROUP BY account_id`));
+      fold(store.all(`SELECT account_id AS id, 'p' || COUNT(*) || '/' || MAX(rowid) || '/' || TOTAL(total) || '/' || COALESCE(MAX(updated_at), '') || '/' || COUNT(deleted_at) || '/' || ${sig("status")} || '/' || TOTAL(covers_balance) || '/' || ${sig("invoice_id")} AS f FROM plans GROUP BY account_id`));
+      fold(store.all(`SELECT p.account_id AS id, 'e' || COUNT(*) || '/' || MAX(e.rowid) || '/' || TOTAL(e.amount) || '/' || COALESCE(MAX(COALESCE(e.updated_at, e.created_at)), '') || '/' || ${days("e.date")} || '/' || ${sig("e.kind")} || '/' || ${sig("e.item_id")} AS f FROM plan_entries e JOIN plans p ON p.id = e.plan_id GROUP BY p.account_id`));
+      fold(store.all(`SELECT p.account_id AS id, 't' || COUNT(*) || '/' || MAX(i.rowid) || '/' || TOTAL(i.amount) || '/' || COALESCE(MAX(i.updated_at), '') || '/' || ${days("i.due_date")} AS f FROM plan_items i JOIN plans p ON p.id = i.plan_id GROUP BY p.account_id`));
+      for (const column of ["c.account_id", "c.endorse_account_id", "ev.account_id"]) fold(store.all(`SELECT ${column} AS id, 'c' || COUNT(*) || '/' || MAX(ev.rowid) || '/' || ${sig("ev.invoice_id")} || '/' || COALESCE(MAX(c.updated_at), '') || '/' || ${days("ev.date")} || '/' || ${sig("ev.kind")} || '/' || TOTAL(ev.amount) AS f FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id GROUP BY ${column}`));
+      if (store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'invoice_offsets'")) fold(store.all(`SELECT account_id AS id, 'o' || COUNT(*) || '/' || MAX(rowid) || '/' || TOTAL(amount) || '/' || ${days("date")} AS f FROM invoice_offsets GROUP BY account_id`));
+      if (store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'doubtful_receivables'")) {
+        fold(store.all(`SELECT account_id AS id, 'd' || COUNT(*) || '/' || MAX(rowid) || '/' || COALESCE(MAX(COALESCE(updated_at, created_at)), '') || '/' || ${sig("status")} || '/' || TOTAL(amount_minor) || '/' || ${days("date")} AS f FROM doubtful_receivables GROUP BY account_id`));
+      }
+    } catch {
+      return null;
+    }
+    return prints;
+  }
   const allPaymentStates = () => allSettled().pay;
+  // Bütün carilerin kuyruğu (cari kimliği → buildObligations sonucu); önbellek fatura durumlarıyla aynı anahtar (işlem içinde okunmaz, yazılmaz).
+  // config.legacyClosing (yalnız testler: 2.0.26 ile birebir karşılaştırmalar) TYK görünümlerini kapatır — taksit, cari kalemi ve liste eski yollarıyla.
+  const allObligations = () => (legacyClosing ? null : allSettled().tyk);
   // Bir carinin kapama girdisi (tek carili yol): carinin defteri + faturaları + bağlar (paymentStates ve entryStates aynı kuralla).
   function accountSettleInput(accountId, ledger, day) {
     // Bu carinin bütün faturaları (listede olmayanlar da kapamada yer tutar).
@@ -803,17 +929,30 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       } catch {
         ledger = [];
       }
-      const states = settle(accountSettleInput(accountId, ledger, day));
+      const states = legacyClosing ? settle(accountSettleInput(accountId, ledger, day)) : obligationsFor(accountId, ledger, day).invoices;
       for (const row of list) out.set(row.id, states.get(row.id) || { payable: row.tryPayable, paid: 0, open: row.tryPayable, state: "open", label: PAY_STATES.open });
     }
     return out;
   }
-  // 2.4.5 madde 6 (BAŞ MİMAR KARARI S1, K6.2): carinin elle Borç / Alacak ve Açılış Bakiyesi satırlarının Kalan'ı — fatura kapamasıyla AYNI kuyruktan
-  // (lib/invoice-settle.mjs settleLedger; ikinci dağıtım yok). entryStates: tek cari, çağıran defteri verir (cari kartı kendi defterini hesaplamışken
-  // yeniden okunmaz; accounts.detail → burası → accounts.detail döngüsü olmaz). allEntryStates: Vade Tarihi ya da Beklenen Ödeme Tarihi girilmiş elle
-  // satırı olan bütün cariler (takvim, zil, Vade Takip); önbellek fatura durumlarıyla aynı anahtarla (işlem içinde okunmaz, yazılmaz).
+  // Ç5-B: YAZMA YOLLARI (taksitli faturanın kendi kartının hedefi — ownTarget; iade → kapsayan kartın küçülmesi — coverState) kart / bağ defterini lib/invoice-settle.mjs
+  // ile AYNEN okur: kart tutarı ve kapsam payı TYK'nın bağsız dağılımından etkilenmesin (defter kuralı Ç5-B'de değişmez; karar (4) Ç7b). Görünüm (durum, Kalan, Kapatanlar) TYK.
+  function settledFor(row) {
+    let ledger = [];
+    try {
+      ledger = accounts()?.detail ? accounts().detail(row.accountId, AUDITOR, { withRemaining: false }).ledger || [] : [];
+    } catch {
+      ledger = [];
+    }
+    return settle(accountSettleInput(row.accountId, ledger, today())).get(row.id) || { payable: row.tryPayable, paid: 0, open: row.tryPayable, state: "open", label: PAY_STATES.open };
+  }
+  // Tek carinin kuyruğu (cari kartı, fatura kartı): carinin defteri çağırandan (accounts.detail → burası → accounts.detail döngüsü olmaz).
+  function obligationsFor(accountId, ledger, day = today()) {
+    return buildObligations(withExtras(accountSettleInput(accountId, ledger || [], day), obligationExtras(accountId), accountId));
+  }
+  // 2.4.5 madde 6 → 2.5.0 Ç5-B: carinin elle Borç / Alacak, açılış, stok ve karşılıksız satırlarının Kalan'ı — TYK'nın NET görünümünden (G1; karar (5)).
   // Dönüş: defter satırı kimliği → { side, remaining, covered } (TL).
-  const entryStates = (accountId, ledger) => settleLedger(accountSettleInput(accountId, ledger || [], today())).entries;
+  // result: çağıranın aynı defterle kurduğu kuyruk (cari kartı) — verilirse yeniden kurulmaz.
+  const entryStates = (accountId, ledger, result = null) => (result || obligationsFor(accountId, ledger)).entries;
   // allSettled (yukarıda) fatura durumlarıyla aynı geçişte üretir.
   const allEntryStates = () => allSettled().entries;
 
@@ -2027,7 +2166,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   function coverState(originalId) {
     const row = store.get("SELECT id, account_id AS accountId, try_payable AS tryPayable, plan_id AS planId, payment_json AS paymentJson FROM invoices WHERE id = ?", originalId);
     if (!row || !plans()?.shrinkPlan) return null;
-    const state = paymentStates([row]).get(row.id) || {};
+    // Ç5-B: kart / bağ defteri (lib/invoice-settle.mjs) — TYK görünümü değil (settledFor; kart tutarı bağsız dağılımdan etkilenmez).
+    const state = settledFor(row);
     return { row, open: Number(state.open) || 0, excess: Number(state.excess) || 0, coveredBy: { ...(state.coveredBy || {}) } };
   }
   // İade (kaydı, düzenlemesi, iptali) sonrası asıl faturayı taksitlendiren kart yeni duruma getirilir:
@@ -5067,18 +5207,47 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // müşterinin alacağı → borç tarafı, alıştan iade tedarikçinin borcu → alacak tarafı). Birleşik listeler (yaşlandırma, nakit akış, vade
   // takip, takvim/bildirim, ANLIK DURUM) iade belgesi istemez: orada iade alacağı carinin avansı gibidir (bakiye zaten net).
   const RETURN_SIDE = { sale_return: "purchase", purchase_return: "sale" };
-  function openItems(day = today(), { net = false, returns = false } = {}) {
+  // Ç5-B: birleşik listeler (net) faturanın TYK NET kalanını gösterir (G1: Mevcut Borç kartının tükettiği kısım kartın taksitlerinde, alış faturası / Alacak Yaz satış
+  // borcuna netleşmiş — karar (5); şüpheli kuyruğundaki kısım hariç — M13). Fatura durumu (Açık / Ödendi, Kalan) G2'den (paymentStates).
+  function netInvoiceStates(rows) {
+    const out = new Map();
+    const accountIds = [...new Set(rows.map(row => row.accountId))];
+    const many = accountIds.length > BATCH_ACCOUNTS;
+    const all = many ? allObligations() : null;
+    for (const accountId of accountIds) {
+      let result = all ? all.get(accountId) : null;
+      if (!all) {
+        let ledger = [];
+        try {
+          ledger = accounts()?.detail ? accounts().detail(accountId, AUDITOR, { withRemaining: false }).ledger || [] : [];
+        } catch {
+          ledger = [];
+        }
+        result = obligationsFor(accountId, ledger);
+      }
+      if (result) for (const [id, state] of result.invoiceNet) out.set(id, state);
+    }
+    return out;
+  }
+  // withoutDoubtful (2.5.0 Ç5-B M13; zil / takvim / Vade Takip): net kalanın şüpheli kuyruğundaki kısmı kalem değildir (Vade Takip'te şüpheli ayrı satır). Nakit akışı ve
+  // Alacak Yaşlandırma ("Şüpheli Alacak (dilimlere dahil)") bugünkü gibi bütün kalanı okur.
+  function openItems(day = today(), { net = false, returns = false, withoutDoubtful = false } = {}) {
     const rows = store.all(`${INVOICE_SQL} WHERE i.status = 'issued' AND i.kind IN ('sale', 'smm', 'purchase'${returns ? ", 'sale_return', 'purchase_return'" : ""}) AND i.plan_id = ''`);
     const states = paymentStates(rows);
+    const netStates = net && !legacyClosing ? netInvoiceStates(rows) : null;
+    const netOpen = id => {
+      const value = netStates.get(id);
+      return value ? roundMoney(value.remaining - (withoutDoubtful ? value.doubtful || 0 : 0)) : 0;
+    };
     return rows
       .map(row => ({ row, state: states.get(row.id) }))
-      .map(({ row, state }) => ({ row, state, open: state ? roundMoney(state.open - (net ? state.covered || 0 : 0)) : 0 }))
+      .map(({ row, state }) => ({ row, state, open: state ? (netStates ? netOpen(row.id) : roundMoney(state.open - (net ? state.covered || 0 : 0))) : 0 }))
       .filter(({ state, open }) => state && open > 0.005)
       .map(({ row, state, open }) => ({ id: row.id, number: row.number, kind: row.kind, side: RETURN_SIDE[row.kind] || INVOICE_KINDS[row.kind].side, ...(RETURN_SIDE[row.kind] ? { isReturn: true } : {}), accountId: row.accountId, accountName: parseJson(row.partyJson, {}).name || row.accountName, phone: row.accountPhone, dueDate: row.dueDate || row.issueDate, issueDate: row.issueDate, payable: row.tryPayable, open, ...(net && state.covered > 0.005 ? { coveredByPlan: state.covered } : {}), state: state.state, days: Math.round((Date.parse(`${row.dueDate || row.issueDate}T00:00:00Z`) - Date.parse(`${day}T00:00:00Z`)) / 86_400_000) }));
   }
   // Tahsilat takvimi ve sağ alt bildirimler: vadesi geçen, bugün ve 7 gün içinde vadesi gelen açık faturalar.
   function dueItems(day = today()) {
-    return openItems(day, { net: true })
+    return openItems(day, { net: true, withoutDoubtful: true })
       .filter(item => item.days <= 7)
       .map(item => ({
         id: `invoice|${item.id}`,
@@ -5149,5 +5318,5 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     doc.paymentDraft = {};
     return writeDraft(user, doc);
   }
-  return { openItems, dueItems, fingerprint, countForAccount, list, listQuery, detail, settings, paymentStates, entryStates, allEntryStates, lastPrices, returnable, cancel, deleteInvoice, restoreDeleted, syncOwnCard, repairOwnCards, repairScreen, issueBankFee, issueBankFeeReturn, createCommissionDraft };
+  return { openItems, dueItems, fingerprint, countForAccount, list, listQuery, detail, settings, paymentStates, entryStates, allEntryStates, obligationsFor, allObligations, cardLedgerState: settledFor, legacyView: legacyClosing, lastPrices, returnable, cancel, deleteInvoice, restoreDeleted, syncOwnCard, repairOwnCards, repairScreen, issueBankFee, issueBankFeeReturn, createCommissionDraft };
 }

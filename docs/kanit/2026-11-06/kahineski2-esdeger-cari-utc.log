@@ -1,0 +1,959 @@
+üretici bayt bayt aynı: 20/20
+EŞDEĞERLİK (2.4.9 / 2.4.6 / 2.4.5 / 2.4.4): 289/289 bayt bayt aynı
+
+G3 — 2.5.0 kâhin çıktısı bakım 1 ↔ bakım 2 (eski senaryolar + rastgele):
+  c10-ks10-projeksiyon-cari-vade.json: 4
+    k1:takvim:hareket:bh2 [tek değer → ÇATAL SK-5] eski {"amount": 25000, "dueDate": "2026-06-12", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -3, "cari": "H", "person · yeni {"catal": [{"amount": 25000, "dueDate": "2026-06-12", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -3, "cari": "
+    k2:takvim:hareket:bh2 [tek değer → ÇATAL SK-5] eski {"amount": 15000, "dueDate": "2026-06-12", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -3, "cari": "H", "person · yeni {"catal": [{"amount": 15000, "dueDate": "2026-06-12", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -3, "cari": "
+    k3:takvim:hareket:bh2 [tek değer → ÇATAL SK-5] eski {"amount": 15000, "dueDate": "2026-06-12", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -3, "cari": "H", "person · yeni {"catal": [{"amount": 15000, "dueDate": "2026-06-12", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -3, "cari": "
+    k5:takvim:hareket:bh2 [tek değer → ÇATAL SK-5] eski {"amount": 15000, "dueDate": "2026-06-12", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -3, "cari": "H", "person · yeni {"catal": [{"amount": 15000, "dueDate": "2026-06-12", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -3, "cari": "
+  c13-ks83-ayni-gun-sira.json: 15
+    k1:cari:S7:acikEsitBakiye [ÇATAL → tek değer SK-4] eski {"catal": [true, false]} · yeni true
+    k1:cari:S7:acikToplam [ÇATAL → tek değer SK-4] eski {"catal": [-30000, 0]} · yeni -30000
+    k1:hareket:a7:kalan [ÇATAL → tek değer SK-4] eski {"catal": [30000, 0]} · yeni 30000
+    k1:hareket:a8:kalan [etiket YAYGIN → BAŞ MİMAR] eski 30000 · yeni 30000
+    k1:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [2, 1]} · yeni 2
+    k1:projeksiyon:cariToplam:S7 [yeni anahtar] eski null · yeni -30000
+    k1:projeksiyon:hareket:a7 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 30000, "date": "2026-06-18", "direction": "out"}, "yok"]} · yeni {"amount": 30000, "date": "2026-06-18", "direction": "out"}
+    k1:projeksiyon:hareket:a8 [etiket YAYGIN → BAŞ MİMAR] eski {"amount": 30000, "date": "2026-06-18", "direction": "out"} · yeni {"amount": 30000, "date": "2026-06-18", "direction": "out"}
+    k1:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [2, 1]} · yeni 2
+    k1:takvim:cariToplam:S7 [yeni anahtar] eski null · yeni -30000
+    k1:takvim:hareket:a7 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 30000, "dueDate": "2026-06-18", "direction": "out", "label": "Ödenecek Borç", "state": "upcoming", "days": 3, "cari": "S7", "person": "Sua · yeni {"amount": 30000, "dueDate": "2026-06-18", "direction": "out", "label": "Ödenecek Borç", "state": "upcoming", "days": 3, "cari": "S7", "person": "Suat Not"}
+    k1:takvim:hareket:a8 [etiket YAYGIN → BAŞ MİMAR] eski {"amount": 30000, "dueDate": "2026-06-18", "direction": "out", "label": "Ödenecek Borç", "state": "upcoming", "days": 3, "cari": "S8", "person": "Sude Not"} · yeni {"amount": 30000, "dueDate": "2026-06-18", "direction": "out", "label": "Ödenecek Borç", "state": "upcoming", "days": 3, "cari": "S8", "person": "Sude Not"}
+    k1:vadeTakip:cariToplam:S7 [yeni anahtar] eski null · yeni -30000
+    k1:vadeTakip:hareket:a7 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 30000, "date": "2026-06-18", "direction": "out"}, "yok"]} · yeni {"amount": 30000, "date": "2026-06-18", "direction": "out"}
+    k1:vadeTakip:hareket:a8 [etiket YAYGIN → BAŞ MİMAR] eski {"amount": 30000, "date": "2026-06-18", "direction": "out"} · yeni {"amount": 30000, "date": "2026-06-18", "direction": "out"}
+  c6-cari-vade-fifo.json: 14
+    k10:takvim:hareket:b1 [ÇATAL → tek değer C14.2] eski {"catal": [{"amount": 25000, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 3, "cari": " · yeni {"amount": 25000, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -5, "cari": "D", "person
+    k11:takvim:hareket:b1 [ÇATAL → tek değer C14.2] eski {"catal": [{"amount": 25000, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 3, "cari": " · yeni {"amount": 25000, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -5, "cari": "D", "person
+    k12:takvim:hareket:b1 [ÇATAL → tek değer C14.2] eski {"catal": [{"amount": 25000, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 3, "cari": " · yeni {"amount": 25000, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -5, "cari": "D", "person
+    k1:takvim:hareket:b1 [ÇATAL → tek değer C14.2] eski {"catal": [{"amount": 50000, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 3, "cari": " · yeni {"amount": 50000, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -5, "cari": "D", "person
+    k1:takvim:hareket:b5 [ÇATAL → tek değer C14.2] eski {"catal": [{"amount": 15000, "dueDate": "2026-06-17", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 2, "cari": " · yeni {"amount": 15000, "dueDate": "2026-06-17", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -12, "cari": "D", "perso
+    k2:takvim:hareket:b1 [ÇATAL → tek değer C14.2] eski {"catal": [{"amount": 35000, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 3, "cari": " · yeni {"amount": 35000, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -5, "cari": "D", "person
+    k3:takvim:hareket:b1 [ÇATAL → tek değer C14.2] eski {"catal": [{"amount": 50000, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 3, "cari": " · yeni {"amount": 50000, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -5, "cari": "D", "person
+    k3:takvim:hareket:b5 [ÇATAL → tek değer C14.2] eski {"catal": [{"amount": 15000, "dueDate": "2026-06-17", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 2, "cari": " · yeni {"amount": 15000, "dueDate": "2026-06-17", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -12, "cari": "D", "perso
+    k4:takvim:hareket:b1 [ÇATAL → tek değer C14.2] eski {"catal": [{"amount": 35000, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 3, "cari": " · yeni {"amount": 35000, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -5, "cari": "D", "person
+    k5:takvim:hareket:b1 [ÇATAL → tek değer C14.2] eski {"catal": [{"amount": 35000, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 3, "cari": " · yeni {"amount": 35000, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -5, "cari": "D", "person
+    k6:takvim:hareket:b1 [ÇATAL → tek değer C14.2] eski {"catal": [{"amount": 15000, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 3, "cari": " · yeni {"amount": 15000, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -5, "cari": "D", "person
+    k7:takvim:hareket:b1 [ÇATAL → tek değer C14.2] eski {"catal": [{"amount": 35000, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 3, "cari": " · yeni {"amount": 35000, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -5, "cari": "D", "person
+    k8:takvim:hareket:b1 [ÇATAL → tek değer C14.2] eski {"catal": [{"amount": 25000, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 3, "cari": " · yeni {"amount": 25000, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -5, "cari": "D", "person
+    k9:takvim:hareket:b1 [ÇATAL → tek değer C14.2] eski {"catal": [{"amount": 25000, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 3, "cari": " · yeni {"amount": 25000, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -5, "cari": "D", "person
+  d7-c5-s52-gecikmis.json: 1
+    k1:takvim:hareket:a1 [ÇATAL → tek değer C14.2] eski {"catal": [{"amount": 100000, "dueDate": "2026-06-20", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 5, "cari":  · yeni {"amount": 100000, "dueDate": "2026-06-20", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -15, "cari": "A", "pers
+  rastgele-s1-1: 15
+    k11:fatura:A3:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 10352]} · yeni 0
+    k11:hareket:s027:kalan [ÇATAL → tek değer SK-4] eski {"catal": [450000, 212720]} · yeni 450000
+    k11:hareket:s046:kalan [ÇATAL → tek değer SK-4] eski {"catal": [19853, 246781]} · yeni 19853
+    k11:projeksiyon:hareket:s027 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 450000, "date": "2026-07-15", "direction": "out"}, {"amount": 212720, "date": "2026-07-15", "direction": "out"}]} · yeni {"amount": 450000, "date": "2026-07-15", "direction": "out"}
+    k11:takvim:fatura:A3 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 10352, "direction": "out"}]} · yeni "yok"
+    k12:fatura:A3:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 10352]} · yeni 0
+    k12:hareket:s027:kalan [ÇATAL → tek değer SK-4] eski {"catal": [450000, 212720]} · yeni 450000
+    k12:hareket:s046:kalan [ÇATAL → tek değer SK-4] eski {"catal": [19853, 246781]} · yeni 19853
+    k12:projeksiyon:hareket:s027 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 450000, "date": "2026-07-15", "direction": "out"}, {"amount": 212720, "date": "2026-07-15", "direction": "out"}]} · yeni {"amount": 450000, "date": "2026-07-15", "direction": "out"}
+    k12:takvim:fatura:A3 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 10352, "direction": "out"}]} · yeni "yok"
+    kson:fatura:A3:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 10352]} · yeni 0
+    kson:hareket:s027:kalan [ÇATAL → tek değer SK-4] eski {"catal": [450000, 212720]} · yeni 450000
+    kson:hareket:s046:kalan [ÇATAL → tek değer SK-4] eski {"catal": [19853, 246781]} · yeni 19853
+    kson:projeksiyon:hareket:s027 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 450000, "date": "2026-07-15", "direction": "out"}, {"amount": 212720, "date": "2026-07-15", "direction": "out"}]} · yeni {"amount": 450000, "date": "2026-07-15", "direction": "out"}
+    kson:takvim:fatura:A3 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 10352, "direction": "out"}]} · yeni "yok"
+  rastgele-s1-2: 119
+    k10:fatura:A4:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 135822]} · yeni 0
+    k10:fatura:A5:acik [ÇATAL → tek değer SK-4] eski {"catal": [437981, 440000]} · yeni 437981
+    k10:hareket:s003:kalan [ÇATAL → tek değer SK-4] eski {"catal": [70000, 0]} · yeni 70000
+    k10:hareket:s018:kalan [ÇATAL → tek değer SK-4] eski {"catal": [90000, 22159]} · yeni 90000
+    k10:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [4, 3]} · yeni 4
+    k10:projeksiyon:hareket:s003 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 70000, "date": "2026-06-14", "direction": "out"}, "yok"]} · yeni {"amount": 70000, "date": "2026-06-14", "direction": "out"}
+    k10:projeksiyon:hareket:s018 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 90000, "date": "2026-07-26", "direction": "out"}, {"amount": 22159, "date": "2026-07-26", "direction": "out"}]} · yeni {"amount": 90000, "date": "2026-07-26", "direction": "out"}
+    k10:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [1, 0]} · yeni 1
+    k10:takvim:fatura:A4 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 135822, "direction": "out"}]} · yeni "yok"
+    k10:takvim:fatura:A5 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 437981, "direction": "out"}, {"amount": 440000, "direction": "out"}]} · yeni {"amount": 437981, "direction": "out"}
+    k10:takvim:hareket:s003 [ÇATAL değişti SK-4] eski {"catal": [{"amount": 70000, "dueDate": "2026-06-14", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -16, "cari": "S", " · yeni {"catal": [{"amount": 70000, "dueDate": "2026-06-14", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -16, "cari": "S", "
+    k10:vadeTakip:hareket:s003 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 70000, "date": "2026-06-14", "direction": "out"}, "yok"]} · yeni {"amount": 70000, "date": "2026-06-14", "direction": "out"}
+    k11:fatura:A4:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 45684]} · yeni 0
+    k11:fatura:A5:acik [ÇATAL → tek değer SK-4] eski {"catal": [325684, 440000]} · yeni 325684
+    k11:hareket:s003:kalan [ÇATAL → tek değer SK-4] eski {"catal": [70000, 0]} · yeni 70000
+    k11:hareket:s018:kalan [ÇATAL → tek değer SK-4] eski {"catal": [90000, 0]} · yeni 90000
+    k11:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [2, 0]} · yeni 2
+    k11:projeksiyon:hareket:s003 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 70000, "date": "2026-06-14", "direction": "out"}, "yok"]} · yeni {"amount": 70000, "date": "2026-06-14", "direction": "out"}
+    k11:projeksiyon:hareket:s018 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 90000, "date": "2026-07-26", "direction": "out"}, "yok"]} · yeni {"amount": 90000, "date": "2026-07-26", "direction": "out"}
+    k11:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [1, 0]} · yeni 1
+    k11:takvim:fatura:A4 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 45684, "direction": "out"}]} · yeni "yok"
+    k11:takvim:fatura:A5 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 325684, "direction": "out"}, {"amount": 440000, "direction": "out"}]} · yeni {"amount": 325684, "direction": "out"}
+    k11:takvim:hareket:s003 [ÇATAL değişti SK-4] eski {"catal": [{"amount": 70000, "dueDate": "2026-06-14", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -16, "cari": "S", " · yeni {"catal": [{"amount": 70000, "dueDate": "2026-06-14", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -16, "cari": "S", "
+    k11:vadeTakip:hareket:s003 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 70000, "date": "2026-06-14", "direction": "out"}, "yok"]} · yeni {"amount": 70000, "date": "2026-06-14", "direction": "out"}
+    k12:fatura:A4:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 45684]} · yeni 0
+    k12:fatura:A5:acik [ÇATAL → tek değer SK-4] eski {"catal": [325684, 440000]} · yeni 325684
+    k12:hareket:s003:kalan [ÇATAL → tek değer SK-4] eski {"catal": [70000, 0]} · yeni 70000
+    k12:hareket:s018:kalan [ÇATAL → tek değer SK-4] eski {"catal": [90000, 0]} · yeni 90000
+    k12:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [2, 0]} · yeni 2
+    k12:projeksiyon:hareket:s003 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 70000, "date": "2026-06-14", "direction": "out"}, "yok"]} · yeni {"amount": 70000, "date": "2026-06-14", "direction": "out"}
+    k12:projeksiyon:hareket:s018 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 90000, "date": "2026-07-26", "direction": "out"}, "yok"]} · yeni {"amount": 90000, "date": "2026-07-26", "direction": "out"}
+    k12:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [1, 0]} · yeni 1
+    k12:takvim:fatura:A4 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 45684, "direction": "out"}]} · yeni "yok"
+    k12:takvim:fatura:A5 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 325684, "direction": "out"}, {"amount": 440000, "direction": "out"}]} · yeni {"amount": 325684, "direction": "out"}
+    k12:takvim:hareket:s003 [ÇATAL değişti SK-4] eski {"catal": [{"amount": 70000, "dueDate": "2026-06-14", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -16, "cari": "S", " · yeni {"catal": [{"amount": 70000, "dueDate": "2026-06-14", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -16, "cari": "S", "
+    k12:vadeTakip:hareket:s003 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 70000, "date": "2026-06-14", "direction": "out"}, "yok"]} · yeni {"amount": 70000, "date": "2026-06-14", "direction": "out"}
+    k1:takvim:hareket:s001 [kural metni SK-5] eski {"catal": [{"amount": 30000, "dueDate": "2026-06-30", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "today", "days": 0, "cari": "E", · yeni {"catal": [{"amount": 30000, "dueDate": "2026-06-30", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "today", "days": 0, "cari": "E",
+    k1:takvim:hareket:s003 [tek değer → ÇATAL SK-5] eski {"amount": 70000, "dueDate": "2026-06-14", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -16, "cari": "S", "person": "R · yeni {"catal": [{"amount": 70000, "dueDate": "2026-06-14", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -16, "cari": "S", "
+    k2:takvim:hareket:s003 [tek değer → ÇATAL SK-5] eski {"amount": 70000, "dueDate": "2026-06-14", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -16, "cari": "S", "person": "R · yeni {"catal": [{"amount": 70000, "dueDate": "2026-06-14", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -16, "cari": "S", "
+    k3:hareket:s003:kalan [ÇATAL → tek değer SK-4] eski {"catal": [70000, 9265]} · yeni 70000
+    k3:hareket:s006:kalan [ÇATAL → tek değer SK-4] eski {"catal": [213123, 273858]} · yeni 213123
+    k3:projeksiyon:hareket:s003 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 70000, "date": "2026-06-14", "direction": "out"}, {"amount": 9265, "date": "2026-06-14", "direction": "out"}]} · yeni {"amount": 70000, "date": "2026-06-14", "direction": "out"}
+    k3:takvim:hareket:s003 [ÇATAL değişti SK-4] eski {"catal": [{"amount": 70000, "dueDate": "2026-06-14", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -16, "cari": "S", " · yeni {"catal": [{"amount": 70000, "dueDate": "2026-06-14", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -16, "cari": "S", "
+    k3:vadeTakip:hareket:s003 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 70000, "date": "2026-06-14", "direction": "out"}, {"amount": 9265, "date": "2026-06-14", "direction": "out"}]} · yeni {"amount": 70000, "date": "2026-06-14", "direction": "out"}
+    k4:hareket:s003:kalan [ÇATAL → tek değer SK-4] eski {"catal": [70000, 9265]} · yeni 70000
+    k4:hareket:s006:kalan [ÇATAL → tek değer SK-4] eski {"catal": [213123, 273858]} · yeni 213123
+    k4:projeksiyon:hareket:s003 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 70000, "date": "2026-06-14", "direction": "out"}, {"amount": 9265, "date": "2026-06-14", "direction": "out"}]} · yeni {"amount": 70000, "date": "2026-06-14", "direction": "out"}
+    k4:takvim:hareket:s003 [ÇATAL değişti SK-4] eski {"catal": [{"amount": 70000, "dueDate": "2026-06-14", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -16, "cari": "S", " · yeni {"catal": [{"amount": 70000, "dueDate": "2026-06-14", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -16, "cari": "S", "
+    k4:takvim:hareket:s034 [ÇATAL → tek değer C14.2] eski {"catal": [{"amount": 290000, "dueDate": "2026-07-07", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 7, "cari":  · yeni {"amount": 290000, "dueDate": "2026-07-07", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -36, "cari": "E", "pers
+    k4:vadeTakip:hareket:s003 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 70000, "date": "2026-06-14", "direction": "out"}, {"amount": 9265, "date": "2026-06-14", "direction": "out"}]} · yeni {"amount": 70000, "date": "2026-06-14", "direction": "out"}
+    k5:fatura:A2:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 34400]} · yeni 0
+    k5:fatura:A3:acik [ÇATAL → tek değer SK-4] eski {"catal": [264400, 300000]} · yeni 264400
+    k5:hareket:s003:kalan [ÇATAL → tek değer SK-4] eski {"catal": [70000, 0]} · yeni 70000
+    k5:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [6, 5]} · yeni 6
+    k5:projeksiyon:hareket:s003 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 70000, "date": "2026-06-14", "direction": "out"}, "yok"]} · yeni {"amount": 70000, "date": "2026-06-14", "direction": "out"}
+    k5:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [4, 3]} · yeni 4
+    k5:takvim:fatura:A2 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 34400, "direction": "out"}]} · yeni "yok"
+    k5:takvim:fatura:A3 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 264400, "direction": "out"}, {"amount": 300000, "direction": "out"}]} · yeni {"amount": 264400, "direction": "out"}
+    k5:takvim:hareket:s003 [ÇATAL değişti SK-4] eski {"catal": [{"amount": 70000, "dueDate": "2026-06-14", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -16, "cari": "S", " · yeni {"catal": [{"amount": 70000, "dueDate": "2026-06-14", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -16, "cari": "S", "
+    k5:takvim:hareket:s034 [ÇATAL → tek değer C14.2] eski {"catal": [{"amount": 279039, "dueDate": "2026-07-07", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 7, "cari":  · yeni {"amount": 279039, "dueDate": "2026-07-07", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -36, "cari": "E", "pers
+    k5:vadeTakip:hareket:s003 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 70000, "date": "2026-06-14", "direction": "out"}, "yok"]} · yeni {"amount": 70000, "date": "2026-06-14", "direction": "out"}
+    k6:fatura:A2:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 34400]} · yeni 0
+    k6:fatura:A3:acik [ÇATAL → tek değer SK-4] eski {"catal": [264400, 300000]} · yeni 264400
+    k6:hareket:s003:kalan [ÇATAL → tek değer SK-4] eski {"catal": [70000, 0]} · yeni 70000
+    k6:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [6, 5]} · yeni 6
+    k6:projeksiyon:hareket:s003 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 70000, "date": "2026-06-14", "direction": "out"}, "yok"]} · yeni {"amount": 70000, "date": "2026-06-14", "direction": "out"}
+    k6:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [4, 3]} · yeni 4
+    k6:takvim:fatura:A2 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 34400, "direction": "out"}]} · yeni "yok"
+    k6:takvim:fatura:A3 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 264400, "direction": "out"}, {"amount": 300000, "direction": "out"}]} · yeni {"amount": 264400, "direction": "out"}
+    k6:takvim:hareket:s003 [ÇATAL değişti SK-4] eski {"catal": [{"amount": 70000, "dueDate": "2026-06-14", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -16, "cari": "S", " · yeni {"catal": [{"amount": 70000, "dueDate": "2026-06-14", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -16, "cari": "S", "
+    k6:takvim:hareket:s034 [ÇATAL → tek değer C14.2] eski {"catal": [{"amount": 279039, "dueDate": "2026-07-07", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 7, "cari":  · yeni {"amount": 279039, "dueDate": "2026-07-07", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -54, "cari": "E", "pers
+    k6:takvim:hareket:s051 [tek değer → ÇATAL SK-5] eski {"amount": 62028, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -12, "cari": "E", "perso · yeni {"catal": [{"amount": 62028, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -12, "cari": 
+    k6:vadeTakip:hareket:s003 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 70000, "date": "2026-06-14", "direction": "out"}, "yok"]} · yeni {"amount": 70000, "date": "2026-06-14", "direction": "out"}
+    k7:fatura:A3:acik [ÇATAL → tek değer SK-4] eski {"catal": [199554, 269554]} · yeni 199554
+    k7:hareket:s003:kalan [ÇATAL → tek değer SK-4] eski {"catal": [70000, 0]} · yeni 70000
+    k7:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [6, 5]} · yeni 6
+    k7:projeksiyon:hareket:s003 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 70000, "date": "2026-06-14", "direction": "out"}, "yok"]} · yeni {"amount": 70000, "date": "2026-06-14", "direction": "out"}
+    k7:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [4, 3]} · yeni 4
+    k7:takvim:fatura:A3 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 199554, "direction": "out"}, {"amount": 269554, "direction": "out"}]} · yeni {"amount": 199554, "direction": "out"}
+    k7:takvim:hareket:s003 [ÇATAL değişti SK-4] eski {"catal": [{"amount": 70000, "dueDate": "2026-06-14", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -16, "cari": "S", " · yeni {"catal": [{"amount": 70000, "dueDate": "2026-06-14", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -16, "cari": "S", "
+    k7:takvim:hareket:s034 [ÇATAL → tek değer C14.2] eski {"catal": [{"amount": 279039, "dueDate": "2026-07-07", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 7, "cari":  · yeni {"amount": 279039, "dueDate": "2026-07-07", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -54, "cari": "E", "pers
+    k7:takvim:hareket:s051 [tek değer → ÇATAL SK-5] eski {"amount": 62028, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -12, "cari": "E", "perso · yeni {"catal": [{"amount": 62028, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -12, "cari": 
+    k7:vadeTakip:hareket:s003 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 70000, "date": "2026-06-14", "direction": "out"}, "yok"]} · yeni {"amount": 70000, "date": "2026-06-14", "direction": "out"}
+    k8:fatura:A3:acik [ÇATAL → tek değer SK-4] eski {"catal": [35529, 105529]} · yeni 35529
+    k8:hareket:s003:kalan [ÇATAL → tek değer SK-4] eski {"catal": [70000, 0]} · yeni 70000
+    k8:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [6, 5]} · yeni 6
+    k8:projeksiyon:hareket:s003 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 70000, "date": "2026-06-14", "direction": "out"}, "yok"]} · yeni {"amount": 70000, "date": "2026-06-14", "direction": "out"}
+    k8:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [4, 3]} · yeni 4
+    k8:takvim:fatura:A3 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 35529, "direction": "out"}, {"amount": 105529, "direction": "out"}]} · yeni {"amount": 35529, "direction": "out"}
+    k8:takvim:hareket:s003 [ÇATAL değişti SK-4] eski {"catal": [{"amount": 70000, "dueDate": "2026-06-14", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -16, "cari": "S", " · yeni {"catal": [{"amount": 70000, "dueDate": "2026-06-14", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -16, "cari": "S", "
+    k8:takvim:hareket:s034 [ÇATAL → tek değer C14.2] eski {"catal": [{"amount": 232025, "dueDate": "2026-07-07", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 7, "cari":  · yeni {"amount": 232025, "dueDate": "2026-07-07", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -54, "cari": "E", "pers
+    k8:takvim:hareket:s051 [tek değer → ÇATAL SK-5] eski {"amount": 62028, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -12, "cari": "E", "perso · yeni {"catal": [{"amount": 62028, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -12, "cari": 
+    k8:vadeTakip:hareket:s003 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 70000, "date": "2026-06-14", "direction": "out"}, "yok"]} · yeni {"amount": 70000, "date": "2026-06-14", "direction": "out"}
+    k9:fatura:A4:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 135822]} · yeni 0
+    k9:fatura:A5:acik [ÇATAL → tek değer SK-4] eski {"catal": [437981, 440000]} · yeni 437981
+    k9:hareket:s003:kalan [ÇATAL → tek değer SK-4] eski {"catal": [70000, 0]} · yeni 70000
+    k9:hareket:s018:kalan [ÇATAL → tek değer SK-4] eski {"catal": [90000, 22159]} · yeni 90000
+    k9:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [7, 6]} · yeni 7
+    k9:projeksiyon:hareket:s003 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 70000, "date": "2026-06-14", "direction": "out"}, "yok"]} · yeni {"amount": 70000, "date": "2026-06-14", "direction": "out"}
+    k9:projeksiyon:hareket:s018 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 90000, "date": "2026-07-26", "direction": "out"}, {"amount": 22159, "date": "2026-07-26", "direction": "out"}]} · yeni {"amount": 90000, "date": "2026-07-26", "direction": "out"}
+    k9:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [4, 3]} · yeni 4
+    k9:takvim:fatura:A4 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 135822, "direction": "out"}]} · yeni "yok"
+    k9:takvim:fatura:A5 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 437981, "direction": "out"}, {"amount": 440000, "direction": "out"}]} · yeni {"amount": 437981, "direction": "out"}
+    k9:takvim:hareket:s003 [ÇATAL değişti SK-4] eski {"catal": [{"amount": 70000, "dueDate": "2026-06-14", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -16, "cari": "S", " · yeni {"catal": [{"amount": 70000, "dueDate": "2026-06-14", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -16, "cari": "S", "
+    k9:takvim:hareket:s034 [ÇATAL → tek değer C14.2] eski {"catal": [{"amount": 77283, "dueDate": "2026-07-07", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 7, "cari": " · yeni {"amount": 77283, "dueDate": "2026-07-07", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -54, "cari": "E", "perso
+    k9:takvim:hareket:s051 [tek değer → ÇATAL SK-5] eski {"amount": 62028, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -12, "cari": "E", "perso · yeni {"catal": [{"amount": 62028, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -12, "cari": 
+    k9:vadeTakip:hareket:s003 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 70000, "date": "2026-06-14", "direction": "out"}, "yok"]} · yeni {"amount": 70000, "date": "2026-06-14", "direction": "out"}
+    kson:fatura:A4:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 45684]} · yeni 0
+    kson:fatura:A5:acik [ÇATAL → tek değer SK-4] eski {"catal": [325684, 440000]} · yeni 325684
+    kson:hareket:s003:kalan [ÇATAL → tek değer SK-4] eski {"catal": [70000, 0]} · yeni 70000
+    kson:hareket:s018:kalan [ÇATAL → tek değer SK-4] eski {"catal": [90000, 0]} · yeni 90000
+    kson:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [2, 0]} · yeni 2
+    kson:projeksiyon:hareket:s003 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 70000, "date": "2026-06-14", "direction": "out"}, "yok"]} · yeni {"amount": 70000, "date": "2026-06-14", "direction": "out"}
+    kson:projeksiyon:hareket:s018 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 90000, "date": "2026-07-26", "direction": "out"}, "yok"]} · yeni {"amount": 90000, "date": "2026-07-26", "direction": "out"}
+    kson:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [1, 0]} · yeni 1
+    kson:takvim:fatura:A4 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 45684, "direction": "out"}]} · yeni "yok"
+    kson:takvim:fatura:A5 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 325684, "direction": "out"}, {"amount": 440000, "direction": "out"}]} · yeni {"amount": 325684, "direction": "out"}
+    kson:takvim:hareket:s003 [ÇATAL değişti SK-4] eski {"catal": [{"amount": 70000, "dueDate": "2026-06-14", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -16, "cari": "S", " · yeni {"catal": [{"amount": 70000, "dueDate": "2026-06-14", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -16, "cari": "S", "
+    kson:vadeTakip:hareket:s003 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 70000, "date": "2026-06-14", "direction": "out"}, "yok"]} · yeni {"amount": 70000, "date": "2026-06-14", "direction": "out"}
+  rastgele-s1-3: 153
+    k10:fatura:A2:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 104033]} · yeni 0
+    k10:fatura:A3:acik [ÇATAL → tek değer SK-4] eski {"catal": [319748, 440000]} · yeni 319748
+    k10:hareket:s005:kalan [ÇATAL → tek değer SK-4] eski {"catal": [138432, 0]} · yeni 138432
+    k10:hareket:s006:kalan [ÇATAL → tek değer SK-4] eski {"catal": [85853, 0]} · yeni 85853
+    k10:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [11, 9]} · yeni 11
+    k10:projeksiyon:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "date": "2026-04-22", "direction": "out"}, "yok"]} · yeni {"amount": 138432, "date": "2026-04-22", "direction": "out"}
+    k10:projeksiyon:hareket:s006 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 85853, "date": "2026-04-21", "direction": "out"}, "yok"]} · yeni {"amount": 85853, "date": "2026-04-21", "direction": "out"}
+    k10:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [8, 6]} · yeni 8
+    k10:takvim:fatura:A2 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 104033, "direction": "out"}]} · yeni "yok"
+    k10:takvim:fatura:A3 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 319748, "direction": "out"}, {"amount": 440000, "direction": "out"}]} · yeni {"amount": 319748, "direction": "out"}
+    k10:takvim:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "dueDate": "2026-04-22", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -69, "cari": "S",  · yeni {"amount": 138432, "dueDate": "2026-04-22", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -69, "cari": "S", "person": "
+    k10:takvim:hareket:s006 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 85853, "dueDate": "2026-04-21", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -70, "cari": "S", "person": "Ras · yeni {"amount": 85853, "dueDate": "2026-04-21", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -70, "cari": "S", "person": "Rastgele Sigma
+    k10:vadeTakip:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "date": "2026-04-22", "direction": "out"}, "yok"]} · yeni {"amount": 138432, "date": "2026-04-22", "direction": "out"}
+    k10:vadeTakip:hareket:s006 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 85853, "date": "2026-04-21", "direction": "out"}, "yok"]} · yeni {"amount": 85853, "date": "2026-04-21", "direction": "out"}
+    k11:fatura:A3:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 163013]} · yeni 0
+    k11:hareket:s005:kalan [ÇATAL → tek değer SK-4] eski {"catal": [138432, 0]} · yeni 138432
+    k11:hareket:s006:kalan [ÇATAL → tek değer SK-4] eski {"catal": [24581, 0]} · yeni 24581
+    k11:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [9, 7]} · yeni 9
+    k11:projeksiyon:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "date": "2026-04-22", "direction": "out"}, "yok"]} · yeni {"amount": 138432, "date": "2026-04-22", "direction": "out"}
+    k11:projeksiyon:hareket:s006 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 24581, "date": "2026-04-21", "direction": "out"}, "yok"]} · yeni {"amount": 24581, "date": "2026-04-21", "direction": "out"}
+    k11:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [7, 5]} · yeni 7
+    k11:takvim:fatura:A3 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 163013, "direction": "out"}]} · yeni "yok"
+    k11:takvim:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "dueDate": "2026-04-22", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -69, "cari": "S",  · yeni {"amount": 138432, "dueDate": "2026-04-22", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -69, "cari": "S", "person": "
+    k11:takvim:hareket:s006 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 24581, "dueDate": "2026-04-21", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -70, "cari": "S", "person": "Ras · yeni {"amount": 24581, "dueDate": "2026-04-21", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -70, "cari": "S", "person": "Rastgele Sigma
+    k11:takvim:hareket:s012 [ÇATAL → tek değer C14.2] eski {"catal": [{"amount": 196795, "dueDate": "2026-07-03", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 3, "cari":  · yeni {"amount": 196795, "dueDate": "2026-07-03", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -9, "cari": "D", "perso
+    k11:vadeTakip:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "date": "2026-04-22", "direction": "out"}, "yok"]} · yeni {"amount": 138432, "date": "2026-04-22", "direction": "out"}
+    k11:vadeTakip:hareket:s006 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 24581, "date": "2026-04-21", "direction": "out"}, "yok"]} · yeni {"amount": 24581, "date": "2026-04-21", "direction": "out"}
+    k12:fatura:A3:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 13022]} · yeni 0
+    k12:fatura:A4:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 50000]} · yeni 0
+    k12:fatura:A5:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 30000]} · yeni 0
+    k12:fatura:A6:acik [ÇATAL → tek değer SK-4] eski {"catal": [194590, 240000]} · yeni 194590
+    k12:hareket:s005:kalan [ÇATAL → tek değer SK-4] eski {"catal": [138432, 0]} · yeni 138432
+    k12:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [8, 7]} · yeni 8
+    k12:projeksiyon:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "date": "2026-04-22", "direction": "out"}, "yok"]} · yeni {"amount": 138432, "date": "2026-04-22", "direction": "out"}
+    k12:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [6, 5]} · yeni 6
+    k12:takvim:fatura:A3 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 13022, "direction": "out"}]} · yeni "yok"
+    k12:takvim:fatura:A4 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 50000, "direction": "out"}]} · yeni "yok"
+    k12:takvim:fatura:A5 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 30000, "direction": "out"}]} · yeni "yok"
+    k12:takvim:fatura:A6 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 194590, "direction": "out"}, {"amount": 240000, "direction": "out"}]} · yeni {"amount": 194590, "direction": "out"}
+    k12:takvim:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "dueDate": "2026-04-22", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -69, "cari": "S",  · yeni {"amount": 138432, "dueDate": "2026-04-22", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -69, "cari": "S", "person": "
+    k12:takvim:hareket:s012 [ÇATAL → tek değer C14.2] eski {"catal": [{"amount": 196795, "dueDate": "2026-07-03", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 3, "cari":  · yeni {"amount": 196795, "dueDate": "2026-07-03", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -9, "cari": "D", "perso
+    k12:vadeTakip:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "date": "2026-04-22", "direction": "out"}, "yok"]} · yeni {"amount": 138432, "date": "2026-04-22", "direction": "out"}
+    k2:fatura:A1:acik [ÇATAL → tek değer SK-4] eski {"catal": [382316, 490000]} · yeni 382316
+    k2:hareket:s005:kalan [ÇATAL → tek değer SK-4] eski {"catal": [138432, 30748]} · yeni 138432
+    k2:projeksiyon:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "date": "2026-04-22", "direction": "out"}, {"amount": 30748, "date": "2026-04-22", "direction": "out"}]} · yeni {"amount": 138432, "date": "2026-04-22", "direction": "out"}
+    k2:takvim:fatura:A1 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 382316, "direction": "out"}, {"amount": 490000, "direction": "out"}]} · yeni {"amount": 382316, "direction": "out"}
+    k2:takvim:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "dueDate": "2026-04-22", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -69, "cari": "S",  · yeni {"amount": 138432, "dueDate": "2026-04-22", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -69, "cari": "S", "person": "
+    k2:vadeTakip:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "date": "2026-04-22", "direction": "out"}, {"amount": 30748, "date": "2026-04-22", "direction": "out"}]} · yeni {"amount": 138432, "date": "2026-04-22", "direction": "out"}
+    k3:fatura:A1:acik [ÇATAL → tek değer SK-4] eski {"catal": [349843, 490000]} · yeni 349843
+    k3:hareket:s005:kalan [ÇATAL → tek değer SK-4] eski {"catal": [138432, 0]} · yeni 138432
+    k3:hareket:s006:kalan [ÇATAL → tek değer SK-4] eski {"catal": [85853, 84128]} · yeni 85853
+    k3:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [4, 3]} · yeni 4
+    k3:projeksiyon:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "date": "2026-04-22", "direction": "out"}, "yok"]} · yeni {"amount": 138432, "date": "2026-04-22", "direction": "out"}
+    k3:projeksiyon:hareket:s006 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 85853, "date": "2026-04-21", "direction": "out"}, {"amount": 84128, "date": "2026-04-21", "direction": "out"}]} · yeni {"amount": 85853, "date": "2026-04-21", "direction": "out"}
+    k3:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [4, 3]} · yeni 4
+    k3:takvim:fatura:A1 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 349843, "direction": "out"}, {"amount": 490000, "direction": "out"}]} · yeni {"amount": 349843, "direction": "out"}
+    k3:takvim:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "dueDate": "2026-04-22", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -69, "cari": "S",  · yeni {"amount": 138432, "dueDate": "2026-04-22", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -69, "cari": "S", "person": "
+    k3:takvim:hareket:s006 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 85853, "dueDate": "2026-04-21", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -70, "cari": "S", "person": "Ras · yeni {"amount": 85853, "dueDate": "2026-04-21", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -70, "cari": "S", "person": "Rastgele Sigma
+    k3:vadeTakip:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "date": "2026-04-22", "direction": "out"}, "yok"]} · yeni {"amount": 138432, "date": "2026-04-22", "direction": "out"}
+    k3:vadeTakip:hareket:s006 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 85853, "date": "2026-04-21", "direction": "out"}, {"amount": 84128, "date": "2026-04-21", "direction": "out"}]} · yeni {"amount": 85853, "date": "2026-04-21", "direction": "out"}
+    k4:fatura:A1:acik [ÇATAL → tek değer SK-4] eski {"catal": [195448, 419733]} · yeni 195448
+    k4:hareket:s005:kalan [ÇATAL → tek değer SK-4] eski {"catal": [138432, 0]} · yeni 138432
+    k4:hareket:s006:kalan [ÇATAL → tek değer SK-4] eski {"catal": [85853, 0]} · yeni 85853
+    k4:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [5, 3]} · yeni 5
+    k4:projeksiyon:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "date": "2026-04-22", "direction": "out"}, "yok"]} · yeni {"amount": 138432, "date": "2026-04-22", "direction": "out"}
+    k4:projeksiyon:hareket:s006 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 85853, "date": "2026-04-21", "direction": "out"}, "yok"]} · yeni {"amount": 85853, "date": "2026-04-21", "direction": "out"}
+    k4:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [5, 3]} · yeni 5
+    k4:takvim:fatura:A1 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 195448, "direction": "out"}, {"amount": 419733, "direction": "out"}]} · yeni {"amount": 195448, "direction": "out"}
+    k4:takvim:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "dueDate": "2026-04-22", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -69, "cari": "S",  · yeni {"amount": 138432, "dueDate": "2026-04-22", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -69, "cari": "S", "person": "
+    k4:takvim:hareket:s006 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 85853, "dueDate": "2026-04-21", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -70, "cari": "S", "person": "Ras · yeni {"amount": 85853, "dueDate": "2026-04-21", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -70, "cari": "S", "person": "Rastgele Sigma
+    k4:vadeTakip:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "date": "2026-04-22", "direction": "out"}, "yok"]} · yeni {"amount": 138432, "date": "2026-04-22", "direction": "out"}
+    k4:vadeTakip:hareket:s006 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 85853, "date": "2026-04-21", "direction": "out"}, "yok"]} · yeni {"amount": 85853, "date": "2026-04-21", "direction": "out"}
+    k5:fatura:A1:acik [ÇATAL → tek değer SK-4] eski {"catal": [195448, 419733]} · yeni 195448
+    k5:hareket:s005:kalan [ÇATAL → tek değer SK-4] eski {"catal": [138432, 0]} · yeni 138432
+    k5:hareket:s006:kalan [ÇATAL → tek değer SK-4] eski {"catal": [85853, 0]} · yeni 85853
+    k5:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [6, 4]} · yeni 6
+    k5:projeksiyon:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "date": "2026-04-22", "direction": "out"}, "yok"]} · yeni {"amount": 138432, "date": "2026-04-22", "direction": "out"}
+    k5:projeksiyon:hareket:s006 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 85853, "date": "2026-04-21", "direction": "out"}, "yok"]} · yeni {"amount": 85853, "date": "2026-04-21", "direction": "out"}
+    k5:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [5, 3]} · yeni 5
+    k5:takvim:fatura:A1 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 195448, "direction": "out"}, {"amount": 419733, "direction": "out"}]} · yeni {"amount": 195448, "direction": "out"}
+    k5:takvim:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "dueDate": "2026-04-22", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -69, "cari": "S",  · yeni {"amount": 138432, "dueDate": "2026-04-22", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -69, "cari": "S", "person": "
+    k5:takvim:hareket:s006 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 85853, "dueDate": "2026-04-21", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -70, "cari": "S", "person": "Ras · yeni {"amount": 85853, "dueDate": "2026-04-21", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -70, "cari": "S", "person": "Rastgele Sigma
+    k5:vadeTakip:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "date": "2026-04-22", "direction": "out"}, "yok"]} · yeni {"amount": 138432, "date": "2026-04-22", "direction": "out"}
+    k5:vadeTakip:hareket:s006 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 85853, "date": "2026-04-21", "direction": "out"}, "yok"]} · yeni {"amount": 85853, "date": "2026-04-21", "direction": "out"}
+    k6:fatura:A1:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 117465]} · yeni 0
+    k6:fatura:A2:acik [ÇATAL → tek değer SK-4] eski {"catal": [223180, 330000]} · yeni 223180
+    k6:hareket:s005:kalan [ÇATAL → tek değer SK-4] eski {"catal": [138432, 0]} · yeni 138432
+    k6:hareket:s006:kalan [ÇATAL → tek değer SK-4] eski {"catal": [85853, 0]} · yeni 85853
+    k6:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [8, 6]} · yeni 8
+    k6:projeksiyon:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "date": "2026-04-22", "direction": "out"}, "yok"]} · yeni {"amount": 138432, "date": "2026-04-22", "direction": "out"}
+    k6:projeksiyon:hareket:s006 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 85853, "date": "2026-04-21", "direction": "out"}, "yok"]} · yeni {"amount": 85853, "date": "2026-04-21", "direction": "out"}
+    k6:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [7, 5]} · yeni 7
+    k6:takvim:fatura:A1 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 117465, "direction": "out"}]} · yeni "yok"
+    k6:takvim:fatura:A2 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 223180, "direction": "out"}, {"amount": 330000, "direction": "out"}]} · yeni {"amount": 223180, "direction": "out"}
+    k6:takvim:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "dueDate": "2026-04-22", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -69, "cari": "S",  · yeni {"amount": 138432, "dueDate": "2026-04-22", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -69, "cari": "S", "person": "
+    k6:takvim:hareket:s006 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 85853, "dueDate": "2026-04-21", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -70, "cari": "S", "person": "Ras · yeni {"amount": 85853, "dueDate": "2026-04-21", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -70, "cari": "S", "person": "Rastgele Sigma
+    k6:vadeTakip:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "date": "2026-04-22", "direction": "out"}, "yok"]} · yeni {"amount": 138432, "date": "2026-04-22", "direction": "out"}
+    k6:vadeTakip:hareket:s006 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 85853, "date": "2026-04-21", "direction": "out"}, "yok"]} · yeni {"amount": 85853, "date": "2026-04-21", "direction": "out"}
+    k7:fatura:A1:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 85294]} · yeni 0
+    k7:fatura:A2:acik [ÇATAL → tek değer SK-4] eski {"catal": [191009, 330000]} · yeni 191009
+    k7:hareket:s005:kalan [ÇATAL → tek değer SK-4] eski {"catal": [138432, 0]} · yeni 138432
+    k7:hareket:s006:kalan [ÇATAL → tek değer SK-4] eski {"catal": [85853, 0]} · yeni 85853
+    k7:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [10, 8]} · yeni 10
+    k7:projeksiyon:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "date": "2026-04-22", "direction": "out"}, "yok"]} · yeni {"amount": 138432, "date": "2026-04-22", "direction": "out"}
+    k7:projeksiyon:hareket:s006 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 85853, "date": "2026-04-21", "direction": "out"}, "yok"]} · yeni {"amount": 85853, "date": "2026-04-21", "direction": "out"}
+    k7:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [8, 6]} · yeni 8
+    k7:takvim:fatura:A1 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 85294, "direction": "out"}]} · yeni "yok"
+    k7:takvim:fatura:A2 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 191009, "direction": "out"}, {"amount": 330000, "direction": "out"}]} · yeni {"amount": 191009, "direction": "out"}
+    k7:takvim:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "dueDate": "2026-04-22", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -69, "cari": "S",  · yeni {"amount": 138432, "dueDate": "2026-04-22", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -69, "cari": "S", "person": "
+    k7:takvim:hareket:s006 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 85853, "dueDate": "2026-04-21", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -70, "cari": "S", "person": "Ras · yeni {"amount": 85853, "dueDate": "2026-04-21", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -70, "cari": "S", "person": "Rastgele Sigma
+    k7:vadeTakip:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "date": "2026-04-22", "direction": "out"}, "yok"]} · yeni {"amount": 138432, "date": "2026-04-22", "direction": "out"}
+    k7:vadeTakip:hareket:s006 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 85853, "date": "2026-04-21", "direction": "out"}, "yok"]} · yeni {"amount": 85853, "date": "2026-04-21", "direction": "out"}
+    k8:fatura:A2:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 166208]} · yeni 0
+    k8:fatura:A3:acik [ÇATAL → tek değer SK-4] eski {"catal": [381923, 440000]} · yeni 381923
+    k8:hareket:s005:kalan [ÇATAL → tek değer SK-4] eski {"catal": [138432, 0]} · yeni 138432
+    k8:hareket:s006:kalan [ÇATAL → tek değer SK-4] eski {"catal": [85853, 0]} · yeni 85853
+    k8:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [10, 8]} · yeni 10
+    k8:projeksiyon:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "date": "2026-04-22", "direction": "out"}, "yok"]} · yeni {"amount": 138432, "date": "2026-04-22", "direction": "out"}
+    k8:projeksiyon:hareket:s006 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 85853, "date": "2026-04-21", "direction": "out"}, "yok"]} · yeni {"amount": 85853, "date": "2026-04-21", "direction": "out"}
+    k8:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [8, 6]} · yeni 8
+    k8:takvim:fatura:A2 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 166208, "direction": "out"}]} · yeni "yok"
+    k8:takvim:fatura:A3 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 381923, "direction": "out"}, {"amount": 440000, "direction": "out"}]} · yeni {"amount": 381923, "direction": "out"}
+    k8:takvim:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "dueDate": "2026-04-22", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -69, "cari": "S",  · yeni {"amount": 138432, "dueDate": "2026-04-22", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -69, "cari": "S", "person": "
+    k8:takvim:hareket:s006 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 85853, "dueDate": "2026-04-21", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -70, "cari": "S", "person": "Ras · yeni {"amount": 85853, "dueDate": "2026-04-21", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -70, "cari": "S", "person": "Rastgele Sigma
+    k8:vadeTakip:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "date": "2026-04-22", "direction": "out"}, "yok"]} · yeni {"amount": 138432, "date": "2026-04-22", "direction": "out"}
+    k8:vadeTakip:hareket:s006 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 85853, "date": "2026-04-21", "direction": "out"}, "yok"]} · yeni {"amount": 85853, "date": "2026-04-21", "direction": "out"}
+    k9:fatura:A2:acik [ÇATAL → tek değer SK-4] eski {"catal": [36471, 260756]} · yeni 36471
+    k9:hareket:s005:kalan [ÇATAL → tek değer SK-4] eski {"catal": [138432, 0]} · yeni 138432
+    k9:hareket:s006:kalan [ÇATAL → tek değer SK-4] eski {"catal": [85853, 0]} · yeni 85853
+    k9:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [9, 7]} · yeni 9
+    k9:projeksiyon:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "date": "2026-04-22", "direction": "out"}, "yok"]} · yeni {"amount": 138432, "date": "2026-04-22", "direction": "out"}
+    k9:projeksiyon:hareket:s006 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 85853, "date": "2026-04-21", "direction": "out"}, "yok"]} · yeni {"amount": 85853, "date": "2026-04-21", "direction": "out"}
+    k9:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [7, 5]} · yeni 7
+    k9:takvim:fatura:A2 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 36471, "direction": "out"}, {"amount": 260756, "direction": "out"}]} · yeni {"amount": 36471, "direction": "out"}
+    k9:takvim:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "dueDate": "2026-04-22", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -69, "cari": "S",  · yeni {"amount": 138432, "dueDate": "2026-04-22", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -69, "cari": "S", "person": "
+    k9:takvim:hareket:s006 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 85853, "dueDate": "2026-04-21", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -70, "cari": "S", "person": "Ras · yeni {"amount": 85853, "dueDate": "2026-04-21", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -70, "cari": "S", "person": "Rastgele Sigma
+    k9:vadeTakip:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "date": "2026-04-22", "direction": "out"}, "yok"]} · yeni {"amount": 138432, "date": "2026-04-22", "direction": "out"}
+    k9:vadeTakip:hareket:s006 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 85853, "date": "2026-04-21", "direction": "out"}, "yok"]} · yeni {"amount": 85853, "date": "2026-04-21", "direction": "out"}
+    kson:fatura:A3:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 13022]} · yeni 0
+    kson:fatura:A4:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 50000]} · yeni 0
+    kson:fatura:A5:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 30000]} · yeni 0
+    kson:fatura:A6:acik [ÇATAL → tek değer SK-4] eski {"catal": [194590, 240000]} · yeni 194590
+    kson:hareket:s005:kalan [ÇATAL → tek değer SK-4] eski {"catal": [138432, 0]} · yeni 138432
+    kson:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [8, 7]} · yeni 8
+    kson:projeksiyon:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "date": "2026-04-22", "direction": "out"}, "yok"]} · yeni {"amount": 138432, "date": "2026-04-22", "direction": "out"}
+    kson:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [6, 5]} · yeni 6
+    kson:takvim:fatura:A3 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 13022, "direction": "out"}]} · yeni "yok"
+    kson:takvim:fatura:A4 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 50000, "direction": "out"}]} · yeni "yok"
+    kson:takvim:fatura:A5 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 30000, "direction": "out"}]} · yeni "yok"
+    kson:takvim:fatura:A6 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 194590, "direction": "out"}, {"amount": 240000, "direction": "out"}]} · yeni {"amount": 194590, "direction": "out"}
+    kson:takvim:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "dueDate": "2026-04-22", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -69, "cari": "S",  · yeni {"amount": 138432, "dueDate": "2026-04-22", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -69, "cari": "S", "person": "
+    kson:takvim:hareket:s012 [ÇATAL → tek değer C14.2] eski {"catal": [{"amount": 196795, "dueDate": "2026-07-03", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 3, "cari":  · yeni {"amount": 196795, "dueDate": "2026-07-03", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -9, "cari": "D", "perso
+    kson:vadeTakip:hareket:s005 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 138432, "date": "2026-04-22", "direction": "out"}, "yok"]} · yeni {"amount": 138432, "date": "2026-04-22", "direction": "out"}
+  rastgele-s1-4: 115
+    k10:hareket:s017:kalan [ÇATAL → tek değer SK-4] eski {"catal": [164065, 0]} · yeni 164065
+    k10:hareket:s021:kalan [ÇATAL → tek değer SK-4] eski {"catal": [69810, 0]} · yeni 69810
+    k10:hareket:s040:kalan [ÇATAL → tek değer SK-4] eski {"catal": [94034, 327909]} · yeni 94034
+    k10:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [5, 4]} · yeni 5
+    k10:projeksiyon:hareket:s017 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 164065, "date": "2026-05-10", "direction": "out"}, "yok"]} · yeni {"amount": 164065, "date": "2026-05-10", "direction": "out"}
+    k10:projeksiyon:hareket:s040 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 94034, "date": "2026-04-29", "direction": "out"}, {"amount": 327909, "date": "2026-04-29", "direction": "out"}]} · yeni {"amount": 94034, "date": "2026-04-29", "direction": "out"}
+    k10:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [5, 4]} · yeni 5
+    k10:takvim:hareket:s017 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 164065, "dueDate": "2026-05-10", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -51, "cari": "S",  · yeni {"amount": 164065, "dueDate": "2026-05-10", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -51, "cari": "S", "person": "
+    k10:takvim:hareket:s040 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 94034, "dueDate": "2026-04-29", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -62, "cari": "S", " · yeni {"amount": 94034, "dueDate": "2026-04-29", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -62, "cari": "S", "person": "R
+    k10:vadeTakip:hareket:s017 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 164065, "date": "2026-05-10", "direction": "out"}, "yok"]} · yeni {"amount": 164065, "date": "2026-05-10", "direction": "out"}
+    k10:vadeTakip:hareket:s040 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 94034, "date": "2026-04-29", "direction": "out"}, {"amount": 327909, "date": "2026-04-29", "direction": "out"}]} · yeni {"amount": 94034, "date": "2026-04-29", "direction": "out"}
+    k11:hareket:s017:kalan [ÇATAL → tek değer SK-4] eski {"catal": [33875, 0]} · yeni 33875
+    k11:hareket:s021:kalan [ÇATAL → tek değer SK-4] eski {"catal": [130000, 0]} · yeni 130000
+    k11:hareket:s026:kalan [ÇATAL → tek değer SK-4] eski {"catal": [70000, 0]} · yeni 70000
+    k11:hareket:s040:kalan [ÇATAL → tek değer SK-4] eski {"catal": [94034, 327909]} · yeni 94034
+    k11:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [6, 4]} · yeni 6
+    k11:projeksiyon:hareket:s017 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 33875, "date": "2026-05-10", "direction": "out"}, "yok"]} · yeni {"amount": 33875, "date": "2026-05-10", "direction": "out"}
+    k11:projeksiyon:hareket:s026 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 70000, "date": "2026-06-12", "direction": "out"}, "yok"]} · yeni {"amount": 70000, "date": "2026-06-12", "direction": "out"}
+    k11:projeksiyon:hareket:s040 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 94034, "date": "2026-04-29", "direction": "out"}, {"amount": 327909, "date": "2026-04-29", "direction": "out"}]} · yeni {"amount": 94034, "date": "2026-04-29", "direction": "out"}
+    k11:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [6, 4]} · yeni 6
+    k11:takvim:hareket:s017 [ÇATAL değişti SK-4] eski {"catal": [{"amount": 33875, "dueDate": "2026-05-10", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -51, "cari": "S", " · yeni {"catal": [{"amount": 33875, "dueDate": "2026-05-10", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -51, "cari": "S", "
+    k11:takvim:hareket:s026 [ÇATAL değişti SK-4] eski {"catal": [{"amount": 70000, "dueDate": "2026-06-12", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -18, "cari": "S", " · yeni {"catal": [{"amount": 70000, "dueDate": "2026-06-12", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -18, "cari": "S", "
+    k11:takvim:hareket:s040 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 94034, "dueDate": "2026-04-29", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -62, "cari": "S", " · yeni {"amount": 94034, "dueDate": "2026-04-29", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -62, "cari": "S", "person": "R
+    k11:vadeTakip:hareket:s017 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 33875, "date": "2026-05-10", "direction": "out"}, "yok"]} · yeni {"amount": 33875, "date": "2026-05-10", "direction": "out"}
+    k11:vadeTakip:hareket:s026 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 70000, "date": "2026-06-12", "direction": "out"}, "yok"]} · yeni {"amount": 70000, "date": "2026-06-12", "direction": "out"}
+    k11:vadeTakip:hareket:s040 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 94034, "date": "2026-04-29", "direction": "out"}, {"amount": 327909, "date": "2026-04-29", "direction": "out"}]} · yeni {"amount": 94034, "date": "2026-04-29", "direction": "out"}
+    k12:hareket:s017:kalan [ÇATAL → tek değer SK-4] eski {"catal": [68044, 0]} · yeni 68044
+    k12:hareket:s040:kalan [ÇATAL → tek değer SK-4] eski {"catal": [224314, 292358]} · yeni 224314
+    k12:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [6, 5]} · yeni 6
+    k12:projeksiyon:hareket:s017 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 68044, "date": "2026-05-10", "direction": "out"}, "yok"]} · yeni {"amount": 68044, "date": "2026-05-10", "direction": "out"}
+    k12:projeksiyon:hareket:s040 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 224314, "date": "2026-04-29", "direction": "out"}, {"amount": 292358, "date": "2026-04-29", "direction": "out"}]} · yeni {"amount": 224314, "date": "2026-04-29", "direction": "out"}
+    k12:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [5, 4]} · yeni 5
+    k12:takvim:hareket:s017 [ÇATAL değişti SK-4] eski {"catal": [{"amount": 68044, "dueDate": "2026-05-10", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -51, "cari": "S", " · yeni {"catal": [{"amount": 68044, "dueDate": "2026-05-10", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -51, "cari": "S", "
+    k12:takvim:hareket:s040 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 224314, "dueDate": "2026-04-29", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -62, "cari": "S",  · yeni {"amount": 224314, "dueDate": "2026-04-29", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -62, "cari": "S", "person": "
+    k12:vadeTakip:hareket:s017 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 68044, "date": "2026-05-10", "direction": "out"}, "yok"]} · yeni {"amount": 68044, "date": "2026-05-10", "direction": "out"}
+    k12:vadeTakip:hareket:s040 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 224314, "date": "2026-04-29", "direction": "out"}, {"amount": 292358, "date": "2026-04-29", "direction": "out"}]} · yeni {"amount": 224314, "date": "2026-04-29", "direction": "out"}
+    k1:takvim:hareket:acilis:D [tek değer → ÇATAL SK-5] eski {"amount": 304410, "dueDate": "2026-04-08", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -83, "cari": "D", "pers · yeni {"catal": [{"amount": 304410, "dueDate": "2026-04-08", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -83, "cari":
+    k2:takvim:hareket:acilis:D [tek değer → ÇATAL SK-5] eski {"amount": 304410, "dueDate": "2026-04-08", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -83, "cari": "D", "pers · yeni {"catal": [{"amount": 304410, "dueDate": "2026-04-08", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -83, "cari":
+    k3:takvim:hareket:acilis:D [tek değer → ÇATAL SK-5] eski {"amount": 304410, "dueDate": "2026-04-08", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -83, "cari": "D", "pers · yeni {"catal": [{"amount": 304410, "dueDate": "2026-04-08", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -83, "cari":
+    k3:takvim:hareket:s026 [tek değer → ÇATAL SK-5] eski {"amount": 70000, "dueDate": "2026-06-12", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -18, "cari": "S", "person": "R · yeni {"catal": [{"amount": 70000, "dueDate": "2026-06-12", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -18, "cari": "S", "
+    k4:hareket:s017:kalan [ÇATAL → tek değer SK-4] eski {"catal": [68234, 0]} · yeni 68234
+    k4:hareket:s021:kalan [ÇATAL → tek değer SK-4] eski {"catal": [69810, 68044]} · yeni 69810
+    k4:hareket:s026:kalan [ÇATAL → tek değer SK-4] eski {"catal": [0, 70000]} · yeni 0
+    k4:projeksiyon:hareket:s017 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 68234, "date": "2026-05-10", "direction": "out"}, "yok"]} · yeni {"amount": 68234, "date": "2026-05-10", "direction": "out"}
+    k4:projeksiyon:hareket:s026 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 70000, "date": "2026-06-12", "direction": "out"}]} · yeni "yok"
+    k4:takvim:hareket:acilis:D [tek değer → ÇATAL SK-5] eski {"amount": 304410, "dueDate": "2026-04-08", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -83, "cari": "D", "pers · yeni {"catal": [{"amount": 304410, "dueDate": "2026-04-08", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -83, "cari":
+    k4:takvim:hareket:s017 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 68234, "dueDate": "2026-05-10", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -51, "cari": "S", " · yeni {"amount": 68234, "dueDate": "2026-05-10", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -51, "cari": "S", "person": "R
+    k4:takvim:hareket:s026 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 70000, "dueDate": "2026-06-12", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -18, "cari": · yeni "yok"
+    k4:takvim:hareket:s033 [ÇATAL → tek değer C14.2] eski {"catal": [{"amount": 23822, "dueDate": "2026-07-02", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 2, "cari": " · yeni {"amount": 23822, "dueDate": "2026-07-02", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -75, "cari": "E", "perso
+    k4:vadeTakip:hareket:s017 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 68234, "date": "2026-05-10", "direction": "out"}, "yok"]} · yeni {"amount": 68234, "date": "2026-05-10", "direction": "out"}
+    k4:vadeTakip:hareket:s026 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 70000, "date": "2026-06-12", "direction": "out"}]} · yeni "yok"
+    k5:hareket:s017:kalan [ÇATAL → tek değer SK-4] eski {"catal": [68234, 0]} · yeni 68234
+    k5:hareket:s021:kalan [ÇATAL → tek değer SK-4] eski {"catal": [69810, 68044]} · yeni 69810
+    k5:hareket:s026:kalan [ÇATAL → tek değer SK-4] eski {"catal": [0, 70000]} · yeni 0
+    k5:projeksiyon:hareket:s017 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 68234, "date": "2026-05-10", "direction": "out"}, "yok"]} · yeni {"amount": 68234, "date": "2026-05-10", "direction": "out"}
+    k5:projeksiyon:hareket:s026 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 70000, "date": "2026-06-12", "direction": "out"}]} · yeni "yok"
+    k5:takvim:hareket:acilis:D [tek değer → ÇATAL SK-5] eski {"amount": 279482, "dueDate": "2026-04-08", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -83, "cari": "D", "pers · yeni {"catal": [{"amount": 279482, "dueDate": "2026-04-08", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -83, "cari":
+    k5:takvim:hareket:s017 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 68234, "dueDate": "2026-05-10", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -51, "cari": "S", " · yeni {"amount": 68234, "dueDate": "2026-05-10", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -51, "cari": "S", "person": "R
+    k5:takvim:hareket:s026 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 70000, "dueDate": "2026-06-12", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -18, "cari": · yeni "yok"
+    k5:vadeTakip:hareket:s017 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 68234, "date": "2026-05-10", "direction": "out"}, "yok"]} · yeni {"amount": 68234, "date": "2026-05-10", "direction": "out"}
+    k5:vadeTakip:hareket:s026 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 70000, "date": "2026-06-12", "direction": "out"}]} · yeni "yok"
+    k6:hareket:s017:kalan [ÇATAL → tek değer SK-4] eski {"catal": [68234, 0]} · yeni 68234
+    k6:hareket:s021:kalan [ÇATAL → tek değer SK-4] eski {"catal": [69810, 68044]} · yeni 69810
+    k6:hareket:s026:kalan [ÇATAL → tek değer SK-4] eski {"catal": [0, 70000]} · yeni 0
+    k6:projeksiyon:hareket:s017 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 68234, "date": "2026-05-10", "direction": "out"}, "yok"]} · yeni {"amount": 68234, "date": "2026-05-10", "direction": "out"}
+    k6:projeksiyon:hareket:s026 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 70000, "date": "2026-06-12", "direction": "out"}]} · yeni "yok"
+    k6:takvim:hareket:s017 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 68234, "dueDate": "2026-05-10", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -51, "cari": "S", " · yeni {"amount": 68234, "dueDate": "2026-05-10", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -51, "cari": "S", "person": "R
+    k6:takvim:hareket:s026 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 70000, "dueDate": "2026-06-12", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -18, "cari": · yeni "yok"
+    k6:vadeTakip:hareket:s017 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 68234, "date": "2026-05-10", "direction": "out"}, "yok"]} · yeni {"amount": 68234, "date": "2026-05-10", "direction": "out"}
+    k6:vadeTakip:hareket:s026 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 70000, "date": "2026-06-12", "direction": "out"}]} · yeni "yok"
+    k7:hareket:s017:kalan [ÇATAL → tek değer SK-4] eski {"catal": [68234, 0]} · yeni 68234
+    k7:hareket:s021:kalan [ÇATAL → tek değer SK-4] eski {"catal": [69810, 0]} · yeni 69810
+    k7:hareket:s026:kalan [ÇATAL → tek değer SK-4] eski {"catal": [0, 7764]} · yeni 0
+    k7:hareket:s040:kalan [ÇATAL → tek değer SK-4] eski {"catal": [359720, 490000]} · yeni 359720
+    k7:projeksiyon:hareket:s017 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 68234, "date": "2026-05-10", "direction": "out"}, "yok"]} · yeni {"amount": 68234, "date": "2026-05-10", "direction": "out"}
+    k7:projeksiyon:hareket:s026 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 7764, "date": "2026-06-12", "direction": "out"}]} · yeni "yok"
+    k7:projeksiyon:hareket:s040 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 359720, "date": "2026-04-29", "direction": "out"}, {"amount": 490000, "date": "2026-04-29", "direction": "out"}]} · yeni {"amount": 359720, "date": "2026-04-29", "direction": "out"}
+    k7:takvim:hareket:s017 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 68234, "dueDate": "2026-05-10", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -51, "cari": "S", " · yeni {"amount": 68234, "dueDate": "2026-05-10", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -51, "cari": "S", "person": "R
+    k7:takvim:hareket:s026 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 7764, "dueDate": "2026-06-12", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -18, "cari":  · yeni "yok"
+    k7:takvim:hareket:s040 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 359720, "dueDate": "2026-04-29", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -62, "cari": "S",  · yeni {"amount": 359720, "dueDate": "2026-04-29", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -62, "cari": "S", "person": "
+    k7:vadeTakip:hareket:s017 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 68234, "date": "2026-05-10", "direction": "out"}, "yok"]} · yeni {"amount": 68234, "date": "2026-05-10", "direction": "out"}
+    k7:vadeTakip:hareket:s026 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 7764, "date": "2026-06-12", "direction": "out"}]} · yeni "yok"
+    k7:vadeTakip:hareket:s040 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 359720, "date": "2026-04-29", "direction": "out"}, {"amount": 490000, "date": "2026-04-29", "direction": "out"}]} · yeni {"amount": 359720, "date": "2026-04-29", "direction": "out"}
+    k8:hareket:s017:kalan [ÇATAL → tek değer SK-4] eski {"catal": [68234, 0]} · yeni 68234
+    k8:hareket:s021:kalan [ÇATAL → tek değer SK-4] eski {"catal": [69810, 0]} · yeni 69810
+    k8:hareket:s040:kalan [ÇATAL → tek değer SK-4] eski {"catal": [262465, 400509]} · yeni 262465
+    k8:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [5, 4]} · yeni 5
+    k8:projeksiyon:hareket:s017 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 68234, "date": "2026-05-10", "direction": "out"}, "yok"]} · yeni {"amount": 68234, "date": "2026-05-10", "direction": "out"}
+    k8:projeksiyon:hareket:s040 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 262465, "date": "2026-04-29", "direction": "out"}, {"amount": 400509, "date": "2026-04-29", "direction": "out"}]} · yeni {"amount": 262465, "date": "2026-04-29", "direction": "out"}
+    k8:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [5, 4]} · yeni 5
+    k8:takvim:hareket:s017 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 68234, "dueDate": "2026-05-10", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -51, "cari": "S", " · yeni {"amount": 68234, "dueDate": "2026-05-10", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -51, "cari": "S", "person": "R
+    k8:takvim:hareket:s040 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 262465, "dueDate": "2026-04-29", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -62, "cari": "S",  · yeni {"amount": 262465, "dueDate": "2026-04-29", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -62, "cari": "S", "person": "
+    k8:vadeTakip:hareket:s017 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 68234, "date": "2026-05-10", "direction": "out"}, "yok"]} · yeni {"amount": 68234, "date": "2026-05-10", "direction": "out"}
+    k8:vadeTakip:hareket:s040 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 262465, "date": "2026-04-29", "direction": "out"}, {"amount": 400509, "date": "2026-04-29", "direction": "out"}]} · yeni {"amount": 262465, "date": "2026-04-29", "direction": "out"}
+    k9:hareket:s017:kalan [ÇATAL → tek değer SK-4] eski {"catal": [68234, 0]} · yeni 68234
+    k9:hareket:s021:kalan [ÇATAL → tek değer SK-4] eski {"catal": [69810, 0]} · yeni 69810
+    k9:hareket:s040:kalan [ÇATAL → tek değer SK-4] eski {"catal": [262465, 400509]} · yeni 262465
+    k9:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [5, 4]} · yeni 5
+    k9:projeksiyon:hareket:s017 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 68234, "date": "2026-05-10", "direction": "out"}, "yok"]} · yeni {"amount": 68234, "date": "2026-05-10", "direction": "out"}
+    k9:projeksiyon:hareket:s040 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 262465, "date": "2026-04-29", "direction": "out"}, {"amount": 400509, "date": "2026-04-29", "direction": "out"}]} · yeni {"amount": 262465, "date": "2026-04-29", "direction": "out"}
+    k9:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [5, 4]} · yeni 5
+    k9:takvim:hareket:s017 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 68234, "dueDate": "2026-05-10", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -51, "cari": "S", " · yeni {"amount": 68234, "dueDate": "2026-05-10", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -51, "cari": "S", "person": "R
+    k9:takvim:hareket:s040 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 262465, "dueDate": "2026-04-29", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -62, "cari": "S",  · yeni {"amount": 262465, "dueDate": "2026-04-29", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -62, "cari": "S", "person": "
+    k9:vadeTakip:hareket:s017 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 68234, "date": "2026-05-10", "direction": "out"}, "yok"]} · yeni {"amount": 68234, "date": "2026-05-10", "direction": "out"}
+    k9:vadeTakip:hareket:s040 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 262465, "date": "2026-04-29", "direction": "out"}, {"amount": 400509, "date": "2026-04-29", "direction": "out"}]} · yeni {"amount": 262465, "date": "2026-04-29", "direction": "out"}
+    kson:hareket:s017:kalan [ÇATAL → tek değer SK-4] eski {"catal": [68044, 0]} · yeni 68044
+    kson:hareket:s040:kalan [ÇATAL → tek değer SK-4] eski {"catal": [224314, 292358]} · yeni 224314
+    kson:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [6, 5]} · yeni 6
+    kson:projeksiyon:hareket:s017 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 68044, "date": "2026-05-10", "direction": "out"}, "yok"]} · yeni {"amount": 68044, "date": "2026-05-10", "direction": "out"}
+    kson:projeksiyon:hareket:s040 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 224314, "date": "2026-04-29", "direction": "out"}, {"amount": 292358, "date": "2026-04-29", "direction": "out"}]} · yeni {"amount": 224314, "date": "2026-04-29", "direction": "out"}
+    kson:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [5, 4]} · yeni 5
+    kson:takvim:hareket:s017 [ÇATAL değişti SK-4] eski {"catal": [{"amount": 68044, "dueDate": "2026-05-10", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -51, "cari": "S", " · yeni {"catal": [{"amount": 68044, "dueDate": "2026-05-10", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -51, "cari": "S", "
+    kson:takvim:hareket:s040 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 224314, "dueDate": "2026-04-29", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -62, "cari": "S",  · yeni {"amount": 224314, "dueDate": "2026-04-29", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -62, "cari": "S", "person": "
+    kson:vadeTakip:hareket:s017 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 68044, "date": "2026-05-10", "direction": "out"}, "yok"]} · yeni {"amount": 68044, "date": "2026-05-10", "direction": "out"}
+    kson:vadeTakip:hareket:s040 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 224314, "date": "2026-04-29", "direction": "out"}, {"amount": 292358, "date": "2026-04-29", "direction": "out"}]} · yeni {"amount": 224314, "date": "2026-04-29", "direction": "out"}
+  rastgele-s1-5: 35
+    k10:hareket:s018:kalan [ÇATAL → tek değer SK-4] eski {"catal": [162260, 72260]} · yeni 162260
+    k10:hareket:s020:kalan [ÇATAL → tek değer SK-4] eski {"catal": [0, 90000]} · yeni 0
+    k10:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [5, 6]} · yeni 5
+    k10:projeksiyon:hareket:s018 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 162260, "date": "2026-05-03", "direction": "out"}, {"amount": 72260, "date": "2026-05-03", "direction": "out"}]} · yeni {"amount": 162260, "date": "2026-05-03", "direction": "out"}
+    k10:projeksiyon:hareket:s020 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 90000, "date": "2026-03-31", "direction": "out"}]} · yeni "yok"
+    k10:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [3, 4]} · yeni 3
+    k10:takvim:hareket:s018 [ÇATAL değişti SK-4] eski {"catal": [{"amount": 162260, "dueDate": "2026-05-03", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -58, "cari": "S",  · yeni {"catal": [{"amount": 162260, "dueDate": "2026-05-03", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -58, "cari": "S", 
+    k10:takvim:hareket:s020 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 90000, "dueDate": "2026-03-31", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -91, "cari": "S", "person · yeni "yok"
+    k10:vadeTakip:hareket:s018 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 162260, "date": "2026-05-03", "direction": "out"}, {"amount": 72260, "date": "2026-05-03", "direction": "out"}]} · yeni {"amount": 162260, "date": "2026-05-03", "direction": "out"}
+    k10:vadeTakip:hareket:s020 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 90000, "date": "2026-03-31", "direction": "out"}]} · yeni "yok"
+    k2:takvim:hareket:s018 [tek değer → ÇATAL SK-5] eski {"amount": 450000, "dueDate": "2026-05-03", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -58, "cari": "S", "person": " · yeni {"catal": [{"amount": 450000, "dueDate": "2026-05-03", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -58, "cari": "S", 
+    k3:takvim:hareket:s018 [tek değer → ÇATAL SK-5] eski {"amount": 450000, "dueDate": "2026-05-03", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -58, "cari": "S", "person": " · yeni {"catal": [{"amount": 450000, "dueDate": "2026-05-03", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -58, "cari": "S", 
+    k6:hareket:s009:kalan [ÇATAL → tek değer SK-4] eski {"catal": [360000, 283389]} · yeni 360000
+    k6:hareket:s020:kalan [ÇATAL → tek değer SK-4] eski {"catal": [13389, 90000]} · yeni 13389
+    k6:projeksiyon:hareket:s009 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 360000, "date": "2026-07-17", "direction": "out"}, {"amount": 283389, "date": "2026-07-17", "direction": "out"}]} · yeni {"amount": 360000, "date": "2026-07-17", "direction": "out"}
+    k6:projeksiyon:hareket:s020 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 13389, "date": "2026-03-31", "direction": "out"}, {"amount": 90000, "date": "2026-03-31", "direction": "out"}]} · yeni {"amount": 13389, "date": "2026-03-31", "direction": "out"}
+    k6:takvim:hareket:s020 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 13389, "dueDate": "2026-03-31", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -91, "cari": "S", "person": "Ras · yeni {"amount": 13389, "dueDate": "2026-03-31", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -91, "cari": "S", "person": "Rastgele Sigma
+    k6:vadeTakip:hareket:s020 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 13389, "date": "2026-03-31", "direction": "out"}, {"amount": 90000, "date": "2026-03-31", "direction": "out"}]} · yeni {"amount": 13389, "date": "2026-03-31", "direction": "out"}
+    k7:fatura:A1:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 303044]} · yeni 0
+    k7:fatura:A2:acik [ÇATAL → tek değer SK-4] eski {"catal": [333044, 390000]} · yeni 333044
+    k7:hareket:s009:kalan [ÇATAL → tek değer SK-4] eski {"catal": [360000, 0]} · yeni 360000
+    k7:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [3, 2]} · yeni 3
+    k7:projeksiyon:hareket:s009 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 360000, "date": "2026-07-17", "direction": "out"}, "yok"]} · yeni {"amount": 360000, "date": "2026-07-17", "direction": "out"}
+    k7:takvim:fatura:A1 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 303044, "direction": "out"}]} · yeni "yok"
+    k7:takvim:fatura:A2 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 333044, "direction": "out"}, {"amount": 390000, "direction": "out"}]} · yeni {"amount": 333044, "direction": "out"}
+    k9:hareket:s018:kalan [ÇATAL → tek değer SK-4] eski {"catal": [192946, 102946]} · yeni 192946
+    k9:hareket:s020:kalan [ÇATAL → tek değer SK-4] eski {"catal": [0, 90000]} · yeni 0
+    k9:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [6, 7]} · yeni 6
+    k9:projeksiyon:hareket:s018 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 192946, "date": "2026-05-03", "direction": "out"}, {"amount": 102946, "date": "2026-05-03", "direction": "out"}]} · yeni {"amount": 192946, "date": "2026-05-03", "direction": "out"}
+    k9:projeksiyon:hareket:s020 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 90000, "date": "2026-03-31", "direction": "out"}]} · yeni "yok"
+    k9:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [3, 4]} · yeni 3
+    k9:takvim:hareket:s018 [ÇATAL değişti SK-4] eski {"catal": [{"amount": 192946, "dueDate": "2026-05-03", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -58, "cari": "S",  · yeni {"catal": [{"amount": 192946, "dueDate": "2026-05-03", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -58, "cari": "S", 
+    k9:takvim:hareket:s020 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 90000, "dueDate": "2026-03-31", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -91, "cari": "S", "person · yeni "yok"
+    k9:vadeTakip:hareket:s018 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 192946, "date": "2026-05-03", "direction": "out"}, {"amount": 102946, "date": "2026-05-03", "direction": "out"}]} · yeni {"amount": 192946, "date": "2026-05-03", "direction": "out"}
+    k9:vadeTakip:hareket:s020 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 90000, "date": "2026-03-31", "direction": "out"}]} · yeni "yok"
+  rastgele-s1-6: 28
+    k10:fatura:A5:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 60000]} · yeni 0
+    k10:hareket:s082:kalan [ÇATAL → tek değer SK-4] eski {"catal": [306485, 246485]} · yeni 306485
+    k10:takvim:fatura:A5 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 60000, "direction": "out"}]} · yeni "yok"
+    k11:fatura:A5:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 22066]} · yeni 0
+    k11:hareket:s082:kalan [ÇATAL → tek değer SK-4] eski {"catal": [158400, 136334]} · yeni 158400
+    k11:takvim:fatura:A5 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 22066, "direction": "out"}]} · yeni "yok"
+    k12:fatura:A6:acik [ÇATAL → tek değer SK-4] eski {"catal": [147631, 382447]} · yeni 147631
+    k12:hareket:s082:kalan [ÇATAL → tek değer SK-4] eski {"catal": [158400, 0]} · yeni 158400
+    k12:hareket:s097:kalan [ÇATAL → tek değer SK-4] eski {"catal": [76416, 0]} · yeni 76416
+    k12:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [3, 2]} · yeni 3
+    k12:projeksiyon:hareket:s097 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 76416, "date": "2026-07-27", "direction": "out"}, "yok"]} · yeni {"amount": 76416, "date": "2026-07-27", "direction": "out"}
+    k12:takvim:fatura:A6 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 147631, "direction": "out"}, {"amount": 382447, "direction": "out"}]} · yeni {"amount": 147631, "direction": "out"}
+    k1:takvim:hareket:acilis:D [tek değer → ÇATAL SK-5] eski {"amount": 197495, "dueDate": "2026-05-11", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -50, "cari": "D", "pers · yeni {"catal": [{"amount": 197495, "dueDate": "2026-05-11", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -50, "cari":
+    k2:takvim:hareket:acilis:D [tek değer → ÇATAL SK-5] eski {"amount": 53216, "dueDate": "2026-05-11", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -50, "cari": "D", "perso · yeni {"catal": [{"amount": 53216, "dueDate": "2026-05-11", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -50, "cari": 
+    k5:fatura:A2:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 32487]} · yeni 0
+    k5:hareket:s032:kalan [ÇATAL → tek değer SK-4] eski {"catal": [56792, 24305]} · yeni 56792
+    k5:projeksiyon:hareket:s032 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 56792, "date": "2026-06-13", "direction": "out"}, {"amount": 24305, "date": "2026-06-13", "direction": "out"}]} · yeni {"amount": 56792, "date": "2026-06-13", "direction": "out"}
+    k5:takvim:fatura:A2 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 32487, "direction": "out"}]} · yeni "yok"
+    k5:takvim:hareket:s032 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 56792, "dueDate": "2026-06-13", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -17, "cari": "S", " · yeni {"amount": 56792, "dueDate": "2026-06-13", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -17, "cari": "S", "person": "R
+    k5:takvim:hareket:s038 [tek değer → ÇATAL SK-5] eski {"amount": 67747, "dueDate": "2026-04-22", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -69, "cari": "E", "perso · yeni {"catal": [{"amount": 67747, "dueDate": "2026-04-22", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -69, "cari": 
+    k5:vadeTakip:hareket:s032 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 56792, "date": "2026-06-13", "direction": "out"}, {"amount": 24305, "date": "2026-06-13", "direction": "out"}]} · yeni {"amount": 56792, "date": "2026-06-13", "direction": "out"}
+    k6:takvim:hareket:s038 [tek değer → ÇATAL SK-5] eski {"amount": 20406, "dueDate": "2026-04-22", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -69, "cari": "E", "perso · yeni {"catal": [{"amount": 20406, "dueDate": "2026-04-22", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -69, "cari": 
+    kson:fatura:A6:acik [ÇATAL → tek değer SK-4] eski {"catal": [147631, 382447]} · yeni 147631
+    kson:hareket:s082:kalan [ÇATAL → tek değer SK-4] eski {"catal": [158400, 0]} · yeni 158400
+    kson:hareket:s097:kalan [ÇATAL → tek değer SK-4] eski {"catal": [76416, 0]} · yeni 76416
+    kson:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [3, 2]} · yeni 3
+    kson:projeksiyon:hareket:s097 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 76416, "date": "2026-07-27", "direction": "out"}, "yok"]} · yeni {"amount": 76416, "date": "2026-07-27", "direction": "out"}
+    kson:takvim:fatura:A6 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 147631, "direction": "out"}, {"amount": 382447, "direction": "out"}]} · yeni {"amount": 147631, "direction": "out"}
+  rastgele-s1-7: 108
+    k10:fatura:A2:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 119288]} · yeni 0
+    k10:fatura:A3:acik [ÇATAL → tek değer SK-4] eski {"catal": [188009, 243873]} · yeni 188009
+    k10:hareket:acilis:S:kalan [ÇATAL → tek değer SK-4] eski {"catal": [175152, 0]} · yeni 175152
+    k10:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [8, 7]} · yeni 8
+    k10:projeksiyon:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "date": "2026-06-17", "direction": "out"}, "yok"]} · yeni {"amount": 175152, "date": "2026-06-17", "direction": "out"}
+    k10:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [7, 6]} · yeni 7
+    k10:takvim:fatura:A2 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 119288, "direction": "out"}]} · yeni "yok"
+    k10:takvim:fatura:A3 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 188009, "direction": "out"}, {"amount": 243873, "direction": "out"}]} · yeni {"amount": 188009, "direction": "out"}
+    k10:takvim:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "dueDate": "2026-06-17", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -13, "cari": "S", "person": "Ra · yeni {"amount": 175152, "dueDate": "2026-06-17", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -13, "cari": "S", "person": "Rastgele Sigm
+    k10:vadeTakip:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "date": "2026-06-17", "direction": "out"}, "yok"]} · yeni {"amount": 175152, "date": "2026-06-17", "direction": "out"}
+    k11:fatura:A2:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 11487]} · yeni 0
+    k11:fatura:A3:acik [ÇATAL → tek değer SK-4] eski {"catal": [80208, 243873]} · yeni 80208
+    k11:hareket:acilis:S:kalan [ÇATAL → tek değer SK-4] eski {"catal": [175152, 0]} · yeni 175152
+    k11:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [8, 7]} · yeni 8
+    k11:projeksiyon:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "date": "2026-06-17", "direction": "out"}, "yok"]} · yeni {"amount": 175152, "date": "2026-06-17", "direction": "out"}
+    k11:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [7, 6]} · yeni 7
+    k11:takvim:fatura:A2 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 11487, "direction": "out"}]} · yeni "yok"
+    k11:takvim:fatura:A3 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 80208, "direction": "out"}, {"amount": 243873, "direction": "out"}]} · yeni {"amount": 80208, "direction": "out"}
+    k11:takvim:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "dueDate": "2026-06-17", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -13, "cari": "S", "person": "Ra · yeni {"amount": 175152, "dueDate": "2026-06-17", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -13, "cari": "S", "person": "Rastgele Sigm
+    k11:vadeTakip:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "date": "2026-06-17", "direction": "out"}, "yok"]} · yeni {"amount": 175152, "date": "2026-06-17", "direction": "out"}
+    k12:fatura:A3:acik [ÇATAL → tek değer SK-4] eski {"catal": [9538, 184690]} · yeni 9538
+    k12:hareket:acilis:S:kalan [ÇATAL → tek değer SK-4] eski {"catal": [175152, 0]} · yeni 175152
+    k12:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [8, 7]} · yeni 8
+    k12:projeksiyon:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "date": "2026-06-17", "direction": "out"}, "yok"]} · yeni {"amount": 175152, "date": "2026-06-17", "direction": "out"}
+    k12:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [7, 6]} · yeni 7
+    k12:takvim:fatura:A3 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 9538, "direction": "out"}, {"amount": 184690, "direction": "out"}]} · yeni {"amount": 9538, "direction": "out"}
+    k12:takvim:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "dueDate": "2026-06-17", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -13, "cari": "S", "person": "Ra · yeni {"amount": 175152, "dueDate": "2026-06-17", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -13, "cari": "S", "person": "Rastgele Sigm
+    k12:vadeTakip:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "date": "2026-06-17", "direction": "out"}, "yok"]} · yeni {"amount": 175152, "date": "2026-06-17", "direction": "out"}
+    k1:fatura:A1:acik [ÇATAL → tek değer SK-4] eski {"catal": [268105, 410000]} · yeni 268105
+    k1:hareket:acilis:S:kalan [ÇATAL → tek değer SK-4] eski {"catal": [175152, 33257]} · yeni 175152
+    k1:projeksiyon:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "date": "2026-06-17", "direction": "out"}, {"amount": 33257, "date": "2026-06-17", "direction": "out"}]} · yeni {"amount": 175152, "date": "2026-06-17", "direction": "out"}
+    k1:takvim:fatura:A1 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 268105, "direction": "out"}, {"amount": 410000, "direction": "out"}]} · yeni {"amount": 268105, "direction": "out"}
+    k1:takvim:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "dueDate": "2026-06-17", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -13, "cari": "S", "person": "Ra · yeni {"amount": 175152, "dueDate": "2026-06-17", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -13, "cari": "S", "person": "Rastgele Sigm
+    k1:vadeTakip:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "date": "2026-06-17", "direction": "out"}, {"amount": 33257, "date": "2026-06-17", "direction": "out"}]} · yeni {"amount": 175152, "date": "2026-06-17", "direction": "out"}
+    k2:fatura:A1:acik [ÇATAL → tek değer SK-4] eski {"catal": [268105, 410000]} · yeni 268105
+    k2:hareket:acilis:S:kalan [ÇATAL → tek değer SK-4] eski {"catal": [175152, 33257]} · yeni 175152
+    k2:projeksiyon:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "date": "2026-06-17", "direction": "out"}, {"amount": 33257, "date": "2026-06-17", "direction": "out"}]} · yeni {"amount": 175152, "date": "2026-06-17", "direction": "out"}
+    k2:takvim:fatura:A1 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 268105, "direction": "out"}, {"amount": 410000, "direction": "out"}]} · yeni {"amount": 268105, "direction": "out"}
+    k2:takvim:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "dueDate": "2026-06-17", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -13, "cari": "S", "person": "Ra · yeni {"amount": 175152, "dueDate": "2026-06-17", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -13, "cari": "S", "person": "Rastgele Sigm
+    k2:vadeTakip:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "date": "2026-06-17", "direction": "out"}, {"amount": 33257, "date": "2026-06-17", "direction": "out"}]} · yeni {"amount": 175152, "date": "2026-06-17", "direction": "out"}
+    k3:fatura:A1:acik [ÇATAL → tek değer SK-4] eski {"catal": [268105, 410000]} · yeni 268105
+    k3:hareket:acilis:S:kalan [ÇATAL → tek değer SK-4] eski {"catal": [175152, 33257]} · yeni 175152
+    k3:projeksiyon:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "date": "2026-06-17", "direction": "out"}, {"amount": 33257, "date": "2026-06-17", "direction": "out"}]} · yeni {"amount": 175152, "date": "2026-06-17", "direction": "out"}
+    k3:takvim:fatura:A1 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 268105, "direction": "out"}, {"amount": 410000, "direction": "out"}]} · yeni {"amount": 268105, "direction": "out"}
+    k3:takvim:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "dueDate": "2026-06-17", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -13, "cari": "S", "person": "Ra · yeni {"amount": 175152, "dueDate": "2026-06-17", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -13, "cari": "S", "person": "Rastgele Sigm
+    k3:vadeTakip:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "date": "2026-06-17", "direction": "out"}, {"amount": 33257, "date": "2026-06-17", "direction": "out"}]} · yeni {"amount": 175152, "date": "2026-06-17", "direction": "out"}
+    k4:fatura:A1:acik [ÇATAL → tek değer SK-4] eski {"catal": [268105, 410000]} · yeni 268105
+    k4:hareket:acilis:S:kalan [ÇATAL → tek değer SK-4] eski {"catal": [175152, 33257]} · yeni 175152
+    k4:projeksiyon:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "date": "2026-06-17", "direction": "out"}, {"amount": 33257, "date": "2026-06-17", "direction": "out"}]} · yeni {"amount": 175152, "date": "2026-06-17", "direction": "out"}
+    k4:takvim:fatura:A1 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 268105, "direction": "out"}, {"amount": 410000, "direction": "out"}]} · yeni {"amount": 268105, "direction": "out"}
+    k4:takvim:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "dueDate": "2026-06-17", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -13, "cari": "S", "person": "Ra · yeni {"amount": 175152, "dueDate": "2026-06-17", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -13, "cari": "S", "person": "Rastgele Sigm
+    k4:vadeTakip:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "date": "2026-06-17", "direction": "out"}, {"amount": 33257, "date": "2026-06-17", "direction": "out"}]} · yeni {"amount": 175152, "date": "2026-06-17", "direction": "out"}
+    k5:fatura:A1:acik [ÇATAL → tek değer SK-4] eski {"catal": [153532, 328684]} · yeni 153532
+    k5:hareket:acilis:S:kalan [ÇATAL → tek değer SK-4] eski {"catal": [175152, 0]} · yeni 175152
+    k5:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [10, 9]} · yeni 10
+    k5:projeksiyon:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "date": "2026-06-17", "direction": "out"}, "yok"]} · yeni {"amount": 175152, "date": "2026-06-17", "direction": "out"}
+    k5:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [9, 8]} · yeni 9
+    k5:takvim:fatura:A1 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 153532, "direction": "out"}, {"amount": 328684, "direction": "out"}]} · yeni {"amount": 153532, "direction": "out"}
+    k5:takvim:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "dueDate": "2026-06-17", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -13, "cari": "S", "person": "Ra · yeni {"amount": 175152, "dueDate": "2026-06-17", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -13, "cari": "S", "person": "Rastgele Sigm
+    k5:vadeTakip:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "date": "2026-06-17", "direction": "out"}, "yok"]} · yeni {"amount": 175152, "date": "2026-06-17", "direction": "out"}
+    k6:fatura:A1:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 162042]} · yeni 0
+    k6:fatura:A2:acik [ÇATAL → tek değer SK-4] eski {"catal": [176890, 190000]} · yeni 176890
+    k6:hareket:acilis:S:kalan [ÇATAL → tek değer SK-4] eski {"catal": [175152, 0]} · yeni 175152
+    k6:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [8, 7]} · yeni 8
+    k6:projeksiyon:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "date": "2026-06-17", "direction": "out"}, "yok"]} · yeni {"amount": 175152, "date": "2026-06-17", "direction": "out"}
+    k6:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [7, 6]} · yeni 7
+    k6:takvim:fatura:A1 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 162042, "direction": "out"}]} · yeni "yok"
+    k6:takvim:fatura:A2 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 176890, "direction": "out"}, {"amount": 190000, "direction": "out"}]} · yeni {"amount": 176890, "direction": "out"}
+    k6:takvim:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "dueDate": "2026-06-17", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -13, "cari": "S", "person": "Ra · yeni {"amount": 175152, "dueDate": "2026-06-17", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -13, "cari": "S", "person": "Rastgele Sigm
+    k6:vadeTakip:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "date": "2026-06-17", "direction": "out"}, "yok"]} · yeni {"amount": 175152, "date": "2026-06-17", "direction": "out"}
+    k7:fatura:A1:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 10136]} · yeni 0
+    k7:fatura:A2:acik [ÇATAL → tek değer SK-4] eski {"catal": [24984, 190000]} · yeni 24984
+    k7:hareket:acilis:S:kalan [ÇATAL → tek değer SK-4] eski {"catal": [175152, 0]} · yeni 175152
+    k7:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [8, 7]} · yeni 8
+    k7:projeksiyon:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "date": "2026-06-17", "direction": "out"}, "yok"]} · yeni {"amount": 175152, "date": "2026-06-17", "direction": "out"}
+    k7:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [6, 5]} · yeni 6
+    k7:takvim:fatura:A1 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 10136, "direction": "out"}]} · yeni "yok"
+    k7:takvim:fatura:A2 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 24984, "direction": "out"}, {"amount": 190000, "direction": "out"}]} · yeni {"amount": 24984, "direction": "out"}
+    k7:takvim:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "dueDate": "2026-06-17", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -13, "cari": "S", "person": "Ra · yeni {"amount": 175152, "dueDate": "2026-06-17", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -13, "cari": "S", "person": "Rastgele Sigm
+    k7:vadeTakip:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "date": "2026-06-17", "direction": "out"}, "yok"]} · yeni {"amount": 175152, "date": "2026-06-17", "direction": "out"}
+    k8:fatura:A2:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 119288]} · yeni 0
+    k8:fatura:A3:acik [ÇATAL → tek değer SK-4] eski {"catal": [188009, 243873]} · yeni 188009
+    k8:hareket:acilis:S:kalan [ÇATAL → tek değer SK-4] eski {"catal": [175152, 0]} · yeni 175152
+    k8:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [8, 7]} · yeni 8
+    k8:projeksiyon:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "date": "2026-06-17", "direction": "out"}, "yok"]} · yeni {"amount": 175152, "date": "2026-06-17", "direction": "out"}
+    k8:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [7, 6]} · yeni 7
+    k8:takvim:fatura:A2 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 119288, "direction": "out"}]} · yeni "yok"
+    k8:takvim:fatura:A3 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 188009, "direction": "out"}, {"amount": 243873, "direction": "out"}]} · yeni {"amount": 188009, "direction": "out"}
+    k8:takvim:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "dueDate": "2026-06-17", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -13, "cari": "S", "person": "Ra · yeni {"amount": 175152, "dueDate": "2026-06-17", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -13, "cari": "S", "person": "Rastgele Sigm
+    k8:vadeTakip:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "date": "2026-06-17", "direction": "out"}, "yok"]} · yeni {"amount": 175152, "date": "2026-06-17", "direction": "out"}
+    k9:fatura:A2:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 119288]} · yeni 0
+    k9:fatura:A3:acik [ÇATAL → tek değer SK-4] eski {"catal": [188009, 243873]} · yeni 188009
+    k9:hareket:acilis:S:kalan [ÇATAL → tek değer SK-4] eski {"catal": [175152, 0]} · yeni 175152
+    k9:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [8, 7]} · yeni 8
+    k9:projeksiyon:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "date": "2026-06-17", "direction": "out"}, "yok"]} · yeni {"amount": 175152, "date": "2026-06-17", "direction": "out"}
+    k9:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [7, 6]} · yeni 7
+    k9:takvim:fatura:A2 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 119288, "direction": "out"}]} · yeni "yok"
+    k9:takvim:fatura:A3 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 188009, "direction": "out"}, {"amount": 243873, "direction": "out"}]} · yeni {"amount": 188009, "direction": "out"}
+    k9:takvim:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "dueDate": "2026-06-17", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -13, "cari": "S", "person": "Ra · yeni {"amount": 175152, "dueDate": "2026-06-17", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -13, "cari": "S", "person": "Rastgele Sigm
+    k9:vadeTakip:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "date": "2026-06-17", "direction": "out"}, "yok"]} · yeni {"amount": 175152, "date": "2026-06-17", "direction": "out"}
+    kson:fatura:A3:acik [ÇATAL → tek değer SK-4] eski {"catal": [9538, 184690]} · yeni 9538
+    kson:hareket:acilis:S:kalan [ÇATAL → tek değer SK-4] eski {"catal": [175152, 0]} · yeni 175152
+    kson:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [8, 7]} · yeni 8
+    kson:projeksiyon:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "date": "2026-06-17", "direction": "out"}, "yok"]} · yeni {"amount": 175152, "date": "2026-06-17", "direction": "out"}
+    kson:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [7, 6]} · yeni 7
+    kson:takvim:fatura:A3 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 9538, "direction": "out"}, {"amount": 184690, "direction": "out"}]} · yeni {"amount": 9538, "direction": "out"}
+    kson:takvim:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "dueDate": "2026-06-17", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -13, "cari": "S", "person": "Ra · yeni {"amount": 175152, "dueDate": "2026-06-17", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -13, "cari": "S", "person": "Rastgele Sigm
+    kson:vadeTakip:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 175152, "date": "2026-06-17", "direction": "out"}, "yok"]} · yeni {"amount": 175152, "date": "2026-06-17", "direction": "out"}
+  rastgele-s1-8: 153
+    k10:fatura:A1:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 15556]} · yeni 0
+    k10:hareket:acilis:S:kalan [ÇATAL → tek değer SK-4] eski {"catal": [234342, 0]} · yeni 234342
+    k10:hareket:s011:kalan [ÇATAL → tek değer SK-4] eski {"catal": [0, 170924]} · yeni 0
+    k10:hareket:s024:kalan [ÇATAL → tek değer SK-4] eski {"catal": [0, 10000]} · yeni 0
+    k10:hareket:s030:kalan [ÇATAL → tek değer SK-4] eski {"catal": [132138, 170000]} · yeni 132138
+    k10:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [7, 8]} · yeni 7
+    k10:projeksiyon:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 234342, "date": "2026-07-02", "direction": "out"}, "yok"]} · yeni {"amount": 234342, "date": "2026-07-02", "direction": "out"}
+    k10:projeksiyon:hareket:s011 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 170924, "date": "2026-03-31", "direction": "out"}]} · yeni "yok"
+    k10:projeksiyon:hareket:s024 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 10000, "date": "2026-04-08", "direction": "out"}]} · yeni "yok"
+    k10:projeksiyon:hareket:s030 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 132138, "date": "2026-04-26", "direction": "out"}, {"amount": 170000, "date": "2026-04-26", "direction": "out"}]} · yeni {"amount": 132138, "date": "2026-04-26", "direction": "out"}
+    k10:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [6, 7]} · yeni 6
+    k10:takvim:fatura:A1 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 15556, "direction": "out"}]} · yeni "yok"
+    k10:takvim:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 234342, "dueDate": "2026-07-02", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 2, "cari": "S", " · yeni {"amount": 234342, "dueDate": "2026-07-02", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -14, "cari": "S", "person": "
+    k10:takvim:hareket:s011 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 170924, "dueDate": "2026-03-31", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -91, "cari": "S", "perso · yeni "yok"
+    k10:takvim:hareket:s024 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 10000, "dueDate": "2026-04-08", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -83, "cari": "S", "person · yeni "yok"
+    k10:takvim:hareket:s030 [ÇATAL değişti SK-4] eski {"catal": [{"amount": 132138, "dueDate": "2026-04-26", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -65, "cari": "S",  · yeni {"catal": [{"amount": 132138, "dueDate": "2026-04-26", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -65, "cari": "S", 
+    k10:vadeTakip:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 234342, "date": "2026-07-02", "direction": "out"}, "yok"]} · yeni {"amount": 234342, "date": "2026-07-02", "direction": "out"}
+    k10:vadeTakip:hareket:s011 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 170924, "date": "2026-03-31", "direction": "out"}]} · yeni "yok"
+    k10:vadeTakip:hareket:s024 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 10000, "date": "2026-04-08", "direction": "out"}]} · yeni "yok"
+    k10:vadeTakip:hareket:s030 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 132138, "date": "2026-04-26", "direction": "out"}, {"amount": 170000, "date": "2026-04-26", "direction": "out"}]} · yeni {"amount": 132138, "date": "2026-04-26", "direction": "out"}
+    k11:fatura:A1:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 15556]} · yeni 0
+    k11:hareket:acilis:S:kalan [ÇATAL → tek değer SK-4] eski {"catal": [234342, 0]} · yeni 234342
+    k11:hareket:s011:kalan [ÇATAL → tek değer SK-4] eski {"catal": [0, 88801]} · yeni 0
+    k11:hareket:s024:kalan [ÇATAL → tek değer SK-4] eski {"catal": [0, 10000]} · yeni 0
+    k11:hareket:s030:kalan [ÇATAL → tek değer SK-4] eski {"catal": [50015, 170000]} · yeni 50015
+    k11:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [6, 7]} · yeni 6
+    k11:projeksiyon:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 234342, "date": "2026-07-02", "direction": "out"}, "yok"]} · yeni {"amount": 234342, "date": "2026-07-02", "direction": "out"}
+    k11:projeksiyon:hareket:s011 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 88801, "date": "2026-03-31", "direction": "out"}]} · yeni "yok"
+    k11:projeksiyon:hareket:s024 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 10000, "date": "2026-04-08", "direction": "out"}]} · yeni "yok"
+    k11:projeksiyon:hareket:s030 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 50015, "date": "2026-04-26", "direction": "out"}, {"amount": 170000, "date": "2026-04-26", "direction": "out"}]} · yeni {"amount": 50015, "date": "2026-04-26", "direction": "out"}
+    k11:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [6, 7]} · yeni 6
+    k11:takvim:fatura:A1 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 15556, "direction": "out"}]} · yeni "yok"
+    k11:takvim:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 234342, "dueDate": "2026-07-02", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 2, "cari": "S", " · yeni {"amount": 234342, "dueDate": "2026-07-02", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -14, "cari": "S", "person": "
+    k11:takvim:hareket:s011 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 88801, "dueDate": "2026-03-31", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -91, "cari": "S", "person · yeni "yok"
+    k11:takvim:hareket:s024 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 10000, "dueDate": "2026-04-08", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -83, "cari": "S", "person · yeni "yok"
+    k11:takvim:hareket:s030 [ÇATAL değişti SK-4] eski {"catal": [{"amount": 50015, "dueDate": "2026-04-26", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -65, "cari": "S", " · yeni {"catal": [{"amount": 50015, "dueDate": "2026-04-26", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -65, "cari": "S", "
+    k11:vadeTakip:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 234342, "date": "2026-07-02", "direction": "out"}, "yok"]} · yeni {"amount": 234342, "date": "2026-07-02", "direction": "out"}
+    k11:vadeTakip:hareket:s011 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 88801, "date": "2026-03-31", "direction": "out"}]} · yeni "yok"
+    k11:vadeTakip:hareket:s024 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 10000, "date": "2026-04-08", "direction": "out"}]} · yeni "yok"
+    k11:vadeTakip:hareket:s030 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 50015, "date": "2026-04-26", "direction": "out"}, {"amount": 170000, "date": "2026-04-26", "direction": "out"}]} · yeni {"amount": 50015, "date": "2026-04-26", "direction": "out"}
+    k12:fatura:A1:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 15556]} · yeni 0
+    k12:hareket:acilis:S:kalan [ÇATAL → tek değer SK-4] eski {"catal": [234342, 0]} · yeni 234342
+    k12:hareket:s011:kalan [ÇATAL → tek değer SK-4] eski {"catal": [0, 2386]} · yeni 0
+    k12:hareket:s024:kalan [ÇATAL → tek değer SK-4] eski {"catal": [0, 10000]} · yeni 0
+    k12:hareket:s030:kalan [ÇATAL → tek değer SK-4] eski {"catal": [0, 170000]} · yeni 0
+    k12:hareket:s031:kalan [ÇATAL → tek değer SK-4] eski {"catal": [373600, 410000]} · yeni 373600
+    k12:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [5, 7]} · yeni 5
+    k12:projeksiyon:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 234342, "date": "2026-07-02", "direction": "out"}, "yok"]} · yeni {"amount": 234342, "date": "2026-07-02", "direction": "out"}
+    k12:projeksiyon:hareket:s011 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 2386, "date": "2026-03-31", "direction": "out"}]} · yeni "yok"
+    k12:projeksiyon:hareket:s024 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 10000, "date": "2026-04-08", "direction": "out"}]} · yeni "yok"
+    k12:projeksiyon:hareket:s030 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 170000, "date": "2026-04-26", "direction": "out"}]} · yeni "yok"
+    k12:projeksiyon:hareket:s031 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 373600, "date": "2026-04-26", "direction": "out"}, {"amount": 410000, "date": "2026-04-26", "direction": "out"}]} · yeni {"amount": 373600, "date": "2026-04-26", "direction": "out"}
+    k12:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [5, 7]} · yeni 5
+    k12:takvim:fatura:A1 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 15556, "direction": "out"}]} · yeni "yok"
+    k12:takvim:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 234342, "dueDate": "2026-07-02", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 2, "cari": "S", " · yeni {"amount": 234342, "dueDate": "2026-07-02", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -14, "cari": "S", "person": "
+    k12:takvim:hareket:s011 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 2386, "dueDate": "2026-03-31", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -91, "cari": "S", "person" · yeni "yok"
+    k12:takvim:hareket:s024 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 10000, "dueDate": "2026-04-08", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -83, "cari": "S", "person · yeni "yok"
+    k12:takvim:hareket:s030 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 170000, "dueDate": "2026-04-26", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -65, "cari" · yeni "yok"
+    k12:takvim:hareket:s031 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 373600, "dueDate": "2026-04-26", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -65, "cari": "S", "person": "Ra · yeni {"amount": 373600, "dueDate": "2026-04-26", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -65, "cari": "S", "person": "Rastgele Sigm
+    k12:vadeTakip:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 234342, "date": "2026-07-02", "direction": "out"}, "yok"]} · yeni {"amount": 234342, "date": "2026-07-02", "direction": "out"}
+    k12:vadeTakip:hareket:s011 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 2386, "date": "2026-03-31", "direction": "out"}]} · yeni "yok"
+    k12:vadeTakip:hareket:s024 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 10000, "date": "2026-04-08", "direction": "out"}]} · yeni "yok"
+    k12:vadeTakip:hareket:s030 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 170000, "date": "2026-04-26", "direction": "out"}]} · yeni "yok"
+    k12:vadeTakip:hareket:s031 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 373600, "date": "2026-04-26", "direction": "out"}, {"amount": 410000, "date": "2026-04-26", "direction": "out"}]} · yeni {"amount": 373600, "date": "2026-04-26", "direction": "out"}
+    k1:takvim:hareket:acilis:S [ÇATAL → tek değer C14.2] eski {"catal": [{"amount": 234342, "dueDate": "2026-07-02", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 2, "cari": "S", " · yeni {"amount": 234342, "dueDate": "2026-07-02", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -14, "cari": "S", "person": "
+    k2:takvim:hareket:acilis:S [ÇATAL → tek değer C14.2] eski {"catal": [{"amount": 234342, "dueDate": "2026-07-02", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 2, "cari": "S", " · yeni {"amount": 234342, "dueDate": "2026-07-02", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -14, "cari": "S", "person": "
+    k3:takvim:hareket:acilis:S [ÇATAL → tek değer C14.2] eski {"catal": [{"amount": 234342, "dueDate": "2026-07-02", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 2, "cari": "S", " · yeni {"amount": 234342, "dueDate": "2026-07-02", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -14, "cari": "S", "person": "
+    k4:fatura:A1:acik [ÇATAL → tek değer SK-4] eski {"catal": [15171, 99923]} · yeni 15171
+    k4:hareket:acilis:S:kalan [ÇATAL → tek değer SK-4] eski {"catal": [234342, 149590]} · yeni 234342
+    k4:projeksiyon:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 234342, "date": "2026-07-02", "direction": "out"}, {"amount": 149590, "date": "2026-07-02", "direction": "out"}]} · yeni {"amount": 234342, "date": "2026-07-02", "direction": "out"}
+    k4:takvim:fatura:A1 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 15171, "direction": "out"}, {"amount": 99923, "direction": "out"}]} · yeni {"amount": 15171, "direction": "out"}
+    k4:takvim:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 234342, "dueDate": "2026-07-02", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 2, "cari": "S", " · yeni {"amount": 234342, "dueDate": "2026-07-02", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -14, "cari": "S", "person": "
+    k4:takvim:hareket:s030 [tek değer → ÇATAL SK-5] eski {"amount": 170000, "dueDate": "2026-04-26", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -65, "cari": "S", "person": " · yeni {"catal": [{"amount": 170000, "dueDate": "2026-04-26", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -65, "cari": "S", 
+    k4:vadeTakip:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 234342, "date": "2026-07-02", "direction": "out"}, {"amount": 149590, "date": "2026-07-02", "direction": "out"}]} · yeni {"amount": 234342, "date": "2026-07-02", "direction": "out"}
+    k5:fatura:A1:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 99923]} · yeni 0
+    k5:hareket:acilis:S:kalan [ÇATAL → tek değer SK-4] eski {"catal": [234342, 133910]} · yeni 234342
+    k5:hareket:s024:kalan [ÇATAL → tek değer SK-4] eski {"catal": [9491, 10000]} · yeni 9491
+    k5:projeksiyon:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 234342, "date": "2026-07-02", "direction": "out"}, {"amount": 133910, "date": "2026-07-02", "direction": "out"}]} · yeni {"amount": 234342, "date": "2026-07-02", "direction": "out"}
+    k5:projeksiyon:hareket:s024 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 9491, "date": "2026-04-08", "direction": "out"}, {"amount": 10000, "date": "2026-04-08", "direction": "out"}]} · yeni {"amount": 9491, "date": "2026-04-08", "direction": "out"}
+    k5:takvim:fatura:A1 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 99923, "direction": "out"}]} · yeni "yok"
+    k5:takvim:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 234342, "dueDate": "2026-07-02", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 2, "cari": "S", " · yeni {"amount": 234342, "dueDate": "2026-07-02", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -14, "cari": "S", "person": "
+    k5:takvim:hareket:s024 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 9491, "dueDate": "2026-04-08", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -83, "cari": "S", "person": "Rast · yeni {"amount": 9491, "dueDate": "2026-04-08", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -83, "cari": "S", "person": "Rastgele Sigma 
+    k5:takvim:hareket:s030 [tek değer → ÇATAL SK-5] eski {"amount": 170000, "dueDate": "2026-04-26", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -65, "cari": "S", "person": " · yeni {"catal": [{"amount": 170000, "dueDate": "2026-04-26", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -65, "cari": "S", 
+    k5:vadeTakip:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 234342, "date": "2026-07-02", "direction": "out"}, {"amount": 133910, "date": "2026-07-02", "direction": "out"}]} · yeni {"amount": 234342, "date": "2026-07-02", "direction": "out"}
+    k5:vadeTakip:hareket:s024 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 9491, "date": "2026-04-08", "direction": "out"}, {"amount": 10000, "date": "2026-04-08", "direction": "out"}]} · yeni {"amount": 9491, "date": "2026-04-08", "direction": "out"}
+    k6:fatura:A1:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 99923]} · yeni 0
+    k6:hareket:acilis:S:kalan [ÇATAL → tek değer SK-4] eski {"catal": [234342, 133910]} · yeni 234342
+    k6:hareket:s011:kalan [ÇATAL → tek değer SK-4] eski {"catal": [195932, 196441]} · yeni 195932
+    k6:projeksiyon:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 234342, "date": "2026-07-02", "direction": "out"}, {"amount": 133910, "date": "2026-07-02", "direction": "out"}]} · yeni {"amount": 234342, "date": "2026-07-02", "direction": "out"}
+    k6:projeksiyon:hareket:s011 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 195932, "date": "2026-03-31", "direction": "out"}, {"amount": 196441, "date": "2026-03-31", "direction": "out"}]} · yeni {"amount": 195932, "date": "2026-03-31", "direction": "out"}
+    k6:takvim:fatura:A1 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 99923, "direction": "out"}]} · yeni "yok"
+    k6:takvim:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 234342, "dueDate": "2026-07-02", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 2, "cari": "S", " · yeni {"amount": 234342, "dueDate": "2026-07-02", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -14, "cari": "S", "person": "
+    k6:takvim:hareket:s011 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 195932, "dueDate": "2026-03-31", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -91, "cari": "S", "person": "Ra · yeni {"amount": 195932, "dueDate": "2026-03-31", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -91, "cari": "S", "person": "Rastgele Sigm
+    k6:takvim:hareket:s030 [tek değer → ÇATAL SK-5] eski {"amount": 170000, "dueDate": "2026-04-26", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -65, "cari": "S", "person": " · yeni {"catal": [{"amount": 170000, "dueDate": "2026-04-26", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -65, "cari": "S", 
+    k6:vadeTakip:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 234342, "date": "2026-07-02", "direction": "out"}, {"amount": 133910, "date": "2026-07-02", "direction": "out"}]} · yeni {"amount": 234342, "date": "2026-07-02", "direction": "out"}
+    k6:vadeTakip:hareket:s011 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 195932, "date": "2026-03-31", "direction": "out"}, {"amount": 196441, "date": "2026-03-31", "direction": "out"}]} · yeni {"amount": 195932, "date": "2026-03-31", "direction": "out"}
+    k7:fatura:A1:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 99923]} · yeni 0
+    k7:hareket:acilis:S:kalan [ÇATAL → tek değer SK-4] eski {"catal": [234342, 133910]} · yeni 234342
+    k7:hareket:s011:kalan [ÇATAL → tek değer SK-4] eski {"catal": [195932, 196441]} · yeni 195932
+    k7:projeksiyon:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 234342, "date": "2026-07-02", "direction": "out"}, {"amount": 133910, "date": "2026-07-02", "direction": "out"}]} · yeni {"amount": 234342, "date": "2026-07-02", "direction": "out"}
+    k7:projeksiyon:hareket:s011 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 195932, "date": "2026-03-31", "direction": "out"}, {"amount": 196441, "date": "2026-03-31", "direction": "out"}]} · yeni {"amount": 195932, "date": "2026-03-31", "direction": "out"}
+    k7:takvim:fatura:A1 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 99923, "direction": "out"}]} · yeni "yok"
+    k7:takvim:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 234342, "dueDate": "2026-07-02", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 2, "cari": "S", " · yeni {"amount": 234342, "dueDate": "2026-07-02", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -14, "cari": "S", "person": "
+    k7:takvim:hareket:s011 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 195932, "dueDate": "2026-03-31", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -91, "cari": "S", "person": "Ra · yeni {"amount": 195932, "dueDate": "2026-03-31", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -91, "cari": "S", "person": "Rastgele Sigm
+    k7:takvim:hareket:s030 [tek değer → ÇATAL SK-5] eski {"amount": 170000, "dueDate": "2026-04-26", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -65, "cari": "S", "person": " · yeni {"catal": [{"amount": 170000, "dueDate": "2026-04-26", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -65, "cari": "S", 
+    k7:vadeTakip:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 234342, "date": "2026-07-02", "direction": "out"}, {"amount": 133910, "date": "2026-07-02", "direction": "out"}]} · yeni {"amount": 234342, "date": "2026-07-02", "direction": "out"}
+    k7:vadeTakip:hareket:s011 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 195932, "date": "2026-03-31", "direction": "out"}, {"amount": 196441, "date": "2026-03-31", "direction": "out"}]} · yeni {"amount": 195932, "date": "2026-03-31", "direction": "out"}
+    k8:fatura:A1:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 99923]} · yeni 0
+    k8:hareket:acilis:S:kalan [ÇATAL → tek değer SK-4] eski {"catal": [234342, 114292]} · yeni 234342
+    k8:hareket:s011:kalan [ÇATAL → tek değer SK-4] eski {"catal": [176314, 196441]} · yeni 176314
+    k8:projeksiyon:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 234342, "date": "2026-07-02", "direction": "out"}, {"amount": 114292, "date": "2026-07-02", "direction": "out"}]} · yeni {"amount": 234342, "date": "2026-07-02", "direction": "out"}
+    k8:projeksiyon:hareket:s011 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 176314, "date": "2026-03-31", "direction": "out"}, {"amount": 196441, "date": "2026-03-31", "direction": "out"}]} · yeni {"amount": 176314, "date": "2026-03-31", "direction": "out"}
+    k8:takvim:fatura:A1 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 99923, "direction": "out"}]} · yeni "yok"
+    k8:takvim:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 234342, "dueDate": "2026-07-02", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 2, "cari": "S", " · yeni {"amount": 234342, "dueDate": "2026-07-02", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -14, "cari": "S", "person": "
+    k8:takvim:hareket:s011 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 176314, "dueDate": "2026-03-31", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -91, "cari": "S", "person": "Ra · yeni {"amount": 176314, "dueDate": "2026-03-31", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -91, "cari": "S", "person": "Rastgele Sigm
+    k8:takvim:hareket:s030 [tek değer → ÇATAL SK-5] eski {"amount": 170000, "dueDate": "2026-04-26", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -65, "cari": "S", "person": " · yeni {"catal": [{"amount": 170000, "dueDate": "2026-04-26", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -65, "cari": "S", 
+    k8:vadeTakip:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 234342, "date": "2026-07-02", "direction": "out"}, {"amount": 114292, "date": "2026-07-02", "direction": "out"}]} · yeni {"amount": 234342, "date": "2026-07-02", "direction": "out"}
+    k8:vadeTakip:hareket:s011 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 176314, "date": "2026-03-31", "direction": "out"}, {"amount": 196441, "date": "2026-03-31", "direction": "out"}]} · yeni {"amount": 176314, "date": "2026-03-31", "direction": "out"}
+    k9:fatura:A1:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 15556]} · yeni 0
+    k9:hareket:acilis:S:kalan [ÇATAL → tek değer SK-4] eski {"catal": [234342, 114292]} · yeni 234342
+    k9:hareket:s011:kalan [ÇATAL → tek değer SK-4] eski {"catal": [91947, 196441]} · yeni 91947
+    k9:projeksiyon:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 234342, "date": "2026-07-02", "direction": "out"}, {"amount": 114292, "date": "2026-07-02", "direction": "out"}]} · yeni {"amount": 234342, "date": "2026-07-02", "direction": "out"}
+    k9:projeksiyon:hareket:s011 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 91947, "date": "2026-03-31", "direction": "out"}, {"amount": 196441, "date": "2026-03-31", "direction": "out"}]} · yeni {"amount": 91947, "date": "2026-03-31", "direction": "out"}
+    k9:takvim:fatura:A1 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 15556, "direction": "out"}]} · yeni "yok"
+    k9:takvim:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 234342, "dueDate": "2026-07-02", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 2, "cari": "S", " · yeni {"amount": 234342, "dueDate": "2026-07-02", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -14, "cari": "S", "person": "
+    k9:takvim:hareket:s011 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 91947, "dueDate": "2026-03-31", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -91, "cari": "S", "person": "Ras · yeni {"amount": 91947, "dueDate": "2026-03-31", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -91, "cari": "S", "person": "Rastgele Sigma
+    k9:takvim:hareket:s030 [tek değer → ÇATAL SK-5] eski {"amount": 170000, "dueDate": "2026-04-26", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -65, "cari": "S", "person": " · yeni {"catal": [{"amount": 170000, "dueDate": "2026-04-26", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -65, "cari": "S", 
+    k9:vadeTakip:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 234342, "date": "2026-07-02", "direction": "out"}, {"amount": 114292, "date": "2026-07-02", "direction": "out"}]} · yeni {"amount": 234342, "date": "2026-07-02", "direction": "out"}
+    k9:vadeTakip:hareket:s011 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 91947, "date": "2026-03-31", "direction": "out"}, {"amount": 196441, "date": "2026-03-31", "direction": "out"}]} · yeni {"amount": 91947, "date": "2026-03-31", "direction": "out"}
+    kson:fatura:A1:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 15556]} · yeni 0
+    kson:hareket:acilis:S:kalan [ÇATAL → tek değer SK-4] eski {"catal": [234342, 0]} · yeni 234342
+    kson:hareket:s011:kalan [ÇATAL → tek değer SK-4] eski {"catal": [0, 2386]} · yeni 0
+    kson:hareket:s024:kalan [ÇATAL → tek değer SK-4] eski {"catal": [0, 10000]} · yeni 0
+    kson:hareket:s030:kalan [ÇATAL → tek değer SK-4] eski {"catal": [0, 170000]} · yeni 0
+    kson:hareket:s031:kalan [ÇATAL → tek değer SK-4] eski {"catal": [373600, 410000]} · yeni 373600
+    kson:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [5, 7]} · yeni 5
+    kson:projeksiyon:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 234342, "date": "2026-07-02", "direction": "out"}, "yok"]} · yeni {"amount": 234342, "date": "2026-07-02", "direction": "out"}
+    kson:projeksiyon:hareket:s011 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 2386, "date": "2026-03-31", "direction": "out"}]} · yeni "yok"
+    kson:projeksiyon:hareket:s024 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 10000, "date": "2026-04-08", "direction": "out"}]} · yeni "yok"
+    kson:projeksiyon:hareket:s030 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 170000, "date": "2026-04-26", "direction": "out"}]} · yeni "yok"
+    kson:projeksiyon:hareket:s031 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 373600, "date": "2026-04-26", "direction": "out"}, {"amount": 410000, "date": "2026-04-26", "direction": "out"}]} · yeni {"amount": 373600, "date": "2026-04-26", "direction": "out"}
+    kson:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [5, 7]} · yeni 5
+    kson:takvim:fatura:A1 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 15556, "direction": "out"}]} · yeni "yok"
+    kson:takvim:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 234342, "dueDate": "2026-07-02", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "upcoming", "days": 2, "cari": "S", " · yeni {"amount": 234342, "dueDate": "2026-07-02", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -14, "cari": "S", "person": "
+    kson:takvim:hareket:s011 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 2386, "dueDate": "2026-03-31", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -91, "cari": "S", "person" · yeni "yok"
+    kson:takvim:hareket:s024 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 10000, "dueDate": "2026-04-08", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -83, "cari": "S", "person · yeni "yok"
+    kson:takvim:hareket:s030 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 170000, "dueDate": "2026-04-26", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -65, "cari" · yeni "yok"
+    kson:takvim:hareket:s031 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 373600, "dueDate": "2026-04-26", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -65, "cari": "S", "person": "Ra · yeni {"amount": 373600, "dueDate": "2026-04-26", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -65, "cari": "S", "person": "Rastgele Sigm
+    kson:vadeTakip:hareket:acilis:S [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 234342, "date": "2026-07-02", "direction": "out"}, "yok"]} · yeni {"amount": 234342, "date": "2026-07-02", "direction": "out"}
+    kson:vadeTakip:hareket:s011 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 2386, "date": "2026-03-31", "direction": "out"}]} · yeni "yok"
+    kson:vadeTakip:hareket:s024 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 10000, "date": "2026-04-08", "direction": "out"}]} · yeni "yok"
+    kson:vadeTakip:hareket:s030 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 170000, "date": "2026-04-26", "direction": "out"}]} · yeni "yok"
+    kson:vadeTakip:hareket:s031 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 373600, "date": "2026-04-26", "direction": "out"}, {"amount": 410000, "date": "2026-04-26", "direction": "out"}]} · yeni {"amount": 373600, "date": "2026-04-26", "direction": "out"}
+  rastgele-s1-9: 35
+    k10:fatura:A4:acik [ÇATAL → tek değer SK-4] eski {"catal": [121758, 250000]} · yeni 121758
+    k10:hareket:s055:kalan [ÇATAL → tek değer SK-4] eski {"catal": [410000, 281758]} · yeni 410000
+    k10:projeksiyon:hareket:s055 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 410000, "date": "2026-06-21", "direction": "out"}, {"amount": 281758, "date": "2026-06-21", "direction": "out"}]} · yeni {"amount": 410000, "date": "2026-06-21", "direction": "out"}
+    k10:takvim:fatura:A4 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 121758, "direction": "out"}, {"amount": 250000, "direction": "out"}]} · yeni {"amount": 121758, "direction": "out"}
+    k10:takvim:hareket:s048 [tek değer → ÇATAL SK-5] eski {"amount": 100000, "dueDate": "2026-06-07", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -23, "cari": "D", "pers · yeni {"catal": [{"amount": 100000, "dueDate": "2026-06-07", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -23, "cari":
+    k10:takvim:hareket:s055 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 410000, "dueDate": "2026-06-21", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -9, "cari": "S", " · yeni {"amount": 410000, "dueDate": "2026-06-21", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -9, "cari": "S", "person": "R
+    k10:vadeTakip:hareket:s055 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 410000, "date": "2026-06-21", "direction": "out"}, {"amount": 281758, "date": "2026-06-21", "direction": "out"}]} · yeni {"amount": 410000, "date": "2026-06-21", "direction": "out"}
+    k11:fatura:A4:acik [ÇATAL → tek değer SK-4] eski {"catal": [121758, 250000]} · yeni 121758
+    k11:hareket:s055:kalan [ÇATAL → tek değer SK-4] eski {"catal": [410000, 281758]} · yeni 410000
+    k11:projeksiyon:hareket:s055 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 410000, "date": "2026-06-21", "direction": "out"}, {"amount": 281758, "date": "2026-06-21", "direction": "out"}]} · yeni {"amount": 410000, "date": "2026-06-21", "direction": "out"}
+    k11:takvim:fatura:A4 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 121758, "direction": "out"}, {"amount": 250000, "direction": "out"}]} · yeni {"amount": 121758, "direction": "out"}
+    k11:takvim:hareket:s048 [tek değer → ÇATAL SK-5] eski {"amount": 100000, "dueDate": "2026-06-07", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -23, "cari": "D", "pers · yeni {"catal": [{"amount": 100000, "dueDate": "2026-06-07", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -23, "cari":
+    k11:takvim:hareket:s055 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 410000, "dueDate": "2026-06-21", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -9, "cari": "S", " · yeni {"amount": 410000, "dueDate": "2026-06-21", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -9, "cari": "S", "person": "R
+    k11:vadeTakip:hareket:s055 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 410000, "date": "2026-06-21", "direction": "out"}, {"amount": 281758, "date": "2026-06-21", "direction": "out"}]} · yeni {"amount": 410000, "date": "2026-06-21", "direction": "out"}
+    k12:fatura:A4:acik [ÇATAL → tek değer SK-4] eski {"catal": [75002, 250000]} · yeni 75002
+    k12:hareket:s055:kalan [ÇATAL → tek değer SK-4] eski {"catal": [410000, 235002]} · yeni 410000
+    k12:projeksiyon:hareket:s055 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 410000, "date": "2026-06-21", "direction": "out"}, {"amount": 235002, "date": "2026-06-21", "direction": "out"}]} · yeni {"amount": 410000, "date": "2026-06-21", "direction": "out"}
+    k12:takvim:fatura:A4 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 75002, "direction": "out"}, {"amount": 250000, "direction": "out"}]} · yeni {"amount": 75002, "direction": "out"}
+    k12:takvim:hareket:s055 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 410000, "dueDate": "2026-06-21", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -9, "cari": "S", " · yeni {"amount": 410000, "dueDate": "2026-06-21", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -9, "cari": "S", "person": "R
+    k12:vadeTakip:hareket:s055 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 410000, "date": "2026-06-21", "direction": "out"}, {"amount": 235002, "date": "2026-06-21", "direction": "out"}]} · yeni {"amount": 410000, "date": "2026-06-21", "direction": "out"}
+    k1:takvim:hareket:s007 [tek değer → ÇATAL SK-5] eski {"amount": 6395, "dueDate": "2026-05-13", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -48, "cari": "E", "person · yeni {"catal": [{"amount": 6395, "dueDate": "2026-05-13", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -48, "cari": "
+    k2:takvim:hareket:s017 [tek değer → ÇATAL SK-5] eski {"amount": 142497, "dueDate": "2026-04-30", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -61, "cari": "D", "pers · yeni {"catal": [{"amount": 142497, "dueDate": "2026-04-30", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -61, "cari":
+    k3:takvim:hareket:s017 [tek değer → ÇATAL SK-5] eski {"amount": 142497, "dueDate": "2026-04-30", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -61, "cari": "D", "pers · yeni {"catal": [{"amount": 142497, "dueDate": "2026-04-30", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -61, "cari":
+    k4:takvim:hareket:s017 [tek değer → ÇATAL SK-5] eski {"amount": 142497, "dueDate": "2026-04-30", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -61, "cari": "D", "pers · yeni {"catal": [{"amount": 142497, "dueDate": "2026-04-30", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -61, "cari":
+    k5:takvim:hareket:s048 [tek değer → ÇATAL SK-5] eski {"amount": 100000, "dueDate": "2026-06-07", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -23, "cari": "D", "pers · yeni {"catal": [{"amount": 100000, "dueDate": "2026-06-07", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -23, "cari":
+    k6:takvim:hareket:s048 [tek değer → ÇATAL SK-5] eski {"amount": 100000, "dueDate": "2026-06-07", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -23, "cari": "D", "pers · yeni {"catal": [{"amount": 100000, "dueDate": "2026-06-07", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -23, "cari":
+    k7:takvim:hareket:s048 [tek değer → ÇATAL SK-5] eski {"amount": 100000, "dueDate": "2026-06-07", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -23, "cari": "D", "pers · yeni {"catal": [{"amount": 100000, "dueDate": "2026-06-07", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -23, "cari":
+    k8:takvim:hareket:s048 [tek değer → ÇATAL SK-5] eski {"amount": 100000, "dueDate": "2026-06-07", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -23, "cari": "D", "pers · yeni {"catal": [{"amount": 100000, "dueDate": "2026-06-07", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -23, "cari":
+    k9:takvim:hareket:s048 [tek değer → ÇATAL SK-5] eski {"amount": 100000, "dueDate": "2026-06-07", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -23, "cari": "D", "pers · yeni {"catal": [{"amount": 100000, "dueDate": "2026-06-07", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -23, "cari":
+    kson:fatura:A4:acik [ÇATAL → tek değer SK-4] eski {"catal": [75002, 250000]} · yeni 75002
+    kson:hareket:s055:kalan [ÇATAL → tek değer SK-4] eski {"catal": [410000, 235002]} · yeni 410000
+    kson:projeksiyon:hareket:s055 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 410000, "date": "2026-06-21", "direction": "out"}, {"amount": 235002, "date": "2026-06-21", "direction": "out"}]} · yeni {"amount": 410000, "date": "2026-06-21", "direction": "out"}
+    kson:takvim:fatura:A4 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 75002, "direction": "out"}, {"amount": 250000, "direction": "out"}]} · yeni {"amount": 75002, "direction": "out"}
+    kson:takvim:hareket:s055 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 410000, "dueDate": "2026-06-21", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -9, "cari": "S", " · yeni {"amount": 410000, "dueDate": "2026-06-21", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -9, "cari": "S", "person": "R
+    kson:vadeTakip:hareket:s055 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 410000, "date": "2026-06-21", "direction": "out"}, {"amount": 235002, "date": "2026-06-21", "direction": "out"}]} · yeni {"amount": 410000, "date": "2026-06-21", "direction": "out"}
+  rastgele-s1-10: 100
+    k10:fatura:A1:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 84939]} · yeni 0
+    k10:fatura:A2:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 106870]} · yeni 0
+    k10:fatura:A3:acik [ÇATAL → tek değer SK-4] eski {"catal": [356026, 460000]} · yeni 356026
+    k10:hareket:s015:kalan [ÇATAL → tek değer SK-4] eski {"catal": [105783, 0]} · yeni 105783
+    k10:hareket:s018:kalan [ÇATAL → tek değer SK-4] eski {"catal": [140000, 0]} · yeni 140000
+    k10:hareket:s055:kalan [ÇATAL → tek değer SK-4] eski {"catal": [50000, 0]} · yeni 50000
+    k10:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [4, 1]} · yeni 4
+    k10:projeksiyon:hareket:s015 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 105783, "date": "2026-07-29", "direction": "out"}, "yok"]} · yeni {"amount": 105783, "date": "2026-07-29", "direction": "out"}
+    k10:projeksiyon:hareket:s018 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 140000, "date": "2026-07-29", "direction": "out"}, "yok"]} · yeni {"amount": 140000, "date": "2026-07-29", "direction": "out"}
+    k10:projeksiyon:hareket:s055 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 50000, "date": "2026-07-21", "direction": "out"}, "yok"]} · yeni {"amount": 50000, "date": "2026-07-21", "direction": "out"}
+    k10:takvim:fatura:A1 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 84939, "direction": "out"}]} · yeni "yok"
+    k10:takvim:fatura:A2 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 106870, "direction": "out"}]} · yeni "yok"
+    k10:takvim:fatura:A3 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 356026, "direction": "out"}, {"amount": 460000, "direction": "out"}]} · yeni {"amount": 356026, "direction": "out"}
+    k11:fatura:A1:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 84939]} · yeni 0
+    k11:fatura:A2:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 106870]} · yeni 0
+    k11:hareket:s015:kalan [ÇATAL → tek değer SK-4] eski {"catal": [105783, 0]} · yeni 105783
+    k11:hareket:s024:kalan [ÇATAL → tek değer SK-4] eski {"catal": [36026, 0]} · yeni 36026
+    k11:hareket:s055:kalan [ÇATAL → tek değer SK-4] eski {"catal": [50000, 0]} · yeni 50000
+    k11:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [4, 1]} · yeni 4
+    k11:projeksiyon:hareket:s015 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 105783, "date": "2026-07-29", "direction": "out"}, "yok"]} · yeni {"amount": 105783, "date": "2026-07-29", "direction": "out"}
+    k11:projeksiyon:hareket:s024 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 36026, "date": "2026-05-30", "direction": "out"}, "yok"]} · yeni {"amount": 36026, "date": "2026-05-30", "direction": "out"}
+    k11:projeksiyon:hareket:s055 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 50000, "date": "2026-07-21", "direction": "out"}, "yok"]} · yeni {"amount": 50000, "date": "2026-07-21", "direction": "out"}
+    k11:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [2, 1]} · yeni 2
+    k11:takvim:fatura:A1 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 84939, "direction": "out"}]} · yeni "yok"
+    k11:takvim:fatura:A2 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 106870, "direction": "out"}]} · yeni "yok"
+    k11:takvim:hareket:s024 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 36026, "dueDate": "2026-05-30", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -31, "cari": "S", "person": "Ras · yeni {"amount": 36026, "dueDate": "2026-05-30", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -31, "cari": "S", "person": "Rastgele Sigma
+    k11:vadeTakip:hareket:s024 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 36026, "date": "2026-05-30", "direction": "out"}, "yok"]} · yeni {"amount": 36026, "date": "2026-05-30", "direction": "out"}
+    k12:fatura:A3:acik [ÇATAL → tek değer SK-4] eski {"catal": [205172, 360955]} · yeni 205172
+    k12:hareket:s015:kalan [ÇATAL → tek değer SK-4] eski {"catal": [105783, 0]} · yeni 105783
+    k12:hareket:s055:kalan [ÇATAL → tek değer SK-4] eski {"catal": [50000, 0]} · yeni 50000
+    k12:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [3, 1]} · yeni 3
+    k12:projeksiyon:hareket:s015 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 105783, "date": "2026-07-29", "direction": "out"}, "yok"]} · yeni {"amount": 105783, "date": "2026-07-29", "direction": "out"}
+    k12:projeksiyon:hareket:s055 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 50000, "date": "2026-07-21", "direction": "out"}, "yok"]} · yeni {"amount": 50000, "date": "2026-07-21", "direction": "out"}
+    k12:takvim:fatura:A3 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 205172, "direction": "out"}, {"amount": 360955, "direction": "out"}]} · yeni {"amount": 205172, "direction": "out"}
+    k1:takvim:hareket:acilis:S [tek değer → ÇATAL SK-5] eski {"amount": 98009, "dueDate": "2026-05-29", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -32, "cari": "S", "person": "R · yeni {"catal": [{"amount": 98009, "dueDate": "2026-05-29", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -32, "cari": "S", "
+    k2:takvim:hareket:s011 [tek değer → ÇATAL SK-5] eski {"amount": 279330, "dueDate": "2026-06-06", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -24, "cari": "D", "pers · yeni {"catal": [{"amount": 279330, "dueDate": "2026-06-06", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -24, "cari":
+    k3:takvim:hareket:s011 [tek değer → ÇATAL SK-5] eski {"amount": 279330, "dueDate": "2026-06-06", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -24, "cari": "D", "pers · yeni {"catal": [{"amount": 279330, "dueDate": "2026-06-06", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -24, "cari":
+    k5:hareket:s015:kalan [ÇATAL → tek değer SK-4] eski {"catal": [105783, 79108]} · yeni 105783
+    k5:hareket:s024:kalan [ÇATAL → tek değer SK-4] eski {"catal": [243325, 270000]} · yeni 243325
+    k5:projeksiyon:hareket:s015 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 105783, "date": "2026-07-29", "direction": "out"}, {"amount": 79108, "date": "2026-07-29", "direction": "out"}]} · yeni {"amount": 105783, "date": "2026-07-29", "direction": "out"}
+    k5:projeksiyon:hareket:s024 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 243325, "date": "2026-05-30", "direction": "out"}, {"amount": 270000, "date": "2026-05-30", "direction": "out"}]} · yeni {"amount": 243325, "date": "2026-05-30", "direction": "out"}
+    k5:takvim:hareket:s024 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 243325, "dueDate": "2026-05-30", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -31, "cari": "S", "person": "Ra · yeni {"amount": 243325, "dueDate": "2026-05-30", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -31, "cari": "S", "person": "Rastgele Sigm
+    k5:vadeTakip:hareket:s024 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 243325, "date": "2026-05-30", "direction": "out"}, {"amount": 270000, "date": "2026-05-30", "direction": "out"}]} · yeni {"amount": 243325, "date": "2026-05-30", "direction": "out"}
+    k6:hareket:s015:kalan [ÇATAL → tek değer SK-4] eski {"catal": [105783, 0]} · yeni 105783
+    k6:hareket:s018:kalan [ÇATAL → tek değer SK-4] eski {"catal": [140000, 55688]} · yeni 140000
+    k6:hareket:s024:kalan [ÇATAL → tek değer SK-4] eski {"catal": [169905, 270000]} · yeni 169905
+    k6:hareket:s044:kalan [ÇATAL → tek değer SK-4] eski {"catal": [0, 90000]} · yeni 0
+    k6:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [4, 3]} · yeni 4
+    k6:projeksiyon:hareket:s015 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 105783, "date": "2026-07-29", "direction": "out"}, "yok"]} · yeni {"amount": 105783, "date": "2026-07-29", "direction": "out"}
+    k6:projeksiyon:hareket:s018 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 140000, "date": "2026-07-29", "direction": "out"}, {"amount": 55688, "date": "2026-07-29", "direction": "out"}]} · yeni {"amount": 140000, "date": "2026-07-29", "direction": "out"}
+    k6:projeksiyon:hareket:s024 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 169905, "date": "2026-05-30", "direction": "out"}, {"amount": 270000, "date": "2026-05-30", "direction": "out"}]} · yeni {"amount": 169905, "date": "2026-05-30", "direction": "out"}
+    k6:takvim:hareket:s024 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 169905, "dueDate": "2026-05-30", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -31, "cari": "S", "person": "Ra · yeni {"amount": 169905, "dueDate": "2026-05-30", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -31, "cari": "S", "person": "Rastgele Sigm
+    k6:vadeTakip:hareket:s024 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 169905, "date": "2026-05-30", "direction": "out"}, {"amount": 270000, "date": "2026-05-30", "direction": "out"}]} · yeni {"amount": 169905, "date": "2026-05-30", "direction": "out"}
+    k7:fatura:A1:acik [ÇATAL → tek değer SK-4] eski {"catal": [192842, 258356]} · yeni 192842
+    k7:hareket:s015:kalan [ÇATAL → tek değer SK-4] eski {"catal": [105783, 0]} · yeni 105783
+    k7:hareket:s018:kalan [ÇATAL → tek değer SK-4] eski {"catal": [140000, 0]} · yeni 140000
+    k7:hareket:s024:kalan [ÇATAL → tek değer SK-4] eski {"catal": [169905, 260174]} · yeni 169905
+    k7:hareket:s044:kalan [ÇATAL → tek değer SK-4] eski {"catal": [0, 90000]} · yeni 0
+    k7:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [5, 3]} · yeni 5
+    k7:projeksiyon:hareket:s015 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 105783, "date": "2026-07-29", "direction": "out"}, "yok"]} · yeni {"amount": 105783, "date": "2026-07-29", "direction": "out"}
+    k7:projeksiyon:hareket:s018 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 140000, "date": "2026-07-29", "direction": "out"}, "yok"]} · yeni {"amount": 140000, "date": "2026-07-29", "direction": "out"}
+    k7:projeksiyon:hareket:s024 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 169905, "date": "2026-05-30", "direction": "out"}, {"amount": 260174, "date": "2026-05-30", "direction": "out"}]} · yeni {"amount": 169905, "date": "2026-05-30", "direction": "out"}
+    k7:takvim:fatura:A1 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 192842, "direction": "out"}, {"amount": 258356, "direction": "out"}]} · yeni {"amount": 192842, "direction": "out"}
+    k7:takvim:hareket:s024 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 169905, "dueDate": "2026-05-30", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -31, "cari": "S", "person": "Ra · yeni {"amount": 169905, "dueDate": "2026-05-30", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -31, "cari": "S", "person": "Rastgele Sigm
+    k7:vadeTakip:hareket:s024 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 169905, "date": "2026-05-30", "direction": "out"}, {"amount": 260174, "date": "2026-05-30", "direction": "out"}]} · yeni {"amount": 169905, "date": "2026-05-30", "direction": "out"}
+    k8:fatura:A1:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 171331]} · yeni 0
+    k8:fatura:A2:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 106870]} · yeni 0
+    k8:fatura:A3:acik [ÇATAL → tek değer SK-4] eski {"catal": [442418, 460000]} · yeni 442418
+    k8:hareket:s015:kalan [ÇATAL → tek değer SK-4] eski {"catal": [105783, 0]} · yeni 105783
+    k8:hareket:s018:kalan [ÇATAL → tek değer SK-4] eski {"catal": [140000, 0]} · yeni 140000
+    k8:hareket:s055:kalan [ÇATAL → tek değer SK-4] eski {"catal": [50000, 0]} · yeni 50000
+    k8:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [3, 0]} · yeni 3
+    k8:projeksiyon:hareket:s015 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 105783, "date": "2026-07-29", "direction": "out"}, "yok"]} · yeni {"amount": 105783, "date": "2026-07-29", "direction": "out"}
+    k8:projeksiyon:hareket:s018 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 140000, "date": "2026-07-29", "direction": "out"}, "yok"]} · yeni {"amount": 140000, "date": "2026-07-29", "direction": "out"}
+    k8:projeksiyon:hareket:s055 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 50000, "date": "2026-07-21", "direction": "out"}, "yok"]} · yeni {"amount": 50000, "date": "2026-07-21", "direction": "out"}
+    k8:takvim:fatura:A1 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 171331, "direction": "out"}]} · yeni "yok"
+    k8:takvim:fatura:A2 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 106870, "direction": "out"}]} · yeni "yok"
+    k8:takvim:fatura:A3 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 442418, "direction": "out"}, {"amount": 460000, "direction": "out"}]} · yeni {"amount": 442418, "direction": "out"}
+    k9:fatura:A1:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 258356]} · yeni 0
+    k9:fatura:A2:acik [ÇATAL → tek değer SK-4] eski {"catal": [0, 106870]} · yeni 0
+    k9:hareket:s015:kalan [ÇATAL → tek değer SK-4] eski {"catal": [105783, 0]} · yeni 105783
+    k9:hareket:s018:kalan [ÇATAL → tek değer SK-4] eski {"catal": [140000, 0]} · yeni 140000
+    k9:hareket:s024:kalan [ÇATAL → tek değer SK-4] eski {"catal": [197128, 0]} · yeni 197128
+    k9:hareket:s044:kalan [ÇATAL → tek değer SK-4] eski {"catal": [0, 77685]} · yeni 0
+    k9:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [4, 1]} · yeni 4
+    k9:projeksiyon:hareket:s015 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 105783, "date": "2026-07-29", "direction": "out"}, "yok"]} · yeni {"amount": 105783, "date": "2026-07-29", "direction": "out"}
+    k9:projeksiyon:hareket:s018 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 140000, "date": "2026-07-29", "direction": "out"}, "yok"]} · yeni {"amount": 140000, "date": "2026-07-29", "direction": "out"}
+    k9:projeksiyon:hareket:s024 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 197128, "date": "2026-05-30", "direction": "out"}, "yok"]} · yeni {"amount": 197128, "date": "2026-05-30", "direction": "out"}
+    k9:takvim:cariKalemSayisi [ÇATAL → tek değer SK-4] eski {"catal": [1, 0]} · yeni 1
+    k9:takvim:fatura:A1 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 258356, "direction": "out"}]} · yeni "yok"
+    k9:takvim:fatura:A2 [ÇATAL → tek değer SK-4] eski {"catal": ["yok", {"amount": 106870, "direction": "out"}]} · yeni "yok"
+    k9:takvim:hareket:s024 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 197128, "dueDate": "2026-05-30", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -31, "cari": "S", "person": "Ra · yeni {"amount": 197128, "dueDate": "2026-05-30", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -31, "cari": "S", "person": "Rastgele Sigm
+    k9:vadeTakip:hareket:s024 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 197128, "date": "2026-05-30", "direction": "out"}, "yok"]} · yeni {"amount": 197128, "date": "2026-05-30", "direction": "out"}
+    kson:fatura:A3:acik [ÇATAL → tek değer SK-4] eski {"catal": [205172, 360955]} · yeni 205172
+    kson:hareket:s015:kalan [ÇATAL → tek değer SK-4] eski {"catal": [105783, 0]} · yeni 105783
+    kson:hareket:s055:kalan [ÇATAL → tek değer SK-4] eski {"catal": [50000, 0]} · yeni 50000
+    kson:projeksiyon:cari [ÇATAL → tek değer SK-4] eski {"catal": [3, 1]} · yeni 3
+    kson:projeksiyon:hareket:s015 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 105783, "date": "2026-07-29", "direction": "out"}, "yok"]} · yeni {"amount": 105783, "date": "2026-07-29", "direction": "out"}
+    kson:projeksiyon:hareket:s055 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 50000, "date": "2026-07-21", "direction": "out"}, "yok"]} · yeni {"amount": 50000, "date": "2026-07-21", "direction": "out"}
+    kson:takvim:fatura:A3 [ÇATAL → tek değer SK-4] eski {"catal": [{"amount": 205172, "direction": "out"}, {"amount": 360955, "direction": "out"}]} · yeni {"amount": 205172, "direction": "out"}
+G3 toplam 895 satır; neden sayıları: {('tek değer → ÇATAL', 'SK-5'): 42, ('ÇATAL → tek değer', 'SK-4'): 798, ('etiket YAYGIN → BAŞ MİMAR', ''): 4, ('yeni anahtar', ''): 3, ('ÇATAL → tek değer', 'C14.2'): 28, ('ÇATAL değişti', 'SK-4'): 19, ('kural metni', 'SK-5'): 1}
+
+YENİ SENARYOLAR — eski (bakım 1) kâhinde 2.5.0:
+  d10-c5-s67-soz-takvim.json: 7 denetimde değer farkı; elle tablonun 6/22 anahtarı eski kâhinde TUTMUYOR; eski belirsiz: []
+    k1:takvim:hareket:a1: elle {"amount": 100000, "dueDate": "2026-06-20", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -15 · eski kâhin {"catal": [{"amount": 100000, "dueDate": "2026-06-20", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "upcoming",
+    k1:takvim:hareket:b1: elle {"amount": 60000, "dueDate": "2026-06-16", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -14, · eski kâhin {"catal": [{"amount": 60000, "dueDate": "2026-06-16", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "upcoming", 
+    k1:takvim:hareket:e1: elle {"amount": 20000, "dueDate": "2026-06-20", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -14, · eski kâhin {"catal": [{"amount": 20000, "dueDate": "2026-06-20", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "upcoming", 
+    k1:takvim:hareket:h1: elle {"amount": 50000, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -26, · eski kâhin {"catal": [{"amount": 50000, "dueDate": "2026-06-18", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "upcoming", 
+    k1:takvim:hareket:t1: elle {"amount": 70000, "dueDate": "2026-06-19", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "overdue", "days": -21, "cari · eski kâhin {"catal": [{"amount": 70000, "dueDate": "2026-06-19", "direction": "out", "label": "Ödenecek Borç (Ödeme Sözü)", "state": "upcoming", "days"
+    k1:takvim:hareket:acilis:K: elle {"amount": 90000, "dueDate": "2026-06-21", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -31, · eski kâhin {"catal": [{"amount": 90000, "dueDate": "2026-06-21", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "upcoming", 
+    k1:takvim:hareket:c1 (ÇATAL SK-5): eski kâhin {"catal": [{"amount": 40000, "dueDate": "2026-06-15", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "today", "days": 0, "cari": "C", "person": "Cem Bugün"}, {"amount": 40000, "dueDate": "2026-06-15", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state"
+    k1:takvim:hareket:d1 (ÇATAL SK-5): eski kâhin {"amount": 30000, "dueDate": "2026-06-14", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -1, "cari": "D", "person": "Derya Dün"}
+  d11-c5-s66-carisiz-karsiliksiz.json: 22 denetimde değer farkı; elle tablonun 15/25 anahtarı eski kâhinde TUTMUYOR; eski belirsiz: ['SK-2: carisiz evrak E1 karşılıksız — defter karşılığı kararda yok (mizan denetlenmedi)', 'SK-2: carisiz evrak E2 karşılıksız — defter karşılığı kararda yok (mizan denetlenmedi)']
+    k1:mizan:101: elle 40000 · eski kâhin "ANAHTAR YOK"
+    k1:mizan:121: elle 0 · eski kâhin "ANAHTAR YOK"
+    k1:mizan:649: elle -185000 · eski kâhin "ANAHTAR YOK"
+    k1:mizan:120: elle 140000 · eski kâhin "ANAHTAR YOK"
+    k1:mizan:320: elle 25000 · eski kâhin "ANAHTAR YOK"
+    k1:mizan:100: elle 80000 · eski kâhin "ANAHTAR YOK"
+    k1:mizan:600: elle -100000 · eski kâhin "ANAHTAR YOK"
+    k1:mizan:500: elle 0 · eski kâhin "ANAHTAR YOK"
+    k1:mizan:519: elle 0 · eski kâhin "ANAHTAR YOK"
+    k1:cari:A:bakiye: elle 50000 · eski kâhin -20000
+    k1:cari:B:bakiye: elle 90000 · eski kâhin 40000
+    k1:cari:T:bakiye: elle 25000 · eski kâhin 0
+    k1:cari:A:gecikmis: elle 50000 · eski kâhin 0
+    k1:cari:B:gecikmis: elle 90000 · eski kâhin 40000
+    k1:cari:T:gecikmis: elle 25000 · eski kâhin 0
+  d9-c5-s68-borc-tarafi-vade.json: 27 denetimde değer farkı; elle tablonun 14/35 anahtarı eski kâhinde TUTMUYOR; eski belirsiz: []
+    k1:fatura:AF1:acik: elle 0 · eski kâhin {"catal": [0, 20000]}
+    k1:hareket:al1:kalan: elle 30000 · eski kâhin {"catal": [30000, 0]}
+    k1:hareket:al2:kalan: elle 10000 · eski kâhin {"catal": [10000, 20000]}
+    k1:takvim:hareket:al2: elle {"amount": 10000, "dueDate": "2026-05-20", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -26, "cari": "T1", "per · eski kâhin {"catal": [{"amount": 10000, "dueDate": "2026-05-20", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -26, "cari":
+    k1:takvim:fatura:AF1: elle "yok" · eski kâhin {"catal": ["yok", {"amount": 20000, "direction": "out"}]}
+    k1:fatura:AF6:acik: elle 0 · eski kâhin {"catal": [0, 30000]}
+    k1:hareket:al8:kalan: elle 30000 · eski kâhin {"catal": [30000, 0]}
+    k1:takvim:hareket:al8: elle {"amount": 30000, "dueDate": "2026-05-15", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -31, "cari": "T6", "per · eski kâhin {"catal": [{"amount": 30000, "dueDate": "2026-05-15", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -31, "cari":
+    k1:fatura:AF2:acik: elle 0 · eski kâhin {"catal": [0, 30000]}
+    k1:hareket:al4:kalan: elle 30000 · eski kâhin {"catal": [30000, 0]}
+    k1:hareket:al5:kalan: elle 20000 · eski kâhin {"catal": [20000, 0]}
+    k1:fatura:AF3:acik: elle 0 · eski kâhin {"catal": [0, 30000]}
+    k1:hareket:acilis:T3:kalan: elle 40000 · eski kâhin {"catal": [40000, 10000]}
+    k1:cari:M1:acikEsitBakiye: elle true · eski kâhin {"catal": [true, false]}
+# tests 289
+# pass 289
+# fail 0
