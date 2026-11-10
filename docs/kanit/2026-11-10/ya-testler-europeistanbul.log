@@ -1,0 +1,762 @@
+TAP version 13
+# Subtest: Doğrulama Kapısı — beklenen liste ↔ CI adımları
+    # Subtest: ci.yml'de koşan her kanıt kaydı kapının --beklenen listesinde, listede koşmayan ad yok
+    ok 1 - ci.yml'de koşan her kanıt kaydı kapının --beklenen listesinde, listede koşmayan ad yok
+      ---
+      duration_ms: 1.705986
+      type: 'test'
+      ...
+    # Subtest: yayın iş akışı CI'nin koştuğu her arayüz senaryosunu koşar
+    ok 2 - yayın iş akışı CI'nin koştuğu her arayüz senaryosunu koşar
+      ---
+      duration_ms: 0.428241
+      type: 'test'
+      ...
+    1..2
+ok 1 - Doğrulama Kapısı — beklenen liste ↔ CI adımları
+  ---
+  duration_ms: 2.860126
+  type: 'suite'
+  ...
+# Subtest: Bağımsız kâhinler iş akışında koşar
+    # Subtest: her test:kahin-* betiği ci.yml ya da uzun-dogrulama.yml'de kanit.mjs kos ile koşar ve kapı listesinde
+    ok 1 - her test:kahin-* betiği ci.yml ya da uzun-dogrulama.yml'de kanit.mjs kos ile koşar ve kapı listesinde
+      ---
+      duration_ms: 1.045066
+      type: 'test'
+      ...
+    1..1
+ok 2 - Bağımsız kâhinler iş akışında koşar
+  ---
+  duration_ms: 1.153188
+  type: 'suite'
+  ...
+# Subtest: Uzun Doğrulama Kapısı — beklenen liste ↔ matris
+    # Subtest: mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor
+    ok 1 - mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor
+      ---
+      duration_ms: 1.407594
+      type: 'test'
+      ...
+    1..1
+ok 3 - Uzun Doğrulama Kapısı — beklenen liste ↔ matris
+  ---
+  duration_ms: 1.525748
+  type: 'suite'
+  ...
+# Subtest: D1/D2: adres bekçisi (izin listesi)
+    # Subtest: gerçek kipte yalnız EDM test ortamının iki servisi (WSDL sorguları dahil) ve yerel adres; kuru kipte yalnız yerel
+    ok 1 - gerçek kipte yalnız EDM test ortamının iki servisi (WSDL sorguları dahil) ve yerel adres; kuru kipte yalnız yerel
+      ---
+      duration_ms: 1.134175
+      type: 'test'
+      ...
+    # Subtest: canlı EDM ve her varyantı reddedilir (büyük harf, port, yol, http, alt alan adı, kimlikli adres, portal, başka ana bilgisayar)
+    ok 2 - canlı EDM ve her varyantı reddedilir (büyük harf, port, yol, http, alt alan adı, kimlikli adres, portal, başka ana bilgisayar)
+      ---
+      duration_ms: 0.484837
+      type: 'test'
+      ...
+    # Subtest: bekçi izinsiz isteği AĞA ÇIKARMADAN düşürür; program bunu 'EDM'ye ulaşılamadı' (kesin ulaşmadı) sayar — belirsiz gönderim değil
+    ok 3 - bekçi izinsiz isteği AĞA ÇIKARMADAN düşürür; program bunu 'EDM'ye ulaşılamadı' (kesin ulaşmadı) sayar — belirsiz gönderim değil
+      ---
+      duration_ms: 4.679006
+      type: 'test'
+      ...
+    # Subtest: D2: oturum açıkken GÖNDERİM isteği (yan etkili, yinelenmeyen işlem) bekçiye takılınca da 'kesin ulaşmadı' — 'Sonucu Belirsiz' değil
+    ok 4 - D2: oturum açıkken GÖNDERİM isteği (yan etkili, yinelenmeyen işlem) bekçiye takılınca da 'kesin ulaşmadı' — 'Sonucu Belirsiz' değil
+      ---
+      duration_ms: 43.204415
+      type: 'test'
+      ...
+    1..4
+ok 4 - D1/D2: adres bekçisi (izin listesi)
+  ---
+  duration_ms: 50.548359
+  type: 'suite'
+  ...
+# Subtest: D4/D6: maskeleme ve üretim bayrakları
+    # Subtest: maskeci kullanıcı adını ve parolayı (uzunu önce) her yerde siler
+    ok 1 - maskeci kullanıcı adını ve parolayı (uzunu önce) her yerde siler
+      ---
+      duration_ms: 0.29361
+      type: 'test'
+      ...
+    # Subtest: düzenek bayrakları server/server.mjs'ten okur: e-Belge, canlı ve e-SMM açık (yorum satırlarındaki örnekler sayılmaz)
+    ok 2 - düzenek bayrakları server/server.mjs'ten okur: e-Belge, canlı ve e-SMM açık (yorum satırlarındaki örnekler sayılmaz)
+      ---
+      duration_ms: 0.637
+      type: 'test'
+      ...
+    1..2
+ok 5 - D4/D6: maskeleme ve üretim bayrakları
+  ---
+  duration_ms: 1.082677
+  type: 'suite'
+  ...
+# Subtest: D8: resmî PDF'te düzenleyenin unvanı
+    # Subtest: e-SMM'de VKN'li düzenleyende BİLGİ (denetim değil); e-SMM'de TCKN'li düzenleyende ve e-Arşiv / e-Fatura'da denetim
+    ok 1 - e-SMM'de VKN'li düzenleyende BİLGİ (denetim değil); e-SMM'de TCKN'li düzenleyende ve e-Arşiv / e-Fatura'da denetim
+      ---
+      duration_ms: 0.272756
+      type: 'test'
+      ...
+    1..1
+ok 6 - D8: resmî PDF'te düzenleyenin unvanı
+  ---
+  duration_ms: 0.43334
+  type: 'suite'
+  ...
+# Subtest: Kuru koşu (sahte EDM): betik uçtan uca
+    # Subtest: bütün adımlar geçer; 5 e-SMM + 2 e-Arşiv gönderilir, 1 iptal; OZET kullanıcıya numaraları ve test portalını verir; kimlik bilgisi hiçbir dosyada ve ekranda yok
+    ok 1 - bütün adımlar geçer; 5 e-SMM + 2 e-Arşiv gönderilir, 1 iptal; OZET kullanıcıya numaraları ve test portalını verir; kimlik bilgisi hiçbir dosyada ve ekranda yok
+      ---
+      duration_ms: 1217.911911
+      type: 'test'
+      ...
+    # Subtest: D3: parola yanlışsa betik giriş adımında HEMEN durur — tek Login, yeniden deneme yok, başka hiçbir EDM isteği yok; çıkış 2
+    ok 2 - D3: parola yanlışsa betik giriş adımında HEMEN durur — tek Login, yeniden deneme yok, başka hiçbir EDM isteği yok; çıkış 2
+      ---
+      duration_ms: 747.813926
+      type: 'test'
+      ...
+    # Subtest: D5/D7: önceki özetin üzerine --uzerine-yaz olmadan yazılmaz; kimlik bilgisi yoksa hiçbir istek yapılmaz (çıkış 4)
+    ok 3 - D5/D7: önceki özetin üzerine --uzerine-yaz olmadan yazılmaz; kimlik bilgisi yoksa hiçbir istek yapılmaz (çıkış 4)
+      ---
+      duration_ms: 938.9965
+      type: 'test'
+      ...
+    1..3
+ok 7 - Kuru koşu (sahte EDM): betik uçtan uca
+  ---
+  duration_ms: 2905.009147
+  type: 'suite'
+  ...
+# Subtest: --eszamanli: yardımcılar
+    # Subtest: ardisikNumara boşluğu ve tekrarı bulur; soapIslemi işlem adını gövdeden okur
+    ok 1 - ardisikNumara boşluğu ve tekrarı bulur; soapIslemi işlem adını gövdeden okur
+      ---
+      duration_ms: 0.571031
+      type: 'test'
+      ...
+    # Subtest: izleyici en çok eşzamanlı isteği ve işlem sayısını yazar, hatayı aynen yükseltir
+    ok 2 - izleyici en çok eşzamanlı isteği ve işlem sayısını yazar, hatayı aynen yükseltir
+      ---
+      duration_ms: 3.582767
+      type: 'test'
+      ...
+    # Subtest: bağımsız okuyucu (programın EDM istemcisinden ayrı): kendi girişi, GetSMM YALNIZ ETTN ile, EDM'nin kaydındaki numarayı okur; olmayan ETTN 0 kayıt; yanlış parola giriş hatası
+    ok 3 - bağımsız okuyucu (programın EDM istemcisinden ayrı): kendi girişi, GetSMM YALNIZ ETTN ile, EDM'nin kaydındaki numarayı okur; olmayan ETTN 0 kayıt; yanlış parola giriş hatası
+      ---
+      duration_ms: 16.570494
+      type: 'test'
+      ...
+    1..3
+ok 8 - --eszamanli: yardımcılar
+  ---
+  duration_ms: 20.981416
+  type: 'suite'
+  ...
+# Subtest: --eszamanli: kuru koşu (sahte EDM)
+    # Subtest: zorla araya girme: bütün adımlar geçer, ön koşul GERÇEKTEN oluştu (sahte EDM'de ≥ 10 SendSMM aynı anda, önbellek soğuk); giriş tek uçuş (Login 1, N4); 30 belge, TES ardışık; OZET tablosu; kimlik bilgisi yok
+    ok 1 - zorla araya girme: bütün adımlar geçer, ön koşul GERÇEKTEN oluştu (sahte EDM'de ≥ 10 SendSMM aynı anda, önbellek soğuk); giriş tek uçuş (Login 1, N4); 30 belge, TES ardışık; OZET tablosu; kimlik bilgisi yok
+      ---
+      duration_ms: 10816.017885
+      type: 'test'
+      ...
+    # Subtest: N4 EDM davranışları (gerçek EDM'de görülen eşzamanlı giriş reddi; tek oturumlu EDM): tek uçuş girişle 20/20 iletilir, çakışan giriş yok, çıkış 0
+    ok 2 - N4 EDM davranışları (gerçek EDM'de görülen eşzamanlı giriş reddi; tek oturumlu EDM): tek uçuş girişle 20/20 iletilir, çakışan giriş yok, çıkış 0
+      ---
+      duration_ms: 21742.905996
+      type: 'test'
+      ...
+    # Subtest: testin dişi: sahte EDM'ye enjekte edilen her hata düzeneği KIRMIZI yapar, neden iletide (kayıp, çift kayıt, yanlış durum, askı)
+    ok 3 - testin dişi: sahte EDM'ye enjekte edilen her hata düzeneği KIRMIZI yapar, neden iletide (kayıp, çift kayıt, yanlış durum, askı)
+      ---
+      duration_ms: 16902.078125
+      type: 'test'
+      ...
+    # Subtest: hata enjeksiyonu / zorla / kısa zaman aşımı gerçek kipte ya da --eszamanli'siz reddedilir; hiçbir istek yapılmaz, çıktı klasörü açılmaz (çıkış 4)
+    ok 4 - hata enjeksiyonu / zorla / kısa zaman aşımı gerçek kipte ya da --eszamanli'siz reddedilir; hiçbir istek yapılmaz, çıktı klasörü açılmaz (çıkış 4)
+      ---
+      duration_ms: 218.045005
+      type: 'test'
+      ...
+    1..4
+ok 9 - --eszamanli: kuru koşu (sahte EDM)
+  ---
+  duration_ms: 49679.462351
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: özet satırları
+    # Subtest: node:test TAP ve spec biçimleri; son özet alınır
+    ok 1 - node:test TAP ve spec biçimleri; son özet alınır
+      ---
+      duration_ms: 2.294992
+      type: 'test'
+      ...
+    # Subtest: projedeki arayüz senaryosu biçimleri
+    ok 2 - projedeki arayüz senaryosu biçimleri
+      ---
+      duration_ms: 2.595882
+      type: 'test'
+      ...
+    # Subtest: mutabakat ve güvenilirlik koşucuları; yarıda kalan tohum iptal sayılır
+    ok 3 - mutabakat ve güvenilirlik koşucuları; yarıda kalan tohum iptal sayılır
+      ---
+      duration_ms: 0.613837
+      type: 'test'
+      ...
+    # Subtest: defter kâhini (test:kahin-defter): fark, atlanan/reddedilen olay ve yakalanmayan mutasyon başarısız sayılır
+    ok 4 - defter kâhini (test:kahin-defter): fark, atlanan/reddedilen olay ve yakalanmayan mutasyon başarısız sayılır
+      ---
+      duration_ms: 0.648954
+      type: 'test'
+      ...
+    # Subtest: tanınmayan ya da boş çıktı özet sayılmaz
+    ok 5 - tanınmayan ya da boş çıktı özet sayılmaz
+      ---
+      duration_ms: 0.413517
+      type: 'test'
+      ...
+    1..5
+ok 10 - kanıt aracı: özet satırları
+  ---
+  duration_ms: 10.644164
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: hüküm
+    # Subtest: GEÇTİ yalnız çıkış 0 + özet temiz + en az bir test
+    ok 1 - GEÇTİ yalnız çıkış 0 + özet temiz + en az bir test
+      ---
+      duration_ms: 0.285999
+      type: 'test'
+      ...
+    # Subtest: çıkış kodu ile özet çelişirse ÇELİŞKİ (geçmedi)
+    ok 2 - çıkış kodu ile özet çelişirse ÇELİŞKİ (geçmedi)
+      ---
+      duration_ms: 0.466024
+      type: 'test'
+      ...
+    # Subtest: başarısız, yarıda, başlatılamayan
+    ok 3 - başarısız, yarıda, başlatılamayan
+      ---
+      duration_ms: 0.589278
+      type: 'test'
+      ...
+    1..3
+ok 11 - kanıt aracı: hüküm
+  ---
+  duration_ms: 1.712474
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: komut kabuksuz çalışır (Windows'ta argüman bölünmez)
+    # Subtest: Linux/macOS: komut olduğu gibi
+    ok 1 - Linux/macOS: komut olduğu gibi
+      ---
+      duration_ms: 0.61953
+      type: 'test'
+      ...
+    # Subtest: Windows: node → bu Node; npm/npx → bu Node'un npm-cli.js/npx-cli.js'i; .cmd/.bat reddedilir
+    ok 2 - Windows: node → bu Node; npm/npx → bu Node'un npm-cli.js/npx-cli.js'i; .cmd/.bat reddedilir
+      ---
+      duration_ms: 1.226977
+      type: 'test'
+      ...
+    # Subtest: gerçek: bu platformda npm aracın içinden çalışır (çıkış 0; özet olmadığı için BELİRSİZ)
+    ok 3 - gerçek: bu platformda npm aracın içinden çalışır (çıkış 0; özet olmadığı için BELİRSİZ)
+      ---
+      duration_ms: 190.869269
+      type: 'test'
+      ...
+    1..3
+ok 12 - kanıt aracı: komut kabuksuz çalışır (Windows'ta argüman bölünmez)
+  ---
+  duration_ms: 193.042786
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: gerçek koşu kaydı
+    # Subtest: alt klasörlü ad: klasör yoksa açılır, kayıt ve ham çıktı alt klasöre yazılır
+    ok 1 - alt klasörlü ad: klasör yoksa açılır, kayıt ve ham çıktı alt klasöre yazılır
+      ---
+      duration_ms: 119.331457
+      type: 'test'
+      ...
+    # Subtest: geçen komut: çıkış 0, kayıt GEÇTİ, ham çıktı ve sha256 yazılır
+    ok 2 - geçen komut: çıkış 0, kayıt GEÇTİ, ham çıktı ve sha256 yazılır
+      ---
+      duration_ms: 110.942249
+      type: 'test'
+      ...
+    # Subtest: özetinde başarısız olan ama 0 ile çıkan komut GEÇMEZ (çelişki), araç 1 döner
+    ok 3 - özetinde başarısız olan ama 0 ile çıkan komut GEÇMEZ (çelişki), araç 1 döner
+      ---
+      duration_ms: 129.353544
+      type: 'test'
+      ...
+    # Subtest: özetsiz 0 çıkış BELİRSİZ; 3 ile çıkan komut BAŞARISIZ ve gerçek kodu kaydedilir
+    ok 4 - özetsiz 0 çıkış BELİRSİZ; 3 ile çıkan komut BAŞARISIZ ve gerçek kodu kaydedilir
+      ---
+      duration_ms: 261.544714
+      type: 'test'
+      ...
+    # Subtest: kapı kanıt klasöründeki kayıt olmayan JSON'u (kâhin fark/ham çıktısı) yok sayar, çökmez (Uzun Doğrulama 19.10.2026)
+    ok 5 - kapı kanıt klasöründeki kayıt olmayan JSON'u (kâhin fark/ham çıktısı) yok sayar, çökmez (Uzun Doğrulama 19.10.2026)
+      ---
+      duration_ms: 173.583096
+      type: 'test'
+      ...
+    1..5
+ok 13 - kanıt aracı: gerçek koşu kaydı
+  ---
+  duration_ms: 795.117668
+  type: 'suite'
+  ...
+# Subtest: yalnız belge değişen commit (ci.yml paths-ignore, kullanıcı kararı 13.10.2026)
+    # Subtest: yalnız CLAUDE.md değişen commit: hüküm koşusu olan ata commit'ten (YEŞİL)
+    ok 1 - yalnız CLAUDE.md değişen commit: hüküm koşusu olan ata commit'ten (YEŞİL)
+      ---
+      duration_ms: 0.831544
+      type: 'test'
+      ...
+    # Subtest: ata commit kırmızıysa yalnız belge commit'i de KIRMIZI
+    ok 2 - ata commit kırmızıysa yalnız belge commit'i de KIRMIZI
+      ---
+      duration_ms: 0.153317
+      type: 'test'
+      ...
+    # Subtest: kod değişen commit'in koşusu yoksa ata kullanılmaz (BELİRSİZ)
+    ok 3 - kod değişen commit'in koşusu yoksa ata kullanılmaz (BELİRSİZ)
+      ---
+      duration_ms: 0.087289
+      type: 'test'
+      ...
+    # Subtest: testlerin okuduğu plan/kanıt belgesi yalnız belge sayılmaz
+    ok 4 - testlerin okuduğu plan/kanıt belgesi yalnız belge sayılmaz
+      ---
+      duration_ms: 0.084144
+      type: 'test'
+      ...
+    # Subtest: ci.yml push paths-ignore listesi BELGE_YOLLARI ile aynı; pull_request süzgeçsiz
+    ok 5 - ci.yml push paths-ignore listesi BELGE_YOLLARI ile aynı; pull_request süzgeçsiz
+      ---
+      duration_ms: 0.353095
+      type: 'test'
+      ...
+    1..5
+ok 14 - yalnız belge değişen commit (ci.yml paths-ignore, kullanıcı kararı 13.10.2026)
+  ---
+  duration_ms: 1.703845
+  type: 'suite'
+  ...
+# Subtest: doğrulama kapısı: CI okuma (yalnız ci.yml, kapı işi şart)
+    # Subtest: bütün işler başarılı ve kapı işi var → YEŞİL
+    ok 1 - bütün işler başarılı ve kapı işi var → YEŞİL
+      ---
+      duration_ms: 0.199102
+      type: 'test'
+      ...
+    # Subtest: Windows işi kırmızı → KIRMIZI (Linux yeşili yetmez)
+    ok 2 - Windows işi kırmızı → KIRMIZI (Linux yeşili yetmez)
+      ---
+      duration_ms: 0.142562
+      type: 'test'
+      ...
+    # Subtest: atlanan iş yeşil sayılmaz
+    ok 3 - atlanan iş yeşil sayılmaz
+      ---
+      duration_ms: 0.105094
+      type: 'test'
+      ...
+    # Subtest: kapı işi olmayan (eski) commit YEŞİL değil
+    ok 4 - kapı işi olmayan (eski) commit YEŞİL değil
+      ---
+      duration_ms: 0.068924
+      type: 'test'
+      ...
+    # Subtest: koşu sürüyorsa, listedeki işler yeşil olsa da BEKLİYOR
+    ok 5 - koşu sürüyorsa, listedeki işler yeşil olsa da BEKLİYOR
+      ---
+      duration_ms: 0.055447
+      type: 'test'
+      ...
+    # Subtest: aynı commit'in ikinci koşusu kırmızıysa YEŞİL değil
+    ok 6 - aynı commit'in ikinci koşusu kırmızıysa YEŞİL değil
+      ---
+      duration_ms: 0.13585
+      type: 'test'
+      ...
+    # Subtest: başka iş akışlarının koşuları (ör. yayın) hükme girmez
+    ok 7 - başka iş akışlarının koşuları (ör. yayın) hükme girmez
+      ---
+      duration_ms: 0.103324
+      type: 'test'
+      ...
+    # Subtest: GitHub okunamazsa ya da koşu yoksa BELİRSİZ (asla YEŞİL değil)
+    ok 8 - GitHub okunamazsa ya da koşu yoksa BELİRSİZ (asla YEŞİL değil)
+      ---
+      duration_ms: 0.095836
+      type: 'test'
+      ...
+    1..8
+ok 15 - doğrulama kapısı: CI okuma (yalnız ci.yml, kapı işi şart)
+  ---
+  duration_ms: 1.026263
+  type: 'suite'
+  ...
+# Subtest: doğrulama kapısı: CI'deki kapı işinin hükmü
+    # Subtest: dört platform + e2e, aynı sayı, bu commit → geçer
+    ok 1 - dört platform + e2e, aynı sayı, bu commit → geçer
+      ---
+      duration_ms: 0.286035
+      type: 'test'
+      ...
+    # Subtest: Windows kaydı yoksa geçmez
+    ok 2 - Windows kaydı yoksa geçmez
+      ---
+      duration_ms: 0.083437
+      type: 'test'
+      ...
+    # Subtest: çelişkili kayıt (çıkış 0, özette başarısız) geçmez
+    ok 3 - çelişkili kayıt (çıkış 0, özette başarısız) geçmez
+      ---
+      duration_ms: 0.18707
+      type: 'test'
+      ...
+    # Subtest: Windows Linux'tan az test koştuysa geçmez
+    ok 4 - Windows Linux'tan az test koştuysa geçmez
+      ---
+      duration_ms: 0.154995
+      type: 'test'
+      ...
+    # Subtest: atlanan test varsa geçmez (o platformda doğrulanmadı)
+    ok 5 - atlanan test varsa geçmez (o platformda doğrulanmadı)
+      ---
+      duration_ms: 0.085095
+      type: 'test'
+      ...
+    # Subtest: başka commit'te ya da değişmiş ağaçta koşan kayıt geçmez
+    ok 6 - başka commit'te ya da değişmiş ağaçta koşan kayıt geçmez
+      ---
+      duration_ms: 0.107021
+      type: 'test'
+      ...
+    # Subtest: işin kendisi kırmızıysa (needs) kayıtlar temiz olsa da geçmez
+    ok 7 - işin kendisi kırmızıysa (needs) kayıtlar temiz olsa da geçmez
+      ---
+      duration_ms: 0.053751
+      type: 'test'
+      ...
+    # Subtest: aynı adla iki kayıt (biri eski) geçmez
+    ok 8 - aynı adla iki kayıt (biri eski) geçmez
+      ---
+      duration_ms: 0.078822
+      type: 'test'
+      ...
+    1..8
+ok 16 - doğrulama kapısı: CI'deki kapı işinin hükmü
+  ---
+  duration_ms: 1.165282
+  type: 'suite'
+  ...
+# Subtest: doğrulama kapısı: Stop kancası ve imzalı paket kapısı
+    # Subtest: her şey yeşilse kanca durdurmaz
+    ok 1 - her şey yeşilse kanca durdurmaz
+      ---
+      duration_ms: 0.325245
+      type: 'test'
+      ...
+    # Subtest: CI sürerken/kırmızıyken kanca yanıtı BİR KEZ durdurur ve gerçek durumu verir
+    ok 2 - CI sürerken/kırmızıyken kanca yanıtı BİR KEZ durdurur ve gerçek durumu verir
+      ---
+      duration_ms: 0.228503
+      type: 'test'
+      ...
+    # Subtest: CI yeşil ama gönderilmemiş commit ya da değişmiş dosya varsa kanca durdurur
+    ok 3 - CI yeşil ama gönderilmemiş commit ya da değişmiş dosya varsa kanca durdurur
+      ---
+      duration_ms: 0.247994
+      type: 'test'
+      ...
+    # Subtest: imzalı paket kapısı: değişmiş/izlenmeyen dosya ya da yeşil olmayan CI → ret; temiz + YEŞİL → izin
+    ok 4 - imzalı paket kapısı: değişmiş/izlenmeyen dosya ya da yeşil olmayan CI → ret; temiz + YEŞİL → izin
+      ---
+      duration_ms: 0.16591
+      type: 'test'
+      ...
+    # Subtest: tools/release.mjs CI/git okunamayınca anahtarı okumadan reddeder (atlatma seçeneği yok)
+    ok 5 - tools/release.mjs CI/git okunamayınca anahtarı okumadan reddeder (atlatma seçeneği yok)
+      ---
+      duration_ms: 67.39171
+      type: 'test'
+      ...
+    1..5
+ok 17 - doğrulama kapısı: Stop kancası ve imzalı paket kapısı
+  ---
+  duration_ms: 68.60123
+  type: 'suite'
+  ...
+# Subtest: doğrulama kapısı: kanca komutu (Stop / SubagentStop)
+    # Subtest: kancayı tetikleyen klasör (ajanın worktree'si) git deposu değilse durdurur ve nedenini yazar; ikinci denemede bırakır
+    ok 1 - kancayı tetikleyen klasör (ajanın worktree'si) git deposu değilse durdurur ve nedenini yazar; ikinci denemede bırakır
+      ---
+      duration_ms: 122.367497
+      type: 'test'
+      ...
+    # Subtest: depodaki .claude/settings.json Stop ve SubagentStop kancasını bu komuta bağlar
+    ok 2 - depodaki .claude/settings.json Stop ve SubagentStop kancasını bu komuta bağlar
+      ---
+      duration_ms: 0.672673
+      type: 'test'
+      ...
+    1..2
+ok 18 - doğrulama kapısı: kanca komutu (Stop / SubagentStop)
+  ---
+  duration_ms: 123.185167
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: çağrıldığı klasörde koşar (başka worktree'den çağrılınca ana depo değil)
+    # Subtest: komut ve commit, aracın deposu değil çağrılan klasörün deposu
+    ok 1 - komut ve commit, aracın deposu değil çağrılan klasörün deposu
+      ---
+      duration_ms: 203.426231
+      type: 'test'
+      ...
+    1..1
+ok 19 - kanıt aracı: çağrıldığı klasörde koşar (başka worktree'den çağrılınca ana depo değil)
+  ---
+  duration_ms: 203.588958
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: başarısız testlerin adı, yeri ve hatası
+    # Subtest: gerçek node --test (tap): yalnız en içteki düşen testler, üst grup adıyla; yer ve hata; çıktının sonunda
+    ok 1 - gerçek node --test (tap): yalnız en içteki düşen testler, üst grup adıyla; yer ve hata; çıktının sonunda
+      ---
+      duration_ms: 156.001621
+      type: 'test'
+      ...
+    # Subtest: gerçek node --test (spec): yalnız en içteki düşen testler, üst grup adıyla; yer ve hata; çıktının sonunda
+    ok 2 - gerçek node --test (spec): yalnız en içteki düşen testler, üst grup adıyla; yer ve hata; çıktının sonunda
+      ---
+      duration_ms: 154.774233
+      type: 'test'
+      ...
+    # Subtest: Windows yolu kısaltılır; senaryo koşucusunun ✗ satırları; geçen koşuda liste boş
+    ok 3 - Windows yolu kısaltılır; senaryo koşucusunun ✗ satırları; geçen koşuda liste boş
+      ---
+      duration_ms: 1.84949
+      type: 'test'
+      ...
+    # Subtest: kapı özeti başarısız testleri adıyla yazar
+    ok 4 - kapı özeti başarısız testleri adıyla yazar
+      ---
+      duration_ms: 45.446849
+      type: 'test'
+      ...
+    1..4
+ok 20 - kanıt aracı: başarısız testlerin adı, yeri ve hatası
+  ---
+  duration_ms: 358.376187
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: ci --bekle push'tan hemen sonra koşunun oluşmasını bekler
+    # Subtest: sürüyor ya da henüz koşu yok → bekle; GitHub okunamadı, YEŞİL, KIRMIZI → bekleme
+    ok 1 - sürüyor ya da henüz koşu yok → bekle; GitHub okunamadı, YEŞİL, KIRMIZI → bekleme
+      ---
+      duration_ms: 0.291393
+      type: 'test'
+      ...
+    1..1
+ok 21 - kanıt aracı: ci --bekle push'tan hemen sonra koşunun oluşmasını bekler
+  ---
+  duration_ms: 0.420775
+  type: 'suite'
+  ...
+# Subtest: gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+ok 22 - gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+  ---
+  duration_ms: 6.981939
+  type: 'test'
+  ...
+# Subtest: aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+ok 23 - aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+  ---
+  duration_ms: 119.726062
+  type: 'test'
+  ...
+# Subtest: gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+ok 24 - gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+  ---
+  duration_ms: 2.056006
+  type: 'test'
+  ...
+# Subtest: iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+ok 25 - iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+  ---
+  duration_ms: 0.501827
+  type: 'test'
+  ...
+# Subtest: lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+ok 26 - lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+  ---
+  duration_ms: 1.121747
+  type: 'test'
+  ...
+# Subtest: platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+    # Subtest: taranan dosya var
+    ok 1 - taranan dosya var
+      ---
+      duration_ms: 0.61898
+      type: 'test'
+      ...
+    # Subtest: import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+    ok 2 - import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+      ---
+      duration_ms: 130.60307
+      type: 'test'
+      ...
+    # Subtest: new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+    ok 3 - new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+      ---
+      duration_ms: 145.037915
+      type: 'test'
+      ...
+    # Subtest: signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+    ok 4 - signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+      ---
+      duration_ms: 142.202863
+      type: 'test'
+      ...
+    # Subtest: path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+    ok 5 - path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+      ---
+      duration_ms: 300.160436
+      type: 'test'
+      ...
+    1..5
+ok 27 - platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+  ---
+  duration_ms: 719.709941
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+    # Subtest: dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+    ok 1 - dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+      ---
+      duration_ms: 46.292768
+      type: 'test'
+      ...
+    1..1
+ok 28 - platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+  ---
+  duration_ms: 46.487959
+  type: 'suite'
+  ...
+# Subtest: YAPIM AŞAMASI kapısı (yapimAsamasiGate)
+    # Subtest: dolu liste → ret; ileti kayıt sayısını ve paket dağılımını söyler
+    ok 1 - dolu liste → ret; ileti kayıt sayısını ve paket dağılımını söyler
+      ---
+      duration_ms: 1.657649
+      type: 'test'
+      ...
+    # Subtest: CRLF satır sonlu dolu liste de ret (ders 27)
+    ok 2 - CRLF satır sonlu dolu liste de ret (ders 27)
+      ---
+      duration_ms: 0.320027
+      type: 'test'
+      ...
+    # Subtest: boş liste → geçer (LF ve CRLF)
+    ok 3 - boş liste → geçer (LF ve CRLF)
+      ---
+      duration_ms: 0.469988
+      type: 'test'
+      ...
+    # Subtest: dosya yok / bozuk JSON / kayitlar dizisi yok → ret (okunamayan boş sayılmaz, ders 4)
+    ok 4 - dosya yok / bozuk JSON / kayitlar dizisi yok → ret (okunamayan boş sayılmaz, ders 4)
+      ---
+      duration_ms: 0.738924
+      type: 'test'
+      ...
+    # Subtest: kapı cari kâhininin okuduğu dosyayı denetler (aynı yol)
+    ok 5 - kapı cari kâhininin okuduğu dosyayı denetler (aynı yol)
+      ---
+      duration_ms: 1.44236
+      type: 'test'
+      ...
+    1..5
+ok 29 - YAPIM AŞAMASI kapısı (yapimAsamasiGate)
+  ---
+  duration_ms: 5.591583
+  type: 'suite'
+  ...
+# Subtest: tools/release.mjs YAPIM AŞAMASI kapısı
+    # Subtest: depodaki liste doluysa (ya da okunamıyorsa) paket aracı anahtarı okumadan reddeder ve listeyi söyler; boşsa liste iletisi yok
+    ok 1 - depodaki liste doluysa (ya da okunamıyorsa) paket aracı anahtarı okumadan reddeder ve listeyi söyler; boşsa liste iletisi yok
+      ---
+      duration_ms: 59.345429
+      type: 'test'
+      ...
+    # Subtest: release.mjs kapıyı atlatma seçeneği vermez (liste yolu dışarıdan verilemez)
+    ok 2 - release.mjs kapıyı atlatma seçeneği vermez (liste yolu dışarıdan verilemez)
+      ---
+      duration_ms: 0.66872
+      type: 'test'
+      ...
+    1..2
+ok 30 - tools/release.mjs YAPIM AŞAMASI kapısı
+  ---
+  duration_ms: 61.533445
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 91.449327
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 7.053793
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 2.851978
+      type: 'test'
+      ...
+    # Subtest: Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+    ok 4 - Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+      ---
+      duration_ms: 5.016423
+      type: 'test'
+      ...
+    # Subtest: mobil görünümde (client/mobil) kurala uymayan ad yok
+    ok 5 - mobil görünümde (client/mobil) kurala uymayan ad yok
+      ---
+      duration_ms: 4.364575
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 6 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 38.837477
+      type: 'test'
+      ...
+    1..6
+ok 31 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 151.100853
+  type: 'suite'
+  ...
+1..31
+# tests 95
+# suites 26
+# pass 95
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 56185.597987

@@ -1,0 +1,16 @@
+1d1fb364c74db47fec348b66eda7d2bb0e82ac4a57825cc088a3dd1d065c82fb  kural249-eski.log
+1d1fb364c74db47fec348b66eda7d2bb0e82ac4a57825cc088a3dd1d065c82fb  kural249-yeni.log
+b63ee3f92b1e08db9c38c193ce3250421893847d93dbfcab7ab5e717e9717ff6  kural249-eski.ozet.json
+b63ee3f92b1e08db9c38c193ce3250421893847d93dbfcab7ab5e717e9717ff6  kural249-yeni.ozet.json
+d6c9bc93988be8105721e6f5ddb404b4da0e739a311463ac102339d228639d21  legacy-eski.log
+d6c9bc93988be8105721e6f5ddb404b4da0e739a311463ac102339d228639d21  legacy-yeni.log
+c097ab673a776aed257ba4f65e11f720a9d0bad3b8702f0de788f218adca0cc4  legacy-eski.ozet.json
+c097ab673a776aed257ba4f65e11f720a9d0bad3b8702f0de788f218adca0cc4  legacy-yeni.ozet.json
+kural249 eski cikis 1
+kural249 yeni cikis 1
+kural249 cikti AYNI
+kural249 ozet.json AYNI
+legacy eski cikis 1
+legacy yeni cikis 1
+legacy cikti AYNI
+legacy ozet.json AYNI
