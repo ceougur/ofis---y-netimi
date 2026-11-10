@@ -1,0 +1,39 @@
+{
+ "dil": "destekofis-cari/3",
+ "bugun": "2026-06-16",
+ "aciklama": "2.5.0 bakım 5 C17 — d22'nin adımları, bugün 16.06 (GÜN DÖNÜMÜ): dünkü avans 'overdue' −1 ve gecikmiş 400; öbürleri bir gün daha geride.",
+ "dayanak": "KARARLAR.md §17 Y5-6; S96 A, S93 A (ertesi günden gecikmiş)",
+ "elleBeklenen": {
+  "k1:takvim:hareket:v0o": {"amount": 40000, "dueDate": "2026-06-15", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -1, "cari": "V0", "person": "Vedat Bugün"},
+  "k1:cari:V0:gecikmis": 40000,
+  "k1:takvim:hareket:v1o": {"amount": 20000, "dueDate": "2026-06-10", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -6, "cari": "V1", "person": "Volkan Avans"},
+  "k1:cari:V1:gecikmis": 20000,
+  "k1:projeksiyon:hareket:v0o": {"amount": 40000, "date": "2026-06-15", "direction": "in"},
+  "k1:takvim:cariKalemSayisi": 5
+ },
+ "adimlar": [
+  {"id": "cv0", "islem": "cari_ac", "ad": "V0", "isim": "Vedat Bugün", "tarih": "2026-04-01"},
+  {"id": "v0o", "islem": "odeme", "cari": "V0", "tutar": "400", "tarih": "2026-06-15"},
+  {"id": "cv1", "islem": "cari_ac", "ad": "V1", "isim": "Volkan Avans", "tarih": "2026-04-01", "tur": "tedarikci"},
+  {"id": "v1f", "islem": "fatura", "ad": "V1F", "cari": "V1", "tur": "alis", "tutar": "300", "tarih": "2026-06-01"},
+  {"id": "v1o", "islem": "odeme", "cari": "V1", "tutar": "500", "tarih": "2026-06-10"},
+  {"id": "cv2", "islem": "cari_ac", "ad": "V2", "isim": "Vural Kapanan", "tarih": "2026-04-01", "tur": "tedarikci"},
+  {"id": "v2o", "islem": "odeme", "cari": "V2", "tutar": "300", "tarih": "2026-06-01"},
+  {"id": "v2f", "islem": "fatura", "ad": "V2F", "cari": "V2", "tur": "alis", "tutar": "300", "tarih": "2026-06-05"},
+  {"id": "cv3", "islem": "cari_ac", "ad": "V3", "isim": "Veysel Bağ", "tarih": "2026-04-01", "tur": "tedarikci"},
+  {"id": "v3f", "islem": "fatura", "ad": "V3F", "cari": "V3", "tur": "alis", "tutar": "200", "tarih": "2026-06-01"},
+  {"id": "v3o", "islem": "odeme", "cari": "V3", "tutar": "350", "tarih": "2026-06-08", "fatura": "V3F"},
+  {"id": "cv4", "islem": "cari_ac", "ad": "V4", "isim": "Vildan Müşteri", "tarih": "2026-04-01"},
+  {"id": "v4b", "islem": "borc", "cari": "V4", "tutar": "500", "tarih": "2026-06-01", "vade": "2026-06-30"},
+  {"id": "v4o", "islem": "odeme", "cari": "V4", "tutar": "100", "tarih": "2026-06-05"},
+  {"id": "cv5", "islem": "cari_ac", "ad": "V5", "isim": "Vahit Sıra", "tarih": "2026-04-01"},
+  {"id": "v5o", "islem": "odeme", "cari": "V5", "tutar": "200", "tarih": "2026-06-01"},
+  {"id": "v5b", "islem": "borc", "cari": "V5", "tutar": "100", "tarih": "2026-06-03", "vade": "2026-06-30"},
+  {"id": "v5t", "islem": "tahsilat", "cari": "V5", "tutar": "150", "tarih": "2026-06-10"},
+  {"id": "cv6", "islem": "cari_ac", "ad": "V6", "isim": "Vasfi Silinen", "tarih": "2026-04-01"},
+  {"id": "v6o", "islem": "odeme", "cari": "V6", "tutar": "250", "tarih": "2026-06-02"},
+  {"id": "v6s", "islem": "hareket_sil", "hareket": "v6o"},
+  {"id": "k1", "islem": "kontrol", "gecikmis": true, "gorunumToplam": true, "acikToplam": true}
+ ],
+ "ad": "d23-c5-s96-avans-ertesi-gun"
+}

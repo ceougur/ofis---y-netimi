@@ -1,7 +1,7 @@
 {
  "dil": "destekofis-cari/3",
  "ad": "d19-c5-s92-okuma-ayrisan",
- "aciklama": "2.5.0 bakım 4 C16.2 tanım alanı ve okuma birliği — kâhinin SUSTUĞU durumlar (KULLANICIYA SORULMALI SK-6 / SK-8; bugün 15.04): net görünüm denetimleri (Kalan, takvim, Vade Takip, projeksiyon, gecikmiş, açık toplam, sayaçlar) YAZILMAZ, `belirsiz`'e yazılır; saklanan alanlar, bakiye ve faturanın belge durumu yazılır. N1 (SK-6 örnek 1): Borç 10.000 (vade 31.03) + Alacak 6.000 (10.03) netleştikten SONRA biz 6.000 ödedik (12.03) — tek aşama: Borç 4.000 + ödeme 6.000 ayrı açık kalem ↔ iki aşama: Borç 10.000. N2 (SK-6 örnek 2): Borç 1.000 + Alacak 300 + sonradan tahsilat 800 — Alacak 0 + avans 100 ↔ Alacak 100 açık. N3 aynı durum faturalarla: satış 1.000 + alış 400 + bağsız tahsilat 800 — belge durumu yazılır (satış Açık 200, alış Açık 400), fatura takvim kalemleri yazılmaz. N4 tanım alanı dışı: Mevcut Borç kartlı caride karşı yönlü kalem (Açılış 900 kartta + Alacak 200). N5 (SK-8 a) AYNI GÜN Borç 1.000, Alacak 300, tahsilat 1.000 — önce kalemler netleşirse Alacak 0 + avans 300 ↔ önce borç tarafı işlenirse Alacak 300 açık. N6 (SK-8 b) tek yönde: verilen avans satırı 200 (01.03) + açık Borç 100 + sonradan tahsilat 150 — tahsilat önce hangisine.",
+ "aciklama": "2.5.0 bakım 4 C16.2 tanım alanı ve okuma birliği — kâhinin SUSTUĞU durumlar (KULLANICIYA SORULMALI SK-6 / SK-8; bugün 15.04): net görünüm denetimleri (Kalan, takvim, Vade Takip, projeksiyon, gecikmiş, açık toplam, sayaçlar) YAZILMAZ, `belirsiz`'e yazılır; saklanan alanlar, bakiye ve faturanın belge durumu yazılır. N1 (SK-6 örnek 1): Borç 10.000 (vade 31.03) + Alacak 6.000 (10.03) netleştikten SONRA biz 6.000 ödedik (12.03) — tek aşama: Borç 4.000 + ödeme 6.000 ayrı açık kalem ↔ iki aşama: Borç 10.000. N2 (SK-6 örnek 2): Borç 1.000 + Alacak 300 + sonradan tahsilat 800 — Alacak 0 + avans 100 ↔ Alacak 100 açık. N3 aynı durum faturalarla: satış 1.000 + alış 400 + bağsız tahsilat 800 — belge durumu yazılır (satış Açık 200, alış Açık 400), fatura takvim kalemleri yazılmaz. N4 tanım alanı dışı: Mevcut Borç kartlı caride karşı yönlü kalem (Açılış 900 kartta + Alacak 200). N5 (SK-8 a) AYNI GÜN Borç 1.000, Alacak 300, tahsilat 1.000 — önce kalemler netleşirse Alacak 0 + avans 300 ↔ önce borç tarafı işlenirse Alacak 300 açık. N6 (SK-8 b) tek yönde: verilen avans satırı 200 (01.03) + açık Borç 100 + sonradan tahsilat 150 — tahsilat önce hangisine. — BAKIM 5 (§17, S95 / S96 / S97 / S98 = A): N1 S95 → Borç 10.000 vade 31.03 (bugün 15.04 gecikmiş 10.000), Alacak 0. N2 S95 → Borç 0, Alacak 100. N3 faturalarla → net satış 0, alış 200 (belge 200 / 400 aynen). N5 S97 → Alacak 0 + müşterinin 300 avansı. N6 S98 → avans 50 + Borç 100, gecikmiş 50 (avans). N4 tanım alanı dışı (susar); sayaçlar N4 yüzünden yazılmaz.",
  "dayanak": "KARARLAR.md §16 C16.2 (tanım alanı, okuma birliği); SK-6, SK-8",
  "bugun": "2026-04-15",
  "adimlar": [
@@ -31,29 +31,45 @@
   {"id": "k1", "islem": "kontrol", "gecikmis": true, "gorunumToplam": true, "acikToplam": true}
  ],
  "elleBeklenen": {
-  "k1:cari:N1:bakiye": 1000000, "k1:hareket:n1b:vade": "2026-03-31", "k1:hareket:n1b:var": true,
+  "k1:cari:N1:bakiye": 1000000,
+  "k1:hareket:n1b:vade": "2026-03-31",
+  "k1:hareket:n1b:var": true,
   "k1:cari:N2:bakiye": -10000,
-  "k1:cari:N3:bakiye": -20000, "k1:fatura:NF:acik": 20000, "k1:fatura:NAF:acik": 40000,
-  "k1:cari:N4:bakiye": 70000, "k1:hareket:n4a:vade": "2026-04-30",
+  "k1:cari:N3:bakiye": -20000,
+  "k1:fatura:NF:acik": 20000,
+  "k1:fatura:NAF:acik": 40000,
+  "k1:cari:N4:bakiye": 70000,
+  "k1:hareket:n4a:vade": "2026-04-30",
   "k1:cari:N5:bakiye": -30000,
-  "k1:cari:N6:bakiye": 15000
+  "k1:cari:N6:bakiye": 15000,
+  "k1:hareket:n1b:kalan": 1000000,
+  "k1:hareket:n1a:kalan": 0,
+  "k1:takvim:hareket:n1b": {"amount": 1000000, "dueDate": "2026-03-31", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -15, "cari": "N1", "person": "Nazan Sonradan"},
+  "k1:vadeTakip:hareket:n1b": {"amount": 1000000, "date": "2026-03-31", "direction": "in"},
+  "k1:projeksiyon:hareket:n1b": {"amount": 1000000, "date": "2026-03-31", "direction": "in"},
+  "k1:cari:N1:gecikmis": 1000000,
+  "k1:cari:N1:acikToplam": 1000000,
+  "k1:takvim:cariToplam:N1": 1000000,
+  "k1:takvim:hareket:n1o": "yok",
+  "k1:hareket:n2b:kalan": 0,
+  "k1:hareket:n2a:kalan": 10000,
+  "k1:takvim:hareket:n2a": "yok",
+  "k1:cari:N2:gecikmis": 0,
+  "k1:takvim:fatura:NF": "yok",
+  "k1:takvim:fatura:NAF": {"amount": 20000, "direction": "out"},
+  "k1:vadeTakip:fatura:NF": "yok",
+  "k1:cari:N3:gecikmis": 0,
+  "k1:cari:N3:acikToplam": -20000,
+  "k1:hareket:n5b:kalan": 0,
+  "k1:hareket:n5a:kalan": 0,
+  "k1:cari:N5:gecikmis": 0,
+  "k1:hareket:n6b:kalan": 10000,
+  "k1:takvim:hareket:n6b": "yok",
+  "k1:cari:N6:gecikmis": 5000,
+  "k1:takvim:hareket:n6o": {"amount": 5000, "dueDate": "2026-03-01", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -45, "cari": "N6", "person": "Nedim Karışık"}
  },
- "elleYok": [
-  "k1:hareket:n1b:kalan", "k1:hareket:n1a:kalan", "k1:takvim:hareket:n1b", "k1:vadeTakip:hareket:n1b", "k1:projeksiyon:hareket:n1b", "k1:cari:N1:gecikmis", "k1:cari:N1:acikToplam", "k1:takvim:cariToplam:N1",
-  "k1:hareket:n2b:kalan", "k1:hareket:n2a:kalan", "k1:takvim:hareket:n2a", "k1:cari:N2:gecikmis",
-  "k1:takvim:fatura:NF", "k1:takvim:fatura:NAF", "k1:vadeTakip:fatura:NF", "k1:cari:N3:gecikmis", "k1:cari:N3:acikToplam",
-  "k1:hareket:acilis:N4:kalan", "k1:hareket:n4a:kalan", "k1:takvim:hareket:n4a", "k1:cari:N4:gecikmis",
-  "k1:hareket:n5b:kalan", "k1:hareket:n5a:kalan", "k1:cari:N5:gecikmis",
-  "k1:hareket:n6b:kalan", "k1:takvim:hareket:n6b", "k1:cari:N6:gecikmis",
-  "k1:takvim:cariKalemSayisi", "k1:projeksiyon:cari"
- ],
+ "elleYok": ["k1:hareket:acilis:N4:kalan", "k1:hareket:n4a:kalan", "k1:takvim:hareket:n4a", "k1:cari:N4:gecikmis", "k1:takvim:cariKalemSayisi", "k1:projeksiyon:cari"],
  "elleBelirsiz": [
-  ["cari N1 net görünüm tanımsız", "okumalar ayrışıyor"],
-  ["cari N1 gecikmiş tutarı tanımsız"],
-  ["cari N2 net görünüm tanımsız", "okumalar ayrışıyor"],
-  ["cari N3 net görünüm tanımsız", "okumalar ayrışıyor"],
-  ["cari N4 net görünüm tanımsız", "taksit kartı"],
-  ["cari N5 net görünüm tanımsız", "okumalar ayrışıyor"],
-  ["cari N6 net görünüm tanımsız", "verilen avans satırı"]
+  ["cari N4 net görünüm tanımsız", "taksit kartı"]
  ]
 }

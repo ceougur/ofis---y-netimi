@@ -1,0 +1,52 @@
+{
+ "dil": "destekofis-cari/3",
+ "bugun": "2026-03-15",
+ "aciklama": "2.5.0 bakım 5 C17 (KULLANICI S98 = A, 10.11 13:20; bugün 15.03): avans da kalemdir, vade (= ödeme günü) sırasına girer. R1 kararın örneği: Ödeme 200 (01.03), Borç 100 (vade 20.03), tahsilat 150 → avans 50 + Borç 100 açık. R2 sınır: Borç vadesi 02.03 (avanstan bir gün SONRA) → yine önce avans. R3 aynı örnek satış faturasıyla: takvim / gecikmiş net, faturanın BELGE durumu YAZILMAZ (SK-13). R4 vadesiz Borç avanstan ÖNCE (20.02) → önce Borç kapanır, avans 150.",
+ "dayanak": "KARARLAR.md §17 Y5-2, Y5-6; S98 A",
+ "elleBeklenen": {
+  "k1:cari:R1:bakiye": 15000,
+  "k1:hareket:r1b:kalan": 10000,
+  "k1:takvim:hareket:r1b": {"amount": 10000, "dueDate": "2026-03-20", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "upcoming", "days": 5, "cari": "R1", "person": "Rana Örnek"},
+  "k1:takvim:hareket:r1o": {"amount": 5000, "dueDate": "2026-03-01", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -14, "cari": "R1", "person": "Rana Örnek"},
+  "k1:cari:R1:gecikmis": 5000,
+  "k1:takvim:cariToplam:R1": 15000,
+  "k1:cari:R2:bakiye": 15000,
+  "k1:hareket:r2b:kalan": 10000,
+  "k1:takvim:hareket:r2b": {"amount": 10000, "dueDate": "2026-03-02", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -13, "cari": "R2", "person": "Rıza Sınır"},
+  "k1:takvim:hareket:r2o": {"amount": 5000, "dueDate": "2026-03-01", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -14, "cari": "R2", "person": "Rıza Sınır"},
+  "k1:cari:R2:gecikmis": 15000,
+  "k1:cari:R3:bakiye": 15000,
+  "k1:takvim:fatura:R3F": {"amount": 10000, "direction": "in"},
+  "k1:takvim:hareket:r3o": {"amount": 5000, "dueDate": "2026-03-01", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -14, "cari": "R3", "person": "Remzi Fatura"},
+  "k1:cari:R3:gecikmis": 15000,
+  "k1:cari:R4:bakiye": 15000,
+  "k1:hareket:r4b:kalan": 0,
+  "k1:takvim:hareket:r4o": {"amount": 15000, "dueDate": "2026-03-01", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -14, "cari": "R4", "person": "Rüya Önce"},
+  "k1:cari:R4:gecikmis": 15000,
+  "k1:takvim:cariKalemSayisi": 6
+ },
+ "elleYok": ["k1:fatura:R3F:acik", "k1:cari:R3:acikToplam"],
+ "elleBelirsiz": [
+  ["cari R3 fatura belge durumu tanımsız", "SK-13"]
+ ],
+ "adimlar": [
+  {"id": "cr1", "islem": "cari_ac", "ad": "R1", "isim": "Rana Örnek", "tarih": "2026-02-01"},
+  {"id": "r1o", "islem": "odeme", "cari": "R1", "tutar": "200", "tarih": "2026-03-01"},
+  {"id": "r1b", "islem": "borc", "cari": "R1", "tutar": "100", "tarih": "2026-03-05", "vade": "2026-03-20"},
+  {"id": "r1t", "islem": "tahsilat", "cari": "R1", "tutar": "150", "tarih": "2026-03-10"},
+  {"id": "cr2", "islem": "cari_ac", "ad": "R2", "isim": "Rıza Sınır", "tarih": "2026-02-01"},
+  {"id": "r2b", "islem": "borc", "cari": "R2", "tutar": "100", "tarih": "2026-02-25", "vade": "2026-03-02"},
+  {"id": "r2o", "islem": "odeme", "cari": "R2", "tutar": "200", "tarih": "2026-03-01"},
+  {"id": "r2t", "islem": "tahsilat", "cari": "R2", "tutar": "150", "tarih": "2026-03-05"},
+  {"id": "cr3", "islem": "cari_ac", "ad": "R3", "isim": "Remzi Fatura", "tarih": "2026-02-01"},
+  {"id": "r3o", "islem": "odeme", "cari": "R3", "tutar": "200", "tarih": "2026-03-01"},
+  {"id": "r3f", "islem": "fatura", "ad": "R3F", "cari": "R3", "tutar": "100", "tarih": "2026-03-05"},
+  {"id": "r3t", "islem": "tahsilat", "cari": "R3", "tutar": "150", "tarih": "2026-03-10"},
+  {"id": "cr4", "islem": "cari_ac", "ad": "R4", "isim": "Rüya Önce", "tarih": "2026-02-01"},
+  {"id": "r4b", "islem": "borc", "cari": "R4", "tutar": "100", "tarih": "2026-02-20"},
+  {"id": "r4o", "islem": "odeme", "cari": "R4", "tutar": "200", "tarih": "2026-03-01"},
+  {"id": "r4t", "islem": "tahsilat", "cari": "R4", "tutar": "150", "tarih": "2026-03-05"},
+  {"id": "k1", "islem": "kontrol", "gecikmis": true, "gorunumToplam": true, "acikToplam": true}
+ ],
+ "ad": "d25-c5-s98-avans-sirasi"
+}

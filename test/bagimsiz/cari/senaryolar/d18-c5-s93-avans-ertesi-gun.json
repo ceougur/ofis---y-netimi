@@ -1,7 +1,7 @@
 {
  "dil": "destekofis-cari/3",
  "ad": "d18-c5-s93-avans-ertesi-gun",
- "aciklama": "2.5.0 bakım 4 C16.3 — GÜN DÖNÜMÜ: d17 ile AYNI adımlar, bugün 16.06 (bir gün sonra). TB'nin dün verilen avansı (400) bugün vadesi geçmiş: gecikmiş 400 (d17'de 0 — avans ödeme GÜNÜ gecikmiş değildir, ertesi gün gecikmiştir; M1f / S1). Öbür cariler d17 ile aynı (T 200, TS 100, TK 0, TG 150, TA1 600, TA2 0, MU 100 — vadesi 30.06 olan Borç hâlâ gecikmiş değil —, MA 0, TR 0).",
+ "aciklama": "2.5.0 bakım 4 C16.3 — GÜN DÖNÜMÜ: d17 ile AYNI adımlar, bugün 16.06 (bir gün sonra). TB'nin dün verilen avansı (400) bugün vadesi geçmiş: gecikmiş 400 (d17'de 0 — avans ödeme GÜNÜ gecikmiş değildir, ertesi gün gecikmiştir; M1f / S1). Öbür cariler d17 ile aynı (T 200, TS 100, TK 0, TG 150, TA1 600, TA2 0, MU 100 — vadesi 30.06 olan Borç hâlâ gecikmiş değil —, MA 0, TR 0). — BAKIM 5 (§17, S96 = A): sayaç kesin 6; TB avans kalemi 'overdue' −1.",
  "dayanak": "KARARLAR.md §16 C16.3, C16.4",
  "bugun": "2026-06-16",
  "adimlar": [
@@ -35,7 +35,8 @@
  ],
  "elleBeklenen": {
   "k1:cari:T:gecikmis": 20000,
-  "k1:cari:TB:gecikmis": 40000, "k1:cari:TB:bakiye": 40000,
+  "k1:cari:TB:gecikmis": 40000,
+  "k1:cari:TB:bakiye": 40000,
   "k1:cari:TS:gecikmis": 10000,
   "k1:cari:TK:gecikmis": 0,
   "k1:cari:TG:gecikmis": 15000,
@@ -44,6 +45,7 @@
   "k1:cari:MU:gecikmis": 10000,
   "k1:cari:MA:gecikmis": 0,
   "k1:cari:TR:gecikmis": 0,
-  "k1:takvim:cariKalemSayisi": {"catal": [0, 1, 2, 3, 4, 5, 6]}
+  "k1:takvim:cariKalemSayisi": 6,
+  "k1:takvim:hareket:ob": {"amount": 40000, "dueDate": "2026-06-15", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -1, "cari": "TB", "person": "Tuna Bugün"}
  }
 }
