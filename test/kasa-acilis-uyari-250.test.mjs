@@ -129,16 +129,17 @@ describe("Ç5-K tur 2 — Silinenler'den geri gelen açılış öncesi Kasa hare
   });
 
   it("tarama 'yeni sapma' kaydı ve zili üretmez — Mutabakat Testi (iş parçacığında da), sayı ARTINCA da (ikinci geri yükleme)", async () => {
-    const scans = () => server.app.store.get("SELECT COUNT(*) AS n FROM integrity_log WHERE action = 'scan'").n;
-    assert.equal(scans(), 0, "Mutabakat Testi'nden sonra 'scan' kaydı yok");
+    // Önce hepsi gözlenir, sonra tek karşılaştırma (kırmızıda bütün farklar birlikte okunur — ders 38).
+    const scans = () => server.app.store.all("SELECT summary FROM integrity_log WHERE action = 'scan'").map(row => row.summary);
+    const seen = { ilkTaramaGunlugu: scans() };
     await restoreFromTrash(api, ids.c2);
-    const integrity = await integrityOf(api);
-    assert.equal(noticeOf(integrity)?.count, 2, "sayı arttı");
+    seen.sayi = noticeOf(await integrityOf(api))?.count;
     const background = await server.app.integrity.scanInBackground();
-    assert.deepEqual(background?.findings?.map(item => item.code) ?? background, [], `arka plan taraması (iş parçacığı) yeni sapma bulmaz: ${JSON.stringify(background).slice(0, 300)}`);
-    assert.equal(scans(), 0, "sayı artınca da 'scan' kaydı yok");
-    assert.equal(alerts.length, 0, `zil (integrity.alert) yok: ${JSON.stringify(alerts)}`);
-    assert.deepEqual(first.lines.filter(line => /yeni sapma|sapma var/.test(line)), [], "sunucu günlüğünde 'sapma' yok");
+    seen.isParcacigi = background?.findings?.map(item => item.code) ?? background;
+    seen.taramaGunlugu = scans();
+    seen.zil = alerts.map(item => item.findings.map(finding => finding.code));
+    seen.sunucuGunlugu = first.lines.filter(line => /yeni sapma|sapma var/.test(line));
+    assert.deepEqual(seen, { ilkTaramaGunlugu: [], sayi: 2, isParcacigi: [], taramaGunlugu: [], zil: [], sunucuGunlugu: [] }, "uyarı 'yeni sapma' sayılmaz (sayı 1 → 2 artarken de)");
   });
 
   it("Defter Mutabakatı (ekran verisi, PDF, Excel aynı): satır 'Uyarı'; Sonuç 'Tutarlı' (Fark Var DEĞİL); alt başlık uyarıyı ve ne yapılacağını söyler, 'yöneticiye bildirin' / 'eski sürümden kalan' demez", async () => {
@@ -174,17 +175,20 @@ describe("Ç5-K tur 2 — Silinenler'den geri gelen açılış öncesi Kasa hare
     const second = capture();
     server = await startTestServer({ dataDir, backupDir, now: { time: NOW, fixed: true }, gateVerify: false, log: second.log });
     api = apiOf(await loginAdmin(server));
-    assert.deepEqual(second.lines.filter(line => /Mutabakat/.test(line)), [], `açılışta Mutabakat günlüğü yok: ${second.lines.join(" | ")}`);
-    const logRows = server.app.store.all("SELECT action, summary FROM integrity_log");
-    assert.deepEqual(logRows.filter(row => row.summary.includes(NAME)), [], `Mutabakat Günlüğü'nde uyarı yok: ${JSON.stringify(logRows)}`);
     const paths = [];
     for (const [k, date] of [AFTER, OPEN, AFTER].entries()) {
       await must(`Kasa Giriş ${k + 1}`, api.post("/api/workspace/cash", { kind: "in", amount: "1", date, description: `sonra ${k + 1}`, method: "cash" }));
       const gate = server.app.integrity.stats().gate;
       paths.push(`${gate.path}${gate.reason ? ` (${gate.reason})` : ""}`);
     }
-    assert.deepEqual(paths, ["scoped", "scoped", "scoped"], "açılıştan sonraki nakit yazımlarının kapı yolu");
-    assert.equal(noticeOf(await integrityOf(api))?.count, 2, "uyarı sürer");
+    // Önce hepsi gözlenir, sonra tek karşılaştırma (kırmızıda bütün farklar birlikte okunur — ders 38).
+    const seen = {
+      sunucuGunlugu: second.lines.filter(line => /Mutabakat/.test(line)),
+      mutabakatGunlugu: server.app.store.all("SELECT action, summary FROM integrity_log WHERE action = 'baseline'").filter(row => row.summary.includes(NAME)).map(row => `${row.action}: ${row.summary}`),
+      kapiYolu: paths,
+      uyari: noticeOf(await integrityOf(api))?.count,
+    };
+    assert.deepEqual(seen, { sunucuGunlugu: [], mutabakatGunlugu: [], kapiYolu: ["scoped", "scoped", "scoped"], uyari: 2 }, "yeniden açılış: günlük yok, açılıştan sonraki nakit yazımları süzgeçli yolda, uyarı sürer");
   });
 
   it("uyarı gerçeği GİZLEMEZ: gerçek sapma (kapının görmediği tanınmayan ödeme yolu) + uyarı → sapma 'Fark Var' + 'yöneticiye bildirin', taramada günlük + zil YALNIZ sapma için; uyarı satırı yine 'Uyarı'", async () => {

@@ -110,17 +110,21 @@ describe("D2 tur 3 — arşivin yanında işlenmemiş günlük: arşiv 'değişm
       const entryBefore = JSON.stringify(server.app.companies.archiveOf(ROOT_COMPANY_ID, "2025"));
       const printBefore = folderPrint(made);
       const opened = await admin.get("/api/workspace/cash?hofArchive=2025");
-      assert.deepEqual([opened.status, opened.data?.code], [409, "archive-changed"], `işlenmemiş günlüklü eski şemalı arşiv göç ettirilmez: ${opened.status} ${JSON.stringify(opened.data).slice(0, 300)}`);
-      assert.match(String(opened.data?.error || ""), /işlenmemiş günlük dosyası var: destekofis\.sqlite-wal/, "ileti nedeni söyler");
       const verified = unwrap(await admin.post("/api/admin/devir/archives/verify", { company: ROOT_COMPANY_ID, year: "2025" }));
-      assert.equal(verified?.state, "changed", `Doğrula: ${JSON.stringify(verified)}`);
       const row = await archiveRow(admin);
-      assert.deepEqual([row?.status, row?.statusLabel], ["changed", "Değişmiş"], `Yönetim listesi: ${JSON.stringify(row)}`);
-      assert.equal(JSON.stringify(server.app.companies.archiveOf(ROOT_COMPANY_ID, "2025")), entryBefore, "kayıt değişmedi (bekleyen özet yok, göç bilgisi yok)");
+      const entryAfter = JSON.stringify(server.app.companies.archiveOf(ROOT_COMPANY_ID, "2025"));
       await close();
-      assert.deepEqual(folderPrint(made), printBefore, "ana dosya, -wal ve klasör (göç öncesi kopya / çalışma kopyası yok) değişmedi");
-      assert.deepEqual(readView(made.file), view, "WAL'daki kesinleşmiş kayıt ve satır sayısı aynı");
-      assert.equal(schemaOf(made.file), made.schemaVersion, "dosya göç etmedi");
+      // Önce hepsi gözlenir, sonra tek karşılaştırma (kırmızıda bütün farklar — veri kaybı dahil — birlikte okunur; ders 38).
+      const seen = {
+        acilis: [opened.status, opened.data?.code, /işlenmemiş günlük dosyası var: destekofis\.sqlite-wal/.test(String(opened.data?.error || ""))],
+        dogrula: verified?.state,
+        liste: [row?.status, row?.statusLabel],
+        kayitAyni: entryAfter === entryBefore,
+        klasor: folderPrint(made),
+        veri: readView(made.file),
+        sema: schemaOf(made.file),
+      };
+      assert.deepEqual(seen, { acilis: [409, "archive-changed", true], dogrula: "changed", liste: ["changed", "Değişmiş"], kayitAyni: true, klasor: printBefore, veri: view, sema: made.schemaVersion }, "göç etmez, yan dosya silinmez, WAL'daki kayıt kaybolmaz, kayıt değişmez");
     } finally {
       await close();
     }
@@ -235,20 +239,26 @@ describe("D2 tur 3 — arşivin yanında işlenmemiş günlük: arşiv 'değişm
         raced = { wal: size(`${made.file}-wal`), print: folderPrint(made), view: readView(made.file) };
       },
     });
+    let outcome;
+    let entry;
     try {
-      await assert.rejects(app.openArchive(app.companies.get(ROOT_COMPANY_ID), "2025"), error => error?.status === 409 && error?.extra?.code === "archive-changed" && /destekofis\.sqlite-wal/.test(error.message), "taşıma öncesi denetim: 409 archive-changed");
-      assert.ok(raced && raced.wal > 0, `ön koşul: WAL taşımadan önce belirdi (${JSON.stringify(raced?.wal)})`);
-      const entry = app.companies.archiveOf(ROOT_COMPANY_ID, "2025");
-      assert.deepEqual([entry.pendingSha256, entry.pendingFrom, entry.pendingAt, entry.schemaVersion], [undefined, undefined, undefined, made.schemaVersion], `kayıtta bekleyen özet kalmadı, göç bilgisi yok (${JSON.stringify(entry)})`);
-      assert.equal(entry.sha256, made.sha256, "kayıttaki özet ilk dosyanınki");
+      outcome = await app.openArchive(app.companies.get(ROOT_COMPANY_ID), "2025").then(() => "açıldı", error => `${error?.status} ${error?.extra?.code || ""} ${/destekofis\.sqlite-wal/.test(String(error?.message)) ? "(neden: -wal)" : String(error?.message).slice(0, 120)}`);
+      entry = app.companies.archiveOf(ROOT_COMPANY_ID, "2025");
     } finally {
       await app.close();
     }
+    assert.ok(raced && raced.wal > 0, `ön koşul: WAL taşımadan önce belirdi (${JSON.stringify(raced?.wal)})`);
     const print = folderPrint(made);
-    assert.equal(print.ana, raced.print.ana, "ana dosya taşınmadı / değişmedi");
-    assert.equal(print.wal, raced.print.wal, "-wal silinmedi, değişmedi");
-    assert.deepEqual(print.adlar.filter(name => name.startsWith(MIGRATION_WORK_FILE)), [], "çalışma kopyası silindi");
-    assert.deepEqual(readView(made.file), raced.view, "WAL'daki kesinleşmiş kayıt duruyor");
+    // Önce hepsi gözlenir, sonra tek karşılaştırma (kırmızıda bütün farklar — veri kaybı dahil — birlikte okunur; ders 38).
+    const seen = {
+      sonuc: outcome,
+      kayit: [entry?.pendingSha256, entry?.pendingFrom, entry?.pendingAt, entry?.schemaVersion, entry?.sha256 === made.sha256],
+      anaDosyaAyni: print.ana === raced.print.ana,
+      walAyni: print.wal === raced.print.wal,
+      calismaKopyasi: print.adlar.filter(name => name.startsWith(MIGRATION_WORK_FILE)),
+      veri: readView(made.file),
+    };
+    assert.deepEqual(seen, { sonuc: "409 archive-changed (neden: -wal)", kayit: [undefined, undefined, undefined, made.schemaVersion, true], anaDosyaAyni: true, walAyni: true, calismaKopyasi: [], veri: raced.view }, "taşınmaz, silinmez, WAL'daki kayıt kaybolmaz; bekleyen özet geri alındı");
   });
 });
 
