@@ -3,12 +3,13 @@
 """Kâhin bakımı 7 (cari) — G1 taraması: elle senaryolarda seriden numara alan belge adımlarının (satış faturası — `fatura` tur ≠ alis, taslak dahil — ve `iade`)
 senaryo içindeki TARİH SIRASI. Program AÇILMAZ; yalnız senaryo dosyaları okunur.
 
-  python3 -I g1-tara.py <senaryolar klasörü> [--sert]
+  python3 -I g1-tara.py <senaryolar klasörü> [--sert] [--ihlal-bekle]
 
 Okuma (girdi G1): "aynı fatura serisinde belgeleri TARİH SIRASIYLA kabul eder … bütün fatura (ve seriden numara alan iade) adımları, hangi cariye ait olursa olsun,
 tarih sırasıyla (eşit ya da artan) girilmelidir." Alış faturası satıcının numarasıyla girilir (koşucu `number` verir — kos.mjs eşlemesi) → seriden numara ALMAZ; yine de
 `--sert` ile alış da aynı dizide sayılır (bilgi için ayrı satır). Tarih = adımın `tarih`'i, yoksa senaryonun `bugun`'ü (koşucunun kuralı).
-Çıktı: senaryo başına ihlal (önceki en büyük tarih > bu adımın tarihi). Son satır "N/M denetim geçti" (ihlalsiz senaryo / senaryo)."""
+Çıktı: senaryo başına ihlal (önceki en büyük tarih > bu adımın tarihi). Son satır "N/M denetim geçti" (ihlalsiz senaryo / senaryo). `--ihlal-bekle` (ESKİ kopyada — testin dişi): çıkış
+kodu tersine döner — en az bir ihlal varsa 0; son satır ihlalli senaryo sayısını "geçen" yazar."""
 import json
 import os
 import sys
@@ -59,6 +60,13 @@ if __name__ == "__main__":
                 print("  (bilgi, --sert: alış dahil) %s: %s" % (f, "; ".join("adım %d %s %s < %s (%s)" % (i, aid, t, enb, eid) for i, aid, t, eid, enb in s)))
     print("G1 TARAMASI (satış faturası + iade, senaryo içi tarih sırası): %d senaryo ihlalsiz, %d ihlalli%s" % (gecen, kalan, "; --sert ile yalnız alış yüzünden ihlalli %d" % len(sert_kalan) if SERT else ""))
     toplam = gecen + kalan
+    if "--ihlal-bekle" in sys.argv:
+        print("ESKİ KOPYA (beklenen: ihlal > 0): %d ihlalli senaryo" % kalan)
+        print("# tests %d" % max(1, kalan))
+        print("# pass %d" % kalan)
+        print("# fail %d" % (0 if kalan else 1))
+        print("%d/%d denetim geçti" % (kalan, max(1, kalan)))
+        sys.exit(0 if kalan else 1)
     print("# tests %d" % toplam)
     print("# pass %d" % gecen)
     print("# fail %d" % kalan)
