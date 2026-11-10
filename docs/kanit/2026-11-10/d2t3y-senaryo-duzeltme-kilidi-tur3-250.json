@@ -1,0 +1,32 @@
+{
+  "ad": "d2t3y-senaryo-duzeltme-kilidi-tur3-250",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-duzeltme-kilidi-tur3-250.mjs",
+  "commit": "44b85cb5e5667d4ea53479b6b7784022a48c6315",
+  "dal": "sinama-d2t3-ya",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T18:17:28.605Z",
+  "sure_sn": 94,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 110,
+    "gecen": 110,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../d2t3y-kanit/2026-11-10/d2t3y-senaryo-duzeltme-kilidi-tur3-250.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag",
+  "ham_cikti_sha256": "15e678761550727672110e05b2839a357e1105f13a25b8d7adfaf458b272b1e8",
+  "ham_cikti_bayt": 12549
+}

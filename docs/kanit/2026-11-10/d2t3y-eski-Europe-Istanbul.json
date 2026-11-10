@@ -1,0 +1,98 @@
+{
+  "ad": "d2t3y-eski-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/kasa-acilis-uyari-250.test.mjs test/kasa-acilis-iz-250.test.mjs test/devir-arsiv-wal-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T18:15:40.709Z",
+  "sure_sn": 8.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 23,
+    "gecen": 10,
+    "basarisiz": 13,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 13 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "D2 tur 3 — arşivin yanında işlenmemiş günlük: arşiv 'değişmiş' (K2), göç etmez, yan dosya silinmez (ORTA-2) › eski şemalı arşiv + işlenmemiş -wal (kesinleşmiş kayıt yalnız WAL'da) → 409 archive-changed; ana dosya, -wal, klasör ve kayıt DEĞİŞMEDİ; WAL'daki satır duruyor; göç öncesi kopya / çalışma kopyası oluşmadı; Doğrula ve liste 'Değişmiş'",
+      "konum": "test/devir-arsiv-wal-250.test.mjs:97:3",
+      "hata": "göç etmez, yan dosya silinmez, WAL'daki kayıt kaybolmaz, kayıt değişmez · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "D2 tur 3 — arşivin yanında işlenmemiş günlük: arşiv 'değişmiş' (K2), göç etmez, yan dosya silinmez (ORTA-2) › son şemalı arşiv + işlenmemiş -wal → salt okunur açılır, UYARI ile (değişmiş); WAL'daki satır arşivde GÖRÜNÜR (bugünkü davranış: salt okunur bağlantı WAL'ı uygular, işlemez); dosyalar değişmedi",
+      "konum": "test/devir-arsiv-wal-250.test.mjs:133:3",
+      "hata": "arşiv uyarısı: {\"code\":\"archive-read-only\",\"year\":\"2025\",\"cutoff\":\"2025-12-31\",\"message\":\"2025 arşivi yalnız görüntülenir; kayıt eklenemez, değiştirilemez, silinemez.\",\"warning\":\"\",\"schemaAhead\":false} (beklenen , gelen )"
+    },
+    {
+      "ad": "D2 tur 3 — arşivin yanında işlenmemiş günlük: arşiv 'değişmiş' (K2), göç etmez, yan dosya silinmez (ORTA-2) › sıcak -journal (yarıda kalmış yazım; salt okunur bağlantı geri alamaz) → 409 archive-changed (önceden 503 'dosya bozuk olabilir'); ana dosya ve -journal değişmedi, göç denenmedi",
+      "konum": "test/devir-arsiv-wal-250.test.mjs:163:3",
+      "hata": "503 {\"ok\":false,\"error\":\"“001 · Şirket 1” şirketinin 2025 arşivi açılamadı (dosya bozuk olabilir). Yönetici Devir Yedekleri'nden geri yükleyebilir.\",\"code\":\"archive-unreadable\"} · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "D2 tur 3 — arşivin yanında işlenmemiş günlük: arşiv 'değişmiş' (K2), göç etmez, yan dosya silinmez (ORTA-2) › göç sürerken (bekleyen özet yazıldıktan sonra, taşımadan önce) arşivin yanında işlenmemiş -wal belirirse: taşınmaz, silinmez → 409 archive-changed; ana dosya ve -wal değişmedi; kayıtta bekleyen özet kalmadı; çalışma kopyası silindi",
+      "konum": "test/devir-arsiv-wal-250.test.mjs:214:3",
+      "hata": "taşınmaz, silinmez, WAL'daki kayıt kaybolmaz; bekleyen özet geri alındı · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç5-K tur 2 DÜŞÜK-1 — aynı işlemde eklenip düzeltilen açılış öncesi nakit satırı: dış yazımdan sonra da YENİ hareket (RED / RED / RED; store düzeyi, dar kontrol p12) › 1) dış yazım yok → 409; 2) başka bağlantı ayar yazdıktan sonra → 409 (önceden KABUL); 3) hemen ardından → 409; 4) store dışı yazımdan sonra → 409; açılıştan önce tarihli satır yazılmadı",
+      "konum": "test/kasa-acilis-iz-250.test.mjs:112:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç5-K tur 2 DÜŞÜK-1 — aynı işlemde eklenip düzeltilen açılış öncesi nakit satırı: dış yazımdan sonra da YENİ hareket (RED / RED / RED; store düzeyi, dar kontrol p12) › işlem kapsamı: eklenen satırın iki kez düzeltilmesinde ilk yakalanan hâl 'eklendiği hâl' (born); işlemden önce var olan satırın önceki hâli born DEĞİL (lib/db.mjs sözleşmesi)",
+      "konum": "test/kasa-acilis-iz-250.test.mjs:134:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç5-K tur 2 DÜŞÜK-3 K6 — olaysız (eski sürüm biçimli) açılış öncesi kayıt tahsilatı Taksite Aktar ile karta taşınır: önceki hâl (d), yeni hareket SAYILMAZ › ön koşul: olaysız tahsilat açılıştan önce, uyarıda; Taksite Aktar 200 (paymentsMoved 1), karttaki satır aynı gün ve tutar, Kasa değişmez; Mutabakat Testi uyarı dışı sapma yok",
+      "konum": "test/kasa-acilis-iz-250.test.mjs:244:3",
+      "hata": "Taksite Aktar: 409 cash-before-opening {\"ok\":false,\"error\":\"İşlem tarihi (05.03.2026) Kasa açılışından (10.03.2026) önce; o günün nakdi Kasa açılış bakiyesinin içindedir, hareket iki kez sayılır. Tarihi Kasa açılış günü ya da sonrası yapın; hareket gerçekten açılıştan önceyse yönetici Kasa → Açılış Bakiyesi'nin tarihini öne alabilir.\",\"code\":\"cash-before-opening\",\"field\":\"date\",\"date\":\"2026-03-05\",\"openingDate\":\"2026-03-10\",\"row\":\"plan · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "Ç5-K tur 2 — Silinenler'den geri gelen açılış öncesi Kasa hareketi: uyarı SAPMA DEĞİL › Mutabakat Testi: denetim görünür (ok false, gizlenmez) ama UYARI işaretli (notice, severity warning); ne yapılacağı (hint) var, 'eski sürümden kalan' demez; örnek metni Kaynak · kimlik · tarih (K14); uyarı dışı sapma yok",
+      "konum": "test/kasa-acilis-uyari-250.test.mjs:117:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç5-K tur 2 — Silinenler'den geri gelen açılış öncesi Kasa hareketi: uyarı SAPMA DEĞİL › tarama 'yeni sapma' kaydı ve zili üretmez — Mutabakat Testi (iş parçacığında da), sayı ARTINCA da (ikinci geri yükleme)",
+      "konum": "test/kasa-acilis-uyari-250.test.mjs:131:3",
+      "hata": "uyarı 'yeni sapma' sayılmaz (sayı 1 → 2 artarken de) · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç5-K tur 2 — Silinenler'den geri gelen açılış öncesi Kasa hareketi: uyarı SAPMA DEĞİL › Defter Mutabakatı (ekran verisi, PDF, Excel aynı): satır 'Uyarı'; Sonuç 'Tutarlı' (Fark Var DEĞİL); alt başlık uyarıyı ve ne yapılacağını söyler, 'yöneticiye bildirin' / 'eski sürümden kalan' demez",
+      "konum": "test/kasa-acilis-uyari-250.test.mjs:145:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç5-K tur 2 — Silinenler'den geri gelen açılış öncesi Kasa hareketi: uyarı SAPMA DEĞİL › kapı: uyarının alanı yok — familyOf('cash:before-opening') = null (tam kapıyı tetiklemez)",
+      "konum": "test/kasa-acilis-uyari-250.test.mjs:169:3",
+      "hata": "Expected values to be strictly equal: · 'all' !== null (beklenen ~, gelen all)"
+    },
+    {
+      "ad": "Ç5-K tur 2 — Silinenler'den geri gelen açılış öncesi Kasa hareketi: uyarı SAPMA DEĞİL › program yeniden açılınca: açılış günlüğü / sunucu günlüğü 'sapma' yazmaz; açılıştan sonraki İLK nakit yazımı süzgeçli yolda (scoped), sonrakiler de",
+      "konum": "test/kasa-acilis-uyari-250.test.mjs:173:3",
+      "hata": "yeniden açılış: günlük yok, açılıştan sonraki nakit yazımları süzgeçli yolda, uyarı sürer · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç5-K tur 2 — Silinenler'den geri gelen açılış öncesi Kasa hareketi: uyarı SAPMA DEĞİL › uyarı gerçeği GİZLEMEZ: gerçek sapma (kapının görmediği tanınmayan ödeme yolu) + uyarı → sapma 'Fark Var' + 'yöneticiye bildirin', taramada günlük + zil YALNIZ sapma için; uyarı satırı yine 'Uyarı'",
+      "konum": "test/kasa-acilis-uyari-250.test.mjs:194:3",
+      "hata": "gerçek sapmalar sonuçta (sapma, uyarı değil) · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../d2t3y-kanit/2026-11-10/d2t3y-eski-Europe-Istanbul.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski",
+  "ham_cikti_sha256": "e47853823a7154d043cee0f9954d7995ff167526056da06bd3d8bfefdcb0c63b",
+  "ham_cikti_bayt": 35865
+}

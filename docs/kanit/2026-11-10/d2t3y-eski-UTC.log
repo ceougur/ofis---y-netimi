@@ -1,0 +1,766 @@
+TAP version 13
+# Subtest: D2 tur 3 — arşivin yanında işlenmemiş günlük: arşiv 'değişmiş' (K2), göç etmez, yan dosya silinmez (ORTA-2)
+    # Subtest: eski şemalı arşiv + işlenmemiş -wal (kesinleşmiş kayıt yalnız WAL'da) → 409 archive-changed; ana dosya, -wal, klasör ve kayıt DEĞİŞMEDİ; WAL'daki satır duruyor; göç öncesi kopya / çalışma kopyası oluşmadı; Doğrula ve liste 'Değişmiş'
+    not ok 1 - eski şemalı arşiv + işlenmemiş -wal (kesinleşmiş kayıt yalnız WAL'da) → 409 archive-changed; ana dosya, -wal, klasör ve kayıt DEĞİŞMEDİ; WAL'daki satır duruyor; göç öncesi kopya / çalışma kopyası oluşmadı; Doğrula ve liste 'Değişmiş'
+      ---
+      duration_ms: 566.108531
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/devir-arsiv-wal-250.test.mjs:97:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        göç etmez, yan dosya silinmez, WAL'daki kayıt kaybolmaz, kayıt değişmez
+        + actual - expected
+        
+          {
+            acilis: [
+        +     200,
+        +     undefined,
+        +     false
+        -     409,
+        -     'archive-changed',
+        -     true
+            ],
+        +   dogrula: 'ok',
+        +   kayitAyni: false,
+        -   dogrula: 'changed',
+        -   kayitAyni: true,
+            klasor: {
+              adlar: [
+                'arsiv-kaydi.json',
+                'destekofis.sqlite',
+        +       'goc-oncesi-v19.sqlite'
+        -       'destekofis.sqlite-shm',
+        -       'destekofis.sqlite-wal'
+              ],
+        +     ana: '3cc5338b7945546657e4d9e0e71fc0a36e25995a561616ab0726536561c6a81a',
+        -     ana: 'f98b7aeea1554f8c32a9dba9904d79c3276b27f63b08dca734ea7c24297b2ff0',
+              journal: null,
+        +     wal: null
+        -     wal: 'b96f98ece0c484c8927eec765090de0c6250eb51ac75621b2bce80697a903a2f'
+            },
+            liste: [
+        +     'ok',
+        +     'Doğrulandı'
+        -     'changed',
+        -     'Değişmiş'
+            ],
+        +   sema: 47,
+        -   sema: 19,
+            veri: {
+        +     isaret: null,
+        +     kasa: 55,
+        +     walSatiri: 0
+        -     isaret: 'WAL-DAKI-KAYIT',
+        -     kasa: 56,
+        -     walSatiri: 1
+            }
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        acilis:
+          0: 409
+          1: 'archive-changed'
+          2: true
+        dogrula: 'changed'
+        liste:
+          0: 'changed'
+          1: 'Değişmiş'
+        kayitAyni: true
+        klasor:
+          adlar:
+            0: 'arsiv-kaydi.json'
+            1: 'destekofis.sqlite'
+            2: 'destekofis.sqlite-shm'
+            3: 'destekofis.sqlite-wal'
+          ana: 'f98b7aeea1554f8c32a9dba9904d79c3276b27f63b08dca734ea7c24297b2ff0'
+          wal: 'b96f98ece0c484c8927eec765090de0c6250eb51ac75621b2bce80697a903a2f'
+          journal: ~
+        veri:
+          kasa: 56
+          walSatiri: 1
+          isaret: 'WAL-DAKI-KAYIT'
+        sema: 19
+      actual:
+        acilis:
+          0: 200
+          2: false
+        dogrula: 'ok'
+        liste:
+          0: 'ok'
+          1: 'Doğrulandı'
+        kayitAyni: false
+        klasor:
+          adlar:
+            0: 'arsiv-kaydi.json'
+            1: 'destekofis.sqlite'
+            2: 'goc-oncesi-v19.sqlite'
+          ana: '3cc5338b7945546657e4d9e0e71fc0a36e25995a561616ab0726536561c6a81a'
+          wal: ~
+          journal: ~
+        veri:
+          kasa: 55
+          walSatiri: 0
+          isaret: ~
+        sema: 47
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/devir-arsiv-wal-250.test.mjs:127:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: son şemalı arşiv + işlenmemiş -wal → salt okunur açılır, UYARI ile (değişmiş); WAL'daki satır arşivde GÖRÜNÜR (bugünkü davranış: salt okunur bağlantı WAL'ı uygular, işlemez); dosyalar değişmedi
+    not ok 2 - son şemalı arşiv + işlenmemiş -wal → salt okunur açılır, UYARI ile (değişmiş); WAL'daki satır arşivde GÖRÜNÜR (bugünkü davranış: salt okunur bağlantı WAL'ı uygular, işlemez); dosyalar değişmedi
+      ---
+      duration_ms: 353.5548
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/devir-arsiv-wal-250.test.mjs:133:3'
+      failureType: 'testCodeFailure'
+      error: 'arşiv uyarısı: {"code":"archive-read-only","year":"2025","cutoff":"2025-12-31","message":"2025 arşivi yalnız görüntülenir; kayıt eklenemez, değiştirilemez, silinemez.","warning":"","schemaAhead":false}'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: ''
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/devir-arsiv-wal-250.test.mjs:153:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: sıcak -journal (yarıda kalmış yazım; salt okunur bağlantı geri alamaz) → 409 archive-changed (önceden 503 'dosya bozuk olabilir'); ana dosya ve -journal değişmedi, göç denenmedi
+    not ok 3 - sıcak -journal (yarıda kalmış yazım; salt okunur bağlantı geri alamaz) → 409 archive-changed (önceden 503 'dosya bozuk olabilir'); ana dosya ve -journal değişmedi, göç denenmedi
+      ---
+      duration_ms: 385.067007
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/devir-arsiv-wal-250.test.mjs:163:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        503 {"ok":false,"error":"“001 · Şirket 1” şirketinin 2025 arşivi açılamadı (dosya bozuk olabilir). Yönetici Devir Yedekleri'nden geri yükleyebilir.","code":"archive-unreadable"}
+        + actual - expected
+        
+          [
+        +   503,
+        +   'archive-unreadable'
+        -   409,
+        -   'archive-changed'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 409
+        1: 'archive-changed'
+      actual:
+        0: 503
+        1: 'archive-unreadable'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/devir-arsiv-wal-250.test.mjs:178:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: BOŞ (0 bayt) -wal ve -shm kalıntısı zararsız: arşiv değişmiş SAYILMAZ, göç eder, uyarısız açılır; göçün sonucu yerine geçerken boş yan dosyalar silinir (D10)
+    ok 4 - BOŞ (0 bayt) -wal ve -shm kalıntısı zararsız: arşiv değişmiş SAYILMAZ, göç eder, uyarısız açılır; göçün sonucu yerine geçerken boş yan dosyalar silinir (D10)
+      ---
+      duration_ms: 458.3337
+      type: 'test'
+      ...
+    # Subtest: göç sürerken (bekleyen özet yazıldıktan sonra, taşımadan önce) arşivin yanında işlenmemiş -wal belirirse: taşınmaz, silinmez → 409 archive-changed; ana dosya ve -wal değişmedi; kayıtta bekleyen özet kalmadı; çalışma kopyası silindi
+    not ok 5 - göç sürerken (bekleyen özet yazıldıktan sonra, taşımadan önce) arşivin yanında işlenmemiş -wal belirirse: taşınmaz, silinmez → 409 archive-changed; ana dosya ve -wal değişmedi; kayıtta bekleyen özet kalmadı; çalışma kopyası silindi
+      ---
+      duration_ms: 531.308399
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/devir-arsiv-wal-250.test.mjs:214:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        taşınmaz, silinmez, WAL'daki kayıt kaybolmaz; bekleyen özet geri alındı
+        + actual - expected
+        
+          {
+        +   anaDosyaAyni: false,
+        -   anaDosyaAyni: true,
+            calismaKopyasi: [],
+            kayit: [
+              undefined,
+              undefined,
+              undefined,
+        +     47,
+        +     false
+        -     19,
+        -     true
+            ],
+        +   sonuc: 'açıldı',
+        -   sonuc: '409 archive-changed (neden: -wal)',
+            veri: {
+        +     isaret: null,
+        +     kasa: 55,
+        +     walSatiri: 0
+        -     isaret: 'WAL-DAKI-KAYIT',
+        -     kasa: 56,
+        -     walSatiri: 1
+            },
+        +   walAyni: false
+        -   walAyni: true
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        sonuc: '409 archive-changed (neden: -wal)'
+        kayit:
+          3: 19
+          4: true
+        anaDosyaAyni: true
+        walAyni: true
+        calismaKopyasi:
+        veri:
+          kasa: 56
+          walSatiri: 1
+          isaret: 'WAL-DAKI-KAYIT'
+      actual:
+        sonuc: 'açıldı'
+        kayit:
+          3: 47
+          4: false
+        anaDosyaAyni: false
+        walAyni: false
+        calismaKopyasi:
+        veri:
+          kasa: 55
+          walSatiri: 0
+          isaret: ~
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/devir-arsiv-wal-250.test.mjs:261:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 1 - D2 tur 3 — arşivin yanında işlenmemiş günlük: arşiv 'değişmiş' (K2), göç etmez, yan dosya silinmez (ORTA-2)
+  ---
+  duration_ms: 2296.086511
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/devir-arsiv-wal-250.test.mjs:96:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: D2 tur 3 — devir yedeği yarıda kesilen göçün geçici dosyalarını almaz (dar kontrol DÜŞÜK-4: D13, ürün yolundan)
+    # Subtest: göç 'bekleyen-yazildi' adımında SIGKILL → arşiv klasöründe çalışma kopyası + göç öncesi kopya; createDevirBackupFor yedeğinde ikisi de YOK, arşiv dosyası ve kaydı VAR; yedek doğrulaması tutar
+    ok 1 - göç 'bekleyen-yazildi' adımında SIGKILL → arşiv klasöründe çalışma kopyası + göç öncesi kopya; createDevirBackupFor yedeğinde ikisi de YOK, arşiv dosyası ve kaydı VAR; yedek doğrulaması tutar
+      ---
+      duration_ms: 933.669212
+      type: 'test'
+      ...
+    1..1
+ok 2 - D2 tur 3 — devir yedeği yarıda kesilen göçün geçici dosyalarını almaz (dar kontrol DÜŞÜK-4: D13, ürün yolundan)
+  ---
+  duration_ms: 937.95655
+  type: 'suite'
+  ...
+# Subtest: Ç5-K tur 2 DÜŞÜK-1 — aynı işlemde eklenip düzeltilen açılış öncesi nakit satırı: dış yazımdan sonra da YENİ hareket (RED / RED / RED; store düzeyi, dar kontrol p12)
+    # Subtest: 1) dış yazım yok → 409; 2) başka bağlantı ayar yazdıktan sonra → 409 (önceden KABUL); 3) hemen ardından → 409; 4) store dışı yazımdan sonra → 409; açılıştan önce tarihli satır yazılmadı
+    not ok 1 - 1) dış yazım yok → 409; 2) başka bağlantı ayar yazdıktan sonra → 409 (önceden KABUL); 3) hemen ardından → 409; 4) store dışı yazımdan sonra → 409; açılıştan önce tarihli satır yazılmadı
+      ---
+      duration_ms: 11.051236
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/kasa-acilis-iz-250.test.mjs:112:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            'RED cash-before-opening',
+        +   'KABUL',
+            'RED cash-before-opening',
+            'RED cash-before-opening',
+        -   'RED cash-before-opening'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'RED cash-before-opening'
+        1: 'RED cash-before-opening'
+        2: 'RED cash-before-opening'
+        3: 'RED cash-before-opening'
+      actual:
+        0: 'RED cash-before-opening'
+        1: 'KABUL'
+        2: 'RED cash-before-opening'
+        3: 'RED cash-before-opening'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/kasa-acilis-iz-250.test.mjs:130:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: işlem kapsamı: eklenen satırın iki kez düzeltilmesinde ilk yakalanan hâl 'eklendiği hâl' (born); işlemden önce var olan satırın önceki hâli born DEĞİL (lib/db.mjs sözleşmesi)
+    not ok 2 - işlem kapsamı: eklenen satırın iki kez düzeltilmesinde ilk yakalanan hâl 'eklendiği hâl' (born); işlemden önce var olan satırın önceki hâli born DEĞİL (lib/db.mjs sözleşmesi)
+      ---
+      duration_ms: 5.120868
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/kasa-acilis-iz-250.test.mjs:134:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            var: {
+              before: true,
+              born: false,
+              inserted: false
+            },
+            yeni: {
+        +     born: false,
+        +     inserted: false
+        -     born: true,
+        -     inserted: true
+            }
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        yeni:
+          born: true
+          inserted: true
+        var:
+          born: false
+          inserted: false
+          before: true
+      actual:
+        yeni:
+          born: false
+          inserted: false
+        var:
+          born: false
+          inserted: false
+          before: true
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/kasa-acilis-iz-250.test.mjs:157:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 3 - Ç5-K tur 2 DÜŞÜK-1 — aynı işlemde eklenip düzeltilen açılış öncesi nakit satırı: dış yazımdan sonra da YENİ hareket (RED / RED / RED; store düzeyi, dar kontrol p12)
+  ---
+  duration_ms: 400.640174
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/kasa-acilis-iz-250.test.mjs:102:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç5-K tur 2 DÜŞÜK-1 — bugünkü 19 API yolunda davranış değişmedi: açılıştan bir gün önce 409 (dış yazım yokken de, başka bağlantı yazdıktan hemen sonra da), aynı gün 200
+    # Subtest: açılıştan bir gün önce (2026-03-09), dış yazım yok: 19 yolun hepsi 409 cash-before-opening; hiçbir şey yazılmadı, Kasa aynı
+    ok 1 - açılıştan bir gün önce (2026-03-09), dış yazım yok: 19 yolun hepsi 409 cash-before-opening; hiçbir şey yazılmadı, Kasa aynı
+      ---
+      duration_ms: 131.352499
+      type: 'test'
+      ...
+    # Subtest: açılıştan bir gün önce (2026-03-09), her istekten hemen önce BAŞKA BAĞLANTI yazdı: 19 yolun hepsi 409 cash-before-opening; hiçbir şey yazılmadı, Kasa aynı
+    ok 2 - açılıştan bir gün önce (2026-03-09), her istekten hemen önce BAŞKA BAĞLANTI yazdı: 19 yolun hepsi 409 cash-before-opening; hiçbir şey yazılmadı, Kasa aynı
+      ---
+      duration_ms: 159.763631
+      type: 'test'
+      ...
+    # Subtest: açılış günü (2026-03-10), her istekten önce başka bağlantı yazdı: 19 yolun hepsi 200
+    ok 3 - açılış günü (2026-03-10), her istekten önce başka bağlantı yazdı: 19 yolun hepsi 200
+      ---
+      duration_ms: 341.1908
+      type: 'test'
+      ...
+    1..3
+ok 4 - Ç5-K tur 2 DÜŞÜK-1 — bugünkü 19 API yolunda davranış değişmedi: açılıştan bir gün önce 409 (dış yazım yokken de, başka bağlantı yazdıktan hemen sonra da), aynı gün 200
+  ---
+  duration_ms: 1114.592291
+  type: 'suite'
+  ...
+# Subtest: Ç5-K tur 2 DÜŞÜK-3 K5 — Kasa açılışı SİLİNİNCE önbellek düşer (açılışsız Kasa'da kural yok)
+    # Subtest: açılış 10.03 → 11.03 girişi (önbellek dolar) → 09.03 girişi 409 → açılış silinir → 09.03 girişi 200
+    ok 1 - açılış 10.03 → 11.03 girişi (önbellek dolar) → 09.03 girişi 409 → açılış silinir → 09.03 girişi 200
+      ---
+      duration_ms: 60.315097
+      type: 'test'
+      ...
+    1..1
+ok 5 - Ç5-K tur 2 DÜŞÜK-3 K5 — Kasa açılışı SİLİNİNCE önbellek düşer (açılışsız Kasa'da kural yok)
+  ---
+  duration_ms: 329.661729
+  type: 'suite'
+  ...
+# Subtest: Ç5-K tur 2 DÜŞÜK-3 K6 — olaysız (eski sürüm biçimli) açılış öncesi kayıt tahsilatı Taksite Aktar ile karta taşınır: önceki hâl (d), yeni hareket SAYILMAZ
+    # Subtest: ön koşul: olaysız tahsilat açılıştan önce, uyarıda; Taksite Aktar 200 (paymentsMoved 1), karttaki satır aynı gün ve tutar, Kasa değişmez; Mutabakat Testi uyarı dışı sapma yok
+    not ok 1 - ön koşul: olaysız tahsilat açılıştan önce, uyarıda; Taksite Aktar 200 (paymentsMoved 1), karttaki satır aynı gün ve tutar, Kasa değişmez; Mutabakat Testi uyarı dışı sapma yok
+      ---
+      duration_ms: 31.782636
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/kasa-acilis-iz-250.test.mjs:244:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Taksite Aktar: 409 cash-before-opening {"ok":false,"error":"İşlem tarihi (05.03.2026) Kasa açılışından (10.03.2026) önce; o günün nakdi Kasa açılış bakiyesinin içindedir, hareket iki kez sayılır. Tarihi Kasa açılış günü ya da sonrası yapın; hareket gerçekten açılıştan önceyse yönetici Kasa → Açılış Bakiyesi'nin tarihini öne alabilir.","code":"cash-before-opening","field":"date","date":"2026-03-05","openingDate":"2026-03-10","row":"plan
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/kasa-acilis-iz-250.test.mjs:34:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/kasa-acilis-iz-250.test.mjs:250:20)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 6 - Ç5-K tur 2 DÜŞÜK-3 K6 — olaysız (eski sürüm biçimli) açılış öncesi kayıt tahsilatı Taksite Aktar ile karta taşınır: önceki hâl (d), yeni hareket SAYILMAZ
+  ---
+  duration_ms: 318.409086
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/kasa-acilis-iz-250.test.mjs:224:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç5-K tur 2 DÜŞÜK-3 K8 — açılış önbelleğinin damgası: başka bağlantı / store dışı yazım açılışı değiştirince bayatlamaz; 002 + yedekten geri yükleme
+    # Subtest: BAŞKA BAĞLANTI açılışı 05.03'e alır → 07.03 girişi 200 (yeni açılışla), 04.03 girişi 409 (açılış 05.03)
+    ok 1 - BAŞKA BAĞLANTI açılışı 05.03'e alır → 07.03 girişi 200 (yeni açılışla), 04.03 girişi 409 (açılış 05.03)
+      ---
+      duration_ms: 16.395254
+      type: 'test'
+      ...
+    # Subtest: STORE DIŞI yazım (aynı bağlantı) açılışı 03.03'e alır → 04.03 girişi 200, 02.03 girişi 409 (açılış 03.03)
+    ok 2 - STORE DIŞI yazım (aynı bağlantı) açılışı 03.03'e alır → 04.03 girişi 200, 02.03 girişi 409 (açılış 03.03)
+      ---
+      duration_ms: 12.20685
+      type: 'test'
+      ...
+    # Subtest: 002: açılış 05.03 iken yedek → açılış 10.03'e düzeltilir, 11.03 girişi (önbellek 10.03), 07.03 girişi 409 → yedekten geri yükleme → 07.03 girişi 200, 04.03 409 (geri gelen açılış 05.03); 001'in kuralı etkilenmez
+    ok 3 - 002: açılış 05.03 iken yedek → açılış 10.03'e düzeltilir, 11.03 girişi (önbellek 10.03), 07.03 girişi 409 → yedekten geri yükleme → 07.03 girişi 200, 04.03 409 (geri gelen açılış 05.03); 001'in kuralı etkilenmez
+      ---
+      duration_ms: 382.81741
+      type: 'test'
+      ...
+    1..3
+ok 7 - Ç5-K tur 2 DÜŞÜK-3 K8 — açılış önbelleğinin damgası: başka bağlantı / store dışı yazım açılışı değiştirince bayatlamaz; 002 + yedekten geri yükleme
+  ---
+  duration_ms: 760.05227
+  type: 'suite'
+  ...
+# Subtest: Ç5-K tur 2 — temiz veri (Kasa açılışı var, açılıştan önce satır yok): değişiklik yok
+    # Subtest: Mutabakat Testi tutarlı, uyarı denetimi listede YOK; Defter Mutabakatı alt başlığı aynen, 'Uyarı' satırı yok, Sonuç Tutarlı
+    ok 1 - Mutabakat Testi tutarlı, uyarı denetimi listede YOK; Defter Mutabakatı alt başlığı aynen, 'Uyarı' satırı yok, Sonuç Tutarlı
+      ---
+      duration_ms: 42.220319
+      type: 'test'
+      ...
+    1..1
+ok 8 - Ç5-K tur 2 — temiz veri (Kasa açılışı var, açılıştan önce satır yok): değişiklik yok
+  ---
+  duration_ms: 537.025886
+  type: 'suite'
+  ...
+# Subtest: Ç5-K tur 2 — Silinenler'den geri gelen açılış öncesi Kasa hareketi: uyarı SAPMA DEĞİL
+    # Subtest: Mutabakat Testi: denetim görünür (ok false, gizlenmez) ama UYARI işaretli (notice, severity warning); ne yapılacağı (hint) var, 'eski sürümden kalan' demez; örnek metni Kaynak · kimlik · tarih (K14); uyarı dışı sapma yok
+    not ok 1 - Mutabakat Testi: denetim görünür (ok false, gizlenmez) ama UYARI işaretli (notice, severity warning); ne yapılacağı (hint) var, 'eski sürümden kalan' demez; örnek metni Kaynak · kimlik · tarih (K14); uyarı dışı sapma yok
+      ---
+      duration_ms: 20.253733
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/kasa-acilis-uyari-250.test.mjs:117:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            count: 1,
+            name: 'Kasa Açılışından Önce Tarihli Hareket',
+        +   notice: undefined,
+        -   notice: true,
+            ok: false,
+            opening: '2026-03-10',
+            severity: 'warning'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        name: 'Kasa Açılışından Önce Tarihli Hareket'
+        ok: false
+        notice: true
+        severity: 'warning'
+        count: 1
+        opening: '2026-03-10'
+      actual:
+        name: 'Kasa Açılışından Önce Tarihli Hareket'
+        ok: false
+        severity: 'warning'
+        count: 1
+        opening: '2026-03-10'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/kasa-acilis-uyari-250.test.mjs:121:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tarama 'yeni sapma' kaydı ve zili üretmez — Mutabakat Testi (iş parçacığında da), sayı ARTINCA da (ikinci geri yükleme)
+    not ok 2 - tarama 'yeni sapma' kaydı ve zili üretmez — Mutabakat Testi (iş parçacığında da), sayı ARTINCA da (ikinci geri yükleme)
+      ---
+      duration_ms: 238.199047
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/kasa-acilis-uyari-250.test.mjs:131:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        uyarı 'yeni sapma' sayılmaz (sayı 1 → 2 artarken de)
+        + actual - expected
+        
+          {
+        +   ilkTaramaGunlugu: [
+        +     'Kasa Açılışından Önce Tarihli Hareket'
+        +   ],
+        -   ilkTaramaGunlugu: [],
+            isParcacigi: [],
+            sayi: 2,
+        +   sunucuGunlugu: [
+        +     'error: Mutabakat taraması: kapının görmediği 1 yeni sapma (Kasa Açılışından Önce Tarihli Hareket).',
+        +     'error: Mutabakat taraması: kapının görmediği 1 yeni sapma (Kasa Açılışından Önce Tarihli Hareket).'
+        +   ],
+        +   taramaGunlugu: [
+        +     'Kasa Açılışından Önce Tarihli Hareket',
+        +     'Kasa Açılışından Önce Tarihli Hareket'
+        +   ],
+        +   zil: [
+        +     [
+        +       'cash:before-opening'
+        +     ],
+        +     [
+        +       'cash:before-opening'
+        +     ]
+        +   ]
+        -   sunucuGunlugu: [],
+        -   taramaGunlugu: [],
+        -   zil: []
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        ilkTaramaGunlugu:
+        sayi: 2
+        isParcacigi:
+        taramaGunlugu:
+        zil:
+        sunucuGunlugu:
+      actual:
+        ilkTaramaGunlugu:
+          0: 'Kasa Açılışından Önce Tarihli Hareket'
+        sayi: 2
+        isParcacigi:
+        taramaGunlugu:
+          0: 'Kasa Açılışından Önce Tarihli Hareket'
+          1: 'Kasa Açılışından Önce Tarihli Hareket'
+        zil:
+          0:
+            0: 'cash:before-opening'
+          1:
+            0: 'cash:before-opening'
+        sunucuGunlugu:
+          0: 'error: Mutabakat taraması: kapının görmediği 1 yeni sapma (Kasa Açılışından Önce Tarihli Hareket).'
+          1: 'error: Mutabakat taraması: kapının görmediği 1 yeni sapma (Kasa Açılışından Önce Tarihli Hareket).'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/kasa-acilis-uyari-250.test.mjs:142:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Defter Mutabakatı (ekran verisi, PDF, Excel aynı): satır 'Uyarı'; Sonuç 'Tutarlı' (Fark Var DEĞİL); alt başlık uyarıyı ve ne yapılacağını söyler, 'yöneticiye bildirin' / 'eski sürümden kalan' demez
+    not ok 3 - Defter Mutabakatı (ekran verisi, PDF, Excel aynı): satır 'Uyarı'; Sonuç 'Tutarlı' (Fark Var DEĞİL); alt başlık uyarıyı ve ne yapılacağını söyler, 'yöneticiye bildirin' / 'eski sürümden kalan' demez
+      ---
+      duration_ms: 19.243469
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/kasa-acilis-uyari-250.test.mjs:145:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            '2 satır',
+        +   'Fark Var'
+        -   'Uyarı'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '2 satır'
+        1: 'Uyarı'
+      actual:
+        0: '2 satır'
+        1: 'Fark Var'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/kasa-acilis-uyari-250.test.mjs:149:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kapı: uyarının alanı yok — familyOf('cash:before-opening') = null (tam kapıyı tetiklemez)
+    not ok 4 - kapı: uyarının alanı yok — familyOf('cash:before-opening') = null (tam kapıyı tetiklemez)
+      ---
+      duration_ms: 0.677811
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/kasa-acilis-uyari-250.test.mjs:169:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        'all' !== null
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ~
+      actual: 'all'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/kasa-acilis-uyari-250.test.mjs:170:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: program yeniden açılınca: açılış günlüğü / sunucu günlüğü 'sapma' yazmaz; açılıştan sonraki İLK nakit yazımı süzgeçli yolda (scoped), sonrakiler de
+    not ok 5 - program yeniden açılınca: açılış günlüğü / sunucu günlüğü 'sapma' yazmaz; açılıştan sonraki İLK nakit yazımı süzgeçli yolda (scoped), sonrakiler de
+      ---
+      duration_ms: 128.105308
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/kasa-acilis-uyari-250.test.mjs:173:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yeniden açılış: günlük yok, açılıştan sonraki nakit yazımları süzgeçli yolda, uyarı sürer
+        + actual - expected
+        
+          {
+            kapiYolu: [
+        +     'full (taban sapması (all))',
+              'scoped',
+              'scoped',
+        -     'scoped'
+            ],
+        +   mutabakatGunlugu: [
+        +     'baseline: Kasa Açılışından Önce Tarihli Hareket'
+        +   ],
+        +   sunucuGunlugu: [
+        +     'warn: Mutabakat: güncelleme öncesinden kalan 1 sapma var (Kasa Açılışından Önce Tarihli Hareket). Yeni işlemler bu sapmayı büyütemez.'
+        +   ],
+        -   mutabakatGunlugu: [],
+        -   sunucuGunlugu: [],
+            uyari: 2
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        sunucuGunlugu:
+        mutabakatGunlugu:
+        kapiYolu:
+          0: 'scoped'
+          1: 'scoped'
+          2: 'scoped'
+        uyari: 2
+      actual:
+        sunucuGunlugu:
+          0: 'warn: Mutabakat: güncelleme öncesinden kalan 1 sapma var (Kasa Açılışından Önce Tarihli Hareket). Yeni işlemler bu sapmayı büyütemez.'
+        mutabakatGunlugu:
+          0: 'baseline: Kasa Açılışından Önce Tarihli Hareket'
+        kapiYolu:
+          0: 'full (taban sapması (all))'
+          1: 'scoped'
+          2: 'scoped'
+        uyari: 2
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/kasa-acilis-uyari-250.test.mjs:191:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: uyarı gerçeği GİZLEMEZ: gerçek sapma (kapının görmediği tanınmayan ödeme yolu) + uyarı → sapma 'Fark Var' + 'yöneticiye bildirin', taramada günlük + zil YALNIZ sapma için; uyarı satırı yine 'Uyarı'
+    not ok 6 - uyarı gerçeği GİZLEMEZ: gerçek sapma (kapının görmediği tanınmayan ödeme yolu) + uyarı → sapma 'Fark Var' + 'yöneticiye bildirin', taramada günlük + zil YALNIZ sapma için; uyarı satırı yine 'Uyarı'
+      ---
+      duration_ms: 10.950019
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/kasa-acilis-uyari-250.test.mjs:194:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        gerçek sapmalar sonuçta (sapma, uyarı değil)
+        + actual - expected
+        
+          [
+            'gl:100',
+            'money:method',
+        +   'cash:before-opening',
+            'money:event'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'gl:100'
+        1: 'money:method'
+        2: 'money:event'
+      actual:
+        0: 'gl:100'
+        1: 'money:method'
+        2: 'cash:before-opening'
+        3: 'money:event'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/kasa-acilis-uyari-250.test.mjs:204:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..6
+not ok 9 - Ç5-K tur 2 — Silinenler'den geri gelen açılış öncesi Kasa hareketi: uyarı SAPMA DEĞİL
+  ---
+  duration_ms: 760.962513
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3y-eski/test/kasa-acilis-uyari-250.test.mjs:87:1'
+  failureType: 'subtestsFailed'
+  error: '6 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..9
+# tests 23
+# suites 9
+# pass 10
+# fail 13
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8732.65156
