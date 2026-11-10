@@ -1,0 +1,32 @@
+{
+  "ad": "yay3-kapi",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/yapim-asamasi-kapisi.test.mjs test/kanit-araci.test.mjs test/ci-kapi-listesi.test.mjs test/platform-tasinabilirlik.test.mjs test/yazim-duzeni.test.mjs test/lisans-servisi-izolasyonu.test.mjs",
+  "commit": "2d53d4122ea78deaef8b9580bdca48e788f15ba2",
+  "dal": "sinama-d2t3-ya",
+  "kirli": 2,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T23:08:44.228Z",
+  "sure_sn": 4.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 78,
+    "gecen": 78,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../yay3-kanit/2026-11-10/yay3-kapi.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag",
+  "ham_cikti_sha256": "a102b2b265fc9b0fcf96aa9da4e4bd35fa484d0e2c2b998b23efedf1ba2b62fb",
+  "ham_cikti_bayt": 22769
+}

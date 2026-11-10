@@ -1,0 +1,32 @@
+{
+  "ad": "k5y-mutasyon",
+  "komut": "timeout 7000 flock -s -n /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock python3 -I -B docs/kanit/2026-11-10/kahineski5-arac/mutasyon-tara.py --model test/bagimsiz/cari",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T18:25:42.234Z",
+  "sure_sn": 56.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 207,
+    "gecen": 207,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../kahineski5y-kanit/2026-11-10/k5y-mutasyon.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski5y-yeni",
+  "ham_cikti_sha256": "8f8b6133d9f64cdfe4a1dc69f26f04234dcefe477cfc481d5a46b61848253bfa",
+  "ham_cikti_bayt": 35558
+}

@@ -1,0 +1,66 @@
+ÜRETİCİ: 20/20 aynı dizi (tur s1 + ux18, tohum 1–10 × 120 işlem)
+EŞDEĞERLİK (2.4.9 / 2.4.6 / 2.4.5 / --legacy; 73 elle + 20 rastgele senaryo × 4 kip): 372/372 bayt bayt aynı
+G3 (kural 2.5.0; 93 senaryo): eski 42653 denetim · yeni 43855 denetim · değişen / kalkan / yeni toplam 1612 · BEKLENMEYEN 0 · yalnız etiketi değişen 0
+  S96-gorunum      yeni        54
+      örn. d17-c5-s93-verilen-avans k1:projeksiyon:cariToplam:MU: "(denetim yok)" → 40000
+      örn. d17-c5-s93-verilen-avans k1:projeksiyon:cariToplam:T: "(denetim yok)" → 20000
+      örn. d17-c5-s93-verilen-avans k1:projeksiyon:cariToplam:TA1: "(denetim yok)" → 60000
+      örn. d17-c5-s93-verilen-avans k1:projeksiyon:cariToplam:TB: "(denetim yok)" → 40000
+  S96-kalem        yeni      1230
+      örn. c10-ks10-projeksiyon-cari-vade k2:projeksiyon:hareket:ot1: "(denetim yok)" → "yok"
+      örn. c10-ks10-projeksiyon-cari-vade k2:takvim:hareket:ot1: "(denetim yok)" → "yok"
+      örn. c10-ks10-projeksiyon-cari-vade k2:vadeTakip:hareket:ot1: "(denetim yok)" → "yok"
+      örn. c10-ks10-projeksiyon-cari-vade k3:projeksiyon:hareket:ot1: "(denetim yok)" → "yok"
+  Y5-7             kalkan     190
+      örn. rastgele-s1-4 k12:fatura:G13:acik: 0 → "(denetim yok)"
+      örn. rastgele-s1-4 k12:fatura:G15:acik: 0 → "(denetim yok)"
+      örn. rastgele-s1-4 k12:fatura:G16:acik: 0 → "(denetim yok)"
+      örn. rastgele-s1-4 k12:fatura:G1:acik: 0 → "(denetim yok)"
+  geri-kazanilan   yeni       102
+      örn. c12-ks81-sb-kalan-dagilimi k1:cari:B4:acikEsitBakiye: "(denetim yok)" → false
+      örn. c12-ks81-sb-kalan-dagilimi k1:cari:B4:acikToplam: "(denetim yok)" → -15000
+      örn. c12-ks81-sb-kalan-dagilimi k1:hareket:ab4:kalan: "(denetim yok)" → 15000
+      örn. c12-ks81-sb-kalan-dagilimi k1:hareket:bb4:kalan: "(denetim yok)" → 0
+  sayac            degisen     22
+      örn. c14a-c1-hareket-turleri k1:projeksiyon:cari: {"catal": [3, 4, 5, 6]} → {"catal": [4, 5, 6]}
+      örn. c14a-c1-hareket-turleri k1:takvim:cariKalemSayisi: {"catal": [3, 4, 5, 6]} → {"catal": [4, 5, 6]}
+      örn. c14a-c1-hareket-turleri k2:projeksiyon:cari: {"catal": [3, 4, 5, 6]} → {"catal": [4, 5, 6]}
+      örn. c14a-c1-hareket-turleri k2:takvim:cariKalemSayisi: {"catal": [3, 4, 5, 6]} → {"catal": [4, 5, 6]}
+  sayac            kalkan       4
+      örn. rastgele-s1-4 k12:projeksiyon:cari: {"catal": [6, 7, 8]} → "(denetim yok)"
+      örn. rastgele-s1-4 k12:takvim:cariKalemSayisi: {"catal": [5, 6, 7]} → "(denetim yok)"
+      örn. rastgele-s1-4 kson:projeksiyon:cari: {"catal": [6, 7, 8]} → "(denetim yok)"
+      örn. rastgele-s1-4 kson:takvim:cariKalemSayisi: {"catal": [5, 6, 7]} → "(denetim yok)"
+  sayac            yeni        10
+      örn. c12-ks81-sb-kalan-dagilimi k1:projeksiyon:cari: "(denetim yok)" → {"catal": [1, 2]}
+      örn. c12-ks81-sb-kalan-dagilimi k1:takvim:cariKalemSayisi: "(denetim yok)" → {"catal": [1, 2]}
+      örn. c8-ks8-iade-geri-odemesi k2:projeksiyon:cari: "(denetim yok)" → 7
+      örn. c8-ks8-iade-geri-odemesi k2:takvim:cariKalemSayisi: "(denetim yok)" → 7
+G3 senaryo senaryo (sınıf/tür: adet):
+  c10-ks10-projeksiyon-cari-vade           S96-kalem/yeni 15
+  c11-ks81-sa-mevcut-borc-karti            S96-kalem/yeni 6
+  c12-ks81-sb-kalan-dagilimi               S96-kalem/yeni 9 · geri-kazanilan/yeni 10 · sayac/yeni 2
+  c13-ks83-ayni-gun-sira                   S96-kalem/yeni 9
+  c14a-c1-hareket-turleri                  S96-kalem/yeni 9 · sayac/degisen 6
+  c14e-c1-pasife-al                        S96-kalem/yeni 9 · sayac/degisen 6
+  c6-cari-vade-fifo                        S96-kalem/yeni 36
+  c8-ks8-iade-geri-odemesi                 S96-kalem/yeni 69 · geri-kazanilan/yeni 5 · sayac/yeni 2
+  c8b-ks8-bagli-iade-odemesi               S96-kalem/yeni 3
+  d17-c5-s93-verilen-avans                 S96-gorunum/yeni 24 · S96-kalem/yeni 24 · sayac/degisen 2
+  d18-c5-s93-avans-ertesi-gun              S96-gorunum/yeni 24 · S96-kalem/yeni 24 · sayac/degisen 2
+  d19-c5-s92-okuma-ayrisan                 S96-gorunum/yeni 6 · S96-kalem/yeni 6 · geri-kazanilan/yeni 53
+  d9-c5-s68-borc-tarafi-vade               S96-kalem/yeni 18
+  rastgele-s1-1                            S96-kalem/yeni 27
+  rastgele-s1-10                           S96-kalem/yeni 36 · geri-kazanilan/yeni 22 · sayac/yeni 2
+  rastgele-s1-2                            S96-kalem/yeni 30
+  rastgele-s1-3                            S96-kalem/yeni 138
+  rastgele-s1-4                            S96-kalem/yeni 276 · Y5-7/kalkan 84 · geri-kazanilan/yeni 12 · sayac/kalkan 4 · sayac/yeni 4
+  rastgele-s1-5                            S96-kalem/yeni 9 · Y5-7/kalkan 68
+  rastgele-s1-6                            S96-kalem/yeni 72 · Y5-7/kalkan 38
+  rastgele-s1-7                            S96-kalem/yeni 246 · sayac/degisen 6
+  rastgele-s1-8                            S96-kalem/yeni 48
+  rastgele-s1-9                            S96-kalem/yeni 111
+# tests 393
+# pass 393
+# fail 0
+393/393 denetim geçti

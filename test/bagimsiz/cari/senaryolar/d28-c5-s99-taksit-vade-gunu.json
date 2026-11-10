@@ -1,0 +1,42 @@
+{
+ "dil": "destekofis-cari/3",
+ "bugun": "2026-06-20",
+ "aciklama": "d27'nin P2 / P3'ü, bugün 20.06 (P2'nin 2. taksitinin VADE GÜNÜ — gecikmiş değil, M1f): P2 gecikmiş 0, P3 20.000; açıklar aynı.",
+ "dayanak": "KARARLAR.md §18 Y6-3; S99 A, M1f",
+ "elleBeklenen": {
+  "k1:fatura:P2F:acik": 40000,
+  "k1:hareket:p2b:kalan": 0,
+  "k1:cari:P2:bakiye": 40000,
+  "k1:cari:P2:gecikmis": 0,
+  "k1:cari:P2:acikToplam": 40000,
+  "k1:cari:P2:acikEsitBakiye": true,
+  "k1:takvim:hareket:p2b": "yok",
+  "k1:vadeTakip:hareket:p2b": "yok",
+  "k1:projeksiyon:hareket:p2b": "yok",
+  "k1:fatura:P3F:acik": 50000,
+  "k1:cari:P3:bakiye": 50000,
+  "k1:cari:P3:gecikmis": 20000,
+  "k1:takvim:hareket:p3o": "yok",
+  "k1:vadeTakip:hareket:p3o": "yok",
+  "k1:projeksiyon:hareket:p3o": "yok",
+  "k1:cari:P3:acikToplam": 50000,
+  "k1:cari:P3:acikEsitBakiye": true
+ },
+ "adimlar": [
+  {"id": "cp1", "islem": "cari_ac", "ad": "P1", "isim": "Pınar Örnek", "tarih": "2026-04-01"},
+  {"id": "p1t", "islem": "tahsilat", "cari": "P1", "tutar": "500", "tarih": "2026-05-01"},
+  {"id": "p1b", "islem": "fatura", "ad": "P1B", "cari": "P1", "tutar": "300", "tarih": "2026-05-05", "taksit": {"sayi": 3, "ilkVade": "2026-06-01"}},
+  {"id": "p1a", "islem": "fatura", "ad": "P1A", "cari": "P1", "tutar": "500", "tarih": "2026-05-10"},
+  {"id": "cp2", "islem": "cari_ac", "ad": "P2", "isim": "Pelin Vadeler", "tarih": "2026-04-01"},
+  {"id": "p2t", "islem": "tahsilat", "cari": "P2", "tutar": "400", "tarih": "2026-05-01"},
+  {"id": "p2f", "islem": "fatura", "ad": "P2F", "cari": "P2", "tutar": "900", "tarih": "2026-05-02", "taksit": {"sayi": 3, "ilkVade": "2026-05-20"}},
+  {"id": "p2b", "islem": "borc", "cari": "P2", "tutar": "200", "tarih": "2026-05-03", "vade": "2026-06-10"},
+  {"id": "p2u", "islem": "tahsilat", "cari": "P2", "tutar": "300", "tarih": "2026-06-12"},
+  {"id": "cp3", "islem": "cari_ac", "ad": "P3", "isim": "Polat Avanslı", "tarih": "2026-04-01"},
+  {"id": "p3o", "islem": "odeme", "cari": "P3", "tutar": "200", "tarih": "2026-05-01"},
+  {"id": "p3f", "islem": "fatura", "ad": "P3F", "cari": "P3", "tutar": "600", "tarih": "2026-05-05", "taksit": {"sayi": 2, "ilkVade": "2026-06-01"}},
+  {"id": "p3t", "islem": "tahsilat", "cari": "P3", "tutar": "300", "tarih": "2026-05-10"},
+  {"id": "k1", "islem": "kontrol", "gecikmis": true, "gorunumToplam": true, "acikToplam": true}
+ ],
+ "ad": "d28-c5-s99-taksit-vade-gunu"
+}

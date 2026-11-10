@@ -1,0 +1,29 @@
+#!/bin/bash
+# Kâhin bakımı 5 + 6 birleşiminden sonra: mobil yazma özeti, öz test, ESKİ listeyle kahin-cari (kırmızı beklenir — fark dökümü), listeyi yeniden üret, farkı dök
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+A=$S/d2t3-ya-ag; export KANIT_DIR=$S/yay3-kanit HUKUK_LICENSE_URL=http://127.0.0.1:9
+mkdir -p "$KANIT_DIR" || exit 1
+cd "$A" || exit 1
+L=test/bagimsiz/cari/YAPIM-ASAMASI.json
+echo "başladı $(date -u +%H:%M:%S) yük $(cat /proc/loadavg)"
+python3 -I -B test/bagimsiz/mobil-yazma/senaryolar.py > "$KANIT_DIR/mobil-senaryolar.out" 2>&1; echo "mobil senaryolar.py çıkış $?"; git diff --stat test/bagimsiz/mobil-yazma | tail -2
+for tz in UTC Europe/Istanbul; do n=$(echo $tz | tr '/' '-'); TZ=$tz node tools/kanit.mjs kos yay3-cari-oz-$n -- python3 -I -B test/bagimsiz/cari/oz-test.py > "$KANIT_DIR/cari-oz-$n.out" 2>&1; echo "cari öz test $tz çıkış $?"; done
+cp "$L" "$KANIT_DIR/liste-once.json" || exit 1
+TZ=UTC node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --mutasyonsuz > "$KANIT_DIR/kahin-cari-eski-liste.out" 2>&1; echo "kahin-cari ESKİ listeyle çıkış $? (kırmızı beklenir)"
+grep -E "ÖZET" "$KANIT_DIR/kahin-cari-eski-liste.out" | cut -c1-500
+node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz --mutasyonsuz > "$KANIT_DIR/yaz.out" 2>&1; echo "yaz çıkış $?"; tail -1 "$KANIT_DIR/yaz.out" | cut -c1-300
+python3 -I - "$KANIT_DIR/liste-once.json" "$L" <<'PY'
+import json, sys, collections
+a = {(x["senaryo"], x["anahtar"]): x for x in json.load(open(sys.argv[1], encoding="utf-8"))["kayitlar"]}
+b = {(x["senaryo"], x["anahtar"]): x for x in json.load(open(sys.argv[2], encoding="utf-8"))["kayitlar"]}
+yeni = [k for k in b if k not in a]; kapanan = [k for k in a if k not in b]
+degisen = [k for k in b if k in a and (a[k]["beklenen"], a[k]["program"]) != (b[k]["beklenen"], b[k]["program"])]
+etiket = [k for k in b if k in a and a[k]["paket"] != b[k]["paket"]]
+print(f"önce {len(a)} → sonra {len(b)}; yeni {len(yeni)}, kapanan {len(kapanan)}, değeri değişen {len(degisen)}, etiketi değişen {len(etiket)}")
+print("yeni — pakete göre:", dict(collections.Counter(b[k]["paket"] for k in yeni)))
+print("yeni — senaryoya göre:", dict(collections.Counter(k[0][:26] for k in yeni)))
+print("kapanan — senaryoya göre:", dict(collections.Counter(k[0][:26] for k in kapanan)))
+print("değişen — senaryoya göre:", dict(collections.Counter(k[0][:26] for k in degisen)))
+print("sonra paket dağılımı:", dict(collections.Counter(x["paket"] for x in b.values())))
+PY
+echo "bitti $(date -u +%H:%M:%S) yük $(cat /proc/loadavg)"

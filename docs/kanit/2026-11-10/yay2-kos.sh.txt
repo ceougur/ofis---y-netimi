@@ -1,0 +1,13 @@
+#!/bin/bash
+# Etiket ayrıştırmasından sonra: liste yeniden üretimde bayt bayt aynı mı (elle etiket korunuyor mu), kahin-cari (liste mutantlarıyla), kapı + kaynak tarayanlar
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+A=$S/d2t3-ya-ag; export KANIT_DIR=$S/yay-kanit HUKUK_LICENSE_URL=http://127.0.0.1:9
+cd "$A" || exit 1
+L=test/bagimsiz/cari/YAPIM-ASAMASI.json
+echo "başladı $(date -u +%H:%M:%S) yük $(cat /proc/loadavg)"
+cp "$L" $S/yay-dis/etiketli-once.json || exit 1
+node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz --mutasyonsuz > "$KANIT_DIR/yaz2.out" 2>&1; echo "yaz çıkış $?"; tail -1 "$KANIT_DIR/yaz2.out" | cut -c1-260
+cmp "$L" $S/yay-dis/etiketli-once.json && echo "ETİKETLİ liste yeniden üretimde bayt bayt AYNI" || { echo "LİSTE DEĞİŞTİ"; git diff --stat "$L"; }
+TZ=UTC flock -s -n $S/olcum.lock node tools/kanit.mjs kos yay2-kahin-cari-UTC -- npm run test:kahin-cari > "$KANIT_DIR/kahin-cari2-UTC.out" 2>&1; echo "kahin-cari çıkış $?"
+node tools/kanit.mjs kos yay2-kapi -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/yapim-asamasi-kapisi.test.mjs test/kanit-araci.test.mjs test/ci-kapi-listesi.test.mjs test/platform-tasinabilirlik.test.mjs test/yazim-duzeni.test.mjs test/lisans-servisi-izolasyonu.test.mjs > "$KANIT_DIR/kapi2.out" 2>&1; echo "kapi çıkış $?"
+echo "bitti $(date -u +%H:%M:%S) yük $(cat /proc/loadavg)"

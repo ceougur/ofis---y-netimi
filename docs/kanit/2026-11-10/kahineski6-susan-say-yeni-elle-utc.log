@@ -1,0 +1,7 @@
+KÜME: 9 elle senaryo (/home/user/ofis---y-netimi/.claude/worktrees/agent-a465471c0e1816b16/test/bagimsiz/cari/senaryolar — yalnız d25,d26,d27,d28,d29,d30,d31,d32,d33) + 0 rastgele
+BAKIM 5 (1ab2d1de) (eski): C13.4(11):EK-2B-32 12 · C13.4(11):EK-2B-32:kayit 3 · belge-tanimsiz:SK-13 5 · belge-tanimsiz:SK-13:fatura 5 · belge-tanimsiz:Y5-7 4 · belge-tanimsiz:Y5-7:fatura 3 · cari-kesim 47 · net-tanimsiz:Y5-7 4 · net-tanimsiz:Y5-7:fatura 3 · net-tanimsiz:Y5-7:kayit 5 · net-tanimsiz:okumalar-ayrisiyor 9 · net-tanimsiz:okumalar-ayrisiyor:fatura 6 · net-tanimsiz:okumalar-ayrisiyor:kayit 13 · net-tanimsiz:tanim-alani-disi:taksitli 1 · net-tanimsiz:tanim-alani-disi:taksitli:fatura 2 · net-tanimsiz:tanim-alani-disi:taksitli:kayit 0 · okuma-ayrisan-soru:SK-10 7 · okuma-ayrisan-soru:SK-11/SK-17 7 · okuma-ayrisan-soru:SK-12 2 · okuma-ayrisan-soru:SK-9 9
+BAKIM 6 (yeni): C13.4(11):EK-2B-32 2 · C13.4(11):EK-2B-32:kayit 0 · C13.4(11):SK-14 1 · C13.4(11):SK-14:kayit 2 · belge-tanimsiz:SK-15 1 · belge-tanimsiz:SK-15:fatura 2 · belge-tanimsiz:Y5-7 1 · belge-tanimsiz:Y5-7:fatura 0 · cari-kesim 47 · net-tanimsiz:Y5-7 1 · net-tanimsiz:Y5-7:fatura 0 · net-tanimsiz:Y5-7:kayit 2 · net-tanimsiz:okumalar-ayrisiyor 1 · net-tanimsiz:okumalar-ayrisiyor:fatura 2 · net-tanimsiz:okumalar-ayrisiyor:kayit 0 · net-tanimsiz:tanim-alani-disi:taksitli+karsi(SK-15) 1 · net-tanimsiz:tanim-alani-disi:taksitli+karsi(SK-15):fatura 2 · net-tanimsiz:tanim-alani-disi:taksitli+karsi(SK-15):kayit 0 · okuma-ayrisan-soru:SK-11/SK-17 1
+# tests 1
+# pass 1
+# fail 0
+1/1 denetim geçti

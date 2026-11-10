@@ -1,0 +1,27 @@
+#!/bin/bash
+# Ana oturum yeniden koşusu: cari kâhini bakımı 5 (1ab2d1de) — kendi ayrı kopyalarında (ders 23, 25); program AÇILMAZ.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+R=/home/user/ofis---y-netimi
+Y=$S/kahineski5y-yeni; E=$S/kahineski5y-eski; export KANIT_DIR=$S/kahineski5y-kanit
+mkdir -p "$Y" "$E" "$KANIT_DIR" || exit 1
+git -C "$R" archive 1ab2d1de test/bagimsiz tools package.json docs/kanit/2026-11-10/kahineski5-arac | tar -x -C "$Y" || exit 1
+git -C "$R" archive 14e3f4bb test/bagimsiz/cari test/bagimsiz/defter | tar -x -C "$E" || exit 1
+ESKI=$E/test/bagimsiz/cari; A=docs/kanit/2026-11-10/kahineski5-arac
+cd "$Y" || exit 1
+ELLE=$(ls test/bagimsiz/cari/senaryolar/d1[7-9]-*.json test/bagimsiz/cari/senaryolar/d2[0-6]-*.json)
+echo "başladı $(date -u +%H:%M:%S) yük $(cat /proc/loadavg)"
+for tz in utc ist; do
+  if [ $tz = utc ]; then export TZ=UTC; else export TZ=Europe/Istanbul; fi
+  node tools/kanit.mjs kos k5y-cari-oz-$tz -- python3 -I -B test/bagimsiz/cari/oz-test.py > $KANIT_DIR/cari-oz-$tz.out 2>&1; echo "cari-oz $tz çıkış $?"
+  node tools/kanit.mjs kos k5y-defter-oz-$tz -- python3 -I -B test/bagimsiz/defter/oz-test.py > $KANIT_DIR/defter-oz-$tz.out 2>&1; echo "defter-oz $tz çıkış $?"
+  node tools/kanit.mjs kos k5y-elle-yeni-$tz -- python3 -I -B $A/elle-karsilastir.py --model test/bagimsiz/cari $ELLE > $KANIT_DIR/elle-yeni-$tz.out 2>&1; echo "elle-yeni $tz çıkış $?"
+  python3 -I -B $A/elle-karsilastir.py --model $ESKI $ELLE > $KANIT_DIR/elle-eski-ham-$tz.out 2>&1; echo "elle-eski (ham, kırmızı beklenir) $tz çıkış $?"
+  node tools/kanit.mjs kos k5y-kirmizi-eski-$tz -- python3 -I -B $A/elle-karsilastir.py --model $ESKI --kirmizi-bekle $ELLE > $KANIT_DIR/kirmizi-eski-$tz.out 2>&1; echo "kirmizi-eski $tz çıkış $?"
+  node tools/kanit.mjs kos k5y-esdeger-$tz -- python3 -I -B $A/karsilastir.py --eski $ESKI --yeni test/bagimsiz/cari --dokum $KANIT_DIR/g3-dokum-$tz.json > $KANIT_DIR/esdeger-$tz.out 2>&1; echo "esdeger $tz çıkış $?"
+  node tools/kanit.mjs kos k5y-susan-$tz -- python3 -I -B $A/susan-say.py --eski $ESKI --yeni test/bagimsiz/cari > $KANIT_DIR/susan-$tz.out 2>&1; echo "susan $tz çıkış $?"
+done
+cmp $KANIT_DIR/g3-dokum-utc.json $KANIT_DIR/g3-dokum-ist.json && echo "G3 dökümü iki TZ aynı"
+export TZ=UTC
+node tools/kanit.mjs kos k5y-mutasyon -- timeout 7000 flock -s -n $S/olcum.lock python3 -I -B $A/mutasyon-tara.py --model test/bagimsiz/cari > $KANIT_DIR/mutasyon.out 2>&1; echo "mutasyon çıkış $?"
+node tools/kanit.mjs kos k5y-genis -- timeout 7000 flock -s -n $S/olcum.lock python3 -I -B $A/genis-tarama.py --model test/bagimsiz/cari --tohum 30 --islem 120 > $KANIT_DIR/genis.out 2>&1; echo "genis çıkış $?"
+echo "bitti $(date -u +%H:%M:%S) yük $(cat /proc/loadavg)"

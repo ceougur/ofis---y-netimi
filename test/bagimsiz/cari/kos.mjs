@@ -585,8 +585,10 @@ async function kos(senaryo) {
           break;
         }
         case "kart_tahsilat": {
-          const planlar = (await api("GET", "/api/workspace/plans")).data?.plans || [];
-          const pl = planlar.find(x => x.caseKey === ids.anahtar[a.kayit]);
+          // bakım 6 eşlemesi (yalnız eşleme): Taksitler'den açılan kartın (kart_ac) Taksit Tahsilatı — kart kimliği ids.kart'tan; Tablodan Aktar kartı kayıt anahtarıyla (eskisi gibi)
+          const kartId = ids.kart[a.kayit]?.id;
+          const planlar = kartId ? [] : (await api("GET", "/api/workspace/plans")).data?.plans || [];
+          const pl = kartId ? { id: kartId } : planlar.find(x => x.caseKey === ids.anahtar[a.kayit]);
           durum(a, await api("POST", `/api/workspace/plans/${pl?.id}/entries`, { kind: "in", amount: tlMetin(kurusOf(a.tutar)), date: t, method: "cash", cashForce: true, similarOk: true }));
           break;
         }
@@ -1363,8 +1365,17 @@ if (YAPIM_YAZ) {
     process.exit(1);
   }
   const sirala = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
+  // Ana oturumun ELLE ayrıştırdığı etiket korunur: kural metni paketi göstermiyorsa (AYRIŞTIRILMADI) ve eski dosyada aynı senaryo + anahtar için
+  // elle verilmiş bir paket varsa o paket ve notu aynen kalır (yeniden üretim ayrıştırmayı silmesin). Eski dosya okunamıyorsa etiket korunmaz.
+  const elle = new Map();
+  try {
+    for (const e of JSON.parse(readFileSync(YAPIM_YOLU, "utf8"))?.kayitlar ?? []) {
+      if (e && YAPIM_PAKETLER.includes(e.paket) && e.paket !== "AYRIŞTIRILMADI") elle.set(`${e.senaryo}|${e.anahtar}`, { paket: e.paket, ...(e.not ? { not: e.not } : {}) });
+    }
+  } catch { /* eski liste yok / okunamıyor: etiketler yalnız kural metninden */ }
   const kayitlar = yapimYazilacak.map(({ senaryo, f, sinif246 }) => {
-    const { paket, not } = yapimPaketi(f);
+    const oto = yapimPaketi(f);
+    const { paket, not } = oto.paket === "AYRIŞTIRILMADI" && elle.has(`${senaryo}|${f.anahtar}`) ? elle.get(`${senaryo}|${f.anahtar}`) : oto;
     return { senaryo, anahtar: f.anahtar, beklenen: f.beklenen, program: f.program, sinif: `${f.sinif} ${f.etiket}${sinif246 ? ` · ${sinif246}` : ""}`, kural: f.kural, paket, ...(not ? { not } : {}) };
   }).sort((a, b) => sirala(a.senaryo, b.senaryo) || sirala(a.anahtar, b.anahtar));
   const dosya = {
