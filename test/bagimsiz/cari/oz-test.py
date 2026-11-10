@@ -12,6 +12,10 @@
    olan carilerde (kart, iade, evrak, kapatıcı, ödeme, şüpheli YOK) — model.py'nin açık / Kalan değerleri bire bir aynı olmalı. Senaryolar: elle /3 dosyaları + uretici.py
    rastgele s1 ve ux18 (tohum 1–3 × 60).
 4. 2.4.9 eşitliği: kartsız, vadesiz (vade alanı boş) carilerde 2.5.0 ve 2.4.9 açık / Kalan değerleri aynı olmalı (ANINDA = HAVUZ, tarih sıralı alanda; C13.4 (4)).
+5. Bakım 4 (§16; S91 / S92 / S93): `elleBelirsiz` — kâhinin SUSTUĞU (net görünümü tanımsız) carinin `belirsiz` kaydı; mutantlar 224–233 DEĞERLE; iki yönlü tek kuyruğun (C16.2 / C16.3)
+   "saf" (model.py'den ayrı yazılmış: tek aşama, gün içinde önce kalemler sonra ödemeler, karşı satırlar vade → belge → yazım) simülasyonuyla çapraz denetimi — yalnız fatura / elle
+   kayıt / Açılış / tahsilat / ödeme olan carilerde, modelin okuma birliği bulduğu yerde net kalanlar ve verilen avans satırları bire bir aynı olmalı; karşı yönlü kalemi OLMAYAN caride
+   iki yönlü kuyruk = kendi tarafının kuyruğu (§13–§15 değişmedi); gecikmiş için EK-1 §1 (i) 0 ≤ gecikmiş ≤ max(0, bakiye) ve net kuyrukta (ii) Σ açık borç − Σ açık alacak = bakiye.
 Çıktı: TAP benzeri sayılar + son satır "N/M denetim geçti". Çıkış 0 yalnız hepsi geçerse.
 """
 import importlib.util
@@ -34,7 +38,9 @@ def yukle(p):
 
 def calistir(sen, mut=0, kural="2.5.0"):
     m = M.Model(sen, mut, kural)
-    return m, m.kos()["denetimler"]
+    sonuc = m.kos()
+    m.son_belirsiz = sonuc["belirsiz"]
+    return m, sonuc["denetimler"]
 
 
 def saf_tyk(m, cari):
@@ -87,6 +93,59 @@ def saf_tyk(m, cari):
     return {ad: v[3] for ad, v in kalem.items()}
 
 
+def saf_net(m, cari):
+    """C16.2 / C16.3'ün saf okuması (model.py'den bağımsız yazıldı; KARARLAR.md §16): carinin bütün satırları TEK listede, iki yönde. Yükümlülük kalemleri (satış / alış faturası,
+    elle Borç / Alacak, Açılış) ve ödeme satırları (tahsilat, Ödeme). Bağlı tahsilat / ödeme önce kendi faturasını kapatır (zamandan bağımsız), artanı kendi gününde bağsız. Olaylar
+    gün → (önce o günün kalemleri, sonra ödemeleri) → yazım sırası; gelen satır o anda açık KARŞI yönlü satırlara vade → belge günü → yazım sırasıyla (ödeme satırında vade = gün)
+    uygulanır, artanı açık kalır. Dönüş ({kalem: net kalan}, [(gün, kalan)] açık borç yönlü ödeme satırları, Σ açık borç yönlü − Σ açık alacak yönlü)."""
+    S = []  # [yön (+1 cari borçlanır / −1 alacaklanır), kalem mi, gün, vade, yazım sırası, kalan, ad, bağ hedefi]
+    for ad, f in m.faturalar.items():
+        if f["cari"] == cari and f["durum"] == "kesildi" and f["tur"] in ("satis", "alis"):
+            S.append([1 if f["tur"] == "satis" else -1, True, f["tarih"], f["tarih"], f["seq"], f["tutar"], ad, None])
+    for hn, h in m.hareketler.items():
+        if h["cari"] == cari and h["aktif"] and h["tur"] in ("borc", "alacak", "acilis"):
+            S.append([1 if h["yon"] == "borc" else -1, True, h["tarih"], h.get("vade") or h["tarih"], h["seq"], h["tutar"], hn, None])
+    for xn, x in m.kapaticilar.items():
+        if x["cari"] == cari and x["aktif"] and x["tur"] == "stok_satis":
+            S.append([1, True, x["tarih"], x["tarih"], x["seq"], x["tutar"], xn, None])  # stok veresiye (KS7.1): borç yönlü yükümlülük kalemi
+    for tn, t in m.tahsilatlar.items():
+        if t["cari"] == cari and t["aktif"]:
+            S.append([-1, False, t["tarih"], t["tarih"], t["seq"], t["tutar"], tn, t["fatura"]])
+    for on, o in m.odemeler.items():
+        if o["cari"] == cari and o["aktif"]:
+            S.append([1, False, o["tarih"], o["tarih"], o["seq"], o["tutar"], on, o["fatura"]])
+    kalem = {s[6]: s for s in S if s[1]}
+    for s in sorted((x for x in S if not x[1] and x[7] in kalem), key=lambda x: (x[2], x[4])):
+        hedef = kalem[s[7]]
+        if hedef[0] == s[0] or s[7] not in m.faturalar:
+            continue  # bağ yalnız karşı yönlü faturaya (tahsilat → satış, ödeme → alış)
+        x = min(hedef[5], s[5])
+        hedef[5] -= x
+        s[5] -= x
+    acik = []
+    for s in sorted(S, key=lambda x: (x[2], 0 if x[1] else 1, x[4])):
+        for o in sorted((x for x in acik if x[0] != s[0] and x[5] > 0), key=lambda x: (x[3], x[2], x[4])):
+            x = min(s[5], o[5])
+            s[5] -= x
+            o[5] -= x
+        if s[5] > 0:
+            acik.append(s)
+    return ({s[6]: s[5] for s in S if s[1]}, sorted((s[2], s[5]) for s in S if not s[1] and s[0] == 1 and s[5] > 0), sum(s[0] * s[5] for s in S))
+
+
+def yalin_saf(m, cari):
+    """saf_net'in alanı: yalnız fatura (taksitsiz satış / alış), elle kayıt, Açılış, stok veresiye, tahsilat, ödeme — kart, evrak, iade / değersiz kapatıcı, şüpheli, tablo bağı YOK."""
+    if m.cariler[cari].get("kayit") is not None or any(kt["cari"] == cari for kt in m.kartlar.values()):
+        return False
+    if any(f["cari"] == cari and f["durum"] == "kesildi" and (f["tur"] not in ("satis", "alis") or f["taksitli"]) for f in m.faturalar.values()):
+        return False
+    if any(e["cari"] == cari or e.get("ciroCari") == cari or e.get("karsiliksizCari") == cari for e in m.evraklar.values()):
+        return False
+    if any(x["cari"] == cari and x["tur"] != "stok_satis" for x in m.kapaticilar.values()) or any(sp["cari"] == cari for sp in m.supheliler.values()):
+        return False
+    return True
+
+
 def basit(m, cari):
     if any(kt["cari"] == cari for kt in m.kartlar.values()):
         return False
@@ -133,6 +192,10 @@ def main():
             denetle("%s %s" % (ad, k), g == b, "elle %s · kâhin %s" % (json.dumps(b, ensure_ascii=False), json.dumps(g, ensure_ascii=False)))
         for k in sen.get("elleYok") or []:
             denetle("%s %s yok (tanımsız — kâhin kurmaz)" % (ad, k), k not in out, json.dumps(out.get(k), ensure_ascii=False))
+        for parca in sen.get("elleBelirsiz") or []:
+            # bakım 4: kâhinin sustuğu durum `belirsiz`'e yazılmış olmalı (sessizce atlanmaz) — parça listesinin HEPSİ aynı kayıtta geçer
+            parcalar = parca if isinstance(parca, list) else [parca]
+            denetle("%s belirsiz: %s" % (ad, " + ".join(parcalar)), any(all(x in b for x in parcalar) for b in _m.son_belirsiz), json.dumps(_m.son_belirsiz, ensure_ascii=False)[:300])
         for k, alanlar in (sen.get("elleCatal") or {}).items():
             g = out.get(k, {}).get("b")
             dallar = g.get("catal") if isinstance(g, dict) else None
@@ -218,6 +281,63 @@ def main():
                     denetle("%s %s %s 2.4.9 = 2.5.0 (vadesiz)" % (ad, cari, kad), a249.get(kad) == model_acik.get(kad),
                             "2.4.9 %s · 2.5.0 %s" % (a249.get(kad), model_acik.get(kad)))
     print("  çapraz denetim (saf TYK): %d kalem · tarih sıralı alanda 2.4.9 = 2.5.0: %d kalem" % (capraz, esit249))
+    # 5. bakım 4 (§16): iki yönlü tek kuyruk — saf simülasyon ↔ model (net250), tek yönde = kendi tarafının kuyruğu, gecikmiş değişmezleri
+    rastgele4 = list(rastgele)
+    for t in (4, 5, 6, 7, 8):
+        r = subprocess.run([sys.executable, "-I", os.path.join(BURASI, "uretici.py"), "--tur", "s1", "--tohum", str(t), "--islem", "60"], capture_output=True, check=True)
+        rastgele4.append(("rastgele-s1-%d" % t, json.loads(r.stdout)))
+    say = {"net": 0, "tek": 0, "avans": 0, "gecikmis": 0, "ii": 0, "ayrisan": 0, "disarida": 0}
+    for ad, sen in [(os.path.basename(p), yukle(p)) for p in v3] + rastgele4:
+        if sen.get("dil") != M.DIL:
+            continue
+        # son durum + her kontrol anı: kontrol adımlarında modelin o andaki durumu denetlenir (zaman içinde değişen kuyruk)
+        adimlar = sen["adimlar"]
+        kesimler = [i + 1 for i, a in enumerate(adimlar) if a["islem"] == "kontrol"][-3:] or [len(adimlar)]
+        for kesim in kesimler:
+            try:
+                m, _ = calistir(dict(sen, adimlar=adimlar[:kesim]))
+            except SystemExit:
+                continue
+            for cari, c in m.cariler.items():
+                if c.get("silindi"):
+                    continue
+                nd = m.net_durum(cari)
+                yalin = m._net_uygun(cari)[0]
+                if nd[0] == "tanimsiz":
+                    say["ayrisan" if yalin else "disarida"] += 1
+                if yalin:
+                    N = m.net250(cari)
+                    if N["birlik"]:
+                        # (ii) net kuyrukta Σ açık borç yönlü − Σ açık alacak yönlü = bakiye; iki yön birlikte açık kalmaz
+                        b_acik = sum(r["kalan"] for r in N["satirlar"] if r["yon"] == "B")
+                        a_acik = sum(r["kalan"] for r in N["satirlar"] if r["yon"] == "A")
+                        say["ii"] += 1
+                        denetle("%s@%d %s net kuyruk (ii) Σ açık = bakiye, tek yön açık" % (ad, kesim, cari), b_acik - a_acik == m.bakiye(cari) and min(b_acik, a_acik) == 0,
+                                "borç yönlü %s · alacak yönlü %s · bakiye %s" % (b_acik, a_acik, m.bakiye(cari)))
+                    if N["birlik"] and yalin_saf(m, cari):
+                        saf_kalan, saf_avans, saf_bakiye = saf_net(m, cari)
+                        denetle("%s@%d %s saf net bakiye" % (ad, kesim, cari), saf_bakiye == m.bakiye(cari), "saf %s · model %s" % (saf_bakiye, m.bakiye(cari)))
+                        for kad, v in saf_kalan.items():
+                            say["net" if nd[0] == "net" else "tek"] += 1
+                            denetle("%s@%d %s %s saf net (iki yönlü tek kuyruk)" % (ad, kesim, cari, kad), N["kalan"].get(kad) == v, "saf %s · model %s" % (v, N["kalan"].get(kad)))
+                        say["avans"] += 1
+                        denetle("%s@%d %s saf net verilen avans satırları" % (ad, kesim, cari), N["avans"] == saf_avans, "saf %s · model %s" % (saf_avans, N["avans"]))
+                    if N["birlik"] and nd[0] == "tek":
+                        # karşı yönlü kalemi olmayan yalın caride iki yönlü kuyruk = kendi tarafının kuyruğu (§13–§15 değişmedi)
+                        taraf = dict(m.kuyruk(cari))
+                        taraf.update(m.kuyruk_borc(cari))
+                        taraf.update({k_: v_ for k_, v_ in m.tyk250(cari)["kuyruk"].items() if k_.startswith("kars:")})
+                        for kad, v in N["kalan"].items():
+                            say["tek"] += 1
+                            denetle("%s@%d %s %s tek yönde net = kendi tarafı" % (ad, kesim, cari, kad), taraf.get(kad) == v, "kendi tarafı %s · net %s" % (taraf.get(kad), v))
+                if not m.tyk250(cari)["neden"] and not any(sp["cari"] == cari for sp in m.supheliler.values()):
+                    g = m.gecikmis250(cari)
+                    if g is not None:
+                        say["gecikmis"] += 1
+                        denetle("%s@%d %s gecikmiş (i) 0 ≤ gecikmiş ≤ max(0, bakiye)" % (ad, kesim, cari), 0 <= g <= max(0, m.bakiye(cari)), "gecikmiş %s · bakiye %s" % (g, m.bakiye(cari)))
+    print("  bakım 4 çapraz denetim: saf net %d kalem (karşı yönlü kalemli caride) + %d kalem (tek yönde) · avans %d cari · (ii) %d cari · gecikmiş (i) %d cari · susulan: okuma ayrışan %d,"
+          " tanım alanı dışı %d" % (say["net"], say["tek"], say["avans"], say["ii"], say["gecikmis"], say["ayrisan"], say["disarida"]))
+    denetle("bakım 4 çapraz denetim boş değil (karşı yönlü kalemli caride saf net kalemi var)", say["net"] > 0 and say["tek"] > 0 and say["gecikmis"] > 0, json.dumps(say))
     toplam = gecen + kalan
     if satirlar:
         print("BAŞARISIZ:")
