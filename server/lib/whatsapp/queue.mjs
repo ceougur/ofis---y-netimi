@@ -27,7 +27,7 @@ import { statementData, statementFileName, statementPdf } from "../statement-pdf
 import { e164Of, waPresetRange } from "./alici.mjs";
 import { HOOK_SEEN_KEY, HOOK_SEEN_MODE_KEY, isTokenRejectCode } from "./connection.mjs";
 import { allPeriodStartOf, localDayOf, periodKeyOf, periodKeysOf, queueKeysOf, rollingSinceOf, sameKeys, sentSinceOf } from "./donem.mjs";
-import { DAY_MS } from "./defter.mjs";
+import { DAY_MS, hookAppOf } from "./defter.mjs";
 import { META_D0, META_DEFAULT_TTL_SECONDS, MetaGraphError, classifyMetaCode, createMetaTemplates, neverReachedMeta, tierInfo } from "./meta-graph.mjs";
 import { deliveryTtlRules, listedDeliveryTtl, noteDeliveryTtl, noteListing, sendingVerdict } from "./templates.mjs";
 import { SKIP_ERASED, SKIP_REQUEST, SKIP_RETENTION, candidateBound, checkpoint as walCheckpoint, erasedMarker, erasedOf, retentionDue, retentionStartSql, scrubDigits, wamidDigest, wamidForms, withSecureDelete } from "./saklama.mjs";
@@ -2434,12 +2434,17 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     else if (value === "failed" && !ledger.deliveredJob?.(jobId)) ledgerMust(ledger.deliveryFailed({ jobId, attempt: last.attempt, at }), "teslim edilemedi");
     return true;
   }
-  function applyStatuses(statuses = [], { phoneNumberId = "", signed = false } = {}) {
+  function applyStatuses(statuses = [], { phoneNumberId = "", signed = false, via } = {}) {
     const out = { applied: 0, ignored: 0, unknown: 0 };
     // 2.5.0 WhatsApp tur 2 — KULLANICI KARARI S58 = A: işaretle birlikte o anki bağlantı kipi (yalnız değişince yazılır); kip değişince işaret sıfırlanır (connection.mjs).
     const mode = connection.read()?.mode || "";
-    if (mode && store.setting(HOOK_SEEN_MODE_KEY, "") !== mode) store.setSetting(HOOK_SEEN_MODE_KEY, mode);
-    store.setSetting(HOOK_SEEN_KEY, iso());
+    // 2.5.0 WhatsApp tur 3 — KULLANICI KARARI S90 = A: işareti YALNIZ şirketin şimdiki kipinin uygulamasının adresinden gelen bildirim koyar (via: kanca adresinin uygulaması —
+    // lib/whatsapp/hook.mjs deliver; Yol 1'de uygulama düzeyi adres dahil). Eski yolun geç bildirimi işareti koymaz, durumları aşağıda AYNEN işler (Teslim Edildi). via verilmemiş iç
+    // çağrı (araç / test) eskisi gibi.
+    if (via === undefined || via === hookAppOf(mode)) {
+      if (mode && store.setting(HOOK_SEEN_MODE_KEY, "") !== mode) store.setSetting(HOOK_SEEN_MODE_KEY, mode);
+      store.setSetting(HOOK_SEEN_KEY, iso());
+    }
     for (const status of Array.isArray(statuses) ? statuses : []) {
       const wamid = String(status?.id || "").slice(0, 200);
       const value = String(status?.status || "").toLowerCase();
