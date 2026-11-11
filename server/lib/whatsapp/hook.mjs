@@ -200,7 +200,9 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
         }),
       );
     }
-    // 2.5.0 WhatsApp tur 3 (S90 = A): uygulama düzeyi adres Elle Bağla'nın (müşterinin) uygulamasınındır → işareti yalnız şimdiki kipi Yol 1 olan şirkete koyar.
+    // 2.5.0 WhatsApp tur 3 (S90 = A, AYNEN: "… yalnız şirketin ŞİMDİKİ kipinin uygulamasının adresinden (Yol 1'de uygulama düzeyi adres dahil) gelen bildirim koyar"): uygulama
+    // düzeyi adres Elle Bağla'nın (müşterinin uygulamasının) panel ayarıdır → yalnız Yol 1'in adresi sayılır; Yol 2 şirketinde (imzalı da olsa) durumları işler, işaret KOYMAZ
+    // (güvenli yön — ilke 2). Tur 1 T1-10'un "imzalı → işaret" beklentisi bu kararla değişti; BAŞ MİMAR teyidi gerekir (tur 3 raporu: B seçeneği imzalıyı Yol 2 sayar).
     return deliver(res, batches, mark.signed === true, "manual");
   }
   /** Gövdeyi okur ve ayrıştırır; olmazsa yanıtı yazar ve undefined döner. */
