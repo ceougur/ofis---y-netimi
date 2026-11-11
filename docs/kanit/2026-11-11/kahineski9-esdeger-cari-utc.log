@@ -1,0 +1,17 @@
+ÜRETİCİ: 20/20 aynı dizi (tur s1 + ux18, tohum 1–10 × 120 işlem)
+ADIMLAR: eski kopyadaki 88 elle senaryonun 0'inin adımları değişti: yok · yeni elle senaryo: d35-c5-s120-elle-borclar
+EŞDEĞERLİK (2.4.9 / 2.4.6 / 2.4.5 / --legacy; eski kopyanın 88 elle + yeni kopyanın yeni 1 elle + 20 rastgele senaryo × 4 kip): 436/436 bayt bayt aynı
+G3 (kural 2.5.0; 108 senaryo — eski kopyanın 88 elle senaryosu + yeni elle + 20 rastgele): eski 46588 denetim · yeni 46899 denetim · değişen / kalkan / yeni toplam 311 · BEKLENMEYEN 0 · yalnız etiketi değişen 0
+  S120-alan      yeni       311
+      örn. d34-c5-s110-kendi-borcu k1:cari:E11:acikEsitBakiye: "(denetim yok)" → true
+      örn. d34-c5-s110-kendi-borcu k1:cari:E11:acikToplam: "(denetim yok)" → 180000
+      örn. d34-c5-s110-kendi-borcu k1:cari:E11:gecikmis: "(denetim yok)" → 120000
+      örn. d34-c5-s110-kendi-borcu k1:cari:E12:acikEsitBakiye: "(denetim yok)" → true
+G3 senaryo senaryo (sınıf/tür: adet; listede olmayan senaryoda fark 0):
+  d34-c5-s110-kendi-borcu                  S120-alan/yeni 52
+  d35-c5-s120-elle-borclar                 S120-alan/yeni 242
+  d8-c5-tanimsiz                           S120-alan/yeni 17
+# tests 545
+# pass 545
+# fail 0
+545/545 denetim geçti

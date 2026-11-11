@@ -2386,3 +2386,26 @@ SK-20 | SK-22 | SK-23 (§21)" ve "… Mevcut Borç kartı <no> birden çok elle 
 - Vade günü / ertesi gün (gün dönümü) S120 senaryosu — tek bugünle yazıldı (gecikmiş kuralı C13.5 aynen); S120 kartının iki şirket / yedek geri yükleme senaryosu yok (kâhinin dilinde şirket yok).
 - Aynı caride iki elle S120 kartı (ikinci kart birincinin dışında kalan elle borcu alır) — kural yolu aynı (kartın günündeki açık elle kalemler); elle senaryo yazılmadı.
 - Ödeme Sözü (Beklenen) taşıyan elle borcun S120 sırası — S52 "sırayı değiştirmez" aynen; senaryo yazılmadı.
+
+### C0n Değişen eski beklentiler (G3; bakım 8 (`9446aff4` ağacı, kâhin `467d289b`) ↔ bakım 9 kâhin çıktısı, `2.5.0`; eski kopyanın 88 elle senaryosu + d35 + rastgele s1 / ux18 tohum 1–10 × 120) — kararla ilgisiz eski beklenti DEĞİŞMEDİ
+Eski 46.588 → yeni 46.899 denetim; değişen / kalkan / yeni toplam **311**, hepsi **S120-alan / yeni** (bakım 8'in sustuğu yerde artık değer); **BEKLENMEYEN 0**, değeri değişen 0, kalkan 0, yalnız etiketi değişen 0
+(dökümü `docs/kanit/2026-11-11/kahineski9-g3-dokum-*.json`, özet `kahineski9-esdeger-cari-*.log`; iki saat diliminde bayt bayt aynı). Sınıf, yeni modelin `_alacak_govde250` sonuçlarından cari cari
+(`son["s120"]` / S120 ve SK-21 nedenleri) kaydedildi:
+- **d34 (52 yeni):** E11 22, E12 15, E13 15 — kararın üç örneği; bakım 8 SK-19 ile susuyordu. E1–E10, E14a / E14b fark 0.
+- **d8 (17 yeni):** A carisi (Açılış 1.000 + Borç 500, kart 1.200 — elle borçlar eskiden yeniye; bakım 8'de SK-19, önceden "birden çok kalemi tüketti"). B fark 0.
+- **d35 (242 yeni; dosya yeni, eski kâhinde de koşuldu):** H1 22, H2 22, H4b 16, H5 22, H6a 22, H7 22, H9b 22, H12 28, H13 22, H14 22, H15a 22 (eski kâhin SK-19 ile susuyordu). Fark 0: H3 (SK-22), H8 (SK-20),
+  H9a (SK-23), H10 / H11 (SK-21) — iki kâhinde de susar; H4a ve H6b (tek eşit elle borç — bakım 8 kuralı AYNEN), H15b.
+- **Öbür 86 eski elle senaryo ve 20 rastgele: fark 0** (adımları değişen eski senaryo 0).
+- **Eski ELLE tablolarda değişen beklentiler** (`kahineski9-elle-fark-*.log`; yalnız iki dosya, karar gereği): d34 E11–E13 — 14 `elleYok` + 3 `elleBelirsiz` (SK-19) kalktı, 49 değer eklendi; d8 A — 4 `elleYok`
+  (Borç / Açılış Kalan, kart ödeneni, gecikmiş) kalktı, 4 değer eklendi. Öbür 86 dosyanın elle tablosu ve bütün dosyaların adımları AYNI.
+- `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`: **436/436 bayt bayt aynı** (88 eski elle + d35 + 20 rastgele × 4 kip); üretici 20/20 aynı dizi.
+- **Yeni / değişen elle tablolar ESKİ (bakım 8) kâhinde — beklenen NEDENLE kırmızı (ders 7, 38):** 587 elle denetimin **253**'ü (`kahineski9-kirmizi-eski-cari-*.log`; d35 205, d34 44, d8 4): 248'i "ANAHTAR YOK"
+  (eski kâhin SK-19 / "birden çok kalemi tüketti" ile susuyor), 5'i `belirsiz` kaydında SK-20 / SK-21 / SK-22 / SK-23 yok (eski kâhin SK-19 yazıyor); 334'ü iki kâhinde aynı (bakiyeler, kart tutarları,
+  H4a / H6b — bakım 8 kuralı, H15b).
+
+### Kanıt (bakım 9; iki saat dilimi — UTC ve Europe/Istanbul çıktıları bayt bayt aynı; kâhin `ab628e61`, temiz ağaç; `docs/kanit/2026-11-11/kahineski9-*`, araçlar ve koşu betiği `kahineski9-arac/`)
+cari öz test **4.457/4.457** (`-cari-oz-*`: elle tablolar 89 senaryo, mutantlar 200–264 — 219–264 değerle, saf TYK 175 kalem, bakım 4–6 çapraz denetimi, G1 89 senaryo × 121 belge adımı) · mutasyon taraması
+**231/231** (`-cari-mutasyon-*`) · eşdeğerlik + G3 **545/545** (`-esdeger-cari-*`) · yeni / değişen elle tablo **587/587** (`-elle-yeni-cari-*`: d35 342 + d34 236 + d8 9) · ESKİ kâhinde **253 kırmızı** / 587
+(`-kirmizi-eski-cari-*`) · eski elle tablo farkı **88/88** izinli (`-elle-fark-*`) · G1 tarama **89/89** (`-g1-tara-*`) · geniş tarama **2.201/2.201** (`-genis-tarama-*`; bakım 8 ile aynı sayı) · mutant ↔ senaryo
+dökümü `kahineski9-arac/mutant-senaryo.py` (261 H1 / H4b / E11 / E12, 262 H1 / E11, 263 H14 / E11, 264 H4a). **Defter öz testi BAŞARISIZ** (`-defter-oz-*`; `VARSAYILAN_KURAL` AttributeError) — TABANDA da aynı
+(eski kopya `9446aff4`'te koşuldu); bu bakım defter kâhinine dokunmadı. Mutasyon, eşdeğerlik, öz test ve geniş tarama `flock -s -n …/olcum.lock` ile (ders 52). Program açılmadı.
