@@ -1,0 +1,15 @@
+WhatsApp tur 3 (2.5.0) — kanıt dizini. Kod: dal worktree-agent-a548e3bfea9553e7c; taban 1f136bb6; ürün kodu son hâli 758eca4b (sürücü koşuları 47dbc017'de — ürün davranışı 758eca4b ile AYNI:
+yalnız kanca yorum satırı ve testler değişti). Kopyalar: scratchpad/watur3-eski (git archive 1f136bb6), watur3-yeni (git archive HEAD), watur3-329d (git archive 329d5d1b — DÜŞÜK-1 eski verisi).
+
+watur3-surucu-on-UTC / watur3-surucu-sonra-{UTC,Europe-Istanbul}: program ↔ kâhin sürücüsü, tam küme (398), hızlı uç, imzalı kip. Önce (taban) Istanbul koşusunun kanıt kaydı yok
+  (sürücü özetten sonra çıkmadı, süreç elle durduruldu); ham çıktı watur3-cikti/surucu-on-istanbul-ham.out.gz + karşılaştırma dosyası watur3-cikti/surucu-on-istanbul-karsilastirma.json.gz.
+  Fark: watur3-cikti/surucu-fark-*.txt (betik watur3-betikler/fark.py) — iki TZ'de yalnız S70-03 değişti (13 fark kapandı, yeni fark 0).
+watur3-eski-tur3-*, watur3-eski-tur3-son-*, watur3-eski-t16b-*, watur3-eski-tur1-t1-7-10-*: yeni / beklentisi değişen hücreler TABAN kodda (beklenen kırmızılar + nedenleri: watur3-cikti/eski-kirmizi.out).
+watur3-son-degisen-*: değişen test dosyaları yeni kodda (137/137 iki TZ).
+watur3-komsu-*: G2 komşuları (96 dosya — watur3-cikti/komsu-liste.txt) 47dbc017'de: 693/695 — kırmızı 2 = tur 1 T1-7 / T1-10 (S90 ile beklentisi değişen hücreler;
+  758eca4b'de düzeltildi, watur3-son-degisen yeşil).
+watur3-kirilgan-yuklu-*: kırılgan kalıbı düzeltilen 6 dosya, komşu yığını YANINDA (loadavg 5,9'a çıktı) — 169/169 iki TZ.
+watur3-mutasyon-UTC (18/20; iki kaçan → test güçlendirildi) + watur3-mutasyon-ek-UTC (4/4) + watur3-mutasyon-tam-Europe-Istanbul (20/20, son test): watur3-cikti/mutasyon*.out.
+watur3-dk-f1-*, watur3-dk-f2-*, watur3-t16-urun-*: dar kontrol betikleri ve T16 ürün yarışı betiği, yeni ve taban kod, iki TZ (f1 / f2 'özet satırı tanınmadı' = betik TAP yazmaz; sonuç '# SONUÇ').
+watur3-e2e-*: 8 ekran senaryosu (WhatsApp 6 + şema kapısı + yedek) 758eca4b'de — hepsi geçti.
+Ölçüm (100.000 iş + 100.000 defter): DENENMEYEN — olcum.lock her denemede başka koşunun paylaşımlı kilidindeydi (bekleme döngüsü kurulmadı); betik watur3-betikler/olcum.mjs + olcum.sh hazır.

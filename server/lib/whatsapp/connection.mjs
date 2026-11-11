@@ -106,8 +106,8 @@ export const sha256 = value => createHash("sha256").update(String(value)).digest
 // webhook adresi de (lib/whatsapp/app-webhook.mjs) AYNI kuralla.
 export const hookBase = value => String(value || "").replace(/\/+$/, "");
 export const usableBase = base => /^https:\/\/[^\s/?#]+$/i.test(base) || /^http:\/\/[^\s/?#]+\.(test|localhost)(:\d+)?$/i.test(base);
-// sharedWaba(wabaId) (2.5.0 W-2): bu bilgisayarda BAŞKA bir şirket aynı WhatsApp Business hesabına belirteçli bağlı mı (ortak kayıt — lib/whatsapp/hub.mjs). Bağlıysa
-// Bağlantıyı Kaldır Meta'daki aboneliği SİLMEZ (abonelik uygulama + WABA başına tektir; öbür şirketinki de odur — plan §3 "Nasıl bozulur" 1).
+// sharedWaba(wabaId, mode) (2.5.0 W-2; tur 3 WT2-7: AYNI KİPTE): bu bilgisayarda BAŞKA bir şirket aynı WhatsApp Business hesabına AYNI uygulamayla (kip) belirteçli bağlı mı (ortak
+// kayıt — lib/whatsapp/hub.mjs). Bağlıysa Bağlantıyı Kaldır Meta'daki aboneliği SİLMEZ (abonelik uygulama + WABA başına tektir; öbür şirketinki de odur — plan §3 "Nasıl bozulur" 1).
 export function createWhatsappConnection({ store, config = {}, audit = () => {}, now = () => new Date(), onChange = () => {}, hooks = null, publicUrl = () => "", sharedWaba = () => false }) {
   let box = null;
   const secrets = () => (box ||= createSecretBox(config.dataDir || "."));
@@ -483,7 +483,8 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
   async function unsubscribeAtMeta(record) {
     let shared = false;
     try {
-      shared = Boolean(sharedWaba(record.wabaId));
+      // 2.5.0 WhatsApp tur 3 (WT2-7): abonelik uygulama (kip) başınadır — yalnız AYNI KİPTE bu WABA'ya bağlı öbür şirket aboneliği korur.
+      shared = Boolean(sharedWaba(record.wabaId, record.mode === "embedded" ? "embedded" : "manual"));
     } catch {
       shared = false;
     }

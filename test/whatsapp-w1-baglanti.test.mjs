@@ -177,15 +177,15 @@ describe("2.4.8 W1 — WhatsApp Business API bağlantısı (Elle Bağla)", () =>
     assert.equal(res.data.code, "whatsapp-mismatch");
     await admin.put(URL_CONN, { phoneNumberId: PNID, wabaId: WABA, appId: APP });
     // Zaman aşımı (1,5 sn): sonuç "bilinmiyor".
-    fake.set({ delayMs: 3000 });
+    // 2.5.0 WhatsApp tur 3 (kırılgan kalıp — KAYIT 06.11 16:10 listesi; ders 20): eskiden sahte yanıt 3 sn GECİKTİRİLİP sonra sabit 1,8 sn beklenirdi ("geciken istek bitene dek"); yüklü
+    // makinede geciken istek bu beklemeden sonra biterse aşağıdaki failNext'i o tüketirdi. Artık yanıt HİÇ gelmez (hang — istek sahte sunucuda hiçbir kuralı tüketmez); bekleme yok.
+    fake.set({ hang: /./ });
     res = await admin.post(`${URL_CONN}/test`, {});
+    fake.set({ hang: null });
     assert.equal(res.status, 502);
     assert.equal(res.data.code, "whatsapp-meta-unreachable");
     assert.equal(res.data.meta.reason, "timeout");
     assert.equal(res.data.meta.retry, "unknown");
-    fake.set({ delayMs: 0 });
-    // Geciken istek sahte sunucuda bitene dek beklenir (yoksa aşağıdaki failNext'i o tüketir).
-    await new Promise(resolve => setTimeout(resolve, 1800));
     // Gövdesiz (HTML) 500: vekil hata sayfası gibi.
     fake.set({ failNext: { status: 500, raw: "<html>Bad Gateway</html>" } });
     res = await admin.post(`${URL_CONN}/test`, {});

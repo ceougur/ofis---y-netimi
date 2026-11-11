@@ -1,0 +1,32 @@
+{
+  "ad": "watur3-mutasyon-UTC",
+  "komut": "node /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur3-betik/mutasyon.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-11T07:14:39.906Z",
+  "sure_sn": 47.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 20,
+    "gecen": 18,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "ÇELİŞKİ",
+  "neden": "çıkış 0 ama özet: 2 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "../watur3-kanit/2026-11-11/watur3-mutasyon-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur3-mut",
+  "ham_cikti_sha256": "aa2d188c6bfd2a02aa3702465cb1744963bafa587a7621e9b556ebfa4b9c88fc",
+  "ham_cikti_bayt": 15547
+}

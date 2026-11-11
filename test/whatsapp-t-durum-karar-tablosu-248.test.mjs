@@ -642,22 +642,89 @@ describe("2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşı
       await s.close();
     }
   });
-  it("T35 istek Meta'dayken toparlama denemeye 'uncertain' yazdı → yanıt gelince kabul öğrenilir (A7, K8); sonraki imzasız delivered uygulanır; Daha Önce", async () => {
-    const s = await harness();
+  // 2.5.0 WhatsApp tur 3 (T16 ÜRÜN yarışı; KAYIT 06.11 16:10 (b), ORTA): yanıtsız dal (bağlantı koptu / zaman aşımı) satırı YALNIZ hâlâ bu denemede "Gönderiliyor" ise Sonucu Belirsiz
+  // yapar ve art arda hata sayacını artırır. Ön koşul KAPIYLA (ders 20): yanıt sahte Meta'da kapıda tutulur, bildirim uygulanır, sonra kapı açılınca bağlantı KOPAR (yanıt hiç gelmez —
+  // "yanıtsız" dal); süre sınırı kapıdan uzun (60 sn) → sıra makine hızına bağlı değil.
+  for (const [value, expected] of [["delivered", "delivered"], ["read", "read"], ["failed", "failed"]]) {
+    it(`T16b istek Meta'dayken imzalı ${value} satırı ${expected} yaptı → yanıt hiç gelmez (bağlantı koptu): satır ${expected} KALIR, art arda hata sayacı 0; defterde teslim aynen; Yine de Gönder yok (T16 ürün yarışı)`, { timeout: 120_000 }, async () => {
+      const s = await harness({ timeoutMs: 60_000 });
+      let open = () => {};
+      try {
+        const batchId = await s.batch();
+        const wamid = `wamid.SAHTE${String(s.ctx.fake.state.sent + 1).padStart(4, "0")}`;
+        s.ctx.fake.state.failQueue.push({ match: /^POST \/\d+\/messages$/, gate: new Promise(resolve => (open = resolve)), destroy: true });
+        const turn = s.ctx.wa.scheduler.runOnce();
+        let job = null;
+        for (let i = 0; i < 2_000 && !(job?.state === "sending" && s.ctx.fake.requests.some(item => /\/messages$/.test(item.path))); i += 1) {
+          job = s.ctx.store.get("SELECT id, state, attempt FROM wa_jobs WHERE batch_id = ?", batchId);
+          await wait(10);
+        }
+        assert.equal(job?.state, "sending", "ön koşul: ileti isteği Meta'da (yanıt kapıda), satır Gönderiliyor");
+        const extra = value === "failed" ? { biz_opaque_callback_data: job.id, errors: [{ code: 131026, title: "Message undeliverable" }] } : { biz_opaque_callback_data: job.id };
+        assert.equal(s.apply([st(s, wamid, value, extra)], true).applied, 1, "imzalı bildirim (iş kimliğiyle) istek sürerken uygulandı");
+        assert.equal((await s.job(batchId)).state, expected, "ön koşul: bildirim satırı ilerletti");
+        open();
+        await turn;
+        assert.equal(s.outcomeSql(job.id, job.attempt), "uncertain", "ön koşul: istek yanıtsız sonuçlandı (defterde 'uncertain' aynen)");
+        const row = await s.job(batchId);
+        assert.equal(row.state, expected, `yanıtsız dal kesin satırı EZMEDİ (eski kod: uncertain) — ${row.state}`);
+        assert.equal(s.ctx.store.get("SELECT troubles FROM wa_batches WHERE id = ?", batchId).troubles, 0, "art arda hata sayacı artmadı");
+        if (expected !== "failed") {
+          assert.equal(s.deliveredSql(job.id), true, "defterde teslim (kime kaç kez: R3 / Bu Ay)");
+          assert.equal(await s.buAy(), 1);
+          assert.deepEqual(await s.skip(), ["Daha Önce Gönderildi"]);
+          const again = await s.ctx.api.post(`/api/workspace/whatsapp/jobs/${job.id}/send-anyway`, { confirm: true });
+          assert.equal(again.status, 409, "satır Sonucu Belirsiz değil → işteki Yine de Gönder sunulmaz (eski kod: sunuluyor, 400 çıkmaz)");
+        }
+        assert.equal(s.ctx.fake.requests.filter(item => item.method === "POST" && /\/messages$/.test(item.path)).length, 1, "tek ileti isteği (ikinci ileti yok)");
+      } finally {
+        open();
+        await s.close();
+      }
+    });
+  }
+  it("T16c ters sıra: istek yanıtsız sonuçlanır (satır Sonucu Belirsiz, sayaç 1) → SONRA imzalı geç teslim → satır Teslim Edildi (K1′ / S70 ile uyumlu); Bu Ay 1, Daha Önce", { timeout: 120_000 }, async () => {
+    const s = await harness({ timeoutMs: 60_000 });
+    let open = () => {};
     try {
       const batchId = await s.batch();
-      s.ctx.fake.state.delayMs = 400;
+      const wamid = `wamid.SAHTE${String(s.ctx.fake.state.sent + 1).padStart(4, "0")}`;
+      s.ctx.fake.state.failQueue.push({ match: /^POST \/\d+\/messages$/, gate: new Promise(resolve => (open = resolve)), destroy: true });
       const turn = s.ctx.wa.scheduler.runOnce();
-      let job = null;
-      for (let i = 0; i < 200 && !(job?.state === "sending" && s.ctx.fake.requests.some(item => item.path.endsWith("/messages"))); i += 1) {
-        job = s.ctx.store.get("SELECT id, state, attempt FROM wa_jobs WHERE batch_id = ?", batchId);
-        await wait(20);
-      }
+      for (let i = 0; i < 2_000 && !s.ctx.fake.requests.some(item => /\/messages$/.test(item.path)); i += 1) await wait(10);
+      open();
+      await turn;
+      const job = s.ctx.store.get("SELECT id, state, attempt FROM wa_jobs WHERE batch_id = ?", batchId);
+      assert.equal(job.state, "uncertain", "ön koşul: yanıtsız → Sonucu Belirsiz");
+      assert.equal(s.ctx.store.get("SELECT troubles FROM wa_batches WHERE id = ?", batchId).troubles, 1, "yanıtsız dal sayacı artırdı (aynen)");
+      assert.equal(s.apply([st(s, wamid, "delivered", { biz_opaque_callback_data: job.id })], true).applied, 1);
+      assert.equal((await s.job(batchId)).state, "delivered", "geç teslim Sonucu Belirsiz'i geçer");
+      assert.equal(await s.buAy(), 1);
+      assert.deepEqual(await s.skip(), ["Daha Önce Gönderildi"]);
+    } finally {
+      open();
+      await s.close();
+    }
+  });
+  it("T35 istek Meta'dayken toparlama denemeye 'uncertain' yazdı → yanıt gelince kabul öğrenilir (A7, K8); sonraki imzasız delivered uygulanır; Daha Önce", { timeout: 120_000 }, async () => {
+    // 2.5.0 WhatsApp tur 3 (kırılgan kalıp — KAYIT 06.11 16:10 listesi; T35r yöntemi, ders 20): "istek Meta'dayken" 400 ms sahte gecikme + 800 ms süre sınırıyla DEĞİL, KAPIYLA;
+    // yanıtın gerçekten geldiği (zaman aşımı değil) defterden okunur.
+    const s = await harness({ timeoutMs: 60_000 });
+    let release = () => {};
+    try {
+      const batchId = await s.batch();
+      s.ctx.fake.state.hold = { match: /^POST \/\d+\/messages$/, promise: new Promise(resolve => (release = resolve)) };
+      const turn = s.ctx.wa.scheduler.runOnce();
+      for (let i = 0; i < 2_000 && !s.ctx.fake.state.held; i += 1) await wait(10);
+      const job = s.ctx.store.get("SELECT id, state, attempt FROM wa_jobs WHERE batch_id = ?", batchId);
+      assert.deepEqual([s.ctx.fake.state.held, job?.state], [1, "sending"], "ön koşul: ileti isteği Meta'da (yanıt kapıda), satır Gönderiliyor");
       // Açılış toparlamasının yaptığı (geri yükleme / yeniden açılış — istek sürerken): talepli, sonuçsuz denemeye "uncertain".
       s.ctx.server.app.whatsapp.ledger.outcome({ jobId: job.id, attempt: job.attempt, outcome: "uncertain", at: s.isoNow(), companyId: "sirket-001", wabaId: WABA });
       s.ctx.store.run("UPDATE wa_jobs SET state = 'uncertain', error_text = ? WHERE id = ?", "Gönderim sırasında program kapandı; iletinin Meta'ya ulaşıp ulaşmadığı bilinmiyor.", job.id);
+      s.ctx.fake.state.hold = null;
+      release();
       await turn;
-      s.ctx.fake.state.delayMs = 0;
+      assert.equal(s.ctx.messages().length, 1, "ön koşul: Meta iletiyi kabul etti (yanıt geldi)");
       const wamid = s.ctx.messages().at(-1).wamid;
       assert.equal(s.ctx.server.app.whatsapp.ledger.attemptOfWamid(wamid)?.jobId, job.id, "kabul defterde öğrenildi (wamid bağlı)");
       const row = await s.job(batchId);
@@ -665,6 +732,8 @@ describe("2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşı
       assert.equal(s.apply([st(s, wamid, "delivered")]).applied, 1, "sonraki bildirim tanındı");
       assert.deepEqual(await s.skip(), ["Daha Önce Gönderildi"]);
     } finally {
+      s.ctx.fake.state.hold = null;
+      release();
       await s.close();
     }
   });
@@ -856,15 +925,21 @@ describe("2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşı
     }
   });
   it("T-settleSending-D istek Meta'dayken yedek (satır Gönderiliyor) → kabul → delivered → geri yükleme → açılış toparlaması: Teslim Edildi (V2, n1b)", { timeout: 120_000 }, async () => {
-    const s = await harness({ second: true, timeoutMs: 8_000 });
+    // 2.5.0 WhatsApp tur 3 (kırılgan kalıp — KAYIT 06.11 16:10 listesi; T35r yöntemi, ders 20): yedek "istek Meta'dayken" alınmalı — eskiden sahte Meta yanıtı 2,5 sn gecikmeli
+    // (yedek daha uzun sürerse yanıt yedekten ÖNCE gelir, hücrenin konusu kaybolur); artık yanıt KAPIDA tutulur, yedek alınınca bırakılır; süre sınırı kapıdan uzun (60 sn).
+    const s = await harness({ second: true, timeoutMs: 60_000 });
+    let release = () => {};
     try {
       const batchId = await s.batch();
-      s.ctx.fake.state.delayMs = 2_500;
+      s.ctx.fake.state.hold = { match: /^POST \/\d+\/messages$/, promise: new Promise(resolve => (release = resolve)) };
       const turn = s.ctx.wa.scheduler.runOnce();
-      for (let i = 0; i < 400 && !s.ctx.fake.requests.some(item => item.path.endsWith("/messages")); i += 1) await wait(10);
+      for (let i = 0; i < 2_000 && !s.ctx.fake.state.held; i += 1) await wait(10);
+      assert.equal(s.ctx.fake.state.held, 1, "ön koşul: ileti isteği Meta'da (yanıt kapıda)");
       const backup = await s.backup();
+      assert.deepEqual([s.ctx.fake.state.held, (await s.job(batchId))?.state], [1, "sending"], "ön koşul: yedek istek Meta'dayken alındı (satır Gönderiliyor)");
+      s.ctx.fake.state.hold = null;
+      release();
       await turn;
-      s.ctx.fake.state.delayMs = 0;
       const job = await s.job(batchId);
       assert.equal(job.state, "accepted", "ön koşul: kabul");
       assert.equal(s.apply([st(s, job.wamid, "delivered")]).applied, 1);
@@ -874,7 +949,8 @@ describe("2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşı
       assert.equal(await s.buAy(), 1);
       assert.equal(s.ctx.messages().length, 1);
     } finally {
-      s.ctx.fake.state.delayMs = 0;
+      s.ctx.fake.state.hold = null;
+      release();
       await s.close();
     }
   });
@@ -1226,29 +1302,35 @@ async function hookHarness(options = {}) {
 }
 describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", () => {
   it("T17 imzasız bildirim yanıt işlenmeden gelir (istek Meta'da) → 503; yanıt işlenince yineleme 200 ve uygulanır; bekleyen istek yokken / pencere (5 dk) dışında tanınmayan → 200; pencere içinde yabancı ileti de 503 (BİLİNEN SINIR)", { timeout: 120_000 }, async () => {
-    const s = await hookHarness();
+    // 2.5.0 WhatsApp tur 3 (kırılgan kalıp — KAYIT 06.11 16:10 listesi; T35r yöntemi, ders 20): istek eskiden 600 ms sahte gecikme + 800 ms süre sınırıyla "Meta'da" tutuluyordu (üç
+    // kanca isteği 600 ms'den uzun sürerse yanıt erken gelir, uzun durursa zaman aşımı); artık yanıt KAPIDA, süre sınırı kapıdan uzun (60 sn).
+    const s = await hookHarness({ timeoutMs: 60_000 });
+    let release = () => {};
     try {
       assert.equal((await s.post([st(s, "wamid.YABANCI1", "delivered")])).status, 200, "bekleyen istek yokken yabancı ileti 200");
       const batchId = await s.batch();
       const wamid = `wamid.SAHTE${String(s.ctx.fake.state.sent + 1).padStart(4, "0")}`;
-      s.ctx.fake.state.delayMs = 600; // istemci zaman aşımı 800 ms (startWa) — istek yanıtlanır, yalnız gecikir
+      s.ctx.fake.state.hold = { match: /^POST \/\d+\/messages$/, promise: new Promise(resolve => (release = resolve)) };
       const turn = s.ctx.wa.scheduler.runOnce();
-      for (let i = 0; i < 200 && !s.ctx.fake.requests.some(item => item.path.endsWith("/messages")); i += 1) await wait(10);
-      assert.ok(s.ctx.fake.requests.some(item => item.path.endsWith("/messages")), "ön koşul: ileti isteği Meta'da");
+      for (let i = 0; i < 2_000 && !s.ctx.fake.state.held; i += 1) await wait(10);
+      assert.equal(s.ctx.fake.state.held, 1, "ön koşul: ileti isteği Meta'da (yanıt kapıda)");
       const early = await s.post([st(s, wamid, "delivered")]);
       assert.equal(early.status, 503, `yanıtı beklenen istek varken tanınmayan bildirim 503 (geldi ${early.status} ${early.text})`);
       assert.equal((await s.post([st(s, "wamid.YABANCI2", "delivered")])).status, 503, "pencere içinde yabancı ileti de 503 (BİLİNEN SINIR)");
       s.ctx.clock.advance(6 * 60_000);
       assert.equal((await s.post([st(s, "wamid.YABANCI3", "delivered")])).status, 200, "talep 5 dk'dan eski → 200 (pencere sınırlı)");
-      assert.equal((await s.job(batchId)).state, "sending", "ön koşul: yanıt henüz işlenmedi");
+      assert.deepEqual([s.ctx.fake.state.held, (await s.job(batchId)).state], [1, "sending"], "ön koşul: yanıt henüz işlenmedi");
+      s.ctx.fake.state.hold = null;
+      release();
       await turn;
-      s.ctx.fake.state.delayMs = 0;
       assert.equal((await s.job(batchId)).state, "accepted", "yanıt işlendi");
       const again = await s.post([st(s, wamid, "delivered")]);
       assert.equal(again.status, 200);
       assert.equal((await s.job(batchId)).state, "delivered", "yinelenen bildirim uygulandı");
       assert.equal((await s.post([st(s, "wamid.YABANCI4", "delivered")])).status, 200, "talep sonuçlandı → yabancı ileti 200");
     } finally {
+      s.ctx.fake.state.hold = null;
+      release();
       await s.close();
     }
   });
