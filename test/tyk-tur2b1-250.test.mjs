@@ -113,6 +113,11 @@ describe("2.5.0 Ç5-B tur 2b-1 — G-2: taksitsiz / eksik taksitli kart 'Bitti' 
     h.goods = await h.must("ürün", h.api.post("/api/workspace/stock", { name: "Tur2b1 Ürün", code: "URN-2B1", unit: "Adet", unitPrice: "10", salePrice: "100" }));
     await h.must("alım", h.api.post(`/api/workspace/stock/${h.goods.id}/moves`, { kind: "in", qty: "1000", unitPrice: "10", pay: "none", date: day(-200) }));
     const want = { yok: ["active", "active"], kart: ["done", "done"], cari: ["active", "active"] };
+    // G3 (tur 2b-2, ekran yürüyüşü 1 Y2 — BAŞ MİMAR KARARI 11.11 05:48, S91 = A'nın sunumu): taksitlere bölünmemiş kalanı kuyrukta kalem olan kart (ayrı kart, Excel kartı,
+    // taksitleri silinmiş faturanın kartı — kalemin günü kartın açılış günü −30) ödenmemişse "Gecikti" (Geciken sekmesi) — zil / Vade Takip / cari kartındaki gecikmişle aynı.
+    // v2.4.9 bu kartları Aktif gösteriyordu (fark testinde karar adıyla). Mevcut Borç / stoktan kartın taksitlendirilmemiş kısmı alttaki borç kalemidir (kartın değil) → Aktif.
+    const OWN_REST = new Set(["Ayrı", "Faturadan", "Excel"]);
+    const wantOf = (kind, pay) => (pay === "yok" && OWN_REST.has(kind) ? ["overdue", "active/overdue"] : want[pay]);
     for (const [kind, make] of Object.entries(makers)) {
       for (const pay of ["yok", "kart", "cari"]) {
         const acc = kind === "Excel" ? { name: `Tur2b1 G2 ${kind} ${pay}` } : await h.account(`G2 ${kind} ${pay}`);
@@ -124,8 +129,8 @@ describe("2.5.0 Ç5-B tur 2b-1 — G-2: taksitsiz / eksik taksitli kart 'Bitti' 
         if (pay === "cari") await h.entry(acc, { kind: "in", amount: "1000", date: day(-5) });
         h.tick();
         const p = await h.plan(id);
-        assert.deepEqual([p.items.length, p.state, await h.tabs(id)], [0, ...want[pay]], `${kind} · taksitsiz · ödeme ${pay}`);
-        assert.equal((await h.listRow(id)).state, want[pay][0], `${kind} · ${pay}: Taksitler listesi satırı`);
+        assert.deepEqual([p.items.length, p.state, await h.tabs(id)], [0, ...wantOf(kind, pay)], `${kind} · taksitsiz · ödeme ${pay}`);
+        assert.equal((await h.listRow(id)).state, wantOf(kind, pay)[0], `${kind} · ${pay}: Taksitler listesi satırı`);
       }
     }
   });

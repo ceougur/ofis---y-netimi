@@ -299,6 +299,22 @@
   },
   {
    "cari": "TYKF T1 Taksitsiz Ayrı Kart",
+   "alan": "kart1.durum",
+   "eski": "\"active\"",
+   "yeni": "\"overdue\"",
+   "karar": "Y2 (BAŞ MİMAR KARARI 11.11 05:48; S91 = A)",
+   "not": "tur 2b-2: taksitsiz ayrı kartın taksitlendirilmemiş 1.000'i (vade kartın açılış günü −20) zilde / Vade Takip'te gecikmiş — kart da 'Gecikti' (v2.4.9: Aktif)."
+  },
+  {
+   "cari": "TYKF T1 Taksitsiz Ayrı Kart",
+   "alan": "kart1.sekme",
+   "eski": "\"active\"",
+   "yeni": "\"active/overdue\"",
+   "karar": "Y2 (BAŞ MİMAR KARARI 11.11 05:48; S91 = A)",
+   "not": "tur 2b-2: Geciken sekmesinde de (v2.4.9: yalnız Aktif)."
+  },
+  {
+   "cari": "TYKF T1 Taksitsiz Ayrı Kart",
    "alan": "vadeTakip",
    "eski": "[]",
    "yeni": "[\"plan|Taksitlendirilmemiş Kalan|1000|2026-09-30|in\"]",

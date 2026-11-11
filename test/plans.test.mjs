@@ -150,7 +150,9 @@ describe("taksit modülü API (v2.0.4)", () => {
     plan = created.data.data;
     assert.equal(plan.items.length, 0, "kayıt bitince taksit sorulmaz");
     assert.equal(plan.totals.unplanned, 12000);
-    assert.equal(plan.state, "active");
+    // G3 (tur 2b-2, ekran yürüyüşü 1 Y2 — BAŞ MİMAR KARARI 11.11 05:48): Kayıt Tarihi 01.09 geçmiş, taksitlere bölünmemiş 12.000 kuyrukta gecikmiş kalem → kart da "Gecikti"
+    // (zil / Vade Takip ile aynı). Önceki beklenti "active" (kartın durumu yalnız taksitlerden).
+    assert.equal(plan.state, "overdue");
     const spread = await admin.post(`/api/workspace/plans/${plan.id}/distribute`, { count: 4, firstDue: "2026-09-05" });
     assert.equal(spread.status, 200, JSON.stringify(spread.data));
     plan = spread.data.data;
