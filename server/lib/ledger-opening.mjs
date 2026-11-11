@@ -2,6 +2,7 @@
 // modüllerin kendi tablolarından; journal()'dan bağımsız SQL) ve kilitsiz geçmiş yıl bilgisi (S53). Açılış Eşleştirme Fişi ve Kural Farkı Düzeltme Fişi TUR 2'de bu dosyaya eklenir
 // (eşleştirme denetimi aynı `openingCounterpart` toplamını okur).
 import { LEDGER_RULE_ALIASES, localDayOf } from "./general-ledger.mjs";
+import { leanAll } from "./lean-rows.mjs";
 import { roundMoney } from "./money.mjs";
 import { isOpeningCandidateNote } from "./migrations.mjs";
 
@@ -108,7 +109,7 @@ export function oldRulePinnedPlans(store) {
   const preKg5 = rule => (LEDGER_RULE_ALIASES[rule] || rule) === "2.4.9";
   let segments = [];
   let pending = null;
-  for (const run of store.all("SELECT no, kind, state, from_date AS fromDate, through, rule_version AS rule FROM ledger_snapshot_runs WHERE state IN ('done', 'pending') ORDER BY no")) {
+  for (const run of leanAll(store, "SELECT no, kind, state, from_date AS fromDate, through, rule_version AS rule FROM ledger_snapshot_runs WHERE state IN ('done', 'pending') ORDER BY no")) {
     if (run.state === "pending") {
       pending = run;
       continue;
@@ -131,13 +132,13 @@ export function oldRulePinnedPlans(store) {
     if (!segment.frozen) return true;
     return Boolean(store.get(`SELECT 1 AS found FROM ledger_snapshots WHERE date = ? AND entry_id = ? AND rule_version IN (${marks}) LIMIT 1`, day, id, ...frozenRules));
   };
-  const cards = store.all(
+  const cards = leanAll(store, 
     `SELECT p.id, COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) AS date, COALESCE((SELECT x.created_at FROM plan_imports x WHERE x.id = p.import_id), '') AS importedAt
      FROM plans p WHERE p.deleted_at IS NULL AND p.import_id <> '' AND NOT p.covers_balance`,
   );
   if (!cards.length) return out;
   const openings = new Map();
-  for (const row of store.all(
+  for (const row of leanAll(store, 
     `SELECT e.id, e.plan_id AS planId, e.date FROM plan_entries e JOIN plans p ON p.id = e.plan_id AND p.deleted_at IS NULL
      WHERE e.kind = 'in' AND e.opening = 1 AND p.import_id <> '' AND NOT p.covers_balance`,
   )) {
