@@ -30,6 +30,8 @@ import { apiOf, integrityOf, integrityOk, rawRun } from "./banka-210-ortak.mjs";
 import { BANK, NOW, TODAY, ZIRAAT_IBAN, bootBank, expectStatus, lockPeriod, must, openAccount } from "./banka-210-hesap-ortak.mjs";
 import { fixtureExists, readFixture, unpackFixture } from "./guvenilirlik/fikstur.mjs";
 import { CURRENT, bootVersion, checkoutTag, tagsAvailable } from "./guvenilirlik/surumler.mjs";
+import { c5aOpeningFold, c5aTrialAccounts } from "./guvenilirlik/defter-olgulari.mjs";
+import { CHART } from "../server/lib/general-ledger.mjs";
 
 const CHEQUES = "/api/workspace/cheques";
 const act = (api, id, body) => api.post(`${CHEQUES}/${id}/actions`, body);
@@ -476,7 +478,14 @@ describe("Senet 121 / 321 — eşdeğerlik: surum-2.0.26-turler (gerçek 2.0.26 
         let notes = 0;
         for (const [id, expected] of Object.entries(before_.companies)) {
           assert.equal((await api.post("/api/companies/select", { id })).status, 200);
-          const ledger = unwrapLedger(await api.get("/api/workspace/ledger"));
+          const raw = unwrapLedger(await api.get("/api/workspace/ledger"));
+          // 2.5.0 Ç5-A (bilerek değişen defter kuralı; C5-ACILIS-TASARIM §12.2): açılış karşılığı 519, KG-5, carisiz evrak — karar numaralı katlama (defter-olgulari); dişi c5aProblems.
+          const ctx = (server.app.openCompany(id) || server.app).context;
+          const fold = c5aOpeningFold(ctx.ledger, ctx.store);
+          assert.deepEqual(fold.problems, [], `${expected.code}: Ç5-A katlaması — kural dışı fark`);
+          const debit = [...fold.delta.values()].reduce((sum, row) => sum + row.debit, 0);
+          const credit = [...fold.delta.values()].reduce((sum, row) => sum + row.credit, 0);
+          const ledger = { ...raw, trial: { ...raw.trial, accounts: c5aTrialAccounts(raw.trial.accounts, fold, CHART), totals: { ...raw.trial.totals, debit: (kurus(raw.trial.totals.debit) + debit) / 100, credit: (kurus(raw.trial.totals.credit) + credit) / 100, difference: (kurus(raw.trial.totals.difference) + debit - credit) / 100 } } };
           const parse = rows => Object.fromEntries(rows.map(row => row.split("|")).map(([code, ...values]) => [code, values.map(Number)]));
           const was = parse(expected.trial);
           const now = Object.fromEntries(ledger.trial.accounts.map(row => [row.code, [kurus(row.debit), kurus(row.credit), kurus(row.balance)]]));

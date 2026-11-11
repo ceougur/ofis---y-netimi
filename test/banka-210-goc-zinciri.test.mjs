@@ -28,7 +28,7 @@ import assert from "node:assert/strict";
 import path from "node:path";
 import { describe, it } from "node:test";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { fileFacts, ledgerFacts } from "./guvenilirlik/defter-olgulari.mjs";
+import { c5aOpeningFold, fileFacts, ledgerFacts } from "./guvenilirlik/defter-olgulari.mjs";
 import { invoiceStates, k1Check } from "./guvenilirlik/kapama-k1-fark.mjs";
 import { settleInvoices as settleK1Oncesi } from "./guvenilirlik/kapama-k1-oncesi.mjs";
 import { verifyUpgrade } from "./guvenilirlik/dogrula.mjs";
@@ -57,7 +57,9 @@ describe("göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebi
           const api = await server.login();
           for (const [id, expected] of Object.entries(before.companies)) {
             assert.equal((await api.post("/api/companies/select", { id })).status, 200, `${expected.code} seçilemedi`);
-            after[id] = await ledgerFacts(api);
+            // 2.5.0 Ç5-A (bilerek değişen defter kuralı; C5-ACILIS-TASARIM §12.2): açılış karşılığı 519, KG-5, carisiz evrak — karar numaralı katlama (defter-olgulari).
+            const ctxOf = () => (server.app.openCompany(id) || server.app).context;
+            after[id] = await ledgerFacts(api, { fold: () => c5aOpeningFold(ctxOf().ledger, ctxOf().store) });
             legacyStates[id] = await invoiceStates(api);
           }
           await api.post("/api/companies/select", { id: "sirket-001" });
@@ -71,7 +73,12 @@ describe("göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebi
           const api = await current.login();
           for (const [id, expected] of Object.entries(before.companies)) {
             assert.equal((await api.post("/api/companies/select", { id })).status, 200, `${expected.code} seçilemedi`);
-            const facts = await ledgerFacts(api);
+            const ctxOf = () => (current.app.openCompany(id) || current.app).context;
+            // 2.5.0 Ç5-A: bekleyen 2.4.9 göç koşusu burada donar (şirket örneği ilk istekte açılır) — donmuş dönemin kural farkı Ç5-A katlamasıyla AÇIKLANMALI (c5aProblems).
+            assert.equal((await api.get("/api/workspace/ledger/lock")).status, 200);
+            await ctxOf().ledger.snapshots.runPending();
+            const facts = await ledgerFacts(api, { fold: () => c5aOpeningFold(ctxOf().ledger, ctxOf().store) });
+            assert.deepEqual(facts.c5aProblems, [], `${name} ${expected.code}: Ç5-A katlaması (donmuş dönemin kural farkı dahil) — kural dışı fark`);
             // 2.5.0 Ç5-B: K1'in sınırı kapama defteri kuralında (ekran durumu Tek Yükümlülük Kuyruğu görünümü — S2 / S50 / M1e ile iadesi olmayan caride de bilerek değişir).
             k1[id] = { facts, ...(await k1Check(legacyStates[id], api, { ledgerStates: ids => (current.app.openCompany(id) || current.app).context.invoices.repairScreen(ids) })) };
           }
@@ -85,6 +92,7 @@ describe("göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebi
         for (const [id, expected] of Object.entries(before.companies)) {
           const got = after[id];
           const label = `${name} ${expected.code} · ${expected.name}`;
+          assert.deepEqual(got.c5aProblems, [], `${label}: Ç5-A katlaması — kural dışı fark`);
           assert.deepEqual(got.integrity, expected.integrity, `${label}: kapı imzası (Mutabakat Testi sapmaları) farklı`);
           assert.deepEqual(expected.checksOk.filter(code => !got.checksOk.includes(code)), [], `${label}: 2.0.26'da tamam olan denetim artık tamam değil`);
           assert.deepEqual(got.trial, expected.trial, `${label}: mizan farklı`);
@@ -113,7 +121,8 @@ describe("göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebi
           assert.equal(file.version, LATEST_VERSION, `${label}: veri dosyası güncel şemada (v20 + 2.2.0 v21) değil`);
           assert.equal(file.lockAll, expected.file.lockAll, `${label}: kilit izi (bütün tarihler) değişti`);
           assert.equal(file.lockAt, expected.file.lockAt, `${label}: kilit izi (kilit tarihi) değişti`);
-          assert.equal(file.baselines, expected.file.baselines, `${label}: mutabakat günlüğüne yeni taban kaydı yazıldı`);
+          // 2.5.0 Ç5-A (bilerek): kural farkı Ç5-A ile açıklandıysa (c5aProblems boş) yalnız onu taşıyan taban kaydı sayılmaz.
+          assert.equal(file.baselines - (got.c5aProblems?.length === 0 ? file.ruleDiffBaselines : 0), expected.file.baselines, `${label}: mutabakat günlüğüne yeni taban kaydı yazıldı`);
           assert.equal(file.rolledBack, expected.file.rolledBack, `${label}: açılışta geri alınan işlem`);
         }
       } finally {
