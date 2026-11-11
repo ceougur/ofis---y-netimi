@@ -3,7 +3,9 @@
 // Sınıflar (her cari tek sınıf; ad öneki "TYKF "): dar kontrol DK-C5BT2A y1-uret A–R (stoktan taksitlendir, kısmi, iade, karşı yönlü, elle geriye tarihli Mevcut Borç, toplu, ileri
 // tarihli, aynı gün iki kart, tahsilat önce / sonra, eksi havuz, faturadan, S110 elle / stok, kilitli dönem, Excel kart, Excel bakiye) + o3 (taksitsiz / eksik taksitli ayrı kart ve
 // Mevcut Borç kartı) + taksitleri silinmiş stoktan kart + kart tahsilatıyla ödenmiş taksitsiz kart + tedarikçi stoktan / faturalı Alış İadesi + tedarikçiye avans (denetim) + başka
-// karttan doğan avans (K8). Kilit en son (−25).
+// karttan doğan avans (K8). Tur 2b-2 (11.11.2026): U01–U15 — kullanıcı kararlarının KENDİ örnekleri (S95, S97 aynı gün / ertesi gün, S102, S98, S103, S104, S105, S96 verilen çek,
+// S99 avans + taksitli + taksitsiz, S101 avanslı stok kartı + kısmi avans, S120, S122, S110 elle kart) + U16–U18 (S98 × S99 fatura durumu iki yön, takvim / zil ufku söz
+// gününe göre). Kilit en son (−25).
 //
 // NASIL YENİDEN ÜRETİLİR (yalnız eski kod değişirse ya da yeni sınıf eklenince; ders 23 / 25 — eski kod AYRI kopyada, benzersiz klasörde):
 //   mkdir -p <not defteri>/v249 && git archive v2.4.9 | tar -x -C <not defteri>/v249 && ln -s <depo>/node_modules <not defteri>/v249/node_modules
@@ -189,6 +191,96 @@ try {
   tick();
   const open = await autoPlan(T11, { registeredOn: day(-12), total: "1000", count: "1", firstDue: day(10) }, "açık kart");
   await step("T11 açık kart tahsilatı 300", api.post(`/api/workspace/plans/${open.data?.id}/entries`, { kind: "in", amount: "300", date: day(-10), method: "cash" }));
+  // ---- Ç5-B tur 2b-2 sınıfları (kullanıcı kararlarının KENDİ örnekleri; satış faturaları tarih sırasıyla — numara kronolojisi) ----
+  const U1 = await account("U01 S95 Karşı Yönlü Sonra Ödeme");
+  await sale(U1, day(-18), 10000, { rest: "open", dueDate: day(10) });
+  await step("alış U01", api.post("/api/workspace/invoices", { scenario: "expense_purchase", kind: "purchase", accountId: U1.id, number: "ALS-TYKF-U01", issueDate: day(-15), lines: [{ name: "Gider", qty: 1, unitPrice: "6000", vatRate: 0, expenseCode: "other" }], payment: { rest: "open", dueDate: day(-15) }, cashForce: true }));
+  tick();
+  await pay(U1, { kind: "out", amount: "6000", date: day(-12) });
+  const U2 = await account("U02 S97 Aynı Gün");
+  await pay(U2, { kind: "debt", amount: "1000", date: day(-10) });
+  await pay(U2, { kind: "credit", amount: "300", date: day(-10) }, "hareket2");
+  await pay(U2, { kind: "in", amount: "1000", date: day(-10) }, "hareket3");
+  const U3 = await account("U03 S97 Ertesi Gün");
+  await pay(U3, { kind: "debt", amount: "1000", date: day(-10) });
+  await pay(U3, { kind: "credit", amount: "300", date: day(-10) }, "hareket2");
+  await pay(U3, { kind: "in", amount: "1000", date: day(-9) }, "hareket3");
+  const U4 = await account("U04 S102 İki Karşı Kalem");
+  await pay(U4, { kind: "debt", amount: "1000", date: day(-12) });
+  await pay(U4, { kind: "credit", amount: "300", date: day(-11) }, "hareket2");
+  await pay(U4, { kind: "credit", amount: "300", date: day(-10) }, "hareket3");
+  await pay(U4, { kind: "in", amount: "1000", date: day(-10) }, "hareket4");
+  const U5 = await account("U05 S98 Verilen Avans");
+  await pay(U5, { kind: "out", amount: "200", date: day(-40) });
+  await pay(U5, { kind: "debt", amount: "100", date: day(-35), dueDate: day(30) }, "hareket2");
+  await pay(U5, { kind: "in", amount: "150", date: day(-30) }, "hareket3");
+  const U6 = await account("U06 S103 Tedarikçi Avans Geri", "supplier");
+  await pay(U6, { kind: "out", amount: "500", date: day(-30) });
+  await step("alış U06", api.post("/api/workspace/invoices", { scenario: "expense_purchase", kind: "purchase", accountId: U6.id, number: "ALS-TYKF-U06", issueDate: day(-26), lines: [{ name: "Gider", qty: 1, unitPrice: "300", vatRate: 0, expenseCode: "other" }], payment: { rest: "open", dueDate: day(-26) }, cashForce: true }));
+  tick();
+  await pay(U6, { kind: "in", amount: "500", date: day(-21) }, "hareket2");
+  const U7 = await account("U07 S104 Avans ve Alacak");
+  await pay(U7, { kind: "in", amount: "500", date: day(-30) });
+  await pay(U7, { kind: "credit", amount: "200", date: day(-26), dueDate: day(30) }, "hareket2");
+  await pay(U7, { kind: "out", amount: "300", date: day(-21) }, "hareket3");
+  const U8 = await account("U08 S105 İade ve Avans", "supplier");
+  await pay(U8, { kind: "out", amount: "300", date: day(-30) });
+  await step("alış iadesi U08", api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "out", reason: "preturn", qty: "2", unitPrice: "100", pay: "account", method: "cash", accountId: U8.id, date: day(-26) }));
+  await step("alış U08", api.post("/api/workspace/invoices", { scenario: "expense_purchase", kind: "purchase", accountId: U8.id, number: "ALS-TYKF-U08", issueDate: day(-21), lines: [{ name: "Gider", qty: 1, unitPrice: "250", vatRate: 0, expenseCode: "other" }], payment: { rest: "open", dueDate: day(-21) }, cashForce: true }));
+  const U9 = await account("U09 S96 Verilen Çek", "supplier");
+  await step("verilen çek U09", api.post("/api/workspace/cheques", { direction: "out", instrument: "cheque", amount: "700", issueDate: day(-10), dueDate: day(30), accountId: U9.id, serialNo: "TYKF-U09" }));
+  const U10 = await account("U10 S99 Avans Taksitli Taksitsiz");
+  await pay(U10, { kind: "in", amount: "500", date: day(-17) });
+  tick();
+  await sale(U10, day(-16), 300, { rest: "installments", installments: { count: 2, firstDue: day(-10), everyMonths: 1 } });
+  tick();
+  await sale(U10, day(-15), 500, { rest: "open", dueDate: day(-15) });
+  const U11 = await account("U11 S101 Avans Stok Kart");
+  await pay(U11, { kind: "in", amount: "1000", date: day(-40) });
+  tick();
+  await stockSale(U11, day(-30), 6, { count: 2, firstDue: day(-20) });
+  tick();
+  await step("kart tahsilatı U11", api.post(`/api/workspace/plans/${await planOf(U11)}/entries`, { kind: "in", amount: "300", date: day(-15), method: "cash", cashForce: true }));
+  tick();
+  await pay(U11, { kind: "debt", amount: "500", date: day(-10) }, "hareket2");
+  const U12 = await account("U12 S101 Kısmi Avans");
+  await pay(U12, { kind: "in", amount: "400", date: day(-40) });
+  tick();
+  await stockSale(U12, day(-30), 6, { count: 2, firstDue: day(-20) });
+  for (const [label, withPay] of [["U13 S120 Elle Borçlar", false], ["U14 S122 Karta Ödeme", true]]) {
+    const acc = await account(label);
+    await sale(acc, day(-14), 600, { rest: "open", dueDate: day(-14) });
+    tick();
+    await pay(acc, { kind: "debt", amount: "500", date: day(-13) }, "hareket X");
+    tick();
+    await pay(acc, { kind: "debt", amount: "700", date: day(-12) }, "hareket Y");
+    tick();
+    const card = await autoPlan(acc, { registeredOn: day(-11), total: "900", count: "3", firstDue: day(-5), coversBalance: true }, `kart ${label}`);
+    tick();
+    if (withPay) await step(`kart tahsilatı ${label}`, api.post(`/api/workspace/plans/${card.data?.id}/entries`, { kind: "in", amount: "300", date: day(-2), method: "cash", cashForce: true }));
+  }
+  const U15 = await account("U15 S110 Elle Kart Sonra");
+  await pay(U15, { kind: "debt", amount: "900", date: day(-14) });
+  tick();
+  await sale(U15, day(-13), 600, { rest: "open", dueDate: day(-13) });
+  tick();
+  await autoPlan(U15, { registeredOn: day(-12), total: "900", count: "3", firstDue: day(-5), coversBalance: true });
+  // S98 × S99 (fatura durumunda karşı tarafın avansı kalem — kâhin d25 R3) ve ters yönü; takvim / zil ufku söz gününe göre (K6.3 + S67).
+  const U16 = await account("U16 S98 S99 Verilen Avans Fatura");
+  await pay(U16, { kind: "out", amount: "200", date: day(-10) });
+  tick();
+  await sale(U16, day(-9), 100, { rest: "open", dueDate: day(-9) });
+  tick();
+  await pay(U16, { kind: "in", amount: "150", date: day(-8) }, "hareket2");
+  const U17 = await account("U17 S98 S99 Avans Geri Ödeme Fatura");
+  await pay(U17, { kind: "in", amount: "500", date: day(-9) });
+  tick();
+  await pay(U17, { kind: "out", amount: "300", date: day(-8) }, "hareket2");
+  tick();
+  await sale(U17, day(-7), 500, { rest: "open", dueDate: day(-7) });
+  const U18 = await account("U18 Söz Ufku");
+  await pay(U18, { kind: "debt", amount: "150", date: day(-40), dueDate: day(-30), expectedDate: day(15) });
+  await pay(U18, { kind: "debt", amount: "40", date: day(-40), dueDate: day(-30), expectedDate: day(5) }, "hareket2");
   // Kilit en son (P'nin ve öbürlerinin kilitten SONRAKİ görünümü).
   await step("kilit", api.put("/api/admin/period-lock", { lockedUntil: day(-25) }));
   const facts = await readFacts(async url => {

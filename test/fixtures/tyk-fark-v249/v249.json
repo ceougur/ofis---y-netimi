@@ -263,6 +263,9 @@
    ],
    "zil": [
     "plan|1. taksit|500|overdue"
+   ],
+   "faturalar": [
+    "2026-09-30|sale|1000|1000|overdue"
    ]
   },
   "TYKF M S110 Elle": {
@@ -287,6 +290,9 @@
    ],
    "zil": [
     "plan|1. taksit|300|overdue"
+   ],
+   "faturalar": [
+    "2026-09-30|sale|600|600|overdue"
    ]
   },
   "TYKF N S110 Stok": {
@@ -515,7 +521,11 @@
    "gecikmis": 0,
    "kartlar": [],
    "vadeTakip": [],
-   "zil": []
+   "zil": [],
+   "faturalar": [
+    "2026-09-20|purchase|300|0|paid",
+    "2026-09-30|purchase_return|300|300|return"
+   ]
   },
   "TYKF T8 Tedarikçiye Avans": {
    "bakiye": 300,
@@ -537,6 +547,263 @@
    ],
    "vadeTakip": [],
    "zil": []
+  },
+  "TYKF U01 S95 Karşı Yönlü Sonra Ödeme": {
+   "bakiye": 10000,
+   "gecikmis": 0,
+   "kartlar": [],
+   "vadeTakip": [
+    "invoice|Satış faturası FIS2026000000004|10000|2026-10-30|in"
+   ],
+   "zil": [],
+   "faturalar": [
+    "2026-10-02|sale|10000|10000|open",
+    "2026-10-05|purchase|6000|0|paid"
+   ]
+  },
+  "TYKF U02 S97 Aynı Gün": {
+   "bakiye": -300,
+   "gecikmis": 0,
+   "kartlar": [],
+   "vadeTakip": [],
+   "zil": []
+  },
+  "TYKF U03 S97 Ertesi Gün": {
+   "bakiye": -300,
+   "gecikmis": 0,
+   "kartlar": [],
+   "vadeTakip": [],
+   "zil": []
+  },
+  "TYKF U04 S102 İki Karşı Kalem": {
+   "bakiye": -600,
+   "gecikmis": 0,
+   "kartlar": [],
+   "vadeTakip": [],
+   "zil": []
+  },
+  "TYKF U05 S98 Verilen Avans": {
+   "bakiye": 150,
+   "gecikmis": 0,
+   "kartlar": [],
+   "vadeTakip": [],
+   "zil": []
+  },
+  "TYKF U06 S103 Tedarikçi Avans Geri": {
+   "bakiye": -300,
+   "gecikmis": 0,
+   "kartlar": [],
+   "vadeTakip": [],
+   "zil": [],
+   "faturalar": [
+    "2026-09-24|purchase|300|0|paid"
+   ]
+  },
+  "TYKF U07 S104 Avans ve Alacak": {
+   "bakiye": -400,
+   "gecikmis": 0,
+   "kartlar": [],
+   "vadeTakip": [],
+   "zil": []
+  },
+  "TYKF U08 S105 İade ve Avans": {
+   "bakiye": 250,
+   "gecikmis": 0,
+   "kartlar": [],
+   "vadeTakip": [],
+   "zil": [],
+   "faturalar": [
+    "2026-09-29|purchase|250|0|paid"
+   ]
+  },
+  "TYKF U09 S96 Verilen Çek": {
+   "bakiye": 700,
+   "gecikmis": 0,
+   "kartlar": [],
+   "vadeTakip": [],
+   "zil": []
+  },
+  "TYKF U10 S99 Avans Taksitli Taksitsiz": {
+   "bakiye": 300,
+   "gecikmis": 150,
+   "kartlar": [
+    {
+     "ad": "TYKF U10 S99 Avans Taksitli Taksitsiz",
+     "durum": "overdue",
+     "sekme": "active/overdue",
+     "taksitler": [
+      "1:150:150:overdue",
+      "2:150:150:open"
+     ]
+    }
+   ],
+   "vadeTakip": [
+    "plan|1. taksit|150|2026-10-10|in",
+    "plan|2. taksit|150|2026-11-10|in"
+   ],
+   "zil": [
+    "plan|1. taksit|150|overdue"
+   ],
+   "faturalar": [
+    "2026-10-04|sale|300|300|overdue",
+    "2026-10-05|sale|500|0|paid"
+   ]
+  },
+  "TYKF U11 S101 Avans Stok Kart": {
+   "bakiye": -200,
+   "gecikmis": 0,
+   "kartlar": [
+    {
+     "ad": "TYKF U11 S101 Avans Stok Kart",
+     "durum": "active",
+     "sekme": "active",
+     "taksitler": [
+      "1:300:0:paid",
+      "2:300:300:open"
+     ]
+    }
+   ],
+   "vadeTakip": [
+    "plan|2. taksit|300|2026-10-30|in"
+   ],
+   "zil": []
+  },
+  "TYKF U12 S101 Kısmi Avans": {
+   "bakiye": 200,
+   "gecikmis": 300,
+   "kartlar": [
+    {
+     "ad": "TYKF U12 S101 Kısmi Avans",
+     "durum": "overdue",
+     "sekme": "active/overdue",
+     "taksitler": [
+      "1:300:300:overdue",
+      "2:300:300:open"
+     ]
+    }
+   ],
+   "vadeTakip": [
+    "plan|1. taksit|300|2026-09-30|in",
+    "plan|2. taksit|300|2026-10-30|in"
+   ],
+   "zil": [
+    "plan|1. taksit|300|overdue"
+   ]
+  },
+  "TYKF U13 S120 Elle Borçlar": {
+   "bakiye": 1800,
+   "gecikmis": 300,
+   "kartlar": [
+    {
+     "ad": "TYKF U13 S120 Elle Borçlar",
+     "durum": "overdue",
+     "sekme": "active/overdue",
+     "taksitler": [
+      "1:300:300:overdue",
+      "2:300:300:open",
+      "3:300:300:open"
+     ]
+    }
+   ],
+   "vadeTakip": [
+    "invoice|Satış faturası FIS2026000000007|600|2026-10-06|in",
+    "plan|1. taksit|300|2026-10-15|in",
+    "plan|2. taksit|300|2026-11-15|in",
+    "plan|3. taksit|300|2026-12-15|in"
+   ],
+   "zil": [
+    "invoice|Tahsil Edilecek Fatura FIS2026000000007|600|overdue",
+    "plan|1. taksit|300|overdue"
+   ],
+   "faturalar": [
+    "2026-10-06|sale|600|600|overdue"
+   ]
+  },
+  "TYKF U14 S122 Karta Ödeme": {
+   "bakiye": 1500,
+   "gecikmis": 0,
+   "kartlar": [
+    {
+     "ad": "TYKF U14 S122 Karta Ödeme",
+     "durum": "active",
+     "sekme": "active",
+     "taksitler": [
+      "1:300:0:paid",
+      "2:300:300:open",
+      "3:300:300:open"
+     ]
+    }
+   ],
+   "vadeTakip": [
+    "invoice|Satış faturası FIS2026000000008|600|2026-10-06|in",
+    "plan|2. taksit|300|2026-11-15|in",
+    "plan|3. taksit|300|2026-12-15|in"
+   ],
+   "zil": [
+    "invoice|Tahsil Edilecek Fatura FIS2026000000008|600|overdue"
+   ],
+   "faturalar": [
+    "2026-10-06|sale|600|600|overdue"
+   ]
+  },
+  "TYKF U15 S110 Elle Kart Sonra": {
+   "bakiye": 1500,
+   "gecikmis": 300,
+   "kartlar": [
+    {
+     "ad": "TYKF U15 S110 Elle Kart Sonra",
+     "durum": "overdue",
+     "sekme": "active/overdue",
+     "taksitler": [
+      "1:300:300:overdue",
+      "2:300:300:open",
+      "3:300:300:open"
+     ]
+    }
+   ],
+   "vadeTakip": [
+    "plan|1. taksit|300|2026-10-15|in",
+    "plan|2. taksit|300|2026-11-15|in",
+    "plan|3. taksit|300|2026-12-15|in"
+   ],
+   "zil": [
+    "plan|1. taksit|300|overdue"
+   ],
+   "faturalar": [
+    "2026-10-07|sale|600|600|overdue"
+   ]
+  },
+  "TYKF U16 S98 S99 Verilen Avans Fatura": {
+   "bakiye": 150,
+   "gecikmis": 0,
+   "kartlar": [],
+   "vadeTakip": [],
+   "zil": [],
+   "faturalar": [
+    "2026-10-11|sale|100|0|paid"
+   ]
+  },
+  "TYKF U17 S98 S99 Avans Geri Ödeme Fatura": {
+   "bakiye": 300,
+   "gecikmis": 0,
+   "kartlar": [],
+   "vadeTakip": [],
+   "zil": [],
+   "faturalar": [
+    "2026-10-13|sale|500|0|paid"
+   ]
+  },
+  "TYKF U18 Söz Ufku": {
+   "bakiye": 190,
+   "gecikmis": 0,
+   "kartlar": [],
+   "vadeTakip": [
+    "account|Tahsil Edilecek Borç (Ödeme Sözü)|150|2026-11-04|in",
+    "account|Tahsil Edilecek Borç (Ödeme Sözü)|40|2026-10-25|in"
+   ],
+   "zil": [
+    "account|Tahsil Edilecek Borç (Ödeme Sözü)|40|upcoming"
+   ]
   }
  }
 }

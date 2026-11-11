@@ -244,3 +244,30 @@ sıra değiştir (yazım sırası ↔ belge tarihi; ödeme önce / borç önce /
 
 ### 12.4 Hız etkisi (ders 53; ölçülecek istekler)
 Kuyruğun hesabı değişen her istek: cari kartı, Cari Listesi, Vade Takip, zil / açılış, nakit akışı, fatura listesi / kartı, Taksitler listesi / kartı, kart yazım yanıtı, Borç Yaz / tahsilat yanıtı. Ek maliyet: (i) S95 geri alma — ödeme başına yalnız artan varsa, netleşme kayıtları cari içinde; (ii) S101 ek geçiş — yalnız eksik kalan Mevcut Borç kartı olan caride (en çok 3 geçiş); (iii) S110 seçimi kart olayında (aday listesi zaten var). Bütçe: tur 2b-1 tabanına göre kötüleşme yok.
+
+### 12.5 Kodlama sırasında netleşenler (tur 2b-2; karar metinleri değişmedi — YORUMLAR rapora da yazıldı)
+- **S101'in genel mekanizması (iki geçiş):** kartın tüketemediği kısım (`leftover`), kartın taşıdığı borcun (O ≤ T: kartın anına kadar kaydedilmiş bütün borç kalemleri; S110 / S120: seçilen
+  kalemler) bağsız PARAYLA (kapatanı `payment` türü: tahsilat, alınan / verilen evrak, kart ve bağ fazlası) kapanmış kısmından ölçülür — olaylar BİTTİKTEN sonra (kartın günü borçtan önce
+  olabilir, kapanış sonra gelir). Ölçülen tutar bir sonraki geçişte kart tahsilatından ÖNCE vadesi en önce gelen taksitten "Avansla Kapandı" diye yazılır (`prepay`); para dışı eksik son
+  taksitten kırpılır. Kart tahsilatı açık taksit bulamazsa kart fazlası (`card-excess`) — carinin avansı, sonraki borcu kapatır. Kart fazlası başka kartın tükettiği borcu kapatınca o kartın
+  ölçüsü değişir → kararlı olana dek en çok 12 geçiş (tohumlu rastgele 1.800 kuyrukta %90'ı 1, en çok 9). Önceki kartların saydığı para aynı kaleme iki kez sayılmaz (`advClaimed`).
+- **Satışla açılan kartın "kendi satışı":** kartın kaydında satış kimliği yok (göç yazılmadı); kartın anına kadar EN SON kaydedilen borç satırı stok satışıysa ve tutarı kartın açıldığı andaki
+  tutara (iade kesintileri geri eklenmiş) eşitse ya da kayıt anı kartla aynıysa (aynı işlem — iade sonrası küçülmüş eski kart, fikstür C) o satıştır. Excel / Tablodan Aktar kartı
+  (`plans.import_id`) kararların dışında (eski kural).
+- **S123 = C'nin doğal davranışı:** elle borçlar kartı doldurmuyorsa artan kapasite bu kartın ÖNCEKİ kuralıyla (öbür açık borçlar s2 sırasıyla) dolar — tabanın davranışı o kısımda sürer;
+  elle borcu hiç olmayan caride kart boş kalmaz (literal "yalnız elle" okuması kartı açılır açılmaz Bitti yapardı). Sonucu S123'ün A seçeneğiyle aynı sayıyı verir — kural olarak değil,
+  tabanın sürmesi olarak; BİLİNEN SINIR (rapor "BİLİNEN SINIR — sayılar"). S124: karar metninin harfi (eşit elle borç TEK değilse eskiden yeniye) — Z 300 + X'in 600'ü kartta. S125: s2
+  (vade sırası) — Y 700 + X'in 200'ü kartta.
+- **S110 tetiğindeki "carinin açık borcu":** kartın tüketebileceği kalemler + öbür kartların / taksitli faturaların açık taksitleri (kâhin Y8-1 ile aynı okuma); 1 kuruş fazla da fazla.
+- **S95 geri alması:** yalnız NET görünümde ve yalnız iki YÜKÜMLÜLÜK kalemi arasındaki (ikisi de `due`) Otomatik netleşme; ödemenin kendi gününden önceki günler, en yeni önce (S102 /
+  K2). Aynı gün ve aynı kayıt anlı iki kalemin listedeki yeri yazım sırasıdır (ders 31) — tyk-250 değişmezinin "girdi sırası ters" karşılaştırması küme karşılaştırması oldu (G3).
+- **Mutabakat motoru (S99):** motor tek kuyruğu kurmaz; "taksitli faturanın açığı = kartın kendi kalanı (hedef)" eşitliği "açık ≤ hedef" oldu (üst sınır); kartın kendi kalanı = hedef
+  denetimi aynen. Tek kuyruğun eşitliği cari kâhininde ve tyk-250 değişmezinde (karşı yönlü kalemi olmayan caride fatura açığı = net kuyruk).
+- **S98 × S99 fatura durumunda (kâhin d25 R3 / d26 S13 / d27–d29 P3 / d33 T13c; §12.1'deki S99 satırının tamamlanması):** S99 = A "fatura listesi, kart, Vade Takip, zil AYNI sayıyı
+  gösterir" + S98 = A "avans da kalemdir": fatura durumunda (side) karşı tarafın NETLEŞMEMİŞ bağsız parası (müşteriye yaptığımız Ödeme; tedarikçinin bize ödemesi) gelen bağsız paranın
+  karşısında kendi günüyle (s2) kalemdir — müşteriye Ödeme 200 (01.03) · satış 100 · tahsilat 150 ⇒ fatura 100 açık, avans 50 (önce fatura 'Ödendi', Vade Takip 100: iki ekran ayrı
+  sayı). Ters yönde de: müşterinin avansı 500 · ona geri Ödeme 300 · satış 500 ⇒ fatura 300 açık (önce 0). Karar (5) / Y4-3 korunur: karşı tarafın BELGE kalemleri (alış ↔ satış) fatura
+  durumunda eşleşmez (yalnız Mahsup Et).
+- **Takvim / zil ufku söz gününe göre (Ç5-B gerilemesi; kâhin c10 bg4, d10 l1, rastgele s042):** S67 = A gecikmiş borcun gün sayısını VADEDEN ölçer; ufuk ise (K6.3 "geçmiş + 7 gün",
+  S67 "söz ufkun dışında → kalem yok") kalemin gösterildiği günden (söz varsa söz günü). v2.4.9'da gün sayısı söz gününden ölçüldüğü için ikisi aynıydı; Ç5-B'den sonra süzgeç gün sayısına
+  bakıyordu ve +15 sözlü gecikmiş borç zilde / takvimde çıkıyordu. Vade Takip ve nakit akışı ufuksuz (değişmez).
