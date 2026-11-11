@@ -1,8 +1,8 @@
 {
  "dil": "destekofis-cari/3",
  "bugun": "2026-04-15",
- "aciklama": "Bakım 10 (S122 = A): birden çok elle borcu içine alan karta gelen ödeme elle borçların Kalan'ını kartın içine alma sırasıyla, eskiden yeniye düşürür — ödeme ilk elle borcu tam bitirir (J1) / aşıp ikinciye geçer (J2) / kartı kapatır (J3), iki ödeme üst üste (J4), üç elle borç (J5), kısmen ödenmiş elle borç (J6), S50 payı (J7), silme (J8) ve geri yükleme (J9), tek kalem (J10 — değişmedi), vade ↔ belge sırası ödemeyi ayırıyor (J11 SUS — S125 = C; J11b değer), O = T elle kart (J12, J12b — Y10-3), O = T karışık kart (J13 susar), SK-20 / SK-22 / SK-23 + ödeme (J14–J16 SUS — S123 / S124 / S125 = C), aynı adlı iki cari (J17a / J17b)",
- "dayanak": "KARARLAR.md §22 (S122 A; S123 / S124 / S125 = C; Y10-1 … Y10-7), §21 (S120 A), §20 (Y8-4), §13 C13.4 / C13.5",
+ "aciklama": "Bakım 10 (S122 = A): birden çok elle borcu içine alan karta gelen ödeme elle borçların Kalan'ını kartın içine alma sırasıyla, eskiden yeniye düşürür — ödeme ilk elle borcu tam bitirir (J1) / aşıp ikinciye geçer (J2) / kartı kapatır (J3), iki ödeme üst üste (J4), üç elle borç (J5), kısmen ödenmiş elle borç (J6), S50 payı (J7), silme (J8) ve geri yükleme (J9), tek kalem (J10 — değişmedi), vade ↔ belge sırası ödemeyi ayırıyor (J11 SUS — S125 = C; J11b değer), O = T elle kart (J12, J12b — Y10-3), O = T faturalı kart (J13 — bakım 11 S126 A: kararın örneği, değer), SK-20 / SK-22 / SK-23 + ödeme (J14–J16 SUS — S123 / S124 / S125 = C), aynı adlı iki cari (J17a / J17b)",
+ "dayanak": "KARARLAR.md §22 (S122 A; S123 / S124 / S125 = C; Y10-1 … Y10-7), §21 (S120 A), §20 (Y8-4), §13 C13.4 / C13.5; §23 (S126 A — J13)",
  "elleBeklenen": {
   "k1:cari:J1:bakiye": 130000,
   "k1:cari:J1:gecikmis": 90000,
@@ -331,12 +331,26 @@
   "k1:hareket:j17bb:kalan": 60000,
   "k1:takvim:hareket:j17bb": {"amount": 60000, "dueDate": "2026-03-01", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -45, "cari": "J17b", "person": "Aynı Ödeyen"},
   "k1:vadeTakip:hareket:j17bb": {"amount": 60000, "date": "2026-03-01", "direction": "in"},
-  "k1:projeksiyon:hareket:j17bb": {"amount": 60000, "date": "2026-03-01", "direction": "in"}
+  "k1:projeksiyon:hareket:j17bb": {"amount": 60000, "date": "2026-03-01", "direction": "in"},
+  "k1:cari:J13:gecikmis": 0,
+  "k1:cari:J13:acikToplam": 60000,
+  "k1:cari:J13:acikEsitBakiye": true,
+  "k1:fatura:J13F:acik": 30000,
+  "k1:takvim:fatura:J13F": "yok",
+  "k1:hareket:j13x:kalan": 30000,
+  "k1:takvim:hareket:j13x": "yok",
+  "k1:vadeTakip:hareket:j13x": "yok",
+  "k1:projeksiyon:hareket:j13x": "yok",
+  "k1:kart:KJ13:odenen": 30000,
+  "k1:kart:KJ13:kalan": 60000,
+  "k1:kart:KJ13:mevcutBorc": true,
+  "k1:kart:KJ13:taksit1:odenen": 30000,
+  "k1:kart:KJ13:taksit2:odenen": 0,
+  "k1:kart:KJ13:taksit3:odenen": 0
  },
- "elleYok": ["k1:cari:J11:gecikmis", "k1:kart:KJ11:kalan", "k1:hareket:j11x:kalan", "k1:hareket:j11y:kalan", "k1:takvim:hareket:j11x", "k1:fatura:J11F:acik", "k1:cari:J13:gecikmis", "k1:kart:KJ13:kalan", "k1:hareket:j13x:kalan", "k1:takvim:hareket:j13x", "k1:fatura:J13F:acik", "k1:cari:J14:gecikmis", "k1:kart:KJ14:kalan", "k1:hareket:j14x:kalan", "k1:takvim:hareket:j14x", "k1:fatura:J14F:acik", "k1:cari:J15:gecikmis", "k1:kart:KJ15:kalan", "k1:hareket:j15z:kalan", "k1:hareket:j15x:kalan", "k1:hareket:j15y:kalan", "k1:takvim:hareket:j15z", "k1:fatura:J15F:acik", "k1:cari:J16:gecikmis", "k1:kart:KJ16:kalan", "k1:hareket:j16x:kalan", "k1:hareket:j16y:kalan", "k1:takvim:hareket:j16x", "k1:fatura:J16F:acik"],
+ "elleYok": ["k1:cari:J11:gecikmis", "k1:kart:KJ11:kalan", "k1:hareket:j11x:kalan", "k1:hareket:j11y:kalan", "k1:takvim:hareket:j11x", "k1:fatura:J11F:acik", "k1:cari:J14:gecikmis", "k1:kart:KJ14:kalan", "k1:hareket:j14x:kalan", "k1:takvim:hareket:j14x", "k1:fatura:J14F:acik", "k1:cari:J15:gecikmis", "k1:kart:KJ15:kalan", "k1:hareket:j15z:kalan", "k1:hareket:j15x:kalan", "k1:hareket:j15y:kalan", "k1:takvim:hareket:j15z", "k1:fatura:J15F:acik", "k1:cari:J16:gecikmis", "k1:kart:KJ16:kalan", "k1:hareket:j16x:kalan", "k1:hareket:j16y:kalan", "k1:takvim:hareket:j16x", "k1:fatura:J16F:acik"],
  "elleBelirsiz": [
   ["cari J11 tanımsız", "S125 = C", "SK-23"],
-  ["cari J13 tanımsız", "birden çok kalemi tüketti"],
   ["cari J14 tanımsız", "SK-20", "BİLİNEN SINIR", "S123 = C"],
   ["cari J15 tanımsız", "SK-22", "BİLİNEN SINIR", "S124 = C"],
   ["cari J16 tanımsız", "SK-23", "BİLİNEN SINIR", "S125 = C"]

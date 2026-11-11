@@ -2679,3 +2679,70 @@ SK-24'ü).
   taksiti; karta ödeme gelince hangi kalem önce düşer; UÇ DURUM):** 01.03 stok veresiye satışı S 400 · 02.03 elle borç X 300 · 15.03 kart 700 (kartta S 400 + X 300) · 10.04 kart tahsilatı 300.
   **A (öneri — S126'nın genellemesi: türüne bakmadan kartın içine alma sırasıyla, eskiden yeniye):** S'nin açığı 100, X Kalan 300. / **B (önce fatura ve elle borçlar, öbür kalemler en sonda):**
   X Kalan 0, S'nin açığı 400. / **C:** uç durum böyle kalsın (BİLİNEN SINIR). (Bakiye 400, kart kalanı 400, gecikmiş ve takvim üç seçenekte aynı.)
+
+### Kurallar (kod commit'i; yorumların `model.py`'deki karşılığı)
+- **C23.1 (Y11-1 / Y11-7 / Y11-9) `_alacak_govde250`:** `ot_` = Taksitler kartı (`api_kart`, S110 / S120 alanı dışında — O = T) ve ≥ 2 kalem tüketti; tüketilen her kalemin türü `tur_` ("e" elle Borç / borçlu Açılış
+  — `hareketler`, "f" taksitsiz satış faturası — `satis`, "o" öbür). `ot_elle` (hepsi "e") bakım 10 Y10-3 AYNEN; `ot_fat` (hepsi "e" / "f", en az bir "f" — yalnız faturalar da) S126; en az bir "o"
+  → neden "… KULLANICIYA SORULMALI SK-25 (§23 Y11-9)" (C13.4 (11) düzeni; eski "birden çok kalemi tüketti" nedeninin YERİNE, susma aynen).
+- **C23.2 (Y11-2 / Y11-3 / Y11-4 / Y11-5):** `ot_fat` kartı C22.1'in yoluna girer: P = Σ taksit ödeneni − S101 önceden; `_s122_dagit(tk, tk'nin sırası, P)` (türüne bakmadan, kartın içine alma sırası — S2) →
+  her kalemin `acik` (faturada belge açığı, elle kayıtta Kalan) = kuyruk kalanı + tüketilen − pay; P = 0 iken pay 0. Görünüm S110 alanının kurallarıyla (`s110 = True`).
+- **C23.3 (Y11-8):** belge tarihi sırasıyla (`(d, s)`) dağıtım başka pay veriyorsa SUS — neden "… carinin bütün açık borcunu (fatura dahil — S126) içine aldı ve kartın <P>'si ödendi — … BİLİNEN SINIR
+  (kullanıcı kararı S125 = C) SK-23 (§22 Y10-4, §23 Y11-8)".
+- **C23.4 (Y11-10) görünüm (`kontrol` fatura kalemleri):** S110 alanındaki caride kartın tükettiği satış faturası `takvim:fatura:<ad>` = kuyruk kalanı (> 0 ise `{amount, direction}`, değilse "yok");
+  bakım 10'a kadar bu kalem S110 alanında hiç yazılmıyordu (alanın kartları fatura tüketmiyordu). Vade Takip / projeksiyon / sayaç / görünüm toplamı S110 alanında yazılmaz (Y8-4 aynen).
+- İz: `son["s122"]` kart → … | "s126" | "s126f" (+ "-odemeli") | "sus" | "sk25"; `son["s126_fpay"]` (faturaya düşen pay — yalnız mutant 273). Sonucu değiştirmez.
+- `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`: hiçbir yol değişmedi (yeni dallar `_alacak_govde250` / `kontrol`'ün `k250` kolunda ya da mutant).
+
+### C8p Nasıl bozulur? (bakım 11 — kod commit'inde, senaryolarla birlikte yazıldı)
+| # | Bozulma | Senaryo |
+|---|---|---|
+| Z134 | Ödeme önce elle borçlara düşer (S126 B) | d37 L1 / L2 / L3 / L5 / L7 / L8 / L9 / L10 / L16a, d36 J13 (mutant 270) |
+| Z135 | Ödeme en yeniden düşer | d37 L1 / L2 / L3 / L5 … L10 / L12 / L13c / L15 / L16a, d36 J13 (mutant 265) |
+| Z136 | Ödeme orantılı dağılır | d37 L1 / L2 / L3 / L5 … L10 / L12 / L13c / L15 / L16a, d36 J13 (mutant 266) |
+| Z137 | Ödeme yalnız faturanın açığını / yalnız elle kaydın Kalan'ını düşürür | d37 L3 / L4 / L5 / L6 / L7 / L13b / L13c / L15 (mutant 271); d37 L1 / L2 / L3 / L4 / L5 / L7 / L8 / L9 / L10 / L12 / L13b / L16a, d36 J13 (mutant 272) |
+| Z138 | Faturaya düşen pay bakiyeyi / kart kalanını / gecikmişi de değiştirir ("değişmez") | bakiye: d37 L1 … L5 / L7 … L10 / L12 / L13b / L16a, d36 J13 (mutant 273); kart: d37 L1 … L10 / L12 / L15 / L16a, d36 J13 (mutant 269); gecikmiş / takvim: d37 L1 / L6 / L7 / L8 / L9 / L11 / L12 / L13c / L15 / L16a, d36 J13 (mutant 274). Mutant 268 (bakım 10 — pay kuyruktan da düşer) S126 kartında ETKİSİZ: O = T kartın tükettiği kalemler kuyrukta zaten 0 |
+| Z139 | İkinci ödemede sıra baştan başlar | d37 L3 / L4 / L5 / L7 / L13b (mutant 267) |
+| Z140 | Silinen ödeme sayılır / geri yüklenen sayılmaz; S50 payı ödeme sayılmaz | d37 L8 / L9 / L10 |
+| Z141 | Kartın tamamen içine aldığı fatura takvimde kalem olur ya da kartın dışındaki fatura takvimden düşer | d37 L1 … (`takvim:fatura` "yok"), L18 (fatura 600 takvimde) |
+| Z142 | Vade ↔ belge sırası ödemeyi ayırırken değer uydurulur / ayırmazken susulur | d37 L13 (SUS), L13b / L13c (değer) |
+| Z143 | Öbür kalem türlü kartta değer uydurulur (SK-25) | d37 L14 (SUS) |
+| Z144 | Yalnız elle kalemli bakiye kadar kart (Y10-3) ya da açık borçtan küçük kart (S120 / S122) bozulur | d37 L17 / L18, d36 J1 … J12b |
+| Z145 | Aynı adlı iki carinin ödemesi / faturası karışır | d37 L16a / L16b |
+
+### Senaryolar (bakım 11; elle tablolar — kâhin koşulmadan karar metninden ve §13 / §20 / §22 / §23'ten; betikler `docs/kanit/2026-11-11/kahineski11-arac/yeni-senaryolar11.py`, `d36-guncelle11.py`, adımların yeri `g1-sirala.py`)
+- **`d37-c5-s126-faturali-kart`** (bugün 15.04.2026; 355 elle denetim = 344 değer + 9 yok + 2 belirsiz): L1 kararın örneği AYNEN (kart tahsilatı 300 ⇒ F açık 300, X Kalan 300) · L2 ödeme F'yi tam bitirir
+  (600 ⇒ F 0, X 300) · L3 aşıp X'e geçer (700 ⇒ F 0, X 200) · L4 kartı kapatır (900 ⇒ 0 / 0) · L5 iki ödeme üst üste 300 + 400 (F 0, X 200) · L6 elle borç faturadan eski (X 0, F 600) · L7 iki fatura + elle
+  (F1 400 · X 300 · F2 500, kart 1.200, ödeme 600 ⇒ F1 0, X 100, F2 500) · L8 S50 payı 500 (F 100, X 300) · L9 silme (F 300, X 300) · L10 silme + geri yükleme (F 0, X 300) · L11 ödemesiz (F 600, X 300; gecikmiş
+  = taksit 1 300) · L12 yalnız faturalar (F1 100, F2 500 — Y11-7) · L13 SUS (S125 = C; vade sırası F 300 / X 300 ↔ belge X 0 / F 600) · L13b değer (kart tamamen ödenmiş) · L13c değer (vadeli kayıt sırayı
+  değiştirmiyor: X 0, F 600) · L14 stok veresiye satışlı kart SUS (SK-25) · L15 borçlu Açılış + fatura (Açılış 0, F 600) · L16a / L16b aynı adlı iki cari · L17 yalnız elle kalemli bakiye kadar kart (bakım 10 —
+  X 200, Y 400; değişmedi) · L18 açık borçtan küçük kart (S120 / S122 — X 200, Y 700, F 600 takvimde; değişmedi). Her değer carisinde `acikToplam` = bakiye ve `acikEsitBakiye` (NOT (4)).
+- **`d36-c5-s122-kart-odemesi` J13 (bakım 10'un SK-24'ü = kararın örneği AYNEN — karar gereği değişti):** 5 `elleYok` (gecikmiş, kart kalanı, X Kalan, X takvim, F açık) + 1 `elleBelirsiz` ("birden çok
+  kalemi tüketti") KALKTI, 15 elle değer EKLENDİ — F açık 300, `takvim:fatura` "yok", X Kalan 300, X takvim / Vade Takip / projeksiyon "yok", gecikmiş 0, açık toplamı 600 = bakiye, kart 900 / 300
+  ([300, 0, 0]). Adımlar ve öbür beklentiler (J1 … J12b, J14 … J17b) AYNEN. d36 toplam 371 elle denetim (bakım 10: 362).
+- **İlk koşu:** 726 elle denetimin (d37 355 + d36 371) hepsi kâhinle aynı (koşudan sonra değişen elle değer YOK). Elle değerler yazılmadan önce kâhin S126 alanında koşulmadı / çıktısına bakılmadı.
+
+### C10p Mutantlar (bakım 11; `oz-test.py` DEĞERLE — çökmeden, elle tablo kırmızı)
+270 S126 B (önce elle borçlar) · 271 yalnız faturanın açığı düşer · 272 yalnız elle kaydın Kalan'ı düşer · 273 faturaya düşen pay bakiyeyi bir kez daha düşürür · 274 kartın içindeki faturanın açığı kuyrukta
+da sayılır (gecikmiş / takvim). En yeniden (265), orantılı (266), her ödeme baştan (267) ve kart ödeneni (269) bakım 10 mutantları S126 yolunda da işler ve d37 / d36 J13'te DEĞERLE yakalanır; 268 S126 kartında
+etkisiz (C8p Z138). Bakım 6 … 10 mutantları (241–269) aynen yakalanıyor.
+
+### Dil ekleri (/3, bakım 11)
+Yeni adım YOK; yeni çıktı anahtarı YOK (S110 alanında kartın tükettiği satış faturasının `takvim:fatura:<ad>`'ı artık yazılır — anahtar biçimi aynı). `belirsiz` kayıtları: "Mevcut Borç kartı <no> carinin bütün açık
+borcunu içine aldı ve içinde fatura / elle kayıt dışında kalem var (<kalemler>) — ödemenin sırası kararda yok (S126 'fatura DAHİL') — KULLANICIYA SORULMALI SK-25 (§23 Y11-9)" ve "Mevcut Borç kartı <no> carinin
+bütün açık borcunu (fatura dahil — S126) içine aldı ve kartın <P>'si ödendi — … BİLİNEN SINIR (kullanıcı kararı S125 = C) SK-23 (§22 Y10-4, §23 Y11-8)". "birden çok kalemi tüketti" kaydı Taksitler kartında
+artık yazılmaz (Tablodan Aktar kartında aynen).
+
+### Eşleme notları (ana oturum için; `kos.mjs` bu bakımda DEĞİŞMEDİ, açılmadı)
+- Yeni adım / anahtar yok; d37 bakım 7–10'un adım türleriyle (`cari_ac {acilis}`, `fatura`, `borc {vade}`, `tahsilat`, `stok_satis_hesap`, `kart_ac {mevcut}`, `kart_tahsilat`, `hareket_sil` / `hareket_geri_yukle`
+  (`cari` alanıyla — bakım 10 düzeni)).
+- **Ana oturuma:** `model.py` değişti — mobil yazma kâhininin `cari_model_sha256`'sı yeniden üretilmeli (o dosya okunmadı); yapım aşaması listesi bu ajanca açılmadı (d37 ve d36 J13'ün yeni değerleri — özellikle
+  S110 alanındaki yeni `takvim:fatura` denetimi — listeye yeni kayıt olarak düşebilir; ayrıştırma ana oturumda).
+
+### C12p DENENMEYEN (bakım 11; neden)
+- Program koşulmadı (görev). Programın S126 alanındaki gösterimi bilinmiyor.
+- SK-25'in öbür kalem türleri (karşılıksız çek / senet kalemi, başka taksit kartının taksiti, taksitli faturanın taksiti) için elle senaryo yazılmadı — kural yolu aynı (`tur_` "o"), yalnız stok veresiye
+  satışı (L14) denendi.
+- Faturanın satış iadesi / faturaya bağlı tahsilat (kart açıldıktan sonra) ile S126 kartı: bağlar kartın gününden bağımsız önce kapattığından kart açıldığı anda O < T olur (EK-2B 32 / S101 alanı) — bu
+  bakımın konusu değil, senaryo yazılmadı. Kart tahsilatının silinmesi (dilde yol yok — bakım 10 C12o aynen); tahsilat tutarının düzeltilmesi (dilde adım yok).
+- Aynı caride iki S126 kartı; Ödeme Sözü taşıyan kalem; vade günü / gün dönümü; iki şirket / yedek geri yükleme (kâhinin dilinde şirket yok).
+- Y11-7'nin ters okuması (yalnız faturalı kart SUS) koşulmadı — G3'te ayrı sınıf (S126-F) olarak sayıldı.
