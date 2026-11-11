@@ -108,3 +108,36 @@ dışında kalan her seçim §11'de "BAŞ MİMAR KARARI GEREKİYOR" / "KULLANICI
 
 ## 13. Windows (ders 48)
 - Dosya silen / kilitleyen yeni test: DÜŞÜK-1 eski-veri testi (geçici kök, kendi tam yolu). Raporda listelenir.
+
+## 14. Tur 3 hız (11.11.2026; WhatsApp tur 3 hız düzeltme ajanı; KODDAN ÖNCE yazıldı — BAŞ MİMAR KARARI 11.11 11:21 "100 BİN SATIRLIK HIZ ÖLÇÜMÜ")
+- BULGU (ana oturumun ölçümü; 100.000 iş + 100.000 defter satırı): 100 teslim bildirimi tek çağrıda 173 (111) → 291 (230) ms, 1.000 teslim bildirimi ayrı çağrılarla 1.682 → 2.753 ms. Neden: §2'nin
+  `settleSkippedChain`'i (`server/lib/whatsapp/queue.mjs:2404–2436`) satır yolunda (applyStatuses `:2588`, `self: false`) her delivered / read bildiriminde işin carisinin `inherit_of`'u dolu
+  bütün satırlarını okuyor (`:2408`; `idx_wa_jobs_account` ile carinin BÜTÜN işleri taranıp tablodan okunur — ölçüm şablonunda cari başına 500 iş: ~0,77 ms / bildirim; ayrıca `jobRow` ~0,02 ms).
+  Olağan veride (hiç "Yine de Gönder" zinciri olmayan) bu okumaların hepsi BOŞ döner.
+- DEĞİŞİKLİK (davranış AYNI; yalnız okuma atlanır):
+  1. Zincir KAYNAK kümesi (`queue.mjs`, settleSkippedChain'in yanında): şirket dosyasında `inherit_of`'u dolu satırların gösterdiği iş kimlikleri (`SELECT DISTINCT inherit_of … WHERE inherit_of <> ''`,
+     BÜTÜN cariler; 100 bin işte ~21 ms, yalnız yeniden kurulurken). Bir işin kimliği kümede YOKSA hiçbir satırın `inherit_of`'u o işi göstermiyor → §2 yürüyüşünün ilk katmanı boş → zincir hedefi
+     YOK (kesin).
+  2. `settleSkippedChain(jobId, …)`: küme kimliği İÇERMİYORSA — `self: false` (satır yolu): `jobRow` dahil hiçbir okuma yapılmadan 0 döner (bugün de hedef yok → 0, yazım yok, bildirim yok);
+     `self: true` (eski deneme / yalnız defter yolu): yalnız işin kendisi (`jobRow`) değerlendirilir, carinin zincir okuması atlanır (bugün de `rows` içinde bu işi gösteren satır yok → hedef
+     yalnız işin kendisi). Küme kimliği İÇERİYORSA ya da küme bilinmiyorsa: BUGÜNKÜ okuma ve yürüyüş AYNEN (`:2408`–`:2436`, 200 sınırı, sıra, `fresh` / `self` kuralları değişmez).
+  3. Küme ne zaman geçerli (ÜST KÜME kalmalı — eksik kimlik davranışı değiştirir, fazla kimlik yalnız bugünkü okumaya döndürür): kurulduğu andaki bağlantının `PRAGMA data_version`'ı aynıysa (başka
+     bağlantının / sürecin yazımı görülür; ölçüm ~0,002 ms); bu bağlantının `inherit_of` yazımı YALNIZ `createBatch`'te (`:833`, `:837` — işteki Yine de Gönder ve zincirli Başarısızları Yeniden
+     Dene) → o işlemden sonra küme DÜŞÜRÜLÜR (sonraki ilk bildirim yeniden kurar). İşlem İÇİNDE küme KURULMAZ (geri alınabilir yazım görülmesin — ledger-snapshots ile aynı ilke); işlem içinde
+     geçerli küme kullanılabilir (kurulduğu andan beri bu bağlantıda kimlik ekleyen yazım yok). `data_version` okunamazsa küme yok sayılır (bugünkü yol). Silinen satır kümeden çıkmaz (fazla kimlik).
+     Geri yükleme / şirket kapama yeni bağlantı + yeni kuyruk açar (küme sıfırdan).
+  4. `freshDelivery` (`:2578`, defter okuması) AYNEN kalır (ucuz, dizinli; arıza yolunda bugünkü davranış — atlanırsa defter kilitliyken hata türü değişebilirdi).
+- KORUMA (kalıcı test): `server/` altında `inherit_of`'a yazan deyim yalnız `queue.mjs` createBatch'te ve hemen ardından küme düşürülüyor — kaynak tarayan denetim (yeni bir yazar eklenirse
+  test kırılır; CRLF — ders 27).
+- Nasıl bozulur? (eşdeğerlik testi bu listeden; tur 3'ün bildirim-başına GERÇEK kodu (sinama-wa3 028e1b76) aynı tohumlu dizide referans — fikstür o kodla üretilir, ders 5 / 6 / 23):
+  1. aynı çağrıda aynı işe iki bildirim (delivered + delivered; delivered + read) — ikincisi birincinin yazdığı durumu görmeli;
+  2. teslim + okundu aynı çağrıda, zincir işi ile kaynağı aynı çağrıda (zincir işinin kendi wamid'i + kaynağın geç teslimi, iki sırayla);
+  3. küme kurulduktan SONRA açılan zincir (işteki Yine de Gönder, zincirli Başarısızları Yeniden Dene) → kaynağın geç teslimi zincir işini Teslim Edildi yapmalı (küme düşürülmezse Atlandı kalır);
+  4. başka bağlantının yazımı (program açıkken dışarıdan `inherit_of` — taşınan / onarılan veri benzetimi) → `data_version`;
+  5. eski deneme yolu (`applyOldAttempt`) ve yalnız defter yolu (`applyLedgerOnly`) — `self: true`;
+  6. iki şirket: her şirketin kuyruğu kendi kümesini tutar; 002'de açılan zincir 001'in kümesine girmez, 002'ninkini düşürür;
+  7. çağrı ortasında durum değişimi: zincir işinin aynı çağrıda önce kendi bildirimiyle değişmesi, sonra kaynağın teslimi (yürüyüş satırı TAZE okur — bugünkü gibi);
+  8. zincirsiz olağan veri (ölçümün yolu) — hiç okuma yok; tanınmayan wamid, failed, sent (zincir yürüyüşü yok — bugünkü gibi).
+- MUTANTLAR (eşdeğerlik testi DEĞERLE yakalamalı): (M1) küme denetimi yanlış durumda atlar (ör. `self: true`'da da erken dönüş / küme düşürülmez); (M2) toplu okuma yanlış cariye / kimliğe bakar
+  (kümede kaynağın değil zincir işinin kimliği); (M3) aynı çağrıdaki ikinci bildirim eski durumu görür (çağrı başında okunan satır anlık görüntüsü kullanılır).
+- Ölçüm: aynı şablon, `flock -x`, sıra çalışma dalı → tur 3 → yeni → çalışma dalı → tur 3 → yeni; HEDEF iki bildirim ölçümü ve olay döngüsü çalışma dalından en çok %10 kötü.
