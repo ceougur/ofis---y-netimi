@@ -1896,7 +1896,11 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
         }
         for (const flow of cheques().flows()) {
           if (flow.direction !== "in") continue;
-          const cheque = store.get("SELECT account_id AS accountId FROM cheques WHERE id = ?", flow.ref.id);
+          const cheque = store.get("SELECT c.account_id AS accountId, EXISTS (SELECT 1 FROM plan_entries pe JOIN plans p ON p.id = pe.plan_id AND p.deleted_at IS NULL WHERE pe.cheque_id = c.id) AS planLinked FROM cheques c WHERE c.id = ?", flow.ref.id);
+          // 2.5.0 Ç5-A tur 1b (BAŞ MİMAR KARARI 11.11; KULLANICI S49 = A + kural kitabı MM5 "müşteri başına"; C5-ACILIS-TASARIM §12.3): CARİSİZ evrak (cari seçilmemiş, taksit kartına
+          // sayılmamış — formdan carisiz ya da Excel açılış portföyünden carisiz) Alacak Yaşlandırması'na GİRMEZ: alacak bir müşterinin değildir (defterde 649.90 / 519). Carili evrak
+          // (Excel'de keşideci adıyla cariyle eşleşen ve karşılıksızda cari seçilen — S48 — dahil) carisinin satırında kalır. Nakit Akış / Vade Takip / vade dağılımı portföy görünümüdür, değişmez.
+          if (!cheque?.accountId && !Number(cheque?.planLinked)) continue;
           const key = cheque?.accountId || `party:${flow.party}`;
           add(key, names.get(cheque?.accountId) || flow.party, lateOf(flow.date), flow.amount);
         }
