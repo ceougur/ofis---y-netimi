@@ -1059,7 +1059,25 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     }
     ledgerRetry = false;
     let ok = true;
+    let scrubbed = 0;
     for (const request of list) {
+      // 2.5.0 WhatsApp tur 3 (WhatsApp tur 2 dar kontrol DÜŞÜK-1): tur 2'den ÖNCEKİ kodun içeriği silinmiş işe SONRADAN yazdığı numaralı hata metni (eski W-3 verisi) — aynı bayraklı
+      // turda (açılıştan sonraki ilk bakım turu; saatlik tam tarama YOK — WT2-5) o carinin içeriği silinmiş işlerinin metni scrubDigits'ten geçirilir. Dizinli cari okuması; yalnız
+      // değişen satıra yazım (eşgüçlü), secure_delete altında; WAL turun sonunda bir kez boşaltılır.
+      try {
+        const dirty = store
+          .all("SELECT id, error_text FROM wa_jobs WHERE account_id = ? AND params_json LIKE '{%' AND error_text <> ''", request.accountId)
+          .filter(row => scrubDigits(row.error_text) !== row.error_text);
+        if (dirty.length) {
+          withSecureDelete(store.db, () => store.tx(() => {
+            for (const row of dirty) store.run("UPDATE wa_jobs SET error_text = ? WHERE id = ? AND error_text = ?", scrubDigits(row.error_text), row.id, row.error_text);
+          }));
+          scrubbed += dirty.length;
+        }
+      } catch (error) {
+        ok = false; // kilit dahil: bayrak kalır, sonraki tur yeniden dener
+        log.warn?.(`WhatsApp silme talebinin eski hata metinleri temizlenemedi (${error?.code || error?.message || error}); sonra yeniden denenecek.`);
+      }
       let open = [];
       try {
         const fileIds = store.all("SELECT id FROM wa_jobs WHERE account_id = ? AND created_at <= ?", request.accountId, request.at).map(row => row.id);
@@ -1075,6 +1093,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       }
       await yieldLoop();
     }
+    if (scrubbed) flushStore(); // silinen metnin eski sayfaları WAL'da kalmasın (düşerse bayrak — maintain yeniden dener)
     if (!ok) ledgerRetry = true;
     return ok;
   }
