@@ -1,0 +1,81 @@
+d34-c5-s110-kendi-borcu.json: 66 elle beklenti değişti
+    değer                  k1:cari:E11:acikEsitBakiye: "(yok)" → true
+    değer                  k1:cari:E11:acikToplam: "(yok)" → 180000
+    değer                  k1:cari:E11:gecikmis: "(yok)" → 120000
+    değer                  k1:cari:E12:acikEsitBakiye: "(yok)" → true
+    değer                  k1:cari:E12:acikToplam: "(yok)" → 150000
+    değer                  k1:cari:E12:gecikmis: "(yok)" → 120000
+    değer                  k1:cari:E13:acikEsitBakiye: "(yok)" → true
+    değer                  k1:cari:E13:acikToplam: "(yok)" → 150000
+    değer                  k1:cari:E13:gecikmis: "(yok)" → 125000
+    değer                  k1:fatura:E11F:acik: "(yok)" → 60000
+    değer                  k1:fatura:E12F:acik: "(yok)" → 60000
+    değer                  k1:fatura:E13F:acik: "(yok)" → 60000
+    değer                  k1:hareket:e11x:kalan: "(yok)" → 50000
+    değer                  k1:hareket:e11y:kalan: "(yok)" → 70000
+    değer                  k1:hareket:e12b:kalan: "(yok)" → 90000
+    değer                  k1:hareket:e13b:kalan: "(yok)" → 90000
+    değer                  k1:kart:KE11:kalan: "(yok)" → 90000
+    değer                  k1:kart:KE11:mevcutBorc: "(yok)" → true
+    değer                  k1:kart:KE11:odenen: "(yok)" → 0
+    değer                  k1:kart:KE11:taksit1:odenen: "(yok)" → 0
+    değer                  k1:kart:KE11:taksit2:odenen: "(yok)" → 0
+    değer                  k1:kart:KE11:taksit3:odenen: "(yok)" → 0
+    değer                  k1:kart:KE12:kalan: "(yok)" → 60000
+    değer                  k1:kart:KE12:mevcutBorc: "(yok)" → true
+    değer                  k1:kart:KE12:odenen: "(yok)" → 0
+    değer                  k1:kart:KE12:taksit1:odenen: "(yok)" → 0
+    değer                  k1:kart:KE12:taksit2:odenen: "(yok)" → 0
+    değer                  k1:kart:KE12:var: "(yok)" → true
+    değer                  k1:kart:KE13:kalan: "(yok)" → 50000
+    değer                  k1:kart:KE13:mevcutBorc: "(yok)" → true
+    değer                  k1:kart:KE13:odenen: "(yok)" → 0
+    değer                  k1:kart:KE13:taksit1:odenen: "(yok)" → 0
+    değer                  k1:kart:KE13:taksit2:odenen: "(yok)" → 0
+    değer                  k1:kart:KE13:var: "(yok)" → true
+    değer                  k1:projeksiyon:hareket:e11x: "(yok)" → "yok"
+    değer                  k1:projeksiyon:hareket:e11y: "(yok)" → {"amount": 30000, "date": "2026-03-05", "direction": "in"}
+    değer                  k1:projeksiyon:hareket:e12b: "(yok)" → {"amount": 30000, "date": "2026-03-01", "direction": "in"}
+    değer                  k1:projeksiyon:hareket:e13b: "(yok)" → {"amount": 40000, "date": "2026-03-01", "direction": "in"}
+    değer                  k1:takvim:fatura:E11F: "(yok)" → {"amount": 60000, "direction": "in"}
+    değer                  k1:takvim:fatura:E12F: "(yok)" → {"amount": 60000, "direction": "in"}
+    değer                  k1:takvim:fatura:E13F: "(yok)" → {"amount": 60000, "direction": "in"}
+    değer                  k1:takvim:hareket:e11x: "(yok)" → "yok"
+    değer                  k1:takvim:hareket:e11y: "(yok)" → {"amount": 30000, "dueDate": "2026-03-05", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -41, "cari": "E11", "person": "Ekin İki Borç"}
+    değer                  k1:takvim:hareket:e12b: "(yok)" → {"amount": 30000, "dueDate": "2026-03-01", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -45, "cari": "E12", "person": "Eray Eşit Fatura"}
+    değer                  k1:takvim:hareket:e13b: "(yok)" → {"amount": 40000, "dueDate": "2026-03-01", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -45, "cari": "E13", "person": "Ezgi Parça"}
+    değer                  k1:vadeTakip:hareket:e11x: "(yok)" → "yok"
+    değer                  k1:vadeTakip:hareket:e11y: "(yok)" → {"amount": 30000, "date": "2026-03-05", "direction": "in"}
+    değer                  k1:vadeTakip:hareket:e12b: "(yok)" → {"amount": 30000, "date": "2026-03-01", "direction": "in"}
+    değer                  k1:vadeTakip:hareket:e13b: "(yok)" → {"amount": 40000, "date": "2026-03-01", "direction": "in"}
+    elleYok kalktı         k1:cari:E11:gecikmis: "yok" → ""
+    elleYok kalktı         k1:cari:E12:gecikmis: "yok" → ""
+    elleYok kalktı         k1:cari:E13:gecikmis: "yok" → ""
+    elleYok kalktı         k1:fatura:E11F:acik: "yok" → ""
+    elleYok kalktı         k1:fatura:E12F:acik: "yok" → ""
+    elleYok kalktı         k1:fatura:E13F:acik: "yok" → ""
+    elleYok kalktı         k1:hareket:e11x:kalan: "yok" → ""
+    elleYok kalktı         k1:hareket:e11y:kalan: "yok" → ""
+    elleYok kalktı         k1:hareket:e12b:kalan: "yok" → ""
+    elleYok kalktı         k1:hareket:e13b:kalan: "yok" → ""
+    elleYok kalktı         k1:kart:KE11:kalan: "yok" → ""
+    elleYok kalktı         k1:kart:KE12:kalan: "yok" → ""
+    elleYok kalktı         k1:kart:KE13:kalan: "yok" → ""
+    elleYok kalktı         k1:takvim:hareket:e11x: "yok" → ""
+    elleBelirsiz kalktı    ["cari E11 tanımsız", "SK-19"]: "" → ""
+    elleBelirsiz kalktı    ["cari E12 tanımsız", "SK-19"]: "" → ""
+    elleBelirsiz kalktı    ["cari E13 tanımsız", "SK-19"]: "" → ""
+d8-c5-tanimsiz.json: 8 elle beklenti değişti
+    değer                  k1:cari:A:gecikmis: "(yok)" → 90000
+    değer                  k1:hareket:acilis:A:kalan: "(yok)" → 100000
+    değer                  k1:hareket:b1:kalan: "(yok)" → 50000
+    değer                  k1:kart:KA:odenen: "(yok)" → 0
+    elleYok kalktı         k1:cari:A:gecikmis: "yok" → ""
+    elleYok kalktı         k1:hareket:acilis:A:kalan: "yok" → ""
+    elleYok kalktı         k1:hareket:b1:kalan: "yok" → ""
+    elleYok kalktı         k1:kart:KA:odenen: "yok" → ""
+yeni elle senaryo: d35-c5-s120-elle-borclar.json
+# tests 88
+# pass 88
+# fail 0
+88/88 denetim geçti
