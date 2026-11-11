@@ -95,12 +95,13 @@ bek.update(yok3("e2b"))
 bek.update(kart("KE2", 90000, 0, [0, 0, 0]))
 
 # E3 — SINIR: kart tutarı = açık borç (O = T — kural devreye girmez, eski davranış AYNEN): 01.03 F 600 · 15.03 kart 600 (2 × 300). Kart F'yi tüketir (tek kalem).
-#   F açık (defter kalanı) = 0 + 600 − 0 = 600; gecikmiş 1. taksit 300; kartlı caride fatura takvim kalemi yazılmaz (K6.5 — S110 alanı değil).
+#   F açık (defter kalanı) = 0 + 600 − 0 = 600; gecikmiş 1. taksit 300.
+#   KOŞUDAN SONRA DEĞİŞEN ELLE DEĞER (raporda açıkça): ilk yazımda `takvim:fatura:E3F` "yazılmaz" (elleYok) yazılmıştı — yanlış okuma; kâhinin kendi K6.5 (1) kuralı ("kartlı caride fatura
+#   kalemi NET: açık − kartın açık kapsamı, kapsanan borç kartın taksitleriyle bir kez") bu caride (tek satış faturası, elle kayıt yok) kalemi yazar: 600 − 600 = 0 → "yok". Eski kâhinde de aynı.
 adim += [ca("E3", "Ece Eşit"), fat("e3f", "E3F", "E3", "600", "2026-03-01"), elle_kart("ke3", "KE3", "E3", "600", taksit=2)]
 bek.update(cari("E3", 60000, 30000, 60000))
-bek.update({"k1:fatura:E3F:acik": 60000})
+bek.update({"k1:fatura:E3F:acik": 60000, "k1:takvim:fatura:E3F": "yok"})
 bek.update(kart("KE3", 60000, 0, [0, 0]))
-yok += ["k1:takvim:fatura:E3F"]
 
 # E4 — SINIR: açık borç kart tutarını 1 KURUŞ aşıyor (O = T + 0,01 — "fazla"): 01.03 F 0,01 · 05.03 Borç 900 (vade 10.03) · 15.03 kart 900. Kart Borç'u taşır; F 0,01 ayrı açık.
 #   gecikmiş = 0,01 + 300 = 300,01. (B / eski kural: F 0,01 + Borç'un 899,99'u kartta — iki kalem, eski kâhin susar.)
