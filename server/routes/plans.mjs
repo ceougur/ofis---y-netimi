@@ -280,11 +280,28 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     }
     return out;
   }
+  // Ç5-B tur 2b-1 (DK-C5BT2A G-1; tasarım §5 "tek cari: her istekte hesaplanır"): kart ekranı ve kartın yazım yanıtları kuyruğu YALNIZ kartın carisi için kurar
+  // (invoices.obligationsFor — önbelleğin artımlı yolunun cari başına kurduğu sonuçla aynı işlev). Önceden bütün carilerin kuyruğu (allObligations → allSettled) okunuyordu:
+  // yazımdan hemen sonra bütün carilerin izi yeniden hesaplanıyordu (100 bin satırda kart tahsilatı yanıtı ~0,15 → ~1,1 sn). Eşdeğerlik: test/tyk-tur2b1-250.test.mjs
+  // (yanıt = ardından okuma = bütün carilerin kuyruğu). Liste (Taksitler) bütün carilerin kuyruğunu okumayı sürdürür.
+  const AUDITOR = { id: "plans", role: "admin", permissions: [] };
+  const queueFor = accountId => {
+    if (store.inTransaction || !accountId) return null;
+    const module = invoices();
+    if (!module?.obligationsFor || module.legacyView) return null;
+    let ledger = null;
+    try {
+      ledger = accounts()?.detail ? accounts().detail(accountId, AUDITOR, { withRemaining: false }).ledger || null : null;
+    } catch {
+      ledger = null; // silinmiş cari: kuyruk yok (carisiz kart gibi kartın kendi hesabı)
+    }
+    return ledger ? new Map([[accountId, module.obligationsFor(accountId, ledger)]]) : null;
+  };
   // Kart ekranı (GET): kartın kendi hesabı + kuyruk görünümü.
   const detailView = (id, user) => {
     const plan = planRow(id);
     const shaped = shape(plan, user);
-    const view = withQueue(plan, shaped, queueOf());
+    const view = withQueue(plan, shaped, queueFor(plan.accountId));
     return view === shaped ? shaped : { ...shaped, ...view };
   };
 
