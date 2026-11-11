@@ -150,9 +150,15 @@ describe("2.5.0 Ç5-B tur 2a — TYK önbelleği (Y-3): iz bütün girdileri kap
           async stokSatis(acc) { const body = { kind: "out", qty: String(1 + Math.floor(r() * 5)), unitPrice: "50", pay: "account", method: "cash", accountId: acc.id, date: anyDate() }; if (r() < 0.5) body.installments = { count: 2, firstDue: body.date }; return h.api.post(`/api/workspace/stock/${goods.id}/moves`, body); },
           async supheli(acc) { const bal = (await h.api.get(`/api/workspace/accounts/${acc.id}`)).data?.totals?.balance || 0; if (!(bal > 50)) return null; return h.api.post(`/api/workspace/accounts/${acc.id}/doubtful`, { amount: String(Math.floor(bal / 3)), date: day(-Math.floor(r() * 30)), reason: "lawsuit", note: "dava" }); },
           async kilit() { locked = locked ? "" : day(-120 + Math.floor(r() * 60)); return h.api.put("/api/admin/period-lock", { lockedUntil: locked }); },
+          // Ç5-B tur 2b-2 girdileri: verilen çek (S96 kalemi), alış faturası ve stoktan Alış İadesi (S95 / S103 / S105 — karşı yönlü kalemler ve geri alma), tek elle borca
+          // eşit elle kart (S110 / S120 seçimi), avansla kapanmış borca stok kartı (S101 ön ödemesi).
+          async verilenCek(acc) { return h.api.post("/api/workspace/cheques", { direction: "out", instrument: "cheque", amount: amount(), issueDate: anyDate(), dueDate: day(30), accountId: acc.id, serialNo: `ONB-${Math.floor(r() * 1e9)}` }); },
+          async alis(acc) { return h.api.post("/api/workspace/invoices", { scenario: "expense_purchase", kind: "purchase", accountId: acc.id, number: `ALS-ONB-${Math.floor(r() * 1e9)}`, issueDate: anyDate(), lines: [{ name: "Gider", qty: 1, unitPrice: amount(), vatRate: 0, expenseCode: "other" }], payment: { rest: "open", dueDate: day(-10) }, cashForce: true }); },
+          async alisIadesi(acc) { return h.api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "out", reason: "preturn", qty: "1", unitPrice: "40", pay: "account", method: "cash", accountId: acc.id, date: anyDate(), force: true }); },
+          async elleKart(acc) { const debt = (await entriesOf(acc)).find(e => e.kind === "debt" && !e.source); if (!debt) return null; return h.api.post("/api/workspace/plans", { name: acc.name, registeredOn: day(-Math.floor(r() * 20)), total: String(debt.amount), accountId: acc.id, coversBalance: true, mode: "auto", count: "2", firstDue: day(-Math.floor(r() * 10)), everyMonths: "1" }); },
           async dokunmayan() { const what = r(); if (what < 0.4) return h.api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "in", qty: "1", unitPrice: "10", pay: "none", date: day(0) }); if (what < 0.7) { await loginAdmin(h.server); return null; } const acc = pick(accs); return h.api.put(`/api/workspace/accounts/${acc.id}`, { ...(await h.api.get(`/api/workspace/accounts/${acc.id}`)).data, note: `not ${r()}` }); },
         };
-        const weights = [["borc", 10], ["alacak", 5], ["tahsilat", 10], ["odeme", 4], ["fatura", 8], ["duzelt", 10], ["sil", 4], ["geriAl", 3], ["yeniBorcKarti", 4], ["mevcutBorcKarti", 4], ["taksit", 6], ["kartDuzenle", 3], ["kartTahsilati", 7], ["kartHareketi", 5], ["kartDurumu", 2], ["stokSatis", 5], ["supheli", 2], ["kilit", 3], ["dokunmayan", 9]];
+        const weights = [["borc", 10], ["alacak", 5], ["tahsilat", 10], ["odeme", 4], ["fatura", 8], ["duzelt", 10], ["sil", 4], ["geriAl", 3], ["yeniBorcKarti", 4], ["mevcutBorcKarti", 4], ["taksit", 6], ["kartDuzenle", 3], ["kartTahsilati", 7], ["kartHareketi", 5], ["kartDurumu", 2], ["stokSatis", 5], ["supheli", 2], ["kilit", 3], ["dokunmayan", 9], ["verilenCek", 3], ["alis", 3], ["alisIadesi", 2], ["elleKart", 3]];
         const total = weights.reduce((s, [, w]) => s + w, 0);
         h.compare("başlangıç");
         for (let i = 0; i < steps; i += 1) {
@@ -166,7 +172,7 @@ describe("2.5.0 Ç5-B tur 2a — TYK önbelleği (Y-3): iz bütün girdileri kap
         }
         // Kanıt: denenen yazım türleri ve yanıt kodları (reddedilenler ayrı sayılır — ders 3).
         const accepted = [...kinds].filter(([k]) => k.endsWith(":200")).map(([k]) => k.split(":")[0]);
-        for (const name of ["borc", "tahsilat", "fatura", "duzelt", "kartTahsilati", "stokSatis", "kilit", "dokunmayan"]) assert.ok(accepted.includes(name) || kinds.has(`${name}:-`), `tohum ${seed}: ${name} en az bir kez kabul edildi (${JSON.stringify([...kinds])})`);
+        for (const name of ["borc", "tahsilat", "fatura", "duzelt", "kartTahsilati", "stokSatis", "kilit", "dokunmayan", "verilenCek", "alis"]) assert.ok(accepted.includes(name) || kinds.has(`${name}:-`), `tohum ${seed}: ${name} en az bir kez kabul edildi (${JSON.stringify([...kinds])})`);
         console.log(`# tohum ${seed}: ${JSON.stringify(Object.fromEntries([...kinds].sort()))}`);
       } finally {
         await h.server.close();

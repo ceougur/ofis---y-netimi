@@ -185,3 +185,89 @@ döner; 29 düzeltmede cari değişimi (S54, S57, S79, S80, S81, S83–S85), red
   vade son İADENİN günü) — takvim / zil / Vade Takip / nakit akışı kalemidir (routes/plans.mjs queueExtras); kartın durumu ve taksit gecikmişi taksitlerden (değişmedi).
 - **Değişmez:** "Σ kalem = cari bakiyesi" kartlı rastgele carilerde (tyk-250 tur 2a); S101 (kart kırpıldı + kart tahsilatı) ve S99 adıyla dışarıda, sayıları çıktıda. Tanı alanı
   `coverage` (kart başına tükettiği ↔ tüketebileceği).
+
+## 11. Tur 2b-1 (11.11.2026; dar kontrol DK-C5BT2A'nın ORTA / DÜŞÜK bulguları — S95–S99, S101–S105, S110'un kodu tur 2b-2)
+- **G-2 (kart durumu; beklenen v2.4.9'un gerçek kodu):** Bitti için kuyruk kalanı 0 + bütün taksitler ödendi YETMEZ; ayrıca kart tutarı > 0 ve (kartın KENDİ kalanı 0 — v2.4.9
+  `allocate` kuralı — YA DA taksiti olup Mevcut Borç kartında taksitlere bölünmemiş kapsam kalmamış). Neden: taksitsiz kartta boş listede "hepsi ödendi" doğruydu; Mevcut Borç
+  kartında taksitlere bölünmemiş borç kuyrukta kartın değil alttaki borç kalemidir (coverTotal = taksitler, v2.0.23). S50 = A'nın kapattığı taksitler (kart seçilmeden alınan
+  tahsilat) bugünkü gibi Bitti'ye götürür; Mevcut Borç kartında taksitlendirilmemiş kısım kalırken Aktif kalır (v2.4.9: Gecikti — fark testi S50).
+- **ORTA-1 (karar (3) × çek / senet düzeltmesi):** bağ ilk olaydadır (cheque_events.invoice_id); bağın anı = `cheque.updated` izinde `invoiceId` taşıyan son düzeltmenin anı, yoksa
+  ilk olayın kaydı (routes/invoices.mjs `chequeLinkMoments`). KESİN an (`linkMoments`, kuyrukta `linkedAt`'ten önce): tutar / cari / tarih düzeltmesi olayın satırlarını yeniden
+  yazar (yeni kayıt anı) ama bağ aynıdır — cari tahsilatının "tutar / tarih düzeltmesi bağın anını değiştirmez" kuralı. Çekin karta sayılması (plan_entries) eski kuralda (satırın
+  kaydı; izde planId değişimi yok — BİLİNEN SINIR). Bağın KALDIRILMASI: ödeme bağsızdır (çek = cari tahsilatı); kilitli dönemdeki bağsız kapanışların bundan etkilenmesi
+  KULLANICIYA SORULDU listesinde (tur 2b-1 raporu).
+- **ORTA-2 (S91 = A, S93, S96):** cari kalemleri (Vade Takip / zil / takvim / nakit akışı) alacak tarafındaki HER açık kalemdir (fatura ve kart kalemleri kendi kaynaklarında):
+  tedarikçideki faturasız (stoktan) ve faturalı Alış İadesi artık "Tahsil Edilecek Borç". Çek / senet ve banka (POS) kaynaklı verilen avans S96 notuyla tur 2b-2.
+- **G-1 (hız, en küçük düzeltme):** kart ekranı (GET /plans/:id) ve bütün kart yazım yanıtları kuyruğu YALNIZ kartın carisi için kurar (`invoices.obligationsFor` — önbelleğin
+  artımlı yolunun cari başına kullandığı işlev; §5 "tek cari her istekte"). Taksitler listesi, zil, Vade Takip bütün carilerin kuyruğunu okumayı sürdürür. Eşdeğerlik:
+  test/tyk-tur2b1-250 (yanıt = okuma = liste satırı, cariler arası durumlar).
+- **K8 formu (karar 'CI #1059' (2)) KODLANMADI:** sunucunun K8 sınırını kuyruk kalanına çevirmek mutabakat motorunun K8 modelini (test/mutabakat/motor.mjs planLeft = kartın
+  kendi kalanı; plan §3.10/3) kırıyor (mutabakat-cekirdek / yıl dönümü: "taksit-tahsil: yanlış ret 409 plan-paid") ve taksitli faturada önceki avans kartı "ödendi" sayıp
+  faturanın açığını (G2) kart tahsilatıyla kapatmayı engelliyor → para kuralı ayrışması (ders 43), KULLANICIYA SORULMALI; senaryo-k8-230 kırmızı kalır.
+- **Fark testi (ders 53, kalıcı):** test/fixtures/tyk-fark-v249 (v2.4.9'un gerçek koduyla üretilmiş 28 sınıf + v2.4.9'un kendi sayıları) → test/tyk-fark-v249-250; her fark
+  `beklenen-farklar.json`'da karar numarasıyla. Değişmez (tyk-250): S110 sınıfı `coverage.ambiguous` ile ayrı adla; S99 dışlaması kalktı.
+
+## 12. Tur 2b-2 (11.11.2026; kullanıcı kararları S95–S99, S101–S105, S110, S118, S120, S122 + ekran yürüyüşü 1'in Y2 / Y4) — KOD ÖNCESİ
+Kaynak: iş listesi C / D AYNEN (13:20, 13:27, 18:22, 18:28; 11.11 03:15, 06:14, 06:35, 07:33); cari kâhininin KARARLAR §17–§21 YORUMLARI (Y5-1 … Y9-9; kodu değil). Satır numaraları taban
+c5b-2b2-taban (ba77c90b). Bugünkü sayılar ajan betiğiyle (DK-C5BT2A s95-98 / s99-105 / kart-avans kopyaları; sahte saat 20.10.2026) yeniden üretildi.
+
+### 12.1 Karar → değişen kural (dosya:satır) → örneğin bugünkü / hedef sayısı
+| Karar | Değişen kural | Bugün (taban) | Hedef (karar metni) |
+|---|---|---|---|
+| S95 = A (+ S97, S102) | obligation-queue.mjs `arrive` :640–658 (NET): bağsız ödeme (tahsilat / Ödeme / faturasız stok iadesi / kart fazlası) önce açık karşı kalemleri kapatır; artarsa ÖNCEKİ GÜNLERDE iki YÜKÜMLÜLÜK kalemi arasında yapılmış netleşmeyi EN YENİDEN geri alır (karşı kalem yeniden açılır, ödeme kendi tarafının kalemini kapatır); kendi günündeki netleşme kesin (S97). | satış 10.000 (vade +10) · alış 6.000 · biz 6.000 öderiz: gecikmiş 6.000, Vade Takip 'Tahsil Edilecek Borç 6.000' + fatura 4.000 | alış Ödendi, satış 10.000 vade +10, gecikmiş 0 |
+| S97 = A | eventOrder :77–82 (gün → sınıf 0 kalem / 2 ödeme) — DEĞİŞMEZ; geri alma yalnız `closure.date < ödemenin günü` | Alacak 0 + avans 300 | aynı |
+| S102 = A | aynı geri alma, en yeni önce (K2) | X 0, Y 0, Σ −600 (avans 600) | X 300 açık, Y 0, avans 300 |
+| S103 = A | verilen avans ↔ alış kapanışı netleşme DEĞİL (ödeme ↔ kalem) → geri alınmaz | alış Ödendi, avans 300 kalem değil | aynı (geri alma kuralı bozmamalı) |
+| S98 / S104 = A | s2 :70–75 avans dahil tek vade sırası — DEĞİŞMEZ | avans 50 + Borç 100 / avans 200 + Alacak 200 | aynı |
+| S105 = A | `arrive` :643: gelen alacak yönlü YÜKÜMLÜLÜK kalemi (alış, Alacak, alacaklı Açılış) önce açık alış iadesi alacağını (stoktan Alış İadesi, faturalı Alış İadesi) kapatır, sonra s2 | iade 200 açık + avans 50 (zil iki kalem) | iade 0, avans 250 |
+| S96 = A (+ S93) | routes/accounts.mjs :1893 `RECEIVABLE_ITEM_ORIGINS` + çek / senet (`cheque`) ve banka (`pos-fee`) kaynaklı açık borç yönlü kalem → 'Tahsil Edilecek Borç' (Vade Takip / zil / takvim / nakit akışı) | tedarikçiye verilen çek: gecikmişte var, takvimde yok | her ekranda aynı tutar |
+| S99 = A | obligation-queue.mjs `assemble` :723–737 (G2): taksitli faturanın açığı = kendi kartının taksitlerinin + peşin kısmının KUYRUK kalanı (bağsız kapanış dahil; `linkedLeft` kalkar); kapatanlarda Otomatik satırlar; `runQueue` :225 kilit ölçümündeki "side + ownCard" istisnası kalkar (G1 ile aynı kural); mutabakat motoru test/mutabakat/motor.mjs :429 (fatura açığı = kartın kendi kalanı) en küçük hâliyle güncellenir | B 300 Gecikti + A 300 Gecikti (Σ 600 ≠ bakiye 300) | B Ödendi, A 300 açık, Σ = 300 |
+| S101 = A (genel mekanizma) | `coverEvent` :630–638 (EK-2B 32 kırpma) → kartın taşıdığı borcun BAĞSIZ PARAYLA (tahsilat, alınan evrak, kart fazlası) kapanmış kısmı kartın ÖDENMİŞ kısmıdır (vadesi en önce gelen taksitten); yalnız kalanı (para dışı kapanış: iade, Alacak …) son taksitten kırpılır. Ön ödeme kart tahsilatından ÖNCE yazılsın diye `runQueue`'da kararlı olana dek (en çok 3) ek geçiş; kart tahsilatı açık taksit bulamazsa carinin avansıdır (mevcut `card-excess`). `coveredLeftOf` :675 ön ödemeyi elle kaydın Kalan'ından düşmez. | kart Bitti, gecikmiş 100, Σ kalem 100 ≠ bakiye −200 | kart Bitti, takvim / zil boş, gecikmiş 0, Σ = −200 |
+| S110 = A | `coverEvent` :618–626 + `coverForcing` :182–185 (ambiguous kolu kalkar) + `endCover` :596–612: kartın anında açık borç O > kart tutarı T ise kart KENDİ borcunu taşır — satışla açılan kart: kartın anına kadar en son kaydedilen borç satırı tutarı karta eşit stok satışıysa o; elle kart: açık tutarı T'ye eşit TEK elle borç (Borç Yaz / borçlu Açılış) varsa o. lib/accounts.mjs :99 kart satırına `coverSource` (Excel / Tablodan Aktar kartı `import_id` ile — S110 / S120'ye GİRMEZ) | elle 900 + F 600, kart 900: kart Bitti, gecikmiş 1.500; stok 1.000 + Borç 500: gecikmiş 1.500 | 3 × 300 taksit + F 600 ayrı (gecikmiş 900); [500, 500] + Borç 500 (gecikmiş 1.000) |
+| S120 = A | aynı yerde: elle kart, eşit tek elle borç yoksa yalnız ELLE borçlar s2 sırasıyla (vadesizde belge sırası) | — (bugün S2 bütün borçlar) | F 600 + X 500 + Y 700, kart 900 ⇒ kartta X 500 + Y 400; açık F 600 + Y 300 |
+| S122 = A | `coveredLeftOf` :675–700 — tüketim sırası = kartın içine alma sırası (X sonra Y) → karta ödeme Kalan'ı o sırayla düşer (kural zaten bu; S120'nin sırasıyla değer kazanır) | — | karta 300 ⇒ X Kalan 200, Y Kalan 700 |
+| S123 / S124 / S125 = C | ÖZEL KOD YOK — S120 kuralının doğal sonucu (yalnız elle borçlar s2 sırasıyla; artan kapasite S101 / kırpma) | sayılar raporda "BİLİNEN SINIR — sayılar" | değişmezler testle |
+| S118 = B | routes/plans.mjs `withQueue` :224–266: `ownNext` + taksit başına `ownRemaining` (kartın kendi hesabı); client/assets/hof-plans.js `editEntry` :785 önerilen tutar kartın KENDİ kalanından + kuyruk kalanı küçükse tek satır bilgi notu. Sunucu sınırı, mutabakat, banka planı DEĞİŞMEZ | önerilen 600 (kuyruk) | 700 (kendi) + "Carinin avansı bu kartın 100,00 TL'sini kapatıyor." |
+| Y2 (S91 = A sunumu) | `withQueue`: taksitlendirilmemiş kalan / Taksit İadesi (queueExtras) günü geçmişse kart 'Gecikti'; totals.overdue bu kalemi de sayar, ayrı alan `overdueRest`; hof-plans.js kart kutusu ve liste metni | taksitsiz ayrı kart 800: zil 800 gecikti, kart 'Geciken 0' | kart Gecikti, 'Geciken ₺800,00 · 0 taksit + taksitlendirilmemiş kalan' |
+| Y4 | GÖZLEM: v2.4.9 hof-plans.js:417 ve routes/plans.mjs:1452 da kartın Kayıt Tarihi'ni (stoktan kartta carinin Kayıt Tarihi) gösteriyor → 2.5.0 getirmedi, DOKUNULMAZ (2.5.1 sunum) | — | — |
+
+### 12.2 Kararlar arası etkileşim
+| Birlikte | Okuma (karar metinlerinden) |
+|---|---|
+| S95 × S97 × S102 | geri alma yalnız ÖNCEKİ günlerin kalem ↔ kalem netleşmesi; en yeni önce; aynı gün kesin. Örnek S97 ertesi gün tahsilatla: Alacak 300 açık (kâhin Y5-1 'sıçrama', D 18:25 (1) kabul). |
+| S98 × S104 × S105 | gelen ödeme: avans dahil tek vade sırası (S98 / S104); gelen YÜKÜMLÜLÜK kalemi (alış / Alacak): önce açık alış iadesi alacağı (S105), sonra tek vade sırası; avans ↔ kalem kapanışı kesin (S103) — geri alınan yalnız iki yükümlülüğün netleşmesi. |
+| S99 × S101 × S110 × S120 | taksitli fatura kendi kartı (S99: bağsız para taksitleri vade sırasıyla kapatır, G2 de); Mevcut Borç kartı: O > T → S110 / S120 seçimi; O ≤ T → bütün açık borç (eski kural), eksik kısmın parayla kapanmışı ödenmiş taksit (S101), kalanı kırpılır. S110 kartının kendi borcu kısmen avansla kapanmışsa aynı S101 kuralı (karar (e) 11.11 03:15). |
+| S50 / S2 / karar (1)–(6) | kart seçilmeden alınan tahsilat taksitleri de kapatır (S50) — ön ödenmiş taksit kapalıdır; bağ (karar (2)) önce; kilit (karar (3)) G2'de de aynı ölçüm; netleşme (5) yalnız NET görünümde (S95 geri alması da). |
+
+### 12.3 Nasıl bozulur? (testler buradan)
+sıra değiştir (yazım sırası ↔ belge tarihi; ödeme önce / borç önce / kart önce), aynı gün (S97 + S95; kart ile ödeme aynı gün), düzelt / sil / geri al (Alacak silinince geri alma kalkar; kart tahsilatı silinince ön ödeme aynı), kilitli dönem (kilitten önce netleşmiş kalemler + kilitten sonra ödeme; S99 kilitli dönemde taksitli fatura + avans), iki cari (aynı adlı), yedek geri yükleme (önbellek), v2.4.9 verisi (fark testi: yeni sınıflar), S101'in üç yüzü (ödeme satıştan sonra tarihli ama önce kaydedilmiş; karttan sonra kaydedilen geriye tarihli ödeme + kart tahsilatı; rastgele sıra), S110'da 1 kuruş fazla / eşit / az, iki kart aynı gün, Tablodan Aktar kartı (değişmemeli), S123–S125 (değişmez + çökme yok).
+
+### 12.4 Hız etkisi (ders 53; ölçülecek istekler)
+Kuyruğun hesabı değişen her istek: cari kartı, Cari Listesi, Vade Takip, zil / açılış, nakit akışı, fatura listesi / kartı, Taksitler listesi / kartı, kart yazım yanıtı, Borç Yaz / tahsilat yanıtı. Ek maliyet: (i) S95 geri alma — ödeme başına yalnız artan varsa, netleşme kayıtları cari içinde; (ii) S101 ek geçiş — yalnız eksik kalan Mevcut Borç kartı olan caride (en çok 3 geçiş); (iii) S110 seçimi kart olayında (aday listesi zaten var). Bütçe: tur 2b-1 tabanına göre kötüleşme yok.
+
+### 12.5 Kodlama sırasında netleşenler (tur 2b-2; karar metinleri değişmedi — YORUMLAR rapora da yazıldı)
+- **S101'in genel mekanizması (iki geçiş):** kartın tüketemediği kısım (`leftover`), kartın taşıdığı borcun (O ≤ T: kartın anına kadar kaydedilmiş bütün borç kalemleri; S110 / S120: seçilen
+  kalemler) bağsız PARAYLA (kapatanı `payment` türü: tahsilat, alınan / verilen evrak, kart ve bağ fazlası) kapanmış kısmından ölçülür — olaylar BİTTİKTEN sonra (kartın günü borçtan önce
+  olabilir, kapanış sonra gelir). Ölçülen tutar bir sonraki geçişte kart tahsilatından ÖNCE vadesi en önce gelen taksitten "Avansla Kapandı" diye yazılır (`prepay`); para dışı eksik son
+  taksitten kırpılır. Kart tahsilatı açık taksit bulamazsa kart fazlası (`card-excess`) — carinin avansı, sonraki borcu kapatır. Kart fazlası başka kartın tükettiği borcu kapatınca o kartın
+  ölçüsü değişir → kararlı olana dek en çok 12 geçiş (tohumlu rastgele 1.800 kuyrukta %90'ı 1, en çok 9). Önceki kartların saydığı para aynı kaleme iki kez sayılmaz (`advClaimed`).
+- **Satışla açılan kartın "kendi satışı":** kartın kaydında satış kimliği yok (göç yazılmadı); kartın anına kadar EN SON kaydedilen borç satırı stok satışıysa ve tutarı kartın açıldığı andaki
+  tutara (iade kesintileri geri eklenmiş) eşitse ya da kayıt anı kartla aynıysa (aynı işlem — iade sonrası küçülmüş eski kart, fikstür C) o satıştır. Excel / Tablodan Aktar kartı
+  (`plans.import_id`) kararların dışında (eski kural).
+- **S123 = C'nin doğal davranışı:** elle borçlar kartı doldurmuyorsa artan kapasite bu kartın ÖNCEKİ kuralıyla (öbür açık borçlar s2 sırasıyla) dolar — tabanın davranışı o kısımda sürer;
+  elle borcu hiç olmayan caride kart boş kalmaz (literal "yalnız elle" okuması kartı açılır açılmaz Bitti yapardı). Sonucu S123'ün A seçeneğiyle aynı sayıyı verir — kural olarak değil,
+  tabanın sürmesi olarak; BİLİNEN SINIR (rapor "BİLİNEN SINIR — sayılar"). S124: karar metninin harfi (eşit elle borç TEK değilse eskiden yeniye) — Z 300 + X'in 600'ü kartta. S125: s2
+  (vade sırası) — Y 700 + X'in 200'ü kartta.
+- **S110 tetiğindeki "carinin açık borcu":** kartın tüketebileceği kalemler + öbür kartların / taksitli faturaların açık taksitleri (kâhin Y8-1 ile aynı okuma); 1 kuruş fazla da fazla.
+- **S95 geri alması:** yalnız NET görünümde ve yalnız iki YÜKÜMLÜLÜK kalemi arasındaki (ikisi de `due`) Otomatik netleşme; ödemenin kendi gününden önceki günler, en yeni önce (S102 /
+  K2). Aynı gün ve aynı kayıt anlı iki kalemin listedeki yeri yazım sırasıdır (ders 31) — tyk-250 değişmezinin "girdi sırası ters" karşılaştırması küme karşılaştırması oldu (G3).
+- **Mutabakat motoru (S99):** motor tek kuyruğu kurmaz; "taksitli faturanın açığı = kartın kendi kalanı (hedef)" eşitliği "açık ≤ hedef" oldu (üst sınır); kartın kendi kalanı = hedef
+  denetimi aynen. Tek kuyruğun eşitliği cari kâhininde ve tyk-250 değişmezinde (karşı yönlü kalemi olmayan caride fatura açığı = net kuyruk).
+- **S98 × S99 fatura durumunda (kâhin d25 R3 / d26 S13 / d27–d29 P3 / d33 T13c; §12.1'deki S99 satırının tamamlanması):** S99 = A "fatura listesi, kart, Vade Takip, zil AYNI sayıyı
+  gösterir" + S98 = A "avans da kalemdir": fatura durumunda (side) karşı tarafın NETLEŞMEMİŞ bağsız parası (müşteriye yaptığımız Ödeme; tedarikçinin bize ödemesi) gelen bağsız paranın
+  karşısında kendi günüyle (s2) kalemdir — müşteriye Ödeme 200 (01.03) · satış 100 · tahsilat 150 ⇒ fatura 100 açık, avans 50 (önce fatura 'Ödendi', Vade Takip 100: iki ekran ayrı
+  sayı). Ters yönde de: müşterinin avansı 500 · ona geri Ödeme 300 · satış 500 ⇒ fatura 300 açık (önce 0). Karar (5) / Y4-3 korunur: karşı tarafın BELGE kalemleri (alış ↔ satış) fatura
+  durumunda eşleşmez (yalnız Mahsup Et).
+- **Takvim / zil ufku söz gününe göre (Ç5-B gerilemesi; kâhin c10 bg4, d10 l1, rastgele s042):** S67 = A gecikmiş borcun gün sayısını VADEDEN ölçer; ufuk ise (K6.3 "geçmiş + 7 gün",
+  S67 "söz ufkun dışında → kalem yok") kalemin gösterildiği günden (söz varsa söz günü). v2.4.9'da gün sayısı söz gününden ölçüldüğü için ikisi aynıydı; Ç5-B'den sonra süzgeç gün sayısına
+  bakıyordu ve +15 sözlü gecikmiş borç zilde / takvimde çıkıyordu. Vade Takip ve nakit akışı ufuksuz (değişmez).

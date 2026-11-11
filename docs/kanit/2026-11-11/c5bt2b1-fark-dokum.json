@@ -1,0 +1,947 @@
+{
+ "kod": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1f2f9f23b4876417",
+ "now": {
+  "today": "2026-10-20",
+  "cariler": {
+   "TYKF A Stok Taban": {
+    "bakiye": 1000,
+    "gecikmis": 500,
+    "kartlar": [
+     {
+      "ad": "TYKF A Stok Taban",
+      "durum": "overdue",
+      "sekme": "active/overdue",
+      "taksitler": [
+       "1:500:500:overdue",
+       "2:500:500:open"
+      ]
+     }
+    ],
+    "vadeTakip": [
+     "plan|1. taksit|500|2026-10-10|in",
+     "plan|2. taksit|500|2026-11-10|in"
+    ],
+    "zil": [
+     "plan|1. taksit|500|overdue"
+    ]
+   },
+   "TYKF B Stok Kısmi": {
+    "bakiye": 700,
+    "gecikmis": 200,
+    "kartlar": [
+     {
+      "ad": "TYKF B Stok Kısmi",
+      "durum": "overdue",
+      "sekme": "active/overdue",
+      "taksitler": [
+       "1:500:200:overdue",
+       "2:500:500:open"
+      ]
+     }
+    ],
+    "vadeTakip": [
+     "plan|1. taksit (kalan)|200|2026-10-10|in",
+     "plan|2. taksit|500|2026-11-10|in"
+    ],
+    "zil": [
+     "plan|1. taksit|200|overdue"
+    ]
+   },
+   "TYKF C Stok İade": {
+    "bakiye": 800,
+    "gecikmis": 500,
+    "kartlar": [
+     {
+      "ad": "TYKF C Stok İade",
+      "durum": "overdue",
+      "sekme": "active/overdue",
+      "taksitler": [
+       "1:500:500:overdue",
+       "2:300:300:open"
+      ]
+     }
+    ],
+    "vadeTakip": [
+     "plan|1. taksit|500|2026-10-10|in",
+     "plan|2. taksit|300|2026-11-10|in"
+    ],
+    "zil": [
+     "plan|1. taksit|500|overdue"
+    ]
+   },
+   "TYKF E Karşı Yönlü": {
+    "bakiye": 700,
+    "gecikmis": 500,
+    "kartlar": [
+     {
+      "ad": "TYKF E Karşı Yönlü",
+      "durum": "overdue",
+      "sekme": "active/overdue",
+      "taksitler": [
+       "1:500:500:overdue",
+       "2:500:200:open"
+      ]
+     }
+    ],
+    "vadeTakip": [
+     "plan|1. taksit|500|2026-10-10|in",
+     "plan|2. taksit (kalan)|200|2026-11-10|in"
+    ],
+    "zil": [
+     "plan|1. taksit|500|overdue"
+    ]
+   },
+   "TYKF F Elle Geriye": {
+    "bakiye": 1000,
+    "gecikmis": 500,
+    "kartlar": [
+     {
+      "ad": "TYKF F Elle Geriye",
+      "durum": "overdue",
+      "sekme": "active/overdue",
+      "taksitler": [
+       "1:500:500:overdue",
+       "2:500:500:open"
+      ]
+     }
+    ],
+    "vadeTakip": [
+     "plan|1. taksit|500|2026-10-10|in",
+     "plan|2. taksit|500|2026-11-10|in"
+    ],
+    "zil": [
+     "plan|1. taksit|500|overdue"
+    ]
+   },
+   "TYKF G Toplu": {
+    "bakiye": 1000,
+    "gecikmis": 500,
+    "kartlar": [
+     {
+      "ad": "TYKF G Toplu",
+      "durum": "overdue",
+      "sekme": "active/overdue",
+      "taksitler": [
+       "1:500:500:overdue",
+       "2:500:500:open"
+      ]
+     }
+    ],
+    "vadeTakip": [
+     "plan|1. taksit|500|2026-10-10|in",
+     "plan|2. taksit|500|2026-11-10|in"
+    ],
+    "zil": [
+     "plan|1. taksit|500|overdue"
+    ]
+   },
+   "TYKF H İleri Kart": {
+    "bakiye": 1000,
+    "gecikmis": 1000,
+    "kartlar": [],
+    "vadeTakip": [
+     "account|Tahsil Edilecek Borç|1000|2026-09-30|in"
+    ],
+    "zil": [
+     "account|Tahsil Edilecek Borç|1000|overdue"
+    ]
+   },
+   "TYKF I Aynı Gün İki Kart": {
+    "bakiye": 1000,
+    "gecikmis": 1000,
+    "kartlar": [
+     {
+      "ad": "TYKF I Aynı Gün İki Kart",
+      "durum": "done",
+      "sekme": "done",
+      "taksitler": [
+       "1:300:0:paid",
+       "2:300:0:paid"
+      ]
+     },
+     {
+      "ad": "TYKF I Aynı Gün İki Kart",
+      "durum": "done",
+      "sekme": "done",
+      "taksitler": [
+       "1:200:0:paid",
+       "2:200:0:paid"
+      ]
+     }
+    ],
+    "vadeTakip": [
+     "account|Tahsil Edilecek Borç|400|2026-09-30|in",
+     "account|Tahsil Edilecek Borç|600|2026-09-30|in"
+    ],
+    "zil": [
+     "account|Tahsil Edilecek Borç|400|overdue",
+     "account|Tahsil Edilecek Borç|600|overdue"
+    ]
+   },
+   "TYKF J Tahsilat Sonra Kart": {
+    "bakiye": 600,
+    "gecikmis": 300,
+    "kartlar": [
+     {
+      "ad": "TYKF J Tahsilat Sonra Kart",
+      "durum": "overdue",
+      "sekme": "active/overdue",
+      "taksitler": [
+       "1:300:300:overdue",
+       "2:300:300:open"
+      ]
+     }
+    ],
+    "vadeTakip": [
+     "plan|1. taksit|300|2026-10-10|in",
+     "plan|2. taksit|300|2026-11-10|in"
+    ],
+    "zil": [
+     "plan|1. taksit|300|overdue"
+    ]
+   },
+   "TYKF J2 Kart Sonra Tahsilat": {
+    "bakiye": 600,
+    "gecikmis": 500,
+    "kartlar": [
+     {
+      "ad": "TYKF J2 Kart Sonra Tahsilat",
+      "durum": "overdue",
+      "sekme": "active/overdue",
+      "taksitler": [
+       "1:500:500:overdue",
+       "2:500:100:open"
+      ]
+     }
+    ],
+    "vadeTakip": [
+     "plan|1. taksit|500|2026-10-10|in",
+     "plan|2. taksit (kalan)|100|2026-11-10|in"
+    ],
+    "zil": [
+     "plan|1. taksit|500|overdue"
+    ]
+   },
+   "TYKF K Eksi Havuz": {
+    "bakiye": 700,
+    "gecikmis": 200,
+    "kartlar": [
+     {
+      "ad": "TYKF K Eksi Havuz",
+      "durum": "overdue",
+      "sekme": "active/overdue",
+      "taksitler": [
+       "1:500:200:overdue",
+       "2:500:500:open"
+      ]
+     }
+    ],
+    "vadeTakip": [
+     "plan|1. taksit (kalan)|200|2026-10-10|in",
+     "plan|2. taksit|500|2026-11-10|in"
+    ],
+    "zil": [
+     "plan|1. taksit|200|overdue"
+    ]
+   },
+   "TYKF L Faturadan": {
+    "bakiye": 1000,
+    "gecikmis": 500,
+    "kartlar": [
+     {
+      "ad": "TYKF L Faturadan",
+      "durum": "overdue",
+      "sekme": "active/overdue",
+      "taksitler": [
+       "1:500:500:overdue",
+       "2:500:500:open"
+      ]
+     }
+    ],
+    "vadeTakip": [
+     "plan|1. taksit|500|2026-10-10|in",
+     "plan|2. taksit|500|2026-11-10|in"
+    ],
+    "zil": [
+     "plan|1. taksit|500|overdue"
+    ]
+   },
+   "TYKF M S110 Elle": {
+    "bakiye": 1500,
+    "gecikmis": 1500,
+    "kartlar": [
+     {
+      "ad": "TYKF M S110 Elle",
+      "durum": "done",
+      "sekme": "done",
+      "taksitler": [
+       "1:300:0:paid",
+       "2:300:0:paid",
+       "3:300:0:paid"
+      ]
+     }
+    ],
+    "vadeTakip": [
+     "account|Tahsil Edilecek Borç|900|2026-09-25|in",
+     "invoice|Satış faturası FIS2026000000002|600|2026-09-30|in"
+    ],
+    "zil": [
+     "account|Tahsil Edilecek Borç|900|overdue",
+     "invoice|Tahsil Edilecek Fatura FIS2026000000002|600|overdue"
+    ]
+   },
+   "TYKF N S110 Stok": {
+    "bakiye": 1500,
+    "gecikmis": 1500,
+    "kartlar": [
+     {
+      "ad": "TYKF N S110 Stok",
+      "durum": "done",
+      "sekme": "done",
+      "taksitler": [
+       "1:500:0:paid",
+       "2:500:0:paid"
+      ]
+     }
+    ],
+    "vadeTakip": [
+     "account|Tahsil Edilecek Borç|1000|2026-09-30|in",
+     "account|Tahsil Edilecek Borç|500|2026-09-20|in"
+    ],
+    "zil": [
+     "account|Tahsil Edilecek Borç|1000|overdue",
+     "account|Tahsil Edilecek Borç|500|overdue"
+    ]
+   },
+   "TYKF P Kilitli": {
+    "bakiye": 700,
+    "gecikmis": 200,
+    "kartlar": [
+     {
+      "ad": "TYKF P Kilitli",
+      "durum": "overdue",
+      "sekme": "active/overdue",
+      "taksitler": [
+       "1:500:200:overdue",
+       "2:500:500:today"
+      ]
+     }
+    ],
+    "vadeTakip": [
+     "plan|1. taksit (kalan)|200|2026-09-20|in",
+     "plan|2. taksit|500|2026-10-20|in"
+    ],
+    "zil": [
+     "plan|1. taksit|200|overdue",
+     "plan|2. taksit|500|today"
+    ]
+   },
+   "TYKF Q Excel Kart": {
+    "bakiye": 600,
+    "gecikmis": 100,
+    "kartlar": [
+     {
+      "ad": "TYKF Q Excel Kart",
+      "durum": "overdue",
+      "sekme": "active/overdue",
+      "taksitler": [
+       "1:500:100:overdue",
+       "2:500:500:today"
+      ]
+     }
+    ],
+    "vadeTakip": [
+     "plan|1. taksit (kalan)|100|2026-09-20|in",
+     "plan|2. taksit|500|2026-10-20|in"
+    ],
+    "zil": [
+     "plan|1. taksit|100|overdue",
+     "plan|2. taksit|500|today"
+    ]
+   },
+   "TYKF R Excel Bakiye": {
+    "bakiye": 1000,
+    "gecikmis": 500,
+    "kartlar": [
+     {
+      "ad": "TYKF R Excel Bakiye",
+      "durum": "overdue",
+      "sekme": "active/overdue",
+      "taksitler": [
+       "1:500:500:overdue",
+       "2:500:500:open"
+      ]
+     }
+    ],
+    "vadeTakip": [
+     "plan|1. taksit|500|2026-10-10|in",
+     "plan|2. taksit|500|2026-11-10|in"
+    ],
+    "zil": [
+     "plan|1. taksit|500|overdue"
+    ]
+   },
+   "TYKF T1 Taksitsiz Ayrı Kart": {
+    "bakiye": 1000,
+    "gecikmis": 1000,
+    "kartlar": [
+     {
+      "ad": "TYKF T1 Taksitsiz Ayrı Kart",
+      "durum": "active",
+      "sekme": "active",
+      "taksitler": []
+     }
+    ],
+    "vadeTakip": [
+     "plan|Taksitlendirilmemiş Kalan|1000|2026-09-30|in"
+    ],
+    "zil": [
+     "plan|Taksitlendirilmemiş Kalan|1000|overdue"
+    ]
+   },
+   "TYKF T10 Cari Tahsilatıyla Ödenmiş Taksitsiz Mevcut Borç": {
+    "bakiye": 0,
+    "gecikmis": 0,
+    "kartlar": [
+     {
+      "ad": "TYKF T10 Cari Tahsilatıyla Ödenmiş Taksitsiz Mevcut Borç",
+      "durum": "active",
+      "sekme": "active",
+      "taksitler": []
+     }
+    ],
+    "vadeTakip": [],
+    "zil": []
+   },
+   "TYKF T11 Başka Karttan Avans": {
+    "bakiye": 600,
+    "gecikmis": 0,
+    "kartlar": [
+     {
+      "ad": "TYKF T11 Başka Karttan Avans",
+      "durum": "done",
+      "sekme": "done",
+      "taksitler": [
+       "1:1000:0:paid"
+      ]
+     },
+     {
+      "ad": "TYKF T11 Başka Karttan Avans",
+      "durum": "active",
+      "sekme": "active",
+      "taksitler": [
+       "1:1000:600:open"
+      ]
+     }
+    ],
+    "vadeTakip": [
+     "plan|1. taksit (kalan)|600|2026-10-30|in"
+    ],
+    "zil": []
+   },
+   "TYKF T2 Eksik Taksitli Ayrı Kart": {
+    "bakiye": 1000,
+    "gecikmis": 700,
+    "kartlar": [
+     {
+      "ad": "TYKF T2 Eksik Taksitli Ayrı Kart",
+      "durum": "overdue",
+      "sekme": "active/overdue",
+      "taksitler": [
+       "1:300:300:overdue",
+       "2:300:300:open"
+      ]
+     }
+    ],
+    "vadeTakip": [
+     "plan|1. taksit|300|2026-10-10|in",
+     "plan|2. taksit|300|2026-11-09|in",
+     "plan|Taksitlendirilmemiş Kalan|400|2026-09-30|in"
+    ],
+    "zil": [
+     "plan|1. taksit|300|overdue",
+     "plan|Taksitlendirilmemiş Kalan|400|overdue"
+    ]
+   },
+   "TYKF T3 Taksitsiz Mevcut Borç": {
+    "bakiye": 1000,
+    "gecikmis": 1000,
+    "kartlar": [
+     {
+      "ad": "TYKF T3 Taksitsiz Mevcut Borç",
+      "durum": "active",
+      "sekme": "active",
+      "taksitler": []
+     }
+    ],
+    "vadeTakip": [
+     "account|Tahsil Edilecek Borç|1000|2026-09-30|in"
+    ],
+    "zil": [
+     "account|Tahsil Edilecek Borç|1000|overdue"
+    ]
+   },
+   "TYKF T4 Eksik Taksitli Mevcut Borç": {
+    "bakiye": 1000,
+    "gecikmis": 1000,
+    "kartlar": [
+     {
+      "ad": "TYKF T4 Eksik Taksitli Mevcut Borç",
+      "durum": "overdue",
+      "sekme": "active/overdue",
+      "taksitler": [
+       "1:500:500:overdue"
+      ]
+     }
+    ],
+    "vadeTakip": [
+     "account|Tahsil Edilecek Borç|500|2026-09-30|in",
+     "plan|1. taksit|500|2026-10-10|in"
+    ],
+    "zil": [
+     "account|Tahsil Edilecek Borç|500|overdue",
+     "plan|1. taksit|500|overdue"
+    ]
+   },
+   "TYKF T5 Taksitleri Silinmiş Stoktan Kart": {
+    "bakiye": 1000,
+    "gecikmis": 1000,
+    "kartlar": [
+     {
+      "ad": "TYKF T5 Taksitleri Silinmiş Stoktan Kart",
+      "durum": "active",
+      "sekme": "active",
+      "taksitler": []
+     }
+    ],
+    "vadeTakip": [
+     "account|Tahsil Edilecek Borç|1000|2026-09-30|in"
+    ],
+    "zil": [
+     "account|Tahsil Edilecek Borç|1000|overdue"
+    ]
+   },
+   "TYKF T6 Tedarikçi Stoktan Alış İadesi": {
+    "bakiye": 300,
+    "gecikmis": 300,
+    "kartlar": [],
+    "vadeTakip": [
+     "account|Tahsil Edilecek Borç|300|2026-09-30|in"
+    ],
+    "zil": [
+     "account|Tahsil Edilecek Borç|300|overdue"
+    ]
+   },
+   "TYKF T7 Tedarikçi Faturalı Alış İadesi": {
+    "bakiye": 300,
+    "gecikmis": 300,
+    "kartlar": [],
+    "vadeTakip": [
+     "account|Tahsil Edilecek Borç|300|2026-09-30|in"
+    ],
+    "zil": [
+     "account|Tahsil Edilecek Borç|300|overdue"
+    ]
+   },
+   "TYKF T8 Tedarikçiye Avans": {
+    "bakiye": 300,
+    "gecikmis": 300,
+    "kartlar": [],
+    "vadeTakip": [
+     "account|Tahsil Edilecek Borç|300|2026-09-30|in"
+    ],
+    "zil": [
+     "account|Tahsil Edilecek Borç|300|overdue"
+    ]
+   },
+   "TYKF T9 Kart Tahsilatıyla Ödenmiş Taksitsiz Kart": {
+    "bakiye": 0,
+    "gecikmis": 0,
+    "kartlar": [
+     {
+      "ad": "TYKF T9 Kart Tahsilatıyla Ödenmiş Taksitsiz Kart",
+      "durum": "done",
+      "sekme": "done",
+      "taksitler": []
+     }
+    ],
+    "vadeTakip": [],
+    "zil": []
+   }
+  }
+ },
+ "farklar": [
+  {
+   "cari": "TYKF B Stok Kısmi",
+   "alan": "gecikmis",
+   "eski": "500",
+   "yeni": "200"
+  },
+  {
+   "cari": "TYKF B Stok Kısmi",
+   "alan": "kart1.taksitler",
+   "eski": "[\"1:500:500:overdue\",\"2:500:500:open\"]",
+   "yeni": "[\"1:500:200:overdue\",\"2:500:500:open\"]"
+  },
+  {
+   "cari": "TYKF B Stok Kısmi",
+   "alan": "vadeTakip",
+   "eski": "[\"plan|1. taksit|500|2026-10-10|in\",\"plan|2. taksit|500|2026-11-10|in\"]",
+   "yeni": "[\"plan|1. taksit (kalan)|200|2026-10-10|in\",\"plan|2. taksit|500|2026-11-10|in\"]"
+  },
+  {
+   "cari": "TYKF B Stok Kısmi",
+   "alan": "zil",
+   "eski": "[\"plan|1. taksit|500|overdue\"]",
+   "yeni": "[\"plan|1. taksit|200|overdue\"]"
+  },
+  {
+   "cari": "TYKF E Karşı Yönlü",
+   "alan": "kart1.taksitler",
+   "eski": "[\"1:500:500:overdue\",\"2:500:500:open\"]",
+   "yeni": "[\"1:500:500:overdue\",\"2:500:200:open\"]"
+  },
+  {
+   "cari": "TYKF E Karşı Yönlü",
+   "alan": "vadeTakip",
+   "eski": "[\"plan|1. taksit|500|2026-10-10|in\",\"plan|2. taksit|500|2026-11-10|in\"]",
+   "yeni": "[\"plan|1. taksit|500|2026-10-10|in\",\"plan|2. taksit (kalan)|200|2026-11-10|in\"]"
+  },
+  {
+   "cari": "TYKF H İleri Kart",
+   "alan": "gecikmis",
+   "eski": "0",
+   "yeni": "1000"
+  },
+  {
+   "cari": "TYKF H İleri Kart",
+   "alan": "vadeTakip",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|1000|2026-09-30|in\"]"
+  },
+  {
+   "cari": "TYKF H İleri Kart",
+   "alan": "zil",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|1000|overdue\"]"
+  },
+  {
+   "cari": "TYKF I Aynı Gün İki Kart",
+   "alan": "gecikmis",
+   "eski": "500",
+   "yeni": "1000"
+  },
+  {
+   "cari": "TYKF I Aynı Gün İki Kart",
+   "alan": "kart1.durum",
+   "eski": "\"overdue\"",
+   "yeni": "\"done\""
+  },
+  {
+   "cari": "TYKF I Aynı Gün İki Kart",
+   "alan": "kart1.sekme",
+   "eski": "\"active/overdue\"",
+   "yeni": "\"done\""
+  },
+  {
+   "cari": "TYKF I Aynı Gün İki Kart",
+   "alan": "kart1.taksitler",
+   "eski": "[\"1:300:300:overdue\",\"2:300:300:open\"]",
+   "yeni": "[\"1:300:0:paid\",\"2:300:0:paid\"]"
+  },
+  {
+   "cari": "TYKF I Aynı Gün İki Kart",
+   "alan": "kart2.durum",
+   "eski": "\"overdue\"",
+   "yeni": "\"done\""
+  },
+  {
+   "cari": "TYKF I Aynı Gün İki Kart",
+   "alan": "kart2.sekme",
+   "eski": "\"active/overdue\"",
+   "yeni": "\"done\""
+  },
+  {
+   "cari": "TYKF I Aynı Gün İki Kart",
+   "alan": "kart2.taksitler",
+   "eski": "[\"1:200:200:overdue\",\"2:200:200:open\"]",
+   "yeni": "[\"1:200:0:paid\",\"2:200:0:paid\"]"
+  },
+  {
+   "cari": "TYKF I Aynı Gün İki Kart",
+   "alan": "vadeTakip",
+   "eski": "[\"plan|1. taksit|200|2026-10-15|in\",\"plan|1. taksit|300|2026-10-10|in\",\"plan|2. taksit|200|2026-11-15|in\",\"plan|2. taksit|300|2026-11-10|in\"]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|400|2026-09-30|in\",\"account|Tahsil Edilecek Borç|600|2026-09-30|in\"]"
+  },
+  {
+   "cari": "TYKF I Aynı Gün İki Kart",
+   "alan": "zil",
+   "eski": "[\"plan|1. taksit|200|overdue\",\"plan|1. taksit|300|overdue\"]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|400|overdue\",\"account|Tahsil Edilecek Borç|600|overdue\"]"
+  },
+  {
+   "cari": "TYKF J2 Kart Sonra Tahsilat",
+   "alan": "kart1.taksitler",
+   "eski": "[\"1:500:500:overdue\",\"2:500:500:open\"]",
+   "yeni": "[\"1:500:500:overdue\",\"2:500:100:open\"]"
+  },
+  {
+   "cari": "TYKF J2 Kart Sonra Tahsilat",
+   "alan": "vadeTakip",
+   "eski": "[\"plan|1. taksit|500|2026-10-10|in\",\"plan|2. taksit|500|2026-11-10|in\"]",
+   "yeni": "[\"plan|1. taksit|500|2026-10-10|in\",\"plan|2. taksit (kalan)|100|2026-11-10|in\"]"
+  },
+  {
+   "cari": "TYKF M S110 Elle",
+   "alan": "gecikmis",
+   "eski": "300",
+   "yeni": "1500"
+  },
+  {
+   "cari": "TYKF M S110 Elle",
+   "alan": "kart1.durum",
+   "eski": "\"overdue\"",
+   "yeni": "\"done\""
+  },
+  {
+   "cari": "TYKF M S110 Elle",
+   "alan": "kart1.sekme",
+   "eski": "\"active/overdue\"",
+   "yeni": "\"done\""
+  },
+  {
+   "cari": "TYKF M S110 Elle",
+   "alan": "kart1.taksitler",
+   "eski": "[\"1:300:300:overdue\",\"2:300:300:open\",\"3:300:300:open\"]",
+   "yeni": "[\"1:300:0:paid\",\"2:300:0:paid\",\"3:300:0:paid\"]"
+  },
+  {
+   "cari": "TYKF M S110 Elle",
+   "alan": "vadeTakip",
+   "eski": "[\"plan|1. taksit|300|2026-10-05|in\",\"plan|2. taksit|300|2026-11-05|in\",\"plan|3. taksit|300|2026-12-05|in\"]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|900|2026-09-25|in\",\"invoice|Satış faturası FIS2026000000002|600|2026-09-30|in\"]"
+  },
+  {
+   "cari": "TYKF M S110 Elle",
+   "alan": "zil",
+   "eski": "[\"plan|1. taksit|300|overdue\"]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|900|overdue\",\"invoice|Tahsil Edilecek Fatura FIS2026000000002|600|overdue\"]"
+  },
+  {
+   "cari": "TYKF N S110 Stok",
+   "alan": "gecikmis",
+   "eski": "500",
+   "yeni": "1500"
+  },
+  {
+   "cari": "TYKF N S110 Stok",
+   "alan": "kart1.durum",
+   "eski": "\"overdue\"",
+   "yeni": "\"done\""
+  },
+  {
+   "cari": "TYKF N S110 Stok",
+   "alan": "kart1.sekme",
+   "eski": "\"active/overdue\"",
+   "yeni": "\"done\""
+  },
+  {
+   "cari": "TYKF N S110 Stok",
+   "alan": "kart1.taksitler",
+   "eski": "[\"1:500:500:overdue\",\"2:500:500:open\"]",
+   "yeni": "[\"1:500:0:paid\",\"2:500:0:paid\"]"
+  },
+  {
+   "cari": "TYKF N S110 Stok",
+   "alan": "vadeTakip",
+   "eski": "[\"plan|1. taksit|500|2026-10-10|in\",\"plan|2. taksit|500|2026-11-10|in\"]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|1000|2026-09-30|in\",\"account|Tahsil Edilecek Borç|500|2026-09-20|in\"]"
+  },
+  {
+   "cari": "TYKF N S110 Stok",
+   "alan": "zil",
+   "eski": "[\"plan|1. taksit|500|overdue\"]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|1000|overdue\",\"account|Tahsil Edilecek Borç|500|overdue\"]"
+  },
+  {
+   "cari": "TYKF P Kilitli",
+   "alan": "gecikmis",
+   "eski": "500",
+   "yeni": "200"
+  },
+  {
+   "cari": "TYKF P Kilitli",
+   "alan": "kart1.taksitler",
+   "eski": "[\"1:500:500:overdue\",\"2:500:500:today\"]",
+   "yeni": "[\"1:500:200:overdue\",\"2:500:500:today\"]"
+  },
+  {
+   "cari": "TYKF P Kilitli",
+   "alan": "vadeTakip",
+   "eski": "[\"plan|1. taksit|500|2026-09-20|in\",\"plan|2. taksit|500|2026-10-20|in\"]",
+   "yeni": "[\"plan|1. taksit (kalan)|200|2026-09-20|in\",\"plan|2. taksit|500|2026-10-20|in\"]"
+  },
+  {
+   "cari": "TYKF P Kilitli",
+   "alan": "zil",
+   "eski": "[\"plan|1. taksit|500|overdue\",\"plan|2. taksit|500|today\"]",
+   "yeni": "[\"plan|1. taksit|200|overdue\",\"plan|2. taksit|500|today\"]"
+  },
+  {
+   "cari": "TYKF T1 Taksitsiz Ayrı Kart",
+   "alan": "gecikmis",
+   "eski": "0",
+   "yeni": "1000"
+  },
+  {
+   "cari": "TYKF T1 Taksitsiz Ayrı Kart",
+   "alan": "vadeTakip",
+   "eski": "[]",
+   "yeni": "[\"plan|Taksitlendirilmemiş Kalan|1000|2026-09-30|in\"]"
+  },
+  {
+   "cari": "TYKF T1 Taksitsiz Ayrı Kart",
+   "alan": "zil",
+   "eski": "[]",
+   "yeni": "[\"plan|Taksitlendirilmemiş Kalan|1000|overdue\"]"
+  },
+  {
+   "cari": "TYKF T11 Başka Karttan Avans",
+   "alan": "kart2.taksitler",
+   "eski": "[\"1:1000:700:open\"]",
+   "yeni": "[\"1:1000:600:open\"]"
+  },
+  {
+   "cari": "TYKF T11 Başka Karttan Avans",
+   "alan": "vadeTakip",
+   "eski": "[\"plan|1. taksit (kalan)|700|2026-10-30|in\"]",
+   "yeni": "[\"plan|1. taksit (kalan)|600|2026-10-30|in\"]"
+  },
+  {
+   "cari": "TYKF T2 Eksik Taksitli Ayrı Kart",
+   "alan": "gecikmis",
+   "eski": "300",
+   "yeni": "700"
+  },
+  {
+   "cari": "TYKF T2 Eksik Taksitli Ayrı Kart",
+   "alan": "vadeTakip",
+   "eski": "[\"plan|1. taksit|300|2026-10-10|in\",\"plan|2. taksit|300|2026-11-09|in\"]",
+   "yeni": "[\"plan|1. taksit|300|2026-10-10|in\",\"plan|2. taksit|300|2026-11-09|in\",\"plan|Taksitlendirilmemiş Kalan|400|2026-09-30|in\"]"
+  },
+  {
+   "cari": "TYKF T2 Eksik Taksitli Ayrı Kart",
+   "alan": "zil",
+   "eski": "[\"plan|1. taksit|300|overdue\"]",
+   "yeni": "[\"plan|1. taksit|300|overdue\",\"plan|Taksitlendirilmemiş Kalan|400|overdue\"]"
+  },
+  {
+   "cari": "TYKF T3 Taksitsiz Mevcut Borç",
+   "alan": "gecikmis",
+   "eski": "0",
+   "yeni": "1000"
+  },
+  {
+   "cari": "TYKF T3 Taksitsiz Mevcut Borç",
+   "alan": "vadeTakip",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|1000|2026-09-30|in\"]"
+  },
+  {
+   "cari": "TYKF T3 Taksitsiz Mevcut Borç",
+   "alan": "zil",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|1000|overdue\"]"
+  },
+  {
+   "cari": "TYKF T4 Eksik Taksitli Mevcut Borç",
+   "alan": "gecikmis",
+   "eski": "500",
+   "yeni": "1000"
+  },
+  {
+   "cari": "TYKF T4 Eksik Taksitli Mevcut Borç",
+   "alan": "vadeTakip",
+   "eski": "[\"plan|1. taksit|500|2026-10-10|in\"]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|500|2026-09-30|in\",\"plan|1. taksit|500|2026-10-10|in\"]"
+  },
+  {
+   "cari": "TYKF T4 Eksik Taksitli Mevcut Borç",
+   "alan": "zil",
+   "eski": "[\"plan|1. taksit|500|overdue\"]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|500|overdue\",\"plan|1. taksit|500|overdue\"]"
+  },
+  {
+   "cari": "TYKF T5 Taksitleri Silinmiş Stoktan Kart",
+   "alan": "gecikmis",
+   "eski": "0",
+   "yeni": "1000"
+  },
+  {
+   "cari": "TYKF T5 Taksitleri Silinmiş Stoktan Kart",
+   "alan": "vadeTakip",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|1000|2026-09-30|in\"]"
+  },
+  {
+   "cari": "TYKF T5 Taksitleri Silinmiş Stoktan Kart",
+   "alan": "zil",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|1000|overdue\"]"
+  },
+  {
+   "cari": "TYKF T6 Tedarikçi Stoktan Alış İadesi",
+   "alan": "gecikmis",
+   "eski": "0",
+   "yeni": "300"
+  },
+  {
+   "cari": "TYKF T6 Tedarikçi Stoktan Alış İadesi",
+   "alan": "vadeTakip",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|300|2026-09-30|in\"]"
+  },
+  {
+   "cari": "TYKF T6 Tedarikçi Stoktan Alış İadesi",
+   "alan": "zil",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|300|overdue\"]"
+  },
+  {
+   "cari": "TYKF T7 Tedarikçi Faturalı Alış İadesi",
+   "alan": "gecikmis",
+   "eski": "0",
+   "yeni": "300"
+  },
+  {
+   "cari": "TYKF T7 Tedarikçi Faturalı Alış İadesi",
+   "alan": "vadeTakip",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|300|2026-09-30|in\"]"
+  },
+  {
+   "cari": "TYKF T7 Tedarikçi Faturalı Alış İadesi",
+   "alan": "zil",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|300|overdue\"]"
+  },
+  {
+   "cari": "TYKF T8 Tedarikçiye Avans",
+   "alan": "gecikmis",
+   "eski": "0",
+   "yeni": "300"
+  },
+  {
+   "cari": "TYKF T8 Tedarikçiye Avans",
+   "alan": "vadeTakip",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|300|2026-09-30|in\"]"
+  },
+  {
+   "cari": "TYKF T8 Tedarikçiye Avans",
+   "alan": "zil",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|300|overdue\"]"
+  }
+ ]
+}

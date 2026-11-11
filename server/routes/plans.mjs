@@ -233,24 +233,40 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       const state = remaining <= 0.005 ? "paid" : closed ? "closed" : days < 0 ? "overdue" : days === 0 ? "today" : days <= 7 ? "upcoming" : "open";
       // held: kalanın şüpheli kuyruğundaki kısmı (M13) — takvim / zil / Vade Takip kalemine girmez (S3; Vade Takip'te şüpheli ayrı satır).
       const held = row ? roundMoney(Math.min(remaining, row.doubtful || 0)) : 0;
-      return { ...item, remaining, held, accountPaid, partial: remaining > 0.005 && remaining < item.amount - 0.005, state };
+      // ownRemaining: kartın KENDİ hesabıyla kalan (allocate) — S118 = B (tur 2b-2): tahsilat formunun önerdiği tutar bundan (sınır ve soru da kartın kendi kalanından).
+      return { ...item, remaining, ownRemaining: item.remaining, held, accountPaid, partial: remaining > 0.005 && remaining < item.amount - 0.005, state };
     });
     // Ç5-B tur 2a (O-3): taksitlere bölünmemiş kalan ("rest") ve Taksit İadesi ("back") kuyruk kalanındadır (kalemleri queueExtras: takvim / zil / Vade Takip / nakit akışı).
-    // Kartın durumu ve taksit gecikmişi (totals.overdue) bugünkü gibi taksitlerden (taksitsiz yeni kart "Gecikti" olmaz — plans.test "kayıt bitince taksit sorulmaz").
+    // Ç5-B tur 2b-2 (ekran yürüyüşü 1 Y2; BAŞ MİMAR KARARI 11.11 05:48 — sunum, S91 = A'nın sonucu): bu kalemin günü geçmişse kart da "Gecikti" sayılır (Taksitler'in Geciken
+    // sekmesi, liste göstergesi, kart penceresindeki Geciken kutusu) — zil / Vade Takip / cari kartındaki gecikmişle AYNI sayı. Geciken tutarı (totals.overdue) bu kalemi de
+    // sayar, taksit sayısı (overdueCount) yalnız taksitleri; kalemler ayrı (overdueExtras — kutu metni "taksitlendirilmemiş kalan"ı ayrı söyler). Bugün açılan taksitsiz
+    // kart Gecikti olmaz (kalemin günü kartın açılış günü; ertesi günden — S1).
     const extras = queueExtras(plan, all, day);
+    const lateExtras = extras.filter(item => item.state === "overdue");
     const overdue = items.filter(item => item.state === "overdue");
     const next = items.find(item => item.remaining > 0.005 && item.state !== "closed") || null;
     const remaining = roundMoney(items.reduce((sum, item) => sum + item.remaining, 0) + extras.reduce((sum, item) => sum + item.remaining, 0));
     const accountPaid = roundMoney(items.reduce((sum, item) => sum + item.accountPaid, 0));
     let state = ledger.state;
-    if (!closed) state = remaining <= 0.005 && items.every(item => item.state === "paid") ? "done" : overdue.length ? "overdue" : "active";
+    // Ç5-B tur 2b-1 (DK-C5BT2A G-2; beklenen v2.4.9 lib/plans.mjs allocate "total > 0 && kalan 0 && hepsi ödendi"): kuyruk kalanı Mevcut Borç kartında taksitlere
+    // bölünmemiş borcu İÇERMEZ (o kısım alttaki borç kalemi olarak kalır — lib/accounts.mjs coverTotal = min(tutar, taksitler)); taksiti olmayan kartta taksit listesi boş →
+    // "hepsi ödendi" doğru sayılıyor, kart açılır açılmaz "Bitti" oluyordu (v2.4.9: Aktif). Bitti için ayrıca: kartın KENDİ kalanı 0 (v2.4.9 kuralı) YA DA taksiti olup
+    // taksitlere bölünmemiş kapsam kalmamış (S50 = A: kart seçilmeden alınan tahsilatın kapattığı taksitler — bugünkü gibi). Taksitsiz kart yalnız kartın kendi tahsilatıyla
+    // ya da Kartı Kapat ile kapanır.
+    const ownLeft = roundMoney(ledger.totals?.remaining ?? 0);
+    const unplanned = plan.coversBalance ? roundMoney(Math.max(0, (ledger.totals?.total ?? 0) - (ledger.totals?.planned ?? 0))) : 0;
+    const settled = (ledger.totals?.total ?? 0) > 0.005 && remaining <= 0.005 && items.every(item => item.state === "paid") && (ownLeft <= 0.005 || (items.length > 0 && unplanned <= 0.005));
+    if (!closed) state = settled ? "done" : overdue.length || lateExtras.length ? "overdue" : "active";
+    const overdueExtras = lateExtras.map(item => ({ key: item.key, label: item.label, amount: item.remaining }));
     return {
       ...ledger,
       items,
       // totals.remaining kartın KENDİ hesabı kalır (tutar − kart tahsilatı; Mutabakat Testi plans:totals "ekran = kartın satırları"); kuyruk kalanı ayrı alan.
       // ownOverdue: kartın kendi hesabıyla gecikmiş (taksit − kart tahsilatı; eski anlam) — onarım / göç karşılaştırmaları için.
-      totals: { ...ledger.totals, queueRemaining: remaining, accountPaid, overdue: roundMoney(overdue.reduce((sum, item) => sum + item.remaining, 0)), overdueCount: overdue.length, ownOverdue: ledger.totals.overdue ?? 0 },
+      totals: { ...ledger.totals, queueRemaining: remaining, accountPaid, overdue: roundMoney(overdue.reduce((sum, item) => sum + item.remaining, 0) + lateExtras.reduce((sum, item) => sum + item.remaining, 0)), overdueCount: overdue.length, overdueRest: roundMoney(lateExtras.reduce((sum, item) => sum + item.remaining, 0)), overdueExtras, ownOverdue: ledger.totals.overdue ?? 0 },
       next: next ? { id: next.id, seq: next.seq, dueDate: next.dueDate, remaining: next.remaining, days: next.days, state: next.state } : null,
+      // S118 = B: kartın KENDİ hesabıyla sıradaki taksit (formun önerdiği tutar; ledger.next = allocate).
+      ownNext: ledger.next || null,
       state,
     };
   }
@@ -272,11 +288,28 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     }
     return out;
   }
+  // Ç5-B tur 2b-1 (DK-C5BT2A G-1; tasarım §5 "tek cari: her istekte hesaplanır"): kart ekranı ve kartın yazım yanıtları kuyruğu YALNIZ kartın carisi için kurar
+  // (invoices.obligationsFor — önbelleğin artımlı yolunun cari başına kurduğu sonuçla aynı işlev). Önceden bütün carilerin kuyruğu (allObligations → allSettled) okunuyordu:
+  // yazımdan hemen sonra bütün carilerin izi yeniden hesaplanıyordu (100 bin satırda kart tahsilatı yanıtı ~0,15 → ~1,1 sn). Eşdeğerlik: test/tyk-tur2b1-250.test.mjs
+  // (yanıt = ardından okuma = bütün carilerin kuyruğu). Liste (Taksitler) bütün carilerin kuyruğunu okumayı sürdürür.
+  const AUDITOR = { id: "plans", role: "admin", permissions: [] };
+  const queueFor = accountId => {
+    if (store.inTransaction || !accountId) return null;
+    const module = invoices();
+    if (!module?.obligationsFor || module.legacyView) return null;
+    let ledger = null;
+    try {
+      ledger = accounts()?.detail ? accounts().detail(accountId, AUDITOR, { withRemaining: false }).ledger || null : null;
+    } catch {
+      ledger = null; // silinmiş cari: kuyruk yok (carisiz kart gibi kartın kendi hesabı)
+    }
+    return ledger ? new Map([[accountId, module.obligationsFor(accountId, ledger)]]) : null;
+  };
   // Kart ekranı (GET): kartın kendi hesabı + kuyruk görünümü.
   const detailView = (id, user) => {
     const plan = planRow(id);
     const shaped = shape(plan, user);
-    const view = withQueue(plan, shaped, queueOf());
+    const view = withQueue(plan, shaped, queueFor(plan.accountId));
     return view === shaped ? shaped : { ...shaped, ...view };
   };
 
@@ -355,6 +388,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       totals.remaining = roundMoney(totals.remaining + ledger.totals.remaining);
       totals.overdue = roundMoney(totals.overdue + ledger.totals.overdue);
       totals.overdueCount += ledger.totals.overdueCount;
+      // Y2 (tur 2b-2): gecikmiş taksitlendirilmemiş kalan / Taksit İadesi (tutar totals.overdue'da; ayrıca gösterilir).
+      totals.overdueRest = roundMoney((totals.overdueRest || 0) + (ledger.totals.overdueRest || 0));
       totals.month = roundMoney(totals.month + ledger.items.filter(item => item.dueDate.startsWith(month) && item.remaining > 0.005 && item.state !== "closed").reduce((sum, item) => sum + item.remaining, 0));
       totals.count += 1;
       out.push({
@@ -436,10 +471,10 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
         tl(plan.totals.paid),
         tl(plan.totals.remaining),
         plan.next ? `${dayText(plan.next.dueDate)} · ${plan.next.seq}. taksit` : "",
-        `${STATE_TEXT[plan.state] || ""}${plan.totals.overdueCount ? ` · ${plan.totals.overdueCount} taksit geciken` : ""}`,
+        `${STATE_TEXT[plan.state] || ""}${plan.totals.overdueCount ? ` · ${plan.totals.overdueCount} taksit geciken` : ""}${plan.totals.overdueRest ? ` · taksitlendirilmemiş kalan ${tl(plan.totals.overdueRest)} geciken` : ""}`,
         plan.note || "",
       ]),
-      summary: [["Kart", String(data.totals.count)], ["Kalan Alacak", tl(data.totals.remaining)], ["Geciken", `${tl(data.totals.overdue)} · ${data.totals.overdueCount} taksit`], ["Bu Ay Beklenen", tl(data.totals.month)], ["Tahsil Edilen", tl(data.totals.paid)]],
+      summary: [["Kart", String(data.totals.count)], ["Kalan Alacak", tl(data.totals.remaining)], ["Geciken", `${tl(data.totals.overdue)} · ${data.totals.overdueCount} taksit${data.totals.overdueRest ? ` + taksitlendirilmemiş kalan ${tl(data.totals.overdueRest)}` : ""}`], ["Bu Ay Beklenen", tl(data.totals.month)], ["Tahsil Edilen", tl(data.totals.paid)]],
       userName: user.display_name || user.username || "",
       // Liste okula ya da veliye verilebilir: altbilgide program adı değil firma adı (v2.0.6).
       ...header.pdf({ brand: office() }),
@@ -1532,7 +1567,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   // Mizan (v2.0.7): tüm carilerin kartları, hareketleriyle; carinin defteri (accountLedger) Cari kartıyla aynı girdiyi alır.
   function ledgerPlansByAccount() {
     const out = new Map();
-    const plans = store.all("SELECT id, account_id AS accountId, name, total, status, covers_balance AS coversBalance, registered_on AS registeredOn, created_at AS createdAt, updated_at AS updatedAt, closed_at AS closedAt FROM plans WHERE deleted_at IS NULL AND account_id <> ''");
+    // import_id: Excel / Tablodan Aktar kartı (2.5.0 Ç5-B tur 2b-2 — S110 / S120 bu kartlara uygulanmaz; lib/accounts.mjs coverSource).
+    const plans = store.all("SELECT id, account_id AS accountId, name, total, status, covers_balance AS coversBalance, registered_on AS registeredOn, created_at AS createdAt, updated_at AS updatedAt, closed_at AS closedAt, import_id AS importId FROM plans WHERE deleted_at IS NULL AND account_id <> ''");
     if (!plans.length) return out;
     const seqs = new Map();
     const counts = new Map();
@@ -1559,10 +1595,11 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   function forAccount(accountId, user) {
     if (!accountId) return [];
     const cutsOf = returnCuts();
+    const imported = new Set(store.all("SELECT id FROM plans WHERE account_id = ? AND import_id <> ''", accountId).map(row => row.id));
     return store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND p.account_id = ? ORDER BY (p.status = 'active') DESC, p.created_at`, accountId).map(plan => {
       const shaped = shape(plan, user);
       const seqOf = new Map(shaped.items.map(item => [item.id, item.seq]));
-      return { ...shaped, itemCount: shaped.items.length, returnCuts: cutsOf.get(plan.id) || 0, entries: shaped.entries.map(entry => ({ ...entry, itemSeq: entry.itemId ? seqOf.get(entry.itemId) || null : null })) };
+      return { ...shaped, itemCount: shaped.items.length, returnCuts: cutsOf.get(plan.id) || 0, importId: imported.has(plan.id) ? "import" : "", entries: shaped.entries.map(entry => ({ ...entry, itemSeq: entry.itemId ? seqOf.get(entry.itemId) || null : null })) };
     });
   }
   // Carinin toplu taksitlendirmesi (routes/accounts.mjs): kartı cariye bağlı açar, isterse taksitleri dağıtır.

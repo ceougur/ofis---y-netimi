@@ -1,0 +1,264 @@
+{
+ "cariler": {
+  "K01 Borç Yaz Vadesiz": {
+   "yazim": 200,
+   "bakiye": 300,
+   "gecikmis": 300,
+   "kalemler": [
+    "entry|account|debt|300"
+   ],
+   "vadeGecikmis": 300,
+   "vade": [
+    "account|Tahsil Edilecek Borç|300|2026-09-30|in"
+   ],
+   "zilGecikmis": 300,
+   "zil": [
+    "account|Tahsil Edilecek Borç|300|overdue"
+   ],
+   "nakit": [
+    "account|Tahsil Edilecek Borç|300|2026-09-30|in"
+   ]
+  },
+  "K02 Borç Yaz Vadeli": {
+   "yazim": 200,
+   "bakiye": 300,
+   "gecikmis": 300,
+   "kalemler": [
+    "entry|account|debt|300"
+   ],
+   "vadeGecikmis": 300,
+   "vade": [
+    "account|Tahsil Edilecek Borç|300|2026-10-10|in"
+   ],
+   "zilGecikmis": 300,
+   "zil": [
+    "account|Tahsil Edilecek Borç|300|overdue"
+   ],
+   "nakit": [
+    "account|Tahsil Edilecek Borç|300|2026-10-10|in"
+   ]
+  },
+  "K03 Stok Veresiye Satış": {
+   "yazim": 200,
+   "bakiye": 300,
+   "gecikmis": 300,
+   "kalemler": [
+    "stock|stock|debt|300"
+   ],
+   "vadeGecikmis": 300,
+   "vade": [
+    "account|Tahsil Edilecek Borç|300|2026-09-30|in"
+   ],
+   "zilGecikmis": 300,
+   "zil": [
+    "account|Tahsil Edilecek Borç|300|overdue"
+   ],
+   "nakit": [
+    "account|Tahsil Edilecek Borç|300|2026-09-30|in"
+   ]
+  },
+  "K04 Tedarikçi Stoktan Alış İadesi": {
+   "yazim": 200,
+   "bakiye": 300,
+   "gecikmis": 300,
+   "kalemler": [
+    "stock|stock|debt|300"
+   ],
+   "vadeGecikmis": 300,
+   "vade": [
+    "account|Tahsil Edilecek Borç|300|2026-09-30|in"
+   ],
+   "zilGecikmis": 300,
+   "zil": [
+    "account|Tahsil Edilecek Borç|300|overdue"
+   ],
+   "nakit": [
+    "account|Tahsil Edilecek Borç|300|2026-09-30|in"
+   ]
+  },
+  "K05 Müşteriye Ödeme (Para İadesi)": {
+   "yazim": 200,
+   "bakiye": 300,
+   "gecikmis": 300,
+   "kalemler": [
+    "payment|account|out|300"
+   ],
+   "vadeGecikmis": 300,
+   "vade": [
+    "account|Tahsil Edilecek Borç|300|2026-09-30|in"
+   ],
+   "zilGecikmis": 300,
+   "zil": [
+    "account|Tahsil Edilecek Borç|300|overdue"
+   ],
+   "nakit": [
+    "account|Tahsil Edilecek Borç|300|2026-09-30|in"
+   ]
+  },
+  "K06 Tedarikçiye Avans": {
+   "yazim": 200,
+   "bakiye": 300,
+   "gecikmis": 300,
+   "kalemler": [
+    "payment|account|out|300"
+   ],
+   "vadeGecikmis": 300,
+   "vade": [
+    "account|Tahsil Edilecek Borç|300|2026-09-30|in"
+   ],
+   "zilGecikmis": 300,
+   "zil": [
+    "account|Tahsil Edilecek Borç|300|overdue"
+   ],
+   "nakit": [
+    "account|Tahsil Edilecek Borç|300|2026-09-30|in"
+   ]
+  },
+  "K07 Karşılıksız Çek": {
+   "yazim": 200,
+   "bakiye": 0,
+   "gecikmis": 0,
+   "kalemler": [],
+   "vadeGecikmis": 0,
+   "vade": [],
+   "zilGecikmis": 0,
+   "zil": [],
+   "nakit": []
+  },
+  "K08 Tedarikçiye Verilen Çek": {
+   "yazim": 200,
+   "bakiye": 300,
+   "gecikmis": 300,
+   "kalemler": [
+    "payment|cheque|debt|300"
+   ],
+   "vadeGecikmis": 0,
+   "vade": [
+    "cheque|Verilen çek · No TARA-08|300|2026-11-09|out"
+   ],
+   "zilGecikmis": 0,
+   "zil": [],
+   "nakit": [
+    "cheque|Verilen çek · No TARA-08|300|2026-11-09|out",
+    "unbilled|Faturasız Cari Alacağı|300|2026-09-30|in"
+   ]
+  },
+  "K09 Tedarikçi Faturalı Alış İadesi": {
+   "yazim": 200,
+   "bakiye": 300,
+   "gecikmis": 300,
+   "kalemler": [
+    "note|invoice|debt|300"
+   ],
+   "vadeGecikmis": 300,
+   "vade": [
+    "account|Tahsil Edilecek Borç|300|2026-09-30|in"
+   ],
+   "zilGecikmis": 300,
+   "zil": [
+    "account|Tahsil Edilecek Borç|300|overdue"
+   ],
+   "nakit": [
+    "account|Tahsil Edilecek Borç|300|2026-09-30|in"
+   ]
+  },
+  "K10 Excel Açılış Bakiyesi": {
+   "yazim": 200,
+   "bakiye": 0,
+   "gecikmis": 0,
+   "kalemler": [],
+   "vadeGecikmis": 0,
+   "vade": [],
+   "zilGecikmis": 0,
+   "zil": [],
+   "nakit": []
+  },
+  "K11 Vadesiz Satış Faturası": {
+   "yazim": 200,
+   "bakiye": 300,
+   "gecikmis": 300,
+   "kalemler": [
+    "invoice|invoice|debt|300"
+   ],
+   "vadeGecikmis": 300,
+   "vade": [
+    "invoice|Satış faturası FIS2026000000002|300|2026-09-30|in"
+   ],
+   "zilGecikmis": 300,
+   "zil": [
+    "invoice|Tahsil Edilecek Fatura FIS2026000000002|300|overdue"
+   ],
+   "nakit": [
+    "invoice|Satış faturası FIS2026000000002|300|2026-09-30|in"
+   ]
+  },
+  "K12 Taksitsiz Yeni Borç Kartı": {
+   "yazim": 200,
+   "bakiye": 300,
+   "gecikmis": 300,
+   "kalemler": [
+    "plan-rest|plan||300"
+   ],
+   "vadeGecikmis": 300,
+   "vade": [
+    "plan|Taksitlendirilmemiş Kalan|300|2026-09-30|in"
+   ],
+   "zilGecikmis": 300,
+   "zil": [
+    "plan|Taksitlendirilmemiş Kalan|300|overdue"
+   ],
+   "nakit": [
+    "plan|Taksitlendirilmemiş Kalan|300|2026-09-30|in"
+   ]
+  },
+  "K13 Taksit İadesi": {
+   "yazim": 400,
+   "bakiye": 0,
+   "gecikmis": 0,
+   "kalemler": [],
+   "vadeGecikmis": 0,
+   "vade": [],
+   "zilGecikmis": 0,
+   "zil": [],
+   "nakit": []
+  },
+  "K14 Tedarikçi Stoktan Alış İadesi Kısmen Netleşen": {
+   "yazim": 200,
+   "bakiye": 200,
+   "gecikmis": 200,
+   "kalemler": [
+    "stock|stock|debt|200"
+   ],
+   "vadeGecikmis": 200,
+   "vade": [
+    "account|Tahsil Edilecek Borç|200|2026-09-30|in"
+   ],
+   "zilGecikmis": 200,
+   "zil": [
+    "account|Tahsil Edilecek Borç|200|overdue"
+   ],
+   "nakit": [
+    "account|Tahsil Edilecek Borç|200|2026-09-30|in"
+   ]
+  },
+  "K10b Excel Açılış (yüklenen)": {
+   "yazim": 200,
+   "bakiye": 300,
+   "gecikmis": 300,
+   "kalemler": [
+    "entry|account|debt|300"
+   ],
+   "vadeGecikmis": 300,
+   "vade": [
+    "account|Tahsil Edilecek Borç|300|2026-09-30|in"
+   ],
+   "zilGecikmis": 300,
+   "zil": [
+    "account|Tahsil Edilecek Borç|300|overdue"
+   ],
+   "nakit": [
+    "account|Tahsil Edilecek Borç|300|2026-09-30|in"
+   ]
+  }
+ }
+}

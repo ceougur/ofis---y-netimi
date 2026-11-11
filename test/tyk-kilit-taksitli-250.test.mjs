@@ -42,9 +42,11 @@ describe("2.5.0 Ç5-B — kilit × taksitli fatura: kart tahsilatı faturayı ka
     const planId = invoice.planId || invoice.plan?.id;
     assert.ok(planId, "faturanın kendi kartı açıldı");
     await must("dönem kilidi", admin.put("/api/admin/period-lock", { lockedUntil: addDays(today, -10) }));
-    // Kart tahsilatından önce: açık = kartın kalanı 169,03 (bağsız avans taksitli faturayı kapatmaz — v2.0.23 Bulgu 2).
+    // G3 (tur 2b-2, S99 = A — KULLANICI KARARI 10.11 13:27): bağsız avans taksitli faturanın taksitlerini vade sırasıyla kapatır → kart tahsilatından ÖNCE fatura Ödendi,
+    // kapatan avans (Otomatik). Önceki beklenti (açık 169,03, kapatan yok) v2.0.23 Bulgu 2'nin 'bağsız avans taksitli faturayı kapatmaz' kuralıydı — S99 bu kuralı değiştirdi.
     const before = await must("fatura (önce)", admin.get(`/api/workspace/invoices/${invoice.id}`));
-    assert.deepEqual([before.open, before.paid, before.closers.length], [169.03, 0, 0], "kart tahsilatından önce fatura açık, kapatan yok");
+    assert.deepEqual([before.open, before.paid], [0, 169.03], "S99: kart tahsilatından önce avans taksitleri kapattı — fatura Ödendi");
+    assert.ok(before.closers.length > 0 && before.closers.every(c => c.mode === "auto" && c.date === addDays(today, -20)), `kapatan avans (Otomatik; kapatanın tarihi avansın günü): ${JSON.stringify(before.closers)}`);
     const entry = await must("kart tahsilatı", admin.post(`/api/workspace/plans/${planId}/entries`, { kind: "in", amount: "169,03", method: "cash", date: addDays(today, -5) }));
     assert.ok(entry, "tahsilat kaydedildi");
     const plan = await must("kart", admin.get(`/api/workspace/plans/${planId}`));
@@ -52,7 +54,9 @@ describe("2.5.0 Ç5-B — kilit × taksitli fatura: kart tahsilatı faturayı ka
     assert.deepEqual([totals.total, totals.paid, totals.remaining], [169.03, 169.03, 0], "kart tam ödendi");
     const after = await must("fatura (sonra)", admin.get(`/api/workspace/invoices/${invoice.id}`));
     assert.deepEqual([after.open, after.paid], [0, 169.03], `taksitli faturanın açığı = kartın kalanı 0 (kapatanlar: ${JSON.stringify(after.closers)})`);
-    assert.ok(after.closers.length > 0 && after.closers.every(c => c.mode === "linked" && c.date === addDays(today, -5)), `kapatanlar kart tahsilatı (Bağlı): ${JSON.stringify(after.closers)}`);
+    // G3 (tur 2b-2, S99 = A + karar (3)): taksitler kilitli dönemde (kilit −10) avansla kapandı; kilitten sonraki kart tahsilatının bağı onları yeniden açmaz (karar (3)) →
+    // kapatanlar avans (Otomatik, avansın günü −20); kart tahsilatı carinin avansına eklenir (bakiye −1.000 aynen). Önceki beklenti: kapatan kart tahsilatı (Bağlı, −5).
+    assert.ok(after.closers.length > 0 && after.closers.every(c => c.mode === "auto" && c.date === addDays(today, -20)), `kapatanlar avans (Otomatik; karar (3)): ${JSON.stringify(after.closers)}`);
     assert.equal(Math.round(after.closers.reduce((sum, c) => sum + c.amount, 0) * 100), 16903, "kapatanların toplamı 169,03");
     // Fatura listesi de aynı durum (G2 toplu yolu — allSettled).
     const list = await must("fatura listesi", admin.get("/api/workspace/invoices?tab=all&limit=50"));

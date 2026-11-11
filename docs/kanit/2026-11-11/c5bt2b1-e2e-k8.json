@@ -1,0 +1,43 @@
+{
+  "ad": "c5bt2b1-e2e-k8",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-k8-230.mjs",
+  "commit": "d1765d6e7c70cafe53f9488c2211d9e03129258c",
+  "dal": "worktree-agent-a1f2f9f23b4876417",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-11T06:00:09.294Z",
+  "sure_sn": 12.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 17,
+    "gecen": 16,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "önerilen tutar kalan: 600,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "senaryo-k8-230: 16 geçti, 1 kaldı",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2b1-kanit/2026-11-11/c5bt2b1-e2e-k8.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1f2f9f23b4876417",
+  "ham_cikti_sha256": "4cdc60e952b3736a9e57672d1cba11ae96969d78b9611d3c235ddc57d57799f4",
+  "ham_cikti_bayt": 2080
+}

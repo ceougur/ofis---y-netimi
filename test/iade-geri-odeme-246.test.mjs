@@ -526,7 +526,9 @@ describe("DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ö
     // 2.5.0 Ç5-B (bilerek güncellendi; kullanıcı kararları (5) "Bakiyeden Netleşsin" ve S2): takvim NET kuyruğu okur — elle Alacak 300 satış borcuna kendi tarihinde
     // uygulanır (vadesi en önce gelen B: 500 → 200), stok iadesi 300 B'nin 200'ünü ve borcun 100'ünü kapatır; bağsız Ödeme 300 (müşteriye para iadesi, EK-1 §1 T-09)
     // kendi gününde açık borç kalemidir. Σ takvim = bakiye 500. Fatura durumu (iki yönlü, yukarıda B 200) değişmedi.
-    assert.deepEqual(await duesOf(acc), [["account", 200], ["account", 300]], "takvim: borç 200 + müşteriye ödeme 300 (net kuyruk)");
+    // Ç5-B tur 2b-2 (bilerek güncellendi; KULLANICI S95 = A + S102 = A): bağsız Ödeme 300 önce KENDİ tarafının kalemini (elle Alacak 300) kapatır — önceki günün
+    // Alacak ↔ B netleşmesi geri alınır, B yeniden 300 açık; ödeme ayrı kalem değildir. Σ takvim = bakiye 500 (önce: borç 200 + ödeme kalemi 300).
+    assert.deepEqual(await duesOf(acc), [["account", 200], ["invoice", 300]], "takvim: borç 200 + B 300 (S95: ödeme Alacak'ı kapattı, netleşme geri alındı)");
     const facts0 = await facts(acc);
     await must("iadeye bağla", api.put(`${entries}/${pay.id}`, { refundOf: target }));
     assert.deepEqual(await invoice(b), ["overdue", 500], "bağlı: iadenin geri ödemesi — B 500");

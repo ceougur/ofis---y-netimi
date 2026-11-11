@@ -1,0 +1,63 @@
+{
+  "ad": "c5bt2b1-kahin-cari",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs",
+  "commit": "d1765d6e7c70cafe53f9488c2211d9e03129258c",
+  "dal": "worktree-agent-a1f2f9f23b4876417",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-11T05:50:00.750Z",
+  "sure_sn": 182.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 12211,
+    "gecen": 12205,
+    "basarisiz": 6,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 6 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:projeksiyon:cari: program \"tuttu\" · kâhin {\"catal\":[1,2]} (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-B tur 2; liste program 0))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:takvim:cariKalemSayisi: program \"tuttu\" · kâhin {\"catal\":[1,2]} (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-B tur 2; liste program 0))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:takvim:cariToplam:S12: program \"tuttu\" · kâhin 25000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-B tur 2; liste program 5000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:vadeTakip:cariToplam:S12: program \"tuttu\" · kâhin 25000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-B tur 2; liste program 5000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI DEĞİŞTİ YAYGIN] k1:projeksiyon:cari: program 7 · kâhin {\"catal\":[8,9]} (KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı · C16.1 / C16.3: belirsiz üyeler (ÇATAL; SK-7) · değer değişti: liste program 6 / kâhin {\"catal\":[8,9",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI DEĞİŞTİ YAYGIN] k1:takvim:cariKalemSayisi: program 7 · kâhin {\"catal\":[8,9]} (K6.3 takvimdeki cari kalemlerinin sayısı · C16.1 / C16.3: stok veresiye / karşılıksız kalemi ve verilen avans satırı sayaçta belirsiz üye (ÇATAL; SK-7) · değer değişti: liste program 6 / kâhin {\"catal\":[8,9]",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2b1-kanit/2026-11-11/c5bt2b1-kahin-cari.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1f2f9f23b4876417",
+  "ham_cikti_sha256": "66e24722c56bf94a2785efeb5d33237611bd0b6f6ee3ed06d27a7467857ca9fb",
+  "ham_cikti_bayt": 56861
+}
