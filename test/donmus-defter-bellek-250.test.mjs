@@ -215,7 +215,20 @@ describe("2.5.0 Ç3 tamamlama — türetme ve donmuş defter sıkı satırlarla 
     assert.deepStrictEqual(canon(frozen), canon(copy.filter(entry => entry.date <= lockA)), "donmuş maddeler = 2.4.9 kopyasının türetmesi (kilit gününe kadar)");
     assert.deepStrictEqual(canon(S.entries({ from: lockA.slice(0, 4) + "-01-01", to: lockA })), canon(copy.filter(entry => entry.date >= lockA.slice(0, 4) + "-01-01" && entry.date <= lockA)), "aralıklı okuma");
     const diff = S.ruleDiff();
-    assert.equal(diff.count, 0, `kural değişmedi: fark yok (${JSON.stringify(diff.sample)})`);
+    // 2.5.0 Ç5-A tur 1 — BİLEREK DEĞİŞTİ (G3: C5-ACILIS-TASARIM §3.1 "kural değişince ledger:rule-diff görünür; sessiz değişiklik yok" + B15): güncel kural (2.5.0-defter) artık
+    // 2.4.9 kopyasından farklıdır. Beklenen fark bağımsız sayılır: kilit gününe kadar 2.4.9 kopyası ↔ güncel türetme maddeleri; fark YALNIZ Ç5-A hesaplarında (500 → 519 açılış;
+    // 602 / 770 → 519 / 649.90 / 770.90 açılış evrakı ve carisiz evrak), maddelerin öbür satırları aynen. v2.0.26 zincir verisinde "Açılış…" açıklamalı eski Borç Yaz göç 48'de aday (519).
+    const C5 = new Set(["500", "519", "602", "770", "649"]);
+    const keyed = entries => new Map(canon(entries.filter(entry => entry.date <= lockA)).map(entry => [entry.id, entry]));
+    const oldMap = keyed(copy);
+    const newMap = keyed(current);
+    const differing = [...new Set([...oldMap.keys(), ...newMap.keys()])].filter(id => JSON.stringify(oldMap.get(id)) !== JSON.stringify(newMap.get(id)));
+    for (const id of differing) {
+      const rest = entry => (entry ? entry.lines.filter(line => !C5.has(line[0])) : null);
+      assert.deepEqual(rest(newMap.get(id)), rest(oldMap.get(id)), `${id}: fark Ç5-A hesaplarının dışında`);
+    }
+    assert.ok(differing.length > 0, "v2.0.26 verisinde Ç5-A farkı beklenirdi (açıklamalı eski açılış)");
+    assert.equal(diff.count, differing.length, `Kural Değişikliği Farkı = bağımsız sayılan fark (${JSON.stringify(diff.sample)})`);
     assert.deepEqual(seen.filter(sql => FROZEN_SQL.test(sql) || SOURCE_SQL.test(sql)), [], "donmuş okuma ve fark denetimi store.all'a düşmemeli");
     // Fark varsa (benzetim: güncel türetmede bir madde değişti, biri eksildi, biri iki kez, biri yeni) sayı, örnek sırası ve tutarlar önceki uygulamayla aynı.
     const tweak = entries => [

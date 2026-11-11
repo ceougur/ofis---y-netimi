@@ -6,7 +6,7 @@
 import { parentPort, workerData } from "node:worker_threads";
 import { createClock } from "./clock.mjs";
 import { createStore, openDatabase } from "./db.mjs";
-import { LEDGER_RULE_VERSION } from "./general-ledger.mjs";
+import { LEDGER_RULE_ALIASES, LEDGER_RULE_VERSION } from "./general-ledger.mjs";
 import { LOCK_SQL_VERSION, lockDigestOf } from "./integrity.mjs";
 import { RULE_249, buildRule249 } from "./ledger-rule-249/index.mjs";
 import { leanStore } from "./lean-rows.mjs";
@@ -29,7 +29,8 @@ try {
       // Koşu anlık görüntüde hâlâ en son bekleyen koşu mu (kilit bu arada değiştiyse ana iş parçacığı zaten durdurur).
       const row = store.get("SELECT no, state, from_date AS fromDate, through, rule_version AS rule FROM ledger_snapshot_runs WHERE no = (SELECT MAX(no) FROM ledger_snapshot_runs)");
       if (!row || row.no !== run.no || row.state !== "pending" || row.through !== run.through || row.fromDate !== run.from || row.rule !== run.rule) throw new Error("koşu artık bekleyen son koşu değil");
-      if (run.rule === RULE_249) entries = buildRule249(leanStore(store));
+      // 2.5.0 Ç5-A (B15): kural takma adı ("2.5.0" = 2.4.9 kopyası) kayıt defteriyle (lib/ledger-snapshots.mjs rules) aynı eşlemeyle çözülür.
+      if ((LEDGER_RULE_ALIASES[run.rule] || run.rule) === RULE_249) entries = buildRule249(leanStore(store));
       else if (run.rule === LEDGER_RULE_VERSION) {
         const now = createClock({ time, fixed: true });
         const ledger = registerLedgerRoutes(createRouter(), { store, now, auth: null, audit: () => {}, events: null, period: createPeriod({ store, now }), integrity: () => null, money: null, config: {} });

@@ -154,7 +154,8 @@ export const SPEC = Object.freeze([
       ["pos", "Kredi Kartı Tahsilatları (POS)", fixed("108", "108"), ""],
       ["loan", "Banka Kredileri", fixed("300", "300"), ""],
       ["card", "Kredi Kartları", fixed("309", "309"), ""],
-      ["opening", "Açılış ve Devir Bakiyeleri", fixed("500", "500"), ""],
+      // 2.5.0 Ç5-A (B3): açılış ve Devir Kapanışı defterde 519'a yazılır (saklı satır kodu 500 değişmez; lib/bank/voucher.mjs effectiveGl).
+      ["opening", "Eşleştirilecek Açılış Bakiyeleri", fixed("519", "519"), ""],
     ],
   },
   {

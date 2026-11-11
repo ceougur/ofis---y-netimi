@@ -30,7 +30,7 @@ const upTo = (entries, day) => entries.filter(entry => entry.date <= day);
 // Programın kendi API'siyle: 2026'nın her ayına Kasa girişleri + bir cari (açılış, tahsilat) + 2027 başı.
 async function seed(admin, count = 40) {
   const customer = await must("cari", admin.post("/api/workspace/accounts", { name: "Ece Tan", registeredOn: "2026-01-03" }));
-  await must("açılış", admin.post(`/api/workspace/accounts/${customer.id}/entries`, { kind: "debt", amount: "700", date: "2026-01-03", note: "Açılış bakiyesi" }));
+  await must("açılış", admin.post(`/api/workspace/accounts/${customer.id}/entries`, { kind: "debt", amount: "700", date: "2026-01-03", note: "Devir borcu" })); // 2.5.0 Ç5-A (G3): Ç3 mekaniği verisi iki kuralda da AYNI türetilsin diye açılış dışı açıklama ("Açılış…" Borç Yaz 2.4.9 kuralında 500, güncel kuralda 602 — K8-1; o ayrışma kural tuzağı ve test/acilis-*-250 testlerinin konusu)
   for (let i = 1; i <= count; i += 1) await must(`kasa ${i}`, admin.post("/api/workspace/cash", { kind: "in", amount: String(10 + i), date: `2026-${String(1 + (i % 12)).padStart(2, "0")}-1${i % 9}`, description: `Giriş ${i}` }));
   await must("tahsilat", admin.post(`/api/workspace/accounts/${customer.id}/entries`, { kind: "in", amount: "150", date: "2026-11-20", method: "cash", note: "Tahsilat" }));
   await must("yeni yıl", admin.post("/api/workspace/cash", { kind: "in", amount: "25", date: "2027-01-04", description: "Yeni yıl" }));

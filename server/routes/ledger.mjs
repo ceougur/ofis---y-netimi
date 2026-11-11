@@ -34,6 +34,7 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
   const has = table => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table));
   // v2.1.0 (§3.11): para satırının hesap bağı (fin_ref; '' = Hesabı Atanmamış). v19 dosyasında (araçlar) kolon yoktur: ''.
   const refOf = (table, alias) => (store.all(`PRAGMA table_info(${table})`).some(column => column.name === "fin_ref") ? `${alias}.fin_ref` : "''");
+  const hasColumn = (table, name) => store.all(`PRAGMA table_info(${table})`).some(column => column.name === name);
   // Banka hesabı ve POS kartları (alt hesap kodları): yevmiyede moneyAccount, beklenenlerde yolun alt hesabı.
   function refs() {
     const out = { accounts: {}, pos: {} };
@@ -96,8 +97,12 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
       const returned = collections
         ? "CASE WHEN e.source = 'cheque' AND e.kind = 'debt' AND c.direction = 'in' AND e.account_id = c.account_id AND EXISTS (SELECT 1 FROM cheque_collections k WHERE k.cheque_id = c.id AND k.status = 'returned') THEN 1 ELSE 0 END"
         : "0";
+      // 2.5.0 Ç5-A (§2.3; KG-16): açılış işaretten — Açılış Bakiyesi satırı (is_opening, göç 35) ve "Açılış Olabilir" durumu (opening_review, göç 48). Eski dosyada kolon yok: 0 / ''.
+      const entryOpening = hasColumn("account_entries", "is_opening") ? "e.is_opening" : "0";
+      const entryReview = hasColumn("account_entries", "opening_review") ? "e.opening_review" : "''";
       out.accountEntries = all(
         `SELECT e.id, e.rowid AS seq, e.kind, e.amount, e.date, e.note, e.source, e.source_id AS sourceId, e.method, ${refOf("account_entries", "e")} AS ref, a.type AS accountType, e.account_id AS party,
+                ${entryOpening} AS isOpening, ${entryReview} AS openingReview,
                 COALESCE(c.direction, '') AS chequeDirection, COALESCE(c.instrument, '') AS chequeInstrument, COALESCE(m.reason, '') AS moveReason, ${returned} AS bankReturned,
                 e.invoice_id AS invoiceId, e.doubtful_skip AS doubtfulSkip
          FROM account_entries e ${J} accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
@@ -108,9 +113,15 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     }
     if (has("plans")) {
       // Kartın carisi silindiyse kart cari defterinde görünmez: ana defterde "carisiz kart" hesabında izlenir.
+      // 2.5.0 Ç5-A (KG-5; B5): yüklenen kart (import_id) — yükleme damgası (plan_imports.created_at; yerel günü journal()'da) ve açılış satırlarının toplamı (P). Eski dosyada: yok.
+      const imported = hasColumn("plans", "import_id") && has("plan_imports");
+      const planImport = imported
+        ? `p.import_id AS importId, COALESCE((SELECT x.created_at FROM plan_imports x WHERE x.id = p.import_id), '') AS importedAt,
+                COALESCE((SELECT SUM(e.amount) FROM plan_entries e WHERE e.plan_id = p.id AND e.kind = 'in' AND e.opening = 1), 0) AS openingPaid,`
+        : "'' AS importId, '' AS importedAt, 0 AS openingPaid,";
       out.plans = all(
         `SELECT p.id, p.rowid AS seq, p.total, p.status, p.covers_balance AS coversBalance, COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) AS date, COALESCE(p.closed_at, substr(p.updated_at, 1, 10)) AS closedOn,
-                COALESCE(a.type, '') AS accountType, COALESCE(a.id, '') AS party,
+                COALESCE(a.type, '') AS accountType, COALESCE(a.id, '') AS party, ${planImport}
                 COALESCE((SELECT SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END) FROM plan_entries e WHERE e.plan_id = p.id), 0) AS paid
          FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE ${X}p.deleted_at IS NULL${where("p", [[set?.parties, "SELECT id FROM plans WHERE account_id IN $"], [set?.plans, own("plans")]], "AND")}`,
         wanted(set?.parties, set?.plans),
@@ -123,7 +134,7 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
       const planInstrument = has("cheques") ? "CASE WHEN e.cheque_id <> '' THEN COALESCE((SELECT x.instrument FROM cheques x WHERE x.id = e.cheque_id), '') ELSE '' END" : "''";
       out.planEntries = all(
         `SELECT e.id, e.rowid AS seq, e.plan_id AS planId, e.kind, e.amount, e.date, e.note, e.method, ${refOf("plan_entries", "e")} AS ref, e.cheque_id AS chequeId, ${planInstrument} AS chequeInstrument, e.opening, COALESCE(a.type, '') AS accountType, COALESCE(a.id, '') AS party, ${planReturned} AS bankReturned,
-                COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) AS planDate, p.covers_balance AS planCovers
+                COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) AS planDate, p.covers_balance AS planCovers, ${imported ? "p.import_id <> ''" : "0"} AS planImported
          FROM plan_entries e ${J} plans p ON p.id = e.plan_id AND p.deleted_at IS NULL LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL${where("e", [[set?.parties, "SELECT pe.id FROM plans pp JOIN plan_entries pe ON pe.plan_id = pp.id WHERE pp.account_id IN $"], [set?.plans, "SELECT id FROM plan_entries WHERE plan_id IN $"], [set?.planEntries, own("m_plan_entries")], [set?.cheques, "SELECT id FROM plan_entries WHERE cheque_id IN $"]])}`,
         wanted(set?.parties, set?.plans, set?.planEntries, set?.cheques),
       );
@@ -149,7 +160,7 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     }
     // Banka Fişi satırları (v2.1.0): THP kodu, alt hesap ve kuruş yazım anında saklanır.
     if (has("bank_lines") && has("fin_events")) {
-      out.bankLines = all(`SELECT l.event_id AS eventId, e.rowid AS eventSeq, l.seq, l.gl, l.sub, l.side, l.try_minor AS tryMinor, e.date, e.no, e.description FROM bank_lines l ${J} fin_events e ON e.id = l.event_id${filter ? ` WHERE ${set?.events ? `l.event_id IN ${set.events}` : "0"}` : ""} ORDER BY e.date, l.event_id, l.seq`, wanted(set?.events));
+      out.bankLines = all(`SELECT l.event_id AS eventId, e.rowid AS eventSeq, l.seq, l.role, l.gl, l.sub, l.side, l.try_minor AS tryMinor, e.date, e.no, e.description FROM bank_lines l ${J} fin_events e ON e.id = l.event_id${filter ? ` WHERE ${set?.events ? `l.event_id IN ${set.events}` : "0"}` : ""} ORDER BY e.date, l.event_id, l.seq`, wanted(set?.events));
     }
     if (has("cheques")) {
       const eventOf = refOf("cheque_events", "ev") === "''" ? "''" : "ev.event_id";
@@ -162,8 +173,10 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
       // Cariye işlenmemiş evrak: carisi/kartı olmayan (ör. cari açılmamış bir kişiden alınan çek) ya da Excel'den
       // "carilere dokunmadan" alınan açılış portföyü. Cari etkisi yoktur; portföye girişi ve karşılıksız/iade çıkışı ana
       // defterde doğrudan gelir/gider karşılığıyla izlenir (portföy mutabakatı tutsun).
+      // 2.5.0 Ç5-A (§2.5; B4): açılış evrakı işaretten (cheques.is_opening, göç 49 — Excel "Açılış portföyü"); eski dosyada kolon yok: 0 (formdan carisiz evrak kuralı).
+      const chequeOpening = hasColumn("cheques", "is_opening") ? "c.is_opening" : "0";
       for (const row of all(
-        `SELECT c.id, c.rowid AS seq, c.direction, c.instrument, c.amount, c.issue_date AS date, c.status, c.serial_no AS serialNo,
+        `SELECT c.id, c.rowid AS seq, c.direction, c.instrument, c.amount, c.issue_date AS date, c.status, c.serial_no AS serialNo, ${chequeOpening} AS isOpening,
                 (SELECT ev.date FROM cheque_events ev WHERE ev.cheque_id = c.id AND ev.kind = 'bounce' ORDER BY ev.created_at DESC LIMIT 1) AS bouncedOn,
                 ${collections ? "EXISTS (SELECT 1 FROM cheque_collections k WHERE k.cheque_id = c.id AND k.status = 'returned')" : "0"} AS bankReturned,
                 EXISTS (SELECT 1 FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
@@ -180,10 +193,11 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
         // Yazım sırası (MM8): evrakın rowid'i cari satırlarınınkiyle karşılaştırılamaz (başka tablo) → aynı gün cari satırlarından SONRA, evrakların
         // yazım sırasıyla (general-ledger journalOrder).
         const seq = FREE_SEQ + Number(row.seq);
+        const isOpening = Number(row.isOpening) === 1 ? 1 : 0;
         if (row.direction === "in") {
-          out.accountEntries.push({ id: `free-in:${row.id}`, seq, kind: "credit", amount: row.amount, date: row.date, note, source: "cheque", chequeDirection: "in", chequeInstrument: row.instrument, accountType: "", free: true });
-          if (row.status === "bounced" && row.bouncedOn && !row.hasDebt) out.accountEntries.push({ id: `free-bounce:${row.id}`, seq, kind: "debt", amount: row.amount, date: row.bouncedOn, note: `${note} · karşılıksız`, source: "cheque", chequeDirection: "in", chequeInstrument: row.instrument, accountType: "", free: true, bankReturned: Number(row.bankReturned) ? 1 : 0 });
-        } else out.accountEntries.push({ id: `free-out:${row.id}`, seq, kind: "debt", amount: row.amount, date: row.date, note, source: "cheque", chequeDirection: "out", chequeInstrument: row.instrument, accountType: "", free: true });
+          out.accountEntries.push({ id: `free-in:${row.id}`, seq, kind: "credit", amount: row.amount, date: row.date, note, source: "cheque", chequeDirection: "in", chequeInstrument: row.instrument, accountType: "", free: true, isOpening });
+          if (row.status === "bounced" && row.bouncedOn && !row.hasDebt) out.accountEntries.push({ id: `free-bounce:${row.id}`, seq, kind: "debt", amount: row.amount, date: row.bouncedOn, note: `${note} · karşılıksız`, source: "cheque", chequeDirection: "in", chequeInstrument: row.instrument, accountType: "", free: true, bounce: true, isOpening, bankReturned: Number(row.bankReturned) ? 1 : 0 });
+        } else out.accountEntries.push({ id: `free-out:${row.id}`, seq, kind: "debt", amount: row.amount, date: row.date, note, source: "cheque", chequeDirection: "out", chequeInstrument: row.instrument, accountType: "", free: true, isOpening });
       }
     }
     // Bankaya Tahsile Ver (plan §3.14): tahsil kayıtları (101.01 ↔ 101.02). Silinmiş evrakın kaydı (tahsildeyken silinemez) deftere girmez.
@@ -211,15 +225,9 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     if (!filter) out.vouchers = voucherJournalRows(store);
     return out;
   }
-  // Carisiz evrakın karşı hesabı gelir/gider (602 / 770): journal() cariyi kontrol hesabı sayar; burada düzeltilir.
+  // 2.5.0 Ç5-A: carisiz evrakın karşı hesabı journal()'da (açılış evrakı 519, formdan carisiz 649.90 / 770.90 — S49); 2.4.9'da burada 602 / 770'e çevriliyordu.
   function build(filter = null) {
-    const source = rows(filter);
-    const entries = journal(source);
-    const free = new Set(source.accountEntries.filter(row => row.free).map(row => `account:${row.id}`));
-    for (const entry of entries) {
-      if (!free.has(entry.id)) continue;
-      for (const line of entry.lines) if (["120", "320", "336"].includes(line.account)) line.account = line.debit ? "770" : "602";
-    }
+    const entries = journal(rows(filter));
     // YALNIZ TEST (test/donmus-defter-250.test.mjs): kural değişikliği benzetimi — canlı türetmenin çıktısı değiştirilir (sürüm yükseltmesi). Üretimde kanca yok.
     return __testLedgerRule?.fn ? __testLedgerRule.fn(entries) : entries;
   }

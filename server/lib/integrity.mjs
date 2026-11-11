@@ -38,6 +38,7 @@ import { compareVersions } from "./semver.mjs";
 import { CHEQUE_BOND_BAD, createScopedGate, familyOf } from "./integrity-scope.mjs";
 import { runScanWorker } from "./integrity-scan-runner.mjs";
 import { cashBeforeOpening, cashRestoreMark } from "./cash-opening.mjs";
+import { ledgerBalanceOf, openingCounterpart, unlockedPastYears } from "./ledger-opening.mjs";
 import { systemClock } from "./clock.mjs";
 import { roundMoney, toCents } from "./money.mjs";
 
@@ -479,13 +480,32 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
         if (!entry.id.startsWith("stock-open:")) continue;
         seen.add(entry.id);
         const value = want.get(entry.id);
+        // 2.5.0 Ç5-A (M-07; C5-ACILIS-TASARIM §2.8): karşı hesap 519 (2.4.9: 500).
         const debit = entry.lines.filter(line => line.account === "153").reduce((sum, line) => sum + line.debit - line.credit, 0);
-        const credit = entry.lines.filter(line => line.account === "500").reduce((sum, line) => sum + line.credit - line.debit, 0);
-        const other = entry.lines.some(line => line.account !== "153" && line.account !== "500");
-        if (value === undefined || debit !== value || credit !== value || other) wrong.push(`${entry.id}: defter 153 ${debit / 100} / 500 ${credit / 100} · hareket ${value === undefined ? "yok" : value / 100}`);
+        const credit = entry.lines.filter(line => line.account === "519").reduce((sum, line) => sum + line.credit - line.debit, 0);
+        const other = entry.lines.some(line => line.account !== "153" && line.account !== "519");
+        if (value === undefined || debit !== value || credit !== value || other) wrong.push(`${entry.id}: defter 153 ${debit / 100} / 519 ${credit / 100} · hareket ${value === undefined ? "yok" : value / 100}`);
       }
       for (const [id, value] of want) if (value && !seen.has(id)) wrong.push(`${id}: hareket ${value / 100} · defterde yok`);
-      checks.push({ code: "stock:opening", name: "Açılış Stoku ↔ Ana Defter (B 153 / A 500)", ok: wrong.length === 0, count: wrong.length, sample: wrong.slice(0, 5) });
+      checks.push({ code: "stock:opening", name: "Açılış Stoku ↔ Ana Defter (B 153 / A 519)", ok: wrong.length === 0, count: wrong.length, sample: wrong.slice(0, 5) });
+    }
+    // 2.5.0 Ç5-A (C5-ACILIS-TASARIM §2.8; BAŞ MİMAR KARARI B2): "Açılış Karşılığı" — 519 = −(Σ modül açılışları) + fiş satırlarının 519'u, 500 = fiş satırlarının 500'ü; ikinci
+    // yükleyici modüllerin kendi tablolarından (lib/ledger-opening.mjs openingCounterpart; journal() okunmaz). `expected()`'e GİRMEZ (K6 fiş koruması ve Kural Farkı fişi — §3.4).
+    // YALNIZ tam taramada (açılış, Mutabakat Testi, arka plan taraması, Defter Mutabakatı); COMMIT kapısında yok. Kullanılmayan veride (açılışsız, fişsiz) denetim listede yok.
+    if (lastEntries && !touched) {
+      const want = openingCounterpart(store);
+      const got = { 519: ledgerBalanceOf(lastEntries, "519"), 500: ledgerBalanceOf(lastEntries, "500") };
+      if (want[519] || want[500] || got[519] || got[500]) {
+        for (const code of ["519", "500"]) {
+          const difference = got[code] - want[code];
+          checks.push({ code: `opening:${code}`, name: `Açılış Karşılığı (${code} ${code === "519" ? "Eşleştirilecek Açılış Bakiyeleri = Kasa, cari, banka, stok, taksit ve evrak açılışları + fişler" : "Sermaye = fişler"})`, ok: difference === 0, count: difference === 0 ? 0 : 1, difference: roundMoney(difference / 100), ledger: roundMoney(got[code] / 100), subledger: roundMoney(want[code] / 100), ...(code === "519" ? { parts: want.parts } : {}) });
+        }
+      }
+      // S53 = A (C5-ACILIS-TASARIM §3.5): kilitsiz geçmiş yıl yeni kuralla hesaplandı — bilgi (uyarı; sapma değil, notice). Bir satır (yıl sayısı count değil — uyarı artışı zili açmaz).
+      const years = unlockedPastYears(lastEntries, { lock: period()?.lockedUntil?.() || "", today: period()?.today?.() || now.today() });
+      if (years.length) {
+        checks.push({ code: "ledger:unlocked-years", name: "Kilitlenmemiş Geçmiş Yıl Yeni Kuralla Hesaplandı", ok: false, count: 1, severity: "warning", notice: true, years, hint: `Dönem kilidi konmamış geçmiş yıl (${years.join(", ")}) 2.5.0'ın açılış kurallarıyla hesaplandı (açılış karşı hesabı 519, açılış çekleri ve Excel taksit kartları gelir / gider değil). O yılın beyannamesi verildiyse Yönetim → Dönem Kilidi ile yılı kilitleyin; kilitli dönemin defteri değişmez.` });
+      }
     }
     // Kuruş ve işaret: 12,345 TL ya da −5 TL gibi tutar yok.
     for (const [table, column, where] of AMOUNT_COLUMNS) {

@@ -994,7 +994,8 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
   function meta() {
     const values = settings();
     // Hareketler süzgecinin türleri ve formların hesap adları (gelir/gider eşlemesi, masraf türlerinin hesapları).
-    const codes = new Set([...ROLE_GL.income, ...ROLE_GL.expense, "102", "191", "193", "300", "309", "320", "500", values.gl.fee, values.gl.commission, values.gl.interestIncome, values.gl.interestExpense]);
+    // 2.5.0 Ç5-A (B3): açılış / Devir Kapanışı satırının defter hesabı 519 (İşlem Kartı effectiveGl ile gösterir); 500'ün adı da kalır (eski istemci önbelleği).
+    const codes = new Set([...ROLE_GL.income, ...ROLE_GL.expense, "102", "191", "193", "300", "309", "320", "500", "519", values.gl.fee, values.gl.commission, values.gl.interestIncome, values.gl.interestExpense]);
     return {
       groups: Object.entries(GROUP_LABELS).map(([key, label]) => ({ key, label })),
       glNames: Object.fromEntries([...codes].filter(Boolean).map(code => [code, CHART[code] || code])),
