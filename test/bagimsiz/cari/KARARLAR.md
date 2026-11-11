@@ -2060,3 +2060,29 @@ yazılmaz). Yeni `belirsiz` kayıtları: "adım <id>: … SK-18 (§19)", C13.4 (
   (2B-S3 / Ç7b) — kararda / dilde yok.
 - G1: defter kâhininin senaryoları bu bakımın kapsamı dışında, değiştirilmedi (bilgi: `test/bagimsiz/defter/senaryo.json`'da satış / iade belgeleri tarih sıralı; yalnız kendi numaralı alış F12
   geriye tarihli — alış seriye girmez).
+
+### C0l Değişen eski beklentiler (G3; bakım 6 `a0d8342a` ↔ bakım 7 kâhin çıktısı, `2.5.0`; eski kopyanın 87 elle senaryosu + rastgele s1 / ux18 tohum 1–10 × 120) — kararla ilgisiz eski beklenti DEĞİŞMEDİ
+Eski 45.944 → yeni 45.906 denetim; değişen / kalkan / yeni toplam **164**, hepsi G2b sınıfında (yeni kâhinin REDDETTİĞİ elle Mevcut Borç kartının carisi / kartı / adımları ve o karta yazılan kart
+tahsilatı) ya da G2b-genel (aynı kontrolde Kasa, Kasa raporu girişi ve sayaçlar); **BEKLENMEYEN 0**, yalnız etiketi değişen 0 (dökümü `docs/kanit/2026-11-10/kahineski7-g3-dokum-*.json`, özet
+`kahineski7-esdeger-cari-*.log`; iki saat diliminde bayt bayt aynı):
+- **d30 (eski dosya):** G2b değişen 31 · kalkan 44 · yeni 32 · G2b-genel değişen 2 · yeni 2 — bakım 6'nın elle kartları (KQ8B hariç) avansla / iadeyle tamamen ya da kısmen kapanmış borca açılıyordu;
+  G2 (b) ile RET (kart anahtarları kalkar, carinin Kalan / gecikmiş / açık toplamı artık yazılır, reddedilen kartın tahsilatı RET — Kasa düşer).
+- **d31 / d32 (eski dosya):** G2b değişen 9 / 8 · kalkan 14 / 14 · G2b-genel değişen 4 / 4 (KQ2, KQ4 RET — açık 200 < kart 600).
+- **Öbür 84 eski elle senaryo (d27–d29 dahil) ve 20 rastgele: fark 0.** Eski elle Mevcut Borç kartlarının hepsi (c11, d4 KM / KP, d7 KE, d8 KA, d19 KN4) iki okumada da KABUL — değer değişmedi.
+- **`--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`:** **764/764** bayt bayt aynı (eski kopyanın 87 elle + yeni kopyanın yeni adımsız 84 elle — yeri değişen d27–d29 dahil — + 20 rastgele × 4 kip);
+  yeni adım türünü kullanan d30–d32 (yeni hâl) eski kâhinde koşmadığı için dışarıda, eski hâlleri içeride. Üretici 20/20 aynı dizi. Eski kopyadaki elle senaryolardan yalnız d27–d32'nin adımları değişti.
+- **G1:** d27 / d28 / d29 eski ↔ yeni dosya, iki kâhinde (bakım 6 ve 7) beş kipte kâhin çıktısı bayt bayt aynı (**39/39**; sha256 dökümü `kahineski7-g1-dokum-*.json`). Taramada yeni kümede 87/87
+  senaryo ihlalsiz; ESKİ kümede 3 ihlalli (d27 5, d28 2, d29 2 adım — testin dişi). Üretici: s1 + ux18 × tohum 1–30 × işlem 120 / 400 = 120 senaryoda seriden numara alan belgede ihlal 0, alış dahil
+  ihlal 0, hiçbir tarihli adımda geri giden tarih yok (`kahineski7-g1-uretici-*`).
+- **Yeni / değişen elle tablolar ESKİ (bakım 6) kâhinde — beklenen NEDENLE kırmızı (ders 7, 38):** 225 elle denetimin **208**'i (`kahineski7-kirmizi-eski-cari-*.log`): d30 / d31 / d32 eski kâhinde
+  koşmuyor (`stok_satis_taksit` adımı yok — 136 + 21 + 21); d30'un elle yol satırları (Q6, QR1–QR5, QS) ayrı senaryoda eski kâhinde 47 denetimin 30'u kırmızı (kartlar RET yerine kabul, kart anahtarları
+  var, `qr1k` kabul ve QR1 bakiyesi −200, QR4'te 1 kuruşluk "Bitti", SK-18 kaydı yok); 17'si iki kâhinde aynı (bakiyeler, QR3'ün kabulü).
+
+### Kanıt (bakım 7; iki saat dilimi — UTC ve Europe/Istanbul çıktıları bayt bayt aynı; kâhin `5d35d906`, araç `29e2860d`, temiz ağaç; `docs/kanit/2026-11-10/kahineski7-*`, araçlar ve koşu betiği `kahineski7-arac/`)
+cari öz test **3.819/3.819** (`-cari-oz-*`: elle tablolar 87 senaryo, mutantlar 200–255 — 219–255 değerle, saf TYK 173 kalem, bakım 4–6 çapraz denetimi aynen (saf net 138 + 587 kalem, belge 94 fatura),
+G1 87 senaryo × 92 belge adımı, Y7-3 reddinin yalnız 2.5.0'da olduğu) · mutasyon taraması **222/222** (`-cari-mutasyon-*`; kos.mjs düzeni, 87 dosya × kipler) · eşdeğerlik + G3 **875/875**
+(`-esdeger-cari-*`) · yeni / güncellenen elle tablolar **331/331** (`-elle-yeni-cari-*`: d27–d33) · ESKİ kâhinde **208 kırmızı** / 225 (`-kirmizi-eski-cari-*`) · G1 tarama **87/87**, eski kümede
+3 ihlal (`-g1-tara-*`, `-g1-tara-eski-*`) · G1 eşdeğerlik **39/39** (`-g1-esdeger-*`) · üretici G1 **120/120** (`-g1-uretici-*`) · geniş tarama **2.201/2.201** (`-genis-tarama-*`; bakım 6 ile aynı
+sayılar) · taşınan / değişen elle değerler dökümü (`-elle-tasinan-*`, bilgi). **Defter öz testi BAŞARISIZ** (`-defter-oz-*`): `test/bagimsiz/defter/oz-test.py` `kahin.py`'de olmayan
+`VARSAYILAN_KURAL`'ı arıyor (AttributeError) — TABANDA (`a0d8342a`, bu dalın dokunmadığı dosyalar; `-defter-oz-taban-utc`) de aynı; bu bakım defter kâhinine dokunmadı (ana oturuma bildirildi).
+Mutasyon, eşdeğerlik, öz test, geniş tarama ve üretici taraması `flock -s -n …/olcum.lock` ile koşuldu (ders 52). Program açılmadı.

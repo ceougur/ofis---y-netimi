@@ -1,0 +1,52 @@
+d27-c5-s99-taksitli-avans: bakım 6 43 elle denetim (38 değer + 4 yok + 1 belirsiz) → bakım 7 43 (38 + 4 + 1)
+  değer AYNEN taşınan 38: k1:cari:P1:acikEsitBakiye, k1:cari:P1:acikToplam, k1:cari:P1:bakiye, k1:cari:P1:gecikmis, k1:cari:P2:acikEsitBakiye, k1:cari:P2:acikToplam, k1:cari:P2:bakiye, k1:cari:P2:gecikmis, k1:cari:P3:acikEsitBakiye, k1:cari:P3:acikToplam, k1:cari:P3:bakiye, k1:cari:P3:gecikmis, k1:cari:P4a:acikEsitBakiye, k1:cari:P4a:acikToplam, k1:cari:P4a:bakiye, k1:cari:P4a:gecikmis, k1:cari:P4b:acikEsitBakiye, k1:cari:P4b:acikToplam, k1:cari:P4b:bakiye, k1:cari:P4b:gecikmis, k1:cari:P5:bakiye, k1:fatura:P1A:acik, k1:fatura:P1B:acik, k1:fatura:P2F:acik, k1:fatura:P3F:acik, k1:fatura:P4F:acik, k1:fatura:P4G:acik, k1:hareket:p2b:kalan, k1:projeksiyon:cari, k1:projeksiyon:hareket:p2b, k1:projeksiyon:hareket:p3o, k1:takvim:cariKalemSayisi, k1:takvim:fatura:P1A, k1:takvim:fatura:P4G, k1:takvim:hareket:p2b, k1:takvim:hareket:p3o, k1:vadeTakip:hareket:p2b, k1:vadeTakip:hareket:p3o
+  değeri DEĞİŞEN 0: 
+  değer → YOK (artık yazılmamalı) 0: 
+  değer kalktı (denetlenmiyor) 0: 
+  yok AYNEN 4: k1:cari:P5:acikToplam, k1:cari:P5:gecikmis, k1:fatura:P5A:acik, k1:fatura:P5F:acik · yok → değer 0:  · yok kalktı 0: 
+  belirsiz AYNEN 1: [('cari P5', 'SK-15')] · kalkan 0: [] · yeni 0: []
+  YENİ değer 0 · YENİ yok 0
+d28-c5-s99-taksit-vade-gunu: bakım 6 17 elle denetim (17 değer + 0 yok + 0 belirsiz) → bakım 7 17 (17 + 0 + 0)
+  değer AYNEN taşınan 17: k1:cari:P2:acikEsitBakiye, k1:cari:P2:acikToplam, k1:cari:P2:bakiye, k1:cari:P2:gecikmis, k1:cari:P3:acikEsitBakiye, k1:cari:P3:acikToplam, k1:cari:P3:bakiye, k1:cari:P3:gecikmis, k1:fatura:P2F:acik, k1:fatura:P3F:acik, k1:hareket:p2b:kalan, k1:projeksiyon:hareket:p2b, k1:projeksiyon:hareket:p3o, k1:takvim:hareket:p2b, k1:takvim:hareket:p3o, k1:vadeTakip:hareket:p2b, k1:vadeTakip:hareket:p3o
+  değeri DEĞİŞEN 0: 
+  değer → YOK (artık yazılmamalı) 0: 
+  değer kalktı (denetlenmiyor) 0: 
+  yok AYNEN 0:  · yok → değer 0:  · yok kalktı 0: 
+  belirsiz AYNEN 0: [] · kalkan 0: [] · yeni 0: []
+  YENİ değer 0 · YENİ yok 0
+d29-c5-s99-taksit-ertesi-gun: bakım 6 17 elle denetim (17 değer + 0 yok + 0 belirsiz) → bakım 7 17 (17 + 0 + 0)
+  değer AYNEN taşınan 17: k1:cari:P2:acikEsitBakiye, k1:cari:P2:acikToplam, k1:cari:P2:bakiye, k1:cari:P2:gecikmis, k1:cari:P3:acikEsitBakiye, k1:cari:P3:acikToplam, k1:cari:P3:bakiye, k1:cari:P3:gecikmis, k1:fatura:P2F:acik, k1:fatura:P3F:acik, k1:hareket:p2b:kalan, k1:projeksiyon:hareket:p2b, k1:projeksiyon:hareket:p3o, k1:takvim:hareket:p2b, k1:takvim:hareket:p3o, k1:vadeTakip:hareket:p2b, k1:vadeTakip:hareket:p3o
+  değeri DEĞİŞEN 0: 
+  değer → YOK (artık yazılmamalı) 0: 
+  değer kalktı (denetlenmiyor) 0: 
+  yok AYNEN 0:  · yok → değer 0:  · yok kalktı 0: 
+  belirsiz AYNEN 0: [] · kalkan 0: [] · yeni 0: []
+  YENİ değer 0 · YENİ yok 0
+d30-c5-s101-bitti-kart: bakım 6 62 elle denetim (50 değer + 9 yok + 3 belirsiz) → bakım 7 136 (107 + 26 + 3)
+  değer AYNEN taşınan 48: k1:cari:Q1:acikEsitBakiye, k1:cari:Q1:acikToplam, k1:cari:Q1:bakiye, k1:cari:Q1:gecikmis, k1:cari:Q2:bakiye, k1:cari:Q2:gecikmis, k1:cari:Q3:bakiye, k1:cari:Q3:gecikmis, k1:cari:Q4:bakiye, k1:cari:Q4:gecikmis, k1:cari:Q5:bakiye, k1:cari:Q6:bakiye, k1:cari:Q7:bakiye, k1:cari:Q8a:bakiye, k1:cari:Q8a:gecikmis, k1:cari:Q8b:bakiye, k1:cari:Q8b:gecikmis, k1:hareket:q1b:kalan, k1:kart:KQ1:kalan, k1:kart:KQ1:odenen, k1:kart:KQ1:taksit1:odenen, k1:kart:KQ1:taksit2:odenen, k1:kart:KQ1:toplam, k1:kart:KQ2:kalan, k1:kart:KQ2:odenen, k1:kart:KQ2:taksit1:odenen, k1:kart:KQ2:taksit2:odenen, k1:kart:KQ2:toplam, k1:kart:KQ3:kalan, k1:kart:KQ3:odenen, k1:kart:KQ3:taksit1:odenen, k1:kart:KQ3:taksit2:odenen, k1:kart:KQ4:kalan, k1:kart:KQ4:odenen, k1:kart:KQ4:taksit1:odenen, k1:kart:KQ4:taksit2:odenen, k1:kart:KQ4:toplam, k1:kart:KQ5:toplam, k1:kart:KQ7:toplam, k1:kart:KQ8:kalan, k1:kart:KQ8:odenen, k1:kart:KQ8B:kalan, k1:kart:KQ8B:odenen, k1:kart:KQ8B:taksit1:odenen, k1:kart:KQ8B:taksit2:odenen, k1:projeksiyon:hareket:q1b, k1:takvim:hareket:q1b, k1:vadeTakip:hareket:q1b
+  değeri DEĞİŞEN 0: 
+  değer → YOK (artık yazılmamalı) 2: k1:kart:KQ1:mevcutBorc (bakım 6: true); k1:kart:KQ6:toplam (bakım 6: 100000)
+  değer kalktı (denetlenmiyor) 0: 
+  yok AYNEN 8: k1:cari:Q5:gecikmis, k1:hareket:q5x:kalan, k1:hareket:q5y:kalan, k1:kart:KQ5:kalan, k1:kart:KQ5:odenen, k1:kart:KQ7:odenen, k1:projeksiyon:cari, k1:takvim:cariKalemSayisi · yok → değer 0:  · yok kalktı 1: k1:kart:KQ6:odenen
+  belirsiz AYNEN 2: [('cari Q5 tanımsız', 'SK-14'), ('cari Q7 tanımsız', 'EK-2B 32')] · kalkan 1: [('cari Q6 tanımsız', 'EK-2B 32')] · yeni 1: [('adım kqs', 'SK-18')]
+  YENİ değer 59 · YENİ yok 16
+d31-c5-s101-taksit-vade-gunu: bakım 6 14 elle denetim (14 değer + 0 yok + 0 belirsiz) → bakım 7 21 (19 + 2 + 0)
+  değer AYNEN taşınan 14: k1:cari:Q2:bakiye, k1:cari:Q2:gecikmis, k1:cari:Q4:bakiye, k1:cari:Q4:gecikmis, k1:kart:KQ2:kalan, k1:kart:KQ2:odenen, k1:kart:KQ2:taksit1:odenen, k1:kart:KQ2:taksit2:odenen, k1:kart:KQ2:toplam, k1:kart:KQ4:kalan, k1:kart:KQ4:odenen, k1:kart:KQ4:taksit1:odenen, k1:kart:KQ4:taksit2:odenen, k1:kart:KQ4:toplam
+  değeri DEĞİŞEN 0: 
+  değer → YOK (artık yazılmamalı) 0: 
+  değer kalktı (denetlenmiyor) 0: 
+  yok AYNEN 0:  · yok → değer 0:  · yok kalktı 0: 
+  belirsiz AYNEN 0: [] · kalkan 0: [] · yeni 0: []
+  YENİ değer 5 · YENİ yok 2
+d32-c5-s101-taksit-ertesi-gun: bakım 6 14 elle denetim (14 değer + 0 yok + 0 belirsiz) → bakım 7 21 (19 + 2 + 0)
+  değer AYNEN taşınan 14: k1:cari:Q2:bakiye, k1:cari:Q2:gecikmis, k1:cari:Q4:bakiye, k1:cari:Q4:gecikmis, k1:kart:KQ2:kalan, k1:kart:KQ2:odenen, k1:kart:KQ2:taksit1:odenen, k1:kart:KQ2:taksit2:odenen, k1:kart:KQ2:toplam, k1:kart:KQ4:kalan, k1:kart:KQ4:odenen, k1:kart:KQ4:taksit1:odenen, k1:kart:KQ4:taksit2:odenen, k1:kart:KQ4:toplam
+  değeri DEĞİŞEN 0: 
+  değer → YOK (artık yazılmamalı) 0: 
+  değer kalktı (denetlenmiyor) 0: 
+  yok AYNEN 0:  · yok → değer 0:  · yok kalktı 0: 
+  belirsiz AYNEN 0: [] · kalkan 0: [] · yeni 0: []
+  YENİ değer 5 · YENİ yok 2
+# tests 6
+# pass 6
+# fail 0
+6/6 denetim geçti
