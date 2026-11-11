@@ -296,14 +296,17 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   const queueFor = accountId => {
     if (store.inTransaction || !accountId) return null;
     const module = invoices();
-    if (!module?.obligationsFor || module.legacyView) return null;
-    let ledger = null;
-    try {
-      ledger = accounts()?.detail ? accounts().detail(accountId, AUDITOR, { withRemaining: false }).ledger || null : null;
-    } catch {
-      ledger = null; // silinmiş cari: kuyruk yok (carisiz kart gibi kartın kendi hesabı)
-    }
-    return ledger ? new Map([[accountId, module.obligationsFor(accountId, ledger)]]) : null;
+    if (!module?.obligationsOf || module.legacyView) return null;
+    const ledgerOf = () => {
+      try {
+        return accounts()?.detail ? accounts().detail(accountId, AUDITOR, { withRemaining: false }).ledger || null : null;
+      } catch {
+        return null; // silinmiş cari: kuyruk yok (carisiz kart gibi kartın kendi hesabı)
+      }
+    };
+    // Ç5-B son tur (hız): aynı veri durumunda carinin kuyruğu bir kez kurulur (invoices.obligationsOf — yazım yanıtından hemen sonraki kart okuması yeniden kurmaz).
+    const result = module.obligationsOf(accountId, ledgerOf);
+    return result ? new Map([[accountId, result]]) : null;
   };
   // Kart ekranı (GET): kartın kendi hesabı + kuyruk görünümü.
   const detailView = (id, user) => {

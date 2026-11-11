@@ -834,6 +834,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   }
   const withExtras = (input, extras, accountId) => ({ ...input, schedules: extras.schedules, dueDates: extras.dueDates, promises: extras.promises, doubtfulRecords: extras.doubtful.get(accountId) || [], lockAt: extras.lockAt, linkTimes: extras.linkTimes, linkMoments: extras.linkMoments });
   let settledCache = { key: "", pay: null, entries: null, tyk: null };
+  // Tek carinin bu veri durumunda (aynı anahtar) kurulmuş kuyruğu — obligationsOf (aşağıda); allSettled'in artımlı yolu da okur.
+  let oneCache = { key: "", map: new Map() };
+  const ONE_MAX = 16;
   function allSettled() {
     const day = today();
     const inTx = store.inTransaction;
@@ -869,14 +872,18 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
           }
           tyk.delete(id);
           for (const row of store.all("SELECT id FROM invoices WHERE account_id = ?", id)) pay.delete(row.id);
+          // Ç5-B son tur (hız): cari bu veri durumunda (aynı anahtar) zaten kurulduysa (kart yazım yanıtı / kart okuması — obligationsOf) yeniden kurulmaz.
+          const memo = oneCache.key === key ? oneCache.map.get(id) || null : null;
           let ledger = null;
-          try {
-            ledger = accounts()?.detail ? accounts().detail(id, AUDITOR, { withRemaining: false }).ledger || [] : null;
-          } catch {
-            ledger = null; // silinmiş cari: kuyruğu yok, faturaları (varsa) açık sayılır (toplu yolla aynı)
+          if (!memo) {
+            try {
+              ledger = accounts()?.detail ? accounts().detail(id, AUDITOR, { withRemaining: false }).ledger || [] : null;
+            } catch {
+              ledger = null; // silinmiş cari: kuyruğu yok, faturaları (varsa) açık sayılır (toplu yolla aynı)
+            }
           }
-          const result = obligationsFor(id, ledger || [], day);
-          if (ledger) {
+          const result = memo || obligationsFor(id, ledger || [], day);
+          if (memo || ledger) {
             tyk.set(id, result);
             for (const [entryId, state] of result.entries) entries.set(entryId, state);
           }
@@ -1030,6 +1037,31 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // Tek carinin kuyruğu (cari kartı, fatura kartı): carinin defteri çağırandan (accounts.detail → burası → accounts.detail döngüsü olmaz).
   function obligationsFor(accountId, ledger, day = today()) {
     return buildObligations(withExtras(accountSettleInput(accountId, ledger || [], day), obligationExtras(accountId), accountId));
+  }
+  // Ç5-B son tur (hız; ders 47, 53 — iş listesi D "HIZ KABUL ÖLÇÜMÜ" 11.11 08:49): tek carinin kuyruğu AYNI veri durumunda (settleKey: total_changes | data_version | gün —
+  // bütün cariler önbelleğinin anahtarı) BİR KEZ kurulur. Tur 2b-1 kart yazım yanıtını ve kart okumasını tek carinin kuyruğuna indirmişti (G-1); ama yazımdan hemen sonraki
+  // kart okuması aynı kuyruğu YENİDEN kuruyor (kalabalık caride 3 ms → 160–200 ms), ardından gelen ilk zil / takvim okuması da artımlı yenilemede aynı cariyi bir kez daha
+  // kuruyordu. Burada: (1) bütün carilerin önbelleği tazeyse sonuç oradan (yazım olmadıysa kart okuması kuyruk kurmaz); (2) değilse bu anahtarda kurulmuş sonuç saklanır —
+  // kart okuması ve allSettled'in artımlı yolu onu kullanır. Herhangi bir yazım ya da gün dönümü anahtarı değiştirir: bayat sonuç verilmez (eşdeğerlik:
+  // test/tyk-onbellek-250.test.mjs — önbellekli tek cari = baştan kurulan, her yazım türünden sonra, rastgele sırayla). İşlem içinde okunmaz, yazılmaz (bugünkü kural).
+  // ledgerOf: carinin defterini veren işlev (yalnız kurmak gerekince çağrılır; null → cari yok / silinmiş → kuyruk yok).
+  function obligationsOf(accountId, ledgerOf) {
+    const day = today();
+    if (store.inTransaction) {
+      const ledger = ledgerOf();
+      return ledger ? obligationsFor(accountId, ledger, day) : null;
+    }
+    const key = settleKey(day);
+    if (settledCache.key === key && settledCache.tyk?.has(accountId)) return settledCache.tyk.get(accountId);
+    if (oneCache.key !== key) oneCache = { key, map: new Map() };
+    const hit = oneCache.map.get(accountId);
+    if (hit) return hit;
+    const ledger = ledgerOf();
+    if (!ledger) return null;
+    const result = obligationsFor(accountId, ledger, day);
+    if (oneCache.map.size >= ONE_MAX) oneCache.map.clear();
+    oneCache.map.set(accountId, result);
+    return result;
   }
   // 2.4.5 madde 6 → 2.5.0 Ç5-B: carinin elle Borç / Alacak, açılış, stok ve karşılıksız satırlarının Kalan'ı — TYK'nın NET görünümünden (G1; karar (5)).
   // Dönüş: defter satırı kimliği → { side, remaining, covered } (TL).
@@ -5400,5 +5432,5 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     doc.paymentDraft = {};
     return writeDraft(user, doc);
   }
-  return { openItems, dueItems, fingerprint, countForAccount, list, listQuery, detail, settings, paymentStates, entryStates, allEntryStates, obligationsFor, allObligations, cardLedgerState: settledFor, legacyView: legacyClosing, lastPrices, returnable, cancel, deleteInvoice, restoreDeleted, syncOwnCard, repairOwnCards, repairScreen, issueBankFee, issueBankFeeReturn, createCommissionDraft };
+  return { openItems, dueItems, fingerprint, countForAccount, list, listQuery, detail, settings, paymentStates, entryStates, allEntryStates, obligationsFor, obligationsOf, allObligations, cardLedgerState: settledFor, legacyView: legacyClosing, lastPrices, returnable, cancel, deleteInvoice, restoreDeleted, syncOwnCard, repairOwnCards, repairScreen, issueBankFee, issueBankFeeReturn, createCommissionDraft };
 }

@@ -263,4 +263,37 @@ describe("Ç5-B son tur — gerçek program: S126 / S128 örnekleri ekranların 
     const stock = ledger.find(row => row.origin === "stock");
     assert.equal(queue.entries.get(stock.id).remaining, 100, "S açığı 100");
   });
+  // HIZ (ders 47, 53; iş listesi D "HIZ KABUL ÖLÇÜMÜ" 11.11 08:49): tur 2b-1'den sonra yazımdan hemen sonraki kart okuması carinin kuyruğunu YENİDEN kuruyordu (100 bin
+  // satırda 3 ms → 160–200 ms), ilk zil okuması da artımlı yenilemede bir kez daha. Kuyruğun kurulması = carinin defterinin okunması (accounts.detail withRemaining: false):
+  // sayaç yazım yanıtında 1, ardından gelen kart okumasında 0, zilin artımlı yenilemesinde 0 olmalı; sonuçlar aynı (yanıt = okuma = bütün carilerin kuyruğu).
+  it("hız: kart tahsilatı yanıtından sonra kart okuması ve ilk zil okuması carinin kuyruğunu yeniden KURMAZ (defter okuma sayacı 1 / 0 / 0); yeni yazım belleği geçersiz kılar", async () => {
+    const acc = await account("Hız");
+    await entry(acc, { kind: "debt", amount: "900", date: day(-49), note: "X" });
+    const plan = await cardOpen(acc, 900, 3);
+    await must("zil (önbellek ısınsın)", api.get("/api/workspace/dues"));
+    const accounts = server.app.context.accounts;
+    const original = accounts.detail;
+    let builds = 0;
+    accounts.detail = (id, user, options) => {
+      if (id === acc.id && options?.withRemaining === false) builds += 1;
+      return original(id, user, options);
+    };
+    try {
+      const reply = await cardPay(plan.id, 300);
+      const afterWrite = builds;
+      const read = await must("kart oku", api.get(`/api/workspace/plans/${plan.id}`));
+      const afterRead = builds;
+      const zil = (await must("zil", api.get("/api/workspace/dues"))).items.filter(r => r.accountId === acc.id);
+      const afterZil = builds;
+      assert.deepEqual([afterWrite, afterRead - afterWrite, afterZil - afterRead], [1, 0, 0], "defter okuması: yazım yanıtı 1, kart okuması 0, zil 0");
+      assert.deepEqual([reply.items.map(i => i.remaining), reply.totals.queueRemaining, reply.state], [read.items.map(i => i.remaining), read.totals.queueRemaining, read.state], "yazım yanıtı = okuma");
+      assert.deepEqual([read.items.map(i => i.remaining), zil.map(r => r.amount)], [[0, 300, 300], []], "1. taksit ödendi; zilde gecikmiş kalem yok");
+      // Yeni yazım (bağsız tahsilat 100): bellek bayat sonuç vermez — kart okuması yeni kuyruğu gösterir.
+      await entry(acc, { kind: "in", amount: "100", date: day(-3), note: "T100" });
+      const fresh = await must("kart oku (yazımdan sonra)", api.get(`/api/workspace/plans/${plan.id}`));
+      assert.deepEqual([fresh.items.map(i => i.remaining), fresh.totals.queueRemaining], [[0, 200, 300], 500], "bağsız tahsilat 2. taksitten düştü (S50)");
+    } finally {
+      accounts.detail = original;
+    }
+  });
 });

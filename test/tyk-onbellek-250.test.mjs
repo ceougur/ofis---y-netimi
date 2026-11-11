@@ -39,15 +39,26 @@ async function harness({ fixed }) {
     [...result.installments].sort().map(([k, m]) => [k, [...m].sort().map(([i, r]) => [i, r.remaining, r.byAccount])]),
     [...result.entries].sort().map(([k, v]) => [k, v.remaining, v.covered]),
   ]);
+  // Ç5-B son tur (hız): tek carinin önbellekli kuyruğu (invoices.obligationsOf — kart ekranı / kart yazım yanıtı) da baştan kurulanla aynı olmalı. Sıra dönüşümlü: çift
+  // çağrılarda tek cari yolu bütün cariler önbelleğinden ÖNCE okunur (yazımdan hemen sonraki kart okuması: kendi belleği kurulur, ikinci okuma bellekten, ardından artımlı
+  // yenileme o sonucu kullanır); tek çağrılarda SONRA (bütün cariler önbelleği taze: sonuç oradan). Sonuç her iki sırada da baştan kurulana eşit.
+  let turn = 0;
   const compare = label => {
-    const all = ctx().invoices.allObligations();
     const ids = ctx().store.all("SELECT id FROM accounts WHERE deleted_at IS NULL").map(row => row.id);
+    const ledgerOf = id => ctx().accounts.detail(id, AUDIT, { withRemaining: false }).ledger;
+    const one = (id, when) => {
+      const fresh = digest(ctx().invoices.obligationsFor(id, ledgerOf(id)));
+      for (const pass of [1, 2]) assert.equal(digest(ctx().invoices.obligationsOf(id, () => ledgerOf(id))), fresh, `${label}: cari ${id} tek cari önbelleği (${when}, ${pass}. okuma) ≠ baştan kurulan`);
+    };
+    const first = (turn += 1) % 2 === 0;
+    if (first) for (const id of ids.filter((_, index) => (index + turn) % 3 === 0)) one(id, "bütün carilerden önce");
+    const all = ctx().invoices.allObligations();
     for (const id of ids) {
-      const ledger = ctx().accounts.detail(id, AUDIT, { withRemaining: false }).ledger;
-      const fresh = ctx().invoices.obligationsFor(id, ledger);
+      const fresh = ctx().invoices.obligationsFor(id, ledgerOf(id));
       assert.ok(all.get(id), `${label}: cari ${id} önbellekte yok`);
       assert.equal(digest(all.get(id)), digest(fresh), `${label}: cari ${id} önbellekli sonuç ≠ baştan kurulan`);
     }
+    if (!first) for (const id of ids.filter((_, index) => (index + turn) % 3 === 0)) one(id, "bütün carilerden sonra");
   };
   const countFull = () => {
     const accounts = ctx().accounts;
