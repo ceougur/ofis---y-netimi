@@ -138,7 +138,9 @@ export function createOpeningReview({ store }) {
     if (!row || !DECIDED.has(String(row.review))) return { status: 404 };
     const next = decision === "confirm" ? OPENING_REVIEW.confirmed : OPENING_REVIEW.rejected;
     if (row.review === next) return { status: 200, row: { ...row, review: next }, changed: false };
-    store.run("UPDATE account_entries SET opening_review = ? WHERE id = ?", next, id);
+    // Para alanı değil (tutar, yön, tarih, yol, bakiye, Kasa değişmez; yalnız Ana Defter'in karşı hesabı 519 ↔ 602 / 770): para koruması (bank.post) dışında, gerekçeli ham yazım
+    // (göç 35 / 48 gibi). Kapı (mutabakat) işlemin sonunda yine koşar.
+    store.raw("ledger.opening-review", () => store.run("UPDATE account_entries SET opening_review = ? WHERE id = ?", next, id));
     return { status: 200, row: { ...row, review: next, previous: row.review }, changed: true };
   }
   return { list, decide };
