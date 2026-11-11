@@ -835,6 +835,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       }
       // İş W (S9-1 c): yeniden denemede zincir bağı (yalnız bağ).
       for (const source of chain) store.run("UPDATE wa_jobs SET inherit_of = ? WHERE batch_id = ? AND account_id = ? AND state = 'pending'", source.id, batchId, source.account_id);
+      // Tur 3 hız (tasarım §14): zincir kaynak kümesi bu yazımı görmez → düşürülür (işlem içinde yeniden kurulmaz; ilk bildirim kesinleşmiş veriden kurar).
+      if (inherit || chain.length) forgetChainSources();
     });
     for (const source of [...(inherit ? [inherit] : []), ...chain]) {
       const target = store.get("SELECT id FROM wa_jobs WHERE batch_id = ? AND inherit_of = ?", batchId, source.id);
@@ -2393,6 +2395,31 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     if (owned.row) notify(owned.row.batch_id);
     return true;
   }
+  // 2.5.0 WhatsApp tur 3 HIZ (docs/erp/WA-TUR3-TASARIM.md §14; ders 47 — bildirim başına cari okuması yok): "Yine de Gönder" zincirinin KAYNAK kümesi = şirket dosyasında inherit_of'u dolu
+  // satırların gösterdiği iş kimlikleri (bütün cariler; tek okuma). Kimlik kümede YOKSA o işi gösteren zincir satırı KESİN yoktur. Küme ÜST KÜME kalır: kurulduğu andaki data_version
+  // değişirse (başka bağlantının yazımı) yeniden kurulur; bu bağlantının inherit_of yazımı yalnız createBatch'te — ardından forgetChainSources (test/whatsapp-tur3-hiz-250 kaynak denetimi);
+  // işlem İÇİNDE kurulmaz (geri alınabilir yazım saklanmasın); silinen satır kümede kalır (fazla kimlik yalnız tam okumaya döndürür). Bilinmiyorsa (data_version okunamadı) tam okuma.
+  let chainSources = null;
+  let chainSourcesVersion = null;
+  const forgetChainSources = () => {
+    chainSources = null;
+    chainSourcesVersion = null;
+  };
+  function mayHaveChain(jobId) {
+    let version = null;
+    try {
+      version = store.get("PRAGMA data_version")?.data_version ?? null;
+    } catch {
+      version = null;
+    }
+    if (version === null) return true;
+    if (!chainSources || chainSourcesVersion !== version) {
+      if (store.inTransaction) return true;
+      chainSources = new Set(store.all("SELECT DISTINCT inherit_of AS id FROM wa_jobs WHERE inherit_of <> ''").map(row => String(row.id)));
+      chainSourcesVersion = version;
+    }
+    return chainSources.has(String(jobId));
+  }
   /**
    * 2.5.0 WhatsApp tur 3 — KULLANICI KARARI S70 = A (AYNEN: "K1′ genel — Atlandı olmuş işe geç teslim gelirse her Atlandı sırasında "Teslim Edildi" (zincir işin eski belirsiz iletisi;
    * İstemiyor / Şüpheli Alacağı Var nedeniyle atlanan Meta Bekletti işinin 1. iletisi dahil)."; BAŞ MİMAR Y20-3: J10 ile "Daha Önce Gönderildi" olan işin öbür eski denemesine geç teslim de;
@@ -2403,9 +2430,12 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
    */
   function settleSkippedChain(jobId, value, at, { fresh = false, self = false } = {}) {
     if (!["delivered", "read"].includes(value)) return 0;
+    // Tur 3 hız (tasarım §14): X'i gösteren zincir satırı KESİN yoksa yürüyüşün ilk katmanı boştur — satır yolunda hiçbir okuma yapılmaz, öbür yollarda yalnız X'in kendisi.
+    const chained = mayHaveChain(jobId);
+    if (!self && !chained) return 0;
     const root = jobRow(jobId);
     if (!root) return 0;
-    const rows = store.all("SELECT id, batch_id, state, inherit_of, skip_reason, sent_at, delivered_at FROM wa_jobs WHERE account_id = ? AND inherit_of <> ''", root.account_id);
+    const rows = chained ? store.all("SELECT id, batch_id, state, inherit_of, skip_reason, sent_at, delivered_at FROM wa_jobs WHERE account_id = ? AND inherit_of <> ''", root.account_id) : [];
     const targets = self ? [root] : [];
     const seen = new Set([root.id]);
     for (let frontier = [root.id]; frontier.length && seen.size < 200; ) {
