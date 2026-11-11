@@ -1,0 +1,36 @@
+===== kilitsiz: şema 45 → 49
+  mizan: 500 -32300 → 0; 519 0 → -42700; 602 -11500 → -100; 649 -500 → -950; 770 750 → 200
+  mizan2025: 120 13400 → 5000; 500 -33800 → 0; 519 0 → -35450; 602 -11150 → -100; 649 -500 → -950; 770 550 → 0
+  mizan2026: 500 -32300 → 0; 519 0 → -42700; 602 -11500 → -100; 649 -500 → -950; 770 750 → 200
+  cari: AYNI
+  kdv: AYNI
+  stok: AYNI
+  yevmiye 2025 satırları: 34 → 30 · FARKLI
+  Mutabakat Testi: True → False · sonra başarısız: [{"code": "ledger:unlocked-years", "name": "Kilitlenmemiş Geçmiş Yıl Yeni Kuralla Hesaplandı", "notice": true, "count": 1}]
+  Açılış Karşılığı: [{"code": "opening:519", "ok": true, "ledger": -42700, "subledger": -42700}, {"code": "opening:500", "ok": true, "ledger": 0, "subledger": 0}]
+  Defter Mutabakatı uyumsuz satırlar: [["Denetim", "Kilitlenmemiş Geçmiş Yıl Yeni Kuralla Hesaplandı", "", "", "1 satır", "Uyarı"]]
+  Açılış Olabilir: {'candidate': 3, 'confirmed': 0, 'rejected': 0} · [('Açılış bakiyesi', 1500), ('AÇILIŞ BAKİYESİ', 400), ('Açilış farkı', 250)]
+===== kilitli: şema 45 → 49
+  mizan: 120 12300 → 20700; 500 -32300 → -33800; 519 0 → -7250; 602 -11500 → -11150
+  mizan2025: fark yok
+  mizan2026: 120 12300 → 20700; 500 -32300 → -33800; 519 0 → -7250; 602 -11500 → -11150
+  cari: AYNI
+  kdv: AYNI
+  stok: AYNI
+  yevmiye 2025 satırları: 34 → 34 · BAYT BAYT AYNI
+  Mutabakat Testi: True → True · sonra başarısız: []
+  Açılış Karşılığı: [{"code": "opening:519", "ok": true, "ledger": -42700, "subledger": -42700}, {"code": "opening:500", "ok": true, "ledger": 0, "subledger": 0}]
+  Defter Mutabakatı uyumsuz satırlar: []
+  Açılış Olabilir: {'candidate': 3, 'confirmed': 0, 'rejected': 0} · [('Açılış bakiyesi', 1500), ('AÇILIŞ BAKİYESİ', 400), ('Açilış farkı', 250)]
+===== kilitli, göç 47 koşusu DONDUKTAN sonra (DONDUR=1)
+  yevmiye 2025 bayt bayt aynı: True · mizan2025 aynı: True
+  Mutabakat Testi başarısız: [{"code": "ledger:rule-diff", "name": "Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2025 ve Öncesi)", "notice": false, "count": 15, "difference": 44850}]
+  Defter Mutabakatı Kural Değişikliği Farkı satırları:
+    ['Denetim', 'Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2025 ve Öncesi)', '', '', '15 madde', 'Kural Değişikliği Farkı']
+    ['120', 'Alıcılar (Müşteri Carileri) — Kilitli Dönem (Donmuş Defter / Güncel Kural)', '8.400,00 TL', '0,00 TL', '-8.400,00 TL', 'Kural Değişikliği Farkı']
+    ['500', 'Sermaye — Kilitli Dönem (Donmuş Defter / Güncel Kural)', '-33.800,00 TL', '0,00 TL', '33.800,00 TL', 'Kural Değişikliği Farkı']
+    ['519', 'Eşleştirilecek Açılış Bakiyeleri — Kilitli Dönem (Donmuş Defter / Güncel Kural)', '0,00 TL', '-35.450,00 TL', '-35.450,00 TL', 'Kural Değişikliği Farkı']
+    ['602', 'Diğer Gelirler (Hizmet, Taksitli Satış, Kayıt Tahsilatları) — Kilitli Dönem (Donmuş Defter / Güncel Kural)', '-11.050,00 TL', '0,00 TL', '11.050,00 TL', 'Kural Değişikliği Farkı']
+    ['649', 'Diğer Olağan Gelir ve Kârlar — Kilitli Dönem (Donmuş Defter / Güncel Kural)', '0,00 TL', '-450,00 TL', '-450,00 TL', 'Kural Değişikliği Farkı']
+    ['770', 'Genel Yönetim Giderleri — Kilitli Dönem (Donmuş Defter / Güncel Kural)', '550,00 TL', '0,00 TL', '-550,00 TL', 'Kural Değişikliği Farkı']
+  karma mizan 120 (bütün zaman): 20700 · cari toplamı (müşteri): 12300
