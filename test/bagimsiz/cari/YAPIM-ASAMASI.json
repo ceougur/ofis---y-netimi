@@ -870,21 +870,6 @@
   },
   {
    "senaryo": "c12-ks81-sb-kalan-dagilimi",
-   "anahtar": "k1:projeksiyon:cari",
-   "beklenen": {
-    "catal": [
-     1,
-     2
-    ]
-   },
-   "program": 0,
-   "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
-   "kural": "KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı · C16.1 / C16.3: belirsiz üyeler (ÇATAL; SK-7)",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 10.11: S92 / S95–S98 / S102–S105 net görünüm senaryosu (kâhin bakımı 5 / 6); kararların kodu Ç5-B tur 2b'de — adım reddi yok, fark doğrudan görünüm farkı"
-  },
-  {
-   "senaryo": "c12-ks81-sb-kalan-dagilimi",
    "anahtar": "k1:projeksiyon:hareket:ab4",
    "beklenen": {
     "amount": 15000,
@@ -894,21 +879,6 @@
    "program": "yok",
    "sinif": "BULGU KULLANICI · SINIF DIŞI",
    "kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 10.11: S92 / S95–S98 / S102–S105 net görünüm senaryosu (kâhin bakımı 5 / 6); kararların kodu Ç5-B tur 2b'de — adım reddi yok, fark doğrudan görünüm farkı"
-  },
-  {
-   "senaryo": "c12-ks81-sb-kalan-dagilimi",
-   "anahtar": "k1:takvim:cariKalemSayisi",
-   "beklenen": {
-    "catal": [
-     1,
-     2
-    ]
-   },
-   "program": 0,
-   "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
-   "kural": "K6.3 takvimdeki cari kalemlerinin sayısı · C16.1 / C16.3: stok veresiye / karşılıksız kalemi ve verilen avans satırı sayaçta belirsiz üye (ÇATAL; SK-7)",
    "paket": "Ç5-B tur 2",
    "not": "ana oturum 10.11: S92 / S95–S98 / S102–S105 net görünüm senaryosu (kâhin bakımı 5 / 6); kararların kodu Ç5-B tur 2b'de — adım reddi yok, fark doğrudan görünüm farkı"
   },
@@ -3778,16 +3748,6 @@
   },
   {
    "senaryo": "d26-c5-bakim5-susan",
-   "anahtar": "k1:takvim:cariToplam:S12",
-   "beklenen": 25000,
-   "program": 5000,
-   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
-   "kural": "K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 10.11: S92 / S95–S98 / S102–S105 net görünüm senaryosu (kâhin bakımı 5 / 6); kararların kodu Ç5-B tur 2b'de — adım reddi yok, fark doğrudan görünüm farkı"
-  },
-  {
-   "senaryo": "d26-c5-bakim5-susan",
    "anahtar": "k1:takvim:hareket:s12o",
    "beklenen": {
     "amount": 25000,
@@ -3830,16 +3790,6 @@
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün · C16.1 S91 A: vadesiz kayıt kayıt gününde vadeli kalem (gün = kayıt günü) · C16.2 S92 A: tutar NET Kalan (karşı yönlü kalemler kendi belge tarihinde netleşir; C17 S95–S98 A)",
    "paket": "Ç5-B tur 2"
-  },
-  {
-   "senaryo": "d26-c5-bakim5-susan",
-   "anahtar": "k1:vadeTakip:cariToplam:S12",
-   "beklenen": 25000,
-   "program": 5000,
-   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
-   "kural": "K6.5 (1) + KS8.1 + KS10: carinin vadeTakip kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 10.11: S92 / S95–S98 / S102–S105 net görünüm senaryosu (kâhin bakımı 5 / 6); kararların kodu Ç5-B tur 2b'de — adım reddi yok, fark doğrudan görünüm farkı"
   },
   {
    "senaryo": "d26-c5-bakim5-susan",
@@ -4844,7 +4794,7 @@
      9
     ]
    },
-   "program": 6,
+   "program": 7,
    "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
    "kural": "KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı · C16.1 / C16.3: belirsiz üyeler (ÇATAL; SK-7)",
    "paket": "Ç5-B tur 2",
@@ -4914,7 +4864,7 @@
      9
     ]
    },
-   "program": 6,
+   "program": 7,
    "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
    "kural": "K6.3 takvimdeki cari kalemlerinin sayısı · C16.1 / C16.3: stok veresiye / karşılıksız kalemi ve verilen avans satırı sayaçta belirsiz üye (ÇATAL; SK-7)",
    "paket": "Ç5-B tur 2",
