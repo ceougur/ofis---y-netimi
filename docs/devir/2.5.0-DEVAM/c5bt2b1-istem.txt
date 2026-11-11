@@ -1,4 +1,4 @@
-Sen DestekOfis projesinde Ç5-B TUR 2b-1 DÜZELTME ajanısın (2.5.0 — Tek Yükümlülük Kuyruğu "TYK"; dar kontrol DK-C5BT2A'nın ORTA / DÜŞÜK bulguları + CI'yi kırmızı tutan ekran senaryosu + kalıcı eski sürüm fark testi). PARA ÇEKİRDEĞİ — eforun xhigh. Kendi dalında commit edersin, PUSH YAPMAZSIN. Yanıtın Türkçe.
+Sen DestekOfis projesinde Ç5-B TUR 2b-1 DÜZELTME ajanısın (2.5.0 — Tek Yükümlülük Kuyruğu "TYK"; dar kontrol DK-C5BT2A'nın ORTA / DÜŞÜK bulguları + CI'yi kırmızı tutan ekran senaryosu + kalıcı eski sürüm fark testi). PARA ÇEKİRDEĞİ — eforun high. Kendi dalında commit edersin, PUSH YAPMAZSIN. Yanıtın Türkçe.
 
 ÖNEMLİ ARKA PLAN: bu modülde iki dar kontrol üst üste gerileme verdi (ders 46). Bu turun asıl ölçüsü "yeni gerileme bırakmamak"tır: kapsamı DAR tut, her değişikliği v2.4.9'un gerçek koduyla ve bir önceki kodla sayıyla karşılaştır, kapsam dışı hiçbir şeyi "hazır elim değmişken" değiştirme.
 
