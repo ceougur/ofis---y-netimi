@@ -2351,12 +2351,58 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     return { route: "unknown" };
   }
   // K2 / L3 + K1′ (İş U "teslim her yolda sayılır"): eski denemenin GEÇ TESLİMİ — kesin aldı (K10:10 / K11:00): deftere O DENEMEYE teslim; satır değişmez. Başka türler etkisiz.
+  // 2.5.0 WhatsApp tur 3 (S70 = A): satır (ya da ondan türeyen zincir işi) "Atlandı" ise Teslim Edildi / Okundu olur (settleSkippedChain).
   function applyOldAttempt(owned, status, value, at) {
-    if (!["delivered", "read"].includes(value) || ledger.deliveredAttempt?.(owned.jobId, owned.attempt)) return false;
+    if (!["delivered", "read"].includes(value)) return false;
+    if (ledger.deliveredAttempt?.(owned.jobId, owned.attempt)) {
+      settleSkippedChain(owned.jobId, value, at, { fresh: false, self: true }); // yalnız ileri: bu kuralla Teslim Edildi olmuş iş read ile Okundu
+      return false;
+    }
     const billable = billableOf(status, owned.row ? owned.row.billable !== 0 : true);
     ledgerMust(ledger.delivered({ jobId: owned.jobId, attempt: owned.attempt, companyId, wabaId: owned.wabaId, billable, at }), "teslim");
+    settleSkippedChain(owned.jobId, value, at, { fresh: true, self: true });
     if (owned.row) notify(owned.row.batch_id);
     return true;
+  }
+  /**
+   * 2.5.0 WhatsApp tur 3 — KULLANICI KARARI S70 = A (AYNEN: "K1′ genel — Atlandı olmuş işe geç teslim gelirse her Atlandı sırasında "Teslim Edildi" (zincir işin eski belirsiz iletisi;
+   * İstemiyor / Şüpheli Alacağı Var nedeniyle atlanan Meta Bekletti işinin 1. iletisi dahil)."; BAŞ MİMAR Y20-3: J10 ile "Daha Önce Gönderildi" olan işin öbür eski denemesine geç teslim de;
+   * tasarım docs/erp/WA-TUR3-TASARIM.md §2). X işinin bir denemesine delivered / read tanındı: X'in kendisi (self — satır yolu X'i zaten yürütür) ve X'ten türeyen "Yine de Gönder"
+   * zincir işleri (aynı cari, inherit_of; dizinli cari okuması — ders 47) — durumu ATLANDI olan iş, teslim o deneme için YENİYSE (fresh; aynı denemeye yinelenen bildirim yeni teslim
+   * değildir — Y20-3) S59 düzeniyle "Teslim Edildi" / "Okundu"; bu kuralla Teslim Edildi olmuş iş (skip_reason izi dolu) read ile Okundu'ya ilerler. Defter YAZILMAZ (teslim kaynağın
+   * denemesinde — R3 / Bu Ay aynen); iş gönderime dönmez. İptal / Durduruldu / Başarısız / Süresi Doldu / Sonucu Belirsiz zincir işleri değişmez (Y20-5). Dönüş: değişen iş sayısı.
+   */
+  function settleSkippedChain(jobId, value, at, { fresh = false, self = false } = {}) {
+    if (!["delivered", "read"].includes(value)) return 0;
+    const root = jobRow(jobId);
+    if (!root) return 0;
+    const rows = store.all("SELECT id, batch_id, state, inherit_of, skip_reason, sent_at, delivered_at FROM wa_jobs WHERE account_id = ? AND inherit_of <> ''", root.account_id);
+    const targets = self ? [root] : [];
+    const seen = new Set([root.id]);
+    for (let frontier = [root.id]; frontier.length && seen.size < 200; ) {
+      const next = rows.filter(row => frontier.includes(row.inherit_of) && !seen.has(row.id));
+      for (const row of next) seen.add(row.id);
+      targets.push(...next);
+      frontier = next.map(row => row.id);
+    }
+    let changed = 0;
+    const batches = new Set();
+    for (const row of targets) {
+      let fields = null;
+      const fromSkip = row.state === "skipped" && fresh;
+      const upgrade = value === "read" && row.state === "delivered" && Boolean(row.skip_reason);
+      if (fromSkip && value === "delivered") fields = { state: "delivered", delivered_at: at, sent_at: row.sent_at || at, closed_at: iso(), next_at: null, error_code: null, error_text: "" };
+      else if (fromSkip || upgrade) fields = { state: "read", read_at: at, delivered_at: row.delivered_at || at, sent_at: row.sent_at || at, closed_at: iso(), next_at: null, error_code: null, error_text: "" };
+      if (!fields) continue;
+      updateJob(row.id, fields);
+      changed += 1;
+      batches.add(row.batch_id);
+    }
+    for (const id of batches) {
+      notify(id);
+      finishIfDone(id);
+    }
+    return changed;
   }
   // K4: satır o denemeyi BİLMİYOR (yok — sıfırlama; geri yüklenmiş / durdurulmuş eski satır) → yalnız defter. D/R → teslim (Süresi Doldu / teslim edilemedi sonrası da — P3;
   // A2); F (131026, 131049 dahil — yeniden deneme yok) → teslim edilemedi, teslimden sonra yok sayılır (§7a 18). İmzalı ve imzasız. Eşgüçlü.
@@ -2364,6 +2410,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     // İş V1: kural defterin tek yardımcısında (kancanın kalıcı açılamama yolu da aynısını çağırır).
     const result = ledger.ledgerOnlyResult({ jobId: owned.jobId, attempt: owned.attempt, companyId, wabaId: owned.wabaId, value, billable: billableOf(status, true), at });
     ledgerMust(result !== "error", value === "failed" ? "teslim edilemedi" : "teslim");
+    // 2.5.0 WhatsApp tur 3 (S70 = A): satırı (dosyadaysa) ya da zincir işi "Atlandı" ise Teslim Edildi / Okundu.
+    settleSkippedChain(owned.jobId, value, at, { fresh: result === "applied", self: true });
     return result === "applied";
   }
   // K5 / Q4 (dar kontrol 10 DÜŞÜK-4): iş dosyada YOK, wamid defterde BAĞSIZ, İMZALI bildirim + iş kimliği: defterdeki sonucu belli olmayan SON deneme kapatılır (wamid öğrenilir
@@ -2476,6 +2524,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       if (resolving && changed) ledgerMust(ledger.lateAccept({ jobId: job.id, attempt: job.attempt, wamid: fields.wamid || "", companyId, wabaId, at }), "kabul");
       // K6 (R4/Q5; A3): accepted_at = o denemenin defterdeki kabul anı (eşzamanlı kabul > öğrenilen wamid > bildirimin anı).
       if (resolving && ["sent", "delivered", "read"].includes(fields.state)) fields.accepted_at = ledger.acceptanceAt?.(job.id, job.attempt) || at;
+      // 2.5.0 WhatsApp tur 3 (S70 = A): bu denemenin teslimi YENİ mi (defter yazımından ÖNCE; zincir işleri yalnız yeni teslimle Atlandı'dan çıkar — Y20-3).
+      const freshDelivery = ["delivered", "read"].includes(fields.state) && !ledger.deliveredAttempt?.(job.id, job.attempt);
       if (["delivered", "read"].includes(fields.state)) ledgerMust(ledger.delivered({ jobId: job.id, attempt: job.attempt, companyId, wabaId, billable: fields.billable === undefined ? job.billable !== 0 : fields.billable === 1, at: fields.delivered_at || at }), "teslim");
       if (fields.state === "failed") ledgerMust(ledger.deliveryFailed({ jobId: job.id, attempt: job.attempt, at }), "teslim edilemedi");
       if (fields.state === "held") ledgerMust(ledger.released({ jobId: job.id, attempt: job.attempt, at }), "yeniden deneme izni");
@@ -2500,6 +2550,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       out.applied += 1;
       notify(job.batch_id);
       if (fields.state && ["delivered", "read", "failed"].includes(fields.state)) finishIfDone(job.batch_id);
+      // 2.5.0 WhatsApp tur 3 (S70 = A): bu işten türeyen "Yine de Gönder" zincir işleri Atlandı ise Teslim Edildi / Okundu (işin kendisi yukarıda).
+      if (["delivered", "read"].includes(fields.state)) settleSkippedChain(job.id, fields.state, fields.state === "read" ? fields.read_at || at : fields.delivered_at || at, { fresh: freshDelivery, self: false });
       // 2.5.0 W-3 (S35 / S42): içeriği silinmiş iş 131049 ile "Meta Bekletti"ye düştüyse yeniden denenmez — o anda Atlandı.
       if (fields.state === "held") closeErasedWaiting(job.id);
     }
