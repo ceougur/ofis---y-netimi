@@ -1,0 +1,33 @@
+// ORTA-1 komşusu (soru için sayı): kilitten ÖNCE kurulmuş bağ kilitten SONRA kaldırılınca kilitli dönemdeki kapanışlar. Kurgu o1-kilit: F1 1.000 (−60, vade +10) · F2 500 (−50) ·
+// P 500 (−45) · D Borç Yaz 300 (−35, vade −25) · çek / tahsilat 300 (−30) F2'ye bağlı · kilit −40 · bağ kaldırılır. Kullanım: ROOT=<kod> node kaldir.mjs
+import { boot, day, NOW } from "./h.mjs";
+
+const h = await boot({ now: { time: NOW, fixed: false } });
+const adv = () => h.server.clock.advance({ seconds: 5 });
+const out = {};
+try {
+  const sets = { cek: { acc: await h.account("Kaldır Çek") }, tah: { acc: await h.account("Kaldır Tahsilat") } };
+  for (const s of Object.values(sets)) { s.F1 = await h.sale(s.acc, day(-60), 1000, day(10)); adv(); }
+  for (const s of Object.values(sets)) { s.F2 = await h.sale(s.acc, day(-50), 500, day(-50)); adv(); }
+  for (const [k, s] of Object.entries(sets)) {
+    await h.entry(s.acc, { kind: "in", amount: "500", date: day(-45) }); adv();
+    await h.entry(s.acc, { kind: "debt", amount: "300", date: day(-35), dueDate: day(-25) }); adv();
+    if (k === "cek") s.ch = await h.must("çek", h.api.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", amount: "300", issueDate: day(-30), dueDate: day(40), serialNo: "KLD-1", accountId: s.acc.id, invoiceId: s.F2 }));
+    else s.p = await h.entry(s.acc, { kind: "in", amount: "300", date: day(-30), invoiceId: s.F2 });
+    adv();
+  }
+  const look = async s => {
+    const f = [];
+    for (const id of [s.F1, s.F2]) { const d = await h.invoice(id); f.push(`${d.number}: ${d.payState} açık ${d.open} · ${(d.closers || []).map(c => `${c.modeLabel || c.mode} ${c.amount} @${c.date}`).join(", ")}`); }
+    const card = await h.card(s.acc);
+    return { gecikmis: card.totals.overdueDebt, faturalar: f, borcKalan: card.entries.find(e => e.kind === "debt")?.remaining };
+  };
+  out.once = { cek: await look(sets.cek), tah: await look(sets.tah) };
+  await h.lock(day(-40)); adv();
+  await h.must("çek bağı kaldır", h.api.put(`/api/workspace/cheques/${sets.cek.ch.id}`, { invoiceId: "" })); adv();
+  await h.must("tahsilat bağı kaldır", h.api.put(`/api/workspace/accounts/${sets.tah.acc.id}/entries/${sets.tah.p.id}`, { invoiceId: "", cashForce: true })); adv();
+  out.sonra = { cek: await look(sets.cek), tah: await look(sets.tah) };
+} finally {
+  await h.server.close();
+}
+console.log(JSON.stringify(out, null, 1));
