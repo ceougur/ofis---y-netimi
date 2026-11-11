@@ -210,9 +210,12 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
       return "";
     }
   };
-  function sharedWaba(wabaId) {
+  // 2.5.0 WhatsApp tur 3 (BAŞ MİMAR KARARI 06.11 15:25 WT2-7): Meta aboneliği UYGULAMA başınadır (WT2-1: uygulama = bağlantı kipi) → yalnız AYNI KİPTE aynı WABA'ya bağlı öbür
+  // şirket "paylaşıyor" sayılır. Kip verilmezse (eski çağrı) her kip. Özetin kipi summaryOf'tan (kipi bilinmeyen eski kayıt Elle Bağla).
+  function sharedWaba(wabaId, mode = null) {
     const waba = String(wabaId);
-    const usesWaba = summary => Boolean(summary?.configured) && summary.wabaId === waba;
+    const kip = mode === null ? null : mode === "embedded" ? "embedded" : "manual";
+    const usesWaba = summary => Boolean(summary?.configured) && summary.wabaId === waba && (kip === null || summary.mode === kip);
     if (!companies?.list || typeof withCompanyDb !== "function") {
       return Object.entries(whatsapp?.registry?.snapshot?.() || {}).some(([id, item]) => id !== String(companyId) && usesWaba(item) && exists(id));
     }
