@@ -1,0 +1,32 @@
+{
+  "ad": "wa3hiz-mutasyon-MH-UTC",
+  "komut": "node /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wa3hiz-a70a/betik/mutasyon.mjs MH1-kume-dusurulmez,MH1-kendisi-de-atlanir,MH1-kendisi-de-atlanir-tur3,MH1-surum-bakilmaz,MH2-yanlis-kimlik,MH2-yanlis-cari,MH3-cagri-anlik-goruntusu",
+  "commit": "37dfcf310def84de61cbbc2baae71b4dc79c78fc",
+  "dal": "worktree-agent-a70a580bda07d5ebe",
+  "kirli": 0,
+  "izlenmeyen": 13,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-11T16:31:25.263Z",
+  "sure_sn": 224.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 7,
+    "gecen": 6,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "ÇELİŞKİ",
+  "neden": "çıkış 0 ama özet: 1 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-11/wa3hiz-mutasyon-MH-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a70a580bda07d5ebe",
+  "ham_cikti_sha256": "8b525048429063c47d565e6c624e006da3f29fb147dbd77c6caa36bef849f06b",
+  "ham_cikti_bayt": 4619
+}

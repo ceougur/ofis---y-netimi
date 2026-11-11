@@ -1,0 +1,5 @@
+1) ESKİ kod: talep HTTP 200; iş failed, içerik silindi true; hata metni: "Değerlerden biri geçersiz (ör. alıcı numarası). (Meta hata kodu 131009: Parameter value is not valid: to +90 532 111 22 33)"
+2) ESKİ kod kapandı — veri klasöründe "+90 532 111 22 33": ["destekofis.sqlite"]
+3) YENİ kod: açılış + iki bakım turu sonra hata metni: "Değerlerden biri geçersiz (ör. alıcı numarası). (Meta hata kodu 131009: Parameter value is not valid: to +90 532 111 22 33)"
+4) YENİ kod kapandı — veri klasöründe "+90 532 111 22 33": ["destekofis.sqlite"]
+# SONUÇ: eski kodun silinmiş işe yazdığı numaralı metin yeni kodda KALIYOR

@@ -1,0 +1,32 @@
+{
+  "ad": "wa3hiz-mutasyon-UTC",
+  "komut": "node /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wa3hiz-a70a/betik/mutasyon.mjs",
+  "commit": "7cae5134bd787360547775622969d8b560f6c517",
+  "dal": "worktree-agent-a70a580bda07d5ebe",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-11T16:18:52.346Z",
+  "sure_sn": 266,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 26,
+    "gecen": 23,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "ÇELİŞKİ",
+  "neden": "çıkış 0 ama özet: 3 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-11/wa3hiz-mutasyon-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a70a580bda07d5ebe",
+  "ham_cikti_sha256": "438357503624730182b44b8dab5367d62b97b146f7bd601a3e6a1332c4e08eda",
+  "ham_cikti_bayt": 19349
+}

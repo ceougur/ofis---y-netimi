@@ -1,0 +1,14 @@
+calisma1   yük 3.15 GEÇERSİZ | 1000 ayrı 1599 (93)    | 100 tek 156 (95)   | bakım temiz 1577 (350)   | bayraksız 484 (322)  | eski metin 1597 (338)   | bayraksız2 488 (336) | kalan 100000
+tur3_1     yük 2.10 GEÇERSİZ | 1000 ayrı 2895 (99)    | 100 tek 308 (247)  | bakım temiz 1794 (404)   | bayraksız 504 (321)  | eski metin 6590 (362)   | bayraksız2 492 (352) | kalan 0
+yeni1      yük 1.56 GEÇERLİ | 1000 ayrı 1647 (99)    | 100 tek 137 (75)   | bakım temiz 1692 (341)   | bayraksız 479 (330)  | eski metin 6615 (412)   | bayraksız2 440 (293) | kalan 0
+calisma2   yük 1.26 GEÇERLİ | 1000 ayrı 1383 (91)    | 100 tek 160 (100)  | bakım temiz 1610 (389)   | bayraksız 473 (315)  | eski metin 1549 (327)   | bayraksız2 481 (325) | kalan 100000
+tur3_2     yük 1.07 GEÇERLİ | 1000 ayrı 2688 (97)    | 100 tek 286 (224)  | bakım temiz 1816 (367)   | bayraksız 506 (336)  | eski metin 6861 (374)   | bayraksız2 499 (344) | kalan 0
+yeni2      yük 1.03 GEÇERLİ | 1000 ayrı 1627 (101)   | 100 tek 159 (98)   | bakım temiz 1803 (375)   | bayraksız 534 (377)  | eski metin 6884 (352)   | bayraksız2 517 (352) | kalan 0
+calisma3   yük 0.29 GEÇERLİ | 1000 ayrı 1600 (99)    | 100 tek 188 (129)  | bakım temiz 1604 (360)   | bayraksız 514 (356)  | eski metin 1544 (328)   | bayraksız2 508 (356) | kalan 100000
+yeni3      yük 0.82 GEÇERLİ | 1000 ayrı 1647 (96)    | 100 tek 162 (100)  | bakım temiz 1847 (377)   | bayraksız 522 (357)  | eski metin 6217 (347)   | bayraksız2 480 (325) | kalan 0
+calisma4   yük 1.09 GEÇERLİ | 1000 ayrı 1629 (90)    | 100 tek 145 (86)   | bakım temiz 1583 (356)   | bayraksız 469 (313)  | eski metin 1583 (374)   | bayraksız2 561 (397) | kalan 100000
+yeni4      yük 1.02 GEÇERLİ | 1000 ayrı 1750 (104)   | 100 tek 149 (88)   | bakım temiz 1727 (351)   | bayraksız 456 (315)  | eski metin 6360 (397)   | bayraksız2 533 (386) | kalan 0
+calisma5   yük 1.08 GEÇERLİ | 1000 ayrı 1507 (86)    | 100 tek 162 (101)  | bakım temiz 1637 (343)   | bayraksız 491 (327)  | eski metin 1673 (336)   | bayraksız2 491 (336) | kalan 100000
+yeni5      yük 1.04 GEÇERLİ | 1000 ayrı 1569 (95)    | 100 tek 150 (87)   | bakım temiz 1830 (376)   | bayraksız 494 (348)  | eski metin 6298 (368)   | bayraksız2 542 (390) | kalan 0
+calisma6   yük 1.14 GEÇERLİ | 1000 ayrı 1640 (103)   | 100 tek 178 (117)  | bakım temiz 1682 (328)   | bayraksız 526 (354)  | eski metin 1676 (348)   | bayraksız2 524 (371) | kalan 100000
+yeni6      yük 1.07 GEÇERLİ | 1000 ayrı 1694 (91)    | 100 tek 162 (101)  | bakım temiz 1714 (342)   | bayraksız 499 (342)  | eski metin 6278 (373)   | bayraksız2 466 (320) | kalan 0

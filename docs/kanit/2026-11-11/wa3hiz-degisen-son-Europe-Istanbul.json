@@ -1,0 +1,32 @@
+{
+  "ad": "wa3hiz-degisen-son-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=2 test/whatsapp-tur3-hiz-250.test.mjs test/whatsapp-tur3-250.test.mjs test/whatsapp-tur1-bildirim-yolu-250.test.mjs test/whatsapp-wy-imzasiz-250.test.mjs test/whatsapp-t-durum-karar-tablosu-248.test.mjs",
+  "commit": "37dfcf310def84de61cbbc2baae71b4dc79c78fc",
+  "dal": "worktree-agent-a70a580bda07d5ebe",
+  "kirli": 0,
+  "izlenmeyen": 19,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-11T16:36:46.119Z",
+  "sure_sn": 79.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 142,
+    "gecen": 142,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-11/wa3hiz-degisen-son-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a70a580bda07d5ebe",
+  "ham_cikti_sha256": "5e99c5d5e50122eac309862000f4995b929e46e9708a7f27e6db5394a3bd15fa",
+  "ham_cikti_bayt": 63189
+}

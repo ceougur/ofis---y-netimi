@@ -1,0 +1,765 @@
+2.31 2.59 3.35 3/221 13007
+
+> destekofis@2.4.9 test:senaryo-whatsapp
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-whatsapp.mjs
+
+
+■ Kurulum: yönetici girer; Cari → Excel / Sheets’ten Yükle ile 1.000 müşteri açılır
+✓ kolonlar tanındı: name, phone, group, balance
+✓ 1.000 cari açıldı (0.8 sn)
+✓ cari listesinde 1000 cari
+✓ örnek cari: Müşteri 0007 Yılmaz bakiye 1059, 0537 007 07 21
+
+■ A. Listeden 40 cari işaretlenir → WhatsApp Ekstre → sırayla hepsine gönderilir
+✓ ilk sayfada 300 cari (sayfa 300)
+✓ seçim çubuğu: 40 cari seçildi Seçilenlere Taksit Planı WhatsApp Ekstre Wha
+✓ özet (519 ms): 40 Cari 39 Geçerli Numara 1 Numarası Yok / Hatalı 39 Gönderilecek
+✓ sıra 1 / 39 ile başlar
+✓ tamamlandı: 39 kişiye gönderildi (kişi başı 355 ms)
+✓ 39 wa.me adresi, hepsi geçerli cep numarası
+✓ her mesaj kendi kişisinin adıyla (kişiye özel ekstre)
+✓ her mesajda güncel bakiye
+✓ Müşteri 0004 Yılmaz: cari kartına ekstre gönderimi yazıldı
+✓ Müşteri 0037 Yılmaz (numarasız): gönderilmedi
+✓ gönderim bitince seçim temizlendi
+
+■ B. Sayfalar arasında 40 seçim: 20 ilk sayfadan, 20 Daha Fazla Göster'den sonra
+✓ daha fazla yüklenince seçim korunur (20)
+✓ iki sayfadan 40: 40 cari seçildi Seçilenlere Taksit Planı
+✓ özet: 40 Cari 38 Geçerli Numara 2 Numarası Yok / Hatalı 38 Gönderilecek
+✓ alıcı listesinde iki sayfadan seçilenlerin hepsi var
+
+■ C. Kadıköy Şube süzülür → Tümüne WhatsApp Mesaj → yalnız borçlular → şablonla hepsine gönderilir
+✓ şube süzgeci: 250 cari
+✓ hepsi: 250 Cari 238 Geçerli Numara 12 Numarası Yok / Hatalı 238 Gönderilecek
+✓ yalnız borçlular: 190 gönderilecek (250 Cari 238 Geçerli Numara 12 Numarası Yok / Hatalı 190 Gönderilecek)
+✓ sıra 1 / 190 ile başlar
+✓ tamamlandı: 190 kişiye gönderildi (kişi başı 371 ms)
+✓ 190 mesaj açıldı
+✓ her mesajda kendi adı ve kendi bakiyesi
+✓ doldurulmamış değişken kalmadı
+✓ Müşteri 0020 Yılmaz (borcu yok): kampanya mesajı gönderilmedi (geçmiş: statement)
+✓ Müşteri 0004 Yılmaz: mesaj gönderimi cari kartına yazıldı
+
+■ D. Hepsini Seç (1.000) → üç kişinin işareti kaldırılır → 997; o üçü alıcı listesinde yok
+✓ hepsi: 1.000 cari seçildi (süzgeçteki hepsi) Seçilenlere Taksit Pla
+✓ işareti kaldırılan üç kişi hariç: 997 cari seçildi (süzgeçteki hepsi, 3 hariç) Seçilenlere Taksit Planı 
+✓ başlık kutusu kısmi (yarım) görünür
+✓ özet (787 ms): 997 Cari 946 Geçerli Numara 51 Numarası Yok / Hatalı 946 Gönderilecek
+✓ hariç tutulan üç kişi alıcı listesinde yok
+
+■ E. Otomatik Sıra (v2.0.14): WhatsApp'tan bu pencereye dönülünce sıradaki kişi kendiliğinden açılır; kapatılınca açılmaz
+✓ üç kişi seçildi: Müşteri 0001 Yılmaz, Müşteri 0002 Yılmaz, Müşteri 0003 Yılmaz
+✓ Otomatik Sıra kutusu varsayılan açık
+✓ 2. kişi hazır, ipucu: WhatsApp'ta Gönder'e basın; bu pencereye dönünce Müşteri 0002 Yılmaz kendiliğinden açılaca
+✓ programa dönünce 2. kişi kendiliğinden açıldı; sıra 3 / 3
+✓ 3. kişi de kendiliğinden açıldı; 3 kişiye gönderildi
+✓ Müşteri 0003 Yılmaz: kendiliğinden açılan gönderim de cari kartına yazıldı
+✓ tamamlandıktan sonra odak dönüşü yeni sohbet açmaz
+✓ Otomatik Sıra kapalı: düğme eski adıyla
+✓ Otomatik Sıra kapalıyken odak dönüşü sıradakini açmaz
+✓ tercih hatırlanır (kapalı)
+
+■ Tarayıcı hataları
+✓ hiçbir ekranda tarayıcı hatası yok
+
+45 / 45 kontrol geçti.
+
+[kanit] watur3-e2e-senaryo-whatsapp: GEÇTİ · çıkış 0 · 45/45 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+2.37 2.69 3.26 1/224 15737
+
+> destekofis@2.4.9 test:senaryo-whatsapp-ayar-248
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-whatsapp-ayar-248.mjs
+
+
+■ A1 sekme ve boş durum: "Bağlı Değil", Elle Bağla
+  ✓ sekme adı WhatsApp
+  ✓ sekme seçili
+  ✓ durum Bağlı Değil
+  ✓ Elle Bağla düğmesi görünür
+  ✓ sekme açılınca Meta'ya istek yok
+
+■ A1b WhatsApp'ı Bağla: düğme görünür ve etkin; kapıcısız kurulumda açık ileti, pencere kapanır, Meta'ya istek yok
+  ✓ WhatsApp'ı Bağla düğmesi görünür
+  ✓ düğme adı
+  ✓ düğme etkin (düz açık)
+  ✓ boş bağlama penceresi kapandı
+  ✓ Meta'ya istek yok
+
+■ A2 Elle Bağla: Tab ile insan hızında yazım → Kaydet ve Sına → Bağlı; belirteç ekranda ve yanıtlarda yok
+  ✓ pencere başlığı Elle Bağla
+  ✓ App ID yardımı Ekstre şablonunu söylüyor: İsteğe bağlı; Ekstre şablonunu Meta'da açmak için gerekir (Meta uygulama panelinin üst kısmındaki App ID).
+  ✓ belirteç yardımı süre için Never diyor: Meta İşletme Ayarları'nda (Business Settings) System Users → Generate token; süre (Token expiration) olarak Never seçin — 60 günlük belirtecin bitişini program önceden bilemez. İzinler: business_management, whatsapp_business_management, whatsapp_business_messaging.
+  ✓ Tab sırası: kimlikler → belirteç
+  ✓ sınama sonrası durum Bağlı
+  ✓ Kaydet ve Sına bildirimi yeşil: hof-toast hof-toast-success is-visible|Kaydedildi; bağlantı çalışıyor.
+  ✓ pencere kapandı
+  ✓ görünen ad: Deneme Ticaret Ltd
+  ✓ kalite: Yüksek
+  ✓ sınır: 24 saatte 250 farklı kişi
+  ✓ belirteç: Kayıtlı (şifreli; ekranda gösterilmez)
+  ✓ deneme şablonu: hello_world: Onaylı (en_US)
+  ✓ Meta'ya giden belirteç yazılanla birebir (karakter kaybı yok)
+  ✓ veri tabanında kimlikler yazılanla aynı
+  ✓ veri tabanında belirteç mühürlü
+  ✓ bağlandıktan sonra: sayfada belirteç yok
+  ✓ API yanıtlarında belirteç yok (29 yanıt)
+
+■ A3 Kendime Deneme Gönder: numara + Enter → Meta'ya +90 ile hello_world; kartta Son Deneme
+  ✓ pencere başlığı
+  ✓ alıcı +905321112233 (+905321112233)
+  ✓ şablon hello_world, dil listeden (en_US)
+  ✓ Son Deneme: 03.11.2026 06:00 · …2233 · Meta kabul etti (wamid.SAHTE0001)
+  ✓ Meta'ya tek deneme iletisi (1)
+
+■ A4 Bilgileri Değiştir: kimlikler dolu, belirteç boş; yanlış belirteç → Sınama Başarısız; doğru belirteç → Bağlı
+  ✓ kimlikler dolu geldi
+  ✓ belirteç alanı boş (ekrana geri gelmez)
+  ✓ belirteç yardım yazısı
+  ✓ yanlış belirteçte Sınama Başarısız
+  ✓ neden Türkçe: 03.11.2026 06:00 · başarısız — Erişim belirtecinin süresi dolmuş. Meta İşletme Ayarları → 
+  ✓ doğru belirteçle yeniden Bağlı
+  ✓ yeniden bağlandıktan sonra: sayfada belirteç yok
+
+■ A4b Bildirim Yolu: uzaktan adres yokken Kayıtlı Değil → Bağlantıyı Sına ile Çalışıyor; Çakışma'da neden yazısı, Bağlantıyı Sına düzeltir
+  ✓ kartta Bildirim Yolu satırı var
+  ✓ uzaktan adres yokken: Kayıtlı Değil · ofisin uzaktan bağlantısı açılınca kendiliğinden kaydedilir
+  ✓ Bağlantıyı Sına sonrası: Çalışıyor · 03.11.2026 06:00 tarihinde kaydedildi
+  ✓ başarılı yolda yeşil bildirim aynen: hof-toast hof-toast-success is-visible|Bağlantı çalışıyor.
+  ✓ çalışırken Meta iletisi satırı yok
+  ✓ Meta'ya bu ofisin adresi kaydedildi
+  ✓ çalışırken neden yazısı yok
+  ✓ çakışmada: Çakışma · Meta'daki adres bu bilgisayarınkinden farklı
+  ✓ ne yapılacağı yazılı: Teslim ve okundu bilgisi şu an bu bilgisayara gelmiyor olabilir: aynı WhatsApp hesabı başka bir bilgisayarda da bağlı. B
+  ✓ Bağlantıyı Sına etkin
+  ✓ Bağlantıyı Sına Meta'daki adresi bu bilgisayara geri aldı (yeni gizli yol)
+  ✓ çakışma yazısı kalktı
+
+■ A4c Bildirim Yolu kaydedilemedi (Meta 100 abonelik): uyarı bildirimi, neden düğmelerin altında Türkçe, hücrede yalnız Kaydedilemedi + tarih; düzelince yeşil
+  ✓ ön koşul oluştu: Meta'ya abonelik kaydı istendi ve reddedildi (1 istek)
+  ✓ Bağlantıyı Sına: uyarı bildirimi: hof-toast hof-toast-warn is-visible|Bağlantı çalışıyor; ancak Bildirim Yolu kaydedilemedi — nedeni aşağıda.
+  ✓ yeşil 'Bağlantı çalışıyor.' bildirimi yok
+  ✓ hücrede yalnız Kaydedilemedi + tarih: Kaydedilemedi · 03.11.2026 06:00
+  ✓ neden Türkçe satırda: Bildirim Yolu kaydedilemedi — Meta bildirim adresini kaydetmedi: uygulamanızın bu WhatsApp Business hesabına aboneliği ve uygulama düzeyi webhook ayarı tamamlan
+  ✓ neden satırında İngilizce Meta iletisi yok
+  ✓ Meta iletisi ayrı satırda: Meta iletisi: (#100) Before override the current callback uri, your app must be subscribed to receive messages for Whats
+  ✓ neden düğmelerin altında, Meta iletisi onun altında, bilgi kutusunun dışında: {"whyAfterActions":true,"metaAfterWhy":true,"outsideFacts":true}
+  ✓ Bildirim Yolu hücresi kısa (yükseklik 42 px, Son Sınama 32 px)
+  ✓ bağlantı (ileti gönderimi) çalışıyor: durum Bağlı
+  ✓ hücrede yalnız Kaydedilemedi + tarih: Kaydedilemedi · 03.11.2026 06:00
+  ✓ neden Türkçe satırda: Bildirim Yolu kaydedilemedi — Meta bildirim adresini kaydetmedi: uygulamanızın bu WhatsApp Business hesabına aboneliği ve uygulama düzeyi webhook ayarı tamamlan
+  ✓ neden satırında İngilizce Meta iletisi yok
+  ✓ Meta iletisi ayrı satırda: Meta iletisi: (#100) Before override the current callback uri, your app must be subscribed to receive messages for Whats
+  ✓ neden düğmelerin altında, Meta iletisi onun altında, bilgi kutusunun dışında: {"whyAfterActions":true,"metaAfterWhy":true,"outsideFacts":true}
+  ✓ Bildirim Yolu hücresi kısa (yükseklik 42 px, Son Sınama 32 px)
+  ✓ Kaydet ve Sına: uyarı bildirimi: hof-toast hof-toast-warn is-visible|Kaydedildi. Bağlantı çalışıyor; ancak Bildirim Yolu kaydedilemedi — nedeni aşağıda.
+  ✓ yeşil 'Kaydedildi; bağlantı çalışıyor.' yok
+  ✓ hücrede yalnız Kaydedilemedi + tarih: Kaydedilemedi · 03.11.2026 06:00
+  ✓ neden Türkçe satırda: Bildirim Yolu kaydedilemedi — Meta bildirim adresini kaydetmedi: uygulamanızın bu WhatsApp Business hesabına aboneliği ve uygulama düzeyi webhook ayarı tamamlan
+  ✓ neden satırında İngilizce Meta iletisi yok
+  ✓ Meta iletisi ayrı satırda: Meta iletisi: (#100) Before override the current callback uri, your app must be subscribed to receive messages for Whats
+  ✓ neden düğmelerin altında, Meta iletisi onun altında, bilgi kutusunun dışında: {"whyAfterActions":true,"metaAfterWhy":true,"outsideFacts":true}
+  ✓ Bildirim Yolu hücresi kısa (yükseklik 42 px, Son Sınama 32 px)
+  ✓ düzelince yeşil bildirim: hof-toast hof-toast-success is-visible|Bağlantı çalışıyor.
+  ✓ neden ve Meta iletisi satırları kalktı
+
+■ A4d Bildirim Yolu kaydedilemedi, Meta yalnız hata kodu döndürdü (ileti yok): neden satırında '(Meta hata kodu 100)', Meta iletisi satırı yok; düzelince satır kalkar
+  ✓ ön koşul oluştu: abonelik kaydı istendi ve reddedildi (1 istek)
+  ✓ neden satırında Meta hata kodu: Bildirim Yolu kaydedilemedi — Meta bildirim adresi kaydını kabul etmedi (geçersiz değer) (Meta hata kodu 100). Kaydedilene dek teslim ve okundu bilgisi bu bilgisayara gelmez; program saatte bir kendil
+  ✓ Meta iletisi satırı yok (Meta ileti göndermedi)
+  ✓ düzelince neden satırı kalktı
+
+■ A4e Webhook Bilgileri: pencerede Callback URL (ofisin adresi + /wa/kanca/…) ve Verify Token; Belirteci Kopyala bildirimi; değerler sunucununkiyle aynı; pencere kapanınca sayfada yok
+  ✓ pencere başlığı Webhook Bilgileri
+  ✓ Callback URL: http://ofisx.destekofis.test/wa/kanca/sybgH60hcn2y4jwCQsTzHDHLMrphc32ZGI-G1e957xs
+  ✓ Verify Token 43 karakter
+  ✓ etiketler: Callback URL (Bildirim Adresi) | Verify Token (Doğrulama Belirteci)
+  ✓ düğmeler: Adresi Kopyala | Belirteci Kopyala
+  ✓ ekrandaki değerler sunucununkiyle aynı
+  ✓ Belirteci Kopyala bildirimi: hof-toast hof-toast-success|Doğrulama belirteci panoya kopyalandı.
+  ✓ pencere kapanınca sayfada belirteç yok
+
+■ A4f Webhook Bilgileri · kapıda belirteç yok: boş Verify Token satırı ve Belirteci Kopyala gizli, neden metni görünür, Adresi Kopyala yok
+  ✓ neden metni görünür (Türkçe cümle)
+  ✓ boş Verify Token satırı yok
+  ✓ Belirteci Kopyala yok (boş değer kopyalanmaz)
+  ✓ pencerede hiçbir değer satırı / kopyala düğmesi yok
+
+■ A5 Bağlantıyı Kaldır (onaylı) → Bağlı Değil; ayar satırı silindi; 2.5.0 W-2: Meta'daki abonelik de silindi, yeşil bildirim
+  ✓ onay sorusu soruldu
+  ✓ onay metni (Elle Bağla) kendi uygulamanın aboneliğini ve bekleyen gönderimleri söylüyor: ×
+        ONAY
+        Bağlantı kaldırılsın mı?
+        Kayıtlı belirteç ve kimlikler bu şirketten silinir, Meta uygulamanızın bu WhatsApp hesabındaki bildirim aboneliği de kaldırılır; bekleyen otomatik gönderimler durdu
+  ✓ durum Bağlı Değil
+  ✓ veri tabanında bağlantı yok
+  ✓ Meta'ya bir abonelik silme isteği (1)
+  ✓ yeşil bildirim: hof-toast hof-toast-success is-visible|WhatsApp bağlantısı kaldırıldı; Meta'daki abonelik de silindi.
+
+■ A5b Meta abonelik silmeyi reddederse: bağlantı yine kaldırılır, uyarı bildirimi 'Meta tarafında kaldırılamadı' + Veri Silme Adımları düğmesi
+  ✓ ön koşul: yeniden bağlandı
+  ✓ durum Bağlı Değil (yerel kaldırma yapıldı)
+  ✓ veri tabanında bağlantı yok
+  ✓ uyarı bildirimi: hof-toast hof-toast-warn|Bağlantı bu programdan kaldırıldı; ancak Meta tarafında kaldırılamadı (Meta isteği reddetti, hata kodu 100). Meta uygulamanızın WhatsApp hesabınızdaki aboneliğini Meta'dan kaldırmak için destekofis.net/veri-silme sayfasındaki adımları izleyin.
+  ✓ Veri Silme Adımları düğmesi
+
+■ A5c belirteç süresi: 53. gün uyarı satırı + Yeniden Bağla; ana ekranda günde bir bildirim; 60. gün Süresi Doldu, Kendime Deneme Gönder pasif + neden, Yeniden Bağla ve Bağlantıyı Sına açık
+  ✓ uyarı satırı: WhatsApp bağlantınızın süresi doluyor — yeniden bağlayın. Bağlantı 02.01.2027 tarihinde sona erer (7 gün kaldı).
+  ✓ Bağlantı Süresi: 02.01.2027 06:00 tarihine kadar · 7 gün kaldı
+  ✓ Yeniden Bağla görünür ve etkin
+  ✓ ana ekranda bildirim çıktı
+  ✓ bildirimde Yeniden Bağla düğmesi
+  ✓ aynı gün yeniden açılınca bildirim yok (günde en çok bir kez)
+  ✓ durum Süresi Doldu
+  ✓ neden satırı: WhatsApp bağlantınızın süresi doldu (02.01.2027). Yeni gönderim başlatılamaz; Yönetim → WhatsApp'ta Yeniden Bağla ile yeniden bağlayın.
+  ✓ Kendime Deneme Gönder pasif
+  ✓ pasif düğmenin nedeni görünür: Bağlantının süresi doldu; deneme iletisi gönderilemez. Yeniden Bağla ile bağlantıyı yenileyin.
+  ✓ Yeniden Bağla ve Bağlantıyı Sına etkin
+  ✓ Yeniden Bağla WhatsApp'ı Bağla yolunu açtı (kapıcısız kurulumda açık ileti)
+
+■ A6 yetkisiz (Personel): Yönetim açılmaz, WhatsApp bağlantı API'si 403
+  ✓ Yönetim paneli personelde kapalı
+  ✓ API 403 (403)
+  ✓ Webhook bilgileri API 403 (403)
+
+■ A7 WhatsApp'ı Bağla uçtan uca: pencere → sır postMessage ile → Bağlanacak Program → Facebook ile Devam Et → Bağlı; sır adreslerde yok
+  ✓ Yönetim sayfası COOP same-origin-allow-popups (same-origin-allow-popups)
+  ✓ WhatsApp'ı Bağla etkin (yerel adres)
+  ✓ kapıcı sayfası çerçeveye alınamaz (frame-ancestors 'none' + DENY)
+  ✓ kapıcı sayfası COOP koymaz
+  ✓ Bağlanacak Program: firma adı aynen (Kurban <img src=x onerror="window.__xss=…)
+  ✓ firma adındaki HTML yorumlanmadı (betik / resim yok)
+  ✓ sayfa sırrı alınca pencereyi açanla bağı kesti (Facebook betiği programa erişemez)
+  ✓ Facebook SDK sır doğrulanınca bir kez yüklendi (1)
+  ✓ program ekranı tek kullanımlık sırrı aldı
+  ✓ kapıcı Meta'da kodu bir kez değiştirdi (AQD-e2e-kodu-0001)
+  ✓ program Bağlı
+  ✓ Bağlantı Yolu: WhatsApp'ı Bağla
+  ✓ Bağlantı Süresi: 10.01.2027 08:21 tarihine kadar · 60 gün kaldı
+  ✓ Uygulama Kimliği kapıcıdan geldi
+  ✓ örnek PDF App ID ile yüklendi (1)
+  ✓ Ekstre şablonu Meta'ya gönderildi
+  ✓ Şablonlar kartı olmayan düğmeye yönlendirmiyor
+  ✓ sır hiçbir istek adresinde yok (159 istek)
+
+■ A8 TAŞINAN BAĞLANTI (pencereyi açan yok): ileti, düğme pasif, SDK yüklenmez, kapıcıya istek yok
+  ✓ ön koşul: saldırganın oturumu (200)
+  ✓ ileti: Bu bağlantı yalnız DestekOfis programından açılır. Bağlantıyı size başkası gönderdiyse pencereyi kapatın.
+  ✓ Facebook ile Devam Et pasif
+  ✓ pasif görünüm: opaklık 0.45, imleç not-allowed
+  ✓ firma adı gösterilmedi
+  ✓ Facebook SDK yüklenmedi (Meta akışı başlamadı)
+  ✓ kapıcıya doğrulama / kod isteği gitmedi
+
+■ A9 SALDIRGANIN SAYFASI pencereyi açıp DOĞRU sırrı verir: genel kökenden ileti yok sayılır; SDK yok, kapıcıya istek yok
+  ✓ ön koşul: saldırganın oturumu ve sırrı (200, sır var)
+  ✓ saldırganın sayfası bağlama penceresini açtı
+  ✓ ön koşul: sayfa "hazır" dedi, saldırgan sırrı gönderdi (31 kez)
+  ✓ ileti: Bu bağlantı yalnız DestekOfis programından açılır. Bağlantıyı size başkası gönderdiyse pencereyi kapatın.
+  ✓ Facebook ile Devam Et pasif
+  ✓ Facebook SDK yüklenmedi
+  ✓ kapıcıya doğrulama / kod isteği gitmedi
+
+■ A10 program yerel olmayan adla açık (uzak.ofis.example): WhatsApp'ı Bağla pasif + neden yazısı; öbür düğmeler etkin; API 409
+  ✓ WhatsApp'ı Bağla / Yeniden Bağla pasif
+  ✓ öbür düğmeler etkin (test, self-test, remove)
+  ✓ neden görünür yazıyla: WhatsApp'ı Bağla işlemi ofisteki bilgisayardan yapılır: programı ofis ağındaki bir bilgisayarda açıp yeniden deneyin.
+  ✓ API 409 whatsapp-embedded-local (409 whatsapp-embedded-local)
+  ✓ yerel olmayan istek yok (—)
+  ✓ sayfa hatası yok (—)
+
+157 geçti, 0 kaldı
+
+[kanit] watur3-e2e-senaryo-whatsapp-ayar-248: GEÇTİ · çıkış 0 · 157/157 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+2.50 2.70 3.23 1/220 16295
+
+> destekofis@2.4.9 test:senaryo-whatsapp-donem-248
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-whatsapp-donem-248.mjs
+
+
+■ Giriş
+  ✓ yönetici girdi
+
+■ D1 Geçen Ay: metin ve 'Cari Ekstre - PDF' aynı dönem, aynı bakiye
+  ✓ baloncuk: güncel bakiye 850,00 TL (Güncel bakiye: 850,00 TL (borcunuz))
+  ✓ baloncukta dönem 01.10.2026 – 31.10.2026
+  ✓ PDF bağlantısı dönemli (/api/workspace/accounts/account-347984df-10b1-41ac-b3c4-8068953644b5/ekstre.pdf?donem=1&from=2026-10-01&to=2026-10-31)
+  ✓ PDF indi
+  ✓ PDF dönemi 01.10.2026 – 31.10.2026
+  ✓ dönem uçlarındaki hareketler PDF'te
+  ✓ dönem dışı (Kasım) hareket PDF'te YOK
+  ✓ PDF dönem sonu bakiyesi 850,00 TL (metinle aynı)
+  ✓ devir 1.000,00 TL
+
+■ D2 WhatsApp'ta Aç: kişinin adıyla inen PDF dönemli ve D1'le aynı
+  ✓ indirme bağlantısının dosya adı: Ekstre Dönem Kişisi 01.10.2026-31.10.2026.pdf
+  ✓ indirme bağlantısı dönemli
+  ✓ indirilen PDF bağlantıdaki dönemli PDF'le BAYT BAYT aynı
+  ✓ WhatsApp sohbeti kişinin numarasıyla açıldı
+
+■ D3 Tüm Hareketler: PDF bugüne kadar, bakiye metindekiyle aynı
+  ✓ baloncuk: 890,00 TL
+  ✓ PDF: Tüm Hareketler · 03.11.2026 tarihine kadar
+  ✓ bütün hareketler
+  ✓ PDF bakiyesi 890,00 TL (metinle aynı)
+
+■ D4 WhatsApp Mesajı İstemiyor: formda Tab + Boşluk, kartta rozet, pencerede seçilemez
+  ✓ başlangıçta işaretsiz
+  ✓ alan adı: WhatsApp Mesajı İstemiyor
+  ✓ Tab ile kutuya gelindi
+  ✓ Boşluk ile işaretlendi
+  ✓ veri tabanında işaret 1
+  ✓ kartta rozet
+  ✓ özet: 1 Cari 0 Geçerli Numara 0 Numarası Yok / Hatalı 1 WhatsApp Mesajı İstemiyor 0 Gönderilecek
+  ✓ özet İstemiyor'u ayrı sayar: 1 Cari 0 Geçerli Numara 0 Numarası Yok / Hatalı 1 WhatsApp Mesajı İstemiyor 0 Gönderilecek
+  ✓ satırda neden yazılı
+  ✓ kişi seçilemez
+  ✓ Gönderime Başla pasif
+  ✓ Gönderime Başla pasifliğinin nedeni görünür: Gönderilebilecek kişi yok: seçilen carilerin numarası yok ya da hatalı, cari WhatsApp mesajı istemiyor ya da pasif.
+
+■ D5 Pasif Cari: kartta Pasife Al → WhatsApp penceresinde seçilemez, ayrı sayaç, nedeni görünür
+  ✓ veri tabanında durum passive
+  ✓ özet Pasif Cari'yi ayrı sayar: 1 Cari 0 Geçerli Numara 0 Numarası Yok / Hatalı 1 Pasif Cari 0 Gönderilecek
+  ✓ satırda neden yazılı:  Pasif Kişisi 0533 111 22 33 · Pasif Cari ₺300,00 Borçlu
+  ✓ kişi seçilemez
+  ✓ Gönderime Başla pasif
+  ✓ pasifliğin nedeni görünür: Gönderilebilecek kişi yok: seçilen carilerin numarası yok ya da hatalı, cari WhatsApp mesajı istemiyor ya da pasif.
+  ✓ sayfa hatası yok (—)
+
+37 geçti, 0 kaldı
+
+[kanit] watur3-e2e-senaryo-whatsapp-donem-248: GEÇTİ · çıkış 0 · 37/37 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+2.79 2.76 3.24 5/223 16447
+
+> destekofis@2.4.9 test:senaryo-whatsapp-sablon-248
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-whatsapp-sablon-248.mjs
+
+
+■ B0 bağlantı yokken: şablon kartı görünür, düğme pasif ve nedeni yazılı
+  ✓ kart başlığı
+  ✓ Şablonları Denetle ve Oluştur pasif
+  ✓ neden: Önce yukarıdaki Elle Bağla ile WhatsApp Business API bağlantısını kurun.
+  ✓ durum Denetlenmedi
+  ✓ Meta'ya istek yok
+
+■ B1 App ID'siz bağlantı → Denetle: Ödeme Hatırlatma açılır, Ekstre için Uygulama Kimliği istenir
+  ✓ bağlantı kaydedildi (200)
+  ✓ Ödeme Hatırlatma: Onay Bekliyor
+  ✓ Ekstre: Henüz Açılmadı
+  ✓ Ekstre için App ID nedeni görünür
+  ✓ Meta'ya yalnız Ödeme Hatırlatma, UTILITY
+
+■ B2 Bilgileri Değiştir: App ID Tab ile → Kaydet ve Sına → Ekstre kendiliğinden açılır (örnek PDF, KVKK alt satırı)
+  ✓ Tab: WABA ID → App ID
+  ✓ Ekstre: Onay Bekliyor (kendiliğinden açıldı)
+  ✓ örnek PDF Meta'ya yüklendi
+  ✓ Ekstre UTILITY, tr
+  ✓ BELGE başlığı + yükleme tanıtıcısı
+  ✓ gövde plandaki metin
+  ✓ KVKK alt satırı
+  ✓ açma isteğinde teslim süresi yok — Meta varsayılanı 30 gün (2.4.9 W-T) (geldi undefined)
+  ✓ Ödeme Hatırlatma yeniden açılmadı
+  ✓ veri tabanında App ID yazılan
+  ✓ kendiliğinden açmadan sonra: sayfada belirteç yok
+
+■ B3 Meta Ekstre'yi Pazarlama'ya aldı, Hatırlatma onaylandı → klavyeyle Denetle: açık uyarı, Ekstre gönderime hazır değil
+  ✓ Ekstre kategorisi Pazarlama
+  ✓ Ekstre gönderime hazır: Hayır
+  ✓ Hatırlatma Onaylandı / Evet
+  ✓ uyarı görünür: Meta bu şablonu Pazarlama (Marketing) sınıfına aldı; program bu şablonla gönderi
+  ✓ uyarı ekranda görünür
+  ✓ yeniden şablon açılmadı
+  ✓ onaylı şablona teslim süresi düzenlemesi gitmedi (2.4.9 W-T)
+
+■ B3b 2.4.8'den kalan teslim süresi kaydı (ret + kırmızı TTL işlemi): kartta TTL uyarısı ve TTL işlemi GÖRÜNMEZ (2.4.9 W-6)
+  ✓ kartta teslim süresi uyarısı / işlemi yok
+  ✓ kartta kimlik suçlayan kırmızı ileti yok
+  ✓ Hatırlatma Onaylandı / Evet (kayıt okunuyor)
+
+■ B4 yetkisiz (Personel): şablon API'si 403
+  ✓ GET 403
+  ✓ POST 403
+  ✓ aydınlatma metni 403
+  ✓ aydınlatma PDF 403
+
+■ B5 Aydınlatma Metni Hazırla: firma bilgileri, eksik e-posta, Kopyala = API metni, PDF, Esc
+  ✓ firma bilgisi kaydedildi (e-posta yok)
+  ✓ kart başlığı
+  ✓ pencere başlığı Aydınlatma Metni
+  ✓ metinde unvan, VKN, adres
+  ✓ metinde Meta, md. 9, veri işleyen
+  ✓ eksik e-posta yer tutucusu
+  ✓ eksik bilgi adıyla söylendi
+  ✓ panodaki metin API metniyle aynı (5999 karakter)
+  ✓ inen dosya PDF
+  ✓ dosya adı (başlık): inline; filename="KVKK Aydinlatma Metni (WhatsApp) Mavi Muhasebe Ltd. Sti..pdf"; filename*=UTF-8''KVKK Aydınlatma Metni (WhatsApp) Mavi Muhasebe Ltd. Şti..pdf
+  ✓ PDF isteği şirket parametreli: /api/workspace/whatsapp/aydinlatma-metni.pdf?hofCompany=sirket-001
+  ✓ düğme adı Aydınlatma Metni - PDF
+  ✓ Esc ile kapandı, soru sorulmadı
+  ✓ API yanıtlarında belirteç yok (41 yanıt)
+  ✓ sayfa hatası yok (—)
+
+50 geçti, 0 kaldı
+
+[kanit] watur3-e2e-senaryo-whatsapp-sablon-248: GEÇTİ · çıkış 0 · 50/50 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+3.05 2.82 3.26 2/218 16559
+
+> destekofis@2.4.9 test:senaryo-whatsapp-gonder-248
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-whatsapp-gonder-248.mjs
+
+
+■ Giriş
+  ✓ yönetici girdi
+
+■ G1 Cari listesi → hepsini seç → WhatsApp Ekstre: iki yol, Otomatik Gönder seçili; önizleme sayıları; onaysız Gönder pasif + neden
+  ✓ iki yol: Otomatik Gönder + WhatsApp Web ile Gönder
+  ✓ bağlı ve şablon hazır → Otomatik Gönder varsayılan
+  ✓ pencere başlığı
+  ✓ seçilen 7 (7)
+  ✓ gönderilecek 4: aynı adlı iki + aynı telefonlu iki (§7a 8) (4)
+  ✓ elenen 3 (3)
+  ✓ nedenler: Telefon yok 1, WhatsApp Mesajı İstemiyor 1, Pasif Cari 1
+  ✓ aynı adlı iki cari ayrı satırda, telefonun son haneleriyle (…0001, …0002)
+  ✓ tahmini ücret 4 × 0,0009 = 0,0036 USD (≈ 0,0036 USD (4 ileti × 0,0009 USD; yalnız teslim edilen ileti ücretlidir, Meta faturası esastır))
+  ✓ 24 saatlik sınır 250 (TIER_250)
+  ✓ ertesi güne kalan 0
+  ✓ onay işaretsiz: Gönder PASİF
+  ✓ nedeni görünür yazı: Gönderim için onay kutusunu işaretleyin: "Aydınlatma metnimi okudum, carilerime ulaştıracağım."
+  ✓ Aydınlatma Metni bağlantısı (yönetici)
+  ✓ önizleme: toplu iş yok, Meta'ya ileti yok
+
+■ G2 her seçenek: Ödeme Hatırlatma (gecikmiş borç yok → hepsi elenir, Gönder pasif + neden) ve Geçen Ay dönemi
+  ✓ Ödeme Hatırlatma: gönderilecek 0
+  ✓ Gecikmiş Borç Yok 4 (4)
+  ✓ hatırlatmada dönem seçimi yok
+  ✓ Gönder pasif
+  ✓ Geçen Ay dönemi 01.10.2026 – 31.10.2026
+  ✓ Geçen Ay: gönderilecek 4
+  ✓ Bu Ay dönemi 01.11.2026 – 03.11.2026
+
+■ G3 onay Tab + Boşluk → Gönder (4 Kişi) → soru → toplu iş ekranı; veri tabanı 1 toplu iş, 7 iş
+  ✓ onay kutusuna Tab ile gelindi
+  ✓ onay veri tabanında (whatsapp.ack)
+  ✓ onaydan sonra Gönder etkin
+  ✓ düğme: Gönder (4 Kişi)
+  ✓ soru penceresi "Gönderim Başlasın mı?" (görülen: Gönderim Başlasın mı?)
+  ✓ veri tabanı: 1 toplu iş
+  ✓ veri tabanı: 4 bekliyor + 3 atlandı ({"pending":4,"skipped":3})
+  ✓ ekranda Bekliyor 4, Atlandı 3
+  ✓ durum Sürüyor
+  ✓ işçi çalışmadan Meta'ya ileti yok
+
+■ G4 Duraklat → Devam Et (veri tabanı); işçi → sahte Meta 4 ileti, ekranda Meta Kabul Etti 4
+  ✓ veri tabanı: paused
+  ✓ ekranda Duraklatıldı 4
+  ✓ duraklatılmış işten ileti gitmedi
+  ✓ veri tabanı: running
+  ✓ sahte Meta: 4 ileti (4)
+  ✓ aynı telefona iki ileti, iki ayrı PDF (Ekstre Ortak Telefon A 01.11.2026-03.11.2026.pdf | Ekstre Ortak Telefon B 01.11.2026-03.11.2026.pdf)
+  ✓ şablon destekofis_ekstre, dil tr
+  ✓ İstemiyor ve pasif cariye ileti yok
+  ✓ ekranda Meta Kabul Etti 4 (canlı olayla)
+  ✓ toplu iş Tamamlandı
+
+■ G5 kanca (HTTP) → Teslim Edildi 2, Okundu 1, Başarısız 1 (neden); Bu Ay 3
+  ✓ kanca 200 (200 {"ok":true})
+  ✓ ekranda Teslim Edildi 2, Okundu 1, Başarısız 1
+  ✓ başarısızın nedeni satırda (İleti alıcıya iletilemedi (numara WhatsApp kullanmıyor, WhatsApp'ın koşullarını kabul etmemiş ya da WhatsApp'ı çok eski). (Meta hata kodu 131026))
+  ✓ Başarısızları Yeniden Dene görünür
+  ✓ API: bu ay teslim 3, ücretli 3 (3/3)
+
+■ G6 yenile → Gönderimler listesinden aynı toplu iş; ikinci sekmede süren işte 'Zaten Kuyrukta'
+  ✓ Gönderim Özeti: Bu Ay Gönderilen İleti Sayısı 3
+  ✓ Gönderimler listesinde toplu iş
+  ✓ yeniden açılınca durumlar sunucudan (Teslim 2, Başarısız 1)
+  ✓ Yönetim → WhatsApp: Teslim Edilen İleti 3
+  ✓ Meta faturasıyla karşılaştırma notu
+  ✓ Yönetim kartında onay işaretli
+
+■ G7 R3: aynı dönem yeniden → 3 kişiye daha önce gönderildi; varsayılan Bunları Çıkar (1); Yine de Gönder (4); iki sekme → Zaten Kuyrukta
+  ✓ R3 uyarısı (3 kişiye bu dönem daha önce gönderildi (son gönderim 03.11.2026 06:00). Aynı ekstre ya da )
+  ✓ varsayılan Bunları Çıkar
+  ✓ gönderilecek 1 (başarısız olan), Daha Önce Gönderildi 3
+  ✓ Yine de Gönder → gönderilecek 4
+  ✓ Bunları Çıkar'a dönünce 1
+  ✓ soru penceresi "Gönderim Başlasın mı?" (görülen: Gönderim Başlasın mı?)
+  ✓ yalnız başarısız olan (Ortak Telefon B) bekliyor
+  ✓ ikinci sekme: Zaten Kuyrukta 1 (1)
+  ✓ ikinci sekme: gönderilecek 0, Gönder pasif
+  ✓ ikinci sekmede 'Süren gönderim var' notu
+  ✓ sahte Meta: toplam 5 ileti (5)
+
+■ G8 Bağlantı Bekleniyor (Meta'ya ulaşılamıyor) ve Sınır Nedeniyle Bekliyor ekranda açıkça
+  ✓ toplu iş açıldı (200)
+  ✓ durum Bağlantı Bekleniyor
+  ✓ açıklama: iletiler başarısız sayılmaz, kendiliğinden sürer
+  ✓ Devam Et gerekmez (düğme yok)
+  ✓ bağlantı dönünce gönderildi (done)
+  ✓ elle günlük sınır 4
+  ✓ Sınır Nedeniyle Bekliyor açıklaması
+
+■ G8b Gönderimler: Daha Fazla Göster (klavye) satırı artırır, sonda düğme yok + neden; tarih süzgeci daraltır, boş gün ipucu, geçersiz aralıkta neden; Süzgeci Temizle
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ toplu iş açıldı (200)
+  ✓ veri tabanı: 36 gönderim (30'dan fazla)
+  ✓ ilk açılışta 30 satır (görülen 30)
+  ✓ Daha Fazla Göster düğmesi görünür
+  ✓ Daha Fazla Göster (Enter) → 36 satır
+  ✓ daha eski yok → düğme görünmez
+  ✓ düğmenin yokluğunun nedeni yazılı
+  ✓ Daha Fazla Göster sonrası odak ilk yeni satırda (31.) (görülen {"tag":"TR","row":30,"value":null,"scroll":1049,"visible":true})
+  ✓ kutu ilk yeni satıra kaydı, satır görünür (görülen {"tag":"TR","row":30,"value":null,"scroll":1049,"visible":true})
+  ✓ Tab → sonraki satır (odak listede sürer)
+  ✓ toplu iş açıldı (200)
+  ✓ canlı yenileme kutu kaydırmasını korur (200 → 200)
+  ✓ canlı yenilemede odak aynı satırda kalır (görülen {"tag":"TR","row":32,"value":null,"scroll":200,"visible":false})
+  ✓ Başlangıç'a klavyeyle 01.01.2026: değer tam, odak alanda (görülen {"tag":"INPUT[name=waListFrom]","row":-1,"value":"2026-01-01","scroll":0,"visible":false})
+  ✓ yarım yılla (0002 …) liste isteği gitmedi (istekler ["?limit=31&from=2026-01-01&hofCompany=sirket-001&hofPage=dataset%3A%2F%2Fofis"])
+  ✓ geçersiz tarih nedeni çıkmadı (süzgeç tam tarihle uygulandı)
+  ✓ arka plan gönderimleri açıldı (hatalar [])
+  ✓ ön koşul: yazım sırasında arka planda 3 gönderim, 2 canlı yenileme (istekler ["?limit=31&from=2026-01-01&hofCompany=sirket-001&hofPage=dataset%3A%2F%2Fofis","?limit=31&from=2026-01-01&hofCompany=sirket-001&hofPage=dataset%3A%2F%2Fofis","?limit=31&from=2026-01-01&to=2026-12-12&hofCompany=sirket-001&hofPage=dataset%3A%2F%2Fofis","?limit=31&from=2026-01-01&to=2026-12-12&hofCompany=sirket-001&hofPage=dataset%3A%2F%2Fofis"])
+  ✓ süren gönderimde Bitiş'e klavyeyle 12.12.2026: değer tam, odak alanda (görülen {"tag":"INPUT[name=waListTo]","row":-1,"value":"2026-12-12","scroll":0,"visible":false})
+  ✓ Bitiş yalnız tam tarihle uygulandı
+  ✓ Başlangıç = Bitiş = 01.11 → 3 satır (süzgeç daraltır)
+  ✓ süzgeçli sonda neden
+  ✓ geçersiz aralık: sunucunun nedeni listede
+  ✓ gönderimsiz gün: "Bu tarihlerde gönderim yok."
+  ✓ Süzgeci Temizle → baştan 30 satır, alanlar boş
+  ✓ Süzgeci Temizle'den sonra odak Başlangıç'ta (düğme kalktı, odak sayfaya düşmez)
+
+■ G8c Gönderimler: süren yenilemede Daha Fazla Göster, yüklenirken odak ve çift basış, yarım tarihle Süzgeci Temizle / satır, Tab ve Enter
+  ✓ veri tabanı: 100 gönderim (üç sayfadan fazla)
+  ✓ ilk açılışta 30 satır
+  ✓ ön koşul: canlı yenileme isteği sürüyor (süren 1)
+  ✓ yenileme sürerken basılan Daha Fazla Göster "Yükleniyor…" gösterir, odakta (görülen {"tag":"BUTTON[name=waListMore]","row":-1,"aria":"true","text":"Yükleniyor…","value":""})
+  ✓ canlı yenileme sürerken Enter yutulmadı → 60 satır (görülen 60)
+  ✓ yenileme sürerken iki Enter → tek Daha Fazla Göster isteği (görülen 1)
+  ✓ ön koşul: canlı yenileme isteği sürüyor (fare; süren 1)
+  ✓ canlı yenileme sürerken fareyle basış yutulmadı → 90 satır (görülen 90)
+  ✓ ön koşul: Daha Fazla Göster isteği sürüyor (süren 1)
+  ✓ yüklenirken odak düğmede, aria-disabled + "Yükleniyor…" (görülen {"tag":"BUTTON[name=waListMore]","row":-1,"aria":"true","text":"Yükleniyor…","value":""})
+  ✓ sonda 102 satır (görülen 102)
+  ✓ yüklenirken ikinci Enter ikinci istek açmadı (Daha Fazla Göster isteği 1)
+  ✓ yükleme bitince odak ilk yeni satırda (91.) (görülen {"tag":"TR","row":90,"aria":"","text":"03.11.2026 06:05Ekstre01.11.2026 – 03.11","value":null})
+  ✓ ön koşul: Başlangıç'ta yarım yıl (görülen 0002-01-01)
+  ✓ yarım tarihle Süzgeci Temizle'ye fareyle basış kaybolmadı: alanlar boş, düğme kalktı (görülen {"from":"","to":"","button":false})
+  ✓ Süzgeci Temizle → baştan 30 satır
+  ✓ ön koşul: yarım yılla yazarken istek gitmedi
+  ✓ Tab ile alandan çıkınca yarım tarih uygulandı (istekler ["?limit=31&to=0020-01-01&hofCompany=sirket-001&hofPage=dataset%3A%2F%2Fofis"])
+  ✓ Tab sonrası liste yarım tarihe göre (görülen 0 satır)
+  ✓ Enter ile yarım tarih uygulandı (istekler ["?limit=31&to=0020-01-01&hofCompany=sirket-001&hofPage=dataset%3A%2F%2Fofis"], 0 satır)
+  ✓ Enter'dan sonra odak Bitiş'te (görülen {"tag":"INPUT[name=waListTo]","row":-1,"aria":"","text":"","value":"0020-01-01"})
+  ✓ yarım tarihle satıra fareyle basış kaybolmadı: gönderim wab-447f1bf6-e6f0-46c0-8872-fbcc0354faec açıldı
+
+■ G8d şirket dosyası başka programda kilitli: süren gönderimde neden ve listede etiket; kilit kalkınca kalkar, iş gider
+  ✓ toplu iş açıldı (200)
+  ✓ kilitsizde not yok
+  ✓ kilitte ileti gitmedi
+  ✓ ekranda neden (görülen: Bekliyor: Şirket dosyası başka bir program tarafından kullanılıyor; gönderim bekliyor.)
+  ✓ listede Dosya Kullanımda etiketi
+  ✓ etiket yalnız süren gönderimde (1)
+  ✓ kilit kalkınca listedeki etiket kalktı (canlı olay)
+  ✓ kilit kalkınca iş gitti, tek ileti (done, 1)
+  ✓ gönderim ekranında not yok
+
+■ G8e makine defteri başka programda kilitli: süren gönderimde defter cümlesi ve listede etiket; kilit kalkınca kalkar
+  ✓ toplu iş açıldı (200)
+  ✓ defter kilitliyken ileti gitmedi
+  ✓ ekranda defter cümlesi (görülen: Bekliyor: WhatsApp gönderim defteri başka bir program tarafından kullanılıyor; gönderim bekliyor.)
+  ✓ listede Dosya Kullanımda etiketi
+  ✓ kilit kalkınca etiket kalktı
+  ✓ kilit kalkınca tek ileti (1)
+
+■ G8f İş V3 + X4: önceki bir kabul deftere YAZILAMADI (onarım listesinde) + defter başka programda kilitli → önizleme beklemez, Gönder pasif + kilit cümlesi; kilit kalkınca BEKLEMEDEN kalkar
+  ✓ toplu iş açıldı (200)
+  ✓ ön koşul: dosyada Meta Kabul Etti (accepted)
+  ✓ ön koşul: onarım listesinde (defterde kabul YOK)
+  ✓ önizleme defter kilidini beklemedi (1454 ms; kilit beklemesi 10 sn)
+  ✓ Gönder PASİF
+  ✓ nedeni görünür yazı, kilit notuyla aynı cümle (görülen: WhatsApp gönderim defteri başka bir program tarafından kullanılıyor; gönderim bekliyor.)
+  ✓ kilit kalkınca neden hemen kalktı (görülen: Gönderilebilecek kişi yok (seçilenlerin hepsi elendi; nedenler yukarıda).)
+  ✓ onarım listesi boşaldı (kabul deftere yazıldı)
+
+■ G9 WhatsApp Web ile Gönder (wa.me) bağlantı varken de çalışır
+  ✓ başlık bugünkü (WhatsApp ile Ekstre Gönder)
+  ✓ otomatik panel gizli
+  ✓ wa.me adresi açıldı (905321000001)
+  ✓ cari kartına kayıt (message_sends +1)
+
+■ G10 yetkisiz (Personel): Otomatik Gönder sekmesinde neden, Gönder pasif; API 403
+  ✓ yetkisiz: WhatsApp Web ile Gönder varsayılan
+  ✓ sekmede neden: yetkiniz yok
+  ✓ Gönder pasif
+  ✓ neden görünür: WhatsApp ile otomatik gönderim yetkiniz yok (yetkiyi yönetici verir: WhatsApp ile Otomatik Gönder).
+  ✓ API: personel toplu iş 403 (403)
+
+■ G11 dar pencere (760 px): yatay taşma yok
+  ✓ pencerede yatay taşma yok (0 px)
+
+■ G12 salt okunur lisans: Otomatik Gönder'de neden, Gönder pasif; yeni toplu iş yok
+  ✓ salt okunur: WhatsApp Web ile Gönder varsayılan
+  ✓ Gönder pasif
+  ✓ neden görünür: Program salt okunur çalışıyor (lisans); WhatsApp ile otomatik gönderim yapılamaz.
+  ✓ yeni toplu iş yok
+  ✓ sayfa hatası yok
+
+189 geçti, 0 kaldı
+
+[kanit] watur3-e2e-senaryo-whatsapp-gonder-248: GEÇTİ · çıkış 0 · 189/189 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+2.50 2.71 3.17 2/222 17532
+
+> destekofis@2.4.9 test:senaryo-whatsapp-kvkk-250
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-whatsapp-kvkk-250.mjs
+
+K1 Cari kartı → WhatsApp: KVKK düğmesi, Vazgeç
+  ✓ yönetici KVKK düğmesini görür
+  ✓ düğme adı
+  ✓ soru başlığı ve nedeni
+  ✓ Vazgeç: hiçbir kayıt silinmedi
+K2 Sil → bildirim ve veri tabanı
+  ✓ bildirim (Gönderim kayıtları silindi: 2 kayıt, 1 bekleyen gönderim atlandı.×)
+  ✓ A'nın iki işi içeriksiz
+  ✓ bekleyen iş Atlandı — Silme Talebi
+  ✓ B'nin işi durur
+  ✓ Son Gönderimler satırında İçerik Silindi
+K3 Gönderimler → ayrıntı
+  ✓ ayrıntıda neden metni
+  ✓ telefon boş, ad karttan
+K4 Yönetim → WhatsApp → Gönderim Kayıtları ve KVKK (telefonsuz cari)
+  ✓ kart başlığı
+  ✓ C'nin işi silindi (kartta WhatsApp düğmesi olmadan)
+K4b Yönetim → WhatsApp: Silinenler'deki cari (WhatsApp kaydı var) da bulunur — kart açılmaz, yalnız silme talebi
+  ✓ satır silinmiş cari olarak işaretli
+  ✓ satırda (Silinenler'de) etiketi
+  ✓ silinmiş carinin kartına bağlantı yok
+  ✓ silinmiş carinin işi silindi
+K5 Personel: düğme yok, uç 403
+  ✓ personel uca erişemez (403)
+  ✓ personelde KVKK düğmesi yok
+  ✓ B'nin işi hâlâ durur
+20 geçti, 0 kaldı
+
+[kanit] watur3-e2e-senaryo-whatsapp-kvkk-250: GEÇTİ · çıkış 0 · 20/20 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+2.70 2.74 3.17 1/162 17879
+
+> destekofis@2.4.9 test:sema-kapisi-bs7
+> node --disable-warning=ExperimentalWarning test/e2e/sema-kapisi-bs7.mjs
+
+
+■ Hazırlık: 001 ve 002 programın kendi API'siyle; 002'nin şeması 'yeni sürüm' benzetimiyle büyütülür
+
+■ 002 penceresi: şerit görünür, okuma çalışır
+2026-11-11T08:24:48.906Z [WARN] Veri dosyası programın daha yeni bir sürümüyle açılmış (şema 48 > 47); göç yapılmadı, şirket yalnız görüntülenir.
+  ✓ pencere 002'yi gösteriyor
+  ✓ uyarı şeridi görünür
+  ✓ şerit başlığı (Bu Şirket Yalnız GörüntülenirBu şirketin verisi programın da)
+  ✓ şerit Türkçe nedeni söyler
+  ✓ şerit ekran okuyucuya duyurulur (role=alert)
+
+■ Kayıt denemesi: sunucu reddeder, veri değişmez
+  ✓ kayıt 409 SCHEMA_AHEAD ({"status":409,"code":"SCHEMA_AHEAD","message":"Bu şirketin verisi programın daha yeni bir sürümüyle açılmış. Programı güncelleyin; o zamana kadar veri yalnız görüntülenir."})
+  ✓ hata iletisi Türkçe neden
+  ✓ şerit kayıt denemesinden sonra da görünür
+
+■ 001 penceresi: şerit yok
+  ✓ pencere 001'i gösteriyor
+  ✓ 001'de şerit yok
+  ✓ 002'nin Kasa satırı sayısı değişmedi (1)
+  ✓ sayfa hatası yok
+
+✓ sema-kapisi-bs7: 12 geçti, 0 kaldı
+
+[kanit] watur3-e2e-sema-kapisi-bs7: GEÇTİ · çıkış 0 · 12/12 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+2.65 2.73 3.16 2/224 18108
+
+> destekofis@2.4.9 test:senaryo-220-yedek
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-220-yedek.mjs
+
+
+■ Kurulum: yönetici girer; 001'de 3, 002'de 2 cari
+  ✓ 001: 3 cari, 002: 2 cari
+
+■ Yönetim → Yedekler: açıklama satırı ve Şimdi Yedek Al (Tüm Şirketler)
+  ✓ açıklama: Her şirketin yedeği kendi klasöründe: …/backups/001 - Şirket 1 …/backups/002 - Şirket 2
+  ✓ kolonlar: Şirket, Yedek Dosyası, Tarih, Boyut, İşlemler
+  ✓ Devir Yedekleri bölümü ve kolonları: Şirket, Devir Yedeği, Tarih, Boyut, Durum, İşlemler
+  ✓ Yedekler ekranında Drive yok (bölüm, yazı, ayar kutusu)
+  ✓ Yedek Al seçenekleri: Tüm Şirketler (2) / Yalnız 001 · Şirket 1 (varsayılan Tüm Şirketler)
+  ✓ bildirim: 2 şirketin yedeği alındı; her biri kendi klasöründe.×
+  ✓ Şirket kolonu: 002 · Şirket 2, 001 · Şirket 1
+  ✓ dosya adında kendi şirketinin kodu
+  ✓ diskte: 001 - Şirket 1 (1), 002 - Şirket 2 (1), kökte 0
+  ✓ yedeklerin içi: 001 → 3 cari, 002 → 2 cari (karışma yok)
+
+■ Şimdi Yedek Al → Yalnız 001 · Şirket 1
+  ✓ yalnız 001 yedeklendi (001: 2, 002: 1)
+
+■ 002 yedekten geri yüklenir (onay kod + parola); 001 etkilenmez
+  ✓ 002'ye yedekten sonra bir cari eklendi (3)
+  ✓ pencere: yedek yalnız kendi şirketine yüklenir
+  ✓ bildirim: “002 · Şirket 2” yedekten geri yüklendi. Önceki veri yedeklendi: destekofis-002-2026-11-11T08-24-58-060Z-geri-yukleme-oncesi-002.sqlite×
+  ✓ 002 yedekteki hâline döndü (2 cari)
+  ✓ 001 aynı (3 cari)
+  ✓ geri yükleme öncesi yedek 002'nin klasöründe
+
+■ Fatura: geri yüklenen 002'de tek seferlik numara uyarısı; 001'de yok; Uyarıyı Kapat → bir daha çıkmaz
+  ✓ 002 uyarısı (e-Belge yok → yalnız kâğıt/fiş): Yedek geri yüklendi (yedek tarihi: 11.11.2026 08:24). Yedekten sonra verilmiş kâğıt/fiş numaraları programda yeniden verilebilir. Yeni belge kaydetmeden önce Fatura Ayarları → Numaralar'dan sıradaki numarayı elinizdeki son numaranın ilerisine alın. Fatura Ayarları Uyarıyı Kapat
+  ✓ uyarı düğmeleri: Fatura Ayarları, Uyarıyı Kapat
+  ✓ 002'de e-Fatura + e-Arşiv açıldı (200)
+  ✓ 002 uyarısı (e-Belge, Test Ortamı): Yedek geri yüklendi (yedek tarihi: 11.11.2026 08:24). Yedekten sonra EDM'ye gönderilmiş e-Belge'ler ve verilmiş kâğıt/fiş numaraları programda yeniden verilebilir; EDM aynı numarayı reddeder. Göndermeden önce Fatura Ayarları → Numaralar'dan sıradaki numarayı EDM'deki ve elinizdeki son numaranın ilerisine alın. Test Ortamı'nda e-Belge numarası Entegratör Ayarları → Otomatik Seriler'den ileri alınır. Fatura Ayarları Uyarıyı Kapat
+  ✓ 001'in Fatura'sında uyarı yok (geri yüklenmedi)
+  ✓ Uyarıyı Kapat → uyarı kalktı
+  ✓ Uyarıyı Kapat → odak “+ Yeni Fatura”da (new|+ Yeni Fatura)
+  ✓ sayfa yeniden açılınca uyarı yine yok (tek seferlik)
+  ✓ sunucu: 002'de uyarı işareti silindi
+
+■ Yanlış şirket: 002'nin yedeği elle 001'in klasörüne kopyalanmış → reddedilir
+  ✓ ret: Bu yedek “002 · Şirket 2” şirketine ait; “001 · Şirket 1” şirketine geri yüklenemez. Yedeği kendi şirketine geri yükleyin.
+  ✓ 001'e hiçbir şey yüklenmedi
+
+■ Yönetim → Şirketler: Veri ve Yedek Klasörleri; ad değişince klasör de değişir
+  ✓ iki şirket satırı (2)
+  ✓ veri dosyaları: /tmp/destekofis-220-7oY19g/data/destekofis.sqlite · /tmp/destekofis-220-7oY19g/data/sirketler/002/destekofis.sqlite
+  ✓ cari sayıları: 3, 2
+  ✓ son yedek ve yedek klasörü yazıyor
+  ✓ kolonlar: Şirket, Veri Dosyası, Boyut, Cari, Kayıt, Son Yedek, Yedek Klasörü
+  ✓ klasör yeniden adlandırıldı: 002 - Gayri Resmi Ş Ç (2 yedek korundu: manuel + geri yükleme öncesi)
+  ✓ açıklama satırı yeni klasörü gösterir
+  ✓ Yönetim sayfası kaldırılan Drive uçlarını çağırmaz — Yedek Al, Geri Yükle, Şirketler boyunca (0 istek)
+  ✓ sayfada JavaScript hatası yok
+
+Senaryo 2.0.20 (yedek): 38 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-220-yedek
+
+[kanit] watur3-e2e-senaryo-220-yedek: GEÇTİ · çıkış 0 · 38/38 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+2.88 2.78 3.17 1/221 18289
+BITTI

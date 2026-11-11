@@ -1,0 +1,32 @@
+{
+  "ad": "watur3-mutasyon-ek-UTC",
+  "komut": "node /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur3-betik/mutasyon.mjs M71-zaten-kuyrukta-once,MD1-wal-bosaltilmaz,M71-kisi-alinir,MD1-temizlik-yok",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-11T07:16:23.653Z",
+  "sure_sn": 5.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 4,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../watur3-kanit/2026-11-11/watur3-mutasyon-ek-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur3-mut",
+  "ham_cikti_sha256": "4ff361c3e9e8188097c235eb2af091cf5c3f2f36d379cf568f7c82f230abd7b2",
+  "ham_cikti_bayt": 3275
+}

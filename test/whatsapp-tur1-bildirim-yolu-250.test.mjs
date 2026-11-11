@@ -256,7 +256,16 @@ describe("2.5.0 WhatsApp tur 1 — S33 ETKİLEŞİMİ: aynı WABA'da iki şirket
       const efe = await s.sent("Efe Tan", "0533 444 55 71");
       const ece = await sent001(s, "Ece Su", "0533 444 55 70");
       const ali = await sent001(s, "Ali Can", "0533 444 55 75");
-      const res = await s.post([st(s, ece.job.wamid, "delivered")]);
+      const deniz = await sent001(s, "Deniz Ak", "0533 444 55 76");
+      // 2.5.0 WhatsApp tur 3 (KULLANICI KARARI S90 = A — "yalnız şirketin ŞİMDİKİ kipinin uygulamasının adresinden … gelen bildirim koyar"): 001'in (Elle Bağla = müşterinin uygulaması)
+      // bildirimi WhatsApp'ı Bağla'nın (002 — DestekOfis uygulaması) adresinden gelirse işi Teslim Edildi yapar ama 001'i İŞARETLEMEZ; 001'in kendi teslimi KENDİ (Elle Bağla)
+      // uygulamasının adresinden gelir (S63: kayıt uygulama başına). Tur 1'in tek yollu düzeneği (001'in bildirimi 002'nin yoluna) tur 3'te bu iki adıma ayrıldı; beklentiler aynen.
+      const other = await s.post([st(s, deniz.job.wamid, "delivered")]);
+      assert.equal(other.status, 200, `001 (Yol 1) imzasız teslimi öbür uygulamanın adresinde de kabul (geldi ${other.status} ${other.text})`);
+      assert.equal(await state001(s, deniz.batchId), "delivered", "S90: eski / öbür yolun bildirimi işi yine Teslim Edildi yapar");
+      assert.equal(marks(s).root, "", "S90: öbür uygulamanın (002 — Yol 2) adresinden gelen bildirim 001'i işaretlemez");
+      const own = await s.registerRoot();
+      const res = await s.post([st(s, ece.job.wamid, "delivered")], { path: own });
       assert.equal(res.status, 200, `001 (Yol 1) imzasız teslimi kabul (geldi ${res.status} ${res.text})`);
       assert.equal(await state001(s, ece.batchId), "delivered");
       const m = marks(s);
@@ -318,7 +327,7 @@ describe("2.5.0 WhatsApp tur 1 — S41: uygulama düzeyi adrese gelen bildirim (
     }
   });
 
-  it("T1-10 Yol 2 · uygulama düzeyi adrese İMZASIZ delivered → 401, yazılmaz; İMZALI delivered → 200, Teslim Edildi + işaret; adres denetimi iki bildirimde TEK kez", { timeout: 180_000 }, async () => {
+  it("T1-10 Yol 2 · uygulama düzeyi adrese İMZASIZ delivered → 401, yazılmaz; İMZALI delivered → 200, Teslim Edildi (işaret YOK — tur 3 S90); adres denetimi iki bildirimde TEK kez", { timeout: 180_000 }, async () => {
     const s = await kurulum({ root: "manual", second: "embedded" });
     try {
       ttl12(s.fake);
@@ -333,7 +342,10 @@ describe("2.5.0 WhatsApp tur 1 — S41: uygulama düzeyi adrese gelen bildirim (
       assert.equal(signed.status, 200, signed.text);
       assert.equal((await s.job(efe.batchId)).state, "delivered");
       assert.equal(s.delivered(efe.job.id), true);
-      assert.notEqual(marks(s).child, "", "imzalı uygulama düzeyi bildirim işaret koydu (alternatif adresle aynı kural)");
+      // 2.5.0 WhatsApp tur 3 — KULLANICI KARARI S90 = A ("işaretini yalnız şirketin ŞİMDİKİ kipinin uygulamasının adresinden (Yol 1'de uygulama düzeyi adres dahil) gelen bildirim
+      // koyar"): uygulama düzeyi adres Yol 1'in (Elle Bağla) adresidir → Yol 2 şirketinde imzalı bildirim işi Teslim Edildi yapar ama işaret KOYMAZ (tur 1'de "koydu" bekleniyordu;
+      // BAŞ MİMAR teyidi tur 3 raporunda).
+      assert.equal(marks(s).child, "", "S90: uygulama düzeyi adres Yol 2'nin adresi değil → işaret konmadı");
       await s.server.app.whatsapp.appWebhook.rechecks?.settled();
       assert.equal(subscribedReads(s.fake) - reads, 1, "15 dk içinde iki bildirim → Meta'ya tek adres okuması");
       assert.deepEqual(await s.skip(efe.accountId), [SENT_BEFORE]);

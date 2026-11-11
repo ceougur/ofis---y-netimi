@@ -200,7 +200,10 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
         }),
       );
     }
-    return deliver(res, batches, mark.signed === true);
+    // 2.5.0 WhatsApp tur 3 (S90 = A, AYNEN: "… yalnız şirketin ŞİMDİKİ kipinin uygulamasının adresinden (Yol 1'de uygulama düzeyi adres dahil) gelen bildirim koyar"): uygulama
+    // düzeyi adres Elle Bağla'nın (müşterinin uygulamasının) panel ayarıdır → yalnız Yol 1'in adresi sayılır; Yol 2 şirketinde (imzalı da olsa) durumları işler, işaret KOYMAZ
+    // (güvenli yön — ilke 2). Tur 1 T1-10'un "imzalı → işaret" beklentisi bu kararla değişti; BAŞ MİMAR teyidi gerekir (tur 3 raporu: B seçeneği imzalıyı Yol 2 sayar).
+    return deliver(res, batches, mark.signed === true, "manual");
   }
   /** Gövdeyi okur ve ayrıştırır; olmazsa yanıtı yazar ve undefined döner. */
   async function readPayload(req, res) {
@@ -235,7 +238,9 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
     }
     const payload = await readPayload(req, res);
     if (payload === undefined) return;
-    return deliver(res, new Map([[hook.wabaId, Array.isArray(payload?.entry) ? payload.entry : []]]), mark.signed === true);
+    // 2.5.0 WhatsApp tur 3 (S90 = A): bildirimin geldiği alternatif adresin uygulaması (kaydın app'i: manual | embedded; tur 2 öncesi 'mixed' tek kayıt '' — hangi uygulamanın olduğu
+    // bilinmez, İLKEYLE işaret koymaz).
+    return deliver(res, new Map([[hook.wabaId, Array.isArray(payload?.entry) ? payload.entry : []]]), mark.signed === true, String(hook.app || ""));
   }
   /**
    * TEK işleme yolu — WABA'nın alternatif adresi ve (S41) uygulama düzeyi adres. batches: WABA → entry[] (alternatif adreste WABA gizli yolun kaydından, uygulama düzeyinde
@@ -244,8 +249,11 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
    * KONMAZ — 3fe5a92d'ye dek her POST, imza ve tanınma denetiminden önce koyuyordu. İşaret yalnız şirket düzeyinde: aşağıda şirketin işlemesine verilen (sahibi bu kurulumun o
    * şirketi, WABA'sı bildirimin WABA'sı; Yol 2'de YALNIZ imzalı) bildirim queue.applyStatuses'ta koyar. Tanınmayan (bu kurulumun göndermediği) wamid, Yol 2'de imzasız
    * bildirim ve başka şirketin bildirimi bir şirketi işaretlemez. Tanınma: wamid → (yalnız imzalı) iş kimliği → taşınan veride dosya.
+   * 2.5.0 WhatsApp tur 3 — KULLANICI KARARI S90 = A (AYNEN: "kip değişince sıfırlanan bildirim yolu işaretini yalnız şirketin ŞİMDİKİ kipinin uygulamasının adresinden (Yol 1'de uygulama
+   * düzeyi adres dahil) gelen bildirim koyar; eski yolun geç bildirimi işi yine 'Teslim Edildi' yapar"): via = bildirimin geldiği adresin uygulaması (manual | embedded | '' bilinmiyor);
+   * queue.applyStatuses işareti yalnız via şirketin şimdiki kipinin uygulamasıysa koyar, durumları her durumda işler.
    */
-  async function deliver(res, batches, signed) {
+  async function deliver(res, batches, signed, via = "") {
     // 2.4.8 İş P1 (c2): makine defteri başka süreçte kilitliyse (kısa sınama) durumlar 10 sn beklemeden yazılmaz → 503, Meta yeniden dener (P3 ile aynı yanıt).
     const ledgerWritable = hooks.probeWritable?.();
     if (ledgerWritable === false || ledgerWritable === PROBE_CLOSED) return failure(res, 503, "whatsapp-hook-busy", "Şirket şu anda açılamıyor; bildirim yeniden denenecek.");
@@ -317,7 +325,7 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
       const byPhone = new Map();
       for (const item of items) byPhone.set(item.phoneNumberId, [...(byPhone.get(item.phoneNumberId) || []), item.status]);
       for (const [phoneNumberId, statuses] of byPhone) {
-        const result = wa.queue.applyStatuses(statuses, { phoneNumberId, signed });
+        const result = wa.queue.applyStatuses(statuses, { phoneNumberId, signed, via });
         for (const key of Object.keys(out)) out[key] += result[key] || 0;
       }
     }

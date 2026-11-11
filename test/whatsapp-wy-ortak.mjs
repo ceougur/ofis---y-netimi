@@ -146,9 +146,14 @@ export async function kurulum({ root = "manual", second = "embedded" } = {}) {
       child,
       ledgerFile,
       /** Meta'nın bildirimi: kapıcıya ofisin telefon adresiyle; signed → DestekOfis uygulama sırrıyla X-Hub-Signature-256. */
-      post: (statuses, { signed = false } = {}) => {
+      post: (statuses, { signed = false, path: target = secret } = {}) => {
         const body = statusEvent(statuses);
-        return raw(kapi.base, "POST", `/wa/kanca/${secret}`, { body, headers: { host, ...(signed ? { "x-hub-signature-256": sign(body) } : {}) } });
+        return raw(kapi.base, "POST", `/wa/kanca/${target}`, { body, headers: { host, ...(signed ? { "x-hub-signature-256": sign(body) } : {}) } });
+      },
+      /** 2.5.0 WhatsApp tur 3 (S90): 001'in KENDİ uygulamasının (kipinin) alternatif adresini kaydeder; gizli yolu döner (post({ path })). */
+      async registerRoot() {
+        await server.app.context.whatsapp.connection.registerHook(null, `http://${host}`);
+        return new URL(fake.state.subscriptions.at(-1).override_callback_uri).pathname.split("/").pop();
       },
       /**
        * 2.5.0 WhatsApp tur 1 (S41): Meta'nın bildirimi Elle Bağla'nın UYGULAMA DÜZEYİ adresine (Webhook Bilgileri'ndeki Callback URL; kapıcıdan, ofisin telefon adresiyle).

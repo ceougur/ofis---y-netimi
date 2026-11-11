@@ -1,0 +1,64 @@
+▶ 2.5.0 WhatsApp tur 3 hız — eşdeğerlik: aynı tohumlu bildirim dizisi tur 3'ün bildirim-başına GERÇEK koduyla AYNI sonucu verir (iş durumları, atlanma nedenleri, defter, işaretler, Bu Ay)
+  ✔ W3H-E tohum 101: zincir / J10 / eski deneme / dizinin ortasında yeni zincir / zincirli yeniden dene / başka bağlantının yazımı / iki şirket / aynı çağrıda çift bildirim (12217.190143ms)
+  ✔ W3H-E tohum 202: zincir / J10 / eski deneme / dizinin ortasında yeni zincir / zincirli yeniden dene / başka bağlantının yazımı / iki şirket / aynı çağrıda çift bildirim (12027.61322ms)
+  ✔ W3H-E tohum 303: zincir / J10 / eski deneme / dizinin ortasında yeni zincir / zincirli yeniden dene / başka bağlantının yazımı / iki şirket / aynı çağrıda çift bildirim (12158.848821ms)
+✔ 2.5.0 WhatsApp tur 3 hız — eşdeğerlik: aynı tohumlu bildirim dizisi tur 3'ün bildirim-başına GERÇEK koduyla AYNI sonucu verir (iş durumları, atlanma nedenleri, defter, işaretler, Bu Ay) (36404.959124ms)
+▶ 2.5.0 WhatsApp tur 3 hız — koruma
+  ✖ W3H-K1 inherit_of'a yazan deyim server/ altında yalnız queue.mjs createBatch'te (2 yer) ve aynı işlemde zincir kaynak kümesi düşürülüyor — yeni yazar eklenirse küme ÜST KÜME olmaktan çıkar (60.179677ms)
+  ✖ W3H-K2 zincirsiz olağan veride (ölçümün yolu) teslim / okundu bildirimi carinin zincir okumasını YAPMAZ; kaynak kümesi bir kez kurulur (ders 47: bildirim başına ek okuma yok) (659.239433ms)
+✖ 2.5.0 WhatsApp tur 3 hız — koruma (720.169758ms)
+ℹ tests 5
+ℹ suites 2
+ℹ pass 3
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 37512.832417
+
+✖ failing tests:
+
+test at test/whatsapp-tur3-hiz-250.test.mjs:44:3
+✖ W3H-K1 inherit_of'a yazan deyim server/ altında yalnız queue.mjs createBatch'te (2 yer) ve aynı işlemde zincir kaynak kümesi düşürülüyor — yeni yazar eklenirse küme ÜST KÜME olmaktan çıkar (60.179677ms)
+  AssertionError [ERR_ASSERTION]: iki yazımın hemen ardından, aynı işlemin içinde küme düşürülüyor
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wa3hy-tur3/test/whatsapp-tur3-hiz-250.test.mjs:65:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.start (node:internal/test_runner/test:944:17)
+      at node:internal/test_runner/test:1440:71
+      at node:internal/per_context/primordials:466:82
+      at new Promise (<anonymous>)
+      at new SafePromise (node:internal/per_context/primordials:435:3)
+      at node:internal/per_context/primordials:466:9
+      at Array.map (<anonymous>) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: `        store.run("UPDATE wa_jobs SET inherit_of = ? WHERE batch_id = ? AND account_id = ? AND state = 'pending'", inherit.id, batchId, inherit.account_id);\n        inheritContent(batchId, inherit.id, at);\n      }\n      // İş W (S9-1 c): yeniden denemede zincir bağı (yalnız bağ).\n      for (const source of chain) store.run("UPDATE wa_jobs SET inherit_of = ? WHERE batch_id = ? AND account_id = ? AND state = 'pending'", source.id, batchId, source.account_id);\n    });\n    for (const source of [...(inherit ? [inherit] : []), ...chain]) {\n      const target = store.get("SELECT id FROM wa_jobs WHERE batch_id = ? AND inherit_of = ?", batchId, source.id);\n      if (target) ledger.anywayLink({ jobId: target.id, sourceJobId: source.id, at });\n    }`,
+    expected: /if \(inherit \|\| chain\.length\) forgetChainSources\(\);\s*\n\s*\}\);/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at test/whatsapp-tur3-hiz-250.test.mjs:70:3
+✖ W3H-K2 zincirsiz olağan veride (ölçümün yolu) teslim / okundu bildirimi carinin zincir okumasını YAPMAZ; kaynak kümesi bir kez kurulur (ders 47: bildirim başına ek okuma yok) (659.239433ms)
+  AssertionError [ERR_ASSERTION]: 12 bildirimde cari zincir okuması 0, kaynak kümesi 1 kez (tur 3: 12 cari okuması)
+  + actual - expected
+  
+    {
+  +   chain: 12,
+  +   sources: 0
+  -   chain: 0,
+  -   sources: 1
+    }
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wa3hy-tur3/test/whatsapp-tur3-hiz-250.test.mjs:96:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { chain: 12, sources: 0 },
+    expected: { chain: 0, sources: 1 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

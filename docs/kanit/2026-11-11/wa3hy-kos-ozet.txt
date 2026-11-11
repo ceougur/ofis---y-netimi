@@ -1,0 +1,27 @@
+başladı 17:00:05 yük 1.05 0.78 1.23 3/158 14154 · ağaç 8bba93e7 · 0 kirli
+beş dosya UTC çıkış 0 [kanit] wa3hy-bes-UTC: GEÇTİ · çıkış 0 · 142/142 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 8bba93e +1 izlenmeyen · linux 6.18.44-f
+beş dosya Europe/Istanbul çıkış 0 [kanit] wa3hy-bes-Europe-Istanbul: GEÇTİ · çıkış 0 · 142/142 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 8bba93e +1 izlenmeyen · lin
+TUR 3 KODUNDA yeni test çıkış 1 [kanit] wa3hy-tur3-kodu: BAŞARISIZ (çıkış 1; 2 başarısız, 0 iptal) · çıkış 1 · 3/5 geçti, 2 başarısız, 0 iptal, 0 atlanan · commit 
+fikstür üretimi UTC çıkış 0
+fikstür karşılaştırma UTC çıkış 0 · TOHUM 303 FARK 0 · cmp: farklı-bayt
+fikstür üretimi Europe/Istanbul çıkış 0
+fikstür karşılaştırma Europe/Istanbul çıkış 0 · TOHUM 303 FARK 0 · cmp: farklı-bayt
+komşu (whatsapp-*) Europe/Istanbul çıkış 0 [kanit] wa3hy-komsu-ist: GEÇTİ · çıkış 0 · 655/655 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 8bba93e +1 izlenmeyen · linux 6.18.44
+mutasyon kopyası yolu: 1
+mutasyon çıkış 0 · # skipped 0 # todo 0 
+aday birleşimi çıkış 0 · b54318f3 · çakışma 0
+e2e senaryo-whatsapp çıkış 0 [kanit] wa3hy-e2e-senaryo-whatsapp: GEÇTİ · çıkış 0 · 45/45 geçti, 0 başarısız, 0 iptal, 0 atlanan
+e2e senaryo-whatsapp-ayar-248 çıkış 0 [kanit] wa3hy-e2e-senaryo-whatsapp-ayar-248: GEÇTİ · çıkış 0 · 157/157 geçti, 0 başarısız, 0 iptal
+e2e senaryo-whatsapp-donem-248 çıkış 0 [kanit] wa3hy-e2e-senaryo-whatsapp-donem-248: GEÇTİ · çıkış 0 · 37/37 geçti, 0 başarısız, 0 iptal,
+e2e senaryo-whatsapp-sablon-248 çıkış 0 [kanit] wa3hy-e2e-senaryo-whatsapp-sablon-248: GEÇTİ · çıkış 0 · 50/50 geçti, 0 başarısız, 0 iptal
+e2e senaryo-whatsapp-gonder-248 çıkış 0 [kanit] wa3hy-e2e-senaryo-whatsapp-gonder-248: GEÇTİ · çıkış 0 · 189/189 geçti, 0 başarısız, 0 ipt
+e2e senaryo-whatsapp-kvkk-250 çıkış 0 [kanit] wa3hy-e2e-senaryo-whatsapp-kvkk-250: GEÇTİ · çıkış 0 · 20/20 geçti, 0 başarısız, 0 iptal, 
+e2e sema-kapisi-bs7 çıkış 0 [kanit] wa3hy-e2e-sema-kapisi-bs7: GEÇTİ · çıkış 0 · 12/12 geçti, 0 başarısız, 0 iptal, 0 atlanan 
+e2e senaryo-220-yedek çıkış 0 [kanit] wa3hy-e2e-senaryo-220-yedek: GEÇTİ · çıkış 0 · 38/38 geçti, 0 başarısız, 0 iptal, 0 atlana
+TAM npm test (aday) çıkış 0 [kanit] wa3hy-tam: GEÇTİ · çıkış 0 · 5314/5314 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit b54318f +1 izlenmeyen · linux 6.18.44-fc-
+# tests 5314
+# pass 5314
+# fail 0
+# cancelled 0
+# skipped 0
+bitti 18:21:30 yük 3.93 3.24 3.06 3/158 19422 · disk 6.0G

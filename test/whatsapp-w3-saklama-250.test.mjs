@@ -253,7 +253,10 @@ describe("2.5.0 W-3 — saklama süresi (1 yıl + anonim iz) ve KVKK silme taleb
   });
 
   it("S42: talep anında iş Gönderiliyor — içerik + telefon (dosya + defter) hemen silinir; kabul → wamid özetle iz; geçici hata → yeniden gönderilmez, 'Atlandı — Silme Talebi'; yanıt yok → Sonucu Belirsiz izi", { timeout: 120_000 }, async () => {
-    const ctx = await startWa({ env: DEAD, now: { time: localIso(2026, 11, 3, 10), fixed: true } });
+    // 2.5.0 WhatsApp tur 3 (kırılgan TERS kalıp — KAYIT 06.11 16:10 listesi): kapı varken istemci süre sınırı 800 ms'ydi — kapıda iken yapılan talep (yüklü makinede) bunu aşarsa "kabul"
+    // ve "geçici hata" adımları zaman aşımına düşerdi. Süre sınırı kapıdan uzun (60 sn); "yanıt yok" adımı süreyle değil, kapı açılınca bağlantının KOPMASIYLA (yanıt hiç gelmez — programın
+    // aynı "yanıtsız" dalı, §7a 10) kurulur. Beklenti aynen.
+    const ctx = await startWa({ env: DEAD, whatsappTimeoutMs: 60_000, now: { time: localIso(2026, 11, 3, 10), fixed: true } });
     try {
       const a = await ctx.account("Ayşe Yılmaz", "0532 111 22 33", 500);
       const b = await ctx.account("Bora Demir", "0532 444 55 66", 300);
@@ -287,9 +290,8 @@ describe("2.5.0 W-3 — saklama süresi (1 yıl + anonim iz) ve KVKK silme taleb
       ctx.clock.advance(HOUR);
       await ctx.drain();
       assert.equal(ctx.messageRequests().length, requestsB, "kapanan işe yeniden deneme isteği gitmedi");
-      // (3) Yanıt yok (zaman aşımı): Sonucu Belirsiz izi kalır; aynı dönem "Sonucu Belirsiz" ile elenir.
-      const lost = await inFlight(c.id, () => (ctx.fake.state.hang = /messages/), "yanıt yok");
-      ctx.fake.state.hang = null;
+      // (3) Yanıt yok (bağlantı koptu — yanıtsız dal): Sonucu Belirsiz izi kalır; aynı dönem "Sonucu Belirsiz" ile elenir.
+      const lost = await inFlight(c.id, () => ctx.fake.state.failQueue.push({ match: /messages/, destroy: true }), "yanıt yok");
       assert.deepEqual([lost.job.state, Boolean(lost.job.contentErased)], ["uncertain", true], "yanıtsız → Sonucu Belirsiz (iz)");
       ctx.clock.advance(HOUR);
       const same = await preview(ctx, { kind: "statement", ids: [a.id, c.id], preset: "thisMonth" });

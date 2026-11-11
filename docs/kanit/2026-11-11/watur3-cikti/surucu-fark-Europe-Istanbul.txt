@@ -1,0 +1,15 @@
+=== DEĞİŞTİ S70-03-zincir-silme-talebi-ve-istemiyor-atlandi-eski-belirsiz-iletiye-gec-teslim kos→kos davranış farkı 20→7
+   KAPANAN durum_sayilari.Okundu: beklenen 1, program '<YOK>'
+   KAPANAN durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+   KAPANAN isler.T1/ZI.atlanma_nedeni: beklenen None, program 'istemiyor'
+   KAPANAN isler.T1/ZI.durum: beklenen 'Okundu', program 'Atlandı'
+   KAPANAN isler.T1/ZS.atlanma_nedeni: beklenen None, program 'silme_talebi'
+   KAPANAN isler.T1/ZS.durum: beklenen 'Teslim Edildi', program 'Atlandı'
+   KAPANAN kontroller.K2.durum_sayilari.Atlandı: beklenen 1, program 2
+   KAPANAN kontroller.K2.durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+   KAPANAN kontroller.K2.isler.T1/ZS: beklenen 'Teslim Edildi', program 'Atlandı'
+   KAPANAN kontroller.K3.durum_sayilari.Okundu: beklenen 1, program '<YOK>'
+   KAPANAN kontroller.K3.durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+   KAPANAN kontroller.K3.isler.T1/ZI: beklenen 'Okundu', program 'Atlandı'
+   KAPANAN kontroller.K3.isler.T1/ZS: beklenen 'Teslim Edildi', program 'Atlandı'
+# senaryo 398 · aynı 397 · değişen 1 · davranış farkı 0 olan: önce 261, sonra 261

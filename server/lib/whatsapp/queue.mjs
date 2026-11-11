@@ -27,7 +27,7 @@ import { statementData, statementFileName, statementPdf } from "../statement-pdf
 import { e164Of, waPresetRange } from "./alici.mjs";
 import { HOOK_SEEN_KEY, HOOK_SEEN_MODE_KEY, isTokenRejectCode } from "./connection.mjs";
 import { allPeriodStartOf, localDayOf, periodKeyOf, periodKeysOf, queueKeysOf, rollingSinceOf, sameKeys, sentSinceOf } from "./donem.mjs";
-import { DAY_MS } from "./defter.mjs";
+import { DAY_MS, hookAppOf } from "./defter.mjs";
 import { META_D0, META_DEFAULT_TTL_SECONDS, MetaGraphError, classifyMetaCode, createMetaTemplates, neverReachedMeta, tierInfo } from "./meta-graph.mjs";
 import { deliveryTtlRules, listedDeliveryTtl, noteDeliveryTtl, noteListing, sendingVerdict } from "./templates.mjs";
 import { SKIP_ERASED, SKIP_REQUEST, SKIP_RETENTION, candidateBound, checkpoint as walCheckpoint, erasedMarker, erasedOf, retentionDue, retentionStartSql, scrubDigits, wamidDigest, wamidForms, withSecureDelete } from "./saklama.mjs";
@@ -202,6 +202,11 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   // ---------- Okuma ----------
   const batchRow = id => store.get("SELECT * FROM wa_batches WHERE id = ?", id);
   const jobRow = id => store.get("SELECT * FROM wa_jobs WHERE id = ?", id);
+  // 2.5.0 WhatsApp tur 3 (T16): satır hâlâ bu denemede "Gönderiliyor" mu (istek sürerken bildirim / toparlama satırı ilerletmediyse).
+  const stillSending = (id, attempt) => {
+    const row = store.get("SELECT state, attempt FROM wa_jobs WHERE id = ?", id);
+    return Boolean(row) && row.state === "sending" && Number(row.attempt) === Number(attempt);
+  };
   // 2.5.0 WhatsApp tur 2 (W-3 dk ORTA-2; tasarım §6): içeriği silinmiş işe (KVKK talebi / 1 yıl — params_json işareti '{') SONRADAN yazılan hata metni de 10+ haneli sayılardan
   // (telefon) arındırılır — failJob / retryLater / applyStatuses / toparlama, hepsi buradan. Karar AYNI UPDATE'te (SQL CASE: satırın o anki işareti; ek okuma, yarış yok).
   const updateJob = (id, fields) => {
@@ -830,6 +835,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       }
       // İş W (S9-1 c): yeniden denemede zincir bağı (yalnız bağ).
       for (const source of chain) store.run("UPDATE wa_jobs SET inherit_of = ? WHERE batch_id = ? AND account_id = ? AND state = 'pending'", source.id, batchId, source.account_id);
+      // Tur 3 hız (tasarım §14): zincir kaynak kümesi bu yazımı görmez → düşürülür (işlem içinde yeniden kurulmaz; ilk bildirim kesinleşmiş veriden kurar).
+      if (inherit || chain.length) forgetChainSources();
     });
     for (const source of [...(inherit ? [inherit] : []), ...chain]) {
       const target = store.get("SELECT id FROM wa_jobs WHERE batch_id = ? AND inherit_of = ?", batchId, source.id);
@@ -1054,7 +1061,25 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     }
     ledgerRetry = false;
     let ok = true;
+    let scrubbed = 0;
     for (const request of list) {
+      // 2.5.0 WhatsApp tur 3 (WhatsApp tur 2 dar kontrol DÜŞÜK-1): tur 2'den ÖNCEKİ kodun içeriği silinmiş işe SONRADAN yazdığı numaralı hata metni (eski W-3 verisi) — aynı bayraklı
+      // turda (açılıştan sonraki ilk bakım turu; saatlik tam tarama YOK — WT2-5) o carinin içeriği silinmiş işlerinin metni scrubDigits'ten geçirilir. Dizinli cari okuması; yalnız
+      // değişen satıra yazım (eşgüçlü), secure_delete altında; WAL turun sonunda bir kez boşaltılır.
+      try {
+        const dirty = store
+          .all("SELECT id, error_text FROM wa_jobs WHERE account_id = ? AND params_json LIKE '{%' AND error_text <> ''", request.accountId)
+          .filter(row => scrubDigits(row.error_text) !== row.error_text);
+        if (dirty.length) {
+          withSecureDelete(store.db, () => store.tx(() => {
+            for (const row of dirty) store.run("UPDATE wa_jobs SET error_text = ? WHERE id = ? AND error_text = ?", scrubDigits(row.error_text), row.id, row.error_text);
+          }));
+          scrubbed += dirty.length;
+        }
+      } catch (error) {
+        ok = false; // kilit dahil: bayrak kalır, sonraki tur yeniden dener
+        log.warn?.(`WhatsApp silme talebinin eski hata metinleri temizlenemedi (${error?.code || error?.message || error}); sonra yeniden denenecek.`);
+      }
       let open = [];
       try {
         const fileIds = store.all("SELECT id FROM wa_jobs WHERE account_id = ? AND created_at <= ?", request.accountId, request.at).map(row => row.id);
@@ -1070,6 +1095,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       }
       await yieldLoop();
     }
+    if (scrubbed) flushStore(); // silinen metnin eski sayfaları WAL'da kalmasın (düşerse bayrak — maintain yeniden dener)
     if (!ok) ledgerRetry = true;
     return ok;
   }
@@ -1688,7 +1714,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     } catch (error) {
       if (!(error instanceof MetaGraphError)) {
         ledger.outcome({ jobId: job.id, attempt, outcome: "uncertain", at: iso(), companyId, wabaId: batch.waba_id });
-        updateJob(job.id, { state: "uncertain", error_text: "Gönderim sırasında beklenmeyen hata; iletinin gidip gitmediği bilinmiyor." });
+        // 2.5.0 WhatsApp tur 3 (T16 kardeş dal): istek sürerken bildirimle kesinleşmiş satır ezilmez (applyFailure yanıtsız dalı ile aynı koruma).
+        if (stillSending(job.id, attempt)) updateJob(job.id, { state: "uncertain", error_text: "Gönderim sırasında beklenmeyen hata; iletinin gidip gitmediği bilinmiyor." });
         throw error;
       }
       handleFailure(batch, jobRow(job.id), error, { stage: "send", attempt });
@@ -1865,8 +1892,12 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     // Yanıtsız ileti isteği (zaman aşımı, bağlantı koptu, gövdesiz 5xx): SONUCU BELİRSİZ — kendiliğinden yeniden gönderilmez; toplu iş sürer (§7a 10).
     if (!reachedMeta && !neverReachedMeta(error) && stage === "send") {
       record("uncertain");
-      updateJob(job.id, { state: "uncertain", error_code: null, error_text: error.message });
-      trouble(row, error.message);
+      // 2.5.0 WhatsApp tur 3 (T16 ürün yarışı; KAYIT 06.11 16:10 (b)): istek sürerken imzalı bildirim (iş kimliğiyle) satırı Teslim Edildi / Okundu / Başarısız yapmış olabilir —
+      // yanıtsız dal YALNIZ satır hâlâ BU denemede "Gönderiliyor" ise Sonucu Belirsiz yazar ve art arda hata sayacını artırır (kesin durum ezilmez; teslim defterde — kime kaç kez aynen).
+      if (stillSending(job.id, attempt)) {
+        updateJob(job.id, { state: "uncertain", error_code: null, error_text: error.message });
+        trouble(row, error.message);
+      }
       finishIfDone(batch.id);
       return;
     }
@@ -2351,12 +2382,86 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     return { route: "unknown" };
   }
   // K2 / L3 + K1′ (İş U "teslim her yolda sayılır"): eski denemenin GEÇ TESLİMİ — kesin aldı (K10:10 / K11:00): deftere O DENEMEYE teslim; satır değişmez. Başka türler etkisiz.
+  // 2.5.0 WhatsApp tur 3 (S70 = A): satır (ya da ondan türeyen zincir işi) "Atlandı" ise Teslim Edildi / Okundu olur (settleSkippedChain).
   function applyOldAttempt(owned, status, value, at) {
-    if (!["delivered", "read"].includes(value) || ledger.deliveredAttempt?.(owned.jobId, owned.attempt)) return false;
+    if (!["delivered", "read"].includes(value)) return false;
+    if (ledger.deliveredAttempt?.(owned.jobId, owned.attempt)) {
+      settleSkippedChain(owned.jobId, value, at, { fresh: false, self: true }); // yalnız ileri: bu kuralla Teslim Edildi olmuş iş read ile Okundu
+      return false;
+    }
     const billable = billableOf(status, owned.row ? owned.row.billable !== 0 : true);
     ledgerMust(ledger.delivered({ jobId: owned.jobId, attempt: owned.attempt, companyId, wabaId: owned.wabaId, billable, at }), "teslim");
+    settleSkippedChain(owned.jobId, value, at, { fresh: true, self: true });
     if (owned.row) notify(owned.row.batch_id);
     return true;
+  }
+  // 2.5.0 WhatsApp tur 3 HIZ (docs/erp/WA-TUR3-TASARIM.md §14; ders 47 — bildirim başına cari okuması yok): "Yine de Gönder" zincirinin KAYNAK kümesi = şirket dosyasında inherit_of'u dolu
+  // satırların gösterdiği iş kimlikleri (bütün cariler; tek okuma). Kimlik kümede YOKSA o işi gösteren zincir satırı KESİN yoktur. Küme ÜST KÜME kalır: kurulduğu andaki data_version
+  // değişirse (başka bağlantının yazımı) yeniden kurulur; bu bağlantının inherit_of yazımı yalnız createBatch'te — ardından forgetChainSources (test/whatsapp-tur3-hiz-250 kaynak denetimi);
+  // işlem İÇİNDE kurulmaz (geri alınabilir yazım saklanmasın); silinen satır kümede kalır (fazla kimlik yalnız tam okumaya döndürür). Bilinmiyorsa (data_version okunamadı) tam okuma.
+  let chainSources = null;
+  let chainSourcesVersion = null;
+  const forgetChainSources = () => {
+    chainSources = null;
+    chainSourcesVersion = null;
+  };
+  function mayHaveChain(jobId) {
+    let version = null;
+    try {
+      version = store.get("PRAGMA data_version")?.data_version ?? null;
+    } catch {
+      version = null;
+    }
+    if (version === null) return true;
+    if (!chainSources || chainSourcesVersion !== version) {
+      if (store.inTransaction) return true;
+      chainSources = new Set(store.all("SELECT DISTINCT inherit_of AS id FROM wa_jobs WHERE inherit_of <> ''").map(row => String(row.id)));
+      chainSourcesVersion = version;
+    }
+    return chainSources.has(String(jobId));
+  }
+  /**
+   * 2.5.0 WhatsApp tur 3 — KULLANICI KARARI S70 = A (AYNEN: "K1′ genel — Atlandı olmuş işe geç teslim gelirse her Atlandı sırasında "Teslim Edildi" (zincir işin eski belirsiz iletisi;
+   * İstemiyor / Şüpheli Alacağı Var nedeniyle atlanan Meta Bekletti işinin 1. iletisi dahil)."; BAŞ MİMAR Y20-3: J10 ile "Daha Önce Gönderildi" olan işin öbür eski denemesine geç teslim de;
+   * tasarım docs/erp/WA-TUR3-TASARIM.md §2). X işinin bir denemesine delivered / read tanındı: X'in kendisi (self — satır yolu X'i zaten yürütür) ve X'ten türeyen "Yine de Gönder"
+   * zincir işleri (aynı cari, inherit_of; dizinli cari okuması — ders 47) — durumu ATLANDI olan iş, teslim o deneme için YENİYSE (fresh; aynı denemeye yinelenen bildirim yeni teslim
+   * değildir — Y20-3) S59 düzeniyle "Teslim Edildi" / "Okundu"; bu kuralla Teslim Edildi olmuş iş (skip_reason izi dolu) read ile Okundu'ya ilerler. Defter YAZILMAZ (teslim kaynağın
+   * denemesinde — R3 / Bu Ay aynen); iş gönderime dönmez. İptal / Durduruldu / Başarısız / Süresi Doldu / Sonucu Belirsiz zincir işleri değişmez (Y20-5). Dönüş: değişen iş sayısı.
+   */
+  function settleSkippedChain(jobId, value, at, { fresh = false, self = false } = {}) {
+    if (!["delivered", "read"].includes(value)) return 0;
+    // Tur 3 hız (tasarım §14): X'i gösteren zincir satırı KESİN yoksa yürüyüşün ilk katmanı boştur — satır yolunda hiçbir okuma yapılmaz, öbür yollarda yalnız X'in kendisi.
+    const chained = mayHaveChain(jobId);
+    if (!self && !chained) return 0;
+    const root = jobRow(jobId);
+    if (!root) return 0;
+    const rows = chained ? store.all("SELECT id, batch_id, state, inherit_of, skip_reason, sent_at, delivered_at FROM wa_jobs WHERE account_id = ? AND inherit_of <> ''", root.account_id) : [];
+    const targets = self ? [root] : [];
+    const seen = new Set([root.id]);
+    for (let frontier = [root.id]; frontier.length && seen.size < 200; ) {
+      const next = rows.filter(row => frontier.includes(row.inherit_of) && !seen.has(row.id));
+      for (const row of next) seen.add(row.id);
+      targets.push(...next);
+      frontier = next.map(row => row.id);
+    }
+    let changed = 0;
+    const batches = new Set();
+    for (const row of targets) {
+      let fields = null;
+      const fromSkip = row.state === "skipped" && fresh;
+      const upgrade = value === "read" && row.state === "delivered" && Boolean(row.skip_reason);
+      if (fromSkip && value === "delivered") fields = { state: "delivered", delivered_at: at, sent_at: row.sent_at || at, closed_at: iso(), next_at: null, error_code: null, error_text: "" };
+      else if (fromSkip || upgrade) fields = { state: "read", read_at: at, delivered_at: row.delivered_at || at, sent_at: row.sent_at || at, closed_at: iso(), next_at: null, error_code: null, error_text: "" };
+      if (!fields) continue;
+      updateJob(row.id, fields);
+      changed += 1;
+      batches.add(row.batch_id);
+    }
+    for (const id of batches) {
+      notify(id);
+      finishIfDone(id);
+    }
+    return changed;
   }
   // K4: satır o denemeyi BİLMİYOR (yok — sıfırlama; geri yüklenmiş / durdurulmuş eski satır) → yalnız defter. D/R → teslim (Süresi Doldu / teslim edilemedi sonrası da — P3;
   // A2); F (131026, 131049 dahil — yeniden deneme yok) → teslim edilemedi, teslimden sonra yok sayılır (§7a 18). İmzalı ve imzasız. Eşgüçlü.
@@ -2364,6 +2469,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     // İş V1: kural defterin tek yardımcısında (kancanın kalıcı açılamama yolu da aynısını çağırır).
     const result = ledger.ledgerOnlyResult({ jobId: owned.jobId, attempt: owned.attempt, companyId, wabaId: owned.wabaId, value, billable: billableOf(status, true), at });
     ledgerMust(result !== "error", value === "failed" ? "teslim edilemedi" : "teslim");
+    // 2.5.0 WhatsApp tur 3 (S70 = A): satırı (dosyadaysa) ya da zincir işi "Atlandı" ise Teslim Edildi / Okundu.
+    settleSkippedChain(owned.jobId, value, at, { fresh: result === "applied", self: true });
     return result === "applied";
   }
   // K5 / Q4 (dar kontrol 10 DÜŞÜK-4): iş dosyada YOK, wamid defterde BAĞSIZ, İMZALI bildirim + iş kimliği: defterdeki sonucu belli olmayan SON deneme kapatılır (wamid öğrenilir
@@ -2386,12 +2493,17 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     else if (value === "failed" && !ledger.deliveredJob?.(jobId)) ledgerMust(ledger.deliveryFailed({ jobId, attempt: last.attempt, at }), "teslim edilemedi");
     return true;
   }
-  function applyStatuses(statuses = [], { phoneNumberId = "", signed = false } = {}) {
+  function applyStatuses(statuses = [], { phoneNumberId = "", signed = false, via } = {}) {
     const out = { applied: 0, ignored: 0, unknown: 0 };
     // 2.5.0 WhatsApp tur 2 — KULLANICI KARARI S58 = A: işaretle birlikte o anki bağlantı kipi (yalnız değişince yazılır); kip değişince işaret sıfırlanır (connection.mjs).
     const mode = connection.read()?.mode || "";
-    if (mode && store.setting(HOOK_SEEN_MODE_KEY, "") !== mode) store.setSetting(HOOK_SEEN_MODE_KEY, mode);
-    store.setSetting(HOOK_SEEN_KEY, iso());
+    // 2.5.0 WhatsApp tur 3 — KULLANICI KARARI S90 = A: işareti YALNIZ şirketin şimdiki kipinin uygulamasının adresinden gelen bildirim koyar (via: kanca adresinin uygulaması —
+    // lib/whatsapp/hook.mjs deliver; Yol 1'de uygulama düzeyi adres dahil). Eski yolun geç bildirimi işareti koymaz, durumları aşağıda AYNEN işler (Teslim Edildi). via verilmemiş iç
+    // çağrı (araç / test) eskisi gibi.
+    if (via === undefined || via === hookAppOf(mode)) {
+      if (mode && store.setting(HOOK_SEEN_MODE_KEY, "") !== mode) store.setSetting(HOOK_SEEN_MODE_KEY, mode);
+      store.setSetting(HOOK_SEEN_KEY, iso());
+    }
     for (const status of Array.isArray(statuses) ? statuses : []) {
       const wamid = String(status?.id || "").slice(0, 200);
       const value = String(status?.status || "").toLowerCase();
@@ -2476,6 +2588,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       if (resolving && changed) ledgerMust(ledger.lateAccept({ jobId: job.id, attempt: job.attempt, wamid: fields.wamid || "", companyId, wabaId, at }), "kabul");
       // K6 (R4/Q5; A3): accepted_at = o denemenin defterdeki kabul anı (eşzamanlı kabul > öğrenilen wamid > bildirimin anı).
       if (resolving && ["sent", "delivered", "read"].includes(fields.state)) fields.accepted_at = ledger.acceptanceAt?.(job.id, job.attempt) || at;
+      // 2.5.0 WhatsApp tur 3 (S70 = A): bu denemenin teslimi YENİ mi (defter yazımından ÖNCE; zincir işleri yalnız yeni teslimle Atlandı'dan çıkar — Y20-3).
+      const freshDelivery = ["delivered", "read"].includes(fields.state) && !ledger.deliveredAttempt?.(job.id, job.attempt);
       if (["delivered", "read"].includes(fields.state)) ledgerMust(ledger.delivered({ jobId: job.id, attempt: job.attempt, companyId, wabaId, billable: fields.billable === undefined ? job.billable !== 0 : fields.billable === 1, at: fields.delivered_at || at }), "teslim");
       if (fields.state === "failed") ledgerMust(ledger.deliveryFailed({ jobId: job.id, attempt: job.attempt, at }), "teslim edilemedi");
       if (fields.state === "held") ledgerMust(ledger.released({ jobId: job.id, attempt: job.attempt, at }), "yeniden deneme izni");
@@ -2500,6 +2614,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       out.applied += 1;
       notify(job.batch_id);
       if (fields.state && ["delivered", "read", "failed"].includes(fields.state)) finishIfDone(job.batch_id);
+      // 2.5.0 WhatsApp tur 3 (S70 = A): bu işten türeyen "Yine de Gönder" zincir işleri Atlandı ise Teslim Edildi / Okundu (işin kendisi yukarıda).
+      if (["delivered", "read"].includes(fields.state)) settleSkippedChain(job.id, fields.state, fields.state === "read" ? fields.read_at || at : fields.delivered_at || at, { fresh: freshDelivery, self: false });
       // 2.5.0 W-3 (S35 / S42): içeriği silinmiş iş 131049 ile "Meta Bekletti"ye düştüyse yeniden denenmez — o anda Atlandı.
       if (fields.state === "held") closeErasedWaiting(job.id);
     }

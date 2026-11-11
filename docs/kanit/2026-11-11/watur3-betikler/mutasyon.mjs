@@ -1,0 +1,64 @@
+// WhatsApp tur 3 — mutasyon koşucusu (kendi kopyam: scratchpad/watur3-mut = tur 3 kodunun kopyası). Her mutant tek metin değişikliği (TAM bir kez geçmeli), hedef testler
+// --test-name-pattern ile koşulur, dosya geri konur. Yakalandı = çıkış ≠ 0 ve fail > 0 (DEĞERLE — AssertionError). Kullanım: node mutasyon.mjs [id,id,…]
+import { spawnSync } from "node:child_process";
+import { readFileSync, writeFileSync } from "node:fs";
+import path from "node:path";
+
+const ROOT = "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur3-mut";
+const TUR3 = "test/whatsapp-tur3-250.test.mjs";
+const KT = "test/whatsapp-t-durum-karar-tablosu-248.test.mjs";
+const KVKK = "test/whatsapp-tur2-kvkk-250.test.mjs";
+const Q = "server/lib/whatsapp/queue.mjs";
+const MUTANTS = [
+  { id: "M70-yalniz-eski-sira", what: "S70'in karşı seçeneği: yalnız işin kendi satırı (S59) — zincir / eski deneme kuralı yok", file: Q, find: "    if (![\"delivered\", \"read\"].includes(value)) return 0;\n    const root = jobRow(jobId);", repl: "    if (true) return 0;\n    const root = jobRow(jobId);", tests: [TUR3], pattern: "^W3T-70" },
+  { id: "M70-yineleme-yeni-sayilir", what: "Y20-3: aynı denemeye yinelenen teslim de Atlandı işi çıkarır (fresh yok sayılır)", file: Q, find: "const fromSkip = row.state === \"skipped\" && fresh;", repl: "const fromSkip = row.state === \"skipped\";", tests: [TUR3], pattern: "^W3T-70d" },
+  { id: "M70-eski-denemede-kendisi-yok", what: "eski deneme yolunda işin kendisi çıkarılmaz (self yok)", file: Q, find: "    settleSkippedChain(owned.jobId, value, at, { fresh: true, self: true });\n    if (owned.row) notify", repl: "    settleSkippedChain(owned.jobId, value, at, { fresh: true, self: false });\n    if (owned.row) notify", tests: [TUR3], pattern: "^W3T-70c" },
+  { id: "M70-okundu-ilerlemez", what: "S70: read Atlandı işi Okundu değil Teslim Edildi yapar", file: Q, find: "      else if (fromSkip || upgrade) fields = { state: \"read\"", repl: "      else if (fromSkip || upgrade) fields = { state: \"delivered\"", tests: [TUR3], pattern: "^W3T-70b" },
+  { id: "M71-kisi-alinir", what: "S71'in B'si: işteki Yine de Gönder'de telefon denetimi yapılmaz (kişi alınır)", file: Q, find: "      const check = eligibility(account, kind);\n      const person", repl: "      const check = anyway ? { ...eligibility(account, kind), skip: \"\" } : eligibility(account, kind);\n      const person", tests: [TUR3], pattern: "^W3T-71" },
+  { id: "M71-zaten-kuyrukta-once", what: "Y20-10: telefon denetimi Zaten Kuyrukta'dan SONRA", file: Q, find: "if (!person.skip && queued(queuedRows.get(account.id), kind, period, keyDay, datesOf(id))) person.skip = \"Zaten Kuyrukta\";", repl: "if ((!person.skip || person.skip === \"Telefon yok\") && queued(queuedRows.get(account.id), kind, period, keyDay, datesOf(id))) person.skip = \"Zaten Kuyrukta\";", tests: [TUR3], pattern: "^W3T-71" },
+  { id: "M90-eski-yol-da-koyar", what: "S90'ın karşı seçeneği: işareti eski yolun bildirimi de koyar", file: Q, find: "if (via === undefined || via === hookAppOf(mode)) {", repl: "if (true) {", tests: [TUR3], pattern: "^W3T-90" },
+  { id: "M90-gec-teslim-sayilmaz", what: "S90: eski yolun geç bildirimi işlenmez (yalnız işaret değil, durum da)", file: Q, find: "    if (via === undefined || via === hookAppOf(mode)) {\n", repl: "    if (via !== undefined && via !== hookAppOf(mode)) return out;\n    if (via === undefined || via === hookAppOf(mode)) {\n", tests: [TUR3], pattern: "^W3T-90" },
+  { id: "M90-kanca-yolu-bildirmez", what: "kanca alternatif adresin uygulamasını bildirmez (via boş)", file: "server/lib/whatsapp/hook.mjs", find: "mark.signed === true, String(hook.app || \"\"));", repl: "mark.signed === true, \"\");", tests: [TUR3], pattern: "^W3T-90[ad]" },
+  { id: "M90-uygulama-duzeyi-yol2", what: "uygulama düzeyi adres Yol 2'nin uygulaması sayılır", file: "server/lib/whatsapp/hook.mjs", find: "return deliver(res, batches, mark.signed === true, \"manual\");", repl: "return deliver(res, batches, mark.signed === true, \"embedded\");", tests: [TUR3], pattern: "^W3T-90b" },
+  { id: "MWE-yazilabilirlik-yok", what: "13:50 (1): lisans durumu reveal'e ulaşmaz", file: "server/routes/whatsapp.mjs", find: "reveal(mobileRemote?.publicUrl?.() || \"\", { writable: writable() });", repl: "reveal(mobileRemote?.publicUrl?.() || \"\");", tests: [TUR3], pattern: "^W3T-WE" },
+  { id: "M27-kip-ayirmaz", what: "WT2-7 öncesi: paylaşım denetimi kipi ayırmaz", file: "server/routes/whatsapp.mjs", find: "summary.wabaId === waba && (kip === null || summary.mode === kip);", repl: "summary.wabaId === waba;", tests: [TUR3], pattern: "^W3T-27" },
+  { id: "M27-ters-yon", what: "WT2-7 YANLIŞ yön: aynı kipteki şirket de paylaşıyor sayılmaz (abonelik silinir)", file: "server/routes/whatsapp.mjs", find: "summary.wabaId === waba && (kip === null || summary.mode === kip);", repl: "summary.wabaId === waba && (kip === null || summary.mode !== kip);", tests: [TUR3], pattern: "^W3T-27" },
+  { id: "M27-baglanti-kipi-gecmez", what: "Kaldır sharedWaba'ya kipi geçirmez (eski çağrı)", file: "server/lib/whatsapp/connection.mjs", find: "shared = Boolean(sharedWaba(record.wabaId, record.mode === \"embedded\" ? \"embedded\" : \"manual\"));", repl: "shared = Boolean(sharedWaba(record.wabaId));", tests: [TUR3], pattern: "^W3T-27" },
+  { id: "M16-koruma-yok", what: "T16'nın karşı seçeneği: yanıtsız dal her durumda Sonucu Belirsiz yazar", file: Q, find: "    return Boolean(row) && row.state === \"sending\" && Number(row.attempt) === Number(attempt);", repl: "    return true;", tests: [KT], pattern: "^T16[bc] " },
+  { id: "M16-her-durumda-atla", what: "T16: yanıtsız dal hiçbir zaman Sonucu Belirsiz yazmaz", file: Q, find: "    return Boolean(row) && row.state === \"sending\" && Number(row.attempt) === Number(attempt);", repl: "    return false;", tests: [KT], pattern: "^T16[bc] " },
+  { id: "M16-deneme-bakilmaz", what: "T16: deneme numarasına bakılmaz (yalnız durum)", file: Q, find: "    return Boolean(row) && row.state === \"sending\" && Number(row.attempt) === Number(attempt);", repl: "    return Boolean(row) && row.state !== \"sent\";", tests: [KT], pattern: "^T16[bc] " },
+  { id: "DK9", what: "DÜŞÜK-2: yeniden uygulama talep anından SONRA açılan işleri de anonimleştirir", file: Q, find: "const fileIds = store.all(\"SELECT id FROM wa_jobs WHERE account_id = ? AND created_at <= ?\", request.accountId, request.at)", repl: "const fileIds = store.all(\"SELECT id FROM wa_jobs WHERE account_id = ?\", request.accountId)", tests: [TUR3, KVKK], pattern: "^(W3T-D2|T2-5)" },
+  { id: "MD1-temizlik-yok", what: "DÜŞÜK-1: eski hata metni temizlenmez", file: Q, find: "          .filter(row => scrubDigits(row.error_text) !== row.error_text);", repl: "          .filter(() => false);", tests: [TUR3], pattern: "^W3T-D1" },
+  { id: "MD1-wal-bosaltilmaz", what: "DÜŞÜK-1: temizlikten sonra denetim noktası yok (eski sayfa WAL'da)", file: Q, find: "    if (scrubbed) flushStore();", repl: "    void scrubbed;", tests: [TUR3], pattern: "^W3T-D1" },
+];
+const only = (process.argv[2] || "").split(",").filter(Boolean);
+const results = [];
+for (const m of MUTANTS) {
+  if (only.length && !only.includes(m.id)) continue;
+  const file = path.join(ROOT, m.file);
+  const original = readFileSync(file, "utf8");
+  const count = original.split(m.find).length - 1;
+  if (count !== 1) {
+    results.push(`${m.id} UYGULANAMADI (eşleşme ${count}) — ${m.what}`);
+    console.log(results.at(-1));
+    continue;
+  }
+  writeFileSync(file, original.replace(m.find, m.repl));
+  try {
+    const run = spawnSync(process.execPath, ["--disable-warning=ExperimentalWarning", "--test", "--test-concurrency=1", "--test-reporter=spec", `--test-name-pattern=${m.pattern}`, ...m.tests], { cwd: ROOT, env: { ...process.env, HUKUK_LICENSE_URL: "http://127.0.0.1:9", TZ: process.env.TZ || "UTC" }, encoding: "utf8", maxBuffer: 256 * 1024 * 1024, timeout: 1_200_000 });
+    const out = `${run.stdout || ""}${run.stderr || ""}`;
+    const n = key => Number(new RegExp(`ℹ ${key} (\\d+)`).exec(out)?.[1] ?? NaN);
+    const reds = [...out.matchAll(/^\s*✖ (.{0,90})/gm)].map(x => x[1]).filter(t => !/failing tests/.test(t));
+    const why = /AssertionError[^\n]{0,200}/.exec(out)?.[0] || "";
+    const byValue = Boolean(why);
+    const caught = run.status !== 0 && n("fail") > 0;
+    results.push(`${m.id} ${caught ? (byValue ? "YAKALANDI (değerle)" : "YAKALANDI (istisnayla)") : "KAÇTI"} · çıkış ${run.status} · tests ${n("tests")} pass ${n("pass")} fail ${n("fail")} · ${m.what}${caught ? ` · ilk kırmızı: ${reds[0] || "?"} · ${why}` : ""}`);
+  } finally {
+    writeFileSync(file, original);
+  }
+  console.log(results.at(-1));
+}
+console.log("# ÖZET");
+for (const line of results) console.log(line);
+const caught = results.filter(r => / YAKALANDI \(değerle\) /.test(r)).length;
+console.log(`# tests ${results.length}\n# pass ${caught}\n# fail ${results.length - caught}\n# cancelled 0\n# skipped 0\n# todo 0`);

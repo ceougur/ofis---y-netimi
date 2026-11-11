@@ -1,0 +1,15 @@
+M71-kisi-alinir YAKALANDI (değerle) · çıkış 1 · tests 1 pass 0 fail 1 · S71'in B'si: işteki Yine de Gönder'de telefon denetimi yapılmaz (kişi alınır) · ilk kırmızı: W3T-71 işteki Yine de Gönder → 400 'Telefon yok' (bekleyen iş varken de — Zaten Kuyrukta'd · AssertionError [ERR_ASSERTION]: neden 'Telefon yok' — 'Zaten Kuyrukta' DEĞİL (Y20-10)
+M71-zaten-kuyrukta-once YAKALANDI (değerle) · çıkış 1 · tests 1 pass 0 fail 1 · Y20-10: telefon denetimi Zaten Kuyrukta'dan SONRA · ilk kırmızı: W3T-71 işteki Yine de Gönder → 400 'Telefon yok' (bekleyen iş varken de — Zaten Kuyrukta'd · AssertionError [ERR_ASSERTION]: neden 'Telefon yok' — 'Zaten Kuyrukta' DEĞİL (Y20-10)
+MD1-temizlik-yok YAKALANDI (değerle) · çıkış 1 · tests 1 pass 0 fail 1 · DÜŞÜK-1: eski hata metni temizlenmez · ilk kırmızı: W3T-D1 tur 2'den ÖNCEKİ kodun GERÇEK verisi (whatsapp-kvkk-hata-329d5d1b: silinmiş işin ha · AssertionError [ERR_ASSERTION]: DÜŞÜK-1: eski metin bir kez temizlendi (eski kod: numara kalıyor) — Değerlerden biri geçersiz (ör. alıcı numarası). (Meta hata kodu 131009: Parameter value is not valid: to +90 532 1
+MD1-wal-bosaltilmaz YAKALANDI (değerle) · çıkış 1 · tests 1 pass 0 fail 1 · DÜŞÜK-1: temizlikten sonra denetim noktası yok (eski sayfa WAL'da) · ilk kırmızı: W3T-D1 tur 2'den ÖNCEKİ kodun GERÇEK verisi (whatsapp-kvkk-hata-329d5d1b: silinmiş işin ha · AssertionError [ERR_ASSERTION]: program AÇIKKEN de (temizlik turundan hemen sonra) ana dosyada / WAL'da eski sayfa yok — denetim noktası
+# ÖZET
+M71-kisi-alinir YAKALANDI (değerle) · çıkış 1 · tests 1 pass 0 fail 1 · S71'in B'si: işteki Yine de Gönder'de telefon denetimi yapılmaz (kişi alınır) · ilk kırmızı: W3T-71 işteki Yine de Gönder → 400 'Telefon yok' (bekleyen iş varken de — Zaten Kuyrukta'd · AssertionError [ERR_ASSERTION]: neden 'Telefon yok' — 'Zaten Kuyrukta' DEĞİL (Y20-10)
+M71-zaten-kuyrukta-once YAKALANDI (değerle) · çıkış 1 · tests 1 pass 0 fail 1 · Y20-10: telefon denetimi Zaten Kuyrukta'dan SONRA · ilk kırmızı: W3T-71 işteki Yine de Gönder → 400 'Telefon yok' (bekleyen iş varken de — Zaten Kuyrukta'd · AssertionError [ERR_ASSERTION]: neden 'Telefon yok' — 'Zaten Kuyrukta' DEĞİL (Y20-10)
+MD1-temizlik-yok YAKALANDI (değerle) · çıkış 1 · tests 1 pass 0 fail 1 · DÜŞÜK-1: eski hata metni temizlenmez · ilk kırmızı: W3T-D1 tur 2'den ÖNCEKİ kodun GERÇEK verisi (whatsapp-kvkk-hata-329d5d1b: silinmiş işin ha · AssertionError [ERR_ASSERTION]: DÜŞÜK-1: eski metin bir kez temizlendi (eski kod: numara kalıyor) — Değerlerden biri geçersiz (ör. alıcı numarası). (Meta hata kodu 131009: Parameter value is not valid: to +90 532 1
+MD1-wal-bosaltilmaz YAKALANDI (değerle) · çıkış 1 · tests 1 pass 0 fail 1 · DÜŞÜK-1: temizlikten sonra denetim noktası yok (eski sayfa WAL'da) · ilk kırmızı: W3T-D1 tur 2'den ÖNCEKİ kodun GERÇEK verisi (whatsapp-kvkk-hata-329d5d1b: silinmiş işin ha · AssertionError [ERR_ASSERTION]: program AÇIKKEN de (temizlik turundan hemen sonra) ana dosyada / WAL'da eski sayfa yok — denetim noktası
+# tests 4
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
