@@ -185,3 +185,24 @@ döner; 29 düzeltmede cari değişimi (S54, S57, S79, S80, S81, S83–S85), red
   vade son İADENİN günü) — takvim / zil / Vade Takip / nakit akışı kalemidir (routes/plans.mjs queueExtras); kartın durumu ve taksit gecikmişi taksitlerden (değişmedi).
 - **Değişmez:** "Σ kalem = cari bakiyesi" kartlı rastgele carilerde (tyk-250 tur 2a); S101 (kart kırpıldı + kart tahsilatı) ve S99 adıyla dışarıda, sayıları çıktıda. Tanı alanı
   `coverage` (kart başına tükettiği ↔ tüketebileceği).
+
+## 11. Tur 2b-1 (11.11.2026; dar kontrol DK-C5BT2A'nın ORTA / DÜŞÜK bulguları — S95–S99, S101–S105, S110'un kodu tur 2b-2)
+- **G-2 (kart durumu; beklenen v2.4.9'un gerçek kodu):** Bitti için kuyruk kalanı 0 + bütün taksitler ödendi YETMEZ; ayrıca kart tutarı > 0 ve (kartın KENDİ kalanı 0 — v2.4.9
+  `allocate` kuralı — YA DA taksiti olup Mevcut Borç kartında taksitlere bölünmemiş kapsam kalmamış). Neden: taksitsiz kartta boş listede "hepsi ödendi" doğruydu; Mevcut Borç
+  kartında taksitlere bölünmemiş borç kuyrukta kartın değil alttaki borç kalemidir (coverTotal = taksitler, v2.0.23). S50 = A'nın kapattığı taksitler (kart seçilmeden alınan
+  tahsilat) bugünkü gibi Bitti'ye götürür; Mevcut Borç kartında taksitlendirilmemiş kısım kalırken Aktif kalır (v2.4.9: Gecikti — fark testi S50).
+- **ORTA-1 (karar (3) × çek / senet düzeltmesi):** bağ ilk olaydadır (cheque_events.invoice_id); bağın anı = `cheque.updated` izinde `invoiceId` taşıyan son düzeltmenin anı, yoksa
+  ilk olayın kaydı (routes/invoices.mjs `chequeLinkMoments`). KESİN an (`linkMoments`, kuyrukta `linkedAt`'ten önce): tutar / cari / tarih düzeltmesi olayın satırlarını yeniden
+  yazar (yeni kayıt anı) ama bağ aynıdır — cari tahsilatının "tutar / tarih düzeltmesi bağın anını değiştirmez" kuralı. Çekin karta sayılması (plan_entries) eski kuralda (satırın
+  kaydı; izde planId değişimi yok — BİLİNEN SINIR). Bağın KALDIRILMASI: ödeme bağsızdır (çek = cari tahsilatı); kilitli dönemdeki bağsız kapanışların bundan etkilenmesi
+  KULLANICIYA SORULDU listesinde (tur 2b-1 raporu).
+- **ORTA-2 (S91 = A, S93, S96):** cari kalemleri (Vade Takip / zil / takvim / nakit akışı) alacak tarafındaki HER açık kalemdir (fatura ve kart kalemleri kendi kaynaklarında):
+  tedarikçideki faturasız (stoktan) ve faturalı Alış İadesi artık "Tahsil Edilecek Borç". Çek / senet ve banka (POS) kaynaklı verilen avans S96 notuyla tur 2b-2.
+- **G-1 (hız, en küçük düzeltme):** kart ekranı (GET /plans/:id) ve bütün kart yazım yanıtları kuyruğu YALNIZ kartın carisi için kurar (`invoices.obligationsFor` — önbelleğin
+  artımlı yolunun cari başına kullandığı işlev; §5 "tek cari her istekte"). Taksitler listesi, zil, Vade Takip bütün carilerin kuyruğunu okumayı sürdürür. Eşdeğerlik:
+  test/tyk-tur2b1-250 (yanıt = okuma = liste satırı, cariler arası durumlar).
+- **K8 formu (karar 'CI #1059' (2)) KODLANMADI:** sunucunun K8 sınırını kuyruk kalanına çevirmek mutabakat motorunun K8 modelini (test/mutabakat/motor.mjs planLeft = kartın
+  kendi kalanı; plan §3.10/3) kırıyor (mutabakat-cekirdek / yıl dönümü: "taksit-tahsil: yanlış ret 409 plan-paid") ve taksitli faturada önceki avans kartı "ödendi" sayıp
+  faturanın açığını (G2) kart tahsilatıyla kapatmayı engelliyor → para kuralı ayrışması (ders 43), KULLANICIYA SORULMALI; senaryo-k8-230 kırmızı kalır.
+- **Fark testi (ders 53, kalıcı):** test/fixtures/tyk-fark-v249 (v2.4.9'un gerçek koduyla üretilmiş 28 sınıf + v2.4.9'un kendi sayıları) → test/tyk-fark-v249-250; her fark
+  `beklenen-farklar.json`'da karar numarasıyla. Değişmez (tyk-250): S110 sınıfı `coverage.ambiguous` ile ayrı adla; S99 dışlaması kalktı.

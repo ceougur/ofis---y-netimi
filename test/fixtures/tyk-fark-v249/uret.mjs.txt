@@ -1,0 +1,212 @@
+// 2.5.0 Ç5-B tur 2b-1 — KALICI ESKİ SÜRÜM FARK TESTİ fikstürü (ders 17, 53; CLAUDE.md TEST VERİSİ): v2.4.9'un GERÇEK koduyla (git archive v2.4.9 = ccf0b0ca) programın KENDİ
+// API'sinden üretilir; kopyalama / elle SQL YOK. Aynı süreçte v2.4.9'un o veriden KENDİ API'siyle okunan sayıları (test/tyk-fark-oku.mjs) v249.json'a yazılır.
+// Sınıflar (her cari tek sınıf; ad öneki "TYKF "): dar kontrol DK-C5BT2A y1-uret A–R (stoktan taksitlendir, kısmi, iade, karşı yönlü, elle geriye tarihli Mevcut Borç, toplu, ileri
+// tarihli, aynı gün iki kart, tahsilat önce / sonra, eksi havuz, faturadan, S110 elle / stok, kilitli dönem, Excel kart, Excel bakiye) + o3 (taksitsiz / eksik taksitli ayrı kart ve
+// Mevcut Borç kartı) + taksitleri silinmiş stoktan kart + kart tahsilatıyla ödenmiş taksitsiz kart + tedarikçi stoktan / faturalı Alış İadesi + tedarikçiye avans (denetim) + başka
+// karttan doğan avans (K8). Kilit en son (−25).
+//
+// NASIL YENİDEN ÜRETİLİR (yalnız eski kod değişirse ya da yeni sınıf eklenince; ders 23 / 25 — eski kod AYRI kopyada, benzersiz klasörde):
+//   mkdir -p <not defteri>/v249 && git archive v2.4.9 | tar -x -C <not defteri>/v249 && ln -s <depo>/node_modules <not defteri>/v249/node_modules
+//   cp test/fixtures/tyk-fark-v249/uret.mjs.txt <not defteri>/uret.mjs
+//   HUKUK_LICENSE_URL=http://127.0.0.1:9 node <not defteri>/uret.mjs <not defteri>/v249 <not defteri>/cikti <depo kökü>
+//   → <not defteri>/cikti/{destekofis.sqlite.gz, v249.json, uretim.json} dosyaları test/fixtures/tyk-fark-v249/'ye kopyalanır; beklenen-farklar.json test çıktısına göre
+//     (her fark bir KARAR NUMARASIYLA — açıklanamayan fark bulgudur) güncellenir.
+import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+import { gzipSync } from "node:zlib";
+
+const [root, outDir, repo] = process.argv.slice(2);
+if (process.env.HUKUK_LICENSE_URL !== "http://127.0.0.1:9") throw new Error("ders 30: HUKUK_LICENSE_URL=http://127.0.0.1:9");
+if (!root || !outDir || !repo) throw new Error("kullanım: node uret.mjs <v2.4.9 kökü> <çıktı klasörü> <depo kökü>");
+const helpers = await import(pathToFileURL(path.join(root, "test/helpers.mjs")).href);
+const { readFacts } = await import(pathToFileURL(path.join(repo, "test/tyk-fark-oku.mjs")).href);
+const TODAY = "2026-10-20";
+const NOW = `${TODAY}T12:00:00+03:00`;
+const PREFIX = "TYKF ";
+const day = offset => {
+  const at = new Date(`${TODAY}T00:00:00Z`);
+  at.setUTCDate(at.getUTCDate() + offset);
+  return at.toISOString().slice(0, 10);
+};
+const tr = iso => iso.split("-").reverse().join(".");
+const dataDir = path.join(outDir, "data");
+const backupDir = path.join(outDir, "backups");
+mkdirSync(outDir, { recursive: true });
+const server = await helpers.startTestServer({ dataDir, backupDir, now: { time: NOW, fixed: false }, env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
+const client = await helpers.loginAdmin(server);
+const unwrap = response => (response.data && typeof response.data === "object" && "ok" in response.data ? (response.data.ok ? response.data.data : response.data) : response.data);
+const log = {};
+let n = 0;
+const step = async (label, promise) => {
+  const res = await promise;
+  log[label] = res.status === 200 ? 200 : `${res.status} ${JSON.stringify(res.data).slice(0, 200)}`;
+  return { status: res.status, data: unwrap(res) };
+};
+const must = async (label, promise) => {
+  const res = await step(label, promise);
+  if (res.status !== 200) throw new Error(`${label}: ${log[label]}`);
+  return res.data;
+};
+const api = { get: url => client.get(url), post: (url, body) => client.post(url, body), put: (url, body) => client.put(url, body), del: url => client.del(url) };
+const tick = () => server.clock.advance({ seconds: 30 });
+try {
+  await must("kurulum", api.post("/api/workspace/bank/setup/dismiss", {}));
+  const item = await must("hizmet", api.post("/api/workspace/stock", { kind: "service", code: "HZM-TYKF", name: "Hizmet", unit: "Adet", salePrice: "1000" }));
+  const goods = await must("ürün", api.post("/api/workspace/stock", { name: "TYKF Ürün", code: "URN-TYKF", unit: "Adet", unitPrice: "10", salePrice: "100" }));
+  await must("alım", api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "in", qty: "1000", unitPrice: "10", pay: "none", date: day(-200) }));
+  const account = (label, type = "customer") => must(`cari ${label}`, api.post("/api/workspace/accounts", { name: `${PREFIX}${label}`, type, registeredOn: day(-400), phone: `0500 253 ${String(10 + Math.floor((n += 1) / 100)).padStart(2, "0")} ${String(n % 100).padStart(2, "0")}` }));
+  const card = acc => must("cari kartı", api.get(`/api/workspace/accounts/${acc.id}`));
+  const planOf = async acc => (await card(acc)).plans?.[0]?.id;
+  const pay = (acc, body, label = "hareket") => step(`${label} ${acc.name} ${body.kind} ${body.date}`, api.post(`/api/workspace/accounts/${acc.id}/entries`, { method: "cash", cashForce: true, ...body }));
+  const stockSale = (acc, date, qty, inst) => step(`stok ${acc.name} ${date}`, api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "out", qty: String(qty), unitPrice: "100", pay: "account", method: "cash", accountId: acc.id, date, ...(inst ? { installments: inst } : {}) }));
+  const plan = (acc, body, label = "kart") => step(`${label} ${acc.name}`, api.post("/api/workspace/plans", { name: acc.name, accountId: acc.id, ...body }));
+  const autoPlan = (acc, body, label) => plan(acc, { mode: "auto", everyMonths: "1", ...body }, label);
+  const sale = (acc, date, amount, payment) => step(`fatura ${acc.name} ${date}`, api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: acc.id, issueDate: date, lines: [{ itemId: item.id, qty: 1, unitPrice: String(amount), vatRate: 0 }], payment, cashForce: true }));
+  const dropItems = async (planId, keep) => {
+    const detail = unwrap(await api.get(`/api/workspace/plans/${planId}`));
+    for (const row of (detail.items || []).slice(keep)) await step(`taksit sil ${planId} ${row.seq}`, api.del(`/api/workspace/plans/${planId}/items/${row.id}`));
+  };
+
+  // ---- Faturalar (seri tarih sırası: önce en eski) ----
+  const M = await account("M S110 Elle");
+  const L = await account("L Faturadan");
+  const T7 = await account("T7 Tedarikçi Faturalı Alış İadesi", "supplier");
+  const P7 = await step("alış T7", api.post("/api/workspace/invoices", { scenario: "expense_purchase", kind: "purchase", accountId: T7.id, number: "ALS-TYKF-T7", issueDate: day(-30), lines: [{ name: "Gider", qty: 1, unitPrice: "300", vatRate: 0, expenseCode: "other" }], payment: { rest: "open", dueDate: day(-30) }, cashForce: true }));
+  tick();
+  await pay(T7, { kind: "out", amount: "300", date: day(-28), invoiceId: P7.data?.id });
+  // ---- A–R (dar kontrol y1-uret) ----
+  const A = await account("A Stok Taban");
+  await stockSale(A, day(-20), 10, { count: 2, firstDue: day(-10) });
+  tick();
+  const B = await account("B Stok Kısmi");
+  await stockSale(B, day(-20), 10, { count: 2, firstDue: day(-10) });
+  tick();
+  await pay(B, { kind: "in", amount: "300", date: day(-15) });
+  const C = await account("C Stok İade");
+  await stockSale(C, day(-20), 10, { count: 2, firstDue: day(-10) });
+  tick();
+  await step("iade C", api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "in", reason: "return", qty: "2", unitPrice: "100", pay: "account", method: "cash", accountId: C.id, date: day(-12) }));
+  const E = await account("E Karşı Yönlü");
+  await pay(E, { kind: "credit", amount: "300", date: day(-25) });
+  tick();
+  await stockSale(E, day(-20), 10, { count: 2, firstDue: day(-10) });
+  const F = await account("F Elle Geriye");
+  await pay(F, { kind: "debt", amount: "1000", date: day(-20) });
+  tick();
+  await autoPlan(F, { registeredOn: day(-30), total: "1000", count: "2", firstDue: day(-10), coversBalance: true });
+  const G = await account("G Toplu");
+  await pay(G, { kind: "debt", amount: "1000", date: day(-20) });
+  tick();
+  await step("toplu G", api.post("/api/workspace/accounts/bulk-plan", { ids: [G.id], amountMode: "balance", count: 2, firstDue: day(-10), everyMonths: 1 }));
+  const H = await account("H İleri Kart");
+  await pay(H, { kind: "debt", amount: "1000", date: day(-20) });
+  tick();
+  await autoPlan(H, { registeredOn: day(5), total: "1000", count: "2", firstDue: day(10), coversBalance: true });
+  const I = await account("I Aynı Gün İki Kart");
+  await pay(I, { kind: "debt", amount: "600", date: day(-20) });
+  await pay(I, { kind: "debt", amount: "400", date: day(-20) }, "hareket2");
+  tick();
+  await autoPlan(I, { registeredOn: day(-30), total: "600", count: "2", firstDue: day(-10), coversBalance: true }, "kart1");
+  tick();
+  await autoPlan(I, { registeredOn: day(-30), total: "400", count: "2", firstDue: day(-5), coversBalance: true }, "kart2");
+  const J = await account("J Tahsilat Sonra Kart");
+  await pay(J, { kind: "debt", amount: "1000", date: day(-20) });
+  await pay(J, { kind: "in", amount: "400", date: day(-18) });
+  tick();
+  await autoPlan(J, { registeredOn: day(-30), total: "600", count: "2", firstDue: day(-10), coversBalance: true });
+  tick();
+  const J2 = await account("J2 Kart Sonra Tahsilat");
+  await pay(J2, { kind: "debt", amount: "1000", date: day(-20) });
+  tick();
+  await autoPlan(J2, { registeredOn: day(-30), total: "1000", count: "2", firstDue: day(-10), coversBalance: true });
+  tick();
+  await pay(J2, { kind: "in", amount: "400", date: day(-25) });
+  const K = await account("K Eksi Havuz");
+  await stockSale(K, day(-20), 10, { count: 2, firstDue: day(-10) });
+  tick();
+  const kPlan = await planOf(K);
+  await step("kart tahsilatı K", api.post(`/api/workspace/plans/${kPlan}/entries`, { kind: "in", amount: "300", date: day(-9), method: "cash", cashForce: true }));
+  await step("kart iadesi K", api.post(`/api/workspace/plans/${kPlan}/entries`, { kind: "out", amount: "500", date: day(-5), method: "cash", cashForce: true }));
+  await sale(L, day(-20), 1000, { rest: "installments", installments: { count: 2, firstDue: day(-10), everyMonths: 1 } });
+  await pay(M, { kind: "debt", amount: "900", date: day(-25) });
+  await sale(M, day(-20), 600, { rest: "open", dueDate: day(-20) });
+  tick();
+  await autoPlan(M, { registeredOn: day(-30), total: "900", count: "3", firstDue: day(-15), coversBalance: true });
+  const N = await account("N S110 Stok");
+  await pay(N, { kind: "debt", amount: "500", date: day(-30) });
+  tick();
+  await stockSale(N, day(-20), 10, { count: 2, firstDue: day(-10) });
+  const P = await account("P Kilitli");
+  await stockSale(P, day(-40), 10, { count: 2, firstDue: day(-30) });
+  tick();
+  await pay(P, { kind: "in", amount: "300", date: day(-35) });
+  tick();
+  const Q = { name: `${PREFIX}Q Excel Kart` };
+  await step("excel Q", api.post("/api/workspace/plans/import", { matrix: [["Ad Soyad", "Toplam", "Taksit", "İlk Vade", "Ödenen", "Kayıt"], [Q.name, "1000", "2", tr(day(-30)), "400", tr(day(-60))]], headerAt: 0, roles: { 0: "name", 1: "total", 2: "count", 3: "firstDue", 4: "paid", 5: "registered" }, fileName: "tykf-q.xlsx", linkRecords: false }));
+  await step("excel R", api.post("/api/workspace/accounts/import", { matrix: [["Ad Soyad", "Telefon", "Bakiye", "Kayıt"], [`${PREFIX}R Excel Bakiye`, "0500 253 99 01", "1000", tr(day(-20))]], headerAt: 0, roles: { 0: "name", 1: "phone", 2: "balance", 3: "registered" }, fileName: "tykf-r.xlsx" }));
+  const R = server.app.store.get("SELECT id, name FROM accounts WHERE name = ?", `${PREFIX}R Excel Bakiye`);
+  if (R) await step("toplu R", api.post("/api/workspace/accounts/bulk-plan", { ids: [R.id], amountMode: "balance", count: 2, firstDue: day(-10), everyMonths: 1 }));
+  // ---- o3 + G-2 sınıfları ----
+  const T1 = await account("T1 Taksitsiz Ayrı Kart");
+  await plan(T1, { registeredOn: day(-20), total: "1000" });
+  const T2 = await account("T2 Eksik Taksitli Ayrı Kart");
+  const t2 = await plan(T2, { registeredOn: day(-20), total: "1000" });
+  await step("T2 taksit 1", api.post(`/api/workspace/plans/${t2.data?.id}/items`, { dueDate: day(-10), amount: "300" }));
+  await step("T2 taksit 2", api.post(`/api/workspace/plans/${t2.data?.id}/items`, { dueDate: day(20), amount: "300" }));
+  const T3 = await account("T3 Taksitsiz Mevcut Borç");
+  await pay(T3, { kind: "debt", amount: "1000", date: day(-20) });
+  tick();
+  await plan(T3, { registeredOn: day(-20), total: "1000", coversBalance: true });
+  const T4 = await account("T4 Eksik Taksitli Mevcut Borç");
+  await pay(T4, { kind: "debt", amount: "1000", date: day(-20) });
+  tick();
+  const t4 = await autoPlan(T4, { registeredOn: day(-20), total: "1000", count: "2", firstDue: day(-10), coversBalance: true });
+  await dropItems(t4.data?.id, 1);
+  const T5 = await account("T5 Taksitleri Silinmiş Stoktan Kart");
+  await stockSale(T5, day(-20), 10, { count: 2, firstDue: day(-10) });
+  tick();
+  await dropItems(await planOf(T5), 0);
+  const T9 = await account("T9 Kart Tahsilatıyla Ödenmiş Taksitsiz Kart");
+  const t9 = await plan(T9, { registeredOn: day(-20), total: "1000" });
+  await step("kart tahsilatı T9", api.post(`/api/workspace/plans/${t9.data?.id}/entries`, { kind: "in", amount: "1000", date: day(-5), method: "cash", cashForce: true }));
+  const T10 = await account("T10 Cari Tahsilatıyla Ödenmiş Taksitsiz Mevcut Borç");
+  await pay(T10, { kind: "debt", amount: "1000", date: day(-20) });
+  tick();
+  await plan(T10, { registeredOn: day(-20), total: "1000", coversBalance: true });
+  tick();
+  await pay(T10, { kind: "in", amount: "1000", date: day(-5) });
+  const T6 = await account("T6 Tedarikçi Stoktan Alış İadesi", "supplier");
+  await step("alış iadesi T6", api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "out", reason: "preturn", qty: "3", unitPrice: "100", pay: "account", method: "cash", accountId: T6.id, date: day(-20) }));
+  const T8 = await account("T8 Tedarikçiye Avans", "supplier");
+  await pay(T8, { kind: "out", amount: "300", date: day(-20) });
+  const purchaseDetail = P7.data?.id ? unwrap(await api.get(`/api/workspace/invoices/${P7.data.id}`)) : null;
+  if (purchaseDetail?.lines?.[0]) await step("faturalı alış iadesi T7", api.post("/api/workspace/invoices", { kind: "purchase_return", originalId: P7.data.id, issueDate: day(-20), lines: [{ originLineId: purchaseDetail.lines[0].id, qty: 1 }], payment: { rest: "open" }, force: true }));
+  const T11 = await account("T11 Başka Karttan Avans");
+  const paid = await autoPlan(T11, { registeredOn: day(-20), total: "1000", count: "1", firstDue: day(10) }, "ödenmiş kart");
+  await step("T11 kart tahsilatı 1.000", api.post(`/api/workspace/plans/${paid.data?.id}/entries`, { kind: "in", amount: "1000", date: day(-15), method: "cash" }));
+  await step("T11 avans 100", api.post(`/api/workspace/plans/${paid.data?.id}/entries`, { kind: "in", amount: "100", date: day(-14), method: "cash", overpay: true }));
+  tick();
+  const open = await autoPlan(T11, { registeredOn: day(-12), total: "1000", count: "1", firstDue: day(10) }, "açık kart");
+  await step("T11 açık kart tahsilatı 300", api.post(`/api/workspace/plans/${open.data?.id}/entries`, { kind: "in", amount: "300", date: day(-10), method: "cash" }));
+  // Kilit en son (P'nin ve öbürlerinin kilitten SONRAKİ görünümü).
+  await step("kilit", api.put("/api/admin/period-lock", { lockedUntil: day(-25) }));
+  const facts = await readFacts(async url => {
+    const res = await api.get(url);
+    if (res.status !== 200) throw new Error(`${url}: ${res.status}`);
+    return unwrap(res);
+  }, { today: TODAY, prefix: PREFIX });
+  writeFileSync(path.join(outDir, "v249.json"), `${JSON.stringify({ kod: "v2.4.9 (ccf0b0ca)", node: process.version, now: NOW, ...facts }, null, 1)}\n`);
+} finally {
+  await server.close();
+}
+writeFileSync(path.join(outDir, "uretim.json"), `${JSON.stringify({ kod: "v2.4.9 (ccf0b0ca)", node: process.version, log }, null, 1)}\n`);
+writeFileSync(path.join(outDir, "destekofis.sqlite.gz"), gzipSync(readFileSync(path.join(dataDir, "destekofis.sqlite")), { level: 9 }));
+for (const file of ["sirketler.json"]) {
+  try {
+    copyFileSync(path.join(dataDir, file), path.join(outDir, file));
+  } catch {
+    // tek şirket: dosya yok
+  }
+}
+console.log(`yazıldı ${outDir}: ${Object.keys(log).length} adım, ${Object.values(log).filter(v => v !== 200).length} ret`);

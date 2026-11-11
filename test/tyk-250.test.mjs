@@ -516,7 +516,7 @@ describe("TYK tur 2a — değişmez: kalemler toplamı = cari bakiyesi (kartlı,
   for (const seed of [11, 12, 13]) {
     it(`tohum ${seed}: 200 cari × 22 olay — Σ kalem = bakiye (S99 / S101 adıyla dışarıda)`, () => {
       const r = rng(seed);
-      const counts = { checked: 0, S101: 0, S101fark: 0, S99: 0, S99fark: 0, coverBefore: 0, stockCover: 0, bare: 0, partial: 0, targeted: 0, back: 0, own: 0 };
+      const counts = { checked: 0, S110: 0, S110fark: 0, S101: 0, S101fark: 0, S99denetlendi: 0, coverBefore: 0, stockCover: 0, bare: 0, partial: 0, targeted: 0, back: 0, own: 0 };
       for (let a = 0; a < 200; a += 1) {
         const lines = [];
         const invoices = [];
@@ -601,22 +601,26 @@ describe("TYK tur 2a — değişmez: kalemler toplamı = cari bakiyesi (kartlı,
         const res = buildObligations({ lines, invoices, links, schedules, today: day(320) });
         const balance = Math.round(lines.reduce((s, l) => s + l.debit - l.credit, 0) * 100);
         const sum = Math.round(res.items.reduce((s, i) => s + (i.side === "receivable" ? i.remaining : -i.remaining), 0) * 100);
-        // S101 sınıfı (adıyla): tükettiği borçtan büyük Mevcut Borç kartı (kapsam < tüketebileceği — kartın anında borç avansla kapanmış / kart borçtan büyük) + kart tahsilatı.
+        // Tur 2b-1 (DK-C5BT2A DÜŞÜK-2): dışarıda bırakılan sınıflar ADIYLA ve sayısıyla. S110: kartın anında açık borç kart tutarından fazla, iki okuma farklı kalem seçiyor
+        // (coverage.ambiguous; S110 = A'nın kodu tur 2b-2'de) — önceden 'S101' sayılıyordu. S101 (adıyla): tükettiği borçtan büyük Mevcut Borç kartı (kapsam < tüketebileceği —
+        // kartın anında borç avansla kapanmış / kart borçtan büyük) + kart tahsilatı. 'S99' (bağsız avans + taksitli + taksitsiz fatura) dışarıda BIRAKILMAZ (dar kontrol: o
+        // sınıfın hepsinde Σ kalem = bakiye) — sayısı yalnız bilgi.
+        if ([...res.coverage.values()].some(c => c.ambiguous)) {
+          counts.S110 += 1;
+          if (sum !== balance) counts.S110fark += 1;
+          continue;
+        }
         const cut = [...res.coverage.values()].some(c => c.paid && c.consumed < c.capacity - 0.005);
         if (cut) {
           counts.S101 += 1;
           if (sum !== balance) counts.S101fark += 1;
           continue;
         }
-        if (flags.avans && flags.own && flags.plainSale) {
-          counts.S99 += 1;
-          if (sum !== balance) counts.S99fark += 1;
-          continue;
-        }
+        if (flags.avans && flags.own && flags.plainSale) counts.S99denetlendi += 1;
         counts.checked += 1;
         assert.equal(sum, balance, `tohum ${seed} cari ${a}: Σ kalem ${sum / 100} ≠ bakiye ${balance / 100}`);
       }
-      console.log(`# tohum ${seed}: ${JSON.stringify(counts)} — dışarıda bırakılan: S101 ${counts.S101} (borcu avansla kapanmışken açılan kart + kart tahsilatı; tur 2b), S99 ${counts.S99} (bağsız avans + taksitli + taksitsiz fatura; tur 2b)`);
+      console.log(`# tohum ${seed}: ${JSON.stringify(counts)} — dışarıda bırakılan: S110 ${counts.S110} (Σ ≠ bakiye ${counts.S110fark}; kart açılırken açık borç kart tutarından fazla, iki okuma; tur 2b-2), S101 ${counts.S101} (Σ ≠ bakiye ${counts.S101fark}; borcu avansla kapanmışken açılan kart + kart tahsilatı; tur 2b-2); denetlenen ${counts.checked} (S99 sınıfı ${counts.S99denetlendi} dahil)`);
       assert.ok(counts.checked >= 60 && counts.coverBefore > 0 && counts.stockCover > 0 && counts.bare > 0 && counts.targeted > 0 && counts.back > 0, `sınıflar üretildi: ${JSON.stringify(counts)}`);
     });
   }

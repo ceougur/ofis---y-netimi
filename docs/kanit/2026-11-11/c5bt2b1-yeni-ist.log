@@ -1,0 +1,520 @@
+TAP version 13
+# \# tohum 11: {"checked":68,"S110":85,"S110fark":34,"S101":47,"S101fark":43,"S99denetlendi":29,"coverBefore":113,"stockCover":222,"bare":95,"partial":102,"targeted":129,"back":84,"own":75} — dışarıda bırakılan: S110 85 (Σ ≠ bakiye 34; kart açılırken açık borç kart tutarından fazla, iki okuma; tur 2b-2), S101 47 (Σ ≠ bakiye 43; borcu avansla kapanmışken açılan kart + kart tahsilatı; tur 2b-2); denetlenen 68 (S99 sınıfı 29 dahil)
+# \# tohum 12: {"checked":63,"S110":83,"S110fark":29,"S101":54,"S101fark":49,"S99denetlendi":31,"coverBefore":120,"stockCover":221,"bare":86,"partial":112,"targeted":128,"back":78,"own":85} — dışarıda bırakılan: S110 83 (Σ ≠ bakiye 29; kart açılırken açık borç kart tutarından fazla, iki okuma; tur 2b-2), S101 54 (Σ ≠ bakiye 49; borcu avansla kapanmışken açılan kart + kart tahsilatı; tur 2b-2); denetlenen 63 (S99 sınıfı 31 dahil)
+# \# tohum 13: {"checked":64,"S110":83,"S110fark":32,"S101":53,"S101fark":50,"S99denetlendi":25,"coverBefore":114,"stockCover":236,"bare":95,"partial":102,"targeted":123,"back":73,"own":77} — dışarıda bırakılan: S110 83 (Σ ≠ bakiye 32; kart açılırken açık borç kart tutarından fazla, iki okuma; tur 2b-2), S101 53 (Σ ≠ bakiye 50; borcu avansla kapanmışken açılan kart + kart tahsilatı; tur 2b-2); denetlenen 64 (S99 sınıfı 25 dahil)
+# Subtest: TYK — vade ve gecikmiş (S1, M1f)
+    # Subtest: S1: vadesiz kalemin vadesi belge günü — o gün gecikmiş DEĞİL, ertesi gün gecikmiş; M1f: vade günü gecikmiş değil
+    ok 1 - S1: vadesiz kalemin vadesi belge günü — o gün gecikmiş DEĞİL, ertesi gün gecikmiş; M1f: vade günü gecikmiş değil
+      ---
+      duration_ms: 5.897272
+      type: 'test'
+      ...
+    # Subtest: gecikmiş: netleşmemiş bağsız ödeme de açık borç kalemidir (EK-1 §1 T-09) — vadesi geçmiş satış gecikmişten kaybolmaz
+    ok 2 - gecikmiş: netleşmemiş bağsız ödeme de açık borç kalemidir (EK-1 §1 T-09) — vadesi geçmiş satış gecikmişten kaybolmaz
+      ---
+      duration_ms: 10.293831
+      type: 'test'
+      ...
+    # Subtest: elle Borç Yaz: Vade Tarihi yoksa belge günü (S1), varsa Vade Tarihi
+    ok 3 - elle Borç Yaz: Vade Tarihi yoksa belge günü (S1), varsa Vade Tarihi
+      ---
+      duration_ms: 1.267488
+      type: 'test'
+      ...
+    1..3
+ok 1 - TYK — vade ve gecikmiş (S1, M1f)
+  ---
+  duration_ms: 18.749304
+  type: 'suite'
+  ...
+# Subtest: TYK — bağsız ödemenin sırası (S2, karar (1), S68)
+    # Subtest: S2: bağsız tahsilat vadesi önce gelen borcu kapatır (belge tarihi değil)
+    ok 1 - S2: bağsız tahsilat vadesi önce gelen borcu kapatır (belge tarihi değil)
+      ---
+      duration_ms: 1.440479
+      type: 'test'
+      ...
+    # Subtest: S2 eşitlikte: aynı vade → belge tarihi → kayıt anı → yazım sırası (giriş sırası ters verilse de aynı — ders 31)
+    ok 2 - S2 eşitlikte: aynı vade → belge tarihi → kayıt anı → yazım sırası (giriş sırası ters verilse de aynı — ders 31)
+      ---
+      duration_ms: 0.75341
+      type: 'test'
+      ...
+    # Subtest: karar (1): ödeme KENDİ tarihinde açık borçlara — sonradan doğan erken vadeli borca kaymaz, kapanmış kalem yeniden açılmaz
+    ok 3 - karar (1): ödeme KENDİ tarihinde açık borçlara — sonradan doğan erken vadeli borca kaymaz, kapanmış kalem yeniden açılmaz
+      ---
+      duration_ms: 0.402803
+      type: 'test'
+      ...
+    # Subtest: karar (1): artan ödeme avanstır, sonra doğan borca doğduğu gün uygulanır
+    ok 4 - karar (1): artan ödeme avanstır, sonra doğan borca doğduğu gün uygulanır
+      ---
+      duration_ms: 0.501376
+      type: 'test'
+      ...
+    # Subtest: karar (1): aynı gün önce borç kalemleri — aynı gün kesilen fatura aynı günkü bağsız tahsilatla kapanır (kayıt anı sonra olsa da)
+    ok 5 - karar (1): aynı gün önce borç kalemleri — aynı gün kesilen fatura aynı günkü bağsız tahsilatla kapanır (kayıt anı sonra olsa da)
+      ---
+      duration_ms: 0.607968
+      type: 'test'
+      ...
+    # Subtest: S68: bizim bağlamadan yaptığımız ödeme vadesi en önce gelen alacak kalemini kapatır (iki yön)
+    ok 6 - S68: bizim bağlamadan yaptığımız ödeme vadesi en önce gelen alacak kalemini kapatır (iki yön)
+      ---
+      duration_ms: 0.554862
+      type: 'test'
+      ...
+    1..6
+ok 2 - TYK — bağsız ödemenin sırası (S2, karar (1), S68)
+  ---
+  duration_ms: 4.888226
+  type: 'suite'
+  ...
+# Subtest: TYK — bağlar (karar (2), (3))
+    # Subtest: karar (2): bağ hedefini her durumda kapatır; hedefi önceden kapatmış bağsız ödeme serbest kalır ve kendi tarihinde yeniden dağılır
+    ok 1 - karar (2): bağ hedefini her durumda kapatır; hedefi önceden kapatmış bağsız ödeme serbest kalır ve kendi tarihinde yeniden dağılır
+      ---
+      duration_ms: 0.903422
+      type: 'test'
+      ...
+    # Subtest: karar (3): kilitli dönemde bağsız kapanmış kalem kilitten sonraki bağla yeniden açılmaz; bağ bağsız gibi dağılır (kapatanlarda 'locked')
+    ok 2 - karar (3): kilitli dönemde bağsız kapanmış kalem kilitten sonraki bağla yeniden açılmaz; bağ bağsız gibi dağılır (kapatanlarda 'locked')
+      ---
+      duration_ms: 1.248308
+      type: 'test'
+      ...
+    # Subtest: lockAtOf: yazım anındaki kilit; kilit sonradan ilerlese de eski kaydın kilidi değişmez (S19)
+    ok 3 - lockAtOf: yazım anındaki kilit; kilit sonradan ilerlese de eski kaydın kilidi değişmez (S19)
+      ---
+      duration_ms: 0.200097
+      type: 'test'
+      ...
+    1..3
+ok 3 - TYK — bağlar (karar (2), (3))
+  ---
+  duration_ms: 2.577114
+  type: 'suite'
+  ...
+# Subtest: TYK — karşılıksız (S8, S11, S18, S19)
+    # Subtest: S8: evrakın kapattığı fatura karşılıksızla yeniden açılır, KENDİ vadesine kadar gecikmez
+    ok 1 - S8: evrakın kapattığı fatura karşılıksızla yeniden açılır, KENDİ vadesine kadar gecikmez
+      ---
+      duration_ms: 0.455342
+      type: 'test'
+      ...
+    # Subtest: S11 / S19: evrak kilitli dönemde alındı, karşılıksız kilitten sonra yazıldı → kapanış değişmez, karşılıksız ayrı borç (vade = karşılıksız günü)
+    ok 2 - S11 / S19: evrak kilitli dönemde alındı, karşılıksız kilitten sonra yazıldı → kapanış değişmez, karşılıksız ayrı borç (vade = karşılıksız günü)
+      ---
+      duration_ms: 0.510001
+      type: 'test'
+      ...
+    # Subtest: S18: kilitli dönemde alınıp dağılmamış (avans) evrak karşılıksız dönerse evrakın TAMAMI ayrı borç
+    ok 3 - S18: kilitli dönemde alınıp dağılmamış (avans) evrak karşılıksız dönerse evrakın TAMAMI ayrı borç
+      ---
+      duration_ms: 0.568749
+      type: 'test'
+      ...
+    # Subtest: S19: kilit karşılıksızdan SONRA ilerlerse karar değişmez (karşılıksız yazıldığında kilit yoktu → UX18 netleşmesi)
+    ok 4 - S19: kilit karşılıksızdan SONRA ilerlerse karar değişmez (karşılıksız yazıldığında kilit yoktu → UX18 netleşmesi)
+      ---
+      duration_ms: 0.40556
+      type: 'test'
+      ...
+    1..4
+ok 4 - TYK — karşılıksız (S8, S11, S18, S19)
+  ---
+  duration_ms: 2.146706
+  type: 'suite'
+  ...
+# Subtest: TYK — taksit kartları (S50, M1a, M1e, K8-3)
+    # Subtest: S50 + K8-3: kart seçilmeden alınan tahsilat ayrı kartın taksitlerini de S2 sırasıyla kapatır (vadesi gelmemiş taksit dahil)
+    ok 1 - S50 + K8-3: kart seçilmeden alınan tahsilat ayrı kartın taksitlerini de S2 sırasıyla kapatır (vadesi gelmemiş taksit dahil)
+      ---
+      duration_ms: 1.383075
+      type: 'test'
+      ...
+    # Subtest: M1e: kart tahsilatı kartın vadesi ilk gelen açık taksitini kapatır; kart ile alttaki borç birlikte sayılmaz (Σ kalem = bakiye)
+    ok 2 - M1e: kart tahsilatı kartın vadesi ilk gelen açık taksitini kapatır; kart ile alttaki borç birlikte sayılmaz (Σ kalem = bakiye)
+      ---
+      duration_ms: 1.650116
+      type: 'test'
+      ...
+    # Subtest: M1e + K8-3: Mevcut Borç kartı açıldığı an açık borçları S2 sırasıyla tüketir (en yeniden değil)
+    ok 3 - M1e + K8-3: Mevcut Borç kartı açıldığı an açık borçları S2 sırasıyla tüketir (en yeniden değil)
+      ---
+      duration_ms: 1.181422
+      type: 'test'
+      ...
+    # Subtest: M1e kapsamı: karttan SONRA kaydedilen borç (aynı gün) kartın içinde değildir; aynı gün karttan ÖNCE kaydedilen ödeme önce kapatır
+    ok 4 - M1e kapsamı: karttan SONRA kaydedilen borç (aynı gün) kartın içinde değildir; aynı gün karttan ÖNCE kaydedilen ödeme önce kapatır
+      ---
+      duration_ms: 1.483043
+      type: 'test'
+      ...
+    # Subtest: M1e kapsamı: kart açıldığında portföyde olan evrak sonradan karşılıksız dönerse kartın kapsamı DEĞİŞMEZ; yeniden açılan fatura kartın dışında (UX18 T17 (i))
+    ok 5 - M1e kapsamı: kart açıldığında portföyde olan evrak sonradan karşılıksız dönerse kartın kapsamı DEĞİŞMEZ; yeniden açılan fatura kartın dışında (UX18 T17 (i))
+      ---
+      duration_ms: 0.985073
+      type: 'test'
+      ...
+    # Subtest: M1a / S50: taksitli faturanın kendi kartının taksitleri de tek kuyrukta — bağsız tahsilat vadesi gelmiş taksiti kapatır
+    ok 6 - M1a / S50: taksitli faturanın kendi kartının taksitleri de tek kuyrukta — bağsız tahsilat vadesi gelmiş taksiti kapatır
+      ---
+      duration_ms: 0.621103
+      type: 'test'
+      ...
+    # Subtest: karar (3) × v2.0.24: kilitten önceki bağsız avans varken kilitten sonraki kart tahsilatı taksitli faturayı KAPATIR (fatura durumu); net görünümde karar (3) aynen
+    ok 7 - karar (3) × v2.0.24: kilitten önceki bağsız avans varken kilitten sonraki kart tahsilatı taksitli faturayı KAPATIR (fatura durumu); net görünümde karar (3) aynen
+      ---
+      duration_ms: 0.915723
+      type: 'test'
+      ...
+    1..7
+ok 5 - TYK — taksit kartları (S50, M1a, M1e, K8-3)
+  ---
+  duration_ms: 8.619694
+  type: 'suite'
+  ...
+# Subtest: TYK — netleşme (karar (5)) ve fatura durumu
+    # Subtest: karar (5) A (EK-2 S9 örneği): 10.000 vadesi geçmiş + 5.000 vadesi gelmemiş satış, 6.000 alış → gecikmiş 4.000; fatura durumu Açık kalır
+    ok 1 - karar (5) A (EK-2 S9 örneği): 10.000 vadesi geçmiş + 5.000 vadesi gelmemiş satış, 6.000 alış → gecikmiş 4.000; fatura durumu Açık kalır
+      ---
+      duration_ms: 0.539171
+      type: 'test'
+      ...
+    # Subtest: bize alacaklı kişi (alış > satış): gecikmiş 0
+    ok 2 - bize alacaklı kişi (alış > satış): gecikmiş 0
+      ---
+      duration_ms: 0.280802
+      type: 'test'
+      ...
+    # Subtest: Mahsup Et iki faturayı birlikte kapatır (fatura durumu)
+    ok 3 - Mahsup Et iki faturayı birlikte kapatır (fatura durumu)
+      ---
+      duration_ms: 0.4026
+      type: 'test'
+      ...
+    # Subtest: elle Alacak Yaz satış borcuna net görünümde kendi tarihinde uygulanır (Kalan net); fatura durumu değişmez
+    ok 4 - elle Alacak Yaz satış borcuna net görünümde kendi tarihinde uygulanır (Kalan net); fatura durumu değişmez
+      ---
+      duration_ms: 0.246167
+      type: 'test'
+      ...
+    1..4
+ok 6 - TYK — netleşme (karar (5)) ve fatura durumu
+  ---
+  duration_ms: 1.629506
+  type: 'suite'
+  ...
+# Subtest: TYK — şüpheli kuyruğu (M13, S3)
+    # Subtest: açık şüpheli kaydın kalanı gecikmişe girmez; kalem listede görünür (şüpheli tutarı ayrı alan)
+    ok 1 - açık şüpheli kaydın kalanı gecikmişe girmez; kalem listede görünür (şüpheli tutarı ayrı alan)
+      ---
+      duration_ms: 0.271521
+      type: 'test'
+      ...
+    1..1
+ok 7 - TYK — şüpheli kuyruğu (M13, S3)
+  ---
+  duration_ms: 0.332669
+  type: 'suite'
+  ...
+# Subtest: TYK — takvim kalemi (S67, S69, Y3-1, K6.3)
+    # Subtest: S67 / S69: vadesi geçmiş borç + ileri tarihli söz → kalem söz gününde, Gecikmiş, gün sayısı vadeden
+    ok 1 - S67 / S69: vadesi geçmiş borç + ileri tarihli söz → kalem söz gününde, Gecikmiş, gün sayısı vadeden
+      ---
+      duration_ms: 0.350099
+      type: 'test'
+      ...
+    # Subtest: Y3-1: söz VADEDEN ÖNCE ve ikisi de geçmişse gün sayısı sözden; vade geçmemişse K6.3 (söz günü)
+    ok 2 - Y3-1: söz VADEDEN ÖNCE ve ikisi de geçmişse gün sayısı sözden; vade geçmemişse K6.3 (söz günü)
+      ---
+      duration_ms: 0.111005
+      type: 'test'
+      ...
+    1..2
+ok 8 - TYK — takvim kalemi (S67, S69, Y3-1, K6.3)
+  ---
+  duration_ms: 0.561581
+  type: 'suite'
+  ...
+# Subtest: TYK — değişmezler (tohumlu rastgele, 500 olay × 4 tohum)
+    # Subtest: tohum 1: 0 ≤ gecikmiş ≤ max(0, CH); Σ açık borç − Σ açık alacak = CH; iki taraf birden açık değil; girdi sırası sonucu değiştirmez
+    ok 1 - tohum 1: 0 ≤ gecikmiş ≤ max(0, CH); Σ açık borç − Σ açık alacak = CH; iki taraf birden açık değil; girdi sırası sonucu değiştirmez
+      ---
+      duration_ms: 27.827672
+      type: 'test'
+      ...
+    # Subtest: tohum 2: 0 ≤ gecikmiş ≤ max(0, CH); Σ açık borç − Σ açık alacak = CH; iki taraf birden açık değil; girdi sırası sonucu değiştirmez
+    ok 2 - tohum 2: 0 ≤ gecikmiş ≤ max(0, CH); Σ açık borç − Σ açık alacak = CH; iki taraf birden açık değil; girdi sırası sonucu değiştirmez
+      ---
+      duration_ms: 19.565931
+      type: 'test'
+      ...
+    # Subtest: tohum 3: 0 ≤ gecikmiş ≤ max(0, CH); Σ açık borç − Σ açık alacak = CH; iki taraf birden açık değil; girdi sırası sonucu değiştirmez
+    ok 3 - tohum 3: 0 ≤ gecikmiş ≤ max(0, CH); Σ açık borç − Σ açık alacak = CH; iki taraf birden açık değil; girdi sırası sonucu değiştirmez
+      ---
+      duration_ms: 16.786788
+      type: 'test'
+      ...
+    # Subtest: tohum 4: 0 ≤ gecikmiş ≤ max(0, CH); Σ açık borç − Σ açık alacak = CH; iki taraf birden açık değil; girdi sırası sonucu değiştirmez
+    ok 4 - tohum 4: 0 ≤ gecikmiş ≤ max(0, CH); Σ açık borç − Σ açık alacak = CH; iki taraf birden açık değil; girdi sırası sonucu değiştirmez
+      ---
+      duration_ms: 15.231747
+      type: 'test'
+      ...
+    1..4
+ok 9 - TYK — değişmezler (tohumlu rastgele, 500 olay × 4 tohum)
+  ---
+  duration_ms: 79.665546
+  type: 'suite'
+  ...
+# Subtest: TYK tur 2a — Y-1: Kayıt Tarihi borçtan ÖNCE olan Mevcut Borç kartı borcu tüketir (v2.4.9; M1e)
+    # Subtest: stoktan veresiye satış → taksitlendir (kartın Kayıt Tarihi carinin Kayıt Tarihi): taksitler 500 / 500, gecikmiş 500 (önceden kart 'Bitti', gecikmiş 1.000)
+    ok 1 - stoktan veresiye satış → taksitlendir (kartın Kayıt Tarihi carinin Kayıt Tarihi): taksitler 500 / 500, gecikmiş 500 (önceden kart 'Bitti', gecikmiş 1.000)
+      ---
+      duration_ms: 1.095152
+      type: 'test'
+      ...
+    # Subtest: elle geriye tarihli kart (Kayıt Tarihi Borç Yaz'dan önce) aynı; Kayıt Tarihi borçtan SONRA olan kart (kontrol) aynı sonuç
+    ok 2 - elle geriye tarihli kart (Kayıt Tarihi Borç Yaz'dan önce) aynı; Kayıt Tarihi borçtan SONRA olan kart (kontrol) aynı sonuç
+      ---
+      duration_ms: 0.621996
+      type: 'test'
+      ...
+    # Subtest: karttan sonra yazılan tahsilat taksiti kapatır (kartın açılış günü tükettiği borcun günü): [200, 500], gecikmiş 200
+    ok 3 - karttan sonra yazılan tahsilat taksiti kapatır (kartın açılış günü tükettiği borcun günü): [200, 500], gecikmiş 200
+      ---
+      duration_ms: 0.453869
+      type: 'test'
+      ...
+    # Subtest: kartın anında bilinen avans: kart açıldığı an açık kalanı (800) tüketir → taksitler 400 / 400, gecikmiş 400
+    ok 4 - kartın anında bilinen avans: kart açıldığı an açık kalanı (800) tüketir → taksitler 400 / 400, gecikmiş 400
+      ---
+      duration_ms: 0.412325
+      type: 'test'
+      ...
+    1..4
+ok 10 - TYK tur 2a — Y-1: Kayıt Tarihi borçtan ÖNCE olan Mevcut Borç kartı borcu tüketir (v2.4.9; M1e)
+  ---
+  duration_ms: 2.777221
+  type: 'suite'
+  ...
+# Subtest: TYK tur 2a — O-1: karar (3) bağın KURULDUĞU andaki kilitle (düzeltmeyle kurulan bağ = yeni kayıtla kurulan)
+    # Subtest: bağ kilitten sonra düzeltmeyle kuruldu → kilit uygulanır: gecikmiş 0, F3 'kilitli dönemde kapanmıştı'
+    ok 1 - bağ kilitten sonra düzeltmeyle kuruldu → kilit uygulanır: gecikmiş 0, F3 'kilitli dönemde kapanmıştı'
+      ---
+      duration_ms: 0.425088
+      type: 'test'
+      ...
+    # Subtest: bağ kilitten önce kuruldu (düzeltme yok) → bağ geçerli: F3 300 gecikmiş
+    ok 2 - bağ kilitten önce kuruldu (düzeltme yok) → bağ geçerli: F3 300 gecikmiş
+      ---
+      duration_ms: 0.168082
+      type: 'test'
+      ...
+    # Subtest: lockAtOf: kilitle AYNI anda yazılan kayıt kilidi görür (B12; durağan saat — yaşayan mutant N02)
+    ok 3 - lockAtOf: kilitle AYNI anda yazılan kayıt kilidi görür (B12; durağan saat — yaşayan mutant N02)
+      ---
+      duration_ms: 0.066108
+      type: 'test'
+      ...
+    1..3
+ok 11 - TYK tur 2a — O-1: karar (3) bağın KURULDUĞU andaki kilitle (düzeltmeyle kurulan bağ = yeni kayıtla kurulan)
+  ---
+  duration_ms: 0.758116
+  type: 'suite'
+  ...
+# Subtest: TYK tur 2a — 'Hangi Taksite' bağı (karar (2)) ve O-3 kart kalemleri
+    # Subtest: bağlı tahsilat önce KENDİ taksitini kapatır; taksitini aşan kısmı vade sırasıyla (kartın kendi hesabıyla aynı)
+    ok 1 - bağlı tahsilat önce KENDİ taksitini kapatır; taksitini aşan kısmı vade sırasıyla (kartın kendi hesabıyla aynı)
+      ---
+      duration_ms: 0.467348
+      type: 'test'
+      ...
+    # Subtest: karar (3): kilitten sonra kurulan / düzeltilen 'Hangi Taksite' bağı kilitli dönemde bağsız kapanmış taksiti yeniden açmaz
+    ok 2 - karar (3): kilitten sonra kurulan / düzeltilen 'Hangi Taksite' bağı kilitli dönemde bağsız kapanmış taksiti yeniden açmaz
+      ---
+      duration_ms: 0.564333
+      type: 'test'
+      ...
+    # Subtest: O-3: taksitlere bölünmemiş kalan ('rest') ve Taksit İadesi ('back') kart kalemi olarak — vade ve kalanla
+    ok 3 - O-3: taksitlere bölünmemiş kalan ('rest') ve Taksit İadesi ('back') kart kalemi olarak — vade ve kalanla
+      ---
+      duration_ms: 0.493455
+      type: 'test'
+      ...
+    # Subtest: M13: şüpheli kuyruğu önce kayıt gününe kadar doğmuş kalemlerden — sonra doğan erken vadeli kalem ilk geçişte alınmaz (N06)
+    ok 4 - M13: şüpheli kuyruğu önce kayıt gününe kadar doğmuş kalemlerden — sonra doğan erken vadeli kalem ilk geçişte alınmaz (N06)
+      ---
+      duration_ms: 0.175077
+      type: 'test'
+      ...
+    # Subtest: bağlı tahsilattan çok iade / karşılıksız ters kaydı bağlı payı EN YENİ taksitten geriye geri alır (Taksit İadesi kalemi değil)
+    ok 5 - bağlı tahsilattan çok iade / karşılıksız ters kaydı bağlı payı EN YENİ taksitten geriye geri alır (Taksit İadesi kalemi değil)
+      ---
+      duration_ms: 0.565372
+      type: 'test'
+      ...
+    # Subtest: rastgele kartlar (tohum 21–23 × 150): kuyruğun taksit kalanları = kartın kendi hesabı (allocate)
+    ok 6 - rastgele kartlar (tohum 21–23 × 150): kuyruğun taksit kalanları = kartın kendi hesabı (allocate)
+      ---
+      duration_ms: 43.174199
+      type: 'test'
+      ...
+    1..6
+ok 12 - TYK tur 2a — 'Hangi Taksite' bağı (karar (2)) ve O-3 kart kalemleri
+  ---
+  duration_ms: 45.68257
+  type: 'suite'
+  ...
+# Subtest: TYK tur 2a — değişmez: kalemler toplamı = cari bakiyesi (kartlı, tohumlu rastgele)
+    # Subtest: tohum 11: 200 cari × 22 olay — Σ kalem = bakiye (S99 / S101 adıyla dışarıda)
+    ok 1 - tohum 11: 200 cari × 22 olay — Σ kalem = bakiye (S99 / S101 adıyla dışarıda)
+      ---
+      duration_ms: 227.880226
+      type: 'test'
+      ...
+    # Subtest: tohum 12: 200 cari × 22 olay — Σ kalem = bakiye (S99 / S101 adıyla dışarıda)
+    ok 2 - tohum 12: 200 cari × 22 olay — Σ kalem = bakiye (S99 / S101 adıyla dışarıda)
+      ---
+      duration_ms: 172.797316
+      type: 'test'
+      ...
+    # Subtest: tohum 13: 200 cari × 22 olay — Σ kalem = bakiye (S99 / S101 adıyla dışarıda)
+    ok 3 - tohum 13: 200 cari × 22 olay — Σ kalem = bakiye (S99 / S101 adıyla dışarıda)
+      ---
+      duration_ms: 117.481423
+      type: 'test'
+      ...
+    1..3
+ok 13 - TYK tur 2a — değişmez: kalemler toplamı = cari bakiyesi (kartlı, tohumlu rastgele)
+  ---
+  duration_ms: 518.425979
+  type: 'suite'
+  ...
+# fark testi: 62 fark (28 cari); yazılı olmayan 0, değeri değişen 0, kapanmış ama listede duran 0
+#   karar başına: S50 + B1 2 · S50 8 · karar (5) + S92 2 · S1 + S91 + B1 4 · S1 + S91 8 · S110 21 · karar (1) + EK-2B 32 2 · S91 + B1 2 · S91 4 · S93 + S96 + S91 + B1 2 · S93 + S96 + S91 4 · S93 + S96 + B1 1 · S93 + S96 2
+# Subtest: 2.5.0 Ç5-B — v2.4.9 GERÇEK verisinde sınıf sınıf fark testi (her fark karar numarasıyla)
+    # Subtest: fikstür bugünkü kodla: bütün farklar beklenen-farklar.json'da, değerleri aynı; listede kapanmış fark yok
+    ok 1 - fikstür bugünkü kodla: bütün farklar beklenen-farklar.json'da, değerleri aynı; listede kapanmış fark yok
+      ---
+      duration_ms: 498.23408
+      type: 'test'
+      ...
+    1..1
+ok 14 - 2.5.0 Ç5-B — v2.4.9 GERÇEK verisinde sınıf sınıf fark testi (her fark karar numarasıyla)
+  ---
+  duration_ms: 499.076509
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç5-B tur 2b-1 — G-2: taksitsiz / eksik taksitli kart 'Bitti' olmaz (v2.4.9)
+    # Subtest: her kart türü × taksitsiz × (ödeme yok / kart tahsilatı / cari tahsilatı): durum ve Taksitler sekmesi v2.4.9 ile aynı
+    ok 1 - her kart türü × taksitsiz × (ödeme yok / kart tahsilatı / cari tahsilatı): durum ve Taksitler sekmesi v2.4.9 ile aynı
+      ---
+      duration_ms: 1001.366672
+      type: 'test'
+      ...
+    # Subtest: taksitsiz Mevcut Borç kartı Aktif → taksit girilir: [500 Gecikti, 500], Gecikmiş Borç 500, 'Gecikmiş' sekmesi; elle Kartı Kapat → Kapalı
+    ok 2 - taksitsiz Mevcut Borç kartı Aktif → taksit girilir: [500 Gecikti, 500], Gecikmiş Borç 500, 'Gecikmiş' sekmesi; elle Kartı Kapat → Kapalı
+      ---
+      duration_ms: 137.122603
+      type: 'test'
+      ...
+    # Subtest: eksik taksitli kart: taksitler kartla ödenince Bitti (v2.4.9); Mevcut Borç kartında taksitler cari tahsilatıyla kapanınca Aktif (taksitlendirilmemiş kısım var — v2.4.9 Gecikti, S50 farkı)
+    ok 3 - eksik taksitli kart: taksitler kartla ödenince Bitti (v2.4.9); Mevcut Borç kartında taksitler cari tahsilatıyla kapanınca Aktif (taksitlendirilmemiş kısım var — v2.4.9 Gecikti, S50 farkı)
+      ---
+      duration_ms: 169.006794
+      type: 'test'
+      ...
+    1..3
+ok 15 - 2.5.0 Ç5-B tur 2b-1 — G-2: taksitsiz / eksik taksitli kart 'Bitti' olmaz (v2.4.9)
+  ---
+  duration_ms: 1739.054037
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç5-B tur 2b-1 — ORTA-1: çek / senedin Kapatılacak Fatura bağı × kilit (karar (3)) = cari tahsilatı
+    # Subtest: kurulum / değiştirme / tutar / vade / kaldırma: çek ile cari tahsilatı aynı Gecikmiş Borç; kilitten sonra kurulan çek bağı = yeni evrak
+    ok 1 - kurulum / değiştirme / tutar / vade / kaldırma: çek ile cari tahsilatı aynı Gecikmiş Borç; kilitten sonra kurulan çek bağı = yeni evrak
+      ---
+      duration_ms: 1602.736079
+      type: 'test'
+      ...
+    # Subtest: D05: bağı kilitten önce ve sonra değiştiren düzeltme — son düzeltmenin anı (çek ve cari tahsilatı): Gecikmiş Borç 0
+    ok 2 - D05: bağı kilitten önce ve sonra değiştiren düzeltme — son düzeltmenin anı (çek ve cari tahsilatı): Gecikmiş Borç 0
+      ---
+      duration_ms: 478.281301
+      type: 'test'
+      ...
+    # Subtest: D06: kart tahsilatının 'Hangi Taksite' bağı kilitten SONRA düzeltmeyle kurulunca kilit sayılır: taksitler [0, 0], Borç Yaz açık
+    ok 3 - D06: kart tahsilatının 'Hangi Taksite' bağı kilitten SONRA düzeltmeyle kurulunca kilit sayılır: taksitler [0, 0], Borç Yaz açık
+      ---
+      duration_ms: 352.241754
+      type: 'test'
+      ...
+    1..3
+ok 16 - 2.5.0 Ç5-B tur 2b-1 — ORTA-1: çek / senedin Kapatılacak Fatura bağı × kilit (karar (3)) = cari tahsilatı
+  ---
+  duration_ms: 2796.222012
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç5-B tur 2b-1 — ORTA-2: tedarikçideki Alış İadesi Vade Takip / zil / nakit akışında (gecikmiş = ekranlar)
+    # Subtest: stoktan / kısmen netleşen / faturalı Alış İadesi: gecikmiş = Vade Takip (her süzgeç) = zil = nakit akışı
+    ok 1 - stoktan / kısmen netleşen / faturalı Alış İadesi: gecikmiş = Vade Takip (her süzgeç) = zil = nakit akışı
+      ---
+      duration_ms: 284.747277
+      type: 'test'
+      ...
+    1..1
+ok 17 - 2.5.0 Ç5-B tur 2b-1 — ORTA-2: tedarikçideki Alış İadesi Vade Takip / zil / nakit akışında (gecikmiş = ekranlar)
+  ---
+  duration_ms: 618.709008
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç5-B tur 2b-1 — G-1: kart yanıtı / okuması tek cari kuyruğundan = bütün carilerin kuyruğu; D10 / D11 Taksit İadesi
+    # Subtest: 15 yazım yolu (yönetici + personel): yanıt = okuma = liste satırı
+    ok 1 - 15 yazım yolu (yönetici + personel): yanıt = okuma = liste satırı
+      ---
+      duration_ms: 422.09069
+      type: 'test'
+      ...
+    # Subtest: cariler arası: taksite sayılıp tedarikçiye ciro edilen çek ve carisi değiştirilen tahsilat — iki carinin kartı da okuma = liste satırı
+    ok 2 - cariler arası: taksite sayılıp tedarikçiye ciro edilen çek ve carisi değiştirilen tahsilat — iki carinin kartı da okuma = liste satırı
+      ---
+      duration_ms: 124.597255
+      type: 'test'
+      ...
+    # Subtest: D10 / D11: karşılıksız çekle kartın net tahsilatı eksiye düşünce 'Taksit İadesi' 300 Vade Takip / zilde, kuyruk kalanı 900, Gecikmiş Borç 300
+    ok 3 - D10 / D11: karşılıksız çekle kartın net tahsilatı eksiye düşünce 'Taksit İadesi' 300 Vade Takip / zilde, kuyruk kalanı 900, Gecikmiş Borç 300
+      ---
+      duration_ms: 78.833639
+      type: 'test'
+      ...
+    1..3
+ok 18 - 2.5.0 Ç5-B tur 2b-1 — G-1: kart yanıtı / okuması tek cari kuyruğundan = bütün carilerin kuyruğu; D10 / D11 Taksit İadesi
+  ---
+  duration_ms: 963.024708
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç5-B tur 2b-1 — D01–D03: durağan saatte iz kolonları (önbellek = baştan)
+    # Subtest: D01 'Hangi Taksite', D02 taslak tutarı, D03 çek bağı: değişiklikten sonra önbellek bayat değil
+    ok 1 - D01 'Hangi Taksite', D02 taslak tutarı, D03 çek bağı: değişiklikten sonra önbellek bayat değil
+      ---
+      duration_ms: 170.39673
+      type: 'test'
+      ...
+    1..1
+ok 19 - 2.5.0 Ç5-B tur 2b-1 — D01–D03: durağan saatte iz kolonları (önbellek = baştan)
+  ---
+  duration_ms: 491.628686
+  type: 'suite'
+  ...
+1..19
+# tests 62
+# suites 19
+# pass 62
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8589.00587

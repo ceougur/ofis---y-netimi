@@ -1,0 +1,180 @@
+== G2 ayri yok yok
+   g2-v249: active · sekme active/all · taksit [] · bakiye 1000 · gecikmiş -/0 ·
+   g2-eski: active · sekme active/all · taksit [] · bakiye 1000 · gecikmiş 1000/0 ·
+   g2-yeni: active · sekme active/all · taksit [] · bakiye 1000 · gecikmiş 1000/0 ·
+== G2 ayri yok kart
+   g2-v249: done · sekme done/all · taksit [] · bakiye 0 · gecikmiş -/0 · kart 200
+   g2-eski: done · sekme done/all · taksit [] · bakiye 0 · gecikmiş 0/0 · kart 200
+   g2-yeni: done · sekme done/all · taksit [] · bakiye 0 · gecikmiş 0/0 · kart 200
+== G2 ayri yok cari   <-- DURUM/SEKME FARKI
+   g2-v249: active · sekme active/all · taksit [] · bakiye 0 · gecikmiş -/0 · cari 200
+   g2-eski: done · sekme done/all · taksit [] · bakiye 0 · gecikmiş 0/0 · cari 200
+   g2-yeni: active · sekme active/all · taksit [] · bakiye 0 · gecikmiş 0/0 · cari 200
+== G2 ayri eksik yok
+   g2-v249: overdue · sekme active/overdue/all · taksit [500:500:overdue] · bakiye 1000 · gecikmiş -/500 ·sil 200
+   g2-eski: overdue · sekme active/overdue/all · taksit [500:500:overdue] · bakiye 1000 · gecikmiş 1000/500 ·sil 200
+   g2-yeni: overdue · sekme active/overdue/all · taksit [500:500:overdue] · bakiye 1000 · gecikmiş 1000/500 ·sil 200
+== G2 ayri eksik kart
+   g2-v249: done · sekme done/all · taksit [500:0:paid] · bakiye 0 · gecikmiş -/0 ·sil 200 kart 200
+   g2-eski: done · sekme done/all · taksit [500:0:paid] · bakiye 0 · gecikmiş 0/0 ·sil 200 kart 200
+   g2-yeni: done · sekme done/all · taksit [500:0:paid] · bakiye 0 · gecikmiş 0/0 ·sil 200 kart 200
+== G2 ayri eksik cari   <-- DURUM/SEKME FARKI
+   g2-v249: overdue · sekme active/overdue/all · taksit [500:500:overdue] · bakiye 0 · gecikmiş -/500 ·sil 200 cari 200
+   g2-eski: done · sekme done/all · taksit [500:0:paid] · bakiye 0 · gecikmiş 0/500 ·sil 200 cari 200
+   g2-yeni: done · sekme done/all · taksit [500:0:paid] · bakiye 0 · gecikmiş 0/500 ·sil 200 cari 200
+== G2 ayri tam yok
+   g2-v249: overdue · sekme active/overdue/all · taksit [500:500:overdue 500:500:open] · bakiye 1000 · gecikmiş -/500 ·
+   g2-eski: overdue · sekme active/overdue/all · taksit [500:500:overdue 500:500:open] · bakiye 1000 · gecikmiş 500/500 ·
+   g2-yeni: overdue · sekme active/overdue/all · taksit [500:500:overdue 500:500:open] · bakiye 1000 · gecikmiş 500/500 ·
+== G2 ayri tam kart
+   g2-v249: done · sekme done/all · taksit [500:0:paid 500:0:paid] · bakiye 0 · gecikmiş -/0 · kart 200
+   g2-eski: done · sekme done/all · taksit [500:0:paid 500:0:paid] · bakiye 0 · gecikmiş 0/0 · kart 200
+   g2-yeni: done · sekme done/all · taksit [500:0:paid 500:0:paid] · bakiye 0 · gecikmiş 0/0 · kart 200
+== G2 ayri tam cari   <-- DURUM/SEKME FARKI
+   g2-v249: overdue · sekme active/overdue/all · taksit [500:500:overdue 500:500:open] · bakiye 0 · gecikmiş -/500 · cari 200
+   g2-eski: done · sekme done/all · taksit [500:0:paid 500:0:paid] · bakiye 0 · gecikmiş 0/500 · cari 200
+   g2-yeni: done · sekme done/all · taksit [500:0:paid 500:0:paid] · bakiye 0 · gecikmiş 0/500 · cari 200
+== G2 mevcut yok yok   <-- DURUM/SEKME FARKI
+   g2-v249: active · sekme active/all · taksit [] · bakiye 1000 · gecikmiş -/0 ·
+   g2-eski: done · sekme done/all · taksit [] · bakiye 1000 · gecikmiş 1000/0 ·
+   g2-yeni: active · sekme active/all · taksit [] · bakiye 1000 · gecikmiş 1000/0 ·
+== G2 mevcut yok kart
+   g2-v249: done · sekme done/all · taksit [] · bakiye 0 · gecikmiş -/0 · kart 200
+   g2-eski: done · sekme done/all · taksit [] · bakiye 0 · gecikmiş 0/0 · kart 200
+   g2-yeni: done · sekme done/all · taksit [] · bakiye 0 · gecikmiş 0/0 · kart 200
+== G2 mevcut yok cari   <-- DURUM/SEKME FARKI
+   g2-v249: active · sekme active/all · taksit [] · bakiye 0 · gecikmiş -/0 · cari 200
+   g2-eski: done · sekme done/all · taksit [] · bakiye 0 · gecikmiş 0/0 · cari 200
+   g2-yeni: active · sekme active/all · taksit [] · bakiye 0 · gecikmiş 0/0 · cari 200
+== G2 mevcut eksik yok
+   g2-v249: overdue · sekme active/overdue/all · taksit [500:500:overdue] · bakiye 1000 · gecikmiş -/500 ·sil 200
+   g2-eski: overdue · sekme active/overdue/all · taksit [500:500:overdue] · bakiye 1000 · gecikmiş 1000/500 ·sil 200
+   g2-yeni: overdue · sekme active/overdue/all · taksit [500:500:overdue] · bakiye 1000 · gecikmiş 1000/500 ·sil 200
+== G2 mevcut eksik kart
+   g2-v249: done · sekme done/all · taksit [500:0:paid] · bakiye 0 · gecikmiş -/0 ·sil 200 kart 200
+   g2-eski: done · sekme done/all · taksit [500:0:paid] · bakiye 0 · gecikmiş 0/0 ·sil 200 kart 200
+   g2-yeni: done · sekme done/all · taksit [500:0:paid] · bakiye 0 · gecikmiş 0/0 ·sil 200 kart 200
+== G2 mevcut eksik cari   <-- DURUM/SEKME FARKI
+   g2-v249: overdue · sekme active/overdue/all · taksit [500:500:overdue] · bakiye 0 · gecikmiş -/500 ·sil 200 cari 200
+   g2-eski: done · sekme done/all · taksit [500:0:paid] · bakiye 0 · gecikmiş 0/500 ·sil 200 cari 200
+   g2-yeni: active · sekme active/all · taksit [500:0:paid] · bakiye 0 · gecikmiş 0/500 ·sil 200 cari 200
+== G2 mevcut tam yok
+   g2-v249: overdue · sekme active/overdue/all · taksit [500:500:overdue 500:500:open] · bakiye 1000 · gecikmiş -/500 ·
+   g2-eski: overdue · sekme active/overdue/all · taksit [500:500:overdue 500:500:open] · bakiye 1000 · gecikmiş 500/500 ·
+   g2-yeni: overdue · sekme active/overdue/all · taksit [500:500:overdue 500:500:open] · bakiye 1000 · gecikmiş 500/500 ·
+== G2 mevcut tam kart
+   g2-v249: done · sekme done/all · taksit [500:0:paid 500:0:paid] · bakiye 0 · gecikmiş -/0 · kart 200
+   g2-eski: done · sekme done/all · taksit [500:0:paid 500:0:paid] · bakiye 0 · gecikmiş 0/0 · kart 200
+   g2-yeni: done · sekme done/all · taksit [500:0:paid 500:0:paid] · bakiye 0 · gecikmiş 0/0 · kart 200
+== G2 mevcut tam cari   <-- DURUM/SEKME FARKI
+   g2-v249: overdue · sekme active/overdue/all · taksit [500:500:overdue 500:500:open] · bakiye 0 · gecikmiş -/500 · cari 200
+   g2-eski: done · sekme done/all · taksit [500:0:paid 500:0:paid] · bakiye 0 · gecikmiş 0/500 · cari 200
+   g2-yeni: done · sekme done/all · taksit [500:0:paid 500:0:paid] · bakiye 0 · gecikmiş 0/500 · cari 200
+== G2 stok yok yok   <-- DURUM/SEKME FARKI
+   g2-v249: active · sekme active/all · taksit [] · bakiye 1000 · gecikmiş -/0 ·sil 200,200
+   g2-eski: done · sekme done/all · taksit [] · bakiye 1000 · gecikmiş 1000/0 ·sil 200,200
+   g2-yeni: active · sekme active/all · taksit [] · bakiye 1000 · gecikmiş 1000/0 ·sil 200,200
+== G2 stok yok kart
+   g2-v249: done · sekme done/all · taksit [] · bakiye 0 · gecikmiş -/0 ·sil 200,200 kart 200
+   g2-eski: done · sekme done/all · taksit [] · bakiye 0 · gecikmiş 0/0 ·sil 200,200 kart 200
+   g2-yeni: done · sekme done/all · taksit [] · bakiye 0 · gecikmiş 0/0 ·sil 200,200 kart 200
+== G2 stok yok cari   <-- DURUM/SEKME FARKI
+   g2-v249: active · sekme active/all · taksit [] · bakiye 0 · gecikmiş -/0 ·sil 200,200 cari 200
+   g2-eski: done · sekme done/all · taksit [] · bakiye 0 · gecikmiş 0/0 ·sil 200,200 cari 200
+   g2-yeni: active · sekme active/all · taksit [] · bakiye 0 · gecikmiş 0/0 ·sil 200,200 cari 200
+== G2 stok eksik yok
+   g2-v249: overdue · sekme active/overdue/all · taksit [500:500:overdue] · bakiye 1000 · gecikmiş -/500 ·sil 200
+   g2-eski: overdue · sekme active/overdue/all · taksit [500:500:overdue] · bakiye 1000 · gecikmiş 1000/500 ·sil 200
+   g2-yeni: overdue · sekme active/overdue/all · taksit [500:500:overdue] · bakiye 1000 · gecikmiş 1000/500 ·sil 200
+== G2 stok eksik kart
+   g2-v249: done · sekme done/all · taksit [500:0:paid] · bakiye 0 · gecikmiş -/0 ·sil 200 kart 200
+   g2-eski: done · sekme done/all · taksit [500:0:paid] · bakiye 0 · gecikmiş 0/0 ·sil 200 kart 200
+   g2-yeni: done · sekme done/all · taksit [500:0:paid] · bakiye 0 · gecikmiş 0/0 ·sil 200 kart 200
+== G2 stok eksik cari   <-- DURUM/SEKME FARKI
+   g2-v249: overdue · sekme active/overdue/all · taksit [500:500:overdue] · bakiye 0 · gecikmiş -/500 ·sil 200 cari 200
+   g2-eski: done · sekme done/all · taksit [500:0:paid] · bakiye 0 · gecikmiş 0/500 ·sil 200 cari 200
+   g2-yeni: active · sekme active/all · taksit [500:0:paid] · bakiye 0 · gecikmiş 0/500 ·sil 200 cari 200
+== G2 stok tam yok
+   g2-v249: overdue · sekme active/overdue/all · taksit [500:500:overdue 500:500:open] · bakiye 1000 · gecikmiş -/500 ·
+   g2-eski: overdue · sekme active/overdue/all · taksit [500:500:overdue 500:500:open] · bakiye 1000 · gecikmiş 500/500 ·
+   g2-yeni: overdue · sekme active/overdue/all · taksit [500:500:overdue 500:500:open] · bakiye 1000 · gecikmiş 500/500 ·
+== G2 stok tam kart
+   g2-v249: done · sekme done/all · taksit [500:0:paid 500:0:paid] · bakiye 0 · gecikmiş -/0 · kart 200
+   g2-eski: done · sekme done/all · taksit [500:0:paid 500:0:paid] · bakiye 0 · gecikmiş 0/0 · kart 200
+   g2-yeni: done · sekme done/all · taksit [500:0:paid 500:0:paid] · bakiye 0 · gecikmiş 0/0 · kart 200
+== G2 stok tam cari   <-- DURUM/SEKME FARKI
+   g2-v249: overdue · sekme active/overdue/all · taksit [500:500:overdue 500:500:open] · bakiye 0 · gecikmiş -/500 · cari 200
+   g2-eski: done · sekme done/all · taksit [500:0:paid 500:0:paid] · bakiye 0 · gecikmiş 0/500 · cari 200
+   g2-yeni: done · sekme done/all · taksit [500:0:paid 500:0:paid] · bakiye 0 · gecikmiş 0/500 · cari 200
+== G2 fatura yok yok
+   g2-v249: active · sekme active/all · taksit [] · bakiye 1000 · gecikmiş -/0 ·sil 200,200
+   g2-eski: active · sekme active/all · taksit [] · bakiye 1000 · gecikmiş 1000/0 ·sil 200,200
+   g2-yeni: active · sekme active/all · taksit [] · bakiye 1000 · gecikmiş 1000/0 ·sil 200,200
+== G2 fatura yok kart
+   g2-v249: done · sekme done/all · taksit [] · bakiye 0 · gecikmiş -/0 ·sil 200,200 kart 200
+   g2-eski: done · sekme done/all · taksit [] · bakiye 0 · gecikmiş 0/0 ·sil 200,200 kart 200
+   g2-yeni: done · sekme done/all · taksit [] · bakiye 0 · gecikmiş 0/0 ·sil 200,200 kart 200
+== G2 fatura yok cari   <-- DURUM/SEKME FARKI
+   g2-v249: active · sekme active/all · taksit [] · bakiye 0 · gecikmiş -/0 ·sil 200,200 cari 200
+   g2-eski: done · sekme done/all · taksit [] · bakiye 0 · gecikmiş 0/0 ·sil 200,200 cari 200
+   g2-yeni: active · sekme active/all · taksit [] · bakiye 0 · gecikmiş 0/0 ·sil 200,200 cari 200
+== G2 fatura eksik yok
+   g2-v249: overdue · sekme active/overdue/all · taksit [500:500:overdue] · bakiye 1000 · gecikmiş -/500 ·sil 200
+   g2-eski: overdue · sekme active/overdue/all · taksit [500:500:overdue] · bakiye 1000 · gecikmiş 1000/500 ·sil 200
+   g2-yeni: overdue · sekme active/overdue/all · taksit [500:500:overdue] · bakiye 1000 · gecikmiş 1000/500 ·sil 200
+== G2 fatura eksik kart
+   g2-v249: done · sekme done/all · taksit [500:0:paid] · bakiye 0 · gecikmiş -/0 ·sil 200 kart 200
+   g2-eski: done · sekme done/all · taksit [500:0:paid] · bakiye 0 · gecikmiş 0/0 ·sil 200 kart 200
+   g2-yeni: done · sekme done/all · taksit [500:0:paid] · bakiye 0 · gecikmiş 0/0 ·sil 200 kart 200
+== G2 fatura eksik cari   <-- DURUM/SEKME FARKI
+   g2-v249: overdue · sekme active/overdue/all · taksit [500:500:overdue] · bakiye 0 · gecikmiş -/500 ·sil 200 cari 200
+   g2-eski: done · sekme done/all · taksit [500:0:paid] · bakiye 0 · gecikmiş 0/500 ·sil 200 cari 200
+   g2-yeni: active · sekme active/all · taksit [500:0:paid] · bakiye 0 · gecikmiş 0/500 ·sil 200 cari 200
+== G2 fatura tam yok
+   g2-v249: overdue · sekme active/overdue/all · taksit [500:500:overdue 500:500:open] · bakiye 1000 · gecikmiş -/500 ·
+   g2-eski: overdue · sekme active/overdue/all · taksit [500:500:overdue 500:500:open] · bakiye 1000 · gecikmiş 500/500 ·
+   g2-yeni: overdue · sekme active/overdue/all · taksit [500:500:overdue 500:500:open] · bakiye 1000 · gecikmiş 500/500 ·
+== G2 fatura tam kart
+   g2-v249: done · sekme done/all · taksit [500:0:paid 500:0:paid] · bakiye 0 · gecikmiş -/0 · kart 200
+   g2-eski: done · sekme done/all · taksit [500:0:paid 500:0:paid] · bakiye 0 · gecikmiş 0/0 · kart 200
+   g2-yeni: done · sekme done/all · taksit [500:0:paid 500:0:paid] · bakiye 0 · gecikmiş 0/0 · kart 200
+== G2 fatura tam cari   <-- DURUM/SEKME FARKI
+   g2-v249: overdue · sekme active/overdue/all · taksit [500:500:overdue 500:500:open] · bakiye 0 · gecikmiş -/500 · cari 200
+   g2-eski: done · sekme done/all · taksit [500:0:paid 500:0:paid] · bakiye 0 · gecikmiş 0/500 · cari 200
+   g2-yeni: done · sekme done/all · taksit [500:0:paid 500:0:paid] · bakiye 0 · gecikmiş 0/500 · cari 200
+== G2 excel yok yok
+   g2-v249: active · sekme active/all · taksit [] · bakiye 1000 · gecikmiş -/0 ·
+   g2-eski: active · sekme active/all · taksit [] · bakiye 1000 · gecikmiş 1000/0 ·
+   g2-yeni: active · sekme active/all · taksit [] · bakiye 1000 · gecikmiş 1000/0 ·
+== G2 excel yok kart
+   g2-v249: done · sekme done/all · taksit [] · bakiye 0 · gecikmiş -/0 · kart 200
+   g2-eski: done · sekme done/all · taksit [] · bakiye 0 · gecikmiş 0/0 · kart 200
+   g2-yeni: done · sekme done/all · taksit [] · bakiye 0 · gecikmiş 0/0 · kart 200
+== G2 excel yok cari   <-- DURUM/SEKME FARKI
+   g2-v249: active · sekme active/all · taksit [] · bakiye 0 · gecikmiş -/0 · cari 200
+   g2-eski: done · sekme done/all · taksit [] · bakiye 0 · gecikmiş 0/0 · cari 200
+   g2-yeni: active · sekme active/all · taksit [] · bakiye 0 · gecikmiş 0/0 · cari 200
+== G2 excel eksik yok
+   g2-v249: overdue · sekme active/overdue/all · taksit [500:500:overdue] · bakiye 1000 · gecikmiş -/500 ·sil 200
+   g2-eski: overdue · sekme active/overdue/all · taksit [500:500:overdue] · bakiye 1000 · gecikmiş 1000/500 ·sil 200
+   g2-yeni: overdue · sekme active/overdue/all · taksit [500:500:overdue] · bakiye 1000 · gecikmiş 1000/500 ·sil 200
+== G2 excel eksik kart
+   g2-v249: done · sekme done/all · taksit [500:0:paid] · bakiye 0 · gecikmiş -/0 ·sil 200 kart 200
+   g2-eski: done · sekme done/all · taksit [500:0:paid] · bakiye 0 · gecikmiş 0/0 ·sil 200 kart 200
+   g2-yeni: done · sekme done/all · taksit [500:0:paid] · bakiye 0 · gecikmiş 0/0 ·sil 200 kart 200
+== G2 excel eksik cari   <-- DURUM/SEKME FARKI
+   g2-v249: overdue · sekme active/overdue/all · taksit [500:500:overdue] · bakiye 0 · gecikmiş -/500 ·sil 200 cari 200
+   g2-eski: done · sekme done/all · taksit [500:0:paid] · bakiye 0 · gecikmiş 0/500 ·sil 200 cari 200
+   g2-yeni: done · sekme done/all · taksit [500:0:paid] · bakiye 0 · gecikmiş 0/500 ·sil 200 cari 200
+== G2 excel tam yok
+   g2-v249: overdue · sekme active/overdue/all · taksit [500:500:overdue 500:500:open] · bakiye 1000 · gecikmiş -/500 ·
+   g2-eski: overdue · sekme active/overdue/all · taksit [500:500:overdue 500:500:open] · bakiye 1000 · gecikmiş 500/500 ·
+   g2-yeni: overdue · sekme active/overdue/all · taksit [500:500:overdue 500:500:open] · bakiye 1000 · gecikmiş 500/500 ·
+== G2 excel tam kart
+   g2-v249: done · sekme done/all · taksit [500:0:paid 500:0:paid] · bakiye 0 · gecikmiş -/0 · kart 200
+   g2-eski: done · sekme done/all · taksit [500:0:paid 500:0:paid] · bakiye 0 · gecikmiş 0/0 · kart 200
+   g2-yeni: done · sekme done/all · taksit [500:0:paid 500:0:paid] · bakiye 0 · gecikmiş 0/0 · kart 200
+== G2 excel tam cari   <-- DURUM/SEKME FARKI
+   g2-v249: overdue · sekme active/overdue/all · taksit [500:500:overdue 500:500:open] · bakiye 0 · gecikmiş -/500 · cari 200
+   g2-eski: done · sekme done/all · taksit [500:0:paid 500:0:paid] · bakiye 0 · gecikmiş 0/500 · cari 200
+   g2-yeni: done · sekme done/all · taksit [500:0:paid 500:0:paid] · bakiye 0 · gecikmiş 0/500 · cari 200

@@ -1,0 +1,80 @@
+// Tur 2b-1 ORTA-2 taraması: kuyruğun ürettiği her açık BORÇ (alacak tarafı) kalem türü × kaynağı ↔ ekranlardaki karşılığı. Her cari tek kalem türü taşır.
+// Değişmez (S91 = A, C5 §2.10 madde 9): carinin Gecikmiş Borç'u = Vade Takip'teki gecikmiş kalemlerin toplamı = zildeki gecikmiş kalemlerin toplamı; nakit akışında kalem görünür.
+// Kullanım: ROOT=<kod> node kalem-tara.mjs
+import { boot, day, NOW, TODAY } from "./h.mjs";
+
+const h = await boot({ now: { time: NOW, fixed: false } });
+const out = { cariler: {} };
+const adv = () => h.server.clock.advance({ seconds: 5 });
+const AUD = { id: "dk", role: "admin", permissions: [] };
+try {
+  const goods = await h.must("ürün", h.api.post("/api/workspace/stock", { name: "Tara Ürün", code: "URN-TARA", unit: "Adet", unitPrice: "10", salePrice: "100" }));
+  await h.must("alım", h.api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "in", qty: "1000", unitPrice: "10", pay: "none", date: day(-200) }));
+  const cases = [];
+  const add = async (label, type, fn) => {
+    const acc = await h.account(label, type);
+    const res = await fn(acc);
+    cases.push({ acc, label, res: res?.status ?? 200 });
+    adv();
+  };
+  await add("K01 Borç Yaz Vadesiz", "customer", acc => h.entry(acc, { kind: "debt", amount: "300", date: day(-20) }));
+  await add("K02 Borç Yaz Vadeli", "customer", acc => h.entry(acc, { kind: "debt", amount: "300", date: day(-20), dueDate: day(-10) }));
+  await add("K03 Stok Veresiye Satış", "customer", acc => h.api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "out", qty: "3", unitPrice: "100", pay: "account", method: "cash", accountId: acc.id, date: day(-20) }));
+  await add("K04 Tedarikçi Stoktan Alış İadesi", "supplier", acc => h.api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "out", reason: "preturn", qty: "3", unitPrice: "100", pay: "account", method: "cash", accountId: acc.id, date: day(-20) }));
+  await add("K05 Müşteriye Ödeme (Para İadesi)", "customer", acc => h.entry(acc, { kind: "out", amount: "300", date: day(-20) }));
+  await add("K06 Tedarikçiye Avans", "supplier", acc => h.entry(acc, { kind: "out", amount: "300", date: day(-20) }));
+  await add("K07 Karşılıksız Çek", "customer", async acc => {
+    const ch = await h.must("çek", h.api.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", amount: "300", issueDate: day(-30), dueDate: day(-20), serialNo: "TARA-07", accountId: acc.id }));
+    return h.api.post(`/api/workspace/cheques/${ch.id}/actions`, { action: "bounce", date: day(-20) });
+  });
+  await add("K08 Tedarikçiye Verilen Çek", "supplier", acc => h.api.post("/api/workspace/cheques", { direction: "out", instrument: "cheque", amount: "300", issueDate: day(-20), dueDate: day(20), serialNo: "TARA-08", accountId: acc.id }));
+  await add("K09 Tedarikçi Faturalı Alış İadesi", "supplier", async acc => {
+    const p = await h.purchase(acc, day(-30), 300);
+    adv();
+    await h.entry(acc, { kind: "out", amount: "300", date: day(-28), invoiceId: p });
+    const detail = await h.invoice(p);
+    return h.api.post("/api/workspace/invoices", { kind: "purchase_return", originalId: p, issueDate: day(-20), lines: [{ originLineId: detail.lines[0].id, qty: 1 }], payment: { rest: "open" }, force: true });
+  });
+  await add("K10 Excel Açılış Bakiyesi", "customer", () => h.api.post("/api/workspace/accounts/import", { matrix: [["Ad Soyad", "Telefon", "Bakiye", "Kayıt"], ["DK K10 Excel Açılış", "0500 251 98 01", "300", day(-20).split("-").reverse().join(".")]], headerAt: 0, roles: { 0: "name", 1: "phone", 2: "balance", 3: "registered" }, fileName: "tara.xlsx" }));
+  await add("K11 Vadesiz Satış Faturası", "customer", acc => h.sale(acc, day(-20), 300, day(-20)));
+  await add("K12 Taksitsiz Yeni Borç Kartı", "customer", acc => h.api.post("/api/workspace/plans", { name: acc.name, registeredOn: day(-20), total: "300", accountId: acc.id }));
+  await add("K13 Taksit İadesi", "customer", async acc => {
+    const p = await h.must("kart", h.api.post("/api/workspace/plans", { name: acc.name, registeredOn: day(-30), total: "300", accountId: acc.id, mode: "auto", count: "1", firstDue: day(10), everyMonths: "1" }));
+    await h.must("kart tahsilatı", h.api.post(`/api/workspace/plans/${p.id}/entries`, { kind: "in", amount: "300", date: day(-25), method: "cash", cashForce: true }));
+    return h.api.post(`/api/workspace/plans/${p.id}/entries`, { kind: "out", amount: "400", date: day(-20), method: "cash", cashForce: true });
+  });
+  await add("K14 Tedarikçi Stoktan Alış İadesi Kısmen Netleşen", "supplier", async acc => {
+    await h.entry(acc, { kind: "credit", amount: "100", date: day(-25) });
+    return h.api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "out", reason: "preturn", qty: "3", unitPrice: "100", pay: "account", method: "cash", accountId: acc.id, date: day(-20) });
+  });
+  const R10 = h.store.get("SELECT id, name FROM accounts WHERE name = 'DK K10 Excel Açılış'");
+  if (R10) cases.push({ acc: R10, label: "K10b Excel Açılış (yüklenen)", res: 200 });
+  const vade = await h.must("vade", h.api.get(`/api/workspace/overview/vade-takip?from=${day(-400)}&to=${day(400)}`));
+  const dues = await h.must("zil", h.api.get("/api/workspace/dues"));
+  const cash = await h.api.get(`/api/workspace/overview/nakit-akisi?from=${day(-60)}&to=${day(60)}`);
+  const flat = [];
+  const walk = v => { if (Array.isArray(v)) v.forEach(walk); else if (v && typeof v === "object") { if ("amount" in v && ("party" in v || "label" in v)) flat.push(v); else Object.values(v).forEach(walk); } };
+  walk(cash.data);
+  for (const c of cases) {
+    const card = await h.card(c.acc);
+    const r = h.ctx.invoices.obligationsFor(c.acc.id, h.ctx.accounts.detail(c.acc.id, AUD, { withRemaining: false }).ledger);
+    const vrows = vade.rows.filter(x => x.accountId === c.acc.id || x.party === c.acc.name);
+    const drows = (dues.items || []).filter(x => x.accountId === c.acc.id || x.person === c.acc.name);
+    const mine = flat.filter(x => x.accountId === c.acc.id || x.party === c.acc.name);
+    const sum = rows => Math.round(rows.reduce((s, x) => s + (x.amount || 0), 0) * 100) / 100;
+    out.cariler[c.label] = {
+      yazim: c.res,
+      bakiye: card.totals.balance,
+      gecikmis: card.totals.overdueDebt,
+      kalemler: r.overdue(TODAY).items.map(i => `${i.kind}|${i.origin}|${i.lineKind}|${i.remaining}`),
+      vadeGecikmis: sum(vrows.filter(x => x.date < TODAY && x.direction === "in")),
+      vade: vrows.map(x => `${x.source}|${x.label}|${x.amount}|${x.date}|${x.direction}`),
+      zilGecikmis: sum(drows.filter(x => x.state === "overdue" && x.direction !== "out")),
+      zil: drows.map(x => `${x.source}|${x.label}|${x.amount}|${x.state}`),
+      nakit: mine.map(x => `${x.source || ""}|${x.label}|${x.amount}|${x.date || ""}|${x.direction || ""}`),
+    };
+  }
+} finally {
+  await h.server.close();
+}
+console.log(JSON.stringify(out, null, 1));

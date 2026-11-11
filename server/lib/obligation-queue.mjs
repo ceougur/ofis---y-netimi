@@ -166,7 +166,7 @@ const bornOf = input => {
   const issued = new Map((input.invoices || []).map(invoice => [invoice.id, invoice.issuedAt || ""]));
   return line => String((line.origin === "invoice" ? issued.get(line.sourceId) : "") || line.at || "");
 };
-function coverForcing(input, mode, pieces, late = null) {
+function coverForcing(input, mode, pieces, late = null, ambiguous = null) {
   const { lines = [], offsets = [] } = input;
   const covers = coverLines(input);
   if (!covers.length) return null;
@@ -179,7 +179,10 @@ function coverForcing(input, mode, pieces, late = null) {
     if (known.length === lines.length && !shift) continue;
     const state = queueOnce({ ...input, lines: known, offsets: offsets.filter(offset => String(offset.createdAt || offset.date || "") <= at) }, mode, null, { pieces, forced: forced.size ? forced : null, endCover: shift ? cover.planId : "" });
     const card = state.cards.get(cover.planId);
-    if (shift && card?.ambiguous) continue;
+    if (shift && card?.ambiguous) {
+      ambiguous?.add(cover.planId); // tanı (tur 2b-1, DÜŞÜK-2): S110 sınıfı — davranış değişmez
+      continue;
+    }
     const consumed = card?.consumedFrom || [];
     if (!shift && !consumed.length) continue;
     const date = consumed.reduce((max, entry) => (entry.target.born > max ? entry.target.born : max), String(cover.date || ""));
@@ -204,10 +207,12 @@ function runQueue(input, mode, pieces) {
   let forced = coverForcing(input, mode, pieces);
   let state = queueOnce(input, mode, null, { pieces, forced });
   const late = lateCovers(input, state);
+  const ambiguous = new Set();
   if (late.size) {
-    forced = coverForcing(input, mode, pieces, late);
+    forced = coverForcing(input, mode, pieces, late, ambiguous);
     state = queueOnce(input, mode, null, { pieces, forced });
   }
+  const tagged = result => Object.assign(result, { ambiguousCovers: ambiguous });
   // karar (3): kilit duyarlı bağlar varsa önce o bağlar SERBEST sayılarak oynatılır; hedefin kilit gününe kadar bağsız kapanmış kısmı ölçülür, ikinci geçişte bağ yalnız kalanı ayırır.
   if (state.lockLinks.length) {
     const probe = queueOnce(input, mode, new Map(state.lockLinks.map(link => [link.id, null])), { pieces, forced });
@@ -220,15 +225,17 @@ function runQueue(input, mode, pieces) {
       const closedByL = target && !(mode === "side" && target.ownCard) ? target.freeClosures.filter(c => c.date <= link.lock).reduce((sum, c) => sum + c.amount, 0) : 0;
       caps.set(link.id, closedByL);
     }
-    return queueOnce(input, mode, caps, { pieces, forced });
+    return tagged(queueOnce(input, mode, caps, { pieces, forced }));
   }
-  return state;
+  return tagged(state);
 }
 
 function queueOnce(input, mode, lockCaps, { pieces = null, pseudo = null, forced = null, endCover = "" } = {}) {
-  const { lines = [], invoices = [], links = new Map(), chequeEvents = new Map(), reversals = new Map(), offsets = [], schedules = new Map(), dueDates = new Map(), promises = new Map(), lockAt = () => "", linkTimes = new Map() } = input;
-  // Bağın kurulduğu an (O-1): düzeltmeyle kurulan / değişen bağda düzeltmenin anı, öbür durumda kaydın anı (routes/invoices.mjs linkTimesOf).
+  const { lines = [], invoices = [], links = new Map(), chequeEvents = new Map(), reversals = new Map(), offsets = [], schedules = new Map(), dueDates = new Map(), promises = new Map(), lockAt = () => "", linkTimes = new Map(), linkMoments = new Map() } = input;
+  // Bağın kurulduğu an (O-1): düzeltmeyle kurulan / değişen bağda düzeltmenin anı, öbür durumda kaydın anı (routes/invoices.mjs linkTimesOf). Çek / senet satırında KESİN an
+  // (tur 2b-1 ORTA-1; routes/invoices.mjs chequeLinkMoments): evrak düzeltmesi satırı yeniden yazsa da bağ değişmediyse an değişmez.
   const linkedAt = (lineId, at) => {
+    if (linkMoments.has(lineId)) return linkMoments.get(lineId);
     const edited = linkTimes.get(lineId) || "";
     return edited > String(at || "") ? edited : String(at || "");
   };
@@ -806,6 +813,8 @@ function assemble(input, side, net) {
     return { amount, count: list.length, since: list.reduce((min, item) => (!min || item.vade < min ? item.vade : min), ""), items: list };
   };
   // Mevcut Borç kartlarının kapsamı (NET görünüm; tanı alanı — değişmez testleri S101 sınıfını bununla adlandırır): tükettiği ↔ tüketebileceği (kapsam ile taksitlerin küçüğü).
-  const coverage = new Map([...net.cards.values()].filter(card => card.kind === "cover").map(card => [card.planId, { consumed: tl(card.consumed || 0), capacity: tl(Math.min(card.coverTotal || 0, card.capacity ?? 0)), paid: card.payments.some(p => p.amount > 0) }]));
+  // ambiguous (tur 2b-1, DK-C5BT2A DÜŞÜK-2): Y-1'in iki okumalı kolu — kartın anında açık borç kart tutarından fazla, S2 ile 'kartın kendi borcu' farklı kalem seçiyor, kart
+  // kaydırılmadı (S110 = A'nın kodu tur 2b-2'de; değişmez testi bu sınıfı S110 adıyla sayar).
+  const coverage = new Map([...net.cards.values()].filter(card => card.kind === "cover").map(card => [card.planId, { consumed: tl(card.consumed || 0), capacity: tl(Math.min(card.coverTotal || 0, card.capacity ?? 0)), paid: card.payments.some(p => p.amount > 0), ambiguous: Boolean(net.ambiguousCovers?.has(card.planId)) }]));
   return { invoices: out, entries, items: viewItems, invoiceNet, installments, doubtful: { amount: tl(doubtful.amount), items: doubtful.items }, overdue, coverage };
 }

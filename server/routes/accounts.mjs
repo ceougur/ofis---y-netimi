@@ -1884,8 +1884,14 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // kartın taksitlerinde; şüpheli kuyruğundaki kısım hariç). Gün / durum: S67, S69 = A, BAŞ MİMAR Y3-1 / Y3-2 (lib/obligation-queue.mjs calendarState).
   // Netleşmemiş BORÇ yönlü bağsız ödeme (cari kartından müşteriye ödeme — T-09 müşteriye para iadesi; tedarikçiye avans) da açık borç kalemidir (EK-1 §1, gecikmiş ile
   // aynı küme — değişmez (iii)); karşı yön (alınan avans) kalem değildir (bugünkü gibi). Çek / senet satırı cari kartı satırı olmadığından takvim kalemi olmaz (BİLİNEN SINIR).
+  // Ç5-B tur 2b-1 (DK-C5BT2A ORTA-2; S91 = A, EK-1 §1 (iii) "Vade Takip gecikmiş tutarı = gecikmiş"): ALACAK tarafındaki (carinin bize borcu) her açık kalem — gecikmiş
+  // (lib/obligation-queue.mjs overdue) yükümlülük rolüne bakmadan bütün alacak kalemlerini sayar. Önceden yalnız cari kartından yapılan ödeme alınıyordu: tedarikçiye
+  // faturasız Alış İadesi (stoktan; bağsız ödeme rolü — 2.4.5 KS7 (a)) ve karşılığı gelmemiş faturalı Alış İadesi (iade belgesi) gecikmişte sayılıp Vade Takip / zil /
+  // takvimde yoktu (nakit akışında "Faturasız Cari Alacağı"). Fatura kalemi faturanın, taksit / kart kalemleri kartın kaynağında; çek / senet ve banka (POS) kaynaklı
+  // verilen avans S96 notuyla sonraki turda (BİLİNEN SINIR).
   const DUE_ITEM_KINDS = new Set(["entry", "stock", "bounce"]);
-  const dueItemOf = item => item.lineId && ((DUE_ITEM_KINDS.has(item.kind) && item.due) || (item.kind === "payment" && item.side === "receivable" && item.origin === "account"));
+  const RECEIVABLE_ITEM_ORIGINS = new Set(["account", "stock", "invoice"]);
+  const dueItemOf = item => item.lineId && ((DUE_ITEM_KINDS.has(item.kind) && item.due) || (item.side === "receivable" && item.kind !== "invoice" && RECEIVABLE_ITEM_ORIGINS.has(item.origin)));
   function openDueItems(day = today()) {
     const all = invoiceModule()?.allObligations ? invoiceModule().allObligations() : null;
     if (!all) return [];
