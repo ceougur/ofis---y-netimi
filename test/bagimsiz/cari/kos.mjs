@@ -61,7 +61,7 @@ const ONCEKI = { "2.4.6": "2.4.5", "2.4.9": "2.4.6", "2.5.0": "2.4.9" }[KURAL] |
 const GECIKMIS_ALAN = r => r.totals?.overdueDebt; // 2.5.0 Ç5-B: cari kartının TYK gecikmişi (totals.overdue ESKİ anlam — WhatsApp Ç5-C'ye kadar)
 // 2.5.0 bakım 2 C14.3 (KARARLAR.md §14): carisiz evrakın karşılıksızında programın "cari seç" sorusuna verilen yanıtın gövde alanı — Ç5-A kod ajanı verir
 // (ör. (a, ids) => ({ accountId: ids.cari[a.cari] })); null → `karsiliksiz {cari}` adımı GÖNDERİLMEZ, okuma hatası yazılır (sonuç yeşil sayılmaz)
-const KARSILIKSIZ_CARI = null;
+const KARSILIKSIZ_CARI = (a, ids) => ({ accountId: ids.cari[a.cari] }); // 2.5.0 Ç5-A (S48 / S66): karşılıksız ucunun isteğe bağlı cari alanı
 const VARSAYILAN = !dosyalar.length && !opt("--tohum");
 if (VARSAYILAN) dosyalar = readdirSync(path.join(HERE, "senaryolar")).filter(f => f.endsWith(".json")).sort().map(f => path.join(HERE, "senaryolar", f));
 const TOHUM = opt("--tohum") || (VARSAYILAN ? "1-2" : null);
@@ -849,7 +849,7 @@ async function kos(senaryo) {
           const led = await api("GET", "/api/workspace/ledger");
           if (led.status === 200) {
             // Mizan okundu: bakiyesi sıfır olan hesap programın listesinde yer almayabilir → 0 (okunamadı değil).
-            for (const kod of ["100", "101", "120", "121", "320", "600", "610", "770"]) P[`${k}:mizan:${kod}`] = 0;
+            for (const kod of ["100", "101", "120", "121", "320", "500", "519", "600", "610", "770"]) P[`${k}:mizan:${kod}`] = 0; // 2.5.0 Ç5-A: 500 / 519 de (sıfır bakiye okundu)
             for (const h of led.data.trial.accounts) if (Math.round(h.balance * 100)) P[`${k}:mizan:${h.code}`] = Math.round(h.balance * 100);
             ids.mizan[k] = Object.fromEntries(led.data.trial.accounts.map(h => [h.code, Math.round(h.balance * 100)]).filter(([, v]) => v).sort());
             // /3: "Yevmiye DEĞİŞMEZ" — mizan önceki kontroldekiyle aynı mı (vade alanı değişikliğinden sonra)

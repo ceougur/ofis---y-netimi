@@ -43,10 +43,23 @@ export const UCLAR = {
   //   karsiliksiz_cari    : { cek, tarih, cari }  açılış evrakının (S48) ve formdan carisiz evrakın (S66, bakım 2) karşılıksızında programın "cari seç" sorusuna verilen yanıt; kimlik ids[olay.cek]
   //   excel_taksit_karti  : { tarih, cari, toplam, odenen }  Excel'den (tablodan) yüklenen taksit kartı (KG-5)
   //   kasa_duzelt         : { hareket, tarih }  Kasa hareketinin tarih düzeltmesi (B11); kimlik ids[olay.hareket]
-  acilis_evrak: null,
-  karsiliksiz_cari: null,
-  excel_taksit_karti: null,
-  kasa_duzelt: null,
+  // 2.5.0 Ç5-A tur 1b (uç adları Ç5-A'dan; yalnız çağrı biçimi — beklenenler kahin.py'nin kendi kurallarından): Excel "carilere dokunmadan" açılış portföyü, karşılıksızda cari
+  // seçimi (S48 / S66), Excel taksit kartı (KG-5), Kasa hareketinin düzeltmesi (B11). Atlanan Excel satırı (200 + skipped, ör. "Aynı adla açık kart var") başarı DEĞİL (ders 3):
+  // kimlik yalnız kart açıldıysa; açılmadıysa olay programda yok sayılır ve karşılaştırma farkı nedenini gösterir (sürücü adı değiştirerek GİZLEMEZ).
+  acilis_evrak: {
+    method: "POST",
+    url: "/api/workspace/cheques/import",
+    govde: o => ({ matrix: [["Yön", "Tür", "Seri No", "Banka", "Keşideci", "Tutar", "Vade", "Tarih"], [o.yon === "alinan" ? "Alınan" : "Verilen", o.evrak === "senet" ? "Senet" : "Çek", o.no, "Akbank", `Açılış keşidecisi ${o.no}`, String(o.tutar).replace(".", ","), o.vade.split("-").reverse().join("."), o.tarih.split("-").reverse().join(".")]], headerAt: 0, roles: { 0: "direction", 1: "instrument", 2: "serial", 3: "bank", 4: "drawer", 5: "amount", 6: "due", 7: "issue" }, fileName: `acilis-${o.no}.xlsx`, post: false }),
+    kimlik: d => d?.ids?.[0],
+  },
+  karsiliksiz_cari: { method: "POST", url: (o, ids) => `/api/workspace/cheques/${encodeURIComponent(ids[o.cek])}/actions`, govde: (o, ids) => ({ action: "bounce", date: o.tarih, accountId: ids[o.cari] }), kimlik: () => null },
+  excel_taksit_karti: {
+    method: "POST",
+    url: "/api/workspace/plans/import",
+    govde: o => ({ matrix: [["Ad Soyad", "Toplam", "Taksit Sayısı", "İlk Vade", "Ödenen", "Kayıt Tarihi"], [senaryo.olaylar.find(x => x.id === o.cari)?.ad, String(o.toplam), "6", "15.12.2026", String(o.odenen), o.tarih.split("-").reverse().join(".")]], headerAt: 0, roles: { 0: "name", 1: "total", 2: "count", 3: "firstDue", 4: "paid", 5: "registered" }, fileName: `${o.id}.xlsx`, linkRecords: false }),
+    kimlik: d => (d?.created ? d.importId : null),
+  },
+  kasa_duzelt: { method: "PUT", url: (o, ids) => `/api/workspace/cash/${encodeURIComponent(ids[o.hareket])}`, govde: o => ({ kind: "out", amount: String(senaryo.olaylar.find(x => x.id === o.hareket)?.tutar), method: "cash", date: o.tarih, description: o.hareket }), kimlik: () => null },
 };
 
 // Senaryo: varsayılan senaryo.json; 2.5.0'dan beri isteğe bağlı yol (elle senaryolar, ör. senaryolar/g4-…json — göç olayı OLMAYANLAR)
