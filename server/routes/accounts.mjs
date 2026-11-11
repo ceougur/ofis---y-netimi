@@ -1883,14 +1883,17 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // Alacak ve açılış — vadeli ya da vadesiz: vade yoksa belge günü, S1 —, stok veresiye, karşılıksız evrak). Tutar kuyruk kalanı (Mevcut Borç kartının tükettiği kısım
   // kartın taksitlerinde; şüpheli kuyruğundaki kısım hariç). Gün / durum: S67, S69 = A, BAŞ MİMAR Y3-1 / Y3-2 (lib/obligation-queue.mjs calendarState).
   // Netleşmemiş BORÇ yönlü bağsız ödeme (cari kartından müşteriye ödeme — T-09 müşteriye para iadesi; tedarikçiye avans) da açık borç kalemidir (EK-1 §1, gecikmiş ile
-  // aynı küme — değişmez (iii)); karşı yön (alınan avans) kalem değildir (bugünkü gibi). Çek / senet satırı cari kartı satırı olmadığından takvim kalemi olmaz (BİLİNEN SINIR).
+  // aynı küme — değişmez (iii)); karşı yön (alınan avans) kalem değildir (bugünkü gibi). Çek / senet ve banka kaynaklı verilen avans: tur 2b-2 (aşağıda).
   // Ç5-B tur 2b-1 (DK-C5BT2A ORTA-2; S91 = A, EK-1 §1 (iii) "Vade Takip gecikmiş tutarı = gecikmiş"): ALACAK tarafındaki (carinin bize borcu) her açık kalem — gecikmiş
   // (lib/obligation-queue.mjs overdue) yükümlülük rolüne bakmadan bütün alacak kalemlerini sayar. Önceden yalnız cari kartından yapılan ödeme alınıyordu: tedarikçiye
   // faturasız Alış İadesi (stoktan; bağsız ödeme rolü — 2.4.5 KS7 (a)) ve karşılığı gelmemiş faturalı Alış İadesi (iade belgesi) gecikmişte sayılıp Vade Takip / zil /
-  // takvimde yoktu (nakit akışında "Faturasız Cari Alacağı"). Fatura kalemi faturanın, taksit / kart kalemleri kartın kaynağında; çek / senet ve banka (POS) kaynaklı
-  // verilen avans S96 notuyla sonraki turda (BİLİNEN SINIR).
+  // takvimde yoktu (nakit akışında "Faturasız Cari Alacağı"). Fatura kalemi faturanın, taksit / kart kalemleri kartın kaynağında (çek / senet ve banka
+  // kaynaklı verilen avans: tur 2b-2, RECEIVABLE_ITEM_ORIGINS).
   const DUE_ITEM_KINDS = new Set(["entry", "stock", "bounce"]);
-  const RECEIVABLE_ITEM_ORIGINS = new Set(["account", "stock", "invoice"]);
+  // Ç5-B tur 2b-2 (S96 = A + S93, KULLANICI KARARI 10.11 13:20 AYNEN: "verilen, karşılığı gelmemiş avans takvim / zil / Vade Takip / nakit akışında AYRI KALEM ('Tahsil
+  // Edilecek Borç', ödeme gününde vadeli)"): çek / senetle (tedarikçiye verilen / ciro edilen evrak — cari satırı source 'cheque') ve banka kaynaklı (POS komisyon tahsili
+  // — source 'bank', origin 'pos-fee') verilen avans da kalemdir; gecikmiş toplamı her ekranda aynı (EK-1 §1 (iii)). Kalemin hareketi carinin defterinde (Kayda Git).
+  const RECEIVABLE_ITEM_ORIGINS = new Set(["account", "stock", "invoice", "cheque", "pos-fee"]);
   const dueItemOf = item => item.lineId && ((DUE_ITEM_KINDS.has(item.kind) && item.due) || (item.side === "receivable" && item.kind !== "invoice" && RECEIVABLE_ITEM_ORIGINS.has(item.origin)));
   function openDueItems(day = today()) {
     const all = invoiceModule()?.allObligations ? invoiceModule().allObligations() : null;
