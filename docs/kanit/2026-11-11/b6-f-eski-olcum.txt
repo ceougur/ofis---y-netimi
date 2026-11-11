@@ -1,0 +1,11 @@
+eski araç (taban dbf635be), eski araçla üretilmiş 10.000 verisi; paylaşımlı kilit. başta: 2.04 2.26 2.26 2/145 28097
+file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/tools/kapi-olcum.mjs:283
+  if (!baseline.ok) throw new Error(`veri tutarsız (açılış taraması): ${baseline.failures.map(item => `${item.code} ${item.sample?.[0] || ""}`).join("; ")}`);
+                          ^
+
+Error: veri tutarsız (açılış taraması): doubtful:records Değersiz Alacak satırı aentry-f28299b6-1cad-48a8-a191-60780d770d7b~1: kaydı yok ya da iptal edilmiş
+    at measure (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/tools/kapi-olcum.mjs:283:27)
+    at async file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/tools/kapi-olcum.mjs:426:18
+
+Node.js v22.23.4
+cikis 1

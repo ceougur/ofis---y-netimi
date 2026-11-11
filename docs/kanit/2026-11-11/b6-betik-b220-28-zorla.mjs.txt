@@ -1,0 +1,82 @@
+// Birleşik tur 6 C3 — senaryo-banka-220 adım 2.8 (satır ~621: waitForSelector(li) sonrası page.$(li) null) ZORLA üretim denemesi (commit edilmez; not defterinde).
+// Her denemede: Faturalar → Yeni → Gider Alışı formu; cari kutusuna "Tedarikçi A" (fill); öneri listesi görününce 1,5 sn boyunca li düğümünün DOM'dan kalkması / liste
+// gizlenmesi / kutunun odağı kaybetmesi / formun yeniden çizilmesi gözlenir. Kipler: sade | baska-oturum (adım 2.7'deki gibi başka kullanıcı açılır ve giriş yapar).
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+import { chromium } from "playwright";
+
+process.env.HUKUK_LICENSE_URL ||= "http://127.0.0.1:9";
+const ROOT = path.resolve(process.env.DEPO);
+const { createApp } = await import(pathToFileURL(path.join(ROOT, "server", "app.mjs")).href);
+const { createClient, installPageClock } = await import(pathToFileURL(path.join(ROOT, "test", "helpers.mjs")).href);
+const MODE = process.argv[2] || "sade";
+const TRIALS = Number(process.argv[3] || 15);
+const PASS = "B220-Zorla-2026!";
+const root = mkdtempSync(path.join(tmpdir(), "b220-28-zorla-"));
+const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, now: "2026-10-08T12:00:00+03:00", env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f45" } });
+const { port } = await app.listen(0, "127.0.0.1");
+const BASE = `http://127.0.0.1:${port}`;
+const api = createClient(BASE);
+await api.login("admin", PASS);
+await api.post("/api/workspace/bank/setup/dismiss", {});
+const sup = (await api.post("/api/workspace/accounts", { name: "Tedarikçi A", type: "supplier" })).data.data;
+for (const name of ["Tedarikçi B", "Tedarikçi AB", "Müşteri A"]) await api.post("/api/workspace/accounts", { name, type: name.startsWith("M") ? "customer" : "supplier", similarOk: true, force: true });
+const browser = await chromium.launch();
+const ctx = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: "tr-TR" });
+const page = await ctx.newPage();
+await installPageClock(page, app.config.now);
+await page.goto(`${BASE}/`);
+await page.fill("#hof-auth input[name=username]", "admin");
+await page.fill("#hof-auth input[name=password]", PASS);
+await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
+await page.waitForSelector("#hof-sidecard", { timeout: 60000 });
+await page.waitForTimeout(700);
+const modal = ".hof-modal-backdrop.is-visible";
+const inv = `${modal} .hof-invoices-modal`;
+let seen = 0;
+for (let no = 1; no <= TRIALS; no += 1) {
+  for (let k = 0; k < 6 && (await page.$(modal)); k += 1) {
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(200);
+    const leave = await page.$(`${modal} [data-answer="yes"]`);
+    if (leave) await leave.click().catch(() => null);
+  }
+  if (MODE === "baska-oturum") {
+    await api.post("/api/admin/users", { username: `p220z${no}`, name: `Personel ${no}`, role: "personel", password: "Personel-2026!", mustChangePassword: false });
+    const other = createClient(BASE);
+    await other.login(`p220z${no}`, "Personel-2026!");
+  }
+  await page.click("#hof-sidecard [data-action=invoices]");
+  await page.waitForSelector(`${inv} [data-act="new"]`, { timeout: 15000 });
+  await page.click(`${inv} [data-act="new"]`);
+  await page.click(`${inv} [data-scenario="expense_purchase"]`);
+  await page.waitForSelector(`${inv} [data-lines]`, { timeout: 10000 });
+  await page.fill(`${inv} [data-f="number"]`, `AL-Z-${no}`);
+  await page.fill(`${inv} [data-acc-query]`, "Tedarikçi A");
+  const li = `${inv} .hof-acc-picker li[data-id="${sup.id}"]`;
+  await page.waitForSelector(li, { timeout: 8000 });
+  const report = await page.evaluate(async sel => {
+    const node = document.querySelector(sel);
+    const input = document.querySelector(".hof-invoices-modal [data-acc-query]");
+    const events = [];
+    const obs = new MutationObserver(() => {
+      if (!node.isConnected) events.push("li DOM'dan kalktı");
+      if (node.closest("ul")?.hidden) events.push("liste gizlendi");
+    });
+    obs.observe(document, { childList: true, subtree: true, attributes: true });
+    const blur = () => events.push("kutu odağı kaybetti");
+    input?.addEventListener("blur", blur);
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    obs.disconnect();
+    input?.removeEventListener("blur", blur);
+    return { events: [...new Set(events)], connected: node.isConnected, now: Boolean(document.querySelector(sel)) };
+  }, li);
+  if (report.events.length || !report.now) seen += 1;
+  console.log(`deneme ${no}: ${report.events.length ? report.events.join(", ") : "değişiklik yok"} · 1,5 sn sonra li ${report.now ? "var" : "YOK"}`);
+}
+console.log(`SONUÇ (${MODE}): ${seen}/${TRIALS} denemede liste değişti`);
+await browser.close();
+await app.close();
+rmSync(root, { recursive: true, force: true });

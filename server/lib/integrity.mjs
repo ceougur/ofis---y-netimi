@@ -37,7 +37,7 @@ import { BANK_SUBS, DOCUMENT_MAINS, DOCUMENT_SUB_NAMES, RECEIVED_MAINS, document
 import { compareVersions } from "./semver.mjs";
 import { CHEQUE_BOND_BAD, createScopedGate, familyOf } from "./integrity-scope.mjs";
 import { runScanWorker } from "./integrity-scan-runner.mjs";
-import { cashBeforeOpening } from "./cash-opening.mjs";
+import { cashBeforeOpening, cashRestoreMark } from "./cash-opening.mjs";
 import { systemClock } from "./clock.mjs";
 import { roundMoney, toCents } from "./money.mjs";
 
@@ -647,7 +647,8 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     // 2.5.0 Ç5-K tur 2 (dar kontrol ORTA-1; BAŞ MİMAR 10.11 — S20 = A "Mutabakat Testi uyarı verir"): bu denetim SAPMA DEĞİL UYARIDIR — notice: true. Sonuçta
     // görünür (ok false, failures içinde; gizlenmez), ama sapma sayılmaz: Yönetim › Sistem'de sarı + hint ("N denetim tamam" bozulmaz), Defter Mutabakatı'nda durum
     // "Uyarı" (Sonuç bu satır yüzünden "Fark Var" olmaz), kapının tabanına / alanına girmez (integrity-scope familyOf → null), tarama "yeni sapma" kaydı ve zili
-    // üretmez (settleScan), açılış "sapma var" günlüğü yazmaz (start). Sayı artsa da uyarıdır (yeni satırı S12 zaten reddeder).
+    // üretmez (settleScan), açılış "sapma var" günlüğü yazmaz (start). Birleşik tur 6 (DK-D2T3 ORTA-1): sayının Silinenler geri yüklemeleriyle açıklanamayan ARTIŞI
+    // (kapının görmediği yazım — yeni satırı S12 reddettiği için elle / dış araçla) taramada günlük + zil olur (noticeGrowth); uyarı yine uyarıdır.
     if (!touched && has("cash_entries")) {
       const early = cashBeforeOpening(store, money());
       if (early?.rows.length) {
@@ -846,6 +847,8 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     legacyCheques = new Set(drift);
     distrust = new Set();
     known = new Set(baseline);
+    // Birleşik tur 6 (DK-D2T3 ORTA-1): uyarının açılıştaki sayısı (ilk görünüş sessiz; yeniden başlatmada önceki artış yeniden bildirilmez).
+    noticeMark = { counts: noticeCounts(result), restored: cashRestoreMark(store) };
     const lock = period()?.lockedUntil?.() || "";
     lockState = { lock, digest: lockDigest(lock) };
     syncCounters();
@@ -954,8 +957,42 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
   // önceki taramalarda görülen sapma imzaları (COMMIT tabanından bağımsız; olay bazlı denetimlerin taban olmaması tarama sonucunu değiştirmez).
   let known = new Set();
   let lastScan = null;
+  // ---------- Uyarının sayısı (2.5.0 birleşik tur 6; DK-D2T3 ORTA-1 — BAŞ MİMAR 11.11, kullanıcı onaylı) ----------
+  // Uyarı (notice; bugün yalnız "Kasa Açılışından Önce Tarihli Hareket") sapma değildir, ama tarama kapının GÖRMEDİĞİ yazımı yakalamak içindir: açılıştan sonraki bir
+  // nakit hareketinin tarihi dışarıdan (elle / dış araçla) açılış öncesine alınınca uyarı 2 → 3 olur, Kasa'da o tutar iki kez sayılır. Kural: tarama uyarının önceki
+  // sayısını tutar (açılışta ölçülür — ilk görünüş sessiz; program yeniden açılınca önceki artış yeniden bildirilmez); kapının bu arada kabul ettiği Silinenler geri
+  // yüklemelerinin kattığı satırlar (lib/cash-opening.mjs cashRestoreMark) açıklanmış sayılır; açıklanamayan ARTIŞ günlüğe ("scan") ve zile yazılır; azalma sessiz.
+  // Sunum (sarı uyarı, Defter Mutabakatı'nda "Tutarlı", ilk yazımın süzgeçli yolu) değişmez: uyarı tabana / kapı alanına girmez.
+  let noticeMark = null; // { counts: Map(kod → sayı), restored }
+  const noticeCounts = result => new Map((result?.failures || []).filter(item => item.notice).map(item => [item.code, Number(item.count) || 0]));
+  const NOTICE_GROWTH = {
+    "cash:before-opening": (previous, count) => `Kasa açılışından önce tarihli hareket uyarısı arttı (${previous} → ${count} hareket; kapının görmediği yazım)`,
+  };
+  // restoredAt: taramanın anlık görüntüsüne giren geri yükleme sayacı. İş parçacığı taraması sürerken geri yükleme kesinleştiyse (sayaç değişti) bu tarama uyarıyı
+  // karşılaştırmaz (anlık görüntünün geri yüklemeyi içerip içermediği bilinmez — yanlış alarm olurdu); işaret değişmez, sonraki tarama karşılaştırır.
+  function noticeGrowth(result, restoredAt) {
+    const counts = noticeCounts(result);
+    if (!noticeMark) {
+      noticeMark = { counts, restored: restoredAt };
+      return [];
+    }
+    if (restoredAt !== cashRestoreMark(store)) return [];
+    const explained = Math.max(0, restoredAt - noticeMark.restored);
+    const out = [];
+    for (const item of result.failures.filter(entry => entry.notice)) {
+      const previous = noticeMark.counts.get(item.code) ?? 0;
+      const count = Number(item.count) || 0;
+      const unexplained = count - previous - (item.code === "cash:before-opening" ? explained : 0);
+      if (unexplained > 0) {
+        const name = NOTICE_GROWTH[item.code]?.(previous, count) || `${item.name}: uyarı arttı (${previous} → ${count}; kapının görmediği yazım)`;
+        out.push({ code: item.code, name, ok: false, notice: true, severity: "warning", count, previous, unexplained, sample: item.sample || [] });
+      }
+    }
+    noticeMark = { counts, restored: restoredAt };
+    return out;
+  }
   // Tarama sonucunun işlenmesi (iki yol ortak): kilit izi, yeni sapmanın günlüğü ve zili.
-  function settleScan(result, lock, digest, via) {
+  function settleScan(result, lock, digest, via, restoredAt = cashRestoreMark(store)) {
     // Kilit izi (gözden geçirme D8; plan §3.11/4 "sha256 tam taramaya kalır"): süzgeç kilit izini yalnız kilide giren bir dokunuşta, tam kapı
     // yalnız kendi yolunda hesaplar; kapının görmediği (store dışı, eski sürüm, elle) kilitli dönem değişikliği taramada görünür. Taban
     // değişmez: 2.0.26'daki gibi sonraki tam kapı yolu "Kapanmış dönem" 409'u verir (yeniden başlatmaya ya da kilit değişimine kadar).
@@ -967,19 +1004,22 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       result.failures.push(item);
       result.ok = false;
     }
-    // 2.5.0 Ç5-K tur 2: uyarı (notice; "Kasa Açılışından Önce Tarihli Hareket") yeni sapma sayılmaz — günlük ("scan") ve zil (integrity.alert) yok; sayı artsa da.
+    // 2.5.0 Ç5-K tur 2: uyarı (notice; "Kasa Açılışından Önce Tarihli Hareket") yeni sapma sayılmaz. Birleşik tur 6 (DK-D2T3 ORTA-1): uyarının AÇIKLANAMAYAN artışı
+    // (noticeGrowth) günlüğe ve zile "uyarı arttı (kapının görmediği yazım)" diye yazılır; azalma ve ilk görünüş sessiz.
     const drifts = result.failures.filter(item => !item.notice);
     const current = new Set(drifts.map(signature));
-    const findings = drifts.filter(item => !known.has(signature(item)));
+    const fresh = drifts.filter(item => !known.has(signature(item)));
     known = current;
+    const grown = noticeGrowth(result, restoredAt);
+    const findings = [...fresh, ...grown];
     if (findings.length) {
       write("scan", [], findings);
-      const names = findings.map(item => item.name).join("; ");
-      (strict ? log?.error : log?.warn)?.call(log, `Mutabakat taraması: kapının görmediği ${findings.length} yeni sapma (${names}).`);
+      if (fresh.length) (strict ? log?.error : log?.warn)?.call(log, `Mutabakat taraması: kapının görmediği ${fresh.length} yeni sapma (${fresh.map(item => item.name).join("; ")}).`);
+      for (const item of grown) log?.warn?.(`Mutabakat taraması: ${item.name}. Elle ya da dış bir araçla veri düzenlenmiş olabilir; Mutabakat Testi'ndeki uyarının satırlarına bakın.`);
       try {
         // Zil yalnız yöneticilere (sapmanın adı ve tutarı yönetim bilgisidir).
         const admins = has("users") ? store.all("SELECT id FROM users WHERE role = 'admin' AND active = 1").map(row => row.id) : [];
-        events?.publish?.("integrity.alert", { at: now().toISOString(), findings: findings.map(item => ({ code: item.code, name: item.name, count: item.count ?? 0, difference: item.difference ?? 0 })) }, { users: admins });
+        events?.publish?.("integrity.alert", { at: now().toISOString(), findings: findings.map(item => ({ code: item.code, name: item.name, count: item.count ?? 0, difference: item.difference ?? 0, ...(item.notice ? { notice: true, previous: item.previous } : {}) })) }, { users: admins });
       } catch {
         // zil yayımlanamasa da kayıt yazıldı
       }
@@ -1031,12 +1071,14 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       scanStats.skipped += 1;
       return { skipped: "unchanged" };
     }
+    // Birleşik tur 6: iş parçacığının anlık görüntüsü bundan SONRA alınır — bu ana kadar kesinleşen geri yüklemeler görüntüdedir (noticeGrowth).
+    const restoredAt = cashRestoreMark(store);
     backgroundScan = runScanWorker({ dbPath, time: now().toISOString(), legacy: exportLegacy(), partyRows });
     try {
       const outcome = await backgroundScan;
       scanStats.runs += 1;
       scanFingerprint = fingerprint;
-      return settleScan(outcome.result, outcome.lock, outcome.digest, "worker");
+      return settleScan(outcome.result, outcome.lock, outcome.digest, "worker", restoredAt);
     } catch (error) {
       scanStats.failed += 1;
       log?.warn?.(`Mutabakat taraması arka planda çalışmadı (${error.message}); bir sonraki zamanda yeniden denenecek.`);

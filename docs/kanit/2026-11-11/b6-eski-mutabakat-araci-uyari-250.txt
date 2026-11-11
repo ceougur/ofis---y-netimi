@@ -1,0 +1,128 @@
+TAP version 13
+# Subtest: mutabakat aracı: Kasa açılış uyarısı 'Uyarı' başlığında, sapma değil
+    # Subtest: yalnız uyarı: çıkış 0; '✓ … tutarlı' + '⚠ Uyarı' başlığında uyarının adı, sayısı ve ne yapılacağı; 'sapma' listesi yok; JSON ok true, notices; dosya değişmez
+    not ok 1 - yalnız uyarı: çıkış 0; '✓ … tutarlı' + '⚠ Uyarı' başlığında uyarının adı, sayısı ve ne yapılacağı; 'sapma' listesi yok; JSON ok true, notices; dosya değişmez
+      ---
+      duration_ms: 1025.840247
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/test/mutabakat-araci-uyari-250.test.mjs:54:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        DestekOfis mutabakat denetimi · /tmp/b6-mutabakat-araci-nnCLND/data/destekofis.sqlite
+        Bugün 11.11.2026 · Dönem kilidi: yok · 63 denetim, 7 ms
+        Mizan: borç 5.100,00 TL · alacak 5.100,00 TL · fark 0,00 TL
+        
+        ✗ 1 denetimde sapma:
+          ✗ Kasa Açılışından Önce Tarihli Hareket · 1 kayıt
+              Bu nakit hareketleri Kasa açılışından (10.03.2026) önce tarihli (geri yüklenen yedek, eski sürüm verisi ya da Silinenler'den geri gelen kayıt). Tarihi değişmeden düzeltilebilir; açılıştan önceye yeni hareket girilemez. Hareketler açılışın içinde değilse yönetici Kasa → Açılış Bakiyesi'nin tarihini öne alır; uyarı kalkar.
+              Kasa Hareketi cash-fa176281-de22-4222-a31c-67a881abe788 · 05.03.2026
+        
+        Veri değiştirilmedi. Sapmalar eski sürümlerden kalmış olabilir; program yeni sapmaya izin vermez.
+        
+        + actual - expected
+        
+          {
+        +   cikis: 1,
+        -   cikis: 0,
+            dosya: true,
+            ipucu: true,
+            json: {
+        +     cikis: 1,
+        +     notices: undefined,
+        +     ok: false
+        -     cikis: 0,
+        -     notices: [
+        -       'cash:before-opening'
+        -     ],
+        -     ok: true
+            },
+        +   sapmaBasligi: true,
+        +   tutarli: false,
+        +   uyari: false
+        -   sapmaBasligi: false,
+        -   tutarli: true,
+        -   uyari: true
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        cikis: 0
+        tutarli: true
+        sapmaBasligi: false
+        uyari: true
+        ipucu: true
+        json:
+          cikis: 0
+          ok: true
+          notices:
+            0: 'cash:before-opening'
+        dosya: true
+      actual:
+        cikis: 1
+        tutarli: false
+        sapmaBasligi: true
+        uyari: false
+        ipucu: true
+        json:
+          cikis: 1
+          ok: false
+        dosya: true
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/test/mutabakat-araci-uyari-250.test.mjs:60:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: gerçek sapma + uyarı: çıkış 1; sapma listesinde yalnız gerçek sapmalar (uyarı YOK), uyarı ayrı başlıkta
+    not ok 2 - gerçek sapma + uyarı: çıkış 1; sapma listesinde yalnız gerçek sapmalar (uyarı YOK), uyarı ayrı başlıkta
+      ---
+      duration_ms: 493.168459
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/test/mutabakat-araci-uyari-250.test.mjs:75:3'
+      failureType: 'testCodeFailure'
+      error: 'uyarı sapma listesinde değil'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: |-
+          ✗ 100 Kasa (Nakit) · defter 5.110,00 TL / alt defter 5.100,00 TL · fark 10,00 TL
+          ⚠ Tanınmayan ödeme yolu (nakit, havale/EFT, POS/kredi kartı dışında) · 1 kayıt · eski sürümden kalan, yeni işlemler engellenmez
+          ✗ Kasa Açılışından Önce Tarihli Hareket · 1 kayıt
+              Bu nakit hareketleri Kasa açılışından (10.03.2026) önce tarihli (geri yüklenen yedek, eski sürüm verisi ya da Silinenler'den geri gelen kayıt). Tarihi değişmeden düzeltilebilir; açılıştan önceye yeni hareket girilemez. Hareketler açılışın içinde değilse yönetici Kasa → Açılış Bakiyesi'nin tarihini öne alır; uyarı kalkar.
+              Kasa Hareketi cash-fa176281-de22-4222-a31c-67a881abe788 · 05.03.2026
+          ⚠ İşlem Başlığı Olmayan Para Satırı (v20'den sonra) · 1 kayıt · eski sürümden kalan, yeni işlemler engellenmez
+              Eski sürümle girilmiş hareketler (Hesabı Belirsiz Yeni Hareketler). Banka modülünde hesaba atanabilir.
+              cash_entries:b6-arac-yol
+        
+      operator: 'doesNotMatch'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/test/mutabakat-araci-uyari-250.test.mjs:84:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - mutabakat aracı: Kasa açılış uyarısı 'Uyarı' başlığında, sapma değil
+  ---
+  duration_ms: 2044.107226
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/test/mutabakat-araci-uyari-250.test.mjs:34:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2401.257666

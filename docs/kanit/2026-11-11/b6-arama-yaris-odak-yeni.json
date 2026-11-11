@@ -1,0 +1,32 @@
+{
+  "ad": "b6-arama-yaris-odak-yeni",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/banka-210-arama-yaris.mjs --kip odak --deneme 5",
+  "commit": "16dae88762e263ba1081792fbe327669d279fe93",
+  "dal": "worktree-agent-a115f88e3014ea777",
+  "kirli": 5,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-11T04:53:31.115Z",
+  "sure_sn": 25.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 5,
+    "gecen": 5,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-kanit/2026-11-11/b6-arama-yaris-odak-yeni.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a115f88e3014ea777",
+  "ham_cikti_sha256": "e1b823ec90acf4ed0695023d0a45439453541a96d1a142a554b9c0afe6c9704c",
+  "ham_cikti_bayt": 2229
+}

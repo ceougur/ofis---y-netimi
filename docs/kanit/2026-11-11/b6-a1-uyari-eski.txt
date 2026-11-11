@@ -1,0 +1,55 @@
+{
+ "depo": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski",
+ "v249": {
+  "kasaGirisAcilisOncesi": 200,
+  "cariTahsilatAcilisOncesi": 200,
+  "kasaSatir": 2
+ },
+ "acilis": {
+  "gunluk": [],
+  "mutabakatGunlugu": [],
+  "uyari": 2,
+  "uyariNotice": true,
+  "sapmalar": [],
+  "ok": false,
+  "rapor": {
+   "sonuc": "Tutarlı",
+   "satir": [
+    "2 satır",
+    "Uyarı"
+   ],
+   "yoneticiye": false
+  },
+  "ilkYazimKapisi": "scoped"
+ },
+ "s12": 409,
+ "kapiDisi": {
+  "once": {
+   "uyari": 2,
+   "sapmalar": [],
+   "gunluk": 0,
+   "zil": 0
+  },
+  "sonra": {
+   "uyari": 3,
+   "sapmalar": [],
+   "yeniTaramaGunlugu": [],
+   "zil": [],
+   "isParcacigi": []
+  },
+  "kasaBakiye": 5391,
+  "sunucuGunlugu": []
+ },
+ "ikiSirket": {
+  "s002Uyari": null,
+  "s002Sapma": [],
+  "s002GeriAlinca": 1,
+  "s001": 3
+ },
+ "geriYukleme": {
+  "s002Uyari": 1,
+  "s002Sapma": [],
+  "yeniGunluk": [],
+  "yeniZil": []
+ }
+}

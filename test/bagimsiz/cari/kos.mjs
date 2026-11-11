@@ -1382,16 +1382,37 @@ if (YAPIM_YAZ) {
   // Ana oturumun ELLE ayrıştırdığı etiket korunur: kural metni paketi göstermiyorsa (AYRIŞTIRILMADI) ve eski dosyada aynı senaryo + anahtar için
   // elle verilmiş bir paket varsa o paket ve notu aynen kalır (yeniden üretim ayrıştırmayı silmesin). Eski dosya okunamıyorsa etiket korunmaz.
   const elle = new Map();
+  // Birleşik tur 6 (dar kontrol DK-D2T3 DÜŞÜK-6): eski listenin bütün kayıtları (anahtar → beklenen / program / paket) — yeniden üretim eski listeyle karşılaştırılır
+  // (yeni / kapanan / değeri değişen sayıları ve anahtarları yazılır); DEĞERİ değişen kayıtta elle etiket korunur ama nota "değer değişti: <eski> → <yeni>" eklenir
+  // (önceden etiket ve not değer değişse de uyarısız taşınıyordu; c10'da program 999 + elle not → yeniden üretim 4 yazdı, etiket + not aynen).
+  const eski = new Map();
+  let eskiOkunamadi = "";
   try {
     for (const e of JSON.parse(readFileSync(YAPIM_YOLU, "utf8"))?.kayitlar ?? []) {
-      if (e && YAPIM_PAKETLER.includes(e.paket) && e.paket !== "AYRIŞTIRILMADI") elle.set(`${e.senaryo}|${e.anahtar}`, { paket: e.paket, ...(e.not ? { not: e.not } : {}) });
+      if (!e || typeof e !== "object") continue;
+      eski.set(`${e.senaryo}|${e.anahtar}`, e);
+      if (YAPIM_PAKETLER.includes(e.paket) && e.paket !== "AYRIŞTIRILMADI") elle.set(`${e.senaryo}|${e.anahtar}`, { paket: e.paket, ...(e.not ? { not: e.not } : {}) });
     }
-  } catch { /* eski liste yok / okunamıyor: etiketler yalnız kural metninden */ }
+  } catch (e) {
+    eskiOkunamadi = e.code || e.message; // eski liste yok / okunamıyor: etiketler yalnız kural metninden, karşılaştırma "okunamadı"
+  }
+  const deger = e => `program ${JSON.stringify(e.program)} / kâhin ${JSON.stringify(e.beklenen)}`;
+  const degisen = [];
   const kayitlar = yapimYazilacak.map(({ senaryo, f, sinif246 }) => {
+    const ad = `${senaryo}|${f.anahtar}`;
     const oto = yapimPaketi(f);
-    const { paket, not } = oto.paket === "AYRIŞTIRILMADI" && elle.has(`${senaryo}|${f.anahtar}`) ? elle.get(`${senaryo}|${f.anahtar}`) : oto;
+    let { paket, not } = oto.paket === "AYRIŞTIRILMADI" && elle.has(ad) ? elle.get(ad) : oto;
+    const onceki = eski.get(ad);
+    if (onceki && !(esit(onceki.program, f.program) && esit(onceki.beklenen, f.beklenen))) {
+      const iz = `değer değişti: ${deger(onceki)} → ${deger(f)}`;
+      not = not ? `${not} · ${iz}` : iz;
+      degisen.push({ ad, paket, iz, korundu: paket === elle.get(ad)?.paket && oto.paket === "AYRIŞTIRILMADI" });
+    }
     return { senaryo, anahtar: f.anahtar, beklenen: f.beklenen, program: f.program, sinif: `${f.sinif} ${f.etiket}${sinif246 ? ` · ${sinif246}` : ""}`, kural: f.kural, paket, ...(not ? { not } : {}) };
   }).sort((a, b) => sirala(a.senaryo, b.senaryo) || sirala(a.anahtar, b.anahtar));
+  const yeniAdlar = new Set(kayitlar.map(k => `${k.senaryo}|${k.anahtar}`));
+  const yeni = kayitlar.filter(k => !eski.has(`${k.senaryo}|${k.anahtar}`));
+  const kapanan = [...eski.values()].filter(e => !yeniAdlar.has(`${e.senaryo}|${e.anahtar}`));
   const dosya = {
     aciklama: "Cari kâhini ↔ program YAPIM AŞAMASI listesi (S100 = A, KULLANICI KARARI 10.11.2026 17:54 UTC; docs/2.5.0-IS-LISTESI.md D). Ç5 paket paket ana dala girerken bugünkü farklar kararı / bekleyen paketiyle sabitlenir; kâhinin beklentisi DEĞİŞMEZ. Listede OLMAYAN fark, değeri DEĞİŞEN fark ve KAPANDIĞI hâlde listede duran kayıt kırmızıdır (liste yalnız küçülür). Yayın adayında liste BOŞ olmalı (tools/release.mjs). BİLİNEN.json'dan (kullanıcının ERTELEDİĞİ farklar) AYRIDIR.",
     kural: KURAL,
@@ -1402,6 +1423,14 @@ if (YAPIM_YAZ) {
   writeFileSync(YAPIM_YOLU, `${JSON.stringify(dosya, null, 1)}\n`);
   const dag = Object.entries(kayitlar.reduce((s, k) => ({ ...s, [k.paket]: (s[k.paket] || 0) + 1 }), {})).map(([p, n]) => `${p} ${n}`).join(", ");
   console.log(`\nYAPIM-ASAMASI.json YAZILDI (${path.relative(ROOT, YAPIM_YOLU) || YAPIM_YOLU}): ${kayitlar.length} kayıt (${kayitlar.filter(k => k.anahtar.startsWith(OKUMA_ONEKI)).length} okuma hatası) — paketlere göre: ${dag || "yok"}. Bu bir denetim sonucu DEĞİLDİR; liste varsayılan koşuyla denetlenir.`);
+  // Eski listeyle fark (ana oturumun birleşim dökümü: her yeni kayıt paketine ayrılır, kapanan ve değeri değişen ayrıca okunur).
+  if (eskiOkunamadi) console.log(`ESKİ LİSTEYLE FARK: eski liste okunamadı (${eskiOkunamadi}) — karşılaştırılmadı; ${kayitlar.length} kaydın hepsi yeni sayılmalı.`);
+  else {
+    console.log(`ESKİ LİSTEYLE FARK: yeni ${yeni.length}, kapanan ${kapanan.length}, değeri değişen ${degisen.length} (eski liste ${eski.size} kayıt → yeni ${kayitlar.length})`);
+    for (const k of yeni) console.log(`  + yeni: ${k.senaryo} ${k.anahtar} · ${deger(k)} · paket ${k.paket}${k.not ? ` (${k.not})` : ""}`);
+    for (const e of kapanan) console.log(`  − kapanan: ${e.senaryo} ${e.anahtar} · ${deger(e)} · paket ${e.paket}`);
+    for (const d of degisen) console.log(`  ~ değeri değişen: ${d.ad.replace("|", " ")} · ${d.iz} · paket ${d.paket}${d.korundu ? " (elle etiket korundu — yeniden ayrıştırın)" : ""}`);
+  }
   process.exit(0);
 }
 if (!LEGACY) console.log(`\nGEÇERSİZ DENETİM (2.4.5 kararıyla; --legacy'de koşar — KARARLAR.md §8 C0): ${GECERSIZ_DENETIM.reduce((t, x) => t + x.adet, 0)} denetim, ${GECERSIZ_DENETIM.length} senaryo${GECERSIZ_DENETIM.length ? ` — ${GECERSIZ_DENETIM.map(x => `${x.senaryo} ${x.adet}`).join(", ")}` : ""}`);
@@ -1414,5 +1443,7 @@ console.log(`\nÖZET [${LEGACY ? "legacy" : KURAL}]: ${dosyalar.length} senaryo,
 if (genelBilinen) console.log(`BİLİNEN SINIRLAR (${genelBilinen}): ${bilinenHepsi.map(b => `${b.senaryo} ${b.anahtar}`).join("; ")}`);
 // "geçti" sayısı bilinen sınırları içerir (başarısız sayılmaz — CI kapısı); ayrıntısı yukarıdaki BİLİNEN satırlarında ve ozet.json "bilinen" alanında.
 // YAPIM AŞAMASI kayıtları (S100) "geçti" SAYILMAZ: payda ve paydan düşülür (başarısız da sayılmaz; kanit.mjs başarısız = payda − pay = fark + okuma hatası + yakalanmayan mutasyon)
-console.log(`${Math.max(0, genelToplam - genelFark - okumaHatasi - kacan - genelYapim)}/${genelToplam - genelYapim} denetim geçti${genelBilinen ? ` (${genelBilinen} bilinen sınır dahil)` : ""}${genelYapim ? ` (${genelYapim} yapım aşaması ayrı sayıldı — geçti sayılmadı)` : ""}`);
+// Birleşik tur 6 (dar kontrol DK-D2T3 DÜŞÜK-5): paydan ve paydadan YALNIZ denetim olan yapım aşaması kayıtları düşülür (genelYapimDenetim) — okuma hatası kayıtları
+// denetim değildir (genelToplam'da yoklar); önceden onlar da düşülüyor, satır gerçek denetim sayısından az yazıyordu (12.205 ↔ 12.212). Başarısız sayısı (payda − pay) aynı.
+console.log(`${Math.max(0, genelToplam - genelFark - okumaHatasi - kacan - genelYapimDenetim)}/${genelToplam - genelYapimDenetim} denetim geçti${genelBilinen ? ` (${genelBilinen} bilinen sınır dahil)` : ""}${genelYapim ? ` (${genelYapim} yapım aşaması ayrı sayıldı — ${genelYapimDenetim} denetim + ${genelYapim - genelYapimDenetim} okuma hatası; geçti sayılmadı)` : ""}`);
 process.exitCode = genelFark || okumaHatasi || kacan ? 1 : 0;

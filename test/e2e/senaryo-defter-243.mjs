@@ -263,6 +263,36 @@ try {
     ok(!(await second.$(`${WIN} [data-act="v-tax"]`)), "Banka Hareketler'de + Vergi Ödemesi yok");
     await other.close();
   });
+
+  // 2.5.0 birleşik tur 6 — S94 = A (kullanıcı 10.11.2026): Kasa açılışından önce tarihli Vergi Ödemesi (yedekten / eski sürümden / Silinenler'den) Kasa'dan
+  // düzeltilmek istenince ileti çıkış yolunu söyler. Veri API'den (programın kendi uçları): açılış yokken 02.10 KDV 50, silinir, Kasa açılışı 05.10, Silinenler'den
+  // geri alınır. Son adım: Kasa açılışı öncekileri etkilemesin.
+  await step("S94 Kasa → açılıştan önce tarihli Vergi Ödemesi ✎ Düzelt → Kaydet: ileti 'açılış günü ya da sonrası / açılışı öne alma' yolunu söyler; satır değişmez", async () => {
+    await must("S94 Vergi Ödemesi (açılış yokken)", api.post("/api/workspace/tax/payments", { way: "cash", date: "2026-10-02", taxType: "kdv", amount: "50", description: "KDV S94", cashForce: true, similarOk: true, force: true }));
+    const taxId = app.store.get("SELECT id FROM cash_entries WHERE COALESCE(tax_json, '') <> '' AND date = '2026-10-02'")?.id;
+    ok(Boolean(taxId), "ön koşul: 02.10 Vergi Ödemesi Kasa'da");
+    await must("S94 sil", api.del(`/api/workspace/cash/${taxId}`));
+    await must("S94 Kasa açılışı", api.post("/api/workspace/cash/opening", { amount: "50.000", date: "2026-10-05" }));
+    const listed = await must("Silinenler", api.get("/api/admin/trash"));
+    const item = (Array.isArray(listed) ? listed : listed.items || []).find(row => row.ref === taxId);
+    await must("S94 geri yükle", api.post("/api/admin/trash/restore", { id: item?.id }));
+    await closeAll();
+    await page.click('#hof-sidecard [data-action="cash"]');
+    await page.waitForSelector(`${MODAL} [data-edit="${taxId}"]`, { timeout: 15000 });
+    await page.click(`${MODAL} [data-edit="${taxId}"]`);
+    await page.waitForSelector(`${TOP} form [name="amount"]`, { timeout: 10000 });
+    await fill("amount", "60");
+    await page.click(`${TOP} form button[type="submit"]`);
+    const shown = await page.waitForFunction(sel => {
+      const box = document.querySelector(`${sel} .hof-form-error`);
+      return box && box.textContent.trim() ? box.textContent.trim() : null;
+    }, TOP, { timeout: 10000 }).then(handle => handle.jsonValue()).catch(() => "");
+    ok(/^Bu hareket bir Vergi Ödemesi; Kasa'dan düzeltilmez\. Silip Vergi Ödemesi'nden doğru tutarla yeniden girin\. Hareket Kasa açılışından \(05\.10\.2026\) önce tarihli: yeniden girerken tarihi Kasa açılış günü ya da sonrası yapın; ödeme gerçekten açılıştan önceyse yönetici Kasa → Açılış Bakiyesi'nin tarihini öne alabilir\.$/.test(shown), `ileti: “${shown}”`);
+    await shot("s94-vergi-iletisi");
+    const row = app.store.get("SELECT amount, date FROM cash_entries WHERE id = ?", taxId);
+    ok(row?.amount === 50 && row?.date === "2026-10-02", `satır değişmedi (${row?.amount} · ${row?.date})`);
+    await closeAll();
+  });
 } catch (error) {
   failed += 1;
   console.log(`✗ kurulum hatası: ${error.stack || error.message}`);

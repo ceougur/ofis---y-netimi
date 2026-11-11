@@ -1,0 +1,668 @@
+b2-ux18-karsiliksiz: 109/121 tuttu
+  2.5.0 kararıyla değişen beklenti: 12 denetim · farkların 12/12'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k2:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k2:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k3:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k3:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k4:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k4:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k5:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k5:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k6:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k6:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+b2-ux18-retler: 88/94 tuttu
+  2.5.0 kararıyla değişen beklenti: 6 denetim · farkların 6/6'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k2:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k2:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k3:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k3:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+b2-ux18-sira: 91/101 tuttu
+  2.5.0 kararıyla değişen beklenti: 10 denetim · farkların 10/10'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k2:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k2:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k3:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k3:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k4:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k4:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k5:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k5:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+b2-ux18-temel: 189/207 tuttu
+  2.5.0 kararıyla değişen beklenti: 18 denetim · farkların 18/18'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k2:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k2:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k3:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k3:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k4:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k4:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k5:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k5:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k6:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k6:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k7:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k7:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k8:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k8:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k9:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k9:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+b3b-k1-k4-donem-raporlar: 45/47 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 2/2'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+b3c-k2-donem-ayni-no: 34/36 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 2/2'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+b3d-c3-kisi-gruplama: 68/70 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 2/2'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+b3e-vergi-sutunu: 29/31 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 2/2'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+b3k-vergi-tek-kolon: 29/31 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 2/2'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+b3n-borc-kolonu-kisi-ozniteligi: 31/33 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 2/2'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+b3o-seyrek-kalan: 34/36 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 2/2'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+b3q-takvim-kalemi: 38/40 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 2/2'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+b3r-kalan-sifir-eksi: 30/32 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 2/2'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+b3s-soz-tutari-kalemi: 28/30 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 2/2'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+b3t-sozlesme-tutari: 34/36 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 2/2'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+b3u-sozlesme-tarihi-soz-basliklari: 34/36 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 2/2'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+b3v-taahhut-soz-miktari: 36/38 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 2/2'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+b3w-yalniz-soz-tutari: 34/36 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 2/2'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+b3x-yalin-soz-ve-tutar: 38/40 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 2/2'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+b3y-taahhut-alacak-bakiye: 25/34 tuttu · BİLİNEN 7
+  ≈ [BİLİNEN] k1:k4:akis: program 920000 · kâhin 850000 (DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır)
+  ≈ [BİLİNEN] k1:k4:kisiler: program 720000 · kâhin 1150000 (DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır)
+  ≈ [BİLİNEN] k1:k4:vade: program 920000 · kâhin 850000 (DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır)
+  ≈ [BİLİNEN] k1:rapor:2026/1012:borc: program 0 · kâhin 400000 (DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır)
+  ≈ [BİLİNEN] k1:rapor:2026/1012:grup: program [] · kâhin ["2026/1012"] (DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır)
+  ≈ [BİLİNEN] k1:rapor:2026/1013:borc: program 0 · kâhin 30000 (DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır)
+  ≈ [BİLİNEN] k1:rapor:2026/1013:grup: program [] · kâhin ["2026/1013"] (DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır)
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 2/2'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+b5-u1-nihai-tuketici: 34/36 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 2/2'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+c1-kayit-tahsilat-kapisi: 160/170 tuttu
+  2.5.0 kararıyla değişen beklenti: 10 denetim · farkların 10/10'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k2:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k2:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k3:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k3:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k4:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k4:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k5:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k5:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+c10-ks10-projeksiyon-cari-vade: 477/479 tuttu
+  2.5.0 kararıyla değişen beklenti: 95 denetim · farkların 1/2'i bu sınıfta — SINIF DIŞI 1
+  ✗ [BULGU BAŞ MİMAR] k1:takvim:cariKalemSayisi: program 4 · kâhin 3 (K6.3 takvimdeki cari kalemlerinin sayısı)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:takvim:hareket:bg4: program {"amount":15000,"cari":"G","days":-13,"direction":"in","dueDate":"2026-07-15","label":"Tahsil Edilecek Borç (Ödeme Sözü)","person":"Gül Vadeli","state":"overdue"} · kâhin "yok" (K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün)
+c11-ks81-sa-mevcut-borc-karti: 66/66 tuttu
+  2.5.0 kararıyla değişen beklenti: 6 denetim · farkların 0/0'i bu sınıfta
+c12-ks81-sb-kalan-dagilimi: 153/160 tuttu
+  2.5.0 kararıyla değişen beklenti: 11 denetim · farkların 2/7'i bu sınıfta — SINIF DIŞI 5
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:B4:acikToplam: program 0 · kâhin -15000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:hareket:ab4:kalan: program 0 · kâhin 15000 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta) · C16.2 S92 A net görünüm: karşı yönlü kalemler kendi belge tarihinde netleşir (S2 sırası; faturanın belge durumu ayrı — (5)); C17 S95 / S97 / S98 A (Y5-1))
+  ✗ [İNCELE YAYGIN] k1:projeksiyon:cari: program 0 · kâhin {"catal":[1,2]} (KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı · C16.1 / C16.3: belirsiz üyeler (ÇATAL; SK-7))
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:projeksiyon:hareket:ab4: program "yok" · kâhin {"amount":15000,"date":"2026-06-18","direction":"out"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))
+  ✗ [İNCELE YAYGIN] k1:takvim:cariKalemSayisi: program 0 · kâhin {"catal":[1,2]} (K6.3 takvimdeki cari kalemlerinin sayısı · C16.1 / C16.3: stok veresiye / karşılıksız kalemi ve verilen avans satırı sayaçta belirsiz üye (ÇATAL; SK-7))
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:takvim:hareket:ab4: program "yok" · kâhin {"amount":15000,"cari":"B4","days":3,"direction":"out","dueDate":"2026-06-18","label":"Ödenecek Borç","person":"Bora Fazla","state":"upcoming"} (K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün · C16.2 S92 A: tutar NET Kalan (karşı yönlü kalemler kendi belge tarihinde netleşir; C17 S95–S98 A))
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:vadeTakip:hareket:ab4: program "yok" · kâhin {"amount":15000,"date":"2026-06-18","direction":"out"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)
+c13-ks83-ayni-gun-sira: 125/125 tuttu
+  2.5.0 kararıyla değişen beklenti: 18 denetim · farkların 0/0'i bu sınıfta
+c14a-c1-hareket-turleri: 442/442 tuttu
+  2.5.0 kararıyla değişen beklenti: 51 denetim · farkların 0/0'i bu sınıfta
+c14b-c1-silinenler-ve-geri-yukleme: 258/258 tuttu
+  2.5.0 kararıyla değişen beklenti: 6 denetim · farkların 0/0'i bu sınıfta
+c14c-c1-silinmis-cariye-yazim: 91/99 tuttu
+  2.5.0 kararıyla değişen beklenti: 8 denetim · farkların 8/8'i bu sınıfta
+  ✗ [BULGU KULLANICI] k0:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k0:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k2:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k2:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k3:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k3:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+c14d-c1-ayni-ad: 110/110 tuttu
+  2.5.0 kararıyla değişen beklenti: 18 denetim · farkların 0/0'i bu sınıfta
+c14e-c1-pasife-al: 99/99 tuttu
+  2.5.0 kararıyla değişen beklenti: 27 denetim · farkların 0/0'i bu sınıfta
+c14f-c1-geri-al-y2: 267/274 tuttu
+  2.5.0 kararıyla değişen beklenti: 24 denetim · farkların 6/7'i bu sınıfta — SINIF DIŞI 1
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin -1200000 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k2:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k2:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k3:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k3:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU PLAN · SINIF DIŞI] k1:mizan:602: program -1200000 · kâhin 0 (B2.6 kâhinin yazmadığı hesap)
+c14g-c1-kayit-tahsilati: 74/78 tuttu
+  2.5.0 kararıyla değişen beklenti: 4 denetim · farkların 4/4'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k2:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k2:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+c2-tablodan-aktar-kapisi: 149/159 tuttu
+  2.5.0 kararıyla değişen beklenti: 32 denetim · farkların 8/10'i bu sınıfta — SINIF DIŞI 2
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin -300000 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k2:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k2:mizan:519: program "okunamadı" · kâhin -300000 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k3:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k3:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k4:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k4:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU PLAN · SINIF DIŞI] k1:mizan:602: program -300000 · kâhin 0 (B2.6 kâhinin yazmadığı hesap)
+  ✗ [BULGU PLAN · SINIF DIŞI] k2:mizan:602: program -300000 · kâhin 0 (B2.6 kâhinin yazmadığı hesap)
+c4-uyari-kapisi: 52/54 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 2/2'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+c6-cari-vade-fifo: 1041/1041 tuttu
+  2.5.0 kararıyla değişen beklenti: 175 denetim · farkların 0/0'i bu sınıfta
+c6b-cari-vade-dogrulama: 161/161 tuttu
+  2.5.0 kararıyla değişen beklenti: 20 denetim · farkların 0/0'i bu sınıfta
+c6c-mevcut-borc-karti: 122/128 tuttu
+  2.5.0 kararıyla değişen beklenti: 24 denetim · farkların 6/6'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:mizan:500: program -500000 · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin -500000 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k2:mizan:500: program -500000 · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k2:mizan:519: program "okunamadı" · kâhin -500000 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k3:mizan:500: program -500000 · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k3:mizan:519: program "okunamadı" · kâhin -500000 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+c7-ks7-bagsiz-kapaticilar: 205/209 tuttu
+  2.5.0 kararıyla değişen beklenti: 25 denetim · farkların 4/4'i bu sınıfta
+  ✗ [İNCELE YAYGIN] k3:projeksiyon:hareket:acilis:D: program {"amount":30000,"date":"2026-05-31","direction":"in"} · kâhin {"amount":100000,"date":"2026-05-31","direction":"in"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))
+  ✗ [İNCELE YAYGIN] k3:takvim:fatura:F1: program "yok" · kâhin {"amount":20000,"direction":"in"} (madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık))
+  ✗ [BULGU BAŞ MİMAR] k3:takvim:hareket:acilis:D: program {"amount":30000,"cari":"D","days":-15,"direction":"in","dueDate":"2026-05-31","label":"Tahsil Edilecek Borç","person":"Dilek Değersiz","state":"overdue"} · kâhin {"amount":100000,"cari":"D","days":-15,"direction":"in","dueDate":"2026-05-31","label":"Tahsil Edilecek Borç","person":"Dilek Değersiz","state":"overdue"} (K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün)
+  ✗ [BULGU BAŞ MİMAR] k3:vadeTakip:hareket:acilis:D: program {"amount":30000,"date":"2026-05-31","direction":"in"} · kâhin {"amount":100000,"date":"2026-05-31","direction":"in"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)
+c7b-supheli-kalan: 48/48 tuttu
+  2.5.0 kararıyla değişen beklenti: 10 denetim · farkların 0/0'i bu sınıfta
+c8-ks8-iade-geri-odemesi: 586/592 tuttu
+  2.5.0 kararıyla değişen beklenti: 81 denetim · farkların 6/6'i bu sınıfta
+  ✗ [BULGU KULLANICI] k2:hareket:ae1:kalan: program 0 · kâhin 10000 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta) · C16.2 S92 A net görünüm: karşı yönlü kalemler kendi belge tarihinde netleşir (S2 sırası; faturanın belge durumu ayrı — (5)); C17 S95 / S97 / S98 A (Y5-1))
+  ✗ [İNCELE YAYGIN] k2:projeksiyon:cari: program 6 · kâhin 7 (KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı)
+  ✗ [İNCELE YAYGIN] k2:projeksiyon:hareket:ae1: program "yok" · kâhin {"amount":10000,"date":"2026-06-14","direction":"out"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))
+  ✗ [BULGU BAŞ MİMAR] k2:takvim:cariKalemSayisi: program 6 · kâhin 7 (K6.3 takvimdeki cari kalemlerinin sayısı)
+  ✗ [BULGU KULLANICI] k2:takvim:hareket:ae1: program "yok" · kâhin {"amount":10000,"cari":"E","days":-1,"direction":"out","dueDate":"2026-06-14","label":"Ödenecek Borç","person":"Ece Karışık","state":"overdue"} (K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün · C16.2 S92 A: tutar NET Kalan (karşı yönlü kalemler kendi belge tarihinde netleşir; C17 S95–S98 A))
+  ✗ [BULGU KULLANICI] k2:vadeTakip:hareket:ae1: program "yok" · kâhin {"amount":10000,"date":"2026-06-14","direction":"out"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)
+c8b-ks8-bagli-iade-odemesi: 66/66 tuttu
+  2.5.0 kararıyla değişen beklenti: 3 denetim · farkların 0/0'i bu sınıfta
+d1-c5-acilis-519: 63/65 tuttu
+  2.5.0 kararıyla değişen beklenti: 30 denetim · farkların 2/2'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:mizan:500: program -130000 · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin -130000 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+d10-c5-s67-soz-takvim: 135/137 tuttu
+  2.5.0 kararıyla değişen beklenti: 19 denetim · farkların 0/2'i bu sınıfta — SINIF DIŞI 2
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:takvim:cariKalemSayisi: program 11 · kâhin 10 (K6.3 takvimdeki cari kalemlerinin sayısı)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:takvim:hareket:l1: program {"amount":15000,"cari":"L","days":-36,"direction":"in","dueDate":"2026-06-30","label":"Tahsil Edilecek Borç (Ödeme Sözü)","person":"Lale Uzak","state":"overdue"} · kâhin "yok" (K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün)
+d11-c5-s66-carisiz-karsiliksiz: 34/62 tuttu · OKUMA HATASI 3: x1: karşılıksızda cari seçimi eşlemesi yok (KARSILIKSIZ_CARI — Ç5-A verir) — adım gönderilmedi; x4: karşılıksızda cari seçimi eşlemesi yok (KARSILIKSIZ_CARI — Ç5-A verir) — adım gönderilmedi; x5: karşılıksızda cari seçimi eşlemesi yok (KARSILIKSIZ_CARI — Ç5-A verir) — adım gönderilmedi
+  2.5.0 kararıyla değişen beklenti: 17 denetim · farkların 14/28'i bu sınıfta — SINIF DIŞI 14
+  ✗ [BULGU PLAN · SINIF DIŞI] adim:e1:durum: program "ret" · kâhin "ok" (adım kabul edilir) · yanıt:  Çeki kimden aldığınızı yazın ya da cari seçin.
+  ✗ [BULGU PLAN · SINIF DIŞI] adim:e2:durum: program "ret" · kâhin "ok" (adım kabul edilir) · yanıt:  Çeki kimden aldığınızı yazın ya da cari seçin.
+  ✗ [BULGU PLAN · SINIF DIŞI] adim:e3:durum: program "ret" · kâhin "ok" (adım kabul edilir) · yanıt:  Çeki kimden aldığınızı yazın ya da cari seçin.
+  ✗ [BULGU PLAN · SINIF DIŞI] adim:e4:durum: program "ret" · kâhin "ok" (adım kabul edilir) · yanıt:  Çeki kimden aldığınızı yazın ya da cari seçin.
+  ✗ [BULGU PLAN · SINIF DIŞI] adim:e5:durum: program "ret" · kâhin "ok" (adım kabul edilir) · yanıt:  Çeki kimden aldığınızı yazın ya da cari seçin.
+  ✗ [BULGU PLAN · SINIF DIŞI] adim:e6:durum: program "ret" · kâhin "ok" (adım kabul edilir) · yanıt:  Çeki kimden aldığınızı yazın ya da cari seçin.
+  ✗ [BULGU PLAN · SINIF DIŞI] adim:x1:durum: program "okunamadı" · kâhin "ok" (adım kabul edilir)
+  ✗ [BULGU PLAN · SINIF DIŞI] adim:x2:durum: program "ret" · kâhin "ok" (adım kabul edilir) · yanıt:  Çek/senet bulunamadı. Silinmiş olabilir.
+  ✗ [BULGU PLAN · SINIF DIŞI] adim:x4:durum: program "okunamadı" · kâhin "ok" (adım kabul edilir)
+  ✗ [BULGU PLAN · SINIF DIŞI] adim:x5:durum: program "okunamadı" · kâhin "ok" (adım kabul edilir)
+  ✗ [BULGU PLAN · SINIF DIŞI] adim:x6:durum: program "ret" · kâhin "ok" (adım kabul edilir) · yanıt:  Çek/senet bulunamadı. Silinmiş olabilir.
+  ✗ [BULGU PLAN · SINIF DIŞI] k0:mizan:101: program 0 · kâhin 200000 (B2.6 §3.11a yevmiye)
+  ✗ [BULGU PLAN · SINIF DIŞI] k0:mizan:121: program 0 · kâhin 30000 (B2.6 §3.11a yevmiye)
+  ✗ [BULGU KULLANICI] k0:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k0:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k0:mizan:649: program "okunamadı" · kâhin -230000 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU PLAN] k1:cari:A:bakiye: program -20000 · kâhin 50000 (B1.1/B2.7 bakiye = borçlar − alacaklar)
+  ✗ [BULGU KULLANICI] k1:cari:A:gecikmis: program 0 · kâhin 50000 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A))
+  ✗ [BULGU PLAN] k1:cari:B:bakiye: program 40000 · kâhin 90000 (B1.1/B2.7 bakiye = borçlar − alacaklar)
+  ✗ [BULGU KULLANICI] k1:cari:B:gecikmis: program 40000 · kâhin 90000 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A))
+  ✗ [BULGU PLAN] k1:cari:T:bakiye: program 0 · kâhin 25000 (B1.1/B2.7 bakiye = borçlar − alacaklar)
+  ✗ [BULGU KULLANICI] k1:cari:T:gecikmis: program 0 · kâhin 25000 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A))
+  ✗ [BULGU PLAN · SINIF DIŞI] k1:mizan:101: program 0 · kâhin 40000 (B2.6 §3.11a yevmiye)
+  ✗ [BULGU PLAN] k1:mizan:120: program 20000 · kâhin 140000 (B2.6 §3.11a yevmiye)
+  ✗ [BULGU PLAN] k1:mizan:320: program 0 · kâhin 25000 (B2.6 §3.11a yevmiye)
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:649: program "okunamadı" · kâhin -185000 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+d12-c5-s69-soz-gunu-ve-gecmis: 198/198 tuttu
+  2.5.0 kararıyla değişen beklenti: 26 denetim · farkların 0/0'i bu sınıfta
+d13-c5-s69-soz-ertesi-gun: 198/198 tuttu
+  2.5.0 kararıyla değişen beklenti: 27 denetim · farkların 0/0'i bu sınıfta
+d14-c5-s91-vadesiz-kayit-gunu: 148/161 tuttu · OKUMA HATASI 2: x1: karşılıksızda cari seçimi eşlemesi yok (KARSILIKSIZ_CARI — Ç5-A verir) — adım gönderilmedi; x2: karşılıksızda cari seçimi eşlemesi yok (KARSILIKSIZ_CARI — Ç5-A verir) — adım gönderilmedi
+  2.5.0 kararıyla değişen beklenti: 68 denetim · farkların 9/13'i bu sınıfta — SINIF DIŞI 4
+  ✗ [BULGU PLAN · SINIF DIŞI] adim:e1:durum: program "ret" · kâhin "ok" (adım kabul edilir) · yanıt:  Çeki kimden aldığınızı yazın ya da cari seçin.
+  ✗ [BULGU PLAN · SINIF DIŞI] adim:e2:durum: program "ret" · kâhin "ok" (adım kabul edilir) · yanıt:  Çeki kimden aldığınızı yazın ya da cari seçin.
+  ✗ [BULGU PLAN · SINIF DIŞI] adim:x1:durum: program "okunamadı" · kâhin "ok" (adım kabul edilir)
+  ✗ [BULGU PLAN · SINIF DIŞI] adim:x2:durum: program "okunamadı" · kâhin "ok" (adım kabul edilir)
+  ✗ [BULGU PLAN] k1:cari:Q2:bakiye: program 0 · kâhin 35000 (B1.1/B2.7 bakiye = borçlar − alacaklar)
+  ✗ [BULGU PLAN] k1:cari:Q:bakiye: program 0 · kâhin 60000 (B1.1/B2.7 bakiye = borçlar − alacaklar)
+  ✗ [BULGU KULLANICI] k1:cari:Q:gecikmis: program 0 · kâhin 60000 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A))
+  ✗ [BULGU BAŞ MİMAR] k1:projeksiyon:cariToplam:Q: program 0 · kâhin 60000 (K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [BULGU BAŞ MİMAR] k1:projeksiyon:cariToplam:Q2: program 0 · kâhin 35000 (K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [BULGU BAŞ MİMAR] k1:takvim:cariToplam:Q: program 0 · kâhin 60000 (K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [BULGU BAŞ MİMAR] k1:takvim:cariToplam:Q2: program 0 · kâhin 35000 (K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [BULGU BAŞ MİMAR] k1:vadeTakip:cariToplam:Q: program 0 · kâhin 60000 (K6.5 (1) + KS8.1 + KS10: carinin vadeTakip kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [BULGU BAŞ MİMAR] k1:vadeTakip:cariToplam:Q2: program 0 · kâhin 35000 (K6.5 (1) + KS8.1 + KS10: carinin vadeTakip kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+d15-c5-s91-vadesiz-ertesi-gun: 147/161 tuttu · OKUMA HATASI 2: x1: karşılıksızda cari seçimi eşlemesi yok (KARSILIKSIZ_CARI — Ç5-A verir) — adım gönderilmedi; x2: karşılıksızda cari seçimi eşlemesi yok (KARSILIKSIZ_CARI — Ç5-A verir) — adım gönderilmedi
+  2.5.0 kararıyla değişen beklenti: 68 denetim · farkların 10/14'i bu sınıfta — SINIF DIŞI 4
+  ✗ [BULGU PLAN · SINIF DIŞI] adim:e1:durum: program "ret" · kâhin "ok" (adım kabul edilir) · yanıt:  Çeki kimden aldığınızı yazın ya da cari seçin.
+  ✗ [BULGU PLAN · SINIF DIŞI] adim:e2:durum: program "ret" · kâhin "ok" (adım kabul edilir) · yanıt:  Çeki kimden aldığınızı yazın ya da cari seçin.
+  ✗ [BULGU PLAN · SINIF DIŞI] adim:x1:durum: program "okunamadı" · kâhin "ok" (adım kabul edilir)
+  ✗ [BULGU PLAN · SINIF DIŞI] adim:x2:durum: program "okunamadı" · kâhin "ok" (adım kabul edilir)
+  ✗ [BULGU PLAN] k1:cari:Q2:bakiye: program 0 · kâhin 35000 (B1.1/B2.7 bakiye = borçlar − alacaklar)
+  ✗ [BULGU KULLANICI] k1:cari:Q2:gecikmis: program 0 · kâhin 35000 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A))
+  ✗ [BULGU PLAN] k1:cari:Q:bakiye: program 0 · kâhin 60000 (B1.1/B2.7 bakiye = borçlar − alacaklar)
+  ✗ [BULGU KULLANICI] k1:cari:Q:gecikmis: program 0 · kâhin 60000 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A))
+  ✗ [BULGU BAŞ MİMAR] k1:projeksiyon:cariToplam:Q: program 0 · kâhin 60000 (K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [BULGU BAŞ MİMAR] k1:projeksiyon:cariToplam:Q2: program 0 · kâhin 35000 (K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [BULGU BAŞ MİMAR] k1:takvim:cariToplam:Q: program 0 · kâhin 60000 (K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [BULGU BAŞ MİMAR] k1:takvim:cariToplam:Q2: program 0 · kâhin 35000 (K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [BULGU BAŞ MİMAR] k1:vadeTakip:cariToplam:Q: program 0 · kâhin 60000 (K6.5 (1) + KS8.1 + KS10: carinin vadeTakip kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [BULGU BAŞ MİMAR] k1:vadeTakip:cariToplam:Q2: program 0 · kâhin 35000 (K6.5 (1) + KS8.1 + KS10: carinin vadeTakip kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+d16-c5-s92-net-gorunum: 288/288 tuttu
+  2.5.0 kararıyla değişen beklenti: 87 denetim · farkların 0/0'i bu sınıfta
+d17-c5-s93-verilen-avans: 149/149 tuttu
+  2.5.0 kararıyla değişen beklenti: 60 denetim · farkların 0/0'i bu sınıfta
+d18-c5-s93-avans-ertesi-gun: 149/149 tuttu
+  2.5.0 kararıyla değişen beklenti: 60 denetim · farkların 0/0'i bu sınıfta
+d19-c5-s92-okuma-ayrisan: 115/135 tuttu
+  2.5.0 kararıyla değişen beklenti: 40 denetim · farkların 8/20'i bu sınıfta — SINIF DIŞI 12
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:N1:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:N1:acikToplam: program 400000 · kâhin 1000000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:N2:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:N2:acikToplam: program 0 · kâhin -10000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:hareket:n1b:kalan: program 400000 · kâhin 1000000 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta) · C16.2 S92 A net görünüm: karşı yönlü kalemler kendi belge tarihinde netleşir (S2 sırası; faturanın belge durumu ayrı — (5)); C17 S95 / S97 / S98 A (Y5-1))
+  ✗ [BULGU KULLANICI] k1:hareket:n2a:kalan: program 0 · kâhin 10000 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta) · C16.2 S92 A net görünüm: karşı yönlü kalemler kendi belge tarihinde netleşir (S2 sırası; faturanın belge durumu ayrı — (5)); C17 S95 / S97 / S98 A (Y5-1))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:projeksiyon:cariToplam:N2: program 0 · kâhin -10000 (K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:projeksiyon:cariToplam:N3: program 0 · kâhin -20000 (K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [BULGU KULLANICI] k1:projeksiyon:fatura:NAF: program "yok" · kâhin {"amount":20000,"direction":"out"} (fatura kalemi açık tutarıyla (belge tarihinde, geçmiş — her görünümde) · C16.2 S92 A: karşı yönlü kalemli caride tutar NET kalan)
+  ✗ [İNCELE YAYGIN · SINIF DIŞI] k1:projeksiyon:hareket:n1b: program {"amount":400000,"date":"2026-03-31","direction":"in"} · kâhin {"amount":1000000,"date":"2026-03-31","direction":"in"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))
+  ✗ [BULGU KULLANICI] k1:projeksiyon:hareket:n1o: program {"amount":600000,"date":"2026-03-12","direction":"in"} · kâhin "yok" (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Nakit Akış Projeksiyonu (KS10 penceresi, gecikenler dahil — K-P1))
+  ✗ [BULGU KULLANICI] k1:projeksiyon:hareket:n2a: program "yok" · kâhin {"amount":10000,"date":"2026-04-30","direction":"out"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:takvim:cariToplam:N3: program 0 · kâhin -20000 (K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [BULGU KULLANICI] k1:takvim:fatura:NAF: program "yok" · kâhin {"amount":20000,"direction":"out"} (madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık) · C16.2 S92 A: karşı yönlü kalemli caride tutar NET kalan (kendi belge tarihinde netleşme))
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:takvim:hareket:n1b: program {"amount":400000,"cari":"N1","days":-15,"direction":"in","dueDate":"2026-03-31","label":"Tahsil Edilecek Borç","person":"Nazan Sonradan","state":"overdue"} · kâhin {"amount":1000000,"cari":"N1","days":-15,"direction":"in","dueDate":"2026-03-31","label":"Tahsil Edilecek Borç","person":"Nazan Sonradan","state":"overdue"} (K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün · C16.2 S92 A: tutar NET Kalan (karşı yönlü kalemler kendi belge tarihinde netleşir; C17 S95–S98 A))
+  ✗ [BULGU KULLANICI] k1:takvim:hareket:n1o: program {"amount":600000,"cari":"N1","days":-34,"direction":"in","dueDate":"2026-03-12","label":"Tahsil Edilecek Borç","person":"Nazan Sonradan","state":"overdue"} · kâhin "yok" (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:vadeTakip:cariToplam:N3: program 0 · kâhin -20000 (K6.5 (1) + KS8.1 + KS10: carinin vadeTakip kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [BULGU KULLANICI] k1:vadeTakip:fatura:NAF: program "yok" · kâhin {"amount":20000,"direction":"out"} (fatura kalemi açık tutarıyla (belge tarihinde, geçmiş — her görünümde) · C16.2 S92 A: karşı yönlü kalemli caride tutar NET kalan)
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:vadeTakip:hareket:n1b: program {"amount":400000,"date":"2026-03-31","direction":"in"} · kâhin {"amount":1000000,"date":"2026-03-31","direction":"in"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)
+  ✗ [BULGU KULLANICI] k1:vadeTakip:hareket:n1o: program {"amount":600000,"date":"2026-03-12","direction":"in"} · kâhin "yok" (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Vade Takip aynı kalem)
+d2-c5-kg5-excel-kart: 88/93 tuttu
+  2.5.0 kararıyla değişen beklenti: 26 denetim · farkların 4/5'i bu sınıfta — SINIF DIŞI 1
+  ✗ [BULGU KULLANICI] k1:mizan:500: program -90000 · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin -190000 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k2:mizan:500: program -90000 · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k2:mizan:519: program "okunamadı" · kâhin -90000 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU PLAN · SINIF DIŞI] k1:mizan:602: program -100000 · kâhin 0 (B2.6 kâhinin yazmadığı hesap)
+d20-c5-s95-netlesme-sonrasi-odeme: 127/170 tuttu
+  2.5.0 kararıyla değişen beklenti: 41 denetim · farkların 22/43'i bu sınıfta — SINIF DIŞI 21
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:P1:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:P1:acikToplam: program 400000 · kâhin 1000000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU KULLANICI] k1:cari:P1:gecikmis: program 600000 · kâhin 0 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:P3:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:P3:acikToplam: program 0 · kâhin -10000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:P4:acikToplam: program 40000 · kâhin 100000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU KULLANICI] k1:cari:P4:gecikmis: program 90000 · kâhin 30000 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:P6:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:P6:acikToplam: program 60000 · kâhin 100000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU KULLANICI] k1:cari:P6:gecikmis: program 40000 · kâhin 0 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A))
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:hareket:p1b:kalan: program 400000 · kâhin 1000000 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta) · C16.2 S92 A net görünüm: karşı yönlü kalemler kendi belge tarihinde netleşir (S2 sırası; faturanın belge durumu ayrı — (5)); C17 S95 / S97 / S98 A (Y5-1))
+  ✗ [BULGU KULLANICI] k1:hareket:p3a:kalan: program 0 · kâhin 10000 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta) · C16.2 S92 A net görünüm: karşı yönlü kalemler kendi belge tarihinde netleşir (S2 sırası; faturanın belge durumu ayrı — (5)); C17 S95 / S97 / S98 A (Y5-1))
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:hareket:p4b:kalan: program 40000 · kâhin 100000 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta) · C16.2 S92 A net görünüm: karşı yönlü kalemler kendi belge tarihinde netleşir (S2 sırası; faturanın belge durumu ayrı — (5)); C17 S95 / S97 / S98 A (Y5-1))
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:hareket:p6b:kalan: program 60000 · kâhin 100000 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta) · C16.2 S92 A net görünüm: karşı yönlü kalemler kendi belge tarihinde netleşir (S2 sırası; faturanın belge durumu ayrı — (5)); C17 S95 / S97 / S98 A (Y5-1))
+  ✗ [İNCELE YAYGIN] k1:projeksiyon:cari: program 8 · kâhin 6 (KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:projeksiyon:cariToplam:P3: program 0 · kâhin -10000 (K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [İNCELE YAYGIN · SINIF DIŞI] k1:projeksiyon:fatura:PF1: program {"amount":400000,"direction":"in"} · kâhin {"amount":1000000,"direction":"in"} (fatura kalemi açık tutarıyla (belge tarihinde, geçmiş — her görünümde) · C16.2 S92 A: karşı yönlü kalemli caride tutar NET kalan)
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:projeksiyon:hareket:p1b: program {"amount":400000,"date":"2026-03-31","direction":"in"} · kâhin {"amount":1000000,"date":"2026-03-31","direction":"in"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))
+  ✗ [BULGU KULLANICI] k1:projeksiyon:hareket:p1o: program {"amount":600000,"date":"2026-03-12","direction":"in"} · kâhin "yok" (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Nakit Akış Projeksiyonu (KS10 penceresi, gecikenler dahil — K-P1))
+  ✗ [BULGU KULLANICI] k1:projeksiyon:hareket:p2o: program {"amount":600000,"date":"2026-03-12","direction":"in"} · kâhin "yok" (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Nakit Akış Projeksiyonu (KS10 penceresi, gecikenler dahil — K-P1))
+  ✗ [BULGU KULLANICI] k1:projeksiyon:hareket:p3a: program "yok" · kâhin {"amount":10000,"date":"2026-03-25","direction":"out"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:projeksiyon:hareket:p4b: program {"amount":40000,"date":"2026-03-31","direction":"in"} · kâhin {"amount":100000,"date":"2026-03-31","direction":"in"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))
+  ✗ [İNCELE YAYGIN] k1:projeksiyon:hareket:p4o: program {"amount":90000,"date":"2026-03-12","direction":"in"} · kâhin {"amount":30000,"date":"2026-03-12","direction":"in"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Nakit Akış Projeksiyonu (KS10 penceresi, gecikenler dahil — K-P1))
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:projeksiyon:hareket:p6b: program {"amount":60000,"date":"2026-03-31","direction":"in"} · kâhin {"amount":100000,"date":"2026-03-31","direction":"in"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))
+  ✗ [BULGU KULLANICI] k1:projeksiyon:hareket:p6o: program {"amount":40000,"date":"2026-03-12","direction":"in"} · kâhin "yok" (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Nakit Akış Projeksiyonu (KS10 penceresi, gecikenler dahil — K-P1))
+  ✗ [BULGU BAŞ MİMAR] k1:takvim:cariKalemSayisi: program 5 · kâhin 3 (K6.3 takvimdeki cari kalemlerinin sayısı)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:takvim:cariToplam:P1: program 600000 · kâhin 0 (K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:takvim:cariToplam:P3: program 0 · kâhin -10000 (K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [BULGU BAŞ MİMAR] k1:takvim:cariToplam:P4: program 90000 · kâhin 30000 (K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:takvim:cariToplam:P6: program 40000 · kâhin 0 (K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [İNCELE YAYGIN · SINIF DIŞI] k1:takvim:fatura:PF1: program {"amount":400000,"direction":"in"} · kâhin {"amount":1000000,"direction":"in"} (madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık) · C16.2 S92 A: karşı yönlü kalemli caride tutar NET kalan (kendi belge tarihinde netleşme))
+  ✗ [BULGU KULLANICI] k1:takvim:hareket:p1o: program {"amount":600000,"cari":"P1","days":-8,"direction":"in","dueDate":"2026-03-12","label":"Tahsil Edilecek Borç","person":"Pelin Sonra","state":"overdue"} · kâhin "yok" (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil)
+  ✗ [BULGU KULLANICI] k1:takvim:hareket:p2o: program {"amount":600000,"cari":"P2","days":-8,"direction":"in","dueDate":"2026-03-12","label":"Tahsil Edilecek Borç","person":"Polat Fatura","state":"overdue"} · kâhin "yok" (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil)
+  ✗ [BULGU KULLANICI] k1:takvim:hareket:p3a: program "yok" · kâhin {"amount":10000,"cari":"P3","days":5,"direction":"out","dueDate":"2026-03-25","label":"Ödenecek Borç","person":"Pakize Fazla","state":"upcoming"} (K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün · C16.2 S92 A: tutar NET Kalan (karşı yönlü kalemler kendi belge tarihinde netleşir; C17 S95–S98 A))
+  ✗ [BULGU KULLANICI] k1:takvim:hareket:p4o: program {"amount":90000,"cari":"P4","days":-8,"direction":"in","dueDate":"2026-03-12","label":"Tahsil Edilecek Borç","person":"Poyraz Aşan","state":"overdue"} · kâhin {"amount":30000,"cari":"P4","days":-8,"direction":"in","dueDate":"2026-03-12","label":"Tahsil Edilecek Borç","person":"Poyraz Aşan","state":"overdue"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil)
+  ✗ [BULGU KULLANICI] k1:takvim:hareket:p6o: program {"amount":40000,"cari":"P6","days":-8,"direction":"in","dueDate":"2026-03-12","label":"Tahsil Edilecek Borç","person":"Pamir Dün","state":"overdue"} · kâhin "yok" (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:vadeTakip:cariToplam:P3: program 0 · kâhin -10000 (K6.5 (1) + KS8.1 + KS10: carinin vadeTakip kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [İNCELE YAYGIN · SINIF DIŞI] k1:vadeTakip:fatura:PF1: program {"amount":400000,"direction":"in"} · kâhin {"amount":1000000,"direction":"in"} (fatura kalemi açık tutarıyla (belge tarihinde, geçmiş — her görünümde) · C16.2 S92 A: karşı yönlü kalemli caride tutar NET kalan)
+  ✗ [BULGU KULLANICI] k1:vadeTakip:hareket:p1o: program {"amount":600000,"date":"2026-03-12","direction":"in"} · kâhin "yok" (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Vade Takip aynı kalem)
+  ✗ [BULGU KULLANICI] k1:vadeTakip:hareket:p2o: program {"amount":600000,"date":"2026-03-12","direction":"in"} · kâhin "yok" (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Vade Takip aynı kalem)
+  ✗ [BULGU KULLANICI] k1:vadeTakip:hareket:p3a: program "yok" · kâhin {"amount":10000,"date":"2026-03-25","direction":"out"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)
+  ✗ [BULGU KULLANICI] k1:vadeTakip:hareket:p4o: program {"amount":90000,"date":"2026-03-12","direction":"in"} · kâhin {"amount":30000,"date":"2026-03-12","direction":"in"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Vade Takip aynı kalem)
+  ✗ [BULGU KULLANICI] k1:vadeTakip:hareket:p6o: program {"amount":40000,"date":"2026-03-12","direction":"in"} · kâhin "yok" (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Vade Takip aynı kalem)
+d21-c5-s95-ertesi-ay: 130/173 tuttu
+  2.5.0 kararıyla değişen beklenti: 41 denetim · farkların 18/43'i bu sınıfta — SINIF DIŞI 25
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:P1:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:P1:acikToplam: program 400000 · kâhin 1000000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:P3:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:P3:acikToplam: program 0 · kâhin -10000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:P4:acikToplam: program 40000 · kâhin 100000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:P6:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:P6:acikToplam: program 60000 · kâhin 100000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:hareket:p1b:kalan: program 400000 · kâhin 1000000 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta) · C16.2 S92 A net görünüm: karşı yönlü kalemler kendi belge tarihinde netleşir (S2 sırası; faturanın belge durumu ayrı — (5)); C17 S95 / S97 / S98 A (Y5-1))
+  ✗ [BULGU KULLANICI] k1:hareket:p3a:kalan: program 0 · kâhin 10000 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta) · C16.2 S92 A net görünüm: karşı yönlü kalemler kendi belge tarihinde netleşir (S2 sırası; faturanın belge durumu ayrı — (5)); C17 S95 / S97 / S98 A (Y5-1))
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:hareket:p4b:kalan: program 40000 · kâhin 100000 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta) · C16.2 S92 A net görünüm: karşı yönlü kalemler kendi belge tarihinde netleşir (S2 sırası; faturanın belge durumu ayrı — (5)); C17 S95 / S97 / S98 A (Y5-1))
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:hareket:p6b:kalan: program 60000 · kâhin 100000 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta) · C16.2 S92 A net görünüm: karşı yönlü kalemler kendi belge tarihinde netleşir (S2 sırası; faturanın belge durumu ayrı — (5)); C17 S95 / S97 / S98 A (Y5-1))
+  ✗ [İNCELE YAYGIN] k1:projeksiyon:cari: program 8 · kâhin 6 (KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:projeksiyon:cariToplam:P3: program 0 · kâhin -10000 (K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [İNCELE YAYGIN · SINIF DIŞI] k1:projeksiyon:fatura:PF1: program {"amount":400000,"direction":"in"} · kâhin {"amount":1000000,"direction":"in"} (fatura kalemi açık tutarıyla (belge tarihinde, geçmiş — her görünümde) · C16.2 S92 A: karşı yönlü kalemli caride tutar NET kalan)
+  ✗ [İNCELE YAYGIN · SINIF DIŞI] k1:projeksiyon:hareket:p1b: program {"amount":400000,"date":"2026-03-31","direction":"in"} · kâhin {"amount":1000000,"date":"2026-03-31","direction":"in"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))
+  ✗ [BULGU KULLANICI] k1:projeksiyon:hareket:p1o: program {"amount":600000,"date":"2026-03-12","direction":"in"} · kâhin "yok" (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Nakit Akış Projeksiyonu (KS10 penceresi, gecikenler dahil — K-P1))
+  ✗ [BULGU KULLANICI] k1:projeksiyon:hareket:p2o: program {"amount":600000,"date":"2026-03-12","direction":"in"} · kâhin "yok" (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Nakit Akış Projeksiyonu (KS10 penceresi, gecikenler dahil — K-P1))
+  ✗ [İNCELE YAYGIN] k1:projeksiyon:hareket:p3a: program "yok" · kâhin {"amount":10000,"date":"2026-03-25","direction":"out"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))
+  ✗ [İNCELE YAYGIN · SINIF DIŞI] k1:projeksiyon:hareket:p4b: program {"amount":40000,"date":"2026-03-31","direction":"in"} · kâhin {"amount":100000,"date":"2026-03-31","direction":"in"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))
+  ✗ [İNCELE YAYGIN] k1:projeksiyon:hareket:p4o: program {"amount":90000,"date":"2026-03-12","direction":"in"} · kâhin {"amount":30000,"date":"2026-03-12","direction":"in"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Nakit Akış Projeksiyonu (KS10 penceresi, gecikenler dahil — K-P1))
+  ✗ [İNCELE YAYGIN · SINIF DIŞI] k1:projeksiyon:hareket:p6b: program {"amount":60000,"date":"2026-03-31","direction":"in"} · kâhin {"amount":100000,"date":"2026-03-31","direction":"in"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))
+  ✗ [BULGU KULLANICI] k1:projeksiyon:hareket:p6o: program {"amount":40000,"date":"2026-03-12","direction":"in"} · kâhin "yok" (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Nakit Akış Projeksiyonu (KS10 penceresi, gecikenler dahil — K-P1))
+  ✗ [BULGU BAŞ MİMAR] k1:takvim:cariKalemSayisi: program 8 · kâhin 6 (K6.3 takvimdeki cari kalemlerinin sayısı)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:takvim:cariToplam:P3: program 0 · kâhin -10000 (K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [İNCELE YAYGIN · SINIF DIŞI] k1:takvim:fatura:PF1: program {"amount":400000,"direction":"in"} · kâhin {"amount":1000000,"direction":"in"} (madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık) · C16.2 S92 A: karşı yönlü kalemli caride tutar NET kalan (kendi belge tarihinde netleşme))
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:takvim:hareket:p1b: program {"amount":400000,"cari":"P1","days":-1,"direction":"in","dueDate":"2026-03-31","label":"Tahsil Edilecek Borç","person":"Pelin Sonra","state":"overdue"} · kâhin {"amount":1000000,"cari":"P1","days":-1,"direction":"in","dueDate":"2026-03-31","label":"Tahsil Edilecek Borç","person":"Pelin Sonra","state":"overdue"} (K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün · C16.2 S92 A: tutar NET Kalan (karşı yönlü kalemler kendi belge tarihinde netleşir; C17 S95–S98 A))
+  ✗ [BULGU KULLANICI] k1:takvim:hareket:p1o: program {"amount":600000,"cari":"P1","days":-20,"direction":"in","dueDate":"2026-03-12","label":"Tahsil Edilecek Borç","person":"Pelin Sonra","state":"overdue"} · kâhin "yok" (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil)
+  ✗ [BULGU KULLANICI] k1:takvim:hareket:p2o: program {"amount":600000,"cari":"P2","days":-20,"direction":"in","dueDate":"2026-03-12","label":"Tahsil Edilecek Borç","person":"Polat Fatura","state":"overdue"} · kâhin "yok" (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil)
+  ✗ [BULGU KULLANICI] k1:takvim:hareket:p3a: program "yok" · kâhin {"amount":10000,"cari":"P3","days":-7,"direction":"out","dueDate":"2026-03-25","label":"Ödenecek Borç","person":"Pakize Fazla","state":"overdue"} (K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün · C16.2 S92 A: tutar NET Kalan (karşı yönlü kalemler kendi belge tarihinde netleşir; C17 S95–S98 A))
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:takvim:hareket:p4b: program {"amount":40000,"cari":"P4","days":-1,"direction":"in","dueDate":"2026-03-31","label":"Tahsil Edilecek Borç","person":"Poyraz Aşan","state":"overdue"} · kâhin {"amount":100000,"cari":"P4","days":-1,"direction":"in","dueDate":"2026-03-31","label":"Tahsil Edilecek Borç","person":"Poyraz Aşan","state":"overdue"} (K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün · C16.2 S92 A: tutar NET Kalan (karşı yönlü kalemler kendi belge tarihinde netleşir; C17 S95–S98 A))
+  ✗ [BULGU KULLANICI] k1:takvim:hareket:p4o: program {"amount":90000,"cari":"P4","days":-20,"direction":"in","dueDate":"2026-03-12","label":"Tahsil Edilecek Borç","person":"Poyraz Aşan","state":"overdue"} · kâhin {"amount":30000,"cari":"P4","days":-20,"direction":"in","dueDate":"2026-03-12","label":"Tahsil Edilecek Borç","person":"Poyraz Aşan","state":"overdue"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil)
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:takvim:hareket:p6b: program {"amount":60000,"cari":"P6","days":-1,"direction":"in","dueDate":"2026-03-31","label":"Tahsil Edilecek Borç","person":"Pamir Dün","state":"overdue"} · kâhin {"amount":100000,"cari":"P6","days":-1,"direction":"in","dueDate":"2026-03-31","label":"Tahsil Edilecek Borç","person":"Pamir Dün","state":"overdue"} (K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün · C16.2 S92 A: tutar NET Kalan (karşı yönlü kalemler kendi belge tarihinde netleşir; C17 S95–S98 A))
+  ✗ [BULGU KULLANICI] k1:takvim:hareket:p6o: program {"amount":40000,"cari":"P6","days":-20,"direction":"in","dueDate":"2026-03-12","label":"Tahsil Edilecek Borç","person":"Pamir Dün","state":"overdue"} · kâhin "yok" (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:vadeTakip:cariToplam:P3: program 0 · kâhin -10000 (K6.5 (1) + KS8.1 + KS10: carinin vadeTakip kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [İNCELE YAYGIN · SINIF DIŞI] k1:vadeTakip:fatura:PF1: program {"amount":400000,"direction":"in"} · kâhin {"amount":1000000,"direction":"in"} (fatura kalemi açık tutarıyla (belge tarihinde, geçmiş — her görünümde) · C16.2 S92 A: karşı yönlü kalemli caride tutar NET kalan)
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:vadeTakip:hareket:p1b: program {"amount":400000,"date":"2026-03-31","direction":"in"} · kâhin {"amount":1000000,"date":"2026-03-31","direction":"in"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)
+  ✗ [BULGU KULLANICI] k1:vadeTakip:hareket:p1o: program {"amount":600000,"date":"2026-03-12","direction":"in"} · kâhin "yok" (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Vade Takip aynı kalem)
+  ✗ [BULGU KULLANICI] k1:vadeTakip:hareket:p2o: program {"amount":600000,"date":"2026-03-12","direction":"in"} · kâhin "yok" (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Vade Takip aynı kalem)
+  ✗ [BULGU KULLANICI] k1:vadeTakip:hareket:p3a: program "yok" · kâhin {"amount":10000,"date":"2026-03-25","direction":"out"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:vadeTakip:hareket:p4b: program {"amount":40000,"date":"2026-03-31","direction":"in"} · kâhin {"amount":100000,"date":"2026-03-31","direction":"in"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)
+  ✗ [BULGU KULLANICI] k1:vadeTakip:hareket:p4o: program {"amount":90000,"date":"2026-03-12","direction":"in"} · kâhin {"amount":30000,"date":"2026-03-12","direction":"in"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Vade Takip aynı kalem)
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:vadeTakip:hareket:p6b: program {"amount":60000,"date":"2026-03-31","direction":"in"} · kâhin {"amount":100000,"date":"2026-03-31","direction":"in"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)
+  ✗ [BULGU KULLANICI] k1:vadeTakip:hareket:p6o: program {"amount":40000,"date":"2026-03-12","direction":"in"} · kâhin "yok" (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Vade Takip aynı kalem)
+d22-c5-s96-avans-kalemi: 121/121 tuttu
+  2.5.0 kararıyla değişen beklenti: 52 denetim · farkların 0/0'i bu sınıfta
+d23-c5-s96-avans-ertesi-gun: 121/121 tuttu
+  2.5.0 kararıyla değişen beklenti: 52 denetim · farkların 0/0'i bu sınıfta
+d24-c5-s97-ayni-gun: 123/134 tuttu
+  2.5.0 kararıyla değişen beklenti: 39 denetim · farkların 0/11'i bu sınıfta — SINIF DIŞI 11
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:A3:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:A3:acikToplam: program 0 · kâhin -30000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:hareket:a3a:kalan: program 0 · kâhin 30000 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta) · C16.2 S92 A net görünüm: karşı yönlü kalemler kendi belge tarihinde netleşir (S2 sırası; faturanın belge durumu ayrı — (5)); C17 S95 / S97 / S98 A (Y5-1))
+  ✗ [İNCELE YAYGIN · SINIF DIŞI] k1:projeksiyon:cari: program 3 · kâhin 4 (KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:projeksiyon:cariToplam:A3: program 0 · kâhin -30000 (K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:projeksiyon:hareket:a3a: program "yok" · kâhin {"amount":30000,"date":"2026-03-20","direction":"out"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:takvim:cariKalemSayisi: program 3 · kâhin 4 (K6.3 takvimdeki cari kalemlerinin sayısı)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:takvim:cariToplam:A3: program 0 · kâhin -30000 (K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:takvim:hareket:a3a: program "yok" · kâhin {"amount":30000,"cari":"A3","days":5,"direction":"out","dueDate":"2026-03-20","label":"Ödenecek Borç","person":"Arda Ertesi","state":"upcoming"} (K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün · C16.2 S92 A: tutar NET Kalan (karşı yönlü kalemler kendi belge tarihinde netleşir; C17 S95–S98 A))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:vadeTakip:cariToplam:A3: program 0 · kâhin -30000 (K6.5 (1) + KS8.1 + KS10: carinin vadeTakip kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:vadeTakip:hareket:a3a: program "yok" · kâhin {"amount":30000,"date":"2026-03-20","direction":"out"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)
+d25-c5-s98-avans-sirasi: 85/87 tuttu
+  2.5.0 kararıyla değişen beklenti: 45 denetim · farkların 2/2'i bu sınıfta
+  ✗ [BULGU BAŞ MİMAR] k1:cari:R3:acikToplam: program 0 · kâhin 10000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU KULLANICI] k1:fatura:R3F:acik: program 0 · kâhin 10000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta))
+d26-c5-bakim5-susan: 120/132 tuttu
+  2.5.0 kararıyla değişen beklenti: 51 denetim · farkların 11/12'i bu sınıfta — SINIF DIŞI 1
+  ✗ [BULGU BAŞ MİMAR] k1:cari:S13:acikToplam: program 0 · kâhin 10000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU BAŞ MİMAR] k1:cari:S9:acikToplam: program 0 · kâhin -30000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU KULLANICI] k1:fatura:S13F:acik: program 0 · kâhin 10000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta))
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:hareket:s9x:kalan: program 0 · kâhin 30000 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta) · C16.2 S92 A net görünüm: karşı yönlü kalemler kendi belge tarihinde netleşir (S2 sırası; faturanın belge durumu ayrı — (5)); C17 S95 / S97 / S98 A (Y5-1))
+  ✗ [İNCELE YAYGIN] k1:projeksiyon:hareket:s12o: program {"amount":5000,"date":"2026-03-01","direction":"in"} · kâhin {"amount":25000,"date":"2026-03-01","direction":"in"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Nakit Akış Projeksiyonu (KS10 penceresi, gecikenler dahil — K-P1))
+  ✗ [İNCELE YAYGIN] k1:projeksiyon:hareket:s9x: program "yok" · kâhin {"amount":30000,"date":"2026-06-02","direction":"out"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))
+  ✗ [BULGU BAŞ MİMAR] k1:takvim:cariToplam:S12: program 5000 · kâhin 25000 (K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [BULGU KULLANICI] k1:takvim:hareket:s12o: program {"amount":5000,"cari":"S12","days":-106,"direction":"in","dueDate":"2026-03-01","label":"Tahsil Edilecek Borç","person":"Sk Oniki","state":"overdue"} · kâhin {"amount":25000,"cari":"S12","days":-106,"direction":"in","dueDate":"2026-03-01","label":"Tahsil Edilecek Borç","person":"Sk Oniki","state":"overdue"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil)
+  ✗ [BULGU KULLANICI] k1:takvim:hareket:s9x: program "yok" · kâhin {"amount":30000,"cari":"S9","days":-13,"direction":"out","dueDate":"2026-06-02","label":"Ödenecek Borç","person":"Sk Dokuz","state":"overdue"} (K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün · C16.1 S91 A: vadesiz kayıt kayıt gününde vadeli kalem (gün = kayıt günü) · C16.2 S92 A: tutar NET Kalan (karşı yönlü kalemler kendi belge tarihinde netleşir; C17 S95–S98 A))
+  ✗ [BULGU BAŞ MİMAR] k1:vadeTakip:cariToplam:S12: program 5000 · kâhin 25000 (K6.5 (1) + KS8.1 + KS10: carinin vadeTakip kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [BULGU KULLANICI] k1:vadeTakip:hareket:s12o: program {"amount":5000,"date":"2026-03-01","direction":"in"} · kâhin {"amount":25000,"date":"2026-03-01","direction":"in"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Vade Takip aynı kalem)
+  ✗ [BULGU KULLANICI] k1:vadeTakip:hareket:s9x: program "yok" · kâhin {"amount":30000,"date":"2026-06-02","direction":"out"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)
+d27-c5-s99-taksitli-avans: 60/71 tuttu
+  2.5.0 kararıyla değişen beklenti: 22 denetim · farkların 11/11'i bu sınıfta
+  ✗ [BULGU BAŞ MİMAR] k1:cari:P1:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR] k1:cari:P1:acikToplam: program 60000 · kâhin 30000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU BAŞ MİMAR] k1:cari:P2:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR] k1:cari:P2:acikToplam: program 90000 · kâhin 40000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU BAŞ MİMAR] k1:cari:P3:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR] k1:cari:P3:acikToplam: program 60000 · kâhin 50000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU BAŞ MİMAR] k1:cari:P4a:acikToplam: program 60000 · kâhin 0 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU KULLANICI] k1:fatura:P1B:acik: program 30000 · kâhin 0 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta))
+  ✗ [BULGU BAŞ MİMAR] k1:fatura:P2F:acik: program 90000 · kâhin 40000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk)
+  ✗ [BULGU KULLANICI] k1:fatura:P3F:acik: program 60000 · kâhin 50000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta))
+  ✗ [BULGU KULLANICI] k1:fatura:P4F:acik: program 60000 · kâhin 0 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta))
+d28-c5-s99-taksit-vade-gunu: 37/46 tuttu
+  2.5.0 kararıyla değişen beklenti: 17 denetim · farkların 9/9'i bu sınıfta
+  ✗ [BULGU BAŞ MİMAR] k1:cari:P1:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR] k1:cari:P1:acikToplam: program 60000 · kâhin 30000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU BAŞ MİMAR] k1:cari:P2:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR] k1:cari:P2:acikToplam: program 90000 · kâhin 40000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU BAŞ MİMAR] k1:cari:P3:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR] k1:cari:P3:acikToplam: program 60000 · kâhin 50000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU KULLANICI] k1:fatura:P1B:acik: program 30000 · kâhin 0 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta))
+  ✗ [BULGU BAŞ MİMAR] k1:fatura:P2F:acik: program 90000 · kâhin 40000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk)
+  ✗ [BULGU KULLANICI] k1:fatura:P3F:acik: program 60000 · kâhin 50000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta))
+d29-c5-s99-taksit-ertesi-gun: 37/46 tuttu
+  2.5.0 kararıyla değişen beklenti: 17 denetim · farkların 9/9'i bu sınıfta
+  ✗ [BULGU BAŞ MİMAR] k1:cari:P1:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR] k1:cari:P1:acikToplam: program 60000 · kâhin 30000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU BAŞ MİMAR] k1:cari:P2:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR] k1:cari:P2:acikToplam: program 90000 · kâhin 40000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU BAŞ MİMAR] k1:cari:P3:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR] k1:cari:P3:acikToplam: program 60000 · kâhin 50000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU KULLANICI] k1:fatura:P1B:acik: program 30000 · kâhin 0 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta))
+  ✗ [BULGU BAŞ MİMAR] k1:fatura:P2F:acik: program 90000 · kâhin 40000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk)
+  ✗ [BULGU KULLANICI] k1:fatura:P3F:acik: program 60000 · kâhin 50000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta))
+d3-c5-carisiz-evrak: 22/37 tuttu
+  2.5.0 kararıyla değişen beklenti: 8 denetim · farkların 6/15'i bu sınıfta — SINIF DIŞI 9
+  ✗ [BULGU PLAN · SINIF DIŞI] adim:e1:durum: program "ret" · kâhin "ok" (adım kabul edilir) · yanıt:  Çeki kimden aldığınızı yazın ya da cari seçin.
+  ✗ [BULGU PLAN · SINIF DIŞI] adim:e2:durum: program "ret" · kâhin "ok" (adım kabul edilir) · yanıt:  Çeki kimden aldığınızı yazın ya da cari seçin.
+  ✗ [BULGU PLAN · SINIF DIŞI] adim:h1:durum: program "ret" · kâhin "ok" (adım kabul edilir) · yanıt:  Çek/senet bulunamadı. Silinmiş olabilir.
+  ✗ [BULGU PLAN · SINIF DIŞI] k1:mizan:101: program 20000 · kâhin 90000 (B2.6 §3.11a yevmiye)
+  ✗ [BULGU PLAN · SINIF DIŞI] k1:mizan:121: program 0 · kâhin 30000 (B2.6 §3.11a yevmiye)
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:649: program "okunamadı" · kâhin -100000 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k2:kasa: program 0 · kâhin 70000 (B1.2 Kasa değişmez / tahsilatlar Kasa'da)
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k2:kasaRapor:giris: program 0 · kâhin 70000 (B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar))
+  ✗ [BULGU PLAN · SINIF DIŞI] k2:mizan:100: program 0 · kâhin 70000 (B2.6 §3.11a yevmiye)
+  ✗ [BULGU PLAN · SINIF DIŞI] k2:mizan:121: program 0 · kâhin 30000 (B2.6 §3.11a yevmiye)
+  ✗ [BULGU KULLANICI] k2:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k2:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k2:mizan:649: program "okunamadı" · kâhin -100000 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+d30-c5-s101-bitti-kart: 199/227 tuttu
+  2.5.0 kararıyla değişen beklenti: 67 denetim · farkların 24/28'i bu sınıfta — SINIF DIŞI 4
+  ✗ [BULGU BAŞ MİMAR] k1:cari:Q1:acikToplam: program 10000 · kâhin 0 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU KULLANICI] k1:cari:Q1:gecikmis: program 10000 · kâhin 0 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A))
+  ✗ [BULGU KULLANICI] k1:cari:Q2:gecikmis: program 20000 · kâhin 0 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A))
+  ✗ [BULGU KULLANICI] k1:cari:Q4:gecikmis: program 10000 · kâhin 0 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A))
+  ✗ [İNCELE YAYGIN · SINIF DIŞI] k1:hareket:q1b:kalan: program 10000 · kâhin 0 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta))
+  ✗ [BULGU KULLANICI] k1:kart:KQ1:kalan: program 30000 · kâhin 0 (C13.4)
+  ✗ [BULGU KULLANICI] k1:kart:KQ1:odenen: program 30000 · kâhin 60000 (C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50))
+  ✗ [BULGU KULLANICI] k1:kart:KQ1:taksit2:odenen: program 0 · kâhin 30000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)
+  ✗ [BULGU KULLANICI] k1:kart:KQ2:kalan: program 60000 · kâhin 20000 (C13.4)
+  ✗ [BULGU KULLANICI] k1:kart:KQ2:odenen: program 0 · kâhin 40000 (C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50))
+  ✗ [BULGU KULLANICI] k1:kart:KQ2:taksit1:odenen: program 0 · kâhin 30000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)
+  ✗ [BULGU KULLANICI] k1:kart:KQ2:taksit2:odenen: program 0 · kâhin 10000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)
+  ✗ [BULGU KULLANICI] k1:kart:KQ3:kalan: program 10000 · kâhin 0 (C13.4)
+  ✗ [BULGU KULLANICI] k1:kart:KQ3:odenen: program 50000 · kâhin 60000 (C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50))
+  ✗ [BULGU KULLANICI] k1:kart:KQ3:taksit2:odenen: program 20000 · kâhin 30000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)
+  ✗ [BULGU KULLANICI] k1:kart:KQ4:kalan: program 50000 · kâhin 10000 (C13.4)
+  ✗ [BULGU KULLANICI] k1:kart:KQ4:odenen: program 10000 · kâhin 50000 (C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50))
+  ✗ [BULGU KULLANICI] k1:kart:KQ4:taksit1:odenen: program 10000 · kâhin 30000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)
+  ✗ [BULGU KULLANICI] k1:kart:KQ4:taksit2:odenen: program 0 · kâhin 20000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)
+  ✗ [BULGU KULLANICI] k1:kart:KQ8:kalan: program 60000 · kâhin 0 (C13.4)
+  ✗ [BULGU KULLANICI] k1:kart:KQ8:odenen: program 0 · kâhin 60000 (C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50))
+  ✗ [BULGU KULLANICI] k1:kart:KQ8:taksit1:odenen: program 0 · kâhin 30000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)
+  ✗ [BULGU KULLANICI] k1:kart:KQ8:taksit2:odenen: program 0 · kâhin 30000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:projeksiyon:hareket:q1b: program {"amount":10000,"date":"2026-05-12","direction":"in"} · kâhin "yok" (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan − Mevcut Borç kartının açık kapsamı, K6.5 (1) bir kez; pencere bugün → +30, gecikenler dahil))
+  ✗ [BULGU BAŞ MİMAR] k1:takvim:cariToplam:Q2: program 20000 · kâhin 0 (K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [BULGU BAŞ MİMAR] k1:takvim:cariToplam:Q4: program 10000 · kâhin 0 (K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:takvim:hareket:q1b: program {"amount":10000,"cari":"Q1","days":-34,"direction":"in","dueDate":"2026-05-12","label":"Tahsil Edilecek Borç","person":"Kemal Bitti","state":"overdue"} · kâhin "yok" (K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan − Mevcut Borç kartının açık kapsamı (K6.5); ufuk geçmiş + 7 gün · C16.1 S91 A: vadesiz kayıt kayıt gününde vadeli kalem (gün = kayıt günü))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:vadeTakip:hareket:q1b: program {"amount":10000,"date":"2026-05-12","direction":"in"} · kâhin "yok" (K6.3 kalem olmayan kayıt Vade Takip'te yok)
+d31-c5-s101-taksit-vade-gunu: 29/39 tuttu
+  2.5.0 kararıyla değişen beklenti: 16 denetim · farkların 10/10'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:cari:Q2:gecikmis: program 20000 · kâhin 0 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A))
+  ✗ [BULGU KULLANICI] k1:cari:Q4:gecikmis: program 10000 · kâhin 0 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A))
+  ✗ [BULGU KULLANICI] k1:kart:KQ2:kalan: program 60000 · kâhin 20000 (C13.4)
+  ✗ [BULGU KULLANICI] k1:kart:KQ2:odenen: program 0 · kâhin 40000 (C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50))
+  ✗ [BULGU KULLANICI] k1:kart:KQ2:taksit1:odenen: program 0 · kâhin 30000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)
+  ✗ [BULGU KULLANICI] k1:kart:KQ2:taksit2:odenen: program 0 · kâhin 10000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)
+  ✗ [BULGU KULLANICI] k1:kart:KQ4:kalan: program 50000 · kâhin 10000 (C13.4)
+  ✗ [BULGU KULLANICI] k1:kart:KQ4:odenen: program 10000 · kâhin 50000 (C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50))
+  ✗ [BULGU KULLANICI] k1:kart:KQ4:taksit1:odenen: program 10000 · kâhin 30000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)
+  ✗ [BULGU KULLANICI] k1:kart:KQ4:taksit2:odenen: program 0 · kâhin 20000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)
+d32-c5-s101-taksit-ertesi-gun: 31/39 tuttu
+  2.5.0 kararıyla değişen beklenti: 16 denetim · farkların 8/8'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:kart:KQ2:kalan: program 60000 · kâhin 20000 (C13.4)
+  ✗ [BULGU KULLANICI] k1:kart:KQ2:odenen: program 0 · kâhin 40000 (C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50))
+  ✗ [BULGU KULLANICI] k1:kart:KQ2:taksit1:odenen: program 0 · kâhin 30000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)
+  ✗ [BULGU KULLANICI] k1:kart:KQ2:taksit2:odenen: program 0 · kâhin 10000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)
+  ✗ [BULGU KULLANICI] k1:kart:KQ4:kalan: program 50000 · kâhin 10000 (C13.4)
+  ✗ [BULGU KULLANICI] k1:kart:KQ4:odenen: program 10000 · kâhin 50000 (C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50))
+  ✗ [BULGU KULLANICI] k1:kart:KQ4:taksit1:odenen: program 10000 · kâhin 30000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)
+  ✗ [BULGU KULLANICI] k1:kart:KQ4:taksit2:odenen: program 0 · kâhin 20000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)
+d33-c5-s102-s105-sinirlar: 184/204 tuttu
+  2.5.0 kararıyla değişen beklenti: 73 denetim · farkların 16/20'i bu sınıfta — SINIF DIŞI 4
+  ✗ [BULGU BAŞ MİMAR] k1:cari:T13c:acikToplam: program 0 · kâhin 10000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:T9a:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:T9a:acikToplam: program 0 · kâhin -60000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU KULLANICI] k1:fatura:T13CF:acik: program 0 · kâhin 10000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta))
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:hareket:t9ax:kalan: program 0 · kâhin 30000 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta) · C16.2 S92 A net görünüm: karşı yönlü kalemler kendi belge tarihinde netleşir (S2 sırası; faturanın belge durumu ayrı — (5)); C17 S95 / S97 / S98 A (Y5-1))
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:hareket:t9ay:kalan: program 0 · kâhin 30000 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta) · C16.2 S92 A net görünüm: karşı yönlü kalemler kendi belge tarihinde netleşir (S2 sırası; faturanın belge durumu ayrı — (5)); C17 S95 / S97 / S98 A (Y5-1))
+  ✗ [İNCELE YAYGIN] k1:projeksiyon:cari: program 6 · kâhin {"catal":[8,9]} (KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı · C16.1 / C16.3: belirsiz üyeler (ÇATAL; SK-7))
+  ✗ [BULGU BAŞ MİMAR] k1:projeksiyon:cariToplam:T9a: program 0 · kâhin -60000 (K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [İNCELE YAYGIN] k1:projeksiyon:hareket:t12bo: program {"amount":15000,"date":"2026-03-01","direction":"in"} · kâhin {"amount":30000,"date":"2026-03-01","direction":"in"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Nakit Akış Projeksiyonu (KS10 penceresi, gecikenler dahil — K-P1))
+  ✗ [İNCELE YAYGIN] k1:projeksiyon:hareket:t9ax: program "yok" · kâhin {"amount":30000,"date":"2026-06-02","direction":"out"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))
+  ✗ [İNCELE YAYGIN] k1:projeksiyon:hareket:t9ay: program "yok" · kâhin {"amount":30000,"date":"2026-06-03","direction":"out"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))
+  ✗ [İNCELE YAYGIN] k1:takvim:cariKalemSayisi: program 6 · kâhin {"catal":[8,9]} (K6.3 takvimdeki cari kalemlerinin sayısı · C16.1 / C16.3: stok veresiye / karşılıksız kalemi ve verilen avans satırı sayaçta belirsiz üye (ÇATAL; SK-7))
+  ✗ [BULGU BAŞ MİMAR] k1:takvim:cariToplam:T9a: program 0 · kâhin -60000 (K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [BULGU KULLANICI] k1:takvim:hareket:t12bo: program {"amount":15000,"cari":"T12b","days":-106,"direction":"in","dueDate":"2026-03-01","label":"Tahsil Edilecek Borç","person":"Küçük Alış","state":"overdue"} · kâhin {"amount":30000,"cari":"T12b","days":-106,"direction":"in","dueDate":"2026-03-01","label":"Tahsil Edilecek Borç","person":"Küçük Alış","state":"overdue"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil)
+  ✗ [BULGU KULLANICI] k1:takvim:hareket:t9ax: program "yok" · kâhin {"amount":30000,"cari":"T9a","days":-13,"direction":"out","dueDate":"2026-06-02","label":"Ödenecek Borç","person":"Sınır Önceki","state":"overdue"} (K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün · C16.1 S91 A: vadesiz kayıt kayıt gününde vadeli kalem (gün = kayıt günü) · C16.2 S92 A: tutar NET Kalan (karşı yönlü kalemler kendi belge tarihinde netleşir; C17 S95–S98 A))
+  ✗ [BULGU KULLANICI] k1:takvim:hareket:t9ay: program "yok" · kâhin {"amount":30000,"cari":"T9a","days":-12,"direction":"out","dueDate":"2026-06-03","label":"Ödenecek Borç","person":"Sınır Önceki","state":"overdue"} (K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün · C16.1 S91 A: vadesiz kayıt kayıt gününde vadeli kalem (gün = kayıt günü) · C16.2 S92 A: tutar NET Kalan (karşı yönlü kalemler kendi belge tarihinde netleşir; C17 S95–S98 A))
+  ✗ [BULGU BAŞ MİMAR] k1:vadeTakip:cariToplam:T9a: program 0 · kâhin -60000 (K6.5 (1) + KS8.1 + KS10: carinin vadeTakip kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))
+  ✗ [BULGU KULLANICI] k1:vadeTakip:hareket:t12bo: program {"amount":15000,"date":"2026-03-01","direction":"in"} · kâhin {"amount":30000,"date":"2026-03-01","direction":"in"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Vade Takip aynı kalem)
+  ✗ [BULGU KULLANICI] k1:vadeTakip:hareket:t9ax: program "yok" · kâhin {"amount":30000,"date":"2026-06-02","direction":"out"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)
+  ✗ [BULGU KULLANICI] k1:vadeTakip:hareket:t9ay: program "yok" · kâhin {"amount":30000,"date":"2026-06-03","direction":"out"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)
+d4-c5-s50-tek-kuyruk: 48/54 tuttu
+  2.5.0 kararıyla değişen beklenti: 8 denetim · farkların 6/6'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:kart:K1:kalan: program 300000 · kâhin 150000 (C13.4)
+  ✗ [BULGU KULLANICI] k1:kart:K1:odenen: program 0 · kâhin 150000 (C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50))
+  ✗ [BULGU KULLANICI] k1:kart:K1:taksit1:odenen: program 0 · kâhin 100000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)
+  ✗ [BULGU KULLANICI] k1:kart:K1:taksit2:odenen: program 0 · kâhin 50000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)
+  ✗ [BULGU KULLANICI] k1:mizan:500: program -500000 · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin -500000 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+d5-c5-s2-vade-sirasi: 40/40 tuttu
+  2.5.0 kararıyla değişen beklenti: 12 denetim · farkların 0/0'i bu sınıfta
+d6-c5-aninda: 92/92 tuttu
+d7-c5-s52-gecikmis: 80/80 tuttu
+  2.5.0 kararıyla değişen beklenti: 17 denetim · farkların 0/0'i bu sınıfta
+d8-c5-tanimsiz: 17/17 tuttu
+d9-c5-s68-borc-tarafi-vade: 142/142 tuttu
+  2.5.0 kararıyla değişen beklenti: 48 denetim · farkların 0/0'i bu sınıfta
+rastgele-ux18-1: 757/771 tuttu
+  2.5.0 kararıyla değişen beklenti: 14 denetim · farkların 14/14'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k2:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k2:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k3:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k3:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k4:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k4:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k5:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k5:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k6:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k6:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] kson:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] kson:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+rastgele-s1-1: 537/540 tuttu
+  2.5.0 kararıyla değişen beklenti: 59 denetim · farkların 0/3'i bu sınıfta — SINIF DIŞI 3
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k5:takvim:hareket:s042: program {"amount":470000,"cari":"D","days":-3,"direction":"in","dueDate":"2026-08-16","label":"Tahsil Edilecek Borç (Ödeme Sözü)","person":"Rastgele Delta 1","state":"overdue"} · kâhin "yok" (K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k6:takvim:hareket:s042: program {"amount":470000,"cari":"D","days":-3,"direction":"in","dueDate":"2026-08-16","label":"Tahsil Edilecek Borç (Ödeme Sözü)","person":"Rastgele Delta 1","state":"overdue"} · kâhin "yok" (K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] kson:takvim:hareket:s042: program {"amount":470000,"cari":"D","days":-3,"direction":"in","dueDate":"2026-08-16","label":"Tahsil Edilecek Borç (Ödeme Sözü)","person":"Rastgele Delta 1","state":"overdue"} · kâhin "yok" (K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün)
+rastgele-ux18-2: 803/817 tuttu
+  2.5.0 kararıyla değişen beklenti: 14 denetim · farkların 14/14'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k1:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k2:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k2:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k3:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k3:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k4:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k4:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k5:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k5:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k6:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] k6:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] kson:mizan:500: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+  ✗ [BULGU KULLANICI] kson:mizan:519: program "okunamadı" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))
+rastgele-s1-2: 721/721 tuttu
+  2.5.0 kararıyla değişen beklenti: 107 denetim · farkların 0/0'i bu sınıfta
+  liste mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  liste mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  liste mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  liste mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  liste mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  yapım aşaması listesi mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  yapım aşaması listesi mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  yapım aşaması listesi mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+
+YAPIM-ASAMASI.json YAZILDI (../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-b6/yapim-deneme-2.json): 495 kayıt (7 okuma hatası) — paketlere göre: Ç5-A 228, Ç5-B tur 2 260, eşleme 7. Bu bir denetim sonucu DEĞİLDİR; liste varsayılan koşuyla denetlenir.
+ESKİ LİSTEYLE FARK: yeni 1, kapanan 1, değeri değişen 1 (eski liste 495 kayıt → yeni 495)
+  + yeni: b2-ux18-karsiliksiz k1:mizan:500 · program "okunamadı" / kâhin 0 · paket Ç5-A
+  − kapanan: b2-ux18-karsiliksiz b6:olmayan:kayit · program 2 / kâhin 1 · paket Ç5-A
+  ~ değeri değişen: c10-ks10-projeksiyon-cari-vade k1:takvim:cariKalemSayisi · değer değişti: program 1004 / kâhin 3 → program 4 / kâhin 3 · paket Ç5-B tur 2 (elle etiket korundu — yeniden ayrıştırın)
+uretici-2 cikis 0

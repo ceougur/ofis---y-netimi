@@ -236,7 +236,8 @@
       if (keepForm) delete next.settings;
       Object.assign(view, next, { error: "" });
       if (view.legacy) view.selected = new Set([...view.selected].filter(id => view.legacy.rows.some(row => rowKey(row) === id && canPick(row))));
-      if (!keepForm) render();
+      // Birleşik tur 6 (DK-D2T3 DÜŞÜK-4): arka plan yenilemesi kullanıcının çalıştığı süzgeç çubuğunu (Hareketler, Hesap Detayı, POS) yeniden kurmaz (HOF.swapKeeping).
+      if (!keepForm) render({ background: quiet });
       if (first) maybeWizard();
     } catch (error) {
       if (!modal || own !== ticket || key !== viewKey()) return;
@@ -304,13 +305,18 @@
     return setTab(tabList().some(([id]) => id === view.eventBack) ? view.eventBack : "movements");
   }
 
-  function render() {
+  function render({ background = false } = {}) {
     const node = root();
     if (!node) return;
     const extra = view.mode === "tab" ? extraTabs.get(view.tab) : null;
     const content = view.mode === "account" ? accountHtml() : view.mode === "legacy" ? legacyHtml() : view.mode === "event" ? eventHtml() : extra ? extraHtml(extra) : view.tab === "accounts" ? accountsHtml() : view.tab === "movements" ? movementsHtml() : view.tab === "settings" ? settingsHtml() : overviewHtml();
     const tabs = `<div class="hof-bank-tabs" role="tablist" aria-label="Banka bölümleri">${tabList().map(([id, label]) => `<button type="button" role="tab" class="hof-rep-chip ${view.mode === "tab" && view.tab === id ? "is-on" : ""}" aria-selected="${view.mode === "tab" && view.tab === id}" data-tab="${id}">${esc(label)}</button>`).join("")}</div>`;
-    HOF.swap(node, `${tabs}<div class="hof-bank-body">${content}</div>`);
+    const html = `${tabs}<div class="hof-bank-body">${content}</div>`;
+    if (background) HOF.swapKeeping(node, html, "[data-mv-filters], [data-pos-filters]");
+    // POS süzgeci kendi değişikliğinde de pencereyi yeniden çizer (hof-bank-pos.js: rerender + reloadView); çubuğun içeriği yalnız süzgeç değerleridir → odak çubuktayken
+    // (tarih yazılırken her geçerli bölümde "change" gelir) çubuk korunur, yoksa yıl yazılırken imleç ilk bölüme düşüyordu.
+    else if (view.mode === "tab" && view.tab === "pos") HOF.swapKeeping(node, html, "[data-pos-filters]", { pending: false });
+    else HOF.swap(node, html);
   }
 
   /** Eklenen sekmenin içeriği (HOF.bank.addTab): sekmenin kendi html()'i; hata olursa sekme boş kalmaz, neden yazılır. */

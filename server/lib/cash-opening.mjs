@@ -108,7 +108,9 @@ export function installCashOpeningGuard(store) {
   const known = guardStates.get(store);
   if (known) return known;
   const counters = () => (typeof store.changeCounters === "function" ? store.changeCounters() : null);
-  const state = { restoring: 0, opening: null, openingTouched: false };
+  // restored: Silinenler geri yüklemelerinin (restoringCash) "Kasa Açılışından Önce Tarihli Hareket" uyarısına kattığı satır sayısı (birikimli; yalnız artış).
+  // Mutabakat taraması (lib/integrity.mjs settleScan) uyarının önceki sayısından bu kadarını açıklanmış sayar (birleşik tur 6, DK-D2T3 ORTA-1).
+  const state = { restoring: 0, opening: null, openingTouched: false, restored: 0 };
   // Açılış tarihinin önbelleği: başka bağlantı yazınca (data_version) ya da store dışı yazımda (total − tracked) geçersiz; açılış satırına dokunan işlem
   // kendi içinde yeniden okur ve COMMIT'ten sonra önbelleği düşürür.
   function openingDate(fresh) {
@@ -210,12 +212,44 @@ export function installCashOpeningGuard(store) {
 export function restoringCash(store, fn) {
   const handle = guardStates.get(store);
   if (!handle) return fn();
+  // 2.5.0 birleşik tur 6 (DK-D2T3 ORTA-1; BAŞ MİMAR 11.11 — kullanıcı onaylı): en dış geri yüklemede uyarı sayısı önce / sonra ölçülür; artış (geri gelen satırlar
+  // ve görünürlüğü dönen üst kaydın — cari, kart, çek — satırları) state.restored'a eklenir. Tarama bu artışı "kapının görmediği yazım" saymaz. Ölçüm eşzamanlı
+  // (fn store işlemlerini beklemeden bitirir; arada başka istek çalışmaz); fn hata verse de ölçülür (işlemin bir kısmı kesinleşmiş olabilir).
+  const outer = handle.state.restoring === 0;
+  const before = outer ? countBeforeOpening(store) : 0;
+  const settle = () => {
+    if (!outer) return;
+    const after = countBeforeOpening(store);
+    if (before >= 0 && after > before) handle.state.restored += after - before;
+  };
   handle.state.restoring += 1;
+  let result;
   try {
-    return fn();
+    result = fn();
   } finally {
     handle.state.restoring -= 1;
+    if (!(result && typeof result.then === "function")) settle();
   }
+  // Bekleyen iş (bugün yok): sonuç gelince ölçülür (arada başka istek çalışabilir — artış yine açıklanmış sayılır, yanlış alarm yönüne gitmez).
+  if (result && typeof result.then === "function") return Promise.resolve(result).finally(settle);
+  return result;
+}
+
+/**
+ * Uyarı sayısı (cashBeforeOpening ile aynı tanım: Kasa açılışından önce tarihli görünür nakit hareketi; açılış yoksa 0). Okunamazsa -1 (eski şema): restoringCash
+ * artışı ölçemez — o geri yükleme açıklama katmaz (taramanın bir sonraki karşılaştırması yine çalışır).
+ */
+function countBeforeOpening(store) {
+  try {
+    return cashBeforeOpening(store)?.rows.length || 0;
+  } catch {
+    return -1;
+  }
+}
+
+/** Silinenler geri yüklemelerinin uyarıya kattığı birikimli satır sayısı (store başına; denetim kurulu değilse 0). lib/integrity.mjs settleScan okur. */
+export function cashRestoreMark(store) {
+  return guardStates.get(store)?.state.restored ?? 0;
 }
 
 const SOURCE_LABEL = { payment: "Kayıt Tahsilatı", manual: "Kasa Hareketi", account: "Cari Hareketi", invoice: "Fatura Peşini", plan: "Taksit Hareketi", stock: "Stok Hareketi", cheque: "Çek / Senet Hareketi" };

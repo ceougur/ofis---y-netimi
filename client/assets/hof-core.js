@@ -116,7 +116,9 @@
   // 2.5.0 (CI #864 / #1056, senaryo-banka-210 adım 15): Banka → Hareketler süzgeç alanları (data-mv) listede yoktu; arama, tutar ve tarih
   // kutusunda name / id / aria-label da yok. Arka plan yenilemesi pencereyi yeniden çizince odak BODY'ye düşüyor, kutu süzgecin eski değeriyle
   // çiziliyordu: kutuya tıklayıp yazmaya başlayan kullanıcının tuşları boşa gidiyor, yazdığı metin siliniyordu (zorla: test/e2e/banka-210-arama-yaris.mjs).
-  const FOCUS_KEYS = ["data-filter", "data-q", "data-mv", "data-pick", "data-rc-search", "data-field", "data-range", "data-open-account", "data-open-plan", "data-case-action", "data-case-collect", "data-action", "data-act", "data-pulse", "data-pulse-go", "data-composer", "data-body", "data-current", "data-opt", "name", "id", "aria-label"];
+  // 2.5.0 birleşik tur 6 (banka-210 incelemesinin ek bulgusu): POS süzgeci (data-pos-filter), Rapor Merkezi parametreleri (data-param) ve Gelen e-Faturalar tarih
+  // alanları (data-inbox-from / -to) da listede — yoksa arka plan yenilemesinde odak BODY'ye düşüyordu.
+  const FOCUS_KEYS = ["data-filter", "data-q", "data-mv", "data-pos-filter", "data-param", "data-inbox-from", "data-inbox-to", "data-pick", "data-rc-search", "data-field", "data-range", "data-open-account", "data-open-plan", "data-case-action", "data-case-collect", "data-action", "data-act", "data-pulse", "data-pulse-go", "data-composer", "data-body", "data-current", "data-opt", "name", "id", "aria-label"];
   const TEXT_INPUT = /^(text|search|tel|email|url|number|password|date|datetime-local|month)?$/;
   // Birincil anahtar (eski davranış): ilk bulunan FOCUS_KEYS niteliği.
   const primaryFocusKey = node => {
@@ -168,6 +170,12 @@
     }
     const next = refind(root, snap);
     if (!next || next.disabled) return out;
+    // Birleşik tur 6: öğe yerinde kaldı ve odak hâlâ onda (HOF.swapKeeping çubuğu korudu) — yeniden odak verilmez: tarih kutusunda focus() imleci ilk bölüme
+    // taşıyıp değeri "change" ile yeniden bildiriyordu (o olayın çizimi korunan çubuğu iç içe yeniden kuruyordu).
+    if (next === active && document.activeElement === active) {
+      if (snap.scroll) root.scrollTop = snap.scroll;
+      return out;
+    }
     if (button) {
       // Dar kontrol 2.4.3 (D1): satır SİLEN düğme (×) yeniden çizimden sonra hiçbir zaman başka bir silme düğmesine odak vermez — aynı anahtarlı
       // düğme artık bir sonraki satırındır (ikinci Enter onu da silerdi). Odak aynı konumdaki satırın ilk yazılabilir alanına gider; yoksa verilmez
@@ -191,6 +199,58 @@
     return out;
   };
   HOF.swap = (root, html) => HOF.keepFocus(root, () => { root.innerHTML = html; });
+
+  // ---------- Süzgeç çubuğunu koruyan yeniden çizim (2.5.0 birleşik tur 6; dar kontrol DK-D2T3 DÜŞÜK-4 + banka-210 incelemesinin ek bulgusu) ----------
+  // Arka plan yenilemesi (canlı olay, başka oturumun kaydı) pencereyi yeniden çizerken kullanıcının ÇALIŞTIĞI süzgeç / parametre çubuğunu yeniden KURMAZ: çubuk DOM'dan hiç
+  // kalkmaz, yalnız çevresi yeni çizimden gelir. keepFocus odağı ve metni geri verir ama yarım yazılmış tarih kutusunun bölümlerini (değeri boş görünür), seçim listesinin
+  // açık hâlini ve imlecin hangi bölümde olduğunu geri veremez — kutu yeni bir düğüm olunca "07.__.____" yazan kullanıcının sonraki tuşları yanlış bölüme gidiyordu
+  // ("0026-10-20"; zorla: test/e2e/banka-210-arama-yaris.mjs --kip tarih). Çubuk korunur: odak çubuktaysa ya da çubukta henüz uygulanmamış yazım varsa (değer çizilen
+  // değerden farklı, ya da tarih yarım — validity.badInput). Öbür durumlarda olağan çizim (HOF.swap; seçenekler tazelenir). Kullanıcının kendi süzgeç değişikliği
+  // (olağan çizim) bunu kullanmaz: çubuk yeni durumu göstermeli ("Süzgeçleri Temizle").
+  // Seçim kutusunun çizilen değeri: "selected" işaretli seçenek, yoksa ilki (tarayıcının seçtiği) — işaretsiz kutu "yazılmış" sayılmaz.
+  const drawnSelect = node => ([...node.options].find(option => option.defaultSelected) || node.options[0])?.value ?? "";
+  const pendingInput = bar => [...bar.querySelectorAll("input, select, textarea")].some(node => node.type !== "hidden" && (node.validity?.badInput || (node.type === "checkbox" || node.type === "radio" ? node.checked !== node.defaultChecked : node.tagName === "SELECT" ? node.value !== drawnSelect(node) : node.value !== node.defaultValue)));
+  // pending: false → yalnız odak çubuktayken korunur (kullanıcının kendi değişikliğinin çizimi; uygulanmış değer çizilen değerden farklı kalsa da çubuk tazelenebilsin).
+  HOF.keepsBar = (bar, { active = document.activeElement, pending = true } = {}) => Boolean(bar && ((active && active !== document.body && bar.contains(active)) || (pending && pendingInput(bar))));
+  HOF.swapKeeping = (root, html, selector, { pending = true } = {}) => {
+    const live = root && selector ? root.querySelector(selector) : null;
+    if (!HOF.keepsBar(live, { pending })) return HOF.swap(root, html);
+    const template = document.createElement("template");
+    template.innerHTML = html;
+    const fresh = template.content.querySelector(selector);
+    // Çubuktan köke ata zinciri iki çizimde aynı derinlikte ve aynı etiketlerle olmalı; değilse (görünüm değişti) olağan çizim.
+    const chain = (node, top) => {
+      const out = [];
+      for (let at = node; at && at !== top; at = at.parentNode) out.push(at);
+      return out;
+    };
+    const kept = fresh ? chain(live, root) : [];
+    const made = fresh ? chain(fresh, template.content) : [];
+    if (!fresh || kept.length !== made.length || kept.some((node, index) => node.tagName !== made[index].tagName)) return HOF.swap(root, html);
+    return HOF.keepFocus(root, () => {
+      // Kökten çubuğa doğru her düzeyde: korunan atanın kardeşleri yeni çizimdekilerle değişir, korunan ata (çubuğun kendisi değilse) yeni niteliklerini alır.
+      for (let level = kept.length - 1; level >= 0; level -= 1) {
+        const keep = kept[level];
+        const next = made[level];
+        const parent = level === kept.length - 1 ? root : kept[level + 1];
+        const source = level === made.length - 1 ? template.content : made[level + 1];
+        if (level > 0) {
+          for (const attr of [...keep.attributes]) if (!next.hasAttribute(attr.name)) keep.removeAttribute(attr.name);
+          for (const attr of [...next.attributes]) if (keep.getAttribute(attr.name) !== attr.value) keep.setAttribute(attr.name, attr.value);
+        }
+        const before = [];
+        const after = [];
+        let seen = false;
+        for (const child of [...source.childNodes]) {
+          if (child === next) seen = true;
+          else (seen ? after : before).push(child);
+        }
+        for (const child of [...parent.childNodes]) if (child !== keep) parent.removeChild(child);
+        for (const child of before) parent.insertBefore(child, keep);
+        for (const child of after) parent.appendChild(child);
+      }
+    });
+  };
 
   // ---------- Form taslağı (2.4.3, kullanıcı kararı 17.10.2026: "Form state yönetimini izole hale getir; dosya/resim yükleme formun
   // genel state'ini re-render etmesin ve kaydedilmemiş verileri ezmesin") ----------

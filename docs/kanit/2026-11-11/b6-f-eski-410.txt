@@ -1,0 +1,12 @@
+file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/tools/kapi-olcum.mjs:116
+    if (first.mismatches.length) throw new Error(`tohum 001: ${JSON.stringify(first.mismatches.slice(0, 2))}`);
+                                       ^
+
+Error: tohum 001: [{"at":"işlem 11 (kayit-tahsil, 2025-10-09)","problems":["kayit-tahsil: beklenmeyen ret 410 {\"ok\":false,\"error\":\"Kayıt tahsilatı kapatıldı; tahsilat Cari'den girilir.\",\"code\":\"case-payments-closed\"}"]},{"at":"işlem 49 (kayit-tahsil, 2025-10-15)","problems":["kayit-tahsil: beklenmeyen ret 410 {\"ok\":false,\"error\":\"Kayıt tahsilatı kapatıldı; tahsilat Cari'den girilir.\",\"code\":\"case-payments-closed\"}"]}]
+    at buildSeed (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/tools/kapi-olcum.mjs:116:40)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async fixture (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/tools/kapi-olcum.mjs:243:5)
+    at async file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/tools/kapi-olcum.mjs:421:25
+
+Node.js v22.23.4
+cikis 1

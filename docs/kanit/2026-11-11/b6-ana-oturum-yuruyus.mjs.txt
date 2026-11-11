@@ -1,0 +1,92 @@
+import fs, { mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+process.env.HUKUK_LICENSE_URL = "http://127.0.0.1:9";
+const ROOT = process.env.ROOT;
+const imp = rel => import(pathToFileURL(path.join(ROOT, rel)).href);
+const { chromium } = await import(pathToFileURL(path.join(ROOT, "node_modules/playwright/index.mjs")).href);
+const { createApp } = await imp("server/app.mjs");
+const { createClient, installPageClock } = await imp("test/helpers.mjs");
+const { escClose } = await imp("test/e2e/esc-kapat.mjs");
+const OUT = process.env.OUT;
+const PASS = "Prova-Admin-2026!";
+const TODAY = "2026-10-20";
+const NOW = `${TODAY}T12:00:00+03:00`;
+const day = o => { const d = new Date(`${TODAY}T00:00:00Z`); d.setUTCDate(d.getUTCDate() + o); return d.toISOString().slice(0, 10); };
+const MODAL = ".hof-modal-backdrop.is-visible";
+const TOP = `${MODAL}:nth-last-child(1 of ${MODAL})`;
+const unwrap = r => (r.data && typeof r.data === "object" && "ok" in r.data ? (r.data.ok ? r.data.data : r.data) : r.data);
+const must = async (label, p) => { const r = await p; if (r.status !== 200) throw new Error(`${label}: ${r.status} ${JSON.stringify(r.data).slice(0, 300)}`); return unwrap(r); };
+const note = (...a) => console.log(...a);
+const root = mkdtempSync(path.join(tmpdir(), "yuruyus-c5b-"));
+const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, now: NOW, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0", HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f51" } });
+const { port } = await app.listen(0, "127.0.0.1");
+const BASE = `http://127.0.0.1:${port}`;
+const api = createClient(BASE);
+const browser = await chromium.launch();
+let page = null; let n = 0;
+const shot = async name => { n += 1; const f = path.join(OUT, `${String(n).padStart(2, "0")}-${name}.png`); await page.screenshot({ path: f }).catch(() => null); return f; };
+const closeAll = async () => { for (let i = 0; i < 6 && (await page.$(MODAL)); i += 1) { await escClose(page); await page.waitForTimeout(250); } };
+const text = sel => page.$$eval(sel, ns => ns.map(x => x.textContent.replace(/\s+/g, " ").trim()));
+const step = async (title, fn) => { note(`\n■ ${title}`); try { await fn(); } catch (e) { note(`  ✗ ADIM YARIDA: ${String(e?.message || e).split("\n")[0]}`); await shot(`hata`); await closeAll().catch(() => null); } };
+try {
+  await api.login("admin", PASS);
+  await must("banka", api.post("/api/workspace/bank/setup/dismiss", {}));
+  const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: "tr-TR", deviceScaleFactor: 1 });
+  page = await context.newPage();
+  await installPageClock(page, app.config.now);
+  const errors = [];
+  page.on("pageerror", e => errors.push(`pageerror ${e.message}`));
+  await page.goto(`${BASE}/`);
+  await page.fill("#hof-auth input[name=username]", "admin");
+  await page.fill("#hof-auth input[name=password]", PASS);
+  await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
+  await page.waitForSelector("#hof-sidecard", { timeout: 60000 });
+  await page.waitForTimeout(700);
+  const bankWin = ".hof-bank-modal";
+  let k = 0;
+  const yanki = async () => { k += 1; await must("yankı", api.post("/api/workspace/accounts", { name: `Yürüyüş Yankı ${k}`, type: "customer", registeredOn: day(-10), phone: `0500 260 9${k} 01` })); await page.waitForTimeout(2500); };
+  const bak = async (ad, sel) => {
+    await page.waitForSelector(sel, { timeout: 15000 });
+    await page.waitForTimeout(500);
+    await page.fill(sel, "2026-10-07");
+    await page.focus(sel);
+    await yanki();
+    const v = await page.$eval(sel, n => n.value).catch(e => `YOK (${e.message.split("\n")[0]})`);
+    const odak = await page.evaluate(s => document.activeElement === document.querySelector(s), sel);
+    note(`  ${ad}: arka plan yenilemesinden sonra kutu = "${v}" · odak kutuda: ${odak} · ${await shot(ad)}`);
+  };
+  await step("Banka → Hareketler, Başlangıç tarihi", async () => {
+    await page.click('#hof-sidecard [data-action="bank"]');
+    await page.waitForSelector(`${bankWin} [data-bank] .hof-bank-tabs`, { timeout: 30000 });
+    await page.click(`${bankWin} .hof-bank-tabs [data-tab="movements"]`);
+    await bak("banka-hareketler", `${bankWin} [data-mv="from"]`);
+  });
+  await step("Banka → POS, Başlangıç tarihi", async () => {
+    await page.click(`${bankWin} .hof-bank-tabs [data-tab="pos"]`);
+    await bak("banka-pos", `${bankWin} [data-pos-filter="from"]`);
+  });
+  await closeAll();
+  await step("Raporlar → Kasa Hareketleri, Başlangıç tarihi", async () => {
+    await page.click("#hof-sidecard [data-action=analytics]");
+    await page.waitForSelector(`${TOP} .hof-rep-tab[data-tab="all"]`, { timeout: 15000 });
+    await page.click(`${TOP} .hof-rep-tab[data-tab="all"]`);
+    await page.waitForSelector(`${TOP} [data-rc-list] [data-report="kasa-hareketleri"]`, { timeout: 15000 });
+    await page.click(`${TOP} [data-rc-list] [data-report="kasa-hareketleri"]`);
+    await page.waitForSelector(`${TOP} [data-rc-main] .hof-rc-table`, { timeout: 15000 });
+    await bak("rapor-kasa-hareketleri", `${TOP} [data-rc-main] [data-param="from"]`);
+  });
+  await closeAll();
+  await step("Fatura → Gelen Kutusu, tarih", async () => {
+    await page.click("#hof-sidecard [data-action=invoices]");
+    await page.waitForSelector(`${TOP} .hof-inv-tabs [data-tab="inbox"]`, { timeout: 15000 });
+    await page.click(`${TOP} .hof-inv-tabs [data-tab="inbox"]`);
+    await bak("gelen-kutusu", `${TOP} [data-inbox-from]`);
+  });
+  note(`\nsayfa hatası: ${errors.length} ${errors.slice(0, 3).join(" | ")}`);
+} finally {
+  await browser.close().catch(() => null);
+  await app.close?.().catch(() => null);
+  process.exit(0);
+}

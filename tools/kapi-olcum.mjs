@@ -106,7 +106,9 @@ async function buildSeed(seedDir) {
   const { runReconciliation } = await import(pathToFileURL(path.join(ROOT, "test", "mutabakat", "motor.mjs")).href);
   // bankPickLegacy (2.1.0 Aşama 5–6'dan beri motorun havalelerinin bir kısmı eski sürüm gibi hesap seçmeden yazılır; test/mutabakat/kos.mjs ve
   // tools/olcek-210.mjs gibi). Doğrulama T10: bu seçenek yoktu, tohum ilk hesapsız havalede 400 bank-account-required ile duruyordu (v2.1.0'da da).
-  const app = createApp(appOptions(path.join(seedDir, "data"), { bankPickLegacy: true }));
+  // Birleşik tur 6 (B satır 177, F3): motor kayıt (dosya) tahsilatı ve Tablodan Aktar da yazar — 2.4.5'ten beri programda kapalı (410 case-payments-closed); test
+  // yardımcısı (test/helpers.mjs) gibi eski veri üreticisi için açılır. Önceden --yalniz-kur tohumda "kayit-tahsil 410" ile duruyordu.
+  const app = createApp(appOptions(path.join(seedDir, "data"), { bankPickLegacy: true, legacyCasePayments: true, legacyTableTransfer: true }));
   const { port } = await app.listen(0, "127.0.0.1");
   const client = createClient(`http://127.0.0.1:${port}`);
   try {
@@ -174,6 +176,10 @@ async function grow(file, target) {
       db.exec("BEGIN");
       for (const [table, { columns, statement }] of Object.entries(insert)) {
         for (const row of seed[table]) {
+          // Birleşik tur 6 (HIZ İNCELEMESİ (3), F1): şüpheli alacak kaynaklı cari satırı (Değersiz Alacak; source 'doubtful') kopyalanmaz — kaydı ve karşılığı
+          // (doubtful_receivables / doubtful_provisions) ve işlem başlığı kopyalanmıyordu; 105 kopyada 525 satır kayıtsız / başlıksız kalıyor → açılışta
+          // `doubtful:records` taban sapması → cari ailesindeki HER yazım tam kapıya (100 bin satırda ~6 sn). Tabloları tutarlı kopyalamaktan küçük yol.
+          if (table === "account_entries" && row.source === "doubtful") continue;
           const next = {};
           for (const column of columns) next[column] = value(row[column]);
           if (MODULE_ROWS.has(table)) {
@@ -237,6 +243,36 @@ export function renumberInvoices(db) {
     UPDATE invoices SET number = series || year || printf('%09d', seq) WHERE seq > 0;
     COMMIT;`);
 }
+// Birleşik tur 6 (HIZ İNCELEMESİ (3) + KURAL "hazır ölçüm verisi kullanılmadan önce taban sapması denetlenir", F2): veri bir kopyada programla (bu aracın kodu) BİR KEZ açılır,
+// her şirketin Mutabakat Testi okunur; uyarı (notice) dışında sapma varsa veri REDDEDİLİR (çıkış ≠ 0, sapma kodları yazılır) — taban sapması kapının süzgecini o ailede
+// tam denetime düşürür, ölçüm ürünün değil verinin süresini ölçerdi. Yeni üretilen veri ve yeniden kullanılan hazır veri için.
+async function validateFixture(dir, label) {
+  const work = path.join(DIR, "denetim");
+  rmSync(work, { recursive: true, force: true });
+  cpSync(dir, work, { recursive: true });
+  const { createApp, createClient } = await loadCode(ROOT);
+  const app = createApp(appOptions(path.join(work, "data")));
+  const problems = [];
+  try {
+    const { port } = await app.listen(0, "127.0.0.1");
+    const client = createClient(`http://127.0.0.1:${port}`);
+    await must("giriş", client.login("admin", PASS));
+    for (const company of (await must("şirketler", client.get("/api/companies"))).companies || []) {
+      const result = await must(`${company.code} Mutabakat Testi`, scoped(client, company.id).get("/api/workspace/ledger/integrity"));
+      const drifts = (result.failures || []).filter(item => !item.notice);
+      const notices = (result.failures || []).filter(item => item.notice).map(item => `${item.code} ${item.count}`);
+      log(`  ${label} ${company.code}: Mutabakat Testi ${drifts.length ? `${drifts.length} SAPMA` : "taban sapması yok"}${notices.length ? ` · uyarı: ${notices.join(", ")}` : ""}`);
+      for (const item of drifts) problems.push(`${company.code} ${item.code}${item.count ? ` (${item.count})` : ""}${item.sample?.[0] ? ` — ${item.sample[0]}` : ""}`);
+    }
+  } finally {
+    await app.close();
+    rmSync(work, { recursive: true, force: true });
+  }
+  if (problems.length) {
+    console.error(`\n✗ ${label}: ölçüm verisi REDDEDİLDİ — açılışta taban sapması (kapı bu ailelerde her yazımı tam denetime verir; ölçüm geçersiz olurdu):\n  - ${problems.join("\n  - ")}`);
+    process.exit(3);
+  }
+}
 async function fixture(target) {
   const seedDir = path.join(DIR, "tohum");
   if (!existsSync(path.join(seedDir, "hazir")) || flag("tohum-yeniden")) {
@@ -244,7 +280,10 @@ async function fixture(target) {
     writeFileSync(path.join(seedDir, "hazir"), new Date().toISOString());
   }
   const dir = path.join(DIR, `n-${target}`);
-  if (existsSync(path.join(dir, "hazir.json")) && !flag("yeniden")) return { dir, info: JSON.parse(readFileSync(path.join(dir, "hazir.json"), "utf8")) };
+  if (existsSync(path.join(dir, "hazir.json")) && !flag("yeniden")) {
+    await validateFixture(dir, `${target} (hazır veri)`);
+    return { dir, info: JSON.parse(readFileSync(path.join(dir, "hazir.json"), "utf8")) };
+  }
   rmSync(dir, { recursive: true, force: true });
   cpSync(seedDir, dir, { recursive: true });
   const info = { target, companies: {} };
@@ -253,6 +292,7 @@ async function fixture(target) {
     info.companies[company.code] = await grow(company.file, want);
     log(`\n  ${target}: ${company.code} → ${info.companies[company.code].money} para satırı, ${info.companies[company.code].rows} satır (${info.companies[company.code].copies} kopya, ${info.companies[company.code].seconds} sn)`);
   }
+  await validateFixture(dir, `${target} (yeni üretim)`);
   writeFileSync(path.join(dir, "hazir.json"), JSON.stringify(info, null, 2));
   return { dir, info };
 }
@@ -280,7 +320,9 @@ async function measure(fixtureDir, info) {
   const startedAt = performance.now();
   const baseline = app.integrity.start().baseline;
   const startMs = performance.now() - startedAt;
-  if (!baseline.ok) throw new Error(`veri tutarsız (açılış taraması): ${baseline.failures.map(item => `${item.code} ${item.sample?.[0] || ""}`).join("; ")}`);
+  // Birleşik tur 6: uyarı (notice — Kasa Açılışından Önce Tarihli Hareket) sapma değildir (kapıyı tetiklemez); yalnız sapma ölçümü durdurur.
+  const baselineDrifts = baseline.failures.filter(item => !item.notice);
+  if (baselineDrifts.length) throw new Error(`veri tutarsız (açılış taraması): ${baselineDrifts.map(item => `${item.code} ${item.sample?.[0] || ""}`).join("; ")}`);
   const { port } = await app.listen(0, "127.0.0.1");
   const client = createClient(`http://127.0.0.1:${port}`);
   const out = { kod: path.basename(KOD), openMs, startMs, writes: [], second: [] };
@@ -303,6 +345,9 @@ async function measure(fixtureDir, info) {
       const tx = store.lastTx || null;
       const stats = app.integrity.stats?.() || null;
       out.writes.push({ phase: out.phase, kind, httpMs, guardMs, moneyMs: tx ? tx.moneyMs + tx.marksMs : null, sections: stats?.gate?.sections || null, path: stats?.gate?.path || "", reason: stats?.gate?.reason || "" });
+      // Birleşik tur 6 (KURAL "her yazım ölçümü raporu kapı yolunu taşır", F4): her yazımda denetim yolu ve nedeni — tam kapı yolundaki sayı nedeniyle okunur.
+      const gate = stats?.gate;
+      log(`  · [${out.phase}] ${kind}: kapı ${ms((guardMs ?? 0) + (tx ? tx.moneyMs + tx.marksMs : 0))} ms · HTTP ${ms(httpMs)} ms · denetim yolu ${gate?.path === "scoped" ? "süzgeçli" : gate?.path === "full" ? `TAM (${gate.reason || "neden yok"})` : gate?.path || "—"}`);
     };
     const round = async () => {
       await record("Kasa nakit girişi", () => must("kasa", client.post("/api/workspace/cash", { kind: "in", amount: "125,50", method: "cash", description: "Ölçüm", date: today })));

@@ -93,6 +93,15 @@ const MONEY_CELL = /^(-?)((?:\d{1,3}(?:\.\d{3})*|\d+)),(\d{2}) TL$/;
 const NUMBER_CELL = /^-?(?:\d{1,3}(?:\.\d{3})+|\d+)(?:,\d+)?$/;
 // Mutabakat Günlüğü olay adları (integrity_log.action).
 const INTEGRITY_ACTIONS = { "rolled-back": "Geri Alındı", baseline: "Açılışta Bulunan Sapma", scan: "Taramada Bulunan Sapma", repair: "Açılış Onarımı" };
+// Günlük ayrıntısının (detail_json) bütün kalemleri uyarı mı (notice: true) — okunamazsa hayır (olağan "Sapma" adı kalır).
+const noticeOnly = detail => {
+  try {
+    const items = JSON.parse(detail || "[]");
+    return Array.isArray(items) && items.length > 0 && items.every(item => item?.notice === true);
+  } catch {
+    return false;
+  }
+};
 
 export function cellNumber(value, type) {
   const raw = String(value ?? "").trim().replace(/−/g, "-");
@@ -749,7 +758,8 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
           headers: ["Zaman", "Olay", "Etkilenen Tablolar", "Denetim"],
           types: ["", "", "", ""],
           // v2.1.0: tam tarama ("scan", kapının görmediği değişiklik) ve eski sürümden dönüşte açılış onarımı ("repair") da bu günlükte.
-          rows: rows.map(row => [row.at.replace("T", " ").slice(0, 19), INTEGRITY_ACTIONS[row.action] || "Açılışta Bulunan Sapma", row.tables, row.summary]),
+          // 2.5.0 birleşik tur 6 (DK-D2T3 ORTA-1): taramanın yazdığı "uyarı arttı" kaydı (bütün kalemleri notice) sapma değildir — olay adı "Taramada Bulunan Uyarı Artışı".
+          rows: rows.map(row => [row.at.replace("T", " ").slice(0, 19), row.action === "scan" && noticeOnly(row.detail) ? "Taramada Bulunan Uyarı Artışı" : INTEGRITY_ACTIONS[row.action] || "Açılışta Bulunan Sapma", row.tables, row.summary]),
           summary: [["Geri Alınan", String(rows.filter(row => row.action === "rolled-back").length)]],
         };
       },

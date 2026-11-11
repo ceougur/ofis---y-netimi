@@ -1,0 +1,7 @@
+  10000 (hazır veri) 001: Mutabakat Testi 1 SAPMA
+  10000 (hazır veri) 002: Mutabakat Testi 1 SAPMA
+
+✗ 10000 (hazır veri): ölçüm verisi REDDEDİLDİ — açılışta taban sapması (kapı bu ailelerde her yazımı tam denetime verir; ölçüm geçersiz olurdu):
+  - 001 doubtful:records (100) — Değersiz Alacak satırı aentry-f28299b6-1cad-48a8-a191-60780d770d7b~1: kaydı yok ya da iptal edilmiş
+  - 002 doubtful:records (12) — Değersiz Alacak satırı aentry-1befd8ac-7362-4eb5-b5ec-f7c95317c404~1: kaydı yok ya da iptal edilmiş
+cikis 3

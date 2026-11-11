@@ -236,3 +236,17 @@ Bkz. §1 (`server/routes/devir.mjs`). Hepsi ortak katmanda (`HUB_ONLY`'e `admin/
   `test/fixtures/devir-arsiv-wal-isci.mjs` (yazar, bağlantıyı kapatmadan SIGKILL). Mutasyon `test/devir-d2-250-mutasyon.mjs` 40–47 (30 çok noktalı oldu).
 - WINDOWS'TA DOSYAYA DOKUNANLAR (ders 48; CI'de görülecek): yan dosyanın boyunu okuma, boş yan dosyaların silinmesi (taşımadan önce), SIGKILL'li işçinin bıraktığı `-wal` /
   `-shm` / `-journal` yanında arşivi açma denemesi. Testte her bağlantı dosyaya dokunulmadan önce kapanır.
+
+## 15. Birleşik tur 6 (dar kontrol 11.11 DK-D2T3; BAŞ MİMAR KARARI 11.11 02:21 + kullanıcı 11.11 03:15 (a); taban dbf635be — yalnız bu turun D2 / Ç5-K ilgili kısmı)
+- ORTA-1 (Kasa açılış uyarısının kapının görmediği ARTIŞI; lib/integrity.mjs `noticeGrowth`, lib/cash-opening.mjs `restoringCash` / `cashRestoreMark`): tarama uyarının
+  önceki sayısını tutar (açılışta ölçülür — ilk görünüş sessiz; program yeniden açılınca önceki artış yeniden bildirilmez). Silinenler geri yüklemesinin kattığı satırlar
+  (önce / sonra ölçülür — görünürlüğü dönen üst kayıt, ör. taksit kartı, dahil) açıklanmış sayılır; açıklanamayan artış `integrity_log` "scan" + zil (`integrity.alert`,
+  `notice: true`, `previous`) + sunucu günlüğü: "Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)". Azalma sessiz, işaret
+  izler. İş parçacığı taraması sürerken geri yükleme kesinleşirse o tarama karşılaştırmaz (işaret değişmez; sonraki tarama yapar). Yedekten geri yükleme ve şirket sıfırlama
+  yeni açılıştır (işaret yeniden ölçülür). Sunum (sarı uyarı, Defter Mutabakatı "Tutarlı", ilk yazımın süzgeçli yolu) değişmedi.
+  BİLİNEN SINIR: sayı tabanlıdır — iki tarama arasında bir satır silinip başka bir satırın tarihi dışarıdan açılış öncesine alınırsa (azalma + artış) fark görünmez; program
+  KAPALIYKEN dış araçla yapılan artış açılışta "ilk görünüş" sayılır (bildirilmez).
+- DÜŞÜK-1 (lib/db.mjs `readBefore`): önceki hâli yakalanan satırın rowid'i işlem başındaki en büyük rowid'den (K6'nın BEGIN'deki `money.marks`) büyükse `born` — store
+  dışından eklenip düzeltilen açılış öncesi YENİ satır 409. K6 politikası olmayan çıplak store'da işaret yok (yalnız `inserted`).
+- Testler: `test/kasa-acilis-uyari-artis-250.test.mjs` (9), `test/kasa-acilis-b6-250.test.mjs` (1), yaşayan mutantlar `test/kasa-acilis-mutant-b6-250.test.mjs` (3: A1, A16, A6),
+  `test/devir-arsiv-wal-250.test.mjs` (+1: A4 özetsiz kayıtlı arşiv + `-wal`), `test/yapim-asamasi-kapisi.test.mjs` (+4: C1, C3, liste commit'ten — skip-worktree atlatması).

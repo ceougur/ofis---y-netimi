@@ -342,7 +342,9 @@
     }
     return run();
   }
-  function renderMain() {
+  // background (birleşik tur 6; banka-210 incelemesinin ek bulgusu): canlı yenilemenin çizimi kullanıcının çalıştığı parametre çubuğunu (tarih, kategori, seçimler —
+  // "Ön İzle"ye basılmadan yazılmış olabilir) yeniden kurmaz (HOF.swapKeeping); önceden main.innerHTML ile her şey yeniden kuruluyor, odak ve yazılan tarih kayboluyordu.
+  function renderMain({ background = false } = {}) {
     const main = root()?.querySelector("[data-rc-main]");
     const report = current();
     if (!main || !report) return;
@@ -382,7 +384,7 @@
       : `<p class="hof-empty"${hold}>${ready ? "Rapor hazırlanıyor…" : "Önce cariyi seçin."}</p>`;
     // 2.4.3 (C5): açıklama ilk bakışta en çok iki satır (uzun açıklama 1366×768'de tabloyu ekranın altına itiyordu); tam metin üzerine gelince
     // (ipucu) ve açıklamaya tıklayınca açılır.
-    main.innerHTML = `<header class="hof-rc-head"><div><p class="hof-eyebrow">${esc(report.group)}</p><h3>${esc(preview?.title || report.title)}</h3><p class="hof-rc-desc" title="${esc(report.description)}" data-rc-desc>${esc(report.description)}</p>${preview?.subtitle ? `<small class="hof-rc-scope">${esc(preview.subtitle)}</small>` : ""}</div>
+    const html = `<header class="hof-rc-head"><div><p class="hof-eyebrow">${esc(report.group)}</p><h3>${esc(preview?.title || report.title)}</h3><p class="hof-rc-desc" title="${esc(report.description)}" data-rc-desc>${esc(report.description)}</p>${preview?.subtitle ? `<small class="hof-rc-scope">${esc(preview.subtitle)}</small>` : ""}</div>
         <span class="hof-rep-export ${ready ? "" : "is-disabled"}" role="group" aria-label="Dışa aktar">
           ${HOF.outputButton({ kind: "pdf", href: ready ? `/api/workspace/report-center/${encodeURIComponent(report.id)}/pdf?${qs}` : "#", what: preview?.title || report.title, attrs: `target="_blank" rel="noopener"${ready ? "" : ' aria-disabled="true" tabindex="-1"'}` })}
           ${HOF.outputButton({ kind: "xlsx", href: ready ? `/api/workspace/report-center/${encodeURIComponent(report.id)}/xlsx?${qs}` : "#", what: preview?.title || report.title, attrs: `download${ready ? "" : ' aria-disabled="true" tabindex="-1"'}` })}
@@ -390,10 +392,13 @@
         </span></header>
       ${report.params.length ? `<div class="hof-rc-params">${paramsHtml(report)}${columnsHtml(preview)}<button type="button" class="hof-button hof-button-small" data-rc-run>Ön İzle</button><span class="hof-rc-busy" data-rc-busy role="status" hidden>Güncelleniyor…</span></div>` : ""}
       <div class="hof-rc-result" data-rc-result>${table}</div>`;
+    if (background) HOF.swapKeeping(main, html, ".hof-rc-params");
+    else main.innerHTML = html;
     // Sonuç gelene kadar meşgul (aria-busy): ekran okuyucu ve testler eski sonucu yeni sanmaz.
     setBusy(Boolean(ready && !preview));
     const slot = main.querySelector("[data-account-slot]");
-    if (slot && HOF.accounts?.picker) {
+    // Korunan çubukta cari seçici zaten kurulu (yeniden eklenmez).
+    if (slot && !slot.firstElementChild && HOF.accounts?.picker) {
       const field = HOF.accounts.picker({ value: center.account || {}, label: report.accountRequired ? "Cari" : "Cari (Boş Bırakılırsa Tüm Cariler)", onPick: account => {
         center.account = account && account.id ? { id: account.id, name: account.name } : null;
         // 2.4.3 (C4): cari süzgeci değişince de eski sonuç yeni gelene kadar yerinde (soluk) kalır.
@@ -455,7 +460,7 @@
       if (!center || ticket !== center.ticket) return;
       center.preview = preview;
       center.holdHeight = 0;
-      renderMain();
+      renderMain({ background: quiet });
     } catch (error) {
       if (!center || ticket !== center.ticket) return;
       HOF.toastError(error);

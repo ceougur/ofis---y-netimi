@@ -1,0 +1,11 @@
+#!/bin/bash
+# Birleşik tur 6 — banka-210-arama-yaris.mjs (gözcüsü güncellendi: yeniden çizim çubuğun dışındaki düğümle görülür) yeni ve eski kodda, dört kip.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-a115f88e3014ea777
+export PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194 HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=$S/birlesik6-kanit
+cd "$W" || exit 1
+for kip in odak fill yazarken tutar; do
+  node tools/kanit.mjs kos "b6-arama-yaris-$kip-yeni" -- node --disable-warning=ExperimentalWarning test/e2e/banka-210-arama-yaris.mjs --kip $kip --deneme 5
+  DEPO=$S/birlesik6-eski node tools/kanit.mjs kos "b6-arama-yaris-$kip-eski" -- node --disable-warning=ExperimentalWarning test/e2e/banka-210-arama-yaris.mjs --kip $kip --deneme 5
+done
+echo BITTI

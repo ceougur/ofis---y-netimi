@@ -1,0 +1,9 @@
+tohum: 001 2500 işlem, 002 1000 işlem (47 sn)
+
+  10000: 001 → 8709 para satırı, 43301 satır (10 kopya, 1 sn)
+
+  10000: 002 → 923 para satırı, 5444 satır (2 kopya, 0 sn)
+  10000 (yeni üretim) 001: Mutabakat Testi taban sapması yok
+  10000 (yeni üretim) 002: Mutabakat Testi taban sapması yok
+10000: veri hazır (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-f/yeni/n-10000)
+cikis 0

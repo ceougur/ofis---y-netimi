@@ -1,0 +1,10 @@
+#!/bin/bash
+# Birleşik tur 6 — G2 komşu testleri (taramayla: komsu.mjs → komsu.txt; 241 dosya) iki saat diliminde (ders 13, 22). Yük koşusu: flock -s (çağıran sarar).
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-a115f88e3014ea777
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=$S/birlesik6-kanit
+cd "$W" || exit 1
+mapfile -t FILES < "$S/birlesik6-b6/komsu.txt"
+TZ=UTC node tools/kanit.mjs kos b6-komsu-utc -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 "${FILES[@]}"
+TZ=Europe/Istanbul node tools/kanit.mjs kos b6-komsu-istanbul -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 "${FILES[@]}"
+echo BITTI
