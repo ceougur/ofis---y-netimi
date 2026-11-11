@@ -436,3 +436,81 @@ WhatsApp tur 1 — `lib/whatsapp/**`, app-webhook; Ç2 tur 3 — ledger-vouchers
 - Kâhin kodu okunmadı (yalnız README); kâhinin `kartlar` raporundaki taksit kalanının bağsız tahsilatı içerip içermediği README'den kesin değil (EK-2B 35 (5) "kartın taksitlerine dağılmış bağsız
   ödemeler" içerdiğini gösteriyor) → S-Ç5-4.
 - Mevzuat birincil metinleri bu turda açılmadı (kitap §10'daki sınır aynen).
+
+---
+
+## 11. Ç5-A tur 1 (kod ajanı, 11.11.2026; taban `c5a-taban` b4d207e3) — KODDAN ÖNCE yazıldı
+
+Kapsam: defterin TÜRETME çekirdeği + veri / göç + uçlar (§2.1–§2.6, §2.8, §3.1, §3.2, §3.5; B2–B9, B15; S47, S48, S49, S51, S53). TUR 2'ye: §2.7 Açılış Eşleştirme Fişi ve
+ekranı, §3.3 Kural Farkı Düzeltme Fişi + "Düzeltildi" (B16), "Açılış Olabilir Kayıtlar" EKRANI + zil, §2.11 (S14 / S25 / S39; B14), kılavuz. Ç7a / Ç7b satırlarında
+(602 → 600.90, 689, .90 alt hesapları, 102.00 ara adımı) yalnız 500 → 519 ve açılış tanıması.
+
+### 11.1 §1'in dosya:satırlarının bugünkü karşılığı (taban b4d207e3)
+| §1 | Bugün |
+|---|---|
+| general-ledger.mjs:20 `LEDGER_RULE_VERSION` | :20 (aynı) |
+| :133 500 adı, :135 519 | :133, :135 |
+| :235 `opening(note)` | :235; okuyan :414-415 (cari Borç / Alacak Yaz) |
+| :368 Kasa açılışı | :368 |
+| :429 kart B CH T / A 602, :444 "Açılış (devir)" B 500 | :429, :444 |
+| :468 stok açılışı | :468 |
+| :551-563 banka fişi (saklı kod aynen) | :550-563 |
+| :606-631 JOURNAL_CLASS | :606-631; `classOf` :632, `journalOrder` :633 |
+| routes/ledger.mjs:87-94 cari SELECT (`is_opening` yok) | :99-107 |
+| routes/ledger.mjs:146-179 free-in / free-out / free-bounce, :203-210 `build()` 770 / 602 | :162-187, :215-225 |
+| routes/ledger.mjs:234-331 `expected()`, :356 `subledgerAccounts` | :246-343, :368 |
+| ledger-snapshots.mjs:29 GAP_RULE, :39 RULE_HISTORY | :29, :41; kayıt defteri `rules` :227; donmuş satırın sınıfı `classOf` :52-55 (madde kimliğinden) |
+| — | ledger-freeze-worker.mjs:30-37 (iş parçacığının kural kaydı: yalnız 2.4.9 ve güncel) |
+| bank/voucher.mjs:22-23 ROLE_GL, :100-120 | :22-23, `openingLines` :96-108, `carryLines` :110-121 |
+| bank/settings.mjs:157, bank/vouchers.mjs:997 | :157, :997 |
+| — İşlem Kartı görünümü | bank/movements.mjs:178-186 `voucherLines` (gl + glName saklı koddan) |
+| integrity.mjs:468-486 `stock:opening` | :466-489 |
+| routes/cheques.mjs:370 carisiz evrak, :838 "Açılış portföyü" | :372-373 (cari de keşideci de yoksa 400 — S49'un önünde), :838; karşılıksız :578-640 |
+| routes/accounts.mjs:1900-1905 Silinenler'den dönüş | :2061 `restoredOpening` (DOSYA SINIRI DIŞI — Ç5-B tur 2b-2; §11.6) |
+| test/donmus-defter-250:404, tur1:259-290 | :418, :259-290 |
+
+### 11.2 Kural başına değişen yol
+| Kural | Değişen yol |
+|---|---|
+| §2.1 hesap planı | ACCOUNT_PLAN: 500 "Sermaye"; 501–503, 520–529 ve 540–549'un Tek Düzen hesapları; MSUGT V.B Sermaye Yedekleri, V.C Kâr Yedekleri; PLAN_SUBS 649.90 "Sınıflandırılmamış" (S49) |
+| §2.2 519 | journal(): Kasa, cari, stok, kart / KG-5, açılış evrakı; banka satırı türetmede `effectiveGl(line)` (bank/voucher.mjs; saklı "500" + rol opening / closing → 519); aynı yardımcı İşlem Kartı (movements.mjs voucherLines), Banka Ayarları sabit satırı, fiş meta adları |
+| §2.3 işaret | rows(): `e.is_opening`, `e.opening_review` okunur; journal(): `opening(note)` KALKAR |
+| §2.4 KG-16 | göç 48: `account_entries.opening_review` ('' / candidate / confirmed / rejected); candidate + confirmed → 519, rejected → 602 / 770; uçlar YENİ routes/opening-review.mjs (`accounts.manage`) |
+| §2.5 evrak | göç 49: `cheques.is_opening` (ilk olayın notu "Açılış portföyü (Excel/Sheets)"); Excel yüklemesi işaretli yazar; rows() free satırlarında `isOpening`; build(): açılış → 519, açılış değil → alınan 649.90 / verilen 770.90 (S49), carisiz karşılıksız: açılış B 519 / A 101, açılış değil B 649.90 / A 101 (S66 — kâhin bakımı 2 KARARLAR D4′); S48 cari seçimi: karşılıksız ucunda `accountId` (carisiz evrakta) → carinin borç satırı (B CH / A 101) |
+| §2.6 sınıf | maddeye `cls` (açılış = 2; voucher-open 1'den sonra, belgelerden önce); `journalOrder` ve donmuş satırın sınıfı önce `cls`'i okur; kimlik değişmez |
+| §2.8 denetim | integrity.mjs: "Açılış Karşılığı (519 / 500)" denetimi (ikinci yükleyici, modül tablolarından SQL + fiş satırları); `stock:opening` → 519; `expected()`'e GİRMEZ (K6 değişmez) |
+| §3 kural sürümü | LEDGER_RULE_VERSION "2.5.0-defter"; RULE_HISTORY ["2.4.9", "2.5.0", "2.5.0-defter"]; "2.5.0" = 2.4.9 kopyasının takma adı (LEDGER_RULE_ALIASES; kayıt defteri + iş parçacığı) |
+| S53 | Mutabakat Testi / Defter Mutabakatı: kilitsiz geçmiş yılda 519 / 649.90 / 770.90 maddesi varsa uyarı satırı "Kilitlenmemiş Geçmiş Yıl Yeni Kuralla Hesaplandı" + "yılı kilitleyin" |
+
+### 11.3 Değişen kodu okuyanlar (ders 10; tarama `grep general-ledger.mjs / ROLE_GL / ledger().build|check|book`)
+| Okuyan | Etki | Ne yapılır |
+|---|---|---|
+| Yevmiye Defteri, Hesap Planı Mizanı, Mizan, Ana Defter (report-center :658-706, :1707; GET ledger) | 500 → 519, KG-5 tek madde, sıra | kendiliğinden (journal); e2e senaryo-defter-243 |
+| Alt Hesap Mizanı (report-center :965) | 649.90 yeni alt hesap | ad PLAN_SUBS'tan — rapor adları okuyor mu denenir |
+| Defter Mutabakatı (report-center :707) | yeni denetim satırı integrity().run()'dan gelir | kendiliğinden (rapor denetimleri listeler) |
+| Mutabakat Testi + kapı (integrity.mjs run) | yeni denetim yalnız tam taramada (COMMIT'te değil) | §6 bütçesi ≤ 20 ms |
+| İşlem Kartı / Banka Fişi görünümü (movements.mjs :178) | saklı 500 | effectiveGl (DOSYA SINIRI: movements.mjs listede yok — tek satır, raporda) |
+| Banka Ayarları sabit eşleme (settings.mjs :157), fiş meta adları (vouchers.mjs :997) | ad / kod | 519 "Eşleştirilecek Açılış Bakiyeleri" |
+| bütünlük kapısının süzgeçli yolu (integrity-scope partyBalances / subBalances) | cari ve alt hesap bakiyesi DEĞİŞMEZ (yalnız karşı hesap) | komşu testleri |
+| donmuş defter (ledger-snapshots dondurma, ruleDiff, iş parçacığı) | yeni kural etiketi; "2.5.0" takma ad | kayıt defteri + tuzak testleri G3 |
+| 2.4.9 kopyası (ledger-rule-249) | journalOrder'ı güncel dosyadan içe aktarır — `cls`'siz maddede sıra AYNI | kopya sha256 değişmez |
+| tax.mjs (KDV mahsubu: 391 / 191 / 190) | etkilenmez | — |
+| mobil özet, cari kartı, cari listesi, Vade Takip | defter okumaz | — |
+| ikinci yükleyiciler (expected(), doubtfulExpected) | 500 / 519 yok; 649.90 alt defter hesabı değil | — |
+
+### 11.4 "Nasıl bozulur?" (§4 + bugünkü kod)
+§4 1–8, 10, 11 (Ç5-A) aynen; bugünkü koddan eklenenler: (a) 2.4.9 kopyası güncel `journalOrder`'ı kullanır → `cls` alanı kopyanın maddelerinde yok, sıra değişmemeli; (b) iş parçacığı kural
+kaydı ayrı (ledger-freeze-worker) → "2.5.0" bekleyen koşusu orada da tanınmalı; (c) `free-bounce` açılış evrakında cari seçilince cheque.account_id değişir → `free-in` hâlâ cariye
+işlenmemiş evrak (alacak satırı yok), `hasDebt` 1 → free-bounce yazılmaz (çift karşılıksız yok); (d) KG-5 kartının açılış satırları (plan_entries.opening) Geri Al / silme / Silinenler
+yoluyla P değişince tek maddenin tutarı değişir (T − P); (e) carisiz import kartı (127) da KG-5 (party plan:<id>); (f) "Mevcut Borcu Taksitlendir" (covers) içe aktarım kartı yeni alacak
+değildir → KG-5 tek madde YOK, açılış satırı B 519 / A CH (bugünkü B 500'ün 519'u); (g) Silinenler'den dönen cari satırı routes/accounts.mjs'te — dosya sınırı dışı (§11.6).
+
+### 11.5 Hız etkisi (§6)
+`rows()`'a iki sütun (aynı satır), kart sorgusuna üç alt sorgu (`opening` toplamı, yükleme damgası — plan_entries(plan_id) ve plan_imports birincil anahtarı), evrak sorgusuna bir sütun:
+build() ±%5 hedefi. Yeni denetim yedi SUM (tam taramada). Göç 48: tek UPDATE + JS katlama yalnız "a/A/Ä"… ile başlayan elle satırlarda; göç 49: tek UPDATE (ilk olay). Ölçüm: temiz
+100 bin kopyası, önce / sonra (kanıt docs/kanit/2026-11-11/c5a1-*).
+
+### 11.6 Dosya sınırının dışında kalan ve TUR 2 / ana oturuma bırakılan bağlantı noktaları
+- B8 / S51 (Silinenler'den dönen satır aday): routes/accounts.mjs (Ç5-B tur 2b-2'nin dosyası; YAZILMAZ). Bağlantı noktası: `restoredOpeningReview(payload, restoredIsOpening)`
+  (lib/ledger-opening.mjs) — accounts.mjs'teki INSERT'e `opening_review` sütunu olarak tek değer. Göç öncesi yedeğin geri yüklenmesi (B8'in öbür yarısı) göçü yeniden koşar → bu turda.
+- S48'in ekran sorusu: hof-cheques.js karşılıksız penceresine isteğe bağlı cari seçici (yeni ekran dosyası yok).
