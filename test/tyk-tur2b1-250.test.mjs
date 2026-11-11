@@ -451,6 +451,10 @@ describe("2.5.0 Ç5-B tur 2b-1 — D01–D03: durağan saatte iz kolonları (ön
     await h.must("Hangi Taksite = 1.", h.api.put(`/api/workspace/plans/${p.id}/entries/${w.entryId}`, { kind: "in", amount: "300", date: day(-5), method: "cash", cashForce: true, itemId: p.items[0].id }));
     check("D01 sonra", a);
     assert.deepEqual(h.fresh(a).overdue(TODAY).amount, 0, "D01: 1. taksit (vadesi geçmiş) kapandı");
+    // İkinci düzeltme (geri 2. taksite): ilk düzeltme hareketin güncelleme damgasını doldurdu — durağan saatte artık YALNIZ bağ kolonu değişir.
+    await h.must("Hangi Taksite = 2.", h.api.put(`/api/workspace/plans/${p.id}/entries/${w.entryId}`, { kind: "in", amount: "300", date: day(-5), method: "cash", cashForce: true, itemId: p.items[1].id }));
+    check("D01 ikinci düzeltme", a);
+    assert.deepEqual(h.fresh(a).overdue(TODAY).amount, 300, "D01: bağ 2. taksite döndü, 1. taksit 300 gecikmiş");
     const b = await h.account("D02 Taslak");
     const draft = await h.must("taslak", h.api.post("/api/workspace/invoices", { status: "draft", scenario: "service_sale", accountId: b.id, issueDate: day(-1), lines: [{ itemId: h.item.id, qty: 1, unitPrice: "1000", vatRate: 0 }], payment: { rest: "open", dueDate: day(-1) } }));
     check("D02 önce", b);
