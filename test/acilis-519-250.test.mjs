@@ -9,8 +9,11 @@ import { DatabaseSync } from "node:sqlite";
 import path from "node:path";
 import { trialBalance } from "../server/lib/general-ledger.mjs";
 import { lockDigestOf, LOCK_SQL_VERSION } from "../server/lib/integrity.mjs";
-import { isOpeningCandidateNote, restoredOpeningReview } from "../server/lib/ledger-opening.mjs";
 import { createUser, loginAdmin, removeTestDir, startTestServer } from "./helpers.mjs";
+// Tur 1b (ders 7, 38; C5-ACILIS-TASARIM §12.4): lib/ledger-opening.mjs (Ç5-A'nın yeni modülü) YALNIZ onu sınayan testlerde dinamik içe aktarılır — eski kodda dosya yüklenir, her
+// test kendi iddiasının yokluğuyla kırmızı olur (önceden üst düzey içe aktarma bütün dosyayı "modül bulunamadı" ile düşürüyordu). Hazırlık adımları istekleri TOPLAR, iddia etmez;
+// her test kendi ön koşulunu (need) kendi iddiası olarak sınar.
+const openingModule = () => import("../server/lib/ledger-opening.mjs");
 
 const NOW = "2026-11-23T00:30:00+03:00"; // İstanbul'da 23.11, UTC'de 22.11 (KG-5 yerel gün sınırı — iki TZ'de koşulur)
 const must = async (label, call) => {
@@ -31,44 +34,57 @@ describe("2.5.0 Ç5-A tur 1 — modül açılışları 519, KG-5, açılış evr
   let server;
   let admin;
   let ids = {};
+  const steps = {};
+  // Hazırlık adımı: yanıt TOPLANIR (iddia yok); veri döner (yoksa {}). Testler ön koşullarını need() ile kendi iddiası olarak sınar.
+  const step = async (label, call) => {
+    const r = await call;
+    steps[label] = { status: r.status, body: JSON.stringify(r.data).slice(0, 400) };
+    return r.status === 200 ? (r.data?.data ?? r.data) || {} : {};
+  };
+  const need = (...labels) => {
+    for (const label of labels) {
+      assert.ok(steps[label], `${label}: hazırlıkta koşulmadı`);
+      assert.equal(steps[label].status, 200, `${label}: ${steps[label].status} ${steps[label].body}`);
+    }
+  };
   before(async () => {
     server = await startTestServer({ now: { time: NOW, fixed: true } });
     admin = await loginAdmin(server);
-    await must("kurulum", admin.post("/api/workspace/bank/setup/dismiss", {}));
-    ids.cash = await must("Kasa açılışı", admin.post("/api/workspace/cash/opening", { amount: "1.000", date: "2026-02-01" }));
-    ids.debtor = (await must("borçlu cari", admin.post("/api/workspace/accounts", { name: "Borçlu Cari", registeredOn: "2026-02-01", openingBalance: "300", openingSide: "auto" }))).id;
-    ids.creditor = (await must("alacaklı cari", admin.post("/api/workspace/accounts", { name: "Alacaklı Tedarikçi", type: "supplier", registeredOn: "2026-02-01", openingBalance: "200", openingSide: "credit" }))).id;
-    ids.bank = await must("banka açılışı", admin.post("/api/workspace/bank/accounts", { bankName: "Ziraat Bankası", name: "Ana Hesap", kind: "demand", currency: "TRY", opening: { date: "2026-02-01", amount: "5.000", confirmed: true } }));
-    await must("Çek Kullan", admin.put(`/api/workspace/bank/accounts/${ids.bank?.id || ids.bank?.account?.id}`, { usePos: true, useCheque: true, useNote: true }));
-    ids.card = await must("kart açılışı", admin.post("/api/workspace/bank/accounts", { bankName: "Garanti BBVA", name: "Şirket Kartı", kind: "card", currency: "TRY", creditLimit: "10.000", opening: { date: "2026-02-01", amount: "400", confirmed: true } }));
-    await must("stok açılışı", admin.post("/api/workspace/stock", { name: "Un", unit: "Kg", unitPrice: "20", salePrice: "30", openingQty: "10", openingDate: "2026-02-01" }));
+    await step("kurulum", admin.post("/api/workspace/bank/setup/dismiss", {}));
+    ids.cash = await step("Kasa açılışı", admin.post("/api/workspace/cash/opening", { amount: "1.000", date: "2026-02-01" }));
+    ids.debtor = (await step("borçlu cari", admin.post("/api/workspace/accounts", { name: "Borçlu Cari", registeredOn: "2026-02-01", openingBalance: "300", openingSide: "auto" }))).id;
+    ids.creditor = (await step("alacaklı cari", admin.post("/api/workspace/accounts", { name: "Alacaklı Tedarikçi", type: "supplier", registeredOn: "2026-02-01", openingBalance: "200", openingSide: "credit" }))).id;
+    ids.bank = await step("banka açılışı", admin.post("/api/workspace/bank/accounts", { bankName: "Ziraat Bankası", name: "Ana Hesap", kind: "demand", currency: "TRY", opening: { date: "2026-02-01", amount: "5.000", confirmed: true } }));
+    await step("Çek Kullan", admin.put(`/api/workspace/bank/accounts/${ids.bank?.id || ids.bank?.account?.id}`, { usePos: true, useCheque: true, useNote: true }));
+    ids.card = await step("kart açılışı", admin.post("/api/workspace/bank/accounts", { bankName: "Garanti BBVA", name: "Şirket Kartı", kind: "card", currency: "TRY", creditLimit: "10.000", opening: { date: "2026-02-01", amount: "400", confirmed: true } }));
+    await step("stok açılışı", admin.post("/api/workspace/stock", { name: "Un", unit: "Kg", unitPrice: "20", salePrice: "30", openingQty: "10", openingDate: "2026-02-01" }));
     // Aynı gün olağan Kasa girişi (açılış sınıfı önce gelmeli; açılıştan önce kaydedilmiş gibi yazım sırası açılışınkinden ÖNCE değil — sıra sınıftan).
-    await must("Kasa girişi", admin.post("/api/workspace/cash", { kind: "in", amount: "50", date: "2026-02-01", description: "Olağan giriş" }));
+    await step("Kasa girişi", admin.post("/api/workspace/cash", { kind: "in", amount: "50", date: "2026-02-01", description: "Olağan giriş" }));
     // Açıklaması "Açılış…" olan YENİ Borç Yaz / Alacak Yaz (göçten sonra): açılış DEĞİL (C-01 / C-02; K8-1).
-    await must("Borç Yaz AÇILIŞ", admin.post(`/api/workspace/accounts/${ids.debtor}/entries`, { kind: "debt", amount: "70", date: "2026-03-01", note: "AÇILIŞ BAKİYESİ" }));
-    await must("Alacak Yaz açılış", admin.post(`/api/workspace/accounts/${ids.creditor}/entries`, { kind: "credit", amount: "30", date: "2026-03-01", note: "Açılış bakiyesi" }));
+    await step("Borç Yaz AÇILIŞ", admin.post(`/api/workspace/accounts/${ids.debtor}/entries`, { kind: "debt", amount: "70", date: "2026-03-01", note: "AÇILIŞ BAKİYESİ" }));
+    await step("Alacak Yaz açılış", admin.post(`/api/workspace/accounts/${ids.creditor}/entries`, { kind: "credit", amount: "30", date: "2026-03-01", note: "Açılış bakiyesi" }));
     // Excel açılış portföyü (carilere dokunmadan): alınan çek, alınan senet, verilen çek.
     const roles = { 0: "direction", 1: "instrument", 2: "serial", 3: "bank", 4: "drawer", 5: "amount", 6: "due", 7: "issue" };
-    const portfolio = await must("açılış portföyü", admin.post("/api/workspace/cheques/import", { matrix: [["Yön", "Tür", "Seri No", "Banka", "Keşideci", "Tutar", "Vade", "Tarih"], ["Alınan", "Çek", "AC-1", "Akbank", "Eski Keşideci", "800", "15.12.2026", "01.02.2026"], ["Alınan", "Senet", "AS-2", "Akbank", "Eski Borçlu", "150", "20.12.2026", "01.02.2026"], ["Verilen", "Çek", "AV-3", "Akbank", "Eski Lehtar", "120", "25.12.2026", "01.02.2026"]], headerAt: 0, roles, fileName: "acilis.xlsx", post: false }));
-    assert.equal(portfolio.created, 3);
-    [ids.openIn, ids.openNote, ids.openOut] = portfolio.ids;
+    const portfolio = await step("açılış portföyü", admin.post("/api/workspace/cheques/import", { matrix: [["Yön", "Tür", "Seri No", "Banka", "Keşideci", "Tutar", "Vade", "Tarih"], ["Alınan", "Çek", "AC-1", "Akbank", "Eski Keşideci", "800", "15.12.2026", "01.02.2026"], ["Alınan", "Senet", "AS-2", "Akbank", "Eski Borçlu", "150", "20.12.2026", "01.02.2026"], ["Verilen", "Çek", "AV-3", "Akbank", "Eski Lehtar", "120", "25.12.2026", "01.02.2026"]], headerAt: 0, roles, fileName: "acilis.xlsx", post: false }));
+    [ids.openIn, ids.openNote, ids.openOut] = portfolio.ids || [];
     // Formdan carisiz evrak (S49): ne cari ne keşideci — 2.4.9'da 400 idi.
-    ids.freeIn = (await must("carisiz alınan", admin.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", serialNo: "FC-1", bank: "Akbank", amount: "250", issueDate: "2026-04-01", dueDate: "2026-12-01" }))).id;
-    ids.freeIn2 = (await must("carisiz alınan 2", admin.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", serialNo: "FC-2", bank: "Akbank", amount: "90", issueDate: "2026-04-01", dueDate: "2026-12-01" }))).id;
-    ids.freeOut = (await must("carisiz verilen", admin.post("/api/workspace/cheques", { direction: "out", instrument: "cheque", serialNo: "FV-1", bank: "Akbank", amount: "60", issueDate: "2026-04-01", dueDate: "2026-12-01", bankAccountId: ids.bank?.id || ids.bank?.account?.id }))).id;
+    ids.freeIn = (await step("carisiz alınan", admin.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", serialNo: "FC-1", bank: "Akbank", amount: "250", issueDate: "2026-04-01", dueDate: "2026-12-01" }))).id;
+    ids.freeIn2 = (await step("carisiz alınan 2", admin.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", serialNo: "FC-2", bank: "Akbank", amount: "90", issueDate: "2026-04-01", dueDate: "2026-12-01" }))).id;
+    ids.freeOut = (await step("carisiz verilen", admin.post("/api/workspace/cheques", { direction: "out", instrument: "cheque", serialNo: "FV-1", bank: "Akbank", amount: "60", issueDate: "2026-04-01", dueDate: "2026-12-01", bankAccountId: ids.bank?.id || ids.bank?.account?.id }))).id;
     // Karşılıksız: açılış evrakı cari seçilmeden (S48) · açılış senedi cari seçilerek (S48) · formdan carisiz cari seçilmeden (S66) · formdan carisiz cari seçilerek (S66).
-    await must("AC-1 karşılıksız", admin.post(`/api/workspace/cheques/${ids.openIn}/actions`, { action: "bounce", date: "2026-05-01" }));
-    await must("AS-2 karşılıksız + cari", admin.post(`/api/workspace/cheques/${ids.openNote}/actions`, { action: "bounce", date: "2026-05-01", accountId: ids.debtor }));
-    await must("FC-1 karşılıksız", admin.post(`/api/workspace/cheques/${ids.freeIn}/actions`, { action: "bounce", date: "2026-05-01" }));
-    await must("FC-2 karşılıksız + cari", admin.post(`/api/workspace/cheques/${ids.freeIn2}/actions`, { action: "bounce", date: "2026-05-01", accountId: ids.debtor }));
+    await step("AC-1 karşılıksız", admin.post(`/api/workspace/cheques/${ids.openIn}/actions`, { action: "bounce", date: "2026-05-01" }));
+    await step("AS-2 karşılıksız + cari", admin.post(`/api/workspace/cheques/${ids.openNote}/actions`, { action: "bounce", date: "2026-05-01", accountId: ids.debtor }));
+    await step("FC-1 karşılıksız", admin.post(`/api/workspace/cheques/${ids.freeIn}/actions`, { action: "bounce", date: "2026-05-01" }));
+    await step("FC-2 karşılıksız + cari", admin.post(`/api/workspace/cheques/${ids.freeIn2}/actions`, { action: "bounce", date: "2026-05-01", accountId: ids.debtor }));
     // KG-5: Excel'den yüklenen kartlar — P > 0 (6.000 / 1.500), P = 0 (2.000), P = T (900 / 900).
     const plan = (name, total, paid) => [name, total, "6", "15.12.2026", paid, "01.03.2026"];
-    const imported = await must("Excel kartı", admin.post("/api/workspace/plans/import", { matrix: [["Ad Soyad", "Toplam", "Taksit Sayısı", "İlk Vade", "Ödenen", "Kayıt Tarihi"], plan("Kart Bir", "6000", "1500"), plan("Kart İki", "2000", "0"), plan("Kart Üç", "900", "900")], headerAt: 0, roles: { 0: "name", 1: "total", 2: "count", 3: "firstDue", 4: "paid", 5: "registered" }, fileName: "kart.xlsx", linkRecords: false }));
-    assert.equal(imported.created, 3, JSON.stringify(imported.skipped));
+    const imported = await step("Excel kartı", admin.post("/api/workspace/plans/import", { matrix: [["Ad Soyad", "Toplam", "Taksit Sayısı", "İlk Vade", "Ödenen", "Kayıt Tarihi"], plan("Kart Bir", "6000", "1500"), plan("Kart İki", "2000", "0"), plan("Kart Üç", "900", "900")], headerAt: 0, roles: { 0: "name", 1: "total", 2: "count", 3: "firstDue", 4: "paid", 5: "registered" }, fileName: "kart.xlsx", linkRecords: false }));
+    steps["Excel kartı sayısı"] = { status: imported.created === 3 ? 200 : 0, body: JSON.stringify(imported).slice(0, 400) };
   });
   after(async () => server?.close());
 
   it("modül açılışları tek madde, karşı hesap 519, açılış sınıfı (M-01, M-02 / M-03, M-04, M-05, M-07; KG-1); 500 Sermaye'ye hiçbir olay yazmaz", () => {
+    need("Kasa açılışı", "borçlu cari", "alacaklı cari", "banka açılışı", "kart açılışı", "stok açılışı");
     const entries = server.app.ledger.build();
     const cash = entries.find(entry => entry.source === "Kasa açılışı");
     assert.deepEqual(linesOf(cash), ["A 519 1000", "B 100 1000"]);
@@ -84,6 +100,7 @@ describe("2.5.0 Ç5-A tur 1 — modül açılışları 519, KG-5, açılış evr
   });
 
   it("açılış İŞARETTEN tanınır: göçten sonra yazılmış 'AÇILIŞ BAKİYESİ' Borç Yaz 602, 'Açılış bakiyesi' Alacak Yaz 770 (C-01 / C-02; P1, K8-1)", () => {
+    need("Borç Yaz AÇILIŞ", "Alacak Yaz açılış");
     const entries = server.app.ledger.build();
     const debt = entries.find(entry => entry.text === "AÇILIŞ BAKİYESİ");
     const credit = entries.find(entry => entry.text === "Açılış bakiyesi" && entry.source === "Cari (alacak yaz)" && entry.lines[0].credit + entry.lines[0].debit === 3000);
@@ -93,6 +110,7 @@ describe("2.5.0 Ç5-A tur 1 — modül açılışları 519, KG-5, açılış evr
   });
 
   it("açılış evrakı 519 (M-08 / M-09: 602 / 770'e yazılmaz); formdan carisiz evrak 649.90 / 770.90 (S49); karşılıksız: açılışta B 519 / A 101, carisizde B 649.90 / A 101, cari seçilince cari borçlanır (S48, S66)", async () => {
+    need("açılış portföyü", "carisiz alınan", "carisiz alınan 2", "carisiz verilen", "AC-1 karşılıksız", "AS-2 karşılıksız + cari", "FC-1 karşılıksız", "FC-2 karşılıksız + cari");
     const entries = server.app.ledger.build();
     const of = id => entries.filter(entry => entry.id.endsWith(`:${id}`) && entry.id.startsWith("account:free-")).map(entry => `${entry.id.split(":")[1]}|${linesOf(entry).join("|")}`).sort();
     assert.deepEqual(of(ids.openIn), ["free-bounce|A 101.01 800|B 519 800", "free-in|A 519 800|B 101.01 800"]);
@@ -114,6 +132,7 @@ describe("2.5.0 Ç5-A tur 1 — modül açılışları 519, KG-5, açılış evr
   });
 
   it("KG-5: yüklenen kart TEK madde B CH (T − P) / A 519, P maddesiz, tarih yüklemenin YEREL günü; P = 0 → T; P = T → madde yok (H-06, B5)", async () => {
+    need("Excel kartı", "Excel kartı sayısı");
     const entries = server.app.ledger.build();
     const today = (await must("bugün", admin.get("/api/workspace/ledger/lock"))).today;
     const cards = entries.filter(entry => entry.source === "Taksit kartı açılışı (Excel / tablo)");
@@ -127,11 +146,17 @@ describe("2.5.0 Ç5-A tur 1 — modül açılışları 519, KG-5, açılış evr
   });
 
   it("açılış sınıfı yalnız SIRAYI değiştirir: aynı gün Kasa açılışı olağan Kasa girişinden önce; borç = alacak her maddede", () => {
+    need("Kasa açılışı", "Kasa girişi", "banka açılışı", "stok açılışı", "açılış portföyü");
     const entries = server.app.ledger.build();
     const day = entries.filter(entry => entry.date === "2026-02-01");
-    const first = day.findIndex(entry => entry.source !== "Kasa açılışı" && !entry.cls);
-    const lastOpening = day.map(entry => Boolean(entry.cls)).lastIndexOf(true);
-    assert.ok(first > lastOpening, `açılış maddeleri olağanlardan önce: ${day.map(entry => `${entry.id}:${entry.cls ?? "-"}`).join(", ")}`);
+    // Tur 1b (ders 7): açılış maddeleri KAYNAĞINDAN tanınır (cls'e bakılmadan) — Kasa açılışı, banka / kart açılış fişi (karşı hesabı 500 / 519), stok açılışı, Excel açılış portföyü.
+    // Olağan Kasa girişi (aynı gün) hepsinden SONRA gelmeli: açılış sınıfı (G-4 / M-01, B9) olmasa banka fişi (sınıf 39) ve evrak (yazım sırası FREE_SEQ) Kasa girişinden (sınıf 32)
+    // sonra gelir. (Önceki biçim cls'i olmayan kodda boş koşulla geçiyordu.)
+    const isOpening = entry => entry.source === "Kasa açılışı" || entry.id.startsWith("stock-open:") || (entry.id.startsWith("bank:") && entry.lines.some(line => line.account === "500" || line.account === "519")) || (entry.id.startsWith("account:free-in:") && ["AC-1", "AS-2"].includes(server.app.store.get("SELECT serial_no AS no FROM cheques WHERE id = ?", entry.id.slice("account:free-in:".length))?.no));
+    const plain = day.findIndex(entry => entry.text === "Olağan giriş");
+    const openings = day.map((entry, index) => (isOpening(entry) ? index : -1)).filter(index => index >= 0);
+    assert.ok(plain >= 0 && openings.length >= 5, `aynı gün açılışlar ve olağan giriş: ${day.map(entry => entry.id).join(", ")}`);
+    assert.ok(openings.every(index => index < plain), `açılış maddeleri olağan Kasa girişinden önce: ${day.map(entry => `${entry.id}:${entry.cls ?? "-"}`).join(", ")}`);
     for (const entry of entries) assert.equal(entry.lines.reduce((sum, line) => sum + line.debit - line.credit, 0), 0, `${entry.id} dengesiz`);
   });
 
@@ -149,6 +174,7 @@ describe("2.5.0 Ç5-A tur 1 — modül açılışları 519, KG-5, açılış evr
   });
 
   it("Banka İşlem Kartı ve Banka Ayarları 519 okur; saklı satır kodu 500 kalır (B3)", async () => {
+    need("banka açılışı");
     const event = server.app.store.get("SELECT e.id FROM fin_events e WHERE e.type = 'opening' LIMIT 1");
     const card = await must("İşlem Kartı", admin.get(`/api/workspace/bank/events/${event.id}`));
     const lines = card.lines || card.event?.lines || [];
@@ -188,7 +214,11 @@ describe("2.5.0 Ç5-A tur 1 — KG-16 'Açılış Olabilir' (göç 48): aday kur
   const downgrade = async () => {
     await server.app.close();
     const db = new DatabaseSync(file);
-    db.exec("UPDATE account_entries SET opening_review = ''; UPDATE cheques SET is_opening = 0; PRAGMA user_version = 47;");
+    // Eski kodda (göç 48 / 49 yok) sütunlar yoktur: yalnız var olanı boşalt (hazırlık eski şemada da yürür; ders 38).
+    const has = (table, column) => db.prepare(`PRAGMA table_info(${table})`).all().some(row => row.name === column);
+    if (has("account_entries", "opening_review")) db.exec("UPDATE account_entries SET opening_review = ''");
+    if (has("cheques", "is_opening")) db.exec("UPDATE cheques SET is_opening = 0");
+    db.exec("PRAGMA user_version = 47;");
     db.close();
     server = await startTestServer({ dataDir: first.dataDir, backupDir: path.join(first.root, "backups"), now: { time: NOW, fixed: true } });
     admin = await loginAdmin(server);
@@ -209,6 +239,7 @@ describe("2.5.0 Ç5-A tur 1 — KG-16 'Açılış Olabilir' (göç 48): aday kur
   });
 
   it("göç 48: aday kuralı (B6, S65) — Türkçe küçük harf + ç/ı/ş katlaması, baştaki boşluk; 'Devir' / 'Devreden' / ortada geçen girmez; Açılış Bakiyesi satırı (is_opening) aday değil; onaya kadar 519 (S47)", async () => {
+    const { isOpeningCandidateNote } = await openingModule();
     for (const note of NOTES) assert.equal(isOpeningCandidateNote(note), WANT.includes(note), note);
     const list = await must("liste", admin.get("/api/workspace/opening-review"));
     // Program açıklamayı kaydederken baştaki boşluğu atar (form / API); katlama işlevi baştaki boşluğu da tanır (yukarıda).
@@ -276,7 +307,8 @@ describe("2.5.0 Ç5-A tur 1 — KG-16 'Açılış Olabilir' (göç 48): aday kur
 });
 
 describe("2.5.0 Ç5-A tur 1 — Silinenler bağlantı noktası (B8 / S51; routes/accounts.mjs tur 2b-2 sonrası bağlanır)", () => {
-  it("restoredOpeningReview: işaretli silinmiş + başka açılış → candidate; 2.4.x yükü 'Açılış…' → candidate; 2.5.0 yükü durumunu korur; işaretle dönen ''", () => {
+  it("restoredOpeningReview: işaretli silinmiş + başka açılış → candidate; 2.4.x yükü 'Açılış…' → candidate; 2.5.0 yükü durumunu korur; işaretle dönen ''", async () => {
+    const { restoredOpeningReview } = await openingModule();
     assert.equal(restoredOpeningReview({ kind: "debt", source: "", isOpening: 1, note: "x" }, 0), "candidate");
     assert.equal(restoredOpeningReview({ kind: "debt", source: "", isOpening: 1, note: "x" }, 1), "");
     assert.equal(restoredOpeningReview({ kind: "credit", source: "", note: "AÇILIŞ" }, 0), "candidate");
