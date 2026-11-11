@@ -2409,3 +2409,85 @@ cari öz test **4.457/4.457** (`-cari-oz-*`: elle tablolar 89 senaryo, mutantlar
 (`-kirmizi-eski-cari-*`) · eski elle tablo farkı **88/88** izinli (`-elle-fark-*`) · G1 tarama **89/89** (`-g1-tara-*`) · geniş tarama **2.201/2.201** (`-genis-tarama-*`; bakım 8 ile aynı sayı) · mutant ↔ senaryo
 dökümü `kahineski9-arac/mutant-senaryo.py` (261 H1 / H4b / E11 / E12, 262 H1 / E11, 263 H14 / E11, 264 H4a). **Defter öz testi BAŞARISIZ** (`-defter-oz-*`; `VARSAYILAN_KURAL` AttributeError) — TABANDA da aynı
 (eski kopya `9446aff4`'te koşuldu); bu bakım defter kâhinine dokunmadı. Mutasyon, eşdeğerlik, öz test ve geniş tarama `flock -s -n …/olcum.lock` ile (ders 52). Program açılmadı.
+
+## 22. 2.5.0 Ç5 bakımı 10 — S122 (birden çok elle borcu içine alan karta gelen ödeme elle borçların Kalan'ını içine alma sırasıyla, eskiden yeniye düşürür) + S123 / S124 / S125 = C (BİLİNEN SINIR) (11.11.2026, `date -u` 08:36; karar 11.11.2026 — ana oturumun özet dosyası; eski kâhinler bakımı 10 — kodu görmeyen AYRI el) — kural seti `2.5.0` = §13 + … + §21 + bu bölüm
+
+Bu bakım KÜÇÜKTÜR: bakım 9'un dört susma sınırının kullanıcı yanıtları — biri kural (S122 = A, SK-21'in sorusu), üçü BİLİNEN SINIR (S123 / S124 / S125 = C — SK-20 / SK-22 / SK-23; susma AYNEN, yalnız
+neden metni). S110, S120, S2, S50, S101, S99 ve §13–§21'in öbür kuralları DEĞİŞMEZ; tek kalem içeren kartta C13.4 (7) / Y9-7 AYNEN. `--kural 2.4.9` (ve 2.4.6 / 2.4.5 / `--legacy`) AYNEN. Defter
+kâhini (`test/bagimsiz/defter/`) DEĞİŞMEZ (Mevcut Borç kartı maddesizdir — elle kaydın "Kalan" sütunu yevmiyeyi değiştirmez).
+**Bu bölümün ilk commit'i yalnız YORUMDUR (ders 40 — önce kural, sonra kod); senaryo / mutant / G3 sayıları kod ve kanıt commit'lerinde eklenir.**
+
+### C00o Temiz oda (bakım 10)
+- **Girdi (AYNEN; ana oturumun özet dosyası `scratchpad/kahin-eski10-kararlar.md` — "programın hesap / görünüm davranışı hakkında hiçbir bilgi içermez"):**
+  - SORU S122 (bakım 9'un SK-21'i — kullanıcıya gösterilen metin AYNEN): "karta ödeme gelince hangi elle borcun "Kalan"ı düşer? Uç durum değil: birden çok elle borcu içine alan her kartta, her
+    taksit ödemesinde çıkar. Örnek: F 600 + X 500 + Y 700, kart 900 (içinde X 500 + Y'nin 400'ü). Karta 300 ödeme geliyor. — A (öneri): eskiden yeniye → X Kalan 200, Y Kalan 700. — B: en yeniden →
+    X Kalan 500, Y Kalan 400. Bakiye, kart kalanı, gecikmiş tutar ve takvim ikisinde de aynı; değişen yalnız elle kayıtların "Kalan" sütunu."
+  - SORULAR S123 (SK-20), S124 (SK-22), S125 (SK-23) — üçü "(uç durum)", seçenek C "uç durum böyle kalsın (bilinen sınır)" (metinler girdi dosyasında AYNEN; örnekleri §21'in SK-20 / SK-22 / SK-23'ü).
+  - KARAR (kullanıcı 11.11.2026, AYNEN: "s122 a şıkı, diğerleri c"): "S122 = A (PARA KURALI): Taksitler'den açılan kart birden çok elle borcu içine aldıysa karta gelen ödeme elle borçların
+    'Kalan'ını kartın içine alma sırasıyla, ESKİDEN YENİYE düşürür. Örnek: fatura F 600 + elle borç X 500 + elle borç Y 700, kart 900 (içinde X 500 + Y'nin 400'ü); karta 300 ödeme ⇒ X Kalan 200,
+    Y Kalan 700 (bakiye, kart kalanı, gecikmiş ve takvim değişmez). S123 = C, S124 = C, S125 = C: üçü de UÇ DURUM — BİLİNEN SINIR. Kural konmadı; kâhin SK-20, SK-22, SK-23'te SUSMAYA DEVAM EDER.
+    Bu üç kayıt artık "KULLANICIYA SORULMALI" değil "BİLİNEN SINIR (kullanıcı kararı S123 / S124 / S125 = C)" diye anılır (susma davranışı değişmez; yalnız neden metni / KARARLAR başlığı)."
+  - NOT (ana oturum, AYNEN): "(1) S122 yalnız kartın içine BİRDEN ÇOK elle borç aldığı durumu yanıtlar; S110, S120, S2, S50, S101 kararlarının YERİNE geçmez; tek kalem içeren kartta bakım 9'un
+    kuralı aynen. (2) "Karta gelen ödeme" sözünün kapsamı (kartın taksit tahsilatı; karta pay düşen bağsız tahsilat — bakım 9'un H10 / H11 senaryolarındaki iki yol) karar metninden tek okumayla
+    çıkıyorsa değer yaz; çıkmıyorsa o yolda SUS ve "KULLANICIYA SORULMALI" yaz (iki seçenek + öneri; uç durumsa üçüncü seçenek "Uç durum böyle kalsın (BİLİNEN SINIR)"). (3) Ödemenin geri
+    alınması / silinmesi / düzeltilmesi sonrası 'Kalan' için karar ayrı bir şey söylemiyor: geri alınan ödeme hiç yapılmamış gibi okunabiliyorsa (kâhinin öbür geri alma kurallarıyla aynı) öyle;
+    tek okuma çıkmıyorsa SUS. Kendi yorumunla kesinleştirme."
+- **Birlikte okunan (kâhinin kendi belgesi):** bu dosyanın §13 C13.4 (1)–(11) ve K6.5, §20 (Y8-3 / Y8-4), §21 (bütünü — Y9-1 … Y9-9, SK-20 … SK-23, C21.1 … C21.3, C8n, C0n); `model.py` kart tüketimi
+  (`_tyk`, `_s120_doldur`), defter kalanı (`_alacak_govde250`), gecikmiş (`_gecikmis_brut`), görünüm (`kontrol` hareket / fatura kalemleri), adımlar (`tahsilat`, `kart_tahsilat`, `hareket_sil`,
+  `hareket_geri_yukle`, `hareket_duzenle`); d35 elle senaryosu ve onu üreten `docs/kanit/2026-11-11/kahineski9-arac/yeni-senaryolar9.py`. Okunan / okunmayan dosyaların tam listesi ajan raporunda.
+- **Okunmayan:** `server/**`, `client/**`, `bulut/**`, `packaging/**`, `tools/**` (yalnız `kanit.mjs` çalıştırılır), `docs/erp/C5-ACILIS-TASARIM.md`, `docs/erp/C5B-TYK-TASARIM.md`, `docs/devir/**`,
+  `docs/2.5.0-IS-LISTESI*.md` (hiçbir sürümü), `test/bagimsiz/cari/YAPIM-ASAMASI.json`, `kos.mjs`, iki kâhin klasörü dışındaki `test/**`, başka ajanların `docs/kanit/**` dosyaları (yalnız
+  `kahineski9-arac/` araçları), git farkı / geçmiş içeriği. Program koşulmadı; programın davranışı aranmadı. CLAUDE.md "Açık iş"teki program durumu kural / beklenti kaynağı sayılmadı.
+
+### Kâhinin BUGÜNKÜ (bakım 9, `ab628e61` + ana dal) okuması — S122 alanında (açıkça)
+Bakım 9 kâhini S122'nin hiçbir seçeneğini DEĞER olarak yazmıyordu: S120 alanındaki (Y9-3) kart birden çok elle kalemi içine aldıysa ve kartın ödenen kısmı > 0 ise (kart tahsilatı — d35 H11; S50 ile
+bağsız tahsilatın taksite düşen payı — d35 H10) cari C13.4 (11) düzeninde SUSUYORDU (Kalan / açık / kart kalanı / gecikmiş / görünüm yazılmaz; `belirsiz` "… SK-21 (§21)"); yazılanlar yalnız bakiye
+ve kart tutarı. Kartın ödenen kısmı 0 iken Y9-7 ile DEĞER (Kalan = kuyruk kalanı + tüketilen). Taksitler'den açılan kart açık borca EŞİT (O = T) olup birden çok kalemi tükettiyse — kalemlerin
+hepsi elle olsa bile — C13.4 (7) / (11) ile ödenen kısımdan bağımsız SUSUYORDU ("birden çok kalemi tüketti (dağılım kararda yok)"). SK-20 / SK-22 / SK-23 "KULLANICIYA SORULMALI" diye susuyordu.
+
+### Yorumlar (ders 40 — karardan; kod yazılmadan ÖNCE; baş mimar kullanıcıya gösterir)
+- **Y10-1 — kural:** Taksitler'den açılan Mevcut Borç kartının içine aldığı kalemlerin HEPSİ elle kayıt (elle Borç Yaz, borçlu Açılış) ve en az İKİ tane ise kartın ödenen kısmı P (C13.4 (7)'nin
+  "kartın ödenen kısmı" — kart taksitlerinin kapanan toplamı, S101'in avansla ödenmiş saydığı kısım hariç) elle kalemlere kartın İÇİNE ALMA SIRASIYLA, eskiden yeniye, birikimli dağılır: ilk
+  kalemin karttaki kısmı (tüketilen) dolana dek ona, sonra ikinciye … Her kalemin defter kalanı (Kalan; K6.5 (a)) = kuyruk kalanı + tüketilen − o kaleme düşen pay. Kararın örneği AYNEN:
+  X tüketilen 500, Y tüketilen 400 (kuyruk 300); P = 300 ⇒ X 0 + 500 − 300 = 200, Y 300 + 400 − 0 = 700. Bakiye, kart kalanı, gecikmiş, takvim / Vade Takip / projeksiyon (kuyruk kalanı — Y8-4)
+  DEĞİŞMEZ ("bakiye, kart kalanı, gecikmiş ve takvim değişmez"). P = 0 iken Y9-7 AYNEN.
+- **Y10-2 — "karta gelen ödeme"nin kapsamı (NOT (2)) — TEK OKUMA, değer:** P kaynağına bakmaz: kart tahsilatı (karta doğrudan; d35 H11) ve kart seçilmeden alınan tahsilatın S50 ile taksite düşen
+  payı (d35 H10) AYNI P'ye girer. Gerekçe (kâhinin kendi belgesinden): S122 sorusu bakım 9'un SK-21'inin sorusudur ve SK-21 (Y9-7) iki yolu birlikte tanımlıyordu ("kartın ödenen kısmı > 0 iken
+  (kart tahsilatı ya da S50 ile bağsız tahsilatın taksite düşen payı)"); S50 A "kart seçilmeden alınan tahsilat ayrı taksit kartının vadesi gelmiş taksitini de kapatır (tek yükümlülük kuyruğu)" —
+  kapanan taksit kartın ödenmiş taksitidir; C13.4 (7) tek kalemli kartta da P'yi kaynağa göre ayırmaz. Karar yalnız SIRAYI verdi; kaynağa göre başka bir sıra okuması metinde yok. Aynı gerekçeyle
+  taksiti kapatan öbür bağsız kapatıcıların (stok Satış İadesi, Değersiz Alacak Yaz, bağ fazlası) S50 payı da P'dir (C13.4 (7) ile aynı; ayrı sıra okuması yok).
+- **Y10-3 — "birden çok elle borcu içine aldıysa" — O = T kartı da (BAŞ MİMAR'IN DEĞERLENDİRMESİNE):** kararın metni kuralı S120 alanına (O > T) bağlamıyor ("Taksitler'den açılan kart birden çok
+  elle borcu içine aldıysa"); soru metni de "birden çok elle borcu içine alan her kartta, her taksit ödemesinde çıkar" diyor. Bu yüzden kâhin Y10-1'i, Taksitler'den açılan kartın açık borca EŞİT
+  olduğu (O = T; eski M1e kuralı — kart bütün açık borcu S2 sırasıyla tüketir) ve tükettiği kalemlerin HEPSİ elle olduğu (iki ya da daha çok) durumda da uygular; içine alma sırası M1e'nin S2 sırasıdır
+  (vadesizde belge sırası). Bu durumda kâhin bakım 9'a kadar ödenen kısımdan bağımsız susuyordu (C13.4 (11) "birden çok kalemi tüketti"); artık Kalan değer alır (P = 0 iken kuyruk kalanı +
+  tüketilen — Y9-7 ile aynı) ve görünüm S110 alanının kurallarıyla (Y8-4 / C20.3: takvim / Vade Takip / projeksiyon kuyruk kalanı; sayaç ve görünüm toplamı yazılmaz) yazılır. Öbür okuma
+  ("S122 yalnız sorunun bağlamı — SK-21, S120 alanı") seçilirse O = T kartı eskisi gibi susar; ayrışan denetim sayısı G3'te ayrı sınıfta ("S122-OT") dökülür — ters okumaya dönmek tek koşuldur.
+  Kart bir faturayı / stok satışını / karşılıksızı / başka kartın taksitini de içine aldıysa (O = T) C13.4 (7) / (11) AYNEN susar — karar yalnız ELLE borçların sırasını verdi, ödemenin fatura ile
+  elle arasındaki dağılımı metinde yok.
+- **Y10-4 — S125 (= C) ile çakışan alt durum — SUS (BİLİNEN SINIR):** "kartın içine alma sırası" "eskiden yeniye"dir; "eski"nin vade mi belge tarihi mi olduğu S125'te soruldu ve kullanıcı C dedi
+  (kural yok). Bakım 9 yalnız iki sıranın TÜKETİMİ ayrıştığında susuyordu (SK-23). Tüketim aynı olup (örneğin elle borçların toplamı = kart, ikisi de tamamen kartta) iki sıra kalemleri FARKLI sırayla
+  diziyorsa ödeme iki okumada farklı kalemden düşer → kâhin SUSAR, neden "BİLİNEN SINIR (S125 = C) SK-23". Örnek: 01.03 F 600 · 02.03 X 500 (vade 30.03) · 05.03 Y 400 (vade 10.03) · 15.03 kart 900 ·
+  10.04 kart tahsilatı 300 ⇒ vade sırası Y Kalan 100, X Kalan 500 / belge sırası X Kalan 200, Y Kalan 400 (bakiye 1.200, kart kalanı 600 ikisinde aynı). İki okuma aynı payı veriyorsa (ör. kart tamamen
+  ödenmiş: P = 900 ⇒ X 0, Y 0) değer.
+- **Y10-5 — geri alma / silme / düzeltme (NOT (3)) — TEK OKUMA, değer:** Y10-1'in dağılımı yalnız P'nin TOPLAMINA bağlıdır (birikimli doldurma — ödemelerin sırası / sayısı sonucu değiştirmez;
+  iki ödeme üst üste = toplamları tek ödeme). Kâhin her kontrolde durumu baştan kurar; silinen (Silinenler'e giden) tahsilat P'ye girmez, geri yüklenen kendi tarihinde girer (C13.4 (4) "geriye tarihli
+  kayıt kendi tarihinde girmiş sayılır") → silinen ödeme hiç yapılmamış gibi; öbür geri alma kurallarıyla aynı. Tahsilat tutarının DÜZELTİLMESİ kâhinin dilinde yok (`hareket_duzenle` yalnız elle
+  Borç / Alacak) → denenmedi (C12o). Kart açıldıktan sonra içine alınan elle borcun silinmesi / düzenlenmesi bu kararın konusu değil (kartın tüketimi kartın gününde baştan kurulur — C13.4 (6)
+  AYNEN).
+- **Y10-6 — S123 / S124 / S125 = C:** SK-20 (açık elle borçların toplamı kart tutarından az), SK-22 (karta eşit birden çok elle borç, eskiden yeniye önce başka elle borç), SK-23 (vade ↔ belge
+  sırası tüketimi ayırıyor) ve Y10-4'ün alt durumu AYNEN susar (C13.4 (11) düzeni; yazılanlar yalnız bakiye ve kart tutarı); `belirsiz` nedeni "… BİLİNEN SINIR (kullanıcı kararı S123 = C) SK-20"
+  / "… (S124 = C) SK-22" / "… (S125 = C) SK-23" — "KULLANICIYA SORULMALI" yazılmaz. Susan kartın tüketimi eski sırayla sürer (bakım 8 / 9 düzeni); karta ödeme gelmesi susmayı değiştirmez.
+- **Y10-7 — DEĞİŞMEYEN:** tek kalem içeren kart (Y9-2 "kendi"; Y9-3'ün tek elle kalemi — kararın S120 2. / 3. örneği; O = T tek kalem) C13.4 (7) AYNEN; satışla açılan kart (Y7-2 / Y8-2),
+  Tablodan Aktar kartı (Y8-6), taksitli fatura (S99), O < T (EK-2B 32 / S101), G2 (b) (Y7-3), S2 / S50 sırası, gecikmiş C13.5 / C16.4, Y8-6'nın tanım alanı.
+
+### SK-20 … SK-23 bu kararlarla (açıkça)
+| Bakım 9 | Bakım 10 |
+|---|---|
+| SK-20 (E < T) — KULLANICIYA SORULMALI, SUS | **BİLİNEN SINIR (S123 = C)** — SUS aynen |
+| SK-21 (çok elle kalemli kart, P > 0) — KULLANICIYA SORULMALI, SUS | **DEĞER** (Y10-1; kart tahsilatı ve S50 payı — Y10-2; silme / geri yükleme — Y10-5) — yalnız Y10-4 alt durumu SUS (BİLİNEN SINIR S125 = C) |
+| SK-22 (birden çok eşit elle borç, önce başka elle borç) — KULLANICIYA SORULMALI, SUS | **BİLİNEN SINIR (S124 = C)** — SUS aynen |
+| SK-23 (vade ↔ belge sırası tüketimi ayırıyor) — KULLANICIYA SORULMALI, SUS | **BİLİNEN SINIR (S125 = C)** — SUS aynen; Y10-4 ile ödeme dağılımına da uygulanır |
+| (C13.4 (11)) O = T, Taksitler kartı, hepsi elle, iki ya da daha çok kalem — SUS | **DEĞER** (Y10-3 — baş mimarın değerlendirmesine) |
+
+### KULLANICIYA SORULMALI (bakım 10)
+YOK — Y10-2 / Y10-5 tek okuma; Y10-4 S125 = C'nin alanı (BİLİNEN SINIR); Y10-3 karar metninin harfi (baş mimar değerlendirir; ters okuma seçilirse tek koşul).
