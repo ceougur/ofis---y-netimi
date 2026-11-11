@@ -8,6 +8,7 @@ import os from "node:os";
 import path from "node:path";
 import { after, describe, it } from "node:test";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { removeTestDir } from "./helpers.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const { yapimAsamasiGate, YAPIM_ASAMASI_YOLU } = await import(pathToFileURL(path.join(ROOT, "tools", "kanit.mjs")).href);
@@ -77,6 +78,54 @@ describe("YAPIM AŞAMASI kapısı (yapimAsamasiGate)", () => {
     assert.equal(YAPIM_ASAMASI_YOLU, path.join(ROOT, "test", "bagimsiz", "cari", "YAPIM-ASAMASI.json"));
     const kos = readFileSync(path.join(ROOT, "test", "bagimsiz", "cari", "kos.mjs"), "utf8");
     assert.ok(kos.split(/\r?\n/).some(satir => satir.includes('path.join(HERE, "YAPIM-ASAMASI.json")')), "kos.mjs listeyi aynı adla okumalı");
+  });
+});
+
+// Birleşik tur 6 (dar kontrol DK-D2T3 DOĞRULANMADI → denendi): `git update-index --skip-worktree` ile listenin çalışma ağacında boşaltılması `git status --porcelain`'de
+// görünmüyor (temiz ağaç denetimi geçer) ve kapı çalışma ağacının BOŞ listesini okuyup geçiyordu. Kapı artık listeyi commit'ten de okur; farklıysa ret.
+describe("YAPIM AŞAMASI kapısı — liste commit'ten de okunur (skip-worktree / assume-unchanged atlatması)", () => {
+  const listeMetni = kayitlar => JSON.stringify({ aciklama: "deneme", kayitlar }, null, 1);
+  const dolu = [kayit("k1:mizan:519", "Ç5-A"), kayit("k1:mizan:500", "Ç5-A")];
+  const sahteGit = icerik => (...args) => (args[0] === "show" && args[1] === "HEAD:liste.json" ? icerik : null);
+  it("çalışma ağacında boş, commit'te dolu → ret: 'FARKLI' + 'commit'te boş değil'; ikisi aynıysa (CRLF ↔ LF dahil) geçer; commit'ten okunamıyor / bozuk → ret", () => {
+    const yol = yaz("liste.json", listeMetni([]));
+    const atlatma = yapimAsamasiGate(yol, { commit: true, kok: DIR, gitFn: sahteGit(listeMetni(dolu)) });
+    const ayni = yapimAsamasiGate(yaz("liste.json", listeMetni([]).split("\n").join("\r\n")), { commit: true, kok: DIR, gitFn: sahteGit(listeMetni([])) });
+    const okunamadi = yapimAsamasiGate(yol, { commit: true, kok: DIR, gitFn: sahteGit(null) });
+    const bozuk = yapimAsamasiGate(yol, { commit: true, kok: DIR, gitFn: sahteGit('{"kayitlar": [') });
+    assert.deepEqual(
+      { atlatma: [atlatma.ok, atlatma.problems.some(p => /çalışma ağacında commit'tekinden FARKLI \(commit'te 2, çalışma ağacında 0 kayıt\)/.test(p)), atlatma.problems.some(p => /commit'te boş değil: 2 kayıt/.test(p))], ayni: [ayni.ok, ayni.problems], okunamadi: [okunamadi.ok, /commit'ten okunamadı \(git show HEAD:liste\.json\)/.test(okunamadi.problems.join("\n"))], bozuk: [bozuk.ok, /okunamadı \(HEAD:liste\.json/.test(bozuk.problems.join("\n"))] },
+      { atlatma: [false, true, true], ayni: [true, []], okunamadi: [false, true], bozuk: [false, true] },
+    );
+  });
+  it("gerçek git: dolu liste commit'lenir, skip-worktree işaretlenir, çalışma ağacında boşaltılır → git status temiz (ön koşul), kapı ret; işaret yoksa status 'M' gösterir", () => {
+    const repo = mkdtempSync(path.join(os.tmpdir(), "yapim-asamasi-git-"));
+    try {
+      const git = (...args) => {
+        const r = spawnSync("git", ["-C", repo, "-c", "user.name=Deneme", "-c", "user.email=deneme@example.invalid", "-c", "core.autocrlf=false", ...args], { encoding: "utf8" });
+        return r.status === 0 ? r.stdout.trim() : null;
+      };
+      const yol = path.join(repo, "liste.json");
+      assert.notEqual(git("init", "-q"), null, "git init");
+      writeFileSync(yol, listeMetni(dolu));
+      assert.notEqual(git("add", "liste.json"), null);
+      assert.notEqual(git("commit", "-q", "-m", "liste"), null);
+      assert.notEqual(git("update-index", "--skip-worktree", "liste.json"), null);
+      writeFileSync(yol, listeMetni([]));
+      const status = git("status", "--porcelain");
+      assert.equal(status, "", "ön koşul (ders 20): skip-worktree işaretli dosyanın değişikliği git status'ta GÖRÜNMEZ");
+      const kapi = yapimAsamasiGate(yol, { commit: true, kok: repo, gitFn: git });
+      const yalnizAgac = yapimAsamasiGate(yol);
+      assert.notEqual(git("update-index", "--no-skip-worktree", "liste.json"), null);
+      assert.deepEqual(
+        { kapi: kapi.ok, neden: kapi.problems.some(p => /FARKLI/.test(p)), yalnizAgac: yalnizAgac.ok, isaretsizStatus: git("status", "--porcelain") },
+        { kapi: false, neden: true, yalnizAgac: true, isaretsizStatus: "M liste.json" },
+        "commit'le karşılaştırmayan kapı (eski davranış) bu durumda GEÇERDİ",
+      );
+    } finally {
+      // Windows (ders 48): git nesne dosyaları salt okunur — temizlik hatası asıl sonucu ezmez (removeTestDir yineler, Windows'ta uyarıyla bırakır).
+      removeTestDir(repo);
+    }
   });
 });
 
