@@ -57,6 +57,22 @@ describe("YAPIM AŞAMASI kapısı (yapimAsamasiGate)", () => {
       assert.match(r.problems.join("\n"), /boş sayılmaz/, ad);
     }
   });
+  // Birleşik tur 6 (dar kontrol DK-D2T3 DÜŞÜK-7, yaşayan mutant C1): koşucunun adım eşlemesini bekleyen kayıtlar ("eşleme" paketi) da sayılır — liste YALNIZ onlardan
+  // oluşsa da yayın adayı olmaz (S100: liste BOŞ olmak zorunda).
+  it("yalnız 'eşleme' paketli kayıtlar → yine ret (sayılır; paket dağılımında görünür)", () => {
+    const r = yapimAsamasiGate(yaz("esleme.json", JSON.stringify({ kayitlar: [kayit("k1:mizan:519", "eşleme"), kayit("k1:mizan:500", "eşleme")] }, null, 1)));
+    assert.deepEqual({ ok: r.ok, sayi: r.sayi, paketler: r.paketler }, { ok: false, sayi: 2, paketler: { eşleme: 2 } });
+    assert.match(r.problems.join("\n"), /YAPIM AŞAMASI listesi boş değil: 2 kayıt \(paketlere göre: eşleme 2\)/);
+  });
+  // Birleşik tur 6 (DK-D2T3 DÜŞÜK-7, mutant C3): varsayılan yol aracın KENDİ deposundan çözülür — çalışma dizinine bağlı değildir (release.mjs başka klasörden de çağrılabilir).
+  it("varsayılan yol çalışma dizininden bağımsız: başka klasörden çağrılınca da depodaki listeyi okur (aynı sonuç)", () => {
+    const burada = yapimAsamasiGate();
+    const kod = `const k = await import(${JSON.stringify(pathToFileURL(path.join(ROOT, "tools", "kanit.mjs")).href)}); const r = k.yapimAsamasiGate(); console.log(JSON.stringify({ ok: r.ok, sayi: r.sayi, problems: r.problems }));`;
+    const r = spawnSync(process.execPath, ["--input-type=module", "-e", kod], { cwd: DIR, encoding: "utf8" });
+    assert.equal(r.status, 0, r.stderr);
+    assert.deepEqual(JSON.parse(r.stdout.trim().split(/\r?\n/).at(-1)), { ok: burada.ok, sayi: burada.sayi, problems: burada.problems });
+    assert.notEqual(burada.sayi, null, "depodaki liste okunabilmeli (okunamadı iletisi değil)");
+  });
   it("kapı cari kâhininin okuduğu dosyayı denetler (aynı yol)", () => {
     assert.equal(YAPIM_ASAMASI_YOLU, path.join(ROOT, "test", "bagimsiz", "cari", "YAPIM-ASAMASI.json"));
     const kos = readFileSync(path.join(ROOT, "test", "bagimsiz", "cari", "kos.mjs"), "utf8");

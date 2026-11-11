@@ -186,6 +186,40 @@ describe("D2 tur 3 — arşivin yanında işlenmemiş günlük: arşiv 'değişm
     }
   });
 
+  // Birleşik tur 6 (dar kontrol DK-D2T3 DÜŞÜK-3, yaşayan mutant A4): yan dosya denetimi kaydında bütünlük özeti OLMAYAN (diskten tanınmış / özeti henüz alınmamış) arşivde de
+  // ÖNCE gelir — "recovered" yolu yan dosyayı görmezse kayda yalnız ana dosyanın özeti yazılır (WAL'daki kayıt "güvenilen" özetin dışında kalır), Doğrula "recovered" der.
+  test("özetsiz kayıtlı (bütünlük özeti yok) eski şemalı arşiv + işlenmemiş -wal → 409 archive-changed; kayda özet YAZILMAZ; Doğrula 'changed'; ana dosya, -wal ve klasör değişmedi", async () => {
+    const dir = workDir();
+    const server = await start(dir);
+    const close = closer(server);
+    try {
+      const admin = await loginAdmin(server);
+      const made = await placeLegacyArchive(server.app, ROOT_COMPANY_ID, { source: fixtureDb, year: "2025", register: false });
+      leaveJournal("wal", made.file);
+      assert.ok(size(`${made.file}-wal`) > 0, "ön koşul: -wal boş değil");
+      server.app.companies.addArchive(ROOT_COMPANY_ID, { year: "2025", cutoff: "2025-12-31", runId: made.runId, schemaVersion: made.schemaVersion, createdAt: new Date().toISOString() });
+      const entryBefore = server.app.companies.archiveOf(ROOT_COMPANY_ID, "2025");
+      assert.equal(entryBefore?.sha256 ?? "", "", "ön koşul: kayıtta bütünlük özeti yok");
+      const printBefore = folderPrint(made);
+      const view = readView(made.file);
+      const opened = await admin.get("/api/workspace/cash?hofArchive=2025");
+      const verified = unwrap(await admin.post("/api/admin/devir/archives/verify", { company: ROOT_COMPANY_ID, year: "2025" }));
+      const entryAfter = server.app.companies.archiveOf(ROOT_COMPANY_ID, "2025");
+      await close();
+      const seen = {
+        acilis: [opened.status, opened.data?.code, /işlenmemiş günlük dosyası var: destekofis\.sqlite-wal/.test(String(opened.data?.error || ""))],
+        dogrula: verified?.state,
+        kayit: JSON.stringify(entryAfter) === JSON.stringify(entryBefore),
+        ozet: entryAfter?.sha256 ?? "",
+        klasor: folderPrint(made),
+        veri: readView(made.file),
+      };
+      assert.deepEqual(seen, { acilis: [409, "archive-changed", true], dogrula: "changed", kayit: true, ozet: "", klasor: printBefore, veri: view });
+    } finally {
+      await close();
+    }
+  });
+
   test("BOŞ (0 bayt) -wal ve -shm kalıntısı zararsız: arşiv değişmiş SAYILMAZ, göç eder, uyarısız açılır; göçün sonucu yerine geçerken boş yan dosyalar silinir (D10)", async () => {
     const dir = workDir();
     const server = await start(dir);
