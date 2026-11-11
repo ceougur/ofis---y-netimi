@@ -290,7 +290,9 @@ describe("çek/senet: Cari, Taksit ve Kasa ile işlem bütünlüğü", () => {
   it("doğrulama: tutar, tarih, kişi, çift seri no, işlem tarihi; personel çek göremez", async () => {
     assert.equal((await admin.post("/api/workspace/cheques", { direction: "in", drawer: "X", amount: 0, dueDate: shift(3) })).status, 400);
     assert.equal((await admin.post("/api/workspace/cheques", { direction: "in", drawer: "X", amount: 10, dueDate: "2026-02-30" })).status, 400, "olmayan gün");
-    assert.equal((await admin.post("/api/workspace/cheques", { direction: "in", amount: 10, dueDate: shift(3) })).status, 400, "kimden alındığı yok");
+    // 2.5.0 Ç5-A (G3: KULLANICI S49 = A + BAŞ MİMAR KARARI 10.11 07:54 not (1)): cari de keşideci de yoksa REDDEDİLMEZ — formdan carisiz evrak (defter B 101 / A 649.90).
+    const free = await admin.post("/api/workspace/cheques", { direction: "in", amount: 10, dueDate: shift(3) });
+    assert.equal(free.status, 200, "carisiz evrak (S49) kabul");
     assert.equal((await admin.post("/api/workspace/cheques", { direction: "sideways", drawer: "X", amount: 10, dueDate: shift(3) })).status, 400);
     const dup = await admin.post("/api/workspace/cheques", { direction: "in", drawer: "Başka", amount: 10, dueDate: shift(3), serialNo: "A-100", bank: "Ziraat Meram" });
     assert.equal(dup.status, 409);

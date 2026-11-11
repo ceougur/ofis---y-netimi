@@ -164,10 +164,11 @@ describe("2.5.0 Ç5-A tur 1 — modül açılışları 519, KG-5, açılış evr
     await must("2025 portföyü", admin.post("/api/workspace/cheques/import", { matrix: [["Yön", "Tür", "Seri No", "Banka", "Keşideci", "Tutar", "Vade", "Tarih"], ["Alınan", "Çek", "OLD-1", "Akbank", "Eski", "40", "15.12.2026", "15.12.2025"]], headerAt: 0, roles, fileName: "eski.xlsx", post: false }));
     const before = await must("Mutabakat Testi", admin.get("/api/workspace/ledger/integrity"));
     const info = before.checks.find(check => check.code === "ledger:unlocked-years");
-    assert.ok(info && info.notice === true && info.years.includes("2025"), JSON.stringify(info));
+    assert.ok(info && info.ok === true && info.info === true && !info.notice && info.years.includes("2025"), JSON.stringify(info));
+    assert.equal(before.ok, true, "bilgi satırı Mutabakat Testi'nin sonucunu bozmaz (K8-4)");
     const report = await must("Defter Mutabakatı", admin.get("/api/workspace/report-center/defter-mutabakati"));
-    assert.ok(report.rows.some(row => row[1] === "Kilitlenmemiş Geçmiş Yıl Yeni Kuralla Hesaplandı" && row[5] === "Uyarı"), JSON.stringify(report.rows.slice(-5)));
-    assert.match(report.subtitle, /yılı kilitleyin/);
+    assert.ok(report.rows.some(row => row[1] === "Kilitlenmemiş Geçmiş Yıl (2025) Yeni Kuralla Hesaplandı — Beyan Edildiyse Yılı Kilitleyin" && row[5] === "Tutarlı"), JSON.stringify(report.rows.slice(-5)));
+    assert.ok(report.summary.some(([label, value]) => label === "Sonuç" && value === "Tutarlı"), "bilgi satırı Sonuç'u bozmaz");
     await must("2025 kilidi", admin.put("/api/admin/period-lock", { lockedUntil: "2025-12-31" }));
     const later = await must("Mutabakat Testi", admin.get("/api/workspace/ledger/integrity"));
     assert.equal(later.checks.some(check => check.code === "ledger:unlocked-years"), false);

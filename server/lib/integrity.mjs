@@ -501,10 +501,12 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
           checks.push({ code: `opening:${code}`, name: `Açılış Karşılığı (${code} ${code === "519" ? "Eşleştirilecek Açılış Bakiyeleri = Kasa, cari, banka, stok, taksit ve evrak açılışları + fişler" : "Sermaye = fişler"})`, ok: difference === 0, count: difference === 0 ? 0 : 1, difference: roundMoney(difference / 100), ledger: roundMoney(got[code] / 100), subledger: roundMoney(want[code] / 100), ...(code === "519" ? { parts: want.parts } : {}) });
         }
       }
-      // S53 = A (C5-ACILIS-TASARIM §3.5): kilitsiz geçmiş yıl yeni kuralla hesaplandı — bilgi (uyarı; sapma değil, notice). Bir satır (yıl sayısı count değil — uyarı artışı zili açmaz).
+      // S53 = A (C5-ACILIS-TASARIM §3.5; K8-4 "yalnız bilgi"): kilitsiz geçmiş yıl yeni kuralla hesaplandı — BİLGİ satırı: ok true (sapma da uyarı da değil; Mutabakat Testi'nin
+      // sonucunu, "N denetim tamam"ı bozmaz, zil / tarama günlüğü üretmez — notice DEĞİL). Defter Mutabakatı'nda adıyla ve önerisiyle görünür ("Tutarlı"). Tur 2'nin ekranı
+      // (ya da rapor merkezinde ayrı bir "Bilgi" durumu) bu satırı `info` alanıyla ayırabilir.
       const years = unlockedPastYears(lastEntries, { lock: period()?.lockedUntil?.() || "", today: period()?.today?.() || now.today() });
       if (years.length) {
-        checks.push({ code: "ledger:unlocked-years", name: "Kilitlenmemiş Geçmiş Yıl Yeni Kuralla Hesaplandı", ok: false, count: 1, severity: "warning", notice: true, years, hint: `Dönem kilidi konmamış geçmiş yıl (${years.join(", ")}) 2.5.0'ın açılış kurallarıyla hesaplandı (açılış karşı hesabı 519, açılış çekleri ve Excel taksit kartları gelir / gider değil). O yılın beyannamesi verildiyse Yönetim → Dönem Kilidi ile yılı kilitleyin; kilitli dönemin defteri değişmez.` });
+        checks.push({ code: "ledger:unlocked-years", name: `Kilitlenmemiş Geçmiş Yıl (${years.join(", ")}) Yeni Kuralla Hesaplandı — Beyan Edildiyse Yılı Kilitleyin`, ok: true, count: 0, info: true, years, hint: `Dönem kilidi konmamış geçmiş yıl (${years.join(", ")}) 2.5.0'ın açılış kurallarıyla hesaplandı (açılış karşı hesabı 519, açılış çekleri ve Excel taksit kartları gelir / gider değil). O yılın beyannamesi verildiyse Yönetim → Dönem Kilidi ile yılı kilitleyin; kilitli dönemin defteri değişmez.` });
       }
     }
     // Kuruş ve işaret: 12,345 TL ya da −5 TL gibi tutar yok.

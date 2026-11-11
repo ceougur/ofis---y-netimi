@@ -39,7 +39,9 @@ describe("B5 — 2.0.26'nın eski para türleri göçten sonra güncel kodla iş
       for (const [id, company] of companies) {
         const label = `${company.code} · ${company.name}`;
         assert.equal((await api.post("/api/companies/select", { id })).status, 200);
-        const failures = data => (data.failures || []).map(item => `${item.code}|${item.severity}|${item.count ?? ""}`).sort();
+        // 2.5.0 Ç5-A (G3: C5-ACILIS-TASARIM §3.1 — kural değişince kilitli dönemde "Kural Değişikliği Farkı" UYARISI görünür; fikstürün göç 47 koşusu açılıştan sonra arkada donar,
+        // uyarı o an çıkar): ledger:rule-diff bu karşılaştırmanın dışında — konusu yeni SAPMA. Kural farkının kendisi test/acilis-519-250 ve kanıt c5a1-v249'da.
+        const failures = data => (data.failures || []).filter(item => item.code !== "ledger:rule-diff").map(item => `${item.code}|${item.severity}|${item.count ?? ""}`).sort();
         const start = failures((await api.get("/api/workspace/ledger/integrity")).data);
         // Bu şirketin veri dosyasında işlemlerden önceki en büyük rowid'ler (sonra yazılanlar olaylı olmalı).
         const file = companyDbFile(fixture.dataDir, (readRegistry(fixture.dataDir) || []).find(entry => entry.id === id) || { id, dir: "" });

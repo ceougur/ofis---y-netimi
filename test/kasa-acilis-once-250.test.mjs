@@ -457,7 +457,9 @@ describe("Ç5-K S20 = A: v2.4.9'un GERÇEK koduyla üretilmiş açılış önces
     assert.equal(store.get("SELECT date FROM account_entries WHERE id = ?", ids.py).date, "2026-01-25");
     const ledger = await v.get("/api/workspace/ledger");
     const now250 = Object.fromEntries(ledger.data.trial.accounts.map(row => [String(row.code), Math.round(row.balance * 100)]));
-    assert.deepEqual(now250, old249, "mizan 2.4.9 ile aynı (defter kuralı değişmez)");
+    // 2.5.0 Ç5-A (G3: C5-ACILIS-TASARIM §2.2; M-01 — Kasa açılışının karşı hesabı 519): 2.4.9'un 500'ü yeni kuralda 519; öbür hesaplar aynı.
+    const want = Object.fromEntries(Object.entries(old249).map(([code, minor]) => [code === "500" ? "519" : code, minor]));
+    assert.deepEqual(now250, want, "mizan 2.4.9 ile aynı (yalnız 500 → 519)");
     const integrity = (await v.get("/api/workspace/ledger/integrity")).data;
     assertIntegrity(integrity, "göç");
     const warning = warningOf(integrity);

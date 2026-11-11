@@ -215,9 +215,9 @@ describe("Senet 121 / 321 — ciro, carisiz, taksit, fatura, iptal, sil → geri
     await must("ciro", act(ctx.api, n.id, { action: "endorse", date: TODAY, accountId: seller.id }));
     assert.deepEqual(linesOf(ctx, `account:${ctx.store.get("SELECT id FROM account_entries WHERE source = 'cheque' AND source_id = ? AND account_id = ?", n.id, seller.id).id}`), [["320", 70000, 0], ["121.01", 0, 70000]], "ciro B 320 / A 121");
     const free = await receive(ctx.api, { serialNo: "CS-1", drawer: "Carisiz Kişi", amount: "200" });
-    assert.deepEqual(linesOf(ctx, `account:free-in:${free.id}`), [["121.01", 20000, 0], ["602", 0, 20000]], "carisiz senet B 121 / A 602");
+    assert.deepEqual(linesOf(ctx, `account:free-in:${free.id}`), [["121.01", 20000, 0], ["649.90", 0, 20000]], "carisiz senet B 121 / A 649.90 (2.5.0 Ç5-A G3: S49 = A — formdan carisiz evrak 649.90; 2.4.9 602)");
     await must("carisiz karşılıksız", act(ctx.api, free.id, { action: "bounce", date: TODAY }));
-    assert.deepEqual(linesOf(ctx, `account:free-bounce:${free.id}`), [["770", 20000, 0], ["121.01", 0, 20000]], "carisiz karşılıksız B 770 / A 121");
+    assert.deepEqual(linesOf(ctx, `account:free-bounce:${free.id}`), [["649.90", 20000, 0], ["121.01", 0, 20000]], "carisiz karşılıksız B 649.90 / A 121 (2.5.0 Ç5-A G3: S66 = A — cari seçilmezse S49 geliri geri alınır; 2.4.9 770)");
     const plan = await must("taksit kartı", ctx.api.post("/api/workspace/plans", { name: "ABC Taksit", accountId: buyer.id, total: "900", mode: "auto", count: 1, firstDue: "2026-11-08", registeredOn: "2026-10-01" }));
     const planned = await receive(ctx.api, { serialNo: "TK-1", accountId: buyer.id, planId: plan.id, amount: "900" });
     const entry = ctx.store.get("SELECT id FROM plan_entries WHERE cheque_id = ?", planned.id).id;

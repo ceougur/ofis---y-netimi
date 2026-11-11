@@ -1,4 +1,5 @@
 // 2.1.0 Aşama 4 (Banka Hareketleri) testlerinin ortak yardımcıları. (Bu dosya test değildir: adı ".test.mjs" ile bitmez.)
+// 2.5.0 Ç5-A tur 1 — BEKLENTİ BİLEREK DEĞİŞTİ (G3: docs/erp/C5-ACILIS-TASARIM.md §2.2 / §11; KG-1, M-01 / M-04 / M-05 / M-07, B3): açılışların karşı hesabı 500 değil 519 "Eşleştirilecek Açılış Bakiyeleri" (banka fişinde saklı kod 500 kalır, türetmede 519). Tutarlar AYNI; yalnız hesap kodu.
 //
 // Sahte saat 08.10.2026 Perşembe (plan §12.5 ön koşulu). Hesaplar (kabul 1–4): Ziraat Bankası · Ana TL Hesabı 01.10.2026 100.000 (102.01),
 // Garanti BBVA · Ana TL Hesabı 50.000 (102.02); ayrıca Kurumsal Kredi Kartı (309.01, açılış borcu 5.000) ve Kredi Hesabı (300.01, açılış 0).
@@ -50,9 +51,9 @@ export class Ledger {
 
 /** Kabul hesaplarının açılışlarını modele yazar. */
 export function openingModel(ledger, set) {
-  ledger.post([["102", set.ziraat.glSub, "D", 10_000_000], ["500", "", "C", 10_000_000]]);
-  ledger.post([["102", set.garanti.glSub, "D", 5_000_000], ["500", "", "C", 5_000_000]]);
-  ledger.post([["500", "", "D", 500_000], ["309", set.card.glSub, "C", 500_000]]);
+  ledger.post([["102", set.ziraat.glSub, "D", 10_000_000], ["519", "", "C", 10_000_000]]);
+  ledger.post([["102", set.garanti.glSub, "D", 5_000_000], ["519", "", "C", 5_000_000]]);
+  ledger.post([["519", "", "D", 500_000], ["309", set.card.glSub, "C", 500_000]]);
 }
 
 /** Banka Fişi gönderir; 200 bekler; İşlem Kartı döner. */

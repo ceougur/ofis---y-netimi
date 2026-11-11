@@ -471,7 +471,9 @@ describe("2.1.0 Rapor Merkezi BANKALI veriyle: bütün para raporları × bütü
       assert.equal(signed("102"), toEnd(E.bank), "102 Bankalar = açılışlar + bağlı hareketler (transfer net 0)");
       // 120 + 320 (cari) toplamı = carilerin net bakiyesi; 500 = −açılışlar (banka hesapları + 2.2.0 İz 1.3: Kasa açılışı).
       const openings = r2(sum(E.bank.filter(r => r.adjust && (!range?.to || r.d <= range.to)), r => r.amt) + sum(E.cash.filter(r => r.opening && (!range?.to || r.d <= range.to)), r => r.amt));
-      assert.equal(signed("500"), r2(0 - openings) || 0, "500 Açılış = banka açılışları + Kasa açılışı");
+      // 2.5.0 Ç5-A (G3: KG-1, M-01 / M-04 — açılışların karşı hesabı 519; 500 Sermaye boş): 519 = banka açılışları + Kasa açılışı.
+      assert.equal(signed("519"), r2(0 - openings) || 0, "519 Açılış = banka açılışları + Kasa açılışı");
+      assert.equal(signed("500") || 0, 0, "500 Sermaye boş (yalnız Açılış Eşleştirme Fişi)");
     },
     yevmiye(data, c, range) {
       const b = col(data, "Borç");
