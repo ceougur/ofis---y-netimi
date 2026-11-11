@@ -193,9 +193,10 @@ describe("2.0.23 Bulgu 2: taksit kartı ↔ fatura kapama", () => {
     const inv = await sale(acc, "2025-02-20", 3000, { count: 3, firstDue: "2025-03-20", everyMonths: 1 });
     assert.equal((await collect(acc, "2025-02-21", 5000)).status, 200);
     const s = await state(acc, inv.id, inv.planId || inv.plan?.id);
-    assert.equal(s.open, s.cardLeft, `fatura açığı ${s.open} = kart kalanı ${s.cardLeft}`);
-    assert.deepEqual([s.open, s.cardLeft], [3000, 3000]);
-    assert.notEqual(s.payState, "paid");
+    // G3 (tur 2b-2, S99 = A — KULLANICI KARARI 10.11 13:27): bağsız 5.000 taksitli faturanın taksitlerini de kapatır → fatura Ödendi (açık 0); kartın KENDİ kalanı 3.000
+    // (kart tahsilatı yok; S118 = B — kart tahsilatı sınırı bundan). Önceki beklenti "fatura açığı = kart kalanı 3.000" v2.0.24 kuralıydı; S99 "KUYRUK kalanıyla sürer" dedi.
+    assert.deepEqual([s.open, s.cardLeft], [0, 3000]);
+    assert.equal(s.payState, "paid");
   });
 
   test("F: taksitli faturaya 'Kapatılacak Fatura' bağı reddedilir; liste taksitli faturayı ayırt eder", async () => {
@@ -401,7 +402,8 @@ describe("2.0.23 gözden geçirme: kapamanın kalan yolları", () => {
     server.app.store.run("UPDATE account_entries SET invoice_id = ? WHERE id = ?", f.id, res.entryId);
     const edit = await api.put(`/api/workspace/accounts/${acc.id}/entries/${res.entryId}`, { note: "yalnız açıklama düzeltildi" });
     assert.equal(edit.status, 200, `açıklama düzeltmesi engellenmemeli: ${JSON.stringify(edit.data).slice(0, 160)}`);
-    assert.deepEqual([(await inv(f.id)).open, (await card(f.planId)).totals.remaining], [3000, 3000]);
+    // G3 (tur 2b-2, S99 = A): bağı yok sayılan (taksitli fatura, v2.0.23) 1.000 bağsızdır ve taksitleri vade sırasıyla kapatır → fatura açığı 2.000; kartın kendi kalanı 3.000.
+    assert.deepEqual([(await inv(f.id)).open, (await card(f.planId)).totals.remaining], [2000, 3000]);
   });
 
   test("#7: kısmen ödenmiş açık fatura sonradan taksitlendirilemez; neden ve doğru yol söylenir", async () => {

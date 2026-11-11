@@ -1567,7 +1567,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   // Mizan (v2.0.7): tüm carilerin kartları, hareketleriyle; carinin defteri (accountLedger) Cari kartıyla aynı girdiyi alır.
   function ledgerPlansByAccount() {
     const out = new Map();
-    const plans = store.all("SELECT id, account_id AS accountId, name, total, status, covers_balance AS coversBalance, registered_on AS registeredOn, created_at AS createdAt, updated_at AS updatedAt, closed_at AS closedAt FROM plans WHERE deleted_at IS NULL AND account_id <> ''");
+    // import_id: Excel / Tablodan Aktar kartı (2.5.0 Ç5-B tur 2b-2 — S110 / S120 bu kartlara uygulanmaz; lib/accounts.mjs coverSource).
+    const plans = store.all("SELECT id, account_id AS accountId, name, total, status, covers_balance AS coversBalance, registered_on AS registeredOn, created_at AS createdAt, updated_at AS updatedAt, closed_at AS closedAt, import_id AS importId FROM plans WHERE deleted_at IS NULL AND account_id <> ''");
     if (!plans.length) return out;
     const seqs = new Map();
     const counts = new Map();
@@ -1594,10 +1595,11 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   function forAccount(accountId, user) {
     if (!accountId) return [];
     const cutsOf = returnCuts();
+    const imported = new Set(store.all("SELECT id FROM plans WHERE account_id = ? AND import_id <> ''", accountId).map(row => row.id));
     return store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND p.account_id = ? ORDER BY (p.status = 'active') DESC, p.created_at`, accountId).map(plan => {
       const shaped = shape(plan, user);
       const seqOf = new Map(shaped.items.map(item => [item.id, item.seq]));
-      return { ...shaped, itemCount: shaped.items.length, returnCuts: cutsOf.get(plan.id) || 0, entries: shaped.entries.map(entry => ({ ...entry, itemSeq: entry.itemId ? seqOf.get(entry.itemId) || null : null })) };
+      return { ...shaped, itemCount: shaped.items.length, returnCuts: cutsOf.get(plan.id) || 0, importId: imported.has(plan.id) ? "import" : "", entries: shaped.entries.map(entry => ({ ...entry, itemSeq: entry.itemId ? seqOf.get(entry.itemId) || null : null })) };
     });
   }
   // Carinin toplu taksitlendirmesi (routes/accounts.mjs): kartı cariye bağlı açar, isterse taksitleri dağıtır.
