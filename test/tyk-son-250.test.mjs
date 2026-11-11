@@ -111,6 +111,34 @@ describe("Ç5-B son tur — S126 = A (açık borca eşit, içinde fatura da olan
   });
 });
 
+describe("Ç5-B son tur — S128 = A (kartın içinde fatura / elle borç dışında kalem: türüne bakılmadan eskiden yeniye)", () => {
+  const sched = taksitler("M", 700, 2);
+  it("karar örneği: 01.03 stok veresiye S 400 · 02.03 elle X 300 · 15.03 kart 700 · 10.04 karta 300 ⇒ S açığı 100, X Kalan 300; bakiye 400, kart kalanı 400", () => {
+    const lines = [stokSatis("S", "2026-03-01", 400), borc("X", "2026-03-02", 300), kart("M", "2026-03-15", 700), kartTahsilati("e1", "M", "2026-04-10", 300)];
+    const r = build({ lines, schedules: sched, today: TODAY });
+    assert.deepEqual([kalan(r, "S"), kalan(r, "X")], [100, 300], "S açığı 100, X Kalan 300 (B olsaydı: X 0, S 400)");
+    assert.deepEqual([sigma(r), balanceOf([], lines), inst(r, "M")], [400, 400, [50, 350]], "bakiye 400 = kart kalanı 400");
+    assert.equal(r.coverage.get("M").rule, "s2");
+  });
+  it("elle borç stok satışından ESKİ: X 300 (25.02) · S 400 (01.03) · kart 700 · karta 500 ⇒ X Kalan 0, S açığı 200", () => {
+    const r = build({ lines: [borc("X", "2026-02-25", 300), stokSatis("S", "2026-03-01", 400), kart("M", "2026-03-15", 700), kartTahsilati("e1", "M", "2026-04-10", 500)], schedules: sched, today: TODAY });
+    assert.deepEqual([kalan(r, "X"), kalan(r, "S"), sigma(r)], [0, 200, 200]);
+  });
+  it("karşılıksız kalemi: 01.03 karşılıksız çek B 400 · 02.03 elle X 300 · kart 700 · karta 300 ⇒ B açığı 100, X Kalan 300; bağsız tahsilatla (S50) da aynı", () => {
+    for (const pay of [kartTahsilati("e1", "M", "2026-04-10", 300), tahsilat("T", "2026-04-10", 300)]) {
+      const lines = [karsiliksiz("B", "2026-03-01", 400), borc("X", "2026-03-02", 300), kart("M", "2026-03-15", 700), pay];
+      const r = build({ lines, chequeEvents: new Map([["B", "bounce"]]), schedules: sched, today: TODAY });
+      assert.deepEqual([kalan(r, "B"), kalan(r, "X"), sigma(r), inst(r, "M")], [100, 300, 400, [50, 350]], pay.id);
+    }
+  });
+  it("üç tür birlikte (fatura + stok + elle): F 200 (01.03) · S 300 (02.03) · X 200 (03.03), kart 700, karta 350 ⇒ F 0, S açığı 150, X Kalan 200", () => {
+    const docs = [sale("F", "2026-03-01", 200)];
+    const lines = [stokSatis("S", "2026-03-02", 300), borc("X", "2026-03-03", 200), kart("M", "2026-03-15", 700), kartTahsilati("e1", "M", "2026-04-10", 350)];
+    const r = build({ docs, lines, schedules: sched, today: TODAY });
+    assert.deepEqual([acik(r, "F"), kalan(r, "S"), kalan(r, "X"), sigma(r)], [0, 150, 200, 350]);
+  });
+});
+
 describe("Ç5-B son tur — BİLİNEN SINIRLAR (S123 = S124 = S125 = C: kural YOK; bugünkü davranış sabitlenir, değişmezler korunur)", () => {
   const two = (planId, total) => new Map([[planId, [{ id: `${planId}1`, seq: 1, dueDate: "2026-04-05", amount: total / 2 }, { id: `${planId}2`, seq: 2, dueDate: "2026-05-05", amount: total / 2 }]]]);
   const check = (r, docs, lines) => {
@@ -219,5 +247,20 @@ describe("Ç5-B son tur — gerçek program: S126 / S128 örnekleri ekranların 
     assert.deepEqual([two.acik, two.kalan, two.bakiye, two.kartKuyruk, two.taksit], [[0], { X: 200 }, 200, 200, [0, 0, 200]], "bağsız tahsilat (S50 payı) da eskiden yeniye: F kapandı, X Kalan 200");
     await must("tahsilatı sil", api.del(`/api/workspace/accounts/${acc.id}/entries/${free.id}?cashForce=1`));
     assert.deepEqual(await views(acc, plan.id, [f]), paid, "bağsız tahsilat silinince bir önceki hâl (bütün ekranlar)");
+  });
+  it("S128 = A: stok veresiye S 400 · elle X 300 · kart 700 (2 × 350) · karta 300 ⇒ X Kalan 300 (S açığı 100 — kuyrukta); bakiye 400, kart kalanı 400, gecikmiş 50 her ekranda", async () => {
+    const acc = await account("S128");
+    await must("stok satışı", api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "out", qty: "1", unitPrice: "400", pay: "account", accountId: acc.id, date: day(-50) }));
+    await entry(acc, { kind: "debt", amount: "300", date: day(-49), note: "X" });
+    const plan = await cardOpen(acc, 700, 2);
+    await cardPay(plan.id, 300);
+    const v = await views(acc, plan.id);
+    assert.deepEqual([v.kalan, v.bakiye, v.kartKendi, v.kartKuyruk, v.taksit], [{ X: 300 }, 400, 400, 400, [50, 350]]);
+    assert.deepEqual([v.gecikmis, v.gecikmisListe, v.vadeGecikmis, v.zil], [50, 50, 50, ["plan:50:overdue"]]);
+    // Stok satışı satırının Kalan'ı ekranda yok (yalnız elle Borç / Alacak satırında); kuyruğun kayıt haritasında: S açığı 100.
+    const ledger = server.app.context.accounts.detail(acc.id, { id: "son", role: "admin", permissions: [] }, { withRemaining: false }).ledger;
+    const queue = server.app.context.invoices.obligationsFor(acc.id, ledger);
+    const stock = ledger.find(row => row.origin === "stock");
+    assert.equal(queue.entries.get(stock.id).remaining, 100, "S açığı 100");
   });
 });
