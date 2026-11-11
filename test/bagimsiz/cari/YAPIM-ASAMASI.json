@@ -5049,6 +5049,443 @@
    "not": "ana oturum 10.11: S92 / S95–S98 / S102–S105 net görünüm senaryosu (kâhin bakımı 5 / 6); kararların kodu Ç5-B tur 2b'de — adım reddi yok, fark doğrudan görünüm farkı"
   },
   {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E5:gecikmis",
+   "beklenen": 120000,
+   "program": 150000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
+   "paket": "Ç5-B tur 2"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E6:gecikmis",
+   "beklenen": 20000,
+   "program": 50000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
+   "paket": "Ç5-B tur 2"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E9:gecikmis",
+   "beklenen": 50000,
+   "program": 70000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
+   "paket": "Ç5-B tur 2"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:fatura:E7F:acik",
+   "beklenen": 10000,
+   "program": 60000,
+   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
+   "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:fatura:E8F:acik",
+   "beklenen": 40000,
+   "program": 60000,
+   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
+   "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e7b:kalan",
+   "beklenen": 90000,
+   "program": 40000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta)",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e8b:kalan",
+   "beklenen": 90000,
+   "program": 70000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta)",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE6:kalan",
+   "beklenen": 50000,
+   "program": 60000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE6:odenen",
+   "beklenen": 10000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE6:taksit1:odenen",
+   "beklenen": 10000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE9:kalan",
+   "beklenen": 20000,
+   "program": 60000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE9:odenen",
+   "beklenen": 40000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE9:taksit1:odenen",
+   "beklenen": 30000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE9:taksit2:odenen",
+   "beklenen": 10000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:projeksiyon:hareket:e14ab",
+   "beklenen": "yok",
+   "program": {
+    "amount": 60000,
+    "date": "2026-03-10",
+    "direction": "in"
+   },
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan − Mevcut Borç kartının açık kapsamı, K6.5 (1) bir kez; pencere bugün → +30, gecikenler dahil)",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:projeksiyon:hareket:e1b",
+   "beklenen": "yok",
+   "program": {
+    "amount": 60000,
+    "date": "2026-03-10",
+    "direction": "in"
+   },
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan − Mevcut Borç kartının açık kapsamı, K6.5 (1) bir kez; pencere bugün → +30, gecikenler dahil)",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:projeksiyon:hareket:e4b",
+   "beklenen": "yok",
+   "program": {
+    "amount": 1,
+    "date": "2026-03-10",
+    "direction": "in"
+   },
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan − Mevcut Borç kartının açık kapsamı, K6.5 (1) bir kez; pencere bugün → +30, gecikenler dahil)",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:projeksiyon:hareket:e7b",
+   "beklenen": "yok",
+   "program": {
+    "amount": 10000,
+    "date": "2026-03-10",
+    "direction": "in"
+   },
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan − Mevcut Borç kartının açık kapsamı, K6.5 (1) bir kez; pencere bugün → +30, gecikenler dahil)",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:projeksiyon:hareket:e8b",
+   "beklenen": "yok",
+   "program": {
+    "amount": 40000,
+    "date": "2026-03-10",
+    "direction": "in"
+   },
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan − Mevcut Borç kartının açık kapsamı, K6.5 (1) bir kez; pencere bugün → +30, gecikenler dahil)",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:takvim:fatura:E14F",
+   "beklenen": {
+    "amount": 60000,
+    "direction": "in"
+   },
+   "program": "yok",
+   "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
+   "kural": "madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık)",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:takvim:fatura:E1F",
+   "beklenen": {
+    "amount": 60000,
+    "direction": "in"
+   },
+   "program": "yok",
+   "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
+   "kural": "madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık)",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:takvim:fatura:E4F",
+   "beklenen": {
+    "amount": 1,
+    "direction": "in"
+   },
+   "program": "yok",
+   "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
+   "kural": "madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık)",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:takvim:fatura:E7F",
+   "beklenen": {
+    "amount": 10000,
+    "direction": "in"
+   },
+   "program": "yok",
+   "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
+   "kural": "madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık)",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:takvim:fatura:E8F",
+   "beklenen": {
+    "amount": 40000,
+    "direction": "in"
+   },
+   "program": "yok",
+   "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
+   "kural": "madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık)",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:takvim:hareket:e14ab",
+   "beklenen": "yok",
+   "program": {
+    "amount": 60000,
+    "cari": "E14a",
+    "days": -36,
+    "direction": "in",
+    "dueDate": "2026-03-10",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Aynı Kartçı",
+    "state": "overdue"
+   },
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan − Mevcut Borç kartının açık kapsamı (K6.5); ufuk geçmiş + 7 gün",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:takvim:hareket:e1b",
+   "beklenen": "yok",
+   "program": {
+    "amount": 60000,
+    "cari": "E1",
+    "days": -36,
+    "direction": "in",
+    "dueDate": "2026-03-10",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Ebru Örnek",
+    "state": "overdue"
+   },
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan − Mevcut Borç kartının açık kapsamı (K6.5); ufuk geçmiş + 7 gün",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:takvim:hareket:e4b",
+   "beklenen": "yok",
+   "program": {
+    "amount": 1,
+    "cari": "E4",
+    "days": -36,
+    "direction": "in",
+    "dueDate": "2026-03-10",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Erkan Kuruş",
+    "state": "overdue"
+   },
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan − Mevcut Borç kartının açık kapsamı (K6.5); ufuk geçmiş + 7 gün",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:takvim:hareket:e7b",
+   "beklenen": "yok",
+   "program": {
+    "amount": 10000,
+    "cari": "E7",
+    "days": -36,
+    "direction": "in",
+    "dueDate": "2026-03-10",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Engin Yeni Borç",
+    "state": "overdue"
+   },
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan − Mevcut Borç kartının açık kapsamı (K6.5); ufuk geçmiş + 7 gün",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:takvim:hareket:e8b",
+   "beklenen": "yok",
+   "program": {
+    "amount": 40000,
+    "cari": "E8",
+    "days": -36,
+    "direction": "in",
+    "dueDate": "2026-03-10",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Esra İade",
+    "state": "overdue"
+   },
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan − Mevcut Borç kartının açık kapsamı (K6.5); ufuk geçmiş + 7 gün",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:vadeTakip:hareket:e14ab",
+   "beklenen": "yok",
+   "program": {
+    "amount": 60000,
+    "date": "2026-03-10",
+    "direction": "in"
+   },
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.3 kalem olmayan kayıt Vade Takip'te yok",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:vadeTakip:hareket:e1b",
+   "beklenen": "yok",
+   "program": {
+    "amount": 60000,
+    "date": "2026-03-10",
+    "direction": "in"
+   },
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.3 kalem olmayan kayıt Vade Takip'te yok",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:vadeTakip:hareket:e4b",
+   "beklenen": "yok",
+   "program": {
+    "amount": 1,
+    "date": "2026-03-10",
+    "direction": "in"
+   },
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.3 kalem olmayan kayıt Vade Takip'te yok",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:vadeTakip:hareket:e7b",
+   "beklenen": "yok",
+   "program": {
+    "amount": 10000,
+    "date": "2026-03-10",
+    "direction": "in"
+   },
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.3 kalem olmayan kayıt Vade Takip'te yok",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:vadeTakip:hareket:e8b",
+   "beklenen": "yok",
+   "program": {
+    "amount": 40000,
+    "date": "2026-03-10",
+    "direction": "in"
+   },
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.3 kalem olmayan kayıt Vade Takip'te yok",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok"
+  },
+  {
    "senaryo": "d4-c5-s50-tek-kuyruk",
    "anahtar": "k1:kart:K1:kalan",
    "beklenen": 150000,
