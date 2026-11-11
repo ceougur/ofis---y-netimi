@@ -1,0 +1,32 @@
+{
+  "ad": "kahineski9-elle-fark-ist",
+  "komut": "python3 -I -B docs/kanit/2026-11-11/kahineski9-arac/elle-fark.py --eski /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski9-eski/test/bagimsiz/cari --yeni test/bagimsiz/cari",
+  "commit": "ab628e61d9519bd1df25609ea6b1bc7afaf5b1af",
+  "dal": "worktree-agent-aa85b9828a1e24841",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-11T07:25:44.449Z",
+  "sure_sn": 0.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 88,
+    "gecen": 88,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski9-kanit/2026-11-11/kahineski9-elle-fark-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa85b9828a1e24841",
+  "ham_cikti_sha256": "d362373271ab902b82f307a98913b9dfb0c2ff4e92058331ae6317bb561f0866",
+  "ham_cikti_bayt": 6143
+}
