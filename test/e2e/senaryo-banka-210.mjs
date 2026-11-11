@@ -1013,18 +1013,24 @@ try {
     // Kök neden üründe: arka plan yenilemesi (adım 14'teki kaydın canlı olayı) pencereyi yeniden çizince odak süzgeç alanından düşüyordu.
     // fill iki adımdır (sayfada odak → ayrı çağrıyla metin); yeniden çizim araya girince metin hiçbir yere yazılmıyordu. Sıra burada her koşuda
     // zorla kurulur: odak → canlı olay → yeniden çizim → metin. Beklenen: odak kutuda kalır, yazılan kutuya girer ve liste süzülür.
+    // 2.5.0 birleşik tur 6 (HOF.swapKeeping; dar kontrol DK-D2T3 DÜŞÜK-4): arka plan yenilemesi odaktaki süzgeç çubuğunu artık yeniden KURMAZ — yeniden çizim çubuğun
+    // DIŞINDAKİ sekme çubuğunun (.hof-bank-tabs) yenilenmesiyle beklenir (önceden çubuğun kendisinin yenilenmesi beklenirdi; çubuk korununca bekleme süre aşımına düşerdi)
+    // ve çubuğun korunduğu (aynı düğüm) ayrıca denetlenir.
     const redrawBank = async () => {
-      const before = await admin.evaluateHandle(() => document.querySelector(".hof-bank-modal [data-mv-filters]"));
+      const before = await admin.evaluateHandle(() => [document.querySelector(".hof-bank-modal .hof-bank-tabs"), document.querySelector(".hof-bank-modal [data-mv-filters]")]);
       await admin.evaluate(() => window.HOF.emit("live:overview.changed", { kinds: ["bank"] }));
-      await admin.waitForFunction(old => ![null, old].includes(document.querySelector(".hof-bank-modal [data-mv-filters]")), before, { timeout: 10000 });
+      await admin.waitForFunction(old => ![null, old[0]].includes(document.querySelector(".hof-bank-modal .hof-bank-tabs")), before, { timeout: 10000 });
+      const kept = await admin.evaluate(old => document.querySelector(".hof-bank-modal [data-mv-filters]") === old[1], before);
       await before.dispose();
+      return kept;
     };
     const focusedFilter = () => admin.evaluate(() => document.activeElement?.dataset?.mv || document.activeElement?.tagName || "");
     await admin.fill(`${bankWin} [data-mv="q"]`, "");
     await waitMoves(admin, () => document.querySelectorAll(".hof-bank-modal .hof-bank-moves tbody tr[data-event]").length === 8);
     await admin.focus(`${bankWin} [data-mv="q"]`);
-    await redrawBank();
+    const keptOnFocus = await redrawBank();
     ok((await focusedFilter()) === "q", `arka plan yenilemesi pencereyi yeniden çizince odak arama kutusunda kalır (odak: ${await focusedFilter()})`);
+    ok(keptOnFocus, "odak süzgeç çubuğundayken arka plan yenilemesi çubuğu yeniden kurmaz (aynı düğüm; birleşik tur 6)");
     await admin.keyboard.insertText(feeNo);
     await waitMoves(admin, no => {
       const list = [...document.querySelectorAll(".hof-bank-modal .hof-bank-moves tbody tr[data-event]")];
