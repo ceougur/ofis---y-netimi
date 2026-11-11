@@ -240,6 +240,7 @@ describe("2.5.0 Ç5-A tur 1 — KG-16 'Açılış Olabilir' (göç 48): aday kur
     assert.equal((await must("ret tekrar", admin.post(`/api/workspace/opening-review/${credit.id}`, { decision: "reject" }))).changed, false);
     assert.equal(lockDigestOf(server.app.store, "2025-12-31", { version: LOCK_SQL_VERSION }), digest, "işaret kilit izine girmez (kaynak izi sürümü değişmez)");
     assert.deepEqual(server.app.store.get("SELECT amount, date, kind, is_opening AS o FROM account_entries WHERE id = ?", credit.id), before);
+    assert.equal(server.app.store.get("SELECT is_opening AS o FROM account_entries WHERE id = ?", debt.id).o, 0, "onay is_opening'e yazılmaz (B7: Açılış Bakiyesi satırı cari başına bir)");
     const entries = server.app.ledger.build();
     assert.ok(entries.find(e => e.id === `account:${debt.id}`).lines.some(line => line.account === "519"));
     assert.ok(entries.find(e => e.id === `account:${credit.id}`).lines.some(line => line.account === "770"));

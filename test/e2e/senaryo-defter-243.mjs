@@ -333,7 +333,9 @@ try {
     ok(Number(old?.balance) === 5750, `Eski Müşteri bakiyesi 5.750: ${old?.balance}`);
     const after = await trial();
     ok(Math.round(((after["120"] || 0) - (before["120"] || 0)) * 100) === 75000 && Math.round(((after["519"] || 0) - (before["519"] || 0)) * 100) === 0, `120 +750 (${after["120"]} ← ${before["120"]}), 519 değişmedi (${after["519"]})`);
-    ok(await integrityOk(), "Mutabakat Testi temiz");
+    // S94 adımının bilerek bıraktığı "Kasa Açılışından Önce Tarihli Hareket" UYARISI (notice) sapma değildir — sapma yok.
+    const integrity = await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));
+    ok(integrity.failures.every(item => item.notice), `Mutabakat Testi: sapma yok (${JSON.stringify(integrity.failures.map(item => item.code))})`);
     await closeAll();
   });
 } catch (error) {
