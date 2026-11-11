@@ -27,6 +27,8 @@
 9. Bakım 8 (§20; S110): kart açılırken açık borç kart tutarından fazlaysa kart kendi borcunu taşır — d34 elle tablosu; mutantlar 256–260 DEĞERLE; `elleYok` / `elleBelirsiz` SK-19 susması.
 10. Bakım 9 (§21; S120): elle kart tek bir elle borca denk gelmiyorsa yalnız elle borçları eskiden yeniye içine alır — d35 elle tablosu (d34 E11–E13 ve d8 A artık değerle); mutantlar 261–264
    DEĞERLE; `elleYok` / `elleBelirsiz` SK-20 … SK-23 susmaları.
+11. Bakım 10 (§22; S122 A, S123 / S124 / S125 = C): birden çok elle borcu içine alan karta gelen ödeme elle borçların Kalan'ını içine alma sırasıyla, eskiden yeniye düşürür — d36 elle tablosu
+   (d35 H10 / H11 artık değerle); mutantlar 265–269 DEĞERLE; `elleYok` / `elleBelirsiz` Y10-4 (S125 = C) ve SK-20 / SK-22 / SK-23 (BİLİNEN SINIR) susmaları.
 Çıktı: TAP benzeri sayılar + son satır "N/M denetim geçti". Çıkış 0 yalnız hepsi geçerse.
 """
 import importlib.util

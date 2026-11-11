@@ -49,6 +49,8 @@ DILLER = ("destekofis-cari/1", "destekofis-cari/2", DIL)
 # elle kartta açık tutarı kart tutarına eşit tek elle kayıt, yoksa SUS — SK-19); satış kartının "öbür açık borç" susması (Y7-2 (5)) kalktı; S110 alanında görünüm kuyruk kalanıyla.
 # 2.5.0 Ç5 bakımı 9 (11.11.2026; kodu görmeyen AYRI el — KARARLAR.md §21): S120 A — elle kart (O > T) tek bir elle borca denk gelmiyorsa yalnız ELLE borçları eskiden yeniye içine alır
 # (faturalar ayrı); SK-19 susması kalktı; yeni susmalar SK-20 (elle toplamı < T), SK-21 (çok kalemli kartın ödemesi), SK-22 (birden çok eşit elle borç), SK-23 (vade ↔ belge sırası).
+# 2.5.0 Ç5 bakımı 10 (11.11.2026; kodu görmeyen AYRI el — KARARLAR.md §22): S122 A — Taksitler kartının içine aldığı kalemler hepsi elle ve birden çoksa kartın ödenen kısmı elle borçlara
+# içine alma sırasıyla, eskiden yeniye, birikimli düşer (SK-21 kalktı; O = T elle kartı da — Y10-3); vade ↔ belge sırası ödemeyi ayırıyorsa SUS (S125 = C); SK-20 / SK-22 / SK-23 BİLİNEN SINIR.
 KURALLAR =("2.4.4", "2.4.5", "2.4.6", "2.4.9", "2.5.0")
 VARSAYILAN_KURAL = "2.5.0"
 BIRINCIL = {"KULLANICI", "PLAN", "GIB", "EDM", "BAŞ MİMAR"}
@@ -313,6 +315,12 @@ MUTASYONLAR = {
     262: "Ç5 C21 (faturayı da içine alan elle kol): tek eşit elle borç yoksa kart faturalar dahil bütün borçları eskiden yeniye içine alır",
     263: "Ç5 C21 (sıra ters): elle borçları yeniden eskiye içine alır",
     264: "Ç5 C21 ('eşit TEK elle borç' istisnası ezilir): karta eşit tek elle borç varken de elle borçları eskiden yeniye içine alır",
+    # bakım 10 (KARARLAR.md §22 — S122: birden çok elle borcu içine alan karta gelen ödeme elle borçların Kalan'ını içine alma sırasıyla, eskiden yeniye düşürür)
+    265: "Ç5 C22 (S122 B): kartın ödenen kısmı elle borçlara en yeniden (içine alma sırasının tersi) düşer",
+    266: "Ç5 C22 (orantılı): kartın ödenen kısmı elle borçlara karttaki paylarıyla orantılı dağılır",
+    267: "Ç5 C22 (her ödeme baştan): her taksitin ödenen kısmı ayrı ayrı ilk elle borçtan başlayarak dağılır (yalnız ilk ödemede doğru — önceki ödemeyi bilmez)",
+    268: "Ç5 C22 (kuyruğu da düşürür): elle borca düşen pay kuyruk kalanından da düşer (gecikmiş / takvim değişir)",
+    269: "Ç5 C22 (kart ödeneni görünmez): elle borçlara dağıtılan ödeme kartın ödenen kısmından düşer (kart kalanı = kart tutarı)",
 }
 # 2.4.9 C1.6: silinmiş cariye yazılamayan para adımları (hedef cari adımın `cari`'si) ve carisi silinmişken yapılamayan Silinenler geri yüklemeleri (hedef kaydın carisi)
 C1_YAZIM = ("tahsilat", "odeme", "borc", "alacak", "fatura", "evrak", "kart_ac", "stok_iade", "alis_iade", "stok_satis_hesap", "supheli_al", "ciro", "stok_satis_taksit")
@@ -981,6 +989,27 @@ class Model:
                 gerek -= x
         return out
 
+    def _s122_dagit(self, tk, sira, P, parcalar):
+        """Bakım 10 (§22 Y10-1) [KULLANICI S122 A]: kartın ödenen kısmı P, içine alınan elle kalemlere `sira` ile (eskiden yeniye), birikimli — her kalem en çok karttaki kısmı (tk) kadar.
+        Dönüş {kalem: pay}. Mutantlar: 265 (S122 B) en yeniden; 266 orantılı; 267 her taksit ödemesi baştan (önceki ödemeyi bilmez — `parcalar` taksit başına ödenen)."""
+        if self.mut == 265:
+            sira = list(reversed(sira))
+        pay = {a: 0 for a in sira}
+        if self.mut == 266:
+            top = sum(tk[a] for a in sira)
+            for a in sira:
+                pay[a] = P * tk[a] // top
+            pay[sira[-1]] += P - sum(pay.values())
+            return pay
+        for p in ([x for x in parcalar if x > 0] if self.mut == 267 else [P]):
+            kalan_p = p
+            for a in sira:
+                x = min(kalan_p, tk[a] - (0 if self.mut == 267 else pay[a]))
+                if x > 0:
+                    pay[a] += x
+                    kalan_p -= x
+        return pay
+
     def _tyk(self, kalemler, tuketimler, kaynaklar, havuz_sirasi, tarih_sirasi=False, s101=None):
         """C13.4 (4) [KULLANICI (1) A; EK-2B 23] ANINDA zaman çizelgesi. Olaylar tarih sırasıyla (aynı gün önce borç kalemleri ve kart tüketimi — sınıf 0 —, sonra bağsız
         alacak — sınıf 1; sınıf içinde yazım sırası). Her olaydan sonra açık kalemler S2 sırasıyla (vade → belge → yazım) bekleyen bağsız alacaktan kapanır; artan avanstır, sonra
@@ -1339,8 +1368,10 @@ class Model:
                 ne_ = {"SK-20": "açık elle borçların toplamı (%s) kart tutarından az — kartın kalan kısmının neyi taşıdığı kararda yok (NOT (2))" % (str(m_[5]) if len(m_) > 5 else "?",),
                        "SK-22": "karta eşit birden çok elle borç ve eskiden yeniye önce başka elle borç geliyor — 'TEK elle borç' istisnası mı, ana kural mı",
                        "SK-23": "'eskiden yeniye' vade sırası ile belge tarihi sırası farklı kalemleri içine alıyor"}.get(m_[4] if len(m_) > 4 else "", "")
-                neden.add("S120: Mevcut Borç kartı %s açılırken açık borç (%d) kart tutarından (%d) fazla — %s (açık tutarı kart tutarına eşit kalem: %s) — KULLANICIYA SORULMALI %s (§21)"
-                          % (t["kart"], m_[1], m_[2], ne_, ",".join(m_[3]) or "yok", m_[4] if len(m_) > 4 else "SK-19"))
+                # bakım 10 (§22 Y10-6) [KULLANICI S123 / S124 / S125 = C]: susma AYNEN — neden "BİLİNEN SINIR" (KULLANICIYA SORULMALI değil)
+                kod_ = m_[4] if len(m_) > 4 else "SK-19"
+                neden.add("S120: Mevcut Borç kartı %s açılırken açık borç (%d) kart tutarından (%d) fazla — %s (açık tutarı kart tutarına eşit kalem: %s) — BİLİNEN SINIR (kullanıcı kararı %s) %s (§21, §22)"
+                          % (t["kart"], m_[1], m_[2], ne_, ",".join(m_[3]) or "yok", {"SK-20": "S123 = C", "SK-22": "S124 = C", "SK-23": "S125 = C"}.get(kod_, "?"), kod_))
             elif m_:
                 s110 = True
                 if m_[0] == "elle" or (m_[0] == "kendi" and len(m_) > 2 and m_[2]):
@@ -1376,18 +1407,37 @@ class Model:
             kart_pay[no] = [self._kart_kalemleri(no, self.kartlar[no])[i][1] - kalemler[k]["kalan"] for i, k in enumerate(kads)]
         # C13.4 (7) defter kalanı (K6.5 (a) aynen): Mevcut Borç kartının tükettiği TEK kalemde kalan = kuyruk kalanı + (tüketilen − kartın ödenen kısmı)
         kuyruk_kalan = {ad: k["kalan"] for ad, k in kalemler.items()}
+        api_kart = {t["kart"]: bool(t.get("s110")) for t in tuketimler if t.get("api") and t.get("satis") is None}  # Taksitler'den açılan kartlar (S110 / S120 alanında mı)
+        s122_iz = {}  # bakım 10 (§22): kart → "alan" | "ot" (+ "-odemeli") | "sus" (iz — sonucu değiştirmez)
         for no, tk in tuketilen.items():
-            if len(tk) != 1 and no in s120_kart:
-                # bakım 9 (§21 Y9-7) [KULLANICI S120 A]: kartın ödenen kısmı 0 iken her tüketilen kalemin Kalan'ı = kuyruk kalanı + tüketilen (dağılım sorusu doğmuyor);
-                # ödenen kısım > 0 iken ödemenin tüketilen elle borçlara dağılımı kararda yok — C13.4 (7) / (11) aynen susar (SK-21)
+            # bakım 10 (§22 Y10-3): O = T Taksitler kartı (S110 / S120 alanı dışında) tükettiği kalemlerin HEPSİ elle ve birden çoksa S122 onu da kapsar ("birden çok elle borcu içine aldıysa")
+            ot_elle = (self.k250 and len(tk) >= 2 and no in api_kart and not api_kart[no] and no not in s120_kart and all(a in self.hareketler for a in tk))
+            if len(tk) != 1 and (no in s120_kart or ot_elle):
+                # bakım 9 (§21 Y9-7) [KULLANICI S120 A]: kartın ödenen kısmı 0 iken her tüketilen kalemin Kalan'ı = kuyruk kalanı + tüketilen (dağılım sorusu doğmuyor).
+                # bakım 10 (§22 Y10-1 / Y10-2 / Y10-5) [KULLANICI S122 A]: ödenen kısım P > 0 iken P elle kalemlere kartın İÇİNE ALMA sırasıyla (tk'nin sırası — S2), eskiden yeniye, birikimli
+                # düşer: Kalan = kuyruk kalanı + tüketilen − pay. P kaynağına bakmaz (kart tahsilatı, S50 payı); silinen ödeme P'ye girmez (durum baştan kurulur).
+                # Y10-4 [KULLANICI S125 = C]: belge tarihi sırası başka pay veriyorsa SUS (BİLİNEN SINIR).
                 kp_ = sum(kart_pay.get(no, [])) - onceden.get(no, 0)
+                if ot_elle:
+                    s110 = True  # Y10-3: görünüm S110 alanının kurallarıyla (Y8-4 — kuyruk kalanı; sayaç / görünüm toplamı yazılmaz)
+                pay_ = {a: 0 for a in tk}
+                s122_iz[no] = ("ot" if ot_elle else "alan") + ("-odemeli" if kp_ > 0 else "")
                 if kp_ > 0:
-                    neden.add("Mevcut Borç kartı %s birden çok elle borcu içine aldı (S120 A) ve kartın %d'si ödendi — ödemenin içine alınan elle borçlara dağılımı kararda yok"
-                              " — KULLANICIYA SORULMALI SK-21 (§21)" % (no, kp_))
-                    continue
+                    sira_ = list(tk)
+                    belge_ = sorted(tk, key=lambda a: (kalemler[a]["d"], kalemler[a]["s"]))
+                    pay_ = self._s122_dagit(tk, sira_, kp_, kart_pay.get(no, []))
+                    if pay_ != self._s122_dagit(tk, belge_, kp_, kart_pay.get(no, [])):
+                        neden.add("Mevcut Borç kartı %s birden çok elle borcu içine aldı ve kartın %d'si ödendi — 'eskiden yeniye' vade sırası ile belge tarihi sırası ödemeyi farklı elle"
+                                  " borçlara düşürüyor — BİLİNEN SINIR (kullanıcı kararı S125 = C) SK-23 (§22 Y10-4)" % (no, kp_))
+                        s122_iz[no] = "sus"
+                        continue
                 for x_ad, x_t in tk.items():
                     if x_ad in acik:
-                        acik[x_ad] += x_t
+                        acik[x_ad] += x_t - pay_[x_ad]
+                    if self.mut == 268:
+                        kuyruk_kalan[x_ad] = max(0, kuyruk_kalan[x_ad] - pay_[x_ad])  # mutant 268: pay kuyruktan da düşer
+                if self.mut == 269 and kp_ > 0:
+                    kart_pay[no] = [0] * len(kart_pay[no])  # mutant 269: dağıtılan ödeme kartın ödeneninden düşer
                 continue
             if len(tk) != 1:
                 neden.add("Mevcut Borç kartı %s birden çok kalemi tüketti (dağılım kararda yok)" % no)
@@ -1419,6 +1469,7 @@ class Model:
         son = {"kart": kart_pay, "neden": neden, "kalemler": kalemler, "kuyruk": kuyruk_kalan,
                "s110": s110 and not neden, "tuketilen": {no: dict(tk) for no, tk in tuketilen.items()},
                "s120": sorted(s120_kart),  # bakım 9 (§21): yalnız elle borçları eskiden yeniye içine alan kartlar (iz — sonucu değiştirmez)
+               "s122": dict(s122_iz),  # bakım 10 (§22): S122 alanındaki kartlar (iz — sonucu değiştirmez)
                # bakım 5 (_s98_dis): bağsız kaynakların günü, kapattığı kalemler ve artanı (yalnız iz — sonucu değiştirmez); bakım 6: S101 avansla ödenmiş sayılan kısım
                "kaynak": [(q["ad"], q["d"]) for q in kaynaklar], "iz": {q: set(v) for q, v in iz.items()}, "kaynak_kalan": dict(kalan_q), "onceden": dict(onceden)}
         return {"acik": acik, "Gp": Gp, "nA": nA, "artik": sum(kalan_q.values()), "iz": iz_, "son": son, "onceden": onceden, "onceden_kalem": onceden_kalem,
