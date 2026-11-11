@@ -1,0 +1,13 @@
+başladı 11:26:12 yük 1.48 1.59 1.38 2/113 7088
+liste üretimi çıkış 0
+liste farkı: önceki 598 → yeni 706 · kapanan 0 · yeni 108 · değeri değişen 0 · etiketi / notu değişen 0 · paketler {'Ç5-A': 228, 'Ç5-B tur 2': 379, 'eşleme': 7, 'AYRIŞTIRILMADI': 92}
+kahin-cari UTC çıkış 0
+ÖZET [2.5.0]: 82 senaryo, 14181 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 706 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: AYRIŞTIRILMADI 92, eşleme 7, Ç5-A 228, Ç5-B tur 2 379; 699 denetim + 7 okuma hatası; geçti de başarısız da sayılm
+13482/13482 denetim geçti (7 bilinen sınır dahil) (706 yapım aşaması ayrı sayıldı — 699 denetim + 7 okuma hatası; geçti sayılmadı)
+kahin-cari Europe/Istanbul çıkış 0
+ÖZET [2.5.0]: 82 senaryo, 14181 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 706 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: AYRIŞTIRILMADI 92, eşleme 7, Ç5-A 228, Ç5-B tur 2 379; 699 denetim + 7 okuma hatası; geçti de başarısız da sayılm
+13482/13482 denetim geçti (7 bilinen sınır dahil) (706 yapım aşaması ayrı sayıldı — 699 denetim + 7 okuma hatası; geçti sayılmadı)
+kahin-defter çıkış 0 [kanit] kahin10b-kahin-defter: GEÇTİ · çıkış 0 · 176/176 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 2f7e862 +2 değişmiş
+turun testleri UTC çıkış 1 [kanit] kahin10b-testler-UTC: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 60/61 geçti, 1 başarısız, 0 iptal, 0 a
+turun testleri Europe/Istanbul çıkış 1 [kanit] kahin10b-testler-Europe-Istanbul: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 60/61 geçti, 1 başarısız, 
+bitti 11:38:10 yük 2.64 2.54 1.94 2/144 14338

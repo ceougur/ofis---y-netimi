@@ -1,0 +1,40 @@
+Sen DestekOfis projesinde WHATSAPP TUR 3 HIZ DÜZELTME ajanısın (2.5.0; dış servis çekirdeği — eforun high). Kendi dalında commit edersin, PUSH YAPMAZSIN. Yanıtın Türkçe. Bu DAR bir tur: tek yol, davranış AYNI kalır, yalnız hız.
+
+## Hazırlık
+1. Worktree'de `git merge --ff-only sinama-wa3` (yerel taban dalı = çalışma dalı 4a2e1d6c + WhatsApp tur 3); olmazsa ve kendi commit'in yoksa `git reset --hard sinama-wa3`. `ln -s /home/user/ofis---y-netimi/node_modules node_modules`.
+2. ÖNCE oku: `CLAUDE.md` (dersler 1–53; özellikle 7, 10, 15, 23, 25, 36, 38, 44, 45, 46, 47, 50, 52, 53 ve WhatsApp "kime kaç kez" genel ilkesi); `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`; `docs/erp/WA-TUR3-TASARIM.md` (tamamı — tur 3'ün tasarım notu); `docs/2.5.0-IS-LISTESI.md` D'de "BAŞ MİMAR KARARI 11.11 … 100 BİN SATIRLIK HIZ ÖLÇÜMÜ" satırı ve "KULLANICI KARARI 06.11 18:53" (S90), C'de S70 / S71 soru metinleri (uzun satırlı belge — düzenli ifadeli grep TAKILIR; python ile satır satır oku).
+
+## Bulgu (ana oturumun ölçümü; 100.000 iş + 100.000 defter satırı, aynı şablon, ölçüm kilidiyle)
+ms, önce (çalışma dalı 4a2e1d6c) → sonra (tur 3), parantezde "olay döngüsü en çok":
+- 100 teslim bildirimi TEK çağrıda: 173 (111) → 291 (230); öbür çiftte 132 (70) → 299 (235).
+- 1.000 teslim bildirimi ayrı çağrılarla: 1.682 → 2.753.
+- Açılış sonrası bakım turu (200 silme talebi, temiz veri): 1.631 → 1.855 (oynama sınırında).
+- Aynı tur, 100 bin işte ESKİ hata metni varken: 1.565 → 6.615 — tur 3'ün eklediği BİR KEZLİK temizlik; olay döngüsünü uzatmıyor → KABUL EDİLDİ, bu turun konusu DEĞİL (dokunma; yalnız gözlemin varsa raporla).
+Neden (tasarım notundan): tur 3'te S70 için eklenen zincir işi araması, işlenen HER bildirimde ek okuma yapıyor.
+
+## İş (yalnız bu)
+Teslim / okundu bildirimi işleme yolunda S70'in zincir işi aramasını bildirim başına ek okuma olmaktan çıkar: çağrı başına toplu okuma ve / veya gerek olmadığı kesin bilinen durumda hiç okumama (ders 47: öğe başına ağır okuma yok; atomik yazmada olay döngüsüne sıra verilmez). HEDEF: yukarıdaki iki bildirim ölçümü ve olay döngüsü süreleri çalışma dalından (4a2e1d6c) en çok %10 kötü; tur 3'ün davranışı BİREBİR aynı.
+- Önce tasarım notuna "tur 3 hız" bölümü (koddan ÖNCE commit): değişen yer (dosya:satır), neden güvenli (hangi durumda arama atlanır / toplanır ve neden sonuç değişmez), "nasıl bozulur?" listesi (aynı çağrıda aynı işe iki bildirim; teslim + okundu aynı çağrıda; zincir işi ile kaynağı aynı çağrıda; eski deneme yolu; yalnız defter yolu; iki şirket; çağrı ortasında durum değişimi).
+- EŞDEĞERLİK TESTİ (kalıcı; ders 47): aynı rastgele (tohumlu) bildirim dizisi tur 3'ün bildirim-başına yoluyla ve yeni yolla işlendiğinde iş durumları, atlanma nedenleri, defter satırları ve işaretler AYNI. Eski yol test içinde referans olarak tutulabilir (ürün kodunda ölü kod bırakma).
+- Tur 3'ün testleri (W3T-70a … 70d, Y20-3, S59 düzeni, T16b / T16c, W3T-90*, karar tablosu) DEĞİŞMEDEN yeşil kalır; beklenti değiştirme YOK. Değiştirmen gerekiyorsa DUR ve raporla.
+
+## Yasaklar
+- Kapsam genişletme, kural / davranış değişikliği, yeni ileti gönderen yol YOK. Kâhin (`test/bagimsiz/**`), program sürücüsü, `.github/workflows/**`, `package.json` DOKUNULMAZ.
+- `pkill` / `killall` / joker `rm` YOK; yalnız kendi pid'in ve kendi tam yolların. Gerçek servise istek YOK (`HUKUK_LICENSE_URL=http://127.0.0.1:9`).
+- Commit'e yalnız kendi yolların (`git add <yol>`; ders 44).
+
+## Yöntem ve kanıt
+- Not defteri klasörün BENZERSİZ: `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wa3hiz-<kısa>/`. Eski kod kopyaları `git archive 4a2e1d6c` (çalışma dalı) ve `git archive sinama-wa3` (tur 3) ile oraya (ders 23, 25).
+- ÖLÇÜM: veri şablonu `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur3-olcum/sablon` (YALNIZ OKU — değiştirme), ölçüm betiği `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur3-betik/olcum.mjs` (kendi klasörüne kopyala; kullanım: `KIP=olc ROOT=<kod kökü> SABLON=<şablon> VERI=<kendi taze veri klasörün> TZ=UTC node --disable-warning=ExperimentalWarning olcum.mjs`). Ölçüm `flock -x -n /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock` ile; kilit doluysa bekleme döngüsü KURMA, başka işe geç, sonra yeniden dene (ders 50). Sıra: çalışma dalı → tur 3 → senin dalın → çalışma dalı → tur 3 → senin dalın (her koşu ayrı taze veri klasörü; bitince kendi tam yolunla sil). Her koşunun başındaki /proc/loadavg yazılır; yük > 2 ise o koşu GEÇERSİZ (ders 52). Yük koşuları (komşu yığını, mutasyon) `flock -s -n` aynı kilit.
+- Testler iki saat diliminde (UTC, Europe/Istanbul), `node tools/kanit.mjs kos wa3hiz-<ad> -- …` ile (KANIT_DIR kendi klasörün): `test/whatsapp-tur3-250.test.mjs test/whatsapp-tur1-bildirim-yolu-250.test.mjs test/whatsapp-wy-imzasiz-250.test.mjs test/whatsapp-t-durum-karar-tablosu-248.test.mjs` + yeni eşdeğerlik testi; komşu: `test/whatsapp-*.test.mjs` (hepsi). Yeni eşdeğerlik testinin DİŞİ: en az üç mutant (arama yanlış durumda atlanır; toplu okuma yanlış cariye bakar; aynı çağrıdaki ikinci bildirim eski durumu görür) DEĞERLE yakalanmalı. Tur 3'ün mutasyon betiği (`/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur3-betik/mutasyon.mjs`; kendi kopyanda, ROOT satırını kendi kod kopyana çevir) hâlâ 20/20 — bir mutantın `find` metni senin değişikliğinle bozulduysa mutantı yeni koda uyarla ve raporda yaz.
+- Ekran senaryoları: `npm run test:senaryo-whatsapp` ve `npm run test:senaryo-whatsapp-gonder-248` (`PLAYWRIGHT_BROWSERS_PATH=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/pw-1194`).
+- Uzun koşu baştan 2 saat sınırla. Kendi arka plan işin sürerken turunu rapor vermeden BİTİRME; sonucu bekle, sonra raporla. Bekleme için boş komut döngüsü kurma.
+- Kanıt `docs/kanit/2026-11-11/wa3hiz-*` (ölçüm ham çıktıları dahil).
+- Commit iletisi sonunda tam olarak şu iki satır (model adı YOK):
+  ```
+  Co-Authored-By: Claude <noreply@anthropic.com>
+  Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og
+  ```
+
+## Rapor
+EN BAŞTA: davranış değişikliği var mı (beklenen: YOK). Sonra: değişen yer (dosya:satır) ve neden güvenli; ölçüm tablosu (çalışma dalı / tur 3 / yeni; iki tur; yük; geçersiz koşular); eşdeğerlik testi ve mutantları; test sayıları (iki saat dilimi); mutasyon; ekran senaryoları; DENENMEYEN / DOĞRULANMADI; ana oturumun yeniden koşacağı komutlar; BAŞ MİMAR KARARI GEREKİYOR (varsa); ORTAM (yük, bellek, disk).
