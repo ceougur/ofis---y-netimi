@@ -1,0 +1,78 @@
+▶ 2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test)
+  ✖ T16b istek Meta'dayken imzalı delivered satırı delivered yaptı → yanıt hiç gelmez (bağlantı koptu): satır delivered KALIR, art arda hata sayacı 0; defterde teslim aynen; Yine de Gönder yok (T16 ürün yarışı) (664.4468ms)
+  ✖ T16b istek Meta'dayken imzalı read satırı read yaptı → yanıt hiç gelmez (bağlantı koptu): satır read KALIR, art arda hata sayacı 0; defterde teslim aynen; Yine de Gönder yok (T16 ürün yarışı) (514.460531ms)
+  ✖ T16b istek Meta'dayken imzalı failed satırı failed yaptı → yanıt hiç gelmez (bağlantı koptu): satır failed KALIR, art arda hata sayacı 0; defterde teslim aynen; Yine de Gönder yok (T16 ürün yarışı) (537.702265ms)
+  ✔ T16c ters sıra: istek yanıtsız sonuçlanır (satır Sonucu Belirsiz, sayaç 1) → SONRA imzalı geç teslim → satır Teslim Edildi (K1′ / S70 ile uyumlu); Bu Ay 1, Daha Önce (478.382668ms)
+✖ 2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) (2197.677368ms)
+ℹ tests 4
+ℹ suites 1
+ℹ pass 1
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2567.294462
+
+✖ failing tests:
+
+test at test/whatsapp-t-durum-karar-tablosu-248-yeni.test.mjs:649:5
+✖ T16b istek Meta'dayken imzalı delivered satırı delivered yaptı → yanıt hiç gelmez (bağlantı koptu): satır delivered KALIR, art arda hata sayacı 0; defterde teslim aynen; Yine de Gönder yok (T16 ürün yarışı) (664.4468ms)
+  AssertionError [ERR_ASSERTION]: yanıtsız dal kesin satırı EZMEDİ (eski kod: uncertain) — uncertain
+  + actual - expected
+  
+  + 'uncertain'
+  - 'delivered'
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur3-eski/test/whatsapp-t-durum-karar-tablosu-248-yeni.test.mjs:670:16)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 39)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'uncertain',
+    expected: 'delivered',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/whatsapp-t-durum-karar-tablosu-248-yeni.test.mjs:649:5
+✖ T16b istek Meta'dayken imzalı read satırı read yaptı → yanıt hiç gelmez (bağlantı koptu): satır read KALIR, art arda hata sayacı 0; defterde teslim aynen; Yine de Gönder yok (T16 ürün yarışı) (514.460531ms)
+  AssertionError [ERR_ASSERTION]: yanıtsız dal kesin satırı EZMEDİ (eski kod: uncertain) — uncertain
+  + actual - expected
+  
+  + 'uncertain'
+  - 'read'
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur3-eski/test/whatsapp-t-durum-karar-tablosu-248-yeni.test.mjs:670:16)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'uncertain',
+    expected: 'read',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/whatsapp-t-durum-karar-tablosu-248-yeni.test.mjs:649:5
+✖ T16b istek Meta'dayken imzalı failed satırı failed yaptı → yanıt hiç gelmez (bağlantı koptu): satır failed KALIR, art arda hata sayacı 0; defterde teslim aynen; Yine de Gönder yok (T16 ürün yarışı) (537.702265ms)
+  AssertionError [ERR_ASSERTION]: yanıtsız dal kesin satırı EZMEDİ (eski kod: uncertain) — uncertain
+  + actual - expected
+  
+  + 'uncertain'
+  - 'failed'
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur3-eski/test/whatsapp-t-durum-karar-tablosu-248-yeni.test.mjs:670:16)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'uncertain',
+    expected: 'failed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

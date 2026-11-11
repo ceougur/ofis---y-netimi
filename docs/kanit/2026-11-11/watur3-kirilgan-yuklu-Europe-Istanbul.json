@@ -1,0 +1,32 @@
+{
+  "ad": "watur3-kirilgan-yuklu-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-s1-satir-denemeyi-bilmiyor-248.test.mjs test/whatsapp-t-durum-karar-tablosu-248.test.mjs test/whatsapp-tur2-kvkk-250.test.mjs test/whatsapp-w3-saklama-250.test.mjs test/whatsapp-w-kok-ttl-249.test.mjs test/whatsapp-w1-baglanti.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-11T08:01:03.904Z",
+  "sure_sn": 165,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 169,
+    "gecen": 169,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../watur3-kanit/2026-11-11/watur3-kirilgan-yuklu-Europe-Istanbul.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur3-yeni",
+  "ham_cikti_sha256": "aac5124b06809382a3d923a556b212a7959b25391c7a520a8b1d429c787a7c53",
+  "ham_cikti_bayt": 72812
+}

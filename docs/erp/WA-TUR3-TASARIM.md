@@ -59,6 +59,10 @@ dışında kalan her seçim §11'de "BAŞ MİMAR KARARI GEREKİYOR" / "KULLANICI
   işlenmesi (Teslim Edildi, R3, Bu Ay) DEĞİŞMEZ.
 - İLKEYLE (ilke 2): 'mixed' eski tek kaydın yoluna gelen bildirim hangi uygulamanın olduğu bilinmediği için işaret KOYMAZ (güvenli yön; iki uygulama ilk bakım turunda kendi kaydını yazar).
 - Kime kaç kez: işaretin konmaması güvenli yön (iş Meta Kabul Etti'de kalır, kişi "Daha Önce Gönderildi", R3 Yine de Gönder açık — ilke 2 + 4).
+- UYGULAMADA (11.11, komşu koşusu): tur 1'in iki hücresi bu kararla çelişti — T1-7 (001 Elle Bağla'nın bildirimi 002'nin WhatsApp'ı Bağla adresinden; tek yollu eski düzenek) ve T1-10
+  (Yol 2'de uygulama düzeyi adrese İMZALI bildirim → işaret). Karar metni AYNEN uygulandı: öbür uygulamanın adresi işaret koymaz (T1-7'de 001'in kendi teslimi artık kendi adresinden;
+  öbür adresten gelen ayrı adım: Teslim Edildi, işaret yok); uygulama düzeyi adres yalnız Yol 1'in → T1-10'da imzalı bildirim Teslim Edildi, işaret YOK. BAŞ MİMAR KARARI GEREKİYOR
+  (teyit): B seçeneği — imzalı (DestekOfis sırrıyla doğrulanmış) uygulama düzeyi bildirimi Yol 2'nin sayılır (T1-10 eski beklentisi); pratikte Yol 2'de bu adrese bildirim gelmez.
 
 ## 5. İş 4 — salt okunur lisansta Webhook çifti üretilmez
 - `routes/whatsapp.mjs` app-webhook ucu: `reveal(publicUrl, { writable: writable() })` (tek satır). Var olan çift gösterilir (bugünkü davranış); S62 (salt okunurda KVKK talebi) dokunulmaz.
