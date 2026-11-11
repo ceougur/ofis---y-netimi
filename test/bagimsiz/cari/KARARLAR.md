@@ -2086,3 +2086,79 @@ G1 87 senaryo × 92 belge adımı, Y7-3 reddinin yalnız 2.5.0'da olduğu) · mu
 sayılar) · taşınan / değişen elle değerler dökümü (`-elle-tasinan-*`, bilgi). **Defter öz testi BAŞARISIZ** (`-defter-oz-*`): `test/bagimsiz/defter/oz-test.py` `kahin.py`'de olmayan
 `VARSAYILAN_KURAL`'ı arıyor (AttributeError) — TABANDA (`a0d8342a`, bu dalın dokunmadığı dosyalar; `-defter-oz-taban-utc`) de aynı; bu bakım defter kâhinine dokunmadı (ana oturuma bildirildi).
 Mutasyon, eşdeğerlik, öz test, geniş tarama ve üretici taraması `flock -s -n …/olcum.lock` ile koşuldu (ders 52). Program açılmadı.
+
+## 20. 2.5.0 Ç5 bakımı 8 — S110 (kart açılırken açık borç kart tutarından fazla: kart KENDİ borcunu taşır) (11.11.2026, `date -u` 06:00; karar 11.11.2026 — ana oturumun özet dosyası; eski kâhinler bakımı 8 — kodu görmeyen AYRI el) — kural seti `2.5.0` = §13 + … + §19 + bu bölüm
+
+Bu bakım KÜÇÜKTÜR: tek kullanıcı kararı (S110), yalnız M1e'nin (C13.4 (6)) "kart hangi borcu içine alır" cümlesini, kart açıldığı anda açık borç kart tutarından FAZLA olduğunda değiştirir.
+S2 (vade sırası), S50, S101, S99 ve §13–§19'un öbür kuralları DEĞİŞMEZ. `--kural 2.4.9` (ve 2.4.6 / 2.4.5 / `--legacy`) AYNEN. Defter kâhini (`test/bagimsiz/defter/`) DEĞİŞMEZ (Mevcut Borç
+kartı ve satışla açılan kart maddesizdir — C13.2 / kitap H-02; hangi borcun kartın içinde olduğu yevmiyeyi değiştirmez). **Bu bölümün ilk commit'i yalnız YORUMDUR (ders 40 — önce kural, sonra
+kod); senaryo / mutant / G3 sayıları kod ve kanıt commit'lerinde eklenir.**
+
+### C00m Temiz oda (bakım 8)
+- **Girdi (AYNEN; ana oturumun özet dosyası `scratchpad/kahin-eski8-kararlar.md` — "programın hesap / görünüm davranışı hakkında hiçbir bilgi içermez"):**
+  - SORU (iş listesi C — programın bugünkü hâline ilişkin cümle çıkarılmış): "taksit kartı açıldığı anda carinin açık borcu kart tutarından FAZLAYSA kart hangi borcu taşır? Örnek: elle borç 900 +
+    fatura F 600 (toplam 1.500), kart 900 (3 × 300) — A (öneri; 2.4.9'daki gibi): kart KENDİ borcunu taşır (stoktan satışta o satışı; elle kartta taksitlendirilen borcu): takvimde 3 × 300 taksit + F 600
+    ayrı açık; gecikmiş 900 / B: vade sırası (S2): kart en eski vadeli borçları içine alır — F kartın içinde, elle borcun 600'ü ayrı açık; gecikmiş 900."
+  - KARAR (iş listesi D, 11.11 — AYNEN): "S110 = A (para kuralı): taksit kartı açılırken carinin açık borcu kart tutarından FAZLAYSA kart KENDİ borcunu taşır (stoktan satışta o satışı; elle kartta
+    taksitlendirilen borcu) — 2.4.9'daki gibi; örnek: elle borç 900 + fatura 600, kart 900 (3 × 300) ⇒ takvimde 3 × 300 taksit + fatura 600 ayrı açık; gecikmiş 900."
+  - NOT (ana oturum): "bu karar S2 (vade sırası) ve S50 / S101 kararlarının YERİNE geçmez; yalnız 'kart açıldığı anda açık borç kart tutarından fazla' durumunda kartın hangi borcu içine aldığını
+    belirler. 'Elle kartta taksitlendirilen borç'un hangi borç olduğu karar metninden tek okumayla çıkmıyorsa (ör. aynı caride birden çok elle borç, kart tutarı hiçbirine eşit değil) kâhin o sınırda
+    SUSAR ve 'KULLANICIYA SORULMALI' yazar (iki seçenek + öneri; uç durumsa üçüncü seçenek 'Uç durum böyle kalsın (BİLİNEN SINIR)')."
+- **Birlikte okunan (kâhinin kendi belgesi):** bu dosyanın §13 C13.4 (1)–(11) ve C13.5, §18 (C00k, Y6-4, Y6-5, SK-14, SK-16, C18.4), §19 (C00l, Y7-2, Y7-3, Y7-4, SK-18, C19.2, C19.3, C0l); `model.py` kart
+  tüketimi (`_tyk`, `_alacak_govde250`, `kart_ac`, `_g2b_okumalar`, `stok_satis_taksit`) ve K6.5 görünümü (`kontrol` hareket / fatura kalemleri, `_cari_kalemleri`); d4, d7, d30–d32 elle senaryoları.
+  Okunan / okunmayan dosyaların tam listesi (satır aralıklarıyla) ajan raporunda.
+- **Okunmayan:** `server/**`, `client/**`, `bulut/**`, `packaging/**`, `tools/**` (yalnız `kanit.mjs` çalıştırılır), `docs/erp/C5-ACILIS-TASARIM.md`, `docs/erp/C5B-TYK-TASARIM.md`, `docs/devir/**`,
+  `docs/2.5.0-IS-LISTESI*.md` (hiçbir sürümü), `test/bagimsiz/cari/YAPIM-ASAMASI.json`, iki kâhin klasörü dışındaki `test/**`, başka ajanların `docs/kanit/**` dosyaları (yalnız `kahineski7-arac/`
+  araçları), git farkı / geçmiş içeriği. Program koşulmadı; programın davranışı aranmadı. CLAUDE.md "Açık iş"teki program durumu kural / beklenti kaynağı sayılmadı.
+
+### Kâhinin BUGÜNKÜ (bakım 7, `60280990`) okuması — S110'un hangi seçeneği (açıkça)
+Bakım 7 kâhini kararın örneğinde ne A'yı ne B'yi DEĞER olarak yazıyordu; iki kolda ayrı:
+- **Elle "Carinin Mevcut Borcunu Taksitlendir" kartı (`kart_ac {mevcut}`) → B (vade sırası).** C13.4 (6) M1e: kart "kart tutarı kadar açık borç kalemini 2'deki sırayla (v → d → s, S2) TÜKETİR". Bu S110'un B
+  seçeneğidir. Ama B'nin sonucu kartın İKİ kalemi tüketmesiyse (kararın örneğinin B düzeni: F 600 kartın içinde + elle borcun 300'ü) C13.4 (7) / (11) "Mevcut Borç kartı birden çok kalemi tüketti" ile
+  carinin Kalan / açık / kart / gecikmiş / görünüm denetimleri YAZILMIYORDU (susma). Yani: tüketim kuralı B, örnekte değer yok. Eski kâhinle koşulan iki düzen (kâhinin kendisi — program değil; betik
+  `docs/kanit/2026-11-11/kahineski8-arac/eski-okuma.py`): **F önce** (01.03 F 600 · 05.03 Borç 900 vade 10.03 · 15.03 kart 900) → "KA birden çok kalemi tüketti" — yalnız bakiye 1.500, kart tutarı;
+  **Borç önce** (01.03 Borç 900 · 05.03 F 600 · 15.03 kart 900) → B'nin ilk kalemi elle borcun kendisi, tek kalem → A ile aynı sonuç: F açık 600, gecikmiş 900, kart kalanı 900, açık toplamı 1.500.
+  Kart tutarı tek bir eski kalemle örtüşmeyen her düzende (B kalem sınırını aşınca) susuyordu; eski kalem kart tutarından büyükse (kart 500 · Borç 900 önce · F 600) B değer YAZIYORDU (Borç'un 500'ü kartın içinde).
+- **Satışla birlikte açılan kart (`stok_satis_taksit`) → A (tüketim), ama S110 alanında SUSMA.** Y7-2 (1): kart yalnız KENDİ satışını tüketir (mutant 255 = B). Fakat Y7-2 (5) "kartın açıldığı anda ya da kontrol
+  anında carinin kendi satışı DIŞINDA açık borcu varsa" o carinin denetimlerini yazmıyordu — S110'un tanım alanı (açık borç > kart tutarı = başka açık borç var) tam olarak bu susma alanıdır. Y7-2 (5)
+  bunu "kural sorusu DEĞİL, kâhinin sınırı" diye yazmış ama aynı paragrafta "'kendi satışı' ile 'kuyruk sırası' o alanda aynı sonucu verir" demişti (yalnız başka açık borç yokken) — başka açık borç
+  varken iki okuma ayrışıyordu; S110 bunu kapatır.
+
+### Yorumlar (ders 40 — karardan; kod yazılmadan ÖNCE; baş mimar kullanıcıya gösterir)
+- **Y8-1 — tetik (S110 "FAZLAYSA"):** kartın açıldığı anda (kartın tarihi, aynı gün yazım sırasıyla — C13.4 (6)) M1e'nin tüketebileceği açık borç yönlü kalemlerin toplamı O (kuyruk kalanları: taksitsiz
+  satış faturası, elle Borç, borçlu Açılış, stok veresiye satışı, karşılıksız borç kalemi, öbür kartların / taksitli faturaların açık taksitleri; kartın kendi taksitleri hariç; karşı yönlü kalemle
+  netleşmez) kart tutarı T'den **büyükse** (O > T) S110 uygulanır. O = T: kart bütün açık borcu tüketir, A ile B aynıdır — **eski kural AYNEN** (kararın tetiklenmediği sınır). O < T: S110'un alanı
+  değil — elle kartta G2 (b) (Y7-3) kabul / ret, satış kartında S101 (Y6-4 / Y7-2 (2)) ve EK-2B 32 AYNEN. 1 kuruş fazlası da "fazla"dır.
+- **Y8-2 — satış kolu ("stoktan satışta o satışı"):** kart kendi satışını tüketir (Y7-2 (1) aynen; S110 bunu KULLANICI kuralı yapar). Kartın KAPSAMI artık kararlıdır: kart yalnız kendi satışını
+  kapsar, öbür açık borç kalemleri kuyrukta kendi kalanlarıyla kalır. Bu yüzden **Y7-2 (5)'in "öbür açık borç" susması KALKAR** — hem kart açıldığı anda hem kontrol anında (sonradan doğan borç da
+  kartın kapsamında değildir). Görünüm: öbür kalemlerin takvim / Vade Takip / projeksiyon tutarı = kuyruk kalanı (C13.4 (7) son cümlesi); kart kapsamı yalnız kendi satışından düşülür. **Kalan:**
+  Y7-2 (5)'in "başka Mevcut Borç kartı" kolu (aynı caride satış kartı + elle Mevcut Borç kartı) AYNEN susar — iki kartın birbirinin taksitlerine dokunup dokunmadığı S110'un sorusu değil (bakım 9'a).
+- **Y8-3 — elle kol ("elle kartta taksitlendirilen borç") — tek okuma alanı:** kart adımında borcun kimliği yok (kart yalnız cari + tutar + taksit); "taksitlendirilen borç" karardan iki işaretle okunur:
+  **(i) tutar** — kartın tutarı o borcun açık tutarıdır (kararın örneği: kart 900 = elle borç 900); **(ii) tür** — elle kartın taksitlendirdiği borç carinin ELLE kaydıdır (Borç Yaz ya da borçlu Açılış;
+  örnek "elle borç 900" ↔ "fatura 600 ayrı açık"; satışın kendi yolu "stoktan satışta o satışı" ayrı yazılmış). **Tek okuma:** kart anında açık tutarı T'ye EŞİT TEK kalem var ve o kalem elle kayıt →
+  kart YALNIZ o kalemi tüketir (tamamen; tek kalem — C13.4 (7) defter kalanı tanımlı). Öbür her durumda (iki işaret ayrışıyor ya da kalem tek değil) kâhin **SUSAR** (C13.4 (11) düzeninde o carinin
+  Kalan / açık / kart / gecikmiş / görünüm denetimleri yazılmaz; `belirsiz` "… S110 … KULLANICIYA SORULMALI SK-19 (§20)"). Susulan sınırlar (sayılar SK-19'da):
+  (a) eşit kalem yok, birden çok elle borç (NOT'un örneği); (b) eşit kalem elle kayıt değil (fatura, stok satışı, karşılıksız, başka kartın taksiti); (c) eşit kalem yok, tek elle borç kart tutarından
+  büyük (kart elle borcun bir parçasını mı taşır?); (d) açık tutarı T'ye eşit birden çok kalem.
+- **Y8-4 — kartın tükettiği kalem ve görünüm (elle kol, tek okuma):** kalemin defter kalanı (Kalan / fatura açığı) C13.4 (7) / K6.5 (a) AYNEN = kuyruk kalanı + (tüketilen − kartın ödenen kısmı);
+  takvim / Vade Takip / projeksiyon tutarı = kuyruk kalanı (kartın tükettiği kalem 0 — taksitleriyle bir kez); kartın tüketmediği kalemler (kararın "fatura 600 ayrı açık"ı) kuyruk kalanıyla takvimde
+  (fatura kalemi de: K6.5'in "kartlı caride fatura kalemi yazılmaz" sınırı S110 alanında kalkar — fatura kartın kapsamında değil). K6.5'in "carinin tek elle kaydı, faturasız" tanım alanı S110
+  alanında gerekmez (kapsam kalem kalem belli). Görünüm TOPLAMI (`gorunumToplam`, `_cari_kalemleri`) ve takvim / projeksiyon SAYACI S110 alanındaki caride YAZILMAZ (taksit kalemlerinin
+  sayaçtaki kimliği bilinmiyor — K6.5'te de yazılmıyordu; kâhinin sınırı, kural sorusu değil).
+- **Y8-5 — S110 × S2 / S50 / S101 / S99 (NOT: yerine geçmez):** kart açıldıktan SONRA gelen bağsız tahsilat / stok iadesi kuyrukta S2 sırasıyla dağılır (kartın taksitleri dahil — S50; ANINDA (1));
+  sonra doğan borç kalemi kuyruğa kendi vadesiyle girer, kartın kapsamına girmez (kart tüketimi yalnız açıldığı gün — C13.4 (6)); kart tahsilatı kartın taksitine (3) — hepsi AYNEN. S101: satış kartında
+  satışın avanslı kısmı kartın ödenmiş kısmıdır (Y7-2 (2)) — tetik O < T olduğundan S110 ile aynı anda tetiklenmez; S101 kartından sonra doğan borç artık Y7-2 (5) ile susturulmaz (Y8-2). Taksitli
+  fatura (S99) kendi kartıdır (C13.4 (6) "kendi faturasını tüketir") — S110'un kart açılışı değildir, değişmez.
+- **Y8-6 — DEĞİŞMEYEN tanım alanı:** karşı yönlü kalemli kartlı cari (C16.2 / Y6-10 — net görünüm, gecikmiş tanımsız; belge durumu, bakiye, kart yazılır — kartın hangi borcu taşıdığı A ile), KS8 / KS9,
+  şüpheli / değersiz, fatura iadesi, tabloya bağlı cari, Tablodan Aktar'ın mevcut borç kartı (B1.4 kendi kuralı — kartın kaydı belli), SK-14 … SK-18 → aynen. G2 (b)'nin kabul / ret kararı
+  (Y7-3) S110'dan ÖNCE verilir; S110 yalnız KABUL edilen kartın neyi taşıdığını söyler.
+
+### KULLANICIYA SORULMALI (bakım 8; kâhin bu durumda SUSAR — ders 43, SORU DÜZENİ; UÇ DURUM)
+- **SK-19 (S110 — "elle kartta taksitlendirilen borç" tek okumayla belirlenemiyor):** Carinin Mevcut Borcunu Taksitlendir kartı açılırken açık borç kart tutarından fazla ve kartın tutarı tek bir elle
+  kaydın açık tutarına eşit DEĞİL. Örnekler (bugün 15.04, kartın taksitleri 01.04 / 01.05 / 01.06): **(a)** 01.03 fatura 600 · 02.03 Borç X 500 · 05.03 Borç Y 700 · 15.03 kart 900; **(b)** 01.03 Borç 900 ·
+  05.03 fatura 600 · 15.03 kart 600 (2 × 300); **(c)** 01.03 Borç 900 · 05.03 fatura 600 · 15.03 kart 500 (2 × 250).
+  **A (öneri — elle kart elle kayıtları taşır; faturanın kendi "Bu Satışı Taksitlendir" yolu var):** kart carinin elle kayıtlarını (Borç Yaz / Açılış) vade sırasıyla içine alır, faturalar ayrı açık —
+  (a) X 500 + Y'nin 400'ü kartta, açık: fatura 600 + Y 300; (b) Borç'un 600'ü kartta, açık: Borç 300 + fatura 600; (c) Borç'un 500'ü kartta, açık: Borç 400 + fatura 600 /
+  **B (tutar eşleşmesi, yoksa S2):** kart tutarı bir kalemin açık tutarına eşitse o kalemi (türü ne olursa), değilse vadesi en önce gelen borçları içine alır — (a) fatura 600 + X'in 300'ü kartta, açık: X 200 + Y 700;
+  (b) fatura kartta, açık: Borç 900; (c) Borç'un 500'ü kartta, açık: Borç 400 + fatura 600 (A ile aynı) / **C:** uç durum böyle kalsın (BİLİNEN SINIR). (Bakiye her seçenekte aynı; değişen hangi kalemin
+  açık kaldığı — takvim / Vade Takip kalemi, fatura listesi, sonra gelen ödemenin sırası.)
