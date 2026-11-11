@@ -66,6 +66,9 @@ export const BALANCE_SHEET_ITEMS = Object.freeze({
   "III.G": Object.freeze({ taraf: "pasif", grup: "III", grupAd: "Kısa Vadeli Yabancı Kaynaklar", ad: "Borç ve Gider Karşılıkları" }),
   "III.I": Object.freeze({ taraf: "pasif", grup: "III", grupAd: "Kısa Vadeli Yabancı Kaynaklar", ad: "Diğer Kısa Vadeli Yabancı Kaynaklar" }),
   "V.A": Object.freeze({ taraf: "pasif", grup: "V", grupAd: "Özkaynaklar", ad: "Ödenmiş Sermaye" }),
+  // 2.5.0 Ç5-A (C5-ACILIS-TASARIM §2.1; M-11 hedefleri, çekirdek §13): sermaye ve kâr yedekleri — Açılış Eşleştirme Fişi'nin (tur 2) hedef hesapları.
+  "V.B": Object.freeze({ taraf: "pasif", grup: "V", grupAd: "Özkaynaklar", ad: "Sermaye Yedekleri" }),
+  "V.C": Object.freeze({ taraf: "pasif", grup: "V", grupAd: "Özkaynaklar", ad: "Kâr Yedekleri" }),
   "V.D": Object.freeze({ taraf: "pasif", grup: "V", grupAd: "Özkaynaklar", ad: "Geçmiş Yıllar Kârları" }),
   "V.E": Object.freeze({ taraf: "pasif", grup: "V", grupAd: "Özkaynaklar", ad: "Geçmiş Yıllar Zararları (−)" }),
   "V.F": Object.freeze({ taraf: "pasif", grup: "V", grupAd: "Özkaynaklar", ad: "Dönem Net Kârı (Zararı)" }),
@@ -130,9 +133,25 @@ export const ACCOUNT_PLAN = Object.freeze({
   // Ters (KG-14 A, çekirdek §13): borçlu 360 Diğer Çeşitli Dönen Varlıklar'a (198) + Kesin Değil.
   360: pasif("Ödenecek Vergi ve Fonlar (Tevkifat, Stopaj)", "III.F", brut("I.H", "198", "hesap", { kesinDegil: true })),
   391: pasif("Hesaplanan KDV", "III.I"),
-  500: pasif("Açılış ve Devir Bakiyeleri", "V.A"),
-  // 2.5.0 Ç1 (KG-1, çekirdek §13): geçici açılış hesabı. Modül açılışları Ç5'te buraya yazılır; Bilanço'da Özkaynaklar'ın sonunda uyarılı satır.
+  // 2.5.0 Ç5-A (C5-ACILIS-TASARIM §2.1; kural kitabı §2 "500 Sermaye … yalnız eşleştirme fişiyle"): Tek Düzen adı. 2.4.9'a kadar "Açılış ve Devir Bakiyeleri" — modül
+  // açılışları artık 519'a yazılır; 500'e yalnız Açılış Eşleştirme Fişi (tur 2) yazar. Banka fişlerinde saklı "500" (rol opening / closing) türetmede 519 okunur (effectiveGl).
+  500: pasif("Sermaye", "V.A"),
+  501: pasif("Ödenmemiş Sermaye (−)", "V.A", null, { duzenleyici: true }),
+  502: pasif("Sermaye Düzeltmesi Olumlu Farkları", "V.A"),
+  503: pasif("Sermaye Düzeltmesi Olumsuz Farkları (−)", "V.A", null, { duzenleyici: true }),
+  // 2.5.0 Ç1 (KG-1, çekirdek §13): geçici açılış hesabı. Modül açılışları (Ç5-A) buraya yazılır; Bilanço'da Özkaynaklar'ın sonunda uyarılı satır.
   519: pasif("Eşleştirilecek Açılış Bakiyeleri", "V.G"),
+  // 2.5.0 Ç5-A (§2.1): Sermaye Yedekleri (52) ve Kâr Yedekleri (54), Tek Düzen adları — yalnız Açılış Eşleştirme Fişi'nin hedefi (hiçbir olay türetmede yazmaz).
+  520: pasif("Hisse Senedi İhraç Primleri", "V.B"),
+  521: pasif("Hisse Senedi İptal Kârları", "V.B"),
+  522: pasif("Maddi Duran Varlık Yeniden Değerleme Artışları", "V.B"),
+  523: pasif("İştirakler Yeniden Değerleme Artışları", "V.B"),
+  529: pasif("Diğer Sermaye Yedekleri", "V.B"),
+  540: pasif("Yasal Yedekler", "V.C"),
+  541: pasif("Statü Yedekleri", "V.C"),
+  542: pasif("Olağanüstü Yedekler", "V.C"),
+  548: pasif("Diğer Kâr Yedekleri", "V.C"),
+  549: pasif("Özel Fonlar", "V.C"),
   // 2.5.0 Ç1: dönem sonu ve devir hesapları (kapanış akışı: 690 → 692 → 590 / 591; önceki yıllar 570 / 580 — KG-12).
   570: pasif("Geçmiş Yıllar Kârları", "V.D"),
   580: pasif("Geçmiş Yıllar Zararları (−)", "V.E", null, { duzenleyici: true }),
@@ -189,6 +208,8 @@ export const PLAN_SUBS = Object.freeze({
   "336.90": "Sınıflandırılmamış Tahsilatlar",
   "600.90": "Belgesiz",
   "602.90": "Sınıflandırılmamış",
+  // 2.5.0 Ç5-A (S49 = A): formdan carisiz alınan evrak (açılış değil) B 101 / A 649.90 — Kasa'nın carisiz girişi gibi (KG-3 ailesi).
+  "649.90": "Sınıflandırılmamış",
   "610.90": "Belgesiz",
   "770.90": "Sınıflandırılmamış",
 });
