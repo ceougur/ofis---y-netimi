@@ -25,6 +25,8 @@
 8. Bakım 7 (§19; G1 / G2): bütün elle senaryolarda seriden numara alan belgeler (satış faturası — taslak dahil — ve iade) senaryo içinde tarih sırasıyla (Y7-1); elle Mevcut Borç kartının
    reddi (Y7-3) yalnız 2.5.0'da — 2.4.9'da aynı adım kabul; mutantlar 251–255 DEĞERLE; `elleYok` / `elleBelirsiz` SK-18 susması.
 9. Bakım 8 (§20; S110): kart açılırken açık borç kart tutarından fazlaysa kart kendi borcunu taşır — d34 elle tablosu; mutantlar 256–260 DEĞERLE; `elleYok` / `elleBelirsiz` SK-19 susması.
+10. Bakım 9 (§21; S120): elle kart tek bir elle borca denk gelmiyorsa yalnız elle borçları eskiden yeniye içine alır — d35 elle tablosu (d34 E11–E13 ve d8 A artık değerle); mutantlar 261–264
+   DEĞERLE; `elleYok` / `elleBelirsiz` SK-20 … SK-23 susmaları.
 Çıktı: TAP benzeri sayılar + son satır "N/M denetim geçti". Çıkış 0 yalnız hepsi geçerse.
 """
 import importlib.util

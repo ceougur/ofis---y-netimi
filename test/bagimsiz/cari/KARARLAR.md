@@ -2328,3 +2328,61 @@ listesi, sonra gelen ödemenin sırası) ya da (SK-21) elle kaydın "Kalan" süt
 - **SK-23 ("eskiden yeniye" belge tarihi mi vade mi — iki sıra tüketimi ayırıyor; UÇ DURUM):** 01.03 F 600 · 02.03 Borç X 500 (vade 30.03) · 05.03 Borç Y 700 (vade 10.03) · 15.03 kart 900.
   **A (öneri — vade sırası, S2 ile aynı):** kartta Y 700 + X'in 200'ü; açık F 600 + X 300 (vade 30.03). / **B (belge tarihi):** kartta X 500 + Y'nin 400'ü; açık F 600 + Y 300 (vade 10.03). / **C:** uç
   durum böyle kalsın (BİLİNEN SINIR).
+
+### Kurallar (kod commit'i; yorumların `model.py`'deki karşılığı)
+- **C21.1 (Y9-1 … Y9-6) `_tyk` elle kol (yalnız `2.5.0`; Y8-1 tetiği ve `api` koşulu AYNEN):** `elle_` = kartın günündeki açık kalemlerden `hareketler`dekiler (elle Borç / borçlu Açılış); `es` = açık tutarı T'ye eşit
+  elle kalemler. `len(es) == 1` → `("kendi", kalem, eşit fatura da var mı)` (Y9-2; bakım 8 aynen). Değilse: E = Σ elle açık; E < T → `("sus", …, "SK-20")`; vade sırası (S2 anahtarı) ile belge sırası (d → s)
+  farklı tüketim veriyorsa → `"SK-23"`; `len(es) ≥ 2` ve eskiden yeniye tüketim tek bir eşit elle kalemin tamamı değilse → `"SK-22"`; öbür durumda kart elle kalemleri S2 sırasıyla (vadesizde = belge
+  sırası) içine alır (`liste_`, `("elle", kalemler)`). Yardımcı `_s120_doldur` (yan etkisiz). Susan kartın tüketimi eski sırayla sürer, cari C13.4 (11) düzeninde susar (bakım 8 düzeni).
+- **C21.2 (Y9-7) `_alacak_govde250`:** `s120_kart` (S120 alanındaki kartlar — `son["s120"]`, iz); birden çok kalem tüketen S120 kartında ödenen kısım 0 → her kalemin defter kalanı = kuyruk kalanı +
+  tüketilen; > 0 → neden "… SK-21 (§21)" (C13.4 (7) / (11)). SK-19 nedeni kalktı; yeni neden "S120: Mevcut Borç kartı <no> … KULLANICIYA SORULMALI SK-20 | SK-22 | SK-23 (§21)".
+- **C21.3 görünüm:** değişmedi — S110 alanının (`son["s110"]`) kuralları (Y8-4 / C20.3) çok kalemli S120 kartında da işler (Kalan defter kalanı, takvim / Vade Takip / projeksiyon kuyruk kalanı,
+  kartın içine almadığı satış faturası kendi açığıyla; sayaç ve görünüm toplamı yazılmaz).
+- `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`: hiçbir yol değişmedi (yeni dallar `k250` içinde ya da mutant).
+
+### C8n Nasıl bozulur? (bakım 9 — kod commit'inde, senaryolarla birlikte yazıldı)
+| # | Bozulma | Senaryo |
+|---|---|---|
+| Z112 | Elle kart (eşit elle borç yok) faturayı da içine alır (S120 B / vade sırası bütün borçlar) | d34 E11, d35 H1 (mutant 261, 262) |
+| Z113 | Elle borçlar yeniden eskiye alınır | d34 E11, d35 H14 (mutant 263) |
+| Z114 | "Tutarı karta eşit TEK elle borç" istisnası ezilir (eskiden yeniye alınır) | d35 H4a (mutant 264) |
+| Z115 | Eşit fatura, tek eşit elle borcun istisnasını bozar (SK-19 (d) gibi susar ya da faturayı alır) | d35 H4b (mutant 261) |
+| Z116 | Kart sonrası tahsilat / yeni borç / stok iadesi kartın içine girer ya da S2 / S50 bozulur | d35 H1, H12, H13, H14 |
+| Z117 | Kısmen ödenmiş elle borç tam tutarıyla alınır | d35 H6a, H6b |
+| Z118 | Borçlu Açılış elle borç sayılmaz | d35 H5, d8 A |
+| Z119 | Kâhin kararın söylemediği alt durumda okuma uydurur (elle toplamı < kart; vade ↔ belge sırası; birden çok eşit elle borç; çok kalemli kartın ödemesi) | d35 H8 (SK-20), H9a (SK-23), H3 (SK-22), H10 / H11 (SK-21) |
+| Z120 | Birden çok eşit elle borçta ilk elle kalem eşitken de susar | d35 H2 |
+| Z121 | Aynı adlı iki carinin borcu birbirinin kartına girer | d35 H15a / H15b |
+
+### Senaryolar (bakım 9; elle tablolar — kâhin koşulmadan karar metninden ve §13 / §20 / §21'den; betikler `docs/kanit/2026-11-11/kahineski9-arac/yeni-senaryolar9.py`, `d34-guncelle9.py`, `d8-guncelle9.py`, adımların yeri `g1-sirala.py`)
+- **`d35-c5-s120-elle-borclar`** (bugün 15.04.2026; 342 elle denetim = 307 değer + 30 yok + 5 belirsiz): H1 kararın 1. örneği + sonra bağsız tahsilat 600 · H2 iki eşit elle borç (ilk elle eşit) · H3 SK-22 ·
+  H4a tek eşit elle borç (bakım 8 aynen) · H4b tek eşit elle borç + eşit fatura · H5 borçlu Açılış · H6a kısmen ödenmiş elle borç · H6b kısmen ödenmiş, açığı karta eşit · H7 elle toplamı = kart ·
+  H8 SK-20 · H9a SK-23 · H9b vadeli, sıra aynı · H10 SK-21 (S50 payı) · H11 SK-21 (kart tahsilatı) · H12 sonra yeni borç · H13 sonra stok iadesi · H14 sonra kısmi tahsilat (karta ulaşmaz) · H15a / H15b aynı adlı iki cari.
+- **`d34-c5-s110-kendi-borcu` E11 / E12 / E13 (kararın üç örneği AYNEN — bakım 8'in SK-19 (a) / (b) / (c)):** 14 `elleYok` + 3 `elleBelirsiz` (SK-19) KALKTI, 49 elle değer EKLENDİ (E11: X Kalan 500, Y Kalan 700,
+  gecikmiş 1.200, açık toplamı 1.800, F açık 600 + takvim 600, Y takvim 300 (−41), X takvim yok, kart 900 / 0; E12: Borç Kalan 900, gecikmiş 1.200, açık 1.500, F 600, Borç takvim 300 (−45), kart 600 / 0;
+  E13: Borç Kalan 900, gecikmiş 1.250, açık 1.500, F 600, Borç takvim 400 (−45), kart 500 / 0). Adımlar ve öbür beklentiler (E1–E10, E14) AYNEN. d34 toplam 236 elle denetim (bakım 8: 204).
+- **`d8-c5-tanimsiz` A (S120 alanına girdi — karar gereği):** elle kart 1.200, açık borç Açılış 1.000 + Borç 500 (fatura yok, eşit kalem yok) → kart Açılış 1.000 + Borç'un 200'ü; 4 `elleYok` KALKTI,
+  4 elle değer EKLENDİ (Açılış Kalan 1.000, Borç Kalan 500, kart ödenen 0, gecikmiş 900 — bugün 15.06). Bakım 8'e kadar "birden çok kalemi tüketti" / SK-19 ile susuyordu. B carisi aynen susar.
+- **İlk koşu:** d35'in 342 elle denetiminin hepsi kâhinle aynı (koşudan sonra değişen elle değer YOK). d34 E11–E13 değerleri elle hesaplandıktan sonra, dosyaya yazılmadan önce kâhinin d34 çıktısına
+  bir kez bakıldı (sağlama — değerler aynıydı; bağımsızlık notu). d8 A'nın kırmızısı öz testte görüldü (eski elle tablo: "yok" beklenirken kâhin değer yazdı — beklenen neden: karar alanı genişledi);
+  değerler karar metninden elle hesaplandı, kırmızı satırındaki kâhin değerleriyle aynı (bağımsızlık notu: kırmızı satırı değerlerden önce görüldü).
+
+### C10n Mutantlar (bakım 9; `oz-test.py` DEĞERLE — çökmeden, elle tablo kırmızı)
+261 S120 B (eşit kalem türü ne olursa, yoksa bütün borçlar vade sırası) · 262 faturayı da içine alan elle kol · 263 elle borçlar yeniden eskiye · 264 "eşit TEK elle borç" istisnası ezilir. Bakım 6 / 7 / 8
+mutantları (241–260) aynen yakalanıyor.
+
+### Dil ekleri (/3, bakım 9)
+Yeni adım YOK; yeni çıktı anahtarı YOK. `belirsiz` kayıtları: "cari <ad> tanımsız (2.5.0 C13.4 (11)): S120: Mevcut Borç kartı <no> açılırken açık borç (O) kart tutarından (T) fazla — … KULLANICIYA SORULMALI
+SK-20 | SK-22 | SK-23 (§21)" ve "… Mevcut Borç kartı <no> birden çok elle borcu içine aldı (S120 A) ve kartın <x>'i ödendi — … SK-21 (§21)". SK-19 kaydı artık yazılmaz.
+
+### Eşleme notları (ana oturum için; `kos.mjs` bu bakımda DEĞİŞMEDİ, açılmadı)
+- Yeni adım / anahtar yok; d35 bakım 7–8'in adım türleriyle (`cari_ac {acilis}`, `fatura`, `borc {vade}`, `tahsilat`, `kart_ac {mevcut}`, `kart_tahsilat`, `stok_iade`).
+- **Ana oturuma:** `model.py` değişti — mobil yazma kâhininin `cari_model_sha256`'sı yeniden üretilmeli (o dosya okunmadı); yapım aşaması listesi bu ajanca açılmadı (S120 alanındaki yeni değerler —
+  d34 E11–E13, d8 A, d35 — listeye yeni kayıt olarak düşebilir; ayrıştırma ana oturumda).
+
+### C12n DENENMEYEN (bakım 9; neden)
+- Program koşulmadı (görev). Programın S120 alanındaki gösterimi (takvimde taksit kalemlerinin kimliği, görünüm toplamı, sayaç) bilinmiyor — kâhin o denetimleri S120 alanında yazmaz (Y8-4 aynen).
+- Kart açıldıktan sonra kartın taksit tahsilatı ile birden çok elle borç: yalnız SUS (SK-21) denetlendi — kararlı değer yok (kullanıcı kararı bekler).
+- Vade günü / ertesi gün (gün dönümü) S120 senaryosu — tek bugünle yazıldı (gecikmiş kuralı C13.5 aynen); S120 kartının iki şirket / yedek geri yükleme senaryosu yok (kâhinin dilinde şirket yok).
+- Aynı caride iki elle S120 kartı (ikinci kart birincinin dışında kalan elle borcu alır) — kural yolu aynı (kartın günündeki açık elle kalemler); elle senaryo yazılmadı.
+- Ödeme Sözü (Beklenen) taşıyan elle borcun S120 sırası — S52 "sırayı değiştirmez" aynen; senaryo yazılmadı.
