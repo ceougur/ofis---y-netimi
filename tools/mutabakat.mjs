@@ -12,7 +12,8 @@
 //   npm run mutabakat -- --json             makine okunur çıktı (--sirket ile: { companies: [...] })
 //   HUKUK_DATA_DIR=D:\DestekOfis\data npm run mutabakat
 //
-// Çıkış kodu: 0 tutarlı, 1 sapma var, 2 çalıştırılamadı (bilinmeyen şirket kodu dahil).
+// Çıkış kodu: 0 tutarlı, 1 sapma var, 2 çalıştırılamadı (bilinmeyen şirket kodu dahil). Uyarı (ör. Kasa Açılışından Önce Tarihli Hareket) sapma değildir: ayrı "Uyarı"
+// başlığında yazılır, çıkış kodunu değiştirmez (JSON'da notices: uyarı kodları; ok yalnız sapmaya bakar).
 import { existsSync, mkdirSync, mkdtempSync, rmSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -65,7 +66,11 @@ async function check(source, work) {
   try {
     const result = app.integrity.run();
     const { trial } = app.ledger.check();
-    return { source, today: app.period.today(), lockedUntil: app.period.lockedUntil(), ok: result.ok, durationMs: result.durationMs, trial, checks: result.checks, failures: result.failures };
+    // 2.5.0 birleşik tur 6 (BAŞ MİMAR 10.11 "D2 TUR 3 + Ç5-K TUR 2" (3)): uyarı (notice — "Kasa Açılışından Önce Tarihli Hareket") sapma DEĞİLDİR: ayrı "Uyarı" başlığında
+    // yazılır, çıkış kodunu sapma yokken 1 yapmaz (programın ekranındaki gibi: Yönetim › Sistem sarı, Defter Mutabakatı "Tutarlı").
+    const failures = result.failures.filter(item => !item.notice);
+    const notices = result.failures.filter(item => item.notice);
+    return { source, today: app.period.today(), lockedUntil: app.period.lockedUntil(), ok: failures.length === 0, durationMs: result.durationMs, trial, checks: result.checks, failures, notices };
   } finally {
     await app.close().catch(() => {});
   }
@@ -73,7 +78,7 @@ async function check(source, work) {
 
 function print(report, heading = "") {
   const { source, today, lockedUntil, trial } = report;
-  const result = { ok: report.ok, checks: report.checks, failures: report.failures, durationMs: report.durationMs };
+  const result = { ok: report.ok, checks: report.checks, failures: report.failures, notices: report.notices || [], durationMs: report.durationMs };
   console.log(`DestekOfis mutabakat denetimi · ${heading ? `${heading} · ` : ""}${source}`);
   console.log(`Bugün ${day(today)} · Dönem kilidi: ${lockedUntil ? `${day(lockedUntil)} ve öncesi kilitli` : "yok"} · ${result.checks.length} denetim, ${result.durationMs} ms`);
   console.log(`Mizan: borç ${tl(trial.totals.debit)} · alacak ${tl(trial.totals.credit)} · fark ${tl(trial.totals.difference)}${trial.unbalanced ? ` · dengesiz fiş ${trial.unbalanced}` : ""}`);
@@ -83,7 +88,7 @@ function print(report, heading = "") {
     console.log("\nDenetimler");
     for (const item of result.checks) {
       const extra = item.ledger !== undefined ? ` (defter ${tl(item.ledger)} / alt defter ${tl(item.subledger)})` : item.count ? ` (${item.count})` : "";
-      console.log(`  ${item.ok ? "✓" : "✗"} ${item.name}${extra}`);
+      console.log(`  ${item.ok ? "✓" : item.notice ? "⚠" : "✗"} ${item.name}${extra}`);
     }
   }
   if (result.ok) console.log("\n✓ Ana defter ile Kasa, Cari, Stok ve Taksit alt defterleri kuruşu kuruşuna tutarlı.");
@@ -100,6 +105,14 @@ function print(report, heading = "") {
     }
     console.log("\nVeri değiştirilmedi. Sapmalar eski sürümlerden kalmış olabilir; program yeni sapmaya izin vermez.");
   }
+  if (result.notices.length) {
+    console.log(`\n⚠ Uyarı (sapma değil; yeni işlemleri engellemez) — ${result.notices.length} denetim:`);
+    for (const item of result.notices) {
+      console.log(`  ⚠ ${item.name}${item.count ? ` · ${item.count} kayıt` : ""}`);
+      if (item.hint) console.log(`      ${item.hint}`);
+      for (const line of item.sample || []) console.log(`      ${line}`);
+    }
+  }
 }
 
 const work = mkdtempSync(path.join(os.tmpdir(), "destekofis-mutabakat-"));
@@ -114,7 +127,7 @@ try {
     } else {
       const report = await check(source, work);
       code = report.ok ? 0 : 1;
-      if (asJson) console.log(JSON.stringify({ source, today: report.today, lockedUntil: report.lockedUntil, ok: report.ok, durationMs: report.durationMs, trial: report.trial, checks: report.checks }, null, 2));
+      if (asJson) console.log(JSON.stringify({ source, today: report.today, lockedUntil: report.lockedUntil, ok: report.ok, durationMs: report.durationMs, trial: report.trial, checks: report.checks, notices: report.notices.map(item => item.code) }, null, 2));
       else print(report);
     }
   } else {
@@ -139,7 +152,7 @@ try {
       const missing = reports.some(report => report.error);
       code = missing ? 2 : reports.every(report => report.ok) ? 0 : 1;
       if (asJson) {
-        console.log(JSON.stringify({ dataDir, ok: reports.every(report => report.ok), companies: reports.map(({ failures, ...rest }) => rest) }, null, 2));
+        console.log(JSON.stringify({ dataDir, ok: reports.every(report => report.ok), companies: reports.map(({ failures, notices, ...rest }) => ({ ...rest, ...(notices ? { notices: notices.map(item => item.code) } : {}) })) }, null, 2));
       } else {
         reports.forEach((report, index) => {
           if (index) console.log("\n" + "─".repeat(72) + "\n");
@@ -149,7 +162,7 @@ try {
         });
         if (reports.length > 1) {
           console.log("\n" + "─".repeat(72));
-          for (const report of reports) console.log(`  ${report.error ? "✗" : report.ok ? "✓" : "✗"} ${report.code} · ${report.name}${report.error ? ` — ${report.error}` : report.ok ? "" : ` — ${report.failures.length} denetimde sapma`}`);
+          for (const report of reports) console.log(`  ${report.error ? "✗" : report.ok ? "✓" : "✗"} ${report.code} · ${report.name}${report.error ? ` — ${report.error}` : report.ok ? "" : ` — ${report.failures.length} denetimde sapma`}${!report.error && report.notices?.length ? ` · ${report.notices.length} uyarı` : ""}`);
         }
       }
     }

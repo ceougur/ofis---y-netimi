@@ -14,7 +14,7 @@ import { METHODS, NEGATIVE_GUARDED, NEGATIVE_KEY, NEGATIVE_POLICIES, methodOf, r
 import { systemClock } from "../lib/clock.mjs";
 import { createMoneyLines, waysFor } from "../lib/bank/money-lines.mjs";
 import { negativeConfirmed } from "../lib/bank/module-ref.mjs";
-import { CASH_OPENING_TEXT, cashOpenings, firstCashMovement, installCashOpeningGuard, isCashOpeningId } from "../lib/cash-opening.mjs";
+import { CASH_OPENING_TEXT, cashOpeningDate, cashOpenings, firstCashMovement, installCashOpeningGuard, isCashOpeningId } from "../lib/cash-opening.mjs";
 import { assertRowVersion, rowVersion } from "../lib/row-version.mjs";
 
 // Banka Fişi'nin para hareketi olmayan türleri (açılış, Devir Kapanışı, eski bakiye aktarımı): raporda "Açılış ve Devir Düzeltmeleri".
@@ -473,10 +473,21 @@ export function registerCashRoutes(router, context) {
 
   // 2.4.3 MM3: Kasa'dan Vergi Ödemesi (B 360 · B 689 / A 100) Kasa'dan düzeltilmez — vergi ve gecikme ayrımı tutarla birlikte değişirdi. Silinir
   // (Silinenler'den geri gelir) ve Vergi Ödemesi'nden doğru tutarla yeniden girilir.
+  // 2.5.0 birleşik tur 6 (KULLANICI KARARI 10.11.2026 13:16, S94 = A): Kasa açılışından önce tarihli (yedekten / eski sürümden / Silinenler'den gelen) Vergi Ödemesi
+  // aynı tarihle yeniden girilemez (S12: 409 cash-before-opening) — ileti çıkış yolunu söyler: açılış günü / sonrası tarihle yeniden girmek ya da yöneticinin Kasa
+  // açılışını öne alması. Açılıştan sonraki Vergi Ödemesi'nin iletisi değişmez.
   const assertNotTaxPayment = id => {
-    if (store.get("SELECT 1 AS found FROM pragma_table_info('cash_entries') WHERE name = 'tax_json'") && store.get("SELECT tax_json AS t FROM cash_entries WHERE id = ?", id)?.t) {
-      throw new HttpError(409, "Bu hareket bir Vergi Ödemesi; Kasa'dan düzeltilmez. Silip Vergi Ödemesi'nden doğru tutarla yeniden girin.", { code: "cash-tax-payment" });
-    }
+    if (!store.get("SELECT 1 AS found FROM pragma_table_info('cash_entries') WHERE name = 'tax_json'")) return;
+    const row = store.get("SELECT tax_json AS t, date FROM cash_entries WHERE id = ?", id);
+    if (!row?.t) return;
+    const opening = cashOpeningDate(store);
+    const early = Boolean(opening && row.date && String(row.date) < opening);
+    const day = iso => String(iso).split("-").reverse().join(".");
+    throw new HttpError(
+      409,
+      `Bu hareket bir Vergi Ödemesi; Kasa'dan düzeltilmez. Silip Vergi Ödemesi'nden doğru tutarla yeniden girin.${early ? ` Hareket Kasa açılışından (${day(opening)}) önce tarihli: yeniden girerken tarihi Kasa açılış günü ya da sonrası yapın; ödeme gerçekten açılıştan önceyse yönetici Kasa → Açılış Bakiyesi'nin tarihini öne alabilir.` : ""}`,
+      { code: "cash-tax-payment", ...(early ? { openingDate: opening, date: String(row.date) } : {}) },
+    );
   };
   // 2.5.0 BİRLEŞİK TUR 1 (YB-1): hareket düzeltmesinde iyimser kilit (lib/row-version.mjs; gövdede updatedAt varsa).
   const ENTRY_STALE = { code: "cash-entry-stale", message: "Bu Kasa hareketi siz açtıktan sonra başka biri tarafından değiştirildi; düzeltmeniz kaydedilmedi. Listeyi yenileyip yeniden deneyin." };
