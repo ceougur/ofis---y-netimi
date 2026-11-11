@@ -9,6 +9,7 @@ import { systemClock } from "../lib/clock.mjs";
 import { HttpError, ok, readJson, text } from "../lib/http.mjs";
 import { VOUCHER_TYPES, createLedgerVouchers, voucherJournalRows } from "../lib/ledger-vouchers.mjs";
 import { createLedgerSnapshots } from "../lib/ledger-snapshots.mjs";
+import { oldRulePinnedPlans } from "../lib/ledger-opening.mjs";
 import { leanAll } from "../lib/lean-rows.mjs";
 import { roundMoney } from "../lib/money.mjs";
 
@@ -138,6 +139,15 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
          FROM plan_entries e ${J} plans p ON p.id = e.plan_id AND p.deleted_at IS NULL LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL${where("e", [[set?.parties, "SELECT pe.id FROM plans pp JOIN plan_entries pe ON pe.plan_id = pp.id WHERE pp.account_id IN $"], [set?.plans, "SELECT id FROM plan_entries WHERE plan_id IN $"], [set?.planEntries, own("m_plan_entries")], [set?.cheques, "SELECT id FROM plan_entries WHERE cheque_id IN $"]])}`,
         wanted(set?.parties, set?.plans, set?.planEntries, set?.cheques),
       );
+      // 2.5.0 Ç5-A tur 1b (S127 = A, "bir olay tek kez yazılır"; C5-ACILIS-TASARIM §12.1): KG-5'ten önceki kuralla donmuş dönemin iki yanına düşen yüklenen kart eski yapısıyla
+      // (journal() pinnedOld). Karar kart başına, süzgeçsiz verilir (süzgeçli kapı aynı kartı aynı kuralla görür). Donmuş koşu yoksa sorgu yok.
+      if (imported) {
+        const pinned = oldRulePinnedPlans(store);
+        if (pinned.size) {
+          for (const plan of out.plans) if (pinned.has(plan.id)) plan.pinnedOld = 1;
+          for (const entry of out.planEntries) if (pinned.has(entry.planId)) entry.planPinned = 1;
+        }
+      }
     }
     // Fatura (v2.0.15): yalnız kesilmiş olanlar (taslak ve iptal deftere girmez). Carisi silinmiş fatura olamaz (silme engelli).
     if (has("invoices")) {

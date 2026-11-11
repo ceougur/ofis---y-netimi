@@ -1,6 +1,7 @@
 // 2.5.0 Ç5-A tur 1 — açılış düzeni (docs/erp/C5-ACILIS-TASARIM.md §2.4, §2.8, §3.5, §11): KG-16 "Açılış Olabilir" listesi, "Açılış Karşılığı" ikinci yükleyicisi (519 / 500,
 // modüllerin kendi tablolarından; journal()'dan bağımsız SQL) ve kilitsiz geçmiş yıl bilgisi (S53). Açılış Eşleştirme Fişi ve Kural Farkı Düzeltme Fişi TUR 2'de bu dosyaya eklenir
 // (eşleştirme denetimi aynı `openingCounterpart` toplamını okur).
+import { LEDGER_RULE_ALIASES, localDayOf } from "./general-ledger.mjs";
 import { roundMoney } from "./money.mjs";
 import { isOpeningCandidateNote } from "./migrations.mjs";
 
@@ -89,6 +90,70 @@ export function openingCounterpart(store) {
   }
   const counterpart = parts.cash + parts.accounts + parts.plans + parts.stock + parts.bank + parts.cheques + parts.vouchers519;
   return { 519: counterpart, 500: parts.vouchers500, parts };
+}
+
+/**
+ * S127 = A (KULLANICI KARARI 11.11.2026, "bir olay tek kez yazılır"; C5-ACILIS-TASARIM §12.1): KG-5'ten ÖNCEKİ kuralla (2.4.9 ve takma adı "2.5.0") donmuş dönem ile Excel /
+ * tablo taksit kartının iki kuraldaki yerleşimi kilit sınırının İKİ YANINA düşüyorsa kart eski kurala bağlıdır (journal() `pinnedOld`: kart Kayıt Tarihi'nde T, açılış satırları
+ * kendi günlerinde — donmuş defterdeki maddeyle aynı kimlik / tarih / cari tutarı; karma okumada ikinci kez yazılmaz, eksik de kalmaz). Dönüş: bağlı kart kimlikleri (Set).
+ * Eski kurallı bölge: koşu tablosunun sırayla yeniden oynatılması — tamamlanmış freeze kesitleri (from, through], tamamlanmış thaw kırpar; bekleyen eski kurallı koşunun kesiti de
+ * bölgedir (göç / onarım penceresi: ara dilim o kuralla canlı türetilir — lib/ledger-snapshots.mjs middleOf). İleri yön (eski yerleşimin bir parçası bölgede, yeni yerleşim
+ * dışında): eski maddelerden biri donmuş satırlarda GERÇEKTEN varsa (tarih indeksiyle; bekleyen kesitte tarih yeter) bağlı — donmadan sonra açılan / Silinenler'den dönen kart
+ * yeni kuralla kalır. Ters yön (yeni yerleşim bölgede, eski yerleşim tamamen değil): bağlı (yeni kural maddeyi donmuş döneme koyar, karma okumada görünmezdi).
+ * İkisi de bölgede (C5 §3.3 örneği) ya da ikisi de dışında: bağlı DEĞİL (yeni kural; fark ruleDiff'te). Donmuş koşu yoksa (kilitsiz) boş küme — sorgu yok.
+ */
+export function oldRulePinnedPlans(store) {
+  const out = new Set();
+  if (!has(store, "ledger_snapshot_runs") || !has(store, "ledger_snapshots") || !has(store, "plans") || !has(store, "plan_imports") || !hasColumn(store, "plans", "import_id")) return out;
+  const preKg5 = rule => (LEDGER_RULE_ALIASES[rule] || rule) === "2.4.9";
+  let segments = [];
+  let pending = null;
+  for (const run of store.all("SELECT no, kind, state, from_date AS fromDate, through, rule_version AS rule FROM ledger_snapshot_runs WHERE state IN ('done', 'pending') ORDER BY no")) {
+    if (run.state === "pending") {
+      pending = run;
+      continue;
+    }
+    if (run.kind === "thaw") {
+      const upto = String(run.through || "");
+      segments = segments.map(segment => ({ ...segment, through: segment.through > upto ? upto : segment.through })).filter(segment => segment.through > segment.from);
+    } else if (run.kind === "freeze" && run.through) segments.push({ from: String(run.fromDate || ""), through: String(run.through), rule: run.rule, frozen: true });
+  }
+  const done = segments.length ? segments.at(-1).through : "";
+  if (pending && pending.kind === "freeze" && pending.through > done) segments.push({ from: done, through: String(pending.through), rule: pending.rule, frozen: false });
+  const old = segments.filter(segment => preKg5(segment.rule));
+  if (!old.length) return out;
+  const regionOf = day => old.find(segment => day > segment.from && day <= segment.through) || null;
+  const frozenRules = Object.keys(LEDGER_RULE_ALIASES).filter(preKg5).concat("2.4.9");
+  const marks = frozenRules.map(() => "?").join(", ");
+  const present = (id, day) => {
+    const segment = regionOf(day);
+    if (!segment) return false;
+    if (!segment.frozen) return true;
+    return Boolean(store.get(`SELECT 1 AS found FROM ledger_snapshots WHERE date = ? AND entry_id = ? AND rule_version IN (${marks}) LIMIT 1`, day, id, ...frozenRules));
+  };
+  const cards = store.all(
+    `SELECT p.id, COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) AS date, COALESCE((SELECT x.created_at FROM plan_imports x WHERE x.id = p.import_id), '') AS importedAt
+     FROM plans p WHERE p.deleted_at IS NULL AND p.import_id <> '' AND NOT p.covers_balance`,
+  );
+  if (!cards.length) return out;
+  const openings = new Map();
+  for (const row of store.all(
+    `SELECT e.id, e.plan_id AS planId, e.date FROM plan_entries e JOIN plans p ON p.id = e.plan_id AND p.deleted_at IS NULL
+     WHERE e.kind = 'in' AND e.opening = 1 AND p.import_id <> '' AND NOT p.covers_balance`,
+  )) {
+    if (!openings.has(row.planId)) openings.set(row.planId, []);
+    openings.get(row.planId).push(row);
+  }
+  for (const card of cards) {
+    // Eski kuralın maddeleri: kart (Kayıt Tarihi) + her açılış satırı (kendi günü). Yeni kuralın tek maddesi: yüklemenin yerel günü (journal() ile aynı kural).
+    const legacy = [{ id: `plan:${card.id}`, date: String(card.date) }, ...(openings.get(card.id) || []).map(row => ({ id: `plan-entry:${row.id}`, date: String(row.date) }))];
+    const fresh = localDayOf(card.importedAt) || String(card.date);
+    const inside = legacy.filter(item => regionOf(item.date));
+    const freshInside = Boolean(regionOf(fresh));
+    if (freshInside ? inside.length === legacy.length : inside.length === 0) continue;
+    if (freshInside || inside.some(item => present(item.id, item.date))) out.add(card.id);
+  }
+  return out;
 }
 
 /** Yevmiyede hesabın bakiyesi (kuruş, borç artı). */

@@ -498,7 +498,12 @@ export function journal(rows) {
     // 2.5.0 Ç5-A (KG-5 = A, H-06, M-10; BAŞ MİMAR B5): Excel'den / tablodan yüklenen kart (plans.import_id) AÇILIŞ alacağıdır — TEK madde B CH (T − P) / A 519, P (kartın
     // "Excel'de ödenmiş (açılış)" satırları) maddesiz; tarih yüklemenin (plan_imports.created_at) YEREL günü (damga yoksa kartın tarihi); açılış sınıfı. Gelir değildir.
     // BİLİNEN SINIR (B5): kartın Kayıt Tarihi yükleme gününden önceyse cari ekstresinde kart Kayıt Tarihi'nde, defterde yükleme gününde görünür.
-    if (!plan.coversBalance && plan.importId) {
+    // 2.5.0 Ç5-A tur 1b (S127 = A, "bir olay tek kez yazılır"; C5-ACILIS-TASARIM §12.1): KG-5'ten önceki kuralla donmuş dönemin iki yanına düşen kart (routes/ledger.mjs rows()
+    // pinnedOld — lib/ledger-opening.mjs oldRulePinnedPlans) BÜTÜNÜYLE ESKİ YAPISIYLA: kart maddesi Kayıt Tarihi'nde B CH T, açılış satırları (P) kendi günlerinde ayrı madde
+    // (aşağıda planEntries) — donmuş defterdeki maddeyle aynı kimlik / tarih / cari tutarı. Karşı hesap güncel açılış hesabı 519 (öbür kilitli kayıtlar gibi; eski ↔ yeni kural
+    // farkı 602 ↔ 519 Kural Değişikliği Farkı'nda görünür).
+    if (!plan.coversBalance && plan.importId && Number(plan.pinnedOld) === 1) post(`plan:${plan.id}`, plan.date, "Taksit kartı açılışı (Excel / tablo)", "Açılış alacağı (yüklenen taksit kartı)", control, OPENING_GL, plan.total);
+    else if (!plan.coversBalance && plan.importId) {
       const n = out.length;
       post(`plan:${plan.id}`, localDayOf(plan.importedAt) || plan.date, "Taksit kartı açılışı (Excel / tablo)", "Açılış alacağı (yüklenen taksit kartı)", control, OPENING_GL, roundMoney((Number(plan.total) || 0) - (Number(plan.openingPaid) || 0)));
       opened(n);
@@ -519,7 +524,8 @@ export function journal(rows) {
     if (row.kind === "in") {
       // 2.5.0 Ç5-A (KG-5): yüklenen (Excel / tablo) kartın açılış satırı (P) maddesizdir — kartın tek maddesinin içinde (T − P). Öbür açılış satırı (Mevcut Borcu
       // Taksitlendir yüklemesi) B 519 / A CH (2.4.9: 500), açılış sınıfı.
-      if (row.opening && row.planImported && !Number(row.planCovers)) continue;
+      // S127 (tur 1b): eski kurala bağlı kartın (planPinned) açılış satırı ayrı madde B 519 / A CH (kart maddesi T'yi taşır).
+      if (row.opening && row.planImported && !Number(row.planCovers) && !Number(row.planPinned)) continue;
       const debit = row.opening ? OPENING_GL : row.chequeId ? received(row.chequeInstrument) : moneyOf(row);
       const n = out.length;
       post(id, row.date, row.opening ? "Taksit açılışı (devir)" : row.chequeId ? "Taksit (çek/senetle)" : "Taksit tahsilatı", row.note, debit, control, row.amount);
