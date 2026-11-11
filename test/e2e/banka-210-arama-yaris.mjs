@@ -112,19 +112,23 @@ try {
       },
       true,
     );
-    // Süzgeç çubuğu yeniden çizildi mi (alan yeni düğüm)? ON-KOSUL: odak alandayken ve yazılan metin süzgece ürünün kendi yolundan girmeden önce —
-    // odak kipi: odaktan sonra, hiç yazılmadan; arama: son tuştan sonra 300 ms dolmadan (onInput zamanlayıcısı); tutar: Enter'dan önce (betik
-    // Enter'a yeniden çizimi gördükten sonra basar).
+    // Pencere yeniden çizildi mi? ON-KOSUL: odak alandayken ve yazılan metin süzgece ürünün kendi yolundan girmeden önce — odak kipi: odaktan sonra, hiç
+    // yazılmadan; arama: son tuştan sonra 300 ms dolmadan (onInput zamanlayıcısı); tutar: Enter'dan önce (betik Enter'a yeniden çizimi gördükten sonra basar).
+    // 2.5.0 birleşik tur 6 (ürün: HOF.swapKeeping — arka plan yenilemesi odaktaki süzgeç çubuğunu yeniden KURMAZ): yeniden çizim çubuğun DIŞINDAKİ gözcü düğümle
+    // (sekme çubuğu .hof-bank-tabs) ya da alanın yeni düğüm olmasıyla görülür; önceden yalnız alanın değişmesine bakılıyordu (çubuk korununca ön koşul hiç
+    // "oluşmuyordu"). Ürün kuralı (kutu yazılanı taşır, odak kutuda, liste süzülür) aynen.
     new MutationObserver(() => {
       const state = window.__aramaZorla;
       if (!state || state.seen) return;
       const box = document.querySelector(`.hof-bank-modal [data-mv="${state.field}"]`);
-      if (!box || box === state.node) return;
+      const tabs = document.querySelector(".hof-bank-modal .hof-bank-tabs");
+      if ((!box || box === state.node) && (!tabs || tabs === state.tabs)) return;
       state.seen = true;
+      state.replaced = Boolean(box && box !== state.node);
       state.gap = state.inputAt === null ? null : Math.round(realNow() - state.inputAt);
       state.precondition = state.focused && (state.mode === "odak" ? state.gap === null : state.gap !== null && (state.field !== "q" || state.gap < 300));
       state.typedBefore = state.node.value;
-      console.log(`[arama-zorla] ${state.precondition ? "ON-KOSUL" : "on-kosul-yok"}: süzgeç çubuğu ${state.focused ? "odak alandayken" : "odak alanda değilken"}, ${state.gap === null ? "yazıdan önce" : `son tuştan ${state.gap} ms sonra`} yeniden çizildi; eski kutuda "${state.node.value}", yeni kutuda "${box.value}", odak ${document.activeElement === box ? "kutuda" : document.activeElement?.tagName || "yok"}`);
+      console.log(`[arama-zorla] ${state.precondition ? "ON-KOSUL" : "on-kosul-yok"}: pencere ${state.focused ? "odak alandayken" : "odak alanda değilken"}, ${state.gap === null ? "yazıdan önce" : `son tuştan ${state.gap} ms sonra`} yeniden çizildi (süzgeç çubuğu ${state.replaced ? "YENİDEN KURULDU" : "korundu"}); eski kutuda "${state.node.value}", şimdiki kutuda "${box?.value ?? ""}", odak ${document.activeElement === box ? "kutuda" : document.activeElement?.tagName || "yok"}`);
     }).observe(document, { childList: true, subtree: true });
   });
   const page = await context.newPage();
@@ -197,7 +201,7 @@ try {
       await Promise.race([holding, new Promise((_, reject) => setTimeout(() => reject(new Error("arka plan yenilemesinin hareket isteği 15 sn içinde gelmedi")), 15000))]);
       await page.evaluate(
         ([field, mode]) => {
-          window.__aramaZorla = { field, mode, focused: false, inputAt: null, gap: null, seen: false, precondition: false, typedBefore: null, node: document.querySelector(`.hof-bank-modal [data-mv="${field}"]`) };
+          window.__aramaZorla = { field, mode, focused: false, inputAt: null, gap: null, seen: false, precondition: false, typedBefore: null, node: document.querySelector(`.hof-bank-modal [data-mv="${field}"]`), tabs: document.querySelector(".hof-bank-modal .hof-bank-tabs") };
         },
         [FIELD, MODE],
       );
@@ -242,7 +246,7 @@ try {
         .catch(() => false);
       const state = await page.evaluate(field => {
         const box = document.querySelector(`.hof-bank-modal [data-mv="${field}"]`);
-        const out = { ...window.__aramaZorla, node: undefined, value: box?.value ?? null, focus: document.activeElement === box, clear: Boolean(document.querySelector('.hof-bank-modal [data-act="mv-clear"]')), active: document.activeElement?.dataset?.mv || document.activeElement?.tagName || "", rows: [...document.querySelectorAll(".hof-bank-modal .hof-bank-moves tbody tr[data-event]")].map(node => node.dataset.no) };
+        const out = { ...window.__aramaZorla, node: undefined, tabs: undefined, value: box?.value ?? null, focus: document.activeElement === box, clear: Boolean(document.querySelector('.hof-bank-modal [data-act="mv-clear"]')), active: document.activeElement?.dataset?.mv || document.activeElement?.tagName || "", rows: [...document.querySelectorAll(".hof-bank-modal .hof-bank-moves tbody tr[data-event]")].map(node => node.dataset.no) };
         window.__aramaZorla = null;
         return out;
       }, FIELD);

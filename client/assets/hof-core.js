@@ -207,7 +207,9 @@
   // ("0026-10-20"; zorla: test/e2e/banka-210-arama-yaris.mjs --kip tarih). Çubuk korunur: odak çubuktaysa ya da çubukta henüz uygulanmamış yazım varsa (değer çizilen
   // değerden farklı, ya da tarih yarım — validity.badInput). Öbür durumlarda olağan çizim (HOF.swap; seçenekler tazelenir). Kullanıcının kendi süzgeç değişikliği
   // (olağan çizim) bunu kullanmaz: çubuk yeni durumu göstermeli ("Süzgeçleri Temizle").
-  const pendingInput = bar => [...bar.querySelectorAll("input, select, textarea")].some(node => node.validity?.badInput || (node.type === "checkbox" || node.type === "radio" ? node.checked !== node.defaultChecked : node.tagName === "SELECT" ? [...node.options].some(option => option.selected !== option.defaultSelected) : node.value !== node.defaultValue));
+  // Seçim kutusunun çizilen değeri: "selected" işaretli seçenek, yoksa ilki (tarayıcının seçtiği) — işaretsiz kutu "yazılmış" sayılmaz.
+  const drawnSelect = node => ([...node.options].find(option => option.defaultSelected) || node.options[0])?.value ?? "";
+  const pendingInput = bar => [...bar.querySelectorAll("input, select, textarea")].some(node => node.type !== "hidden" && (node.validity?.badInput || (node.type === "checkbox" || node.type === "radio" ? node.checked !== node.defaultChecked : node.tagName === "SELECT" ? node.value !== drawnSelect(node) : node.value !== node.defaultValue)));
   // pending: false → yalnız odak çubuktayken korunur (kullanıcının kendi değişikliğinin çizimi; uygulanmış değer çizilen değerden farklı kalsa da çubuk tazelenebilsin).
   HOF.keepsBar = (bar, { active = document.activeElement, pending = true } = {}) => Boolean(bar && ((active && active !== document.body && bar.contains(active)) || (pending && pendingInput(bar))));
   HOF.swapKeeping = (root, html, selector, { pending = true } = {}) => {
