@@ -1,0 +1,16 @@
+#!/bin/bash
+# WhatsApp tur 3 hız ölçümü: AYNI şablon, sıra verilen koda göre; her koşu ayrı taze veri klasörü, bitince tam yoluyla silinir. flock -x altında çağrılır.
+# Kullanım: olcum.sh <çıktı dosyası> <ad=kök> [<ad=kök> ...]
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+H=$S/wa3hiz-a70a
+OUT="$1"; shift
+for pair in "$@"; do
+  ad="${pair%%=*}"; kok="${pair#*=}"
+  veri="$H/veri-$ad-$$"
+  rm -rf "$veri"
+  echo "KOŞU $ad kök=$kok $(date -u +%H:%M:%S) loadavg $(cat /proc/loadavg) nproc $(nproc)" >> "$OUT"
+  KIP=olc ROOT="$kok" SABLON=$S/watur3-olcum/sablon VERI="$veri" TZ=UTC HUKUK_LICENSE_URL=http://127.0.0.1:9 node --disable-warning=ExperimentalWarning $H/betik/olcum.mjs > "$H/son-$ad.txt" 2>&1
+  echo "cikis $? $(tail -1 "$H/son-$ad.txt")" >> "$OUT"
+  rm -rf "$veri"
+done
+echo "BITTI $(date -u +%H:%M:%S) loadavg $(cat /proc/loadavg)" >> "$OUT"
