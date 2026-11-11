@@ -1949,7 +1949,12 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     }
     return out;
   }
-  const dueItems = (day = today()) => openDueItems(day).filter(item => item.days <= DUE_WINDOW.aheadDays);
+  // Takvim / zil ufku KALEMİN GÜNÜNE göre (K6.3 "ufuk geçmiş + 7 gün"; S67 = A "L söz 30.06 ufkun dışında → kalem yok (ufuk söz gününe göre)"): gecikmiş borcun gün
+  // sayısı (days) vadeden ölçülür (S67), ufuk ise kalemin gösterildiği günden (söz varsa söz günü) — v2.4.9'da days söz gününden ölçüldüğü için ikisi aynıydı. Ç5-B tur 2b-2:
+  // önceden süzgeç days'e bakıyordu; ileri tarihli sözü olan gecikmiş borç (ve S91 = A ile vadesiz borcun sözü) ufkun dışındayken de takvimde / zilde çıkıyordu (kâhin
+  // c10 bg4, d10 l1).
+  const windowGap = (day, date) => Math.round((Date.parse(`${date}T00:00:00Z`) - Date.parse(`${day}T00:00:00Z`)) / 86_400_000);
+  const dueItems = (day = today()) => openDueItems(day).filter(item => windowGap(day, item.dueDate) <= DUE_WINDOW.aheadDays);
   // Takvim önbelleğinin anahtarı (routes/dues.mjs): satır sayısı / son damga / tutar toplamı + tarihli satırların tarihleri (durağan sahte saatte de
   // yalnız tarih değişince ayırt eder) + carilerin silinmesi / adı + mahsup fişleri (Kalan'ı değiştirir).
   const dueFingerprint = () => {
