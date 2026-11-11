@@ -168,24 +168,32 @@ describe("2.4.8 İş S1 — satır o denemeyi bilmiyorken geç bildirim", () => 
   });
 
   it("koşul (a): istek Meta'dayken imzalı bildirim işi Teslim Edildi yaptı → yanıt gelince 'Meta Kabul Etti' EZMEZ, çift ileti yok", { timeout: 120_000 }, async () => {
-    const ctx = await startWa({ now: { time: localIso(2026, 11, 3, 10), fixed: true } });
+    // 2.5.0 WhatsApp tur 3 (kırılgan kalıp — KAYIT 06.11 16:10; T16 / T35r yöntemi, ders 20): "istek Meta'dayken" ön koşulu sahte Meta gecikmesiyle (400 ms) + istemci süre sınırıyla
+    // (800 ms) DEĞİL, KAPIYLA kurulur; süre sınırı kapıdan uzun (60 sn). Yanıtın gerçekten geldiği defterden okunur (zaman aşımı bu hücrenin konusu değil).
+    const ctx = await startWa({ now: { time: localIso(2026, 11, 3, 10), fixed: true }, whatsappTimeoutMs: 60_000 });
+    let release = () => {};
     try {
       const p = await ctx.account("Burak Kaya", "0533 444 55 66", 800);
       const o = await ok(await ctx.batch({ kind: "statement", ids: [p.id], preset: "thisMonth" }), "gönderim");
       const wamid = `wamid.SAHTE${String(ctx.fake.state.sent + 1).padStart(4, "0")}`;
-      ctx.fake.state.delayMs = 400;
+      ctx.fake.state.hold = { match: /^POST \/\d+\/messages$/, promise: new Promise(resolve => (release = resolve)) };
       const turn = ctx.wa.scheduler.runOnce();
-      let job = null;
-      for (let i = 0; i < 200; i += 1) {
-        job = ctx.store.get("SELECT id, state FROM wa_jobs WHERE batch_id = ?", o.batch.id);
-        if (job.state === "sending" && ctx.fake.requests.some(item => item.method === "POST" && item.path.endsWith("/messages"))) break;
-        await new Promise(resolve => setTimeout(resolve, 20));
-      }
+      for (let i = 0; i < 2_000 && !ctx.fake.state.held; i += 1) await new Promise(resolve => setTimeout(resolve, 10));
+      assert.equal(ctx.fake.state.held, 1, "ön koşul: istek Meta'da (yanıt kapıda)");
+      const job = ctx.store.get("SELECT id, state, attempt FROM wa_jobs WHERE batch_id = ?", o.batch.id);
       assert.equal(job.state, "sending", "ön koşul: istek Meta'da");
       const hook = ctx.statuses([{ id: wamid, status: "delivered", timestamp: ts(ctx), recipient_id: "905334445566", biz_opaque_callback_data: job.id }], { signed: true });
       assert.equal(hook.applied, 1, "bildirim istek sürerken uygulandı");
+      assert.equal(ctx.fake.state.held, 1, "ön koşul: bildirim uygulandığında yanıt henüz gelmedi");
+      ctx.fake.state.hold = null;
+      release();
       await turn;
-      ctx.fake.state.delayMs = 0;
+      const reader = new DatabaseSync(ctx.wa.ledger.file, { readOnly: true });
+      try {
+        assert.equal(reader.prepare("SELECT outcome FROM outcomes WHERE job_id = ? AND attempt = ?").get(job.id, job.attempt)?.outcome, "accepted", "ileti isteği Meta'nın yanıtıyla sonuçlandı (zaman aşımı değil)");
+      } finally {
+        reader.close();
+      }
       const after = (await ctx.jobs(o.batch.id))[0];
       assert.deepEqual([after.state, after.wamid], ["delivered", wamid], "durum geriye gitmedi (Meta Kabul Etti ezmedi)");
       await ctx.drain();
@@ -196,7 +204,10 @@ describe("2.4.8 İş S1 — satır o denemeyi bilmiyorken geç bildirim", () => 
   });
 
   it("koşul (b): satır daha YENİ denemedeyse eski denemenin failed'ı hiçbir şey yapmaz (131049 → 2. deneme istek Meta'da)", { timeout: 120_000 }, async () => {
-    const ctx = await startWa({ now: { time: localIso(2026, 11, 3, 10), fixed: true } });
+    // 2.5.0 WhatsApp tur 3 (kırılgan kalıp — aynı tarama; KAYIT 06.11 16:10 listesinin kalıbı): "2. deneme istek Meta'da" ön koşulu yanıtsız istek (hang) + 800 ms süre sınırıyla
+    // kuruluyordu — denetimler süre dolmadan bitmezse (yüklü makine) satır Sonucu Belirsiz olur, "satır değişmedi" denetimi yanlış kırmızı verirdi. Artık KAPI (yanıt kapıda) + 60 sn.
+    const ctx = await startWa({ now: { time: localIso(2026, 11, 3, 10), fixed: true }, whatsappTimeoutMs: 60_000 });
+    let release = () => {};
     try {
       const p = await ctx.account("Burak Kaya", "0533 444 55 66", 800);
       const o = await ok(await ctx.batch({ kind: "statement", ids: [p.id], preset: "thisMonth" }), "gönderim");
@@ -205,15 +216,11 @@ describe("2.4.8 İş S1 — satır o denemeyi bilmiyorken geç bildirim", () => 
       ctx.clock.advance(60_000);
       ctx.statuses([{ id: first.wamid, status: "failed", timestamp: ts(ctx), recipient_id: "905334445566", errors: [{ code: 131049, title: "x" }] }]);
       ctx.clock.advance(24 * HOUR + 60_000);
-      ctx.fake.state.hang = /^POST \/\d+\/messages$/;
+      ctx.fake.state.hold = { match: /^POST \/\d+\/messages$/, promise: new Promise(resolve => (release = resolve)) };
       const turn = ctx.wa.scheduler.runOnce();
-      let row = null;
-      for (let i = 0; i < 200; i += 1) {
-        row = ctx.store.get("SELECT state, attempt FROM wa_jobs WHERE batch_id = ?", o.batch.id);
-        if (row.attempt === 2 && row.state === "sending" && ctx.fake.requests.filter(item => item.method === "POST" && item.path.endsWith("/messages")).length === 2) break;
-        await new Promise(resolve => setTimeout(resolve, 20));
-      }
-      assert.deepEqual([row.attempt, row.state], [2, "sending"], "ön koşul: 2. deneme istek Meta'da");
+      for (let i = 0; i < 2_000 && !ctx.fake.state.held; i += 1) await new Promise(resolve => setTimeout(resolve, 10));
+      const row = ctx.store.get("SELECT state, attempt FROM wa_jobs WHERE batch_id = ?", o.batch.id);
+      assert.deepEqual([ctx.fake.state.held, row.attempt, row.state], [1, 2, "sending"], "ön koşul: 2. deneme istek Meta'da (yanıt kapıda)");
       for (const signed of [false, true]) {
         const hook = ctx.statuses([{ id: first.wamid, status: "failed", timestamp: ts(ctx), recipient_id: "905334445566", errors: [{ code: 131026, title: "x" }], ...(signed ? { biz_opaque_callback_data: first.id } : {}) }], { signed });
         assert.equal(hook.applied, 0, `${signed ? "imzalı" : "imzasız"} eski deneme failed uygulanmadı (geldi ${JSON.stringify(hook)})`);
@@ -221,10 +228,12 @@ describe("2.4.8 İş S1 — satır o denemeyi bilmiyorken geç bildirim", () => 
       const now = ctx.store.get("SELECT state, attempt FROM wa_jobs WHERE batch_id = ?", o.batch.id);
       assert.deepEqual([now.attempt, now.state], [2, "sending"], "satır değişmedi");
       assert.deepEqual(ctx.server.app.whatsapp.ledger.attempts(first.id).map(item => item.outcome), ["released", null], "defter değişmedi");
-      ctx.fake.state.hang = null;
-      await ctx.server.close().catch(() => {});
+      ctx.fake.state.hold = null;
+      release();
       await turn.catch(() => {});
     } finally {
+      ctx.fake.state.hold = null;
+      release();
       await ctx.close().catch(() => {});
     }
   });

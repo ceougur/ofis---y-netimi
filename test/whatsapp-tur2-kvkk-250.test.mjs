@@ -139,7 +139,9 @@ describe("2.5.0 WhatsApp tur 2 — W-3 dk ORTA-1: defter anonimleştirmesi düş
     const cap = capture();
     let ctx = null;
     try {
-      ctx = await startWa({ fake: graph, env: DEAD, dataDir, backupDir, whatsappLedgerFault: op => failAnon && op === "anonymize", log: cap.log, now: { time: localIso(2026, 11, 3, 10), fixed: true } });
+      // 2.5.0 WhatsApp tur 3 (kırılgan TERS kalıp — KAYIT 06.11 16:10 listesi): kapı varken istemci süre sınırı 800 ms'ydi — kapıda iken iki talep (yüklü makinede > 800 ms) isteği
+      // zaman aşımına düşürür, "B kabul edildi" ön koşulu yanlış kırmızı olurdu. Süre sınırı kapıdan uzun (60 sn; T35r / T16 yöntemi).
+      ctx = await startWa({ fake: graph, env: DEAD, dataDir, backupDir, whatsappTimeoutMs: 60_000, whatsappLedgerFault: op => failAnon && op === "anonymize", log: cap.log, now: { time: localIso(2026, 11, 3, 10), fixed: true } });
       const a = await ctx.account("Ayşe Yılmaz", "0532 111 22 33", 500);
       const b = await ctx.account("Bora Demir", "0533 444 55 66", 300);
       const madeA = await ok(ctx.batch({ kind: "statement", ids: [a.id], preset: "thisMonth" }), "A");
@@ -248,7 +250,8 @@ describe("2.5.0 WhatsApp tur 2 — W-3 dk ORTA-2: silinmiş işe SONRADAN yazıl
   });
   it("T2-6b (a) S42 + Meta hatası (ayrıntıda '+90 532 111 22 33'), (b) kabul + talep + sonra 'failed' bildirimi (ayrıntıda '905334445566'), (c) talepten önce yazılmış hata — dosyada, veri klasöründe ve günlükte numara yok", { timeout: 180_000 }, async () => {
     const cap = capture();
-    const ctx = await startWa({ env: DEAD, log: cap.log, now: { time: localIso(2026, 11, 3, 10), fixed: true } });
+    // 2.5.0 WhatsApp tur 3 (kırılgan TERS kalıp): kapı varken süre sınırı kapıdan uzun (60 sn) — kapıda iken yapılan talep 800 ms'yi aşarsa yanıt (Meta hatası) yerine zaman aşımı gelirdi.
+    const ctx = await startWa({ env: DEAD, log: cap.log, whatsappTimeoutMs: 60_000, now: { time: localIso(2026, 11, 3, 10), fixed: true } });
     try {
       const a = await ctx.account("Ayşe Yılmaz", "0532 111 22 33", 500);
       const b = await ctx.account("Bora Demir", "0533 444 55 66", 300);
