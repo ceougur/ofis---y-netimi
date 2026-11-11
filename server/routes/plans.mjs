@@ -315,6 +315,16 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     const view = withQueue(plan, shaped, queueFor(plan.accountId));
     return view === shaped ? shaped : { ...shaped, ...view };
   };
+  // Yazım yanıtı (kart açma / düzenleme / durum, Otomatik Dağıt, taksit ve tahsilat işlemleri): okumayla aynı görünüm (O-2) + bütün carilerin kuyruk önbelleği BURADA yenilenir.
+  // Ç5-B son tur (hız; iş listesi D "HIZ KABUL ÖLÇÜMÜ" 11.11 08:49 — hedef: çalışma dalına göre yazım + ilk okumalar toplamı ve hiçbir TEK yol kötüleşmesin): tur 2b-1 yanıtı
+  // tek carinin kuyruğuna indirince bütün carilerin izinin taranması (100 bin satırda ~1 sn) yazımdan sonraki İLK liste / zil okumasına kaymıştı (zil 1,9–2,1 → 3,1–3,3 sn).
+  // Tarama yeniden yazım yanıtında (çalışma dalındaki yeri); carinin kuyruğu yine BİR kez kurulur (obligationsOf'un sonucu artımlı yenilemede kullanılır — invoices.mjs).
+  // İz taramasını yazımdan da okumadan da kaldırmak "kirli küme" tasarımıdır (önbelleğin yapısal işi; tasarım notu §13.3 — bu turda yapılmadı).
+  const writeView = (id, user) => {
+    const view = detailView(id, user);
+    queueOf();
+    return view;
+  };
 
   // Sıra No (v2.0.5): Excel'deki "S.N" kolonu ya da kart açılırken verilen numara. Sayı olanlar sayı gibi sıralanır
   // ("2" < "10"); boş ya da sayı olmayan numara en sona.
@@ -696,7 +706,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     changed(user, { planId: id });
     changed(user, { kind: "accounts", accountId: result.accountId || "" });
     // Ç5-B tur 2a (O-2): yazım yanıtı okumayla (GET) AYNI görünüm — kartın kendi hesabı + kuyruk (işlem kesinleştikten sonra; işlem içinde kuyruk okunmaz).
-    ok(res, detailView(id, user));
+    ok(res, writeView(id, user));
   });
 
   router.get("/api/workspace/plans/:id", async ({ req, res, params }) => {
@@ -772,7 +782,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       changed(user, { planId: opened.id });
       changed(user, { kind: "accounts", accountId: result.accountId || "" });
     }
-    ok(res, detailView(result.id, user));
+    ok(res, writeView(result.id, user));
   });
 
   router.delete("/api/workspace/plans/:id", async ({ req, res, params, url }) => {
@@ -827,7 +837,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       return detail(plan.id, user);
     });
     changed(user, { planId: plan.id });
-    ok(res, detailView(result.id, user));
+    ok(res, writeView(result.id, user));
   });
 
   // ---------- Taksitler (elle) ----------
@@ -858,7 +868,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       audit(user, "plan.item.created", id, { planId: plan.id, ...input });
     });
     changed(user, { planId: plan.id });
-    ok(res, detailView(plan.id, user));
+    ok(res, writeView(plan.id, user));
   });
   // 2.5.0 BİRLEŞİK TUR 3 (YAN-B; iyimser kilit, lib/row-version.mjs): taksit düzeltme formu açıldığı andaki taksitin sürümünü (updatedAt) gönderir; taksit o andan sonra
   // değiştiyse 409 plan-item-stale. Önceden tam form öbür kişinin düzeltmesini sessizce geri yazıyordu (B taksiti 500 → 300 yaptı, yalnız vadeyi değiştiren A'nın formu
@@ -889,7 +899,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       return true;
     });
     if (wrote) changed(user, { planId: plan.id });
-    ok(res, detailView(plan.id, user));
+    ok(res, writeView(plan.id, user));
   });
   router.delete("/api/workspace/plans/:id/items/:itemId", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "plans.manage");
@@ -901,7 +911,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       audit(user, "plan.item.deleted", previous.id, { planId: plan.id, ...previous });
     });
     changed(user, { planId: plan.id });
-    ok(res, detailView(plan.id, user));
+    ok(res, writeView(plan.id, user));
   });
 
   // ---------- Hareketler: tahsilat ve ödeme/iade ----------
@@ -1036,7 +1046,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       changed(user, { kind: "cash" });
       touchedCase(user, plan);
     }
-    ok(res, { ...detailView(plan.id, user), entryId: created?.replayed ? created.refId : id, ...(created?.replayed ? { replayed: true } : {}) });
+    ok(res, { ...writeView(plan.id, user), entryId: created?.replayed ? created.refId : id, ...(created?.replayed ? { replayed: true } : {}) });
   });
   router.put("/api/workspace/plans/:id/entries/:entryId", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "plans.collect");
@@ -1098,7 +1108,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     changed(user, { planId: plan.id });
     changed(user, { kind: "cash" });
     touchedCase(user, plan);
-    ok(res, detailView(plan.id, user));
+    ok(res, writeView(plan.id, user));
   });
   router.delete("/api/workspace/plans/:id/entries/:entryId", async ({ req, res, params, url }) => {
     const user = auth.requirePermission(req, "plans.collect");
@@ -1129,7 +1139,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     changed(user, { planId: plan.id });
     changed(user, { kind: "cash" });
     touchedCase(user, plan);
-    ok(res, detailView(plan.id, user));
+    ok(res, writeView(plan.id, user));
   });
 
   // ---------- PDF: ekstre ve makbuz ----------

@@ -302,8 +302,14 @@ c5bson-karar-taban.json). Tur 2b-2'nin testleri tur 2b-1 ucunda 40 kırmızı (n
   kurulmuş sonuç küçük bir bellekte (en çok 16 cari) tutulur; kart ekranı / kart yazım yanıtı (routes/plans.mjs `queueFor`) ve `allSettled`'in artımlı yolu onu kullanır. Anahtar bütün cariler
   önbelleğininkiyle AYNI: her yazım ve gün dönümü anahtarı değiştirir → bayat sonuç verilmez; işlem içinde okunmaz, yazılmaz. Davranış AYNI (eşdeğerlik: test/tyk-onbellek-250 — tek cari
   önbelleği = baştan kurulan, her yazım türünden sonra, rastgele sırayla, bütün cariler önbelleğinden önce / sonra; sayaç testi test/tyk-son-250 "hız"; mutant HIZ-a … HIZ-d).
-- **Kapsam dışı (YAPISAL):** iz taramasının kendisi (yazımdan sonraki ilk okumada bütün tabloların taranması) — "kirli küme" (yazan yolun dokunduğu cariyi bildirmesi) önbelleğin yeniden
-  tasarımıdır; bu turda YAPILMADI (ölçümler ve seçenekler son tur raporunda "BAŞ MİMAR KARARI GEREKİYOR").
+- **İz taraması yeniden yazım yanıtında (routes/plans.mjs `writeView`):** tek carinin belleği kart okumasını ve çift kuruluşu düzeltir, ama bütün carilerin izinin taranması
+  (`accountPrints`; 100 bin satırda ~1 sn — profil: cari satırları %35, çek olayları üç sorgu %35, faturalar %14, taksitler %7) tur 2b-1'de yazım yanıtından çıkıp yazımdan sonraki
+  İLK zil / liste okumasına kaymıştı (hedef (ii) "hiçbir tek yol kötüleşmesin" tutmuyordu). `writeView` kart yazım yanıtlarında (9 uç) görünümü kurduktan sonra bütün carilerin
+  önbelleğini de yeniler (`queueOf()`): tarama çalışma dalındaki yerinde, carinin kuyruğu yine bir kez. Sonuç: her yol çalışma dalıyla aynı işi yapar (yazım ~1,3 sn, kart okuması ~3 ms,
+  ilk zil ~2 sn), tur 2b-1'in "yazım 0,35 sn" kazancı BIRAKILDI. Seçenek (BAŞ MİMAR KARARI — son tur raporu): `writeView`'daki `queueOf()` satırı kaldırılırsa yazım 0,35 sn'ye iner,
+  tarama ilk okumaya kayar (toplam aynı; art arda yazımlarda tarama yazım başına değil okuma başına bir kez). Sayaç testi test/tyk-son-250 "hız" (iz taraması 1 / 0 / 0), mutant HIZ-e.
+- **Kapsam dışı (YAPISAL):** iz taramasının kendisini yazımdan da okumadan da kaldırmak — "kirli küme" (yazan yolun dokunduğu cariyi bildirmesi) önbelleğin yeniden tasarımıdır; bu
+  turda YAPILMADI (ölçümler ve seçenekler son tur raporunda "BAŞ MİMAR KARARI GEREKİYOR"). Ucuz ara adım adayı (yapılmadı): çek olayları izinin üç sorgusunun tek sorguya inmesi.
 
 ### 13.4 Yapım aşaması listesinde kalan 'Ç5-B tur 2' kayıtları (72) — nedenleri (kuyruk kuralı eksiği YOK)
 - 62 kayıt `kart:<ad>:kalan / odenen / taksitN:odenen` (d4, d30–d32, d34–d37): kâhin kartın TYK kalanını / ödenenini bekliyor; sürücü kartın KENDİ hesabını (`totals.remaining`, `totals.paid`,
