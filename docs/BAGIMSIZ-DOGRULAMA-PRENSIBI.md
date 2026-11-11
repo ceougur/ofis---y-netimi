@@ -16,7 +16,7 @@ gerilemesini getirebildi; bu yüzden tek tur yetmez, düzeltmeden sonra yalnız 
 1a. **Mali müşavir (kodu görmeyen uzman; kullanıcı kararı 05.11.2026: "kodu bilmeyen bir uzman mali müşavir ajanını da baştan yazalım. son adayı uzun koşuya
    göndermeden ondan geçsin"):** muhasebe / defter / devir işlerinde planı ve kararları mevzuata ve yaygın uygulamaya göre inceler ve kâhinin kurulacağı
    MUHASEBELEŞTİRME KURAL KİTABI'nı yazar (P, kâhinden önce); çekirdek bitince ara kabul (A); son adayı tam kapıdan ve Uzun Doğrulama'dan ÖNCE kullanıcı gibi
-   ekrandan denetler (S). Görev tanımı `docs/erp/MALI-MUSAVIR-AJANI.md`, ajan `.claude/agents/mali-musavir.md`; efor xhigh; her temas noktası yeni ajan.
+   ekrandan denetler (S). Görev tanımı `docs/erp/MALI-MUSAVIR-AJANI.md`, ajan `.claude/agents/mali-musavir.md`; efor high (EFOR TAVANI, kullanıcı 11.11.2026; önce xhigh idi); her temas noktası yeni ajan.
    Kâhin programı plana karşı, mali müşavir planı ve çıktıyı mevzuata karşı denetler. Lisanslı SMMM görüşü yerine geçmez.
 2. **Bağımsız gözden geçirme:** son adayın tamamına bir tur, yalnız hata arar (ör. 2.4.8 T2).
 3. **Dar kontrol:** her düzeltmeden SONRA, YALNIZ o düzeltmenin farkına (`git diff <önceki>..<düzeltme>`) yeni bir incelemeci (§3).
@@ -28,7 +28,7 @@ gerilemesini getirebildi; bu yüzden tek tur yetmez, düzeltmeden sonra yalnız 
 - **Bağımsızlık:** düzeltmeyi yapan ajan incelemez. İncelemeci düzeltenin gerekçesini/raporunu görmez; eline yalnız fark (commit aralığı),
   kullanıcı kararlarının AYNEN metni, anayasa + dersler ve iş listesindeki ilgili satır verilir. Kararın baş mimar yorumu ayrıca
   "değerlendir, karar metnine uyuyor mu" diye verilir.
-- **Efor:** her zaman `xhigh` (anayasa: AJAN EFORU).
+- **Efor:** her zaman `high` (anayasa: AJAN EFORU + EFOR TAVANI — kullanıcı kararı 11.11.2026, AYNEN: "bundan sonra hıgh eforun üzerinde ajan başlatma çünkü sen zaten daha üst model olarak koordine ediyorsun herşeyi"; "tavan efor hıgh kalsın"; önce `xhigh` idi). Derinlik açığını ana oturum kapatır: bulguların yeniden üretimi, eski kod kırmızısı, eski sürüm fark testi, hız kabul ölçümü.
 - **Yalnız hata arar:** kod değiştirmez, commit/push yapmaz, çalışma ağacına dokunmaz.
 - **Zorla yeniden üretme:** her bulgu bir betikle GERÇEK programda (sahte dış servisle — sahte Meta, `HUKUK_LICENSE_URL=http://127.0.0.1:9`)
   üretilir; çıktıda sayı vardır ("B'ye 2 ileti", "ikinci iş 200"). Üretilemeyen kuşku ayrı başlıkta "DOĞRULANMADI" yazılır, bulgu sayılmaz.
