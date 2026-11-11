@@ -8161,6 +8161,218 @@
    "not": "S120 / S122 alanı (cari kâhini bakımı 10 — kartın içindeki elle borçlar ve karta gelen ödemenin dağılımı) — program S110 / S120 / S122'yi henüz kodlamadı; kodu tur 2b-2'de (ana oturum 11.11)"
   },
   {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:fatura:L18F:acik",
+   "beklenen": 60000,
+   "program": 30000,
+   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
+   "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk",
+   "paket": "Ç5-B tur 2",
+   "not": "S126 / S110–S120 alanı (d37 — kâhin bakımı 11; program bu kararları ana dalda henüz kodlamadı; Ç5-B son tur)"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:hareket:l18x:kalan",
+   "beklenen": 20000,
+   "program": 50000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta)",
+   "paket": "Ç5-B tur 2",
+   "not": "S126 / S110–S120 alanı (d37 — kâhin bakımı 11; program bu kararları ana dalda henüz kodlamadı; Ç5-B son tur)"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:kart:KL10:kalan",
+   "beklenen": 30000,
+   "program": 60000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4",
+   "paket": "Ç5-B tur 2",
+   "not": "S126 / S110–S120 alanı (d37 — kâhin bakımı 11; program bu kararları ana dalda henüz kodlamadı; Ç5-B son tur)"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:kart:KL10:odenen",
+   "beklenen": 60000,
+   "program": 30000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
+   "paket": "Ç5-B tur 2",
+   "not": "S126 / S110–S120 alanı (d37 — kâhin bakımı 11; program bu kararları ana dalda henüz kodlamadı; Ç5-B son tur)"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:kart:KL10:taksit2:odenen",
+   "beklenen": 30000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "Ç5-B tur 2",
+   "not": "S126 / S110–S120 alanı (d37 — kâhin bakımı 11; program bu kararları ana dalda henüz kodlamadı; Ç5-B son tur)"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:kart:KL8:kalan",
+   "beklenen": 40000,
+   "program": 90000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4",
+   "paket": "Ç5-B tur 2",
+   "not": "S126 / S110–S120 alanı (d37 — kâhin bakımı 11; program bu kararları ana dalda henüz kodlamadı; Ç5-B son tur)"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:kart:KL8:odenen",
+   "beklenen": 50000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
+   "paket": "Ç5-B tur 2",
+   "not": "S126 / S110–S120 alanı (d37 — kâhin bakımı 11; program bu kararları ana dalda henüz kodlamadı; Ç5-B son tur)"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:kart:KL8:taksit1:odenen",
+   "beklenen": 30000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "Ç5-B tur 2",
+   "not": "S126 / S110–S120 alanı (d37 — kâhin bakımı 11; program bu kararları ana dalda henüz kodlamadı; Ç5-B son tur)"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:kart:KL8:taksit2:odenen",
+   "beklenen": 20000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "Ç5-B tur 2",
+   "not": "S126 / S110–S120 alanı (d37 — kâhin bakımı 11; program bu kararları ana dalda henüz kodlamadı; Ç5-B son tur)"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:projeksiyon:hareket:l18x",
+   "beklenen": "yok",
+   "program": {
+    "amount": 20000,
+    "date": "2026-03-02",
+    "direction": "in"
+   },
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan − Mevcut Borç kartının açık kapsamı, K6.5 (1) bir kez; pencere bugün → +30, gecikenler dahil)",
+   "paket": "Ç5-B tur 2",
+   "not": "S126 / S110–S120 alanı (d37 — kâhin bakımı 11; program bu kararları ana dalda henüz kodlamadı; Ç5-B son tur)"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:projeksiyon:hareket:l18y",
+   "beklenen": {
+    "amount": 30000,
+    "date": "2026-03-05",
+    "direction": "in"
+   },
+   "program": {
+    "amount": 70000,
+    "date": "2026-03-05",
+    "direction": "in"
+   },
+   "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
+   "kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan − Mevcut Borç kartının açık kapsamı, K6.5 (1) bir kez; pencere bugün → +30, gecikenler dahil)",
+   "paket": "Ç5-B tur 2",
+   "not": "S126 / S110–S120 alanı (d37 — kâhin bakımı 11; program bu kararları ana dalda henüz kodlamadı; Ç5-B son tur)"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:takvim:fatura:L18F",
+   "beklenen": {
+    "amount": 60000,
+    "direction": "in"
+   },
+   "program": "yok",
+   "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
+   "kural": "madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık)",
+   "paket": "Ç5-B tur 2",
+   "not": "S126 / S110–S120 alanı (d37 — kâhin bakımı 11; program bu kararları ana dalda henüz kodlamadı; Ç5-B son tur)"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:takvim:hareket:l18x",
+   "beklenen": "yok",
+   "program": {
+    "amount": 20000,
+    "cari": "L18",
+    "days": -44,
+    "direction": "in",
+    "dueDate": "2026-03-02",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Lale Küçük Kart",
+    "state": "overdue"
+   },
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan − Mevcut Borç kartının açık kapsamı (K6.5); ufuk geçmiş + 7 gün · C16.1 S91 A: vadesiz kayıt kayıt gününde vadeli kalem (gün = kayıt günü)",
+   "paket": "Ç5-B tur 2"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:takvim:hareket:l18y",
+   "beklenen": {
+    "amount": 30000,
+    "cari": "L18",
+    "days": -41,
+    "direction": "in",
+    "dueDate": "2026-03-05",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Lale Küçük Kart",
+    "state": "overdue"
+   },
+   "program": {
+    "amount": 70000,
+    "cari": "L18",
+    "days": -41,
+    "direction": "in",
+    "dueDate": "2026-03-05",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Lale Küçük Kart",
+    "state": "overdue"
+   },
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan − Mevcut Borç kartının açık kapsamı (K6.5); ufuk geçmiş + 7 gün · C16.1 S91 A: vadesiz kayıt kayıt gününde vadeli kalem (gün = kayıt günü)",
+   "paket": "Ç5-B tur 2"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:vadeTakip:hareket:l18x",
+   "beklenen": "yok",
+   "program": {
+    "amount": 20000,
+    "date": "2026-03-02",
+    "direction": "in"
+   },
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.3 kalem olmayan kayıt Vade Takip'te yok",
+   "paket": "Ç5-B tur 2",
+   "not": "S126 / S110–S120 alanı (d37 — kâhin bakımı 11; program bu kararları ana dalda henüz kodlamadı; Ç5-B son tur)"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:vadeTakip:hareket:l18y",
+   "beklenen": {
+    "amount": 30000,
+    "date": "2026-03-05",
+    "direction": "in"
+   },
+   "program": {
+    "amount": 70000,
+    "date": "2026-03-05",
+    "direction": "in"
+   },
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir",
+   "paket": "Ç5-B tur 2",
+   "not": "S126 / S110–S120 alanı (d37 — kâhin bakımı 11; program bu kararları ana dalda henüz kodlamadı; Ç5-B son tur)"
+  },
+  {
    "senaryo": "d4-c5-s50-tek-kuyruk",
    "anahtar": "k1:kart:K1:kalan",
    "beklenen": 150000,

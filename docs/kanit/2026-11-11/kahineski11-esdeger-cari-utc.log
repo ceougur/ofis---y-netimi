@@ -1,0 +1,21 @@
+ÜRETİCİ: 20/20 aynı dizi (tur s1 + ux18, tohum 1–10 × 120 işlem)
+ADIMLAR: eski kopyadaki 90 elle senaryonun 0'inin adımları değişti: yok · yeni elle senaryo: d37-c5-s126-faturali-kart
+EŞDEĞERLİK (2.4.9 / 2.4.6 / 2.4.5 / --legacy; eski kopyanın 90 elle + yeni kopyanın yeni 1 elle + 20 rastgele senaryo × 4 kip): 444/444 bayt bayt aynı
+G3 (kural 2.5.0; 110 senaryo — eski kopyanın 90 elle senaryosu + yeni elle + 20 rastgele): eski 47766 denetim · yeni 48036 denetim · değişen / kalkan / yeni toplam 270 · BEKLENMEYEN 0 · yalnız etiketi değişen 0
+  S126-F         yeni        12
+      örn. d37-c5-s126-faturali-kart k1:cari:L12:acikEsitBakiye: "(denetim yok)" → true
+      örn. d37-c5-s126-faturali-kart k1:cari:L12:acikToplam: "(denetim yok)" → 60000
+      örn. d37-c5-s126-faturali-kart k1:cari:L12:gecikmis: "(denetim yok)" → 0
+      örn. d37-c5-s126-faturali-kart k1:fatura:L12F1:acik: "(denetim yok)" → 10000
+  S126-alan      yeni       258
+      örn. d36-c5-s122-kart-odemesi k1:cari:J13:acikEsitBakiye: "(denetim yok)" → true
+      örn. d36-c5-s122-kart-odemesi k1:cari:J13:acikToplam: "(denetim yok)" → 60000
+      örn. d36-c5-s122-kart-odemesi k1:cari:J13:gecikmis: "(denetim yok)" → 0
+      örn. d36-c5-s122-kart-odemesi k1:fatura:J13F:acik: "(denetim yok)" → 30000
+G3 senaryo senaryo (sınıf/tür: adet; listede olmayan senaryoda fark 0):
+  d36-c5-s122-kart-odemesi                 S126-alan/yeni 16
+  d37-c5-s126-faturali-kart                S126-F/yeni 12 · S126-alan/yeni 242
+# tests 555
+# pass 555
+# fail 0
+555/555 denetim geçti

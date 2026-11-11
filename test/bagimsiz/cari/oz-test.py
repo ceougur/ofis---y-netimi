@@ -29,6 +29,8 @@
    DEĞERLE; `elleYok` / `elleBelirsiz` SK-20 … SK-23 susmaları.
 11. Bakım 10 (§22; S122 A, S123 / S124 / S125 = C): birden çok elle borcu içine alan karta gelen ödeme elle borçların Kalan'ını içine alma sırasıyla, eskiden yeniye düşürür — d36 elle tablosu
    (d35 H10 / H11 artık değerle); mutantlar 265–269 DEĞERLE; `elleYok` / `elleBelirsiz` Y10-4 (S125 = C) ve SK-20 / SK-22 / SK-23 (BİLİNEN SINIR) susmaları.
+12. Bakım 11 (§23; S126 A): bakiye kadar açılan, içine fatura da giren Taksitler kartına gelen ödeme kalemleri fatura dahil içine alma sırasıyla, eskiden yeniye düşürür — d37 elle tablosu
+   (d36 J13 artık değerle); mutantlar 270–274 DEĞERLE; `elleYok` / `elleBelirsiz` Y11-8 (S125 = C) ve SK-25 susmaları.
 Çıktı: TAP benzeri sayılar + son satır "N/M denetim geçti". Çıkış 0 yalnız hepsi geçerse.
 """
 import importlib.util
