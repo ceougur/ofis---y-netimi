@@ -5,7 +5,7 @@ koşuya göndermeden ondan geçsin uygunsa?" — Baş mimar görüşü: UYGUN (g
 
 Durum: görev tanımı. "başla"da aynı metinle `.claude/agents/mali-musavir.md` olarak kurulur ve `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`'ye katman
 olarak eklenir (ikisi de BELGE_YOLLARI dışında → ilk kod gönderimiyle birlikte, ders 26). Ajan tanımı kurulana kadar bu metin genel amaçlı
-ajana görev metni olarak verilir. Model adı yazılmaz (anayasa); efor her zaman `xhigh` (AJAN EFORU: kritik muhasebe).
+ajana görev metni olarak verilir. Model adı yazılmaz (anayasa); efor `high` (kullanıcı kararı 11.11.2026: EFOR TAVANI — hiçbir ajan high'ın üzerinde başlatılmaz; önceki kural xhigh idi).
 
 ## 1. Neden ayrı bir katman
 - Kâhin (Python temiz oda modeli) programı PLANA karşı denetler. Planın kendisinde muhasebe ya da mevzuat hatası varsa kâhin onu da taşır
