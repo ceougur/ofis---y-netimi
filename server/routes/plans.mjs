@@ -243,7 +243,15 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     const remaining = roundMoney(items.reduce((sum, item) => sum + item.remaining, 0) + extras.reduce((sum, item) => sum + item.remaining, 0));
     const accountPaid = roundMoney(items.reduce((sum, item) => sum + item.accountPaid, 0));
     let state = ledger.state;
-    if (!closed) state = remaining <= 0.005 && items.every(item => item.state === "paid") ? "done" : overdue.length ? "overdue" : "active";
+    // Ç5-B tur 2b-1 (DK-C5BT2A G-2; beklenen v2.4.9 lib/plans.mjs allocate "total > 0 && kalan 0 && hepsi ödendi"): kuyruk kalanı Mevcut Borç kartında taksitlere
+    // bölünmemiş borcu İÇERMEZ (o kısım alttaki borç kalemi olarak kalır — lib/accounts.mjs coverTotal = min(tutar, taksitler)); taksiti olmayan kartta taksit listesi boş →
+    // "hepsi ödendi" doğru sayılıyor, kart açılır açılmaz "Bitti" oluyordu (v2.4.9: Aktif). Bitti için ayrıca: kartın KENDİ kalanı 0 (v2.4.9 kuralı) YA DA taksiti olup
+    // taksitlere bölünmemiş kapsam kalmamış (S50 = A: kart seçilmeden alınan tahsilatın kapattığı taksitler — bugünkü gibi). Taksitsiz kart yalnız kartın kendi tahsilatıyla
+    // ya da Kartı Kapat ile kapanır.
+    const ownLeft = roundMoney(ledger.totals?.remaining ?? 0);
+    const unplanned = plan.coversBalance ? roundMoney(Math.max(0, (ledger.totals?.total ?? 0) - (ledger.totals?.planned ?? 0))) : 0;
+    const settled = (ledger.totals?.total ?? 0) > 0.005 && remaining <= 0.005 && items.every(item => item.state === "paid") && (ownLeft <= 0.005 || (items.length > 0 && unplanned <= 0.005));
+    if (!closed) state = settled ? "done" : overdue.length ? "overdue" : "active";
     return {
       ...ledger,
       items,
