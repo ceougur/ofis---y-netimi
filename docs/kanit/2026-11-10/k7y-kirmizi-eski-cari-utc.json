@@ -1,0 +1,32 @@
+{
+  "ad": "k7y-kirmizi-eski-cari-utc",
+  "komut": "python3 -I -B docs/kanit/2026-11-10/kahineski7-arac/kirmizi-eski.py --model /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski7y-eski/test/bagimsiz/cari test/bagimsiz/cari/senaryolar/d30-c5-s101-bitti-kart.json test/bagimsiz/cari/senaryolar/d31-c5-s101-taksit-vade-gunu.json test/bagimsiz/cari/senaryolar/d32-c5-s101-taksit-ertesi-gun.json",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-11T00:11:08.605Z",
+  "sure_sn": 0,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 1,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../kahineski7y-kanit/2026-11-11/k7y-kirmizi-eski-cari-utc.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski7y-yeni",
+  "ham_cikti_sha256": "b5a963481023ca4f8697c5a20d07c580ec5700c7a04c97bce769344de99c7dfe",
+  "ham_cikti_bayt": 3976
+}

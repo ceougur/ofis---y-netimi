@@ -1,8 +1,8 @@
 {
  "dil": "destekofis-cari/3",
  "bugun": "2026-07-02",
- "aciklama": "d30'un Q2 / Q4'ü, bugün 02.07 (GÜN DÖNÜMÜ — 2. taksit vadesinin ertesi): gecikmiş 200 / 100 (2. taksitlerin açık kısmı); kart ödenenleri aynı.",
- "dayanak": "KARARLAR.md §18 Y6-4; S101 A, S1 A, M1f",
+ "aciklama": "d30'un Q2 / Q4'ü (satışla açılan kart), bugün 02.07 (GÜN DÖNÜMÜ — 2. taksit vadesinin ertesi): gecikmiş 200 / 100 (2. taksitlerin açık kısmı); kart ödenenleri aynı.",
+ "dayanak": "KARARLAR.md §19 Y7-2; §18 Y6-4; S101 A, S1 A, M1f",
  "elleBeklenen": {
   "k1:kart:KQ2:toplam": 60000,
   "k1:kart:KQ2:odenen": 40000,
@@ -17,17 +17,21 @@
   "k1:kart:KQ4:taksit1:odenen": 30000,
   "k1:kart:KQ4:taksit2:odenen": 20000,
   "k1:cari:Q4:bakiye": 10000,
-  "k1:cari:Q4:gecikmis": 10000
+  "k1:cari:Q4:gecikmis": 10000,
+  "adim:kq2:durum": "ok",
+  "adim:kq4:durum": "ok",
+  "adim:q4k:durum": "ok",
+  "k1:kart:KQ2:var": true,
+  "k1:kart:KQ4:var": true
  },
+ "elleYok": ["k1:kart:KQ2:mevcutBorc", "k1:kart:KQ4:mevcutBorc"],
  "adimlar": [
   {"id": "cq2", "islem": "cari_ac", "ad": "Q2", "isim": "Kısmi Bitti", "tarih": "2026-04-01"},
   {"id": "q2t", "islem": "tahsilat", "cari": "Q2", "tutar": "400", "tarih": "2026-05-01"},
-  {"id": "q2s", "islem": "stok_satis_hesap", "cari": "Q2", "tutar": "600", "tarih": "2026-05-05"},
-  {"id": "kq2", "islem": "kart_ac", "ad": "KQ2", "cari": "Q2", "tutar": "600", "taksit": 2, "ilkVade": "2026-06-01", "tarih": "2026-05-05", "mevcut": true},
+  {"id": "kq2", "islem": "stok_satis_taksit", "ad": "KQ2", "cari": "Q2", "tutar": "600", "tarih": "2026-05-05", "taksit": 2, "ilkVade": "2026-06-01"},
   {"id": "cq4", "islem": "cari_ac", "ad": "Q4", "isim": "Aşmayan Taksit", "tarih": "2026-04-01"},
   {"id": "q4t", "islem": "tahsilat", "cari": "Q4", "tutar": "400", "tarih": "2026-05-01"},
-  {"id": "q4s", "islem": "stok_satis_hesap", "cari": "Q4", "tutar": "600", "tarih": "2026-05-05"},
-  {"id": "kq4", "islem": "kart_ac", "ad": "KQ4", "cari": "Q4", "tutar": "600", "taksit": 2, "ilkVade": "2026-06-01", "tarih": "2026-05-05", "mevcut": true},
+  {"id": "kq4", "islem": "stok_satis_taksit", "ad": "KQ4", "cari": "Q4", "tutar": "600", "tarih": "2026-05-05", "taksit": 2, "ilkVade": "2026-06-01"},
   {"id": "q4k", "islem": "kart_tahsilat", "kayit": "KQ4", "tutar": "100", "tarih": "2026-05-20"},
   {"id": "k1", "islem": "kontrol", "gecikmis": true, "gorunumToplam": true, "acikToplam": true}
  ],

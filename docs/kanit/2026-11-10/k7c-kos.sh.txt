@@ -1,0 +1,16 @@
+#!/bin/bash
+# Kâhin 5 + 6 birleşik ağaç, etiketli liste: yeniden üretim aynı mı, kahin-cari iki TZ, kahin-defter, kahin-mobil-yazma, kapı + kaynak tarayanlar
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+A=$S/k7-ag; export KANIT_DIR=$S/k7-kanit HUKUK_LICENSE_URL=http://127.0.0.1:9
+cd "$A" || exit 1
+L=test/bagimsiz/cari/YAPIM-ASAMASI.json
+echo "başladı $(date -u +%H:%M:%S) yük $(cat /proc/loadavg)"
+cp "$L" "$KANIT_DIR/liste-etiketli.json" || exit 1
+node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz --mutasyonsuz > "$KANIT_DIR/yaz2.out" 2>&1; echo "yaz çıkış $?"; tail -1 "$KANIT_DIR/yaz2.out" | cut -c1-260
+cmp "$L" "$KANIT_DIR/liste-etiketli.json" && echo "ETİKETLİ liste yeniden üretimde bayt bayt AYNI" || { echo "LİSTE DEĞİŞTİ"; git diff --stat "$L"; }
+for tz in UTC Europe/Istanbul; do n=$(echo $tz | tr '/' '-'); TZ=$tz node tools/kanit.mjs kos k7b-kahin-cari-$n -- npm run test:kahin-cari > "$KANIT_DIR/kahin-cari-$n.out" 2>&1; echo "kahin-cari $tz çıkış $?"; grep -E "denetim geçti" "$KANIT_DIR/kahin-cari-$n.out" | tail -1 | cut -c1-200; done
+node tools/kanit.mjs kos k7b-kahin-defter -- npm run test:kahin-defter > "$KANIT_DIR/kahin-defter.out" 2>&1; echo "kahin-defter çıkış $?"
+node tools/kanit.mjs kos k7b-kahin-mobil-yazma -- npm run test:kahin-mobil-yazma -- --haric E02-es-havale-pos-mobil,E02-es-havale-pos-masaustu > "$KANIT_DIR/kahin-mobil-yazma.out" 2>&1; echo "kahin-mobil-yazma çıkış $?"
+node tools/kanit.mjs kos k7b-kapi -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/yapim-asamasi-kapisi.test.mjs test/kanit-araci.test.mjs test/ci-kapi-listesi.test.mjs test/platform-tasinabilirlik.test.mjs test/yazim-duzeni.test.mjs test/lisans-servisi-izolasyonu.test.mjs > "$KANIT_DIR/kapi.out" 2>&1; echo "kapi çıkış $?"
+git status -s | grep -v node_modules
+echo "bitti $(date -u +%H:%M:%S) yük $(cat /proc/loadavg)"

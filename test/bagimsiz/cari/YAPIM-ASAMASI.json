@@ -3874,63 +3874,13 @@
   },
   {
    "senaryo": "d27-c5-s99-taksitli-avans",
-   "anahtar": "adim:p2f:durum",
-   "beklenen": "ok",
-   "program": "ret",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "adım kabul edilir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d27-c5-s99-taksitli-avans",
-   "anahtar": "adim:p3f:durum",
-   "beklenen": "ok",
-   "program": "ret",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "adım kabul edilir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d27-c5-s99-taksitli-avans",
-   "anahtar": "adim:p4f:durum",
-   "beklenen": "ok",
-   "program": "ret",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "adım kabul edilir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d27-c5-s99-taksitli-avans",
-   "anahtar": "adim:p4g:durum",
-   "beklenen": "ok",
-   "program": "ret",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "adım kabul edilir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d27-c5-s99-taksitli-avans",
-   "anahtar": "adim:p5f:durum",
-   "beklenen": "ok",
-   "program": "ret",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "adım kabul edilir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d27-c5-s99-taksitli-avans",
    "anahtar": "k1:cari:P1:acikEsitBakiye",
    "beklenen": true,
    "program": false,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d27-c5-s99-taksitli-avans",
@@ -3939,156 +3889,58 @@
    "program": 60000,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "KS8.1: carinin açık kalemlerinin işaretli toplamı",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d27-c5-s99-taksitli-avans",
    "anahtar": "k1:cari:P2:acikEsitBakiye",
    "beklenen": true,
-   "program": "okunamadı",
+   "program": false,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d27-c5-s99-taksitli-avans",
    "anahtar": "k1:cari:P2:acikToplam",
    "beklenen": 40000,
-   "program": "okunamadı",
+   "program": 90000,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "KS8.1: carinin açık kalemlerinin işaretli toplamı",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d27-c5-s99-taksitli-avans",
-   "anahtar": "k1:cari:P2:bakiye",
-   "beklenen": 40000,
-   "program": -50000,
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d27-c5-s99-taksitli-avans",
    "anahtar": "k1:cari:P3:acikEsitBakiye",
    "beklenen": true,
-   "program": "okunamadı",
+   "program": false,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d27-c5-s99-taksitli-avans",
    "anahtar": "k1:cari:P3:acikToplam",
    "beklenen": 50000,
-   "program": "okunamadı",
+   "program": 60000,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "KS8.1: carinin açık kalemlerinin işaretli toplamı",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d27-c5-s99-taksitli-avans",
-   "anahtar": "k1:cari:P3:bakiye",
-   "beklenen": 50000,
-   "program": -10000,
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d27-c5-s99-taksitli-avans",
-   "anahtar": "k1:cari:P3:gecikmis",
-   "beklenen": 20000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
-   "paket": "Ç5-B tur 2"
-  },
-  {
-   "senaryo": "d27-c5-s99-taksitli-avans",
-   "anahtar": "k1:cari:P4a:acikEsitBakiye",
-   "beklenen": false,
-   "program": "okunamadı",
-   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
-   "kural": "KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d27-c5-s99-taksitli-avans",
    "anahtar": "k1:cari:P4a:acikToplam",
    "beklenen": 0,
-   "program": "okunamadı",
+   "program": 60000,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "KS8.1: carinin açık kalemlerinin işaretli toplamı",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d27-c5-s99-taksitli-avans",
-   "anahtar": "k1:cari:P4a:bakiye",
-   "beklenen": -40000,
-   "program": -100000,
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d27-c5-s99-taksitli-avans",
-   "anahtar": "k1:cari:P4b:acikEsitBakiye",
-   "beklenen": true,
-   "program": "okunamadı",
-   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
-   "kural": "KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d27-c5-s99-taksitli-avans",
-   "anahtar": "k1:cari:P4b:acikToplam",
-   "beklenen": 50000,
-   "program": "okunamadı",
-   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
-   "kural": "KS8.1: carinin açık kalemlerinin işaretli toplamı",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d27-c5-s99-taksitli-avans",
-   "anahtar": "k1:cari:P4b:bakiye",
-   "beklenen": 50000,
-   "program": 0,
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d27-c5-s99-taksitli-avans",
-   "anahtar": "k1:cari:P4b:gecikmis",
-   "beklenen": 50000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
-   "paket": "Ç5-B tur 2"
-  },
-  {
-   "senaryo": "d27-c5-s99-taksitli-avans",
-   "anahtar": "k1:cari:P5:bakiye",
-   "beklenen": 50000,
-   "program": -40000,
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d27-c5-s99-taksitli-avans",
@@ -4097,137 +3949,38 @@
    "program": 30000,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d27-c5-s99-taksitli-avans",
    "anahtar": "k1:fatura:P2F:acik",
    "beklenen": 40000,
-   "program": "okunamadı",
+   "program": 90000,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d27-c5-s99-taksitli-avans",
    "anahtar": "k1:fatura:P3F:acik",
    "beklenen": 50000,
-   "program": "okunamadı",
+   "program": 60000,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d27-c5-s99-taksitli-avans",
    "anahtar": "k1:fatura:P4F:acik",
    "beklenen": 0,
-   "program": "okunamadı",
+   "program": 60000,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d27-c5-s99-taksitli-avans",
-   "anahtar": "k1:fatura:P4G:acik",
-   "beklenen": 50000,
-   "program": "okunamadı",
-   "sinif": "BULGU KULLANICI · SINIF DIŞI",
-   "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d27-c5-s99-taksitli-avans",
-   "anahtar": "k1:projeksiyon:cariToplam:P4b",
-   "beklenen": 50000,
-   "program": 0,
-   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
-   "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d27-c5-s99-taksitli-avans",
-   "anahtar": "k1:projeksiyon:fatura:P4G",
-   "beklenen": {
-    "amount": 50000,
-    "direction": "in"
-   },
-   "program": "okunamadı",
-   "sinif": "İNCELE YAYGIN · SINIF DIŞI",
-   "kural": "fatura kalemi açık tutarıyla (belge tarihinde, geçmiş — her görünümde)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d27-c5-s99-taksitli-avans",
-   "anahtar": "k1:takvim:cariToplam:P4b",
-   "beklenen": 50000,
-   "program": 0,
-   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
-   "kural": "K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d27-c5-s99-taksitli-avans",
-   "anahtar": "k1:takvim:fatura:P4G",
-   "beklenen": {
-    "amount": 50000,
-    "direction": "in"
-   },
-   "program": "yok",
-   "sinif": "İNCELE YAYGIN · SINIF DIŞI",
-   "kural": "madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d27-c5-s99-taksitli-avans",
-   "anahtar": "k1:vadeTakip:cariToplam:P4b",
-   "beklenen": 50000,
-   "program": 0,
-   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
-   "kural": "K6.5 (1) + KS8.1 + KS10: carinin vadeTakip kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d27-c5-s99-taksitli-avans",
-   "anahtar": "k1:vadeTakip:fatura:P4G",
-   "beklenen": {
-    "amount": 50000,
-    "direction": "in"
-   },
-   "program": "okunamadı",
-   "sinif": "İNCELE YAYGIN · SINIF DIŞI",
-   "kural": "fatura kalemi açık tutarıyla (belge tarihinde, geçmiş — her görünümde)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d28-c5-s99-taksit-vade-gunu",
-   "anahtar": "adim:p2f:durum",
-   "beklenen": "ok",
-   "program": "ret",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "adım kabul edilir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d28-c5-s99-taksit-vade-gunu",
-   "anahtar": "adim:p3f:durum",
-   "beklenen": "ok",
-   "program": "ret",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "adım kabul edilir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d28-c5-s99-taksit-vade-gunu",
@@ -4236,8 +3989,8 @@
    "program": false,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d28-c5-s99-taksit-vade-gunu",
@@ -4246,77 +3999,48 @@
    "program": 60000,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "KS8.1: carinin açık kalemlerinin işaretli toplamı",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d28-c5-s99-taksit-vade-gunu",
    "anahtar": "k1:cari:P2:acikEsitBakiye",
    "beklenen": true,
-   "program": "okunamadı",
+   "program": false,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d28-c5-s99-taksit-vade-gunu",
    "anahtar": "k1:cari:P2:acikToplam",
    "beklenen": 40000,
-   "program": "okunamadı",
+   "program": 90000,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "KS8.1: carinin açık kalemlerinin işaretli toplamı",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d28-c5-s99-taksit-vade-gunu",
-   "anahtar": "k1:cari:P2:bakiye",
-   "beklenen": 40000,
-   "program": -50000,
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d28-c5-s99-taksit-vade-gunu",
    "anahtar": "k1:cari:P3:acikEsitBakiye",
    "beklenen": true,
-   "program": "okunamadı",
+   "program": false,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d28-c5-s99-taksit-vade-gunu",
    "anahtar": "k1:cari:P3:acikToplam",
    "beklenen": 50000,
-   "program": "okunamadı",
+   "program": 60000,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "KS8.1: carinin açık kalemlerinin işaretli toplamı",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d28-c5-s99-taksit-vade-gunu",
-   "anahtar": "k1:cari:P3:bakiye",
-   "beklenen": 50000,
-   "program": -10000,
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d28-c5-s99-taksit-vade-gunu",
-   "anahtar": "k1:cari:P3:gecikmis",
-   "beklenen": 20000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
-   "paket": "Ç5-B tur 2"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d28-c5-s99-taksit-vade-gunu",
@@ -4325,48 +4049,28 @@
    "program": 30000,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d28-c5-s99-taksit-vade-gunu",
    "anahtar": "k1:fatura:P2F:acik",
    "beklenen": 40000,
-   "program": "okunamadı",
+   "program": 90000,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d28-c5-s99-taksit-vade-gunu",
    "anahtar": "k1:fatura:P3F:acik",
    "beklenen": 50000,
-   "program": "okunamadı",
+   "program": 60000,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d29-c5-s99-taksit-ertesi-gun",
-   "anahtar": "adim:p2f:durum",
-   "beklenen": "ok",
-   "program": "ret",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "adım kabul edilir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d29-c5-s99-taksit-ertesi-gun",
-   "anahtar": "adim:p3f:durum",
-   "beklenen": "ok",
-   "program": "ret",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "adım kabul edilir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d29-c5-s99-taksit-ertesi-gun",
@@ -4375,8 +4079,8 @@
    "program": false,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d29-c5-s99-taksit-ertesi-gun",
@@ -4385,86 +4089,48 @@
    "program": 60000,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "KS8.1: carinin açık kalemlerinin işaretli toplamı",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d29-c5-s99-taksit-ertesi-gun",
    "anahtar": "k1:cari:P2:acikEsitBakiye",
    "beklenen": true,
-   "program": "okunamadı",
+   "program": false,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d29-c5-s99-taksit-ertesi-gun",
    "anahtar": "k1:cari:P2:acikToplam",
    "beklenen": 40000,
-   "program": "okunamadı",
+   "program": 90000,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "KS8.1: carinin açık kalemlerinin işaretli toplamı",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d29-c5-s99-taksit-ertesi-gun",
-   "anahtar": "k1:cari:P2:bakiye",
-   "beklenen": 40000,
-   "program": -50000,
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d29-c5-s99-taksit-ertesi-gun",
-   "anahtar": "k1:cari:P2:gecikmis",
-   "beklenen": 10000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
-   "paket": "Ç5-B tur 2"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d29-c5-s99-taksit-ertesi-gun",
    "anahtar": "k1:cari:P3:acikEsitBakiye",
    "beklenen": true,
-   "program": "okunamadı",
+   "program": false,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d29-c5-s99-taksit-ertesi-gun",
    "anahtar": "k1:cari:P3:acikToplam",
    "beklenen": 50000,
-   "program": "okunamadı",
+   "program": 60000,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "KS8.1: carinin açık kalemlerinin işaretli toplamı",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d29-c5-s99-taksit-ertesi-gun",
-   "anahtar": "k1:cari:P3:bakiye",
-   "beklenen": 50000,
-   "program": -10000,
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d29-c5-s99-taksit-ertesi-gun",
-   "anahtar": "k1:cari:P3:gecikmis",
-   "beklenen": 20000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
-   "paket": "Ç5-B tur 2"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d29-c5-s99-taksit-ertesi-gun",
@@ -4473,28 +4139,28 @@
    "program": 30000,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d29-c5-s99-taksit-ertesi-gun",
    "anahtar": "k1:fatura:P2F:acik",
    "beklenen": 40000,
-   "program": "okunamadı",
+   "program": 90000,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d29-c5-s99-taksit-ertesi-gun",
    "anahtar": "k1:fatura:P3F:acik",
    "beklenen": 50000,
-   "program": "okunamadı",
+   "program": 60000,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO SIRASI — senaryo faturaları cari cari giriyor, program aynı seride daha eski tarihli belgeyi reddediyor ('numara ve tarih sırası uyuşmalı'); P2–P5 adımları ret, kalan farklar bunun zinciri olabilir. Kâhin bakımında adımlar tarih sırasına dizilir (beklenen değerler değişmez), liste yeniden üretilir; o zamana kadar bu kayıtlar S99'un gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d3-c5-carisiz-evrak",
@@ -4642,153 +4308,13 @@
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "adim:kq1:durum",
-   "beklenen": "ok",
-   "program": "ret",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "adım kabul edilir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "adim:kq2:durum",
-   "beklenen": "ok",
-   "program": "ret",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "adım kabul edilir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "adim:kq3:durum",
-   "beklenen": "ok",
-   "program": "ret",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "adım kabul edilir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "adim:kq4:durum",
-   "beklenen": "ok",
-   "program": "ret",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "adım kabul edilir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "adim:kq5:durum",
-   "beklenen": "ok",
-   "program": "ret",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "adım kabul edilir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "adim:kq6:durum",
-   "beklenen": "ok",
-   "program": "ret",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "adım kabul edilir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "adim:kq7:durum",
-   "beklenen": "ok",
-   "program": "ret",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "adım kabul edilir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "adim:kq8:durum",
-   "beklenen": "ok",
-   "program": "ret",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "adım kabul edilir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "adim:q1k:durum",
-   "beklenen": "ok",
-   "program": "ret",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "adım kabul edilir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "adim:q3k:durum",
-   "beklenen": "ok",
-   "program": "ret",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "adım kabul edilir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "adim:q4k:durum",
-   "beklenen": "ok",
-   "program": "ret",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "adım kabul edilir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "adim:q5k:durum",
-   "beklenen": "ok",
-   "program": "ret",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "adım kabul edilir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:cari:Q1:acikEsitBakiye",
-   "beklenen": false,
-   "program": true,
-   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
-   "kural": "KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
    "anahtar": "k1:cari:Q1:acikToplam",
    "beklenen": 0,
    "program": 10000,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "KS8.1: carinin açık kalemlerinin işaretli toplamı",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:cari:Q1:bakiye",
-   "beklenen": -20000,
-   "program": 10000,
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
@@ -4810,32 +4336,12 @@
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:cari:Q3:bakiye",
-   "beklenen": -30000,
-   "program": 20000,
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
    "anahtar": "k1:cari:Q3:gecikmis",
    "beklenen": 0,
    "program": 20000,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
    "paket": "Ç5-B tur 2"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:cari:Q4:bakiye",
-   "beklenen": 10000,
-   "program": 20000,
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
@@ -4848,13 +4354,21 @@
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:cari:Q5:bakiye",
-   "beklenen": 10000,
-   "program": 40000,
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "anahtar": "k1:cari:Q8b:gecikmis",
+   "beklenen": 30000,
+   "program": 60000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
+   "paket": "Ç5-B tur 2"
+  },
+  {
+   "senaryo": "d30-c5-s101-bitti-kart",
+   "anahtar": "k1:cari:Q9:gecikmis",
+   "beklenen": 70000,
+   "program": 100000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
+   "paket": "Ç5-B tur 2"
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
@@ -4863,468 +4377,188 @@
    "program": 10000,
    "sinif": "İNCELE YAYGIN · SINIF DIŞI",
    "kural": "C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
    "anahtar": "k1:kart:KQ1:kalan",
    "beklenen": 0,
-   "program": "okunamadı",
+   "program": 30000,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ1:mevcutBorc",
-   "beklenen": true,
-   "program": "okunamadı",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.4 mevcut borcu taksitlendir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
    "anahtar": "k1:kart:KQ1:odenen",
    "beklenen": 60000,
-   "program": "okunamadı",
+   "program": 30000,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ1:taksit1:odenen",
-   "beklenen": 30000,
-   "program": "okunamadı",
-   "sinif": "BULGU KULLANICI · SINIF DIŞI",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
    "anahtar": "k1:kart:KQ1:taksit2:odenen",
    "beklenen": 30000,
-   "program": "okunamadı",
+   "program": 0,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ1:toplam",
-   "beklenen": 60000,
-   "program": "okunamadı",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.3 kart tutarı = tablodaki kalan",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ1:var",
-   "beklenen": true,
-   "program": false,
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.3 kart açıldı",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
    "anahtar": "k1:kart:KQ2:kalan",
    "beklenen": 20000,
-   "program": "okunamadı",
+   "program": 60000,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ2:mevcutBorc",
-   "beklenen": true,
-   "program": "okunamadı",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.4 mevcut borcu taksitlendir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
    "anahtar": "k1:kart:KQ2:odenen",
    "beklenen": 40000,
-   "program": "okunamadı",
+   "program": 0,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
    "anahtar": "k1:kart:KQ2:taksit1:odenen",
    "beklenen": 30000,
-   "program": "okunamadı",
+   "program": 0,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
    "anahtar": "k1:kart:KQ2:taksit2:odenen",
    "beklenen": 10000,
-   "program": "okunamadı",
+   "program": 0,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ2:toplam",
-   "beklenen": 60000,
-   "program": "okunamadı",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.3 kart tutarı = tablodaki kalan",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ2:var",
-   "beklenen": true,
-   "program": false,
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.3 kart açıldı",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
    "anahtar": "k1:kart:KQ3:kalan",
    "beklenen": 0,
-   "program": "okunamadı",
+   "program": 10000,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ3:mevcutBorc",
-   "beklenen": true,
-   "program": "okunamadı",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.4 mevcut borcu taksitlendir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
    "anahtar": "k1:kart:KQ3:odenen",
    "beklenen": 60000,
-   "program": "okunamadı",
+   "program": 50000,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ3:taksit1:odenen",
-   "beklenen": 30000,
-   "program": "okunamadı",
-   "sinif": "BULGU KULLANICI · SINIF DIŞI",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
    "anahtar": "k1:kart:KQ3:taksit2:odenen",
    "beklenen": 30000,
-   "program": "okunamadı",
+   "program": 20000,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ3:toplam",
-   "beklenen": 60000,
-   "program": "okunamadı",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.3 kart tutarı = tablodaki kalan",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ3:var",
-   "beklenen": true,
-   "program": false,
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.3 kart açıldı",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
    "anahtar": "k1:kart:KQ4:kalan",
    "beklenen": 10000,
-   "program": "okunamadı",
+   "program": 50000,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ4:mevcutBorc",
-   "beklenen": true,
-   "program": "okunamadı",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.4 mevcut borcu taksitlendir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
    "anahtar": "k1:kart:KQ4:odenen",
    "beklenen": 50000,
-   "program": "okunamadı",
+   "program": 10000,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
    "anahtar": "k1:kart:KQ4:taksit1:odenen",
    "beklenen": 30000,
-   "program": "okunamadı",
+   "program": 10000,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
    "anahtar": "k1:kart:KQ4:taksit2:odenen",
    "beklenen": 20000,
-   "program": "okunamadı",
+   "program": 0,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ4:toplam",
-   "beklenen": 60000,
-   "program": "okunamadı",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.3 kart tutarı = tablodaki kalan",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ4:var",
-   "beklenen": true,
-   "program": false,
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.3 kart açıldı",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ5:mevcutBorc",
-   "beklenen": true,
-   "program": "okunamadı",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.4 mevcut borcu taksitlendir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ5:toplam",
-   "beklenen": 60000,
-   "program": "okunamadı",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.3 kart tutarı = tablodaki kalan",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ5:var",
-   "beklenen": true,
-   "program": false,
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.3 kart açıldı",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ6:mevcutBorc",
-   "beklenen": true,
-   "program": "okunamadı",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.4 mevcut borcu taksitlendir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ6:toplam",
-   "beklenen": 100000,
-   "program": "okunamadı",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.3 kart tutarı = tablodaki kalan",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ6:var",
-   "beklenen": true,
-   "program": false,
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.3 kart açıldı",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ7:mevcutBorc",
-   "beklenen": true,
-   "program": "okunamadı",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.4 mevcut borcu taksitlendir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ7:toplam",
-   "beklenen": 60000,
-   "program": "okunamadı",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.3 kart tutarı = tablodaki kalan",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ7:var",
-   "beklenen": true,
-   "program": false,
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.3 kart açıldı",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
    "anahtar": "k1:kart:KQ8:kalan",
    "beklenen": 0,
-   "program": "okunamadı",
+   "program": 60000,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ8:mevcutBorc",
-   "beklenen": true,
-   "program": "okunamadı",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.4 mevcut borcu taksitlendir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
    "anahtar": "k1:kart:KQ8:odenen",
    "beklenen": 60000,
-   "program": "okunamadı",
+   "program": 0,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
    "anahtar": "k1:kart:KQ8:taksit1:odenen",
    "beklenen": 30000,
-   "program": "okunamadı",
+   "program": 0,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
    "anahtar": "k1:kart:KQ8:taksit2:odenen",
    "beklenen": 30000,
-   "program": "okunamadı",
+   "program": 0,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ8:toplam",
-   "beklenen": 60000,
-   "program": "okunamadı",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.3 kart tutarı = tablodaki kalan",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ8:var",
-   "beklenen": true,
-   "program": false,
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.3 kart açıldı",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kasa",
-   "beklenen": 600000,
-   "program": 480000,
-   "sinif": "BULGU KULLANICI · SINIF DIŞI",
-   "kural": "B1.2 Kasa değişmez / tahsilatlar Kasa'da",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kasaRapor:giris",
-   "beklenen": 600000,
-   "program": 480000,
-   "sinif": "BULGU KULLANICI · SINIF DIŞI",
-   "kural": "B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
@@ -5333,8 +4567,8 @@
    "program": 20000,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
@@ -5347,8 +4581,8 @@
    },
    "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
    "kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan − Mevcut Borç kartının açık kapsamı, K6.5 (1) bir kez; pencere bugün → +30, gecikenler dahil)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
@@ -5357,8 +4591,8 @@
    "program": 20000,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
@@ -5367,8 +4601,28 @@
    "program": 20000,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
+  },
+  {
+   "senaryo": "d30-c5-s101-bitti-kart",
+   "anahtar": "k1:takvim:cariToplam:Q8b",
+   "beklenen": 30000,
+   "program": 60000,
+   "sinif": "İNCELE YAYGIN · SINIF DIŞI",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
+  },
+  {
+   "senaryo": "d30-c5-s101-bitti-kart",
+   "anahtar": "k1:takvim:cariToplam:Q9",
+   "beklenen": 70000,
+   "program": 100000,
+   "sinif": "İNCELE YAYGIN · SINIF DIŞI",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
@@ -5400,8 +4654,8 @@
    "program": 20000,
    "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
    "kural": "K6.5 (1) + KS8.1 + KS10: carinin vadeTakip kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
@@ -5414,38 +4668,8 @@
    },
    "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
    "kural": "K6.3 kalem olmayan kayıt Vade Takip'te yok",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d31-c5-s101-taksit-vade-gunu",
-   "anahtar": "adim:kq2:durum",
-   "beklenen": "ok",
-   "program": "ret",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "adım kabul edilir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d31-c5-s101-taksit-vade-gunu",
-   "anahtar": "adim:kq4:durum",
-   "beklenen": "ok",
-   "program": "ret",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "adım kabul edilir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d31-c5-s101-taksit-vade-gunu",
-   "anahtar": "adim:q4k:durum",
-   "beklenen": "ok",
-   "program": "ret",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "adım kabul edilir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d31-c5-s101-taksit-vade-gunu",
@@ -5458,16 +4682,6 @@
   },
   {
    "senaryo": "d31-c5-s101-taksit-vade-gunu",
-   "anahtar": "k1:cari:Q4:bakiye",
-   "beklenen": 10000,
-   "program": 20000,
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d31-c5-s101-taksit-vade-gunu",
    "anahtar": "k1:cari:Q4:gecikmis",
    "beklenen": 0,
    "program": 20000,
@@ -5479,161 +4693,81 @@
    "senaryo": "d31-c5-s101-taksit-vade-gunu",
    "anahtar": "k1:kart:KQ2:kalan",
    "beklenen": 20000,
-   "program": "okunamadı",
+   "program": 60000,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d31-c5-s101-taksit-vade-gunu",
-   "anahtar": "k1:kart:KQ2:mevcutBorc",
-   "beklenen": true,
-   "program": "okunamadı",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.4 mevcut borcu taksitlendir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d31-c5-s101-taksit-vade-gunu",
    "anahtar": "k1:kart:KQ2:odenen",
    "beklenen": 40000,
-   "program": "okunamadı",
+   "program": 0,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d31-c5-s101-taksit-vade-gunu",
    "anahtar": "k1:kart:KQ2:taksit1:odenen",
    "beklenen": 30000,
-   "program": "okunamadı",
+   "program": 0,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d31-c5-s101-taksit-vade-gunu",
    "anahtar": "k1:kart:KQ2:taksit2:odenen",
    "beklenen": 10000,
-   "program": "okunamadı",
+   "program": 0,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d31-c5-s101-taksit-vade-gunu",
-   "anahtar": "k1:kart:KQ2:toplam",
-   "beklenen": 60000,
-   "program": "okunamadı",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.3 kart tutarı = tablodaki kalan",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d31-c5-s101-taksit-vade-gunu",
-   "anahtar": "k1:kart:KQ2:var",
-   "beklenen": true,
-   "program": false,
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.3 kart açıldı",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d31-c5-s101-taksit-vade-gunu",
    "anahtar": "k1:kart:KQ4:kalan",
    "beklenen": 10000,
-   "program": "okunamadı",
+   "program": 50000,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d31-c5-s101-taksit-vade-gunu",
-   "anahtar": "k1:kart:KQ4:mevcutBorc",
-   "beklenen": true,
-   "program": "okunamadı",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.4 mevcut borcu taksitlendir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d31-c5-s101-taksit-vade-gunu",
    "anahtar": "k1:kart:KQ4:odenen",
    "beklenen": 50000,
-   "program": "okunamadı",
+   "program": 10000,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d31-c5-s101-taksit-vade-gunu",
    "anahtar": "k1:kart:KQ4:taksit1:odenen",
    "beklenen": 30000,
-   "program": "okunamadı",
+   "program": 10000,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d31-c5-s101-taksit-vade-gunu",
    "anahtar": "k1:kart:KQ4:taksit2:odenen",
    "beklenen": 20000,
-   "program": "okunamadı",
+   "program": 0,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d31-c5-s101-taksit-vade-gunu",
-   "anahtar": "k1:kart:KQ4:toplam",
-   "beklenen": 60000,
-   "program": "okunamadı",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.3 kart tutarı = tablodaki kalan",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d31-c5-s101-taksit-vade-gunu",
-   "anahtar": "k1:kart:KQ4:var",
-   "beklenen": true,
-   "program": false,
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.3 kart açıldı",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d31-c5-s101-taksit-vade-gunu",
-   "anahtar": "k1:kasa",
-   "beklenen": 90000,
-   "program": 80000,
-   "sinif": "BULGU KULLANICI · SINIF DIŞI",
-   "kural": "B1.2 Kasa değişmez / tahsilatlar Kasa'da",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d31-c5-s101-taksit-vade-gunu",
-   "anahtar": "k1:kasaRapor:giris",
-   "beklenen": 90000,
-   "program": 80000,
-   "sinif": "BULGU KULLANICI · SINIF DIŞI",
-   "kural": "B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d31-c5-s101-taksit-vade-gunu",
@@ -5642,8 +4776,8 @@
    "program": 2,
    "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
    "kural": "KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d31-c5-s101-taksit-vade-gunu",
@@ -5652,8 +4786,8 @@
    "program": 20000,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d31-c5-s101-taksit-vade-gunu",
@@ -5662,8 +4796,8 @@
    "program": 2,
    "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
    "kural": "K6.3 takvimdeki cari kalemlerinin sayısı",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d31-c5-s101-taksit-vade-gunu",
@@ -5672,8 +4806,8 @@
    "program": 20000,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d31-c5-s101-taksit-vade-gunu",
@@ -5682,48 +4816,8 @@
    "program": 20000,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "K6.5 (1) + KS8.1 + KS10: carinin vadeTakip kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d32-c5-s101-taksit-ertesi-gun",
-   "anahtar": "adim:kq2:durum",
-   "beklenen": "ok",
-   "program": "ret",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "adım kabul edilir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d32-c5-s101-taksit-ertesi-gun",
-   "anahtar": "adim:kq4:durum",
-   "beklenen": "ok",
-   "program": "ret",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "adım kabul edilir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d32-c5-s101-taksit-ertesi-gun",
-   "anahtar": "adim:q4k:durum",
-   "beklenen": "ok",
-   "program": "ret",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "adım kabul edilir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d32-c5-s101-taksit-ertesi-gun",
-   "anahtar": "k1:cari:Q4:bakiye",
-   "beklenen": 10000,
-   "program": 20000,
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d32-c5-s101-taksit-ertesi-gun",
@@ -5738,161 +4832,81 @@
    "senaryo": "d32-c5-s101-taksit-ertesi-gun",
    "anahtar": "k1:kart:KQ2:kalan",
    "beklenen": 20000,
-   "program": "okunamadı",
+   "program": 60000,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d32-c5-s101-taksit-ertesi-gun",
-   "anahtar": "k1:kart:KQ2:mevcutBorc",
-   "beklenen": true,
-   "program": "okunamadı",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.4 mevcut borcu taksitlendir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d32-c5-s101-taksit-ertesi-gun",
    "anahtar": "k1:kart:KQ2:odenen",
    "beklenen": 40000,
-   "program": "okunamadı",
+   "program": 0,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d32-c5-s101-taksit-ertesi-gun",
    "anahtar": "k1:kart:KQ2:taksit1:odenen",
    "beklenen": 30000,
-   "program": "okunamadı",
+   "program": 0,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d32-c5-s101-taksit-ertesi-gun",
    "anahtar": "k1:kart:KQ2:taksit2:odenen",
    "beklenen": 10000,
-   "program": "okunamadı",
+   "program": 0,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d32-c5-s101-taksit-ertesi-gun",
-   "anahtar": "k1:kart:KQ2:toplam",
-   "beklenen": 60000,
-   "program": "okunamadı",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.3 kart tutarı = tablodaki kalan",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d32-c5-s101-taksit-ertesi-gun",
-   "anahtar": "k1:kart:KQ2:var",
-   "beklenen": true,
-   "program": false,
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.3 kart açıldı",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d32-c5-s101-taksit-ertesi-gun",
    "anahtar": "k1:kart:KQ4:kalan",
    "beklenen": 10000,
-   "program": "okunamadı",
+   "program": 50000,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d32-c5-s101-taksit-ertesi-gun",
-   "anahtar": "k1:kart:KQ4:mevcutBorc",
-   "beklenen": true,
-   "program": "okunamadı",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.4 mevcut borcu taksitlendir",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d32-c5-s101-taksit-ertesi-gun",
    "anahtar": "k1:kart:KQ4:odenen",
    "beklenen": 50000,
-   "program": "okunamadı",
+   "program": 10000,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d32-c5-s101-taksit-ertesi-gun",
    "anahtar": "k1:kart:KQ4:taksit1:odenen",
    "beklenen": 30000,
-   "program": "okunamadı",
+   "program": 10000,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d32-c5-s101-taksit-ertesi-gun",
    "anahtar": "k1:kart:KQ4:taksit2:odenen",
    "beklenen": 20000,
-   "program": "okunamadı",
+   "program": 0,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d32-c5-s101-taksit-ertesi-gun",
-   "anahtar": "k1:kart:KQ4:toplam",
-   "beklenen": 60000,
-   "program": "okunamadı",
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.3 kart tutarı = tablodaki kalan",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d32-c5-s101-taksit-ertesi-gun",
-   "anahtar": "k1:kart:KQ4:var",
-   "beklenen": true,
-   "program": false,
-   "sinif": "BULGU PLAN · SINIF DIŞI",
-   "kural": "B1.3 kart açıldı",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d32-c5-s101-taksit-ertesi-gun",
-   "anahtar": "k1:kasa",
-   "beklenen": 90000,
-   "program": 80000,
-   "sinif": "BULGU KULLANICI · SINIF DIŞI",
-   "kural": "B1.2 Kasa değişmez / tahsilatlar Kasa'da",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
-  },
-  {
-   "senaryo": "d32-c5-s101-taksit-ertesi-gun",
-   "anahtar": "k1:kasaRapor:giris",
-   "beklenen": 90000,
-   "program": 80000,
-   "sinif": "BULGU KULLANICI · SINIF DIŞI",
-   "kural": "B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d32-c5-s101-taksit-ertesi-gun",
@@ -5901,8 +4915,8 @@
    "program": 2,
    "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
    "kural": "KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d32-c5-s101-taksit-ertesi-gun",
@@ -5911,8 +4925,8 @@
    "program": 20000,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d32-c5-s101-taksit-ertesi-gun",
@@ -5921,8 +4935,8 @@
    "program": 2,
    "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
    "kural": "K6.3 takvimdeki cari kalemlerinin sayısı",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d32-c5-s101-taksit-ertesi-gun",
@@ -5931,8 +4945,8 @@
    "program": 20000,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d32-c5-s101-taksit-ertesi-gun",
@@ -5941,8 +4955,8 @@
    "program": 20000,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
    "kural": "K6.5 (1) + KS8.1 + KS10: carinin vadeTakip kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
-   "paket": "eşleme",
-   "not": "ana oturum 10.11: SENARYO YOLU — senaryo kartı 'Carinin Mevcut Borcunu Taksitlendir' adımıyla açıyor; program avansla kapanmış borca bu yoldan kart açmıyor (ret: 'taksitlendirilecek borcu yok' / 'toplam bundan büyük olamaz'), sonraki kart tahsilatı da 'kart bulunamadı'. S101'in örneği satışla birlikte açılan kart (stoktan veresiye satış → taksitlendir). Kâhin bakımında senaryo o yola taşınır / koşucuya adım eklenir; o zamana kadar bu kayıtlar S101'in gerçek farkı SAYILMAZ"
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d33-c5-s102-s105-sinirlar",

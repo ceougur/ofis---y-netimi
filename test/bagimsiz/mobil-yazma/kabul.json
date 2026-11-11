@@ -1,7 +1,7 @@
 {
  "aciklama": "DestekOfis 2.4.7 M5 mobil yazma (tahsilat / ödeme / stok) bağımsız kâhininin kabul kümesi. Programın kodu görülmeden karar metninden üretildi; para anlamı cari kâhinine (test/bagimsiz/cari/model.py, kural 2.4.6) devredilir. Kurallar, açık sorular, eşleme: README.md.",
  "birlesim_bicimi": "kapatilacak=…;yollar=…;taksit=…;onay=…;eksi_stok=…;tarih=…;gec_yeniden=…;stok_yonu=… (bu sırayla)",
- "cari_model_sha256": "a06c04c8c4c8b860916cbddf35edfdf9c8a6d9ad72d3a41cbd7fb1b38f51e654",
+ "cari_model_sha256": "dc06c04d85f5065c4f1603827dd31de374e95449191d77a05ad408e603bed8bc",
  "dil": "destekofis-mobil-yazma/1",
  "esdeger_birlesim": {
   "eksi_stok": "sorar",

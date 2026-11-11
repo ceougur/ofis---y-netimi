@@ -1,0 +1,35 @@
+ÜRETİCİ: 20/20 aynı dizi (tur s1 + ux18, tohum 1–10 × 120 işlem)
+ADIMLAR: eski kopyadaki 87 elle senaryonun 6'inin adımları değişti: d27-c5-s99-taksitli-avans, d28-c5-s99-taksit-vade-gunu, d29-c5-s99-taksit-ertesi-gun, d30-c5-s101-bitti-kart, d31-c5-s101-taksit-vade-gunu, d32-c5-s101-taksit-ertesi-gun (G1: yer; G2: yeni adım türü)
+EŞDEĞERLİK (2.4.9 / 2.4.6 / 2.4.5 / --legacy; eski kopyanın 87 elle + yeni kopyanın yeni adımsız 84 elle + 20 rastgele senaryo × 4 kip): 764/764 bayt bayt aynı · dışarıda (yeni adım türü): d30-c5-s101-bitti-kart, d31-c5-s101-taksit-vade-gunu, d32-c5-s101-taksit-ertesi-gun
+G3 (kural 2.5.0; 107 senaryo — eski kopyanın 87 elle senaryosu + 20 rastgele): eski 45944 denetim · yeni 45906 denetim · değişen / kalkan / yeni toplam 164 · BEKLENMEYEN 0 · yalnız etiketi değişen 0
+  G2b            degisen     48
+      örn. d30-c5-s101-bitti-kart adim:kq1:durum: "ok" → "ret"
+      örn. d30-c5-s101-bitti-kart adim:kq2:durum: "ok" → "ret"
+      örn. d30-c5-s101-bitti-kart adim:kq3:durum: "ok" → "ret"
+      örn. d30-c5-s101-bitti-kart adim:kq4:durum: "ok" → "ret"
+  G2b            kalkan      72
+      örn. d30-c5-s101-bitti-kart k1:kart:KQ1:kalan: 0 → "(denetim yok)"
+      örn. d30-c5-s101-bitti-kart k1:kart:KQ1:mevcutBorc: true → "(denetim yok)"
+      örn. d30-c5-s101-bitti-kart k1:kart:KQ1:odenen: 60000 → "(denetim yok)"
+      örn. d30-c5-s101-bitti-kart k1:kart:KQ1:taksit1:odenen: 30000 → "(denetim yok)"
+  G2b            yeni        32
+      örn. d30-c5-s101-bitti-kart k1:cari:Q5:acikEsitBakiye: "(denetim yok)" → true
+      örn. d30-c5-s101-bitti-kart k1:cari:Q5:acikToplam: "(denetim yok)" → 40000
+      örn. d30-c5-s101-bitti-kart k1:cari:Q5:gecikmis: "(denetim yok)" → 30000
+      örn. d30-c5-s101-bitti-kart k1:cari:Q6:acikEsitBakiye: "(denetim yok)" → false
+  G2b-genel      degisen     10
+      örn. d30-c5-s101-bitti-kart k1:kasa: 600000 → 480000
+      örn. d30-c5-s101-bitti-kart k1:kasaRapor:giris: 600000 → 480000
+      örn. d31-c5-s101-taksit-vade-gunu k1:kasa: 90000 → 80000
+      örn. d31-c5-s101-taksit-vade-gunu k1:kasaRapor:giris: 90000 → 80000
+  G2b-genel      yeni         2
+      örn. d30-c5-s101-bitti-kart k1:projeksiyon:cari: "(denetim yok)" → {"catal": [3, 4, 5, 6]}
+      örn. d30-c5-s101-bitti-kart k1:takvim:cariKalemSayisi: "(denetim yok)" → {"catal": [2, 3, 4, 5]}
+G3 senaryo senaryo (sınıf/tür: adet; listede olmayan senaryoda fark 0):
+  d30-c5-s101-bitti-kart                   G2b/degisen 31 · G2b/kalkan 44 · G2b/yeni 32 · G2b-genel/degisen 2 · G2b-genel/yeni 2
+  d31-c5-s101-taksit-vade-gunu             G2b/degisen 9 · G2b/kalkan 14 · G2b-genel/degisen 4
+  d32-c5-s101-taksit-ertesi-gun            G2b/degisen 8 · G2b/kalkan 14 · G2b-genel/degisen 4
+# tests 875
+# pass 875
+# fail 0
+875/875 denetim geçti

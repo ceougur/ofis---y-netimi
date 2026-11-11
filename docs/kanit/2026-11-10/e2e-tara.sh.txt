@@ -1,0 +1,13 @@
+#!/bin/bash
+# Ana dal (a0d8342a kodu = bf4855fd): ci.yml'nin e2e listesinde K8'den SONRAKİ bütün senaryolar — CI'de atlandılar (ilk kırmızıdan sonra adımlar koşmuyor). Hata durdurmaz; her birinin çıkışı yazılır.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194 KANIT_DIR=$S/e2e-tara-kanit
+mkdir -p "$KANIT_DIR" || exit 1
+cd /home/user/ofis---y-netimi || exit 1
+echo "başladı $(date -u +%H:%M:%S) yük $(cat /proc/loadavg)"
+n=$(grep -n "senaryo-k8-230" $S/e2e-liste.txt | cut -d: -f1)
+tail -n +$((n + 1)) $S/e2e-liste.txt | while read ad betik; do
+  node tools/kanit.mjs kos y-$ad -- npm run $betik > "$KANIT_DIR/$ad.out" 2>&1 < /dev/null; c=$?
+  echo "$c $ad $(tail -1 "$KANIT_DIR/$ad.out" | grep -oP '\d+/\d+ geçti, \d+ başarısız' )"
+done
+echo "bitti $(date -u +%H:%M:%S) yük $(cat /proc/loadavg)"

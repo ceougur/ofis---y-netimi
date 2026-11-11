@@ -473,6 +473,20 @@ async function kos(senaryo) {
           durum(a, await api("POST", `/api/workspace/stock/${ids.mal}/moves`, { ...neden, qty: "1", unitPrice: tlMetin(kurusOf(a.tutar)), pay: "account", accountId: ids.cari[a.cari], date: t }));
           break;
         }
+        case "stok_satis_taksit": {
+          // bakım 7 eşlemesi (ana oturum; yalnız eşleme): stoktan açık hesap satış + AYNI işlemde taksitlendirme — POST /api/workspace/stock/:id/moves {…, installments:
+          // {count, firstDue, everyMonths: 1}}. Kart kimliği yanıtta yok → işlemden önce / sonra kart listesi karşılaştırılır (tam bir yeni kart beklenir); kart adı ids.kart'a yazılır
+          // (kart_tahsilat ve kart:<ad>:… okumaları bu adla çalışır). Mal kartı ilk kullanımda açılır (stok_satis_hesap ile aynı).
+          if (!ids.mal) ids.mal = (await api("POST", "/api/workspace/stock", { kind: "goods", code: `KAHIN-MAL${ids.malSilinen ? `-${ids.malSilinen + 1}` : ""}`, name: "Kâhin Malı", unit: "Adet", openingQty: "100000", salePrice: "100" })).data?.id;
+          // status=all: avansla kapanmış satışın kartı "Bitti" doğar — varsayılan liste (etkin kartlar) onu göstermez
+          const kartlarOnce = new Set(((await api("GET", "/api/workspace/plans?status=all")).data?.plans || []).map(x => x.id));
+          const r = await api("POST", `/api/workspace/stock/${ids.mal}/moves`, { kind: "out", qty: "1", unitPrice: tlMetin(kurusOf(a.tutar)), pay: "account", accountId: ids.cari[a.cari], date: t,
+            installments: { count: String(a.taksit || 1), firstDue: a.ilkVade, everyMonths: 1 } });
+          durum(a, r);
+          const yeniKartlar = ((await api("GET", "/api/workspace/plans?status=all")).data?.plans || []).filter(x => !kartlarOnce.has(x.id) && x.accountId === ids.cari[a.cari]);
+          ids.kart[a.ad] = { id: yeniKartlar.length === 1 ? yeniKartlar[0].id : undefined, cari: a.cari };
+          break;
+        }
         case "supheli_al": {
           // KS7 / PLAN §3.11b/2: Şüpheli Alacağa Al — POST /api/workspace/accounts/:id/doubtful {amount, date, reason} → { record: { id } } (yoklama 5)
           const r = await api("POST", `/api/workspace/accounts/${ids.cari[a.cari]}/doubtful`, { amount: tlMetin(kurusOf(a.tutar)), date: t, reason: "other" });

@@ -1916,3 +1916,173 @@ yeni / güncellenen elle tablolar **335/335** (`-elle-yeni-cari-*`) · ESKİ kâ
 390 kontrol kesimi — saf net 677 + 516, saf belge durumu 386, tek yön = kendi tarafı 1.750, (ii) 420, gecikmiş (i) 513; susulan: okuma ayrışan **0** (bakım 5: 30), tanım alanı dışı 215 — aynen) ·
 susulan sayımı **1/1** + **1/1** (`-susan-say-*`, `-susan-say-yeni-elle-*`). Mutasyon, eşdeğerlik, geniş tarama ve susulan sayımı `flock -s -n …/olcum.lock` ile koşuldu (ders 52). Program
 açılmadı.
+
+## 19. 2.5.0 Ç5 bakımı 7 — senaryo düzeni (G1) ve satışla birlikte açılan kart (G2) (10.11.2026, `date -u` 23:27; girdiler 10.11.2026 — ana oturumun özet dosyası; eski kâhinler bakımı 7 — kodu görmeyen AYRI el) — kural seti `2.5.0` = §13 + … + §18 + bu bölüm
+
+Bu bakım KÜÇÜKTÜR: kâhinin para / görünüm kuralları (§13–§18) DEĞİŞMEZ. İki girdi programın ADIM KABUL kurallarıdır (hangi girişi kabul eder / reddeder): G1 bir senaryo düzeni sorunudur (beklenen
+değer değişmez), G2 bir adım türü ekler ve elle "Carinin Mevcut Borcunu Taksitlendir" kartının kabul koşulunu yazar. `--kural 2.4.9` (ve 2.4.6 / 2.4.5 / `--legacy`) AYNEN. Defter kâhini
+(`test/bagimsiz/defter/`) DEĞİŞMEZ (ret edilen kart yevmiye yazmaz; satışla açılan kart maddesizdir — C13.2 / kitap H-02). **Bu bölümün ilk commit'i yalnız YORUMDUR (ders 40 — önce kural, sonra
+kod); senaryo / mutant / G3 sayıları kod ve kanıt commit'lerinde eklenir.**
+
+### C00l Temiz oda (bakım 7)
+- **Girdi (AYNEN; ana oturumun özet dosyası `scratchpad/kahin-eski7-kararlar.md` — "programın hesap / görünüm davranışı hakkında hiçbir bilgi içermez; içerdiği iki madde programın ADIM KABUL
+  kurallarıdır … ve kullanıcının / baş mimarın kararıdır"):**
+  - "G1 — Fatura adımlarının sırası (mevcut ürün kuralı; 2.4.x'ten beri): Program aynı fatura serisinde belgeleri TARİH SIRASIYLA kabul eder: seride son kaydedilen belgeden DAHA ESKİ tarihli
+    yeni belge reddedilir ('numara ve tarih sırası uyuşmalı'). Bir senaryoda bütün fatura (ve seriden numara alan iade) adımları, hangi cariye ait olursa olsun, tarih sırasıyla (eşit ya da artan)
+    girilmelidir. Bakım 6'nın S99 senaryoları (d27, d28, d29) faturaları cari cari giriyor … → program o adımları reddediyor. Bu bir SENARYO düzeni sorunudur; kâhinin kuralı ve beklenen
+    değerleri bununla DEĞİŞMEZ."
+  - "G2 — … (BAŞ MİMAR KARARI 10.11.2026; kullanıcıya gösterildi) KARAR (iş listesi D, 10.11 — AYNEN özü): müşterinin borcu avansla kapanmışken ELLE 'Carinin Mevcut Borcunu Taksitlendir' kartı
+    açılamaz — bu yol bugünkü gibi REDDEDİLİR (mevcut kural: kart tutarı carinin taksitlendirilebilecek borcundan büyük olamaz; taksitlendirilecek borç yoksa kart açılmaz). S101 = A yalnız kartın
+    SATIŞLA BİRLİKTE açıldığı yolda oluşur: stoktan veresiye satış yapılırken aynı işlemde taksitlendirme (kullanıcının S101 örneği de budur: 'stoktan 600 veresiye satış + 2 taksit'). Gerekçe:
+    borcu kalmamış müşteriye elle 'Bitti' kart açtırmak kullanıcıyı yanıltır." · "Sonuç: bakım 6'nın S101 senaryoları (d30, d31, d32) kartı ayrı bir 'mevcut borç kartı aç' adımıyla açıyor →
+    program o adımı reddediyor, sonraki kart tahsilatı adımları da karşılıksız kalıyor."
+  - S101 karar metni aynı dosyada §18 C00k'daki metinle AYNI (değişmedi).
+- **Birlikte okunan (kâhinin kendi belgeleri ve kural kitabı):** bu dosyanın §5, §8 C9, §9 KS7 / KS7.1, §10 dil ekleri (`kart_ac`), §13 (C13.2, C13.4 (1)–(11)), §18 (Y6-3, Y6-4, Y6-5, SK-14, SK-16, C18.x,
+  senaryo listesi); `docs/erp/MUHASEBELESTIRME-KURAL-KITABI-EK-2B.md` başlık, §0 özet, madde 32, 35, §4, §5, §6; `…-EK-1.md` §1 adım 1–4 (satır 52–63); `…-EK-2.md` Soru 30 ve 32 (satır 128–155);
+  kural kitabı H-02 satırı ve EK'lerde "Mevcut Borç / taksitlendir" araması. Okunan / okunmayan dosyaların tam listesi (satır aralıklarıyla) ajan raporunda.
+- **Okunmayan:** `server/**`, `client/**`, `bulut/**`, `packaging/**`, `tools/**` (yalnız `kanit.mjs` çalıştırılır), `docs/erp/C5-ACILIS-TASARIM.md`, `docs/erp/C5B-TYK-TASARIM.md`, `docs/devir/**`,
+  `docs/2.5.0-IS-LISTESI*.md` (hiçbir sürümü), `test/bagimsiz/cari/YAPIM-ASAMASI.json`, iki kâhin klasörü dışındaki `test/**`, git farkı / geçmiş içeriği. `kos.mjs` yalnız eşleme için okundu (satır
+  540–650 adım eşlemeleri: `kart_ac`, `kart_tahsilat`, `fatura`, `iade`; arama satırları 14, 71, 152–154, 177, 288, 368, 388, 603–640, 737–760, 921) — alış faturasının koşucuda kendi `number`'ıyla
+  gönderildiği, satış ve iadenin numarasız (seriden) gittiği buradan; kural türetilmedi. `docs/kanit/` altında yalnız `kahineski4|5|6-arac/` araçları açıldı; ana oturumun
+  `docs/kanit/2026-11-10/kahineski6y-kos.sh.txt` dosyasının ilk 5 satırı (yol tanımları) bir listeleme komutunda yanlışlıkla ekrana geldi — kullanılmadı. Program koşulmadı; programın davranışı
+  aranmadı. CLAUDE.md "Açık iş"teki program durumu kural / beklenti kaynağı sayılmadı.
+
+### Yorumlar (ders 40 — girdilerden; kod yazılmadan ÖNCE; baş mimar kullanıcıya gösterir)
+- **Y7-1 — G1 senaryo düzeni (kural değil):** "seriden numara alan" belge = satış faturası (`fatura`, `tur` ≠ `alis`; taslak dahil — taslağın numarayı ne zaman aldığı bilinmediğinden en sıkı
+  okuma) ve `iade` (satıştan iade belgesi). Alış faturası satıcının numarasıyla girilir (koşucu her alışa kendi `number`'ını verir) → seriye girmez; yine de "alış dahil" sıkı tarama BİLGİ olarak
+  raporlanır. Belgenin tarihi = adımın `tarih`'i, yoksa senaryonun `bugun`'ü (koşucunun kuralı). Senaryo içinde bu adımların tarihleri eşit ya da artan olmalı (§5'in "Geçerlilik: aynı seride
+  fatura tarihleri artan" kuralı elle senaryolarda da ZORUNLU; öz denetime eklenir). **Düzeltme yöntemi:** yalnız adımların YERİ değişir — her carinin kendi adımlarının göreli sırası, `cari_ac`
+  adımlarının göreli sırası ve `kontrol` adımlarının yeri korunur; tutar, tarih, ad, elle beklenen değer DEĞİŞMEZ. **Koşul:** kâhinin o senaryo için ürettiği bütün çıktı (denetimler değer + etiket +
+  kural metni ve `belirsiz`) beş kipte (2.5.0, 2.4.9, 2.4.6, 2.4.5, `--legacy`) önce / sonra bayt bayt aynı; aynı çıkmazsa DURULUR (o zaman sıra kural meselesidir). Gerekçe: kâhinde cariler
+  birbirinden bağımsızdır, aynı gün sırası yalnız aynı carinin olayları arasında anlamlıdır (ders 31); farklı carilerin adımlarının araya girmesi bir carinin kuyruğunu değiştirmez.
+- **Y7-2 — G2 (a) yeni adım "satışla birlikte açılan kart" — `stok_satis_taksit {ad, cari, tutar, tarih, taksit, ilkVade}`:** stoktan veresiye (açık hesap) satış + AYNI işlemde o satışın taksit
+  kartı ("Bu satışı taksitlendir"in stok satışındaki karşılığı). Alanlar `stok_satis_hesap {cari, tutar, tarih}` ve `kart_ac {ad, cari, tutar, taksit, ilkVade, tarih}` ile aynı adlarla: `ad` kartın
+  adı (çıktı `kart:<ad>:*`, `kart_tahsilat {kayit: <ad>}`), `tutar` satış tutarı = kart tutarı (peşinatsız — kararın örneği "600 veresiye satış + 2 taksit"), `tarih` satışın ve kartın günü,
+  `taksit` taksit sayısı, `ilkVade` ilk taksit tarihi (taksitler eşit, artık kuruş sonda, ilk vadeden ayda bir — [YAYGIN], `kart_ac` ile aynı varsayım). Kâhindeki anlamı:
+  1. Satış KS7.1'deki stok veresiye satışıyla aynı borç kalemidir (belge günü = vade = `tarih`; C13.4 (1)); kart hemen ardından (aynı gün, yazım sırasıyla satıştan sonra) açılır ve KENDİ satışını tüketir
+     (C13.4 (6) "Bu Satışı Taksitlendir kendi faturasını tüketir" ve EK-1 §1 adım 2 "'Bu Satışı Taksitlendir' → o fatura" ilkesi; S101 "o satış için taksit kartı"). Kart ile satış birlikte sayılmaz;
+     kuyrukta yalnız kartın taksitleri kalır (M1e).
+  2. Bekleyen bağsız alacak (avans) satış doğduğu anda onu kapatır (C13.4 (4) ANINDA); kart satışın açık kısmını tüketir, satışın AVANSLA (bağsız PARA — Y6-4) kapanmış kısmı kartın ÖDENMİŞ kısmıdır
+     ("avans satışı kapatmıştır, kart 'Bitti' görünür"), vadesi en önce gelen taksitten — **S101 A / Y6-4 / Y6-5 (R1 / R2, SK-14) bu kartta AYNEN**. Kart tahsilatı kartın açık taksitine, kalmadıysa
+     carinin avansına; sonraki borç avanstan kapanır.
+  3. Satış avans DIŞI bağsız alacakla (stok / fatura iadesinin artanı, Değersiz Alacak) kapanmışsa Y6-4'ün "AVANSLA" sınırı AYNEN: EK-2B 32 tanımsızlığı (C13.4 (11)).
+  4. Adım her durumda KABUL edilir (girdide bu yol için ret koşulu yok; kart kendi satışından büyük olamaz). Yevmiye: stok satışı (mizan zaten denetlenmez — stok adımı), kart maddesiz (C13.2, H-02).
+     Programın bu kartı hangi türle işaretlediği bilinmiyor → `kart:<ad>:mevcutBorc` YAZILMAZ (`var`, `toplam`, `odenen`, `kalan`, `taksitN:odenen` yazılır).
+  5. **Kâhinin kurmadığı (susar — kural sorusu DEĞİL, kâhinin sınırı):** satış kartının açıldığı anda ya da kontrol anında carinin kendi satışı DIŞINDA açık (kalanı > 0) borç kalemi varsa (başka
+     fatura / Borç / Açılış / stok satışı / taksit) — kâhinin K6.5 görünüm hesabı (takvim / Vade Takip tutarı = Kalan − kartın açık kapsamı) kartın carinin elle kaydını kapsadığını varsayar; satış kartı
+     stok satışını kapsar. O carinin kalan / açık / kart / görünüm denetimleri C13.4 (11) düzeninde yazılmaz (neden "… satışla açılan kart … öbür açık borç (bakım 7 Y7-2)"). Kartın açıldığı anda başka
+     açık borç YOKKEN kart yalnız kendi satışından tüketebilir (sonradan doğan kalemi tüketemez) — "kendi satışı" ile "kuyruk sırası" o alanda aynı sonucu verir.
+- **Y7-3 — G2 (b) elle "Carinin Mevcut Borcunu Taksitlendir" kartının kabulü (yalnız `2.5.0`):** Taksitler'den `kart_ac {mevcut: true}`, tutarı > 0. Kart tutarı carinin **taksitlendirilebilecek
+  borcundan** büyükse ya da taksitlendirilecek borç yoksa adım REDDEDİLİR (`adim:<id>:durum` "ret"; kart oluşmaz — `kart:<ad>:*` yazılmaz; sonraki `kart_tahsilat {kayit: <ad>}` "ret", kartı olmayan
+  kayda kart tahsilatı girilemez — mevcut kural; Kasa ve bakiye değişmez). Eşitlik (kart = taksitlendirilebilecek borç) KABUL ("büyük olamaz"). Sıfır kart (C1.5 S2 A), Yeni Borç kartı
+  (`mevcut: false`), Tablodan Aktar'ın mevcut borç kartı (B1.4 kendi kuralı) ve satışla açılan kart (Y7-2) bu kurala GİRMEZ. Sonuç: Y6-4'ün "avansla kapanmış borca açılan Mevcut Borç kartı"
+  dalı ve EK-2B 32 tanımsızlığı elle kartta artık oluşmaz (ret) — yalnız aşağıdaki iki okumanın ayrıştığı sınırda (SUS) ve satış kartında (Y7-2 (3)) kalır. **"Taksitlendirilebilecek borç"un
+  tanımı ne bu dosyada ne kural kitabında yazılı** (kitap: EK-2B 32 "kart hiçbir zaman alttaki borcun üstünde kalmaz"; EK-1 §1 adım 2 "'Carinin Mevcut Borcu' → açık borç kalemleri"; kılavuz — EK-2 Soru
+  30 / 32'de aktarılan — "Carinin Mevcut Borcu (tutar bakiyeden gelir) … tutarı sonradan büyütülmez", EK-2 S.32 "kartın borçtan büyük olmasının olağan yolu bakiyenin şüpheli kısmıdır") → iki okuma:
+  - **OK — kalem okuması:** kartın tarihinde (aynı gün yazım sırasıyla) carinin kuyruğunda açık olan ve M1e'nin tüketebileceği borç yönlü kalemlerin toplamı (C13.4 (6); karşı yönlü kalemle netleşmez,
+    verilen avansı saymaz, kartın gününden sonra tarihli kalemi saymaz).
+  - **OB — bakiye okuması:** kart girildiği anda carinin borç bakiyesi (bütün kayıtlarıyla; şüpheli kısım dahil) eksi öbür etkin taksit kartlarının ve taksitli faturaların AÇIK taksitleri (zaten
+    taksitlendirilmiş kısım).
+  Tek yönlü (karşı yönlü kalemi, verilen avansı, şüphelisi, başka kartı / taksitli faturası olmayan), kayıtları kart gününe kadar tarihli caride iki okuma AYNIDIR (avans ANINDA kapattığından açık
+  kalemlerin toplamı = max(0, bakiye)). İki okumanın kabul / ret kararı ayrışırsa kâhin **SUSAR**: adımın durumu ve iki dünyada (kart kabul / kart yok) farklı çıkan her denetim yazılmaz; `belirsiz`
+  "… KULLANICIYA SORULMALI SK-18 (§19)". (Karar ayrışmıyorsa — ör. kart iki okumanın da altında — kabul / ret yazılır.)
+- **Y7-4 — S101'in kâhindeki yeri (G2 × §18):** S101 A (Y6-4 / Y6-5) kural olarak AYNEN; girdi "S101 = A yalnız kartın SATIŞLA BİRLİKTE açıldığı yolda oluşur" dediği için elle yolda erişilmez (ret).
+  Bakım 6'nın d30–d32'si satışla açılan kartla yeniden yazılır; elle yolun reddi ayrı satırlarla denenir. Q6 (kart, satışın açık + avanslı kısmından büyük) satışla açılan kartta KURULAMAZ (kart tutarı =
+  satış tutarı) → elle yolun reddi satırına döner.
+- **Y7-5 — SK-16 (bakım 6) × G2 (b):** SK-16'nın örneği (müşteriye Ödeme 200 · Borç 500 · Mevcut Borç kartı 700) artık önce bir KABUL sorusudur: OK ret (açık yükümlülük 500 < 700), OB kabul
+  (bakiye 700) → SK-18'in bir örneği; kâhin o carinin adımında da susar (SK-16'nın sorusu kart kabul edilirse anlamlı kalır — aynen açık).
+
+### KULLANICIYA SORULMALI (bakım 7; kâhin bu durumda SUSAR — ders 43, SORU DÜZENİ; UÇ DURUM)
+- **SK-18 (G2 (b) — "taksitlendirilebilecek borç"):** aynı kişi hem müşteri hem tedarikçi (ya da müşteriye avans vermişiz, ya da başka taksit kartı var); "Carinin Mevcut Borcunu Taksitlendir" kartının
+  üst sınırı hangisi? Örnek: 01.05 satış faturası 600 · 02.05 aynı kişiden alış faturası 300 · 05.05 Carinin Mevcut Borcu kartı 600 (2 taksit). **A (öneri — kılavuz "tutar bakiyeden gelir"):** sınır
+  carinin net borç bakiyesi (eksi zaten taksitlendirilmiş kısım) — 300; kart 600 reddedilir, 300'lük kart açılır / **B:** sınır açık borç kalemleri (alış ayrı yükümlülük, Mahsup Et ile kapanır) — 600;
+  kart açılır / **C:** uç durum böyle kalsın (BİLİNEN SINIR).
+
+### Kurallar (kod commit'i; yorumların `model.py`'deki karşılığı)
+- **C19.1 (Y7-1) senaryo düzeni:** d27 / d28 / d29'un adımlarının YERİ değişti (araç `docs/kanit/2026-11-10/kahineski7-arac/g1-sirala.py`: kontrol adımları ve carisi çözülemeyen adımlar yerinde; arada
+  `cari_ac`'lar önde, öbür adımlar cari kuyruklarından tarihle birleştirilerek); tutar / tarih / ad / elle beklenen değişmedi. `oz-test.py` 8: bütün elle senaryolarda satış faturası (taslak dahil) + iade
+  tarih sırasıyla. `uretici.py` DEĞİŞMEDİ (fatura / iade tarihlerini sıralı üretiyor — kanıtta ölçüldü).
+- **C19.2 (Y7-2) `stok_satis_taksit`:** `_kapatici(…, "stok_satis")` (KS7.1 kalemi) + `kart_ac({…, mevcut: true, _satis_kart})`; kartın `satis` = adımın kimliği (satış kalemi). `_tyk`'ta satış kartının
+  tüketimi YALNIZ kendi satışından (`hedef_`; mutant 255: kuyruk sırasıyla), S101'de karşılanabilir tutar = kendi satışının AVANSLA kapanmış kısmı (mutant 252: S101 B yalnız satış kartında; 243
+  aynen). `_alacak_govde250` Y7-2 (5) nedeni: satış kartlı caride başka (satış kartı olmayan) Mevcut Borç kartı ya da kuyrukta açık elle kayıt / taksitsiz satış faturası / karşılıksız kalemi →
+  C13.4 (11) tanımsız. `kontrol` satış kartında `mevcutBorc` yazmaz. `C1_YAZIM`'a eklendi (silinmiş cariye yazım reddi C1.6 aynen).
+- **C19.3 (Y7-3) elle `kart_ac {mevcut}` (yalnız `2.5.0`, tutar > 0, satış kartı değil):** `_g2b_okumalar` (OK: kart denenerek açılır, S101'siz kuyrukta kartın eksiği yoksa kabul; OB: kartsız kuyruğun
+  açık taksitleri düşülmüş bakiye ≥ tutar — kartsız kuyruk C13.4 (11) tanımsızsa ya da cari şüpheli kayıtlıysa okunamıyor). İkisi ret → `("ret", "BAŞ MİMAR", "C19 Y7-3 …")`, kart silinir;
+  ayrışır ya da OB okunamıyorsa kart kabul edilmiş sayılır ve `sus_kart`'a yazılır: `kos()` sonunda adımsız senaryo da koşulur, iki dünyada farklı çıkan ya da yalnız birinde olan her denetim
+  silinir, `belirsiz` "… SK-18 (§19)". Mutantlar 251 (ret yok), 253 (eşitlikte ret), 254 (1 kuruş aşan kabul). `yedek_al` kopyası `sus_kart`'ı taşımaz (adım kaydı).
+- `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`: hiçbir yol değişmedi (yeni dallar `k250` ya da mutant). Yeni adım ≤ 2.4.9 kiplerinde de stok satışı + kart olarak işlenir (eski kâhinde adım yok —
+  eşdeğerlik o üç dosyanın ESKİ hâlleriyle ölçüldü).
+
+### C8l Nasıl bozulur? (bakım 7 — kod commit'inde, senaryolarla birlikte yazıldı)
+| # | Bozulma | Senaryo |
+|---|---|---|
+| Z92 | Fatura adımları cari cari girilir — seride eski tarihli belge (program reddeder; beklenenler boşa düşer) | d27 / d28 / d29 (oz-test 8) |
+| Z93 | Avansla kapanmış borca ELLE Mevcut Borç kartı açılır ("Bitti") | d30 Q6, QR1 (mutant 251) |
+| Z94 | Kart açık borçtan büyükken kabul / eşitlikte ret | d30 QR2, QR3, QR4; d4 KM / KP, d7 KE (eşitlik) (mutantlar 251, 253, 254) |
+| Z95 | Reddedilen kartın tahsilatı kabul edilir (Kasa'ya girer, bakiye düşer) | d30 QR1 `qr1k` |
+| Z96 | İadeyle kapanmış (borcu kalmamış) cariye elle kart açılır | d30 QR5 |
+| Z97 | Satış kartında S101 B (kart kendi borcunu taşır, avans serbest) ya da ödenmiş kısım son taksitten | d30 Q1–Q4, Q8; d31 / d32 (mutantlar 252, 243, 244) |
+| Z98 | Satış kartı kendi satışı yerine başka kartın vadesi geçmiş taksitlerini tüketir | d30 Q9 (mutant 255) |
+| Z99 | Kalem / bakiye okuması ayrışırken kâhin kabul ya da ret uydurur | d30 QS (SK-18) |
+| Z100 | İade alacağıyla kapanan satışın kartı "Bitti" sayılır (S101 "AVANSLA") | d30 Q7 |
+| Z101 | Aynı adlı iki carinin avansı birbirinin satış kartına sayılır | d30 Q8 |
+
+### Senaryolar (bakım 7; elle tablolar — kâhin koşulmadan girdilerden ve §18 / §19'dan elle; betik `docs/kanit/2026-11-10/kahineski7-arac/yeni-senaryolar7.py`, değerler betikte elle. İLK koşuda 178 elle denetimin hepsi kâhinle aynıydı)
+- **d27 / d28 / d29:** yalnız adımların yeri (C19.1); elle tablolar AYNEN (43 + 17 + 17).
+- **`d30-c5-s101-bitti-kart`** (bugün 15.06; 136 = 107 değer + 26 yok + 3 belirsiz): satış kartıyla Q1 (kararın örneği), Q2, Q3, Q4, Q5 (SK-14), Q7 (iade alacağıyla kapanmış satış — EK-2B 32), Q8 (aynı
+  ad), Q9 (iki satış kartı — kendi satışı); ELLE yol Q6 (borç tamamen avansla kapanmış, kart > satış → RET), QR1 (tamamen avanslı, kart = satış → RET; sonraki Taksit Tahsilatı RET, Borç avanstan),
+  QR2 (kısmen kapanmış, kart 600 > açık 200 → RET), QR3 (kart = açık 200 → KABUL), QR4 (200,01 → RET), QR5 (iadeyle kapanmış → RET); QS SK-18 (susar).
+  **Bakım 6'dan:** 50 değerin 48'i AYNEN; 2'si YOK'a döndü — `kart:KQ1:mevcutBorc` (satış kartında yazılmaz, Y7-2 (4)), `kart:KQ6:toplam` (Q6 elle yolda RET, Y7-3 / Y7-4); 9 yokun 8'i AYNEN
+  (`kart:KQ6:odenen` kalktı — kart yok); 3 belirsizin 2'si AYNEN (SK-14, Q7 EK-2B 32), Q6'nın EK-2B 32'si kalktı (RET). Değeri değişen 0. Yeni 59 değer + 16 yok + 1 belirsiz (SK-18).
+- **d31 / d32** (bugün 01.07 / 02.07; 21 = 19 değer + 2 yok): bakım 6'nın 14 değeri AYNEN (Q2 / Q4 satış kartıyla) + 3 adım durumu + 2 `kart:var`; yok: iki kartın `mevcutBorc`'u.
+
+### C10l Mutantlar (bakım 7; `oz-test.py` DEĞERLE — çökmeden, elle tablo kırmızı)
+251 G2 (b) kalkar (elle kart açık borçtan büyükken / borç yokken kabul — bakım 6 davranışı) · 252 S101 B satış kartında · 253 sınır: kart = borç da ret · 254 sınır: 1 kuruş aşan kabul · 255 Y7-2 (1) B:
+satış kartı kuyruk sırasıyla tüketir. Bakım 6'nın 241–250'si aynen; 243 / 244 artık satış kartıyla (d30–d32) yakalanır.
+
+### Dil ekleri (/3, bakım 7)
+Yeni adım `stok_satis_taksit {ad, cari, tutar, tarih, taksit, ilkVade}` (Y7-2). `kart_ac {mevcut: true}` 2.5.0'da `ret` dönebilir (Y7-3). Yeni çıktı anahtarı YOK (satış kartında `kart:<ad>:mevcutBorc`
+yazılmaz). Yeni `belirsiz` kayıtları: "adım <id>: … SK-18 (§19)", C13.4 (11) nedeni "satışla açılan kart … (bakım 7 Y7-2 (5))".
+
+### Eşleme notları (ana oturum için; `kos.mjs` bu bakımda DEĞİŞMEDİ — yeni adımın eşlemesini ana oturum ekler)
+- **`stok_satis_taksit`:** stoktan açık hesap (veresiye) satış + AYNI işlemde taksitlendirme (taksit sayısı `taksit`, ilk vade `ilkVade`, ayda bir; tutar = satış tutarı = kart tutarı; tarih `tarih`).
+  Kartın kimliği `ids.kart[a.ad]`'a yazılmalı (`kart_tahsilat {kayit: <ad>}` bugünkü eşlemesiyle onu kullanır); satış `stok_satis_hesap` ile aynı stok hareketi sınıfında. Kart anahtarları `kart:<ad>:{var,
+  toplam, odenen, kalan, taksitN:odenen}` (bugünkü kart okumalarıyla); `mevcutBorc` kâhinde yok. Programın ucu / alan adı bu ajanca bilinmiyor.
+- **Reddedilen `kart_ac`:** `durum` "ret" (HTTP 4xx) beklenir; kart kimliği yok → sonraki `kart_tahsilat` "ret" beklenir (koşucu kimlik yokken tablo aramasına düşüyor — satır 589–592; ana oturum
+  bunun "ret" ürettiğini doğrulasın). SK-18 susan adımın `adim:<id>:durum`'u kâhinde yok.
+- **Ana oturuma:** `model.py` değişti — mobil yazma kâhininin `cari_model_sha256`'sı yeniden üretilmeli (o dosya okunmadı); yapım aşaması listesi bu ajanca açılmadı.
+
+### C12l DENENMEYEN (bakım 7; neden)
+- Program koşulmadı (görev). Satışla açılan kartın programdaki ucu / gösterimi bilinmiyor.
+- SK-18'in öbür örnekleri (verilen avans — SK-16, başka kart / taksitli fatura, kartın gününden sonra tarihli kayıt, şüpheli kayıt) elle senaryo yazılmadı; susma mekanizması QS'de (karşı yönlü kalem) denendi.
+- Y7-2 (5) (satış kartı + başka açık borç / başka Mevcut Borç kartı) — kâhin susar; değer kurulmadı (Q5'te SK-14 ile birlikte geçiyor).
+- Tablodan Aktar'ın mevcut borç kartı G2 (b)'ye girmez (B1.4) — yeni senaryo yazılmadı; satış kartında peşinat (kart < satış), satış kartı silme / geri yükleme, taksitli stok satışının iadesi
+  (2B-S3 / Ç7b) — kararda / dilde yok.
+- G1: defter kâhininin senaryoları bu bakımın kapsamı dışında, değiştirilmedi (bilgi: `test/bagimsiz/defter/senaryo.json`'da satış / iade belgeleri tarih sıralı; yalnız kendi numaralı alış F12
+  geriye tarihli — alış seriye girmez).
+
+### C0l Değişen eski beklentiler (G3; bakım 6 `a0d8342a` ↔ bakım 7 kâhin çıktısı, `2.5.0`; eski kopyanın 87 elle senaryosu + rastgele s1 / ux18 tohum 1–10 × 120) — kararla ilgisiz eski beklenti DEĞİŞMEDİ
+Eski 45.944 → yeni 45.906 denetim; değişen / kalkan / yeni toplam **164**, hepsi G2b sınıfında (yeni kâhinin REDDETTİĞİ elle Mevcut Borç kartının carisi / kartı / adımları ve o karta yazılan kart
+tahsilatı) ya da G2b-genel (aynı kontrolde Kasa, Kasa raporu girişi ve sayaçlar); **BEKLENMEYEN 0**, yalnız etiketi değişen 0 (dökümü `docs/kanit/2026-11-10/kahineski7-g3-dokum-*.json`, özet
+`kahineski7-esdeger-cari-*.log`; iki saat diliminde bayt bayt aynı):
+- **d30 (eski dosya):** G2b değişen 31 · kalkan 44 · yeni 32 · G2b-genel değişen 2 · yeni 2 — bakım 6'nın elle kartları (KQ8B hariç) avansla / iadeyle tamamen ya da kısmen kapanmış borca açılıyordu;
+  G2 (b) ile RET (kart anahtarları kalkar, carinin Kalan / gecikmiş / açık toplamı artık yazılır, reddedilen kartın tahsilatı RET — Kasa düşer).
+- **d31 / d32 (eski dosya):** G2b değişen 9 / 8 · kalkan 14 / 14 · G2b-genel değişen 4 / 4 (KQ2, KQ4 RET — açık 200 < kart 600).
+- **Öbür 84 eski elle senaryo (d27–d29 dahil) ve 20 rastgele: fark 0.** Eski elle Mevcut Borç kartlarının hepsi (c11, d4 KM / KP, d7 KE, d8 KA, d19 KN4) iki okumada da KABUL — değer değişmedi.
+- **`--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`:** **764/764** bayt bayt aynı (eski kopyanın 87 elle + yeni kopyanın yeni adımsız 84 elle — yeri değişen d27–d29 dahil — + 20 rastgele × 4 kip);
+  yeni adım türünü kullanan d30–d32 (yeni hâl) eski kâhinde koşmadığı için dışarıda, eski hâlleri içeride. Üretici 20/20 aynı dizi. Eski kopyadaki elle senaryolardan yalnız d27–d32'nin adımları değişti.
+- **G1:** d27 / d28 / d29 eski ↔ yeni dosya, iki kâhinde (bakım 6 ve 7) beş kipte kâhin çıktısı bayt bayt aynı (**39/39**; sha256 dökümü `kahineski7-g1-dokum-*.json`). Taramada yeni kümede 87/87
+  senaryo ihlalsiz; ESKİ kümede 3 ihlalli (d27 5, d28 2, d29 2 adım — testin dişi). Üretici: s1 + ux18 × tohum 1–30 × işlem 120 / 400 = 120 senaryoda seriden numara alan belgede ihlal 0, alış dahil
+  ihlal 0, hiçbir tarihli adımda geri giden tarih yok (`kahineski7-g1-uretici-*`).
+- **Yeni / değişen elle tablolar ESKİ (bakım 6) kâhinde — beklenen NEDENLE kırmızı (ders 7, 38):** 225 elle denetimin **208**'i (`kahineski7-kirmizi-eski-cari-*.log`): d30 / d31 / d32 eski kâhinde
+  koşmuyor (`stok_satis_taksit` adımı yok — 136 + 21 + 21); d30'un elle yol satırları (Q6, QR1–QR5, QS) ayrı senaryoda eski kâhinde 47 denetimin 30'u kırmızı (kartlar RET yerine kabul, kart anahtarları
+  var, `qr1k` kabul ve QR1 bakiyesi −200, QR4'te 1 kuruşluk "Bitti", SK-18 kaydı yok); 17'si iki kâhinde aynı (bakiyeler, QR3'ün kabulü).
+
+### Kanıt (bakım 7; iki saat dilimi — UTC ve Europe/Istanbul çıktıları bayt bayt aynı; kâhin `5d35d906`, araç `29e2860d`, temiz ağaç; `docs/kanit/2026-11-10/kahineski7-*`, araçlar ve koşu betiği `kahineski7-arac/`)
+cari öz test **3.819/3.819** (`-cari-oz-*`: elle tablolar 87 senaryo, mutantlar 200–255 — 219–255 değerle, saf TYK 173 kalem, bakım 4–6 çapraz denetimi aynen (saf net 138 + 587 kalem, belge 94 fatura),
+G1 87 senaryo × 92 belge adımı, Y7-3 reddinin yalnız 2.5.0'da olduğu) · mutasyon taraması **222/222** (`-cari-mutasyon-*`; kos.mjs düzeni, 87 dosya × kipler) · eşdeğerlik + G3 **875/875**
+(`-esdeger-cari-*`) · yeni / güncellenen elle tablolar **331/331** (`-elle-yeni-cari-*`: d27–d33) · ESKİ kâhinde **208 kırmızı** / 225 (`-kirmizi-eski-cari-*`) · G1 tarama **87/87**, eski kümede
+3 ihlal (`-g1-tara-*`, `-g1-tara-eski-*`) · G1 eşdeğerlik **39/39** (`-g1-esdeger-*`) · üretici G1 **120/120** (`-g1-uretici-*`) · geniş tarama **2.201/2.201** (`-genis-tarama-*`; bakım 6 ile aynı
+sayılar) · taşınan / değişen elle değerler dökümü (`-elle-tasinan-*`, bilgi). **Defter öz testi BAŞARISIZ** (`-defter-oz-*`): `test/bagimsiz/defter/oz-test.py` `kahin.py`'de olmayan
+`VARSAYILAN_KURAL`'ı arıyor (AttributeError) — TABANDA (`a0d8342a`, bu dalın dokunmadığı dosyalar; `-defter-oz-taban-utc`) de aynı; bu bakım defter kâhinine dokunmadı (ana oturuma bildirildi).
+Mutasyon, eşdeğerlik, öz test, geniş tarama ve üretici taraması `flock -s -n …/olcum.lock` ile koşuldu (ders 52). Program açılmadı.
