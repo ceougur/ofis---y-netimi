@@ -271,3 +271,45 @@ Kuyruğun hesabı değişen her istek: cari kartı, Cari Listesi, Vade Takip, zi
 - **Takvim / zil ufku söz gününe göre (Ç5-B gerilemesi; kâhin c10 bg4, d10 l1, rastgele s042):** S67 = A gecikmiş borcun gün sayısını VADEDEN ölçer; ufuk ise (K6.3 "geçmiş + 7 gün",
   S67 "söz ufkun dışında → kalem yok") kalemin gösterildiği günden (söz varsa söz günü). v2.4.9'da gün sayısı söz gününden ölçüldüğü için ikisi aynıydı; Ç5-B'den sonra süzgeç gün sayısına
   bakıyordu ve +15 sözlü gecikmiş borç zilde / takvimde çıkıyordu. Vade Takip ve nakit akışı ufuksuz (değişmez).
+
+## 13. Son tur (11.11.2026; Ç5-B'yi kapatan tur — tur 2b-2'nin devri + S126 = A, S128 = A + hız)
+Kaynak: iş listesi D "Ç5-B SARMAL KURALI" (kullanıcı 11.11 14:12), "KULLANICI KARARI 11.11 11:16" (S126 = A), "13:29" (S128 = A), "HIZ KABUL ÖLÇÜMÜ" (08:49). Taban c5b-son-taban (86276ce4).
+Bu turda kuyruğun KURALI DEĞİŞMEDİ (lib/obligation-queue.mjs'e dokunulmadı); ürün kodu değişikliği yalnız hız (aşağıda 13.3).
+
+### 13.1 Tur 2b-2'nin devri (rapor vermeden durdurulmuştu)
+Görev metninin "İş" maddeleri (1–10 + S122) kararın KENDİ örneğiyle gerçek programda (API) yeniden koşuldu — hepsi kararın sayısını veriyor (tablo: son tur raporu / docs/kanit/2026-11-11/
+c5bson-karar-taban.json). Tur 2b-2'nin testleri tur 2b-1 ucunda 40 kırmızı (nedenleri karar numaralarıyla okundu), tabanda 239 / 239 iki saat dilimi.
+
+### 13.2 S126 = A ve S128 = A — kural zaten kuyrukta (yeni kod YOK; koruma testi + mutant)
+- Kartın **içine alma sırası**: açık borç ≤ kart tutarı iken (eski kural, `rule: "s2"`) kart açıldığı anda açık bütün borç kalemlerini — fatura, elle borç, stok veresiye satışı, karşılıksız kalemi —
+  türüne bakmadan s2 sırasıyla (vade ↑ → belge tarihi ↑ → kayıt anı ↑) tüketir (`coverEvent`: `chosen = candidates`; `card.consumedFrom` bu sırayla yazılır).
+- **Karta gelen ödeme** (kartın Taksit Tahsilatı + karta pay düşen bağsız tahsilat — S50) kalemleri aynı sırayla düşürür: `coveredLeftOf` (assemble) kartın taksitlerinden kapanan toplamı
+  `consumedFrom` sırasıyla kalemlere dağıtır; faturanın açığı (G2) ve elle / stok / karşılıksız kaydın Kalan'ı (G1 `entries`) bu dağıtımdan okunur. Vadesiz kalemde vade = belge günü → sıra
+  "eskiden yeniye". S122'nin (S120 kolu: yalnız elle borçlar) kuralı da aynı satırlar.
+- Karar örnekleri gerçek programda: S126 — F 600 + X 300, kart 900, karta 300 ⇒ F açık 300, X Kalan 300 (bağsız 500 ⇒ F 100, X 300; 300 + 400 ⇒ F 0, X 200); S128 — S 400 + X 300, kart 700, karta
+  300 ⇒ X Kalan 300, S açığı 100 (stok satırının Kalan'ı ekranda YOK — yalnız elle Borç / Alacak satırında; kuyruğun kayıt haritasında 100), bakiye 400, kart kalanı 400.
+- **Vade ↔ belge sırası ayrışırsa** (S125 = C, BİLİNEN SINIR): özel kural yok — kuyruk vade sırasını kullanır (sayılar testte sabit: test/tyk-son-250 "BİLİNEN SINIRLAR"). S123 / S124 = C aynen
+  (§12.5).
+- **S128'in üçüncü türü ("başka kartın ya da taksitli faturanın taksiti"):** program Mevcut Borç kartının içine taksit ALMAZ (v2.0.23 "kart kartı tüketmez"; kart açma ucu taksitlendirilebilecek
+  borcu kartsız açık borçla sınırlar — 400 `cover-exceeds`). Durum programda oluşmuyor; kural gerektiren yeni okuma çıkarsa TOPLU sorulur (sarmal kuralı (2)).
+- Testler: test/tyk-son-250.test.mjs (saf kuyruk + gerçek program; taban kodda da YEŞİL — koruma testi), mutantlar test/tyk-mutasyon-250.mjs S126-a … S126-d, S128-a / S128-b (karşı seçenekler B).
+
+### 13.3 Hız — tek carinin kuyruğu aynı veri durumunda bir kez kurulur (routes/invoices.mjs `obligationsOf`; en küçük değişiklik)
+- **Kök neden (ölçüm: son tur raporu, docs/kanit/2026-11-11/c5bson-hiz-*.txt):** tur 2b-1 (G-1) kart yazım yanıtını ve kart okumasını tek carinin kuyruğuna indirdi; yanıt bütün carilerin izini
+  (`accountPrints` — bütün tabloların tam taraması) artık yenilemiyor → iz taraması yazımdan sonraki İLK liste / zil okumasına kaydı; ayrıca yazımdan hemen sonraki kart okuması carinin kuyruğunu
+  YENİDEN kuruyor, ilk zil okuması da artımlı yenilemede bir kez daha kuruyordu (aynı cari, aynı veri durumu, üç kez).
+- **Değişiklik:** `obligationsOf(cari, defterVeren)` — (1) bütün carilerin önbelleği tazeyse (anahtar = `settleKey`: total_changes | data_version | gün) sonuç oradan; (2) değilse bu anahtarda
+  kurulmuş sonuç küçük bir bellekte (en çok 16 cari) tutulur; kart ekranı / kart yazım yanıtı (routes/plans.mjs `queueFor`) ve `allSettled`'in artımlı yolu onu kullanır. Anahtar bütün cariler
+  önbelleğininkiyle AYNI: her yazım ve gün dönümü anahtarı değiştirir → bayat sonuç verilmez; işlem içinde okunmaz, yazılmaz. Davranış AYNI (eşdeğerlik: test/tyk-onbellek-250 — tek cari
+  önbelleği = baştan kurulan, her yazım türünden sonra, rastgele sırayla, bütün cariler önbelleğinden önce / sonra; sayaç testi test/tyk-son-250 "hız"; mutant HIZ-a … HIZ-d).
+- **Kapsam dışı (YAPISAL):** iz taramasının kendisi (yazımdan sonraki ilk okumada bütün tabloların taranması) — "kirli küme" (yazan yolun dokunduğu cariyi bildirmesi) önbelleğin yeniden
+  tasarımıdır; bu turda YAPILMADI (ölçümler ve seçenekler son tur raporunda "BAŞ MİMAR KARARI GEREKİYOR").
+
+### 13.4 Yapım aşaması listesinde kalan 'Ç5-B tur 2' kayıtları (72) — nedenleri (kuyruk kuralı eksiği YOK)
+- 62 kayıt `kart:<ad>:kalan / odenen / taksitN:odenen` (d4, d30–d32, d34–d37): kâhin kartın TYK kalanını / ödenenini bekliyor; sürücü kartın KENDİ hesabını (`totals.remaining`, `totals.paid`,
+  taksit `paid`) okuyor. Programda TYK değerleri ayrı alanlarda (`totals.queueRemaining`, taksit `remaining`); sürücünün kopyasında yalnız bu üç okuma kuyruk alanlarına çevrilince 62'si de
+  kapanıyor, yeni fark 0 (not defteri c5bson-kahin; depodaki sürücü DEĞİŞMEDİ — test/bagimsiz yazılmaz). Kart penceresinin göstergeleri (Tahsil Edilen / Kalan) ve taksit satırının "Ödenen"
+  sütunu da kartın kendi hesabı (S118 = B sınırı / öneriyi kartın kendi kalanına bağladı; göstergeler için karar yok) → son tur raporu "BAŞ MİMAR KARARI GEREKİYOR".
+- 6 kayıt `cari:<ad>:gecikmis` (d11, d14, d15): carisiz evrakın karşılıksızında cari seçimi (S66) — sürücünün `KARSILIKSIZ_CARI` eşlemesi boş (adım gönderilmiyor); Ç5-A / eşleme.
+- 4 kayıt c7-ks7 k3 (takvim / Vade Takip / projeksiyon kalemi): şüpheli kuyruğundaki kısım (M13) kalemden düşülüyor (§9 "Şüpheli kuyruğu vade kalemi değildir"), kâhin K6.3 "şüpheliye alma
+  kalemi değiştirmez" bekliyor — bu turun kararlarında yok; TOPLU SORULACAKLAR.
