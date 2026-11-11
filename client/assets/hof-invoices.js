@@ -549,6 +549,11 @@
   function onChange(event) {
     if (view.mode === "form") return formChange(event);
     if (view.mode === "settings") return event.target.matches("[data-logo-file]") ? pickLogo(event.target) : event.target.matches("[data-stamp-file]") ? pickStamp(event.target) : undefined;
+    // Birleşik tur 6: Gelen e-Faturalar'ın tarih aralığı görünümde tutulur — yeniden çizim (canlı yenileme) yazılanı ay başına geri almaz.
+    if (event.target.matches("[data-inbox-from], [data-inbox-to]")) {
+      view.inboxRange = { ...(view.inboxRange || {}), [event.target.matches("[data-inbox-from]") ? "from" : "to"]: event.target.value };
+      return;
+    }
     const name = event.target.dataset.filter;
     if (!name || name === "q") return;
     view[name] = event.target.value;
@@ -3867,7 +3872,7 @@
     ["ignored", "Yok Sayıldı"],
     ["", "Tümü"],
   ];
-  async function loadInbox() {
+  async function loadInbox({ background = false } = {}) {
     if (!edoc()) return showList();
     setMode("inbox");
     view.tab = "inbox";
@@ -3876,31 +3881,36 @@
     } catch (error) {
       view.inbox = { items: [], counts: {}, error: error.message };
     }
-    renderInbox();
+    // Yanıt gelene kadar kullanıcı başka görünüme geçtiyse arka plan yenilemesi onu ezmez.
+    if (background && view.mode !== "inbox") return;
+    renderInbox({ background });
   }
-  function renderInbox() {
+  function renderInbox({ background = false } = {}) {
     const root = body();
     const data = view.inbox;
     if (!root || !data) return;
-    const [from, to] = presetRange("month");
+    const [monthFrom, monthTo] = presetRange("month");
+    const from = view.inboxRange?.from ?? monthFrom;
+    const to = view.inboxRange?.to ?? (todayIso() < monthTo ? todayIso() : monthTo);
     const rows = data.items
       .map(item => `<tr data-inbox="${esc(item.id)}" tabindex="0"><td>${esc(HOF.formatDate(item.issueDate))}</td><td><b>${esc(item.number)}</b><small>${esc(item.profile)}</small></td><td><b>${esc(item.senderName || "—")}</b><small>${esc(item.senderVkn)}</small></td><td><span class="hof-inv-pill is-in-${esc(item.state)}">${esc(item.stateLabel)}</span>${item.duplicateNumber ? '<small class="hof-inv-warn">Bu numarayla alış faturası zaten kayıtlı</small>' : ""}${item.invoiceNumber || item.invoiceId ? `<small>${item.invoiceStatus === "draft" ? "Taslak" : esc(item.invoiceNumber)}</small>` : ""}</td><td class="num"><b>${esc(curMoney(item.payable, item.currency))}</b></td></tr>`)
       .join("");
     const tabs = [TABS[0], ["pending", "Gönderilecekler"], ...TABS.slice(1), ["inbox", "Gelen e-Faturalar"]];
-    HOF.swap(
-      root,
+    const html =
       `<div class="hof-plan-head"><div class="hof-plan-title"><h3>Gelen e-Faturalar</h3><small>Size kesilen e-Faturalar entegratörden çekilir; alış faturası olarak alınca stok, cari ve KDV kayıtları açılır.</small></div>
         <div class="hof-plan-actions">${canSettings() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="settings">Fatura Ayarları</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="integrator">Entegratör Ayarları</button>' : ""}</div></div>
       <div class="hof-inv-tabs" role="tablist">${tabs.map(([id, label]) => `<button type="button" role="tab" class="hof-rep-chip ${view.tab === id ? "is-on" : ""}" data-tab="${id}">${label}</button>`).join("")}</div>
       <div class="hof-plans-filters hof-chq-filters">
         <div class="hof-rep-presets" role="group" aria-label="Durum">${INBOX_STATES.map(([id, label]) => `<button type="button" class="hof-rep-chip ${view.inboxState === id ? "is-on" : ""}" data-inbox-state="${id}">${label}${id && data.counts?.[id] ? ` <b>${data.counts[id]}</b>` : ""}</button>`).join("")}</div>
-        <label class="hof-rep-date"><span>Başlangıç</span><input type="date" data-inbox-from value="${esc(from)}"></label>
-        <label class="hof-rep-date"><span>Bitiş</span><input type="date" data-inbox-to value="${esc(todayIso() < to ? todayIso() : to)}"></label>
+        <span data-inbox-dates style="display: contents"><label class="hof-rep-date"><span>Başlangıç</span><input type="date" data-inbox-from value="${esc(from)}"></label>
+        <label class="hof-rep-date"><span>Bitiş</span><input type="date" data-inbox-to value="${esc(to)}"></label></span>
         ${canManage() ? '<button type="button" class="hof-button hof-button-small" data-act="inbox-fetch">Gelen Kutusunu Yenile</button>' : ""}
       </div>
       ${data.error ? `<p class="hof-inv-banner is-cancelled">${esc(data.error)}</p>` : ""}
-      <div class="hof-rep-table"><table class="hof-table hof-chq-table"><thead><tr><th>Tarih</th><th>No</th><th>Gönderen</th><th>Durum</th><th class="num">Tutar</th></tr></thead><tbody>${rows || `<tr><td colspan="5" class="hof-empty">${view.inboxState === "new" ? "Yeni gelen e-Fatura yok. Gelen Kutusunu Yenile ile entegratörden çekin." : "Bu durumda belge yok."}</td></tr>`}</tbody></table></div>`,
-    );
+      <div class="hof-rep-table"><table class="hof-table hof-chq-table"><thead><tr><th>Tarih</th><th>No</th><th>Gönderen</th><th>Durum</th><th class="num">Tutar</th></tr></thead><tbody>${rows || `<tr><td colspan="5" class="hof-empty">${view.inboxState === "new" ? "Yeni gelen e-Fatura yok. Gelen Kutusunu Yenile ile entegratörden çekin." : "Bu durumda belge yok."}</td></tr>`}</tbody></table></div>`;
+    // Birleşik tur 6: canlı yenileme (başka oturumun gelen kutusu işlemi) yazılmakta olan tarih aralığını yeniden kurmaz (HOF.swapKeeping).
+    if (background) HOF.swapKeeping(root, html, "[data-inbox-dates]");
+    else HOF.swap(root, html);
   }
   async function loadInboxItem(id) {
     try {
@@ -4048,7 +4058,7 @@
       if (!modal || change?.kind !== "invoices") return;
       if (view.mode === "list") refreshOpen();
       else if (view.mode === "card" && view.id && (!change.invoiceId || change.invoiceId === view.id)) refreshOpen();
-      else if (view.mode === "inbox" && change.inbox) loadInbox();
+      else if (view.mode === "inbox" && change.inbox) loadInbox({ background: true });
     });
     // Tahsilat, çek/senet ya da taksitten gelen ödeme faturanın ödeme durumunu değiştirir: açık liste/kart yenilenir.
     HOF.onLedger(["accounts", "cheques", "plans", "cash", "invoices"], detail => {
