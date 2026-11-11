@@ -134,6 +134,12 @@ describe("Ç5-B tur 2b-2 — S99 (fatura durumu tek kuyruktan)", () => {
     assert.deepEqual([r.invoices.get("P").open, ...inst(r, "KP"), left(r, "O")], [500, 200, 300, 0]);
     assert.equal(r.overdue("2026-06-15").amount, 200, "gecikmiş = 1. taksitin kalanı 200");
   });
+  it("KS8.1 korunur (kâhin c12 B1): Borç 200 · faturasız stok iadesi 500 · bağsız Ödeme 400 ⇒ ödeme önce iadenin açık 300'ünü geri öder, artan 100 Borç'u yeniden açar (Borç 100 = bakiye)", () => {
+    const lines = [borc("B", "2026-05-16", 200), line("I", "stock", "credit", "2026-05-21", 0, 500, { stockReason: "return", sourceId: "m-I" }), odeme("O", "2026-06-05", 400)];
+    const r = build({ lines, dueDates: new Map([["B", "2026-06-10"]]), today: "2026-06-15" });
+    assert.deepEqual([left(r, "B"), left(r, "I"), left(r, "O")], [100, 0, 0], "stok iadesinin açık kalanı S98 × S99 kuralıyla değil K-b / KS8.1 ile kapanır");
+    assert.equal(sigma(r), balanceOf([], lines));
+  });
   it("karar (5) korunur: alış 300 (bizim borcumuz) + satış 500; müşteriden tahsilat 200 ⇒ fatura durumunda alış AÇIK kalır (belgeler arası netleşme yok), satış 300", () => {
     const docs = [purchase("A", "2026-03-01", 300, "2026-03-01"), sale("S", "2026-03-02", 500, "2026-03-02")];
     const lines = [tahsilat("T", "2026-03-05", 200)];

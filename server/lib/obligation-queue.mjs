@@ -771,14 +771,17 @@ function queueOnce(input, mode, lockCaps, { pieces = null, pseudo = null, forced
   // durumunda (side) da karşı tarafın NETLEŞMEMİŞ bağsız parası (müşteriye yaptığımız Ödeme / tedarikçinin bize yaptığı ödeme — avans) gelen bağsız paranın karşısında
   // kendi günüyle kalemdir; belgeler arası netleşme yine yalnız Mahsup Et ile (karar (5), BAŞ MİMAR Y4-3 — karşı yönlü BELGE kalemleri burada eşleşmez). Önceden
   // müşteriye verilen avans fatura durumunda hiç kapanmıyor, sonraki tahsilat faturayı kapatıyordu (fatura 'Ödendi', Vade Takip / zil 100 açık — d25 R3).
+  // Yalnız PARA ↔ PARA (cari kartı Tahsilat / Ödeme, alınan / verilen evrak): faturasız stok iadesinin açık kalanı karşı tarafın parasıyla K-b / KS8.1 yoluyla (implicitRefunds)
+  // geri ödenir — o yol iadenin AÇIK notunu ilk fatura durumu geçişinden okur; burada kapatılırsa not açık görünmez, "artanı iadenin geri ödemesi" kuralı kaybolur (kâhin c12 B1).
+  const freeMoney = item => !item.due && !item.linkedOnly && item.kind === "payment" && (item.line?.origin === "account" || item.line?.origin === "cheque");
   const againstOf = item => {
     const own = listFor(item, false);
-    if (mode !== "side" || item.due || !freePayment(item)) return [own];
+    if (mode !== "side" || !freeMoney(item)) return [own];
     return [own, open[`${item.side === "r" ? "p" : "r"}Pay`]];
   };
   const arrive = item => {
     const lists = againstOf(item);
-    const against = lists.length === 1 ? lists[0] : [...lists[0], ...lists[1].filter(other => freePayment(other))];
+    const against = lists.length === 1 ? lists[0] : [...lists[0], ...lists[1].filter(other => freeMoney(other))];
     if (against.length) {
       if (mode === "net" && item.due && item.sign < 0) against.sort((a, b) => (isPurchaseReturn(a) === isPurchaseReturn(b) ? s2(a, b) : isPurchaseReturn(a) ? -1 : 1));
       else against.sort(s2);
