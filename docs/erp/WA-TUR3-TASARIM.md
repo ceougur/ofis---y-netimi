@@ -141,3 +141,10 @@ dışında kalan her seçim §11'de "BAŞ MİMAR KARARI GEREKİYOR" / "KULLANICI
 - MUTANTLAR (eşdeğerlik testi DEĞERLE yakalamalı): (M1) küme denetimi yanlış durumda atlar (ör. `self: true`'da da erken dönüş / küme düşürülmez); (M2) toplu okuma yanlış cariye / kimliğe bakar
   (kümede kaynağın değil zincir işinin kimliği); (M3) aynı çağrıdaki ikinci bildirim eski durumu görür (çağrı başında okunan satır anlık görüntüsü kullanılır).
 - Ölçüm: aynı şablon, `flock -x`, sıra çalışma dalı → tur 3 → yeni → çalışma dalı → tur 3 → yeni; HEDEF iki bildirim ölçümü ve olay döngüsü çalışma dalından en çok %10 kötü.
+- UYGULAMADA (11.11, kod 7cae5134 + senaryo 37dfcf31): değişen yerler `queue.mjs:839` (createBatch işleminin içinde `forgetChainSources()`), `:2398–2421` (küme + `mayHaveChain`), `:2433–2438`
+  (settleSkippedChain'in başı: kümede yoksa satır yolunda erken dönüş, öbür yollarda cari okuması yok). Davranış değişikliği YOK; `freshDelivery` (`:2592`) aynen.
+  Eşdeğerlik: `test/whatsapp-tur3-hiz-250.test.mjs` W3H-E (3 tohum; fikstür `test/fixtures/wa3hiz-250/tur3-028e1b76.json` tur 3'ün GERÇEK koduyla, UTC ve Europe/Istanbul'da üretilip
+  karşılaştırıldı — fark 0); W3H-K1 (inherit_of yazarı yalnız createBatch + aynı işlemde küme düşürme — kaynak denetimi), W3H-K2 (zincirsiz veride 12 bildirimde cari zincir okuması 0).
+  Mutantlar: M1 küme düşürülmez / sürüm (data_version) bakılmaz, M2 yanlış kimlik / yanlış cari, M3 çağrı anlık görüntüsü → W3H-E DEĞERLE yakalar. M1 "kümede yoksa self yolunda da erken dönüş"
+  W3H-E'den KAÇAR (senaryoda eski deneme yolu yok — o yol 60 sn istek süre sınırlı kapı düzeneği ister); tur 3'ün W3T-70c'si DEĞERLE yakalar. Tur 3'ün mutasyon betiğinde M70-yalniz-eski-sira'nın
+  `find` metni bu değişiklikle bozuldu → yeni koda uyarlandı (aynı anlam: yardımcı hiçbir işi değiştirmez); 20/20 yakalandı.
