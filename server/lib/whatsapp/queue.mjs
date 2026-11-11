@@ -202,6 +202,11 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   // ---------- Okuma ----------
   const batchRow = id => store.get("SELECT * FROM wa_batches WHERE id = ?", id);
   const jobRow = id => store.get("SELECT * FROM wa_jobs WHERE id = ?", id);
+  // 2.5.0 WhatsApp tur 3 (T16): satır hâlâ bu denemede "Gönderiliyor" mu (istek sürerken bildirim / toparlama satırı ilerletmediyse).
+  const stillSending = (id, attempt) => {
+    const row = store.get("SELECT state, attempt FROM wa_jobs WHERE id = ?", id);
+    return Boolean(row) && row.state === "sending" && Number(row.attempt) === Number(attempt);
+  };
   // 2.5.0 WhatsApp tur 2 (W-3 dk ORTA-2; tasarım §6): içeriği silinmiş işe (KVKK talebi / 1 yıl — params_json işareti '{') SONRADAN yazılan hata metni de 10+ haneli sayılardan
   // (telefon) arındırılır — failJob / retryLater / applyStatuses / toparlama, hepsi buradan. Karar AYNI UPDATE'te (SQL CASE: satırın o anki işareti; ek okuma, yarış yok).
   const updateJob = (id, fields) => {
@@ -1688,7 +1693,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     } catch (error) {
       if (!(error instanceof MetaGraphError)) {
         ledger.outcome({ jobId: job.id, attempt, outcome: "uncertain", at: iso(), companyId, wabaId: batch.waba_id });
-        updateJob(job.id, { state: "uncertain", error_text: "Gönderim sırasında beklenmeyen hata; iletinin gidip gitmediği bilinmiyor." });
+        // 2.5.0 WhatsApp tur 3 (T16 kardeş dal): istek sürerken bildirimle kesinleşmiş satır ezilmez (applyFailure yanıtsız dalı ile aynı koruma).
+        if (stillSending(job.id, attempt)) updateJob(job.id, { state: "uncertain", error_text: "Gönderim sırasında beklenmeyen hata; iletinin gidip gitmediği bilinmiyor." });
         throw error;
       }
       handleFailure(batch, jobRow(job.id), error, { stage: "send", attempt });
@@ -1865,8 +1871,12 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     // Yanıtsız ileti isteği (zaman aşımı, bağlantı koptu, gövdesiz 5xx): SONUCU BELİRSİZ — kendiliğinden yeniden gönderilmez; toplu iş sürer (§7a 10).
     if (!reachedMeta && !neverReachedMeta(error) && stage === "send") {
       record("uncertain");
-      updateJob(job.id, { state: "uncertain", error_code: null, error_text: error.message });
-      trouble(row, error.message);
+      // 2.5.0 WhatsApp tur 3 (T16 ürün yarışı; KAYIT 06.11 16:10 (b)): istek sürerken imzalı bildirim (iş kimliğiyle) satırı Teslim Edildi / Okundu / Başarısız yapmış olabilir —
+      // yanıtsız dal YALNIZ satır hâlâ BU denemede "Gönderiliyor" ise Sonucu Belirsiz yazar ve art arda hata sayacını artırır (kesin durum ezilmez; teslim defterde — kime kaç kez aynen).
+      if (stillSending(job.id, attempt)) {
+        updateJob(job.id, { state: "uncertain", error_code: null, error_text: error.message });
+        trouble(row, error.message);
+      }
       finishIfDone(batch.id);
       return;
     }
