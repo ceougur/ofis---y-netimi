@@ -1,0 +1,98 @@
+{
+  "ad": "c5bt2ay-eski-tyk-250",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/tyk-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-11T00:29:49.789Z",
+  "sure_sn": 0.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 50,
+    "gecen": 37,
+    "basarisiz": 13,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 13 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "TYK tur 2a — Y-1: Kayıt Tarihi borçtan ÖNCE olan Mevcut Borç kartı borcu tüketir (v2.4.9; M1e) › stoktan veresiye satış → taksitlendir (kartın Kayıt Tarihi carinin Kayıt Tarihi): taksitler 500 / 500, gecikmiş 500 (önceden kart 'Bitti', gecikmiş 1.000)",
+      "konum": "test/tyk-250.test.mjs:369:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "TYK tur 2a — Y-1: Kayıt Tarihi borçtan ÖNCE olan Mevcut Borç kartı borcu tüketir (v2.4.9; M1e) › elle geriye tarihli kart (Kayıt Tarihi Borç Yaz'dan önce) aynı; Kayıt Tarihi borçtan SONRA olan kart (kontrol) aynı sonuç",
+      "konum": "test/tyk-250.test.mjs:376:3",
+      "hata": "kart 2026-09-20 · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "TYK tur 2a — Y-1: Kayıt Tarihi borçtan ÖNCE olan Mevcut Borç kartı borcu tüketir (v2.4.9; M1e) › karttan sonra yazılan tahsilat taksiti kapatır (kartın açılış günü tükettiği borcun günü): [200, 500], gecikmiş 200",
+      "konum": "test/tyk-250.test.mjs:385:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "TYK tur 2a — Y-1: Kayıt Tarihi borçtan ÖNCE olan Mevcut Borç kartı borcu tüketir (v2.4.9; M1e) › kartın anında bilinen avans: kart açıldığı an açık kalanı (800) tüketir → taksitler 400 / 400, gecikmiş 400",
+      "konum": "test/tyk-250.test.mjs:392:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "TYK tur 2a — O-1: karar (3) bağın KURULDUĞU andaki kilitle (düzeltmeyle kurulan bağ = yeni kayıtla kurulan) › bağ kilitten sonra düzeltmeyle kuruldu → kilit uygulanır: gecikmiş 0, F3 'kilitli dönemde kapanmıştı'",
+      "konum": "test/tyk-250.test.mjs:409:3",
+      "hata": "Expected values to be strictly equal: · 300 !== 0 (beklenen 0, gelen 300)"
+    },
+    {
+      "ad": "TYK tur 2a — 'Hangi Taksite' bağı (karar (2)) ve O-3 kart kalemleri › bağlı tahsilat önce KENDİ taksitini kapatır; taksitini aşan kısmı vade sırasıyla (kartın kendi hesabıyla aynı)",
+      "konum": "test/tyk-250.test.mjs:433:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "TYK tur 2a — 'Hangi Taksite' bağı (karar (2)) ve O-3 kart kalemleri › karar (3): kilitten sonra kurulan / düzeltilen 'Hangi Taksite' bağı kilitli dönemde bağsız kapanmış taksiti yeniden açmaz",
+      "konum": "test/tyk-250.test.mjs:442:3",
+      "hata": "düzeltmeyle kurulan bağ = yeni kayıt · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "TYK tur 2a — 'Hangi Taksite' bağı (karar (2)) ve O-3 kart kalemleri › O-3: taksitlere bölünmemiş kalan ('rest') ve Taksit İadesi ('back') kart kalemi olarak — vade ve kalanla",
+      "konum": "test/tyk-250.test.mjs:452:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "TYK tur 2a — 'Hangi Taksite' bağı (karar (2)) ve O-3 kart kalemleri › bağlı tahsilattan çok iade / karşılıksız ters kaydı bağlı payı EN YENİ taksitten geriye geri alır (Taksit İadesi kalemi değil)",
+      "konum": "test/tyk-250.test.mjs:469:3",
+      "hata": "bağlı paydan artan iade Taksit İadesi kalemi · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "TYK tur 2a — 'Hangi Taksite' bağı (karar (2)) ve O-3 kart kalemleri › rastgele kartlar (tohum 21–23 × 150): kuyruğun taksit kalanları = kartın kendi hesabı (allocate)",
+      "konum": "test/tyk-250.test.mjs:481:3",
+      "hata": "tohum 21 kart 0: [{\"id\":\"e0\",\"itemId\":\"\",\"kind\":\"in\",\"amount\":50,\"date\":\"2026-02-10\"},{\"id\":\"e1\",\"itemId\":\"\",\"kind\":\"in\",\"amount\":250,\"date\":\"2026-02-11\"},{\"id\":\"e2\",\"itemId\":\"t3\",\"kind\":\"in\",\"amount\":150,\"date\":\"2026-02-12\"},{\"id\":\"e3\",\"itemId\":\"t4\",\"kind\":\"in\",\"amount\":400,\"date\":\"2026-03-13\"},{\"id\":\"e4\",\"itemId\":\"t4\",\"kind\":\"in\",\"amount\":200,\"date\":\"2026-03-14\"}] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "TYK tur 2a — değişmez: kalemler toplamı = cari bakiyesi (kartlı, tohumlu rastgele) › tohum 11: 200 cari × 22 olay — Σ kalem = bakiye (S99 / S101 adıyla dışarıda)",
+      "konum": "test/tyk-250.test.mjs:517:5",
+      "hata": "Cannot read properties of undefined (reading 'values')"
+    },
+    {
+      "ad": "TYK tur 2a — değişmez: kalemler toplamı = cari bakiyesi (kartlı, tohumlu rastgele) › tohum 12: 200 cari × 22 olay — Σ kalem = bakiye (S99 / S101 adıyla dışarıda)",
+      "konum": "test/tyk-250.test.mjs:517:5",
+      "hata": "Cannot read properties of undefined (reading 'values')"
+    },
+    {
+      "ad": "TYK tur 2a — değişmez: kalemler toplamı = cari bakiyesi (kartlı, tohumlu rastgele) › tohum 13: 200 cari × 22 olay — Σ kalem = bakiye (S99 / S101 adıyla dışarıda)",
+      "konum": "test/tyk-250.test.mjs:517:5",
+      "hata": "Cannot read properties of undefined (reading 'values')"
+    }
+  ],
+  "ham_cikti": "../c5bt2ay-kanit/2026-11-11/c5bt2ay-eski-tyk-250.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2ay-eski",
+  "ham_cikti_sha256": "460e49e40536ee76196386659d5c9c6e23e6005d7b017366854ffcfa17b5f784",
+  "ham_cikti_bayt": 36198
+}

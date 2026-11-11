@@ -9,7 +9,7 @@ import { toMinor } from "../lib/minor.mjs";
 import { bankForm } from "../lib/bank/module-ref.mjs";
 import { posMetaOf } from "../lib/bank/pos.mjs";
 import { canUser } from "../lib/permissions.mjs";
-import { allocate, dayText, distribute, isoDay, mapHeaders, parseDay } from "../lib/plans.mjs";
+import { allocate, dayText, daysUntil, distribute, isoDay, mapHeaders, parseDay } from "../lib/plans.mjs";
 import { extractSchedules, spreadPaid } from "../lib/insight/schedules.mjs";
 import { tabContext } from "../lib/insight/dues.mjs";
 import { planStatementPdf, receiptPdf } from "../lib/plan-report.mjs";
@@ -235,9 +235,12 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       const held = row ? roundMoney(Math.min(remaining, row.doubtful || 0)) : 0;
       return { ...item, remaining, held, accountPaid, partial: remaining > 0.005 && remaining < item.amount - 0.005, state };
     });
+    // Ç5-B tur 2a (O-3): taksitlere bölünmemiş kalan ("rest") ve Taksit İadesi ("back") kuyruk kalanındadır (kalemleri queueExtras: takvim / zil / Vade Takip / nakit akışı).
+    // Kartın durumu ve taksit gecikmişi (totals.overdue) bugünkü gibi taksitlerden (taksitsiz yeni kart "Gecikti" olmaz — plans.test "kayıt bitince taksit sorulmaz").
+    const extras = queueExtras(plan, all, day);
     const overdue = items.filter(item => item.state === "overdue");
     const next = items.find(item => item.remaining > 0.005 && item.state !== "closed") || null;
-    const remaining = roundMoney(items.reduce((sum, item) => sum + item.remaining, 0) + Math.max(0, roundMoney(map.get("rest")?.remaining || 0)));
+    const remaining = roundMoney(items.reduce((sum, item) => sum + item.remaining, 0) + extras.reduce((sum, item) => sum + item.remaining, 0));
     const accountPaid = roundMoney(items.reduce((sum, item) => sum + item.accountPaid, 0));
     let state = ledger.state;
     if (!closed) state = remaining <= 0.005 && items.every(item => item.state === "paid") ? "done" : overdue.length ? "overdue" : "active";
@@ -250,6 +253,24 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       next: next ? { id: next.id, seq: next.seq, dueDate: next.dueDate, remaining: next.remaining, days: next.days, state: next.state } : null,
       state,
     };
+  }
+  // Ç5-B tur 2a (O-3, S91 = A — vadesiz kayıt kayıt gününde vadeli kalem; C5 §2.10 madde 9 "Vade Takip gecikmiş tutarı = gecikmiş"): kuyruğun kart kalemlerinden TAKSİT
+  // OLMAYANLAR — kartın taksitlere bölünmemiş kalanı (vade = kartın açılış günü) ve Taksit İadesi (iadeler tahsilatı aşınca; vade = son iade günü) — takvim / zil / Vade Takip /
+  // nakit akışı kalemidir. Önceden gecikmişte sayılıyor, bu listelerde görünmüyordu (dar kontrol DK-C5B O-3). Kapatılmış kartta yok (kalan Kartı Kapat ile kapanır).
+  const QUEUE_EXTRAS = [["rest", "Taksitlendirilmemiş Kalan"], ["back", "Taksit İadesi"]];
+  function queueExtras(plan, all, day) {
+    const map = plan.accountId && all && plan.status !== "closed" ? all.get(plan.accountId)?.installments.get(plan.id) : null;
+    if (!map) return [];
+    const out = [];
+    for (const [key, label] of QUEUE_EXTRAS) {
+      const row = map.get(key);
+      const remaining = roundMoney(row?.remaining || 0);
+      if (!row || !(remaining > 0.005)) continue;
+      const days = daysUntil(row.vade, day);
+      const state = days < 0 ? "overdue" : days === 0 ? "today" : days <= 7 ? "upcoming" : "open";
+      out.push({ id: key, key, seq: 0, label, dueDate: row.vade, amount: roundMoney(row.amount), remaining, held: roundMoney(Math.min(remaining, row.doubtful || 0)), days, state, partial: remaining < roundMoney(row.amount) - 0.005 });
+    }
+    return out;
   }
   // Kart ekranı (GET): kartın kendi hesabı + kuyruk görünümü.
   const detailView = (id, user) => {
@@ -636,7 +657,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     });
     changed(user, { planId: id });
     changed(user, { kind: "accounts", accountId: result.accountId || "" });
-    ok(res, result);
+    // Ç5-B tur 2a (O-2): yazım yanıtı okumayla (GET) AYNI görünüm — kartın kendi hesabı + kuyruk (işlem kesinleştikten sonra; işlem içinde kuyruk okunmaz).
+    ok(res, detailView(id, user));
   });
 
   router.get("/api/workspace/plans/:id", async ({ req, res, params }) => {
@@ -712,7 +734,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       changed(user, { planId: opened.id });
       changed(user, { kind: "accounts", accountId: result.accountId || "" });
     }
-    ok(res, result);
+    ok(res, detailView(result.id, user));
   });
 
   router.delete("/api/workspace/plans/:id", async ({ req, res, params, url }) => {
@@ -767,7 +789,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       return detail(plan.id, user);
     });
     changed(user, { planId: plan.id });
-    ok(res, result);
+    ok(res, detailView(result.id, user));
   });
 
   // ---------- Taksitler (elle) ----------
@@ -798,7 +820,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       audit(user, "plan.item.created", id, { planId: plan.id, ...input });
     });
     changed(user, { planId: plan.id });
-    ok(res, detail(plan.id, user));
+    ok(res, detailView(plan.id, user));
   });
   // 2.5.0 BİRLEŞİK TUR 3 (YAN-B; iyimser kilit, lib/row-version.mjs): taksit düzeltme formu açıldığı andaki taksitin sürümünü (updatedAt) gönderir; taksit o andan sonra
   // değiştiyse 409 plan-item-stale. Önceden tam form öbür kişinin düzeltmesini sessizce geri yazıyordu (B taksiti 500 → 300 yaptı, yalnız vadeyi değiştiren A'nın formu
@@ -829,7 +851,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       return true;
     });
     if (wrote) changed(user, { planId: plan.id });
-    ok(res, detail(plan.id, user));
+    ok(res, detailView(plan.id, user));
   });
   router.delete("/api/workspace/plans/:id/items/:itemId", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "plans.manage");
@@ -841,7 +863,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       audit(user, "plan.item.deleted", previous.id, { planId: plan.id, ...previous });
     });
     changed(user, { planId: plan.id });
-    ok(res, detail(plan.id, user));
+    ok(res, detailView(plan.id, user));
   });
 
   // ---------- Hareketler: tahsilat ve ödeme/iade ----------
@@ -976,7 +998,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       changed(user, { kind: "cash" });
       touchedCase(user, plan);
     }
-    ok(res, { ...detail(plan.id, user), entryId: created?.replayed ? created.refId : id, ...(created?.replayed ? { replayed: true } : {}) });
+    ok(res, { ...detailView(plan.id, user), entryId: created?.replayed ? created.refId : id, ...(created?.replayed ? { replayed: true } : {}) });
   });
   router.put("/api/workspace/plans/:id/entries/:entryId", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "plans.collect");
@@ -1038,7 +1060,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     changed(user, { planId: plan.id });
     changed(user, { kind: "cash" });
     touchedCase(user, plan);
-    ok(res, detail(plan.id, user));
+    ok(res, detailView(plan.id, user));
   });
   router.delete("/api/workspace/plans/:id/entries/:entryId", async ({ req, res, params, url }) => {
     const user = auth.requirePermission(req, "plans.collect");
@@ -1069,7 +1091,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     changed(user, { planId: plan.id });
     changed(user, { kind: "cash" });
     touchedCase(user, plan);
-    ok(res, detail(plan.id, user));
+    ok(res, detailView(plan.id, user));
   });
 
   // ---------- PDF: ekstre ve makbuz ----------
@@ -1362,7 +1384,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     }
     for (const plan of plans) {
       const ledger = withQueue(plan, allocate(plan, items.get(plan.id) || [], entries.get(plan.id) || [], { today: day }), queue, day);
-      for (const item of capToRemaining(ledger)) {
+      for (const item of [...capToRemaining(ledger), ...queueExtras(plan, queue, day)]) {
         const amount = roundMoney(item.remaining - (item.held || 0));
         if (amount <= 0.005 || item.state === "open" || item.state === "closed") continue;
         const where = [plan.groupName, plan.subgroupName].filter(Boolean).join(" › ");
@@ -1377,7 +1399,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
           caseSource: plan.caseSource || "",
           caseTitle: plan.caseTitle || "",
           tab: "",
-          label: `${item.seq}. taksit`,
+          label: item.key ? item.label : `${item.seq}. taksit`,
           kind: "date",
           dueDate: item.dueDate,
           dueText: dayText(item.dueDate),
@@ -1415,12 +1437,12 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     }
     for (const plan of plans) {
       const ledger = withQueue(plan, allocate(plan, items.get(plan.id) || [], entries.get(plan.id) || [], { today: day }), queue, day);
-      for (const item of capToRemaining(ledger)) {
+      for (const item of [...capToRemaining(ledger), ...queueExtras(plan, queue, day)]) {
         // withoutDoubtful (Vade Takip; 2.5.0 Ç5-B M13): kalanın şüpheli kuyruğundaki kısmı kalem değildir. Nakit akışı ve yaşlandırma (dilimlere dahil) bugünkü gibi.
         const amount = roundMoney(item.remaining - (withoutDoubtful ? item.held || 0 : 0));
         if (amount <= 0.005 || item.state === "closed") continue;
         // Vade takip (v2.0.9) kartı, cariyi ve taksiti de gösterir; nakit akışı yalnız tarih/tutar/kaynağı okur.
-        out.push({ date: item.dueDate, direction: "in", amount, source: "plan", label: `${item.seq}. taksit${item.partial || amount < item.remaining - 0.005 ? " (kalan)" : ""}`, party: plan.name, ref: { type: "plan", id: plan.id }, seq: item.seq, fullAmount: item.amount, partial: Boolean(item.partial) || amount < item.remaining - 0.005, phone: plan.phone || "", refNo: plan.refNo || "", accountId: plan.accountId || "", accountName: plan.accountName || "" });
+        out.push({ date: item.dueDate, direction: "in", amount, source: "plan", label: `${item.key ? item.label : `${item.seq}. taksit`}${item.partial || amount < item.remaining - 0.005 ? " (kalan)" : ""}`, party: plan.name, ref: { type: "plan", id: plan.id }, seq: item.seq, fullAmount: item.amount, partial: Boolean(item.partial) || amount < item.remaining - 0.005, phone: plan.phone || "", refNo: plan.refNo || "", accountId: plan.accountId || "", accountName: plan.accountName || "" });
       }
     }
     return out;

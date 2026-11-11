@@ -1,0 +1,28 @@
+#!/bin/bash
+# Ana oturum yeniden koşusu: Ç5-B tur 2a (sınama ağacı fde5a5a8 = ana dal 4c74c866 + ac6d3558)
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+A=$S/d2t3-ya-ag; E=$S/c5bt2ay-eski; M=$S/c5bt2ay-mut; export KANIT_DIR=$S/c5bt2ay-kanit
+R=/home/user/ofis---y-netimi
+mkdir -p "$KANIT_DIR" "$E" "$M" || exit 1
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194
+YENI="test/tyk-250.test.mjs test/tyk-onbellek-250.test.mjs test/tyk-tur2a-250.test.mjs test/tyk-api-250.test.mjs test/kapama-tek-gecis-245.test.mjs test/cheques-overview.test.mjs"
+NT="node --disable-warning=ExperimentalWarning --test --test-concurrency=1"
+echo "başladı $(date -u +%H:%M:%S) yük $(cat /proc/loadavg)"
+cd "$A" || exit 1
+for tz in UTC Europe/Istanbul; do n=$(echo $tz | tr '/' '-'); TZ=$tz node tools/kanit.mjs kos c5bt2ay-yeni-$n -- $NT $YENI > "$KANIT_DIR/yeni-$n.out" 2>&1; echo "yeni $tz çıkış $? $(tail -1 "$KANIT_DIR/yeni-$n.out" | grep -oP '\d+/\d+ geçti, \d+ başarısız')"; done
+# eski kod (ana dal a0d8342a ayrı kopya) + yeni / değişen testler (düzeltme üründe — ders 51 kapsamı dışı)
+git -C "$R" archive a0d8342a | tar -x -C "$E" || exit 1
+ln -sfn "$R/node_modules" "$E/node_modules"
+cp test/tyk-250.test.mjs test/tyk-onbellek-250.test.mjs test/tyk-tur2a-250.test.mjs test/tyk-api-250.test.mjs test/kapama-tek-gecis-245.test.mjs "$E/test/" && cp test/e2e/senaryo-tyk-tur2a-250.mjs "$E/test/e2e/" || exit 1
+cd "$E" || exit 1
+for f in tyk-250 tyk-onbellek-250 tyk-tur2a-250 tyk-api-250 kapama-tek-gecis-245; do TZ=UTC node tools/kanit.mjs kos c5bt2ay-eski-$f -- $NT test/$f.test.mjs > "$KANIT_DIR/eski-$f.out" 2>&1; echo "eski $f çıkış $? $(tail -1 "$KANIT_DIR/eski-$f.out" | grep -oP '\d+/\d+ geçti, \d+ başarısız')"; done
+node tools/kanit.mjs kos c5bt2ay-eski-ekran -- node --disable-warning=ExperimentalWarning test/e2e/senaryo-tyk-tur2a-250.mjs > "$KANIT_DIR/eski-ekran.out" 2>&1; echo "eski ekran çıkış $? ($(grep -c '✗' "$KANIT_DIR/eski-ekran.out") ✗)"
+cd "$A" || exit 1
+node tools/kanit.mjs kos c5bt2ay-ekran -- node --disable-warning=ExperimentalWarning test/e2e/senaryo-tyk-tur2a-250.mjs > "$KANIT_DIR/ekran.out" 2>&1; echo "ekran yeni çıkış $? $(tail -1 "$KANIT_DIR/ekran.out" | grep -oP '\d+/\d+ geçti, \d+ başarısız')"
+node tools/kanit.mjs kos c5bt2ay-mutasyon -- node --disable-warning=ExperimentalWarning test/tyk-mutasyon-250.mjs --klasor "$M" > "$KANIT_DIR/mutasyon.out" 2>&1; echo "mutasyon çıkış $?"; grep -E "SONUÇ|ÖZET|yakalandı" "$KANIT_DIR/mutasyon.out" | tail -2 | cut -c1-200
+# kâhin adımları (bugünkü liste: 611 kayıt) — fark çıkarsa döküm
+TZ=UTC node tools/kanit.mjs kos c5bt2ay-kahin-cari -- npm run test:kahin-cari > "$KANIT_DIR/kahin-cari.out" 2>&1; echo "kahin-cari çıkış $?"; grep -E "ÖZET|denetim geçti" "$KANIT_DIR/kahin-cari.out" | cut -c1-330
+node tools/kanit.mjs kos c5bt2ay-kahin-defter -- npm run test:kahin-defter > "$KANIT_DIR/kahin-defter.out" 2>&1; echo "kahin-defter çıkış $?"
+# tam npm test (ders 41)
+flock -n $S/tam-npm-test.lock node tools/kanit.mjs kos c5bt2ay-npm-test -- npm test > "$KANIT_DIR/npm-test.out" 2>&1; echo "npm test çıkış $?"; tail -1 "$KANIT_DIR/npm-test.out" | cut -c1-200
+echo "bitti $(date -u +%H:%M:%S) yük $(cat /proc/loadavg)"

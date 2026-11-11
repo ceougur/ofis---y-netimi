@@ -106,6 +106,9 @@ export function accountLedger(entries = [], plans = []) {
         planId: plan.id,
         kind: incoming ? "plan-in" : "plan-out",
         opening: Boolean(entry.opening),
+        // 2.5.0 Ç5-B tur 2a: "Hangi Taksite" bağı (plan_entries.item_id) — Tek Yükümlülük Kuyruğu'nda bağlı tahsilat önce o taksiti kapatır (karar (2); kartın kendi hesabı
+        // lib/plans.mjs allocate ile aynı sıra).
+        itemId: entry.itemId || "",
         // Çek/senetle alınan taksit (v2.0.7): rapor "çekle tahsilat" olarak ayırır (v2.0.9, cari bazında tahsilat).
         cheque: Boolean(entry.chequeId),
         date: entry.date,

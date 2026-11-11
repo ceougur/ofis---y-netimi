@@ -4336,36 +4336,9 @@
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:cari:Q3:gecikmis",
-   "beklenen": 0,
-   "program": 20000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
-   "paket": "Ç5-B tur 2"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
    "anahtar": "k1:cari:Q4:gecikmis",
    "beklenen": 0,
-   "program": 20000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
-   "paket": "Ç5-B tur 2"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:cari:Q8b:gecikmis",
-   "beklenen": 30000,
-   "program": 60000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
-   "paket": "Ç5-B tur 2"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:cari:Q9:gecikmis",
-   "beklenen": 70000,
-   "program": 100000,
+   "program": 10000,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
    "paket": "Ç5-B tur 2"
@@ -4562,16 +4535,6 @@
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:projeksiyon:cariToplam:Q4",
-   "beklenen": 10000,
-   "program": 20000,
-   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
-   "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
    "anahtar": "k1:projeksiyon:hareket:q1b",
    "beklenen": "yok",
    "program": {
@@ -4598,28 +4561,8 @@
    "senaryo": "d30-c5-s101-bitti-kart",
    "anahtar": "k1:takvim:cariToplam:Q4",
    "beklenen": 0,
-   "program": 20000,
+   "program": 10000,
    "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
-   "kural": "K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:takvim:cariToplam:Q8b",
-   "beklenen": 30000,
-   "program": 60000,
-   "sinif": "İNCELE YAYGIN · SINIF DIŞI",
-   "kural": "K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:takvim:cariToplam:Q9",
-   "beklenen": 70000,
-   "program": 100000,
-   "sinif": "İNCELE YAYGIN · SINIF DIŞI",
    "kural": "K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
    "paket": "Ç5-B tur 2",
    "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
@@ -4641,21 +4584,6 @@
    "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
    "kural": "K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan − Mevcut Borç kartının açık kapsamı (K6.5); ufuk geçmiş + 7 gün · C16.1 S91 A: vadesiz kayıt kayıt gününde vadeli kalem (gün = kayıt günü)",
    "paket": "Ç5-B tur 2"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:vadeTakip:cariToplam:Q4",
-   "beklenen": {
-    "catal": [
-     0,
-     10000
-    ]
-   },
-   "program": 20000,
-   "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
-   "kural": "K6.5 (1) + KS8.1 + KS10: carinin vadeTakip kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
    "senaryo": "d30-c5-s101-bitti-kart",
@@ -4684,7 +4612,7 @@
    "senaryo": "d31-c5-s101-taksit-vade-gunu",
    "anahtar": "k1:cari:Q4:gecikmis",
    "beklenen": 0,
-   "program": 20000,
+   "program": 10000,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
    "paket": "Ç5-B tur 2"
@@ -4770,65 +4698,6 @@
    "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },
   {
-   "senaryo": "d31-c5-s101-taksit-vade-gunu",
-   "anahtar": "k1:projeksiyon:cari",
-   "beklenen": 0,
-   "program": 2,
-   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
-   "kural": "KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
-  },
-  {
-   "senaryo": "d31-c5-s101-taksit-vade-gunu",
-   "anahtar": "k1:projeksiyon:cariToplam:Q4",
-   "beklenen": 10000,
-   "program": 20000,
-   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
-   "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
-  },
-  {
-   "senaryo": "d31-c5-s101-taksit-vade-gunu",
-   "anahtar": "k1:takvim:cariKalemSayisi",
-   "beklenen": 0,
-   "program": 2,
-   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
-   "kural": "K6.3 takvimdeki cari kalemlerinin sayısı",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
-  },
-  {
-   "senaryo": "d31-c5-s101-taksit-vade-gunu",
-   "anahtar": "k1:takvim:cariToplam:Q4",
-   "beklenen": 10000,
-   "program": 20000,
-   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
-   "kural": "K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
-  },
-  {
-   "senaryo": "d31-c5-s101-taksit-vade-gunu",
-   "anahtar": "k1:vadeTakip:cariToplam:Q4",
-   "beklenen": 10000,
-   "program": 20000,
-   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
-   "kural": "K6.5 (1) + KS8.1 + KS10: carinin vadeTakip kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
-  },
-  {
-   "senaryo": "d32-c5-s101-taksit-ertesi-gun",
-   "anahtar": "k1:cari:Q4:gecikmis",
-   "beklenen": 10000,
-   "program": 20000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
-   "paket": "Ç5-B tur 2"
-  },
-  {
    "senaryo": "d32-c5-s101-taksit-ertesi-gun",
    "anahtar": "k1:kart:KQ2:kalan",
    "beklenen": 20000,
@@ -4905,56 +4774,6 @@
    "program": 0,
    "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
    "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
-  },
-  {
-   "senaryo": "d32-c5-s101-taksit-ertesi-gun",
-   "anahtar": "k1:projeksiyon:cari",
-   "beklenen": 0,
-   "program": 2,
-   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
-   "kural": "KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
-  },
-  {
-   "senaryo": "d32-c5-s101-taksit-ertesi-gun",
-   "anahtar": "k1:projeksiyon:cariToplam:Q4",
-   "beklenen": 10000,
-   "program": 20000,
-   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
-   "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
-  },
-  {
-   "senaryo": "d32-c5-s101-taksit-ertesi-gun",
-   "anahtar": "k1:takvim:cariKalemSayisi",
-   "beklenen": 0,
-   "program": 2,
-   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
-   "kural": "K6.3 takvimdeki cari kalemlerinin sayısı",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
-  },
-  {
-   "senaryo": "d32-c5-s101-taksit-ertesi-gun",
-   "anahtar": "k1:takvim:cariToplam:Q4",
-   "beklenen": 10000,
-   "program": 20000,
-   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
-   "kural": "K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
-  },
-  {
-   "senaryo": "d32-c5-s101-taksit-ertesi-gun",
-   "anahtar": "k1:vadeTakip:cariToplam:Q4",
-   "beklenen": 10000,
-   "program": 20000,
-   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
-   "kural": "K6.5 (1) + KS8.1 + KS10: carinin vadeTakip kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
    "paket": "Ç5-B tur 2",
    "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de"
   },

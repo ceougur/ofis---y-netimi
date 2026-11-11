@@ -1,0 +1,198 @@
+TAP version 13
+# Subtest: 2.5.0 Ç5-B tur 2a (API): Y-1, O-1, O-2, O-3
+    # Subtest: Y-1: stoktan veresiye satış → taksitlendir: kart Gecikti [500, 500], Vade Takip iki taksit, zil 1. taksit, Gecikmiş Borç 500
+    not ok 1 - Y-1: stoktan veresiye satış → taksitlendir: kart Gecikti [500, 500], Vade Takip iki taksit, zil 1. taksit, Gecikmiş Borç 500
+      ---
+      duration_ms: 86.857915
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2ay-eski/test/tyk-tur2a-250.test.mjs:46:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            [
+        +     0,
+        +     0
+        -     500,
+        -     500
+            ],
+        +   'done'
+        -   'overdue'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 500
+          1: 500
+        1: 'overdue'
+      actual:
+        0:
+          0: 0
+          1: 0
+        1: 'done'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2ay-eski/test/tyk-tur2a-250.test.mjs:53:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: O-1: kilitten sonra DÜZELTMEYLE kurulan bağ = yeni kayıtla kurulan bağ (gecikmiş 0; F3 'kilitli dönemde kapanmıştı')
+    not ok 2 - O-1: kilitten sonra DÜZELTMEYLE kurulan bağ = yeni kayıtla kurulan bağ (gecikmiş 0; F3 'kilitli dönemde kapanmıştı')
+      ---
+      duration_ms: 434.922176
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2ay-eski/test/tyk-tur2a-250.test.mjs:65:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Tur2a K3 Düzeltme: gecikmiş 0
+        
+        300 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 300
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2ay-eski/test/tyk-tur2a-250.test.mjs:91:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: O-2: kart tahsilatı / taksit ekle / taksit düzelt / tahsilat düzelt / tahsilat sil / Otomatik Dağıt / durum yanıtları okumayla AYNI görünüm
+    not ok 3 - O-2: kart tahsilatı / taksit ekle / taksit düzelt / tahsilat düzelt / tahsilat sil / Otomatik Dağıt / durum yanıtları okumayla AYNI görünüm
+      ---
+      duration_ms: 26.402939
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2ay-eski/test/tyk-tur2a-250.test.mjs:104:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        açılış yanıtı
+        + actual - expected
+        
+          {
+            items: [
+              [
+                1,
+                300,
+        +       undefined,
+        -       0,
+                'overdue'
+              ],
+              [
+                2,
+                300,
+        +       undefined,
+        -       0,
+                'open'
+              ]
+            ],
+            own: 600,
+        +   queue: undefined,
+        -   queue: 600,
+            state: 'overdue'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        items:
+          0:
+            0: 1
+            1: 300
+            2: 0
+            3: 'overdue'
+          1:
+            0: 2
+            1: 300
+            2: 0
+            3: 'open'
+        state: 'overdue'
+        queue: 600
+        own: 600
+      actual:
+        items:
+          0:
+            0: 1
+            1: 300
+            3: 'overdue'
+          1:
+            0: 2
+            1: 300
+            3: 'open'
+        state: 'overdue'
+        own: 600
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2ay-eski/test/tyk-tur2a-250.test.mjs:107:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: O-3: taksitsiz / eksik taksitli kartın kalanı ve Taksit İadesi — gecikmiş = Vade Takip (her süzgeç) = zil = nakit akışı
+    not ok 4 - O-3: taksitsiz / eksik taksitli kartın kalanı ve Taksit İadesi — gecikmiş = Vade Takip (her süzgeç) = zil = nakit akışı
+      ---
+      duration_ms: 140.321158
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2ay-eski/test/tyk-tur2a-250.test.mjs:134:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Tur2a Taksitsiz: Vade Takip kalemleri
+        + actual - expected
+        
+        + []
+        - [
+        -   [
+        -     'plan',
+        -     'Taksitlendirilmemiş Kalan',
+        -     1000
+        -   ]
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'plan'
+          1: 'Taksitlendirilmemiş Kalan'
+          2: 1000
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2ay-eski/test/tyk-tur2a-250.test.mjs:153:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: M13: zilde şüpheli kuyruğundaki taksit payı düşer (gecikmiş = zil)
+    ok 5 - M13: zilde şüpheli kuyruğundaki taksit payı düşer (gecikmiş = zil)
+      ---
+      duration_ms: 72.972663
+      type: 'test'
+      ...
+    1..5
+not ok 1 - 2.5.0 Ç5-B tur 2a (API): Y-1, O-1, O-2, O-3
+  ---
+  duration_ms: 1190.930063
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2ay-eski/test/tyk-tur2a-250.test.mjs:18:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 1
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1571.794046

@@ -1,0 +1,5 @@
+önce 319 sonra 319
+kapanan 0
+açılan 0
+aynı adla değeri değişen 0
+çoklu küme farkı (sıralı ✗ satırları): 0 satır; ✗ satırı önce 532 sonra 532

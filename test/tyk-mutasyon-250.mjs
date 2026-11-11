@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 // 2.5.0 Ç5-B — TYK mutasyon testi (KANIT KURALI 3; ders 7): her kararın KARŞI seçeneği ve sınır kayması lib/obligation-queue.mjs'in AYRI kopyasına (ders 23, 25) enjekte edilir;
-// test/tyk-250.test.mjs her mutantta KIRMIZI olmalı. Kullanım: node test/tyk-mutasyon-250.mjs [--klasor <boş geçici klasör>]
+// test/tyk-250.test.mjs her mutantta KIRMIZI olmalı (Ç5-B tur 2a: yol / önbellek mutantları API testleriyle, tam kopyada). Kullanım: node test/tyk-mutasyon-250.mjs [--klasor <boş geçici klasör>] [--yalniz-saf]
 // Çıkış 0 yalnız bütün mutantlar öldüyse. Yük koşusudur: `flock -s scratchpad/olcum.lock` ile başlatılır (ders 52).
 import { spawnSync } from "node:child_process";
-import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -41,7 +41,7 @@ const MUTANTS = [
   ["M19", "S2 sınır kayması — eşit vadede belge tarihi tersten", "  : a.date !== b.date ? (a.date < b.date ? -1 : 1)\n  : a.at !== b.at", "  : a.date !== b.date ? (a.date < b.date ? 1 : -1)\n  : a.at !== b.at"],
   ["M20", "M1e B — kart tahsilatı en geç vadeli taksitten", "    const ordered = [...card.installments].sort(s2);", "    const ordered = [...card.installments].sort(s2).reverse();"],
   ["M21", "v2.0.23 B — karttan SONRA kaydedilen borç da kapsanır", "      if (card.at && target.recorded && target.recorded > card.at) continue;\n", "\n"],
-  ["M22", "kart kapsamı B — kartın anındaki bilinen satırlar okunmaz (sonraki karşılıksız kapsamı değiştirir)", "  const forced = coverForcing(input, mode, pieces);", "  const forced = null;"],
+  ["M22", "kart kapsamı B — kartın anındaki bilinen satırlar okunmaz (sonraki karşılıksız kapsamı değiştirir)", "  let forced = coverForcing(input, mode, pieces);", "  let forced = null;"],
   ["M23", "kart açılışı gün sınıfı B — aynı gün karttan önce yazılan ödeme karttan sonra sayılır", "events.push({ type: \"cover\", card, date: card.date, cls: 2,", "events.push({ type: \"cover\", card, date: card.date, cls: 1,"],
   ["M24", "gecikmiş B — yalnız yükümlülük rolü (netleşmemiş bağsız ödeme açık borç kalemi sayılmaz)", "item => item.side === \"receivable\" && item.vade < day", "item => item.due && item.side === \"receivable\" && item.vade < day"],
   // Ç5-B birleşim düzeltmesi (mutabakat yıl dönümü tohum 39): fatura durumunda karar (3)'ün kilit ölçümü taksitli faturanın kendi kartını "bağsız kapanmış" saymaz.
@@ -49,6 +49,46 @@ const MUTANTS = [
   ["M26", "istisna iki görünümde — net görünümde de karar (3) kart tahsilatını kesmez (taksit yeniden açılır)", "const closedByL = target && !(mode === \"side\" && target.ownCard) ?", "const closedByL = target && !target.ownCard ?"],
   ["M27", "istisna ters görünümde — yalnız net görünümde", "const closedByL = target && !(mode === \"side\" && target.ownCard) ?", "const closedByL = target && !(mode === \"net\" && target.ownCard) ?"],
   ["M28", "v2.0.24 B — fatura durumu taksitli faturanın bağsız kapanışını da sayar (açık ≠ kartın kalanı)", "const linkedLeft = item => Math.max(0, item.amount - item.closures.filter(c => !c.reverse && c.mode !== \"auto\" && c.mode !== \"locked\").reduce((sum, c) => sum + c.amount, 0));", "const linkedLeft = item => Math.max(0, item.left);"],
+  // ---- Ç5-B tur 2a (dar kontrol DK-C5B) — her düzeltmenin karşı mutantı; değerle yakalanmalı ----
+  ["Y1-a", "Y-1 geri — Kayıt Tarihi borçtan önce olan kart ön geçişe alınmaz (borç tüketilmez)", "  const late = lateCovers(input, state);", "  const late = new Set();"],
+  ["Y1-b", "Y-1 — asıl geçişte kartın açılış günü kaydırılmaz (Kayıt Tarihi'nde tüketecek borç yok)", "const opened = endCover === line.planId ? END_OF_STREAM : shifted > line.date ? shifted : line.date;", "const opened = endCover === line.planId ? END_OF_STREAM : line.date;"],
+  ["Y1-c", "Y-1 — ön geçişte kart bilinen satırların sonunda değil Kayıt Tarihi'nde", "endCover: shift ? cover.planId : \"\" });", "endCover: \"\" });"],
+  ["Y1-d", "Y-1 — belirsizlik koruması ters (tek okumalı kart kaydırılmaz)", "    if (shift && card?.ambiguous) continue;", "    if (shift && !card?.ambiguous) continue;"],
+  ["Y1-e", "Y-1 — açılış günü tüketilen kalemin en ERKEN günü", "const date = consumed.reduce((max, entry) => (entry.target.born > max ? entry.target.born : max), String(cover.date || \"\"));", "const date = String(cover.date || \"\");"],
+  ["O1-a", "O-1 geri — bağın anı düzeltme izinden okunmaz (oluşturulma anı)", "    const edited = linkTimes.get(lineId) || \"\";", "    const edited = \"\";"],
+  ["O1-b", "O-1 — Kapatılacak Fatura bağında kilit oluşturulma anından", "lockAt(linkedAt(link.from.lineId, link.from.at))", "lockAt(link.from.at)"],
+  ["O1-c", "O-1 — 'Hangi Taksite' bağında kilit oluşturulma anından", "const lock = lockAt(linkedAt(p.line.id, p.line.at));", "const lock = lockAt(p.line.at);"],
+  ["T-a", "Hangi Taksite geri — bağlı tahsilat vade sırasıyla (bağ yok sayılır)", "const inst = p.amount > 0 && p.line.itemId ? byItem.get(p.line.itemId) : null;", "const inst = null;"],
+  ["T-b", "Hangi Taksite — taksitini aşan kısım kaybolur", "sum + p.amount - (p.targeted || 0), 0);", "sum + p.amount - (p.targeted !== undefined ? p.amount : 0), 0);"],
+  ["T-c", "Hangi Taksite × karar (3) — kilitli dönemdeki bütün taksitler ölçüme yazılmaz", "if (lock && !lockCaps && card.payments.some(p => p.targeted !== undefined)) for", "if (false) for"],
+  ["T-d", "Hangi Taksite × karar (3) — kesilen payın kilidi bağın anından değil son tahsilatın kaydından", "const when = p.targeted !== undefined ? linkedAt(p.line.id, p.line.at) : \"\";", "const when = \"\";"],
+  ["T-e", "Hangi Taksite × iade geri — eksi havuz bağlı payı geri almaz (karşılıksız çekin taksiti açılmaz, Taksit İadesi kalemi olur)", "    if (net < 0 && targets.length) {", "    if (false) {"],
+  ["T-f", "Hangi Taksite × iade — bağlı pay EN ESKİ taksitten geri alınır", "pos.get(b.inst) - pos.get(a.inst) || b.index - a.index", "pos.get(a.inst) - pos.get(b.inst) || a.index - b.index"],
+  ["T-g", "Hangi Taksite × iade — iade tutarı kadar değil bağlı payın tamamı geri alınır", "const cut = Math.min(t.p.targeted, -net);", "const cut = t.p.targeted;"],
+  ["T-h", "Hangi Taksite × iade — geri alınan pay taksite dönmez (kalan değişmez)", "        t.inst.left += cut;\n", "\n"],
+  ["B-a", "O-3 Taksit İadesi kaleminin günü son tahsilatın günü (iadenin değil)", "const back = card.payments.filter(p => p.amount < 0).at(-1)?.line || last;", "const back = last;"],
+  ["B-b", "O-3 Taksit İadesi kalemi kart kalemlerinde yok", "    if (card.back) map.set(\"back\",", "    if (false) map.set(\"back\","],
+  ["N02", "B12 sınır — kayıtla AYNI anda yazılan kilit sayılmaz (dar kontrolün yaşayan mutantı)", "      if (row.at > when) break;", "      if (row.at >= when) break;"],
+  ["N06", "M13 B — şüpheli kuyruğu kayıt gününden SONRA doğan kalemi ilk geçişte alır (dar kontrolün yaşayan mutantı)", "        if (pass && item.born > record.date) continue;\n", "\n"],
+];
+// Ç5-B tur 2a: yol / önbellek düzeltmelerinin mutantları (server/routes/*) GERÇEK programda (API testleri) — tam kopya (server, client, test; node_modules bağı) üzerinde dosya
+// değiştir → seçili testler → geri yükle. --yalniz-saf ile atlanır.
+const API_MUTANTS = [
+  // Y3-a: Ç5-B ilk hâlinin kuralı (iz değişmediyse bütün cariler); yalnız erken dönüşü kapatmak eşdeğerdir (boş artımlı geçiş aynı sonucu verir).
+  ["Y3-a", "Y-3 geri — izi değişmeyen yazımda bütün cariler yeniden kurulur", "server/routes/invoices.mjs", "      if (!changed.size) {\n        settledCache = { ...previous, key };\n        return settledCache;\n      }\n      if (!changed.has(LOCK_PRINT) && changed.size <= INCREMENTAL_MAX) {", "      if (changed.size && !changed.has(LOCK_PRINT) && changed.size <= INCREMENTAL_MAX) {", ["test/tyk-onbellek-250.test.mjs", "test/tyk-api-250.test.mjs"]],
+  ["Y3-b", "Y-3 — izde Kapatılacak Fatura bağı yok (bayat sayı)", "server/routes/invoices.mjs", "id(\"source_id\"), id(\"invoice_id\"), id(\"refund_of\")", "id(\"source_id\"), id(\"refund_of\")", ["test/tyk-onbellek-250.test.mjs"]],
+  ["Y3-c", "Y-3 — izde kartın Kayıt Tarihi yok", "server/routes/invoices.mjs", "word(\"status\", [\"active\", \"closed\"]), day(\"registered_on\"), ", "word(\"status\", [\"active\", \"closed\"]), ", ["test/tyk-onbellek-250.test.mjs"]],
+  ["Y3-d", "Y-3 — izde taksitin vadesi yok", "server/routes/invoices.mjs", "\"COALESCE(i.seq, 0)\", day(\"i.due_date\"), ", "\"COALESCE(i.seq, 0)\", ", ["test/tyk-onbellek-250.test.mjs"]],
+  ["Y3-e", "Y-3 — kilit izi yazılmaz (N09'un kök nedeni geri)", "server/routes/invoices.mjs", "      prints.set(LOCK_PRINT, `|${", "      prints.set(`x${LOCK_PRINT}`, `|${", ["test/tyk-onbellek-250.test.mjs"]],
+  ["N09", "önbellek B — dönem kilidinin izi değişince bütün cariler yeniden kurulmaz (dar kontrolün 'eşdeğere yakın' mutantı)", "server/routes/invoices.mjs", "if (!changed.has(LOCK_PRINT) && changed.size <= INCREMENTAL_MAX) {", "if (changed.size <= INCREMENTAL_MAX) {", ["test/tyk-onbellek-250.test.mjs"]],
+  ["O1-API", "O-1 — düzeltme izinde önceki ↔ yeni bağ karşılaştırılmaz (bağın anı okunmaz)", "server/routes/invoices.mjs", "'$.previous.${previousKey}'", "'$.${previousKey}'", ["test/tyk-tur2a-250.test.mjs"]],
+  ["O2-a", "O-2 geri — kart tahsilatı yanıtı kartın kendi hesabı", "server/routes/plans.mjs", "    ok(res, { ...detailView(plan.id, user), entryId:", "    ok(res, { ...detail(plan.id, user), entryId:", ["test/tyk-tur2a-250.test.mjs"]],
+  ["O2-b", "O-2 geri — kart açılış yanıtı kartın kendi hesabı", "server/routes/plans.mjs", "    ok(res, detailView(id, user));", "    ok(res, result);", ["test/tyk-tur2a-250.test.mjs"]],
+  ["O2-c", "O-2 geri — kart düzenleme / durum yanıtı kartın kendi hesabı", "server/routes/plans.mjs", "    ok(res, detailView(result.id, user));\n  });\n\n  router.delete(\"/api/workspace/plans/:id\"", "    ok(res, result);\n  });\n\n  router.delete(\"/api/workspace/plans/:id\"", ["test/tyk-tur2a-250.test.mjs"]],
+  ["O3-a", "O-3 geri — kartın taksit dışı kalemleri hiçbir listede yok", "server/routes/plans.mjs", "    if (!map) return [];\n    const out = [];", "    if (true) return [];\n    const out = [];", ["test/tyk-tur2a-250.test.mjs"]],
+  ["O3-b", "O-3 — zil / takvim kartın kalanını göstermez", "server/routes/plans.mjs", "      for (const item of [...capToRemaining(ledger), ...queueExtras(plan, queue, day)]) {\n        const amount = roundMoney(item.remaining - (item.held || 0));", "      for (const item of capToRemaining(ledger)) {\n        const amount = roundMoney(item.remaining - (item.held || 0));", ["test/tyk-tur2a-250.test.mjs"]],
+  ["O3-c", "O-3 — Vade Takip / nakit akışı kartın kalanını göstermez", "server/routes/plans.mjs", "      for (const item of [...capToRemaining(ledger), ...queueExtras(plan, queue, day)]) {\n        // withoutDoubtful", "      for (const item of capToRemaining(ledger)) {\n        // withoutDoubtful", ["test/tyk-tur2a-250.test.mjs"]],
+  ["N08", "M13 B — zilde şüpheli kuyruğundaki taksit kısmı düşülmez (dar kontrolün yaşayan mutantı)", "server/routes/plans.mjs", "        const amount = roundMoney(item.remaining - (item.held || 0));\n        if (amount <= 0.005 || item.state === \"open\"", "        const amount = roundMoney(item.remaining);\n        if (amount <= 0.005 || item.state === \"open\"", ["test/tyk-tur2a-250.test.mjs"]],
 ];
 rmSync(base, { recursive: true, force: true });
 let killed = 0;
@@ -65,7 +105,7 @@ for (const [id, label, from, to] of MUTANTS) {
   const dir = path.join(base, id);
   mkdirSync(path.join(dir, "server/lib"), { recursive: true });
   mkdirSync(path.join(dir, "test"), { recursive: true });
-  for (const file of ["money.mjs", "invoice-settle.mjs"]) cpSync(path.join(ROOT, "server/lib", file), path.join(dir, "server/lib", file));
+  for (const file of ["money.mjs", "invoice-settle.mjs", "plans.mjs"]) cpSync(path.join(ROOT, "server/lib", file), path.join(dir, "server/lib", file));
   writeFileSync(path.join(dir, "server/lib/obligation-queue.mjs"), mutated);
   cpSync(path.join(ROOT, "test/tyk-250.test.mjs"), path.join(dir, "test/tyk-250.test.mjs"));
   writeFileSync(path.join(dir, "package.json"), JSON.stringify({ type: "module" }));
@@ -77,7 +117,42 @@ for (const [id, label, from, to] of MUTANTS) {
   if (dead) killed += 1;
   rows.push(`${id} ${dead ? "ÖLDÜ" : "YAŞADI"} (pass ${pass}, fail ${fail}) — ${label}${dead ? ` · öldüren: ${failed.join(" | ").slice(0, 300)}` : ""}`);
 }
+// API mutantları: tam kopya (server, client, test; node_modules ROOT'unkine bağ — npm ci YOK, ders 29), taban yeşil değilse koşulmaz.
+let apiTotal = 0;
+if (!argv.includes("--yalniz-saf")) {
+  const full = path.join(base, "tam");
+  mkdirSync(full, { recursive: true });
+  for (const dir of ["server", "client", "test"]) cpSync(path.join(ROOT, dir), path.join(full, dir), { recursive: true });
+  cpSync(path.join(ROOT, "package.json"), path.join(full, "package.json"));
+  symlinkSync(realpathSync(path.join(ROOT, "node_modules")), path.join(full, "node_modules"), "junction");
+  const env = { ...process.env, HUKUK_LICENSE_URL: "http://127.0.0.1:9" };
+  const runTests = tests => spawnSync(process.execPath, ["--disable-warning=ExperimentalWarning", "--test", "--test-concurrency=1", ...tests], { cwd: full, encoding: "utf8", timeout: 1_800_000, env });
+  const count = (out, name) => Number((out.match(new RegExp(`^# ${name} (\\d+)`, "m")) || [])[1] || 0);
+  const tests = [...new Set(API_MUTANTS.flatMap(m => m[5]))];
+  const baseRun = runTests(tests);
+  rows.push(`API TABAN (mutantsız): tests ${count(baseRun.stdout, "tests")}, pass ${count(baseRun.stdout, "pass")}, fail ${count(baseRun.stdout, "fail")}, çıkış ${baseRun.status}`);
+  if (baseRun.status === 0) {
+    for (const [id, label, file, from, to, list] of API_MUTANTS) {
+      apiTotal += 1;
+      const target = path.join(full, file);
+      const original = readFileSync(target, "utf8");
+      const hits = original.split(from).length - 1;
+      if (hits !== 1) {
+        rows.push(`${id} ENJEKTE EDİLEMEDİ (${hits} eşleşme) — ${label}`);
+        continue;
+      }
+      writeFileSync(target, original.replace(from, to));
+      const run = runTests(list);
+      writeFileSync(target, original);
+      const failed = [...run.stdout.matchAll(/^\s*not ok \d+ - (.*)$/gm)].map(m => m[1]).slice(0, 3);
+      const dead = run.status !== 0 && count(run.stdout, "fail") > 0;
+      if (dead) killed += 1;
+      rows.push(`${id} ${dead ? "ÖLDÜ" : "YAŞADI"} (tests ${count(run.stdout, "tests")}, pass ${count(run.stdout, "pass")}, fail ${count(run.stdout, "fail")}) — ${label}${dead ? ` · öldüren: ${failed.join(" | ").slice(0, 300)}` : ""}`);
+    }
+  } else rows.push("API TABAN KIRMIZI — API mutantları koşulmadı");
+}
 rmSync(base, { recursive: true, force: true });
 for (const row of rows) console.log(row);
-console.log(`# tests ${MUTANTS.length}\n# pass ${killed}\n# fail ${MUTANTS.length - killed}`);
-process.exitCode = killed === MUTANTS.length ? 0 : 1;
+const total = MUTANTS.length + (argv.includes("--yalniz-saf") ? 0 : API_MUTANTS.length);
+console.log(`# tests ${total}\n# pass ${killed}\n# fail ${total - killed}`);
+process.exitCode = killed === total ? 0 : 1;

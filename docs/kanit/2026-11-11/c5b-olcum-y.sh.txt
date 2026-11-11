@@ -1,0 +1,20 @@
+#!/bin/bash
+# Ana oturum ölçümü (ders 15, 47, 52): AYNI veri (c5b-olcum/n-100000'in taze kopyası) üç kodla — önceki (Ç5-B öncesi fd310c0a^1), eski (Ç5-B; ana dal a0d8342a), yeni (tur 2a; sınama ağacı fde5a5a8).
+# Betikler dar kontrolün (düzeltme ajanından bağımsız): olc.mjs (soğuk / ılık liste, tek kart, Borç Yaz sonrası, Vade Takip, zil) + olc2.mjs (cariye dokunmayan yazım sonrası).
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+OUT=$S/c5b-olcum-y.txt; B=$S/dk-c5b-q7/betik
+: > "$OUT"
+echo "nproc $(nproc) · başta /proc/loadavg $(cat /proc/loadavg) · $(free -g | sed -n 2p)" >> "$OUT"
+for pair in "onceki:$S/yay-onceki" "eski:$S/c5bt2ay-eski" "yeni:$S/d2t3-ya-ag"; do
+  IFS=: read -r name root <<< "$pair"
+  for olc in olc olc2; do
+    data=$S/c5b-olcum-y-veri/$name-$olc
+    rm -rf "$data" && mkdir -p "$(dirname "$data")" && cp -r "$S/c5b-olcum/n-100000" "$data" || exit 1
+    sleep 5
+    echo "=== $olc.mjs · $name ($root) · /proc/loadavg $(cat /proc/loadavg)" >> "$OUT"
+    (cd "$B" && HUKUK_LICENSE_URL=http://127.0.0.1:9 timeout 1500 node $olc.mjs "$root" "$data" 3) >> "$OUT" 2>&1
+    echo "çıkış $? · /proc/loadavg $(cat /proc/loadavg)" >> "$OUT"
+    rm -rf "$data"
+  done
+done
+echo "sonda /proc/loadavg $(cat /proc/loadavg)" >> "$OUT"

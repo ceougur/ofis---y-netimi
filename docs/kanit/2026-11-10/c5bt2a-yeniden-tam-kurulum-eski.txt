@@ -1,0 +1,22 @@
+{
+ "hiçbir yazım yok": {
+  "yazimDurumu": "-",
+  "butunCariKurulumu": 0
+ },
+ "stok girişi (cari / para yok)": {
+  "yazimDurumu": 200,
+  "butunCariKurulumu": 1
+ },
+ "yeni oturum (giriş)": {
+  "yazimDurumu": "-",
+  "butunCariKurulumu": 1
+ },
+ "carinin Borç Yaz'ı": {
+  "yazimDurumu": "-",
+  "butunCariKurulumu": 0
+ },
+ "cari kartının notu (yalnız açıklama)": {
+  "yazimDurumu": 200,
+  "butunCariKurulumu": 1
+ }
+}

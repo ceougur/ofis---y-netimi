@@ -1,0 +1,126 @@
+{
+ "once_duzelt": {
+  "bakiye": 300,
+  "gecikmisKart": 0,
+  "gecikmisKartAdet": 0,
+  "eskiGeciken": 0,
+  "gecikmisListe": 0,
+  "vade": [
+   "invoice:Satış faturası FIS2026000000003:300@2026-10-30"
+  ],
+  "vadeGecikmis": 0,
+  "zil": [],
+  "kalan": [],
+  "faturalar": [
+   {
+    "no": "FIS2026000000001",
+    "state": "paid",
+    "open": 0,
+    "closers": [
+     "Otomatik (vadesi en önce gelen):300@2026-09-05"
+    ]
+   },
+   {
+    "no": "FIS2026000000003",
+    "state": "open",
+    "open": 300,
+    "closers": []
+   },
+   {
+    "no": "FIS2026000000005",
+    "state": "paid",
+    "open": 0,
+    "closers": [
+     "Otomatik (vadesi en önce gelen):300@2026-10-15"
+    ]
+   }
+  ],
+  "kartlar": []
+ },
+ "duzeltYaniti": [
+  200,
+  "{\"id\":\"account-3e85cd8b-b33d-4436-8767-a0c0588fb2be\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"DK K3 Düzeltme\",\"phone\":\"0500 251 10 01\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2025-09-15\",\"groupId\":null,\""
+ ],
+ "sonra_duzelt": {
+  "bakiye": 300,
+  "gecikmisKart": 0,
+  "gecikmisKartAdet": 0,
+  "eskiGeciken": 0,
+  "gecikmisListe": 0,
+  "vade": [
+   "invoice:Satış faturası FIS2026000000003:300@2026-10-30"
+  ],
+  "vadeGecikmis": 0,
+  "zil": [],
+  "kalan": [],
+  "faturalar": [
+   {
+    "no": "FIS2026000000001",
+    "state": "paid",
+    "open": 0,
+    "closers": [
+     "Otomatik (vadesi en önce gelen):300@2026-09-05"
+    ]
+   },
+   {
+    "no": "FIS2026000000003",
+    "state": "open",
+    "open": 300,
+    "closers": []
+   },
+   {
+    "no": "FIS2026000000005",
+    "state": "paid",
+    "open": 0,
+    "closers": [
+     "Bağsız (kilitli dönemde kapanmıştı):300@2026-10-15"
+    ]
+   }
+  ],
+  "kartlar": []
+ },
+ "yeniYaniti": 200,
+ "sonra_yeni": {
+  "bakiye": 300,
+  "gecikmisKart": 0,
+  "gecikmisKartAdet": 0,
+  "eskiGeciken": 0,
+  "gecikmisListe": 0,
+  "vade": [
+   "invoice:Satış faturası FIS2026000000004:300@2026-10-30"
+  ],
+  "vadeGecikmis": 0,
+  "zil": [],
+  "kalan": [],
+  "faturalar": [
+   {
+    "no": "FIS2026000000002",
+    "state": "paid",
+    "open": 0,
+    "closers": [
+     "Otomatik (vadesi en önce gelen):300@2026-09-05"
+    ]
+   },
+   {
+    "no": "FIS2026000000004",
+    "state": "open",
+    "open": 300,
+    "closers": []
+   },
+   {
+    "no": "FIS2026000000006",
+    "state": "paid",
+    "open": 0,
+    "closers": [
+     "Bağsız (kilitli dönemde kapanmıştı):300@2026-10-15"
+    ]
+   }
+  ],
+  "kartlar": []
+ },
+ "mutabakat": {
+  "status": 200,
+  "ok": true,
+  "bad": []
+ }
+}

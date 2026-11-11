@@ -255,11 +255,13 @@ describe("2.5.0 Ç5-B — Tek Yükümlülük Kuyruğu (API)", () => {
       full = 0;
       after_ = snapshot();
       assert.equal(full, 0, "cari yazımından sonra bütün carilerin defteri kurulmaz (yalnız yazılan cari)");
-      // İzi görünmeyen yazım (aynı değerle güncelleme): güvenli yön — bütün cariler bir kez.
+      // Ç5-B tur 2a (Y-3, bilerek güncellendi — dar kontrol DK-C5B Y-3: "İzi değişmeyen yazımda önbellek korunur; iz TYK'nin BÜTÜN girdilerini kapsar"): kuyruğa dokunmayan
+      // yazımdan (aynı değerle güncelleme) sonra bütün cariler yeniden KURULMAZ (önceden "güvenli yön" diye bir kez kuruluyordu — 100 bin satırda ~7 sn). İzin eksiksizliği
+      // test/tyk-onbellek-250.test.mjs'te (her yazım türünden sonra önbellekli = baştan kurulan, rastgele sıra, durağan ve akan saat).
       server.app.store.run("UPDATE accounts SET updated_at = updated_at WHERE id = ?", acc.id);
       inv.allObligations();
       inv.allObligations();
-      assert.equal(full, 1, "izi görünmeyen yazımda bütün cariler BİR kez");
+      assert.equal(full, 0, "izi değişmeyen yazımda bütün cariler yeniden kurulmaz");
     } finally {
       accounts.allLedgers = original;
     }

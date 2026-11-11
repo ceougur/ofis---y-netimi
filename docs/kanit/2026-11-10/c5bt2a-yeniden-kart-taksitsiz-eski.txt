@@ -1,0 +1,63 @@
+{
+ "a_taksitSayisi": 0,
+ "a": {
+  "bakiye": 1000,
+  "gecikmisKart": 1000,
+  "gecikmisKartAdet": 1,
+  "eskiGeciken": 0,
+  "gecikmisListe": 1000,
+  "vade": [],
+  "vadeGecikmis": 0,
+  "zil": [],
+  "kalan": [],
+  "faturalar": [],
+  "kartlar": [
+   {
+    "state": "active",
+    "items": [],
+    "own": 1000,
+    "queue": 1000,
+    "accountPaid": 0
+   }
+  ]
+ },
+ "b_taksitEkle": [
+  200,
+  200,
+  "{\"id\":\"plan-74795364-8cd0-405f-894a-5440b9cb551b\",\"accountId\":\"account-b8a8a0ec-cd6c-4cc9-a493-c814a3ef7925\",\"refNo\":\"2\",\"registeredOn\":\"2026-09-30\",\"caseKey\":\""
+ ],
+ "b": {
+  "bakiye": 1000,
+  "gecikmisKart": 700,
+  "gecikmisKartAdet": 2,
+  "eskiGeciken": 300,
+  "gecikmisListe": 700,
+  "vade": [
+   "plan:1. taksit:300@2026-10-10",
+   "plan:2. taksit:300@2026-11-09"
+  ],
+  "vadeGecikmis": 300,
+  "zil": [
+   "plan:1. taksit:300:overdue"
+  ],
+  "kalan": [],
+  "faturalar": [],
+  "kartlar": [
+   {
+    "state": "overdue",
+    "items": [
+     300,
+     300
+    ],
+    "own": 1000,
+    "queue": 1000,
+    "accountPaid": 0
+   }
+  ]
+ },
+ "mutabakat": {
+  "status": 200,
+  "ok": true,
+  "bad": []
+ }
+}

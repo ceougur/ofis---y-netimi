@@ -1,0 +1,142 @@
+======== stok-kart
+  eski a_kart: {"id": "plan-e5d8c6c0-90ab-4cc1-b76f-9a441626f874", "kayitTarihi": "2025-09-15"}
+  eski a: {"bakiye": 1000, "gecikmisKart": 1000, "eskiGeciken": 500, "gecikmisListe": 1000, "vadeGecikmis": 1000, "kart": [["done", [0, 0]]], "vade": ["account:Tahsil Edilecek Borç:1000@2026-09-30"], "zil": ["account:Tahsil Edilecek Borç:1000:overdue"]}
+  eski b_kartYaniti: 200
+  eski b: {"bakiye": 1000, "gecikmisKart": 1000, "eskiGeciken": 500, "gecikmisListe": 1000, "vadeGecikmis": 1000, "kart": [["done", [0, 0]]], "vade": ["account:Tahsil Edilecek Borç:1000@2026-09-30"], "zil": ["account:Tahsil Edilecek Borç:1000:overdue"]}
+  eski a_kalemler: ["stock|2026-09-30|1000"]
+  eski a_sigmaKalem: 1000
+  eski b_kalemler: ["entry|2026-09-30|1000"]
+  eski b_sigmaKalem: 1000
+  eski taksitListesi_active: []
+  eski taksitListesi_overdue: []
+  eski taksitListesi_done: ["DK Stok Kartı:done:1000", "DK Geriye Tarihli Kart:done:1000"]
+  eski taksitListesi_all: ["DK Stok Kartı:done:1000", "DK Geriye Tarihli Kart:done:1000"]
+  eski mutabakat: {"status": 200, "ok": true, "bad": []}
+  v249 a_kart: {"id": "plan-3267dd73-3d1c-4222-9f60-5813c6fb5bb3", "kayitTarihi": "2025-09-15"}
+  v249 a: {"bakiye": 1000, "eskiGeciken": 500, "gecikmisListe": 500, "vadeGecikmis": 500, "kart": [["overdue", [500, 500]]], "vade": ["plan:1. taksit:500@2026-10-10", "plan:2. taksit:500@2026-11-10"], "zil": ["plan:1. taksit:500:overdue"]}
+  v249 b_kartYaniti: 200
+  v249 b: {"bakiye": 1000, "eskiGeciken": 500, "gecikmisListe": 500, "vadeGecikmis": 500, "kart": [["overdue", [500, 500]]], "vade": ["plan:1. taksit:500@2026-10-10", "plan:2. taksit:500@2026-11-10"], "zil": ["plan:1. taksit:500:overdue"]}
+  v249 taksitListesi_active: ["DK Stok Kartı:overdue:1000", "DK Geriye Tarihli Kart:overdue:1000"]
+  v249 taksitListesi_overdue: ["DK Stok Kartı:overdue:1000", "DK Geriye Tarihli Kart:overdue:1000"]
+  v249 taksitListesi_done: []
+  v249 taksitListesi_all: ["DK Stok Kartı:overdue:1000", "DK Geriye Tarihli Kart:overdue:1000"]
+  v249 mutabakat: {"status": 200, "ok": true, "bad": []}
+  son a_kart: {"id": "plan-e8e83a1b-8b6e-4976-a793-738079cbc5f7", "kayitTarihi": "2025-09-15"}
+  son a: {"bakiye": 1000, "gecikmisKart": 500, "eskiGeciken": 500, "gecikmisListe": 500, "vadeGecikmis": 500, "kart": [["overdue", [500, 500]]], "vade": ["plan:1. taksit:500@2026-10-10", "plan:2. taksit:500@2026-11-10"], "zil": ["plan:1. taksit:500:overdue"]}
+  son b_kartYaniti: 200
+  son b: {"bakiye": 1000, "gecikmisKart": 500, "eskiGeciken": 500, "gecikmisListe": 500, "vadeGecikmis": 500, "kart": [["overdue", [500, 500]]], "vade": ["plan:1. taksit:500@2026-10-10", "plan:2. taksit:500@2026-11-10"], "zil": ["plan:1. taksit:500:overdue"]}
+  son a_kalemler: ["installment|2026-10-10|500", "installment|2026-11-10|500"]
+  son a_sigmaKalem: 1000
+  son b_kalemler: ["installment|2026-10-10|500", "installment|2026-11-10|500"]
+  son b_sigmaKalem: 1000
+  son taksitListesi_active: ["DK Stok Kartı:overdue:1000", "DK Geriye Tarihli Kart:overdue:1000"]
+  son taksitListesi_overdue: ["DK Stok Kartı:overdue:1000", "DK Geriye Tarihli Kart:overdue:1000"]
+  son taksitListesi_done: []
+  son taksitListesi_all: ["DK Stok Kartı:overdue:1000", "DK Geriye Tarihli Kart:overdue:1000"]
+  son mutabakat: {"status": 200, "ok": true, "bad": []}
+======== kart-avans
+  eski kartOncesi: {"bakiye": -400, "gecikmisKart": 0, "eskiGeciken": 300, "gecikmisListe": 0, "vadeGecikmis": 0, "kart": [["done", [0, 0]]], "vade": [], "zil": []}
+  eski kartTahsilati: 200
+  eski sonra: {"bakiye": -700, "gecikmisKart": 0, "eskiGeciken": 0, "gecikmisListe": 0, "vadeGecikmis": 0, "kart": [["done", [0, 0]]], "vade": [], "zil": []}
+  eski borcSonrasi: {"bakiye": -200, "gecikmisKart": 100, "eskiGeciken": 0, "gecikmisListe": 100, "vadeGecikmis": 100, "kart": [["done", [0, 0]]], "vade": ["account:Tahsil Edilecek Borç:100@2026-10-10"], "zil": ["account:Tahsil Edilecek Borç:100:overdue"]}
+  eski kalemler: ["entry|receivable|2026-10-10|500→100"]
+  eski sigmaKalem: 100
+  v249 kartOncesi: {"bakiye": -400, "eskiGeciken": 300, "gecikmisListe": 300, "vadeGecikmis": 300, "kart": [["overdue", [300, 300]]], "vade": ["plan:1. taksit:300@2026-09-25", "plan:2. taksit:300@2026-10-25"], "zil": ["plan:1. taksit:300:overdue", "plan:2. taksit:300:upcoming"]}
+  v249 kartTahsilati: 200
+  v249 sonra: {"bakiye": -700, "eskiGeciken": 0, "gecikmisListe": 0, "vadeGecikmis": 0, "kart": [["active", [0, 300]]], "vade": ["plan:2. taksit:300@2026-10-25"], "zil": ["plan:2. taksit:300:upcoming"]}
+  v249 borcSonrasi: {"bakiye": -200, "eskiGeciken": 0, "gecikmisListe": 0, "vadeGecikmis": 0, "kart": [["active", [0, 300]]], "vade": ["plan:2. taksit:300@2026-10-25"], "zil": ["plan:2. taksit:300:upcoming"]}
+  son kartOncesi: {"bakiye": -400, "gecikmisKart": 0, "eskiGeciken": 300, "gecikmisListe": 0, "vadeGecikmis": 0, "kart": [["done", [0, 0]]], "vade": [], "zil": []}
+  son kartTahsilati: 200
+  son sonra: {"bakiye": -700, "gecikmisKart": 0, "eskiGeciken": 0, "gecikmisListe": 0, "vadeGecikmis": 0, "kart": [["done", [0, 0]]], "vade": [], "zil": []}
+  son borcSonrasi: {"bakiye": -200, "gecikmisKart": 0, "eskiGeciken": 0, "gecikmisListe": 0, "vadeGecikmis": 0, "kart": [["done", [0, 0]]], "vade": [], "zil": []}
+  son kalemler: []
+  son sigmaKalem: 0
+======== kart-taksitsiz
+  eski a_taksitSayisi: 0
+  eski a: {"bakiye": 1000, "gecikmisKart": 1000, "eskiGeciken": 0, "gecikmisListe": 1000, "vadeGecikmis": 0, "kart": [["active", []]], "vade": [], "zil": []}
+  eski b_taksitEkle: [200, 200, "{\"id\":\"plan-74795364-8cd0-405f-894a-5440b9cb551b\",\"accountId\":\"account-b8a8a0ec-cd6c-4cc9-a493-c814a3ef7925\",\"refNo\":\"2\",\"registeredOn\":\"2026-09-30\",\"caseKey\":\""]
+  eski b: {"bakiye": 1000, "gecikmisKart": 700, "eskiGeciken": 300, "gecikmisListe": 700, "vadeGecikmis": 300, "kart": [["overdue", [300, 300]]], "vade": ["plan:1. taksit:300@2026-10-10", "plan:2. taksit:300@2026-11-09"], "zil": ["plan:1. taksit:300:overdue"]}
+  eski mutabakat: {"status": 200, "ok": true, "bad": []}
+  v249 a_taksitSayisi: 0
+  v249 a: {"bakiye": 1000, "eskiGeciken": 0, "gecikmisListe": 0, "vadeGecikmis": 0, "kart": [["active", []]], "vade": [], "zil": []}
+  v249 b_taksitEkle: [200, 200, "{\"id\":\"plan-179c67be-cc08-4324-8035-0b9267ef54e7\",\"accountId\":\"account-a78e3a1b-c84a-43e3-8943-1c2df9b6ae37\",\"refNo\":\"2\",\"registeredOn\":\"2026-09-30\",\"caseKey\":\""]
+  v249 b: {"bakiye": 1000, "eskiGeciken": 300, "gecikmisListe": 300, "vadeGecikmis": 300, "kart": [["overdue", [300, 300]]], "vade": ["plan:1. taksit:300@2026-10-10", "plan:2. taksit:300@2026-11-09"], "zil": ["plan:1. taksit:300:overdue"]}
+  v249 mutabakat: {"status": 200, "ok": true, "bad": []}
+  son a_taksitSayisi: 0
+  son a: {"bakiye": 1000, "gecikmisKart": 1000, "eskiGeciken": 0, "gecikmisListe": 1000, "vadeGecikmis": 1000, "kart": [["active", []]], "vade": ["plan:Taksitlendirilmemiş Kalan:1000@2026-09-30"], "zil": ["plan:Taksitlendirilmemiş Kalan:1000:overdue"]}
+  son b_taksitEkle: [200, 200, "{\"id\":\"plan-e0225552-b095-480d-8032-704e7168988b\",\"accountId\":\"account-c12c0ef1-50e5-48ae-b016-e8189f805e6f\",\"refNo\":\"2\",\"registeredOn\":\"2026-09-30\",\"caseKey\":\""]
+  son b: {"bakiye": 1000, "gecikmisKart": 700, "eskiGeciken": 300, "gecikmisListe": 700, "vadeGecikmis": 700, "kart": [["overdue", [300, 300]]], "vade": ["plan:1. taksit:300@2026-10-10", "plan:2. taksit:300@2026-11-09", "plan:Taksitlendirilmemiş Kalan:400@2026-09-30"], "zil": ["plan:1. taksit:300:overdue", "plan:Taksitlendirilmemiş Kalan
+  son mutabakat: {"status": 200, "ok": true, "bad": []}
+======== k3-duzelt
+  eski once_duzelt: {"bakiye": 300, "gecikmisKart": 0, "eskiGeciken": 0, "gecikmisListe": 0, "vadeGecikmis": 0, "kart": [], "vade": ["invoice:Satış faturası FIS2026000000003:300@2026-10-30"], "zil": []}
+  eski duzeltYaniti: [200, "{\"id\":\"account-72c94bee-203c-4577-b934-c6907bdea915\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"DK K3 Düzeltme\",\"phone\":\"0500 251 10 01\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2025-09-15\",\"groupId\":null,\""]
+  eski sonra_duzelt: {"bakiye": 300, "gecikmisKart": 300, "eskiGeciken": 0, "gecikmisListe": 300, "vadeGecikmis": 300, "kart": [], "vade": ["invoice:Satış faturası FIS2026000000005:300@2026-09-15"], "zil": ["invoice:Tahsil Edilecek Fatura FIS2026000000005:300:overdue"]}
+  eski yeniYaniti: 200
+  eski sonra_yeni: {"bakiye": 300, "gecikmisKart": 0, "eskiGeciken": 0, "gecikmisListe": 0, "vadeGecikmis": 0, "kart": [], "vade": ["invoice:Satış faturası FIS2026000000004:300@2026-10-30"], "zil": []}
+  eski mutabakat: {"status": 200, "ok": true, "bad": []}
+  v249 once_duzelt: {"bakiye": 300, "eskiGeciken": 0, "gecikmisListe": 0, "vadeGecikmis": 300, "kart": [], "vade": ["invoice:Satış faturası FIS2026000000005:300@2026-09-15"], "zil": ["invoice:Tahsil Edilecek Fatura FIS2026000000005:300:overdue"]}
+  v249 duzeltYaniti: [200, "{\"id\":\"account-c0da745e-9482-4232-a8bc-fb2874308e74\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"DK K3 Düzeltme\",\"phone\":\"0500 251 10 01\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2025-09-15\",\"groupId\":null,\""]
+  v249 sonra_duzelt: {"bakiye": 300, "eskiGeciken": 0, "gecikmisListe": 0, "vadeGecikmis": 300, "kart": [], "vade": ["invoice:Satış faturası FIS2026000000005:300@2026-09-15"], "zil": ["invoice:Tahsil Edilecek Fatura FIS2026000000005:300:overdue"]}
+  v249 yeniYaniti: 200
+  v249 sonra_yeni: {"bakiye": 300, "eskiGeciken": 0, "gecikmisListe": 0, "vadeGecikmis": 300, "kart": [], "vade": ["invoice:Satış faturası FIS2026000000006:300@2026-09-15"], "zil": ["invoice:Tahsil Edilecek Fatura FIS2026000000006:300:overdue"]}
+  v249 mutabakat: {"status": 200, "ok": true, "bad": []}
+  son once_duzelt: {"bakiye": 300, "gecikmisKart": 0, "eskiGeciken": 0, "gecikmisListe": 0, "vadeGecikmis": 0, "kart": [], "vade": ["invoice:Satış faturası FIS2026000000003:300@2026-10-30"], "zil": []}
+  son duzeltYaniti: [200, "{\"id\":\"account-3e85cd8b-b33d-4436-8767-a0c0588fb2be\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"DK K3 Düzeltme\",\"phone\":\"0500 251 10 01\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2025-09-15\",\"groupId\":null,\""]
+  son sonra_duzelt: {"bakiye": 300, "gecikmisKart": 0, "eskiGeciken": 0, "gecikmisListe": 0, "vadeGecikmis": 0, "kart": [], "vade": ["invoice:Satış faturası FIS2026000000003:300@2026-10-30"], "zil": []}
+  son yeniYaniti: 200
+  son sonra_yeni: {"bakiye": 300, "gecikmisKart": 0, "eskiGeciken": 0, "gecikmisListe": 0, "vadeGecikmis": 0, "kart": [], "vade": ["invoice:Satış faturası FIS2026000000004:300@2026-10-30"], "zil": []}
+  son mutabakat: {"status": 200, "ok": true, "bad": []}
+======== kilit-kardes
+  eski a_duzeltme: 200
+  eski a_sonra: {"items": [[1, 0, 0], [2, 0, 300]], "state": "done", "queue": 0}
+  eski b_yeni: 200
+  eski b_sonra: {"items": [[1, 0, 300], [2, 0, 0]], "state": "done", "queue": 0}
+  eski c_duzeltme: 200
+  eski c_sonra: {"items": [[1, 0, 0], [2, 0, 300]], "state": "done", "queue": 0}
+  eski d_yeni: 200
+  eski d_sonra: {"items": [[1, 0, 300], [2, 0, 0]], "state": "done", "queue": 0}
+  eski a_gecikmis: 0
+  eski b_gecikmis: 0
+  eski c_gecikmis: 0
+  eski d_gecikmis: 0
+  eski e_duzeltme: [200, "{\"id\":\"invoice-7e3a2ce6-05ba-43c8-a1cf-a7e67d71f5db\",\"kind\":\"sale_return\",\"kindLabel\":\"Satıştan İade Faturası\",\"scenario\":\"sale_return\",\"scenarioLabel\":\"Satışta"]
+  eski e_sonra: {"bakiye": 180, "gecikmisKart": 180, "eskiGeciken": 0, "gecikmisListe": 180, "vadeGecikmis": 180, "kart": [], "vade": ["invoice:Satış faturası FIS2026000000003 (kalan):180@2026-09-15"], "zil": ["invoice:Tahsil Edilecek Fatura FIS2026000000003:180:overdue"]}
+  eski f_sonra: {"bakiye": 180, "gecikmisKart": 180, "eskiGeciken": 0, "gecikmisListe": 180, "vadeGecikmis": 180, "kart": [], "vade": ["invoice:Satış faturası FIS2026000000004 (kalan):180@2026-09-15"], "zil": ["invoice:Tahsil Edilecek Fatura FIS2026000000004:180:overdue"]}
+  eski mutabakat: {"status": 200, "ok": true, "bad": []}
+  v249: okunamadı (FileNotFoundError)
+  son a_duzeltme: 200
+  son a_sonra: {"items": [[1, 0, 0], [2, 0, 300]], "state": "done", "queue": 0}
+  son b_yeni: 200
+  son b_sonra: {"items": [[1, 0, 300], [2, 0, 0]], "state": "done", "queue": 0}
+  son c_duzeltme: 200
+  son c_sonra: {"items": [[1, 0, 300], [2, 0, 0]], "state": "done", "queue": 0}
+  son d_yeni: 200
+  son d_sonra: {"items": [[1, 0, 300], [2, 0, 0]], "state": "done", "queue": 0}
+  son a_gecikmis: 0
+  son b_gecikmis: 0
+  son c_gecikmis: 0
+  son d_gecikmis: 0
+  son e_duzeltme: [200, "{\"id\":\"invoice-4b88685d-7f28-4fbd-8775-fb73499d5d7b\",\"kind\":\"sale_return\",\"kindLabel\":\"Satıştan İade Faturası\",\"scenario\":\"sale_return\",\"scenarioLabel\":\"Satışta"]
+  son e_sonra: {"bakiye": 180, "gecikmisKart": 180, "eskiGeciken": 0, "gecikmisListe": 180, "vadeGecikmis": 180, "kart": [], "vade": ["invoice:Satış faturası FIS2026000000003 (kalan):180@2026-09-15"], "zil": ["invoice:Tahsil Edilecek Fatura FIS2026000000003:180:overdue"]}
+  son f_sonra: {"bakiye": 180, "gecikmisKart": 180, "eskiGeciken": 0, "gecikmisListe": 180, "vadeGecikmis": 180, "kart": [], "vade": ["invoice:Satış faturası FIS2026000000004 (kalan):180@2026-09-15"], "zil": ["invoice:Tahsil Edilecek Fatura FIS2026000000004:180:overdue"]}
+  son mutabakat: {"status": 200, "ok": true, "bad": []}
+======== tam-kurulum
+  eski hiçbir yazım yok: {"yazimDurumu": "-", "butunCariKurulumu": 0}
+  eski stok girişi (cari / para yok): {"yazimDurumu": 200, "butunCariKurulumu": 1}
+  eski yeni oturum (giriş): {"yazimDurumu": "-", "butunCariKurulumu": 1}
+  eski carinin Borç Yaz'ı: {"yazimDurumu": "-", "butunCariKurulumu": 0}
+  eski cari kartının notu (yalnız açıklama): {"yazimDurumu": 200, "butunCariKurulumu": 1}
+  v249 hiçbir yazım yok: {"yazimDurumu": "-", "butunCariKurulumu": 0}
+  v249 stok girişi (cari / para yok): {"yazimDurumu": 200, "butunCariKurulumu": 0}
+  v249 yeni oturum (giriş): {"yazimDurumu": "-", "butunCariKurulumu": 0}
+  v249 carinin Borç Yaz'ı: {"yazimDurumu": "-", "butunCariKurulumu": 0}
+  v249 cari kartının notu (yalnız açıklama): {"yazimDurumu": 200, "butunCariKurulumu": 0}
+  son hiçbir yazım yok: {"yazimDurumu": "-", "butunCariKurulumu": 0}
+  son stok girişi (cari / para yok): {"yazimDurumu": 200, "butunCariKurulumu": 0}
+  son yeni oturum (giriş): {"yazimDurumu": "-", "butunCariKurulumu": 0}
+  son carinin Borç Yaz'ı: {"yazimDurumu": "-", "butunCariKurulumu": 0}
+  son cari kartının notu (yalnız açıklama): {"yazimDurumu": 200, "butunCariKurulumu": 0}
+======== belirsiz-kart
+  eski sonuc: {"bakiye": 1500, "gecikmisKart": 1500, "eskiGeciken": 300, "gecikmisListe": 1500, "vadeGecikmis": 1500, "kart": [["done", [0, 0, 0]]], "vade": ["account:Tahsil Edilecek Borç:900@2026-09-20", "invoice:Satış faturası FIS2026000000001:600@2026-08-21"], "zil": ["account:Tahsil Edilecek Borç:900:overdue", "invoice:Tahsil Edilecek Fat
+  v249 sonuc: {"bakiye": 1500, "eskiGeciken": 300, "gecikmisListe": 300, "vadeGecikmis": 900, "kart": [["overdue", [300, 300, 300]]], "vade": ["invoice:Satış faturası FIS2026000000001:600@2026-08-21", "plan:1. taksit:300@2026-09-30", "plan:2. taksit:300@2026-10-30", "plan:3. taksit:300@2026-11-30"], "zil": ["invoice:Tahsil Edilecek Fatura FIS
+  son sonuc: {"bakiye": 1500, "gecikmisKart": 1500, "eskiGeciken": 300, "gecikmisListe": 1500, "vadeGecikmis": 1500, "kart": [["done", [0, 0, 0]]], "vade": ["account:Tahsil Edilecek Borç:900@2026-09-20", "invoice:Satış faturası FIS2026000000001:600@2026-08-21"], "zil": ["account:Tahsil Edilecek Borç:900:overdue", "invoice:Tahsil Edilecek Fat

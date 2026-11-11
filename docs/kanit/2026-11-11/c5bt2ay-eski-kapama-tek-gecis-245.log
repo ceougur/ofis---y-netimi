@@ -1,0 +1,65 @@
+TAP version 13
+# Subtest: G8 tek geçiş: fatura durumları ve vadeli elle satırların Kalan'ı aynı kapama geçişinden; sonuç cari başına yolla aynı
+    # Subtest: tek geçiş: yazımdan sonra iki harita için carilerin defteri en çok BİR KEZ kurulur; ikinci çağrılar önbellekten
+    not ok 1 - tek geçiş: yazımdan sonra iki harita için carilerin defteri en çok BİR KEZ kurulur; ikinci çağrılar önbellekten
+      ---
+      duration_ms: 25.023673
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2ay-eski/test/kapama-tek-gecis-245.test.mjs:117:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        izi değişmeyen yazımdan sonra ters sırada allLedgers 1 kez (0 beklenir — önbellek korunur)
+        
+        1 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 1
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2ay-eski/test/kapama-tek-gecis-245.test.mjs:128:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: toplu yol = cari başına yol: her fatura durumu ve her vadeli carinin her satırı (D1 olayları dahil)
+    ok 2 - toplu yol = cari başına yol: her fatura durumu ve her vadeli carinin her satırı (D1 olayları dahil)
+      ---
+      duration_ms: 23.631266
+      type: 'test'
+      ...
+    # Subtest: kapsam: elle satır haritası elle Borç / Alacak satırı olan carilerin satırlarını taşır (faturasız vadeli cari dahil; vadesiz cari de — S1)
+    ok 3 - kapsam: elle satır haritası elle Borç / Alacak satırı olan carilerin satırlarını taşır (faturasız vadeli cari dahil; vadesiz cari de — S1)
+      ---
+      duration_ms: 9.748771
+      type: 'test'
+      ...
+    # Subtest: bayatlık: yazımdan sonra yeni değer; işlem içinde hesaplanan sonuç önbelleğe yazılmaz (geri alınınca eski değer)
+    ok 4 - bayatlık: yazımdan sonra yeni değer; işlem içinde hesaplanan sonuç önbelleğe yazılmaz (geri alınınca eski değer)
+      ---
+      duration_ms: 43.555822
+      type: 'test'
+      ...
+    1..4
+not ok 1 - G8 tek geçiş: fatura durumları ve vadeli elle satırların Kalan'ı aynı kapama geçişinden; sonuç cari başına yolla aynı
+  ---
+  duration_ms: 1672.559777
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2ay-eski/test/kapama-tek-gecis-245.test.mjs:30:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 3
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2030.613698
