@@ -1,0 +1,65 @@
+UYARI: özel ölçüm kilidi alınamadı (başka iş paylaşımlı kilitte) — paylaşımlı kilitle koşuldu; SÜRELER GEÇERSİZ (ders 52), yalnız denetim yolu ve taban sapması okunur. başta: 2.12 2.29 2.26 1/145 27910
+  10000 (hazır veri) 001: Mutabakat Testi taban sapması yok
+  10000 (hazır veri) 002: Mutabakat Testi taban sapması yok
+  · [kilitsiz] Kasa nakit girişi: kapı 9.2 ms · HTTP 19.8 ms · denetim yolu süzgeçli
+  · [kilitsiz] Cari havale tahsilatı: kapı 15.3 ms · HTTP 86.2 ms · denetim yolu süzgeçli
+  · [kilitsiz] Peşin satış faturası: kapı 18.9 ms · HTTP 71.2 ms · denetim yolu süzgeçli
+  · [kilitsiz] Taksit tahsilatı: kapı 13.9 ms · HTTP 178 ms · denetim yolu süzgeçli
+  · [kilitsiz] Borç Yaz (para olmayan): kapı 9.9 ms · HTTP 59.6 ms · denetim yolu süzgeçli
+  · [kilitsiz] Çek alış: kapı 12.7 ms · HTTP 24.3 ms · denetim yolu süzgeçli
+  · [kilitsiz] Çek tahsili: kapı 16.1 ms · HTTP 26.2 ms · denetim yolu süzgeçli
+  · [kilitsiz] Çek alış (tahsile): kapı 9.9 ms · HTTP 15.7 ms · denetim yolu süzgeçli
+  · [kilitsiz] Bankaya Tahsile Ver: kapı 12.5 ms · HTTP 17.9 ms · denetim yolu süzgeçli
+  · [kilitsiz] Bankadan Geri Al: kapı 12.6 ms · HTTP 18.0 ms · denetim yolu süzgeçli
+  · [kilitsiz] Bankaya Tahsile Ver (2): kapı 13.5 ms · HTTP 18.5 ms · denetim yolu süzgeçli
+  · [kilitsiz] Tahsil Edildi (tahsildeki): kapı 16.1 ms · HTTP 25.5 ms · denetim yolu süzgeçli
+  · [kilitsiz] Kasa nakit girişi: kapı 3.2 ms · HTTP 8.6 ms · denetim yolu süzgeçli
+  · [kilitsiz] Cari havale tahsilatı: kapı 14.0 ms · HTTP 71.7 ms · denetim yolu süzgeçli
+  · [kilitsiz] Peşin satış faturası: kapı 15.6 ms · HTTP 54.4 ms · denetim yolu süzgeçli
+  · [kilitsiz] Taksit tahsilatı: kapı 12.9 ms · HTTP 155 ms · denetim yolu süzgeçli
+  · [kilitsiz] Borç Yaz (para olmayan): kapı 10.5 ms · HTTP 56.7 ms · denetim yolu süzgeçli
+  · [kilitsiz] Çek alış: kapı 13.1 ms · HTTP 19.1 ms · denetim yolu süzgeçli
+  · [kilitsiz] Çek tahsili: kapı 14.1 ms · HTTP 23.7 ms · denetim yolu süzgeçli
+  · [kilitsiz] Çek alış (tahsile): kapı 10.3 ms · HTTP 17.7 ms · denetim yolu süzgeçli
+  · [kilitsiz] Bankaya Tahsile Ver: kapı 13.7 ms · HTTP 18.3 ms · denetim yolu süzgeçli
+  · [kilitsiz] Bankadan Geri Al: kapı 14.0 ms · HTTP 22.9 ms · denetim yolu süzgeçli
+  · [kilitsiz] Bankaya Tahsile Ver (2): kapı 17.9 ms · HTTP 26.0 ms · denetim yolu süzgeçli
+  · [kilitsiz] Tahsil Edildi (tahsildeki): kapı 16.1 ms · HTTP 23.7 ms · denetim yolu süzgeçli
+  · [kilitli] Kasa nakit girişi: kapı 3.5 ms · HTTP 16.5 ms · denetim yolu süzgeçli
+  · [kilitli] Cari havale tahsilatı: kapı 14.0 ms · HTTP 60.3 ms · denetim yolu süzgeçli
+  · [kilitli] Peşin satış faturası: kapı 15.3 ms · HTTP 50.4 ms · denetim yolu süzgeçli
+  · [kilitli] Taksit tahsilatı: kapı 14.5 ms · HTTP 915 ms · denetim yolu süzgeçli
+  · [kilitli] Borç Yaz (para olmayan): kapı 10.9 ms · HTTP 52.8 ms · denetim yolu süzgeçli
+  · [kilitli] Çek alış: kapı 10.5 ms · HTTP 15.8 ms · denetim yolu süzgeçli
+  · [kilitli] Çek tahsili: kapı 14.2 ms · HTTP 20.2 ms · denetim yolu süzgeçli
+  · [kilitli] Çek alış (tahsile): kapı 11.0 ms · HTTP 15.4 ms · denetim yolu süzgeçli
+  · [kilitli] Bankaya Tahsile Ver: kapı 17.9 ms · HTTP 24.4 ms · denetim yolu süzgeçli
+  · [kilitli] Bankadan Geri Al: kapı 12.6 ms · HTTP 20.1 ms · denetim yolu süzgeçli
+  · [kilitli] Bankaya Tahsile Ver (2): kapı 13.0 ms · HTTP 17.6 ms · denetim yolu süzgeçli
+  · [kilitli] Tahsil Edildi (tahsildeki): kapı 14.7 ms · HTTP 20.7 ms · denetim yolu süzgeçli
+  · [kilitli] Kasa nakit girişi: kapı 2.9 ms · HTTP 7.0 ms · denetim yolu süzgeçli
+  · [kilitli] Cari havale tahsilatı: kapı 21.9 ms · HTTP 66.9 ms · denetim yolu süzgeçli
+  · [kilitli] Peşin satış faturası: kapı 14.7 ms · HTTP 48.5 ms · denetim yolu süzgeçli
+  · [kilitli] Taksit tahsilatı: kapı 12.6 ms · HTTP 157 ms · denetim yolu süzgeçli
+  · [kilitli] Borç Yaz (para olmayan): kapı 9.9 ms · HTTP 51.3 ms · denetim yolu süzgeçli
+  · [kilitli] Çek alış: kapı 11.1 ms · HTTP 16.4 ms · denetim yolu süzgeçli
+  · [kilitli] Çek tahsili: kapı 12.9 ms · HTTP 21.1 ms · denetim yolu süzgeçli
+  · [kilitli] Çek alış (tahsile): kapı 9.6 ms · HTTP 14.0 ms · denetim yolu süzgeçli
+  · [kilitli] Bankaya Tahsile Ver: kapı 11.7 ms · HTTP 15.9 ms · denetim yolu süzgeçli
+  · [kilitli] Bankadan Geri Al: kapı 11.9 ms · HTTP 15.8 ms · denetim yolu süzgeçli
+  · [kilitli] Bankaya Tahsile Ver (2): kapı 11.9 ms · HTTP 16.0 ms · denetim yolu süzgeçli
+  · [kilitli] Tahsil Edildi (tahsildeki): kapı 12.4 ms · HTTP 18.4 ms · denetim yolu süzgeçli
+
+=== 10.000 hedef · kod agent-a115f88e3014ea777 · 001: 8.709 para satırı / 43.301 defter satırı · 002: 923 para satırı
+açılış 1904 ms · kapı kurulumu (taban taraması) 647 ms · kilit koyma 1107 ms · tam tarama 1410 ms
+kilitsiz: 24 yazım · kapı ortanca 13.5 ms, p95 17.9, en çok 18.9 · HTTP ortanca 23.7 ms · K6 0.2 ms
+  tür: Kasa nakit girişi 3.2 · Cari havale tahsilatı 14.0 · Peşin satış faturası 15.6 · Taksit tahsilatı 12.9 · Borç Yaz (para olmayan) 9.9 · Çek alış 12.7 · Çek tahsili 14.1 · Çek alış (tahsile) 9.9 · Bankaya Tahsile Ver 12.5 · Bankadan Geri Al 12.6 · Bankaya Tahsile Ver (2) 13.5 · Tahsil Edildi (tahsildeki) 16.1
+  kapı yolu: scoped 24
+  bölüm (ortanca ms): scoped 13.2 · s.party 8.9 · s.bank 2.3 · s.cheque 0.9 · s.money 0.8 · s.rows 0.3 · s.scope 0.1 · s.lock 0.0 · s.links 0.0 · s.invoice 0.0 · s.stock 0.0 · s.plan 0.0
+kilitli: 24 yazım · kapı ortanca 12.4 ms, p95 17.9, en çok 21.9 · HTTP ortanca 20.1 ms · K6 0.1 ms
+  tür: Kasa nakit girişi 2.9 · Cari havale tahsilatı 14.0 · Peşin satış faturası 14.7 · Taksit tahsilatı 12.6 · Borç Yaz (para olmayan) 9.9 · Çek alış 10.5 · Çek tahsili 12.9 · Çek alış (tahsile) 9.6 · Bankaya Tahsile Ver 11.7 · Bankadan Geri Al 11.9 · Bankaya Tahsile Ver (2) 11.9 · Tahsil Edildi (tahsildeki) 12.4
+  kapı yolu: scoped 24
+  bölüm (ortanca ms): scoped 12.1 · s.party 8.3 · s.bank 2.3 · s.cheque 0.8 · s.money 0.6 · s.rows 0.3 · s.lock 0.0 · s.scope 0.0 · s.links 0.0 · s.invoice 0.0 · s.stock 0.0 · s.plan 0.0
+002 Kasa yazımı HTTP ortanca 7.9 ms
+cikis 0
+sonda: 2.24 2.31 2.27 2/147 27969

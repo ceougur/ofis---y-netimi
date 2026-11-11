@@ -1,0 +1,138 @@
+// DAR KONTROL (aa47) — A / İŞLEM İZİ: lib/db.mjs scope.inserted / scope.born'un yazım yolları ve Kasa açılış denetiminin (cash-opening) RET / KABUL'ü.
+// Kullanım: DEPO=<programın kopyası> node iz.mjs [--hacim 100000]
+import path from "node:path";
+import { DatabaseSync } from "node:sqlite";
+import { pathToFileURL } from "node:url";
+
+process.env.HUKUK_LICENSE_URL = "http://127.0.0.1:9";
+const DEPO = path.resolve(process.env.DEPO);
+const HACIM = Number(process.argv.includes("--hacim") ? process.argv[process.argv.indexOf("--hacim") + 1] : 0);
+const { startTestServer, ADMIN_PASSWORD } = await import(pathToFileURL(path.join(DEPO, "test", "helpers.mjs")).href);
+const NOW = "2026-03-20T12:00:00";
+const OPEN = "2026-03-10";
+const BEFORE = "2026-03-09";
+const AFTER = "2026-03-11";
+const s = await startTestServer({ now: { time: NOW, fixed: true }, moneyStrict: process.env.MONEY_STRICT === "1", gateVerify: false });
+const c = s.client();
+await c.login("admin", ADMIN_PASSWORD);
+await c.post("/api/workspace/bank/setup/dismiss", {});
+const op = await c.post("/api/workspace/cash/opening", { amount: "5.000", date: OPEN });
+if (op.status !== 200) throw new Error(`açılış ${op.status}`);
+const store = s.app.store;
+const db = s.app.db;
+const file = store.get("PRAGMA database_list").file;
+const ins = (id, date, extra = "") => `INSERT INTO cash_entries (id, kind, amount, date, description, method, created_by, created_at${extra ? ", event_id" : ""}) VALUES ('${id}', 'in', 5, '${date}', 'iz', 'cash', 't', '${NOW}'${extra ? `, '${extra}'` : ""})`;
+const tryTx = fn => {
+  seen = null;
+  try {
+    store.tx(fn);
+    return "KABUL";
+  } catch (e) {
+    return `RED ${e?.extra?.code || e?.code || String(e?.message).slice(0, 80)}`;
+  }
+};
+// İşlem öncesi var olan açılış öncesi satır (geri yüklenmiş / eski sürüm benzetimi): başka bağlantıdan yazılır (S20: aynen gelir).
+const other = sql => {
+  const o = new DatabaseSync(file);
+  o.exec("PRAGMA busy_timeout = 5000");
+  o.exec(sql);
+  o.close();
+};
+other(ins("onceki-P", BEFORE, "ev-onceki-P"));
+const out = { depo: DEPO };
+// izin gözlemi (yeni kodda scope.inserted / born; eski kodda yok)
+let seen = null;
+const remove = store.addCommitGuard({
+  check({ scope }) {
+    const fmt = m => Object.fromEntries([...(m || new Map())].filter(([t]) => t === "cash_entries").map(([t, set]) => [t, [...set].sort((a, b) => a - b)]));
+    seen = { inserted: fmt(scope?.inserted), born: fmt(scope?.born), unknown: scope?.unknown || "" };
+  },
+});
+const rowid = id => store.get("SELECT rowid AS r FROM cash_entries WHERE id = ?", id)?.r ?? null;
+
+// 1) çok satırlı INSERT + düzeltme (açılış öncesi YENİ iki satır) → RED beklenir
+out.cokSatir = tryTx(() => {
+  store.run(`INSERT INTO cash_entries (id, kind, amount, date, description, method, created_by, created_at) VALUES ('m1','in',5,'${BEFORE}','iz','cash','t','${NOW}'), ('m2','in',5,'${BEFORE}','iz','cash','t','${NOW}')`);
+  store.run("UPDATE cash_entries SET description = 'd' WHERE id IN ('m1','m2')");
+});
+out.cokSatirIz = seen;
+// 2) INSERT … SELECT (açılış sonrası satırın kopyası, tarih açılış öncesi) + düzeltme → RED
+other(ins("kaynak-S", AFTER, "ev-kaynak-S"));
+out.insertSelect = tryTx(() => {
+  store.run(`INSERT INTO cash_entries (id, kind, amount, date, description, method, created_by, created_at) SELECT id || '-kopya', kind, amount, '${BEFORE}', description, method, created_by, created_at FROM cash_entries WHERE id = 'kaynak-S'`);
+  store.run("UPDATE cash_entries SET description = 'd' WHERE id = 'kaynak-S-kopya'");
+});
+// 3) S26 benzeri: işlem öncesi var olan açılış öncesi satırın yalnız tutarı düzeltilir → KABUL beklenir (tarih değişmedi)
+out.s26 = tryTx(() => store.run("UPDATE cash_entries SET amount = 7 WHERE id = 'onceki-P'"));
+// 4) UPSERT (ON CONFLICT DO UPDATE) — SQLite DO UPDATE kolunda last_insert_rowid DEĞİŞMEZ: bağlantının son eklemesinin rowid'i (başka tablo da olabilir).
+//    Son ekleme rowid'i = P'nin rowid'i olacak şekilde ayarlanır (ayar tablosuna açık rowid'le ekleme), sonra başka bir satıra UPSERT, sonra P'nin S26 düzeltmesi.
+const pRow = rowid("onceki-P");
+other(ins("upsert-X", AFTER, "ev-upsert-X"));
+out.upsertOnce = { pRowid: pRow };
+// 4a) aynı dizi, P düzeltilmeden (işlem geçer; iz okunur): P'nin rowid'i "bu işlemde eklendi" sayılıyor mu
+out.upsertYalniz = tryTx(() => {
+  db.exec(`CREATE TEMP TABLE IF NOT EXISTS iz_tmp (x); DELETE FROM iz_tmp; INSERT INTO iz_tmp (rowid, x) VALUES (${pRow}, 1)`);
+  store.run(`INSERT INTO cash_entries (id, kind, amount, date, description, method, created_by, created_at) VALUES ('upsert-X','in',5,'${AFTER}','iz','cash','t','${NOW}') ON CONFLICT(id) DO UPDATE SET description = excluded.description || '?'`);
+});
+out.upsertYalnizIz = seen;
+db.exec("DELETE FROM settings WHERE key = 'iz.tmp0'");
+out.upsertS26 = tryTx(() => {
+  db.exec(`CREATE TEMP TABLE IF NOT EXISTS iz_tmp (x); DELETE FROM iz_tmp; INSERT INTO iz_tmp (rowid, x) VALUES (${pRow}, 1)`);
+  store.run(`INSERT INTO cash_entries (id, kind, amount, date, description, method, created_by, created_at) VALUES ('upsert-X','in',5,'${AFTER}','iz','cash','t','${NOW}') ON CONFLICT(id) DO UPDATE SET description = excluded.description || '!'`);
+  store.run("UPDATE cash_entries SET amount = 8 WHERE id = 'onceki-P'");
+});
+out.upsertIz = seen;
+db.exec("DELETE FROM settings WHERE key IN ('iz.tmp', 'iz.tmp2')");
+// 5) sil + aynı rowid'le yeniden ekle: en büyük rowid'li açılış öncesi satır silinir, YENİ kimlikli FARKLI olaylı satır (aynı rowid'i alır) eklenir → RED beklenir
+other(ins("sonuncu-L", BEFORE, "ev-sonuncu-L"));
+const lRow = rowid("sonuncu-L");
+out.silYeniden = tryTx(() => {
+  store.run("DELETE FROM cash_entries WHERE id = 'sonuncu-L'");
+  store.run(ins("yeni-N", BEFORE, "ev-yeni-N"));
+  store.run("UPDATE cash_entries SET description = 'd' WHERE id = 'yeni-N'");
+});
+out.silYenidenRowid = { silinen: lRow, yeni: rowid("yeni-N") };
+// 6) savepoint geri alma: iç işlem açılış öncesi satır ekleyip düzeltir ve düşer; dış işlem P'nin tutarını düzeltir (KABUL) — ardından YENİ satır (aynı rowid) → RED
+out.savepointS26 = tryTx(() => {
+  try {
+    store.tx(() => {
+      store.run(ins("ic-X", BEFORE));
+      store.run("UPDATE cash_entries SET description = 'd' WHERE id = 'ic-X'");
+      throw new Error("iç işlem düştü");
+    });
+  } catch {}
+  store.run("UPDATE cash_entries SET amount = 9 WHERE id = 'onceki-P'");
+});
+out.savepointYeni = tryTx(() => {
+  try {
+    store.tx(() => {
+      store.run(ins("ic-Y", AFTER));
+      throw new Error("iç işlem düştü");
+    });
+  } catch {}
+  store.run(ins("dis-Z", BEFORE));
+  store.run("UPDATE cash_entries SET description = 'd' WHERE id = 'dis-Z'");
+});
+out.savepointIz = seen;
+// 7) İŞLEM İÇİNDE store dışı ekleme (aynı bağlantı, db.prepare) + store ile düzeltme: açılış öncesi YENİ satır
+out.hamEklemeDuzeltme = tryTx(() => {
+  db.prepare(ins("ham-H", BEFORE)).run();
+  store.run("UPDATE cash_entries SET description = 'd' WHERE id = 'ham-H'");
+});
+out.hamIz = seen;
+out.acilisOncesiSatirlar = store.all("SELECT id FROM cash_entries WHERE date < ? AND is_opening = 0 ORDER BY id", OPEN).map(r => r.id);
+// 8) uzun işlem: HACIM satır tek işlemde (bellek ve süre; ölçüm DEĞİL — yük altında fikir)
+if (HACIM) {
+  global.gc?.();
+  const m0 = process.memoryUsage().heapUsed;
+  const t0 = performance.now();
+  let mid = 0;
+  store.tx(() => {
+    for (let k = 0; k < HACIM; k += 1) store.run("INSERT INTO cash_entries (id, kind, amount, date, description, method, created_by, created_at) VALUES (?, 'in', 1, ?, 'h', 'cash', 't', ?)", `h${k}`, AFTER, NOW);
+    mid = process.memoryUsage().heapUsed;
+  });
+  out.hacim = { satir: HACIM, ms: Math.round(performance.now() - t0), heapArtisMB: Math.round((mid - m0) / 1e5) / 10, iz: seen ? { inserted: (seen.inserted.cash_entries || []).length } : null, loadavg: (await import("node:os")).loadavg().map(x => x.toFixed(2)) };
+}
+remove();
+await s.close();
+console.log(JSON.stringify(out, null, 1));
