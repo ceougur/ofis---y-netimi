@@ -171,7 +171,7 @@ export async function runScenario({ seed, steps: stepCount = 45 }) {
       await ctx.drain();
     });
     // Sonucu Belirsiz kaynaklar: Z1–Z3 (kurulumda zincir), R1–R2 (dizinin ortasında zincir), D (dış yazım), T (zincirli yeniden dene), J (J10).
-    const names = ["Zafer Silme", "Zuhal İstemez", "Zeki İstemez", "Rana Sonra", "Rıza Sonra", "Deniz Dış", "Tamer Tekrar", "Jale Çift"];
+    const names = ["Zafer Silme", "Zuhal İstemez", "Zeki İstemez", "Rana Sonra", "Rıza Sonra", "Deniz Dış", "Tamer Tekrar", "Jale Çift", "Mert Aynı"];
     const acc = {};
     for (const [i, name] of names.entries()) acc[name] = await account("001", name, `0545 2${String(i).padStart(2, "0")} 00 0${i}`);
     // Her kaynak kendi toplu işinde (art arda yanıtsız istek toplu işi duraklatır — tek toplu işte sondakiler Duraklatıldı kalırdı).
@@ -187,10 +187,10 @@ export async function runScenario({ seed, steps: stepCount = 45 }) {
     for (const [i, name] of plain.entries()) acc[name] = await account("001", name, `0545 3${String(i).padStart(2, "0")} 00 0${i}`);
     await batch("001", plain.map(name => acc[name].id));
     await ctx.drain();
-    // Z zincirleri: işteki Yine de Gönder → duraklat → Z1 silme talebi, Z2 / Z3 İstemiyor → Devam Et → Atlandı.
+    // Z zincirleri: işteki Yine de Gönder → duraklat → Z1 silme talebi, Z2 / Z3 İstemiyor → Devam Et → Atlandı. M (Mert Aynı) da aynı düzen; kaynağı dizide AYNI çağrıda teslim + okundu alır.
     const chainBatch = {};
     await step("Z zincirleri", async () => {
-      for (const name of ["Zafer Silme", "Zuhal İstemez", "Zeki İstemez"]) {
+      for (const name of ["Zafer Silme", "Zuhal İstemez", "Zeki İstemez", "Mert Aynı"]) {
         const made = await ok(anyway("001", src(name).id), `Yine de Gönder ${name}`);
         await ok(action("001", made.batch.id, "pause"), "duraklat");
         chainBatch[name] = made.batch.id;
@@ -198,7 +198,8 @@ export async function runScenario({ seed, steps: stepCount = 45 }) {
       await ok(ctx.api.post(ERASE, { accountId: acc["Zafer Silme"].id, confirm: true }), "silme talebi");
       await setCard("001", acc["Zuhal İstemez"].id, { waOptOut: true });
       await setCard("001", acc["Zeki İstemez"].id, { waOptOut: true });
-      for (const name of ["Zafer Silme", "Zuhal İstemez", "Zeki İstemez"]) await ok(action("001", chainBatch[name], "resume"), "Devam Et");
+      await setCard("001", acc["Mert Aynı"].id, { waOptOut: true });
+      for (const name of ["Zafer Silme", "Zuhal İstemez", "Zeki İstemez", "Mert Aynı"]) await ok(action("001", chainBatch[name], "resume"), "Devam Et");
       await ctx.drain();
     });
     // J10: iki Sonucu Belirsiz deneme; 2. Yine de Gönder duraklatılır; ilk kaynağın imzalı geç teslimi (küme BURADA kurulur) → Devam Et → Atlandı — Daha Önce Gönderildi.
@@ -260,9 +261,9 @@ export async function runScenario({ seed, steps: stepCount = 45 }) {
 
     // ---- TOHUMLU DİZİ ----
     // Havuz cari kimliğiyle (silme talebi carinin adını işten siler). Ayrılanlar kendi adımına dek dizide yok (önce teslim alırlarsa adımın ön koşulu kalmaz).
-    const reserved = new Set([acc["Rana Sonra"].id, acc["Rıza Sonra"].id, q2b.id, acc["Tamer Tekrar"].id, acc["Deniz Dış"].id]);
+    const reserved = new Set([acc["Rana Sonra"].id, acc["Rıza Sonra"].id, q2b.id, acc["Tamer Tekrar"].id, acc["Deniz Dış"].id, acc["Mert Aynı"].id]);
     const interesting = new Set([...["Zafer Silme", "Zuhal İstemez", "Zeki İstemez", "Jale Çift", "Tamer Tekrar", "Deniz Dış"].map(name => acc[name].id), h.id, q.id]);
-    const at = { r1: 8 + Math.floor(random() * 6), ext: 16 + Math.floor(random() * 4), t2: 20 + Math.floor(random() * 4), q2: 24 + Math.floor(random() * 4), r2: 28 + Math.floor(random() * 6) };
+    const at = { r1: 8 + Math.floor(random() * 6), ext: 16 + Math.floor(random() * 4), t2: 20 + Math.floor(random() * 4), q2: 24 + Math.floor(random() * 4), r2: 28 + Math.floor(random() * 6), same: 3 + Math.floor(random() * 4) };
     const newChain = async (c, name, accId) => {
       reserved.delete(accId);
       interesting.add(accId);
@@ -275,6 +276,13 @@ export async function runScenario({ seed, steps: stepCount = 45 }) {
     };
     for (let n = 0; n < stepCount; n += 1) {
       ctx.clock.advance(MIN * (1 + Math.floor(random() * 30)));
+      if (n === at.same) {
+        // Nasıl bozulur 1 / 7: AYNI çağrıda kaynağa geç teslim (wamid öğrenilir) + aynı wamid'e okundu — ikinci bildirim birincinin zincir işine yazdığını görmeli (Atlandı → Teslim Edildi → Okundu).
+        reserved.delete(acc["Mert Aynı"].id);
+        interesting.add(acc["Mert Aynı"].id);
+        const first = late(src("Mert Aynı").id, "delivered");
+        call("001", [first, { id: first.id, status: "read", timestamp: ts(), recipient_id: "905000000000" }], { signed: true }, `M aynı çağrıda teslim + okundu (${n})`);
+      }
       if (n === at.r1) await step(`yeni zincir R1 (${n})`, () => newChain("001", "Rana Sonra", acc["Rana Sonra"].id));
       if (n === at.r2) await step(`yeni zincir R2 (${n})`, () => newChain("001", "Rıza Sonra", acc["Rıza Sonra"].id));
       if (n === at.q2) await step(`002 yeni zincir (${n})`, () => newChain("002", "Kerem İkinci", q2b.id));
@@ -299,6 +307,8 @@ export async function runScenario({ seed, steps: stepCount = 45 }) {
             db.close();
           }
         });
+        // Nasıl bozulur 4: dış yazımdan HEMEN sonra (arada küme düşüren işlem yok) kaynağın geç teslimi — küme data_version'la yeniden kurulmalı.
+        call("001", [late(src("Deniz Dış").id, "delivered")], { signed: true }, `D kaynağı geç teslim (${n})`);
       }
       const c = random() < 0.85 ? "001" : "002";
       const jobs = jobsOf(c).filter(job => !reserved.has(job.account_id));
