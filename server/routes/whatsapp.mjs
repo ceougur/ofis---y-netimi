@@ -281,7 +281,8 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
     if (!whatsapp?.appWebhook) throw failed();
     let info;
     try {
-      info = whatsapp.appWebhook.reveal(mobileRemote?.publicUrl?.() || "");
+      // 2.5.0 WhatsApp tur 3 (BAŞ MİMAR KARARI 06.11 13:50 (1)): lisans durumu çifti üreten nesneye ulaşır — salt okunurda çift YOKSA üretilmez (var olan çift gösterilir).
+      info = whatsapp.appWebhook.reveal(mobileRemote?.publicUrl?.() || "", { writable: writable() });
     } catch {
       throw failed();
     }
