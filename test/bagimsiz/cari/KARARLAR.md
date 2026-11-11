@@ -2162,3 +2162,80 @@ Bakım 7 kâhini kararın örneğinde ne A'yı ne B'yi DEĞER olarak yazıyordu;
   **B (tutar eşleşmesi, yoksa S2):** kart tutarı bir kalemin açık tutarına eşitse o kalemi (türü ne olursa), değilse vadesi en önce gelen borçları içine alır — (a) fatura 600 + X'in 300'ü kartta, açık: X 200 + Y 700;
   (b) fatura kartta, açık: Borç 900; (c) Borç'un 500'ü kartta, açık: Borç 400 + fatura 600 (A ile aynı) / **C:** uç durum böyle kalsın (BİLİNEN SINIR). (Bakiye her seçenekte aynı; değişen hangi kalemin
   açık kaldığı — takvim / Vade Takip kalemi, fatura listesi, sonra gelen ödemenin sırası.)
+
+### Kurallar (kod commit'i `467d289b`; yorumların `model.py`'deki karşılığı)
+- **C20.1 (Y8-1 / Y8-3) `_tyk` kart tüketimi (yalnız `2.5.0`):** kartın olayında O = Σ kuyruk kalanı {M1e'nin tüketebileceği açık borç yönlü kalemler — kartın kendi taksitleri hariç}; tetik O > T
+  (mutant 258: O ≥ T; 259: O > T + 1 kuruş). Elle kart (Taksitler'den `kart_ac {mevcut}` — `api`; Tablodan Aktar kartı girmez, Y8-6): açık tutarı T'ye eşit TEK kalem `hareketler`de (elle Borç /
+  borçlu Açılış) ise `hedef_` = o kalem (`t["s110"] = ("kendi", kalem)`), değilse `("sus", O, T, eşitler)` — tüketim eski sırayla sürer ama cari C13.4 (11) düzeninde susar. Satış kartı: `hedef_` =
+  kendi satışı AYNEN (mutant 256 / 260: tetikte vade sırası). Mutant 256: iki kol vade sırası (S110 B); 257: elle kol eski kural.
+- **C20.2 (Y8-2) `_alacak_govde250`:** SK-19 nedeni "S110: Mevcut Borç kartı … tek okumayla belirlenemiyor … KULLANICIYA SORULMALI SK-19 (§20)"; Y7-2 (5)'in "öbür açık borç" kolu (`diger_acik`,
+  başka Mevcut Borç kartı yokken) neden değil S110 alanı; `son["s110"]` (alan ve neden yok) ve `son["tuketilen"]` (kart → {kalem: tutar}).
+- **C20.3 (Y8-4) görünüm:** S110 alanındaki caride `kontrol` hareket döngüsü K6.5'in "tek elle kayıt, faturasız" şartını aramaz: Kalan = `kalanlar()` (defter kalanı), takvim / Vade Takip / projeksiyon tutarı
+  = kuyruk kalanı, takvim sayacı yazılmaz; fatura döngüsü kartın tüketmediği SATIŞ faturasını açığıyla takvim kalemi yazar (alış faturası kartlı caride aynen yazılmaz); `_cari_kalemleri` None
+  (görünüm toplamı yok).
+- `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`: hiçbir yol değişmedi (bütün yeni dallar `k250` ya da mutant).
+
+### C8m Nasıl bozulur? (bakım 8 — kod commit'inde, senaryolarla birlikte yazıldı)
+| # | Bozulma | Senaryo |
+|---|---|---|
+| Z102 | Elle kart açık borç fazlayken vade sırasıyla en eski borçları içine alır (S110 B) — kararın örneğinde fatura kartın içinde, elle borç 600 açık | d34 E1, E4, E7, E8, E14a (mutant 256, 257) |
+| Z103 | Satış kartı başka açık borç varken vade sırasıyla öbür borcu tüketir; öbür borcun takvim tutarı kart kapsamıyla düşer | d34 E5, E6 (mutant 256, 260) |
+| Z104 | Kart = açık borç sınırında yeni kural uygulanır — eski değerler susar / değişir | d34 E3 (mutant 258) |
+| Z105 | 1 kuruş fazla "fazla" sayılmaz (eski vade sırası, iki kalem → susma) | d34 E4 (mutant 259) |
+| Z106 | "Taksitlendirilen borç" belirsizken kâhin bir okuma uydurur (birden çok elle borç / eşit kalem fatura / kart elle borçtan küçük) | d34 E11, E12, E13 (SK-19) |
+| Z107 | Kart sonrası tahsilat / yeni borç / stok iadesi kartın kapsamına girer ya da S2 / S50 bozulur | d34 E6, E7, E8 |
+| Z108 | S101 kartından sonra doğan borç yüzünden cari susar (Y7-2 (5)) ya da borç kartın içinde sayılır | d34 E9 |
+| Z109 | Karşı yönlü kalemli kartlı caride kâhin net görünüm / gecikmiş uydurur | d34 E10 |
+| Z110 | Aynı adlı iki carinin borcu birbirinin kartına sayılır | d34 E14a / E14b |
+| Z111 | Tablodan Aktar'ın mevcut borç kartı S110'un elle koluna girer (kartın kaydı belli — B1.4) | c6c, d2 (G3: fark 0 — ilk denemede 51 BEKLENMEYEN ile yakalandı, düzeltildi) |
+
+### Senaryolar (bakım 8; elle tablo — kâhin koşulmadan karar metninden ve §13 / §18 / §19 / §20'den; betik `docs/kanit/2026-11-11/kahineski8-arac/yeni-senaryolar8.py`, adımların yeri `g1-sirala.py`)
+- **`d34-c5-s110-kendi-borcu`** (bugün 15.04.2026; 204 elle denetim = 181 değer + 19 yok + 4 belirsiz): E1 kararın örneği AYNEN (B'nin ayrıştığı düzen: F en eski) · E2 elle borç en eski (A = B) · E3 sınır
+  O = T (eski kural) · E4 O = T + 0,01 · E5 satış kolu (başka açık borçlu cariye stoktan taksitli satış) · E6 satış kolu + sonra bağsız tahsilat (S2 + S50) · E7 elle kol + sonra yeni borç + tahsilat ·
+  E8 elle kol + sonra stok iadesi · E9 S101 kartı + sonra borç · E10 karşı yönlü kalem (susar) · E11 / E12 / E13 SK-19 (a) / (b) / (c) (susar) · E14a / E14b aynı adlı iki cari.
+- **İlk koşu:** 204 elle denetimin 203'ü kâhinle aynı; 1 kırmızı — **E3 `takvim:fatura:E3F`**: elle "yazılmaz" (elleYok) yazılmıştı, kâhin "yok" yazdı. Kök neden ELLE tablodaydı: kâhinin kendi K6.5 (1)
+  kuralı (kartlı caride tek satış faturası, elle kayıt yokken fatura kalemi NET = açık − kartın açık kapsamı = 600 − 600 = 0 → "yok") — bakım 7 kâhini de aynısını yazıyor (eski kopyada koşuldu);
+  S110'la ilgisi yok (E3 tetik dışı). Elle değer `"yok"` olarak düzeltildi (betikte not); başka elle değer değişmedi.
+- **Eski elle tablolar:** hiçbiri değişmedi (G3: 87 eski senaryoda fark 0).
+
+### C10m Mutantlar (bakım 8; `oz-test.py` DEĞERLE — çökmeden, elle tablo kırmızı)
+256 S110 B (iki kol vade sırası) · 257 S110 yalnız satış kolunda (elle kol eski kural) · 258 sınır: O = T de tetikler · 259 sınır: yalnız 1 kuruştan fazla aşan · 260 S110 yalnız elle kolda (satış
+kartı vade sırası). Bakım 6 / 7 mutantları (241–255) aynen yakalanıyor.
+
+### Dil ekleri (/3, bakım 8)
+Yeni adım YOK; yeni çıktı anahtarı YOK. Yeni `belirsiz` kaydı: "cari <ad> tanımsız (2.5.0 C13.4 (11)): S110: Mevcut Borç kartı <no> açılırken açık borç (O) kart tutarından (T) fazla — … SK-19 (§20)".
+Y7-2 (5)'in "öbür açık borç (…)" nedeni artık yalnız aynı caride başka elle Mevcut Borç kartı varken yazılır ("başka Mevcut Borç kartı (…)").
+
+### Eşleme notları (ana oturum için; `kos.mjs` bu bakımda DEĞİŞMEDİ, açılmadı)
+- Yeni adım / anahtar yok; d34 bakım 7'nin adım türleriyle (`kart_ac {mevcut}`, `stok_satis_taksit`, `stok_iade`, `tahsilat`, `fatura`, `borc`). `stok_satis_taksit`'in eşlemesi bakım 7'den beri ana oturumda.
+- **Ana oturuma:** `model.py` değişti — mobil yazma kâhininin `cari_model_sha256`'sı yeniden üretilmeli (o dosya okunmadı); yapım aşaması listesi bu ajanca açılmadı (S110 alanındaki yeni değerler
+  listeye yeni kayıt olarak düşebilir — ayrıştırma ana oturumda).
+
+### C12m DENENMEYEN (bakım 8; neden)
+- Program koşulmadı (görev). Programın S110 alanındaki gösterimi (takvimde taksit kalemlerinin kimliği, görünüm toplamı, sayaç) bilinmiyor — kâhin o üç denetimi S110 alanında yazmaz.
+- SK-19 (d) (açık tutarı T'ye eşit birden çok kalem) ve "borçlu Açılış" kaydının kartın kendi borcu olduğu durum elle senaryo yazılmadı (kural yolu E1'le aynı: `hareketler`).
+- Kısmen ödenmiş elle borç (tutar > T, açık tutar = T) — kural açık tutara bakar; senaryo yazılmadı.
+- Kart açıldıktan sonra karta doğrudan Taksit Tahsilatı (bağ) ile S110 elle kol; vade günü / ertesi gün (gün dönümü) S110 senaryosu — tek bugünle yazıldı (gecikmiş kuralı C13.5 / C16.4 aynen).
+- Aynı caride satış kartı + elle Mevcut Borç kartı (Y7-2 (5)'in "başka Mevcut Borç kartı" kolu aynen susar) — S110'un sorusu değil.
+- Tablodan Aktar'ın mevcut borç kartı S110'a girmez (Y8-6) — yeni senaryo yazılmadı; c6c / d2'nin G3'te değişmemesi kanıt.
+
+### C0m Değişen eski beklentiler (G3; bakım 7 `60280990` ↔ bakım 8 kâhin çıktısı, `2.5.0`; eski kopyanın 87 elle senaryosu + d34 + rastgele s1 / ux18 tohum 1–10 × 120) — kararla ilgisiz eski beklenti DEĞİŞMEDİ
+Eski 46.217 → yeni 46.328 denetim; değişen / kalkan / yeni toplam **143**, hepsi d34'te; **BEKLENMEYEN 0**, değeri değişen 0, yalnız etiketi değişen 0 (dökümü `docs/kanit/2026-11-11/kahineski8-g3-dokum-*.json`,
+özet `kahineski8-esdeger-cari-*.log`; iki saat diliminde bayt bayt aynı). Sınıf, yeni modelin `_alacak_govde250` sonuçlarından cari cari (S110 bayrağı / SK-19 nedeni) kaydedildi:
+- **Eski 87 elle senaryo ve 20 rastgele: fark 0** (adımları değişen eski senaryo 0). Eski elle Mevcut Borç kartlı carilerin (c11, d4 KM / KP, d7 KE, d8 KA, d19 KN4, d30 QR3) hiçbir değeri değişmedi.
+  **İlk G3 denemesinde 51 BEKLENMEYEN** (c6c-mevcut-borc-karti 39, d2-c5-kg5-excel-kart 12 — kalkan): kod Tablodan Aktar'ın mevcut borç kartını da elle kola alıyordu (açılış 5.000 > kart 3.000, eşit kalem
+  yok → SK-19 susması). Y8-6'nın yazılı kuralına aykırı (kod hatası — kural değil); `api` (Taksitler'den açılan kart) koşulu eklendi, ikinci denemede fark 0.
+- **d34 (yeni dosya, eski ↔ yeni kâhin):** S110-alan / yeni 127 — E1 16, E2 7 (Kalan / takvim — bakım 7 K6.5 "faturasız" şartıyla yazmıyordu), E4 16, E5 13, E7 22, E8 16, E9 13, E10 8, E14a 16 (bakım 7: E1 / E4 /
+  E7 / E8 / E10 / E14a "birden çok kalemi tüketti", E5 / E9 Y7-2 (5) ile susuyordu) · S110-sus / kalkan 16 — E12 8, E13 8 (bakım 7 vade sırasıyla TEK kalem tükettiği için değer yazıyordu; S110'da
+  kart tutarı tek elle kaydın açık tutarına eşit değil → SK-19). E3, E6, E11, E14b fark 0.
+- `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`: **432/432 bayt bayt aynı** (87 eski elle + d34 + 20 rastgele × 4 kip); üretici 20/20 aynı dizi.
+- **Yeni elle tablo ESKİ (bakım 7) kâhinde — beklenen NEDENLE kırmızı (ders 7, 38):** 204 elle denetimin **112**'si (`kahineski8-kirmizi-eski-cari-*.log`): E1 / E4 / E7 / E8 / E10 / E14a'da eski kâhin
+  "birden çok kalemi tüketti" ile susuyor (vade sırası — S110 B'nin tüketimi), E5 / E9'da Y7-2 (5) ile susuyor, E2'de Kalan / takvim yazmıyor, E12 / E13'te vade sırasıyla değer YAZIYOR (elle YOK) ve
+  SK-19 kayıtları yok; 92'si iki kâhinde aynı (bakiyeler, E3 sınırı, E6, E11'in susması, kart tutarları).
+
+### Kanıt (bakım 8; iki saat dilimi — UTC ve Europe/Istanbul çıktıları bayt bayt aynı (başlık satırları dışında); kâhin `467d289b`, temiz ağaç; `docs/kanit/2026-11-11/kahineski8-*`, araçlar ve koşu betiği `kahineski8-arac/`)
+cari öz test **4.050/4.050** (`-cari-oz-*`: elle tablolar 88 senaryo, mutantlar 200–260 — 219–260 değerle, saf TYK 174 kalem, bakım 4–6 çapraz denetimi, G1 88 senaryo × 103 belge adımı) · mutasyon taraması
+**227/227** (`-cari-mutasyon-*`; kos.mjs düzeni, bütün elle dosyalar × kipler) · eşdeğerlik + G3 **540/540** (`-esdeger-cari-*`) · yeni elle tablo **204/204** (`-elle-yeni-cari-*`) · ESKİ kâhinde **112 kırmızı** / 204
+(`-kirmizi-eski-cari-*`) · G1 tarama **88/88** (`-g1-tara-*`) · geniş tarama **2.201/2.201** (`-genis-tarama-*`; bakım 7 ile aynı sayı). **Defter öz testi BAŞARISIZ** (`-defter-oz-*`; `VARSAYILAN_KURAL`
+AttributeError) — bakım 7'deki gibi TABANDA da aynı (eski kopyada koşuldu); bu bakım defter kâhinine dokunmadı. Mutasyon, eşdeğerlik, öz test ve geniş tarama `flock -s -n …/olcum.lock` ile koşuldu
+(ders 52). Program açılmadı.
