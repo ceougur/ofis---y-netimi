@@ -2746,3 +2746,26 @@ artık yazılmaz (Tablodan Aktar kartında aynen).
   bakımın konusu değil, senaryo yazılmadı. Kart tahsilatının silinmesi (dilde yol yok — bakım 10 C12o aynen); tahsilat tutarının düzeltilmesi (dilde adım yok).
 - Aynı caride iki S126 kartı; Ödeme Sözü taşıyan kalem; vade günü / gün dönümü; iki şirket / yedek geri yükleme (kâhinin dilinde şirket yok).
 - Y11-7'nin ters okuması (yalnız faturalı kart SUS) koşulmadı — G3'te ayrı sınıf (S126-F) olarak sayıldı.
+
+### C0p Değişen eski beklentiler (G3; bakım 10 (`3aa793fb` ağacı — çalışma dalı ucu) ↔ bakım 11 kâhin çıktısı, `2.5.0`; eski kopyanın 90 elle senaryosu + d37 + rastgele s1 / ux18 tohum 1–10 × 120) — kararla ilgisiz eski beklenti DEĞİŞMEDİ
+Eski 47.766 → yeni 48.036 denetim; değişen / kalkan / yeni toplam **270**, hepsi **yeni** (bakım 10'un sustuğu yerde artık değer): S126-alan 258 + S126-F 12; **BEKLENMEYEN 0**, değeri değişen 0, kalkan 0,
+yalnız etiketi değişen 0 (dökümü `docs/kanit/2026-11-11/kahineski11-g3-dokum-*.json` — iki saat diliminde bayt bayt aynı; özet `kahineski11-esdeger-cari-*.log`; cari cari sayım `kahineski11-arac/g3-cari.py`).
+Sınıf, yeni modelin `son["s122"]` izinden cari cari:
+- **d36 (16 yeni, S126-alan):** J13 — kararın örneği (bakım 10'da "birden çok kalemi tüketti" ile susuyordu — SK-24). Öbür J carilerinde fark 0 (S122 alanı — bakım 10 — AYNEN).
+- **d37 (254 yeni; dosya yeni, eski kâhinde de koşuldu):** S126-alan 242 — L1 / L2 / L3 / L4 / L5 / L6 / L8 / L9 / L10 / L11 / L13b / L13c / L15 / L16a 16'şar, L7 18 (eski kâhin "birden çok kalemi tüketti" ile
+  susuyordu); S126-F 12 — L12 (yalnız faturalar; Y11-7 — ters okuma seçilirse yalnız bu 12 denetim kalkar). Fark 0: L13 (iki kâhinde de susar: "birden çok kalemi tüketti" → S125 = C), L14 (iki kâhinde de
+  susar → SK-25), L16b (kartsız), L17 (bakım 10 Y10-3 AYNEN), L18 (S120 / S122 AYNEN).
+- **Öbür 89 eski elle senaryo ve 20 rastgele: fark 0** (adımları değişen eski senaryo 0; O = T faturalı Taksitler kartı eski elle senaryolarda yalnız d36 J13'te).
+- **Eski ELLE tablolarda değişen beklentiler** (`kahineski11-elle-fark-*.log`; yalnız d36, karar gereği): J13 — 5 `elleYok` + 1 `elleBelirsiz` ("birden çok kalemi tüketti") kalktı, 15 değer eklendi. Öbür 89 dosyanın
+  elle tablosu ve bütün dosyaların adımları AYNI.
+- `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`: **444/444 bayt bayt aynı** (90 eski elle + d37 + 20 rastgele × 4 kip); üretici 20/20 aynı dizi.
+- **Yeni / değişen elle tablolar ESKİ (bakım 10) kâhinde — beklenen NEDENLE kırmızı (ders 7, 38):** 726 elle denetimin **242**'si (`kahineski11-kirmizi-eski-cari-*.log`; d37 228, d36 14): 240'ı "ANAHTAR YOK"
+  (eski kâhin "birden çok kalemi tüketti" ile susuyor), 2'si `belirsiz` kaydında "S125 = C / SK-23" (L13) ve "SK-25" (L14) yok (eski kâhin "birden çok kalemi tüketti" yazıyor); 484'ü iki kâhinde aynı
+  (bakiyeler, kart tutarları, L16b, L17, L18, d36'nın öbür carileri).
+
+### Kanıt (bakım 11; iki saat dilimi — UTC ve Europe/Istanbul çıktıları bayt bayt aynı (başlık satırları dışında); kâhin `02517ac5`, temiz ağaç; `docs/kanit/2026-11-11/kahineski11-*`, araçlar ve koşu betiği `kahineski11-arac/`)
+cari öz test **5.277/5.277** (`-cari-oz-*`: elle tablolar 91 senaryo, mutantlar 200–274 — 219–274 değerle) · mutasyon taraması **241/241** (`-cari-mutasyon-*`) · eşdeğerlik + G3 **555/555** (`-esdeger-cari-*`) ·
+yeni / değişen elle tablo **726/726** (`-elle-yeni-cari-*`: d37 355 + d36 371) · ESKİ kâhinde **242 kırmızı** / 726 (`-kirmizi-eski-cari-*`) · eski elle tablo farkı **90/90** izinli (`-elle-fark-*`) · G1 tarama
+**91/91** (`-g1-tara-*`) · mutant ↔ senaryo **42/42** (`-mutant-senaryo-*`) · geniş tarama **2.201/2.201** (`-genis-tarama-*`; bakım 10 ile aynı sayı). **Defter öz testi BAŞARISIZ** (`-defter-oz-*`;
+`VARSAYILAN_KURAL` AttributeError) — bakım 9 / 10'daki gibi, TABANDA (`3aa793fb` eski kopyası) da aynı; bu bakım defter kâhinine dokunmadı. Öz test, mutasyon, eşdeğerlik ve geniş tarama `flock -s -n …/olcum.lock`
+ile (ders 52). Program açılmadı. Koşu günlükleri `kahineski11-kos-utc.txt` / `-ist.txt` (yük 2,6 / 3,8 — 4 çekirdek).
