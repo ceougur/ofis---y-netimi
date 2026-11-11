@@ -235,7 +235,8 @@ export function createStore(db) {
   let trackedChanges = 0;
   // 2.5.0 Ç5-K tur 2 (dar kontrol DÜŞÜK-1): inserted = bu işlemde EKLENEN satırların rowid'i; born = önceki hâli (before) bu işlemde eklenmiş satırın hâli olan
   // rowid'ler (işlem ÖNCESİ hâl değil — lib/cash-opening.mjs "önceki hâl" eşlemesi bunları saymaz). Kesin iz: önceden cash-opening "son COMMIT'teki en büyük rowid"
-  // sezgisiyle buluyordu; başka bağlantı yazınca (data_version) sezgi kabul yönünde kapanıyordu.
+  // sezgisiyle buluyordu; başka bağlantı yazınca (data_version) sezgi kabul yönünde kapanıyordu. Birleşik tur 6 (DK-D2T3 DÜŞÜK-1): rowid'i işlem başındaki en büyük
+  // rowid'den büyük olan önceki hâl de born (store dışından eklenmiş satır; işaret K6'nın BEGIN'de okuduğu money.marks — para kaynağı tabloları).
   const freshScope = () => ({ rows: new Map(), before: new Map(), inserted: new Map(), born: new Map(), unknown: "" });
   const setIn = (map, table) => {
     if (!map.has(table)) map.set(table, new Set());
@@ -263,10 +264,14 @@ export function createStore(db) {
       const rows = store.all(`SELECT rowid AS __rowid, * FROM ${table}${parsed.where ? ` WHERE ${parsed.where}` : ""}`, ...args.slice(parsed.setParams));
       if (!scope.before.has(table)) scope.before.set(table, new Map());
       const before = scope.before.get(table);
+      // Birleşik tur 6 (DK-D2T3 DÜŞÜK-1): işlem başındaki en büyük rowid'den (money:event işareti, BEGIN'de) BÜYÜK rowid'li satır da bu işlemde doğmuştur — store
+      // dışından (aynı bağlantıda db.prepare / db.exec) eklenip sonra store ile düzeltilen satırın eklendiği hâli işlem öncesi hâl sayılmaz. Silinen en büyük
+      // satırın rowid'ini alan yeni satır işaretten büyük değildir; onu inserted (store ile eklendiyse) ya da kimlik eşlemesi (cash-opening) yakalar.
+      const mark = money?.marks.get(table);
       for (const row of rows) {
         if (!before.has(row.__rowid)) {
           before.set(row.__rowid, row);
-          if (scope.inserted.get(table)?.has(row.__rowid)) setIn(scope.born, table).add(row.__rowid);
+          if (scope.inserted.get(table)?.has(row.__rowid) || (mark !== undefined && Number(row.__rowid) > mark)) setIn(scope.born, table).add(row.__rowid);
         }
         if (parsed.verb === "UPDATE") scopeRows(table).add(row.__rowid);
       }
