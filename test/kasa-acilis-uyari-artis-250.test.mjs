@@ -144,6 +144,9 @@ describe("Birleşik tur 6 — uyarının kapının görmediği artışı: günl�
     const seen = { uyari: noticeOf(result)?.count, notice: noticeOf(result)?.notice, severity: noticeOf(result)?.severity, sapma: driftsOf(result), gozlem: obs.fresh() };
     const report = await must("Defter Mutabakatı", api.get("/api/workspace/report-center/defter-mutabakati"));
     seen.rapor = { sonuc: (report.summary || []).find(pair => pair[0] === "Sonuç")?.[1], satir: (report.rows || []).find(row => String(row[1]) === "Kasa Açılışından Önce Tarihli Hareket")?.slice(-2) };
+    // Mutabakat Günlüğü (Raporlar): olay adı "Taramada Bulunan Uyarı Artışı" (sapma değil), denetim sütununda cümle.
+    const journal = await must("Mutabakat Günlüğü", api.get("/api/workspace/report-center/mutabakat-gunlugu"));
+    seen.gunlukRaporu = (journal.rows || []).filter(row => row[3] === grew(2, 3)).map(row => row[1]);
     // Aynı artış: iş parçacığı taraması ve ikinci Mutabakat Testi yeniden yazmaz.
     const background = await server.app.integrity.scanInBackground();
     await integ();
@@ -151,6 +154,7 @@ describe("Birleşik tur 6 — uyarının kapının görmediği artışı: günl�
     assert.deepEqual(seen, {
       uyari: 3, notice: true, severity: "warning", sapma: [], gozlem: ALARM(2, 3),
       rapor: { sonuc: "Tutarlı", satir: ["3 satır", "Uyarı"] },
+      gunlukRaporu: ["Taramada Bulunan Uyarı Artışı"],
       ikinci: { isParcacigi: [], gozlem: QUIET },
     });
   });
