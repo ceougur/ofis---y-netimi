@@ -202,7 +202,7 @@ describe("2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi,
   // 2.5.0 Ç5-B (bilerek güncellendi; kullanıcı kararı (5) "Bakiyeden Netleşsin", C5-ACILIS-TASARIM §2.10 madde 7): müşterideki elle Alacak satış borcuna KENDİ
   // tarihinde uygulanır (kalem / gecikmiş / Vade Takip görünümü); 2.4.5 KS2'deki "mahsup EDİLMEZ, ayrı Ödenecek Borç kalemi" bu görünümde kalktı. Fatura
   // durumu (iki yönlü kapama) değişmedi — tyk-250 karar (5) testleri. Beklenen sayılar karar metninden elle.
-  it("karar (5): müşterideki elle Alacak müşterinin borcuyla kendi tarihinde netleşir; sonraki bağsız ödeme kalemi kapatmaz, bakiyeye yazılır", async () => {
+  it("karar (5): müşterideki elle Alacak müşterinin borcuyla kendi tarihinde netleşir; sonradan gelen bağsız ödeme netleşmeyi geri alır (S95)", async () => {
     const acc = await account("KS2");
     const debt = await entry(acc, { kind: "debt", amount: "1.000", date: day(-20), dueDate: day(2) });
     const credit = await entry(acc, { kind: "credit", amount: "300", date: day(-10), dueDate: day(3) });
@@ -212,13 +212,14 @@ describe("2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi,
     const items = (await accountItems()).filter(row => row.accountId === acc.id);
     assert.deepEqual(items.map(row => [row.entryId, row.direction, row.label, row.amount]), [[debt.id, "in", "Tahsil Edilecek Borç", 700]], "tek kalem: net borç");
     await entry(acc, { kind: "out", amount: "300", date: day(-1) });
-    assert.equal((await rowOf(acc, credit.id)).remaining, 0, "elle Alacak kapalı kalır");
-    assert.equal((await rowOf(acc, debt.id)).remaining, 700, "bağsız ödeme borç kalemini açmaz / kapatmaz");
+    // Ç5-B tur 2b-2 (bilerek güncellendi; KULLANICI S95 = A, 10.11 13:20: "ödeme önce KENDİ tarafının kalemini kapatır" + S102 = A): sonradan gelen bağsız Ödeme 300
+    // (müşteriye borcumuzu ödedik) önceki günün Borç ↔ Alacak netleşmesini geri alır — Alacak'ı ödeme kapatır, Borç yeniden 1.000 (önce: Borç 700 + ayrı 'Tahsil
+    // Edilecek' ödeme kalemi 300; iki okumada da Σ kalem = bakiye 1.000).
+    assert.equal((await rowOf(acc, credit.id)).remaining, 0, "elle Alacak kapalı kalır (artık ödemeyle)");
+    assert.equal((await rowOf(acc, debt.id)).remaining, 1000, "netleşme geri alındı: Borç 1.000 (S95)");
     assert.equal((await card(acc)).totals.balance, 1000, "ödeme bakiyeye yazıldı");
-    // EK-1 §1 (T-09 "müşteriye para iadesi" borç kalemi): netleşmemiş bağsız ödeme kendi gününde açık borç kalemidir (Tahsil Edilecek) — kalem toplamı = bakiye.
-    const paid = (await card(acc)).entries.find(row => row.kind === "out");
     const after_ = (await accountItems()).filter(row => row.accountId === acc.id);
-    assert.deepEqual(after_.map(row => [row.entryId, row.direction, row.amount]).sort(), [[debt.id, "in", 700], [paid.id, "in", 300]].sort(), "borç 700 + müşteriye ödeme 300 = bakiye 1.000");
+    assert.deepEqual(after_.map(row => [row.entryId, row.direction, row.amount]), [[debt.id, "in", 1000]], "tek kalem: Borç 1.000 = bakiye (ödeme ayrı kalem değil — kendi tarafını kapattı)");
   });
 
   it("S1 taksit kartı: ayrı kartın tahsilatı borç kaydını kapatmaz; Mevcut Borç kartının kapsadığı borç takvimden düşer (taksitlerle bir kez)", async () => {

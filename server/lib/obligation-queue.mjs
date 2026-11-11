@@ -767,8 +767,18 @@ function queueOnce(input, mode, lockCaps, { pieces = null, pseudo = null, forced
       }
     }
   };
+  // Ç5-B tur 2b-2 (S99 = A "fatura listesi, kart, Vade Takip, zil AYNI sayıyı gösterir" + S98 = A "avans da kalemdir, vade (= ödeme günü) sırasına girer"): fatura
+  // durumunda (side) da karşı tarafın NETLEŞMEMİŞ bağsız parası (müşteriye yaptığımız Ödeme / tedarikçinin bize yaptığı ödeme — avans) gelen bağsız paranın karşısında
+  // kendi günüyle kalemdir; belgeler arası netleşme yine yalnız Mahsup Et ile (karar (5), BAŞ MİMAR Y4-3 — karşı yönlü BELGE kalemleri burada eşleşmez). Önceden
+  // müşteriye verilen avans fatura durumunda hiç kapanmıyor, sonraki tahsilat faturayı kapatıyordu (fatura 'Ödendi', Vade Takip / zil 100 açık — d25 R3).
+  const againstOf = item => {
+    const own = listFor(item, false);
+    if (mode !== "side" || item.due || !freePayment(item)) return [own];
+    return [own, open[`${item.side === "r" ? "p" : "r"}Pay`]];
+  };
   const arrive = item => {
-    const against = listFor(item, false);
+    const lists = againstOf(item);
+    const against = lists.length === 1 ? lists[0] : [...lists[0], ...lists[1].filter(other => freePayment(other))];
     if (against.length) {
       if (mode === "net" && item.due && item.sign < 0) against.sort((a, b) => (isPurchaseReturn(a) === isPurchaseReturn(b) ? s2(a, b) : isPurchaseReturn(a) ? -1 : 1));
       else against.sort(s2);
@@ -785,7 +795,7 @@ function queueOnce(input, mode, lockCaps, { pieces = null, pseudo = null, forced
         close(target, payer, take, payer.lockFreed ? "locked" : "auto", date);
         if (mode === "net" && item.due && other.due) nettings.push({ debit: target, credit: payer, amount: take, date, seq: nettings.length, forward: target.closures.at(-1), reverse: payer.closures.at(-1) });
       }
-      for (let i = against.length - 1; i >= 0; i -= 1) if (!(against[i].left > 0)) against.splice(i, 1);
+      for (const list of lists) for (let i = list.length - 1; i >= 0; i -= 1) if (!(list[i].left > 0)) list.splice(i, 1);
     }
     if (mode === "net" && item.left > 0 && freePayment(item) && nettings.length) unnet(item);
     if (item.left > 0) listFor(item, true).push(item);
