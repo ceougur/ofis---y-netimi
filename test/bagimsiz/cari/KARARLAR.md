@@ -3123,3 +3123,82 @@ DEĞİŞMEZ (S130 bakiyeyi ve yevmiyeyi değiştirmez — karar metni "bakiye de
 - **SK-29 (şüpheli kayıtlı caride gecikmiş tutarı — S130 ile aynı mı; UÇ DURUM DEĞİL):** kararın örneği (bugün 15.06; F1 200 (20.05), Açılış 1.000 (vade 31.05), Borç 500 (vade 12.06) — hepsinin vadesi
   geçmiş; Şüpheli 900). **A (öneri — S130'un devamı: gecikmiş de görünen kalemlerden):** 300 + 500 = 800 / **B (gecikmiş defter kuyruğundan, şüpheli dahil — C13.5'in formülü):** min(1.700, 1.700) =
   1.700. Bakiye 1.700 iki seçenekte. (Kâhin bakım 4'ten beri şüpheli kayıtlı caride gecikmişi yazmıyor — değişmedi.)
+
+### Kurallar (kod commit'i; yorumların `model.py`'deki karşılığı)
+- **C25.1 `_supheli_hesap`:** `supheli_durum`'un hesabı (kalan AYNEN — bakım 12 ile bayt bayt; `--kural 2.4.9` ve öncesi aynı yol) + iz: şüpheliden düşen her alacak satırının düşen kısmı (`("t" | "e" | "h" | "i" | "x",
+  kimlik, bağ)`) ve kayıt başına Değersiz toplamı.
+- **C25.2 `s130(cari)` (Y14-1 … Y14-6; yalnız `2.5.0`):** R = Σ şüpheli kalan (Y14-3); R = 0 → görünen = kuyruk kalanı (iz "sifir"); R > 0 iken etkin taksit kartı / taksitli satış faturası / verilen avans (Ödeme,
+  ciro) → SUS SK-27; şüpheliden düşen satır bağlı (faturaya bağlı çek / senet, iade faturası) ya da elle Alacak → SUS SK-28 (b); öbür durumda O1 = kuyruk kalanından R'nin `_anahtar250(v, d, s)` sırasıyla
+  birikimli düşürülmesi, O2 = `_alacak_govde250(…, s130_mod)` (şüpheli kaydı kendi gününde 'd' havuzunda bağsız kapatıcı; o carinin Değersiz kapatıcıları çıkarılır; şüpheliden düşen tahsilat / evrak / stok
+  iadesinin düşen kısmı kaynaktan düşülür); O1 ≠ O2 → SUS SK-28 (a); eşitse görünen = O1 (iz "alan"). `kontrol()` SUS'u `belirsiz`'e "cari <ad> S130 görünümü tanımsız (2.5.0 §25): <neden>" diye yazar.
+- **C25.3 görünüm (Y14-1 / Y14-4 / Y14-8 / Y14-9):** `kontrol_v3` hareket kalemleri — Kalan / vade / beklenen yazıldıktan SONRA: SUS → kalem yazılmaz, sayaç bilinmiyor (`sayim_kesin` False); "alan" → borç yönlü
+  kalemin takvim / Vade Takip / projeksiyon tutarı = görünen, etiket KULLANICI; verilen avans kalemi SUS'ta yazılmaz; fatura kalemleri (`takvim:fatura`) SUS'ta yazılmaz, "alan"da satış faturası görünen tutarla
+  (etiket KULLANICI). `_cari_kalemleri`: şüpheli kayıtlı cari artık tanımsız DEĞİL — kartsız ve S130 değeri varsa kalemler görünen tutarla, denetim Σ = bakiye − (Σ kuyruk − Σ görünen); `_belirsiz_uyeler`
+  stok / karşılıksız kalemini görünen tutarla sayar. `kontrol_acik_toplam` ve gecikmiş (şüpheli kayıtlı cari) DEĞİŞMEDİ.
+- **C25.4 S133 (Y14-12) `_tyk` S110 elle kolu:** Y9-2 "kendi" seçilince carinin kartın gününde açık (kuyruğa girmiş) stok veresiye satışlarının belge tarihi → yazım sırasıyla EN SONUNCUSUNUN tutarı kart tutarına
+  eşit ve kalanı > 0 ise `("sus", …, "S133", satış)` — neden "… BİLİNEN SINIR (kullanıcı kararı S133 = C) S133 (§25 Y14-12)"; tüketim Y9-2 düzeniyle sürer (cari C13.4 (11) düzeninde susar).
+- **C25.5 S134 (Y14-13):** `_geri5` — `_s134b` bayrağı açıkken netleşme günü ≤ kilit < ödeme günü ise geri alınmaz (yalnız karşılaştırma); `net250` dönem kilidi varken ilk okumayı (K2) bayrakla bir kez daha
+  koşar, net kalanlar ya da verilen avans satırları ayrışırsa `"s134": True`; `net_durum` → ("tanimsiz", "… BİLİNEN SINIR (kullanıcı kararı S134 = C) S134 (§25 Y14-13)"), `gecikmis250` → None.
+- **C25.6 S135 (Y14-14):** SK-20 tuple'ına yedinci öğe (öbür kartların / taksitli faturaların açık taksitleri O'dan çıkınca O = T mi); doğruysa neden metnine "· … BİLİNEN SINIR (kullanıcı kararı S135 = C) S135
+  (§25 Y14-14)". **C25.7 S131 (Y14-11):** SK-26 nedeni "… BİLİNEN SINIR (kullanıcı kararı S131 = C) SK-26 (§24, §25 Y14-11; kartın kabulü ayrıca SK-18)".
+- Mutantlar 280–285 (`MUTASYONLAR`): 280 S130 B (kalemler düşmez) · 281 en yeniden · 282 orantılı · 283 bakiye de düşer · 284 Değersiz R'den düşülmez (Değersiz sonrası değişir) · 285 "en eski" belge tarihi.
+- `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`: hiçbir yol değişmedi (`s130` ve S134 karşılaştırması yalnız `k250`; `_supheli_hesap` kalanı aynen; S133 dalı `k250` içindeki S110 kolunda; S135 / S131 yalnız neden metni).
+
+### C8r Nasıl bozulur? (bakım 14 — kod commit'inde, senaryolarla birlikte yazıldı)
+| # | Bozulma | Senaryo |
+|---|---|---|
+| Z159 | Şüpheli Alacağa alınan tutar kalemlerden düşmez (S130 B) | d39 N1 … N4, N6, N7, N10 … N13a (mutant 280) |
+| Z160 | Tutar en yeniden düşer | d39 N1, N2, N3, N6, N7, N10, N12 (mutant 281) |
+| Z161 | Tutar orantılı dağılır | d39 N1, N2, N3, N6, N7, N10, N12 (mutant 282) |
+| Z162 | "En eski" belge tarihine göre (vade sırası değil) — kararın örneği | d39 N1 (mutant 285) |
+| Z163 | Şüpheliye alma bakiyeyi / Kalan'ı / fatura açığını da değiştirir | bakiye: d39 N1 … N4, N6, N7, N10 … N13a, d40 Q1 … Q4 (mutant 283); Kalan / açık: d39 her N carisi (elle değer) |
+| Z164 | Değersiz yazılınca kalemler bir kez daha düşer (Değersiz sonrası değişir) | d39 N1b, N5, N6 (mutant 284) |
+| Z165 | Kısmen tahsilat / tahsilatın şüpheliyi aşması / kısmen Değersiz yanlış R | d39 N6, N7, N8 |
+| Z166 | Şüpheli kalan kalemleri aşınca eksi kalem / toplam | d39 N11 |
+| Z167 | Sonradan doğan kalemde değer uydurulur (iki okuma ayrışıyor) ya da ayrışmazken susulur | d40 Q1 / Q1b (SUS), d39 N10 (değer) |
+| Z168 | Bağlı çek / taksit kartı / verilen avansla değer uydurulur; kart göstergeleri değişir | d40 Q2 (SK-28 (b)), Q3 (SK-27; kart 400 / 0), Q4 (SK-27; avans kalemi yazılmaz) |
+| Z169 | S133: en son satış karta eşitken değer uydurulur ya da eşit değilken Y9-2 bozulur | d40 Q5 (SUS), Q5b (değer) |
+| Z170 | S134: kilitli netleşmede değer uydurulur ya da kilitten sonraki netleşmede S95 bozulur | d40 Q6 (SUS), Q7 (değer) |
+| Z171 | S135 / S131 susmasında değer uydurulur ya da neden "KULLANICIYA SORULMALI" kalır | d40 Q8, d38 M14 / M15 |
+| Z172 | Aynı adlı iki cari karışır; şüphelisiz carinin kalemi düşer; görünüm toplamı / sayaç bozulur | d39 N13a / N13b, `cariKalemSayisi` / `projeksiyon:cari` |
+
+### Senaryolar (bakım 14; elle tablolar — kâhin koşulmadan karar metinlerinden ve §8 / §13 / §16 / §17 / §21 / §25'ten; betikler `docs/kanit/2026-11-12/kahineski14-arac/yeni-senaryolar14.py`, `d38-guncelle14.py`, adımların yeri `g1-sirala.py`)
+- **`d39-c5-s130-supheli-kalemleri`** (bugün 15.06.2026; 234 elle denetim = 195 değer + 39 yok): N1 kararın örneği AYNEN (Açılış kalemi 300, fatura kalemi yok, Borç 500; Kalan Açılış 1.000 / Borç 500, fatura açığı
+  200, bakiye 1.700; görünüm toplamı 800 = 1.700 − 900) · N1b Değersiz 900 sonrası (kalemler aynı; Kalan Açılış 300, açık 0, bakiye 800) · N2 ilk kalemi tam bitirir (F yok, x 300) · N3 aşar (x 200) · N4 hepsini
+  bitirir (0) · N5 tam Değersiz (R 0; x 200) · N6 kısmen Değersiz 200 (R 300; F yok, x 200; Kalan x 300, F açığı 200) · N7 kısmen tahsilat 200 (aynı) · N8 tahsilat şüpheliyi aşar (R 0) · N10 sonradan doğan kalem
+  sırada sonra (x 200, F 300 — değer) · N11 şüpheli kalan kalemleri aşar (kalem yok, toplam 0) · N12 iki şüpheli kaydı (x yok, y 400) · N13a / N13b aynı adlı iki cari (300 / 500 — şüphelisiz değişmez) · P1 / P2
+  S129'un iki örneği (ödenen 500 · kalan 400, taksitler 300 / 200 / 0, bakiye 400; ödenen 600 · kalan 0, 300 / 300, bakiye −200) · P3 Yeni Borç kartıyla S129 · sayaçlar `cariKalemSayisi` = `projeksiyon:cari` = 14.
+  Her S130 değer carisinde Σ görünen = bakiye − R (R kalemleri aşarsa 0) betikte assert edildi (Y14-8). Şüpheli kayıtlı caride gecikmiş ve `acikToplam` `elleYok` (değişmedi — SK-29).
+- **`d40-c5-s130-sus-bilinen-sinir`** (bugün 15.06.2026; 94 elle denetim = 42 değer + 44 yok + 8 belirsiz): Q1 / Q1b SK-28 (a) SUS (Kalan, vade, fatura açığı, bakiye yazılır) · Q2 SK-28 (b) bağlı çek SUS · Q3 SK-27
+  taksit kartı SUS (kart göstergeleri 400 / 0 değişmez) · Q4 SK-27 verilen avans SUS (avans kalemi de yok) · Q5 S133 = C SUS (bakiye 1.000, kart tutarı) · Q5b en son satış karta eşit değil — Y9-2 değer (x Kalan 500,
+  takvim yok, kart 500 / 0, gecikmiş 1.300) · Q6 S134 = C SUS (bakiye −300) · Q7 kilitten sonraki netleşme — S95 değer (Borç Kalan 0, Alacak Kalan 300, "Ödenecek Borç" 300 gecikmiş −13) · Q8 S135 = C
+  (SK-20 + S135 metni; bakiye 900, kart tutarı).
+- **`d38-c5-s128-ozge-kalemli-kart` M14 / M15 (S131 = C):** `elleBelirsiz` kaydına "BİLİNEN SINIR", "S131 = C" eklendi; adımlar ve değer beklentileri AYNEN (d38 294 elle denetim).
+- **İlk koşu:** 328 yeni elle denetimin (d39 234 + d40 94) hepsi kâhinle aynı; d38 294/294. Koşudan sonra değişen elle DEĞER yok — yalnız d40'ta Q8'in adımları senaryonun başına alındı (dönem kilidi
+  adımı G1 sıralamasında sınır olduğundan Q8'in mart faturaları haziran faturalarından sonraya düşmüştü — G1 taraması yakaladı; değerler aynı, koşu yinelendi: 328/328). Elle değerler yazılmadan önce kâhin
+  S130 alanında koşulmadı / çıktısına bakılmadı (geliştirme sırasındaki tek bakış: eski ↔ yeni kâhinin eski elle senaryolardaki farkı — c7 `k3`'ün dört görünüm denetimi, kararın örneği).
+
+### C10r Mutantlar (bakım 14; `oz-test.py` DEĞERLE — çökmeden, elle tablo kırmızı)
+280 S130 B (kalemler düşmez) · 281 en yeniden · 282 orantılı · 283 bakiye de düşer · 284 Değersiz sonrası değişir (R'den Değersiz düşülmez) · 285 "en eski" belge tarihi. Hepsi d39'da DEĞERLE (283 d40'ta da). Bakım 6
+… 12 mutantları (241–279) aynen yakalanıyor (`oz-test.py`; `mutant-senaryo.py` 261–285 × d35 … d40).
+
+### Dil ekleri (/3, bakım 14)
+Yeni adım YOK; yeni çıktı anahtarı YOK — şüpheli kayıtlı carinin görünüm toplamı (`<k>:takvim|vadeTakip|projeksiyon:cariToplam:<cari>`) artık yazılır (S130 değer alanında, kartsız caride). `belirsiz` kayıtları:
+"<k>: cari <ad> S130 görünümü tanımsız (2.5.0 §25): … KULLANICIYA SORULMALI SK-27 | SK-28 (a) | SK-28 (b) …", "… BİLİNEN SINIR (kullanıcı kararı S133 = C) S133 (§25 Y14-12)", "… BİLİNEN SINIR (kullanıcı kararı S134 =
+C) S134 (§25 Y14-13)", SK-20 nedeninde "… S135 = C) S135 (§25 Y14-14)", SK-26 nedeninde "BİLİNEN SINIR (kullanıcı kararı S131 = C) SK-26".
+
+### Eşleme notları (ana oturum için; `kos.mjs` bu bakımda DEĞİŞMEDİ, açılmadı)
+- Yeni adım yok; d39 / d40 mevcut adım türleriyle (`cari_ac {acilis, acilisVade, tel}`, `fatura {taksit}`, `borc {vade}`, `alacak`, `tahsilat`, `odeme`, `stok_iade`, `stok_satis_hesap`, `supheli_al`, `degersiz`, `evrak {fatura}`,
+  `kart_ac {mevcut}`, `kart_tahsilat`, `donem_kilitle`). `degersiz` adımında `cari` alanı YOK (kayıttan bulunur) — G1 sıralamasında sınır; `donem_kilitle` senaryonun bütün carilerine uygulanır (d40'ta yalnız Q6 / Q7
+  net görünümlü).
+- **Ana oturuma:** `model.py` değişti — mobil yazma kâhininin `cari_model_sha256`'sı yeniden üretilmeli (o dosya okunmadı); yapım aşaması listesi bu ajanca açılmadı (c7 `k3`'ün dört görünüm değeri, d39 / d40'ın yeni
+  denetimleri ve S133 / S134 alanındaki programda varsa eski değerler listede DEĞİŞEN / YENİ / KAPANAN kayıt olarak görünebilir — ayrıştırma ana oturumda). Kâhinin dilinde kartın / taksitin DURUM anahtarı
+  ("Tamamlandı" / "Ödendi · Kısmen · Bekliyor") yok — S129'un durum metni koşucuya ayrı anahtar olarak eklenmek istenirse kâhine ayrı bakım gerekir.
+
+### C12r DENENMEYEN (bakım 14; neden)
+- Program koşulmadı (görev). Programın S130 / S133 / S134 alanındaki gösterimi bilinmiyor (yalnız soru metinlerindeki örnekler).
+- Şüpheliden GERİ ALMA (Şüpheliden Çıkar / karşılık) — kâhinin dilinde adım yok (§8 ŞÜPHELİ KALAN'dan beri DENENMEYEN).
+- Şüpheli kayıtlı caride gecikmiş (SK-29), Ödeme Sözü taşıyan kalem, vadesi gelecekte (ufuk dışı) kalem, iki şirket / yedek geri yükleme, silinen / geri yüklenen şüpheli kaydı ya da tahsilatı (silme ↔ S130).
+- S129'un durum metinleri ve tahsilat formunun sınırı (S118 = B) — anahtar yok. S133'ün "en son" sözünün yazım sırası ↔ belge tarihi ayrımı (kâhin belge tarihi → yazım sırasıyla en sonu alır; iki sıranın ayrıştığı
+  senaryo yazılmadı). S134'ün K1 biçimi (yalnız mutant 245 dünyasında).
+- S133 / S134'ün programdaki eski değerleriyle karşılaştırma (yapım aşaması listesi — ana oturumda).

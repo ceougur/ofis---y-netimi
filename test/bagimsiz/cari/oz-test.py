@@ -33,6 +33,9 @@
    (d36 J13 artık değerle); mutantlar 270–274 DEĞERLE; `elleYok` / `elleBelirsiz` Y11-8 (S125 = C) ve SK-25 susmaları.
 13. Bakım 12 (§24; S128 A): bakiye kadar açılan Taksitler kartının içinde stok veresiye satışı / karşılıksız kalemi de varsa ödeme kalemleri türüne bakılmadan içine alma sırasıyla, eskiden yeniye
    düşürür — d38 elle tablosu (d37 L14 artık değerle); mutantlar 275–279 DEĞERLE; `elleYok` / `elleBelirsiz` Y12-8 (S125 = C) ve SK-18 + SK-26 (başka kartın / taksitli faturanın taksiti) susmaları.
+14. Bakım 14 (§25; TOPLU — S130 A, S129 A onay, S131 / S133 / S134 / S135 = C): Şüpheli Alacağa alınmış, Değersiz yazılmamış, tahsil edilmemiş tutar 'Tahsil Edilecek' kalemlerinden tek
+   yükümlülük kuyruğunun sırasıyla en eskiden düşer (bakiye / Kalan / fatura açığı değişmez; görünüm toplamı = bakiye − R) — d39 elle tablosu (S129'un iki örneği dahil); SUS alanları ve BİLİNEN
+   SINIRLAR d40 (SK-27 / SK-28, S133, S134, S135); d38 M14 / M15 SK-26 susması S131 = C; mutantlar 280–285 DEĞERLE.
 Çıktı: TAP benzeri sayılar + son satır "N/M denetim geçti". Çıkış 0 yalnız hepsi geçerse.
 """
 import importlib.util
