@@ -39,6 +39,8 @@
 # 2.5.0 Ç5 bakımı 2 (06.11.2026; KARARLAR.md "2.5.0 Ç5 bakımı 2" — kodu görmeyen AYRI el; KULLANICI S65 = A, S66 = A):
 #   D6′ "Açılış Olabilir" adayı yalnız açıklaması "Açılış…" ile BAŞLAYAN eski kayıt (ortada geçen aday değil — SK-1 kapandı) · D4′ formdan carisiz ALINAN evrakın karşılıksızı:
 #   cari seçilirse B CH / A 101|121 (cari borçlanır), seçilmezse B 649 / A 101|121 (S49 geliri geri alınır) — SK-2 kapandı; Y2 (kitap G-7): kilitli dönem içinde tarihli karşılıksız ret.
+# 2.5.0 Ç5 bakımı 3 (12.11.2026; KARARLAR.md "2.5.0 Ç5 bakımı 3" — BAŞ MİMAR KARARI 12.11, para / defter kuralı DEĞİL): ÖK-1 senaryo ön koşulu — aynı carinin o an AÇIK taksit kartı
+#   (iptal edilmemiş, kalanı > 0 taksitli satış faturası ya da silinmemiş, T − P > 0 Excel kartı) varken gelen `excel_taksit_karti` kurulmaz: kâhin sayı üretmez, hata verir.
 #
 # Kullanım: python3 -I kahin.py senaryo.json [--yapilan yapilan.json] [--mutasyon N] [--kural 2.5.0|2.4.9] > beklenen.json
 import json
@@ -78,6 +80,8 @@ MUTASYONLAR_250 = {
     36: "D4′ (S66 B): carisiz evrakın karşılıksızı, cari seçilmezse gidere (B 770 / A 101)",
     37: "D4′ (S66): cari seçilse de cari borçlanmaz (B 649 / A 101)",
     38: "D4′ Y2 (G-7 B): kilitli dönem içinde tarihli karşılıksız kabul (madde donmuş döneme yazılır)",
+    # bakım 3 (KARARLAR.md "2.5.0 Ç5 bakımı 3") — kural değil, senaryo ön koşulunun denetimi (testin dişi)
+    39: "ÖK-1 denetimi yok: açık taksit kartlı cariye Excel taksit kartı sessizce kurulur (sayı üretilir)",
 }
 ACILIS_TURLERI = ("kasa_acilis", "banka_hesap", "urun", "cari_acilis", "borc_yaz", "alacak_yaz", "acilis_evrak", "cek_carisiz", "excel_taksit_karti")
 
@@ -151,6 +155,23 @@ def hesapla(sen, yapilan=None, mut=0, kural=VARSAYILAN_KURAL):
     kasa_hareket = {}                # D10: Kasa hareketi olay id → tarih (S12, B11 düzeltmesi, EK-2B 33)
     kilit = [None]                   # D7: göçte donan son gün (L)
     tanimsiz_eski = set()            # D7: 2.4.9 karşılığı kararda olmayan eski madde (gözlenirse hata)
+    taksit_karti = {}                # ÖK-1 (bakım 3): kart id (taksitli fatura / Excel kartı) → {"cari", "kalan" (kuruş), "tur"}
+
+    def ok1_denetle(o):
+        """ÖK-1 [BAŞ MİMAR KARARI 12.11.2026; senaryo ön koşulu]: aynı carinin o an AÇIK taksit kartı varken Excel taksit kartı yüklenemez → kâhin kurmaz.
+        En dar okuma: aynı CARİ (SS-1 grup, SS-2 aynı adlı ayrı cari okunmaz); açık = kalan > 0, iptal / silinmiş değil (SS-3); yalnız taksit kartları (SS-4). Mutant 39: denetim yok."""
+        if mut == 39:
+            return
+        acik = []
+        for kid, kart in taksit_karti.items():
+            if kart["cari"] != o["cari"] or kart["kalan"] <= 0:
+                continue
+            if kart["tur"] == "excel" and kaynak.get(kid, {}).get("silindi"):
+                continue
+            acik.append(kid)
+        if acik:
+            raise SystemExit("ÖK-1 (BAŞ MİMAR KARARI 12.11.2026): %s Excel taksit kartı, aynı carinin (%s) açık taksit kartı varken (%s) yüklenemez — gerçekte kayıt oluşmaz, kâhin kurmaz"
+                             % (o["id"], o["cari"], ", ".join(sorted(acik))))
 
     def kasa_once(t):
         """D10 S12 A: Kasa açılışından ÖNCE tarihli yeni Kasa hareketi reddedilir (açılış günü kabul). Mutant 32: kabul."""
@@ -388,8 +409,12 @@ def hesapla(sen, yapilan=None, mut=0, kural=VARSAYILAN_KURAL):
                         fis(t, oid + ":peşin", B("320", x), A(hesap, x)); cari[c] += x
                     pesin.append((hesap, x))
             faturalar[oid] = {"olay": o, "kalemler": kalemler, "odenecek": odenecek, "ay": ay, "kdv": kdv, "tev": tev, "pesin": pesin, "tur": ft}
+            if ft == "satis" and od.get("taksit"):
+                taksit_karti[oid] = {"cari": c, "kalan": odenecek - sum(x for _, x in pesin), "tur": "fatura"}  # ÖK-1: taksitli faturanın kartı
         elif tur == "iptal":
             f = faturalar[o["fatura"]]
+            if o["fatura"] in taksit_karti:
+                taksit_karti[o["fatura"]]["kalan"] = 0  # ÖK-1 SS-3: iptal edilmiş taksitli faturanın kartı açık sayılmaz
             for tarih, olay, satirlar in list(J):
                 if olay in (o["fatura"], o["fatura"] + ":peşin"):
                     fis(t, oid, *[(h, a, b) for h, b, a in satirlar])
@@ -518,11 +543,15 @@ def hesapla(sen, yapilan=None, mut=0, kural=VARSAYILAN_KURAL):
                 kasa_hareket[o["hareket"]] = o["tarih"]
         elif tur == "taksit_tahsil":
             x = kurus(o["tutar"]); c = faturalar[o["fatura"]]["olay"]["cari"]
+            if o["fatura"] in taksit_karti:
+                taksit_karti[o["fatura"]]["kalan"] -= x  # ÖK-1 SS-5: kartın kalanı yalnız kendi taksit tahsilleriyle düşer
             cari[c] -= x
             fis(t, oid, B("100" if o["yol"] == "nakit" else "102", x), A("120", x))
         elif tur == "excel_taksit_karti":
             # D9 KG-5 A: Excel'den yüklenen taksit kartı açılış alacağı (tek madde, P maddesiz)
+            ok1_denetle(o)  # ÖK-1 (bakım 3): açık taksit kartlı cariye yüklenemez — kâhin kurmaz
             x = kurus(o["toplam"]) - kurus(o.get("odenen", 0))
+            taksit_karti[oid] = {"cari": o["cari"], "kalan": x, "tur": "excel"}
             cari[o["cari"]] += x
             acilis_fisi(o, t)
         elif tur == "vergi_odeme":

@@ -1,10 +1,11 @@
 {
-  "aciklama": "2.5.0 Ç5 D1–D5, D9, D10 elle tablo (programla da koşulabilir: node test/bagimsiz/defter/kos.mjs <bu dosya>): açılışlar 519'a (Kasa, banka, stok, cari borçlu / alacaklı); 'AÇILIŞ BAKİYESİ' / 'açılış' açıklamalı yeni Borç / Alacak Yaz 602 / 770 (açıklama açılış yapmaz); formdan carisiz evrak 649 / 770 (S49); açılış portföyü 519 (alınan çek / senet, verilen çek); karşılıksız açılış evrakı cari seçilmeden B 519, cari seçilince B 120 (S48); Excel taksit kartı B 120 (T − P) / A 519 (KG-5); Kasa açılışından önce tarihli gider ve önceye alınan düzeltme ret, açılış günü kabul (S12, B11).",
+  "aciklama": "2.5.0 Ç5 D1–D5, D9, D10 elle tablo (programla da koşulabilir: node test/bagimsiz/defter/kos.mjs <bu dosya>): açılışlar 519'a (Kasa, banka, stok, cari borçlu / alacaklı); 'AÇILIŞ BAKİYESİ' / 'açılış' açıklamalı yeni Borç / Alacak Yaz 602 / 770 (açıklama açılış yapmaz); formdan carisiz evrak 649 / 770 (S49); açılış portföyü 519 (alınan çek / senet, verilen çek); karşılıksız açılış evrakı cari seçilmeden B 519, cari seçilince B 120 (S48); Excel taksit kartı B 120 (T − P) / A 519 (KG-5; bakım 3 ÖK-1: açık kartı olmayan ayrı cariye); Kasa açılışından önce tarihli gider ve önceye alınan düzeltme ret, açılış günü kabul (S12, B11).",
   "simdi": "2026-09-15T17:00:00+03:00",
   "bugun": "2026-09-15",
   "olaylar": [
     { "id": "M1", "tur": "cari", "ad": "Elle Alfa Ltd.", "tip": "customer" },
     { "id": "T1", "tur": "cari", "ad": "Elle Tedarik A.Ş.", "tip": "supplier" },
+    { "id": "M2", "tur": "cari", "ad": "Elle Excel Müşterisi Ltd.", "tip": "customer", "not": "bakım 3 ÖK-1: EX1'in carisi — başka olayı yok (açık kartı yok)" },
     { "id": "P1", "tur": "urun", "ad": "Elle Ürün", "kod": "EP1", "birim": "Adet", "alis": 30, "satis": 50, "kdv": 20, "acilisMiktar": 10, "acilisTarih": "2026-09-01" },
     { "id": "KASA0", "tur": "kasa_acilis", "tarih": "2026-09-01", "tutar": 2000 },
     { "id": "B", "tur": "banka_hesap", "tarih": "2026-09-01", "ad": "Elle TL Hesabı", "acilis": 5000 },
@@ -19,7 +20,7 @@
     { "id": "AE3", "tur": "acilis_evrak", "tarih": "2026-09-01", "yon": "verilen", "evrak": "cek", "tutar": 200, "no": "G4-A3", "vade": "2026-10-01" },
     { "id": "AE1K", "tur": "karsiliksiz", "tarih": "2026-09-10", "cek": "AE1" },
     { "id": "AE2K", "tur": "karsiliksiz", "tarih": "2026-09-10", "cek": "AE2", "cari": "M1" },
-    { "id": "EX1", "tur": "excel_taksit_karti", "tarih": "2026-09-12", "cari": "M1", "toplam": 900, "odenen": 300 },
+    { "id": "EX1", "tur": "excel_taksit_karti", "tarih": "2026-09-12", "cari": "M2", "toplam": 900, "odenen": 300, "not": "bakım 3 ÖK-1: M1'den taşındı (girdi: M1'in açık kartı var — açık kartlı cariye Excel kartı yüklenemez)" },
     { "id": "KG0", "tur": "kasa_gider", "tarih": "2026-08-30", "tutar": 100, "beklenen": "ret" },
     { "id": "KG1", "tur": "kasa_gider", "tarih": "2026-09-01", "tutar": 40 },
     { "id": "KD1", "tur": "kasa_duzelt", "tarih": "2026-08-31", "hareket": "KG1", "beklenen": "ret" },
@@ -32,7 +33,8 @@
     },
     "retler": ["KD1", "KG0"],
     "acilisOlabilir": [],
-    "cari": { "Elle Alfa Ltd.": 2300, "Elle Tedarik A.Ş.": -650 },
+    "cari": { "Elle Alfa Ltd.": 1700, "Elle Tedarik A.Ş.": -650, "Elle Excel Müşterisi Ltd.": 600 },
+    "yaslandirmaCariler": { "Elle Alfa Ltd.": 1700, "Elle Excel Müşterisi Ltd.": 600 },
     "stok": { "EP1": "10" },
     "yaslandirmaToplam": 2300
   }

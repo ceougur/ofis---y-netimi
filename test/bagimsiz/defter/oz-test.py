@@ -8,6 +8,8 @@
 2. Değişmez: her kontrol noktasında mizan dengeli (Σ = 0).
 3. Mutantlar (kâhinin dişi): 2.5.0 mutantlarının (kahin.py MUTASYONLAR_250) her biri en az bir senaryoda çıktıyı DEĞERLE değiştirmeli ("mutasyon" alanı hariç);
    mutant kâhini çökertirse (SystemExit) davranış değişmiştir — yakalandı sayılır. Yakalanmayan = eksik test.
+4. Ön koşulu çiğneyen senaryolar (bakım 3, `beklenenHata`; ör. ÖK-1): kâhin sayı ÜRETMEMELİ, iletisinde beklenen metinle çökmeli; mutant bu çöküşü kaldırırsa yakalandı.
+   Elle tablolarda `yaslandirmaCariler` (müşteri başına yaşlandırma satırı) da denetlenir.
 Çıktı: TAP benzeri sayılar + son satır "N/M denetim geçti". Çıkış 0 yalnız hepsi geçerse.
 """
 import importlib.util
@@ -62,6 +64,11 @@ def main():
         ad = os.path.basename(p)
         out = calistir(sen)
         taban[p] = out
+        if sen.get("beklenenHata"):
+            # bakım 3: ön koşulu ÇİĞNEYEN senaryo (ÖK-1) — kâhin sayı üretmemeli, beklenen NEDENLE çökmeli (ders 7, 38)
+            denetle("%s beklenen nedenle çöktü (%s)" % (ad, sen["beklenenHata"]), sen["beklenenHata"] in out.get("__cokme__", ""),
+                    out.get("__cokme__", "çökmedi — sayı üretti"))
+            continue
         if "__cokme__" in out:
             denetle("%s çalıştı" % ad, False, out["__cokme__"])
             continue
@@ -91,6 +98,9 @@ def main():
             denetle("%s cari %s" % (ad, c), out["cari"].get(c) == kurus_tl(v), "elle %d · kâhin %s" % (kurus_tl(v), out["cari"].get(c)))
         for kod, q in e.get("stok", {}).items():
             denetle("%s stok %s" % (ad, kod), out["stok"].get(kod) == q, "elle %s · kâhin %s" % (q, out["stok"].get(kod)))
+        for c, v in e.get("yaslandirmaCariler", {}).items():  # bakım 3: yaşlandırma satırları (müşteri başına)
+            g = out["yaslandirma"]["cariler"].get(c)
+            denetle("%s yaşlandırma %s" % (ad, c), g == kurus_tl(v), "elle %d · kâhin %s" % (kurus_tl(v), g))
         if "yaslandirmaToplam" in e:
             b = kurus_tl(e["yaslandirmaToplam"])
             denetle("%s yaşlandırma toplam" % ad, out["yaslandirma"]["toplam"] == b, "elle %d · kâhin %d" % (b, out["yaslandirma"]["toplam"]))
@@ -106,9 +116,18 @@ def main():
     for n, ad in K.MUTASYONLAR_250.items():
         yakalayan = []
         for p in dosyalar:
+            sen = yukle(p)
+            if sen.get("beklenenHata"):
+                # ön koşulu çiğneyen senaryo: mutant beklenen çöküşü kaldırırsa (sayı üretir ya da başka nedenle çöker) yakalandı
+                if "__cokme__" not in taban[p] or sen["beklenenHata"] not in taban[p]["__cokme__"]:
+                    continue
+                m = calistir(sen, n)
+                if sen["beklenenHata"] not in m.get("__cokme__", ""):
+                    yakalayan.append(os.path.basename(p) + " (beklenen çöküş kalktı)")
+                continue
             if "__cokme__" in taban[p]:
                 continue
-            m = calistir(yukle(p), n)
+            m = calistir(sen, n)
             if "__cokme__" in m or deger(m) != deger(taban[p]):
                 yakalayan.append(os.path.basename(p) + (" (çöktü)" if "__cokme__" in m else ""))
         ok = bool(yakalayan)

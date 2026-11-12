@@ -8,7 +8,9 @@
     "aciklama": "2.5.0 Ç5 elle tablo (KISMİ — yalnız Ç5'in değiştirdiği / eklediği hesaplar; öbürleri 2.4.3 kâhininden aynen): 519 = −(Kasa 10.000 + banka 50.000 + P1 stoğu 100 × 50 + M1A 5.000 + M5A 2.000 + M4A 5.000 − T1A 8.000) − AE1 3.000 − AE2 1.000 + AE3 800 + AE1K 3.000 − EX1 4.500; 500 = 0; 101 = CK1 2.500 (+ AE1 − AE1K); 121 = S1 2.000 + CK3 700 (+ AE2 − AE2K); 103 = C3 −2.000 − CK2 1.200 − AE3 800; 602 = −(BY1 + BY2 + BY3); 649 = −(CK1 + CK3).",
     "kismi": true,
     "kontroller": { "K_SON": { "500": 0, "519": -73700, "101": 2500, "121": 2700, "103": -4000, "602": -2050, "649": -3200 } },
-    "retler": ["KDZ1", "KG0"]
+    "retler": ["KDZ1", "KG0"],
+    "cari": { "Ahmet Yılmaz": 1100, "Excel Kart Müşterisi Ltd.": 4500 },
+    "yaslandirmaCariler": { "Ahmet Yılmaz": 1100, "Excel Kart Müşterisi Ltd.": 4500 }
   },
   "olaylar": [
     { "id": "M1", "tur": "cari", "ad": "Alfa Ticaret A.Ş.", "tip": "customer", "vkn": "9876543217" },
@@ -20,6 +22,7 @@
     { "id": "T2", "tur": "cari", "ad": "Kırtasiye Ali Veli", "tip": "supplier" },
     { "id": "T3", "tur": "cari", "ad": "Pırıl Temizlik Ltd. Şti.", "tip": "supplier" },
     { "id": "T4", "tur": "cari", "ad": "Mehmet Kiraya Veren", "tip": "supplier" },
+    { "id": "M6", "tur": "cari", "ad": "Excel Kart Müşterisi Ltd.", "tip": "customer", "not": "bakım 3 ÖK-1: EX1'in carisi — başka olayı yok (açık kartı yok)" },
 
     { "id": "P1", "tur": "urun", "ad": "Defter A4", "kod": "P1", "birim": "Adet", "alis": 50, "satis": 100, "kdv": 20, "acilisMiktar": 100, "acilisTarih": "2026-09-01" },
     { "id": "P2", "tur": "urun", "ad": "Un", "kod": "P2", "birim": "Kg", "alis": 8, "satis": 10, "kdv": 1 },
@@ -127,7 +130,7 @@
     { "id": "AE3", "tur": "acilis_evrak", "tarih": "2026-09-01", "yon": "verilen", "evrak": "cek", "tutar": 800, "no": "A-003", "vade": "2026-12-10", "not": "2.5.0 D3: B 519 / A 103 (770'e yazılmaz)" },
     { "id": "AE1K", "tur": "karsiliksiz", "tarih": "2026-11-22", "cek": "AE1", "not": "2.5.0 D4 S48: cari seçilmedi — B 519 / A 101" },
     { "id": "AE2K", "tur": "karsiliksiz", "tarih": "2026-11-22", "cek": "AE2", "cari": "M3", "not": "2.5.0 D4 S48: cari seçildi — B 120 / A 121, M3 borçlanır" },
-    { "id": "EX1", "tur": "excel_taksit_karti", "tarih": "2026-11-23", "cari": "M2", "toplam": 6000, "odenen": 1500, "not": "2.5.0 D9 KG-5: B 120 4.500 / A 519 (tek madde, ödenen maddesiz)" },
+    { "id": "EX1", "tur": "excel_taksit_karti", "tarih": "2026-11-23", "cari": "M6", "toplam": 6000, "odenen": 1500, "not": "2.5.0 D9 KG-5: B 120 4.500 / A 519 (tek madde, ödenen maddesiz). Bakım 3 ÖK-1: M2'den taşındı — M2'nin F13 taksitli satış kartı (kalan 800) açıkken yüklenemez" },
     { "id": "KG0", "tur": "kasa_gider", "tarih": "2026-08-25", "tutar": 100, "beklenen": "ret", "not": "2.5.0 D10 S12: Kasa açılışından (01.09) önce tarihli — ret" },
     { "id": "KG2", "tur": "kasa_gider", "tarih": "2026-09-01", "tutar": 50, "not": "2.5.0 D10: açılış günü — kabul" },
     { "id": "KDZ1", "tur": "kasa_duzelt", "tarih": "2026-08-31", "hareket": "KG2", "beklenen": "ret", "not": "2.5.0 D10 B11: tarihi açılıştan önceye alan düzeltme — ret" },

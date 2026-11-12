@@ -222,3 +222,38 @@ denetimi ve kâhinin öz testi.
   - Yaşlandırma satırları: Ahmet Yılmaz 5.600 → **1.100** (portföy evrakı yok); Excel Kart Müşterisi Ltd. (yeni) **4.500**; toplam DEĞİŞMEZ.
   - KDV, stok, stopaj özeti, yevmiye sırası, retler: DEĞİŞMEZ.
 - **g1–g3, g5–g8:** Excel taksit kartı yok → çiğneyen olay YOK.
+
+### Senaryolar (bakım 3)
+- `senaryolar/g9-ok1-acik-taksitli-fatura` ve `senaryolar/g9b-ok1-acik-excel-karti` — ön koşulu ÇİĞNEYEN senaryolar (`beklenenHata: "ÖK-1"`): taksitli satış kartı kısmen ödenmiş (kalan 800) iken / ilk
+  Excel kartı açık (kalan 600) iken aynı cariye Excel kartı. Yalnız `oz-test.py`; programla KOŞULMAZ (kâhin hata verir — `kos.mjs` bunlarda beklenen hesaplayamaz).
+- `g4` ve `senaryo.json`: EX1 olaysız yeni cariye (yukarıda); elle tablolara cari bakiyeleri ve yaşlandırma satırları (`yaslandirmaCariler`) eklendi.
+
+### Mutant (bakım 3; `oz-test.py`)
+39 ÖK-1 denetimi yok (çiğneyen senaryo sessizce sayı üretir) — g9 / g9b'de "beklenen çöküş kalktı" diye yakalanır. EX1'in kuralı için bakım 1 mutantları taşınan olayla DEĞERLE (çöküş değil): 21 (KG-5 B)
+kontrol mizanında 519 ve 600'ü değiştirir (g4 K1: 519 −8.500 → −7.600, 600 0 → −900; `senaryo.json` K_SON: 519 −73.700 → −67.700, 600 −67.300 → −73.300; cari / yaşlandırma T − P net aynı), 14 (500)
+519 / 500'ü (g4 K1: 519 −8.500 → +600, 500 → −9.100). Kanıt `docs/kanit/2026-11-12/kahineski13-mut-ex1.out`. `kos.mjs` "tam senaryo" listesine EKLENMEDİ (kos.mjs
+değiştirilmedi; ÖK-1 çiğneyen senaryo programla koşulmaz).
+
+### `oz-test.py` ekleri (bakım 3)
+`beklenenHata` (senaryo kâhinde beklenen metinle çökmeli; çökmezse ya da başka nedenle çökerse kırmızı; mutantın çöküşü kaldırması yakalanma sayılır) ve `yaslandirmaCariler` (müşteri başına
+yaşlandırma satırı). Öz test bakım öncesi tabanda (`a55e47e4`) iki saat diliminde YEŞİLDİ (171/171); bakımdan sonra 181/181 (UTC ve Europe/Istanbul). Yeni öz test ESKİ kâhinle (bakım 2) beklenen
+NEDENLE kırmızı: g9 / g9b "çökmedi — sayı üretti" (178/180).
+
+### Değişen eski beklentiler (G3; hepsi EX1'in taşınmasından — ÖK-1)
+Bakım 2 kâhini (eski senaryolar) ↔ bakım 3 kâhini (yeni senaryolar), her senaryo × iki kural × mutant 0–39: fark YALNIZ `senaryo.json` ve `g4`'te, YALNIZ yukarıda elle yazılan cari bakiyesi ve
+yaşlandırma satırlarında (eski cari −T+P, yeni cari +T−P; mizan, toplamlar, KDV, stok, retler aynen); g1–g3, g5–g8 bayt bayt AYNI (BEKLENMEYEN 0 — sayılar ajan raporu / kanıt
+`docs/kanit/2026-11-12/kahineski13-*`). Yeni kâhin ESKİ `senaryo.json`'da ÖK-1 nedeniyle çöker (beklenen — çiğneyen olay), ESKİ `g4`'te çökmez (SS-4).
+
+### Eşleme notları (`kos.mjs` — değiştirilmedi)
+Yeni cariler (`g4` M2, `senaryo.json` M6) `cari` olayıyla açılır (açılışsız: `registeredOn` 2026-01-01); EX1'in Excel satırı carinin ADINI taşır (eşleme aynen). Yeni olay türü / alan YOK.
+
+### KULLANICIYA SORULMALI / BAŞ MİMAR KARARI GEREKİYOR (bakım 3)
+- **BM-1 (bildirim; kural değil):** girdi `g4`'te M1'in açık kartı olduğunu söylüyor, kâhin dilinde M1'in olaylarından hiçbiri taksit kartı değil (SS-4). Programın M1'de neyi kart saydığı (cari
+  açılışı mı, "AÇILIŞ BAKİYESİ" açıklamalı Borç Yaz mı, cari seçilerek karşılıksız mı) kâhinin konusu değil, ama bu bir KART TANIMI farkıdır: başka bir senaryoda Excel kartı açılışı / Borç Yaz'ı olan
+  bir cariye konursa kâhin sayı üretir, program reddeder. **A (öneri):** kâhin en dar okumada kalsın; senaryolar Excel kartını yalnız olaysız cariye koysun (bu bakımda yapıldı). **B:** baş mimar kart
+  sayılan kayıtları karar metniyle yazsın; kâhin ÖK-1'i genişletir. **C:** uç durum böyle kalsın (BİLİNEN SINIR).
+
+### DENENMEYEN (bakım 3; neden)
+- SS-1 … SS-5'in sınırları (grup, aynı adlı ayrı cari, kapanmış / iptal / silinmiş kart, taksit kartı dışı kayıt, genel tahsilatla kapanan kart): kararda yok → senaryo KURULMADI (kâhin bu durumlarda
+  hata vermez; beklentisi yazılmadı).
+- Program koşulmadı (görev gereği; `npm run test:kahin-defter` ana oturumda).
