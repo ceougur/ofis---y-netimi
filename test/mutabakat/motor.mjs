@@ -112,7 +112,7 @@ export const motorNow = (base = new Date()) => new Date(base.getFullYear(), base
 // supheli (2.3.0 İz 1, plan §3.11b): Şüpheli Ticari Alacaklar işlemleri (yalnız banka ekseniyle; false: torbada yoklar, motorun rastgele sırası
 // 2.2.0'dakiyle aynı). İşlemler yalnız motorun bu iş için açtığı iki müşteride koşar (accounts/customers havuzunda değildir: öbür işlemlerin
 // rastgele seçimleri değişmez); model 128/129/644/654'ü plandan yazılmış kendi ayırma kuralıyla (doubtfulModel) hesaplar.
-export async function runReconciliation({ client, seed = 1, operations = 500, verifyEvery = 1, reportEvery = 50, burst = 40, span = 120, bank = true, pos = false, tahsileVer = true, k8 = true, supheli = true, log = () => {} }) {
+export async function runReconciliation({ client, seed = 1, operations = 500, verifyEvery = 1, reportEvery = 50, burst = 40, span = 120, bank = true, pos = false, tahsileVer = true, k8 = true, supheli = true, sigmaOf = null, log = () => {} }) {
   const R = rng(seed);
   const api = async (method, url, body) => {
     const response = await (method === "GET" ? client.get(url) : method === "DELETE" ? client.del(url) : method === "PUT" ? client.put(url, body) : client.post(url, body));
@@ -373,6 +373,17 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     }
     const list = (await api("GET", "/api/workspace/accounts?status=all&limit=500")).data.accounts;
     for (const a of list) if (M.cari.has(a.id) && centsOf(a.balance) !== M.cari.get(a.id)) problems.push(`Cari ${a.name} (${a.refNo}): program ${a.balance} · model ${tl(M.cari.get(a.id))}`);
+    // 2.5.0 Ç5-B kapanış düzeltmesi (dar kontrol DÜŞÜK-3 + ORTA-2; kullanıcının koşulu "kalemler toplamı = cari bakiyesi HER durumda tutar"): tek yükümlülük kuyruğunun
+    // açık kalemlerinin toplamı (alacak − borç yönü) bu modelin BAĞIMSIZ cari bakiyesine eşit. Model kuyruğu kurmaz; bakiyeyi kendi satırlarından toplar — iki görünümü
+    // birden bozan hata (ör. yakınsamayan ön ödeme ölçümü: kalemler bakiyeden 20 fazla) burada görünür. sigmaOf: koşucunun verdiği okuma (test/mutabakat/sigma.mjs —
+    // programın kuyruğundan cari → kuruş); verilmediyse denetim yapılmaz (HTTP'den okunamaz: karşı yönlü avans kalemleri ekranlarda kalem değildir).
+    if (sigmaOf) {
+      const sigma = await sigmaOf();
+      for (const a of list) {
+        if (!M.cari.has(a.id) || !sigma.has(a.id)) continue;
+        if (sigma.get(a.id) !== M.cari.get(a.id)) problems.push(`Cari ${a.name} (${a.refNo}): açık kalemlerin toplamı ${tl(sigma.get(a.id))} ≠ bakiye (model) ${tl(M.cari.get(a.id))} — kalemler toplamı = cari bakiyesi`);
+      }
+    }
     const stock = (await api("GET", "/api/workspace/stock")).data.items;
     for (const s of stock) if (M.stok.has(s.id) && Math.round(s.qty * 1000) !== M.stok.get(s.id)) problems.push(`Stok ${s.name}: program ${s.qty} · model ${qtyText(M.stok.get(s.id))}`);
     const plans = (await api("GET", "/api/workspace/plans?status=all")).data.plans || [];
@@ -436,6 +447,14 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       // (açık hedefi aşamaz — kuyruk kartın kendi kalanından fazlasını açık tutamaz). Kartın kendi kalanı = hedef denetimi (aşağıda) ve S118 = B (kart tahsilatı sınırı kartın
       // kendi kalanından) AYNEN. Tek kuyruğun sayısı (eşitlik) cari kâhininde (test/bagimsiz/cari — S99 = A, Y6-3) ve test/tyk-tur2b2-250.test.mjs'te.
       if (centsOf(inv.open) - want > 1) problems.push(`Taksitli fatura ${inv.number}: açık ${inv.open} > imzalı açık hedefi ${tl(want)} (geri ödenen ${tl(refunds)}) · kapatanlar ${(inv.closers || []).map(c => `${c.date}:${c.amount}:${c.label}`).join(" | ")}`);
+      // 2.5.0 Ç5-B kapanış düzeltmesi (dar kontrol DÜŞÜK-3): üst sınır tek başına dişsizdi — fatura durumunda taksiti hep kapalı sayan hata (açık olması gerekenden KÜÇÜK)
+      // yakalanmıyordu (mutant kanıtı docs/kanit/2026-11-12/c5bkd-motor). ALT SINIR: fatura durumunda kapanmış görünen her kuruşun bir KAPATANI vardır — açık + kapatanların
+      // toplamı ödenecekten küçük olamaz. (Dar kontrolün önerdiği "açık ≥ kartın kuyruk kalanı" 500 işlemde tutuyor, 5.000 işlemlik koşuda ise kart fazlası birden çok
+      // kartlı caride iki görünümde farklı dağıldığı için düzeltmeden ÖNCEKİ kodda da uyarı veriyor — ayrı bulgu, teslim raporunda; o yüzden burada kullanılmadı.)
+      {
+        const closedMinor = (inv.closers || []).reduce((sum, c) => sum + centsOf(c.amount), 0);
+        if (centsOf(inv.open) + closedMinor < centsOf(inv.tryPayable) - 1) problems.push(`Taksitli fatura ${inv.number}: açık ${inv.open} + kapatanlar ${tl(closedMinor)} < ödenecek ${inv.tryPayable} (alt sınır: kapanan her kuruşun kapatanı olmalı) · kapatanlar ${(inv.closers || []).map(c => `${c.date}:${c.amount}:${c.label}`).join(" | ")}`);
+      }
       if (Math.abs(want - left) > 1) problems.push(`Taksitli fatura ${inv.number}: açık ${inv.open} (geri ödenen ${tl(refunds)}) ≠ kartın kalanı ${tl(left)} · kapatanlar ${(inv.closers || []).map(c => `${c.date}:${c.amount}:${c.label}`).join(" | ")}`);
     }
     // Fatura: her belge programda ve modelde aynı durumda, aynı TL ödenecekle; programda olup modelde olmayan (yetim) belge yok.
