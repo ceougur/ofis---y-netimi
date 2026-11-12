@@ -15,19 +15,22 @@ const hasColumn = (store, table, column) => store.all(`PRAGMA table_info(${table
 const cents = value => Math.round((Number(value) || 0) * 100);
 
 /**
- * Silinenler'den geri alınan cari satırının KG-16 durumu (BAŞ MİMAR B8; KULLANICI S51 = A) — routes/accounts.mjs geri alma INSERT'inin `opening_review` değeri (BAĞLANTI NOKTASI:
- * o dosya Ç5-B tur 2b-2'nin; bu turda çağrılmıyor, ana oturum birleşimde bağlar). payload: silinmeden önceki satır (2.4.x yükünde opening_review yok); restoredIsOpening: geri
- * alınan satıra yazılan is_opening (carinin başka açılışı varsa 0 — 2.4.6 kuralı).
- *   - yükte durum varsa (2.5.0'da silinmiş) o durum aynen (açılış işaretiyle dönüyorsa '');
- *   - açılış işaretli silinmiş, carinin başka açılışı yüzünden işaretsiz dönüyor → candidate (S51);
+ * Silinenler'den geri alınan cari satırının KG-16 durumu (BAŞ MİMAR B8; KULLANICI S51 = A) — routes/accounts.mjs geri alma INSERT'inin `opening_review` (ve kapının kopyası
+ * `opening_review_gate`) değeri (Ç5-A tur 1e'de bağlandı; silme yükü `openingReview`'i taşır). payload: silinmeden önceki satır (2.4.x yükünde openingReview yok);
+ * restoredIsOpening: geri alınan satıra yazılan is_opening (carinin başka açılışı varsa 0 — 2.4.6 kuralı).
+ *   - açılış işaretiyle dönüyor → '' (Açılış Bakiyesi satırı; listeye girmez);
+ *   - açılış işaretli silinmiş (yükte isOpening; 2.4.5 yükünde açıklama "Açılış bakiyesi"), carinin başka açılışı yüzünden işaretsiz dönüyor → candidate (S51 = A — 2.5.0'da
+ *     silinmiş yükte de: S51 yükteki duruma ÖNCELİKLİDİR);
+ *   - yükte durum varsa (2.5.0'da silinmiş) silinmeden önceki durum AYNEN (onaylı onaylı, reddedilen reddedilen, aday aday döner; '' — göçten sonra elle girilmiş "Açılış…" — ''
+ *     kalır: K8-1);
  *   - 2.4.x yükü, işaretsiz, açıklaması KG-16 kuralına uyuyor → candidate (B8: göçte aday olacaktı);
  *   - öbürleri ''.
  */
 export function restoredOpeningReview(payload, restoredIsOpening) {
   if (Number(restoredIsOpening) === 1) return OPENING_REVIEW.none;
   if (!["debt", "credit"].includes(String(payload?.kind || "")) || String(payload?.source || "")) return OPENING_REVIEW.none;
+  if (payload?.isOpening === true || Number(payload?.isOpening) === 1) return OPENING_REVIEW.candidate;
   if (payload && Object.hasOwn(payload, "openingReview")) return DECIDED.has(String(payload.openingReview)) ? String(payload.openingReview) : OPENING_REVIEW.none;
-  if (Number(payload?.isOpening) === 1) return OPENING_REVIEW.candidate;
   return isOpeningCandidateNote(payload?.note) ? OPENING_REVIEW.candidate : OPENING_REVIEW.none;
 }
 
