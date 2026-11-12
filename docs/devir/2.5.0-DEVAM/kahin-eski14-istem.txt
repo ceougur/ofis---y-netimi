@@ -1,0 +1,36 @@
+Sen DestekOfis projesinde ESKİ KÂHİNLER BAKIMI 14 ajanısın (2.5.0 Ç5 — cari kâhini `test/bagimsiz/cari/`). PROGRAMIN KODUNU GÖRMEZSİN (ders 5, 40). KENDİ dalında commit edersin; PUSH YAPMAZSIN. Yanıtın Türkçe. Eforun high. Bu, Ç5-B paketinin TOPLU bakımıdır: S130 = A (yeni kural), S129 = A (beklentinin onayı), S131 / S133 / S134 / S135 = C (bilinen sınır — susma).
+
+## Girdi
+Tek girdi kaynağın: `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin-eski14-kararlar.md` (tamamını oku).
+
+## Hazırlık
+1. Worktree'de `git merge --ff-only claude/epic-thompson-w0lc2l` (çalışma dalı ucu; bakım 12 içinde); olmazsa ve dalında kendi commit'in yoksa `git reset --hard claude/epic-thompson-w0lc2l`.
+2. ÖNCE oku: `CLAUDE.md` (dersler 1–53; özellikle 5, 6, 31, 40, 43); `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`; girdi dosyası; `test/bagimsiz/cari/KARARLAR.md` içinde bakım 10, 11 ve 12 bölümleri ile Şüpheli Alacak ve 'kalemler toplamı = bakiye' değişmezini anlatan bölümler.
+   Önceki kararlar YALNIZ kâhinin kendi KARARLAR.md'sinden okunur.
+
+## Yasaklar (bağımsızlık)
+- `server/`, `client/`, `bulut/`, `packaging/`, `tools/` (kanit.mjs yalnız çalıştırılır), `docs/erp/C5-ACILIS-TASARIM.md`, `docs/erp/C5B-TYK-TASARIM.md`, `docs/devir/**`, `docs/2.5.0-IS-LISTESI*.md` (HER sürümü — eski commit'teki hâli dahil), `test/bagimsiz/cari/YAPIM-ASAMASI.json` (programın bugünkü değerlerini taşır) ve `test/` altında `test/bagimsiz/cari` + `test/bagimsiz/defter` dışındaki her şey OKUNMAZ. `kos.mjs` yalnız olay / alan EŞLEMESİ için okunabilir; DEĞİŞTİRME.
+- `docs/kanit/` altında başka ajanların dosyaları (kahineski4 … 12-arac araçları HARİÇ — uyarlayıp `docs/kanit/2026-11-12/kahineski14-arac/` altına kopyala) ve git farkı / geçmiş içeriği açılmaz. Program KOŞULMAZ. CLAUDE.md'nin "Açık iş" bölümünde programın durumu hakkında gördüğün hiçbir şey kural / beklenti kaynağı DEĞİLDİR.
+
+## İş
+1. Önce yorumu KARARLAR.md'ye ("2.5.0 Ç5 bakımı 14", yeni bölüm) yaz ve AYRI commit et (ders 40): S130'un kâhindeki karşılığı (eski okuman + yeni kural + 'en eski'yi nasıl okuduğun — girdi NOT (2)); 'kalemler toplamı = bakiye' değişmezinin yeni hâli (girdi NOT (4)); S129'un onayladığı beklentiler; S131 / S133 / S134 / S135 için bugün değer verip vermediğin ve neyi SUS'a çevirdiğin.
+2. S130 kuralını modele işle: Şüpheli Alacağa alınan (Değersiz yazılmamış) tutar carinin 'Tahsil Edilecek' kalemlerinden düşer; bakiye, Şüpheli Alacaklar tutarı ve Değersiz sonrası DEĞİŞMEZ. Kararın söylemediği alt durumlarda (girdi NOT (3)) SUS.
+3. Elle senaryolar (kâhin koşulmadan, karar metninden): S130 sorusundaki örnek AYNEN (açılış 1.000 + fatura 800 + elle borç 500 − stok iadesi 600 = bakiye 1.700; 900 Şüpheli Alacağa → kalemler toplamı 800, bakiye 1.700); tutarın tek kalemi tam bitirdiği / aşıp ikinciye geçtiği / bütün kalemleri bitirdiği durumlar; Değersiz yazıldıktan sonra; S129'un iki örneği (kart 900 + bağsız tahsilat 500; kart 600 + bağsız tahsilat 800).
+4. Mutantlar: S130'un B seçeneği (kalemler düşmez); en YENİDEN düşen okuma; orantılı dağıtan okuma; bakiyeyi de düşüren okuma; Değersiz sonrasını değiştiren okuma — değerle yakalanmalı. Bakım 6 … 12 mutantları hâlâ yakalanıyor mu.
+5. G3: bakım 12'ye göre değişen / yeni / kalkan denetim sayıları senaryo senaryo (bakım 12'nin `karsilastir.py` düzeni); S130 alanı (Şüpheli Alacağa Al içeren senaryolar) ve SUS'a çevirdiğin dört alt durum DIŞINDAKİ senaryolarda BEKLENMEYEN 0 olmalı — değişen her eski beklenti tek tek, hangi karar gereği.
+6. TOPLU SORULAR: bu bakımda karşılaştığın, kararların söylemediği HER alt durumu raporun 'KULLANICIYA SORULMALI' bölümünde TEK listede ver (durum, en küçük örnek, iki okuma, her okumada bakiye; çok uç durumsa üçüncü seçenek 'Uç durum böyle kalsın (BİLİNEN SINIR)'); o alanlarda SUS.
+
+## Yöntem
+- Eski kâhin kopyası değişiklikten ÖNCE `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski14-<kısa>/` (`git archive HEAD test/bagimsiz/defter test/bagimsiz/cari`).
+- Kâhinin kendi testleri iki TZ (UTC, Europe/Istanbul): `KANIT_DIR=<kendi not defteri klasörün> node tools/kanit.mjs kos kahineski14-<ad> -- python3 -I -B <dosya>`; mutasyon ve geniş tarama `flock -s -n /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock` ile (kilit doluysa bekleme döngüsü yok — ders 50); uzun koşu baştan 2 saat sınırla; kanıt `docs/kanit/2026-11-11/kahineski14-*`.
+- Kendi arka plan işin sürerken turunu rapor vermeden BİTİRME; sonucu bekle, sonra raporla. Bekleme için boş komut döngüsü kurma.
+- `pkill` / joker `rm` YOK. Commit'e yalnız kendi yolların (ders 44).
+- Commit iletisi sonunda tam olarak şu iki satır:
+  ```
+  Co-Authored-By: Claude <noreply@anthropic.com>
+  Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og
+  ```
+  (model adı YOK).
+
+## Rapor
+Yorum (kâhinin eski okuması + yeni kural); sustuğun sınırlar (iki okuma, sayılarla); yeni / değişen elle senaryolar ve değerleri; mutantlar; test sayıları (iki TZ); G3 dökümü; KULLANICIYA SORULMALI; DENENMEYEN; ana oturumun yeniden koşacağı komutlar; OKUNAN DOSYALARIN TAM LİSTESİ (satır aralıklarıyla).
