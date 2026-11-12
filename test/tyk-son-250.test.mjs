@@ -246,7 +246,7 @@ describe("Ç5-B son tur — gerçek program: S126 / S128 örnekleri ekranların 
     goods = await must("mal", api.post("/api/workspace/stock", { kind: "goods", code: "MAL-SON", name: "Son Tur Malı", unit: "Adet", openingQty: "1000", salePrice: "100" }));
   });
   after(async () => server?.close());
-  it("S126 = A: F 600 + X 300, kart 900 (3 × 300) — Taksit Tahsilatı 300 ⇒ F açık 300, X Kalan 300; sonra bağsız tahsilat 400 ⇒ F 0, X Kalan 200; silinince geri döner", async () => {
+  it("S126 = A: F 600 + X 300, kart 900 (3 × 300) — Taksit Tahsilatı 300 ⇒ F açık 300, X Kalan 300; sonra bağsız tahsilat 400 ⇒ F 0, X Kalan 200; silinince geri döner, Silinenler'den geri yüklenince yine F 0, X Kalan 200", async () => {
     const acc = await account("S126");
     const f = await sale(acc, day(-50), 600);
     await entry(acc, { kind: "debt", amount: "300", date: day(-49), note: "X" });
@@ -263,6 +263,11 @@ describe("Ç5-B son tur — gerçek program: S126 / S128 örnekleri ekranların 
     assert.deepEqual([two.acik, two.kalan, two.bakiye, two.kartKuyruk, two.taksit], [[0], { X: 200 }, 200, 200, [0, 0, 200]], "bağsız tahsilat (S50 payı) da eskiden yeniye: F kapandı, X Kalan 200");
     await must("tahsilatı sil", api.del(`/api/workspace/accounts/${acc.id}/entries/${free.id}?cashForce=1`));
     assert.deepEqual(await views(acc, plan.id, [f]), paid, "bağsız tahsilat silinince bir önceki hâl (bütün ekranlar)");
+    // Silinenler'den geri yükleme (ders 3, 9): tahsilat geri gelince silinmeden önceki hâl — F 0, X Kalan 200 (bütün ekranlar).
+    const trashed = (await must("Silinenler", api.get("/api/admin/trash"))).find(row => row.kind === "account-entry" && JSON.stringify(row).includes(free.id));
+    assert.ok(trashed, "silinen tahsilat Silinenler'de");
+    await must("tahsilatı geri yükle", api.post("/api/admin/trash/restore", { id: trashed.id, cashForce: true }));
+    assert.deepEqual(await views(acc, plan.id, [f]), two, "geri yüklenince silinmeden önceki hâl (F 0, X Kalan 200; bütün ekranlar)");
   });
   it("S128 = A: stok veresiye S 400 · elle X 300 · kart 700 (2 × 350) · karta 300 ⇒ X Kalan 300 (S açığı 100 — kuyrukta); bakiye 400, kart kalanı 400, gecikmiş 50 her ekranda", async () => {
     const acc = await account("S128");
