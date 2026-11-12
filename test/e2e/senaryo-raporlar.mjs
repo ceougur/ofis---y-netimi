@@ -319,9 +319,10 @@ try {
     const byRef = ref => tahsilat.rows.find(row => row[0] === ref);
     const col = header => tahsilat.headers.indexOf(header);
     ok(tahsilat.rows.length === 2 && String(byRef(ahmet1.refNo)?.[col("Toplam")]).includes(money(2500)) && String(byRef(ahmet1.refNo)?.[col("Nakit / Havale")]).includes(money(1500)) && String(byRef(ahmet2.refNo)?.[col("Çek / Senet (alınan)")]).includes(money(700)), `cari bazında tahsilat: ${tahsilat.rows.map(row => row.join(" | ")).join(" / ")}`);
-    // Taksit performansı: 3 taksit 3.000; ödenen 0; geciken 1.000.
+    // Taksit performansı: 3 taksit 3.000; geciken 300. S129 = A (12.11.2026): raporun Ödenen / Kalan / Geciken'i kart ekranıyla AYNI sayı (tek kuyruk) — vadesi geçen 1. taksit
+    // 1.000; carinin alınan senedi 700 bağsız paradır ve vade sırasıyla o taksiti kapatır (S50 / S99) → 300. (Önceki beklenti 1.000 kartın kendi hesabıydı; test/raporlar-209 ile aynı.)
     const perf = await run("taksit-performans", `from=${local(-400)}&to=${local(400)}`);
-    ok(String(sumOf(perf, "Vadesi Gelen")).includes(money(3000)) && String(sumOf(perf, "Geciken")).includes(money(1000)), `taksit performansı: vadesi gelen ${sumOf(perf, "Vadesi Gelen")}, geciken ${sumOf(perf, "Geciken")}`);
+    ok(String(sumOf(perf, "Vadesi Gelen")).includes(money(3000)) && String(sumOf(perf, "Geciken")).startsWith(money(300)), `taksit performansı: vadesi gelen ${sumOf(perf, "Vadesi Gelen")}, geciken ${sumOf(perf, "Geciken")}`);
     // Çek/senet vade dağılımı: tahsil edilecek 1.000 + 700; ödenecek 800.
     const cek = await run("cek-vade-dagilimi", "");
     ok(String(sumOf(cek, "Tahsil Edilecek")).includes(money(1700)) && String(sumOf(cek, "Ödenecek")).includes(money(800)), `çek/senet vade dağılımı: tahsil ${sumOf(cek, "Tahsil Edilecek")}, ödeme ${sumOf(cek, "Ödenecek")}`);
