@@ -793,3 +793,14 @@ kodda da yeşil (gerileme denetimi).
   modeli Mutabakat Testi'nin failures'ı (notice hariç) idi; İş A'dan sonra ürünün tabanı (driftsOf) kural farkını içermez. Düzeltme (test): şirketin bekleyen dondurması SINIRLI beklenir,
   taban = ürünün sapma kümesi; yazım yolu iddiası (Borç Yaz ve Kasa Giriş süzgeçli yolda) AYNEN — kural farkı olan şirkette de. Sonra: 20/20 × iki TZ, bitir 20/20 yeşil.
 - İş A'nın komşuları (Mutabakat Günlüğü / bulgu / zil / taban okuyan 38 test dosyası, taramayla) G2 listesinin içinde (İş E (b)).
+
+### 14.10 İş E — kabul koşulları ve ölçüm durumu (kanıt docs/kanit/2026-11-12/c5a1d-isE-*)
+- (a) 100 bin eşdeğerlik (aynı şablonun ayrı kopyaları; kilitsiz + kilitli; iki TZ; 15 çıktı: GET ledger iki biçim, Yevmiye üç dönem, Hesap Planı Mizanı iki dönem, Alt Hesap Mizanı, Defter
+  Mutabakatı, Mutabakat Testi, Alacak Yaşlandırma, Açılış Olabilir iki biçim, build() ve süzgeçli build): tur 1b ucu ↔ tur 1c ucu 4 çift × 15 = hepsi birebir. Tur 1c ucu ↔ tur 1d ucu
+  (100 bin + bütün sürüm fikstürleri) 42 çift: 30 birebir; 12 çiftte (kilitli: 100 bin × 2 TZ, 2.0.24 / 2.0.25 / 2.0.26-turler / 2.0.26-zincir / 2.4.9-s127 × 2 TZ) YALNIZ Mutabakat Testi
+  yanıtının `log` alanı: tabanda 1 fazla "scan" satırı "Kural Değişikliği Farkı (Kilitli Dönem: …)" — günlük dışı bütün alanlar (denetim listesindeki kural farkı satırı dahil) AYNI. Başka fark YOK.
+- (b) G2: 121 dosya (tur 1c + bu turun ürün dosyalarını adıyla / API yoluyla anan + İş A okuyucuları + kabul E'nin iki dosyası) 1.364/1.364 × iki TZ (son kod).
+- (c) e2e: defter / mizan / dondurma / Mutabakat Testi ekranlarına dokunan 34 senaryo (tarama + Ç5-A'nın iki senaryosu + run.mjs): 33 geçti; senaryo-iz1-kasa-acilis Ç5-A tur 1'den beri
+  bu dalda 19/21 (c5a1d-taban kopyasında aynı iki satır: "500 = −25.000"): beklentisi M-01'e göre (B 100 / A 519, 500 boş) güncellendi → 21/21 × iki TZ.
+- İş B / İş F ÖLÇÜMÜ (flock -x): ÖLÇÜLEMEDİ — tur sonunda ölçüm kilidi ana oturumun Ç5-B aday e2e koşusunda (paylaşımlı) tutuluyordu; bekleme döngüsü kurulmadı (ders 50). Düzenek hazır:
+  scratchpad/c5a1d-olcum/hepsi.sh (c5a-taban · tur 1c · tur 1d kilitli + taban / tur 1d kilitsiz; kos.sh = c5a1b-olcum'un kopyası, çıktı c5a1d-olcum/olc-*.txt).
