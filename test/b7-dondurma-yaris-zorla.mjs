@@ -1,7 +1,8 @@
 // Ders 20 / 51 zorla betiği (Ç5-A tur 1c): verilen test dosyasını, programın açılışta başlattığı bekleyen dondurma testin ilk karşılaştırma adımına kadar BİTMEYECEK
 // biçimde koşar (ön yükleme test/fixtures/dondurma-yaris-zorla-yukle.mjs — ürünün YALNIZ TEST kancasıyla "before-done"da tutar; süre / uyku YOK). Varsayılan: B7'nin
 // "gerçek 2.0.26 verisi" testi. Bu bir test değildir. Kullanım: node test/b7-dondurma-yaris-zorla.mjs [test/dosya.test.mjs] [yineleme=1] [--ad <test adı deseni>]
-// Kip (komşu taraması için): DONDURMA_YARIS=ara (varsayılan) | tut (okumaların hepsi dondurma sürerken) | bitir (okumaların hepsi dondurmadan sonra). "--ad ''" bütün testler.
+// Kip (komşu taraması için): DONDURMA_YARIS=ara (varsayılan) | tut (okumaların hepsi dondurma sürerken) | bitir (okumaların hepsi dondurmadan sonra) | gozlem (tur 1d: testin
+// ilk adımı — kendi bekleyişi ya da ilk taraması — başladığında kanca dondurmayı GERÇEKTEN tutuyordu, bırakma o adım gözlenerek; yeni B7 testinin dişini gösterir). "--ad ''" bütün testler.
 // Her yinelemenin çıkışı: ön koşul GERÇEKLEŞTİ/GERÇEKLEŞMEDİ · test YEŞİL/KIRMIZI. Sonda sayılar. Çıkış: 0 hepsinde ön koşul + yeşil · 1 ön koşullu bir yinelemede kırmızı
 // · 2 bir yinelemede ön koşul gerçekleşmedi (o yineleme sayılmaz).
 import { spawnSync } from "node:child_process";
