@@ -37,7 +37,13 @@ export const HTML_CSP = [
 
 export function send(res, status, payload, headers = {}) {
   if (res.headersSent) return;
-  const body = JSON.stringify(payload);
+  sendBody(res, status, JSON.stringify(payload), headers);
+}
+
+// ÖNCEDEN JSON'a çevrilmiş gövde (metin ya da UTF-8 Buffer): başlıklar ve gövde baytları send ile AYNI — büyük ve değişmeyen yanıtı her çağrıda yeniden JSON'a çevirmemek
+// için (routes/dues.mjs: 100 bin satırlık veride takvim yanıtı ~21 MB). Gövdeyi çağıran üretir; içerik send'e verilecek nesnenin JSON.stringify çıktısı olmalıdır.
+export function sendBody(res, status, body, headers = {}) {
+  if (res.headersSent) return;
   res.writeHead(status, {
     ...SECURITY_HEADERS,
     "content-type": "application/json; charset=utf-8",
