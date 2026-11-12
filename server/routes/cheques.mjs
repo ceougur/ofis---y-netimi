@@ -448,7 +448,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
     const status = initialStatus(input.direction);
     const stamp = now();
     // 2.5.0 Ç5-A (§2.5; B4; göç 49): Excel / Sheets "Açılış portföyü" (cariye işlenmeden yüklenen) evrak açılış İŞARETLİ yazılır (defter B 101 / A 519 — M-08 / M-09); işaret
-    // kilit izine girmez (para alanı değil; LOCK_SQL_VERSION değişmez).
+    // Ç5-A tur 1e'den kilit izinde (lib/integrity.mjs LOCK_SQL cheques_opening_lock; C5-ACILIS-TASARIM §15) — INSERT'te yazılır, sonra değişmez.
     store.run(
       "INSERT INTO cheques (id, direction, instrument, serial_no, bank, drawer, account_id, plan_id, amount, issue_date, due_date, status, status_date, note, invoice_id, bank_account_id, created_by, created_at, updated_at, is_opening) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       id, input.direction, input.instrument, input.serialNo, input.bank, input.drawer, input.accountId, input.planId, input.amount, input.issueDate, input.dueDate, status, input.issueDate, input.note, invoiceId, input.bankAccountId || "", user.id, stamp, stamp,

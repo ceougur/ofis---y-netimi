@@ -1592,7 +1592,8 @@ export const MIGRATIONS = [
       // küçük harf + ç→c, ı→i, ş→s katlamasıyla — "acilis" ile BAŞLAYAN her satır ADAY olur (opening_review = 'candidate'): "AÇILIŞ", "Açilış", "Acilis", ikinci "Açılış
       // bakiyesi" dahil; "Devir" / "Devreden" ve ortada geçen "açılış" GİRMEZ (S65 = A). Aday onaya kadar defterde açılıştır (519; S47), onay → M-02 / M-03, ret → C-01 / C-02.
       // YALNIZ GÖÇTE: göçten sonra elle girilen "Açılış…" açıklamalı Borç Yaz aday OLMAZ (K8-1). Göç öncesi yedeğin geri yüklenmesi bu göçü yeniden koşar (B8).
-      // Para alanı DEĞİL: tutar, yön, tarih değişmez; sütun kilit izine (integrity.mjs LOCK_SQL) girmez — kaynak izi sürümü değişmez (B4 ile aynı bilinçli sınır).
+      // Para alanı DEĞİL: tutar, yön, tarih değişmez; sütun kilit izine (integrity.mjs LOCK_SQL) girmez (K8-2: kilitli satırda kapıdan geçerek değişir) — kapı dışı değişikliği
+      // göç 50'nin gölge sütunuyla bulunur (Ç5-A tur 1e).
       // Eşgüçlü: sütun varsa eklenmez; yalnız durumu boş ('') satırlar aday yapılır (onay / ret yeniden koşuda bozulmaz). Hız (ders 47): ön süzgeç SQL'de (baştaki boşluk
       // sonrası ilk harf A / a), katlama JS'te tek geçiş, yazım tek UPDATE (json_each).
       store.raw("migration.v48", () => {
@@ -1613,7 +1614,8 @@ export const MIGRATIONS = [
     up(store) {
       // 2.5.0 Ç5-A (§2.5; BAŞ MİMAR B4; M-08 / M-09; 30.10 (1)): Excel / Sheets'ten "carilere dokunmadan" yüklenen evrak AÇILIŞ portföyüdür (defter B 101 / A 519, verilen B 519 /
       // A 103 — 602 / 770'e yazılmaz). Yeni yüklemede işaret yazılır (routes/cheques.mjs insertCheque); eski veride ilk olayının notundan doldurulur ("Açılış portföyü
-      // (Excel/Sheets)" — v2.0.13'ten beri programın yazdığı metin, routes/cheques.mjs OPENING_PORTFOLIO_NOTE). Para alanı DEĞİL; kilit izine girmez (B4). Eşgüçlü.
+      // (Excel/Sheets)" — v2.0.13'ten beri programın yazdığı metin, routes/cheques.mjs OPENING_PORTFOLIO_NOTE). Para alanı DEĞİL. Ç5-A tur 1e'den: işaret kilit izinde (integrity.mjs
+      // LOCK_SQL cheques_opening_lock — B4'ün sınırı kaldırıldı; C5-ACILIS-TASARIM §15). Eşgüçlü.
       store.raw("migration.v49", () => {
         if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cheques'")) return;
         addColumn(store, "cheques", "is_opening", "INTEGER NOT NULL DEFAULT 0");
@@ -1623,6 +1625,22 @@ export const MIGRATIONS = [
              SELECT ev.cheque_id FROM cheque_events ev WHERE ev.note = ? AND ev.rowid = (SELECT MIN(x.rowid) FROM cheque_events x WHERE x.cheque_id = ev.cheque_id))`,
           OPENING_PORTFOLIO_NOTE,
         );
+      });
+    },
+  },
+  {
+    version: 50,
+    name: "v2.5.0 Ç5-A tur 1e KG-16 durumunun kapının yazdığı kopyası (account_entries.opening_review_gate; para dışı)",
+    up(store) {
+      // 2.5.0 Ç5-A tur 1e (dar kontrol G-1; docs/erp/C5-ACILIS-TASARIM.md §15.2 (2)): KG-16 durumu (opening_review) kilitli satırda da kapıdan geçerek değişir (K8-2) — kilit izine
+      // giremez. Onun yerine satır başına KAPININ YAZDIĞI durum tutulur: durumu yazan her program yolu (göç 48 + bu göç, KG-16 kararı lib/ledger-opening.mjs decide, Silinenler'den
+      // geri alma routes/accounts.mjs restoreEntry) iki sütunu AYNI işlemde yazar; tam tarama (lib/integrity.mjs "opening:review") ikisi farklı satırları kapı dışı değişiklik diye
+      // bulur. Göçte gölge durumun kopyasıdır (göçten önceki durum programın yazdığıdır). Para alanı değil; kilit izine girmez. Eşgüçlü (yeniden koşan göç farkları yeniden eşitler).
+      store.raw("migration.v50", () => {
+        if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'account_entries'")) return;
+        if (!columnExists(store, "account_entries", "opening_review")) return;
+        addColumn(store, "account_entries", "opening_review_gate", "TEXT NOT NULL DEFAULT ''");
+        store.run("UPDATE account_entries SET opening_review_gate = opening_review WHERE opening_review_gate <> opening_review");
       });
     },
   },
