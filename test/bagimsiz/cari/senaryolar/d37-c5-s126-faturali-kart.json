@@ -1,8 +1,8 @@
 {
  "dil": "destekofis-cari/3",
  "bugun": "2026-04-15",
- "aciklama": "Bakım 11 (S126 = A): bakiye kadar açılan, içine fatura da giren Taksitler kartına gelen ödeme kalemleri fatura dahil kartın içine alma sırasıyla, eskiden yeniye düşürür — kararın örneği (L1), ödeme ilk kalemi tam bitirir (L2) / aşıp ikinciye geçer (L3) / kartı kapatır (L4), iki ödeme üst üste (L5), elle borç faturadan eski (L6), iki fatura + elle (L7), S50 payı (L8), silme (L9) ve geri yükleme (L10), ödemesiz (L11), yalnız faturalar (L12 — baş mimarın değerlendirmesine), vade ↔ belge sırası ödemeyi ayırıyor (L13 SUS — S125 = C; L13b / L13c değer), stok veresiye satışlı kart (L14 SUS — SK-25), borçlu Açılış (L15), aynı adlı iki cari (L16a / L16b), yalnız elle kart (L17 — değişmedi), açık borçtan küçük kart (L18 — değişmedi)",
- "dayanak": "KARARLAR.md §23 (S126 A; Y11-1 … Y11-12; SK-25), §22 (S122 A; Y10-3 / Y10-4), §21 (S120 A), §20 (Y8-4), §13 C13.4 / C13.5, K6.5",
+ "aciklama": "Bakım 11 (S126 = A): bakiye kadar açılan, içine fatura da giren Taksitler kartına gelen ödeme kalemleri fatura dahil kartın içine alma sırasıyla, eskiden yeniye düşürür — kararın örneği (L1), ödeme ilk kalemi tam bitirir (L2) / aşıp ikinciye geçer (L3) / kartı kapatır (L4), iki ödeme üst üste (L5), elle borç faturadan eski (L6), iki fatura + elle (L7), S50 payı (L8), silme (L9) ve geri yükleme (L10), ödemesiz (L11), yalnız faturalar (L12 — Y11-7; bakım 12 Y12-11: not kalktı), vade ↔ belge sırası ödemeyi ayırıyor (L13 SUS — S125 = C; L13b / L13c değer), stok veresiye satışlı kart (L14 — bakım 12 S128 A: kararın örneği, değer), borçlu Açılış (L15), aynı adlı iki cari (L16a / L16b), yalnız elle kart (L17 — değişmedi), açık borçtan küçük kart (L18 — değişmedi)",
+ "dayanak": "KARARLAR.md §23 (S126 A; Y11-1 … Y11-12; SK-25), §22 (S122 A; Y10-3 / Y10-4), §21 (S120 A), §20 (Y8-4), §13 C13.4 / C13.5, K6.5; §24 (S128 A — L14)",
  "elleBeklenen": {
   "k1:cari:L1:bakiye": 60000,
   "k1:cari:L1:gecikmis": 0,
@@ -347,12 +347,23 @@
   "k1:kart:KL18:mevcutBorc": true,
   "k1:kart:KL18:taksit1:odenen": 30000,
   "k1:kart:KL18:taksit2:odenen": 0,
-  "k1:kart:KL18:taksit3:odenen": 0
+  "k1:kart:KL18:taksit3:odenen": 0,
+  "k1:cari:L14:gecikmis": 5000,
+  "k1:cari:L14:acikToplam": 30000,
+  "k1:cari:L14:acikEsitBakiye": false,
+  "k1:hareket:l14x:kalan": 30000,
+  "k1:takvim:hareket:l14x": "yok",
+  "k1:vadeTakip:hareket:l14x": "yok",
+  "k1:projeksiyon:hareket:l14x": "yok",
+  "k1:kart:KL14:odenen": 30000,
+  "k1:kart:KL14:kalan": 40000,
+  "k1:kart:KL14:mevcutBorc": true,
+  "k1:kart:KL14:taksit1:odenen": 30000,
+  "k1:kart:KL14:taksit2:odenen": 0
  },
- "elleYok": ["k1:cari:L13:gecikmis", "k1:kart:KL13:kalan", "k1:hareket:l13x:kalan", "k1:takvim:hareket:l13x", "k1:fatura:L13F:acik", "k1:cari:L14:gecikmis", "k1:kart:KL14:kalan", "k1:hareket:l14x:kalan", "k1:takvim:hareket:l14x"],
+ "elleYok": ["k1:cari:L13:gecikmis", "k1:kart:KL13:kalan", "k1:hareket:l13x:kalan", "k1:takvim:hareket:l13x", "k1:fatura:L13F:acik"],
  "elleBelirsiz": [
-  ["cari L13 tanımsız", "S125 = C", "SK-23"],
-  ["cari L14 tanımsız", "SK-25", "KULLANICIYA SORULMALI"]
+  ["cari L13 tanımsız", "S125 = C", "SK-23"]
  ],
  "adimlar": [
   {"id": "cl1", "islem": "cari_ac", "ad": "L1", "isim": "Lale Örnek", "tarih": "2026-02-01"},

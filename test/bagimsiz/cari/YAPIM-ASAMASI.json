@@ -8373,6 +8373,406 @@
    "not": "S126 / S110–S120 alanı (d37 — kâhin bakımı 11; program bu kararları ana dalda henüz kodlamadı; Ç5-B son tur)"
   },
   {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "OKUMA HATASI: x12: karşılıksızda cari seçimi eşlemesi yok (KARSILIKSIZ_CARI — Ç5-A verir) — adım gönderilmedi",
+   "beklenen": null,
+   "program": "okunamadı",
+   "sinif": "OKUMA HATASI OKUMA",
+   "kural": "okuma hatası (ders 4)",
+   "paket": "eşleme"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "adim:e12:durum",
+   "beklenen": "ok",
+   "program": "ret",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "adım kabul edilir",
+   "paket": "Ç5-A",
+   "not": "ana oturum 12.11: zincir — e12 (carisiz çek; ret iletisi 'Çeki kimden aldığınızı yazın ya da cari seçin.') ve x12 (karşılıksızda cari seçimi eşlemesi yok — gönderilmedi) yüzünden M12'nin 400'lük borcu oluşmadı; km12 reddi 'cover-exceeds … taksitlendirilebilecek borcu 300,00 TL', m12k reddi 'Taksit kartı bulunamadı' bunun sonucu; eşleme Ç5-A birleşimiyle gelir — o birleşimde yeniden ayrıştırılır (kalan S128 farkı → Ç5-B)"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "adim:km12:durum",
+   "beklenen": "ok",
+   "program": "ret",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "adım kabul edilir",
+   "paket": "Ç5-A",
+   "not": "ana oturum 12.11: zincir — e12 (carisiz çek; ret iletisi 'Çeki kimden aldığınızı yazın ya da cari seçin.') ve x12 (karşılıksızda cari seçimi eşlemesi yok — gönderilmedi) yüzünden M12'nin 400'lük borcu oluşmadı; km12 reddi 'cover-exceeds … taksitlendirilebilecek borcu 300,00 TL', m12k reddi 'Taksit kartı bulunamadı' bunun sonucu; eşleme Ç5-A birleşimiyle gelir — o birleşimde yeniden ayrıştırılır (kalan S128 farkı → Ç5-B)"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "adim:m12k:durum",
+   "beklenen": "ok",
+   "program": "ret",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "adım kabul edilir",
+   "paket": "Ç5-A",
+   "not": "ana oturum 12.11: zincir — e12 (carisiz çek; ret iletisi 'Çeki kimden aldığınızı yazın ya da cari seçin.') ve x12 (karşılıksızda cari seçimi eşlemesi yok — gönderilmedi) yüzünden M12'nin 400'lük borcu oluşmadı; km12 reddi 'cover-exceeds … taksitlendirilebilecek borcu 300,00 TL', m12k reddi 'Taksit kartı bulunamadı' bunun sonucu; eşleme Ç5-A birleşimiyle gelir — o birleşimde yeniden ayrıştırılır (kalan S128 farkı → Ç5-B)"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "adim:x12:durum",
+   "beklenen": "ok",
+   "program": "okunamadı",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "adım kabul edilir",
+   "paket": "Ç5-A",
+   "not": "ana oturum 12.11: zincir — e12 (carisiz çek; ret iletisi 'Çeki kimden aldığınızı yazın ya da cari seçin.') ve x12 (karşılıksızda cari seçimi eşlemesi yok — gönderilmedi) yüzünden M12'nin 400'lük borcu oluşmadı; km12 reddi 'cover-exceeds … taksitlendirilebilecek borcu 300,00 TL', m12k reddi 'Taksit kartı bulunamadı' bunun sonucu; eşleme Ç5-A birleşimiyle gelir — o birleşimde yeniden ayrıştırılır (kalan S128 farkı → Ç5-B)"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:cari:M12:bakiye",
+   "beklenen": 40000,
+   "program": 30000,
+   "sinif": "BULGU PLAN · 2.5.0 kararıyla değişen",
+   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
+   "paket": "Ç5-A",
+   "not": "ana oturum 12.11: zincir — e12 (carisiz çek; ret iletisi 'Çeki kimden aldığınızı yazın ya da cari seçin.') ve x12 (karşılıksızda cari seçimi eşlemesi yok — gönderilmedi) yüzünden M12'nin 400'lük borcu oluşmadı; km12 reddi 'cover-exceeds … taksitlendirilebilecek borcu 300,00 TL', m12k reddi 'Taksit kartı bulunamadı' bunun sonucu; eşleme Ç5-A birleşimiyle gelir — o birleşimde yeniden ayrıştırılır (kalan S128 farkı → Ç5-B)"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:cari:M12:gecikmis",
+   "beklenen": 5000,
+   "program": 30000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
+   "paket": "Ç5-A",
+   "not": "ana oturum 12.11: zincir — e12 (carisiz çek; ret iletisi 'Çeki kimden aldığınızı yazın ya da cari seçin.') ve x12 (karşılıksızda cari seçimi eşlemesi yok — gönderilmedi) yüzünden M12'nin 400'lük borcu oluşmadı; km12 reddi 'cover-exceeds … taksitlendirilebilecek borcu 300,00 TL', m12k reddi 'Taksit kartı bulunamadı' bunun sonucu; eşleme Ç5-A birleşimiyle gelir — o birleşimde yeniden ayrıştırılır (kalan S128 farkı → Ç5-B)"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:cari:M19:acikToplam",
+   "beklenen": 50000,
+   "program": 80000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS8.1: carinin açık kalemlerinin işaretli toplamı",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 12.11: S128 = A senaryosu (adım reddi yok); S128'in kodu Ç5-B son turunda, ana dalda yok — Ç5-B kapısında yeniden ayrıştırılır"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:hareket:m19x:kalan",
+   "beklenen": 20000,
+   "program": 50000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta)",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 12.11: S128 = A senaryosu (adım reddi yok); S128'in kodu Ç5-B son turunda, ana dalda yok — Ç5-B kapısında yeniden ayrıştırılır"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:kart:KM10:kalan",
+   "beklenen": 10000,
+   "program": 40000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 12.11: S128 = A senaryosu (adım reddi yok); S128'in kodu Ç5-B son turunda, ana dalda yok — Ç5-B kapısında yeniden ayrıştırılır"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:kart:KM10:odenen",
+   "beklenen": 60000,
+   "program": 30000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 12.11: S128 = A senaryosu (adım reddi yok); S128'in kodu Ç5-B son turunda, ana dalda yok — Ç5-B kapısında yeniden ayrıştırılır"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:kart:KM10:taksit1:odenen",
+   "beklenen": 35000,
+   "program": 30000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 12.11: S128 = A senaryosu (adım reddi yok); S128'in kodu Ç5-B son turunda, ana dalda yok — Ç5-B kapısında yeniden ayrıştırılır"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:kart:KM10:taksit2:odenen",
+   "beklenen": 25000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 12.11: S128 = A senaryosu (adım reddi yok); S128'in kodu Ç5-B son turunda, ana dalda yok — Ç5-B kapısında yeniden ayrıştırılır"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:kart:KM12:kalan",
+   "beklenen": 40000,
+   "program": "okunamadı",
+   "sinif": "İNCELE YAYGIN · SINIF DIŞI",
+   "kural": "C13.4",
+   "paket": "Ç5-A",
+   "not": "ana oturum 12.11: zincir — e12 (carisiz çek; ret iletisi 'Çeki kimden aldığınızı yazın ya da cari seçin.') ve x12 (karşılıksızda cari seçimi eşlemesi yok — gönderilmedi) yüzünden M12'nin 400'lük borcu oluşmadı; km12 reddi 'cover-exceeds … taksitlendirilebilecek borcu 300,00 TL', m12k reddi 'Taksit kartı bulunamadı' bunun sonucu; eşleme Ç5-A birleşimiyle gelir — o birleşimde yeniden ayrıştırılır (kalan S128 farkı → Ç5-B)"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:kart:KM12:mevcutBorc",
+   "beklenen": true,
+   "program": "okunamadı",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "B1.4 mevcut borcu taksitlendir",
+   "paket": "Ç5-A",
+   "not": "ana oturum 12.11: zincir — e12 (carisiz çek; ret iletisi 'Çeki kimden aldığınızı yazın ya da cari seçin.') ve x12 (karşılıksızda cari seçimi eşlemesi yok — gönderilmedi) yüzünden M12'nin 400'lük borcu oluşmadı; km12 reddi 'cover-exceeds … taksitlendirilebilecek borcu 300,00 TL', m12k reddi 'Taksit kartı bulunamadı' bunun sonucu; eşleme Ç5-A birleşimiyle gelir — o birleşimde yeniden ayrıştırılır (kalan S128 farkı → Ç5-B)"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:kart:KM12:odenen",
+   "beklenen": 30000,
+   "program": "okunamadı",
+   "sinif": "İNCELE YAYGIN · SINIF DIŞI",
+   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
+   "paket": "Ç5-A",
+   "not": "ana oturum 12.11: zincir — e12 (carisiz çek; ret iletisi 'Çeki kimden aldığınızı yazın ya da cari seçin.') ve x12 (karşılıksızda cari seçimi eşlemesi yok — gönderilmedi) yüzünden M12'nin 400'lük borcu oluşmadı; km12 reddi 'cover-exceeds … taksitlendirilebilecek borcu 300,00 TL', m12k reddi 'Taksit kartı bulunamadı' bunun sonucu; eşleme Ç5-A birleşimiyle gelir — o birleşimde yeniden ayrıştırılır (kalan S128 farkı → Ç5-B)"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:kart:KM12:taksit1:odenen",
+   "beklenen": 30000,
+   "program": "okunamadı",
+   "sinif": "İNCELE YAYGIN · SINIF DIŞI",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "Ç5-A",
+   "not": "ana oturum 12.11: zincir — e12 (carisiz çek; ret iletisi 'Çeki kimden aldığınızı yazın ya da cari seçin.') ve x12 (karşılıksızda cari seçimi eşlemesi yok — gönderilmedi) yüzünden M12'nin 400'lük borcu oluşmadı; km12 reddi 'cover-exceeds … taksitlendirilebilecek borcu 300,00 TL', m12k reddi 'Taksit kartı bulunamadı' bunun sonucu; eşleme Ç5-A birleşimiyle gelir — o birleşimde yeniden ayrıştırılır (kalan S128 farkı → Ç5-B)"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:kart:KM12:taksit2:odenen",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "İNCELE YAYGIN · SINIF DIŞI",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "Ç5-A",
+   "not": "ana oturum 12.11: zincir — e12 (carisiz çek; ret iletisi 'Çeki kimden aldığınızı yazın ya da cari seçin.') ve x12 (karşılıksızda cari seçimi eşlemesi yok — gönderilmedi) yüzünden M12'nin 400'lük borcu oluşmadı; km12 reddi 'cover-exceeds … taksitlendirilebilecek borcu 300,00 TL', m12k reddi 'Taksit kartı bulunamadı' bunun sonucu; eşleme Ç5-A birleşimiyle gelir — o birleşimde yeniden ayrıştırılır (kalan S128 farkı → Ç5-B)"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:kart:KM12:toplam",
+   "beklenen": 70000,
+   "program": "okunamadı",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "B1.3 kart tutarı = tablodaki kalan",
+   "paket": "Ç5-A",
+   "not": "ana oturum 12.11: zincir — e12 (carisiz çek; ret iletisi 'Çeki kimden aldığınızı yazın ya da cari seçin.') ve x12 (karşılıksızda cari seçimi eşlemesi yok — gönderilmedi) yüzünden M12'nin 400'lük borcu oluşmadı; km12 reddi 'cover-exceeds … taksitlendirilebilecek borcu 300,00 TL', m12k reddi 'Taksit kartı bulunamadı' bunun sonucu; eşleme Ç5-A birleşimiyle gelir — o birleşimde yeniden ayrıştırılır (kalan S128 farkı → Ç5-B)"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:kart:KM12:var",
+   "beklenen": true,
+   "program": false,
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "B1.3 kart açıldı",
+   "paket": "Ç5-A",
+   "not": "ana oturum 12.11: zincir — e12 (carisiz çek; ret iletisi 'Çeki kimden aldığınızı yazın ya da cari seçin.') ve x12 (karşılıksızda cari seçimi eşlemesi yok — gönderilmedi) yüzünden M12'nin 400'lük borcu oluşmadı; km12 reddi 'cover-exceeds … taksitlendirilebilecek borcu 300,00 TL', m12k reddi 'Taksit kartı bulunamadı' bunun sonucu; eşleme Ç5-A birleşimiyle gelir — o birleşimde yeniden ayrıştırılır (kalan S128 farkı → Ç5-B)"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:kart:KM8:kalan",
+   "beklenen": 20000,
+   "program": 70000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 12.11: S128 = A senaryosu (adım reddi yok); S128'in kodu Ç5-B son turunda, ana dalda yok — Ç5-B kapısında yeniden ayrıştırılır"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:kart:KM8:odenen",
+   "beklenen": 50000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 12.11: S128 = A senaryosu (adım reddi yok); S128'in kodu Ç5-B son turunda, ana dalda yok — Ç5-B kapısında yeniden ayrıştırılır"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:kart:KM8:taksit1:odenen",
+   "beklenen": 35000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 12.11: S128 = A senaryosu (adım reddi yok); S128'in kodu Ç5-B son turunda, ana dalda yok — Ç5-B kapısında yeniden ayrıştırılır"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:kart:KM8:taksit2:odenen",
+   "beklenen": 15000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 12.11: S128 = A senaryosu (adım reddi yok); S128'in kodu Ç5-B son turunda, ana dalda yok — Ç5-B kapısında yeniden ayrıştırılır"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:kasa",
+   "beklenen": 800000,
+   "program": 770000,
+   "sinif": "BULGU KULLANICI · SINIF DIŞI",
+   "kural": "B1.2 Kasa değişmez / tahsilatlar Kasa'da",
+   "paket": "Ç5-A",
+   "not": "ana oturum 12.11: zincir — e12 (carisiz çek; ret iletisi 'Çeki kimden aldığınızı yazın ya da cari seçin.') ve x12 (karşılıksızda cari seçimi eşlemesi yok — gönderilmedi) yüzünden M12'nin 400'lük borcu oluşmadı; km12 reddi 'cover-exceeds … taksitlendirilebilecek borcu 300,00 TL', m12k reddi 'Taksit kartı bulunamadı' bunun sonucu; eşleme Ç5-A birleşimiyle gelir — o birleşimde yeniden ayrıştırılır (kalan S128 farkı → Ç5-B)"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:kasaRapor:giris",
+   "beklenen": 800000,
+   "program": 770000,
+   "sinif": "BULGU KULLANICI · SINIF DIŞI",
+   "kural": "B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar)",
+   "paket": "Ç5-A",
+   "not": "ana oturum 12.11: zincir — e12 (carisiz çek; ret iletisi 'Çeki kimden aldığınızı yazın ya da cari seçin.') ve x12 (karşılıksızda cari seçimi eşlemesi yok — gönderilmedi) yüzünden M12'nin 400'lük borcu oluşmadı; km12 reddi 'cover-exceeds … taksitlendirilebilecek borcu 300,00 TL', m12k reddi 'Taksit kartı bulunamadı' bunun sonucu; eşleme Ç5-A birleşimiyle gelir — o birleşimde yeniden ayrıştırılır (kalan S128 farkı → Ç5-B)"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:projeksiyon:hareket:m12x",
+   "beklenen": "yok",
+   "program": {
+    "amount": 30000,
+    "date": "2026-03-02",
+    "direction": "in"
+   },
+   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
+   "kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan − Mevcut Borç kartının açık kapsamı, K6.5 (1) bir kez; pencere bugün → +30, gecikenler dahil)",
+   "paket": "Ç5-A",
+   "not": "ana oturum 12.11: zincir — e12 (carisiz çek; ret iletisi 'Çeki kimden aldığınızı yazın ya da cari seçin.') ve x12 (karşılıksızda cari seçimi eşlemesi yok — gönderilmedi) yüzünden M12'nin 400'lük borcu oluşmadı; km12 reddi 'cover-exceeds … taksitlendirilebilecek borcu 300,00 TL', m12k reddi 'Taksit kartı bulunamadı' bunun sonucu; eşleme Ç5-A birleşimiyle gelir — o birleşimde yeniden ayrıştırılır (kalan S128 farkı → Ç5-B)"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:projeksiyon:hareket:m19x",
+   "beklenen": "yok",
+   "program": {
+    "amount": 10000,
+    "date": "2026-03-02",
+    "direction": "in"
+   },
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan − Mevcut Borç kartının açık kapsamı, K6.5 (1) bir kez; pencere bugün → +30, gecikenler dahil)",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 12.11: S128 = A senaryosu (adım reddi yok); S128'in kodu Ç5-B son turunda, ana dalda yok — Ç5-B kapısında yeniden ayrıştırılır"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:projeksiyon:hareket:m19y",
+   "beklenen": "yok",
+   "program": {
+    "amount": 30000,
+    "date": "2026-03-05",
+    "direction": "in"
+   },
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan − Mevcut Borç kartının açık kapsamı, K6.5 (1) bir kez; pencere bugün → +30, gecikenler dahil)",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 12.11: S128 = A senaryosu (adım reddi yok); S128'in kodu Ç5-B son turunda, ana dalda yok — Ç5-B kapısında yeniden ayrıştırılır"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:takvim:hareket:m12x",
+   "beklenen": "yok",
+   "program": {
+    "amount": 30000,
+    "cari": "M12",
+    "days": -44,
+    "direction": "in",
+    "dueDate": "2026-03-02",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Mesut Karşılıksız",
+    "state": "overdue"
+   },
+   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
+   "kural": "K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan − Mevcut Borç kartının açık kapsamı (K6.5); ufuk geçmiş + 7 gün · C16.1 S91 A: vadesiz kayıt kayıt gününde vadeli kalem (gün = kayıt günü)",
+   "paket": "Ç5-A",
+   "not": "ana oturum 12.11: zincir — e12 (carisiz çek; ret iletisi 'Çeki kimden aldığınızı yazın ya da cari seçin.') ve x12 (karşılıksızda cari seçimi eşlemesi yok — gönderilmedi) yüzünden M12'nin 400'lük borcu oluşmadı; km12 reddi 'cover-exceeds … taksitlendirilebilecek borcu 300,00 TL', m12k reddi 'Taksit kartı bulunamadı' bunun sonucu; eşleme Ç5-A birleşimiyle gelir — o birleşimde yeniden ayrıştırılır (kalan S128 farkı → Ç5-B)"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:takvim:hareket:m19x",
+   "beklenen": "yok",
+   "program": {
+    "amount": 10000,
+    "cari": "M19",
+    "days": -44,
+    "direction": "in",
+    "dueDate": "2026-03-02",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Muhsin Küçük Kart",
+    "state": "overdue"
+   },
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan − Mevcut Borç kartının açık kapsamı (K6.5); ufuk geçmiş + 7 gün · C16.1 S91 A: vadesiz kayıt kayıt gününde vadeli kalem (gün = kayıt günü)",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 12.11: S128 = A senaryosu (adım reddi yok); S128'in kodu Ç5-B son turunda, ana dalda yok — Ç5-B kapısında yeniden ayrıştırılır"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:takvim:hareket:m19y",
+   "beklenen": "yok",
+   "program": {
+    "amount": 30000,
+    "cari": "M19",
+    "days": -41,
+    "direction": "in",
+    "dueDate": "2026-03-05",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Muhsin Küçük Kart",
+    "state": "overdue"
+   },
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan − Mevcut Borç kartının açık kapsamı (K6.5); ufuk geçmiş + 7 gün · C16.1 S91 A: vadesiz kayıt kayıt gününde vadeli kalem (gün = kayıt günü)",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 12.11: S128 = A senaryosu (adım reddi yok); S128'in kodu Ç5-B son turunda, ana dalda yok — Ç5-B kapısında yeniden ayrıştırılır"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:vadeTakip:hareket:m12x",
+   "beklenen": "yok",
+   "program": {
+    "amount": 30000,
+    "date": "2026-03-02",
+    "direction": "in"
+   },
+   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
+   "kural": "K6.3 kalem olmayan kayıt Vade Takip'te yok",
+   "paket": "Ç5-A",
+   "not": "ana oturum 12.11: zincir — e12 (carisiz çek; ret iletisi 'Çeki kimden aldığınızı yazın ya da cari seçin.') ve x12 (karşılıksızda cari seçimi eşlemesi yok — gönderilmedi) yüzünden M12'nin 400'lük borcu oluşmadı; km12 reddi 'cover-exceeds … taksitlendirilebilecek borcu 300,00 TL', m12k reddi 'Taksit kartı bulunamadı' bunun sonucu; eşleme Ç5-A birleşimiyle gelir — o birleşimde yeniden ayrıştırılır (kalan S128 farkı → Ç5-B)"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:vadeTakip:hareket:m19x",
+   "beklenen": "yok",
+   "program": {
+    "amount": 10000,
+    "date": "2026-03-02",
+    "direction": "in"
+   },
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.3 kalem olmayan kayıt Vade Takip'te yok",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 12.11: S128 = A senaryosu (adım reddi yok); S128'in kodu Ç5-B son turunda, ana dalda yok — Ç5-B kapısında yeniden ayrıştırılır"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:vadeTakip:hareket:m19y",
+   "beklenen": "yok",
+   "program": {
+    "amount": 30000,
+    "date": "2026-03-05",
+    "direction": "in"
+   },
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.3 kalem olmayan kayıt Vade Takip'te yok",
+   "paket": "Ç5-B tur 2",
+   "not": "ana oturum 12.11: S128 = A senaryosu (adım reddi yok); S128'in kodu Ç5-B son turunda, ana dalda yok — Ç5-B kapısında yeniden ayrıştırılır"
+  },
+  {
    "senaryo": "d4-c5-s50-tek-kuyruk",
    "anahtar": "k1:kart:K1:kalan",
    "beklenen": 150000,
