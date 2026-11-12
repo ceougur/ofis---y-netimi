@@ -1,0 +1,1532 @@
+TAP version 13
+# (node:17542) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11)
+    # Subtest: surum-2.0.16-zincir
+    not ok 1 - surum-2.0.16-zincir
+      ---
+      duration_ms: 992.722159
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-210-goc-zinciri.test.mjs:45:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        surum-2.0.16-zincir 001 · Merkez Danışmanlık Ltd. Şti.: mizan farklı
+        + actual - expected
+        
+          [
+            '100|8216336|310561|7905775',
+            '102|767338|0|767338',
+            '120|31899011|8758491|23140520',
+            '191|63000|0|63000',
+            '320|90213|378000|-287787',
+            '391|0|1559520|-1559520',
+        +   '519|0|10050000|-10050000',
+        -   '500|0|10050000|-10050000',
+            '600|0|11135000|-11135000',
+            '602|0|9154491|-9154491',
+            '649|0|225183|-225183',
+            '770|535348|0|535348'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '100|8216336|310561|7905775'
+        1: '102|767338|0|767338'
+        2: '120|31899011|8758491|23140520'
+        3: '191|63000|0|63000'
+        4: '320|90213|378000|-287787'
+        5: '391|0|1559520|-1559520'
+        6: '500|0|10050000|-10050000'
+        7: '600|0|11135000|-11135000'
+        8: '602|0|9154491|-9154491'
+        9: '649|0|225183|-225183'
+        10: '770|535348|0|535348'
+      actual:
+        0: '100|8216336|310561|7905775'
+        1: '102|767338|0|767338'
+        2: '120|31899011|8758491|23140520'
+        3: '191|63000|0|63000'
+        4: '320|90213|378000|-287787'
+        5: '391|0|1559520|-1559520'
+        6: '519|0|10050000|-10050000'
+        7: '600|0|11135000|-11135000'
+        8: '602|0|9154491|-9154491'
+        9: '649|0|225183|-225183'
+        10: '770|535348|0|535348'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-210-goc-zinciri.test.mjs:90:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: surum-2.0.17-zincir
+    not ok 2 - surum-2.0.17-zincir
+      ---
+      duration_ms: 1753.176084
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-210-goc-zinciri.test.mjs:45:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        surum-2.0.17-zincir 001 · Merkez Danışmanlık Ltd. Şti.: mizan farklı
+        + actual - expected
+        
+          [
+            '100|15054294|816486|14237808',
+            '102|1667016|0|1667016',
+            '120|54487524|16438925|38048599',
+            '191|119600|0|119600',
+            '320|257125|717600|-460475',
+            '391|0|3456220|-3456220',
+        +   '519|0|10330000|-10330000',
+        -   '500|0|10330000|-10330000',
+            '600|0|25944000|-25944000',
+            '602|0|14757304|-14757304',
+            '649|0|282385|-282385',
+            '770|1157361|0|1157361'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '100|15054294|816486|14237808'
+        1: '102|1667016|0|1667016'
+        2: '120|54487524|16438925|38048599'
+        3: '191|119600|0|119600'
+        4: '320|257125|717600|-460475'
+        5: '391|0|3456220|-3456220'
+        6: '500|0|10330000|-10330000'
+        7: '600|0|25944000|-25944000'
+        8: '602|0|14757304|-14757304'
+        9: '649|0|282385|-282385'
+        10: '770|1157361|0|1157361'
+      actual:
+        0: '100|15054294|816486|14237808'
+        1: '102|1667016|0|1667016'
+        2: '120|54487524|16438925|38048599'
+        3: '191|119600|0|119600'
+        4: '320|257125|717600|-460475'
+        5: '391|0|3456220|-3456220'
+        6: '519|0|10330000|-10330000'
+        7: '600|0|25944000|-25944000'
+        8: '602|0|14757304|-14757304'
+        9: '649|0|282385|-282385'
+        10: '770|1157361|0|1157361'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-210-goc-zinciri.test.mjs:90:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: surum-2.0.18-zincir
+    not ok 3 - surum-2.0.18-zincir
+      ---
+      duration_ms: 3344.467796
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-210-goc-zinciri.test.mjs:45:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        surum-2.0.18-zincir 001 · Merkez Danışmanlık Ltd. Şti.: mizan farklı
+        + actual - expected
+        
+          [
+            '100|19144775|1217738|17927037',
+            '102|3061516|0|3061516',
+            '120|70595373|21711069|48884304',
+            '191|334000|0|334000',
+            '320|859052|2004000|-1144948',
+            '391|0|4168160|-4168160',
+        +   '519|0|10770000|-10770000',
+        -   '500|0|10770000|-10770000',
+            '600|0|31287000|-31287000',
+            '602|0|24763286|-24763286',
+            '649|0|495222|-495222',
+            '770|2421759|0|2421759'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '100|19144775|1217738|17927037'
+        1: '102|3061516|0|3061516'
+        2: '120|70595373|21711069|48884304'
+        3: '191|334000|0|334000'
+        4: '320|859052|2004000|-1144948'
+        5: '391|0|4168160|-4168160'
+        6: '500|0|10770000|-10770000'
+        7: '600|0|31287000|-31287000'
+        8: '602|0|24763286|-24763286'
+        9: '649|0|495222|-495222'
+        10: '770|2421759|0|2421759'
+      actual:
+        0: '100|19144775|1217738|17927037'
+        1: '102|3061516|0|3061516'
+        2: '120|70595373|21711069|48884304'
+        3: '191|334000|0|334000'
+        4: '320|859052|2004000|-1144948'
+        5: '391|0|4168160|-4168160'
+        6: '519|0|10770000|-10770000'
+        7: '600|0|31287000|-31287000'
+        8: '602|0|24763286|-24763286'
+        9: '649|0|495222|-495222'
+        10: '770|2421759|0|2421759'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-210-goc-zinciri.test.mjs:90:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: surum-2.0.19-zincir
+    not ok 4 - surum-2.0.19-zincir
+      ---
+      duration_ms: 2692.127755
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-210-goc-zinciri.test.mjs:45:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        surum-2.0.19-zincir 001 · Merkez Danışmanlık Ltd. Şti.: mizan farklı
+        + actual - expected
+        
+          [
+            '100|22729781|1501355|21228426',
+            '102|5010530|0|5010530',
+            '120|90597505|26976451|63621054',
+            '191|435400|0|435400',
+            '320|1040724|2612400|-1571676',
+            '391|0|5073200|-5073200',
+        +   '519|0|11480000|-11480000',
+        -   '500|0|11480000|-11480000',
+            '600|0|39589000|-39589000',
+            '602|0|34848378|-34848378',
+            '649|0|763860|-763860',
+            '770|3030704|0|3030704'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '100|22729781|1501355|21228426'
+        1: '102|5010530|0|5010530'
+        2: '120|90597505|26976451|63621054'
+        3: '191|435400|0|435400'
+        4: '320|1040724|2612400|-1571676'
+        5: '391|0|5073200|-5073200'
+        6: '500|0|11480000|-11480000'
+        7: '600|0|39589000|-39589000'
+        8: '602|0|34848378|-34848378'
+        9: '649|0|763860|-763860'
+        10: '770|3030704|0|3030704'
+      actual:
+        0: '100|22729781|1501355|21228426'
+        1: '102|5010530|0|5010530'
+        2: '120|90597505|26976451|63621054'
+        3: '191|435400|0|435400'
+        4: '320|1040724|2612400|-1571676'
+        5: '391|0|5073200|-5073200'
+        6: '519|0|11480000|-11480000'
+        7: '600|0|39589000|-39589000'
+        8: '602|0|34848378|-34848378'
+        9: '649|0|763860|-763860'
+        10: '770|3030704|0|3030704'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-210-goc-zinciri.test.mjs:90:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: surum-2.0.20-zincir
+    not ok 5 - surum-2.0.20-zincir
+      ---
+      duration_ms: 2530.799911
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-210-goc-zinciri.test.mjs:45:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        surum-2.0.20-zincir 001 · Merkez Danışmanlık Ltd. Şti.: mizan farklı
+        + actual - expected
+        
+          [
+            '100|27332485|1764985|25567500',
+            '102|5984665|0|5984665',
+            '120|115177262|32361193|82816069',
+            '191|468600|0|468600',
+            '320|1245272|2811600|-1566328',
+            '391|0|6444750|-6444750',
+        +   '519|0|12780000|-12780000',
+        -   '500|0|12780000|-12780000',
+            '600|0|52198000|-52198000',
+            '602|0|44147585|-44147585',
+            '649|0|955957|-955957',
+            '770|3255786|0|3255786'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '100|27332485|1764985|25567500'
+        1: '102|5984665|0|5984665'
+        2: '120|115177262|32361193|82816069'
+        3: '191|468600|0|468600'
+        4: '320|1245272|2811600|-1566328'
+        5: '391|0|6444750|-6444750'
+        6: '500|0|12780000|-12780000'
+        7: '600|0|52198000|-52198000'
+        8: '602|0|44147585|-44147585'
+        9: '649|0|955957|-955957'
+        10: '770|3255786|0|3255786'
+      actual:
+        0: '100|27332485|1764985|25567500'
+        1: '102|5984665|0|5984665'
+        2: '120|115177262|32361193|82816069'
+        3: '191|468600|0|468600'
+        4: '320|1245272|2811600|-1566328'
+        5: '391|0|6444750|-6444750'
+        6: '519|0|12780000|-12780000'
+        7: '600|0|52198000|-52198000'
+        8: '602|0|44147585|-44147585'
+        9: '649|0|955957|-955957'
+        10: '770|3255786|0|3255786'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-210-goc-zinciri.test.mjs:90:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: surum-2.0.21-zincir
+    not ok 6 - surum-2.0.21-zincir
+      ---
+      duration_ms: 2355.552517
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-210-goc-zinciri.test.mjs:45:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        surum-2.0.21-zincir 001 · Merkez Danışmanlık Ltd. Şti.: mizan farklı
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            '100|27392485|1784985|25607500',
+            '101|40000|40000|0',
+            '102|6167365|25000|6142365',
+            '108|180000|60000|120000',
+        ...
+            '391|3000|6530750|-6527750',
+        +   '519|0|12780000|-12780000',
+        -   '500|0|12780000|-12780000',
+            '600|0|52643000|-52643000',
+            '602|0|44512585|-44512585',
+            '610|15000|0|15000',
+            '649|0|1005957|-1005957',
+            '770|3305786|0|3305786'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '100|27392485|1784985|25607500'
+        1: '101|40000|40000|0'
+        2: '102|6167365|25000|6142365'
+        3: '108|180000|60000|120000'
+        4: '120|116033262|32681893|83351369'
+        5: '191|478600|0|478600'
+        6: '320|1320272|2871600|-1551328'
+        7: '391|3000|6530750|-6527750'
+        8: '500|0|12780000|-12780000'
+        9: '600|0|52643000|-52643000'
+        10: '602|0|44512585|-44512585'
+        11: '610|15000|0|15000'
+        12: '649|0|1005957|-1005957'
+        13: '770|3305786|0|3305786'
+      actual:
+        0: '100|27392485|1784985|25607500'
+        1: '101|40000|40000|0'
+        2: '102|6167365|25000|6142365'
+        3: '108|180000|60000|120000'
+        4: '120|116033262|32681893|83351369'
+        5: '191|478600|0|478600'
+        6: '320|1320272|2871600|-1551328'
+        7: '391|3000|6530750|-6527750'
+        8: '519|0|12780000|-12780000'
+        9: '600|0|52643000|-52643000'
+        10: '602|0|44512585|-44512585'
+        11: '610|15000|0|15000'
+        12: '649|0|1005957|-1005957'
+        13: '770|3305786|0|3305786'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-210-goc-zinciri.test.mjs:90:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: surum-2.0.22-zincir
+    not ok 7 - surum-2.0.22-zincir
+      ---
+      duration_ms: 2485.538302
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-210-goc-zinciri.test.mjs:45:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        surum-2.0.22-zincir 001 · Merkez Danışmanlık Ltd. Şti.: mizan farklı
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            '100|27452485|1804985|25647500',
+            '101|80000|80000|0',
+            '102|6350065|50000|6300065',
+            '108|360000|120000|240000',
+        ...
+            '391|6000|6616750|-6610750',
+        +   '519|0|12780000|-12780000',
+        -   '500|0|12780000|-12780000',
+            '600|0|53088000|-53088000',
+            '602|0|44947585|-44947585',
+            '610|30000|0|30000',
+            '649|0|1055957|-1055957',
+            '770|3355786|0|3355786'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '100|27452485|1804985|25647500'
+        1: '101|80000|80000|0'
+        2: '102|6350065|50000|6300065'
+        3: '108|360000|120000|240000'
+        4: '120|116959262|33002593|83956669'
+        5: '191|488600|0|488600'
+        6: '320|1395272|2931600|-1536328'
+        7: '391|6000|6616750|-6610750'
+        8: '500|0|12780000|-12780000'
+        9: '600|0|53088000|-53088000'
+        10: '602|0|44947585|-44947585'
+        11: '610|30000|0|30000'
+        12: '649|0|1055957|-1055957'
+        13: '770|3355786|0|3355786'
+      actual:
+        0: '100|27452485|1804985|25647500'
+        1: '101|80000|80000|0'
+        2: '102|6350065|50000|6300065'
+        3: '108|360000|120000|240000'
+        4: '120|116959262|33002593|83956669'
+        5: '191|488600|0|488600'
+        6: '320|1395272|2931600|-1536328'
+        7: '391|6000|6616750|-6610750'
+        8: '519|0|12780000|-12780000'
+        9: '600|0|53088000|-53088000'
+        10: '602|0|44947585|-44947585'
+        11: '610|30000|0|30000'
+        12: '649|0|1055957|-1055957'
+        13: '770|3355786|0|3355786'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-210-goc-zinciri.test.mjs:90:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: surum-2.0.23-zincir
+    not ok 8 - surum-2.0.23-zincir
+      ---
+      duration_ms: 2501.821235
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-210-goc-zinciri.test.mjs:45:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        surum-2.0.23-zincir 001 · Merkez Danışmanlık Ltd. Şti.: mizan farklı
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            '100|27512485|1824985|25687500',
+            '101|120000|120000|0',
+            '102|6532765|75000|6457765',
+            '108|540000|180000|360000',
+        ...
+            '391|9000|6702750|-6693750',
+        +   '519|0|12780000|-12780000',
+        -   '500|0|12780000|-12780000',
+            '600|0|53533000|-53533000',
+            '602|0|45462585|-45462585',
+            '610|45000|0|45000',
+            '649|0|1105957|-1105957',
+            '770|3405786|0|3405786'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '100|27512485|1824985|25687500'
+        1: '101|120000|120000|0'
+        2: '102|6532765|75000|6457765'
+        3: '108|540000|180000|360000'
+        4: '120|117965262|33323293|84641969'
+        5: '191|498600|0|498600'
+        6: '320|1470272|2991600|-1521328'
+        7: '391|9000|6702750|-6693750'
+        8: '500|0|12780000|-12780000'
+        9: '600|0|53533000|-53533000'
+        10: '602|0|45462585|-45462585'
+        11: '610|45000|0|45000'
+        12: '649|0|1105957|-1105957'
+        13: '770|3405786|0|3405786'
+      actual:
+        0: '100|27512485|1824985|25687500'
+        1: '101|120000|120000|0'
+        2: '102|6532765|75000|6457765'
+        3: '108|540000|180000|360000'
+        4: '120|117965262|33323293|84641969'
+        5: '191|498600|0|498600'
+        6: '320|1470272|2991600|-1521328'
+        7: '391|9000|6702750|-6693750'
+        8: '519|0|12780000|-12780000'
+        9: '600|0|53533000|-53533000'
+        10: '602|0|45462585|-45462585'
+        11: '610|45000|0|45000'
+        12: '649|0|1105957|-1105957'
+        13: '770|3405786|0|3405786'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-210-goc-zinciri.test.mjs:90:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:17542) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: surum-2.0.24-zincir
+    not ok 9 - surum-2.0.24-zincir
+      ---
+      duration_ms: 2639.081062
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-210-goc-zinciri.test.mjs:45:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        surum-2.0.24-zincir 001 · Merkez Danışmanlık Ltd. Şti.: raporlar farklı
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            'acik-faturalar': {
+              footer: null,
+              rows: '55664f047e21e45ef95b12acde7fa149',
+              summary: [
+        ...
+              ],
+        +     rows: 'ab7c97c0aaaef5f6eac5879408b94c65',
+        -     rows: '4a59b6c48d0f7c1e18898615bccb28f5',
+              summary: [
+                [
+                  'Dönem Borç',
+                  '1.597.108,70 TL'
+                ],
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        kasa-hareketleri:
+          total: 143
+          rows: '33d122a28c6465351b2655d948cc4682'
+          footer:
+            0: 'TOPLAM'
+            1: ''
+            2: ''
+            3: '275.724,85 TL'
+            4: '18.449,85 TL'
+            5: ''
+            6: ''
+          summary:
+            0:
+              0: 'Devir'
+              1: '0,00 TL'
+            1:
+              0: 'Dönem Giriş'
+              1: '275.724,85 TL'
+            2:
+              0: 'Dönem Çıkış'
+              1: '18.449,85 TL'
+            3:
+              0: 'Dönem Net'
+              1: '257.275,00 TL'
+            4:
+              0: 'Dönem Sonu Kasa'
+              1: '257.275,00 TL'
+            5:
+              0: 'Güncel Kasa (tüm hareketler)'
+              1: '257.275,00 TL'
+        banka-pos-hareketleri:
+          total: 84
+          rows: 'e02b95400fcd525903580633b225764b'
+          footer:
+            0: 'TOPLAM'
+            1: ''
+            2: ''
+            3: ''
+            4: '74.354,65 TL'
+            5: '3.400,00 TL'
+            6: ''
+            7: ''
+          summary:
+            0:
+              0: 'Devir'
+              1: '0,00 TL'
+            1:
+              0: 'Dönem Giriş'
+              1: '74.354,65 TL'
+            2:
+              0: 'Dönem Çıkış'
+              1: '3.400,00 TL'
+            3:
+              0: 'Dönem Net'
+              1: '70.954,65 TL'
+            4:
+              0: 'Dönem Sonu'
+              1: '70.954,65 TL'
+            5:
+              0: 'Banka (tüm hareketler)'
+              1: '66.154,65 TL'
+            6:
+              0: 'POS / Kredi Kartı (tüm hareketler)'
+              1: '4.800,00 TL'
+        hesap-mizani:
+          total: 14
+          rows: '4a59b6c48d0f7c1e18898615bccb28f5'
+          footer:
+            0: 'TOPLAM'
+            1: ''
+            2: '0,00 TL'
+            3: '1.597.108,70 TL'
+            4: '1.597.108,70 TL'
+            5: ''
+            6: ''
+          summary:
+            0:
+              0: 'Dönem Borç'
+              1: '1.597.108,70 TL'
+            1:
+              0: 'Dönem Alacak'
+              1: '1.597.108,70 TL'
+            2:
+              0: 'Fark'
+              1: '0,00 TL'
+        cari-listesi:
+          total: 188
+          rows: 'eacfaa7f0be670c90516778441d1bf77'
+          footer:
+            0: 'TOPLAM'
+            1: ''
+            2: ''
+            3: ''
+            4: ''
+            5: '1.205.065,34 TL'
+            6: '366.955,93 TL'
+            7: '838.109,41 TL'
+            8: 'Borçlu'
+            9: '245.694,30 TL'
+          summary:
+            0:
+              0: 'Cari'
+              1: '188'
+            1:
+              0: 'Toplam Borç (Anlaşılan)'
+              1: '1.205.065,34 TL'
+            2:
+              0: 'Toplam Alacak (Ödenen)'
+              1: '366.955,93 TL'
+            3:
+              0: 'Kalan (Borçlu)'
+              1: '838.109,41 TL'
+            4:
+              0: 'Borçlular'
+              1: '926.724,32 TL'
+            5:
+              0: 'Alacaklılar'
+              1: '88.614,91 TL'
+            6:
+              0: 'Geciken Taksit'
+              1: '245.694,30 TL'
+        acik-faturalar:
+          total: 43
+          rows: '55664f047e21e45ef95b12acde7fa149'
+          footer: ~
+          summary:
+            0:
+              0: 'Açık Alacak'
+              1: '323.079,06 TL'
+            1:
+              0: 'Açık Borç'
+              1: '19.597,04 TL'
+      actual:
+        kasa-hareketleri:
+          total: 143
+          rows: '33d122a28c6465351b2655d948cc4682'
+          footer:
+            0: 'TOPLAM'
+            1: ''
+            2: ''
+            3: '275.724,85 TL'
+            4: '18.449,85 TL'
+            5: ''
+            6: ''
+          summary:
+            0:
+              0: 'Devir'
+              1: '0,00 TL'
+            1:
+              0: 'Dönem Giriş'
+              1: '275.724,85 TL'
+            2:
+              0: 'Dönem Çıkış'
+              1: '18.449,85 TL'
+            3:
+              0: 'Dönem Net'
+              1: '257.275,00 TL'
+            4:
+              0: 'Dönem Sonu Kasa'
+              1: '257.275,00 TL'
+            5:
+              0: 'Güncel Kasa (tüm hareketler)'
+              1: '257.275,00 TL'
+        banka-pos-hareketleri:
+          total: 84
+          rows: 'e02b95400fcd525903580633b225764b'
+          footer:
+            0: 'TOPLAM'
+            1: ''
+            2: ''
+            3: ''
+            4: '74.354,65 TL'
+            5: '3.400,00 TL'
+            6: ''
+            7: ''
+          summary:
+            0:
+              0: 'Devir'
+              1: '0,00 TL'
+            1:
+              0: 'Dönem Giriş'
+              1: '74.354,65 TL'
+            2:
+              0: 'Dönem Çıkış'
+              1: '3.400,00 TL'
+            3:
+              0: 'Dönem Net'
+              1: '70.954,65 TL'
+            4:
+              0: 'Dönem Sonu'
+              1: '70.954,65 TL'
+            5:
+              0: 'Banka (tüm hareketler)'
+              1: '66.154,65 TL'
+            6:
+              0: 'POS / Kredi Kartı (tüm hareketler)'
+              1: '4.800,00 TL'
+        hesap-mizani:
+          total: 14
+          rows: 'ab7c97c0aaaef5f6eac5879408b94c65'
+          footer:
+            0: 'TOPLAM'
+            1: ''
+            2: '0,00 TL'
+            3: '1.597.108,70 TL'
+            4: '1.597.108,70 TL'
+            5: ''
+            6: ''
+          summary:
+            0:
+              0: 'Dönem Borç'
+              1: '1.597.108,70 TL'
+            1:
+              0: 'Dönem Alacak'
+              1: '1.597.108,70 TL'
+            2:
+              0: 'Fark'
+              1: '0,00 TL'
+        cari-listesi:
+          total: 188
+          rows: 'eacfaa7f0be670c90516778441d1bf77'
+          footer:
+            0: 'TOPLAM'
+            1: ''
+            2: ''
+            3: ''
+            4: ''
+            5: '1.205.065,34 TL'
+            6: '366.955,93 TL'
+            7: '838.109,41 TL'
+            8: 'Borçlu'
+            9: '245.694,30 TL'
+          summary:
+            0:
+              0: 'Cari'
+              1: '188'
+            1:
+              0: 'Toplam Borç (Anlaşılan)'
+              1: '1.205.065,34 TL'
+            2:
+              0: 'Toplam Alacak (Ödenen)'
+              1: '366.955,93 TL'
+            3:
+              0: 'Kalan (Borçlu)'
+              1: '838.109,41 TL'
+            4:
+              0: 'Borçlular'
+              1: '926.724,32 TL'
+            5:
+              0: 'Alacaklılar'
+              1: '88.614,91 TL'
+            6:
+              0: 'Geciken Taksit'
+              1: '245.694,30 TL'
+        acik-faturalar:
+          total: 43
+          rows: '55664f047e21e45ef95b12acde7fa149'
+          footer: ~
+          summary:
+            0:
+              0: 'Açık Alacak'
+              1: '323.079,06 TL'
+            1:
+              0: 'Açık Borç'
+              1: '19.597,04 TL'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-210-goc-zinciri.test.mjs:105:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:17542) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: surum-2.0.25-zincir
+    not ok 10 - surum-2.0.25-zincir
+      ---
+      duration_ms: 2558.127108
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-210-goc-zinciri.test.mjs:45:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        surum-2.0.25-zincir 001 · Merkez Danışmanlık Ltd. Şti.: mizan farklı
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            '100|27632485|1864985|25767500',
+            '101|275000|200000|75000',
+            '102|6898165|125000|6773165',
+            '108|900000|300000|600000',
+        ...
+            '600|0|54423000|-54423000',
+        +   '602|0|46522585|-46522585',
+        -   '602|0|46597585|-46597585',
+            '610|75000|0|75000',
+        +   '649|0|1280957|-1280957',
+        -   '649|0|1205957|-1205957',
+            '770|3505786|0|3505786'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '100|27632485|1864985|25767500'
+        1: '101|275000|200000|75000'
+        2: '102|6898165|125000|6773165'
+        3: '108|900000|300000|600000'
+        4: '120|120007262|33964693|86042569'
+        5: '191|518600|0|518600'
+        6: '320|1620272|3111600|-1491328'
+        7: '391|15000|6874750|-6859750'
+        8: '500|0|12780000|-12780000'
+        9: '600|0|54423000|-54423000'
+        10: '602|0|46597585|-46597585'
+        11: '610|75000|0|75000'
+        12: '649|0|1205957|-1205957'
+        13: '770|3505786|0|3505786'
+      actual:
+        0: '100|27632485|1864985|25767500'
+        1: '101|275000|200000|75000'
+        2: '102|6898165|125000|6773165'
+        3: '108|900000|300000|600000'
+        4: '120|120007262|33964693|86042569'
+        5: '191|518600|0|518600'
+        6: '320|1620272|3111600|-1491328'
+        7: '391|15000|6874750|-6859750'
+        8: '500|0|12780000|-12780000'
+        9: '600|0|54423000|-54423000'
+        10: '602|0|46522585|-46522585'
+        11: '610|75000|0|75000'
+        12: '649|0|1280957|-1280957'
+        13: '770|3505786|0|3505786'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-210-goc-zinciri.test.mjs:90:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:17542) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: surum-2.0.26-zincir
+    not ok 11 - surum-2.0.26-zincir
+      ---
+      duration_ms: 2595.548722
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-210-goc-zinciri.test.mjs:45:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        surum-2.0.26-zincir 001 · Merkez Danışmanlık Ltd. Şti.: mizan farklı
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            '100|27692485|1884985|25807500',
+            '101|315000|240000|75000',
+            '102|7080865|150000|6930865',
+            '108|1080000|360000|720000',
+        ...
+            '600|0|54868000|-54868000',
+        +   '602|0|47027585|-47027585',
+        -   '602|0|47102585|-47102585',
+            '610|90000|0|90000',
+        +   '649|0|1330957|-1330957',
+        -   '649|0|1255957|-1255957',
+            '770|3555786|0|3555786'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '100|27692485|1884985|25807500'
+        1: '101|315000|240000|75000'
+        2: '102|7080865|150000|6930865'
+        3: '108|1080000|360000|720000'
+        4: '120|121003262|34285393|86717869'
+        5: '191|528600|0|528600'
+        6: '320|1695272|3171600|-1476328'
+        7: '391|18000|6960750|-6942750'
+        8: '500|0|12780000|-12780000'
+        9: '600|0|54868000|-54868000'
+        10: '602|0|47102585|-47102585'
+        11: '610|90000|0|90000'
+        12: '649|0|1255957|-1255957'
+        13: '770|3555786|0|3555786'
+      actual:
+        0: '100|27692485|1884985|25807500'
+        1: '101|315000|240000|75000'
+        2: '102|7080865|150000|6930865'
+        3: '108|1080000|360000|720000'
+        4: '120|121003262|34285393|86717869'
+        5: '191|528600|0|528600'
+        6: '320|1695272|3171600|-1476328'
+        7: '391|18000|6960750|-6942750'
+        8: '500|0|12780000|-12780000'
+        9: '600|0|54868000|-54868000'
+        10: '602|0|47027585|-47027585'
+        11: '610|90000|0|90000'
+        12: '649|0|1330957|-1330957'
+        13: '770|3555786|0|3555786'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-210-goc-zinciri.test.mjs:90:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: surum-2.0.19-cakisma
+    not ok 12 - surum-2.0.19-cakisma
+      ---
+      duration_ms: 1439.472304
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-210-goc-zinciri.test.mjs:45:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        surum-2.0.19-cakisma 001 · Şirket 1: mizan farklı
+        + actual - expected
+        
+          [
+            '100|8216336|310561|7905775',
+            '102|767338|0|767338',
+            '120|31899011|8758491|23140520',
+            '191|63000|0|63000',
+            '320|90213|378000|-287787',
+            '391|0|1559520|-1559520',
+        +   '519|0|10050000|-10050000',
+        -   '500|0|10050000|-10050000',
+            '600|0|11135000|-11135000',
+            '602|0|9154491|-9154491',
+            '649|0|225183|-225183',
+            '770|535348|0|535348'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '100|8216336|310561|7905775'
+        1: '102|767338|0|767338'
+        2: '120|31899011|8758491|23140520'
+        3: '191|63000|0|63000'
+        4: '320|90213|378000|-287787'
+        5: '391|0|1559520|-1559520'
+        6: '500|0|10050000|-10050000'
+        7: '600|0|11135000|-11135000'
+        8: '602|0|9154491|-9154491'
+        9: '649|0|225183|-225183'
+        10: '770|535348|0|535348'
+      actual:
+        0: '100|8216336|310561|7905775'
+        1: '102|767338|0|767338'
+        2: '120|31899011|8758491|23140520'
+        3: '191|63000|0|63000'
+        4: '320|90213|378000|-287787'
+        5: '391|0|1559520|-1559520'
+        6: '519|0|10050000|-10050000'
+        7: '600|0|11135000|-11135000'
+        8: '602|0|9154491|-9154491'
+        9: '649|0|225183|-225183'
+        10: '770|535348|0|535348'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-210-goc-zinciri.test.mjs:90:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: surum-2.0.19-eski
+    not ok 13 - surum-2.0.19-eski
+      ---
+      duration_ms: 1249.718706
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-210-goc-zinciri.test.mjs:45:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        surum-2.0.19-eski 001 · Eski Hukuk Bürosu: mizan farklı
+        + actual - expected
+        
+          [
+            '100|12123478|874119|11249359',
+            '102|2384614|0|2384614',
+            '120|52954015|14144757|38809258',
+            '191|254000|0|254000',
+            '320|412205|1658403|-1246198',
+            '391|0|2621530|-2621530',
+        +   '519|0|9340000|-9340000',
+        -   '500|0|9340000|-9340000',
+            '600|0|19368000|-19368000',
+            '602|0|21624485|-21624485',
+            '649|0|228932|-228932',
+            '770|1731914|0|1731914'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '100|12123478|874119|11249359'
+        1: '102|2384614|0|2384614'
+        2: '120|52954015|14144757|38809258'
+        3: '191|254000|0|254000'
+        4: '320|412205|1658403|-1246198'
+        5: '391|0|2621530|-2621530'
+        6: '500|0|9340000|-9340000'
+        7: '600|0|19368000|-19368000'
+        8: '602|0|21624485|-21624485'
+        9: '649|0|228932|-228932'
+        10: '770|1731914|0|1731914'
+      actual:
+        0: '100|12123478|874119|11249359'
+        1: '102|2384614|0|2384614'
+        2: '120|52954015|14144757|38809258'
+        3: '191|254000|0|254000'
+        4: '320|412205|1658403|-1246198'
+        5: '391|0|2621530|-2621530'
+        6: '519|0|9340000|-9340000'
+        7: '600|0|19368000|-19368000'
+        8: '602|0|21624485|-21624485'
+        9: '649|0|228932|-228932'
+        10: '770|1731914|0|1731914'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-210-goc-zinciri.test.mjs:90:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:17542) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: surum-2.0.26-turler
+    not ok 14 - surum-2.0.26-turler
+      ---
+      duration_ms: 2894.371419
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-210-goc-zinciri.test.mjs:45:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        surum-2.0.26-turler 001 · Merkez Danışmanlık Ltd. Şti.: mizan farklı
+        + actual - expected
+        
+          [
+            '100|27776485|1914985|25861500',
+            '101|440000|365000|75000',
+            '102|7152865|332000|6820865',
+            '103|120000|120000|0',
+            '108|1080000|360000|720000',
+        +   '120|121620262|34470393|87149869',
+        -   '120|121735262|34585393|87149869',
+            '153|80000|0|80000',
+            '191|528600|0|528600',
+            '320|1880272|3671600|-1791328',
+            '391|18000|6960750|-6942750',
+        +   '500|0|12780000|-12780000',
+        +   '519|0|365000|-365000',
+        -   '500|115000|12780000|-12665000',
+            '600|0|54904000|-54904000',
+        +   '602|0|47267585|-47267585',
+        -   '602|0|47822585|-47822585',
+            '610|90000|0|90000',
+        +   '649|0|1330957|-1330957',
+        -   '649|0|1255957|-1255957',
+            '770|4055786|0|4055786'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '100|27776485|1914985|25861500'
+        1: '101|440000|365000|75000'
+        2: '102|7152865|332000|6820865'
+        3: '103|120000|120000|0'
+        4: '108|1080000|360000|720000'
+        5: '120|121735262|34585393|87149869'
+        6: '153|80000|0|80000'
+        7: '191|528600|0|528600'
+        8: '320|1880272|3671600|-1791328'
+        9: '391|18000|6960750|-6942750'
+        10: '500|115000|12780000|-12665000'
+        11: '600|0|54904000|-54904000'
+        12: '602|0|47822585|-47822585'
+        13: '610|90000|0|90000'
+        14: '649|0|1255957|-1255957'
+        15: '770|4055786|0|4055786'
+      actual:
+        0: '100|27776485|1914985|25861500'
+        1: '101|440000|365000|75000'
+        2: '102|7152865|332000|6820865'
+        3: '103|120000|120000|0'
+        4: '108|1080000|360000|720000'
+        5: '120|121620262|34470393|87149869'
+        6: '153|80000|0|80000'
+        7: '191|528600|0|528600'
+        8: '320|1880272|3671600|-1791328'
+        9: '391|18000|6960750|-6942750'
+        10: '500|0|12780000|-12780000'
+        11: '519|0|365000|-365000'
+        12: '600|0|54904000|-54904000'
+        13: '602|0|47267585|-47267585'
+        14: '610|90000|0|90000'
+        15: '649|0|1330957|-1330957'
+        16: '770|4055786|0|4055786'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-210-goc-zinciri.test.mjs:90:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..14
+not ok 1 - göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11)
+  ---
+  duration_ms: 32036.307507
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-210-goc-zinciri.test.mjs:43:1'
+  failureType: 'subtestsFailed'
+  error: '14 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.0.21–2.0.26 kesitleri v20 koduyla: hiçbir kayıt ve yedek kaybolmaz, eski yedekler kendi şirketine geri yüklenir
+    # Subtest: surum-2.0.21-zincir
+    ok 1 - surum-2.0.21-zincir
+      ---
+      duration_ms: 8050.810856
+      type: 'test'
+      ...
+# (node:17542) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:17542) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:17542) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: surum-2.0.26-zincir
+    ok 2 - surum-2.0.26-zincir
+      ---
+      duration_ms: 10120.833041
+      type: 'test'
+      ...
+# (node:17542) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:17542) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:17542) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:17542) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: surum-2.0.26-turler
+    ok 3 - surum-2.0.26-turler
+      ---
+      duration_ms: 11263.33343
+      type: 'test'
+      ...
+    1..3
+ok 2 - 2.0.21–2.0.26 kesitleri v20 koduyla: hiçbir kayıt ve yedek kaybolmaz, eski yedekler kendi şirketine geri yüklenir
+  ---
+  duration_ms: 29435.612096
+  type: 'suite'
+  ...
+# (node:17548) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Senet 121 / 321 — çalışıyor mu (sayılarla, planın yevmiyesiyle)
+    # Subtest: alınan senet 121.01 (B 121 / A 120), alınan çek 101.01; verilen senet 321 (B 320 / A 321), verilen çek 103; Defter Mutabakatı gl:121 / gl:321
+    ok 1 - alınan senet 121.01 (B 121 / A 120), alınan çek 101.01; verilen senet 321 (B 320 / A 321), verilen çek 103; Defter Mutabakatı gl:121 / gl:321
+      ---
+      duration_ms: 188.833746
+      type: 'test'
+      ...
+    # Subtest: Hesap Planı Mizanı ve Alt Hesap Mizanı: Tekdüzen adları (101 Alınan Çekler, 103 Verilen Çekler ve Ödeme Emirleri (−), 121, 321; 121.01/121.02)
+    ok 2 - Hesap Planı Mizanı ve Alt Hesap Mizanı: Tekdüzen adları (101 Alınan Çekler, 103 Verilen Çekler ve Ödeme Emirleri (−), 121, 321; 121.01/121.02)
+      ---
+      duration_ms: 67.309304
+      type: 'test'
+      ...
+    # Subtest: Tahsile Ver B 121.02 / A 121.01; Bankadan Geri Al B 121.01 / A 121.02; 101.0x değişmez; İşlem Kartı adlarıyla; Tahsildeki Çek ve Senetler = 101.02 + 121.02
+    ok 3 - Tahsile Ver B 121.02 / A 121.01; Bankadan Geri Al B 121.01 / A 121.02; 101.0x değişmez; İşlem Kartı adlarıyla; Tahsildeki Çek ve Senetler = 101.02 + 121.02
+      ---
+      duration_ms: 185.813782
+      type: 'test'
+      ...
+    # Subtest: tahsildeki senet Tahsil Edildi: B 102.01 / A 121.02, Ziraat +1.000; Geri Al → yeniden 121.02; karşılıksız: B 120 / A 121.02, cari yeniden borçlu
+    ok 4 - tahsildeki senet Tahsil Edildi: B 102.01 / A 121.02, Ziraat +1.000; Geri Al → yeniden 121.02; karşılıksız: B 120 / A 121.02, cari yeniden borçlu
+      ---
+      duration_ms: 196.367019
+      type: 'test'
+      ...
+    # Subtest: verilen senet ödemesi B 321 / A 102.01 (Ziraat −900); verilen çek ödemesi B 103 / A 102.01; 321 = 0, 103 = 0
+    ok 5 - verilen senet ödemesi B 321 / A 102.01 (Ziraat −900); verilen çek ödemesi B 103 / A 102.01; 321 = 0, 103 = 0
+      ---
+      duration_ms: 78.531971
+      type: 'test'
+      ...
+    1..5
+ok 3 - Senet 121 / 321 — çalışıyor mu (sayılarla, planın yevmiyesiyle)
+  ---
+  duration_ms: 1610.812996
+  type: 'suite'
+  ...
+# Subtest: Senet 121 / 321 — ciro, carisiz, taksit, fatura, iptal, sil → geri yükle
+    # Subtest: ciro: B 320 / A 121.01; carisiz senet B 121.01 / A 602 ve karşılıksızı B 770 / A 121.01; taksite sayılan senet B 121.01 / A 120
+    ok 1 - ciro: B 320 / A 121.01; carisiz senet B 121.01 / A 602 ve karşılıksızı B 770 / A 121.01; taksite sayılan senet B 121.01 / A 120
+      ---
+      duration_ms: 118.617042
+      type: 'test'
+      ...
+    # Subtest: faturadan gelen alınan senet 121 (+2.000) ve verilen senet 321 (−450); fatura iptal edilince evrakla birlikte geri
+    ok 2 - faturadan gelen alınan senet 121 (+2.000) ve verilen senet 321 (−450); fatura iptal edilince evrakla birlikte geri
+      ---
+      duration_ms: 171.327892
+      type: 'test'
+      ...
+    # Subtest: sil → geri yükle: 121 −300 / +300
+    ok 3 - sil → geri yükle: 121 −300 / +300
+      ---
+      duration_ms: 80.971814
+      type: 'test'
+      ...
+    1..3
+ok 4 - Senet 121 / 321 — ciro, carisiz, taksit, fatura, iptal, sil → geri yükle
+  ---
+  duration_ms: 908.142673
+  type: 'suite'
+  ...
+# Subtest: Senet 121 / 321 — nasıl bozarım: tür düzenleme, kilitli dönem, kilit izi
+    # Subtest: açık dönemde senet → çek: 121 −500, 101 +500 (aynı tutar); geri senet; tahsildeyken 409 cheque-deposited; işlem görmüşken 409
+    ok 1 - açık dönemde senet → çek: 121 −500, 101 +500 (aynı tutar); geri senet; tahsildeyken 409 cheque-deposited; işlem görmüşken 409
+      ---
+      duration_ms: 203.138073
+      type: 'test'
+      ...
+# (node:17548) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kilitli dönemde (alış 02.10, kilit 05.10) tür değişikliği 409 period-locked, 121 aynı; ham SQL ile değiştirilirse kilit izi değişir ve Mutabakat Testi 'Kapanmış dönem' der
+    ok 2 - kilitli dönemde (alış 02.10, kilit 05.10) tür değişikliği 409 period-locked, 121 aynı; ham SQL ile değiştirilirse kilit izi değişir ve Mutabakat Testi 'Kapanmış dönem' der
+      ---
+      duration_ms: 484.45718
+      type: 'test'
+      ...
+    1..2
+ok 5 - Senet 121 / 321 — nasıl bozarım: tür düzenleme, kilitli dönem, kilit izi
+  ---
+  duration_ms: 1277.436513
+  type: 'suite'
+  ...
+# Subtest: Senet 121 / 321 — şirket ayrımı, yetki, Şirket Verisini Sıfırla, Banka Fişi rolleri
+    # Subtest: yetkisiz personel senet giremez (403, hiçbir şey yazılmaz); ?hofCompany=: 002'nin senedi 001'in 121'ine girmez
+    ok 1 - yetkisiz personel senet giremez (403, hiçbir şey yazılmaz); ?hofCompany=: 002'nin senedi 001'in 121'ine girmez
+      ---
+      duration_ms: 417.377578
+      type: 'test'
+      ...
+    # Subtest: Şirket Verisini Sıfırla: 101 / 121 / 103 / 321 sıfır, Mutabakat Testi temiz; sonra yeni senet yine 121'e
+    ok 2 - Şirket Verisini Sıfırla: 101 / 121 / 103 / 321 sıfır, Mutabakat Testi temiz; sonra yeni senet yine 121'e
+      ---
+      duration_ms: 204.087154
+      type: 'test'
+      ...
+    # Subtest: Banka Fişi: hiçbir rolde 121 / 321 seçilemez (§3.11 rol listesi; 400 bank-gl-forbidden); Hesap Eşlemeleri'nde 400
+    ok 3 - Banka Fişi: hiçbir rolde 121 / 321 seçilemez (§3.11 rol listesi; 400 bank-gl-forbidden); Hesap Eşlemeleri'nde 400
+      ---
+      duration_ms: 9.531568
+      type: 'test'
+      ...
+    1..3
+ok 6 - Senet 121 / 321 — şirket ayrımı, yetki, Şirket Verisini Sıfırla, Banka Fişi rolleri
+  ---
+  duration_ms: 1362.200686
+  type: 'suite'
+  ...
+# Subtest: Senet 121 / 321 — eşdeğerlik: gerçek eski kod (v2.1.0) ile aynı veri
+    # Subtest: eski sürümün verisi yeni kuralla: 101 + 121 = eski 101, 103 + 321 = eski 103, öbür hesaplar ve toplam aynı; kilitli dönem sahte fark vermez
+    ok 1 - eski sürümün verisi yeni kuralla: 101 + 121 = eski 101, 103 + 321 = eski 103, öbür hesaplar ve toplam aynı; kilitli dönem sahte fark vermez
+      ---
+      duration_ms: 2599.418459
+      type: 'test'
+      ...
+    1..1
+ok 7 - Senet 121 / 321 — eşdeğerlik: gerçek eski kod (v2.1.0) ile aynı veri
+  ---
+  duration_ms: 2599.701764
+  type: 'suite'
+  ...
+# (node:17548) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Senet 121 / 321 — eşdeğerlik: surum-2.0.26-turler (gerçek 2.0.26 koduyla üretilmiş; verilen ve ödenmiş senet)
+    # Subtest: 2.0.26'nın kendi ölçüsüyle: 103 + 321 = eski 103, öbür hesaplar ve toplam aynı; 321 borç = alacak = 300
+    not ok 1 - 2.0.26'nın kendi ölçüsüyle: 103 + 321 = eski 103, öbür hesaplar ve toplam aynı; 321 borç = alacak = 300
+      ---
+      duration_ms: 1208.165554
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-220-senet-121.test.mjs:468:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        001: öbür hesaplar
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            '100': [
+              27776485,
+              1914985,
+              25861500
+        ...
+            '120': [
+        +     121620262,
+        +     34470393,
+        -     121735262,
+        -     34585393,
+              87149869
+            ],
+            '153': [
+              80000,
+              0,
+        ...
+            '500': [
+        +     0,
+        -     115000,
+              12780000,
+        +     -12780000
+        -     -12665000
+            ],
+        +   '519': [
+        +     0,
+        +     365000,
+        +     -365000
+        +   ],
+            '600': [
+              0,
+              54904000,
+              -54904000
+            ],
+            '602': [
+              0,
+        +     47267585,
+        +     -47267585
+        -     47822585,
+        -     -47822585
+            ],
+            '610': [
+              90000,
+              0,
+              90000
+        ...
+              0,
+        +     1330957,
+        +     -1330957
+        -     1255957,
+        -     -1255957
+            ],
+            '770': [
+              4055786,
+              0,
+              4055786
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        100:
+          0: 27776485
+          1: 1914985
+          2: 25861500
+        102:
+          0: 7152865
+          1: 332000
+          2: 6820865
+        108:
+          0: 1080000
+          1: 360000
+          2: 720000
+        120:
+          0: 121735262
+          1: 34585393
+          2: 87149869
+        153:
+          0: 80000
+          1: 0
+          2: 80000
+        191:
+          0: 528600
+          1: 0
+          2: 528600
+        320:
+          0: 1880272
+          1: 3671600
+          2: -1791328
+        391:
+          0: 18000
+          1: 6960750
+          2: -6942750
+        500:
+          0: 115000
+          1: 12780000
+          2: -12665000
+        600:
+          0: 0
+          1: 54904000
+          2: -54904000
+        602:
+          0: 0
+          1: 47822585
+          2: -47822585
+        610:
+          0: 90000
+          1: 0
+          2: 90000
+        649:
+          0: 0
+          1: 1255957
+          2: -1255957
+        770:
+          0: 4055786
+          1: 0
+          2: 4055786
+      actual:
+        100:
+          0: 27776485
+          1: 1914985
+          2: 25861500
+        102:
+          0: 7152865
+          1: 332000
+          2: 6820865
+        108:
+          0: 1080000
+          1: 360000
+          2: 720000
+        120:
+          0: 121620262
+          1: 34470393
+          2: 87149869
+        153:
+          0: 80000
+          1: 0
+          2: 80000
+        191:
+          0: 528600
+          1: 0
+          2: 528600
+        320:
+          0: 1880272
+          1: 3671600
+          2: -1791328
+        391:
+          0: 18000
+          1: 6960750
+          2: -6942750
+        500:
+          0: 0
+          1: 12780000
+          2: -12780000
+        519:
+          0: 0
+          1: 365000
+          2: -365000
+        600:
+          0: 0
+          1: 54904000
+          2: -54904000
+        602:
+          0: 0
+          1: 47267585
+          2: -47267585
+        610:
+          0: 90000
+          1: 0
+          2: 90000
+        649:
+          0: 0
+          1: 1330957
+          2: -1330957
+        770:
+          0: 4055786
+          1: 0
+          2: 4055786
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-220-senet-121.test.mjs:488:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 8 - Senet 121 / 321 — eşdeğerlik: surum-2.0.26-turler (gerçek 2.0.26 koduyla üretilmiş; verilen ve ödenmiş senet)
+  ---
+  duration_ms: 1209.175789
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115/test/banka-220-senet-121.test.mjs:467:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:17548) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+1..8
+# tests 32
+# suites 8
+# pass 17
+# fail 15
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 61978.509308

@@ -1,0 +1,121 @@
+(node:7561) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{
+ "asil": {
+  "adimlar": [
+   "stok satışı 810 → 200",
+   "Mevcut Borç kartı 810 → 200",
+   "taksit 405 → 200",
+   "taksit 405 → 200",
+   "Alacak Yaz 250 → 200",
+   "kart tahsilatı 490 → 200",
+   "fatura 960 → 200",
+   "Borç Yaz 360 → 200",
+   "bağsız tahsilat 450 → 200"
+  ],
+  "bakiye": 940,
+  "sigmaKalem": 960,
+  "FARK": 20,
+  "gecikmisBorc": 960,
+  "listeGecikmis": 960,
+  "vadeTakip": [
+   "invoice:in:960@2026-10-15"
+  ],
+  "zil": [
+   "invoice:960:overdue"
+  ],
+  "fatura": [
+   "overdue açık 960"
+  ],
+  "kalan": [
+   "account/credit:-250→0",
+   "account/debt:360→0",
+   "stock/debt:810→0"
+  ],
+  "kart": [
+   "done kuyruk 0,0 kendi 0,320"
+  ],
+  "kural": [
+   "s2 tük 230/810 avans 310 kırp 250"
+  ],
+  "mutabakat": true
+ },
+ "dogalTarih": {
+  "adimlar": [
+   "stok satışı 810 → 200",
+   "Mevcut Borç kartı 810 → 200",
+   "taksit 405 → 200",
+   "taksit 405 → 200",
+   "Alacak Yaz 250 → 200",
+   "kart tahsilatı 490 → 200",
+   "fatura 960 → 200",
+   "Borç Yaz 360 → 200",
+   "bağsız tahsilat 450 → 200"
+  ],
+  "bakiye": 940,
+  "sigmaKalem": 940,
+  "FARK": 0,
+  "gecikmisBorc": 940,
+  "listeGecikmis": 940,
+  "vadeTakip": [
+   "invoice:in:940@2026-10-15"
+  ],
+  "zil": [
+   "invoice:940:overdue"
+  ],
+  "fatura": [
+   "overdue açık 960"
+  ],
+  "kalan": [
+   "stock/debt:810→0",
+   "account/credit:-250→0",
+   "account/debt:360→0"
+  ],
+  "kart": [
+   "done kuyruk 0,0 kendi 0,320"
+  ],
+  "kural": [
+   "s2 tük 810/810 avans 0 kırp 0"
+  ],
+  "mutabakat": true
+ },
+ "kartEski": {
+  "adimlar": [
+   "stok satışı 810 → 200",
+   "Mevcut Borç kartı 810 → 200",
+   "taksit 405 → 200",
+   "taksit 405 → 200",
+   "Alacak Yaz 250 → 200",
+   "kart tahsilatı 490 → 200",
+   "fatura 960 → 200",
+   "Borç Yaz 360 → 200",
+   "bağsız tahsilat 450 → 200"
+  ],
+  "bakiye": 940,
+  "sigmaKalem": 940,
+  "FARK": 0,
+  "gecikmisBorc": 940,
+  "listeGecikmis": 940,
+  "vadeTakip": [
+   "invoice:in:940@2026-10-15"
+  ],
+  "zil": [
+   "invoice:940:overdue"
+  ],
+  "fatura": [
+   "overdue açık 960"
+  ],
+  "kalan": [
+   "stock/debt:810→0",
+   "account/credit:-250→0",
+   "account/debt:360→0"
+  ],
+  "kart": [
+   "done kuyruk 0,0 kendi 0,320"
+  ],
+  "kural": [
+   "s2 tük 810/810 avans 0 kırp 0"
+  ],
+  "mutabakat": true
+ }
+}

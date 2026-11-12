@@ -1,0 +1,70 @@
+Ç5-A tur 1b ölçüm · z1-tur1b · kilitli · kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1by-uc · nproc 4 · başta 1.52 1.33 1.18 2/112 21881 · 12:05:28
+kilit ('2026-06-30',)
+=== TZ Europe/Istanbul · başta 1.52 1.33 1.18 1/113 21913 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1by-uc · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-olcum/kopya · yük (başta) 1.52 1.33 1.18 · TZ Europe/Istanbul
+açılış (göç dahil) 22252 ms · şema 49
+donma (bekleyen 2.4.9 koşusu, 2026-06-30'e kadar) 8265 ms · kapsam 2026-06-30
+veri: 1484 cari, 102295 cari satırı, 11554 Kasa satırı, 11660 evrak, 339 banka satırı
+tur 1 · yük 1.37 1.31 1.18
+  Mizan + mutabakat (GET ledger): 200 · 4041 ms · olay döngüsü en çok 4034.9 ms
+  Yevmiye Defteri (rapor): 200 · 2899.5 ms · olay döngüsü en çok 2898.3 ms
+  Hesap Planı Mizanı (rapor): 200 · 3878.9 ms · olay döngüsü en çok 0 ms
+  Alt Hesap Mizanı (rapor): 200 · 519 ms · olay döngüsü en çok 516.9 ms
+  Defter Mutabakatı (rapor): 200 · 17015.7 ms · olay döngüsü en çok 0 ms
+  Mutabakat Testi (GET ledger/integrity): 200 · 14381.2 ms · olay döngüsü en çok 14378.1 ms
+  Alacak Yaşlandırma (rapor): 200 · 2892.9 ms · olay döngüsü en çok 0 ms
+  Yevmiye Defteri bütün zaman (rapor): 200 · 5026.3 ms · olay döngüsü en çok 0 ms
+  Banka İşlem Kartı (GET bank/events): 200 · 6.8 ms · olay döngüsü en çok 0 ms
+  YAZIM Borç Yaz (bütünlük kapısı): 200 · 330.3 ms · olay döngüsü en çok 0 ms · kapı yolu scoped · kapı 58.7 ms
+  YAZIM evrak (alınan çek, carili): 200 · 75.7 ms · olay döngüsü en çok 73.2 ms · kapı yolu scoped · kapı 62.2 ms
+  Açılış Olabilir listesi (yeni uç; tabanda 404): 200 · 82.6 ms · olay döngüsü en çok 0 ms
+tur 2 · yük 1.20 1.28 1.17
+  Mizan + mutabakat (GET ledger): 200 · 3530.1 ms · olay döngüsü en çok 0 ms
+  Yevmiye Defteri (rapor): 200 · 3099.2 ms · olay döngüsü en çok 0 ms
+  Hesap Planı Mizanı (rapor): 200 · 3420.1 ms · olay döngüsü en çok 0 ms
+  Alt Hesap Mizanı (rapor): 200 · 489.7 ms · olay döngüsü en çok 0 ms
+  Defter Mutabakatı (rapor): 200 · 17122.7 ms · olay döngüsü en çok 0 ms
+  Mutabakat Testi (GET ledger/integrity): 200 · 14532.3 ms · olay döngüsü en çok 0 ms
+  Alacak Yaşlandırma (rapor): 200 · 2107 ms · olay döngüsü en çok 0 ms
+  Yevmiye Defteri bütün zaman (rapor): 200 · 4807.8 ms · olay döngüsü en çok 0 ms
+  Banka İşlem Kartı (GET bank/events): 200 · 2.9 ms · olay döngüsü en çok 0 ms
+  YAZIM Borç Yaz (bütünlük kapısı): 200 · 285.3 ms · olay döngüsü en çok 278.7 ms · kapı yolu scoped · kapı 45.4 ms
+  YAZIM evrak (alınan çek, carili): 200 · 65.5 ms · olay döngüsü en çok 63.3 ms · kapı yolu scoped · kapı 57.3 ms
+  Açılış Olabilir listesi (yeni uç; tabanda 404): 200 · 74.5 ms · olay döngüsü en çok 0 ms
+yük (sonda) 1.12 1.25 1.17
+çıkış 0 · sonda 1.12 1.25 1.17 1/108 22000
+kilit ('2026-06-30',)
+=== TZ UTC · başta 1.12 1.25 1.17 1/108 22006 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1by-uc · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-olcum/kopya · yük (başta) 1.12 1.25 1.17 · TZ UTC
+açılış (göç dahil) 22259 ms · şema 49
+donma (bekleyen 2.4.9 koşusu, 2026-06-30'e kadar) 8272 ms · kapsam 2026-06-30
+veri: 1484 cari, 102295 cari satırı, 11554 Kasa satırı, 11660 evrak, 339 banka satırı
+tur 1 · yük 1.35 1.30 1.19
+  Mizan + mutabakat (GET ledger): 200 · 3739.9 ms · olay döngüsü en çok 3735 ms
+  Yevmiye Defteri (rapor): 200 · 2602.4 ms · olay döngüsü en çok 2600.5 ms
+  Hesap Planı Mizanı (rapor): 200 · 4064 ms · olay döngüsü en çok 0 ms
+  Alt Hesap Mizanı (rapor): 200 · 410.7 ms · olay döngüsü en çok 0 ms
+  Defter Mutabakatı (rapor): 200 · 16241.5 ms · olay döngüsü en çok 0 ms
+  Mutabakat Testi (GET ledger/integrity): 200 · 14075.6 ms · olay döngüsü en çok 0 ms
+  Alacak Yaşlandırma (rapor): 200 · 2864.7 ms · olay döngüsü en çok 0 ms
+  Yevmiye Defteri bütün zaman (rapor): 200 · 4669.5 ms · olay döngüsü en çok 0 ms
+  Banka İşlem Kartı (GET bank/events): 200 · 5.6 ms · olay döngüsü en çok 0 ms
+  YAZIM Borç Yaz (bütünlük kapısı): 200 · 361.5 ms · olay döngüsü en çok 0 ms · kapı yolu scoped · kapı 60.5 ms
+  YAZIM evrak (alınan çek, carili): 200 · 62.7 ms · olay döngüsü en çok 0 ms · kapı yolu scoped · kapı 52.8 ms
+  Açılış Olabilir listesi (yeni uç; tabanda 404): 200 · 74.7 ms · olay döngüsü en çok 0 ms
+tur 2 · yük 1.16 1.25 1.18
+  Mizan + mutabakat (GET ledger): 200 · 3561.9 ms · olay döngüsü en çok 0 ms
+  Yevmiye Defteri (rapor): 200 · 2783.1 ms · olay döngüsü en çok 0 ms
+  Hesap Planı Mizanı (rapor): 200 · 3169.4 ms · olay döngüsü en çok 0 ms
+  Alt Hesap Mizanı (rapor): 200 · 422.4 ms · olay döngüsü en çok 0 ms
+  Defter Mutabakatı (rapor): 200 · 16794.1 ms · olay döngüsü en çok 0 ms
+  Mutabakat Testi (GET ledger/integrity): 200 · 14721.8 ms · olay döngüsü en çok 0 ms
+  Alacak Yaşlandırma (rapor): 200 · 1947.2 ms · olay döngüsü en çok 0 ms
+  Yevmiye Defteri bütün zaman (rapor): 200 · 4832.4 ms · olay döngüsü en çok 0 ms
+  Banka İşlem Kartı (GET bank/events): 200 · 3.2 ms · olay döngüsü en çok 0 ms
+  YAZIM Borç Yaz (bütünlük kapısı): 200 · 295.9 ms · olay döngüsü en çok 293.1 ms · kapı yolu scoped · kapı 50.7 ms
+  YAZIM evrak (alınan çek, carili): 200 · 57.3 ms · olay döngüsü en çok 0 ms · kapı yolu scoped · kapı 50 ms
+  Açılış Olabilir listesi (yeni uç; tabanda 404): 200 · 70.7 ms · olay döngüsü en çok 0 ms
+yük (sonda) 1.23 1.27 1.19
+çıkış 0 · sonda 1.23 1.27 1.19 1/110 22675
+bitti 12:09:51

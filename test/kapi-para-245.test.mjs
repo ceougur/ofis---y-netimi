@@ -17,6 +17,7 @@ import { loadConfig } from "../server/lib/config.mjs";
 import { okulServisiWorkbook } from "./fixtures/okul-servisi-ornek.mjs";
 import { CURRENT, bootVersion, tagsAvailable } from "./guvenilirlik/surumler.mjs";
 import { loginAdmin, startTestServer } from "./helpers.mjs";
+import { trialKg5As250Defter } from "./fixtures/c5a-acilis.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const OLD = "v2.4.4";
@@ -145,14 +146,20 @@ describe(`2.4.5 madde 1–2: eski sürüm verisi (${OLD} gerçek kodu) yeni kodl
     rmSync(root, { recursive: true, force: true });
   });
 
+  // 2.5.0 Ç5-A tur 1 (G3: KG-5 = A, H-06; C5-ACILIS-TASARIM §2.2): Tablodan Aktar kartı yüklenen kart — eski defterin iki maddesi (B CH T / A 602 + B 500 P / A CH P) yeni kuralda
+  // TEK madde B CH (T − P) / A 519. Eski mizan ve madde sayısı karar metninin dönüşümüyle (kart T / P veri tabanından); öbür olgular AYNEN.
+  const oldNow = () => {
+    const { trial, entryCount } = trialKg5As250Defter(JSON.parse(old.trial), old.journal, server.app.store);
+    return { ...old, trial: JSON.stringify(trial), journal: entryCount };
+  };
   it("eski satırlar aynen: kayıt tahsilatı, Kasa, cari/kart satırları, işlem başlıkları, mizan ve yevmiye madde sayısı", async () => {
-    assert.deepEqual(await facts(server, api), old);
+    assert.deepEqual(await facts(server, api), oldNow());
   });
 
   it("POST kayıt tahsilatı 410 (istek kimliğiyle de); veri değişmez", async () => {
     closed(await api.client.post(`/api/workspace/cases/${encodeURIComponent(keys["Efe Kaya"])}/payments`, { amount: "500", date: day(0), method: "cash", caseTitle: "Efe Kaya" }), CASE_CLOSED, "POST");
     closed(await api.client.post(`/api/workspace/cases/${encodeURIComponent("YENI-KAYIT")}/payments`, { amount: "500", date: day(0), method: "cash" }, { "x-hof-request": randomUUID() }), CASE_CLOSED, "POST + istek kimliği");
-    assert.deepEqual(await facts(server, api), old);
+    assert.deepEqual(await facts(server, api), oldNow());
   });
 
   it("PUT eski kayıt tahsilatı 410; satırın tutarı, tarihi ve yolu aynı", async () => {
@@ -160,7 +167,7 @@ describe(`2.4.5 madde 1–2: eski sürüm verisi (${OLD} gerçek kodu) yeni kodl
     closed(await api.client.put(`/api/workspace/payments/${encodeURIComponent(ids.efe)}`, { amount: "1.000", date: day(-3), method: "cash", note: "Düzeltme" }), CASE_CLOSED, "PUT");
     closed(await api.client.put(`/api/workspace/payments/${encodeURIComponent("payment-yok")}`, { amount: "1.000" }), CASE_CLOSED, "PUT (olmayan satır)");
     assert.deepEqual(server.app.store.get("SELECT amount, date, method, note, updated_at AS updatedAt FROM payments WHERE id = ?", ids.efe), before0);
-    assert.deepEqual(await facts(server, api), old);
+    assert.deepEqual(await facts(server, api), oldNow());
   });
 
   it("oturumsuz 401; personel de 410 alır (Tablodan Aktar yetkisi olmasa da 410: kapı yetkiden önce); veri değişmez", async () => {
@@ -171,7 +178,7 @@ describe(`2.4.5 madde 1–2: eski sürüm verisi (${OLD} gerçek kodu) yeni kodl
     closed(await staff.client.post(`/api/workspace/cases/${encodeURIComponent(keys["Efe Kaya"])}/payments`, { amount: "500", date: day(0), method: "cash" }), CASE_CLOSED, "personel POST");
     closed(await staff.client.put(`/api/workspace/payments/${encodeURIComponent(ids.efe)}`, { amount: "1" }), CASE_CLOSED, "personel PUT");
     closed(await staff.client.post("/api/workspace/plans/from-table", { keys: [keys["Efe Kaya"]] }), tableClosed, "personel Tablodan Aktar");
-    assert.deepEqual(await facts(server, api), old);
+    assert.deepEqual(await facts(server, api), oldNow());
   });
 
   it("Tablodan Aktar POST 410; yükleme sonrası özet sormaz; veri değişmez; eski aktarım listede", async () => {
@@ -181,7 +188,7 @@ describe(`2.4.5 madde 1–2: eski sürüm verisi (${OLD} gerçek kodu) yeni kodl
     assert.deepEqual({ count: summary.count, ask: summary.ask }, { count: 0, ask: false }, `yükleme sonrası soru yok: ${JSON.stringify(summary)}`);
     const imports = (await must("aktarımlar", api.get("/api/workspace/plans/imports"))).imports;
     assert.ok(imports.some(item => item.id === ids.importId && !item.undoneAt), "eski aktarım Son Aktarımlar'da, geri alınmamış");
-    assert.deepEqual(await facts(server, api), old);
+    assert.deepEqual(await facts(server, api), oldNow());
   });
 
   it("DELETE açık (→ Silinenler), Silinenler'den geri yükleme açık: Kasa ve mizan eski hâline döner", async () => {
@@ -194,7 +201,7 @@ describe(`2.4.5 madde 1–2: eski sürüm verisi (${OLD} gerçek kodu) yeni kodl
     assert.ok(item, "silinen kayıt tahsilatı Silinenler'de");
     const restored = await api.client.post("/api/admin/trash/restore", { id: item.id });
     assert.equal(restored.status, 200, JSON.stringify(restored.data));
-    assert.deepEqual(await facts(server, api), old, "geri yükleme eski hâli verir (aynı kimlik, tutar, Kasa, mizan)");
+    assert.deepEqual(await facts(server, api), oldNow(), "geri yükleme eski hâli verir (aynı kimlik, tutar, Kasa, mizan)");
     assert.equal(server.app.store.get("SELECT amount FROM payments WHERE id = ?", ids.ada)?.amount, 400, "aynı kimlikle geri geldi");
   });
 

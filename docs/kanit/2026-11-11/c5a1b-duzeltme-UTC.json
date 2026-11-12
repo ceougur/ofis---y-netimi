@@ -1,0 +1,32 @@
+{
+  "ad": "c5a1b-duzeltme-UTC",
+  "komut": "node --test --test-concurrency=1 test/banka-210-transfer.test.mjs test/donmus-defter-bellek-250.test.mjs test/s127-tek-kez-250.test.mjs",
+  "commit": "bd937eeecb5601ce79136fba4e54d682077e0d19",
+  "dal": "worktree-agent-ae40882bc6254a115",
+  "kirli": 2,
+  "izlenmeyen": 21,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-11T22:24:05.090Z",
+  "sure_sn": 6.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 37,
+    "gecen": 37,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-kanit/2026-11-11/c5a1b-duzeltme-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115",
+  "ham_cikti_sha256": "f0cdd5c13c9103e52ae46a56d3924310936707a93e93b5112b26887b34935958",
+  "ham_cikti_bayt": 16323
+}

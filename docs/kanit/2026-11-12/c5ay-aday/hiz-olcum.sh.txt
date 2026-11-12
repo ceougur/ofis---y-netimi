@@ -1,0 +1,9 @@
+#!/bin/bash
+# Ana oturum: Ç5-A ADAYI hız kabul ölçümü — aynı düzenek (c5a1b-olcum/kos.sh), iki sütun (öncesi = Ç5-B adayı 465a2eeb / aday = + Ç5-A tur 1–1d) × kilitsiz + kilitli, İKİ geçiş. Özel ölçüm kilidi altında çağrılır.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+R=/home/user/ofis---y-netimi; d=$S/c5ay-o-oncesi
+[ -d $d/server ] || { mkdir -p $d && git -C $R archive 465a2eeb ':!docs/kanit' | tar -x -C $d || exit 1; ln -s $R/node_modules $d/node_modules; }
+echo "kilit alındı $(date -u +%T) yük $(cat /proc/loadavg) · aday $(git -C $S/d2t3-ya-ag rev-parse --short HEAD)"
+for kip in kilitsiz kilitli; do for g in a1 a2; do for p in "oncesi:$d" "aday:$S/d2t3-ya-ag"; do tag=$g-${p%%:*}; kok=${p#*:}
+  echo "== $tag $kip başta $(cat /proc/loadavg)"; timeout 900 bash $S/c5a1b-olcum/kos.sh $kok $tag $kip; echo "çıkış $?"; done; done; done
+echo "sonda $(date -u +%T) $(cat /proc/loadavg) · disk $(df -h / | awk 'NR==2{print $4}')"

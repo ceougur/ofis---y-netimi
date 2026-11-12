@@ -1,0 +1,156 @@
+TAP version 13
+# Subtest: Koruma — eski sürüm fikstürleri bugünkü kodla açılınca taban sapması hiçbir yazım ailesini tam kapıya düşürmez
+    # Subtest: fikstür listesi taramayla bulundu (19): surum-2.0.16-zincir, surum-2.0.17-zincir, surum-2.0.18-zincir, surum-2.0.19-cakisma, surum-2.0.19-eski, surum-2.0.19-zincir, surum-2.0.20-zincir, surum-2.0.21-zincir, surum-2.0.22-zincir, surum-2.0.23-zincir, surum-2.0.24-zincir, surum-2.0.25-zincir, surum-2.0.26-iade, surum-2.0.26-onarim-250, surum-2.0.26-turler, surum-2.0.26-zincir, surum-2.4.3-baslarken, surum-2.4.9-s127, surum-2.4.9-s127-kilitsiz
+    ok 1 - fikstür listesi taramayla bulundu (19): surum-2.0.16-zincir, surum-2.0.17-zincir, surum-2.0.18-zincir, surum-2.0.19-cakisma, surum-2.0.19-eski, surum-2.0.19-zincir, surum-2.0.20-zincir, surum-2.0.21-zincir, surum-2.0.22-zincir, surum-2.0.23-zincir, surum-2.0.24-zincir, surum-2.0.25-zincir, surum-2.0.26-iade, surum-2.0.26-onarim-250, surum-2.0.26-turler, surum-2.0.26-zincir, surum-2.4.3-baslarken, surum-2.4.9-s127, surum-2.4.9-s127-kilitsiz
+      ---
+      duration_ms: 0.860841
+      type: 'test'
+      ...
+# \# surum-2.0.16-zincir: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.16-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 2 - surum-2.0.16-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 492.119703
+      type: 'test'
+      ...
+# \# surum-2.0.17-zincir: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.17-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 3 - surum-2.0.17-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 829.505093
+      type: 'test'
+      ...
+# \# surum-2.0.18-zincir: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"004","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.18-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 4 - surum-2.0.18-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 995.890889
+      type: 'test'
+      ...
+# \# surum-2.0.19-cakisma: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"005","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.19-cakisma: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 5 - surum-2.0.19-cakisma: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 743.384866
+      type: 'test'
+      ...
+# \# surum-2.0.19-eski: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.19-eski: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 6 - surum-2.0.19-eski: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 627.743347
+      type: 'test'
+      ...
+# \# surum-2.0.19-zincir: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"004","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.19-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 7 - surum-2.0.19-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 1154.246768
+      type: 'test'
+      ...
+# \# surum-2.0.20-zincir: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"004","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.20-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 8 - surum-2.0.20-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 1206.448283
+      type: 'test'
+      ...
+# \# surum-2.0.21-zincir: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"004","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.21-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 9 - surum-2.0.21-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 1187.443845
+      type: 'test'
+      ...
+# \# surum-2.0.22-zincir: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"004","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.22-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 10 - surum-2.0.22-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 1260.430764
+      type: 'test'
+      ...
+# \# surum-2.0.23-zincir: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"004","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.23-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 11 - surum-2.0.23-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 1177.676401
+      type: 'test'
+      ...
+# \# surum-2.0.24-zincir: [{"sirket":"001","kuralFarki":true,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"004","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.24-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 12 - surum-2.0.24-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 1304.70508
+      type: 'test'
+      ...
+# \# surum-2.0.25-zincir: [{"sirket":"001","kuralFarki":true,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"004","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.25-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 13 - surum-2.0.25-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 1482.399027
+      type: 'test'
+      ...
+# \# surum-2.0.26-iade: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.26-iade: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 14 - surum-2.0.26-iade: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 500.55027
+      type: 'test'
+      ...
+# \# surum-2.0.26-onarim-250: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.26-onarim-250: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 15 - surum-2.0.26-onarim-250: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 644.06427
+      type: 'test'
+      ...
+# \# surum-2.0.26-turler: [{"sirket":"001","kuralFarki":true,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"004","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.26-turler: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 16 - surum-2.0.26-turler: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 1444.740632
+      type: 'test'
+      ...
+# \# surum-2.0.26-zincir: [{"sirket":"001","kuralFarki":true,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"004","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.26-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 17 - surum-2.0.26-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 1302.817076
+      type: 'test'
+      ...
+# \# surum-2.4.3-baslarken: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.4.3-baslarken: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 18 - surum-2.4.3-baslarken: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 458.425473
+      type: 'test'
+      ...
+# \# surum-2.4.9-s127: [{"sirket":"001","kuralFarki":true,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.4.9-s127: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 19 - surum-2.4.9-s127: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 339.835759
+      type: 'test'
+      ...
+# \# surum-2.4.9-s127-kilitsiz: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.4.9-s127-kilitsiz: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 20 - surum-2.4.9-s127-kilitsiz: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 214.391907
+      type: 'test'
+      ...
+    1..20
+ok 1 - Koruma — eski sürüm fikstürleri bugünkü kodla açılınca taban sapması hiçbir yazım ailesini tam kapıya düşürmez
+  ---
+  duration_ms: 17371.083383
+  type: 'suite'
+  ...
+1..1
+# tests 20
+# suites 1
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 17764.008031

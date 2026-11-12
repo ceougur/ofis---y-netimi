@@ -14,7 +14,7 @@
 import { randomUUID } from "node:crypto";
 import { Worker } from "node:worker_threads";
 import { systemClock } from "./clock.mjs";
-import { CHART, JOURNAL_CLASS, LEDGER_RULE_VERSION, journalOrder } from "./general-ledger.mjs";
+import { CHART, JOURNAL_CLASS, LEDGER_RULE_ALIASES, LEDGER_RULE_VERSION, entryClass, journalOrder } from "./general-ledger.mjs";
 import { roundMoney } from "./money.mjs";
 import { HttpError } from "./http.mjs";
 import { LOCK_SQL_VERSION, lockDigestOf } from "./integrity.mjs";
@@ -38,7 +38,9 @@ export const PLAN_TRACE = "ledger.snapshot.plan";
  * server/lib/ledger-rule-<sürüm, noktasız>/ klasörüne AYNEN kopyalanır, kayıt defterine (createLedgerSnapshots rules ve dondurma iş parçacığı) eklenir, bu listeye yenisi
  * eklenir — eski sürümde açılmış bekleyen koşu (göç, onarım) kendi kuralıyla donar. test/donmus-defter-tur1-250.test.mjs (kayıt defteri denetimi) eksiği yakalar.
  */
-export const RULE_HISTORY = Object.freeze(["2.4.9", "2.5.0"]);
+// 2.5.0 Ç5-A tur 1 (BAŞ MİMAR KARARI B15; C5-ACILIS-TASARIM §3.2): "2.5.0" = 2.4.9 kopyasının KANITLI takma adı (LEDGER_RULE_ALIASES; ayrı kopya yok — Ç5-A'dan önce güncel
+// türetme 2.4.9 kopyasıyla madde madde aynıydı, kural tuzağı testi), "2.5.0-defter" güncel kural (Ç7a / Ç7b yayından önce aynı etiketi genişletir).
+export const RULE_HISTORY = Object.freeze(["2.4.9", "2.5.0", "2.5.0-defter"]);
 const ENTITY = no => `ledger-snapshot-run:${no}`;
 // Ağırlık sağlaması (Σ hesap kodu × (borç − alacak), satır başına mod P): hesaplar arası para kaymasını sayı / toplam değişmeden de görür; SQL ve JS aynı (tamsayı, kesme).
 const WEIGHT_MOD = 1_000_000_007;
@@ -67,7 +69,8 @@ export function* snapshotBatches(entries, { from = "", through, size = 2000, tot
   for (const entry of entries) {
     if (!(entry.date > from && entry.date <= through)) continue;
     totals.entries += 1;
-    const cls = classOf(entry.id);
+    // 2.5.0 Ç5-A (B9): açılış sınıfı ayrı alandan (madde kimliği değişmez; okuma sırası run_seq — bu sütun yalnız saklanır).
+    const cls = entryClass(entry);
     const seq = Number.isSafeInteger(entry.seq) ? entry.seq : null;
     for (let index = 0; index < entry.lines.length; index += 1) {
       const line = entry.lines[index];
@@ -225,6 +228,8 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
   const lockNow = () => period?.lockedUntil?.() || "";
   // 2.4.9 kopyası (değiştirilemez) sıkı satırlı depoyla okur (lib/lean-rows.mjs; ders 47) — çıktı aynı.
   const rules = { [LEDGER_RULE_VERSION]: () => build(), [RULE_249]: () => buildRule249(leanStore(store)) };
+  // 2.5.0 Ç5-A (B15): takma adlar ("2.5.0" → 2.4.9 kopyası) aynı türetmeyi kullanır.
+  for (const [alias, target] of Object.entries(LEDGER_RULE_ALIASES)) if (!Object.hasOwn(rules, alias) && Object.hasOwn(rules, target)) rules[alias] = rules[target];
   const ruleKnown = rule => Object.hasOwn(rules, rule);
   const callHook = (phase, info) => hook?.fn?.(phase, info);
   // shut: kapanış (kalıcı); stopping: süren işin durdurulması (sıfırlama, başka güne kilit; iş bitince kalkar). İkisinden biri → yazım adımı atılmaz.

@@ -1,0 +1,32 @@
+{
+  "ad": "c5a1cy-altin-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-210-goc-zinciri.test.mjs test/banka-210-altin.test.mjs test/banka-220-senet-121.test.mjs",
+  "commit": "595abf87ff58779b48d2162d55a614ba88d6cd0e",
+  "dal": "sinama-c5a1c",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T12:29:36.120Z",
+  "sure_sn": 96.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 38,
+    "gecen": 38,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../c5a1cy-kanit/2026-11-12/c5a1cy-altin-Europe-Istanbul.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag",
+  "ham_cikti_sha256": "2af6d96b9d8bbef66177befe3de892121e53acbd40e11d5a3a2a0106638cc867",
+  "ham_cikti_bayt": 19688
+}

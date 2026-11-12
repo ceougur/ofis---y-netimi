@@ -1,4 +1,5 @@
 // İz 1.3 (2.2.0 iş listesi; K6, hakem 10.10.2026 "KASA-ACILIS-649"): Kasa'ya devreden (açılış) nakit 649'a (Diğer Olağan Gelir) yazılıyordu;
+// 2.5.0 Ç5-A tur 1 — BEKLENTİ BİLEREK DEĞİŞTİ (G3: docs/erp/C5-ACILIS-TASARIM.md §2.2 / §11; KG-1, M-01 / M-04 / M-05 / M-07, B3): açılışların karşı hesabı 500 değil 519 "Eşleştirilecek Açılış Bakiyeleri" (banka fişinde saklı kod 500 kalır, türetmede 519). Tutarlar AYNI; yalnız hesap kodu.
 // açılış gelir değildir. Plan susuyor → yaygın muhasebe (Tekdüzen açılış fişi): B 100 Kasa / A 500 "Açılış ve Devir Bakiyeleri" — banka
 // hesabının açılışı (lib/bank/voucher.mjs openingLines: B 102.k / A 500), cari açılışı ve taksit açılışı (general-ledger.mjs) ile AYNI karşı
 // hesap. Kasa'da "Açılış Bakiyesi" yolu: yalnız yönetici, bir kez, tarihli (ilk Kasa hareketinden sonra olamaz — banka açılışı kuralı),
@@ -84,7 +85,7 @@ describe("Yargıç Y2/Y3 — açıklaması 'Açılış …' olan sıradan Kasa g
     const trial = await trialOf(admin);
     assert.equal(trial["100"], 5000 - 200 + 1000 + 300 + 1000, "100 Kasa");
     assert.equal(trial["649"], -(5000 + 1000 + 300 + 1000), "bütün nakit girişler 649'da (2.1.0 ile aynı)");
-    assert.equal(trial["500"] || 0, 0, "açılış yok: 500 boş");
+    assert.equal(trial["519"] || 0, 0, "açılış yok: 500 boş");
     assert.equal((await openingRows(admin)).length, 0, "Kasa'da açılış satırı yok");
     assert.equal((await must("açılış durumu", admin.get("/api/workspace/cash/opening"))).opening, null, "Kasa → Açılış Bakiyesi boş");
   });
@@ -102,7 +103,7 @@ describe("Yargıç Y2/Y3 — açıklaması 'Açılış …' olan sıradan Kasa g
     await must("muhasebe 'Açılış …' girişini siler", staff.del(`/api/workspace/cash/${normal.id}`));
     let trial = await trialOf(admin);
     assert.equal(trial["649"], -(5100 + 1100 + 300), "düzeltmeler 649'da");
-    assert.equal(trial["500"] || 0, 0, "hiçbir giriş açılışa çevrilmedi");
+    assert.equal(trial["519"] || 0, 0, "hiçbir giriş açılışa çevrilmedi");
     assert.equal((await openingRows(admin)).length, 0);
     // Kilitli dönem: kilit altındaki 'Açılış …' girişleri 649'da kalır; kilitli aralığın mizanı kilitten önce ve sonra aynı.
     const lockedRange = `/api/workspace/ledger?from=${day(-30)}&to=${day(-5)}`;
@@ -110,7 +111,7 @@ describe("Yargıç Y2/Y3 — açıklaması 'Açılış …' olan sıradan Kasa g
     await must("kilit", admin.put("/api/admin/period-lock", { lockedUntil: day(-5) }));
     const after = (await must("kilitli aralık (sonra)", admin.get(lockedRange))).trial.accounts.map(row => [String(row.code), row.balance]);
     assert.deepEqual(after, before, "kilitli dönemin mizanı değişmez");
-    assert.deepEqual(Object.fromEntries(after.filter(([code]) => ["500", "649"].includes(code))), { 649: -(5100 + 1100) }, "kilitli aralıkta 649 = 6.200, 500 yok");
+    assert.deepEqual(Object.fromEntries(after.filter(([code]) => ["519", "649"].includes(code))), { 649: -(5100 + 1100) }, "kilitli aralıkta 649 = 6.200, 500 yok");
     trial = await trialOf(admin);
     assert.equal(trial["649"], -(5100 + 1100 + 300));
     await must("kilit kalkar", admin.put("/api/admin/period-lock", { lockedUntil: "" }));
@@ -120,7 +121,7 @@ describe("Yargıç Y2/Y3 — açıklaması 'Açılış …' olan sıradan Kasa g
     await refused("ilk hareketten sonra açılış", admin.post("/api/workspace/cash/opening", { amount: "49.505", date: day(-5) }), 409, "cash-opening-after-first");
     await must("açılış (düğme)", admin.post("/api/workspace/cash/opening", { amount: "49.505", date: day(-9) }));
     let trial = await trialOf(admin);
-    assert.equal(trial["500"], -49505, "yalnız işaretli satır 500'de");
+    assert.equal(trial["519"], -49505, "yalnız işaretli satır 500'de");
     assert.equal(trial["649"], -(5100 + 1100 + 300), "'Açılış …' sıradan girişler 649'da kalır");
     const state = await must("açılış durumu", admin.get("/api/workspace/cash/opening"));
     assert.equal(state.opening?.amount, 49505, "var olan açılış görünür");
@@ -130,13 +131,13 @@ describe("Yargıç Y2/Y3 — açıklaması 'Açılış …' olan sıradan Kasa g
     await must("düğmeyle düzelt", admin.post("/api/workspace/cash/opening", { amount: "48.000", date: day(-9) }));
     assert.equal((await openingRows(admin)).length, 1, "tek açılış satırı");
     trial = await trialOf(admin);
-    assert.equal(trial["500"], -48000, "500 düzeltildi");
+    assert.equal(trial["519"], -48000, "500 düzeltildi");
     assert.equal(trial["649"], -(5100 + 1100 + 300 + 10));
     const [opening] = await openingRows(admin);
     await refused("açılış çıkışa çevrilemez", admin.put(`/api/workspace/cash/${opening.id}`, { kind: "out", amount: "48.000", date: day(-9), description: "Açılış Bakiyesi" }), 400, "cash-opening-kind");
     await must("açılışın açıklaması değişir, işaret kalır", admin.put(`/api/workspace/cash/${opening.id}`, { kind: "in", amount: "48.000", date: day(-9), description: "Devreden nakit" }));
     assert.equal((await openingRows(admin)).length, 1, "açıklama değişince açılış açılış kalır");
-    assert.equal((await trialOf(admin))["500"], -48000);
+    assert.equal((await trialOf(admin))["519"], -48000);
   });
 });
 
@@ -163,7 +164,7 @@ describe("İz 1.3 — Kasa → Açılış Bakiyesi (yalnız yönetici, bir kez, 
     assert.equal(created.created, true);
     const trial = await trialOf(admin);
     assert.equal(trial["100"], 20000);
-    assert.equal(trial["500"], -20000);
+    assert.equal(trial["519"], -20000);
     assert.equal(trial["649"] || 0, 0);
     const rows = await openingRows(admin);
     assert.equal(rows.length, 1);
@@ -180,7 +181,7 @@ describe("İz 1.3 — Kasa → Açılış Bakiyesi (yalnız yönetici, bir kez, 
     const normal = await must("muhasebe sıradan giriş", staff.post("/api/workspace/cash", { kind: "in", amount: "300", date: day(-8), description: "Danışmanlık" }));
     assert.ok(normal.id, "sıradan giriş yazıldı");
     assert.equal(await cashBalance(admin), 20300);
-    assert.equal((await trialOf(admin))["500"], -20000, "reddedilen istekler hiçbir şey yazmadı");
+    assert.equal((await trialOf(admin))["519"], -20000, "reddedilen istekler hiçbir şey yazmadı");
   });
 
   it("6, 7: ilk hareketten (−8) sonraki tarihe açılış/düzeltme 409; ileri tarih 400; kilitli dönemde 409", async () => {
@@ -207,7 +208,7 @@ describe("İz 1.3 — Kasa → Açılış Bakiyesi (yalnız yönetici, bir kez, 
     await refused("açılış 1.000'e", admin.post("/api/workspace/cash/opening", { amount: "1.000", date: day(-10) }), 409, "cash-negative");
     await must("onayla", admin.post("/api/workspace/cash/opening", { amount: "1.000", date: day(-10), cashForce: true }));
     assert.equal(await cashBalance(admin), 1000 + 300 - 15000);
-    assert.equal((await trialOf(admin))["500"], -1000);
+    assert.equal((await trialOf(admin))["519"], -1000);
     await must("geri 20.000", admin.post("/api/workspace/cash/opening", { amount: "20.000", date: day(-10) }));
   });
 
@@ -216,7 +217,7 @@ describe("İz 1.3 — Kasa → Açılış Bakiyesi (yalnız yönetici, bir kez, 
     // Açılış silinince Kasa eksiye düşer (5.300 − 20.000): yönetici "Yine de Sil" der (cashForce).
     await refused("sil (soru)", admin.del(`/api/workspace/cash/${row.id}`), 409, "cash-negative");
     await must("sil", admin.del(`/api/workspace/cash/${row.id}?cashForce=1`));
-    assert.equal((await trialOf(admin))["500"] || 0, 0, "500 boşaldı");
+    assert.equal((await trialOf(admin))["519"] || 0, 0, "500 boşaldı");
     const trash = await must("Silinenler", admin.get("/api/admin/trash"));
     const item = trash.find(entry => entry.kind === "cash" && entry.ref === row.id);
     assert.ok(item, "Silinenler'de");
@@ -224,6 +225,6 @@ describe("İz 1.3 — Kasa → Açılış Bakiyesi (yalnız yönetici, bir kez, 
     await must("yeni açılış", admin.post("/api/workspace/cash/opening", { amount: "7.000", date: day(-10) }));
     await refused("eski açılış geri yüklenmez (iki açılış olurdu)", admin.post("/api/admin/trash/restore", { id: item.id }), 409, "cash-opening-exists");
     assert.equal((await openingRows(admin)).length, 1);
-    assert.equal((await trialOf(admin))["500"], -7000);
+    assert.equal((await trialOf(admin))["519"], -7000);
   });
 });

@@ -20,15 +20,34 @@ import { readFixture, unpackFixture } from "./guvenilirlik/fikstur.mjs";
 const NOW = "2026-10-08T12:00:00+03:00";
 const TODAY = "2026-10-08";
 const signatureOf = result => JSON.stringify(result.checks.map(item => [item.code, item.ok, item.count ?? null, item.gateCount ?? null, item.difference ?? null]));
+// 2.5.0 Ç5-A tur 1c: dondurmayı bekleyen her adım SINIRLI — süre dolunca nedeni (dondurmanın durumu) yazılarak KIRMIZI; asılı test CI'yi tutmaz.
+const FREEZE_WAIT_MS = 60_000;
+const within = (promise, label, state = () => null) => {
+  let timer = null;
+  const limit = new Promise((_, reject) => {
+    timer = setTimeout(() => reject(new Error(`${label} ${FREEZE_WAIT_MS / 1000} sn'de olmadı — dondurma: ${JSON.stringify(state())}`)), FREEZE_WAIT_MS);
+    timer.unref?.();
+  });
+  return Promise.race([promise, limit]).finally(() => clearTimeout(timer));
+};
 
 describe("B7 — arka plan taraması", () => {
-  it("gerçek 2.0.26 verisi: arka plan sonucu = satır içi sonuç; tam çalışma ana iş parçacığında koşmaz", async () => {
+  it("gerçek 2.0.26 verisi: arka plan sonucu = satır içi sonuç; tam çalışma ana iş parçacığında koşmaz", { timeout: 180_000 }, async () => {
     const name = "surum-2.0.26-zincir";
     const fixture = unpackFixture(name);
     let server = null;
     try {
       server = await bootVersion(CURRENT, { dataDir: fixture.dataDir, backupDir: fixture.backupDir, maxCompanies: 10, now: `${readFixture(name).oncesi.today}T12:00:00+03:00`, integrityScan: false });
       const integrity = server.app.integrity;
+      // 2.5.0 Ç5-A tur 1c (ders 6, 20, 38; kök neden docs/erp/C5-ACILIS-TASARIM.md §13): 2.0.26 verisi kilitli → açılışta göç 47'nin bekleyen 2.4.9 dondurması arkada
+      // koşar (app.mjs setImmediate). Sürerken "Kural Değişikliği Farkı" denetimi listede yoktur (karşılaştırılacak donmuş dönem henüz yok — C3 §8 kapsam); bitince Ç5-A'nın
+      // kural farkı (2.4.9 ↔ 2.5.0-defter) görünür. İki taramanın bu anın iki yanına düşmesi sahte fark doğuruyordu (zorla: test/b7-dondurma-yaris-zorla.mjs). Ön koşul
+      // ÜRÜNÜN DURUMUNDAN kurulur: bekleyen koşu bitene kadar beklenir (ürünün kendi runPending'i: süren işi bekler, kalan koşuyu dondurur), sonra koşu kalmadığı denetlenir.
+      // İddialar (iki yol aynı sonuç; tam çalışma ana iş parçacığında koşmaz) aynen.
+      await within(server.app.ledger.snapshots.runPending(), "açılıştaki bekleyen dondurmanın bitmesi", () => ({ ...server.app.ledger.snapshots.state(), freeze: server.app.ledger.snapshots.status() }));
+      const frozen = server.app.ledger.snapshots.state();
+      assert.equal(frozen.pending, null, `açılıştaki bekleyen dondurma bitmeli: ${JSON.stringify(frozen)}`);
+      assert.equal(frozen.coverage, frozen.lock, `kilitli dönem donmuş olmalı: ${JSON.stringify(frozen)}`);
       const before = integrity.stats().run;
       const background = await integrity.scanInBackground();
       assert.ok(background.result, JSON.stringify(background));
@@ -37,6 +56,58 @@ describe("B7 — arka plan taraması", () => {
       const inline = integrity.scan();
       assert.equal(signatureOf(background.result), signatureOf(inline.result), "iki yol aynı sonucu vermeli");
     } finally {
+      await server?.close().catch(() => {});
+      fixture.cleanup();
+    }
+  });
+
+  it("gerçek 2.0.26 verisi, açılıştaki bekleyen dondurma: sürerken iki yol aynı (kural farkı henüz yok); bitince arka plan taraması ATLANMADAN yeniden koşar ve kural farkını görür", { timeout: 180_000 }, async () => {
+    // 2.5.0 Ç5-A tur 1c (docs/erp/C5-ACILIS-TASARIM.md §13): ön koşullar ürünün YALNIZ TEST kancasıyla (__testFreezeHook "before-done": dondurma son adımında tutulur) —
+    // uyku / süre yok (ders 20). Sürerken: kapsam boş → "Kural Değişikliği Farkı" denetimi yok (C3 §8); bitince: donmuş 2.4.9 ↔ güncel 2.5.0-defter farkı görünür.
+    const name = "surum-2.0.26-zincir";
+    const fixture = unpackFixture(name);
+    let server = null;
+    let release = () => {};
+    const opened = new Promise(resolve => {
+      release = resolve;
+    });
+    let reached = () => {};
+    const atGate = new Promise(resolve => {
+      reached = resolve;
+    });
+    const hook = {
+      async fn(phase) {
+        if (phase !== "before-done") return;
+        reached();
+        await opened;
+      },
+    };
+    const codes = result => result.checks.map(item => item.code);
+    try {
+      server = await bootVersion(CURRENT, { dataDir: fixture.dataDir, backupDir: fixture.backupDir, maxCompanies: 10, now: `${readFixture(name).oncesi.today}T12:00:00+03:00`, integrityScan: false, __testFreezeHook: hook });
+      const { integrity } = server.app;
+      const snapshots = server.app.ledger.snapshots;
+      await within(atGate, "dondurmanın son adıma (before-done) gelmesi", () => ({ ...snapshots.state(), freeze: snapshots.status() }));
+      assert.ok(snapshots.state().pending, "ön koşul: açılışın bekleyen dondurması sürüyor");
+      const during = await integrity.scanInBackground();
+      assert.ok(during.result, JSON.stringify(during));
+      assert.equal(integrity.lastScan.via, "worker");
+      const duringInline = integrity.scan();
+      assert.ok(snapshots.state().pending, "ön koşul iki tarama boyunca sürdü");
+      assert.equal(signatureOf(during.result), signatureOf(duringInline.result), "dondurma sürerken iki yol aynı sonucu vermeli");
+      assert.ok(!codes(during.result).includes("ledger:rule-diff"), "donmuş dönem yokken kural farkı denetimi listede yok (C3 §8 kapsam)");
+      release();
+      await within(snapshots.runPending(), "bırakılan dondurmanın bitmesi", () => ({ ...snapshots.state(), freeze: snapshots.status() }));
+      assert.equal(snapshots.state().pending, null, "dondurma bitti");
+      const after = await integrity.scanInBackground();
+      assert.ok(after.result, `dondurmadan sonra arka plan taraması atlanmamalı: ${JSON.stringify(after)}`);
+      const afterInline = integrity.scan();
+      assert.equal(signatureOf(after.result), signatureOf(afterInline.result), "dondurmadan sonra iki yol aynı sonucu vermeli");
+      const ruleDiff = after.result.checks.find(item => item.code === "ledger:rule-diff");
+      assert.ok(ruleDiff && ruleDiff.ok === false && ruleDiff.count > 0, `Ç5-A'nın kural farkı görünmeli: ${JSON.stringify(ruleDiff)}`);
+      assert.equal(after.result.checks.length, during.result.checks.length + 1, "fark yalnız Kural Değişikliği Farkı satırı");
+    } finally {
+      release();
       await server?.close().catch(() => {});
       fixture.cleanup();
     }

@@ -1,0 +1,55 @@
+▶ Alacak Yaşlandırma — carisiz evrak girmez, carili evrak carisinin satırında (S49 = A, MM5)
+  ✔ hazırlık: bütün istekler kabul edildi (ders 3) (0.639432ms)
+  ✖ ekran: carisiz evrak (keşidecili, '—', Excel'in eşleşmeyen satırı) satır DEĞİL; carinin satırı = bakiye + carili portföy; TOPLAM = satırlar (9.578468ms)
+  ✖ PDF ve Excel aynı: carisiz keşideci adları yok, carinin satırı ve TOPLAM ekranla aynı (ders 11) (15.288264ms)
+  ✔ carili evrak carisinin satırında KALIR (karşı mutant: carili evrak da düşerse satır bakiyeye iner) (6.513951ms)
+✖ Alacak Yaşlandırma — carisiz evrak girmez, carili evrak carisinin satırında (S49 = A, MM5) (476.928965ms)
+ℹ tests 4
+ℹ suites 1
+ℹ pass 2
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 754.959844
+
+✖ failing tests:
+
+test at test/yaslandirma-carisiz-evrak-250.test.mjs:46:3
+✖ ekran: carisiz evrak (keşidecili, '—', Excel'in eşleşmeyen satırı) satır DEĞİL; carinin satırı = bakiye + carili portföy; TOPLAM = satırlar (9.578468ms)
+  AssertionError [ERR_ASSERTION]: satırlar: [["Ayla Müşteri","1.750,00 TL"],["—","200,00 TL"],["Eski Borçlu","250,00 TL"],["Tanımsız Keşideci","450,00 TL"]]
+  + actual - expected
+  
+    [
+      'Ayla Müşteri',
+  +   'Eski Borçlu',
+  +   'Tanımsız Keşideci',
+  +   '—'
+    ]
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1by-tur1/test/yaslandirma-carisiz-evrak-250.test.mjs:52:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'Ayla Müşteri', 'Eski Borçlu', 'Tanımsız Keşideci', '—' ],
+    expected: [ 'Ayla Müşteri' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/yaslandirma-carisiz-evrak-250.test.mjs:63:3
+✖ PDF ve Excel aynı: carisiz keşideci adları yok, carinin satırı ve TOPLAM ekranla aynı (ders 11) (15.288264ms)
+  AssertionError [ERR_ASSERTION]: Excel'de carisiz evrak satırı: Tanımsız Keşideci
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1by-tur1/test/yaslandirma-carisiz-evrak-250.test.mjs:71:93)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

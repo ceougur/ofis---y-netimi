@@ -1,0 +1,32 @@
+{
+  "ad": "c5a1d-isF-esdegerlik-Europe-Istanbul",
+  "komut": "node --test --test-concurrency=1 test/defter-hiz-esdegerlik-tur1d-250.test.mjs test/defter-hiz-esdegerlik-250.test.mjs",
+  "commit": "b884ca5b5e97dd8e4cc82bdc611920f3b47e6729",
+  "dal": "worktree-agent-ac0e51d0f24e4542e",
+  "kirli": 3,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T14:17:59.582Z",
+  "sure_sn": 3.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 7,
+    "gecen": 7,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1d-kanit/2026-11-12/c5a1d-isF-esdegerlik-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac0e51d0f24e4542e",
+  "ham_cikti_sha256": "a54fed55c96772550d1e02d2321feece7b04e594466741b095676914df857e66",
+  "ham_cikti_bayt": 4821
+}

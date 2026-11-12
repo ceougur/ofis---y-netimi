@@ -30,6 +30,8 @@ const validDate = value => {
 };
 const MAX_IMPORT = 100_000;
 const PDF_ROWS = 20_000;
+/** Excel / Sheets "carilere dokunmadan" yüklenen evrakın ilk olay notu (v2.0.13'ten beri aynı metin; göç 49 eski veride işareti bundan doldurur — lib/migrations.mjs). */
+export const OPENING_PORTFOLIO_NOTE = "Açılış portföyü (Excel/Sheets)";
 const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" });
 // Geri çevrilebilir etkilerin yazılabileceği tablolar (effects_json'dan gelen ad SQL'e yalnız bu listeden girer).
 const EFFECT_TABLES = new Set(["account_entries", "plan_entries"]);
@@ -369,8 +371,9 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
       accountId = accountId || plan.accountId || "";
     } else if (!planId) planId = "";
     if (accountId && checkLinks && !accounts()?.exists?.(accountId)) throw new HttpError(400, "Seçilen cari bulunamadı; silinmiş olabilir.");
+    // 2.5.0 Ç5-A (S49 = A; BAŞ MİMAR KARARI 10.11 07:54 not (1)): carisiz evrak (cari de keşideci / lehtar adı da yok) REDDEDİLMEZ — defterde açılış değil, alınan B 101 / A 649.90,
+    // verilen B 770.90 / A 103 (Kasa'nın carisiz girişi / çıkışı gibi). 2.4.9'da 400 "Çeki kimden aldığınızı yazın ya da cari seçin." idi.
     const drawer = limited(body.drawer ?? previous?.drawer ?? "", 160, direction === "in" ? "Keşideci / borçlu" : "Lehtar");
-    if (!accountId && !drawer) throw new HttpError(400, direction === "in" ? "Çeki kimden aldığınızı yazın ya da cari seçin." : "Çeki kime verdiğinizi yazın ya da cari seçin.");
     return {
       direction,
       instrument,
@@ -444,9 +447,12 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
     const id = newId("cheque");
     const status = initialStatus(input.direction);
     const stamp = now();
+    // 2.5.0 Ç5-A (§2.5; B4; göç 49): Excel / Sheets "Açılış portföyü" (cariye işlenmeden yüklenen) evrak açılış İŞARETLİ yazılır (defter B 101 / A 519 — M-08 / M-09); işaret
+    // kilit izine girmez (para alanı değil; LOCK_SQL_VERSION değişmez).
     store.run(
-      "INSERT INTO cheques (id, direction, instrument, serial_no, bank, drawer, account_id, plan_id, amount, issue_date, due_date, status, status_date, note, invoice_id, bank_account_id, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO cheques (id, direction, instrument, serial_no, bank, drawer, account_id, plan_id, amount, issue_date, due_date, status, status_date, note, invoice_id, bank_account_id, created_by, created_at, updated_at, is_opening) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       id, input.direction, input.instrument, input.serialNo, input.bank, input.drawer, input.accountId, input.planId, input.amount, input.issueDate, input.dueDate, status, input.issueDate, input.note, invoiceId, input.bankAccountId || "", user.id, stamp, stamp,
+      eventNote === OPENING_PORTFOLIO_NOTE ? 1 : 0,
     );
     const cheque = { id, ...input, status };
     const kind = initialEvent(input.direction);
@@ -615,6 +621,20 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
         if (!endorseAccountId) throw new HttpError(400, "Çeki kime ciro ettiğinizi seçin (tedarikçi carisi).");
         if (!accounts()?.exists?.(endorseAccountId)) throw new HttpError(400, "Seçilen cari bulunamadı; silinmiş olabilir.");
         if (endorseAccountId === cheque.accountId) throw new HttpError(400, "Çek, alındığı cariye ciro edilemez; iade için “Karşılıksız / iade” kullanın.");
+      }
+      // 2.5.0 Ç5-A (S48 = A: açılış evrakı; S66 = A: formdan carisiz evrak — kâhin bakımı 2 KARARLAR D4′): CARİSİZ alınan evrak karşılıksız dönünce program cariyi sorar
+      // (karşılıksız penceresinde isteğe bağlı cari). Seçilirse evrak o cariye bağlanır ve cari KARŞILIKSIZ GÜNÜ borçlanır (B CH / A 101 — öteki karşılıksızlarla aynı;
+      // evrakın alışı cariye işlenmemiş kalır: açılışta 519, formdan alınmışsa 649.90). Seçilmezse açılış evrakında B 519 / A 101 ("açılış geri alınmış"), formdan
+      // carisizde B 649.90 / A 101 (S49 geliri geri alınır) — routes/ledger.mjs free-bounce. Carili evrakta alan yok sayılmaz: reddedilir (yanlış cariye borç yazılmasın).
+      if (action === "bounce" && text(body.accountId)) {
+        const chosen = text(body.accountId).slice(0, 120);
+        if (cheque.direction !== "in" || cheque.accountId || cheque.planId) {
+          if (chosen !== cheque.accountId) throw new HttpError(400, "Bu evrak bir cariye bağlı; karşılıksızda cari değiştirilemez.", { code: "cheque-bounce-account" });
+        } else {
+          if (!accounts()?.exists?.(chosen)) throw new HttpError(400, "Seçilen cari bulunamadı; silinmiş olabilir.");
+          store.run("UPDATE cheques SET account_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", chosen, user.id, now(), cheque.id);
+          cheque.accountId = chosen;
+        }
       }
       const history = eventsOf(cheque.id);
       const receiveEffects = effectsOf(history.find(event => event.kind === "receive"));
@@ -786,7 +806,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
     const post = body.post === true;
     const cell = (row, index) => (index >= 0 ? sanitizeCell(row[index]) : "");
     const rows = matrix.slice(headerAt + 1, headerAt + 1 + MAX_IMPORT);
-    const report = { created: 0, skipped: [], skippedTotal: 0, linked: 0, posted: 0, closed: 0, truncated: Math.max(0, matrix.length - headerAt - 1 - MAX_IMPORT) };
+    const report = { created: 0, ids: [], skipped: [], skippedTotal: 0, linked: 0, posted: 0, closed: 0, truncated: Math.max(0, matrix.length - headerAt - 1 - MAX_IMPORT) };
     const skip = (index, reason) => {
       report.skippedTotal += 1;
       if (report.skipped.length < 500) report.skipped.push({ row: headerAt + index + 2, reason });
@@ -835,8 +855,10 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
         const lock = period?.lockedUntil?.() || "";
         if (lock && issue <= lock) return skip(index, `${issueLabel} (${dayText(issue)}) kapatılmış (kilitli) dönemde; ${dayText(lock)} ve öncesine evrak girilmez`);
         const input = { direction, instrument, amount: roundMoney(amount), issueDate: issue, dueDate: due, accountId, planId: "", itemId: "", drawer, serialNo, bank, note: cell(row, col.note).slice(0, 500) };
-        const created = insertCheque(user, input, { post: post && Boolean(accountId), eventNote: post && accountId ? "" : "Açılış portföyü (Excel/Sheets)" });
+        const created = insertCheque(user, input, { post: post && Boolean(accountId), eventNote: post && accountId ? "" : OPENING_PORTFOLIO_NOTE });
         report.created += 1;
+        // 2.5.0 Ç5-A: açılan evrakların kimlikleri (ilk 500; yanıta ek alan — kâhin sürücüsü ve ekran karşılıksız / açılış evrakını bununla bulur).
+        if (report.ids.length < 500) report.ids.push(created.id);
         if (accountId) report.linked += 1;
         if (created.effects.length) report.posted += 1;
       });

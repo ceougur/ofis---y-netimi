@@ -1,0 +1,22 @@
+#!/bin/bash
+# Ç5-A tur 1d İş E (c): defter / mizan / dondurma / Mutabakat Testi ekranlarına dokunan e2e senaryoları (tarama: e2e-liste.txt + Ç5-A'nın kendi iki senaryosu + run.mjs).
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-ac0e51d0f24e4542e
+O=$S/c5a1d-is/e2e
+K=$S/c5a1d-kanit/2026-11-12/c5a1d-isE-e2e.txt
+mkdir -p $O
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194
+cd $W || exit 1
+LIST=$( (cat $S/c5a1d-is/e2e-liste.txt; echo test/e2e/senaryo-defter-turu-250.mjs; echo test/e2e/senaryo-ekstre-ayrinti-245.mjs; echo test/e2e/run.mjs) | sort -u)
+pass=0; fail=0
+echo "e2e · commit $(git rev-parse --short HEAD) · $(date -u +%H:%M:%S) · başta $(cat /proc/loadavg)" > $K
+for f in $LIST; do
+  n=$(basename $f .mjs)
+  TZ=Europe/Istanbul timeout -k 5 1200 node --disable-warning=ExperimentalWarning $f > $O/$n.out 2>&1
+  rc=$?
+  last=$(grep -vE '^\s*$' $O/$n.out | tail -1 | cut -c1-220)
+  echo "$n · çıkış $rc · $last" >> $K
+  if [ $rc = 0 ]; then pass=$((pass+1)); else fail=$((fail+1)); fi
+done
+echo "[e2e özet] $((pass+fail)) senaryo · geçen $pass · düşen $fail · $(date -u +%H:%M:%S) · sonda $(cat /proc/loadavg)" >> $K
+echo bitti

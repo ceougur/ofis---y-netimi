@@ -38,6 +38,7 @@ import { compareVersions } from "./semver.mjs";
 import { CHEQUE_BOND_BAD, createScopedGate, familyOf } from "./integrity-scope.mjs";
 import { runScanWorker } from "./integrity-scan-runner.mjs";
 import { cashBeforeOpening, cashRestoreMark } from "./cash-opening.mjs";
+import { ledgerBalanceOf, openingCounterpart, unlockedPastYears } from "./ledger-opening.mjs";
 import { systemClock } from "./clock.mjs";
 import { roundMoney, toCents } from "./money.mjs";
 
@@ -479,13 +480,34 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
         if (!entry.id.startsWith("stock-open:")) continue;
         seen.add(entry.id);
         const value = want.get(entry.id);
+        // 2.5.0 Ç5-A (M-07; C5-ACILIS-TASARIM §2.8): karşı hesap 519 (2.4.9: 500).
         const debit = entry.lines.filter(line => line.account === "153").reduce((sum, line) => sum + line.debit - line.credit, 0);
-        const credit = entry.lines.filter(line => line.account === "500").reduce((sum, line) => sum + line.credit - line.debit, 0);
-        const other = entry.lines.some(line => line.account !== "153" && line.account !== "500");
-        if (value === undefined || debit !== value || credit !== value || other) wrong.push(`${entry.id}: defter 153 ${debit / 100} / 500 ${credit / 100} · hareket ${value === undefined ? "yok" : value / 100}`);
+        const credit = entry.lines.filter(line => line.account === "519").reduce((sum, line) => sum + line.credit - line.debit, 0);
+        const other = entry.lines.some(line => line.account !== "153" && line.account !== "519");
+        if (value === undefined || debit !== value || credit !== value || other) wrong.push(`${entry.id}: defter 153 ${debit / 100} / 519 ${credit / 100} · hareket ${value === undefined ? "yok" : value / 100}`);
       }
       for (const [id, value] of want) if (value && !seen.has(id)) wrong.push(`${id}: hareket ${value / 100} · defterde yok`);
-      checks.push({ code: "stock:opening", name: "Açılış Stoku ↔ Ana Defter (B 153 / A 500)", ok: wrong.length === 0, count: wrong.length, sample: wrong.slice(0, 5) });
+      checks.push({ code: "stock:opening", name: "Açılış Stoku ↔ Ana Defter (B 153 / A 519)", ok: wrong.length === 0, count: wrong.length, sample: wrong.slice(0, 5) });
+    }
+    // 2.5.0 Ç5-A (C5-ACILIS-TASARIM §2.8; BAŞ MİMAR KARARI B2): "Açılış Karşılığı" — 519 = −(Σ modül açılışları) + fiş satırlarının 519'u, 500 = fiş satırlarının 500'ü; ikinci
+    // yükleyici modüllerin kendi tablolarından (lib/ledger-opening.mjs openingCounterpart; journal() okunmaz). `expected()`'e GİRMEZ (K6 fiş koruması ve Kural Farkı fişi — §3.4).
+    // YALNIZ tam taramada (açılış, Mutabakat Testi, arka plan taraması, Defter Mutabakatı); COMMIT kapısında yok. Kullanılmayan veride (açılışsız, fişsiz) denetim listede yok.
+    if (lastEntries && !touched) {
+      const want = openingCounterpart(store);
+      const got = { 519: ledgerBalanceOf(lastEntries, "519"), 500: ledgerBalanceOf(lastEntries, "500") };
+      if (want[519] || want[500] || got[519] || got[500]) {
+        for (const code of ["519", "500"]) {
+          const difference = got[code] - want[code];
+          checks.push({ code: `opening:${code}`, name: `Açılış Karşılığı (${code} ${code === "519" ? "Eşleştirilecek Açılış Bakiyeleri = Kasa, cari, banka, stok, taksit ve evrak açılışları + fişler" : "Sermaye = fişler"})`, ok: difference === 0, count: difference === 0 ? 0 : 1, difference: roundMoney(difference / 100), ledger: roundMoney(got[code] / 100), subledger: roundMoney(want[code] / 100), ...(code === "519" ? { parts: want.parts } : {}) });
+        }
+      }
+      // S53 = A (C5-ACILIS-TASARIM §3.5; K8-4 "yalnız bilgi"): kilitsiz geçmiş yıl yeni kuralla hesaplandı — BİLGİ satırı: ok true (sapma da uyarı da değil; Mutabakat Testi'nin
+      // sonucunu, "N denetim tamam"ı bozmaz, zil / tarama günlüğü üretmez — notice DEĞİL). Defter Mutabakatı'nda adıyla ve önerisiyle görünür ("Tutarlı"). Tur 2'nin ekranı
+      // (ya da rapor merkezinde ayrı bir "Bilgi" durumu) bu satırı `info` alanıyla ayırabilir.
+      const years = unlockedPastYears(lastEntries, { lock: period()?.lockedUntil?.() || "", today: period()?.today?.() || now.today() });
+      if (years.length) {
+        checks.push({ code: "ledger:unlocked-years", name: `Kilitlenmemiş Geçmiş Yıl (${years.join(", ")}) Yeni Kuralla Hesaplandı — Beyan Edildiyse Yılı Kilitleyin`, ok: true, count: 0, info: true, years, hint: `Dönem kilidi konmamış geçmiş yıl (${years.join(", ")}) 2.5.0'ın açılış kurallarıyla hesaplandı (açılış karşı hesabı 519, açılış çekleri ve Excel taksit kartları gelir / gider değil). O yılın beyannamesi verildiyse Yönetim → Dönem Kilidi ile yılı kilitleyin; kilitli dönemin defteri değişmez.` });
+      }
     }
     // Kuruş ve işaret: 12,345 TL ya da −5 TL gibi tutar yok.
     for (const [table, column, where] of AMOUNT_COLUMNS) {
@@ -809,6 +831,11 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
   // Sapmanın kimliği: hangi denetim, ne kadar/kaç satır. Aynı sapma sürüyorsa işlem engellenmez; yenisi ya da büyüyeni engellenir.
   // gateCount (G4): eski sürümden kalan satırları taşıyan denetimlerde kapının saydığı (yeni) satırlar; sonuçta count hepsidir.
   const signature = item => `${item.code}|${roundMoney(item.difference || 0)}|${item.gateCount ?? item.count ?? 0}`;
+  // Sapma kümesi (taban, açılış günlüğü, taramanın "yeni sapma"sı, zil): uyarı (notice; Ç5-K tur 2) ve 2.5.0 Ç5-A tur 1d'den "Kural Değişikliği Farkı" (ledger:rule-diff)
+  // DIŞINDA. Kural farkı UYARIDIR, sapma değil (C3 §8; BAŞ MİMAR KARARI 12.11): kural sürümle değişir; kilitli veride açılışın bekleyen dondurması bitince (taban dondurmadan
+  // ÖNCE alınır) ilk tarama onu "kapının görmediği yeni sapma" sayıyordu. Denetim satırı (Mutabakat Testi, Defter Mutabakatı, Kural Değişikliği Farkı raporu) aynen kalır;
+  // kilitli dönemin kapı dışı değişikliği kendi denetimleriyle (period-lock, ledger:snapshot) sapma olarak bulunur. docs/erp/C5-ACILIS-TASARIM.md §14.
+  const driftsOf = failures => failures.filter(item => !item.notice && item.code !== "ledger:rule-diff");
   let baseline = new Set();
   let pending = null;
   let pendingDecision = null;
@@ -839,8 +866,8 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     legacyMethod = measureLegacyMethod();
     measureLegacyBank();
     const result = run();
-    // 2.5.0 Ç5-K tur 2: uyarı (notice) sapma değildir — taban, açılış günlüğü ve sunucu günlüğü yalnız sapmaları taşır.
-    const drifts = result.failures.filter(item => !item.notice);
+    // 2.5.0 Ç5-K tur 2: uyarı (notice) sapma değildir — taban, açılış günlüğü ve sunucu günlüğü yalnız sapmaları taşır (Ç5-A tur 1d: kural farkı da — driftsOf).
+    const drifts = driftsOf(result.failures);
     baseline = new Set(drifts.map(signature));
     baselineFamilies = familiesOf(baseline);
     legacyRows = measureLegacyRows(baseline);
@@ -1006,7 +1033,8 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     }
     // 2.5.0 Ç5-K tur 2: uyarı (notice; "Kasa Açılışından Önce Tarihli Hareket") yeni sapma sayılmaz. Birleşik tur 6 (DK-D2T3 ORTA-1): uyarının AÇIKLANAMAYAN artışı
     // (noticeGrowth) günlüğe ve zile "uyarı arttı (kapının görmediği yazım)" diye yazılır; azalma ve ilk görünüş sessiz.
-    const drifts = result.failures.filter(item => !item.notice);
+    // Ç5-A tur 1d: kural farkı (ledger:rule-diff) da yeni sapma sayılmaz (driftsOf).
+    const drifts = driftsOf(result.failures);
     const current = new Set(drifts.map(signature));
     const fresh = drifts.filter(item => !known.has(signature(item)));
     known = current;

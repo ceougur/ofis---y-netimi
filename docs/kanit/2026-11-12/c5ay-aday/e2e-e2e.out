@@ -1,0 +1,71 @@
+
+> destekofis@2.4.9 test:e2e
+> node --disable-warning=ExperimentalWarning test/e2e/run.mjs
+
+DestekOfis e2e — http://127.0.0.1:38175
+  ✓ giriş ekranı açılır, hatalı parola reddedilir (955 ms)
+  ✓ yönetici giriş yapar, uygulama ve operasyon kartı yüklenir (548 ms)
+  ✓ ücretsiz deneme program açılınca kendiliğinden başlar; lisans ekranı sadeleşir (2047 ms)
+  ✓ veri yokken ortada 'başlayalım' kartı; paketin yükleme düğmeleri gizli (191 ms)
+  ✓ Excel başlangıç kartından yüklenir ve ofisin kalıcı verisi olur (1308 ms)
+  ✓ akıllı analiz ekranı adım adım açılır; sektör önerisi kanıtıyla gelir, kendiliğinden uygulanmaz (4067 ms)
+  ✓ sektör seçici: kelimeyle aranır, klavyeyle gezilir, Esc ile kapanır (678 ms)
+  ✓ öneri onaylanınca görünüm sektör diline geçer; göstergeler kolon adlarıyla (699 ms)
+  ✓ kolon genişliği başlığın kenarından sürüklenir, hatırlanır; çift tık otomatik genişliğe döndürür (802 ms)
+  ✓ akıllı özet kartı tıklanınca kayıt listesi açılır; kayda gidilir ve satır belirginleşir (900 ms)
+  ✓ kartın 'Nasıl hesaplandı?' açıklaması ve dağılımdan kayıt listesi (1190 ms)
+  ✓ başlık kalemle değiştirilir, kalıcıdır ve varsayılana döndürülebilir; ana ekranda 'Dosya özeti' bloğu yok (v2.0.10) (1699 ms)
+  ✓ satırlar sunucu kimliği taşır, sayfalama 20 satır gösterir (171 ms)
+  ✓ sekmeler kendi kolonlarıyla; arama tüm sekmeleri sayar, Enter başka sekmedeki kayda gider (1632 ms)
+  ✓ hücre düzenlenir; tablo yenilenir ve seçim korunur (1097 ms)
+  ✓ satır silinir ve geri alınır (899 ms)
+  ✓ yeni kayıt açık sekmenin kolonlarıyla oluşturulur, o sekmede en üste gelir ve seçilir (796 ms)
+  ✓ dosyaya not eklenir; işlem geçmişinde işlemi yapanla görünür (1568 ms)
+  ✓ eski kayıt tahsilatı (en altta) düzeltilmez, silinir; kasaya düşer, kasadan ödeme girilir (3270 ms)
+  ✓ taksitler (v2.0.4): kart açılır, taksitler dağıtılır, tahsilat kalanı düşürür ve kasaya iner (6609 ms)
+  ✓ taksit kartı tablodaki kayda bağlanır; kişinin kartından taksit tahsilatı taksitten düşer ve Kasa'ya tek kayıt iner (v2.0.6) (4846 ms)
+  ✓ Cari (2.0.18): Tablodan Al yok; cariler Excel yükleme ucuyla açılır (kayda bağ yok), cari tahsilatı Kasa'ya düşer; taksitli caride tahsilat taksite yazılır (2539 ms)
+  ✓ Stok (v2.0.6): ürün açılır, çıkışla kritik seviyeye iner (rozet), Kasa'dan ödenen giriş Kasa'ya gider olarak düşer (4237 ms)
+  ✓ ANLIK DURUM (v2.0.7): kart canlı; arayüzden tahsil edilen çek Kasa'yı anında değiştirir; Rapor Al, nakit akışı grafiği, rapor merkezi PDF/Excel; kart küçülür ve öyle kalır (5933 ms)
+  ✓ detaydaki 'Notu Kaydet' merkezi sunucuya yazılır (1213 ms)
+  ✓ 2.4.5 uyarı kapısı: tablodaki ödeme sözleri şeritte, takvimde, Vade Takip ve Nakit Akış'ta yok; Tablo / Ödeme Sözü seçenekleri yok (539 ms)
+  ✓ yönetici personel hesabı oluşturur (yönetim paneli) (830 ms)
+  ✓ yönetim panelinde yedek alınır ve geçmiş listelenir (340 ms)
+  ✓ yönetim panelinde ofis adı kaydedilir, bağlantı adresleri listelenir (315 ms)
+  ✓ yeni personel ilk girişte parolasını değiştirmek zorunda (1176 ms)
+  ✓ personel aynı merkezi tabloyu ve notları görür (212 ms)
+  ✓ operasyon merkezi düğme adları köşedeki kalemle değişir; tüm bilgisayarlara yansır, personel kalemi görmez (2248 ms)
+  ✓ personel kaynak menülerini göremez, satır silemez (720 ms)
+  ✓ ANLIK DURUM kartı yalnız yöneticide (v2.0.10); yetki panelinden 'Finans raporları' verilince personelde Raporlar sayfa yenilenmeden açılır, kart açılmaz; geri alınınca kapanır (1622 ms)
+  ✓ yönetici görev atar, personel sayfayı yenilemeden rozet ve bildirim alır, tamamlar (2034 ms)
+  ✓ sohbet: özel mesaj anında gelir, okundu görünür, dosya numarası dosyayı açar (2445 ms)
+  ✓ alt tablolu Excel 'yerine koy' ile yüklenir; sekme içindeki tablolar kendi kolonlarıyla bölüm olur (6790 ms)
+  ✓ yeni ay dosyası 'devamı olarak' eklenir: yeniler eklenir, değişen güncellenir, olmayan korunur (1297 ms)
+  ✓ farklı konudaki Excel yeni sayfada açılır; adı şeritte değişir, sayfalar arasında geçilir, diğer kullanıcının ekranı değişmez (8286 ms)
+  ✓ oturum kapanınca giriş ekranı ofis adıyla gelir (316 ms)
+  ✓ v1.0.0 tarayıcısındaki kaynak ve notlar ilk girişte ofise taşınır (1652 ms)
+  ✓ hukuk dışı veri: klinik tablosu Klinik önerir; seçilince dil 'hasta'ya döner, haciz gizlenir (7172 ms)
+  ✓ okul servisi: sektör tanınır; ödenmeyen aylar şeritte ve sağ alt bildirimde; pilden tahsilat girilince pil kaybolur; belge son günleri zilde; kasa aralığı PDF iner (20526 ms)
+  ✓ Excel açılır listeleri tarayıcıda okunur; kartta ▾ ile seçilir; gizli liste sayfası sekme olmaz; kendi sektörü oluşturulur (8209 ms)
+  ✓ formüllü Excel: detay kartında taksit girilince Kalan ve Durum yeniden hesaplanır (8641 ms)
+  ✓ akıllı denetim öneriyle düzeltir; belge eklenir ve önizlenir; kolon adlandırılır; Excel'e aktarılır (14189 ms)
+2026-11-12T17:42:16.197Z [WARN] Analiz ana iş parçacığında yeniden hesaplanıyor Error: Sunucu kapanıyor
+    at Object.close (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag/server/lib/insight/worker.mjs:101:18)
+    at Object.close (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag/server/app.mjs:1444:28)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag/test/e2e/run.mjs:1731:7
+    at async step (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag/test/e2e/run.mjs:65:5)
+    at async file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag/test/e2e/run.mjs:1640:3
+  ✓ serbest sayfa: '+ Sayfa' ile açılır; Excel gibi yazılır, geçince kaydedilir; formül, alt toplam, detay kartı ve geri alma çalışır (10082 ms)
+  ✓ denemenin 3. gününde yöneticiden firma bilgisi istenir; gönderilince bir daha sorulmaz (6985 ms)
+  ✓ deneme süresi dolunca program durur: şerit, açıklama, yazma engeli; lisans anahtarıyla kaldığı yerden devam eder (4158 ms)
+  ✓ tarayıcı konsolunda hata ve CSP ihlali yok (0 ms)
+
+50 adım başarılı.
+npm notice
+npm notice New major version of npm available! 10.9.9 -> 12.2.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2
+npm notice To update run: npm install -g npm@12.2.2
+npm notice
+
+[kanit] c5ay-aday-e2e-e2e: GEÇTİ · çıkış 0 · 50/50 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit ea04863 +1 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v22.23.4

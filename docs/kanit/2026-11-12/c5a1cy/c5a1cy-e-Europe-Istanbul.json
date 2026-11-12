@@ -1,0 +1,32 @@
+{
+  "ad": "c5a1cy-e-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/acilis-519-250.test.mjs test/ekstre-ayrinti-245.test.mjs test/hesap-plani-sinif-250.test.mjs test/donmus-defter-250.test.mjs test/donmus-defter-tur1-250.test.mjs test/s127-tek-kez-250.test.mjs test/yaslandirma-carisiz-evrak-250.test.mjs test/defter-hiz-esdegerlik-250.test.mjs test/banka-210-gg-tarama.test.mjs",
+  "commit": "595abf87ff58779b48d2162d55a614ba88d6cd0e",
+  "dal": "sinama-c5a1c",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T12:27:26.437Z",
+  "sure_sn": 37.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 76,
+    "gecen": 76,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../c5a1cy-kanit/2026-11-12/c5a1cy-e-Europe-Istanbul.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag",
+  "ham_cikti_sha256": "545d1e82112cd7c16eea88a3b9d2db16ab2ef83c411211565c6415d46a78ac26",
+  "ham_cikti_bayt": 34647
+}

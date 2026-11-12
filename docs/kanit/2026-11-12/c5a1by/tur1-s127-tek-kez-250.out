@@ -1,0 +1,148 @@
+▶ S127 = A — eski kuralla donmuş yılın iki yanına düşen Excel kartı bir kez yazılır (v2.4.9 gerçek koduyla üretilmiş kilitli veri)
+  ✔ v2.4.9'un kendi sayıları (kâhin): mizan 120 = müşteri carileri, Mutabakat Testi tamam, kilit 31.12.2025 (0.640993ms)
+  ✖ göç penceresi (bekleyen 2.4.9 koşusu donmadan): karma mizan 120 = cariler; sonra donma tamamlanınca da (i, ii, iii, iv, ters) (290.476864ms)
+  ✖ donmuş veri: cariler v2.4.9 ile aynı; mizan 120 = cariler; kilitli 2025 mizanı ve Yevmiye Defteri BAYT BAYT aynı; bütün zaman mizanında fark YALNIZ karar numaralı beklenen farklar (124.184369ms)
+  ✖ Kural Değişikliği Farkı yalnız gerçekten kural farkı olan hesaplarda (500 / 519 / 602); 120'de kartın çift sayımından doğan fark YOK (2.231714ms)
+  ✖ sınıflar: eski yapıya bağlı kartlar YALNIZ i / ii / ters (iii ve iv yeni kuralla); kartların yevmiye tarihleri (1.975398ms)
+  ✖ vii: kilitli Kayıt Tarihli kart silinemez / Geri Al yapılamaz (409); açık dönemdeki açılış satırı düzeltilir → 120 = cariler (103.85275ms)
+  ✔ vi: Kilidi Aç → Yeniden Kilitle — yıl GÜNCEL kuralla yeniden donar, kart yeni kuralla (yükleme günü), çift / eksik yok; kural farkı kalmaz (241.804203ms)
+✖ S127 = A — eski kuralla donmuş yılın iki yanına düşen Excel kartı bir kez yazılır (v2.4.9 gerçek koduyla üretilmiş kilitli veri) (781.700492ms)
+▶ S127 — kilitsiz v2.4.9 verisi: viii (kilitsiz, hiçbir şey eski yapıya bağlanmaz) ve v (kilit güncellemeden SONRA konur)
+  ✔ viii: kilitsiz veride bağlı kart YOK; bütün kartlar KG-5 (yükleme günü, T − P); 120 = cariler; fark yalnız KG-5 (136.255609ms)
+  ✔ v: kilit güncellemeden SONRA konur → yıl yeni kuralla donar; bağlı kart yok; 120 = cariler; kural farkı yok (212.075735ms)
+✔ S127 — kilitsiz v2.4.9 verisi: viii (kilitsiz, hiçbir şey eski yapıya bağlanmaz) ve v (kilit güncellemeden SONRA konur) (361.162603ms)
+ℹ tests 9
+ℹ suites 2
+ℹ pass 4
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1458.252316
+
+✖ failing tests:
+
+test at test/s127-tek-kez-250.test.mjs:63:3
+✖ göç penceresi (bekleyen 2.4.9 koşusu donmadan): karma mizan 120 = cariler; sonra donma tamamlanınca da (i, ii, iii, iv, ters) (290.476864ms)
+  AssertionError [ERR_ASSERTION]: göç penceresinde 120 = cariler (çift / eksik yok)
+  + actual - expected
+  
+  + 1990000
+  - 1550000
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1by-tur1/test/s127-tek-kez-250.test.mjs:75:12)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1990000,
+    expected: 1550000,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/s127-tek-kez-250.test.mjs:78:3
+✖ donmuş veri: cariler v2.4.9 ile aynı; mizan 120 = cariler; kilitli 2025 mizanı ve Yevmiye Defteri BAYT BAYT aynı; bütün zaman mizanında fark YALNIZ karar numaralı beklenen farklar (124.184369ms)
+  AssertionError [ERR_ASSERTION]: mizan 120 = müşteri carileri (S127)
+  + actual - expected
+  
+  + 1990000
+  - 1550000
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1by-tur1/test/s127-tek-kez-250.test.mjs:82:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1990000,
+    expected: 1550000,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/s127-tek-kez-250.test.mjs:103:3
+✖ Kural Değişikliği Farkı yalnız gerçekten kural farkı olan hesaplarda (500 / 519 / 602); 120'de kartın çift sayımından doğan fark YOK (2.231714ms)
+  AssertionError [ERR_ASSERTION]: [{"year":2025,"account":"120","sub":"","party":"account-0efe2889-d67e-4541-9d97-63a0e2e21d58","frozenMinor":600000,"liveMinor":0,"differenceMinor":-600000},{"year":2025,"account":"120","sub":"","party":"account-11acf4fe-6a32-44c3-affd-db41078d6246","frozenMinor":-60000,"liveMinor":240000,"differenceMinor":300000},{"year":2025,"account":"120","sub":"","party":"account-13d1e968-7a26-4890-a542-d834b161d34c","frozenMinor":0,"liveMinor":100000,"differenceMinor":100000},{"year":2025,"account":"120","sub":"","party":"account-8456b7cf-ad79-437d-98c6-e7aa2f1d0803","frozenMinor":240000,"liveMinor":0,"differenceMinor":-240000},{"year":2025,"account":"500","sub":"","party":"","frozenMinor":-1190000,"liveMinor":0,"differenceMinor":1190000},{"year":2025,"account":"519","sub":"","party":"","frozenMinor":0,"liveMinor":-1790000,"differenceMinor":-1790000},{"year":2025,"account":"602","sub":"","party":"","frozenMinor":-1040000,"liveMinor":0,"differenceMinor":1040000}]
+  + actual - expected
+  
+    [
+  +   '120',
+      '500',
+      '519',
+      '602'
+    ]
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1by-tur1/test/s127-tek-kez-250.test.mjs:106:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ '120', '500', '519', '602' ],
+    expected: [ '500', '519', '602' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/s127-tek-kez-250.test.mjs:112:3
+✖ sınıflar: eski yapıya bağlı kartlar YALNIZ i / ii / ters (iii ve iv yeni kuralla); kartların yevmiye tarihleri (1.975398ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + []
+  - [
+  -   'Kart Bir',
+  -   'Kart İki',
+  -   'Ters Kart',
+  -   'Ters Sıfır'
+  - ]
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1by-tur1/test/s127-tek-kez-250.test.mjs:113:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [],
+    expected: [ 'Kart Bir', 'Kart İki', 'Ters Kart', 'Ters Sıfır' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/s127-tek-kez-250.test.mjs:124:3
+✖ vii: kilitli Kayıt Tarihli kart silinemez / Geri Al yapılamaz (409); açık dönemdeki açılış satırı düzeltilir → 120 = cariler (103.85275ms)
+  AssertionError [ERR_ASSERTION]: düzeltmeden sonra 120 = cariler
+  + actual - expected
+  
+  + 2040000
+  - 1600000
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1by-tur1/test/s127-tek-kez-250.test.mjs:135:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2040000,
+    expected: 1600000,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+[kanit] başarısız testler (5):
+  ✖ göç penceresi (bekleyen 2.4.9 koşusu donmadan): karma mizan 120 = cariler; sonra donma tamamlanınca da (i, ii, iii, iv, ters) [test/s127-tek-kez-250.test.mjs:63:3] — AssertionError [ERR_ASSERTION]: göç penceresinde 120 = cariler (çift / eksik yok) · + actual - expected
+  ✖ donmuş veri: cariler v2.4.9 ile aynı; mizan 120 = cariler; kilitli 2025 mizanı ve Yevmiye Defteri BAYT BAYT aynı; bütün zaman mizanında fark YALNIZ karar numaralı beklenen farklar [test/s127-tek-kez-250.test.mjs:78:3] — AssertionError [ERR_ASSERTION]: mizan 120 = müşteri carileri (S127) · + actual - expected
+  ✖ Kural Değişikliği Farkı yalnız gerçekten kural farkı olan hesaplarda (500 / 519 / 602); 120'de kartın çift sayımından doğan fark YOK [test/s127-tek-kez-250.test.mjs:103:3] — AssertionError [ERR_ASSERTION]: [{"year":2025,"account":"120","sub":"","party":"account-0efe2889-d67e-4541-9d97-63a0e2e21d58","frozenMinor":600000,"liveMinor":0,"differenceMinor":-600000},{"year":2025,"account":"120","sub":"","party":"account-11acf4fe-6a32-44c3-affd-db41078d6246","frozenMinor":-60000,"liveMinor":240000,"differenceMinor":300000},{"year":2025,"account":"120","sub":"","party":"account-13d1e968-7a26-4890-a542-d834b161d34c","frozenMinor":0,"liveMinor":100000,"differenceMinor":100000},{"year":2025,"account":"120","sub":"","party":"account-8456b7cf-ad79-437d-98c6-e7aa2f1d0803","frozenMinor":240000,"liveMinor":0,"differenceMinor":-240000},{"year":2025,"account":"500","sub":"","party":"","frozenMinor":-1190000,"liveMinor":0,"differenceMinor":1190000},{"year":2025,"account":"519","sub":"","party":"","frozenMinor":0,"liveMinor":-1790000,"differenceMinor":-1790000},{"year":2025,"account":"602","sub":"","party":"","frozenMinor":-1040000,"liveMinor":0,"differenceMinor":1040000}] · + actual - expected
+  ✖ sınıflar: eski yapıya bağlı kartlar YALNIZ i / ii / ters (iii ve iv yeni kuralla); kartların yevmiye tarihleri [test/s127-tek-kez-250.test.mjs:112:3] — AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal: · + actual - expected
+  ✖ vii: kilitli Kayıt Tarihli kart silinemez / Geri Al yapılamaz (409); açık dönemdeki açılış satırı düzeltilir → 120 = cariler [test/s127-tek-kez-250.test.mjs:124:3] — AssertionError [ERR_ASSERTION]: düzeltmeden sonra 120 = cariler · + actual - expected
+
+[kanit] c5a1by-tur1-s127-tek-kez-250: BAŞARISIZ (çıkış 1; 5 başarısız, 0 iptal) · çıkış 1 · 4/9 geçti, 5 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v378 x64 · Node v22.23.4

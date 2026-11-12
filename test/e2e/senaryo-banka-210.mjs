@@ -358,7 +358,8 @@ try {
     ok(garanti?.glSub === "102.02" && garanti.balanceMinor === 5_000_000 && garanti.balanceConfirmed && garanti.policy === "warn", "kabul 3–4: 102.02 = 50.000, Bakiye Doğrulandı, denetim Uyar");
     const ledger = await must("mizan", api.get("/api/workspace/ledger"));
     const bal = code => ledger.trial.accounts.find(row => row.code === code)?.balance;
-    ok(bal("102") === 150000 && bal("500") === -150000, `mizan: 102 = ${bal("102")}, 500 = ${bal("500")}`);
+    // 2.5.0 Ç5-A (G3: M-04, B3 — banka açılışının karşı hesabı türetmede 519; saklı satır kodu 500 kalır): 519 = −150.000, 500 boş.
+    ok(bal("102") === 150000 && bal("519") === -150000 && !bal("500"), `mizan: 102 = ${bal("102")}, 519 = ${bal("519")}, 500 = ${bal("500")}`);
     const integrity = await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));
     ok(integrity.ok === true, "mutabakat ok");
   });
@@ -805,7 +806,7 @@ try {
     if (net !== 0) throw new Error(`model fişi dengesiz: ${JSON.stringify(lines)}`);
   };
   // Bölüm 1 sonunda 001: Ziraat 100.000 (102.01), Garanti 50.000 (102.02), karşılığı 500.
-  book([["102.01", "D", 10_000_000], ["102.02", "D", 5_000_000], ["500", "C", 15_000_000]]);
+  book([["102.01", "D", 10_000_000], ["102.02", "D", 5_000_000], ["519", "C", 15_000_000]]); // 2.5.0 Ç5-A (G3): açılış karşı hesabı 519 (M-04)
   const ziraatMoves = [];
   const HOF_MONEY = minor => new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(minor / 100);
   const accountsNow = async () => (await must("hesaplar", api.get("/api/workspace/bank/accounts?status=all"))).accounts;
@@ -1326,7 +1327,7 @@ try {
     // Kurumsal kart (açılış borcu 5.000) ve kredi hesabı (açılış 0) — hesap formu bölüm 1'de sınandı; burada API'den, açılışları modele.
     CARD = await must("kart", api.post("/api/workspace/bank/accounts", { bankName: "Garanti BBVA", name: "Şirket Kartı", kind: "card", creditLimit: "50.000", opening: { date: "2026-10-01", amount: "5.000", confirmed: true } }));
     LOAN = await must("kredi", api.post("/api/workspace/bank/accounts", { bankName: "Garanti BBVA", name: "Ticari Kredi", kind: "loan", opening: { date: "2026-10-01", amount: "0", confirmed: true } }));
-    book([["500", "D", 500_000], [CARD.glSub, "C", 500_000]]);
+    book([["519", "D", 500_000], [CARD.glSub, "C", 500_000]]); // 2.5.0 Ç5-A (G3): kart açılış borcu B 519 / A 309 (M-05)
     await tab(admin, "accounts");
     await tab(admin, "movements");
     await admin.waitForSelector(`${bankWin} [data-act="v-other"]`);
@@ -1853,7 +1854,8 @@ try {
     // 500 −150.000 · 600 −16.666,67.
     // 2.4.3 MM4 (bilerek güncellendi; kullanıcı kararı 18.10.2026, plan §12.5 sayısının yerine): Ürün A'nın açılış stoku (10 Adet × 10.000 = 100.000)
     // Ana Defter'e açılış fişi olarak girer (B 153 / A 500) → 500 −250.000, 153 100.000 (aralıklı envanter: satış 153'ü azaltmaz). Öbür hesaplar aynı.
-    const want = { 100: 1_000_000, 102: 16_000_000, 120: 0, 153: 10_000_000, 391: -333_333, 500: -25_000_000, 600: -1_666_667 };
+    // 2.5.0 Ç5-A (G3: M-04 / M-07 — açılışların karşı hesabı 519; 500 Sermaye yalnız Açılış Eşleştirme Fişi): 519 −250.000, 500 0.
+    const want = { 100: 1_000_000, 102: 16_000_000, 120: 0, 153: 10_000_000, 391: -333_333, 500: 0, 519: -25_000_000, 600: -1_666_667 };
     const got = await trial();
     const off = Object.entries(want).filter(([code, minor]) => (got[code] || 0) !== minor);
     ok(!off.length, off.length ? `mizan modelden farklı: ${off.map(([code, minor]) => `${code} program ${(got[code] || 0) / 100} / model ${minor / 100}`).join("; ")}` : "mizan bağımsız modelle aynı (100, 102, 120, 153, 391, 500, 600)");
@@ -2726,7 +2728,7 @@ try {
   // Bu dosyanın Kabul Şirketi adım 32–40'la ilerlediği için (aynı gün) adım 16 sonu ayrıca kurulur: ayrı sunucu, boş şirket, plan
   // §12.5 ön koşulları (Ürün A 10, Ürün B 25 parasız), kabul 1–16 API'den (ekrandan sınanışı adım 26–31b); mizan EKRANDAN okunur:
   // Raporlar → Tüm Raporlar → Hesap Planı Mizanı ve Banka → Alt Hesap Mizanı. Bağımsız beklenen: plan tablosu (elle yazıldı).
-  await step("50. Kabul 1–16 sonu mizanı ekrandan: Hesap Planı Mizanı 100 = 10.000 B · 102 = 160.000 B · 120 = 0 · 391 = 3.333,33 A · 500 = 150.000 A · 600 = 16.666,67 A; Fark 0; Alt Hesap Mizanı 102.01 = 90.000, 102.02 = 70.000", async () => {
+  await step("50. Kabul 1–16 sonu mizanı ekrandan: Hesap Planı Mizanı 100 = 10.000 B · 102 = 160.000 B · 120 = 0 · 391 = 3.333,33 A · 519 = 150.000 A (2.5.0 Ç5-A: açılış karşı hesabı) · 600 = 16.666,67 A; Fark 0; Alt Hesap Mizanı 102.01 = 90.000, 102.02 = 70.000", async () => {
     const root2 = mkdtempSync(path.join(tmpdir(), "destekofis-banka-210-mizan-"));
     const app2 = createApp({ dataDir: path.join(root2, "data"), backupDir: path.join(root2, "backups"), logLevel: "warn", scheduleBackups: false, now: NOW, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f41" } });
     const base2 = `http://127.0.0.1:${(await app2.listen(0, "127.0.0.1")).port}`;
@@ -2767,7 +2769,7 @@ try {
       const at = name => screen.heads.indexOf(name);
       const tl = cell => Number(String(cell || "").replace(/[^0-9,-]/g, "").replace(",", ".")) || 0;
       // Bağımsız beklenen (plan §12.5'in 2.1.0 karşılığı; elle): bakiye ve yön.
-      const want = { 100: [10000, "Borç"], 102: [160000, "Borç"], 391: [3333.33, "Alacak"], 500: [150000, "Alacak"], 600: [16666.67, "Alacak"] };
+      const want = { 100: [10000, "Borç"], 102: [160000, "Borç"], 391: [3333.33, "Alacak"], 519: [150000, "Alacak"], 600: [16666.67, "Alacak"] }; // 2.5.0 Ç5-A (G3): 500 → 519 (M-04)
       for (const [code, [value, side]] of Object.entries(want)) {
         const row = screen.rows.find(cells => cells[0] === code);
         ok(row && tl(row[at("Bakiye")]) === value && row[at("Yön")] === side, `ekranda ${code}: ${row ? `${row[at("Bakiye")]} ${row[at("Yön")]}` : "satır yok"} (beklenen ${value} ${side})`);

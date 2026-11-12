@@ -1,0 +1,5 @@
+[mutant 1] düzeltme geri alınır (kural farkı yine sapma kümesinde) · YAKALANDI · tests 5 fail 4 · error: 'kural farkı yeni sapma sayılmamalı: ["ledger:rule-diff"]' ‖ error: 'yeniden açılışın taban satırında kural farkı olmamalı: ["İleri tarihli hareket (Çek/Senet Hareketleri)","Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi); İleri tarihli hareket (Ç
+[mutant 2] genişletme: dondurmadan sonra hiçbir şey yeni sapma sayılmaz · YAKALANDI · tests 5 fail 2 · error: 'kilitli kaynağın kapı dışı değişimi (cash-817a45b2-6565-467b-9bc7-3d6ef3a05654) bulunmalı (period-lock + ledger:snapshot): []' ‖ error: 'gerçek sapma yeni sapma olarak bulunmalı: []'
+[mutant 3] genişletme: her uyarı düzeyli denetim (severity: warning) sapma kümesinin dışında · YAKALANDI · tests 5 fail 1 · error: 'kilitli kaynağın kapı dışı değişimi (cash-817a45b2-6565-467b-9bc7-3d6ef3a05654) bulunmalı (period-lock + ledger:snapshot): ["period-lock"]' ‖ error: '1 subtest failed'
+
+[mutasyon özet] 3/3 yakalandı

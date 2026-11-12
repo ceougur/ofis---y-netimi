@@ -1,4 +1,5 @@
 // 2.4.3 göç v30 (MM4: stok açılışı işareti) — ESKİ SÜRÜMÜN GERÇEK KODUYLA üretilen veri (test kuralı): v2.4.2 etiketi açılır, API'sinden ürün kartında
+// 2.5.0 Ç5-A tur 1 — BEKLENTİ BİLEREK DEĞİŞTİ (G3: docs/erp/C5-ACILIS-TASARIM.md §2.2 / §11; KG-1, M-01 / M-04 / M-05 / M-07, B3): açılışların karşı hesabı 500 değil 519 "Eşleştirilecek Açılış Bakiyeleri" (banka fişinde saklı kod 500 kalır, türetmede 519). Tutarlar AYNI; yalnız hesap kodu.
 // açılış stoku, Excel'den ürün (miktarlı), Kasa'dan peşin İlk Alım, yalnız miktar girişi ve satış girilir; Eylül kilitlenir. Aynı veri dosyası güncel
 // kodla açılır. Beklenen (kullanıcı kararı 18.10.2026: eski verideki açılışlar da mizana gelir): programın yazdığı açılış hareketleri işaretlenir;
 // 153 ve 500 açılış toplamı kadar değişir, başka hiçbir hesap değişmez; kilit izi değişmez (kapı "kapanmış dönem" demez); Mutabakat Testi temiz
@@ -65,9 +66,10 @@ describe(`göç v30: ${OLD} verisindeki stok açılışları Ana Defter'e gelir 
       assert.deepEqual(flagged.map(row => [row.name, row.qty, row.price]), [["Masa", 4, 1250], ["Sandalye", 12, 300]], "yalnız programın yazdığı açılışlar işaretli");
       const ledger = (await api.get("/api/workspace/ledger")).data;
       const after = Object.fromEntries(ledger.trial.accounts.map(row => [row.code, row.balance]));
-      assert.equal((after["153"] ?? 0) - (before.accounts["153"] ?? 0), 8600, "153 açılış kadar arttı (kâhin 8.600)");
-      assert.equal((after["500"] ?? 0) - (before.accounts["500"] ?? 0), -8600, "500 açılış kadar azaldı");
-      for (const code of new Set([...Object.keys(before.accounts), ...Object.keys(after)])) if (!["153", "500"].includes(code)) assert.equal(after[code] ?? 0, before.accounts[code] ?? 0, `${code} değişmemeli`);
+      // 2.5.0 Ç5-A (G3: C5-ACILIS-TASARIM §2.2 + §3.1): açılışların karşı hesabı güncel kuralda 519, kilitli dönemde (göç 47 — 2.4.9 kuralı, bekleyen koşu / donmuş) 500; bu veri kilitli
+      // (30.09.2026) → 500 + 519 birlikte açılış kadar azalır; ayrım kilide bağlı (kanıt c5a1-v249: kilitli dönem bayt bayt 2.4.9).
+      assert.equal((after["500"] ?? 0) + (after["519"] ?? 0) - (before.accounts["500"] ?? 0), -8600, "500 + 519 açılış kadar azaldı");
+      for (const code of new Set([...Object.keys(before.accounts), ...Object.keys(after)])) if (!["153", "500", "519"].includes(code)) assert.equal(after[code] ?? 0, before.accounts[code] ?? 0, `${code} değişmemeli`);
       assert.equal(ledger.trial.balanced, true);
       assert.equal(lockDigestOf(current.app.store, "2026-09-30", { version: "2.4.2" }), before.digest, "kilit izi göç öncesiyle aynı");
       const stock = (await api.get("/api/workspace/stock")).data;

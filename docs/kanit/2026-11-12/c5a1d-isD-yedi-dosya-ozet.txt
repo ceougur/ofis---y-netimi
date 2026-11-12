@@ -1,0 +1,14 @@
+test/banka-220-senet-121.test.mjs · kip tut · 6 örnek · ön koşul GERÇEKLEŞTİ · test YEŞİL · tests 15 pass 15 fail 0
+test/banka-220-senet-121.test.mjs · kip bitir · 6 örnek · ön koşul GERÇEKLEŞTİ · test YEŞİL · tests 15 pass 15 fail 0
+test/banka-220-tahsile-ver.test.mjs · kip tut · 6 örnek · ön koşul GERÇEKLEŞTİ · test KIRMIZI (çıkış 1) · tests 19 pass 17 fail 2 · TypeError: fetch failed ‖   AssertionError [ERR_ASSERTION]: hesap aç Ziraat Bankası Vadeli: 409 {"ok":false,"error":"Hareket 01.10.2026 tarihli; 04.10.2026 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini a
+test/banka-220-tahsile-ver.test.mjs · kip bitir · 6 örnek · ön koşul GERÇEKLEŞTİ · test YEŞİL · tests 19 pass 19 fail 0
+test/iade-210-onarim.test.mjs · kip tut · 2 örnek · ön koşul GERÇEKLEŞMEDİ · test YEŞİL · tests 5 pass 5 fail 0
+test/iade-210-onarim.test.mjs · kip bitir · 2 örnek · ön koşul GERÇEKLEŞTİ · test YEŞİL · tests 5 pass 5 fail 0
+test/banka-210-gg-kapi.test.mjs · kip tut · 8 örnek · ön koşul GERÇEKLEŞTİ · test YEŞİL · tests 9 pass 9 fail 0
+test/banka-210-gg-kapi.test.mjs · kip bitir · 8 örnek · ön koşul GERÇEKLEŞTİ · test YEŞİL · tests 9 pass 9 fail 0
+test/banka-210-goc.test.mjs · kip tut · 3 örnek · ön koşul GERÇEKLEŞTİ · test KIRMIZI (çıkış 1) · tests 25 pass 24 fail 1 · TypeError: fetch failed
+test/banka-210-goc.test.mjs · kip bitir · 3 örnek · ön koşul GERÇEKLEŞTİ · test YEŞİL · tests 25 pass 25 fail 0
+test/fis-defteri-kayit-250.test.mjs · kip tut · 23 örnek · ön koşul GERÇEKLEŞMEDİ · test YEŞİL · tests 14 pass 14 fail 0
+test/fis-defteri-kayit-250.test.mjs · kip bitir · 23 örnek · ön koşul GERÇEKLEŞMEDİ · test YEŞİL · tests 14 pass 14 fail 0
+test/koruma-taban-ailesi-250.test.mjs · kip tut · 19 örnek · ön koşul GERÇEKLEŞTİ · test YEŞİL · tests 20 pass 20 fail 0
+test/koruma-taban-ailesi-250.test.mjs · kip bitir · 19 örnek · ön koşul GERÇEKLEŞTİ · test KIRMIZI (çıkış 1) · tests 20 pass 15 fail 5 · AssertionError [ERR_ASSERTION]: surum-2.0.24-zincir 001: tam kapıyı tetikleyen taban sapması (DÜZELTME — raporla): ledger:rule-diff→all ‖   AssertionError [ERR_ASSERTION]: surum-2.0.25-zincir 001: tam kapıyı tetikleyen taban sapması (

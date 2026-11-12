@@ -1,4 +1,5 @@
 // 2.1.0 — Aşama 3 (Banka Hesapları), dilim 1: Hesabı Atanmamış Eski Hareketler (102.00 / 108.00), "Bu Hesaba Ata", Kurulum ve Aktarım
+// 2.5.0 Ç5-A tur 1 — BEKLENTİ BİLEREK DEĞİŞTİ (G3: docs/erp/C5-ACILIS-TASARIM.md §2.2 / §11; KG-1, M-01 / M-04 / M-05 / M-07, B3): açılışların karşı hesabı 500 değil 519 "Eşleştirilecek Açılış Bakiyeleri" (banka fişinde saklı kod 500 kalır, türetmede 519). Tutarlar AYNI; yalnız hesap kodu.
 // Sihirbazı (Devir Kapanışı + eski hareketleri hesaba bağlama, geri alınabilir), Bankaya Geçmiş Say / Kart Borcuna Aktar ve Alt Hesap Mizanı
 // (docs/BANKA-MODULU-PLAN.md §3.3 op 'assign', §3.11, §5.5 kilit izi money_refs, §8.3, §10.3, §10.4, §12.3 "Aşama 3").
 //
@@ -123,7 +124,7 @@ describe("Aşama 3 — Hesabı Atanmamış Eski Hareketler ve Kurulum Sihirbazı
     const before = await balancesOf(ctx.api);
     assert.equal(before.subs["102.00"], 6000);
     assert.equal(before.trial["102"], 106000);
-    assert.equal(before.trial["500"], -100000);
+    assert.equal(before.trial["519"], -100000);
     const eventBefore = ctx.store.get("SELECT * FROM fin_events WHERE id = ?", rows.after.eventId);
     const preview = await must("önizleme", ctx.api.post(`${BANK}/setup?dryRun=1`, { accountId: ziraat.id, carryClose: true, assign: "all" }));
     assert.equal(preview.date, "2026-10-01");
@@ -147,7 +148,7 @@ describe("Aşama 3 — Hesabı Atanmamış Eski Hareketler ve Kurulum Sihirbazı
     assert.equal(mid.subs["102.01"], 102000);
     assert.equal(mid.trial["102"], 102000);
     assert.equal(mid.trial["108"] || 0, 0);
-    assert.equal(mid.trial["500"], -93000);
+    assert.equal(mid.trial["519"], -93000);
     const event = ctx.store.get("SELECT bank_ref AS ref, status FROM fin_events WHERE id = ?", rows.after.eventId);
     assert.deepEqual({ ...event }, { ref: ziraat.id, status: "active" }, "bağlanan satırın olayı hesabı gösterir");
     assert.equal(ctx.store.get("SELECT fin_ref AS ref FROM account_entries WHERE id = ?", rows.after.id).ref, ziraat.id);
@@ -243,7 +244,8 @@ describe("Aşama 3 — sihirbaz eski sürüm verisinde (v2.0.26 zincir fikstür�
       const before = { trial: await trialOf(), subs: await subsOf() };
       // Fikstürün kendi uyarıları (ör. eski sürümden kalan ileri tarihli çek hareketi; tarihi gelince kalkar) taban sayılır: sihirbaz YENİ sapma
       // üretmemeli.
-      const failuresOf = result => (result.failures || []).map(item => `${item.code}:${item.count}`).sort();
+      // 2.5.0 Ç5-A (G3: §3.1): eski sürüm fikstürünün kilitli dönemi 2.4.9 kuralıyla donar → "Kural Değişikliği Farkı" uyarısı (arkada dondurma bitince); sapma karşılaştırmasının dışında.
+      const failuresOf = result => (result.failures || []).filter(item => item.code !== "ledger:rule-diff").map(item => `${item.code}:${item.count}`).sort();
       const baseline = failuresOf(await okData("Mutabakat Testi (taban)", api.get("/api/workspace/ledger/integrity")));
       const account = await okData("hesap", api.post(`${BANK}/accounts`, { bankName: "Ziraat Bankası", name: "Eski Veri Hesabı", kind: "demand", opening: { date: today, amount: "10.000", confirmed: true } }));
       assert.ok(!lock || today > lock);

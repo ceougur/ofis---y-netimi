@@ -50,6 +50,7 @@ import { registerAccountRoutes } from "./routes/accounts.mjs";
 import { registerStockRoutes } from "./routes/stock.mjs";
 import { registerChequeRoutes } from "./routes/cheques.mjs";
 import { registerDoubtfulRoutes } from "./routes/doubtful.mjs";
+import { registerOpeningReviewRoutes } from "./routes/opening-review.mjs";
 import { registerTaxRoutes } from "./routes/tax.mjs";
 import { registerInvoiceRoutes } from "./routes/invoices.mjs";
 import { registerOverviewRoutes } from "./routes/overview.mjs";
@@ -541,6 +542,7 @@ function buildApp(overrides, opening) {
   context.accounts = registerAccountRoutes(router, { ...context, plans: () => context.plans, cheques: () => context.cheques, invoices: () => context.invoices, bankModule: () => context.bankAccounts?.module, doubtful: () => context.doubtful });
   // Şüpheli Ticari Alacaklar (2.3.0 İz 1; plan §3.11b): cari kartının 128/129 işlemleri; cari servisine (bakiye, Değersiz Alacak satırı) istek anında ulaşır.
   context.doubtful = registerDoubtfulRoutes(router, { ...context, accounts: () => context.accounts, bankModule: () => context.bankAccounts?.module });
+  context.openingReview = registerOpeningReviewRoutes(router, context); // 2.5.0 Ç5-A: KG-16 "Açılış Olabilir" uçları (routes/opening-review.mjs)
   context.stock = registerStockRoutes(router, { ...context, accounts: () => context.accounts, plans: () => context.plans, bankModule: () => context.bankAccounts?.module });
   // Çek / Senet (v2.0.7): cari ve taksit defterine bağlı; Kasa tahsil/ödeme olaylarını okur.
   context.cheques = registerChequeRoutes(router, { ...context, accounts: () => context.accounts, plans: () => context.plans, bankModule: () => context.bankAccounts?.module });

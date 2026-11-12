@@ -1,0 +1,3 @@
+[zorla 1/1] test/iade-210-onarim.test.mjs · [dondurma yarışı] kip bitir · 2 örnek (açılışta bekliyor true · ilk adım yok · ilk adımda bekliyor null · ilk adımda kanca tutuyordu null · bırakma adımla false · kanca tuttu false · sonra bitti false · listen'dan önce bitti true | açılışta bekliyor false · ilk adım yok · ilk adımda bekliyor null · ilk adımda kanca tutuyordu null · bırakma adımla false · kanca tuttu false · sonra bitti false · listen'dan önce bitti false): ön koşul GERÇEKLEŞTİ · test YEŞİL · tests 5 pass 5 fail 0
+
+[zorla özet] test/iade-210-onarim.test.mjs · 1 yineleme · ön koşul gerçekleşti 1 · gerçekleşmedi 0 · ön koşullu yeşil 1 · ön koşullu kırmızı 0

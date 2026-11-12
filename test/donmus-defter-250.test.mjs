@@ -88,7 +88,8 @@ describe("2.5.0 Ç3 — donmuş defter: kilit, ilerletme, geri çekme, kural de�
 
   it("F1: kilit konunca kilit gününe kadarki türetilmiş yevmiye satır satır donar; donmuş = canlı (madde madde, mizan yıl yıl); koşu başlığı kural sürümü ve kaynak iziyle", async () => {
     assert.ok(S()?.state, "donmuş defter yok (ledger.snapshots)");
-    assert.equal(LATEST_VERSION, 47, "göç 47");
+    // 2.5.0 Ç5-A (G3): göç 48 (KG-16 adayları) ve 49 (açılış evrakı işareti) eklendi; donmuş defter tabloları göç 47'de.
+    assert.equal(LATEST_VERSION, 49, "göç 49 (donmuş defter göç 47'de; 48 / 49 Ç5-A)");
     const live = L().build();
     const result = await lock(LOCK_2026);
     assert.equal(result.lockedUntil, LOCK_2026);
@@ -123,9 +124,9 @@ describe("2.5.0 Ç3 — donmuş defter: kilit, ilerletme, geri çekme, kural de�
     assert.deepEqual(L().check({ from: "2026-01-01", to: "2026-12-31", book: true }).trial, trialOf(live), "check(book) mizanı");
     // Aralık başından okunan donmuş yevmiye = süzülmüş karma yevmiye.
     assert.deepEqual(canon(L().book({ from: "2026-07-01", to: "2027-01-31" }).filter(entry => entry.date >= "2026-07-01" && entry.date <= "2027-01-31")), canon(live.filter(entry => entry.date >= "2026-07-01" && entry.date <= "2027-01-31")));
-    // Koşu başlığı: kural sürümü "2.5.0", neden lock, kaynak izi = kilit izinin LOCK_SQL_VERSION tanımı.
+    // Koşu başlığı: kural sürümü güncel kural ("2.5.0-defter" — 2.5.0 Ç5-A G3: B15 yeni etiket; önceden "2.5.0"), neden lock, kaynak izi = kilit izinin LOCK_SQL_VERSION tanımı.
     const run = store.get("SELECT * FROM ledger_snapshot_runs WHERE kind = 'freeze' AND state = 'done' ORDER BY no DESC LIMIT 1");
-    assert.equal(run.rule_version, "2.5.0");
+    assert.equal(run.rule_version, "2.5.0-defter");
     assert.equal(run.reason, "lock");
     assert.equal(run.from_date, "");
     assert.equal(run.through, LOCK_2026);
@@ -133,7 +134,7 @@ describe("2.5.0 Ç3 — donmuş defter: kilit, ilerletme, geri çekme, kural de�
     assert.equal(run.state_lines, run.line_count);
     assert.equal(run.source_digest, lockDigestOf(store, LOCK_2026, { version: run.digest_version }), "kaynak izi");
     assert.equal(store.get("SELECT COUNT(DISTINCT rule_version) AS n FROM ledger_snapshots").n, 1);
-    assert.equal(store.get("SELECT rule_version FROM ledger_snapshots LIMIT 1").rule_version, "2.5.0");
+    assert.equal(store.get("SELECT rule_version FROM ledger_snapshots LIMIT 1").rule_version, "2.5.0-defter");
     // İz: dondurma işlem geçmişinde (silme tetikleyicisinin dayanağı).
     assert.equal(store.get("SELECT COUNT(*) AS n FROM audit_events WHERE type = 'ledger.snapshot.frozen' AND entity_id = ?", `ledger-snapshot-run:${run.no}`).n, 1);
     // GET kilit ucu kapsamı gösterir; Mutabakat Testi temiz.
@@ -415,16 +416,34 @@ describe("2.5.0 Ç3 — 2.4.9 kural kopyası (dondurulmuş) ve kural tuzağı", 
     const newest = versions.sort((a, b) => key(a).localeCompare(key(b))).at(-1);
     assert.equal(integrity.LOCK_SQL_VERSION, newest, "yeni kilit izi girdisi eklenince LOCK_SQL_VERSION yükselir");
   });
-  it("kural tuzağı: güncel kural sürümü 2.5.0 iken güncel türetme = 2.4.9 kopyası (madde madde); Ç5 / Ç7 ilk kural değişikliğinde bu testi ve LEDGER_RULE_VERSION'ı bilerek değiştirir", async () => {
+  // 2.5.0 Ç5-A tur 1 — BİLEREK DEĞİŞTİ (G3: docs/erp/C5-ACILIS-TASARIM.md §3.2 + BAŞ MİMAR KARARI B15): "2.5.0" kuralı 2.4.9 kopyasının takma adıdır (Ç5-A'dan önce bu test
+  // güncel = 2.4.9'u madde madde kanıtlıyordu — o kanıt takma adın dayanağı); güncel kural "2.5.0-defter" ve 2.4.9'dan farkı YALNIZ Ç5-A kural kimliklerinde: açılış karşı hesabı
+  // 500 → 519 (M-01 / M-07 stok açılışı), açılış açıklamadan değil işaretten (P1 / M-02: işaretsiz "Açılış bakiyesi" açıklamalı Borç Yaz 500 → 602). Öbür her madde AYNEN.
+  it("kural tuzağı: güncel kural 2.5.0-defter; güncel türetme ↔ 2.4.9 kopyası farkı yalnız Ç5-A kural kimliklerinde (500 → 519 açılış, açıklamalı Borç Yaz 500 → 602); öbür maddeler aynen", async () => {
     const gl = await import("../server/lib/general-ledger.mjs");
     const rule = await import("../server/lib/ledger-rule-249/index.mjs").catch(() => null);
     assert.ok(rule?.buildRule249, "2.4.9 kural kopyası yok");
-    assert.equal(gl.LEDGER_RULE_VERSION, "2.5.0");
+    assert.equal(gl.LEDGER_RULE_VERSION, "2.5.0-defter");
+    assert.deepEqual({ ...gl.LEDGER_RULE_ALIASES }, { "2.5.0": "2.4.9" }, "2.5.0 = 2.4.9 kopyasının takma adı (B15)");
     const server = await startTestServer({ now: { time: NOW, fixed: true } });
     try {
       const admin = await loginAdmin(server);
       await seed(admin);
-      assert.deepEqual(canon(rule.buildRule249(server.app.store)), canon(server.app.ledger.build()));
+      const old = new Map(canon(rule.buildRule249(server.app.store)).map(entry => [entry.id, entry]));
+      const live = new Map(canon(server.app.ledger.build()).map(entry => [entry.id, entry]));
+      assert.deepEqual([...live.keys()].sort(), [...old.keys()].sort(), "madde kimlikleri aynı (B9: açılış sınıfı kimliği değiştirmez)");
+      const explained = [];
+      for (const [id, entry] of old) {
+        const want = structuredClone(entry);
+        // Ç5-A kural kimlikleri: stok açılışı M-07 (500 → 519); "Açılış bakiyesi" açıklamalı, açılış İŞARETSİZ Borç Yaz C-01 (500 → 602; P1 / M-02 "açıklamadan değil").
+        if (id.startsWith("stock-open:")) for (const line of want.lines) if (line[0] === "500") line[0] = "519";
+        if (id.startsWith("account:") && want.text.startsWith("Açılış")) for (const line of want.lines) if (line[0] === "500") line[0] = "602";
+        if (JSON.stringify(want) !== JSON.stringify(entry)) explained.push(id);
+        assert.deepEqual(live.get(id), want, `${id}: güncel türetme ↔ 2.4.9 farkı Ç5-A kural kimliklerinin dışında`);
+      }
+      assert.equal(explained.length, 2, `beklenen iki fark (stok açılışı + açıklamalı Borç Yaz) görülmedi: ${explained.join(", ")}`);
+      // 2.4.9 kopyası değişmedi: açılışlar orada hâlâ 500'de.
+      assert.ok([...old.values()].some(entry => entry.lines.some(line => line[0] === "500")), "2.4.9 kopyası açılışı 500'e yazmıyor");
     } finally {
       await server.close();
     }

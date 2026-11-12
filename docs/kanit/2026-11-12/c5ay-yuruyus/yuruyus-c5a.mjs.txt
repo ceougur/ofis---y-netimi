@@ -1,0 +1,188 @@
+// ANA OTURUM — Ç5-A ADAYI EKRAN YÜRÜYÜŞÜ (anayasa "kalite çıtası"; D 12.11 15:57 (4)). Kullanıcı gözüyle: carisiz evrak, karşılıksızda "Borçlanacak Cari",
+// Alacak Yaşlandırma, Yönetim → Dönem Kilidi ve Mutabakat satırı (A: yeni veri; B: kilitli ESKİ sürüm verisi — programın kendi ürettiği fikstür).
+// Kullanım: ROOT=<kod kökü> OUT=<klasör> BOLUM=A|B node yuruyus-c5a.mjs
+import fs, { mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+process.env.HUKUK_LICENSE_URL = "http://127.0.0.1:9";
+const ROOT = process.env.ROOT;
+const OUT = process.env.OUT;
+const BOLUM = process.env.BOLUM || "A";
+const imp = rel => import(pathToFileURL(path.join(ROOT, rel)).href);
+const { chromium } = await import(pathToFileURL(path.join(ROOT, "node_modules/playwright/index.mjs")).href);
+const { createClient, installPageClock } = await imp("test/helpers.mjs");
+const { escClose } = await imp("test/e2e/esc-kapat.mjs");
+const MODAL = ".hof-modal-backdrop.is-visible";
+const TOP = `${MODAL}:nth-last-child(1 of ${MODAL})`;
+const unwrap = r => (r.data && typeof r.data === "object" && "ok" in r.data ? (r.data.ok ? r.data.data : r.data) : r.data);
+const must = async (label, p) => { const r = await p; if (r.status !== 200) throw new Error(`${label}: ${r.status} ${JSON.stringify(r.data).slice(0, 300)}`); return unwrap(r); };
+const note = (...a) => console.log(...a);
+fs.mkdirSync(OUT, { recursive: true });
+const browser = await chromium.launch();
+let page = null; let n = 0; let app = null; let root = null;
+const shot = async name => { n += 1; const f = path.join(OUT, `${BOLUM}${String(n).padStart(2, "0")}-${name}.png`); await page.screenshot({ path: f }).catch(() => null); return f; };
+const closeAll = async () => { for (let i = 0; i < 6 && (await page.$(MODAL)); i += 1) { await escClose(page); await page.waitForTimeout(250); } };
+const step = async (title, fn) => { note(`\n■ ${title}`); try { await fn(); } catch (e) { note(`  ✗ ADIM YARIDA: ${String(e?.message || e).split("\n")[0]}`); await shot("hata"); await closeAll().catch(() => null); } };
+const login = async (BASE, pass) => {
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: "tr-TR", timezoneId: "Europe/Istanbul" });
+  page = await context.newPage();
+  if (app?.config?.now) await installPageClock(page, app.config.now);
+  page.on("pageerror", e => note(`  ! sayfa hatası: ${String(e.message).split("\n")[0]}`));
+  await page.goto(`${BASE}/`);
+  await page.fill("#hof-auth input[name=username]", "admin");
+  await page.fill("#hof-auth input[name=password]", pass);
+  await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
+  await page.waitForSelector("#hof-sidecard", { timeout: 60000 });
+  await page.waitForTimeout(1200);
+};
+const openReport = async match => {
+  await closeAll();
+  await page.click('#hof-sidecard [data-action="analytics"]');
+  await page.waitForSelector(`${MODAL} .hof-rep-tab[data-tab="all"]`, { timeout: 15000 });
+  await page.click(`${MODAL} .hof-rep-tab[data-tab="all"]`);
+  await page.waitForSelector(`${MODAL} [data-rc-list] [data-report]`, { timeout: 15000 });
+  const id = await page.$$eval(`${MODAL} [data-rc-list] [data-report]`, (ns, m) => ns.find(x => new RegExp(m).test(x.textContent))?.getAttribute("data-report") || null, match);
+  if (!id) throw new Error(`rapor listede yok: ${match}`);
+  await page.click(`${MODAL} [data-rc-list] [data-report="${id}"]`);
+  await page.waitForFunction(sel => { const main = document.querySelector(`${sel} [data-rc-main]`); return main && main.getAttribute("aria-busy") !== "true" && main.querySelector(".hof-rc-table, .hof-rc-summary, .hof-empty") && !/Rapor hazırlanıyor/.test(main.innerText); }, MODAL, { timeout: 30000 });
+  await page.waitForTimeout(400);
+  return id;
+};
+const tableOf = () => page.$$eval(`${MODAL} [data-rc-main] tr`, rows => rows.map(tr => [...tr.querySelectorAll("th,td")].map(td => td.textContent.replace(/\s+/g, " ").trim()).join(" | ")));
+const adminLine = async BASE => {
+  await closeAll();
+  await page.goto(`${BASE}/admin.html`, { waitUntil: "load" });
+  await page.waitForTimeout(800);
+  await page.evaluate(() => [...document.querySelectorAll("button, a")].find(x => x.textContent.trim() === "Sistem")?.click());
+  await page.waitForFunction(() => (document.querySelector("#adm-integrity-status")?.textContent || "").length > 10, null, { timeout: 60000 });
+  await page.$eval("#adm-period", node => node.scrollIntoView({ block: "center" }));
+  await page.waitForTimeout(400);
+  const out = await page.evaluate(() => ({ kilit: document.querySelector("#adm-period-status")?.textContent.replace(/\s+/g, " ").trim(), mutabakat: document.querySelector("#adm-integrity-status")?.textContent.replace(/\s+/g, " ").trim(), sinif: document.querySelector("#adm-integrity-status")?.className }));
+  note(`  Dönem kilidi: ${out.kilit}`); note(`  Mutabakat satırı [${out.sinif}]: ${out.mutabakat}`);
+  await shot("yonetim-mutabakat");
+  return out;
+};
+const bell = async () => {
+  const b = await page.evaluate(() => { const el = document.querySelector("[data-action=notifications], #hof-bell, .hof-bell"); return el ? { metin: el.textContent.replace(/\s+/g, " ").trim().slice(0, 80), ad: el.getAttribute("aria-label") } : null; });
+  note(`  zil: ${JSON.stringify(b)}`);
+};
+
+try {
+  if (BOLUM === "A") {
+    const { createApp } = await imp("server/app.mjs");
+    const PASS = "Prova-Admin-2026!"; const TODAY = "2026-10-20";
+    const day = o => { const d = new Date(`${TODAY}T00:00:00Z`); d.setUTCDate(d.getUTCDate() + o); return d.toISOString().slice(0, 10); };
+    root = mkdtempSync(path.join(tmpdir(), "yuruyus-c5a-"));
+    app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, now: `${TODAY}T12:00:00+03:00`, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0", HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f51" } });
+    const { port } = await app.listen(0, "127.0.0.1");
+    const BASE = `http://127.0.0.1:${port}`;
+    const api = createClient(BASE);
+    await api.login("admin", PASS);
+    await must("banka", api.post("/api/workspace/bank/setup/dismiss", {}));
+    const trial = async () => Object.fromEntries((await must("mizan", api.get("/api/workspace/ledger"))).trial.accounts.filter(r => Math.abs(r.balance) > 0.004).map(r => [r.code, r.balance]));
+    const musteri = await must("cari", api.post("/api/workspace/accounts", { name: "Yürüyüş Müşteri", type: "customer", registeredOn: day(-60), phone: "0500 260 11 01", openingBalance: "1.000" }));
+    note("kurulum: Yürüyüş Müşteri açılış 1.000"); note("mizan (açılıştan sonra):", JSON.stringify(await trial()));
+    const formCarisiz = await api.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", amount: "300", issueDate: day(-10), dueDate: day(30), serialNo: "YRY-CARISIZ", bank: "Akbank" });
+    note(`formdan carisiz çek (cari yok, keşideci yok): ${formCarisiz.status} ${JSON.stringify(formCarisiz.data).slice(0, 160)}`);
+    const carili = await must("carili çek", api.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", amount: "400", accountId: musteri.id, issueDate: day(-8), dueDate: day(40), serialNo: "YRY-CARILI", bank: "Akbank", drawer: "Yürüyüş Müşteri" }));
+    const roles = { 0: "direction", 1: "instrument", 2: "serial", 3: "bank", 4: "drawer", 5: "amount", 6: "due", 7: "issue" };
+    const tr = iso => iso.split("-").reverse().join(".");
+    const imported = await must("açılış portföyü", api.post("/api/workspace/cheques/import", { matrix: [["Yön", "Tür", "Seri No", "Banka", "Keşideci", "Tutar", "Vade", "Tarih"], ["Alınan", "Çek", "YRY-ACILIS", "Akbank", "Tanınmayan Keşideci", "750", tr(day(50)), tr(day(-45))]], headerAt: 0, roles, fileName: "yuruyus.xlsx", post: false }));
+    note(`açılış portföyü yüklemesi: ${JSON.stringify(imported).slice(0, 200)}`);
+    const acilisId = imported.ids?.[0]; const carisizId = unwrap(formCarisiz)?.id || unwrap(formCarisiz)?.cheque?.id;
+    note("mizan (üç evraktan sonra):", JSON.stringify(await trial()));
+    await login(BASE, PASS);
+    const CHQ = ".hof-cheques-modal";
+    const openCheques = async () => { await closeAll(); await page.click("#hof-sidecard [data-action=cheques]"); await page.waitForSelector(`${CHQ} tr[data-cheque]`, { timeout: 15000 }); await page.waitForTimeout(400); };
+    const rowsOf = () => page.$$eval(`${CHQ} tr[data-cheque]`, rows => rows.map(tr => [...tr.querySelectorAll("td")].map(td => td.textContent.replace(/\s+/g, " ").trim()).join(" | ")));
+    await step("A1 Çek / Senet listesi: carisiz, carili ve açılış portföyü evrakı nasıl görünüyor", async () => {
+      await openCheques(); for (const r of await rowsOf()) note(`  ${r}`); await shot("cek-listesi");
+    });
+    await step("A2 Formdan carisiz evrak → Karşılıksız / İade: 'Borçlanacak Cari' sorusu (boş bırakılır)", async () => {
+      await page.click(`${CHQ} tr[data-cheque="${carisizId}"]`);
+      await page.waitForSelector(`${CHQ} .hof-chq-actions [data-action="bounce"]`, { timeout: 15000 });
+      await shot("carisiz-evrak-detay");
+      await page.click(`${CHQ} .hof-chq-actions [data-action="bounce"]`);
+      const FORM = `${TOP} form`;
+      await page.waitForSelector(`${FORM} [data-acc-query]`, { timeout: 8000 });
+      note(`  form alanları: ${(await page.$$eval(`${FORM} .hof-field`, ns => ns.map(x => x.textContent.replace(/\s+/g, " ").trim().slice(0, 230)))).join(" ‖ ")}`);
+      await shot("carisiz-karsiliksiz-sorusu");
+      await page.click(`${FORM} input[name="note"]`); await page.keyboard.type("banka iade etti", { delay: 50 });
+      await page.click(`${FORM} button[type="submit"]`);
+      await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop.is-visible form [data-acc-query]"), null, { timeout: 10000 }).catch(() => null);
+      await page.waitForTimeout(700); await shot("carisiz-karsiliksiz-sonra");
+      note(`  evrak: ${JSON.stringify(app.store.get("SELECT status, account_id AS accountId, is_opening AS opening FROM cheques WHERE id = ?", carisizId))}`);
+      note("  mizan:", JSON.stringify(await trial()));
+    });
+    await step("A3 Açılış portföyü evrakı → Karşılıksız / İade: cari seçilir (Yürüyüş Müşteri) → cari borçlanır", async () => {
+      await openCheques();
+      await page.click(`${CHQ} tr[data-cheque="${acilisId}"]`);
+      await page.waitForSelector(`${CHQ} .hof-chq-actions [data-action="bounce"]`, { timeout: 15000 });
+      await page.click(`${CHQ} .hof-chq-actions [data-action="bounce"]`);
+      const FORM = `${TOP} form`;
+      await page.waitForSelector(`${FORM} [data-acc-query]`, { timeout: 8000 });
+      await page.click(`${FORM} [data-acc-query]`); await page.keyboard.type("Yürüyüş", { delay: 80 });
+      await page.waitForSelector(`${FORM} .hof-case-picker-list li[data-id="${musteri.id}"]`, { timeout: 8000 });
+      await shot("acilis-karsiliksiz-cari-secimi");
+      await page.click(`${FORM} .hof-case-picker-list li[data-id="${musteri.id}"]`);
+      await page.click(`${FORM} button[type="submit"]`);
+      await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop.is-visible form [data-acc-query]"), null, { timeout: 10000 }).catch(() => null);
+      await page.waitForTimeout(700); await shot("acilis-karsiliksiz-sonra");
+      note(`  evrak: ${JSON.stringify(app.store.get("SELECT status, account_id AS accountId, is_opening AS opening FROM cheques WHERE id = ?", acilisId))}`);
+      const acc = await must("cari", api.get(`/api/workspace/accounts/${musteri.id}`));
+      note(`  Yürüyüş Müşteri bakiye: ${JSON.stringify(acc.account?.balance ?? acc.balance)} (beklenen 1.000 açılış + 750 karşılıksız = 1.750; carili 400'lük çek tahsilat sayıldıysa 1.350)`);
+      note("  mizan:", JSON.stringify(await trial()));
+    });
+    await step("A4 Carili evrakta karşılıksız: cari sorusu ÇIKMAMALI", async () => {
+      await openCheques();
+      await page.click(`${CHQ} tr[data-cheque="${carili.id || carili.cheque?.id}"]`);
+      await page.waitForSelector(`${CHQ} .hof-chq-actions [data-action="bounce"]`, { timeout: 15000 });
+      await page.click(`${CHQ} .hof-chq-actions [data-action="bounce"]`);
+      await page.waitForSelector(`${TOP} form input[name="note"]`, { timeout: 8000 });
+      note(`  cari sorusu var mı: ${Boolean(await page.$(`${TOP} form [data-acc-query]`))} (beklenen false)`);
+      await shot("carili-karsiliksiz-formu"); await closeAll();
+    });
+    await step("A5 Çek / Senet listesi son hâl + cari kartı", async () => {
+      await openCheques(); for (const r of await rowsOf()) note(`  ${r}`); await shot("cek-listesi-son");
+    });
+    await step("A6 Raporlar → Alacak Yaşlandırma: carisiz evrak satırı yok; müşteri satırı", async () => {
+      await openReport("Alacak Yaşlandırma"); for (const r of await tableOf()) note(`  ${r}`); await shot("alacak-yaslandirma");
+    });
+    await step("A7 Raporlar → Defter Mutabakatı", async () => {
+      await openReport("Defter Mutabakatı"); for (const r of (await tableOf()).slice(0, 40)) note(`  ${r}`); await shot("defter-mutabakati");
+    });
+    await step("A8 Yönetim → Dönem Kilidi ve Mutabakat (yeni veri: temiz beklenir)", async () => { await adminLine(BASE); });
+  } else {
+    const { CURRENT, bootVersion } = await imp("test/guvenilirlik/surumler.mjs");
+    const { readFixture, unpackFixture } = await imp("test/guvenilirlik/fikstur.mjs");
+    const { ADMIN_PASSWORD } = await imp("test/helpers.mjs");
+    const NAME = process.env.FIKSTUR || "surum-2.0.26-zincir";
+    const meta = readFixture(NAME); const today = meta.oncesi?.today || String(meta.now || "").slice(0, 10);
+    const fixture = unpackFixture(NAME); root = path.dirname(fixture.dataDir);
+    note(`fikstür ${NAME} · bugün ${today} · veri ${fixture.dataDir}`);
+    const server = await bootVersion(CURRENT, { dataDir: fixture.dataDir, backupDir: fixture.backupDir, maxCompanies: 10, now: { time: `${today}T12:00:00+03:00`, fixed: true } });
+    app = server.app;
+    const snaps = app.ledger.snapshots;
+    note(`açılışta dondurma durumu: ${JSON.stringify(snaps.state())}`);
+    await Promise.race([snaps.runPending(), new Promise((_, rej) => setTimeout(() => rej(new Error("dondurma 120 sn'de bitmedi")), 120000).unref())]);
+    note(`dondurmadan sonra: ${JSON.stringify(snaps.state())}`);
+    const scan = await app.integrity.scanInBackground().catch(e => ({ hata: String(e.message) }));
+    note(`ilk arka plan taraması: bulgu ${JSON.stringify((scan.findings || []).map(f => f.code))} ${scan.hata || ""}`);
+    note(`Mutabakat Günlüğü satırları: ${JSON.stringify(app.store.all("SELECT action, substr(summary,1,120) AS ozet FROM integrity_log"))}`);
+    await login(server.base, ADMIN_PASSWORD);
+    await step("B1 Ana ekran (güncellemeden sonra ilk açılış): zil ve uyarılar", async () => { await bell(); await shot("ana-ekran"); });
+    await step("B2 Yönetim → Dönem Kilidi ve Mutabakat: kilitli eski veride satır", async () => { await adminLine(server.base); });
+    await step("B3 Raporlar → Defter Mutabakatı (Kural Değişikliği Farkı satırı)", async () => {
+      await page.goto(`${server.base}/`, { waitUntil: "load" }); await page.waitForSelector("#hof-sidecard", { timeout: 60000 }); await page.waitForTimeout(1000);
+      await openReport("Defter Mutabakatı"); for (const r of (await tableOf()).slice(0, 60)) note(`  ${r}`); await shot("defter-mutabakati");
+      await page.$eval(`${MODAL} [data-rc-main]`, node => { node.scrollTop = node.scrollHeight; }).catch(() => null); await page.waitForTimeout(300); await shot("defter-mutabakati-alt");
+    });
+    await step("B4 Raporlar → Mutabakat Günlüğü", async () => { await openReport("Mutabakat Günlüğü"); for (const r of (await tableOf()).slice(0, 20)) note(`  ${r}`); await shot("mutabakat-gunlugu"); });
+    await step("B5 Raporlar → Kural Değişikliği Farkı (varsa)", async () => { await openReport("Kural Değişikliği"); for (const r of (await tableOf()).slice(0, 30)) note(`  ${r}`); await shot("kural-farki-raporu"); });
+  }
+} catch (e) { console.error("HATA:", e); } finally {
+  await browser.close();
+  if (app) await app.close().catch(() => null);
+  if (root && root.startsWith(tmpdir())) fs.rmSync(root, { recursive: true, force: true });
+}

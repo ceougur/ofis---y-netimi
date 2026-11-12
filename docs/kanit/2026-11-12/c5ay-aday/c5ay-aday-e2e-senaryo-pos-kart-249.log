@@ -1,0 +1,520 @@
+
+> destekofis@2.4.9 test:senaryo-pos-kart-249
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-pos-kart-249.mjs
+
+
+══════ Şirkette 0 kredi kartı ══════
+
+■ [0 kart] T1 + T3/T4 müşteri + Tahsilat 500, yol POS
+  ✓ müşteride "Kredi Kartına İade" kutusu yok (yok)
+  ✓ müşteri POS tahsilatında kredi kartı seçicisi yok (yok)
+  ✓ "Kredi Kartı Tanımla" yazmıyor (T4)
+  ✓ "… kredi kartına yazılır" yazmıyor (T3)
+  ✓ POS alanı görünür: “Ziraat Fiziki POS POS'una yazılır. POS Taksit Sayısı Tek Çek”
+  ✓ açıklama POS'a göre: “Cariden POS ile tahsil edildi: bakiyeden düşer; seçilen POS'a yazılır,”
+  · T1 kaydet: POST 200 gövde {"amount":"500","method":"card","posInstallments":"1","authCode":"T1K0","date":"2026-10-08","note":"","kind":"in","refundOf":""} → {"ok":true,"data":{"id":"account-78733b8c-ccf1-4987-91db-9fc91f5b6a78","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ T1 kaydedildi (yanıt 200, form kapandı): 200 {"ok":true,"data":{"id":"account-78733b8c-ccf1-4987-91db-9fc91f5b6a78","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ gövdede hesap / kart / kutu alanı yok: {"amount":"500","method":"card","posInstallments":"1","authCode":"T1K0","date":"2026-10-08","note":"","kind":"in","refundOf":""}
+  ✓ veri tabanında 1 satır: [{"id":"aentry-1e6574b4-f09d-477e-a320-83a371a380c9","kind":"in","amount":500,"method":"card","finRef":"pos-e290c113-87f9-498e-9f5e-2d4b6a4e0ddf","hesap":"POS"}]
+  ✓ POS satışı 50000 kuruş: [{"id":"psale-f2b577da-553e-464e-a86b-d2be67f3f92b","eventId":"ev-0mwdv4owy0000-68fb7349-eb0b-4b23","posId":"pos-e290c113-87f9-498e-9f5e-2d4b6a4e0ddf","kind":"sale","gross":50000,"authCode":"T1K0","status":"active"}]
+  ✓ POS Bekleyen +500 (0 → 50000)
+  ✓ müşteri bakiyesi −500 (0 → -500)
+  ✓ kartlar değişmedi (kart1 null → null, kart2 null → null)
+  ✓ Kasa değişmedi (0 → 0)
+  ✓ T1: Mutabakat Testi tamam
+
+■ [0 kart] T9 müşteri + Tahsilat 250, yol klavyeyle Nakit → POS → Havale / EFT → POS
+  ✓ Tab ile Tahsilat Yolu alanına geçildi
+  ✓ yol sırası klavyeyle: cash > bank > card > bank > card
+  ✓ ilk ve son POS'ta kart seçicisi yok (yok / yok)
+  ✓ Havale / EFT'de POS alanı gizli (gizli), kart seçicisi yok (yok)
+  ✓ son POS'ta POS alanı görünür (görünür)
+  · T9 kaydet: POST 200 gövde {"amount":"250","method":"card","posInstallments":"1","authCode":"T9K0","date":"2026-10-08","note":"","kind":"in","refundOf":""} → {"ok":true,"data":{"id":"account-78733b8c-ccf1-4987-91db-9fc91f5b6a78","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ T9 kaydedildi: 200 {"ok":true,"data":{"id":"account-78733b8c-ccf1-4987-91db-9fc91f5b6a78","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ gövde: hesap alanı yok, POS alanları var — {"amount":"250","method":"card","posInstallments":"1","authCode":"T9K0","date":"2026-10-08","note":"","kind":"in","refundOf":""}
+  ✓ satır POS'a 250: [{"id":"aentry-03adc38f-575e-443f-bf9c-0518ac5b4d44","kind":"in","amount":250,"method":"card","finRef":"pos-e290c113-87f9-498e-9f5e-2d4b6a4e0ddf","hesap":"POS"}]
+  ✓ POS satışı +1 (1 → 2)
+  ✓ T9: Mutabakat Testi tamam
+
+■ [0 kart] T2 müşteri POS tahsilatının düzeltmesi ✎ 700 → 650
+  ✓ API ile 700 POS tahsilatı: 200
+  ✓ satır POS'ta: {"id":"aentry-7f663b08-9697-462e-be03-2c07af504a8a","kind":"in","amount":700,"method":"card","finRef":"pos-e290c113-87f9-498e-9f5e-2d4b6a4e0ddf"}
+  ✓ düzeltme formunda kart seçicisi / kutu / kart metni yok (yok, yok)
+  ✓ POS alanı görünür (görünür)
+  · T2 kaydet: PUT 200 gövde {"amount":"650","method":"card","posInstallments":"1","authCode":"T2K0","date":"2026-10-08","note":"","kind":"in","refundOf":"","updatedAt":""} → {"ok":true,"data":{"id":"account-78733b8c-ccf1-4987-91db-9fc91f5b6a78","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ T2 düzeltildi: PUT 200 {"ok":true,"data":{"id":"account-78733b8c-ccf1-4987-91db-9fc91f5b6a78","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ satır 650 POS'ta: {"id":"aentry-7f663b08-9697-462e-be03-2c07af504a8a","kind":"in","amount":650,"method":"card","finRef":"pos-e290c113-87f9-498e-9f5e-2d4b6a4e0ddf","hesap":"POS"}
+  ✓ etkin POS satışı 65000, eski 70000 geçersiz: [{"id":"psale-ea30f5a2-3d33-4dc9-95f4-934904a34415","eventId":"ev-0mwdv4uek0000-e6a35c62-aabd-4466","posId":"pos-e290c113-87f9-498e-9f5e-2d4b6a4e0ddf","kind":"sale","gross":70000,"authCode":"T2K0","status":"void"},{"id":"psale-1993ecec-f7ec-4f08-91b3-8aeb886d0221","eventId":"ev-0mwdv4uek0000-e6a35c62-aabd-4466","posId":"pos-e290c113-87f9-498e-9f5e-2d4b6a4e0ddf","kind":"sale","gross":65000,"authCode":"T2K0","status":"active"}]
+  ✓ POS Bekleyen −50 (145000 → 140000)
+  ✓ müşteri bakiyesi +50 (-1450 → -1400)
+  ✓ kartlar ve Kasa değişmedi
+  ✓ T2: Mutabakat Testi tamam
+
+■ [0 kart] T8 tedarikçi − Ödeme 300, Kredi Kartı
+  ✓ 0 kart: "Kredi Kartı Tanımla" görünür (görünür: “Kredi Kartı Tanımla Tanımlamadan kaydederseniz hareket Hesabı Atanmamış Eski Hareketler'de kalır.”)
+  ✓ ödeme formunda not aynen (“Kredi Kartı Tanımla Tanımlamadan kaydederseniz hareket Hesabı Atanmamış Eski Hareketler'de kalır.”), düğme etkin (true)
+  · T8 kaydet: POST 200 gövde {"amount":"300","method":"card","date":"2026-10-08","note":"","kind":"out","refundOf":""} → {"ok":true,"data":{"id":"account-2fdcdeab-3816-4790-b66d-0936007f7a80","refNo":"2","type":"supplier","name":"Toptancı A.Ş.","phone":"","email":"","address":"","
+  ✓ T8 kaydedildi: 200 {"ok":true,"data":{"id":"account-2fdcdeab-3816-4790-b66d-0936007f7a80","refNo":"2","type":"supplier","name":"Toptancı A.Ş.","phone":"","email":"","address":"","
+  ✓ satır (hesapsız): [{"id":"aentry-44523e82-5e4c-416e-9fef-553a75fc1e55","kind":"out","amount":300,"method":"card","finRef":"","hesap":"(hesapsız)"}]
+  ✓ POS Bekleyen ve Kasa değişmedi
+  ✓ T8: Mutabakat Testi tamam
+
+■ [0 kart] T6 tedarikçi + Tahsilat 100, Kredi Kartına İade işaretli
+  ✓ tedarikçide kutu görünür, işaretsiz; kart seçicisi gizli, POS alanı görünür (görünür, gizli, görünür)
+  ✓ işaretli: kart seçicisi görünür, POS alanı gizli (görünür, gizli)
+  ✓ 0 kart: seçicide “Kredi Kartı Tanımla” + “Kredi Kartına İade için önce bir kredi kartı tanımlayın.” (“Kredi Kartı Tanımla Kredi Kartına İade için önce bir kredi kartı tanımlayın.”)
+  ✓ “Tanımlamadan kaydederseniz … Hesabı Atanmamış …” yazmıyor (“Kredi Kartı Tanımla Kredi Kartına İade için önce bir kredi kartı tanımlayın.”)
+  ✓ açıklama: “Tedarikçi parayı kredi kartımıza iade etti: Kredi Kartına İade için önce bir kredi kartı tanımlayın; kart tanımlanmadan kaydedilemez.”
+  ✓ “Tahsilat” düğmesi pasif, nedeni görünür: “Kaydedilemez: Kredi Kartına İade için önce bir kredi kartı tanımlayın (ya da işareti kaldırın / yolu değiştirin).” (aria-describedby hof-card-refund-block-1)
+  ✓ tıklama ve Enter istek göndermedi (0), satır yok, form açık
+  ✓ tedarikçi bakiyesi değişmedi
+  ✓ kutu kaldırılınca düğme etkin, not yok, POS alanı görünür (false, “”, görünür)
+  ✓ yeniden işaretlenince yine pasif
+  ✓ API: 400, satır yok (400)
+  ✓ T6: Mutabakat Testi tamam
+
+■ [0 kart] T7 tedarikçi + Tahsilat 50, kutu işaretsiz (POS)
+  ✓ kutu görünür, kart seçicisi gizli, POS alanı görünür (görünür, gizli, görünür)
+  · T7 kaydet: POST 200 gövde {"amount":"50","method":"card","posInstallments":"1","authCode":"T7K0","cardRefund":false,"date":"2026-10-08","note":"","kind":"in","refundOf":""} → {"ok":true,"data":{"id":"account-2fdcdeab-3816-4790-b66d-0936007f7a80","refNo":"2","type":"supplier","name":"Toptancı A.Ş.","phone":"","email":"","address":"","
+  ✓ T7 kaydedildi: 200 {"ok":true,"data":{"id":"account-2fdcdeab-3816-4790-b66d-0936007f7a80","refNo":"2","type":"supplier","name":"Toptancı A.Ş.","phone":"","email":"","address":"","
+  ✓ satır POS'a: [{"id":"aentry-14e857f5-2591-46c2-b8bc-38349c2f830f","kind":"in","amount":50,"method":"card","finRef":"pos-e290c113-87f9-498e-9f5e-2d4b6a4e0ddf","hesap":"POS"}]
+  ✓ POS satışı +1, POS Bekleyen +50 (140000 → 145000)
+  ✓ kartlar değişmedi
+  ✓ T7: Mutabakat Testi tamam
+
+■ [0 kart] T16 (P1 tur 2 DÜŞÜK-1) 0 kart: tedarikçinin POS satırı ✎ Kredi Kartına İade işaretlenir → 400, satır POS'ta
+  ✓ düzeltilecek T7 satırı: {"id":"aentry-14e857f5-2591-46c2-b8bc-38349c2f830f","kind":"in","amount":50,"method":"card","finRef":"pos-e290c113-87f9-498e-9f5e-2d4b6a4e0ddf","hesap":"POS"}
+  ✓ kutu görünür, işaretsiz; POS alanı görünür (görünür, false, görünür)
+  ✓ işaretli: kart seçicisi "Kredi Kartı Tanımla" (görünür: “Kredi Kartı Tanımla Kredi Kartına İade için önce bir kredi k”)
+  ✓ seçici notu: “Kredi Kartı Tanımla Kredi Kartına İade için önce bir kredi kartı tanımlayın.”
+  ✓ “Kaydet” pasif, neden: “Kaydedilemez: Kredi Kartına İade için önce bir kredi kartı tanımlayın (ya da işareti kaldırın / yolu değiştirin).”
+  ✓ Enter istek göndermedi (0), form açık
+  ✓ API PUT: 400 bank-account-invalid (400)
+  ✓ satır POS'ta kaldı (hesapsıza yazılmadı): {"id":"aentry-14e857f5-2591-46c2-b8bc-38349c2f830f","kind":"in","amount":50,"method":"card","finRef":"pos-e290c113-87f9-498e-9f5e-2d4b6a4e0ddf","hesap":"POS"}
+  ✓ POS satışı aynı (5000): [{"id":"psale-7896a1d9-bd28-4f23-9b6c-ee8fc0d0ef71","eventId":"ev-0mwdv58g40000-10d9b0e4-aab7-4192","posId":"pos-e290c113-87f9-498e-9f5e-2d4b6a4e0ddf","kind":"sale","gross":5000,"authCode":"T7K0","status":"active"}]
+  ✓ POS Bekleyen (145000), tedarikçi bakiyesi (250) ve Kasa aynı
+  ✓ T16: Mutabakat Testi tamam
+
+■ [0 kart] T11 (P1-b) aynı adlı ikinci müşteriye − Ödeme Kredi Kartı 400, sonra + Tahsilat Kredi Kartına İade 150
+  ✓ pencere başlığında ikinci müşterinin Cari No'su: “No 3 · ABC Ltd.”
+  · T11 ödeme kaydet: POST 200 gövde {"amount":"400","method":"card","date":"2026-10-08","note":"","kind":"out","refundOf":""} → {"ok":true,"data":{"id":"account-ca29d97f-3296-4bba-8b63-54a186cbaa3b","refNo":"3","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ kartla Ödeme kaydedildi: 200 {"ok":true,"data":{"id":"account-ca29d97f-3296-4bba-8b63-54a186cbaa3b","refNo":"3","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ ödeme satırı (hesapsız): {"id":"aentry-c5428e00-13e0-4fd6-9538-791fe84024a2","kind":"out","amount":400,"method":"card","finRef":"","hesap":"(hesapsız)"}
+  ✓ hasCardPayment false (0 kartta ödeme hesapsız: sayılmaz)
+  ✓ 0 kart: kutu yok (hesapsız ödeme sayılmaz), POS alanı var (yok, yok, görünür)
+
+■ [0 kart] T10 Banka → POS → POS İşlemleri → İade 100 (T1 satışı)
+  ✓ iade edilecek satış: T1K0
+  · T10 kaydet: POST 200 gövde {"amount":"100","date":"2026-10-08","note":""} → {"ok":true,"data":{"sale":{"id":"psale-f2b577da-553e-464e-a86b-d2be67f3f92b","kind":"sale","kindLabel":"POS Satışı","src":"module","status":"active","statusLabe
+  ✓ T10 iade kaydedildi: 200 {"ok":true,"data":{"sale":{"id":"psale-f2b577da-553e-464e-a86b-d2be67f3f92b","kind":"sale","kindLabel":"POS Satışı","src":"module","status":"active","statusLabe
+  ✓ POS iadesi 10000: [{"id":"psale-c5bf923d-29ed-4e90-87ba-b69b0b1d940a","eventId":"ev-0mwdv5mys0000-049f3cc1-fc85-4931","posId":"pos-e290c113-87f9-498e-9f5e-2d4b6a4e0ddf","kind":"refund","gross":10000,"authCode":"","status":"active"}]
+  ✓ POS Bekleyen −100 (145000 → 135000)
+  ✓ kartlar ve Kasa değişmedi
+  ✓ T10: Mutabakat Testi tamam
+
+■ [0 kart] T15 (P1 tur 2 TEST-1) yalnız POS İadesi olan müşteri: + Tahsilat'ta Kredi Kartına İade kutusu yok, API'den 400
+  ✓ POS satışı: {"id":"psale-89ed4837-1579-45b6-87fa-63beb5d234a4","eventId":"ev-0mwdv5nyp0000-b1067758-9994-4617","posId":"pos-e290c113-87f9-498e-9f5e-2d4b6a4e0ddf","kind":"sale","gross":20000,"authCode":"T15K0","status":"active"}
+  ✓ POS İadesi POS'a bağlı çıkış: [{"id":"aentry-c6947009-c7a7-452a-919d-270b1f17bac4","kind":"out","amount":50,"method":"card","finRef":"pos-e290c113-87f9-498e-9f5e-2d4b6a4e0ddf","hesap":"POS"}]
+  ✓ yalnız POS İadesi → hasCardPayment false (false)
+  ✓ kutu ve kart seçicisi yok, POS alanı var (yok, yok, görünür)
+  ✓ API'den Kredi Kartına İade 400 card-refund-no-payment, satır yok: 400 {"ok":false,"error":"Bu müşteriye kredi kartıyla yapılmış bir ödeme yok; Kredi Kartına İade girilemez. Müşteriden kartla alınan para POS tahsilatıdır: \"Kredi K
+  ✓ T15: Mutabakat Testi tamam
+
+  · [0 kart] son bakiyeler: {"musteri":-1300,"musteri2":400,"tedarikci":250,"kart1":null,"kart2":null,"posBekleyen":150000,"kasa":0}
+  · [0 kart] müşteri satırları: [["in",500,"card","POS"],["in",250,"card","POS"],["in",650,"card","POS"],["out",100,"card","POS"]]
+  · [0 kart] tedarikçi satırları: [["out",300,"card","(hesapsız)"],["in",50,"card","POS"]]
+  · [0 kart] ikinci müşteri satırları: [["out",400,"card","(hesapsız)"]]
+  ✓ Kasa 0 (POS / kart Kasa'ya girmez; T13 Nakit 150): 0
+
+══════ Şirkette 1 kredi kartı ══════
+
+■ [1 kart] T1 + T3/T4 müşteri + Tahsilat 500, yol POS
+  ✓ müşteride "Kredi Kartına İade" kutusu yok (yok)
+  ✓ müşteri POS tahsilatında kredi kartı seçicisi yok (yok)
+  ✓ "Kredi Kartı Tanımla" yazmıyor (T4)
+  ✓ "… kredi kartına yazılır" yazmıyor (T3)
+  ✓ POS alanı görünür: “Ziraat Fiziki POS POS'una yazılır. POS Taksit Sayısı Tek Çek”
+  ✓ açıklama POS'a göre: “Cariden POS ile tahsil edildi: bakiyeden düşer; seçilen POS'a yazılır,”
+  · T1 kaydet: POST 200 gövde {"amount":"500","method":"card","posInstallments":"1","authCode":"T1K1","date":"2026-10-08","note":"","kind":"in","refundOf":""} → {"ok":true,"data":{"id":"account-789fcefe-6834-48ce-a399-eef4552a88c5","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ T1 kaydedildi (yanıt 200, form kapandı): 200 {"ok":true,"data":{"id":"account-789fcefe-6834-48ce-a399-eef4552a88c5","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ gövdede hesap / kart / kutu alanı yok: {"amount":"500","method":"card","posInstallments":"1","authCode":"T1K1","date":"2026-10-08","note":"","kind":"in","refundOf":""}
+  ✓ veri tabanında 1 satır: [{"id":"aentry-c6b05a22-6efc-4d83-b13a-62b5f8f49198","kind":"in","amount":500,"method":"card","finRef":"pos-68609c35-b605-46b4-92e4-72708e8bff5b","hesap":"POS"}]
+  ✓ POS satışı 50000 kuruş: [{"id":"psale-ef450e45-56e2-4fef-8255-a74037fbf1c9","eventId":"ev-0mwdv5vu00000-f0a55dca-40b5-40ac","posId":"pos-68609c35-b605-46b4-92e4-72708e8bff5b","kind":"sale","gross":50000,"authCode":"T1K1","status":"active"}]
+  ✓ POS Bekleyen +500 (0 → 50000)
+  ✓ müşteri bakiyesi −500 (0 → -500)
+  ✓ kartlar değişmedi (kart1 0 → 0, kart2 null → null)
+  ✓ Kasa değişmedi (0 → 0)
+  ✓ T1: Mutabakat Testi tamam
+
+■ [1 kart] T9 müşteri + Tahsilat 250, yol klavyeyle Nakit → POS → Havale / EFT → POS
+  ✓ Tab ile Tahsilat Yolu alanına geçildi
+  ✓ yol sırası klavyeyle: cash > bank > card > bank > card
+  ✓ ilk ve son POS'ta kart seçicisi yok (yok / yok)
+  ✓ Havale / EFT'de POS alanı gizli (gizli), kart seçicisi yok (yok)
+  ✓ son POS'ta POS alanı görünür (görünür)
+  · T9 kaydet: POST 200 gövde {"amount":"250","method":"card","posInstallments":"1","authCode":"T9K1","date":"2026-10-08","note":"","kind":"in","refundOf":""} → {"ok":true,"data":{"id":"account-789fcefe-6834-48ce-a399-eef4552a88c5","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ T9 kaydedildi: 200 {"ok":true,"data":{"id":"account-789fcefe-6834-48ce-a399-eef4552a88c5","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ gövde: hesap alanı yok, POS alanları var — {"amount":"250","method":"card","posInstallments":"1","authCode":"T9K1","date":"2026-10-08","note":"","kind":"in","refundOf":""}
+  ✓ satır POS'a 250: [{"id":"aentry-eb8b78b8-6740-4343-84b4-da8ab188de97","kind":"in","amount":250,"method":"card","finRef":"pos-68609c35-b605-46b4-92e4-72708e8bff5b","hesap":"POS"}]
+  ✓ POS satışı +1 (1 → 2)
+  ✓ T9: Mutabakat Testi tamam
+
+■ [1 kart] T2 müşteri POS tahsilatının düzeltmesi ✎ 700 → 650
+  ✓ API ile 700 POS tahsilatı: 200
+  ✓ satır POS'ta: {"id":"aentry-20faf672-d4ab-477f-b1fe-dee5831e3671","kind":"in","amount":700,"method":"card","finRef":"pos-68609c35-b605-46b4-92e4-72708e8bff5b"}
+  ✓ düzeltme formunda kart seçicisi / kutu / kart metni yok (yok, yok)
+  ✓ POS alanı görünür (görünür)
+  · T2 kaydet: PUT 200 gövde {"amount":"650","method":"card","posInstallments":"1","authCode":"T2K1","date":"2026-10-08","note":"","kind":"in","refundOf":"","updatedAt":""} → {"ok":true,"data":{"id":"account-789fcefe-6834-48ce-a399-eef4552a88c5","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ T2 düzeltildi: PUT 200 {"ok":true,"data":{"id":"account-789fcefe-6834-48ce-a399-eef4552a88c5","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ satır 650 POS'ta: {"id":"aentry-20faf672-d4ab-477f-b1fe-dee5831e3671","kind":"in","amount":650,"method":"card","finRef":"pos-68609c35-b605-46b4-92e4-72708e8bff5b","hesap":"POS"}
+  ✓ etkin POS satışı 65000, eski 70000 geçersiz: [{"id":"psale-6fa0ce51-4889-47eb-9d70-5196fc5cea84","eventId":"ev-0mwdv61ax0000-d86212f3-c823-47c9","posId":"pos-68609c35-b605-46b4-92e4-72708e8bff5b","kind":"sale","gross":70000,"authCode":"T2K1","status":"void"},{"id":"psale-615cb060-1e58-439a-a709-5c2b00a859be","eventId":"ev-0mwdv61ax0000-d86212f3-c823-47c9","posId":"pos-68609c35-b605-46b4-92e4-72708e8bff5b","kind":"sale","gross":65000,"authCode":"T2K1","status":"active"}]
+  ✓ POS Bekleyen −50 (145000 → 140000)
+  ✓ müşteri bakiyesi +50 (-1450 → -1400)
+  ✓ kartlar ve Kasa değişmedi
+  ✓ T2: Mutabakat Testi tamam
+
+■ [1 kart] T8 tedarikçi − Ödeme 300, Kredi Kartı
+  ✓ 1 kart: bilgi satırı (“Ziraat Bankası · World kredi kartına yazılır. Kart (08.10.20”)
+  · T8 kaydet: POST 200 gövde {"amount":"300","method":"card","date":"2026-10-08","note":"","kind":"out","refundOf":""} → {"ok":true,"data":{"id":"account-daafff3a-0866-4b86-b885-c0acab430490","refNo":"2","type":"supplier","name":"Toptancı A.Ş.","phone":"","email":"","address":"","
+  ✓ T8 kaydedildi: 200 {"ok":true,"data":{"id":"account-daafff3a-0866-4b86-b885-c0acab430490","refNo":"2","type":"supplier","name":"Toptancı A.Ş.","phone":"","email":"","address":"","
+  ✓ satır KART1: [{"id":"aentry-2edc2df2-f4a7-454b-8d80-4f445b061d59","kind":"out","amount":300,"method":"card","finRef":"bacc-3f138455-764e-4b1c-9970-b0a2e09f16eb","hesap":"KART1"}]
+  ✓ kart1 300 değişti (0 → -30000)
+  ✓ POS Bekleyen ve Kasa değişmedi
+  ✓ T8: Mutabakat Testi tamam
+
+■ [1 kart] T6 tedarikçi + Tahsilat 100, Kredi Kartına İade işaretli
+  ✓ tedarikçide kutu görünür, işaretsiz; kart seçicisi gizli, POS alanı görünür (görünür, gizli, görünür)
+  ✓ işaretli: kart seçicisi görünür, POS alanı gizli (görünür, gizli)
+  · T6 kaydet: POST 200 gövde {"amount":"100","method":"card","cardRefund":true,"date":"2026-10-08","note":"","kind":"in","refundOf":""} → {"ok":true,"data":{"id":"account-daafff3a-0866-4b86-b885-c0acab430490","refNo":"2","type":"supplier","name":"Toptancı A.Ş.","phone":"","email":"","address":"","
+  ✓ T6 kaydedildi: 200 {"ok":true,"data":{"id":"account-daafff3a-0866-4b86-b885-c0acab430490","refNo":"2","type":"supplier","name":"Toptancı A.Ş.","phone":"","email":"","address":"","
+  ✓ gövde cardRefund, POS alanı yok: {"amount":"100","method":"card","cardRefund":true,"date":"2026-10-08","note":"","kind":"in","refundOf":""}
+  ✓ satır KART1: [{"id":"aentry-2cf81fef-5413-49f8-9153-6aca509b0630","kind":"in","amount":100,"method":"card","finRef":"bacc-3f138455-764e-4b1c-9970-b0a2e09f16eb","hesap":"KART1"}]
+  ✓ POS satışı oluşmadı
+  ✓ kart1 borcu 100 azaldı (-30000 → -20000; ödeme etkisi -30000)
+  ✓ POS Bekleyen ve Kasa değişmedi
+  ✓ T6: Mutabakat Testi tamam
+
+■ [1 kart] T7 tedarikçi + Tahsilat 50, kutu işaretsiz (POS)
+  ✓ kutu görünür, kart seçicisi gizli, POS alanı görünür (görünür, gizli, görünür)
+  · T7 kaydet: POST 200 gövde {"amount":"50","method":"card","posInstallments":"1","authCode":"T7K1","cardRefund":false,"date":"2026-10-08","note":"","kind":"in","refundOf":""} → {"ok":true,"data":{"id":"account-daafff3a-0866-4b86-b885-c0acab430490","refNo":"2","type":"supplier","name":"Toptancı A.Ş.","phone":"","email":"","address":"","
+  ✓ T7 kaydedildi: 200 {"ok":true,"data":{"id":"account-daafff3a-0866-4b86-b885-c0acab430490","refNo":"2","type":"supplier","name":"Toptancı A.Ş.","phone":"","email":"","address":"","
+  ✓ satır POS'a: [{"id":"aentry-538da9a5-717c-410c-bd4f-c27dc274191f","kind":"in","amount":50,"method":"card","finRef":"pos-68609c35-b605-46b4-92e4-72708e8bff5b","hesap":"POS"}]
+  ✓ POS satışı +1, POS Bekleyen +50 (140000 → 145000)
+  ✓ kartlar değişmedi
+  ✓ T7: Mutabakat Testi tamam
+
+■ [1 kart] T5 müşteride eski "Kredi Kartına İade" satırının düzeltmesi ✎ 120 → 110 (gerileme koruması)
+  ✓ API ile müşteriye Kredi Kartına İade 120: 200 {"ok":true,"data":{"id":"account-789fcefe-6834-48ce-a399-eef4552a88c5","refNo":"1","type":"customer","name":"ABC Ltd.","
+  ✓ kartla ödeme silindi: 200
+  ✓ ödeme silinince hasCardPayment false
+  ✓ satır KART1: {"id":"aentry-e295a5f3-a2db-4403-b723-e24c444ebdce","kind":"in","amount":120,"method":"card","finRef":"bacc-3f138455-764e-4b1c-9970-b0a2e09f16eb","hesap":"KART1"}
+  ✓ kart1 120 değişti (ödeme silindi; -20000 → -8000)
+  ✓ yeni Tahsilat'ta kutu ve kart seçicisi yok, POS alanı var (yok, yok, görünür)
+  ✓ kutu görünür ve işaretli (görünür, true)
+  ✓ kart seçicisi görünür, POS alanı gizli (görünür: “Ziraat Bankası · World kredi kartına yazılır. Kart (08.10.2026): Borç ”, POS gizli)
+  · T5 kaydet: PUT 200 gövde {"amount":"110","method":"card","cardRefund":true,"date":"2026-10-08","note":"","kind":"in","refundOf":"","updatedAt":""} → {"ok":true,"data":{"id":"account-789fcefe-6834-48ce-a399-eef4552a88c5","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ T5 düzeltildi: 200 {"ok":true,"data":{"id":"account-789fcefe-6834-48ce-a399-eef4552a88c5","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ gövde cardRefund true, POS alanı yok: {"amount":"110","method":"card","cardRefund":true,"date":"2026-10-08","note":"","kind":"in","refundOf":"","updatedAt":""}
+  ✓ tek kartta gövdede kart kimliği yok (satırın bağı sürer): {"amount":"110","method":"card","cardRefund":true,"date":"2026-10-08","note":"","kind":"in","refundOf":"","updatedAt":""}
+  ✓ satır 110, KART1: {"id":"aentry-e295a5f3-a2db-4403-b723-e24c444ebdce","kind":"in","amount":110,"method":"card","finRef":"bacc-3f138455-764e-4b1c-9970-b0a2e09f16eb","hesap":"KART1"}
+  ✓ kart1 etkisi 110 (-20000 → -9000)
+  ✓ POS Bekleyen değişmedi
+  ✓ T5: Mutabakat Testi tamam
+
+■ [1 kart] T12 (DÜŞÜK-1) eski Kredi Kartına İade satırı ✎ kutu kaldırılır → POS tahsilatı
+  ✓ düzeltilecek satır: aentry-e295a5f3-a2db-4403-b723-e24c444ebdce
+  ✓ kutu görünür ve işaretli (görünür, true)
+  ✓ kutu kaldırıldı: kart seçicisi gizli, POS alanı görünür (gizli, görünür: “Ziraat Fiziki POS POS'una yazılır. POS Taksit Sayı”)
+  ✓ açıklama POS'a göre: “Cariden POS ile tahsil edildi: bakiyeden düşer; seçilen POS'a yazılır,”
+  · T12 kaydet: PUT 200 gövde {"amount":"110,00","method":"card","posInstallments":"1","cardRefund":false,"date":"2026-10-08","note":"","kind":"in","refundOf":"","updatedAt":"2026-10-08T09:00:34.089Z"} → {"ok":true,"data":{"id":"account-789fcefe-6834-48ce-a399-eef4552a88c5","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ T12 düzeltildi: PUT 200 {"ok":true,"data":{"id":"account-789fcefe-6834-48ce-a399-eef4552a88c5","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ gövde cardRefund false, POS alanları var, kart kimliği yok: {"amount":"110,00","method":"card","posInstallments":"1","cardRefund":false,"date":"2026-10-08","note":"","kind":"in","refundOf":"","updatedAt":"2026-10-08T09:00:34.089Z"}
+  ✓ satır 110 POS'ta: {"id":"aentry-e295a5f3-a2db-4403-b723-e24c444ebdce","kind":"in","amount":110,"method":"card","finRef":"pos-68609c35-b605-46b4-92e4-72708e8bff5b","hesap":"POS"}
+  ✓ etkin POS satışı 11000: [{"id":"psale-3c46f7fa-23da-4a8b-bf0b-680ba026fa8b","eventId":"ev-0mwdv6da40000-7c69405a-f1e9-4f4b","posId":"pos-68609c35-b605-46b4-92e4-72708e8bff5b","kind":"sale","gross":11000,"authCode":"","status":"active"}]
+  ✓ kart1 iade etkisi geri alındı (-9000 → -20000; iadeden önce -20000)
+  ✓ POS Bekleyen +110 (145000 → 156000)
+  ✓ müşteri bakiyesi aynı (-1510 → -1510)
+  ✓ Kasa değişmedi (0)
+  ✓ bildirim: “Hareket düzeltildi. Bakiye ₺1.510,00 Alacaklı.×2×”
+  ✓ T12: Mutabakat Testi tamam
+  ✓ yeniden açılınca kutu yok, POS alanı var (yok, yok, görünür)
+
+■ [1 kart] T11 (P1-b) aynı adlı ikinci müşteriye − Ödeme Kredi Kartı 400, sonra + Tahsilat Kredi Kartına İade 150
+  ✓ pencere başlığında ikinci müşterinin Cari No'su: “No 3 · ABC Ltd.”
+  · T11 ödeme kaydet: POST 200 gövde {"amount":"400","method":"card","date":"2026-10-08","note":"","kind":"out","refundOf":""} → {"ok":true,"data":{"id":"account-5222df63-1054-470e-a623-26cf6aaeaa9a","refNo":"3","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ kartla Ödeme kaydedildi: 200 {"ok":true,"data":{"id":"account-5222df63-1054-470e-a623-26cf6aaeaa9a","refNo":"3","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ ödeme satırı KART1: {"id":"aentry-6a140407-876a-417e-aeee-d3f7b27dfc1e","kind":"out","amount":400,"method":"card","finRef":"bacc-3f138455-764e-4b1c-9970-b0a2e09f16eb","hesap":"KART1"}
+  ✓ hasCardPayment true (kartla ödeme var)
+  ✓ kartla ödemeli müşteride kutu görünür, işaretsiz; kart seçicisi gizli, POS alanı görünür (görünür, false, gizli, görünür)
+  ✓ kutu etiketi müşteriye göre: “Kredi Kartına İade (müşteri parayı firmanın kredi kartına iade etti; POS tahsilatı değil)”
+  ✓ işaretli: kart seçicisi görünür, POS alanı gizli (görünür, gizli)
+  ✓ açıklama: “Müşteri parayı kredi kartımıza iade etti: bakiyeden düşer, seçilen kredi kartını”
+  · T11 iade kaydet: POST 200 gövde {"amount":"150","method":"card","cardRefund":true,"date":"2026-10-08","note":"","kind":"in","refundOf":""} → {"ok":true,"data":{"id":"account-5222df63-1054-470e-a623-26cf6aaeaa9a","refNo":"3","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ T11 kaydedildi: 200 {"ok":true,"data":{"id":"account-5222df63-1054-470e-a623-26cf6aaeaa9a","refNo":"3","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ gövde cardRefund true, POS alanı yok: {"amount":"150","method":"card","cardRefund":true,"date":"2026-10-08","note":"","kind":"in","refundOf":""}
+  ✓ satır KART1: [{"id":"aentry-78a21eae-d865-419e-8bce-3b1ff3ce01b8","kind":"in","amount":150,"method":"card","finRef":"bacc-3f138455-764e-4b1c-9970-b0a2e09f16eb","hesap":"KART1"}]
+  ✓ POS satışı oluşmadı (6 → 6)
+  ✓ kart1 borcu 150 azaldı (-60000 → -45000)
+  ✓ kart1 (ödemenin kartı) değişmedi (-60000 → -45000)
+  ✓ ikinci müşterinin bakiyesi −150 (400 → 250)
+  ✓ POS Bekleyen ve Kasa değişmedi
+  ✓ birinci müşterinin bakiyesi değişmedi (-1510 → -1510)
+  ✓ T11: Mutabakat Testi tamam
+  ✓ birinci müşteri: “No 1 · ABC Ltd.”
+  ✓ birinci müşteride kutu ve kart seçicisi yok (yok, yok)
+
+■ [1 kart] T13 (DÜŞÜK-1) T11 iadesi ✎ kutu kaldırılır, yol Nakit → nakit tahsilat
+  ✓ düzeltilecek satır: aentry-78a21eae-d865-419e-8bce-3b1ff3ce01b8
+  ✓ kutu görünür ve işaretli (görünür, true)
+  ✓ Nakit: kutu, kart seçicisi ve POS alanı gizli (gizli, gizli, gizli)
+  · T13 kaydet: PUT 200 gövde {"amount":"150,00","method":"cash","cardRefund":false,"date":"2026-10-08","note":"","kind":"in","refundOf":"","updatedAt":""} → {"ok":true,"data":{"id":"account-5222df63-1054-470e-a623-26cf6aaeaa9a","refNo":"3","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ T13 düzeltildi: PUT 200 {"ok":true,"data":{"id":"account-5222df63-1054-470e-a623-26cf6aaeaa9a","refNo":"3","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ gövde: Nakit, cardRefund false, hesap / POS alanı yok — {"amount":"150,00","method":"cash","cardRefund":false,"date":"2026-10-08","note":"","kind":"in","refundOf":"","updatedAt":""}
+  ✓ satır nakit 150: {"id":"aentry-78a21eae-d865-419e-8bce-3b1ff3ce01b8","kind":"in","amount":150,"method":"cash","finRef":"","hesap":"(hesapsız)"}
+  ✓ Kasa +150 (0 → 150)
+  ✓ kart1 iade etkisi geri alındı (-45000 → -60000)
+  ✓ ikinci müşterinin bakiyesi (250) ve POS Bekleyen aynı
+  ✓ bildirim: “Hareket düzeltildi. Bakiye ₺250,00 Borçlu.×”
+  ✓ T13: Mutabakat Testi tamam
+
+■ [1 kart] UI-A1 (ORTA-1) cari kartı Hareketler: Kredi Kartına İade satırının yol etiketi
+  · tedarikçi satırları: [{"note":"Borçlu","label":"Ödeme","tag":"Kredi Kartı","refund":false},{"note":"Borçlu","label":"Tahsilat","tag":"Kredi Kartına İade","refund":true},{"note":"Borçlu","label":"Tahsilat","tag":"POS","refund":false}]
+  ✓ tedarikçi Tahsilat etiketleri: ["Kredi Kartına İade","POS"] (beklenen Kredi Kartına İade + POS)
+  ✓ iade satırı işaretli (data-card-refund) ve etiketi “Kredi Kartına İade”
+  ✓ tedarikçi: POS tahsilatı (T7) etiketi “POS”
+  ✓ tedarikçi: kartla ödeme (T8) etiketi “Kredi Kartı”
+  ✓ müşteriye Kredi Kartına İade 20 (API): 200 {"ok":true,"data":{"id":"account-5222df63-1054-470e-a623-26cf6aaeaa9a","refNo":"3","type":"customer","name":"ABC Ltd.","
+  · müşteri satırları: [{"note":"Borçlu","label":"Ödeme","tag":"Kredi Kartı","refund":false},{"note":"Borçlu","label":"Tahsilat","tag":"Nakit","refund":false},{"note":"UI-A1 iade","label":"Tahsilat","tag":"Kredi Kartına İade","refund":true}]
+  ✓ müşteri: iade satırı “Tahsilat” + “Kredi Kartına İade” (beklenen Kredi Kartına İade)
+  ✓ müşteri: kartla ödeme “Kredi Kartı”
+  ✓ bakiyeler: tedarikçi aynı (150), müşteri 2 yalnız yeni iade kadar −20 (250 → 230)
+  ✓ UI-A1: Mutabakat Testi tamam
+
+■ [1 kart] T10 Banka → POS → POS İşlemleri → İade 100 (T1 satışı)
+  ✓ iade edilecek satış: T1K1
+  · T10 kaydet: POST 200 gövde {"amount":"100","date":"2026-10-08","note":""} → {"ok":true,"data":{"sale":{"id":"psale-ef450e45-56e2-4fef-8255-a74037fbf1c9","kind":"sale","kindLabel":"POS Satışı","src":"module","status":"active","statusLabe
+  ✓ T10 iade kaydedildi: 200 {"ok":true,"data":{"sale":{"id":"psale-ef450e45-56e2-4fef-8255-a74037fbf1c9","kind":"sale","kindLabel":"POS Satışı","src":"module","status":"active","statusLabe
+  ✓ POS iadesi 10000: [{"id":"psale-ecf2e46d-d6cc-45a8-a1e7-0f6b4d601dec","eventId":"ev-0mwdv76n50000-567dfa82-52e1-4670","posId":"pos-68609c35-b605-46b4-92e4-72708e8bff5b","kind":"refund","gross":10000,"authCode":"","status":"active"}]
+  ✓ POS Bekleyen −100 (156000 → 146000)
+  ✓ kartlar ve Kasa değişmedi
+  ✓ T10: Mutabakat Testi tamam
+
+■ [1 kart] T15 (P1 tur 2 TEST-1) yalnız POS İadesi olan müşteri: + Tahsilat'ta Kredi Kartına İade kutusu yok, API'den 400
+  ✓ POS satışı: {"id":"psale-7b4fb477-77d1-45eb-bfce-12f5c8f3187a","eventId":"ev-0mwdv77rc0000-055c9c7f-bf92-49de","posId":"pos-68609c35-b605-46b4-92e4-72708e8bff5b","kind":"sale","gross":20000,"authCode":"T15K1","status":"active"}
+  ✓ POS İadesi POS'a bağlı çıkış: [{"id":"aentry-81fd57b4-c4ea-479d-9ada-640ae6722222","kind":"out","amount":50,"method":"card","finRef":"pos-68609c35-b605-46b4-92e4-72708e8bff5b","hesap":"POS"}]
+  ✓ yalnız POS İadesi → hasCardPayment false (false)
+  ✓ kutu ve kart seçicisi yok, POS alanı var (yok, yok, görünür)
+  ✓ API'den Kredi Kartına İade 400 card-refund-no-payment, satır yok: 400 {"ok":false,"error":"Bu müşteriye kredi kartıyla yapılmış bir ödeme yok; Kredi Kartına İade girilemez. Müşteriden kartla alınan para POS tahsilatıdır: \"Kredi K
+  ✓ T15: Mutabakat Testi tamam
+
+  · [1 kart] son bakiyeler: {"musteri":-1410,"musteri2":230,"tedarikci":150,"kart1":-58000,"kart2":null,"posBekleyen":161000,"kasa":150}
+  · [1 kart] müşteri satırları: [["in",500,"card","POS"],["in",250,"card","POS"],["in",650,"card","POS"],["in",110,"card","POS"],["out",100,"card","POS"]]
+  · [1 kart] tedarikçi satırları: [["out",300,"card","KART1"],["in",100,"card","KART1"],["in",50,"card","POS"]]
+  · [1 kart] ikinci müşteri satırları: [["out",400,"card","KART1"],["in",150,"cash","(hesapsız)"],["in",20,"card","KART1"]]
+  ✓ Kasa 150 (POS / kart Kasa'ya girmez; T13 Nakit 150): 150
+
+══════ Şirkette 2 kredi kartı ══════
+
+■ [2 kart] T1 + T3/T4 müşteri + Tahsilat 500, yol POS
+  ✓ müşteride "Kredi Kartına İade" kutusu yok (yok)
+  ✓ müşteri POS tahsilatında kredi kartı seçicisi yok (yok)
+  ✓ "Kredi Kartı Tanımla" yazmıyor (T4)
+  ✓ "… kredi kartına yazılır" yazmıyor (T3)
+  ✓ POS alanı görünür: “Ziraat Fiziki POS POS'una yazılır. POS Taksit Sayısı Tek Çek”
+  ✓ açıklama POS'a göre: “Cariden POS ile tahsil edildi: bakiyeden düşer; seçilen POS'a yazılır,”
+  · T1 kaydet: POST 200 gövde {"amount":"500","method":"card","posInstallments":"1","authCode":"T1K2","date":"2026-10-08","note":"","kind":"in","refundOf":""} → {"ok":true,"data":{"id":"account-ab7e2fac-aaaf-469d-ba01-e181b8ffbff5","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ T1 kaydedildi (yanıt 200, form kapandı): 200 {"ok":true,"data":{"id":"account-ab7e2fac-aaaf-469d-ba01-e181b8ffbff5","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ gövdede hesap / kart / kutu alanı yok: {"amount":"500","method":"card","posInstallments":"1","authCode":"T1K2","date":"2026-10-08","note":"","kind":"in","refundOf":""}
+  ✓ veri tabanında 1 satır: [{"id":"aentry-42a4cd21-0cc4-4a41-8d38-6e663828e19e","kind":"in","amount":500,"method":"card","finRef":"pos-9f1ef932-3a62-4d08-851c-b19ba458d275","hesap":"POS"}]
+  ✓ POS satışı 50000 kuruş: [{"id":"psale-18da8df9-6405-4ecc-8b57-bab2f91b6080","eventId":"ev-0mwdv7fy50000-f96768b6-c561-4093","posId":"pos-9f1ef932-3a62-4d08-851c-b19ba458d275","kind":"sale","gross":50000,"authCode":"T1K2","status":"active"}]
+  ✓ POS Bekleyen +500 (0 → 50000)
+  ✓ müşteri bakiyesi −500 (0 → -500)
+  ✓ kartlar değişmedi (kart1 0 → 0, kart2 0 → 0)
+  ✓ Kasa değişmedi (0 → 0)
+  ✓ T1: Mutabakat Testi tamam
+
+■ [2 kart] T9 müşteri + Tahsilat 250, yol klavyeyle Nakit → POS → Havale / EFT → POS
+  ✓ Tab ile Tahsilat Yolu alanına geçildi
+  ✓ yol sırası klavyeyle: cash > bank > card > bank > card
+  ✓ ilk ve son POS'ta kart seçicisi yok (yok / yok)
+  ✓ Havale / EFT'de POS alanı gizli (gizli), kart seçicisi yok (yok)
+  ✓ son POS'ta POS alanı görünür (görünür)
+  · T9 kaydet: POST 200 gövde {"amount":"250","method":"card","posInstallments":"1","authCode":"T9K2","date":"2026-10-08","note":"","kind":"in","refundOf":""} → {"ok":true,"data":{"id":"account-ab7e2fac-aaaf-469d-ba01-e181b8ffbff5","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ T9 kaydedildi: 200 {"ok":true,"data":{"id":"account-ab7e2fac-aaaf-469d-ba01-e181b8ffbff5","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ gövde: hesap alanı yok, POS alanları var — {"amount":"250","method":"card","posInstallments":"1","authCode":"T9K2","date":"2026-10-08","note":"","kind":"in","refundOf":""}
+  ✓ satır POS'a 250: [{"id":"aentry-5d4380fb-19fc-40af-bb07-792b65d6f62e","kind":"in","amount":250,"method":"card","finRef":"pos-9f1ef932-3a62-4d08-851c-b19ba458d275","hesap":"POS"}]
+  ✓ POS satışı +1 (1 → 2)
+  ✓ T9: Mutabakat Testi tamam
+
+■ [2 kart] T2 müşteri POS tahsilatının düzeltmesi ✎ 700 → 650
+  ✓ API ile 700 POS tahsilatı: 200
+  ✓ satır POS'ta: {"id":"aentry-c7fd2170-1ecd-45ec-9b37-e6c4f1f25ed9","kind":"in","amount":700,"method":"card","finRef":"pos-9f1ef932-3a62-4d08-851c-b19ba458d275"}
+  ✓ düzeltme formunda kart seçicisi / kutu / kart metni yok (yok, yok)
+  ✓ POS alanı görünür (görünür)
+  · T2 kaydet: PUT 200 gövde {"amount":"650","method":"card","posInstallments":"1","authCode":"T2K2","date":"2026-10-08","note":"","kind":"in","refundOf":"","updatedAt":""} → {"ok":true,"data":{"id":"account-ab7e2fac-aaaf-469d-ba01-e181b8ffbff5","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ T2 düzeltildi: PUT 200 {"ok":true,"data":{"id":"account-ab7e2fac-aaaf-469d-ba01-e181b8ffbff5","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ satır 650 POS'ta: {"id":"aentry-c7fd2170-1ecd-45ec-9b37-e6c4f1f25ed9","kind":"in","amount":650,"method":"card","finRef":"pos-9f1ef932-3a62-4d08-851c-b19ba458d275","hesap":"POS"}
+  ✓ etkin POS satışı 65000, eski 70000 geçersiz: [{"id":"psale-6fc631ce-13a4-46e4-a990-b551a443fba0","eventId":"ev-0mwdv7led0000-08cac26e-3f83-4a9a","posId":"pos-9f1ef932-3a62-4d08-851c-b19ba458d275","kind":"sale","gross":70000,"authCode":"T2K2","status":"void"},{"id":"psale-858520a5-bf66-4ffc-bf51-3ea293a6e8c8","eventId":"ev-0mwdv7led0000-08cac26e-3f83-4a9a","posId":"pos-9f1ef932-3a62-4d08-851c-b19ba458d275","kind":"sale","gross":65000,"authCode":"T2K2","status":"active"}]
+  ✓ POS Bekleyen −50 (145000 → 140000)
+  ✓ müşteri bakiyesi +50 (-1450 → -1400)
+  ✓ kartlar ve Kasa değişmedi
+  ✓ T2: Mutabakat Testi tamam
+
+■ [2 kart] T8 tedarikçi − Ödeme 300, Kredi Kartı
+  ✓ 2 kart: zorunlu kart seçicisi görünür (görünür, zorunlu true)
+  · T8 kaydet: POST 200 gövde {"amount":"300","method":"card","date":"2026-10-08","note":"","kind":"out","refundOf":"","bankAccountId":"bacc-6960326c-c361-4556-a32a-41bcb590be36"} → {"ok":true,"data":{"id":"account-feed2bb5-ea2a-4ba7-ac08-c3336ac7cd0d","refNo":"2","type":"supplier","name":"Toptancı A.Ş.","phone":"","email":"","address":"","
+  ✓ T8 kaydedildi: 200 {"ok":true,"data":{"id":"account-feed2bb5-ea2a-4ba7-ac08-c3336ac7cd0d","refNo":"2","type":"supplier","name":"Toptancı A.Ş.","phone":"","email":"","address":"","
+  ✓ satır KART2: [{"id":"aentry-8b8fa3e2-7e62-4c7d-a441-51e32a19a7a0","kind":"out","amount":300,"method":"card","finRef":"bacc-6960326c-c361-4556-a32a-41bcb590be36","hesap":"KART2"}]
+  ✓ kart2 300 değişti (0 → -30000)
+  ✓ kart1 değişmedi (0)
+  ✓ POS Bekleyen ve Kasa değişmedi
+  ✓ T8: Mutabakat Testi tamam
+
+■ [2 kart] T6 tedarikçi + Tahsilat 100, Kredi Kartına İade işaretli
+  ✓ tedarikçide kutu görünür, işaretsiz; kart seçicisi gizli, POS alanı görünür (görünür, gizli, görünür)
+  ✓ işaretli: kart seçicisi görünür, POS alanı gizli (görünür, gizli)
+  ✓ 2 kart: kart seçimi zorunlu
+  · T6 kaydet: POST 200 gövde {"amount":"100","method":"card","cardRefund":true,"date":"2026-10-08","note":"","kind":"in","refundOf":"","bankAccountId":"bacc-6960326c-c361-4556-a32a-41bcb590be36"} → {"ok":true,"data":{"id":"account-feed2bb5-ea2a-4ba7-ac08-c3336ac7cd0d","refNo":"2","type":"supplier","name":"Toptancı A.Ş.","phone":"","email":"","address":"","
+  ✓ T6 kaydedildi: 200 {"ok":true,"data":{"id":"account-feed2bb5-ea2a-4ba7-ac08-c3336ac7cd0d","refNo":"2","type":"supplier","name":"Toptancı A.Ş.","phone":"","email":"","address":"","
+  ✓ gövde cardRefund, POS alanı yok: {"amount":"100","method":"card","cardRefund":true,"date":"2026-10-08","note":"","kind":"in","refundOf":"","bankAccountId":"bacc-6960326c-c361-4556-a32a-41bcb590be36"}
+  ✓ satır KART2: [{"id":"aentry-711afdda-51d4-408d-9c83-cc2ded0c2837","kind":"in","amount":100,"method":"card","finRef":"bacc-6960326c-c361-4556-a32a-41bcb590be36","hesap":"KART2"}]
+  ✓ POS satışı oluşmadı
+  ✓ kart2 borcu 100 azaldı (-30000 → -20000; ödeme etkisi -30000)
+  ✓ POS Bekleyen ve Kasa değişmedi
+  ✓ T6: Mutabakat Testi tamam
+
+■ [2 kart] T7 tedarikçi + Tahsilat 50, kutu işaretsiz (POS)
+  ✓ kutu görünür, kart seçicisi gizli, POS alanı görünür (görünür, gizli, görünür)
+  · T7 kaydet: POST 200 gövde {"amount":"50","method":"card","posInstallments":"1","authCode":"T7K2","cardRefund":false,"date":"2026-10-08","note":"","kind":"in","refundOf":""} → {"ok":true,"data":{"id":"account-feed2bb5-ea2a-4ba7-ac08-c3336ac7cd0d","refNo":"2","type":"supplier","name":"Toptancı A.Ş.","phone":"","email":"","address":"","
+  ✓ T7 kaydedildi: 200 {"ok":true,"data":{"id":"account-feed2bb5-ea2a-4ba7-ac08-c3336ac7cd0d","refNo":"2","type":"supplier","name":"Toptancı A.Ş.","phone":"","email":"","address":"","
+  ✓ satır POS'a: [{"id":"aentry-2a7ea68e-84c4-4ce3-a51a-33991a2f2736","kind":"in","amount":50,"method":"card","finRef":"pos-9f1ef932-3a62-4d08-851c-b19ba458d275","hesap":"POS"}]
+  ✓ POS satışı +1, POS Bekleyen +50 (140000 → 145000)
+  ✓ kartlar değişmedi
+  ✓ T7: Mutabakat Testi tamam
+
+■ [2 kart] T5 müşteride eski "Kredi Kartına İade" satırının düzeltmesi ✎ 120 → 110 (gerileme koruması)
+  ✓ API ile müşteriye Kredi Kartına İade 120: 200 {"ok":true,"data":{"id":"account-ab7e2fac-aaaf-469d-ba01-e181b8ffbff5","refNo":"1","type":"customer","name":"ABC Ltd.","
+  ✓ kartla ödeme silindi: 200
+  ✓ ödeme silinince hasCardPayment false
+  ✓ satır KART2: {"id":"aentry-9fd1ef4f-31d0-454e-a2f2-8948c7d342c5","kind":"in","amount":120,"method":"card","finRef":"bacc-6960326c-c361-4556-a32a-41bcb590be36","hesap":"KART2"}
+  ✓ kart2 120 değişti (ödeme silindi; -20000 → -8000)
+  ✓ yeni Tahsilat'ta kutu ve kart seçicisi yok, POS alanı var (yok, yok, görünür)
+  ✓ kutu görünür ve işaretli (görünür, true)
+  ✓ kart seçicisi görünür, POS alanı gizli (görünür: “Kredi Kartı * Kart Seçin Ziraat Bankası · World (ZIR-KART) — Borç ₺0,0”, POS gizli)
+  ✓ satırın kartı seçili (KART2)
+  · T5 kaydet: PUT 200 gövde {"amount":"110","method":"card","cardRefund":true,"date":"2026-10-08","note":"","kind":"in","refundOf":"","bankAccountId":"bacc-6960326c-c361-4556-a32a-41bcb590be36","updatedAt":""} → {"ok":true,"data":{"id":"account-ab7e2fac-aaaf-469d-ba01-e181b8ffbff5","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ T5 düzeltildi: 200 {"ok":true,"data":{"id":"account-ab7e2fac-aaaf-469d-ba01-e181b8ffbff5","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ gövde cardRefund true, POS alanı yok: {"amount":"110","method":"card","cardRefund":true,"date":"2026-10-08","note":"","kind":"in","refundOf":"","bankAccountId":"bacc-6960326c-c361-4556-a32a-41bcb590be36","updatedAt":""}
+  ✓ gövdede seçilen kart (KART2)
+  ✓ satır 110, KART2: {"id":"aentry-9fd1ef4f-31d0-454e-a2f2-8948c7d342c5","kind":"in","amount":110,"method":"card","finRef":"bacc-6960326c-c361-4556-a32a-41bcb590be36","hesap":"KART2"}
+  ✓ kart2 etkisi 110 (-20000 → -9000)
+  ✓ POS Bekleyen değişmedi
+  ✓ T5: Mutabakat Testi tamam
+
+■ [2 kart] T12 (DÜŞÜK-1) eski Kredi Kartına İade satırı ✎ kutu kaldırılır → POS tahsilatı
+  ✓ düzeltilecek satır: aentry-9fd1ef4f-31d0-454e-a2f2-8948c7d342c5
+  ✓ kutu görünür ve işaretli (görünür, true)
+  ✓ kutu kaldırıldı: kart seçicisi gizli, POS alanı görünür (gizli, görünür: “Ziraat Fiziki POS POS'una yazılır. POS Taksit Sayı”)
+  ✓ açıklama POS'a göre: “Cariden POS ile tahsil edildi: bakiyeden düşer; seçilen POS'a yazılır,”
+  · T12 kaydet: PUT 200 gövde {"amount":"110,00","method":"card","posInstallments":"1","cardRefund":false,"date":"2026-10-08","note":"","kind":"in","refundOf":"","updatedAt":"2026-10-08T09:00:35.269Z"} → {"ok":true,"data":{"id":"account-ab7e2fac-aaaf-469d-ba01-e181b8ffbff5","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ T12 düzeltildi: PUT 200 {"ok":true,"data":{"id":"account-ab7e2fac-aaaf-469d-ba01-e181b8ffbff5","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ gövde cardRefund false, POS alanları var, kart kimliği yok: {"amount":"110,00","method":"card","posInstallments":"1","cardRefund":false,"date":"2026-10-08","note":"","kind":"in","refundOf":"","updatedAt":"2026-10-08T09:00:35.269Z"}
+  ✓ satır 110 POS'ta: {"id":"aentry-9fd1ef4f-31d0-454e-a2f2-8948c7d342c5","kind":"in","amount":110,"method":"card","finRef":"pos-9f1ef932-3a62-4d08-851c-b19ba458d275","hesap":"POS"}
+  ✓ etkin POS satışı 11000: [{"id":"psale-eefe2c19-ef9d-4d6b-86b6-ca7ae501fee6","eventId":"ev-0mwdv7ydf0000-b2014e09-a049-4b8f","posId":"pos-9f1ef932-3a62-4d08-851c-b19ba458d275","kind":"sale","gross":11000,"authCode":"","status":"active"}]
+  ✓ kart2 iade etkisi geri alındı (-9000 → -20000; iadeden önce -20000)
+  ✓ POS Bekleyen +110 (145000 → 156000)
+  ✓ müşteri bakiyesi aynı (-1510 → -1510)
+  ✓ Kasa değişmedi (0)
+  ✓ bildirim: “Hareket düzeltildi. Bakiye ₺1.510,00 Alacaklı.×2×”
+  ✓ T12: Mutabakat Testi tamam
+  ✓ yeniden açılınca kutu yok, POS alanı var (yok, yok, görünür)
+
+■ [2 kart] T11 (P1-b) aynı adlı ikinci müşteriye − Ödeme Kredi Kartı 400, sonra + Tahsilat Kredi Kartına İade 150
+  ✓ pencere başlığında ikinci müşterinin Cari No'su: “No 3 · ABC Ltd.”
+  · T11 ödeme kaydet: POST 200 gövde {"amount":"400","method":"card","date":"2026-10-08","note":"","kind":"out","refundOf":"","bankAccountId":"bacc-686cb34a-ce7e-46cc-a578-b524687dbc32"} → {"ok":true,"data":{"id":"account-89037308-69f1-46d1-8e9e-1c9969955279","refNo":"3","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ kartla Ödeme kaydedildi: 200 {"ok":true,"data":{"id":"account-89037308-69f1-46d1-8e9e-1c9969955279","refNo":"3","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ ödeme satırı KART1: {"id":"aentry-3f8ddb5a-2cf7-4518-8472-4fb41f4d4e30","kind":"out","amount":400,"method":"card","finRef":"bacc-686cb34a-ce7e-46cc-a578-b524687dbc32","hesap":"KART1"}
+  ✓ hasCardPayment true (kartla ödeme var)
+  ✓ kartla ödemeli müşteride kutu görünür, işaretsiz; kart seçicisi gizli, POS alanı görünür (görünür, false, gizli, görünür)
+  ✓ kutu etiketi müşteriye göre: “Kredi Kartına İade (müşteri parayı firmanın kredi kartına iade etti; POS tahsilatı değil)”
+  ✓ işaretli: kart seçicisi görünür, POS alanı gizli (görünür, gizli)
+  ✓ açıklama: “Müşteri parayı kredi kartımıza iade etti: bakiyeden düşer, seçilen kredi kartını”
+  ✓ 2 kart: kart seçimi zorunlu
+  · T11 iade kaydet: POST 200 gövde {"amount":"150","method":"card","cardRefund":true,"date":"2026-10-08","note":"","kind":"in","refundOf":"","bankAccountId":"bacc-6960326c-c361-4556-a32a-41bcb590be36"} → {"ok":true,"data":{"id":"account-89037308-69f1-46d1-8e9e-1c9969955279","refNo":"3","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ T11 kaydedildi: 200 {"ok":true,"data":{"id":"account-89037308-69f1-46d1-8e9e-1c9969955279","refNo":"3","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ gövde cardRefund true, POS alanı yok: {"amount":"150","method":"card","cardRefund":true,"date":"2026-10-08","note":"","kind":"in","refundOf":"","bankAccountId":"bacc-6960326c-c361-4556-a32a-41bcb590be36"}
+  ✓ gövdede seçilen kart (KART2)
+  ✓ satır KART2: [{"id":"aentry-d36fe982-9292-4065-b637-1b86c9b4087b","kind":"in","amount":150,"method":"card","finRef":"bacc-6960326c-c361-4556-a32a-41bcb590be36","hesap":"KART2"}]
+  ✓ POS satışı oluşmadı (6 → 6)
+  ✓ kart2 borcu 150 azaldı (-20000 → -5000)
+  ✓ kart1 (ödemenin kartı) değişmedi (-40000 → -40000)
+  ✓ ikinci müşterinin bakiyesi −150 (400 → 250)
+  ✓ POS Bekleyen ve Kasa değişmedi
+  ✓ birinci müşterinin bakiyesi değişmedi (-1510 → -1510)
+  ✓ T11: Mutabakat Testi tamam
+  ✓ birinci müşteri: “No 1 · ABC Ltd.”
+  ✓ birinci müşteride kutu ve kart seçicisi yok (yok, yok)
+
+■ [2 kart] T13 (DÜŞÜK-1) T11 iadesi ✎ kutu kaldırılır, yol Nakit → nakit tahsilat
+  ✓ düzeltilecek satır: aentry-d36fe982-9292-4065-b637-1b86c9b4087b
+  ✓ kutu görünür ve işaretli (görünür, true)
+  ✓ Nakit: kutu, kart seçicisi ve POS alanı gizli (gizli, gizli, gizli)
+  · T13 kaydet: PUT 200 gövde {"amount":"150,00","method":"cash","cardRefund":false,"date":"2026-10-08","note":"","kind":"in","refundOf":"","updatedAt":""} → {"ok":true,"data":{"id":"account-89037308-69f1-46d1-8e9e-1c9969955279","refNo":"3","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ T13 düzeltildi: PUT 200 {"ok":true,"data":{"id":"account-89037308-69f1-46d1-8e9e-1c9969955279","refNo":"3","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ gövde: Nakit, cardRefund false, hesap / POS alanı yok — {"amount":"150,00","method":"cash","cardRefund":false,"date":"2026-10-08","note":"","kind":"in","refundOf":"","updatedAt":""}
+  ✓ satır nakit 150: {"id":"aentry-d36fe982-9292-4065-b637-1b86c9b4087b","kind":"in","amount":150,"method":"cash","finRef":"","hesap":"(hesapsız)"}
+  ✓ Kasa +150 (0 → 150)
+  ✓ kart2 iade etkisi geri alındı (-5000 → -20000)
+  ✓ ikinci müşterinin bakiyesi (250) ve POS Bekleyen aynı
+  ✓ bildirim: “Hareket düzeltildi. Bakiye ₺250,00 Borçlu.×”
+  ✓ T13: Mutabakat Testi tamam
+
+■ [2 kart] UI-A1 (ORTA-1) cari kartı Hareketler: Kredi Kartına İade satırının yol etiketi
+  · tedarikçi satırları: [{"note":"Borçlu","label":"Ödeme","tag":"Kredi Kartı","refund":false},{"note":"Borçlu","label":"Tahsilat","tag":"Kredi Kartına İade","refund":true},{"note":"Borçlu","label":"Tahsilat","tag":"POS","refund":false}]
+  ✓ tedarikçi Tahsilat etiketleri: ["Kredi Kartına İade","POS"] (beklenen Kredi Kartına İade + POS)
+  ✓ iade satırı işaretli (data-card-refund) ve etiketi “Kredi Kartına İade”
+  ✓ tedarikçi: POS tahsilatı (T7) etiketi “POS”
+  ✓ tedarikçi: kartla ödeme (T8) etiketi “Kredi Kartı”
+  ✓ müşteriye Kredi Kartına İade 20 (API): 200 {"ok":true,"data":{"id":"account-89037308-69f1-46d1-8e9e-1c9969955279","refNo":"3","type":"customer","name":"ABC Ltd.","
+  · müşteri satırları: [{"note":"Borçlu","label":"Ödeme","tag":"Kredi Kartı","refund":false},{"note":"Borçlu","label":"Tahsilat","tag":"Nakit","refund":false},{"note":"UI-A1 iade","label":"Tahsilat","tag":"Kredi Kartına İade","refund":true}]
+  ✓ müşteri: iade satırı “Tahsilat” + “Kredi Kartına İade” (beklenen Kredi Kartına İade)
+  ✓ müşteri: kartla ödeme “Kredi Kartı”
+  ✓ bakiyeler: tedarikçi aynı (150), müşteri 2 yalnız yeni iade kadar −20 (250 → 230)
+  ✓ UI-A1: Mutabakat Testi tamam
+
+■ [2 kart] T10 Banka → POS → POS İşlemleri → İade 100 (T1 satışı)
+  ✓ iade edilecek satış: T1K2
+  · T10 kaydet: POST 200 gövde {"amount":"100","date":"2026-10-08","note":""} → {"ok":true,"data":{"sale":{"id":"psale-18da8df9-6405-4ecc-8b57-bab2f91b6080","kind":"sale","kindLabel":"POS Satışı","src":"module","status":"active","statusLabe
+  ✓ T10 iade kaydedildi: 200 {"ok":true,"data":{"sale":{"id":"psale-18da8df9-6405-4ecc-8b57-bab2f91b6080","kind":"sale","kindLabel":"POS Satışı","src":"module","status":"active","statusLabe
+  ✓ POS iadesi 10000: [{"id":"psale-3bf6f9cf-c757-4083-81cf-83bba99b7231","eventId":"ev-0mwdv8rnq0000-fe8d7f83-4fd8-49b8","posId":"pos-9f1ef932-3a62-4d08-851c-b19ba458d275","kind":"refund","gross":10000,"authCode":"","status":"active"}]
+  ✓ POS Bekleyen −100 (156000 → 146000)
+  ✓ kartlar ve Kasa değişmedi
+  ✓ T10: Mutabakat Testi tamam
+
+■ [2 kart] T15 (P1 tur 2 TEST-1) yalnız POS İadesi olan müşteri: + Tahsilat'ta Kredi Kartına İade kutusu yok, API'den 400
+  ✓ POS satışı: {"id":"psale-c27c530c-f244-4ab3-9bee-f7505257456b","eventId":"ev-0mwdv8sre0000-8bdbdcc6-1c83-4841","posId":"pos-9f1ef932-3a62-4d08-851c-b19ba458d275","kind":"sale","gross":20000,"authCode":"T15K2","status":"active"}
+  ✓ POS İadesi POS'a bağlı çıkış: [{"id":"aentry-06b120d1-fa84-4c50-b477-014f888044c2","kind":"out","amount":50,"method":"card","finRef":"pos-9f1ef932-3a62-4d08-851c-b19ba458d275","hesap":"POS"}]
+  ✓ yalnız POS İadesi → hasCardPayment false (false)
+  ✓ kutu ve kart seçicisi yok, POS alanı var (yok, yok, görünür)
+  ✓ API'den Kredi Kartına İade 400 card-refund-no-payment, satır yok: 400 {"ok":false,"error":"Bu müşteriye kredi kartıyla yapılmış bir ödeme yok; Kredi Kartına İade girilemez. Müşteriden kartla alınan para POS tahsilatıdır: \"Kredi K
+  ✓ T15: Mutabakat Testi tamam
+
+■ [2 kart] T14 (DÜŞÜK-1, 2 POS) kartla ödemeli müşterinin Kredi Kartına İade satırı ✎ kutu kaldırılır, POS2 seçilir
+  ✓ satır KART2: {"id":"aentry-c49d5606-80eb-4bba-8205-39919025edd7","kind":"in","amount":90,"method":"card","finRef":"bacc-6960326c-c361-4556-a32a-41bcb590be36","hesap":"KART2"}
+  ✓ kutu kaldırıldı: POS seçici görünür (görünür: “POS * POS Seçin Ziraat Fiziki POS · Ziraat Bankası Ziraat Sa”)
+  · T14 kaydet: PUT 200 gövde {"amount":"90,00","method":"card","posId":"pos-d0b4b51b-cb47-4dcd-8b5b-106a36f5c310","posInstallments":"1","cardRefund":false,"date":"2026-10-08","note":"","kind":"in","refundOf":"","updatedAt":""} → {"ok":true,"data":{"id":"account-89037308-69f1-46d1-8e9e-1c9969955279","refNo":"3","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ T14 düzeltildi: PUT 200 {"ok":true,"data":{"id":"account-89037308-69f1-46d1-8e9e-1c9969955279","refNo":"3","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+  ✓ gövde cardRefund false, posId POS2: {"amount":"90,00","method":"card","posId":"pos-d0b4b51b-cb47-4dcd-8b5b-106a36f5c310","posInstallments":"1","cardRefund":false,"date":"2026-10-08","note":"","kind":"in","refundOf":"","updatedAt":""}
+  ✓ satır POS2'de: {"id":"aentry-c49d5606-80eb-4bba-8205-39919025edd7","kind":"in","amount":90,"method":"card","finRef":"pos-d0b4b51b-cb47-4dcd-8b5b-106a36f5c310","hesap":"POS2"}
+  ✓ POS2'de etkin satış 9000: [{"id":"psale-73c6c3bf-5f9b-4620-90f3-f3dec792b3c6","eventId":"ev-0mwdv8whu0000-5fca0f47-7f5f-4458","posId":"pos-d0b4b51b-cb47-4dcd-8b5b-106a36f5c310","kind":"sale","gross":9000,"authCode":"","status":"active"}]
+  ✓ kart2 iade etkisi geri alındı (-11000 → -20000)
+  ✓ POS Bekleyen +90 (161000 → 170000)
+  ✓ T14: Mutabakat Testi tamam
+
+  · [2 kart] son bakiyeler: {"musteri":-1410,"musteri2":140,"tedarikci":150,"kart1":-38000,"kart2":-20000,"posBekleyen":170000,"kasa":150}
+  · [2 kart] müşteri satırları: [["in",500,"card","POS"],["in",250,"card","POS"],["in",650,"card","POS"],["in",110,"card","POS"],["out",100,"card","POS"]]
+  · [2 kart] tedarikçi satırları: [["out",300,"card","KART2"],["in",100,"card","KART2"],["in",50,"card","POS"]]
+  · [2 kart] ikinci müşteri satırları: [["out",400,"card","KART1"],["in",150,"cash","(hesapsız)"],["in",20,"card","KART1"],["in",90,"card","POS2"]]
+  ✓ Kasa 150 (POS / kart Kasa'ya girmez; T13 Nakit 150): 150
+
+✓ senaryo-pos-kart-249: 383 geçti, 0 kaldı · ekran görüntüleri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag/test/e2e/artifacts/senaryo-pos-kart-249

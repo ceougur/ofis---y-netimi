@@ -1,0 +1,6 @@
+✓ senaryo-defter-243: 33 geçti, 0 kaldı · depo /home/user/ofis---y-netimi/.claude/worktrees/agent-aa26556ff648f1ff8 · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-aa26556ff648f1ff8/test/e2e/artifacts/senaryo-defter-243
+
+[kanit] c5a1-e2e-defter-243: GEÇTİ · çıkış 0 · 33/33 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit f082e6e +3 değişmiş dosya +13 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+TAMAM: 428 denetim geçti, 0 başarısız. Ekran görüntüleri: /home/user/ofis---y-netimi/.claude/worktrees/agent-aa26556ff648f1ff8/test/e2e/artifacts/senaryo-banka-210
+
+[kanit] c5a1-e2e-banka-210: GEÇTİ · çıkış 0 · 428/428 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit f082e6e +3 değişmiş dosya +13 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v22.23.4

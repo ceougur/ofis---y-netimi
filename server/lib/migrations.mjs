@@ -1583,7 +1583,60 @@ export const MIGRATIONS = [
       );
     },
   },
+  {
+    version: 48,
+    name: "v2.5.0 Ç5-A KG-16 'Açılış Olabilir' adayları (account_entries.opening_review; para dışı)",
+    up(store) {
+      // 2.5.0 Ç5-A (docs/erp/C5-ACILIS-TASARIM.md §2.4; kural kitabı KG-16 = A; KULLANICI S47 = A; BAŞ MİMAR B6, B7, B8, K8-1): 2.4.9'a kadar cari açılışı AÇIKLAMADAN
+      // tanınıyordu (`/^açılış/i`); 2.5.0'da işaretten (is_opening). Göçte, açılış işaretsiz elle Borç / Alacak Yaz satırlarından açıklaması — baştaki boşluk atılıp Türkçe
+      // küçük harf + ç→c, ı→i, ş→s katlamasıyla — "acilis" ile BAŞLAYAN her satır ADAY olur (opening_review = 'candidate'): "AÇILIŞ", "Açilış", "Acilis", ikinci "Açılış
+      // bakiyesi" dahil; "Devir" / "Devreden" ve ortada geçen "açılış" GİRMEZ (S65 = A). Aday onaya kadar defterde açılıştır (519; S47), onay → M-02 / M-03, ret → C-01 / C-02.
+      // YALNIZ GÖÇTE: göçten sonra elle girilen "Açılış…" açıklamalı Borç Yaz aday OLMAZ (K8-1). Göç öncesi yedeğin geri yüklenmesi bu göçü yeniden koşar (B8).
+      // Para alanı DEĞİL: tutar, yön, tarih değişmez; sütun kilit izine (integrity.mjs LOCK_SQL) girmez — kaynak izi sürümü değişmez (B4 ile aynı bilinçli sınır).
+      // Eşgüçlü: sütun varsa eklenmez; yalnız durumu boş ('') satırlar aday yapılır (onay / ret yeniden koşuda bozulmaz). Hız (ders 47): ön süzgeç SQL'de (baştaki boşluk
+      // sonrası ilk harf A / a), katlama JS'te tek geçiş, yazım tek UPDATE (json_each).
+      store.raw("migration.v48", () => {
+        if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'account_entries'")) return;
+        addColumn(store, "account_entries", "opening_review", "TEXT NOT NULL DEFAULT ''");
+        if (!columnExists(store, "account_entries", "is_opening")) return;
+        const ids = store
+          .all("SELECT id, note FROM account_entries WHERE source = '' AND kind IN ('debt', 'credit') AND is_opening = 0 AND opening_review = '' AND ltrim(note, ' ' || char(9) || char(10) || char(13) || char(160)) LIKE 'a%'")
+          .filter(row => isOpeningCandidateNote(row.note))
+          .map(row => row.id);
+        if (ids.length) store.run("UPDATE account_entries SET opening_review = 'candidate' WHERE id IN (SELECT value FROM json_each(?))", JSON.stringify(ids));
+      });
+    },
+  },
+  {
+    version: 49,
+    name: "v2.5.0 Ç5-A açılış evrakının işareti (cheques.is_opening; para dışı)",
+    up(store) {
+      // 2.5.0 Ç5-A (§2.5; BAŞ MİMAR B4; M-08 / M-09; 30.10 (1)): Excel / Sheets'ten "carilere dokunmadan" yüklenen evrak AÇILIŞ portföyüdür (defter B 101 / A 519, verilen B 519 /
+      // A 103 — 602 / 770'e yazılmaz). Yeni yüklemede işaret yazılır (routes/cheques.mjs insertCheque); eski veride ilk olayının notundan doldurulur ("Açılış portföyü
+      // (Excel/Sheets)" — v2.0.13'ten beri programın yazdığı metin, routes/cheques.mjs OPENING_PORTFOLIO_NOTE). Para alanı DEĞİL; kilit izine girmez (B4). Eşgüçlü.
+      store.raw("migration.v49", () => {
+        if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cheques'")) return;
+        addColumn(store, "cheques", "is_opening", "INTEGER NOT NULL DEFAULT 0");
+        if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cheque_events'")) return;
+        store.run(
+          `UPDATE cheques SET is_opening = 1 WHERE is_opening = 0 AND id IN (
+             SELECT ev.cheque_id FROM cheque_events ev WHERE ev.note = ? AND ev.rowid = (SELECT MIN(x.rowid) FROM cheque_events x WHERE x.cheque_id = ev.cheque_id))`,
+          OPENING_PORTFOLIO_NOTE,
+        );
+      });
+    },
+  },
 ];
+/** Excel / Sheets "Açılış portföyü" evrakının ilk olay notu (routes/cheques.mjs OPENING_PORTFOLIO_NOTE ile AYNI metin; göç 49). */
+const OPENING_PORTFOLIO_NOTE = "Açılış portföyü (Excel/Sheets)";
+/**
+ * KG-16 aday kuralı (BAŞ MİMAR B6; S65 = A): açıklama — baştaki boşluk atılıp Türkçe küçük harf (İ → i, I → ı) ve ç → c, ı → i, ş → s katlamasıyla — "acilis" ile BAŞLAR.
+ * ğ / ö / ü katlanmaz ("açılış" sözcüğünde yok). lib/ledger-opening.mjs aynı işlevi Silinenler'den dönen satır için kullanır (B8).
+ */
+export function isOpeningCandidateNote(note) {
+  const folded = String(note ?? "").trimStart().toLocaleLowerCase("tr-TR").replace(/ç/g, "c").replace(/ı/g, "i").replace(/ş/g, "s");
+  return folded.startsWith("acilis");
+}
 // 2.5.0 Ç3: kilitli dönemin donmuş defteri. Tutarlar kuruş.
 //   ledger_snapshot_runs: kilit her değiştiğinde bir koşu — freeze (kapsam → through; pending → done) ya da thaw (kapsam through'a iner; done doğar). KAPSAM = state 'done' olan
 //                         son koşunun through'u. state_*: koşudan sonra görünen bütün donmuş satırların toplamları (sağlama). source_digest: through'daki kilit izi

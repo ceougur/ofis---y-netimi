@@ -52,7 +52,7 @@ const legacyPending = (server, lock) => {
 
 async function seed(admin) {
   const customer = await must("müşteri", admin.post("/api/workspace/accounts", { name: "Tur Bir", registeredOn: "2026-01-05" }));
-  await must("açılış", admin.post(`/api/workspace/accounts/${customer.id}/entries`, { kind: "debt", amount: "900", date: "2026-01-05", note: "Açılış bakiyesi" }));
+  await must("açılış", admin.post(`/api/workspace/accounts/${customer.id}/entries`, { kind: "debt", amount: "900", date: "2026-01-05", note: "Devir borcu" })); // 2.5.0 Ç5-A (G3): Ç3 mekaniği verisi iki kuralda da AYNI türetilsin diye açılış dışı açıklama ("Açılış…" Borç Yaz 2.4.9 kuralında 500, güncel kuralda 602 — K8-1; o ayrışma kural tuzağı ve test/acilis-*-250 testlerinin konusu)
   const cash = {};
   for (const [day, amount] of [["2026-03-10", "1.000"], ["2026-05-05", "250"], ["2026-08-01", "300"], ["2026-12-31", "75"], ["2027-01-02", "60"]]) {
     cash[day] = (await must(`kasa ${day}`, admin.post("/api/workspace/cash", { kind: "in", amount, date: day, description: `Giriş ${day}` }))).id;
@@ -263,8 +263,13 @@ describe("2.5.0 Ç3 tur 1 — önbellek, aynı gün / başka gün yeniden kilit,
     assert.deepEqual(module.RULE_HISTORY.slice(0, 2), ["2.4.9", "2.5.0"], "kural geçmişinden sürüm silindi");
     assert.equal(module.RULE_HISTORY.at(-1), LEDGER_RULE_VERSION, "LEDGER_RULE_VERSION yükseldi ama RULE_HISTORY'ye eklenmedi");
     assert.equal(new Set(module.RULE_HISTORY).size, module.RULE_HISTORY.length);
+    // 2.5.0 Ç5-A tur 1 — BİLEREK DEĞİŞTİ (G3: C5-ACILIS-TASARIM §3.2 + BAŞ MİMAR KARARI B15): önceki her kuralın kopyası YA DA eşdeğerlik testli takma adı ("2.5.0" = 2.4.9
+    // kopyası; eşdeğerlik test/donmus-defter-250 kural tuzağının Ç5-A'dan önceki hâli + aşağıdaki "donmuş = o kuralın türetmesi").
+    const { LEDGER_RULE_ALIASES } = await import("../server/lib/general-ledger.mjs");
     for (const version of module.RULE_HISTORY.slice(0, -1)) {
-      assert.ok(existsSync(path.join(ROOT, "server/lib", `ledger-rule-${version.replace(/\./g, "")}`, "index.mjs")), `${version} kuralının kopyası yok (server/lib/ledger-rule-${version.replace(/\./g, "")}/)`);
+      const target = LEDGER_RULE_ALIASES[version] || version;
+      if (LEDGER_RULE_ALIASES[version]) assert.ok(module.RULE_HISTORY.includes(target) && !LEDGER_RULE_ALIASES[target], `${version} takma adının hedefi (${target}) kayıt defterinde gerçek kural değil`);
+      assert.ok(existsSync(path.join(ROOT, "server/lib", `ledger-rule-${target.replace(/\./g, "")}`, "index.mjs")), `${version} kuralının kopyası yok (server/lib/ledger-rule-${target.replace(/\./g, "")}/)`);
     }
     const { admin, S, store, L } = await open();
     try {
@@ -279,7 +284,9 @@ describe("2.5.0 Ç3 tur 1 — önbellek, aynı gün / başka gün yeniden kilit,
         const run = runsOf(store).find(item => item.no === no);
         assert.equal(run.state, "done", `${version} kuralının bekleyen koşusu donmadı: ${JSON.stringify(status)}`);
         assert.equal(store.get("SELECT GROUP_CONCAT(DISTINCT rule_version) AS v FROM ledger_snapshots").v, version);
-        assert.deepEqual(canon(S.entries()), canon(upTo(L.build(), LOCK)), `${version}: donmuş = canlı (bugün kurallar tutarda aynı)`);
+        // 2.5.0 Ç5-A (G3): "donmuş = canlı" yalnız güncel kural için; eski kural (ve takma adı) için "donmuş = o kuralın türetmesi" (kurallar artık tutarda ayrı).
+        const own = version === LEDGER_RULE_VERSION ? L.build() : (await rule249())(store);
+        assert.deepEqual(canon(S.entries()), canon(upTo(own, LOCK)), `${version}: donmuş = ${version === LEDGER_RULE_VERSION ? "canlı" : "2.4.9 kopyasının türetmesi"}`);
       }
     } finally {
       await close();

@@ -1,0 +1,98 @@
+{
+  "ad": "c5a1by-taban0-acilis",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-reporter=spec test/acilis-519-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T04:00:37.485Z",
+  "sure_sn": 1.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 13,
+    "gecen": 0,
+    "basarisiz": 13,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 13 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "modül açılışları tek madde, karşı hesap 519, açılış sınıfı (M-01, M-02 / M-03, M-04, M-05, M-07; KG-1); 500 Sermaye'ye hiçbir olay yazmaz",
+      "konum": "test/acilis-519-250.test.mjs:86:3",
+      "hata": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal: · + actual - expected"
+    },
+    {
+      "ad": "açılış İŞARETTEN tanınır: göçten sonra yazılmış 'AÇILIŞ BAKİYESİ' Borç Yaz 602, 'Açılış bakiyesi' Alacak Yaz 770 (C-01 / C-02; P1, K8-1)",
+      "konum": "test/acilis-519-250.test.mjs:102:3",
+      "hata": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal: · + actual - expected"
+    },
+    {
+      "ad": "açılış evrakı 519 (M-08 / M-09: 602 / 770'e yazılmaz); formdan carisiz evrak 649.90 / 770.90 (S49); karşılıksız: açılışta B 519 / A 101, carisizde B 649.90 / A 101, cari seçilince cari borçlanır (S48, S66)",
+      "konum": "test/acilis-519-250.test.mjs:112:3",
+      "hata": "AssertionError [ERR_ASSERTION]: carisiz alınan: 400 {\"ok\":false,\"error\":\"Çeki kimden aldığınızı yazın ya da cari seçin.\"} · 400 !== 200"
+    },
+    {
+      "ad": "KG-5: yüklenen kart TEK madde B CH (T − P) / A 519, P maddesiz, tarih yüklemenin YEREL günü; P = 0 → T; P = T → madde yok (H-06, B5)",
+      "konum": "test/acilis-519-250.test.mjs:134:3",
+      "hata": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal: · + actual - expected"
+    },
+    {
+      "ad": "açılış sınıfı yalnız SIRAYI değiştirir: aynı gün Kasa açılışı olağan Kasa girişinden önce; borç = alacak her maddede",
+      "konum": "test/acilis-519-250.test.mjs:148:3",
+      "hata": "AssertionError [ERR_ASSERTION]: açılış maddeleri olağan Kasa girişinden önce: stock-open:smove-e9925f46-5352-46e1-86f0-d561f8123b46:-, cash:cash-1d8c243c-e53d-4796-8a89-a558e3bc5608:-, cash:cash-cac859f3-637b-4e15-b8dc-99239104c371:-, account:aentry-759b2067-54d0-4ae3-9606-58d55e58b0da:-, account:aentry-a4d84ca9-31d6-41d5-8100-ae9ed48fc2d6:-, account:free-in:cheque-a852c0d2-bb83-4d6f-bdb7-df52e2d1a41a:-, account:free-in:cheque-ac51360d-deaf-4037-a4fe-34baef3e30a7:-, account:free-out:cheque-70d6ce34-213a-4092-afb7-7698bec34167:-, bank:ev-0mwd0skko0000-0524db44-df0b-4eba:-, bank:ev-0mwd0sklc0000-58fb502d-0554-4313:- · at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1by-taban0/test/acilis-519-250.test.mjs:159:12)"
+    },
+    {
+      "ad": "Mutabakat Testi: 'Açılış Karşılığı' (519 / 500) denetimi temiz ve ikinci yükleyici = defter (B2); stock:opening 519'a göre; expected() 519'u içermez (K6)",
+      "konum": "test/acilis-519-250.test.mjs:163:3",
+      "hata": "AssertionError [ERR_ASSERTION]: Açılış Karşılığı denetimi yok · at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1by-taban0/test/acilis-519-250.test.mjs:166:12)"
+    },
+    {
+      "ad": "Banka İşlem Kartı ve Banka Ayarları 519 okur; saklı satır kodu 500 kalır (B3)",
+      "konum": "test/acilis-519-250.test.mjs:176:3",
+      "hata": "AssertionError [ERR_ASSERTION]: [{\"role\":\"bank\",\"gl\":\"102\",\"glName\":\"Bankalar (Havale / EFT)\",\"sub\":\"102.01\",\"subName\":\"Ziraat Bankası · Ana Hesap\",\"ref\":\"bacc-4bcc0cf5-a4a1-4ba1-abc5-93756a0fa5ac\",\"side\":\"D\",\"tryMinor\":500000,\"currency\":\"TRY\",\"fxMinor\":500000,\"memo\":\"\"},{\"role\":\"opening\",\"gl\":\"500\",\"glName\":\"Açılış ve Devir Bakiyeleri\",\"sub\":\"\",\"subName\":\"\",\"ref\":\"\",\"side\":\"C\",\"tryMinor\":500000,\"currency\":\"TRY\",\"fxMinor\":500000,\"memo\":\"\"}] · at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1by-taban0/test/acilis-519-250.test.mjs:181:12)"
+    },
+    {
+      "ad": "S53: kilitsiz geçmiş yılda Ç5-A maddesi varsa Defter Mutabakatı / Mutabakat Testi uyarısı; yıl kilitlenince kalkar",
+      "konum": "test/acilis-519-250.test.mjs:186:3",
+      "hata": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value: · assert.ok(info && info.ok === true && info.info === true && !info.notice && info.years.includes(\"2025\"), JSON.stringify(info))"
+    },
+    {
+      "ad": "göç 48: aday kuralı (B6, S65) — Türkçe küçük harf + ç/ı/ş katlaması, baştaki boşluk; 'Devir' / 'Devreden' / ortada geçen girmez; Açılış Bakiyesi satırı (is_opening) aday değil; onaya kadar 519 (S47)",
+      "konum": "test/acilis-519-250.test.mjs:241:3",
+      "hata": "Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1by-taban0/server/lib/ledger-opening.mjs' imported from /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1by-taban0/test/acilis-519-250.test.mjs · at finalizeResolution (node:internal/modules/esm/resolve:275:11)"
+    },
+    {
+      "ad": "onay → 519 (M-02 / M-03), ret → 602 / 770 (C-01 / C-02); tutar / tarih / yön / is_opening DEĞİŞMEZ; kilit izi değişmez (B4); aynı karar tekrarı yazmaz; yetkisiz 403; listede olmayan 404",
+      "konum": "test/acilis-519-250.test.mjs:261:3",
+      "hata": "AssertionError [ERR_ASSERTION]: liste: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200"
+    },
+    {
+      "ad": "göç eşgüçlü: yeniden koşan göç 48 kararları bozmaz (onay / ret aynen), adayları çoğaltmaz",
+      "konum": "test/acilis-519-250.test.mjs:291:3",
+      "hata": "AssertionError [ERR_ASSERTION]: liste: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200"
+    },
+    {
+      "ad": "göçten sonra yazılan 'Açılış…' Borç Yaz aday OLMAZ (K8-1)",
+      "konum": "test/acilis-519-250.test.mjs:302:3",
+      "hata": "Error: no such column: opening_review · at prepare (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1by-taban0/server/lib/db.mjs:79:22)"
+    },
+    {
+      "ad": "restoredOpeningReview: işaretli silinmiş + başka açılış → candidate; 2.4.x yükü 'Açılış…' → candidate; 2.5.0 yükü durumunu korur; işaretle dönen ''",
+      "konum": "test/acilis-519-250.test.mjs:310:3",
+      "hata": "Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1by-taban0/server/lib/ledger-opening.mjs' imported from /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1by-taban0/test/acilis-519-250.test.mjs · at finalizeResolution (node:internal/modules/esm/resolve:275:11)"
+    }
+  ],
+  "ham_cikti": "../c5a1by-kanit/2026-11-12/c5a1by-taban0-acilis.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1by-taban0",
+  "ham_cikti_sha256": "ef8e77ccfbca3e8b6ee4a37c78698e7f9a590b129aa943b1c3cfa41aab5b7b07",
+  "ham_cikti_bayt": 17809
+}

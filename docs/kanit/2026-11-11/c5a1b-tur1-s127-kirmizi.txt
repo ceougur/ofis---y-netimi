@@ -1,0 +1,212 @@
+TAP version 13
+# (node:27063) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: S127 = A — eski kuralla donmuş yılın iki yanına düşen Excel kartı bir kez yazılır (v2.4.9 gerçek koduyla üretilmiş kilitli veri)
+    # Subtest: v2.4.9'un kendi sayıları (kâhin): mizan 120 = müşteri carileri, Mutabakat Testi tamam, kilit 31.12.2025
+    ok 1 - v2.4.9'un kendi sayıları (kâhin): mizan 120 = müşteri carileri, Mutabakat Testi tamam, kilit 31.12.2025
+      ---
+      duration_ms: 0.800514
+      type: 'test'
+      ...
+# (node:27063) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: göç penceresi (bekleyen 2.4.9 koşusu donmadan): karma mizan 120 = cariler; sonra donma tamamlanınca da (i, ii, iii, iv, ters)
+    not ok 2 - göç penceresi (bekleyen 2.4.9 koşusu donmadan): karma mizan 120 = cariler; sonra donma tamamlanınca da (i, ii, iii, iv, ters)
+      ---
+      duration_ms: 393.672118
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-tur1/test/s127-tek-kez-250.test.mjs:63:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        göç penceresinde 120 = cariler (çift / eksik yok)
+        + actual - expected
+        
+        + 1990000
+        - 1550000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1550000
+      actual: 1990000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-tur1/test/s127-tek-kez-250.test.mjs:75:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: donmuş veri: cariler v2.4.9 ile aynı; mizan 120 = cariler; kilitli 2025 mizanı ve Yevmiye Defteri BAYT BAYT aynı; bütün zaman mizanında fark YALNIZ karar numaralı beklenen farklar
+    not ok 3 - donmuş veri: cariler v2.4.9 ile aynı; mizan 120 = cariler; kilitli 2025 mizanı ve Yevmiye Defteri BAYT BAYT aynı; bütün zaman mizanında fark YALNIZ karar numaralı beklenen farklar
+      ---
+      duration_ms: 156.852185
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-tur1/test/s127-tek-kez-250.test.mjs:78:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        mizan 120 = müşteri carileri (S127)
+        + actual - expected
+        
+        + 1990000
+        - 1550000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1550000
+      actual: 1990000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-tur1/test/s127-tek-kez-250.test.mjs:82:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Kural Değişikliği Farkı yalnız gerçekten kural farkı olan hesaplarda (500 / 519 / 602); 120'de kartın çift sayımından doğan fark YOK
+    not ok 4 - Kural Değişikliği Farkı yalnız gerçekten kural farkı olan hesaplarda (500 / 519 / 602); 120'de kartın çift sayımından doğan fark YOK
+      ---
+      duration_ms: 2.544842
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-tur1/test/s127-tek-kez-250.test.mjs:103:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        [{"year":2025,"account":"120","sub":"","party":"account-0efe2889-d67e-4541-9d97-63a0e2e21d58","frozenMinor":600000,"liveMinor":0,"differenceMinor":-600000},{"year":2025,"account":"120","sub":"","party":"account-11acf4fe-6a32-44c3-affd-db41078d6246","frozenMinor":-60000,"liveMinor":240000,"differenceMinor":300000},{"year":2025,"account":"120","sub":"","party":"account-13d1e968-7a26-4890-a542-d834b161d34c","frozenMinor":0,"liveMinor":100000,"differenceMinor":100000},{"year":2025,"account":"120","sub":"","party":"account-8456b7cf-ad79-437d-98c6-e7aa2f1d0803","frozenMinor":240000,"liveMinor":0,"differenceMinor":-240000},{"year":2025,"account":"500","sub":"","party":"","frozenMinor":-1190000,"liveMinor":0,"differenceMinor":1190000},{"year":2025,"account":"519","sub":"","party":"","frozenMinor":0,"liveMinor":-1790000,"differenceMinor":-1790000},{"year":2025,"account":"602","sub":"","party":"","frozenMinor":-1040000,"liveMinor":0,"differenceMinor":1040000}]
+        + actual - expected
+        
+          [
+        +   '120',
+            '500',
+            '519',
+            '602'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '500'
+        1: '519'
+        2: '602'
+      actual:
+        0: '120'
+        1: '500'
+        2: '519'
+        3: '602'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-tur1/test/s127-tek-kez-250.test.mjs:106:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: sınıflar: eski yapıya bağlı kartlar YALNIZ i / ii / ters (iii ve iv yeni kuralla); kartların yevmiye tarihleri
+    not ok 5 - sınıflar: eski yapıya bağlı kartlar YALNIZ i / ii / ters (iii ve iv yeni kuralla); kartların yevmiye tarihleri
+      ---
+      duration_ms: 2.145898
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-tur1/test/s127-tek-kez-250.test.mjs:112:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + []
+        - [
+        -   'Kart Bir',
+        -   'Kart İki',
+        -   'Ters Kart',
+        -   'Ters Sıfır'
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'Kart Bir'
+        1: 'Kart İki'
+        2: 'Ters Kart'
+        3: 'Ters Sıfır'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-tur1/test/s127-tek-kez-250.test.mjs:113:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: vii: kilitli Kayıt Tarihli kart silinemez / Geri Al yapılamaz (409); açık dönemdeki açılış satırı düzeltilir → 120 = cariler
+    not ok 6 - vii: kilitli Kayıt Tarihli kart silinemez / Geri Al yapılamaz (409); açık dönemdeki açılış satırı düzeltilir → 120 = cariler
+      ---
+      duration_ms: 128.060924
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-tur1/test/s127-tek-kez-250.test.mjs:124:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        düzeltmeden sonra 120 = cariler
+        + actual - expected
+        
+        + 2040000
+        - 1600000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1600000
+      actual: 2040000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-tur1/test/s127-tek-kez-250.test.mjs:135:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:27063) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: vi: Kilidi Aç → Yeniden Kilitle — yıl GÜNCEL kuralla yeniden donar, kart yeni kuralla (yükleme günü), çift / eksik yok; kural farkı kalmaz
+    ok 7 - vi: Kilidi Aç → Yeniden Kilitle — yıl GÜNCEL kuralla yeniden donar, kart yeni kuralla (yükleme günü), çift / eksik yok; kural farkı kalmaz
+      ---
+      duration_ms: 325.069358
+      type: 'test'
+      ...
+    1..7
+not ok 1 - S127 = A — eski kuralla donmuş yılın iki yanına düşen Excel kartı bir kez yazılır (v2.4.9 gerçek koduyla üretilmiş kilitli veri)
+  ---
+  duration_ms: 1032.100332
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-tur1/test/s127-tek-kez-250.test.mjs:47:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: S127 — kilitsiz v2.4.9 verisi: viii (kilitsiz, hiçbir şey eski yapıya bağlanmaz) ve v (kilit güncellemeden SONRA konur)
+    # Subtest: viii: kilitsiz veride bağlı kart YOK; bütün kartlar KG-5 (yükleme günü, T − P); 120 = cariler; fark yalnız KG-5
+    ok 1 - viii: kilitsiz veride bağlı kart YOK; bütün kartlar KG-5 (yükleme günü, T − P); 120 = cariler; fark yalnız KG-5
+      ---
+      duration_ms: 212.092155
+      type: 'test'
+      ...
+# (node:27063) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: v: kilit güncellemeden SONRA konur → yıl yeni kuralla donar; bağlı kart yok; 120 = cariler; kural farkı yok
+    ok 2 - v: kilit güncellemeden SONRA konur → yıl yeni kuralla donar; bağlı kart yok; 120 = cariler; kural farkı yok
+      ---
+      duration_ms: 312.480417
+      type: 'test'
+      ...
+    1..2
+ok 2 - S127 — kilitsiz v2.4.9 verisi: viii (kilitsiz, hiçbir şey eski yapıya bağlanmaz) ve v (kilit güncellemeden SONRA konur)
+  ---
+  duration_ms: 543.517954
+  type: 'suite'
+  ...
+1..2
+# tests 9
+# suites 2
+# pass 4
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1985.439701

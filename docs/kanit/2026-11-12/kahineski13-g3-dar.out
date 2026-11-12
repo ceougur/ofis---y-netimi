@@ -1,0 +1,78 @@
+G3 eski kâhin (eski senaryo) ↔ yeni kâhin (yeni senaryo): 22 karşılaştırma, 16 aynı, 6 farklı
+BEKLENMEYEN fark: 0
+# tests 22
+# pass 22
+# fail 0
+== senaryo.json: 1 farklı koşu, 1 ayrı fark imzası
+   koşular (1): 2.5.0/m0
+      /cari/Ahmet Yılmaz: eski 560000 → yeni 110000
+      /cari/Excel Kart Müşterisi Ltd.: eski null → yeni 450000
+      /yaslandirma/cariler/Ahmet Yılmaz: eski 560000 → yeni 110000
+      /yaslandirma/cariler/Excel Kart Müşterisi Ltd.: eski null → yeni 450000
+== senaryolar/g4-yeni-kayitlar.json: 1 farklı koşu, 1 ayrı fark imzası
+   koşular (1): 2.5.0/m0
+      /cari/Elle Alfa Ltd.: eski 230000 → yeni 170000
+      /cari/Elle Excel Müşterisi Ltd.: eski null → yeni 60000
+      /yaslandirma/cariler/Elle Alfa Ltd.: eski 230000 → yeni 170000
+      /yaslandirma/cariler/Elle Excel Müşterisi Ltd.: eski null → yeni 60000
+== senaryolar/g9-ok1-acik-taksitli-fatura.json: 2 farklı koşu, 1 ayrı fark imzası
+   koşular (2): 2.5.0/m0 2.4.9/m0
+      /__cokme__: eski null → yeni "ÖK-1 (BAŞ MİMAR KARARI 12.11.2026): EX1 Excel taksit kartı, aynı carinin (M1) açık taksit kartı varken (F1) yüklenemez — gerçekte kayıt oluşmaz, kâhin kurmaz"
+      /__yok__: eski true → yeni null
+== senaryolar/g9b-ok1-acik-excel-karti.json: 2 farklı koşu, 2 ayrı fark imzası
+   koşular (1): 2.5.0/m0
+      /__cokme__: eski null → yeni "ÖK-1 (BAŞ MİMAR KARARI 12.11.2026): EX2 Excel taksit kartı, aynı carinin (M1) açık taksit kartı varken (EX1) yüklenemez — gerçekte kayıt oluşmaz, kâhin kurmaz"
+      /__yok__: eski true → yeni null
+   koşular (1): 2.4.9/m0
+      /__cokme__: eski null → yeni "2.4.9 kuralında tanımsız: Excel taksit kartının eski defter karşılığı kararda yok"
+      /__yok__: eski true → yeni null
+
+KOD ETKİSİ — eski senaryolar, eski kâhin ↔ yeni kâhin:
+  senaryo.json: 2 koşu, 1 farklı — örnek ('2.5.0', 0, 'ÖK-1 (BAŞ MİMAR KARARI 12.11.2026): EX1 Excel taksit kartı, aynı carinin (M2) açık taksit kartı varken (F13) yüklenemez — gerçekte kayıt olu')
+  senaryolar/g1-goc-kilitsiz.json: 2 koşu, 0 farklı
+  senaryolar/g2-goc-kilitli.json: 2 koşu, 0 farklı
+  senaryolar/g3-s51-b8-geri-alma.json: 2 koşu, 0 farklı
+  senaryolar/g4-yeni-kayitlar.json: 2 koşu, 0 farklı
+  senaryolar/g5-kasa-hareket-once.json: 2 koşu, 0 farklı
+  senaryolar/g6-s65-acilis-basi.json: 2 koşu, 0 farklı
+  senaryolar/g7-s66-carisiz-karsiliksiz.json: 2 koşu, 0 farklı
+  senaryolar/g8-s66-kilitli-donem.json: 2 koşu, 0 farklı
+
+MUTANT 39 (yeni senaryolar, 2.5.0): taban ↔ m39
+  senaryo.json: AYNI
+  senaryolar/g1-goc-kilitsiz.json: AYNI
+  senaryolar/g2-goc-kilitli.json: AYNI
+  senaryolar/g3-s51-b8-geri-alma.json: AYNI
+  senaryolar/g4-yeni-kayitlar.json: AYNI
+  senaryolar/g5-kasa-hareket-once.json: AYNI
+  senaryolar/g6-s65-acilis-basi.json: AYNI
+  senaryolar/g7-s66-carisiz-karsiliksiz.json: AYNI
+  senaryolar/g8-s66-kilitli-donem.json: AYNI
+  senaryolar/g9-ok1-acik-taksitli-fatura.json: FARKLI (taban ÖK-1 (BAŞ MİMAR KARARI 12.11.2026): EX1 Excel taksit kartı,  · m39 sayı)
+  senaryolar/g9b-ok1-acik-excel-karti.json: FARKLI (taban ÖK-1 (BAŞ MİMAR KARARI 12.11.2026): EX2 Excel taksit kartı,  · m39 sayı)
+
+EX1 KURALI MUTANTLARI (yeni senaryolar, 2.5.0): taban ↔ mutant farkı
+  senaryo.json m14: değerle, 10 fark
+      /kontroller/K_EKIM_ONCE/500: taban None → mutant -6900000
+      /kontroller/K_EKIM_ONCE/519: taban -6900000 → mutant None
+      /kontroller/K_EYLUL/500: taban None → mutant -6900000
+      /kontroller/K_EYLUL/519: taban -6900000 → mutant None
+      /kontroller/K_EYLUL_MAHSUP/500: taban None → mutant -6900000
+      /kontroller/K_EYLUL_MAHSUP/519: taban -6900000 → mutant None
+      /kontroller/K_GERI_ALINDI/500: taban None → mutant -6900000
+      /kontroller/K_GERI_ALINDI/519: taban -6900000 → mutant None
+      /kontroller/K_SON/500: taban None → mutant -7670000
+      /kontroller/K_SON/519: taban -7370000 → mutant 300000
+  senaryo.json m21: değerle, 2 fark
+      /kontroller/K_SON/519: taban -7370000 → mutant -6770000
+      /kontroller/K_SON/600: taban -6730000 → mutant -7330000
+  senaryo.json: yeni cari 'Excel Kart Müşterisi Ltd.' taban cari 450000 · yaşlandırma 450000
+  senaryolar/g4-yeni-kayitlar.json m14: değerle, 2 fark
+      /kontroller/K1/500: taban None → mutant -910000
+      /kontroller/K1/519: taban -850000 → mutant 60000
+  senaryolar/g4-yeni-kayitlar.json m21: değerle, 2 fark
+      /kontroller/K1/519: taban -850000 → mutant -760000
+      /kontroller/K1/600: taban None → mutant -90000
+  senaryolar/g4-yeni-kayitlar.json: yeni cari 'Elle Excel Müşterisi Ltd.' taban cari 60000 · yaşlandırma 60000
+
+[kanit] kahineski13-g3-dar: GEÇTİ · çıkış 0 · 22/22 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 5665174 · linux 6.18.44-fc-v378 x64 · Node v22.23.4

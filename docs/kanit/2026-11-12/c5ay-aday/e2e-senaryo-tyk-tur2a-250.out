@@ -1,0 +1,74 @@
+
+> destekofis@2.4.9 test:senaryo-tyk-tur2a-250
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-tyk-tur2a-250.mjs
+
+
+■ Kurulum (programın API'si): ürün + alım; stoktan veresiye satış + taksitlendir; taksitsiz Yeni Borç kartı
+  ✓ stoktan açılan kartın Kayıt Tarihi carinin Kayıt Tarihi (borçtan önce — Y-1 koşulu)
+
+■ E1 Taksitler: stoktan açılan kart 'Geciken' sekmesinde (Y-1; önceden 'Biten')
+  ✓ Geciken sekmesinde stok kartı (2 kart)
+  ✓ Biten sekmesinde değil
+
+■ E2 Kart penceresi: taksitler 500 / 500, 1. taksit Gecikti (Y-1)
+  ✓ iki taksit satırı (2)
+  ✓ kalanlar 500 / 500: ["₺500,00","₺500,00"]
+  ✓ 1. taksit Gecikti: “Gecikti”
+
+■ E3 Karttan Taksit Tahsilatı 200 (gerçek tıklama, insan hızı) → kart 300 / 500; kapatılıp yeniden açılınca aynı (O-2); veri tabanında 200
+  ✓ tahsilattan hemen sonra kart: ["₺300,00","₺500,00"]
+  ✓ veri tabanı: tahsilat {"amount":200,"date":"2026-10-20"}
+  ✓ yeniden açılınca aynı: [["₺300,00","Kısmen · Gecikti"],["₺500,00","Bekliyor"]]
+
+■ E4 Cari kartı Gecikmiş Borç (Y-1: 300 — 1. taksitin kalanı; önceden satışın tamamı)
+  ✓ ekranda: “₺300,00Gecikmiş Borç · 1 kalem”
+
+■ E5 Zil: stok kartının 1. taksiti; taksitsiz kartın 'Taksitlendirilmemiş Kalan' 1.000 (O-3)
+  ✓ zilde stok kartı: ["10 gün geciktiEkran Stok Müşteri1. taksit · vade 10.10.2026 · ₺300,00 (kalan)✕Tahsilat GirTaksit Kartı"]
+  ✓ zilde taksitsiz kart: ["20 gün geciktiEkran Taksitsiz MüşteriTaksitlendirilmemiş Kalan · vade 30.09.2026 · ₺1.000,00✕Tahsilat GirTaksit Kartı"]
+  ✓ cari B Gecikmiş Borç 1.000 (1000)
+  ✓ Vade Takip (gecikmiş) taksitsiz kart 1.000 (1000)
+
+■ E6 Taksitsiz Mevcut Borç kartı 'Aktif' sekmesinde → + Taksit ile iki taksit (gerçek tıklama, insan hızı) → kart Gecikti 500 / 500; Gecikmiş Borç 500 (G-2)
+  ✓ Aktif sekmesinde taksitsiz Mevcut Borç kartı (3 kart)
+  ✓ Biten sekmesinde değil (önceden açılır açılmaz 'Bitti')
+  ✓ taksitler 500 / 500: ["₺500,00","₺500,00"]
+  ✓ 1. taksit Gecikti: “Gecikti”
+  ✓ veri tabanı: [{"d":"2026-10-10","amount":500},{"d":"2026-11-09","amount":500}]
+  ✓ cari kartı Gecikmiş Borç: “₺500,00Gecikmiş Borç · 1 kalem”
+
+■ E7 Tedarikçiye stoktan Alış İadesi 300 → Vade Takip ve zilde 'Tahsil Edilecek Borç 300' (ORTA-2)
+  ✓ Gecikmiş Borç 300 (300)
+  ✓ Vade Takip: ["30.09.202620 gün geçtiEkran İade TedarikçiCari (vadeli)Tahsil Edilecek BorçAlış iadesi: Ekran Ürün 3 Adet × 100,00 TL · Kayıt 30.09.2026 · 300,00 TL₺300,00"]
+  ✓ zilde: ["20 gün geciktiEkran İade TedarikçiTahsil Edilecek Borç · Alış iadesi: Ekran Ürün 3 Adet × 100,00 TL · vade 30.09.2026 · ₺300,00✕Tahsilat GirCariyi Aç"]
+
+■ E8 Taksitsiz kart Gecikti: Geciken sekmesi, kart penceresinin Geciken kutusu, liste göstergesi (Y2)
+  ✓ Geciken sekmesinde taksitsiz kart (3 kart)
+  ✓ liste göstergesi taksitlendirilmemiş kalanı ayrı söyler: “₺2.800,00Kalan Alacak · 3 kart₺1.800,00Geciken · 2 taksit + taksitlendirilmemiş kalan ₺1.000,00₺800,00Bu Ay Beklenen₺200,00Tahsil Edilen”
+  ✓ Geciken kutusu: “₺1.000,00Geciken · 0 taksit · taksitlendirilmemiş kalan ₺1.000,00”
+
+■ E9 S110: stoktan taksitli satış + başka açık borç → kart kendi satışını taşır; Taksitler, cari kartı, Vade Takip, zil aynı sayı
+  ✓ kart 500 / 500, 1. taksit Gecikti: [["₺500,00","Gecikti"],["₺500,00","Bekliyor"]]
+  ✓ cari kartı Gecikmiş Borç: “₺1.000,00Gecikmiş Borç · 2 kalem”
+  ✓ Vade Takip gecikmiş 1.000 (1000)
+  ✓ zilde: ["30 gün geciktiEkran S110 MüşteriTahsil Edilecek Borç · vade 20.09.2026 · ₺500,00✕Tahsilat GirCariyi Aç","10 gün geciktiEkran S110 Müşteri1. taksit · vade 10.10.2026 · ₺500,00✕Tahsilat GirTaksit Kartı"]
+
+■ E10 S118: taksit tahsilatı formu kartın KENDİ kalanını önerir (700,00) + bilgi notu (gerçek tıklama)
+  ✓ taksit satırı avans düşülmüş kalan 600: ["₺600,00"]
+  ✓ önerilen tutar kartın kendi kalanı: 700,00
+  ✓ bilgi notu: “Carinin avansı bu kartın 100,00 TL'sini kapatıyor.”
+
+■ E11 S96: tedarikçiye verilen çek (karşılığı yok) Vade Takip ve zilde 'Tahsil Edilecek Borç 700'
+  ✓ Gecikmiş Borç 700 (700)
+  ✓ Vade Takip: ["10.10.202610 gün geçtiEkran Çek TedarikçiCari (vadeli)Tahsil Edilecek BorçÇek verildi · No EKR-T2B2 · vade 19.11.2026 · Kayıt 10.10.2026 · 700,00 TL₺700,00","19.11.202630 günEkran Çek TedarikçiÇekVerilen çek · No EKR-T2B2₺700,00"]
+  ✓ zilde: ["10 gün geciktiEkran Çek TedarikçiTahsil Edilecek Borç · Çek verildi · No EKR-T2B2 · vade 19.11.2026 · vade 10.10.2026 · ₺700,00✕Tahsilat GirCariyi Aç"]
+
+■ E12 S98 × S99: verilen avanslı müşteride fatura durumu Vade Takip / zil ile aynı (fatura 100 açık, avans 50)
+  ✓ fatura durumu: “Vadesi Geçti”
+  ✓ fatura açığı 100 (100)
+  ✓ zilde: ["12 gün geciktiEkran Avans Fatura · Cari No 8Tahsil Edilecek Borç · vade 08.10.2026 · ₺50,00 (kalan)✕Tahsilat GirCariyi Aç","11 gün geciktiEkran Avans FaturaTahsil Edilecek Fatura FIS2026000000001 · vade 09.10.2026 · ₺100,00✕Tahsilat GirFatura Kartını Aç"]
+  ✓ sayfa hatası yok
+
+SONUÇ: 40 geçti, 0 kaldı
+
+[kanit] c5ay-aday-e2e-senaryo-tyk-tur2a-250: GEÇTİ · çıkış 0 · 40/40 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit ea04863 +1 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v22.23.4

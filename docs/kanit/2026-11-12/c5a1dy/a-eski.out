@@ -1,0 +1,112 @@
+TAP version 13
+# Subtest: Ç5-A tur 1d — Kural Değişikliği Farkı uyarıdır, yeni sapma değildir
+    # Subtest: [1] kilitli eski veri: dondurmadan sonraki İLK ARKA PLAN taraması sessiz (günlük / zil / sunucu yok), uyarı satırı var; ardından satır içi de sessiz
+    not ok 1 - [1] kilitli eski veri: dondurmadan sonraki İLK ARKA PLAN taraması sessiz (günlük / zil / sunucu yok), uyarı satırı var; ardından satır içi de sessiz
+      ---
+      duration_ms: 1054.053792
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1dy-eski/test/kural-farki-alarm-250.test.mjs:96:3'
+      failureType: 'testCodeFailure'
+      error: 'kural farkı yeni sapma sayılmamalı: ["ledger:rule-diff"]'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1dy-eski/test/kural-farki-alarm-250.test.mjs:107:14)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: [3] dondurmadan sonra yeniden açılış: taban satırı / sunucu 'kalan sapma' iletisi kural farkını taşımaz, ilk taramalar sessiz; kapı dışı kilitli kaynak değişimi yine bulunur
+    not ok 2 - [3] dondurmadan sonra yeniden açılış: taban satırı / sunucu 'kalan sapma' iletisi kural farkını taşımaz, ilk taramalar sessiz; kapı dışı kilitli kaynak değişimi yine bulunur
+      ---
+      duration_ms: 906.14218
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1dy-eski/test/kural-farki-alarm-250.test.mjs:121:3'
+      failureType: 'testCodeFailure'
+      error: 'yeniden açılışın taban satırında kural farkı olmamalı: ["İleri tarihli hareket (Çek/Senet Hareketleri)","Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi); İleri tarihli hareket (Çek/Senet Hareketleri)"]'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1dy-eski/test/kural-farki-alarm-250.test.mjs:133:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [1] kilitli eski veri: dondurmadan sonraki İLK tarama SATIR İÇİ yoldan (Mutabakat Testi ucu) sessiz, uyarı satırı yanıtta
+    not ok 3 - [1] kilitli eski veri: dondurmadan sonraki İLK tarama SATIR İÇİ yoldan (Mutabakat Testi ucu) sessiz, uyarı satırı yanıtta
+      ---
+      duration_ms: 766.093843
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1dy-eski/test/kural-farki-alarm-250.test.mjs:160:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        satır içi ilk taramada bulgu yok
+        + actual - expected
+        
+        + [
+        +   'ledger:rule-diff'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'ledger:rule-diff'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1dy-eski/test/kural-farki-alarm-250.test.mjs:171:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [2] GERÇEK yeni sapma (kural farkı dışı) dondurmadan SONRA, kural farkıyla AYNI taramada: bulunur, günlüğe yazılır, zil + sunucu iletisi; kural farkı bulgu değil
+    not ok 4 - [2] GERÇEK yeni sapma (kural farkı dışı) dondurmadan SONRA, kural farkıyla AYNI taramada: bulunur, günlüğe yazılır, zil + sunucu iletisi; kural farkı bulgu değil
+      ---
+      duration_ms: 1091.220733
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1dy-eski/test/kural-farki-alarm-250.test.mjs:185:3'
+      failureType: 'testCodeFailure'
+      error: 'kural farkı bulgu değil: ["ledger:rule-diff","cents:cash_entries","money:report","money:event"]'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1dy-eski/test/kural-farki-alarm-250.test.mjs:198:14)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [4] kilitsiz veri: kural farkı denetimi yok, ilk tarama sessiz; gerçek sapma eskisi gibi bulunur (gerileme yok)
+    ok 5 - [4] kilitsiz veri: kural farkı denetimi yok, ilk tarama sessiz; gerçek sapma eskisi gibi bulunur (gerileme yok)
+      ---
+      duration_ms: 590.492495
+      type: 'test'
+      ...
+    1..5
+not ok 1 - Ç5-A tur 1d — Kural Değişikliği Farkı uyarıdır, yeni sapma değildir
+  ---
+  duration_ms: 4410.05433
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1dy-eski/test/kural-farki-alarm-250.test.mjs:95:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 1
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4831.94954

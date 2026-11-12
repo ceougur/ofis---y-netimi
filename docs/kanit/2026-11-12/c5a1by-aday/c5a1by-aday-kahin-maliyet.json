@@ -1,0 +1,32 @@
+{
+  "ad": "c5a1by-aday-kahin-maliyet",
+  "komut": "npm run test:kahin-maliyet",
+  "commit": "69c2a3a0ce20b80b5c6246c0b171f481aec1b7d8",
+  "dal": "sinama-c5a1b-aday",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T04:26:31.753Z",
+  "sure_sn": 120.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 41306,
+    "gecen": 41306,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../c5a1by-aday-kanit/2026-11-12/c5a1by-aday-kahin-maliyet.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag",
+  "ham_cikti_sha256": "095eded9109bd84519914119cf8c9098f907d0097e2f42a7d3a73b97b005d2ee",
+  "ham_cikti_bayt": 561
+}

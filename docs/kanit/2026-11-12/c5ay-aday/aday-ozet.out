@@ -1,0 +1,22 @@
+başladı 16:34:32 yük 0.35 0.86 1.06 · aday 33001f40 · ölçülen adayla (be51a3d8) fark (liste / belge dışı; BOŞ olmalı): []
+liste üretimi çıkış 0
+  − kapanan: rastgele-ux18-2 k6:mizan:500 · program "okunamadı" / kâhin 0 · paket Ç5-A
+  − kapanan: rastgele-ux18-2 k6:mizan:519 · program "okunamadı" / kâhin 0 · paket Ç5-A
+  − kapanan: rastgele-ux18-2 kson:mizan:500 · program "okunamadı" / kâhin 0 · paket Ç5-A
+  − kapanan: rastgele-ux18-2 kson:mizan:519 · program "okunamadı" / kâhin 0 · paket Ç5-A
+liste farkı (çalışma dalı → aday): önceki 334 ({'Ç5-A': 252, 'Ç5-B tur 2': 74, 'eşleme': 8}) → yeni 74 · kapanan 260 ({'Ç5-A': 252, 'eşleme': 8}) · yeni 0 · değeri değişen 0 · kalan paketler {'Ç5-B tur 2': 74}
+kalan senaryolar (Ç5-A etiketli): {}
+yeni kayıtlar: []
+değeri değişen: []
+aday commit ea04863c · temiz mi: 0
+kahin-cari UTC çıkış 0 [kanit] c5ay-aday-kahin-cari-UTC: GEÇTİ · çıkış 0 · 15092/15092 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit ea04863 +1 izle
+kahin-cari Europe/Istanbul çıkış 0 [kanit] c5ay-aday-kahin-cari-Europe-Istanbul: GEÇTİ · çıkış 0 · 15092/15092 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit ea0
+kahin-defter UTC çıkış 0 [kanit] c5ay-aday-kahin-defter-UTC: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit ea04863 +1 izlenm · ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-uiZQgA
+kahin-defter Europe/Istanbul çıkış 0 [kanit] c5ay-aday-kahin-defter-Europe-Istanbul: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit ea048 · ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-ytG19c
+kahin-tutar çıkış 0 [kanit] c5ay-aday-kahin-tutar: GEÇTİ · çıkış 0 · 3559/3559 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 
+kahin-maliyet çıkış 0 [kanit] c5ay-aday-kahin-maliyet: GEÇTİ · çıkış 0 · 41306/41306 geçti, 0 başarısız, 0 iptal, 0 atlanan · com
+ci.yml ayrıştı
+kâhin bölümü bitti 16:48:52 yük 1.27 1.28 1.19
+TAM npm test çıkış 0 [kanit] c5ay-aday-tam: GEÇTİ · çıkış 0 · 5420/5420 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit ea04863 +1 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node
+# tests 5420 # pass 5420 # fail 0 # cancelled 0 # skipped 0 
+A bölümü bitti 17:39:27 yük 2.15 1.89 1.91 · disk 5.9G

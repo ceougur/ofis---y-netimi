@@ -1,0 +1,26 @@
+#!/bin/bash
+# Ç5-A tur 1d İş C: B7 zorlaması (gozlem kipi) yeni test × 20 × iki TZ; eski test (tur 1b kopyası + yeni yardımcılar) × 20 × iki TZ; gg-tarama normal koşu × 20 × iki TZ.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-ac0e51d0f24e4542e
+E=$S/c5a1d-eski1b
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=$S/c5a1d-kanit
+for tz in UTC Europe/Istanbul; do
+  t=$(echo $tz | tr '/' '-')
+  (cd $W && DONDURMA_YARIS=gozlem TZ=$tz node tools/kanit.mjs kos c5a1d-isC-gozlem-yeni-$t -- node test/b7-dondurma-yaris-zorla.mjs test/banka-210-gg-tarama.test.mjs 20) > $S/c5a1d-is/isC-gozlem-yeni-$t.out 2>&1
+  echo "yeni $tz çıkış $?"
+  (cd $E && DONDURMA_YARIS=gozlem TZ=$tz node $W/tools/kanit.mjs kos c5a1d-isC-gozlem-eski1b-$t -- node test/b7-dondurma-yaris-zorla.mjs test/banka-210-gg-tarama.test.mjs 20) > $S/c5a1d-is/isC-gozlem-eski-$t.out 2>&1
+  echo "eski $tz çıkış $?"
+done
+for tz in UTC Europe/Istanbul; do
+  t=$(echo $tz | tr '/' '-')
+  pass=0; fail=0
+  for i in $(seq 1 20); do
+    (cd $W && TZ=$tz timeout -k 5 400 node --test test/banka-210-gg-tarama.test.mjs) > $S/c5a1d-is/isC-normal-$t-$i.out 2>&1
+    rc=$?
+    p=$(grep -E '^# pass' $S/c5a1d-is/isC-normal-$t-$i.out | awk '{print $3}'); f=$(grep -E '^# fail' $S/c5a1d-is/isC-normal-$t-$i.out | awk '{print $3}'); n=$(grep -E '^# tests' $S/c5a1d-is/isC-normal-$t-$i.out | awk '{print $3}')
+    echo "[normal $tz $i/20] çıkış $rc tests $n pass $p fail $f"
+    if [ "$rc" = 0 ] && [ "$f" = 0 ]; then pass=$((pass+1)); else fail=$((fail+1)); fi
+  done
+  echo "[normal özet] $tz 20 yineleme · yeşil $pass · kırmızı $fail"
+done > $S/c5a1d-kanit/2026-11-12/c5a1d-isC-normal-gg-tarama.txt
+echo bitti

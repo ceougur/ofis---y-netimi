@@ -1,0 +1,43 @@
+{
+  "ad": "kahin13y-kirmizi-eski-kahin",
+  "komut": "python3 -I -B /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin13y-kirmizi/oz-test.py",
+  "commit": "e12f063e3da4d4083c46d3ee58381762e0ee4ef6",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T08:58:54.369Z",
+  "sure_sn": 0.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 180,
+    "gecen": 178,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "g9-ok1-acik-taksitli-fatura.json beklenen nedenle çöktü (ÖK-1) çökmedi — sayı üretti",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "g9b-ok1-acik-excel-karti.json beklenen nedenle çöktü (ÖK-1) çökmedi — sayı üretti",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../kahin13y-kanit/2026-11-12/kahin13y-kirmizi-eski-kahin.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8y-ag",
+  "ham_cikti_sha256": "019ffdc50f96526194f79e28d089d0130b2b6806784b27085b35472c1c4d1579",
+  "ham_cikti_bayt": 3903
+}

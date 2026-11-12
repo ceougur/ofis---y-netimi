@@ -417,6 +417,13 @@
         const own = action === "pay" ? cheque.bankAccountId || "" : "";
         // 2.7: seçicide bakiye — tutar evrakın tutarı (ödemede hesaptan çıkar, tahsilde girer).
         if (moneyAction && HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: own, ...(action === "pay" && cheque.instrument === "note" && !own ? { suggest: "note" } : {}), direction: action === "pay" ? "out" : "in", amount: () => Number(cheque.amount) || 0 });
+        // 2.5.0 Ç5-A (S48 = A, S66 = A): cariye işlenmemiş (carisiz) alınan evrak karşılıksız dönünce program cariyi sorar — seçilirse cari borçlanır, seçilmezse açılış geri alınmış
+        // (açılış evrakı) ya da evrakın geliri geri alınmış sayılır. Seçim isteğe bağlı.
+        if (action === "bounce" && cheque.direction === "in" && !cheque.accountId && !cheque.planId) {
+          const picker = HOF.accounts?.picker({ label: "Borçlanacak Cari", required: false, prefer: "customer", allowNew: { type: "customer" }, help: "Evrak bir cariye işlenmemiş. Karşılıksız tutarı bir cariye borç yazmak için seçin; boş bırakırsanız kimse borçlanmaz (açılış evrakında açılış geri alınmış sayılır).", name: "accountId" });
+          if (picker) dialog.querySelector('[name="date"]').closest(".hof-field").after(picker);
+          return;
+        }
         if (action !== "endorse") return;
         // v2.0.17 (müşteri: "cari bulunmuyor"): tür kısıtı yok — bütün cariler aranır, tedarikçiler üstte; "+ Yeni Cari".
         const picker = HOF.accounts?.picker({ label: "Ciro Edilen Cari", required: true, prefer: "supplier", allowNew: { type: "supplier" }, help: "Tedarikçi ya da müşteri: çekin kime verildiği. Bulunamazsa + Yeni Cari ile açın.", name: "accountId" });

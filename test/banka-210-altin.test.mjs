@@ -37,7 +37,8 @@ import { localDay, pdfText, unwrap, xlsxSheets } from "./banka-210-ortak.mjs";
 import { fixtureExists, unpackFixture } from "./guvenilirlik/fikstur.mjs";
 import { CURRENT, bootVersion, tagsAvailable } from "./guvenilirlik/surumler.mjs";
 import { runReconciliation } from "./mutabakat/motor.mjs";
-import { foldDocumentRows, foldIntegrityChecks, foldReconciliation, foldTrialAccounts, hasDocumentSplit, legacyBankBox, legacyBankPos, legacyCashFlow, normDocumentNames } from "./guvenilirlik/defter-olgulari.mjs";
+import { c5aIntegrity, c5aMizanReport, c5aOpeningFold, c5aReconciliationReport, c5aTrialAccounts, foldDocumentRows, foldIntegrityChecks, foldReconciliation, foldTrialAccounts, hasDocumentSplit, legacyBankBox, legacyBankPos, legacyCashFlow, normDocumentNames } from "./guvenilirlik/defter-olgulari.mjs";
+import { CHART } from "../server/lib/general-ledger.mjs";
 import { invoiceStates, k1Check } from "./guvenilirlik/kapama-k1-fark.mjs";
 import { settleInvoices as settleK1Oncesi } from "./guvenilirlik/kapama-k1-oncesi.mjs";
 import { LATEST_VERSION } from "../server/lib/migrations.mjs";
@@ -140,6 +141,27 @@ function requests() {
 // (Gerçek Banka + Hesabı Atanmamış = eski Banka / POS) ayrıca denetlenir. İç hareketi olan Banka ve POS Hareketleri dönemlerinin PDF/Excel'i
 // eski dosyayla değil, aynı dönemin ekranıyla karşılaştırılır (özet ve açıklama biçimi bilerek değişti).
 const k10Problems = [];
+// 2.5.0 Ç5-A (bilerek değişen defter kuralı; C5-ACILIS-TASARIM §12.2): seçili şirketin katlaması (defter-olgulari c5aOpeningFold) — compare() şirket başına kurar; yeni tarafın
+// Ana Defter / Mutabakat Testi / Hesap Planı Mizanı / Defter Mutabakatı JSON'u karar numaralı katlamayla eski düzende; dosyaları (PDF / Excel) yeni ekranla karşılaştırılır.
+let c5aFold = null;
+const c5aTally = { folded: 0, selfChecked: 0 };
+function legacyOpenings(url, data) {
+  if (!c5aFold) return data;
+  const base = url.split("?")[0];
+  if (base === "/api/workspace/ledger") {
+    if (!c5aFold.delta.size) return data;
+    c5aTally.folded += 1;
+    const debit = [...c5aFold.delta.values()].reduce((sum, row) => sum + row.debit, 0);
+    const credit = [...c5aFold.delta.values()].reduce((sum, row) => sum + row.credit, 0);
+    const tl = value => Math.round(value) / 100;
+    const c = value => Math.round(Number(value || 0) * 100);
+    return { ...data, entryCount: data.entryCount + c5aFold.entryDelta, trial: { ...data.trial, accounts: c5aTrialAccounts(data.trial.accounts, c5aFold, CHART), totals: { ...data.trial.totals, debit: tl(c(data.trial.totals.debit) + debit), credit: tl(c(data.trial.totals.credit) + credit), difference: tl(c(data.trial.totals.difference) + debit - credit) } } };
+  }
+  if (base === "/api/workspace/ledger/integrity") return c5aIntegrity(data, c5aFold);
+  if (base === "/api/workspace/report-center/hesap-mizani" && url.includes("from=2000-01-01")) return c5aMizanReport(data, c5aFold, CHART);
+  if (base === "/api/workspace/report-center/defter-mutabakati") return c5aReconciliationReport(data, c5aFold);
+  return data;
+}
 const unbilledTally = { count: 0 }; // 2.4.3 MM5: normalleştirmede çıkarılan faturasız cari alacağı kalemi sayısı (günlüğe yazılır)
 const roundCents = value => Math.round((Number(value) || 0) * 100) / 100;
 // company: yeni taraf PDF'inin şirket satırındaki unvan (2.2.0 İz 1.1); eski taraf aynı satırı (varsa) atar.
@@ -153,7 +175,7 @@ async function fetchOne(api, request, side = "eski", company = null) {
       data = { ...data, cash: { ...data.cash, bank: box } };
     }
     if (side === "yeni" && response.status === 200 && request.url.includes("/report-center/banka-pos-hareketleri")) data = legacyBankPos(data);
-    if (side === "yeni" && response.status === 200) data = legacyDocuments(request.url, data);
+    if (side === "yeni" && response.status === 200) data = legacyDocuments(request.url, legacyOpenings(request.url, data));
     // 2.3.0 İz 3.3 (plan §8.9, eşleme 301; bilerek): Vade Takip'e "bank" kaynağı (planlı banka işlemleri) geldi; eski veride planlı işlem yok, satırlar aynı.
     // 2.4.5 madde 6 (K6.3; bilerek): "account" kaynağı (carinin vadeli borç kaydı) geldi; 2.0.26 verisinde vade alanı yok (göçle boş), satırlar aynı.
     if (side === "yeni" && response.status === 200 && request.url.split("?")[0] === "/api/workspace/overview/vade-takip" && Array.isArray(data.allowed)) {
@@ -341,8 +363,10 @@ async function bankPosSelfCheck(api, request) {
 async function documentSelfCheck(api, request) {
   if (!/\/report-center\/(hesap-mizani|defter-mutabakati)\//.test(request.url)) return null;
   const json = unwrap(await api.client.get(request.url.replace(/\/(pdf|xlsx)(\?|$)/, "$2")));
-  if (json.status !== 200 || !hasDocumentSplit(json.data.rows.map(row => row[0]))) return null;
-  documentTally.selfChecked += 1;
+  const opening = Boolean(c5aFold?.active);
+  if (json.status !== 200 || !(hasDocumentSplit(json.data.rows.map(row => row[0])) || opening)) return null;
+  if (opening) c5aTally.selfChecked += 1;
+  else documentTally.selfChecked += 1;
   const cells = [...json.data.rows.flat(), ...(json.data.footer || [])].filter(cell => MONEY_CELL.test(String(cell)));
   const codes = json.data.rows.map(row => String(row[0])).filter(code => /^\d{3}$/.test(code));
   const response = await api.client.raw("GET", request.url);
@@ -375,6 +399,12 @@ async function compare(oldServer, newServer, { companies, label, skip = () => fa
       const b = await login(newServer, who);
       // Şirket seçimi kullanıcı başına sunucuda saklanır: 001 de açıkça seçilir (K1 karşılaştırması aynı sunucuya ikinci kez girer).
       for (const api of [a, b]) assert.equal((await api.post("/api/companies/select", { id: company.id })).status, 200, `${company.code} seçilemedi`);
+      // 2.5.0 Ç5-A: şirket örneği ilk istekte açılır; bekleyen 2.4.9 göç koşusu burada donar → katlama (donmuş dönemin kural farkı dahil) kurulur; sorunları fark sayılır.
+      assert.equal((await b.get("/api/workspace/ledger/lock")).status, 200);
+      const ctx = (newServer.app.openCompany(company.id) || newServer.app).context;
+      await ctx.ledger.snapshots.runPending();
+      c5aFold = c5aOpeningFold(ctx.ledger, ctx.store);
+      problems.push(...c5aFold.problems.slice(0, 10).map(text => `${label} · ${company.code} · Ç5-A katlaması: ${text}`));
       for (const request of requests().filter(item => (item.who || "admin") === who && !skip(item.url))) {
         const where = `${label} · ${company.code} · ${who} · ${request.kind} ${request.url}`;
         if (request.kind !== "json" && request.url.includes("/banka-pos-hareketleri/")) {
@@ -389,7 +419,7 @@ async function compare(oldServer, newServer, { companies, label, skip = () => fa
           const self = await documentSelfCheck(b, request);
           if (self) {
             compared += 1;
-            if (self.length) problems.push(`${where}: yeni dosya (senet hesapları) ekranla aynı değil: ${self.slice(0, 5).join("; ")}`);
+            if (self.length) problems.push(`${where}: yeni dosya (senet hesapları / Ç5-A) ekranla aynı değil: ${self.slice(0, 5).join("; ")}`);
             continue;
           }
         }

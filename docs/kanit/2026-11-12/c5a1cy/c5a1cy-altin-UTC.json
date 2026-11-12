@@ -1,0 +1,38 @@
+{
+  "ad": "c5a1cy-altin-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-210-goc-zinciri.test.mjs test/banka-210-altin.test.mjs test/banka-220-senet-121.test.mjs",
+  "commit": "595abf87ff58779b48d2162d55a614ba88d6cd0e",
+  "dal": "sinama-c5a1c",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T12:28:03.878Z",
+  "sure_sn": 92.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 38,
+    "gecen": 37,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Senet 121 / 321 — eşdeğerlik: gerçek eski kod (v2.1.0) ile aynı veri › eski sürümün verisi yeni kuralla: 101 + 121 = eski 101, 103 + 321 = eski 103, öbür hesaplar ve toplam aynı; kilitli dönem sahte fark vermez",
+      "konum": "test/banka-220-senet-121.test.mjs:374:3",
+      "hata": "Expected values to be strictly equal: · false !== true (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../c5a1cy-kanit/2026-11-12/c5a1cy-altin-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag",
+  "ham_cikti_sha256": "e6b22396d5eb6a0e292d323e443d777299293e43a1b8dfed729e44dd82f1f387",
+  "ham_cikti_bayt": 20850
+}

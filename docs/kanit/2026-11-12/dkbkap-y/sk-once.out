@@ -1,0 +1,56 @@
+(node:7598) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{
+ "saat": "akan",
+ "tutar800": {
+  "anlar": [
+   "satış@09:00:00.455Z",
+   "kart@09:00:00.457Z"
+  ],
+  "once": {
+   "bakiye": 1500,
+   "gecikmis": 500,
+   "vadeTakip": [
+    "account:in:500@2026-11-19",
+    "plan:in:500@2026-09-30",
+    "plan:in:500@2026-10-30"
+   ],
+   "kalan": [
+    "account/debt:500→500",
+    "stock/debt:1000→1000"
+   ],
+   "taksit": [
+    500,
+    500
+   ],
+   "kural": [
+    " tük 1000/1000 avans  kırp "
+   ],
+   "sigma": true
+  },
+  "islem": "kart tutarı 200 ",
+  "sonra": {
+   "bakiye": 1500,
+   "gecikmis": 700,
+   "vadeTakip": [
+    "account:in:200@2026-09-05",
+    "account:in:500@2026-11-19",
+    "plan:in:300@2026-10-30",
+    "plan:in:500@2026-09-30"
+   ],
+   "kalan": [
+    "account/debt:500→500",
+    "stock/debt:1000→1000"
+   ],
+   "taksit": [
+    500,
+    300
+   ],
+   "kural": [
+    " tük 800/800 avans  kırp "
+   ],
+   "sigma": true
+  },
+  "mutabakat": true
+ }
+}

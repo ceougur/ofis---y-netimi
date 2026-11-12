@@ -30,7 +30,10 @@ const EXPECTED = {
   190: ["aktif", "I.H"], 191: ["aktif", "I.H"], 193: ["aktif", "I.H"], 198: ["aktif", "I.H"], 255: ["aktif", "II.D"],
   300: ["pasif", "III.A"], 309: ["pasif", "III.A"], 320: ["pasif", "III.B"], 321: ["pasif", "III.B"], 336: ["pasif", "III.C"], 340: ["pasif", "III.D"],
   360: ["pasif", "III.F"], 391: ["pasif", "III.I"],
-  500: ["pasif", "V.A"], 519: ["pasif", "V.G"], 570: ["pasif", "V.D"], 580: ["pasif", "V.E"], 590: ["pasif", "V.F"], 591: ["pasif", "V.F"],
+  // 2.5.0 Ç5-A (C5-ACILIS-TASARIM §2.1; G3: M-11 hedefleri planda): 501–503 Ödenmiş Sermaye kalemi, 52x Sermaye Yedekleri, 54x Kâr Yedekleri.
+  500: ["pasif", "V.A"], 501: ["pasif", "V.A"], 502: ["pasif", "V.A"], 503: ["pasif", "V.A"], 519: ["pasif", "V.G"],
+  520: ["pasif", "V.B"], 521: ["pasif", "V.B"], 522: ["pasif", "V.B"], 523: ["pasif", "V.B"], 529: ["pasif", "V.B"],
+  540: ["pasif", "V.C"], 541: ["pasif", "V.C"], 542: ["pasif", "V.C"], 548: ["pasif", "V.C"], 549: ["pasif", "V.C"], 570: ["pasif", "V.D"], 580: ["pasif", "V.E"], 590: ["pasif", "V.F"], 591: ["pasif", "V.F"],
   600: ["gelir", "A"], 602: ["gelir", "A"], 610: ["gider", "B"], 621: ["gider", "D"], 631: ["gider", "E"], 632: ["gider", "E"],
   642: ["gelir", "F"], 644: ["gelir", "F"], 646: ["gelir", "F"], 649: ["gelir", "F"],
   653: ["gider", "G"], 654: ["gider", "G"], 656: ["gider", "G"], 659: ["gider", "G"], 660: ["gider", "H"], 671: ["gelir", "I"], 681: ["gider", "J"], 689: ["gider", "J"],
@@ -38,7 +41,8 @@ const EXPECTED = {
   760: ["gider", "E"], 761: ["yansitma", null], 770: ["gider", "E"], 771: ["yansitma", null], 780: ["gider", "H"], 781: ["yansitma", null],
 };
 // Kural kitabı §2 "Tür" kolonunda (−) işaretli bilanço hesapları.
-const CONTRA = ["103", "129", "580", "591"];
+// 2.5.0 Ç5-A (§2.1, G3): Tek Düzen 501 / 503 "(−)" hesaplarıdır.
+const CONTRA = ["103", "129", "501", "503", "580", "591"];
 // Çekirdek §13 / kural kitabı §7.3: brütleştirilen ters bakiyeler.
 const GROSS = {
   102: { bilanco: "III.A", hesap: "300", boyut: "altHesap", kesinDegil: false },
@@ -52,7 +56,8 @@ const GROSS = {
 const NOT_FINAL = ["100", "101", "103", "108", "121", "128", "129", "153", "300", "321"];
 // Kural kitabı §2 "Ters bakiyede (§7.3)" sütunu "—" olan bilanço hesapları: ters bakiye kendi kaleminde işaretli kalır (brütleştirme / Kesin Değil yok).
 // 519'un sütunu "aynı satır, eksi" — aynı kural. (Kitap satırları: 136, 159, 190, 191, 193, 198, 255, 340, 391, 500, 519, 570, 580, 590, 591.)
-const SAME = ["136", "159", "190", "191", "193", "198", "255", "340", "391", "500", "519", "570", "580", "590", "591"];
+// 2.5.0 Ç5-A (§2.1, G3): eklenen öz kaynak hesapları (501–503, 52x, 54x) — ters bakiyede aynı satır (500 / 570 gibi).
+const SAME = ["136", "159", "190", "191", "193", "198", "255", "340", "391", "500", "501", "502", "503", "519", "520", "521", "522", "523", "529", "540", "541", "542", "548", "549", "570", "580", "590", "591"];
 // Kural kitabında ters kuralı olmayan bilanço hesapları — KARAR GEREKİYOR (liste ancak bilerek büyür).
 const UNDECIDED = ["127"];
 // Ç1'de eklenen hesapların adları — kural kitabı §2 "Ad (Tek Düzen)" sütunundan (671 / 681: EK-1 M7 / E2) ELLE yazıldı. Karşılaştırmada iki yazım farkı yok sayılır
@@ -67,6 +72,10 @@ const NEW_NAMES = {
   671: "Önceki Dönem Gelir ve Kârları", 681: "Önceki Dönem Gider ve Zararları",
   690: "Dönem Kârı veya Zararı", 691: "Dönem Kârı Vergi ve Diğer Yasal Yükümlülük Karşılıkları (−)", 692: "Dönem Net Kârı veya Zararı",
   761: "Pazarlama Satış ve Dağıtım Giderleri Yansıtma Hesabı", 771: "Genel Yönetim Giderleri Yansıtma Hesabı", 781: "Finansman Giderleri Yansıtma Hesabı",
+  // 2.5.0 Ç5-A (C5-ACILIS-TASARIM §2.1; Tek Düzen Hesap Planı adları — mali müşavir A'da doğrulanır): öz kaynak hesapları.
+  500: "Sermaye", 501: "Ödenmemiş Sermaye (−)", 502: "Sermaye Düzeltmesi Olumlu Farkları", 503: "Sermaye Düzeltmesi Olumsuz Farkları (−)",
+  520: "Hisse Senedi İhraç Primleri", 521: "Hisse Senedi İptal Kârları", 522: "Maddi Duran Varlık Yeniden Değerleme Artışları", 523: "İştirakler Yeniden Değerleme Artışları",
+  529: "Diğer Sermaye Yedekleri", 540: "Yasal Yedekler", 541: "Statü Yedekleri", 542: "Olağanüstü Yedekler", 548: "Diğer Kâr Yedekleri", 549: "Özel Fonlar",
 };
 // Dar kontrol DÜŞÜK (Ç4 turu): "(−)" YALNIZ kitabın adından silinir; programın adı olduğu gibi karşılaştırılır — programda gelir tablosu / kapanış hesabının
 // adına "(−)" eklenirse (2.4.9'dan beri adda yazılmaz) kırmızı olur.
@@ -82,7 +91,7 @@ const NAMES_249 = {
   120: "Alıcılar (Müşteri Carileri)", 121: "Alacak Senetleri", 127: "Carisiz Taksit Kartları", 128: "Şüpheli Ticari Alacaklar", 129: "Şüpheli Ticari Alacaklar Karşılığı (−)",
   153: "Ticari Mallar (Stok Alımları)", 190: "Devreden KDV", 191: "İndirilecek KDV", 193: "Peşin Ödenen Vergiler (Stopaj)", 255: "Demirbaşlar", 300: "Banka Kredileri",
   309: "Diğer Mali Borçlar (Kredi Kartları)", 320: "Satıcılar (Tedarikçi Carileri)", 321: "Borç Senetleri", 336: "Diğer Cariler (Personel vb.)",
-  360: "Ödenecek Vergi ve Fonlar (Tevkifat, Stopaj)", 391: "Hesaplanan KDV", 500: "Açılış ve Devir Bakiyeleri", 600: "Yurt İçi Satışlar (Stok)",
+  360: "Ödenecek Vergi ve Fonlar (Tevkifat, Stopaj)", 391: "Hesaplanan KDV", 600: "Yurt İçi Satışlar (Stok)",
   602: "Diğer Gelirler (Hizmet, Taksitli Satış, Kayıt Tahsilatları)", 610: "Satıştan İadeler", 642: "Faiz Gelirleri", 644: "Konusu Kalmayan Karşılıklar",
   646: "Kambiyo Kârları", 649: "Diğer Olağan Gelir ve Kârlar", 653: "Komisyon Giderleri", 654: "Karşılık Giderleri", 656: "Kambiyo Zararları",
   659: "Diğer Olağan Gider ve Zararlar", 689: "Diğer Olağandışı Gider ve Zararlar", 760: "Pazarlama, Satış ve Dağıtım Giderleri", 780: "Finansman Giderleri",
@@ -198,7 +207,9 @@ describe("2.5.0 Ç1 — hesap planı sınıflaması", () => {
     assert.equal(gl.CHART["671"], "Önceki Dönem Gelir ve Kârları");
     assert.equal(gl.CHART["681"], "Önceki Dönem Gider ve Zararları");
     const renamed = Object.entries(NAMES_249).filter(([code, name]) => gl.CHART[code] !== name).map(([code, name]) => `${code}: ${name} → ${gl.CHART[code]}`);
-    assert.deepEqual(renamed, [], "2.4.9 adı değişen hesap (yalnız 770 değişir)");
+    assert.deepEqual(renamed, [], "2.4.9 adı değişen hesap (yalnız 770 ve 500 değişir)");
+    // 2.5.0 Ç5-A (C5-ACILIS-TASARIM §2.1, G3): 500 Tek Düzen adıyla (2.4.9 "Açılış ve Devir Bakiyeleri"; açılışlar 519'a geçti).
+    assert.equal(gl.CHART["500"], "Sermaye");
     for (const code of ["519", "570", "580", "590", "591", "690", "691", "692", "621", "631", "632", "660", "671", "681", "761", "771", "781", "340", "159", "136", "198"]) assert.ok(gl.CHART[code], `${code} planda yok`);
     const wrongNames = Object.entries(NEW_NAMES).filter(([code, name]) => !sameName(code, gl.CHART[code], name)).map(([code, name]) => `${code}: kitap "${name}", program "${gl.CHART[code]}"`);
     assert.deepEqual(wrongNames, [], "eklenen hesabın adı kural kitabı §2'deki Tek Düzen adı değil");
@@ -212,6 +223,8 @@ describe("2.5.0 Ç1 — hesap planı sınıflaması", () => {
     // Kitap §2 "602 Diğer Gelirler (.90 Sınıflandırılmamış)" (KG-4 Borç Yaz); KG-2 "600.90 / 610.90" belgesiz satış / müşteri iadesi — 600.90 ile aynı ad.
     assert.equal(subs["602.90"], "Sınıflandırılmamış", "602.90 alt hesap tanımı");
     assert.equal(subs["610.90"], "Belgesiz", "610.90 alt hesap tanımı");
+    // 2.5.0 Ç5-A (S49 = A): formdan carisiz alınan evrak 649.90.
+    assert.equal(subs["649.90"], "Sınıflandırılmamış", "649.90 alt hesap tanımı (S49)");
     assert.equal(itemOf("336")?.tur, "pasif", "Sınıflandırılmamış Tahsilatlar pasif hesabın altında (KG-3: gelir değil)");
     const taken = new Set([...Object.keys(DOCUMENT_SUB_NAMES), ...Object.keys(gl.UNASSIGNED_SUBS || {}), ...Object.values(UNASSIGNED_SUB)]);
     for (const sub of Object.keys(subs)) {

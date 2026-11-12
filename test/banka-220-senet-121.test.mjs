@@ -30,6 +30,8 @@ import { apiOf, integrityOf, integrityOk, rawRun } from "./banka-210-ortak.mjs";
 import { BANK, NOW, TODAY, ZIRAAT_IBAN, bootBank, expectStatus, lockPeriod, must, openAccount } from "./banka-210-hesap-ortak.mjs";
 import { fixtureExists, readFixture, unpackFixture } from "./guvenilirlik/fikstur.mjs";
 import { CURRENT, bootVersion, checkoutTag, tagsAvailable } from "./guvenilirlik/surumler.mjs";
+import { c5aOpeningFold, c5aTrialAccounts } from "./guvenilirlik/defter-olgulari.mjs";
+import { CHART } from "../server/lib/general-ledger.mjs";
 
 const CHEQUES = "/api/workspace/cheques";
 const act = (api, id, body) => api.post(`${CHEQUES}/${id}/actions`, body);
@@ -215,9 +217,9 @@ describe("Senet 121 / 321 — ciro, carisiz, taksit, fatura, iptal, sil → geri
     await must("ciro", act(ctx.api, n.id, { action: "endorse", date: TODAY, accountId: seller.id }));
     assert.deepEqual(linesOf(ctx, `account:${ctx.store.get("SELECT id FROM account_entries WHERE source = 'cheque' AND source_id = ? AND account_id = ?", n.id, seller.id).id}`), [["320", 70000, 0], ["121.01", 0, 70000]], "ciro B 320 / A 121");
     const free = await receive(ctx.api, { serialNo: "CS-1", drawer: "Carisiz Kişi", amount: "200" });
-    assert.deepEqual(linesOf(ctx, `account:free-in:${free.id}`), [["121.01", 20000, 0], ["602", 0, 20000]], "carisiz senet B 121 / A 602");
+    assert.deepEqual(linesOf(ctx, `account:free-in:${free.id}`), [["121.01", 20000, 0], ["649.90", 0, 20000]], "carisiz senet B 121 / A 649.90 (2.5.0 Ç5-A G3: S49 = A — formdan carisiz evrak 649.90; 2.4.9 602)");
     await must("carisiz karşılıksız", act(ctx.api, free.id, { action: "bounce", date: TODAY }));
-    assert.deepEqual(linesOf(ctx, `account:free-bounce:${free.id}`), [["770", 20000, 0], ["121.01", 0, 20000]], "carisiz karşılıksız B 770 / A 121");
+    assert.deepEqual(linesOf(ctx, `account:free-bounce:${free.id}`), [["649.90", 20000, 0], ["121.01", 0, 20000]], "carisiz karşılıksız B 649.90 / A 121 (2.5.0 Ç5-A G3: S66 = A — cari seçilmezse S49 geliri geri alınır; 2.4.9 770)");
     const plan = await must("taksit kartı", ctx.api.post("/api/workspace/plans", { name: "ABC Taksit", accountId: buyer.id, total: "900", mode: "auto", count: 1, firstDue: "2026-11-08", registeredOn: "2026-10-01" }));
     const planned = await receive(ctx.api, { serialNo: "TK-1", accountId: buyer.id, planId: plan.id, amount: "900" });
     const entry = ctx.store.get("SELECT id FROM plan_entries WHERE cheque_id = ?", planned.id).id;
@@ -432,6 +434,18 @@ describe(`Senet 121 / 321 — eşdeğerlik: gerçek eski kod (${OLD}) ile aynı 
 
       current = await bootVersion(CURRENT, { ...dirs, now: NOW });
       const store = current.app.store;
+      // 2.5.0 Ç5-A tur 1d (ders 6, 20, 38; C5-ACILIS-TASARIM §14): eski sürümün kilitli verisi → açılışta göç 47'nin bekleyen 2.4.9 dondurması arkada koşar. Bitince Ç5-A'nın
+      // kural farkı (2.4.9 ↔ 2.5.0-defter: banka açılışı 500 → 519, formdan carisiz senet 649 → 602) Mutabakat Testi'nde UYARI olarak görünür; testin okumaları dondurmanın
+      // bitişinin iki yanına düşünce ara sıra kırmızıydı ("ok" false — zorla: DONDURMA_YARIS=bitir test/b7-dondurma-yaris-zorla.mjs). Ön koşul ÜRÜNÜN DURUMUNDAN kurulur
+      // (ürünün runPending'i süren işi bekler; SINIRLI). İddia zayıflamaz: kural farkı dışında hiçbir denetim düşmez; kural farkı YALNIZ kararın açıkladığı hesaplarda ve
+      // senaryonun elle yazılmış tutarlarında; Mutabakat Günlüğü'ne tarama ('sapma') satırı yazılmaz.
+      const snapshots = current.app.ledger.snapshots;
+      let timer = null;
+      await Promise.race([snapshots.runPending(), new Promise((_, reject) => {
+        timer = setTimeout(() => reject(new Error(`açılıştaki bekleyen dondurma 60 sn'de bitmedi: ${JSON.stringify({ ...snapshots.state(), freeze: snapshots.status() })}`)), 60_000);
+        timer.unref?.();
+      })]).finally(() => clearTimeout(timer));
+      assert.deepEqual([snapshots.state().pending, snapshots.state().coverage], [null, "2026-10-05"], `ön koşul: kilitli dönem donmuş: ${JSON.stringify(snapshots.state())}`);
       const next = await current.login();
       const ledger = await ok("yeni Ana Defter", next.get("/api/workspace/ledger"));
       const newTrial = Object.fromEntries(ledger.trial.accounts.map(row => [row.code, [kurus(row.debit), kurus(row.credit), kurus(row.balance)]]));
@@ -446,15 +460,25 @@ describe(`Senet 121 / 321 — eşdeğerlik: gerçek eski kod (${OLD}) ile aynı 
       const want = oracle(store);
       assert.deepEqual([newTrial["121"]?.[2] ?? 0, newTrial["321"]?.[2] ?? 0, newTrial["101"]?.[2] ?? 0, newTrial["103"]?.[2] ?? 0], [want["121"], want["321"], want["101"], want["103"]], "ham tablo");
       assert.deepEqual([want["121"], want["321"], want["101"], want["103"]], [deposits ? 100000 + 20000 + 90000 + 200000 + 80000 : 100000 + 20000 + 90000 + 200000, -(90000 + 45000), 40000, -30000], "senaryonun elle yazılmış sayıları");
-      // Kilitli dönem: sahte fark yok.
+      // Kilitli dönem: sahte fark yok. Ç5-A tur 1d: kural farkı uyarısı kararın açıkladığı farktır (elle yazılmış tutarlar; hesap → |fark| kuruş).
+      const RULE_DIFF = { 500: 10000000, 519: 10000000, 602: 20000, 649: 20000 };
+      const ruleDiffOk = (result, label) => {
+        assert.deepEqual(result.failures.filter(item => item.code !== "ledger:rule-diff"), [], `${label}: kural farkı dışında Mutabakat Testi temiz`);
+        const diff = result.failures.find(item => item.code === "ledger:rule-diff");
+        assert.ok(diff && diff.severity === "warning" && diff.count === 2, `${label}: kural farkı uyarısı (banka açılışı + carisiz senet): ${JSON.stringify(diff).slice(0, 600)}`);
+        assert.deepEqual(Object.fromEntries(diff.breakdown.map(row => [row.account, Math.abs(row.differenceMinor)])), RULE_DIFF, `${label}: kural farkı yalnız Ç5-A'nın açıkladığı hesaplarda: ${JSON.stringify(diff.breakdown)}`);
+        assert.equal(diff.difference, 100200, label);
+      };
       const integrity = await ok("Mutabakat Testi", next.get("/api/workspace/ledger/integrity"));
-      assert.equal(integrity.ok, true, `yeni kuralla Mutabakat Testi temiz: ${JSON.stringify(integrity.failures).slice(0, 600)}`);
+      ruleDiffOk(integrity, "yeni kuralla Mutabakat Testi");
       assert.equal(count(store, "integrity_log", "action = 'rolled-back'"), 0, "açılışta geri alınan işlem yok");
+      assert.equal(count(store, "integrity_log", "action = 'scan'"), 0, "Mutabakat Günlüğü'ne tarama (sapma) satırı yazılmaz — kural farkı uyarıdır (İş A)");
       assert.equal(lockDigestOf(store, "2026-10-05", { version: "2.1.0" }), oldDigest, "kilit izi (kilit tarihi) eski sürümün iziyle aynı");
       assert.equal(lockDigestOf(store, "9999-12-31", { version: "2.1.0" }), oldDigestAll, "kilit izi (bütün tarihler) eski sürümün iziyle aynı");
       await ok("açık dönemde yeni senet", next.post(CHEQUES, { direction: "in", instrument: "note", amount: "55", issueDate: "2026-10-08", dueDate: "2026-12-01", accountId: buyer.id, serialNo: "Y-N" }));
       await ok("açık dönemde tahsilat", next.post(`/api/workspace/accounts/${buyer.id}/entries`, { kind: "in", amount: "10", method: "cash", date: "2026-10-08" }));
-      assert.equal((await ok("son", next.get("/api/workspace/ledger/integrity"))).ok, true);
+      ruleDiffOk(await ok("son", next.get("/api/workspace/ledger/integrity")), "açık dönem yazımlarından sonra");
+      assert.equal(count(store, "integrity_log", "action IN ('scan', 'rolled-back')"), 0, "açık dönem yazımlarından sonra da günlükte sapma / geri alma yok");
     } finally {
       await old?.close();
       await current?.close();
@@ -476,7 +500,14 @@ describe("Senet 121 / 321 — eşdeğerlik: surum-2.0.26-turler (gerçek 2.0.26 
         let notes = 0;
         for (const [id, expected] of Object.entries(before_.companies)) {
           assert.equal((await api.post("/api/companies/select", { id })).status, 200);
-          const ledger = unwrapLedger(await api.get("/api/workspace/ledger"));
+          const raw = unwrapLedger(await api.get("/api/workspace/ledger"));
+          // 2.5.0 Ç5-A (bilerek değişen defter kuralı; C5-ACILIS-TASARIM §12.2): açılış karşılığı 519, KG-5, carisiz evrak — karar numaralı katlama (defter-olgulari); dişi c5aProblems.
+          const ctx = (server.app.openCompany(id) || server.app).context;
+          const fold = c5aOpeningFold(ctx.ledger, ctx.store);
+          assert.deepEqual(fold.problems, [], `${expected.code}: Ç5-A katlaması — kural dışı fark`);
+          const debit = [...fold.delta.values()].reduce((sum, row) => sum + row.debit, 0);
+          const credit = [...fold.delta.values()].reduce((sum, row) => sum + row.credit, 0);
+          const ledger = { ...raw, trial: { ...raw.trial, accounts: c5aTrialAccounts(raw.trial.accounts, fold, CHART), totals: { ...raw.trial.totals, debit: (kurus(raw.trial.totals.debit) + debit) / 100, credit: (kurus(raw.trial.totals.credit) + credit) / 100, difference: (kurus(raw.trial.totals.difference) + debit - credit) / 100 } } };
           const parse = rows => Object.fromEntries(rows.map(row => row.split("|")).map(([code, ...values]) => [code, values.map(Number)]));
           const was = parse(expected.trial);
           const now = Object.fromEntries(ledger.trial.accounts.map(row => [row.code, [kurus(row.debit), kurus(row.credit), kurus(row.balance)]]));

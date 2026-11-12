@@ -1,0 +1,8 @@
+M1 KIRMIZI (yakalandı) · pass ? fail ? · H1: işaret sorgusu onaylıyı (confirmed) almaz
+M2 KIRMIZI (yakalandı) · pass ? fail ? · H1: süzgeçli yolda (kapı) satırlar işaretlenmez
+M3 KIRMIZI (yakalandı) · pass ? fail ? · H2: süzgeçli yolda taksit satırının kartı kapsama alınmaz
+M4 KIRMIZI (yakalandı) · pass ? fail ? · H2: yükleme damgası karta yazılmaz (madde kartın tarihine düşer)
+M5 KIRMIZI (yakalandı) · pass ? fail ? · H2: P karta yazılmaz (tek madde T olur)
+M6 KIRMIZI (yakalandı) · pass ? fail ? · H3: yazım sırası anahtarı düşer
+M7 KIRMIZI (yakalandı) · pass ? fail ? · H3: sınıf anahtarı düşer
+[mutasyon] 7 / 7 kırmızı
