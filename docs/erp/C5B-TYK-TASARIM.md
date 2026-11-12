@@ -328,4 +328,8 @@ c5bson-karar-taban.json). Tur 2b-2'nin testleri tur 2b-1 ucunda 40 kırmızı (n
 - **Ölçüm** (temiz 100 bin satır, ölçüm kilidiyle; ham çıktı docs/kanit/2026-11-11/c5bson-hiz-*.txt): 11.11'de 16 / 16 geçerli koşu — yazım + kart okuması + ilk zil toplamı çalışma dalı 3148 ms,
   tur 2b-1 3630, yalnız bellek 3293, son tur 3316; 12.11'de (ikinci turun 8 geçerli koşusu; ilk turun altısı baştaki yük > 2 olduğu için özete girmedi) 3216 / 3622 / 3059 / 3102. Son tur
   çalışma dalıyla ±%5 içinde (iki ölçümde işaret ters — fark gürültü düzeyinde); tur 2b-1'in ilk zil okumasındaki +%55–61 kapandı.
+  İKİLİ ölçüm (12.11 11:35, yalnız çalışma dalı ↔ son uç, 3 tur × 2 tekrar, 12 / 12 geçerli, baştaki yük ≤ 1,55): toplam 3090 → 3247 ms (+%5); kart tahsilatı yazımı +%5, ilk zil +%5,
+  ilk Vade Takip +%4, Borç Yaz / nakit tahsilat +%3, nakit akışı +%1, ılık Vade Takip −%2. SINIRI AŞAN iki yol: **ılık zil 484 → 547 ms (+%13;** önceki iki ölçümde +%5 ve +%6 — tur 2b-1
+  sütununda da +%7 / +%9, yani bu turun belleğinden değil) ve **açılış 19,6 → 21,8 sn (+%11;** önce +%5). Kök neden profili alınamadı (ölçüm kilidi doluydu) — son tur raporu
+  "BAŞ MİMAR KARARI GEREKİYOR".
 - **Geri yükleme**: S126 gerçek program testi bağsız tahsilatı silip Silinenler'den geri de yükler (bütün ekranlar silinmeden önceki hâle döner).
