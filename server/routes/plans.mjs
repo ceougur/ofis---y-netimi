@@ -234,7 +234,10 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       // held: kalanın şüpheli kuyruğundaki kısmı (M13) — takvim / zil / Vade Takip kalemine girmez (S3; Vade Takip'te şüpheli ayrı satır).
       const held = row ? roundMoney(Math.min(remaining, row.doubtful || 0)) : 0;
       // ownRemaining: kartın KENDİ hesabıyla kalan (allocate) — S118 = B (tur 2b-2): tahsilat formunun önerdiği tutar bundan (sınır ve soru da kartın kendi kalanından).
-      return { ...item, remaining, ownRemaining: item.remaining, held, accountPaid, partial: remaining > 0.005 && remaining < item.amount - 0.005, state };
+      // paid (Ç5-B kapanış düzeltmesi, S129 = A — KULLANICI KARARI 12.11 13:26 AYNEN: "taksit satırının 'Ödenen'i de TEK KUYRUKTAN gösterilir (ekranda tek sayı …)"):
+      // satırın Ödenen'i = taksitin kuyrukta TAHSİL EDİLEN kısmı (lib/obligation-queue.mjs `collected`: kart tahsilatı + kart seçilmeden alınan tahsilatın / avansın payı);
+      // kartın kendi tahsilatı ownPaid'de. Kapatılmış kartta bugünkü gösterim AYNEN (kural yazılmadı — kapanış dar kontrolünün kapsam dışı gözlemi).
+      return { ...item, remaining, ownRemaining: item.remaining, paid: closed ? item.paid : roundMoney(Math.min(item.amount, row ? row.collected || 0 : 0)), ownPaid: item.paid, held, accountPaid, partial: remaining > 0.005 && remaining < item.amount - 0.005, state };
     });
     // Ç5-B tur 2a (O-3): taksitlere bölünmemiş kalan ("rest") ve Taksit İadesi ("back") kuyruk kalanındadır (kalemleri queueExtras: takvim / zil / Vade Takip / nakit akışı).
     // Ç5-B tur 2b-2 (ekran yürüyüşü 1 Y2; BAŞ MİMAR KARARI 11.11 05:48 — sunum, S91 = A'nın sonucu): bu kalemin günü geçmişse kart da "Gecikti" sayılır (Taksitler'in Geciken
@@ -258,17 +261,48 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     const settled = (ledger.totals?.total ?? 0) > 0.005 && remaining <= 0.005 && items.every(item => item.state === "paid") && (ownLeft <= 0.005 || (items.length > 0 && unplanned <= 0.005));
     if (!closed) state = settled ? "done" : overdue.length || lateExtras.length ? "overdue" : "active";
     const overdueExtras = lateExtras.map(item => ({ key: item.key, label: item.label, amount: item.remaining }));
+    // S129 = A (KULLANICI KARARI 12.11 13:26 AYNEN: "taksit kartının penceresindeki 'Tahsil Edilen' / 'Kalan' göstergeleri, Taksitler listesindeki aynı sütunlar ve taksit
+    // satırının 'Ödenen'i de TEK KUYRUKTAN gösterilir (ekranda tek sayı: örnekte kart 900, bağsız tahsilat 500 → Tahsil Edilen 500 · Kalan 400; kart 600, bağsız tahsilat
+    // 800 → Kalan 0 · Tamamlandı); tahsilat formunun sınırı / sorusu / önerilen tutarı S118 = B'deki gibi kartın KENDİ kalanından kalır"): totals.paid / totals.remaining
+    // GÖSTERİLEN sayılardır (shownTotals); kartın kendi hesabı totals.ownPaid / ownRemaining (lib/plans.mjs allocate) — sınır, Mutabakat Testi, mutabakat motoru bunları okur.
+    const shown = closed ? { paid: ledger.totals.paid, remaining: ledger.totals.remaining } : shownTotals(plan, ledger.totals, collectedOf(map));
     return {
       ...ledger,
       items,
-      // totals.remaining kartın KENDİ hesabı kalır (tutar − kart tahsilatı; Mutabakat Testi plans:totals "ekran = kartın satırları"); kuyruk kalanı ayrı alan.
       // ownOverdue: kartın kendi hesabıyla gecikmiş (taksit − kart tahsilatı; eski anlam) — onarım / göç karşılaştırmaları için.
-      totals: { ...ledger.totals, queueRemaining: remaining, accountPaid, overdue: roundMoney(overdue.reduce((sum, item) => sum + item.remaining, 0) + lateExtras.reduce((sum, item) => sum + item.remaining, 0)), overdueCount: overdue.length, overdueRest: roundMoney(lateExtras.reduce((sum, item) => sum + item.remaining, 0)), overdueExtras, ownOverdue: ledger.totals.overdue ?? 0 },
+      totals: { ...ledger.totals, paid: shown.paid, remaining: shown.remaining, queueRemaining: remaining, accountPaid, overdue: roundMoney(overdue.reduce((sum, item) => sum + item.remaining, 0) + lateExtras.reduce((sum, item) => sum + item.remaining, 0)), overdueCount: overdue.length, overdueRest: roundMoney(lateExtras.reduce((sum, item) => sum + item.remaining, 0)), overdueExtras, ownOverdue: ledger.totals.overdue ?? 0 },
       next: next ? { id: next.id, seq: next.seq, dueDate: next.dueDate, remaining: next.remaining, days: next.days, state: next.state } : null,
       // S118 = B: kartın KENDİ hesabıyla sıradaki taksit (formun önerdiği tutar; ledger.next = allocate).
       ownNext: ledger.next || null,
       state,
     };
+  }
+  // S129 = A — kartın GÖSTERİLEN tahsil edileni ve kalanı (kart penceresi, Taksitler listesi, cari kartı, PDF / Excel / raporlar aynı sayı):
+  //   Tahsil Edilen = taksitlerin (ve taksitlendirilmemiş kalanın) kuyrukta TAHSİL EDİLEN kısmı (`collected`: kart tahsilatı + kart seçilmeden alınan tahsilatın / avansın
+  //                   payı) = satırların Ödenen toplamı; Mevcut Borç kartının taksitlere BÖLÜNMEMİŞ kısmına yazılan kart tahsilatı (o kısım kuyrukta kartın kalemi değildir —
+  //                   alttaki borç kalemi olarak durur) kartın kendi hesabından, bugünkü gibi eklenir.
+  //   Kalan = Toplam − Tahsil Edilen (kâhin KARARLAR Y6-4: "Kart kalan = toplam − ödenen").
+  // Karar örnekleri yalnız PARAYLA kapanışı söyler. Para dışı kapanışta (elle Alacak / alış faturasıyla netleşme, iade ya da kırpma — EK-2B 32) karar yok: o tutar "tahsil
+  // edilen" sayılmaz, kartın göstergesi bugünkü gibi kalır (kapanış düzeltme turu raporu "TOPLU SORULACAKLAR").
+  const collectedOf = map => {
+    let sum = 0;
+    for (const [key, row] of map) if (key !== "back") sum += row.collected || 0;
+    return roundMoney(sum);
+  };
+  function shownTotals(plan, totals, collected) {
+    const total = totals.total || 0;
+    const unplannedPaid = plan.coversBalance ? Math.max(0, Math.min(totals.extra || 0, totals.unplanned || 0)) : 0;
+    // Kartın KENDİ fazla tahsilatı (kart toplamını aşan; K8 "Fazlasını Avans Yaz" — plan §3.10/3) bugünkü gibi Tahsil Edilen'de görünür ("fazla ₺…" notuyla; karar yok).
+    const over = Math.max(0, roundMoney((totals.ownPaid ?? totals.paid ?? 0) - total));
+    const paid = roundMoney(Math.min(total, collected + unplannedPaid) + over);
+    return { paid, remaining: roundMoney(Math.max(0, total - paid)) };
+  }
+  // Cari kartı / Cari Listesi (routes/accounts.mjs): kartın özetine (kartın kendi hesabı) aynı gösterilen sayıları verir. tyk: carinin kuyruğu (obligationsFor / allObligations
+  // öğesi); yoksa ya da kart kapalıysa null (özet değişmez). Dönüş { paid, remaining }.
+  function shownTotalsOf(plan, tyk) {
+    const map = tyk && plan.status !== "closed" ? tyk.installments?.get(plan.id) : null;
+    if (!map || !plan.totals) return null;
+    return shownTotals(plan, plan.totals, collectedOf(map));
   }
   // Ç5-B tur 2a (O-3, S91 = A — vadesiz kayıt kayıt gününde vadeli kalem; C5 §2.10 madde 9 "Vade Takip gecikmiş tutarı = gecikmiş"): kuyruğun kart kalemlerinden TAKSİT
   // OLMAYANLAR — kartın taksitlere bölünmemiş kalanı (vade = kartın açılış günü) ve Taksit İadesi (iadeler tahsilatı aşınca; vade = son iade günü) — takvim / zil / Vade Takip /
@@ -1148,14 +1182,16 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   const header = createReportHeader({ store });
   router.get("/api/workspace/plans/:id/ekstre.pdf", async ({ req, res, params, url }) => {
     const user = auth.requirePermission(req, "plans.view");
-    const plan = detail(params.id, user);
+    // S129 = A: ekstre kart penceresiyle AYNI sayıları basar (gösterge, satırın Ödenen / Kalan / Durum'u — kuyruk görünümü; önce kartın kendi hesabıydı: ekran ≠ PDF).
+    const plan = detailView(params.id, user);
     const pdf = planStatementPdf(plan, { ...header.pdf(), userName: user.display_name || user.username || "", now: clock() });
     audit(user, "plan.statement.exported", plan.id, { name: plan.name });
     sendBuffer(res, pdf, { type: "application/pdf", name: `Taksit-ekstresi ${plan.name}.pdf`, inline: url.searchParams.get("download") !== "1" });
   });
   router.get("/api/workspace/plans/:id/entries/:entryId/makbuz.pdf", async ({ req, res, params, url }) => {
     const user = auth.requirePermission(req, "plans.view");
-    const plan = detail(params.id, user);
+    // S129 = A: makbuzdaki Tahsil edilen / Kalan borç kart penceresiyle aynı (kuyruk görünümü).
+    const plan = detailView(params.id, user);
     const entry = plan.entries.find(item => item.id === params.entryId);
     if (!entry) throw new HttpError(404, "Hareket bulunamadı.");
     // Açılış (devir) kaydı programda alınmış bir tahsilat değildir; makbuzu kesilmez (v2.0.8).
@@ -1817,5 +1853,5 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   // ikinci kez saymaz; aktarma "kartı var" der.
   const linkedCases = source => new Set(store.all("SELECT case_key AS k FROM plans WHERE deleted_at IS NULL AND case_key <> '' AND case_source = ?", source || "").map(row => row.k));
 
-  return { uncoveredDebt, assertRestorable, assertCloseOpen, assertRoom, closeDayOf, trimCovers, shrinkPlan, leftOf, signedLeftOf, syncInvoiceCard, cashEntries, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, scheduledStart, lockedStartReason, adoptPayment, adoptAccountEntry, linkedCases };
+  return { shownTotalsOf, queueLedger: (plan, ledger, queue, day) => withQueue(plan, ledger, queue, day), queueAll: queueOf, uncoveredDebt, assertRestorable, assertCloseOpen, assertRoom, closeDayOf, trimCovers, shrinkPlan, leftOf, signedLeftOf, syncInvoiceCard, cashEntries, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, scheduledStart, lockedStartReason, adoptPayment, adoptAccountEntry, linkedCases };
 }

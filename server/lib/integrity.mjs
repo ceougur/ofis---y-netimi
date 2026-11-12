@@ -446,8 +446,10 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       for (const plan of plans().list(AUDITOR, { status: "all" }).plans || []) {
         const row = raw.get(plan.id);
         if (!row) continue;
-        if (toCents(plan.totals.total) !== toCents(row.total) || toCents(plan.totals.paid) !== toCents(row.paid)) wrong.push(`${plan.refNo || plan.id} ${plan.name}: ekran ${plan.totals.total}/${plan.totals.paid} · satır ${row.total}/${row.paid}`);
-        else if (plan.status !== "closed" && toCents(plan.totals.remaining) !== Math.max(0, toCents(row.total) - toCents(row.paid))) wrong.push(`${plan.refNo || plan.id} ${plan.name}: kalan ${plan.totals.remaining}`);
+        // S129 = A: listede totals.paid / remaining GÖSTERİLEN (kuyruk) sayıdır; kartın kendi hesabı ownPaid / ownRemaining — denetim onları satırlarla karşılaştırır.
+        const own = { paid: plan.totals.ownPaid ?? plan.totals.paid, remaining: plan.totals.ownRemaining ?? plan.totals.remaining };
+        if (toCents(plan.totals.total) !== toCents(row.total) || toCents(own.paid) !== toCents(row.paid)) wrong.push(`${plan.refNo || plan.id} ${plan.name}: ekran ${plan.totals.total}/${own.paid} · satır ${row.total}/${row.paid}`);
+        else if (plan.status !== "closed" && toCents(own.remaining) !== Math.max(0, toCents(row.total) - toCents(row.paid))) wrong.push(`${plan.refNo || plan.id} ${plan.name}: kalan ${own.remaining}`);
       }
       checks.push({ code: "plans:totals", name: "Taksit kartları (tutar, tahsilat, kalan)", ok: wrong.length === 0, count: wrong.length, sample: wrong.slice(0, 5) });
       lap("plans");

@@ -359,6 +359,50 @@ try {
     const items = (await bell()).filter(text => text.includes("Ekran Avans Fatura"));
     ok(items.some(text => text.includes("Fatura") && text.includes("100,00")) && items.some(text => text.includes("Tahsil Edilecek Borç") && text.includes("50,00")), `zilde: ${JSON.stringify(items)}`);
   });
+
+  // Ç5-B kapanış düzeltme turu. ELLE (KULLANICI KARARI 12.11 13:26 — S129 = A, AYNEN: "kart 900, bağsız tahsilat 500 → Tahsil Edilen 500 · Kalan 400 …; tahsilat formunun
+  // sınırı / sorusu / önerilen tutarı S118 = B'deki gibi kartın KENDİ kalanından kalır"; kapanış dar kontrolü DÜŞÜK-4 — form kendi içinde çelişmesin):
+  //   E13: kart 900 (3 × 300; vadeler −40, sonraki aylar), karta BAĞLANMADAN 500 tahsilat → kart penceresi göstergeleri Tahsil Edilen 500,00 · Kalan 400,00; satırlar Ödenen
+  //        300,00 / 200,00 / (boş), Kalan 0,00 / 100,00 / 300,00; 1. satır 'Ödendi' ama ₺ düğmesi duruyor (kartın kendi hesabında açık). ₺ → form: önerilen 300,00, "Hangi
+  //        Taksite" 1. taksit (kalan 300,00), açıklama "sıradaki 1. taksit … (carinin avansıyla kapalı görünüyor)" — "gecikti" DEMEZ; bilgi notu 500,00. Cari kartının taksit
+  //        özeti 500,00 / 400,00 ve Taksitten Kalan 400,00.
+  await step("E13 S129: kart penceresi Tahsil Edilen / Kalan / Ödenen tek kuyruktan; form kartın kendi kalanından ve satır durumuyla çelişmez (DÜŞÜK-4)", async () => {
+    const k = await must("cari K", api.post("/api/workspace/accounts", { name: "Ekran S129 Müşteri", type: "customer", registeredOn: day(-400), phone: "0500 253 10 09" }));
+    const card = await must("kart 900", api.post("/api/workspace/plans", { accountId: k.id, name: k.name, total: "900", mode: "auto", count: 3, firstDue: day(-40), registeredOn: day(-60) }));
+    await must("bağsız tahsilat 500", api.post(`/api/workspace/accounts/${k.id}/entries`, { kind: "in", amount: "500", date: day(-5), method: "cash" }));
+    await openCard(card.id);
+    const kpi = await page.$eval(`${TOP} .hof-plans-kpis`, node => node.textContent.replace(/\s+/g, " ").trim());
+    ok(/900,00\s*Toplam Tutar/.test(kpi) && /500,00\s*Tahsil Edilen/.test(kpi) && /400,00\s*Kalan/.test(kpi), `kart penceresi göstergeleri: “${kpi}”`);
+    const rows = await planRows();
+    ok(JSON.stringify(rows.map(r => [r[3].replace(/[^\d,]/g, ""), r[4].replace(/[^\d,]/g, "")])) === JSON.stringify([["300,00", "0,00"], ["200,00", "100,00"], ["", "300,00"]]), `satırlar Ödenen / Kalan: ${JSON.stringify(rows.map(r => [r[3], r[4]]))}`);
+    ok(rows[0]?.[5]?.includes("Ödendi"), `1. taksit satırı: “${rows[0]?.[5]}”`);
+    const payButtons = await page.$$eval(`${TOP} tr[data-item]`, list => list.map(row => Boolean(row.querySelector("[data-pay-item]"))));
+    ok(JSON.stringify(payButtons) === JSON.stringify([true, true, true]), `₺ düğmesi kartın kendi hesabında açık her taksitte: ${JSON.stringify(payButtons)}`);
+    await shot("e13-s129-kart");
+    await page.click(`${TOP} tr[data-item] [data-pay-item]`);
+    await page.waitForSelector(`${TOP} input[name="amount"]`, { timeout: 10000 });
+    await page.waitForSelector(`${TOP} select[name="itemId"]`, { timeout: 10000 });
+    const suggested = await page.inputValue(`${TOP} input[name="amount"]`);
+    ok(suggested === "300,00", `önerilen tutar seçilen taksitin kartın kendi kalanı: ${suggested}`);
+    const chosen = await page.$eval(`${TOP} select[name="itemId"]`, node => node.selectedOptions[0]?.textContent.replace(/\s+/g, " ").trim() || "");
+    ok(chosen.startsWith("1. taksit") && chosen.includes("kalan") && chosen.includes("300,00"), `Hangi Taksite: “${chosen}”`);
+    const formText = await page.$eval(TOP, node => node.textContent.replace(/\s+/g, " ").trim());
+    ok(formText.includes("sıradaki 1. taksit") && formText.includes("carinin avansıyla kapalı görünüyor") && !/sıradaki 1\. taksit[^.]*gecikti/.test(formText), `açıklama satır durumuyla çelişmiyor: “${formText.slice(0, 260)}”`);
+    const note = await page.$eval(`${TOP} [data-cover-note]`, node => node.textContent.replace(/\s+/g, " ").trim()).catch(() => "");
+    ok(note === "Carinin avansı bu kartın 500,00 TL'sini kapatıyor.", `bilgi notu: “${note}”`);
+    await page.waitForTimeout(400);
+    await shot("e13-s129-form");
+    await closeAll();
+    await page.evaluate(id => window.HOF.accounts.open(id), k.id);
+    await page.waitForSelector(`${MODAL} tr[data-open-plan]`, { timeout: 15000 });
+    const planCells = await page.$eval(`${MODAL} tr[data-open-plan]`, row => [...row.querySelectorAll("td")].map(td => td.textContent.replace(/\s+/g, " ").trim()));
+    ok(planCells[2]?.includes("900,00") && planCells[3]?.includes("500,00") && planCells[4]?.includes("400,00"), `cari kartının taksit özeti Toplam / Tahsil Edilen / Kalan: ${JSON.stringify(planCells.slice(2, 5))}`);
+    const accKpi = await page.$eval(`${MODAL} .hof-plans-kpis`, node => node.textContent.replace(/\s+/g, " ").trim());
+    ok(/400,00\s*Taksitten Kalan/.test(accKpi), `cari kartı Taksitten Kalan 400,00: “${accKpi}”`);
+    ok(app.store.get("SELECT COUNT(*) AS n FROM plan_entries WHERE plan_id = ?", card.id).n === 0, "karta tahsilat yazılmadı (yalnız bakıldı)");
+    await shot("e13-s129-cari");
+    await closeAll();
+  });
   await context.close();
 } catch (error) {
   failed += 1;

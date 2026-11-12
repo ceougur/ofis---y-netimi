@@ -231,7 +231,7 @@ describe("Ç5-B son tur — gerçek program: S126 / S128 örnekleri ekranların 
     const open = [];
     for (const id of invoices) open.push((await must("fatura kartı", api.get(`/api/workspace/invoices/${id}`))).open);
     return {
-      bakiye: card.totals.balance, kartKendi: plan.totals.remaining, kartKuyruk: plan.totals.queueRemaining, taksit: plan.items.map(i => i.remaining),
+      bakiye: card.totals.balance, kartKendi: plan.totals.ownRemaining, kartKuyruk: plan.totals.queueRemaining, taksit: plan.items.map(i => i.remaining),
       gecikmis: card.totals.overdueDebt, gecikmisListe: list.overdue, vadeGecikmis: r2(vade.filter(r => r.date < NOW_DAY && r.direction === "in").reduce((s, r) => s + r.amount, 0)),
       vade: vade.map(r => `${r.source}:${r.amount}@${r.date}`).sort(), zil: zil.map(r => `${r.source}:${r.amount}:${r.state}`).sort(),
       kalan: Object.fromEntries(card.entries.filter(e => e.remaining !== undefined).map(e => [e.note, e.remaining])), acik: open,

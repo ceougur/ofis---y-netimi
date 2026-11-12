@@ -1035,7 +1035,11 @@ function assemble(input, side, net) {
     const map = new Map();
     for (const inst of card.installments) {
       const byAccount = inst.closures.filter(c => !c.reverse && c.mode !== "linked").reduce((sum, c) => sum + c.amount, 0);
-      map.set(inst.itemId || "rest", { remaining: tl(inst.left), doubtful: tl(held.get(inst.key) || 0), paid: tl(inst.amount - inst.left), byAccount: tl(byAccount), amount: tl(inst.amount), vade: inst.vade, seq: inst.seq || 0 });
+      // collected (Ç5-B kapanış düzeltmesi, S129 = A): taksitin TAHSİL EDİLEN kısmı — kart tahsilatı (bağlı) + kart seçilmeden gelen bağsız ödemenin payı (tahsilat, evrak,
+      // faturasız stok iadesi, kart / bağ fazlası — S50) + avansla ödenmiş sayılan kısım (S101). İki YÜKÜMLÜLÜK kaleminin netleşmesi (elle Alacak, alış faturası — karar
+      // (5) / S92) tahsilat değildir: sayılmaz (o caride kartın gösterimi bugünkü gibi kalır — kâhin C16.2 "karşı yönlü kalemli kartlı cari: tanım alanı dışı").
+      const collected = inst.closures.filter(c => !c.reverse && !c.payer?.due).reduce((sum, c) => sum + c.amount, 0);
+      map.set(inst.itemId || "rest", { remaining: tl(inst.left), doubtful: tl(held.get(inst.key) || 0), paid: tl(inst.amount - inst.left), collected: tl(collected), byAccount: tl(byAccount), amount: tl(inst.amount), vade: inst.vade, seq: inst.seq || 0 });
     }
     // Ç5-B tur 2a (O-3, S91 = A): kartın "Taksit İadesi" kalemi (iadeler tahsilatı aşınca; kartın borcudur) — takvim / zil / Vade Takip / nakit akışı kalemi (routes/plans.mjs).
     if (card.back) map.set("back", { remaining: tl(card.back.left), doubtful: tl(held.get(card.back.key) || 0), paid: tl(card.back.amount - card.back.left), byAccount: 0, amount: tl(card.back.amount), vade: card.back.vade, seq: 0 });

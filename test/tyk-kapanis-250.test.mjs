@@ -48,7 +48,7 @@ async function openProgram({ dataDir = "", backupDir = "", clock = steppingClock
     return res.data;
   };
   let n = 0;
-  const h = { server, api, must, store: server.app.store, ctx: server.app.context };
+  const h = { server, client, api, must, store: server.app.store, ctx: server.app.context };
   h.account = (label, type = "customer") => must(`cari ${label}`, api.post("/api/workspace/accounts", { name: `Kapanış ${label}`, type, registeredOn: day(-400), phone: `0500 259 ${String(10 + Math.floor((n += 1) / 100)).padStart(2, "0")} ${String(n % 100).padStart(2, "0")}` }));
   h.goods = async () => (h.goodsRow ||= await must("mal", api.post("/api/workspace/stock", { kind: "goods", code: `MAL-KAP-${(n += 1)}`, name: `Kapanış Malı ${n}`, unit: "Adet", openingQty: "100000", salePrice: "100" })));
   h.entry = (acc, body) => must(`hareket ${body.kind}`, api.post(`/api/workspace/accounts/${acc.id}/entries`, { method: "cash", cashForce: true, similarOk: true, ...body }));
@@ -420,5 +420,176 @@ describe("Ç5-B kapanış — ORTA-2 gerçek program: geriye tarihli Alacak + ka
     assert.deepEqual(v.taksit, [[0, 0]], "kart Bitti (avansla kapandı)");
     const check = await h.must("Mutabakat Testi", h.api.get("/api/workspace/ledger/integrity"));
     assert.equal(check.ok, true, "Mutabakat Testi tamam");
+  });
+});
+
+// ---------------- S129 = A: kartın 'Tahsil Edilen' / 'Kalan'ı ve satırın 'Ödenen'i TEK KUYRUKTAN — ekran, PDF, Rapor Merkezi, cari kartı, Cari Listesi AYNI sayı ----------------
+// KULLANICI KARARI 12.11 13:26 (iş listesi D, AYNEN): "taksit kartının penceresindeki 'Tahsil Edilen' / 'Kalan' göstergeleri, Taksitler listesindeki aynı sütunlar ve taksit
+// satırının 'Ödenen'i de TEK KUYRUKTAN gösterilir (ekranda tek sayı: örnekte kart 900, bağsız tahsilat 500 → Tahsil Edilen 500 · Kalan 400; kart 600, bağsız tahsilat 800 →
+// Kalan 0 · Tamamlandı); tahsilat formunun sınırı / sorusu / önerilen tutarı S118 = B'deki gibi kartın KENDİ kalanından kalır."
+describe("Ç5-B kapanış — S129 = A: kartın gösterilen Tahsil Edilen / Kalan / Ödenen'i tek kuyruktan; sınır kartın kendi kalanından (S118 = B)", () => {
+  let h;
+  let pdfText;
+  let xlsxRows;
+  const tlText = value => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)} TL`;
+  // Rapor hücresi "500,00 TL" → 500 (boş hücre 0).
+  const num = cell => Number(String(cell ?? "").replace(/[^\d,-]/g, "").replace(",", ".")) || 0;
+  const raw = async url => {
+    const res = await h.client.raw("GET", url);
+    assert.equal(res.status, 200, `${url}: ${res.status}`);
+    return res.buffer;
+  };
+  const report = (id, extra = "") => h.must(`rapor ${id}`, h.api.get(`/api/workspace/report-center/${id}?${extra}`));
+  const newCard = (acc, total, count) => h.must("kart", h.api.post("/api/workspace/plans", { name: acc.name, registeredOn: day(-40), total: String(total), accountId: acc.id, mode: "auto", count: String(count), firstDue: day(-10), everyMonths: "1" }));
+  before(async () => {
+    ({ pdfText, xlsxRows } = await import("./fixtures/rapor-dosya-oku.mjs"));
+    h = await openProgram();
+  });
+  after(async () => h?.server.close());
+
+  it("karar örneği 1 — kart 900 (3 × 300), karta BAĞLANMADAN 500 tahsilat: Tahsil Edilen 500 · Kalan 400; satırlar Ödenen 300 / 200 / 0; kartın kendi hesabı 0 / 900 ayrı alanlarda", async () => {
+    const acc = await h.account("S129 Örnek 1");
+    const plan = await newCard(acc, 900, 3);
+    await h.entry(acc, { kind: "in", amount: "500", date: day(-5) });
+    const p = await h.plan(plan.id);
+    assert.deepEqual([p.totals.total, p.totals.paid, p.totals.remaining], [900, 500, 400], "kart penceresi göstergeleri");
+    assert.deepEqual(p.items.map(item => [item.amount, item.paid, item.remaining]), [[300, 300, 0], [300, 200, 100], [300, 0, 300]], "taksit satırları: Tutar / Ödenen / Kalan");
+    assert.equal(r2(p.items.reduce((sum, item) => sum + item.paid, 0)), p.totals.paid, "satırların Ödenen toplamı = gösterge");
+    assert.deepEqual([p.totals.ownPaid, p.totals.ownRemaining, p.items.map(item => [item.ownPaid, item.ownRemaining])], [0, 900, [[0, 300], [0, 300], [0, 300]]], "kartın kendi hesabı (kart tahsilatı yok)");
+    // Taksitler listesi: aynı sütunlar + toplam göstergeleri.
+    const list = await h.must("Taksitler", h.api.get("/api/workspace/plans?status=all&limit=500"));
+    const row = list.plans.find(item => item.id === plan.id);
+    assert.deepEqual([row.totals.paid, row.totals.remaining, row.totals.ownPaid, row.totals.ownRemaining], [500, 400, 0, 900]);
+    // Cari kartının taksit özeti ve "Taksitten Kalan"; Cari Listesi satırı.
+    const card = await h.card(acc);
+    assert.deepEqual([card.plans[0].totals.paid, card.plans[0].totals.remaining, card.plans[0].totals.ownRemaining, card.totals.planRemaining, card.totals.balance], [500, 400, 900, 400, 400]);
+    const accounts = await h.must("Cari Listesi", h.api.get("/api/workspace/accounts?status=all&limit=5000"));
+    assert.equal(accounts.accounts.find(item => item.id === acc.id).planRemaining, 400, "Cari Listesi: Taksitten Kalan");
+    // PDF / Excel / Rapor Merkezi aynı sayılar.
+    const ekstre = pdfText(await raw(`/api/workspace/plans/${plan.id}/ekstre.pdf`));
+    assert.ok(ekstre.includes(`Toplam tutar\n${tlText(900)}\nTahsil edilen\n${tlText(500)}\nKalan\n${tlText(400)}`), `taksit ekstresi göstergeleri: ${ekstre.slice(0, 300)}`);
+    assert.ok(ekstre.includes(`${tlText(300)}\n${tlText(200)}\n${tlText(100)}`), "taksit ekstresi 2. taksit: Tutar 300 / Ödenen 200 / Kalan 100");
+    assert.ok(ekstre.includes(`Toplam\n${tlText(900)}\n${tlText(500)}\n${tlText(400)}`), "taksit ekstresi tablo toplamı");
+    const liste = pdfText(await raw("/api/workspace/plans/liste.pdf?status=all"));
+    assert.ok(liste.includes(`${acc.name}\n`) && liste.includes(`${tlText(900)}\n${tlText(500)}\n${tlText(400)}`), "Taksit Listesi PDF satırı: Toplam 900 / Ödenen 500 / Kalan 400");
+    const xlsx = xlsxRows(await raw("/api/workspace/accounts/export.xlsx?status=all"));
+    const head = xlsx[0];
+    const line = xlsx.find(cells => cells[head.indexOf("Ad / Unvan")] === acc.name);
+    assert.equal(line[head.indexOf("Taksitten Kalan")], 400, "Cari Listesi Excel: Taksitten Kalan");
+    const cariPdf = pdfText(await raw(`/api/workspace/accounts/${acc.id}/ekstre.pdf`));
+    assert.match(cariPdf, /Taksitlerden Kalan[^T]{0,30}\n400,00 TL/, `cari ekstresi özeti: Taksitlerden Kalan 400 — ${cariPdf.slice(0, 500)}`);
+    const kartlar = await report("taksit-kartlari", "planStatus=all");
+    const kHead = kartlar.headers;
+    const kRow = kartlar.rows.find(cells => cells[kHead.indexOf("Ad")] === acc.name);
+    assert.deepEqual([num(kRow[kHead.indexOf("Toplam")]), num(kRow[kHead.indexOf("Ödenen")]), num(kRow[kHead.indexOf("Kalan")])], [900, 500, 400], "Rapor Merkezi Taksit Kartları");
+    // Sınır kartın KENDİ kalanından (S118 = B): 901 'Kalanı Aşan Tutar'; kayıt yazılmaz.
+    const over = await h.api.post(`/api/workspace/plans/${plan.id}/entries`, { kind: "in", amount: "901", method: "cash", date: day(-1), cashForce: true, similarOk: true });
+    assert.deepEqual([over.status, over.data?.code], [409, "plan-overpay"]);
+    assert.equal(h.store.get("SELECT COUNT(*) AS n FROM plan_entries WHERE plan_id = ?", plan.id).n, 0, "reddedilen tahsilat yazılmadı");
+    const check = await h.must("Mutabakat Testi", h.api.get("/api/workspace/ledger/integrity"));
+    assert.equal(check.ok, true, "Mutabakat Testi (kartın kendi hesabı = satırlar) tamam");
+  });
+
+  it("karar örneği 2 — kart 600 (2 × 300), bağlanmadan 800 tahsilat: Kalan 0 · Tamamlandı, Tahsil Edilen 600; cari 200 alacaklı", async () => {
+    const acc = await h.account("S129 Örnek 2");
+    const plan = await newCard(acc, 600, 2);
+    await h.entry(acc, { kind: "in", amount: "800", date: day(-5) });
+    const p = await h.plan(plan.id);
+    assert.deepEqual([p.totals.paid, p.totals.remaining, p.state, p.items.map(item => [item.paid, item.remaining])], [600, 0, "done", [[300, 0], [300, 0]]]);
+    const list = await h.must("Taksitler (Biten)", h.api.get("/api/workspace/plans?status=done&limit=500"));
+    assert.deepEqual(list.plans.filter(item => item.id === plan.id).map(item => [item.totals.paid, item.totals.remaining, item.state]), [[600, 0, "done"]]);
+    const card = await h.card(acc);
+    assert.deepEqual([card.totals.balance, card.totals.planRemaining, card.plans[0].totals.remaining], [-200, 0, 0]);
+  });
+
+  it("karta kendi tahsilatı + bağsız tahsilat birlikte: kart 900, karta 300 (1. taksit) + bağsız 200 ⇒ Tahsil Edilen 500 · Kalan 400; kartın kendi hesabı 300 / 600", async () => {
+    const acc = await h.account("S129 Karma");
+    const plan = await newCard(acc, 900, 3);
+    // Önce bağsız tahsilat, SONRA kart tahsilatı: kartın yazımında mutabakat kapısı (plans:totals — kartın kendi hesabı = satırlar) gösterilen ≠ kendi hesabı durumunu görür.
+    await h.entry(acc, { kind: "in", amount: "200", date: day(-5) });
+    await h.must("kart tahsilatı", h.api.post(`/api/workspace/plans/${plan.id}/entries`, { kind: "in", amount: "300", method: "cash", date: day(-8), cashForce: true, similarOk: true }));
+    const p = await h.plan(plan.id);
+    assert.deepEqual([p.totals.paid, p.totals.remaining, p.totals.ownPaid, p.totals.ownRemaining], [500, 400, 300, 600]);
+    assert.deepEqual(p.items.map(item => [item.paid, item.remaining, item.ownPaid, item.ownRemaining]), [[300, 0, 300, 0], [200, 100, 0, 300], [0, 300, 0, 300]]);
+    // Makbuz (kart tahsilatının): Tahsil edilen / Kalan borç kart penceresiyle aynı.
+    const entryId = p.entries.find(entry => entry.kind === "in").id;
+    const makbuz = pdfText(await raw(`/api/workspace/plans/${plan.id}/entries/${entryId}/makbuz.pdf`));
+    assert.ok(makbuz.includes(`Toplam borç\n${tlText(900)}\nTahsil edilen\n${tlText(500)}\nKalan borç\n${tlText(400)}`), `makbuz: ${makbuz.slice(0, 400)}`);
+    // Rapor Merkezi taksit vadeleri: satırın Ödenen / Kalan'ı kart penceresiyle aynı (2. taksit 200 / 100).
+    const vade = await report("taksit-vadeleri", `from=${day(-60)}&to=${day(120)}`);
+    const vHead = vade.headers;
+    const rows = vade.rows.filter(cells => cells[vHead.indexOf("Ad")] === acc.name).map(cells => [cells[vHead.indexOf("Taksit")], num(cells[vHead.indexOf("Ödenen")]), num(cells[vHead.indexOf("Kalan")]), cells[vHead.indexOf("Durum")]]);
+    assert.deepEqual(rows, [["1. taksit", 300, 0, "Ödendi"], ["2. taksit", 200, 100, "Kısmen ödendi"], ["3. taksit", 0, 300, "Açık"]]);
+    // Aylık performans = ekran: açık kartların taksitleri (kart penceresinin satırları) ay ay toplanınca raporun Ödenen / Kalan'ını verir.
+    const perf = await report("taksit-performans", `from=${day(-60)}&to=${day(120)}`);
+    const pHead = perf.headers;
+    const months = new Map();
+    for (const row of (await h.must("Taksitler", h.api.get("/api/workspace/plans?status=all&limit=500"))).plans) {
+      if (row.status !== "active") continue; // rapor: kapatılmamış kartlar (Biten dahil)
+      for (const item of (await h.plan(row.id)).items) {
+        if (item.dueDate < day(-60) || item.dueDate > day(120)) continue;
+        const month = months.get(item.dueDate.slice(0, 7)) || { paid: 0, remaining: 0 };
+        months.set(item.dueDate.slice(0, 7), { paid: r2(month.paid + item.paid), remaining: r2(month.remaining + item.remaining) });
+      }
+    }
+    assert.ok(months.size >= 2 && [...months.values()].some(month => month.paid > 0), "ön koşul: birden çok ay, ödeneni olan ay var");
+    assert.deepEqual(r2(perf.rows.reduce((sum, cells) => sum + num(cells[pHead.indexOf("Ödenen")]), 0)), r2([...months.values()].reduce((sum, month) => sum + month.paid, 0)), "performans raporu Ödenen toplamı = kart satırlarının Ödenen toplamı");
+    assert.deepEqual(r2(perf.rows.reduce((sum, cells) => sum + num(cells[pHead.indexOf("Kalan")]), 0)), r2([...months.values()].reduce((sum, month) => sum + month.remaining, 0)), "performans raporu Kalan toplamı = kart satırlarının Kalan toplamı");
+    for (const cells of perf.rows) assert.equal(r2(num(cells[pHead.indexOf("Ödenen")]) + num(cells[pHead.indexOf("Kalan")])), num(cells[pHead.indexOf("Vadesi Gelen")]), `performans ${cells[0]}: Ödenen + Kalan = Vadesi Gelen`);
+  });
+
+  it("kapatılmış kart: gösterim BUGÜNKÜ gibi (kural yazılmadı) — Tahsil Edilen 300, Kalan 600 kartın kendi hesabından", async () => {
+    const acc = await h.account("S129 Kapalı");
+    const plan = await newCard(acc, 900, 3);
+    await h.must("kart tahsilatı", h.api.post(`/api/workspace/plans/${plan.id}/entries`, { kind: "in", amount: "300", method: "cash", date: day(-8), cashForce: true, similarOk: true }));
+    const cur = h.store.get("SELECT name, registered_on AS registeredOn FROM plans WHERE id = ?", plan.id);
+    assert.equal((await h.api.put(`/api/workspace/plans/${plan.id}`, { name: cur.name, registeredOn: cur.registeredOn, status: "closed" })).status, 200);
+    const p = await h.plan(plan.id);
+    assert.deepEqual([p.state, p.totals.paid, p.totals.remaining, p.totals.ownPaid, p.totals.ownRemaining, p.items.map(item => item.paid)], ["closed", 300, 600, 300, 600, [300, 0, 0]]);
+  });
+
+  it("Mevcut Borç kartının taksitlere BÖLÜNMEMİŞ kısmı bugünkü gösteriminde (karar yok): Borç 1.000, kart 1.000 (taksit 300 + 300), bağsız tahsilat 200 ⇒ Kalan 1.000, Tahsil Edilen 0", async () => {
+    // Bölünmemiş 400 kuyrukta kartın kalemi değil (alttaki borç); tahsilat vade sırasıyla o borcu kapatır (taksitlerin vadesi sonra). Gösterge: taksitler 600 + bölünmemiş 400.
+    const acc = await h.account("S129 Bölünmemiş");
+    await h.entry(acc, { kind: "debt", amount: "1000", date: day(-30) });
+    const plan = await h.must("kart", h.api.post("/api/workspace/plans", { name: acc.name, registeredOn: day(-20), total: "1000", accountId: acc.id, coversBalance: true }));
+    await h.must("taksit 1", h.api.post(`/api/workspace/plans/${plan.id}/items`, { dueDate: day(-10), amount: "300" }));
+    await h.must("taksit 2", h.api.post(`/api/workspace/plans/${plan.id}/items`, { dueDate: day(20), amount: "300" }));
+    await h.entry(acc, { kind: "in", amount: "200", date: day(-15) });
+    const p = await h.plan(plan.id);
+    assert.deepEqual([p.totals.total, p.totals.paid, p.totals.remaining, p.items.map(item => [item.paid, item.remaining]), p.totals.ownRemaining], [1000, 0, 1000, [[0, 300], [0, 300]], 1000]);
+    assert.equal((await h.card(acc)).totals.balance, 800);
+    // Karta 700 tahsilat (taksitler 600 + bölünmemiş kısma 100): Tahsil Edilen 700 · Kalan 300 — bölünmemiş kısma yazılan pay kartın kendi hesabından (bugünkü gibi).
+    await h.must("kart tahsilatı", h.api.post(`/api/workspace/plans/${plan.id}/entries`, { kind: "in", amount: "700", method: "cash", date: day(-3), cashForce: true, similarOk: true }));
+    const q = await h.plan(plan.id);
+    assert.deepEqual([q.totals.paid, q.totals.remaining, q.totals.ownPaid, q.totals.ownRemaining, q.items.map(item => [item.paid, item.remaining])], [700, 300, 700, 300, [[300, 0], [300, 0]]]);
+  });
+
+  it("elle Alacak'la NETLEŞME tahsilat değildir (karar yok — gösterim bugünkü gibi; kâhin d19 N4): Açılış 900 → Mevcut Borç kartı 900 (3 × 300) → Alacak 200 ⇒ Tahsil Edilen 0 · Kalan 900, satırların Ödenen'i 0", async () => {
+    const acc = await h.account("S129 Netleşme");
+    await h.entry(acc, { kind: "debt", amount: "900", date: day(-45), dueDate: day(-40) });
+    const plan = await h.must("kart", h.api.post("/api/workspace/plans", { name: acc.name, registeredOn: day(-38), total: "900", accountId: acc.id, mode: "auto", count: "3", firstDue: day(-15), everyMonths: "1", coversBalance: true }));
+    await h.entry(acc, { kind: "credit", amount: "200", date: day(-36), dueDate: day(15) });
+    const p = await h.plan(plan.id);
+    assert.deepEqual([p.totals.paid, p.totals.remaining, p.items.map(item => item.paid)], [0, 900, [0, 0, 0]]);
+    const card = await h.card(acc);
+    assert.deepEqual([card.totals.balance, card.plans[0].totals.paid, card.plans[0].totals.remaining, card.totals.planRemaining], [700, 0, 900, 900]);
+  });
+
+  it("kartın KENDİ fazla tahsilatı (K8 'Fazlasını Avans Yaz') bugünkü gibi: kart 1.000 ödendi + 100 avans ⇒ Tahsil Edilen 1.100 · Kalan 0 · fazla 100", async () => {
+    const acc = await h.account("S129 K8 Avans");
+    const plan = await h.must("kart", h.api.post("/api/workspace/plans", { name: acc.name, registeredOn: day(-30), total: "1000", accountId: acc.id, mode: "auto", count: "1", firstDue: day(10), everyMonths: "1" }));
+    await h.must("1.000", h.api.post(`/api/workspace/plans/${plan.id}/entries`, { kind: "in", amount: "1000", method: "cash", date: day(-20), cashForce: true, similarOk: true }));
+    await h.must("avans 100", h.api.post(`/api/workspace/plans/${plan.id}/entries`, { kind: "in", amount: "100", method: "cash", date: day(-19), overpay: true, cashForce: true, similarOk: true }));
+    const p = await h.plan(plan.id);
+    assert.deepEqual([p.totals.paid, p.totals.remaining, p.totals.extra, p.totals.ownPaid, p.state, p.items.map(item => [item.paid, item.remaining])], [1100, 0, 100, 1100, "done", [[1000, 0]]]);
+    assert.equal((await h.card(acc)).totals.balance, -100);
+  });
+
+  it("carisiz kart (kuyruk yok): gösterilen sayı kartın kendi hesabı — alanlar aynı", async () => {
+    const plan = await h.must("carisiz kart", h.api.post("/api/workspace/plans", { name: "Kapanış Carisiz", registeredOn: day(-40), total: "600", mode: "auto", count: "2", firstDue: day(-10), everyMonths: "1" }));
+    await h.must("kart tahsilatı", h.api.post(`/api/workspace/plans/${plan.id}/entries`, { kind: "in", amount: "250", method: "cash", date: day(-8), cashForce: true, similarOk: true }));
+    const p = await h.plan(plan.id);
+    assert.deepEqual([p.totals.paid, p.totals.remaining, p.totals.ownPaid, p.totals.ownRemaining, p.items.map(item => [item.paid, item.ownPaid])], [250, 350, 250, 350, [[250, 250], [0, 0]]]);
   });
 });

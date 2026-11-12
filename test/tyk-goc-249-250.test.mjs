@@ -58,7 +58,8 @@ describe("2.5.0 Ç5-B — v2.4.9 verisi güncel kodun kuyruğunda", () => {
         assert.deepEqual([f1.open, f1.payState, f2.open, f2.payState], [1000, "overdue", 0, "paid"]);
         const plan = await must("kart", api.get(`/api/workspace/plans/${ids.plan}`));
         assert.deepEqual(plan.items.map(i => [i.remaining, i.accountPaid]), [[0, 300], [300, 0]]);
-        assert.equal(plan.totals.remaining, 600, "kartın kendi hesabı (kart tahsilatı yok) değişmez");
+        // S129 = A (kapanış düzeltme turu): gösterilen Kalan / Tahsil Edilen tek kuyruktan (300 / 300); kartın kendi hesabı ownRemaining'de.
+        assert.deepEqual([plan.totals.ownRemaining, plan.totals.ownPaid, plan.totals.remaining, plan.totals.paid], [600, 0, 300, 300], "kartın kendi hesabı (kart tahsilatı yok) değişmez; gösterilen sayı kuyruktan");
         const card = await must("cari kartı", api.get(`/api/workspace/accounts/${ids.account}`));
         assert.deepEqual([card.totals.overdueDebt, card.totals.overdueDebtCount, card.totals.balance], [1200, 2, 1500]);
         const integrity = await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));

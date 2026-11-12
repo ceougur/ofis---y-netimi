@@ -135,6 +135,9 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   let planSeq = 0;
   const cariAdd = (id, cents) => M.cari.set(id, (M.cari.get(id) || 0) + cents);
   const planLeft = p => Math.max(0, p.total - Math.max(0, p.paid));
+  // 2.5.0 Ç5-B kapanış düzeltmesi (S129 = A): programın kart yanıtında totals.paid GÖSTERİLEN (tek kuyruk) sayıdır; kartın KENDİ tahsilatı totals.ownPaid — model kart
+  // tahsilatlarını sayar, onunla karşılaştırılır (eski sürüm kodunu süren koşularda alan yoktur: totals.paid zaten kartın kendi hesabıdır).
+  const ownPaidOf = p => p.totals.ownPaid ?? p.totals.paid;
   // v2.0.24: taksitli faturanın kendi kartı faturanın açığını izler (iade, iade iptali, kart tahsilatı/iadesi/silmesi sonrası).
   // Bağımsız hesap (v2.1.0, Canlı Hata 2): hedef = max(0, taksite kalan − kartın net tahsilatı − iadeler + geri ödenen) —
   // geri ödeme önce iadenin faturayı aşıp avansa dönen kısmından düşülür (2.0.24–2.0.26 kodu ve bu model açığı 0'da kırpıp
@@ -380,7 +383,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       seen.add(p.id);
       // v2.0.24: iade, asıl faturayı kapsayan Mevcut Borç kartını faturadaki payı kadar küçültür; model kapsamı (FIFO) tutmaz.
       // Bu kartta program değeri [model − bu karttaki iadeler, model] aralığında ve ödenenin altında değilse benimsenir.
-      if ((m.slack || m.over) && centsOf(p.totals.paid) === m.paid) {
+      if ((m.slack || m.over) && centsOf(ownPaidOf(p)) === m.paid) {
         const got = centsOf(p.totals.total);
         if (got <= m.total + (m.over || 0) && got >= m.total - (m.slack || 0) && got >= Math.max(0, m.paid)) {
           // Benimsenen fark en son iadeye yazılır (iade iptalinde geri büyüyecek tutar; programın coverCuts'ı gibi): program daha
@@ -396,7 +399,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
           m.total = got;
         }
       }
-      if (centsOf(p.totals.total) !== m.total || centsOf(p.totals.paid) !== m.paid) {
+      if (centsOf(p.totals.total) !== m.total || centsOf(ownPaidOf(p)) !== m.paid) {
         // Teşhis için kartın taksitleri ve tahsilatları da yazılır (hangi satırın saptığı görünsün).
         const d = (await api("GET", `/api/workspace/plans/${p.id}`)).data || {};
         const items = (d.items || d.ledger?.items || []).map(i => `${i.dueDate}:${i.amount}/${i.paid ?? i.paidAmount ?? "-"}`).join(" ");
@@ -404,7 +407,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const invId = d.invoiceId || m.invoiceId;
         const inv = invId ? (await api("GET", `/api/workspace/invoices/${invId}`)).data : null;
         if (inv) problems.push(`  fatura ${inv.number} ${inv.issueDate}: ödenecek ${inv.payable} açık ${inv.open} ödenen ${inv.paid} · kapatanlar ${(inv.closers || []).map(c => `${c.date}:${c.amount}:${c.mode}:${c.label}`).join(" | ")}`);
-        problems.push(`Taksit kartı ${p.name} (${p.id}, fatura ${d.invoiceId || d.invoice?.number || "-"}, durum ${p.status}): program ${p.totals.total}/${p.totals.paid} · model ${tl(m.total)}/${tl(m.paid)} · taksitler [${items}] · tahsilatlar [${ents}]`);
+        problems.push(`Taksit kartı ${p.name} (${p.id}, fatura ${d.invoiceId || d.invoice?.number || "-"}, durum ${p.status}): program ${p.totals.total}/${ownPaidOf(p)} · model ${tl(m.total)}/${tl(m.paid)} · taksitler [${items}] · tahsilatlar [${ents}]`);
       }
       if ((p.status === "closed") !== (m.status === "closed")) problems.push(`Taksit kartı ${p.name}: durum ${p.status} · model ${m.status}`);
       // Yukarı yönlü pay (over) yalnız iadenin ardından programın ilk gözlemine kadar geçerli; gözlendikten sonra kalkar.
@@ -417,15 +420,15 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       if (!m?.invoiceId || p.status === "closed") continue;
       const inv = (await api("GET", `/api/workspace/invoices/${m.invoiceId}`)).data;
       if (!inv || inv.status !== "issued") continue;
-      const left = Math.max(0, centsOf(p.totals.total) - Math.max(0, centsOf(p.totals.paid)));
+      const left = Math.max(0, centsOf(p.totals.total) - Math.max(0, centsOf(ownPaidOf(p))));
       // Parası geri verilen iade borcu düşürmez: kartın kalanı = max(0, imzalı açık), imzalı açık = taksite kalan − kart tahsilatı − iadelerin
       // mahsup edilen kısmı (iade − geri ödenen; Canlı Hata 2: geri ödeme önce avansa dönen iadeden düşülür), taksite kalanı aşmadan. K1 (2.1.0;
       // kâhin + hakem IADE-KAPAMA): faturanın açığı AYNI formüldür (geri ödenen iade faturaya mahsup edilmez) → açık = kartın kalanı = hedef.
       // Önceki denetim "açık + geri ödenen = hedef" programın aynı alacağı iki kez kullanan hatasını taşıyordu (ders 5).
       const mi = M.invoices.get(m.invoiceId);
       if (!mi) continue;
-      const { target, refunds } = ownTarget(mi, centsOf(p.totals.paid));
-      const want = Math.min(target, Math.max(0, mi.rest - Math.max(0, centsOf(p.totals.paid))));
+      const { target, refunds } = ownTarget(mi, centsOf(ownPaidOf(p)));
+      const want = Math.min(target, Math.max(0, mi.rest - Math.max(0, centsOf(ownPaidOf(p)))));
       // 2.5.0 Ç5-B tur 2b-2 — S99 = A (KULLANICI KARARI 10.11 13:27, AYNEN: "FATURA DURUMU da TEK kuyruktan: bağsız avans vade sırasıyla taksitli faturanın taksitlerini de
       // kapatır … 'Taksitli faturanın açığı = kartının kalanı' kuralı KUYRUK kalanıyla sürer (2.4.9'daki 'bağsız para taksitli faturanın kartına harcanmaz' kuralı bu kararla
       // DEĞİŞTİ) … mutabakat modeli bu kararla güncellenir"): faturanın açığı artık kartın KENDİ kalanına (bu modelin hedefi) EŞİT olmak zorunda değil — carinin bağsız parası
@@ -608,7 +611,13 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     const kartlar = await rc("taksit-kartlari", "", "", "&planStatus=all");
     if (kartlar.total !== M.plans.size) problems.push(`Taksit Kartları (Tüm Kartlar): ${kartlar.total} satır · model ${M.plans.size}${M.plans.size && !kartlar.total ? " (VERİ VARKEN BOŞ)" : ""}`);
     const planTotal = [...M.plans.values()].reduce((s, p) => s + p.total, 0), planPaid = [...M.plans.values()].reduce((s, p) => s + p.paid, 0);
-    if (sum(kartlar, "Toplam") !== planTotal || sum(kartlar, "Ödenen") !== planPaid) problems.push(`Taksit Kartları: toplam/ödenen ${tl(sum(kartlar, "Toplam"))}/${tl(sum(kartlar, "Ödenen"))} · model ${tl(planTotal)}/${tl(planPaid)}`);
+    // 2.5.0 Ç5-B kapanış düzeltmesi (S129 = A): raporun "Ödenen"i artık GÖSTERİLEN sayıdır (tek kuyruk — kart seçilmeden alınan tahsilatın kapattığı pay dahil); model tek
+    // kuyruğu kurmaz. Zincir iki halkayla korunur: (1) Taksitler listesinin kartın KENDİ hesabı (totals.ownPaid) = model (kart tahsilatları); (2) rapor = ekran (raporun
+    // Ödenen'i = listenin gösterilen toplamı). Eski sürüm kodunda ownPaid yoktur: totals.paid kartın kendi hesabıdır, iki halka aynı sayıya iner (eski denetim).
+    const liste = (await api("GET", "/api/workspace/plans?status=all")).data?.plans || [];
+    const ownPaid = liste.reduce((s, p) => s + centsOf(ownPaidOf(p)), 0), shownPaid = liste.reduce((s, p) => s + centsOf(p.totals.paid), 0);
+    if (sum(kartlar, "Toplam") !== planTotal || ownPaid !== planPaid) problems.push(`Taksit Kartları: toplam ${tl(sum(kartlar, "Toplam"))} · kartların kendi tahsilatı ${tl(ownPaid)} · model ${tl(planTotal)}/${tl(planPaid)}`);
+    if (sum(kartlar, "Ödenen") !== shownPaid) problems.push(`Taksit Kartları: raporun ödeneni ${tl(sum(kartlar, "Ödenen"))} · Taksitler listesinin ödeneni ${tl(shownPaid)} (rapor ≠ ekran)`);
     const mizan = await rc("hesap-mizani", D0, T);
     if (!mizan.total) problems.push("Hesap Planı Mizanı: veri varken boş");
     // 2.1.0 (plan testleri): Hesap Planı Mizanı raporu hesap hesap (yalnız "boş değil" değil): 100/102/108 ve cari hesapları modelle; Fark 0.

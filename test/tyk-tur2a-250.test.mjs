@@ -35,7 +35,7 @@ describe("2.5.0 Ç5-B tur 2a (API): Y-1, O-1, O-2, O-3", () => {
   const account = label => must(`cari ${label}`, api.post("/api/workspace/accounts", { name: `Tur2a ${label}`, type: "customer", registeredOn: day(-400), phone: `0500 252 10 ${String((n += 1)).padStart(2, "0")}` }));
   const card = acc => must("cari kartı", api.get(`/api/workspace/accounts/${acc.id}`));
   const plan = id => must("taksit kartı", api.get(`/api/workspace/plans/${id}`));
-  const view = p => ({ items: p.items.map(i => [i.seq, i.remaining, i.accountPaid, i.state]), state: p.state, queue: p.totals.queueRemaining, own: p.totals.remaining });
+  const view = p => ({ items: p.items.map(i => [i.seq, i.remaining, i.accountPaid, i.state]), state: p.state, queue: p.totals.queueRemaining, own: p.totals.ownRemaining });
   const vade = async (acc, query = "") => (await must("Vade Takip", api.get(`/api/workspace/overview/vade-takip?from=${day(-500)}&to=${day(500)}${query}`))).rows.filter(r => r.party === acc.name || r.accountId === acc.id);
   const lateSum = rows => Math.round(rows.filter(r => r.date < TODAY && r.direction === "in").reduce((s, r) => s + (r.amount || 0), 0) * 100) / 100;
   const dues = async acc => (await must("zil", api.get("/api/workspace/dues"))).items.filter(r => r.accountId === acc.id);

@@ -157,7 +157,11 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
 
   // withRemaining (2.4.5 madde 6): false → borç kayıtlarının Kalan'ı hesaplanmaz (fatura kapaması yalnız defteri ister; aynı kapama iki kez koşmasın);
   // geri ödenecek iadeler ve silme engeli (2.4.9 C1 TUR 1) de okunmaz.
-  function detail(id, user, { withRemaining = true } = {}) {
+  // shown (2.5.0 Ç5-B kapanış düzeltmesi, S129 = A — KULLANICI KARARI 12.11 13:26: kart penceresinin 'Tahsil Edilen' / 'Kalan'ı TEK KUYRUKTAN, "ekranda tek sayı"): true →
+  // taksit özetinin (plans[].totals.paid / remaining) ve "Taksitten Kalan"ın (totals.planRemaining) GÖSTERİLEN sayıları kart penceresiyle aynı (routes/plans.mjs
+  // shownTotalsOf); kartın kendi hesabı plans[].totals.ownPaid / ownRemaining'de durur. Yalnız EKRANA / PDF'e giden yanıtlarda (viewOf): iç çağıranlar (kartı bakiyeye göre
+  // kırpma, taksitlendirilebilecek borç, WhatsApp, fatura kapaması) kartın kendi hesabını okumayı sürdürür — bakiye ve defter DEĞİŞMEZ.
+  function detail(id, user, { withRemaining = true, shown = false } = {}) {
     const account = accountRow(id);
     const manage = canUser(user, "accounts.manage");
     // Stok ve çek/senetten gelen satırlar (v2.0.6, v2.0.7) kendi kartlarından düzeltilir.
@@ -189,15 +193,20 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     // Kalan haritası kartın "ekran eki"dir (entryStates; kuyruk bir kez kurulur, sonuç verilir): eki hata verirse cari kartı da hata verir (2.4.9 whatsapp-elle-alici §13 b).
     const remaining = tyk ? (invoiceModule().entryStates ? invoiceModule().entryStates(account.id, ledger.lines, tyk) : tyk.entries) : null;
     if (remaining) for (const entry of entries) if (isManualDue(entry)) entry.remaining = remaining.get(entry.id)?.remaining ?? roundMoney(Number(entry.amount) || 0);
+    const shownOf = shown && tyk && plans()?.shownTotalsOf ? plan => plans().shownTotalsOf(plan, tyk) : () => null;
+    const summaries = planList.map(plan => {
+      const view = shownOf(plan);
+      return planSummaryOf(view ? { ...plan, totals: { ...plan.totals, paid: view.paid, remaining: view.remaining } } : plan);
+    });
     return {
       ...account,
       typeLabel: ACCOUNT_TYPES[account.type] || "",
       entries,
-      plans: planList.map(planSummaryOf),
+      plans: summaries,
       ledger: ledger.lines,
       // totals.overdue / overdueCount: ESKİ anlam (açık taksit kartlarının gecikmişi) — WhatsApp Ödeme Hatırlatma Ç5-C'ye kadar bunu okur (lib/whatsapp/queue.mjs overdueOf;
       // tasarım §8 B1-W). TYK gecikmişi overdueDebt* (ekranda "Gecikmiş Borç").
-      totals: tyk ? { ...ledger.totals, overdueInstallments: ledger.totals.overdue, ...tykTotals(tyk) } : ledger.totals,
+      totals: tyk ? { ...ledger.totals, overdueInstallments: ledger.totals.overdue, ...tykTotals(tyk), ...(shown ? { planRemaining: roundMoney(summaries.reduce((sum, plan) => sum + (plan.status === "closed" ? 0 : Math.max(0, Number(plan.totals?.remaining) || 0)), 0)) } : {}) } : ledger.totals,
       side: balanceSide(ledger.totals.balance),
       canManage: manage,
       canCollect: canUser(user, "accounts.collect"),
@@ -217,6 +226,9 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       refundables: withRemaining ? refundablesOf(account.id) : [],
     };
   }
+
+  // Ekrana / PDF'e giden cari kartı (S129 = A): taksit özeti ve "Taksitten Kalan" kart penceresiyle aynı sayılar.
+  const viewOf = (id, user) => detail(id, user, { shown: true });
 
   // İş Z (2.4.8, T9 ORTA: 2.000 carili şirkette WhatsApp önizlemesi ~23 sn, olay döngüsü kilitli): WhatsApp toplu gönderiminin önizleme / açma okuması
   // (lib/whatsapp/queue.mjs plan()). Cari kartının (detail) AYNI çekirdeği — accountRow (silinmiş / olmayan cari 404), entriesOf, plans().forAccount, accountLedger —
@@ -324,7 +336,9 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         planDebit += plan.coversBalance ? 0 : total;
         planCredit += plan.status === "closed" ? Math.max(total, paid) : paid;
         if (plan.status !== "closed") {
-          planRemaining += Math.max(0, total - paid);
+          // S129 = A: "Taksitten Kalan" (liste, PDF, Excel) kart penceresinin Kalan'ıyla aynı — kullanıcı isteğinde kuyruktan; iç çağıranlarda (kuyruk okunmaz) kartın kendi hesabı.
+          const view = tykAll && plans()?.shownTotalsOf ? plans().shownTotalsOf(plan, tykAll.get(row.id)) : null;
+          planRemaining += view ? Math.max(0, view.remaining) : Math.max(0, total - paid);
           overdue += plan.totals.overdue || 0;
           overdueCount += plan.totals.overdueCount || 0;
           if (plan.next && (!next || plan.next.dueDate < next.dueDate)) next = { ...plan.next, planId: plan.id };
@@ -653,7 +667,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       const id = insertAccount(user, input);
       if (hasOpening) addEntry(user, id, { kind, amount: roundMoney(Math.abs(opening)), date: input.registeredOn, note: OPENING_NOTE, opening: true, ...due });
       audit(user, "account.created", id, { name: input.name, type: input.type });
-      return detail(id, user);
+      return viewOf(id, user);
     });
     touched(user, result);
     ok(res, result);
@@ -690,7 +704,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       plans()?.followAccount?.(previous.id, { name: previous.name, phone: previous.phone }, { name: input.name, phone: input.phone });
       audit(user, "account.updated", previous.id, { previous: { name: previous.name, phone: previous.phone, status: previous.status, ...(waOptOut !== Number(previous.waOptOut || 0) ? { waOptOut: Number(previous.waOptOut || 0) } : {}) }, name: input.name, phone: input.phone, status: input.status, ...(waOptOut !== Number(previous.waOptOut || 0) ? { waOptOut } : {}) });
       dueChanged = setOpeningDue(user, previous.id, body);
-      return detail(previous.id, user);
+      return viewOf(previous.id, user);
     });
     // Para defterini etkileyen değişiklik (tür, durum) ya da başka pencerelerde görünen ad/telefon/Cari No (taksit kartı,
     // fatura, Kasa satırı) yoksa olay "bilgi" olarak gider: ANLIK DURUM ve açık pencerelerin para/vade yenilemesi
@@ -1108,7 +1122,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     k7.prime(created);
     touched(user, account);
     if (isMoney(input.kind) && !created?.replayed) changed(user, { kind: "cash" });
-    ok(res, { ...detail(account.id, user), entryId: created?.replayed ? created.refId : created.id, ...(created?.replayed ? { replayed: true } : {}) });
+    ok(res, { ...viewOf(account.id, user), entryId: created?.replayed ? created.refId : created.id, ...(created?.replayed ? { replayed: true } : {}) });
   });
   router.put("/api/workspace/accounts/:id/entries/:entryId", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "accounts.view");
@@ -1198,11 +1212,11 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       touched(user, accountRow(targetId));
       touched(user, account);
       changed(user, { kind: "cash" });
-      return ok(res, { ...detail(targetId, user), movedFrom: account.id, ...(result?.replayed ? { replayed: true } : {}) });
+      return ok(res, { ...viewOf(targetId, user), movedFrom: account.id, ...(result?.replayed ? { replayed: true } : {}) });
     }
     touched(user, account);
     changed(user, { kind: "cash" });
-    ok(res, { ...detail(account.id, user), ...(result?.replayed ? { replayed: true } : {}) });
+    ok(res, { ...viewOf(account.id, user), ...(result?.replayed ? { replayed: true } : {}) });
   });
   router.delete("/api/workspace/accounts/:id/entries/:entryId", async ({ req, res, params, url }) => {
     const user = auth.requirePermission(req, "accounts.view");
@@ -1232,14 +1246,14 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     k7.prime(result);
     touched(user, account);
     changed(user, { kind: "cash" });
-    ok(res, detail(account.id, user));
+    ok(res, viewOf(account.id, user));
   });
 
   // ---------- PDF ve Excel ----------
   const sideText = balance => (balance > EPS ? "borçlu" : balance < -EPS ? "alacaklı" : "");
   router.get("/api/workspace/accounts/:id/ekstre.pdf", async ({ req, res, params, url }) => {
     const user = auth.requirePermission(req, "accounts.view");
-    const account = detail(params.id, user);
+    const account = viewOf(params.id, user);
     // 2.4.8 W3 (plan §6 W3, S5): WhatsApp penceresinin (wa.me yolu) "Cari Ekstre - PDF"i seçilen DÖNEMLE (?donem=1&from=&to=): ANLIK DURUM ekstresiyle aynı
     // üretici (lib/statement-pdf.mjs) — devir + dönem hareketleri + dönem sonu bakiye, iletideki metinle aynı dönem ve aynı bakiye. Başlangıç boşsa "Tüm Hareketler"
     // (bitiş gününe kadar). Parametresiz çağrı (cari kartı) eskisi gibi bütün hareketleri basar.
@@ -1346,7 +1360,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // Tek cari (statik adreslerden sonra kayıtlı: "liste.pdf", "export.xlsx" kimlik sanılmasın).
   router.get("/api/workspace/accounts/:id", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "accounts.view");
-    ok(res, detail(params.id, user));
+    ok(res, viewOf(params.id, user));
   });
 
   // ---------- Google Sheets'ten toplu alım (Cari, Stok, Taksitler ortak) ----------
@@ -1657,7 +1671,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const key = limited(params.key, 200, "Kayıt");
     const found = store.get("SELECT id FROM accounts WHERE deleted_at IS NULL AND case_key = ? AND case_source = ? ORDER BY created_at LIMIT 1", key, currentSource());
     if (!found) return ok(res, { account: null, canManage: canUser(user, "accounts.manage") });
-    const account = detail(found.id, user);
+    const account = viewOf(found.id, user);
     ok(res, { account: { id: account.id, name: account.name, refNo: account.refNo, type: account.type, totals: account.totals, side: account.side, planCount: account.plans.length }, canManage: account.canManage });
   });
 

@@ -1360,7 +1360,8 @@
   // hesabına). Böylece taksitli kişinin parası yanlışlıkla taksit dışı yazılıp taksit "ödenmemiş" görünmez.
   // preset (2.4.4 E8): zil / Tahsilat Takvimi'nden gelince { amount, note } taksit dışı tahsilat formuna gelir (taksite yazılırsa tutar kartın sıradaki taksitidir).
   function collect(account, preset = null) {
-    const open = account.plans.filter(plan => plan.status === "active" && plan.totals.remaining > 0.005);
+    // 2.5.0 Ç5-B kapanış düzeltmesi (S129 = A): özetin Kalan'ı kart penceresiyle aynı (kuyruk); karta tahsilat yazılıp yazılamayacağı kartın KENDİ kalanına bağlı (S118 = B).
+    const open = account.plans.filter(plan => plan.status === "active" && (plan.totals.ownRemaining ?? plan.totals.remaining) > 0.005);
     if (!open.length || !HOF.plans?.collect) return editEntry(account, { kind: "in", preset });
     const chooser = HOF.modal({
       title: "Tahsilat",
