@@ -804,3 +804,61 @@ kodda da yeşil (gerileme denetimi).
   bu dalda 19/21 (c5a1d-taban kopyasında aynı iki satır: "500 = −25.000"): beklentisi M-01'e göre (B 100 / A 519, 500 boş) güncellendi → 21/21 × iki TZ.
 - İş B / İş F ÖLÇÜMÜ (flock -x): ÖLÇÜLEMEDİ — tur sonunda ölçüm kilidi ana oturumun Ç5-B aday e2e koşusunda (paylaşımlı) tutuluyordu; bekleme döngüsü kurulmadı (ders 50). Düzenek hazır:
   scratchpad/c5a1d-olcum/hepsi.sh (c5a-taban · tur 1c · tur 1d kilitli + taban / tur 1d kilitsiz; kos.sh = c5a1b-olcum'un kopyası, çıktı c5a1d-olcum/olc-*.txt).
+
+## 15. Ç5-A tur 1e (kod ajanı, 12.11.2026; taban `c5a1e-taban` c40c012d = çalışma dalı ucu, Ç5-A birleşimi 8e90f9cf içinde) — KODDAN ÖNCE yazıldı
+
+Kapsam (görev metni docs/devir/2.5.0-DEVAM/c5a1e-istem.txt; dar kontrol raporu docs/devir/2.5.0-DEVAM/dk-c5a1-rapor.md): İş 1 G-1 (kilitli dönemin kapı dışı bozulması), İş 2 G-2 (S51 = A —
+Silinenler'den dönen satırın KG-16 durumu), İş 3 ORTA-3 (göç 48 ön süzgecinin boşluk kümesi), İş 4 DÜŞÜK-1 / DÜŞÜK-2 (yalnız test). Tur 2'nin işleri, istemci, kâhin, Ç5-B'nin dosyaları
+KAPSAM DIŞI. Tur 1d'nin kararı ("kural farkı sapma kümesinin DIŞINDA") AYNEN kalır: `driftsOf` değişmez, ilk taramanın yanlış alarmı geri gelmez.
+
+### 15.1 Kök neden (koddan; dar kontrolün tablosu)
+Türetmenin Ç5-A ile gelen girdileri — `cash_entries.is_opening`, `account_entries.is_opening`, `account_entries.opening_review`, `cheques.is_opening`, `plans.import_id` +
+`plan_imports.created_at` — kilit izinde (integrity.mjs LOCK_SQL) YOK (B4 / göç 48 / 49 "bilinçli sınır"). Kilitli dönemin kaynak değişikliğini bulan üç mekanizma (kapının kilit izi →
+`period-lock`; donmuş defterin kaynak izi → `ledger:snapshot` "Donmuş Dönemin Kaynağı Değişti"; taramadaki `period-lock`) bu alanları görmez. Tur 1d'den önce bu değişiklik yalnız
+"Kural Değişikliği Farkı"nın imzası değiştiği için (yan etkiyle) bulunuyordu; tur 1d kural farkını sapma kümesinden çıkarınca (doğru) bulunmaz oldu. Yani tur 1d'nin "kapı dışı değişiklik
+kendi denetimleriyle bulunur" cümlesi bu beş alan için yanlıştı — eksik olan, onların kendi denetimleriydi.
+
+### 15.2 Seçilen yol (BAŞ MİMAR KARARI GEREKİYOR — görev metninin önerdiği yoldan farklı; gerekçe aşağıda, ana oturum değerlendirir)
+(1) DÖRT İŞARET KİLİT İZİNE GİRER (B4'ün "işaret kilit izine EKLENMEZ" sınırı bu dört alan için kaldırılır): LOCK_SQL'e `since: "2.5.0"` girdileri — kilitli dönemdeki açılış işaretli Kasa
+satırları (`cash_entries` is_opening = 1), açılış işaretli cari satırları (`account_entries` is_opening = 1), açılış evrakı (`cheques` is_opening = 1, alış / veriliş tarihi kilitte), Kayıt
+Tarihi kilitte olan YÜKLENMİŞ kartlar (`plans.import_id` + yüklemenin `plan_imports.created_at`'ı). Satır KİMLİKLERİYLE girerler (sayı / toplam değil): sayısı ve tutarı değişmeden yalnız
+hesap dağılımını değiştiren yazım (bir carinin işareti 1→0, başka carinin aynı tutarlı satırı 0→1) da izi değiştirir. LOCK_SQL_VERSION "2.5.0" KALIR (2.5.0 yayımlanmadı; eski sürümlerin
+izleri `since` ile aynen). Süzgeç (integrity-scope.mjs LOCK_FIELDS) aynı alanları bilir — kapı ↔ süzgeç eşdeğerliği korunur. Sonuç: kapı dışı değişiklik bugünkü kilitli kaynak değişikliği
+gibi bulunur — tarama: `period-lock` ("kapının görmediği bir yolla değişti") + `ledger:snapshot` ("Donmuş Dönemin Kaynağı Değişti") → Mutabakat Günlüğü + zil + sunucu iletisi; yeniden
+açılışta donmuş defterin kaynak izi (koşuda saklı) yine tutmaz → `ledger:snapshot` SAPMA olarak Mutabakat Testi'nde ve açılış taban satırında kalır; kural farkının açıklaması
+(`ruleDiffHint`) "kaynak kayıtlar değişti" der. Çözüm kullanıcıda: Kilidi Aç → Yeniden Kilitle (Ç3'ün bugünkü yolu).
+(2) KG-16 DURUMU (`opening_review`) KİLİT İZİNE GİRMEZ (K8-2: kilitli satırda kapıdan geçerek değişir) — onun yerine satır başına KAPININ YAZDIĞI DURUM tutulur: yeni sütun
+`account_entries.opening_review_gate` (GÖÇ 50; göçte `opening_review`'in kopyası). Durumu yazan her program yolu (göç 48 + 50, KG-16 kararı, Silinenler'den geri alma) iki sütunu AYNI
+işlemde yazar. Tam taramada (açılış, Mutabakat Testi, arka plan, Defter Mutabakatı — COMMIT'te DEĞİL) yeni denetim `opening:review` "Açılış Olabilir Kararları (Kapının Yazdığıyla Aynı)":
+iki sütunu farklı satır sayısı; yalnız bozukken görünür (sağlıklı şirketin denetim listesi değişmez). Kilitli / açık dönem ayrımı yok (açık dönemdeki kapı dışı değişiklik de defteri
+519 ↔ 602 / 770 sessizce kaydırıyordu). Satır, Açılış Olabilir listesinden yeniden karar verilince düzelir (karar iki sütunu yazar; iki sütundan biri kararlıysa satır karar alır).
+NEDEN ÖNERİLEN YOL (kural farkı dökümünün parmak izini kalıcı taban yapmak) DEĞİL:
+- Parmak izi "kilitli dönemin canlı türetmesi değişti" der; kapıdan geçen her meşru değişiklik, ayrı bir "açıklayan olay" olarak bildirilmedikçe yanlış alarmdır. Kilitli dönemin canlı
+  türetmesini kapıdan geçerek değiştiren yollar bu turun dosya sınırının DIŞINDA da var: Kayıt Tarihi kilitten sonra olup yüklemesi kilitte olan kartın silinmesi / yüklemenin geri alınması
+  (plans / plan-transfer), cariye işlenmemiş açılış evrakının sonradan cariye bağlanması, defteri etkileyen ayar değişiklikleri. Her biri tur 1d'nin düzelttiği yanlış alarm ailesinden yeni
+  bir üye olurdu (DERS 46 izlemesi: gerileme riski).
+- Yeniden açılış güvencesi: taban "kapının bildiği olayda AYNI İŞLEMDE" yenilenecekse olayın anında parmak izi gerekir = tam türetme (100 bin satırda ~3 sn) her KG-16 kararında / her biten
+  dondurmada; ucuz yol (taban "bayat" işaretlenip sonraki taramada yenilenir) bayat penceresindeki kapı dışı yazımı yutar — program kapanmadan önceki son yazım hemen her zaman bu penceredir.
+- Seçilen yol veri düzeyinde: kapıdan geçen yazım bu dört işareti kilitli satırda HİÇ değiştirmez (tarama: yalnız göçler ve INSERT'ler yazar; kilitli tarihe INSERT / DELETE zaten 409),
+  `opening_review_gate`'i kapının kendi yolları yazar → yeni yanlış alarm yüzeyi yok; "aynı işlem" yapı gereği (iz veriden hesaplanır; gölge sütun aynı UPDATE / INSERT'te); taban
+  diye ayrı bir şey tutulmaz → "her taramada yenilenen / açılışta sessizce yenilenen taban" kusuru doğamaz; maliyet birkaç SQL.
+- Yalnız kilit izine alan eklemek TEK BAŞINA yetmezdi (dar kontrol): `opening_review` için doğru — o yüzden (2).
+SINIR (BİLİNEN SINIR adayı; ana oturuma): Kayıt Tarihi kilitten SONRA, yükleme günü kilitte olan kart (KG-5 maddesi kilitli dönemde) izde yok — yerel gün SQL'de hesaplanamıyor; UTC gününe
+genişletmek meşru geri almayı reddettirirdi. Bu kartın kapı dışı değişikliği yalnız kural farkının sayısında görünür (Ç5-A öncesi kuralda kart kilitli döneme hiç düşmüyordu; yeni sınır
+KG-5'in kendisinden). Kâhin / tur 2 notu: Kural Farkı Düzeltme Fişi, `ledger:snapshot` kaynak / satır bozukluğu ya da `opening:review` sapması varken yazılmamalı (fark kural farkı değildir).
+
+### 15.3 "Nasıl bozulur?" (önce yazıldı; testler buradan — sonuçlar kodla birlikte 15.6'da)
+1. Dondurma sürerken tarama ve bittikten sonraki ilk tarama: kural farkı yine sapma DEĞİL (tur 1d testi AYNEN yeşil); yeni izin girdileri dondurmanın kaynak iziyle kapının iziyle aynı
+   tanımla hesaplanır → dondurma bitince `adoptLock` / kaynak izi karşılaştırması yanlış "değişti" demez.
+2. Kapı dışı yazım (beş tür: Kasa işareti 0→1, cari işareti 0→1 ve 1→0, KG-16 durumu, evrak işareti, kartın yükleme bağı): satır içi tarama VE arka plan taraması → bulgu + Mutabakat Günlüğü
+   "scan" satırı + zil; Mutabakat Testi'nde sapma.
+3. Programın yeniden açılması (kapalıyken yapılan kapı dışı yazım): açılışın tam taramasında sapma (Mutabakat Testi'nde, açılış taban satırında, sunucu iletisinde) — sessizce
+   kaybolmaz (kaynak izi koşuda, gölge sütun satırda saklı). Açılışta zil yok (taban sapması — bugünkü düzen; o an bağlı ekran yok).
+4. Sayı ve tutar aynı, yalnız hesap dağılımı değişir (iki carinin işaretleri yer değiştirir): bulunur.
+5. Meşru olaylar (hepsi SESSİZ: bulgu / günlük / zil yok, yazım reddedilmez): kilitli satırda KG-16 onayı ve reddi (K8-2); kilidin ilerletilmesi / kaldırılması / yeniden kilitleme (yeni
+   dondurma); yedekten geri yükleme; Şirket Verisini Sıfırla; sürüm güncellemesi (göç 50 ilk açılışta gölgeyi doldurur; kural sürümü izi etkilemez); Silinenler'den geri alma (S51).
+6. İki şirket: iz ve gölge şirketin kendi dosyasında; bir şirketteki kapı dışı yazım öbürünü etkilemez.
+7. Yarıda kesilme: gölge sütun ile durum aynı işlemde (karar: aynı `store.tx`; geri alma: aynı INSERT); iz ayrı yazılmaz.
+8. Kapı ↔ süzgeç: kilitli satırda işaret değiştiren bir mağaza yazımı (testte) süzgeçte de "kilitli dönem" → tam kapı → 409 (eşdeğerlik ihlali yok).
+9. Mutantlar (testin dişi): işaretler izden çıkar; izde kimlik yerine yalnız sayı / toplam (dağılım kaybolur); karar gölgeyi yazmaz (meşru olayda yanlış alarm); açılışta / her taramada gölge
+   durumdan kopyalanır (kapı dışı yazım yutulur) — hepsi kırmızı olmalı.
