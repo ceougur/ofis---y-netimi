@@ -333,3 +333,70 @@ c5bson-karar-taban.json). Tur 2b-2'nin testleri tur 2b-1 ucunda 40 kırmızı (n
   sütununda da +%7 / +%9, yani bu turun belleğinden değil) ve **açılış 19,6 → 21,8 sn (+%11;** önce +%5). Kök neden profili alınamadı (ölçüm kilidi doluydu) — son tur raporu
   "BAŞ MİMAR KARARI GEREKİYOR".
 - **Geri yükleme**: S126 gerçek program testi bağsız tahsilatı silip Silinenler'den geri de yükler (bütün ekranlar silinmeden önceki hâle döner).
+
+## 14. Kapanış düzeltme turu (12.11.2026; kapanış dar kontrolünün bulguları — ORTA-1, ORTA-2, DÜŞÜK-2 … DÜŞÜK-4 — + S129 = A + hız)
+Görev metni docs/devir/2.5.0-DEVAM/c5bkd-istem.txt; dar kontrol raporu docs/devir/2.5.0-DEVAM/dk-c5bkap-rapor.md. Altı madde, altı commit. Karar metinleri değişmedi; YORUMLAR raporda.
+
+### 14.1 ORTA-1 (GERİLEME; S110 = A) — satışla açılan kartın kaynağı KALICI bilgiden
+- **Kök neden**: tanıma "bugünkü tutar + iade kesintisi = satış tutarı" ya da "kayıt anı eşit" koşuluna dayanıyordu; tutar düzenlenince ve gerçek (akan) saatte ikisi de tutmuyor, kart elle kola
+  (S120) düşüp carinin elle borcunu içine alıyordu. Testler durağan saatle yeşildi (ders 14).
+- **Kaynak**: kartın açılış izi (`plan.created`). Bundan sonra açılan kartta izde satışın kimliği yazılı (`saleMoveId`; elle / toplu kartta alan BOŞ yazılır — çıkarım yapılmaz). 2.4.9'a kadarki
+  veride alan yok: kaynak izden ÇIKARILIR — kartın açılış izinden hemen önceki iz aynı kullanıcının, aynı cariye, kartın AÇILIŞ tutarında veresiye stok satışıysa (satış ve kart aynı işlemde art
+  arda yazılır) kaynak o satıştır. Göç numarası EKLENMEDİ (şema değişmedi; Ç5-A'nın göçleriyle çakışma yok): okuma `routes/plans.mjs saleSources` (dizinli; işlem dışında bellekte).
+- **Kuyruk**: kart satırı `coverSale` taşır; `saleItemOf` kimliği taşıyan BORÇ yönlü satış satırını bulur (iade / alış iadesi satırını değil). Kaynak bilinmiyorsa (elle kart; izi olmayan eski
+  kart; satış silinmiş) ESKİ tanıma AYNEN — S133 = C (BİLİNEN SINIR): elle kartın tutarı en son taksitsiz stok satışına eşitse sonuç kayıt sırasına bağlı (karar2 Ç1 gecikmiş 0, Ç1b 500 — testle sabit).
+- **Testler ADIMLI saatle** (her okumada 7 ms ilerleyen saat — "kayıt anı farklı" ön koşulu zorla kurulur ve veri tabanından okunarak doğrulanır): test/tyk-kapanis-250.test.mjs.
+- **v2.4.9 fark testi**: fikstür v2.4.9'un gerçek koduyla yeniden üretildi (46 eski sınıf birebir aynı) + V1 Tutarı Düzenlenmiş, V2 İadeyle Küçülmüş, V3 Faturasız İade, V4 Kartı Kapat
+  (beklenen farklar 101 → 116; her yeni fark karar numarasıyla).
+- **Gözlenebilir değişiklik** (bakiye hepsinde aynı): tutarı düzenlenmiş satış kartı (1.000 → 800; elle Borç 500 ayrıca) gecikmiş 1.200 → 700 (= Ç5-B öncesi); iadeyle 800 küçülmüş satış kartı
+  taksit [500, 200] gecikmiş 500 → [0, 200] gecikmiş 0, Borç 500 kendi vadesinde ayrı (= Ç5-B öncesi; v2.4.9 [500, 200] idi — TOPLU SORU TS-K1).
+
+### 14.2 ORTA-2 — "kalemler toplamı = cari bakiyesi" her girdide
+- **Kök neden**: ön ödeme ölçümü döngüsü sabit 12 geçişte kesiliyordu; ölçüm geçiş başına küçük adımla ilerleyen girdide (geriye tarihli Alacak + kart tahsilatı: geçiş başına 20 TL) döngü
+  yakınsamadan bitiyor, kart tahsilatı var olmayan taksiti kapatmış kalıyor, kalemler bakiyeyi aşıyordu (960 ↔ 940).
+- **Düzeltme**: sınır girdinin büyüklüğüne bağlı — iş bütçesi (geçiş × cari satırı) sabit: küçük caride 400 geçişe kadar, çok satırlı caride en az 12 (`prepaidPassLimit`; ders 47: tek carinin
+  kuyruğu saniyelere çıkmaz). Sınırda da yakınsamazsa son ölçüm GÜVENLİ KAPANIŞLA uygulanır (`settleExcess`): kart tahsilatının var olmayan taksite yazdığı pay en son taksitten geri alınır,
+  para kartın fazlası (carinin avansı) olur ve kendi gününde bağsız ödeme gibi dağılır — toplam asla bakiyeyi aşmaz. Yakınsayan caride bu dal çalışmaz.
+- **Değişmez testi**: test/tyk-kapanis-sigma-250.test.mjs — geriye tarihli üretici, 80 tohum × 250 cari (20.000 cari; 12'den çok geçişli 409, güvenli kapanış 1, en çok 400 geçiş; ~4 sn).
+  100 bin satırlık temiz veride (1.484 cari) 12'den çok geçiş isteyen cari YOK — hıza etkisi yok.
+- Sonuç alanı `prepaidPasses: { count, stable }` — `count` kararlı geçişten ÖNCEKİ geçiş sayısıdır (ilk ön ödemeli geçişte yakınsayan caride 0).
+
+### 14.3 S129 = A — kartın gösterilen sayıları tek kuyruktan; alan adları AYRILDI
+- Kart yanıtında `totals.paid / remaining` ve `items[].paid` GÖSTERİLEN sayıdır (Tahsil Edilen = taksitin kuyrukta PARAYLA kapanan kısmı — kuyruk `collected`; Kalan = Toplam − Tahsil Edilen).
+  Kartın KENDİ hesabı `totals.ownPaid / ownRemaining`, `items[].ownPaid / ownRemaining` (lib/plans.mjs allocate her yerde verir): Mutabakat Testi (`plans:totals`), mutabakat kapısı, mutabakat
+  motoru, K8 sınırı ve S118 = B (form sınırı / soru / öneri) bunları okur. İç çağıranlar (kartı bakiyeye göre kırpma, taksitlendirilebilecek borç, WhatsApp, fatura kapaması) kartın kendi hesabında.
+- Aynı sayı: kart penceresi, Taksitler listesi + PDF, taksit ekstresi ve makbuz PDF, Rapor Merkezi (Taksit Kartları, taksit vadeleri / gecikenler, aylık performans), cari kartının taksit özeti ve
+  Taksitten Kalan, Cari Listesi ekran / PDF / Excel, cari ekstresi özeti.
+- Kararın SÖYLEMEDİĞİ dört durum bugünkü gösteriminde bırakıldı (TOPLU SORULACAKLAR): elle Alacak'la netleşme (tahsilat değildir — kâhin d19 N4), Mevcut Borç kartının taksitlere bölünmemiş
+  kısmı, kartın kendi fazla tahsilatı (K8 "Fazlasını Avans Yaz"), kapatılmış kart.
+- DÜŞÜK-4: satırdaki ₺ düğmesi ve "Hangi Taksite" listesi kartın kendi kalanından; açıklama satır durumuyla çelişmez.
+
+### 14.4 Ara sıra düşen ekran senaryosu ('zilde: []') — kök neden TEST yarışı
+Zil paneli sayfanın BELLEKTEKİ takviminden kurulur ve açıldıktan sonra kendini yenilemez; sayfa takvimini sunucudaki değişiklikten ≥ 0,8 sn sonra, en sık 4 sn'de bir yeniler. Senaryo API ile
+yazıp hemen zili açıyor, 300 ms bekleyip okuyordu. Zorlama (test/e2e/zil-yaris-zorla.mjs — sayfanın takvim isteğinin yanıtı bekletilir): eski yardımcı 34 / 40 (altı okumada 'zilde: []';
+sunucunun yanıtında kalemler VAR), yeni yardımcı (test/e2e/zil-oku.mjs — sayfanın takvimi sunucunun güncel sürümüne yetişene kadar bekler) 51 / 51. Ürün değişmedi.
+
+### 14.5 Hız — kök neden düzeltmesi (iş listesi D'deki "ılık zil her çağrıda bütün carilerin kuyruğunu yeniden kuruyor" okuması YANLIŞ)
+- **Profil (yalnız ılık döngü; 100 bin satır)**: takvimin ılık çağrısında KUYRUK KURULMUYOR. Süre: ~21 MB'lık yanıtın JSON'a çevrilmesi (~130 ms) + önbellek anahtarının parmak izi sorguları
+  (~115 ms) + ölçüm istemcisinin gövdeyi çözmesi (~120 ms) + çöp toplama (~60 ms). Ç5-B ile yanıt %5 büyüdü (37.477 → 39.460 kalem: kart 16.525 → 18.720, fatura 6.676 → 7.100, cari
+  11.973 → 11.337 — kararların sonucu). Ekranın gerçek çağrısı (elindeki sürümü gönderir) ~100 ms ve Ç5-B'den etkilenmedi.
+- **Değişiklik 1** (routes/dues.mjs `bodyOf`, lib/http.mjs `sendBody`): yanıt gövdesi, hesabın sonucu değişmediği sürece kişinin görebildiği kalem türleri başına bir kez üretilir (WeakMap —
+  sonuç nesnesi değişince bırakılır; en çok 3 görünürlük çeşidi). Baytlar birebir aynı.
+- **Değişiklik 2** (routes/invoices.mjs `chequeLinkMoments`): Borç Yaz'daki tek ek iş kilit açıkken çek / senet bağı anları sorgusuydu (bütün ilk olaylar taranıyordu: ~16 ms); tek cari sorgusu
+  carinin kendi evrak satırlarından sürülür (14,9 → 0,18 ms; 1.484 cari / 102.295 defter satırında harita aynı).
+- **Motora dokunulmadı**: dar kontrolün üç "tembel" yaması denendi — kazanç %2–4, ölçüm gürültüsü (±%5) içinde. Motorun Ç5-B ile artan süresi (aynı girdilerle ~+%19; kartlı carilerde kart
+  başına ön geçiş) yapısal iştir (2.5.1); ılık zile ve Borç Yaz'a etkisi yoktur, açılışa ve yazımdan sonraki ilk okumaya vardır.
+- **Öneri (2.5.1; kapsam dışı)**: parmak izi sorguları (~115 ms; ekranın sürümlü çağrısının tamamı) veri tabanı değişmediyse yeniden koşmayabilir (kuyruk belleğinin anahtarıyla aynı düzen).
+
+### 14.6 DÜŞÜK-2 (yaşayan mutantlar) ve DÜŞÜK-3 (mutabakat motoru)
+- K5, K6, K24, K25 → test/tyk-kapanis-250 (madde 1). K3, K8, K22, K28, K35 → test/tyk-kapanis-dis-250.test.mjs (K22: Tablodan Aktar'ın çağırdığı servisle açılan aktarım kimlikli Mevcut Borç
+  kartı; K28: ödeme kuruluşu POS'unda valörden önce tam iade → "POS Komisyon Tahsili"). K1: gözlenebilir farkı bulunamadı — asıl ↔ mutant motor çok kartlı geriye tarihli üreticiyle 40.000
+  caride (27.457'si çok kartlı; aynı üretici K3'ü 2.000 carinin 430'unda ayırıyor) ve 100 bin satırlık verinin 1.484 carisinde birebir aynı; koşul yalnız döngünün kararlılığını korur.
+- Mutabakat motoru (test/mutabakat/motor.mjs): taksitli faturanın açığına ALT SINIR — fatura durumunda kapanmış görünen her kuruşun bir kapatanı vardır (açık + kapatanların toplamı ≥
+  ödenecek) + "açık kalemlerin toplamı = modelin bağımsız cari bakiyesi" (koşucu programın kuyruğunu aynı süreçten okur — test/mutabakat/sigma.mjs; HTTP ekranları karşı yönlü avansı
+  kalem saymadığı için oradan kurulamaz).
+- **Dar kontrolün önerdiği alt sınır ("açık ≥ kartın kuyruk kalanı") KULLANILMADI — YENİ BULGU (kapsam dışı; düzeltmeden önceki kodda da var)**: 500 işlemde tutuyor, 5.000 işlemlik
+  koşuda uyarı veriyor (taban kod, tohum 1, 273. işlem): kart fazlası ("Taksit kartından artan ödeme") fatura durumunda (G2) taksitli faturanın taksitlerini kapatıyor (fatura Ödendi),
+  net görünümde (G1) ise önce müşteriye verilen avansı / başka kartın taksitini — fatura listesi "açık 0", kart / Vade Takip / zil "783,88 açık". S99 = A "aynı sayı" ile çelişir
+  (neden adayı: G2'de karşı tarafın avansına karşı yalnız cari kartı parası ve evrak "bağsız para" sayılıyor, kart fazlası sayılmıyor). Bakiye iki görünümde aynı. Yeniden üretim ve
+  döküm: docs/kanit/2026-11-12/c5bkd-s99-bulgu.
