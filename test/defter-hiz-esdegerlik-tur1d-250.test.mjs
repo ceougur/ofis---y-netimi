@@ -74,4 +74,53 @@ describe("İş F — S127 bağlılık kararı yalnız okunan kartlar için; sonu
       assert.ok(checked > 0, `${name}: sınanan kart ${checked}`);
     });
   }
+
+  it("göç penceresi (bekleyen 2.4.9 koşusu sürerken) ve kararı YALNIZ açılış satırının günü belirleyen kart: süzgeçli karar = süzgeçsiz (ek denetim — elle bozulmuş durum)", { timeout: 240_000 }, async () => {
+    // Fikstürde kararı yalnız açılış satırının (P) günü belirleyen kart yok (kart ve yükleme günü bölgenin dışında, P bölgenin içinde). Bekleyen (donmamış) eski kurallı kesitte "donmuş
+    // satırda var mı" sorulmaz (tarih yeter) → kapı dışından P'nin günü bölgeye alınınca kart bağlı olur. EK DENETİM: durum programın kendi ürettiği değil (kanıt sayılmaz), yalnız
+    // ids süzgecinin açılış satırlarını kartla birlikte süzdüğünü (başka kartınkini değil, hiç değil) sınar. Dondurma ürünün YALNIZ TEST kancasıyla tutulur (uyku yok).
+    const name = "surum-2.4.9-s127";
+    const fixture = unpackFixture(name);
+    const manifest = readFixture(name);
+    let release = () => {};
+    const opened = new Promise(resolve => {
+      release = resolve;
+    });
+    let reach = () => {};
+    const reached = new Promise(resolve => {
+      reach = resolve;
+    });
+    const hook = { async fn(phase) { if (phase === "before-done") { reach(); await opened; } } };
+    let server = null;
+    try {
+      server = await bootVersion(CURRENT, { dataDir: fixture.dataDir, backupDir: fixture.backupDir, maxCompanies: 10, now: { time: `${String(manifest.now).slice(0, 10)}T12:00:00+03:00`, fixed: true }, integrityScan: false, __testFreezeHook: hook });
+      const { app } = server;
+      await reached;
+      assert.ok(app.ledger.snapshots.state().pending, "ön koşul: bekleyen 2.4.9 koşusu sürüyor");
+      const before = oldRulePinnedPlans(app.store);
+      const open = app.store.all("SELECT p.id, e.id AS entry FROM plans p JOIN plan_entries e ON e.plan_id = p.id AND e.kind = 'in' AND e.opening = 1 WHERE p.deleted_at IS NULL AND p.import_id <> '' AND NOT p.covers_balance AND COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) > ? ORDER BY p.rowid", manifest.lockedUntil).find(row => !before.has(row.id));
+      assert.ok(open, `ön koşul: açık dönemde açılış satırlı, bağlı olmayan yüklenen kart (sınıf iv) — bağlılar ${JSON.stringify([...before])}`);
+      const { DatabaseSync } = await import("node:sqlite");
+      const other = new DatabaseSync(app.store.get("PRAGMA database_list").file);
+      try {
+        other.exec("PRAGMA busy_timeout = 5000");
+        other.prepare("UPDATE plan_entries SET date = ? WHERE id = ?").run(`${manifest.lockedUntil.slice(0, 8)}15`, open.entry);
+      } finally {
+        other.close();
+      }
+      const full = oldRulePinnedPlans(app.store);
+      assert.ok(full.has(open.id), "ön koşul: P bölgeye alınınca kart bağlı (bekleyen kesitte tarih yeter)");
+      const plans = app.store.all("SELECT id FROM plans ORDER BY rowid").map(row => row.id);
+      for (const id of plans) assert.deepEqual([...oldRulePinnedPlans(app.store, { ids: [id] })], full.has(id) ? [id] : [], `kart ${id} tek başına (göç penceresi)`);
+      assert.ok(same(oldRulePinnedPlans(app.store, { ids: plans }), full), "bütün kartlar birden (göç penceresi)");
+      const entries = app.ledger.build();
+      const byId = new Map(entries.map(entry => [entry.id, entry]));
+      assertSubset("P'si bölgedeki kartın taksit satırı", app.ledger.build({ money: { plan_entries: [open.entry] } }), byId, { expectIds: [`plan-entry:${open.entry}`] });
+      assertSubset("P'si bölgedeki kart", app.ledger.build({ plans: [open.id] }), byId, { expectIds: [`plan:${open.id}`] });
+    } finally {
+      release();
+      await server?.close().catch(() => {});
+      fixture.cleanup();
+    }
+  });
 });
