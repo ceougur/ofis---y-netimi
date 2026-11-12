@@ -1,0 +1,24 @@
+# Ç5-A tur 1d İş E (a): esdeger.sh çıktısındaki her farkı ayrıştırır — Mutabakat Testi yanıtının günlük (log) dışı alanları aynı mı, günlükte hangi satırlar fazla.
+# Kullanım: python3 -I fark-ayristir.py <esdeger çıktı klasörü>
+import json, glob, os, sys
+os.chdir(sys.argv[1])
+rows = []
+for base in sorted(glob.glob("*-taban.json")):
+    tag = base[:-len("-taban.json")]
+    A = json.load(open(base)); B = json.load(open(tag + "-uc.json"))
+    for name in A["outputs"]:
+        x, y = A["outputs"][name], B["outputs"][name]
+        if x["sha"] == y["sha"]:
+            continue
+        if not (x.get("text") and y.get("text")):
+            rows.append(f"{tag} · {name} · METİN YOK (karşılaştırılamadı)")
+            continue
+        tx, ty = json.loads(x["text"]), json.loads(y["text"])
+        dx, dy = tx["data"]["data"], ty["data"]["data"]
+        lx = dx.pop("log", None) or []
+        ly = dy.pop("log", None) or []
+        extra = [r for r in lx if r not in ly]
+        missing = [r for r in ly if r not in lx]
+        kinds = sorted({(r["action"], r["summary"][:70]) for r in extra})
+        rows.append(f"{tag} · {name} · günlük dışı AYNI: {tx == ty} · tabanda fazla günlük satırı {len(extra)} {kinds} · uçta fazla {len(missing)}")
+print("\n".join(rows))

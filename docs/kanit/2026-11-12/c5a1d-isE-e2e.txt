@@ -1,0 +1,36 @@
+e2e · commit 3560af0b · 14:45:35 · başta 3.14 3.60 3.49 8/230 19436
+banka-210-saat · çıkış 0 · TAMAM: 12 denetim geçti, 0 başarısız.
+gg243-banka-kart-aciklama · çıkış 0 · ✓ gg243-banka-kart-aciklama: 11 geçti, 0 kaldı
+gg243-dar2-ekran · çıkış 0 · ✓ gg243-dar2-ekran: 21 geçti, 0 kaldı
+gg243-tumunu-gonder · çıkış 0 · ✓ gg243-tumunu-gonder: 17 geçti, 0 kaldı
+gg244-numara-tarih-onay · çıkış 0 · ✓ gg244-numara-tarih-onay: 40 geçti, 0 kaldı
+gg244-secilenleri-gonder · çıkış 0 · ✓ gg244-secilenleri-gonder: 45 geçti, 0 kaldı
+run · çıkış 0 · 50 adım başarılı.
+senaryo-213 · çıkış 0 · 64 / 64 kontrol geçti.
+senaryo-215 · çıkış 0 · 73 / 73 kontrol geçti.
+senaryo-219 · çıkış 0 · Senaryo 2.0.19: 74 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-219
+senaryo-220 · çıkış 0 · Senaryo 2.0.20: 25 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-220
+senaryo-222 · çıkış 0 · Senaryo 2.0.22: 60 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-222
+senaryo-224 · çıkış 0 · TAMAM: 69 denetim geçti, 0 başarısız.
+senaryo-226 · çıkış 0 · TAMAM: 22 denetim geçti, 0 başarısız.
+senaryo-banka-210-temel · çıkış 0 · ✓ senaryo-banka-210-temel: 80 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-ac0e51d0f24e4542e/test/e2e/artifacts/senaryo-banka-210-temel
+senaryo-banka-210 · çıkış 0 · TAMAM: 428 denetim geçti, 0 başarısız. Ekran görüntüleri: /home/user/ofis---y-netimi/.claude/worktrees/agent-ac0e51d0f24e4542e/test/e2e/artifacts/senaryo-banka-210
+senaryo-banka-210b · çıkış 0 · ✓ senaryo-banka-210b: 90 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-ac0e51d0f24e4542e/test/e2e/artifacts/senaryo-banka-210b
+senaryo-defter-243 · çıkış 0 · ✓ senaryo-defter-243: 33 geçti, 0 kaldı · depo /home/user/ofis---y-netimi/.claude/worktrees/agent-ac0e51d0f24e4542e · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-ac0e51d0f24e4542e/test/e
+senaryo-defter-turu-250 · çıkış 0 · 28 geçti, 0 kaldı
+senaryo-donem-kilidi-ilerleme-250 · çıkış 0 · # fail 0
+senaryo-duzeltme-kilidi-250 · çıkış 0 · 79 geçti, 0 kaldı
+senaryo-duzeltme-kilidi-tur3-250 · çıkış 0 · 110 geçti, 0 kaldı
+senaryo-ekstre-ayrinti-245 · çıkış 0 · 37 geçti, 0 kaldı
+senaryo-fatura-243 · çıkış 0 · 61 geçti, 0 kaldı
+senaryo-iz1-kasa-acilis · çıkış 1 · SONUÇ: 19 geçti, 2 kaldı
+senaryo-iz32-230 · çıkış 0 · ✓ senaryo-iz32-230: 41 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-ac0e51d0f24e4542e/test/e2e/artifacts/senaryo-iz32-230
+senaryo-kasa-acilis-uyari-250 · çıkış 0 · # fail 0
+senaryo-pos-220 · çıkış 0 · ✓ senaryo-pos-220: 113 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-ac0e51d0f24e4542e/test/e2e/artifacts/senaryo-pos-220
+senaryo-pos-kart-249 · çıkış 0 · ✓ senaryo-pos-kart-249: 383 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-ac0e51d0f24e4542e/test/e2e/artifacts/senaryo-pos-kart-249
+senaryo-raporlar · çıkış 0 · 87/87 denetim geçti. Ekran görüntüleri: /home/user/ofis---y-netimi/.claude/worktrees/agent-ac0e51d0f24e4542e/test/e2e/artifacts/senaryo-rapor
+senaryo-supheli-230 · çıkış 0 · ✓ senaryo-supheli-230: 67 geçti, 0 kaldı
+senaryo-tahsile-ver-220 · çıkış 0 · ✓ senaryo-tahsile-ver-220: 140 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-ac0e51d0f24e4542e/test/e2e/artifacts/senaryo-tahsile-ver-220
+senaryo-ux18-244 · çıkış 0 · 27 geçti, 0 kaldı
+uiux-ui11-244 · çıkış 0 · 153 geçti, 0 kaldı
+[e2e özet] 34 senaryo · geçen 33 · düşen 1 · 15:23:18 · sonda 3.02 2.81 2.78 5/208 1222

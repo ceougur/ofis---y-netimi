@@ -1,0 +1,35 @@
+// Ç5-A tur 1d İş F sondası (profil — ölçüm değil): kilitli 100 bin verisinde evrak yazımının kapı bölümleri. Kullanım: node evrak-sonda.mjs <kod kökü> <veri kopyası> [n=8]
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+
+process.env.HUKUK_LICENSE_URL ||= "http://127.0.0.1:9";
+const [root, dir, nText = "8"] = process.argv.slice(2);
+const { createApp } = await import(pathToFileURL(path.join(root, "server", "app.mjs")).href);
+const { createClient } = await import(pathToFileURL(path.join(root, "test", "helpers.mjs")).href);
+const PASS = "Kapi-Olcum-2026!";
+const app = createApp({
+  dataDir: path.join(dir, "data"), backupDir: path.join(dir, "backups"), logLevel: "silent", scheduleBackups: false,
+  env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "0123456789abcdef0123456789abcdef" },
+  startLicenseTimers: false, integrityScan: false, analysisWorker: false, now: "2026-10-08T12:00:00+03:00", moneyStrict: false,
+});
+const { port } = await app.listen(0, "127.0.0.1");
+if (app.ledger.snapshots.state().pending) await app.ledger.snapshots.runPending();
+const client = createClient(`http://127.0.0.1:${port}`);
+if ((await client.login("admin", PASS)).status !== 200) throw new Error("giriş");
+const store = app.store;
+const acc = store.get("SELECT a.id FROM accounts a WHERE a.deleted_at IS NULL AND a.type = 'customer' ORDER BY (SELECT COUNT(*) FROM account_entries e WHERE e.account_id = a.id) DESC LIMIT 1").id;
+const sum = {};
+const n = Number(nText) || 8;
+for (let i = 0; i < n; i += 1) {
+  const s = performance.now();
+  const res = await client.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", serialNo: `SND-${i}-${Date.now()}`, bank: "Akbank", accountId: acc, amount: "10", issueDate: "2026-10-08", dueDate: "2026-12-08" });
+  const ms = performance.now() - s;
+  const gate = app.integrity.stats().gate || {};
+  if (i >= 2) {
+    sum.total = (sum.total || 0) + ms;
+    for (const [k, v] of Object.entries({ gate: gate.ms || 0, ...(gate.sections || {}) })) sum[k] = (sum[k] || 0) + v;
+  }
+  console.log(`evrak ${i}: ${res.status} · ${Math.round(ms * 10) / 10} ms · kapı ${gate.path} ${Math.round((gate.ms || 0) * 10) / 10} ms · ${Object.entries(gate.sections || {}).filter(([, v]) => v >= 0.5).map(([k, v]) => `${k} ${Math.round(v * 10) / 10}`).join(", ")}`);
+}
+console.log(`ortalama (ilk ikisi hariç, ${n - 2}): ${Object.entries(sum).map(([k, v]) => `${k} ${Math.round((v / (n - 2)) * 10) / 10}`).join(" · ")}`);
+await app.close();

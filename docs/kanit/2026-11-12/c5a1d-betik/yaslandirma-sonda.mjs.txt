@@ -1,0 +1,52 @@
+// Ç5-A tur 1d İş B sondası (profil — ölçüm değil): kilitli 100 bin verisinde açılıştan sonraki İLK Alacak Yaşlandırma çağrısının alt adımları.
+// Kullanım: node yaslandirma-sonda.mjs <kod kökü> <veri kopyası> [onceki=1|0]
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+
+process.env.HUKUK_LICENSE_URL ||= "http://127.0.0.1:9";
+const [root, dir, before = "1"] = process.argv.slice(2);
+const { createApp } = await import(pathToFileURL(path.join(root, "server", "app.mjs")).href);
+const { createClient } = await import(pathToFileURL(path.join(root, "test", "helpers.mjs")).href);
+const { reconcileReceivables } = await import(pathToFileURL(path.join(root, "server", "lib", "receivable-aging.mjs")).href);
+const PASS = "Kapi-Olcum-2026!";
+const app = createApp({
+  dataDir: path.join(dir, "data"), backupDir: path.join(dir, "backups"), logLevel: "silent", scheduleBackups: false,
+  env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "0123456789abcdef0123456789abcdef" },
+  startLicenseTimers: false, integrityScan: false, analysisWorker: false, now: "2026-10-08T12:00:00+03:00", moneyStrict: false,
+});
+const { port } = await app.listen(0, "127.0.0.1");
+if (app.ledger.snapshots.state().pending) await app.ledger.snapshots.runPending();
+const client = createClient(`http://127.0.0.1:${port}`);
+if ((await client.login("admin", PASS)).status !== 200) throw new Error("giriş");
+const RANGE = "from=2026-01-01&to=2026-12-31";
+const t = async (label, fn) => {
+  const s = performance.now();
+  const out = await fn();
+  console.log(`  ${label}: ${Math.round(performance.now() - s)} ms`);
+  return out;
+};
+if (before === "1") {
+  for (const url of ["/api/workspace/ledger", `/api/workspace/report-center/yevmiye?${RANGE}`, `/api/workspace/report-center/hesap-mizani?${RANGE}`, `/api/workspace/report-center/alt-hesap-mizani?${RANGE}`, "/api/workspace/report-center/defter-mutabakati", "/api/workspace/ledger/integrity"]) await t(`önce ${url}`, () => client.get(url));
+}
+const ctx = app.context;
+const day = "2026-10-08";
+const admin = { id: "admin", role: "admin" };
+const steps = async round => {
+  console.log(`alt adımlar · tur ${round}`);
+  const names = await t("cari adları", () => new Map(app.store.all("SELECT id, name FROM accounts").map(row => [row.id, row.name])));
+  const planItems = await t("plans.openItems", () => ctx.plans.openItems(day));
+  await t("planların cari sorgusu", () => { for (const item of planItems) app.store.get("SELECT account_id AS accountId FROM plans WHERE id = ?", item.ref.id); });
+  const inv = await t("invoices.openItems", () => (ctx.invoices?.openItems ? ctx.invoices.openItems(day, { net: true }) : []));
+  const live = await t("accounts.list", () => ctx.accounts.list({ id: "", role: "admin" }, { status: "all" }).accounts);
+  await t("reconcileReceivables", () => reconcileReceivables(app.store, { accounts: live.map(a => ({ id: a.id, name: a.name, balance: a.balance })), items: [...planItems.map(i => ({ accountId: "", key: i.ref.id, name: "", date: i.date, amount: i.amount })), ...inv.filter(i => i.side === "sale").map(i => ({ accountId: i.accountId, key: i.accountId, name: "", date: i.dueDate, amount: i.open }))], day }));
+  const flows = await t("cheques.flows", () => ctx.cheques.flows());
+  await t("evrak cari sorgusu", () => { for (const flow of flows) if (flow.direction === "in") app.store.get("SELECT c.account_id AS accountId FROM cheques c WHERE c.id = ?", flow.ref.id); });
+  await t("doubtful.openByAccount", () => (ctx.doubtful?.openByAccount ? ctx.doubtful.openByAccount() : null));
+  void names;
+};
+if (process.env.HTTP_ONCE === "1") await t("HTTP Alacak Yaşlandırma (0 — ilk)", () => client.get("/api/workspace/report-center/alacak-yaslandirma"));
+await steps(1);
+await t("HTTP Alacak Yaşlandırma (1)", () => client.get("/api/workspace/report-center/alacak-yaslandirma"));
+await steps(2);
+await t("HTTP Alacak Yaşlandırma (2)", () => client.get("/api/workspace/report-center/alacak-yaslandirma"));
+await app.close();

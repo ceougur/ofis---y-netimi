@@ -1,0 +1,63 @@
+// Ç5-A tur 1d İş A sondası (ölçüm değil): kilitli eski sürüm verisinde dondurmadan sonraki taramaların günlük / bulgu / zil / sunucu günlüğü sayıları; yeniden açılışta
+// taban satırı ve ilk yazımın kapı yolu. Kullanım: node sonda.mjs <kod kökü> [fikstür=surum-2.0.26-zincir] [gercek=0|1]
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+import { DatabaseSync } from "node:sqlite";
+
+const [root, name = "surum-2.0.26-zincir", real = "0"] = process.argv.slice(2);
+const imp = p => import(pathToFileURL(path.join(root, p)).href);
+const { CURRENT, bootVersion } = await imp("test/guvenilirlik/surumler.mjs");
+const { readFixture, unpackFixture } = await imp("test/guvenilirlik/fikstur.mjs");
+const fixture = unpackFixture(name);
+const meta = readFixture(name);
+const today = meta.oncesi?.today || String(meta.now || "").slice(0, 10);
+const lines = [];
+const log = { debug() {}, info() {}, warn: (...a) => lines.push(`warn: ${a.join(" ")}`), error: (...a) => lines.push(`error: ${a.join(" ")}`) };
+const alerts = [];
+const rows = store => store.all("SELECT action, summary FROM integrity_log ORDER BY at, rowid");
+const out = { root, name, today };
+let server = null;
+const boot = async () => {
+  server = await bootVersion(CURRENT, { dataDir: fixture.dataDir, backupDir: fixture.backupDir, maxCompanies: 10, now: { time: `${today}T12:00:00+03:00`, fixed: true }, integrityScan: false, log });
+  server.app.events.tap((ev, payload) => {
+    if (ev === "integrity.alert") alerts.push(payload.findings.map(f => f.code));
+  });
+  return server.app;
+};
+const mark = () => ({ log: rows(server.app.store).length, alerts: alerts.length, lines: lines.length });
+const since = m => ({ gunluk: rows(server.app.store).slice(m.log), zil: alerts.slice(m.alerts), sunucu: lines.slice(m.lines).filter(l => /Mutabakat/.test(l)).map(l => l.slice(0, 200)) });
+try {
+  let app = await boot();
+  out.acilis = { pending: Boolean(app.ledger.snapshots.state().pending), gunluk: rows(app.store), sunucu: lines.filter(l => /Mutabakat/.test(l)).map(l => l.slice(0, 200)) };
+  await app.ledger.snapshots.runPending();
+  out.dondu = app.ledger.snapshots.state();
+  if (real === "1") {
+    const other = new DatabaseSync(app.store.get("PRAGMA database_list").file);
+    other.prepare("INSERT INTO cash_entries (id, kind, amount, date, description, method, created_by, created_at) VALUES ('sonda-kurus', 'in', 1.005, ?, 'elle', 'cash', 'x', ?)").run(today, `${today}T09:00:00.000Z`);
+    other.close();
+  }
+  let m = mark();
+  const first = await app.integrity.scanInBackground();
+  out.ilkArka = { findings: (first.findings || []).map(f => `${f.code} (${f.count})`), ruleDiffInChecks: (first.result?.checks || []).some(c => c.code === "ledger:rule-diff"), ...since(m) };
+  m = mark();
+  const inline = app.integrity.scan();
+  out.satirIci = { findings: inline.findings.map(f => f.code), ruleDiff: inline.result.checks.filter(c => c.code === "ledger:rule-diff").map(c => ({ ok: c.ok, count: c.count, difference: c.difference })), ...since(m) };
+  m = mark();
+  const second = await app.integrity.scanInBackground();
+  out.ikinciArka = { findings: (second.findings || []).map(f => f.code), skipped: second.skipped || null, ...since(m) };
+  await server.close();
+  server = null;
+  lines.length = 0;
+  app = await boot();
+  out.yenidenAcilis = { pending: Boolean(app.ledger.snapshots.state().pending), sonGunluk: rows(app.store).slice(-2), sunucu: lines.filter(l => /Mutabakat/.test(l)).map(l => l.slice(0, 200)) };
+  m = mark();
+  const reopened = await app.integrity.scanInBackground();
+  out.yenidenIlkArka = { findings: (reopened.findings || []).map(f => f.code), ...since(m) };
+  const api = await server.login();
+  const res = await api.post("/api/workspace/cash", { kind: "in", amount: "7", date: today, description: "sonda yazım" });
+  out.ilkYazim = { status: res.status, gate: app.integrity.stats().gate ? { path: app.integrity.stats().gate.path, reason: app.integrity.stats().gate.reason, ms: Math.round(app.integrity.stats().gate.ms) } : null };
+} finally {
+  await server?.close().catch(() => {});
+  fixture.cleanup();
+}
+console.log(JSON.stringify(out, null, 1));

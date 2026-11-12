@@ -1,0 +1,12 @@
+100k-kilitli-Europe-Istanbul · Mutabakat Testi · günlük dışı AYNI: True · tabanda fazla günlük satırı 1 [('scan', 'Kural Değişikliği Farkı (Kilitli Dönem: 30.06.2026 ve Öncesi)')] · uçta fazla 0
+100k-kilitli-UTC · Mutabakat Testi · günlük dışı AYNI: True · tabanda fazla günlük satırı 1 [('scan', 'Kural Değişikliği Farkı (Kilitli Dönem: 30.06.2026 ve Öncesi)')] · uçta fazla 0
+surum-2.0.24-zincir-Europe-Istanbul · Mutabakat Testi · günlük dışı AYNI: True · tabanda fazla günlük satırı 1 [('scan', 'Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi)')] · uçta fazla 0
+surum-2.0.24-zincir-UTC · Mutabakat Testi · günlük dışı AYNI: True · tabanda fazla günlük satırı 1 [('scan', 'Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi)')] · uçta fazla 0
+surum-2.0.25-zincir-Europe-Istanbul · Mutabakat Testi · günlük dışı AYNI: True · tabanda fazla günlük satırı 1 [('scan', 'Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi)')] · uçta fazla 0
+surum-2.0.25-zincir-UTC · Mutabakat Testi · günlük dışı AYNI: True · tabanda fazla günlük satırı 1 [('scan', 'Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi)')] · uçta fazla 0
+surum-2.0.26-turler-Europe-Istanbul · Mutabakat Testi · günlük dışı AYNI: True · tabanda fazla günlük satırı 1 [('scan', 'Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi)')] · uçta fazla 0
+surum-2.0.26-turler-UTC · Mutabakat Testi · günlük dışı AYNI: True · tabanda fazla günlük satırı 1 [('scan', 'Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi)')] · uçta fazla 0
+surum-2.0.26-zincir-Europe-Istanbul · Mutabakat Testi · günlük dışı AYNI: True · tabanda fazla günlük satırı 1 [('scan', 'Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi)')] · uçta fazla 0
+surum-2.0.26-zincir-UTC · Mutabakat Testi · günlük dışı AYNI: True · tabanda fazla günlük satırı 1 [('scan', 'Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi)')] · uçta fazla 0
+surum-2.4.9-s127-Europe-Istanbul · Mutabakat Testi · günlük dışı AYNI: True · tabanda fazla günlük satırı 1 [('scan', 'Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2025 ve Öncesi)')] · uçta fazla 0
+surum-2.4.9-s127-UTC · Mutabakat Testi · günlük dışı AYNI: True · tabanda fazla günlük satırı 1 [('scan', 'Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2025 ve Öncesi)')] · uçta fazla 0
