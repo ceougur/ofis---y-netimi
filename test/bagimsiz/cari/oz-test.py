@@ -31,6 +31,8 @@
    (d35 H10 / H11 artık değerle); mutantlar 265–269 DEĞERLE; `elleYok` / `elleBelirsiz` Y10-4 (S125 = C) ve SK-20 / SK-22 / SK-23 (BİLİNEN SINIR) susmaları.
 12. Bakım 11 (§23; S126 A): bakiye kadar açılan, içine fatura da giren Taksitler kartına gelen ödeme kalemleri fatura dahil içine alma sırasıyla, eskiden yeniye düşürür — d37 elle tablosu
    (d36 J13 artık değerle); mutantlar 270–274 DEĞERLE; `elleYok` / `elleBelirsiz` Y11-8 (S125 = C) ve SK-25 susmaları.
+13. Bakım 12 (§24; S128 A): bakiye kadar açılan Taksitler kartının içinde stok veresiye satışı / karşılıksız kalemi de varsa ödeme kalemleri türüne bakılmadan içine alma sırasıyla, eskiden yeniye
+   düşürür — d38 elle tablosu (d37 L14 artık değerle); mutantlar 275–279 DEĞERLE; `elleYok` / `elleBelirsiz` Y12-8 (S125 = C) ve SK-18 + SK-26 (başka kartın / taksitli faturanın taksiti) susmaları.
 Çıktı: TAP benzeri sayılar + son satır "N/M denetim geçti". Çıkış 0 yalnız hepsi geçerse.
 """
 import importlib.util
