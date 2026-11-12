@@ -46,9 +46,11 @@ export function openingCounterpart(store) {
   }
   if (has(store, "account_entries") && has(store, "accounts") && hasColumn(store, "account_entries", "is_opening")) {
     const review = hasColumn(store, "account_entries", "opening_review") ? " OR e.opening_review IN ('candidate', 'confirmed')" : "";
+    // Ç5-A tur 1c (hız; C5-ACILIS-TASARIM §13 H4): CROSS JOIN yalnız birleşim SIRASINI belirler (sonuç aynı iç birleşim) — satırlar önce koşulla süzülür, cari yalnız eşleşen
+    // satır için aranır. Planlayıcı aksi hâlde silinmemiş her cari için bütün satırlarını dolaşıyordu (100.000 satırda ~40 ms → ~20 ms).
     parts.accounts = sum(
       `SELECT COALESCE(SUM(CASE e.kind WHEN 'debt' THEN -CAST(ROUND(e.amount * 100) AS INTEGER) ELSE CAST(ROUND(e.amount * 100) AS INTEGER) END), 0) AS n
-       FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
+       FROM account_entries e CROSS JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
        WHERE e.kind IN ('debt', 'credit') AND e.source NOT IN ('cheque', 'invoice', 'doubtful', 'stock') AND (e.is_opening = 1${review})`,
     );
   }
