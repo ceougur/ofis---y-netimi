@@ -144,7 +144,8 @@ describe("Ç5-A tur 1d — Kural Değişikliği Farkı uyarıdır, yeni sapma de
       const changed = changeLockedSource(ctx.app, state.lock);
       const outside = await ctx.app.integrity.scanInBackground();
       const found = codesOf(outside.findings);
-      assert.ok(found.includes("period-lock") || found.includes("ledger:snapshot"), `kilitli kaynağın kapı dışı değişimi (${changed}) bulunmalı: ${JSON.stringify(found)}`);
+      // İki kendi denetimi de (kapının kilit izi ve donmuş defterin kaynak izi — uyarı düzeyli) yeni sapma olarak bulunur: düzeltme yalnız kural farkını dışarıda bırakır.
+      assert.ok(found.includes("period-lock") && found.includes("ledger:snapshot"), `kilitli kaynağın kapı dışı değişimi (${changed}) bulunmalı (period-lock + ledger:snapshot): ${JSON.stringify(found)}`);
       assert.ok(!found.includes(RULE_DIFF), "kural farkı yine bulgu değil");
       const seen = ctx.fresh();
       assert.equal(seen.gunluk, 1, "kapı dışı değişim günlüğe yazılır");
