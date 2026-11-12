@@ -2028,7 +2028,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   };
   // 2.5.0 Ç5-A tur 1e (KULLANICI S51 = A; BAŞ MİMAR B8; dar kontrol G-2): silinen satırın KG-16 "Açılış Olabilir" durumu (account_entries.opening_review, göç 48) silme yükünde
   // `openingReview` olarak taşınır; geri alma durumu lib/ledger-opening.mjs restoredOpeningReview'den yazar (silinmeden önceki durum; carinin başka açılışı yüzünden işaretsiz dönen
-  // açılış aday; 2.4.x yükü açıklamasından) ve kapının kopyasını (opening_review_gate, göç 50) AYNI INSERT'te. Sütun yoksa (eski şema) yük alanı yok.
+  // açılış aday; 2.4.x yükü açıklamasından) ve kapının kopyasını (opening_review_gate, göç 50) AYNI işlemde (INSERT'in hemen ardından). Sütun yoksa (eski şema) yük alanı yok.
   let reviewColumns = null;
   const hasReviewColumns = () => (reviewColumns ??= (() => {
     const names = new Set(store.all("PRAGMA table_info(account_entries)").map(column => column.name));
