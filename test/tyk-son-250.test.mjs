@@ -139,6 +139,22 @@ describe("Ç5-B son tur — S128 = A (kartın içinde fatura / elle borç dış�
   });
 });
 
+// Tur 2b-2'nin yaşayan mutantı S101-c (son tur mutasyon koşusu: "para dışı kapanış da 'avansla ödenmiş' sayılır" — tur 2b-2 testleri 31 / 31 geçiyordu): S101 = A + karar (e)
+// 11.11 03:15 yalnız PARAYLA (avans) kapanmış kısmı "ödenmiş" sayar; para dışı kapanan eksik (Alacak / iade netleşmesi) EK-2B 32 gereği SON taksitlerden kırpılır.
+describe("Ç5-B son tur — S101 sınırı (tur 2b-2'nin dişsiz kalan mutantı): para dışı kapanış avans DEĞİLDİR", () => {
+  it("Borç 600 → kart 600 (2 × 300) → geriye tarihli Alacak 200 (karttan sonra yazıldı): eksik 200 son taksitten kırpılır [300, 100]; ilk taksit 'avansla ödenmiş' sayılmaz", () => {
+    const sched = taksitler("M", 600, 2);
+    const lines = [borc("B", "2026-03-01", 600), kart("M", "2026-03-15", 600), line("Y", "account", "credit", "2026-03-05", 0, 200)];
+    const r = build({ lines, schedules: sched, today: TODAY });
+    assert.deepEqual(inst(r, "M"), [300, 100], "1. taksit tam açık (gecikmiş 300), 2. taksit 100'e kırpıldı");
+    assert.deepEqual([sigma(r), balanceOf([], lines), r.overdue(TODAY).amount, r.coverage.get("M").advance], [400, 400, 300, 0]);
+    // Aynı eksik PARAYLA (önceden alınmış avans 200) kapanmışsa: 1. taksitin 200'ü ödenmiş (S101 = A, karar (e)) — iki durum ayrışır.
+    const paid = [tahsilat("P", "2026-02-20", 200), borc("B", "2026-03-01", 600), kart("M", "2026-03-15", 600)];
+    const a = build({ lines: paid, schedules: sched, today: TODAY });
+    assert.deepEqual([inst(a, "M"), a.coverage.get("M").advance, a.overdue(TODAY).amount], [[100, 300], 200, 100]);
+  });
+});
+
 describe("Ç5-B son tur — BİLİNEN SINIRLAR (S123 = S124 = S125 = C: kural YOK; bugünkü davranış sabitlenir, değişmezler korunur)", () => {
   const two = (planId, total) => new Map([[planId, [{ id: `${planId}1`, seq: 1, dueDate: "2026-04-05", amount: total / 2 }, { id: `${planId}2`, seq: 2, dueDate: "2026-05-05", amount: total / 2 }]]]);
   const check = (r, docs, lines) => {
