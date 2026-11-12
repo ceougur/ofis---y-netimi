@@ -228,7 +228,9 @@ describe("Raporlar penceresi uçları (tam yığın)", () => {
     assert.ok(tahsilat.rows.find(row => row[0] === veli.refNo && /700,00/.test(row[4])), "Ali Veli (2): alınan senet 700 ayrı satırda");
     const perf = await run("taksit-performans", `from=${shift(-400)}&to=${shift(400)}`);
     assert.match(perf.summary.find(([label]) => label === "Vadesi Gelen")[1], /3\.000,00/);
-    assert.match(perf.summary.find(([label]) => label === "Geciken")[1], /1\.000,00/);
+    // S129 = A (12.11.2026): raporun Ödenen / Kalan / Geciken'i kart ekranıyla AYNI sayı (tek kuyruk). Ali Veli'nin vadesi geçen 1. taksiti 1.000; alınan senet 700 (S-1)
+    // carinin bağsız parasıdır ve vade sırasıyla o taksiti kapatır (S50 / S99) → Geciken 300. (Önceki beklenti 1.000 kartın kendi hesabıydı.)
+    assert.match(perf.summary.find(([label]) => label === "Geciken")[1], /^300,00/);
     const cek = await run("cek-vade-dagilimi");
     assert.match(cek.summary.find(([label]) => label === "Tahsil Edilecek")[1], /1\.700,00/);
     assert.match(cek.summary.find(([label]) => label === "Ödenecek")[1], /800,00/);

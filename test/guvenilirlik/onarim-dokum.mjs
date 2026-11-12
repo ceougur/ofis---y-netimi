@@ -79,7 +79,9 @@ export async function dumpRepair(app, { hash = false, screen = false, password =
   const rows = accounts.accounts || accounts.items || [];
   if (!rows.length) throw new Error("cari listesi boş okundu (ders 4)");
   // 2.5.0 Ç5-B: listenin `overdue`'su Tek Yükümlülük Kuyruğu'nun gecikmiş borcu oldu (B1, bilerek); onarım eşdeğerliği eski anlamlı alanı okur (overdueInstallments; eski kodda overdue).
-  put("cariler", rows.map(row => ({ id: row.id, debit: row.debit, credit: row.credit, balance: row.balance, planRemaining: row.planRemaining, overdue: row.overdueInstallments ?? row.overdue })));
+  // 2.5.0 Ç5-B kapanış düzeltmesi (S129 = A): listenin `planRemaining`'i ve kartın `paid` / `remaining`'i GÖSTERİLEN sayı oldu (tek kuyruk; bilerek); onarım eşdeğerliği kartın
+  // KENDİ hesabını okur (planOwnRemaining, ownPaid, ownRemaining; eski kodda planRemaining, paid, remaining).
+  put("cariler", rows.map(row => ({ id: row.id, debit: row.debit, credit: row.credit, balance: row.balance, planRemaining: row.planOwnRemaining ?? row.planRemaining, overdue: row.overdueInstallments ?? row.overdue })));
   const cash = await get("/api/workspace/cash");
   if (!cash?.totals) throw new Error("Kasa okunamadı (ders 4)");
   out.kasa = plain({ in: cash.totals.in, out: cash.totals.out, balance: cash.totals.balance });
@@ -87,7 +89,7 @@ export async function dumpRepair(app, { hash = false, screen = false, password =
   for (const row of candidates) {
     const t = (await get(`/api/workspace/plans/${row.planId}`)).totals || {};
     // 2.5.0 Ç5-B: kartın `overdue`'su kuyruk kalanından (S50); onarım eşdeğerliği kartın kendi hesabını okur (ownOverdue; eski kodda overdue).
-    cards.push({ planId: row.planId, total: t.total, paid: t.paid, remaining: t.remaining, overdue: t.ownOverdue ?? t.overdue ?? 0 });
+    cards.push({ planId: row.planId, total: t.total, paid: t.ownPaid ?? t.paid, remaining: t.ownRemaining ?? t.remaining, overdue: t.ownOverdue ?? t.overdue ?? 0 });
   }
   put("adayKartlar", cards);
   const integrity = await get("/api/workspace/ledger/integrity");

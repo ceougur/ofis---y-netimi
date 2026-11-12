@@ -329,6 +329,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       let overdue = 0;
       let overdueCount = 0;
       let planRemaining = 0;
+      let planOwnRemaining = 0;
       let next = null;
       for (const plan of accountPlans) {
         const total = roundMoney(Number(plan.total) || 0);
@@ -339,6 +340,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
           // S129 = A: "Taksitten Kalan" (liste, PDF, Excel) kart penceresinin Kalan'ıyla aynı — kullanıcı isteğinde kuyruktan; iç çağıranlarda (kuyruk okunmaz) kartın kendi hesabı.
           const view = tykAll && plans()?.shownTotalsOf ? plans().shownTotalsOf(plan, tykAll.get(row.id)) : null;
           planRemaining += view ? Math.max(0, view.remaining) : Math.max(0, total - paid);
+          planOwnRemaining += Math.max(0, total - paid);
           overdue += plan.totals.overdue || 0;
           overdueCount += plan.totals.overdueCount || 0;
           if (plan.next && (!next || plan.next.dueDate < next.dueDate)) next = { ...plan.next, planId: plan.id };
@@ -419,6 +421,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         planCount: accountPlans.length,
         activePlans,
         planRemaining: roundMoney(planRemaining),
+        // Kartların KENDİ hesabıyla kalan toplamı (S129 öncesinin "Taksitten Kalan"ı) — onarım / göç karşılaştırmaları için (overdueInstallments ile aynı düzen).
+        planOwnRemaining: roundMoney(planOwnRemaining),
         overdue: roundMoney(overdue),
         overdueCount,
         overdueInstallments: roundMoney(overdueInstallments),

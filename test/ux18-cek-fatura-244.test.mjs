@@ -517,7 +517,7 @@ describe("2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu 
     // kapatmıyordu (açık 1.200, bakiye 700 — S99 B okuması).
     const f = await k.account("T17 Taksitli");
     const planned = await k.invoice(f, 1200, { payment: { rest: "installments", installments: { count: 3, firstDue: day(20), everyMonths: 1 } } });
-    const remaining = async () => (await must("kart", api.get(`/api/workspace/plans/${planned.planId}`))).totals.remaining;
+    const remaining = async () => (await must("kart", api.get(`/api/workspace/plans/${planned.planId}`))).totals.ownRemaining; // kartın KENDİ kalanı (S129 = A: totals.remaining gösterilen sayıdır)
     const ef = await k.cheque(f, 500);
     assert.deepEqual([await k.open(planned.id), await remaining(), await k.balance(f)], [700, 1200, 700], "bağsız evrak taksitli faturanın taksitlerini kapatır (S99); kartın kendi kalanı 1.200");
     await k.act(ef, "bounce");
