@@ -98,33 +98,50 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
       const returned = collections
         ? "CASE WHEN e.source = 'cheque' AND e.kind = 'debt' AND c.direction = 'in' AND e.account_id = c.account_id AND EXISTS (SELECT 1 FROM cheque_collections k WHERE k.cheque_id = c.id AND k.status = 'returned') THEN 1 ELSE 0 END"
         : "0";
-      // 2.5.0 Ç5-A (§2.3; KG-16): açılış işaretten — Açılış Bakiyesi satırı (is_opening, göç 35) ve "Açılış Olabilir" durumu (opening_review, göç 48). Eski dosyada kolon yok: 0 / ''.
-      const entryOpening = hasColumn("account_entries", "is_opening") ? "e.is_opening" : "0";
-      const entryReview = hasColumn("account_entries", "opening_review") ? "e.opening_review" : "''";
+      const entryKeys = [[set?.parties, "SELECT id FROM account_entries WHERE account_id IN $"], [set?.entries, own("m_entries")], [set?.cheques, "SELECT id FROM account_entries WHERE source = 'cheque' AND source_id IN $"]];
       out.accountEntries = all(
         `SELECT e.id, e.rowid AS seq, e.kind, e.amount, e.date, e.note, e.source, e.source_id AS sourceId, e.method, ${refOf("account_entries", "e")} AS ref, a.type AS accountType, e.account_id AS party,
-                ${entryOpening} AS isOpening, ${entryReview} AS openingReview,
                 COALESCE(c.direction, '') AS chequeDirection, COALESCE(c.instrument, '') AS chequeInstrument, COALESCE(m.reason, '') AS moveReason, ${returned} AS bankReturned,
                 e.invoice_id AS invoiceId, e.doubtful_skip AS doubtfulSkip
          FROM account_entries e ${J} accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
            LEFT JOIN cheques c ON e.source = 'cheque' AND c.id = e.source_id
-           LEFT JOIN stock_moves m ON e.source = 'stock' AND m.id = e.source_id${where("e", [[set?.parties, "SELECT id FROM account_entries WHERE account_id IN $"], [set?.entries, own("m_entries")], [set?.cheques, "SELECT id FROM account_entries WHERE source = 'cheque' AND source_id IN $"]])}`,
+           LEFT JOIN stock_moves m ON e.source = 'stock' AND m.id = e.source_id${where("e", entryKeys)}`,
         wanted(set?.parties, set?.entries, set?.cheques),
       );
+      // 2.5.0 Ç5-A (§2.3; KG-16): açılış işaretten — Açılış Bakiyesi satırı (is_opening, göç 35) ve "Açılış Olabilir" durumu (opening_review, göç 48). Eski dosyada kolon yok.
+      // Ç5-A tur 1c (hız, ders 47; C5-ACILIS-TASARIM §13 H1): iki kolon bütün satırlarda okunmaz (100.000 satırda türetme başına ~100 ms satır dönüşümü) — yalnız işaretli ya da
+      // aday / onaylı satırların değerleri ayrı küçük sorguyla (AYNI süzgeçle) okunur ve o satır nesnelerine AYNI değerlerle yazılır. Öbür satırlarda alan yoktur: journal()'ın
+      // isOpeningEntry'si yine false (0 / '' / rejected ile aynı). Evrakın carisiz satırları (free-in / free-out; kendi isOpening'leri) aşağıda, bundan SONRA eklenir.
+      const entryOpening = hasColumn("account_entries", "is_opening");
+      const entryReview = hasColumn("account_entries", "opening_review");
+      if ((entryOpening || entryReview) && out.accountEntries.length) {
+        const flagged = new Map();
+        for (const row of all(
+          `SELECT e.id, ${entryOpening ? "e.is_opening" : "0"} AS isOpening, ${entryReview ? "e.opening_review" : "''"} AS openingReview FROM account_entries e
+           WHERE (${[entryOpening ? "e.is_opening = 1" : "", entryReview ? "e.opening_review IN ('candidate', 'confirmed')" : ""].filter(Boolean).join(" OR ")})${where("e", entryKeys, "AND")}`,
+          wanted(set?.parties, set?.entries, set?.cheques),
+        )) flagged.set(row.id, row);
+        if (flagged.size) {
+          for (const row of out.accountEntries) {
+            const flag = flagged.get(row.id);
+            if (flag) {
+              row.isOpening = flag.isOpening;
+              row.openingReview = flag.openingReview;
+            }
+          }
+        }
+      }
     }
     if (has("plans")) {
       // Kartın carisi silindiyse kart cari defterinde görünmez: ana defterde "carisiz kart" hesabında izlenir.
       // 2.5.0 Ç5-A (KG-5; B5): yüklenen kart (import_id) — yükleme damgası (plan_imports.created_at; yerel günü journal()'da) ve açılış satırlarının toplamı (P). Eski dosyada: yok.
       const imported = hasColumn("plans", "import_id") && has("plan_imports");
-      const planImport = imported
-        ? `p.import_id AS importId, COALESCE((SELECT x.created_at FROM plan_imports x WHERE x.id = p.import_id), '') AS importedAt,
-                COALESCE((SELECT SUM(e.amount) FROM plan_entries e WHERE e.plan_id = p.id AND e.kind = 'in' AND e.opening = 1), 0) AS openingPaid,`
-        : "'' AS importId, '' AS importedAt, 0 AS openingPaid,";
+      const planKeys = [[set?.parties, "SELECT id FROM plans WHERE account_id IN $"], [set?.plans, own("plans")]];
       out.plans = all(
         `SELECT p.id, p.rowid AS seq, p.total, p.status, p.covers_balance AS coversBalance, COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) AS date, COALESCE(p.closed_at, substr(p.updated_at, 1, 10)) AS closedOn,
-                COALESCE(a.type, '') AS accountType, COALESCE(a.id, '') AS party, ${planImport}
+                COALESCE(a.type, '') AS accountType, COALESCE(a.id, '') AS party,
                 COALESCE((SELECT SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END) FROM plan_entries e WHERE e.plan_id = p.id), 0) AS paid
-         FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE ${X}p.deleted_at IS NULL${where("p", [[set?.parties, "SELECT id FROM plans WHERE account_id IN $"], [set?.plans, own("plans")]], "AND")}`,
+         FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE ${X}p.deleted_at IS NULL${where("p", planKeys, "AND")}`,
         wanted(set?.parties, set?.plans),
       );
       // Doğrulama T11: taksite sayılmış evrakın karşılıksız ters kaydı (çekli 'out'); bankada tahsildeyken döndüyse alacağı 101.02 (satır bazında).
@@ -135,10 +152,36 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
       const planInstrument = has("cheques") ? "CASE WHEN e.cheque_id <> '' THEN COALESCE((SELECT x.instrument FROM cheques x WHERE x.id = e.cheque_id), '') ELSE '' END" : "''";
       out.planEntries = all(
         `SELECT e.id, e.rowid AS seq, e.plan_id AS planId, e.kind, e.amount, e.date, e.note, e.method, ${refOf("plan_entries", "e")} AS ref, e.cheque_id AS chequeId, ${planInstrument} AS chequeInstrument, e.opening, COALESCE(a.type, '') AS accountType, COALESCE(a.id, '') AS party, ${planReturned} AS bankReturned,
-                COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) AS planDate, p.covers_balance AS planCovers, ${imported ? "p.import_id <> ''" : "0"} AS planImported
+                COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) AS planDate, p.covers_balance AS planCovers
          FROM plan_entries e ${J} plans p ON p.id = e.plan_id AND p.deleted_at IS NULL LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL${where("e", [[set?.parties, "SELECT pe.id FROM plans pp JOIN plan_entries pe ON pe.plan_id = pp.id WHERE pp.account_id IN $"], [set?.plans, "SELECT id FROM plan_entries WHERE plan_id IN $"], [set?.planEntries, own("m_plan_entries")], [set?.cheques, "SELECT id FROM plan_entries WHERE cheque_id IN $"]])}`,
         wanted(set?.parties, set?.plans, set?.planEntries, set?.cheques),
       );
+      // Ç5-A tur 1c (hız, ders 47; C5-ACILIS-TASARIM §13 H2): yüklenen kartın alanları (importId, importedAt, openingPaid — tur 1'deki AYNI SQL ifadeleri) ve taksit satırının
+      // planImported'ı (kartı yüklenmiş mi: p.import_id <> '') bütün kartlarda / satırlarda okunmaz; yalnız yüklenen kartlar (silinmemiş, import_id ≠ '') ayrı sorguyla okunur ve o
+      // kart nesnelerine / o kartların taksit satırlarına AYNI değerlerle yazılır. Süzgeçli yolda (kapı) sorgu yalnız okunan kartların ve taksit satırlarının kartlarıyla sınırlı
+      // (taksit satırının kartı kart süzgecinde olmayabilir). Öbür kartlarda / satırlarda alan yok (journal()'da '' / 0 ile aynı).
+      if (imported && (out.plans.length || out.planEntries.length)) {
+        const scope = filter ? [...new Set([...out.plans.map(plan => plan.id), ...out.planEntries.map(entry => entry.planId)])] : null;
+        const details = new Map();
+        for (const row of leanAll(
+          store,
+          `SELECT p.id, p.import_id AS importId, COALESCE((SELECT x.created_at FROM plan_imports x WHERE x.id = p.import_id), '') AS importedAt,
+                  COALESCE((SELECT SUM(e.amount) FROM plan_entries e WHERE e.plan_id = p.id AND e.kind = 'in' AND e.opening = 1), 0) AS openingPaid
+           FROM plans p WHERE ${X}p.deleted_at IS NULL AND p.import_id <> ''${scope ? " AND p.id IN (SELECT value FROM json_each(?))" : ""}`,
+          ...(scope ? [JSON.stringify(scope)] : []),
+        )) details.set(row.id, row);
+        if (details.size) {
+          for (const plan of out.plans) {
+            const detail = details.get(plan.id);
+            if (detail) {
+              plan.importId = detail.importId;
+              plan.importedAt = detail.importedAt;
+              plan.openingPaid = detail.openingPaid;
+            }
+          }
+          for (const entry of out.planEntries) if (details.has(entry.planId)) entry.planImported = 1;
+        }
+      }
       // 2.5.0 Ç5-A tur 1b (S127 = A, "bir olay tek kez yazılır"; C5-ACILIS-TASARIM §12.1): KG-5'ten önceki kuralla donmuş dönemin iki yanına düşen yüklenen kart eski yapısıyla
       // (journal() pinnedOld). Karar kart başına, süzgeçsiz verilir (süzgeçli kapı aynı kartı aynı kuralla görür). Donmuş koşu yoksa sorgu yok.
       if (imported) {
