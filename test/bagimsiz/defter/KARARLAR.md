@@ -240,9 +240,11 @@ yaşlandırma satırı). Öz test bakım öncesi tabanda (`a55e47e4`) iki saat d
 NEDENLE kırmızı: g9 / g9b "çökmedi — sayı üretti" (178/180).
 
 ### Değişen eski beklentiler (G3; hepsi EX1'in taşınmasından — ÖK-1)
-Bakım 2 kâhini (eski senaryolar) ↔ bakım 3 kâhini (yeni senaryolar), her senaryo × iki kural × mutant 0–39: fark YALNIZ `senaryo.json` ve `g4`'te, YALNIZ yukarıda elle yazılan cari bakiyesi ve
-yaşlandırma satırlarında (eski cari −T+P, yeni cari +T−P; mizan, toplamlar, KDV, stok, retler aynen); g1–g3, g5–g8 bayt bayt AYNI (BEKLENMEYEN 0 — sayılar ajan raporu / kanıt
-`docs/kanit/2026-11-12/kahineski13-*`). Yeni kâhin ESKİ `senaryo.json`'da ÖK-1 nedeniyle çöker (beklenen — çiğneyen olay), ESKİ `g4`'te çökmez (SS-4).
+Bakım 2 kâhini (eski senaryolar) ↔ bakım 3 kâhini (yeni senaryolar), her senaryo × iki kural, mutasyonsuz (22 karşılaştırma; `docs/kanit/2026-11-12/kahineski13-g3-dar.*`): fark YALNIZ `senaryo.json` ve
+`g4`'te (2.5.0), YALNIZ yukarıda elle yazılan cari bakiyesi ve yaşlandırma satırlarında — Ahmet Yılmaz 5.600 → 1.100, Excel Kart Müşterisi Ltd. — → 4.500; Elle Alfa Ltd. 2.300 → 1.700, Elle Excel
+Müşterisi Ltd. — → 600 (mizan, yaşlandırma toplamı, KDV, stok, retler aynen); g1–g3, g5–g8 AYNI; BEKLENMEYEN 0. Elle değerlerin hepsi kâhinin çıktısıyla tuttu. Yeni kâhin ESKİ `senaryo.json`'da ÖK-1
+nedeniyle çöker (beklenen — çiğneyen olay), ESKİ `g4`'te ve öbür eski senaryolarda eski kâhinle AYNI çıktı (SS-4). Mutant düzeyinde (0–39) aynı karşılaştırma ölçüm kilidi dolu olduğu için bu
+bakımda KOŞULMADI (betik `docs/kanit/2026-11-12/kahineski13-g3.py`, ana oturum koşar); mutantların yeni senaryolardaki dişi `oz-test.py`'de (39/39 yakalandı).
 
 ### Eşleme notları (`kos.mjs` — değiştirilmedi)
 Yeni cariler (`g4` M2, `senaryo.json` M6) `cari` olayıyla açılır (açılışsız: `registeredOn` 2026-01-01); EX1'in Excel satırı carinin ADINI taşır (eşleme aynen). Yeni olay türü / alan YOK.
