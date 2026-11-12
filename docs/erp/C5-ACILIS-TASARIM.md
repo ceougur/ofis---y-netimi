@@ -618,3 +618,47 @@ Tur 1'in düzeneği kendi kopyamda (`scratchpad/c5a1b-olcum/`); yollar: Ana Deft
   yazar (B 519 / A 101); kâhinin karşılıksız maddesinde cari satırı var (sürücünün çevirisi karsilastir.py bu satırı 770'e çeviriyor) — sürücü karşılıksız adımında cari
   göndermiyor (program.mjs evrak_karsiliksiz). Cari sürücüsündeki aynı eşleme (KARSILIKSIZ_CARI) 7 kaydı kapattı. Muhasebe sürücüsüne dokunulmadı (görev sınırı);
   tanı kopyasında `v.cari` gönderildi, fark değişmedi → kâhin olayındaki cari alanının adı bilinmiyor (kâhin dosyaları okunmadı) — DOĞRULANMADI, sürücü bakımına.
+
+---
+
+## 13. Ç5-A tur 1c (kod ajanı, 12.11.2026; taban `c5a1c-taban` a55e47e4 = tur 1b ucu) — KODDAN ÖNCE yazıldı
+
+Kapsam (görev metni docs/devir/2.5.0-DEVAM/c5a1c-istem.txt): (1) HIZ — defteri okuyan her yol Ç5-A öncesinin (`c5a-taban`) en çok %10 üstünde (en iyi ve ortanca), hiçbiri tur 1b
+ucundan kötü değil, DAVRANIŞ AYNI; (2) B7 TEST YARIŞI (test/banka-210-gg-tarama "iki yol aynı sonucu vermeli" ara sıra kırmızı). Tur 2'nin işleri, kâhin dosyaları, S127 /
+yaşlandırma kuralları KAPSAM DIŞI.
+
+### 13.1 Profil (ders 47; ölçüm kilidiyle, yük 1,2; 100 bin satırlık şablonun kendi kopyası, kilitsiz; beş okuma yolu × 2, açılış hariç; ham çıktı docs/kanit/2026-11-12/c5a1c-profil-*)
+İşlev başına KAPSAYICI süre (11 türetme), c5a-taban → tur 1b ucu: `build()` 24.520 → 27.101 ms (+2.581); bunun içinde `rows()` 20.526 → 22.883 (+2.357; `leanRows` öz süresi 8.477 → 10.387,
+`iterate` 12.624 → 13.059), `journal()` + `build()` öz süresi 1.757 → 2.140 (+383; tabandaki carisiz evrak döngüsü journal()'a taşındı), sıralama (`journalOrder` kapsayıcı) 1.734 → 1.577.
+Mutabakat Testi / Defter Mutabakatı `run()` öz süresi 523 → 873 (+350; yeni "Açılış Karşılığı" bloğunun JS'i: iki `ledgerBalanceOf` + `unlockedPastYears` — üç ayrı tam geçiş), `get`
+(SQL) 795 → 1.053 (+258; `openingCounterpart`'ın SQL'i).
+OKUMA: ek sürenin ~%90'ı `rows()`'un SATIR DÖNÜŞÜMÜ — tur 1'in kaynak sorgularına eklediği kolonlar bütün satırlarda okunur, kopyalanır ve (metinse) havuzlanır: cari satırlarına
+`isOpening` + `openingReview` (102.295 satır × 2), kartlara `importId` + `importedAt` + `openingPaid` (13.992 × 3; ikisi ilişkili alt sorgu), taksit satırlarına `planImported`
+(8.162), evraka `isOpening` (11.660), banka satırına `role` (339). Satır başına ek kolon ~1 µs (sözlük kipli satır + kopya); 100 bin satırlık şirkette türetme başına ~210 ms. Bu
+kolonların DEĞERİ satırların çok küçük bir kısmında anlamlı (açılış işaretli / aday cari satırı, yüklenen kart); öbür satırlarda 0 / ''.
+
+### 13.2 Değişiklikler (her biri DAVRANIŞ AYNI; okuyucular ders 10; "nasıl bozulur?")
+| # | Değişen yol | Ne | Okuyucular | Nasıl bozulur? |
+|---|---|---|---|---|
+| H1 | routes/ledger.mjs `rows()` cari satırları | `is_opening` / `opening_review` ana sorgudan çıkar; açılış işaretli ya da aday / onaylı satırların kimlik → değerleri AYRI küçük sorguyla okunur ve YALNIZ o satır nesnelerine aynı değerlerle yazılır (öbürlerinde alan yok → `isOpeningEntry` yine false: 0 / '' / rejected ile aynı) | yalnız `journal()` (rows() başka yere verilmez: build() → GET ledger, Yevmiye, Hesap Planı / Alt Hesap Mizanı, Defter Mutabakatı, Mutabakat Testi, kapının süzgeçli yolu build(filter), dondurma iş parçacığı, ruleDiff) | süzgeçli build(filter) işaretsiz kalır (küçük sorgu süzgeçsiz okunur, yalnız gelen satırlar işaretlenir); evrakın carisiz satırları (free-in / free-out, kendi `isOpening`'leri) yanlışlıkla işaretlenir (işaretleme free satırlar eklenmeden ÖNCE); eski şema (kolon yok) |
+| H2 | routes/ledger.mjs `rows()` kart / taksit satırları | `importId` / `importedAt` / `openingPaid` ve `planImported` ana sorgulardan çıkar; yalnız yüklenen kartlar (import_id ≠ '') için ayrı sorgu, değerler aynı SQL ifadeleriyle o kart nesnelerine / o kartların taksit satırlarına | yalnız `journal()` (KG-5 tek madde, açılış satırının maddesizliği); `oldRulePinnedPlans` DEĞİŞMEZ | süzgeçli yol; carisi silinmiş kart; kartın yükleme kaydı yok (importedAt '' → kartın tarihi); Mevcut Borcu Taksitlendir kartı (covers) |
+| H3 | general-ledger.mjs `journal()` sonu | `out.sort(journalOrder)` → aynı karşılaştırmanın önceden hesaplanmış anahtarlarla (tarih, sınıf, yazım sırası, kimlik) kararlı sıralaması (`journalSort`); `journalOrder` AYNEN (2.4.9 kopyası ve donmuş defter onu kullanır) | journal() çıktısının sırası (Yevmiye Defteri, donmuş satırların run_seq'i, ruleDiff örnek sırası) | eşit anahtarlı iki maddenin sırası (kararlı sıralama aynı girdi sırasını korur — journalOrder ile aynı); `cls`'li madde; `seq`'siz madde (Infinity); sınıfı bilinmeyen önek (90) |
+| H4 | integrity.mjs "Açılış Karşılığı" + S53 bloğu (YALNIZ İş 1'in gerektirdiği; görev metni integrity.mjs'i İş 2'ye bağlıyor — dar kontrol değerlendirir) | 519 / 500 bakiyesi ve kilitsiz geçmiş yıllar üç geçiş yerine TEK geçişte (`openingLedgerFacts`, ledger-opening.mjs); sonuçlar aynı | Mutabakat Testi, Defter Mutabakatı, arka plan taraması (iş parçacığı aynı run()) | yılın sınırı (1 Ocak), kilit günü (≤ kilit atlanır), 649.90 / 770.90 alt hesabı, 519'u olmayan madde |
+H1 / H2 küçük sorguları satır sayısıyla orantılı değildir (işaretli satır sayısı kadar); büyük şirkette bile birkaç bin satır.
+
+### 13.3 Eşdeğerlik (ders 47)
+Aynı veri kopyasında c5a1c-taban ↔ tur 1c: GET ledger (mizan + mutabakat), Yevmiye Defteri, Hesap Planı Mizanı, Alt Hesap Mizanı, Defter Mutabakatı, Mutabakat Testi denetim
+listesi, Alacak Yaşlandırma, Açılış Olabilir listesi — 100 bin şablonu kilitsiz + kilitli, depodaki eski sürüm fikstürleri, iki TZ; betik ve ham çıktı docs/kanit/2026-11-12/c5a1c-*.
+Kalıcı test (yeni dosya; eşdeğerlik testidir, eski kodda kırmızı BEKLENMEZ): journalSort ≡ sort(journalOrder) (gerçek maddeler, karıştırılmış girdi, eşit anahtarlar); H1 / H2'nin
+işaret yolu (süzgeçli ve süzgeçsiz build) veri tabanının kolonlarından bağımsız hesaplanan beklenenle; H4 tek geçiş ≡ eski üç geçiş. Dişi: çıktıyı bozan mutantla kırmızı.
+
+### 13.4 B7 yarışı (İş 2) — koddan kök neden
+- 2.0.26 fikstürü kilitli → açılışta göç 47'nin bekleyen 2.4.9 koşusu; app.mjs sırası: `integrity.start()` (taban) → `setImmediate(runPending)` (dondurma arkada, iş parçacığında).
+- `snapshots.checks()` (ledger-snapshots.mjs): "Kural Değişikliği Farkı" yalnız KAPSAM (tamamlanmış dondurma) varken listelenir ve yalnız `ok: false` iken görünür. Ç5-A'dan önce güncel kural
+  = 2.4.9 kopyası → dondurma bitince de fark yok → görünmez (yarış görünmüyordu). Ç5-A ile 2.4.9 ↔ 2.5.0-defter farkı var → dondurma bitince denetim listeye girer (64 → 65).
+- Testin iki taraması (arka plan iş parçacığı, sonra satır içi) dondurmanın bitiş anının iki yanına düşünce sahte "iki yol farklı". Zorlama: ürünün YALNIZ TEST kancası
+  (`__testFreezeHook` "before-done") ile dondurma son adımda tutulur (test/b7-dondurma-yaris-zorla.mjs + test/fixtures/dondurma-yaris-zorla-yukle.mjs); uyku yok.
+- Test düzeltmesi: karşılaştırmadan önce ön koşul ürünün durumundan (`snapshots.runPending()` süren işi bekler; `state().pending` null, kapsam = kilit); iddialar aynen. Yeni test:
+  sürerken iki yol aynı (kural farkı yok), bitince arka plan taraması ATLANMADAN yeniden koşar (dondurmanın yazımı total_changes'ı değiştirir) ve farkı görür.
+- Ürün değerlendirmesi (rapor): taban (`integrity.start`) dondurmadan ÖNCE alındığı için kural farkı tabanda yok → dondurmadan sonraki ilk tarama onu "yeni sapma" sayar (C3 §8 "kapının
+  tabanında" beklentisiyle çelişir) — BULGU; sayıyla rapor, düzeltme seçenekleri BAŞ MİMAR KARARI GEREKİYOR (zil / günlük davranışı).
