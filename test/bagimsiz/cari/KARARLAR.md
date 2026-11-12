@@ -2943,5 +2943,24 @@ borcunu (fatura / elle kayıt dışında kalem dahil — S128) içine aldı ve k
 - Tahsilat tutarının düzeltilmesi (dilde adım yok); kart tahsilatının silinmesi (dilde yol yok — bakım 10 C12o aynen).
 - Aynı caride iki S128 kartı; Ödeme Sözü taşıyan kalem; vade günü / gün dönümü; iki şirket / yedek geri yükleme (kâhinin dilinde şirket yok).
 
-### G3 / Kanıt
-Kanıt commit'inde eklenir.
+### C0q Değişen eski beklentiler (G3; bakım 11 (`bb05ae9b` ağacı — çalışma dalı ucu) ↔ bakım 12 kâhin çıktısı, `2.5.0`; eski kopyanın 91 elle senaryosu + d38 + rastgele s1 / ux18 tohum 1–10 × 120) — kararla ilgisiz eski beklenti DEĞİŞMEDİ
+Eski 48.286 → yeni 48.488 denetim; değişen / kalkan / yeni toplam **202**, hepsi **yeni** (bakım 11'in SK-25 ile sustuğu yerde artık değer): S128-alan 202; **BEKLENMEYEN 0**, değeri değişen 0, kalkan 0, yalnız etiketi
+değişen 0, S128-genel 0 (dökümü `docs/kanit/2026-11-11/kahineski12-g3-dokum-*.json` — iki saat diliminde bayt bayt aynı; özet `kahineski12-esdeger-cari-*.log`; cari cari sayım `kahineski12-arac/g3-cari.py`). Sınıf, yeni
+modelin `son["s122"]` izinden cari cari:
+- **d37 (13 yeni, S128-alan):** L14 — kararın örneği (bakım 11'de SK-25 ile susuyordu; 12 elle değer + X'in `hareket:l14x:beklenen`'i). Öbür L carilerinde fark 0 (S126 alanı — bakım 11 — AYNEN).
+- **d38 (189 yeni; dosya yeni, eski kâhinde de koşuldu):** M1 / M2 / M3 / M4 / M5 / M6 / M8 / M9 / M10 / M11 / M16b / M17a 13'er, M7 15, M12 11 (`acikToplam` yok — C14.3), M13 7 (Y12-7 — elle / fatura kalemi yok);
+  eski kâhin hepsinde SK-25 ile susuyordu. Fark 0: M14 / M15 (iki kâhinde de susar: SK-18 + SK-25 → SK-26), M16 (iki kâhinde de susar: SK-25 → S125 = C), M17b (kartsız), M18 (S126 AYNEN), M19 (S120 / S122 AYNEN).
+- **Öbür 90 eski elle senaryo ve 20 rastgele: fark 0** (adımları değişen eski senaryo 0; öbür türlü O = T Taksitler kartı eski elle senaryolarda yalnız d37 L14'te).
+- **Eski ELLE tablolarda değişen beklentiler** (`kahineski12-elle-fark-*.log`; yalnız d37, karar gereği): L14 — 4 `elleYok` + 1 `elleBelirsiz` (SK-25) kalktı, 12 değer eklendi. Öbür 90 dosyanın elle tablosu ve
+  bütün dosyaların adımları AYNI (91/91).
+- `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`: **448/448 bayt bayt aynı** (91 eski elle + d38 + 20 rastgele × 4 kip); üretici 20/20 aynı dizi.
+- **Yeni / değişen elle tablolar ESKİ (bakım 11) kâhinde — beklenen NEDENLE kırmızı (ders 7, 38):** 656 elle denetimin **176**'sı (`kahineski12-kirmizi-eski-cari-*.log`; d38 165, d37 11): 173'ü "ANAHTAR YOK"
+  (eski kâhin SK-25 ile susuyor), 3'ü `belirsiz` kaydında "SK-26" (M14, M15) / "S125 = C + SK-23" (M16) yok (eski kâhin SK-25 yazıyor); 480'i iki kâhinde aynı (bakiyeler, kart tutarları, M14 / M15'in SK-18
+  kaydı ve iki dünyada aynı kalanlar, M17b, M18, M19, d37'nin öbür carileri).
+
+### Kanıt (bakım 12; iki saat dilimi — UTC ve Europe/Istanbul çıktıları bayt bayt aynı (başlık satırları dışında); kâhin `7e50f5af`, temiz ağaç; `docs/kanit/2026-11-11/kahineski12-*`, araçlar ve koşu betiği `kahineski12-arac/`)
+cari öz test **5.611/5.611** (`-cari-oz-*`: elle tablolar 92 senaryo, mutantlar 200–279 — 219–279 değerle) · mutasyon taraması **246/246** (`-cari-mutasyon-*`) · eşdeğerlik + G3 **560/560** (`-esdeger-cari-*`) ·
+yeni / değişen elle tablo **656/656** (`-elle-yeni-cari-*`: d38 294 + d37 362) · ESKİ kâhinde **176 kırmızı** / 656 (`-kirmizi-eski-cari-*`) · eski elle tablo farkı **91/91** izinli (`-elle-fark-*`) · G1 tarama
+**92/92** (`-g1-tara-*`) · mutant ↔ senaryo **76/76** (`-mutant-senaryo-*`; d38 / d37 / d36 / d35 × 261–279) · geniş tarama **2.201/2.201** (`-genis-tarama-*`; bakım 11 ile aynı sayı). **Defter öz testi
+BAŞARISIZ** (`-defter-oz-*`; `VARSAYILAN_KURAL` AttributeError) — bakım 9 / 10 / 11'deki gibi, TABANDA (`bb05ae9b` eski kopyası) da aynı; bu bakım defter kâhinine dokunmadı. Öz test, mutasyon, eşdeğerlik ve
+geniş tarama `flock -s -n …/olcum.lock` ile (ders 52). Program açılmadı. Koşu günlükleri `kahineski12-kos-utc.txt` / `-ist.txt` (yük 2,5 / 3,0 — 4 çekirdek).
