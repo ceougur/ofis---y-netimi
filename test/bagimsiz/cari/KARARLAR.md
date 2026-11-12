@@ -3202,3 +3202,30 @@ C) S134 (§25 Y14-13)", SK-20 nedeninde "… S135 = C) S135 (§25 Y14-14)", SK-2
 - S129'un durum metinleri ve tahsilat formunun sınırı (S118 = B) — anahtar yok. S133'ün "en son" sözünün yazım sırası ↔ belge tarihi ayrımı (kâhin belge tarihi → yazım sırasıyla en sonu alır; iki sıranın ayrıştığı
   senaryo yazılmadı). S134'ün K1 biçimi (yalnız mutant 245 dünyasında).
 - S133 / S134'ün programdaki eski değerleriyle karşılaştırma (yapım aşaması listesi — ana oturumda).
+
+### C0r Değişen eski beklentiler (G3; bakım 12 (`86531a4a` ağacı — çalışma dalı ucu) ↔ bakım 14 kâhin çıktısı, `2.5.0`; eski kopyanın 92 elle senaryosu + d39 / d40 + rastgele s1 / ux18 tohum 1–10 × 120) — kararla ilgisiz eski beklenti DEĞİŞMEDİ
+Eski 48.957 → yeni 48.973 denetim; değişen / kalkan / yeni toplam **141**; **BEKLENMEYEN 0** (dökümü `docs/kanit/2026-11-11/kahineski14-g3-dokum-*.json` — iki saat diliminde bayt bayt aynı; özet
+`kahineski14-esdeger-cari-*.log`). Sınıf, yeni modelin `s130` / `_alacak_govde250` / `net_durum` izinden cari cari:
+- **c7-ks7-bagsiz-kapaticilar (S130-alan, 4 değişen — kararın örneği AYNEN):** `k3:takvim:hareket:acilis:D`, `k3:vadeTakip:hareket:acilis:D`, `k3:projeksiyon:hareket:acilis:D` 1.000 → 300;
+  `k3:takvim:fatura:F1` 200 → "yok". Borç 500 (b1) kalemi, Kalan'lar, F1 açığı (200), bakiye (1.700) ve `k4`'ten sonraki bütün denetimler (Değersiz 900 sonrası — R = 0) AYNEN. Yalnız etiketi değişen 2
+  (`k3:takvim|vadeTakip:hareket:b1` BAŞ MİMAR → KULLANICI — değer aynı).
+- **d39 (dosya yeni, eski kâhinde de koşuldu): S130-alan 33 değişen + 59 yeni, S130-genel 2 değişen** (sayaçlar `cariKalemSayisi` / `projeksiyon:cari` — eski kâhin şüpheli kalemleri düşmeden sayıyordu);
+  yeni 59 = şüpheli kayıtlı carilerin görünüm toplamı (`cariToplam` × 3 görünüm; bakım 12'de tanımsızdı). Etiketi değişen 3 (N10F, n1b ×2 — değer aynı).
+- **d40 (dosya yeni): S130-sus 16 kalkan** (Q1 / Q1b / Q2 / Q3 / Q4 — eski kâhinin düşürmeden yazdığı kalem / fatura kalemi / sayaç değerleri), **S133-sus 13 kalkan** (Q5 — eski kâhin Y9-2 ile Kalan / takvim /
+  kart ödeneni / gecikmiş yazıyordu = S133 B), **S134-sus 14 kalkan** (Q6 — eski kâhin S95'le kilitli netleşmeyi geri alıp Kalan / takvim / gecikmiş yazıyordu = S134 A). Q5b (Y9-2 aynen), Q7 (S95 aynen), Q8 (SK-20
+  susması aynen) fark 0.
+- **Öbür 91 eski elle senaryo ve 20 rastgele: fark 0** (rastgele üretici şüpheliyi aynı gün tamamen Değersiz yazdırıyor — R = 0; adımları değişen eski senaryo 0; S133 / S134 / S130 SUS alanı eski elle
+  senaryolarda yok).
+- **Eski ELLE tablolarda değişen beklentiler** (`kahineski14-elle-fark-*.log`; yalnız d38, S131 = C gereği): M14 / M15'in `elleBelirsiz` kaydına "BİLİNEN SINIR", "S131 = C" eklendi (2 kalktı + 2 eklendi).
+  Öbür 91 dosyanın elle tablosu ve bütün dosyaların adımları AYNI (92/92).
+- `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`: **456/456 bayt bayt aynı** (92 eski elle + d39 / d40 + 20 rastgele × 4 kip); üretici 20/20 aynı dizi.
+- **Yeni / değişen elle tablolar ESKİ (bakım 12) kâhinde — beklenen NEDENLE kırmızı (ders 7, 38):** 622 elle denetimin **108**'i (`kahineski14-kirmizi-eski-cari-*.log`; d39 74, d40 32, d38 2): 35'i değer
+  farklı (eski kâhin kalemleri düşürmüyor — S130 B), 39'u "ANAHTAR YOK" (şüpheli carinin görünüm toplamı eski kâhinde tanımsız), 24'ü eski kâhinin SUS alanında değer yazması (Q1 … Q6), 10'u `belirsiz`
+  kaydı yok (S130 SUS, S133, S134, S135, S131 metinleri); 514'ü iki kâhinde aynı (bakiyeler, Kalan'lar, fatura açıkları, S129 kart göstergeleri — P1 / P2 / P3 — eski kâhinde de aynı: S129 onayı).
+
+### Kanıt (bakım 14; iki saat dilimi — UTC ve Europe/Istanbul çıktıları bayt bayt aynı (başlık satırları dışında); kâhin `1aa3ec9f`, temiz ağaç; `docs/kanit/2026-11-11/kahineski14-*`, araçlar ve koşu betiği `docs/kanit/2026-11-12/kahineski14-arac/`)
+cari öz test **5.976/5.976** (`-cari-oz-*`: elle tablolar 94 senaryo, mutantlar 200–285 — 219–285 değerle) · mutasyon taraması **252/252** (`-cari-mutasyon-*`) · eşdeğerlik + G3 **569/569** (`-esdeger-cari-*`) ·
+yeni / değişen elle tablo **622/622** (`-elle-yeni-cari-*`: d39 234 + d40 94 + d38 294) · ESKİ kâhinde **108 kırmızı** / 622 (`-kirmizi-eski-cari-*`) · eski elle tablo farkı **92/92** izinli (`-elle-fark-*`) · G1 tarama
+**94/94** (`-g1-tara-*`) · mutant ↔ senaryo **150/150** (`-mutant-senaryo-*`; d35 … d40 × 261–285) · geniş tarama **2.201/2.201** (`-genis-tarama-*`; bakım 12 ile aynı sayı) · defter öz testi **181/181**
+(`-defter-oz-*`; bakım 9–12'deki AttributeError bu tabanda yok — bu bakım defter kâhinine dokunmadı). Öz test, mutasyon, eşdeğerlik ve geniş tarama `flock -s -n …/olcum.lock` ile (ders 52). Program açılmadı.
+Koşu günlükleri `kahineski14-kos-utc.txt` / `-ist.txt` (yük 1,3 / 2,3 — 4 çekirdek).
