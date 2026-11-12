@@ -434,6 +434,18 @@ describe(`Senet 121 / 321 — eşdeğerlik: gerçek eski kod (${OLD}) ile aynı 
 
       current = await bootVersion(CURRENT, { ...dirs, now: NOW });
       const store = current.app.store;
+      // 2.5.0 Ç5-A tur 1d (ders 6, 20, 38; C5-ACILIS-TASARIM §14): eski sürümün kilitli verisi → açılışta göç 47'nin bekleyen 2.4.9 dondurması arkada koşar. Bitince Ç5-A'nın
+      // kural farkı (2.4.9 ↔ 2.5.0-defter: banka açılışı 500 → 519, formdan carisiz senet 649 → 602) Mutabakat Testi'nde UYARI olarak görünür; testin okumaları dondurmanın
+      // bitişinin iki yanına düşünce ara sıra kırmızıydı ("ok" false — zorla: DONDURMA_YARIS=bitir test/b7-dondurma-yaris-zorla.mjs). Ön koşul ÜRÜNÜN DURUMUNDAN kurulur
+      // (ürünün runPending'i süren işi bekler; SINIRLI). İddia zayıflamaz: kural farkı dışında hiçbir denetim düşmez; kural farkı YALNIZ kararın açıkladığı hesaplarda ve
+      // senaryonun elle yazılmış tutarlarında; Mutabakat Günlüğü'ne tarama ('sapma') satırı yazılmaz.
+      const snapshots = current.app.ledger.snapshots;
+      let timer = null;
+      await Promise.race([snapshots.runPending(), new Promise((_, reject) => {
+        timer = setTimeout(() => reject(new Error(`açılıştaki bekleyen dondurma 60 sn'de bitmedi: ${JSON.stringify({ ...snapshots.state(), freeze: snapshots.status() })}`)), 60_000);
+        timer.unref?.();
+      })]).finally(() => clearTimeout(timer));
+      assert.deepEqual([snapshots.state().pending, snapshots.state().coverage], [null, "2026-10-05"], `ön koşul: kilitli dönem donmuş: ${JSON.stringify(snapshots.state())}`);
       const next = await current.login();
       const ledger = await ok("yeni Ana Defter", next.get("/api/workspace/ledger"));
       const newTrial = Object.fromEntries(ledger.trial.accounts.map(row => [row.code, [kurus(row.debit), kurus(row.credit), kurus(row.balance)]]));
@@ -448,15 +460,25 @@ describe(`Senet 121 / 321 — eşdeğerlik: gerçek eski kod (${OLD}) ile aynı 
       const want = oracle(store);
       assert.deepEqual([newTrial["121"]?.[2] ?? 0, newTrial["321"]?.[2] ?? 0, newTrial["101"]?.[2] ?? 0, newTrial["103"]?.[2] ?? 0], [want["121"], want["321"], want["101"], want["103"]], "ham tablo");
       assert.deepEqual([want["121"], want["321"], want["101"], want["103"]], [deposits ? 100000 + 20000 + 90000 + 200000 + 80000 : 100000 + 20000 + 90000 + 200000, -(90000 + 45000), 40000, -30000], "senaryonun elle yazılmış sayıları");
-      // Kilitli dönem: sahte fark yok.
+      // Kilitli dönem: sahte fark yok. Ç5-A tur 1d: kural farkı uyarısı kararın açıkladığı farktır (elle yazılmış tutarlar; hesap → |fark| kuruş).
+      const RULE_DIFF = { 500: 10000000, 519: 10000000, 602: 20000, 649: 20000 };
+      const ruleDiffOk = (result, label) => {
+        assert.deepEqual(result.failures.filter(item => item.code !== "ledger:rule-diff"), [], `${label}: kural farkı dışında Mutabakat Testi temiz`);
+        const diff = result.failures.find(item => item.code === "ledger:rule-diff");
+        assert.ok(diff && diff.severity === "warning" && diff.count === 2, `${label}: kural farkı uyarısı (banka açılışı + carisiz senet): ${JSON.stringify(diff).slice(0, 600)}`);
+        assert.deepEqual(Object.fromEntries(diff.breakdown.map(row => [row.account, Math.abs(row.differenceMinor)])), RULE_DIFF, `${label}: kural farkı yalnız Ç5-A'nın açıkladığı hesaplarda: ${JSON.stringify(diff.breakdown)}`);
+        assert.equal(diff.difference, 100200, label);
+      };
       const integrity = await ok("Mutabakat Testi", next.get("/api/workspace/ledger/integrity"));
-      assert.equal(integrity.ok, true, `yeni kuralla Mutabakat Testi temiz: ${JSON.stringify(integrity.failures).slice(0, 600)}`);
+      ruleDiffOk(integrity, "yeni kuralla Mutabakat Testi");
       assert.equal(count(store, "integrity_log", "action = 'rolled-back'"), 0, "açılışta geri alınan işlem yok");
+      assert.equal(count(store, "integrity_log", "action = 'scan'"), 0, "Mutabakat Günlüğü'ne tarama (sapma) satırı yazılmaz — kural farkı uyarıdır (İş A)");
       assert.equal(lockDigestOf(store, "2026-10-05", { version: "2.1.0" }), oldDigest, "kilit izi (kilit tarihi) eski sürümün iziyle aynı");
       assert.equal(lockDigestOf(store, "9999-12-31", { version: "2.1.0" }), oldDigestAll, "kilit izi (bütün tarihler) eski sürümün iziyle aynı");
       await ok("açık dönemde yeni senet", next.post(CHEQUES, { direction: "in", instrument: "note", amount: "55", issueDate: "2026-10-08", dueDate: "2026-12-01", accountId: buyer.id, serialNo: "Y-N" }));
       await ok("açık dönemde tahsilat", next.post(`/api/workspace/accounts/${buyer.id}/entries`, { kind: "in", amount: "10", method: "cash", date: "2026-10-08" }));
-      assert.equal((await ok("son", next.get("/api/workspace/ledger/integrity"))).ok, true);
+      ruleDiffOk(await ok("son", next.get("/api/workspace/ledger/integrity")), "açık dönem yazımlarından sonra");
+      assert.equal(count(store, "integrity_log", "action IN ('scan', 'rolled-back')"), 0, "açık dönem yazımlarından sonra da günlükte sapma / geri alma yok");
     } finally {
       await old?.close();
       await current?.close();

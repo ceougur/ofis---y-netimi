@@ -29,6 +29,8 @@ export async function load(url, context, nextLoad) {
   if (!/\/server\/app\.mjs$/.test(url)) return result;
   const source = typeof result.source === "string" ? result.source : Buffer.from(result.source).toString("utf8");
   const calls = source.split(OPENING_CALL).length - 1;
+  // Donmuş defteri olmayan eski sürüm (ör. eski sürüm karşılaştırmasının v2.1.0'ı): zorlanacak dondurma yok — sarmalayıcı (wrap) da snapshots yoksa dokunmaz.
+  if (calls === 0 && !/snapshots\.runPending\(/.test(source)) return { ...result, source: `${source}${APPENDIX}`, shortCircuit: true };
   if (calls !== 1) throw new Error(`dondurma yarışı zorlaması: app.mjs'te açılışın runPending çağrısı ${calls} kez bulundu (1 beklenir) — zorlama bu kodla kullanılamaz`);
   return { ...result, source: `${source.replace(OPENING_CALL, OPENING_MARKED)}${APPENDIX}`, shortCircuit: true };
 }
