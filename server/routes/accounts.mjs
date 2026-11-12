@@ -1883,9 +1883,18 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // Alacak ve açılış — vadeli ya da vadesiz: vade yoksa belge günü, S1 —, stok veresiye, karşılıksız evrak). Tutar kuyruk kalanı (Mevcut Borç kartının tükettiği kısım
   // kartın taksitlerinde; şüpheli kuyruğundaki kısım hariç). Gün / durum: S67, S69 = A, BAŞ MİMAR Y3-1 / Y3-2 (lib/obligation-queue.mjs calendarState).
   // Netleşmemiş BORÇ yönlü bağsız ödeme (cari kartından müşteriye ödeme — T-09 müşteriye para iadesi; tedarikçiye avans) da açık borç kalemidir (EK-1 §1, gecikmiş ile
-  // aynı küme — değişmez (iii)); karşı yön (alınan avans) kalem değildir (bugünkü gibi). Çek / senet satırı cari kartı satırı olmadığından takvim kalemi olmaz (BİLİNEN SINIR).
+  // aynı küme — değişmez (iii)); karşı yön (alınan avans) kalem değildir (bugünkü gibi). Çek / senet ve banka kaynaklı verilen avans: tur 2b-2 (aşağıda).
+  // Ç5-B tur 2b-1 (DK-C5BT2A ORTA-2; S91 = A, EK-1 §1 (iii) "Vade Takip gecikmiş tutarı = gecikmiş"): ALACAK tarafındaki (carinin bize borcu) her açık kalem — gecikmiş
+  // (lib/obligation-queue.mjs overdue) yükümlülük rolüne bakmadan bütün alacak kalemlerini sayar. Önceden yalnız cari kartından yapılan ödeme alınıyordu: tedarikçiye
+  // faturasız Alış İadesi (stoktan; bağsız ödeme rolü — 2.4.5 KS7 (a)) ve karşılığı gelmemiş faturalı Alış İadesi (iade belgesi) gecikmişte sayılıp Vade Takip / zil /
+  // takvimde yoktu (nakit akışında "Faturasız Cari Alacağı"). Fatura kalemi faturanın, taksit / kart kalemleri kartın kaynağında (çek / senet ve banka
+  // kaynaklı verilen avans: tur 2b-2, RECEIVABLE_ITEM_ORIGINS).
   const DUE_ITEM_KINDS = new Set(["entry", "stock", "bounce"]);
-  const dueItemOf = item => item.lineId && ((DUE_ITEM_KINDS.has(item.kind) && item.due) || (item.kind === "payment" && item.side === "receivable" && item.origin === "account"));
+  // Ç5-B tur 2b-2 (S96 = A + S93, KULLANICI KARARI 10.11 13:20 AYNEN: "verilen, karşılığı gelmemiş avans takvim / zil / Vade Takip / nakit akışında AYRI KALEM ('Tahsil
+  // Edilecek Borç', ödeme gününde vadeli)"): çek / senetle (tedarikçiye verilen / ciro edilen evrak — cari satırı source 'cheque') ve banka kaynaklı (POS komisyon tahsili
+  // — source 'bank', origin 'pos-fee') verilen avans da kalemdir; gecikmiş toplamı her ekranda aynı (EK-1 §1 (iii)). Kalemin hareketi carinin defterinde (Kayda Git).
+  const RECEIVABLE_ITEM_ORIGINS = new Set(["account", "stock", "invoice", "cheque", "pos-fee"]);
+  const dueItemOf = item => item.lineId && ((DUE_ITEM_KINDS.has(item.kind) && item.due) || (item.side === "receivable" && item.kind !== "invoice" && RECEIVABLE_ITEM_ORIGINS.has(item.origin)));
   function openDueItems(day = today()) {
     const all = invoiceModule()?.allObligations ? invoiceModule().allObligations() : null;
     if (!all) return [];
@@ -1940,7 +1949,12 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     }
     return out;
   }
-  const dueItems = (day = today()) => openDueItems(day).filter(item => item.days <= DUE_WINDOW.aheadDays);
+  // Takvim / zil ufku KALEMİN GÜNÜNE göre (K6.3 "ufuk geçmiş + 7 gün"; S67 = A "L söz 30.06 ufkun dışında → kalem yok (ufuk söz gününe göre)"): gecikmiş borcun gün
+  // sayısı (days) vadeden ölçülür (S67), ufuk ise kalemin gösterildiği günden (söz varsa söz günü) — v2.4.9'da days söz gününden ölçüldüğü için ikisi aynıydı. Ç5-B tur 2b-2:
+  // önceden süzgeç days'e bakıyordu; ileri tarihli sözü olan gecikmiş borç (ve S91 = A ile vadesiz borcun sözü) ufkun dışındayken de takvimde / zilde çıkıyordu (kâhin
+  // c10 bg4, d10 l1).
+  const windowGap = (day, date) => Math.round((Date.parse(`${date}T00:00:00Z`) - Date.parse(`${day}T00:00:00Z`)) / 86_400_000);
+  const dueItems = (day = today()) => openDueItems(day).filter(item => windowGap(day, item.dueDate) <= DUE_WINDOW.aheadDays);
   // Takvim önbelleğinin anahtarı (routes/dues.mjs): satır sayısı / son damga / tutar toplamı + tarihli satırların tarihleri (durağan sahte saatte de
   // yalnız tarih değişince ayırt eder) + carilerin silinmesi / adı + mahsup fişleri (Kalan'ı değiştirir).
   const dueFingerprint = () => {

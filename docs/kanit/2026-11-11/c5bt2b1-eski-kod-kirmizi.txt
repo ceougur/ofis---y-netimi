@@ -1,0 +1,345 @@
+TAP version 13
+# fark testi: 64 fark (28 cari); yazılı olmayan 6, değeri değişen 0, kapanmış ama listede duran 4
+#   karar başına: S50 + B1 2 · S50 8 · karar (5) + S92 2 · S1 + S91 + B1 4 · S1 + S91 8 · S110 21 · karar (1) + EK-2B 32 2 · S91 + B1 2 · S91 4 · S93 + S96 + S91 + B1 2 · S93 + S96 + S91 4 · S93 + S96 + B1 1 · S93 + S96 2
+# Subtest: 2.5.0 Ç5-B — v2.4.9 GERÇEK verisinde sınıf sınıf fark testi (her fark karar numarasıyla)
+    # Subtest: fikstür bugünkü kodla: bütün farklar beklenen-farklar.json'da, değerleri aynı; listede kapanmış fark yok
+    not ok 1 - fikstür bugünkü kodla: bütün farklar beklenen-farklar.json'da, değerleri aynı; listede kapanmış fark yok
+      ---
+      duration_ms: 539.70587
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2b1-eski/test/tyk-fark-v249-250.test.mjs:23:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        beklenen-farklar.json'da YAZILI OLMAYAN fark (karar numarasıyla açıklanmadı):
+          TYKF T10 Cari Tahsilatıyla Ödenmiş Taksitsiz Mevcut Borç · kart1.durum: "active" → "done"
+          TYKF T10 Cari Tahsilatıyla Ödenmiş Taksitsiz Mevcut Borç · kart1.sekme: "active" → "done"
+          TYKF T3 Taksitsiz Mevcut Borç · kart1.durum: "active" → "done"
+          TYKF T3 Taksitsiz Mevcut Borç · kart1.sekme: "active" → "done"
+          TYKF T5 Taksitleri Silinmiş Stoktan Kart · kart1.durum: "active" → "done"
+          TYKF T5 Taksitleri Silinmiş Stoktan Kart · kart1.sekme: "active" → "done"
+        
+        6 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 6
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2b1-eski/test/tyk-fark-v249-250.test.mjs:64:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - 2.5.0 Ç5-B — v2.4.9 GERÇEK verisinde sınıf sınıf fark testi (her fark karar numarasıyla)
+  ---
+  duration_ms: 541.461157
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2b1-eski/test/tyk-fark-v249-250.test.mjs:22:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 Ç5-B tur 2b-1 — G-2: taksitsiz / eksik taksitli kart 'Bitti' olmaz (v2.4.9)
+    # Subtest: her kart türü × taksitsiz × (ödeme yok / kart tahsilatı / cari tahsilatı): durum ve Taksitler sekmesi v2.4.9 ile aynı
+    not ok 1 - her kart türü × taksitsiz × (ödeme yok / kart tahsilatı / cari tahsilatı): durum ve Taksitler sekmesi v2.4.9 ile aynı
+      ---
+      duration_ms: 246.38719
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2b1-eski/test/tyk-tur2b1-250.test.mjs:112:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Ayrı · taksitsiz · ödeme cari
+        + actual - expected
+        
+          [
+            0,
+        +   'done',
+        +   'done'
+        -   'active',
+        -   'active'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 0
+        1: 'active'
+        2: 'active'
+      actual:
+        0: 0
+        1: 'done'
+        2: 'done'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2b1-eski/test/tyk-tur2b1-250.test.mjs:127:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: taksitsiz Mevcut Borç kartı Aktif → taksit girilir: [500 Gecikti, 500], Gecikmiş Borç 500, 'Gecikmiş' sekmesi; elle Kartı Kapat → Kapalı
+    not ok 2 - taksitsiz Mevcut Borç kartı Aktif → taksit girilir: [500 Gecikti, 500], Gecikmiş Borç 500, 'Gecikmiş' sekmesi; elle Kartı Kapat → Kapalı
+      ---
+      duration_ms: 61.988592
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2b1-eski/test/tyk-tur2b1-250.test.mjs:132:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        açılır açılmaz Aktif (v2.4.9)
+        + actual - expected
+        
+          [
+        +   'done',
+        +   'done'
+        -   'active',
+        -   'active'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'active'
+        1: 'active'
+      actual:
+        0: 'done'
+        1: 'done'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2b1-eski/test/tyk-tur2b1-250.test.mjs:136:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: eksik taksitli kart: taksitler kartla ödenince Bitti (v2.4.9); Mevcut Borç kartında taksitler cari tahsilatıyla kapanınca Aktif (taksitlendirilmemiş kısım var — v2.4.9 Gecikti, S50 farkı)
+    not ok 3 - eksik taksitli kart: taksitler kartla ödenince Bitti (v2.4.9); Mevcut Borç kartında taksitler cari tahsilatıyla kapanınca Aktif (taksitlendirilmemiş kısım var — v2.4.9 Gecikti, S50 farkı)
+      ---
+      duration_ms: 179.333082
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2b1-eski/test/tyk-tur2b1-250.test.mjs:149:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        taksit cari tahsilatıyla kapandı (S50), taksitlendirilmemiş 500 için kart Aktif
+        + actual - expected
+        
+          [
+            [
+              [
+                0,
+                'paid'
+              ]
+            ],
+        +   'done',
+        +   'done'
+        -   'active',
+        -   'active'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0:
+            0: 0
+            1: 'paid'
+        1: 'active'
+        2: 'active'
+      actual:
+        0:
+          0:
+            0: 0
+            1: 'paid'
+        1: 'done'
+        2: 'done'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2b1-eski/test/tyk-tur2b1-250.test.mjs:162:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 2 - 2.5.0 Ç5-B tur 2b-1 — G-2: taksitsiz / eksik taksitli kart 'Bitti' olmaz (v2.4.9)
+  ---
+  duration_ms: 952.914352
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2b1-eski/test/tyk-tur2b1-250.test.mjs:83:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 Ç5-B tur 2b-1 — ORTA-1: çek / senedin Kapatılacak Fatura bağı × kilit (karar (3)) = cari tahsilatı
+    # Subtest: kurulum / değiştirme / tutar / vade / kaldırma: çek ile cari tahsilatı aynı Gecikmiş Borç; kilitten sonra kurulan çek bağı = yeni evrak
+    not ok 1 - kurulum / değiştirme / tutar / vade / kaldırma: çek ile cari tahsilatı aynı Gecikmiş Borç; kilitten sonra kurulan çek bağı = yeni evrak
+      ---
+      duration_ms: 1633.589635
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2b1-eski/test/tyk-tur2b1-250.test.mjs:179:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kur: çek 300 · cari tahsilatı 0 (beklenen 0)
+        + actual - expected
+        
+          [
+        +   300,
+            0,
+        -   0
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 0
+        1: 0
+      actual:
+        0: 300
+        1: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2b1-eski/test/tyk-tur2b1-250.test.mjs:216:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: D05: bağı kilitten önce ve sonra değiştiren düzeltme — son düzeltmenin anı (çek ve cari tahsilatı): Gecikmiş Borç 0
+    not ok 2 - D05: bağı kilitten önce ve sonra değiştiren düzeltme — son düzeltmenin anı (çek ve cari tahsilatı): Gecikmiş Borç 0
+      ---
+      duration_ms: 559.045764
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2b1-eski/test/tyk-tur2b1-250.test.mjs:237:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        çek: Gecikmiş Borç 0
+        
+        300 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 300
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2b1-eski/test/tyk-tur2b1-250.test.mjs:258:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: D06: kart tahsilatının 'Hangi Taksite' bağı kilitten SONRA düzeltmeyle kurulunca kilit sayılır: taksitler [0, 0], Borç Yaz açık
+    ok 3 - D06: kart tahsilatının 'Hangi Taksite' bağı kilitten SONRA düzeltmeyle kurulunca kilit sayılır: taksitler [0, 0], Borç Yaz açık
+      ---
+      duration_ms: 409.891397
+      type: 'test'
+      ...
+    1..3
+not ok 3 - 2.5.0 Ç5-B tur 2b-1 — ORTA-1: çek / senedin Kapatılacak Fatura bağı × kilit (karar (3)) = cari tahsilatı
+  ---
+  duration_ms: 2981.220572
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2b1-eski/test/tyk-tur2b1-250.test.mjs:173:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 Ç5-B tur 2b-1 — ORTA-2: tedarikçideki Alış İadesi Vade Takip / zil / nakit akışında (gecikmiş = ekranlar)
+    # Subtest: stoktan / kısmen netleşen / faturalı Alış İadesi: gecikmiş = Vade Takip (her süzgeç) = zil = nakit akışı
+    not ok 1 - stoktan / kısmen netleşen / faturalı Alış İadesi: gecikmiş = Vade Takip (her süzgeç) = zil = nakit akışı
+      ---
+      duration_ms: 170.63702
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2b1-eski/test/tyk-tur2b1-250.test.mjs:312:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Tur2b1 İade Stoktan: Vade Takip kalemi
+        + actual - expected
+        
+        + []
+        - [
+        -   [
+        -     'account',
+        -     'Tahsil Edilecek Borç',
+        -     300,
+        -     'in'
+        -   ]
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'account'
+          1: 'Tahsil Edilecek Borç'
+          2: 300
+          3: 'in'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2b1-eski/test/tyk-tur2b1-250.test.mjs:331:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 4 - 2.5.0 Ç5-B tur 2b-1 — ORTA-2: tedarikçideki Alış İadesi Vade Takip / zil / nakit akışında (gecikmiş = ekranlar)
+  ---
+  duration_ms: 571.561769
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2b1-eski/test/tyk-tur2b1-250.test.mjs:306:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 Ç5-B tur 2b-1 — G-1: kart yanıtı / okuması tek cari kuyruğundan = bütün carilerin kuyruğu; D10 / D11 Taksit İadesi
+    # Subtest: 15 yazım yolu (yönetici + personel): yanıt = okuma = liste satırı
+    ok 1 - 15 yazım yolu (yönetici + personel): yanıt = okuma = liste satırı
+      ---
+      duration_ms: 504.481183
+      type: 'test'
+      ...
+    # Subtest: cariler arası: taksite sayılıp tedarikçiye ciro edilen çek ve carisi değiştirilen tahsilat — iki carinin kartı da okuma = liste satırı
+    ok 2 - cariler arası: taksite sayılıp tedarikçiye ciro edilen çek ve carisi değiştirilen tahsilat — iki carinin kartı da okuma = liste satırı
+      ---
+      duration_ms: 147.609587
+      type: 'test'
+      ...
+    # Subtest: D10 / D11: karşılıksız çekle kartın net tahsilatı eksiye düşünce 'Taksit İadesi' 300 Vade Takip / zilde, kuyruk kalanı 900, Gecikmiş Borç 300
+    ok 3 - D10 / D11: karşılıksız çekle kartın net tahsilatı eksiye düşünce 'Taksit İadesi' 300 Vade Takip / zilde, kuyruk kalanı 900, Gecikmiş Borç 300
+      ---
+      duration_ms: 106.506643
+      type: 'test'
+      ...
+    1..3
+ok 5 - 2.5.0 Ç5-B tur 2b-1 — G-1: kart yanıtı / okuması tek cari kuyruğundan = bütün carilerin kuyruğu; D10 / D11 Taksit İadesi
+  ---
+  duration_ms: 1152.476892
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç5-B tur 2b-1 — D01–D03: durağan saatte iz kolonları (önbellek = baştan)
+    # Subtest: D01 'Hangi Taksite', D02 taslak tutarı, D03 çek bağı: değişiklikten sonra önbellek bayat değil
+    ok 1 - D01 'Hangi Taksite', D02 taslak tutarı, D03 çek bağı: değişiklikten sonra önbellek bayat değil
+      ---
+      duration_ms: 183.344388
+      type: 'test'
+      ...
+    1..1
+ok 6 - 2.5.0 Ç5-B tur 2b-1 — D01–D03: durağan saatte iz kolonları (önbellek = baştan)
+  ---
+  duration_ms: 581.301713
+  type: 'suite'
+  ...
+1..6
+# tests 12
+# suites 6
+# pass 5
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7551.986679

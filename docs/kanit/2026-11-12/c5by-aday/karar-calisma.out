@@ -1,0 +1,1419 @@
+{
+ "S95": {
+  "bakiye": 10000,
+  "gecikmisKart": 6000,
+  "gecikmisKartAdet": 1,
+  "eskiGeciken": 0,
+  "gecikmisListe": 6000,
+  "vade": [
+   "account:Tahsil Edilecek Borç:6000@2026-09-22",
+   "invoice:Satış faturası FIS2026000000009 (kalan):4000@2026-10-30"
+  ],
+  "vadeGecikmis": 6000,
+  "zil": [
+   "account:Tahsil Edilecek Borç:6000:overdue"
+  ],
+  "kalan": [],
+  "faturalar": [
+   {
+    "no": "FIS2026000000009",
+    "state": "open",
+    "open": 10000,
+    "closers": []
+   },
+   {
+    "no": "ALS17944892651351",
+    "state": "paid",
+    "open": 0,
+    "closers": [
+     "Otomatik (vadesi en önce gelen):6000@2026-09-22"
+    ]
+   }
+  ],
+  "kartlar": [],
+  "kalanNot": [],
+  "kuyruk": {
+   "kalemler": [
+    "payment|+|2026-09-22|6000→6000",
+    "invoice|+|2026-10-30|10000→4000"
+   ],
+   "sigma": 10000,
+   "gecikmis": 6000,
+   "kapsama": []
+  },
+  "nakit": [
+   "account:Tahsil Edilecek Borç:in:6000@2026-09-22",
+   "invoice:Satış faturası FIS2026000000009 (kalan):in:4000@2026-10-30"
+  ]
+ },
+ "S97_ayni_gun": {
+  "bakiye": -300,
+  "gecikmisKart": 0,
+  "gecikmisKartAdet": 0,
+  "eskiGeciken": 0,
+  "gecikmisListe": 0,
+  "vade": [],
+  "vadeGecikmis": 0,
+  "zil": [],
+  "kalan": [
+   "debt:1000→0",
+   "credit:300→0"
+  ],
+  "faturalar": [],
+  "kartlar": [],
+  "kalanNot": [
+   "B:1000→0",
+   "Y:300→0"
+  ],
+  "kuyruk": {
+   "kalemler": [
+    "payment|-|2026-10-15|1000→300"
+   ],
+   "sigma": -300,
+   "gecikmis": 0,
+   "kapsama": []
+  },
+  "nakit": []
+ },
+ "S97_ters_yazim": {
+  "bakiye": -300,
+  "gecikmisKart": 0,
+  "gecikmisKartAdet": 0,
+  "eskiGeciken": 0,
+  "gecikmisListe": 0,
+  "vade": [],
+  "vadeGecikmis": 0,
+  "zil": [],
+  "kalan": [
+   "credit:300→0",
+   "debt:1000→0"
+  ],
+  "faturalar": [],
+  "kartlar": [],
+  "kalanNot": [
+   "Y:300→0",
+   "B:1000→0"
+  ],
+  "kuyruk": {
+   "kalemler": [
+    "payment|-|2026-10-15|1000→300"
+   ],
+   "sigma": -300,
+   "gecikmis": 0,
+   "kapsama": []
+  },
+  "nakit": []
+ },
+ "S102": {
+  "bakiye": -600,
+  "gecikmisKart": 0,
+  "gecikmisKartAdet": 0,
+  "eskiGeciken": 0,
+  "gecikmisListe": 0,
+  "vade": [],
+  "vadeGecikmis": 0,
+  "zil": [],
+  "kalan": [
+   "debt:1000→0",
+   "credit:300→0",
+   "credit:300→0"
+  ],
+  "faturalar": [],
+  "kartlar": [],
+  "kalanNot": [
+   "B:1000→0",
+   "X:300→0",
+   "Y:300→0"
+  ],
+  "kuyruk": {
+   "kalemler": [
+    "payment|-|2026-10-12|1000→600"
+   ],
+   "sigma": -600,
+   "gecikmis": 0,
+   "kapsama": []
+  },
+  "nakit": []
+ },
+ "S103": {
+  "bakiye": -300,
+  "gecikmisKart": 0,
+  "gecikmisKartAdet": 0,
+  "eskiGeciken": 0,
+  "gecikmisListe": 0,
+  "vade": [],
+  "vadeGecikmis": 0,
+  "zil": [],
+  "kalan": [],
+  "faturalar": [
+   {
+    "no": "ALS17944892654692",
+    "state": "paid",
+    "open": 0,
+    "closers": [
+     "Otomatik (vadesi en önce gelen):300@2026-09-30"
+    ]
+   }
+  ],
+  "kartlar": [],
+  "kalanNot": [],
+  "kuyruk": {
+   "kalemler": [
+    "payment|-|2026-10-09|500→300"
+   ],
+   "sigma": -300,
+   "gecikmis": 0,
+   "kapsama": []
+  },
+  "nakit": []
+ },
+ "S96_nakit_tedarikci": {
+  "bakiye": 700,
+  "gecikmisKart": 700,
+  "gecikmisKartAdet": 1,
+  "eskiGeciken": 0,
+  "gecikmisListe": 700,
+  "vade": [
+   "account:Tahsil Edilecek Borç:700@2026-10-10"
+  ],
+  "vadeGecikmis": 700,
+  "zil": [
+   "account:Tahsil Edilecek Borç:700:overdue"
+  ],
+  "kalan": [],
+  "faturalar": [],
+  "kartlar": [],
+  "kalanNot": [],
+  "kuyruk": {
+   "kalemler": [
+    "payment|+|2026-10-10|700→700"
+   ],
+   "sigma": 700,
+   "gecikmis": 700,
+   "kapsama": []
+  },
+  "nakit": [
+   "account:Tahsil Edilecek Borç:in:700@2026-10-10"
+  ]
+ },
+ "S96_cek_tedarikci": {
+  "bakiye": 700,
+  "gecikmisKart": 700,
+  "gecikmisKartAdet": 1,
+  "eskiGeciken": 0,
+  "gecikmisListe": 700,
+  "vade": [
+   "cheque:Verilen çek · No SON-1:700@2026-11-19"
+  ],
+  "vadeGecikmis": 0,
+  "zil": [],
+  "kalan": [],
+  "faturalar": [],
+  "kartlar": [],
+  "kalanNot": [],
+  "kuyruk": {
+   "kalemler": [
+    "payment|+|2026-10-10|700→700"
+   ],
+   "sigma": 700,
+   "gecikmis": 700,
+   "kapsama": []
+  },
+  "nakit": [
+   "cheque:Verilen çek · No SON-1:out:700@2026-11-19",
+   "unbilled:Faturasız Cari Alacağı:in:700@2026-10-10"
+  ]
+ },
+ "S96_musteri": {
+  "bakiye": 250,
+  "gecikmisKart": 250,
+  "gecikmisKartAdet": 1,
+  "eskiGeciken": 0,
+  "gecikmisListe": 250,
+  "vade": [
+   "account:Tahsil Edilecek Borç:250@2026-10-17"
+  ],
+  "vadeGecikmis": 250,
+  "zil": [
+   "account:Tahsil Edilecek Borç:250:overdue"
+  ],
+  "kalan": [],
+  "faturalar": [],
+  "kartlar": [],
+  "kalanNot": [],
+  "kuyruk": {
+   "kalemler": [
+    "payment|+|2026-10-17|250→250"
+   ],
+   "sigma": 250,
+   "gecikmis": 250,
+   "kapsama": []
+  },
+  "nakit": [
+   "account:Tahsil Edilecek Borç:in:250@2026-10-17"
+  ]
+ },
+ "S98": {
+  "bakiye": 150,
+  "gecikmisKart": 50,
+  "gecikmisKartAdet": 1,
+  "eskiGeciken": 0,
+  "gecikmisListe": 50,
+  "vade": [
+   "account:Tahsil Edilecek Borç:100@2026-11-19",
+   "account:Tahsil Edilecek Borç:50@2026-09-10"
+  ],
+  "vadeGecikmis": 50,
+  "zil": [
+   "account:Tahsil Edilecek Borç:50:overdue"
+  ],
+  "kalan": [
+   "debt:100→100"
+  ],
+  "faturalar": [],
+  "kartlar": [],
+  "kalanNot": [
+   "B:100→100"
+  ],
+  "kuyruk": {
+   "kalemler": [
+    "payment|+|2026-09-10|200→50",
+    "entry|+|2026-11-19|100→100"
+   ],
+   "sigma": 150,
+   "gecikmis": 50,
+   "kapsama": []
+  },
+  "nakit": [
+   "account:Tahsil Edilecek Borç:in:100@2026-11-19",
+   "account:Tahsil Edilecek Borç:in:50@2026-09-10"
+  ]
+ },
+ "S104": {
+  "bakiye": -400,
+  "gecikmisKart": 0,
+  "gecikmisKartAdet": 0,
+  "eskiGeciken": 0,
+  "gecikmisListe": 0,
+  "vade": [
+   "account:Ödenecek Borç:200@2026-11-19"
+  ],
+  "vadeGecikmis": 0,
+  "zil": [],
+  "kalan": [
+   "credit:200→200"
+  ],
+  "faturalar": [],
+  "kartlar": [],
+  "kalanNot": [
+   "Y:200→200"
+  ],
+  "kuyruk": {
+   "kalemler": [
+    "payment|-|2026-09-10|500→200",
+    "entry|-|2026-11-19|200→200"
+   ],
+   "sigma": -400,
+   "gecikmis": 0,
+   "kapsama": []
+  },
+  "nakit": [
+   "account:Ödenecek Borç:out:200@2026-11-19"
+  ]
+ },
+ "S105": {
+  "bakiye": 250,
+  "gecikmisKart": 250,
+  "gecikmisKartAdet": 2,
+  "eskiGeciken": 0,
+  "gecikmisListe": 250,
+  "vade": [
+   "account:Tahsil Edilecek Borç:50@2026-09-30"
+  ],
+  "vadeGecikmis": 50,
+  "zil": [
+   "account:Tahsil Edilecek Borç:50:overdue"
+  ],
+  "kalan": [],
+  "faturalar": [
+   {
+    "no": "ALS17944892658773",
+    "state": "paid",
+    "open": 0,
+    "closers": [
+     "Otomatik (vadesi en önce gelen):250@2026-09-30"
+    ]
+   }
+  ],
+  "kartlar": [],
+  "kalanNot": [],
+  "kuyruk": {
+   "kalemler": [
+    "payment|+|2026-09-30|300→50",
+    "stock|+|2026-10-04|200→200"
+   ],
+   "sigma": 250,
+   "gecikmis": 250,
+   "kapsama": []
+  },
+  "nakit": [
+   "account:Tahsil Edilecek Borç:in:50@2026-09-30",
+   "unbilled:Faturasız Cari Alacağı:in:200@2026-10-04"
+  ]
+ },
+ "S99": {
+  "bakiye": 300,
+  "gecikmisKart": 300,
+  "gecikmisKartAdet": 1,
+  "eskiGeciken": 150,
+  "gecikmisListe": 300,
+  "vade": [
+   "invoice:Satış faturası FIS2026000000011 (kalan):300@2026-09-25"
+  ],
+  "vadeGecikmis": 300,
+  "zil": [
+   "invoice:Tahsil Edilecek Fatura FIS2026000000011:300:overdue"
+  ],
+  "kalan": [],
+  "faturalar": [
+   {
+    "no": "FIS2026000000010",
+    "state": "overdue",
+    "open": 300,
+    "closers": []
+   },
+   {
+    "no": "FIS2026000000011",
+    "state": "overdue",
+    "open": 300,
+    "closers": [
+     "Otomatik (vadesi en önce gelen):200@2026-09-10"
+    ]
+   }
+  ],
+  "kartlar": [
+   {
+    "state": "done",
+    "items": [
+     0,
+     0
+    ],
+    "own": 300,
+    "queue": 0,
+    "accountPaid": 300
+   }
+  ],
+  "kalanNot": [],
+  "kuyruk": {
+   "kalemler": [
+    "invoice|+|2026-09-25|500→300"
+   ],
+   "sigma": 300,
+   "gecikmis": 300,
+   "kapsama": []
+  },
+  "nakit": [
+   "invoice:Satış faturası FIS2026000000011 (kalan):in:300@2026-09-25"
+  ],
+  "kartAyrinti": [
+   {
+    "durum": "done",
+    "taksitKalan": [
+     0,
+     0
+    ],
+    "taksitDurum": [
+     "paid",
+     "paid"
+    ],
+    "kendiKalan": 300,
+    "kuyrukKalan": 0,
+    "kendiOdenen": 0,
+    "cariPayi": 300,
+    "geciken": 0,
+    "gecikenAdet": 0
+   }
+  ],
+  "Bplan": "plan-db07a48c-4725-4862-9b83-dce95c928f40"
+ },
+ "S101": {
+  "kartTahsilati": 200,
+  "kartOncesi": {
+   "kart": [
+    {
+     "durum": "done",
+     "taksitKalan": [
+      0,
+      0
+     ],
+     "taksitDurum": [
+      "paid",
+      "paid"
+     ],
+     "kendiKalan": 600,
+     "kuyrukKalan": 0,
+     "kendiOdenen": 0,
+     "cariPayi": 0,
+     "geciken": 0,
+     "gecikenAdet": 0
+    }
+   ],
+   "gecikmis": 0,
+   "zil": []
+  },
+  "bakiye": -200,
+  "gecikmisKart": 0,
+  "gecikmisKartAdet": 0,
+  "eskiGeciken": 0,
+  "gecikmisListe": 0,
+  "vade": [],
+  "vadeGecikmis": 0,
+  "zil": [],
+  "kalan": [
+   "debt:500→0"
+  ],
+  "faturalar": [],
+  "kartlar": [
+   {
+    "state": "done",
+    "items": [
+     0,
+     0
+    ],
+    "own": 300,
+    "queue": 0,
+    "accountPaid": 0
+   }
+  ],
+  "kalanNot": [
+   "B500:500→0"
+  ],
+  "kuyruk": {
+   "kalemler": [],
+   "sigma": 0,
+   "gecikmis": 0,
+   "kapsama": [
+    "undefined:tük100/kap600:avansundefined:kırpundefined"
+   ]
+  },
+  "nakit": [],
+  "kartAyrinti": [
+   {
+    "durum": "done",
+    "taksitKalan": [
+     0,
+     0
+    ],
+    "taksitDurum": [
+     "paid",
+     "paid"
+    ],
+    "kendiKalan": 300,
+    "kuyrukKalan": 0,
+    "kendiOdenen": 300,
+    "cariPayi": 0,
+    "geciken": 0,
+    "gecikenAdet": 0
+   }
+  ]
+ },
+ "S110_elle": {
+  "kart": 200,
+  "bakiye": 1500,
+  "gecikmisKart": 900,
+  "gecikmisKartAdet": 2,
+  "eskiGeciken": 300,
+  "gecikmisListe": 900,
+  "vade": [
+   "account:Tahsil Edilecek Borç:600@2026-09-05",
+   "plan:1. taksit:300@2026-10-10",
+   "plan:2. taksit:300@2026-11-10",
+   "plan:3. taksit:300@2026-12-10"
+  ],
+  "vadeGecikmis": 900,
+  "zil": [
+   "account:Tahsil Edilecek Borç:600:overdue",
+   "plan:1. taksit:300:overdue"
+  ],
+  "kalan": [
+   "debt:900→900"
+  ],
+  "faturalar": [
+   {
+    "no": "FIS2026000000002",
+    "state": "overdue",
+    "open": 600,
+    "closers": []
+   }
+  ],
+  "kartlar": [
+   {
+    "state": "overdue",
+    "items": [
+     300,
+     300,
+     300
+    ],
+    "own": 900,
+    "queue": 900,
+    "accountPaid": 0
+   }
+  ],
+  "kalanNot": [
+   "X900:900→900"
+  ],
+  "kuyruk": {
+   "kalemler": [
+    "entry|+|2026-09-05|900→600",
+    "installment|+|2026-10-10|300→300",
+    "installment|+|2026-11-10|300→300",
+    "installment|+|2026-12-10|300→300"
+   ],
+   "sigma": 1500,
+   "gecikmis": 900,
+   "kapsama": [
+    "undefined:tük900/kap900:avansundefined:kırpundefined"
+   ]
+  },
+  "nakit": [
+   "account:Tahsil Edilecek Borç:in:600@2026-09-05",
+   "plan:1. taksit:in:300@2026-10-10",
+   "plan:2. taksit:in:300@2026-11-10",
+   "plan:3. taksit:in:300@2026-12-10"
+  ],
+  "kartAyrinti": [
+   {
+    "durum": "overdue",
+    "taksitKalan": [
+     300,
+     300,
+     300
+    ],
+    "taksitDurum": [
+     "overdue",
+     "open",
+     "open"
+    ],
+    "kendiKalan": 900,
+    "kuyrukKalan": 900,
+    "kendiOdenen": 0,
+    "cariPayi": 0,
+    "geciken": 300,
+    "gecikenAdet": 1,
+    "kuyrukSiradaki": 300
+   }
+  ]
+ },
+ "S110_stok": {
+  "bakiye": 1500,
+  "gecikmisKart": 1500,
+  "gecikmisKartAdet": 2,
+  "eskiGeciken": 500,
+  "gecikmisListe": 1500,
+  "vade": [
+   "account:Tahsil Edilecek Borç:1000@2026-09-30",
+   "account:Tahsil Edilecek Borç:500@2026-09-20"
+  ],
+  "vadeGecikmis": 1500,
+  "zil": [
+   "account:Tahsil Edilecek Borç:1000:overdue",
+   "account:Tahsil Edilecek Borç:500:overdue"
+  ],
+  "kalan": [
+   "debt:500→500"
+  ],
+  "faturalar": [],
+  "kartlar": [
+   {
+    "state": "done",
+    "items": [
+     0,
+     0
+    ],
+    "own": 1000,
+    "queue": 0,
+    "accountPaid": 0
+   }
+  ],
+  "kalanNot": [
+   "B500:500→500"
+  ],
+  "kuyruk": {
+   "kalemler": [
+    "entry|+|2026-09-20|500→500",
+    "stock|+|2026-09-30|1000→1000"
+   ],
+   "sigma": 1500,
+   "gecikmis": 1500,
+   "kapsama": [
+    "undefined:tük0/kap1000:avansundefined:kırpundefined"
+   ]
+  },
+  "nakit": [
+   "account:Tahsil Edilecek Borç:in:1000@2026-09-30",
+   "account:Tahsil Edilecek Borç:in:500@2026-09-20"
+  ],
+  "kartAyrinti": [
+   {
+    "durum": "done",
+    "taksitKalan": [
+     0,
+     0
+    ],
+    "taksitDurum": [
+     "paid",
+     "paid"
+    ],
+    "kendiKalan": 1000,
+    "kuyrukKalan": 0,
+    "kendiOdenen": 0,
+    "cariPayi": 0,
+    "geciken": 0,
+    "gecikenAdet": 0
+   }
+  ]
+ },
+ "S120": {
+  "kart": 200,
+  "bakiye": 1800,
+  "gecikmisKart": 1200,
+  "gecikmisKartAdet": 3,
+  "eskiGeciken": 300,
+  "gecikmisListe": 1200,
+  "vade": [
+   "account:Tahsil Edilecek Borç:200@2026-09-05",
+   "account:Tahsil Edilecek Borç:700@2026-09-07",
+   "plan:1. taksit:300@2026-10-10",
+   "plan:2. taksit:300@2026-11-10",
+   "plan:3. taksit:300@2026-12-10"
+  ],
+  "vadeGecikmis": 1200,
+  "zil": [
+   "account:Tahsil Edilecek Borç:200:overdue",
+   "account:Tahsil Edilecek Borç:700:overdue",
+   "plan:1. taksit:300:overdue"
+  ],
+  "kalan": [
+   "debt:500→500",
+   "debt:700→700"
+  ],
+  "faturalar": [
+   {
+    "no": "FIS2026000000003",
+    "state": "overdue",
+    "open": 600,
+    "closers": []
+   }
+  ],
+  "kartlar": [
+   {
+    "state": "overdue",
+    "items": [
+     300,
+     300,
+     300
+    ],
+    "own": 900,
+    "queue": 900,
+    "accountPaid": 0
+   }
+  ],
+  "kalanNot": [
+   "X500:500→500",
+   "Y700:700→700"
+  ],
+  "kuyruk": {
+   "kalemler": [
+    "entry|+|2026-09-05|500→200",
+    "entry|+|2026-09-07|700→700",
+    "installment|+|2026-10-10|300→300",
+    "installment|+|2026-11-10|300→300",
+    "installment|+|2026-12-10|300→300"
+   ],
+   "sigma": 1800,
+   "gecikmis": 1200,
+   "kapsama": [
+    "undefined:tük900/kap900:avansundefined:kırpundefined"
+   ]
+  },
+  "nakit": [
+   "account:Tahsil Edilecek Borç:in:200@2026-09-05",
+   "account:Tahsil Edilecek Borç:in:700@2026-09-07",
+   "plan:1. taksit:in:300@2026-10-10",
+   "plan:2. taksit:in:300@2026-11-10",
+   "plan:3. taksit:in:300@2026-12-10"
+  ],
+  "kartAyrinti": [
+   {
+    "durum": "overdue",
+    "taksitKalan": [
+     300,
+     300,
+     300
+    ],
+    "taksitDurum": [
+     "overdue",
+     "open",
+     "open"
+    ],
+    "kendiKalan": 900,
+    "kuyrukKalan": 900,
+    "kendiOdenen": 0,
+    "cariPayi": 0,
+    "geciken": 300,
+    "gecikenAdet": 1,
+    "kuyrukSiradaki": 300
+   }
+  ]
+ },
+ "S122": {
+  "kart": 200,
+  "bakiye": 1500,
+  "gecikmisKart": 900,
+  "gecikmisKartAdet": 2,
+  "eskiGeciken": 0,
+  "gecikmisListe": 900,
+  "vade": [
+   "account:Tahsil Edilecek Borç:200@2026-09-05",
+   "account:Tahsil Edilecek Borç:700@2026-09-07",
+   "plan:2. taksit:300@2026-11-10",
+   "plan:3. taksit:300@2026-12-10"
+  ],
+  "vadeGecikmis": 900,
+  "zil": [
+   "account:Tahsil Edilecek Borç:200:overdue",
+   "account:Tahsil Edilecek Borç:700:overdue"
+  ],
+  "kalan": [
+   "debt:500→500",
+   "debt:700→700"
+  ],
+  "faturalar": [
+   {
+    "no": "FIS2026000000004",
+    "state": "overdue",
+    "open": 300,
+    "closers": [
+     "Bağlı:300@2026-10-18"
+    ]
+   }
+  ],
+  "kartlar": [
+   {
+    "state": "active",
+    "items": [
+     0,
+     300,
+     300
+    ],
+    "own": 600,
+    "queue": 600,
+    "accountPaid": 0
+   }
+  ],
+  "kalanNot": [
+   "X500:500→500",
+   "Y700:700→700"
+  ],
+  "kuyruk": {
+   "kalemler": [
+    "entry|+|2026-09-05|500→200",
+    "entry|+|2026-09-07|700→700",
+    "installment|+|2026-11-10|300→300",
+    "installment|+|2026-12-10|300→300"
+   ],
+   "sigma": 1500,
+   "gecikmis": 900,
+   "kapsama": [
+    "undefined:tük900/kap900:avansundefined:kırpundefined"
+   ]
+  },
+  "nakit": [
+   "account:Tahsil Edilecek Borç:in:200@2026-09-05",
+   "account:Tahsil Edilecek Borç:in:700@2026-09-07",
+   "plan:2. taksit:in:300@2026-11-10",
+   "plan:3. taksit:in:300@2026-12-10"
+  ],
+  "kartAyrinti": [
+   {
+    "durum": "active",
+    "taksitKalan": [
+     0,
+     300,
+     300
+    ],
+    "taksitDurum": [
+     "paid",
+     "open",
+     "open"
+    ],
+    "kendiKalan": 600,
+    "kuyrukKalan": 600,
+    "kendiOdenen": 300,
+    "cariPayi": 0,
+    "geciken": 0,
+    "gecikenAdet": 0,
+    "kuyrukSiradaki": 300
+   }
+  ]
+ },
+ "S120_b_kart600": {
+  "kart": 200,
+  "bakiye": 1500,
+  "gecikmisKart": 1200,
+  "gecikmisKartAdet": 3,
+  "eskiGeciken": 300,
+  "gecikmisListe": 1200,
+  "vade": [
+   "account:Tahsil Edilecek Borç:300@2026-08-31",
+   "invoice:Satış faturası FIS2026000000007:600@2026-09-05",
+   "plan:1. taksit:300@2026-10-10",
+   "plan:2. taksit:300@2026-11-10"
+  ],
+  "vadeGecikmis": 1200,
+  "zil": [
+   "account:Tahsil Edilecek Borç:300:overdue",
+   "invoice:Tahsil Edilecek Fatura FIS2026000000007:600:overdue",
+   "plan:1. taksit:300:overdue"
+  ],
+  "kalan": [
+   "debt:900→900"
+  ],
+  "faturalar": [
+   {
+    "no": "FIS2026000000007",
+    "state": "overdue",
+    "open": 600,
+    "closers": []
+   }
+  ],
+  "kartlar": [
+   {
+    "state": "overdue",
+    "items": [
+     300,
+     300
+    ],
+    "own": 600,
+    "queue": 600,
+    "accountPaid": 0
+   }
+  ],
+  "kalanNot": [
+   "X900:900→900"
+  ],
+  "kuyruk": {
+   "kalemler": [
+    "entry|+|2026-08-31|900→300",
+    "invoice|+|2026-09-05|600→600",
+    "installment|+|2026-10-10|300→300",
+    "installment|+|2026-11-10|300→300"
+   ],
+   "sigma": 1500,
+   "gecikmis": 1200,
+   "kapsama": [
+    "undefined:tük600/kap600:avansundefined:kırpundefined"
+   ]
+  },
+  "nakit": [
+   "account:Tahsil Edilecek Borç:in:300@2026-08-31",
+   "invoice:Satış faturası FIS2026000000007:in:600@2026-09-05",
+   "plan:1. taksit:in:300@2026-10-10",
+   "plan:2. taksit:in:300@2026-11-10"
+  ],
+  "kartAyrinti": [
+   {
+    "durum": "overdue",
+    "taksitKalan": [
+     300,
+     300
+    ],
+    "taksitDurum": [
+     "overdue",
+     "open"
+    ],
+    "kendiKalan": 600,
+    "kuyrukKalan": 600,
+    "kendiOdenen": 0,
+    "cariPayi": 0,
+    "geciken": 300,
+    "gecikenAdet": 1,
+    "kuyrukSiradaki": 300
+   }
+  ]
+ },
+ "S120_c_kart500": {
+  "kart": 200,
+  "bakiye": 1500,
+  "gecikmisKart": 1250,
+  "gecikmisKartAdet": 3,
+  "eskiGeciken": 250,
+  "gecikmisListe": 1250,
+  "vade": [
+   "account:Tahsil Edilecek Borç:400@2026-08-31",
+   "invoice:Satış faturası FIS2026000000008:600@2026-09-05",
+   "plan:1. taksit:250@2026-10-10",
+   "plan:2. taksit:250@2026-11-10"
+  ],
+  "vadeGecikmis": 1250,
+  "zil": [
+   "account:Tahsil Edilecek Borç:400:overdue",
+   "invoice:Tahsil Edilecek Fatura FIS2026000000008:600:overdue",
+   "plan:1. taksit:250:overdue"
+  ],
+  "kalan": [
+   "debt:900→900"
+  ],
+  "faturalar": [
+   {
+    "no": "FIS2026000000008",
+    "state": "overdue",
+    "open": 600,
+    "closers": []
+   }
+  ],
+  "kartlar": [
+   {
+    "state": "overdue",
+    "items": [
+     250,
+     250
+    ],
+    "own": 500,
+    "queue": 500,
+    "accountPaid": 0
+   }
+  ],
+  "kalanNot": [
+   "X900:900→900"
+  ],
+  "kuyruk": {
+   "kalemler": [
+    "entry|+|2026-08-31|900→400",
+    "invoice|+|2026-09-05|600→600",
+    "installment|+|2026-10-10|250→250",
+    "installment|+|2026-11-10|250→250"
+   ],
+   "sigma": 1500,
+   "gecikmis": 1250,
+   "kapsama": [
+    "undefined:tük500/kap500:avansundefined:kırpundefined"
+   ]
+  },
+  "nakit": [
+   "account:Tahsil Edilecek Borç:in:400@2026-08-31",
+   "invoice:Satış faturası FIS2026000000008:in:600@2026-09-05",
+   "plan:1. taksit:in:250@2026-10-10",
+   "plan:2. taksit:in:250@2026-11-10"
+  ],
+  "kartAyrinti": [
+   {
+    "durum": "overdue",
+    "taksitKalan": [
+     250,
+     250
+    ],
+    "taksitDurum": [
+     "overdue",
+     "open"
+    ],
+    "kendiKalan": 500,
+    "kuyrukKalan": 500,
+    "kendiOdenen": 0,
+    "cariPayi": 0,
+    "geciken": 250,
+    "gecikenAdet": 1,
+    "kuyrukSiradaki": 250
+   }
+  ]
+ },
+ "S123_sinir": {
+  "kart": 200,
+  "bakiye": 900,
+  "gecikmisKart": 650,
+  "gecikmisKartAdet": 3,
+  "eskiGeciken": 250,
+  "gecikmisListe": 650,
+  "vade": [
+   "account:Tahsil Edilecek Borç:300@2026-09-05",
+   "invoice:Satış faturası FIS2026000000005 (kalan):100@2026-08-31",
+   "plan:1. taksit:250@2026-10-10",
+   "plan:2. taksit:250@2026-11-10"
+  ],
+  "vadeGecikmis": 650,
+  "zil": [
+   "account:Tahsil Edilecek Borç:300:overdue",
+   "invoice:Tahsil Edilecek Fatura FIS2026000000005:100:overdue",
+   "plan:1. taksit:250:overdue"
+  ],
+  "kalan": [
+   "debt:300→300"
+  ],
+  "faturalar": [
+   {
+    "no": "FIS2026000000005",
+    "state": "overdue",
+    "open": 600,
+    "closers": []
+   }
+  ],
+  "kartlar": [
+   {
+    "state": "overdue",
+    "items": [
+     250,
+     250
+    ],
+    "own": 500,
+    "queue": 500,
+    "accountPaid": 0
+   }
+  ],
+  "kalanNot": [
+   "X300:300→300"
+  ],
+  "kuyruk": {
+   "kalemler": [
+    "invoice|+|2026-08-31|600→100",
+    "entry|+|2026-09-05|300→300",
+    "installment|+|2026-10-10|250→250",
+    "installment|+|2026-11-10|250→250"
+   ],
+   "sigma": 900,
+   "gecikmis": 650,
+   "kapsama": [
+    "undefined:tük500/kap500:avansundefined:kırpundefined"
+   ]
+  },
+  "nakit": [
+   "account:Tahsil Edilecek Borç:in:300@2026-09-05",
+   "invoice:Satış faturası FIS2026000000005 (kalan):in:100@2026-08-31",
+   "plan:1. taksit:in:250@2026-10-10",
+   "plan:2. taksit:in:250@2026-11-10"
+  ],
+  "kartAyrinti": [
+   {
+    "durum": "overdue",
+    "taksitKalan": [
+     250,
+     250
+    ],
+    "taksitDurum": [
+     "overdue",
+     "open"
+    ],
+    "kendiKalan": 500,
+    "kuyrukKalan": 500,
+    "kendiOdenen": 0,
+    "cariPayi": 0,
+    "geciken": 250,
+    "gecikenAdet": 1,
+    "kuyrukSiradaki": 250
+   }
+  ]
+ },
+ "S124_sinir": {
+  "kart": 200,
+  "bakiye": 2700,
+  "gecikmisKart": 2100,
+  "gecikmisKartAdet": 3,
+  "eskiGeciken": 300,
+  "gecikmisListe": 2100,
+  "vade": [
+   "account:Tahsil Edilecek Borç:900@2026-09-02",
+   "account:Tahsil Edilecek Borç:900@2026-09-05",
+   "plan:1. taksit:300@2026-10-10",
+   "plan:2. taksit:300@2026-11-10",
+   "plan:3. taksit:300@2026-12-10"
+  ],
+  "vadeGecikmis": 2100,
+  "zil": [
+   "account:Tahsil Edilecek Borç:900:overdue",
+   "account:Tahsil Edilecek Borç:900:overdue",
+   "plan:1. taksit:300:overdue"
+  ],
+  "kalan": [
+   "debt:300→300",
+   "debt:900→900",
+   "debt:900→900"
+  ],
+  "faturalar": [
+   {
+    "no": "FIS2026000000001",
+    "state": "overdue",
+    "open": 600,
+    "closers": []
+   }
+  ],
+  "kartlar": [
+   {
+    "state": "overdue",
+    "items": [
+     300,
+     300,
+     300
+    ],
+    "own": 900,
+    "queue": 900,
+    "accountPaid": 0
+   }
+  ],
+  "kalanNot": [
+   "Z300:300→300",
+   "X900:900→900",
+   "Y900:900→900"
+  ],
+  "kuyruk": {
+   "kalemler": [
+    "entry|+|2026-09-02|900→900",
+    "entry|+|2026-09-05|900→900",
+    "installment|+|2026-10-10|300→300",
+    "installment|+|2026-11-10|300→300",
+    "installment|+|2026-12-10|300→300"
+   ],
+   "sigma": 2700,
+   "gecikmis": 2100,
+   "kapsama": [
+    "undefined:tük900/kap900:avansundefined:kırpundefined"
+   ]
+  },
+  "nakit": [
+   "account:Tahsil Edilecek Borç:in:900@2026-09-02",
+   "account:Tahsil Edilecek Borç:in:900@2026-09-05",
+   "plan:1. taksit:in:300@2026-10-10",
+   "plan:2. taksit:in:300@2026-11-10",
+   "plan:3. taksit:in:300@2026-12-10"
+  ],
+  "kartAyrinti": [
+   {
+    "durum": "overdue",
+    "taksitKalan": [
+     300,
+     300,
+     300
+    ],
+    "taksitDurum": [
+     "overdue",
+     "open",
+     "open"
+    ],
+    "kendiKalan": 900,
+    "kuyrukKalan": 900,
+    "kendiOdenen": 0,
+    "cariPayi": 0,
+    "geciken": 300,
+    "gecikenAdet": 1,
+    "kuyrukSiradaki": 300
+   }
+  ]
+ },
+ "S125_sinir": {
+  "kart": 200,
+  "bakiye": 1800,
+  "gecikmisKart": 1200,
+  "gecikmisKartAdet": 3,
+  "eskiGeciken": 300,
+  "gecikmisListe": 1200,
+  "vade": [
+   "account:Tahsil Edilecek Borç:400@2026-09-10",
+   "account:Tahsil Edilecek Borç:500@2026-09-30",
+   "plan:1. taksit:300@2026-10-10",
+   "plan:2. taksit:300@2026-11-10",
+   "plan:3. taksit:300@2026-12-10"
+  ],
+  "vadeGecikmis": 1200,
+  "zil": [
+   "account:Tahsil Edilecek Borç:400:overdue",
+   "account:Tahsil Edilecek Borç:500:overdue",
+   "plan:1. taksit:300:overdue"
+  ],
+  "kalan": [
+   "debt:500→500",
+   "debt:700→700"
+  ],
+  "faturalar": [
+   {
+    "no": "FIS2026000000006",
+    "state": "overdue",
+    "open": 600,
+    "closers": []
+   }
+  ],
+  "kartlar": [
+   {
+    "state": "overdue",
+    "items": [
+     300,
+     300,
+     300
+    ],
+    "own": 900,
+    "queue": 900,
+    "accountPaid": 0
+   }
+  ],
+  "kalanNot": [
+   "X500:500→500",
+   "Y700:700→700"
+  ],
+  "kuyruk": {
+   "kalemler": [
+    "entry|+|2026-09-10|700→400",
+    "entry|+|2026-09-30|500→500",
+    "installment|+|2026-10-10|300→300",
+    "installment|+|2026-11-10|300→300",
+    "installment|+|2026-12-10|300→300"
+   ],
+   "sigma": 1800,
+   "gecikmis": 1200,
+   "kapsama": [
+    "undefined:tük900/kap900:avansundefined:kırpundefined"
+   ]
+  },
+  "nakit": [
+   "account:Tahsil Edilecek Borç:in:400@2026-09-10",
+   "account:Tahsil Edilecek Borç:in:500@2026-09-30",
+   "plan:1. taksit:in:300@2026-10-10",
+   "plan:2. taksit:in:300@2026-11-10",
+   "plan:3. taksit:in:300@2026-12-10"
+  ],
+  "kartAyrinti": [
+   {
+    "durum": "overdue",
+    "taksitKalan": [
+     300,
+     300,
+     300
+    ],
+    "taksitDurum": [
+     "overdue",
+     "open",
+     "open"
+    ],
+    "kendiKalan": 900,
+    "kuyrukKalan": 900,
+    "kendiOdenen": 0,
+    "cariPayi": 0,
+    "geciken": 300,
+    "gecikenAdet": 1,
+    "kuyrukSiradaki": 300
+   }
+  ]
+ },
+ "S118": {
+  "bakiye": 600,
+  "gecikmisKart": 0,
+  "gecikmisKartAdet": 0,
+  "eskiGeciken": 0,
+  "gecikmisListe": 0,
+  "vade": [
+   "plan:1. taksit (kalan):600@2026-10-30"
+  ],
+  "vadeGecikmis": 0,
+  "zil": [],
+  "kalan": [],
+  "faturalar": [],
+  "kartlar": [
+   {
+    "state": "active",
+    "items": [
+     600
+    ],
+    "own": 700,
+    "queue": 600,
+    "accountPaid": 100
+   }
+  ],
+  "kalanNot": [],
+  "kuyruk": {
+   "kalemler": [
+    "installment|+|2026-10-30|1000→600"
+   ],
+   "sigma": 600,
+   "gecikmis": 0,
+   "kapsama": []
+  },
+  "nakit": [
+   "plan:1. taksit (kalan):in:600@2026-10-30"
+  ],
+  "kartAyrinti": [
+   {
+    "durum": "active",
+    "taksitKalan": [
+     600
+    ],
+    "taksitDurum": [
+     "open"
+    ],
+    "kendiKalan": 700,
+    "kuyrukKalan": 600,
+    "kendiOdenen": 300,
+    "cariPayi": 100,
+    "geciken": 0,
+    "gecikenAdet": 0,
+    "kuyrukSiradaki": 600
+   }
+  ],
+  "sinir800": "409:plan-overpay"
+ },
+ "Y2": {
+  "gecikenSekmesinde": false,
+  "listeGosterge": {
+   "total": 5200,
+   "paid": 0,
+   "remaining": 5200,
+   "overdue": 2000,
+   "overdueCount": 7,
+   "month": 2000,
+   "count": 7
+  },
+  "bakiye": 800,
+  "gecikmisKart": 800,
+  "gecikmisKartAdet": 1,
+  "eskiGeciken": 0,
+  "gecikmisListe": 800,
+  "vade": [
+   "plan:Taksitlendirilmemiş Kalan:800@2026-09-30"
+  ],
+  "vadeGecikmis": 800,
+  "zil": [
+   "plan:Taksitlendirilmemiş Kalan:800:overdue"
+  ],
+  "kalan": [],
+  "faturalar": [],
+  "kartlar": [
+   {
+    "state": "active",
+    "items": [],
+    "own": 800,
+    "queue": 800,
+    "accountPaid": 0
+   }
+  ],
+  "kalanNot": [],
+  "kuyruk": {
+   "kalemler": [
+    "plan-rest|+|2026-09-30|800→800"
+   ],
+   "sigma": 800,
+   "gecikmis": 800,
+   "kapsama": []
+  },
+  "nakit": [
+   "plan:Taksitlendirilmemiş Kalan:in:800@2026-09-30"
+  ],
+  "kartAyrinti": [
+   {
+    "durum": "active",
+    "taksitKalan": [],
+    "taksitDurum": [],
+    "kendiKalan": 800,
+    "kuyrukKalan": 800,
+    "kendiOdenen": 0,
+    "cariPayi": 0,
+    "geciken": 0,
+    "gecikenAdet": 0
+   }
+  ]
+ }
+}

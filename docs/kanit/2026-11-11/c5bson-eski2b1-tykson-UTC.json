@@ -1,0 +1,68 @@
+{
+  "ad": "c5bson-eski2b1-tykson-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/tyk-son-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T09:30:15.751Z",
+  "sure_sn": 1.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 20,
+    "gecen": 13,
+    "basarisiz": 7,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 7 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Ç5-B son tur — S126 = A (açık borca eşit, içinde fatura da olan kart: ödeme fatura dahil eskiden yeniye) › karar örneği: F 600 + X 300, kart 900; karta 300 ödeme (Taksit Tahsilatı) ⇒ F açık 300, X Kalan 300; bakiye 600, kart kalanı 600",
+      "konum": "test/tyk-son-250.test.mjs:50:3",
+      "hata": "açık borç = kart tutarı: S110 / S120 seçimi yok · undefined !== 's2'"
+    },
+    {
+      "ad": "Ç5-B son tur — S128 = A (kartın içinde fatura / elle borç dışında kalem: türüne bakılmadan eskiden yeniye) › karar örneği: 01.03 stok veresiye S 400 · 02.03 elle X 300 · 15.03 kart 700 · 10.04 karta 300 ⇒ S açığı 100, X Kalan 300; bakiye 400, kart kalanı 400",
+      "konum": "test/tyk-son-250.test.mjs:116:3",
+      "hata": "Expected values to be strictly equal: · undefined !== 's2'"
+    },
+    {
+      "ad": "Ç5-B son tur — S101 sınırı (tur 2b-2'nin dişsiz kalan mutantı): para dışı kapanış avans DEĞİLDİR › Borç 600 → kart 600 (2 × 300) → geriye tarihli Alacak 200 (karttan sonra yazıldı): eksik 200 son taksitten kırpılır [300, 100]; ilk taksit 'avansla ödenmiş' sayılmaz",
+      "konum": "test/tyk-son-250.test.mjs:145:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç5-B son tur — BİLİNEN SINIRLAR (S123 = S124 = S125 = C: kural YOK; bugünkü davranış sabitlenir, değişmezler korunur) › S123 (açık elle borçlar kart tutarından az: F 600 + X 300, kart 500): bugün kartta X 300 + F'nin 200'ü; karta 250 ⇒ X Kalan 50, F açık 600",
+      "konum": "test/tyk-son-250.test.mjs:165:3",
+      "hata": "BİLİNEN SINIR — bugünkü sayılar (kural değil) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç5-B son tur — BİLİNEN SINIRLAR (S123 = S124 = S125 = C: kural YOK; bugünkü davranış sabitlenir, değişmezler korunur) › S124 (karta eşit birden çok elle borç + daha eski elle borç: Z 300 + X 900 + Y 900, kart 900): bugün kartta Z 300 + X'in 600'ü; karta 400 ⇒ Z 0, X Kalan 800",
+      "konum": "test/tyk-son-250.test.mjs:172:3",
+      "hata": "BİLİNEN SINIR — bugünkü sayılar (kural değil) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç5-B son tur — BİLİNEN SINIRLAR (S123 = S124 = S125 = C: kural YOK; bugünkü davranış sabitlenir, değişmezler korunur) › S125 (belge sırası ↔ vade sırası ters; S120 kolu: X 02.03 vade 30.03, Y 05.03 vade 10.03, F 600, kart 900): bugün vade sırası — kartta Y 700 + X'in 200'ü; karta 300 ⇒ Y Kalan 400, X 500",
+      "konum": "test/tyk-son-250.test.mjs:179:3",
+      "hata": "BİLİNEN SINIR — bugünkü sayılar (kural değil) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç5-B son tur — gerçek program: S126 / S128 örnekleri ekranların okuduğu uçlardan (cari kartı, fatura kartı, taksit kartı, Vade Takip, zil) › hız: kart tahsilatı yanıtından sonra kart okuması ve ilk zil okuması carinin kuyruğunu yeniden KURMAZ, bütün carilerin izini yeniden TARAMAZ (sayaçlar 1 / 0 / 0); yeni yazım belleği geçersiz kılar",
+      "konum": "test/tyk-son-250.test.mjs:285:3",
+      "hata": "defter okuması: yazım yanıtı 1, kart okuması 0, zil 0 · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../c5bson-kanit/2026-11-12/c5bson-eski2b1-tykson-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-eski2b1",
+  "ham_cikti_sha256": "5a0a7848bae42716bc4153803af5ad84b403dd8c0811dd0f0634cacc3d07c1d5",
+  "ham_cikti_bayt": 19397
+}

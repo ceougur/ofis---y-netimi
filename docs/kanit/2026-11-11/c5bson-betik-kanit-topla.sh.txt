@@ -1,0 +1,40 @@
+#!/bin/bash
+# Ç5-B son tur — kanıt dosyalarını depoya (docs/kanit/2026-11-11/c5bson-*) kopyalar. Kullanım: kanit-topla.sh
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-ac2cc1e4fd632460d
+D=$W/docs/kanit/2026-11-11
+C=$S/c5bson-cikti
+mkdir -p $D || exit 1
+# kanit.mjs kos çıktıları (json + log / log.gz) — aynı adlı koşuda SON günün kaydı kalır (2026-11-12 = son uç 2c553ffc)
+for f in $S/c5bson-kanit/2026-11-1*/c5bson-*; do cp "$f" "$D/$(basename "$f")" || exit 1; done
+# özetler / ölçümler
+for f in c5bson-liste-fark.txt c5bson-hiz-ilk.txt c5bson-hiz-ozet.txt c5bson-hiz-son.txt c5bson-hiz-son-ozet.txt c5bson-hiz-ikili.txt c5bson-hiz-ikili-ozet.txt; do
+  if [ -f $S/c5bson-kanit/$f ]; then cp $S/c5bson-kanit/$f $D/$f || exit 1; fi
+done
+cp $C/karar-taban.json $D/c5bson-karar-taban.json || exit 1
+cp $C/karar-uc.json $D/c5bson-karar-son.json || exit 1
+cp $C/s126-taban.txt $D/c5bson-s126-taban.txt || exit 1
+cp $C/s126-uc2.txt $D/c5bson-s126-son.txt || exit 1
+cp $C/profil-sontur.txt $D/c5bson-profil-bellek-yuk-altinda.txt || exit 1
+cp $C/profil-taban-iz.txt $D/c5bson-profil-taban-iz-taramasi.txt || exit 1
+grep -E "tuttu|ÖZET|denetim geçti" $C/esleme.out > $D/c5bson-kahin-esleme-kopyasi-ozet.txt
+grep -c "YAPIM AŞAMASI KAPANDI YAPIM" $C/esleme.out | sed 's/^/kuyruk alanlarından okuyan sürücü KOPYASIYLA kapanan kart kaydı: /' >> $D/c5bson-kahin-esleme-kopyasi-ozet.txt
+# zincir özetleri: önce son uç (2c553ffc) koşuları, sonra önceki (07173015 ürün kodu) koşular
+{
+  echo "##### SON UÇ 2c553ffc (12.11) — yeniden koşular"
+  for f in kos-son-hafif.out kos-son-mutabakat1.out kos-son-mutabakat2.out kos-son-komsu.out kos-son-e2e.out kos-son-kapanis.out; do
+    if [ -f $C/$f ]; then echo "### $f"; grep -E "^(uç |--- |== |ZİNCİR|HAFİF|SON |eski |YENI|KALAN|API TABAN|karar|s126|senaryo|komşu|.* YAŞADI|.* ENJEKTE|  ✓|  ✗|Tohum)" $C/$f | cut -c1-400; fi
+  done
+  echo "##### ÖNCEKİ KOŞULAR (11.11–12.11; ürün kodu 07173015 / c6f86b93 — kesintilerden önce)"
+  for f in kos-zincir2.out kos-zincir3-e2e.out kos-zincir3-mutasyon.out kos-zincir4.out kos-zincir5.out; do
+    if [ -f $C/$f ]; then echo "### $f"; grep -E "^(--- |== |ZİNCİR|eski |YENI|KALAN|API TABAN|.* YAŞADI|.* ENJEKTE)" $C/$f | cut -c1-400; fi
+  done
+} > $D/c5bson-zincir-ozetleri.txt
+# eski kod kırmızılarının NEDENLERİ (ders 38)
+python3 -I $S/c5bson-betik/kirmizi-neden.py $C/c5bson-eski2b1-yenitest-UTC.out > $D/c5bson-eski2b1-kirmizi-nedenleri.txt || exit 1
+python3 -I $S/c5bson-betik/kirmizi-neden.py $C/c5bson-eski2b1-tykson-UTC.out > $D/c5bson-eski2b1-tykson-kirmizi-nedenleri.txt || exit 1
+python3 -I $S/c5bson-betik/kirmizi-neden.py $C/c5bson-taban-tykson-UTC.out 600 > $D/c5bson-taban-tykson-kirmizi-nedenleri.txt || exit 1
+# betikler (yeniden üretim)
+for f in profil2.sh profil2-ozet.py kos-son-kapanis.sh kanit-topla.sh h.mjs karar.mjs s126.mjs profil.mjs iz-yigin.mjs bag-kolon.mjs liste-fark.py kirmizi-neden.py olcum.sh olcum-ozet.py kos-zincir2.sh kos-zincir3.sh kos-zincir4.sh kos-son.sh kos-son-hafif.sh kos-degisen.sh asama.py; do cp $S/c5bson-betik/$f $D/c5bson-betik-$f.txt || exit 1; done
+ls $D | grep -c "^c5bson-"
+du -ch $D/c5bson-* | tail -1

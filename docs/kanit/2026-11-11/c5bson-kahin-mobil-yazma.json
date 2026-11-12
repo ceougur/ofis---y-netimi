@@ -1,0 +1,32 @@
+{
+  "ad": "c5bson-kahin-mobil-yazma",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/mobil-yazma/program-surucu.mjs --haric E02-es-havale-pos-mobil,E02-es-havale-pos-masaustu",
+  "commit": "2c553ffca835d9a6eac5820d5f8aeed867745753",
+  "dal": "worktree-agent-ac2cc1e4fd632460d",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T09:23:06.112Z",
+  "sure_sn": 224.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 52,
+    "gecen": 52,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-kanit/2026-11-12/c5bson-kahin-mobil-yazma.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac2cc1e4fd632460d",
+  "ham_cikti_sha256": "9e09720b247aff0c282be05f00006c7fdf640c08eec189348a3d1f7d2d1215ea",
+  "ham_cikti_bayt": 2891
+}

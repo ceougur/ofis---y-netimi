@@ -1,0 +1,26 @@
+# Ana oturum: Ç5-B birleşiminde yapım aşaması listesinin yeniden ayrıştırılması (aday listesi → ana ağaç). Kullanım: python3 -I c5by-etiket.py <aday listesi> <hedef>
+import json,sys,io
+from collections import Counter
+j=json.load(io.open(sys.argv[1],encoding='utf-8'))
+ZINCIR={('d11-c5-s66-carisiz-karsiliksiz','k1:cari:A:gecikmis'),('d11-c5-s66-carisiz-karsiliksiz','k1:cari:B:gecikmis'),('d11-c5-s66-carisiz-karsiliksiz','k1:cari:T:gecikmis'),
+        ('d14-c5-s91-vadesiz-kayit-gunu','k1:cari:Q:gecikmis'),('d15-c5-s91-vadesiz-ertesi-gun','k1:cari:Q2:gecikmis'),('d15-c5-s91-vadesiz-ertesi-gun','k1:cari:Q:gecikmis'),
+        ('d38-c5-s128-ozge-kalemli-kart','k1:cari:M12:gecikmis'),('d38-c5-s128-ozge-kalemli-kart','k1:takvim:hareket:m12x')}
+n=Counter(); gor=set()
+def ekle(e,metin):
+    eski=e.get('not') or ''
+    if metin not in eski: e['not']=(eski+' · ' if eski else '')+metin
+for e in j['kayitlar']:
+    k=(e['senaryo'],e['anahtar'])
+    if e['paket']!='Ç5-B tur 2': continue
+    if k in ZINCIR:
+        gor.add(k); e['paket']='Ç5-A'; ekle(e,"ana oturum 12.11 (Ç5-B birleşimi): carisiz evrak adım REDDİ zinciri — Ç5-A'nın işi (yeniden ayrıştırıldı)"); n['zincir → Ç5-A']+=1
+    elif e['senaryo'].startswith('c7-ks7-'):
+        ekle(e,"ana oturum 12.11: S130 = A (program bugünkü hâliyle kalır) — toplu cari kâhini bakımında kapanır; kod işi yok"); n['S130 kâhin bakımı']+=1
+    elif ':kart:' in e['anahtar'] and (e['anahtar'].endswith(':kalan') or e['anahtar'].endswith(':odenen')):
+        ekle(e,"ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"); n['S129 düzeltme turu']+=1
+    else:
+        n['AYRIŞTIRILAMADI: '+e['senaryo']+' '+e['anahtar']]+=1
+assert gor==ZINCIR, ZINCIR-gor
+print(dict(n)); print('paketler:',dict(Counter(e['paket'] for e in j['kayitlar'])),'toplam',len(j['kayitlar']))
+assert not any(k.startswith('AYRIŞ') for k in n), 'ayrıştırılmayan kayıt var'
+io.open(sys.argv[2],'w',encoding='utf-8',newline='\n').write(json.dumps(j,ensure_ascii=False,indent=1)+'\n')

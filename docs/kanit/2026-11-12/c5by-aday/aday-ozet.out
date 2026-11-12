@@ -1,0 +1,26 @@
+başladı 13:10:21 yük 1.19 1.10 0.90 · dal sinama-c5b-aday · çakışma 1
+liste üretimi çıkış 0
+  − kapanan: d38-c5-s128-ozge-kalemli-kart k1:vadeTakip:hareket:m19y · program {"amount":30000,"date":"2026-03-05","direction":"in"} / kâhin "yok" · paket Ç5-B tur 2
+  − kapanan: rastgele-s1-1 k5:takvim:hareket:s042 · program {"amount":470000,"cari":"D","days":-3,"direction":"in","dueDate":"2026-08-16","label":"Tahsil Edilecek Borç (Ödeme Sözü)","person":"Rastgele Delta 1","state":"overdue"} / k�
+  − kapanan: rastgele-s1-1 k6:takvim:hareket:s042 · program {"amount":470000,"cari":"D","days":-3,"direction":"in","dueDate":"2026-08-16","label":"Tahsil Edilecek Borç (Ödeme Sözü)","person":"Rastgele Delta 1","state":"overdue"} / k�
+  − kapanan: rastgele-s1-1 kson:takvim:hareket:s042 · program {"amount":470000,"cari":"D","days":-3,"direction":"in","dueDate":"2026-08-16","label":"Tahsil Edilecek Borç (Ödeme Sözü)","person":"Rastgele Delta 1","state":"overdue"} / 
+liste farkı (çalışma dalı → aday): önceki 757 ({'Ç5-A': 246, 'Ç5-B tur 2': 503, 'eşleme': 8}) → yeni 334 · kapanan 423 ({'Ç5-B tur 2': 423}) · yeni 0 · değeri değişen 0 · kalan paketler {'Ç5-A': 244, 'Ç5-B tur 2': 82, 'eşleme': 8}
+kalan senaryolar: {'b2-ux18-karsiliksiz': 12, 'b2-ux18-retler': 6, 'b2-ux18-sira': 10, 'b2-ux18-temel': 18, 'b3b-k1-k4-donem-raporlar': 2, 'b3c-k2-donem-ayni-no': 2, 'b3d-c3-kisi-gruplama': 2, 'b3e-vergi-sutunu': 2, 'b3k-vergi-tek-kolon': 2, 'b3n-borc-kolonu-kisi-ozniteligi': 2, 'b3o-seyrek-kalan': 2, 'b3q-takvim-kalemi': 2, 'b3r-kalan-sifir-eksi': 2, 'b3s-soz-tutari-kalemi': 2, 'b3t-sozlesme-tutari': 2, 'b3u-sozlesme-tarihi-soz-basliklari': 2, 'b3v-taahhut-soz-miktari': 2, 'b3w-yalniz-soz-tutari': 2, 'b3x-yalin-soz-ve-tutar': 2, 'b3y-taahhut-alacak-bakiye': 2, 'b5-u1-nihai-tuketici': 2, 'c1-kayit-tahsilat-kapisi': 10, 'c14c-c1-silinmis-cariye-yazim': 8, 'c14f-c1-geri-al-y2': 7, 'c14g-c1-kayit-tahsilati': 4, 'c2-tablodan-aktar-kapisi': 10, 'c4-uyari-kapisi': 2, 'c6c-mevcut-borc-karti': 6, 'c7-ks7-bagsiz-kapaticilar': 4, 'd1-c5-acilis-519': 2, 'd11-c5-s66-carisiz-karsiliksiz': 31, 'd14-c5-s91-vadesiz-kayit-gunu': 15, 'd15-c5-s91-vadesiz-ertesi-gun': 16, 'd2-c5-kg5-excel-kart': 5, 'd3-c5-carisiz-evrak': 15, 'd30-c5-s101-bitti-kart': 18, 'd31-c5-s101-taksit-vade-gunu': 8, 'd32-c5-s101-taksit-ertesi-gun': 8, 'd34-c5-s110-kendi-borcu': 7, 'd35-c5-s120-elle-borclar': 3, 'd36-c5-s122-kart-odemesi': 7, 'd37-c5-s126-faturali-kart': 7, 'd38-c5-s128-ozge-kalemli-kart': 27, 'd4-c5-s50-tek-kuyruk': 6, 'rastgele-ux18-1': 14, 'rastgele-ux18-2': 14}
+anahtarında bakiye geçen kalan kayıt: 8 [('d11-c5-s66-carisiz-karsiliksiz', 'k1:cari:A:bakiye'), ('d11-c5-s66-carisiz-karsiliksiz', 'k1:cari:B:bakiye'), ('d11-c5-s66-carisiz-karsiliksiz', 'k1:cari:T:bakiye'), ('d14-c5-s91-vadesiz-kayit-gunu', 'k1:cari:Q2:bakiye'), ('d14-c5-s91-vadesiz-kayit-gunu', 'k1:cari:Q:bakiye'), ('d15-c5-s91-vadesiz-ertesi-gun', 'k1:cari:Q2:bakiye'), ('d15-c5-s91-vadesiz-ertesi-gun', 'k1:cari:Q:bakiye'), ('d38-c5-s128-ozge-kalemli-kart', 'k1:cari:M12:bakiye')]
+aday commit 465a2eeb · temiz mi: 0
+karar (aday) çıkış 0 · 27799 bayt
+s126 (aday) çıkış 0 · 4018 bayt
+karar (calisma) çıkış 0 · 26938 bayt
+s126 (calisma) çıkış 0 · 4018 bayt
+s126 (aday, İstanbul) çıkış 0 · UTC ile aynı mı: EVET
+kahin-cari UTC çıkış 0 [kanit] c5by-aday-kahin-cari-UTC: GEÇTİ · çıkış 0 · 14844/14844 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 465a2ee +1 izle
+kahin-cari Europe/Istanbul çıkış 0 [kanit] c5by-aday-kahin-cari-Europe-Istanbul: GEÇTİ · çıkış 0 · 14844/14844 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 465
+kahin-defter UTC çıkış 0 [kanit] c5by-aday-kahin-defter-UTC: GEÇTİ · çıkış 0 · 176/176 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 465a2ee +1 izlenm
+kahin-defter Europe/Istanbul çıkış 0 [kanit] c5by-aday-kahin-defter-Europe-Istanbul: GEÇTİ · çıkış 0 · 176/176 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 465a2
+kahin-tutar çıkış 0 [kanit] c5by-aday-kahin-tutar: GEÇTİ · çıkış 0 · 3559/3559 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 
+kahin-maliyet çıkış 0 [kanit] c5by-aday-kahin-maliyet: GEÇTİ · çıkış 0 · 41306/41306 geçti, 0 başarısız, 0 iptal, 0 atlanan · com
+ci.yml ayrıştı
+kâhin bölümü bitti 13:24:58 yük 1.02 1.30 1.22
+TAM npm test çıkış 0 [kanit] c5by-aday-tam: GEÇTİ · çıkış 0 · 5378/5378 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 465a2ee +1 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node
+# tests 5378 # pass 5378 # fail 0 # cancelled 0 # skipped 0 
+A bölümü bitti 14:16:16 yük 0.91 1.49 2.07 · disk 6.4G

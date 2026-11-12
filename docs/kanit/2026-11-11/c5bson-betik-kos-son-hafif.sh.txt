@@ -1,0 +1,11 @@
+#!/bin/bash
+# Ç5-B SON TUR — SON UÇ yeniden koşuları, hafif zincir (tek çekirdek): karar örnekleri → kâhin adımları → değişen + yeni testler iki TZ → eski kod kırmızısı → mutasyon.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+B=$S/c5bson-betik
+echo "HAFİF ZİNCİR · başta $(cat /proc/loadavg) · $(date -u +%H:%M) · disk $(df -h / | tail -1 | awk '{print $4}')"
+bash $B/kos-son.sh karar
+bash $B/kos-zincir2.sh kahin
+bash $B/kos-zincir4.sh test
+bash $B/kos-son.sh eski
+bash $B/kos-zincir4.sh mutasyon
+echo "HAFİF ZİNCİR BİTTİ $(date -u +%H:%M) · yük $(cat /proc/loadavg)"

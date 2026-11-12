@@ -1,0 +1,813 @@
+{
+ "aciklama": "v2.4.9 (fikstür v249.json) → bugünkü kod farkları; her biri karar numarasıyla. B1 (05.11 17:16 'hepsi A' (1): gecikmiş borç = vadesi geçmiş bütün açık borç kalemleri; v2.4.9 kolonu yalnız geciken taksit). S110 satırları tur 2b-2'de kapanacak (o turda listeden çıkar, yerine v2.4.9 ile aynı sayılar). · Tur 2b-2 (11.11.2026): S110 = A ile I / M / N sınıflarının kart farkları KAPANDI (kartlar v2.4.9 gibi taksitlerini taşıyor); M / N'de kalan farklar S110 örneğinin kendi sayıları + B1 / S1 / S91; J2 S101; T1 Y2. · Tur 2b-2 fikstüre U01–U15 sınıfları eklendi (kararların kendi örnekleri, v2.4.9 gerçek koduyla); U01 (S95), U02 (S97 aynı gün), U06 (S103) v2.4.9 ile birebir.",
+ "farklar": [
+  {
+   "cari": "TYKF B Stok Kısmi",
+   "alan": "gecikmis",
+   "eski": "500",
+   "yeni": "200",
+   "karar": "S50 + B1",
+   "not": "kart seçilmeden alınan bağsız tahsilat 300 ilk taksiti kapatır (Taksitler, zil, takvim gösterir)"
+  },
+  {
+   "cari": "TYKF B Stok Kısmi",
+   "alan": "kart1.taksitler",
+   "eski": "[\"1:500:500:overdue\",\"2:500:500:open\"]",
+   "yeni": "[\"1:500:200:overdue\",\"2:500:500:open\"]",
+   "karar": "S50",
+   "not": "kart seçilmeden alınan bağsız tahsilat 300 ilk taksiti kapatır (Taksitler, zil, takvim gösterir)"
+  },
+  {
+   "cari": "TYKF B Stok Kısmi",
+   "alan": "vadeTakip",
+   "eski": "[\"plan|1. taksit|500|2026-10-10|in\",\"plan|2. taksit|500|2026-11-10|in\"]",
+   "yeni": "[\"plan|1. taksit (kalan)|200|2026-10-10|in\",\"plan|2. taksit|500|2026-11-10|in\"]",
+   "karar": "S50",
+   "not": "kart seçilmeden alınan bağsız tahsilat 300 ilk taksiti kapatır (Taksitler, zil, takvim gösterir)"
+  },
+  {
+   "cari": "TYKF B Stok Kısmi",
+   "alan": "zil",
+   "eski": "[\"plan|1. taksit|500|overdue\"]",
+   "yeni": "[\"plan|1. taksit|200|overdue\"]",
+   "karar": "S50",
+   "not": "kart seçilmeden alınan bağsız tahsilat 300 ilk taksiti kapatır (Taksitler, zil, takvim gösterir)"
+  },
+  {
+   "cari": "TYKF E Karşı Yönlü",
+   "alan": "kart1.taksitler",
+   "eski": "[\"1:500:500:overdue\",\"2:500:500:open\"]",
+   "yeni": "[\"1:500:500:overdue\",\"2:500:200:open\"]",
+   "karar": "karar (5) + S92",
+   "not": "Bakiyeden Netleşsin: Alacak Yaz 300 satış borcuna kendi tarihinde; net görünüm Kalan / takvim / Vade Takip'te (son taksit 500 → 200)"
+  },
+  {
+   "cari": "TYKF E Karşı Yönlü",
+   "alan": "vadeTakip",
+   "eski": "[\"plan|1. taksit|500|2026-10-10|in\",\"plan|2. taksit|500|2026-11-10|in\"]",
+   "yeni": "[\"plan|1. taksit|500|2026-10-10|in\",\"plan|2. taksit (kalan)|200|2026-11-10|in\"]",
+   "karar": "karar (5) + S92",
+   "not": "Bakiyeden Netleşsin: Alacak Yaz 300 satış borcuna kendi tarihinde; net görünüm Kalan / takvim / Vade Takip'te (son taksit 500 → 200)"
+  },
+  {
+   "cari": "TYKF H İleri Kart",
+   "alan": "gecikmis",
+   "eski": "0",
+   "yeni": "1000",
+   "karar": "S1 + S91 + B1",
+   "not": "ileri tarihli kart v2.4.9'da da reddedildi (kart yok); vadesiz Borç Yaz ertesi gün gecikmiş, takvim / zil / Vade Takip kalemi"
+  },
+  {
+   "cari": "TYKF H İleri Kart",
+   "alan": "vadeTakip",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|1000|2026-09-30|in\"]",
+   "karar": "S1 + S91",
+   "not": "ileri tarihli kart v2.4.9'da da reddedildi (kart yok); vadesiz Borç Yaz ertesi gün gecikmiş, takvim / zil / Vade Takip kalemi"
+  },
+  {
+   "cari": "TYKF H İleri Kart",
+   "alan": "zil",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|1000|overdue\"]",
+   "karar": "S1 + S91",
+   "not": "ileri tarihli kart v2.4.9'da da reddedildi (kart yok); vadesiz Borç Yaz ertesi gün gecikmiş, takvim / zil / Vade Takip kalemi"
+  },
+  {
+   "cari": "TYKF J2 Kart Sonra Tahsilat",
+   "alan": "gecikmis",
+   "eski": "500",
+   "yeni": "100",
+   "karar": "S101 + karar (e) 11.11 03:15",
+   "not": "tur 2b-2: kart açıldıktan sonra kaydedilen, borçtan ÖNCE tarihli tahsilat 400 borcu avans olarak kapatmış: kartın o kadarı ÖDENMİŞTİR, vadesi en önce gelen taksitten (S101 = A'nın genel mekanizması; 'kısmen avansla kapanmış borçta kartın o kadarı ödenmiş sayılır') — 1. taksit kalanı 100, gecikmiş 100. v2.4.9: kart tahsilatsız 500 gecikmiş; tur 2b-1: EK-2B 32 kırpması son taksitten."
+  },
+  {
+   "cari": "TYKF J2 Kart Sonra Tahsilat",
+   "alan": "kart1.taksitler",
+   "eski": "[\"1:500:500:overdue\",\"2:500:500:open\"]",
+   "yeni": "[\"1:500:100:overdue\",\"2:500:500:open\"]",
+   "karar": "S101 + karar (e) 11.11 03:15",
+   "not": "tur 2b-2: avansla ödenmiş 400 1. taksitten (vade sırası): [500:100, 500:500]."
+  },
+  {
+   "cari": "TYKF J2 Kart Sonra Tahsilat",
+   "alan": "vadeTakip",
+   "eski": "[\"plan|1. taksit|500|2026-10-10|in\",\"plan|2. taksit|500|2026-11-10|in\"]",
+   "yeni": "[\"plan|1. taksit (kalan)|100|2026-10-10|in\",\"plan|2. taksit|500|2026-11-10|in\"]",
+   "karar": "S101 + karar (e) 11.11 03:15",
+   "not": "tur 2b-2: 1. taksit (kalan) 100 + 2. taksit 500."
+  },
+  {
+   "cari": "TYKF J2 Kart Sonra Tahsilat",
+   "alan": "zil",
+   "eski": "[\"plan|1. taksit|500|overdue\"]",
+   "yeni": "[\"plan|1. taksit|100|overdue\"]",
+   "karar": "S101 + karar (e) 11.11 03:15",
+   "not": "tur 2b-2: zilde 1. taksit (kalan) 100."
+  },
+  {
+   "cari": "TYKF M S110 Elle",
+   "alan": "gecikmis",
+   "eski": "300",
+   "yeni": "900",
+   "karar": "S110 + B1 + S91",
+   "not": "tur 2b-2: S110 = A'nın kendi örneği (elle borç 900 + fatura 600, kart 900): kart elle borcu taşır, F 600 ayrı açık — gecikmiş 900 (1. taksit 300 + F 600). v2.4.9: 300 (yalnız geciken taksit — B1 tek gecikmiş tanımı)."
+  },
+  {
+   "cari": "TYKF M S110 Elle",
+   "alan": "vadeTakip",
+   "eski": "[\"plan|1. taksit|300|2026-10-05|in\",\"plan|2. taksit|300|2026-11-05|in\",\"plan|3. taksit|300|2026-12-05|in\"]",
+   "yeni": "[\"invoice|Satış faturası FIS2026000000002|600|2026-09-30|in\",\"plan|1. taksit|300|2026-10-05|in\",\"plan|2. taksit|300|2026-11-05|in\",\"plan|3. taksit|300|2026-12-05|in\"]",
+   "karar": "S110 + S91",
+   "not": "tur 2b-2: S110 = A: F 600 kartın dışında, kendi vadesiyle açık kalem (v2.4.9'da kart en son kaydedilen borcu — faturayı — içine almıştı); taksitler aynı."
+  },
+  {
+   "cari": "TYKF M S110 Elle",
+   "alan": "zil",
+   "eski": "[\"plan|1. taksit|300|overdue\"]",
+   "yeni": "[\"invoice|Tahsil Edilecek Fatura FIS2026000000002|600|overdue\",\"plan|1. taksit|300|overdue\"]",
+   "karar": "S110 + S91",
+   "not": "tur 2b-2: S110 = A: zilde F 600 (vadesi geçmiş) + 1. taksit 300."
+  },
+  {
+   "cari": "TYKF N S110 Stok",
+   "alan": "gecikmis",
+   "eski": "500",
+   "yeni": "1000",
+   "karar": "S110 + B1 + S1 + S91",
+   "not": "tur 2b-2: S110 = A (stoktan satışta o satış): kart satışın 1.000'ini taşır, vadesiz elle Borç 500 ayrı (S1: kayıt gününde vadeli) — gecikmiş 1. taksit 500 + Borç 500 = 1.000 (v2.4.9: yalnız geciken taksit 500)."
+  },
+  {
+   "cari": "TYKF N S110 Stok",
+   "alan": "vadeTakip",
+   "eski": "[\"plan|1. taksit|500|2026-10-10|in\",\"plan|2. taksit|500|2026-11-10|in\"]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|500|2026-09-20|in\",\"plan|1. taksit|500|2026-10-10|in\",\"plan|2. taksit|500|2026-11-10|in\"]",
+   "karar": "S110 + S1 + S91",
+   "not": "tur 2b-2: S110 = A: taksitler 500 + 500 + vadesiz Borç 500 'Tahsil Edilecek Borç' kalemi (v2.4.9: vadesiz elle borç Vade Takip kalemi değildi — S91 = A)."
+  },
+  {
+   "cari": "TYKF N S110 Stok",
+   "alan": "zil",
+   "eski": "[\"plan|1. taksit|500|overdue\"]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|500|overdue\",\"plan|1. taksit|500|overdue\"]",
+   "karar": "S110 + S1 + S91",
+   "not": "tur 2b-2: S110 = A + S91 = A: zilde Borç 500 (vadesiz, kayıt gününde) + 1. taksit 500."
+  },
+  {
+   "cari": "TYKF P Kilitli",
+   "alan": "gecikmis",
+   "eski": "500",
+   "yeni": "200",
+   "karar": "S50 + B1",
+   "not": "bağsız tahsilat 300 (−35) ilk taksiti kapatır; kilit (−25) karar (3) bu sınıfta etkisiz"
+  },
+  {
+   "cari": "TYKF P Kilitli",
+   "alan": "kart1.taksitler",
+   "eski": "[\"1:500:500:overdue\",\"2:500:500:today\"]",
+   "yeni": "[\"1:500:200:overdue\",\"2:500:500:today\"]",
+   "karar": "S50",
+   "not": "bağsız tahsilat 300 (−35) ilk taksiti kapatır; kilit (−25) karar (3) bu sınıfta etkisiz"
+  },
+  {
+   "cari": "TYKF P Kilitli",
+   "alan": "vadeTakip",
+   "eski": "[\"plan|1. taksit|500|2026-09-20|in\",\"plan|2. taksit|500|2026-10-20|in\"]",
+   "yeni": "[\"plan|1. taksit (kalan)|200|2026-09-20|in\",\"plan|2. taksit|500|2026-10-20|in\"]",
+   "karar": "S50",
+   "not": "bağsız tahsilat 300 (−35) ilk taksiti kapatır; kilit (−25) karar (3) bu sınıfta etkisiz"
+  },
+  {
+   "cari": "TYKF P Kilitli",
+   "alan": "zil",
+   "eski": "[\"plan|1. taksit|500|overdue\",\"plan|2. taksit|500|today\"]",
+   "yeni": "[\"plan|1. taksit|200|overdue\",\"plan|2. taksit|500|today\"]",
+   "karar": "S50",
+   "not": "bağsız tahsilat 300 (−35) ilk taksiti kapatır; kilit (−25) karar (3) bu sınıfta etkisiz"
+  },
+  {
+   "cari": "TYKF T1 Taksitsiz Ayrı Kart",
+   "alan": "gecikmis",
+   "eski": "0",
+   "yeni": "1000",
+   "karar": "S91 + B1",
+   "not": "taksitlere bölünmemiş kalan 'Taksitlendirilmemiş Kalan' kalemi, vade kartın açılış günü (tur 2a O-3); kart durumu v2.4.9 gibi Aktif (tur 2b-1 G-2)"
+  },
+  {
+   "cari": "TYKF T1 Taksitsiz Ayrı Kart",
+   "alan": "kart1.durum",
+   "eski": "\"active\"",
+   "yeni": "\"overdue\"",
+   "karar": "Y2 (BAŞ MİMAR KARARI 11.11 05:48; S91 = A)",
+   "not": "tur 2b-2: taksitsiz ayrı kartın taksitlendirilmemiş 1.000'i (vade kartın açılış günü −20) zilde / Vade Takip'te gecikmiş — kart da 'Gecikti' (v2.4.9: Aktif)."
+  },
+  {
+   "cari": "TYKF T1 Taksitsiz Ayrı Kart",
+   "alan": "kart1.sekme",
+   "eski": "\"active\"",
+   "yeni": "\"active/overdue\"",
+   "karar": "Y2 (BAŞ MİMAR KARARI 11.11 05:48; S91 = A)",
+   "not": "tur 2b-2: Geciken sekmesinde de (v2.4.9: yalnız Aktif)."
+  },
+  {
+   "cari": "TYKF T1 Taksitsiz Ayrı Kart",
+   "alan": "vadeTakip",
+   "eski": "[]",
+   "yeni": "[\"plan|Taksitlendirilmemiş Kalan|1000|2026-09-30|in\"]",
+   "karar": "S91",
+   "not": "taksitlere bölünmemiş kalan 'Taksitlendirilmemiş Kalan' kalemi, vade kartın açılış günü (tur 2a O-3); kart durumu v2.4.9 gibi Aktif (tur 2b-1 G-2)"
+  },
+  {
+   "cari": "TYKF T1 Taksitsiz Ayrı Kart",
+   "alan": "zil",
+   "eski": "[]",
+   "yeni": "[\"plan|Taksitlendirilmemiş Kalan|1000|overdue\"]",
+   "karar": "S91",
+   "not": "taksitlere bölünmemiş kalan 'Taksitlendirilmemiş Kalan' kalemi, vade kartın açılış günü (tur 2a O-3); kart durumu v2.4.9 gibi Aktif (tur 2b-1 G-2)"
+  },
+  {
+   "cari": "TYKF T11 Başka Karttan Avans",
+   "alan": "kart2.taksitler",
+   "eski": "[\"1:1000:700:open\"]",
+   "yeni": "[\"1:1000:600:open\"]",
+   "karar": "S50",
+   "not": "aynı caride öbür kartın 'Fazlasını Avans Yaz' fazlası (100) bu kartın taksitini kapatır (K8-3: vadesi gelmemiş taksit de)"
+  },
+  {
+   "cari": "TYKF T11 Başka Karttan Avans",
+   "alan": "vadeTakip",
+   "eski": "[\"plan|1. taksit (kalan)|700|2026-10-30|in\"]",
+   "yeni": "[\"plan|1. taksit (kalan)|600|2026-10-30|in\"]",
+   "karar": "S50",
+   "not": "aynı caride öbür kartın 'Fazlasını Avans Yaz' fazlası (100) bu kartın taksitini kapatır (K8-3: vadesi gelmemiş taksit de)"
+  },
+  {
+   "cari": "TYKF T2 Eksik Taksitli Ayrı Kart",
+   "alan": "gecikmis",
+   "eski": "300",
+   "yeni": "700",
+   "karar": "S91 + B1",
+   "not": "taksitlere bölünmemiş kalan 400 'Taksitlendirilmemiş Kalan' kalemi (tur 2a O-3)"
+  },
+  {
+   "cari": "TYKF T2 Eksik Taksitli Ayrı Kart",
+   "alan": "vadeTakip",
+   "eski": "[\"plan|1. taksit|300|2026-10-10|in\",\"plan|2. taksit|300|2026-11-09|in\"]",
+   "yeni": "[\"plan|1. taksit|300|2026-10-10|in\",\"plan|2. taksit|300|2026-11-09|in\",\"plan|Taksitlendirilmemiş Kalan|400|2026-09-30|in\"]",
+   "karar": "S91",
+   "not": "taksitlere bölünmemiş kalan 400 'Taksitlendirilmemiş Kalan' kalemi (tur 2a O-3)"
+  },
+  {
+   "cari": "TYKF T2 Eksik Taksitli Ayrı Kart",
+   "alan": "zil",
+   "eski": "[\"plan|1. taksit|300|overdue\"]",
+   "yeni": "[\"plan|1. taksit|300|overdue\",\"plan|Taksitlendirilmemiş Kalan|400|overdue\"]",
+   "karar": "S91",
+   "not": "taksitlere bölünmemiş kalan 400 'Taksitlendirilmemiş Kalan' kalemi (tur 2a O-3)"
+  },
+  {
+   "cari": "TYKF T3 Taksitsiz Mevcut Borç",
+   "alan": "gecikmis",
+   "eski": "0",
+   "yeni": "1000",
+   "karar": "S1 + S91 + B1",
+   "not": "taksitsiz Mevcut Borç kartı borcu kapsamaz (v2.0.23 coverTotal = taksitler); vadesiz Borç Yaz ertesi gün gecikmiş ve kalem; kart Aktif (tur 2b-1 G-2)"
+  },
+  {
+   "cari": "TYKF T3 Taksitsiz Mevcut Borç",
+   "alan": "vadeTakip",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|1000|2026-09-30|in\"]",
+   "karar": "S1 + S91",
+   "not": "taksitsiz Mevcut Borç kartı borcu kapsamaz (v2.0.23 coverTotal = taksitler); vadesiz Borç Yaz ertesi gün gecikmiş ve kalem; kart Aktif (tur 2b-1 G-2)"
+  },
+  {
+   "cari": "TYKF T3 Taksitsiz Mevcut Borç",
+   "alan": "zil",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|1000|overdue\"]",
+   "karar": "S1 + S91",
+   "not": "taksitsiz Mevcut Borç kartı borcu kapsamaz (v2.0.23 coverTotal = taksitler); vadesiz Borç Yaz ertesi gün gecikmiş ve kalem; kart Aktif (tur 2b-1 G-2)"
+  },
+  {
+   "cari": "TYKF T4 Eksik Taksitli Mevcut Borç",
+   "alan": "gecikmis",
+   "eski": "500",
+   "yeni": "1000",
+   "karar": "S1 + S91 + B1",
+   "not": "taksitlere bölünmemiş 500 alttaki Borç Yaz kalemi olarak kalır (v2.0.23), vadesiz → kalem ve gecikmiş"
+  },
+  {
+   "cari": "TYKF T4 Eksik Taksitli Mevcut Borç",
+   "alan": "vadeTakip",
+   "eski": "[\"plan|1. taksit|500|2026-10-10|in\"]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|500|2026-09-30|in\",\"plan|1. taksit|500|2026-10-10|in\"]",
+   "karar": "S1 + S91",
+   "not": "taksitlere bölünmemiş 500 alttaki Borç Yaz kalemi olarak kalır (v2.0.23), vadesiz → kalem ve gecikmiş"
+  },
+  {
+   "cari": "TYKF T4 Eksik Taksitli Mevcut Borç",
+   "alan": "zil",
+   "eski": "[\"plan|1. taksit|500|overdue\"]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|500|overdue\",\"plan|1. taksit|500|overdue\"]",
+   "karar": "S1 + S91",
+   "not": "taksitlere bölünmemiş 500 alttaki Borç Yaz kalemi olarak kalır (v2.0.23), vadesiz → kalem ve gecikmiş"
+  },
+  {
+   "cari": "TYKF T5 Taksitleri Silinmiş Stoktan Kart",
+   "alan": "gecikmis",
+   "eski": "0",
+   "yeni": "1000",
+   "karar": "S1 + S91 + B1",
+   "not": "taksitleri silinmiş stoktan kart borcu kapsamaz; stok veresiye satışı vadesiz kalem (kayıt günü), ertesi gün gecikmiş; kart Aktif (tur 2b-1 G-2)"
+  },
+  {
+   "cari": "TYKF T5 Taksitleri Silinmiş Stoktan Kart",
+   "alan": "vadeTakip",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|1000|2026-09-30|in\"]",
+   "karar": "S1 + S91",
+   "not": "taksitleri silinmiş stoktan kart borcu kapsamaz; stok veresiye satışı vadesiz kalem (kayıt günü), ertesi gün gecikmiş; kart Aktif (tur 2b-1 G-2)"
+  },
+  {
+   "cari": "TYKF T5 Taksitleri Silinmiş Stoktan Kart",
+   "alan": "zil",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|1000|overdue\"]",
+   "karar": "S1 + S91",
+   "not": "taksitleri silinmiş stoktan kart borcu kapsamaz; stok veresiye satışı vadesiz kalem (kayıt günü), ertesi gün gecikmiş; kart Aktif (tur 2b-1 G-2)"
+  },
+  {
+   "cari": "TYKF T6 Tedarikçi Stoktan Alış İadesi",
+   "alan": "gecikmis",
+   "eski": "0",
+   "yeni": "300",
+   "karar": "S93 + S96 + S91 + B1",
+   "not": "tedarikçideki faturasız Alış İadesi bağsız ödemedir (2.4.5 KS7 (a)); netleşmeyen kısım Gecikmiş Borç (S93) ve ayrı kalem 'Tahsil Edilecek Borç' (S96 / S91; tur 2b-1 ORTA-2)"
+  },
+  {
+   "cari": "TYKF T6 Tedarikçi Stoktan Alış İadesi",
+   "alan": "vadeTakip",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|300|2026-09-30|in\"]",
+   "karar": "S93 + S96 + S91",
+   "not": "tedarikçideki faturasız Alış İadesi bağsız ödemedir (2.4.5 KS7 (a)); netleşmeyen kısım Gecikmiş Borç (S93) ve ayrı kalem 'Tahsil Edilecek Borç' (S96 / S91; tur 2b-1 ORTA-2)"
+  },
+  {
+   "cari": "TYKF T6 Tedarikçi Stoktan Alış İadesi",
+   "alan": "zil",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|300|overdue\"]",
+   "karar": "S93 + S96 + S91",
+   "not": "tedarikçideki faturasız Alış İadesi bağsız ödemedir (2.4.5 KS7 (a)); netleşmeyen kısım Gecikmiş Borç (S93) ve ayrı kalem 'Tahsil Edilecek Borç' (S96 / S91; tur 2b-1 ORTA-2)"
+  },
+  {
+   "cari": "TYKF T7 Tedarikçi Faturalı Alış İadesi",
+   "alan": "gecikmis",
+   "eski": "0",
+   "yeni": "300",
+   "karar": "S93 + S96 + S91 + B1",
+   "not": "karşılığı gelmemiş faturalı Alış İadesi tedarikçinin bize borcu: Gecikmiş Borç (S93) ve ayrı kalem (tur 2b-1 ORTA-2)"
+  },
+  {
+   "cari": "TYKF T7 Tedarikçi Faturalı Alış İadesi",
+   "alan": "vadeTakip",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|300|2026-09-30|in\"]",
+   "karar": "S93 + S96 + S91",
+   "not": "karşılığı gelmemiş faturalı Alış İadesi tedarikçinin bize borcu: Gecikmiş Borç (S93) ve ayrı kalem (tur 2b-1 ORTA-2)"
+  },
+  {
+   "cari": "TYKF T7 Tedarikçi Faturalı Alış İadesi",
+   "alan": "zil",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|300|overdue\"]",
+   "karar": "S93 + S96 + S91",
+   "not": "karşılığı gelmemiş faturalı Alış İadesi tedarikçinin bize borcu: Gecikmiş Borç (S93) ve ayrı kalem (tur 2b-1 ORTA-2)"
+  },
+  {
+   "cari": "TYKF T8 Tedarikçiye Avans",
+   "alan": "gecikmis",
+   "eski": "0",
+   "yeni": "300",
+   "karar": "S93 + S96 + B1",
+   "not": "tedarikçiye verilen, karşılığı gelmemiş avans: vadesi geçince Gecikmiş Borç (S93), takvim / zil / Vade Takip'te ayrı kalem (S96)"
+  },
+  {
+   "cari": "TYKF T8 Tedarikçiye Avans",
+   "alan": "vadeTakip",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|300|2026-09-30|in\"]",
+   "karar": "S93 + S96",
+   "not": "tedarikçiye verilen, karşılığı gelmemiş avans: vadesi geçince Gecikmiş Borç (S93), takvim / zil / Vade Takip'te ayrı kalem (S96)"
+  },
+  {
+   "cari": "TYKF T8 Tedarikçiye Avans",
+   "alan": "zil",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|300|overdue\"]",
+   "karar": "S93 + S96",
+   "not": "tedarikçiye verilen, karşılığı gelmemiş avans: vadesi geçince Gecikmiş Borç (S93), takvim / zil / Vade Takip'te ayrı kalem (S96)"
+  },
+  {
+   "cari": "TYKF U03 S97 Ertesi Gün",
+   "alan": "vadeTakip",
+   "eski": "[]",
+   "yeni": "[\"account|Ödenecek Borç|300|2026-10-10|out\"]",
+   "karar": "S95 + S97 + S91",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): Borç 1.000 + Alacak 300 aynı gün, tahsilat ERTESİ gün: tahsilat önce kendi tarafının (Borç) kalemini kapatır, önceki günün netleşmesi geri alınır → Alacak 300 açık 'Ödenecek Borç' (D 10.11 18:25 (1) Y5-1 kabul; S91: vadesiz Alacak kayıt gününde vadeli). v2.4.9: kalem yok."
+  },
+  {
+   "cari": "TYKF U03 S97 Ertesi Gün",
+   "alan": "zil",
+   "eski": "[]",
+   "yeni": "[\"account|Ödenecek Borç|300|overdue\"]",
+   "karar": "S95 + S97 + S91",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): Borç 1.000 + Alacak 300 aynı gün, tahsilat ERTESİ gün: tahsilat önce kendi tarafının (Borç) kalemini kapatır, önceki günün netleşmesi geri alınır → Alacak 300 açık 'Ödenecek Borç' (D 10.11 18:25 (1) Y5-1 kabul; S91: vadesiz Alacak kayıt gününde vadeli). v2.4.9: kalem yok."
+  },
+  {
+   "cari": "TYKF U04 S102 İki Karşı Kalem",
+   "alan": "vadeTakip",
+   "eski": "[]",
+   "yeni": "[\"account|Ödenecek Borç|300|2026-10-09|out\"]",
+   "karar": "S102 + S91",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S102 = A'nın örneği: önceki günün karşı kalemi (X 300) açılır, aynı günün (Y) netleşmesi kalır, müşterinin avansı 300 (kalem değil). v2.4.9: kalem yok."
+  },
+  {
+   "cari": "TYKF U04 S102 İki Karşı Kalem",
+   "alan": "zil",
+   "eski": "[]",
+   "yeni": "[\"account|Ödenecek Borç|300|overdue\"]",
+   "karar": "S102 + S91",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S102 = A'nın örneği: önceki günün karşı kalemi (X 300) açılır, aynı günün (Y) netleşmesi kalır, müşterinin avansı 300 (kalem değil). v2.4.9: kalem yok."
+  },
+  {
+   "cari": "TYKF U05 S98 Verilen Avans",
+   "alan": "gecikmis",
+   "eski": "0",
+   "yeni": "50",
+   "karar": "S98 + S96 + S93 + S91 + B1",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S98 = A'nın örneği: verilen avans da kalemdir, vade (= ödeme günü) sırasına girer → avans 50 'Tahsil Edilecek Borç' (ödeme gününde, gecikmiş) + Borç 100 (vade +30). v2.4.9: avans kalem değildi, gecikmiş 0."
+  },
+  {
+   "cari": "TYKF U05 S98 Verilen Avans",
+   "alan": "vadeTakip",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|100|2026-11-19|in\",\"account|Tahsil Edilecek Borç|50|2026-09-10|in\"]",
+   "karar": "S98 + S96 + S93 + S91 + B1",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S98 = A'nın örneği: verilen avans da kalemdir, vade (= ödeme günü) sırasına girer → avans 50 'Tahsil Edilecek Borç' (ödeme gününde, gecikmiş) + Borç 100 (vade +30). v2.4.9: avans kalem değildi, gecikmiş 0."
+  },
+  {
+   "cari": "TYKF U05 S98 Verilen Avans",
+   "alan": "zil",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|50|overdue\"]",
+   "karar": "S98 + S96 + S93 + S91 + B1",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S98 = A'nın örneği: verilen avans da kalemdir, vade (= ödeme günü) sırasına girer → avans 50 'Tahsil Edilecek Borç' (ödeme gününde, gecikmiş) + Borç 100 (vade +30). v2.4.9: avans kalem değildi, gecikmiş 0."
+  },
+  {
+   "cari": "TYKF U07 S104 Avans ve Alacak",
+   "alan": "vadeTakip",
+   "eski": "[]",
+   "yeni": "[\"account|Ödenecek Borç|200|2026-11-19|out\"]",
+   "karar": "S104 + S68 + S91",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S104 = A'nın örneği: Ödeme önce müşterinin avansını (01.03) kapatır → Alacak 200 açık 'Ödenecek Borç' (vade +30). v2.4.9: Vade Takip'te yok."
+  },
+  {
+   "cari": "TYKF U08 S105 İade ve Avans",
+   "alan": "gecikmis",
+   "eski": "0",
+   "yeni": "250",
+   "karar": "S105 + S96 + S93 + B1",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S105 = A'nın örneği: alış önce alış iadesinden düşülür → iade alacağı 0, verilen avans 250 'Tahsil Edilecek Borç' (ödeme günü, gecikmiş). v2.4.9: kalem yok, gecikmiş 0."
+  },
+  {
+   "cari": "TYKF U08 S105 İade ve Avans",
+   "alan": "vadeTakip",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|250|2026-09-20|in\"]",
+   "karar": "S105 + S96 + S93 + B1",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S105 = A'nın örneği: alış önce alış iadesinden düşülür → iade alacağı 0, verilen avans 250 'Tahsil Edilecek Borç' (ödeme günü, gecikmiş). v2.4.9: kalem yok, gecikmiş 0."
+  },
+  {
+   "cari": "TYKF U08 S105 İade ve Avans",
+   "alan": "zil",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|250|overdue\"]",
+   "karar": "S105 + S96 + S93 + B1",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S105 = A'nın örneği: alış önce alış iadesinden düşülür → iade alacağı 0, verilen avans 250 'Tahsil Edilecek Borç' (ödeme günü, gecikmiş). v2.4.9: kalem yok, gecikmiş 0."
+  },
+  {
+   "cari": "TYKF U09 S96 Verilen Çek",
+   "alan": "gecikmis",
+   "eski": "0",
+   "yeni": "700",
+   "karar": "S96 + S93 + B1",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S96 = A: tedarikçiye verilen, karşılığı gelmemiş çek avansı 'Tahsil Edilecek Borç' (ödeme gününde vadeli; gecikmiş 700 her ekranda aynı). v2.4.9: kalem yok, gecikmiş 0."
+  },
+  {
+   "cari": "TYKF U09 S96 Verilen Çek",
+   "alan": "vadeTakip",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|700|2026-10-10|in\"]",
+   "karar": "S96 + S93 + B1",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S96 = A: tedarikçiye verilen, karşılığı gelmemiş çek avansı 'Tahsil Edilecek Borç' (ödeme gününde vadeli; gecikmiş 700 her ekranda aynı). v2.4.9: kalem yok, gecikmiş 0."
+  },
+  {
+   "cari": "TYKF U09 S96 Verilen Çek",
+   "alan": "zil",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|700|overdue\"]",
+   "karar": "S96 + S93 + B1",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S96 = A: tedarikçiye verilen, karşılığı gelmemiş çek avansı 'Tahsil Edilecek Borç' (ödeme gününde vadeli; gecikmiş 700 her ekranda aynı). v2.4.9: kalem yok, gecikmiş 0."
+  },
+  {
+   "cari": "TYKF U10 S99 Avans Taksitli Taksitsiz",
+   "alan": "faturalar",
+   "eski": "[\"2026-10-04|sale|300|300|overdue\",\"2026-10-05|sale|500|0|paid\"]",
+   "yeni": "[\"2026-10-04|sale|300|0|paid\",\"2026-10-05|sale|500|300|overdue\"]",
+   "karar": "S99",
+   "not": "tur 2b-2 (fark okuyucusu fatura durumunu da okur): S99 = A'nın KENDİ örneği — avans 500 taksitli B 300'ün taksitlerini kapatır (B Ödendi), taksitsiz A 500'ün 300'ü açık; Σ fatura açığı 300 = bakiye. v2.4.9: B 300 açık, A Ödendi (S99 B)."
+  },
+  {
+   "cari": "TYKF U10 S99 Avans Taksitli Taksitsiz",
+   "alan": "gecikmis",
+   "eski": "150",
+   "yeni": "300",
+   "karar": "S99 + B1",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S99 = A'nın örneği: avans 500 taksitli B'nin taksitlerini vade sırasıyla kapatır → kart Bitti (taksitler kapalı), A 300 açık 'Vadesi Geçti'; gecikmiş 300 = A. v2.4.9: avans taksitsiz A'yı kapatıyordu, B'nin 1. taksiti 150 gecikmiş."
+  },
+  {
+   "cari": "TYKF U10 S99 Avans Taksitli Taksitsiz",
+   "alan": "kart1.durum",
+   "eski": "\"overdue\"",
+   "yeni": "\"done\"",
+   "karar": "S99 + B1",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S99 = A'nın örneği: avans 500 taksitli B'nin taksitlerini vade sırasıyla kapatır → kart Bitti (taksitler kapalı), A 300 açık 'Vadesi Geçti'; gecikmiş 300 = A. v2.4.9: avans taksitsiz A'yı kapatıyordu, B'nin 1. taksiti 150 gecikmiş."
+  },
+  {
+   "cari": "TYKF U10 S99 Avans Taksitli Taksitsiz",
+   "alan": "kart1.sekme",
+   "eski": "\"active/overdue\"",
+   "yeni": "\"done\"",
+   "karar": "S99 + B1",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S99 = A'nın örneği: avans 500 taksitli B'nin taksitlerini vade sırasıyla kapatır → kart Bitti (taksitler kapalı), A 300 açık 'Vadesi Geçti'; gecikmiş 300 = A. v2.4.9: avans taksitsiz A'yı kapatıyordu, B'nin 1. taksiti 150 gecikmiş."
+  },
+  {
+   "cari": "TYKF U10 S99 Avans Taksitli Taksitsiz",
+   "alan": "kart1.taksitler",
+   "eski": "[\"1:150:150:overdue\",\"2:150:150:open\"]",
+   "yeni": "[\"1:150:0:paid\",\"2:150:0:paid\"]",
+   "karar": "S99 + B1",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S99 = A'nın örneği: avans 500 taksitli B'nin taksitlerini vade sırasıyla kapatır → kart Bitti (taksitler kapalı), A 300 açık 'Vadesi Geçti'; gecikmiş 300 = A. v2.4.9: avans taksitsiz A'yı kapatıyordu, B'nin 1. taksiti 150 gecikmiş."
+  },
+  {
+   "cari": "TYKF U10 S99 Avans Taksitli Taksitsiz",
+   "alan": "vadeTakip",
+   "eski": "[\"plan|1. taksit|150|2026-10-10|in\",\"plan|2. taksit|150|2026-11-10|in\"]",
+   "yeni": "[\"invoice|Satış faturası FIS2026000000006 (kalan)|300|2026-10-05|in\"]",
+   "karar": "S99 + B1",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S99 = A'nın örneği: avans 500 taksitli B'nin taksitlerini vade sırasıyla kapatır → kart Bitti (taksitler kapalı), A 300 açık 'Vadesi Geçti'; gecikmiş 300 = A. v2.4.9: avans taksitsiz A'yı kapatıyordu, B'nin 1. taksiti 150 gecikmiş."
+  },
+  {
+   "cari": "TYKF U10 S99 Avans Taksitli Taksitsiz",
+   "alan": "zil",
+   "eski": "[\"plan|1. taksit|150|overdue\"]",
+   "yeni": "[\"invoice|Tahsil Edilecek Fatura FIS2026000000006|300|overdue\"]",
+   "karar": "S99 + B1",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S99 = A'nın örneği: avans 500 taksitli B'nin taksitlerini vade sırasıyla kapatır → kart Bitti (taksitler kapalı), A 300 açık 'Vadesi Geçti'; gecikmiş 300 = A. v2.4.9: avans taksitsiz A'yı kapatıyordu, B'nin 1. taksiti 150 gecikmiş."
+  },
+  {
+   "cari": "TYKF U11 S101 Avans Stok Kart",
+   "alan": "kart1.durum",
+   "eski": "\"active\"",
+   "yeni": "\"done\"",
+   "karar": "S101",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S101 = A'nın örneği: borç avansla kapanmışken açılan kart Bitti; kart tahsilatı avansa eklenir, Borç 500 avanstan kapanır; takvim / zil boş, gecikmiş 0. v2.4.9: kart Aktif, 2. taksit 300 takvimde."
+  },
+  {
+   "cari": "TYKF U11 S101 Avans Stok Kart",
+   "alan": "kart1.sekme",
+   "eski": "\"active\"",
+   "yeni": "\"done\"",
+   "karar": "S101",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S101 = A'nın örneği: borç avansla kapanmışken açılan kart Bitti; kart tahsilatı avansa eklenir, Borç 500 avanstan kapanır; takvim / zil boş, gecikmiş 0. v2.4.9: kart Aktif, 2. taksit 300 takvimde."
+  },
+  {
+   "cari": "TYKF U11 S101 Avans Stok Kart",
+   "alan": "kart1.taksitler",
+   "eski": "[\"1:300:0:paid\",\"2:300:300:open\"]",
+   "yeni": "[\"1:300:0:paid\",\"2:300:0:paid\"]",
+   "karar": "S101",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S101 = A'nın örneği: borç avansla kapanmışken açılan kart Bitti; kart tahsilatı avansa eklenir, Borç 500 avanstan kapanır; takvim / zil boş, gecikmiş 0. v2.4.9: kart Aktif, 2. taksit 300 takvimde."
+  },
+  {
+   "cari": "TYKF U11 S101 Avans Stok Kart",
+   "alan": "vadeTakip",
+   "eski": "[\"plan|2. taksit|300|2026-10-30|in\"]",
+   "yeni": "[]",
+   "karar": "S101",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S101 = A'nın örneği: borç avansla kapanmışken açılan kart Bitti; kart tahsilatı avansa eklenir, Borç 500 avanstan kapanır; takvim / zil boş, gecikmiş 0. v2.4.9: kart Aktif, 2. taksit 300 takvimde."
+  },
+  {
+   "cari": "TYKF U12 S101 Kısmi Avans",
+   "alan": "gecikmis",
+   "eski": "300",
+   "yeni": "0",
+   "karar": "S101 + karar (e) 11.11 03:15",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): karar (e): kısmen avansla kapanmış borçta kartın o kadarı ödenmiş — avans 400 1. taksitin 300'ü + 2. taksitin 100'ü; 2. taksit 200 açık (vadesi gelmedi), gecikmiş 0. v2.4.9: avans kartı saymıyordu, 1. taksit 300 gecikmiş."
+  },
+  {
+   "cari": "TYKF U12 S101 Kısmi Avans",
+   "alan": "kart1.durum",
+   "eski": "\"overdue\"",
+   "yeni": "\"active\"",
+   "karar": "S101 + karar (e) 11.11 03:15",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): karar (e): kısmen avansla kapanmış borçta kartın o kadarı ödenmiş — avans 400 1. taksitin 300'ü + 2. taksitin 100'ü; 2. taksit 200 açık (vadesi gelmedi), gecikmiş 0. v2.4.9: avans kartı saymıyordu, 1. taksit 300 gecikmiş."
+  },
+  {
+   "cari": "TYKF U12 S101 Kısmi Avans",
+   "alan": "kart1.sekme",
+   "eski": "\"active/overdue\"",
+   "yeni": "\"active\"",
+   "karar": "S101 + karar (e) 11.11 03:15",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): karar (e): kısmen avansla kapanmış borçta kartın o kadarı ödenmiş — avans 400 1. taksitin 300'ü + 2. taksitin 100'ü; 2. taksit 200 açık (vadesi gelmedi), gecikmiş 0. v2.4.9: avans kartı saymıyordu, 1. taksit 300 gecikmiş."
+  },
+  {
+   "cari": "TYKF U12 S101 Kısmi Avans",
+   "alan": "kart1.taksitler",
+   "eski": "[\"1:300:300:overdue\",\"2:300:300:open\"]",
+   "yeni": "[\"1:300:0:paid\",\"2:300:200:open\"]",
+   "karar": "S101 + karar (e) 11.11 03:15",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): karar (e): kısmen avansla kapanmış borçta kartın o kadarı ödenmiş — avans 400 1. taksitin 300'ü + 2. taksitin 100'ü; 2. taksit 200 açık (vadesi gelmedi), gecikmiş 0. v2.4.9: avans kartı saymıyordu, 1. taksit 300 gecikmiş."
+  },
+  {
+   "cari": "TYKF U12 S101 Kısmi Avans",
+   "alan": "vadeTakip",
+   "eski": "[\"plan|1. taksit|300|2026-09-30|in\",\"plan|2. taksit|300|2026-10-30|in\"]",
+   "yeni": "[\"plan|2. taksit (kalan)|200|2026-10-30|in\"]",
+   "karar": "S101 + karar (e) 11.11 03:15",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): karar (e): kısmen avansla kapanmış borçta kartın o kadarı ödenmiş — avans 400 1. taksitin 300'ü + 2. taksitin 100'ü; 2. taksit 200 açık (vadesi gelmedi), gecikmiş 0. v2.4.9: avans kartı saymıyordu, 1. taksit 300 gecikmiş."
+  },
+  {
+   "cari": "TYKF U12 S101 Kısmi Avans",
+   "alan": "zil",
+   "eski": "[\"plan|1. taksit|300|overdue\"]",
+   "yeni": "[]",
+   "karar": "S101 + karar (e) 11.11 03:15",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): karar (e): kısmen avansla kapanmış borçta kartın o kadarı ödenmiş — avans 400 1. taksitin 300'ü + 2. taksitin 100'ü; 2. taksit 200 açık (vadesi gelmedi), gecikmiş 0. v2.4.9: avans kartı saymıyordu, 1. taksit 300 gecikmiş."
+  },
+  {
+   "cari": "TYKF U13 S120 Elle Borçlar",
+   "alan": "gecikmis",
+   "eski": "300",
+   "yeni": "1200",
+   "karar": "S120 + S1 + S91 + B1",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S120 = A'nın örneği: kart yalnız elle borçları eskiden yeniye (X 500 + Y'nin 400'ü); ayrı açık F 600 + Y 300 ('Tahsil Edilecek Borç', vadesiz — S1) → gecikmiş F 600 + Y 300 + 1. taksit 300 = 1.200. v2.4.9: kart en yeni borçları (Y 700 + X'in 200'ü), X'in kalanı vadesiz kalem değildi; gecikmiş yalnız taksit 300."
+  },
+  {
+   "cari": "TYKF U13 S120 Elle Borçlar",
+   "alan": "vadeTakip",
+   "eski": "[\"invoice|Satış faturası FIS2026000000007|600|2026-10-06|in\",\"plan|1. taksit|300|2026-10-15|in\",\"plan|2. taksit|300|2026-11-15|in\",\"plan|3. taksit|300|2026-12-15|in\"]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|300|2026-10-08|in\",\"invoice|Satış faturası FIS2026000000007|600|2026-10-06|in\",\"plan|1. taksit|300|2026-10-15|in\",\"plan|2. taksit|300|2026-11-15|in\",\"plan|3. taksit|300|2026-12-15|in\"]",
+   "karar": "S120 + S1 + S91 + B1",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S120 = A'nın örneği: kart yalnız elle borçları eskiden yeniye (X 500 + Y'nin 400'ü); ayrı açık F 600 + Y 300 ('Tahsil Edilecek Borç', vadesiz — S1) → gecikmiş F 600 + Y 300 + 1. taksit 300 = 1.200. v2.4.9: kart en yeni borçları (Y 700 + X'in 200'ü), X'in kalanı vadesiz kalem değildi; gecikmiş yalnız taksit 300."
+  },
+  {
+   "cari": "TYKF U13 S120 Elle Borçlar",
+   "alan": "zil",
+   "eski": "[\"invoice|Tahsil Edilecek Fatura FIS2026000000007|600|overdue\",\"plan|1. taksit|300|overdue\"]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|300|overdue\",\"invoice|Tahsil Edilecek Fatura FIS2026000000007|600|overdue\",\"plan|1. taksit|300|overdue\"]",
+   "karar": "S120 + S1 + S91 + B1",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S120 = A'nın örneği: kart yalnız elle borçları eskiden yeniye (X 500 + Y'nin 400'ü); ayrı açık F 600 + Y 300 ('Tahsil Edilecek Borç', vadesiz — S1) → gecikmiş F 600 + Y 300 + 1. taksit 300 = 1.200. v2.4.9: kart en yeni borçları (Y 700 + X'in 200'ü), X'in kalanı vadesiz kalem değildi; gecikmiş yalnız taksit 300."
+  },
+  {
+   "cari": "TYKF U14 S122 Karta Ödeme",
+   "alan": "gecikmis",
+   "eski": "0",
+   "yeni": "900",
+   "karar": "S122 + S120 + S1 + S91 + B1",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S120 kartına 300 ödeme (S122: X Kalan 200, Y Kalan 700 — Kalan sütunu bu fikstürde okunmuyor); takvimde Y 300 + F 600; gecikmiş F 600 + Y 300 = 900 (1. taksit ödendi). v2.4.9: 0 (yalnız geciken taksit)."
+  },
+  {
+   "cari": "TYKF U14 S122 Karta Ödeme",
+   "alan": "vadeTakip",
+   "eski": "[\"invoice|Satış faturası FIS2026000000008|600|2026-10-06|in\",\"plan|2. taksit|300|2026-11-15|in\",\"plan|3. taksit|300|2026-12-15|in\"]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|300|2026-10-08|in\",\"invoice|Satış faturası FIS2026000000008|600|2026-10-06|in\",\"plan|2. taksit|300|2026-11-15|in\",\"plan|3. taksit|300|2026-12-15|in\"]",
+   "karar": "S122 + S120 + S1 + S91 + B1",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S120 kartına 300 ödeme (S122: X Kalan 200, Y Kalan 700 — Kalan sütunu bu fikstürde okunmuyor); takvimde Y 300 + F 600; gecikmiş F 600 + Y 300 = 900 (1. taksit ödendi). v2.4.9: 0 (yalnız geciken taksit)."
+  },
+  {
+   "cari": "TYKF U14 S122 Karta Ödeme",
+   "alan": "zil",
+   "eski": "[\"invoice|Tahsil Edilecek Fatura FIS2026000000008|600|overdue\"]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|300|overdue\",\"invoice|Tahsil Edilecek Fatura FIS2026000000008|600|overdue\"]",
+   "karar": "S122 + S120 + S1 + S91 + B1",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S120 kartına 300 ödeme (S122: X Kalan 200, Y Kalan 700 — Kalan sütunu bu fikstürde okunmuyor); takvimde Y 300 + F 600; gecikmiş F 600 + Y 300 = 900 (1. taksit ödendi). v2.4.9: 0 (yalnız geciken taksit)."
+  },
+  {
+   "cari": "TYKF U15 S110 Elle Kart Sonra",
+   "alan": "gecikmis",
+   "eski": "300",
+   "yeni": "900",
+   "karar": "S110 + S91 + B1",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S110 = A'nın örneği (elle borç 900 + F 600, kart 900): kart elle borcu taşır, F 600 ayrı açık → gecikmiş 1. taksit 300 + F 600 = 900. v2.4.9 kartı en son kaydedilen borçtan (F 600 + elle borcun 300'ü) kuruyordu — karar metnindeki '2.4.9'daki gibi' elle kolda v2.4.9 ile birebir değil (raporda)."
+  },
+  {
+   "cari": "TYKF U15 S110 Elle Kart Sonra",
+   "alan": "vadeTakip",
+   "eski": "[\"plan|1. taksit|300|2026-10-15|in\",\"plan|2. taksit|300|2026-11-15|in\",\"plan|3. taksit|300|2026-12-15|in\"]",
+   "yeni": "[\"invoice|Satış faturası FIS2026000000009|600|2026-10-07|in\",\"plan|1. taksit|300|2026-10-15|in\",\"plan|2. taksit|300|2026-11-15|in\",\"plan|3. taksit|300|2026-12-15|in\"]",
+   "karar": "S110 + S91 + B1",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S110 = A'nın örneği (elle borç 900 + F 600, kart 900): kart elle borcu taşır, F 600 ayrı açık → gecikmiş 1. taksit 300 + F 600 = 900. v2.4.9 kartı en son kaydedilen borçtan (F 600 + elle borcun 300'ü) kuruyordu — karar metnindeki '2.4.9'daki gibi' elle kolda v2.4.9 ile birebir değil (raporda)."
+  },
+  {
+   "cari": "TYKF U15 S110 Elle Kart Sonra",
+   "alan": "zil",
+   "eski": "[\"plan|1. taksit|300|overdue\"]",
+   "yeni": "[\"invoice|Tahsil Edilecek Fatura FIS2026000000009|600|overdue\",\"plan|1. taksit|300|overdue\"]",
+   "karar": "S110 + S91 + B1",
+   "not": "tur 2b-2 (yeni sınıf, v2.4.9 gerçek koduyla üretildi): S110 = A'nın örneği (elle borç 900 + F 600, kart 900): kart elle borcu taşır, F 600 ayrı açık → gecikmiş 1. taksit 300 + F 600 = 900. v2.4.9 kartı en son kaydedilen borçtan (F 600 + elle borcun 300'ü) kuruyordu — karar metnindeki '2.4.9'daki gibi' elle kolda v2.4.9 ile birebir değil (raporda)."
+  },
+  {
+   "cari": "TYKF U16 S98 S99 Verilen Avans Fatura",
+   "alan": "faturalar",
+   "eski": "[\"2026-10-11|sale|100|0|paid\"]",
+   "yeni": "[\"2026-10-11|sale|100|100|overdue\"]",
+   "karar": "S98 + S99",
+   "not": "tur 2b-2: fatura durumu tek kuyruktan — tahsilat 150 önce avansı (01 gün önce) kapattı, fatura 100 açık 'Vadesi Geçti' (v2.4.9: tahsilat faturayı kapatıyordu, 'Ödendi'; Vade Takip ile ayrı sayı)."
+  },
+  {
+   "cari": "TYKF U16 S98 S99 Verilen Avans Fatura",
+   "alan": "gecikmis",
+   "eski": "0",
+   "yeni": "150",
+   "karar": "S98 + S99 + S93 + B1",
+   "not": "tur 2b-2 yeni sınıf: müşteriye Ödeme 200 → satış 100 → tahsilat 150: tahsilat önce verilen avansı kapatır (S98 = A), fatura 100 açık (S99 = A 'fatura listesi = Vade Takip'), avansın 50'si 'Tahsil Edilecek Borç' (T-09 / S93); gecikmiş 150 = bakiye. v2.4.9 gecikmiş 0 (bakiye 150)."
+  },
+  {
+   "cari": "TYKF U16 S98 S99 Verilen Avans Fatura",
+   "alan": "vadeTakip",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|50|2026-10-10|in\",\"invoice|Satış faturası FIS2026000000010|100|2026-10-11|in\"]",
+   "karar": "S98 + S99 + S93",
+   "not": "tur 2b-2: Vade Takip avans 50 (ödeme gününde) + fatura 100 (v2.4.9: kalem yok — fatura 'Ödendi', avans kalem değildi)."
+  },
+  {
+   "cari": "TYKF U16 S98 S99 Verilen Avans Fatura",
+   "alan": "zil",
+   "eski": "[]",
+   "yeni": "[\"account|Tahsil Edilecek Borç|50|overdue\",\"invoice|Tahsil Edilecek Fatura FIS2026000000010|100|overdue\"]",
+   "karar": "S98 + S99 + S93",
+   "not": "tur 2b-2: zil Vade Takip ile aynı iki kalem (gecikmiş)."
+  },
+  {
+   "cari": "TYKF U17 S98 S99 Avans Geri Ödeme Fatura",
+   "alan": "faturalar",
+   "eski": "[\"2026-10-13|sale|500|0|paid\"]",
+   "yeni": "[\"2026-10-13|sale|500|300|overdue\"]",
+   "karar": "S98 + S99",
+   "not": "tur 2b-2: fatura 300 açık (v2.4.9 'Ödendi' — avansın geri ödenen kısmı fatura durumunda hâlâ faturayı kapatıyordu); Σ fatura açığı = bakiye."
+  },
+  {
+   "cari": "TYKF U17 S98 S99 Avans Geri Ödeme Fatura",
+   "alan": "gecikmis",
+   "eski": "0",
+   "yeni": "300",
+   "karar": "S98 + S99 + B1",
+   "not": "tur 2b-2 yeni sınıf (S98 × S99 ters yön): müşterinin avansı 500 → ona geri Ödeme 300 → satış 500: ödeme avansın 300'ünü kapatır, fatura 300 açık; gecikmiş 300 = bakiye (v2.4.9 0)."
+  },
+  {
+   "cari": "TYKF U17 S98 S99 Avans Geri Ödeme Fatura",
+   "alan": "vadeTakip",
+   "eski": "[]",
+   "yeni": "[\"invoice|Satış faturası FIS2026000000011 (kalan)|300|2026-10-13|in\"]",
+   "karar": "S98 + S99",
+   "not": "tur 2b-2: Vade Takip fatura kalanı 300 (v2.4.9: fatura 'Ödendi', kalem yok; bakiye 300 hiçbir ekranda görünmüyordu)."
+  },
+  {
+   "cari": "TYKF U17 S98 S99 Avans Geri Ödeme Fatura",
+   "alan": "zil",
+   "eski": "[]",
+   "yeni": "[\"invoice|Tahsil Edilecek Fatura FIS2026000000011|300|overdue\"]",
+   "karar": "S98 + S99",
+   "not": "tur 2b-2: zil Vade Takip ile aynı (fatura 300 gecikmiş)."
+  },
+  {
+   "cari": "TYKF U18 Söz Ufku",
+   "alan": "gecikmis",
+   "eski": "0",
+   "yeni": "190",
+   "karar": "S52 + B1",
+   "not": "tur 2b-2 yeni sınıf: vadesi geçmiş iki borç (150 sözü +15, 40 sözü +5): Ödeme Sözü gecikmişi değiştirmez (S52) — gecikmiş 190 (v2.4.9 0)."
+  },
+  {
+   "cari": "TYKF U18 Söz Ufku",
+   "alan": "zil",
+   "eski": "[\"account|Tahsil Edilecek Borç (Ödeme Sözü)|40|upcoming\"]",
+   "yeni": "[\"account|Tahsil Edilecek Borç (Ödeme Sözü)|40|overdue\"]",
+   "karar": "S67",
+   "not": "tur 2b-2: söz +5 ufukta — kalem söz gününde, durumu Gecikmiş, gün sayısı vadeden (S67 = A; v2.4.9 'upcoming'); söz +15 ufkun dışında — iki sürümde de zilde YOK (K6.3; Ç5-B'nin gerilemesi bu turda kapandı)."
+  }
+ ]
+}

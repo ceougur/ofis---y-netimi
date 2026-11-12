@@ -1,0 +1,408 @@
+TAP version 13
+# Subtest: Ç5-B son tur — S126 = A (açık borca eşit, içinde fatura da olan kart: ödeme fatura dahil eskiden yeniye)
+    # Subtest: karar örneği: F 600 + X 300, kart 900; karta 300 ödeme (Taksit Tahsilatı) ⇒ F açık 300, X Kalan 300; bakiye 600, kart kalanı 600
+    not ok 1 - karar örneği: F 600 + X 300, kart 900; karta 300 ödeme (Taksit Tahsilatı) ⇒ F açık 300, X Kalan 300; bakiye 600, kart kalanı 600
+      ---
+      duration_ms: 6.052439
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-eski2b1/test/tyk-son-250.test.mjs:50:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        açık borç = kart tutarı: S110 / S120 seçimi yok
+        
+        undefined !== 's2'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 's2'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-eski2b1/test/tyk-son-250.test.mjs:55:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: karta pay düşen BAĞSIZ tahsilat (kart seçilmeden; S50) da aynı sırayla: tahsilat 500 ⇒ F açık 100, X Kalan 300 (kâhin d37 L8 ile aynı sayılar)
+    ok 2 - karta pay düşen BAĞSIZ tahsilat (kart seçilmeden; S50) da aynı sırayla: tahsilat 500 ⇒ F açık 100, X Kalan 300 (kâhin d37 L8 ile aynı sayılar)
+      ---
+      duration_ms: 1.813512
+      type: 'test'
+      ...
+    # Subtest: iki ödeme üst üste (300 + 400) ⇒ F 0, X Kalan 200; kartı tamamen kapatan ödeme ⇒ F Ödendi, X Kalan 0, kalem yok
+    ok 3 - iki ödeme üst üste (300 + 400) ⇒ F 0, X Kalan 200; kartı tamamen kapatan ödeme ⇒ F Ödendi, X Kalan 0, kalem yok
+      ---
+      duration_ms: 1.682098
+      type: 'test'
+      ...
+    # Subtest: ödemenin silinmesi / geri yüklenmesi: ödemesiz hâl = silinmiş hâl; geri yüklenince yine F açık 300, X Kalan 300 (yazım sırası sonucu değiştirmez)
+    ok 4 - ödemenin silinmesi / geri yüklenmesi: ödemesiz hâl = silinmiş hâl; geri yüklenince yine F açık 300, X Kalan 300 (yazım sırası sonucu değiştirmez)
+      ---
+      duration_ms: 1.29058
+      type: 'test'
+      ...
+    # Subtest: elle borç faturadan ESKİ: X 300 (25.02) + F 600 (01.03), kart 900, karta 300 ⇒ X Kalan 0, F açık 600 (eskiden yeniye: önce X)
+    ok 5 - elle borç faturadan ESKİ: X 300 (25.02) + F 600 (01.03), kart 900, karta 300 ⇒ X Kalan 0, F açık 600 (eskiden yeniye: önce X)
+      ---
+      duration_ms: 0.445438
+      type: 'test'
+      ...
+    # Subtest: itirazsız okuma (kâhin Y10-3): içindekilerin HEPSİ elle borç — X 500 + Y 400, kart 900, ödeme 300 ⇒ X Kalan 200, Y Kalan 400
+    ok 6 - itirazsız okuma (kâhin Y10-3): içindekilerin HEPSİ elle borç — X 500 + Y 400, kart 900, ödeme 300 ⇒ X Kalan 200, Y Kalan 400
+      ---
+      duration_ms: 0.329658
+      type: 'test'
+      ...
+    # Subtest: itirazsız okuma (kâhin Y11-7): içinde YALNIZ faturalar — F1 400 (01.03) + F2 500 (05.03), kart 900, ödeme 300 ⇒ F1 açık 100, F2 açık 500
+    ok 7 - itirazsız okuma (kâhin Y11-7): içinde YALNIZ faturalar — F1 400 (01.03) + F2 500 (05.03), kart 900, ödeme 300 ⇒ F1 açık 100, F2 açık 500
+      ---
+      duration_ms: 0.39716
+      type: 'test'
+      ...
+    # Subtest: değişmezler ödemenin her tutarında (1 … 900): Σ fatura açığı + Σ elle Kalan = bakiye = kart kalanı; kalemler yalnız taksitler
+    ok 8 - değişmezler ödemenin her tutarında (1 … 900): Σ fatura açığı + Σ elle Kalan = bakiye = kart kalanı; kalemler yalnız taksitler
+      ---
+      duration_ms: 2.084498
+      type: 'test'
+      ...
+    1..8
+not ok 1 - Ç5-B son tur — S126 = A (açık borca eşit, içinde fatura da olan kart: ödeme fatura dahil eskiden yeniye)
+  ---
+  duration_ms: 15.341262
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-eski2b1/test/tyk-son-250.test.mjs:45:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç5-B son tur — S128 = A (kartın içinde fatura / elle borç dışında kalem: türüne bakılmadan eskiden yeniye)
+    # Subtest: karar örneği: 01.03 stok veresiye S 400 · 02.03 elle X 300 · 15.03 kart 700 · 10.04 karta 300 ⇒ S açığı 100, X Kalan 300; bakiye 400, kart kalanı 400
+    not ok 1 - karar örneği: 01.03 stok veresiye S 400 · 02.03 elle X 300 · 15.03 kart 700 · 10.04 karta 300 ⇒ S açığı 100, X Kalan 300; bakiye 400, kart kalanı 400
+      ---
+      duration_ms: 0.860832
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-eski2b1/test/tyk-son-250.test.mjs:116:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        undefined !== 's2'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 's2'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-eski2b1/test/tyk-son-250.test.mjs:121:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: elle borç stok satışından ESKİ: X 300 (25.02) · S 400 (01.03) · kart 700 · karta 500 ⇒ X Kalan 0, S açığı 200
+    ok 2 - elle borç stok satışından ESKİ: X 300 (25.02) · S 400 (01.03) · kart 700 · karta 500 ⇒ X Kalan 0, S açığı 200
+      ---
+      duration_ms: 0.580498
+      type: 'test'
+      ...
+    # Subtest: karşılıksız kalemi: 01.03 karşılıksız çek B 400 · 02.03 elle X 300 · kart 700 · karta 300 ⇒ B açığı 100, X Kalan 300; bağsız tahsilatla (S50) da aynı
+    ok 3 - karşılıksız kalemi: 01.03 karşılıksız çek B 400 · 02.03 elle X 300 · kart 700 · karta 300 ⇒ B açığı 100, X Kalan 300; bağsız tahsilatla (S50) da aynı
+      ---
+      duration_ms: 0.858537
+      type: 'test'
+      ...
+    # Subtest: üç tür birlikte (fatura + stok + elle): F 200 (01.03) · S 300 (02.03) · X 200 (03.03), kart 700, karta 350 ⇒ F 0, S açığı 150, X Kalan 200
+    ok 4 - üç tür birlikte (fatura + stok + elle): F 200 (01.03) · S 300 (02.03) · X 200 (03.03), kart 700, karta 350 ⇒ F 0, S açığı 150, X Kalan 200
+      ---
+      duration_ms: 0.538048
+      type: 'test'
+      ...
+    1..4
+not ok 2 - Ç5-B son tur — S128 = A (kartın içinde fatura / elle borç dışında kalem: türüne bakılmadan eskiden yeniye)
+  ---
+  duration_ms: 3.298595
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-eski2b1/test/tyk-son-250.test.mjs:114:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç5-B son tur — S101 sınırı (tur 2b-2'nin dişsiz kalan mutantı): para dışı kapanış avans DEĞİLDİR
+    # Subtest: Borç 600 → kart 600 (2 × 300) → geriye tarihli Alacak 200 (karttan sonra yazıldı): eksik 200 son taksitten kırpılır [300, 100]; ilk taksit 'avansla ödenmiş' sayılmaz
+    not ok 1 - Borç 600 → kart 600 (2 × 300) → geriye tarihli Alacak 200 (karttan sonra yazıldı): eksik 200 son taksitten kırpılır [300, 100]; ilk taksit 'avansla ödenmiş' sayılmaz
+      ---
+      duration_ms: 0.906961
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-eski2b1/test/tyk-son-250.test.mjs:145:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            400,
+            400,
+            300,
+        +   undefined
+        -   0
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 400
+        1: 400
+        2: 300
+        3: 0
+      actual:
+        0: 400
+        1: 400
+        2: 300
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-eski2b1/test/tyk-son-250.test.mjs:150:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    1..1
+not ok 3 - Ç5-B son tur — S101 sınırı (tur 2b-2'nin dişsiz kalan mutantı): para dışı kapanış avans DEĞİLDİR
+  ---
+  duration_ms: 0.987338
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-eski2b1/test/tyk-son-250.test.mjs:144:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç5-B son tur — BİLİNEN SINIRLAR (S123 = S124 = S125 = C: kural YOK; bugünkü davranış sabitlenir, değişmezler korunur)
+    # Subtest: S123 (açık elle borçlar kart tutarından az: F 600 + X 300, kart 500): bugün kartta X 300 + F'nin 200'ü; karta 250 ⇒ X Kalan 50, F açık 600
+    not ok 1 - S123 (açık elle borçlar kart tutarından az: F 600 + X 300, kart 500): bugün kartta X 300 + F'nin 200'ü; karta 250 ⇒ X Kalan 50, F açık 600
+      ---
+      duration_ms: 0.964889
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-eski2b1/test/tyk-son-250.test.mjs:165:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        BİLİNEN SINIR — bugünkü sayılar (kural değil)
+        + actual - expected
+        
+          [
+        +   300,
+        +   350,
+        +   100,
+        +   undefined
+        -   50,
+        -   600,
+        -   400,
+        -   'S120'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 50
+        1: 600
+        2: 400
+        3: 'S120'
+      actual:
+        0: 300
+        1: 350
+        2: 100
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-eski2b1/test/tyk-son-250.test.mjs:170:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: S124 (karta eşit birden çok elle borç + daha eski elle borç: Z 300 + X 900 + Y 900, kart 900): bugün kartta Z 300 + X'in 600'ü; karta 400 ⇒ Z 0, X Kalan 800
+    not ok 2 - S124 (karta eşit birden çok elle borç + daha eski elle borç: Z 300 + X 900 + Y 900, kart 900): bugün kartta Z 300 + X'in 600'ü; karta 400 ⇒ Z 0, X Kalan 800
+      ---
+      duration_ms: 0.624192
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-eski2b1/test/tyk-son-250.test.mjs:172:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        BİLİNEN SINIR — bugünkü sayılar (kural değil)
+        + actual - expected
+        
+          [
+        +   300,
+        -   0,
+        -   800,
+            900,
+        +   900,
+        +   200
+        -   600
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 0
+        1: 800
+        2: 900
+        3: 600
+      actual:
+        0: 300
+        1: 900
+        2: 900
+        3: 200
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-eski2b1/test/tyk-son-250.test.mjs:177:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S125 (belge sırası ↔ vade sırası ters; S120 kolu: X 02.03 vade 30.03, Y 05.03 vade 10.03, F 600, kart 900): bugün vade sırası — kartta Y 700 + X'in 200'ü; karta 300 ⇒ Y Kalan 400, X 500
+    not ok 3 - S125 (belge sırası ↔ vade sırası ters; S120 kolu: X 02.03 vade 30.03, Y 05.03 vade 10.03, F 600, kart 900): bugün vade sırası — kartta Y 700 + X'in 200'ü; karta 300 ⇒ Y Kalan 400, X 500
+      ---
+      duration_ms: 4.77935
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-eski2b1/test/tyk-son-250.test.mjs:179:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        BİLİNEN SINIR — bugünkü sayılar (kural değil)
+        + actual - expected
+        
+          [
+        +   700,
+        -   400,
+            500,
+        +   300
+        -   600
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 400
+        1: 500
+        2: 600
+      actual:
+        0: 700
+        1: 500
+        2: 300
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-eski2b1/test/tyk-son-250.test.mjs:184:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S125 × S126 (açık borca eşit kartta vade ↔ belge sırası ters: X 02.03 vade 30.03 · F 04.03 vadesiz, kart 900, karta 300): bugün vade sırası — F açık 300, X Kalan 300 (kâhin d37 L13: susar)
+    ok 4 - S125 × S126 (açık borca eşit kartta vade ↔ belge sırası ters: X 02.03 vade 30.03 · F 04.03 vadesiz, kart 900, karta 300): bugün vade sırası — F açık 300, X Kalan 300 (kâhin d37 L13: susar)
+      ---
+      duration_ms: 0.554935
+      type: 'test'
+      ...
+    1..4
+not ok 4 - Ç5-B son tur — BİLİNEN SINIRLAR (S123 = S124 = S125 = C: kural YOK; bugünkü davranış sabitlenir, değişmezler korunur)
+  ---
+  duration_ms: 7.135438
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-eski2b1/test/tyk-son-250.test.mjs:158:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç5-B son tur — gerçek program: S126 / S128 örnekleri ekranların okuduğu uçlardan (cari kartı, fatura kartı, taksit kartı, Vade Takip, zil)
+    # Subtest: S126 = A: F 600 + X 300, kart 900 (3 × 300) — Taksit Tahsilatı 300 ⇒ F açık 300, X Kalan 300; sonra bağsız tahsilat 400 ⇒ F 0, X Kalan 200; silinince geri döner
+    ok 1 - S126 = A: F 600 + X 300, kart 900 (3 × 300) — Taksit Tahsilatı 300 ⇒ F açık 300, X Kalan 300; sonra bağsız tahsilat 400 ⇒ F 0, X Kalan 200; silinince geri döner
+      ---
+      duration_ms: 379.032819
+      type: 'test'
+      ...
+    # Subtest: S128 = A: stok veresiye S 400 · elle X 300 · kart 700 (2 × 350) · karta 300 ⇒ X Kalan 300 (S açığı 100 — kuyrukta); bakiye 400, kart kalanı 400, gecikmiş 50 her ekranda
+    ok 2 - S128 = A: stok veresiye S 400 · elle X 300 · kart 700 (2 × 350) · karta 300 ⇒ X Kalan 300 (S açığı 100 — kuyrukta); bakiye 400, kart kalanı 400, gecikmiş 50 her ekranda
+      ---
+      duration_ms: 97.760178
+      type: 'test'
+      ...
+    # Subtest: hız: kart tahsilatı yanıtından sonra kart okuması ve ilk zil okuması carinin kuyruğunu yeniden KURMAZ, bütün carilerin izini yeniden TARAMAZ (sayaçlar 1 / 0 / 0); yeni yazım belleği geçersiz kılar
+    not ok 3 - hız: kart tahsilatı yanıtından sonra kart okuması ve ilk zil okuması carinin kuyruğunu yeniden KURMAZ, bütün carilerin izini yeniden TARAMAZ (sayaçlar 1 / 0 / 0); yeni yazım belleği geçersiz kılar
+      ---
+      duration_ms: 86.227181
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-eski2b1/test/tyk-son-250.test.mjs:285:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        defter okuması: yazım yanıtı 1, kart okuması 0, zil 0
+        + actual - expected
+        
+          [
+            1,
+        +   1,
+        +   1
+        -   0,
+        -   0
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 1
+        1: 0
+        2: 0
+      actual:
+        0: 1
+        1: 1
+        2: 1
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-eski2b1/test/tyk-son-250.test.mjs:313:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 5 - Ç5-B son tur — gerçek program: S126 / S128 örnekleri ekranların okuduğu uçlardan (cari kartı, fatura kartı, taksit kartı, Vade Takip, zil)
+  ---
+  duration_ms: 1165.93553
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-eski2b1/test/tyk-son-250.test.mjs:204:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..5
+# tests 20
+# suites 5
+# pass 13
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1629.6534

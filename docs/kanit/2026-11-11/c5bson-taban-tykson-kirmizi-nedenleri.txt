@@ -1,0 +1,3 @@
+1. hız: kart tahsilatı yanıtından sonra kart okuması ve ilk zil okuması carinin kuyruğunu yeniden KURMAZ, bütün carilerin izini yeniden TARAMAZ (sayaçlar 1 / 0 / 0); yeni yazım belleği geçersiz kılar
+     -> defter okuması: yazım yanıtı 1, kart okuması 0, zil 0 + actual - expected
+kırmızı test sayısı: 1

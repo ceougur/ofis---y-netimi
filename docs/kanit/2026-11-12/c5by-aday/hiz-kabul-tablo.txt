@@ -1,0 +1,13 @@
+yükler: {'aday': (1.09, 1.85), 'calisma': (1.01, 1.56)}
+yol | çalışma dalı en iyi/ortanca (n) | aday | fark % (en iyi/ortanca)
+açılış                               19980/20226 (4) | 21499/21937 (4) | +8/+8
+Borç Yaz                             268/299 (4) | 302/312 (4) | +13/+4 < tek ölçüde
+nakit tahsilat                       299/323 (4) | 324/332 (4) | +8/+3
+Kasa Giriş                           12/12 (2) | 11/13 (2) | -9/+5
+YAZIM kart tahsilatı                 1190/1254 (4) | 1171/1208 (4) | -2/-4
+kart GET (yazımdan hemen sonra)      2/3 (4) | 2/3 (4) | +4/-10
+zil / takvim (yazımdan sonra ilk)    1903/2008 (4) | 1903/2035 (4) | +0/+1
+Vade Takip (yazımdan sonra ilk)      1517/1577 (4) | 1501/1634 (4) | -1/+4
+zil / takvim (ılık)                  456/484 (4) | 564/580 (4) | +24/+20 <<< %10 ÜSTÜ
+Vade Takip (ılık)                    1530/1667 (4) | 1506/1592 (4) | -2/-5
+nakit akışı (ılık)                   4411/4474 (4) | 4422/4555 (4) | +0/+2

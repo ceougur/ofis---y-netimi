@@ -1,0 +1,38 @@
+#!/bin/bash
+# Ç5-B SON TUR — zincir 2 (son kod; worktree): kâhin adımları (liste kendi kopyada yeniden üretilir) → değişen + yeni testler iki TZ → komşu iki TZ.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-ac2cc1e4fd632460d
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=$S/c5bson-kanit
+cd "$W" || exit 1
+L="flock -s -n $S/olcum.lock"
+run() { # ad, TZ, komut…
+  local ad=$1 tz=$2; shift 2
+  echo "--- $ad · yük $(cat /proc/loadavg | cut -d' ' -f1-3) · $(date -u +%H:%M)"
+  TZ=$tz $L node tools/kanit.mjs kos "$ad" --sure 110 -- "$@" > $S/c5bson-cikti/$ad.out 2>&1
+  echo "== $ad cikis=$? · $(grep -E '^# (tests|pass|fail|cancelled|skipped)' $S/c5bson-cikti/$ad.out | tr '\n' ' ') $(tail -1 $S/c5bson-cikti/$ad.out | cut -c1-200)"
+}
+N="node --disable-warning=ExperimentalWarning"
+PART=${1:-hepsi}
+if [ "$PART" = hepsi ] || [ "$PART" = kahin ]; then
+# 1. yapım aşaması listesi — KENDİ kopyada yeniden üretim (depodaki liste değişmez)
+cp test/bagimsiz/cari/YAPIM-ASAMASI.json $S/c5bson-cikti/liste-sontur.json || exit 1
+KAHIN_YAPIM_ASAMASI=$S/c5bson-cikti/liste-sontur.json run c5bson-kahin-cari-liste-uretim UTC $N test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz --mutasyonsuz
+python3 -I $S/c5bson-betik/liste-fark.py test/bagimsiz/cari/YAPIM-ASAMASI.json $S/c5bson-cikti/liste-sontur.json > $S/c5bson-kanit/c5bson-liste-fark.txt 2>&1
+head -4 $S/c5bson-kanit/c5bson-liste-fark.txt
+# 2. program ↔ kâhin (depodaki listeyle; iki TZ) + defter + mobil yazma
+run c5bson-kahin-cari-UTC UTC $N test/bagimsiz/cari/kos.mjs
+run c5bson-kahin-cari-Europe-Istanbul Europe/Istanbul $N test/bagimsiz/cari/kos.mjs
+run c5bson-kahin-defter UTC $N test/bagimsiz/defter/kos.mjs
+run c5bson-kahin-mobil-yazma UTC $N test/bagimsiz/mobil-yazma/program-surucu.mjs --haric E02-es-havale-pos-mobil,E02-es-havale-pos-masaustu
+fi
+if [ "$PART" = hepsi ] || [ "$PART" = test ]; then
+# 3. değişen + yeni testler iki TZ
+FILES="test/tyk-son-250.test.mjs test/tyk-tur2b2-250.test.mjs test/tyk-250.test.mjs test/tyk-onbellek-250.test.mjs test/tyk-tur2b1-250.test.mjs test/tyk-kilit-taksitli-250.test.mjs test/tyk-fark-v249-250.test.mjs test/bulgu-223.test.mjs test/cari-vade-245.test.mjs test/iade-geri-odeme-246.test.mjs test/plans.test.mjs test/ux18-cek-fatura-244.test.mjs test/whatsapp-onizleme-olcek-248.test.mjs"
+run c5bson-sontur-degisen-UTC UTC $N --test --test-concurrency=1 $FILES
+run c5bson-sontur-degisen-Europe-Istanbul Europe/Istanbul $N --test --test-concurrency=1 $FILES
+# 4. komşu iki TZ (son kod)
+KOMSU=$(sed 's#^\./#test/#' $S/c5bson-cikti/komsu-liste.txt | tr '\n' ' ')
+run c5bson-sontur-komsu-UTC UTC $N --test --test-concurrency=2 --test-timeout=1500000 $KOMSU
+run c5bson-sontur-komsu-Europe-Istanbul Europe/Istanbul $N --test --test-concurrency=2 --test-timeout=1500000 $KOMSU
+fi
+echo "ZİNCİR 2 ($PART) BİTTİ $(date -u +%H:%M)"

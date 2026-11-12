@@ -426,7 +426,13 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       if (!mi) continue;
       const { target, refunds } = ownTarget(mi, centsOf(p.totals.paid));
       const want = Math.min(target, Math.max(0, mi.rest - Math.max(0, centsOf(p.totals.paid))));
-      if (Math.abs(centsOf(inv.open) - want) > 1) problems.push(`Taksitli fatura ${inv.number}: açık ${inv.open} ≠ imzalı açık hedefi ${tl(want)} (geri ödenen ${tl(refunds)}) · kapatanlar ${(inv.closers || []).map(c => `${c.date}:${c.amount}:${c.label}`).join(" | ")}`);
+      // 2.5.0 Ç5-B tur 2b-2 — S99 = A (KULLANICI KARARI 10.11 13:27, AYNEN: "FATURA DURUMU da TEK kuyruktan: bağsız avans vade sırasıyla taksitli faturanın taksitlerini de
+      // kapatır … 'Taksitli faturanın açığı = kartının kalanı' kuralı KUYRUK kalanıyla sürer (2.4.9'daki 'bağsız para taksitli faturanın kartına harcanmaz' kuralı bu kararla
+      // DEĞİŞTİ) … mutabakat modeli bu kararla güncellenir"): faturanın açığı artık kartın KENDİ kalanına (bu modelin hedefi) EŞİT olmak zorunda değil — carinin bağsız parası
+      // (tahsilat, çek, faturasız stok iadesi, kart fazlası) taksitleri vade sırasıyla kapatınca açık hedeften KÜÇÜKTÜR. Model tek yükümlülük kuyruğunu kurmaz; denetim üst sınırdır
+      // (açık hedefi aşamaz — kuyruk kartın kendi kalanından fazlasını açık tutamaz). Kartın kendi kalanı = hedef denetimi (aşağıda) ve S118 = B (kart tahsilatı sınırı kartın
+      // kendi kalanından) AYNEN. Tek kuyruğun sayısı (eşitlik) cari kâhininde (test/bagimsiz/cari — S99 = A, Y6-3) ve test/tyk-tur2b2-250.test.mjs'te.
+      if (centsOf(inv.open) - want > 1) problems.push(`Taksitli fatura ${inv.number}: açık ${inv.open} > imzalı açık hedefi ${tl(want)} (geri ödenen ${tl(refunds)}) · kapatanlar ${(inv.closers || []).map(c => `${c.date}:${c.amount}:${c.label}`).join(" | ")}`);
       if (Math.abs(want - left) > 1) problems.push(`Taksitli fatura ${inv.number}: açık ${inv.open} (geri ödenen ${tl(refunds)}) ≠ kartın kalanı ${tl(left)} · kapatanlar ${(inv.closers || []).map(c => `${c.date}:${c.amount}:${c.label}`).join(" | ")}`);
     }
     // Fatura: her belge programda ve modelde aynı durumda, aynı TL ödenecekle; programda olup modelde olmayan (yetim) belge yok.

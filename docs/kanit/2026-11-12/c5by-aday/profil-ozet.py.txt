@@ -1,0 +1,12 @@
+import json,sys,collections,os
+p=sys.argv[1]; j=json.load(open(p))
+nodes={n['id']:n for n in j['nodes']}; dt=j['timeDeltas']; self=collections.Counter()
+for s,d in zip(j['samples'],dt): self[s]+=d
+tot=sum(self.values())
+byfn=collections.Counter(); byfile=collections.Counter()
+for i,t in self.items():
+    c=nodes[i]['callFrame']; u=c['url']; f=u.split('/server/')[-1] if '/server/' in u else (os.path.basename(u) or '(yerel)')
+    byfn[(c['functionName'] or '(anonim)',f,c['lineNumber']+1)]+=t; byfile[f]+=t
+print(f"toplam {tot/1000:.0f} ms")
+print('dosya:',[(f,round(t/1000)) for f,t in byfile.most_common(10)])
+for (fn,f,l),t in byfn.most_common(16): print(f"  {t/1000:7.0f} ms  {fn[:38]:38} {f}:{l}")

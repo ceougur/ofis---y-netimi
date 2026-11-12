@@ -1,0 +1,27 @@
+S126a ÖNCE (ödemesiz): bakiye 900 | kart kendi 900 kuyruk 900 [300/300/300] overdue | gecikmiş 300 = liste 300 = Vade Takip 300 | zil {plan:1. taksit:300:overdue} | Kalan {X:300→300} | fatura {overdue:600} | Σ kalem 900
+S126a SONRA (karta 300): bakiye 600 | kart kendi 600 kuyruk 600 [0/300/300] active | gecikmiş 0 = liste 0 = Vade Takip 0 | zil {} | Kalan {X:300→300} | fatura {overdue:300} | Σ kalem 600
+  beklenen (karar): F açık 300, X Kalan 300; bakiye 900 − 300
+S126a iki ödeme üst üste (300 + 400): bakiye 200 | kart kendi 200 kuyruk 200 [0/0/200] active | gecikmiş 0 = liste 0 = Vade Takip 0 | zil {} | Kalan {X:300→200} | fatura {paid:0} | Σ kalem 200
+  beklenen (karar, eskiden yeniye): F 0, X Kalan 200
+S126a kartı tamamen kapatan ödeme (toplam 900): bakiye 0 | kart kendi 0 kuyruk 0 [0/0/0] done | gecikmiş 0 = liste 0 = Vade Takip 0 | zil {} | Kalan {X:300→0} | fatura {paid:0} | Σ kalem 0
+S126b bağsız tahsilat 500 (S50 payı): bakiye 400 | kart kendi 900 kuyruk 400 [0/100/300] active | gecikmiş 0 = liste 0 = Vade Takip 0 | zil {} | Kalan {X:300→300} | fatura {overdue:100} | Σ kalem 400
+  beklenen (karar + kâhin d37 L8): F açık 100, X Kalan 300; bakiye 400
+S126c ÖNCE: bakiye 900 | kart kendi 900 kuyruk 900 [300/300/300] overdue | gecikmiş 300 = liste 300 = Vade Takip 300 | zil {plan:1. taksit:300:overdue} | Kalan {X:300→300} | fatura {overdue:600} | Σ kalem 900
+S126c bağsız tahsilat 300: bakiye 600 | kart kendi 900 kuyruk 600 [0/300/300] active | gecikmiş 0 = liste 0 = Vade Takip 0 | zil {} | Kalan {X:300→300} | fatura {overdue:300} | Σ kalem 600
+S126c tahsilat SİLİNDİ: bakiye 900 | kart kendi 900 kuyruk 900 [300/300/300] overdue | gecikmiş 300 = liste 300 = Vade Takip 300 | zil {plan:1. taksit:300:overdue} | Kalan {X:300→300} | fatura {overdue:600} | Σ kalem 900
+  silme = önce mi? fark: []
+S126c GERİ YÜKLENDİ (200): bakiye 600 | kart kendi 900 kuyruk 600 [0/300/300] active | gecikmiş 0 = liste 0 = Vade Takip 0 | zil {} | Kalan {X:300→300} | fatura {overdue:300} | Σ kalem 600
+  geri yükleme = ödeme sonrası mı? fark: []
+S126d elle borç faturadan eski, karta 300: bakiye 600 | kart kendi 600 kuyruk 600 [0/300/300] active | gecikmiş 0 = liste 0 = Vade Takip 0 | zil {} | Kalan {X:300→0} | fatura {overdue:600} | Σ kalem 600
+  beklenen (karar, eskiden yeniye): X Kalan 0, F açık 600
+S126e hepsi elle, karta 300: bakiye 600 | kart kendi 600 kuyruk 600 [0/300/300] active | gecikmiş 0 = liste 0 = Vade Takip 0 | zil {} | Kalan {X:500→200, Y:400→400} | fatura {} | Σ kalem 600
+  beklenen (itirazsız okuma): X Kalan 200, Y Kalan 400
+S126g yalnız faturalar, karta 300: bakiye 600 | kart kendi 600 kuyruk 600 [0/300/300] active | gecikmiş 0 = liste 0 = Vade Takip 0 | zil {} | Kalan {} | fatura {overdue:100, overdue:500} | Σ kalem 600
+  beklenen (itirazsız okuma): F1 açık 100, F2 açık 500
+S128a ÖNCE: bakiye 700 | kart kendi 700 kuyruk 700 [350/350] overdue | gecikmiş 350 = liste 350 = Vade Takip 350 | zil {plan:1. taksit:350:overdue} | Kalan {X:300→300} | fatura {} | Σ kalem 700
+S128a SONRA (karta 300): bakiye 400 | kart kendi 400 kuyruk 400 [50/350] overdue | gecikmiş 50 = liste 50 = Vade Takip 50 | zil {plan:1. taksit:50:overdue} | Kalan {X:300→300} | fatura {} | Σ kalem 400
+  beklenen (karar): S açığı 100, X Kalan 300, bakiye 400, kart kalanı 400 (önce bakiye 700)
+S128b elle eski + stok, karta 500: bakiye 200 | kart kendi 200 kuyruk 200 [0/200] active | gecikmiş 0 = liste 0 = Vade Takip 0 | zil {} | Kalan {X:300→0} | fatura {} | Σ kalem 200
+  beklenen (karar, türüne bakılmadan eskiden yeniye): X Kalan 0, S açığı 200
+S128c taksitli fatura 600 + X 300, kart 900 → kart açma yanıtı 400 {"ok":false,"error":"Carinin taksitlendirilebilecek borcu 300,00 TL; toplam bundan büyük olamaz. Fazlası yeni borçsa ayrı kart açın ya da \"Yeni borç\" seçin.","code":"cover-exceeds","free":300}
+S128c aynı caride kart 300 (yalnız elle borç kadar) → 200 

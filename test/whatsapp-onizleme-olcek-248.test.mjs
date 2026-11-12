@@ -118,9 +118,10 @@ describe("2.4.8 İş Z — WhatsApp önizlemesi kartın eleme çekirdeğiyle (da
         // 2.5.0 Ç5-B (bilerek güncellendi; BİRLEŞİM KURALI "WhatsApp eski alanı Ç5-C'ye kadar okur"): Taksitler ekranı (GET /plans/:id) taksit kalanını, durumu, sıradakini
         // ve gecikmişi Tek Yükümlülük Kuyruğu'ndan gösterir (S50); cari kartının taksit özeti (WhatsApp'ın plan() okuması) kartın KENDİ hesabında kalır. Eşitlik kartın
         // kendi alanlarında aranır: kimlik alanları + kendi toplamları (kuyruk alanları çıkarılır, gecikmiş = ownOverdue). Durum / sıradaki / gecikmiş adedi Ç5-C'de birleşir.
+        // Ç5-B tur 2b-2 (bilerek güncellendi; ekran yürüyüşü 1 Y2): overdueRest / overdueExtras da kuyruk alanıdır (taksitlendirilmemiş kalanın gecikmişi) — çıkarılır.
         const omit = (obj, keys) => Object.fromEntries(Object.entries(obj).filter(([key]) => !keys.includes(key)));
         assert.equal(ozet.totals.overdue, plan.totals.ownOverdue, `${anahtar}: cari kartındaki taksit özetinin gecikmişi = kartın kendi gecikmişi`);
-        assert.deepEqual(omit(ozet.totals, ["overdue", "overdueCount"]), omit(plan.totals, ["queueRemaining", "accountPaid", "ownOverdue", "overdue", "overdueCount"]), `${anahtar}: cari kartındaki taksit özetinin toplamları = kartın kendi toplamları`);
+        assert.deepEqual(omit(ozet.totals, ["overdue", "overdueCount"]), omit(plan.totals, ["queueRemaining", "accountPaid", "ownOverdue", "overdue", "overdueCount", "overdueRest", "overdueExtras"]), `${anahtar}: cari kartındaki taksit özetinin toplamları = kartın kendi toplamları`);
         const ozetKimlik = omit(ozet, ["state", "next", "totals"]);
         assert.deepEqual(ozetKimlik, { id: plan.id, name: plan.name, refNo: plan.refNo, status: plan.status, itemCount: plan.items.length, registeredOn: plan.registeredOn, total: plan.total, coversBalance: Boolean(plan.coversBalance) }, `${anahtar}: cari kartındaki taksit özeti kartın ayrıntısıyla aynı değil`);
       }

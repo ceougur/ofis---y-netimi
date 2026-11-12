@@ -1,0 +1,12 @@
+#!/bin/bash
+# Tur 2b-2'nin eklediği / değiştirdiği test dosyaları — iki saat dilimi. Kullanım: kos-degisen.sh <kod kökü> <ad öneki>
+ROOT="$1"; ON="$2"
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+cd "$ROOT" || exit 1
+FILES="test/tyk-tur2b2-250.test.mjs test/tyk-250.test.mjs test/tyk-onbellek-250.test.mjs test/tyk-tur2b1-250.test.mjs test/tyk-kilit-taksitli-250.test.mjs test/tyk-fark-v249-250.test.mjs test/bulgu-223.test.mjs test/cari-vade-245.test.mjs test/iade-geri-odeme-246.test.mjs test/plans.test.mjs test/ux18-cek-fatura-244.test.mjs test/whatsapp-onizleme-olcek-248.test.mjs"
+for TZN in UTC Europe/Istanbul; do
+  AD="$ON-degisen-$(echo $TZN | tr '/' '-')"
+  cat /proc/loadavg
+  TZ=$TZN HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=$S/c5bson-kanit flock -s -n $S/olcum.lock node tools/kanit.mjs kos "$AD" -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 $FILES 2>&1 | tail -25
+  echo "== $AD cikis=${PIPESTATUS[0]}"
+done

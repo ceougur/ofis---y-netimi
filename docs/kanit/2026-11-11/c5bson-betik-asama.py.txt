@@ -1,0 +1,32 @@
+# Ç5-B son tur — commit'leri maddelere bölmek için test dosyasının aşamalı hâlleri (S126 → S128 → hız). Kullanım: asama.py <kök> <A|B|C>
+# A: yalnız S126 + bilinen sınırlar; B: + S128; C: tam (hız testi ve HIZ mutantları dahil). Tam hâller <not defteri>/c5bson-cikti/tam-*.txt'te saklanır.
+import sys, re, os
+root, stage = sys.argv[1], sys.argv[2]
+keep = '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-cikti/'
+tp, mp = os.path.join(root, 'test/tyk-son-250.test.mjs'), os.path.join(root, 'test/tyk-mutasyon-250.mjs')
+for path, name in ((tp, 'tam-tyk-son.txt'), (mp, 'tam-mutasyon.txt')):
+    if not os.path.exists(keep + name):
+        open(keep + name, 'w', encoding='utf-8').write(open(path, encoding='utf-8').read())
+t = open(keep + 'tam-tyk-son.txt', encoding='utf-8').read()
+m = open(keep + 'tam-mutasyon.txt', encoding='utf-8').read()
+
+def cut(text, start, end):
+    a = text.index(start)
+    b = text.index(end, a)
+    return text[:a] + text[b:]
+
+if stage in ('A', 'B'):
+    # hız testi (API bölümünün son it'i) ve HIZ mutantları yok
+    a = t.index('  // HIZ (ders 47, 53; iş listesi D "HIZ KABUL ÖLÇÜMÜ"')
+    b = t.rindex('});')
+    t = t[:a] + t[b:]
+    m = '\n'.join(l for l in m.split('\n') if not l.startswith('  ["HIZ-') and 'Ç5-B son tur (hız): tek carinin önbelleği' not in l)
+if stage == 'A':
+    t = cut(t, 'describe("Ç5-B son tur — S128 = A', 'describe("Ç5-B son tur — BİLİNEN SINIRLAR')
+    a = t.index('  it("S128 = A: stok veresiye S 400')
+    b = t.rindex('});')
+    t = t[:a] + t[b:]
+    m = '\n'.join(l for l in m.split('\n') if not l.startswith('  ["S128-'))
+open(tp, 'w', encoding='utf-8').write(t)
+open(mp, 'w', encoding='utf-8').write(m)
+print(stage, 'yazıldı:', t.count('\n  it('), 'it;', m.count('["S126-'), m.count('["S128-'), m.count('["HIZ-'))

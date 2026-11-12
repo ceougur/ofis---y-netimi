@@ -339,7 +339,9 @@ describe("2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu 
     const restored = await must("geri yükle", api.post("/api/admin/trash/restore", { id: await trashId() }));
     assert.match(JSON.stringify(restored), /taksitli olduğu \(kendi taksit kartıyla kapandığı\) için faturaya bağlanmadı/);
     assert.deepEqual([k.row(cheque.id).bond, k.row(cheque.id).deletedAt], ["", null]);
-    assert.equal(await k.open(target.id), 500, "taksitli fatura kartıyla kapanır; evrak bağsız (en eski borç)");
+    // Ç5-B tur 2b-2 (bilerek güncellendi; KULLANICI S99 = A, 10.11 13:27: "fatura durumu da TEK kuyruktan — bağsız para taksitli faturanın taksitlerini de kapatır"):
+    // bağsız dönen evrak 500 taksitli faturanın taksitlerini kapatır → fatura açığı 0 = bakiye (önce 500: bağsız para taksitli faturaya harcanmıyordu — S99 B okuması).
+    assert.equal(await k.open(target.id), 0, "evrak bağsız (en eski borç): taksitli faturanın taksitlerini kuyrukta kapatır (S99)");
     // Fatura iptali silinmiş evrakın bağını da düşürür: geri gelen evrak bağsızdır.
     const other = await k.invoice(acc, 300);
     const second = await k.cheque(acc, 300, { invoiceId: other.id });
@@ -510,12 +512,14 @@ describe("2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu 
     assert.equal(await k.open(m.id), 0);
     await k.act(ee, "bounce");
     assert.deepEqual([await k.open(m.id), await k.balance(e)], [700, 700], "iade 300 kalır, evrakın 700'ü açılır");
-    // (f) taksitli fatura DEĞİŞMEZ: bağsız evrak onu kapatmaz (avans), karşılıksızda da açık = kartın kalanı; taksite sayılan evrak kartı açar.
+    // (f) taksitli fatura: Ç5-B tur 2b-2 (bilerek güncellendi; KULLANICI S99 = A): bağsız evrak taksitli faturanın taksitlerini fatura durumunda da kapatır (açık 700 =
+    // bakiye; kartın KENDİ kalanı 1.200 — kart tahsilatı değil); karşılıksızda açık yine 1.200; taksite sayılan evrak kartı da açar. Önce: bağsız evrak taksitli faturayı
+    // kapatmıyordu (açık 1.200, bakiye 700 — S99 B okuması).
     const f = await k.account("T17 Taksitli");
     const planned = await k.invoice(f, 1200, { payment: { rest: "installments", installments: { count: 3, firstDue: day(20), everyMonths: 1 } } });
     const remaining = async () => (await must("kart", api.get(`/api/workspace/plans/${planned.planId}`))).totals.remaining;
     const ef = await k.cheque(f, 500);
-    assert.deepEqual([await k.open(planned.id), await remaining(), await k.balance(f)], [1200, 1200, 700], "bağsız evrak taksitli faturayı kapatmaz");
+    assert.deepEqual([await k.open(planned.id), await remaining(), await k.balance(f)], [700, 1200, 700], "bağsız evrak taksitli faturanın taksitlerini kapatır (S99); kartın kendi kalanı 1.200");
     await k.act(ef, "bounce");
     assert.deepEqual([await k.open(planned.id), await remaining(), await k.balance(f)], [1200, 1200, 1200]);
     const counted = await k.cheque(f, 400, { planId: planned.planId });

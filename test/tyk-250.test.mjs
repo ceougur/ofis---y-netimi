@@ -237,8 +237,9 @@ describe("TYK — taksit kartları (S50, M1a, M1e, K8-3)", () => {
     const schedules = new Map([["K", [{ id: "t1", seq: 1, dueDate: "2026-02-01", amount: 600 }, { id: "t2", seq: 2, dueDate: "2026-03-01", amount: 600 }]]]);
     const r = build({ docs: [f, sale("G", "2026-01-10", 300, "2026-02-15")], lines: [tahsilat("P", "2026-02-20", 600)], schedules, today: "2026-02-25" });
     assert.deepEqual([r.installments.get("K").get("t1").remaining, r.installments.get("K").get("t2").remaining, open(r, "G")], [0, 600, 300], "S2: taksit (01.02) önce, G (15.02) açık");
-    // Fatura durumu (G2) taksitli faturada kartın KENDİ hesabıdır (v2.0.24 "açık = kartın kalanı"; kart tahsilatı yok → 1.200); M1a / S50 net görünümde (taksit kalanı, gecikmiş).
-    assert.equal(open(r, "F"), 1200, "taksitli faturanın açığı = kartın kendi kalanı");
+    // G3 (tur 2b-2, S99 = A — KULLANICI KARARI 10.11 13:27): fatura durumu (G2) da tek kuyruktan — bağsız tahsilatın kapattığı 1. taksit faturanın açığından da düşer
+    // (önceki beklenti 1.200 = kartın kendi kalanı, v2.0.24 kuralıydı; karar "bu kuralı DEĞİŞTİ" diyor). Açık = taksit kalanı 600.
+    assert.equal(open(r, "F"), 600, "S99: taksitli faturanın açığı = kartının KUYRUK kalanı");
     assert.equal(gecikmis(r, "2026-02-25"), 300, "net: 1. taksit cari tahsilatıyla kapandı, G (15.02) 300 gecikmiş");
   });
   // Ç5-B birleşim düzeltmesi (Ç5-B ana dalla birleşince 30e12c20'de mutabakat yıl dönümü tohum 39 + ek tohum 7 / 11 / 13 / 17 kırmızı): fatura durumunda (G2) taksitli faturanın kendi kartı yalnız BAĞLI ödemeyle kapanır
@@ -254,10 +255,14 @@ describe("TYK — taksit kartları (S50, M1a, M1e, K8-3)", () => {
     const avans = { ...tahsilat("P", "2026-01-01", 1500), at: "2026-01-01T09:00:00.000Z" };
     const kart = { ...planIn("e1", "K", "2026-01-25", 1200), at: "2026-01-25T09:00:00.000Z" };
     const once = build({ docs: [f], lines: [avans], schedules, lockAt: lockAtOf(history), today: "2026-01-21" });
-    assert.deepEqual([open(once, "F"), state(once, "F")], [1200, "installment"], "kart tahsilatından önce: açık = kartın kalanı 1.200 (bağsız avans taksitli faturayı kapatmaz — v2.0.24)");
+    // G3 (tur 2b-2, S99 = A): kart tahsilatından önce bağsız avans 1.500 taksitli faturanın taksitlerini vade sırasıyla kapatmıştır → fatura Ödendi (önceki beklenti 1.200 /
+    // Taksitli — v2.0.24 'bağsız para taksitli faturanın kartına harcanmaz' kuralı; S99 bu kuralı değiştirdi).
+    assert.deepEqual([open(once, "F"), state(once, "F")], [0, "paid"], "S99: kart tahsilatından önce avans taksitleri kapattı — fatura Ödendi");
     const r = build({ docs: [f], lines: [avans, kart], schedules, lockAt: lockAtOf(history), today: "2026-01-26" });
     assert.deepEqual([open(r, "F"), state(r, "F")], [0, "paid"], "kart tahsilatı taksitli faturayı kapatır: açık = kartın kalanı 0");
-    assert.deepEqual(r.invoices.get("F").closers.map(c => [c.id, c.mode, c.amount]), [["plan-entry:e1", "linked", 600], ["plan-entry:e1", "linked", 600]], "kapatanlar: kart tahsilatı (Bağlı)");
+    // G3 (tur 2b-2, S99 = A + karar (3)): taksitler kilitten ÖNCE avansla kapandı; kilitten sonraki kart tahsilatının bağı onları yeniden açmaz (karar (3)), tahsilat bağsız
+    // dağılır → kapatanlar avans (Otomatik), kart tahsilatı değil (önceki beklenti: kart tahsilatı Bağlı — G2'de bağsız kapanış sayılmıyordu).
+    assert.deepEqual(r.invoices.get("F").closers.map(c => [c.id, c.mode, c.amount]), [["P", "auto", 600], ["P", "auto", 600]], "kapatanlar: avans (Otomatik; karar (3) — kilitli dönemde kapanmış)");
     const inst = r.installments.get("K");
     assert.deepEqual([inst.get("t1").remaining, inst.get("t2").remaining, inst.get("t1").byAccount, inst.get("t2").byAccount], [0, 0, 600, 600], "net: taksitler kilitten önce avansla kapandı (karar (3) — yeniden açılmaz)");
     assert.equal(r.items.reduce((s, i) => s + (i.side === "receivable" ? i.remaining : -i.remaining), 0), -1500, "net: Σ kalem = bakiye (1.200 − 1.500 − 1.200)");
@@ -348,7 +353,9 @@ describe("TYK — değişmezler (tohumlu rastgele, 500 olay × 4 tohum)", () => 
         const g = res.overdue(t).amount;
         assert.ok(g >= 0 && g <= Math.max(0, openDebit) + 0.005, `0 ≤ gecikmiş(${t}) ≤ max(0, CH)`);
       }
-      assert.deepEqual(res.items.map(i => [i.key, i.remaining]), rev.items.map(i => [i.key, i.remaining]), "girdi sırası ters: aynı kalemler");
+      // G3 (tur 2b-2; ders 31): yardımcının kayıt anı (09:10 + n % 50) aynı gün çakışabiliyor — tarih VE kayıt anı eşit iki kalemin listedeki yeri yazım sırasıdır (ters
+      // girdide ters); kalemler ve kalanlar aynı. S95 geri alması bu eşitlikte iki kalemi birden açık bırakınca (tohum 2: Y2-176 / Y2-226) sıra farkı görünür oldu → küme karşılaştırması.
+      assert.deepEqual(res.items.map(i => [i.key, i.remaining]).sort(), rev.items.map(i => [i.key, i.remaining]).sort(), "girdi sırası ters: aynı kalemler");
       assert.deepEqual([...res.invoices].sort().map(([k, v]) => [k, v.open]), [...rev.invoices].sort().map(([k, v]) => [k, v.open]), "fatura durumu aynı");
     });
   }
@@ -508,22 +515,22 @@ describe("TYK tur 2a — 'Hangi Taksite' bağı (karar (2)) ve O-3 kart kalemler
 // Değişmez (C5 §2.10 madde 9, EK-1 §4): Σ açık borç kalemi − Σ açık alacak kalemi = cari bakiyesi — KARTLI rastgele carilerde (DK-C5B kararı (4): mutabakat motoru TYK'yi ölçmüyordu).
 // Üretici şu sınıfları da üretir: kartın Kayıt Tarihi borçtan önce, stoktan taksitlendir (stok borcu + Mevcut Borç kartı), taksitsiz kart, eksik taksitli kart, "Hangi Taksite"
 // bağlı tahsilat, Taksit İadesi, taksitli fatura, Kapatılacak Fatura. DIŞARIDA BIRAKILAN SINIFLAR (sessizce değil — adı, nedeni ve sayısı çıktıda):
-//   S101 — borcu avansla kapanmışken açılan Mevcut Borç kartı + kart tahsilatı (kart kırpıldı ve tahsilatı var): kullanıcı kararı S101 = A, kodu Ç5-B tur 2b.
-//   S99  — bağsız avans + taksitli fatura + taksitsiz fatura aynı caride: kullanıcı kararı S99 = A (fatura durumu tek kuyruktan), kodu Ç5-B tur 2b.
+//   (tur 2b-2: S101 / S110 / S120 kodlandı — dışarıda bırakılan sınıf KALMADI; sınıflar yalnız sayılır. S99: karşı yönlü kalemi olmayan caride fatura durumu (G2) = net
+//   kuyruk (G1) — faturanın açığı = net kalanı + kapsanan + kendi kartının taksit kalanı.)
 describe("TYK tur 2a — değişmez: kalemler toplamı = cari bakiyesi (kartlı, tohumlu rastgele)", () => {
   const rng = seed => () => ((seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648);
   const day = n => new Date(Date.UTC(2026, 0, 1 + n)).toISOString().slice(0, 10);
   for (const seed of [11, 12, 13]) {
-    it(`tohum ${seed}: 200 cari × 22 olay — Σ kalem = bakiye (S99 / S101 adıyla dışarıda)`, () => {
+    it(`tohum ${seed}: 200 cari × 22 olay — Σ kalem = bakiye (S99 / S101 / S110 / S120 içeride); karşı yönsüz caride fatura açığı = net kuyruk`, () => {
       const r = rng(seed);
-      const counts = { checked: 0, S101: 0, S101fark: 0, S99: 0, S99fark: 0, coverBefore: 0, stockCover: 0, bare: 0, partial: 0, targeted: 0, back: 0, own: 0 };
+      const counts = { checked: 0, S110: 0, S120: 0, S101: 0, S101kirpma: 0, S99denetlendi: 0, S99fatura: 0, coverBefore: 0, stockCover: 0, bare: 0, partial: 0, targeted: 0, back: 0, own: 0 };
       for (let a = 0; a < 200; a += 1) {
         const lines = [];
         const invoices = [];
         const schedules = new Map();
         const links = new Map();
         const cards = [];
-        const flags = { avans: false, own: false, plainSale: false };
+        const flags = { avans: false, own: false, plainSale: false, counter: false };
         let n = 0;
         const at = () => `2026-12-01T${String(Math.floor(n / 60)).padStart(2, "0")}:${String((n += 1) % 60).padStart(2, "0")}:00.000Z`;
         const two = (planId, total, first) => schedules.set(planId, [{ id: `${planId}-1`, seq: 1, dueDate: first, amount: Math.floor(total / 2) }, { id: `${planId}-2`, seq: 2, dueDate: day(Math.floor(r() * 330)), amount: total - Math.floor(total / 2) }]);
@@ -557,9 +564,15 @@ describe("TYK tur 2a — değişmez: kalemler toplamı = cari bakiyesi (kartlı,
           } else if (p < 0.4) {
             lines.push({ id: `P${id}`, origin: "account", kind: "in", date: d, at: at(), debit: 0, credit: amount });
             flags.avans = true;
-          } else if (p < 0.46) lines.push({ id: `O${id}x`, origin: "account", kind: "out", date: d, at: at(), debit: amount, credit: 0 });
+          } else if (p < 0.46) {
+            lines.push({ id: `O${id}x`, origin: "account", kind: "out", date: d, at: at(), debit: amount, credit: 0 });
+            flags.counter = true;
+          }
           else if (p < 0.56) lines.push({ id: `B${id}`, origin: "account", kind: "debt", date: d, at: at(), debit: amount, credit: 0 });
-          else if (p < 0.62) lines.push({ id: `Y${id}`, origin: "account", kind: "credit", date: d, at: at(), debit: 0, credit: amount });
+          else if (p < 0.62) {
+            lines.push({ id: `Y${id}`, origin: "account", kind: "credit", date: d, at: at(), debit: 0, credit: amount });
+            flags.counter = true;
+          }
           else if (p < 0.7) {
             const bal = lines.reduce((s, l) => s + l.debit - l.credit, 0);
             if (bal > 20) {
@@ -601,22 +614,28 @@ describe("TYK tur 2a — değişmez: kalemler toplamı = cari bakiyesi (kartlı,
         const res = buildObligations({ lines, invoices, links, schedules, today: day(320) });
         const balance = Math.round(lines.reduce((s, l) => s + l.debit - l.credit, 0) * 100);
         const sum = Math.round(res.items.reduce((s, i) => s + (i.side === "receivable" ? i.remaining : -i.remaining), 0) * 100);
-        // S101 sınıfı (adıyla): tükettiği borçtan büyük Mevcut Borç kartı (kapsam < tüketebileceği — kartın anında borç avansla kapanmış / kart borçtan büyük) + kart tahsilatı.
-        const cut = [...res.coverage.values()].some(c => c.paid && c.consumed < c.capacity - 0.005);
-        if (cut) {
-          counts.S101 += 1;
-          if (sum !== balance) counts.S101fark += 1;
-          continue;
-        }
-        if (flags.avans && flags.own && flags.plainSale) {
-          counts.S99 += 1;
-          if (sum !== balance) counts.S99fark += 1;
-          continue;
-        }
+        // Tur 2b-2 (S101 / S110 / S120 = A'nın kodu): tur 2b-1'in DIŞARIDA bıraktığı sınıflar (S110: coverage.ambiguous; S101: tükettiği borçtan büyük kart + kart tahsilatı)
+        // artık İÇERİDE — her caride Σ kalem = bakiye; sınıflar yalnız sayılır (coverage.rule / advance / kırpma).
+        const covers = [...res.coverage.values()];
+        if (covers.some(c => c.rule === "S110-satis" || c.rule === "S110-elle")) counts.S110 += 1;
+        if (covers.some(c => c.rule === "S120")) counts.S120 += 1;
+        if (covers.some(c => c.advance > 0)) counts.S101 += 1;
+        if (covers.some(c => c.paid && c.consumed + c.advance < c.capacity - 0.005)) counts.S101kirpma += 1;
+        if (flags.avans && flags.own && flags.plainSale) counts.S99denetlendi += 1;
         counts.checked += 1;
         assert.equal(sum, balance, `tohum ${seed} cari ${a}: Σ kalem ${sum / 100} ≠ bakiye ${balance / 100}`);
+        // S99 = A: karşı yönlü kalemi (elle Alacak, müşteriye Ödeme) olmayan caride fatura durumu (G2) net kuyruğun (G1) aynısıdır — fatura listesi = Vade Takip / zil.
+        if (!flags.counter) {
+          for (const inv of invoices) {
+            const net = res.invoiceNet.get(inv.id);
+            // Kartın "Taksit İadesi" kalemi (back; iadeler kart tahsilatını aşınca) faturanın değil kartın borcudur — faturanın açığına girmez (açık ≤ ödenecek).
+            const inst = inv.planId ? [...(res.installments.get(inv.planId) || [])].filter(([key]) => key !== "back").reduce((s, [, row]) => s + row.remaining, 0) : 0;
+            assert.equal(Math.round(res.invoices.get(inv.id).open * 100), Math.round(Math.min(inv.payable, net.remaining + net.covered + inst) * 100), `tohum ${seed} cari ${a} fatura ${inv.id}: fatura açığı ${res.invoices.get(inv.id).open} ≠ net ${net.remaining} + kapsanan ${net.covered} + taksit ${inst}`);
+            counts.S99fatura += 1;
+          }
+        }
       }
-      console.log(`# tohum ${seed}: ${JSON.stringify(counts)} — dışarıda bırakılan: S101 ${counts.S101} (borcu avansla kapanmışken açılan kart + kart tahsilatı; tur 2b), S99 ${counts.S99} (bağsız avans + taksitli + taksitsiz fatura; tur 2b)`);
+      console.log(`# tohum ${seed}: ${JSON.stringify(counts)} — dışarıda bırakılan sınıf YOK (S110 ${counts.S110}, S120 ${counts.S120}, S101 ön ödemeli ${counts.S101}, kırpılan + tahsilatlı ${counts.S101kirpma} içeride); denetlenen ${counts.checked} (S99 sınıfı ${counts.S99denetlendi}, fatura açığı = net kuyruk ${counts.S99fatura} fatura)`);
       assert.ok(counts.checked >= 60 && counts.coverBefore > 0 && counts.stockCover > 0 && counts.bare > 0 && counts.targeted > 0 && counts.back > 0, `sınıflar üretildi: ${JSON.stringify(counts)}`);
     });
   }

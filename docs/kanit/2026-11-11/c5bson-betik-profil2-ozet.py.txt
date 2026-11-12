@@ -1,0 +1,54 @@
+# Ç5-B son tur — iki CPU profilinin (çalışma dalı | son uç) işlev bazında karşılaştırması: kendi süre (self) ve kapsayan süre (inclusive; özyineleme bir kez sayılır).
+# Kullanım: profil2-ozet.py <calisma.cpuprofile> <sontur.cpuprofile> [satır sayısı]
+import json, sys, os, collections
+
+def load(path):
+    p = json.load(open(path))
+    nodes = {n['id']: n for n in p['nodes']}
+    self_us = collections.Counter()
+    for sid, dt in zip(p['samples'], p['timeDeltas']):
+        self_us[sid] += dt
+    def key(n):
+        c = n['callFrame']
+        url = c.get('url', '')
+        base = '/'.join(url.split('/')[-2:]) if url else '(yerleşik)'
+        return f"{c.get('functionName') or '(adsız)'} · {base}:{c.get('lineNumber', 0) + 1}"
+    selfk = collections.Counter()
+    incl = collections.Counter()
+    total = sum(self_us.values())
+    # kapsayan süre: kökten aşağı, yığındaki anahtar kümesiyle (özyineleme bir kez)
+    root = p['nodes'][0]
+    sub = {}
+    order = []
+    stack = [root['id']]
+    while stack:
+        i = stack.pop()
+        order.append(i)
+        stack.extend(nodes[i].get('children', []))
+    for i in reversed(order):
+        sub[i] = self_us[i] + sum(sub[c] for c in nodes[i].get('children', []))
+    stack = [(root['id'], frozenset())]
+    while stack:
+        i, seen = stack.pop()
+        k = key(nodes[i])
+        selfk[k] += self_us[i]
+        if k not in seen:
+            incl[k] += sub[i]
+            seen = seen | {k}
+        for c in nodes[i].get('children', []):
+            stack.append((c, seen))
+    return selfk, incl, total
+
+a_self, a_incl, a_tot = load(sys.argv[1])
+b_self, b_incl, b_tot = load(sys.argv[2])
+top = int(sys.argv[3]) if len(sys.argv) > 3 else 22
+ms = lambda v: round(v / 1000)
+print(f'toplam örneklenen süre: çalışma dalı {ms(a_tot)} ms | son uç {ms(b_tot)} ms | fark {ms(b_tot - a_tot):+d} ms')
+for title, a, b in (('KENDİ SÜRE (self)', a_self, b_self), ('KAPSAYAN SÜRE (inclusive)', a_incl, b_incl)):
+    print(f'--- {title}: en çok ARTAN {top} işlev (ms: çalışma dalı → son uç)')
+    keys = set(a) | set(b)
+    for k in sorted(keys, key=lambda k: b[k] - a[k], reverse=True)[:top]:
+        print(f'  {ms(b[k] - a[k]):+6d}  {ms(a[k]):6d} → {ms(b[k]):6d}  {k}')
+    print(f'--- {title}: en çok AZALAN 8 işlev')
+    for k in sorted(keys, key=lambda k: b[k] - a[k])[:8]:
+        print(f'  {ms(b[k] - a[k]):+6d}  {ms(a[k]):6d} → {ms(b[k]):6d}  {k}')

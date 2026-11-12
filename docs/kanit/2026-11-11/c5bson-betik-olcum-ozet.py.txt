@@ -1,0 +1,52 @@
+# Ç5-B son tur — hız ölçümü özeti: sütun (kod) × yol → ms listesi (tur / tekrar sırasıyla). Kullanım: olcum-ozet.py <c5bson-hiz-*.txt>
+import re, sys, collections
+rows = collections.OrderedDict()
+cols = []
+col = None
+invalid = []
+for line in open(sys.argv[1], encoding='utf-8'):
+    m = re.match(r'=== tur (\d+) · ([\w-]+) · (\S+) · başta ([\d.]+)', line)
+    if m:
+        col = m.group(2)
+        if col not in cols:
+            cols.append(col)
+        if 'GEÇERSİZ' in line:
+            invalid.append(line.strip())
+            col = None  # geçersiz bölümün (baştaki yük > 2) sayıları özete GİRMEZ — ders 52
+        continue
+    if col is None:
+        continue
+    m = re.match(r'\s*(Borç Yaz #\d|nakit tahsilat #\d|Kasa Giriş)[^:]*: durum (\d+) · toplam ([\d.]+) ms', line)
+    if m:
+        key = re.sub(r' #\d', '', m.group(1))
+        rows.setdefault(key, collections.defaultdict(list))[col].append((m.group(3), m.group(2)))
+        continue
+    m = re.match(r'\s+(YAZIM kart tahsilatı|kart GET \(yazımdan hemen sonra\)|zil / takvim \(yazımdan sonra ilk\)|Vade Takip \(yazımdan sonra ilk\)|zil / takvim \(ılık\)|Vade Takip \(ılık\)|nakit akışı \(ılık\)): (\d+) · ([\d.]+) ms · olay döngüsü en çok ([\d.]+)', line)
+    if m:
+        rows.setdefault(m.group(1), collections.defaultdict(list))[col].append((m.group(3), m.group(2)))
+    m = re.match(r'açılış (\d+) ms', line)
+    if m:
+        rows.setdefault('açılış', collections.defaultdict(list))[col].append((m.group(1), '200'))
+print('sütunlar:', ' | '.join(cols))
+med = {}
+for key, by in rows.items():
+    cells = []
+    for c in cols:
+        vals = [float(v) for v, status in by.get(c, []) if status == '200']
+        bad = [status for v, status in by.get(c, []) if status != '200']
+        vals.sort()
+        mid = vals[len(vals) // 2] if vals else None
+        med.setdefault(key, {})[c] = (sum(vals) / len(vals)) if vals else None
+        cells.append((' / '.join(str(round(v)) for v in vals) or '—') + (f' (durum {bad})' if bad else ''))
+    print(f'{key}: ' + ' | '.join(cells))
+print('--- ortalamalar (ms) ve çalışma dalına göre fark')
+base = cols[0]
+for key in med:
+    b = med[key].get(base)
+    print(f'{key}: ' + ' | '.join(f"{round(med[key][c])} ({'+' if med[key][c] >= b else ''}{round((med[key][c] / b - 1) * 100)}%)" if med[key].get(c) is not None and b else '—' for c in cols))
+tot = ['YAZIM kart tahsilatı', 'kart GET (yazımdan hemen sonra)', 'zil / takvim (yazımdan sonra ilk)']
+if all(k in med for k in tot):
+    print('yazım + kart GET + ilk zil toplamı: ' + ' | '.join(str(round(sum(med[k][c] for k in tot))) for c in cols))
+for line in invalid:
+    print('GEÇERSİZ:', line)
+print(open(sys.argv[1], encoding='utf-8').read().split('\n')[0])

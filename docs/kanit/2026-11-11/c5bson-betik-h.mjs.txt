@@ -1,0 +1,90 @@
+// Dar kontrol Ç5-B — ortak koşum aracı (kendi not defteri klasörü). ROOT ortam değişkeni: sınanacak kod kopyası (yeni / eski / v2.4.9).
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+
+export const ROOT = process.env.ROOT;
+const helpers = await import(pathToFileURL(path.join(ROOT, "test/helpers.mjs")).href);
+
+export const TODAY = process.env.TODAY || "2026-10-20";
+export const NOW = `${TODAY}T12:00:00+03:00`;
+export const day = offset => {
+  const at = new Date(`${TODAY}T00:00:00Z`);
+  at.setUTCDate(at.getUTCDate() + offset);
+  return at.toISOString().slice(0, 10);
+};
+const unwrap = response => ({ ...response, data: response.data && typeof response.data === "object" && "ok" in response.data ? (response.data.ok ? response.data.data : response.data) : response.data });
+export const codeOf = res => res.data?.code ?? res.data?.data?.code ?? res.data?.error?.code;
+
+export async function boot(extra = {}) {
+  const server = await helpers.startTestServer({ now: { time: NOW, fixed: true }, env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, ...extra });
+  const client = await helpers.loginAdmin(server);
+  const api = {
+    get: async url => unwrap(await client.get(url)),
+    post: async (url, body) => unwrap(await client.post(url, body)),
+    put: async (url, body) => unwrap(await client.put(url, body)),
+    del: async url => unwrap(await client.del(url)),
+  };
+  await api.post("/api/workspace/bank/setup/dismiss", {});
+  let n = 0;
+  const must = async (label, promise) => {
+    const res = await promise;
+    if (res.status !== 200) throw new Error(`${label}: ${res.status} ${JSON.stringify(res.data).slice(0, 600)}`);
+    return res.data;
+  };
+  const item = (await api.post("/api/workspace/stock", { kind: "service", code: `HZM-DK-${Date.now() % 100000}`, name: "Hizmet", unit: "Adet", salePrice: "1000" })).data;
+  const account = (label, type = "customer") => must(`cari ${label}`, api.post("/api/workspace/accounts", { name: `DK ${label}`, type, registeredOn: day(-400), phone: `0500 251 ${String(10 + Math.floor((n += 1) / 100)).padStart(2, "0")} ${String(n % 100).padStart(2, "0")}` }));
+  const sale = async (acc, date, amount, dueDate = date, payment = null) => (await must("fatura", api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: acc.id, issueDate: date, lines: [{ itemId: item.id, qty: 1, unitPrice: String(amount), vatRate: 0 }], payment: payment || { rest: "open", dueDate }, cashForce: true }))).id;
+  let pno = 0;
+  const purchase = async (acc, date, amount, dueDate = date) => (await must("alış", api.post("/api/workspace/invoices", { scenario: "expense_purchase", kind: "purchase", accountId: acc.id, number: `ALS${Date.now()}${(pno += 1)}`, issueDate: date, lines: [{ name: "Gider", qty: 1, unitPrice: String(amount), vatRate: 0, expenseCode: "other" }], payment: { rest: "open", dueDate }, cashForce: true }))).id;
+  const card = acc => must("kart", api.get(`/api/workspace/accounts/${acc.id}`));
+  const entry = async (acc, body) => {
+    const before = new Set((await card(acc)).entries.map(row => row.id));
+    const result = await must(`hareket ${body.kind}`, api.post(`/api/workspace/accounts/${acc.id}/entries`, { method: "cash", cashForce: true, ...body }));
+    return result.entries.find(row => !before.has(row.id));
+  };
+  const invoice = id => must("fatura oku", api.get(`/api/workspace/invoices/${id}`));
+  const lock = until => must("kilit", api.put("/api/admin/period-lock", { lockedUntil: until }));
+  return { server, api, must, item, account, sale, purchase, card, entry, invoice, lock, store: server.app.store, ctx: server.app.context };
+}
+
+// Bir carinin bütün görünümleri (sayılarla).
+export async function views(h, acc, { invoices = [], plans = [] } = {}) {
+  const { api, must } = h;
+  const card = await h.card(acc);
+  const t = card.totals || {};
+  const list = await must("liste", api.get("/api/workspace/accounts?status=all&limit=5000"));
+  const row = list.accounts.find(item => item.id === acc.id) || {};
+  const vade = await must("vade takip", api.get(`/api/workspace/overview/vade-takip?from=${day(-800)}&to=${day(800)}`));
+  const vrows = vade.rows.filter(r => r.party === acc.name || r.accountId === acc.id || r.ref?.id === acc.id);
+  const lateVade = vrows.filter(r => r.date < TODAY && r.direction === "in").reduce((s, r) => s + (r.amount || 0), 0);
+  const dues = await must("zil", api.get("/api/workspace/dues"));
+  const drows = (dues.items || []).filter(r => r.accountId === acc.id || r.person === acc.name);
+  const inv = [];
+  for (const id of invoices) {
+    const doc = await h.invoice(id);
+    inv.push({ no: doc.number, state: doc.payState, open: doc.open, closers: (doc.closers || []).map(c => `${c.modeLabel || c.mode}:${c.amount}@${c.date}`) });
+  }
+  const pl = [];
+  for (const id of plans) {
+    const p = await must("taksit kartı", api.get(`/api/workspace/plans/${id}`));
+    pl.push({ state: p.state, items: (p.items || []).map(i => i.remaining), own: p.totals?.remaining, queue: p.totals?.queueRemaining, accountPaid: p.totals?.accountPaid });
+  }
+  return {
+    bakiye: t.balance,
+    gecikmisKart: t.overdueDebt,
+    gecikmisKartAdet: t.overdueDebtCount,
+    eskiGeciken: t.overdueInstallments ?? t.overdue,
+    gecikmisListe: row.overdue,
+    vade: vrows.map(r => `${r.source}:${r.label}:${r.amount}@${r.date}`).sort(),
+    vadeGecikmis: Math.round(lateVade * 100) / 100,
+    zil: drows.map(r => `${r.source}:${r.label || ""}:${r.amount}:${r.state}`).sort(),
+    kalan: (card.entries || []).filter(e => e.remaining !== undefined).map(e => `${e.kind}:${e.amount}→${e.remaining}`),
+    faturalar: inv,
+    kartlar: pl,
+  };
+}
+export async function integrity(h) {
+  const res = await h.api.get("/api/workspace/ledger/integrity");
+  const bad = (res.data?.checks || []).filter(c => !c.ok).map(c => `${c.id || c.code || c.name}: ${String(c.detail || c.message || "").slice(0, 200)}`);
+  return { status: res.status, ok: res.data?.ok, bad };
+}
