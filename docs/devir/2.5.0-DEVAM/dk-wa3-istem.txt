@@ -43,3 +43,6 @@ KAPSAM DIŞI (yeniden yazma; yalnız yeni bir yüzü varsa bildir): hatırlatma 
 
 ## Rapor (prensip §3 biçimi)
 EN BAŞTA: GERİLEMELER (varsa; neye göre). Sonra her bulgu: sınıf (YÜKSEK / ORTA / DÜŞÜK), dosya:satır, betik + çıktı (sayılarla), kök neden, en küçük düzeltme önerisi; geçersiz kılma tablosu (yazım yolu ↔ kümeyi düşürüyor mu ↔ denendi mi ↔ sonuç); fikstürün yeniden üretim sonucu; yeni mutantların sonucu; baş mimar kararlarının / okumalarının değerlendirmesi (madde 1, 2, 4, 5 + "KABUL ÖLÇÜMÜ ve BİRLEŞİM" kararının (1) hız kabulü, (2) bakım turundaki küçük farkın kabulü, (3) fikstürün kabulü); KULLANICIYA SORULMALI; DOĞRULANMADI; DENENMEYEN. Bulgu yoksa açıkça "YÜKSEK/ORTA YOK".
+
+
+EK KURAL (12.11): başlattığın HER arka plan / uzun koşuya açık süre sınırı koy (`timeout <sn> …`); yük kilidini (`flock -s`) tutan iş boşta bekleyemez — asılı kalan koşu öbür işlerin ölçümünü engeller. Ölçüm kilidi doluysa bekleme döngüsü kurma; başka işine dön, sonra yeniden dene; tur sonunda hâlâ ölçemediysen "ÖLÇÜLEMEDİ" yaz. Not defterinde disk sınırda (~5,5 GB boş): eski kod kopyalarını `git archive <ref> ':!docs/kanit'` ile aç (kanıt klasörü hariç), biten kopyanı kendi TAM yoluyla sil; /tmp altına bıraktığın geçici klasörleri de kendi tam yoluyla sil.
