@@ -166,3 +166,59 @@ YOK (S65 / S66 metni bu kâhinin durumlarını çözdü; Y1 / Y2 yorumdur — yu
 - g6 / g8 programla koşulamaz (göç — bakım 1 ile aynı neden); g7'nin cari seçimi olayı uç adı verilene kadar ATLANAN.
 - Kural Farkı fişinin karşılıksız dönmüş donmuş evrakla birlikte ön izlemesi (fiş yalnız alış maddesinin eski ↔ yeni farkını alır; ekran ön izlemesi bu kâhinin çıktısında yok).
 - Karşılıksızdan sonra aynı evrakın yeniden işlem görmesi (karşılıksız evrakın tahsili / cirosu) — kararda yok.
+
+## 2.5.0 Ç5 bakımı 3 (12.11.2026; eski kâhinler bakımı 13 — kodu görmeyen AYRI el)
+
+Kural seti adı değişmedi (`2.5.0` varsayılan = bakım 1 + 2 + bu bölüm; `--kural 2.4.9` AYNEN). Bu bakımda PARA / DEFTER KURALI DEĞİŞMEDİ: yalnız bir senaryo ön koşulu, onun
+denetimi ve kâhinin öz testi.
+
+### Kaynak (temiz oda; ders 5, 40)
+- **Karar metni:** ana oturumun girdi dosyası (12.11.2026; bu bakımın TEK girdisi) — (1) BAŞ MİMAR KARARI 12.11.2026, (2) öz test, (3) yapılmayacaklar (S127 konusu bu bakımın işi değil; başka kural
+  değişikliği yok). Önceki kararlar yalnız bu dosyanın yukarıdaki bölümlerinden.
+- **Okunan / okunmayan:** bakım 1'in alanı daraltılarak (bu klasör + girdi + CLAUDE.md + `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`; `kos.mjs` yalnız olay eşlemesi için). Program koşulmadı, programın
+  davranışı aranmadı; `docs/erp/**`, `docs/devir/**`, iş listesi bu bakımda OKUNMADI. Tam liste ajan raporunda.
+
+### ÖK-1 — BAŞ MİMAR KARARI 12.11.2026 (senaryo dilinin ön koşulu; para / defter kuralı DEĞİL)
+- **Metin (girdi (1), AYNEN):** "Ürünün 2.0.4 sürümünden beri var olan, 2.5.0'da DEĞİŞMEYEN bir giriş denetimi: Excel / Sheets'ten taksit kartı, aynı grupta aynı adla AÇIK bir kartı
+  (taksitli faturanın kartı dahil) bulunan kişiye YÜKLENEMEZ; yükleme reddedilir, hiçbir kayıt oluşmaz. Bu bir muhasebeleştirme kuralı değildir (hiçbir kaydın hesabını / tutarını
+  belirlemez); yalnız 'bu olay gerçekte kurulamaz' bilgisidir."
+- **Neden kâhine girdi:** kâhin böyle bir `excel_taksit_karti` olayını kurulmuş sayıp sayı üretirse, gerçekte hiç oluşmayan bir kaydın beklentisi karşılaştırmada nedeni kararla
+  açıklanamayan fark üretir (girdi: beş denetim, hepsi tek olaydan). Kâhin hiçbir maddenin hesabını / tutarını bu karardan almaz — yalnız olayı KURMAZ.
+- **Kâhindeki karşılığı:** `excel_taksit_karti {cari}` olayı, AYNI CARİNİN o an AÇIK bir taksit kartı varken gelirse kâhin sayı ÜRETMEZ, hata verir ("ÖK-1 … kâhin kurmaz"). Açık taksit kartı (kâhinin
+  senaryo dilinde yalnız iki kaynak):
+  (i) aynı carinin DAHA ÖNCEKİ taksitli satış faturası (`fatura` `satis`, `odeme.taksit`) — iptal edilmemiş (`iptal` yok) ve kalanı (ödenecek − o faturanın `taksit_tahsil`leri) > 0;
+  (ii) aynı carinin DAHA ÖNCEKİ `excel_taksit_karti`'sı — silinmemiş (`kayit_sil` yok) ve T − P > 0.
+  Ön koşulu çiğneyen senaryo ders 7 / 38 gereği beklenen NEDENLE çöker (öz test `beklenenHata`).
+- **EN DAR OKUMA** (girdi (1) son madde: "aynı cari + o an açık kartı var") ve **SUSTUĞUM SINIRLAR** (kâhinin senaryo dilinde karşılığı yok → uydurulmadı; bu durumlarda kâhin hata VERMEZ,
+  olayı kurar — senaryolar bu durumlara Excel kartı KOYMAZ):
+  - **SS-1 "aynı grupta":** grup kavramı senaryo dilinde yok → kâhin grup ayırmaz (tek grup gibi).
+  - **SS-2 "aynı adla":** kâhin aynı CARİ'ye (kimlik) bakar; aynı adlı iki AYRI cari kâhinde kurulmaz (bakım 1 DENENMEYEN — defter kâhininin cari çıktısı ada göre). Senaryolarda Excel kartı alan
+    carinin adı benzersizdir.
+  - **SS-3 kapanmış / silinmiş kart:** kalanı 0'a inmiş taksitli fatura kartı, T = P Excel kartı, iptal edilmiş taksitli fatura, Silinenler'deki Excel kartı → "açık" SAYILMAZ.
+  - **SS-4 taksit kartı dışındaki kayıtlar:** cari açılışı (`cari_acilis`), Borç / Alacak Yaz, cari seçilerek karşılıksız, açık hesap / peşin fatura, çek / senet → kâhin bunları "kart" SAYMAZ (karar
+    yalnız taksit kartını ve "taksitli faturanın kartı"nı anıyor).
+  - **SS-5 kartın kalanı:** yalnız o kartın `taksit_tahsil`leriyle düşer; genel tahsilat / çek / mahsup kartı kapatır mı — kararda yok.
+  - **SS-6 2.4.9 kuralı:** Excel kartının 2.4.9 karşılığı zaten tanımsız (D9 — hata); değişmedi.
+- **Girdi ↔ kâhin dili ayrımı (BAŞ MİMAR'a bildirilir):** girdi "`g4`'te M1'in açık bir kartı var" diyor. Kâhinin senaryo dilinde M1'in `g4`'teki olayları cari açılışı (M1A), Borç Yaz (BY1) ve cari
+  seçilerek karşılıksız (AE2K) — SS-4 gereği hiçbiri taksit kartı değil → ESKİ `g4` bu denetimle hata VERMEZ. Programın M1'de neyi kart saydığı kararda yok; uydurulmadı. EX1 yine de taşındı (her
+  okumada güvenli yere — aşağıda).
+
+### EX1'in yeni yeri (girdi (1) a, d) — elle beklenenler, kâhin koşulmadan ÖNCE yazıldı
+- **`senaryolar/g4-yeni-kayitlar.json`:** EX1 M1 (Elle Alfa Ltd.) → YENİ cari **M2 "Elle Excel Müşterisi Ltd."** (müşteri; senaryoda başka HİÇBİR olayı yok). Neden o: g4'ün öbür carisi T1
+  tedarikçi — D9'un denediği yazım müşteri alacağı (B 120 (T − P) / A 519); tedarikçiye taşımak kuralın sınadığı hesabı değiştirirdi (kapsam daralır). M1'de kalmak ya da açılışı / Borç Yaz'ı olan
+  bir cari, SS-4'ün öbür okumasında (programın onları kart sayması) yine çiğneyebilir; olaysız yeni cari HER okumada ön koşulu çiğnemez. Tarih (12.09), toplam (900), ödenen (300) AYNEN → D9 aynı
+  tutarla, aynı günde sınanır. `kos.mjs` eşlemesi taşıyor (cari olayı + Excel satırında cari adı); eşleme değişmedi.
+  Elle (TL; kaynak olay):
+  - Mizan K1: DEĞİŞMEZ — 120 = 2.300 (alt cari değişir, ana hesap aynı), 519 = −8.500 (EX1 yine A 519 600), öbürleri aynen.
+  - Cari bakiyeleri: Elle Alfa Ltd. 2.300 → **1.700** (M1A 1.000 + BY1 400 + AE2K 300; EX1 600 çıktı); Elle Excel Müşterisi Ltd. (yeni) **600** (EX1 T − P = 900 − 300); Elle Tedarik A.Ş. −650 aynen.
+  - Yaşlandırma satırları: Elle Alfa Ltd. 2.300 → **1.700** (portföyde M1'in evrakı yok — AE2 karşılıksız); Elle Excel Müşterisi Ltd. (yeni) **600**. Toplam 2.300 → **2.300** (değişmez).
+  - Stok, retler (KD1, KG0), onay listesi: DEĞİŞMEZ.
+- **`senaryo.json` (tarama (d) — ÇİĞNİYOR):** EX1 (23.11, M2 Ahmet Yılmaz) geldiğinde M2'nin F13 taksitli satış kartı (23.09; KDV dahil 10 × 120 = 1.200; TK1 400 → kalan 800; iptal yok) AÇIK →
+  kararın açık durumu ("taksitli faturanın kartı dahil"), SS'den bağımsız. → YENİ cari **M6 "Excel Kart Müşterisi Ltd."** (müşteri; başka olayı yok); tarih, toplam (6.000), ödenen (1.500) AYNEN.
+  Elle (TL):
+  - Mizan (bütün kontrol noktaları): DEĞİŞMEZ — EX1 23.11'de, yalnız K_SON'u etkiler; 120 ana hesapta aynı, 519 = −73.700 aynen.
+  - Cari bakiyeleri: Ahmet Yılmaz 5.600 → **1.100** (F5 1.610 − peşin 1.610; F11 240 − iptal 240; F13 1.200 − TK1 400; F14 4.040 − havale 4.040; BY2 300; EX1 4.500 çıktı); Excel Kart Müşterisi
+    Ltd. (yeni) **4.500**.
+  - Yaşlandırma satırları: Ahmet Yılmaz 5.600 → **1.100** (portföy evrakı yok); Excel Kart Müşterisi Ltd. (yeni) **4.500**; toplam DEĞİŞMEZ.
+  - KDV, stok, stopaj özeti, yevmiye sırası, retler: DEĞİŞMEZ.
+- **g1–g3, g5–g8:** Excel taksit kartı yok → çiğneyen olay YOK.
