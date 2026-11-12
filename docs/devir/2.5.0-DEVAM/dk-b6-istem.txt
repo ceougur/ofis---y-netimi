@@ -42,3 +42,6 @@ G. Koruma testi: eski sürüm zincir fikstürleri bugünkü kodla açılınca hi
 
 ## Rapor (prensip §3 biçimi)
 EN BAŞTA: GERİLEMELER (varsa; neye göre). Sonra her bulgu: sınıf (YÜKSEK / ORTA / DÜŞÜK), dosya:satır, betik + çıktı (sayılarla), kök neden, en küçük düzeltme önerisi; A1 tablosu (yol ↔ uyarı sayısı önce / sonra ↔ alarm bekleniyor mu ↔ oldu mu); eski ↔ yeni kod para sayıları; C zorlama betiklerinin ön koşul sayıları; E atlatma denemeleri tablosu; yeni mutantların sonucu; ölçüm (loadavg + denetim yolu ile); baş mimar kararlarının değerlendirmesi (A1, A2); KULLANICIYA SORULMALI; DOĞRULANMADI; DENENMEYEN. Bulgu yoksa açıkça "YÜKSEK/ORTA YOK".
+
+
+EK KURAL (12.11): başlattığın HER arka plan / uzun koşuya açık süre sınırı koy (`timeout <sn> …`); yük kilidini (`flock -s`) tutan iş boşta bekleyemez — asılı kalan koşu öbür işlerin ölçümünü engeller. Ölçüm kilidi doluysa bekleme döngüsü kurma; başka işine dön, sonra yeniden dene. Not defterinde disk sınırda (~5,5 GB boş): eski kod kopyalarını `git archive <ref> ':!docs/kanit'` ile aç, biten kopyanı kendi TAM yoluyla sil. Şu an makinede ana oturumun bir hız ölçümü sürüyor (özel kilit ~25 dk dolu olabilir) — o sırada okuma / inceleme yap.
