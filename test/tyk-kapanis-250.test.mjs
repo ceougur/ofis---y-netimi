@@ -395,3 +395,30 @@ describe("Ç5-B kapanış — ORTA-1 saf kuyruk: kaynağı bilinen kart (coverSa
     assert.equal(sigma(r), -250);
   });
 });
+
+describe("Ç5-B kapanış — ORTA-2 gerçek program: geriye tarihli Alacak + kart tahsilatı — kalemler toplamı = bakiye, Gecikmiş Borç bakiyeyi aşmaz (saf kuyruk: test/tyk-kapanis-sigma-250)", () => {
+  let h;
+  before(async () => {
+    h = await openProgram();
+  });
+  after(async () => h?.server.close());
+  it("dar kontrolün kayıt sırası: stok satışı 810 → Mevcut Borç kartı 810 (Kayıt Tarihi eski) → Alacak 250 (−230) → kart tahsilatı 490 (−217) → fatura 960 → Borç 360 → tahsilat 450 ⇒ bakiye 940 = Σ kalem = Gecikmiş Borç", async () => {
+    const acc = await h.account("Sigma");
+    await h.stockSale(acc, day(-43), 810);
+    const plan = await h.must("Mevcut Borç kartı", h.api.post("/api/workspace/plans", { name: acc.name, registeredOn: day(-500), total: "810", accountId: acc.id, coversBalance: true }));
+    await h.must("taksit 1", h.api.post(`/api/workspace/plans/${plan.id}/items`, { dueDate: day(-43), amount: "405" }));
+    await h.must("taksit 2", h.api.post(`/api/workspace/plans/${plan.id}/items`, { dueDate: day(-67), amount: "405" }));
+    await h.entry(acc, { kind: "credit", amount: "250", date: day(-230) });
+    await h.must("kart tahsilatı", h.api.post(`/api/workspace/plans/${plan.id}/entries`, { kind: "in", amount: "490", date: day(-217), method: "cash", cashForce: true, similarOk: true }));
+    const item = await h.must("hizmet", h.api.post("/api/workspace/stock", { kind: "service", code: "HZM-KAP-SIGMA", name: "Kapanış Hizmeti", unit: "Adet", salePrice: "1000" }));
+    await h.must("fatura", h.api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: acc.id, issueDate: day(-5), lines: [{ itemId: item.id, qty: 1, unitPrice: "960", vatRate: 0 }], payment: { rest: "open", dueDate: day(-5) }, cashForce: true }));
+    await h.entry(acc, { kind: "debt", amount: "360", date: day(-73) });
+    await h.entry(acc, { kind: "in", amount: "450", date: day(-69) });
+    const v = await h.view(acc);
+    assert.deepEqual([v.bakiye, v.sigma, v.gecikmis, v.listeGecikmis], [940, 940, 940, 940], "bakiye = kalemler toplamı = Gecikmiş Borç (cari kartı = liste)");
+    assert.deepEqual(v.vade, [`invoice:940@${day(-5)}`], "Vade Takip: tek kalem — fatura 940");
+    assert.deepEqual(v.taksit, [[0, 0]], "kart Bitti (avansla kapandı)");
+    const check = await h.must("Mutabakat Testi", h.api.get("/api/workspace/ledger/integrity"));
+    assert.equal(check.ok, true, "Mutabakat Testi tamam");
+  });
+});
