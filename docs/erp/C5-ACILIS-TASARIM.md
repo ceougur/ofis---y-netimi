@@ -599,3 +599,22 @@ Defter (`test/bagimsiz/defter/kos.mjs`): UCLAR acilis_evrak / karsiliksiz_cari /
 ### 12.6 Hız (ders 47, 53)
 Tur 1'in düzeneği kendi kopyamda (`scratchpad/c5a1b-olcum/`); yollar: Ana Defter (build + karma mizan), Yevmiye, Defter Mutabakatı, Mutabakat Testi, Alacak Yaşlandırma, açılış
 (göç + donma); üç sütun: c5a-taban / tur 1 ucu / tur 1b ucu; `flock -x -n`, yük > 2 → GEÇERSİZ.
+
+### 12.7 Sonuç (kodla birlikte; ayrıntı ve sayılar docs/kanit/2026-11-11/c5a1b-* ve teslim raporunda)
+- S127: kararın örneğinde (v2.4.9 gerçek kodu) mizan 120 v2.4.9 12.300 → tur 1 20.700 → tur 1b 12.300; kilitli 2025 mizanı ve Yevmiye Defteri bayt bayt aynı; `ledger:rule-diff`
+  hesapları tur 1'de 120 / 500 / 519 / 602 / 649 / 770 (120'de 8.400 — çift sayım), tur 1b'de 500 / 519 / 602 / 649 / 770 (120 yok; kartın 8.400'ü 602 ↔ 519 farkında). Kalıcı test
+  (`test/s127-tek-kez-250.test.mjs`, fikstür surum-2.4.9-s127 / -kilitsiz): i, ii (P > 0, P = 0), iii, iv, v, vi, vii, viii ve TERS yön (v2.4.9'da Kayıt Tarihi sonradan
+  ileri alınınca ÜRETİLDİ: tur 1'de kart açık dönemde hiç yazılmıyordu — EKSİK) sayıyla. Göç penceresinde (bekleyen 2.4.9 koşusu donmadan) de 120 = cariler.
+- Ters yönün üretimi: v2.4.9 Excel yüklemesinde ileri Kayıt Tarihi'ni yükleme gününe çeker; ters yön ancak kilitten önce Kayıt Tarihi kart düzeltmesiyle ileri alınınca doğar
+  (fikstürde 20.01.2026'da 10.11.2025 → 15.01.2026 / 20.01.2026).
+- KG-5 dışında Ç5-A'nın madde TARİHİNİ değiştirdiği başka kural YOK (tur 1 farkındaki her `post(…)` çağrısının tarih bağımsız değişkeni tarandı: yalnız `plan:` maddesi `localDayOf
+  (importedAt)`; açılış sınıfı (`cls`) yalnız sırayı değiştirir).
+- Eski sürüm karşılaştırması: katlama `test/guvenilirlik/defter-olgulari.mjs` (`c5aOpeningFold`); ayrıca kural farkının kapı tabanına yazdığı kayıt (yalnız `ledger:rule-diff` getiren
+  taban satırı, fark Ç5-A ile açıklanmışsa) sayılmaz.
+- Katlamanın dişi: c5a-taban kodunda (Ç5-A yok) 2.0.26 verisi 'Ç5-A katlaması — kural dışı fark' ile kırmızı (92 fişsiz 500). Mutant 20'nin ilk hâli (Kasa açılışı 500'de
+  kalır) eski sürüm verisinde YAKALANMADI: 2.0.16–2.0.26 fikstürlerinde Kasa açılışı yok (2.2.0'da geldi) — mutant cari açılışına (Borç Yaz) taşındı, yakalandı; Kasa
+  açılışının 519'u mutant 1'de (acilis-519-250). BİLİNEN SINIR: katlamanın Kasa / banka / stok açılışı dalları eski sürüm verisiyle sınanmıyor (o sınıflar fikstürde yok).
+- Muhasebe sürücüsü (rastgele-2) 519 farkı 75.300 = tek carisiz açılış çeki (evrak_acilis + evrak_karsiliksiz): program karşılıksızda carisiz evrakın açılışını 519'a geri
+  yazar (B 519 / A 101); kâhinin karşılıksız maddesinde cari satırı var (sürücünün çevirisi karsilastir.py bu satırı 770'e çeviriyor) — sürücü karşılıksız adımında cari
+  göndermiyor (program.mjs evrak_karsiliksiz). Cari sürücüsündeki aynı eşleme (KARSILIKSIZ_CARI) 7 kaydı kapattı. Muhasebe sürücüsüne dokunulmadı (görev sınırı);
+  tanı kopyasında `v.cari` gönderildi, fark değişmedi → kâhin olayındaki cari alanının adı bilinmiyor (kâhin dosyaları okunmadı) — DOĞRULANMADI, sürücü bakımına.

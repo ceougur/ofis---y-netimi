@@ -1,0 +1,145 @@
+TAP version 13
+# (node:2031) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Senet 121 / 321 — eşdeğerlik: surum-2.0.26-turler (gerçek 2.0.26 koduyla üretilmiş; verilen ve ödenmiş senet)
+    # Subtest: 2.0.26'nın kendi ölçüsüyle: 103 + 321 = eski 103, öbür hesaplar ve toplam aynı; 321 borç = alacak = 300
+    not ok 1 - 2.0.26'nın kendi ölçüsüyle: 103 + 321 = eski 103, öbür hesaplar ve toplam aynı; 321 borç = alacak = 300
+      ---
+      duration_ms: 1325.297542
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/banka-220-senet-121.test.mjs:470:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        001: Ç5-A katlaması — kural dışı fark
+        + actual - expected
+        
+        + [
+        +   'account:aentry-ca99f56a-973a-400d-83e0-a3ebaccb29f2 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-4680f44a-ac59-47b1-828e-c6ad5459c04f (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-e666fb4a-2fee-41d6-93f7-6c9449fb2852 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-fe39ab14-eb9a-44d4-a59c-f296c2d6eab6 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-21cbdbe3-c8eb-446a-bacb-9b08e8b0fea5 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-77f2e23f-ba0f-4bcf-ad96-f5e7dd3c9518 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-6621afb6-8527-462c-bc43-8dbf70e06373 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-c18dd68d-eaaa-4918-946d-4c10ca7b579b (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-8dd7103a-202c-49f4-9b00-969529d881cf (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-7ec00f60-30b6-4478-813a-a05dc886e557 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-26184d23-35f7-44ef-a68e-54860f93ce28 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-d3848d65-8a0d-4ed2-9d31-5c2c927b077a (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-05b4aefe-8e1c-4944-9920-4222a75ea227 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-edc7ad72-57b7-4dca-8ce1-39a96454f65f (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-07bb2f0a-d2da-400c-a5f7-235198442add (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-90076162-b7b0-4434-9b26-525a27cf9b44 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-dcb90e1b-3465-4a92-bb9d-956e7762c8ac (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-c6a29b3e-31b3-4972-856a-9ccf0432ebea (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-9cdb438c-f0e6-4a54-8ce1-e3b89aa4c260 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-91ad100f-63d0-4775-8c61-5b460a91fe1f (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-68535c9f-1d3f-4b8e-9ead-5572e47095cb (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-3093a5ef-d785-4e30-8981-163596e87b08 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-9ef731c2-7b22-4ab7-8c9f-10b66e11edae (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-e3db390b-edd0-4656-9351-74f7b0cb6019 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-dc7e790e-0857-4692-82a5-6abe5fcee7ef (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-f152e650-574c-4d3c-bed3-dea094fc9898 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-147cb54d-1f55-4f93-a250-ff8c3a927146 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-01e83e8d-59db-4593-9f32-c65dca9d868c (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-8eaa88df-362f-4332-ad35-5f867ee8f5fd (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-1bf95a68-3232-4072-b54f-59f28ecd624f (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-18ad5536-f2b2-4604-bbd4-3b821afc0635 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-ddd99d45-f3ab-4730-8f69-b5c9c60865fd (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-47537112-6ef6-40f2-b890-8e42a4b4dc81 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-6526e59b-0d66-4739-b48f-d8ab3a501b4a (2025-10-03): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-6529c1a9-2e86-47bb-99f3-420b9d41009d (2025-10-03): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-7e8e800e-2f6d-46a8-970e-0183454810a3 (2025-10-03): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-3d493906-e24f-4841-981d-da41e72aecd7 (2026-01-02): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-a67b32e8-9630-4005-a455-b042fa6709ec (2026-01-02): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-fc95762f-a2e2-4ee2-a8ed-d1d4a8918aec (2026-04-03): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-0c768ed9-09ca-4c70-8073-50d276716598 (2026-04-03): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-85e52212-17df-442e-bb35-c2faec9ac42c (2026-04-03): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-dbc25bb4-d2cc-4221-86c0-814526019c2f (2026-07-03): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-8323fa33-ad8e-4d7e-8240-6f8e3e1239db (2026-07-03): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'account:aentry-4ba3e1dc-7aec-4802-897d-eb2649028186 (2026-07-03): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'plan-entry:entry-e9258e5a-0fff-4784-8f20-5ea6e1c3a6ec (2026-10-09): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)',
+        +   'plan-entry:entry-0b31026d-ee81-45a0-beba-a8c8062b36cb (2026-10-09): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'account:aentry-ca99f56a-973a-400d-83e0-a3ebaccb29f2 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        1: 'account:aentry-4680f44a-ac59-47b1-828e-c6ad5459c04f (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        2: 'account:aentry-e666fb4a-2fee-41d6-93f7-6c9449fb2852 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        3: 'account:aentry-fe39ab14-eb9a-44d4-a59c-f296c2d6eab6 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        4: 'account:aentry-21cbdbe3-c8eb-446a-bacb-9b08e8b0fea5 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        5: 'account:aentry-77f2e23f-ba0f-4bcf-ad96-f5e7dd3c9518 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        6: 'account:aentry-6621afb6-8527-462c-bc43-8dbf70e06373 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        7: 'account:aentry-c18dd68d-eaaa-4918-946d-4c10ca7b579b (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        8: 'account:aentry-8dd7103a-202c-49f4-9b00-969529d881cf (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        9: 'account:aentry-7ec00f60-30b6-4478-813a-a05dc886e557 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        10: 'account:aentry-26184d23-35f7-44ef-a68e-54860f93ce28 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        11: 'account:aentry-d3848d65-8a0d-4ed2-9d31-5c2c927b077a (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        12: 'account:aentry-05b4aefe-8e1c-4944-9920-4222a75ea227 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        13: 'account:aentry-edc7ad72-57b7-4dca-8ce1-39a96454f65f (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        14: 'account:aentry-07bb2f0a-d2da-400c-a5f7-235198442add (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        15: 'account:aentry-90076162-b7b0-4434-9b26-525a27cf9b44 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        16: 'account:aentry-dcb90e1b-3465-4a92-bb9d-956e7762c8ac (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        17: 'account:aentry-c6a29b3e-31b3-4972-856a-9ccf0432ebea (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        18: 'account:aentry-9cdb438c-f0e6-4a54-8ce1-e3b89aa4c260 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        19: 'account:aentry-91ad100f-63d0-4775-8c61-5b460a91fe1f (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        20: 'account:aentry-68535c9f-1d3f-4b8e-9ead-5572e47095cb (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        21: 'account:aentry-3093a5ef-d785-4e30-8981-163596e87b08 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        22: 'account:aentry-9ef731c2-7b22-4ab7-8c9f-10b66e11edae (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        23: 'account:aentry-e3db390b-edd0-4656-9351-74f7b0cb6019 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        24: 'account:aentry-dc7e790e-0857-4692-82a5-6abe5fcee7ef (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        25: 'account:aentry-f152e650-574c-4d3c-bed3-dea094fc9898 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        26: 'account:aentry-147cb54d-1f55-4f93-a250-ff8c3a927146 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        27: 'account:aentry-01e83e8d-59db-4593-9f32-c65dca9d868c (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        28: 'account:aentry-8eaa88df-362f-4332-ad35-5f867ee8f5fd (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        29: 'account:aentry-1bf95a68-3232-4072-b54f-59f28ecd624f (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        30: 'account:aentry-18ad5536-f2b2-4604-bbd4-3b821afc0635 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        31: 'account:aentry-ddd99d45-f3ab-4730-8f69-b5c9c60865fd (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        32: 'account:aentry-47537112-6ef6-40f2-b890-8e42a4b4dc81 (2025-07-04): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        33: 'account:aentry-6526e59b-0d66-4739-b48f-d8ab3a501b4a (2025-10-03): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        34: 'account:aentry-6529c1a9-2e86-47bb-99f3-420b9d41009d (2025-10-03): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        35: 'account:aentry-7e8e800e-2f6d-46a8-970e-0183454810a3 (2025-10-03): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        36: 'account:aentry-3d493906-e24f-4841-981d-da41e72aecd7 (2026-01-02): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        37: 'account:aentry-a67b32e8-9630-4005-a455-b042fa6709ec (2026-01-02): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        38: 'account:aentry-fc95762f-a2e2-4ee2-a8ed-d1d4a8918aec (2026-04-03): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        39: 'account:aentry-0c768ed9-09ca-4c70-8073-50d276716598 (2026-04-03): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        40: 'account:aentry-85e52212-17df-442e-bb35-c2faec9ac42c (2026-04-03): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        41: 'account:aentry-dbc25bb4-d2cc-4221-86c0-814526019c2f (2026-07-03): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        42: 'account:aentry-8323fa33-ad8e-4d7e-8240-6f8e3e1239db (2026-07-03): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        43: 'account:aentry-4ba3e1dc-7aec-4802-897d-eb2649028186 (2026-07-03): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        44: 'plan-entry:entry-e9258e5a-0fff-4784-8f20-5ea6e1c3a6ec (2026-10-09): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+        45: 'plan-entry:entry-0b31026d-ee81-45a0-beba-a8c8062b36cb (2026-10-09): fişsiz 500 satırı — açılış karşı hesabı 519 olmalı (KG-1)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/banka-220-senet-121.test.mjs:485:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - Senet 121 / 321 — eşdeğerlik: surum-2.0.26-turler (gerçek 2.0.26 koduyla üretilmiş; verilen ve ödenmiş senet)
+  ---
+  duration_ms: 1326.434933
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/banka-220-senet-121.test.mjs:469:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:2031) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3903.102335

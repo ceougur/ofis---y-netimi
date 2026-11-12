@@ -48,7 +48,8 @@ const MUTASYONLAR = [
   // Tur 1b — carisiz evrak Alacak Yaşlandırması'na girmez (BAŞ MİMAR KARARI 11.11; S49 = A + MM5 "müşteri başına").
   [18, "carisiz evrak yaşlandırmada kalır (karar geri)", RC, `          if (!cheque?.accountId && !Number(cheque?.planLinked)) continue;`, ``, [AGING], /carisiz|—|Carisiz/],
   [19, "carili evrak da yaşlandırmadan düşer (fazla geniş)", RC, `          if (!cheque?.accountId && !Number(cheque?.planLinked)) continue;`, `          continue;`, [AGING], /carili|Carili|seçilen/],
-  [20, "katlamanın dişi: Kasa açılışı 500'de kalır (eski sürüm verisinde)", GL, `post(\`cash:\${row.id}\`, row.date, "Kasa açılışı", row.description, moneyOf(row), OPENING_GL, row.amount);`, `post(\`cash:\${row.id}\`, row.date, "Kasa açılışı", row.description, moneyOf(row), "500", row.amount);`, [SENET], /fişsiz 500|Ç5-A katlaması/],
+  // 20: eski sürüm verisi (2.0.26) Kasa açılışından (2.2.0) önce — katlamanın 'fişsiz 500' dişi orada cari açılışıyla sınanır (Kasa açılışının 519'u mutant 1'de).
+  [20, "katlamanın dişi: cari açılışı (Borç Yaz) 500'de kalır (eski sürüm verisinde)", GL, `post(id, row.date, "Cari (borç yaz)", row.note, control, isOpening ? OPENING_GL : "602", row.amount);`, `post(id, row.date, "Cari (borç yaz)", row.note, control, isOpening ? "500" : "602", row.amount);`, [SENET], /fişsiz 500|Ç5-A katlaması/],
   [21, "katlamanın dişi: cari tahsilatı 519'a yazılır", GL, `post(id, row.date, "Cari tahsilat", row.note, moneyOf(row), control, row.amount);`, `post(id, row.date, "Cari tahsilat", row.note, moneyOf(row), "519", row.amount);`, [SENET], /açılış sınıfı dışında|Ç5-A katlaması|öbür hesaplar/],
   [22, "katlamanın dişi: KG-5'e P de eklenir (T − P değil T)", GL, `OPENING_GL, roundMoney((Number(plan.total) || 0) - (Number(plan.openingPaid) || 0)));`, `OPENING_GL, roundMoney(Number(plan.total) || 0));`, [SENET], /KG-5 tutarı|Ç5-A katlaması/],
 ];

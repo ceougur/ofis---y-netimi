@@ -1,0 +1,397 @@
+TAP version 13
+# (node:12803) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:12803) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:12803) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# K1 zincir: durumu değişen belge 12; karşılaştırılan yanıt 550; senet katlaması (2.2.0 İz 4.2) 0 yanıt, ekranla karşılaştırılan dosya 0; Nakit Akışı faturasız kalem (2.4.3 MM5) 264
+# Subtest: altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS, ANLIK DURUM, Ana Defter ve raporları gösterir
+    # Subtest: zincir fikstürü surum-2.0.26-zincir (2.0.16 → 2.0.26 gerçek sürüm koduyla, 4 şirket)
+    ok 1 - zincir fikstürü surum-2.0.26-zincir (2.0.16 → 2.0.26 gerçek sürüm koduyla, 4 şirket)
+      ---
+      duration_ms: 17471.700939
+      type: 'test'
+      ...
+# K1 motor: durumu değişen belge 8; karşılaştırılan yanıt 154; senet katlaması (2.2.0 İz 4.2, toplam) 8 yanıt, ekranla karşılaştırılan dosya 8; Nakit Akışı faturasız kalem (2.4.3 MM5) 288
+    # Subtest: v2.0.26'nın kendi koduyla üretilen veri (mutabakat motoru: 120 güne yayılmış 260 rastgele işlem, dönem kilidi, iade/iptal)
+    ok 2 - v2.0.26'nın kendi koduyla üretilen veri (mutabakat motoru: 120 güne yayılmış 260 rastgele işlem, dönem kilidi, iade/iptal)
+      ---
+      duration_ms: 7064.838656
+      type: 'test'
+      ...
+    1..2
+ok 1 - altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS, ANLIK DURUM, Ana Defter ve raporları gösterir
+  ---
+  duration_ms: 24538.296425
+  type: 'suite'
+  ...
+# Subtest: altın test PDF karşılaştırması: 2.4.4 U3 yeniden yerleşim kuralı yalnız boşluğu ve kesik tutarın devamını kabul eder
+    # Subtest: aynı sayılar başka satır kırılımıyla ve kesiksiz özet tutarıyla: aynı
+    ok 1 - aynı sayılar başka satır kırılımıyla ve kesiksiz özet tutarıyla: aynı
+      ---
+      duration_ms: 0.669691
+      type: 'test'
+      ...
+    # Subtest: tablo tutarının son rakamı değişirse fark
+    ok 2 - tablo tutarının son rakamı değişirse fark
+      ---
+      duration_ms: 0.424553
+      type: 'test'
+      ...
+    # Subtest: kesik özet tutarı yeni tutarın öneki değilse fark; kesiğin devamına metin giremez
+    ok 3 - kesik özet tutarı yeni tutarın öneki değilse fark; kesiğin devamına metin giremez
+      ---
+      duration_ms: 0.21948
+      type: 'test'
+      ...
+    # Subtest: araya sözcük girerse ya da sözcük değişirse fark; Rapor Merkezi dışındaki PDF bu kurala girmez
+    ok 4 - araya sözcük girerse ya da sözcük değişirse fark; Rapor Merkezi dışındaki PDF bu kurala girmez
+      ---
+      duration_ms: 0.144866
+      type: 'test'
+      ...
+    1..4
+ok 2 - altın test PDF karşılaştırması: 2.4.4 U3 yeniden yerleşim kuralı yalnız boşluğu ve kesik tutarın devamını kabul eder
+  ---
+  duration_ms: 1.743193
+  type: 'suite'
+  ...
+# (node:12894) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# K1 surum-2.0.16-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 0
+# Subtest: göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11)
+    # Subtest: surum-2.0.16-zincir
+    ok 1 - surum-2.0.16-zincir
+      ---
+      duration_ms: 820.790418
+      type: 'test'
+      ...
+# K1 surum-2.0.17-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 0
+# K1 surum-2.0.17-zincir 002 · Şahin İnşaat Ltd. Şti.: durumu değişen belge 0
+# K1 surum-2.0.17-zincir 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+    # Subtest: surum-2.0.17-zincir
+    ok 2 - surum-2.0.17-zincir
+      ---
+      duration_ms: 1504.219181
+      type: 'test'
+      ...
+# K1 surum-2.0.18-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 0
+# K1 surum-2.0.18-zincir 002 · Şahin İnşaat Ltd. Şti.: durumu değişen belge 0
+# K1 surum-2.0.18-zincir 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+# K1 surum-2.0.18-zincir 004 · Çağdaş Eğitim Kurumları: durumu değişen belge 0
+    # Subtest: surum-2.0.18-zincir
+    ok 3 - surum-2.0.18-zincir
+      ---
+      duration_ms: 2080.415132
+      type: 'test'
+      ...
+# K1 surum-2.0.19-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 0
+# K1 surum-2.0.19-zincir 002 · Şahin İnşaat ve Ticaret Ltd. Şti.: durumu değişen belge 0
+# K1 surum-2.0.19-zincir 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+# K1 surum-2.0.19-zincir 004 · Çağdaş Eğitim Kurumları: durumu değişen belge 0
+    # Subtest: surum-2.0.19-zincir
+    ok 4 - surum-2.0.19-zincir
+      ---
+      duration_ms: 2182.268699
+      type: 'test'
+      ...
+# K1 surum-2.0.20-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 0
+# K1 surum-2.0.20-zincir 002 · Şahin İnşaat ve Ticaret Ltd. Şti.: durumu değişen belge 0
+# K1 surum-2.0.20-zincir 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+# K1 surum-2.0.20-zincir 004 · Işık Turizm ve Seyahat: durumu değişen belge 0
+    # Subtest: surum-2.0.20-zincir
+    ok 5 - surum-2.0.20-zincir
+      ---
+      duration_ms: 2240.451747
+      type: 'test'
+      ...
+# K1 surum-2.0.21-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 1 — IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.21-zincir 002 · Şahin İnşaat ve Ticaret Ltd. Şti.: durumu değişen belge 1 — IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.21-zincir 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+# K1 surum-2.0.21-zincir 004 · Işık Turizm ve Seyahat: durumu değişen belge 0
+    # Subtest: surum-2.0.21-zincir
+    ok 6 - surum-2.0.21-zincir
+      ---
+      duration_ms: 2358.545573
+      type: 'test'
+      ...
+# K1 surum-2.0.22-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 2 — IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.22-zincir 002 · Şahin İnşaat ve Ticaret Ltd. Şti.: durumu değişen belge 2 — IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.22-zincir 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+# K1 surum-2.0.22-zincir 004 · Işık Turizm ve Seyahat: durumu değişen belge 0
+    # Subtest: surum-2.0.22-zincir
+    ok 7 - surum-2.0.22-zincir
+      ---
+      duration_ms: 2555.517017
+      type: 'test'
+      ...
+# K1 surum-2.0.23-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 3 — IAD2026000000003 ["return",0,0]→["return",18000,0]; IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.23-zincir 002 · Şahin İnşaat ve Ticaret Ltd. Şti.: durumu değişen belge 3 — IAD2026000000003 ["return",0,0]→["return",18000,0]; IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.23-zincir 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+# K1 surum-2.0.23-zincir 004 · Işık Turizm ve Seyahat: durumu değişen belge 0
+    # Subtest: surum-2.0.23-zincir
+    ok 8 - surum-2.0.23-zincir
+      ---
+      duration_ms: 2508.981145
+      type: 'test'
+      ...
+# (node:12894) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# K1 surum-2.0.24-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 4 — IAD2026000000004 ["return",0,0]→["return",18000,0]; IAD2026000000003 ["return",0,0]→["return",18000,0]; IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.24-zincir 002 · Şahin İnşaat ve Ticaret Ltd. Şti.: durumu değişen belge 4 — IAD2026000000004 ["return",0,0]→["return",18000,0]; IAD2026000000003 ["return",0,0]→["return",18000,0]; IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.24-zincir 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+# K1 surum-2.0.24-zincir 004 · Işık Turizm ve Seyahat: durumu değişen belge 0
+    # Subtest: surum-2.0.24-zincir
+    ok 9 - surum-2.0.24-zincir
+      ---
+      duration_ms: 3136.766002
+      type: 'test'
+      ...
+# (node:12894) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# K1 surum-2.0.25-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 5 — IAD2026000000005 ["return",0,0]→["return",18000,0]; IAD2026000000004 ["return",0,0]→["return",18000,0]; IAD2026000000003 ["return",0,0]→["return",18000,0]; IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.25-zincir 002 · Şahin İnşaat ve Ticaret Ltd. Şti.: durumu değişen belge 5 — IAD2026000000005 ["return",0,0]→["return",18000,0]; IAD2026000000004 ["return",0,0]→["return",18000,0]; IAD2026000000003 ["return",0,0]→["return",18000,0]; IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.25-zincir 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+# K1 surum-2.0.25-zincir 004 · Işık Turizm ve Seyahat: durumu değişen belge 0
+    # Subtest: surum-2.0.25-zincir
+    ok 10 - surum-2.0.25-zincir
+      ---
+      duration_ms: 3231.336217
+      type: 'test'
+      ...
+# (node:12894) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# K1 surum-2.0.26-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 6 — IAD2026000000006 ["return",0,0]→["return",18000,0]; IAD2026000000005 ["return",0,0]→["return",18000,0]; IAD2026000000004 ["return",0,0]→["return",18000,0]; IAD2026000000003 ["return",0,0]→["return",18000,0]; IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.26-zincir 002 · Şahin İnşaat ve Ticaret Ltd. Şti.: durumu değişen belge 6 — IAD2026000000006 ["return",0,0]→["return",18000,0]; IAD2026000000005 ["return",0,0]→["return",18000,0]; IAD2026000000004 ["return",0,0]→["return",18000,0]; IAD2026000000003 ["return",0,0]→["return",18000,0]; IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.26-zincir 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+# K1 surum-2.0.26-zincir 004 · Işık Turizm ve Seyahat: durumu değişen belge 0
+    # Subtest: surum-2.0.26-zincir
+    ok 11 - surum-2.0.26-zincir
+      ---
+      duration_ms: 2946.798169
+      type: 'test'
+      ...
+# K1 surum-2.0.19-cakisma 001 · Şirket 1: durumu değişen belge 0
+# K1 surum-2.0.19-cakisma 005 · Resmi Şirket: durumu değişen belge 0
+# K1 surum-2.0.19-cakisma 002 · Gayri Resmi Şirket: durumu değişen belge 0
+    # Subtest: surum-2.0.19-cakisma
+    ok 12 - surum-2.0.19-cakisma
+      ---
+      duration_ms: 1319.958368
+      type: 'test'
+      ...
+# K1 surum-2.0.19-eski 001 · Eski Hukuk Bürosu: durumu değişen belge 0
+# K1 surum-2.0.19-eski 002 · Yeni Büro Ltd. Şti.: durumu değişen belge 0
+    # Subtest: surum-2.0.19-eski
+    ok 13 - surum-2.0.19-eski
+      ---
+      duration_ms: 1115.013799
+      type: 'test'
+      ...
+# (node:12894) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# K1 surum-2.0.26-turler 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 6 — IAD2026000000006 ["return",0,0]→["return",18000,0]; IAD2026000000005 ["return",0,0]→["return",18000,0]; IAD2026000000004 ["return",0,0]→["return",18000,0]; IAD2026000000003 ["return",0,0]→["return",18000,0]; IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.26-turler 002 · Şahin İnşaat ve Ticaret Ltd. Şti.: durumu değişen belge 6 — IAD2026000000006 ["return",0,0]→["return",18000,0]; IAD2026000000005 ["return",0,0]→["return",18000,0]; IAD2026000000004 ["return",0,0]→["return",18000,0]; IAD2026000000003 ["return",0,0]→["return",18000,0]; IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.26-turler 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+# K1 surum-2.0.26-turler 004 · Işık Turizm ve Seyahat: durumu değişen belge 0
+    # Subtest: surum-2.0.26-turler
+    ok 14 - surum-2.0.26-turler
+      ---
+      duration_ms: 2698.624212
+      type: 'test'
+      ...
+    1..14
+ok 3 - göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11)
+  ---
+  duration_ms: 30702.672463
+  type: 'suite'
+  ...
+# Subtest: 2.0.21–2.0.26 kesitleri v20 koduyla: hiçbir kayıt ve yedek kaybolmaz, eski yedekler kendi şirketine geri yüklenir
+    # Subtest: surum-2.0.21-zincir
+    ok 1 - surum-2.0.21-zincir
+      ---
+      duration_ms: 7409.307006
+      type: 'test'
+      ...
+# (node:12894) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:12894) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:12894) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: surum-2.0.26-zincir
+    ok 2 - surum-2.0.26-zincir
+      ---
+      duration_ms: 10278.10029
+      type: 'test'
+      ...
+# (node:12894) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:12894) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:12894) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:12894) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: surum-2.0.26-turler
+    ok 3 - surum-2.0.26-turler
+      ---
+      duration_ms: 10828.250894
+      type: 'test'
+      ...
+    1..3
+ok 4 - 2.0.21–2.0.26 kesitleri v20 koduyla: hiçbir kayıt ve yedek kaybolmaz, eski yedekler kendi şirketine geri yüklenir
+  ---
+  duration_ms: 28516.213285
+  type: 'suite'
+  ...
+# (node:13344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Senet 121 / 321 — çalışıyor mu (sayılarla, planın yevmiyesiyle)
+    # Subtest: alınan senet 121.01 (B 121 / A 120), alınan çek 101.01; verilen senet 321 (B 320 / A 321), verilen çek 103; Defter Mutabakatı gl:121 / gl:321
+    ok 1 - alınan senet 121.01 (B 121 / A 120), alınan çek 101.01; verilen senet 321 (B 320 / A 321), verilen çek 103; Defter Mutabakatı gl:121 / gl:321
+      ---
+      duration_ms: 129.49642
+      type: 'test'
+      ...
+    # Subtest: Hesap Planı Mizanı ve Alt Hesap Mizanı: Tekdüzen adları (101 Alınan Çekler, 103 Verilen Çekler ve Ödeme Emirleri (−), 121, 321; 121.01/121.02)
+    ok 2 - Hesap Planı Mizanı ve Alt Hesap Mizanı: Tekdüzen adları (101 Alınan Çekler, 103 Verilen Çekler ve Ödeme Emirleri (−), 121, 321; 121.01/121.02)
+      ---
+      duration_ms: 49.09749
+      type: 'test'
+      ...
+    # Subtest: Tahsile Ver B 121.02 / A 121.01; Bankadan Geri Al B 121.01 / A 121.02; 101.0x değişmez; İşlem Kartı adlarıyla; Tahsildeki Çek ve Senetler = 101.02 + 121.02
+    ok 3 - Tahsile Ver B 121.02 / A 121.01; Bankadan Geri Al B 121.01 / A 121.02; 101.0x değişmez; İşlem Kartı adlarıyla; Tahsildeki Çek ve Senetler = 101.02 + 121.02
+      ---
+      duration_ms: 133.729571
+      type: 'test'
+      ...
+    # Subtest: tahsildeki senet Tahsil Edildi: B 102.01 / A 121.02, Ziraat +1.000; Geri Al → yeniden 121.02; karşılıksız: B 120 / A 121.02, cari yeniden borçlu
+    ok 4 - tahsildeki senet Tahsil Edildi: B 102.01 / A 121.02, Ziraat +1.000; Geri Al → yeniden 121.02; karşılıksız: B 120 / A 121.02, cari yeniden borçlu
+      ---
+      duration_ms: 162.74814
+      type: 'test'
+      ...
+    # Subtest: verilen senet ödemesi B 321 / A 102.01 (Ziraat −900); verilen çek ödemesi B 103 / A 102.01; 321 = 0, 103 = 0
+    ok 5 - verilen senet ödemesi B 321 / A 102.01 (Ziraat −900); verilen çek ödemesi B 103 / A 102.01; 321 = 0, 103 = 0
+      ---
+      duration_ms: 77.499555
+      type: 'test'
+      ...
+    1..5
+ok 5 - Senet 121 / 321 — çalışıyor mu (sayılarla, planın yevmiyesiyle)
+  ---
+  duration_ms: 1198.594907
+  type: 'suite'
+  ...
+# Subtest: Senet 121 / 321 — ciro, carisiz, taksit, fatura, iptal, sil → geri yükle
+    # Subtest: ciro: B 320 / A 121.01; carisiz senet B 121.01 / A 602 ve karşılıksızı B 770 / A 121.01; taksite sayılan senet B 121.01 / A 120
+    ok 1 - ciro: B 320 / A 121.01; carisiz senet B 121.01 / A 602 ve karşılıksızı B 770 / A 121.01; taksite sayılan senet B 121.01 / A 120
+      ---
+      duration_ms: 175.58962
+      type: 'test'
+      ...
+    # Subtest: faturadan gelen alınan senet 121 (+2.000) ve verilen senet 321 (−450); fatura iptal edilince evrakla birlikte geri
+    ok 2 - faturadan gelen alınan senet 121 (+2.000) ve verilen senet 321 (−450); fatura iptal edilince evrakla birlikte geri
+      ---
+      duration_ms: 141.088987
+      type: 'test'
+      ...
+    # Subtest: sil → geri yükle: 121 −300 / +300
+    ok 3 - sil → geri yükle: 121 −300 / +300
+      ---
+      duration_ms: 76.486298
+      type: 'test'
+      ...
+    1..3
+ok 6 - Senet 121 / 321 — ciro, carisiz, taksit, fatura, iptal, sil → geri yükle
+  ---
+  duration_ms: 782.383424
+  type: 'suite'
+  ...
+# Subtest: Senet 121 / 321 — nasıl bozarım: tür düzenleme, kilitli dönem, kilit izi
+    # Subtest: açık dönemde senet → çek: 121 −500, 101 +500 (aynı tutar); geri senet; tahsildeyken 409 cheque-deposited; işlem görmüşken 409
+    ok 1 - açık dönemde senet → çek: 121 −500, 101 +500 (aynı tutar); geri senet; tahsildeyken 409 cheque-deposited; işlem görmüşken 409
+      ---
+      duration_ms: 176.395143
+      type: 'test'
+      ...
+# (node:13344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kilitli dönemde (alış 02.10, kilit 05.10) tür değişikliği 409 period-locked, 121 aynı; ham SQL ile değiştirilirse kilit izi değişir ve Mutabakat Testi 'Kapanmış dönem' der
+    ok 2 - kilitli dönemde (alış 02.10, kilit 05.10) tür değişikliği 409 period-locked, 121 aynı; ham SQL ile değiştirilirse kilit izi değişir ve Mutabakat Testi 'Kapanmış dönem' der
+      ---
+      duration_ms: 319.15153
+      type: 'test'
+      ...
+    1..2
+ok 7 - Senet 121 / 321 — nasıl bozarım: tür düzenleme, kilitli dönem, kilit izi
+  ---
+  duration_ms: 929.952285
+  type: 'suite'
+  ...
+# Subtest: Senet 121 / 321 — şirket ayrımı, yetki, Şirket Verisini Sıfırla, Banka Fişi rolleri
+    # Subtest: yetkisiz personel senet giremez (403, hiçbir şey yazılmaz); ?hofCompany=: 002'nin senedi 001'in 121'ine girmez
+    ok 1 - yetkisiz personel senet giremez (403, hiçbir şey yazılmaz); ?hofCompany=: 002'nin senedi 001'in 121'ine girmez
+      ---
+      duration_ms: 359.282634
+      type: 'test'
+      ...
+    # Subtest: Şirket Verisini Sıfırla: 101 / 121 / 103 / 321 sıfır, Mutabakat Testi temiz; sonra yeni senet yine 121'e
+    ok 2 - Şirket Verisini Sıfırla: 101 / 121 / 103 / 321 sıfır, Mutabakat Testi temiz; sonra yeni senet yine 121'e
+      ---
+      duration_ms: 195.953255
+      type: 'test'
+      ...
+    # Subtest: Banka Fişi: hiçbir rolde 121 / 321 seçilemez (§3.11 rol listesi; 400 bank-gl-forbidden); Hesap Eşlemeleri'nde 400
+    ok 3 - Banka Fişi: hiçbir rolde 121 / 321 seçilemez (§3.11 rol listesi; 400 bank-gl-forbidden); Hesap Eşlemeleri'nde 400
+      ---
+      duration_ms: 8.179121
+      type: 'test'
+      ...
+    1..3
+ok 8 - Senet 121 / 321 — şirket ayrımı, yetki, Şirket Verisini Sıfırla, Banka Fişi rolleri
+  ---
+  duration_ms: 987.829076
+  type: 'suite'
+  ...
+# Subtest: Senet 121 / 321 — eşdeğerlik: gerçek eski kod (v2.1.0) ile aynı veri
+    # Subtest: eski sürümün verisi yeni kuralla: 101 + 121 = eski 101, 103 + 321 = eski 103, öbür hesaplar ve toplam aynı; kilitli dönem sahte fark vermez
+    ok 1 - eski sürümün verisi yeni kuralla: 101 + 121 = eski 101, 103 + 321 = eski 103, öbür hesaplar ve toplam aynı; kilitli dönem sahte fark vermez
+      ---
+      duration_ms: 1573.976669
+      type: 'test'
+      ...
+    1..1
+ok 9 - Senet 121 / 321 — eşdeğerlik: gerçek eski kod (v2.1.0) ile aynı veri
+  ---
+  duration_ms: 1574.265716
+  type: 'suite'
+  ...
+# (node:13344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:13344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Senet 121 / 321 — eşdeğerlik: surum-2.0.26-turler (gerçek 2.0.26 koduyla üretilmiş; verilen ve ödenmiş senet)
+    # Subtest: 2.0.26'nın kendi ölçüsüyle: 103 + 321 = eski 103, öbür hesaplar ve toplam aynı; 321 borç = alacak = 300
+    ok 1 - 2.0.26'nın kendi ölçüsüyle: 103 + 321 = eski 103, öbür hesaplar ve toplam aynı; 321 borç = alacak = 300
+      ---
+      duration_ms: 1290.885452
+      type: 'test'
+      ...
+    1..1
+ok 10 - Senet 121 / 321 — eşdeğerlik: surum-2.0.26-turler (gerçek 2.0.26 koduyla üretilmiş; verilen ve ödenmiş senet)
+  ---
+  duration_ms: 1291.226734
+  type: 'suite'
+  ...
+1..10
+# tests 38
+# suites 10
+# pass 38
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 91783.127909

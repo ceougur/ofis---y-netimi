@@ -1,0 +1,52 @@
+rastgele-2 [TZ=UTC]: 1126 olay · yapıldı 1111 · red 0 · api_yok 4 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 140 ms
+    rastgele-2 [UTC] öz denetim TAMAM · AYNI 215 · U 45 · P 0 · K 0 · R 0 · SINIFLANMADI 17 · ÖLÇÜLEMEDİ 2 · red farkı 0 · adım farkı 18 (sınıfsız 11)  (38 sn + 15 sn)
+
+AYNI 215 · U 45 · P 4 · K 0 · R 0 · SINIFLANMADI 17 · ÖLÇÜLEMEDİ 2 · red farkı 0 · uygulanamayan olay 0 · sınıfsız adım farkı 11 · değişmez 0 · öz denetim bozuk 0 · koşu hatası 0
+Ölçüm (olay döngüsü en çok, ms): rastgele-2 [UTC] 140 (koşu 38 sn; GET ledger ort 9 / en çok 28 ms)
+BEKLEYEN KURAL FARKLARI (kimlik: senaryo / denetim [UTC]): ATANMAMIŞ-ALT-90 (KG-4 602.90 / 770.90, K-01 649.90, K-02 770.90, M14 770.90) 1/20 · D2–D4 1/1 · Ç5-ACILIS-519 1/13 · Ç5-B1 1/1 · Ç5-KARSILIKSIZ-ACILIS-CEKI 1/13 · Ç7b-F06 1/19 · Ç7b-KG2 1/19 · Ç7b-KG24 1/24 · Ç7b-KG8 (P2) 1/18
+ÖLÇÜLEMEDİ (2; geçmiş günlü rapor — program as-of okumaz):
+  rastgele-2 [UTC] gec_ocak gecikmis:C1 program 729308 · kâhin 804608 · bugün 51200 (geçmiş günlü rapor: program 2027-02-28 gününe kadar girilmiş kayıtları da görür (as-of gecikmiş okuması yok))
+  rastgele-2 [UTC] gec_ocak gecikmis:C3 program 1206560 · kâhin 1752640 · bugün 0 (geçmiş günlü rapor: program 2027-02-28 gününe kadar girilmiş kayıtları da görür (as-of gecikmiş okuması yok))
+U etiketleri: KG24-IHRACAT 24 · C1-ALT-90 20 · KG2-H03 19 · F06-GIDER-TURU 19 · KG8-IADE-KDV 18 · C5-EVRAK-KARSILIKSIZ 13 · C5-ACILIS-519 12 · C5-EVRAK-ACILIS 1
+
+FARKLAR (32; ilk 200):
+  rastgele-2 [UTC] OLAY #224 kart_faiz (api_yok) → P: kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL
+  rastgele-2 [UTC] OLAY #345 kart_faiz (api_yok) → P: kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL
+  rastgele-2 [UTC] OLAY #498 kart_faiz (api_yok) → P: kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL
+  rastgele-2 [UTC] OLAY #769 kart_faiz (api_yok) → P: kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL
+  rastgele-2 [UTC] ADIM 1 kasa_acilis  {"ana":{"500":285300,"519":-285300}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 2 banka_acilis  {"ana":{"500":1100200,"519":-1100200}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 3 banka_acilis  {"ana":{"500":1056200,"519":-1056200}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 4 kart_acilis  {"ana":{"500":-83900,"519":83900}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 5 kredi_acilis  {"ana":{"500":-1054000,"519":1054000}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 6 cari_acilis  {"ana":{"500":284300,"519":-284300}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 7 cari_acilis  {"ana":{"500":136200,"519":-136200}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 8 cari_acilis  {"ana":{"500":-61500,"519":61500}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 9 stok_acilis  {"ana":{"500":66200,"519":-66200}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 10 evrak_acilis  {"ana":{"519":-75300,"602":75300}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 11 evrak_karsiliksiz  {"ana":{"519":75300,"770":-75300}} → SINIFLANMADI
+  rastgele-2 [UTC] bil_arsiv ana:519 program -1729000 · kâhin -1804300 · bugün 0 → SINIFLANMADI
+  rastgele-2 [UTC] bil_canli_K ana:519 program -1729000 · kâhin -1804300 · bugün 0 → SINIFLANMADI
+  rastgele-2 [UTC] bil_yeni ana:519 program -1729000 · kâhin -1804300 · bugün 0 → SINIFLANMADI
+  rastgele-2 [UTC] gec_son gecikmis:C1 program 729308 · kâhin 804608 · bugün 51200 → SINIFLANMADI
+  rastgele-2 [UTC] gt_arsiv ana:602 program -359500 · kâhin -82600 · bugün -434800 → SINIFLANMADI
+  rastgele-2 [UTC] gt_arsiv ana:770 program 3108925 · kâhin 2707225 · bugün 3184225 → SINIFLANMADI
+  rastgele-2 [UTC] gt_canli ana:602 program -359500 · kâhin -82600 · bugün -434800 → SINIFLANMADI
+  rastgele-2 [UTC] gt_canli ana:770 program 3108925 · kâhin 2707225 · bugün 3184225 → SINIFLANMADI
+  rastgele-2 [UTC] mz_arsiv ana:519 program -1729000 · kâhin -1804300 · bugün 0 → SINIFLANMADI
+  rastgele-2 [UTC] mz_arsiv ana:602 program -359500 · kâhin -82600 · bugün -434800 → SINIFLANMADI
+  rastgele-2 [UTC] mz_arsiv ana:770 program 3108925 · kâhin 2707225 · bugün 3184225 → SINIFLANMADI
+  rastgele-2 [UTC] mz_yeni ana:519 program -1729000 · kâhin -1804300 · bugün 0 → SINIFLANMADI
+  rastgele-2 [UTC] mz_yeni ana:602 program -497100 · kâhin -90400 · bugün -572400 → SINIFLANMADI
+  rastgele-2 [UTC] mz_yeni ana:770 program 3558925 · kâhin 2965325 · bugün 3634225 → SINIFLANMADI
+  rastgele-2 [UTC] son ana:519 program -1729000 · kâhin -1804300 · bugün 0 → SINIFLANMADI
+  rastgele-2 [UTC] son ana:602 program -497100 · kâhin -90400 · bugün -572400 → SINIFLANMADI
+  rastgele-2 [UTC] son ana:770 program 3558925 · kâhin 2965325 · bugün 3634225 → SINIFLANMADI
+
+# tests 294
+# pass 260
+# fail 32
+# cancelled 0
+# skipped 2
+# todo 0
+Çıktı: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-muh/cikti

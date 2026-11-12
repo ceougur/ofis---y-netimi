@@ -1,0 +1,355 @@
+TAP version 13
+# (node:32098) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç5-A tur 1 — modül açılışları 519, KG-5, açılış evrakı, carisiz evrak, sınıf, denetim
+    # Subtest: modül açılışları tek madde, karşı hesap 519, açılış sınıfı (M-01, M-02 / M-03, M-04, M-05, M-07; KG-1); 500 Sermaye'ye hiçbir olay yazmaz
+    not ok 1 - modül açılışları tek madde, karşı hesap 519, açılış sınıfı (M-01, M-02 / M-03, M-04, M-05, M-07; KG-1); 500 Sermaye'ye hiçbir olay yazmaz
+      ---
+      duration_ms: 3.621636
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs:86:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   'A 500 1000',
+        -   'A 519 1000',
+            'B 100 1000'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'A 519 1000'
+        1: 'B 100 1000'
+      actual:
+        0: 'A 500 1000'
+        1: 'B 100 1000'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs:90:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: açılış İŞARETTEN tanınır: göçten sonra yazılmış 'AÇILIŞ BAKİYESİ' Borç Yaz 602, 'Açılış bakiyesi' Alacak Yaz 770 (C-01 / C-02; P1, K8-1)
+    not ok 2 - açılış İŞARETTEN tanınır: göçten sonra yazılmış 'AÇILIŞ BAKİYESİ' Borç Yaz 602, 'Açılış bakiyesi' Alacak Yaz 770 (C-01 / C-02; P1, K8-1)
+      ---
+      duration_ms: 1.658854
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs:102:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            'A 320 30',
+        +   'B 500 30'
+        -   'B 770 30'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'A 320 30'
+        1: 'B 770 30'
+      actual:
+        0: 'A 320 30'
+        1: 'B 500 30'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs:108:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: açılış evrakı 519 (M-08 / M-09: 602 / 770'e yazılmaz); formdan carisiz evrak 649.90 / 770.90 (S49); karşılıksız: açılışta B 519 / A 101, carisizde B 649.90 / A 101, cari seçilince cari borçlanır (S48, S66)
+    not ok 3 - açılış evrakı 519 (M-08 / M-09: 602 / 770'e yazılmaz); formdan carisiz evrak 649.90 / 770.90 (S49); karşılıksız: açılışta B 519 / A 101, carisizde B 649.90 / A 101, cari seçilince cari borçlanır (S48, S66)
+      ---
+      duration_ms: 0.508934
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs:112:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        carisiz alınan: 400 {"ok":false,"error":"Çeki kimden aldığınızı yazın ya da cari seçin."}
+        
+        400 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 400
+      operator: 'strictEqual'
+      stack: |-
+        need (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs:47:14)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs:113:5)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: KG-5: yüklenen kart TEK madde B CH (T − P) / A 519, P maddesiz, tarih yüklemenin YEREL günü; P = 0 → T; P = T → madde yok (H-06, B5)
+    not ok 4 - KG-5: yüklenen kart TEK madde B CH (T − P) / A 519, P maddesiz, tarih yüklemenin YEREL günü; P = 0 → T; P = T → madde yok (H-06, B5)
+      ---
+      duration_ms: 7.247314
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs:134:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + []
+        - [
+        -   'A 519 2000|B 120 2000',
+        -   'A 519 4500|B 120 4500'
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'A 519 2000|B 120 2000'
+        1: 'A 519 4500|B 120 4500'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs:139:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: açılış sınıfı yalnız SIRAYI değiştirir: aynı gün Kasa açılışı olağan Kasa girişinden önce; borç = alacak her maddede
+    not ok 5 - açılış sınıfı yalnız SIRAYI değiştirir: aynı gün Kasa açılışı olağan Kasa girişinden önce; borç = alacak her maddede
+      ---
+      duration_ms: 1.863577
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs:148:3'
+      failureType: 'testCodeFailure'
+      error: 'açılış maddeleri olağan Kasa girişinden önce: stock-open:smove-256f5277-b22f-4282-ac53-e47d8eccd6cb:-, cash:cash-3b97f6c1-f0d8-4edb-ab24-973c302b7318:-, cash:cash-8fd524f5-e58c-481c-a618-7255d448c9d4:-, account:aentry-49c68c01-5d85-4d8c-9f5e-82e4f8c5a010:-, account:aentry-5b119f35-340d-444f-98c3-ba1e8aed5da6:-, account:free-in:cheque-19304e38-e120-4564-8ed5-d9faf7587e41:-, account:free-in:cheque-411bdca3-b56a-4cba-a36a-ac2d31be1e4a:-, account:free-out:cheque-cb91ad79-54cf-457d-acd0-fe170cfaf2af:-, bank:ev-0mwcegcmf0000-8f0115b9-dc77-469f:-, bank:ev-0mwcegcn80000-47cad4ff-7bae-4838:-'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs:159:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Mutabakat Testi: 'Açılış Karşılığı' (519 / 500) denetimi temiz ve ikinci yükleyici = defter (B2); stock:opening 519'a göre; expected() 519'u içermez (K6)
+    not ok 6 - Mutabakat Testi: 'Açılış Karşılığı' (519 / 500) denetimi temiz ve ikinci yükleyici = defter (B2); stock:opening 519'a göre; expected() 519'u içermez (K6)
+      ---
+      duration_ms: 22.711865
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs:163:3'
+      failureType: 'testCodeFailure'
+      error: 'Açılış Karşılığı denetimi yok'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs:166:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Banka İşlem Kartı ve Banka Ayarları 519 okur; saklı satır kodu 500 kalır (B3)
+    not ok 7 - Banka İşlem Kartı ve Banka Ayarları 519 okur; saklı satır kodu 500 kalır (B3)
+      ---
+      duration_ms: 5.163756
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs:176:3'
+      failureType: 'testCodeFailure'
+      error: '[{"role":"bank","gl":"102","glName":"Bankalar (Havale / EFT)","sub":"102.01","subName":"Ziraat Bankası · Ana Hesap","ref":"bacc-b7272d69-3f0b-4358-8bca-942081ffe034","side":"D","tryMinor":500000,"currency":"TRY","fxMinor":500000,"memo":""},{"role":"opening","gl":"500","glName":"Açılış ve Devir Bakiyeleri","sub":"","subName":"","ref":"","side":"C","tryMinor":500000,"currency":"TRY","fxMinor":500000,"memo":""}]'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs:181:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S53: kilitsiz geçmiş yılda Ç5-A maddesi varsa Defter Mutabakatı / Mutabakat Testi uyarısı; yıl kilitlenince kalkar
+    not ok 8 - S53: kilitsiz geçmiş yılda Ç5-A maddesi varsa Defter Mutabakatı / Mutabakat Testi uyarısı; yıl kilitlenince kalkar
+      ---
+      duration_ms: 48.678024
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs:186:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        The expression evaluated to a falsy value:
+        
+          assert.ok(info && info.ok === true && info.info === true && !info.notice && info.years.includes("2025"), JSON.stringify(info))
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs:193:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..8
+not ok 1 - 2.5.0 Ç5-A tur 1 — modül açılışları 519, KG-5, açılış evrakı, carisiz evrak, sınıf, denetim
+  ---
+  duration_ms: 824.217043
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs:33:1'
+  failureType: 'subtestsFailed'
+  error: '8 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 Ç5-A tur 1 — KG-16 'Açılış Olabilir' (göç 48): aday kuralı, onay / ret, yetki, kilit izi, göç 49
+    # Subtest: göç 48: aday kuralı (B6, S65) — Türkçe küçük harf + ç/ı/ş katlaması, baştaki boşluk; 'Devir' / 'Devreden' / ortada geçen girmez; Açılış Bakiyesi satırı (is_opening) aday değil; onaya kadar 519 (S47)
+    not ok 1 - göç 48: aday kuralı (B6, S65) — Türkçe küçük harf + ç/ı/ş katlaması, baştaki boşluk; 'Devir' / 'Devreden' / ortada geçen girmez; Açılış Bakiyesi satırı (is_opening) aday değil; onaya kadar 519 (S47)
+      ---
+      duration_ms: 1.978839
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs:241:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot find module '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/server/lib/ledger-opening.mjs' imported from /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs"
+      code: 'ERR_MODULE_NOT_FOUND'
+      stack: |-
+        finalizeResolution (node:internal/modules/esm/resolve:275:11)
+        moduleResolve (node:internal/modules/esm/resolve:865:10)
+        defaultResolve (node:internal/modules/esm/resolve:989:11)
+        #cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+        ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+        ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+        onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:680:36)
+        TracingChannel.tracePromise (node:diagnostics_channel:350:14)
+        ModuleLoader.import (node:internal/modules/esm/loader:679:21)
+        defaultImportModuleDynamicallyForModule (node:internal/modules/esm/utils:222:31)
+      ...
+    # Subtest: onay → 519 (M-02 / M-03), ret → 602 / 770 (C-01 / C-02); tutar / tarih / yön / is_opening DEĞİŞMEZ; kilit izi değişmez (B4); aynı karar tekrarı yazmaz; yetkisiz 403; listede olmayan 404
+    not ok 2 - onay → 519 (M-02 / M-03), ret → 602 / 770 (C-01 / C-02); tutar / tarih / yön / is_opening DEĞİŞMEZ; kilit izi değişmez (B4); aynı karar tekrarı yazmaz; yetkisiz 403; listede olmayan 404
+      ---
+      duration_ms: 6.980074
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs:261:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        liste: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs:21:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs:262:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: göç eşgüçlü: yeniden koşan göç 48 kararları bozmaz (onay / ret aynen), adayları çoğaltmaz
+    not ok 3 - göç eşgüçlü: yeniden koşan göç 48 kararları bozmaz (onay / ret aynen), adayları çoğaltmaz
+      ---
+      duration_ms: 3.970213
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs:291:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        liste: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs:21:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs:292:21)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: göçten sonra yazılan 'Açılış…' Borç Yaz aday OLMAZ (K8-1)
+    not ok 4 - göçten sonra yazılan 'Açılış…' Borç Yaz aday OLMAZ (K8-1)
+      ---
+      duration_ms: 18.132995
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs:302:3'
+      failureType: 'testCodeFailure'
+      error: 'no such column: opening_review'
+      code: 'ERR_SQLITE_ERROR'
+      stack: |-
+        prepare (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/server/lib/db.mjs:79:22)
+        query (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/server/lib/db.mjs:378:14)
+        Object.get (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/server/lib/db.mjs:395:28)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs:305:35)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 2 - 2.5.0 Ç5-A tur 1 — KG-16 'Açılış Olabilir' (göç 48): aday kuralı, onay / ret, yetki, kilit izi, göç 49
+  ---
+  duration_ms: 670.321307
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs:204:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 Ç5-A tur 1 — Silinenler bağlantı noktası (B8 / S51; routes/accounts.mjs tur 2b-2 sonrası bağlanır)
+    # Subtest: restoredOpeningReview: işaretli silinmiş + başka açılış → candidate; 2.4.x yükü 'Açılış…' → candidate; 2.5.0 yükü durumunu korur; işaretle dönen ''
+    not ok 1 - restoredOpeningReview: işaretli silinmiş + başka açılış → candidate; 2.4.x yükü 'Açılış…' → candidate; 2.5.0 yükü durumunu korur; işaretle dönen ''
+      ---
+      duration_ms: 0.814149
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs:310:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot find module '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/server/lib/ledger-opening.mjs' imported from /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs"
+      code: 'ERR_MODULE_NOT_FOUND'
+      stack: |-
+        finalizeResolution (node:internal/modules/esm/resolve:275:11)
+        moduleResolve (node:internal/modules/esm/resolve:865:10)
+        defaultResolve (node:internal/modules/esm/resolve:989:11)
+        #cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+        ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+        ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+        onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:680:36)
+        TracingChannel.tracePromise (node:diagnostics_channel:350:14)
+        ModuleLoader.import (node:internal/modules/esm/loader:679:21)
+        defaultImportModuleDynamicallyForModule (node:internal/modules/esm/utils:222:31)
+      ...
+    1..1
+not ok 3 - 2.5.0 Ç5-A tur 1 — Silinenler bağlantı noktası (B8 / S51; routes/accounts.mjs tur 2b-2 sonrası bağlanır)
+  ---
+  duration_ms: 0.925396
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-taban/test/acilis-519-250.test.mjs:309:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..3
+# tests 13
+# suites 3
+# pass 0
+# fail 13
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1838.789775

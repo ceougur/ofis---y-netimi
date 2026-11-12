@@ -1,0 +1,108 @@
+{
+  "ad": "c5a1b-ilk-goc",
+  "komut": "node --test test/banka-210-goc-zinciri.test.mjs test/banka-220-senet-121.test.mjs",
+  "commit": "653b8a8ff2a0281e5411716353a9bf466e18bc73",
+  "dal": "worktree-agent-ae40882bc6254a115",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-11T17:05:50.241Z",
+  "sure_sn": 62,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 32,
+    "gecen": 17,
+    "basarisiz": 15,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 15 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11) › surum-2.0.16-zincir",
+      "konum": "test/banka-210-goc-zinciri.test.mjs:45:5",
+      "hata": "surum-2.0.16-zincir 001 · Merkez Danışmanlık Ltd. Şti.: mizan farklı · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11) › surum-2.0.17-zincir",
+      "konum": "test/banka-210-goc-zinciri.test.mjs:45:5",
+      "hata": "surum-2.0.17-zincir 001 · Merkez Danışmanlık Ltd. Şti.: mizan farklı · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11) › surum-2.0.18-zincir",
+      "konum": "test/banka-210-goc-zinciri.test.mjs:45:5",
+      "hata": "surum-2.0.18-zincir 001 · Merkez Danışmanlık Ltd. Şti.: mizan farklı · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11) › surum-2.0.19-zincir",
+      "konum": "test/banka-210-goc-zinciri.test.mjs:45:5",
+      "hata": "surum-2.0.19-zincir 001 · Merkez Danışmanlık Ltd. Şti.: mizan farklı · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11) › surum-2.0.20-zincir",
+      "konum": "test/banka-210-goc-zinciri.test.mjs:45:5",
+      "hata": "surum-2.0.20-zincir 001 · Merkez Danışmanlık Ltd. Şti.: mizan farklı · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11) › surum-2.0.21-zincir",
+      "konum": "test/banka-210-goc-zinciri.test.mjs:45:5",
+      "hata": "surum-2.0.21-zincir 001 · Merkez Danışmanlık Ltd. Şti.: mizan farklı · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11) › surum-2.0.22-zincir",
+      "konum": "test/banka-210-goc-zinciri.test.mjs:45:5",
+      "hata": "surum-2.0.22-zincir 001 · Merkez Danışmanlık Ltd. Şti.: mizan farklı · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11) › surum-2.0.23-zincir",
+      "konum": "test/banka-210-goc-zinciri.test.mjs:45:5",
+      "hata": "surum-2.0.23-zincir 001 · Merkez Danışmanlık Ltd. Şti.: mizan farklı · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11) › surum-2.0.24-zincir",
+      "konum": "test/banka-210-goc-zinciri.test.mjs:45:5",
+      "hata": "surum-2.0.24-zincir 001 · Merkez Danışmanlık Ltd. Şti.: raporlar farklı · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11) › surum-2.0.25-zincir",
+      "konum": "test/banka-210-goc-zinciri.test.mjs:45:5",
+      "hata": "surum-2.0.25-zincir 001 · Merkez Danışmanlık Ltd. Şti.: mizan farklı · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11) › surum-2.0.26-zincir",
+      "konum": "test/banka-210-goc-zinciri.test.mjs:45:5",
+      "hata": "surum-2.0.26-zincir 001 · Merkez Danışmanlık Ltd. Şti.: mizan farklı · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11) › surum-2.0.19-cakisma",
+      "konum": "test/banka-210-goc-zinciri.test.mjs:45:5",
+      "hata": "surum-2.0.19-cakisma 001 · Şirket 1: mizan farklı · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11) › surum-2.0.19-eski",
+      "konum": "test/banka-210-goc-zinciri.test.mjs:45:5",
+      "hata": "surum-2.0.19-eski 001 · Eski Hukuk Bürosu: mizan farklı · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11) › surum-2.0.26-turler",
+      "konum": "test/banka-210-goc-zinciri.test.mjs:45:5",
+      "hata": "surum-2.0.26-turler 001 · Merkez Danışmanlık Ltd. Şti.: mizan farklı · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Senet 121 / 321 — eşdeğerlik: surum-2.0.26-turler (gerçek 2.0.26 koduyla üretilmiş; verilen ve ödenmiş senet) › 2.0.26'nın kendi ölçüsüyle: 103 + 321 = eski 103, öbür hesaplar ve toplam aynı; 321 borç = alacak = 300",
+      "konum": "test/banka-220-senet-121.test.mjs:468:3",
+      "hata": "001: öbür hesaplar · + actual - expected · ... Skipped lines"
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-kanit/2026-11-11/c5a1b-ilk-goc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115",
+  "ham_cikti_sha256": "994833540e99c7541d15046f13e07a6b3f943a0c09b9f0f8596d71f7969eab0e",
+  "ham_cikti_bayt": 55458
+}
