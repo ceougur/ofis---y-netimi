@@ -665,3 +665,66 @@ işaret yolu (süzgeçli ve süzgeçsiz build) veri tabanının kolonlarından b
   sürerken iki yol aynı (kural farkı yok), bitince arka plan taraması ATLANMADAN yeniden koşar (dondurmanın yazımı total_changes'ı değiştirir) ve farkı görür.
 - Ürün değerlendirmesi (rapor): taban (`integrity.start`) dondurmadan ÖNCE alındığı için kural farkı tabanda yok → dondurmadan sonraki ilk tarama onu "yeni sapma" sayar (C3 §8 "kapının
   tabanında" beklentisiyle çelişir) — BULGU; sayıyla rapor, düzeltme seçenekleri BAŞ MİMAR KARARI GEREKİYOR (zil / günlük davranışı).
+
+---
+
+## 14. Ç5-A tur 1d (kod ajanı, 12.11.2026; taban `c5a1d-taban` 595abf87 = tur 1c ucu) — KODDAN ÖNCE yazıldı
+
+Kapsam (görev metni docs/devir/2.5.0-DEVAM/c5a1d-istem.txt): İş A (kural farkının yanlış alarmı — BAŞ MİMAR KARARI 12.11), İş C (B7 zorlamasına yeni kip), İş D (komşular, senet-121'in
+ara sıra kırmızısı), İş E (tur 1c'nin koşmadığı kabul koşulları), İş B (kilitli veride Alacak Yaşlandırma'nın ilk çağrısı), İş F (kilitli veride evrak yazımı). Tur 2'nin işleri, kâhin
+dosyaları, S127 / yaşlandırma kuralları KAPSAM DIŞI.
+
+### 14.1 Yeniden üretim (koddan önce; c5a1d-taban, fikstür surum-2.0.26-zincir — kilit 05.10.2026, bugün 08.10.2026; TZ Europe/Istanbul; sonda scratchpad/c5a1d-is/sonda.mjs)
+| Adım | c5a1d-taban |
+|---|---|
+| açılış | bekleyen 2.4.9 koşusu var; taban satırı yalnız "İleri tarihli hareket (Çek/Senet Hareketleri)"; kural farkı tabanda YOK (kapsam boş → denetim listede yok) |
+| dondurma biter (ürünün runPending'i) → ilk ARKA PLAN taraması | bulgu `ledger:rule-diff (44)`; Mutabakat Günlüğü +1 "scan" satırı; zil 1 (`integrity.alert` [ledger:rule-diff]); sunucu günlüğü "Mutabakat taraması: kapının görmediği 1 yeni sapma (Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi))." |
+| sonra satır içi tarama (Mutabakat Testi yolu) / ikinci arka plan taraması | bulgu yok (imza artık `known`'da); denetim listesinde `ledger:rule-diff` ok false, 44 madde, fark 127.800 |
+| programın yeniden açılması | taban satırı YENİDEN yazılır: "Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi); İleri tarihli hareket …" + sunucu "güncelleme öncesinden kalan 2 sapma var (Kural Değişikliği Farkı …)" — kural farkı burada da "sapma" adıyla |
+| yeniden açılıştan sonraki ilk yazım (Kasa girişi) | tam kapı, neden "taban sapması (all)" (`familyOf('ledger:rule-diff')` = "all"; integrity-scope.mjs) — ilk tam kapı yazımından sonra taban kapının kendi koşusuyla yenilendiği için yalnız oturumun ilk yazımı |
+Kök neden (koddan): `integrity.mjs` `settleScan` (iki tarama yolunun ortak işleyicisi) "yeni sapma"yı `failures − notice − known` diye bulur; `known` açılışta `start()`'ın tabanıdır. Kural farkı
+(`ledger:rule-diff`, `severity: "warning"`, ok false) notice DEĞİL → sapma kümesinde. Açılışta dondurma bekliyorsa (app.mjs: önce `integrity.start()`, sonra `setImmediate(runPending)`)
+denetim yoktur; dondurma bitince ilk tarama onu "yeni" bulur. Yeniden açılışta ise tabana "sapma" olarak girer.
+
+### 14.2 Seçilen yol: kural farkı "yeni sapma" karşılaştırmasının DIŞINDA (uyarı; sapma değil)
+`integrity.mjs`'te sapma kümesini kuran iki yer (`start()` tabanı ve `settleScan`) `ledger:rule-diff`'i notice gibi DIŞARIDA bırakır (tek yardımcı: `driftsOf`). Denetimin kendisi
+(`result.checks` / `result.failures` — Mutabakat Testi satırı ok false + madde sayısı + fark; Defter Mutabakatı; Kural Değişikliği Farkı raporu; `ruleDiff()`) DEĞİŞMEZ.
+Gerekçe (karar metninin iki seçeneği karşılaştırıldı):
+- (a) "dondurma bitince tabana al": dondurmanın bitişini kapıya bildirmek (ledger-snapshots `freezeRun` → integrity) + bayat tarama yarışı (iş parçacığının anlık görüntüsü bitişten önce
+  alınmış, sonuç bitişten sonra işlenir) için kapsam işareti gerekir — iki dosya, yeni durum; yeniden açılışta tabana "sapma" diye girmeyi (14.1 son iki satır) ÇÖZMEZ (karar: "sapma
+  sayılmaması"). (b) dışarıda tutmak: tek dosya (integrity.mjs), tek yardımcı; yeniden açılış, kilit değişimi, geri yükleme, ikinci şirket aynı kuralla; kapı yolunu değiştirmez
+  (denetim zaten kapıda koşmaz — C3 §8 K3: `run({ events })` dokunulan olayla çağrılınca `snapshots.checks` atlanır). (b) seçildi.
+- C3 §8'in "kapının tabanında" sözünün anlamı "yeni işlemleri ENGELLEMEZ"dir (aynı cümle); (b) bunu korur: denetim kapıda koşmadığı için hiçbir yazımı engellemez. (b)'nin yan etkisi
+  yeniden açılışta tabandan çıkmasıdır → `baselineFamilies`'te "all" oluşmaz → oturumun ilk yazımı süzgeçli yolda kalabilir (sonuç aynı: süzgeç ↔ tam kapı eşdeğerliği gateVerify'da
+  denetlenir; yalnız yol ucuzlar).
+- integrity-scope.mjs'e (familyOf) DOKUNULMAZ (dosya sınırı); (b) onu gerektirmez.
+
+### 14.3 Değişen yardımcının okuyucuları (ders 10; `start` / `settleScan` / `known` / `baseline` / `baselineFamilies` taraması)
+| Okuyucu | Etki |
+|---|---|
+| Mutabakat Günlüğü (`integrity_log`: "baseline" açılışta, "scan" taramada) — Yönetim → Mutabakat Testi altındaki günlük (`GET /api/workspace/ledger/integrity` `log`), `recent()` | kural farkı ne taban ne tarama satırına girer (başka sapmalar aynen) |
+| zil (`integrity.alert`, yöneticiler) + sunucu günlüğü ("kapının görmediği N yeni sapma", "güncelleme öncesinden kalan N sapma") | kural farkı yüzünden yayımlanmaz / yazılmaz; başka sapmalar aynen |
+| `lastScan.findings` | kural farkı girmez |
+| COMMIT kapısı: `baseline` (tam kapının "taban sapması mı" kararı), `baselineFamilies` (süzgecin tam kapıya yönlendirmesi), `legacyRows` | kapının kendi koşusunda kural farkı zaten yok (dokunulan olayla run) → karar aynı; yalnız yeniden açılıştan sonraki ilk yazımın YOLU ("all" yok) |
+| Mutabakat Testi (`scan().result`), Defter Mutabakatı (`run().checks`), arka plan sonucu, Kural Değişikliği Farkı raporu | DEĞİŞMEZ (sonuç nesnesi aynı) |
+| noticeGrowth (Kasa uyarısının artışı) | DEĞİŞMEZ (yalnız notice'leri sayar) |
+
+### 14.4 "Nasıl bozulur?" (önce yazıldı; testler buradan — sonuçlar kodla birlikte 14.6'da)
+1. Dondurma sürerken tarama: denetim yok → bulgu yok (değişmez).
+2. Dondurma bittikten sonraki İLK tarama (arka plan VE satır içi ayrı): günlük satırı, zil, sunucu "yeni sapma" YOK; denetim listesinde kural farkı satırı VAR (ok false, sayı, fark).
+3. İkinci tarama: aynı (sessiz).
+4. Dondurmadan sonra programın yeniden açılması: taban satırına / sunucu "kalan sapma" iletisine kural farkı GİRMEZ; ilk tarama sessiz; denetim satırı VAR.
+5. Kilitsiz veri (dondurma yok): denetim hiç yok; gerçek sapma eskisi gibi bulunur (gerileme yok).
+6. Kilit tarihinin oturum içinde değişmesi / Kilidi Aç → Yeniden Kilitle / yeniden dondurma: kural farkının sayısı / tutarı değişir — kullanıcının (kapının gördüğü) işinin sonucudur, "kapının
+   görmediği yeni sapma" DEĞİL → sessiz (önce: imza değiştiği için zil çalardı — aynı yanlış alarm ailesi).
+7. Kural farkının TUTARININ sonradan değişmesi (aynı kapsam, aynı kural): olası nedenler (i) kilitli dönemin kaynağının kapı dışından değişmesi → `period-lock` ("Kapanmış dönem … kapının
+   görmediği bir yolla değişti") ve `ledger:snapshot` ("Donmuş Dönemin Kaynağı Değişti") ayrı sapma olarak BULUNUR (bu düzeltme onlara dokunmaz); (ii) donmuş satırların dışarıdan
+   değişmesi → `ledger:snapshot` "Satırları Değişmiş" BULUNUR; (iii) kapının kabul ettiği açık dönem yazımının kilitli dönemin CANLI türetmesini kaydırması (ör. eski kurala bağlı kart)
+   → kapının gördüğü iş, sapma değil (Kural Farkı Düzeltme Fişi — tur 2 — farkı okur). Değerlendirme: kural farkının tutarı tek başına "kapının görmediği yazım" kanıtı değildir;
+   gerçek nedenler kendi denetimleriyle bulunur → yeni sapma SAYILMAZ. Para / bakiye / kapama kuralı değil (yalnız bildirim sınıflaması; defter, mizan, fark tutarı aynı) →
+   KULLANICIYA SORULMASI gerekmez; BAŞ MİMAR YORUMU olarak rapora yazılır. (i) testte sınanır.
+8. Kural farkıyla AYNI taramada gerçek bir sapma (kapı dışı bozuk kuruşlu Kasa satırı): o sapma bulunur, günlüğe yazılır, zil + sunucu iletisi çıkar; kural farkı listede yok.
+9. Yedekten geri yüklenen kilitli eski veri: geri yükleme = dosya takası + açılış → 4 ile aynı yol.
+10. İkinci şirket: her şirketin kendi kapısı / tarama işleyicisi — aynı kural (yardımcı şirkete özgü durum tutmaz).
+11. Arka plan taraması ↔ satır içi tarama ↔ yazma kapısı: iki tarama yolu aynı `settleScan`'den geçer; kapı kural farkını hesaplamaz → üçü tutarlı.
+12. Genişletme hatası (mutant): "dondurmadan sonra hiçbir şey yeni sapma sayılmaz" → 8 yakalar; geri alma (mutant) → 2 yakalar.
