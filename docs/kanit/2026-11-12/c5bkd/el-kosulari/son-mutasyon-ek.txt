@@ -1,0 +1,6 @@
+M07 ÖLDÜ (pass 41, fail 9) — M1e B — Mevcut Borç kartı alttaki borcu tüketmez (çift sayım) · öldüren: M1e + K8-3: Mevcut Borç kartı açıldığı an açık borçları S2 sırasıyla tüketir (en yeniden değil) | M1e kapsamı: kart açıldığında portföyde olan evrak sonradan karşılıksız dönerse kartın kapsamı DEĞİŞMEZ; yeniden açılan fatura kartın dışında (UX18 T17 (i)) | stoktan veresiye satış → taksitlendir (kart
+API TABAN (mutantsız): tests 65, pass 65, fail 0, çıkış 0
+S101-d ÖLDÜ (tests 65, pass 61, fail 4) — S101 — ön ödemeli geçiş tek kez (kararlı olana dek değil) · öldüren: dar kontrolün örneği (ölçüm geçiş başına 20 TL ilerler; 12 geçiş yetmiyordu): Σ kalem = bakiye 940, Gecikmiş Borç 940 (960 DEĞİL), fatura açığı 940, kart Bitti | güvenli kapanış — ölçüm geçiş başına 1 KURUŞ ilerliyor (sınırda yakınsamaz): kart tahsilatının var olmayan taksite yazdığı pay avans olur;
+# tests 2
+# pass 2
+# fail 0

@@ -1,0 +1,58 @@
+motor: 774 işlem, uyuşmazlık 1 · DUR (geri-yukle, 2026-08-02)
+FATURA FIS2026000000039 2026-07-30 ödenecek 134465.76 · açık 83623.65 · durum overdue · kapatanlar 2026-07-30:13014.98:Tahsilat:linked | 2026-07-30:12819.22:Çek / Senet:linked | 2026-07-30:10518.52:Çek / Senet:linked | 2026-08-01:2626.39:Taksit kartından artan ödeme:auto | 2026-08-01:11863:Taksit kartından artan ödeme:auto
+KART plan-89a14ef toplam 98113.04 · kendi ödenen 0 kendi kalan 98113.04 · kuyruk kalanı 86250.04 · taksitler 2026-08-15:19622.6→7759.6 2026-09-15:19622.6→19622.6 2026-10-15:19622.6→19622.6 2026-11-15:19622.6→19622.6 2026-12-15:19622.64→19622.64 · tahsilatlar 
+CARİ bakiye 92529.61 · gecikmiş 51973.8 · kartları plan-b5702:15727.82(MB):active plan-50d44:9.94(MB):active plan-c6263:17708.76:active plan-89a14:98113.04(MB):active plan-2dd3b:4969:active plan-003fd:62156.2(MB):closed
+DEFTER (tarih sırası):
+  2026-07-15 plan     plan     borç 0 alacak 0 kart plan-50d44  Taksit Planı (mevcut borç)
+  2026-07-17 account  in       borç 0 alacak 17802.8   Tahsilat
+  2026-07-18 account  in       borç 0 alacak 17833.69   Tahsilat
+  2026-07-18 account  out      borç 10416.95 alacak 0   Ödeme
+  2026-07-19 account  out      borç 49164.86 alacak 0   Ödeme
+  2026-07-20 invoice  debt     borç 11456.76 alacak 0  kaynak invoice-80a6a6 Fatura
+  2026-07-20 cheque   credit   borç 0 alacak 11456.76  kaynak cheque-2a7948a Çek / Senet
+  2026-07-21 invoice  debt     borç 2586.46 alacak 0  kaynak invoice-eaf6ff Fatura
+  2026-07-21 invoice  in       borç 0 alacak 159.21  kaynak invoice-eaf6ff Tahsilat
+  2026-07-21 invoice  in       borç 0 alacak 1176.52  kaynak invoice-eaf6ff Tahsilat
+  2026-07-21 cheque   credit   borç 0 alacak 444.51  kaynak cheque-c7043cd Çek / Senet
+  2026-07-22 invoice  debt     borç 280588.33 alacak 0  kaynak invoice-7c1a63 Fatura
+  2026-07-22 invoice  in       borç 0 alacak 136478.25  kaynak invoice-7c1a63 Tahsilat
+  2026-07-22 invoice  in       borç 0 alacak 13312.2  kaynak invoice-7c1a63 Tahsilat
+  2026-07-22 cheque   credit   borç 0 alacak 41638.21  kaynak cheque-47b863e Çek / Senet
+  2026-07-22 cheque   credit   borç 0 alacak 27003.47  kaynak cheque-599a743 Çek / Senet
+  2026-07-22 plan     plan     borç 0 alacak 0 kart plan-003fd  Taksit Planı (mevcut borç)
+  2026-07-22 plan     plan-in  borç 0 alacak 2533 kart plan-003fd  Taksit Tahsilatı
+  2026-07-23 plan     plan     borç 0 alacak 0 kart plan-b5702  Taksit Planı (mevcut borç)
+  2026-07-26 account  in       borç 0 alacak 13441.86   Tahsilat
+  2026-07-27 account  out      borç 744.51 alacak 0   Ödeme
+  2026-07-28 invoice  debt     borç 116957.14 alacak 0  kaynak invoice-a4f532 Fatura
+  2026-07-28 invoice  in       borç 0 alacak 116957.14  kaynak invoice-a4f532 Tahsilat
+  2026-07-28 account  in       borç 0 alacak 16204   Tahsilat
+  2026-07-28 stock    debt     borç 9.94 alacak 0  kaynak smove-4db6112e Borç
+  2026-07-30 plan     plan     borç 17708.76 alacak 0 kart plan-c6263  Taksit Planı
+  2026-07-30 plan     plan-in  borç 0 alacak 3137.63 kart plan-b5702  Taksit Tahsilatı
+  2026-07-30 invoice  debt     borç 134465.76 alacak 0  kaynak invoice-9a9013 Fatura
+  2026-07-30 invoice  in       borç 0 alacak 13014.98  kaynak invoice-9a9013 Tahsilat
+  2026-07-30 cheque   credit   borç 0 alacak 12819.22  kaynak cheque-8e3972c Çek / Senet
+  2026-07-30 cheque   credit   borç 0 alacak 10518.52  kaynak cheque-640ea6e Çek / Senet
+  2026-07-30 plan     plan     borç 0 alacak 0 kart plan-89a14  Taksit Planı (mevcut borç)
+  2026-07-31 plan     plan     borç 4969 alacak 0 kart plan-2dd3b  Taksit Planı
+  2026-08-01 plan     plan-in  borç 0 alacak 294.98 kart plan-b5702  Taksit Tahsilatı
+  2026-08-01 plan     plan-in  borç 0 alacak 11863 kart plan-50d44  Taksit Tahsilatı
+  2026-08-02 plan     plan-in  borç 0 alacak 8825.71 kart plan-c6263  Taksit Tahsilatı
+  2026-11-12 plan     plan-close borç 0 alacak 59623.2 kart plan-003fd  Kart kapatıldı
+KUYRUK kalemleri (açık):
+  receivable installment 7759.6/19622.6 vade 2026-07-30 kart plan-89a14 
+  receivable installment 1656.33/1656.33 vade 2026-07-31 kart plan-2dd3b 
+  receivable installment 19622.6/19622.6 vade 2026-07-30 kart plan-89a14 
+  receivable installment 1656.33/1656.33 vade 2026-07-31 kart plan-2dd3b 
+  receivable installment 19622.6/19622.6 vade 2026-07-30 kart plan-89a14 
+  receivable installment 1656.34/1656.34 vade 2026-07-31 kart plan-2dd3b 
+  receivable installment 19622.6/19622.6 vade 2026-07-30 kart plan-89a14 
+  receivable installment 19622.64/19622.64 vade 2026-07-30 kart plan-89a14 
+  receivable installment 1310.57/2529.84 vade 2026-07-30 kart plan-c6263 
+Σ kalem 92529.61 · kapsama plan-50d44:s2:tük 0/9.94:avans 9.94:kırp 0 plan-b5702:S120:tük 15727.82/15727.82:avans 0:kırp 0 · ön ödeme null
+  fatura FIS2026000000009 sale ödenecek 11456.76 açık 0 
+  fatura FIS2026000000014 sale ödenecek 2586.46 açık 0 
+  fatura FIS2026000000016 sale ödenecek 280588.33 açık 0 taksitli
+  fatura FIS2026000000036 sale ödenecek 116957.14 açık 0 
+  fatura FIS2026000000039 sale ödenecek 134465.76 açık 83623.65 taksitli

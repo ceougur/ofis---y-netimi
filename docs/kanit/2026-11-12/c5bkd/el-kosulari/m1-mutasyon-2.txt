@@ -1,0 +1,6 @@
+API TABAN (mutantsız): tests 26, pass 26, fail 0, çıkış 0
+KD1-b ÖLDÜ (tests 26, pass 25, fail 1) — ORTA-1 — kartın satış kimliği stok İADESİ satırını da gösterir · öldüren: kaynağı bilinen kartın kimliği stok İADESİ satırını göstermez (yalnız borç yönlü satış satırı) | Ç5-B kapanış — ORTA-1 saf kuyruk: kaynağı bilinen kart (coverSale) ↔ kaynağı bilinmeyen kart (eski tanıma AYNEN)
+KD1-c ÖLDÜ (tests 26, pass 24, fail 2) — ORTA-1 eski veri — çıkarım cariye bakmaz (başka cariye satışın ardından açılan kart o satışa bağlanır) · öldüren: B — hemen önceki satış BAŞKA cariye ⇒ kaynak yok | G — hemen önceki satış PEŞİN (cariye yazılmamış) ⇒ kaynak yok | Ç5-B kapanış — ORTA-1 eski veri: kartın kaynağı açılış izinden ÇIKARILIR (2.4.9'a kadar izde satış kimliği yok) — koşulların her biri
+# tests 2
+# pass 2
+# fail 0

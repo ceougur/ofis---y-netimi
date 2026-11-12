@@ -1,0 +1,20 @@
+2.5.0 Ç5-B kapanış düzeltmesi (3b/6): S129 = A — komşu taramasında çıkan testler kartın KENDİ hesabını own* alanlarından okur
+
+Madde 3 (58ff9202) kart yanıtında totals.paid / remaining ve items[].paid'i GÖSTERİLEN sayı yaptı
+(tek kuyruk; kartın kendi hesabı ownPaid / ownRemaining). Son hâlin komşu taraması (değişen ürün
+dosyalarını anan + kart toplamlarını okuyan bütün testler) dokuz testin eski alan adlarından kartın
+KENDİ hesabını beklediğini gösterdi — madde 3'te koşulan dar kümede yoktular (eksik bendeydi; ders 10).
+Hiçbiri ürün hatası değil: dokuzunda da kartın kendi sayıları doğru, gösterilen sayı kararın dediği.
+
+- K8 kuralı (banka-230-k8-taksit N7, N9), taksitli fatura ↔ kart (bulgu-223 E, #6; ux18 T17), açılış
+  onarımı (iade-210-onarim; acilis-onarimi-hiz dökümü), Tablodan Aktar'ın karta yazdığı
+  (tablodan-aktar-244 5a): own* alanları okunur — beklenen sayılar DEĞİŞMEDİ.
+- raporlar-209 "Yeni modül raporları rakamları ekranlarla aynı": Taksit Performansı'nın Geciken'i
+  kart ekranıyla aynı sayı (S129) — 1. taksit 1.000, alınan senet 700 bağsız paradır ve o taksiti
+  kapatır (S50 / S99) → 300 (önceki beklenti 1.000 kartın kendi hesabıydı).
+- Cari Listesi satırına `planOwnRemaining` (kartların kendi hesabıyla kalan toplamı — S129 öncesinin
+  "Taksitten Kalan"ı; `overdueInstallments` ile aynı düzen): açılış onarımı eşdeğerlik dökümü eski
+  kodun gerçek dökümüyle karşılaştırmayı bununla sürdürür (fikstür değişmedi).
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og

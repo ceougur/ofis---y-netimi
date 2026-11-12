@@ -1,0 +1,39 @@
+{
+ "sorunlar": [],
+ "adimlar": [
+  "kurulum → eşit · gecikmiş A:800 B:0 C:700 D:0",
+  "gün dönümü (yazımsız, +1 gün) [kart overdue, geciken 300, 1. taksit overdue] → eşit · gecikmiş A:800 B:300 C:700 D:0",
+  "kilit koy (−52) [200] → eşit · gecikmiş A:800 B:300 C:700 D:0",
+  "kilitten sonra F1'e BAĞLI tahsilat 600 (karar (3)) [200] → eşit · gecikmiş A:200 B:300 C:700 D:0",
+  "kilit ilerlet (−48) [200] → eşit · gecikmiş A:200 B:300 C:700 D:0",
+  "kilit kaldır [200] → eşit · gecikmiş A:200 B:300 C:700 D:0",
+  "düzeltme: X tutarı 300 → 350 [200] → eşit · gecikmiş A:250 B:300 C:700 D:0",
+  "düzeltme: X vadesi +20 [200] → eşit · gecikmiş A:0 B:300 C:700 D:0",
+  "düzeltme: bağsız tahsilat F2'ye bağlanır [200] → eşit · gecikmiş A:0 B:300 C:700 D:0",
+  "düzeltme: bağ kaldırılır [200] → eşit · gecikmiş A:0 B:300 C:700 D:0",
+  "carisi değişen kayıt: X A → D [200] → eşit · gecikmiş A:0 B:300 C:700 D:0",
+  "D: Mevcut Borç kartı 350 (2 taksit) [200] → eşit · gecikmiş A:0 B:300 C:700 D:175",
+  "D: kart tahsilatı 100 [200] → eşit · gecikmiş A:0 B:300 C:700 D:75",
+  "D: bağsız tahsilat 50 (S50) [200] → eşit · gecikmiş A:0 B:300 C:700 D:25",
+  "D: kart tahsilatı düzelt 100 → 120 [200] → eşit · gecikmiş A:0 B:300 C:700 D:5",
+  "D: kart tahsilatı sil [200] → eşit · gecikmiş A:0 B:300 C:700 D:125",
+  "D: kart tahsilatı Silinenler'den geri al [200] → eşit · gecikmiş A:0 B:300 C:700 D:5",
+  "D: kartı sil [200] → eşit · gecikmiş A:0 B:300 C:700 D:0",
+  "D: kartı Silinenler'den geri al [409] → eşit · gecikmiş A:0 B:300 C:700 D:0",
+  "B carisini sil [409 \"overdue\"] → eşit · gecikmiş A:0 B:300 C:700 D:0",
+  "B carisini Silinenler'den geri al [çöpte yok] → eşit · gecikmiş A:0 B:300 C:700 D:0",
+  "toplu taksitlendir (A) [200 ] → eşit · gecikmiş A:0 B:300 C:700 D:0",
+  "ikinci bağlantıdan yazım (C ödeme 700 → 900) [değişen 1] → eşit · gecikmiş A:0 B:300 C:900 D:0",
+  "ikinci bağlantıdan yazım: D kartının taksit vadesi (+40 gün ileri) [değişen 2] → eşit · gecikmiş A:0 B:300 C:900 D:0",
+  "eşzamanlı: 6 yazım + 6 okuma [200,200,404,404,200,200,200,200,200,200,200,200] → eşit · gecikmiş A:0 B:200 C:800 D:80",
+  "reddedilen yazım (kilitli döneme kart tahsilatı) [404] → eşit · gecikmiş A:0 B:200 C:800 D:80",
+  "gün dönümü + kart tahsilatı [200] → eşit · gecikmiş A:0 B:150 C:800 D:80"
+ ],
+ "mutabakat": {
+  "status": 200,
+  "ok": false,
+  "bad": [
+   "İşlem Başlığı (kopya = satır): "
+  ]
+ }
+}

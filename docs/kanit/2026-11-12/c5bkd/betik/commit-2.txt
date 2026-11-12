@@ -1,0 +1,23 @@
+2.5.0 Ç5-B kapanış düzeltmesi (2/6): kalemler toplamı = cari bakiyesi her girdide (ORTA-2)
+
+Kapanış dar kontrolü ORTA-2: S101'in ön ödeme ölçümü sabit 12 geçişte yakınsamadan bitebiliyordu
+(geriye tarihli Alacak + kart tahsilatı: ölçüm geçiş başına 20 TL ilerliyor, 24 geçiş gerekiyor).
+Döngü yakınsamadan bitince kart tahsilatı var olmayan taksiti kapatmış kalıyor; kalemler toplamı
+bakiyeyi 20 TL aşıyor, Gecikmiş Borç bakiyeden büyük çıkıyordu (960 ↔ 940).
+
+- Ölçüm yakınsayana kadar sürer; üst sınır carinin büyüklüğüne bağlı (iş bütçesi: geçiş × satır
+  ≤ 20.000 — küçük caride 400 geçişe kadar, çok satırlı caride en az 12; prepaidPassLimit).
+- Sınırda da yakınsamazsa son ölçüm GÜVENLİ KAPANIŞLA uygulanır (settleExcess): kart tahsilatının
+  var olmayan taksite yazdığı pay en son taksitten geri alınır, para kartın fazlası (carinin avansı)
+  olarak kendi gününde dağılır. Kilit ölçümlü yolda da. Yakınsayan caride bu dal çalışmaz
+  (önceki çıktıyla birebir).
+- Tanı alanı: prepaidPasses { count, stable }.
+- Testler (test/tyk-kapanis-sigma-250): dar kontrolün örneği; geçiş başına 1 kuruş ilerleyen ölçüm
+  (sınırda yakınsamaz); kilitli yol; çok satırlı cari (sınır 12); S101 karar örneği; GERİYE TARİHLİ
+  rastgele üretici 80 tohum × 250 cari (20.000 cari; 409'u 12 geçişi aşıyor, biri güvenli kapanış).
+  Gerçek programda dar kontrolün kayıt sırası (test/tyk-kapanis-250). Taban kodda 15 / 15 kırmızı
+  (Σ kalem ≠ bakiye).
+- Mutantlar KD2-a … KD2-g (7 / 7 öldü); eşdeğer / gözlenemeyen iki mutant gerekçesiyle not edildi.
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og

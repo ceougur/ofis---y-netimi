@@ -1,0 +1,17 @@
+Ç5-B KAPANIŞ DÜZELTME TURU — KANIT (12.11.2026; dal worktree-agent-a511c161b54069067; taban 0c9d1069)
+Görev metni docs/devir/2.5.0-DEVAM/c5bkd-istem.txt; tasarım notu docs/erp/C5B-TYK-TASARIM.md §14.
+
+kanit/        tools/kanit.mjs kos kayıtları (JSON + günlük): madde başına testler (m1 … m6), komşu koşuları (komsu-tam-utc / -ist: 183 dosya, 2.310 / 2.310),
+              kâhin ↔ program (son-kahin-cari-utc / -ist: 14.844 / 14.914 — 70'i "YAPIM AŞAMASI KAPANDI", başka fark 0), ekran senaryoları (son-e2e-*: 45 / 45, 3.598 adım).
+              Not: komsu-son-utc (9 başarısız) ve mutabakat-5000x2 ARA koşulardır — nedenleri aşağıda.
+olcum/        hiz-kabul/ (özel ölçüm kilidi; Ç5-B öncesi 8d6ea9c9^1 / bugün 0c9d1069 / bu dal; tablo.txt), hiz-acilis-1.txt (açılış: bugün ↔ bu dal, 3 tur),
+              ilik-*.txt ve borc-*.txt (yalnız ılık döngünün profili), m5-cek-ani-esdegerlik-100k.txt (tek cari sorgusu: 1.484 cari / 102.295 defter satırı, fark 0),
+              m5-motor-cpu.txt (aynı girdilerle üç motor sürümü).
+motor/        mutabakat motoru: 1-2 mutantsız (tohum 7, 11; 500 işlem), 3 mutant A + yeni motor (kırmızı), 5 mutant A + eski motor (yeşil), 4 mutant S + yeni motor (kırmızı);
+              uzun1500-benim-tohum1/2 (1.500 işlem, yeşil); uzun5000-…-SURE-ASIMI (50 dk'da bitmedi — BELİRSİZ; alarm satırı yok).
+s99-bulgu/    AYRI BULGU (kapsam dışı): kart fazlası iki görünümde farklı dağılıyor — taban kodda da. incele-taban-tohum1-islem273.txt (döküm),
+              incele-taban-tohum2-islem774.txt ↔ incele-benim-tohum2.txt (aynı işlemde taban = bu dal), dar kontrolün önerdiği denetimin uzun koşu çıktıları.
+F/            dar kontrolün betikleri (s95-98, karar1, karar2, karar3, bayat) taban ↔ bu dal: 1.255 yaprak, 1.209 aynı, 39 S129 gösterim alanı, 7 kimlik / an, öbür fark 0.
+el-kosulari/  kanıt aracı dışındaki koşuların ham çıktıları (taban kırmızıları, zorlama, mutasyon, K1 araması, tarama listeleri).
+              son-mutasyon-tam.txt: 163 / 163 (ilk tur 161 + 2 enjekte edilemedi → metinler güncellendi: son-mutasyon-tam-1-…txt, son-mutasyon-ek.txt).
+betik/        koşu / ölçüm / düzenleme betikleri (yeniden üretim için; yollar not defterine göredir).

@@ -1,0 +1,158 @@
+{
+  "ad": "c5bkd-m3-kahin-cari-utc",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs",
+  "commit": "4b762bde1d8ed7afc65e663369189e8accb3808a",
+  "dal": "worktree-agent-a511c161b54069067",
+  "kirli": 18,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T19:40:23.830Z",
+  "sure_sn": 232.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 14914,
+    "gecen": 14844,
+    "basarisiz": 70,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 70 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KQ1:kalan: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-B tur 2; liste program 30000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KQ1:odenen: program \"tuttu\" · kâhin 60000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-B tur 2; liste program 30000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KQ1:taksit2:odenen: program \"tuttu\" · kâhin 30000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-B tur 2; liste program 0))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KQ2:kalan: program \"tuttu\" · kâhin 20000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-B tur 2; liste program 60000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KQ2:odenen: program \"tuttu\" · kâhin 40000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-B tur 2; liste program 0))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KQ2:taksit1:odenen: program \"tuttu\" · kâhin 30000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-B tur 2; liste program 0))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KQ2:taksit2:odenen: program \"tuttu\" · kâhin 10000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-B tur 2; liste program 0))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KQ3:kalan: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-B tur 2; liste program 10000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KQ3:odenen: program \"tuttu\" · kâhin 60000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-B tur 2; liste program 50000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KQ3:taksit2:odenen: program \"tuttu\" · kâhin 30000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-B tur 2; liste program 20000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KQ4:kalan: program \"tuttu\" · kâhin 10000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-B tur 2; liste program 50000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KQ4:odenen: program \"tuttu\" · kâhin 50000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-B tur 2; liste program 10000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KQ4:taksit1:odenen: program \"tuttu\" · kâhin 30000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-B tur 2; liste program 10000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KQ4:taksit2:odenen: program \"tuttu\" · kâhin 20000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-B tur 2; liste program 0))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KQ8:kalan: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-B tur 2; liste program 60000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KQ8:odenen: program \"tuttu\" · kâhin 60000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-B tur 2; liste program 0))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KQ8:taksit1:odenen: program \"tuttu\" · kâhin 30000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-B tur 2; liste program 0))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KQ8:taksit2:odenen: program \"tuttu\" · kâhin 30000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-B tur 2; liste program 0))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KQ2:kalan: program \"tuttu\" · kâhin 20000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-B tur 2; liste program 60000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KQ2:odenen: program \"tuttu\" · kâhin 40000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-B tur 2; liste program 0))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KQ2:taksit1:odenen: program \"tuttu\" · kâhin 30000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-B tur 2; liste program 0))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KQ2:taksit2:odenen: program \"tuttu\" · kâhin 10000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-B tur 2; liste program 0))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KQ4:kalan: program \"tuttu\" · kâhin 10000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-B tur 2; liste program 50000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KQ4:odenen: program \"tuttu\" · kâhin 50000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-B tur 2; liste program 10000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KQ4:taksit1:odenen: program \"tuttu\" · kâhin 30000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-B tur 2; liste program 10000))",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkd-kanit/2026-11-12/c5bkd-m3-kahin-cari-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a511c161b54069067",
+  "ham_cikti_sha256": "5c8cd203afabea4af992dd8adb6a2561fc6b3c53b039af2bf4abd20caada011f",
+  "ham_cikti_bayt": 73673
+}

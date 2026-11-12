@@ -1,0 +1,26 @@
+2.5.0 Ç5-B kapanış düzeltmesi (5/6): hız — ılık zil / takvim ve Borç Yaz (kabul koşulu S132; ders 47, 53)
+
+KÖK NEDEN (profil; yalnız ılık döngü, 100 bin satırlık temiz veri): takvimin ILIK çağrısında kuyruk
+KURULMUYOR — süre (1) ~21 MB'lık yanıtın her çağrıda yeniden JSON'a çevrilmesi (~130 ms), (2) önbellek
+anahtarının parmak izi sorguları (~115 ms), (3) ölçüm istemcisinin gövdeyi çözmesi ve çöp toplama.
+Ç5-B ile yanıt %5 büyüdü (37.477 → 39.460 kalem; kullanıcı kararlarının sonucu). Borç Yaz'da tek ek iş:
+kilit açıkken çek / senet bağı anları sorgusu bütün ilk olayları tarıyordu (yazım başına ~16 ms).
+
+- routes/dues.mjs: yanıt gövdesi, hesabın sonucu değişmediği sürece kişinin görebildiği kalem
+  türleri başına BİR KEZ üretilir (WeakMap: sonuç nesnesi değişince gövde de bırakılır — bayat yanıt
+  yok; görünürlük anahtarı sürümdeki dört bayrak — yetkisi dar kişi başkasının gövdesini almaz).
+  lib/http.mjs sendBody: hazır gövdeyi send ile AYNI başlıklarla gönderir (send onu kullanır).
+- routes/invoices.mjs chequeLinkMoments: TEK cari sorgusu carinin kendi evrak satırlarından sürülür
+  (dizinli); carinin defter satırları için harita öncekiyle aynı. Bütün cariler yolu değişmedi.
+- Motorun kendisine DOKUNULMADI (üç "tembel" yama denendi: kazanç %2–4, ölçüm gürültüsü içinde).
+
+EŞDEĞERLİK: test/takvim-govde-250.test.mjs — gövde baytları ilk yanıtla birebir ve düz JSON; veri
+değişince yenilenir; dar yetkili kişi fatura kalemini almaz; çek bağı anında önceki sorgu hakem (carinin
+her defter satırı). 100 bin satırlık veride 1.484 cari / 102.295 defter satırı: fark 0 (sorgu 14,9 →
+0,18 ms). Taban kopyada kırmızı (gövde her ılık çağrıda yeniden üretiliyor: 3 ≠ 1; eski sorgu).
+ÖLÇÜM (özel kilit; Ç5-B öncesi / bugün / bu commit; en iyi / ortanca ms, n = 6): ılık zil 447 / 507 →
+394 / 465 → 248 / 264 (−%45 / −%48); Borç Yaz 246 / 255 → 257 / 276 → 228 / 258 (−%7 / +%1).
+Mutantlar KD5-a … KD5-c (3 / 3 öldü).
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og

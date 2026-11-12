@@ -1,0 +1,32 @@
+{
+  "ad": "c5bkd-m3-s129-komsu-ist",
+  "komut": "node --test --test-concurrency=2 test/acilis-onarimi-hiz-250.test.mjs test/banka-230-k8-taksit.test.mjs test/bulgu-223.test.mjs test/iade-210-onarim.test.mjs test/raporlar-209.test.mjs test/tablodan-aktar-244.test.mjs test/ux18-cek-fatura-244.test.mjs",
+  "commit": "e0771de0ad456b5c2b398d32cfff07843b7bb919",
+  "dal": "worktree-agent-a511c161b54069067",
+  "kirli": 12,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T21:00:20.647Z",
+  "sure_sn": 22.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 106,
+    "gecen": 106,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkd-kanit/2026-11-12/c5bkd-m3-s129-komsu-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a511c161b54069067",
+  "ham_cikti_sha256": "62d7dc43b310f093cf8b75a16d020038235a6aaced16c1d69d5bbaab79837b15",
+  "ham_cikti_bayt": 41247
+}

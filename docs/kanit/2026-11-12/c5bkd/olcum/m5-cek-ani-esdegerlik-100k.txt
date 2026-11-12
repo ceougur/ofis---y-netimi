@@ -1,0 +1,2 @@
+PLAN yeni: CO-ROUTINE own ; SEARCH account_entries USING INDEX idx_account_entries_account (account_id=?) ; USE TEMP B-TREE FOR DISTINCT ; SCAN own ; SEARCH ev USING INDEX idx_cheque_events_cheque (cheque_id=?) ; SEARCH c USING INDEX sqlite_autoindex_cheques_1 (id=?) ; CORRELATED SCALAR SUBQUERY 1 ; SEARCH a USING INDEX idx_audit_entity (entity_id=?)
+cari 1484 · sorulan defter satırı 102295 · haritada olan 11130 · FARKLI 0 · satır eski 15370 / yeni 14840 · süre cari başına eski 14.94 ms / yeni 0.179 ms

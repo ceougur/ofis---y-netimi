@@ -1,0 +1,7 @@
+API TABAN (mutantsız): tests 8, pass 8, fail 0, çıkış 0
+KD5-a ÖLDÜ (tests 8, pass 6, fail 2) — hız — takvim gövdesi belleği görünürlüğe bakmaz (yetkisi dar kişi başkasının gövdesini alır) · öldüren: yetkisi dar kişi başkasının gövdesini ALMAZ: Fatura görme yetkisi kaldırılan kişinin yanıtında fatura kalemi yok; yöneticinin yanıtı aynı kalır | saklanandan (3) çok görünürlük çeşidi istenirse de her biri KENDİ gövdesini alır (bellek sınırı yanlış gövde verdirmez) | Takvim / zil yanıtının gövdesi: 
+KD5-b ÖLDÜ (tests 8, pass 7, fail 1) — hız — takvim gövdesi belleği sonuç nesnesine bağlı değil (veri değişince BAYAT yanıt) · öldüren: veri değişince gövde YENİLENİR (bayat yanıt yok): yeni vadeli borç hemen yanıtta, sürüm değişir; tahsilatla kalem tutarı düşer | Takvim / zil yanıtının gövdesi: ılık çağrıda yeniden üretilmez, baytlar aynı, bayatlamaz, yetkiyi aşmaz (gerçek program)
+KD5-c ÖLDÜ (tests 8, pass 7, fail 1) — hız — tek cari evrak bağı anı sorgusu bağsız evrakı da alır (önceki sorguyla eşdeğer değil) · öldüren: evrakı faturaya bağlı (düzeltmeyle bağı değişmiş, ciro edilmiş, bağsız) cariler: programın tek cari sorgusu, carinin HER defter satırı için önceki sorguyla aynı anı verir | Tek carinin kuyruğunda çek / senet bağlarının anı: carinin KENDİ evrak satırlarından sürülen sorgu ≡ önceki sorgu (kilit açık; 
+# tests 3
+# pass 3
+# fail 0

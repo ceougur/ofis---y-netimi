@@ -1,0 +1,32 @@
+{
+  "ad": "c5bkd-son-e2e-senaryo-210",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-210.mjs",
+  "commit": "e2149c9384aff359a67c1825c0b1c055d36d70cc",
+  "dal": "worktree-agent-a511c161b54069067",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T22:28:10.475Z",
+  "sure_sn": 39.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 57,
+    "gecen": 57,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkd-kanit/2026-11-12/c5bkd-son-e2e-senaryo-210.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a511c161b54069067",
+  "ham_cikti_sha256": "0acf076ea44a1f855d71416c7975ab84ce7b7d0282f0e3945cdf03654e0d8151",
+  "ham_cikti_bayt": 4628
+}
