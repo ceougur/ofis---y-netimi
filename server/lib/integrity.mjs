@@ -831,6 +831,11 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
   // Sapmanın kimliği: hangi denetim, ne kadar/kaç satır. Aynı sapma sürüyorsa işlem engellenmez; yenisi ya da büyüyeni engellenir.
   // gateCount (G4): eski sürümden kalan satırları taşıyan denetimlerde kapının saydığı (yeni) satırlar; sonuçta count hepsidir.
   const signature = item => `${item.code}|${roundMoney(item.difference || 0)}|${item.gateCount ?? item.count ?? 0}`;
+  // Sapma kümesi (taban, açılış günlüğü, taramanın "yeni sapma"sı, zil): uyarı (notice; Ç5-K tur 2) ve 2.5.0 Ç5-A tur 1d'den "Kural Değişikliği Farkı" (ledger:rule-diff)
+  // DIŞINDA. Kural farkı UYARIDIR, sapma değil (C3 §8; BAŞ MİMAR KARARI 12.11): kural sürümle değişir; kilitli veride açılışın bekleyen dondurması bitince (taban dondurmadan
+  // ÖNCE alınır) ilk tarama onu "kapının görmediği yeni sapma" sayıyordu. Denetim satırı (Mutabakat Testi, Defter Mutabakatı, Kural Değişikliği Farkı raporu) aynen kalır;
+  // kilitli dönemin kapı dışı değişikliği kendi denetimleriyle (period-lock, ledger:snapshot) sapma olarak bulunur. docs/erp/C5-ACILIS-TASARIM.md §14.
+  const driftsOf = failures => failures.filter(item => !item.notice && item.code !== "ledger:rule-diff");
   let baseline = new Set();
   let pending = null;
   let pendingDecision = null;
@@ -861,8 +866,8 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     legacyMethod = measureLegacyMethod();
     measureLegacyBank();
     const result = run();
-    // 2.5.0 Ç5-K tur 2: uyarı (notice) sapma değildir — taban, açılış günlüğü ve sunucu günlüğü yalnız sapmaları taşır.
-    const drifts = result.failures.filter(item => !item.notice);
+    // 2.5.0 Ç5-K tur 2: uyarı (notice) sapma değildir — taban, açılış günlüğü ve sunucu günlüğü yalnız sapmaları taşır (Ç5-A tur 1d: kural farkı da — driftsOf).
+    const drifts = driftsOf(result.failures);
     baseline = new Set(drifts.map(signature));
     baselineFamilies = familiesOf(baseline);
     legacyRows = measureLegacyRows(baseline);
@@ -1028,7 +1033,8 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     }
     // 2.5.0 Ç5-K tur 2: uyarı (notice; "Kasa Açılışından Önce Tarihli Hareket") yeni sapma sayılmaz. Birleşik tur 6 (DK-D2T3 ORTA-1): uyarının AÇIKLANAMAYAN artışı
     // (noticeGrowth) günlüğe ve zile "uyarı arttı (kapının görmediği yazım)" diye yazılır; azalma ve ilk görünüş sessiz.
-    const drifts = result.failures.filter(item => !item.notice);
+    // Ç5-A tur 1d: kural farkı (ledger:rule-diff) da yeni sapma sayılmaz (driftsOf).
+    const drifts = driftsOf(result.failures);
     const current = new Set(drifts.map(signature));
     const fresh = drifts.filter(item => !known.has(signature(item)));
     known = current;
