@@ -1,0 +1,32 @@
+{
+  "ad": "c5a1d-isA-yeni-UTC",
+  "komut": "node --test test/kural-farki-alarm-250.test.mjs",
+  "commit": "632cf0354ac00714d8786ce62b2cdf3e7457f0e0",
+  "dal": "worktree-agent-ac0e51d0f24e4542e",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T13:30:33.734Z",
+  "sure_sn": 5.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 5,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1d-kanit/2026-11-12/c5a1d-isA-yeni-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac0e51d0f24e4542e",
+  "ham_cikti_sha256": "ec472b8b1fcf3475450d936927210f7ae5bab334b7be8dde25a8a788e931536d",
+  "ham_cikti_bayt": 3237
+}

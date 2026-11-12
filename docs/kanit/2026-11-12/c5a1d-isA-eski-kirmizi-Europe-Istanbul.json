@@ -1,0 +1,53 @@
+{
+  "ad": "c5a1d-isA-eski-kirmizi-Europe-Istanbul",
+  "komut": "node --test test/kural-farki-alarm-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T13:31:04.157Z",
+  "sure_sn": 4.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 1,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Ç5-A tur 1d — Kural Değişikliği Farkı uyarıdır, yeni sapma değildir › [1] kilitli eski veri: dondurmadan sonraki İLK ARKA PLAN taraması sessiz (günlük / zil / sunucu yok), uyarı satırı var; ardından satır içi de sessiz",
+      "konum": "test/kural-farki-alarm-250.test.mjs:96:3",
+      "hata": "kural farkı yeni sapma sayılmamalı: [\"ledger:rule-diff\"] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Ç5-A tur 1d — Kural Değişikliği Farkı uyarıdır, yeni sapma değildir › [3] dondurmadan sonra yeniden açılış: taban satırı / sunucu 'kalan sapma' iletisi kural farkını taşımaz, ilk taramalar sessiz; kapı dışı kilitli kaynak değişimi yine bulunur",
+      "konum": "test/kural-farki-alarm-250.test.mjs:121:3",
+      "hata": "yeniden açılışın taban satırında kural farkı olmamalı: [\"İleri tarihli hareket (Çek/Senet Hareketleri)\",\"Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi); İleri tarihli hareket (Çek/Senet Hareketleri)\"] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Ç5-A tur 1d — Kural Değişikliği Farkı uyarıdır, yeni sapma değildir › [1] kilitli eski veri: dondurmadan sonraki İLK tarama SATIR İÇİ yoldan (Mutabakat Testi ucu) sessiz, uyarı satırı yanıtta",
+      "konum": "test/kural-farki-alarm-250.test.mjs:160:3",
+      "hata": "satır içi ilk taramada bulgu yok · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç5-A tur 1d — Kural Değişikliği Farkı uyarıdır, yeni sapma değildir › [2] GERÇEK yeni sapma (kural farkı dışı) dondurmadan SONRA, kural farkıyla AYNI taramada: bulunur, günlüğe yazılır, zil + sunucu iletisi; kural farkı bulgu değil",
+      "konum": "test/kural-farki-alarm-250.test.mjs:185:3",
+      "hata": "kural farkı bulgu değil: [\"ledger:rule-diff\",\"cents:cash_entries\",\"money:report\",\"money:event\"] (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../c5a1d-kanit/2026-11-12/c5a1d-isA-eski-kirmizi-Europe-Istanbul.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1d-eski",
+  "ham_cikti_sha256": "39ab2c290125bb123c3a006b529ff2ef1fc56371e4a1774c349b302b54b64f86",
+  "ham_cikti_bayt": 6908
+}
