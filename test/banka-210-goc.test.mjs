@@ -303,7 +303,11 @@ describe("K11: v20 göçü hiçbir mevcut satırı değiştirmez (gerçek eski s
     it(`${name}: her şirket dosyası satır satır aynı, kilit izi aynı, göç öncesi yedek tam`, async () => {
       assert.ok(fixtureExists(name), `${name} fikstürü yok`);
       const lockDigestOf = await optional("server/lib/integrity.mjs", "lockDigestOf");
-      const digest = (store, lock) => (lockDigestOf ? lockDigestOf(store, lock) : null);
+      // 2.5.0 Ç5-A tur 1e — BİLEREK DEĞİŞTİ (C5-ACILIS-TASARIM §15.2): kilit izine türetmenin açılış İŞARETLERİ girdi (since "2.5.0"); o işaretleri eski veride göçler (22 / 35 / 49)
+      // doldurur → güncel tanımın izi göçle zorunlu olarak değişir (kilitli dönemin parası değil, işaretin kendisi). K11'in sorusu "göç kilitli dönemin kaynağını değiştirmez"dir:
+      // karşılaştırma göç öncesinde tanımlı iz girdileriyle (2.4.9'un tanımı — önceki bütün since girdileri dahil). Ürünün kapısı izi göçten SONRA ölçer (start), donmuş defterin
+      // kaynak izi dondurmada (göçten sonra) — iki yol da etkilenmez.
+      const digest = (store, lock) => (lockDigestOf ? lockDigestOf(store, lock, { version: "2.4.9" }) : null);
       const fixture = unpackFixture(name);
       try {
         for (const { file, companies } of fixtureDatabases(fixture.dataDir)) {
