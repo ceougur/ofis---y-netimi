@@ -34,6 +34,8 @@ for (let i = 1; i <= times; i += 1) {
   const tests = /ℹ tests (\d+)/.exec(out)?.[1] ?? "?";
   const pass = /ℹ pass (\d+)/.exec(out)?.[1] ?? "?";
   const fail = /ℹ fail (\d+)/.exec(out)?.[1] ?? "?";
+  // Ç5-A tur 1d (ders 2): atlanan test (ör. etiketsiz kopyada eski sürüm karşılaştırması) YEŞİL sayılmaz — satırda ayrıca yazılır; ön koşulu zaten oluşmaz.
+  const skipped = Number(/ℹ skipped (\d+)/.exec(out)?.[1] ?? 0);
   if (!happened) counts.missed += 1;
   else {
     counts.happened += 1;
@@ -43,7 +45,7 @@ for (let i = 1; i <= times; i += 1) {
   const reason = out.split(/\r?\n/).filter(line => /AssertionError|iki yol aynı sonucu|Error:|SÜRE DOLDU|sn'de olmadı/.test(line)).slice(0, 3).join(" ‖ ");
   // Test koşucusunun ana süreci de ön yüklemeyi yükler (0 örnek); testin kendi sürecinin satırı okunur.
   const precondition = out.split(/\r?\n/).filter(line => /\[dondurma yarışı\]/.test(line) && !/ 0 örnek /.test(line)).join(" ") || "[dondurma yarışı] örnek yok";
-  console.log(`[zorla ${i}/${times}] ${file} · ${precondition.trim()} · test ${failed ? `KIRMIZI (çıkış ${run.status})` : "YEŞİL"} · tests ${tests} pass ${pass} fail ${fail}${reason ? ` · ${reason.trim().slice(0, 240)}` : ""}`);
+  console.log(`[zorla ${i}/${times}] ${file} · ${precondition.trim()} · test ${failed ? `KIRMIZI (çıkış ${run.status})` : "YEŞİL"} · tests ${tests} pass ${pass} fail ${fail}${skipped ? ` · ATLANAN ${skipped}` : ""}${reason ? ` · ${reason.trim().slice(0, 240)}` : ""}`);
 }
 console.log(`\n[zorla özet] ${file} · ${times} yineleme · ön koşul gerçekleşti ${counts.happened} · gerçekleşmedi ${counts.missed} · ön koşullu yeşil ${counts.green} · ön koşullu kırmızı ${counts.red}`);
 process.exit(counts.missed ? 2 : counts.red ? 1 : 0);
