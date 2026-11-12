@@ -98,8 +98,10 @@ export function accountLedger(entries = [], plans = []) {
     const coverTotal = covers ? roundMoney(Math.min(total, Number.isFinite(planned) ? Math.max(0, planned) : total) + Math.max(0, Number(plan.returnCuts) || 0)) : 0;
     // 2.5.0 Ç5-B tur 2b-2 (S110 / S120 = A): coverGross = kartın açıldığı andaki tutarı (iade kesintileri geri eklenmiş; taksitlere bölünmemiş kısım dahil) — satışla
     // açılan kartın kendi satışını tanımak için; coverSource "transfer" = Excel / Tablodan Aktar kartı (kararlar bu kartlara uygulanmaz — kartın kaydı belli).
+    // coverSale (Ç5-B kapanış düzeltmesi, ORTA-1): satışla açılan kartın satışı — stok hareketinin kimliği (kalıcı; routes/plans.mjs saleSources). Kart o satışı tutar
+    // eşitliğine bakmadan tanır; boşsa (elle kart, izi olmayan eski kart) tanıma coverGross ile eskisi gibi (S133 = C).
     const coverGross = covers ? roundMoney(total + Math.max(0, Number(plan.returnCuts) || 0)) : 0;
-    lines.push({ id: `plan:${plan.id}`, origin: "plan", planId: plan.id, kind: "plan", covers, coverTotal, coverGross, coverSource: covers && plan.importId ? "transfer" : "", date: opened, at: plan.createdAt || "", label: covers ? "Taksit Planı (mevcut borç)" : "Taksit Planı", note: `${plan.name}${plan.itemCount ? ` · ${plan.itemCount} taksit` : ""}${covers ? ` · ${tlText(total)} borç taksitlendirildi` : ""}`, debit: covers ? 0 : total, credit: 0 });
+    lines.push({ id: `plan:${plan.id}`, origin: "plan", planId: plan.id, kind: "plan", covers, coverTotal, coverGross, coverSource: covers && plan.importId ? "transfer" : "", coverSale: covers ? plan.saleMoveId || "" : "", date: opened, at: plan.createdAt || "", label: covers ? "Taksit Planı (mevcut borç)" : "Taksit Planı", note: `${plan.name}${plan.itemCount ? ` · ${plan.itemCount} taksit` : ""}${covers ? ` · ${tlText(total)} borç taksitlendirildi` : ""}`, debit: covers ? 0 : total, credit: 0 });
     for (const entry of plan.entries || []) {
       const amount = roundMoney(Number(entry.amount) || 0);
       const incoming = entry.kind === "in";

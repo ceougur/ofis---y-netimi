@@ -12,6 +12,9 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const argv = process.argv.slice(2);
 const base = path.resolve(argv.includes("--klasor") ? argv[argv.indexOf("--klasor") + 1] : path.join(tmpdir(), `tyk-mutasyon-${process.pid}`));
 const SOURCE = readFileSync(path.join(ROOT, "server/lib/obligation-queue.mjs"), "utf8");
+// --yalniz K5,KD1-a: yalnız bu kimlikler (geliştirme sırasında; tam koşu süzgeçsiz). Süzülen mutant sayıya girmez.
+const ONLY = argv.includes("--yalniz") ? new Set(String(argv[argv.indexOf("--yalniz") + 1] || "").split(",").filter(Boolean)) : null;
+const wanted = id => !ONLY || ONLY.has(id);
 // [kimlik, karar, eski metin, yeni metin]
 const MUTANTS = [
   ["M01", "karar (1) B — havuz (ödeme sonradan doğan borca kayar)", "a.date !== b.date ? (a.date < b.date ? -1 : 1)\n  : a.cls !== b.cls ? a.cls - b.cls", "a.cls !== b.cls ? a.cls - b.cls\n  : a.date !== b.date ? (a.date < b.date ? -1 : 1)"],
@@ -155,11 +158,26 @@ const API_MUTANTS = [
   // Takvim / zil ufku söz gününe göre (S67 = A, K6.3) — karşı okuma: ufuk vadeden ölçülen gün sayısıyla (Ç5-B'nin gerilemesi).
   ["SOZ-a", "takvim / zil ufku vadeden ölçülen days ile (ileri tarihli sözlü gecikmiş borç ufuk dışında da görünür)", "server/routes/accounts.mjs", "openDueItems(day).filter(item => windowGap(day, item.dueDate) <= DUE_WINDOW.aheadDays);", "openDueItems(day).filter(item => item.days <= DUE_WINDOW.aheadDays);", ["test/tyk-tur2b2-250.test.mjs"]],
   ["SOZ-b", "takvim / zil ufku sınırı kaydı — bugün + 7 dahil değil", "server/routes/accounts.mjs", "openDueItems(day).filter(item => windowGap(day, item.dueDate) <= DUE_WINDOW.aheadDays);", "openDueItems(day).filter(item => windowGap(day, item.dueDate) < 5);", ["test/tyk-tur2b2-250.test.mjs", "test/cari-vade-245.test.mjs", "test/dues.test.mjs"]],
+  // Ç5-B KAPANIŞ DÜZELTME TURU (12.11.2026): kapanış dar kontrolünün yaşayan mutantları (K…) + bu turun yeni kural dalları (KD…).
+  ["K5", "S110 satış kolu (kaynağı bilinmeyen kart) — en son kaydedilen stok satışı tutarı EŞİT olmasa da 'kartın satışı' (kapanış dar kontrolünün yaşayan mutantı)", "server/lib/obligation-queue.mjs", "(newest.amount === card.coverGross || (card.at && newest.recorded === card.at)) ? newest : null;", "true ? newest : null;", ["test/tyk-kapanis-250.test.mjs"]],
+  ["K6", "S110 satış kolu (kaynağı bilinmeyen kart) — stok iadesi / alış iadesi satırı da 'kartın satışı' (yaşayan mutant)", "server/lib/obligation-queue.mjs", "return newest && newest.kind === \"stock\" && !newest.line?.stockReason && ", "return newest && newest.kind === \"stock\" && ", ["test/tyk-kapanis-250.test.mjs"]],
+  ["K24", "S110 satış kolu (kaynağı bilinmeyen kart) — iade kesintisi kartın açılış tutarına geri eklenmez (yaşayan mutant)", "server/lib/accounts.mjs", "const coverGross = covers ? roundMoney(total + Math.max(0, Number(plan.returnCuts) || 0)) : 0;", "const coverGross = covers ? roundMoney(total) : 0;", ["test/tyk-kapanis-250.test.mjs"]],
+  ["K25", "S95 — faturasız stok iadesi netleşmeyi geri almaz (yalnız para; yaşayan mutant)", "server/lib/obligation-queue.mjs", "const freePayment = item => !item.due && !item.linkedOnly && (item.kind === \"payment\" || item.kind === \"stock\");", "const freePayment = item => !item.due && !item.linkedOnly && item.kind === \"payment\";", ["test/tyk-kapanis-250.test.mjs"]],
+  ["KD1-a", "ORTA-1 geri — kaynağı bilinen kart da eski tanımaya düşer (tutar / kayıt anı eşitliği; taban davranışı)", "server/lib/obligation-queue.mjs", "    if (known) return known;\n", "\n", ["test/tyk-kapanis-250.test.mjs"]],
+  ["KD1-b", "ORTA-1 — kartın satış kimliği stok İADESİ satırını da gösterir", "server/lib/obligation-queue.mjs", "item.kind === \"stock\" && item.sign > 0 && !item.line?.stockReason && item.line?.sourceId === card.sale", "item.kind === \"stock\" && item.line?.sourceId === card.sale", ["test/tyk-kapanis-250.test.mjs"]],
+  ["KD1-c", "ORTA-1 eski veri — çıkarım cariye bakmaz (başka cariye satışın ardından açılan kart o satışa bağlanır)", "server/routes/plans.mjs", "    if (!created.accountId || sale.accountId !== created.accountId) return \"\";\n", "\n", ["test/tyk-kapanis-250.test.mjs"]],
+  ["KD1-d", "ORTA-1 eski veri — çıkarım açılış tutarına bakmaz", "server/routes/plans.mjs", "return Math.round((Number(sale.amount) || 0) * 100) === Math.round((Number(created.total) || 0) * 100) ? String(row.prevId || \"\") : \"\";", "return String(row.prevId || \"\");", ["test/tyk-kapanis-250.test.mjs"]],
+  ["KD1-e", "ORTA-1 eski veri — çıkarım kullanıcıya bakmaz", "server/routes/plans.mjs", " || row.prevType !== \"stock.out\" || row.prevActor !== row.actor) return \"\";", " || row.prevType !== \"stock.out\") return \"\";", ["test/tyk-kapanis-250.test.mjs"]],
+  ["KD1-f", "ORTA-1 — izde boş yazılmış satış kimliği yok sayılır (bugünkü biçimde de çıkarım yapılır)", "server/routes/plans.mjs", "if (Object.hasOwn(created, \"saleMoveId\")) return String(created.saleMoveId || \"\");", "if (created.saleMoveId) return String(created.saleMoveId);", ["test/tyk-kapanis-250.test.mjs"]],
+  ["KD1-g", "ORTA-1 — satışla açılan kartın izine satış kimliği yazılmaz (yeni kartlar çıkarıma kalır / kalıcı değil)", "server/routes/stock.mjs", "coversBalance: true, saleMoveId: moveId });", "coversBalance: true });", ["test/tyk-kapanis-250.test.mjs"]],
+  ["KD1-h", "ORTA-1 — tek cari yolu kaynağı vermez (kart ekranı ↔ liste ayrışır)", "server/routes/plans.mjs", "importId: imported.has(plan.id) ? \"import\" : \"\", saleMoveId: sales.get(plan.id) || \"\", entries:", "importId: imported.has(plan.id) ? \"import\" : \"\", saleMoveId: \"\", entries:", ["test/tyk-kapanis-250.test.mjs"]],
+  ["KD1-i", "ORTA-1 — toplu yol (bütün cariler) kaynağı vermez (liste / Vade Takip ↔ kart ekranı ayrışır)", "server/routes/plans.mjs", "returnCuts: cutsOf.get(plan.id) || 0, saleMoveId: sales.get(plan.id) || \"\", totals: { paid }, entries: own });", "returnCuts: cutsOf.get(plan.id) || 0, saleMoveId: \"\", totals: { paid }, entries: own });", ["test/tyk-kapanis-250.test.mjs"]],
 ];
 rmSync(base, { recursive: true, force: true });
 let killed = 0;
 const rows = [];
 for (const [id, label, from, to] of MUTANTS) {
+  if (!wanted(id)) continue;
   const pairs = Array.isArray(from) ? from : [[from, to]];
   let mutated = SOURCE;
   const bad = pairs.map(([a]) => SOURCE.split(a).length - 1).find(count => count !== 1);
@@ -194,11 +212,12 @@ if (!argv.includes("--yalniz-saf")) {
   const env = { ...process.env, HUKUK_LICENSE_URL: "http://127.0.0.1:9" };
   const runTests = tests => spawnSync(process.execPath, ["--disable-warning=ExperimentalWarning", "--test", "--test-concurrency=1", ...tests], { cwd: full, encoding: "utf8", timeout: 1_800_000, env });
   const count = (out, name) => Number((out.match(new RegExp(`^# ${name} (\\d+)`, "m")) || [])[1] || 0);
-  const tests = [...new Set(API_MUTANTS.flatMap(m => m[5]))];
+  const tests = [...new Set(API_MUTANTS.filter(m => wanted(m[0])).flatMap(m => m[5]))];
   const baseRun = runTests(tests);
   rows.push(`API TABAN (mutantsız): tests ${count(baseRun.stdout, "tests")}, pass ${count(baseRun.stdout, "pass")}, fail ${count(baseRun.stdout, "fail")}, çıkış ${baseRun.status}`);
   if (baseRun.status === 0) {
     for (const [id, label, file, from, to, list] of API_MUTANTS) {
+      if (!wanted(id)) continue;
       apiTotal += 1;
       const target = path.join(full, file);
       const original = readFileSync(target, "utf8");
@@ -219,6 +238,6 @@ if (!argv.includes("--yalniz-saf")) {
 }
 rmSync(base, { recursive: true, force: true });
 for (const row of rows) console.log(row);
-const total = MUTANTS.length + (argv.includes("--yalniz-saf") ? 0 : API_MUTANTS.length);
+const total = MUTANTS.filter(m => wanted(m[0])).length + (argv.includes("--yalniz-saf") ? 0 : API_MUTANTS.filter(m => wanted(m[0])).length);
 console.log(`# tests ${total}\n# pass ${killed}\n# fail ${total - killed}`);
 process.exitCode = killed === total ? 0 : 1;

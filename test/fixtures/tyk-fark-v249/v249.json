@@ -804,6 +804,92 @@
    "zil": [
     "account|Tahsil Edilecek Borç (Ödeme Sözü)|40|upcoming"
    ]
+  },
+  "TYKF V1 Satış Kartı Tutarı Düzenlenmiş": {
+   "bakiye": 1500,
+   "gecikmis": 500,
+   "kartlar": [
+    {
+     "ad": "TYKF V1 Satış Kartı Tutarı Düzenlenmiş",
+     "durum": "overdue",
+     "sekme": "active/overdue",
+     "taksitler": [
+      "1:500:500:overdue",
+      "2:500:500:open"
+     ]
+    }
+   ],
+   "vadeTakip": [
+    "account|Tahsil Edilecek Borç|500|2026-11-19|in",
+    "plan|1. taksit|500|2026-09-30|in",
+    "plan|2. taksit (kalan)|300|2026-10-30|in"
+   ],
+   "zil": [
+    "plan|1. taksit|500|overdue"
+   ]
+  },
+  "TYKF V2 Satış Kartı İadeyle Küçülmüş": {
+   "bakiye": 700,
+   "gecikmis": 500,
+   "kartlar": [
+    {
+     "ad": "TYKF V2 Satış Kartı İadeyle Küçülmüş",
+     "durum": "overdue",
+     "sekme": "active/overdue",
+     "taksitler": [
+      "1:500:500:overdue",
+      "2:200:200:open"
+     ]
+    }
+   ],
+   "vadeTakip": [
+    "plan|1. taksit|500|2026-09-30|in",
+    "plan|2. taksit|200|2026-10-30|in"
+   ],
+   "zil": [
+    "plan|1. taksit|500|overdue"
+   ]
+  },
+  "TYKF V3 Satış Kartı Faturasız İade": {
+   "bakiye": 1200,
+   "gecikmis": 500,
+   "kartlar": [
+    {
+     "ad": "TYKF V3 Satış Kartı Faturasız İade",
+     "durum": "overdue",
+     "sekme": "active/overdue",
+     "taksitler": [
+      "1:500:500:overdue",
+      "2:500:500:open"
+     ]
+    }
+   ],
+   "vadeTakip": [
+    "account|Tahsil Edilecek Borç|200|2026-11-19|in",
+    "plan|1. taksit|500|2026-09-30|in",
+    "plan|2. taksit|500|2026-10-30|in"
+   ],
+   "zil": [
+    "plan|1. taksit|500|overdue"
+   ]
+  },
+  "TYKF V4 Kartı Kapat": {
+   "bakiye": 0,
+   "gecikmis": 0,
+   "kartlar": [
+    {
+     "ad": "TYKF V4 Kartı Kapat",
+     "durum": "closed",
+     "sekme": "closed",
+     "taksitler": [
+      "1:300:0:paid",
+      "2:300:300:closed",
+      "3:300:300:closed"
+     ]
+    }
+   ],
+   "vadeTakip": [],
+   "zil": []
   }
  }
 }

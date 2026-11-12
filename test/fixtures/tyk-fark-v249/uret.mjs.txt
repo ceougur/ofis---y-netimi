@@ -5,7 +5,8 @@
 // Mevcut Borç kartı) + taksitleri silinmiş stoktan kart + kart tahsilatıyla ödenmiş taksitsiz kart + tedarikçi stoktan / faturalı Alış İadesi + tedarikçiye avans (denetim) + başka
 // karttan doğan avans (K8). Tur 2b-2 (11.11.2026): U01–U15 — kullanıcı kararlarının KENDİ örnekleri (S95, S97 aynı gün / ertesi gün, S102, S98, S103, S104, S105, S96 verilen çek,
 // S99 avans + taksitli + taksitsiz, S101 avanslı stok kartı + kısmi avans, S120, S122, S110 elle kart) + U16–U18 (S98 × S99 fatura durumu iki yön, takvim / zil ufku söz
-// gününe göre). Kilit en son (−25).
+// gününe göre). Kapanış düzeltme turu (12.11.2026): V1–V4 — açılıştan sonra DEĞİŞEN satış kartı (tutarı düzenlenmiş; faturasız stok iadesiyle küçülmüş; faturasız stok
+// iadesi almış ama küçülmemiş) ve Kartı Kapat. Kilit en son (−25).
 //
 // NASIL YENİDEN ÜRETİLİR (yalnız eski kod değişirse ya da yeni sınıf eklenince; ders 23 / 25 — eski kod AYRI kopyada, benzersiz klasörde):
 //   mkdir -p <not defteri>/v249 && git archive v2.4.9 | tar -x -C <not defteri>/v249 && ln -s <depo>/node_modules <not defteri>/v249/node_modules
@@ -281,6 +282,44 @@ try {
   const U18 = await account("U18 Söz Ufku");
   await pay(U18, { kind: "debt", amount: "150", date: day(-40), dueDate: day(-30), expectedDate: day(15) });
   await pay(U18, { kind: "debt", amount: "40", date: day(-40), dueDate: day(-30), expectedDate: day(5) }, "hareket2");
+  // ---- Ç5-B kapanış düzeltme turu (12.11.2026; kapanış dar kontrolünün "fikstürün kapsamadığı sınıflar" listesinden, ORTA-1 / S129'un dokunduğu): satışla açılan kartın
+  // açılıştan SONRA değiştiği sınıflar (kart kendi satışını yine tanımalı — kaynak kartın açılış izinden) + Kartı Kapat. Kayıt anları 30 sn arayla (gerçek kurulum). ----
+  const putPlan = async (planId, patch, label) => {
+    const cur = unwrap(await api.get(`/api/workspace/plans/${planId}`));
+    return step(label, api.put(`/api/workspace/plans/${planId}`, { name: cur.name, registeredOn: cur.registeredOn, ...patch }));
+  };
+  // V1: elle Borç 500 (vade +30) + stoktan veresiye satış 1.000 2 taksit → kart tutarı 1.000 → 800 (Tutarı Düzenle).
+  const V1 = await account("V1 Satış Kartı Tutarı Düzenlenmiş");
+  await pay(V1, { kind: "debt", amount: "500", date: day(-50), dueDate: day(30) });
+  tick();
+  await stockSale(V1, day(-45), 10, { count: 2, firstDue: day(-20), everyMonths: 1 });
+  tick();
+  await putPlan(await planOf(V1), { total: "800" }, "tutar V1");
+  tick();
+  // V2: aynı + faturasız stok iadesi 800 (bakiye 700 < kart 1.000 → kart 700'e küçülür).
+  const V2 = await account("V2 Satış Kartı İadeyle Küçülmüş");
+  await pay(V2, { kind: "debt", amount: "500", date: day(-50), dueDate: day(30) });
+  tick();
+  await stockSale(V2, day(-45), 10, { count: 2, firstDue: day(-20), everyMonths: 1 });
+  tick();
+  await step("iade V2", api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "in", reason: "return", qty: "8", unitPrice: "100", pay: "account", method: "cash", accountId: V2.id, date: day(-40) }));
+  tick();
+  // V3: aynı + faturasız stok iadesi 300 (kart küçülmez).
+  const V3 = await account("V3 Satış Kartı Faturasız İade");
+  await pay(V3, { kind: "debt", amount: "500", date: day(-50), dueDate: day(30) });
+  tick();
+  await stockSale(V3, day(-45), 10, { count: 2, firstDue: day(-20), everyMonths: 1 });
+  tick();
+  await step("iade V3", api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "in", reason: "return", qty: "3", unitPrice: "100", pay: "account", method: "cash", accountId: V3.id, date: day(-40) }));
+  tick();
+  // V4: Kartı Kapat — ayrı kart 900 (3 taksit), karta 300, kart kapatılır (kalan 600 düşülür).
+  const V4 = await account("V4 Kartı Kapat");
+  await autoPlan(V4, { total: "900", count: "3", firstDue: day(-40), registeredOn: day(-60) }, "kart");
+  tick();
+  await step("tahsilat V4", api.post(`/api/workspace/plans/${await planOf(V4)}/entries`, { kind: "in", amount: "300", method: "cash", cashForce: true, date: day(-35) }));
+  tick();
+  await putPlan(await planOf(V4), { status: "closed" }, "kapat V4");
+  tick();
   // Kilit en son (P'nin ve öbürlerinin kilitten SONRAKİ görünümü).
   await step("kilit", api.put("/api/admin/period-lock", { lockedUntil: day(-25) }));
   const facts = await readFacts(async url => {

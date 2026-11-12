@@ -1577,6 +1577,58 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     }
     return out;
   }
+  // Ç5-B kapanış düzeltmesi (dar kontrol ORTA-1 — GERİLEME; S110 = A; S133 = C): satışla açılan Mevcut Borç kartının KAYNAĞI (hangi stok satışıyla açıldı) kalıcı bilgiden
+  // — kartın açılış izinden (audit_events 'plan.created'; iz silinmez, yedekle / geri yüklemeyle taşınır). Tek Yükümlülük Kuyruğu kartın "kendi satışını" bununla tanır
+  // (lib/accounts.mjs coverSale → lib/obligation-queue.mjs ownSaleOf); tutar ya da kayıt anı eşitliğine bakılmaz.
+  //   2.5.0'dan itibaren: iz yükündeki `saleMoveId` (createForAccount; alan HER toplu kartta yazılır — boşsa kart satışla açılmamıştır, çıkarım yapılmaz).
+  //   Eski veri (v2.0.13 – v2.4.9; yükte alan YOK): stoktan satış aynı işlemde önce 'stock.out' izini, hemen ardından kartın 'plan.created' izini yazar
+  //   (routes/stock.mjs; iki satır ardışıktır — aynı işlem, araya yazım giremez). Kartın izinden HEMEN ÖNCEKİ satır aynı kullanıcının, aynı cariye, açık hesaba (veresiye),
+  //   kartın AÇILIŞ tutarında (izdeki total — sonradan düzenlenen tutar değil) stok satışıysa kart o satışla açılmıştır. Koşul tutmuyorsa kaynak bilinmez: kart elle açılmış
+  //   kart gibi eski tanımada kalır (S133 = C).
+  // Kaynak kart açıldıktan sonra DEĞİŞMEZ → kart kimliğiyle bellekte tutulur (şirket örneği başına; yalnız bilinmeyen kartlar için izden okunur — ders 47: kart başına
+  // sorgu yok, tek sorgu). Veri tabanı işleminin içinde bellek yazılmaz (geri alınan işlemin kartı bellekte kalmasın).
+  const saleSourceCache = new Map();
+  const SALE_SOURCE_SQL = `SELECT e.entity_id AS planId, e.actor_id AS actor, e.payload_json AS payload, s.type AS prevType, s.entity_id AS prevId, s.actor_id AS prevActor, s.payload_json AS prevPayload
+       FROM audit_events e LEFT JOIN audit_events s ON s.rowid = (SELECT MAX(x.rowid) FROM audit_events x WHERE x.rowid < e.rowid)
+       WHERE e.type = 'plan.created' AND e.entity_id IN (SELECT value FROM json_each(?))`;
+  const parsePayload = text => {
+    try {
+      const value = JSON.parse(text || "{}");
+      return value && typeof value === "object" ? value : {};
+    } catch {
+      return {};
+    }
+  };
+  function saleSourceOfEvent(row) {
+    const created = parsePayload(row.payload);
+    if (Object.hasOwn(created, "saleMoveId")) return String(created.saleMoveId || "");
+    if (created.bulk !== true || created.coversBalance !== true || created.invoiceId || row.prevType !== "stock.out" || row.prevActor !== row.actor) return "";
+    const sale = parsePayload(row.prevPayload);
+    // 'stock.out' = satış (tedarikçiye iade 'stock.preturn'); izdeki accountId yalnız açık hesaba (veresiye) satışta doludur (routes/stock.mjs moveInput).
+    if (!created.accountId || sale.accountId !== created.accountId) return "";
+    return Math.round((Number(sale.amount) || 0) * 100) === Math.round((Number(created.total) || 0) * 100) ? String(row.prevId || "") : "";
+  }
+  /** Kart kimlikleri → Map(kart → stok hareketi kimliği); satışla açılmamış / kaynağı bilinmeyen kart haritada YOK. */
+  function saleSources(planIds) {
+    const out = new Map();
+    const missing = [];
+    for (const id of planIds) {
+      if (!saleSourceCache.has(id)) missing.push(id);
+      else if (saleSourceCache.get(id)) out.set(id, saleSourceCache.get(id));
+    }
+    if (missing.length) {
+      const found = new Map(missing.map(id => [id, ""]));
+      for (const row of store.all(SALE_SOURCE_SQL, JSON.stringify(missing))) {
+        const move = saleSourceOfEvent(row);
+        if (move) found.set(row.planId, move);
+      }
+      for (const [id, move] of found) {
+        if (!store.inTransaction) saleSourceCache.set(id, move);
+        if (move) out.set(id, move);
+      }
+    }
+    return out;
+  }
   // Mizan (v2.0.7): tüm carilerin kartları, hareketleriyle; carinin defteri (accountLedger) Cari kartıyla aynı girdiyi alır.
   function ledgerPlansByAccount() {
     const out = new Map();
@@ -1597,11 +1649,12 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       entries.get(entry.planId).push({ ...entry, opening: Boolean(entry.opening), itemSeq: entry.itemId ? seqs.get(entry.itemId) || null : null });
     }
     const cutsOf = returnCuts();
+    const sales = saleSources(plans.filter(plan => plan.coversBalance && !plan.importId).map(plan => plan.id));
     for (const plan of plans) {
       const own = entries.get(plan.id) || [];
       const paid = roundMoney(own.reduce((sum, entry) => sum + (entry.kind === "in" ? Number(entry.amount) || 0 : -(Number(entry.amount) || 0)), 0));
       if (!out.has(plan.accountId)) out.set(plan.accountId, []);
-      out.get(plan.accountId).push({ ...plan, itemCount: counts.get(plan.id) || 0, planned: roundMoney(planned.get(plan.id) || 0), returnCuts: cutsOf.get(plan.id) || 0, totals: { paid }, entries: own });
+      out.get(plan.accountId).push({ ...plan, itemCount: counts.get(plan.id) || 0, planned: roundMoney(planned.get(plan.id) || 0), returnCuts: cutsOf.get(plan.id) || 0, saleMoveId: sales.get(plan.id) || "", totals: { paid }, entries: own });
     }
     return out;
   }
@@ -1609,10 +1662,12 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     if (!accountId) return [];
     const cutsOf = returnCuts();
     const imported = new Set(store.all("SELECT id FROM plans WHERE account_id = ? AND import_id <> ''", accountId).map(row => row.id));
-    return store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND p.account_id = ? ORDER BY (p.status = 'active') DESC, p.created_at`, accountId).map(plan => {
+    const rows = store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND p.account_id = ? ORDER BY (p.status = 'active') DESC, p.created_at`, accountId);
+    const sales = saleSources(rows.filter(plan => plan.coversBalance && !imported.has(plan.id)).map(plan => plan.id));
+    return rows.map(plan => {
       const shaped = shape(plan, user);
       const seqOf = new Map(shaped.items.map(item => [item.id, item.seq]));
-      return { ...shaped, itemCount: shaped.items.length, returnCuts: cutsOf.get(plan.id) || 0, importId: imported.has(plan.id) ? "import" : "", entries: shaped.entries.map(entry => ({ ...entry, itemSeq: entry.itemId ? seqOf.get(entry.itemId) || null : null })) };
+      return { ...shaped, itemCount: shaped.items.length, returnCuts: cutsOf.get(plan.id) || 0, importId: imported.has(plan.id) ? "import" : "", saleMoveId: sales.get(plan.id) || "", entries: shaped.entries.map(entry => ({ ...entry, itemSeq: entry.itemId ? seqOf.get(entry.itemId) || null : null })) };
     });
   }
   // Carinin toplu taksitlendirmesi (routes/accounts.mjs): kartı cariye bağlı açar, isterse taksitleri dağıtır.
@@ -1620,7 +1675,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   // refNo verilirse (toplu taksitlendirme sayacı) kart tablosu her kartta yeniden taranmaz.
   // v2.0.13: coversBalance = carinin mevcut borcunu (veresiye satış, açılış) taksitlendirir; ikinci kez borç yazmaz.
   // v2.0.15: faturadan açılan kartın Kayıt Tarihi fatura tarihidir (registeredOn) ve kart faturaya bağlıdır (invoiceId).
-  function createForAccount(user, account, { total, count = 0, firstDue = "", everyMonths = 1, name = "", note = "", refNo = "", coversBalance = false, registeredOn: fixedOn = "", invoiceId = "" }) {
+  // saleMoveId (Ç5-B kapanış düzeltmesi, ORTA-1): stoktan veresiye satışla açılan kartın satışı (stok hareketi) — kartın açılış izine yazılır (saleSources okur).
+  function createForAccount(user, account, { total, count = 0, firstDue = "", everyMonths = 1, name = "", note = "", refNo = "", coversBalance = false, registeredOn: fixedOn = "", invoiceId = "", saleMoveId = "" }) {
     const id = newId("plan");
     const amount = roundMoney(Number(total) || 0);
     const registeredOn = fixedOn || (account.registeredOn && account.registeredOn <= today() ? account.registeredOn : today());
@@ -1633,7 +1689,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     );
     if (count > 0 && amount > 0) replaceItems(id, distribute({ total: amount, count: Math.min(count, MAX_ITEMS), firstDue, everyMonths }));
     if (invoiceId) store.run("UPDATE plans SET invoice_id = ? WHERE id = ?", invoiceId, id);
-    audit(user, "plan.created", id, { name: name || account.name, total: amount, accountId: account.id, bulk: true, coversBalance, invoiceId });
+    audit(user, "plan.created", id, { name: name || account.name, total: amount, accountId: account.id, bulk: true, coversBalance, invoiceId, saleMoveId: coversBalance && !invoiceId ? String(saleMoveId || "") : "" });
     return id;
   }
   // Satıştan iade iptal edilince (v2.0.15): iadenin küçülttüğü taksit kartı geri büyür — tutar son taksite eklenir; kart,

@@ -350,7 +350,7 @@ function queueOnce(input, mode, lockCaps, { pieces = null, pseudo = null, forced
           // Açılış günü: ön geçişte bilinen satırların sonu; asıl geçişte Kayıt Tarihi ile tükettiği kalemlerin en geç doğduğu günün büyüğü (coverForcing; Y-1).
           const shifted = forced?.get(line.planId)?.date || "";
           const opened = endCover === line.planId ? END_OF_STREAM : shifted > line.date ? shifted : line.date;
-          const card = cardOf(line.planId, "cover", { date: opened, at, rank: r, coverTotal: cents(line.coverTotal), coverGross: cents(line.coverGross ?? line.coverTotal), source: line.coverSource || "" });
+          const card = cardOf(line.planId, "cover", { date: opened, at, rank: r, coverTotal: cents(line.coverTotal), coverGross: cents(line.coverGross ?? line.coverTotal), source: line.coverSource || "", sale: line.coverSale || "" });
           // Kapsam tutarı (coverTotal) kartın açıldığı andaki tutardır; kart sonradan küçültülmüşse (iade → coverState, Tutarı Düzenle) taksitleri bugünkü tutardır —
           // eksik kısım "kalan tek kalem" olarak geri EKLENMEZ (iade-210 K: kart 250, Vade Takip 250).
           const scheduled = (schedules.get(line.planId) || []).reduce((sum, row) => sum + cents(row.amount), 0);
@@ -625,7 +625,16 @@ function queueOnce(input, mode, lockCaps, { pieces = null, pseudo = null, forced
   // S123 / S124 = C (BİLİNEN SINIR): özel kural yok — elle borçların toplamı T'den azsa artan kapasite S101 / EK-2B 32 yoluyla; eşit birden çok elle borçta S120 kolu.
   const isElle = target => target.kind === "entry" && target.sign > 0 && target.line?.origin === "account";
   const DEBT_KINDS = new Set(["invoice", "entry", "stock", "bounce"]);
+  // Ç5-B kapanış düzeltmesi (dar kontrol ORTA-1 — GERİLEME; S110 = A "stoktan satışta o satışı"; S133 = C): satışla açılan kartın KAYNAĞI kalıcı bilgidir — kartın
+  // açılış kaydındaki satış kimliği (card.sale: stok hareketi; routes/plans.mjs saleSources — denetim izi). Kart o satışı HER KOŞULDA tanır: tutarı sonradan düzenlenmiş
+  // (Tutarı Düzenle), iadeyle küçülmüş, araya başka borç yazılmış olsa da. Önceden tanıma "bugünkü tutar + iade kesintisi = satış tutarı" ya da "kayıt anı eşit" koşuluna
+  // dayanıyordu: tutar düzenlenince ve gerçek (akan) saatte ikisi de tutmuyor, kart elle kola (S120) düşüp carinin elle borcunu içine alıyordu. Kaynağı bilinmeyen kart
+  // (elle açılan; izi olmayan eski kart) aşağıdaki eski tanımada AYNEN kalır (S133 = C — BİLİNEN SINIR: elle kartın tutarı en son taksitsiz stok satışına eşitse sonuç
+  // kayıt sırasına bağlı).
+  const saleItemOf = card => (card.sale ? items.find(item => item.kind === "stock" && item.sign > 0 && !item.line?.stockReason && item.line?.sourceId === card.sale) || null : null);
   const ownSaleOf = card => {
+    const known = saleItemOf(card);
+    if (known) return known;
     let newest = null;
     for (const item of items) {
       if (!(item.sign > 0) || !DEBT_KINDS.has(item.kind) || item.ownCard || (card.at && item.recorded && item.recorded > card.at)) continue;
