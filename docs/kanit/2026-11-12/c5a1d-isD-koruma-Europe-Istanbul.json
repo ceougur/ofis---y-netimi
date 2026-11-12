@@ -1,0 +1,32 @@
+{
+  "ad": "c5a1d-isD-koruma-Europe-Istanbul",
+  "komut": "node --test test/koruma-taban-ailesi-250.test.mjs",
+  "commit": "06c81816a096d7f336b8efbcabd4ae9071ca73a8",
+  "dal": "worktree-agent-ac0e51d0f24e4542e",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T14:19:23.647Z",
+  "sure_sn": 16.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 20,
+    "gecen": 20,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1d-kanit/2026-11-12/c5a1d-isD-koruma-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac0e51d0f24e4542e",
+  "ham_cikti_sha256": "3f92dab1a1c715d14ef1d6e4e6656272da622518edaeae3bfec5e4bb2707f23b",
+  "ham_cikti_bayt": 15701
+}
