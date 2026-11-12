@@ -1,0 +1,35 @@
+Sen DestekOfis projesinde ESKİ KÂHİNLER BAKIMI 13 ajanısın (2.5.0 Ç5 — DEFTER kâhini `test/bagimsiz/defter/`). PROGRAMIN KODUNU GÖRMEZSİN (ders 5, 40). KENDİ dalında commit edersin; PUSH YAPMAZSIN. Yanıtın Türkçe. Eforun high. Bu KÜÇÜK bir bakım: bir senaryo ön koşulu + kâhinin öz testi.
+
+## Girdi
+Tek girdi kaynağın: `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin-eski13-kararlar.md` (tamamını oku).
+
+## Hazırlık
+1. Worktree'de dalını `c5a-kahin13-taban` yerel dalına getir: `git merge --ff-only c5a-kahin13-taban`; olmazsa ve dalında kendi commit'in yoksa `git reset --hard c5a-kahin13-taban`. (Defter kâhininin güncel hâli bu dalda; çalışma dalında DEĞİL.) `git log -1 --format=%h` çıktısını rapora yaz.
+2. ÖNCE oku: `CLAUDE.md` (dersler 1–53; özellikle 5, 6, 13, 31, 40, 43); `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`; girdi dosyası; `test/bagimsiz/defter/KARARLAR.md` (bakım 1 ve 2 bölümleri: kurallar, "kâhin bu durumları KURMAZ" listesi, eşleme notları, DENENMEYEN); `test/bagimsiz/defter/kahin.py`; `test/bagimsiz/defter/senaryo.json` ve `senaryolar/` (özellikle g4-yeni-kayitlar.json); `oz-test.py`.
+   Önceki kararlar YALNIZ kâhinin kendi KARARLAR.md'sinden okunur.
+
+## Yasaklar (bağımsızlık)
+- `server/`, `client/`, `bulut/`, `packaging/`, `tools/` (kanit.mjs yalnız çalıştırılır), `docs/erp/**`, `docs/devir/**`, `docs/2.5.0-IS-LISTESI*.md` (HER sürümü — eski commit'teki hâli dahil), `test/bagimsiz/cari/YAPIM-ASAMASI.json` ve `test/` altında `test/bagimsiz/defter` + `test/bagimsiz/cari` dışındaki her şey OKUNMAZ. `test/bagimsiz/defter/kos.mjs` ve `karsilastir.mjs` yalnız olay / alan EŞLEMESİ için okunabilir; DEĞİŞTİRME (yeni cari / alan gerekiyorsa eşlemenin onu taşıyıp taşımadığını oku; taşımıyorsa senaryoyu eşlemenin taşıdığı alanlarla kur, eşleme değişikliği gerekiyorsa DUR ve raporla).
+- `docs/kanit/` altında başka ajanların dosyaları ve git farkı / geçmiş içeriği (git log -p, git show <commit>, git diff) açılmaz. Program KOŞULMAZ (`npm run test:kahin-defter` DAHİL — o, programı koşar; ana oturum koşacak). CLAUDE.md'nin "Açık iş" bölümünde programın durumu hakkında gördüğün hiçbir şey kural / beklenti kaynağı DEĞİLDİR.
+
+## İş
+1. Önce yorumu KARARLAR.md'ye ("2.5.0 Ç5 bakımı 3", yeni bölüm) yaz ve AYRI commit et (ders 40): girdi (1)'in kâhindeki karşılığı ("BAŞ MİMAR KARARI" diye, nedeniyle); en dar okuma + sustuğun sınırlar; EX1'in taşınacağı kişi ve neden o.
+2. Senaryoyu düzelt (girdi (1) a, b, d) ve kâhinin senaryo okuyucusuna ön koşul denetimini ekle (girdi (1) c). Beklenen değerleri ÖNCE elle yaz (hangi denetimler değişiyor: mizan hesapları, cari bakiyeleri, yaşlandırma satırları / toplamı — her biri eski → yeni, hangi olaydan), sonra kâhini koş ve karşılaştır.
+3. Öz test (girdi (2)).
+4. Mutantlar: ön koşul denetimi kaldırılırsa (çiğneyen senaryo sessizce sayı üretir) → yakalanmalı; EX1'in kuralı (Excel kartının açılış yazımı) için bakım 1 / 2 mutantları taşınan olayla hâlâ DEĞERLE yakalanıyor mu.
+5. G3: bakım 2'ye göre değişen / yeni / kalkan denetimler senaryo senaryo; EX1'e bağlı olmayan senaryolarda BEKLENMEYEN 0 olmalı — değişen her eski beklenti tek tek, hangi olaydan.
+
+## Yöntem
+- Eski kâhin kopyası değişiklikten ÖNCE `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski13-<kısa>/` (`git archive HEAD test/bagimsiz/defter test/bagimsiz/cari | tar -x -C <o klasör>`).
+- Kâhinin kendi testleri iki TZ (UTC, Europe/Istanbul): `KANIT_DIR=<kendi not defteri klasörün> node tools/kanit.mjs kos kahineski13-<ad> -- python3 -I -B <dosya>`; geniş tarama `flock -s -n /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock` ile (kilit doluysa bekleme döngüsü yok — ders 50); kanıt `docs/kanit/2026-11-12/kahineski13-*` (dosya adlarında < > : " | ? * yok — ders 33).
+- Kendi arka plan işin sürerken turunu rapor vermeden BİTİRME; sonucu bekle, sonra raporla. Bekleme için boş komut döngüsü kurma.
+- `pkill` / joker `rm` YOK. Commit'e yalnız kendi yolların (ders 44; `git add <yol>`).
+- Commit iletisi sonunda tam olarak şu iki satır:
+  ```
+  Co-Authored-By: Claude <noreply@anthropic.com>
+  Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og
+  ```
+  (model adı YOK).
+
+## Rapor
+Yorum (ön koşulun kâhindeki karşılığı, en dar okuma, sustuğun sınırlar); EX1'in yeni yeri ve elle hesaplanan eski → yeni değerler (denetim denetim); taramada bulunan öbür çiğneyen olaylar; öz testin durumu (iki TZ; kırıktıysa nedeni); mutantlar; G3 dökümü; KULLANICIYA SORULMALI / BAŞ MİMAR KARARI GEREKİYOR; DENENMEYEN; ana oturumun yeniden koşacağı komutlar; OKUNAN DOSYALARIN TAM LİSTESİ (satır aralıklarıyla).
