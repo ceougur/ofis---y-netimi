@@ -1,0 +1,8 @@
+M1 KIRMIZI (yakalandı) · pass 3 fail 1 · H1: işaret sorgusu onaylıyı (confirmed) almaz · neden: account:aentry-44be8324-3720-4bde-972a-ca1a1e33b19d (işaret 0, durum 'confirmed'): karşı hesap
+M2 KIRMIZI (yakalandı) · pass 3 fail 1 · H1: süzgeçli yolda (kapı) satırlar işaretlenmez · neden: cari account-6f6c0fa8-f335-4d23-ab86-5952c16e327b: account:aentry-ca99f56a-973a-400d-83e0-a3ebaccb29f2 süzgeçli ↔ süzgeçsiz
+M3 KIRMIZI (yakalandı) · pass 2 fail 2 · H2: süzgeçli yolda taksit satırının kartı kapsama alınmaz · neden: taksit satırı entry-0c6fa4af-222d-4f2f-a1c5-d96a4a8aa9d6: plan-entry:entry-0c6fa4af-222d-4f2f-a1c5-d96a4a8aa9d6 süzgeçli ↔ süzgeçsiz ‖ taksit satırı entry-0c6fa4af-222d-4f2f-a1c5-d96a4a8aa9d6: plan-entry:entry-0c6fa4af-222d-4f2f-a1c5-d96a4a8aa9d6 süzgeçli ↔ süzgeçsiz
+M4 KIRMIZI (yakalandı) · pass 2 fail 2 · H2: yükleme damgası karta yazılmaz (madde kartın tarihine düşer) · neden: kart plan-5d9aa035-cdc7-4e2e-ac69-9d87cb157858: madde yükleme gününde ‖ kart plan-5d9aa035-cdc7-4e2e-ac69-9d87cb157858: madde yükleme gününde
+M5 KIRMIZI (yakalandı) · pass 2 fail 2 · H2: P karta yazılmaz (tek madde T olur) · neden: kart plan-5d9aa035-cdc7-4e2e-ac69-9d87cb157858: tek madde T − P ‖ kart plan-5d9aa035-cdc7-4e2e-ac69-9d87cb157858: tek madde T − P
+M6 KIRMIZI (yakalandı) · pass 3 fail 1 · H3: yazım sırası anahtarı düşer · neden: surum-2.4.9-s127 (türetme sırası): 2. madde (plan:plan-fb700def-860e-4e1e-849c-2f9c53f31df4 beklenirdi, plan:plan-3f739f86-ca7f-42c6-91dd-7cb854b22fd5)
+M7 KIRMIZI (yakalandı) · pass 3 fail 1 · H3: sınıf anahtarı düşer · neden: surum-2.0.26-zincir (türetme sırası): 1. madde (account:aentry-4680f44a-ac59-47b1-828e-c6ad5459c04f beklenirdi, cash:cash-817a45b2-6565-467b-9bc7-3d6ef3a05654)
+[mutasyon] 7 / 7 kırmızı

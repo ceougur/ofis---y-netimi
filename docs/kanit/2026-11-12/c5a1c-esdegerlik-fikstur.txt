@@ -1,0 +1,685 @@
+(node:22289) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.16-zincir-Europe-Istanbul · TZ Europe/Istanbul · şema 49/49 · dondurma {"coverage":"","lock":"","pending":null,"runs":0} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · 385114884fc043da = 385114884fc043da · 2807 bayt
+  AYNI  GET ledger (dönem): 200/200 · b6f06ac5b9bb26fc = b6f06ac5b9bb26fc · 2781 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · 6e5326b60170c941 = 6e5326b60170c941 · 389 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · 07fb7f2cc40de53d = 07fb7f2cc40de53d · 13144 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · bf6a0da982a437da = bf6a0da982a437da · 13144 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 4a1248870d151e8a = 4a1248870d151e8a · 1636 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 5cc4991905c37b03 = 5cc4991905c37b03 · 1677 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · c26aa469d484bbde = c26aa469d484bbde · 772 bayt
+  AYNI  Defter Mutabakatı: 200/200 · c1607df74baf6f1d = c1607df74baf6f1d · 5288 bayt
+  AYNI  Mutabakat Testi: 200/200 · f08452e850ee6e76 = f08452e850ee6e76 · 7794 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 4683fcb13c5fa683 = 4683fcb13c5fa683 · 6155 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · a6bbc3533cc73b94 = a6bbc3533cc73b94 · 24792 bayt · 82 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:22334) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.17-zincir-Europe-Istanbul · TZ Europe/Istanbul · şema 49/49 · dondurma {"coverage":"","lock":"","pending":null,"runs":0} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · cf53c652c60892a9 = cf53c652c60892a9 · 2827 bayt
+  AYNI  GET ledger (dönem): 200/200 · c44cc4cd71e346f5 = c44cc4cd71e346f5 · 2802 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · 6e5326b60170c941 = 6e5326b60170c941 · 389 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · e0bf5097da6fb7aa = e0bf5097da6fb7aa · 14899 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · 543c19f0a2eee7eb = 543c19f0a2eee7eb · 14899 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 97a7533843865a61 = 97a7533843865a61 · 1648 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 1b40273bb15aa965 = 1b40273bb15aa965 · 1692 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · 72291ebb045d7cea = 72291ebb045d7cea · 777 bayt
+  AYNI  Defter Mutabakatı: 200/200 · eb5054a35ad49d63 = eb5054a35ad49d63 · 5296 bayt
+  AYNI  Mutabakat Testi: 200/200 · 03cc63cfd20ddb03 = 03cc63cfd20ddb03 · 7802 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 5121de622c82375e = 5121de622c82375e · 7211 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · 6770d527931b7d95 = 6770d527931b7d95 · 41929 bayt · 138 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:22366) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.18-zincir-Europe-Istanbul · TZ Europe/Istanbul · şema 49/49 · dondurma {"coverage":"","lock":"","pending":null,"runs":0} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · fc299bc8d22d9c5b = fc299bc8d22d9c5b · 2834 bayt
+  AYNI  GET ledger (dönem): 200/200 · 47c4236b21e850e8 = 47c4236b21e850e8 · 2899 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · 4d1a1d3d602cb099 = 4d1a1d3d602cb099 · 8581 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · e0bf5097da6fb7aa = e0bf5097da6fb7aa · 14899 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · c7cf48a3a47af78e = c7cf48a3a47af78e · 14899 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 43081eeec1798fe3 = 43081eeec1798fe3 · 1751 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 1b40273bb15aa965 = 1b40273bb15aa965 · 1692 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · bea1854d14aa6e62 = bea1854d14aa6e62 · 792 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 6e272148d9cacf25 = 6e272148d9cacf25 · 5298 bayt
+  AYNI  Mutabakat Testi: 200/200 · 7f601cc7a38c4e9f = 7f601cc7a38c4e9f · 7804 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 0b19befa5e133ce6 = 0b19befa5e133ce6 · 7969 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · cdc30f6b328662af = cdc30f6b328662af · 57593 bayt · 190 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:22406) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.19-cakisma-Europe-Istanbul · TZ Europe/Istanbul · şema 49/49 · dondurma {"coverage":"","lock":"","pending":null,"runs":0} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · 385114884fc043da = 385114884fc043da · 2807 bayt
+  AYNI  GET ledger (dönem): 200/200 · de9e44a53085983e = de9e44a53085983e · 2836 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · e43e64a553332d92 = e43e64a553332d92 · 2379 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · 483f7b8114f3ece9 = 483f7b8114f3ece9 · 11254 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · 5ff2dc20e2e51a13 = 5ff2dc20e2e51a13 · 13144 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 56f4fdc729f84a28 = 56f4fdc729f84a28 · 1704 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 63f3c05ceaf829ec = 63f3c05ceaf829ec · 1675 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · c26aa469d484bbde = c26aa469d484bbde · 772 bayt
+  AYNI  Defter Mutabakatı: 200/200 · c1607df74baf6f1d = c1607df74baf6f1d · 5288 bayt
+  AYNI  Mutabakat Testi: 200/200 · f08452e850ee6e76 = f08452e850ee6e76 · 7794 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 84cf1aff5adef73d = 84cf1aff5adef73d · 6175 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · a34dae2d9ade88db = a34dae2d9ade88db · 24792 bayt · 82 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:22442) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.19-eski-Europe-Istanbul · TZ Europe/Istanbul · şema 49/49 · dondurma {"coverage":"","lock":"","pending":null,"runs":0} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · 1d0b441b9f1ca481 = 1d0b441b9f1ca481 · 2834 bayt
+  AYNI  GET ledger (dönem): 200/200 · 6c569202f516645f = 6c569202f516645f · 2874 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · 436cf4b104319d4e = 436cf4b104319d4e · 14611 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · b3518031a9f21050 = b3518031a9f21050 · 5883 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · 21a7fe2700c31171 = 21a7fe2700c31171 · 14638 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 1dee724e064ada20 = 1dee724e064ada20 · 1726 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · b94a50165f7def19 = b94a50165f7def19 · 1302 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · 7ca53ac572c51611 = 7ca53ac572c51611 · 777 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 94212e5e9e3c0600 = 94212e5e9e3c0600 · 5298 bayt
+  AYNI  Mutabakat Testi: 200/200 · e8f06464500cfb12 = e8f06464500cfb12 · 7801 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 44cd323c251b2133 = 44cd323c251b2133 · 7282 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · 731885832cea256a = 731885832cea256a · 40188 bayt · 133 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:22474) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.19-zincir-Europe-Istanbul · TZ Europe/Istanbul · şema 49/49 · dondurma {"coverage":"","lock":"","pending":null,"runs":0} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · 47a1d08f890a7d79 = 47a1d08f890a7d79 · 2823 bayt
+  AYNI  GET ledger (dönem): 200/200 · 9615da236322fd4d = 9615da236322fd4d · 2896 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · f8edc38082917185 = f8edc38082917185 · 14421 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · e0bf5097da6fb7aa = e0bf5097da6fb7aa · 14899 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · b95cebd4b6b386af = b95cebd4b6b386af · 14907 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 9131657343256dfd = 9131657343256dfd · 1755 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 1b40273bb15aa965 = 1b40273bb15aa965 · 1692 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · 3c468cb209d8cc6f = 3c468cb209d8cc6f · 792 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 19ee51bd6091f9c3 = 19ee51bd6091f9c3 · 5298 bayt
+  AYNI  Mutabakat Testi: 200/200 · dfc053b1d0c87d03 = dfc053b1d0c87d03 · 7798 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 62abc68965fd2be8 = 62abc68965fd2be8 · 9176 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · 375eafae08824929 = 375eafae08824929 · 72706 bayt · 240 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:22522) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.20-zincir-Europe-Istanbul · TZ Europe/Istanbul · şema 49/49 · dondurma {"coverage":"","lock":"","pending":null,"runs":0} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · 887daef7370ae5c6 = 887daef7370ae5c6 · 2827 bayt
+  AYNI  GET ledger (dönem): 200/200 · 972798a52b419f53 = 972798a52b419f53 · 2896 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · ead8f2a2c7e1a880 = ead8f2a2c7e1a880 · 14421 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · e0bf5097da6fb7aa = e0bf5097da6fb7aa · 14899 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · c64b3d4c0a2bb4f3 = c64b3d4c0a2bb4f3 · 14907 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 60da004afbed95b7 = 60da004afbed95b7 · 1756 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 1b40273bb15aa965 = 1b40273bb15aa965 · 1692 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · 06dd002e3c6180b7 = 06dd002e3c6180b7 · 792 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 4f6c2b0804e3d5d7 = 4f6c2b0804e3d5d7 · 5298 bayt
+  AYNI  Mutabakat Testi: 200/200 · 68b5c899bf555193 = 68b5c899bf555193 · 7798 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 1072cb3de72b9c71 = 1072cb3de72b9c71 · 10698 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · fb883b8a0a2a6c5a = fb883b8a0a2a6c5a · 88209 bayt · 291 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:22558) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.21-zincir-Europe-Istanbul · TZ Europe/Istanbul · şema 49/49 · dondurma {"coverage":"","lock":"","pending":null,"runs":0} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · 8865793c6fa27a94 = 8865793c6fa27a94 · 3123 bayt
+  AYNI  GET ledger (dönem): 200/200 · 31838dcb02d86be4 = 31838dcb02d86be4 · 3192 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · 323082f08c35e0f8 = 323082f08c35e0f8 · 14421 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · e0bf5097da6fb7aa = e0bf5097da6fb7aa · 14899 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · 0e463a48ee5f3299 = 0e463a48ee5f3299 · 14907 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · e62a53816bb5a5df = e62a53816bb5a5df · 2008 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 1b40273bb15aa965 = 1b40273bb15aa965 · 1692 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · 6f20aadad0bfa49f = 6f20aadad0bfa49f · 1094 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 47a5698698e9d4a3 = 47a5698698e9d4a3 · 5306 bayt
+  AYNI  Mutabakat Testi: 200/200 · c12daeca2c598c18 = c12daeca2c598c18 · 7804 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 4e1ad37c60e42c10 = 4e1ad37c60e42c10 · 11089 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · 0e44b3d1797a3e90 = 0e44b3d1797a3e90 · 95263 bayt · 314 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:22596) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.22-zincir-Europe-Istanbul · TZ Europe/Istanbul · şema 49/49 · dondurma {"coverage":"","lock":"","pending":null,"runs":0} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · 6f13c9fe50c1bc0e = 6f13c9fe50c1bc0e · 3124 bayt
+  AYNI  GET ledger (dönem): 200/200 · 2460f8cf2767126b = 2460f8cf2767126b · 3193 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · 9fd55483d1ec0088 = 9fd55483d1ec0088 · 14421 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · e0bf5097da6fb7aa = e0bf5097da6fb7aa · 14899 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · 3cdcacd3b9de2393 = 3cdcacd3b9de2393 · 14907 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · fdbf6319792922d8 = fdbf6319792922d8 · 2010 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 1b40273bb15aa965 = 1b40273bb15aa965 · 1692 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · 1f2c59d0d6c50a1d = 1f2c59d0d6c50a1d · 1096 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 4b5a0c039c7bd736 = 4b5a0c039c7bd736 · 5306 bayt
+  AYNI  Mutabakat Testi: 200/200 · a7449329036bdc97 = a7449329036bdc97 · 7804 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 0a4b7447b7856ac4 = 0a4b7447b7856ac4 · 11480 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · 5a6b2dcce104db89 = 5a6b2dcce104db89 · 102319 bayt · 337 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:22630) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.23-zincir-Europe-Istanbul · TZ Europe/Istanbul · şema 49/49 · dondurma {"coverage":"","lock":"","pending":null,"runs":0} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · d693e9e7df99619d = d693e9e7df99619d · 3126 bayt
+  AYNI  GET ledger (dönem): 200/200 · 56b5cc4d2ae9b549 = 56b5cc4d2ae9b549 · 3196 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · ce0cfa4358c5c3ac = ce0cfa4358c5c3ac · 14421 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · e0bf5097da6fb7aa = e0bf5097da6fb7aa · 14899 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · cec2cfb1e314ce3c = cec2cfb1e314ce3c · 14907 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · fbb561f25a17b0dc = fbb561f25a17b0dc · 2015 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 1b40273bb15aa965 = 1b40273bb15aa965 · 1692 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · c40426540adcabd1 = c40426540adcabd1 · 1100 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 0d3435325a560f81 = 0d3435325a560f81 · 5306 bayt
+  AYNI  Mutabakat Testi: 200/200 · 3862463c4e9b0e54 = 3862463c4e9b0e54 · 7804 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · ddfead9770a6afde = ddfead9770a6afde · 11872 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · 4c27084b63592d1b = 4c27084b63592d1b · 109376 bayt · 360 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:22675) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.24-zincir-Europe-Istanbul · TZ Europe/Istanbul · şema 49/49 · dondurma {"coverage":"2026-10-05","lock":"2026-10-05","pending":null,"runs":1} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · 1b829b699870332c = 1b829b699870332c · 3103 bayt
+  AYNI  GET ledger (dönem): 200/200 · f596c980ea045706 = f596c980ea045706 · 3173 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · e74963df7f158e7f = e74963df7f158e7f · 14421 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · 972ee22816155cf8 = 972ee22816155cf8 · 14899 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · 0d84b5bdb5dee2ee = 0d84b5bdb5dee2ee · 14907 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 68bce656f84a70b1 = 68bce656f84a70b1 · 1993 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · aa7d676e2323389a = aa7d676e2323389a · 1667 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · ac057e4b54e41add = ac057e4b54e41add · 1102 bayt
+  AYNI  Defter Mutabakatı: 200/200 · f90e14b7afa24e73 = f90e14b7afa24e73 · 5875 bayt
+  AYNI  Mutabakat Testi: 200/200 · f687422ae14f8dc2 = f687422ae14f8dc2 · 10537 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 061a4ede8e626622 = 061a4ede8e626622 · 12271 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · ad3322e4c279c5a5 = ad3322e4c279c5a5 · 116433 bayt · 383 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:22717) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.25-zincir-Europe-Istanbul · TZ Europe/Istanbul · şema 49/49 · dondurma {"coverage":"2026-10-05","lock":"2026-10-05","pending":null,"runs":1} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · 99cd7f5a3b08d845 = 99cd7f5a3b08d845 · 3109 bayt
+  AYNI  GET ledger (dönem): 200/200 · 7864491ce033d1cd = 7864491ce033d1cd · 3179 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · d05c6baf1210c70b = d05c6baf1210c70b · 14421 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · 972ee22816155cf8 = 972ee22816155cf8 · 14899 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · 13a261096498923d = 13a261096498923d · 14907 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · e3e5e346ec77f05b = e3e5e346ec77f05b · 1999 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · aa7d676e2323389a = aa7d676e2323389a · 1667 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · 8eb89df7989dfb1a = 8eb89df7989dfb1a · 1142 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 277e19dec001d7e4 = 277e19dec001d7e4 · 6180 bayt
+  AYNI  Mutabakat Testi: 200/200 · 5b28e619a742ef5e = 5b28e619a742ef5e · 11902 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 56fc8ff730d386c6 = 56fc8ff730d386c6 · 12661 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · 12978241e2d9db48 = 12978241e2d9db48 · 123798 bayt · 407 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:22757) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.26-iade-Europe-Istanbul · TZ Europe/Istanbul · şema 49/49 · dondurma {"coverage":"2026-09-09","lock":"2026-09-09","pending":null,"runs":1} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · c005c5feeb4b5141 = c005c5feeb4b5141 · 1926 bayt
+  AYNI  GET ledger (dönem): 200/200 · c005c5feeb4b5141 = c005c5feeb4b5141 · 1926 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · 0dcb7614e289e1cb = 0dcb7614e289e1cb · 5941 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · 0f2d609ca36ec117 = 0f2d609ca36ec117 · 389 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · 95ddc38e37cec355 = 95ddc38e37cec355 · 5941 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 19e8368a90ebb0ca = 19e8368a90ebb0ca · 975 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 7e501e44a1a6fd78 = 7e501e44a1a6fd78 · 497 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · e77d715aced21f58 = e77d715aced21f58 · 488 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 82b5af09165190be = 82b5af09165190be · 4898 bayt
+  AYNI  Mutabakat Testi: 200/200 · 031e8fe4ac4b68d5 = 031e8fe4ac4b68d5 · 6799 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · ed4828fd43fdcfa5 = ed4828fd43fdcfa5 · 1439 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · 9470e4ee2d790aaa = 9470e4ee2d790aaa · 9735 bayt · 31 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:22793) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.26-onarim-250-Europe-Istanbul · TZ Europe/Istanbul · şema 49/49 · dondurma {"coverage":"2026-10-07","lock":"2026-10-07","pending":null,"runs":1} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · 6a13601e3465c700 = 6a13601e3465c700 · 2060 bayt
+  AYNI  GET ledger (dönem): 200/200 · 6a13601e3465c700 = 6a13601e3465c700 · 2060 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · 85e9b161d56f3e9f = 85e9b161d56f3e9f · 15434 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · 0f2d609ca36ec117 = 0f2d609ca36ec117 · 389 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · f29cc031bb5a114e = f29cc031bb5a114e · 15434 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 200e617dfc755752 = 200e617dfc755752 · 1097 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 7e501e44a1a6fd78 = 7e501e44a1a6fd78 · 497 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · e77d715aced21f58 = e77d715aced21f58 · 488 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 11ddef6d0b428922 = 11ddef6d0b428922 · 4906 bayt
+  AYNI  Mutabakat Testi: 200/200 · bb16d02e14171315 = bb16d02e14171315 · 6805 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 2e9cc4af635a658c = 2e9cc4af635a658c · 5190 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · a086978760434c9a = a086978760434c9a · 134490 bayt · 434 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:22844) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.26-turler-Europe-Istanbul · TZ Europe/Istanbul · şema 49/49 · dondurma {"coverage":"2026-10-05","lock":"2026-10-05","pending":null,"runs":1} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · bd69eed5c4b05db7 = bd69eed5c4b05db7 · 3700 bayt
+  AYNI  GET ledger (dönem): 200/200 · 1efaf799a0409cb6 = 1efaf799a0409cb6 · 3771 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · a808ad9bdf691954 = a808ad9bdf691954 · 14421 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · 972ee22816155cf8 = 972ee22816155cf8 · 14899 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · 566a16af9db3ae6d = 566a16af9db3ae6d · 14907 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 247d6f9a6a6b143b = 247d6f9a6a6b143b · 2358 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · aa7d676e2323389a = aa7d676e2323389a · 1667 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · 3c0d595dabaa4313 = 3c0d595dabaa4313 · 1145 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 3a160bdbb369bdac = 3a160bdbb369bdac · 6312 bayt
+  AYNI  Mutabakat Testi: 200/200 · 33b9ef8f74364ac2 = 33b9ef8f74364ac2 · 12102 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 2ba52fa346eb3d07 = 2ba52fa346eb3d07 · 13429 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · caa20210079d01ca = caa20210079d01ca · 135963 bayt · 447 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:23191) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.26-zincir-Europe-Istanbul · TZ Europe/Istanbul · şema 49/49 · dondurma {"coverage":"2026-10-05","lock":"2026-10-05","pending":null,"runs":1} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · 48d54a3e4336e508 = 48d54a3e4336e508 · 3110 bayt
+  AYNI  GET ledger (dönem): 200/200 · bd8d39ea72979681 = bd8d39ea72979681 · 3181 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · f41c88de1d89585b = f41c88de1d89585b · 14421 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · 972ee22816155cf8 = 972ee22816155cf8 · 14899 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · 184d73040ef72f22 = 184d73040ef72f22 · 14907 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · cd439c4369c43142 = cd439c4369c43142 · 2001 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · aa7d676e2323389a = aa7d676e2323389a · 1667 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · 6ea628042bd28226 = 6ea628042bd28226 · 1143 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 85a7107956f7b437 = 85a7107956f7b437 · 6180 bayt
+  AYNI  Mutabakat Testi: 200/200 · 9ca9fdd0971ace13 = 9ca9fdd0971ace13 · 11902 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 0ac527cbf2caf491 = 0ac527cbf2caf491 · 13045 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · 4e2116a35686f98a = 4e2116a35686f98a · 130856 bayt · 430 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:23519) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.4.3-baslarken-Europe-Istanbul · TZ Europe/Istanbul · şema 49/49 · dondurma {"coverage":"","lock":"","pending":null,"runs":0} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · 2808699a7343f060 = 2808699a7343f060 · 1514 bayt
+  AYNI  GET ledger (dönem): 200/200 · 2808699a7343f060 = 2808699a7343f060 · 1514 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · 6e5326b60170c941 = 6e5326b60170c941 · 389 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · 0f2d609ca36ec117 = 0f2d609ca36ec117 · 389 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · 3a41ddcf0de10c6e = 3a41ddcf0de10c6e · 389 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 15215cd79440beb6 = 15215cd79440beb6 · 497 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 7e501e44a1a6fd78 = 7e501e44a1a6fd78 · 497 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · e77d715aced21f58 = e77d715aced21f58 · 488 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 742e35d0bc7fb174 = 742e35d0bc7fb174 · 4884 bayt
+  AYNI  Mutabakat Testi: 200/200 · c0b0ae19bae71806 = c0b0ae19bae71806 · 6787 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 299c04cc1d2e8c5a = 299c04cc1d2e8c5a · 1024 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:23788) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.4.9-s127-Europe-Istanbul · TZ Europe/Istanbul · şema 49/49 · dondurma {"coverage":"2025-12-31","lock":"2025-12-31","pending":null,"runs":1} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · b8a1baefbb208260 = b8a1baefbb208260 · 2075 bayt
+  AYNI  GET ledger (dönem): 200/200 · 9c6380d07361fb53 = 9c6380d07361fb53 · 2077 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · 0bf63757d8ff6353 = 0bf63757d8ff6353 · 1674 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · 0b37855156fb5c71 = 0b37855156fb5c71 · 1962 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · 823ab19cb0c3b06b = 823ab19cb0c3b06b · 3157 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 32d8c0cb9ca53eca = 32d8c0cb9ca53eca · 1111 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 5d67ca5e2e4282fc = 5d67ca5e2e4282fc · 1009 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · e77d715aced21f58 = e77d715aced21f58 · 488 bayt
+  AYNI  Defter Mutabakatı: 200/200 · b8162161b8c54450 = b8162161b8c54450 · 6000 bayt
+  AYNI  Mutabakat Testi: 200/200 · 76e924e188ed9fd2 = 76e924e188ed9fd2 · 10646 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 43b5bba6af4d943e = 43b5bba6af4d943e · 2039 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · 8e2067e74e4aeed2 = 8e2067e74e4aeed2 · 4267 bayt · 13 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:24019) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.4.9-s127-kilitsiz-Europe-Istanbul · TZ Europe/Istanbul · şema 49/49 · dondurma {"coverage":"","lock":"","pending":null,"runs":0} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · c5e06dffd33f00ff = c5e06dffd33f00ff · 1845 bayt
+  AYNI  GET ledger (dönem): 200/200 · c0e8f337b092c105 = c0e8f337b092c105 · 1851 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · 7f379136a13bd653 = 7f379136a13bd653 · 1312 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · 23b0a6f0dec1c8b3 = 23b0a6f0dec1c8b3 · 1484 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · 881e4e96c159c367 = 881e4e96c159c367 · 2318 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 5e9cce5fba33e00b = 5e9cce5fba33e00b · 903 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 01de30316de257f5 = 01de30316de257f5 · 895 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · e77d715aced21f58 = e77d715aced21f58 · 488 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 5703934581a14dc7 = 5703934581a14dc7 · 5252 bayt
+  AYNI  Mutabakat Testi: 200/200 · 78c219d86a10bf27 = 78c219d86a10bf27 · 7748 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 43b5bba6af4d943e = 43b5bba6af4d943e · 2039 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · b8913fc513b8242d = b8913fc513b8242d · 2873 bayt · 9 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:24095) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.16-zincir-UTC · TZ UTC · şema 49/49 · dondurma {"coverage":"","lock":"","pending":null,"runs":0} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · 385114884fc043da = 385114884fc043da · 2807 bayt
+  AYNI  GET ledger (dönem): 200/200 · b6f06ac5b9bb26fc = b6f06ac5b9bb26fc · 2781 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · 6e5326b60170c941 = 6e5326b60170c941 · 389 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · 07fb7f2cc40de53d = 07fb7f2cc40de53d · 13144 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · bf6a0da982a437da = bf6a0da982a437da · 13144 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 4a1248870d151e8a = 4a1248870d151e8a · 1636 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 5cc4991905c37b03 = 5cc4991905c37b03 · 1677 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · c26aa469d484bbde = c26aa469d484bbde · 772 bayt
+  AYNI  Defter Mutabakatı: 200/200 · c1607df74baf6f1d = c1607df74baf6f1d · 5288 bayt
+  AYNI  Mutabakat Testi: 200/200 · f08452e850ee6e76 = f08452e850ee6e76 · 7794 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 4683fcb13c5fa683 = 4683fcb13c5fa683 · 6155 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · a6bbc3533cc73b94 = a6bbc3533cc73b94 · 24792 bayt · 82 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:24127) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.17-zincir-UTC · TZ UTC · şema 49/49 · dondurma {"coverage":"","lock":"","pending":null,"runs":0} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · cf53c652c60892a9 = cf53c652c60892a9 · 2827 bayt
+  AYNI  GET ledger (dönem): 200/200 · c44cc4cd71e346f5 = c44cc4cd71e346f5 · 2802 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · 6e5326b60170c941 = 6e5326b60170c941 · 389 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · e0bf5097da6fb7aa = e0bf5097da6fb7aa · 14899 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · 543c19f0a2eee7eb = 543c19f0a2eee7eb · 14899 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 97a7533843865a61 = 97a7533843865a61 · 1648 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 1b40273bb15aa965 = 1b40273bb15aa965 · 1692 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · 72291ebb045d7cea = 72291ebb045d7cea · 777 bayt
+  AYNI  Defter Mutabakatı: 200/200 · eb5054a35ad49d63 = eb5054a35ad49d63 · 5296 bayt
+  AYNI  Mutabakat Testi: 200/200 · 03cc63cfd20ddb03 = 03cc63cfd20ddb03 · 7802 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 5121de622c82375e = 5121de622c82375e · 7211 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · 6770d527931b7d95 = 6770d527931b7d95 · 41929 bayt · 138 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:24195) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.18-zincir-UTC · TZ UTC · şema 49/49 · dondurma {"coverage":"","lock":"","pending":null,"runs":0} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · fc299bc8d22d9c5b = fc299bc8d22d9c5b · 2834 bayt
+  AYNI  GET ledger (dönem): 200/200 · 47c4236b21e850e8 = 47c4236b21e850e8 · 2899 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · 4d1a1d3d602cb099 = 4d1a1d3d602cb099 · 8581 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · e0bf5097da6fb7aa = e0bf5097da6fb7aa · 14899 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · c7cf48a3a47af78e = c7cf48a3a47af78e · 14899 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 43081eeec1798fe3 = 43081eeec1798fe3 · 1751 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 1b40273bb15aa965 = 1b40273bb15aa965 · 1692 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · bea1854d14aa6e62 = bea1854d14aa6e62 · 792 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 6e272148d9cacf25 = 6e272148d9cacf25 · 5298 bayt
+  AYNI  Mutabakat Testi: 200/200 · 7f601cc7a38c4e9f = 7f601cc7a38c4e9f · 7804 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 0b19befa5e133ce6 = 0b19befa5e133ce6 · 7969 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · cdc30f6b328662af = cdc30f6b328662af · 57593 bayt · 190 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:24233) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.19-cakisma-UTC · TZ UTC · şema 49/49 · dondurma {"coverage":"","lock":"","pending":null,"runs":0} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · 385114884fc043da = 385114884fc043da · 2807 bayt
+  AYNI  GET ledger (dönem): 200/200 · de9e44a53085983e = de9e44a53085983e · 2836 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · e43e64a553332d92 = e43e64a553332d92 · 2379 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · 483f7b8114f3ece9 = 483f7b8114f3ece9 · 11254 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · 5ff2dc20e2e51a13 = 5ff2dc20e2e51a13 · 13144 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 56f4fdc729f84a28 = 56f4fdc729f84a28 · 1704 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 63f3c05ceaf829ec = 63f3c05ceaf829ec · 1675 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · c26aa469d484bbde = c26aa469d484bbde · 772 bayt
+  AYNI  Defter Mutabakatı: 200/200 · c1607df74baf6f1d = c1607df74baf6f1d · 5288 bayt
+  AYNI  Mutabakat Testi: 200/200 · f08452e850ee6e76 = f08452e850ee6e76 · 7794 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 84cf1aff5adef73d = 84cf1aff5adef73d · 6175 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · a34dae2d9ade88db = a34dae2d9ade88db · 24792 bayt · 82 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:24272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.19-eski-UTC · TZ UTC · şema 49/49 · dondurma {"coverage":"","lock":"","pending":null,"runs":0} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · 1d0b441b9f1ca481 = 1d0b441b9f1ca481 · 2834 bayt
+  AYNI  GET ledger (dönem): 200/200 · 6c569202f516645f = 6c569202f516645f · 2874 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · 436cf4b104319d4e = 436cf4b104319d4e · 14611 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · b3518031a9f21050 = b3518031a9f21050 · 5883 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · 21a7fe2700c31171 = 21a7fe2700c31171 · 14638 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 1dee724e064ada20 = 1dee724e064ada20 · 1726 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · b94a50165f7def19 = b94a50165f7def19 · 1302 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · 7ca53ac572c51611 = 7ca53ac572c51611 · 777 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 94212e5e9e3c0600 = 94212e5e9e3c0600 · 5298 bayt
+  AYNI  Mutabakat Testi: 200/200 · e8f06464500cfb12 = e8f06464500cfb12 · 7801 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 44cd323c251b2133 = 44cd323c251b2133 · 7282 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · 731885832cea256a = 731885832cea256a · 40188 bayt · 133 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:24351) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.19-zincir-UTC · TZ UTC · şema 49/49 · dondurma {"coverage":"","lock":"","pending":null,"runs":0} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · 47a1d08f890a7d79 = 47a1d08f890a7d79 · 2823 bayt
+  AYNI  GET ledger (dönem): 200/200 · 9615da236322fd4d = 9615da236322fd4d · 2896 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · f8edc38082917185 = f8edc38082917185 · 14421 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · e0bf5097da6fb7aa = e0bf5097da6fb7aa · 14899 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · b95cebd4b6b386af = b95cebd4b6b386af · 14907 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 9131657343256dfd = 9131657343256dfd · 1755 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 1b40273bb15aa965 = 1b40273bb15aa965 · 1692 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · 3c468cb209d8cc6f = 3c468cb209d8cc6f · 792 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 19ee51bd6091f9c3 = 19ee51bd6091f9c3 · 5298 bayt
+  AYNI  Mutabakat Testi: 200/200 · dfc053b1d0c87d03 = dfc053b1d0c87d03 · 7798 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 62abc68965fd2be8 = 62abc68965fd2be8 · 9176 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · 375eafae08824929 = 375eafae08824929 · 72706 bayt · 240 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:24383) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.20-zincir-UTC · TZ UTC · şema 49/49 · dondurma {"coverage":"","lock":"","pending":null,"runs":0} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · 887daef7370ae5c6 = 887daef7370ae5c6 · 2827 bayt
+  AYNI  GET ledger (dönem): 200/200 · 972798a52b419f53 = 972798a52b419f53 · 2896 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · ead8f2a2c7e1a880 = ead8f2a2c7e1a880 · 14421 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · e0bf5097da6fb7aa = e0bf5097da6fb7aa · 14899 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · c64b3d4c0a2bb4f3 = c64b3d4c0a2bb4f3 · 14907 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 60da004afbed95b7 = 60da004afbed95b7 · 1756 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 1b40273bb15aa965 = 1b40273bb15aa965 · 1692 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · 06dd002e3c6180b7 = 06dd002e3c6180b7 · 792 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 4f6c2b0804e3d5d7 = 4f6c2b0804e3d5d7 · 5298 bayt
+  AYNI  Mutabakat Testi: 200/200 · 68b5c899bf555193 = 68b5c899bf555193 · 7798 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 1072cb3de72b9c71 = 1072cb3de72b9c71 · 10698 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · fb883b8a0a2a6c5a = fb883b8a0a2a6c5a · 88209 bayt · 291 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:24421) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.21-zincir-UTC · TZ UTC · şema 49/49 · dondurma {"coverage":"","lock":"","pending":null,"runs":0} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · 8865793c6fa27a94 = 8865793c6fa27a94 · 3123 bayt
+  AYNI  GET ledger (dönem): 200/200 · 31838dcb02d86be4 = 31838dcb02d86be4 · 3192 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · 323082f08c35e0f8 = 323082f08c35e0f8 · 14421 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · e0bf5097da6fb7aa = e0bf5097da6fb7aa · 14899 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · 0e463a48ee5f3299 = 0e463a48ee5f3299 · 14907 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · e62a53816bb5a5df = e62a53816bb5a5df · 2008 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 1b40273bb15aa965 = 1b40273bb15aa965 · 1692 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · 6f20aadad0bfa49f = 6f20aadad0bfa49f · 1094 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 47a5698698e9d4a3 = 47a5698698e9d4a3 · 5306 bayt
+  AYNI  Mutabakat Testi: 200/200 · c12daeca2c598c18 = c12daeca2c598c18 · 7804 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 4e1ad37c60e42c10 = 4e1ad37c60e42c10 · 11089 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · 0e44b3d1797a3e90 = 0e44b3d1797a3e90 · 95263 bayt · 314 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:24488) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.22-zincir-UTC · TZ UTC · şema 49/49 · dondurma {"coverage":"","lock":"","pending":null,"runs":0} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · 6f13c9fe50c1bc0e = 6f13c9fe50c1bc0e · 3124 bayt
+  AYNI  GET ledger (dönem): 200/200 · 2460f8cf2767126b = 2460f8cf2767126b · 3193 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · 9fd55483d1ec0088 = 9fd55483d1ec0088 · 14421 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · e0bf5097da6fb7aa = e0bf5097da6fb7aa · 14899 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · 3cdcacd3b9de2393 = 3cdcacd3b9de2393 · 14907 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · fdbf6319792922d8 = fdbf6319792922d8 · 2010 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 1b40273bb15aa965 = 1b40273bb15aa965 · 1692 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · 1f2c59d0d6c50a1d = 1f2c59d0d6c50a1d · 1096 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 4b5a0c039c7bd736 = 4b5a0c039c7bd736 · 5306 bayt
+  AYNI  Mutabakat Testi: 200/200 · a7449329036bdc97 = a7449329036bdc97 · 7804 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 0a4b7447b7856ac4 = 0a4b7447b7856ac4 · 11480 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · 5a6b2dcce104db89 = 5a6b2dcce104db89 · 102319 bayt · 337 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:24533) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.23-zincir-UTC · TZ UTC · şema 49/49 · dondurma {"coverage":"","lock":"","pending":null,"runs":0} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · d693e9e7df99619d = d693e9e7df99619d · 3126 bayt
+  AYNI  GET ledger (dönem): 200/200 · 56b5cc4d2ae9b549 = 56b5cc4d2ae9b549 · 3196 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · ce0cfa4358c5c3ac = ce0cfa4358c5c3ac · 14421 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · e0bf5097da6fb7aa = e0bf5097da6fb7aa · 14899 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · cec2cfb1e314ce3c = cec2cfb1e314ce3c · 14907 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · fbb561f25a17b0dc = fbb561f25a17b0dc · 2015 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 1b40273bb15aa965 = 1b40273bb15aa965 · 1692 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · c40426540adcabd1 = c40426540adcabd1 · 1100 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 0d3435325a560f81 = 0d3435325a560f81 · 5306 bayt
+  AYNI  Mutabakat Testi: 200/200 · 3862463c4e9b0e54 = 3862463c4e9b0e54 · 7804 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · ddfead9770a6afde = ddfead9770a6afde · 11872 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · 4c27084b63592d1b = 4c27084b63592d1b · 109376 bayt · 360 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:24565) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.24-zincir-UTC · TZ UTC · şema 49/49 · dondurma {"coverage":"2026-10-05","lock":"2026-10-05","pending":null,"runs":1} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · 1b829b699870332c = 1b829b699870332c · 3103 bayt
+  AYNI  GET ledger (dönem): 200/200 · f596c980ea045706 = f596c980ea045706 · 3173 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · e74963df7f158e7f = e74963df7f158e7f · 14421 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · 972ee22816155cf8 = 972ee22816155cf8 · 14899 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · 0d84b5bdb5dee2ee = 0d84b5bdb5dee2ee · 14907 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 68bce656f84a70b1 = 68bce656f84a70b1 · 1993 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · aa7d676e2323389a = aa7d676e2323389a · 1667 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · ac057e4b54e41add = ac057e4b54e41add · 1102 bayt
+  AYNI  Defter Mutabakatı: 200/200 · f90e14b7afa24e73 = f90e14b7afa24e73 · 5875 bayt
+  AYNI  Mutabakat Testi: 200/200 · f687422ae14f8dc2 = f687422ae14f8dc2 · 10537 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 061a4ede8e626622 = 061a4ede8e626622 · 12271 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · ad3322e4c279c5a5 = ad3322e4c279c5a5 · 116433 bayt · 383 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:24607) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.25-zincir-UTC · TZ UTC · şema 49/49 · dondurma {"coverage":"2026-10-05","lock":"2026-10-05","pending":null,"runs":1} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · 99cd7f5a3b08d845 = 99cd7f5a3b08d845 · 3109 bayt
+  AYNI  GET ledger (dönem): 200/200 · 7864491ce033d1cd = 7864491ce033d1cd · 3179 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · d05c6baf1210c70b = d05c6baf1210c70b · 14421 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · 972ee22816155cf8 = 972ee22816155cf8 · 14899 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · 13a261096498923d = 13a261096498923d · 14907 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · e3e5e346ec77f05b = e3e5e346ec77f05b · 1999 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · aa7d676e2323389a = aa7d676e2323389a · 1667 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · 8eb89df7989dfb1a = 8eb89df7989dfb1a · 1142 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 277e19dec001d7e4 = 277e19dec001d7e4 · 6180 bayt
+  AYNI  Mutabakat Testi: 200/200 · 5b28e619a742ef5e = 5b28e619a742ef5e · 11902 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 56fc8ff730d386c6 = 56fc8ff730d386c6 · 12661 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · 12978241e2d9db48 = 12978241e2d9db48 · 123798 bayt · 407 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:24641) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.26-iade-UTC · TZ UTC · şema 49/49 · dondurma {"coverage":"2026-09-09","lock":"2026-09-09","pending":null,"runs":1} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · c005c5feeb4b5141 = c005c5feeb4b5141 · 1926 bayt
+  AYNI  GET ledger (dönem): 200/200 · c005c5feeb4b5141 = c005c5feeb4b5141 · 1926 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · 0dcb7614e289e1cb = 0dcb7614e289e1cb · 5941 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · 0f2d609ca36ec117 = 0f2d609ca36ec117 · 389 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · 95ddc38e37cec355 = 95ddc38e37cec355 · 5941 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 19e8368a90ebb0ca = 19e8368a90ebb0ca · 975 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 7e501e44a1a6fd78 = 7e501e44a1a6fd78 · 497 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · e77d715aced21f58 = e77d715aced21f58 · 488 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 82b5af09165190be = 82b5af09165190be · 4898 bayt
+  AYNI  Mutabakat Testi: 200/200 · 031e8fe4ac4b68d5 = 031e8fe4ac4b68d5 · 6799 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · ed4828fd43fdcfa5 = ed4828fd43fdcfa5 · 1439 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · 9470e4ee2d790aaa = 9470e4ee2d790aaa · 9735 bayt · 31 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:24691) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.26-onarim-250-UTC · TZ UTC · şema 49/49 · dondurma {"coverage":"2026-10-07","lock":"2026-10-07","pending":null,"runs":1} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · 6a13601e3465c700 = 6a13601e3465c700 · 2060 bayt
+  AYNI  GET ledger (dönem): 200/200 · 6a13601e3465c700 = 6a13601e3465c700 · 2060 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · 85e9b161d56f3e9f = 85e9b161d56f3e9f · 15434 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · 0f2d609ca36ec117 = 0f2d609ca36ec117 · 389 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · f29cc031bb5a114e = f29cc031bb5a114e · 15434 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 200e617dfc755752 = 200e617dfc755752 · 1097 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 7e501e44a1a6fd78 = 7e501e44a1a6fd78 · 497 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · e77d715aced21f58 = e77d715aced21f58 · 488 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 11ddef6d0b428922 = 11ddef6d0b428922 · 4906 bayt
+  AYNI  Mutabakat Testi: 200/200 · bb16d02e14171315 = bb16d02e14171315 · 6805 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 2e9cc4af635a658c = 2e9cc4af635a658c · 5190 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · a086978760434c9a = a086978760434c9a · 134490 bayt · 434 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:24905) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.26-turler-UTC · TZ UTC · şema 49/49 · dondurma {"coverage":"2026-10-05","lock":"2026-10-05","pending":null,"runs":1} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · bd69eed5c4b05db7 = bd69eed5c4b05db7 · 3700 bayt
+  AYNI  GET ledger (dönem): 200/200 · 1efaf799a0409cb6 = 1efaf799a0409cb6 · 3771 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · a808ad9bdf691954 = a808ad9bdf691954 · 14421 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · 972ee22816155cf8 = 972ee22816155cf8 · 14899 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · 566a16af9db3ae6d = 566a16af9db3ae6d · 14907 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 247d6f9a6a6b143b = 247d6f9a6a6b143b · 2358 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · aa7d676e2323389a = aa7d676e2323389a · 1667 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · 3c0d595dabaa4313 = 3c0d595dabaa4313 · 1145 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 3a160bdbb369bdac = 3a160bdbb369bdac · 6312 bayt
+  AYNI  Mutabakat Testi: 200/200 · 33b9ef8f74364ac2 = 33b9ef8f74364ac2 · 12102 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 2ba52fa346eb3d07 = 2ba52fa346eb3d07 · 13429 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · caa20210079d01ca = caa20210079d01ca · 135963 bayt · 447 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:24945) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.0.26-zincir-UTC · TZ UTC · şema 49/49 · dondurma {"coverage":"2026-10-05","lock":"2026-10-05","pending":null,"runs":1} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · 48d54a3e4336e508 = 48d54a3e4336e508 · 3110 bayt
+  AYNI  GET ledger (dönem): 200/200 · bd8d39ea72979681 = bd8d39ea72979681 · 3181 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · f41c88de1d89585b = f41c88de1d89585b · 14421 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · 972ee22816155cf8 = 972ee22816155cf8 · 14899 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · 184d73040ef72f22 = 184d73040ef72f22 · 14907 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · cd439c4369c43142 = cd439c4369c43142 · 2001 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · aa7d676e2323389a = aa7d676e2323389a · 1667 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · 6ea628042bd28226 = 6ea628042bd28226 · 1143 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 85a7107956f7b437 = 85a7107956f7b437 · 6180 bayt
+  AYNI  Mutabakat Testi: 200/200 · 9ca9fdd0971ace13 = 9ca9fdd0971ace13 · 11902 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 0ac527cbf2caf491 = 0ac527cbf2caf491 · 13045 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · 4e2116a35686f98a = 4e2116a35686f98a · 130856 bayt · 430 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:24992) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.4.3-baslarken-UTC · TZ UTC · şema 49/49 · dondurma {"coverage":"","lock":"","pending":null,"runs":0} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · 2808699a7343f060 = 2808699a7343f060 · 1514 bayt
+  AYNI  GET ledger (dönem): 200/200 · 2808699a7343f060 = 2808699a7343f060 · 1514 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · 6e5326b60170c941 = 6e5326b60170c941 · 389 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · 0f2d609ca36ec117 = 0f2d609ca36ec117 · 389 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · 3a41ddcf0de10c6e = 3a41ddcf0de10c6e · 389 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 15215cd79440beb6 = 15215cd79440beb6 · 497 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 7e501e44a1a6fd78 = 7e501e44a1a6fd78 · 497 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · e77d715aced21f58 = e77d715aced21f58 · 488 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 742e35d0bc7fb174 = 742e35d0bc7fb174 · 4884 bayt
+  AYNI  Mutabakat Testi: 200/200 · c0b0ae19bae71806 = c0b0ae19bae71806 · 6787 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 299c04cc1d2e8c5a = 299c04cc1d2e8c5a · 1024 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:25040) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.4.9-s127-UTC · TZ UTC · şema 49/49 · dondurma {"coverage":"2025-12-31","lock":"2025-12-31","pending":null,"runs":1} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · b8a1baefbb208260 = b8a1baefbb208260 · 2075 bayt
+  AYNI  GET ledger (dönem): 200/200 · 9c6380d07361fb53 = 9c6380d07361fb53 · 2077 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · 0bf63757d8ff6353 = 0bf63757d8ff6353 · 1674 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · 0b37855156fb5c71 = 0b37855156fb5c71 · 1962 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · 823ab19cb0c3b06b = 823ab19cb0c3b06b · 3157 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 32d8c0cb9ca53eca = 32d8c0cb9ca53eca · 1111 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 5d67ca5e2e4282fc = 5d67ca5e2e4282fc · 1009 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · e77d715aced21f58 = e77d715aced21f58 · 488 bayt
+  AYNI  Defter Mutabakatı: 200/200 · b8162161b8c54450 = b8162161b8c54450 · 6000 bayt
+  AYNI  Mutabakat Testi: 200/200 · 76e924e188ed9fd2 = 76e924e188ed9fd2 · 10646 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 43b5bba6af4d943e = 43b5bba6af4d943e · 2039 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · 8e2067e74e4aeed2 = 8e2067e74e4aeed2 · 4267 bayt · 13 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+(node:25100) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[eşdeğerlik] surum-2.4.9-s127-kilitsiz-UTC · TZ UTC · şema 49/49 · dondurma {"coverage":"","lock":"","pending":null,"runs":0} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · c5e06dffd33f00ff = c5e06dffd33f00ff · 1845 bayt
+  AYNI  GET ledger (dönem): 200/200 · c0e8f337b092c105 = c0e8f337b092c105 · 1851 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · 7f379136a13bd653 = 7f379136a13bd653 · 1312 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · 23b0a6f0dec1c8b3 = 23b0a6f0dec1c8b3 · 1484 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · 881e4e96c159c367 = 881e4e96c159c367 · 2318 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 5e9cce5fba33e00b = 5e9cce5fba33e00b · 903 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 01de30316de257f5 = 01de30316de257f5 · 895 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · e77d715aced21f58 = e77d715aced21f58 · 488 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 5703934581a14dc7 = 5703934581a14dc7 · 5252 bayt
+  AYNI  Mutabakat Testi: 200/200 · 78c219d86a10bf27 = 78c219d86a10bf27 · 7748 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 43b5bba6af4d943e = 43b5bba6af4d943e · 2039 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · b8913fc513b8242d = b8913fc513b8242d · 2873 bayt · 9 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+[eşdeğerlik özet] 38 çift karşılaştırıldı · 0 başarısız / farklı
