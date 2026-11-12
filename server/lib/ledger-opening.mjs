@@ -104,9 +104,13 @@ export function openingCounterpart(store) {
  * dışında): eski maddelerden biri donmuş satırlarda GERÇEKTEN varsa (tarih indeksiyle; bekleyen kesitte tarih yeter) bağlı — donmadan sonra açılan / Silinenler'den dönen kart
  * yeni kuralla kalır. Ters yön (yeni yerleşim bölgede, eski yerleşim tamamen değil): bağlı (yeni kural maddeyi donmuş döneme koyar, karma okumada görünmezdi).
  * İkisi de bölgede (C5 §3.3 örneği) ya da ikisi de dışında: bağlı DEĞİL (yeni kural; fark ruleDiff'te). Donmuş koşu yoksa (kilitsiz) boş küme — sorgu yok.
+ * ids (Ç5-A tur 1d, İş F — hız, ders 47; C5-ACILIS-TASARIM §14.7): verilirse yalnız bu kartlar değerlendirilir. Karar KART BAŞINADIR (kartın kendi maddeleri + koşu tablosunun
+ * bölgesi; başka kart karara girmez) → sonuç = (süzgeçsiz sonuç ∩ ids). Kapının süzgeçli türetmesi (rows(filter)) her yazımda bütün yüklenen kartları ve açılış satırlarını
+ * taramasın diye (100 bin satırda süzgeçli build başına ~2,5 ms).
  */
-export function oldRulePinnedPlans(store) {
+export function oldRulePinnedPlans(store, { ids = null } = {}) {
   const out = new Set();
+  if (Array.isArray(ids) && !ids.length) return out;
   if (!has(store, "ledger_snapshot_runs") || !has(store, "ledger_snapshots") || !has(store, "plans") || !has(store, "plan_imports") || !hasColumn(store, "plans", "import_id")) return out;
   const preKg5 = rule => (LEDGER_RULE_ALIASES[rule] || rule) === "2.4.9";
   let segments = [];
@@ -134,15 +138,19 @@ export function oldRulePinnedPlans(store) {
     if (!segment.frozen) return true;
     return Boolean(store.get(`SELECT 1 AS found FROM ledger_snapshots WHERE date = ? AND entry_id = ? AND rule_version IN (${marks}) LIMIT 1`, day, id, ...frozenRules));
   };
-  const cards = leanAll(store, 
+  const scoped = Array.isArray(ids);
+  const scope = scoped ? [JSON.stringify([...new Set(ids.map(String))])] : [];
+  const cards = leanAll(store,
     `SELECT p.id, COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) AS date, COALESCE((SELECT x.created_at FROM plan_imports x WHERE x.id = p.import_id), '') AS importedAt
-     FROM plans p WHERE p.deleted_at IS NULL AND p.import_id <> '' AND NOT p.covers_balance`,
+     FROM plans p WHERE p.deleted_at IS NULL AND p.import_id <> '' AND NOT p.covers_balance${scoped ? " AND p.id IN (SELECT value FROM json_each(?))" : ""}`,
+    ...scope,
   );
   if (!cards.length) return out;
   const openings = new Map();
-  for (const row of leanAll(store, 
+  for (const row of leanAll(store,
     `SELECT e.id, e.plan_id AS planId, e.date FROM plan_entries e JOIN plans p ON p.id = e.plan_id AND p.deleted_at IS NULL
-     WHERE e.kind = 'in' AND e.opening = 1 AND p.import_id <> '' AND NOT p.covers_balance`,
+     WHERE e.kind = 'in' AND e.opening = 1 AND p.import_id <> '' AND NOT p.covers_balance${scoped ? " AND e.plan_id IN (SELECT value FROM json_each(?))" : ""}`,
+    ...scope,
   )) {
     if (!openings.has(row.planId)) openings.set(row.planId, []);
     openings.get(row.planId).push(row);

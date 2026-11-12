@@ -184,8 +184,10 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
       }
       // 2.5.0 Ç5-A tur 1b (S127 = A, "bir olay tek kez yazılır"; C5-ACILIS-TASARIM §12.1): KG-5'ten önceki kuralla donmuş dönemin iki yanına düşen yüklenen kart eski yapısıyla
       // (journal() pinnedOld). Karar kart başına, süzgeçsiz verilir (süzgeçli kapı aynı kartı aynı kuralla görür). Donmuş koşu yoksa sorgu yok.
-      if (imported) {
-        const pinned = oldRulePinnedPlans(store);
+      // Ç5-A tur 1d (İş F, hız; ders 47; C5-ACILIS-TASARIM §14.7): kart / taksit satırı okunmadıysa karar sorulmaz (işaretlenecek nesne yok); süzgeçli yolda yalnız okunan kartlar
+      // (ve taksit satırlarının kartları) değerlendirilir — karar kart başına olduğu için sonuç aynı (= süzgeçsiz karar ∩ okunan kartlar).
+      if (imported && (out.plans.length || out.planEntries.length)) {
+        const pinned = oldRulePinnedPlans(store, filter ? { ids: [...out.plans.map(plan => plan.id), ...out.planEntries.map(entry => entry.planId)] } : {});
         if (pinned.size) {
           for (const plan of out.plans) if (pinned.has(plan.id)) plan.pinnedOld = 1;
           for (const entry of out.planEntries) if (pinned.has(entry.planId)) entry.planPinned = 1;
