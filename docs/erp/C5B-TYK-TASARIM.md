@@ -319,3 +319,13 @@ c5bson-karar-taban.json). Tur 2b-2'nin testleri tur 2b-1 ucunda 40 kırmızı (n
 - 6 kayıt `cari:<ad>:gecikmis` (d11, d14, d15): carisiz evrakın karşılıksızında cari seçimi (S66) — sürücünün `KARSILIKSIZ_CARI` eşlemesi boş (adım gönderilmiyor); Ç5-A / eşleme.
 - 4 kayıt c7-ks7 k3 (takvim / Vade Takip / projeksiyon kalemi): şüpheli kuyruğundaki kısım (M13) kalemden düşülüyor (§9 "Şüpheli kuyruğu vade kalemi değildir"), kâhin K6.3 "şüpheliye alma
   kalemi değiştirmez" bekliyor — bu turun kararlarında yok; TOPLU SORULACAKLAR.
+
+### 13.5 Son uç doğrulaması (12.11.2026) — dişsiz kalan testler, ölçüm, geri yükleme
+- **Mutasyon ilk koşusu 110 / 122 idi** (bu turun bulgusu; düzeltme YALNIZ testte): (a) tur 2b-2 önbellek testinin rastgele adımlarına yeni türler ekleyince tohum dizisi kaydı — iz kolonu
+  mutantları Y3-b … Y3-e ve N09 tur 2b-2'nin kendi ucunda da YAŞIYORDU → test/tyk-onbellek-250 "iz kolonları tek tek (durağan saat)" (bağ, kartın Kayıt Tarihi, taksit vadesi, dönem kilidi —
+  her adımda sonuç DEĞİŞMELİ + önbellek = baştan kurulan); (b) S101-c (para dışı kapanış da 'avansla ödenmiş' sayılır) hiçbir testte yakalanmıyordu → test/tyk-son-250 "S101 sınırı";
+  (c) O2 / G1 mutantlarının enjeksiyon metinleri bu turun `writeView` / `obligationsOf` satırlarına güncellendi. Son uçta 122 / 122 (API tabanı 287 / 287).
+- **Ölçüm** (temiz 100 bin satır, ölçüm kilidiyle; ham çıktı docs/kanit/2026-11-11/c5bson-hiz-*.txt): 11.11'de 16 / 16 geçerli koşu — yazım + kart okuması + ilk zil toplamı çalışma dalı 3148 ms,
+  tur 2b-1 3630, yalnız bellek 3293, son tur 3316; 12.11'de (ikinci turun 8 geçerli koşusu; ilk turun altısı baştaki yük > 2 olduğu için özete girmedi) 3216 / 3622 / 3059 / 3102. Son tur
+  çalışma dalıyla ±%5 içinde (iki ölçümde işaret ters — fark gürültü düzeyinde); tur 2b-1'in ilk zil okumasındaki +%55–61 kapandı.
+- **Geri yükleme**: S126 gerçek program testi bağsız tahsilatı silip Silinenler'den geri de yükler (bütün ekranlar silinmeden önceki hâle döner).

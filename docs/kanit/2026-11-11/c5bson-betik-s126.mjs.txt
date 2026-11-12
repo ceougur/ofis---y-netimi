@@ -1,0 +1,152 @@
+// Ç5-B SON TUR — Bölüm 2: S126 = A ve S128 = A kararlarının örnekleri gerçek programda (API). ROOT = sınanan kod kopyası. Her senaryoda ÖNCE (ödemesiz) ve SONRA sayılar.
+// Çıktı kısa satırlar: bakiye | kart (kendi kalan / kuyruk kalan / taksit kalanları) | gecikmiş (cari kartı = liste = Vade Takip) | zil | Kalan'lar | fatura açıkları | Σ kalem.
+import { boot, day, views, TODAY } from "./h.mjs";
+
+const h = await boot();
+const AUD = { id: "c5bson", role: "admin", permissions: [] };
+const r2 = v => Math.round(v * 100) / 100;
+const lines = [];
+const say = text => {
+  lines.push(text);
+  console.log(text);
+};
+let goods = null;
+const mal = async () => (goods ||= await h.must("ürün", h.api.post("/api/workspace/stock", { kind: "goods", code: "C5BSON-MAL2", name: "Son Tur Malı 2", unit: "Adet", openingQty: "100000", salePrice: "100" })));
+const stokSatis = async (acc, date, amount) => h.must("stok satış", h.api.post(`/api/workspace/stock/${(await mal()).id}/moves`, { kind: "out", qty: "1", unitPrice: String(amount), pay: "account", accountId: acc.id, date }));
+const kartAc = async (acc, date, total, count, firstDue) => h.must("kart", h.api.post("/api/workspace/plans", { name: acc.name, registeredOn: date, total: String(total), accountId: acc.id, mode: "auto", count: String(count), firstDue, coversBalance: true }));
+const kartTahsil = (planId, date, amount) => h.must("kart tahsilatı", h.api.post(`/api/workspace/plans/${planId}/entries`, { kind: "in", amount: String(amount), date, method: "cash", cashForce: true, similarOk: true }));
+const note = (acc, n, body) => h.entry(acc, { note: n, ...body });
+const snap = async (label, acc, planId, invoices = []) => {
+  const v = await views(h, acc, { invoices, plans: [planId] });
+  const card = await h.card(acc);
+  const res = h.ctx.invoices.obligationsFor(acc.id, h.ctx.accounts.detail(acc.id, AUD, { withRemaining: false }).ledger);
+  const sigma = r2(res.items.reduce((s, i) => s + (i.side === "receivable" ? 1 : -1) * i.remaining, 0));
+  const kalan = (card.entries || []).filter(e => e.remaining !== undefined).map(e => `${e.note || e.label || e.kind}:${e.amount}→${e.remaining}`).join(", ");
+  const k = v.kartlar[0];
+  const out = { bakiye: v.bakiye, kartKendi: k.own, kartKuyruk: k.queue, taksit: k.items.join("/"), kartDurum: k.state, gecikmis: v.gecikmisKart, gecikmisListe: v.gecikmisListe, vadeGecikmis: v.vadeGecikmis, zil: v.zil.join(" ; "), vade: v.vade.join(" ; "), kalan, fatura: v.faturalar.map(f => `${f.state}:${f.open}`).join(", "), sigma };
+  say(`${label}: bakiye ${out.bakiye} | kart kendi ${out.kartKendi} kuyruk ${out.kartKuyruk} [${out.taksit}] ${out.kartDurum} | gecikmiş ${out.gecikmis} = liste ${out.gecikmisListe} = Vade Takip ${out.vadeGecikmis} | zil {${out.zil}} | Kalan {${kalan}} | fatura {${out.fatura}} | Σ kalem ${sigma}`);
+  return out;
+};
+const same = (a, b, keys) => keys.filter(key => JSON.stringify(a[key]) !== JSON.stringify(b[key]));
+
+// Satış faturaları belge tarihi sırasıyla (seri kronolojisi): ön aşama.
+const PRE = { "S126 a": [[-50, 600]], "S126 b": [[-50, 600]], "S126 c": [[-50, 600]], "S126 d": [[-50, 600]], "S126 g": [[-50, 400], [-46, 500]], "S126 h": [[-50, 600]], "S128 c": [[-50, 600, { rest: "installments", installments: { count: 2, firstDue: day(-20), everyMonths: 1 } }]] };
+const pre = {};
+{
+  const jobs = [];
+  for (const [label, rows] of Object.entries(PRE)) {
+    pre[label] = { acc: await h.account(label), inv: [] };
+    rows.forEach((row, index) => jobs.push({ label, index, row }));
+  }
+  jobs.sort((a, b) => a.row[0] - b.row[0]);
+  for (const job of jobs) pre[job.label].inv[job.index] = await h.sale(pre[job.label].acc, day(job.row[0]), job.row[1], day(job.row[0]), job.row[2] || null);
+}
+try {
+  // S126 a — kararın örneği: F 600 + X 300, kart 900 (3 × 300; ilk vade +5: taksitler gecikmiş değil), karta 300 ödeme (kartın Taksit Tahsilatı) ⇒ F açık 300, X Kalan 300.
+  {
+    const { acc: a, inv } = pre["S126 a"];
+    await note(a, "X", { kind: "debt", amount: "300", date: day(-49) });
+    const k = await kartAc(a, day(-40), 900, 3, day(-10));
+    const once = await snap("S126a ÖNCE (ödemesiz)", a, k.id, inv);
+    await kartTahsil(k.id, day(-5), 300);
+    const sonra = await snap("S126a SONRA (karta 300)", a, k.id, inv);
+    say(`  beklenen (karar): F açık 300, X Kalan 300; bakiye ${once.bakiye} − 300`);
+    await kartTahsil(k.id, day(-4), 400);
+    await snap("S126a iki ödeme üst üste (300 + 400)", a, k.id, inv);
+    say("  beklenen (karar, eskiden yeniye): F 0, X Kalan 200");
+    await kartTahsil(k.id, day(-3), 200);
+    await snap("S126a kartı tamamen kapatan ödeme (toplam 900)", a, k.id, inv);
+  }
+  // S126 b — karta pay düşen BAĞSIZ tahsilat (kart seçilmeden; S50): F 600 + X 300, kart 900, cari tahsilatı 500 ⇒ F açık 100, X Kalan 300 (kâhin d37 L8).
+  {
+    const { acc: a, inv } = pre["S126 b"];
+    await note(a, "X", { kind: "debt", amount: "300", date: day(-49) });
+    const k = await kartAc(a, day(-40), 900, 3, day(-10));
+    await note(a, "T500", { kind: "in", amount: "500", date: day(-5) });
+    await snap("S126b bağsız tahsilat 500 (S50 payı)", a, k.id, inv);
+    say("  beklenen (karar + kâhin d37 L8): F açık 100, X Kalan 300; bakiye 400");
+  }
+  // S126 c — ödemenin silinmesi / geri yüklenmesi (cari tahsilatı): 300 → sil → geri yükle.
+  {
+    const { acc: a, inv } = pre["S126 c"];
+    await note(a, "X", { kind: "debt", amount: "300", date: day(-49) });
+    const k = await kartAc(a, day(-40), 900, 3, day(-10));
+    const once = await snap("S126c ÖNCE", a, k.id, inv);
+    const e = await note(a, "T300", { kind: "in", amount: "300", date: day(-5) });
+    const odeme = await snap("S126c bağsız tahsilat 300", a, k.id, inv);
+    await h.must("sil", h.api.del(`/api/workspace/accounts/${a.id}/entries/${e.id}?cashForce=1`));
+    const silindi = await snap("S126c tahsilat SİLİNDİ", a, k.id, inv);
+    say(`  silme = önce mi? fark: [${same(once, silindi, Object.keys(once)).join(", ")}]`);
+    const trash = await h.api.get("/api/admin/trash");
+    const list = [trash.data?.data, trash.data, trash.data?.items].find(Array.isArray) || [];
+    const item = list.find(x => x.kind === "account-entry" && JSON.stringify(x).includes(e.id));
+    const back = await h.api.post("/api/admin/trash/restore", { id: item?.id || `account-entry:${e.id}`, cashForce: true });
+    if (back.status !== 200) say(`  GERİ YÜKLEME REDDİ: ${back.status} ${JSON.stringify(back.data).slice(0, 300)} · öğe ${JSON.stringify(item || null).slice(0, 200)} · liste ${list.length} [${list.slice(0, 3).map(x => x.kind + ":" + x.id).join(", ")}]`);
+    const geri = await snap(`S126c GERİ YÜKLENDİ (${back.status})`, a, k.id, inv);
+    say(`  geri yükleme = ödeme sonrası mı? fark: [${same(odeme, geri, Object.keys(odeme)).join(", ")}]`);
+  }
+  // S126 d — elle borç faturadan ESKİ: X 300 (−55) + F 600 (−50), kart 900, karta 300 ⇒ X Kalan 0, F açık 600 (eskiden yeniye: X önce).
+  {
+    const { acc: a, inv } = pre["S126 d"];
+    await note(a, "X", { kind: "debt", amount: "300", date: day(-55) });
+    const k = await kartAc(a, day(-40), 900, 3, day(-10));
+    await kartTahsil(k.id, day(-5), 300);
+    await snap("S126d elle borç faturadan eski, karta 300", a, k.id, inv);
+    say("  beklenen (karar, eskiden yeniye): X Kalan 0, F açık 600");
+  }
+  // S126 e — hepsi elle borç (itirazsız okuma): X 500 + Y 400, kart 900, ödeme 300 ⇒ X Kalan 200, Y 400.
+  {
+    const a = await h.account("S126 e");
+    await note(a, "X", { kind: "debt", amount: "500", date: day(-50) });
+    await note(a, "Y", { kind: "debt", amount: "400", date: day(-48) });
+    const k = await kartAc(a, day(-40), 900, 3, day(-10));
+    await kartTahsil(k.id, day(-5), 300);
+    await snap("S126e hepsi elle, karta 300", a, k.id);
+    say("  beklenen (itirazsız okuma): X Kalan 200, Y Kalan 400");
+  }
+  // S126 g — yalnız faturalar (itirazsız okuma Y11-7): F1 400 + F2 500, kart 900, ödeme 300 ⇒ F1 açık 100, F2 500.
+  {
+    const { acc: a, inv } = pre["S126 g"];
+    const k = await kartAc(a, day(-40), 900, 3, day(-10));
+    await kartTahsil(k.id, day(-5), 300);
+    await snap("S126g yalnız faturalar, karta 300", a, k.id, inv);
+    say("  beklenen (itirazsız okuma): F1 açık 100, F2 açık 500");
+  }
+  // S128 a — kararın örneği: stok veresiye S 400 (−50) · elle X 300 (−49) · kart 700 (2 × 350) · karta 300 ⇒ S açığı 100, X Kalan 300 (bakiye 400, kart kalanı 400).
+  {
+    const a = await h.account("S128 a");
+    await stokSatis(a, day(-50), 400);
+    await note(a, "X", { kind: "debt", amount: "300", date: day(-49) });
+    const k = await kartAc(a, day(-40), 700, 2, day(-10));
+    const once = await snap("S128a ÖNCE", a, k.id);
+    await kartTahsil(k.id, day(-5), 300);
+    await snap("S128a SONRA (karta 300)", a, k.id);
+    say(`  beklenen (karar): S açığı 100, X Kalan 300, bakiye 400, kart kalanı 400 (önce bakiye ${once.bakiye})`);
+  }
+  // S128 b — elle borç stok satışından eski: X 300 (−55) · S 400 (−50) · kart 700 · karta 500 ⇒ X 0, S açığı 200.
+  {
+    const a = await h.account("S128 b");
+    await note(a, "X", { kind: "debt", amount: "300", date: day(-55) });
+    await stokSatis(a, day(-50), 400);
+    const k = await kartAc(a, day(-40), 700, 2, day(-10));
+    await kartTahsil(k.id, day(-5), 500);
+    await snap("S128b elle eski + stok, karta 500", a, k.id);
+    say("  beklenen (karar, türüne bakılmadan eskiden yeniye): X Kalan 0, S açığı 200");
+  }
+  // S128 c — taksitli faturanın taksitleri de açık borçta: TF 600 (2 × 300) + X 300; açık borç 900; kart 900 → programın bugünkü davranışı (kart kartı tüketmez).
+  {
+    const { acc: a, inv } = pre["S128 c"];
+    await note(a, "X", { kind: "debt", amount: "300", date: day(-49) });
+    const res = await h.api.post("/api/workspace/plans", { name: a.name, registeredOn: day(-40), total: "900", accountId: a.id, mode: "auto", count: "3", firstDue: day(-10), coversBalance: true });
+    say(`S128c taksitli fatura 600 + X 300, kart 900 → kart açma yanıtı ${res.status} ${res.status === 200 ? "" : JSON.stringify(res.data).slice(0, 200)}`);
+    if (res.status === 200) {
+      await snap("S128c ÖNCE", a, res.data.id, inv);
+      const w = await h.api.post(`/api/workspace/plans/${res.data.id}/entries`, { kind: "in", amount: "300", date: day(-5), method: "cash", cashForce: true, similarOk: true });
+      await snap(`S128c SONRA (karta 300 → ${w.status})`, a, res.data.id, inv);
+    }
+    const res3 = await h.api.post("/api/workspace/plans", { name: a.name, registeredOn: day(-40), total: "300", accountId: a.id, mode: "auto", count: "1", firstDue: day(-10), coversBalance: true });
+    say(`S128c aynı caride kart 300 (yalnız elle borç kadar) → ${res3.status} ${res3.status === 200 ? "" : JSON.stringify(res3.data).slice(0, 200)}`);
+  }
+} finally {
+  await h.server.close();
+}

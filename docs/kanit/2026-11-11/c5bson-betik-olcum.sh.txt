@@ -1,0 +1,26 @@
+#!/bin/bash
+# Ç5-B SON TUR — Bölüm 3 HIZ ölçümü (ders 15, 47, 52, 53): üç sütun (çalışma dalı ucu | tur 2b-1 ucu | bu tur), temiz 100 bin satırlık verinin KENDİ taze kopyası,
+# ana oturumun betikleri (ana-kabul/betik/olc-yazim.mjs, olc-kart.mjs — OKUNUR, değiştirilmez). Kullanım: flock -x -n <olcum.lock> bash olcum.sh <etiket> [tur]
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-ac2cc1e4fd632460d
+TAG=${1:-olcum}; ROUNDS=${2:-1}
+OUT=$S/c5bson-kanit/c5bson-hiz-$TAG.txt
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+mkdir -p $S/c5bson-olcum
+echo "HIZ · $TAG · nproc $(nproc) · başta $(cat /proc/loadavg) · $(date -u +%H:%M:%S) · disk $(df -h / | tail -1 | awk '{print $4}')" > $OUT
+for round in $(seq 1 $ROUNDS); do
+  for row in "calisma:$S/c5bson-calisma" "tur2b1:$S/c5bson-eski2b1" "secA-yalniz-bellek:$S/c5bson-secA" "sontur:$W"; do
+    name=${row%%:*}; root=${row#*:}
+    # SUTUN="calisma sontur" → yalnız bu sütunlar (ikili yakın karşılaştırma)
+    if [ -n "$SUTUN" ] && ! echo " $SUTUN " | grep -q " $name "; then continue; fi
+    for b in olc-yazim.mjs olc-kart.mjs; do
+      rm -rf $S/c5bson-olcum/kopya && cp -a $S/ana-kabul/temiz-100k $S/c5bson-olcum/kopya || exit 1
+      sync; sleep 2; l0=$(cut -d' ' -f1 /proc/loadavg)
+      echo "=== tur $round · $name · $b · başta $(cat /proc/loadavg) $(awk -v l=$l0 'BEGIN{print (l>2)?"· GEÇERSİZ (yük > 2)":""}')" >> $OUT
+      (cd $S/ana-kabul/betik && timeout 1200 node --disable-warning=ExperimentalWarning $b "$root" $S/c5bson-olcum/kopya 2) >> $OUT 2>&1
+      echo "çıkış $? · sonda $(cat /proc/loadavg)" >> $OUT
+    done
+  done
+done
+rm -rf $S/c5bson-olcum/kopya
+echo "bitti $(date -u +%H:%M:%S)" >> $OUT

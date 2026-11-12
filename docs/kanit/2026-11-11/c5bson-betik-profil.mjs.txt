@@ -1,0 +1,59 @@
+// Ç5-B son tur — KÖK NEDEN profili (kabul ölçümü DEĞİL; yük altında da koşulabilir — sayılar yalnız oranlar için): kart tahsilatı yazımından sonraki ilk okumalarda süre nereye gidiyor?
+// Kullanım: node profil.mjs <kod kökü> <veri kopyası>
+import path from "node:path";
+import { readFileSync } from "node:fs";
+import { pathToFileURL } from "node:url";
+
+process.env.HUKUK_LICENSE_URL ||= "http://127.0.0.1:9";
+const [root, dir] = process.argv.slice(2);
+const load = () => readFileSync("/proc/loadavg", "utf8").trim().split(" ").slice(0, 3).join(" ");
+const { createApp } = await import(pathToFileURL(path.join(root, "server", "app.mjs")).href);
+const { createClient } = await import(pathToFileURL(path.join(root, "test", "helpers.mjs")).href);
+const PASS = "Kapi-Olcum-2026!";
+const app = createApp({
+  dataDir: path.join(dir, "data"), backupDir: path.join(dir, "backups"), logLevel: "silent", scheduleBackups: false,
+  env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "0123456789abcdef0123456789abcdef" },
+  startLicenseTimers: false, integrityScan: false, analysisWorker: false, now: "2026-10-08T12:00:00+03:00", moneyStrict: false,
+});
+const { port } = await app.listen(0, "127.0.0.1");
+const client = createClient(`http://127.0.0.1:${port}`);
+if ((await client.login("admin", PASS)).status !== 200) throw new Error("giriş");
+const store = app.store;
+const ctx = app.context;
+const plan = store.get("SELECT p.id, p.account_id AS acc FROM plans p WHERE p.deleted_at IS NULL AND p.status = 'active' AND p.account_id <> '' ORDER BY (SELECT COUNT(*) FROM account_entries e WHERE e.account_id = p.account_id) DESC LIMIT 1");
+console.log(`kod ${root} · yük ${load()} · kart ${plan.id} · carisinin satırı ${store.get("SELECT COUNT(*) AS n FROM account_entries WHERE account_id = ?", plan.acc).n}`);
+const r = v => Math.round(v * 10) / 10;
+const time = (label, fn) => {
+  const s = performance.now();
+  const out = fn();
+  console.log(`    ${label}: ${r(performance.now() - s)} ms`);
+  return out;
+};
+const timed = async (label, call) => {
+  const s = performance.now();
+  const res = await call();
+  console.log(`  ${label}: ${res.status} · ${r(performance.now() - s)} ms`);
+};
+await client.get("/api/workspace/accounts?status=all&limit=50");
+await client.get("/api/workspace/dues");
+const AUD = { id: "profil", role: "admin", permissions: [] };
+for (let i = 0; i < 2; i += 1) {
+  console.log(`tur ${i + 1} · yük ${load()}`);
+  await timed("YAZIM kart tahsilatı", () => client.post(`/api/workspace/plans/${plan.id}/entries`, { kind: "in", amount: "10", date: "2026-10-08", method: "cash", cashForce: true }));
+  await timed("kart GET (yazımdan hemen sonra)", () => client.get(`/api/workspace/plans/${plan.id}`));
+  // İç adımlar (yazımdan sonra, bütün cariler önbelleği bayatken): carinin defteri, tek cari kuyruğu, bütün cariler (iz + artımlı), sonra zilin kalanı.
+  const ledger = time("carinin defteri (accounts.detail withRemaining:false)", () => ctx.accounts.detail(plan.acc, AUD, { withRemaining: false }).ledger);
+  time("tek cari kuyruğu (obligationsFor)", () => ctx.invoices.obligationsFor(plan.acc, ledger));
+  time("bütün cariler önbelleği yenileme (allObligations: iz taraması + artımlı)", () => ctx.invoices.allObligations());
+  time("bütün cariler önbelleği (ılık)", () => ctx.invoices.allObligations());
+  for (const name of ["plans", "invoices", "cheques"]) if (ctx[name]?.fingerprint) time(`parmak izi ${name}.fingerprint`, () => ctx[name].fingerprint());
+  if (ctx.accounts?.dueFingerprint) time("parmak izi accounts.dueFingerprint", () => ctx.accounts.dueFingerprint());
+  if (ctx.plans?.dueItems) time("plans.dueItems", () => ctx.plans.dueItems("2026-10-08"));
+  if (ctx.invoices?.dueItems) time("invoices.dueItems", () => ctx.invoices.dueItems("2026-10-08"));
+  if (ctx.accounts?.dueItems) time("accounts.dueItems", () => ctx.accounts.dueItems("2026-10-08"));
+  await timed("zil / takvim (iç adımlardan sonra)", () => client.get("/api/workspace/dues"));
+  await timed("zil / takvim (ılık)", () => client.get("/api/workspace/dues"));
+}
+console.log(`yük (sonda) ${load()}`);
+await app.close();
+if (globalThis.__izT) console.log("iz taraması (iki tur toplamı, ms): " + Object.entries(globalThis.__izT).map(([k, v]) => `${k} ${Math.round(v)}`).join(" · "));

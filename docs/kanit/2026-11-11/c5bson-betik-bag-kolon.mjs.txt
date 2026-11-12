@@ -1,0 +1,37 @@
+// Y3-b neden yaşıyor? Durağan saatte yalnız Kapatılacak Fatura bağı değişince cari satırının HANGİ kolonları değişiyor (iz başka kolondan da değişiyorsa mutant ölmez).
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+const ROOT = process.env.ROOT;
+const helpers = await import(pathToFileURL(path.join(ROOT, "test/helpers.mjs")).href);
+const NOW = "2026-10-20T12:00:00+03:00";
+const day = offset => { const d = new Date("2026-10-20T00:00:00Z"); d.setUTCDate(d.getUTCDate() + offset); return d.toISOString().slice(0, 10); };
+const server = await helpers.startTestServer({ now: { time: NOW, fixed: true }, env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
+try {
+  const client = await helpers.loginAdmin(server);
+  const un = r => (r.data && typeof r.data === "object" && "ok" in r.data ? (r.data.ok ? r.data.data : r.data) : r.data);
+  await client.post("/api/workspace/bank/setup/dismiss", {});
+  const acc = un(await client.post("/api/workspace/accounts", { name: "Bağ Kolon", type: "customer", registeredOn: day(-400), phone: "0500 250 79 01" }));
+  const item = un(await client.post("/api/workspace/stock", { kind: "service", code: "HZM-BK", name: "Hizmet", unit: "Adet", salePrice: "100" }));
+  const sale = async offset => un(await client.post("/api/workspace/invoices", { scenario: "service_sale", accountId: acc.id, issueDate: day(offset), lines: [{ itemId: item.id, qty: 1, unitPrice: "100", vatRate: 0 }], payment: { rest: "open", dueDate: day(offset) }, cashForce: true })).id;
+  const f1 = await sale(-60);
+  const f2 = await sale(-50);
+  const store = server.app.store;
+  await client.post(`/api/workspace/accounts/${acc.id}/entries`, { kind: "in", amount: "100", date: day(-20), method: "cash", cashForce: true, invoiceId: f2 });
+  const rows = () => store.all("SELECT rowid AS _rowid, * FROM account_entries WHERE account_id = ? ORDER BY rowid", acc.id);
+  const inv = () => store.all("SELECT rowid AS _rowid, id, status, try_payable, due_date, plan_id, issued_at, updated_at FROM invoices WHERE account_id = ? ORDER BY rowid", acc.id);
+  const before = { e: rows(), i: inv() };
+  const p = before.e.find(r => r.kind === "in");
+  const res = await client.put(`/api/workspace/accounts/${acc.id}/entries/${p.id}`, { invoiceId: f1, cashForce: true });
+  const after = { e: rows(), i: inv() };
+  console.log("PUT", res.status, "· cari satırı sayısı", before.e.length, "→", after.e.length);
+  for (const key of ["e", "i"]) {
+    const a = before[key], b = after[key];
+    for (let n = 0; n < Math.max(a.length, b.length); n += 1) {
+      const x = a[n] || {}, y = b[n] || {};
+      const diff = [...new Set([...Object.keys(x), ...Object.keys(y)])].filter(k => String(x[k]) !== String(y[k]));
+      if (diff.length) console.log(`${key} satır ${n}: ` + diff.map(k => `${k}: ${String(x[k]).slice(0, 40)} → ${String(y[k]).slice(0, 40)}`).join(" | "));
+    }
+  }
+} finally {
+  await server.close();
+}

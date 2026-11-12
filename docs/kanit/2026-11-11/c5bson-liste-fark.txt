@@ -1,0 +1,4 @@
+eski 307 yeni 307
+YENI 0 KAPANAN 0 {} DEGERI DEGISEN 0
+KALAN paket (yeni liste etiketi) {'Ç5-A': 228, 'Ç5-B tur 2': 72, 'eşleme': 7}
+KALAN paket (eski etiketle) {'Ç5-A': 228, 'Ç5-B tur 2': 72, 'eşleme': 7}

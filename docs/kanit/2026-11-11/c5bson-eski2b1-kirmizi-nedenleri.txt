@@ -1,0 +1,92 @@
+1. E: taksitli fatura + cari kartından bağsız tahsilat — fatura açığı = kendi kartının kalanı
+     -> Expected values to be strictly deep-equal: + actual - expected
+2. \#6: eski veride taksitli faturaya bağlı cari tahsilatı düzeltilebilir (bağ değişmeden)
+     -> Expected values to be strictly deep-equal: + actual - expected
+3. karar (5): müşterideki elle Alacak müşterinin borcuyla kendi tarihinde netleşir; sonradan gelen bağsız ödeme netleşmeyi geri alır (S95)
+     -> netleşme geri alındı: Borç 1.000 (S95)
+     beklenen 1000 · gelen 700
+4. açık bağ bağsızdan önce gelir (elle Alacak varken): bağsız Ödeme önce Alacak'ı kapatır (B 200); iadeye bağlanınca iadeyi geri öder (B 500, Alacak açık), takvim de; verilen çekte aynı (K-e)
+     -> takvim: borç 200 + B 300 (S95: ödeme Alacak'ı kapattı, netleşme geri alındı) + actual - expected
+5. kart açılır (taksit sorulmadan), sonra otomatik dağıtılır; tahsilat kalanı düşürür ve Kasa'ya iner
+     -> Expected values to be strictly equal: + actual - expected
+     beklenen 'overdue' · gelen 'active'
+6. gecikmiş taksit tahsilat takvimine ve bildirimlere düşer; kart kapatılınca düşmez
+     -> The input did not match the regular expression /taksit/. Input:
+7. ekstre ve makbuz PDF üretilir
+     -> "Cannot read properties of undefined (reading 'id')"
+8. hareket silinip geri yüklenir; kart silinip geri yüklenir; Kasa yeniden hesaplanır
+     -> "Cannot read properties of undefined (reading 'id')"
+9. M1a / S50: taksitli faturanın kendi kartının taksitleri de tek kuyrukta — bağsız tahsilat vadesi gelmiş taksiti kapatır
+     -> S99: taksitli faturanın açığı = kartının KUYRUK kalanı
+     beklenen 600 · gelen 1200
+10. karar (3) × v2.0.24: kilitten önceki bağsız avans varken kilitten sonraki kart tahsilatı taksitli faturayı KAPATIR (fatura durumu); net görünümde karar (3) aynen
+     -> S99: kart tahsilatından önce avans taksitleri kapattı — fatura Ödendi + actual - expected
+11. tohum 11: 200 cari × 22 olay — Σ kalem = bakiye (S99 / S101 / S110 / S120 içeride); karşı yönsüz caride fatura açığı = net kuyruk
+     -> tohum 11 cari 1: Σ kalem 2972 ≠ bakiye 2600
+     beklenen 260000 · gelen 297200
+12. tohum 12: 200 cari × 22 olay — Σ kalem = bakiye (S99 / S101 / S110 / S120 içeride); karşı yönsüz caride fatura açığı = net kuyruk
+     -> tohum 12 cari 0: Σ kalem -870 ≠ bakiye -1280 + actual - expected
+     beklenen -128000 · gelen -87000
+13. tohum 13: 200 cari × 22 olay — Σ kalem = bakiye (S99 / S101 / S110 / S120 içeride); karşı yönsüz caride fatura açığı = net kuyruk
+     -> tohum 13 cari 0: Σ kalem 480 ≠ bakiye -110
+     beklenen -11000 · gelen 48000
+14. fikstür bugünkü kodla: bütün farklar beklenen-farklar.json'da, değerleri aynı; listede kapanmış fark yok
+     -> beklenen-farklar.json'da YAZILI OLMAYAN fark (karar numarasıyla açıklanmadı): TYKF I Aynı Gün İki Kart · gecikmis: 500 → 1000 TYKF I Aynı Gün İki Kart · kart1.durum: "overdue" → "done" TYKF I Aynı Gün İki Kart · kart1.sekme: "active/overdue" → "done" TYKF I Aynı Gün İki Kart · kart1.taksitler: ["1:3
+     beklenen 0 · gelen 21
+15. avans 1.000 → taksitli fatura 169,03 → kilit faturadan sonraya → kart tahsilatı 169,03: fatura Ödendi (açık 0 = kartın kalanı), kapatan kart tahsilatı (Bağlı)
+     -> S99: kart tahsilatından önce avans taksitleri kapattı — fatura Ödendi + actual - expected
+16. her kart türü × taksitsiz × (ödeme yok / kart tahsilatı / cari tahsilatı): durum ve Taksitler sekmesi v2.4.9 ile aynı
+     -> Ayrı · taksitsiz · ödeme yok + actual - expected
+17. S95 = A: satış 10.000 (vade 31.03) · alış 6.000 (10.03) · biz alışı 6.000 bağlamadan öderiz (12.03) ⇒ alış Ödendi, satış 10.000 vade 31.03, 31.03'e kadar gecikmiş 0
+     -> net görünüm: satış 10.000 (netleşme geri alındı)
+     beklenen 10000 · gelen 4000
+18. S97 = A: aynı gün Borç 1.000 + Alacak 300 + tahsilat 1.000 ⇒ Alacak 0 + müşterinin 300 avansı; ERTESİ gün tahsilat ⇒ Alacak 300 açık (S95; D 10.11 18:25 (1))
+     -> ertesi gün: Alacak 300 açık ('Ödenecek Borç'), avans yok + actual - expected
+19. S102 = A: 01.06 Borç 1.000 · 02.06 Alacak X 300 · 03.06 Alacak Y 300 + aynı gün tahsilat 1.000 ⇒ X 300 açık, Y 0, müşterinin avansı 300
+     -> Expected values to be strictly deep-equal: + actual - expected
+20. S102 iki önceki gün: en YENİ önceki gün netleşmesi önce geri alınır (01.06 B 1.000 · 02.06 X 300 · 03.06 Y 300 · 04.06 tahsilat 700 ⇒ Y 300 açık, X 0)
+     -> Expected values to be strictly deep-equal: + actual - expected
+21. S105 = A: tedarikçi — 01.03 Ödeme 300 · 05.03 faturasız Alış İadesi 200 · 10.03 alış 250 ⇒ iade alacağı 0, avans 250
+     -> Expected values to be strictly deep-equal: + actual - expected
+22. S99 = A: avans 500 → taksitli fatura B 300 (kendi kartı) → taksitsiz fatura A 500 ⇒ B Ödendi, A 300 açık; Σ fatura açığı = cari bakiyesi 300; kart taksitleri kapalı
+     -> Expected values to be strictly deep-equal: + actual - expected
+23. S98 × S99: müşteriye Ödeme 200 (01.03) · satış 100 (05.03) · tahsilat 150 (10.03) ⇒ tahsilat önce avansı kapatır: fatura 100 açık (Vadesi Geçti), avans 50 — Vade Takip ile aynı
+     -> Expected values to be strictly deep-equal: + actual - expected
+24. S98 × S99 (ters yön): müşterinin avansı 500 (01.03) · müşteriye geri Ödeme 300 (05.03) · satış 500 (10.03) ⇒ fatura 300 açık (avansın 200'ü kaldı); ödeme müşterinin avansını kapatır
+     -> fatura durumu = net görünüm + actual - expected
+25. S98 × S99 (taksitli, kâhin d27 P3): verilen avans 200 (01.05) · taksitli satış 600 (2 × 300, 01.06 / 01.07) · tahsilat 300 (10.05) ⇒ fatura 500 açık, 1. taksit 200
+     -> Expected values to be strictly deep-equal: + actual - expected
+26. S101 = A, karar örneği (kart Kayıt Tarihi carinin Kayıt Tarihi — satıştan önce)
+     -> sonraki borç avanstan kapandı
+     beklenen 0 · gelen 100
+27. karar (e) 11.11 03:15 'kısmen avansla kapanmış borçta kartın o kadarı ödenmiş sayılır': avans 400 → satış 600 + kart 600 (2 × 300) ⇒ 1. taksit 0, 2. taksit 200; kart kalanı 200 = bakiye
+     -> Expected values to be strictly deep-equal: + actual - expected
+28. S101'in yüzü (DK-C5BT2A (6) b): kart açıldıktan SONRA kaydedilen geriye tarihli ödeme + kart tahsilatı ⇒ Σ kalem = bakiye, kart fazlası avans
+     -> kart tahsilatının artanı 200 avans + actual - expected
+29. S110 = A (elle): elle borç 900 + fatura F 600, kart 900 (3 × 300) ⇒ takvimde 3 × 300 taksit + F 600 ayrı açık; gecikmiş 900 (bugün 1. taksit + F)
+     -> F kartın dışında
+     beklenen 600 · gelen 0
+30. S110 = A (stoktan satış): Borç 500 + stoktan satış 1.000 + 2 taksit ⇒ [500, 500] + Borç 500 ayrı (kartın Kayıt Tarihi carinin Kayıt Tarihi)
+     -> Expected values to be strictly deep-equal: + actual - expected
+31. S110 tetiği: açık borç = kart tutarı ⇒ eski kural; 1 kuruş fazla ⇒ S110 (tutarı eşit elle borç kartta, 0,01 ayrı)
+     -> eski (s2) okuma 0,01'i kartın içine alıp 900'ün 0,01'ini dışarıda bırakırdı + actual - expected
+32. S120 = A, karar örneği: F 600 (en eski) + elle X 500 + elle Y 700, kart 900 ⇒ kartta X 500 + Y 400; ayrı açık F 600 + Y 300
+     -> Expected values to be strictly deep-equal: + actual - expected
+33. S122 = A: S120 örneği + karta 300 ödeme ⇒ X Kalan 200, Y Kalan 700 (bakiye, kart kalanı, gecikmiş ve takvim değişmez)
+     -> Expected values to be strictly deep-equal: + actual - expected
+34. Tablodan Aktar / Excel kartı (coverSource 'transfer') S110 / S120'ye GİRMEZ — eski kural (vade sırası): F 600 kartın içinde, elle borcun 300'ü
+     -> Expected values to be strictly deep-equal: + actual - expected
+35. S96 = A: tedarikçiye verilen çek (karşılığı gelmemiş avans) Vade Takip / zil / nakit akışında 'Tahsil Edilecek Borç', ödeme gününde vadeli; gecikmiş her ekranda aynı
+     -> Vade Takip kalemi (ödeme günü) + actual - expected
+36. Y2: taksitsiz ayrı kart (Kayıt −20, 800) ödenmemiş ⇒ 'Gecikti' (Geciken sekmesi), Geciken 800 = taksitlendirilmemiş kalan; zil ile aynı sayı; bugün açılan kart Aktif
+     -> "Cannot read properties of undefined (reading 'map')"
+37. S118 = B: başka karttan 100 avansı olan carinin kartında (1.000, 300 tahsil) formun önerisi kartın KENDİ kalanı 700 (ownNext); kuyruk kalanı 600 ayrı alan
+     -> "Cannot read properties of undefined (reading 'remaining')"
+38. takvim / zil ufku söz gününe göre (K6.3; S67 = A 'söz ufkun dışında → kalem yok'): vadesi geçmiş borcun sözü +15 ⇒ zilde YOK, Vade Takip'te var; söz +5 ⇒ zilde 'overdue' (gün vadeden)
+     -> söz günü ufkun (bugün + 7) dışında: zilde / takvimde kalem yok + actual - expected
+39. T10 evrak silinince fatura açılır; Silinenler'den dönünce bağ korunur; fatura bu arada taksitlendirildiyse ya da iptal edildiyse bağsız döner
+     -> evrak bağsız (en eski borç): taksitli faturanın taksitlerini kuyrukta kapatır (S99)
+     beklenen 0 · gelen 500
+40. T17 bağsız evrak karşılıksız dönünce kapattığı faturalar açılır (kısmi, geri al, sonraki ödeme en eskiye, ciro, iki karşılıksız, iade, taksitli, şüpheli, tahsildeki, Mevcut Borç kartı)
+     -> bağsız evrak taksitli faturanın taksitlerini kapatır (S99); kartın kendi kalanı 1.200 + actual - expected
+kırmızı test sayısı: 40

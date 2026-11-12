@@ -1,0 +1,32 @@
+{
+  "ad": "c5bson-e2e-gg243-odak-dugme",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/gg243-odak-dugme.mjs",
+  "commit": "2c553ffca835d9a6eac5820d5f8aeed867745753",
+  "dal": "worktree-agent-ac2cc1e4fd632460d",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T11:09:37.604Z",
+  "sure_sn": 7.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 11,
+    "gecen": 11,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-kanit/2026-11-12/c5bson-e2e-gg243-odak-dugme.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac2cc1e4fd632460d",
+  "ham_cikti_sha256": "1cb7df172498492281791130e22aed63843d86210fc879d3bc9ce35b1e08700d",
+  "ham_cikti_bayt": 754
+}
