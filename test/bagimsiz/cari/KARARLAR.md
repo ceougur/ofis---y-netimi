@@ -2964,3 +2964,162 @@ yeni / değişen elle tablo **656/656** (`-elle-yeni-cari-*`: d38 294 + d37 362)
 **92/92** (`-g1-tara-*`) · mutant ↔ senaryo **76/76** (`-mutant-senaryo-*`; d38 / d37 / d36 / d35 × 261–279) · geniş tarama **2.201/2.201** (`-genis-tarama-*`; bakım 11 ile aynı sayı). **Defter öz testi
 BAŞARISIZ** (`-defter-oz-*`; `VARSAYILAN_KURAL` AttributeError) — bakım 9 / 10 / 11'deki gibi, TABANDA (`bb05ae9b` eski kopyası) da aynı; bu bakım defter kâhinine dokunmadı. Öz test, mutasyon, eşdeğerlik ve
 geniş tarama `flock -s -n …/olcum.lock` ile (ders 52). Program açılmadı. Koşu günlükleri `kahineski12-kos-utc.txt` / `-ist.txt` (yük 2,5 / 3,0 — 4 çekirdek).
+
+## 25. 2.5.0 Ç5 bakımı 14 — S130 (Şüpheli Alacağa alınan tutar 'Tahsil Edilecek' kalemlerinden en eskiden düşer) + S129 (kart penceresinin göstergeleri tek kuyruktan — beklentinin onayı) + S131 / S133 / S134 / S135 = C (BİLİNEN SINIR) (12.11.2026, `date -u` 22:21; kararlar 12.11.2026 13:26 ve 18:21 UTC — ana oturumun özet dosyası; eski kâhinler bakımı 14 — kodu görmeyen AYRI el; TOPLU KÂHİN BAKIMI: Ç5-B paketinin bütün yanıtları tek bakımda) — kural seti `2.5.0` = §13 + … + §24 + bu bölüm
+
+Bu bakım Ç5-B paketinin TOPLU bakımıdır: bir yeni kural (S130 = A), bir beklenti onayı (S129 = A) ve dört BİLİNEN SINIR (S131 / S133 / S134 / S135 = C — kâhin o alt durumlarda SUSAR, kural
+yok). S110, S120, S122, S126, S128, S2, S50, S95, S99, S101 ve §13–§24'ün öbür kuralları DEĞİŞMEZ. `--kural 2.4.9` (ve 2.4.6 / 2.4.5 / `--legacy`) AYNEN. Defter kâhini (`test/bagimsiz/defter/`)
+DEĞİŞMEZ (S130 bakiyeyi ve yevmiyeyi değiştirmez — karar metni "bakiye değişmez"; 128 / 129 karşılıkları cari kâhininde zaten yok — KS7 (d)).
+**Bu bölümün ilk commit'i yalnız YORUMDUR (ders 40 — önce kural, sonra kod); senaryo / mutant / G3 sayıları kod ve kanıt commit'lerinde eklenir.**
+
+### C00r Temiz oda (bakım 14)
+- **Girdi (AYNEN; ana oturumun özet dosyası `scratchpad/kahin-eski14-kararlar.md` — "programın hesap / görünüm davranışı hakkında bilgi içermez"; soruların içindeki örnek sayılar kullanıcıya
+  gösterilip onaylanan metnin parçasıdır):**
+  - S130 SORU (kullanıcıya gösterilen metin — AYNEN): "bir tutar Şüpheli Alacağa alındığında (henüz Değersiz yazılmadan) o tutar carinin 'Tahsil Edilecek' kalemlerinden (takvim / Vade Takip / nakit
+    tahmini) düşsün mü? LİSTEDEN OKUNAN (aday; senaryo: açılış 1.000 + fatura 800 + elle borç 500 − stok iadesi 600 = bakiye 1.700; sonra 900 Şüpheli Alacağa alınıyor): program — açılış kalemi 300,
+    fatura kalemi yok (kalemler en eskiden 900 azalmış), bakiye 1.700; kâhin — açılış kalemi 1.000, fatura kalemi 200 (kalemler azalmaz, toplamı = bakiye). Değersiz yazıldıktan sonra iki okuma
+    AYNI. Bakiye iki okumada AYNI. SEÇENEKLER: A (ÖNERİ) düşsün (bugünkü program: tahsili şüpheli para nakit tahmininde ve tahsil listesinde beklenen para gibi görünmez; Şüpheli Alacaklar'da
+    izlenir), kâhin buna göre güncellenir; B düşmesin (kalemler toplamı her zaman bakiyeye eşit; program değişir); C uç durum böyle kalsın (BİLİNEN SINIR — program A'daki gibi kalır, kâhin bu
+    durumda susar)."
+  - S130 KARAR (kullanıcı 12.11.2026 13:26 UTC, AYNEN: "önerilerini uygula, mikro, netsis, logo, akınsoft gibi piyasada yaygın muhasebe programlarınıda referans alabilirsin"): "S130 = A — Şüpheli
+    Alacağa alınan tutar carinin 'Tahsil Edilecek' kalemlerinden (takvim / Vade Takip / nakit tahmini) en eskiden başlayarak DÜŞER, bakiye değişmez; kâhin buna göre güncellenir."
+  - S130 NOT (ana oturum, AYNEN): "(1) Bakiye, Şüpheli Alacaklar'daki tutar ve Değersiz yazıldıktan sonraki durum bu karardan ETKİLENMEZ (soru metni: "Değersiz yazıldıktan sonra iki okuma AYNI.
+    Bakiye iki okumada AYNI."). (2) Kararın sözü "en eskiden başlayarak"; soru metnindeki örnekte kalemler "açılış kalemi 300, fatura kalemi yok" diye verilmiş (toplam 900 azalmış). "En eski"nin
+    neye göre sayıldığı (belge / hareket tarihi, vade, kayıt sırası) kararın sözünden ve bu örnekten TEK biçimde çıkıyorsa onu uygula ve nasıl çıkardığını KARARLAR.md'ye yaz; çıkmıyorsa ya da örnekle
+    söz senin modelinde bağdaşmıyorsa UYDURMA: iki okumayı sayılarıyla yaz, yalnız ayrışan alanlarda SUS, "KULLANICIYA SORULMALI"ya koy. (3) Şüpheliye alınan tutarın bir kısmı sonradan TAHSİL
+    edilirse / şüpheliden GERİ ALINIRSA / kısmen Değersiz yazılırsa kalemlerin nasıl geri geldiği kararda YOK — kâhinin önceki kurallarından tek biçimde çıkmıyorsa SUS ve raporla. (4) Kalemler
+    toplamı artık her zaman bakiyeye eşit DEĞİL: toplam = bakiye − Şüpheli Alacağa alınmış (henüz Değersiz yazılmamış, tahsil edilmemiş) tutar; önceki "kalemler toplamı = bakiye" değişmezin bu
+    istisnayla yeniden yaz."
+  - S129 SORU (AYNEN): "taksit kartının penceresindeki 'Tahsil Edilen' / 'Kalan' göstergeleri, Taksitler listesindeki aynı sütunlar ve taksit satırının 'Ödenen' sütunu hangi hesaptan? ANA OTURUMUN
+    EKRANDAN OKUDUĞU (aday; yürüyüş c5by-yuruyus-ts3; kart 900 = 3 × 300, cariye karta BAĞLANMADAN 500 tahsilat, bakiye 400): pencere üstü 'Tahsil Edilen 0 · Kalan 900 · Geciken 100', taksit
+    satırları '1. Ödendi (kalan 0) · 2. Kısmen (kalan 100) · 3. Bekliyor (kalan 300)', tablo toplamı 'Ödenen 0 · Kalan 400', liste 'Tahsil Edilen 0 · Kalan 900'; ikinci örnek (kart 600, bağsız
+    tahsilat 800, bakiye −200): liste 'Kalan 600 · Tamamlandı'. Kâhin bu alanlarda kuyruk değerini bekliyor (listede kalan kayıtların büyük kısmı bu sınıf). Bakiye iki okumada AYNI (listede Ç5-B'ye
+    ait bakiye farkı YOK — ana oturum sayıyla baktı). SEÇENEKLER: A (ÖNERİ) göstergeler ve 'Ödenen' de kuyruktan — ekranda tek sayı (örnekte Tahsil Edilen 500 · Kalan 400; ikinci örnekte Kalan 0);
+    tahsilat formunun sınırı S118 = B'deki gibi kartın kendi kalanından kalır; B göstergeler kartın kendi hesabından kalır (bugünkü program; satırlarla gösterge ayrı sayı gösterir), kâhin buna göre
+    güncellenir."
+  - S129 KARAR (aynı ileti, AYNEN): "S129 = A — taksit kartının penceresindeki 'Tahsil Edilen' / 'Kalan' göstergeleri, Taksitler listesindeki aynı sütunlar ve taksit satırının 'Ödenen'i de TEK
+    KUYRUKTAN gösterilir (ekranda tek sayı: örnekte kart 900, bağsız tahsilat 500 → Tahsil Edilen 500 · Kalan 400; kart 600, bağsız tahsilat 800 → Kalan 0 · Tamamlandı); tahsilat formunun sınırı /
+    sorusu / önerilen tutarı S118 = B'deki gibi kartın KENDİ kalanından kalır." NOT (ana oturum, AYNEN): "soru metni kâhinin bu alanlarda zaten kuyruk değerini beklediğini söylüyor; bu karar o
+    beklentiyi ONAYLAR. Beklenen: kâhinin bu alanlardaki değerleri DEĞİŞMEZ. Değişmesi gereken bir yer görürsen (örnek: 'Kalan 0 · Tamamlandı' durumu, 'Ödenen' sütunu) önce KARARLAR.md'ye yaz,
+    sonra işle; karar örneklerinin iki sayısını elle senaryo olarak ekle."
+  - S131 = C (kullanıcı 12.11 13:26), S133 = C, S134 = C, S135 = C (kullanıcı 12.11.2026 18:21 UTC, AYNEN: "hepsi önerin olsun" — üçünde de öneri C idi). Soru metinleri girdi dosyasında AYNEN;
+    özetleri: S131 — bakiye kadar açılan kartın içine BAŞKA bir taksit kartının / taksitli faturanın taksitleri de girerse o taksitlerin kendi gösterimi ("C (ÖNERİ) böyle kalsın — BİLİNEN SINIR
+    (program bu kartı açtırmıyor; kâhin susar)"); S133 — Taksitler'den ELLE açılan kartın tutarı carinin en son taksitsiz stoktan veresiye satışına eşitse kart hangisini içine alır ("ÖRNEK: elle Borç
+    500 (vade ileride) → stoktan satış 500 (vadesiz) → elle kart 500 (iki taksit). A: en son kaydedilen satışı … B: S120'nin harfi — tutarı eşit TEK elle borcu … C (ÖNERİ): Uç durum böyle kalsın —
+    BİLİNEN SINIR. Bakiye üç seçenekte de aynı."); S134 — kilitli dönemde birbirini kapatmış (netleşmiş) borç ve alacak, kilitten SONRAKİ bağsız tahsilatla yeniden açılır mı ("ÖRNEK: Borç 1.000 →
+    Alacak 300 (netleşir, kalan 700) → dönem kilidi → tahsilat 1.000. A: açılır (… kilitli = kilitsiz, S95'in kuralı) → takvimde 'Ödenecek 300, gecikmiş'. B: kilitli dönemdeki netleşme kalır →
+    takvim boş … C (ÖNERİ): Uç durum böyle kalsın — BİLİNEN SINIR (S119 = C ile aynı aile). Bakiye üç seçenekte de −300."); S135 — S126'nın 'kart carinin BÜTÜN açık borcuna eşitse' koşulunda
+    carinin BAŞKA bir taksitli faturasının açık taksitleri 'bütün açık borca' sayılır mı ("ÖRNEK: fatura F 600 + elle borç X 300 + ayrıca taksitli fatura B 300; elle kart 900; karta 300 tahsilat.
+    A: sayılır … kart yalnız elle borçları içine alır: X kapanır, F 600 açık. B: sayılmaz → S126 işler: F'den 300 kapanır, X 300 açık kalır … C (ÖNERİ): Uç durum böyle kalsın — BİLİNEN SINIR.
+    Bakiye üç seçenekte de aynı."). NOT (ana oturum, AYNEN): "bu dört alt durumda kâhinin bugün bir DEĞER verip vermediğine bak. Değer veriyorsa ve o değer yukarıdaki sorularda yazan iki okumadan
+    birine dayanıyorsa, o alt durumda (yalnız ayrışan alanlarda — bakiye iki okumada aynıdır, bakiye beklenir) SUS'a çevir ve KARARLAR.md'ye "BİLİNEN SINIR" diye yaz. Kararların kapsadığı ana
+    durumlar (S95, S110, S120, S126'nın kendi örnekleri) AYNEN değer vermeye devam eder."
+- **Birlikte okunan (kâhinin kendi belgesi):** bu dosyanın §8 C6 (S1, K6.3, K6.5, KS7 — (b) "Şüpheli Alacağa Al kapatıcı DEĞİL", ŞÜPHELİ KALAN), §13 C13.4 (1)–(11) / C13.5, §16 C16.1 / C16.2,
+  §17 (S95 — Y5-1 (b), `_geri5`), §19 (SK-18), §21 (Y9-2, SK-20), §22–§24 (bütünü); `model.py` şüpheli (`supheli_durum`, `supheli_al`, `degersiz`), kuyruk (`_tyk`, `_alacak_govde250`, `tyk250`),
+  görünüm (`kontrol_v3`, `_cari_kalemleri`, `_belirsiz_uyeler`, `kontrol_gorunum`, `kontrol_acik_toplam`), net görünüm (`_net_uygun`, `net_durum`, `net250`, `_k2_5`, `_geri5`), kilit
+  (`donem_kilitle`); c7 / c7b / d35 / d38 elle senaryoları ve `docs/kanit/2026-11-11/kahineski12-arac/` araçları. Okunan / okunmayan dosyaların tam listesi (satır aralıklarıyla) ajan raporunda.
+- **Okunmayan:** `server/**`, `client/**`, `bulut/**`, `packaging/**`, `tools/**` (yalnız `kanit.mjs` çalıştırılır), `docs/erp/C5-ACILIS-TASARIM.md`, `docs/erp/C5B-TYK-TASARIM.md`, `docs/devir/**`,
+  `docs/2.5.0-IS-LISTESI*.md` (hiçbir sürümü), `test/bagimsiz/cari/YAPIM-ASAMASI.json`, `kos.mjs`, iki kâhin klasörü dışındaki `test/**`, başka ajanların `docs/kanit/**` dosyaları (yalnız
+  `kahineski12-arac/` araçları), git farkı / geçmiş içeriği. Program koşulmadı; programın davranışı aranmadı. CLAUDE.md "Açık iş"teki program durumu kural / beklenti kaynağı sayılmadı.
+
+### Kâhinin BUGÜNKÜ (bakım 12, çalışma dalı `86531a4a`) okuması — altı kararın alanında (açıkça)
+- **S130:** KS7 (b) — Şüpheli Alacağa Al kapatıcı değil, görünüme de dokunmuyor: takvim / Vade Takip / projeksiyon kalemi = kuyruk kalanı (şüpheli kısım dahil) — **S130 B**. Kararın örneği c7 `k3`'tür
+  (kâhin: açılış kalemi 1.000, fatura kalemi 200, Borç 500 — toplam 1.700 = bakiye; sorunun "kâhin" satırı). Şüpheli kayıtlı caride gecikmiş (C13.5), görünüm toplamı (`_cari_kalemleri`) ve
+  `acikToplam` YAZILMIYOR (tanımsız).
+- **S129:** kart ödeneni / kalanı / taksit ödeneni TEK KUYRUKTAN (C13.4 (5) / (7) — kart tahsilatı + S50 payı; `kart_odenen`) — kararın A'sı. Değişen değer YOK (aşağıda Y14-10).
+- **S131:** değer YOK — bakım 12'nin SK-18 (kartın kabulü iki dünya) + SK-26 (kalemin kendi gösterimi) susması.
+- **S133:** DEĞER veriyor — §21 Y9-2 ("TEK elle borç … öbür kalemlerden biri (… stok satışı …) de T'ye eşit olsa bile") = S133'ün **B**'si.
+- **S134:** DEĞER veriyor — net görünüm (C16.2 / §17) dönem kilidini görmez (`donem_kilitle` yalnız vade alanı düzeltmesini kilitler); S95 A'nın geri alması kilitli günlerde de işler = S134'ün **A**'sı.
+- **S135:** değer YOK — taksitli faturanın açık taksitleri O'ya sayılır (S135'in A'sı: O > T → S120 elle kolu), elle borç toplamı < T → SK-20 (S123 = C) ile susuyor. B'nin değeri hiç yazılmıyor.
+
+### Yorumlar (ders 40 — kararlardan; kod yazılmadan ÖNCE; baş mimar kullanıcıya gösterir)
+- **Y14-1 — S130'un alanı ("'Tahsil Edilecek' kalemleri (takvim / Vade Takip / nakit tahmini)"):** carinin borç yönlü (in) beklenen para kalemleri — takvim / zil (`takvim:hareket`, `takvim:fatura`),
+  Vade Takip (`vadeTakip:hareket`), Nakit Akış Projeksiyonu (`projeksiyon:hareket`), bunların sayaçları (`takvim:cariKalemSayisi`, `projeksiyon:cari`) ve carinin görünüm toplamı (`cariToplam`).
+  **DEĞİŞMEYEN (tek okuma):** bakiye ("bakiye değişmez"; NOT (1)), Şüpheli Alacaklar'daki tutar / şüpheli kalan (NOT (1)), elle kaydın Kalan'ı ve faturanın açığı (defter / belge durumu — KS7 (b)
+  "Şüpheli Alacağa Al kapatıcı DEĞİL" sürer: kararın sözü yalnız üç beklenen-para görünümünü sayıyor, soru "Şüpheli Alacaklar'da izlenir" diyor; kapama Değersiz Alacak Yaz ile — KS7 (b) / (d)),
+  mizan, kart göstergeleri. Gecikmiş (C13.5 — şüpheli kayıtlı cari tanımsız) DEĞİŞMEZ → **SK-29**.
+- **Y14-2 — "en eskiden başlayarak" = tek yükümlülük kuyruğunun sırası (C13.4 (2): vade → belge → yazım) — NOT (2) TEK okumayla çıkıyor:** kararın örneğinde (c7 düzeni: Açılış 1.000 belge 01.05 vade
+  31.05 · F1 800 belge = vade 20.05 · Borç 500 belge 25.05 vade 12.06 · 05.06 stok Satış İadesi 600) iade sonrası kuyruk F1 200, Açılış 1.000, Borç 500. Vade sırası F1 → Açılış → Borç: 900 = F1'in 200'ü
+  + Açılış'ın 700'ü ⇒ **Açılış kalemi 300, fatura kalemi yok, Borç 500** — sorudaki program satırı ("açılış kalemi 300, fatura kalemi yok … kalemler en eskiden 900 azalmış") ile AYNI. Belge (hareket)
+  tarihi sırası Açılış → F1 → Borç (kayıt sırası da aynı) ⇒ Açılış 100, F1 200 — örnekle BAĞDAŞMIYOR. Yalnız TYK sırası örneği veriyor; aynı sıra iadenin kendisini de dağıttı (F1'i önce kapattı) ve
+  Değersiz Alacak Yaz'ın (bağsız kapatıcı — KS7 (b)) sırasıdır. Mutant 285: belge tarihi sırası.
+- **Y14-3 — düşen tutar R (NOT (4)):** R = carinin şüpheli kayıtlarının KALANLARI toplamı (ŞÜPHELİ KALAN: alınan − şüpheliden düşen alacak satırları − Değersiz) = "Şüpheli Alacağa alınmış (henüz
+  Değersiz yazılmamış, tahsil edilmemiş) tutar". R = 0 (kayıt tamamen Değersiz yazılmış / tahsil edilmiş) → görünüm bakım 12 AYNEN ("Değersiz yazıldıktan sonra iki okuma AYNI"). Mutant 284
+  (Değersiz sonrasını değiştiren okuma): R = alınan − düşen alacak satırları (Değersiz düşülmez) — Değersiz yazılınca kalemler bir kez daha düşer.
+- **Y14-4 — kural:** görünen tutar = kuyruk kalanı − R'nin o kaleme düşen payı; R, kontrol anındaki kuyruk kalanlarına Y14-2 sırasıyla birikimli dağılır (ilk kalem bitene dek ona, sonra
+  ikinciye …). Kararın örneği AYNEN (yukarıda). R kalemlerin toplamını aşarsa (yalnız şüpheli kaydından ÖNCE tarihli bir alacak satırı sonradan girilince — ŞÜPHELİ KALAN: o satır şüpheliden düşmez)
+  bütün kalemler 0 olur (düşecek kalem kalmaz; görünüm toplamı 0). Kaynağı tek: bütün okumalarda kalem 0 (Y14-5'in iki okuması da) → DEĞER.
+- **Y14-5 — NOT (3) ve zaman: iki okuma, ayrışırsa SUS (SK-28 (a)):** kararın sözü "Şüpheli Alacağa alınan tutar … en eskiden … düşer" iki biçimde okunabiliyor — (O1) "kontrol anında": carinin O ANKİ
+  kuyruk kalanlarından R en eskiden düşer (Y14-4); (O2) "şüphelinin gününde": Şüpheli Alacağa Al kendi gününde, o gün açık kalemlerden en eskiden düşer (C13.4 (4)'ün ANINDA ilkesi — bağsız kapatıcı
+  gibi); sonra şüpheliden düşen alacak satırları ve o kaydın Değersiz'i şüpheli tutarın PARÇASIDIR, kalemleri ayrıca kapatmaz (artanı kendi gününde bağsız alacaktır); sonra doğan kalem kendi
+  tutarıyla girer. **Şüpheli kaydından sonra doğan borç kalemi YOKSA iki okuma her durumda AYNI** (kısmen tahsilat, tahsilatın şüpheliyi aşması, kısmen / tam Değersiz, birden çok şüpheli kaydı —
+  bütün kapanmalar aynı sırada baştan birikir, toplamları aynı) → **DEĞER** (NOT (3)'ün "kısmen tahsil / kısmen Değersiz" kolu bu alanda tek okuma). Sonradan doğan kalem sırada şüpheliden etkilenen
+  kalemlerden sonra geliyorsa da AYNI → DEĞER. Kâhin iki okumayı ayrı ayrı hesaplar; herhangi bir kalemin görünen tutarı ayrışıyorsa o carinin S130 görünümü (takvim / Vade Takip / projeksiyon
+  kalemleri, sayaçlar, görünüm toplamı) YAZILMAZ — neden "… KULLANICIYA SORULMALI SK-28 (§25)"; bakiye, Kalan, fatura açığı, vade alanları yazılır. Bir üçüncü okuma ("tahsil edilen kısım da
+  kalemlerden düşmeye devam eder") NOT (4)'ün tanımıyla ("tahsil edilmemiş") çelişir — okuma sayılmadı. Şüpheliden GERİ ALMA kâhinin dilinde yok (ÖNCEKİ DENENMEYEN — "karşılık / Şüpheliden
+  Çıkar") → DENENMEYEN.
+- **Y14-6 — kararın söylemediği kalem / ödeme türleri (SUS):** (a) R > 0 iken carinin etkin taksit kartı, taksitli satış faturası ya da verilen avans kalemi (S96 — Ödeme / ciro) varsa: taksit
+  kalemlerinin ve avans kaleminin "Tahsil Edilecek" kalem sayılıp sayılmadığı ve sıradaki yeri kararda yok → **SK-27** (S130 görünümü yazılmaz; kart göstergeleri, Kalan, fatura açığı, bakiye
+  yazılır — kart göstergeleri Y14-1 gereği zaten değişmez). (b) şüpheliden düşen alacak satırı BAĞLI bir ödemeyse (faturaya bağlı çek / senet — §3.11b (b)'nin istisnası yalnız bağlı TAHSİLAT;
+  iade faturası) ya da elle Alacak ise: ödeme kendi faturasını da kapatıyor (C13.4 (3)), şüpheliden de düşüyor — düşüşün kalemlere etkisi iki okumalı → **SK-28 (b)** (SUS, aynı düzen). Elle Alacak /
+  karşı yönlü kalemli cari C16.2'de zaten "şüpheli / değersiz alacak" ile tanımsız (değişmedi).
+- **Y14-7 — Değersiz Alacak Yaz (NOT (1) / (3)):** Değersiz yazılan kısım TYK'de bağsız kapatıcıdır (KS7 (b), C13.4 (4)) ve R'den düşer; görünen = kuyruk kalanı − (kalan R'nin payı). Tam Değersiz → R = 0
+  → bakım 12 AYNEN. Kararın örneğinde Değersiz 900 (09.06) → F1 0, Açılış 300, Borç 500 — şüpheliye alındığı andaki görünümle AYNI (sorunun "Değersiz yazıldıktan sonra iki okuma AYNI"sı); Kalan
+  Açılış 1.000 → 300, F1 açığı 200 → 0, bakiye 1.700 → 800 (KS7 (b) / (d) aynen).
+- **Y14-8 — NOT (4): "kalemler toplamı = bakiye" değişmezinin yeni hâli:** tek yönlü, kartsız, dağıtılmamış parası olmayan caride Σ görünen 'Tahsil Edilecek' kalemleri = bakiye − R (R ≤ Σ kuyruk
+  kalanı iken; aşarsa 0 — Y14-4). R = 0'da eski K6.5 (1) + KS8.1 değişmezi ("Σ bütün kalemler = bakiye") AYNEN. Görünüm toplamı (`cariToplam` — `_cari_kalemleri`) artık şüpheli kayıtlı caride de
+  (S130 değer alanında) yazılır = bakiye − R (bakım 12'ye kadar şüpheli cari tanımsızdı — S130 yerini verdi). Defter tarafının değişmezi (KS8.1: Σ açık = bakiye — `acikToplam`) Kalan / açık
+  değişmediği için aynıdır; şüpheli kayıtlı caride önceden olduğu gibi yazılmaz (değişmedi). Elle tablo betiği her S130 değer carisinde Σ görünen = bakiye − R'yi assert eder.
+- **Y14-9 — etiket:** S130'un değiştirdiği her görünüm denetimi KULLANICI (S130 A); değişmeyenler kendi etiketiyle.
+- **Y14-10 — S129 (onay; NOT):** kâhinin bu alanlardaki beklentisi DEĞİŞMEZ: `kart:<no>:odenen` = kartın taksitlerinin TYK'de kapanan toplamı (kart tahsilatı + kart seçilmeden alınan tahsilatın S50
+  payı — "Tahsil Edilen"), `kart:<no>:kalan` = tutar − ödenen ("Kalan"), `kart:<no>:taksit<i>:odenen` = taksitin TYK payı (taksit satırının "Ödenen"i; satırın kalanı tutar − ödenen). Kararın iki
+  örneği elle senaryoya girer: kart 900 (3 × 300), bağsız tahsilat 500 → ödenen 500, kalan 400, taksitler 300 / 200 / 0, bakiye 400; kart 600 (2 × 300), bağsız tahsilat 800 → ödenen 600, kalan 0,
+  taksitler 300 / 300, bakiye −200. Kâhinin dilinde kartın / taksitin DURUM anahtarı ("Tamamlandı", "Ödendi / Kısmen / Bekliyor") ve tahsilat formunun sınırı (S118 = B) YOK — eklenmedi (ana
+  oturuma: gerekirse koşucuya ayrı anahtar; DENENMEYEN).
+- **Y14-11 — S131 = C:** kâhin bugün değer vermiyor (SK-18 + SK-26) → susma AYNEN; SK-26 nedeni "… BİLİNEN SINIR (kullanıcı kararı S131 = C) SK-26" olur (KULLANICIYA SORULMALI değil). SK-18'in bu
+  durumdaki (bakiye kadar kart başka kartın / taksitli faturanın taksitini de tüketiyor) susması da S131 = C ile BİLİNEN SINIR'dır; SK-18'in öbür durumları (müşteri hem tedarikçi, verilen avans — §19)
+  açık soru olarak kalır (metin değişmez).
+- **Y14-12 — S133 = C — DEĞER'den SUS'a:** alan: Taksitler'den açılan kart, S110 tetiği (O > T), Y9-2 "kendi" (açık tutarı T'ye eşit TEK elle borç) ve carinin kartın gününe kadarki EN SON (belge tarihi →
+  yazım sırası) stok veresiye satışının (KS7.1) tutarı T'ye eşit, kart gününde açık. İki okuma (S133 A: kart o satışı içine alır — elle borç kendi vadesiyle ayrı; B: elle borcu — Y9-2) kartın neyi
+  tükettiğini, dolayısıyla Kalan'ı, takvimi, gecikmişi ve sonraki ödemelerin taksitlere düşüşünü (kart ödeneni) ayırır → cari C13.4 (11) düzeninde SUSAR (yazılanlar bakiye ve kart tutarı — iki
+  okumada aynı); neden "… BİLİNEN SINIR (kullanıcı kararı S133 = C) S133 (§25)". Kartın günündeki en son stok satışı T'ye eşit değilse (ya da yoksa) Y9-2 AYNEN (S120'nin kendi örnekleri değişmez).
+- **Y14-13 — S134 = C — DEĞER'den SUS'a:** alan: net görünüm caride (C16.2 'net'), dönem kilidi (`lockedUntil`) varken, kilit tarihine kadar (≤ kilit) yapılmış iki kalem netleşmesinin kilitten SONRAKİ
+  bağsız ödemeyle geri alınması (S95 A — Y5-1 (b)) görünümü değiştiriyor. Kâhin iki okumayı hesaplar (A: geri alınır — bugünkü; B: kilitli günlerdeki netleşme kesin); net kalanlar ya da avans
+  ayrışırsa cari C16.2 'tanımsız' düzeninde (bakiye, belge durumu, mizan yazılır; Kalan, takvim / Vade Takip / projeksiyon, gecikmiş yazılmaz) — neden "… BİLİNEN SINIR (kullanıcı kararı S134 = C)
+  S134 (§25)". Kilit yoksa ya da iki okuma aynıysa S95 / §17 AYNEN (S95'in kendi örnekleri — d20 — değişmez).
+- **Y14-14 — S135 = C:** kâhin bugün değer vermiyor (SK-20 susması) → susma AYNEN; SK-20 nedenine, öbür taksit kartlarının / taksitli faturaların açık taksitleri O'dan çıkınca O = T oluyorsa
+  "· BİLİNEN SINIR (kullanıcı kararı S135 = C) S135" eklenir (yalnız metin).
+- **Y14-15 — DEĞİŞMEYEN:** şüphelisiz carilerin bütün denetimleri; şüpheli kayıtlı caride bakiye, Kalan, fatura açığı / belge durumu, şüpheli kalan ve Değersiz ret kodları (ŞÜPHELİ KALAN), mizan;
+  S110 / S120 / S122 / S126 / S128 (S133 alt durumu dışında), S95 (S134 alt durumu dışında), gecikmiş C13.5 / C16.4, `--kural 2.4.9` ve öncesi.
+
+### Altı kararın alt durumları (açıkça)
+| Alt durum | Bakım 12 | Bakım 14 |
+|---|---|---|
+| S130: R > 0, kartsız / avanssız, tek yönlü cari, iki okuma (Y14-5) aynı — kararın örneği, kısmen tahsilat / Değersiz, birden çok kayıt | kalem = kuyruk kalanı (S130 B) | **DEĞER** (Y14-4; toplam = bakiye − R) |
+| S130: R = 0 (tam Değersiz / tahsil) | kalem = kuyruk kalanı | **DEĞER** — değişmedi (görünüm toplamı artık yazılır = bakiye) |
+| S130: şüpheliden sonra doğan kalem iki okumayı ayırıyor | kalem = kuyruk kalanı | **SUS** — KULLANICIYA SORULMALI SK-28 (a) |
+| S130: şüpheliden düşen bağlı çek / iade faturası | kalem = kuyruk kalanı | **SUS** — KULLANICIYA SORULMALI SK-28 (b) |
+| S130: taksit kartı / taksitli fatura / verilen avans kalemi | kalem = kuyruk kalanı (kart kurallarıyla) | **SUS** — KULLANICIYA SORULMALI SK-27 |
+| Şüpheli kayıtlı caride gecikmiş | SUS (C13.5) | SUS — KULLANICIYA SORULMALI SK-29 |
+| S129 kart göstergeleri | DEĞER (kuyruk) | DEĞER — değişmedi (karar onayı) |
+| S131 | SUS (SK-18 + SK-26) | SUS — BİLİNEN SINIR (S131 = C) |
+| S133 | DEĞER (Y9-2 = B) | **SUS** — BİLİNEN SINIR (S133 = C) |
+| S134 | DEĞER (S95 A — kilit görülmez) | **SUS** (iki okuma ayrışırsa) — BİLİNEN SINIR (S134 = C) |
+| S135 | SUS (SK-20) | SUS — BİLİNEN SINIR (S135 = C) metni eklendi |
+
+### KULLANICIYA SORULMALI (bakım 14; kâhin bu durumlarda SUSAR — ders 43, SORU DÜZENİ; bakiye her seçenekte aynı)
+- **SK-27 (S130 × taksit kartı / taksitli fatura / verilen avans — Şüpheli Alacağa alınan tutar taksit kalemlerinden de düşer mi; UÇ DURUM DEĞİL — taksitlendirilmiş her şüpheli müşteride):**
+  01.04 Borç X 400 · 15.04 Taksitler'den kart 400 (2 × 200: 01.05, 01.06; kart X'i içine alır — O = T) · 10.05 satış faturası F 600 · 20.05 Şüpheli Alacağa Al 300; bugün 25.05. Bakiye 1.000; kuyruk sırası
+  taksit 1 (01.05) → F (10.05) → taksit 2 (01.06). **A (öneri — kalemin türüne bakılmadan kuyruk sırasıyla, S128'in düzeni):** taksit 1 kalemi yok, F 500, taksit 2 200 (toplam 700) / **B (taksitler
+  kendi tutarıyla kalır; şüpheli tutar yalnız kart dışı kalemlerden):** F 300, taksit 1 200, taksit 2 200 (toplam 700) / **C:** uç durum böyle kalsın (BİLİNEN SINIR). Kartın göstergeleri (Tahsil
+  Edilen 0 · Kalan 400) iki okumada da DEĞİŞMEZ (S130 yalnız takvim / Vade Takip / nakit tahmini). Aynı soru verilen avans kalemi (S96 "Tahsil Edilecek Borç") için: A sırasıyla düşer / B düşmez.
+- **SK-28 (a) (S130 × zaman — şüpheliye aldıktan SONRA doğan, sırada önce gelen borç; UÇ DURUM):** 01.06 Borç X 600 (vade 30.06) · 05.06 Şüpheli Alacağa Al 400 · 08.06 satış faturası F 300 (vadesiz)
+  · bugün 15.06. Bakiye 900; görünen toplam iki okumada 500. **A (öneri — o anki kalemlerden en eskiden; Değersiz sonradan yazılınca görünüm DEĞİŞMEZ: 16.06'da Değersiz 400 → F 0, X 500):**
+  F kalemi yok, X 500 / **B (şüphelinin günündeki kalemlerden; sonra doğan kalem kendi tutarıyla):** X 200, F 300 / **C:** uç durum böyle kalsın (BİLİNEN SINIR). (Aynı ayrışma şüpheliden
+  düşen tahsilat sonra doğan kalemle birlikte olunca da çıkar: + 10.06 tahsilat 200 → A: F yok, X 500 · B: X 200, F 300; bakiye 700.)
+- **SK-28 (b) (S130 × şüpheliden düşen BAĞLI ödeme; UÇ DURUM):** 01.06 fatura F 800 · 02.06 Borç X 500 · 05.06 Şüpheli Alacağa Al 900 · 08.06 F'ye bağlı çek 300 (§3.11b: yalnız bağlı TAHSİLAT
+  şüpheliden düşmez — çek düşer; şüpheli kalan 600). Bakiye 1.000. **A (öneri — Y14-4 aynen: kalan şüpheli 600 kuyruktan en eskiden; çek F'yi önce kapatır):** F kalemi yok, X 400 (toplam 400 =
+  bakiye − 600) / **B (çek yalnız F'yi kapatır, şüpheliye alınan 900'ün düşüşü değişmez):** F yok, X 100 (toplam 100) / **C:** uç durum böyle kalsın (BİLİNEN SINIR). Aynı soru iade faturası için.
+- **SK-29 (şüpheli kayıtlı caride gecikmiş tutarı — S130 ile aynı mı; UÇ DURUM DEĞİL):** kararın örneği (bugün 15.06; F1 200 (20.05), Açılış 1.000 (vade 31.05), Borç 500 (vade 12.06) — hepsinin vadesi
+  geçmiş; Şüpheli 900). **A (öneri — S130'un devamı: gecikmiş de görünen kalemlerden):** 300 + 500 = 800 / **B (gecikmiş defter kuyruğundan, şüpheli dahil — C13.5'in formülü):** min(1.700, 1.700) =
+  1.700. Bakiye 1.700 iki seçenekte. (Kâhin bakım 4'ten beri şüpheli kayıtlı caride gecikmişi yazmıyor — değişmedi.)
