@@ -677,7 +677,7 @@ export function journal(rows) {
     at = voucher.seq;
     if (lines.length) out.push(stamp({ id: `${VOUCHER_ENTRY[voucher.cls] || VOUCHER_ENTRY.ordinary}:${voucher.id}`, date: voucher.date, source: voucher.label, text: voucher.text, lines }));
   }
-  out.sort(journalOrder);
+  journalSort(out);
   return out;
 }
 /** Saklanan fişin yevmiye sınıfı (ledger_vouchers.journal_class) → madde kimliğinin öneki (JOURNAL_CLASS). */
@@ -733,6 +733,27 @@ export function journalOrder(a, b) {
   const sb = Number.isFinite(b.seq) ? b.seq : Infinity;
   if (sa !== sb) return sa < sb ? -1 : 1;
   return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
+}
+/**
+ * journalOrder'la AYNI sıralama, yerinde (Ç5-A tur 1c, hız — ders 47; C5-ACILIS-TASARIM §13 H3): karşılaştırma anahtarları (tarih, sınıf, yazım sırası, kimlik) madde başına BİR
+ * kez hesaplanır — journalOrder her karşılaştırmada iki maddenin sınıfını kimlik metninden yeniden çıkarıyordu (100.000 satırda ~2 milyon karşılaştırma). Array.prototype.sort
+ * kararlıdır: eşit anahtarlı maddeler girdi sırasını korur (journalOrder'la sıralamayla aynı). journalOrder AYNEN durur (2.4.9 kopyası, donmuş defter, tekil karşılaştırmalar).
+ */
+export function journalSort(entries) {
+  const keyed = new Array(entries.length);
+  for (let index = 0; index < entries.length; index += 1) {
+    const entry = entries[index];
+    keyed[index] = { entry, date: entry.date, cls: entryClass(entry), seq: Number.isFinite(entry.seq) ? entry.seq : Infinity, id: entry.id };
+  }
+  keyed.sort((a, b) => {
+    if (a.date !== b.date) return a.date < b.date ? -1 : 1;
+    const byClass = a.cls - b.cls;
+    if (byClass) return byClass;
+    if (a.seq !== b.seq) return a.seq < b.seq ? -1 : 1;
+    return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
+  });
+  for (let index = 0; index < keyed.length; index += 1) entries[index] = keyed[index].entry;
+  return entries;
 }
 
 /** Alt hesap bakiyeleri (v2.1.0, §3.11): alt hesap kodu (102.01, 108.00 …) → kuruş (borç artı). Σ alt hesap = ana hesap. */
