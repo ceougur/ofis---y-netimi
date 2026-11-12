@@ -11,10 +11,13 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { describe, it } from "node:test";
-import { isOpeningCandidateNote, OPENING_TRIM_CODES } from "../server/lib/migrations.mjs";
+// Ad alanı içe aktarması (adlı değil): eski kodda (OPENING_TRIM_CODES yok) dosya yüklenir, [3] göç yolunun kırmızısı nedeniyle okunur (ders 38); [1] / [2] orada "küme yok" der.
+import * as migrations from "../server/lib/migrations.mjs";
 import { CURRENT, bootVersion, tagsAvailable } from "./guvenilirlik/surumler.mjs";
 
 process.env.HUKUK_LICENSE_URL ||= "http://127.0.0.1:9";
+const { isOpeningCandidateNote } = migrations;
+const OPENING_TRIM_CODES = migrations.OPENING_TRIM_CODES || [];
 // Dar kontrolün tablosu (scratchpad/dk-c5a1-x9/bosluk.mjs) + kuralın kümesinin öbür üyelerinden örnekler.
 const EIGHT = ["Açılış", "  Açılış", " Açılış", " Açılış", "﻿Açılış", "　Açılış", " Açılış", "AÇILIŞ"];
 const MORE = ["\u000bAçılış", "\u000cAçılış", " Açılış", " açılış devri", " Açilış", " AÇILIŞ", " Açılış", " Acilis"];
@@ -24,6 +27,7 @@ const sqlFilter = (db, note) => db.prepare(`SELECT ltrim(?, char(${OPENING_TRIM_
 
 describe("Ç5-A tur 1e — göç 48 ön süzgeci ↔ KG-16 kuralı (aynı boşluk kümesi)", () => {
   it("[1] ön süzgecin kümesi = trimStart'ın attığı karakterler (bütün Unicode, kod noktası kod noktası)", () => {
+    assert.ok(OPENING_TRIM_CODES.length > 0, "göç 48'in ön süzgeç kümesi (OPENING_TRIM_CODES) yok");
     const set = new Set(OPENING_TRIM_CODES);
     const differ = [];
     for (let cp = 0; cp <= 0x10ffff; cp += 1) {
