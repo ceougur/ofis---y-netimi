@@ -15,6 +15,7 @@ import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { createClient, installPageClock } from "../helpers.mjs";
 import { escClose } from "./esc-kapat.mjs";
+import { readBell } from "./zil-oku.mjs";
 
 process.env.HUKUK_LICENSE_URL = "http://127.0.0.1:9";
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-tyk-tur2a-250");
@@ -77,15 +78,10 @@ const openCard = async planId => {
   await page.waitForSelector(`${TOP} tr[data-item]`, { timeout: 15000 });
   await page.waitForTimeout(400);
 };
-const bell = async () => {
-  await page.click(".topbar .top-actions > .icon-button");
-  await page.waitForSelector(".hof-alert-list");
-  await page.waitForTimeout(300);
-  const items = await page.evaluate(() => [...document.querySelectorAll(".hof-alert-list li")].map(node => node.textContent.replace(/\s+/g, " ").trim()));
-  await page.keyboard.press("Escape");
-  await page.waitForTimeout(300);
-  return items;
-};
+// Zil (Ç5-B kapanış düzeltme turu, CI #1071 'zilde: []'): panel sayfanın BELLEKTEKİ takviminden kurulur; sayfa takvimi sunucudaki değişiklikten ≥ 0,8 sn sonra, en sık 4 sn'de
+// bir yeniler. Eski yardımcı paneli hemen açıp 300 ms sonra okuyordu — API ile yazımdan hemen sonra (E7, E11, E12) sayfa henüz yenilenmemişse yeni kalem panelde yoktu
+// (sunucunun yanıtında VARDI; zorla: test/e2e/zil-yaris-zorla.mjs). Yeni yardımcı sayfanın takvimi sunucunun güncel sürümüne yetişene kadar bekler (test/e2e/zil-oku.mjs).
+const bell = () => readBell(page, api);
 
 try {
   console.log("\n■ Kurulum (programın API'si): ürün + alım; stoktan veresiye satış + taksitlendir; taksitsiz Yeni Borç kartı");
