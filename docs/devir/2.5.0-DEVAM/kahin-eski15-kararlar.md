@@ -61,3 +61,28 @@ Soru (AYNEN):
 carinin Açılış Bakiyesi satırı silinip Silinenler'den geri alınıyor; carinin ayrıca ONAYLI bir 'Açılış Olabilir' satırı var. Bugün geri alınan satır açılış işaretiyle döner — carinin iki açılışı olur, geri alınan satır listeye girmez (Ç5-A öncesi kodda da böyle). A: onaylı satır da 'başka açılış' sayılsın → geri alınan satır 'Açılış Olabilir' adayı olsun. B: yalnız Açılış Bakiyesi satırı 'başka açılış' sayılsın (bugünkü davranış). C (ÖNERİ): Uç durum böyle kalsın — BİLİNEN SINIR. Mizan üç seçenekte aynı (ikisi de geçici açılış hesabında; fark ancak aday sonradan reddedilirse çıkar).
 
 NOT (ana oturum): bu altı alt durumda kâhinin bugün bir DEĞER verip vermediğine bak. Değer veriyorsa ve o değer sorularda yazan okumalardan birine dayanıyorsa, o alt durumda (yalnız ayrışan alanlarda — bakiye okumalar arasında aynıysa bakiye beklenir) SUS'a çevir ve KARARLAR.md'ye "BİLİNEN SINIR" diye yaz. S147 açılış satırlarıyla ilgilidir; cari kâhininde karşılığı yoksa "alan yok" diye yaz, defter kâhinine DOKUNMA. Kararların kapsadığı ana durumlar (önceki bakımların kendi örnekleri) AYNEN değer vermeye devam eder.
+
+## 3. SONRADAN GELEN YANITLAR (13.11.2026; aynı toplu bakımda işlenir)
+### S151
+Kullanıcıya gösterilen soru (AYNEN):
+taksit kartının 'Tahsil Edilen'i FATURASIZ stok iadesini sayar mı? ÖRNEK (ana oturum koştu): Borç 500 + stoktan satış kartı 1.000 (2 × 500) + faturasız stok iadesi 300 → bugün kart 'Tahsil Edilen 300 · Kalan 700', 1. taksit 'Ödenen 300' (bağsız 300 tahsilatla birebir aynı görünüm); iade FATURASIYLA yapılınca kart küçülüyor, Tahsil Edilen 0. Bakiye (1.200) ve Kalan (700) iki okumada aynı. A: sayar (bugünkü). B (ÖNERİ): saymaz — iade tahsilat değildir; Tahsil Edilen 0, Kalan yine 700 (iade ayrı gösterilir). C: böyle kalsın (BİLİNEN SINIR).
+
+KARAR (kullanıcı 13.11.2026, AYNEN: "önerilerini uygula" — her soruda öneri seçildi): S151 = B — taksit kartının 'Tahsil Edilen'i ve taksit satırının 'Ödenen'i FATURASIZ stok iadesini SAYMAZ (iade tahsilat değildir): örnekte 'Tahsil Edilen 0', 'Kalan' yine 700, bakiye 1.200; iade ayrı gösterilir. İade faturasıyla yapılan iadede kart küçülür, Tahsil Edilen 0.
+
+### S150
+Kullanıcıya gösterilen soru (AYNEN):
+Vade Takip'in 'Gecikmiş' hazır aralığı sözü bugün ya da ileride olan gecikmiş borcu göstersin mi? ÖRNEK (ekrandan; aday kod): aynı veride 'Gecikmiş Tahsilat' göstergesi '30 Gün' ve 'Tüm Açık' aralığında 850 TL / 4 kalem, 'Gecikmiş' aralığında 750 TL / 3 kalem — sözü 15 gün sonra olan gecikmiş 100 TL 'Gecikmiş' aralığında yok (kalem söz gününde durduğu, aralık dünde bittiği için). A (ÖNERİ): 'Gecikmiş' aralığı durumu Gecikmiş olan HER kalemi göstersin (aynı gösterge her aralıkta aynı sayı; küçük iş — sıradaki birleşik turda). B: böyle kalsın (kalem söz gününde durur; 'Tüm Açık'ta görünür).
+
+KARAR (kullanıcı 13.11.2026, AYNEN: "önerilerini uygula" — her soruda öneri seçildi): S150 = A — Vade Takip'in 'Gecikmiş' hazır aralığı durumu Gecikmiş olan HER kalemi gösterir (sözü bugün ya da ileride olan gecikmiş borç dahil); 'Gecikmiş Tahsilat' göstergesi her aralıkta aynı sayı (örnekte 850 TL / 4 kalem).
+
+### S148
+Kullanıcıya gösterilen soru (AYNEN):
+Nakit Akışı'nda vadesi GEÇMİŞ borca İLERİ tarihli Ödeme Sözü varsa kalem nerede görünür? ÖRNEK (ekrandan; aday kod — tur 7 öncesinde de aynı): borç 100, vadesi 10 gün önce, söz 15 gün sonra → kalem söz gününde 'Tahsil Edilecek Borç (Ödeme Sözü)' satırı; 'gecikmişleri başlangıca ekle' açılınca başlangıca EKLENMİYOR (tek kez, söz gününde sayılıyor). Vade Takip aynı kalemi (tur 7 ile) 'Gecikmiş, 10 gün' gösteriyor. A (ÖNERİ): böyle kalsın — para söz gününde bekleniyor; gecikmişe de yazılırsa aynı tutar iki kez sayılır. B: kalem gecikmişler listesine taşınsın, söz gününde tahmine girmesin. Bakiye iki seçenekte aynı.
+
+KARAR (kullanıcı 13.11.2026, AYNEN: "önerilerini uygula" — her soruda öneri seçildi): S148 = A — Nakit Akışı'nda vadesi geçmiş, sözü ileride borç söz gününde 'beklenen giriş' olarak kalır; gecikmişlere eklenmez (tek kez sayılır).
+
+### S149 = C (kullanıcı 13.11.2026, AYNEN: "önerilerini uygula" — her soruda öneri seçildi) — BİLİNEN SINIR: kâhin bu alt durumda SUSAR
+Soru (AYNEN):
+vadesi GELMEMİŞ borçta Ödeme Sözü'nün günü geçtiyse 'gecikmiş' sayılır mı? ÖRNEK (ekrandan): borç 150, vadesi 10 gün sonra, söz 5 gün önce, ödeme gelmedi → zil / Tahsilat Takvimi / Vade Takip / Nakit Akışı 'Gecikmiş, 5 gün' (sözden) ve Gecikmiş Tahsilat toplamına dahil; cari kartı / Cari Listesi / Anlık Durum gecikmiş 0 (vade gelmedi). A: cari tarafı da sözden gecikmiş saysın. B: takvim tarafı vade gelene kadar 'Gecikmiş' demesin. C (ÖNERİ): Uç durum böyle kalsın — BİLİNEN SINIR (takvim 'söz tutulmadı'yı, cari 'vade geçti'yi gösterir). Bakiye üç seçenekte aynı.
+
+NOT (ana oturum): (1) S151: 'Tahsil Edilen' / 'Ödenen' için bugün faturasız iadeyi sayan bir beklentin varsa karara göre değiştir; 'Kalan', bakiye, gecikmiş ve takvim kalemleri bu karardan ETKİLENMEZ (soru metni: bakiye ve Kalan iki okumada aynı). İadeyle kapanan kısmın ekranda nasıl gösterileceğini karar söylemiyor ('ayrı gösterilir') — o gösterim alanı için değer YAZMA; karar metninin söylemediği alt durumlarda (iade + iade geri ödemesi; satış kartı olmayan caride iade) SUS ve sor. (2) S150 / S148: modelinde Vade Takip hazır aralıkları ya da Nakit Akışı yoksa 'alan yok' diye yaz, ekleme ZORUNLU değil; varsa örnek sayılarını elle senaryo olarak ekle. (3) S149: iki görünümün (takvim tarafı ↔ cari tarafı) ayrıştığı alanlarda SUS.
