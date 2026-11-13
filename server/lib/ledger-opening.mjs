@@ -218,7 +218,8 @@ export function createOpeningReview({ store }) {
     const paged = Number.isInteger(limit) && limit > 0;
     const items = store
       .all(
-        `SELECT e.id, e.account_id AS accountId, a.name AS accountName, a.type AS accountType, e.kind, e.amount, e.date, e.note, e.opening_review AS review
+        // Sayfalı listede (ekran) aynı adlı iki cariyi ayırmak için cari no ve telefon da.
+        `SELECT e.id, e.account_id AS accountId, a.name AS accountName, a.type AS accountType, e.kind, e.amount, e.date, e.note, e.opening_review AS review${paged ? ", COALESCE(a.ref_no, '') AS accountRef, COALESCE(a.phone, '') AS accountPhone" : ""}
          FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
          WHERE ${where} ORDER BY e.date, e.rowid${paged ? " LIMIT ? OFFSET ?" : ""}`,
         ...(paged ? [limit, Math.max(0, Math.trunc(Number(offset) || 0))] : []),

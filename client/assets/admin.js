@@ -109,6 +109,10 @@
     "bank.account.deleted": "Banka hesabını sildi",
     "bank.account.opening.entered": "Banka açılış bakiyesini girdi",
     "bank.account.opening.corrected": "Banka açılış bakiyesini düzeltti",
+    // 2.5.0 Ç5-A: Açılış Olabilir Kayıtlar kararları (routes/opening-review.mjs).
+    "account.opening.confirmed": "Açılış Olabilir kaydını açılış saydı",
+    "account.opening.rejected": "Açılış Olabilir kaydını açılış saymadı",
+    "account.opening.reopened": "Açılış Olabilir kaydının kararını geri aldı",
     "bank.legacy.assigned": "Eski banka hareketini hesaba atadı",
     "bank.legacy.reclassed": "Hesabı atanmamış POS / kart bakiyesini aktardı",
     "bank.setup": "Banka Kurulum Sihirbazı'nı çalıştırdı",
@@ -1880,6 +1884,8 @@
     // Lisans etkinleştirilmemiş veya salt okunurken yönetici önce Lisans sekmesini görür.
     const needsLicense = me.license && !me.license.writable && visible.includes("license");
     selectTab(visible.includes(requested) ? requested : needsLicense ? "license" : visible[0]);
+    // 2.5.0 Ç5-A tur 2c İş 3: zildeki "Açılış Olabilir Kayıtlar" bildirimi (#system/acilis-olabilir) pencereyi açar (client/assets/hof-acilis-olabilir.js).
+    if (hashTab === "system" && hashIntent === "acilis-olabilir" && visible.includes("system")) document.dispatchEvent(new CustomEvent("hof:opening-review-open"));
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot, { once: true });
   else boot();

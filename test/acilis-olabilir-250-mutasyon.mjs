@@ -19,7 +19,7 @@ const TEST = "test/acilis-olabilir-250.test.mjs";
 
 // [no, ad, dosya, eski, yeni, beklenen neden]
 const MUTASYONLAR = [
-  [1, "toplu kararda listede olmayan kimlik işlemi geri almaz (yarım toplu karar)", ROUTE, "if (out.status === 404) throw new HttpError(404,", "if (false) throw new HttpError(404,", /listede olmayan kimlik: ilk kimliğin kararı da geri alındı|404 !== 200|200 !== 404/],
+  [1, "toplu kararda listede olmayan kimlik atlanır (yarım toplu karar)", OPEN, "if (result.status !== 200) return { status: result.status, missing: id };", "if (result.status !== 200) continue;", /listede olmayan kimlik: ilk kimliğin kararı da geri alındı|404 !== 200|200 !== 404/],
   [2, "geri al ret yazar", OPEN, 'decision === "undo" ? OPENING_REVIEW.candidate', 'decision === "undo" ? OPENING_REVIEW.rejected', /'rejected'/],
   [3, "kilitli dönemdeki aday sayısı tarihe bakmaz", OPEN, "WHERE e.opening_review = 'candidate' AND e.date <= ?\", locked)", "WHERE e.opening_review = 'candidate' AND ? <> ''\", locked)", /lockedCandidate/],
   [4, "sayfalama başlangıcı yok sayılır", OPEN, "[limit, Math.max(0, Math.trunc(Number(offset) || 0))]", "[limit, 0]", /sayfalar sıralı listeyi eksiksiz, tekrarsız böler/],

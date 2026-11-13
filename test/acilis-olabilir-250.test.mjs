@@ -81,9 +81,9 @@ describe("Ç5-A tur 2c İş 3 — Açılış Olabilir Kayıtlar: sayfalama, zil 
     const page1 = await must("sayfa 1", api.get(`${URL}?limit=2&offset=0`));
     const page2 = await must("sayfa 2", api.get(`${URL}?limit=2&offset=2`));
     const page3 = await must("sayfa 3", api.get(`${URL}?limit=2&offset=4`));
+    assert.deepEqual([...page1.items, ...page2.items, ...page3.items].map(item => item.id), plain.items.map(item => item.id), "sayfalar sıralı listeyi eksiksiz, tekrarsız böler");
     assert.deepEqual([page1.items.length, page2.items.length, page3.items.length], [2, 2, 1]);
     assert.deepEqual([page1.total, page2.total, page3.total], [5, 5, 5]);
-    assert.deepEqual([...page1.items, ...page2.items, ...page3.items].map(item => item.id), plain.items.map(item => item.id), "sayfalar sıralı listeyi eksiksiz, tekrarsız böler");
     assert.equal(page1.items[0].id, ids.locked);
     assert.equal(page1.items[0].locked, true, "kilitli dönemdeki satır işaretli");
     assert.equal(page1.items[1].locked, false);

@@ -37,7 +37,9 @@
     const head = view.lockedUntil
       ? `<p class="hof-modal-text">Kilitli dönem: ${esc(day(view.lockedUntil))} ve öncesi. Fiş tarihi (ilk açık gün): <b>${esc(day(view.date))}</b>. Kilitli dönemin raporları donmuş defterden okunur ve değişmez; fark bu fişle ilk açık güne alınır. Önceki yılların gelir / gider farkı 671 / 681'e yazılır.</p>`
       : "";
-    return `${head}${view.disabled ? `<p class="adm-warn-text" data-rule-diff-reason>${esc(view.reason)}</p>` : ""}
+    // Ç5-A tur 2c İş 3 (B16): aday nedeni Açılış Olabilir Kayıtlar penceresine götürür (client/assets/hof-acilis-olabilir.js).
+    const candidates = view.code === "rule-diff-candidates" ? ' <button type="button" class="hof-button hof-button-small" data-opening-review-open>Açılış Olabilir Kayıtları Aç</button>' : "";
+    return `${head}${view.disabled ? `<p class="adm-warn-text" data-rule-diff-reason>${esc(view.reason)}${candidates}</p>` : ""}
       <h3>Fiş Satırları</h3>${linesTable(view.lines)}${excludedTable(view.excluded)}${sourcesTable(view)}${vouchersList(view)}
       <label class="hof-check"><input type="checkbox" data-rule-diff-confirm${view.disabled ? " disabled" : ""}> <span>Satırları ve farkı doğuran kayıtları gözden geçirdim; fiş ilk açık güne yazılsın.</span></label>
       <div class="hof-actions"><button type="button" class="hof-button" data-rule-diff-save disabled>Fişi Kaydet</button></div>
@@ -76,6 +78,11 @@
       }
     });
     root.addEventListener("click", async event => {
+      if (event.target.closest("[data-opening-review-open]")) {
+        modal?.close?.();
+        document.dispatchEvent(new CustomEvent("hof:opening-review-open"));
+        return;
+      }
       const button = event.target.closest("[data-rule-diff-reverse]");
       if (!button) return;
       const ok = await HOF.confirm({ title: `${button.dataset.no} ters kaydedilsin mi?`, message: "Ters kayıt fişi bugünün tarihiyle yazılır; kural farkı yeniden düzeltilmemiş görünür.", confirmLabel: "Ters Kaydet" });

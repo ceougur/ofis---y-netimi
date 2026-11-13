@@ -162,6 +162,24 @@
         : "Sunucu boşta ya da mesai dışındayken kendiliğinden kurar. Hemen kurmak için Yönetim → Sistem → Şimdi Güncelle.";
     return [{ id: `update|${version}`, type: "update", tone: "info", eyebrow: "YENİ SÜRÜM HAZIR", title: `DestekOfis ${version}`, when: ready ? "İndirildi" : "Hazır", text, admin: true, days: 0, rank: 5 }];
   }
+  // 2.5.0 Ç5-A tur 2c İş 3 (S47 = A; C5-ACILIS-TASARIM §17.10): "Açılış Olabilir Kayıtlar"da onay bekleyen sayısı — ekran Yönetim › Sistem'de, yalnız sistem yönetimi yetkisine;
+  // en çok 5 dakikada bir sorulur (yeni sürüm bildirimiyle aynı akış). Kimlik sayıyı taşır: kaldırılan bildirim sayı değişince yeniden görünür.
+  let openingCount = 0;
+  let openingAskedAt = 0;
+  async function loadOpening() {
+    if (!HOF.user || !HOF.can("system.manage") || Date.now() - openingAskedAt < 5 * 60_000) return;
+    openingAskedAt = Date.now();
+    try {
+      openingCount = Number((await HOF.api("/api/workspace/opening-review?counts=1")).counts?.candidate) || 0;
+    } catch {
+      openingCount = 0;
+    }
+  }
+  function openingAlerts() {
+    if (!openingCount || !HOF.can("system.manage")) return [];
+    const text = "Eski sürümden gelen, açıklaması 'Açılış…' ile başlayan Borç Yaz / Alacak Yaz kayıtları; açılış olup olmadığını seçin (Yönetim → Sistem → Açılış Olabilir Kayıtlar).";
+    return [{ id: `opening-review|${openingCount}`, type: "opening", tone: "info", eyebrow: "AÇILIŞ OLABİLİR KAYITLAR", title: `${openingCount} kayıt onay bekliyor`, when: "Onay Bekliyor", text, admin: true, adminHash: "system/acilis-olabilir", days: 0, rank: 5 }];
+  }
 
   function alerts() {
     const data = HOF.dues?.data() || { items: [], deadlines: [] };
@@ -240,6 +258,7 @@
     }
     out.push(...taskAlerts());
     out.push(...updateAlerts());
+    out.push(...openingAlerts());
     // Kişinin zil listesinden kaldırdıkları (v2.0.2) ne listede ne sağ altta görünür.
     for (let index = out.length - 1; index >= 0; index -= 1) if (dismissed.has(out[index].id)) out.splice(index, 1);
     // Önce alınmayan tahsilatlar (en çok gecikenden), sonra geciken görevler, son günler, yaklaşanlar.
@@ -419,7 +438,7 @@
       else if (act === "plan") HOF.plans?.open(alert.planId);
       else if (act === "list") openPanel();
       else if (act === "tasks") HOF.workspace?.openTasks?.();
-      else if (act === "admin") window.location.assign("/admin.html#system");
+      else if (act === "admin") window.location.assign(`/admin.html#${alert.adminHash || "system"}`);
       hide(node);
     });
     // Üzerine gelince ya da klavyeyle odaklanınca süre durur.
@@ -564,14 +583,14 @@
       ["Görevler", list.filter(item => item.type === "task" && !item.urgent)],
       ["Yaklaşan tahsilatlar (7 gün)", list.filter(item => item.type === "upcoming" && item.due?.direction !== "out")],
       ["Yaklaşan ödemeler (7 gün)", list.filter(item => item.type === "upcoming" && item.due?.direction === "out")],
-      ["Sistem", list.filter(item => item.type === "update")],
+      ["Sistem", list.filter(item => item.type === "update" || item.type === "opening")],
     ].filter(([, items]) => items.length);
     const body = groups.length
       ? groups
           .map(
             ([title, items]) => `<section class="hof-alert-group"><h3>${esc(title)} <span>${items.length}</span></h3><ul>${items
               .map(
-                (item, index) => `<li class="is-${esc(item.tone)}"><span class="hof-alert-when">${esc(item.when || "")}</span><span class="hof-alert-main"><b>${esc(item.title)}</b><small>${esc(item.text)}</small></span><span class="hof-alert-buttons"><button type="button" class="hof-alert-dismiss" data-dismiss="${esc(title)}|${index}" title="Bu bildirimi listemden kaldır" aria-label="Bildirimi kaldır">✕</button>${canDone(item) ? `<button type="button" class="hof-button hof-button-small hof-button-done" data-done="${esc(title)}|${index}" title="${esc(doneHint(item))}">✓ Gerçekleştirildi</button>` : ""}${item.due && canPay(item.due) ? `<button type="button" class="hof-button hof-button-small" data-pay="${esc(title)}|${index}">${esc(actionsOf(item.due).pay.label)}</button>` : ""}${item.caseKey ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-go="${esc(title)}|${index}">Kayda Git</button>` : ""}${item.planId ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-plan="${esc(title)}|${index}">Taksit Kartı</button>` : ""}${item.due && openAction(item.due) ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-open="${esc(title)}|${index}">${esc(openAction(item.due).label)}</button>` : ""}${item.admin ? '<a class="hof-button hof-button-small hof-button-ghost" href="/admin.html#system">Yönetim → Sistem</a>' : ""}</span></li>`,
+                (item, index) => `<li class="is-${esc(item.tone)}"><span class="hof-alert-when">${esc(item.when || "")}</span><span class="hof-alert-main"><b>${esc(item.title)}</b><small>${esc(item.text)}</small></span><span class="hof-alert-buttons"><button type="button" class="hof-alert-dismiss" data-dismiss="${esc(title)}|${index}" title="Bu bildirimi listemden kaldır" aria-label="Bildirimi kaldır">✕</button>${canDone(item) ? `<button type="button" class="hof-button hof-button-small hof-button-done" data-done="${esc(title)}|${index}" title="${esc(doneHint(item))}">✓ Gerçekleştirildi</button>` : ""}${item.due && canPay(item.due) ? `<button type="button" class="hof-button hof-button-small" data-pay="${esc(title)}|${index}">${esc(actionsOf(item.due).pay.label)}</button>` : ""}${item.caseKey ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-go="${esc(title)}|${index}">Kayda Git</button>` : ""}${item.planId ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-plan="${esc(title)}|${index}">Taksit Kartı</button>` : ""}${item.due && openAction(item.due) ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-open="${esc(title)}|${index}">${esc(openAction(item.due).label)}</button>` : ""}${item.admin ? `<a class="hof-button hof-button-small hof-button-ghost" href="/admin.html#${esc(item.adminHash || "system")}">Yönetim → Sistem</a>` : ""}</span></li>`,
               )
               .join("")}</ul></section>`,
           )
@@ -632,6 +651,7 @@
       tasks = [];
     }
     await loadUpdate();
+    await loadOpening();
     enqueue();
   }
   const tasksSoon = (() => {
@@ -661,7 +681,7 @@
     // Açılışta ekran yerleşsin diye bir süre beklenir; takvim geldikçe yeni bildirimler kuyruğa girer.
     // Kaldırılanlar önce gelir; ilk bildirim kuyruğu kaldırılanları göstermesin.
     loadDismissed().finally(() => setTimeout(loadTasks, 2500));
-    HOF.on("dues", () => setTimeout(() => loadUpdate().finally(enqueue), 300));
+    HOF.on("dues", () => setTimeout(() => loadUpdate().then(loadOpening).finally(enqueue), 300));
     // Olay tabanlı akış (v2.0.2): gün dönümünde sunucu "alerts.refresh" gönderir; takvim yeniden alınır (sunucuda
     // parmak izi değiştiği için bir kez hesaplanır). Sekme uzun süre arka planda kaldıysa görünür olunca da yenilenir.
     HOF.on("live:alerts.refresh", () => {
