@@ -45,6 +45,9 @@
 17. Bakım 17 (§28; S159 A, kart tahsilatı 'Fazlasını Avans Yaz' seçeneği — S118 B sınırı, S154 B; S162 = B / S163 = C susması): açık şüpheli kalmadıysa S155 bağlamaz (d44 X12 artık değerle — kabul,
    bakiye −100; d45 Z2 … Z5); kartın KENDİ kalanını aşan Taksit Tahsilatı seçenekle kabul, seçeneksiz RET, sınır bölgesinde seçeneksiz SUS SK-36 (d45 A1 … A6B; d43 U1 / U2 ve d30 Q1 / Q3 / Q5 seçenekli);
    S162 / S163 BİLİNEN SINIR susmaları (d45 B1 / C1 / C3, d42 T7, d44 Y4; satış kartı SK-37 d42 T6); mutantlar 303–307 DEĞERLE.
+18. Bakım 18 (§29; S165 A, S118 B OKUMASI, S166 = B): kart tahsilatının sınırı TEK sayı K — avansla ödenmiş kısım ve para dışı pay küçültmez (SK-36 kalktı; d45 A6 artık değerle — KABUL, bakiye 400;
+   d46 A7 / A8 S165'in örneği, Q7 / Q8 / Q9 SK-36 (a) sınıfı, R1 / R2 / R3 S118'in kendi örneği); S154 B para dışı paylı kartta (d46 A8); S166 = B satış kartı kolu BİLİNEN SINIR (d42 T6 metni);
+   mutantlar 308 / 309 DEĞERLE.
 Çıktı: TAP benzeri sayılar + son satır "N/M denetim geçti". Çıkış 0 yalnız hepsi geçerse.
 """
 import importlib.util
