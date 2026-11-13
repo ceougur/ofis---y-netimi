@@ -1,4 +1,5 @@
 // 2.5.0 Ç5-A tur 2 — Açılış Düzeni ekranları (docs/erp/C5-ACILIS-TASARIM.md §17). Kullanıcı gözüyle, gerçek tıklama + insan hızında (ders 12):
+//   İş 2 (tur 2b; §17.8): Kural Farkı Düzeltme penceresi — ön izleme, Tab + Boşluk ile onay, Fişi Kaydet, Düzeltildi bilgisi, pasif + neden, Ters Kaydet.
 //   İş 0 (EY-1; D 12.11 15:57 (4)): kilitli dönemi olan ESKİ sürüm verisinde (programın kendi ürettiği fikstür surum-2.0.26-zincir; güncellemeden sonraki ilk açılış)
 //        Yönetim › Sistem'in Mutabakat satırı "Kural Değişikliği Farkı"nı sapma diliyle / kırmızıyla DEĞİL, uyarı olarak ve ne yapılacağını söyleyerek gösterir; aynı verideki
 //        eski sürümden kalan satır ayrı, eskisi gibi görünür.
@@ -105,6 +106,69 @@ try {
   await step("Mutabakat Günlüğü ekran açılınca değişmez (zil / günlük davranışı aynı)", async () => {
     const logAfter = app.store.all("SELECT action, summary FROM integrity_log ORDER BY rowid");
     ok(JSON.stringify(logAfter) === JSON.stringify(logBefore), `günlük satırları aynı (${logBefore.length} → ${logAfter.length})`);
+  });
+  // ---- Ç5-A tur 2b İş 2: Kural Farkı Düzeltme penceresi (gerçek tıklama + Tab + insan hızı; ders 12, 39) ----
+  const MODAL = ".hof-modal-backdrop.is-visible";
+  const top = () => page.locator(`${MODAL}:nth-last-child(1 of ${MODAL})`);
+  const human = () => page.waitForTimeout(250);
+  const vouchers = () => app.store.get("SELECT COUNT(*) AS n FROM ledger_vouchers").n;
+  await step("İş 2. Kural Farkı Düzeltme: ön izleme (satırlar, farkı doğuran kayıtlar), onay kutusu Tab + Boşluk ile, Fişi Kaydet → Mutabakat satırında Düzeltildi", async () => {
+    const integrity = app.integrity.run();
+    const ruleDiff = integrity.failures.find(item => item.code === "ledger:rule-diff");
+    await systemLine();
+    await page.click("#adm-rule-diff-open");
+    await page.waitForSelector(`${MODAL} [data-rule-diff-lines]`, { timeout: 60000 });
+    await human();
+    const dialog = top();
+    ok((await dialog.locator(".hof-modal-title").textContent()).trim() === "Kural Farkı Düzeltme", "pencere başlığı");
+    const rows = await dialog.locator("[data-rule-diff-lines] tbody tr").allTextContents();
+    console.log(`  satırlar: ${rows.map(row => row.replace(/\s+/g, " ").trim()).join(" | ")}`);
+    ok(rows.length === 3 && /^500/.test(rows[0].trim()) && /^519/.test(rows[1].trim()) && /Toplam/.test(rows[2]), "fiş satırları 500 / 519 + toplam");
+    ok((await dialog.locator("[data-rule-diff-sources] tbody tr").count()) === ruleDiff.count, `farkı doğuran kayıtlar = kural farkı madde sayısı (${ruleDiff.count})`);
+    const save = dialog.locator("[data-rule-diff-save]");
+    ok(await save.isDisabled(), "onaysız Fişi Kaydet pasif");
+    ok(/Kaydetmek için onay kutusunu işaretleyin\./.test(await dialog.locator("[data-rule-diff-save-why]").textContent()), "pasifliğin nedeni görünür yazı");
+    await shot("kural-farki-onizleme");
+    // Klavye: onay kutusuna Tab ile gelinir, Boşluk ile işaretlenir.
+    const box = dialog.locator("[data-rule-diff-confirm]");
+    let reached = false;
+    for (let i = 0; i < 400 && !reached; i += 1) {
+      await page.keyboard.press("Tab");
+      reached = await box.evaluate(node => document.activeElement === node);
+    }
+    ok(reached, "onay kutusuna Tab ile ulaşıldı");
+    await page.keyboard.press("Space");
+    await human();
+    ok(!(await save.isDisabled()), "onaydan sonra Fişi Kaydet etkin");
+    ok(vouchers() === 0, "kaydetmeden fiş yok");
+    await save.click();
+    await page.waitForFunction(() => /Düzeltildi \(Fiş 2026-000001\)/.test(document.querySelector("#adm-integrity-status")?.textContent || ""), null, { timeout: 60000 });
+    await human();
+    ok(vouchers() === 1, "fiş yazıldı (veri tabanı)");
+    const line = (await page.textContent("#adm-integrity-status")).replace(/\s+/g, " ").trim();
+    console.log(`  satır: ${line}`);
+    ok(line.includes("Bilgi: Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi) — Düzeltildi (Fiş 2026-000001)"), "Mutabakat satırında Düzeltildi bilgisi");
+    ok(!/Uyarı \(yeni işlemleri engellemez\): Kural Değişikliği Farkı/.test(line), "kural farkı uyarısı kalktı");
+    ok(/eski sürümden kalan satır var/.test(line), "eski sürümden kalan satır ayrı ve aynen");
+    await shot("kural-farki-duzeltildi");
+  });
+  await step("İş 2. Yeniden açılınca pasif + neden; Ters Kaydet → uyarı geri gelir", async () => {
+    await page.click("#adm-rule-diff-open");
+    await page.waitForSelector(`${MODAL} [data-rule-diff-reason]`, { timeout: 60000 });
+    await human();
+    const dialog = top();
+    ok((await dialog.locator("[data-rule-diff-reason]").textContent()).trim() === "Fişle düzeltilebilen fark kalmadı.", "pasifliğin nedeni görünür yazı");
+    ok(await dialog.locator("[data-rule-diff-confirm]").isDisabled(), "onay kutusu pasif");
+    ok(await dialog.locator("[data-rule-diff-save]").isDisabled(), "Fişi Kaydet pasif");
+    await shot("kural-farki-pasif");
+    await dialog.locator("[data-rule-diff-reverse]").click();
+    await page.waitForSelector(`${MODAL} [data-answer="yes"]`, { timeout: 30000 });
+    await human();
+    await top().locator('[data-answer="yes"]').click();
+    await page.waitForFunction(() => /Uyarı \(yeni işlemleri engellemez\): Kural Değişikliği Farkı/.test(document.querySelector("#adm-integrity-status")?.textContent || ""), null, { timeout: 60000 });
+    ok(vouchers() === 2, "ters kayıt fişi yazıldı");
+    ok(!/Düzeltildi/.test(await page.textContent("#adm-integrity-status")), "Düzeltildi bilgisi kalktı");
+    await shot("kural-farki-ters-kayit");
   });
   ok(!errors.length, `sayfa hatası yok${errors.length ? `: ${errors.join(" | ")}` : ""}`);
 } catch (error) {
