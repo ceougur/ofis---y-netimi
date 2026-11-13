@@ -2,7 +2,7 @@
  "dil": "destekofis-cari/3",
  "ad": "d43-c5-bilinen-sinir-sus15",
  "bugun": "2026-06-15",
- "aciklama": "Bakım 15: BİLİNEN SINIRLAR (kullanıcı kararları C) — kâhinin bugün DEĞER verdiği ayrışan alanlar SUS'a çevrildi: S144 (c) kartın kendi fazla tahsilatı (U1), S141 kart fazlası + fatura belge açığı (U2), S143 (a) Alacak Yaz ile netleşen kartın Kalan'ı (U3), S149 vadesi gelmemiş / sözü geçmiş borç (U4; U6 vade günü); komşular değerle: U5 söz günü (K6.3), U7 vade de söz de geçmiş (C15.1) · bakım 17 (§28 Y17-4): U1 / U2'nin kart tahsilatı kartın KENDİ kalanını aşıyor — adım 'Fazlasını Avans Yaz' seçenekli (S118 B); 'Tahsil Edilen' S154 B ile karttan alınan paranın tamamı (KU1 1.100, KU2 600); S141 (U2F) susması aynen",
+ "aciklama": "Bakım 15: BİLİNEN SINIRLAR (kullanıcı kararları C) — kâhinin bugün DEĞER verdiği ayrışan alanlar SUS'a çevrildi: S144 (c) kartın kendi fazla tahsilatı (U1), S141 kart fazlası + fatura belge açığı (U2), S143 (a) Alacak Yaz ile netleşen kartın Kalan'ı (U3), S149 vadesi gelmemiş / sözü geçmiş borç (U4; U6 vade günü); komşular değerle: U5 söz günü (K6.3), U7 vade de söz de geçmiş (C15.1) · bakım 17 (§28 Y17-4): U1 / U2'nin kart tahsilatı kartın KENDİ kalanını aşıyor — adım 'Fazlasını Avans Yaz' seçenekli (S118 B); 'Tahsil Edilen' S154 B ile karttan alınan paranın tamamı (KU1 1.100, KU2 600); S141 (U2F) susması aynen · bakım 19 (§30 Y19-5 (3) — madde 4): U4 / U6 takvim pencere toplamı SUS (takvim kalemi S149 = C ile tanımsız)",
  "dayanak": "KARARLAR.md §26 (Y15-12 … Y15-16), §13 C13.4 (3) / C13.5, §15 C15.1 / C15.2, §16 C16.2, §20 Y8-4",
  "elleBeklenen": {
   "k1:cari:U1:bakiye": -10000,
@@ -34,13 +34,15 @@
   "k1:kart:KU1:odenen": 110000,
   "k1:kart:KU2:odenen": 60000
  },
- "elleYok": ["k1:fatura:U2F:acik", "k1:cari:U2:acikToplam", "k1:kart:KU3:kalan", "k1:takvim:hareket:u4x", "k1:cari:U4:gecikmis", "k1:takvim:hareket:u6x", "k1:cari:U6:gecikmis"],
+ "elleYok": ["k1:fatura:U2F:acik", "k1:cari:U2:acikToplam", "k1:kart:KU3:kalan", "k1:takvim:hareket:u4x", "k1:cari:U4:gecikmis", "k1:takvim:hareket:u6x", "k1:cari:U6:gecikmis", "k1:takvim:cariToplam:U4", "k1:takvim:cariToplam:U6"],
  "elleBelirsiz": [
   ["cari U2 satış faturalarının belge açığı tanımsız", "S141 = C", "BİLİNEN SINIR"],
   ["kart KU3", "S143 = C", "BİLİNEN SINIR"],
   ["takvim kalemi u4x", "S149 = C", "BİLİNEN SINIR"],
   ["cari U4 gecikmiş tutarı tanımsız", "S149 = C"],
-  ["takvim kalemi u6x", "S149 = C"]
+  ["takvim kalemi u6x", "S149 = C"],
+  ["cari U4 takvim pencere toplamı", "S149"],
+  ["cari U6 takvim pencere toplamı", "S149"]
  ],
  "adimlar": [
   {"id": "cu1", "islem": "cari_ac", "ad": "U1", "isim": "Umut Fazla Taksit", "tarih": "2026-03-01"},

@@ -4350,3 +4350,65 @@ YORUMDUR (ders 40 — önce kural, sonra kod); senaryo / mutant / G3 sayıları 
 ### KULLANICIYA SORULMALI (bakım 19)
 - YOK — dört maddenin alanındaki her alt durum KARAR / KAPSAM metinlerinin harfiyle tek okumaya iniyor (Y19-1 … Y19-6); tek okumaya inmeyen yeni bir alt durum çıkmadı. Önceki bakımlarda sorulmuş alanlar
   (SK-31 / S157, S144, S149, S166, S163) yinelenmedi.
+
+### Kurallar (kod commit'i; yorumların `model.py`'deki karşılığı)
+- **C30.1 `_kapatici` (Y19-1) — yalnız `k250`, `stok_iade`:** adım kaydedilmeden ÖNCE (önbellek boşaltılarak) carinin tek kuyruğu kurulur; carinin etkin kartları ve kart taksitleri dışındaki açık borç
+  yönlü kalemler (`_sus17`'nin süzgeci AYNEN: `tur` "n", kalanı > 0, `kart` boş ya da "fatura:") okunur → kapatıcıya `_s162 = {tum: <başka açık borç yok ve en az bir etkin kart var>, kartlar: [...]}`
+  (yalnız iz; kuyruğun hesabını değiştirmez — bakım 17'nin `kart_ac` S163 izi düzeni). Mutant 312: iz kurulmaz.
+- **C30.2 `_sus17` S162 / S166 kolu (Y19-1, Y19-5 (1)):** alan = kartın taksitlerinde stok iadesi payı > 0 VE carinin `_s162.tum` olan ve kartı `_s162.kartlar`'da taşıyan etkin bir faturasız stok iadesi
+  var (mutant 312: bakım 17'nin kontrol anı ölçüsü). SUS anahtarları AYNEN + `takvim | vadeTakip | projeksiyon:cariToplam:<cari>`; neden metinleri AYNEN (S162 = B / S166 = B).
+- **C30.3 `_sus17` S163 kolu (Y19-5 (2) / (4)):** SUS anahtarlarına `takvim | vadeTakip | projeksiyon:cariToplam:<cari>`, `takvim:cariKalemSayisi`, `projeksiyon:cari` eklendi (yalnız yazılmışsa silinir).
+- **C30.4 `_sus17` S170 / S157 (Y19-2 / Y19-3):** etkin satış kartı (`satis` alanı dolu) + carinin etkin faturasız stok iadesi → `kart:<no>:toplam` ve stok iadesi payı > 0 olan taksitlerin
+  `kart:<no>:taksit<i>:odenen`'i silinir (neden "… BİLİNEN SINIR (kullanıcı kararı S170 = B; yetkiyle uygulanan karar) S170", iz `s170`); tek kuyruğun tanımsızlık nedeninde "S157" geçen carinin
+  her etkin kartının `kart:<no>:toplam`'ı silinir (neden "… S157 (§30 Y19-3 — kart toplamı)", iz `s157t`).
+- **C30.5 S149 izi (Y19-5 (3)):** `kontrol_v3`'ün S149 dalı (takvim kalemi yazılmayan cari) `self._s149_k[<kontrol>]`'e cariyi ekler; `_sus17` o kontrolde `takvim:cariToplam:<cari>`'yi siler (iz `s149t`).
+  Vade Takip / projeksiyon toplamları DEĞİŞMEDİ.
+- **C30.6 mutantlar:** 310 (iade her zaman sondan küçültür — kart toplamı stok iadesi payı kadar küçülür; `kontrol`'ün `kart:<no>:toplam`'ı), 311 (iade her zaman ilk taksitten — faturasız stok iadesi
+  S2 yerine carinin iadeden önce açılmış ilk kartının açık taksitlerine `hedef_kart`), 312 (S162 ölçütü kontrol anı — bakım 17).
+- `belirsiz` kaydı yalnız gerçekten silinen denetim varsa yazılır (`_sus17` düzeni AYNEN). `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`: hiçbir yol değişmedi (C30.1 yalnız `k250`; `_sus17` yalnız
+  `k250`; C30.5 dalı yalnız `k250`; mutantlar yalnız `k250`).
+
+### C8w Nasıl bozulur? (bakım 19)
+| # | Bozulma | Senaryo |
+|---|---|---|
+| Z215 | Ölçüt kontrol anı: iadeden SONRA yazılan borç S162 alanını kaldırır (değer uydurulur) | d45 B3 (`elleYok`) |
+| Z216 | Ölçüt kontrol anı: iadeden önce yazılıp sonra silinen borç alanı açar (değer susulur) | d45 B6 (mutant 312) |
+| Z217 | Ölçüt tarih: borcun tarihi iadeden sonra diye (yazımı önce) alan açılır | d45 B4 (değerle) |
+| Z218 | Başka borç varken iade de kartı sondan küçültür | d45 B2 / B4 / B6 (mutant 310) |
+| Z219 | Faturasız iade S2 yerine hep kartın ilk taksitinden düşer | d45 B5 (mutant 311) |
+| Z220 | Satış kartı + faturasız iadede kart toplamı / iadenin kapattığı taksitin 'Ödenen'i yazılır; Kalan / Tahsil Edilen / dokunulmayan taksit susulur | d42 T1 / T2 / T3, d30 Q7 |
+| Z221 | SK-31 carisinde kart toplamı yazılır | d42 T4 / T5 / T8 |
+| Z222 | Susan carinin pencere toplamı yazılır | d42 T6 / T7, d43 U4 / U6, d44 Y4, d45 B1 / B3 |
+
+### Senaryolar (bakım 19; elle tablolar — kâhin koşulmadan karar metinlerinden ve §30'dan; betik `docs/kanit/2026-11-13/kahineski19-arac/senaryolar19.py`)
+- **`d45` (madde 1 — bugün 15.06.2026; ortak yapı Borç 900 (15.04) → Mevcut Borç kartı 900 = 3 × 300, vadeler 06.05 / 06.06 / 06.07 (kart 20.04) → faturasız stok iadesi 300 (10.06); listedeki sıra =
+  yazım sırası):** **B2 (b)** Borç 500 (01.06, vade 30.06) iadeden ÖNCE yazılır → kart 900, Kalan 600, Tahsil Edilen 0, taksit Ödenen 0 / 0 / 0, gecikmiş 300, bakiye 1.100 (değerler bakım 17'deki
+  karşılaştırma değerleriyle AYNI — adımı düzeltildi) · **B3 (a)** iade önce, Borç 500 (12.06) sonra (eski B2'nin sırası) → toplam / taksit Ödenen / gecikmiş / pencere toplamları `elleYok`, Kalan 600, Tahsil
+  Edilen 0, bakiye 1.100 · **B4 (c)** Borç 500'ün tarihi 12.06 (iadeden sonra), yazımı önce → B2 ile aynı değerler · **B5** Borç 500 (25.04, vade 01.05) önce → iade o borcu kapatır (Kalan 200), kart
+  dokunulmaz: toplam 900, Kalan 900, taksit 0 / 0 / 0, gecikmiş 800, bakiye 1.100 · **B6** Borç 500 (01.06) önce, iadeden sonra silindi → B2'nin kart değerleri, gecikmiş 300, bakiye 600, `hareket:b6y:var`
+  false; B1'e pencere toplamları `elleYok` (madde 4). 28 yeni elle değer + 8 `elleYok` + 1 `elleBelirsiz` (B3) + B1'in 3 `elleYok`'u.
+- **`d42`:** T1 (iade 800 → 1. taksit 500 + 2. taksit 300) toplam + taksit 1 / 2 Ödenen, T2 (iade 300 → 1. taksit) toplam + taksit 1 Ödenen, T3 (iade 1.000) toplam + taksit 1 / 2 Ödenen `elleYok`'a (S170);
+  T4 / T5 / T8 toplam `elleYok`'a (S157 — ayrıca S170 alanı); T6 / T7 pencere toplamları `elleYok` (madde 4); 6 `elleBelirsiz`. Dokunulmayan değerler (Kalan 200 / 700 / 0, Tahsil Edilen 0, T2 taksit 2
+  Ödenen 0, gecikmiş, elle borç kalemleri, bakiye) AYNEN.
+- **`d30`:** Q7 (iade 03.05 → satış kartı 05.05; cari EK-2B 32 tanımsız) toplam `elleYok`'a (S170 — KAPSAM'ın harfi: iadenin karttan önce yazılması ayrılmaz).
+- **`d43`:** U4 / U6 `takvim:cariToplam` `elleYok` + 2 `elleBelirsiz` (madde 4 — S149). **`d44`:** Y4 pencere toplamları `elleYok` (madde 4 — S162).
+- **İlk koşu (açıkça):** değişen beş elle tablonun 512 elle denetiminin HEPSİ yeni kâhinle ilk koşuda aynı (`elle-karsilastir.py`); hiçbir elle değer kâhine göre düzeltilmedi.
+
+### Dil ekleri (/3, bakım 19)
+- Adım alanı DEĞİŞMEDİ. Yeni çıktı anahtarı YOK. `belirsiz` metinleri: "kart <no> toplamı ve iadenin kapattığı taksitlerin 'Ödenen'i tanımsız (2.5.0 §30 Y19-2): … S170", "kart <no> toplamı tanımsız
+  (2.5.0 §30 Y19-3): cari <ad> C13.4 (11) tanımsız (SK-31) — … S157 (§30 Y19-3 — kart toplamı)", "cari <ad> takvim pencere toplamı tanımsız (2.5.0 §30 Y19-5 (3)): … S149". S162 / S166 / S163 metinleri
+  AYNEN (silinen anahtar listesi genişledi).
+
+### Eşleme notları (ana oturum için; `kos.mjs` bu bakımda AÇILMADI ve DEĞİŞMEDİ)
+- Koşucu eşlemesini etkileyen değişiklik YOK: adım alanı aynı; `hareket_sil` (d45 B6) mevcut adım. Senaryo adımlarının listedeki sırası = yazım sırası (koşucu adımları sırayla gönderiyor — §28 eşleme
+  notu): d45 B2 / B4'te Borç 500 iadeden ÖNCE gönderilmeli (B4'te tarihi iadeden sonra).
+- **Ana oturuma:** `model.py` değişti — mobil yazma kâhininin `cari_model_sha256`'sı ve kabul dosyası bu bakımda yeniden üretildi (madde 6; `test/bagimsiz/mobil-yazma/README.md` "2.5.0 bakımı 3").
+  Yapım aşaması listesi bu ajanca açılmadı (S162 alanının ölçütü, S170 / S157 toplamları ve pencere toplamları listede KAPANAN / DEĞİŞEN görünebilir — ayrıştırma ana oturumda).
+
+### C12w DENENMEYEN (bakım 19; neden)
+- Program koşulmadı (görev). Programın iadenin yazıldığı andaki durumu okuyup okumadığı, sonradan silinen borçta (B6) kartı yeniden hesaplayıp hesaplamadığı bilinmiyor.
+- S162 ölçütü: iki iade (biri borcun tamamı taşınırken, biri değil) aynı kartta; iade karttan ÖNCE yazılmış elle kart (S162 alanı değil — elle senaryo yok); geri yükleme / Silinenler'den geri gelen borç
+  (iade yazılırken silinmişti); satış kartında (S166) yazım sırası komşusu — elle senaryo yok (kural yolu aynı).
+- S170: satış kartında Değersiz / iade faturası artanı (S170 yalnız FATURASIZ stok iadesinde); iki satış kartı (SK-31 (b) — tanımsız); taksitli satış faturasının kendi kartı — elle senaryo yok.
+- Madde 4: sayaç (`takvim:cariKalemSayisi`, `projeksiyon:cari`) S163 alanlı bir kontrolde hiç yazılmadı (taramada 0) — silme yolu senaryoyla denenmedi. Rastgele üretici satış kartı + faturasız iade
+  üretmiyor (G3 rastgele farkı 0) — üretici değişmedi.

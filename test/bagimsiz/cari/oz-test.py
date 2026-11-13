@@ -48,6 +48,9 @@
 18. Bakım 18 (§29; S165 A, S118 B OKUMASI, S166 = B): kart tahsilatının sınırı TEK sayı K — avansla ödenmiş kısım ve para dışı pay küçültmez (SK-36 kalktı; d45 A6 artık değerle — KABUL, bakiye 400;
    d46 A7 / A8 S165'in örneği, Q7 / Q8 / Q9 SK-36 (a) sınıfı, R1 / R2 / R3 S118'in kendi örneği); S154 B para dışı paylı kartta (d46 A8); S166 = B satış kartı kolu BİLİNEN SINIR (d42 T6 metni);
    mutantlar 308 / 309 DEĞERLE.
+19. Bakım 19 (§30; S162 = B'nin ölçütü iadenin YAZILDIĞI an — BAŞ MİMAR KARARI; S170 = B; S157 = C kart toplamı; madde 4 türetilmiş toplamlar): d45 B2 karşılaştırma örneği doğru sırayla (değerle),
+   B3 iade önce / borç sonra SUS, B4 borcun yazımı önce / tarihi sonra (değerle), B5 başka borcun vadesi ilk taksitten önce (değerle), B6 borç iadeden sonra silindi (değerle); d42 T1 / T2 / T3
+   (S170), T4 / T5 / T8 (S157), d30 Q7 (S170) kart toplamı SUS; pencere toplamları S162 / S166 / S149 carilerinde SUS (d42 T6 / T7, d43 U4 / U6, d44 Y4, d45 B1 / B3); mutantlar 310 / 311 / 312 DEĞERLE.
 Çıktı: TAP benzeri sayılar + son satır "N/M denetim geçti". Çıkış 0 yalnız hepsi geçerse.
 """
 import importlib.util

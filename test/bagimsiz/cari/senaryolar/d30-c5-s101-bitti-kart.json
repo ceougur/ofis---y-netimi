@@ -1,7 +1,7 @@
 {
  "dil": "destekofis-cari/3",
  "bugun": "2026-06-15",
- "aciklama": "2.5.0 bakım 7 C19 (BAŞ MİMAR KARARI 10.11 — G2; KULLANICI S101 = A, 10.11 18:22; bugün 15.06): S101 yalnız SATIŞLA BİRLİKTE açılan kartta (stoktan veresiye satış + aynı işlemde taksit — `stok_satis_taksit`): borç avansla zaten kapanmışken kart 'Bitti'; kartın tahsilatı avansa eklenir; sonraki borç avanstan kapanır. Q1 kararın örneği (kart Bitti, Borç 0, gecikmiş 0, müşteri 200 alacaklı). Q2 kısmen avanslı satışa kart. Q3 / Q4 kart tahsilatı açık kısmı aşıyor / aşmıyor. Q5 SK-14 (susar). Q7 satış iade alacağıyla kapanmış (S101 'AVANSLA' — kurulmaz). Q8 aynı adlı iki cari. Q9 iki satış kartı — kart kendi satışını tüketir. ELLE 'Carinin Mevcut Borcunu Taksitlendir' (G2 (b)): Q6 / QR1 borç tamamen avansla kapanmış → RET (QR1'de sonraki Taksit Tahsilatı da RET), QR2 kısmen kapanmış + kart açık kısımdan büyük → RET, QR3 kart = açık borç → KABUL, QR4 1 kuruş aşan → RET, QR5 borç iadeyle kapanmış → RET; QS SK-18 (kalem / bakiye okuması ayrışır — susar). · bakım 15: S144 = C — BİLİNEN SINIR (§26), beklenti SUS'a çevrildi · bakım 17 (§28 Y17-4): Q1 / Q3 / Q5'in Taksit Tahsilatı kartın kendi kalanının iki okumasının arasında (avansla ödenmiş kısım — SK-36) — S101 A ('kartın tahsilatı avansa eklenir') gereği kabul: adım 'Fazlasını Avans Yaz' seçenekli; beklentiler değişmedi; KQ1 / KQ3 'Tahsil Edilen' S144 = C susması aynen",
+ "aciklama": "2.5.0 bakım 7 C19 (BAŞ MİMAR KARARI 10.11 — G2; KULLANICI S101 = A, 10.11 18:22; bugün 15.06): S101 yalnız SATIŞLA BİRLİKTE açılan kartta (stoktan veresiye satış + aynı işlemde taksit — `stok_satis_taksit`): borç avansla zaten kapanmışken kart 'Bitti'; kartın tahsilatı avansa eklenir; sonraki borç avanstan kapanır. Q1 kararın örneği (kart Bitti, Borç 0, gecikmiş 0, müşteri 200 alacaklı). Q2 kısmen avanslı satışa kart. Q3 / Q4 kart tahsilatı açık kısmı aşıyor / aşmıyor. Q5 SK-14 (susar). Q7 satış iade alacağıyla kapanmış (S101 'AVANSLA' — kurulmaz). Q8 aynı adlı iki cari. Q9 iki satış kartı — kart kendi satışını tüketir. ELLE 'Carinin Mevcut Borcunu Taksitlendir' (G2 (b)): Q6 / QR1 borç tamamen avansla kapanmış → RET (QR1'de sonraki Taksit Tahsilatı da RET), QR2 kısmen kapanmış + kart açık kısımdan büyük → RET, QR3 kart = açık borç → KABUL, QR4 1 kuruş aşan → RET, QR5 borç iadeyle kapanmış → RET; QS SK-18 (kalem / bakiye okuması ayrışır — susar). · bakım 15: S144 = C — BİLİNEN SINIR (§26), beklenti SUS'a çevrildi · bakım 17 (§28 Y17-4): Q1 / Q3 / Q5'in Taksit Tahsilatı kartın kendi kalanının iki okumasının arasında (avansla ödenmiş kısım — SK-36) — S101 A ('kartın tahsilatı avansa eklenir') gereği kabul: adım 'Fazlasını Avans Yaz' seçenekli; beklentiler değişmedi; KQ1 / KQ3 'Tahsil Edilen' S144 = C susması aynen · bakım 19 (§30 Y19-2 — S170 = B): Q7 satış kartı + faturasız iade — kart toplamı SUS",
  "dayanak": "KARARLAR.md §19 Y7-2, Y7-3, SK-18; §18 Y6-4, Y6-5, SK-14; S101 A, M1e, S99 A, 2B-S3 A",
  "elleBeklenen": {
   "k1:kart:KQ2:toplam": 60000,
@@ -64,7 +64,6 @@
   "k1:cari:Q6:gecikmis": 0,
   "adim:kq7:durum": "ok",
   "k1:kart:KQ7:var": true,
-  "k1:kart:KQ7:toplam": 60000,
   "k1:cari:Q7:bakiye": 0,
   "adim:kq9a:durum": "ok",
   "adim:kq9b:durum": "ok",
@@ -110,13 +109,14 @@
   "k1:cari:QR5:gecikmis": 0,
   "k1:cari:QS:bakiye": 30000
  },
- "elleYok": ["k1:kart:KQ5:odenen", "k1:kart:KQ5:kalan", "k1:hareket:q5x:kalan", "k1:hareket:q5y:kalan", "k1:cari:Q5:gecikmis", "k1:kart:KQ6:var", "k1:kart:KQ6:toplam", "k1:kart:KQ7:odenen", "k1:kart:KQ7:kalan", "k1:kart:KQ1:mevcutBorc", "k1:kart:KQ7:mevcutBorc", "k1:kart:KQ9A:mevcutBorc", "k1:kart:KQR1:var", "k1:kart:KQR1:toplam", "k1:kart:KQR2:var", "k1:kart:KQR2:toplam", "k1:kart:KQR4:var", "k1:kart:KQR4:toplam", "k1:kart:KQR5:var", "k1:kart:KQR5:toplam", "adim:kqs:durum", "k1:kart:KQS:var", "k1:kart:KQS:toplam", "k1:cari:QS:gecikmis", "k1:takvim:cariKalemSayisi", "k1:projeksiyon:cari", "k1:kart:KQ1:odenen", "k1:kart:KQ3:odenen"],
+ "elleYok": ["k1:kart:KQ5:odenen", "k1:kart:KQ5:kalan", "k1:hareket:q5x:kalan", "k1:hareket:q5y:kalan", "k1:cari:Q5:gecikmis", "k1:kart:KQ6:var", "k1:kart:KQ6:toplam", "k1:kart:KQ7:odenen", "k1:kart:KQ7:kalan", "k1:kart:KQ1:mevcutBorc", "k1:kart:KQ7:mevcutBorc", "k1:kart:KQ9A:mevcutBorc", "k1:kart:KQR1:var", "k1:kart:KQR1:toplam", "k1:kart:KQR2:var", "k1:kart:KQR2:toplam", "k1:kart:KQR4:var", "k1:kart:KQR4:toplam", "k1:kart:KQR5:var", "k1:kart:KQR5:toplam", "adim:kqs:durum", "k1:kart:KQS:var", "k1:kart:KQS:toplam", "k1:cari:QS:gecikmis", "k1:takvim:cariKalemSayisi", "k1:projeksiyon:cari", "k1:kart:KQ1:odenen", "k1:kart:KQ3:odenen", "k1:kart:KQ7:toplam"],
  "elleBelirsiz": [
   ["cari Q5 tanımsız", "SK-14"],
   ["cari Q7 tanımsız", "EK-2B 32"],
   ["adım kqs", "SK-18"],
   ["kart KQ1", "S144 = C"],
-  ["kart KQ3", "S144 = C"]
+  ["kart KQ3", "S144 = C"],
+  ["kart KQ7 toplamı", "S170 = B"]
  ],
  "adimlar": [
   {"id": "cq2", "islem": "cari_ac", "ad": "Q2", "isim": "Kısmi Bitti", "tarih": "2026-04-01"},
