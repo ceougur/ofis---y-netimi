@@ -434,3 +434,25 @@ Tarama: `grep -rn "allocate(\|shape(\|withQueue\|queueLedger\|shownTotalsOf\|sum
 | 20 | Kayıt geçmişi (GET /cases/:key/history planPaid) ve kart "Hareketler" listesi | plan_entries | kartın GERÇEK hareketleri (gösterge değil) | hareket | hareket — AYNEN |
 
 Kalıcı tarama testi (test/tyk-birlesik8-250.test.mjs "kaynak taraması"): kart kaydını okuyan her uç (routes/plans.mjs `shape(` çağıranları) bu tablodaki bir sınıfa bağlıdır; yeni bir çağıran eklenince test kırmızı olur.
+
+### 15.2 Değişenler (İş 1–8; her iş ayrı commit — karar metinleri değişmedi)
+- **İş 1 (S129 = A, S142 = A)**: kayıt detayı (forCase) kuyruk görünümü; cari kartı özeti `queueSummaryOf` (Tahsil Edilen / Kalan + durum + geciken taksit sayısı + sıradaki);
+  Cari Listesi `summariesByAccount(ids, { queue })` → satırın "N geciken" (`planOverdueCount`) ve sıradaki taksiti kuyruktan (eski alanlar overdueInstallment* kartın kendi hesabında
+  KALDI — karşılaştırmalar için); kart penceresinde hareketsiz ama Tahsil Edilen'i olan kartta açıklama cümlesi. Kapatılmış kartın kayıt detayı satırları (API) artık pencereyle aynı
+  (Kalan 0 / Ödendi) — ekranda kayıt detayı yalnız açık kartları gösterir (S144 = C gösterimi değişmedi).
+- **İş 2**: 'Kalanı Aşan Tutar' iletisi "kartın kendi tahsilatlarına göre kalan …" (kural S118 = B aynen).
+- **İş 3 (S151 = B, S158 = A)**: kuyruğun `collected`ı faturasız stok iadesi / Değersiz Alacak payını saymaz, `returned` ayrı; gösterim: Tahsil Edilen + Kalan + İade / Değersiz ile
+  Kapanan = Toplam (fazla tahsilat hariç). Kalan, bakiye, gecikmiş, takvim, Vade Takip önce → sonra birebir (16 kurgu). Kartın toplamını iade kadar KÜÇÜLTEN yazım (trimCovers —
+  bakiye kartın kapsamının altına düşünce) DEĞİŞMEDİ: karar metni bunu söylemiyor → TOPLU SORU (raporda; gecikmişi değiştirir).
+- **İş 4 (S150 = A)**: Vade Takip 'Gecikmiş' hazır aralığı = bugünden önceki kalemler + durumu Gecikmiş olan kalemler (dueList `keep`); elle aralık ve öbür hazır aralıklar aynen.
+  Bugün / 7 Gün aralığı sözü aralığın bitişinden ileride olan gecikmiş kalemi göstermez (Gecikmiş Tahsilat 400 ↔ 500) — karar 'her aralıkta aynı' diyor, görev metni 'öbür aralıklar
+  değişmez' → TOPLU SORU.
+- **İş 5 (S153 = A)**: üç kurgu gerçek programda (API) kuruldu; gecikmiş dolgulu / dolgusuz FARKLI ÜRETİLDİ (ör. 1.256 ↔ 1.214) — ama kök neden yakınsama sınırı DEĞİL: sınır
+  kaldırılınca da (yakınsıyor) fark aynı; S120 kartının S101 ölçüm kümesine kartın açılışından çok önce KAPANMIŞ elle borçlar giriyor (avans 0 → 85 / 407). Kural sorusu (ders 43)
+  → kod değişmedi, ACİL SORU.
+- **İş 6**: fark fikstürüne kart göstergesi + satır Ödenen'i (v2.4.9 gerçek koduyla okundu; 16 yeni fark karar numarasıyla); V4 → S144 = C, V2 → S140 = A. K1 mutantı eşdeğer
+  (12.000 rastgele + 155 dolgulu caride asıl ↔ mutant birebir); N4 gözlenebilir davranış farkı vermiyor (yalnız iç bellek; kimlik UUID, geri alınan kart yeniden sorgulanmaz).
+- **İş 7 (S145 = A, S155 = A)**: ret iletisi yalnız neden 'doubtful:balance' ise "Bu kayıt carinin borcunu açık şüpheli tutarın altına düşürür (borç …, açık şüpheli …); …" — kural,
+  409 ledger-integrity ve öbür nedenlerin iletisi aynen. Zil okuma yardımcısı bekleme süresini yazar, 5 sn üstünde UYARI.
+- **İş 8 (DK-B7 ORTA-1)**: silinirken gizlenen nakit satırlarının özeti (ayar `cash-hidden:<kaynak>:<kimlik>`; tek satırda Silinenler yükünden); geri yükleme yalnız özetle aynı
+  kimlik + tarih + tutardaki satırı açıklar; özetsiz öğe bugünkü gibi.
