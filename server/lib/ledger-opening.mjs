@@ -210,20 +210,37 @@ export function openingReviewDrift(store) {
 /** KG-16 listesi ve kararı (uçlar: routes/opening-review.mjs). */
 export function createOpeningReview({ store }) {
   const ready = () => has(store, "account_entries") && hasColumn(store, "account_entries", "opening_review");
-  function list({ all = false } = {}) {
+  // Ç5-A tur 2c İş 3 (C5-ACILIS-TASARIM §17.10; tur 1e DÜŞÜK-3): sayfalama (limit / offset; verilmezse bütün liste — tur 1'in çıktısı AYNEN) ve toplam (`total`, yalnız sayfalı);
+  // locked (kilit tarihi) verilirse her satıra `locked` (kilitli dönemde mi — ekran; B16) ve sayılara kilitli dönemde onay bekleyen sayı (`lockedCandidate`).
+  function list({ all = false, limit = 0, offset = 0, locked = "" } = {}) {
     if (!ready()) return { items: [], counts: { candidate: 0, confirmed: 0, rejected: 0 } };
+    const where = `e.opening_review ${all ? "IN ('candidate', 'confirmed', 'rejected')" : "= 'candidate'"}`;
+    const paged = Number.isInteger(limit) && limit > 0;
     const items = store
       .all(
         `SELECT e.id, e.account_id AS accountId, a.name AS accountName, a.type AS accountType, e.kind, e.amount, e.date, e.note, e.opening_review AS review
          FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
-         WHERE e.opening_review ${all ? "IN ('candidate', 'confirmed', 'rejected')" : "= 'candidate'"} ORDER BY e.date, e.rowid`,
+         WHERE ${where} ORDER BY e.date, e.rowid${paged ? " LIMIT ? OFFSET ?" : ""}`,
+        ...(paged ? [limit, Math.max(0, Math.trunc(Number(offset) || 0))] : []),
       )
-      .map(row => ({ ...row, amount: roundMoney(Number(row.amount) || 0) }));
-    const counts = { candidate: 0, confirmed: 0, rejected: 0 };
+      .map(row => ({ ...row, amount: roundMoney(Number(row.amount) || 0), ...(locked ? { locked: row.date <= locked } : {}) }));
+    const out = { items, counts: counts({ locked }) };
+    if (paged) out.total = Number(store.get(`SELECT COUNT(*) AS n FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL WHERE ${where}`)?.n) || 0;
+    return out;
+  }
+  /** Durum sayıları (zil: tek GROUP BY); locked verilirse kilitli dönemde onay bekleyen sayı da (`lockedCandidate`; B16 — Kural Farkı fişi bunlar bitmeden yazılmaz). */
+  function counts({ locked = "" } = {}) {
+    const out = { candidate: 0, confirmed: 0, rejected: 0 };
+    if (!ready()) return out;
     for (const row of store.all("SELECT e.opening_review AS review, COUNT(*) AS n FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL WHERE e.opening_review <> '' GROUP BY e.opening_review")) {
-      if (Object.hasOwn(counts, row.review)) counts[row.review] = Number(row.n) || 0;
+      if (Object.hasOwn(out, row.review)) out[row.review] = Number(row.n) || 0;
     }
-    return { items, counts };
+    if (locked) {
+      out.lockedCandidate = out.candidate
+        ? Number(store.get("SELECT COUNT(*) AS n FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL WHERE e.opening_review = 'candidate' AND e.date <= ?", locked)?.n) || 0
+        : 0;
+    }
+    return out;
   }
   /**
    * Karar: onay (confirmed) ya da ret (rejected). Satırın tutarı / tarihi / yönü / açılış işareti (is_opening) DEĞİŞMEZ; yalnız durum. Aynı karar tekrarı değişiklik yazmaz.
@@ -235,7 +252,8 @@ export function createOpeningReview({ store }) {
     const gated = hasColumn(store, "account_entries", "opening_review_gate");
     const row = store.get(`SELECT e.id, e.opening_review AS review, ${gated ? "e.opening_review_gate" : "e.opening_review"} AS gate, e.account_id AS accountId FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL WHERE e.id = ?`, id);
     if (!row || !(DECIDED.has(String(row.review)) || DECIDED.has(String(row.gate)))) return { status: 404 };
-    const next = decision === "confirm" ? OPENING_REVIEW.confirmed : OPENING_REVIEW.rejected;
+    // Ç5-A tur 2c İş 3: "undo" — kararı geri al: satır yeniden onay bekler (S47: defterde 519). Yalnız listedeki (kararlı) satır; para alanına dokunmaz.
+    const next = decision === "confirm" ? OPENING_REVIEW.confirmed : decision === "undo" ? OPENING_REVIEW.candidate : OPENING_REVIEW.rejected;
     const { gate, ...head } = row;
     if (row.review === next && gate === next) return { status: 200, row: { ...head, review: next }, changed: false };
     // Para alanı değil (tutar, yön, tarih, yol, bakiye, Kasa değişmez; yalnız Ana Defter'in karşı hesabı 519 ↔ 602 / 770): para koruması (bank.post) dışında, gerekçeli ham yazım
@@ -246,7 +264,21 @@ export function createOpeningReview({ store }) {
     });
     return { status: 200, row: { ...head, review: next, previous: row.review }, changed: true };
   }
-  return { list, decide };
+  /**
+   * Ç5-A tur 2c İş 3 — toplu karar. Çağıran AYNI işlemde çağırır (routes/opening-review.mjs store.tx): listede olmayan kimlik varsa { status: 404, missing } döner ve çağıran işlemi
+   * geri alır — yarım toplu karar yazılmaz. Dönüş: { status: 200, rows: [{ id, accountId, review, previous?, changed }] }.
+   */
+  function decideMany(ids, decision) {
+    if (!ready()) return { status: 503 };
+    const rows = [];
+    for (const id of [...new Set(ids.map(String))]) {
+      const result = decide(id, decision);
+      if (result.status !== 200) return { status: result.status, missing: id };
+      rows.push({ ...result.row, changed: result.changed });
+    }
+    return { status: 200, rows };
+  }
+  return { list, counts, decide, decideMany };
 }
 
 // ---- 2.5.0 Ç5-A tur 2b İş 2 — Kural Farkı Düzeltme Fişi (C5-ACILIS-TASARIM §3.3, §17.8; KG-15 A; EK-1 M7; BAŞ MİMAR B14 (a), B16; KULLANICI S76 = A) ----

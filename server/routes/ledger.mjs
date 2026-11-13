@@ -614,7 +614,7 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     let code = "";
     if (!lock) [reason, code] = ["Dönem kilidi yok; düzeltilecek kilitli dönem farkı yok.", "rule-diff-no-lock"];
     else if (pendingFreeze || cover !== lock) [reason, code] = ["Kilitli dönemin defteri dondurulurken düzeltme fişi yazılmaz; dondurma bitince yeniden açın.", "rule-diff-freezing"];
-    else if (candidates) [reason, code] = [`Önce Açılış Olabilir listesini tamamlayın: kilitli dönemde onay bekleyen ${candidates} kayıt var (Cariler › Açılış Olabilir Kayıtlar).`, "rule-diff-candidates"];
+    else if (candidates) [reason, code] = [`Önce Açılış Olabilir listesini tamamlayın: kilitli dönemde onay bekleyen ${candidates} kayıt var (Yönetim › Sistem › Açılış Olabilir Kayıtlar).`, "rule-diff-candidates"];
     else if (!plan.lines.length) [reason, code] = [posted.active.length ? "Fişle düzeltilebilen fark kalmadı." : "Düzeltilecek kural farkı yok.", "rule-diff-nothing"];
     else if (date > today) [reason, code] = ["Kilit bugünün tarihinde; düzeltme fişi yarın yazılabilir.", "rule-diff-lock-today"];
     const lines = plan.lines.map(line => ({ ...line, name: accountName(line.account) }));
