@@ -400,6 +400,18 @@ Toplam 50 anahtar (25 Ödenen, 25 Kalan) + 2 yeni senaryo; **kararla AÇIKLANAMA
 yok (E05 / E41'de yalnız `aciklama`); bakiye, Kasa, banka, taksit Ödenen'leri, `fazla`, `tahsilatSayisi`, adım yanıtları hiçbir eski senaryoda değişmedi. Üst alanlar: `cari_model_sha256` (cari
 kâhini bakım 17 + 18), `kaynak`, `secim_notu`. Kabul: 58 senaryo (55 elle, 3 rastgele), 8.218 adım.
 
+### Kanıt (bakım 2; `docs/kanit/2026-11-13/kahinmobil2/`, `tools/kanit.mjs kos`; kod commit'i `831e709`, ağaçta yalnız bu kanıt klasörü izlenmeyen)
+- **Öz test 162/162, çıkış 0 — TZ=UTC ve TZ=Europe/Istanbul** (`kahinmobil2-oz-utc|ist.{txt,json,log}`; iki çıktı `[kanit]` satırı dışında bayt bayt aynı): A1 kabul güncel, A2 cari kâhini sha
+  eşleşiyor, 55 elle × 256 birleşim model = elle, R1–R3 × 10 birleşim model = akış, C4, D1–D8, **63/63 mutasyon** (51 / 62 E05'te, 63 E43'te ilk yakalayan), J1, **K1** (51 / 62 E05 / E41 / E43'te,
+  63 E43'te değerle; iki kanal × öneri / eşdeğer), H, H2 (cari kâhininin mutasyon taraması). Koşu günlüğü `kos-gunlugu.txt` (yük 2,2 → 5,7 — 4 çekirdek; başka işlerin yükü; sonuç belirlenimci).
+- Üretici denetimi (`kahinmobil2-uretici-denetle.*`): elle 55 × 256, rastgele 3 tohum × 10 birleşim model = akış; komut çıkışı 0 (kanıt aracı TAP özeti bulamadığı için "BELİRSİZ" yazar —
+  komut TAP üretmez). Yazan koşu `uretici-yaz1.txt`.
+- **ESKİ kâhin (bakım 2'den önceki `kahin.py`, ayrı kopya — ders 23) YENİ elle beklentilerde KIRMIZI, beklenen nedenle** (`eski-kirmizi-c18.txt`, `eski-kirmizi-c16.txt`; araç
+  `arac/eski-kirmizi.py`; 55 elle × öneri / eşdeğer = 110): cari kâhini bakım 18 ile **12 kırmızı / 98 aynı** — E05 / E41 "cari kâhini (2.5.0) adımı reddetti" (çeviri açığı:
+  `fazlasiniAvansYaz` yok), E43 "bilinmeyen islem: 'stok_iade'"; cari kâhini bakım 16 (`0c945d05` — eski kabulun kâhini) ile **12 kırmızı / 98 aynı** — E05 `KT1:odenen` [120000, 130000] ≠ 130000
+  ve `KT1:kalan` [0, −10000] ≠ 0, E41 [100000, 150000] ≠ 150000 ve [0, −50000] ≠ 0 (SM-1 listesi — S154 öncesi okuma), E43 `stok_iade` dilde yok. Kırmızı olmayan 98 eski senaryonun beklentisi değişmedi.
+- Kabul farkı (`kabul-fark-dokum.json`, `arac/kabul-fark.py`): 50 değişen anahtarın hepsi S154 B sınıfında, BEKLENMEYEN 0. Program açılmadı; `program-surucu.mjs` koşulmadı ve değişmedi.
+
 ## Senaryo dili `destekofis-mobil-yazma/1`
 
 ```json
