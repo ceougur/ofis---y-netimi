@@ -73,7 +73,8 @@ const shot = async name => {
   await page.screenshot({ path: path.join(OUT, `${String(shotNo).padStart(2, "0")}-${name}.png`) });
 };
 const modal = ".hof-modal-backdrop.is-visible";
-const top = `${modal}:last-of-type`;
+// Ders 39: en üstteki pencere konuma bağlanmaz — pencereden sonra gövdeye eklenen bir div (bildirim kabı) `:last-of-type`ı boşa düşürür (zorla: pencere-yaris-zorla.mjs, HOF_ZORLA=div).
+const top = `${modal}:nth-last-child(1 of ${modal})`;
 const call = (url, body) => page.evaluate(async ([url, body]) => (await (await fetch(url, { method: body ? "POST" : "GET", headers: { "content-type": "application/json" }, body: body ? JSON.stringify(body) : undefined })).json()).data, [url, body]);
 const closeAll = async () => {
   for (let i = 0; i < 6 && (await page.$(modal)); i += 1) {

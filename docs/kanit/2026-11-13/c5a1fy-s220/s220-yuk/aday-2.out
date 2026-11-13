@@ -1,0 +1,72 @@
+[govde-izle] kuruldu
+
+■ Kurulum: yönetici girer, başlangıç tablosu; 10 müşterinin taksitleri Excel'den (Ödenen kolonuyla) arayüzden
+[govde-izle] 161 + nav#hof-skip.hof-skip
+[govde-izle] 161 + aside#hof-license-bar.hof-license-bar.is-info
+[govde-izle] 326 + div#hof-search-panel.hof-search-panel
+[govde-izle] 510 + div.hof-modal-backdrop "Veri okunuyor"
+[govde-izle] 666 + div.hof-modal-backdrop "Yeni veri: baslangic.xlsx"
+[govde-izle] 136 + nav#hof-skip.hof-skip
+[govde-izle] 137 + aside#hof-license-bar.hof-license-bar.is-info
+[govde-izle] 188 + div#hof-toasts.hof-toasts
+[govde-izle] 201 + div#hof-search-panel.hof-search-panel
+[govde-izle] 589 metin hof-toasts: "baslangic.xlsx" yüklendi: 1 kayıt. Tüm bilgisayarlar aynı veriyi görür.×
+[govde-izle] kuruldu
+[govde-izle] 685 + div.hof-modal-backdrop "Verinizi tanıyoruz"
+[govde-izle] 174 + nav#hof-skip.hof-skip
+[govde-izle] 175 + aside#hof-license-bar.hof-license-bar.is-info
+[govde-izle] 285 + div#hof-search-panel.hof-search-panel
+[govde-izle] 734 + div.hof-modal-backdrop "Taksitler"
+[govde-izle] 1164 + div.hof-modal-backdrop "Taksit Kartlarını Toplu Yükle"
+[govde-izle] 1406 + input
+[govde-izle] 1430 + div#hof-toasts.hof-toasts
+[govde-izle] 1662 + div.hof-modal-backdrop "Excel’den Yükle: Kolonları Eşle"
+[govde-izle] 1835 metin hof-toasts: taksit-odenen.xlsx okunuyor…×
+  ✓ 10 kart · toplam 100000 · ödenen 15000 (Excel'de 10.000 + programda 5.000)
+
+■ Raporlar penceresi: ilk sekme (Cari Ekstre / Mizan) Bu Yıl ile açılır, altta TOPLAM
+[govde-izle] 4104 + div.hof-modal-backdrop "Raporlar"
+  ✓ Mizan dönemi: thisYear (Bu Yıl)
+  ✓ Mizan TOPLAM: TOPLAM · ₺0,00 · ₺100.000,00 · ₺15.000,00 · ₺85.000,00 · Borçlu
+
+■ Cari Listesi ve Bakiyeler: toplam borç / toplam alacak / müşteri alacakları / net kartları ve TOPLAM satırı
+[govde-izle] 5430 + div.hof-modal-backdrop "Raporlar"
+  ✓ Toplam Borç ₺100.000,00
+  ✓ Toplam Alacak ₺15.000,00
+  ✓ Müşteri Alacakları ₺85.000,00
+  ✓ Net Bakiye (Müşteri Alacakları − Tedarikçi Borçları) ₺85.000,00
+  ✓ TOPLAM satırı: Borç ₺100.000,00 · Alacak ₺15.000,00 · Bakiye ₺85.000,00 Borçlu
+  ✓ telefon tek satırda: "0532 100 00 01" (1 satır)
+  ✓ 10 kolonlu Cari Listesi 1440 px ekranda yana taşmıyor (1024 / 1024)
+
+■ Cari Bazında Tahsilat (kullanıcının 'çalışmıyor' dediği rapor): Excel'de ödenmiş + programda alınan
+[govde-izle] 7702 + div.hof-modal-backdrop "Raporlar"
+  ✓ açılış dönemi thisYear (Bu Yıl)
+  ✓ kartlar: Önceden Ödenen ₺10.000,00 · Taksit ₺5.000,00 · Toplam ₺15.000,00
+  ✓ 10 satır; TOPLAM satırı ₺15.000,00
+  ✓ 9 kolonlu tablo 1440 px ekranda yana taşmıyor (1024 / 1024)
+  ✓ 1440 × 1000: TOPLAM pencere kaydırılmadan görünür (alt 910 ≤ 970)
+  ✓ 1366 × 768: TOPLAM pencere kaydırılmadan görünür (alt 691 ≤ 750); tablo kutusu 265 px (en az 160)
+  ✓ 1366 × 768: pencere tabloya kaydırılınca da TOPLAM görünür (alt 690 ≤ 750)
+
+■ Boş dönem ipucu ve dönem hafızası (Satış Faturaları)
+[govde-izle] 11217 + div.hof-modal-backdrop "Raporlar"
+  ✓ Satış Faturaları ilk açılış: thisYear
+  ✓ boş dönem: "Bu dönemde kayıt yok. Tüm Zamanları Göster"
+  ✓ Tüm Zamanları Göster → Tüm Zamanlar seçildi
+[govde-izle] 15503 + div#hof-notices.hof-notices
+[govde-izle] 15665 + div.hof-modal-backdrop "Raporlar"
+[govde-izle] 15903 metin hof-notices: ₺ TAHSİLAT ALINMADI · VADESİ BUGÜN Müşteri 01 Tahsil Edilecek Fatura FIS2026000000001 · vade 13.11.2026 · ₺1.200,00 Tahsilat Gir Fatura Kartını Aç × 1/1
+  ✓ yeniden açınca son seçilen dönem hatırlandı: all
+  ✓ 15 kolonlu Satış Faturaları: pencere taşmıyor, tablo kendi içinde kayıyor, TOPLAM Kalan ₺1.200,00 görünür
+
+■ TOPLAM satırı kaydırınca tablonun altında sabit (uzun liste)
+[govde-izle] 36399 + div.hof-modal-backdrop "Raporlar"
+  ✓ TOPLAM görünür ve sabit (TOPLAM |  |  |  |  | ₺100.000,00 | ₺15.000,00 | ₺85.000,00 |  |  | )
+
+■ Sol üstte şirket sayısı rozeti yok (2 şirket)
+[govde-izle] 247 + div#hof-search-panel.hof-search-panel
+  ✓ şirket kutusu: "ŞİRKET 001 · Şirket 1" (sayı rozeti yok)
+  ✓ sayfada JavaScript hatası yok
+
+Senaryo 2.0.20: 25 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-220-tani

@@ -1,0 +1,18 @@
+başladı 15:37:55 yük 0.48 0.72 0.95 · N 4 · işlemci yükü 2
+ana 1 çıkış 0 · Senaryo 2.0.20: 25 geçti, 0 kaldı. Ekranlar: test/e2e/arti · yük 2.60
+   toasts/notices: 192 + div#hof-toasts.hof-toasts;655 + div.hof-modal-backdrop "Taksitler";1322 + div#hof-toasts.hof-toasts;13979 + div#hof-notices.hof-notices;
+aday 1 çıkış 0 · Senaryo 2.0.20: 25 geçti, 0 kaldı. Ekranlar: test/e2e/arti · yük 3.03
+   toasts/notices: 242 + div#hof-toasts.hof-toasts;579 + div.hof-modal-backdrop "Taksitler";1322 + div#hof-toasts.hof-toasts;14429 + div#hof-notices.hof-notices;
+ana 2 çıkış 0 · Senaryo 2.0.20: 25 geçti, 0 kaldı. Ekranlar: test/e2e/arti · yük 3.37
+   toasts/notices: 238 + div#hof-toasts.hof-toasts;487 + div.hof-modal-backdrop "Taksitler";1243 + div#hof-toasts.hof-toasts;14298 + div#hof-notices.hof-notices;
+aday 2 çıkış 0 · Senaryo 2.0.20: 25 geçti, 0 kaldı. Ekranlar: test/e2e/arti · yük 3.72
+   toasts/notices: 188 + div#hof-toasts.hof-toasts;734 + div.hof-modal-backdrop "Taksitler";1430 + div#hof-toasts.hof-toasts;15503 + div#hof-notices.hof-notices;
+ana 3 çıkış 0 · Senaryo 2.0.20: 25 geçti, 0 kaldı. Ekranlar: test/e2e/arti · yük 3.57
+   toasts/notices: 237 + div#hof-toasts.hof-toasts;615 + div.hof-modal-backdrop "Taksitler";1702 + div#hof-toasts.hof-toasts;15183 + div#hof-notices.hof-notices;
+aday 3 çıkış 0 · Senaryo 2.0.20: 25 geçti, 0 kaldı. Ekranlar: test/e2e/arti · yük 3.42
+   toasts/notices: 266 + div#hof-toasts.hof-toasts;609 + div.hof-modal-backdrop "Taksitler";1614 + div#hof-toasts.hof-toasts;14002 + div#hof-notices.hof-notices;
+ana 4 çıkış 0 · Senaryo 2.0.20: 25 geçti, 0 kaldı. Ekranlar: test/e2e/arti · yük 3.26
+   toasts/notices: 213 + div#hof-toasts.hof-toasts;617 + div.hof-modal-backdrop "Taksitler";1366 + div#hof-toasts.hof-toasts;13958 + div#hof-notices.hof-notices;
+aday 4 çıkış 0 · Senaryo 2.0.20: 25 geçti, 0 kaldı. Ekranlar: test/e2e/arti · yük 3.34
+   toasts/notices: 506 + div.hof-modal-backdrop "Taksitler";1496 + div#hof-toasts.hof-toasts;18415 + div#hof-notices.hof-notices;
+bitti 15:47:37 · aday ağacı temiz mi: 0 · ana kod ağacı: 0

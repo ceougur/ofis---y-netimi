@@ -1,0 +1,66 @@
+// ANA OTURUM (dar kontrol betiği değil): Ç5-A tur 1f ajanının bildirdiği 'kilitli dönemdeki tahsilatın fatura bağı' — yeniden üretim + AYIRT EDİCİ örnek.
+// Bugün 20.10; kilit 10.10. Tahsilat 09.10 (kilitli) ↔ fatura 15.10 (kilit dışı). Fatura bugün iptal edilince kilitli dönemin defteri değişiyor mu?
+// A: carinin açık şüphelisi VAR · B: şüphelisi YOK (ayırt edici) · C: kilitli tahsilatı doğrudan düzenleme (denetim: 409 bekleniyor).
+import { boot, day, print } from "./k.mjs";
+const h = await boot();
+const { api } = h;
+const app = h.server.app;
+const out = {};
+const st = r => `${r.status}${r.status >= 400 ? " " + String(r.data?.error?.message || r.data?.error || r.data?.message || "").slice(0, 160) : ""}`;
+const LOCK = day(-10);
+const lines = () => {
+  const m = new Map();
+  for (const e of app.ledger.build()) {
+    if (!(String(e.date) <= LOCK)) continue;
+    for (const l of e.lines || []) {
+      const key = `${e.date}|${l.account}|${l.party ? "cari" : ""}|B${l.debit || 0}|A${l.credit || 0}`;
+      m.set(key, (m.get(key) || 0) + 1);
+    }
+  }
+  return m;
+};
+const diff = (a, b) => {
+  const d = [];
+  for (const key of new Set([...a.keys(), ...b.keys()])) { const n = (b.get(key) || 0) - (a.get(key) || 0); if (n) d.push(`${n > 0 ? "+" : "-"}${key}`); }
+  return d.sort();
+};
+const logN = () => { try { return app.store.get("SELECT COUNT(*) AS n FROM integrity_log").n; } catch { return "tablo yok"; } };
+const scan = async () => {
+  await app.ledger.snapshots?.runPending?.();
+  const s = app.integrity.scan();
+  const w = app.integrity.scanInBackground ? await app.integrity.scanInBackground() : { findings: [] };
+  return [...new Set([...(s.findings || []), ...(w.findings || [])].map(f => f.code))];
+};
+const sayilar = async a => { const c = await h.card(a); const t = c.totals || {}; return { bakiye: t.balance, supheli: t.doubtful ?? t.doubtfulOpen ?? t.doubtfulBalance ?? "(alan yok)" }; };
+try {
+  const mk = async (ad, supheli) => {
+    const a = await h.account(ad);
+    await h.entry(a, { kind: "debt", amount: "1000", date: day(-60) });
+    let s = "-";
+    if (supheli) s = st(await api.post(`/api/workspace/accounts/${a.id}/doubtful`, { amount: 600, date: day(-30), reason: "lawsuit", note: "ana oturum" }));
+    const inv = await api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: a.id, issueDate: day(-5), lines: [{ name: "Danışmanlık", qty: 1, unitPrice: 300, vatRate: 0 }], payment: { rest: "open" } });
+    const t = await api.post(`/api/workspace/accounts/${a.id}/entries`, { kind: "in", amount: "100", date: day(-11), method: "cash", cashForce: true, similarOk: true, invoiceId: inv.data?.id || "" });
+    const row = app.store.get("SELECT id, invoice_id AS inv FROM account_entries WHERE account_id = ? AND kind = 'in'", a.id);
+    return { a, invId: inv.data?.id, entryId: row?.id, kurulum: { supheliyeAlma: s, fatura: st(inv), tahsilat: st(t), bagli: Boolean(row?.inv) } };
+  };
+  const A = await mk("FB Supheli Var", true);
+  const B = await mk("FB Supheli Yok", false);
+  const C = await mk("FB Duzenle", true);
+  out.kurulum = { A: A.kurulum, B: B.kurulum, C: C.kurulum };
+  out.kilit = st(await api.put("/api/admin/period-lock", { lockedUntil: LOCK }));
+  out.kilittenSonraTarama = await scan();
+  for (const [ad, x] of [["A (açık şüpheli VAR)", A], ["B (şüpheli YOK)", B]]) {
+    const once = lines(); const log0 = logN(); const s0 = await sayilar(x.a);
+    const r = await api.post(`/api/workspace/invoices/${x.invId}/cancel`, { reason: "deneme" });
+    const bulgu = await scan();
+    const row = app.store.get("SELECT invoice_id AS inv FROM account_entries WHERE id = ?", x.entryId);
+    out[ad] = { iptal: st(r), bagKaldiMi: Boolean(row?.inv), kilitliDonemDefterFarki: diff(once, lines()), tarama: bulgu, gunlukArtisi: typeof log0 === "number" ? logN() - log0 : log0, once: s0, sonra: await sayilar(x.a) };
+  }
+  {
+    const once = lines();
+    const r = await api.put(`/api/workspace/accounts/${C.a.id}/entries/${C.entryId}`, { kind: "in", amount: "100", date: day(-11), method: "cash", invoiceId: "" });
+    out["C (kilitli tahsilatın bağını DOĞRUDAN kaldır)"] = { duzenle: st(r), kilitliDonemDefterFarki: diff(once, lines()) };
+  }
+} catch (e) { out.HATA = String(e.stack || e).slice(0, 700); }
+print(out);
+await h.server.close();

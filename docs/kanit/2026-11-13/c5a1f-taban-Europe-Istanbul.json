@@ -1,0 +1,158 @@
+{
+  "ad": "c5a1f-taban-Europe-Istanbul",
+  "komut": "node --test --test-reporter=tap test/defter-kaynak-iz-250.test.mjs test/kilit-izi-alanlar-250.test.mjs",
+  "commit": "2e257e21698adceb1e3787f432258ae4c99f6893",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T04:47:07.846Z",
+  "sure_sn": 29.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 37,
+    "gecen": 4,
+    "basarisiz": 33,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 33 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Ç5-A tur 1f — Ana Defter türetmesinin okuduğu her sütun kilit izinde ya da gerekçeli açık istisnada (kalıcı kaynak tarama; §16) › türetmenin okuduğu her sütun: kilitli satırda değişince iz değişir ya da açık istisnada; istisnalar güncel (hepsi türetmede okunuyor)",
+      "konum": "test/defter-kaynak-iz-250.test.mjs:242:3",
+      "hata": "kilit izinde OLMAYAN ve istisna listesinde de olmayan türetme sütunları (LOCK_SQL'e ekleyin ya da gerekçeyle istisnaya yazın): account_entries.doubtful_skip, account_entries.source, account_entries.source_id, cash_entries.transfer_id, cheque_collections.event_id, cheques.account_id, cheques.status, invoices.gl_json, invoices.try_stoppage, invoices.try_withheld, plan_entries.cheque_id, plan_entries.opening, plans.created_at, stock_moves.reason · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz › [1] satır içi tarama — Kasa ↔ Banka transferinin bağı temizlenir",
+      "konum": "test/kilit-izi-alanlar-250.test.mjs:232:5",
+      "hata": "satır içi — Kasa ↔ Banka transferinin bağı temizlenir: ledger:snapshot bulunmalı: [\"gl:102\",\"bank:sub:102.01\",\"bank:event:bacc-5aa3deae-f3a8-4dd6-bb9e-6a0e0e5b6b88\",\"bank:transfer:bacc-5aa3deae-f3a8-4dd6-bb9e-6a0e0e5b6b88\"] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz › [2] arka plan taraması — Kasa ↔ Banka transferinin bağı temizlenir; [3] program kapalıyken yapılan aynı yazım açılışta bulunur",
+      "konum": "test/kilit-izi-alanlar-250.test.mjs:251:5",
+      "hata": "arka plan — Kasa ↔ Banka transferinin bağı temizlenir: ledger:snapshot bulunmalı: [\"gl:102\",\"bank:sub:102.01\",\"bank:event:bacc-5aa3deae-f3a8-4dd6-bb9e-6a0e0e5b6b88\",\"bank:transfer:bacc-5aa3deae-f3a8-4dd6-bb9e-6a0e0e5b6b88\"] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz › [1] satır içi tarama — cari satırının kaynağı (evrak → elle)",
+      "konum": "test/kilit-izi-alanlar-250.test.mjs:232:5",
+      "hata": "satır içi — cari satırının kaynağı (evrak → elle): ledger:snapshot bulunmalı: [] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz › [2] arka plan taraması — cari satırının kaynağı (evrak → elle); [3] program kapalıyken yapılan aynı yazım açılışta bulunur",
+      "konum": "test/kilit-izi-alanlar-250.test.mjs:251:5",
+      "hata": "arka plan — cari satırının kaynağı (evrak → elle): ledger:snapshot bulunmalı: [] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz › [1] satır içi tarama — cari satırının kaynak kimliği başka evrağa",
+      "konum": "test/kilit-izi-alanlar-250.test.mjs:232:5",
+      "hata": "satır içi — cari satırının kaynak kimliği başka evrağa: ledger:snapshot bulunmalı: [\"gl:101\",\"cheque:account\",\"cheque:collections\"] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz › [2] arka plan taraması — cari satırının kaynak kimliği başka evrağa; [3] program kapalıyken yapılan aynı yazım açılışta bulunur",
+      "konum": "test/kilit-izi-alanlar-250.test.mjs:251:5",
+      "hata": "arka plan — cari satırının kaynak kimliği başka evrağa: ledger:snapshot bulunmalı: [\"gl:101\",\"cheque:account\",\"cheque:collections\"] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz › [1] satır içi tarama — şüpheli alacakta 'Normal Cariye İşlendi' işareti (128 → 120; sayı / tutar aynı)",
+      "konum": "test/kilit-izi-alanlar-250.test.mjs:232:5",
+      "hata": "satır içi — şüpheli alacakta 'Normal Cariye İşlendi' işareti (128 → 120; sayı / tutar aynı): ledger:snapshot bulunmalı: [] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz › [2] arka plan taraması — şüpheli alacakta 'Normal Cariye İşlendi' işareti (128 → 120; sayı / tutar aynı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur",
+      "konum": "test/kilit-izi-alanlar-250.test.mjs:251:5",
+      "hata": "arka plan — şüpheli alacakta 'Normal Cariye İşlendi' işareti (128 → 120; sayı / tutar aynı): ledger:snapshot bulunmalı: [] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz › [1] satır içi tarama — taksit satırının evrak bağı temizlenir",
+      "konum": "test/kilit-izi-alanlar-250.test.mjs:232:5",
+      "hata": "satır içi — taksit satırının evrak bağı temizlenir: ledger:snapshot bulunmalı: [\"money:event\"] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz › [2] arka plan taraması — taksit satırının evrak bağı temizlenir; [3] program kapalıyken yapılan aynı yazım açılışta bulunur",
+      "konum": "test/kilit-izi-alanlar-250.test.mjs:251:5",
+      "hata": "arka plan — taksit satırının evrak bağı temizlenir: ledger:snapshot bulunmalı: [\"money:event\"] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz › [1] satır içi tarama — taksit satırının açılış alanı 0 → 1 (100 → 519)",
+      "konum": "test/kilit-izi-alanlar-250.test.mjs:232:5",
+      "hata": "satır içi — taksit satırının açılış alanı 0 → 1 (100 → 519): ledger:snapshot bulunmalı: [] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz › [2] arka plan taraması — taksit satırının açılış alanı 0 → 1 (100 → 519); [3] program kapalıyken yapılan aynı yazım açılışta bulunur",
+      "konum": "test/kilit-izi-alanlar-250.test.mjs:251:5",
+      "hata": "arka plan — taksit satırının açılış alanı 0 → 1 (100 → 519): ledger:snapshot bulunmalı: [] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz › [1] satır içi tarama — stok hareketinin nedeni (satış → alış iadesi; 600 → 153)",
+      "konum": "test/kilit-izi-alanlar-250.test.mjs:232:5",
+      "hata": "satır içi — stok hareketinin nedeni (satış → alış iadesi; 600 → 153): ledger:snapshot bulunmalı: [] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz › [2] arka plan taraması — stok hareketinin nedeni (satış → alış iadesi; 600 → 153); [3] program kapalıyken yapılan aynı yazım açılışta bulunur",
+      "konum": "test/kilit-izi-alanlar-250.test.mjs:251:5",
+      "hata": "arka plan — stok hareketinin nedeni (satış → alış iadesi; 600 → 153): ledger:snapshot bulunmalı: [] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz › [1] satır içi tarama — faturanın muhasebe kırılımı (600 → 602; tutar aynı, yalnız hesap dağılımı)",
+      "konum": "test/kilit-izi-alanlar-250.test.mjs:232:5",
+      "hata": "satır içi — faturanın muhasebe kırılımı (600 → 602; tutar aynı, yalnız hesap dağılımı): ledger:snapshot bulunmalı: [] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz › [2] arka plan taraması — faturanın muhasebe kırılımı (600 → 602; tutar aynı, yalnız hesap dağılımı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur",
+      "konum": "test/kilit-izi-alanlar-250.test.mjs:251:5",
+      "hata": "arka plan — faturanın muhasebe kırılımı (600 → 602; tutar aynı, yalnız hesap dağılımı): ledger:snapshot bulunmalı: [] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz › [1] satır içi tarama — faturanın tevkifat tutarı",
+      "konum": "test/kilit-izi-alanlar-250.test.mjs:232:5",
+      "hata": "satır içi — faturanın tevkifat tutarı: ledger:snapshot bulunmalı: [\"balance\",\"invoice:try\"] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz › [2] arka plan taraması — faturanın tevkifat tutarı; [3] program kapalıyken yapılan aynı yazım açılışta bulunur",
+      "konum": "test/kilit-izi-alanlar-250.test.mjs:251:5",
+      "hata": "arka plan — faturanın tevkifat tutarı: ledger:snapshot bulunmalı: [\"balance\",\"invoice:try\"] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz › [1] satır içi tarama — faturanın stopaj tutarı",
+      "konum": "test/kilit-izi-alanlar-250.test.mjs:232:5",
+      "hata": "satır içi — faturanın stopaj tutarı: ledger:snapshot bulunmalı: [\"balance\",\"invoice:try\"] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz › [2] arka plan taraması — faturanın stopaj tutarı; [3] program kapalıyken yapılan aynı yazım açılışta bulunur",
+      "konum": "test/kilit-izi-alanlar-250.test.mjs:251:5",
+      "hata": "arka plan — faturanın stopaj tutarı: ledger:snapshot bulunmalı: [\"balance\",\"invoice:try\"] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz › [1] satır içi tarama — tahsil kaydının işlem başlığı (101.01 / 101.02 tutarı)",
+      "konum": "test/kilit-izi-alanlar-250.test.mjs:232:5",
+      "hata": "satır içi — tahsil kaydının işlem başlığı (101.01 / 101.02 tutarı): ledger:snapshot bulunmalı: [\"cheque:collections\"] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz › [2] arka plan taraması — tahsil kaydının işlem başlığı (101.01 / 101.02 tutarı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur",
+      "konum": "test/kilit-izi-alanlar-250.test.mjs:251:5",
+      "hata": "arka plan — tahsil kaydının işlem başlığı (101.01 / 101.02 tutarı): ledger:snapshot bulunmalı: [\"cheque:collections\"] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz › [1] satır içi tarama — Kayıt Tarihi boş kartın oluşturma anı",
+      "konum": "test/kilit-izi-alanlar-250.test.mjs:232:5",
+      "hata": "satır içi — Kayıt Tarihi boş kartın oluşturma anı: ledger:snapshot bulunmalı: [] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz › [2] arka plan taraması — Kayıt Tarihi boş kartın oluşturma anı; [3] program kapalıyken yapılan aynı yazım açılışta bulunur",
+      "konum": "test/kilit-izi-alanlar-250.test.mjs:251:5",
+      "hata": "arka plan — Kayıt Tarihi boş kartın oluşturma anı: ledger:snapshot bulunmalı: [] (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../c5a1f-kanit/2026-11-13/c5a1f-taban-Europe-Istanbul.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1f-taban",
+  "ham_cikti_sha256": "bf89a75c427ff2750d4fbfd767895707681c1621986cd70234a0eefc5c524b3e",
+  "ham_cikti_bayt": 59910
+}

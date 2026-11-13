@@ -1,0 +1,34 @@
+#!/bin/bash
+# Ana oturum: senaryo-220 — YÜK ALTINDA doğal yineleme (ders 20): iki işlemci yükü (kendi süreçlerim, süre sınırlı) + izleme ön yüklemesi + tanı kopyası.
+# ANA DAL KODUNDA ve ADAYDA N'şer kez (sırayla dönüşümlü). Çağrı: flock -s -n olcum.lock timeout 3000 bash s220-yuk.sh [N] [yük sayısı]
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+N=${1:-4}; Y=${2:-2}
+K=$S/c5a1fy-kanit2/s220-yuk
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194
+mkdir -p $K || exit 1
+echo "başladı $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg) · N $N · işlemci yükü $Y"
+PIDS=""
+for i in $(seq $Y); do timeout 2700 node -e "for(;;){}" & PIDS="$PIDS $!"; done
+for ad in ana aday; do
+  case $ad in aday) W=$S/d2t3-ya-ag;; ana) W=$S/kahin8y-ag;; esac
+  cp $S/senaryo-220-tani.mjs $W/test/e2e/senaryo-220-tani.mjs || exit 1
+  cp $S/govde-izle.mjs $W/test/e2e/govde-izle-tani.mjs || exit 1
+done
+for i in $(seq $N); do
+  for ad in ana aday; do
+    case $ad in aday) W=$S/d2t3-ya-ag;; ana) W=$S/kahin8y-ag;; esac
+    ( cd $W && timeout 600 node --disable-warning=ExperimentalWarning --import ./test/e2e/govde-izle-tani.mjs test/e2e/senaryo-220-tani.mjs > $K/$ad-$i.out 2>&1; echo "$ad $i çıkış $? · $(grep -E 'geçti, .* kaldı' $K/$ad-$i.out | tail -1 | cut -c1-60) · yük $(cut -d' ' -f1 /proc/loadavg)" )
+    if grep -q "beklenmeyen hata" $K/$ad-$i.out; then
+      grep -E "govde-izle" $K/$ad-$i.out | grep -vE "\+ (a|input|iframe)\b" | tail -14 | cut -c1-330
+      grep -E "beklenmeyen hata|waiting for|TANI" $K/$ad-$i.out | cut -c1-900
+    else
+      echo "   toasts/notices: $(grep -E 'hof-toasts|hof-notices|\"Taksitler\"' $K/$ad-$i.out | grep -v metin | sed -E 's/\[govde-izle\] //' | tr '\n' ';' | cut -c1-260)"
+    fi
+  done
+done
+for p in $PIDS; do kill $p 2>/dev/null; done
+for ad in ana aday; do
+  case $ad in aday) W=$S/d2t3-ya-ag;; ana) W=$S/kahin8y-ag;; esac
+  rm $W/test/e2e/senaryo-220-tani.mjs $W/test/e2e/govde-izle-tani.mjs
+done
+echo "bitti $(date -u +%T) · aday ağacı temiz mi: $(git -C $S/d2t3-ya-ag status -s | grep -v node_modules | wc -l) · ana kod ağacı: $(git -C $S/kahin8y-ag status -s | grep -v node_modules | wc -l)"

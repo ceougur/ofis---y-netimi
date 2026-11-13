@@ -245,6 +245,64 @@ const LOCK_SQL = {
     sql: `SELECT p.id, p.import_id, COALESCE((SELECT x.created_at FROM plan_imports x WHERE x.id = p.import_id), '') AS imported FROM plans p
           WHERE p.deleted_at IS NULL AND p.covers_balance = 0 AND p.registered_on <> '' AND p.registered_on <= ?1 AND p.import_id <> '' ORDER BY p.id`,
   },
+  // 2.5.0 Ç5-A tur 1f (dar kontrol G-1'; S146 = A; docs/erp/C5-ACILIS-TASARIM.md §16): Ana Defter türetmesinin (routes/ledger.mjs rows) okuduğu, kilitli tarihli satırda kapıdan
+  // geçen HİÇBİR yolun yazmadığı alanlar (yalnız INSERT ya da kilitte 409 — §16.2 tablosu, betikle) — kapı dışı değişiklikleri (eski sürüm, dış araç, elle) böylece period-lock +
+  // ledger:snapshot ("Donmuş Dönemin Kaynağı Değişti") olarak bulunur. Satır KİMLİKLERİYLE; bağ / işaret alanı boş / 0 olan satır girmez (boş → dolu yeni satır olarak görünür).
+  // Kasa ↔ Banka transferinin bağı (transfer ↔ 649 / 770; ikizin banka bacağı).
+  cash_transfer_lock: { requires: ["cash_entries.transfer_id"], since: "2.5.0", sql: "SELECT id, transfer_id FROM cash_entries WHERE transfer_id <> '' AND date <= ?1 ORDER BY id" },
+  // Cari satırının kaynağı ve kaynak kimliği (çek / fatura / stok / banka: madde türü, evrağın yönü ve türü, stok hareketinin nedeni) ve şüpheli alacakta "Normal Cariye İşlendi" işareti (120 ↔ 128).
+  // Tek tarama (hız, §16.8): üç alan bir girdide. doubtful_skip 2.3.0'dan beri var; alanı olmayan eski şemada girdi atlanır (araçlar / göç testleri — üretimde şema güncel).
+  account_source_lock: {
+    requires: ["account_entries.source", "account_entries.source_id", "account_entries.doubtful_skip"],
+    since: "2.5.0",
+    sql: "SELECT id, source, source_id, doubtful_skip FROM account_entries WHERE (source <> '' OR source_id <> '' OR doubtful_skip <> 0) AND date <= ?1 ORDER BY id",
+  },
+  // Taksit satırının evrak bağı (101 / 121 ↔ para hesabı; evrağın "cariye işlenmemiş" sayılması) ve açılış alanı (B 519 ↔ para; yüklenen kartın T − P'si).
+  plan_entries_bond_lock: { requires: ["plan_entries.cheque_id", "plan_entries.opening"], since: "2.5.0", sql: "SELECT id, cheque_id, opening FROM plan_entries WHERE (cheque_id <> '' OR opening <> 0) AND date <= ?1 ORDER BY id" },
+  // Stok hareketinin nedeni (peşin ve cari satış / iade / alış iadesi: 600 ↔ 610 ↔ 153).
+  stock_reason_lock: { requires: ["stock_moves.reason"], since: "2.5.0", sql: "SELECT id, reason FROM stock_moves WHERE reason <> '' AND date <= ?1 ORDER BY id" },
+  // Kesilmiş faturanın muhasebe kırılımı (matrah hesapları) ve tevkifat / stopaj tutarları (391 / 360, 193 / 360).
+  invoices_gl_lock: {
+    requires: ["invoices.gl_json", "invoices.try_withheld", "invoices.try_stoppage"],
+    since: "2.5.0",
+    sql: "SELECT id, gl_json, try_withheld, try_stoppage FROM invoices WHERE status <> 'draft' AND issue_date <= ?1 ORDER BY id",
+  },
+  // Bankaya Tahsile Ver kaydının işlem başlığı (101.01 / 101.02 maddesinin tutarı).
+  cheque_collections_event_lock: { requires: ["cheque_collections.event_id"], since: "2.5.0", sql: "SELECT id, event_id FROM cheque_collections WHERE given_date <= ?1 ORDER BY id" },
+  // Kayıt Tarihi BOŞ kartın oluşturma anı (madde tarihi = oluşturma günü; yukarıdaki plans girdisi yalnız dolu Kayıt Tarihli kartları kapsar). API boş Kayıt Tarihi yazmaz,
+  // göç 9 boşları doldurur: normal veride satır üretmez.
+  plans_unregistered_lock: {
+    requires: ["plans"],
+    since: "2.5.0",
+    sql: "SELECT id, total, account_id, created_at FROM plans WHERE deleted_at IS NULL AND covers_balance = 0 AND registered_on = '' AND substr(created_at, 1, 10) <= ?1 ORDER BY id",
+  },
+  // 2.5.0 Ç5-A tur 1f — SINIF 2 (§16.2; kilitli satırda kapıdan geçerek değişebilen alanların yanlış alarmsız alt kümesi / türetilen olgusu):
+  // Kapanmış dönemde KARŞILIKSIZ olayı olan evrak: durumu, türetmenin seçtiği karşılıksız günü (routes/ledger.mjs bouncedOn: en son oluşturulan karşılıksız olayı) ve carinin karşılıksız
+  // borç satırı var mı (hasDebt) — cariye işlenmemiş evrakın karşılıksız maddesi bunlardan doğar. Karşılıksız son durumdur, kilitli karşılıksızın geri alınması 409: bu evrakta durumu
+  // değiştiren meşru yol yok. Öbür evrakın durumu (bugünkü tahsil / ciro / karşılıksız) girmez.
+  cheques_bounce_lock: {
+    requires: ["cheques", "cheque_events", "account_entries", "accounts"],
+    since: "2.5.0",
+    sql: `SELECT c.id, c.status,
+                 COALESCE((SELECT ev.date FROM cheque_events ev WHERE ev.cheque_id = c.id AND ev.kind = 'bounce' ORDER BY ev.created_at DESC LIMIT 1), '') AS bounced_on,
+                 EXISTS (SELECT 1 FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
+                         WHERE e.source = 'cheque' AND e.source_id = c.id AND e.account_id = c.account_id AND e.kind = 'debt') AS has_debt
+          FROM cheques c WHERE c.id IN (SELECT cheque_id FROM cheque_events WHERE kind = 'bounce' AND date <= ?1) ORDER BY c.id`,
+  },
+  // Kapanmış dönemde alınmış / verilmiş evraktan türetmenin "cariye işlenmemiş" saydıkları (routes/ledger.mjs ile AYNI koşul: canlı taksit kartında evrakla satırı yok, canlı
+  // carisinde alış / veriliş satırı yok). Evrağın carisi (cheques.account_id) yalnız bu olgu üzerinden kilitli maddeyi belirler; carisiz evrakın karşılıksızında cari seçimi (meşru)
+  // olguyu DEĞİŞTİRMEZ (seçilen carinin alış satırı yoktur), carili evrağın carisinin dışarıdan silinmesi ya da başka cariye geçmesi değiştirir (çift / eksik madde).
+  cheques_free_lock: {
+    requires: ["cheques", "plan_entries.cheque_id", "plans", "account_entries", "accounts"],
+    since: "2.5.0",
+    sql: `SELECT c.id FROM cheques c
+          WHERE c.issue_date <= ?1 AND c.deleted_at IS NULL
+            AND NOT EXISTS (SELECT 1 FROM plan_entries pe JOIN plans p ON p.id = pe.plan_id AND p.deleted_at IS NULL WHERE pe.cheque_id = c.id)
+            AND NOT EXISTS (SELECT 1 FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
+                            WHERE e.source = 'cheque' AND e.source_id = c.id AND e.account_id = c.account_id
+                              AND e.kind = CASE WHEN c.direction = 'in' THEN 'credit' ELSE 'debt' END)
+          ORDER BY c.id`,
+  },
 };
 
 /**
@@ -253,8 +311,40 @@ const LOCK_SQL = {
  * version (2.2.0 İz 4.2): o sürümün iz tanımı — girdinin "since" sürümü daha yeniyse atlanır (eski sürümün kaydettiği izle karşılaştırma;
  * çalışma anındaki kapı her zaman güncel tanımı kullanır: iz açılışta ölçülür, saklanmaz).
  */
+// 2.5.0 Ç5-A tur 1f (hız; ders 47, 53; docs/erp/C5-ACILIS-TASARIM.md §16.8): aynı veri durumunda iz yeniden hesaplanmaz — Mutabakat Testi aynı izi iki kez ister (taramanın
+// period-lock denetimi ve donmuş defterin kaynak izi; ikincisi `version: LOCK_SQL_VERSION` ile = güncel tanım). Veri durumu: bu bağlantının total_changes()'ı (kendi yazımları, işlem
+// içindekiler dahil), öbür bağlantıların kesinleşmiş yazımları (PRAGMA data_version) ve şema (PRAGMA schema_version); biri değişmişse yeniden hesaplanır. AÇIK İŞLEMDE önbellek ne
+// okunur ne yazılır (COMMIT kapısı: işlem geri alınırsa total_changes geri dönmez, işlem içindeki iz geri alınan veriye ait kalırdı). Okunamazsa (sahte depo) önbellek yok.
+const digestMemo = new WeakMap();
+function dataStamp(store) {
+  if (store.db?.isTransaction !== false) return "";
+  try {
+    return `${store.get("SELECT total_changes() AS n").n}|${store.get("PRAGMA data_version").data_version}|${store.get("PRAGMA schema_version").schema_version}`;
+  } catch {
+    return "";
+  }
+}
 export function lockDigestOf(store, lock, { version = "" } = {}) {
   if (!lock) return "";
+  // Güncel tanım ("" ya da LOCK_SQL_VERSION ve sonrası) aynı anahtar: hiçbir girdi atlanmaz.
+  const effective = version && compareVersions(version, LOCK_SQL_VERSION) < 0 ? version : LOCK_SQL_VERSION;
+  const stamp = store && typeof store === "object" ? dataStamp(store) : "";
+  const key = `${lock}|${effective}|${stamp}`;
+  if (stamp) {
+    const kept = digestMemo.get(store);
+    if (kept?.has(key)) return kept.get(key);
+  }
+  const digest = computeLockDigest(store, lock, version);
+  if (stamp) {
+    // total_changes / data_version okuması hesaplama sırasında değişmez (yalnız okuma); en çok birkaç anahtar tutulur (kilit / tanım çiftleri).
+    const kept = digestMemo.get(store) || new Map();
+    if (kept.size >= 8) kept.clear();
+    kept.set(key, digest);
+    digestMemo.set(store, kept);
+  }
+  return digest;
+}
+function computeLockDigest(store, lock, version) {
   const tables = new Set(store.all("SELECT name FROM sqlite_master WHERE type = 'table'").map(row => row.name));
   const columns = new Map();
   const has = requirement => {

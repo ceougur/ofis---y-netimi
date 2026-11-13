@@ -1,0 +1,16 @@
+[pencere-zorla] kip div, hedef bütün pencereler
+
+■ Kurulum: yönetici girer, başlangıç tablosu; 10 müşterinin taksitleri Excel'den (Ödenen kolonuyla) arayüzden
+[pencere-zorla] "Veri okunuyor": pencereden sonra body'ye div eklendi
+[pencere-zorla] "Yeni veri: baslangic.xlsx": pencereden sonra body'ye div eklendi
+[pencere-zorla] kip div, hedef bütün pencereler
+[pencere-zorla] "Verinizi tanıyoruz": pencereden sonra body'ye div eklendi
+[pencere-zorla] "Taksitler": pencereden sonra body'ye div eklendi
+  TANI {"govdeSon":["noscript.(boş)","aside#hof-license-bar.hof-license-bar.is-info","div#hof-search-panel.hof-search-panel(boş)","button.hof-float(boş)","button.hof-float.hof-float-delete(boş)","div.hof-modal-backdrop.is-visible","div.(boş)"],"gorunenPencere":1,"sonTurPencere":0,"dugme":1,"bildirim":[]}
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible:last-of-type [data-act="import"]') to be visible[22m
+
+    at /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag/test/e2e/senaryo-220-tani.mjs:127:14
+
+Senaryo 2.0.20: 0 geçti, 1 kaldı. Ekranlar: test/e2e/artifacts/senaryo-220-tani

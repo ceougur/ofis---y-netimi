@@ -1,0 +1,51 @@
+## kilitsiz
+   === TZ Europe/Istanbul · başta 0.90 0.62 0.95 3/208 30537
+   çıkış 0 · sonda 2.33 1.18 1.12 1/211 30834
+   === TZ UTC · başta 2.23 1.17 1.12 3/210 30841 · GEÇERSİZ (yük > 2)
+   çıkış 0 · sonda 3.49 1.80 1.35 2/211 31405
+   === TZ Europe/Istanbul · başta 3.49 1.80 1.35 2/211 31416 · GEÇERSİZ (yük > 2)
+   çıkış 0 · sonda 3.00 2.10 1.50 1/208 31952
+   === TZ UTC · başta 3.00 2.10 1.50 2/208 31957 · GEÇERSİZ (yük > 2)
+   çıkış 0 · sonda 3.53 2.53 1.71 3/213 801
+| Yol | taban en iyi / ortanca (ms) | yeni en iyi / ortanca (ms) | ortanca farkı |
+|---|---|---|---|
+| Açılış (göç dahil) | 21008 / 21980 | 21685 / 22128 | +0.7 % |
+| Mizan + mutabakat (GET ledger) | 2983 / 3076 | 3352 / 3674 | +19.4 % |
+| Yevmiye Defteri (rapor) | 2066 / 2202 | 2123 / 2465 | +11.9 % |
+| Hesap Planı Mizanı (rapor) | 3012 / 3212 | 3051 / 3429 | +6.8 % |
+| Alt Hesap Mizanı (rapor) | 410 / 420 | 415 / 443 | +5.4 % |
+| Defter Mutabakatı (rapor) | 10562 / 10786 | 11391 / 11736 | +8.8 % |
+| Mutabakat Testi (GET ledger/integrity) | 6602 / 6698 | 6897 / 7005 | +4.6 % |
+| Alacak Yaşlandırma (rapor) | 1805 / 1932 | 2057 / 2132 | +10.4 % |
+| Yevmiye Defteri bütün zaman (rapor) | 2727 / 2863 | 3000 / 3041 | +6.2 % |
+| Banka İşlem Kartı (GET bank/events) | 2 / 4 | 2 / 4 | +2.7 % |
+| YAZIM Borç Yaz (bütünlük kapısı) | 278 / 302 | 282 / 311 | +3.0 % |
+| YAZIM evrak (alınan çek, carili) | 46 / 52 | 54 / 59 | +13.0 % |
+| Açılış Olabilir listesi (yeni uç; tabanda 404) | 66 / 71 | 63 / 78 | +10.0 % |
+## kilitli
+   === TZ Europe/Istanbul · başta 3.40 2.52 1.71 3/213 813 · GEÇERSİZ (yük > 2)
+   çıkış 0 · sonda 1.68 2.22 1.71 1/125 3117
+   === TZ UTC · başta 1.68 2.22 1.71 1/125 3123
+   çıkış 0 · sonda 1.36 1.94 1.68 1/126 3995
+   === TZ Europe/Istanbul · başta 1.36 1.94 1.68 1/126 4007
+   çıkış 0 · sonda 1.07 1.63 1.60 1/122 4309
+   === TZ UTC · başta 1.07 1.63 1.60 1/122 4315
+   çıkış 0 · sonda 1.32 1.49 1.54 1/111 4470
+| Yol | taban en iyi / ortanca (ms) | yeni en iyi / ortanca (ms) | ortanca farkı |
+|---|---|---|---|
+| Açılış (göç dahil) | 23580 / 24280 | 23172 / 24842 | +2.3 % |
+| Donma (bekleyen koşu) | 8170 / 8590 | 9373 / 9632 | +12.1 % |
+| Mizan + mutabakat (GET ledger) | 2947 / 3475 | 3048 / 3775 | +8.6 % |
+| Yevmiye Defteri (rapor) | 2403 / 2811 | 2458 / 2619 | -6.8 % |
+| Hesap Planı Mizanı (rapor) | 2974 / 3471 | 2796 / 3617 | +4.2 % |
+| Alt Hesap Mizanı (rapor) | 351 / 430 | 431 / 477 | +10.9 % |
+| Defter Mutabakatı (rapor) | 15364 / 16082 | 16835 / 17331 | +7.8 % |
+| Mutabakat Testi (GET ledger/integrity) | 13179 / 14000 | 9745 / 10039 | -28.3 % |
+| Alacak Yaşlandırma (rapor) | 1846 / 1851 | 1886 / 1980 | +6.9 % |
+| Yevmiye Defteri bütün zaman (rapor) | 4126 / 4346 | 4152 / 4766 | +9.6 % |
+| Banka İşlem Kartı (GET bank/events) | 2 / 4 | 3 / 4 | +8.2 % |
+| YAZIM Borç Yaz (bütünlük kapısı) | 235 / 278 | 272 / 337 | +21.2 % |
+| YAZIM evrak (alınan çek, carili) | 44 / 52 | 43 / 55 | +5.9 % |
+| Açılış Olabilir listesi (yeni uç; tabanda 404) | 59 / 71 | 59 / 71 | +0.2 % |
+| Kilit izi (lockDigestOf) | 1977 / 2068 | 2687 / 3147 | +52.2 % |
+| YAZIM kilitli evrağın bugünkü tahsili | 47 / 67 | 51 / 57 | -14.1 % |

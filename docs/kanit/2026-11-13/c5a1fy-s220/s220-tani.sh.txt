@@ -1,0 +1,18 @@
+#!/bin/bash
+# Ana oturum: tur 1f adayında kırmızı çıkan senaryo-220 — TANI (ders 20, 38): tanı kopyası (hata anında gövdenin son öğeleri + pencere sayıları + bildirimler)
+# ADAYDA (sınama ağacı) ve ANA DAL KODUNDA (kâhin ağacım; ürün ana dalla birebir) N'şer kez. Çağrı: flock -s -n olcum.lock timeout 3000 bash s220-tani.sh [N]
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+K=$S/c5a1fy-kanit2/s220-tani; N=${1:-3}
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194
+mkdir -p $K || exit 1
+echo "başladı $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg)"
+for ad in aday ana; do
+  case $ad in aday) W=$S/d2t3-ya-ag;; ana) W=$S/kahin8y-ag;; esac
+  cp $S/senaryo-220-tani.mjs $W/test/e2e/senaryo-220-tani.mjs || exit 1
+  for i in $(seq $N); do
+    ( cd $W && timeout 900 node --disable-warning=ExperimentalWarning test/e2e/senaryo-220-tani.mjs > $K/$ad-$i.out 2>&1; echo "$ad $i ($(git rev-parse --short HEAD)) çıkış $? · $(grep -E 'geçti, .* kaldı' $K/$ad-$i.out | tail -1 | cut -c1-80) · yük $(cut -d' ' -f1 /proc/loadavg)" )
+    grep -E "TANI" $K/$ad-$i.out | cut -c1-900
+  done
+  rm $W/test/e2e/senaryo-220-tani.mjs
+done
+echo "bitti $(date -u +%T) · aday ağacı temiz mi: $(git -C $S/d2t3-ya-ag status -s | grep -v node_modules | wc -l)"

@@ -1,0 +1,99 @@
+// Ç5-A tur 1f — v2.4.9'un GERÇEK koduyla (API) kilitli veri: türetmenin okuduğu bütün alan türleri kilitli dönemde.
+// ROOT=<kod kökü> OUT=<klasör> node sablon.mjs  → OUT/data, OUT/backups, OUT/ids.json
+import path from "node:path";
+import { writeFileSync } from "node:fs";
+import { pathToFileURL } from "node:url";
+process.env.HUKUK_LICENSE_URL = "http://127.0.0.1:9";
+const ROOT = process.env.ROOT;
+const OUT = process.env.OUT;
+const imp = rel => import(pathToFileURL(path.join(ROOT, rel)).href);
+const { bootVersion } = await imp("test/guvenilirlik/surumler.mjs");
+const NOW = { time: "2026-10-20T12:00:00+03:00", fixed: true };
+const LOCK = "2026-10-10";
+const log = {};
+const old = await bootVersion("v2.4.9", { dataDir: path.join(OUT, "data"), backupDir: path.join(OUT, "backups"), now: NOW });
+const ids = {};
+try {
+  const api = await old.login();
+  const step = async (label, promise) => {
+    const res = await promise;
+    log[label] = res.status === 200 ? 200 : `${res.status} ${JSON.stringify(res.data).slice(0, 200)}`;
+    if (res.status !== 200) throw new Error(`${label}: ${log[label]}`);
+    return res.data;
+  };
+  await step("kurulum", api.post("/api/workspace/bank/setup/dismiss", {}));
+  const bank = await step("banka", api.post("/api/workspace/bank/accounts", { bankName: "Ziraat Bankası", name: "Ana Hesap", kind: "demand", currency: "TRY", opening: { date: "2026-10-01", amount: "10.000", confirmed: true } }));
+  ids.bank = bank.id || bank.account?.id;
+  await step("çek kullan", api.put(`/api/workspace/bank/accounts/${ids.bank}`, { useCheque: true, useNote: true }));
+  await step("kasa", api.post("/api/workspace/cash", { kind: "in", amount: "5000", date: "2026-10-01", description: "Kasa girişi" }));
+  await step("transfer", api.post("/api/workspace/cash/transfer", { direction: "to-bank", amount: "1000", date: "2026-10-02", bankAccountId: ids.bank }));
+  const A = await step("A", api.post("/api/workspace/accounts", { name: "Tur1f A", type: "customer", registeredOn: "2026-10-01" }));
+  const S = await step("S", api.post("/api/workspace/accounts", { name: "Tur1f Kiraya Veren", type: "supplier", registeredOn: "2026-10-01" }));
+  const T = await step("T", api.post("/api/workspace/accounts", { name: "Tur1f Temizlik", type: "supplier", registeredOn: "2026-10-01" }));
+  Object.assign(ids, { A: A.id, S: S.id, T: T.id });
+  await step("A borç", api.post(`/api/workspace/accounts/${A.id}/entries`, { kind: "debt", amount: "3000", date: "2026-10-02", note: "Hizmet" }));
+  // Çekler: carili (cari satırı source 'cheque'), carisiz (karşılıksız kilitte), carisiz portföyde, carili tahsile verilen (kilitte verilir).
+  await step("carili çek", api.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", serialNo: "T1F-1", bank: "Akbank", drawer: "A", amount: "400", issueDate: "2026-10-03", dueDate: "2026-12-01", accountId: A.id }));
+  await step("carisiz çek 2", api.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", serialNo: "T1F-2", bank: "Akbank", drawer: "Kemal", amount: "300", issueDate: "2026-10-03", dueDate: "2026-12-01" }));
+  await step("carisiz çek 3", api.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", serialNo: "T1F-3", bank: "Akbank", drawer: "Kemal", amount: "250", issueDate: "2026-10-03", dueDate: "2026-12-01" }));
+  await step("carili çek 4", api.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", serialNo: "T1F-4", bank: "Akbank", drawer: "A", amount: "350", issueDate: "2026-10-03", dueDate: "2026-12-01", accountId: A.id }));
+  await step("carili çek 5", api.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", serialNo: "T1F-5", bank: "Akbank", drawer: "A", amount: "150", issueDate: "2026-10-03", dueDate: "2026-12-01", accountId: A.id }));
+  // Meşru yol denemeleri için (kilitli tarihli, bugün işlem görecek): carisiz tahsil, carisiz karşılıksız (carisiz), carili karşılıksız.
+  await step("carisiz çek 7", api.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", serialNo: "T1F-7", bank: "Akbank", drawer: "Kemal", amount: "180", issueDate: "2026-10-03", dueDate: "2026-12-01" }));
+  await step("carisiz çek 8", api.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", serialNo: "T1F-8", bank: "Akbank", drawer: "Kemal", amount: "170", issueDate: "2026-10-03", dueDate: "2026-12-01" }));
+  await step("carili çek 9", api.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", serialNo: "T1F-9", bank: "Akbank", drawer: "A", amount: "160", issueDate: "2026-10-03", dueDate: "2026-12-01", accountId: A.id }));
+  const q = (sql, ...a) => old.app.store.get(sql, ...a);
+  for (const n of [7, 8, 9]) ids[`cheque${n}`] = q("SELECT id FROM cheques WHERE serial_no = ?", `T1F-${n}`).id;
+  for (const n of [1, 2, 3, 4, 5]) ids[`cheque${n}`] = q("SELECT id FROM cheques WHERE serial_no = ?", `T1F-${n}`).id;
+  await step("çek 2 karşılıksız (kilitte)", api.post(`/api/workspace/cheques/${ids.cheque2}/actions`, { action: "bounce", date: "2026-10-05" }));
+  await step("çek 4 tahsile ver (kilitte)", api.post(`/api/workspace/cheques/${ids.cheque4}/actions`, { action: "bank-deposit", date: "2026-10-05", bankAccountId: ids.bank }));
+  await step("çek 5 tahsile ver (kilitte)", api.post(`/api/workspace/cheques/${ids.cheque5}/actions`, { action: "bank-deposit", date: "2026-10-05", bankAccountId: ids.bank }));
+  await step("çek 5 tahsil (kilitte)", api.post(`/api/workspace/cheques/${ids.cheque5}/actions`, { action: "collect", date: "2026-10-07", method: "bank" }));
+  // Stok: alım, cariye satış (cari satırı source 'stock'), iade, peşin satış.
+  const goods = await step("ürün", api.post("/api/workspace/stock", { name: "Tur1f Ürün", code: "URN-T1F", unit: "Adet", unitPrice: "10", salePrice: "100" }));
+  ids.item = goods.id;
+  await step("alım", api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "in", qty: "100", unitPrice: "10", pay: "none", date: "2026-10-01" }));
+  await step("cariye satış", api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "out", qty: "5", unitPrice: "100", pay: "account", method: "cash", accountId: A.id, date: "2026-10-04" }));
+  await step("iade", api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "in", reason: "return", qty: "1", unitPrice: "100", pay: "account", method: "cash", accountId: A.id, date: "2026-10-05" }));
+  await step("peşin satış", api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "out", qty: "2", unitPrice: "100", pay: "cash", method: "cash", date: "2026-10-04" }));
+  // Faturalar: stopaj, tevkifat, satış.
+  await step("kira (stopaj)", api.post("/api/workspace/invoices", { kind: "purchase", scenario: "expense_purchase", accountId: S.id, issueDate: "2026-10-02", number: "KIRA-10", profile: "KAGIT", stoppageRate: 20, lines: [{ name: "Ekim Kirası", qty: 1, unitPrice: 10000, vatRate: 0, exemptionCode: "351", expenseCode: "rent" }], payment: { rest: "open" } }));
+  await step("temizlik (tevkifat)", api.post("/api/workspace/invoices", { kind: "purchase", scenario: "expense_purchase", accountId: T.id, issueDate: "2026-10-03", number: "PRL-10", profile: "KAGIT", lines: [{ name: "Temizlik Hizmeti", qty: 1, unitPrice: 2000, vatRate: 20, withholdingCode: "612", expenseCode: "cleaning" }], payment: { rest: "open" } }));
+  await step("satış", api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: A.id, issueDate: "2026-10-04", lines: [{ name: "Danışmanlık", qty: 1, unitPrice: 1000, vatRate: 20 }], payment: { rest: "open" } }));
+  ids.invStoppage = q("SELECT id FROM invoices WHERE number = 'KIRA-10'").id;
+  ids.invWithheld = q("SELECT id FROM invoices WHERE number = 'PRL-10'").id;
+  ids.invSale = q("SELECT id FROM invoices WHERE account_id = ? AND kind = 'sale'", A.id).id;
+  // Taksit kartı: elle tahsilat ve çekle tahsilat (taksit satırının evrak bağı).
+  const plan = await step("kart", api.post("/api/workspace/plans", { accountId: A.id, name: "Tur1f A", total: "900", mode: "auto", count: 3, firstDue: "2026-11-05", registeredOn: "2026-10-01" }));
+  ids.plan = plan.id || q("SELECT id FROM plans WHERE account_id = ?", A.id).id;
+  await step("kart tahsilatı", api.post(`/api/workspace/plans/${ids.plan}/entries`, { kind: "in", amount: "100", date: "2026-10-05", method: "cash" }));
+  await step("kart çeki", api.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", serialNo: "T1F-6", bank: "Akbank", drawer: "A", amount: "200", issueDate: "2026-10-06", dueDate: "2026-12-01", accountId: A.id, planId: ids.plan }));
+  ids.cheque6 = q("SELECT id FROM cheques WHERE serial_no = 'T1F-6'").id;
+  // Excel'den kart (önceden ödenen = açılış taksit satırı).
+  await step("excel kart", api.post("/api/workspace/plans/import", { matrix: [["Ad Soyad", "Toplam", "Taksit", "İlk Vade", "Ödenen", "Kayıt"], ["Tur1f Excel", "1000", "2", "05.11.2026", "400", "01.10.2026"]], headerAt: 0, roles: { 0: "name", 1: "total", 2: "count", 3: "firstDue", 4: "paid", 5: "registered" }, fileName: "t1f.xlsx", linkRecords: false }));
+  // Şüpheli alacak (A) ve sonrasında A'nın tahsilatı (120 ↔ 128 ayrımı: doubtful_skip / invoice_id).
+  await step("şüpheli", api.post(`/api/workspace/accounts/${A.id}/doubtful`, { amount: "1000", date: "2026-10-08", reason: "other" }));
+  await step("A tahsilat", api.post(`/api/workspace/accounts/${A.id}/entries`, { kind: "in", amount: "500", date: "2026-10-09", method: "cash", note: "Tahsilat" }));
+  await step("kilit", api.put("/api/admin/period-lock", { lockedUntil: LOCK }));
+  const s = old.app.store;
+  Object.assign(ids, {
+    transferCash: s.get("SELECT id FROM cash_entries WHERE transfer_id <> '' ORDER BY rowid LIMIT 1")?.id,
+    entryCheque: s.get("SELECT id FROM account_entries WHERE source = 'cheque' AND source_id = ?", ids.cheque1)?.id,
+    entryStock: s.get("SELECT id FROM account_entries WHERE source = 'stock' ORDER BY rowid LIMIT 1")?.id,
+    moveSale: s.get("SELECT id FROM stock_moves WHERE pay = 'account' AND kind = 'out'")?.id,
+    moveCash: s.get("SELECT id FROM stock_moves WHERE pay = 'cash' AND kind = 'out'")?.id,
+    planEntryCash: s.get("SELECT id FROM plan_entries WHERE plan_id = ? AND cheque_id = ''", ids.plan)?.id,
+    planEntryCheque: s.get("SELECT id FROM plan_entries WHERE cheque_id = ?", ids.cheque6)?.id,
+    planEntryOpening: s.get("SELECT id FROM plan_entries WHERE opening = 1 ORDER BY rowid LIMIT 1")?.id,
+    importedPlan: s.get("SELECT id FROM plans WHERE import_id <> '' LIMIT 1")?.id,
+    collection4: s.get("SELECT id FROM cheque_collections WHERE cheque_id = ?", ids.cheque4)?.id,
+    collection5: s.get("SELECT id FROM cheque_collections WHERE cheque_id = ?", ids.cheque5)?.id,
+    entryIn: s.get("SELECT id FROM account_entries WHERE account_id = ? AND kind = 'in' AND note = 'Tahsilat'", ids.A)?.id,
+    bounceEvent: s.get("SELECT id FROM cheque_events WHERE cheque_id = ? AND kind = 'bounce'", ids.cheque2)?.id,
+  });
+  ids.cols = { plan_entries: s.all("PRAGMA table_info(plan_entries)").map(c => c.name).join(","), cheque_collections: s.all("PRAGMA table_info(cheque_collections)").map(c => c.name).join(",") };
+} finally {
+  await old.close();
+}
+writeFileSync(path.join(OUT, "ids.json"), JSON.stringify({ ids, log, LOCK, NOW }, null, 1));
+console.log(JSON.stringify({ ids, log }));

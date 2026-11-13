@@ -1,0 +1,111 @@
+// Ç5-A tur 1f — İş 0 (a) kanıtı + önce/sonra: kilitli dönemdeki bir alanı KAPI DIŞINDAN değiştir →
+//   (a) kilitli dönemin CANLI türetmesi değişti mi (build() maddelerinden tarih ≤ kilit olan satırların çoklu kümesi: tarih|hesap|alt|cari|borç|alacak),
+//   bulgu / Mutabakat Günlüğü / zil (satır içi + arka plan), kural farkı.
+// ROOT=<kod> TPL=<şablon> CASES=a,b,… [REOPEN=1] node alan.mjs
+import { cpSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
+import path from "node:path";
+import { DatabaseSync } from "node:sqlite";
+import { pathToFileURL } from "node:url";
+process.env.HUKUK_LICENSE_URL = "http://127.0.0.1:9";
+const ROOT = process.env.ROOT;
+const TPL = process.env.TPL;
+const REOPEN = process.env.REOPEN === "1";
+const imp = rel => import(pathToFileURL(path.join(ROOT, rel)).href);
+const { CURRENT, bootVersion } = await imp("test/guvenilirlik/surumler.mjs");
+const { ids, LOCK } = JSON.parse(readFileSync(path.join(TPL, "ids.json"), "utf8"));
+const NOW = { time: "2026-10-20T12:00:00+03:00", fixed: true };
+const quiet = { debug() {}, info() {}, warn() {}, error() {} };
+const SCRATCH = path.dirname(TPL);
+
+const CASES = {
+  "cash-transfer-clear": db => db.prepare("UPDATE cash_entries SET transfer_id = '' WHERE id = ?").run(ids.transferCash),
+  "cash-transfer-set": db => db.prepare("UPDATE cash_entries SET transfer_id = 'dk-x' WHERE description = 'Kasa girişi'").run(),
+  "acct-source": db => db.prepare("UPDATE account_entries SET source = '' WHERE id = ?").run(ids.entryCheque),
+  "acct-source-id": db => db.prepare("UPDATE account_entries SET source_id = ? WHERE id = ?").run(ids.cheque3, ids.entryCheque),
+  "acct-source-id-stock": db => db.prepare("UPDATE account_entries SET source_id = ? WHERE id = ?").run(ids.moveCash, ids.entryStock),
+  "acct-doubtful-skip": db => db.prepare("UPDATE account_entries SET doubtful_skip = 1 WHERE id = ?").run(ids.entryIn),
+  "acct-invoice-id": db => db.prepare("UPDATE account_entries SET invoice_id = ? WHERE id = ?").run(ids.invSale, ids.entryIn),
+  "plan-entry-cheque": db => db.prepare("UPDATE plan_entries SET cheque_id = '' WHERE id = ?").run(ids.planEntryCheque),
+  "plan-entry-opening-on": db => db.prepare("UPDATE plan_entries SET opening = 1 WHERE id = ?").run(ids.planEntryCash),
+  "plan-entry-opening-off": db => db.prepare("UPDATE plan_entries SET opening = 0 WHERE id = ?").run(ids.planEntryOpening),
+  "stock-reason-account": db => db.prepare("UPDATE stock_moves SET reason = 'preturn' WHERE id = ?").run(ids.moveSale),
+  "stock-reason-cash": db => db.prepare("UPDATE stock_moves SET reason = 'preturn' WHERE id = ?").run(ids.moveCash),
+  "inv-gl-json": db => db.prepare("UPDATE invoices SET gl_json = replace(gl_json, '600', '602') WHERE id = ?").run(ids.invSale),
+  "inv-gl-json-swap": db => db.prepare("UPDATE invoices SET gl_json = replace(gl_json, '770', '760') WHERE id = ?").run(ids.invWithheld),
+  "inv-withheld": db => db.prepare("UPDATE invoices SET try_withheld = try_withheld + 10 WHERE id = ?").run(ids.invWithheld),
+  "inv-stoppage": db => db.prepare("UPDATE invoices SET try_stoppage = try_stoppage + 10 WHERE id = ?").run(ids.invStoppage),
+  "collection-event": db => db.prepare("UPDATE cheque_collections SET event_id = (SELECT event_id FROM cheque_collections WHERE id = ?) WHERE id = ?").run(ids.collection5, ids.collection4),
+  "plan-created-at": db => { db.prepare("UPDATE plans SET registered_on = '' WHERE id = ?").run(ids.plan); return db.prepare("UPDATE plans SET created_at = '2026-10-05T09:00:00.000Z' WHERE id = ?").run(ids.plan); },
+  "cheque-event-created": db => db.prepare("INSERT INTO cheque_events (id, cheque_id, kind, date, amount, account_id, from_status, to_status, note, effects_json, created_by, created_at) SELECT 'dk-bounce2', cheque_id, 'bounce', '2026-10-15', amount, account_id, from_status, to_status, note, '[]', created_by, '2099-01-01T00:00:00.000Z' FROM cheque_events WHERE id = ?").run(ids.bounceEvent),
+  "cheque-status-unbounce": db => db.prepare("UPDATE cheques SET status = 'portfolio' WHERE id = ?").run(ids.cheque2),
+  "cheque-status-bounce-noevent": db => db.prepare("UPDATE cheques SET status = 'bounced' WHERE id = ?").run(ids.cheque3),
+  "cheque-account-clear": db => db.prepare("UPDATE cheques SET account_id = '' WHERE id = ?").run(ids.cheque1),
+  "cheque-account-set-free": db => db.prepare("UPDATE cheques SET account_id = ? WHERE id = ?").run(ids.A, ids.cheque3),
+  "bank-gl-sub": db => db.prepare("UPDATE bank_accounts SET gl_sub = '102.99' WHERE id = ?").run(ids.bank),
+};
+
+const lines = (entries, lock) => {
+  const out = new Map();
+  for (const entry of entries) {
+    if (!(String(entry.date) <= lock)) continue;
+    for (const line of entry.lines || []) {
+      const key = `${entry.date}|${line.account}|${line.sub || ""}|${line.party || ""}|${line.debit || 0}|${line.credit || 0}`;
+      out.set(key, (out.get(key) || 0) + 1);
+    }
+  }
+  return out;
+};
+const diff = (a, b) => {
+  let n = 0;
+  const sample = [];
+  for (const key of new Set([...a.keys(), ...b.keys()])) {
+    const d = (b.get(key) || 0) - (a.get(key) || 0);
+    if (d) { n += Math.abs(d); if (sample.length < 4) sample.push(`${d > 0 ? "+" : "-"}${key}`); }
+  }
+  return { n, sample };
+};
+const boot = dirs => bootVersion(CURRENT, { dataDir: dirs.dataDir, backupDir: dirs.backupDir, now: NOW, integrityScan: false, log: quiet });
+const codes = list => (list || []).map(item => item.code);
+
+for (const name of (process.env.CASES || Object.keys(CASES).join(",")).split(",")) {
+  const root = mkdtempSync(path.join(SCRATCH, "c5a1f-kopya-"));
+  cpSync(TPL, root, { recursive: true });
+  const dirs = { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups") };
+  const out = { case: name, reopen: REOPEN };
+  let server = null;
+  try {
+    server = await boot(dirs);
+    await server.app.ledger.snapshots.runPending();
+    const lock = server.app.ledger.snapshots.state().lock;
+    const file = server.app.store.get("PRAGMA database_list").file;
+    const before = lines(server.app.ledger.build(), lock);
+    const pre = server.app.integrity.scan();
+    out.pre = codes(pre.findings);
+    if (REOPEN) { await server.close(); server = null; }
+    const db = new DatabaseSync(file);
+    db.exec("PRAGMA busy_timeout = 5000");
+    out.changes = CASES[name](db).changes;
+    db.close();
+    if (REOPEN) { server = await boot(dirs); await server.app.ledger.snapshots.runPending(); }
+    const app = server.app;
+    const alerts = [];
+    app.events.tap((event, payload) => { if (event === "integrity.alert") alerts.push(codes(payload.findings).join("+")); });
+    const logN = () => app.store.get("SELECT COUNT(*) AS n FROM integrity_log").n;
+    const log0 = logN();
+    out.derive = diff(before, lines(app.ledger.build(), lock));
+    const s1 = app.integrity.scan();
+    out.inline = { findings: codes(s1.findings), log: logN() - log0, zil: alerts.slice() };
+    const s2 = await app.integrity.scanInBackground();
+    out.worker = { findings: codes(s2.findings), log: logN() - log0, zil: alerts.slice() };
+    out.fails = (s1.result?.failures || []).map(i => `${i.code}:${i.count ?? ""}`);
+    const rd = (s1.result?.checks || []).find(i => i.code === "ledger:rule-diff");
+    out.ruleDiff = rd ? `${rd.count}/${rd.difference}` : null;
+    if (REOPEN) out.baseline = app.store.all("SELECT summary FROM integrity_log WHERE action = 'baseline'").map(r => String(r.summary).slice(0, 120)).slice(-1);
+  } catch (error) {
+    out.error = String(error?.stack || error).slice(0, 800);
+  } finally {
+    await server?.close().catch(() => {});
+    rmSync(root, { recursive: true, force: true });
+  }
+  console.log(JSON.stringify(out));
+}

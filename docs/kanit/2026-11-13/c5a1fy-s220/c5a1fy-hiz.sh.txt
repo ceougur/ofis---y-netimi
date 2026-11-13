@@ -1,0 +1,30 @@
+#!/bin/bash
+# Ana oturum: Ç5-A TUR 1f HIZ KABUL ÖLÇÜMÜ (ders 53 (a)) — ÖNCE = ana ağaç (çalışma dalı ucu; ürün) ↔ SONRA = sınama ağacı (aday: uç + tur 1f).
+# Ajanın düzeneğinin ölçüm betiği (olc.mjs) + kilit kurma betiği (kilit.py) OKUNARAK kullanılır; veri temiz-100k'nın TAZE kopyası; kilitsiz + kilitli; iki TZ.
+# Çağrı: flock -x -n olcum.lock timeout -k 5 7000 bash c5a1fy-hiz.sh   (ölçüm kilidi ÖZEL; yük > 2 ise o TZ satırı GEÇERSİZ diye işaretlenir)
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+A=$S/c5a1f-olcum; H=$S/c5a1fy-hiz; ONCE=/home/user/ofis---y-netimi; SONRA=$S/d2t3-ya-ag
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+mkdir -p $H || exit 1
+cp $A/tablo.py $H/tablo.py || exit 1
+echo "önce $(git -C $ONCE rev-parse --short HEAD) · sonra $(git -C $SONRA rev-parse --short HEAD) · ürün farkı dosyaları: $(git -C $SONRA diff --name-only $(git -C $ONCE rev-parse HEAD) -- server client | tr '\n' ' ')"
+kos() { # <kod kökü> <etiket> <kip>
+  local ROOT=$1 TAG=$2 KIP=$3 OUT=$H/olc-$2-$3.txt
+  echo "Ç5-A tur 1f HIZ KABUL (ana oturum) · $TAG · $KIP · kod $ROOT · nproc $(nproc) · başta $(cat /proc/loadavg) · $(date -u +%H:%M:%S)" > $OUT
+  for tz in Europe/Istanbul UTC; do
+    rm -rf $H/kopya && cp -a $S/ana-kabul/temiz-100k $H/kopya || return 1
+    if [ "$KIP" = kilitli ]; then python3 -I $A/kilit.py $H/kopya/data/destekofis.sqlite >> $OUT || return 1; fi
+    sync; l0=$(cut -d' ' -f1 /proc/loadavg)
+    echo "=== TZ $tz · başta $(cat /proc/loadavg) $(awk -v l=$l0 'BEGIN{print (l>2)?"· GEÇERSİZ (yük > 2)":""}')" >> $OUT
+    TZ=$tz timeout 1500 node --disable-warning=ExperimentalWarning $A/olc.mjs "$ROOT" $H/kopya 2 >> $OUT 2>&1; echo "çıkış $? · sonda $(cat /proc/loadavg)" >> $OUT
+  done
+  rm -rf $H/kopya
+  echo "bitti $(date -u +%H:%M:%S)" >> $OUT
+}
+for kip in kilitsiz kilitli; do
+  kos $ONCE taban $kip || { echo "ölçüm kurulamadı ($kip önce)"; exit 1; }
+  kos $SONRA yeni $kip || { echo "ölçüm kurulamadı ($kip sonra)"; exit 1; }
+  echo "$kip bitti $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg)"
+done
+python3 -I $H/tablo.py > $H/tablo.out 2>&1; echo "tablo çıkış $?"
+echo "hız ölçümü bitti $(date -u +%T) · disk $(df -h / | awk 'NR==2{print $4}')"

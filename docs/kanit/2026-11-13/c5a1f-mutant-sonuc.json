@@ -1,0 +1,576 @@
+[
+ {
+  "no": "S1",
+  "name": "süzgeç: transfer_id",
+  "yakalandi": true,
+  "kosu": [
+   {
+    "test": "test/kilit-izi-alanlar-250.test.mjs",
+    "ozet": "# tests 1 # pass 0 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 1 - [7] kapıdan geçen (mağaza) yazım kilitli satırın yeni izlenen alanını değiştiremez: süzgeç de 'kilitli dönem' der → tam kapı reddeder (eşdeğerlik ihlali yok)",
+     "not ok 1 - Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz"
+    ],
+    "ileti": [
+     "error: 'transfer bağı: kapı reddetmeli (409; eşdeğerlik ihlali değil)'",
+     "error: '1 subtest failed'"
+    ]
+   }
+  ]
+ },
+ {
+  "no": "S2",
+  "name": "süzgeç: source / source_id / doubtful_skip",
+  "yakalandi": true,
+  "kosu": [
+   {
+    "test": "test/kilit-izi-alanlar-250.test.mjs",
+    "ozet": "# tests 1 # pass 0 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 1 - [7] kapıdan geçen (mağaza) yazım kilitli satırın yeni izlenen alanını değiştiremez: süzgeç de 'kilitli dönem' der → tam kapı reddeder (eşdeğerlik ihlali yok)",
+     "not ok 1 - Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz"
+    ],
+    "ileti": [
+     "error: 'şüpheli işareti: kapı reddetmeli (409; eşdeğerlik ihlali değil)'",
+     "error: '1 subtest failed'"
+    ]
+   }
+  ]
+ },
+ {
+  "no": "S3",
+  "name": "süzgeç: cheque_id / opening",
+  "yakalandi": true,
+  "kosu": [
+   {
+    "test": "test/kilit-izi-alanlar-250.test.mjs",
+    "ozet": "# tests 1 # pass 0 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 1 - [7] kapıdan geçen (mağaza) yazım kilitli satırın yeni izlenen alanını değiştiremez: süzgeç de 'kilitli dönem' der → tam kapı reddeder (eşdeğerlik ihlali yok)",
+     "not ok 1 - Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz"
+    ],
+    "ileti": [
+     "error: 'taksit açılış alanı: kapı reddetmeli (409; eşdeğerlik ihlali değil)'",
+     "error: '1 subtest failed'"
+    ]
+   }
+  ]
+ },
+ {
+  "no": "S4",
+  "name": "süzgeç: reason",
+  "yakalandi": true,
+  "kosu": [
+   {
+    "test": "test/kilit-izi-alanlar-250.test.mjs",
+    "ozet": "# tests 1 # pass 0 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 1 - [7] kapıdan geçen (mağaza) yazım kilitli satırın yeni izlenen alanını değiştiremez: süzgeç de 'kilitli dönem' der → tam kapı reddeder (eşdeğerlik ihlali yok)",
+     "not ok 1 - Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz"
+    ],
+    "ileti": [
+     "error: 'stok nedeni: kapı reddetmeli (409; eşdeğerlik ihlali değil)'",
+     "error: '1 subtest failed'"
+    ]
+   }
+  ]
+ },
+ {
+  "no": "S5",
+  "name": "süzgeç: gl_json / try_withheld / try_stoppage",
+  "yakalandi": true,
+  "kosu": [
+   {
+    "test": "test/kilit-izi-alanlar-250.test.mjs",
+    "ozet": "# tests 1 # pass 0 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 1 - [7] kapıdan geçen (mağaza) yazım kilitli satırın yeni izlenen alanını değiştiremez: süzgeç de 'kilitli dönem' der → tam kapı reddeder (eşdeğerlik ihlali yok)",
+     "not ok 1 - Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz"
+    ],
+    "ileti": [
+     "error: 'fatura kırılımı: kapı reddetmeli (409; eşdeğerlik ihlali değil)'",
+     "error: '1 subtest failed'"
+    ]
+   }
+  ]
+ },
+ {
+  "no": "S6",
+  "name": "süzgeç: tahsil kaydının event_id'i",
+  "yakalandi": false,
+  "kosu": [
+   {
+    "test": "test/kilit-izi-alanlar-250.test.mjs",
+    "ozet": "# tests 1 # pass 1 # fail 0 # cancelled 0 # skipped 0",
+    "kirmizi": [],
+    "ileti": []
+   }
+  ]
+ },
+ {
+  "no": "S7",
+  "name": "süzgeç: Kayıt Tarihi boş kart",
+  "yakalandi": true,
+  "kosu": [
+   {
+    "test": "test/kilit-izi-alanlar-250.test.mjs",
+    "ozet": "# tests 1 # pass 0 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 1 - [7] kapıdan geçen (mağaza) yazım kilitli satırın yeni izlenen alanını değiştiremez: süzgeç de 'kilitli dönem' der → tam kapı reddeder (eşdeğerlik ihlali yok)",
+     "not ok 1 - Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz"
+    ],
+    "ileti": [
+     "error: 'boş tarihli kartın oluşturma anı: kapı reddetmeli (409; eşdeğerlik ihlali değil)'",
+     "error: '1 subtest failed'"
+    ]
+   }
+  ]
+ },
+ {
+  "no": "S8",
+  "name": "süzgeç: evrak olguları (chequeLockRelevant)",
+  "yakalandi": true,
+  "kosu": [
+   {
+    "test": "test/kilit-izi-alanlar-250.test.mjs",
+    "ozet": "# tests 1 # pass 0 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 1 - [7] kapıdan geçen (mağaza) yazım kilitli satırın yeni izlenen alanını değiştiremez: süzgeç de 'kilitli dönem' der → tam kapı reddeder (eşdeğerlik ihlali yok)",
+     "not ok 1 - Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz"
+    ],
+    "ileti": [
+     "error: 'kilitli karşılıksızın durumu: kapı reddetmeli (409; eşdeğerlik ihlali değil)'",
+     "error: '1 subtest failed'"
+    ]
+   }
+  ]
+ },
+ {
+  "no": "N7",
+  "name": "DÜŞÜK-A: süzgeçteki plan_imports denetimi düşer",
+  "yakalandi": false,
+  "kosu": [
+   {
+    "test": "test/kilit-izi-alanlar-250.test.mjs",
+    "ozet": "# tests 1 # pass 1 # fail 0 # cancelled 0 # skipped 0",
+    "kirmizi": [],
+    "ileti": []
+   }
+  ]
+ },
+ {
+  "no": "N17",
+  "name": "DÜŞÜK-A: opening:review COMMIT kapısına da girer",
+  "yakalandi": true,
+  "kosu": [
+   {
+    "test": "test/kilit-izi-alanlar-250.test.mjs",
+    "ozet": "# tests 1 # pass 0 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 1 - [8] DÜŞÜK-A: kapı dışı KG-16 sapmasından sonra sıradan yazımlar REDDEDİLMEZ (denetim yalnız tam taramada); durumu tanımsız ama kopyası kararlı satıra karar verilebilir ve sapma kalkar",
+     "not ok 1 - Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz"
+    ],
+    "ileti": [
+     "error: '1 subtest failed'"
+    ]
+   }
+  ]
+ },
+ {
+  "no": "N18",
+  "name": "DÜŞÜK-A: karar ucu yalnız durumu kararlı satırda",
+  "yakalandi": true,
+  "kosu": [
+   {
+    "test": "test/kilit-izi-alanlar-250.test.mjs",
+    "ozet": "# tests 1 # pass 0 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 1 - [8] DÜŞÜK-A: kapı dışı KG-16 sapmasından sonra sıradan yazımlar REDDEDİLMEZ (denetim yalnız tam taramada); durumu tanımsız ama kopyası kararlı satıra karar verilebilir ve sapma kalkar",
+     "not ok 1 - Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz"
+    ],
+    "ileti": [
+     "error: '1 subtest failed'"
+    ]
+   }
+  ]
+ },
+ {
+  "no": "M1",
+  "name": "iz: cash_transfer_lock çıkar",
+  "yakalandi": true,
+  "kosu": [
+   {
+    "test": "test/defter-kaynak-iz-250.test.mjs",
+    "ozet": "# tests 1 # pass 0 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 1 - türetmenin okuduğu her sütun: kilitli satırda değişince iz değişir ya da açık istisnada; istisnalar güncel (hepsi türetmede okunuyor)",
+     "not ok 1 - Ç5-A tur 1f — Ana Defter türetmesinin okuduğu her sütun kilit izinde ya da gerekçeli açık istisnada (kalıcı kaynak tarama; §16)"
+    ],
+    "ileti": [
+     "error: '1 subtest failed'"
+    ]
+   },
+   {
+    "test": "test/kilit-izi-alanlar-250.test.mjs",
+    "ozet": "# tests 16 # pass 15 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 1 - [1] satır içi tarama — Kasa ↔ Banka transferinin bağı temizlenir",
+     "not ok 1 - Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz"
+    ],
+    "ileti": [
+     "error: 'satır içi — Kasa ↔ Banka transferinin bağı temizlenir: ledger:snapshot bulunmalı: [\"gl:102\",\"bank:sub:102.01\",\"bank:event:bacc-212d2185-c26d-4639-8590-42004600f473\",\"bank:transfer:bacc-212d2185-c26d-4639-8590-420",
+     "error: '1 subtest failed'"
+    ]
+   }
+  ]
+ },
+ {
+  "no": "M2",
+  "name": "iz: account_source_lock çıkar",
+  "yakalandi": true,
+  "kosu": [
+   {
+    "test": "test/defter-kaynak-iz-250.test.mjs",
+    "ozet": "# tests 1 # pass 1 # fail 0 # cancelled 0 # skipped 0",
+    "kirmizi": [],
+    "ileti": []
+   },
+   {
+    "test": "test/kilit-izi-alanlar-250.test.mjs",
+    "ozet": "# tests 16 # pass 15 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 3 - [1] satır içi tarama — cari satırının kaynağı (stok → elle; evrak olgusuna girmeyen kaynak)",
+     "not ok 1 - Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz"
+    ],
+    "ileti": [
+     "error: 'satır içi — cari satırının kaynağı (stok → elle; evrak olgusuna girmeyen kaynak): ledger:snapshot bulunmalı: [\"stock:account\"]'",
+     "error: '1 subtest failed'"
+    ]
+   }
+  ]
+ },
+ {
+  "no": "M3",
+  "name": "iz: account_doubtful_skip_lock çıkar",
+  "yakalandi": true,
+  "kosu": [
+   {
+    "test": "test/defter-kaynak-iz-250.test.mjs",
+    "ozet": "# tests 1 # pass 0 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 1 - türetmenin okuduğu her sütun: kilitli satırda değişince iz değişir ya da açık istisnada; istisnalar güncel (hepsi türetmede okunuyor)",
+     "not ok 1 - Ç5-A tur 1f — Ana Defter türetmesinin okuduğu her sütun kilit izinde ya da gerekçeli açık istisnada (kalıcı kaynak tarama; §16)"
+    ],
+    "ileti": [
+     "error: '1 subtest failed'"
+    ]
+   },
+   {
+    "test": "test/kilit-izi-alanlar-250.test.mjs",
+    "ozet": "# tests 16 # pass 15 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 5 - [1] satır içi tarama — şüpheli alacakta 'Normal Cariye İşlendi' işareti (128 → 120; sayı / tutar aynı)",
+     "not ok 1 - Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz"
+    ],
+    "ileti": [
+     "error: '1 subtest failed'"
+    ]
+   }
+  ]
+ },
+ {
+  "no": "M4",
+  "name": "iz: plan_entries_bond_lock çıkar",
+  "yakalandi": true,
+  "kosu": [
+   {
+    "test": "test/defter-kaynak-iz-250.test.mjs",
+    "ozet": "# tests 1 # pass 0 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 1 - türetmenin okuduğu her sütun: kilitli satırda değişince iz değişir ya da açık istisnada; istisnalar güncel (hepsi türetmede okunuyor)",
+     "not ok 1 - Ç5-A tur 1f — Ana Defter türetmesinin okuduğu her sütun kilit izinde ya da gerekçeli açık istisnada (kalıcı kaynak tarama; §16)"
+    ],
+    "ileti": [
+     "error: '1 subtest failed'"
+    ]
+   },
+   {
+    "test": "test/kilit-izi-alanlar-250.test.mjs",
+    "ozet": "# tests 16 # pass 15 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 7 - [1] satır içi tarama — taksit satırının açılış alanı 0 → 1 (100 → 519)",
+     "not ok 1 - Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz"
+    ],
+    "ileti": [
+     "error: 'satır içi — taksit satırının açılış alanı 0 → 1 (100 → 519): ledger:snapshot bulunmalı: []'",
+     "error: '1 subtest failed'"
+    ]
+   }
+  ]
+ },
+ {
+  "no": "M5",
+  "name": "iz: stock_reason_lock çıkar",
+  "yakalandi": true,
+  "kosu": [
+   {
+    "test": "test/defter-kaynak-iz-250.test.mjs",
+    "ozet": "# tests 1 # pass 0 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 1 - türetmenin okuduğu her sütun: kilitli satırda değişince iz değişir ya da açık istisnada; istisnalar güncel (hepsi türetmede okunuyor)",
+     "not ok 1 - Ç5-A tur 1f — Ana Defter türetmesinin okuduğu her sütun kilit izinde ya da gerekçeli açık istisnada (kalıcı kaynak tarama; §16)"
+    ],
+    "ileti": [
+     "error: '1 subtest failed'"
+    ]
+   },
+   {
+    "test": "test/kilit-izi-alanlar-250.test.mjs",
+    "ozet": "# tests 16 # pass 15 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 8 - [1] satır içi tarama — stok hareketinin nedeni (satış → alış iadesi; 600 → 153)",
+     "not ok 1 - Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz"
+    ],
+    "ileti": [
+     "error: 'satır içi — stok hareketinin nedeni (satış → alış iadesi; 600 → 153): ledger:snapshot bulunmalı: []'",
+     "error: '1 subtest failed'"
+    ]
+   }
+  ]
+ },
+ {
+  "no": "M6",
+  "name": "iz: invoices_gl_lock SELECT'ten gl_json çıkar (WHERE kalır)",
+  "yakalandi": true,
+  "kosu": [
+   {
+    "test": "test/defter-kaynak-iz-250.test.mjs",
+    "ozet": "# tests 1 # pass 0 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 1 - türetmenin okuduğu her sütun: kilitli satırda değişince iz değişir ya da açık istisnada; istisnalar güncel (hepsi türetmede okunuyor)",
+     "not ok 1 - Ç5-A tur 1f — Ana Defter türetmesinin okuduğu her sütun kilit izinde ya da gerekçeli açık istisnada (kalıcı kaynak tarama; §16)"
+    ],
+    "ileti": [
+     "error: '1 subtest failed'"
+    ]
+   },
+   {
+    "test": "test/kilit-izi-alanlar-250.test.mjs",
+    "ozet": "# tests 16 # pass 15 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 9 - [1] satır içi tarama — faturanın muhasebe kırılımı (600 → 602; tutar aynı, yalnız hesap dağılımı)",
+     "not ok 1 - Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz"
+    ],
+    "ileti": [
+     "error: 'satır içi — faturanın muhasebe kırılımı (600 → 602; tutar aynı, yalnız hesap dağılımı): ledger:snapshot bulunmalı: []'",
+     "error: '1 subtest failed'"
+    ]
+   }
+  ]
+ },
+ {
+  "no": "M7",
+  "name": "iz: cheque_collections_event_lock çıkar",
+  "yakalandi": true,
+  "kosu": [
+   {
+    "test": "test/defter-kaynak-iz-250.test.mjs",
+    "ozet": "# tests 1 # pass 0 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 1 - türetmenin okuduğu her sütun: kilitli satırda değişince iz değişir ya da açık istisnada; istisnalar güncel (hepsi türetmede okunuyor)",
+     "not ok 1 - Ç5-A tur 1f — Ana Defter türetmesinin okuduğu her sütun kilit izinde ya da gerekçeli açık istisnada (kalıcı kaynak tarama; §16)"
+    ],
+    "ileti": [
+     "error: '1 subtest failed'"
+    ]
+   },
+   {
+    "test": "test/kilit-izi-alanlar-250.test.mjs",
+    "ozet": "# tests 16 # pass 15 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 12 - [1] satır içi tarama — tahsil kaydının işlem başlığı (101.01 / 101.02 tutarı)",
+     "not ok 1 - Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz"
+    ],
+    "ileti": [
+     "error: 'satır içi — tahsil kaydının işlem başlığı (101.01 / 101.02 tutarı): ledger:snapshot bulunmalı: [\"cheque:collections\"]'",
+     "error: '1 subtest failed'"
+    ]
+   }
+  ]
+ },
+ {
+  "no": "M8",
+  "name": "iz: plans_unregistered_lock'tan created_at çıkar",
+  "yakalandi": true,
+  "kosu": [
+   {
+    "test": "test/defter-kaynak-iz-250.test.mjs",
+    "ozet": "# tests 1 # pass 0 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 1 - türetmenin okuduğu her sütun: kilitli satırda değişince iz değişir ya da açık istisnada; istisnalar güncel (hepsi türetmede okunuyor)",
+     "not ok 1 - Ç5-A tur 1f — Ana Defter türetmesinin okuduğu her sütun kilit izinde ya da gerekçeli açık istisnada (kalıcı kaynak tarama; §16)"
+    ],
+    "ileti": [
+     "error: '1 subtest failed'"
+    ]
+   },
+   {
+    "test": "test/kilit-izi-alanlar-250.test.mjs",
+    "ozet": "# tests 16 # pass 15 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 13 - [1] satır içi tarama — Kayıt Tarihi boş kartın oluşturma anı",
+     "not ok 1 - Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz"
+    ],
+    "ileti": [
+     "error: 'satır içi — Kayıt Tarihi boş kartın oluşturma anı: ledger:snapshot bulunmalı: []'",
+     "error: '1 subtest failed'"
+    ]
+   }
+  ]
+ },
+ {
+  "no": "M9",
+  "name": "iz: cheques_bounce_lock'tan durum çıkar",
+  "yakalandi": true,
+  "kosu": [
+   {
+    "test": "test/defter-kaynak-iz-250.test.mjs",
+    "ozet": "# tests 1 # pass 0 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 1 - türetmenin okuduğu her sütun: kilitli satırda değişince iz değişir ya da açık istisnada; istisnalar güncel (hepsi türetmede okunuyor)",
+     "not ok 1 - Ç5-A tur 1f — Ana Defter türetmesinin okuduğu her sütun kilit izinde ya da gerekçeli açık istisnada (kalıcı kaynak tarama; §16)"
+    ],
+    "ileti": [
+     "error: '1 subtest failed'"
+    ]
+   },
+   {
+    "test": "test/kilit-izi-alanlar-250.test.mjs",
+    "ozet": "# tests 16 # pass 15 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 14 - [1] satır içi tarama — kilitli karşılıksızı olan evrağın durumu (karşılıksız → portföyde)",
+     "not ok 1 - Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz"
+    ],
+    "ileti": [
+     "error: 'satır içi — kilitli karşılıksızı olan evrağın durumu (karşılıksız → portföyde): ledger:snapshot bulunmalı: []'",
+     "error: '1 subtest failed'"
+    ]
+   }
+  ]
+ },
+ {
+  "no": "M10",
+  "name": "iz: cheques_free_lock satırı boşalır (kimlik yerine sabit)",
+  "yakalandi": true,
+  "kosu": [
+   {
+    "test": "test/defter-kaynak-iz-250.test.mjs",
+    "ozet": "# tests 1 # pass 0 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 1 - türetmenin okuduğu her sütun: kilitli satırda değişince iz değişir ya da açık istisnada; istisnalar güncel (hepsi türetmede okunuyor)",
+     "not ok 1 - Ç5-A tur 1f — Ana Defter türetmesinin okuduğu her sütun kilit izinde ya da gerekçeli açık istisnada (kalıcı kaynak tarama; §16)"
+    ],
+    "ileti": [
+     "error: '1 subtest failed'"
+    ]
+   },
+   {
+    "test": "test/kilit-izi-alanlar-250.test.mjs",
+    "ozet": "# tests 16 # pass 15 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 16 - [1] satır içi tarama — carili evrağın carisi silinir (cariye işlenmemiş sayılır; çift madde)",
+     "not ok 1 - Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz"
+    ],
+    "ileti": [
+     "error: 'satır içi — carili evrağın carisi silinir (cariye işlenmemiş sayılır; çift madde): ledger:snapshot bulunmalı: [\"gl:101\",\"cheque:collections\"]'",
+     "error: '1 subtest failed'"
+    ]
+   }
+  ]
+ },
+ {
+  "no": "M11",
+  "name": "iz: cheques_bounce_lock karşılıksız günü (created_at sırası) çıkar",
+  "yakalandi": true,
+  "kosu": [
+   {
+    "test": "test/defter-kaynak-iz-250.test.mjs",
+    "ozet": "# tests 1 # pass 1 # fail 0 # cancelled 0 # skipped 0",
+    "kirmizi": [],
+    "ileti": []
+   },
+   {
+    "test": "test/kilit-izi-alanlar-250.test.mjs",
+    "ozet": "# tests 16 # pass 15 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 15 - [1] satır içi tarama — aynı evrakta kilit SONRASI tarihli ikinci karşılıksız olayı (en son oluşturulan; madde kilitli dönemden çıkar)",
+     "not ok 1 - Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz"
+    ],
+    "ileti": [
+     "error: 'satır içi — aynı evrakta kilit SONRASI tarihli ikinci karşılıksız olayı (en son oluşturulan; madde kilitli dönemden çıkar): ledger:snapshot bulunmalı: []'",
+     "error: '1 subtest failed'"
+    ]
+   }
+  ]
+ },
+ {
+  "no": "N3",
+  "name": "DÜŞÜK-A: yükleme damgası izden düşer",
+  "yakalandi": true,
+  "kosu": [
+   {
+    "test": "test/defter-kaynak-iz-250.test.mjs",
+    "ozet": "# tests 1 # pass 0 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 1 - türetmenin okuduğu her sütun: kilitli satırda değişince iz değişir ya da açık istisnada; istisnalar güncel (hepsi türetmede okunuyor)",
+     "not ok 1 - Ç5-A tur 1f — Ana Defter türetmesinin okuduğu her sütun kilit izinde ya da gerekçeli açık istisnada (kalıcı kaynak tarama; §16)"
+    ],
+    "ileti": [
+     "error: '1 subtest failed'"
+    ]
+   },
+   {
+    "test": "test/kilit-izi-alanlar-250.test.mjs",
+    "ozet": "# tests 1 # pass 1 # fail 0 # cancelled 0 # skipped 0",
+    "kirmizi": [],
+    "ileti": []
+   }
+  ]
+ },
+ {
+  "no": "K1",
+  "name": "türetmeye sahte sütun (cari satırının created_by'ı)",
+  "yakalandi": true,
+  "kosu": [
+   {
+    "test": "test/defter-kaynak-iz-250.test.mjs",
+    "ozet": "# tests 1 # pass 0 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 1 - türetmenin okuduğu her sütun: kilitli satırda değişince iz değişir ya da açık istisnada; istisnalar güncel (hepsi türetmede okunuyor)",
+     "not ok 1 - Ç5-A tur 1f — Ana Defter türetmesinin okuduğu her sütun kilit izinde ya da gerekçeli açık istisnada (kalıcı kaynak tarama; §16)"
+    ],
+    "ileti": [
+     "error: '1 subtest failed'"
+    ]
+   }
+  ]
+ },
+ {
+  "no": "K2",
+  "name": "izden sütun çıkar: transfer_id SELECT'ten (WHERE kalır)",
+  "yakalandi": true,
+  "kosu": [
+   {
+    "test": "test/defter-kaynak-iz-250.test.mjs",
+    "ozet": "# tests 1 # pass 0 # fail 1 # cancelled 0 # skipped 0",
+    "kirmizi": [
+     "not ok 1 - türetmenin okuduğu her sütun: kilitli satırda değişince iz değişir ya da açık istisnada; istisnalar güncel (hepsi türetmede okunuyor)",
+     "not ok 1 - Ç5-A tur 1f — Ana Defter türetmesinin okuduğu her sütun kilit izinde ya da gerekçeli açık istisnada (kalıcı kaynak tarama; §16)"
+    ],
+    "ileti": [
+     "error: '1 subtest failed'"
+    ]
+   }
+  ]
+ }
+]
