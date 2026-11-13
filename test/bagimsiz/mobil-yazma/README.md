@@ -412,6 +412,24 @@ kâhini bakım 17 + 18), `kaynak`, `secim_notu`. Kabul: 58 senaryo (55 elle, 3 r
   ve `KT1:kalan` [0, −10000] ≠ 0, E41 [100000, 150000] ≠ 150000 ve [0, −50000] ≠ 0 (SM-1 listesi — S154 öncesi okuma), E43 `stok_iade` dilde yok. Kırmızı olmayan 98 eski senaryonun beklentisi değişmedi.
 - Kabul farkı (`kabul-fark-dokum.json`, `arac/kabul-fark.py`): 50 değişen anahtarın hepsi S154 B sınıfında, BEKLENMEYEN 0. Program açılmadı; `program-surucu.mjs` koşulmadı ve değişmedi.
 
+## 2.5.0 bakımı 3 — cari kâhini bakımı 19'un yansıması (13.11.2026; kodu görmeyen AYRI el — cari kâhini bakımı 19 ajanı; ders 5, 40)
+
+**Kural DEĞİŞMEDİ; `kahin.py`, `senaryolar.py`, `kahin_test.py`, `program-surucu.mjs` DEĞİŞMEDİ.** Bu kâhin kart göstergelerini cari kâhininin `2.5.0` kontrolünden AYNEN alıyor (bakım 2 YM2-2); cari kâhini
+bakım 19'da (`test/bagimsiz/cari/KARARLAR.md` §30) dört alanda değişti: (1) S162 = B'nin ölçütü iadenin YAZILDIĞI an (BAŞ MİMAR KARARI — kontrol anı değil); (2) S170 = B — satış kartı + faturasız iade:
+kart toplamı ve iadenin kapattığı taksitin 'Ödenen'i SUS; (3) S157 = C carilerinde kart toplamı SUS; (4) susan carinin türetilmiş pencere toplamları SUS. Girdi: ana oturumun özet dosyası
+`scratchpad/kahin-eski19-kararlar.md` madde 6 ("kabul dosyasını KENDİ üreticisiyle yeniden üret, bakım 2'nin fark aracıyla farkını dök — maddelerin alanları DIŞINDA BEKLENMEYEN 0; mobil öz testi iki saat
+diliminde koş; KURAL değişmez; sürücüye DOKUNMA").
+
+### Bu kâhindeki etkisi (açıkça — kod koşulmadan önce okundu)
+- Bu dilde stoktan taksitli satış (satış kartı) YOK → madde 2 alanı oluşmaz. Kart toplamı (`kart:<k>:toplam`) ve pencere toplamları bu kâhinin çıktısında cari kâhininden ALINMIYOR → madde 3 / 4 yansımaz.
+- Faturasız stok iadesi yalnız E43 çiftinde (bakım 2): **L** (açılış 900 → kart 900 / 3 → iade 300; başka borç yok) iadenin yazıldığı anda kart borcun tamamını taşıyor → S162 = B alanı AYNEN (taksit
+  'Ödenen'leri SUS); **K** / **M** (kart → fatura → iade) fatura iadeden ÖNCE yazılmış → iade yazılırken başka borç var → alan DEĞİL (değerler AYNEN). Ölçütün (kontrol anı → yazım anı) iki okumayı
+  ayırdığı bir sıra (iade önce, borç sonra; borç iadeden sonra silinir) bu kâhinin senaryolarında YOK → beklenen fark: yalnız `cari_model_sha256`.
+
+### Değişen beklentiler (eski `kabul.json` ↔ yeni; döküm `docs/kanit/2026-11-13/kahineski19-mobil/kabul-fark-dokum.json`, araç `docs/kanit/2026-11-13/kahinmobil2/arac/kabul-fark.py` — değiştirilmeden)
+- Yeni / kalkan senaryo 0; adımı değişen 0; açıklaması değişen 0; **değişen anahtar 0, BEKLENMEYEN 0**; üst alan yalnız `cari_model_sha256` (cari kâhini bakım 19 `model.py`). Kabul: üretici `senaryolar.py`
+  (55 elle × 256 birleşim + 3 rastgele tohum × 10 birleşim; model = elle / akış) — `kahineski19-mobil/uretici-yaz.txt`.
+
 ## Senaryo dili `destekofis-mobil-yazma/1`
 
 ```json
