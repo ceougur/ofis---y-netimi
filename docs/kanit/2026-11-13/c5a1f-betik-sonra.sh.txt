@@ -1,0 +1,25 @@
+#!/bin/bash
+# Kâhin (taban ↔ yeni, iki TZ) + ekran senaryoları (yeni). Çağrı: flock -s -n <olcum.lock> timeout -k 5 7000 bash sonra.sh
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+K=$S/c5a1f-kanit
+Y=/home/user/ofis---y-netimi/.claude/worktrees/agent-af550e32f1aedd444
+T=$S/c5a1f-taban
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194 KANIT_DIR=$K
+mkdir -p $K
+for kod in taban yeni; do
+  if [ $kod = yeni ]; then R=$Y; else R=$T; fi
+  for tz in UTC Europe/Istanbul; do
+    t=$(echo $tz | tr '/' '-')
+    for k in defter cari; do
+      (cd $R && TZ=$tz timeout -k 5 1500 node tools/kanit.mjs kos c5a1f-kahin-$k-$kod-$t -- npm run test:kahin-$k > $K/c5a1f-kahin-$k-$kod-$t.out 2>&1 < /dev/null); c=$?
+      echo "kahin-$k $kod $tz çıkış $c: $(grep -E '^# (tests|pass|fail)|geçti|uyuşmazlık|[0-9]+ / [0-9]+' $K/c5a1f-kahin-$k-$kod-$t.out | tail -3 | tr '\n' ' ' | cut -c1-300)"
+    done
+  done
+done
+cd $Y || exit 1
+for b in test:senaryo-defter-243 test:senaryo-iz1-kasa-acilis test:senaryo-iz1-sayfa test:senaryo-donem-kilidi-ilerleme-250 test:senaryo-duzeltme-kilidi-250 test:senaryo-duzeltme-kilidi-tur3-250 test:sema-kapisi-bs7 test:senaryo-tahsile-ver-220 test:senaryo-banka-220 test:senaryo-banka-210-temel test:senaryo-pos-220 test:senaryo-pos-kart-249 test:senaryo-supheli-230 test:gg244-numara-tarih-onay test:e2e; do
+  ad=$(echo $b | sed 's/^test://')
+  timeout -k 5 1500 node tools/kanit.mjs kos c5a1f-e2e-$ad -- npm run $b > $K/c5a1f-e2e-$ad.out 2>&1 < /dev/null; c=$?
+  echo "e2e $ad çıkış $c: $(tail -3 $K/c5a1f-e2e-$ad.out | tr '\n' ' ' | cut -c1-200)"
+done
+echo bitti

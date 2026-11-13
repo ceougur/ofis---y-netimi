@@ -1,0 +1,74 @@
+#!/usr/bin/env python3
+# Tur 1f — testin dişi (ders 7): her mutant KENDİ kopyamda (c5a1f-mut, git worktree) tek tek açılır, ilgili testler koşulur, dosya geri yazılır.
+# Çağrı: flock -s -n <olcum.lock> timeout -k 5 7000 python3 -I mutant.py [no,no,...]
+import subprocess, sys, json, os
+S = "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad"
+M = S + "/c5a1f-mut/"
+OUT = S + "/c5a1f-is/mutant-sonuc.json"
+INT = "server/lib/integrity.mjs"; SC = "server/lib/integrity-scope.mjs"; OPEN = "server/lib/ledger-opening.mjs"; LED = "server/routes/ledger.mjs"
+KAYNAK = ["test/defter-kaynak-iz-250.test.mjs"]
+IZ = "test/kilit-izi-alanlar-250.test.mjs"
+def entry(name):
+    return ("cut", INT, f"  {name}: ")
+MUTS = [
+ # LOCK_SQL girdisi çıkar (satırı ya da bloğu): (no, ad, dosya, eski, yeni, testler, desen)
+ ("M1", "iz: cash_transfer_lock çıkar", INT, '  cash_transfer_lock: { requires: ["cash_entries.transfer_id"], since: "2.5.0", sql: "SELECT id, transfer_id FROM cash_entries WHERE transfer_id <> \'\' AND date <= ?1 ORDER BY id" },\n', "", KAYNAK + [IZ], r"\[1\]"),
+ ("M2", "iz: account_source_lock çıkar", INT, '  account_source_lock: { requires: ["account_entries.source", "account_entries.source_id"], since: "2.5.0", sql: "SELECT id, source, source_id FROM account_entries WHERE (source <> \'\' OR source_id <> \'\') AND date <= ?1 ORDER BY id" },\n', "", KAYNAK + [IZ], r"\[1\]"),
+ ("M3", "iz: account_doubtful_skip_lock çıkar", INT, '  account_doubtful_skip_lock: { requires: ["account_entries.doubtful_skip"], since: "2.5.0", sql: "SELECT id, doubtful_skip FROM account_entries WHERE doubtful_skip <> 0 AND date <= ?1 ORDER BY id" },\n', "", KAYNAK + [IZ], r"\[1\]"),
+ ("M4", "iz: plan_entries_bond_lock çıkar", INT, '  plan_entries_bond_lock: { requires: ["plan_entries.cheque_id", "plan_entries.opening"], since: "2.5.0", sql: "SELECT id, cheque_id, opening FROM plan_entries WHERE (cheque_id <> \'\' OR opening <> 0) AND date <= ?1 ORDER BY id" },\n', "", KAYNAK + [IZ], r"\[1\]"),
+ ("M5", "iz: stock_reason_lock çıkar", INT, '  stock_reason_lock: { requires: ["stock_moves.reason"], since: "2.5.0", sql: "SELECT id, reason FROM stock_moves WHERE reason <> \'\' AND date <= ?1 ORDER BY id" },\n', "", KAYNAK + [IZ], r"\[1\]"),
+ ("M6", "iz: invoices_gl_lock SELECT'ten gl_json çıkar (WHERE kalır)", INT, 'sql: "SELECT id, gl_json, try_withheld, try_stoppage FROM invoices', 'sql: "SELECT id, try_withheld, try_stoppage FROM invoices', KAYNAK + [IZ], r"\[1\]"),
+ ("M7", "iz: cheque_collections_event_lock çıkar", INT, '  cheque_collections_event_lock: { requires: ["cheque_collections.event_id"], since: "2.5.0", sql: "SELECT id, event_id FROM cheque_collections WHERE given_date <= ?1 ORDER BY id" },\n', "", KAYNAK + [IZ], r"\[1\]"),
+ ("M8", "iz: plans_unregistered_lock'tan created_at çıkar", INT, 'sql: "SELECT id, total, account_id, created_at FROM plans WHERE deleted_at IS NULL AND covers_balance = 0 AND registered_on = \'\'', 'sql: "SELECT id, total, account_id FROM plans WHERE deleted_at IS NULL AND covers_balance = 0 AND registered_on = \'\'', KAYNAK + [IZ], r"\[1\]"),
+ ("M9", "iz: cheques_bounce_lock'tan durum çıkar", INT, "    sql: `SELECT c.id, c.status,\n", "    sql: `SELECT c.id,\n", KAYNAK + [IZ], r"\[1\]"),
+ ("M10", "iz: cheques_free_lock satırı boşalır (kimlik yerine sabit)", INT, "    sql: `SELECT c.id FROM cheques c\n          WHERE c.issue_date <= ?1 AND c.deleted_at IS NULL\n            AND NOT EXISTS (SELECT 1 FROM plan_entries pe", "    sql: `SELECT 1 AS one FROM cheques c\n          WHERE 0 AND c.issue_date <= ?1 AND c.deleted_at IS NULL\n            AND NOT EXISTS (SELECT 1 FROM plan_entries pe", KAYNAK + [IZ], r"\[1\]"),
+ ("M11", "iz: cheques_bounce_lock karşılıksız günü (created_at sırası) çıkar", INT, "                 COALESCE((SELECT ev.date FROM cheque_events ev WHERE ev.cheque_id = c.id AND ev.kind = 'bounce' ORDER BY ev.created_at DESC LIMIT 1), '') AS bounced_on,\n", "", KAYNAK + [IZ], r"\[1\]"),
+ # Süzgeçten alan çıkar.
+ ("S1", "süzgeç: transfer_id", SC, '"tax_json", "is_opening", "transfer_id"]', '"tax_json", "is_opening"]', [IZ], r"\[7\]"),
+ ("S2", "süzgeç: source / source_id / doubtful_skip", SC, '"is_opening", "source", "source_id", "doubtful_skip"]', '"is_opening"]', [IZ], r"\[7\]"),
+ ("S3", "süzgeç: cheque_id / opening", SC, '"fin_ref", "event_id", "cheque_id", "opening"]', '"fin_ref", "event_id"]', [IZ], r"\[7\]"),
+ ("S4", "süzgeç: reason", SC, '"unit_price", "is_opening", "reason"]', '"unit_price", "is_opening"]', [IZ], r"\[7\]"),
+ ("S5", "süzgeç: gl_json / try_withheld / try_stoppage", SC, '"try_vat", "gl_json", "try_withheld", "try_stoppage"]', '"try_vat"]', [IZ], r"\[7\]"),
+ ("S6", "süzgeç: tahsil kaydının event_id'i", SC, '["cheque_id", "bank_account_id", "given_date", "event_id"]', '["cheque_id", "bank_account_id", "given_date"]', [IZ], r"\[7\]"),
+ ("S7", "süzgeç: Kayıt Tarihi boş kart", SC, 'if ((unregistered(pre) || unregistered(post)) &&', 'if (false && (unregistered(pre) || unregistered(post)) &&', [IZ], r"\[7\]"),
+ ("S8", "süzgeç: evrak olguları (chequeLockRelevant)", SC, "        const cheque = chequeLockRelevant(table, pre, post, lock, inTrace);\n", "        const cheque = \"\";\n", [IZ], r"\[7\]"),
+ # Dar kontrol DÜŞÜK-A'nın dört mutantı (mutant2.py ile aynı metin).
+ ("N3", "DÜŞÜK-A: yükleme damgası izden düşer", INT, "SELECT p.id, p.import_id, COALESCE((SELECT x.created_at FROM plan_imports x WHERE x.id = p.import_id), '') AS imported FROM plans p", "SELECT p.id, p.import_id FROM plans p", KAYNAK + [IZ], r"\[8\]"),
+ ("N7", "DÜŞÜK-A: süzgeçteki plan_imports denetimi düşer", SC, 'if (table === "plan_imports" && differs(pre, post, ["created_at"])', 'if (false && table === "plan_imports" && differs(pre, post, ["created_at"])', [IZ], r"\[8\]"),
+ ("N17", "DÜŞÜK-A: opening:review COMMIT kapısına da girer", INT, "    if (!touched) {\n      const review = openingReviewDrift(store);", "    if (true) {\n      const review = openingReviewDrift(store);", [IZ], r"\[8\]"),
+ ("N18", "DÜŞÜK-A: karar ucu yalnız durumu kararlı satırda", OPEN, "if (!row || !(DECIDED.has(String(row.review)) || DECIDED.has(String(row.gate)))) return { status: 404 };", "if (!row || !DECIDED.has(String(row.review))) return { status: 404 };", [IZ], r"\[8\]"),
+ # Kaynak tarama testinin dişi: türetmeye sahte sütun; izden sütun çıkar (WHERE kalır).
+ ("K1", "türetmeye sahte sütun (cari satırının created_by'ı)", LED, "e.invoice_id AS invoiceId, e.doubtful_skip AS doubtfulSkip\n", "e.invoice_id AS invoiceId, e.doubtful_skip AS doubtfulSkip, e.created_by AS createdBy\n", KAYNAK, None),
+ ("K2", "izden sütun çıkar: transfer_id SELECT'ten (WHERE kalır)", INT, '"SELECT id, transfer_id FROM cash_entries WHERE transfer_id', '"SELECT id FROM cash_entries WHERE transfer_id', KAYNAK, None),
+]
+only = set(sys.argv[1].split(",")) if len(sys.argv) > 1 else None
+res = json.load(open(OUT)) if os.path.exists(OUT) and only else []
+res = [r for r in res if not only or r["no"] not in only]
+env = dict(os.environ, HUKUK_LICENSE_URL="http://127.0.0.1:9", TZ="Europe/Istanbul")
+for no, name, f, a, b, tests, pattern in MUTS:
+    if only and no not in only: continue
+    p = M + f
+    src = open(p, encoding="utf-8").read()
+    n = src.count(a)
+    if n != 1:
+        res.append({"no": no, "name": name, "sonuc": f"UYGULANAMADI ({n})"}); print(no, "UYGULANAMADI", n, flush=True); continue
+    open(p, "w", encoding="utf-8").write(src.replace(a, b))
+    lines = []
+    try:
+        for t in tests:
+            cmd = ["node", "--disable-warning=ExperimentalWarning", "--test", "--test-reporter=tap"]
+            if pattern and t == IZ: cmd += ["--test-name-pattern", pattern]
+            try:
+                out = subprocess.run(cmd + [t], cwd=M, capture_output=True, text=True, timeout=1500, env=env).stdout
+            except subprocess.TimeoutExpired:
+                out = "# ZAMAN AŞIMI"
+            summ = [l for l in out.splitlines() if l.startswith("# tests") or l.startswith("# pass") or l.startswith("# fail") or l.startswith("# skipped") or l.startswith("# cancelled")]
+            fails = [l.strip() for l in out.splitlines() if l.startswith("not ok") or l.strip().startswith("not ok")][:6]
+            msg = [l.strip()[:220] for l in out.splitlines() if "error: '" in l or "message:" in l][:3]
+            lines.append({"test": t, "ozet": " ".join(summ), "kirmizi": fails, "ileti": msg})
+    finally:
+        open(p, "w", encoding="utf-8").write(src)
+    killed = any(" fail 0" not in x["ozet"] and "# fail" in x["ozet"] for x in lines)
+    res.append({"no": no, "name": name, "yakalandi": killed, "kosu": lines})
+    print(no, "YAKALANDI" if killed else "YAŞIYOR", [x["ozet"] for x in lines], flush=True)
+json.dump(res, open(OUT, "w"), ensure_ascii=False, indent=1)
