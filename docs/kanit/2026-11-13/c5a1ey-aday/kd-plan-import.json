@@ -1,0 +1,90 @@
+{
+ "root": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag",
+ "case": "plan-import",
+ "today": "2026-10-08",
+ "state": {
+  "lock": "2026-10-05",
+  "coverage": "2026-10-05",
+  "pending": false
+ },
+ "before": {
+  "findings": [],
+  "failures": [
+   "ledger:rule-diff:44",
+   "dates:future:cheque_events:1"
+  ]
+ },
+ "target": {
+  "id": "plan-15e16480-5866-4202-ac76-b20f108a0f16",
+  "total": 28000,
+  "registered_on": "2025-09-26"
+ },
+ "afterInline": {
+  "findings": [
+   "ledger:snapshot",
+   "period-lock"
+  ],
+  "failures": [
+   "ledger:snapshot:1",
+   "ledger:rule-diff:45/155800",
+   "dates:future:cheque_events:1",
+   "period-lock:1"
+  ],
+  "log": 1,
+  "zil": [
+   [
+    "ledger:snapshot",
+    "period-lock"
+   ]
+  ]
+ },
+ "afterWorker": {
+  "findings": [],
+  "log": 1,
+  "zil": [
+   [
+    "ledger:snapshot",
+    "period-lock"
+   ]
+  ]
+ },
+ "ruleDiff": {
+  "ok": false,
+  "count": 45,
+  "difference": 155800,
+  "breakdown": [
+   {
+    "account": "500",
+    "frozenMinor": -12780000,
+    "liveMinor": 0,
+    "differenceMinor": 12780000
+   },
+   {
+    "account": "519",
+    "frozenMinor": 0,
+    "liveMinor": -15580000,
+    "differenceMinor": -15580000
+   },
+   {
+    "account": "602",
+    "frozenMinor": -2800000,
+    "liveMinor": 0,
+    "differenceMinor": 2800000
+   }
+  ]
+ },
+ "opening": [
+  {
+   "code": "opening:519",
+   "ok": true,
+   "ledger": -155800,
+   "subledger": -155800
+  },
+  {
+   "code": "opening:500",
+   "ok": true,
+   "ledger": 0,
+   "subledger": 0
+  }
+ ]
+}

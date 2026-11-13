@@ -1,0 +1,526 @@
+TAP version 13
+# Subtest: v20 şeması (yeni kurulum)
+    # Subtest: göç numarası 20; §5.2'deki 16 tablo STRICT ve plandaki kolonlarla
+    ok 1 - göç numarası 20; §5.2'deki 16 tablo STRICT ve plandaki kolonlarla
+      ---
+      duration_ms: 2.720841
+      type: 'test'
+      ...
+    # Subtest: §5.3: para tablolarına fin_ref ve event_id (kısmi indeksleriyle), cari satırına döviz kolonları, faturaya rate_source
+    ok 2 - §5.3: para tablolarına fin_ref ve event_id (kısmi indeksleriyle), cari satırına döviz kolonları, faturaya rate_source
+      ---
+      duration_ms: 0.972534
+      type: 'test'
+      ...
+    # Subtest: meta.schema.v20At: göç anının iş saati (sahte saat) damgası
+    ok 3 - meta.schema.v20At: göç anının iş saati (sahte saat) damgası
+      ---
+      duration_ms: 0.228752
+      type: 'test'
+      ...
+    # Subtest: STRICT ve CHECK: kesirli/metin/eksi kuruş, yanlış taraf, sıfır tutar, kart sonu, oran, taksit, kur reddedilir
+    ok 4 - STRICT ve CHECK: kesirli/metin/eksi kuruş, yanlış taraf, sıfır tutar, kart sonu, oran, taksit, kur reddedilir
+      ---
+      duration_ms: 1.97192
+      type: 'test'
+      ...
+    # Subtest: tekil indeksler yalnız etkin satırda (iptal/silinmiş satırda aynı değer serbest)
+    ok 5 - tekil indeksler yalnız etkin satırda (iptal/silinmiş satırda aynı değer serbest)
+      ---
+      duration_ms: 1.502025
+      type: 'test'
+      ...
+    # Subtest: kapı listeleri: yeni para tabloları kapıdan geçer, hesap kartının bilgi kolonu geçmez; fin_events tarihli (ileri tarih geri alınır)
+    ok 6 - kapı listeleri: yeni para tabloları kapıdan geçer, hesap kartının bilgi kolonu geçmez; fin_events tarihli (ileri tarih geri alınır)
+      ---
+      duration_ms: 224.60868
+      type: 'test'
+      ...
+    # Subtest: kilit izi: kilitli dönemdeki eski satıra hesap/işlem bağı (fin_ref, event_id) yazmak 409 period-lock; açık dönemde serbest
+    ok 7 - kilit izi: kilitli dönemdeki eski satıra hesap/işlem bağı (fin_ref, event_id) yazmak 409 period-lock; açık dönemde serbest
+      ---
+      duration_ms: 442.811166
+      type: 'test'
+      ...
+    1..7
+ok 1 - v20 şeması (yeni kurulum)
+  ---
+  duration_ms: 1051.043115
+  type: 'suite'
+  ...
+# Subtest: K11: v20 göçü hiçbir mevcut satırı değiştirmez (gerçek eski sürüm verisi)
+    # Subtest: surum-2.0.16-zincir: her şirket dosyası satır satır aynı, kilit izi aynı, göç öncesi yedek tam
+    ok 1 - surum-2.0.16-zincir: her şirket dosyası satır satır aynı, kilit izi aynı, göç öncesi yedek tam
+      ---
+      duration_ms: 182.943801
+      type: 'test'
+      ...
+    # Subtest: surum-2.0.17-zincir: her şirket dosyası satır satır aynı, kilit izi aynı, göç öncesi yedek tam
+    ok 2 - surum-2.0.17-zincir: her şirket dosyası satır satır aynı, kilit izi aynı, göç öncesi yedek tam
+      ---
+      duration_ms: 486.908699
+      type: 'test'
+      ...
+    # Subtest: surum-2.0.18-zincir: her şirket dosyası satır satır aynı, kilit izi aynı, göç öncesi yedek tam
+    ok 3 - surum-2.0.18-zincir: her şirket dosyası satır satır aynı, kilit izi aynı, göç öncesi yedek tam
+      ---
+      duration_ms: 694.588205
+      type: 'test'
+      ...
+    # Subtest: surum-2.0.19-zincir: her şirket dosyası satır satır aynı, kilit izi aynı, göç öncesi yedek tam
+    ok 4 - surum-2.0.19-zincir: her şirket dosyası satır satır aynı, kilit izi aynı, göç öncesi yedek tam
+      ---
+      duration_ms: 803.669357
+      type: 'test'
+      ...
+    # Subtest: surum-2.0.20-zincir: her şirket dosyası satır satır aynı, kilit izi aynı, göç öncesi yedek tam
+    ok 5 - surum-2.0.20-zincir: her şirket dosyası satır satır aynı, kilit izi aynı, göç öncesi yedek tam
+      ---
+      duration_ms: 786.832115
+      type: 'test'
+      ...
+    # Subtest: surum-2.0.21-zincir: her şirket dosyası satır satır aynı, kilit izi aynı, göç öncesi yedek tam
+    ok 6 - surum-2.0.21-zincir: her şirket dosyası satır satır aynı, kilit izi aynı, göç öncesi yedek tam
+      ---
+      duration_ms: 807.213382
+      type: 'test'
+      ...
+    # Subtest: surum-2.0.22-zincir: her şirket dosyası satır satır aynı, kilit izi aynı, göç öncesi yedek tam
+    ok 7 - surum-2.0.22-zincir: her şirket dosyası satır satır aynı, kilit izi aynı, göç öncesi yedek tam
+      ---
+      duration_ms: 772.416065
+      type: 'test'
+      ...
+    # Subtest: surum-2.0.23-zincir: her şirket dosyası satır satır aynı, kilit izi aynı, göç öncesi yedek tam
+    ok 8 - surum-2.0.23-zincir: her şirket dosyası satır satır aynı, kilit izi aynı, göç öncesi yedek tam
+      ---
+      duration_ms: 767.622068
+      type: 'test'
+      ...
+    # Subtest: surum-2.0.24-zincir: her şirket dosyası satır satır aynı, kilit izi aynı, göç öncesi yedek tam
+    ok 9 - surum-2.0.24-zincir: her şirket dosyası satır satır aynı, kilit izi aynı, göç öncesi yedek tam
+      ---
+      duration_ms: 793.52969
+      type: 'test'
+      ...
+    # Subtest: surum-2.0.25-zincir: her şirket dosyası satır satır aynı, kilit izi aynı, göç öncesi yedek tam
+    ok 10 - surum-2.0.25-zincir: her şirket dosyası satır satır aynı, kilit izi aynı, göç öncesi yedek tam
+      ---
+      duration_ms: 840.761732
+      type: 'test'
+      ...
+    # Subtest: surum-2.0.26-zincir: her şirket dosyası satır satır aynı, kilit izi aynı, göç öncesi yedek tam
+    ok 11 - surum-2.0.26-zincir: her şirket dosyası satır satır aynı, kilit izi aynı, göç öncesi yedek tam
+      ---
+      duration_ms: 847.590118
+      type: 'test'
+      ...
+    # Subtest: surum-2.0.19-cakisma: her şirket dosyası satır satır aynı, kilit izi aynı, göç öncesi yedek tam
+    ok 12 - surum-2.0.19-cakisma: her şirket dosyası satır satır aynı, kilit izi aynı, göç öncesi yedek tam
+      ---
+      duration_ms: 328.270864
+      type: 'test'
+      ...
+    # Subtest: surum-2.0.19-eski: her şirket dosyası satır satır aynı, kilit izi aynı, göç öncesi yedek tam
+    ok 13 - surum-2.0.19-eski: her şirket dosyası satır satır aynı, kilit izi aynı, göç öncesi yedek tam
+      ---
+      duration_ms: 336.164758
+      type: 'test'
+      ...
+    1..13
+ok 2 - K11: v20 göçü hiçbir mevcut satırı değiştirmez (gerçek eski sürüm verisi)
+  ---
+  duration_ms: 8449.697175
+  type: 'suite'
+  ...
+# Subtest: yetki göçü (K4, §9.1): 2.0.26 kurulumunun özel rolleri ve kişiye özel yetkileri
+    # Subtest: bankadan çıkış yapabilen herkes bank.move + bank.cancel; cash.manage → transfer/ekstre/mutabakat; cash.view kaldırılmışsa yalnız görme kalkar
+    ok 1 - bankadan çıkış yapabilen herkes bank.move + bank.cancel; cash.manage → transfer/ekstre/mutabakat; cash.view kaldırılmışsa yalnız görme kalkar
+      ---
+      duration_ms: 120.955073
+      type: 'test'
+      ...
+    # Subtest: yalnız ortak katmanda: 002'nin kullanıcı kopyası göçte değişmez; göç iki kez çalışınca aynı (idempotent)
+    ok 2 - yalnız ortak katmanda: 002'nin kullanıcı kopyası göçte değişmez; göç iki kez çalışınca aynı (idempotent)
+      ---
+      duration_ms: 312.983679
+      type: 'test'
+      ...
+    1..2
+ok 3 - yetki göçü (K4, §9.1): 2.0.26 kurulumunun özel rolleri ve kişiye özel yetkileri
+  ---
+  duration_ms: 584.491195
+  type: 'suite'
+  ...
+# Subtest: şirket sıfırlama (§5.6)
+    # Subtest: Tüm Hareketleri Sil: hareket tabloları silinir; hesap/POS kartları ve oranları kalır, Bakiye Doğrulandı sıfırlanır; kur ve tatil, banka ayarları ve İşlem No sayacı kalır
+    ok 1 - Tüm Hareketleri Sil: hareket tabloları silinir; hesap/POS kartları ve oranları kalır, Bakiye Doğrulandı sıfırlanır; kur ve tatil, banka ayarları ve İşlem No sayacı kalır
+      ---
+      duration_ms: 123.746722
+      type: 'test'
+      ...
+    # Subtest: Tümünü Sıfırla: kartlar da silinir; kur ve tatil (başvuru verisi), banka ayarları ve İşlem No sayacı kalır
+    ok 2 - Tümünü Sıfırla: kartlar da silinir; kur ve tatil (başvuru verisi), banka ayarları ve İşlem No sayacı kalır
+      ---
+      duration_ms: 134.940453
+      type: 'test'
+      ...
+    1..2
+ok 4 - şirket sıfırlama (§5.6)
+  ---
+  duration_ms: 612.052793
+  type: 'suite'
+  ...
+# Subtest: göç ortasında kesinti (SIGKILL)
+    # Subtest: v20 yarıda kalırsa dosya v19'da sağlam, göç öncesi yedek tam; yeniden açılışta göç tamamlanır; yedekten dönüş eski hâli verir
+    ok 1 - v20 yarıda kalırsa dosya v19'da sağlam, göç öncesi yedek tam; yeniden açılışta göç tamamlanır; yedekten dönüş eski hâli verir
+      ---
+      duration_ms: 652.853655
+      type: 'test'
+      ...
+    1..1
+ok 5 - göç ortasında kesinti (SIGKILL)
+  ---
+  duration_ms: 653.002043
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç3 — donmuş defter: kilit, ilerletme, geri çekme, kural değişikliği
+    # Subtest: F1: kilit konunca kilit gününe kadarki türetilmiş yevmiye satır satır donar; donmuş = canlı (madde madde, mizan yıl yıl); koşu başlığı kural sürümü ve kaynak iziyle
+    ok 1 - F1: kilit konunca kilit gününe kadarki türetilmiş yevmiye satır satır donar; donmuş = canlı (madde madde, mizan yıl yıl); koşu başlığı kural sürümü ve kaynak iziyle
+      ---
+      duration_ms: 304.888834
+      type: 'test'
+      ...
+    # Subtest: F2 / F3 / F4: kilit geri çekilince açılan dönemin donmuş satırları izle kalkar; değişen kayıtla yeniden kilitlenince yeniden donar; ilerletme ardışık iki koşu
+    ok 2 - F2 / F3 / F4: kilit geri çekilince açılan dönemin donmuş satırları izle kalkar; değişen kayıtla yeniden kilitlenince yeniden donar; ilerletme ardışık iki koşu
+      ---
+      duration_ms: 672.095525
+      type: 'test'
+      ...
+    # Subtest: F5: kural değişikliği benzetimi — kilitli dönemin Yevmiye Defteri ve Hesap Planı Mizanı DEĞİŞMEZ, açık dönem yeni kuralla; Mutabakat Testi ve Defter Mutabakatı 'Kural Değişikliği Farkı'; ruleDiff tutarları; yeni işlemler engellenmez
+    ok 3 - F5: kural değişikliği benzetimi — kilitli dönemin Yevmiye Defteri ve Hesap Planı Mizanı DEĞİŞMEZ, açık dönem yeni kuralla; Mutabakat Testi ve Defter Mutabakatı 'Kural Değişikliği Farkı'; ruleDiff tutarları; yeni işlemler engellenmez
+      ---
+      duration_ms: 97.382157
+      type: 'test'
+      ...
+    # Subtest: F5b: aralığın tamamı donmuş dönemdeyse Yevmiye Defteri canlı türetme yapmaz (yan kazanç); açık dönemi kapsayan aralıkta yapar
+    ok 4 - F5b: aralığın tamamı donmuş dönemdeyse Yevmiye Defteri canlı türetme yapmaz (yan kazanç); açık dönemi kapsayan aralıkta yapar
+      ---
+      duration_ms: 6.386964
+      type: 'test'
+      ...
+    # Subtest: F6: değişmezlik — donmuş satır değiştirilemez, kapsam içinde silinemez, REPLACE ile ezilemez, kapanmış koşuya satır eklenemez; koşu başlığı değiştirilemez / silinemez
+    ok 5 - F6: değişmezlik — donmuş satır değiştirilemez, kapsam içinde silinemez, REPLACE ile ezilemez, kapanmış koşuya satır eklenemez; koşu başlığı değiştirilemez / silinemez
+      ---
+      duration_ms: 3.044608
+      type: 'test'
+      ...
+    # Subtest: F8: kilit sırasında yazım (kilitli döneme 409, açık döneme 200) ve aynı anda iki kilit isteği → son kilit; tek bekleyen koşu yok, donmuş = canlı
+    ok 6 - F8: kilit sırasında yazım (kilitli döneme 409, açık döneme 200) ve aynı anda iki kilit isteği → son kilit; tek bekleyen koşu yok, donmuş = canlı
+      ---
+      duration_ms: 287.187807
+      type: 'test'
+      ...
+    # Subtest: F9: gün / yıl dönümü — 01.01.2027'ye kadar kilit 31.12 ve 01.01 maddelerini dondurur; 01.01 geri çekilince yalnız o gün açılır
+    ok 7 - F9: gün / yıl dönümü — 01.01.2027'ye kadar kilit 31.12 ve 01.01 maddelerini dondurur; 01.01 geri çekilince yalnız o gün açılır
+      ---
+      duration_ms: 332.880287
+      type: 'test'
+      ...
+    # Subtest: F10: kapanış fişi kilitle aynı işlemde (postAll lockThrough) — fiş donmuş defterde, koşu eşzamanlı ve tek işlemde; dondurma düşerse fiş de kilit de yok
+    ok 8 - F10: kapanış fişi kilitle aynı işlemde (postAll lockThrough) — fiş donmuş defterde, koşu eşzamanlı ve tek işlemde; dondurma düşerse fiş de kilit de yok
+      ---
+      duration_ms: 328.005416
+      type: 'test'
+      ...
+    # Subtest: F14: kaynak izi — kilitli dönemin kaynak satırı kapının görmediği bir yolla değişirse Mutabakat Testi 'Donmuş Defter' bulgusu verir; donmuş defter aynen kalır (düzeltme yok)
+    ok 9 - F14: kaynak izi — kilitli dönemin kaynak satırı kapının görmediği bir yolla değişirse Mutabakat Testi 'Donmuş Defter' bulgusu verir; donmuş defter aynen kalır (düzeltme yok)
+      ---
+      duration_ms: 201.386219
+      type: 'test'
+      ...
+    # Subtest: F13 / yetki: Şirket Verisini Sıfırla donmuş defteri ve koşuları siler, tetikleyiciler yeniden kurulu; Muhasebe rolü kilit koyamaz (403)
+    ok 10 - F13 / yetki: Şirket Verisini Sıfırla donmuş defteri ve koşuları siler, tetikleyiciler yeniden kurulu; Muhasebe rolü kilit koyamaz (403)
+      ---
+      duration_ms: 573.270427
+      type: 'test'
+      ...
+    1..10
+ok 6 - 2.5.0 Ç3 — donmuş defter: kilit, ilerletme, geri çekme, kural değişikliği
+  ---
+  duration_ms: 3499.538589
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç3 — 2.4.9 kural kopyası (dondurulmuş) ve kural tuzağı
+    # Subtest: kopya dosyaları sabit (sha256); kopya yalnız kendi klasörünü içe aktarır
+    ok 1 - kopya dosyaları sabit (sha256); kopya yalnız kendi klasörünü içe aktarır
+      ---
+      duration_ms: 1.568296
+      type: 'test'
+      ...
+    # Subtest: LOCK_SQL_VERSION kilit izinin en yeni girdisinin sürümüdür (koşunun kaynak izi = kapının kilit izi tanımı)
+    ok 2 - LOCK_SQL_VERSION kilit izinin en yeni girdisinin sürümüdür (koşunun kaynak izi = kapının kilit izi tanımı)
+      ---
+      duration_ms: 0.902604
+      type: 'test'
+      ...
+    # Subtest: kural tuzağı: güncel kural 2.5.0-defter; güncel türetme ↔ 2.4.9 kopyası farkı yalnız Ç5-A kural kimliklerinde (500 → 519 açılış, açıklamalı Borç Yaz 500 → 602); öbür maddeler aynen
+    ok 3 - kural tuzağı: güncel kural 2.5.0-defter; güncel türetme ↔ 2.4.9 kopyası farkı yalnız Ç5-A kural kimliklerinde (500 → 519 açılış, açıklamalı Borç Yaz 500 → 602); öbür maddeler aynen
+      ---
+      duration_ms: 547.123876
+      type: 'test'
+      ...
+    1..3
+ok 7 - 2.5.0 Ç3 — 2.4.9 kural kopyası (dondurulmuş) ve kural tuzağı
+  ---
+  duration_ms: 549.91031
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç3 — donmuş defter: iki şirket, yedek → geri yükle
+    # Subtest: F13a: iki şirket karışmaz — 001'in kilidi yalnız 001'i dondurur; 002 kendi gününe kendi kuralıyla donar
+    ok 1 - F13a: iki şirket karışmaz — 001'in kilidi yalnız 001'i dondurur; 002 kendi gününe kendi kuralıyla donar
+      ---
+      duration_ms: 419.699692
+      type: 'test'
+      ...
+    # Subtest: F13b: 002 yedeği (kilitli) → kilidi geri çek → geri yükle: yedekteki kapsam, koşular, satırlar ve tetikleyiciler döner; donmuş = canlı
+    ok 2 - F13b: 002 yedeği (kilitli) → kilidi geri çek → geri yükle: yedekteki kapsam, koşular, satırlar ve tetikleyiciler döner; donmuş = canlı
+      ---
+      duration_ms: 204.628334
+      type: 'test'
+      ...
+    # Subtest: F13c: Tümünü Sıfırla donmuş defteri siler; sonra kilit yeniden donar
+    ok 3 - F13c: Tümünü Sıfırla donmuş defteri siler; sonra kilit yeniden donar
+      ---
+      duration_ms: 441.961981
+      type: 'test'
+      ...
+    1..3
+ok 8 - 2.5.0 Ç3 — donmuş defter: iki şirket, yedek → geri yükle
+  ---
+  duration_ms: 2025.311199
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç3 — donmuş defter: yarıda kesilme, disk dolu, eski sürüm, göç
+    # Subtest: F7a: dondurma sırasında süreç öldürülürse (ilk parça yazılmış, koşu açık) yarım koşu görünmez; açılışta sürer, sonuç kilit = kapsam, donmuş = canlı
+    ok 1 - F7a: dondurma sırasında süreç öldürülürse (ilk parça yazılmış, koşu açık) yarım koşu görünmez; açılışta sürer, sonuç kilit = kapsam, donmuş = canlı
+      ---
+      duration_ms: 1489.204259
+      type: 'test'
+      ...
+    # Subtest: F7b: disk dolu — kilit konur ama dondurma tamamlanamaz: yarım satırlar görünmez, raporlar canlı (doğru); yer açılınca tamamlanır
+    ok 2 - F7b: disk dolu — kilit konur ama dondurma tamamlanamaz: yarım satırlar görünmez, raporlar canlı (doğru); yer açılınca tamamlanır
+      ---
+      duration_ms: 2472.798438
+      type: 'test'
+      ...
+    # Subtest: F12: eski sürüm (BS-7 kapısını bilmez) kilidi ilerletir → açılışta aradaki dönem 2.4.9 kuralıyla donar; geri çeker → açılışta çözülür; Şirket Verisini Sıfırla (önce işlem geçmişi) donmuş satırları silebilir → açılışta tutarlı
+    ok 3 - F12: eski sürüm (BS-7 kapısını bilmez) kilidi ilerletir → açılışta aradaki dönem 2.4.9 kuralıyla donar; geri çeker → açılışta çözülür; Şirket Verisini Sıfırla (önce işlem geçmişi) donmuş satırları silebilir → açılışta tutarlı
+      ---
+      duration_ms: 1070.717767
+      type: 'test'
+      ...
+    # Subtest: F11 (benzetim): göç 47 — kilitli 46'lık dosyada bekleyen 2.4.9 koşusu yazılır, açılıştan sonra 2.4.9 kopyasıyla donar; kilitsiz dosyada koşu yok
+    ok 4 - F11 (benzetim): göç 47 — kilitli 46'lık dosyada bekleyen 2.4.9 koşusu yazılır, açılıştan sonra 2.4.9 kopyasıyla donar; kilitsiz dosyada koşu yok
+      ---
+      duration_ms: 1492.535347
+      type: 'test'
+      ...
+    1..4
+ok 9 - 2.5.0 Ç3 — donmuş defter: yarıda kesilme, disk dolu, eski sürüm, göç
+  ---
+  duration_ms: 6559.61335
+  type: 'suite'
+  ...
+# Subtest: Koruma — eski sürüm fikstürleri bugünkü kodla açılınca taban sapması hiçbir yazım ailesini tam kapıya düşürmez
+    # Subtest: fikstür listesi taramayla bulundu (19): surum-2.0.16-zincir, surum-2.0.17-zincir, surum-2.0.18-zincir, surum-2.0.19-cakisma, surum-2.0.19-eski, surum-2.0.19-zincir, surum-2.0.20-zincir, surum-2.0.21-zincir, surum-2.0.22-zincir, surum-2.0.23-zincir, surum-2.0.24-zincir, surum-2.0.25-zincir, surum-2.0.26-iade, surum-2.0.26-onarim-250, surum-2.0.26-turler, surum-2.0.26-zincir, surum-2.4.3-baslarken, surum-2.4.9-s127, surum-2.4.9-s127-kilitsiz
+    ok 1 - fikstür listesi taramayla bulundu (19): surum-2.0.16-zincir, surum-2.0.17-zincir, surum-2.0.18-zincir, surum-2.0.19-cakisma, surum-2.0.19-eski, surum-2.0.19-zincir, surum-2.0.20-zincir, surum-2.0.21-zincir, surum-2.0.22-zincir, surum-2.0.23-zincir, surum-2.0.24-zincir, surum-2.0.25-zincir, surum-2.0.26-iade, surum-2.0.26-onarim-250, surum-2.0.26-turler, surum-2.0.26-zincir, surum-2.4.3-baslarken, surum-2.4.9-s127, surum-2.4.9-s127-kilitsiz
+      ---
+      duration_ms: 1.124754
+      type: 'test'
+      ...
+# \# surum-2.0.16-zincir: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.16-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 2 - surum-2.0.16-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 498.443951
+      type: 'test'
+      ...
+# \# surum-2.0.17-zincir: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.17-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 3 - surum-2.0.17-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 758.680538
+      type: 'test'
+      ...
+# \# surum-2.0.18-zincir: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"004","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.18-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 4 - surum-2.0.18-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 1081.631597
+      type: 'test'
+      ...
+# \# surum-2.0.19-cakisma: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"005","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.19-cakisma: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 5 - surum-2.0.19-cakisma: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 649.587227
+      type: 'test'
+      ...
+# \# surum-2.0.19-eski: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.19-eski: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 6 - surum-2.0.19-eski: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 569.379633
+      type: 'test'
+      ...
+# \# surum-2.0.19-zincir: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"004","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.19-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 7 - surum-2.0.19-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 982.73287
+      type: 'test'
+      ...
+# \# surum-2.0.20-zincir: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"004","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.20-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 8 - surum-2.0.20-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 1061.116153
+      type: 'test'
+      ...
+# \# surum-2.0.21-zincir: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"004","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.21-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 9 - surum-2.0.21-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 1152.367105
+      type: 'test'
+      ...
+# \# surum-2.0.22-zincir: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"004","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.22-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 10 - surum-2.0.22-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 1104.994086
+      type: 'test'
+      ...
+# \# surum-2.0.23-zincir: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"004","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.23-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 11 - surum-2.0.23-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 1121.675217
+      type: 'test'
+      ...
+# \# surum-2.0.24-zincir: [{"sirket":"001","kuralFarki":true,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"004","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.24-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 12 - surum-2.0.24-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 1268.47009
+      type: 'test'
+      ...
+# \# surum-2.0.25-zincir: [{"sirket":"001","kuralFarki":true,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"004","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.25-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 13 - surum-2.0.25-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 1237.614547
+      type: 'test'
+      ...
+# \# surum-2.0.26-iade: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.26-iade: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 14 - surum-2.0.26-iade: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 434.17134
+      type: 'test'
+      ...
+# \# surum-2.0.26-onarim-250: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.26-onarim-250: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 15 - surum-2.0.26-onarim-250: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 610.830104
+      type: 'test'
+      ...
+# \# surum-2.0.26-turler: [{"sirket":"001","kuralFarki":true,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"004","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.26-turler: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 16 - surum-2.0.26-turler: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 1392.642086
+      type: 'test'
+      ...
+# \# surum-2.0.26-zincir: [{"sirket":"001","kuralFarki":true,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"004","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.26-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 17 - surum-2.0.26-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 1372.241541
+      type: 'test'
+      ...
+# \# surum-2.4.3-baslarken: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.4.3-baslarken: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 18 - surum-2.4.3-baslarken: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 441.971879
+      type: 'test'
+      ...
+# \# surum-2.4.9-s127: [{"sirket":"001","kuralFarki":true,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.4.9-s127: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 19 - surum-2.4.9-s127: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 331.084559
+      type: 'test'
+      ...
+# \# surum-2.4.9-s127-kilitsiz: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.4.9-s127-kilitsiz: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 20 - surum-2.4.9-s127-kilitsiz: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 199.292405
+      type: 'test'
+      ...
+    1..20
+ok 10 - Koruma — eski sürüm fikstürleri bugünkü kodla açılınca taban sapması hiçbir yazım ailesini tam kapıya düşürmez
+  ---
+  duration_ms: 16273.266683
+  type: 'suite'
+  ...
+# Subtest: Ç5-A tur 1d — Kural Değişikliği Farkı uyarıdır, yeni sapma değildir
+    # Subtest: [1] kilitli eski veri: dondurmadan sonraki İLK ARKA PLAN taraması sessiz (günlük / zil / sunucu yok), uyarı satırı var; ardından satır içi de sessiz
+    ok 1 - [1] kilitli eski veri: dondurmadan sonraki İLK ARKA PLAN taraması sessiz (günlük / zil / sunucu yok), uyarı satırı var; ardından satır içi de sessiz
+      ---
+      duration_ms: 1097.270152
+      type: 'test'
+      ...
+    # Subtest: [3] dondurmadan sonra yeniden açılış: taban satırı / sunucu 'kalan sapma' iletisi kural farkını taşımaz, ilk taramalar sessiz; kapı dışı kilitli kaynak değişimi yine bulunur
+    ok 2 - [3] dondurmadan sonra yeniden açılış: taban satırı / sunucu 'kalan sapma' iletisi kural farkını taşımaz, ilk taramalar sessiz; kapı dışı kilitli kaynak değişimi yine bulunur
+      ---
+      duration_ms: 1340.128212
+      type: 'test'
+      ...
+    # Subtest: [1] kilitli eski veri: dondurmadan sonraki İLK tarama SATIR İÇİ yoldan (Mutabakat Testi ucu) sessiz, uyarı satırı yanıtta
+    ok 3 - [1] kilitli eski veri: dondurmadan sonraki İLK tarama SATIR İÇİ yoldan (Mutabakat Testi ucu) sessiz, uyarı satırı yanıtta
+      ---
+      duration_ms: 995.05765
+      type: 'test'
+      ...
+    # Subtest: [2] GERÇEK yeni sapma (kural farkı dışı) dondurmadan SONRA, kural farkıyla AYNI taramada: bulunur, günlüğe yazılır, zil + sunucu iletisi; kural farkı bulgu değil
+    ok 4 - [2] GERÇEK yeni sapma (kural farkı dışı) dondurmadan SONRA, kural farkıyla AYNI taramada: bulunur, günlüğe yazılır, zil + sunucu iletisi; kural farkı bulgu değil
+      ---
+      duration_ms: 891.679399
+      type: 'test'
+      ...
+    # Subtest: [4] kilitsiz veri: kural farkı denetimi yok, ilk tarama sessiz; gerçek sapma eskisi gibi bulunur (gerileme yok)
+    ok 5 - [4] kilitsiz veri: kural farkı denetimi yok, ilk tarama sessiz; gerçek sapma eskisi gibi bulunur (gerileme yok)
+      ---
+      duration_ms: 602.600318
+      type: 'test'
+      ...
+    1..5
+ok 11 - Ç5-A tur 1d — Kural Değişikliği Farkı uyarıdır, yeni sapma değildir
+  ---
+  duration_ms: 4928.431181
+  type: 'suite'
+  ...
+1..11
+# tests 70
+# suites 11
+# pass 70
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 46968.507279

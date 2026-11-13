@@ -318,7 +318,7 @@ describe("2.5.0 Ç3 — donmuş defter: yarıda kesilme, disk dolu, eski sürüm
       assert.equal(server.app.store.get("SELECT GROUP_CONCAT(DISTINCT rule_version) AS v FROM ledger_snapshots").v, "2.4.9");
       assert.deepEqual(canon(S.entries()), canon(upTo(buildRule249(server.app.store), LOCK)), "donmuş = 2.4.9 kopyası");
       assert.deepEqual(canon(S.entries()), canon(upTo(server.app.ledger.build(), LOCK)), "bugün güncel kural = 2.4.9 (tutarda)");
-      assert.equal(server.app.store.get("PRAGMA user_version").user_version, 49); // 2.5.0 Ç5-A (G3): 46 → 47 (donmuş defter) → 48, 49 (Ç5-A)
+      assert.equal(server.app.store.get("PRAGMA user_version").user_version, 50); // 2.5.0 Ç5-A (G3): 46 → 47 (donmuş defter) → 48, 49 (Ç5-A); tur 1e: 50
     } finally {
       await server.close();
     }

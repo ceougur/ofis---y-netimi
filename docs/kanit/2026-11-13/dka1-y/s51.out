@@ -1,0 +1,38 @@
+(node:26351) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{
+ "v249": {
+  "acc": 200,
+  "second": 200
+ },
+ "afterMigration": {
+  "id": "aentry-dbd3fe05-a283-4453-ac2c-12f793e1f925",
+  "f": 0,
+  "r": "candidate",
+  "lines": [
+   "120:30000/0 519:0/30000"
+  ]
+ },
+ "confirm": {
+  "status": 200,
+  "review": "confirmed",
+  "lines": [
+   "120:30000/0 519:0/30000"
+  ]
+ },
+ "del": 200,
+ "restore": {
+  "status": 200,
+  "f": 0,
+  "r": "",
+  "lines": [
+   "120:30000/0 602:0/30000"
+  ]
+ },
+ "integrity": {
+  "failures": []
+ },
+ "first": {
+  "id": "aentry-ae664c1f-3077-44e0-96fc-a4369d1d0f5c"
+ }
+}

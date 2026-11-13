@@ -1,0 +1,64 @@
+
+> destekofis@2.4.9 test:suzgec-cubugu-yaris
+> node --disable-warning=ExperimentalWarning test/e2e/suzgec-cubugu-yaris.mjs --kip hepsi --deneme 5
+
+kip banka-tarih; kod bu ağaç; tarayıcı 153.0.8010.12
+tarih kutusu aa/gg/yyyy: ilk bölüm "10", kalan "072026"
+    [suzgec-zorla] ON-KOSUL: ekran gün yazılmışken yeniden çizildi; kutu aynı düğüm, odak kutuda
+✓ deneme 1: yazılan 2026-10-07; kutu "2026-10-07", odak kutuda, kutu korundu, süzgeç uygulandı
+    [suzgec-zorla] ON-KOSUL: ekran gün yazılmışken yeniden çizildi; kutu aynı düğüm, odak kutuda
+✓ deneme 2: yazılan 2026-10-07; kutu "2026-10-07", odak kutuda, kutu korundu, süzgeç uygulandı
+    [suzgec-zorla] ON-KOSUL: ekran gün yazılmışken yeniden çizildi; kutu aynı düğüm, odak kutuda
+✓ deneme 3: yazılan 2026-10-07; kutu "2026-10-07", odak kutuda, kutu korundu, süzgeç uygulandı
+    [suzgec-zorla] ON-KOSUL: ekran gün yazılmışken yeniden çizildi; kutu aynı düğüm, odak kutuda
+✓ deneme 4: yazılan 2026-10-07; kutu "2026-10-07", odak kutuda, kutu korundu, süzgeç uygulandı
+    [suzgec-zorla] ON-KOSUL: ekran gün yazılmışken yeniden çizildi; kutu aynı düğüm, odak kutuda
+✓ deneme 5: yazılan 2026-10-07; kutu "2026-10-07", odak kutuda, kutu korundu, süzgeç uygulandı
+
+TAMAM: 5 denetim geçti, 0 başarısız. (kip banka-tarih; ön koşul 5/5 denemede oluştu; 0 sayılmadı)
+kip pos-tarih; kod bu ağaç; tarayıcı 153.0.8010.12
+tarih kutusu aa/gg/yyyy: ilk bölüm "10", kalan "072026"
+    [suzgec-zorla] ON-KOSUL: ekran gün yazılmışken yeniden çizildi; kutu aynı düğüm, odak kutuda
+✓ deneme 1: yazılan 2026-10-07; kutu "2026-10-07", odak kutuda, kutu korundu, süzgeç uygulandı
+    [suzgec-zorla] ON-KOSUL: ekran gün yazılmışken yeniden çizildi; kutu aynı düğüm, odak kutuda
+✓ deneme 2: yazılan 2026-10-07; kutu "2026-10-07", odak kutuda, kutu korundu, süzgeç uygulandı
+    [suzgec-zorla] ON-KOSUL: ekran gün yazılmışken yeniden çizildi; kutu aynı düğüm, odak kutuda
+✓ deneme 3: yazılan 2026-10-07; kutu "2026-10-07", odak kutuda, kutu korundu, süzgeç uygulandı
+    [suzgec-zorla] ON-KOSUL: ekran gün yazılmışken yeniden çizildi; kutu aynı düğüm, odak kutuda
+✓ deneme 4: yazılan 2026-10-07; kutu "2026-10-07", odak kutuda, kutu korundu, süzgeç uygulandı
+    [suzgec-zorla] ON-KOSUL: ekran gün yazılmışken yeniden çizildi; kutu aynı düğüm, odak kutuda
+✓ deneme 5: yazılan 2026-10-07; kutu "2026-10-07", odak kutuda, kutu korundu, süzgeç uygulandı
+
+TAMAM: 5 denetim geçti, 0 başarısız. (kip pos-tarih; ön koşul 5/5 denemede oluştu; 0 sayılmadı)
+kip rapor-tarih; kod bu ağaç; tarayıcı 153.0.8010.12
+tarih kutusu aa/gg/yyyy: ilk bölüm "10", kalan "072026"
+    [suzgec-zorla] ON-KOSUL: ekran gün yazılmışken yeniden çizildi; kutu aynı düğüm, odak kutuda
+✓ deneme 1: yazılan 2026-10-07; kutu "2026-10-07", odak kutuda, kutu korundu
+    [suzgec-zorla] ON-KOSUL: ekran gün yazılmışken yeniden çizildi; kutu aynı düğüm, odak kutuda
+✓ deneme 2: yazılan 2026-10-07; kutu "2026-10-07", odak kutuda, kutu korundu
+    [suzgec-zorla] ON-KOSUL: ekran gün yazılmışken yeniden çizildi; kutu aynı düğüm, odak kutuda
+✓ deneme 3: yazılan 2026-10-07; kutu "2026-10-07", odak kutuda, kutu korundu
+    [suzgec-zorla] ON-KOSUL: ekran gün yazılmışken yeniden çizildi; kutu aynı düğüm, odak kutuda
+✓ deneme 4: yazılan 2026-10-07; kutu "2026-10-07", odak kutuda, kutu korundu
+    [suzgec-zorla] ON-KOSUL: ekran gün yazılmışken yeniden çizildi; kutu aynı düğüm, odak kutuda
+✓ deneme 5: yazılan 2026-10-07; kutu "2026-10-07", odak kutuda, kutu korundu
+
+TAMAM: 5 denetim geçti, 0 başarısız. (kip rapor-tarih; ön koşul 5/5 denemede oluştu; 0 sayılmadı)
+kip gelen-tarih; kod bu ağaç; tarayıcı 153.0.8010.12
+tarih kutusu aa/gg/yyyy: ilk bölüm "10", kalan "072026"
+    [suzgec-zorla] ON-KOSUL: ekran gün yazılmışken yeniden çizildi; kutu aynı düğüm, odak kutuda
+✓ deneme 1: yazılan 2026-10-07; kutu "2026-10-07", odak kutuda, kutu korundu
+    [suzgec-zorla] ON-KOSUL: ekran gün yazılmışken yeniden çizildi; kutu aynı düğüm, odak kutuda
+✓ deneme 2: yazılan 2026-10-07; kutu "2026-10-07", odak kutuda, kutu korundu
+    [suzgec-zorla] ON-KOSUL: ekran gün yazılmışken yeniden çizildi; kutu aynı düğüm, odak kutuda
+✓ deneme 3: yazılan 2026-10-07; kutu "2026-10-07", odak kutuda, kutu korundu
+    [suzgec-zorla] ON-KOSUL: ekran gün yazılmışken yeniden çizildi; kutu aynı düğüm, odak kutuda
+✓ deneme 4: yazılan 2026-10-07; kutu "2026-10-07", odak kutuda, kutu korundu
+    [suzgec-zorla] ON-KOSUL: ekran gün yazılmışken yeniden çizildi; kutu aynı düğüm, odak kutuda
+✓ deneme 5: yazılan 2026-10-07; kutu "2026-10-07", odak kutuda, kutu korundu
+
+TAMAM: 5 denetim geçti, 0 başarısız. (kip gelen-tarih; ön koşul 5/5 denemede oluştu; 0 sayılmadı)
+
+TAMAM: 20 denetim geçti, 0 başarısız. (dört kip: banka-tarih, pos-tarih, rapor-tarih, gelen-tarih)
+
+[kanit] c5a1ey-e2e-suzgec-cubugu-yaris: GEÇTİ · çıkış 0 · 20/20 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fe2bca2 +1 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v22.23.4

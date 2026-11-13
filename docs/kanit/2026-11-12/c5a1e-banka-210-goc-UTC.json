@@ -1,0 +1,33 @@
+{
+ "ad": "c5a1e-banka-210-goc-UTC",
+ "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-210-goc.test.mjs",
+ "commit": "caec8a59fd4deec8472f6d22a691e16ea678249d",
+ "dal": "worktree-agent-a51e9f595cced8a5a",
+ "kirli": 0,
+ "izlenmeyen": 1,
+ "platform": "linux 6.18.44-fc-v378 x64",
+ "node": "v22.23.4",
+ "cpu": 4,
+ "bellek_gb": 16,
+ "basladi": "2026-11-12T21:43:40.030Z",
+ "sure_sn": 19.1,
+ "cikis_kodu": 0,
+ "sinyal": null,
+ "zaman_asimi": false,
+ "ozet": {
+  "bicim": "node:test",
+  "toplam": 25,
+  "gecen": 25,
+  "basarisiz": 0,
+  "iptal": 0,
+  "atlanan": 0
+ },
+ "hukum": "GEÇTİ",
+ "neden": "",
+ "basarisiz_testler": [],
+ "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1e-kanit/2026-11-12/c5a1e-banka-210-goc-UTC.log",
+ "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a51e9f595cced8a5a",
+ "ham_cikti_sha256": "601930b0351116856306c544c256607f1ae8c02153116a3a3c3dc8ea3a84ac43",
+ "ham_cikti_bayt": 9047,
+ "ham_cikti_not": "ham çıktı ajanın not defterinde (scratchpad/c5a1e-kanit); depoya yalnız özet"
+}

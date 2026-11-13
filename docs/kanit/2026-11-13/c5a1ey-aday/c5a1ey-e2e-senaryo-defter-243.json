@@ -1,0 +1,32 @@
+{
+  "ad": "c5a1ey-e2e-senaryo-defter-243",
+  "komut": "npm run test:senaryo-defter-243",
+  "commit": "fe2bca235bc864589310175885dd734187d0c18c",
+  "dal": "sinama-c5a1e",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T00:16:18.790Z",
+  "sure_sn": 28.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 33,
+    "gecen": 33,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../c5a1ey-kanit/2026-11-13/c5a1ey-e2e-senaryo-defter-243.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag",
+  "ham_cikti_sha256": "b73802a70d1977d3446f9757f5659382c9c66140c7668197eef4a76e879c895a",
+  "ham_cikti_bayt": 4333
+}

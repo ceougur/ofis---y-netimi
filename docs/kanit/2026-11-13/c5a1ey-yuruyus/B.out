@@ -1,0 +1,81 @@
+fikstür surum-2.0.26-zincir · bugün 2026-10-08 · veri /tmp/destekofis-surum-2.0.26-zincir-jJfwI1/data
+açılışta dondurma durumu: {"coverage":"","lock":"2026-10-05","pending":{"no":1,"from":"","through":"2026-10-05","rule":"2.4.9","reason":"migration"},"runs":1}
+dondurmadan sonra: {"coverage":"2026-10-05","lock":"2026-10-05","pending":null,"runs":1}
+ilk arka plan taraması: bulgu [] 
+Mutabakat Günlüğü satırları: [{"action":"baseline","ozet":"İleri tarihli hareket (Çek/Senet Hareketleri)"}]
+
+■ B1 Ana ekran (güncellemeden sonra ilk açılış): zil ve uyarılar
+  zil: null
+
+■ B2 Yönetim → Dönem Kilidi ve Mutabakat: kilitli eski veride satır
+  Dönem kilidi: 05.10.2026 ve öncesi kilitli.
+  Mutabakat satırı [adm-muted adm-error-text]: Mutabakat: 2 denetimde sapma var (Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi), İleri tarihli hareket (Çek/Senet Hareketleri) — eski sürümden kalan 1 satır; yeni işlemler engellenmez). Raporlar › Defter Mutabakatı'nda ayrıntıyı görün.
+
+■ B3 Raporlar → Defter Mutabakatı (Kural Değişikliği Farkı satırı)
+  Hesap | Hesap Adı | Ana Defter | Alt Defter | Fark | Durum
+  100 | Kasa (Nakit) | ₺258.075,00 | ₺258.075,00 | ₺0,00 | Tutarlı
+  101 | Alınan Çekler | ₺750,00 | ₺750,00 | ₺0,00 | Tutarlı
+  102 | Bankalar (Havale / EFT) | ₺69.308,65 | ₺69.308,65 | ₺0,00 | Tutarlı
+  103 | Verilen Çekler ve Ödeme Emirleri (−) | ₺0,00 | ₺0,00 | ₺0,00 | Tutarlı
+  108 | Kredi Kartı Tahsilatları (POS) | ₺7.200,00 | ₺7.200,00 | ₺0,00 | Tutarlı
+  120 | Alıcılar (Müşteri Carileri) | ₺867.178,69 | ₺867.178,69 | ₺0,00 | Tutarlı
+  127 | Carisiz Taksit Kartları | ₺0,00 | ₺0,00 | ₺0,00 | Tutarlı
+  191 | İndirilecek KDV | ₺5.286,00 | ₺5.286,00 | ₺0,00 | Tutarlı
+  193 | Peşin Ödenen Vergiler (Stopaj) | ₺0,00 | ₺0,00 | ₺0,00 | Tutarlı
+  320 | Satıcılar (Tedarikçi Carileri) | -₺14.763,28 | -₺14.763,28 | ₺0,00 | Tutarlı
+  336 | Diğer Cariler (Personel vb.) | ₺0,00 | ₺0,00 | ₺0,00 | Tutarlı
+  360 | Ödenecek Vergi ve Fonlar (Tevkifat, Stopaj) | ₺0,00 | ₺0,00 | ₺0,00 | Tutarlı
+  391 | Hesaplanan KDV | -₺69.427,50 | -₺69.427,50 | ₺0,00 | Tutarlı
+  Denetim | Cari bazında mutabakat (her cari ayrı) |  |  |  | Tutarlı
+  Denetim | Carisiz taksit kartları (kart bazında) |  |  |  | Tutarlı
+  Denetim | Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi) |  |  | 44 madde | Kural Değişikliği Farkı
+  Denetim | Taksit kartları (tutar, tahsilat, kalan) |  |  |  | Tutarlı
+  Denetim | Stok miktarı (girişler − çıkışlar) |  |  |  | Tutarlı
+  Denetim | Açılış Karşılığı (519 Eşleştirilecek Açılış Bakiyeleri = Kasa, cari, banka, stok, taksit ve evrak açılışları + fişler) |  |  |  | Tutarlı
+  Denetim | Açılış Karşılığı (500 Sermaye = fişler) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Kayıt Tahsilatları) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Kasa Hareketleri) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Cari Hareketleri) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Taksit Kartları) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Taksitler) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Taksit Tahsilatları) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Stok Hareketleri) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Çek/Senet) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Çek/Senet Hareketleri) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Faturalar) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Faturalar) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Faturalar) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Faturalar) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Faturalar) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Faturalar) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Fatura Kalemleri) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Fatura Kalemleri) |  |  |  | Tutarlı
+  Denetim | Stok ↔ cari bağı (açık hesap) |  |  |  | Tutarlı
+  Denetim | Stok hareketi silinmiş cari satırı |  |  |  | Tutarlı
+  Denetim | Stok miktarı (sıfırdan büyük) |  |  |  | Tutarlı
+  Denetim | Çek/senet ↔ cari bağı |  |  |  | Tutarlı
+  Denetim | Fatura toplamı = kalemlerin toplamı |  |  |  | Tutarlı
+  Denetim | Fatura TL karşılığı (matrah + KDV − tevkifat − stopaj) |  |  |  | Tutarlı
+  Denetim | Fatura ↔ cari bağı |  |  |  | Tutarlı
+  Denetim | Faturası olmayan cari satırı |  |  |  | Tutarlı
+  Denetim | Fatura kapama bağı ve mahsup fişleri |  |  |  | Tutarlı
+  Denetim | Fatura ↔ stok bağı |  |  |  | Tutarlı
+  Denetim | Fatura ↔ çek/senet bağı |  |  |  | Tutarlı
+  Denetim | Fatura ↔ taksit kartı bağı |  |  |  | Tutarlı
+  Denetim | İade miktarı ≤ faturadaki miktar |  |  |  | Tutarlı
+  Denetim | Tarihsiz ya da geçersiz tarihli hareket (Kayıt Tahsilatları) |  |  |  | Tutarlı
+  Denetim | İleri tarihli hareket (Kayıt Tahsilatları) |  |  |  | Tutarlı
+  Denetim | Tarihsiz ya da geçersiz tarihli hareket (Kasa Hareketleri) |  |  |  | Tutarlı
+  Denetim | İleri tarihli hareket (Kasa Hareketleri) |  |  |  | Tutarlı
+  Denetim | Tarihsiz ya da geçersiz tarihli hareket (Cari Hareketleri) |  |  |  | Tutarlı
+  Denetim | İleri tarihli hareket (Cari Hareketleri) |  |  |  | Tutarlı
+  Denetim | Tarihsiz ya da geçersiz tarihli hareket (Stok Hareketleri) |  |  |  | Tutarlı
+  Denetim | İleri tarihli hareket (Stok Hareketleri) |  |  |  | Tutarlı
+  Denetim | Tarihsiz ya da geçersiz tarihli hareket (Taksit Tahsilatları) |  |  |  | Tutarlı
+
+■ B4 Raporlar → Mutabakat Günlüğü
+  Zaman | Olay | Etkilenen Tablolar | Denetim
+  2026-10-08 17:38:03 | Açılışta Bulunan Sapma |  | İleri tarihli hareket (Çek/Senet Hareketleri)
+
+■ B5 Raporlar → Kural Değişikliği Farkı (varsa)
+  ✗ ADIM YARIDA: rapor listede yok: Kural Değişikliği

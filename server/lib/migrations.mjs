@@ -1592,15 +1592,18 @@ export const MIGRATIONS = [
       // küçük harf + ç→c, ı→i, ş→s katlamasıyla — "acilis" ile BAŞLAYAN her satır ADAY olur (opening_review = 'candidate'): "AÇILIŞ", "Açilış", "Acilis", ikinci "Açılış
       // bakiyesi" dahil; "Devir" / "Devreden" ve ortada geçen "açılış" GİRMEZ (S65 = A). Aday onaya kadar defterde açılıştır (519; S47), onay → M-02 / M-03, ret → C-01 / C-02.
       // YALNIZ GÖÇTE: göçten sonra elle girilen "Açılış…" açıklamalı Borç Yaz aday OLMAZ (K8-1). Göç öncesi yedeğin geri yüklenmesi bu göçü yeniden koşar (B8).
-      // Para alanı DEĞİL: tutar, yön, tarih değişmez; sütun kilit izine (integrity.mjs LOCK_SQL) girmez — kaynak izi sürümü değişmez (B4 ile aynı bilinçli sınır).
+      // Para alanı DEĞİL: tutar, yön, tarih değişmez; sütun kilit izine (integrity.mjs LOCK_SQL) girmez (K8-2: kilitli satırda kapıdan geçerek değişir) — kapı dışı değişikliği
+      // göç 50'nin gölge sütunuyla bulunur (Ç5-A tur 1e).
       // Eşgüçlü: sütun varsa eklenmez; yalnız durumu boş ('') satırlar aday yapılır (onay / ret yeniden koşuda bozulmaz). Hız (ders 47): ön süzgeç SQL'de (baştaki boşluk
-      // sonrası ilk harf A / a), katlama JS'te tek geçiş, yazım tek UPDATE (json_each).
+      // sonrası ilk harf A / a), katlama JS'te tek geçiş, yazım tek UPDATE (json_each). Ç5-A tur 1e (dar kontrol ORTA-3): ön süzgecin attığı baştaki boşluk kümesi kuralın
+      // (isOpeningCandidateNote — String.prototype.trimStart) kümesiyle AYNI (OPENING_TRIM_CODES; önceden yalnız boşluk, sekme, satır sonu ve bölünmez boşluk — başında U+2003,
+      // U+FEFF, U+3000, U+2028 … olan "Açılış…" ön süzgeçte eleniyordu, 2.4.9 ve kural onları açılış sayar).
       store.raw("migration.v48", () => {
         if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'account_entries'")) return;
         addColumn(store, "account_entries", "opening_review", "TEXT NOT NULL DEFAULT ''");
         if (!columnExists(store, "account_entries", "is_opening")) return;
         const ids = store
-          .all("SELECT id, note FROM account_entries WHERE source = '' AND kind IN ('debt', 'credit') AND is_opening = 0 AND opening_review = '' AND ltrim(note, ' ' || char(9) || char(10) || char(13) || char(160)) LIKE 'a%'")
+          .all(`SELECT id, note FROM account_entries WHERE source = '' AND kind IN ('debt', 'credit') AND is_opening = 0 AND opening_review = '' AND ltrim(note, ${OPENING_TRIM_SQL}) LIKE 'a%'`)
           .filter(row => isOpeningCandidateNote(row.note))
           .map(row => row.id);
         if (ids.length) store.run("UPDATE account_entries SET opening_review = 'candidate' WHERE id IN (SELECT value FROM json_each(?))", JSON.stringify(ids));
@@ -1613,7 +1616,8 @@ export const MIGRATIONS = [
     up(store) {
       // 2.5.0 Ç5-A (§2.5; BAŞ MİMAR B4; M-08 / M-09; 30.10 (1)): Excel / Sheets'ten "carilere dokunmadan" yüklenen evrak AÇILIŞ portföyüdür (defter B 101 / A 519, verilen B 519 /
       // A 103 — 602 / 770'e yazılmaz). Yeni yüklemede işaret yazılır (routes/cheques.mjs insertCheque); eski veride ilk olayının notundan doldurulur ("Açılış portföyü
-      // (Excel/Sheets)" — v2.0.13'ten beri programın yazdığı metin, routes/cheques.mjs OPENING_PORTFOLIO_NOTE). Para alanı DEĞİL; kilit izine girmez (B4). Eşgüçlü.
+      // (Excel/Sheets)" — v2.0.13'ten beri programın yazdığı metin, routes/cheques.mjs OPENING_PORTFOLIO_NOTE). Para alanı DEĞİL. Ç5-A tur 1e'den: işaret kilit izinde (integrity.mjs
+      // LOCK_SQL cheques_opening_lock — B4'ün sınırı kaldırıldı; C5-ACILIS-TASARIM §15). Eşgüçlü.
       store.raw("migration.v49", () => {
         if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cheques'")) return;
         addColumn(store, "cheques", "is_opening", "INTEGER NOT NULL DEFAULT 0");
@@ -1626,9 +1630,32 @@ export const MIGRATIONS = [
       });
     },
   },
+  {
+    version: 50,
+    name: "v2.5.0 Ç5-A tur 1e KG-16 durumunun kapının yazdığı kopyası (account_entries.opening_review_gate; para dışı)",
+    up(store) {
+      // 2.5.0 Ç5-A tur 1e (dar kontrol G-1; docs/erp/C5-ACILIS-TASARIM.md §15.2 (2)): KG-16 durumu (opening_review) kilitli satırda da kapıdan geçerek değişir (K8-2) — kilit izine
+      // giremez. Onun yerine satır başına KAPININ YAZDIĞI durum tutulur: durumu yazan her program yolu (göç 48 + bu göç, KG-16 kararı lib/ledger-opening.mjs decide, Silinenler'den
+      // geri alma routes/accounts.mjs restoreEntry) iki sütunu AYNI işlemde yazar; tam tarama (lib/integrity.mjs "opening:review") ikisi farklı satırları kapı dışı değişiklik diye
+      // bulur. Göçte gölge durumun kopyasıdır (göçten önceki durum programın yazdığıdır). Para alanı değil; kilit izine girmez. Eşgüçlü (yeniden koşan göç farkları yeniden eşitler).
+      store.raw("migration.v50", () => {
+        if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'account_entries'")) return;
+        if (!columnExists(store, "account_entries", "opening_review")) return;
+        addColumn(store, "account_entries", "opening_review_gate", "TEXT NOT NULL DEFAULT ''");
+        store.run("UPDATE account_entries SET opening_review_gate = opening_review WHERE opening_review_gate <> opening_review");
+      });
+    },
+  },
 ];
 /** Excel / Sheets "Açılış portföyü" evrakının ilk olay notu (routes/cheques.mjs OPENING_PORTFOLIO_NOTE ile AYNI metin; göç 49). */
 const OPENING_PORTFOLIO_NOTE = "Açılış portföyü (Excel/Sheets)";
+/**
+ * Kuralın (isOpeningCandidateNote: String.prototype.trimStart) baştan attığı karakterler — ECMAScript WhiteSpace + LineTerminator (sekme, satır sonları, boşluk, bölünmez boşluk,
+ * U+1680, U+2000–U+200A, U+2028, U+2029, U+202F, U+205F, U+3000, U+FEFF). Göç 48'in SQL ön süzgeci (ltrim) AYNI kümeyi atar (Ç5-A tur 1e, dar kontrol ORTA-3); kalıcı test
+ * (test/goc48-bosluk-250.test.mjs) kümenin trimStart ile kod noktası kod noktası aynı olduğunu denetler.
+ */
+export const OPENING_TRIM_CODES = Object.freeze([0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x20, 0xa0, 0x1680, 0x2000, 0x2001, 0x2002, 0x2003, 0x2004, 0x2005, 0x2006, 0x2007, 0x2008, 0x2009, 0x200a, 0x2028, 0x2029, 0x202f, 0x205f, 0x3000, 0xfeff]);
+const OPENING_TRIM_SQL = `char(${OPENING_TRIM_CODES.join(", ")})`;
 /**
  * KG-16 aday kuralı (BAŞ MİMAR B6; S65 = A): açıklama — baştaki boşluk atılıp Türkçe küçük harf (İ → i, I → ı) ve ç → c, ı → i, ş → s katlamasıyla — "acilis" ile BAŞLAR.
  * ğ / ö / ü katlanmaz ("açılış" sözcüğünde yok). lib/ledger-opening.mjs aynı işlevi Silinenler'den dönen satır için kullanır (B8).

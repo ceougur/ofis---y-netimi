@@ -1,0 +1,240 @@
+TAP version 13
+# Subtest: A1 — S127: Kayıt Tarihi tam kilit günü olan, kilitten sonra yüklenmiş kart eski kurala bağlı (bir kez yazılır)
+    # Subtest: v2.4.9'un kendi sayıları (kâhin): 120 = cariler, kilit kilit gününde
+    ok 1 - v2.4.9'un kendi sayıları (kâhin): 120 = cariler, kilit kilit gününde
+      ---
+      duration_ms: 0.874873
+      type: 'test'
+      ...
+    # Subtest: güncel kod: cariler v2.4.9 ile aynı; mizan 120 = cariler (kart iki kez yazılmaz); kartın maddesi Kayıt Tarihi'nde (kilit günü — eski yapı)
+    ok 2 - güncel kod: cariler v2.4.9 ile aynı; mizan 120 = cariler (kart iki kez yazılmaz); kartın maddesi Kayıt Tarihi'nde (kilit günü — eski yapı)
+      ---
+      duration_ms: 97.857529
+      type: 'test'
+      ...
+    1..2
+ok 1 - A1 — S127: Kayıt Tarihi tam kilit günü olan, kilitten sonra yüklenmiş kart eski kurala bağlı (bir kez yazılır)
+  ---
+  duration_ms: 1195.560674
+  type: 'suite'
+  ...
+# Subtest: A8 — taksit kartına sayılmış carisiz evrak Alacak Yaşlandırması'nda KALIR (kartın alacağı evrağa geçer; toplam değişmez)
+    # Subtest: kart 900 → karta sayılan çek 400, evrağın carisi boş (eski veri): yaşlandırmanın toplamı aynı (900) — evrak raporda KALIR
+    ok 1 - kart 900 → karta sayılan çek 400, evrağın carisi boş (eski veri): yaşlandırmanın toplamı aynı (900) — evrak raporda KALIR
+      ---
+      duration_ms: 62.475567
+      type: 'test'
+      ...
+    1..1
+ok 2 - A8 — taksit kartına sayılmış carisiz evrak Alacak Yaşlandırması'nda KALIR (kartın alacağı evrağa geçer; toplam değişmez)
+  ---
+  duration_ms: 406.510198
+  type: 'suite'
+  ...
+# Subtest: A16 — göç 49: evrak açılış işaretini yalnız İLK olayının notundan alır
+    # Subtest: v2.4.9: Excel açılış portföyü evrakı → işaretli; formdan alınıp sonraki olayına aynı not yazılmış evrak → işaretsiz
+    ok 1 - v2.4.9: Excel açılış portföyü evrakı → işaretli; formdan alınıp sonraki olayına aynı not yazılmış evrak → işaretsiz
+      ---
+      duration_ms: 474.633011
+      type: 'test'
+      ...
+    1..1
+ok 3 - A16 — göç 49: evrak açılış işaretini yalnız İLK olayının notundan alır
+  ---
+  duration_ms: 474.945656
+  type: 'suite'
+  ...
+# Subtest: Ç5-A tur 1e — göç 48 ön süzgeci ↔ KG-16 kuralı (aynı boşluk kümesi)
+    # Subtest: [1] ön süzgecin kümesi = trimStart'ın attığı karakterler (bütün Unicode, kod noktası kod noktası)
+    ok 1 - [1] ön süzgecin kümesi = trimStart'ın attığı karakterler (bütün Unicode, kod noktası kod noktası)
+      ---
+      duration_ms: 93.600077
+      type: 'test'
+      ...
+    # Subtest: [2] dar kontrolün sekiz örneği + kümenin öbür üyeleri: ön süzgeç ⇔ kural ⇔ v2.4.9 kuralı; kümede olmayan karakter ve ortadaki 'açılış' aday değil
+    ok 2 - [2] dar kontrolün sekiz örneği + kümenin öbür üyeleri: ön süzgeç ⇔ kural ⇔ v2.4.9 kuralı; kümede olmayan karakter ve ortadaki 'açılış' aday değil
+      ---
+      duration_ms: 0.981026
+      type: 'test'
+      ...
+    # Subtest: [3] göç 48: v2.4.9 verisinde başında özel boşluk olan 'Açılış…' satırları ADAY (519), aday kümesi = kuralın kümesi
+    ok 3 - [3] göç 48: v2.4.9 verisinde başında özel boşluk olan 'Açılış…' satırları ADAY (519), aday kümesi = kuralın kümesi
+      ---
+      duration_ms: 988.361379
+      type: 'test'
+      ...
+    1..3
+ok 4 - Ç5-A tur 1e — göç 48 ön süzgeci ↔ KG-16 kuralı (aynı boşluk kümesi)
+  ---
+  duration_ms: 1084.071049
+  type: 'suite'
+  ...
+# Subtest: Ç5-A tur 1e — Silinenler'den dönen satırın KG-16 durumu (S51 = A, B8)
+    # Subtest: dar kontrolün örneği: v2.4.9'da girilmiş 'Açılış devri (ikinci)' → aday → onay (120 / 519) → sil → geri al: ONAYLI ve 519'da kalır
+    ok 1 - dar kontrolün örneği: v2.4.9'da girilmiş 'Açılış devri (ikinci)' → aday → onay (120 / 519) → sil → geri al: ONAYLI ve 519'da kalır
+      ---
+      duration_ms: 55.031577
+      type: 'test'
+      ...
+    # Subtest: sınıf tablosu: reddedilen → reddedilen (602 / 770), aday → aday (519); kapının kopyası aynı
+    ok 2 - sınıf tablosu: reddedilen → reddedilen (602 / 770), aday → aday (519); kapının kopyası aynı
+      ---
+      duration_ms: 67.707785
+      type: 'test'
+      ...
+    # Subtest: B8: v2.4.9'da silinmiş 'Açılış…' satırı (yükünde durum yok) güncel kodda geri alınınca ADAY (519)
+    ok 3 - B8: v2.4.9'da silinmiş 'Açılış…' satırı (yükünde durum yok) güncel kodda geri alınınca ADAY (519)
+      ---
+      duration_ms: 26.77125
+      type: 'test'
+      ...
+    # Subtest: kilitli dönem: kilitli aday silinmez (409); kilitten önce silinip sonra kilitlenen satır geri alınmaz (409) — durum değişmez
+    ok 4 - kilitli dönem: kilitli aday silinmez (409); kilitten önce silinip sonra kilitlenen satır geri alınmaz (409) — durum değişmez
+      ---
+      duration_ms: 241.623439
+      type: 'test'
+      ...
+    # Subtest: S51 = A: açılış silinir, cari başka açılış alır, eskisi geri alınır → 'Açılış Olabilir' (aday, 519) — 2.4.5'te silinmiş yük (açıklamadan) ve 2.5.0'da silinmiş yük (işaretten)
+    ok 5 - S51 = A: açılış silinir, cari başka açılış alır, eskisi geri alınır → 'Açılış Olabilir' (aday, 519) — 2.4.5'te silinmiş yük (açıklamadan) ve 2.5.0'da silinmiş yük (işaretten)
+      ---
+      duration_ms: 775.551057
+      type: 'test'
+      ...
+    # Subtest: 2.4.5'te silinmiş açılış yükü (işaret alanı yok, açıklama 'Açılış bakiyesi'), cari başka işaretli açılışla → aday
+    ok 6 - 2.4.5'te silinmiş açılış yükü (işaret alanı yok, açıklama 'Açılış bakiyesi'), cari başka işaretli açılışla → aday
+      ---
+      duration_ms: 514.567346
+      type: 'test'
+      ...
+    1..6
+ok 5 - Ç5-A tur 1e — Silinenler'den dönen satırın KG-16 durumu (S51 = A, B8)
+  ---
+  duration_ms: 2864.548699
+  type: 'suite'
+  ...
+# Subtest: Ç5-A tur 1e — kilitli dönemin kapı dışı bozulması bulunur; meşru olaylar sessiz
+    # Subtest: [1] satır içi tarama — Kasa satırının açılış işareti 0→1
+    ok 1 - [1] satır içi tarama — Kasa satırının açılış işareti 0→1
+      ---
+      duration_ms: 612.036572
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — Kasa satırının açılış işareti 0→1; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 2 - [2] arka plan taraması — Kasa satırının açılış işareti 0→1; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1240.325014
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — cari satırının açılış işareti 0→1
+    ok 3 - [1] satır içi tarama — cari satırının açılış işareti 0→1
+      ---
+      duration_ms: 528.220051
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — cari satırının açılış işareti 0→1; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 4 - [2] arka plan taraması — cari satırının açılış işareti 0→1; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1347.550332
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — cari satırının açılış işareti 1→0 (519 → 602)
+    ok 5 - [1] satır içi tarama — cari satırının açılış işareti 1→0 (519 → 602)
+      ---
+      duration_ms: 555.346869
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — cari satırının açılış işareti 1→0 (519 → 602); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 6 - [2] arka plan taraması — cari satırının açılış işareti 1→0 (519 → 602); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1326.060966
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — iki carinin işareti yer değiştirir (sayı ve tutar aynı, yalnız hesap dağılımı)
+    ok 7 - [1] satır içi tarama — iki carinin işareti yer değiştirir (sayı ve tutar aynı, yalnız hesap dağılımı)
+      ---
+      duration_ms: 564.889917
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — iki carinin işareti yer değiştirir (sayı ve tutar aynı, yalnız hesap dağılımı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 8 - [2] arka plan taraması — iki carinin işareti yer değiştirir (sayı ve tutar aynı, yalnız hesap dağılımı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1347.409645
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — KG-16 durumu (Açılış Olabilir onayı alanı)
+    ok 9 - [1] satır içi tarama — KG-16 durumu (Açılış Olabilir onayı alanı)
+      ---
+      duration_ms: 568.292061
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — KG-16 durumu (Açılış Olabilir onayı alanı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 10 - [2] arka plan taraması — KG-16 durumu (Açılış Olabilir onayı alanı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1314.928893
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — evrakın açılış işareti
+    ok 11 - [1] satır içi tarama — evrakın açılış işareti
+      ---
+      duration_ms: 568.652642
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — evrakın açılış işareti; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 12 - [2] arka plan taraması — evrakın açılış işareti; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1318.427296
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — taksit kartının Excel yükleme bağı
+    ok 13 - [1] satır içi tarama — taksit kartının Excel yükleme bağı
+      ---
+      duration_ms: 558.88886
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — taksit kartının Excel yükleme bağı; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 14 - [2] arka plan taraması — taksit kartının Excel yükleme bağı; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1286.858731
+      type: 'test'
+      ...
+    # Subtest: [4] meşru olaylar sessiz: kilitli satırda KG-16 onayı ve reddi (K8-2), kilidin ilerletilmesi, kaldırılması ve yeniden kilitleme; yeniden açılış
+    ok 15 - [4] meşru olaylar sessiz: kilitli satırda KG-16 onayı ve reddi (K8-2), kilidin ilerletilmesi, kaldırılması ve yeniden kilitleme; yeniden açılış
+      ---
+      duration_ms: 2490.35237
+      type: 'test'
+      ...
+    # Subtest: [5] yedekten geri yükleme ve Şirket Verisini Sıfırla sessiz
+    ok 16 - [5] yedekten geri yükleme ve Şirket Verisini Sıfırla sessiz
+      ---
+      duration_ms: 1238.527733
+      type: 'test'
+      ...
+    # Subtest: [6] göç 50: gölge sütunu olmayan (göç 49'da kalmış) dosya açılınca gölge durumdan doldurulur — sessiz
+    ok 17 - [6] göç 50: gölge sütunu olmayan (göç 49'da kalmış) dosya açılınca gölge durumdan doldurulur — sessiz
+      ---
+      duration_ms: 690.780661
+      type: 'test'
+      ...
+    # Subtest: [7] kapıdan geçen (mağaza) yazım kilitli satırın açılış işaretini değiştiremez: süzgeç de 'kilitli dönem' der → tam kapı reddeder (eşdeğerlik ihlali yok)
+    ok 18 - [7] kapıdan geçen (mağaza) yazım kilitli satırın açılış işaretini değiştiremez: süzgeç de 'kilitli dönem' der → tam kapı reddeder (eşdeğerlik ihlali yok)
+      ---
+      duration_ms: 627.789284
+      type: 'test'
+      ...
+    1..18
+ok 6 - Ç5-A tur 1e — kilitli dönemin kapı dışı bozulması bulunur; meşru olaylar sessiz
+  ---
+  duration_ms: 19000.978356
+  type: 'suite'
+  ...
+1..6
+# tests 31
+# suites 6
+# pass 31
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 26417.247749
+
+[kanit] c5a1ey-yeni-Europe-Istanbul: GEÇTİ · çıkış 0 · 31/31 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fe2bca2 +1 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v22.23.4

@@ -1,0 +1,36 @@
+{
+ "v249": {
+  "acc": 200,
+  "second": 200
+ },
+ "afterMigration": {
+  "id": "aentry-f8878d31-4683-4444-adfb-ba09d7d5b4ea",
+  "f": 0,
+  "r": "candidate",
+  "lines": [
+   "120:30000/0 519:0/30000"
+  ]
+ },
+ "confirm": {
+  "status": 200,
+  "review": "confirmed",
+  "lines": [
+   "120:30000/0 519:0/30000"
+  ]
+ },
+ "del": 200,
+ "restore": {
+  "status": 200,
+  "f": 0,
+  "r": "confirmed",
+  "lines": [
+   "120:30000/0 519:0/30000"
+  ]
+ },
+ "integrity": {
+  "failures": []
+ },
+ "first": {
+  "id": "aentry-3285d595-2374-4c18-a545-d52b63bb43e9"
+ }
+}

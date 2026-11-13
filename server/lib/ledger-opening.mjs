@@ -15,19 +15,22 @@ const hasColumn = (store, table, column) => store.all(`PRAGMA table_info(${table
 const cents = value => Math.round((Number(value) || 0) * 100);
 
 /**
- * Silinenler'den geri alınan cari satırının KG-16 durumu (BAŞ MİMAR B8; KULLANICI S51 = A) — routes/accounts.mjs geri alma INSERT'inin `opening_review` değeri (BAĞLANTI NOKTASI:
- * o dosya Ç5-B tur 2b-2'nin; bu turda çağrılmıyor, ana oturum birleşimde bağlar). payload: silinmeden önceki satır (2.4.x yükünde opening_review yok); restoredIsOpening: geri
- * alınan satıra yazılan is_opening (carinin başka açılışı varsa 0 — 2.4.6 kuralı).
- *   - yükte durum varsa (2.5.0'da silinmiş) o durum aynen (açılış işaretiyle dönüyorsa '');
- *   - açılış işaretli silinmiş, carinin başka açılışı yüzünden işaretsiz dönüyor → candidate (S51);
+ * Silinenler'den geri alınan cari satırının KG-16 durumu (BAŞ MİMAR B8; KULLANICI S51 = A) — routes/accounts.mjs geri alma INSERT'inin `opening_review` (ve kapının kopyası
+ * `opening_review_gate`) değeri (Ç5-A tur 1e'de bağlandı; silme yükü `openingReview`'i taşır). payload: silinmeden önceki satır (2.4.x yükünde openingReview yok);
+ * restoredIsOpening: geri alınan satıra yazılan is_opening (carinin başka açılışı varsa 0 — 2.4.6 kuralı).
+ *   - açılış işaretiyle dönüyor → '' (Açılış Bakiyesi satırı; listeye girmez);
+ *   - açılış işaretli silinmiş (yükte isOpening; 2.4.5 yükünde açıklama "Açılış bakiyesi"), carinin başka açılışı yüzünden işaretsiz dönüyor → candidate (S51 = A — 2.5.0'da
+ *     silinmiş yükte de: S51 yükteki duruma ÖNCELİKLİDİR);
+ *   - yükte durum varsa (2.5.0'da silinmiş) silinmeden önceki durum AYNEN (onaylı onaylı, reddedilen reddedilen, aday aday döner; '' — göçten sonra elle girilmiş "Açılış…" — ''
+ *     kalır: K8-1);
  *   - 2.4.x yükü, işaretsiz, açıklaması KG-16 kuralına uyuyor → candidate (B8: göçte aday olacaktı);
  *   - öbürleri ''.
  */
 export function restoredOpeningReview(payload, restoredIsOpening) {
   if (Number(restoredIsOpening) === 1) return OPENING_REVIEW.none;
   if (!["debt", "credit"].includes(String(payload?.kind || "")) || String(payload?.source || "")) return OPENING_REVIEW.none;
+  if (payload?.isOpening === true || Number(payload?.isOpening) === 1) return OPENING_REVIEW.candidate;
   if (payload && Object.hasOwn(payload, "openingReview")) return DECIDED.has(String(payload.openingReview)) ? String(payload.openingReview) : OPENING_REVIEW.none;
-  if (Number(payload?.isOpening) === 1) return OPENING_REVIEW.candidate;
   return isOpeningCandidateNote(payload?.note) ? OPENING_REVIEW.candidate : OPENING_REVIEW.none;
 }
 
@@ -189,6 +192,21 @@ export function unlockedPastYears(entries, { lock = "", today = "" } = {}) {
   return [...years].sort();
 }
 
+/**
+ * Ç5-A tur 1e (dar kontrol G-1; C5-ACILIS-TASARIM §15.2 (2)): KG-16 durumunun kapı dışı değişikliği — durumu (opening_review) kapının yazdığı kopyasından (opening_review_gate, göç 50)
+ * farklı satırlar. lib/integrity.mjs tam taramasının "opening:review" denetimi (COMMIT'te değil). Sütun yoksa (eski şema) null.
+ */
+export function openingReviewDrift(store) {
+  if (!has(store, "account_entries") || !hasColumn(store, "account_entries", "opening_review_gate")) return null;
+  const count = Number(store.get("SELECT COUNT(*) AS n FROM account_entries WHERE opening_review <> opening_review_gate")?.n) || 0;
+  if (!count) return { count: 0, sample: [] };
+  const text = value => ({ "": "listede değil", candidate: "onay bekliyor", confirmed: "açılış", rejected: "açılış değil" })[String(value)] ?? String(value);
+  const sample = store
+    .all("SELECT id, date, opening_review AS review, opening_review_gate AS gate FROM account_entries WHERE opening_review <> opening_review_gate ORDER BY date, rowid LIMIT 5")
+    .map(row => `${row.id} (${row.date}): ${text(row.gate)} → ${text(row.review)}`);
+  return { count, sample };
+}
+
 /** KG-16 listesi ve kararı (uçlar: routes/opening-review.mjs). */
 export function createOpeningReview({ store }) {
   const ready = () => has(store, "account_entries") && hasColumn(store, "account_entries", "opening_review");
@@ -207,17 +225,26 @@ export function createOpeningReview({ store }) {
     }
     return { items, counts };
   }
-  /** Karar: onay (confirmed) ya da ret (rejected). Satırın tutarı / tarihi / yönü / açılış işareti (is_opening) DEĞİŞMEZ; yalnız durum. Aynı karar tekrarı değişiklik yazmaz. */
+  /**
+   * Karar: onay (confirmed) ya da ret (rejected). Satırın tutarı / tarihi / yönü / açılış işareti (is_opening) DEĞİŞMEZ; yalnız durum. Aynı karar tekrarı değişiklik yazmaz.
+   * Ç5-A tur 1e (§15.2 (2)): kapının yazdığı durum (opening_review_gate, göç 50) AYNI işlemde yazılır; iki sütundan biri kararlıysa satır karar alır (kapı dışı değişiklikle
+   * listeden düşmüş ya da durumu değişmiş satır yeniden kararla düzelir).
+   */
   function decide(id, decision) {
     if (!ready()) return { status: 503 };
-    const row = store.get("SELECT e.id, e.opening_review AS review, e.account_id AS accountId FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL WHERE e.id = ?", id);
-    if (!row || !DECIDED.has(String(row.review))) return { status: 404 };
+    const gated = hasColumn(store, "account_entries", "opening_review_gate");
+    const row = store.get(`SELECT e.id, e.opening_review AS review, ${gated ? "e.opening_review_gate" : "e.opening_review"} AS gate, e.account_id AS accountId FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL WHERE e.id = ?`, id);
+    if (!row || !(DECIDED.has(String(row.review)) || DECIDED.has(String(row.gate)))) return { status: 404 };
     const next = decision === "confirm" ? OPENING_REVIEW.confirmed : OPENING_REVIEW.rejected;
-    if (row.review === next) return { status: 200, row: { ...row, review: next }, changed: false };
+    const { gate, ...head } = row;
+    if (row.review === next && gate === next) return { status: 200, row: { ...head, review: next }, changed: false };
     // Para alanı değil (tutar, yön, tarih, yol, bakiye, Kasa değişmez; yalnız Ana Defter'in karşı hesabı 519 ↔ 602 / 770): para koruması (bank.post) dışında, gerekçeli ham yazım
     // (göç 35 / 48 gibi). Kapı (mutabakat) işlemin sonunda yine koşar.
-    store.raw("ledger.opening-review", () => store.run("UPDATE account_entries SET opening_review = ? WHERE id = ?", next, id));
-    return { status: 200, row: { ...row, review: next, previous: row.review }, changed: true };
+    store.raw("ledger.opening-review", () => {
+      store.run("UPDATE account_entries SET opening_review = ? WHERE id = ?", next, id);
+      if (gated) store.run("UPDATE account_entries SET opening_review_gate = ? WHERE id = ?", next, id);
+    });
+    return { status: 200, row: { ...head, review: next, previous: row.review }, changed: true };
   }
   return { list, decide };
 }

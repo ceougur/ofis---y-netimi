@@ -1,0 +1,28 @@
+import re,sys,os
+S=sys.argv[1]; cols=[(k,d) for d in('kilitsiz','kilitli') for k in('oncesi','oncesi','aday')]
+T={}; order=[]; gec={}
+for k,d in cols:
+    for g in ('e1','e2'):
+        p=f"{S}/c5a1b-olcum/olc-{g}-{k}-{d}.txt"
+        if not os.path.exists(p): continue
+        cur=None
+        for l in open(p,encoding='utf-8',errors='replace'):
+            m=re.match(r'tur (\d) · yük ([\d.]+)',l)
+            if m: cur=float(m.group(2)); gec.setdefault((k,d),[]).append(cur); continue
+            m=re.match(r'  (.+?)(?: \(.*?\))?: (\d+) · ([\d.]+) ms',l)
+            if m and cur is not None:
+                ad=m.group(1)[:24]
+                if ad not in order: order.append(ad)
+                if cur<=2: T.setdefault((ad,k,d),[]).append(float(m.group(3)))
+print('tur başı yükler:',{f"{k}-{d[:6]}":v for (k,d),v in gec.items()})
+def em(v):
+    v=sorted(v); n=len(v); return (v[0], v[n//2] if n%2 else (v[n//2-1]+v[n//2])/2, n)
+for d in ('kilitsiz','kilitli'):
+    print(f"--- {d}: yol | Ç5-A öncesi en iyi/ortanca (n) | tur 1b | tur 1c | 1c↔öncesi % (en iyi/ortanca) | 1c↔1b %")
+    for ad in order:
+        a,b,c=[T.get((ad,k,d)) for k in('oncesi','oncesi','aday')]
+        if not (a and b and c): print(f"{ad:24} eksik"); continue
+        A,B,C=em(a),em(b),em(c)
+        f=lambda x,y:(x/y-1)*100 if y else 0
+        isa=' <<< %10 ÜSTÜ' if (f(C[0],A[0])>10 and f(C[1],A[1])>10) else (' < tek ölçüde %10 üstü' if (f(C[0],A[0])>10 or f(C[1],A[1])>10) else '')
+        print(f"{ad:24} {A[0]:.0f}/{A[1]:.0f} ({A[2]}) | {B[0]:.0f}/{B[1]:.0f} ({B[2]}) | {C[0]:.0f}/{C[1]:.0f} ({C[2]}) | {f(C[0],A[0]):+.0f}/{f(C[1],A[1]):+.0f} | {f(C[0],B[0]):+.0f}/{f(C[1],B[1]):+.0f}{isa}")

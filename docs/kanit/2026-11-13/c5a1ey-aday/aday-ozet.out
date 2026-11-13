@@ -1,0 +1,82 @@
+başladı 22:10:53 yük 0.92 1.80 3.22 · aday fe2bca23 · ajan ucuyla ürün farkı (belge / kanıt dışı; BOŞ olmalı): []
+R1 yeni testler UTC çıkış 0 # tests 31 # pass 31 # fail 0 # cancelled 0 # skipped 0 
+R1 değişen / komşu UTC çıkış 0 # tests 70 # pass 70 # fail 0 # cancelled 0 # skipped 0 
+R1 yeni testler Europe/Istanbul çıkış 0 # tests 31 # pass 31 # fail 0 # cancelled 0 # skipped 0 
+R1 değişen / komşu Europe/Istanbul çıkış 0 # tests 70 # pass 70 # fail 0 # cancelled 0 # skipped 0 
+R2 TABAN kodda yeni testler çıkış 1 # tests 31 # pass 4 # fail 27 # cancelled 0 # skipped 0 
+      1 not ok 9 - [1] satır içi tarama — KG-16 durumu (Açılış Olabilir onayı alanı)
+      1 not ok 8 - [2] arka plan taraması — iki carinin işareti yer değiştirir (sayı ve tutar aynı, yalnız hesap dağılımı); [3] program kapalıyken yapılan aynı yazım açılışta bulu
+      1 not ok 7 - [1] satır içi tarama — iki carinin işareti yer değiştirir (sayı ve tutar aynı, yalnız hesap dağılımı)
+      1 not ok 6 - Ç5-A tur 1e — kilitli dönemin kapı dışı bozulması bulunur; meşru olaylar sessiz
+      1 not ok 6 - [2] arka plan taraması — cari satırının açılış işareti 1→0 (519 → 602); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      1 not ok 6 - 2.4.5'te silinmiş açılış yükü (işaret alanı yok, açıklama 'Açılış bakiyesi'), cari başka işaretli açılışla → aday
+      1 not ok 5 - Ç5-A tur 1e — Silinenler'den dönen satırın KG-16 durumu (S51 = A, B8)
+      1 not ok 5 - [1] satır içi tarama — cari satırının açılış işareti 1→0 (519 → 602)
+      1 not ok 5 - S51 = A: açılış silinir, cari başka açılış alır, eskisi geri alınır → 'Açılış Olabilir' (aday, 519) — 2.4.5'te silinmiş yük (açıklamadan) ve 2.5.0'da silinmi
+      1 not ok 4 - Ç5-A tur 1e — göç 48 ön süzgeci ↔ KG-16 kuralı (aynı boşluk kümesi)
+      1 not ok 4 - kilitli dönem: kilitli aday silinmez (409); kilitten önce silinip sonra kilitlenen satır geri alınmaz (409) — durum değişmez
+      1 not ok 4 - [2] arka plan taraması — cari satırının açılış işareti 0→1; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      1 not ok 3 - [3] göç 48: v2.4.9 verisinde başında özel boşluk olan 'Açılış…' satırları ADAY (519), aday kümesi = kuralın kümesi
+      1 not ok 3 - [1] satır içi tarama — cari satırının açılış işareti 0→1
+      1 not ok 3 - B8: v2.4.9'da silinmiş 'Açılış…' satırı (yükünde durum yok) güncel kodda geri alınınca ADAY (519)
+      1 not ok 2 - sınıf tablosu: reddedilen → reddedilen (602 / 770), aday → aday (519); kapının kopyası aynı
+      1 not ok 2 - [2] dar kontrolün sekiz örneği + kümenin öbür üyeleri: ön süzgeç ⇔ kural ⇔ v2.4.9 kuralı; kümede olmayan karakter ve ortadaki 'açılış' aday değil
+      1 not ok 2 - [2] arka plan taraması — Kasa satırının açılış işareti 0→1; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      1 not ok 18 - [7] kapıdan geçen (mağaza) yazım kilitli satırın açılış işaretini değiştiremez: süzgeç de 'kilitli dönem' der → tam kapı reddeder (eşdeğerlik ihlali yok)
+      1 not ok 17 - [6] göç 50: gölge sütunu olmayan (göç 49'da kalmış) dosya açılınca gölge durumdan doldurulur — sessiz
+      1 not ok 16 - [5] yedekten geri yükleme ve Şirket Verisini Sıfırla sessiz
+      1 not ok 15 - [4] meşru olaylar sessiz: kilitli satırda KG-16 onayı ve reddi (K8-2), kilidin ilerletilmesi, kaldırılması ve yeniden kilitleme; yeniden açılış
+      1 not ok 14 - [2] arka plan taraması — taksit kartının Excel yükleme bağı; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      1 not ok 13 - [1] satır içi tarama — taksit kartının Excel yükleme bağı
+      1 not ok 12 - [2] arka plan taraması — evrakın açılış işareti; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      1 not ok 11 - [1] satır içi tarama — evrakın açılış işareti
+      1 not ok 10 - [2] arka plan taraması — KG-16 durumu (Açılış Olabilir onayı alanı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      1 not ok 1 - dar kontrolün örneği: v2.4.9'da girilmiş 'Açılış devri (ikinci)' → aday → onay (120 / 519) → sil → geri al: ONAYLI ve 519'da kalır
+      1 not ok 1 - [1] ön süzgecin kümesi = trimStart'ın attığı karakterler (bütün Unicode, kod noktası kod noktası)
+      1 not ok 1 - [1] satır içi tarama — Kasa satırının açılış işareti 0→1
+R2 kırmızı nedenleri (ilk iletiler):
+      8 error: |-
+      2 error: 'no such column: opening_review_gate'
+      1 error: 'satır içi — taksit kartının Excel yükleme bağı: ledger:snapshot bulunmalı: []'
+      1 error: 'satır içi — iki carinin işareti yer değiştirir (sayı ve tutar aynı, yalnız hesap dağılımı): ledger:snapshot bulunmalı: []'
+      1 error: 'satır içi — evrakın açılış işareti: ledger:snapshot bulunmalı: []'
+      1 error: 'satır içi — cari satırının açılış işareti 1→0 (519 → 602): ledger:snapshot bulunmalı: []'
+      1 error: 'satır içi — cari satırının açılış işareti 0→1: ledger:snapshot bulunmalı: []'
+      1 error: 'satır içi — Kasa satırının açılış işareti 0→1: ledger:snapshot bulunmalı: []'
+      1 error: 'satır içi — KG-16 durumu (Açılış Olabilir onayı alanı): opening:review bulunmalı: []'
+      1 error: 'no such column: "opening_review_gate"'
+      1 error: 'arka plan — taksit kartının Excel yükleme bağı: ledger:snapshot bulunmalı: []'
+      1 error: 'arka plan — iki carinin işareti yer değiştirir (sayı ve tutar aynı, yalnız hesap dağılımı): ledger:snapshot bulunmalı: []'
+      1 error: 'arka plan — evrakın açılış işareti: ledger:snapshot bulunmalı: []'
+      1 error: 'arka plan — cari satırının açılış işareti 1→0 (519 → 602): ledger:snapshot bulunmalı: []'
+R3 kd cash-flag çıkış 0
+R3 kd acct-flag çıkış 0
+R3 kd acct-unflag çıkış 0
+R3 kd cheque-flag çıkış 0
+R3 kd plan-import çıkış 0
+R3 kd acct-note çıkış 0
+R3 kd review-reject çıkış 0
+R3 s51 çıkış 0
+R3 bosluk çıkış 0
+R bölümü bitti 22:13:54 yük 2.77 2.20 3.11
+liste üretimi çıkış 0
+
+YAPIM-ASAMASI.json YAZILDI (test/bagimsiz/cari/YAPIM-ASAMASI.json): 74 kayıt (0 okuma hatası) — paketlere göre: Ç5-B tur 2 74. Bu bir denetim sonucu DEĞİLDİR; liste varsayılan koşuyla denetlenir.
+ESKİ LİSTEYLE FARK: yeni 0, kapanan 0, değeri değişen 0 (eski liste 74 kayıt → yeni 74)
+liste farkı: önceki 74 → yeni 74 · kapanan 0 · yeni 0 · değeri değişen 0 · paketler {'Ç5-B tur 2': 74}
+yeni kayıtlar: []
+değeri değişen: []
+aday commit fe2bca23 · temiz mi: 0
+kahin-cari UTC çıkış 0 [kanit] c5a1ey-kahin-cari-UTC: GEÇTİ · çıkış 0 · 15092/15092 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fe2bca2 +1 izlenme ÖZET [2.5.0]: 84 senaryo, 15166 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 74 yapım aşaması (YAPIM-ASAMASI.json; p
+kahin-cari Europe/Istanbul çıkış 0 [kanit] c5a1ey-kahin-cari-Europe-Istanbul: GEÇTİ · çıkış 0 · 15092/15092 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fe2bca ÖZET [2.5.0]: 84 senaryo, 15166 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 74 yapım aşaması (YAPIM-ASAMASI.json; p
+kahin-defter UTC çıkış 0 [kanit] c5a1ey-kahin-defter-UTC: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fe2bca2 +1 izlenmeye ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-iInmT1
+kahin-defter Europe/Istanbul çıkış 0 [kanit] c5a1ey-kahin-defter-Europe-Istanbul: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fe2bca2  ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-Er9NNM
+kahin-tutar çıkış 0 [kanit] c5a1ey-kahin-tutar: GEÇTİ · çıkış 0 · 3559/3559 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fe2
+kahin-maliyet çıkış 0 [kanit] c5a1ey-kahin-maliyet: GEÇTİ · çıkış 0 · 41306/41306 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit
+ci.yml ayrıştı
+kâhin bölümü bitti 22:28:08 yük 3.57 3.49 3.47
+TAM npm test çıkış 0 [kanit] c5a1ey-tam: GEÇTİ · çıkış 0 · 5451/5451 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fe2bca2 +1 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v2
+# tests 5451 # pass 5451 # fail 0 # cancelled 0 # skipped 0 
+A bölümü bitti 23:17:29 yük 2.01 1.50 1.40 · disk 15G
+
+[exited with code 0]

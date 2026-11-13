@@ -1,0 +1,90 @@
+{
+ "root": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag",
+ "case": "cash-flag",
+ "today": "2026-10-08",
+ "state": {
+  "lock": "2026-10-05",
+  "coverage": "2026-10-05",
+  "pending": false
+ },
+ "before": {
+  "findings": [],
+  "failures": [
+   "ledger:rule-diff:44",
+   "dates:future:cheque_events:1"
+  ]
+ },
+ "target": {
+  "id": "cash-817a45b2-6565-467b-9bc7-3d6ef3a05654",
+  "amount": 563.57,
+  "date": "2025-07-04"
+ },
+ "afterInline": {
+  "findings": [
+   "ledger:snapshot",
+   "period-lock"
+  ],
+  "failures": [
+   "ledger:snapshot:1",
+   "ledger:rule-diff:45/128363.57",
+   "dates:future:cheque_events:1",
+   "period-lock:1"
+  ],
+  "log": 1,
+  "zil": [
+   [
+    "ledger:snapshot",
+    "period-lock"
+   ]
+  ]
+ },
+ "afterWorker": {
+  "findings": [],
+  "log": 1,
+  "zil": [
+   [
+    "ledger:snapshot",
+    "period-lock"
+   ]
+  ]
+ },
+ "ruleDiff": {
+  "ok": false,
+  "count": 45,
+  "difference": 128363.57,
+  "breakdown": [
+   {
+    "account": "500",
+    "frozenMinor": -12780000,
+    "liveMinor": 0,
+    "differenceMinor": 12780000
+   },
+   {
+    "account": "519",
+    "frozenMinor": 0,
+    "liveMinor": -12836357,
+    "differenceMinor": -12836357
+   },
+   {
+    "account": "649",
+    "frozenMinor": -56357,
+    "liveMinor": 0,
+    "differenceMinor": 56357
+   }
+  ]
+ },
+ "opening": [
+  {
+   "code": "opening:519",
+   "ok": true,
+   "ledger": -128363.57,
+   "subledger": -128363.57
+  },
+  {
+   "code": "opening:500",
+   "ok": true,
+   "ledger": 0,
+   "subledger": 0
+  }
+ ]
+}

@@ -1,0 +1,33 @@
+{
+ "ad": "c5a1e-kahin-defter-Europe-Istanbul",
+ "komut": "npm run test:kahin-defter",
+ "commit": "caec8a59fd4deec8472f6d22a691e16ea678249d",
+ "dal": "worktree-agent-a51e9f595cced8a5a",
+ "kirli": 0,
+ "izlenmeyen": 1,
+ "platform": "linux 6.18.44-fc-v378 x64",
+ "node": "v22.23.4",
+ "cpu": 4,
+ "bellek_gb": 16,
+ "basladi": "2026-11-12T21:43:20.174Z",
+ "sure_sn": 5.9,
+ "cikis_kodu": 0,
+ "sinyal": null,
+ "zaman_asimi": false,
+ "ozet": {
+  "bicim": "kahin-defter",
+  "toplam": 187,
+  "gecen": 187,
+  "basarisiz": 0,
+  "iptal": 0,
+  "atlanan": 0
+ },
+ "hukum": "GEÇTİ",
+ "neden": "",
+ "basarisiz_testler": [],
+ "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1e-kanit/2026-11-12/c5a1e-kahin-defter-Europe-Istanbul.log",
+ "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a51e9f595cced8a5a",
+ "ham_cikti_sha256": "75138737be069d98a9c6416fb3cb2234adb09b6abe622ade75ef5098dcbb3ff9",
+ "ham_cikti_bayt": 2825,
+ "ham_cikti_not": "ham çıktı ajanın not defterinde (scratchpad/c5a1e-kanit); depoya yalnız özet"
+}

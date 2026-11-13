@@ -38,7 +38,7 @@ import { compareVersions } from "./semver.mjs";
 import { CHEQUE_BOND_BAD, createScopedGate, familyOf } from "./integrity-scope.mjs";
 import { runScanWorker } from "./integrity-scan-runner.mjs";
 import { cashBeforeOpening, cashRestoreMark } from "./cash-opening.mjs";
-import { ledgerBalanceOf, openingCounterpart, unlockedPastYears } from "./ledger-opening.mjs";
+import { ledgerBalanceOf, openingCounterpart, openingReviewDrift, unlockedPastYears } from "./ledger-opening.mjs";
 import { systemClock } from "./clock.mjs";
 import { roundMoney, toCents } from "./money.mjs";
 
@@ -229,6 +229,21 @@ const LOCK_SQL = {
     since: "2.5.0",
     sql: `SELECT v.id, v.year, v.no, v.date, v.type, v.journal_class, COALESCE(v.reversal_of, '') AS reversal_of, v.total_minor, l.seq, l.account, l.sub, l.party, l.debit_minor, l.credit_minor
           FROM ledger_vouchers v JOIN ledger_voucher_lines l ON l.voucher_id = v.id WHERE v.date <= ?1 ORDER BY v.id, l.seq`,
+  },
+  // 2.5.0 Ç5-A tur 1e (dar kontrol G-1; docs/erp/C5-ACILIS-TASARIM.md §15): Ç5-A'nın açılışı İŞARETTEN tanıyan türetmesinin girdileri — kilitli dönemdeki açılış işaretli Kasa
+  // satırı, açılış işaretli cari satırı, açılış evrakı ve Kayıt Tarihi kilitte olan YÜKLENMİŞ kartın yükleme bağı / yükleme damgası (KG-5). Kapıdan geçen hiçbir yol kilitli satırda bu
+  // alanları değiştirmez (yalnız göçler ve INSERT'ler yazar; kilitli tarihe INSERT / DELETE zaten izde); kapı dışı değişiklik (eski sürüm, elle) böylece kilitli kaynak değişikliği gibi
+  // bulunur (period-lock, ledger:snapshot "Donmuş Dönemin Kaynağı Değişti"). Satır KİMLİKLERİYLE (sayı / toplam değil): hesap dağılımını değiştiren yer değiştirme de izi değiştirir.
+  // KG-16 durumu (opening_review) İZE GİRMEZ (K8-2: kilitli satırda kapıdan geçerek değişir) — onun kapı dışı değişikliği "opening:review" denetimiyle bulunur (lib/ledger-opening.mjs).
+  // Süzgeç (lib/integrity-scope.mjs LOCK_FIELDS) aynı alanları bilir. İşaretsiz / yüklenmemiş veride satır üretmez.
+  cash_opening_lock: { requires: ["cash_entries.is_opening"], since: "2.5.0", sql: "SELECT id FROM cash_entries WHERE is_opening = 1 AND date <= ?1 ORDER BY id" },
+  account_opening_lock: { requires: ["account_entries.is_opening"], since: "2.5.0", sql: "SELECT id FROM account_entries WHERE is_opening = 1 AND date <= ?1 ORDER BY id" },
+  cheques_opening_lock: { requires: ["cheques.is_opening"], since: "2.5.0", sql: "SELECT id FROM cheques WHERE is_opening = 1 AND issue_date <= ?1 ORDER BY id" },
+  plans_import_lock: {
+    requires: ["plans.import_id", "plan_imports"],
+    since: "2.5.0",
+    sql: `SELECT p.id, p.import_id, COALESCE((SELECT x.created_at FROM plan_imports x WHERE x.id = p.import_id), '') AS imported FROM plans p
+          WHERE p.deleted_at IS NULL AND p.covers_balance = 0 AND p.registered_on <> '' AND p.registered_on <= ?1 AND p.import_id <> '' ORDER BY p.id`,
   },
 };
 
@@ -507,6 +522,14 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       const years = unlockedPastYears(lastEntries, { lock: period()?.lockedUntil?.() || "", today: period()?.today?.() || now.today() });
       if (years.length) {
         checks.push({ code: "ledger:unlocked-years", name: `Kilitlenmemiş Geçmiş Yıl (${years.join(", ")}) Yeni Kuralla Hesaplandı — Beyan Edildiyse Yılı Kilitleyin`, ok: true, count: 0, info: true, years, hint: `Dönem kilidi konmamış geçmiş yıl (${years.join(", ")}) 2.5.0'ın açılış kurallarıyla hesaplandı (açılış karşı hesabı 519, açılış çekleri ve Excel taksit kartları gelir / gider değil). O yılın beyannamesi verildiyse Yönetim → Dönem Kilidi ile yılı kilitleyin; kilitli dönemin defteri değişmez.` });
+      }
+    }
+    // 2.5.0 Ç5-A tur 1e (dar kontrol G-1; C5-ACILIS-TASARIM §15.2 (2)): KG-16 durumu kapının yazdığıyla aynı — kapı dışı (elle, dış araçla) değiştirilen "Açılış Olabilir" durumu
+    // defteri 519 ↔ 602 / 770 sessizce kaydırır (kilitli dönemde Kural Farkı'na da karışır). YALNIZ tam taramada; yalnız bozukken görünür (sağlıklı şirketin denetim listesi değişmez).
+    if (!touched) {
+      const review = openingReviewDrift(store);
+      if (review?.count) {
+        checks.push({ code: "opening:review", name: "Açılış Olabilir Kararları (kapının yazdığıyla aynı)", ok: false, count: review.count, sample: review.sample, hint: `${review.count} cari hareketinin Açılış Olabilir durumu programın dışından (elle ya da dış bir araçla) değişmiş. Cariler → Açılış Olabilir Kayıtlar'da bu satırlara yeniden karar verin (Açılış ya da Açılış Değil).` });
       }
     }
     // Kuruş ve işaret: 12,345 TL ya da −5 TL gibi tutar yok.

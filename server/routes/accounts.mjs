@@ -28,6 +28,7 @@ import { systemClock } from "../lib/clock.mjs";
 import { IMPORT_SCOPES, createImportRequests } from "../lib/import-request.mjs";
 import { accountMovements, movementBlockText } from "../lib/account-movements.mjs";
 import { assertRowVersion, rowVersion } from "../lib/row-version.mjs";
+import { restoredOpeningReview } from "../lib/ledger-opening.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).getTime());
@@ -1222,8 +1223,10 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       posOutcome: "entry-error",
       write: () => {
         k7.capture();
+        // 2.5.0 Ç5-A tur 1e (S51 = A; dar kontrol G-2): yük KG-16 durumunu taşır (geri alma silinmeden önceki durumla döner — restoredOpeningReview).
+        const review = openingReviewOf(previous.id);
         store.run("DELETE FROM account_entries WHERE id = ?", previous.id);
-        trash?.add({ kind: "account-entry", ref: previous.id, title: account.name, detail: previous.note || KIND_TEXT[previous.kind], payload: { ...previous, accountId: account.id, accountName: account.name }, user });
+        trash?.add({ kind: "account-entry", ref: previous.id, title: account.name, detail: previous.note || KIND_TEXT[previous.kind], payload: { ...previous, ...review, accountId: account.id, accountName: account.name }, user });
         audit(user, "account.entry.deleted", previous.id, { accountId: account.id, ...previous });
         return { id: previous.id };
       },
@@ -1862,8 +1865,9 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       const result = bank.post({
         user, module: "account", op: "delete", prev: previous, posOutcome: "void",
         write: () => {
+          const review = openingReviewOf(previous.id); // Ç5-A tur 1e (S51 = A): yük KG-16 durumunu taşır.
           store.run("DELETE FROM account_entries WHERE id = ?", previous.id);
-          trash?.add({ kind: "account-entry", ref: previous.id, title: account.name, detail: previous.note || KIND_TEXT[previous.kind], payload: { ...previous, accountId: account.id, accountName: account.name }, user });
+          trash?.add({ kind: "account-entry", ref: previous.id, title: account.name, detail: previous.note || KIND_TEXT[previous.kind], payload: { ...previous, ...review, accountId: account.id, accountName: account.name }, user });
           audit(user, "account.entry.deleted", previous.id, { accountId: account.id, ...previous, posVoid: true });
           return { id: previous.id };
         },
@@ -2022,6 +2026,15 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const flagged = Object.hasOwn(payload, "isOpening") ? Number(payload.isOpening) === 1 || payload.isOpening === true : payload.note === OPENING_NOTE;
     return flagged && !openingEntryOf(accountId) ? 1 : 0;
   };
+  // 2.5.0 Ç5-A tur 1e (KULLANICI S51 = A; BAŞ MİMAR B8; dar kontrol G-2): silinen satırın KG-16 "Açılış Olabilir" durumu (account_entries.opening_review, göç 48) silme yükünde
+  // `openingReview` olarak taşınır; geri alma durumu lib/ledger-opening.mjs restoredOpeningReview'den yazar (silinmeden önceki durum; carinin başka açılışı yüzünden işaretsiz dönen
+  // açılış aday; 2.4.x yükü açıklamasından) ve kapının kopyasını (opening_review_gate, göç 50) AYNI işlemde (INSERT'in hemen ardından). Sütun yoksa (eski şema) yük alanı yok.
+  let reviewColumns = null;
+  const hasReviewColumns = () => (reviewColumns ??= (() => {
+    const names = new Set(store.all("PRAGMA table_info(account_entries)").map(column => column.name));
+    return { review: names.has("opening_review"), gate: names.has("opening_review_gate") };
+  })());
+  const openingReviewOf = id => (hasReviewColumns().review ? { openingReview: String(store.get("SELECT opening_review AS r FROM account_entries WHERE id = ?", id)?.r || "") } : {});
   function restoreEntry(user, item, payload, { force = false, banking = null } = {}) {
     if (!KIND_TEXT[payload.kind]) throw new HttpError(409, "Hareketin bilgisi eksik; geri yüklenemez.");
     const account = store.get("SELECT id, deleted_at AS deletedAt FROM accounts WHERE id = ?", payload.accountId);
@@ -2070,6 +2083,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       write: () => {
         k7.capture();
         if (!store.get("SELECT 1 AS found FROM account_entries WHERE id = ?", item.ref)) {
+          const isOpening = restoredOpening(payload, account.id);
           store.run(
             // Karar 15.10.2026: "Normal Cari Hesaba İşle" işareti (doubtful_skip) silinmeden önceki hâliyle döner.
             "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, fin_ref, event_id, created_by, created_at, updated_by, updated_at, doubtful_skip, due_date, expected_date, is_opening, refund_of) VALUES (?, ?, ?, ?, ?, ?, ?, '', '', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -2078,10 +2092,14 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
             payload.kind === "in" && (payload.doubtfulSkip === true || Number(payload.doubtfulSkip) === 1) ? 1 : 0,
             // 2.4.5 madde 6: Vade Tarihi / Beklenen Ödeme Tarihi silinmeden önceki hâliyle (2.4.4'te silinen satırın yükünde yok → boş).
             ...restoredDue(payload),
-            restoredOpening(payload, account.id),
+            isOpening,
             // 2.4.6 madde 9: iade geri ödemesi bağı (2.4.5'te silinen satırın yükünde yok → bağsız).
             refundOf,
           );
+          // 2.5.0 Ç5-A tur 1e (S51 = A; B8): KG-16 durumu ve kapının kopyası aynı işlemde (para alanı değil; tutar / yön / tarih yukarıda).
+          const review = restoredOpeningReview(payload, isOpening);
+          const columns = hasReviewColumns();
+          if (review && columns.review) store.run(`UPDATE account_entries SET opening_review = ?${columns.gate ? ", opening_review_gate = ?" : ""} WHERE id = ?`, ...(columns.gate ? [review, review] : [review]), item.ref);
         }
         trash.markRestored(item.id, user);
         audit(user, "account.entry.restored", item.ref, { accountId: account.id, kind: payload.kind, amount, date: payload.date, method, invoiceId, droppedInvoice: payload.invoiceId && !invoiceId ? payload.invoiceId : "", refundOf, droppedRefund: payload.refundOf && !refundOf ? payload.refundOf : "" });

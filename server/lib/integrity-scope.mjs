@@ -53,14 +53,15 @@ const ACCOUNT_LEDGER_FIELDS = ["kind", "gl", "gl_sub", "currency"];
 // Kilit izinin (lib/integrity.mjs LOCK_SQL) satır alanları: kilitli dönemdeki satırda bunlardan biri değişirse, satır eklenir ya da silinirse iz değişir.
 const LOCK_FIELDS = {
   payments: { date: row => row.date, fields: ["amount", "date", "method", "fin_ref", "event_id"] },
-  cash_entries: { date: row => row.date, fields: ["kind", "amount", "date", "method", "fin_ref", "event_id", "tax_json"] },
-  account_entries: { date: row => row.date, fields: ["account_id", "kind", "amount", "date", "method", "fin_ref", "event_id", "fx_currency", "fx_minor", "fx_rate_e6", "fx_source"] },
+  // 2.5.0 Ç5-A tur 1e: is_opening (LOCK_SQL cash_opening_lock / account_opening_lock / cheques_opening_lock).
+  cash_entries: { date: row => row.date, fields: ["kind", "amount", "date", "method", "fin_ref", "event_id", "tax_json", "is_opening"] },
+  account_entries: { date: row => row.date, fields: ["account_id", "kind", "amount", "date", "method", "fin_ref", "event_id", "fx_currency", "fx_minor", "fx_rate_e6", "fx_source", "is_opening"] },
   stock_moves: { date: row => row.date, fields: ["item_id", "kind", "qty", "amount", "date", "pay", "method", "account_id", "fin_ref", "event_id", "unit_price", "is_opening"] },
   plan_entries: { date: row => row.date, fields: ["plan_id", "kind", "amount", "date", "method", "fin_ref", "event_id"] },
   cheque_events: { date: row => row.date, fields: ["cheque_id", "kind", "amount", "date", "method", "fin_ref", "event_id"] },
   invoices: { date: row => (row.status !== "draft" ? row.issue_date : null), fields: ["kind", "status", "account_id", "issue_date", "try_payable", "try_vat"] },
   // 2.2.0 İz 4.2: evrak türü (cheques_instrument_lock; senet 121/321, çek 101/103).
-  cheques: { date: row => row.issue_date, fields: ["direction", "amount", "issue_date", "deleted_at", "instrument"] },
+  cheques: { date: row => row.issue_date, fields: ["direction", "amount", "issue_date", "deleted_at", "instrument", "is_opening"] },
   fin_events: { date: row => row.date, fields: ["type", "date", "reversal_of", "bank_ref", "counter_ref", "amount_minor", "try_minor"] },
 };
 // Cari satırının kaynakları: '' (elle), fatura, çek/senet, stok, banka (POS kesintisi, Aşama 10). Kaynaklı satır kaynağına bağlıdır.
@@ -354,7 +355,8 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
         if (table === "plans") {
           const plain = row => row && !row.deleted_at && Number(row.covers_balance) === 0 && row.registered_on && locked(row.registered_on);
           const closedOn = row => (row.status === "closed" && !row.deleted_at ? [day(row.closed_at || row.updated_at), day(row.registered_on || row.created_at)].sort().at(-1) : "");
-          if ((plain(pre) || plain(post)) && differs(pre, post, ["total", "account_id", "registered_on", "covers_balance", "deleted_at"])) return "kart kilitli dönem";
+          // 2.5.0 Ç5-A tur 1e: yükleme bağı (LOCK_SQL plans_import_lock).
+          if ((plain(pre) || plain(post)) && differs(pre, post, ["total", "account_id", "registered_on", "covers_balance", "deleted_at", "import_id"])) return "kart kilitli dönem";
           if ((locked(pre && closedOn(pre)) || locked(post && closedOn(post))) && differs(pre, post, ["account_id", "total", "status", "closed_at", "updated_at", "registered_on", "created_at", "deleted_at"])) return "kapatılmış kart kilitli dönem";
           const id = (post || pre).id;
           if (differs(pre, post, ["account_id", "deleted_at"]) && store.get("SELECT 1 AS found FROM plan_entries WHERE plan_id = ? AND date <= ? LIMIT 1", id, lock)) return "kartın kilitli tahsilatı";
@@ -375,6 +377,8 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
           );
           if (found) return "kilitli dönemde hareketi olan cari";
         }
+        // 2.5.0 Ç5-A tur 1e: Kayıt Tarihi kilitte olan yüklenmiş kartın yükleme damgası (LOCK_SQL plans_import_lock).
+        if (table === "plan_imports" && differs(pre, post, ["created_at"]) && hasColumn("plans", "import_id") && store.get("SELECT 1 AS found FROM plans WHERE import_id = ? AND import_id <> '' AND deleted_at IS NULL AND covers_balance = 0 AND registered_on <> '' AND registered_on <= ? LIMIT 1", String((post || pre).id ?? ""), lock)) return "kart yüklemesi kilitli dönem";
         if (table === "bank_lines" && store.get("SELECT 1 AS found FROM fin_events WHERE id = ? AND date <= ?", (post || pre).event_id, lock)) return "kilitli banka fişi";
         // Tahsil kaydı (lib/integrity.mjs LOCK_SQL cheque_collections_given / _closed): verilme ve kapanış ayrı iz girdileri (plan §3.14, §5.5).
         if (table === "cheque_collections") {

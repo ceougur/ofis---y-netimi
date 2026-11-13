@@ -1,0 +1,77 @@
+kurulum: Yürüyüş Müşteri açılış 1.000
+mizan (açılıştan sonra): {"120":1000,"519":-1000}
+formdan carisiz çek (cari yok, keşideci yok): 200 {"ok":true,"data":{"id":"cheque-c7ed899d-e24f-41ee-992c-bc501c552d12","direction":"in","instrument":"cheque","serialNo":"YRY-CARISIZ","bank":"Akbank","drawer":"
+açılış portföyü yüklemesi: {"created":1,"ids":["cheque-77d073c9-b3bc-499d-a295-96b31b05ccf1"],"skipped":[],"skippedTotal":0,"linked":0,"posted":0,"closed":0,"truncated":0}
+mizan (üç evraktan sonra): {"101":1450,"120":600,"519":-1750,"649":-300}
+
+■ A1 Çek / Senet listesi: carisiz, carili ve açılış portföyü evrakı nasıl görünüyor
+  19.11.202630 gün kaldı | Alınan Çek | YRY-CARISIZAkbank | — | Portföyde | ₺300,00
+  29.11.202640 gün kaldı | Alınan Çek | YRY-CARILIAkbank | Yürüyüş Müşteri | Portföyde | ₺400,00
+  09.12.202650 gün kaldı | Alınan Çek | YRY-ACILISAkbank | Tanınmayan Keşideci | Portföyde | ₺750,00
+
+■ A2 Formdan carisiz evrak → Karşılıksız / İade: 'Borçlanacak Cari' sorusu (boş bırakılır)
+  form alanları: İşlem Tarihi * ‖ Borçlanacak Cari + Yeni Cari × Evrak bir cariye işlenmemiş. Karşılıksız tutarı bir cariye borç yazmak için seçin; boş bırakırsanız kimse borçlanmaz (açılış evrakında açılış geri alınmış sayılır). ‖ Açıklama
+  evrak: {"status":"bounced","accountId":"","opening":0}
+  mizan: {"101":1150,"120":600,"519":-1750}
+
+■ A3 Açılış portföyü evrakı → Karşılıksız / İade: cari seçilir (Yürüyüş Müşteri) → cari borçlanır
+  evrak: {"status":"bounced","accountId":"account-45480304-501b-4c72-ad1a-c966ad2696f7","opening":1}
+  Yürüyüş Müşteri bakiye: undefined (beklenen 1.000 açılış + 750 karşılıksız = 1.750; carili 400'lük çek tahsilat sayıldıysa 1.350)
+  mizan: {"101":400,"120":1350,"519":-1750}
+
+■ A4 Carili evrakta karşılıksız: cari sorusu ÇIKMAMALI
+  cari sorusu var mı: false (beklenen false)
+
+■ A5 Çek / Senet listesi son hâl + cari kartı
+  29.11.202640 gün kaldı | Alınan Çek | YRY-CARILIAkbank | Yürüyüş Müşteri | Portföyde | ₺400,00
+
+■ A6 Raporlar → Alacak Yaşlandırma: carisiz evrak satırı yok; müşteri satırı
+  Cari / Kişi | Vade Gecikme (Gün) | Vadesi Gelmemiş | 1–30 Gün | 31–60 Gün | 61–90 Gün | 90+ Gün | Faturasız Alacak (dilimlere dahil) | Şüpheli Alacak (dilimlere dahil) | Toplam Gecikmiş | Toplam
+  Yürüyüş Müşteri | 60 | ₺1.150,00 | ₺0,00 | ₺600,00 | ₺0,00 | ₺0,00 | ₺1.350,00 |  | ₺600,00 | ₺1.750,00
+  TOPLAM |  | ₺1.150,00 | ₺0,00 | ₺600,00 | ₺0,00 | ₺0,00 | ₺1.350,00 |  | ₺600,00 | ₺1.750,00
+
+■ A7 Raporlar → Defter Mutabakatı
+  Hesap | Hesap Adı | Ana Defter | Alt Defter | Fark | Durum
+  100 | Kasa (Nakit) | ₺0,00 | ₺0,00 | ₺0,00 | Tutarlı
+  101 | Alınan Çekler | ₺400,00 | ₺400,00 | ₺0,00 | Tutarlı
+  102 | Bankalar (Havale / EFT) | ₺0,00 | ₺0,00 | ₺0,00 | Tutarlı
+  103 | Verilen Çekler ve Ödeme Emirleri (−) | ₺0,00 | ₺0,00 | ₺0,00 | Tutarlı
+  108 | Kredi Kartı Tahsilatları (POS) | ₺0,00 | ₺0,00 | ₺0,00 | Tutarlı
+  120 | Alıcılar (Müşteri Carileri) | ₺1.350,00 | ₺1.350,00 | ₺0,00 | Tutarlı
+  127 | Carisiz Taksit Kartları | ₺0,00 | ₺0,00 | ₺0,00 | Tutarlı
+  191 | İndirilecek KDV | ₺0,00 | ₺0,00 | ₺0,00 | Tutarlı
+  193 | Peşin Ödenen Vergiler (Stopaj) | ₺0,00 | ₺0,00 | ₺0,00 | Tutarlı
+  320 | Satıcılar (Tedarikçi Carileri) | ₺0,00 | ₺0,00 | ₺0,00 | Tutarlı
+  336 | Diğer Cariler (Personel vb.) | ₺0,00 | ₺0,00 | ₺0,00 | Tutarlı
+  360 | Ödenecek Vergi ve Fonlar (Tevkifat, Stopaj) | ₺0,00 | ₺0,00 | ₺0,00 | Tutarlı
+  391 | Hesaplanan KDV | ₺0,00 | ₺0,00 | ₺0,00 | Tutarlı
+  Denetim | Cari bazında mutabakat (her cari ayrı) |  |  |  | Tutarlı
+  Denetim | Carisiz taksit kartları (kart bazında) |  |  |  | Tutarlı
+  Denetim | Taksit kartları (tutar, tahsilat, kalan) |  |  |  | Tutarlı
+  Denetim | Stok miktarı (girişler − çıkışlar) |  |  |  | Tutarlı
+  Denetim | Açılış Karşılığı (519 Eşleştirilecek Açılış Bakiyeleri = Kasa, cari, banka, stok, taksit ve evrak açılışları + fişler) |  |  |  | Tutarlı
+  Denetim | Açılış Karşılığı (500 Sermaye = fişler) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Kayıt Tahsilatları) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Kasa Hareketleri) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Cari Hareketleri) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Taksit Kartları) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Taksitler) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Taksit Tahsilatları) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Stok Hareketleri) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Çek/Senet) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Çek/Senet Hareketleri) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Faturalar) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Faturalar) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Faturalar) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Faturalar) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Faturalar) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Faturalar) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Fatura Kalemleri) |  |  |  | Tutarlı
+  Denetim | Kuruş ve işaret (Fatura Kalemleri) |  |  |  | Tutarlı
+  Denetim | Stok ↔ cari bağı (açık hesap) |  |  |  | Tutarlı
+  Denetim | Stok hareketi silinmiş cari satırı |  |  |  | Tutarlı
+  Denetim | Stok miktarı (sıfırdan büyük) |  |  |  | Tutarlı
+
+■ A8 Yönetim → Dönem Kilidi ve Mutabakat (yeni veri: temiz beklenir)
+  Dönem kilidi: Kilitli dönem yok; tüm geçmiş tarihlere hareket girilebilir.
+  Mutabakat satırı [adm-muted]: Mutabakat: 64 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı.
