@@ -1,0 +1,11 @@
+basla 2026-11-13T22:16:28Z
+2.73 2.33 1.80 5/215 4871
+653224a7 Mobil yazma kâhini bakımı 3: kabul dosyası cari kâhini bakımı 19 ile yeniden üretildi (yalnız cari_model_sha256 değişti — değişen anahtar 0, BEKLENMEYEN 0); kural ve sürücü değişmedi
+?? docs/kanit/2026-11-13/kahineski19-arac/mobil-kos.sh
+oz-utc cikis 0
+2.61 2.72 2.19 2/136 7806
+oz-ist cikis 0
+1.84 2.34 2.18 1/116 9412
+uretici cikis 1
+bitti 2026-11-13T22:28:58Z
+?? docs/kanit/2026-11-13/kahineski19-arac/mobil-kos.sh

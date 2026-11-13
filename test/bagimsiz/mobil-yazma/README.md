@@ -430,6 +430,14 @@ diliminde koş; KURAL değişmez; sürücüye DOKUNMA").
 - Yeni / kalkan senaryo 0; adımı değişen 0; açıklaması değişen 0; **değişen anahtar 0, BEKLENMEYEN 0**; üst alan yalnız `cari_model_sha256` (cari kâhini bakım 19 `model.py`). Kabul: üretici `senaryolar.py`
   (55 elle × 256 birleşim + 3 rastgele tohum × 10 birleşim; model = elle / akış) — `kahineski19-mobil/uretici-yaz.txt`.
 
+### Kanıt (bakım 3; `docs/kanit/2026-11-13/kahineski19-mobil/`, `tools/kanit.mjs kos`; kabul commit'i `653224a7`; koşu betiği `docs/kanit/2026-11-13/kahineski19-arac/mobil-kos.sh`)
+- **Öz test 162/162, çıkış 0 — TZ=UTC ve TZ=Europe/Istanbul** (`kahineski19-mobil-oz-utc|ist.{txt,json,log}`; iki çıktı `[kanit]` satırı dışında bayt bayt aynı): A1 kabul güncel, A2 cari kâhini sha
+  eşleşiyor, 63/63 mutasyon, K1, H2. Koşu günlüğü `kos-gunlugu.txt` (yük 2,7 → 1,8 — 4 çekirdek).
+- Üretici denetimi (`kahineski19-mobil-uretici-denetle.*`): elle 55 × 256, rastgele 3 tohum × 10 birleşim model = akış; komut çıkışı 0 (kanıt aracı TAP özeti bulamadığı için "BELİRSİZ" yazar ve
+  kendisi 1 döner — komut TAP üretmez; bakım 2 ile aynı).
+- **Testin dişi:** yeni elle beklenti YOK (kural değişmedi) → eski kâhin kırmızısı uygulanmaz. A2'nin dişi: eski kabulun `cari_model_sha256`'sı (`b458dbde…`) bakım 19 `model.py`'sinin sha'sından (`27016e69…`)
+  farklı — eski kabulla A2 kırmızı olurdu (kabul bu yüzden yeniden üretildi). Program açılmadı; `program-surucu.mjs` koşulmadı ve değişmedi.
+
 ## Senaryo dili `destekofis-mobil-yazma/1`
 
 ```json
