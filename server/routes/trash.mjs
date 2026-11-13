@@ -11,7 +11,7 @@ import { methodInput } from "../lib/pay-method.mjs";
 import { FREEZE_CLOSE } from "./plans.mjs";
 import { bankForm } from "../lib/bank/module-ref.mjs";
 import { systemClock } from "../lib/clock.mjs";
-import { cashOpenings, firstCashMovement, isCashOpening, restoringCash } from "../lib/cash-opening.mjs";
+import { cashOpenings, firstCashMovement, hiddenExpected, hiddenKeyOf, isCashOpening, restoringCash } from "../lib/cash-opening.mjs";
 import { canUser } from "../lib/permissions.mjs";
 
 const KIND_LABELS = {
@@ -230,8 +230,23 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
     const body = await readJson(req);
     // 2.5.0 Ç5-K (S20 = A, Z9 BAŞ MİMAR KARARI; lib/cash-opening.mjs): Silinenler'den geri gelen para satırı silinmeden önceki hâliyle döner — Kasa açılışından
     // önce tarihli olsa da (S12 yalnız YENİ harekette; Mutabakat Testi "Kasa Açılışından Önce Tarihli Hareket" uyarısı verir). Kapsam yalnız bu isteğin işlemleri.
-    return restoringCash(store, () => restoreItem(user, body, res));
+    return restoringCash(store, () => restoreItem(user, body, res), { expected: expectedOf(body) });
   });
+
+  // Birleşik tur 8 (DK-B7 ORTA-1; BAŞ MİMAR KARARI 13.11 09:54): geri yüklenecek öğenin silinirkenki nakit satırı özeti (lib/cash-opening.mjs recordingHidden / lib/trash.mjs).
+  // Kart geri gelirken silinmiş carisi de döner — carinin özeti de katılır. Bir özet yoksa (eski öğe) null: bugünkü davranış.
+  function expectedOf(body) {
+    const [source, ...rest] = text(body?.id).split(":");
+    const ref = rest.join(":");
+    if (!ref) return null;
+    if (source === "trash") return hiddenExpected(store, [hiddenKeyOf("trash", ref)]);
+    if (source === "account" || source === "cheque") return hiddenExpected(store, [hiddenKeyOf(source, ref)]);
+    if (source === "plan") {
+      const owner = store.get("SELECT a.id, a.deleted_at AS deletedAt FROM plans p JOIN accounts a ON a.id = p.account_id WHERE p.id = ?", ref);
+      return hiddenExpected(store, [hiddenKeyOf("plan", ref), ...(owner?.deletedAt ? [hiddenKeyOf("account", owner.id)] : [])]);
+    }
+    return null;
+  }
 
   // Silinenler'den geri yükleme (yukarıdaki uç; eşzamanlı — gövde okunduktan sonra bekleme yok).
   function restoreItem(user, body, res) {

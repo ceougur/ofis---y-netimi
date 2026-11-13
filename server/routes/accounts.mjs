@@ -29,6 +29,7 @@ import { IMPORT_SCOPES, createImportRequests } from "../lib/import-request.mjs";
 import { accountMovements, movementBlockText } from "../lib/account-movements.mjs";
 import { assertRowVersion, rowVersion } from "../lib/row-version.mjs";
 import { restoredOpeningReview } from "../lib/ledger-opening.mjs";
+import { recordingHidden } from "../lib/cash-opening.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).getTime());
@@ -731,7 +732,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   router.delete("/api/workspace/accounts/:id", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "accounts.manage");
     const account = accountRow(params.id);
-    store.tx(() => {
+    // Birleşik tur 8 (DK-B7 ORTA-1; BAŞ MİMAR KARARI 13.11 09:54): silinirken görünürlüğü kalkan nakit satırlarının özeti Silinenler için yazılır (lib/cash-opening.mjs recordingHidden).
+    recordingHidden(store, "account", account.id, () => store.tx(() => {
       // 2.4.3 (keşif A5): silme engelleri tek yerde (deleteBlock) — cari kartı Sil düğmesini aynı nedenle pasif gösterir.
       // 2.4.9 C1: hareketi olan cari silinmez (409 account-has-movements); denetim yazımla AYNI işlemde.
       const block = deleteBlock(account);
@@ -740,7 +742,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       // yok sayılır). Yönetim panelindeki Silinenler'den geri gelir.
       store.run("UPDATE accounts SET deleted_by = ?, deleted_at = ? WHERE id = ? AND deleted_at IS NULL", user.id, now(), account.id);
       audit(user, "account.deleted", account.id, { name: account.name });
-    });
+    }));
     touched(user, account);
     changed(user, { kind: "cash" });
     ok(res, { id: account.id });

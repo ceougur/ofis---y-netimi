@@ -19,6 +19,7 @@ import { methodInput } from "../lib/pay-method.mjs";
 import { systemClock } from "../lib/clock.mjs";
 import { IMPORT_SCOPES, createImportRequests } from "../lib/import-request.mjs";
 import { assertRowVersion, rowVersion, sameFields } from "../lib/row-version.mjs";
+import { recordingHidden } from "../lib/cash-opening.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 // v2.0.26 (G6): toplu aktarımda bir satırın iç işlemini geri alıp nedeniyle atlamak için (kapanmış dönem).
@@ -863,8 +864,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       store.run("UPDATE plans SET deleted_by = ?, deleted_at = ? WHERE id = ?", user.id, now(), plan.id);
       audit(user, "plan.deleted", plan.id, { name: plan.name, total: plan.total });
     };
-    if (bank) bank.post({ user, module: "plans", op: "delete", prev: { planId: plan.id, name: plan.name, total: plan.total }, write: remove });
-    else store.tx(remove);
+    // Birleşik tur 8 (DK-B7 ORTA-1; BAŞ MİMAR KARARI 13.11 09:54): silinirken görünürlüğü kalkan nakit satırlarının özeti Silinenler için yazılır (lib/cash-opening.mjs recordingHidden).
+    recordingHidden(store, "plan", plan.id, () => (bank ? bank.post({ user, module: "plans", op: "delete", prev: { planId: plan.id, name: plan.name, total: plan.total }, write: remove }) : store.tx(remove)));
     changed(user, { planId: plan.id });
     changed(user, { kind: "cash" });
     ok(res, { id: plan.id });
