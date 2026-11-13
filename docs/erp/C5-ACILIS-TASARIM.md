@@ -1274,3 +1274,74 @@ mutabakat/motor, e2e/senaryo-supheli-230. Beklentisi bilerek değişecek olası 
 ### 18.8 Hız etkisi (ders 47, 53 (a); karar sonrası ölçülecek)
 Şüpheli kaydı OLMAYAN caride ek iş: `doubtfulUsed` (tek LIMIT 1) — sıfıra yakın. Şüpheli carisinde: bağlı alacak başına bir kesilmiş kuyruk kurulumu (carinin satır sayısı kadar); toplu
 yollar (Yevmiye, Mizan, Defter Mutabakatı, Mutabakat Testi, cari listesi, Anlık Durum) yalnız şüpheli carileri için. Ölçüm: temiz 100 bin satır + şüpheli carili kopya, önce / sonra.
+
+### 18.9 Tur 3a — YALNIZ TAŞIMA (kod ajanı, 13.11.2026; taban `c5a3a-taban` 321202d4) — KODDAN ÖNCE yazıldı
+BAŞ MİMAR KARARI (13.11): §18.3 (a) KABUL, (b) / (c) RET; iş iki tura bölündü (ders 46): 3a = taşıma (gözlenebilir davranış bayt bayt aynı), 3b = kural. Bu alt bölüm 3a'nın planıdır.
+
+**(1) Taşınanlar** — routes/invoices.mjs `registerInvoiceRoutes` kapanışından → YENİ `server/lib/obligation-input.mjs` `createObligationInput({ store })` kapanışına (girinti AYNI:
+iki boşluk; gövdeler AYNEN, kapanış değişkeni yalnız `store`):
+
+| İşlev / değer (taban satırı) | Ne | Yeni yer |
+|---|---|---|
+| `offsetLabel` (632–639) | mahsup fişinin karşı belge adı (kapama girdisinin `offsets[].label`'ı) | modül; fatura servisi fatura ayrıntısında (3886) da modülden alır |
+| `chequeLinks` (647–682) | çek / senet olaylarının bağ / tür / karşılıksız haritaları (iki yolun ortak kuralı) | modül |
+| `groupBy`, `settleTables`, `batchSettleInput` (683–730) | toplu yolun (bütün cariler) kapama girdisi | modül (allSettled + repairScreen modülden çağırır) |
+| `settleKey` (731–733) | önbellek anahtarı (total_changes · data_version · gün) | modül (fatura servisinin önbellekleri de AYNI işlevi çağırır — anahtar metni değişmez) |
+| `groupInto`, `lockCache` + `lockResolver` (742–759) | kilit izi çözücü + kendi belleği | modül (bellek modül örneğinde; fatura servisi TEK örnek kurar → bellek ömrü aynı) |
+| `doubtfulRecordsOf` (760–773) | açık şüpheli kayıtların kalanı (lib/bank/doubtful.mjs `doubtfulState`) | modül |
+| `obligationExtras` (774–787) | kart takvimleri, Vade / Beklenen Ödeme Tarihi, şüpheli, kilit, bağ anları | modül |
+| `linkTimesOf` (788–809), `MOMENT_*` + `chequeLinkMoments` (810–843) | bağ anları (O-1, ORTA-1) | modül |
+| `withExtras` (844) | girdiye eklerin eklenmesi | modül |
+| `accountSettleInput` (986–1009) | tek carinin kapama girdisi | modül |
+
+Fatura serviste KALANLAR (davranış ve metin aynen): `BATCH_ACCOUNTS`, `settledCache` / `oneCache` / `allSettled` / `accountPrints` + `printSql` (önbellek ve geçersiz kılma — anahtar ve
+iz AYNEN), `paymentStates`, `settledFor`, `obligationsFor`, `obligationsOf`, `entryStates`, `allEntryStates`, `allObligations`, `repairScreen`. Bunlar taşınan işlevleri
+`const { … } = createObligationInput({ store })` ile aynı adlarla alır → çağıran satırların METNİ değişmez; fark yalnız tanımların yeri.
+
+**(2) Modülün dışa açık yüzü:** `createObligationInput({ store })` → `{ offsetLabel, chequeLinks, settleTables, batchSettleInput, settleKey, lockResolver, doubtfulRecordsOf,
+obligationExtras, linkTimesOf, chequeLinkMoments, withExtras, accountSettleInput }`. Store dışında bağımlılık: YOK (saat yok — gün `day` parametresiyle; kilit izi `audit_events`'ten;
+ayar okunmaz). İçe aktarımlar yalnız lib: `lib/http.mjs` (parseJson), `lib/invoice-math.mjs` (INVOICE_KINDS), `lib/plans.mjs` (dayText), `lib/obligation-queue.mjs` (lockAtOf,
+lockHistory), `lib/bank/doubtful.mjs` (doubtfulState). İşçide kurulum: `createObligationInput({ store: createStore(openDatabase(dbPath, { readOnly: true })) })` — servis ağacı yok.
+
+**(3) Çağıranlar (ders 10 — tarama `settleTables|batchSettleInput|accountSettleInput|obligationExtras|withExtras|lockResolver|doubtfulRecordsOf|linkTimesOf|chequeLinkMoments|chequeLinks|offsetLabel|settleKey`
+server / test / tools / client):** üretimde YALNIZ routes/invoices.mjs (allSettled 908–913, paymentStates 1030, settledFor 1044, obligationsFor 1048, obligationsOf 1063 [settleKey],
+allSettled 852 [settleKey], repairScreen 2372 / 2380, fatura ayrıntısı 3886 [offsetLabel]) — önce kapanış içi çağrı, sonra aynı ad modül örneğinden. Başka sunucu dosyası bu adları
+ÇAĞIRMAZ (lib/invoice-settle.mjs ve lib/obligation-queue.mjs yalnız yorumda anar). Testlerde yalnız yorum (takvim-govde-250, kapama-tek-gecis-245, acilis-onarimi-hiz-250) ve
+mutasyon desenleri (tyk-mutasyon-250 — desen yerleri modüle taşınır). Dışa açık servis yüzü (`obligationsFor / obligationsOf / allObligations`) — çağıranlar routes/accounts.mjs
+(194, 251, 311, 1934), routes/plans.mjs (224, 354–363), testler tyk-onbellek / tyk-api / tyk-son / tyk-kapanis / tyk-tur2b1 — DEĞİŞMEZ.
+
+**(4) BAŞ MİMAR KARARI GEREKİYOR — "carinin satırlarını kuran zincir" (routes/accounts.mjs `entriesOf` + routes/plans.mjs `forAccount` / `ledgerPlansByAccount` → lib/accounts.mjs
+`accountLedger`) bu turun dosya sınırıyla TAŞINAMAZ:** kuyruğa giren kart alanlarının ikisi (`returnCuts` — iade kesintileri, `saleMoveId` — satışla açılan kartın kaynağı) routes/plans.mjs
+kapanışındaki `returnCuts` / `scanReturnCuts` / `cutsCache` ve `saleSources` belleklerinden gelir; `test/r2-249/mutasyon.mjs` yedi deseni (M1–M7) DOSYA YOLUYLA (`server/routes/plans.mjs`)
+bu gövdelere uygular ve bu dosya bu turun yazılabilir listesinde YOK → taşınınca M1–M7 "değiştirilecek metin bulunamadı" olur (ders 38: diş kaybı). Bu yüzden 3a'da ZİNCİR TAŞINMADI
+(entriesOf da yerinde: yarım zincir 3b'ye bir şey kazandırmaz). Modülün kapama girdisi işlevleri carinin satırlarını bugünkü gibi PARAMETRE alır (`accountSettleInput(accountId, ledger, day)`,
+`batchSettleInput(accountId, lines, tables, day)`). Seçenekler: (i) ÖNERİ — 3b'nin başında (ya da ayrı küçük tur) zincir de modüle taşınır: plans.mjs'ten `returnCuts`, `scanReturnCuts`,
+`saleSources` (+ `SALE_SOURCE_SQL`, `parsePayload`, `saleSourceOfEvent`), `ledgerPlansByAccount`; accounts.mjs'ten `entriesOf` + `STOCK_REASON_SQL`; girinti aynı kaldığından
+r2-249'un desen METİNLERİ değişmez, yalnız `PL` dosya yolu (ve tyk-mutasyon-250'nin plans desenlerinin yolu) — o dosyanın da yazılabilir listeye alınması gerekir. Gerekçe: tek kaynak;
+işçi kart haritasını servis ağacı olmadan kurar. (ii) modül kart haritasını bir sağlayıcıdan alır (`ledgerPlans`), işçi plans servisini kurar (integrity-scan-worker zaten kuruyor,
+ledger-freeze-worker kurmuyor) — (c)'ye yaklaşır, ÖNERİLMEZ.
+
+**(5) Kanıt planı.** (A) Bayt bayt eşdeğerlik: taban ↔ yeni, AYNI veri kopyası, durağan sahte saat; dışa açık yüzden her carinin `obligationsFor` (cari kartının defteriyle), `obligationsOf`
+ve `allObligations().get(id)` çıktısı JSON (Map / Set sıralı; `overdue(gün)` bugün ve +30 / −30 günde) → cari başına özet + toplam SHA-256; veri: temiz 100 bin satır, v2.4.9 fikstürü
+(tyk-fark-v249), kalıcı testin sınıf verisi. (B) Kalıcı test `test/obligation-input-250.test.mjs`: sınıf listesi (bağsız / bağlı tahsilat, çek / senet bağı, şüpheli kaydı, taksit kartı,
+faturasız iade, kilitli dönem + kilitten sonra düzeltmeyle kurulan bağ, iki şirket) programın KENDİ API'siyle; her cari için (a) modül YALNIZ store ile (ayrı salt okunur bağlantı,
+servis yok) → `buildObligations` = servis yüzü (bayt bayt), (b) normalleştirilmiş çıktı (kimlikler oluşturulma sırasına göre etiket) = TABAN KODUNUN ürettiği hakem dosyası
+`test/fixtures/obligation-input-250-hakem.json` (yalnız (a) taşınmadan önce anlamsız olduğundan hakem taşımanın değil davranışın kâhinidir — mutantlar DEĞERLE buradan ölür; hakemi
+üreten betik testin `--hakem-yaz` kipi, taban kopyasında koşulur). Tabanda KIRMIZI: modül yok (içe aktarma hatası — neden iletide okunur). Mutantlar (modülün ayrı kopyasında): çek /
+senet bağını atla, şüpheli kayıtlarını boş ver, bağ zamanını kaydır, kilit çözücü hep 'açık', mahsup etiketi, toplu yolda çek bağı atla. (C) kâhin adımları taban = yeni.
+(D) komşular iki TZ; tyk-mutasyon-250'nin taşınan desenleri modül yoluna (anlam aynı; yerini bulamayan desen 'yakalandı' SAYILMAZ). (E) hız: §18.9 (6)'daki yollar. (F) ekran: ci.yml'de
+'tyk' geçenler + fatura / cari / taksit senaryolarından taramayla seçilenler.
+
+**(6) "Nasıl bozulur?"** (testler buradan) — çağrı sırası: `obligationExtras` kilit çözücüyü bir kez, bağ anlarını kilit varken okur (sıra aynen); bellek / önbellek anahtarları:
+`lockCache` modül örneğinde — fatura servisi İKİ örnek kurarsa ya da her çağrıda yeni örnek kurarsa bellek boşa düşer (hız) → servis kurulurken BİR örnek, kalıcı testte iki
+`obligationsFor` arası kilit değişimi ve aynı anahtar; `settleKey` metni aynı (fatura önbellekleri ile kilit belleği aynı anahtar ailesi); işlem içi çağrı: `store.inTransaction`
+dalları aynen (kilit belleği işlem içinde ne okunur ne yazılır) — kalıcı testte işlem içinden okuma (yazım yanıtı) ↔ dışından; iki şirket: her şirket örneği kendi servisini → kendi
+modül örneğini kurar (bellek şirketler arasında paylaşılmaz — 002'nin kilit izi 001'e sızmaz) — testte iki şirket aynı veriyle farklı kilitle; geri yükleme sonrası: anahtar
+data_version / total_changes ile değişir (aynen) — eski hakemi geri yükleme sonrası okuma ile; kilitli dönem: `linkTimes` / `linkMoments` yalnız kilit varken; eşzamanlı istek: modül
+saf (store dışında paylaşılan durum yalnız `lockCache`, eşzamanlı istekte aynı anahtar → aynı değer); döngüsel içe aktarma: modül routes/ içe aktarmaz; lib/bank/doubtful.mjs modülü
+içe aktarmaz (3b'de içe aktarırsa döngü — (7)).
+
+**(7) Tur 3b için:** defter yükleyicileri (routes/ledger.mjs `rows()` → doubtful-gl; lib/bank/doubtful.mjs `doubtfulState` → `doubtfulCredits`; işçiler) `createObligationInput({ store })`
+kurar; carinin satırları (4)'ün kararına bağlı. Döngü (§18.2 madde 3): `doubtfulRecordsOf` → `doubtfulState` → (3b) kuyruk → `doubtfulRecordsOf` — çözüm önerisi: 3b'de
+`obligationExtras` şüpheli kalanlarını dışarıdan alan bir parametre kazanır (varsayılan bugünkü `doubtfulRecordsOf`; ayırıcı kendi o anki durumunu verir) ve lib/bank/doubtful.mjs modülü
+YALNIZ işlev içinde kullanır (ESM döngüsü üst düzeyde değer okumadıkça çalışır; yine de 3b'de ayrı sınanır).
