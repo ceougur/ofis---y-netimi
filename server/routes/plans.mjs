@@ -304,6 +304,14 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     if (!map || !plan.totals) return null;
     return shownTotals(plan, plan.totals, collectedOf(map));
   }
+  // Birleşik tur 8 (S142 = A — KULLANICI KARARI 13.11 03:44 AYNEN: "cari kartındaki taksit kartı satırında durum etiketi ve 'sıradaki taksit' de aynı (tek) hesaptan"): cari
+  // kartının taksit kartı özeti kart penceresinin görünümünü (detailView ile aynı withQueue) taşır — Tahsil Edilen / Kalan, durum, geciken taksit sayısı, sıradaki taksit.
+  // plan: forAccount öğesi (kartın kendi hesabı + taksitleri); tyk: carinin kuyruğu. Kuyruk yoksa (carisiz, işlem içi) null — özet kartın kendi hesabında kalır.
+  function queueSummaryOf(plan, tyk) {
+    if (!tyk || !plan?.accountId || !Array.isArray(plan.items) || !plan.totals) return null;
+    const view = withQueue(plan, plan, new Map([[plan.accountId, tyk]]));
+    return view === plan ? null : { totals: view.totals, state: view.state, next: view.next };
+  }
   // Ç5-B tur 2a (O-3, S91 = A — vadesiz kayıt kayıt gününde vadeli kalem; C5 §2.10 madde 9 "Vade Takip gecikmiş tutarı = gecikmiş"): kuyruğun kart kalemlerinden TAKSİT
   // OLMAYANLAR — kartın taksitlere bölünmemiş kalanı (vade = kartın açılış günü) ve Taksit İadesi (iadeler tahsilatı aşınca; vade = son iade günü) — takvim / zil / Vade Takip /
   // nakit akışı kalemidir. Önceden gecikmişte sayılıyor, bu listelerde görünmüyordu (dar kontrol DK-C5B O-3). Kapatılmış kartta yok (kalan Kartı Kapat ile kapanır).
@@ -1537,11 +1545,20 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   };
 
   // Kayda bağlı kartlar (v2.0.6): kişinin kartı için taksitleriyle; açık olanlar önce.
+  // Birleşik tur 8 (S129 = A — dar kontrol Ç5-B kapanış 2 ORTA-A): kaydın detayındaki "Taksit Planı" bölümü ve oradan açılan Tahsilat penceresi kart penceresiyle AYNI görünüm
+  // (detailView: kartın kendi hesabı + kuyruk görünümü; formun sınırı ownRemaining / ownNext — S118 = B). Carinin kuyruğu cari başına bir kez kurulur.
   function forCase(caseKey, caseSource, user) {
     if (!caseKey) return [];
+    const queues = new Map();
     return store
       .all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND p.case_key = ? AND (? = '' OR p.case_source = ?) ORDER BY (p.status = 'active') DESC, p.created_at`, caseKey, caseSource || "", caseSource || "")
-      .map(plan => shape(plan, user));
+      .map(plan => {
+        const shaped = shape(plan, user);
+        if (!plan.accountId) return shaped;
+        if (!queues.has(plan.accountId)) queues.set(plan.accountId, queueFor(plan.accountId));
+        const view = withQueue(plan, shaped, queues.get(plan.accountId));
+        return view === shaped ? shaped : { ...shaped, ...view };
+      });
   }
   // Kayda bağlı kartların hareketleri: kişinin işlem geçmişinde tahsilat / ödeme olarak listelenir.
   function entriesForCase(caseKey, caseSource) {
@@ -1557,7 +1574,9 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
 
   // Cari (v2.0.6): carilerin taksit özetleri tek geçişte (liste ve bakiye için) ve bir carinin kartları ayrıntılı.
   // accountIds (v2.1.0, §3.11): yalnız bu carilerin kartları (mutabakat kapısı dokunulan carileri denetler).
-  function summariesByAccount(accountIds = null) {
+  // queue (birleşik tur 8, S142 = A): bütün carilerin kuyruğu (kullanıcı isteğindeki Cari Listesi) — verilirse özete kart penceresinin durumu / sıradaki taksiti / geciken taksit
+  // sayısı `view` alanında eklenir; totals / state / next kartın KENDİ hesabında kalır (bakiye ve Mutabakat Testi onları okur).
+  function summariesByAccount(accountIds = null, { queue = null } = {}) {
     const only = accountIds ? JSON.stringify([...accountIds]) : null;
     const plans = only ? store.all(`${PLAN_SQL} WHERE +p.deleted_at IS NULL AND p.account_id <> '' AND p.account_id IN (SELECT value FROM json_each(?))`, only) : store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND p.account_id <> ''`);
     const out = new Map();
@@ -1576,8 +1595,9 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     const day = today();
     for (const plan of plans) {
       const ledger = allocate(plan, items.get(plan.id) || [], entries.get(plan.id) || [], { today: day });
+      const view = queue ? withQueue(plan, ledger, queue, day) : ledger;
       if (!out.has(plan.accountId)) out.set(plan.accountId, []);
-      out.get(plan.accountId).push({ id: plan.id, name: plan.name, total: plan.total, coversBalance: Boolean(plan.coversBalance), status: plan.status, state: ledger.state, totals: ledger.totals, next: ledger.next, itemCount: ledger.items.length });
+      out.get(plan.accountId).push({ id: plan.id, name: plan.name, total: plan.total, coversBalance: Boolean(plan.coversBalance), status: plan.status, state: ledger.state, totals: ledger.totals, next: ledger.next, itemCount: ledger.items.length, ...(view !== ledger ? { view: { state: view.state, next: view.next, overdueCount: view.totals.overdueCount || 0 } } : {}) });
     }
     return out;
   }
@@ -1853,5 +1873,5 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   // ikinci kez saymaz; aktarma "kartı var" der.
   const linkedCases = source => new Set(store.all("SELECT case_key AS k FROM plans WHERE deleted_at IS NULL AND case_key <> '' AND case_source = ?", source || "").map(row => row.k));
 
-  return { shownTotalsOf, queueLedger: (plan, ledger, queue, day) => withQueue(plan, ledger, queue, day), queueAll: queueOf, uncoveredDebt, assertRestorable, assertCloseOpen, assertRoom, closeDayOf, trimCovers, shrinkPlan, leftOf, signedLeftOf, syncInvoiceCard, cashEntries, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, scheduledStart, lockedStartReason, adoptPayment, adoptAccountEntry, linkedCases };
+  return { shownTotalsOf, queueSummaryOf, queueLedger: (plan, ledger, queue, day) => withQueue(plan, ledger, queue, day), queueAll: queueOf, uncoveredDebt, assertRestorable, assertCloseOpen, assertRoom, closeDayOf, trimCovers, shrinkPlan, leftOf, signedLeftOf, syncInvoiceCard, cashEntries, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, scheduledStart, lockedStartReason, adoptPayment, adoptAccountEntry, linkedCases };
 }

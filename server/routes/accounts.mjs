@@ -194,10 +194,12 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     // Kalan haritası kartın "ekran eki"dir (entryStates; kuyruk bir kez kurulur, sonuç verilir): eki hata verirse cari kartı da hata verir (2.4.9 whatsapp-elle-alici §13 b).
     const remaining = tyk ? (invoiceModule().entryStates ? invoiceModule().entryStates(account.id, ledger.lines, tyk) : tyk.entries) : null;
     if (remaining) for (const entry of entries) if (isManualDue(entry)) entry.remaining = remaining.get(entry.id)?.remaining ?? roundMoney(Number(entry.amount) || 0);
-    const shownOf = shown && tyk && plans()?.shownTotalsOf ? plan => plans().shownTotalsOf(plan, tyk) : () => null;
+    // Birleşik tur 8 (S142 = A): özetin durum etiketi, geciken taksit sayısı ve sıradaki taksiti de kart penceresinin görünümünden (routes/plans.mjs queueSummaryOf); kartın kendi
+    // hesabı totals.ownPaid / ownRemaining'de durur.
+    const shownOf = shown && tyk && plans()?.queueSummaryOf ? plan => plans().queueSummaryOf(plan, tyk) : () => null;
     const summaries = planList.map(plan => {
       const view = shownOf(plan);
-      return planSummaryOf(view ? { ...plan, totals: { ...plan.totals, paid: view.paid, remaining: view.remaining } } : plan);
+      return planSummaryOf(view ? { ...plan, totals: { ...plan.totals, ...view.totals }, state: view.state, next: view.next } : plan);
     });
     return {
       ...account,
@@ -311,7 +313,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       if (!sums.has(row.accountId)) sums.set(row.accountId, { debt: 0, credit: 0, in: 0, out: 0 });
       sums.get(row.accountId)[row.kind] = Number(row.amount) || 0;
     }
-    const planMap = plans()?.summariesByAccount ? plans().summariesByAccount(ids) : new Map();
+    const planMap = plans()?.summariesByAccount ? plans().summariesByAccount(ids, { queue: tykAll }) : new Map();
     // 2.3.0 İz 1.6 (plan §3.11b/5): cari başına açık şüpheli alacak (TL) — listede "Şüpheli" rozeti, ANLIK DURUM alacak toplamında ayrı satır.
     // Şüpheli hiç kullanılmamışsa tek sorgu, boş (lib/bank/doubtful.mjs doubtfulOpenByAccount).
     const doubtfulMap = doubtful()?.openByAccount ? doubtful().openByAccount().byAccount : new Map();
@@ -331,6 +333,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       let overdueCount = 0;
       let planRemaining = 0;
       let planOwnRemaining = 0;
+      let planOverdueCount = 0;
       let next = null;
       for (const plan of accountPlans) {
         const total = roundMoney(Number(plan.total) || 0);
@@ -344,7 +347,10 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
           planOwnRemaining += Math.max(0, total - paid);
           overdue += plan.totals.overdue || 0;
           overdueCount += plan.totals.overdueCount || 0;
-          if (plan.next && (!next || plan.next.dueDate < next.dueDate)) next = { ...plan.next, planId: plan.id };
+          // Birleşik tur 8 (S142 = A): satırın "N geciken" ve sıradaki taksiti kart penceresiyle aynı hesaptan (kullanıcı isteğinde kuyruk görünümü; iç çağıranlarda kartın kendi hesabı).
+          planOverdueCount += plan.view ? plan.view.overdueCount : plan.totals.overdueCount || 0;
+          const planNext = plan.view ? plan.view.next : plan.next;
+          if (planNext && (!next || planNext.dueDate < next.dueDate)) next = { ...planNext, planId: plan.id };
         }
       }
       const debit = roundMoney(sum.debt + sum.out + planDebit);
@@ -428,6 +434,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         overdueCount,
         overdueInstallments: roundMoney(overdueInstallments),
         overdueInstallmentCount,
+        // S142 = A: listedeki "N geciken" (kart penceresinin geciken taksit sayısı; kuyruk görünümü).
+        planOverdueCount,
         // "Ödeme Sözü Var" (S52 / S72 / S73; görünüm — otomatik hatırlatma elemesi Ç5-C): söz bugün ya da sonra ve gecikmiş borç var.
         promiseUntil,
         next,
