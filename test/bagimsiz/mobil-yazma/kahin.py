@@ -5,6 +5,8 @@ metinlerinden (README.md "Kaynaklar") yazıldı. Para anlamı (cari bakiye, fatu
 CARİ kâhinine (test/bagimsiz/cari/model.py, kural seti 2.4.6) DEVREDİLİR: mobil ya da masaüstü kanaldan kabul edilen her para isteği o
 kâhinin AYNI olayına çevrilir (eşdeğerlik). Bu dosya cari kâhinini DEĞİŞTİRMEZ, yalnız içe aktarır; mobil kapılar (sunucu, kesinti, cihaz,
 uzak izni, lisans, şirket yetkisi, istek kimliği, yollar), Kasa / Banka / POS / kurumsal kart hesapları, taksit kartı (K8) ve stok bu dosyada.
+2.5.0 bakımı — S129 (README): taksit kartının göstergeleri (Tahsil Edilen, Kalan, taksit Ödenen'i) cari kâhininin tek kuyruğundan (kural seti 2.5.0); K8 sınırı kartın
+KENDİ kalanından (S118 = B).
 
   python3 -I kahin.py hesapla <senaryo.json> [--param ad=deger …] [--mutasyon N]
   python3 -I kahin.py karsilastir <kabul.json> <program.json> [--birlesim "<ad=deger;…>"]
@@ -35,6 +37,9 @@ def _cari_modulu():
 
 CARI = _cari_modulu()
 CARI_KURAL = "2.4.6"
+# 2.5.0 bakımı — S129 (README "2.5.0 bakımı — S129", YS129-1): taksit kartının GÖSTERİLEN üç alanı (Tahsil Edilen, Kalan, taksit satırının Ödenen'i) cari kâhininin
+# tek yükümlülük kuyruğundan (kural seti 2.5.0 — KARARLAR C13.4 (5)/(7), §25 Y14-10) okunur; bu katman kendi kuyruğunu YAZMAZ.
+TYK_KURAL = "2.5.0"
 
 DIL = "destekofis-mobil-yazma/1"
 TR = timezone(timedelta(hours=3))  # V1: Türkiye sabit UTC+3
@@ -105,7 +110,7 @@ MUTASYONLAR = {
     # KARAR K8-AVANS (kullanıcı, 29.10.2026 "A ÖNERİN UYGUN"; docs/2.4.7-IS-LISTESI.md "KARAR — K8-AVANS")
     49: "K8-AVANS: ödenmiş karta onaylı Fazlasını Avans Yaz tahsilatı yine 409 plan-paid alır (avans hiç yazılmıyor)",
     50: "K8-AVANS: ödenmiş kartta Fazlasını Avans Yaz yetkisi denetlenmez (plans.manage olmayan avans yazar)",
-    51: "K8-AVANS: kartın Ödenen tutarı avansı dışlar (Ödenen en çok kart toplamı)",
+    51: "K8-AVANS: kartın Ödenen tutarı avansı dışlar (Ödenen en çok kart toplamı) — S129 bakımından beri: SM-1'in okuma (a)'sı SEÇİLİR (liste yerine tek değer)",
     52: "K8-AVANS: ödenmiş karttaki avans cariye yazılmaz (cari alacak oluşmaz; yalnız Kasa / banka)",
     53: "K8-AVANS: ödenmiş karttaki avans Kasa / banka'ya girmez (yalnız cari)",
     # BAKIM 29.10.2026 (README "BAKIM 29.10.2026 — R1–R3 farkları"): üç kural, kaynakları kurus_modul(), _cari_govdede() ve istek() yorumlarında
@@ -115,6 +120,10 @@ MUTASYONLAR = {
     57: "Yoldaki cari kimliği de 400 alır (gövde kuralı her uca uygulanır)",
     58: "İki ya da daha çok ihlalli adımda ilk ihlalin tam kodu yazılır (yalnız durum sınıfı değil)",
     59: "Mobil uçta da 2'den çok ondalık yuvarlanır (mobil kuralı 'YUVARLANMAZ' delinir)",
+    # 2.5.0 bakımı — S129 (README "2.5.0 bakımı — S129")
+    60: "S129 B: kartın göstergeleri (Tahsil Edilen, Kalan, taksit Ödenen'i) kartın KENDİ tahsilatlarından (bağsız tahsilat kartı düşürmez)",
+    61: "S118 = B'nin tersi: taksit tahsilatının sınırı (plan-overpay / plan-paid) tek kuyruğun kalanından okunur",
+    62: "SM-1 (K8-AVANS × S129) okuma (b) SEÇİLİR: avanslı kartın Ödenen'i tek değer = tek kuyruk + avans (kâhin seçmemeli — liste)",
 }
 
 PARA_ISLEM = ("tahsilat", "odeme", "stok")
@@ -328,6 +337,30 @@ def cari_sonuclari(adimlar_sirali, cariler, bugun):
             r["fatura"] = {k: v for k, v in list(alacak.items()) + list(borc.items()) if k in m.faturalar}
             r["acilis"] = alacak.get("acilis:" + cad)
         out[cad] = r
+    if any(kartli for _, kartli in cariler):
+        out["__kart__"] = tyk_kartlari(adimlar_sirali, bugun)
+    _CARI_ONBELLEK[anahtar] = out
+    return out
+
+
+def tyk_kartlari(adimlar_sirali, bugun):
+    """S129 = A (README YS129-1 / YS129-5): aynı çevrilmiş adımlar cari kâhinine 2.5.0 kipinde verilir; kart başına taksit ödenenleri (`kart_odenen` — kart tahsilatı +
+    kart seçilmeden alınan tahsilatın kuyruk payı, S50). Cari kâhini o carinin kuyruğunu tanımsız sayıyorsa (C13.4 (11)) ya da kartın kabulünü iki dünyalı buluyorsa (SK-18)
+    → None (SUS: üç gösterge yazılmaz). 2.5.0 kipi bir adımı reddederse bu katmanın ön denetimi eksiktir → hata (sessizce geçilmez)."""
+    anahtar = json.dumps(["tyk", adimlar_sirali, bugun], sort_keys=True, ensure_ascii=False)
+    if anahtar in _CARI_ONBELLEK:
+        return _CARI_ONBELLEK[anahtar]
+    m = CARI.Model({"dil": CARI.DIL, "ad": "mobil-yazma-tyk", "bugun": bugun, "adimlar": []}, 0, TYK_KURAL)
+    for a in adimlar_sirali:
+        m._onbellek = {}
+        sonuc = getattr(m, a["islem"])(a)
+        if isinstance(sonuc, tuple):
+            raise SenaryoHatasi("cari kâhini (%s) adımı reddetti (katman ön denetimi eksik): %s" % (TYK_KURAL, json.dumps(a, ensure_ascii=False)))
+    m._onbellek = {}
+    sus = {x[1] for x in m.sus_kart}
+    out = {}
+    for no, kt in m.kartlar.items():
+        out[no] = None if (no in sus or m.tyk250(kt["cari"])["neden"]) else list(m.kart_odenen(no, kt))
     _CARI_ONBELLEK[anahtar] = out
     return out
 
@@ -802,7 +835,12 @@ class Kahin:
             odemeler = K["odemeler"]
             if mut == 31 and self._grup_on is not None and (sirket, kart) in self._grup_on:
                 odemeler = self._grup_on[(sirket, kart)]   # kilitsiz yarış: kalan grubun başındaki durumdan okunur
+            # S118 = B (kullanıcı 11.11.2026; S129 kararında yinelendi): sınır / soru kartın KENDİ kalanından — kendi tahsilatları (README YS129-2)
             kalan = K["toplam"] - sum(odemeler.values())
+            if mut == 61:
+                pay = self._tyk_pay(w, S, kart, simdi)
+                if pay is not None:
+                    kalan = K["toplam"] - sum(pay)
             if kalan <= 0 and mut != 19:
                 # KARAR K8-AVANS (kullanıcı 29.10.2026): ödenmiş karta yeni tahsilat → `plans.manage` yetkilisine "Fazlasını Avans Yaz"; onaylanırsa tutarın
                 # tamamı cariye avans (cari alacak; Kasa / banka girişi normal); masaüstü ve mobil aynı. Onay vermeyen → ret (ödenmiş kart, 409 plan-paid).
@@ -914,6 +952,17 @@ class Kahin:
                 self._sonuc(w, a["id"], "ok")
         return "ok"
 
+    @staticmethod
+    def _sirali_adimlar(S):
+        sirali = []
+        for cad in S["cariSira"]:
+            sirali.extend(S["cariAdim"].get(cad, []))
+        return sirali
+
+    def _tyk_pay(self, w, S, kart, simdi):
+        """Yalnız mutant 61 (S118 = B'nin tersi): isteğin anındaki tek kuyruk taksit payları (cari kâhini 2.5.0)."""
+        return tyk_kartlari(self._sirali_adimlar(S), gun(simdi)).get(kart)
+
     def _geri_al(self, w, S, rid, anahtar):
         S["kayitlar"].pop(rid, None)
         S["kasa"].pop(rid, None)
@@ -961,6 +1010,17 @@ class Kahin:
         w["bekleyen"][a["id"]] = {"adim": orj, "ctx": octx}   # yeniden gönderimin yeniden gönderimi aynı ilk isteği anar
         return r
 
+    def _kendi_pay(self, K, tutar):
+        """`tutar`ın kartın taksitlerine en eskiden (mutant 44: en yeniden) dağılımı — yalnız mutant 60 (eski okuma) ve 44 için."""
+        sira = list(range(len(K["taksitler"])))
+        if self.mut == 44:
+            sira.reverse()
+        pay = [0] * len(sira)
+        for i in sira:
+            pay[i] = min(K["taksitler"][i], tutar)
+            tutar -= pay[i]
+        return pay
+
     # ─── kontrol
     def kontrol(self, w, a):
         k = a["id"]
@@ -988,24 +1048,38 @@ class Kahin:
                         o[p + "fatura:%s:acik" % fad] = v
                     if c["acilis"]:
                         o[p + "acilis:%s:kalan" % cad] = r["acilis"]
+            tyk = cs.get("__kart__", {})
             for kad in sorted(S["kartlar"]):
                 K = S["kartlar"][kad]
-                odenen_ham = sum(K["odemeler"].values())
-                kapanan = min(odenen_ham, K["toplam"])   # taksitlere düşen kısım; fazlası avans
-                # KARAR K8-AVANS (kullanıcı 29.10.2026): "Kart tutarları (Ödenen avansı da içerir) bugünkü gibi kalır" → Ödenen = bütün tahsilatlar (avans dahil)
-                o[p + "kart:%s:odenen" % kad] = kapanan if self.mut == 51 else odenen_ham
-                o[p + "kart:%s:fazla" % kad] = odenen_ham - kapanan
-                # Kalan: karar YAZMIYOR (yalnız Ödenen'i söyler) → avanslı kartta 0 da (kalan eksiye inmez) toplam − Ödenen (eksi) de kabul; kâhin SEÇMEZ (README K8-AVANS)
-                o[p + "kart:%s:kalan" % kad] = [0, K["toplam"] - odenen_ham] if odenen_ham > K["toplam"] else K["toplam"] - odenen_ham
+                odenen_ham = sum(K["odemeler"].values())          # kartın KENDİ tahsilatları (S118 = B'nin kalanı bundan)
+                kapanan = min(odenen_ham, K["toplam"])            # kendi tahsilatlarından taksitlere düşen; fazlası avans
+                # Fazlasını Avans Yaz ile yazılan avans ve tahsilat sayısı kartın kendi tahsilatlarından (README YS129-2 — S129'un saydığı göstergeler değil)
+                fazla = odenen_ham - kapanan
+                o[p + "kart:%s:fazla" % kad] = fazla
                 o[p + "kart:%s:tahsilatSayisi" % kad] = len(K["odemeler"])
-                kalan = kapanan
-                sira = list(range(len(K["taksitler"])))
-                if self.mut == 44:
-                    sira.reverse()
-                pay = [0] * len(sira)
-                for i in sira:
-                    pay[i] = min(K["taksitler"][i], kalan)
-                    kalan -= pay[i]
+                if self.mut == 60:
+                    # S129 B (eski okuma): göstergeler kartın kendi hesabından
+                    pay = self._kendi_pay(K, kapanan)
+                    o[p + "kart:%s:odenen" % kad] = odenen_ham
+                    o[p + "kart:%s:kalan" % kad] = [0, K["toplam"] - odenen_ham] if odenen_ham > K["toplam"] else K["toplam"] - odenen_ham
+                else:
+                    pay = tyk.get(kad)
+                    if pay is None:
+                        continue   # YS129-5: cari kâhini (2.5.0) bu kartın kuyruğunu tanımlamıyor → üç gösterge YAZILMAZ (SUS)
+                    pay = list(pay)
+                    if self.mut == 44:
+                        pay = self._kendi_pay(dict(K), sum(pay))   # mutant 44: aynı toplam en YENİ taksitten
+                    t_od = sum(pay)
+                    # S129 = A (KULLANICI 12.11.2026): Tahsil Edilen = tek kuyruk ödeneni. KARAR K8-AVANS × S129 (YS129-4, SM-1): kartın kendi avansı varken iki okuma —
+                    # (a) tek kuyruk ödeneni, (b) + kendi avansı (K8-AVANS "Ödenen avansı da içerir"); kâhin SEÇMEZ → liste. Mutant 51: (a) seçilir (avans dışlanır),
+                    # mutant 62: (b) seçilir — ikisi de kararın vermediği seçimi yapar (elle liste yakalar).
+                    if fazla and self.mut not in (51, 62):
+                        o[p + "kart:%s:odenen" % kad] = [t_od, t_od + fazla]
+                    else:
+                        o[p + "kart:%s:odenen" % kad] = t_od + (fazla if self.mut == 62 else 0)
+                    # Kalan: (a) toplam − tek kuyruk ödeneni; (b) K8-AVANS'ın Kalan'ı kararda yok → 0 ya da toplam − Ödenen (README K8-AVANS); kâhin SEÇMEZ
+                    kl = sorted({K["toplam"] - t_od} | ({0, K["toplam"] - t_od - fazla} if fazla else set()), reverse=True)
+                    o[p + "kart:%s:kalan" % kad] = kl if len(kl) > 1 else kl[0]
                 for i, v in enumerate(pay):
                     o[p + "kart:%s:taksit%d:odenen" % (kad, i + 1)] = v
             kasa_satir = list(S["kasa"].values())
