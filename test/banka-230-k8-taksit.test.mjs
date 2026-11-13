@@ -275,7 +275,9 @@ describe("K8 taksit kuralı — yetki, avans, mevcut fazla tahsilat (N10, N7)", 
     rejected(await collect(api, plan.id, "10"), 409, "plan-paid", "fazla tahsilatlı karta yeni tahsilat");
     await must("iade 300", refund(api, plan.id, "300"));
     c = await card(api, plan.id);
-    assert.deepEqual([c.totals.paid, c.totals.extra, c.totals.remaining], [700, 0, 100]);
+    // S129 = A (12.11.2026): totals.paid / remaining GÖSTERİLEN sayıdır (tek kuyruk — bu caride önceki adımların bıraktığı bağsız para taksiti kapatabilir); K8 kuralı kartın KENDİ
+    // hesabını okur (ownPaid / ownRemaining) — sınır da ondan.
+    assert.deepEqual([c.totals.ownPaid, c.totals.extra, c.totals.ownRemaining], [700, 0, 100]);
     rejected(await collect(api, plan.id, "100,01"), 409, "plan-overpay", "kalan 100 iken 100,01");
     await must("100", collect(api, plan.id, "100"));
     await integrityOk(api, "N7");
@@ -333,16 +335,16 @@ describe("K8 taksit kuralı — Silinenler'den geri yükleme ve düzeltme (N8, N
     const res = rejected(await put({ amount: "600" }), 409, "plan-overpay", "A 600");
     assert.deepEqual([res.data.remaining, res.data.excess], [500, 100], "düzeltmede kalan bu satır hariç okunur");
     await must("A 400", put({ amount: "400" }));
-    assert.equal((await card(api, plan.id)).totals.remaining, 100);
+    assert.equal((await card(api, plan.id)).totals.ownRemaining, 100, "kartın kendi kalanı (S129: totals.remaining gösterilen sayıdır)");
     await must("A 500 geri", put({ amount: "500" }));
     await must("A aynı tutar, tarih 01.10", put({ amount: "500", date: "2026-10-01" }));
     rejected(await put({ amount: "500,01" }), 409, "plan-overpay", "1 kuruş büyütme");
     await must("A 600 overpay", put({ amount: "600" }, { overpay: true }));
     const c = await card(api, plan.id);
-    assert.deepEqual([c.totals.paid, c.totals.extra, c.totals.remaining], [1100, 100, 0]);
+    assert.deepEqual([c.totals.ownPaid, c.totals.extra, c.totals.ownRemaining], [1100, 100, 0]);
     const r = await must("iade 100", refund(api, plan.id, "100"));
     await must("iadeyi 200 yap (kural dışı: para çıkışı)", api.put(`${PLAN}/${plan.id}/entries/${r.entryId}`, { amount: "200", date: TODAY, method: "cash", cashForce: true }));
-    assert.deepEqual([(await card(api, plan.id)).totals.paid, (await card(api, plan.id)).totals.remaining], [900, 100]);
+    assert.deepEqual([(await card(api, plan.id)).totals.ownPaid, (await card(api, plan.id)).totals.ownRemaining], [900, 100]);
     await integrityOk(api, "N9");
   });
 });

@@ -1,0 +1,305 @@
+TAP version 13
+# Subtest: Ç5-B kapanış — ORTA-1 (S110 = A): satışla açılan kart kendi satışını HER KOŞULDA tanır (adımlı saat — gerçek kurulum)
+    # Subtest: değişmeden: kart satışın 1.000'ini taşır, elle Borç 500 kendi vadesiyle (+30) AYRI kalem; gecikmiş yalnız 1. taksit 500
+    ok 1 - değişmeden: kart satışın 1.000'ini taşır, elle Borç 500 kendi vadesiyle (+30) AYRI kalem; gecikmiş yalnız 1. taksit 500
+      ---
+      duration_ms: 100.753635
+      type: 'test'
+      ...
+    # Subtest: Tutarı Düzenle (azalt 1.000 → 800): kart yine KENDİ satışını taşır — Borç 500 takvimde vadesiyle durur; gecikmiş 700 (1. taksit 500 + satışın kart dışı 200'ü), 1.200 DEĞİL
+    not ok 2 - Tutarı Düzenle (azalt 1.000 → 800): kart yine KENDİ satışını taşır — Borç 500 takvimde vadesiyle durur; gecikmiş 700 (1. taksit 500 + satışın kart dışı 200'ü), 1.200 DEĞİL
+      ---
+      duration_ms: 62.558933
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkd-taban/test/tyk-kapanis-250.test.mjs:123:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Vade Takip: elle Borç 500 kendi vadesinde AYRI
+        + actual - expected
+        
+          [
+        +   'account:700@2026-09-05',
+        -   'account:200@2026-09-05',
+        -   'account:500@2026-11-19',
+            'plan:300@2026-10-30',
+            'plan:500@2026-09-30'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'account:200@2026-09-05'
+        1: 'account:500@2026-11-19'
+        2: 'plan:300@2026-10-30'
+        3: 'plan:500@2026-09-30'
+      actual:
+        0: 'account:700@2026-09-05'
+        1: 'plan:300@2026-10-30'
+        2: 'plan:500@2026-09-30'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkd-taban/test/tyk-kapanis-250.test.mjs:129:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Tutarı Düzenle (artır 1.000 → 1.200): Mevcut Borç kartı büyütülemez (409 cover-grow) — hiçbir sayı değişmez
+    ok 3 - Tutarı Düzenle (artır 1.000 → 1.200): Mevcut Borç kartı büyütülemez (409 cover-grow) — hiçbir sayı değişmez
+      ---
+      duration_ms: 66.385559
+      type: 'test'
+      ...
+    # Subtest: faturasız stok iadesi 300 (kart küçülmez): kart kendi satışını taşır, Borç 500 ayrı; iade bağsız ödemedir — vadesi en önce gelen 1. taksiti 200'e indirir (S50); gecikmiş 200
+    ok 4 - faturasız stok iadesi 300 (kart küçülmez): kart kendi satışını taşır, Borç 500 ayrı; iade bağsız ödemedir — vadesi en önce gelen 1. taksiti 200'e indirir (S50); gecikmiş 200
+      ---
+      duration_ms: 55.014641
+      type: 'test'
+      ...
+    # Subtest: faturasız stok iadesi 800 (bakiye 700 < kart → kart 700'e küçülür): kart yine kendi satışını taşır, Borç 500 vadesiyle AYRI; iade vade sırasıyla satışın kart dışı 300'ünü + 1. taksiti kapatır
+    not ok 5 - faturasız stok iadesi 800 (bakiye 700 < kart → kart 700'e küçülür): kart yine kendi satışını taşır, Borç 500 vadesiyle AYRI; iade vade sırasıyla satışın kart dışı 300'ünü + 1. taksiti kapatır
+      ---
+      duration_ms: 55.852505
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkd-taban/test/tyk-kapanis-250.test.mjs:151:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Borç 500 kendi vadesinde AYRI kalem
+        + actual - expected
+        
+          [
+        -   'account:500@2026-11-19',
+            'plan:200@2026-10-30',
+        +   'plan:500@2026-09-30'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'account:500@2026-11-19'
+        1: 'plan:200@2026-10-30'
+      actual:
+        0: 'plan:200@2026-10-30'
+        1: 'plan:500@2026-09-30'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkd-taban/test/tyk-kapanis-250.test.mjs:158:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: satış + VADESİZ elle borç (v2.4.9 fikstürü N): kart satışı taşır; vadesiz Borç 500 kayıt gününde vadeli (S1) — gecikmiş 1.000
+    ok 6 - satış + VADESİZ elle borç (v2.4.9 fikstürü N): kart satışı taşır; vadesiz Borç 500 kayıt gününde vadeli (S1) — gecikmiş 1.000
+      ---
+      duration_ms: 46.486051
+      type: 'test'
+      ...
+    # Subtest: iki satış kartı: ikinci satışın kartı ikinci satışı, tutarı düzenlenen birinci kart birinci satışı taşır; Borç 500 ayrı
+    not ok 7 - iki satış kartı: ikinci satışın kartı ikinci satışı, tutarı düzenlenen birinci kart birinci satışı taşır; Borç 500 ayrı
+      ---
+      duration_ms: 73.399
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkd-taban/test/tyk-kapanis-250.test.mjs:168:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   'account:700@2026-09-05',
+        -   'account:200@2026-09-05',
+        -   'account:500@2026-11-19',
+            'plan:300@2026-10-10',
+            'plan:300@2026-10-30',
+            'plan:300@2026-11-10',
+            'plan:500@2026-09-30'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'account:200@2026-09-05'
+        1: 'account:500@2026-11-19'
+        2: 'plan:300@2026-10-10'
+        3: 'plan:300@2026-10-30'
+        4: 'plan:300@2026-11-10'
+        5: 'plan:500@2026-09-30'
+      actual:
+        0: 'account:700@2026-09-05'
+        1: 'plan:300@2026-10-10'
+        2: 'plan:300@2026-10-30'
+        3: 'plan:300@2026-11-10'
+        4: 'plan:500@2026-09-30'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkd-taban/test/tyk-kapanis-250.test.mjs:175:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kaynak KALICI: kartın açılış izinde satışın kimliği yazılı; program yeniden açılınca (bellek boş) sayılar aynı
+    not ok 8 - kaynak KALICI: kartın açılış izinde satışın kimliği yazılı; program yeniden açılınca (bellek boş) sayılar aynı
+      ---
+      duration_ms: 413.72715
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkd-taban/test/tyk-kapanis-250.test.mjs:181:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kartın açılış izinde satışın stok hareketi
+        + actual - expected
+        
+        + undefined
+        - 'smove-34786f21-93bd-45a9-bb4e-be40964c0c38'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'smove-34786f21-93bd-45a9-bb4e-be40964c0c38'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkd-taban/test/tyk-kapanis-250.test.mjs:191:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..8
+not ok 1 - Ç5-B kapanış — ORTA-1 (S110 = A): satışla açılan kart kendi satışını HER KOŞULDA tanır (adımlı saat — gerçek kurulum)
+  ---
+  duration_ms: 1267.415675
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkd-taban/test/tyk-kapanis-250.test.mjs:108:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç5-B kapanış — S133 = C (BİLİNEN SINIR): ELLE açılan kartta tanıma AYNEN — sonuç kayıt sırasına bağlı (sayılar sabit)
+    # Subtest: C1 — stok satışı en son kaydedilen borç ve tutarı karta eşit: kart satışı taşır ⇒ gecikmiş 0 (X vadesi +30)
+    ok 1 - C1 — stok satışı en son kaydedilen borç ve tutarı karta eşit: kart satışı taşır ⇒ gecikmiş 0 (X vadesi +30)
+      ---
+      duration_ms: 73.974361
+      type: 'test'
+      ...
+    # Subtest: C1b — kayıt sırası ters (önce stok satışı, sonra X): kart tutarı eşit TEK elle borcu (X) taşır ⇒ satış 500 kendi gününde açık, gecikmiş 500
+    ok 2 - C1b — kayıt sırası ters (önce stok satışı, sonra X): kart tutarı eşit TEK elle borcu (X) taşır ⇒ satış 500 kendi gününde açık, gecikmiş 500
+      ---
+      duration_ms: 58.046961
+      type: 'test'
+      ...
+    # Subtest: elle kartın açılış izinde satış kimliği YOK (çıkarım yapılmaz) — toplu kartlarda alan boş yazılır
+    not ok 3 - elle kartın açılış izinde satış kimliği YOK (çıkarım yapılmaz) — toplu kartlarda alan boş yazılır
+      ---
+      duration_ms: 36.47808
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkd-taban/test/tyk-kapanis-250.test.mjs:233:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        tek cari yolu: kaynak yok
+        
+        undefined !== ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkd-taban/test/tyk-kapanis-250.test.mjs:239:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 2 - Ç5-B kapanış — S133 = C (BİLİNEN SINIR): ELLE açılan kartta tanıma AYNEN — sonuç kayıt sırasına bağlı (sayılar sabit)
+  ---
+  duration_ms: 489.265374
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkd-taban/test/tyk-kapanis-250.test.mjs:208:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç5-B kapanış — ORTA-1 saf kuyruk: kaynağı bilinen kart (coverSale) ↔ kaynağı bilinmeyen kart (eski tanıma AYNEN)
+    # Subtest: kaynağı bilinen kart: tutar EŞİT DEĞİL, kayıt anı FARKLI, araya daha yeni bir borç yazılmış — kart yine o satışı taşır
+    not ok 1 - kaynağı bilinen kart: tutar EŞİT DEĞİL, kayıt anı FARKLI, araya daha yeni bir borç yazılmış — kart yine o satışı taşır
+      ---
+      duration_ms: 1.072865
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkd-taban/test/tyk-kapanis-250.test.mjs:257:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'S120'
+        - 'S110-satis'
+             ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'S110-satis'
+      actual: 'S120'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkd-taban/test/tyk-kapanis-250.test.mjs:261:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: kaynak satış defterde yoksa (silinmiş) kart kaynağı bilinmeyen kart gibi davranır — eski tanıma
+    ok 2 - kaynak satış defterde yoksa (silinmiş) kart kaynağı bilinmeyen kart gibi davranır — eski tanıma
+      ---
+      duration_ms: 0.382064
+      type: 'test'
+      ...
+    # Subtest: kaynağı bilinen kartın kimliği stok İADESİ satırını göstermez (yalnız borç yönlü satış satırı)
+    ok 3 - kaynağı bilinen kartın kimliği stok İADESİ satırını göstermez (yalnız borç yönlü satış satırı)
+      ---
+      duration_ms: 0.448985
+      type: 'test'
+      ...
+    # Subtest: K5 dişi — kaynağı bilinmeyen (elle) kart: en son kaydedilen stok satışının tutarı karta EŞİT DEĞİLSE kartın satışı sayılmaz (tutarı eşit tek elle borç taşınır)
+    ok 4 - K5 dişi — kaynağı bilinmeyen (elle) kart: en son kaydedilen stok satışının tutarı karta EŞİT DEĞİLSE kartın satışı sayılmaz (tutarı eşit tek elle borç taşınır)
+      ---
+      duration_ms: 0.364076
+      type: 'test'
+      ...
+    # Subtest: K6 dişi — kaynağı bilinmeyen kart: en son kaydedilen borç stoktan ALIŞ İADESİ ise (tutarı karta eşit olsa da) kartın satışı sayılmaz
+    ok 5 - K6 dişi — kaynağı bilinmeyen kart: en son kaydedilen borç stoktan ALIŞ İADESİ ise (tutarı karta eşit olsa da) kartın satışı sayılmaz
+      ---
+      duration_ms: 0.540872
+      type: 'test'
+      ...
+    # Subtest: K24 dişi — kaynağı bilinmeyen eski kart faturalı iadeyle küçülmüş: tanıma kartın AÇILIŞ tutarıyla (bugünkü tutar + iade kesintisi) — lib/accounts.mjs coverGross
+    ok 6 - K24 dişi — kaynağı bilinmeyen eski kart faturalı iadeyle küçülmüş: tanıma kartın AÇILIŞ tutarıyla (bugünkü tutar + iade kesintisi) — lib/accounts.mjs coverGross
+      ---
+      duration_ms: 0.639222
+      type: 'test'
+      ...
+    # Subtest: K25 dişi — S95 = A × faturasız stok iadesi (bağsız ödemedir — 2.4.5 KS7 a): Borç 200 + Alacak 150 netleştikten SONRAKİ gün stok iadesi 300 ⇒ iade Borç'u kapatır, Alacak 150 yeniden açık, artan 100 avans
+    ok 7 - K25 dişi — S95 = A × faturasız stok iadesi (bağsız ödemedir — 2.4.5 KS7 a): Borç 200 + Alacak 150 netleştikten SONRAKİ gün stok iadesi 300 ⇒ iade Borç'u kapatır, Alacak 150 yeniden açık, artan 100 avans
+      ---
+      duration_ms: 0.736007
+      type: 'test'
+      ...
+    1..7
+not ok 3 - Ç5-B kapanış — ORTA-1 saf kuyruk: kaynağı bilinen kart (coverSale) ↔ kaynağı bilinmeyen kart (eski tanıma AYNEN)
+  ---
+  duration_ms: 4.517498
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkd-taban/test/tyk-kapanis-250.test.mjs:256:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..3
+# tests 18
+# suites 3
+# pass 12
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2073.974245

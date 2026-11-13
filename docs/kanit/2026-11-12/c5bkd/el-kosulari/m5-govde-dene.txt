@@ -1,0 +1,79 @@
+TAP version 13
+# Subtest: http.sendBody ≡ http.send (başlıklar ve baytlar)
+    # Subtest: aynı nesnenin JSON metni Buffer olarak verilince durum, başlıklar ve gövde baytları send ile aynı
+    ok 1 - aynı nesnenin JSON metni Buffer olarak verilince durum, başlıklar ve gövde baytları send ile aynı
+      ---
+      duration_ms: 2.00269
+      type: 'test'
+      ...
+    # Subtest: başlıklar gönderilmişse ikisi de dokunmaz
+    ok 2 - başlıklar gönderilmişse ikisi de dokunmaz
+      ---
+      duration_ms: 0.223074
+      type: 'test'
+      ...
+    1..2
+ok 1 - http.sendBody ≡ http.send (başlıklar ve baytlar)
+  ---
+  duration_ms: 3.410493
+  type: 'suite'
+  ...
+# Subtest: Takvim / zil yanıtının gövdesi: ılık çağrıda yeniden üretilmez, baytlar aynı, bayatlamaz, yetkiyi aşmaz (gerçek program)
+    # Subtest: ilk çağrı gövdeyi üretir; ILIK çağrılar yeniden ÜRETMEZ ve baytlar birebir aynıdır; gövde düz JSON'dur (ok + data; kalemler, sürüm)
+    ok 1 - ilk çağrı gövdeyi üretir; ILIK çağrılar yeniden ÜRETMEZ ve baytlar birebir aynıdır; gövde düz JSON'dur (ok + data; kalemler, sürüm)
+      ---
+      duration_ms: 20.08684
+      type: 'test'
+      ...
+    # Subtest: ekranın gerçek çağrısı (since = elindeki sürüm): içerik aynıysa büyük gövde gönderilmez — davranış aynen
+    ok 2 - ekranın gerçek çağrısı (since = elindeki sürüm): içerik aynıysa büyük gövde gönderilmez — davranış aynen
+      ---
+      duration_ms: 7.349862
+      type: 'test'
+      ...
+    # Subtest: veri değişince gövde YENİLENİR (bayat yanıt yok): yeni vadeli borç hemen yanıtta, sürüm değişir; tahsilatla kalem tutarı düşer
+    ok 3 - veri değişince gövde YENİLENİR (bayat yanıt yok): yeni vadeli borç hemen yanıtta, sürüm değişir; tahsilatla kalem tutarı düşer
+      ---
+      duration_ms: 50.547056
+      type: 'test'
+      ...
+    # Subtest: yetkisi dar kişi başkasının gövdesini ALMAZ: Fatura görme yetkisi kaldırılan kişinin yanıtında fatura kalemi yok; yöneticinin yanıtı aynı kalır
+    ok 4 - yetkisi dar kişi başkasının gövdesini ALMAZ: Fatura görme yetkisi kaldırılan kişinin yanıtında fatura kalemi yok; yöneticinin yanıtı aynı kalır
+      ---
+      duration_ms: 115.85333
+      type: 'test'
+      ...
+    # Subtest: saklanandan (3) çok görünürlük çeşidi istenirse de her biri KENDİ gövdesini alır (bellek sınırı yanlış gövde verdirmez)
+    ok 5 - saklanandan (3) çok görünürlük çeşidi istenirse de her biri KENDİ gövdesini alır (bellek sınırı yanlış gövde verdirmez)
+      ---
+      duration_ms: 408.06358
+      type: 'test'
+      ...
+    1..5
+ok 2 - Takvim / zil yanıtının gövdesi: ılık çağrıda yeniden üretilmez, baytlar aynı, bayatlamaz, yetkiyi aşmaz (gerçek program)
+  ---
+  duration_ms: 1127.665412
+  type: 'suite'
+  ...
+# Subtest: Tek carinin kuyruğunda çek / senet bağlarının anı: carinin KENDİ evrak satırlarından sürülen sorgu ≡ önceki sorgu (kilit açık; gerçek program)
+    # Subtest: evrakı faturaya bağlı (düzeltmeyle bağı değişmiş, ciro edilmiş, bağsız) cariler: programın tek cari sorgusu, carinin HER defter satırı için önceki sorguyla aynı anı verir
+    ok 1 - evrakı faturaya bağlı (düzeltmeyle bağı değişmiş, ciro edilmiş, bağsız) cariler: programın tek cari sorgusu, carinin HER defter satırı için önceki sorguyla aynı anı verir
+      ---
+      duration_ms: 488.0445
+      type: 'test'
+      ...
+    1..1
+ok 3 - Tek carinin kuyruğunda çek / senet bağlarının anı: carinin KENDİ evrak satırlarından sürülen sorgu ≡ önceki sorgu (kilit açık; gerçek program)
+  ---
+  duration_ms: 820.427871
+  type: 'suite'
+  ...
+1..3
+# tests 8
+# suites 3
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2327.854378

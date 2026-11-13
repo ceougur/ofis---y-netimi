@@ -1,0 +1,48 @@
+HIZ KABUL · kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a511c161b54069067 (3c8473f2) · nproc 4 · başta 1.72 1.83 1.65 1/116 10599 · 01:25:02
+=== olc-yazim.mjs · başta 1.72 1.83 1.65 1/116 10605 
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a511c161b54069067 · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-kabul/kopya · yük (başta) 1.72 1.83 1.65
+açılış 18554 ms
+veri: 1484 cari, 102295 cari satırı, 34026 fatura, 13992 kart, 11554 Kasa satırı, 3710 kayıt tahsilatı; en kalabalık cari 129 satır
+dönem kilidi: ''
+açılış sonrası kapı sayacı: {} · son run bölümleri (en büyük 8): [["plans",10281],["ledger",2207],["links",913],["bank",712],["accounts",636],["stock",272],["cheques",227],["cents",177]]
+Borç Yaz #1 (cari account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66~1): durum 200 · toplam 243.2 ms · olay döngüsü en çok 238.3 ms · lastTx {"marksMs":0.1,"guardMs":37.3,"moneyMs":0.5} · kapı yolu scoped · kapı 36.8 ms (run 0, kilit 0) · tablolar ["account_entries"]
+    bölümler (en büyük 10): scoped=35.2 s.party=34 s.rows=0.5 s.bank=0.4 s.lock=0.1 s.links=0.1 s.scope=0.1
+    kapsam: {"parties":1,"plans":0,"cheques":0,"invoices":0,"items":0,"money":0,"events":0,"heavyParties":0,"built":116}
+nakit tahsilat #1 (en kalabalık cari account-d002cfb7-3833-49e3-bf65-2efc30940e4f): durum 200 · toplam 262 ms · olay döngüsü en çok 257.8 ms · lastTx {"marksMs":0.1,"guardMs":50.1,"moneyMs":0.1} · kapı yolu scoped · kapı 46 ms (run 0, kilit 0) · tablolar ["fin_events","account_entries"]
+    bölümler (en büyük 10): scoped=45.6 s.party=38 s.bank=4 s.money=2.9 s.rows=0.4 s.scope=0.2 s.links=0.1 s.lock=0
+    kapsam: {"parties":1,"plans":0,"cheques":0,"invoices":0,"items":0,"money":1,"events":1,"heavyParties":0,"built":131}
+Borç Yaz #2 (cari account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66~1): durum 200 · toplam 217 ms · olay döngüsü en çok 0 ms · lastTx {"marksMs":0.1,"guardMs":33.5,"moneyMs":0.1} · kapı yolu scoped · kapı 33.4 ms (run 0, kilit 0) · tablolar ["account_entries"]
+    bölümler (en büyük 10): scoped=33.2 s.party=32 s.rows=0.8 s.bank=0.3 s.links=0.1 s.lock=0 s.scope=0
+    kapsam: {"parties":1,"plans":0,"cheques":0,"invoices":0,"items":0,"money":0,"events":0,"heavyParties":0,"built":117}
+nakit tahsilat #2 (en kalabalık cari account-d002cfb7-3833-49e3-bf65-2efc30940e4f): durum 200 · toplam 232.4 ms · olay döngüsü en çok 0 ms · lastTx {"marksMs":0.1,"guardMs":34.7,"moneyMs":0.1} · kapı yolu scoped · kapı 34.6 ms (run 0, kilit 0) · tablolar ["fin_events","account_entries"]
+    bölümler (en büyük 10): scoped=34.3 s.party=30.8 s.bank=2.1 s.money=0.9 s.rows=0.3 s.scope=0.1 s.links=0.1 s.lock=0
+    kapsam: {"parties":1,"plans":0,"cheques":0,"invoices":0,"items":0,"money":1,"events":1,"heavyParties":0,"built":132}
+Kasa Giriş: durum 200 · toplam 9.3 ms · olay döngüsü en çok 7.7 ms · lastTx {"marksMs":0,"guardMs":3.7,"moneyMs":0.1} · kapı yolu scoped · kapı 3.5 ms (run 0, kilit 0) · tablolar ["fin_events","cash_entries"]
+    bölümler (en büyük 10): scoped=3.3 s.bank=1.8 s.money=1.1 s.rows=0.3 s.scope=0.1 s.lock=0
+    kapsam: {"parties":0,"plans":0,"cheques":0,"invoices":0,"items":0,"money":1,"events":1,"heavyParties":0,"built":1}
+kapı sayacı (sonda): {"temiz":5}
+yük (sonda) 1.60 1.79 1.64
+çıkış 0 · sonda 1.60 1.79 1.64 1/119 10764
+=== olc-kart.mjs · başta 1.60 1.79 1.64 2/119 10769 
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a511c161b54069067 · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-kabul/kopya · yük (başta) 1.60 1.79 1.64
+açılış 18142 ms
+veri: 1484 cari, 102295 cari satırı, 34026 fatura, 13992 kart; ölçülen kart plan-aa6e56f8-791a-4203-b94c-c119ff3f32de (2 taksit; carisinin satırı 100)
+tur 1 · yük 1.60 1.78 1.64
+  YAZIM kart tahsilatı: 200 · 1145.7 ms · olay döngüsü en çok 1142.9 ms · kapı yolu scoped · kapı 43.1 ms
+  kart GET (yazımdan hemen sonra): 200 · 2.4 ms · olay döngüsü en çok 0 ms
+  zil / takvim (yazımdan sonra ilk): 200 · 1721.9 ms · olay döngüsü en çok 1499.5 ms
+  Vade Takip (yazımdan sonra ilk): 200 · 1376 ms · olay döngüsü en çok 1356.9 ms
+  zil / takvim (ılık): 200 · 250.7 ms · olay döngüsü en çok 87.3 ms
+  Vade Takip (ılık): 200 · 1298.9 ms · olay döngüsü en çok 1282.4 ms
+  nakit akışı (ılık): 200 · 4051.8 ms · olay döngüsü en çok 3856.7 ms
+tur 2 · yük 1.51 1.75 1.63
+  YAZIM kart tahsilatı: 200 · 1091.6 ms · olay döngüsü en çok 1089.5 ms · kapı yolu scoped · kapı 45.5 ms
+  kart GET (yazımdan hemen sonra): 200 · 2.3 ms · olay döngüsü en çok 0 ms
+  zil / takvim (yazımdan sonra ilk): 200 · 1621.6 ms · olay döngüsü en çok 7.3 ms
+  Vade Takip (yazımdan sonra ilk): 200 · 1393.4 ms · olay döngüsü en çok 1376.8 ms
+  zil / takvim (ılık): 200 · 267.8 ms · olay döngüsü en çok 94.9 ms
+  Vade Takip (ılık): 200 · 1268.6 ms · olay döngüsü en çok 1246.8 ms
+  nakit akışı (ılık): 200 · 3629.6 ms · olay döngüsü en çok 3496 ms
+yük (sonda) 1.50 1.74 1.63
+çıkış 0 · sonda 1.50 1.74 1.63 1/122 11204
+bitti 01:26:06

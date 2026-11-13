@@ -2318,7 +2318,10 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
       build(query) {
         const range = rangeOf(query, "thisYear");
         const day = today();
-        const list = store.all("SELECT id, name, total, status FROM plans WHERE deleted_at IS NULL AND status = 'active'");
+        const list = store.all("SELECT id, name, total, status, account_id AS accountId, covers_balance AS coversBalance FROM plans WHERE deleted_at IS NULL AND status = 'active'");
+        // S129 = A: taksitin Ödenen / Kalan / Geciken'i kart ekranıyla AYNI (Tek Yükümlülük Kuyruğu görünümü — routes/plans.mjs queueLedger).
+        const queue = plans()?.queueAll ? plans().queueAll() : null;
+        const viewOf = (plan, ledger) => (plans()?.queueLedger ? plans().queueLedger(plan, ledger, queue, day) : ledger);
         const items = new Map();
         for (const item of store.all("SELECT id, plan_id AS planId, seq, due_date AS dueDate, amount FROM plan_items ORDER BY due_date, seq")) {
           if (!items.has(item.planId)) items.set(item.planId, []);
@@ -2331,7 +2334,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
         }
         const months = new Map();
         for (const plan of list) {
-          for (const item of allocate(plan, items.get(plan.id) || [], entries.get(plan.id) || [], { today: day }).items) {
+          for (const item of viewOf(plan, allocate(plan, items.get(plan.id) || [], entries.get(plan.id) || [], { today: day })).items) {
             if (!inRange(item.dueDate, range)) continue;
             const key = item.dueDate.slice(0, 7);
             const month = months.get(key) || { count: 0, amount: 0, paid: 0, remaining: 0, overdue: 0 };
@@ -2878,8 +2881,10 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
   function installmentReport(filter, subtitle, { lateFirst = false } = {}) {
     const day = today();
     const list = store.all(
-      `SELECT p.id, p.name, p.phone, p.total, p.status, COALESCE(a.name, '') AS accountName FROM plans p LEFT JOIN accounts a ON a.id = p.account_id WHERE p.deleted_at IS NULL AND p.status = 'active'`,
+      `SELECT p.id, p.name, p.phone, p.total, p.status, p.account_id AS accountId, p.covers_balance AS coversBalance, COALESCE(a.name, '') AS accountName FROM plans p LEFT JOIN accounts a ON a.id = p.account_id WHERE p.deleted_at IS NULL AND p.status = 'active'`,
     );
+    // S129 = A: satırın Ödenen / Kalan / Durum'u kart ekranıyla AYNI (Tek Yükümlülük Kuyruğu görünümü) — kart seçilmeden alınan tahsilatın kapattığı taksit "geciken" sayılmaz.
+    const queue = plans()?.queueAll ? plans().queueAll() : null;
     const items = new Map();
     for (const item of store.all("SELECT id, plan_id AS planId, seq, due_date AS dueDate, amount FROM plan_items ORDER BY due_date, seq")) {
       if (!items.has(item.planId)) items.set(item.planId, []);
@@ -2892,7 +2897,8 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
     }
     const out = [];
     for (const plan of list) {
-      const ledger = allocate(plan, items.get(plan.id) || [], entries.get(plan.id) || [], { today: day });
+      const own = allocate(plan, items.get(plan.id) || [], entries.get(plan.id) || [], { today: day });
+      const ledger = plans()?.queueLedger ? plans().queueLedger(plan, own, queue, day) : own;
       for (const item of ledger.items) if (filter(item)) out.push({ plan, item });
     }
     out.sort((a, b) => (lateFirst ? a.item.days - b.item.days : 0) || (a.item.dueDate < b.item.dueDate ? -1 : a.item.dueDate > b.item.dueDate ? 1 : 0) || collator.compare(a.plan.name, b.plan.name));

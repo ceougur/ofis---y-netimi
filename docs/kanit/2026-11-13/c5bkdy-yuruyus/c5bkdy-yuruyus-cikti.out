@@ -1,0 +1,110 @@
+
+■ 1 Taksitler listesi — her sekme
+  sekmeler: [["active","Devam Eden"],["overdue","Geciken"],["done","Biten"],["closed","Kapalı"],["all","Tümü"]]
+  [Devam Eden] 4 kart
+     1 | Yürüyüş Taksitli KartGrupsuz · kayıt 31.08.2026 | ₺1.200,00 | ₺0,00 | ₺1.200,00 | 10.09.20261. taksit · 40 gün gecikti | Gecikti2 taksit · ₺800,00
+     2 | Yürüyüş Mevcut BorçGrupsuz · kayıt 30.09.2026 | ₺1.000,00 | ₺0,00 | ₺1.000,00 | Taksit girilmemiş | Devam Ediyor
+     3 | Yürüyüş Stoktan TaksitGrupsuz · 0500 260 13 01 · kayıt 15.09.2025Stok satışı: Yürüyüş Ürün 10 Adet × 100,00 TL | ₺1.000,00 | ₺0,00 | ₺1.000,00 | 10.10.20261. taksit · 10 gün gecikti | Gecikti1 taksit · ₺500,00
+     4 | Yürüyüş Taksitsiz KartGrupsuz · kayıt 30.09.2026 | ₺800,00 | ₺0,00 | ₺800,00 | Taksit girilmemiş | Geciktitaksitlendirilmemiş kalan · ₺800,00
+  [Geciken] 3 kart
+     1 | Yürüyüş Taksitli KartGrupsuz · kayıt 31.08.2026 | ₺1.200,00 | ₺0,00 | ₺1.200,00 | 10.09.20261. taksit · 40 gün gecikti | Gecikti2 taksit · ₺800,00
+     3 | Yürüyüş Stoktan TaksitGrupsuz · 0500 260 13 01 · kayıt 15.09.2025Stok satışı: Yürüyüş Ürün 10 Adet × 100,00 TL | ₺1.000,00 | ₺0,00 | ₺1.000,00 | 10.10.20261. taksit · 10 gün gecikti | Gecikti1 taksit · ₺500,00
+     4 | Yürüyüş Taksitsiz KartGrupsuz · kayıt 30.09.2026 | ₺800,00 | ₺0,00 | ₺800,00 | Taksit girilmemiş | Geciktitaksitlendirilmemiş kalan · ₺800,00
+  [Biten] 0 kart
+  [Kapalı] 0 kart
+  [Tümü] 4 kart
+     1 | Yürüyüş Taksitli KartGrupsuz · kayıt 31.08.2026 | ₺1.200,00 | ₺0,00 | ₺1.200,00 | 10.09.20261. taksit · 40 gün gecikti | Gecikti2 taksit · ₺800,00
+     2 | Yürüyüş Mevcut BorçGrupsuz · kayıt 30.09.2026 | ₺1.000,00 | ₺0,00 | ₺1.000,00 | Taksit girilmemiş | Devam Ediyor
+     3 | Yürüyüş Stoktan TaksitGrupsuz · 0500 260 13 01 · kayıt 15.09.2025Stok satışı: Yürüyüş Ürün 10 Adet × 100,00 TL | ₺1.000,00 | ₺0,00 | ₺1.000,00 | 10.10.20261. taksit · 10 gün gecikti | Gecikti1 taksit · ₺500,00
+     4 | Yürüyüş Taksitsiz KartGrupsuz · kayıt 30.09.2026 | ₺800,00 | ₺0,00 | ₺800,00 | Taksit girilmemiş | Geciktitaksitlendirilmemiş kalan · ₺800,00
+
+■ 2 Kart penceresi: taksitli-kart
+  taksitli-kart KPI: ["₺1.200,00Toplam Tutar₺0,00Tahsil Edilen · %0₺1.200,00Kalan₺800,00Geciken · 2 taksit"]
+  taksit satırları (3):
+     1. | 10.09.202640 gün gecikti | ₺400,00 |  | ₺400,00 | Gecikti | ₺✎×
+     2. | 10.10.202610 gün gecikti | ₺400,00 |  | ₺400,00 | Gecikti | ₺✎×
+     3. | 09.11.202620 gün kaldı | ₺400,00 |  | ₺400,00 | Bekliyor | ₺✎×
+  düğmeler: ["back:← Liste","pay:+ Tahsilat","refund:− Ödeme / İade","addItem:+ Taksit","distribute:Otomatik Dağıt","edit:Düzenle","close:Kartı Kapat","delete:Sil","back:Listeye Dön"]
+
+■ 2 Kart penceresi: mevcut-borc-taksitsiz
+  mevcut-borc-taksitsiz KPI: ["₺1.000,00Toplam Tutar₺0,00Tahsil Edilen · %0₺1.000,00Kalan₺0,00Geciken · 0 taksit"]
+  taksit satırları (0):
+  düğmeler: ["back:← Liste","pay:+ Tahsilat","refund:− Ödeme / İade","addItem:+ Taksit","distribute:Otomatik Dağıt","edit:Düzenle","close:Kartı Kapat","delete:Sil","back:Listeye Dön"]
+
+■ 2 Kart penceresi: stoktan
+  stoktan KPI: ["₺1.000,00Toplam Tutar₺0,00Tahsil Edilen · %0₺1.000,00Kalan₺500,00Geciken · 1 taksit"]
+  taksit satırları (2):
+     1. | 10.10.202610 gün gecikti | ₺500,00 |  | ₺500,00 | Gecikti | ₺✎×
+     2. | 10.11.202621 gün kaldı | ₺500,00 |  | ₺500,00 | Bekliyor | ₺✎×
+  düğmeler: ["back:← Liste","pay:+ Tahsilat","refund:− Ödeme / İade","addItem:+ Taksit","distribute:Otomatik Dağıt","whatsapp:WhatsApp","edit:Düzenle","close:Kartı Kapat","delete:Sil","back:Listeye Dön"]
+
+■ 2 Kart penceresi: taksitsiz-ayri
+  taksitsiz-ayri KPI: ["₺800,00Toplam Tutar₺0,00Tahsil Edilen · %0₺800,00Kalan₺800,00Geciken · 0 taksit · taksitlendirilmemiş kalan ₺800,00"]
+  taksit satırları (0):
+  düğmeler: ["back:← Liste","pay:+ Tahsilat","refund:− Ödeme / İade","addItem:+ Taksit","distribute:Otomatik Dağıt","edit:Düzenle","close:Kartı Kapat","delete:Sil","back:Listeye Dön"]
+
+■ 3 EKRANDAN: taksitli karta Taksit Tahsilatı 500 (insan hızı)
+  formda önerilen tutar: “400,00”
+  form kapandı
+  tahsilattan sonra KPI: ["₺1.200,00Toplam Tutar₺500,00Tahsil Edilen · %42₺700,00Kalan₺300,00Geciken · 1 taksit"]
+  taksit satırları (3):
+     1. | 10.09.2026 | ₺400,00 | ₺400,00 | ₺0,00 | Ödendi | ✎×
+     2. | 10.10.202610 gün gecikti | ₺400,00 | ₺100,00 | ₺300,00 | Kısmen · Gecikti | ₺✎×
+     3. | 09.11.202620 gün kaldı | ₺400,00 |  | ₺400,00 | Bekliyor | ₺✎×
+  düğmeler: ["back:← Liste","pay:+ Tahsilat","refund:− Ödeme / İade","addItem:+ Taksit","distribute:Otomatik Dağıt","edit:Düzenle","close:Kartı Kapat","delete:Sil","back:Listeye Dön"]
+
+■ 4 EKRANDAN: taksitsiz Mevcut Borç kartına taksit girme yolu
+  Mevcut Borç kartı 'active' sekmesinde: VAR
+  Mevcut Borç kartı 'overdue' sekmesinde: yok
+  Mevcut Borç kartı 'done' sekmesinde: yok
+  Mevcut Borç kartı 'all' sekmesinde: VAR
+  kart penceresindeki düğmeler / bağlantılar: ["×","← Liste","+ Tahsilat","− Ödeme / İade","+ Taksit","Otomatik Dağıt","Taksit Ekstresi - PDF","Yazdır","Düzenle","Kartı Kapat","Sil","Yürüyüş Mevcut Borç","Listeye Dön","Kapat"]
+
+■ 5 Cari kartı: taksitli
+  göstergeler: ["₺300,00Gecikmiş Borç · 1 kalem"]
+  API: bakiye 700 · gecikmiş 300 · kartlar ["active:undefined"]
+
+■ 5 Cari kartı: mevcut-borc
+  göstergeler: ["₺1.000,00Gecikmiş Borç · 1 kalem"]
+  API: bakiye 1000 · gecikmiş 1000 · kartlar ["active:undefined"]
+
+■ 5 Cari kartı: stoktan
+  göstergeler: ["₺500,00Gecikmiş Borç · 1 kalem"]
+  API: bakiye 1000 · gecikmiş 500 · kartlar ["active:undefined"]
+
+■ 5 Cari kartı: acik-hesap
+  göstergeler: ["₺400,00Gecikmiş Borç · 1 kalem"]
+  API: bakiye 400 · gecikmiş 400 · kartlar []
+
+■ 5 Cari kartı: taksitsiz
+  göstergeler: ["₺800,00Gecikmiş Borç · 1 kalem"]
+  API: bakiye 800 · gecikmiş 800 · kartlar ["active:undefined"]
+
+■ 5 Cari kartı: tedarikci
+  göstergeler: ["₺300,00Gecikmiş Borç · 1 kalem"]
+  API: bakiye 300 · gecikmiş 300 · kartlar []
+
+■ 6 Zil
+     30 gün geciktiYürüyüş Mevcut BorçTahsil Edilecek Borç · vade 20.09.2026 · ₺1.000,00✕Tahsilat GirCariyi Aç
+     20 gün geciktiYürüyüş Taksitsiz KartTaksitlendirilmemiş Kalan · vade 30.09.2026 · ₺800,00✕Tahsilat GirTaksit Kartı
+     20 gün geciktiYürüyüş TedarikçiTahsil Edilecek Borç · Alış iadesi: Yürüyüş Ürün 3 Adet × 100,00 TL · vade 30.09.2026 · ₺300,00✕Tahsilat GirCariyi Aç
+     10 gün geciktiYürüyüş Stoktan Taksit1. taksit · vade 10.10.2026 · ₺500,00✕Tahsilat GirTaksit Kartı
+     10 gün geciktiYürüyüş Taksitli Kart2. taksit · vade 10.10.2026 · ₺300,00 (kalan)✕Tahsilat GirTaksit Kartı
+     5 gün geciktiYürüyüş Açık HesapTahsil Edilecek Borç · vade 15.10.2026 · ₺400,00 (kalan)✕Tahsilat GirCariyi Aç
+  zilde 'Yürüyüş' kalemi: 6 / 6
+
+■ 7 Vade Takip (Raporlar)
+     20.09.202630 gün geçti | Yürüyüş Mevcut Borç | Cari (vadeli) | Tahsil Edilecek BorçKayıt 20.09.2026 · 1.000,00 TL | ₺1.000,00 | 
+     30.09.202620 gün geçti | Yürüyüş Taksitsiz Kart | Taksit | Taksitlendirilmemiş KalanKart 4 | ₺800,00 | 
+     30.09.202620 gün geçti | Yürüyüş Tedarikçi | Cari (vadeli) | Tahsil Edilecek BorçAlış iadesi: Yürüyüş Ürün 3 Adet × 100,00 TL · Kayıt 30.09.2026 · 300,00 TL | ₺300,00 | 
+     10.10.202610 gün geçti | Yürüyüş Stoktan Taksit | Taksit | 1. taksitKart 3 | ₺500,00 | 
+     10.10.202610 gün geçti | Yürüyüş Taksitli Kart | Taksit | 2. taksit (kalan)Kart 1 | ₺300,00 | 
+     15.10.20265 gün geçti | Yürüyüş Açık Hesap | Cari (vadeli) | Tahsil Edilecek BorçKayıt 25.09.2026 · 600,00 TL · kalan | ₺400,00 | 
+     09.11.202620 gün | Yürüyüş Taksitli Kart | Taksit | 3. taksitKart 1 | ₺400,00 | 
+     10.11.202621 gün | Yürüyüş Stoktan Taksit | Taksit | 2. taksitKart 3 | ₺500,00 | 
+  satır: 8
+  API preset=late: {"Yürüyüş Mevcut Borç":1000,"Yürüyüş Taksitsiz Kart":800,"Yürüyüş Tedarikçi":300,"Yürüyüş Stoktan Taksit":500,"Yürüyüş Taksitli Kart":300,"Yürüyüş Açık Hesap":400}
+  API preset=open: {"Yürüyüş Mevcut Borç":1000,"Yürüyüş Taksitsiz Kart":800,"Yürüyüş Tedarikçi":300,"Yürüyüş Stoktan Taksit":1000,"Yürüyüş Taksitli Kart":700,"Yürüyüş Açık Hesap":400}
+
+sayfa hatası: yok
+Mutabakat ucu: 404 {"ok":false,"error":"Endpoint bulunamadı."}

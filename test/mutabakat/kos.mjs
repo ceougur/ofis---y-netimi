@@ -4,6 +4,7 @@
 // işlemlerle sürer, her işlemden sonra (--her N: her N işlemde bir) bağımsız modelle ve programın mutabakat kapısıyla
 // karşılaştırır. Uyuşmazlıkta çıkış kodu 1 ve hangi işlemde, hangi hesapta, ne kadar fark olduğu yazılır.
 import { loginAdmin, startTestServer } from "../helpers.mjs";
+import { sigmaReader } from "./sigma.mjs";
 import { motorNow, runReconciliation } from "./motor.mjs";
 
 const arg = (name, fallback) => {
@@ -24,7 +25,7 @@ for (let seed = firstSeed; seed < firstSeed + seeds; seed++) {
   const started = performance.now();
   try {
     const admin = await loginAdmin(server);
-    const report = await runReconciliation({ client: admin, seed, operations, verifyEvery: every, burst, pos: !process.argv.includes("--pos-yok"), log: line => console.log(line) });
+    const report = await runReconciliation({ client: admin, seed, operations, verifyEvery: every, burst, pos: !process.argv.includes("--pos-yok"), sigmaOf: sigmaReader(server), log: line => console.log(line) });
     const seconds = (performance.now() - started) / 1000;
     const ms = report.integrityMs.slice().sort((a, b) => a - b);
     console.log(`\nTohum ${seed}: ${report.operations} işlem, ${report.checks} doğrulama, ${report.rejectedAsExpected} beklenen ret (eksiye düşürme / aşım), eşzamanlı ${report.burst?.requests || 0} istek · ${seconds.toFixed(1)} sn`);

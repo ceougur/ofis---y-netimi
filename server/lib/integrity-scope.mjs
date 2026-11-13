@@ -600,8 +600,10 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
         for (const plan of plans().list(AUDITOR, { status: "all", ids: [...s.plans] }).plans || []) {
           const row = raw.get(plan.id);
           if (!row) continue;
-          if (toCents(plan.totals.total) !== toCents(row.total) || toCents(plan.totals.paid) !== toCents(row.paid)) find("plans:totals", `${plan.refNo || plan.id} ${plan.name}`);
-          else if (plan.status !== "closed" && toCents(plan.totals.remaining) !== Math.max(0, toCents(row.total) - toCents(row.paid))) find("plans:totals", `${plan.refNo || plan.id} ${plan.name}: kalan`);
+          // S129 = A: listede totals.paid / remaining GÖSTERİLEN (kuyruk) sayıdır; kartın kendi hesabı ownPaid / ownRemaining — denetim onları satırlarla karşılaştırır.
+          const own = { paid: plan.totals.ownPaid ?? plan.totals.paid, remaining: plan.totals.ownRemaining ?? plan.totals.remaining };
+          if (toCents(plan.totals.total) !== toCents(row.total) || toCents(own.paid) !== toCents(row.paid)) find("plans:totals", `${plan.refNo || plan.id} ${plan.name}`);
+          else if (plan.status !== "closed" && toCents(own.remaining) !== Math.max(0, toCents(row.total) - toCents(row.paid))) find("plans:totals", `${plan.refNo || plan.id} ${plan.name}: kalan`);
         }
       }
       if (hasColumn("plan_items", "due_date") && hasColumn("plans", "registered_on")) {

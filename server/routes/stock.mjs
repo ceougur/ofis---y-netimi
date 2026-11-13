@@ -464,7 +464,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
         // Vade satış tarihinden önce olamaz (v2.0.13).
         if (period) period.dueDate(text(plan.firstDue), { from: input.date, label: "İlk Vade" });
         const distribution = plans()?.validDistribution ? plans().validDistribution({ count, firstDue: plan.firstDue, everyMonths: plan.everyMonths }, input.amount) : null;
-        if (account && distribution) plans().createForAccount(user, account, { total: input.amount, count, firstDue: text(plan.firstDue), everyMonths: Math.trunc(Number(plan.everyMonths) || 1), note: accountNote(item, input), coversBalance: true });
+        if (account && distribution) plans().createForAccount(user, account, { total: input.amount, count, firstDue: text(plan.firstDue), everyMonths: Math.trunc(Number(plan.everyMonths) || 1), note: accountNote(item, input), coversBalance: true, saleMoveId: moveId });
       }
       // Açık hesaba müşteri iadesi: borç azalır; taksitlendirilmiş borç kalandan büyük kalmasın (kart da küçülür).
       if (input.reason === "return" && input.pay === "account" && plans()?.trimCovers) trimmed = plans().trimCovers(input.accountId, user, accountNote(item, input));

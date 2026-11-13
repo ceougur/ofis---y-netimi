@@ -118,7 +118,10 @@ describe("2.5.0 Ç5-B — Tek Yükümlülük Kuyruğu (API)", () => {
     await entry(acc, { kind: "in", amount: "400", date: day(-2) });
     const plan = await must("kart", api.get(`/api/workspace/plans/${planId}`));
     assert.deepEqual(plan.items.map(i => [i.remaining, i.accountPaid]), [[0, 300], [200, 100]]);
-    assert.deepEqual([plan.totals.remaining, plan.totals.queueRemaining, plan.totals.accountPaid, plan.state], [600, 200, 400, "active"]);
+    // S129 = A (kapanış düzeltme turu; KULLANICI KARARI 12.11 13:26): kartın Tahsil Edilen / Kalan'ı ve satırın Ödenen'i TEK KUYRUKTAN — Kalan 200, Tahsil Edilen 400,
+    // satırlar Ödenen 300 / 100; kartın KENDİ hesabı (kart tahsilatı yok) ownRemaining 600 / ownPaid 0'da durur (sınır ve Mutabakat Testi onu okur).
+    assert.deepEqual([plan.totals.remaining, plan.totals.paid, plan.totals.ownRemaining, plan.totals.ownPaid, plan.totals.queueRemaining, plan.totals.accountPaid, plan.state], [200, 400, 600, 0, 200, 400, "active"]);
+    assert.deepEqual(plan.items.map(i => [i.paid, i.ownPaid, i.ownRemaining]), [[300, 0, 300], [100, 0, 300]]);
     assert.equal((await card(acc)).totals.overdueDebt, 0, "gecikmiş yok");
     const dues = await must("takvim", api.get("/api/workspace/dues"));
     assert.equal(dues.items.filter(row => row.accountId === acc.id).length, 0, "zilde kart kalemi yok (2. taksit +25, ufuk dışında)");

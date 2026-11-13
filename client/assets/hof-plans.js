@@ -464,7 +464,7 @@
     const entryTest = (ENTRY_FILTERS.find(([id]) => id === view.entryFilter) || ENTRY_FILTERS[0])[2];
     const items = plan.items.filter(itemTest);
     const entries = plan.entries.filter(entryTest);
-    const itemRow = item => `<tr data-item="${esc(item.id)}" class="is-${esc(item.state)}"><td>${item.seq}.</td><td>${esc(HOF.formatDate(item.dueDate))}${item.note ? `<small>${esc(item.note)}</small>` : ""}<small>${item.state === "paid" ? "" : esc(dayLabel(item.days))}</small></td><td class="num">${esc(money(item.amount))}</td><td class="num hof-cash-in">${item.paid ? esc(money(item.paid)) : ""}</td><td class="num${item.remaining > 0 ? " hof-cash-out" : ""}">${esc(money(item.remaining))}</td><td>${itemBadge(item)}</td><td class="hof-cash-actions">${collect && item.remaining > 0 && active ? `<button type="button" class="hof-mini hof-mini-pay" data-pay-item="${esc(item.id)}" title="Bu taksite tahsilat gir" aria-label="${item.seq}. taksite tahsilat gir">₺</button>` : ""}${manage ? `<button type="button" class="hof-mini" data-edit-item="${esc(item.id)}" title="Taksiti düzelt" aria-label="${item.seq}. taksiti düzelt">✎</button><button type="button" class="hof-mini hof-mini-danger" data-delete-item="${esc(item.id)}" title="Taksiti sil" aria-label="${item.seq}. taksiti sil">×</button>` : ""}</td></tr>`;
+    const itemRow = item => `<tr data-item="${esc(item.id)}" class="is-${esc(item.state)}"><td>${item.seq}.</td><td>${esc(HOF.formatDate(item.dueDate))}${item.note ? `<small>${esc(item.note)}</small>` : ""}<small>${item.state === "paid" ? "" : esc(dayLabel(item.days))}</small></td><td class="num">${esc(money(item.amount))}</td><td class="num hof-cash-in">${item.paid ? esc(money(item.paid)) : ""}</td><td class="num${item.remaining > 0 ? " hof-cash-out" : ""}">${esc(money(item.remaining))}</td><td>${itemBadge(item)}</td><td class="hof-cash-actions">${collect && (item.ownRemaining ?? item.remaining) > 0.005 && active ? `<button type="button" class="hof-mini hof-mini-pay" data-pay-item="${esc(item.id)}" title="Bu taksite tahsilat gir" aria-label="${item.seq}. taksite tahsilat gir">₺</button>` : ""}${manage ? `<button type="button" class="hof-mini" data-edit-item="${esc(item.id)}" title="Taksiti düzelt" aria-label="${item.seq}. taksiti düzelt">✎</button><button type="button" class="hof-mini hof-mini-danger" data-delete-item="${esc(item.id)}" title="Taksiti sil" aria-label="${item.seq}. taksiti sil">×</button>` : ""}</td></tr>`;
     // Açılış (devir, v2.0.8): Excel'de programa girmeden önce ödenmiş kısım; taksiti kapatır, Kasa'da yoktur, makbuzu olmaz.
     const entryRow = entry => `<tr data-entry="${esc(entry.id)}" data-kind="${esc(entry.kind)}"${entry.opening ? ' data-opening=""' : ""}><td>${esc(HOF.formatDate(entry.date))}</td><td><b>${entry.opening ? 'Açılış (devir) <span class="hof-plan-badge is-muted" title="Programa girmeden önce ödenmiş; taksiti kapatır, Kasa’ya girmez">Kasa Dışı</span>' : entry.kind === "in" ? "Tahsilat" : "Ödeme / İade"}${entry.itemId ? ` · ${esc(plan.items.find(item => item.id === entry.itemId)?.seq || "?")}. taksit` : ""}${entry.receiptNo ? ` <span class="hof-plan-receipt">Makbuz ${esc(entry.receiptNo)}</span>` : ""}${entry.chequeId ? ' <span class="hof-plan-badge is-info" title="Çek / senetle alındı; Kasa’ya evrak tahsil edilince girer">çek / senet</span>' : ""}</b><small>${esc(entry.note || "")}${entry.note ? " · " : ""}${esc(entry.actorName || "—")}${entry.updatedAt ? " · düzeltildi" : ""}</small></td><td class="num hof-cash-in">${entry.kind === "in" ? esc(money(entry.amount)) : ""}</td><td class="num hof-cash-out">${entry.kind === "out" ? esc(money(entry.amount)) : ""}</td><td class="hof-cash-actions">${entry.opening ? "" : `<a class="hof-mini hof-mini-text" href="/api/workspace/plans/${encodeURIComponent(plan.id)}/entries/${encodeURIComponent(entry.id)}/makbuz.pdf" target="_blank" rel="noopener" title="Makbuz (PDF)" aria-label="Makbuz">Makbuz</a>`}${entry.chequeId && HOF.can("cheques.view") ? `<button type="button" class="hof-mini" data-open-cheque="${esc(entry.chequeId)}" title="Çek / senet kartını aç (karşılıksız, geri al buradan)" aria-label="Çek / senet kartını aç">↗</button>` : ""}${entry.editable ? `<button type="button" class="hof-mini" data-edit-entry="${esc(entry.id)}" title="Düzelt" aria-label="Düzelt">✎</button><button type="button" class="hof-mini hof-mini-danger" data-delete-entry="${esc(entry.id)}" title="Sil" aria-label="Sil">×</button>` : ""}</td></tr>`;
     const planWarning = Math.abs(t.unplanned) > 0.005 && plan.items.length ? `<p class="hof-alert">Taksitlerin toplamı (${esc(money(t.planned))}) kartın toplam tutarından (${esc(money(t.total))}) ${t.unplanned > 0 ? "az" : "fazla"}: fark ${esc(money(Math.abs(t.unplanned)))}. Taksitleri düzeltin ya da toplam tutarı güncelleyin.</p>` : "";
@@ -783,19 +783,27 @@
   // kind: "in" (tahsilat) | "out" (ödeme/iade). item: taksite bağlı tahsilat. entry: düzeltme.
   function editEntry(plan, { kind = "in", item = null, entry = null, amount = null } = {}) {
     const incoming = (entry?.kind || kind) === "in";
-    const openItems = plan.items.filter(row => row.remaining > 0.005 || row.id === entry?.itemId);
+    // 2.5.0 Ç5-B kapanış düzeltmesi (S129 = A + dar kontrol DÜŞÜK-4): kart penceresinin göstergeleri ve satırın Ödenen / Kalan'ı Tek Yükümlülük Kuyruğu'ndan
+    // (plan.totals.paid / remaining, item.paid / remaining); bu formun sınırı, sorusu, önerisi ve "Hangi Taksite" listesi kartın KENDİ hesabından (S118 = B — sunucunun
+    // sınırıyla aynı sayı: plan.totals.ownRemaining, item.ownRemaining, plan.ownNext). Carinin avansıyla kapalı görünen ama kartın kendi hesabında açık taksit seçilebilir.
+    const ownLeft = row => row.ownRemaining ?? row.remaining;
+    const ownTotalLeft = plan.totals.ownRemaining ?? plan.totals.remaining ?? 0;
+    const openItems = plan.items.filter(row => ownLeft(row) > 0.005 || row.id === entry?.itemId);
     // 2.5.0 Ç5-B tur 2b-2 (S118 = B, KULLANICI KARARI 11.11 06:14 AYNEN: "taksit tahsilatında 'Kalanı Aşan Tutar' / 'Kart Ödendi' sınırı, sorusu ve formda ÖNERİLEN tutar kartın
     // KENDİ kalanından gelir … taksit satırlarındaki kuyruk kalanı 'cari avansı düşülmüş' gösterimi olarak kalır; forma tek satırlık bilgi notu eklenir"): önerilen tutar ve
     // sıradaki taksit kartın kendi hesabından (ownNext / ownRemaining — sunucu sınırıyla aynı sayı); kuyruk kalanı küçükse aradaki fark bilgi notunda.
     const ownNext = plan.ownNext || plan.next;
     const suggested = entry ? amountText(entry.amount) : amount ? amountText(amount) : item ? amountText(item.ownRemaining ?? item.remaining) : ownNext ? amountText(ownNext.remaining) : "";
-    const covered = incoming && !entry && Number.isFinite(plan.totals?.queueRemaining) ? Math.round(((plan.totals.remaining || 0) - plan.totals.queueRemaining) * 100) / 100 : 0;
+    const covered = incoming && !entry && Number.isFinite(plan.totals?.queueRemaining) ? Math.round((ownTotalLeft - plan.totals.queueRemaining) * 100) / 100 : 0;
+    // Sıradaki taksit (kartın kendi hesabı) satırda avansla kapalı görünüyorsa açıklama bunu söyler — "40 gün gecikti" ↔ satırda "Ödendi" çelişmesin (DÜŞÜK-4).
+    const nextRow = ownNext ? plan.items.find(row => row.id === ownNext.id) : null;
+    const nextState = !ownNext ? "" : covered > 0.005 && nextRow && nextRow.remaining <= 0.005 ? "carinin avansıyla kapalı görünüyor" : covered > 0.005 && nextRow && nextRow.remaining < ownNext.remaining - 0.005 ? `${money(Math.round((ownNext.remaining - nextRow.remaining) * 100) / 100)} kadarı carinin avansıyla kapalı görünüyor` : dayLabel(ownNext.days);
     const coverNote = covered > 0.005 ? `<p class="hof-inline-note" data-cover-note>Carinin avansı bu kartın ${esc(amountText(covered))} TL'sini kapatıyor.</p>` : "";
     // v2.1.0 Aşama 8: istek kimliği form açılışında (aynı gönderim ikinci kez yazılmaz); Havale / EFT seçilince Banka Hesabı (tek hesapta gizli).
     const requestId = HOF.requestId();
     // K8 (2.3.0, plan §3.10/3): ödenmiş kartta yeni tahsilat 409 plan-paid, kalanı aşan tutar 409 plan-overpay; yönetici/uzman/muhasebe
     // "Fazlasını Avans Yaz" ile aynı istek kimliğiyle overpay:true gönderir; yetkisizde sunucunun yol gösteren metni formda kalır.
-    const paidOff = incoming && !entry && plan.totals.total > 0.005 && plan.totals.remaining <= 0.005;
+    const paidOff = incoming && !entry && plan.totals.total > 0.005 && ownTotalLeft <= 0.005;
     HOF.formModal({
       title: entry ? (incoming ? "Tahsilatı Düzelt" : "Ödemeyi Düzelt") : incoming ? "Tahsilat Gir" : "Ödeme / İade Gir",
       eyebrow: plan.name,
@@ -804,14 +812,14 @@
           ? "Bu kart ödendi (kalan 0,00 ₺). Girilen tutar fazla tahsilat (avans) olarak karta ve cariye alacak yazılır; kaydederken onay sorulur."
           : "Bu kart ödendi (kalan 0,00 ₺); yeni tahsilat yazılmaz. Fazla alınan para için yöneticinize başvurun."
         : incoming
-          ? `Kalan ${money(plan.totals.remaining)}${ownNext ? ` · sıradaki ${ownNext.seq}. taksit ${money(ownNext.remaining)} (${dayLabel(ownNext.days)})` : ""}. Tutar seçilen yola (nakit kasa, banka, kredi kartı) tahsilat olarak düşer; kalanı aşan tutar kaydedilmez (yönetici avans yazabilir); çekle/senetle ödemede Çek / Senet Al’da “Taksite Say”ı seçin. Makbuz PDF’i hareketler listesinden alınır.`
+          ? `${covered > 0.005 ? "Kartın kendi tahsilatlarına göre kalanı" : "Kalan"} ${money(ownTotalLeft)}${ownNext ? ` · sıradaki ${ownNext.seq}. taksit ${money(ownNext.remaining)} (${nextState})` : ""}. Tutar seçilen yola (nakit kasa, banka, kredi kartı) tahsilat olarak düşer; kalanı aşan tutar kaydedilmez (yönetici avans yazabilir); çekle/senetle ödemede Çek / Senet Al’da “Taksite Say”ı seçin. Makbuz PDF’i hareketler listesinden alınır.`
           : "Müşteriye geri verilen ya da onun adına yapılan ödeme. Kasa’dan düşer ve kartın ödenen tutarını azaltır.",
       fields: [
         { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", value: suggested, autofocus: true },
         { name: "date", label: "Tarih", type: "date", required: true, max: "today", value: entry?.date || todayIso() },
         // v2.0.13: tahsilat / ödeme yolu (Nakit, Havale / EFT, Kredi Kartı). Çekle/senetle ödeme Çek / Senet Al'dan "Taksite Say" ile.
         HOF.methodField(entry?.method || "cash", { incoming }),
-        ...(incoming ? [{ name: "itemId", label: "Hangi Taksite", type: "select", value: entry?.itemId || item?.id || "", options: [{ value: "", label: "En Eski Açık Taksite (önerilen)" }, ...openItems.map(row => ({ value: row.id, label: `${row.seq}. taksit · ${HOF.formatDate(row.dueDate)} · kalan ${money(row.remaining)}` }))] }] : []),
+        ...(incoming ? [{ name: "itemId", label: "Hangi Taksite", type: "select", value: entry?.itemId || item?.id || "", options: [{ value: "", label: "En Eski Açık Taksite (önerilen)" }, ...openItems.map(row => ({ value: row.id, label: `${row.seq}. taksit · ${HOF.formatDate(row.dueDate)} · kalan ${money(ownLeft(row))}` }))] }] : []),
         { name: "note", label: "Açıklama", maxlength: 300, value: entry?.note || "", placeholder: incoming ? "Ör. Ekim taksidi" : "Ne için", list: incoming ? [] : ["İade", "Fazla Alınan", "İndirim"] },
       ],
       submitLabel: entry ? "Kaydet" : incoming ? "Tahsilatı Kaydet" : "Ödemeyi Kaydet",

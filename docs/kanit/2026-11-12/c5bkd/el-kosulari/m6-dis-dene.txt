@@ -1,0 +1,61 @@
+TAP version 13
+# Subtest: Ç5-B kapanış — DÜŞÜK-2 saf kuyruk dişleri
+    # Subtest: K3 dişi — S101: aynı para iki kartta 'avansla ödenmiş' sayılmaz (önceki kartın saydığı kısım düşülür); para dışı kapanan kısım kırpılır
+    ok 1 - K3 dişi — S101: aynı para iki kartta 'avansla ödenmiş' sayılmaz (önceki kartın saydığı kısım düşülür); para dışı kapanan kısım kırpılır
+      ---
+      duration_ms: 9.596448
+      type: 'test'
+      ...
+    # Subtest: K35 dişi — S105: tedarikçi — 01.03 Ödeme 300 · 05.03 FATURALI Alış İadesi 200 · 10.03 alış 250 ⇒ alış önce iade alacağını kapatır: iade 0, avans 250
+    ok 2 - K35 dişi — S105: tedarikçi — 01.03 Ödeme 300 · 05.03 FATURALI Alış İadesi 200 · 10.03 alış 250 ⇒ alış önce iade alacağını kapatır: iade 0, avans 250
+      ---
+      duration_ms: 5.356772
+      type: 'test'
+      ...
+    1..2
+ok 1 - Ç5-B kapanış — DÜŞÜK-2 saf kuyruk dişleri
+  ---
+  duration_ms: 15.840666
+  type: 'suite'
+  ...
+# Subtest: Ç5-B kapanış — DÜŞÜK-2 gerçek program dişleri (K8, K22)
+    # Subtest: K8 dişi — S135 = C: F 600 + elle X 300 + ayrıca TAKSİTLİ fatura B 300; Mevcut Borç kartı 900; karta 300 ⇒ başka kartın açık taksitleri 'bütün açık borca' sayılır: X Kalan 0, F açık 600
+    ok 1 - K8 dişi — S135 = C: F 600 + elle X 300 + ayrıca TAKSİTLİ fatura B 300; Mevcut Borç kartı 900; karta 300 ⇒ başka kartın açık taksitleri 'bütün açık borca' sayılır: X Kalan 0, F açık 600
+      ---
+      duration_ms: 138.939757
+      type: 'test'
+      ...
+    # Subtest: K22 dişi — Tablodan Aktar'ın açtığı Mevcut Borç kartı (aktarım kimlikli) kararların dışında: kart ekranı (tek cari yolu) = liste (bütün cariler yolu) — eski kural (vade sırası)
+    ok 2 - K22 dişi — Tablodan Aktar'ın açtığı Mevcut Borç kartı (aktarım kimlikli) kararların dışında: kart ekranı (tek cari yolu) = liste (bütün cariler yolu) — eski kural (vade sırası)
+      ---
+      duration_ms: 75.733991
+      type: 'test'
+      ...
+    1..2
+ok 2 - Ç5-B kapanış — DÜŞÜK-2 gerçek program dişleri (K8, K22)
+  ---
+  duration_ms: 701.387327
+  type: 'suite'
+  ...
+# Subtest: Ç5-B kapanış — DÜŞÜK-2 K28 dişi (S96 = A): bankadan POS Komisyon Tahsili ile verilen avans takvimde / zilde / Vade Takip'te AYRI KALEM
+    # Subtest: ödeme kuruluşu POS'u (komisyon %2,5 + KDV): satış 10.000 → valörden ÖNCE tam iade → 12.10'da komisyon (250 + KDV 50) bankadan tahsil edilir: sağlayıcı carisine verilen 300, komisyon faturası gelene kadar 'Tahsil Edilecek' kalemidir
+    ok 1 - ödeme kuruluşu POS'u (komisyon %2,5 + KDV): satış 10.000 → valörden ÖNCE tam iade → 12.10'da komisyon (250 + KDV 50) bankadan tahsil edilir: sağlayıcı carisine verilen 300, komisyon faturası gelene kadar 'Tahsil Edilecek' kalemidir
+      ---
+      duration_ms: 458.682964
+      type: 'test'
+      ...
+    1..1
+ok 3 - Ç5-B kapanış — DÜŞÜK-2 K28 dişi (S96 = A): bankadan POS Komisyon Tahsili ile verilen avans takvimde / zilde / Vade Takip'te AYRI KALEM
+  ---
+  duration_ms: 459.007127
+  type: 'suite'
+  ...
+1..3
+# tests 5
+# suites 3
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1600.706893

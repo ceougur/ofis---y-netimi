@@ -1,0 +1,9 @@
+2.5.0 Ç5-B kapanış düzeltmesi (3c/6): S129 = A — senaryo-raporlar'ın Taksit Performansı beklentisi kart ekranıyla aynı sayıya
+
+CI dışı ekran senaryosu test/e2e/senaryo-raporlar.mjs (test/raporlar-209'un ekrandan ikizi) 54 / 55'te
+duruyordu: Taksit Performansı'nın Geciken'i 1.000 bekleniyordu (kartın kendi hesabı). S129 = A ile
+rapor kart ekranıyla aynı sayıyı gösterir: vadesi geçen 1. taksit 1.000, carinin alınan senedi 700
+bağsız paradır ve o taksiti kapatır (S50 / S99) → 300. Beklenti güncellendi; senaryo 87 / 87 (ders 28).
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og

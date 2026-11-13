@@ -1,8 +1,8 @@
 {
  "dil": "destekofis-cari/3",
  "bugun": "2026-04-15",
- "aciklama": "Bakım 12 (S128 = A): bakiye kadar açılan Taksitler kartının içinde fatura / elle borç dışında kalem de varsa karta gelen ödeme kalemleri türüne bakılmadan içine alma sırasıyla, eskiden yeniye düşürür — kararın örneği (M1), ödeme ilk kalemi tam bitirir (M2) / aşıp ikinciye geçer (M3) / kartı kapatır (M4), iki ödeme üst üste (M5), elle borç stok satışından eski (M6), stok + fatura + elle (M7), S50 payı (M8), silme (M9) ve geri yükleme (M10), ödemesiz (M11), karşılıksız kalemi (M12), yalnız stok satışları (M13), başka kartın taksiti (M14 SUS — SK-18 + SK-26), taksitli faturanın taksiti (M15 SUS — SK-18 + SK-26), vade ↔ belge sırası ödemeyi ayırıyor (M16 SUS — S125 = C; M16b değer), aynı adlı iki cari (M17a / M17b), yalnız fatura + elle kart (M18 — değişmedi), açık borçtan küçük kart (M19 — değişmedi)",
- "dayanak": "KARARLAR.md §24 (S128 A; Y12-1 … Y12-12; SK-26), §23 (S126 A), §22 (S122 A; Y10-2 / Y10-4 / Y10-5), §21 (S120 A), §20 (Y8-4), §19 (Y7-3, SK-18), §13 C13.4 / C13.5, C14.3, K6.5",
+ "aciklama": "Bakım 12 (S128 = A): bakiye kadar açılan Taksitler kartının içinde fatura / elle borç dışında kalem de varsa karta gelen ödeme kalemleri türüne bakılmadan içine alma sırasıyla, eskiden yeniye düşürür — kararın örneği (M1), ödeme ilk kalemi tam bitirir (M2) / aşıp ikinciye geçer (M3) / kartı kapatır (M4), iki ödeme üst üste (M5), elle borç stok satışından eski (M6), stok + fatura + elle (M7), S50 payı (M8), silme (M9) ve geri yükleme (M10), ödemesiz (M11), karşılıksız kalemi (M12), yalnız stok satışları (M13), başka kartın taksiti (M14 SUS — SK-18 + SK-26; bakım 14: BİLİNEN SINIR S131 = C), taksitli faturanın taksiti (M15 SUS — SK-18 + SK-26; S131 = C), vade ↔ belge sırası ödemeyi ayırıyor (M16 SUS — S125 = C; M16b değer), aynı adlı iki cari (M17a / M17b), yalnız fatura + elle kart (M18 — değişmedi), açık borçtan küçük kart (M19 — değişmedi)",
+ "dayanak": "KARARLAR.md §24 (S128 A; Y12-1 … Y12-12; SK-26), §23 (S126 A), §22 (S122 A; Y10-2 / Y10-4 / Y10-5), §21 (S120 A), §20 (Y8-4), §19 (Y7-3, SK-18), §13 C13.4 / C13.5, C14.3, K6.5; §25 Y14-11 (S131 = C)",
  "elleBeklenen": {
   "k1:cari:M1:bakiye": 40000,
   "k1:cari:M1:gecikmis": 5000,
@@ -278,9 +278,9 @@
  },
  "elleYok": ["k1:cari:M12:acikToplam", "k1:cari:M12:acikEsitBakiye", "k1:cari:M14:gecikmis", "k1:kart:KM14:var", "k1:kart:KM14:kalan", "k1:kart:KM14A:odenen", "k1:hareket:m14x:kalan", "k1:takvim:hareket:m14x", "k1:cari:M15:gecikmis", "k1:kart:KM15:var", "k1:kart:KM15:kalan", "k1:fatura:M15T:acik", "k1:hareket:m15x:kalan", "k1:takvim:hareket:m15x", "k1:cari:M16:gecikmis", "k1:kart:KM16:kalan", "k1:hareket:m16x:kalan", "k1:takvim:hareket:m16x"],
  "elleBelirsiz": [
-  ["cari M14 tanımsız", "SK-26"],
+  ["cari M14 tanımsız", "SK-26", "BİLİNEN SINIR", "S131 = C"],
   ["cari M14", "KM14", "SK-18"],
-  ["cari M15 tanımsız", "SK-26"],
+  ["cari M15 tanımsız", "SK-26", "BİLİNEN SINIR", "S131 = C"],
   ["cari M15", "KM15", "SK-18"],
   ["cari M16 tanımsız", "S125 = C", "SK-23"]
  ],

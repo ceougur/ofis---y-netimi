@@ -1,0 +1,54 @@
+{
+ "saat": "akan",
+ "tutar800": {
+  "anlar": [
+   "satış@09:00:00.540Z",
+   "kart@09:00:00.542Z"
+  ],
+  "once": {
+   "bakiye": 1500,
+   "gecikmis": 500,
+   "vadeTakip": [
+    "account:in:500@2026-11-19",
+    "plan:in:500@2026-09-30",
+    "plan:in:500@2026-10-30"
+   ],
+   "kalan": [
+    "account/debt:500→500",
+    "stock/debt:1000→1000"
+   ],
+   "taksit": [
+    500,
+    500
+   ],
+   "kural": [
+    "S110-satis tük 1000/1000 avans 0 kırp 0"
+   ],
+   "sigma": true
+  },
+  "islem": "kart tutarı 200 ",
+  "sonra": {
+   "bakiye": 1500,
+   "gecikmis": 700,
+   "vadeTakip": [
+    "account:in:200@2026-09-05",
+    "account:in:500@2026-11-19",
+    "plan:in:300@2026-10-30",
+    "plan:in:500@2026-09-30"
+   ],
+   "kalan": [
+    "account/debt:500→500",
+    "stock/debt:1000→1000"
+   ],
+   "taksit": [
+    500,
+    300
+   ],
+   "kural": [
+    "S110-satis tük 800/800 avans 0 kırp 0"
+   ],
+   "sigma": true
+  },
+  "mutabakat": true
+ }
+}

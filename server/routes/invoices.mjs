@@ -812,16 +812,25 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // düzeltmenin anı, yoksa ilk olayın kaydı. KESİN an: tutar / cari / tarih düzeltmesi olayın cari satırlarını YENİDEN yazar (yeni satır kimliği, yeni kayıt anı) ama bağ aynıdır
   // — cari tahsilatının "tutar / tarih düzeltmesi bağın anını değiştirmez" kuralıyla aynı (önceden yeni satırın anı bağın anı sayılıyordu). Önceden bu iz hiç okunmuyordu:
   // kilitten SONRA düzeltmeyle kurulan çek bağı kilidi aşıyordu (gecikmiş 0 → 300; aynı bağ yeni evrakla 0). Dönüş: satır kimliği (defterdeki) → an.
+  // Ç5-B kapanış düzeltmesi (hız; Borç Yaz — kabul koşulu iş listesi D "… S132"): TEK cari sorgusu carinin KENDİ evrak satırlarından sürülür. Önceden bütün ilk olaylar
+  // (alınan / verilen evrak) taranıp cariye süzülüyordu — kilit açıkken her yazımda (100 bin satırlık veride ~16 ms). Kuyruk bu haritaya yalnız carinin defter satırlarını
+  // sorar; evrakın cari satırı her zaman evrakın kimliğini taşır (routes/cheques.mjs applyEffects: source 'cheque', source_id = evrak) — o satırı yazan olay o evrakındır.
+  // Bu yüzden carinin evrak satırı olan evrakların olayları yeter: carinin defter satırları için harita öncekiyle AYNI (eşdeğerlik: test/takvim-govde-250.test.mjs — eski
+  // sorgu hakem; 100 bin satırlık veride 1.484 cari, 102.295 defter satırı, fark 0). Cari süzgeci aynen durur. Bütün cariler yolu (tek tarama) değişmedi.
+  const MOMENT_COLUMNS = `SELECT ev.effects_json AS effects, ev.created_at AS created,
+           (SELECT MAX(a.created_at) FROM audit_events a WHERE a.entity_id = ev.cheque_id AND a.type = 'cheque.updated' AND json_extract(a.payload_json, '$.invoiceId') IS NOT NULL) AS changed`;
+  const MOMENTS_ALL_SQL = `${MOMENT_COLUMNS}
+         FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id
+         WHERE ev.kind IN ('receive', 'issue') AND ev.invoice_id <> ''`;
+  const MOMENTS_ONE_SQL = `${MOMENT_COLUMNS}
+         FROM (SELECT DISTINCT source_id AS id FROM account_entries WHERE account_id = ?1 AND +source = 'cheque') own
+           CROSS JOIN cheque_events ev ON ev.cheque_id = own.id
+           CROSS JOIN cheques c ON c.id = ev.cheque_id
+         WHERE +ev.kind IN ('receive', 'issue') AND ev.invoice_id <> '' AND (c.account_id = ?1 OR c.endorse_account_id = ?1 OR ev.account_id = ?1)`;
   function chequeLinkMoments(accountId = null) {
     const out = new Map();
     try {
-      for (const row of store.all(
-        `SELECT ev.effects_json AS effects, ev.created_at AS created,
-           (SELECT MAX(a.created_at) FROM audit_events a WHERE a.entity_id = ev.cheque_id AND a.type = 'cheque.updated' AND json_extract(a.payload_json, '$.invoiceId') IS NOT NULL) AS changed
-         FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id
-         WHERE ev.kind IN ('receive', 'issue') AND ev.invoice_id <> ''${accountId ? " AND (c.account_id = ? OR c.endorse_account_id = ? OR ev.account_id = ?)" : ""}`,
-        ...(accountId ? [accountId, accountId, accountId] : []),
-      )) {
+      for (const row of accountId ? store.all(MOMENTS_ONE_SQL, accountId) : store.all(MOMENTS_ALL_SQL)) {
         const at = String(row.changed || "") > String(row.created || "") ? String(row.changed) : String(row.created || "");
         if (!at) continue;
         const effects = parseJson(row.effects, []);

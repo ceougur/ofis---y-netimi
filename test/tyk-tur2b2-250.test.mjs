@@ -323,7 +323,9 @@ describe("Ç5-B tur 2b-2 — gerçek program: S96 (çekle verilen avans kalemi),
     const open = await must("açık kart", api.post("/api/workspace/plans", { accountId: acc.id, name: "S118 Açık", total: "1000", mode: "auto", count: 1, firstDue: day(10), registeredOn: day(-15) }));
     await must("300", api.post(`/api/workspace/plans/${open.id}/entries`, { kind: "in", amount: "300", method: "cash", date: day(-10) }));
     const p = await must("kart oku", api.get(`/api/workspace/plans/${open.id}`));
-    assert.deepEqual([p.totals.remaining, p.totals.queueRemaining, p.ownNext.remaining, p.next.remaining, p.items[0].ownRemaining, p.items[0].remaining], [700, 600, 700, 600, 700, 600]);
+    // S129 = A (kapanış düzeltme turu): totals.remaining GÖSTERİLEN (kuyruk) Kalan 600; kartın kendi kalanı totals.ownRemaining 700 (formun sınırı / önerisi — S118 = B).
+    assert.deepEqual([p.totals.ownRemaining, p.totals.remaining, p.totals.queueRemaining, p.ownNext.remaining, p.next.remaining, p.items[0].ownRemaining, p.items[0].remaining], [700, 600, 600, 700, 600, 700, 600]);
+    assert.deepEqual([p.totals.ownPaid, p.totals.paid, p.items[0].ownPaid, p.items[0].paid], [300, 400, 300, 400], "Tahsil Edilen / Ödenen kuyruktan 400 (kart tahsilatı 300 + avans 100)");
     // Sunucu sınırı kartın kendi kalanından (S118 = B — DEĞİŞMEDİ): 700'ü aşan 800 'Kalanı Aşan Tutar'.
     const over = await api.post(`/api/workspace/plans/${open.id}/entries`, { kind: "in", amount: "800", method: "cash", date: day(-1) });
     assert.equal(over.status, 409);

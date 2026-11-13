@@ -1,0 +1,33 @@
+2.5.0 Ç5-B kapanış düzeltmesi (3/6): kartın Tahsil Edilen / Kalan / Ödenen'i tek kuyruktan (S129 = A) + form çelişkisi (DÜŞÜK-4)
+
+KULLANICI KARARI 12.11 13:26 (S129 = A): taksit kartının penceresindeki 'Tahsil Edilen' / 'Kalan'
+göstergeleri, Taksitler listesindeki aynı sütunlar ve taksit satırının 'Ödenen'i TEK KUYRUKTAN
+(kart 900, bağsız tahsilat 500 → Tahsil Edilen 500 · Kalan 400; kart 600, bağsız tahsilat 800 →
+Kalan 0 · Tamamlandı); tahsilat formunun sınırı / sorusu / önerisi kartın KENDİ kalanından (S118 = B).
+
+- Alan adları ayrıldı: kart yanıtında totals.paid / remaining ve items[].paid GÖSTERİLEN sayıdır;
+  kartın kendi hesabı totals.ownPaid / ownRemaining, items[].ownPaid / ownRemaining
+  (lib/plans.mjs allocate her yerde verir). Mutabakat Testi (plans:totals), mutabakat kapısı,
+  mutabakat motoru, K8 sınırı ve S118 = B kartın kendi alanlarını okur.
+- Tahsil Edilen = taksitin kuyrukta PARAYLA kapanan kısmı (kuyruk `collected`: kart tahsilatı + kart
+  seçilmeden alınan tahsilatın / avansın payı); Kalan = Toplam − Tahsil Edilen. Karar yalnız parayla
+  kapanışı söylüyor: netleşme (elle Alacak), Mevcut Borç kartının taksitlere bölünmemiş kısmı,
+  kartın kendi fazla tahsilatı (K8) ve kapatılmış kart BUGÜNKÜ gösteriminde bırakıldı (raporda
+  TOPLU SORULACAKLAR).
+- Aynı sayı: kart penceresi, Taksitler listesi + Taksit Listesi PDF, taksit ekstresi ve makbuz PDF,
+  Rapor Merkezi (Taksit Kartları, taksit vadeleri / gecikenler, aylık performans), cari kartının
+  taksit özeti ve Taksitten Kalan, Cari Listesi ekran / PDF / Excel, cari ekstresi özeti.
+  İç çağıranlar (kartı bakiyeye göre kırpma, taksitlendirilebilecek borç, WhatsApp, fatura kapaması)
+  kartın kendi hesabını okumayı sürdürür — bakiye ve defter değişmez.
+- DÜŞÜK-4: satırdaki ₺ düğmesi ve "Hangi Taksite" listesi kartın kendi kalanından (avansla kapalı
+  görünen ama kartın kendi hesabında açık taksit seçilebilir); açıklama satır durumuyla çelişmez
+  ("… carinin avansıyla kapalı görünüyor"; "gecikti" demez).
+- Mutabakat motoru: kart ↔ model karşılaştırması ownPaid ile; Taksit Kartları raporu için iki halka
+  (liste ownPaid = model; rapor = ekran).
+- Testler: test/tyk-kapanis-250 S129 bölümü (karar örnekleri, bütün yüzeyler, sınır, Mutabakat Testi),
+  senaryo-tyk-tur2a-250 E13 (ekrandan); beklentisi S129 ile değişen üç test güncellendi.
+  Kâhin ↔ program: 'Ç5-B tur 2' etiketli 74 kaydın 70'i kapandı, yeni fark 0 (liste yeniden
+  üretilecek). Mutantlar KD3-a … KD3-n (13 / 13 öldü; bir eşdeğer not edildi).
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og

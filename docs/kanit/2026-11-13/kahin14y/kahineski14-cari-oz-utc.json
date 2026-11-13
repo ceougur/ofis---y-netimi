@@ -1,0 +1,32 @@
+{
+  "ad": "kahineski14-cari-oz-utc",
+  "komut": "flock -s -n /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock python3 -I -B test/bagimsiz/cari/oz-test.py",
+  "commit": "ce1c1a1afc8205985131d29ab9391a736ff57cd3",
+  "dal": "kahin14y",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T23:12:49.341Z",
+  "sure_sn": 20.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5976,
+    "gecen": 5976,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../kahin14y/kanit/2026-11-12/kahineski14-cari-oz-utc.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8y-ag",
+  "ham_cikti_sha256": "023cfae390393f4f130ddac55c6faf9d1272b06d005744fbc62ff0c93f844dce",
+  "ham_cikti_bayt": 20000
+}

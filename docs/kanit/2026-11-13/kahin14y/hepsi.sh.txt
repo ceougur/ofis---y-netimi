@@ -1,0 +1,4 @@
+#!/bin/bash
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+for z in utc ist; do timeout 3400 bash $S/kahin14y/kos-benim.sh $z > $S/kahin14y/kos-$z.out 2>&1; echo "$z bitti çıkış $?"; grep -E "^== |^\[kanit\]" $S/kahin14y/kos-$z.out | cut -c1-150; done
+echo "kâhin 14 yeniden koşu bitti $(date -u +%T)"

@@ -1,0 +1,21 @@
+
+> destekofis@2.4.9 test:senaryo-kart-iade-gecmis-250
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-kart-iade-gecmis-250.mjs
+
+
+■ Kurulum: Rehber.xlsx (1 kayıt), banka (Ziraat + World kredi kartı)
+
+■ Kayıt seçilir; anahtarı okunur; kayda bağlı tedarikçi ve hareketleri (API)
+  ✓ kayıt anahtarı: 2026/250
+  ✓ veri tabanı: iade satırı kart hesabında ({"kind":"in","method":"card","finRef":"bacc-954a843b-831f-499c-a302-91365f80108b","amount":100})
+
+■ Sayfa yenilenir; kayıt yeniden seçilir; İşlem Geçmişi tamamı (Daha Fazla Göster) ekrandan okunur
+  (ekran satırları: ₺₺300,00 cariye ödeme (Kredi Kartı) · No 1 Toptancı A.Ş. · Kartla ödeme (03.10.2026)Ofis yöneticisi · 08.10.2026 09:00MakbuzKayda Git ‖ ₺₺100,00 cari tahsilatı (Kredi Kartına İade) · No 1 Toptancı A.Ş. · Karta iade · Makbuz No 1 (04.10.2026)Ofis yöneticisi · 08.10.2026 09:00MakbuzKayda Git ‖ ₺₺50,00 cari tahsilatı · No 1 Toptancı A.Ş. · Nakit iade · Makbuz No 2 (05.10.2026)Ofis yöneticisi · 08.10.2026 09:00MakbuzKayda Git)
+  ✓ kayda bağlı carinin 3 tahsilat / ödeme satırı (3)
+  ✓ iade satırı “cari tahsilatı (Kredi Kartına İade)” — ekran: “₺₺100,00 cari tahsilatı (Kredi Kartına İade) · No 1 Toptancı A.Ş. · Karta iade · Makbuz No 1 (04.10.2026)Ofis yöneticisi · 08.10.2026 09:00MakbuzKayda Git”
+  ✓ iade satırında “POS” yazmaz
+  ✓ ödeme satırı “cariye ödeme (Kredi Kartı)” — ekran: “₺₺300,00 cariye ödeme (Kredi Kartı) · No 1 Toptancı A.Ş. · Kartla ödeme (03.10.2026)Ofis yöneticisi · 08.10.2026 09:00MakbuzKayda Git”
+  ✓ nakit tahsilatta yol yazılmaz — ekran: “₺₺50,00 cari tahsilatı · No 1 Toptancı A.Ş. · Nakit iade · Makbuz No 2 (05.10.2026)Ofis yöneticisi · 08.10.2026 09:00MakbuzKayda Git”
+  ✓ sayfa hatası yok
+
+SONUÇ: 8 geçti, 0 kaldı

@@ -1,7 +1,7 @@
 // Tahsilat takvimi ve son tarihi yaklaşan işler (v2.0.1). Kayan ödeme şeridi ve sağ alt bildirimler bunu kullanır.
 // Sonuç; veri, tahsilatlar, elle kapatılan kalemler ve gün değişene kadar oturum başına önbellektedir.
 import { createHash } from "node:crypto";
-import { HttpError, ok, readJson, text } from "../lib/http.mjs";
+import { HttpError, ok, readJson, sendBody, text } from "../lib/http.mjs";
 import { caseCollections, caseCollectionsState } from "../lib/insight/case-collections.mjs";
 import { computeDeadlines, computeDues, dueSources, DUE_WINDOW } from "../lib/insight/dues.mjs";
 import { canUser } from "../lib/permissions.mjs";
@@ -150,8 +150,29 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
     // 2.4.3 H2: sürüm, kişinin görebildiği kalem türlerini de taşır (yetkisi değişen kişi takvimi yeniden alır).
     const version = `${data.version}.${Number(see.cheque)}${Number(see.invoice)}${Number(see.bank)}${Number(see.account)}`;
     if (url.searchParams.get("since") === version) return ok(res, { unchanged: true, version, today: data.today });
-    ok(res, { ...data, items: data.items.filter(item => (item.source !== "cheque" || see.cheque) && (item.source !== "invoice" || see.invoice) && (item.source !== "bank" || see.bank) && (item.source !== accountDues.SOURCE || see.account)), version });
+    sendBody(res, 200, bodyOf(data, see, version));
   });
+  // Ç5-B kapanış düzeltmesi (hız; ders 47, 53 — iş listesi D "5 DK YETKİSİYLE UYGULANDI … S132"): takvimin ILIK çağrısında (içerik aynı, ekran sürüm göndermemiş: ilk açılış,
+  // sayfa yenileme, başka personelin kaydından sonra herkesin yeniden alması) hesap yapılmaz — süre büyük yanıtın her çağrıda yeniden JSON'a çevrilmesiydi (100 bin satırlık
+  // veride ~39 bin kalem, ~21 MB; çağrı başına ~130 ms + çöp toplama). Gövde, hesabın sonucu (compute'un önbellekteki nesnesi) değişmediği sürece kişinin görebildiği kalem
+  // türleri başına BİR KEZ üretilir. Sonuç nesnesi değişince (her veri değişikliği yeni nesne üretir) eski gövdeler onunla birlikte bırakılır (WeakMap) — bayat yanıt
+  // verilmez. Baytlar öncekiyle birebir: aynı nesnenin JSON.stringify çıktısı (test/takvim-govde-250.test.mjs). Görünürlük anahtarı sürümün son hanesiyle aynı dört bayrak:
+  // yetkisi dar kişi başkasının gövdesini ALMAZ.
+  const bodies = new WeakMap(); // compute() sonucu → Map(görünürlük → Buffer)
+  const BODY_VARIANTS = 3; // aynı sonuç için saklanan en çok görünürlük çeşidi (büyük veride gövde onlarca MB)
+  function bodyOf(data, see, version) {
+    let variants = bodies.get(data);
+    if (!variants) bodies.set(data, (variants = new Map()));
+    const key = `${Number(see.cheque)}${Number(see.invoice)}${Number(see.bank)}${Number(see.account)}`;
+    let body = variants.get(key);
+    if (!body) {
+      const items = data.items.filter(item => (item.source !== "cheque" || see.cheque) && (item.source !== "invoice" || see.invoice) && (item.source !== "bank" || see.bank) && (item.source !== accountDues.SOURCE || see.account));
+      body = Buffer.from(JSON.stringify({ ok: true, data: { ...data, items, version } }), "utf8");
+      if (variants.size >= BODY_VARIANTS) variants.clear();
+      variants.set(key, body);
+    }
+    return body;
+  }
 
   // "Ödendi say" / "İptal": kalem, tahsilat girilmeden kapatılır (veri değişmez; kim, ne zaman kaydedilir).
   router.post("/api/workspace/dues/settle", async ({ req, res }) => {

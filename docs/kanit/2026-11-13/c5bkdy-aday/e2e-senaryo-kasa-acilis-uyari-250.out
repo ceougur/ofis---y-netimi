@@ -1,0 +1,39 @@
+
+> destekofis@2.4.9 test:senaryo-kasa-acilis-uyari-250
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-kasa-acilis-uyari-250.mjs
+
+
+■ 1. Temiz veri: Yönetim › Sistem 'N denetim tamam' (renksiz); Defter Mutabakatı Tutarlı, Uyarı satırı yok
+  ✓ "Mutabakat: 64 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı." (sarı false, kırmızı false)
+  ✓ uyarı cümlesi yok
+  ✓ Sonuç: Tutarlı
+  ✓ uyarı satırı / Fark Var yok
+
+■ 2. Silinenler'den geri alınan açılış öncesi hareket: Yönetim › Sistem SARI, 'N denetim tamam' aynen + uyarı ve ne yapılacağı; rapor satırı 'Uyarı', Sonuç 'Tutarlı'
+  ✓ sarı uyarı, kırmızı hata değil (sarı true, kırmızı false)
+  ✓ "N denetim tamam" aynen (N = 64): "Mutabakat: 64 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Uyarı (yeni işlemleri engellemez): Kasa Açılışından Önce Tarihl"
+  ✓ uyarı cümlesi ve hareket sayısı
+  ✓ ne yapılacağı (sunucunun hint'i) yazılı
+  ✓ 'sapma var' / 'eski sürümden kalan' yok
+  ✓ rapor satırı: ["Denetim","Kasa Açılışından Önce Tarihli Hareket","","","1 satır","Uyarı"]
+  ✓ Sonuç: Tutarlı
+  ✓ Fark Var / yöneticiye bildirin yok
+  ✓ alt başlık uyarıyı söyler
+
+■ 3. Uyarı gerçeği gizlemez: kapının görmediği gerçek sapma + uyarı → Yönetim KIRMIZI 'sapma var' + uyarı cümlesi; rapor Sonuç 'Fark Var', uyarı satırı yine 'Uyarı'
+2026-11-13T03:28:17.352Z [WARN] Mutabakat taraması: kapının görmediği 3 yeni sapma (100 Kasa (Nakit); Tanınmayan ödeme yolu (nakit, havale/EFT, POS/kredi kartı dışında); İşlem Başlığı Olmayan Para Satırı (v20'den sonra)).
+  ✓ kırmızı (sarı false, kırmızı true)
+  ✓ sapma listesinde gerçek sapma var, uyarı yok: "100 Kasa (Nakit), Tanınmayan ödeme yolu (nakit, havale/EFT, POS/kredi kartı dışında), İşlem Başlığı Olmayan Para Satırı (v20'den sonra)"
+  ✓ uyarı cümlesi yine yazılı
+  ✓ Sonuç: Fark Var
+  ✓ alt başlık: yöneticiye bildirin
+  ✓ uyarı satırı yine 'Uyarı': ["Denetim","Kasa Açılışından Önce Tarihli Hareket","","","1 satır","Uyarı"]
+  ✓ sayfa hatası yok
+
+TAMAM: 20 denetim geçti, 0 başarısız.
+
+# tests 20
+# pass 20
+# fail 0
+
+[kanit] c5bkdy-e2e-senaryo-kasa-acilis-uyari-250: GEÇTİ · çıkış 0 · 20/20 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit ec658a4 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4

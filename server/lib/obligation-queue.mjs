@@ -211,6 +211,15 @@ const prepaidOf = (state, previous = null) => {
   return out.size ? out : null;
 };
 const samePrepaid = (a, b) => (a?.size || 0) === (b?.size || 0) && [...(a || new Map())].every(([key, value]) => b?.get(key)?.advance === value.advance && b?.get(key)?.trim === value.trim);
+// Ç5-B kapanış düzeltmesi (dar kontrol ORTA-2; kullanıcının koşulu "kalemler toplamı = cari bakiyesi HER durumda tutar"): ön ödemeli geçiş sayısının üst sınırı. Ölçüm her
+// geçişte küçük adımlarla ilerleyebilir (kart fazlası başka borcu kapatır → o para kartın taşıdığı borca ulaşır → ölçüm büyür: geriye tarihli Alacak + kart tahsilatında geçiş
+// başına 20 TL, 25 geçiş) — sabit 12 yetmiyordu: döngü yakınsamadan bitince kart tahsilatı var olmayan taksiti kapatmış kalıyor, kalemler toplamı bakiyeyi aşıyordu. Sınır
+// carinin büyüklüğüne bağlı: toplam iş (geçiş × satır) sabit bütçede — küçük caride 400 geçişe kadar, çok satırlı caride en az 12 (ders 47: tek carinin kuyruğu saniyelere
+// çıkmasın). Sınırda da yakınsamazsa son ölçüm GÜVENLİ KAPANIŞLA uygulanır (queueOnce settle; settleExcess) — toplam asla bakiyeyi aşmaz.
+const PREPAID_MIN_PASSES = 12;
+const PREPAID_MAX_PASSES = 400;
+const PREPAID_WORK_BUDGET = 20_000; // geçiş × cari satırı
+export const prepaidPassLimit = lineCount => Math.max(PREPAID_MIN_PASSES, Math.min(PREPAID_MAX_PASSES, Math.floor(PREPAID_WORK_BUDGET / Math.max(1, lineCount))));
 
 function runQueue(input, mode, pieces) {
   let forced = coverForcing(input, mode, pieces);
@@ -221,13 +230,21 @@ function runQueue(input, mode, pieces) {
     state = queueOnce(input, mode, null, { pieces, forced });
   }
   let prepaid = prepaidOf(state);
-  for (let pass = 0; prepaid && pass < 12; pass += 1) {
+  let stable = !prepaid;
+  let passes = 0;
+  const limit = prepaidPassLimit((input.lines || []).length);
+  for (; prepaid && passes < limit; passes += 1) {
     state = queueOnce(input, mode, null, { pieces, forced, prepaid });
     const next = prepaidOf(state, prepaid);
-    if (samePrepaid(next, prepaid)) break;
+    if (samePrepaid(next, prepaid)) {
+      stable = true;
+      break;
+    }
     prepaid = next;
   }
-  const tagged = result => Object.assign(result, { prepaid });
+  // Yakınsamadı (sınır doldu): son ölçüm güvenli kapanışla uygulanır — kart tahsilatının var olmayan taksite yazdığı pay geri alınır, para carinin avansı olur.
+  if (!stable) state = queueOnce(input, mode, null, { pieces, forced, prepaid, settle: true });
+  const tagged = result => Object.assign(result, { prepaid, prepaidPasses: passes, prepaidStable: stable });
   // karar (3): kilit duyarlı bağlar varsa önce o bağlar SERBEST sayılarak oynatılır; hedefin kilit gününe kadar bağsız kapanmış kısmı ölçülür, ikinci geçişte bağ yalnız kalanı ayırır.
   if (state.lockLinks.length) {
     const probe = queueOnce(input, mode, new Map(state.lockLinks.map(link => [link.id, null])), { pieces, forced, prepaid });
@@ -240,11 +257,11 @@ function runQueue(input, mode, pieces) {
       const closedByL = target ? target.freeClosures.filter(c => c.date <= link.lock).reduce((sum, c) => sum + c.amount, 0) : 0;
       caps.set(link.id, closedByL);
     }
-    return tagged(queueOnce(input, mode, caps, { pieces, forced, prepaid }));
+    return tagged(queueOnce(input, mode, caps, { pieces, forced, prepaid, settle: !stable }));
   }
   return tagged(state);
 }
-function queueOnce(input, mode, lockCaps, { pieces = null, pseudo = null, forced = null, endCover = "", prepaid = null } = {}) {
+function queueOnce(input, mode, lockCaps, { pieces = null, pseudo = null, forced = null, endCover = "", prepaid = null, settle = false } = {}) {
   const { lines = [], invoices = [], links = new Map(), chequeEvents = new Map(), reversals = new Map(), offsets = [], schedules = new Map(), dueDates = new Map(), promises = new Map(), lockAt = () => "", linkTimes = new Map(), linkMoments = new Map() } = input;
   // Bağın kurulduğu an (O-1): düzeltmeyle kurulan / değişen bağda düzeltmenin anı, öbür durumda kaydın anı (routes/invoices.mjs linkTimesOf). Çek / senet satırında KESİN an
   // (tur 2b-1 ORTA-1; routes/invoices.mjs chequeLinkMoments): evrak düzeltmesi satırı yeniden yazsa da bağ değişmediyse an değişmez.
@@ -350,7 +367,7 @@ function queueOnce(input, mode, lockCaps, { pieces = null, pseudo = null, forced
           // Açılış günü: ön geçişte bilinen satırların sonu; asıl geçişte Kayıt Tarihi ile tükettiği kalemlerin en geç doğduğu günün büyüğü (coverForcing; Y-1).
           const shifted = forced?.get(line.planId)?.date || "";
           const opened = endCover === line.planId ? END_OF_STREAM : shifted > line.date ? shifted : line.date;
-          const card = cardOf(line.planId, "cover", { date: opened, at, rank: r, coverTotal: cents(line.coverTotal), coverGross: cents(line.coverGross ?? line.coverTotal), source: line.coverSource || "" });
+          const card = cardOf(line.planId, "cover", { date: opened, at, rank: r, coverTotal: cents(line.coverTotal), coverGross: cents(line.coverGross ?? line.coverTotal), source: line.coverSource || "", sale: line.coverSale || "" });
           // Kapsam tutarı (coverTotal) kartın açıldığı andaki tutardır; kart sonradan küçültülmüşse (iade → coverState, Tutarı Düzenle) taksitleri bugünkü tutardır —
           // eksik kısım "kalan tek kalem" olarak geri EKLENMEZ (iade-210 K: kart 250, Vade Takip 250).
           const scheduled = (schedules.get(line.planId) || []).reduce((sum, row) => sum + cents(row.amount), 0);
@@ -625,7 +642,16 @@ function queueOnce(input, mode, lockCaps, { pieces = null, pseudo = null, forced
   // S123 / S124 = C (BİLİNEN SINIR): özel kural yok — elle borçların toplamı T'den azsa artan kapasite S101 / EK-2B 32 yoluyla; eşit birden çok elle borçta S120 kolu.
   const isElle = target => target.kind === "entry" && target.sign > 0 && target.line?.origin === "account";
   const DEBT_KINDS = new Set(["invoice", "entry", "stock", "bounce"]);
+  // Ç5-B kapanış düzeltmesi (dar kontrol ORTA-1 — GERİLEME; S110 = A "stoktan satışta o satışı"; S133 = C): satışla açılan kartın KAYNAĞI kalıcı bilgidir — kartın
+  // açılış kaydındaki satış kimliği (card.sale: stok hareketi; routes/plans.mjs saleSources — denetim izi). Kart o satışı HER KOŞULDA tanır: tutarı sonradan düzenlenmiş
+  // (Tutarı Düzenle), iadeyle küçülmüş, araya başka borç yazılmış olsa da. Önceden tanıma "bugünkü tutar + iade kesintisi = satış tutarı" ya da "kayıt anı eşit" koşuluna
+  // dayanıyordu: tutar düzenlenince ve gerçek (akan) saatte ikisi de tutmuyor, kart elle kola (S120) düşüp carinin elle borcunu içine alıyordu. Kaynağı bilinmeyen kart
+  // (elle açılan; izi olmayan eski kart) aşağıdaki eski tanımada AYNEN kalır (S133 = C — BİLİNEN SINIR: elle kartın tutarı en son taksitsiz stok satışına eşitse sonuç
+  // kayıt sırasına bağlı).
+  const saleItemOf = card => (card.sale ? items.find(item => item.kind === "stock" && item.sign > 0 && !item.line?.stockReason && item.line?.sourceId === card.sale) || null : null);
   const ownSaleOf = card => {
+    const known = saleItemOf(card);
+    if (known) return known;
     let newest = null;
     for (const item of items) {
       if (!(item.sign > 0) || !DEBT_KINDS.has(item.kind) || item.ownCard || (card.at && item.recorded && item.recorded > card.at)) continue;
@@ -635,7 +661,7 @@ function queueOnce(input, mode, lockCaps, { pieces = null, pseudo = null, forced
     // iadeyle küçülmüşse (v2.4.9 verisinde iade kesintisi kayıtlı değil; fikstür C) aynı kayıt anı da yeter.
     return newest && newest.kind === "stock" && !newest.line?.stockReason && (newest.amount === card.coverGross || (card.at && newest.recorded === card.at)) ? newest : null;
   };
-  const coverEvent = card => {
+  const coverEvent = (card, schedule) => {
     // Kartın taksitleri kuyrukta zaten (olay sırası); burada yalnız alttaki açık borçlar tüketilir.
     const pool = mode === "net" ? open.netDebit : open.rDue;
     pool.sort(s2);
@@ -723,6 +749,37 @@ function queueOnce(input, mode, lockCaps, { pieces = null, pseudo = null, forced
       inst.amount -= cut;
       excess -= cut;
     }
+    if (excess > 0 && settle) settleExcess(card, excess, schedule);
+  };
+  // GÜVENLİ KAPANIŞ (Ç5-B kapanış düzeltmesi, ORTA-2; yalnız ön ödeme ölçümü sınırda yakınsamadıysa — runQueue): kırpılacak kısım açık taksitlerden karşılanamıyorsa o kadar
+  // taksiti KART TAHSİLATI kapatmıştır — taşınmayan borcun taksiti. Tahsilatın o payı en son taksitten geri alınır (taksit o kadar kırpılır) ve para kartın fazlası olur:
+  // carinin avansı — kendi gününde (kartın son tahsilat günü; geçmişte kaldıysa kartın açıldığı anda) bağsız ödeme gibi dağılır (S101 "kartın tahsilatı müşterinin avansına
+  // eklenir; sonraki borç avanstan kapanır"). Böylece taksitler = taşınan borç + avansla ödenmiş kısım; kalemler toplamı = bakiye. Yakınsayan caride bu dal ÇALIŞMAZ (kırpma 0).
+  const settleExcess = (card, excess, schedule) => {
+    let freed = 0;
+    for (const inst of [...card.installments].sort(s2).reverse()) {
+      for (let i = inst.closures.length - 1; i >= 0 && excess > 0; i -= 1) {
+        const closure = inst.closures[i];
+        if (closure.reverse || closure.mode !== "linked" || closure.payer?.kind === "advance") continue;
+        const amount = Math.min(closure.amount, excess);
+        closure.amount -= amount;
+        const back = (closure.payer?.closures || []).find(row => row.reverse && row.payer === inst);
+        if (back) {
+          back.amount -= amount;
+          if (!(back.amount > 0)) closure.payer.closures.splice(closure.payer.closures.indexOf(back), 1);
+        }
+        if (!(closure.amount > 0)) inst.closures.splice(i, 1);
+        inst.amount -= amount;
+        excess -= amount;
+        freed += amount;
+      }
+      if (!(excess > 0)) break;
+    }
+    if (!(freed > 0)) return;
+    const last = card.payments.filter(p => p.amount > 0).at(-1)?.line || card.payments.at(-1)?.line;
+    if (!last) return;
+    const item = add({ key: `card-settle:${card.planId}`, kind: "payment", lineId: `plan-settle:${card.planId}`, line: { ...last, id: `plan-settle:${card.planId}`, label: "Taksit kartından artan ödeme" }, sign: -1, side: "r", due: false, role: { recvDue: false, recvPay: true, payDue: false, payPay: false }, amount: freed, date: last.date, vade: last.date, at: String(last.at || ""), rank: rank.get(last.id) ?? 0, cls: 2, born: last.date });
+    schedule(item);
   };
   // Ç5-B tur 2b-2 — NET görünümde (G1) karşı yönlü kalemler (iş listesi D 10.11 13:20 / 18:28; kâhin KARARLAR Y5-1, Y6-1, Y6-9 okumalarıyla aynı):
   //   S105 = A: gelen alacak yönlü YÜKÜMLÜLÜK kalemi (alış faturası, elle Alacak, alacaklı Açılış) önce açık ALIŞ İADESİ alacağını (stoktan Alış İadesi, faturalı Alış
@@ -803,9 +860,24 @@ function queueOnce(input, mode, lockCaps, { pieces = null, pseudo = null, forced
     if (mode === "net" && item.left > 0 && freePayment(item) && nettings.length) unnet(item);
     if (item.left > 0) listFor(item, true).push(item);
   };
-  for (const event of events) {
-    if (event.type === "cover") coverEvent(event.card);
-    else if (event.item.left > 0) arrive(event.item);
+  for (let index = 0; index < events.length; index += 1) {
+    const event = events[index];
+    if (event.type !== "cover") {
+      if (event.item.left > 0) arrive(event.item);
+      continue;
+    }
+    // Güvenli kapanışın serbest bıraktığı para: günü henüz gelmediyse kalan olayların arasına sırasıyla girer; günü geçtiyse şimdi dağılır (kartın açıldığı an).
+    coverEvent(event.card, item => {
+      const own = { type: "item", item, date: item.born, cls: item.cls, at: item.at, rank: item.rank, sub: item.sub };
+      if (eventOrder(own, event) <= 0) {
+        item.born = event.date;
+        arrive(item);
+        return;
+      }
+      let at = index + 1;
+      while (at < events.length && eventOrder(events[at], own) <= 0) at += 1;
+      events.splice(at, 0, own);
+    });
   }
   // S101 ölçümü (olaylar bittikten sonra, kartlar kayıt anı sırasıyla): kartın tüketemediği kısım (leftover) kartın taşıdığı borcun bağsız PARAYLA kapanmış kısmından
   // karşılanıyorsa o kadarı avansla ödenmiş sayılır; önce bu geçişte zaten yazılmış ön ödeme (preA) kendi payını ayırır (aynı para iki kartta sayılmasın).
@@ -963,7 +1035,11 @@ function assemble(input, side, net) {
     const map = new Map();
     for (const inst of card.installments) {
       const byAccount = inst.closures.filter(c => !c.reverse && c.mode !== "linked").reduce((sum, c) => sum + c.amount, 0);
-      map.set(inst.itemId || "rest", { remaining: tl(inst.left), doubtful: tl(held.get(inst.key) || 0), paid: tl(inst.amount - inst.left), byAccount: tl(byAccount), amount: tl(inst.amount), vade: inst.vade, seq: inst.seq || 0 });
+      // collected (Ç5-B kapanış düzeltmesi, S129 = A): taksitin TAHSİL EDİLEN kısmı — kart tahsilatı (bağlı) + kart seçilmeden gelen bağsız ödemenin payı (tahsilat, evrak,
+      // faturasız stok iadesi, kart / bağ fazlası — S50) + avansla ödenmiş sayılan kısım (S101). İki YÜKÜMLÜLÜK kaleminin netleşmesi (elle Alacak, alış faturası — karar
+      // (5) / S92) tahsilat değildir: sayılmaz (o caride kartın gösterimi bugünkü gibi kalır — kâhin C16.2 "karşı yönlü kalemli kartlı cari: tanım alanı dışı").
+      const collected = inst.closures.filter(c => !c.reverse && !c.payer?.due).reduce((sum, c) => sum + c.amount, 0);
+      map.set(inst.itemId || "rest", { remaining: tl(inst.left), doubtful: tl(held.get(inst.key) || 0), paid: tl(inst.amount - inst.left), collected: tl(collected), byAccount: tl(byAccount), amount: tl(inst.amount), vade: inst.vade, seq: inst.seq || 0 });
     }
     // Ç5-B tur 2a (O-3, S91 = A): kartın "Taksit İadesi" kalemi (iadeler tahsilatı aşınca; kartın borcudur) — takvim / zil / Vade Takip / nakit akışı kalemi (routes/plans.mjs).
     if (card.back) map.set("back", { remaining: tl(card.back.left), doubtful: tl(held.get(card.back.key) || 0), paid: tl(card.back.amount - card.back.left), byAccount: 0, amount: tl(card.back.amount), vade: card.back.vade, seq: 0 });
@@ -981,5 +1057,6 @@ function assemble(input, side, net) {
   // rule (tur 2b-2): kartın taşıdığı borcun seçimi — "s2" (açık borç ≤ kart tutarı: eski kural), "S110-satis" / "S110-elle" (kart kendi borcunu taşır), "S120" (yalnız elle
   // borçlar); advance: S101 — kartın avansla ödenmiş sayılan kısmı; trimmed: para dışı kapanmış eksik (EK-2B 32).
   const coverage = new Map([...net.cards.values()].filter(card => card.kind === "cover").map(card => [card.planId, { consumed: tl(card.consumed || 0), capacity: tl(Math.min(card.coverTotal || 0, card.capacity ?? 0)), paid: card.payments.some(p => p.amount > 0), rule: card.rule || "s2", advance: tl(card.advance || 0), trimmed: tl(Math.max(0, (card.trimmed || 0) - ((card.capacity ?? 0) - Math.min(card.coverTotal || 0, card.capacity ?? 0)))) }]));
-  return { invoices: out, entries, items: viewItems, invoiceNet, installments, doubtful: { amount: tl(doubtful.amount), items: doubtful.items }, overdue, coverage };
+  // prepaidPasses (tanı; Ç5-B kapanış düzeltmesi): S101 ön ödeme ölçümünün geçiş sayısı (iki görünümün büyüğü) ve yakınsayıp yakınsamadığı (false → güvenli kapanış uygulandı).
+  return { invoices: out, entries, items: viewItems, invoiceNet, installments, doubtful: { amount: tl(doubtful.amount), items: doubtful.items }, overdue, coverage, prepaidPasses: { count: Math.max(side.prepaidPasses || 0, net.prepaidPasses || 0), stable: side.prepaidStable !== false && net.prepaidStable !== false } };
 }

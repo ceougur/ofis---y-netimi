@@ -120,7 +120,9 @@ export function allocate(plan, items, entries, { today = isoDay(new Date()), soo
     else if (days < 0) state = "overdue";
     else if (days === 0) state = "today";
     else if (days <= soonDays) state = "upcoming";
-    return { ...item, paid, remaining, partial: paid > EPS && remaining > EPS, days, state };
+    // ownPaid / ownRemaining (2.5.0 Ç5-B kapanış düzeltmesi, S129 = A): kartın KENDİ hesabı (kart tahsilatları) — kart ekranı `paid` / `remaining`i Tek Yükümlülük
+    // Kuyruğu'ndan gösterir (routes/plans.mjs withQueue); sınır / soru / önerilen tutar (S118 = B), Mutabakat Testi ve mutabakat motoru bu alanları okur.
+    return { ...item, paid, remaining, ownPaid: paid, ownRemaining: remaining, partial: paid > EPS && remaining > EPS, days, state };
   });
   const planned = roundMoney(shaped.reduce((sum, item) => sum + item.amount, 0));
   const net = roundMoney(paidIn - paidOut);
@@ -136,7 +138,7 @@ export function allocate(plan, items, entries, { today = isoDay(new Date()), soo
   else if (overdue.length) state = "overdue";
   return {
     items: shaped,
-    totals: { total, planned, unplanned, paidIn: roundMoney(paidIn), paidOut: roundMoney(paidOut), paid: net, remaining, extra, overdue: overdueAmount, overdueCount: overdue.length },
+    totals: { total, planned, unplanned, paidIn: roundMoney(paidIn), paidOut: roundMoney(paidOut), paid: net, remaining, ownPaid: net, ownRemaining: remaining, extra, overdue: overdueAmount, overdueCount: overdue.length },
     next: next ? { id: next.id, seq: next.seq, dueDate: next.dueDate, remaining: next.remaining, days: next.days, state: next.state } : null,
     state,
   };

@@ -1,0 +1,869 @@
+{
+ "S99": {
+  "bakiye": 300,
+  "sigmaKalem": 300,
+  "sigmaTutuyor": true,
+  "gecikmisKart": 300,
+  "eskiGeciken": 150,
+  "gecikmisListe": 300,
+  "listeSuzgecte": true,
+  "vadeGecikmis": 300,
+  "zilGecikmis": 300,
+  "vade": [
+   "invoice:in:300@2026-09-05"
+  ],
+  "zil": [
+   "invoice:300:overdue"
+  ],
+  "kalan": [],
+  "kayitKalan": [],
+  "faturalar": [
+   {
+    "no": "FIS2026000000001",
+    "state": "paid",
+    "open": 0,
+    "closers": [
+     "Otomatik (vadesi en önce gelen):150@2026-08-21",
+     "Otomatik (vadesi en önce gelen):150@2026-08-21"
+    ]
+   },
+   {
+    "no": "FIS2026000000002",
+    "state": "overdue",
+    "open": 300,
+    "closers": [
+     "Otomatik (vadesi en önce gelen):200@2026-08-21"
+    ]
+   }
+  ],
+  "kartlar": [
+   {
+    "state": "done",
+    "items": [
+     0,
+     0
+    ],
+    "ownItems": [
+     150,
+     150
+    ],
+    "paidItems": [
+     0,
+     0
+    ],
+    "own": 300,
+    "paid": 0,
+    "queue": 0,
+    "accountPaid": 300,
+    "overdue": 0,
+    "next": null,
+    "ownNext": 150
+   }
+  ],
+  "kapsama": [],
+  "mutabakat": true
+ },
+ "S101": {
+  "kartAcilinca": {
+   "bakiye": -400,
+   "sigmaKalem": -400,
+   "sigmaTutuyor": true,
+   "gecikmisKart": 0,
+   "eskiGeciken": 300,
+   "gecikmisListe": 0,
+   "listeSuzgecte": false,
+   "vadeGecikmis": 0,
+   "zilGecikmis": 0,
+   "vade": [],
+   "zil": [],
+   "kalan": [],
+   "kayitKalan": [
+    "stock/debt:600→0"
+   ],
+   "faturalar": [],
+   "kartlar": [
+    {
+     "state": "done",
+     "items": [
+      0,
+      0
+     ],
+     "ownItems": [
+      300,
+      300
+     ],
+     "paidItems": [
+      0,
+      0
+     ],
+     "own": 600,
+     "paid": 0,
+     "queue": 0,
+     "accountPaid": 600,
+     "overdue": 0,
+     "next": null,
+     "ownNext": 300
+    }
+   ],
+   "kapsama": [
+    "s2 tük 0/600 avans 600 kırp 0"
+   ]
+  },
+  "tahsilatYaniti": "200 {\"id\":\"plan-1439205e-7e21-4f67-ace6-976b55a3c178\",\"accountId\":\"account-5ad89d32-d28b-4243-b10d-8e5c55c73113\",\"refNo\":\"1\",\"registeredOn\":\"2025-09-15\",\"caseKey\":\"",
+  "tahsilattanSonra": {
+   "bakiye": -700,
+   "sigmaKalem": -700,
+   "sigmaTutuyor": true,
+   "gecikmisKart": 0,
+   "eskiGeciken": 0,
+   "gecikmisListe": 0,
+   "listeSuzgecte": false,
+   "vadeGecikmis": 0,
+   "zilGecikmis": 0,
+   "vade": [],
+   "zil": [],
+   "kalan": [],
+   "kayitKalan": [
+    "stock/debt:600→0"
+   ],
+   "faturalar": [],
+   "kartlar": [
+    {
+     "state": "done",
+     "items": [
+      0,
+      0
+     ],
+     "ownItems": [
+      0,
+      300
+     ],
+     "paidItems": [
+      300,
+      0
+     ],
+     "own": 300,
+     "paid": 300,
+     "queue": 0,
+     "accountPaid": 600,
+     "overdue": 0,
+     "next": null,
+     "ownNext": 300
+    }
+   ],
+   "kapsama": [
+    "s2 tük 0/600 avans 600 kırp 0"
+   ]
+  },
+  "son": {
+   "bakiye": -200,
+   "sigmaKalem": -200,
+   "sigmaTutuyor": true,
+   "gecikmisKart": 0,
+   "eskiGeciken": 0,
+   "gecikmisListe": 0,
+   "listeSuzgecte": false,
+   "vadeGecikmis": 0,
+   "zilGecikmis": 0,
+   "vade": [],
+   "zil": [],
+   "kalan": [
+    "B500:500→0"
+   ],
+   "kayitKalan": [
+    "stock/debt:600→0",
+    "account/debt:500→0"
+   ],
+   "faturalar": [],
+   "kartlar": [
+    {
+     "state": "done",
+     "items": [
+      0,
+      0
+     ],
+     "ownItems": [
+      0,
+      300
+     ],
+     "paidItems": [
+      300,
+      0
+     ],
+     "own": 300,
+     "paid": 300,
+     "queue": 0,
+     "accountPaid": 600,
+     "overdue": 0,
+     "next": null,
+     "ownNext": 300
+    }
+   ],
+   "kapsama": [
+    "s2 tük 0/600 avans 600 kırp 0"
+   ]
+  },
+  "mutabakat": true
+ },
+ "S102": {
+  "bakiye": -600,
+  "sigmaKalem": -600,
+  "sigmaTutuyor": true,
+  "gecikmisKart": 0,
+  "eskiGeciken": 0,
+  "gecikmisListe": 0,
+  "listeSuzgecte": false,
+  "vadeGecikmis": 0,
+  "zilGecikmis": 0,
+  "vade": [
+   "account:out:300@2026-09-21"
+  ],
+  "zil": [
+   "account:300:overdue"
+  ],
+  "kalan": [
+   "B:1000→0",
+   "X:300→300",
+   "Y:300→0"
+  ],
+  "kayitKalan": [
+   "account/debt:1000→0",
+   "account/credit:-300→300",
+   "account/credit:-300→0"
+  ],
+  "faturalar": [],
+  "kartlar": [],
+  "kapsama": [],
+  "mutabakat": true
+ },
+ "S103": {
+  "bakiye": -300,
+  "sigmaKalem": -300,
+  "sigmaTutuyor": true,
+  "gecikmisKart": 0,
+  "eskiGeciken": 0,
+  "gecikmisListe": 0,
+  "listeSuzgecte": false,
+  "vadeGecikmis": 0,
+  "zilGecikmis": 0,
+  "vade": [],
+  "zil": [],
+  "kalan": [],
+  "kayitKalan": [],
+  "faturalar": [
+   {
+    "no": "ALS17945162278151",
+    "state": "paid",
+    "open": 0,
+    "closers": [
+     "Otomatik (vadesi en önce gelen):300@2026-09-20"
+    ]
+   }
+  ],
+  "kartlar": [],
+  "kapsama": [],
+  "mutabakat": true
+ },
+ "S104": {
+  "bakiye": -400,
+  "sigmaKalem": -400,
+  "sigmaTutuyor": true,
+  "gecikmisKart": 0,
+  "eskiGeciken": 0,
+  "gecikmisListe": 0,
+  "listeSuzgecte": false,
+  "vadeGecikmis": 0,
+  "zilGecikmis": 0,
+  "vade": [
+   "account:out:200@2026-11-19"
+  ],
+  "zil": [],
+  "kalan": [
+   "Alacak:200→200"
+  ],
+  "kayitKalan": [
+   "account/credit:-200→200"
+  ],
+  "faturalar": [],
+  "kartlar": [],
+  "kapsama": [],
+  "mutabakat": true
+ },
+ "S105": {
+  "iade": 200,
+  "bakiye": 250,
+  "sigmaKalem": 250,
+  "sigmaTutuyor": true,
+  "gecikmisKart": 250,
+  "eskiGeciken": 0,
+  "gecikmisListe": 250,
+  "listeSuzgecte": true,
+  "vadeGecikmis": 250,
+  "zilGecikmis": 250,
+  "vade": [
+   "account:in:250@2026-09-20"
+  ],
+  "zil": [
+   "account:250:overdue"
+  ],
+  "kalan": [],
+  "kayitKalan": [],
+  "faturalar": [
+   {
+    "no": "ALS17945162299041",
+    "state": "paid",
+    "open": 0,
+    "closers": [
+     "Otomatik (vadesi en önce gelen):250@2026-09-20"
+    ]
+   }
+  ],
+  "kartlar": [],
+  "kapsama": [],
+  "mutabakat": true
+ },
+ "S110_elle": {
+  "bakiye": 1500,
+  "sigmaKalem": 1500,
+  "sigmaTutuyor": true,
+  "gecikmisKart": 900,
+  "eskiGeciken": 300,
+  "gecikmisListe": 900,
+  "listeSuzgecte": true,
+  "vadeGecikmis": 900,
+  "zilGecikmis": 900,
+  "vade": [
+   "invoice:in:600@2026-09-02",
+   "plan:in:300@2026-10-10",
+   "plan:in:300@2026-11-10",
+   "plan:in:300@2026-12-10"
+  ],
+  "zil": [
+   "invoice:600:overdue",
+   "plan:300:overdue"
+  ],
+  "kalan": [
+   "E900:900→900"
+  ],
+  "kayitKalan": [
+   "account/debt:900→900"
+  ],
+  "faturalar": [
+   {
+    "no": "FIS2026000000001",
+    "state": "overdue",
+    "open": 600,
+    "closers": []
+   }
+  ],
+  "kartlar": [
+   {
+    "state": "overdue",
+    "items": [
+     300,
+     300,
+     300
+    ],
+    "ownItems": [
+     300,
+     300,
+     300
+    ],
+    "paidItems": [
+     0,
+     0,
+     0
+    ],
+    "own": 900,
+    "paid": 0,
+    "queue": 900,
+    "accountPaid": 0,
+    "overdue": 300,
+    "next": 300,
+    "ownNext": 300
+   }
+  ],
+  "kapsama": [
+   "S110-elle tük 900/900 avans 0 kırp 0"
+  ],
+  "mutabakat": true
+ },
+ "S110_stok": {
+  "bakiye": 1500,
+  "sigmaKalem": 1500,
+  "sigmaTutuyor": true,
+  "gecikmisKart": 1000,
+  "eskiGeciken": 500,
+  "gecikmisListe": 1000,
+  "listeSuzgecte": true,
+  "vadeGecikmis": 1000,
+  "zilGecikmis": 1000,
+  "vade": [
+   "account:in:500@2026-08-31",
+   "plan:in:500@2026-09-30",
+   "plan:in:500@2026-10-30"
+  ],
+  "zil": [
+   "account:500:overdue",
+   "plan:500:overdue"
+  ],
+  "kalan": [
+   "B500:500→500"
+  ],
+  "kayitKalan": [
+   "account/debt:500→500",
+   "stock/debt:1000→1000"
+  ],
+  "faturalar": [],
+  "kartlar": [
+   {
+    "state": "overdue",
+    "items": [
+     500,
+     500
+    ],
+    "ownItems": [
+     500,
+     500
+    ],
+    "paidItems": [
+     0,
+     0
+    ],
+    "own": 1000,
+    "paid": 0,
+    "queue": 1000,
+    "accountPaid": 0,
+    "overdue": 500,
+    "next": 500,
+    "ownNext": 500
+   }
+  ],
+  "kapsama": [
+   "S110-satis tük 1000/1000 avans 0 kırp 0"
+  ],
+  "mutabakat": true
+ },
+ "S120_S122": {
+  "once": {
+   "bakiye": 1800,
+   "sigmaKalem": 1800,
+   "sigmaTutuyor": true,
+   "gecikmisKart": 1200,
+   "eskiGeciken": 300,
+   "gecikmisListe": 1200,
+   "listeSuzgecte": true,
+   "vadeGecikmis": 1200,
+   "zilGecikmis": 1200,
+   "vade": [
+    "account:in:300@2026-08-31",
+    "invoice:in:600@2026-08-21",
+    "plan:in:300@2026-10-10",
+    "plan:in:300@2026-11-10",
+    "plan:in:300@2026-12-10"
+   ],
+   "zil": [
+    "account:300:overdue",
+    "invoice:600:overdue",
+    "plan:300:overdue"
+   ],
+   "kalan": [
+    "X:500→500",
+    "Y:700→700"
+   ],
+   "kayitKalan": [
+    "account/debt:500→500",
+    "account/debt:700→700"
+   ],
+   "faturalar": [
+    {
+     "no": "FIS2026000000001",
+     "state": "overdue",
+     "open": 600,
+     "closers": []
+    }
+   ],
+   "kartlar": [
+    {
+     "state": "overdue",
+     "items": [
+      300,
+      300,
+      300
+     ],
+     "ownItems": [
+      300,
+      300,
+      300
+     ],
+     "paidItems": [
+      0,
+      0,
+      0
+     ],
+     "own": 900,
+     "paid": 0,
+     "queue": 900,
+     "accountPaid": 0,
+     "overdue": 300,
+     "next": 300,
+     "ownNext": 300
+    }
+   ],
+   "kapsama": [
+    "S120 tük 900/900 avans 0 kırp 0"
+   ]
+  },
+  "sonra": {
+   "bakiye": 1500,
+   "sigmaKalem": 1500,
+   "sigmaTutuyor": true,
+   "gecikmisKart": 900,
+   "eskiGeciken": 0,
+   "gecikmisListe": 900,
+   "listeSuzgecte": true,
+   "vadeGecikmis": 900,
+   "zilGecikmis": 900,
+   "vade": [
+    "account:in:300@2026-08-31",
+    "invoice:in:600@2026-08-21",
+    "plan:in:300@2026-11-10",
+    "plan:in:300@2026-12-10"
+   ],
+   "zil": [
+    "account:300:overdue",
+    "invoice:600:overdue"
+   ],
+   "kalan": [
+    "X:500→200",
+    "Y:700→700"
+   ],
+   "kayitKalan": [
+    "account/debt:500→200",
+    "account/debt:700→700"
+   ],
+   "faturalar": [
+    {
+     "no": "FIS2026000000001",
+     "state": "overdue",
+     "open": 600,
+     "closers": []
+    }
+   ],
+   "kartlar": [
+    {
+     "state": "active",
+     "items": [
+      0,
+      300,
+      300
+     ],
+     "ownItems": [
+      0,
+      300,
+      300
+     ],
+     "paidItems": [
+      300,
+      0,
+      0
+     ],
+     "own": 600,
+     "paid": 300,
+     "queue": 600,
+     "accountPaid": 0,
+     "overdue": 0,
+     "next": 300,
+     "ownNext": 300
+    }
+   ],
+   "kapsama": [
+    "S120 tük 900/900 avans 0 kırp 0"
+   ]
+  },
+  "mutabakat": true
+ },
+ "S120_600": {
+  "bakiye": 1500,
+  "sigmaKalem": 1500,
+  "sigmaTutuyor": true,
+  "gecikmisKart": 1200,
+  "eskiGeciken": 300,
+  "gecikmisListe": 1200,
+  "listeSuzgecte": true,
+  "vadeGecikmis": 1200,
+  "zilGecikmis": 1200,
+  "vade": [
+   "account:in:300@2026-08-31",
+   "invoice:in:600@2026-09-02",
+   "plan:in:300@2026-10-10",
+   "plan:in:300@2026-11-10"
+  ],
+  "zil": [
+   "account:300:overdue",
+   "invoice:600:overdue",
+   "plan:300:overdue"
+  ],
+  "kalan": [
+   "E900:900→900"
+  ],
+  "kayitKalan": [
+   "account/debt:900→900"
+  ],
+  "faturalar": [
+   {
+    "no": "FIS2026000000001",
+    "state": "overdue",
+    "open": 600,
+    "closers": []
+   }
+  ],
+  "kartlar": [
+   {
+    "state": "overdue",
+    "items": [
+     300,
+     300
+    ],
+    "ownItems": [
+     300,
+     300
+    ],
+    "paidItems": [
+     0,
+     0
+    ],
+    "own": 600,
+    "paid": 0,
+    "queue": 600,
+    "accountPaid": 0,
+    "overdue": 300,
+    "next": 300,
+    "ownNext": 300
+   }
+  ],
+  "kapsama": [
+   "S120 tük 600/600 avans 0 kırp 0"
+  ],
+  "mutabakat": true
+ },
+ "S126": {
+  "bakiye": 600,
+  "sigmaKalem": 600,
+  "sigmaTutuyor": true,
+  "gecikmisKart": 0,
+  "eskiGeciken": 0,
+  "gecikmisListe": 0,
+  "listeSuzgecte": false,
+  "vadeGecikmis": 0,
+  "zilGecikmis": 0,
+  "vade": [
+   "plan:in:300@2026-11-10",
+   "plan:in:300@2026-12-10"
+  ],
+  "zil": [],
+  "kalan": [
+   "X:300→300"
+  ],
+  "kayitKalan": [
+   "account/debt:300→300"
+  ],
+  "faturalar": [
+   {
+    "no": "FIS2026000000001",
+    "state": "overdue",
+    "open": 300,
+    "closers": [
+     "Bağlı:300@2026-10-15"
+    ]
+   }
+  ],
+  "kartlar": [
+   {
+    "state": "active",
+    "items": [
+     0,
+     300,
+     300
+    ],
+    "ownItems": [
+     0,
+     300,
+     300
+    ],
+    "paidItems": [
+     300,
+     0,
+     0
+    ],
+    "own": 600,
+    "paid": 300,
+    "queue": 600,
+    "accountPaid": 0,
+    "overdue": 0,
+    "next": 300,
+    "ownNext": 300
+   }
+  ],
+  "kapsama": [
+   "s2 tük 900/900 avans 0 kırp 0"
+  ],
+  "mutabakat": true
+ },
+ "S128": {
+  "bakiye": 400,
+  "sigmaKalem": 400,
+  "sigmaTutuyor": true,
+  "gecikmisKart": 50,
+  "eskiGeciken": 50,
+  "gecikmisListe": 50,
+  "listeSuzgecte": true,
+  "vadeGecikmis": 50,
+  "zilGecikmis": 50,
+  "vade": [
+   "plan:in:350@2026-11-10",
+   "plan:in:50@2026-10-10"
+  ],
+  "zil": [
+   "plan:50:overdue"
+  ],
+  "kalan": [
+   "X:300→300"
+  ],
+  "kayitKalan": [
+   "stock/debt:400→100",
+   "account/debt:300→300"
+  ],
+  "faturalar": [],
+  "kartlar": [
+   {
+    "state": "overdue",
+    "items": [
+     50,
+     350
+    ],
+    "ownItems": [
+     50,
+     350
+    ],
+    "paidItems": [
+     300,
+     0
+    ],
+    "own": 400,
+    "paid": 300,
+    "queue": 400,
+    "accountPaid": 0,
+    "overdue": 50,
+    "next": 50,
+    "ownNext": 50
+   }
+  ],
+  "kapsama": [
+   "s2 tük 700/700 avans 0 kırp 0"
+  ],
+  "mutabakat": true
+ },
+ "S118": {
+  "bakiye": 600,
+  "sigmaKalem": 600,
+  "sigmaTutuyor": true,
+  "gecikmisKart": 100,
+  "eskiGeciken": 200,
+  "gecikmisListe": 100,
+  "listeSuzgecte": true,
+  "vadeGecikmis": 100,
+  "zilGecikmis": 100,
+  "vade": [
+   "plan:in:100@2026-10-10",
+   "plan:in:500@2026-11-10"
+  ],
+  "zil": [
+   "plan:100:overdue"
+  ],
+  "kalan": [
+   "B1000:1000→600"
+  ],
+  "kayitKalan": [
+   "account/debt:1000→600"
+  ],
+  "faturalar": [],
+  "kartlar": [
+   {
+    "state": "overdue",
+    "items": [
+     100,
+     500
+    ],
+    "ownItems": [
+     200,
+     500
+    ],
+    "paidItems": [
+     300,
+     0
+    ],
+    "own": 700,
+    "paid": 300,
+    "queue": 600,
+    "accountPaid": 100,
+    "overdue": 100,
+    "next": 100,
+    "ownNext": 200
+   }
+  ],
+  "kapsama": [
+   "s2 tük 1000/1000 avans 0 kırp 0"
+  ],
+  "kendiKalaniAsan701": "409 plan-overpay",
+  "kendiKalan700": 200,
+  "son": {
+   "bakiye": -100,
+   "sigmaKalem": -100,
+   "sigmaTutuyor": true,
+   "gecikmisKart": 0,
+   "eskiGeciken": 0,
+   "gecikmisListe": 0,
+   "listeSuzgecte": false,
+   "vadeGecikmis": 0,
+   "zilGecikmis": 0,
+   "vade": [],
+   "zil": [],
+   "kalan": [
+    "B1000:1000→0"
+   ],
+   "kayitKalan": [
+    "account/debt:1000→0"
+   ],
+   "faturalar": [],
+   "kartlar": [
+    {
+     "state": "done",
+     "items": [
+      0,
+      0
+     ],
+     "ownItems": [
+      0,
+      0
+     ],
+     "paidItems": [
+      500,
+      500
+     ],
+     "own": 0,
+     "paid": 1000,
+     "queue": 0,
+     "accountPaid": 0,
+     "overdue": 0,
+     "next": null,
+     "ownNext": null
+    }
+   ],
+   "kapsama": [
+    "s2 tük 1000/1000 avans 0 kırp 0"
+   ]
+  },
+  "mutabakat": true
+ }
+}

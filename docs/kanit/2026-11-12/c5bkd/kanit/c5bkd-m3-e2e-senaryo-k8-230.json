@@ -1,0 +1,43 @@
+{
+  "ad": "c5bkd-m3-e2e-senaryo-k8-230",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-k8-230.mjs",
+  "commit": "4b762bde1d8ed7afc65e663369189e8accb3808a",
+  "dal": "worktree-agent-a511c161b54069067",
+  "kirli": 16,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T19:26:37.453Z",
+  "sure_sn": 13.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 17,
+    "gecen": 16,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "avans yazıldı; KPI: \"₺1.000,00Toplam Tutar₺1.000,00Tahsil Edilen · %100₺0,00Kalan · fazla ₺100,00₺0,00Geciken · 0 taksit\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "senaryo-k8-230: 16 geçti, 1 kaldı",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkd-kanit/2026-11-12/c5bkd-m3-e2e-senaryo-k8-230.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a511c161b54069067",
+  "ham_cikti_sha256": "63eade02fc970cdba504173e7339fb94df2f504bd55be9ed60c2f41cbac20a94",
+  "ham_cikti_bayt": 2080
+}

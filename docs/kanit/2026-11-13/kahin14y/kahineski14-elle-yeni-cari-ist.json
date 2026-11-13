@@ -1,0 +1,32 @@
+{
+  "ad": "kahineski14-elle-yeni-cari-ist",
+  "komut": "python3 -I -B docs/kanit/2026-11-12/kahineski14-arac/elle-karsilastir.py --model test/bagimsiz/cari test/bagimsiz/cari/senaryolar/d39-c5-s130-supheli-kalemleri.json test/bagimsiz/cari/senaryolar/d40-c5-s130-sus-bilinen-sinir.json test/bagimsiz/cari/senaryolar/d38-c5-s128-ozge-kalemli-kart.json",
+  "commit": "ce1c1a1afc8205985131d29ab9391a736ff57cd3",
+  "dal": "kahin14y",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T23:18:18.589Z",
+  "sure_sn": 0.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 622,
+    "gecen": 622,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../kahin14y/kanit/2026-11-12/kahineski14-elle-yeni-cari-ist.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8y-ag",
+  "ham_cikti_sha256": "1f8904697de7e4873d41c5d4f04accd38f86cd659d3932ab0fbcc10907b2d0c4",
+  "ham_cikti_bayt": 255
+}

@@ -11,781 +11,232 @@
  ],
  "kayitlar": [
   {
-   "senaryo": "c7-ks7-bagsiz-kapaticilar",
-   "anahtar": "k3:projeksiyon:hareket:acilis:D",
-   "beklenen": {
-    "amount": 100000,
-    "date": "2026-05-31",
-    "direction": "in"
-   },
-   "program": {
-    "amount": 30000,
-    "date": "2026-05-31",
-    "direction": "in"
-   },
-   "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
-   "kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "adim:n11t:durum",
+   "beklenen": "ok",
+   "program": "ret",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "adım kabul edilir",
    "paket": "Ç5-B tur 2",
-   "not": "ana oturum 10.11: Ç5-B ÖNCESİ kodda da fark vardı, değeri Ç5-B ile değişti; tur 2b'de kök neden (bağsız kapatıcılar / kuyruk sırası) · ana oturum 12.11: S130 = A (program bugünkü hâliyle kalır) — toplu cari kâhini bakımında kapanır; kod işi yok"
+   "not": "S145: şüpheli tarihinden ÖNCEKİ tarihe tahsilat programda ret (kâhin: kabul) — kullanıcı kararı bekliyor (12.11 ön kontrol; iş listesi D)"
   },
   {
-   "senaryo": "c7-ks7-bagsiz-kapaticilar",
-   "anahtar": "k3:takvim:fatura:F1",
-   "beklenen": {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:cari:N11:bakiye",
+   "beklenen": 20000,
+   "program": 50000,
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
+   "paket": "Ç5-B tur 2",
+   "not": "S145: şüpheli tarihinden ÖNCEKİ tarihe tahsilat programda ret (kâhin: kabul) — kullanıcı kararı bekliyor (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:hareket:n11x:kalan",
+   "beklenen": 20000,
+   "program": 50000,
+   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
+   "kural": "C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta)",
+   "paket": "Ç5-B tur 2",
+   "not": "S145: şüpheli tarihinden ÖNCEKİ tarihe tahsilat programda ret (kâhin: kabul) — kullanıcı kararı bekliyor (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:kasa",
+   "beklenen": 280000,
+   "program": 250000,
+   "sinif": "BULGU KULLANICI · SINIF DIŞI",
+   "kural": "B1.2 Kasa değişmez / tahsilatlar Kasa'da",
+   "paket": "Ç5-B tur 2",
+   "not": "S145: şüpheli tarihinden ÖNCEKİ tarihe tahsilat programda ret (kâhin: kabul) — kullanıcı kararı bekliyor (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:kasaRapor:giris",
+   "beklenen": 280000,
+   "program": 250000,
+   "sinif": "BULGU KULLANICI · SINIF DIŞI",
+   "kural": "B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar)",
+   "paket": "Ç5-B tur 2",
+   "not": "S145: şüpheli tarihinden ÖNCEKİ tarihe tahsilat programda ret (kâhin: kabul) — kullanıcı kararı bekliyor (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:cariToplam:N1",
+   "beklenen": 80000,
+   "program": 170000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "Ç5-B tur 2",
+   "not": "S130 = A Nakit Akışı'nda uygulanmamış — BİRLEŞİK TUR 7'de düzeltilecek (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:cariToplam:N10",
+   "beklenen": 50000,
+   "program": 90000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "Ç5-B tur 2",
+   "not": "S130 = A Nakit Akışı'nda uygulanmamış — BİRLEŞİK TUR 7'de düzeltilecek (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:cariToplam:N11",
+   "beklenen": 0,
+   "program": 50000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "Ç5-B tur 2",
+   "not": "S145: şüpheli tarihinden ÖNCEKİ tarihe tahsilat programda ret (kâhin: kabul) — kullanıcı kararı bekliyor (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:cariToplam:N12",
+   "beklenen": 40000,
+   "program": 90000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "Ç5-B tur 2",
+   "not": "S130 = A Nakit Akışı'nda uygulanmamış — BİRLEŞİK TUR 7'de düzeltilecek (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:cariToplam:N13a",
+   "beklenen": 30000,
+   "program": 50000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "Ç5-B tur 2",
+   "not": "S130 = A Nakit Akışı'nda uygulanmamış — BİRLEŞİK TUR 7'de düzeltilecek (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:cariToplam:N2",
+   "beklenen": 30000,
+   "program": 70000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "Ç5-B tur 2",
+   "not": "S130 = A Nakit Akışı'nda uygulanmamış — BİRLEŞİK TUR 7'de düzeltilecek (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:cariToplam:N3",
+   "beklenen": 20000,
+   "program": 70000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "Ç5-B tur 2",
+   "not": "S130 = A Nakit Akışı'nda uygulanmamış — BİRLEŞİK TUR 7'de düzeltilecek (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:cariToplam:N4",
+   "beklenen": 0,
+   "program": 70000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "Ç5-B tur 2",
+   "not": "S130 = A Nakit Akışı'nda uygulanmamış — BİRLEŞİK TUR 7'de düzeltilecek (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:cariToplam:N6",
+   "beklenen": 20000,
+   "program": 50000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "Ç5-B tur 2",
+   "not": "S130 = A Nakit Akışı'nda uygulanmamış — BİRLEŞİK TUR 7'de düzeltilecek (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:cariToplam:N7",
+   "beklenen": 20000,
+   "program": 50000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "Ç5-B tur 2",
+   "not": "S130 = A Nakit Akışı'nda uygulanmamış — BİRLEŞİK TUR 7'de düzeltilecek (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:fatura:N1F",
+   "beklenen": "yok",
+   "program": {
     "amount": 20000,
     "direction": "in"
    },
-   "program": "yok",
    "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
-   "kural": "madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık)",
+   "kural": "fatura kalemi açık tutarıyla (belge tarihinde, geçmiş — her görünümde)",
    "paket": "Ç5-B tur 2",
-   "not": "ana oturum 10.11: Ç5-B ÖNCESİ kodda da fark vardı, değeri Ç5-B ile değişti; tur 2b'de kök neden (bağsız kapatıcılar / kuyruk sırası) · ana oturum 12.11: S130 = A (program bugünkü hâliyle kalır) — toplu cari kâhini bakımında kapanır; kod işi yok"
+   "not": "S130 = A Nakit Akışı'nda uygulanmamış — BİRLEŞİK TUR 7'de düzeltilecek (12.11 ön kontrol; iş listesi D)"
   },
   {
-   "senaryo": "c7-ks7-bagsiz-kapaticilar",
-   "anahtar": "k3:takvim:hareket:acilis:D",
-   "beklenen": {
-    "amount": 100000,
-    "cari": "D",
-    "days": -15,
-    "direction": "in",
-    "dueDate": "2026-05-31",
-    "label": "Tahsil Edilecek Borç",
-    "person": "Dilek Değersiz",
-    "state": "overdue"
-   },
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:fatura:N2F",
+   "beklenen": "yok",
    "program": {
-    "amount": 30000,
-    "cari": "D",
-    "days": -15,
-    "direction": "in",
-    "dueDate": "2026-05-31",
-    "label": "Tahsil Edilecek Borç",
-    "person": "Dilek Değersiz",
-    "state": "overdue"
-   },
-   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
-   "kural": "K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 10.11: Ç5-B ÖNCESİ kodda da fark vardı, değeri Ç5-B ile değişti; tur 2b'de kök neden (bağsız kapatıcılar / kuyruk sırası) · ana oturum 12.11: S130 = A (program bugünkü hâliyle kalır) — toplu cari kâhini bakımında kapanır; kod işi yok"
-  },
-  {
-   "senaryo": "c7-ks7-bagsiz-kapaticilar",
-   "anahtar": "k3:vadeTakip:hareket:acilis:D",
-   "beklenen": {
-    "amount": 100000,
-    "date": "2026-05-31",
+    "amount": 40000,
     "direction": "in"
    },
+   "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
+   "kural": "fatura kalemi açık tutarıyla (belge tarihinde, geçmiş — her görünümde)",
+   "paket": "Ç5-B tur 2",
+   "not": "S130 = A Nakit Akışı'nda uygulanmamış — BİRLEŞİK TUR 7'de düzeltilecek (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:fatura:N3F",
+   "beklenen": "yok",
    "program": {
-    "amount": 30000,
-    "date": "2026-05-31",
+    "amount": 40000,
     "direction": "in"
    },
-   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
-   "kural": "K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 10.11: Ç5-B ÖNCESİ kodda da fark vardı, değeri Ç5-B ile değişti; tur 2b'de kök neden (bağsız kapatıcılar / kuyruk sırası) · ana oturum 12.11: S130 = A (program bugünkü hâliyle kalır) — toplu cari kâhini bakımında kapanır; kod işi yok"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ1:kalan",
-   "beklenen": 0,
-   "program": 30000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ1:odenen",
-   "beklenen": 60000,
-   "program": 30000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ1:taksit2:odenen",
-   "beklenen": 30000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ2:kalan",
-   "beklenen": 20000,
-   "program": 60000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ2:odenen",
-   "beklenen": 40000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ2:taksit1:odenen",
-   "beklenen": 30000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ2:taksit2:odenen",
-   "beklenen": 10000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ3:kalan",
-   "beklenen": 0,
-   "program": 10000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ3:odenen",
-   "beklenen": 60000,
-   "program": 50000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ3:taksit2:odenen",
-   "beklenen": 30000,
-   "program": 20000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ4:kalan",
-   "beklenen": 10000,
-   "program": 50000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ4:odenen",
-   "beklenen": 50000,
-   "program": 10000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ4:taksit1:odenen",
-   "beklenen": 30000,
-   "program": 10000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ4:taksit2:odenen",
-   "beklenen": 20000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ8:kalan",
-   "beklenen": 0,
-   "program": 60000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ8:odenen",
-   "beklenen": 60000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ8:taksit1:odenen",
-   "beklenen": 30000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d30-c5-s101-bitti-kart",
-   "anahtar": "k1:kart:KQ8:taksit2:odenen",
-   "beklenen": 30000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d31-c5-s101-taksit-vade-gunu",
-   "anahtar": "k1:kart:KQ2:kalan",
-   "beklenen": 20000,
-   "program": 60000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d31-c5-s101-taksit-vade-gunu",
-   "anahtar": "k1:kart:KQ2:odenen",
-   "beklenen": 40000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d31-c5-s101-taksit-vade-gunu",
-   "anahtar": "k1:kart:KQ2:taksit1:odenen",
-   "beklenen": 30000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d31-c5-s101-taksit-vade-gunu",
-   "anahtar": "k1:kart:KQ2:taksit2:odenen",
-   "beklenen": 10000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d31-c5-s101-taksit-vade-gunu",
-   "anahtar": "k1:kart:KQ4:kalan",
-   "beklenen": 10000,
-   "program": 50000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d31-c5-s101-taksit-vade-gunu",
-   "anahtar": "k1:kart:KQ4:odenen",
-   "beklenen": 50000,
-   "program": 10000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d31-c5-s101-taksit-vade-gunu",
-   "anahtar": "k1:kart:KQ4:taksit1:odenen",
-   "beklenen": 30000,
-   "program": 10000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d31-c5-s101-taksit-vade-gunu",
-   "anahtar": "k1:kart:KQ4:taksit2:odenen",
-   "beklenen": 20000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d32-c5-s101-taksit-ertesi-gun",
-   "anahtar": "k1:kart:KQ2:kalan",
-   "beklenen": 20000,
-   "program": 60000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d32-c5-s101-taksit-ertesi-gun",
-   "anahtar": "k1:kart:KQ2:odenen",
-   "beklenen": 40000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d32-c5-s101-taksit-ertesi-gun",
-   "anahtar": "k1:kart:KQ2:taksit1:odenen",
-   "beklenen": 30000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d32-c5-s101-taksit-ertesi-gun",
-   "anahtar": "k1:kart:KQ2:taksit2:odenen",
-   "beklenen": 10000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d32-c5-s101-taksit-ertesi-gun",
-   "anahtar": "k1:kart:KQ4:kalan",
-   "beklenen": 10000,
-   "program": 50000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d32-c5-s101-taksit-ertesi-gun",
-   "anahtar": "k1:kart:KQ4:odenen",
-   "beklenen": 50000,
-   "program": 10000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d32-c5-s101-taksit-ertesi-gun",
-   "anahtar": "k1:kart:KQ4:taksit1:odenen",
-   "beklenen": 30000,
-   "program": 10000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d32-c5-s101-taksit-ertesi-gun",
-   "anahtar": "k1:kart:KQ4:taksit2:odenen",
-   "beklenen": 20000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11: kâhin bakımı 7'den sonra bu senaryoda adım reddi YOK (S99 senaryoları tarih sırasında; S101 kartı satışla birlikte açılıyor) — kalan fark S99 / S101'in gerçek görünüm farkı; kodu Ç5-B tur 2b'de · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d34-c5-s110-kendi-borcu",
-   "anahtar": "k1:kart:KE6:kalan",
-   "beklenen": 50000,
-   "program": 60000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d34-c5-s110-kendi-borcu",
-   "anahtar": "k1:kart:KE6:odenen",
-   "beklenen": 10000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d34-c5-s110-kendi-borcu",
-   "anahtar": "k1:kart:KE6:taksit1:odenen",
-   "beklenen": 10000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d34-c5-s110-kendi-borcu",
-   "anahtar": "k1:kart:KE9:kalan",
-   "beklenen": 20000,
-   "program": 60000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d34-c5-s110-kendi-borcu",
-   "anahtar": "k1:kart:KE9:odenen",
-   "beklenen": 40000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d34-c5-s110-kendi-borcu",
-   "anahtar": "k1:kart:KE9:taksit1:odenen",
-   "beklenen": 30000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d34-c5-s110-kendi-borcu",
-   "anahtar": "k1:kart:KE9:taksit2:odenen",
-   "beklenen": 10000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 11.11.2026: S110 = A kararının (E9'da S101 ile birlikte) kodu programda henüz yok — tur 2b-2'de kapanır; adım reddi yok · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d35-c5-s120-elle-borclar",
-   "anahtar": "k1:kart:KH10:kalan",
-   "beklenen": 60000,
-   "program": 90000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4",
-   "paket": "Ç5-B tur 2",
-   "not": "S120 / S122 alanı (cari kâhini bakımı 10 — kartın içindeki elle borçlar ve karta gelen ödemenin dağılımı) — program S110 / S120 / S122'yi henüz kodlamadı; kodu tur 2b-2'de (ana oturum 11.11) · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d35-c5-s120-elle-borclar",
-   "anahtar": "k1:kart:KH10:odenen",
-   "beklenen": 30000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
-   "paket": "Ç5-B tur 2",
-   "not": "S120 / S122 alanı (cari kâhini bakımı 10 — kartın içindeki elle borçlar ve karta gelen ödemenin dağılımı) — program S110 / S120 / S122'yi henüz kodlamadı; kodu tur 2b-2'de (ana oturum 11.11) · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d35-c5-s120-elle-borclar",
-   "anahtar": "k1:kart:KH10:taksit1:odenen",
-   "beklenen": 30000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "S120 / S122 alanı (cari kâhini bakımı 10 — kartın içindeki elle borçlar ve karta gelen ödemenin dağılımı) — program S110 / S120 / S122'yi henüz kodlamadı; kodu tur 2b-2'de (ana oturum 11.11) · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d36-c5-s122-kart-odemesi",
-   "anahtar": "k1:kart:KJ7:kalan",
-   "beklenen": 30000,
-   "program": 90000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4",
-   "paket": "Ç5-B tur 2",
-   "not": "S120 / S122 alanı (cari kâhini bakımı 10 — kartın içindeki elle borçlar ve karta gelen ödemenin dağılımı) — program S110 / S120 / S122'yi henüz kodlamadı; kodu tur 2b-2'de (ana oturum 11.11) · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d36-c5-s122-kart-odemesi",
-   "anahtar": "k1:kart:KJ7:odenen",
-   "beklenen": 60000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
-   "paket": "Ç5-B tur 2",
-   "not": "S120 / S122 alanı (cari kâhini bakımı 10 — kartın içindeki elle borçlar ve karta gelen ödemenin dağılımı) — program S110 / S120 / S122'yi henüz kodlamadı; kodu tur 2b-2'de (ana oturum 11.11) · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d36-c5-s122-kart-odemesi",
-   "anahtar": "k1:kart:KJ7:taksit1:odenen",
-   "beklenen": 30000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "S120 / S122 alanı (cari kâhini bakımı 10 — kartın içindeki elle borçlar ve karta gelen ödemenin dağılımı) — program S110 / S120 / S122'yi henüz kodlamadı; kodu tur 2b-2'de (ana oturum 11.11) · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d36-c5-s122-kart-odemesi",
-   "anahtar": "k1:kart:KJ7:taksit2:odenen",
-   "beklenen": 30000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "S120 / S122 alanı (cari kâhini bakımı 10 — kartın içindeki elle borçlar ve karta gelen ödemenin dağılımı) — program S110 / S120 / S122'yi henüz kodlamadı; kodu tur 2b-2'de (ana oturum 11.11) · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d36-c5-s122-kart-odemesi",
-   "anahtar": "k1:kart:KJ9:kalan",
-   "beklenen": 30000,
-   "program": 60000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4",
-   "paket": "Ç5-B tur 2",
-   "not": "S120 / S122 alanı (cari kâhini bakımı 10 — kartın içindeki elle borçlar ve karta gelen ödemenin dağılımı) — program S110 / S120 / S122'yi henüz kodlamadı; kodu tur 2b-2'de (ana oturum 11.11) · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d36-c5-s122-kart-odemesi",
-   "anahtar": "k1:kart:KJ9:odenen",
-   "beklenen": 60000,
-   "program": 30000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
-   "paket": "Ç5-B tur 2",
-   "not": "S120 / S122 alanı (cari kâhini bakımı 10 — kartın içindeki elle borçlar ve karta gelen ödemenin dağılımı) — program S110 / S120 / S122'yi henüz kodlamadı; kodu tur 2b-2'de (ana oturum 11.11) · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d36-c5-s122-kart-odemesi",
-   "anahtar": "k1:kart:KJ9:taksit2:odenen",
-   "beklenen": 30000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "S120 / S122 alanı (cari kâhini bakımı 10 — kartın içindeki elle borçlar ve karta gelen ödemenin dağılımı) — program S110 / S120 / S122'yi henüz kodlamadı; kodu tur 2b-2'de (ana oturum 11.11) · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d37-c5-s126-faturali-kart",
-   "anahtar": "k1:kart:KL10:kalan",
-   "beklenen": 30000,
-   "program": 60000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4",
-   "paket": "Ç5-B tur 2",
-   "not": "S126 / S110–S120 alanı (d37 — kâhin bakımı 11; program bu kararları ana dalda henüz kodlamadı; Ç5-B son tur) · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d37-c5-s126-faturali-kart",
-   "anahtar": "k1:kart:KL10:odenen",
-   "beklenen": 60000,
-   "program": 30000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
-   "paket": "Ç5-B tur 2",
-   "not": "S126 / S110–S120 alanı (d37 — kâhin bakımı 11; program bu kararları ana dalda henüz kodlamadı; Ç5-B son tur) · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d37-c5-s126-faturali-kart",
-   "anahtar": "k1:kart:KL10:taksit2:odenen",
-   "beklenen": 30000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "S126 / S110–S120 alanı (d37 — kâhin bakımı 11; program bu kararları ana dalda henüz kodlamadı; Ç5-B son tur) · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d37-c5-s126-faturali-kart",
-   "anahtar": "k1:kart:KL8:kalan",
-   "beklenen": 40000,
-   "program": 90000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4",
-   "paket": "Ç5-B tur 2",
-   "not": "S126 / S110–S120 alanı (d37 — kâhin bakımı 11; program bu kararları ana dalda henüz kodlamadı; Ç5-B son tur) · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d37-c5-s126-faturali-kart",
-   "anahtar": "k1:kart:KL8:odenen",
-   "beklenen": 50000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
-   "paket": "Ç5-B tur 2",
-   "not": "S126 / S110–S120 alanı (d37 — kâhin bakımı 11; program bu kararları ana dalda henüz kodlamadı; Ç5-B son tur) · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d37-c5-s126-faturali-kart",
-   "anahtar": "k1:kart:KL8:taksit1:odenen",
-   "beklenen": 30000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "S126 / S110–S120 alanı (d37 — kâhin bakımı 11; program bu kararları ana dalda henüz kodlamadı; Ç5-B son tur) · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d37-c5-s126-faturali-kart",
-   "anahtar": "k1:kart:KL8:taksit2:odenen",
-   "beklenen": 20000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "S126 / S110–S120 alanı (d37 — kâhin bakımı 11; program bu kararları ana dalda henüz kodlamadı; Ç5-B son tur) · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
-   "anahtar": "k1:kart:KM10:kalan",
-   "beklenen": 10000,
-   "program": 40000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 12.11: S128 = A senaryosu (adım reddi yok); S128'in kodu Ç5-B son turunda, ana dalda yok — Ç5-B kapısında yeniden ayrıştırılır · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
-   "anahtar": "k1:kart:KM10:odenen",
-   "beklenen": 60000,
-   "program": 30000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 12.11: S128 = A senaryosu (adım reddi yok); S128'in kodu Ç5-B son turunda, ana dalda yok — Ç5-B kapısında yeniden ayrıştırılır · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
-   "anahtar": "k1:kart:KM10:taksit1:odenen",
-   "beklenen": 35000,
-   "program": 30000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 12.11: S128 = A senaryosu (adım reddi yok); S128'in kodu Ç5-B son turunda, ana dalda yok — Ç5-B kapısında yeniden ayrıştırılır · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
-   "anahtar": "k1:kart:KM10:taksit2:odenen",
-   "beklenen": 25000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 12.11: S128 = A senaryosu (adım reddi yok); S128'in kodu Ç5-B son turunda, ana dalda yok — Ç5-B kapısında yeniden ayrıştırılır · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
-   "anahtar": "k1:kart:KM8:kalan",
-   "beklenen": 20000,
-   "program": 70000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 12.11: S128 = A senaryosu (adım reddi yok); S128'in kodu Ç5-B son turunda, ana dalda yok — Ç5-B kapısında yeniden ayrıştırılır · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
-   "anahtar": "k1:kart:KM8:odenen",
-   "beklenen": 50000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 12.11: S128 = A senaryosu (adım reddi yok); S128'in kodu Ç5-B son turunda, ana dalda yok — Ç5-B kapısında yeniden ayrıştırılır · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
-   "anahtar": "k1:kart:KM8:taksit1:odenen",
-   "beklenen": 35000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 12.11: S128 = A senaryosu (adım reddi yok); S128'in kodu Ç5-B son turunda, ana dalda yok — Ç5-B kapısında yeniden ayrıştırılır · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
-   "anahtar": "k1:kart:KM8:taksit2:odenen",
-   "beklenen": 15000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 12.11: S128 = A senaryosu (adım reddi yok); S128'in kodu Ç5-B son turunda, ana dalda yok — Ç5-B kapısında yeniden ayrıştırılır · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d4-c5-s50-tek-kuyruk",
-   "anahtar": "k1:kart:K1:kalan",
-   "beklenen": 150000,
-   "program": 300000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 10.11: Ç5-B ÖNCESİ kodda da AYNI fark — kart alanları S50'nin kuyruk payını göstermiyor (ya da koşucu eşlemesi); tur 2b · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d4-c5-s50-tek-kuyruk",
-   "anahtar": "k1:kart:K1:odenen",
-   "beklenen": 150000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 10.11: Ç5-B ÖNCESİ kodda da AYNI fark — kart alanları S50'nin kuyruk payını göstermiyor (ya da koşucu eşlemesi); tur 2b · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d4-c5-s50-tek-kuyruk",
-   "anahtar": "k1:kart:K1:taksit1:odenen",
-   "beklenen": 100000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 10.11: Ç5-B ÖNCESİ kodda da AYNI fark — kart alanları S50'nin kuyruk payını göstermiyor (ya da koşucu eşlemesi); tur 2b · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
-  },
-  {
-   "senaryo": "d4-c5-s50-tek-kuyruk",
-   "anahtar": "k1:kart:K1:taksit2:odenen",
-   "beklenen": 50000,
-   "program": 0,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
-   "paket": "Ç5-B tur 2",
-   "not": "ana oturum 10.11: Ç5-B ÖNCESİ kodda da AYNI fark — kart alanları S50'nin kuyruk payını göstermiyor (ya da koşucu eşlemesi); tur 2b · ana oturum 12.11: S129 = A (kart göstergeleri tek kuyruktan) — Ç5-B'nin tek düzeltme turunda kapanır"
+   "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
+   "kural": "fatura kalemi açık tutarıyla (belge tarihinde, geçmiş — her görünümde)",
+   "paket": "Ç5-B tur 2",
+   "not": "S130 = A Nakit Akışı'nda uygulanmamış — BİRLEŞİK TUR 7'de düzeltilecek (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:fatura:N4F",
+   "beklenen": "yok",
+   "program": {
+    "amount": 40000,
+    "direction": "in"
+   },
+   "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
+   "kural": "fatura kalemi açık tutarıyla (belge tarihinde, geçmiş — her görünümde)",
+   "paket": "Ç5-B tur 2",
+   "not": "S130 = A Nakit Akışı'nda uygulanmamış — BİRLEŞİK TUR 7'de düzeltilecek (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:fatura:N6F",
+   "beklenen": "yok",
+   "program": {
+    "amount": 20000,
+    "direction": "in"
+   },
+   "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
+   "kural": "fatura kalemi açık tutarıyla (belge tarihinde, geçmiş — her görünümde)",
+   "paket": "Ç5-B tur 2",
+   "not": "S130 = A Nakit Akışı'nda uygulanmamış — BİRLEŞİK TUR 7'de düzeltilecek (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:fatura:N7F",
+   "beklenen": "yok",
+   "program": {
+    "amount": 20000,
+    "direction": "in"
+   },
+   "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
+   "kural": "fatura kalemi açık tutarıyla (belge tarihinde, geçmiş — her görünümde)",
+   "paket": "Ç5-B tur 2",
+   "not": "S130 = A Nakit Akışı'nda uygulanmamış — BİRLEŞİK TUR 7'de düzeltilecek (12.11 ön kontrol; iş listesi D)"
   }
  ]
 }

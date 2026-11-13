@@ -1,0 +1,152 @@
+{
+ "saat": "akan",
+ "iade300": {
+  "anlar": [
+   "satış@09:00:00.459Z",
+   "kart@09:00:00.461Z"
+  ],
+  "once": {
+   "bakiye": 1500,
+   "gecikmis": 500,
+   "vadeTakip": [
+    "account:in:500@2026-11-19",
+    "plan:in:500@2026-09-30",
+    "plan:in:500@2026-10-30"
+   ],
+   "kalan": [
+    "account/debt:500→500",
+    "stock/debt:1000→1000"
+   ],
+   "taksit": [
+    500,
+    500
+   ],
+   "kural": [
+    "S110-satis tük 1000/1000 avans 0 kırp 0"
+   ],
+   "sigma": true
+  },
+  "islem": "stok iadesi 200 küçülen []",
+  "sonra": {
+   "bakiye": 1200,
+   "gecikmis": 200,
+   "vadeTakip": [
+    "account:in:500@2026-11-19",
+    "plan:in:200@2026-09-30",
+    "plan:in:500@2026-10-30"
+   ],
+   "kalan": [
+    "account/debt:500→500",
+    "stock/debt:1000→700"
+   ],
+   "taksit": [
+    200,
+    500
+   ],
+   "kural": [
+    "S110-satis tük 1000/1000 avans 0 kırp 0"
+   ],
+   "sigma": true
+  },
+  "mutabakat": true
+ },
+ "iade800": {
+  "anlar": [
+   "satış@09:00:00.397Z",
+   "kart@09:00:00.398Z"
+  ],
+  "once": {
+   "bakiye": 1500,
+   "gecikmis": 500,
+   "vadeTakip": [
+    "account:in:500@2026-11-19",
+    "plan:in:500@2026-09-30",
+    "plan:in:500@2026-10-30"
+   ],
+   "kalan": [
+    "account/debt:500→500",
+    "stock/debt:1000→1000"
+   ],
+   "taksit": [
+    500,
+    500
+   ],
+   "kural": [
+    "S110-satis tük 1000/1000 avans 0 kırp 0"
+   ],
+   "sigma": true
+  },
+  "islem": "stok iadesi 200 küçülen [{\"id\":\"plan-8527fe71-66e7-4b10-85e3-203f5ee7df3c\",\"name\":\"DK iade800\",\"from\":1000,\"to\":700,\"cut\":300}]",
+  "sonra": {
+   "bakiye": 700,
+   "gecikmis": 0,
+   "vadeTakip": [
+    "account:in:500@2026-11-19",
+    "plan:in:200@2026-10-30"
+   ],
+   "kalan": [
+    "account/debt:500→500",
+    "stock/debt:1000→200"
+   ],
+   "taksit": [
+    0,
+    200
+   ],
+   "kural": [
+    "S110-satis tük 700/700 avans 0 kırp 0"
+   ],
+   "sigma": true
+  },
+  "mutabakat": true
+ },
+ "degismedi": {
+  "anlar": [
+   "satış@09:00:00.343Z",
+   "kart@09:00:00.344Z"
+  ],
+  "once": {
+   "bakiye": 1500,
+   "gecikmis": 500,
+   "vadeTakip": [
+    "account:in:500@2026-11-19",
+    "plan:in:500@2026-09-30",
+    "plan:in:500@2026-10-30"
+   ],
+   "kalan": [
+    "account/debt:500→500",
+    "stock/debt:1000→1000"
+   ],
+   "taksit": [
+    500,
+    500
+   ],
+   "kural": [
+    "S110-satis tük 1000/1000 avans 0 kırp 0"
+   ],
+   "sigma": true
+  },
+  "islem": "—",
+  "sonra": {
+   "bakiye": 1500,
+   "gecikmis": 500,
+   "vadeTakip": [
+    "account:in:500@2026-11-19",
+    "plan:in:500@2026-09-30",
+    "plan:in:500@2026-10-30"
+   ],
+   "kalan": [
+    "account/debt:500→500",
+    "stock/debt:1000→1000"
+   ],
+   "taksit": [
+    500,
+    500
+   ],
+   "kural": [
+    "S110-satis tük 1000/1000 avans 0 kırp 0"
+   ],
+   "sigma": true
+  },
+  "mutabakat": true
+ }
+}

@@ -33,7 +33,7 @@ describe("2.1.0 Canlı Hata 2 — v2.0.26 verisinde yanlış büyümüş taksit 
     const out = {};
     for (const key of Object.keys(cases)) {
       const t = await card(key);
-      out[key] = [t.total, t.paid, t.remaining];
+      out[key] = [t.total, t.ownPaid ?? t.paid, t.ownRemaining ?? t.remaining]; // kartın KENDİ hesabı (onarım bunu yazar; S129 = A: paid / remaining gösterilen sayıdır)
     }
     return out;
   };

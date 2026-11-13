@@ -1,0 +1,32 @@
+{
+  "ad": "c5bkdy-e2e-senaryo-entegrator-240",
+  "komut": "npm run test:senaryo-entegrator-240",
+  "commit": "ec658a46ac2644f0aa55417e05aec50612e733eb",
+  "dal": "sinama-c5bkd",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T03:12:24.236Z",
+  "sure_sn": 67.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 81,
+    "gecen": 81,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../c5bkdy-aday-kanit/2026-11-13/c5bkdy-e2e-senaryo-entegrator-240.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag",
+  "ham_cikti_sha256": "b34d2a46eb2322f430d3908f900606e0ee56b19439e94008a3a54354278a0432",
+  "ham_cikti_bayt": 8847
+}

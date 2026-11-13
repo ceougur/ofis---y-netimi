@@ -1,0 +1,12 @@
+✗ işlem 273 taksit-tahsil:
+  Taksitli fatura SMM2026000000001: açık 0 < kartın KUYRUK kalanı 783,88 (S99 alt sınır) · kapatanlar 2026-08-07:1260.09:Tahsilat | 2026-08-07:633.01:Çek / Senet | 2026-08-07:228.67:Çek / Senet | 2026-08-12:391.94:Taksit kartından artan ödeme | 2026-08-12:391.94:Taksit kartından artan ödeme
+
+Tohum 1: 273 işlem, 273 doğrulama, 63 beklenen ret (eksiye düşürme / aşım), eşzamanlı 0 istek · 15.8 sn
+  Beklenen retler: invoice-linked 12, cash-negative 8, date-invalid 6, 400 4, stock-negative 4, 409 3, due-before-start 3, date-future 3, issueDate 3, cash-method 2, plan-paid 2, payment.rest 2, originalId 2, plan-overpay 2, 404 1, invoice-has-returns 1, return-exceeds 1, vatRate 1, invoice-cancelled 1, payment-exceeds 1, cheque-not-in-portfolio 1
+  İşlem türleri: alim 31, kasa 12, banka-benzer 2, pos-iade 1, satis 27, cari-duzelt 4, cari 11, fatura-taslak 7, taksit-tahsil 17, tarih-hatasi 7, kart-kapat 4, iade 6, kayit-sil 5, cek-ode 2, vade-hatasi 5, fatura-iade 9, supheli-al 4, fatura-alis 11, kilit-ihlali 7, kayit-tahsil 2, banka-transfer 3, cek-tahsil 4, kasa-sil 2, fatura-acid 5, banka-fis 6, taksit-sil 7, supheli-sil 1, kart 4, supheli-karsilik 2, banka-ters 2, fatura-hatasi 13, fatura-satis 14, fatura-iptal 9, pos-tahsil 5, cek-tahsile-ver 2, hareket-sil 3, supheli-cikar 1, kart-sil 1, supheli-tahsil 3, supheli-borc 3, kayit-duzelt 3, fatura-bagli 4, cari-sil 3, banka-duzelt 1, supheli-degersiz 1, kasa-duzelt 1, hareket-duzelt 1, geri-yukle 3, banka-transfer-ters 1, pos-sil 1, cek-bankadan-geri-al 1
+  Model: {"kasa":{"cash":"10405,87","bank":"156731,63","card":"-17227,35"},"cariler":12,"urunler":10,"kartlar":10,"kasaHareketi":7,"bankaSatiri":22,"bankaTersKayit":4,"bankalarArasiTransfer":3,"cariHareketi":18,"stokHareketi":89,"taksitHareketi":6,"hesabaBagliModulHavalesi":15,"kurumsalKartaBagli":4,"kurumsalKartBakiyesi":"-32239,11","supheliKayit":0,"supheliAcik":"0,00"}
+  Fatura: {"kesilen":28,"iptal":6,"taslak":1,"turler":{"purchase":11,"sale":13,"purchase_return":3,"sale_return":4,"smm":3},"cek":14} · seriler {} · tekil ETTN -
+  Mutabakat kapısı süresi: ortanca 10 ms, en çok 26 ms
+  ✗ UYUŞMAZLIK (1):
+    işlem 273 (taksit-tahsil, 2026-08-12)
+      Taksitli fatura SMM2026000000001: açık 0 < kartın KUYRUK kalanı 783,88 (S99 alt sınır) · kapatanlar 2026-08-07:1260.09:Tahsilat | 2026-08-07:633.01:Çek / Senet | 2026-08-07:228.67:Çek / Senet | 2026-08-12:391.94:Taksit kartından artan ödeme | 2026-08-12:391.94:Taksit kartından artan ödeme

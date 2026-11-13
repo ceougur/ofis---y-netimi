@@ -1,0 +1,32 @@
+{
+  "ad": "c5bkd-son-e2e-senaryo-tyk-tur2a-250",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-tyk-tur2a-250.mjs",
+  "commit": "511776b5fbd4e02719abe170857caf58221473f8",
+  "dal": "worktree-agent-a511c161b54069067",
+  "kirli": 4,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T21:42:16.643Z",
+  "sure_sn": 37.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 51,
+    "gecen": 51,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkd-kanit/2026-11-12/c5bkd-son-e2e-senaryo-tyk-tur2a-250.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a511c161b54069067",
+  "ham_cikti_sha256": "5eaa5ca37a47972abbb0f23b89f6036097879479c914562e744a899eb8226d7d",
+  "ham_cikti_bayt": 6654
+}

@@ -1,0 +1,107 @@
+
+> destekofis@2.4.9 test:senaryo-duzeltme-kilidi-250
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-duzeltme-kilidi-250.mjs
+
+  ✓ ön koşul: hareketler açıldı {"cari":"aentry-5bf2d74c-7ba1-4dc2-adf3-77c16ec0b4bf","cariGone":"aentry-7e49a445-6f0c-4994-9864-6266e2375a02","stok":"smove-3518de6b-52c4-4597-97f2-1f9dbf3c9ef1","taksit":"entry-8db8a369-cb18-4cb1-bb72-5d9f7365ba6e","kasa":"cash-e1f7da59-7c42-449d-9d3a-55cc8a3e7851","transferCash":"cash-098cf21e-07e9-4d76-b420-826684d97bd7","transferBank":"cash-166a022f-62ea-4c6d-9e34-2a52a507859c"}
+
+■ D1 Cari hareketi düzelt (hof-accounts editEntry)
+  ✓ Cari: B (muhasebe2, öbür oturum) aynı hareketi düzeltti → 200 
+  ✓ Cari: B'nin düzeltmesi veri tabanında ({"amount":10,"note":"ilk not","updated_by":"B"})
+    (ön koşul: B'nin düzeltmesinden sonra canlı yenileme geldi; kart okumaları 4112 ms'de duruldu)
+  ✓ Cari: A'nın eskimiş formu 409 aldı (409 account-entry-stale)
+  ✓ Cari: ileti formda: “Bu cari hareketi siz açtıktan sonra başka biri tarafından değiştirildi; düzeltmeniz kaydedilmedi. Listeyi yenileyip yeniden deneyin.”
+  ✓ Cari: form açık kaldı (yazılan açıklama formda)
+  ✓ Cari: 409'dan sonra kendiliğinden yeniden göndermedi (tıklamadan sonraki ~2 sn'de /entries/aentry-5bf2d74c-7ba1-4dc2-adf3-77c16ec0b4bf adresine PUT: 1; beklenen 1)
+  ✓ Cari: veri tabanında B'nin değeri duruyor, A'nın açıklaması yazılmadı ({"amount":10,"note":"ilk not","updated_by":"B"})
+  ✓ Cari: 409'dan sonra form kartı kendisi yeniden okudu (^\/api\/workspace\/accounts\/account-b49359e5-6733-40fb-a67c-acd7da82e2af(\?|$))
+  ✓ Cari: arkadaki kart B'nin değerine yenilendi: “18.10.2026 Tahsilat Nakit Makbuz 1 ilk not ₺10,00 ₺4.990,00 Borçlu Makbuz✎×”
+  ✓ Cari: yeniden açılan form B'nin değeriyle dolu
+  ✓ Cari: yarışsız düzeltme kaydedildi (200 )
+  ✓ Cari: veri tabanı — açıklama A'nın, tutar B'nin ({"amount":10,"note":"A'nın notu (yeniden)","updated_by":"A"})
+  ✓ Cari: ardışık ikinci düzeltme de kaydedildi (200 )
+  ✓ Cari: veri tabanında ikinci düzeltme
+
+■ D2 Stok hareketi düzelt (hof-stock editMove)
+  ✓ Stok: B (muhasebe2, öbür oturum) aynı hareketi düzeltti → 200 
+  ✓ Stok: B'nin düzeltmesi veri tabanında ({"amount":10,"qty":1,"unit_price":10,"note":"ilk not","updated_by":"B"})
+    (ön koşul: B'nin düzeltmesinden sonra canlı yenileme geldi; kart okumaları 4107 ms'de duruldu)
+  ✓ Stok: A'nın eskimiş formu 409 aldı (409 stock-move-stale)
+  ✓ Stok: ileti formda: “Bu stok hareketi siz açtıktan sonra başka biri tarafından değiştirildi; düzeltmeniz kaydedilmedi. Listeyi yenileyip yeniden deneyin.”
+  ✓ Stok: form açık kaldı (yazılan açıklama formda)
+  ✓ Stok: 409'dan sonra kendiliğinden yeniden göndermedi (tıklamadan sonraki ~2 sn'de /moves/smove-3518de6b-52c4-4597-97f2-1f9dbf3c9ef1 adresine PUT: 1; beklenen 1)
+  ✓ Stok: veri tabanında B'nin değeri duruyor, A'nın açıklaması yazılmadı ({"amount":10,"qty":1,"unit_price":10,"note":"ilk not","updated_by":"B"})
+  ✓ Stok: 409'dan sonra form kartı kendisi yeniden okudu (^\/api\/workspace\/stock\/stock-f53c6a4a-20e4-415d-9646-a43b17f69ebf(\?|$))
+  ✓ Stok: arkadaki kart B'nin değerine yenilendi: “18.10.2026 Çıkış ilk not · Kasa’ya tahsil edildi · Ofis yöneticisi · düzeltildi 1 -1 ₺10,00 ₺10,00 ✎×”
+  ✓ Stok: yeniden açılan form B'nin değeriyle dolu
+  ✓ Stok: yarışsız düzeltme kaydedildi (200 )
+  ✓ Stok: veri tabanı — açıklama A'nın, tutar B'nin ({"amount":10,"qty":1,"unit_price":10,"note":"A'nın notu (yeniden)","updated_by":"A"})
+  ✓ Stok: ardışık ikinci düzeltme de kaydedildi (200 )
+  ✓ Stok: veri tabanında ikinci düzeltme
+
+■ D3 Taksit hareketi düzelt (hof-plans editEntry)
+  ✓ Taksit: B (muhasebe2, öbür oturum) aynı hareketi düzeltti → 200 
+  ✓ Taksit: B'nin düzeltmesi veri tabanında ({"amount":10,"note":"ilk not","updated_by":"B"})
+    (ön koşul: B'nin düzeltmesinden sonra canlı yenileme geldi; kart okumaları 4111 ms'de duruldu)
+  ✓ Taksit: A'nın eskimiş formu 409 aldı (409 plan-entry-stale)
+  ✓ Taksit: ileti formda: “Bu taksit hareketi siz açtıktan sonra başka biri tarafından değiştirildi; düzeltmeniz kaydedilmedi. Kartı yenileyip yeniden deneyin.”
+  ✓ Taksit: form açık kaldı (yazılan açıklama formda)
+  ✓ Taksit: 409'dan sonra kendiliğinden yeniden göndermedi (tıklamadan sonraki ~2 sn'de /entries/entry-8db8a369-cb18-4cb1-bb72-5d9f7365ba6e adresine PUT: 1; beklenen 1)
+  ✓ Taksit: veri tabanında B'nin değeri duruyor, A'nın açıklaması yazılmadı ({"amount":10,"note":"ilk not","updated_by":"B"})
+  ✓ Taksit: 409'dan sonra form kartı kendisi yeniden okudu (^\/api\/workspace\/plans\/plan-070b6858-f32f-42c1-901e-35e41aaf65b8(\?|$))
+  ✓ Taksit: arkadaki kart B'nin değerine yenilendi: “18.10.2026 Tahsilat Makbuz 3 ilk not · Ofis yöneticisi · düzeltildi ₺10,00 Makbuz✎×”
+  ✓ Taksit: yeniden açılan form B'nin değeriyle dolu
+  ✓ Taksit: yarışsız düzeltme kaydedildi (200 )
+  ✓ Taksit: veri tabanı — açıklama A'nın, tutar B'nin ({"amount":10,"note":"A'nın notu (yeniden)","updated_by":"A"})
+  ✓ Taksit: ardışık ikinci düzeltme de kaydedildi (200 )
+  ✓ Taksit: veri tabanında ikinci düzeltme
+
+■ D4 Kasa hareketi düzelt (hof-workspace editCashEntry)
+  ✓ Kasa: B (muhasebe2, öbür oturum) aynı hareketi düzeltti → 200 
+  ✓ Kasa: B'nin düzeltmesi veri tabanında ({"amount":10,"description":"Kırtasiye","updated_by":"B"})
+    (ön koşul: B'nin düzeltmesinden sonra canlı yenileme geldi; kart okumaları 2505 ms'de duruldu)
+  ✓ Kasa: A'nın eskimiş formu 409 aldı (409 cash-entry-stale)
+  ✓ Kasa: ileti formda: “Bu Kasa hareketi siz açtıktan sonra başka biri tarafından değiştirildi; düzeltmeniz kaydedilmedi. Listeyi yenileyip yeniden deneyin.”
+  ✓ Kasa: form açık kaldı (yazılan açıklama formda)
+  ✓ Kasa: 409'dan sonra kendiliğinden yeniden göndermedi (tıklamadan sonraki ~2 sn'de /api/workspace/cash/cash-e1f7da59-7c42-449d-9d3a-55cc8a3e7851 adresine PUT: 1; beklenen 1)
+  ✓ Kasa: veri tabanında B'nin değeri duruyor, A'nın açıklaması yazılmadı ({"amount":10,"description":"Kırtasiye","updated_by":"B"})
+  ✓ Kasa: 409'dan sonra form Kasa listesini kendisi yeniden okudu (^\/api\/workspace\/cash\?from=)
+  ✓ Kasa: arkadaki Kasa listesi B'nin değerine yenilendi: “18.10.2026 Kırtasiye Ödeme · Ofis yöneticisi ₺10,00 ₺4.990,00 ✎×”
+  ✓ Kasa: yeniden açılan form B'nin değeriyle dolu
+  ✓ Kasa: yarışsız düzeltme kaydedildi (200 )
+  ✓ Kasa: veri tabanı — açıklama A'nın, tutar B'nin ({"amount":10,"description":"A'nın açıklaması (yeniden)","updated_by":"A"})
+  ✓ Kasa: ardışık ikinci düzeltme de kaydedildi (200 )
+  ✓ Kasa: veri tabanında ikinci düzeltme
+
+■ D5 Kasa ↔ Banka transferi düzelt — B ÖBÜR bacaktan (banka tarafı) düzeltir
+  ✓ Transfer: B (muhasebe2, öbür oturum) aynı hareketi düzeltti → 200 
+  ✓ Transfer: B'nin düzeltmesi veri tabanında ({"amount":400,"description":"ATM'den çekildi","updated_by":"B"})
+    (ön koşul: B'nin düzeltmesinden sonra canlı yenileme geldi; kart okumaları 2504 ms'de duruldu)
+  ✓ Transfer: A'nın eskimiş formu 409 aldı (409 cash-entry-stale)
+  ✓ Transfer: ileti formda: “Bu Kasa hareketi siz açtıktan sonra başka biri tarafından değiştirildi; düzeltmeniz kaydedilmedi. Listeyi yenileyip yeniden deneyin.”
+  ✓ Transfer: form açık kaldı (yazılan açıklama formda)
+  ✓ Transfer: 409'dan sonra kendiliğinden yeniden göndermedi (tıklamadan sonraki ~2 sn'de /api/workspace/cash/cash-098cf21e-07e9-4d76-b420-826684d97bd7 adresine PUT: 1; beklenen 1)
+  ✓ Transfer: veri tabanında B'nin değeri duruyor, A'nın açıklaması yazılmadı ({"amount":400,"description":"ATM'den çekildi","updated_by":"B"})
+  ✓ Transfer: 409'dan sonra form Kasa listesini kendisi yeniden okudu (^\/api\/workspace\/cash\?from=)
+  ✓ Transfer: arkadaki Kasa listesi B'nin değerine yenilendi: “18.10.2026 ATM'den çekildi Bankadan kasaya aktarım · Ofis yöneticisi ₺400,00 ₺5.390,00 ✎×”
+  ✓ Transfer: yeniden açılan form B'nin değeriyle dolu
+  ✓ Transfer: yarışsız düzeltme kaydedildi (200 )
+  ✓ Transfer: veri tabanı — açıklama A'nın, tutar B'nin ({"amount":400,"description":"A'nın transfer açıklaması (yeniden)","updated_by":"A"})
+  ✓ Transfer: ardışık ikinci düzeltme de kaydedildi (200 )
+  ✓ Transfer: veri tabanında ikinci düzeltme
+
+■ D6 Silinmiş cari hareketi: 404 iletisi formda, kart yenilenir (satır gider), hiçbir şey yazılmaz
+  ✓ B hareketi sildi → 200
+    (ön koşul: silmeden sonra canlı yenileme geldi; kart okumaları 2505 ms'de duruldu)
+  ✓ 404 ve ileti formda: 404 “Hareket bulunamadı. Başka biri silmiş olabilir.”
+  ✓ 404'ten sonra form kartı kendisi yeniden okudu
+  ✓ veri tabanında hareket yok (yeniden yazılmadı)
+  ✓ arkadaki kart yenilendi: silinen satır listede yok
+
+■ D7 Mutabakat Testi ve Kasa
+  ✓ Mutabakat Testi ok ([])
+  ✓ Nakit Kasa 5.420,00 (5420)
+  ✓ sayfa hatası yok
+
+79 geçti, 0 kaldı
+
+[kanit] c5bkdy-e2e-senaryo-duzeltme-kilidi-250: GEÇTİ · çıkış 0 · 79/79 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit ec658a4 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4

@@ -123,8 +123,10 @@ describe("2.4.4 5a: Tablodan Aktar kayda bağlı carinin taksit dışı tahsilat
     assert.deepEqual({ ...after1, elif: after1.elif - 9000, selin: after1.selin - 4500 }, before0, "Kasa, banka hesabı, etkin işlem başlığı sayısı aynı; carilerin bakiyesi yalnız kart kadar arttı");
     const plan = one("SELECT id FROM plans WHERE case_key = ? AND deleted_at IS NULL", keys["Elif Aydın"]);
     const detail = await must("kart", api.get(`/api/workspace/plans/${plan.id}`));
-    assert.deepEqual([detail.totals.total, detail.totals.paid, detail.totals.remaining], [9000, 3500, 5500]);
-    const items = detail.items.map(item => [item.seq, item.paid]);
+    // Aktarımın karta YAZDIĞI (kartın kendi hesabı). S129 = A: totals.paid / remaining ve items[].paid gösterilen sayıdır — carinin hesabında kalan 7.000 taksit dışı
+    // tahsilat da taksitleri kapatır (tek kuyruk); o gösterim test/tyk-kapanis-250.test.mjs'te.
+    assert.deepEqual([detail.totals.total, detail.totals.ownPaid, detail.totals.ownRemaining], [9000, 3500, 5500]);
+    const items = detail.items.map(item => [item.seq, item.ownPaid]);
     assert.deepEqual(items, [[1, 3000], [2, 500], [3, 0]], `taksitler: ${JSON.stringify(items)}`);
     const moved = db.all("SELECT amount, method, fin_ref AS finRef, event_id AS eventId FROM plan_entries WHERE plan_id = ? AND opening = 0 ORDER BY date", plan.id);
     assert.deepEqual(moved.map(item => [item.amount, item.method]), [[1000, "cash"], [2500, "bank"]]);

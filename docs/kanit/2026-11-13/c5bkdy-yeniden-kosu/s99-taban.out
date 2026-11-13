@@ -1,0 +1,31 @@
+motor: 273 işlem, uyuşmazlık 1 · Taksitli fatura SMM2026000000001: açık 0 < kartın KUYRUK kalanı 783,88 (S99 alt sınır) · kapatanlar 2026-08-07:1260.09:Tahsilat | 2026-08-07:633.01:Çek / Senet | 2026-08-07:228.67:Çek / Senet | 2026-08-12:391.94:Taksit kartından artan ödeme | 2026-08-12:391.94:Taksit kartından artan ödeme
+FATURA SMM2026000000001 2026-08-07 ödenecek 2905.65 · açık 0 · durum paid · kapatanlar 2026-08-07:1260.09:Tahsilat:linked | 2026-08-07:633.01:Çek / Senet:linked | 2026-08-07:228.67:Çek / Senet:linked | 2026-08-12:391.94:Taksit kartından artan ödeme:auto | 2026-08-12:391.94:Taksit kartından artan ödeme:auto
+KART plan-cf4771f toplam 783.88 · kendi ödenen 0 kendi kalan 783.88 · kuyruk kalanı 783.88 · taksitler 2026-08-26:391.94→391.94 2026-09-26:391.94→391.94 · tahsilatlar 
+CARİ bakiye 30168.83 · gecikmiş 30168.83 · kartları plan-19e17:2628.16(MB):active plan-cf477:783.88(MB):active
+DEFTER (tarih sırası):
+  2026-07-21 invoice  debt     borç 2628.16 alacak 0  kaynak invoice-d5c95f Fatura
+  2026-07-21 plan     plan     borç 0 alacak 0 kart plan-19e17  Taksit Planı (mevcut borç)
+  2026-07-24 account  in       borç 0 alacak 6255.29   Tahsilat
+  2026-08-04 account  out      borç 43452.8 alacak 0   Ödeme
+  2026-08-07 invoice  debt     borç 2905.65 alacak 0  kaynak invoice-a9c30a Fatura
+  2026-08-07 invoice  in       borç 0 alacak 1260.09  kaynak invoice-a9c30a Tahsilat
+  2026-08-07 cheque   credit   borç 0 alacak 633.01  kaynak cheque-bcdebba Çek / Senet
+  2026-08-07 cheque   credit   borç 0 alacak 228.67  kaynak cheque-1c0620b Çek / Senet
+  2026-08-07 plan     plan     borç 0 alacak 0 kart plan-cf477  Taksit Planı (mevcut borç)
+  2026-08-08 account  in       borç 0 alacak 948   Tahsilat
+  2026-08-11 invoice  debt     borç 5779.27 alacak 0  kaynak invoice-e1eb38 Fatura
+  2026-08-11 invoice  in       borç 0 alacak 2468.19  kaynak invoice-e1eb38 Tahsilat
+  2026-08-11 cheque   credit   borç 0 alacak 1499.1  kaynak cheque-ce39667 Çek / Senet
+  2026-08-12 invoice  debt     borç 1816.23 alacak 0  kaynak invoice-2ef033 Fatura
+  2026-08-12 cheque   credit   borç 0 alacak 1816.23  kaynak cheque-cd773a4 Çek / Senet
+  2026-08-12 plan     plan-in  borç 0 alacak 11304.7 kart plan-19e17  Taksit Tahsilatı
+KUYRUK kalemleri (açık):
+  receivable payment 27572.97/43452.8 vade 2026-08-04  
+  receivable invoice 1811.98/5779.27 vade 2026-08-11  
+  receivable installment 391.94/391.94 vade 2026-08-07 kart plan-cf477 
+  receivable installment 391.94/391.94 vade 2026-08-07 kart plan-cf477 
+Σ kalem 30168.83 · kapsama  · ön ödeme null
+  fatura FIS2026000000003 sale ödenecek 2628.16 açık 0 taksitli
+  fatura FIS2026000000016 sale ödenecek 5779.27 açık 0 
+  fatura SMM2026000000001 smm ödenecek 2905.65 açık 0 taksitli
+  fatura SMM2026000000003 smm ödenecek 1816.23 açık 0 

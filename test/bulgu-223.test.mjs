@@ -77,7 +77,7 @@ describe("2.0.23 Bulgu 2: taksit kartı ↔ fatura kapama", () => {
     const inv = await must("fatura", api.get(`/api/workspace/invoices/${invoiceId}`));
     const card = planId ? await must("kart", api.get(`/api/workspace/plans/${planId}`)) : null;
     const account = (await must("cari", api.get(`/api/workspace/accounts?status=all&limit=50&q=${encodeURIComponent(acc.name)}`))).accounts.find(a => a.id === acc.id);
-    return { open: inv.open, paid: inv.paid, payState: inv.payState, cardLeft: card?.totals?.remaining, cardPaid: card?.totals?.paid, balance: account.balance };
+    return { open: inv.open, paid: inv.paid, payState: inv.payState, cardLeft: card?.totals?.ownRemaining ?? card?.totals?.remaining, cardPaid: card?.totals?.ownPaid ?? card?.totals?.paid, balance: account.balance }; // kartın KENDİ hesabı (S129 = A: totals.paid / remaining gösterilen sayıdır)
   };
 
   test("A: önce fatura, sonra ayrı kart — kartın tahsilatı faturayı kapatmaz", async () => {
@@ -403,7 +403,7 @@ describe("2.0.23 gözden geçirme: kapamanın kalan yolları", () => {
     const edit = await api.put(`/api/workspace/accounts/${acc.id}/entries/${res.entryId}`, { note: "yalnız açıklama düzeltildi" });
     assert.equal(edit.status, 200, `açıklama düzeltmesi engellenmemeli: ${JSON.stringify(edit.data).slice(0, 160)}`);
     // G3 (tur 2b-2, S99 = A): bağı yok sayılan (taksitli fatura, v2.0.23) 1.000 bağsızdır ve taksitleri vade sırasıyla kapatır → fatura açığı 2.000; kartın kendi kalanı 3.000.
-    assert.deepEqual([(await inv(f.id)).open, (await card(f.planId)).totals.remaining], [2000, 3000]);
+    assert.deepEqual([(await inv(f.id)).open, (await card(f.planId)).totals.ownRemaining], [2000, 3000]);
   });
 
   test("#7: kısmen ödenmiş açık fatura sonradan taksitlendirilemez; neden ve doğru yol söylenir", async () => {

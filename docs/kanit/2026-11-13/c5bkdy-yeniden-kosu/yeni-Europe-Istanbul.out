@@ -1,0 +1,489 @@
+TAP version 13
+# Subtest: http.sendBody ≡ http.send (başlıklar ve baytlar)
+    # Subtest: aynı nesnenin JSON metni Buffer olarak verilince durum, başlıklar ve gövde baytları send ile aynı
+    ok 1 - aynı nesnenin JSON metni Buffer olarak verilince durum, başlıklar ve gövde baytları send ile aynı
+      ---
+      duration_ms: 1.167221
+      type: 'test'
+      ...
+    # Subtest: başlıklar gönderilmişse ikisi de dokunmaz
+    ok 2 - başlıklar gönderilmişse ikisi de dokunmaz
+      ---
+      duration_ms: 0.168054
+      type: 'test'
+      ...
+    1..2
+ok 1 - http.sendBody ≡ http.send (başlıklar ve baytlar)
+  ---
+  duration_ms: 2.109403
+  type: 'suite'
+  ...
+# Subtest: Takvim / zil yanıtının gövdesi: ılık çağrıda yeniden üretilmez, baytlar aynı, bayatlamaz, yetkiyi aşmaz (gerçek program)
+    # Subtest: ilk çağrı gövdeyi üretir; ILIK çağrılar yeniden ÜRETMEZ ve baytlar birebir aynıdır; gövde düz JSON'dur (ok + data; kalemler, sürüm)
+    ok 1 - ilk çağrı gövdeyi üretir; ILIK çağrılar yeniden ÜRETMEZ ve baytlar birebir aynıdır; gövde düz JSON'dur (ok + data; kalemler, sürüm)
+      ---
+      duration_ms: 37.998373
+      type: 'test'
+      ...
+    # Subtest: ekranın gerçek çağrısı (since = elindeki sürüm): içerik aynıysa büyük gövde gönderilmez — davranış aynen
+    ok 2 - ekranın gerçek çağrısı (since = elindeki sürüm): içerik aynıysa büyük gövde gönderilmez — davranış aynen
+      ---
+      duration_ms: 9.629519
+      type: 'test'
+      ...
+    # Subtest: veri değişince gövde YENİLENİR (bayat yanıt yok): yeni vadeli borç hemen yanıtta, sürüm değişir; tahsilatla kalem tutarı düşer
+    ok 3 - veri değişince gövde YENİLENİR (bayat yanıt yok): yeni vadeli borç hemen yanıtta, sürüm değişir; tahsilatla kalem tutarı düşer
+      ---
+      duration_ms: 68.446827
+      type: 'test'
+      ...
+    # Subtest: yetkisi dar kişi başkasının gövdesini ALMAZ: Fatura görme yetkisi kaldırılan kişinin yanıtında fatura kalemi yok; yöneticinin yanıtı aynı kalır
+    ok 4 - yetkisi dar kişi başkasının gövdesini ALMAZ: Fatura görme yetkisi kaldırılan kişinin yanıtında fatura kalemi yok; yöneticinin yanıtı aynı kalır
+      ---
+      duration_ms: 117.552792
+      type: 'test'
+      ...
+    # Subtest: saklanandan (3) çok görünürlük çeşidi istenirse de her biri KENDİ gövdesini alır (bellek sınırı yanlış gövde verdirmez)
+    ok 5 - saklanandan (3) çok görünürlük çeşidi istenirse de her biri KENDİ gövdesini alır (bellek sınırı yanlış gövde verdirmez)
+      ---
+      duration_ms: 436.5126
+      type: 'test'
+      ...
+    1..5
+ok 2 - Takvim / zil yanıtının gövdesi: ılık çağrıda yeniden üretilmez, baytlar aynı, bayatlamaz, yetkiyi aşmaz (gerçek program)
+  ---
+  duration_ms: 1251.13885
+  type: 'suite'
+  ...
+# Subtest: Tek carinin kuyruğunda çek / senet bağlarının anı: carinin KENDİ evrak satırlarından sürülen sorgu ≡ önceki sorgu (kilit açık; gerçek program)
+    # Subtest: evrakı faturaya bağlı (düzeltmeyle bağı değişmiş, ciro edilmiş, bağsız) cariler: programın tek cari sorgusu, carinin HER defter satırı için önceki sorguyla aynı anı verir
+    ok 1 - evrakı faturaya bağlı (düzeltmeyle bağı değişmiş, ciro edilmiş, bağsız) cariler: programın tek cari sorgusu, carinin HER defter satırı için önceki sorguyla aynı anı verir
+      ---
+      duration_ms: 750.505892
+      type: 'test'
+      ...
+    1..1
+ok 3 - Tek carinin kuyruğunda çek / senet bağlarının anı: carinin KENDİ evrak satırlarından sürülen sorgu ≡ önceki sorgu (kilit açık; gerçek program)
+  ---
+  duration_ms: 1103.309265
+  type: 'suite'
+  ...
+# Subtest: Ç5-B kapanış — ORTA-1 (S110 = A): satışla açılan kart kendi satışını HER KOŞULDA tanır (adımlı saat — gerçek kurulum)
+    # Subtest: değişmeden: kart satışın 1.000'ini taşır, elle Borç 500 kendi vadesiyle (+30) AYRI kalem; gecikmiş yalnız 1. taksit 500
+    ok 1 - değişmeden: kart satışın 1.000'ini taşır, elle Borç 500 kendi vadesiyle (+30) AYRI kalem; gecikmiş yalnız 1. taksit 500
+      ---
+      duration_ms: 139.987828
+      type: 'test'
+      ...
+    # Subtest: Tutarı Düzenle (azalt 1.000 → 800): kart yine KENDİ satışını taşır — Borç 500 takvimde vadesiyle durur; gecikmiş 700 (1. taksit 500 + satışın kart dışı 200'ü), 1.200 DEĞİL
+    ok 2 - Tutarı Düzenle (azalt 1.000 → 800): kart yine KENDİ satışını taşır — Borç 500 takvimde vadesiyle durur; gecikmiş 700 (1. taksit 500 + satışın kart dışı 200'ü), 1.200 DEĞİL
+      ---
+      duration_ms: 116.017062
+      type: 'test'
+      ...
+    # Subtest: Tutarı Düzenle (artır 1.000 → 1.200): Mevcut Borç kartı büyütülemez (409 cover-grow) — hiçbir sayı değişmez
+    ok 3 - Tutarı Düzenle (artır 1.000 → 1.200): Mevcut Borç kartı büyütülemez (409 cover-grow) — hiçbir sayı değişmez
+      ---
+      duration_ms: 80.59195
+      type: 'test'
+      ...
+    # Subtest: faturasız stok iadesi 300 (kart küçülmez): kart kendi satışını taşır, Borç 500 ayrı; iade bağsız ödemedir — vadesi en önce gelen 1. taksiti 200'e indirir (S50); gecikmiş 200
+    ok 4 - faturasız stok iadesi 300 (kart küçülmez): kart kendi satışını taşır, Borç 500 ayrı; iade bağsız ödemedir — vadesi en önce gelen 1. taksiti 200'e indirir (S50); gecikmiş 200
+      ---
+      duration_ms: 76.849442
+      type: 'test'
+      ...
+    # Subtest: faturasız stok iadesi 800 (bakiye 700 < kart → kart 700'e küçülür): kart yine kendi satışını taşır, Borç 500 vadesiyle AYRI; iade vade sırasıyla satışın kart dışı 300'ünü + 1. taksiti kapatır
+    ok 5 - faturasız stok iadesi 800 (bakiye 700 < kart → kart 700'e küçülür): kart yine kendi satışını taşır, Borç 500 vadesiyle AYRI; iade vade sırasıyla satışın kart dışı 300'ünü + 1. taksiti kapatır
+      ---
+      duration_ms: 93.075368
+      type: 'test'
+      ...
+    # Subtest: satış + VADESİZ elle borç (v2.4.9 fikstürü N): kart satışı taşır; vadesiz Borç 500 kayıt gününde vadeli (S1) — gecikmiş 1.000
+    ok 6 - satış + VADESİZ elle borç (v2.4.9 fikstürü N): kart satışı taşır; vadesiz Borç 500 kayıt gününde vadeli (S1) — gecikmiş 1.000
+      ---
+      duration_ms: 71.955829
+      type: 'test'
+      ...
+    # Subtest: iki satış kartı: ikinci satışın kartı ikinci satışı, tutarı düzenlenen birinci kart birinci satışı taşır; Borç 500 ayrı
+    ok 7 - iki satış kartı: ikinci satışın kartı ikinci satışı, tutarı düzenlenen birinci kart birinci satışı taşır; Borç 500 ayrı
+      ---
+      duration_ms: 102.987165
+      type: 'test'
+      ...
+    # Subtest: kaynak KALICI: kartın açılış izinde satışın kimliği yazılı; program yeniden açılınca (bellek boş) sayılar aynı
+    ok 8 - kaynak KALICI: kartın açılış izinde satışın kimliği yazılı; program yeniden açılınca (bellek boş) sayılar aynı
+      ---
+      duration_ms: 675.426502
+      type: 'test'
+      ...
+    1..8
+ok 4 - Ç5-B kapanış — ORTA-1 (S110 = A): satışla açılan kart kendi satışını HER KOŞULDA tanır (adımlı saat — gerçek kurulum)
+  ---
+  duration_ms: 1888.818783
+  type: 'suite'
+  ...
+# Subtest: Ç5-B kapanış — S133 = C (BİLİNEN SINIR): ELLE açılan kartta tanıma AYNEN — sonuç kayıt sırasına bağlı (sayılar sabit)
+    # Subtest: C1 — stok satışı en son kaydedilen borç ve tutarı karta eşit: kart satışı taşır ⇒ gecikmiş 0 (X vadesi +30)
+    ok 1 - C1 — stok satışı en son kaydedilen borç ve tutarı karta eşit: kart satışı taşır ⇒ gecikmiş 0 (X vadesi +30)
+      ---
+      duration_ms: 88.879242
+      type: 'test'
+      ...
+    # Subtest: C1b — kayıt sırası ters (önce stok satışı, sonra X): kart tutarı eşit TEK elle borcu (X) taşır ⇒ satış 500 kendi gününde açık, gecikmiş 500
+    ok 2 - C1b — kayıt sırası ters (önce stok satışı, sonra X): kart tutarı eşit TEK elle borcu (X) taşır ⇒ satış 500 kendi gününde açık, gecikmiş 500
+      ---
+      duration_ms: 60.053484
+      type: 'test'
+      ...
+    # Subtest: elle kartın açılış izinde satış kimliği YOK (çıkarım yapılmaz) — toplu kartlarda alan boş yazılır
+    ok 3 - elle kartın açılış izinde satış kimliği YOK (çıkarım yapılmaz) — toplu kartlarda alan boş yazılır
+      ---
+      duration_ms: 38.295169
+      type: 'test'
+      ...
+    1..3
+ok 5 - Ç5-B kapanış — S133 = C (BİLİNEN SINIR): ELLE açılan kartta tanıma AYNEN — sonuç kayıt sırasına bağlı (sayılar sabit)
+  ---
+  duration_ms: 700.337908
+  type: 'suite'
+  ...
+# Subtest: Ç5-B kapanış — ORTA-1 eski veri: kartın kaynağı açılış izinden ÇIKARILIR (2.4.9'a kadar izde satış kimliği yok) — koşulların her biri
+    # Subtest: A — eski biçim satış kartı: hemen önceki iz aynı kullanıcının, aynı cariye, veresiye, kartın AÇILIŞ tutarında stok satışı ⇒ kaynak o satış (tutar sonradan 800 olsa da)
+    ok 1 - A — eski biçim satış kartı: hemen önceki iz aynı kullanıcının, aynı cariye, veresiye, kartın AÇILIŞ tutarında stok satışı ⇒ kaynak o satış (tutar sonradan 800 olsa da)
+      ---
+      duration_ms: 20.894561
+      type: 'test'
+      ...
+    # Subtest: B — hemen önceki satış BAŞKA cariye ⇒ kaynak yok
+    ok 2 - B — hemen önceki satış BAŞKA cariye ⇒ kaynak yok
+      ---
+      duration_ms: 0.510832
+      type: 'test'
+      ...
+    # Subtest: C — hemen önceki satışın tutarı kartın açılış tutarından FARKLI ⇒ kaynak yok
+    ok 3 - C — hemen önceki satışın tutarı kartın açılış tutarından FARKLI ⇒ kaynak yok
+      ---
+      duration_ms: 0.220932
+      type: 'test'
+      ...
+    # Subtest: D — eski biçim toplu kart, hemen önceki iz aynı cariye aynı tutarda veresiye satış ⇒ kaynak o satış (kart o satışı taksitlendirmiştir)
+    ok 4 - D — eski biçim toplu kart, hemen önceki iz aynı cariye aynı tutarda veresiye satış ⇒ kaynak o satış (kart o satışı taksitlendirmiştir)
+      ---
+      duration_ms: 0.191755
+      type: 'test'
+      ...
+    # Subtest: E — BUGÜNKÜ biçim (izde alan boş yazılı): çıkarım yapılmaz ⇒ kaynak yok
+    ok 5 - E — BUGÜNKÜ biçim (izde alan boş yazılı): çıkarım yapılmaz ⇒ kaynak yok
+      ---
+      duration_ms: 0.256046
+      type: 'test'
+      ...
+    # Subtest: F — hemen önceki satışı BAŞKA kullanıcı yazmış ⇒ kaynak yok
+    ok 6 - F — hemen önceki satışı BAŞKA kullanıcı yazmış ⇒ kaynak yok
+      ---
+      duration_ms: 0.175197
+      type: 'test'
+      ...
+    # Subtest: G — hemen önceki satış PEŞİN (cariye yazılmamış) ⇒ kaynak yok
+    ok 7 - G — hemen önceki satış PEŞİN (cariye yazılmamış) ⇒ kaynak yok
+      ---
+      duration_ms: 0.144612
+      type: 'test'
+      ...
+    # Subtest: toplu yol (bütün carilerin kartları) tek cari yoluyla AYNI kaynağı verir
+    ok 8 - toplu yol (bütün carilerin kartları) tek cari yoluyla AYNI kaynağı verir
+      ---
+      duration_ms: 0.961667
+      type: 'test'
+      ...
+    1..8
+ok 6 - Ç5-B kapanış — ORTA-1 eski veri: kartın kaynağı açılış izinden ÇIKARILIR (2.4.9'a kadar izde satış kimliği yok) — koşulların her biri
+  ---
+  duration_ms: 1002.22595
+  type: 'suite'
+  ...
+# Subtest: Ç5-B kapanış — ORTA-1 saf kuyruk: kaynağı bilinen kart (coverSale) ↔ kaynağı bilinmeyen kart (eski tanıma AYNEN)
+    # Subtest: kaynağı bilinen kart: tutar EŞİT DEĞİL, kayıt anı FARKLI, araya daha yeni bir borç yazılmış — kart yine o satışı taşır
+    ok 1 - kaynağı bilinen kart: tutar EŞİT DEĞİL, kayıt anı FARKLI, araya daha yeni bir borç yazılmış — kart yine o satışı taşır
+      ---
+      duration_ms: 1.174833
+      type: 'test'
+      ...
+    # Subtest: kaynak satış defterde yoksa (silinmiş) kart kaynağı bilinmeyen kart gibi davranır — eski tanıma
+    ok 2 - kaynak satış defterde yoksa (silinmiş) kart kaynağı bilinmeyen kart gibi davranır — eski tanıma
+      ---
+      duration_ms: 0.457558
+      type: 'test'
+      ...
+    # Subtest: kaynağı bilinen kartın kimliği stok İADESİ satırını göstermez (yalnız borç yönlü satış satırı)
+    ok 3 - kaynağı bilinen kartın kimliği stok İADESİ satırını göstermez (yalnız borç yönlü satış satırı)
+      ---
+      duration_ms: 0.6336
+      type: 'test'
+      ...
+    # Subtest: K5 dişi — kaynağı bilinmeyen (elle) kart: en son kaydedilen stok satışının tutarı karta EŞİT DEĞİLSE kartın satışı sayılmaz (tutarı eşit tek elle borç taşınır)
+    ok 4 - K5 dişi — kaynağı bilinmeyen (elle) kart: en son kaydedilen stok satışının tutarı karta EŞİT DEĞİLSE kartın satışı sayılmaz (tutarı eşit tek elle borç taşınır)
+      ---
+      duration_ms: 0.38244
+      type: 'test'
+      ...
+    # Subtest: K6 dişi — kaynağı bilinmeyen kart: en son kaydedilen borç stoktan ALIŞ İADESİ ise (tutarı karta eşit olsa da) kartın satışı sayılmaz
+    ok 5 - K6 dişi — kaynağı bilinmeyen kart: en son kaydedilen borç stoktan ALIŞ İADESİ ise (tutarı karta eşit olsa da) kartın satışı sayılmaz
+      ---
+      duration_ms: 0.337421
+      type: 'test'
+      ...
+    # Subtest: K24 dişi — kaynağı bilinmeyen eski kart faturalı iadeyle küçülmüş: tanıma kartın AÇILIŞ tutarıyla (bugünkü tutar + iade kesintisi) — lib/accounts.mjs coverGross
+    ok 6 - K24 dişi — kaynağı bilinmeyen eski kart faturalı iadeyle küçülmüş: tanıma kartın AÇILIŞ tutarıyla (bugünkü tutar + iade kesintisi) — lib/accounts.mjs coverGross
+      ---
+      duration_ms: 0.59755
+      type: 'test'
+      ...
+    # Subtest: K25 dişi — S95 = A × faturasız stok iadesi (bağsız ödemedir — 2.4.5 KS7 a): Borç 200 + Alacak 150 netleştikten SONRAKİ gün stok iadesi 300 ⇒ iade Borç'u kapatır, Alacak 150 yeniden açık, artan 100 avans
+    ok 7 - K25 dişi — S95 = A × faturasız stok iadesi (bağsız ödemedir — 2.4.5 KS7 a): Borç 200 + Alacak 150 netleştikten SONRAKİ gün stok iadesi 300 ⇒ iade Borç'u kapatır, Alacak 150 yeniden açık, artan 100 avans
+      ---
+      duration_ms: 0.73001
+      type: 'test'
+      ...
+    1..7
+ok 7 - Ç5-B kapanış — ORTA-1 saf kuyruk: kaynağı bilinen kart (coverSale) ↔ kaynağı bilinmeyen kart (eski tanıma AYNEN)
+  ---
+  duration_ms: 4.617944
+  type: 'suite'
+  ...
+# Subtest: Ç5-B kapanış — ORTA-2 gerçek program: geriye tarihli Alacak + kart tahsilatı — kalemler toplamı = bakiye, Gecikmiş Borç bakiyeyi aşmaz (saf kuyruk: test/tyk-kapanis-sigma-250)
+    # Subtest: dar kontrolün kayıt sırası: stok satışı 810 → Mevcut Borç kartı 810 (Kayıt Tarihi eski) → Alacak 250 (−230) → kart tahsilatı 490 (−217) → fatura 960 → Borç 360 → tahsilat 450 ⇒ bakiye 940 = Σ kalem = Gecikmiş Borç
+    ok 1 - dar kontrolün kayıt sırası: stok satışı 810 → Mevcut Borç kartı 810 (Kayıt Tarihi eski) → Alacak 250 (−230) → kart tahsilatı 490 (−217) → fatura 960 → Borç 360 → tahsilat 450 ⇒ bakiye 940 = Σ kalem = Gecikmiş Borç
+      ---
+      duration_ms: 279.98274
+      type: 'test'
+      ...
+    1..1
+ok 8 - Ç5-B kapanış — ORTA-2 gerçek program: geriye tarihli Alacak + kart tahsilatı — kalemler toplamı = bakiye, Gecikmiş Borç bakiyeyi aşmaz (saf kuyruk: test/tyk-kapanis-sigma-250)
+  ---
+  duration_ms: 778.90181
+  type: 'suite'
+  ...
+# Subtest: Ç5-B kapanış — S129 = A: kartın gösterilen Tahsil Edilen / Kalan / Ödenen'i tek kuyruktan; sınır kartın kendi kalanından (S118 = B)
+    # Subtest: karar örneği 1 — kart 900 (3 × 300), karta BAĞLANMADAN 500 tahsilat: Tahsil Edilen 500 · Kalan 400; satırlar Ödenen 300 / 200 / 0; kartın kendi hesabı 0 / 900 ayrı alanlarda
+    ok 1 - karar örneği 1 — kart 900 (3 × 300), karta BAĞLANMADAN 500 tahsilat: Tahsil Edilen 500 · Kalan 400; satırlar Ödenen 300 / 200 / 0; kartın kendi hesabı 0 / 900 ayrı alanlarda
+      ---
+      duration_ms: 143.486237
+      type: 'test'
+      ...
+    # Subtest: karar örneği 2 — kart 600 (2 × 300), bağlanmadan 800 tahsilat: Kalan 0 · Tamamlandı, Tahsil Edilen 600; cari 200 alacaklı
+    ok 2 - karar örneği 2 — kart 600 (2 × 300), bağlanmadan 800 tahsilat: Kalan 0 · Tamamlandı, Tahsil Edilen 600; cari 200 alacaklı
+      ---
+      duration_ms: 48.314805
+      type: 'test'
+      ...
+    # Subtest: karta kendi tahsilatı + bağsız tahsilat birlikte: kart 900, karta 300 (1. taksit) + bağsız 200 ⇒ Tahsil Edilen 500 · Kalan 400; kartın kendi hesabı 300 / 600
+    ok 3 - karta kendi tahsilatı + bağsız tahsilat birlikte: kart 900, karta 300 (1. taksit) + bağsız 200 ⇒ Tahsil Edilen 500 · Kalan 400; kartın kendi hesabı 300 / 600
+      ---
+      duration_ms: 89.917899
+      type: 'test'
+      ...
+    # Subtest: kapatılmış kart: gösterim BUGÜNKÜ gibi (kural yazılmadı) — Tahsil Edilen 300, Kalan 600 kartın kendi hesabından
+    ok 4 - kapatılmış kart: gösterim BUGÜNKÜ gibi (kural yazılmadı) — Tahsil Edilen 300, Kalan 600 kartın kendi hesabından
+      ---
+      duration_ms: 64.862519
+      type: 'test'
+      ...
+    # Subtest: Mevcut Borç kartının taksitlere BÖLÜNMEMİŞ kısmı bugünkü gösteriminde (karar yok): Borç 1.000, kart 1.000 (taksit 300 + 300), bağsız tahsilat 200 ⇒ Kalan 1.000, Tahsil Edilen 0
+    ok 5 - Mevcut Borç kartının taksitlere BÖLÜNMEMİŞ kısmı bugünkü gösteriminde (karar yok): Borç 1.000, kart 1.000 (taksit 300 + 300), bağsız tahsilat 200 ⇒ Kalan 1.000, Tahsil Edilen 0
+      ---
+      duration_ms: 199.473764
+      type: 'test'
+      ...
+    # Subtest: elle Alacak'la NETLEŞME tahsilat değildir (karar yok — gösterim bugünkü gibi; kâhin d19 N4): Açılış 900 → Mevcut Borç kartı 900 (3 × 300) → Alacak 200 ⇒ Tahsil Edilen 0 · Kalan 900, satırların Ödenen'i 0
+    ok 6 - elle Alacak'la NETLEŞME tahsilat değildir (karar yok — gösterim bugünkü gibi; kâhin d19 N4): Açılış 900 → Mevcut Borç kartı 900 (3 × 300) → Alacak 200 ⇒ Tahsil Edilen 0 · Kalan 900, satırların Ödenen'i 0
+      ---
+      duration_ms: 91.596712
+      type: 'test'
+      ...
+    # Subtest: kartın KENDİ fazla tahsilatı (K8 'Fazlasını Avans Yaz') bugünkü gibi: kart 1.000 ödendi + 100 avans ⇒ Tahsil Edilen 1.100 · Kalan 0 · fazla 100
+    ok 7 - kartın KENDİ fazla tahsilatı (K8 'Fazlasını Avans Yaz') bugünkü gibi: kart 1.000 ödendi + 100 avans ⇒ Tahsil Edilen 1.100 · Kalan 0 · fazla 100
+      ---
+      duration_ms: 117.965348
+      type: 'test'
+      ...
+    # Subtest: carisiz kart (kuyruk yok): gösterilen sayı kartın kendi hesabı — alanlar aynı
+    ok 8 - carisiz kart (kuyruk yok): gösterilen sayı kartın kendi hesabı — alanlar aynı
+      ---
+      duration_ms: 43.000279
+      type: 'test'
+      ...
+    1..8
+ok 9 - Ç5-B kapanış — S129 = A: kartın gösterilen Tahsil Edilen / Kalan / Ödenen'i tek kuyruktan; sınır kartın kendi kalanından (S118 = B)
+  ---
+  duration_ms: 1224.022941
+  type: 'suite'
+  ...
+# Subtest: Ç5-B kapanış — DÜŞÜK-2 saf kuyruk dişleri
+    # Subtest: K3 dişi — S101: aynı para iki kartta 'avansla ödenmiş' sayılmaz (önceki kartın saydığı kısım düşülür); para dışı kapanan kısım kırpılır
+    ok 1 - K3 dişi — S101: aynı para iki kartta 'avansla ödenmiş' sayılmaz (önceki kartın saydığı kısım düşülür); para dışı kapanan kısım kırpılır
+      ---
+      duration_ms: 8.012579
+      type: 'test'
+      ...
+    # Subtest: K35 dişi — S105: tedarikçi — 01.03 Ödeme 300 · 05.03 FATURALI Alış İadesi 200 · 10.03 alış 250 ⇒ alış önce iade alacağını kapatır: iade 0, avans 250
+    ok 2 - K35 dişi — S105: tedarikçi — 01.03 Ödeme 300 · 05.03 FATURALI Alış İadesi 200 · 10.03 alış 250 ⇒ alış önce iade alacağını kapatır: iade 0, avans 250
+      ---
+      duration_ms: 0.997995
+      type: 'test'
+      ...
+    1..2
+ok 10 - Ç5-B kapanış — DÜŞÜK-2 saf kuyruk dişleri
+  ---
+  duration_ms: 9.993391
+  type: 'suite'
+  ...
+# Subtest: Ç5-B kapanış — DÜŞÜK-2 gerçek program dişleri (K8, K22)
+    # Subtest: K8 dişi — S135 = C: F 600 + elle X 300 + ayrıca TAKSİTLİ fatura B 300; Mevcut Borç kartı 900; karta 300 ⇒ başka kartın açık taksitleri 'bütün açık borca' sayılır: X Kalan 0, F açık 600
+    ok 1 - K8 dişi — S135 = C: F 600 + elle X 300 + ayrıca TAKSİTLİ fatura B 300; Mevcut Borç kartı 900; karta 300 ⇒ başka kartın açık taksitleri 'bütün açık borca' sayılır: X Kalan 0, F açık 600
+      ---
+      duration_ms: 219.129363
+      type: 'test'
+      ...
+    # Subtest: K22 dişi — Tablodan Aktar'ın açtığı Mevcut Borç kartı (aktarım kimlikli) kararların dışında: kart ekranı (tek cari yolu) = liste (bütün cariler yolu) — eski kural (vade sırası)
+    ok 2 - K22 dişi — Tablodan Aktar'ın açtığı Mevcut Borç kartı (aktarım kimlikli) kararların dışında: kart ekranı (tek cari yolu) = liste (bütün cariler yolu) — eski kural (vade sırası)
+      ---
+      duration_ms: 81.729112
+      type: 'test'
+      ...
+    1..2
+ok 11 - Ç5-B kapanış — DÜŞÜK-2 gerçek program dişleri (K8, K22)
+  ---
+  duration_ms: 898.34299
+  type: 'suite'
+  ...
+# Subtest: Ç5-B kapanış — DÜŞÜK-2 K28 dişi (S96 = A): bankadan POS Komisyon Tahsili ile verilen avans takvimde / zilde / Vade Takip'te AYRI KALEM
+    # Subtest: ödeme kuruluşu POS'u (komisyon %2,5 + KDV): satış 10.000 → valörden ÖNCE tam iade → 12.10'da komisyon (250 + KDV 50) bankadan tahsil edilir: sağlayıcı carisine verilen 300, komisyon faturası gelene kadar 'Tahsil Edilecek' kalemidir
+    ok 1 - ödeme kuruluşu POS'u (komisyon %2,5 + KDV): satış 10.000 → valörden ÖNCE tam iade → 12.10'da komisyon (250 + KDV 50) bankadan tahsil edilir: sağlayıcı carisine verilen 300, komisyon faturası gelene kadar 'Tahsil Edilecek' kalemidir
+      ---
+      duration_ms: 682.96374
+      type: 'test'
+      ...
+    1..1
+ok 12 - Ç5-B kapanış — DÜŞÜK-2 K28 dişi (S96 = A): bankadan POS Komisyon Tahsili ile verilen avans takvimde / zilde / Vade Takip'te AYRI KALEM
+  ---
+  duration_ms: 683.33769
+  type: 'suite'
+  ...
+# \# ORTA-2 değişmezi: {"cari":20000,"derin":409,"guvenli":1,"enCok":400} (derin = 12 geçişi aşan; guvenli = güvenli kapanış uygulanan)
+# Subtest: Ç5-B kapanış — ORTA-2: ön ödeme ölçümü yakınsayana kadar sürer; yakınsamazsa güvenli kapanış — kalemler toplamı = bakiye
+    # Subtest: dar kontrolün örneği (ölçüm geçiş başına 20 TL ilerler; 12 geçiş yetmiyordu): Σ kalem = bakiye 940, Gecikmiş Borç 940 (960 DEĞİL), fatura açığı 940, kart Bitti
+    ok 1 - dar kontrolün örneği (ölçüm geçiş başına 20 TL ilerler; 12 geçiş yetmiyordu): Σ kalem = bakiye 940, Gecikmiş Borç 940 (960 DEĞİL), fatura açığı 940, kart Bitti
+      ---
+      duration_ms: 10.6949
+      type: 'test'
+      ...
+    # Subtest: güvenli kapanış — ölçüm geçiş başına 1 KURUŞ ilerliyor (sınırda yakınsamaz): kart tahsilatının var olmayan taksite yazdığı pay avans olur; Σ kalem = bakiye, gecikmiş ≤ bakiye
+    ok 2 - güvenli kapanış — ölçüm geçiş başına 1 KURUŞ ilerliyor (sınırda yakınsamaz): kart tahsilatının var olmayan taksite yazdığı pay avans olur; Σ kalem = bakiye, gecikmiş ≤ bakiye
+      ---
+      duration_ms: 27.096526
+      type: 'test'
+      ...
+    # Subtest: güvenli kapanış kilit ölçümlü yolda da (karar (3): kilitli dönemde bağlı ödeme varken son geçiş ayrı kurulur)
+    ok 3 - güvenli kapanış kilit ölçümlü yolda da (karar (3): kilitli dönemde bağlı ödeme varken son geçiş ayrı kurulur)
+      ---
+      duration_ms: 65.983961
+      type: 'test'
+      ...
+    # Subtest: geçiş sınırı carinin büyüklüğüne bağlı: iş bütçesi (geçiş × satır) sabit — küçük caride 400, çok satırlı caride en az 12
+    ok 4 - geçiş sınırı carinin büyüklüğüne bağlı: iş bütçesi (geçiş × satır) sabit — küçük caride 400, çok satırlı caride en az 12
+      ---
+      duration_ms: 0.255277
+      type: 'test'
+      ...
+    # Subtest: çok satırlı caride (sınır 12) yakınsamayan ölçüm: güvenli kapanış — Σ kalem = bakiye
+    ok 5 - çok satırlı caride (sınır 12) yakınsamayan ölçüm: güvenli kapanış — Σ kalem = bakiye
+      ---
+      duration_ms: 624.188971
+      type: 'test'
+      ...
+    # Subtest: yakınsayan caride güvenli kapanış ÇALIŞMAZ: S101 karar örneği (1.000 avans → 600 veresiye satış 2 taksit → Taksit Tahsilatı 300 → Borç 500) ⇒ takvim boş, müşteri 200 alacaklı
+    ok 6 - yakınsayan caride güvenli kapanış ÇALIŞMAZ: S101 karar örneği (1.000 avans → 600 veresiye satış 2 taksit → Taksit Tahsilatı 300 → Borç 500) ⇒ takvim boş, müşteri 200 alacaklı
+      ---
+      duration_ms: 1.244845
+      type: 'test'
+      ...
+    1..6
+ok 13 - Ç5-B kapanış — ORTA-2: ön ödeme ölçümü yakınsayana kadar sürer; yakınsamazsa güvenli kapanış — kalemler toplamı = bakiye
+  ---
+  duration_ms: 730.584734
+  type: 'suite'
+  ...
+# Subtest: Ç5-B kapanış — ORTA-2 değişmez: geriye tarihli üretici, 80 tohum × 250 cari (20.000 cari)
+    # Subtest: tohum 5000–5009: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+    ok 1 - tohum 5000–5009: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+      ---
+      duration_ms: 904.61905
+      type: 'test'
+      ...
+    # Subtest: tohum 5010–5019: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+    ok 2 - tohum 5010–5019: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+      ---
+      duration_ms: 484.467494
+      type: 'test'
+      ...
+    # Subtest: tohum 5020–5029: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+    ok 3 - tohum 5020–5029: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+      ---
+      duration_ms: 453.129359
+      type: 'test'
+      ...
+    # Subtest: tohum 5030–5039: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+    ok 4 - tohum 5030–5039: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+      ---
+      duration_ms: 475.891522
+      type: 'test'
+      ...
+    # Subtest: tohum 5040–5049: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+    ok 5 - tohum 5040–5049: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+      ---
+      duration_ms: 507.726924
+      type: 'test'
+      ...
+    # Subtest: tohum 5050–5059: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+    ok 6 - tohum 5050–5059: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+      ---
+      duration_ms: 484.307283
+      type: 'test'
+      ...
+    # Subtest: tohum 5060–5069: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+    ok 7 - tohum 5060–5069: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+      ---
+      duration_ms: 480.537762
+      type: 'test'
+      ...
+    # Subtest: tohum 5070–5079: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+    ok 8 - tohum 5070–5079: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+      ---
+      duration_ms: 455.396822
+      type: 'test'
+      ...
+    # Subtest: üretici sınıfı gördü: 12 geçişten sonra yakınsayan ve sınırda yakınsamayan (güvenli kapanış) cariler üretildi
+    ok 9 - üretici sınıfı gördü: 12 geçişten sonra yakınsayan ve sınırda yakınsamayan (güvenli kapanış) cariler üretildi
+      ---
+      duration_ms: 0.898004
+      type: 'test'
+      ...
+    1..9
+ok 14 - Ç5-B kapanış — ORTA-2 değişmez: geriye tarihli üretici, 80 tohum × 250 cari (20.000 cari)
+  ---
+  duration_ms: 4247.740243
+  type: 'suite'
+  ...
+1..14
+# tests 63
+# suites 14
+# pass 63
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9847.459363
+
+[kanit] c5bkdy-yeni-Europe-Istanbul: GEÇTİ · çıkış 0 · 63/63 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 3c8473f +1 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v22.23.4

@@ -1,0 +1,80 @@
+{
+ "SK29": {
+  "bakiye": 1700,
+  "gecikmisKart": 800,
+  "gecikmisListe": 800,
+  "vadeGecikmis": 800,
+  "zilGecikmis": 800,
+  "vadeTakip": [
+   "account:in:300@2026-06-02",
+   "account:in:500@2026-06-12"
+  ],
+  "zil": [
+   "account:300:overdue",
+   "account:500:overdue"
+  ],
+  "kalan": [
+   "B1000:1000→1000",
+   "B500:500→500"
+  ],
+  "kartlar": [],
+  "sigma": true,
+  "mutabakat": true
+ },
+ "SK27": {
+  "bakiye": 1000,
+  "gecikmisKart": 700,
+  "gecikmisListe": 700,
+  "vadeGecikmis": 700,
+  "zilGecikmis": 700,
+  "vadeTakip": [
+   "invoice:in:500@2026-05-13",
+   "plan:in:200@2026-06-03"
+  ],
+  "zil": [
+   "invoice:500:overdue",
+   "plan:200:overdue"
+  ],
+  "kalan": [
+   "X400:400→400"
+  ],
+  "kartlar": [
+   {
+    "items": [
+     200,
+     200
+    ],
+    "own": 400,
+    "paid": 0,
+    "overdue": 400
+   }
+  ],
+  "sigma": true,
+  "mutabakat": true
+ },
+ "SK28a": {
+  "bakiye": 900,
+  "gecikmisKart": 500,
+  "gecikmisListe": 500,
+  "vadeGecikmis": 500,
+  "zilGecikmis": 500,
+  "vadeTakip": [
+   "account:in:200@2026-07-01",
+   "invoice:in:300@2026-06-09"
+  ],
+  "zil": [
+   "account:200:overdue",
+   "invoice:300:overdue"
+  ],
+  "kalan": [
+   "X600:600→600"
+  ],
+  "kartlar": [],
+  "sigma": true,
+  "mutabakat": true
+ },
+ "SK28b_baglama": "404 \"\"",
+ "SK28b": {
+  "HATA": "fatura oku: 404 {\"ok\":false,\"error\":\"Fatura bulunamadı.\"}"
+ }
+}
