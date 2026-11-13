@@ -281,35 +281,37 @@ const signatureOf = line => `${line.date || ""}|${Number(line.cents) || 0}`;
 const HIDDEN_PREFIX = "cash-hidden:";
 /** Silinenler özetinin ayar anahtarı (kaynak: plan / account / cheque / trash; ref: öğenin kimliği). */
 export const hiddenKeyOf = (source, ref) => `${HIDDEN_PREFIX}${source}:${ref}`;
+// Üst kaydın gizlenen para satırları (Kasa uyarısının kimliğiyle aynı tablo + kimlik; tarih + kuruş): kartın taksit hareketleri, carinin cari satırları, evrakın olayları.
+// Hız (ders 47, 53 (a)): yalnız silinen kaydın satırları, dizinli tek sorgu — Kasa'nın bütün satırları OKUNMAZ (ilk sürümde iki tam tarama kart silmeyi ~57 → ~700 ms yapıyordu).
+const CHILD_ROWS = {
+  plan: ["plan_entries", "SELECT id, date, CAST(ROUND(amount * 100) AS INTEGER) AS cents FROM plan_entries WHERE plan_id = ?"],
+  account: ["account_entries", "SELECT id, date, CAST(ROUND(amount * 100) AS INTEGER) AS cents FROM account_entries WHERE account_id = ?"],
+  cheque: ["cheque_events", "SELECT id, date, CAST(ROUND(amount * 100) AS INTEGER) AS cents FROM cheque_events WHERE cheque_id = ?"],
+};
 /**
- * Üst kayıt (kart, cari, çek / senet) silinirken görünürlüğü kalkan NAKİT satırlarının özeti (kimlik → tarih|kuruş) — fn'den önce ve sonra Kasa'nın bütün nakit satırları TEK sorguyla
- * okunur (ders 47: satır başına okuma yok), farkı ayar tablosuna TEK değer olarak yazılır. fn hata verirse özet yazılmaz. Okunamazsa (eski şema) özetsiz kalır.
+ * Üst kayıt (kart, cari, çek / senet) silinirken görünürlüğü kalkan para satırlarının özeti (kimlik → tarih|kuruş) — fn'den ÖNCE okunur (silinirkenki hâl), fn başarıyla
+ * bitince ayar tablosuna TEK değer olarak yazılır. fn hata verirse özet yazılmaz. Okunamazsa (eski şema) öğe özetsiz kalır (bugünkü davranış).
  */
 export function recordingHidden(store, source, ref, fn) {
-  let before = null;
+  let rows = null;
   try {
-    before = cashSignatures(store);
+    const [table, sql] = CHILD_ROWS[source] || [];
+    if (table) {
+      rows = {};
+      for (const row of store.all(sql, ref)) rows[`${table}:${row.id}`] = `${row.date || ""}|${Number(row.cents) || 0}`;
+    }
   } catch {
-    before = null;
+    rows = null;
   }
   const result = fn();
-  if (before) {
+  if (rows) {
     try {
-      const after = cashSignatures(store);
-      const rows = {};
-      for (const [key, sig] of before) if (!after.has(key)) rows[key] = sig;
       saveHidden(store, hiddenKeyOf(source, ref), rows);
     } catch {
       // özet yazılamadı: öğe özetsiz kalır (bugünkü davranış)
     }
   }
   return result;
-}
-function cashSignatures(store) {
-  const lines = createMoneyLines(store);
-  const out = new Map();
-  for (const line of lines.lines({ ways: ["cash"], light: true })) out.set(noticeKeyOf(lines, line), signatureOf(line));
-  return out;
 }
 /** Özeti yazar (kimlik → 'tarih|kuruş'); tek satırlık Silinenler öğesi için yükten (lib/trash.mjs) de çağrılır. */
 export function saveHidden(store, key, rows) {
