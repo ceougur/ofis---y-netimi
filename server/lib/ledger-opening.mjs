@@ -1,9 +1,9 @@
 // 2.5.0 Ç5-A tur 1 — açılış düzeni (docs/erp/C5-ACILIS-TASARIM.md §2.4, §2.8, §3.5, §11): KG-16 "Açılış Olabilir" listesi, "Açılış Karşılığı" ikinci yükleyicisi (519 / 500,
 // modüllerin kendi tablolarından; journal()'dan bağımsız SQL) ve kilitsiz geçmiş yıl bilgisi (S53). Açılış Eşleştirme Fişi ve Kural Farkı Düzeltme Fişi TUR 2'de bu dosyaya eklenir
 // (eşleştirme denetimi aynı `openingCounterpart` toplamını okur).
-import { LEDGER_RULE_ALIASES, localDayOf } from "./general-ledger.mjs";
+import { ACCOUNT_PLAN, LEDGER_RULE_ALIASES, localDayOf } from "./general-ledger.mjs";
 import { leanAll } from "./lean-rows.mjs";
-import { roundMoney } from "./money.mjs";
+import { parseAmount, roundMoney } from "./money.mjs";
 import { isOpeningCandidateNote } from "./migrations.mjs";
 
 export { isOpeningCandidateNote };
@@ -210,20 +210,38 @@ export function openingReviewDrift(store) {
 /** KG-16 listesi ve kararı (uçlar: routes/opening-review.mjs). */
 export function createOpeningReview({ store }) {
   const ready = () => has(store, "account_entries") && hasColumn(store, "account_entries", "opening_review");
-  function list({ all = false } = {}) {
+  // Ç5-A tur 2c İş 3 (C5-ACILIS-TASARIM §17.10; tur 1e DÜŞÜK-3): sayfalama (limit / offset; verilmezse bütün liste — tur 1'in çıktısı AYNEN) ve toplam (`total`, yalnız sayfalı);
+  // locked (kilit tarihi) verilirse her satıra `locked` (kilitli dönemde mi — ekran; B16) ve sayılara kilitli dönemde onay bekleyen sayı (`lockedCandidate`).
+  function list({ all = false, limit = 0, offset = 0, locked = "" } = {}) {
     if (!ready()) return { items: [], counts: { candidate: 0, confirmed: 0, rejected: 0 } };
+    const where = `e.opening_review ${all ? "IN ('candidate', 'confirmed', 'rejected')" : "= 'candidate'"}`;
+    const paged = Number.isInteger(limit) && limit > 0;
     const items = store
       .all(
-        `SELECT e.id, e.account_id AS accountId, a.name AS accountName, a.type AS accountType, e.kind, e.amount, e.date, e.note, e.opening_review AS review
+        // Sayfalı listede (ekran) aynı adlı iki cariyi ayırmak için cari no ve telefon da.
+        `SELECT e.id, e.account_id AS accountId, a.name AS accountName, a.type AS accountType, e.kind, e.amount, e.date, e.note, e.opening_review AS review${paged ? ", COALESCE(a.ref_no, '') AS accountRef, COALESCE(a.phone, '') AS accountPhone" : ""}
          FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
-         WHERE e.opening_review ${all ? "IN ('candidate', 'confirmed', 'rejected')" : "= 'candidate'"} ORDER BY e.date, e.rowid`,
+         WHERE ${where} ORDER BY e.date, e.rowid${paged ? " LIMIT ? OFFSET ?" : ""}`,
+        ...(paged ? [limit, Math.max(0, Math.trunc(Number(offset) || 0))] : []),
       )
-      .map(row => ({ ...row, amount: roundMoney(Number(row.amount) || 0) }));
-    const counts = { candidate: 0, confirmed: 0, rejected: 0 };
+      .map(row => ({ ...row, amount: roundMoney(Number(row.amount) || 0), ...(locked ? { locked: row.date <= locked } : {}) }));
+    const out = { items, counts: counts({ locked }) };
+    if (paged) out.total = Number(store.get(`SELECT COUNT(*) AS n FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL WHERE ${where}`)?.n) || 0;
+    return out;
+  }
+  /** Durum sayıları (zil: tek GROUP BY); locked verilirse kilitli dönemde onay bekleyen sayı da (`lockedCandidate`; B16 — Kural Farkı fişi bunlar bitmeden yazılmaz). */
+  function counts({ locked = "" } = {}) {
+    const out = { candidate: 0, confirmed: 0, rejected: 0 };
+    if (!ready()) return out;
     for (const row of store.all("SELECT e.opening_review AS review, COUNT(*) AS n FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL WHERE e.opening_review <> '' GROUP BY e.opening_review")) {
-      if (Object.hasOwn(counts, row.review)) counts[row.review] = Number(row.n) || 0;
+      if (Object.hasOwn(out, row.review)) out[row.review] = Number(row.n) || 0;
     }
-    return { items, counts };
+    if (locked) {
+      out.lockedCandidate = out.candidate
+        ? Number(store.get("SELECT COUNT(*) AS n FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL WHERE e.opening_review = 'candidate' AND e.date <= ?", locked)?.n) || 0
+        : 0;
+    }
+    return out;
   }
   /**
    * Karar: onay (confirmed) ya da ret (rejected). Satırın tutarı / tarihi / yönü / açılış işareti (is_opening) DEĞİŞMEZ; yalnız durum. Aynı karar tekrarı değişiklik yazmaz.
@@ -235,7 +253,8 @@ export function createOpeningReview({ store }) {
     const gated = hasColumn(store, "account_entries", "opening_review_gate");
     const row = store.get(`SELECT e.id, e.opening_review AS review, ${gated ? "e.opening_review_gate" : "e.opening_review"} AS gate, e.account_id AS accountId FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL WHERE e.id = ?`, id);
     if (!row || !(DECIDED.has(String(row.review)) || DECIDED.has(String(row.gate)))) return { status: 404 };
-    const next = decision === "confirm" ? OPENING_REVIEW.confirmed : OPENING_REVIEW.rejected;
+    // Ç5-A tur 2c İş 3: "undo" — kararı geri al: satır yeniden onay bekler (S47: defterde 519). Yalnız listedeki (kararlı) satır; para alanına dokunmaz.
+    const next = decision === "confirm" ? OPENING_REVIEW.confirmed : decision === "undo" ? OPENING_REVIEW.candidate : OPENING_REVIEW.rejected;
     const { gate, ...head } = row;
     if (row.review === next && gate === next) return { status: 200, row: { ...head, review: next }, changed: false };
     // Para alanı değil (tutar, yön, tarih, yol, bakiye, Kasa değişmez; yalnız Ana Defter'in karşı hesabı 519 ↔ 602 / 770): para koruması (bank.post) dışında, gerekçeli ham yazım
@@ -246,5 +265,240 @@ export function createOpeningReview({ store }) {
     });
     return { status: 200, row: { ...head, review: next, previous: row.review }, changed: true };
   }
-  return { list, decide };
+  /**
+   * Ç5-A tur 2c İş 3 — toplu karar. Çağıran AYNI işlemde çağırır (routes/opening-review.mjs store.tx): listede olmayan kimlik varsa { status: 404, missing } döner ve çağıran işlemi
+   * geri alır — yarım toplu karar yazılmaz. Dönüş: { status: 200, rows: [{ id, accountId, review, previous?, changed }] }.
+   */
+  function decideMany(ids, decision) {
+    if (!ready()) return { status: 503 };
+    const rows = [];
+    for (const id of [...new Set(ids.map(String))]) {
+      const result = decide(id, decision);
+      if (result.status !== 200) return { status: result.status, missing: id };
+      rows.push({ ...result.row, changed: result.changed });
+    }
+    return { status: 200, rows };
+  }
+  return { list, counts, decide, decideMany };
+}
+
+// ---- 2.5.0 Ç5-A tur 2b İş 2 — Kural Farkı Düzeltme Fişi (C5-ACILIS-TASARIM §3.3, §17.8; KG-15 A; EK-1 M7; BAŞ MİMAR B14 (a), B16; KULLANICI S76 = A) ----
+/** Ertesi gün (YYYY-AA-GG; takvim günü, saat dilimi yok). */
+export const nextDayOf = iso => {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(iso || ""))) return "";
+  const at = new Date(`${iso}T00:00:00Z`);
+  at.setUTCDate(at.getUTCDate() + 1);
+  return at.toISOString().slice(0, 10);
+};
+const RESULT_CLASSES = new Set(["6", "7"]);
+/** Önceki yılın sonuç hesabı farkının fişteki hesabı: borç yönlü (gider artışı / gelir azalışı) 681, alacak yönlü 671 (§3.3). */
+export const PRIOR_YEAR_ACCOUNTS = Object.freeze({ debit: "681", credit: "671" });
+
+/**
+ * Kural Farkı Düzeltme Fişi'nin planı (saf; veri tabanı yok). diff: snapshots.ruleDiff({ detail: true }) — { through, count, entries: [{ id, date, source, text, deltas: [{ year,
+ * account, sub, party, minor }] }] } (minor = güncel − donmuş, borç artı). subledger: alt defter hesapları (routes/ledger.mjs subledgerAccounts — K6; fişe yazılmaz). year: fişin
+ * yılı. posted: yazılmış düzeltmelerin net toplamı (postedRuleDiffCorrections().net; anahtar "hesap|alt hesap").
+ *   - 1–5 sınıfı: kilit günü sonundaki BİRİKİMLİ fark (yıllar toplanır) hesap + alt hesap başına;
+ *   - 6 / 7 sınıfı: farkın yılı = fişin yılı → aynı hesap; önceki yıl → (yıl, hesap, alt hesap) farkı borç yönlüyse 681, alacak yönlüyse 671;
+ *   - ALT DEFTER (B14 (a); S76 = A): birikimli farkı sıfır olmayan alt defter hesabına katkı veren maddelerin BÜTÜN farkı fişin dışında kalır (fiş her zaman dengeli; dışarıda kalan
+ *     fark `excluded`'da nedeniyle). Dışlama kararlı noktaya kadar yinelenir (bir maddenin dışlanması başka bir alt defter hesabının birikimini sıfırdan çıkarabilir).
+ * Dönüş: { expected: Map, lines (düzeltilmemiş kalan; fiş satırları, kuruş), excluded: [{ account, sub, party, minor }], excludedEntries: Set, sources: [...] }.
+ */
+export function ruleDiffCorrectionPlan({ diff, subledger = new Set(), year, posted = new Map() }) {
+  const entries = (diff?.entries || []).filter(entry => entry.deltas?.length);
+  const owned = account => subledger.has(account);
+  const out = new Set();
+  const subledgerTotals = () => {
+    const totals = new Map();
+    for (const entry of entries) {
+      if (out.has(entry.id)) continue;
+      for (const delta of entry.deltas) {
+        if (!owned(delta.account)) continue;
+        const key = `${delta.account}|${delta.sub}|${delta.party}`;
+        totals.set(key, (totals.get(key) || 0) + delta.minor);
+      }
+    }
+    return totals;
+  };
+  for (let changed = true; changed; ) {
+    changed = false;
+    const bad = new Set([...subledgerTotals()].filter(([, minor]) => minor !== 0).map(([key]) => key));
+    if (!bad.size) break;
+    for (const entry of entries) {
+      if (out.has(entry.id)) continue;
+      if (entry.deltas.some(delta => owned(delta.account) && bad.has(`${delta.account}|${delta.sub}|${delta.party}`))) {
+        out.add(entry.id);
+        changed = true;
+      }
+    }
+  }
+  const excludedTotals = new Map();
+  const result = new Map();
+  const expected = new Map();
+  const add = (map, key, minor) => map.set(key, (map.get(key) || 0) + minor);
+  for (const entry of entries) {
+    for (const delta of entry.deltas) {
+      if (out.has(entry.id)) {
+        add(excludedTotals, `${delta.account}|${delta.sub}|${delta.party}`, delta.minor);
+        continue;
+      }
+      if (RESULT_CLASSES.has(delta.account[0]) && delta.year !== year) add(result, `${delta.year}|${delta.account}|${delta.sub}`, delta.minor);
+      // Fiş satırı cari taşımaz: cari hesapları (120, 320 …) alt defter hesabıdır, fişe yazılmaz (yukarıda dışlandı).
+      else add(expected, `${delta.account}|${delta.sub}`, delta.minor);
+    }
+  }
+  for (const [key, minor] of result) {
+    if (!minor) continue;
+    add(expected, `${minor > 0 ? PRIOR_YEAR_ACCOUNTS.debit : PRIOR_YEAR_ACCOUNTS.credit}|`, minor);
+  }
+  const lines = [];
+  for (const key of new Set([...expected.keys(), ...posted.keys()])) {
+    const minor = (expected.get(key) || 0) - (posted.get(key) || 0);
+    if (!minor) continue;
+    const [account, sub] = key.split("|");
+    lines.push({ account, sub, party: "", debit: minor > 0 ? minor : 0, credit: minor < 0 ? -minor : 0 });
+  }
+  lines.sort((a, b) => a.account.localeCompare(b.account) || a.sub.localeCompare(b.sub) || b.debit - a.debit);
+  const excluded = [...excludedTotals]
+    .filter(([, minor]) => minor !== 0)
+    .map(([key, minor]) => {
+      const [account, sub, party] = key.split("|");
+      return { account, sub, party, minor, subledger: owned(account) };
+    })
+    .sort((a, b) => a.account.localeCompare(b.account) || a.sub.localeCompare(b.sub) || a.party.localeCompare(b.party));
+  const sources = entries.map(entry => ({ id: entry.id, date: entry.date, source: entry.source || "", text: entry.text || "", inFrozen: entry.inFrozen !== false, inLive: entry.inLive !== false, excluded: out.has(entry.id), deltas: entry.deltas }));
+  return { expected, lines, excluded, excludedEntries: out, sources };
+}
+
+/**
+ * Yazılmış Kural Farkı Düzeltme Fişleri: net toplam (hesap|alt hesap → kuruş, borç artı; ters kayıtları dahil — ters kaydedilen fiş düşer), etkin (ters kaydı olmayan) fişler ve
+ * herhangi bir düzeltme fişi (ters kaydedilmiş dahil) var mı. Tablo yoksa boş.
+ */
+export function postedRuleDiffCorrections(store) {
+  const empty = { any: false, net: new Map(), active: [] };
+  if (!has(store, "ledger_vouchers") || !has(store, "ledger_voucher_lines")) return empty;
+  if (!store.get("SELECT 1 AS found FROM ledger_vouchers WHERE type = 'rule-diff-correction' LIMIT 1")) return empty;
+  const net = new Map();
+  for (const row of store.all(
+    `SELECT l.account, l.sub, SUM(l.debit_minor - l.credit_minor) AS net FROM ledger_vouchers v CROSS JOIN ledger_voucher_lines l ON l.voucher_id = v.id
+     WHERE v.type = 'rule-diff-correction' OR (v.type = 'reversal' AND v.reversal_of IN (SELECT id FROM ledger_vouchers WHERE type = 'rule-diff-correction'))
+     GROUP BY l.account, l.sub`,
+  )) if (Number(row.net)) net.set(`${row.account}|${row.sub || ""}`, Number(row.net));
+  const active = store
+    .all("SELECT v.id, v.year, v.no, v.date FROM ledger_vouchers v WHERE v.type = 'rule-diff-correction' AND NOT EXISTS (SELECT 1 FROM ledger_vouchers r WHERE r.reversal_of = v.id) ORDER BY v.date, v.rowid")
+    .map(row => ({ id: row.id, year: Number(row.year), no: Number(row.no), date: row.date }));
+  return { any: true, net, active };
+}
+
+// ---- 2.5.0 Ç5-A tur 2c İş 1 — Açılış Eşleştirme Fişi (C5-ACILIS-TASARIM §2.7, §17.10; kural kitabı M-11; BAŞ MİMAR B10; kâhin red kodları ESLESTIRME_HESAP / ESLESTIRME_TERS) ----
+/** Açılış karşı hesabı (Eşleştirilecek Açılış Bakiyeleri; §2.2). */
+export const OPENING_MATCH_ACCOUNT = "519";
+const MATCH_MAX_LINES = 50;
+/** Madde kimliğinin öneki → açılış türü (519 dökümü; karma defterin maddeleri). Sıra önemlidir (uzun önek önce). */
+// Cariye işlenmemiş evrakın maddesi cari satırı biçimindedir ("account:free-in:<evrak>" / "account:free-out:<evrak>" — routes/ledger.mjs rows()); açılış evrakı sayılır.
+const MATCH_SOURCES = [["plan-entry:", "plans"], ["plan:", "plans"], ["stock-open:", "stock"], ["stock:", "stock"], ["cash:", "cash"], ["account:free-", "cheques"], ["account:", "accounts"], ["bank:", "bank"], ["cheque", "cheques"], ["voucher", "vouchers"]];
+const sourceKind = id => MATCH_SOURCES.find(([prefix]) => String(id).startsWith(prefix))?.[1] || "other";
+
+/**
+ * 519'un `date` günü SONUNDAKİ bakiyesi (kuruş, borç artı) ve açılış türlerine göre dökümü. entries: karma defter (Yevmiye / Mizan'ın okuduğu — routes/ledger.mjs book()); tarihi
+ * `date`'ten sonra olan maddeler sayılmaz, AYNI günün maddeleri (açılışlar, önceki eşleştirme ve kural farkı fişleri) sayılır. Dökümün toplamı = bakiye.
+ */
+export function openingMatchBalance(entries, date) {
+  const parts = { cash: 0, accounts: 0, plans: 0, stock: 0, bank: 0, cheques: 0, vouchers: 0, other: 0 };
+  let balance = 0;
+  for (const entry of entries) {
+    if (entry.date > date) continue;
+    for (const line of entry.lines) {
+      if (line.account !== OPENING_MATCH_ACCOUNT) continue;
+      const minor = line.debit - line.credit;
+      balance += minor;
+      parts[sourceKind(entry.id)] += minor;
+    }
+  }
+  return { balance, parts };
+}
+
+/**
+ * K6 kümesinde (subledgerAccounts — mutabakatın beklenen bakiyeleri) olmayan ama bakiyesi modülden ya da bilanço sunumundan gelen hesaplar — eşleştirme fişi bunlara da yazmaz:
+ * 153 Ticari Mallar (stok modülünün değeri; "eşleştirme fişi stok değerini DEĞİŞTİRMEZ"), 136 / 159 / 198 / 340 (ters bakiyeli cari / kart / vergi satırlarının bilançoda brüt
+ * gösterim karşılıkları — Ç6'nın hesapladığı satırlar; §3.3 "hesaplanmış satırlar"). BAŞ MİMAR değerlendirmesine (raporda).
+ */
+export const OPENING_MATCH_EXCLUDED = Object.freeze(new Set(["136", "153", "159", "198", "340"]));
+/** İzinli hedef hesaplar (M-11; §2.7): bilanço hesabı (1–5 sınıfı, hesap planında), 519 değil, alt defter hesabı değil (K6 + OPENING_MATCH_EXCLUDED). [{ code, name }]. */
+export function openingMatchTargets(subledger = new Set()) {
+  return Object.keys(ACCOUNT_PLAN)
+    .filter(code => /^[1-5]\d\d$/.test(code) && code !== OPENING_MATCH_ACCOUNT && !subledger.has(code) && !OPENING_MATCH_EXCLUDED.has(code))
+    .sort()
+    .map(code => ({ code, name: ACCOUNT_PLAN[code]?.ad || code }));
+}
+
+/**
+ * Açılış Eşleştirme Fişi'nin planı (saf). lines: [{ account, sub?, side: "debit" | "credit", amount }] (amount TL — metin ya da sayı) ya da kuruşla [{ account, sub?, debit, credit }];
+ * balance: 519'un fiş tarihi gün sonu bakiyesi (openingMatchBalance). Dönüş: { lines (hedefler + kendiliğinden 519 satırı; kuruş), net, after } ya da { error: { status, code, message } }.
+ *   - hedef izinli hesap (openingMatchTargets) değilse 400 opening-match-account (ESLESTIRME_HESAP);
+ *   - 519 satırı = −(hedeflerin net borcu); net 0 → 400 opening-match-zero;
+ *   - b = 519 bakiyesi, b' = b − net: b = 0 → 409 opening-match-nothing; b' ters işarete geçerse 409 opening-match-inverse (ESLESTIRME_TERS — aynı günün açılışları dahil);
+ *     |b'| > |b| (519'u büyütür — M-11 "bakiyesi ya da bir kısmı" değil) → 409 opening-match-direction.
+ */
+export function openingMatchPlan({ lines, balance, subledger = new Set() }) {
+  const fail = (status, code, message, extra = {}) => ({ error: { status, code, message, ...extra } });
+  const allowed = new Set(openingMatchTargets(subledger).map(item => item.code));
+  if (!Array.isArray(lines) || !lines.length) return fail(400, "opening-match-line", "Eşleştirilecek hedef hesap satırı girin.");
+  if (lines.length > MATCH_MAX_LINES) return fail(400, "opening-match-line", `En çok ${MATCH_MAX_LINES} hedef satırı girilebilir.`);
+  const targets = [];
+  for (const [index, line] of lines.entries()) {
+    const at = `${index + 1}. satır`;
+    const account = String(line?.account ?? "").trim();
+    if (!allowed.has(account)) {
+      const why = account === OPENING_MATCH_ACCOUNT ? "519'un karşılığı kendiliğinden yazılır" : subledger.has(account) || OPENING_MATCH_EXCLUDED.has(account) ? "bakiyesi kendi modülünün kayıtlarından ya da bilanço gösteriminden gelir" : "eşleştirmede kullanılmaz (bilanço hesabı değil ya da hesap planında yok)";
+      return fail(400, "opening-match-account", `${at}: ${account || "boş"} hesabı Açılış Eşleştirme'de hedef olamaz; ${why}.`, { line: index + 1, account });
+    }
+    const sub = String(line?.sub ?? "").trim();
+    if (sub && !new RegExp(`^${account}\\.\\d{2,4}$`).test(sub)) return fail(400, "opening-match-account", `${at}: ${sub} alt hesabı ${account} hesabına ait değil.`, { line: index + 1, account });
+    let debit;
+    let credit;
+    if (line?.side !== undefined) {
+      const value = parseAmount(line?.amount);
+      const minor = Math.round(value * 100);
+      const exact = Number.isFinite(value) && Math.abs(value * 100 - minor) < 1e-6;
+      if (!["debit", "credit"].includes(line.side) || !exact || !Number.isSafeInteger(minor) || minor <= 0) return fail(400, "opening-match-line", `${at}: tutarı sıfırdan büyük, en çok iki ondalıkla girin; borç ya da alacak seçin.`, { line: index + 1 });
+      [debit, credit] = line.side === "debit" ? [minor, 0] : [0, minor];
+    } else {
+      [debit, credit] = [line?.debit ?? 0, line?.credit ?? 0];
+      if (!Number.isSafeInteger(debit) || !Number.isSafeInteger(credit) || debit < 0 || credit < 0 || (debit > 0) === (credit > 0)) return fail(400, "opening-match-line", `${at}: satır ya borç ya alacak taşır (kuruş, sıfırdan büyük).`, { line: index + 1 });
+    }
+    targets.push({ account, sub, debit, credit });
+  }
+  const net = targets.reduce((sum, line) => sum + line.debit - line.credit, 0);
+  if (!Number.isSafeInteger(net)) return fail(400, "opening-match-line", "Fiş toplamı çok büyük.");
+  if (!net) return fail(400, "opening-match-zero", "Hedef satırların borcu alacağına eşit; 519'u değiştirmeyen fiş yazılmaz.");
+  if (!balance) return fail(409, "opening-match-nothing", "Fiş tarihinde eşleştirilecek açılış bakiyesi (519) yok.", { balanceMinor: 0 });
+  const after = balance - net;
+  const side = minor => (minor > 0 ? "borç" : "alacak");
+  const money = minor => (Math.abs(minor) / 100).toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  if (after && Math.sign(after) !== Math.sign(balance)) {
+    return fail(409, "opening-match-inverse", `Fiş 519'u ters bakiyeye geçirir: fiş tarihinde 519 bakiyesi ${money(balance)} ${side(balance)}; en çok ${money(balance)} eşleştirilebilir (fişten sonra ${money(after)} ${side(after)} olurdu).`, { balanceMinor: balance, afterMinor: after });
+  }
+  if (Math.abs(after) > Math.abs(balance)) {
+    return fail(409, "opening-match-direction", `Fiş 519 bakiyesini azaltmıyor, büyütüyor: fiş tarihinde 519 bakiyesi ${money(balance)} ${side(balance)}; hedef satırlar ${balance < 0 ? "alacak" : "borç"} tarafında olmalı.`, { balanceMinor: balance, afterMinor: after });
+  }
+  const counter = net > 0 ? { account: OPENING_MATCH_ACCOUNT, sub: "", debit: 0, credit: net } : { account: OPENING_MATCH_ACCOUNT, sub: "", debit: -net, credit: 0 };
+  return { lines: [...targets, counter], net, after };
+}
+
+/**
+ * Eşleştirme fişlerinin durumu (Mutabakat bilgi satırı; Ç6 "Kesin Değil — Ters Bakiye 519"): matched = etkin eşleştirme fişlerinin 519 net borcu (ters kayıtlar düşer); total = defterin
+ * 519 bakiyesi (entries: tam taramanın maddeleri). Fişten sonra açılış silinir / değişir de 519 fişlerin yönünün tersine geçerse `inverse` (ENGELLENMEZ — §2.7). Fiş yoksa null (tek
+ * `LIMIT 1` sorgusu).
+ */
+export function openingMatchState(store, entries) {
+  if (!has(store, "ledger_vouchers") || !has(store, "ledger_voucher_lines")) return null;
+  if (!store.get("SELECT 1 AS found FROM ledger_vouchers WHERE type = 'opening-match' LIMIT 1")) return null;
+  const matched = Number(store.get(
+    `SELECT COALESCE(SUM(l.debit_minor - l.credit_minor), 0) AS n FROM ledger_vouchers v CROSS JOIN ledger_voucher_lines l ON l.voucher_id = v.id
+     WHERE l.account = '519' AND (v.type = 'opening-match' OR (v.type = 'reversal' AND v.reversal_of IN (SELECT id FROM ledger_vouchers WHERE type = 'opening-match')))`,
+  )?.n) || 0;
+  if (!matched) return null;
+  const total = ledgerBalanceOf(entries, OPENING_MATCH_ACCOUNT);
+  return { matched, total, inverse: (matched > 0 && total > 0) || (matched < 0 && total < 0) };
 }

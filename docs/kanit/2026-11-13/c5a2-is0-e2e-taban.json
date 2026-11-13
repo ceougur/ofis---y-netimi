@@ -1,0 +1,63 @@
+{
+  "ad": "c5a2-is0-e2e-taban",
+  "komut": "node test/e2e/senaryo-acilis-duzeni-250.mjs",
+  "commit": "7e8d322862889bd9c04b90dd32edd792557ace63",
+  "dal": "worktree-agent-a294d4187e1bf9872",
+  "kirli": 1,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T17:44:44.632Z",
+  "sure_sn": 4.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 10,
+    "gecen": 4,
+    "basarisiz": 6,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 6 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "satır kırmızı (hata) değil",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "satır sarı (uyarı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "'denetimde sapma var' yazmıyor",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "eski sürümden kalan satır kendi cümlesinde, kural farkı onun içinde değil: \"\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "kural farkı ayrı uyarı cümlesinde, madde sayısıyla",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ne yapılacağı yazılı (Kural Farkı Düzeltme)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2-k7/kanit/2026-11-13/c5a2-is0-e2e-taban.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a294d4187e1bf9872",
+  "ham_cikti_sha256": "14f506bb36ec0a31c5728134f1eb52366df8a4651b68f08ec17f1bcdca54e93e",
+  "ham_cikti_bayt": 1682
+}

@@ -1,0 +1,45 @@
+(node:15875) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:15875) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:15875) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+■ İş 0. Kilitli eski veride Yönetim › Sistem: Kural Değişikliği Farkı uyarıdır (sarı, ne yapılacağı yazılı); eski sürümden kalan satır ayrı
+  ✓ ön koşul: veride kural farkı var (44 madde)
+  ✓ ön koşul: başka sapma yalnız eski sürümden kalan satır (İleri tarihli hareket (Çek/Senet Hareketleri): 1/1)
+  satır: Mutabakat: 1 denetimde eski sürümden kalan satır var; yeni işlemler engellenmez (İleri tarihli hareket (Çek/Senet Hareketleri): 1 satır). Çek/Senet'te 1 evrakta tarihi ileri hareket var (eski sürümden). Alış/Veriliş Tarihi ileriyse evrakın kartında Düzenle ile gerçek güne çekin; tahsil, ciro ya da ödeme tarihi ileriyse o işlemi geri alıp doğru tarihle yeniden yapın. Düzeltilmezse tarihi gelince kendiliğinden kalkar. Raporlar › Defter Mutabakatı'nda ayrıntıyı görün. Uyarı (yeni işlemleri engellemez): Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi) — 44 madde, fark ₺127.800,00. Kilitli dönemin raporları donmuş defterden okunur, değişmez; fark Yönetim › Kural Farkı Düzeltme ile ilk açık güne alınır.
+  ✓ satır kırmızı (hata) değil
+  ✓ satır sarı (uyarı)
+  ✓ 'denetimde sapma var' yazmıyor
+  ✓ eski sürümden kalan satır kendi cümlesinde, kural farkı onun içinde değil: "Mutabakat: 1 denetimde eski sürümden kalan satır var; yeni işlemler engellenmez (İleri tarihli hareket (Çek/Senet Hareketleri)"
+  ✓ kural farkı ayrı uyarı cümlesinde, madde sayısıyla
+  ✓ ne yapılacağı yazılı (Kural Farkı Düzeltme)
+
+■ Mutabakat Günlüğü ekran açılınca değişmez (zil / günlük davranışı aynı)
+  ✓ günlük satırları aynı (1 → 1)
+
+■ İş 2. Kural Farkı Düzeltme: ön izleme (satırlar, farkı doğuran kayıtlar), onay kutusu Tab + Boşluk ile, Fişi Kaydet → Mutabakat satırında Düzeltildi
+  ✗ beklenmeyen hata: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('#adm-rule-diff-open')[22m
+
+    at /home/user/ofis---y-netimi/.claude/worktrees/agent-a5b6e29fe068192ef/test/e2e/senaryo-acilis-duzeni-250.mjs:119:16
+    at async step (/home/user/ofis---y-netimi/.claude/worktrees/agent-a5b6e29fe068192ef/test/e2e/senaryo-acilis-duzeni-250.mjs:53:5)
+    at async file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a5b6e29fe068192ef/test/e2e/senaryo-acilis-duzeni-250.mjs:115:3
+
+■ İş 2. Yeniden açılınca pasif + neden; Ters Kaydet → uyarı geri gelir
+  ✗ beklenmeyen hata: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('#adm-rule-diff-open')[22m
+
+    at /home/user/ofis---y-netimi/.claude/worktrees/agent-a5b6e29fe068192ef/test/e2e/senaryo-acilis-duzeni-250.mjs:156:16
+    at step (/home/user/ofis---y-netimi/.claude/worktrees/agent-a5b6e29fe068192ef/test/e2e/senaryo-acilis-duzeni-250.mjs:53:11)
+    at /home/user/ofis---y-netimi/.claude/worktrees/agent-a5b6e29fe068192ef/test/e2e/senaryo-acilis-duzeni-250.mjs:155:9
+  ✓ sayfa hatası yok
+
+BAŞARISIZ: 10 denetim geçti, 2 başarısız.
+
+# tests 12
+# pass 10
+# fail 2

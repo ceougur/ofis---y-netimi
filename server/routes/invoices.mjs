@@ -2867,6 +2867,20 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       const fee = fromBank ? null : bankFeeOf(invoice.id);
       if (fee) throw new HttpError(409, bankFeeText(fee), { code: "invoice-bank-fee", eventNo: fee.no });
       period?.assertOpen(invoice.issueDate, "Bu fatura");
+      // 2.5.0 Ç5-A tur 2 — S160 = A: iptal (ve iptali çağıran silme, e-Belge iptali, Banka'dan Ters Kaydet) aşağıda bu faturaya bağlı tahsilatların bağını düşürür; bağlı
+      // tahsilat (cari hareketi 'in' ya da Kapatılacak Fatura ile bağlanmış alınan evrak) kilitli dönemdeyse 409 — kilitli defter sessizce değişmez (yönetici kilidi açar).
+      const lock = period?.lockedUntil() || "";
+      if (lock) {
+        const bonded = store.get(
+          `SELECT MIN(date) AS date FROM (
+             SELECT date FROM account_entries WHERE invoice_id = ?1 AND kind = 'in' AND date <= ?2
+             UNION ALL
+             SELECT ev.date FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id
+              WHERE ev.invoice_id = ?1 AND ev.kind = 'receive' AND c.invoice_id <> ev.invoice_id AND c.deleted_at IS NULL AND ev.date <= ?2)`,
+          invoice.id, lock,
+        );
+        period.assertBondOpen(bonded?.date || "", "Bu faturanın iptali ya da silinmesi");
+      }
       const returns = store.get("SELECT COUNT(*) AS n FROM invoices WHERE original_id = ? AND status = 'issued'", invoice.id).n;
       if (returns) throw new HttpError(409, `Bu faturanın ${returns} iade faturası var; önce iade faturalarını iptal edin.`, { code: "invoice-has-returns" });
       // İz 7.3: e-Fatura taslağı EDM'den programla silinemez (EDM'de iptal yalnız e-Arşiv'de); kullanıcı portaldan siler, burada onaylar.

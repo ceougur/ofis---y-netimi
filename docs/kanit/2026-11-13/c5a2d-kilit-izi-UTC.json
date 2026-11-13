@@ -1,0 +1,32 @@
+{
+  "ad": "c5a2d-kilit-izi-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=3 test/kilit-izi-alanlar-250.test.mjs",
+  "commit": "7601bc1318c9fe1fafbcbfacf6ee28828e1e1362",
+  "dal": "worktree-agent-ac4b7ba8396fbd29d",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T22:37:07.529Z",
+  "sure_sn": 47.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 47,
+    "gecen": 47,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2d-q/kanit/2026-11-13/c5a2d-kilit-izi-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac4b7ba8396fbd29d",
+  "ham_cikti_sha256": "74a4ca415e3a6c0b63e8eed8b50e35bc5c2cc3152926a3242b17fa5a6346acd3",
+  "ham_cikti_bayt": 18812
+}

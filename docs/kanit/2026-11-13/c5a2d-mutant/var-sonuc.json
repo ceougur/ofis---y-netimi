@@ -1,0 +1,42 @@
+[
+ {
+  "no": "Y2",
+  "name": "account_source_lock: source_id sütunu düşer",
+  "sonuc": "var-Y2 rc=0 sure=53s yuk=3.12 # tests 151 # pass 151 # fail 0 # cancelled 0 # skipped 0 # todo 0"
+ },
+ {
+  "no": "Y3",
+  "name": "account_source_lock: doubtful_skip sütunu düşer (WHERE kalır)",
+  "sonuc": "var-Y3 rc=0 sure=53s yuk=2.75 # tests 151 # pass 151 # fail 0 # cancelled 0 # skipped 0 # todo 0"
+ },
+ {
+  "no": "Y5",
+  "name": "cheques_bounce_lock: has_debt düşer",
+  "sonuc": "var-Y5 rc=0 sure=59s yuk=2.96 # tests 151 # pass 151 # fail 0 # cancelled 0 # skipped 0 # todo 0"
+ },
+ {
+  "no": "Y10",
+  "name": "süzgeç: tahsil kaydı verilme bloğunda event_id düşer",
+  "sonuc": "var-Y10 rc=0 sure=54s yuk=2.16 # tests 151 # pass 151 # fail 0 # cancelled 0 # skipped 0 # todo 0"
+ },
+ {
+  "no": "Y11",
+  "name": "evrak yardımcısı: cari satırı koşulu ters",
+  "sonuc": "var-Y11 rc=0 sure=54s yuk=2.81 # tests 151 # pass 151 # fail 0 # cancelled 0 # skipped 0 # todo 0"
+ },
+ {
+  "no": "Y12",
+  "name": "evrak yardımcısı: kilitli evrağın carisi dalı düşer",
+  "sonuc": "var-Y12 rc=0 sure=60s yuk=3.62 # tests 151 # pass 151 # fail 0 # cancelled 0 # skipped 0 # todo 0"
+ },
+ {
+  "no": "Y18",
+  "name": "since etiketi: invoices_gl_lock 2.4.2 (eski sürüm iziyle karşılaştırmaya girer)",
+  "sonuc": "var-Y18 rc=0 sure=57s yuk=3.36 # tests 151 # pass 151 # fail 0 # cancelled 0 # skipped 0 # todo 0"
+ },
+ {
+  "no": "Y23",
+  "name": "plan_entries_bond_lock: opening sütunu düşer (WHERE kalır)",
+  "sonuc": "var-Y23 rc=0 sure=56s yuk=3.32 # tests 151 # pass 151 # fail 0 # cancelled 0 # skipped 0 # todo 0"
+ }
+]

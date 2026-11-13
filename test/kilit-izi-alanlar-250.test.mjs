@@ -18,8 +18,10 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { after, before, describe, it } from "node:test";
+import { pathToFileURL } from "node:url";
+import { lockDigestOf } from "../server/lib/integrity.mjs";
 import { ADMIN_PASSWORD } from "./helpers.mjs";
-import { CURRENT, bootVersion, tagsAvailable } from "./guvenilirlik/surumler.mjs";
+import { CURRENT, bootVersion, checkoutTag, tagsAvailable } from "./guvenilirlik/surumler.mjs";
 import { readFixture, unpackFixture } from "./guvenilirlik/fikstur.mjs";
 
 process.env.HUKUK_LICENSE_URL ||= "http://127.0.0.1:9";
@@ -84,6 +86,9 @@ async function makeTemplate() {
     await must("alım", api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "in", qty: "100", unitPrice: "10", pay: "none", date: "2026-10-01" }));
     await must("cariye satış", api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "out", qty: "5", unitPrice: "100", pay: "account", method: "cash", accountId: A.id, date: "2026-10-04" }));
     await must("peşin satış", api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "out", qty: "2", unitPrice: "100", pay: "cash", method: "cash", date: "2026-10-04" }));
+    // Ç5-A tur 2d (dar kontrol 1f DÜŞÜK-2 / Y2): kilit SONRASI tarihli tedarikçiye iade (nedeni 'preturn'; peşin — cari satırı yok). Kilitli stok satırının kaynak kimliği
+    // buna çevrilince madde 600 → 153 olur; stok nedeni girdisi (yalnız kilitli hareketler) bunu görmez, yalnız kaynak kimliği sütunu görür.
+    await must("tedarikçiye iade (kilit sonrası)", api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "out", qty: "1", unitPrice: "10", pay: "cash", method: "cash", reason: "preturn", date: "2026-10-15" }));
     await must("kira (stopaj)", api.post("/api/workspace/invoices", { kind: "purchase", scenario: "expense_purchase", accountId: S.id, issueDate: "2026-10-02", number: "KIRA-10", profile: "KAGIT", stoppageRate: 20, lines: [{ name: "Ekim Kirası", qty: 1, unitPrice: 10000, vatRate: 0, exemptionCode: "351", expenseCode: "rent" }], payment: { rest: "open" } }));
     await must("temizlik (tevkifat)", api.post("/api/workspace/invoices", { kind: "purchase", scenario: "expense_purchase", accountId: T.id, issueDate: "2026-10-03", number: "PRL-10", profile: "KAGIT", lines: [{ name: "Temizlik Hizmeti", qty: 1, unitPrice: 2000, vatRate: 20, withholdingCode: "612", expenseCode: "cleaning" }], payment: { rest: "open" } }));
     await must("satış", api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: A.id, issueDate: "2026-10-04", lines: [{ name: "Danışmanlık", qty: 1, unitPrice: 1000, vatRate: 20 }], payment: { rest: "open" } }));
@@ -126,7 +131,13 @@ async function makeTemplate() {
       bounceEvent: s.get("SELECT id FROM cheque_events WHERE cheque_id = ? AND kind = 'bounce'", ids.cheque2).id,
       importId: s.get("SELECT import_id AS i FROM plans WHERE import_id <> '' LIMIT 1").i,
       candidate: s.get("SELECT id FROM account_entries WHERE account_id = ? AND note = 'Açılış devri (ikinci)'", ids.O).id,
+      movePreturn: s.get("SELECT id FROM stock_moves WHERE reason = 'preturn'").id,
+      lockedInvoices: s.get("SELECT COUNT(*) AS n FROM invoices WHERE status <> 'draft' AND issue_date <= ?", LOCK).n,
     });
+    // Ç5-A tur 2d (DÜŞÜK-2 / Y18): iz girdilerinin sürüm etiketi (since) doğru mu — v2.4.9'un GERÇEK kodunun kendi kilit izi ile güncel kodun "2.4.9 tanımıyla" izi aynı veride
+    // (göçten önce, v2.4.9'un deposu) birebir olmalı. Kilitli dönemde kesilmiş fatura var: 2.5.0'da eklenen fatura kırılımı girdisi yanlışlıkla eski sürüme sayılsa iz ayrışır.
+    const oldIntegrity = await import(pathToFileURL(path.join(checkoutTag(OLD).dir, "server", "lib", "integrity.mjs")).href);
+    ids.digest249 = { old: oldIntegrity.lockDigestOf(s, LOCK), oldAll: oldIntegrity.lockDigestOf(s, "9999-12-31"), current: lockDigestOf(s, LOCK, { version: "2.4.9" }), currentAll: lockDigestOf(s, "9999-12-31", { version: "2.4.9" }) };
   } finally {
     await old.close();
   }
@@ -186,6 +197,20 @@ function outside(app, sql, ...args) {
     other.close();
   }
 }
+/** Ç5-A tur 2d: aynı ayrı bağlantıda birden çok kapı dışı yazım (tek işlemde); değişen satırların toplamı. */
+function outsideMany(app, statements) {
+  const other = new DatabaseSync(app.store.get("PRAGMA database_list").file);
+  try {
+    other.exec("PRAGMA busy_timeout = 5000");
+    other.exec("BEGIN");
+    let changes = 0;
+    for (const [sql, ...args] of statements) changes += Number(other.prepare(sql).run(...args).changes);
+    other.exec("COMMIT");
+    return changes;
+  } finally {
+    other.close();
+  }
+}
 /** Kilitli dönemin canlı türetmesi (tarihi ≤ kilit madde satırlarının çoklu kümesi) — kapı dışı yazımın kilitli defteri gerçekten değiştirdiği ön koşulu. */
 const lockedLines = app => {
   const out = [];
@@ -215,6 +240,16 @@ const KINDS = [
     write: app => outside(app, "INSERT INTO cheque_events (id, cheque_id, kind, date, amount, account_id, from_status, to_status, note, effects_json, created_by, created_at) SELECT 't1f-bounce-2', cheque_id, 'bounce', '2026-10-15', amount, account_id, from_status, to_status, note, '[]', created_by, '2099-01-01T00:00:00.000Z' FROM cheque_events WHERE id = ?", ids.bounceEvent),
   },
   { name: "carili evrağın carisi silinir (cariye işlenmemiş sayılır; çift madde)", write: app => outside(app, "UPDATE cheques SET account_id = '' WHERE id = ?", ids.cheque1) },
+  // Ç5-A tur 2d (dar kontrol 1f DÜŞÜK-2 — yaşayan mutantlar Y2, Y23, Y5): izde ZATEN olan satırın yalnız bir sütunu değişir (satır kümesi aynı).
+  { name: "stok kaynaklı cari satırının kaynak kimliği kilit sonrası tedarikçiye iadeye (600 → 153; satır kümesi aynı)", write: app => outside(app, "UPDATE account_entries SET source_id = ? WHERE id = ?", ids.movePreturn, ids.entryStock) },
+  { name: "evrak bağlı taksit satırının açılış alanı 0 → 1 (101 → 519; satır kümesi aynı)", write: app => outside(app, "UPDATE plan_entries SET opening = 1 WHERE id = ?", ids.planEntryCheque) },
+  {
+    name: "carisiz kilitli karşılıksıza cari yazılır + kilit SONRASI tarihli karşılıksız borç satırı (carinin karşılıksız borcu var olur; evrak kümesi aynı)",
+    write: app => outsideMany(app, [
+      ["UPDATE cheques SET account_id = ? WHERE id = ?", ids.A, ids.cheque2],
+      ["INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, created_by, created_at) VALUES ('t2d-bounce-debt', ?, 'debt', 300, '2026-10-15', 'Karşılıksız', NULL, 'cheque', ?, 'dis-arac', '2026-10-15T09:00:00.000Z')", ids.A, ids.cheque2],
+    ]),
+  },
 ];
 const assertFound = (outcome, kind, seen, label) => {
   const found = codesOf(outcome.findings);
@@ -508,5 +543,67 @@ describe("Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki ka
       await ctx?.server.close().catch(() => {});
       dirs.cleanup();
     }
+  });
+
+  // Ç5-A tur 2d (dar kontrol 1f DÜŞÜK-2; yalnız TEST): yaşayan mutantlar Y11 (evrak yardımcısının cari satırı koşulu), Y5 (karşılıksız borç olgusu), Y3 (kaynaklı satırda işaret)
+  // ve Y18 (iz girdisinin sürüm etiketi).
+  it("[9] kapıdan geçen iki adım: carisiz kilitli karşılıksıza cari yazımı kabul (iz aynı), ardından kilit SONRASI tarihli karşılıksız borç satırı RED (409 Kapanmış dönem; eşdeğerlik ihlali değil)", { timeout: 120_000 }, async () => {
+    const dirs = copyOf();
+    let ctx = null;
+    try {
+      ctx = await open(dirs);
+      await settled(ctx);
+      const store = ctx.app.store;
+      const locked = lockedLines(ctx.app);
+      // 1. adım: evrak kümesi ve karşılıksız olgusu değişmez (carisiz evrağın carisi yoktu, carinin bu evrakla borç satırı yok) — kapı kabul eder.
+      assert.equal(store.run("UPDATE cheques SET account_id = ? WHERE id = ?", ids.A, ids.cheque2).changes, 1, "1. adım kabul");
+      assert.equal(lockedLines(ctx.app), locked, "1. adım kilitli dönemin canlı türetmesini değiştirmez");
+      // 2. adım: carinin bu karşılıksız evrakla borç satırı oluşur → kilitli karşılıksız maddesi değişir. Süzgecin "kilitli karşılıksızın cari satırı" dalı tam kapıya gönderir.
+      const insert = () => store.run("INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, created_by, created_at) VALUES ('t2d-gate-debt', ?, 'debt', 300, ?, 'Karşılıksız', NULL, 'cheque', ?, 'test', '2026-10-20T09:00:00.000Z')", ids.A, TODAY, ids.cheque2);
+      let rejected = null;
+      try {
+        insert();
+      } catch (error) {
+        rejected = error;
+      }
+      assert.ok(rejected, "2. adım kapı reddetmeli — KABUL EDİLDİ");
+      assert.equal(rejected.status, 409, `2. adım 409 beklenir: ${rejected.status} ${rejected.message}`);
+      assert.match(rejected.message, /Kapanmış dönem/, "2. adım: ret nedeni kilitli dönem");
+      assert.doesNotMatch(rejected.message, /eşdeğerlik/, "2. adım: eşdeğerlik ihlali değil");
+      assert.equal(store.get("SELECT COUNT(*) AS n FROM account_entries WHERE id = 't2d-gate-debt'").n, 0, "2. adım geri alındı");
+      assert.equal(lockedLines(ctx.app), locked, "kilitli dönemin canlı türetmesi aynı");
+      assert.deepEqual(ctx.app.integrity.scan().findings, [], "reddedilen yazımdan sonra tarama sessiz");
+    } finally {
+      await ctx?.server.close().catch(() => {});
+      dirs.cleanup();
+    }
+  });
+
+  it("[10] kaynaklı (stok) kilitli cari satırında 'Normal Cariye İşlendi' işareti kapı dışından 0 → 1: türetme değişmez (işaret yalnız tahsilatta anlamlı) ama iz alanın kendisini taşır — bulunur", { timeout: 120_000 }, async () => {
+    const dirs = copyOf();
+    let ctx = null;
+    try {
+      ctx = await open(dirs);
+      await settled(ctx);
+      const before = lockedLines(ctx.app);
+      assert.equal(ctx.app.store.get("SELECT source, doubtful_skip AS skip FROM account_entries WHERE id = ?", ids.entryStock).skip, 0, "ön koşul: işaret 0");
+      assert.equal(outside(ctx.app, "UPDATE account_entries SET doubtful_skip = 1 WHERE id = ?", ids.entryStock), 1, "ön koşul: kapı dışı yazım");
+      assert.equal(lockedLines(ctx.app), before, "türetme değişmez (yalnız iz)");
+      const outcome = ctx.app.integrity.scan();
+      const found = codesOf(outcome.findings);
+      for (const code of LOCKED_SOURCE) assert.ok(found.includes(code), `${code} bulunmalı: ${JSON.stringify(found)}`);
+      const seen = ctx.fresh();
+      assert.equal(seen.gunluk, 1, "Mutabakat Günlüğü'ne bir satır");
+      assert.equal(seen.zil.length, 1, "zil bir kez");
+    } finally {
+      await ctx?.server.close().catch(() => {});
+      dirs.cleanup();
+    }
+  });
+
+  it("[11] iz girdilerinin sürüm etiketi: v2.4.9'un GERÇEK kodunun kilit izi = güncel kodun 2.4.9 tanımıyla izi (aynı v2.4.9 deposu, göçten önce; kilitli dönemde kesilmiş fatura var)", () => {
+    assert.ok(ids.lockedInvoices >= 3, `ön koşul: kilitli dönemde kesilmiş fatura (${ids.lockedInvoices})`);
+    assert.equal(ids.digest249.current, ids.digest249.old, "kilit tarihi: güncel kodun 2.4.9 tanımıyla izi v2.4.9'un iziyle aynı");
+    assert.equal(ids.digest249.currentAll, ids.digest249.oldAll, "bütün tarihler: güncel kodun 2.4.9 tanımıyla izi v2.4.9'un iziyle aynı");
   });
 });

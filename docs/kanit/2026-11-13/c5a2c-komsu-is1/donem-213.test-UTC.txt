@@ -1,0 +1,134 @@
+TAP version 13
+# (node:2619) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: tarih kuralı (period.mjs)
+    # Subtest: takvim: artık yıl, ay sonu, biçim
+    ok 1 - takvim: artık yıl, ay sonu, biçim
+      ---
+      duration_ms: 0.861216
+      type: 'test'
+      ...
+    # Subtest: bugün yerel takvimle (gece yarısından sonra dün değil)
+    ok 2 - bugün yerel takvimle (gece yarısından sonra dün değil)
+      ---
+      duration_ms: 0.440098
+      type: 'test'
+      ...
+    # Subtest: boş, null, geçersiz ve ileri tarih reddedilir
+    ok 3 - boş, null, geçersiz ve ileri tarih reddedilir
+      ---
+      duration_ms: 0.51732
+      type: 'test'
+      ...
+    # Subtest: vade işlem tarihinden önce olamaz; aynı gün olabilir
+    ok 4 - vade işlem tarihinden önce olamaz; aynı gün olabilir
+      ---
+      duration_ms: 0.3808
+      type: 'test'
+      ...
+    # Subtest: kilit: gelecek kilitlenemez; kilit günü ve öncesi kapalı, ertesi gün açık
+    ok 5 - kilit: gelecek kilitlenemez; kilit günü ve öncesi kapalı, ertesi gün açık
+      ---
+      duration_ms: 0.527379
+      type: 'test'
+      ...
+    1..5
+ok 1 - tarih kuralı (period.mjs)
+  ---
+  duration_ms: 3.675907
+  type: 'suite'
+  ...
+# Subtest: dört çekirdekte tarih, dönem kilidi ve iade sınırı (API)
+    # Subtest: Kasa: tarih yoksa bugün; boş, null, geçersiz ve ileri tarih 400
+    ok 1 - Kasa: tarih yoksa bugün; boş, null, geçersiz ve ileri tarih 400
+      ---
+      duration_ms: 39.485065
+      type: 'test'
+      ...
+    # Subtest: Cari, Stok ve Taksit tahsilatı da ileri tarihi reddeder
+    ok 2 - Cari, Stok ve Taksit tahsilatı da ileri tarihi reddeder
+      ---
+      duration_ms: 29.243259
+      type: 'test'
+      ...
+    # Subtest: vade Kayıt Tarihi'nden önce olamaz; Kayıt Tarihi ileri olamaz; satışta vade satıştan önce olamaz
+    ok 3 - vade Kayıt Tarihi'nden önce olamaz; Kayıt Tarihi ileri olamaz; satışta vade satıştan önce olamaz
+      ---
+      duration_ms: 11.717713
+      type: 'test'
+      ...
+    # Subtest: taksit iadesi yapılan tahsilatı aşamaz
+    ok 4 - taksit iadesi yapılan tahsilatı aşamaz
+      ---
+      duration_ms: 62.148573
+      type: 'test'
+      ...
+# (node:2619) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:2619) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: dönem kilidi: yalnız yönetici; ekleme, düzeltme, silme ve kilitli döneme taşıma engellenir
+    ok 5 - dönem kilidi: yalnız yönetici; ekleme, düzeltme, silme ve kilitli döneme taşıma engellenir
+      ---
+      duration_ms: 403.168908
+      type: 'test'
+      ...
+    # Subtest: npm run mutabakat: veritabanına dokunmadan denetler; sapmada çıkış kodu 1
+    ok 6 - npm run mutabakat: veritabanına dokunmadan denetler; sapmada çıkış kodu 1
+      ---
+      duration_ms: 1048.399097
+      type: 'test'
+      ...
+    1..6
+ok 2 - dört çekirdekte tarih, dönem kilidi ve iade sınırı (API)
+  ---
+  duration_ms: 2070.665647
+  type: 'suite'
+  ...
+# Subtest: eksi bakiye denetimi (v2.0.17): yalnız Nakit Kasa denetlenir; Kasa'ya yalnız nakit girilir; Kasa ↔ Banka transferi
+    # Subtest: varsayılan: Nakit Kasa Uyar; banka ve kart denetimi kapalı (Banka modülü gelene kadar), ayar gönderilse de okunmaz
+    ok 1 - varsayılan: Nakit Kasa Uyar; banka ve kart denetimi kapalı (Banka modülü gelene kadar), ayar gönderilse de okunmaz
+      ---
+      duration_ms: 11.40767
+      type: 'test'
+      ...
+    # Subtest: Kasa'ya nakit dışı yol girilemez (400 cash-method); havale/POS cari ekranından girilir ve nakit kasayı değiştirmez
+    ok 2 - Kasa'ya nakit dışı yol girilemez (400 cash-method); havale/POS cari ekranından girilir ve nakit kasayı değiştirmez
+      ---
+      duration_ms: 44.069908
+      type: 'test'
+      ...
+    # Subtest: Engelle: onayla da yazılmaz; Kontrol Yok: sormaz; yetkisiz kullanıcı ayarı değiştiremez
+    ok 3 - Engelle: onayla da yazılmaz; Kontrol Yok: sormaz; yetkisiz kullanıcı ayarı değiştiremez
+      ---
+      duration_ms: 145.974774
+      type: 'test'
+      ...
+    # Subtest: Kasa ↔ Banka transferi: tek işlem, iki bağlı hareket; kasadan bankaya yatırmada nakit denetimi; düzeltme/silme iki tarafı birlikte; Ana Defter 100 ↔ 102
+    ok 4 - Kasa ↔ Banka transferi: tek işlem, iki bağlı hareket; kasadan bankaya yatırmada nakit denetimi; düzeltme/silme iki tarafı birlikte; Ana Defter 100 ↔ 102
+      ---
+      duration_ms: 137.150701
+      type: 'test'
+      ...
+    # Subtest: düzeltmede eski nakit dışı kaydın yolu korunur, nakit kasa denetimi sürer
+    ok 5 - düzeltmede eski nakit dışı kaydın yolu korunur, nakit kasa denetimi sürer
+      ---
+      duration_ms: 58.05262
+      type: 'test'
+      ...
+    1..5
+ok 3 - eksi bakiye denetimi (v2.0.17): yalnız Nakit Kasa denetlenir; Kasa'ya yalnız nakit girilir; Kasa ↔ Banka transferi
+  ---
+  duration_ms: 709.989532
+  type: 'suite'
+  ...
+1..3
+# tests 16
+# suites 3
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3169.957605
+cikis=0

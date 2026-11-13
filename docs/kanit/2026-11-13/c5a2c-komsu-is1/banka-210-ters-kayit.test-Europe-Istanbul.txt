@@ -1,0 +1,89 @@
+TAP version 13
+# (node:9622) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Aşama 4 — Ters Kaydet ve Düzelt
+    # Subtest: Ters Kaydet: ayna fiş, aynı tarih, net 0; iki kez 409; ters kaydın ters kaydı 409
+    ok 1 - Ters Kaydet: ayna fiş, aynı tarih, net 0; iki kez 409; ters kaydın ters kaydı 409
+      ---
+      duration_ms: 82.040911
+      type: 'test'
+      ...
+    # Subtest: açılış, sihirbaz fişi ve modül hareketi bu yoldan ters kaydedilmez (409, nedenli); olmayan olay 404
+    ok 2 - açılış, sihirbaz fişi ve modül hareketi bu yoldan ters kaydedilmez (409, nedenli); olmayan olay 404
+      ---
+      duration_ms: 47.891752
+      type: 'test'
+      ...
+    # Subtest: Düzelt: ters fiş + yeni fiş tek işlemde; tür değişmez; Düzelt → Ters Kaydet → aynı tarihe yeni fiş 200
+    ok 3 - Düzelt: ters fiş + yeni fiş tek işlemde; tür değişmez; Düzelt → Ters Kaydet → aynı tarihe yeni fiş 200
+      ---
+      duration_ms: 91.784084
+      type: 'test'
+      ...
+# (node:9622) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9622) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kilitli fiş: Ters Kaydet bugün tarihli, kilit izi aynı; Düzelt'te yeni tarih kilitliyse 409 ve hiçbir şey yazılmaz
+    ok 4 - kilitli fiş: Ters Kaydet bugün tarihli, kilit izi aynı; Düzelt'te yeni tarih kilitliyse 409 ve hiçbir şey yazılmaz
+      ---
+      duration_ms: 308.309998
+      type: 'test'
+      ...
+# (node:9622) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: açıklama ve referans: HTML ve formül olduğu gibi; kilitli fişte de değişir; para değişmez; 500 karakter üstü 400
+    ok 5 - açıklama ve referans: HTML ve formül olduğu gibi; kilitli fişte de değişir; para değişmez; 500 karakter üstü 400
+      ---
+      duration_ms: 233.610093
+      type: 'test'
+      ...
+    # Subtest: eşleşmiş fiş: Ters Kaydet ve Düzelt 409 bank-reconciled
+    ok 6 - eşleşmiş fiş: Ters Kaydet ve Düzelt 409 bank-reconciled
+      ---
+      duration_ms: 28.319798
+      type: 'test'
+      ...
+    # Subtest: yetki: bank.cancel kaldırılan Ters Kaydet 403; personel 403; aynı istek kimliğiyle iki Ters Kaydet tek fiş
+    ok 7 - yetki: bank.cancel kaldırılan Ters Kaydet 403; personel 403; aynı istek kimliğiyle iki Ters Kaydet tek fiş
+      ---
+      duration_ms: 222.173962
+      type: 'test'
+      ...
+    1..7
+ok 1 - Aşama 4 — Ters Kaydet ve Düzelt
+  ---
+  duration_ms: 1519.374357
+  type: 'suite'
+  ...
+# Subtest: Aşama 4 — KDV'li masrafın yaşam döngüsü
+    # Subtest: Fatura penceresinden Düzenle / İptal / Sil / İade 409 (nedenli); Banka'dan Ters Kaydet: fatura iptal + başlık iptal, her şey eski hâline
+    ok 1 - Fatura penceresinden Düzenle / İptal / Sil / İade 409 (nedenli); Banka'dan Ters Kaydet: fatura iptal + başlık iptal, her şey eski hâline
+      ---
+      duration_ms: 107.02172
+      type: 'test'
+      ...
+# (node:9622) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kilitli dönemdeki KDV'li masraf Ters Kaydet → asıl fatura kalır, bugün tarihli Alıştan İade ve satırsız ters kayıt
+    ok 2 - kilitli dönemdeki KDV'li masraf Ters Kaydet → asıl fatura kalır, bugün tarihli Alıştan İade ve satırsız ters kayıt
+      ---
+      duration_ms: 281.432187
+      type: 'test'
+      ...
+    1..2
+ok 2 - Aşama 4 — KDV'li masrafın yaşam döngüsü
+  ---
+  duration_ms: 754.88968
+  type: 'suite'
+  ...
+1..2
+# tests 9
+# suites 2
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2653.673097
+cikis=0

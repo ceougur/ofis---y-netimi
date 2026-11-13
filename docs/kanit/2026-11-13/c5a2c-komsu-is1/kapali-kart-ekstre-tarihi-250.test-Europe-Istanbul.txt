@@ -1,0 +1,51 @@
+TAP version 13
+# (node:14093) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 BİRLEŞİK TUR 5 — kapalı kartın "Kart kapatıldı" satırı: cari ekstre = genel defter (kapanış günü)
+    # Subtest: kapanış günü: üç yerde de kapanış günü (ön koşul: closed_at = kapanış günü)
+    ok 1 - kapanış günü: üç yerde de kapanış günü (ön koşul: closed_at = kapanış günü)
+      ---
+      duration_ms: 44.482512
+      type: 'test'
+      ...
+    # Subtest: +40 gün: kartın yalnız NOTU düzeltildi / cari adı değişti / aynı içerikle Kaydet → satır kapanış gününde kalır (ön koşul: kartın updated_at'i ilerledi)
+    ok 2 - +40 gün: kartın yalnız NOTU düzeltildi / cari adı değişti / aynı içerikle Kaydet → satır kapanış gününde kalır (ön koşul: kartın updated_at'i ilerledi)
+      ---
+      duration_ms: 89.248168
+      type: 'test'
+      ...
+    # Subtest: closed_at boş eski kart (2.0.13 öncesi benzetimi): son güncelleme günü; ilk düzeltmede dondurulur, üç yer aynı gün kalır; closed_at Kayıt Tarihi'nden önceyse Kayıt Tarihi
+    ok 3 - closed_at boş eski kart (2.0.13 öncesi benzetimi): son güncelleme günü; ilk düzeltmede dondurulur, üç yer aynı gün kalır; closed_at Kayıt Tarihi'nden önceyse Kayıt Tarihi
+      ---
+      duration_ms: 119.522082
+      type: 'test'
+      ...
+    1..3
+ok 1 - 2.5.0 BİRLEŞİK TUR 5 — kapalı kartın "Kart kapatıldı" satırı: cari ekstre = genel defter (kapanış günü)
+  ---
+  duration_ms: 808.440943
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 5 — v2.4.9 gerçek koduyla kapatılıp düzeltilmiş kart güncel kodda
+    # Subtest: v2.4.9: kapat → +40 gün notu düzelt; güncel kod: cari kartı / Cari Ekstre / Yevmiye 689 kapanış gününde
+    ok 1 - v2.4.9: kapat → +40 gün notu düzelt; güncel kod: cari kartı / Cari Ekstre / Yevmiye 689 kapanış gününde
+      ---
+      duration_ms: 848.745319
+      type: 'test'
+      ...
+    1..1
+ok 2 - 2.5.0 BİRLEŞİK TUR 5 — v2.4.9 gerçek koduyla kapatılıp düzeltilmiş kart güncel kodda
+  ---
+  duration_ms: 849.089013
+  type: 'suite'
+  ...
+1..2
+# tests 4
+# suites 2
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2008.709047
+cikis=0

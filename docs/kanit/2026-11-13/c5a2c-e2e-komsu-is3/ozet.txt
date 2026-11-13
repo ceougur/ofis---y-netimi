@@ -1,0 +1,10 @@
+senaryo-acilis-olabilir-250-Europe-Istanbul çıkış=0 tests=34 pass=34 fail=0 skipped=0
+senaryo-acilis-duzeni-250-Europe-Istanbul çıkış=0 tests=27 pass=27 fail=0 skipped=0
+senaryo-211-Europe-Istanbul çıkış=0 tests= pass= fail= skipped=0
+senaryo-213-Europe-Istanbul çıkış=0 tests= pass= fail= skipped=0
+senaryo-226-Europe-Istanbul çıkış=0 tests= pass= fail= skipped=0
+senaryo-kasa-acilis-uyari-250-Europe-Istanbul çıkış=0 tests=20 pass=20 fail=0 skipped=0
+senaryo-donem-kilidi-ilerleme-250-Europe-Istanbul çıkış=0 tests=39 pass=39 fail=0 skipped=0
+zil-oku-Europe-Istanbul çıkış=0 tests= pass= fail= skipped=0
+zil-yaris-zorla-Europe-Istanbul çıkış=0 tests= pass= fail= skipped=0
+BITTI

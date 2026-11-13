@@ -37,6 +37,14 @@ export function createPeriod({ store, now = systemClock }) {
     if (lock && date && date <= lock) throw new HttpError(409, `${what} ${dayText(date)} tarihli; ${dayText(lock)} ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini açmalı.`, { code: "period-locked", lockedUntil: lock });
   }
   /**
+   * 2.5.0 Ç5-A tur 2 — S160 = A (kullanıcı 13.11.2026): kilitli dönemdeki bir TAHSİLATIN fatura bağını düşürecek işlem (fatura iptali / silinmesi) reddedilir; ileti kilitli
+   * tahsilatın tarihini söyler. `date`: faturaya bağlı en eski tahsilatın tarihi (yoksa boş). Kural carinin şüpheli durumuna bağlı DEĞİLDİR (karar metni).
+   */
+  function assertBondOpen(date, what = "Bu işlem") {
+    const lock = lockedUntil();
+    if (lock && date && date <= lock) throw new HttpError(409, `${what} faturaya bağlı ${dayText(date)} tarihli tahsilatın fatura bağını düşürür; ${dayText(lock)} ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini açmalı.`, { code: "period-locked-bond", lockedUntil: lock, date });
+  }
+  /**
    * Hareket tarihi. body[field] hiç yoksa bugün; varsa geçerli, ileri tarihli olmayan ve kilitli dönem dışında olmalı.
    * @param {object} body  istek gövdesi
    * @param {{ field?: string, label?: string, fallback?: string }} options  fallback: alan yoksa kullanılacak tarih
@@ -82,5 +90,5 @@ export function createPeriod({ store, now = systemClock }) {
     store.setSetting(LOCK_KEY, date);
     return date;
   }
-  return { today, lockedUntil, assertOpen, restoreDate, movementDate, dueDate, checkLock, setLock };
+  return { today, lockedUntil, assertOpen, assertBondOpen, restoreDate, movementDate, dueDate, checkLock, setLock };
 }

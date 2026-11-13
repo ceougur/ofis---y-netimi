@@ -38,7 +38,7 @@ import { compareVersions } from "./semver.mjs";
 import { CHEQUE_BOND_BAD, createScopedGate, familyOf } from "./integrity-scope.mjs";
 import { runScanWorker } from "./integrity-scan-runner.mjs";
 import { cashBeforeOpening, cashExplained, cashRestoreMark } from "./cash-opening.mjs";
-import { ledgerBalanceOf, openingCounterpart, openingReviewDrift, unlockedPastYears } from "./ledger-opening.mjs";
+import { ledgerBalanceOf, openingCounterpart, openingMatchState, openingReviewDrift, unlockedPastYears } from "./ledger-opening.mjs";
 import { systemClock } from "./clock.mjs";
 import { roundMoney, toCents } from "./money.mjs";
 
@@ -632,6 +632,13 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
           const difference = got[code] - want[code];
           checks.push({ code: `opening:${code}`, name: `Açılış Karşılığı (${code} ${code === "519" ? "Eşleştirilecek Açılış Bakiyeleri = Kasa, cari, banka, stok, taksit ve evrak açılışları + fişler" : "Sermaye = fişler"})`, ok: difference === 0, count: difference === 0 ? 0 : 1, difference: roundMoney(difference / 100), ledger: roundMoney(got[code] / 100), subledger: roundMoney(want[code] / 100), ...(code === "519" ? { parts: want.parts } : {}) });
         }
+      }
+      // Ç5-A tur 2c İş 1 (C5-ACILIS-TASARIM §2.7, §17.10): Açılış Eşleştirme Fişi'nden SONRA açık dönemde açılış silinir / değişir de 519 fişlerin yönünün tersine geçerse ENGELLENMEZ —
+      // BİLGİ satırı (ok, info; sapma / uyarı değil, zil / tarama günlüğü üretmez — "ledger:unlocked-years" kalıbı). Eşleştirme fişi yoksa satır yok (tek LIMIT 1 sorgusu).
+      const match = openingMatchState(store, lastEntries);
+      if (match?.inverse) {
+        const side = minor => `${(Math.abs(minor) / 100).toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${minor > 0 ? "borç" : "alacak"}`;
+        checks.push({ code: "opening:519-inverse", name: "Eşleştirilecek Açılış Bakiyeleri (519) Eşleştirme Fişlerinin Tersine Geçti", ok: true, count: 0, info: true, ledger: roundMoney(match.total / 100), matched: roundMoney(match.matched / 100), hint: `Açılış Eşleştirme fişlerinden sonra bir açılış silindi ya da değişti: 519 bakiyesi ${side(match.total)} (eşleştirme fişleri ${side(match.matched)}). Fazla eşleştirilen tutar için Açılış Eşleştirme fişini ters kaydedip yeniden yazın.` });
       }
       // S53 = A (C5-ACILIS-TASARIM §3.5; K8-4 "yalnız bilgi"): kilitsiz geçmiş yıl yeni kuralla hesaplandı — BİLGİ satırı: ok true (sapma da uyarı da değil; Mutabakat Testi'nin
       // sonucunu, "N denetim tamam"ı bozmaz, zil / tarama günlüğü üretmez — notice DEĞİL). Defter Mutabakatı'nda adıyla ve önerisiyle görünür ("Tutarlı"). Tur 2'nin ekranı

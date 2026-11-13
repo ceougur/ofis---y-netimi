@@ -1,0 +1,11 @@
+defter yeni Europe/Istanbul exit=0 
+defter yeni UTC exit=0 
+cari yeni exit=0 
+cari-yapim yeni exit=0 41 kayıt
+surucu yeni exit=1 # tests 8456 # pass 7550 # fail 862 # skipped 44 
+defter taban Europe/Istanbul exit=0 
+defter taban UTC exit=0 
+cari taban exit=0 
+cari-yapim taban exit=0 41 kayıt
+surucu taban exit=1 # tests 8456 # pass 7550 # fail 862 # skipped 44 
+BITTI

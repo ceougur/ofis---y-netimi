@@ -1,0 +1,32 @@
+{
+  "ad": "c5a2-is7-kilit-izi-alanlar-ist",
+  "komut": "node --test test/kilit-izi-alanlar-250.test.mjs",
+  "commit": "6cb9f057a6d98452f82eee1c5071c0ef5e547272",
+  "dal": "worktree-agent-a294d4187e1bf9872",
+  "kirli": 2,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T17:52:28.272Z",
+  "sure_sn": 47.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 38,
+    "gecen": 38,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2-k7/kanit/2026-11-13/c5a2-is7-kilit-izi-alanlar-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a294d4187e1bf9872",
+  "ham_cikti_sha256": "0734fa076e3006f31f21243701710d7f5831f9181f72aa2d9db15b6747710053",
+  "ham_cikti_bayt": 32793
+}

@@ -1,0 +1,108 @@
+TAP version 13
+# (node:14153) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç5-K tur 2 DÜŞÜK-1 — aynı işlemde eklenip düzeltilen açılış öncesi nakit satırı: dış yazımdan sonra da YENİ hareket (RED / RED / RED; store düzeyi, dar kontrol p12)
+    # Subtest: 1) dış yazım yok → 409; 2) başka bağlantı ayar yazdıktan sonra → 409 (önceden KABUL); 3) hemen ardından → 409; 4) store dışı yazımdan sonra → 409; açılıştan önce tarihli satır yazılmadı
+    ok 1 - 1) dış yazım yok → 409; 2) başka bağlantı ayar yazdıktan sonra → 409 (önceden KABUL); 3) hemen ardından → 409; 4) store dışı yazımdan sonra → 409; açılıştan önce tarihli satır yazılmadı
+      ---
+      duration_ms: 5.955877
+      type: 'test'
+      ...
+    # Subtest: işlem kapsamı: eklenen satırın iki kez düzeltilmesinde ilk yakalanan hâl 'eklendiği hâl' (born); işlemden önce var olan satırın önceki hâli born DEĞİL (lib/db.mjs sözleşmesi)
+    ok 2 - işlem kapsamı: eklenen satırın iki kez düzeltilmesinde ilk yakalanan hâl 'eklendiği hâl' (born); işlemden önce var olan satırın önceki hâli born DEĞİL (lib/db.mjs sözleşmesi)
+      ---
+      duration_ms: 7.232903
+      type: 'test'
+      ...
+    1..2
+ok 1 - Ç5-K tur 2 DÜŞÜK-1 — aynı işlemde eklenip düzeltilen açılış öncesi nakit satırı: dış yazımdan sonra da YENİ hareket (RED / RED / RED; store düzeyi, dar kontrol p12)
+  ---
+  duration_ms: 517.231382
+  type: 'suite'
+  ...
+# Subtest: Ç5-K tur 2 DÜŞÜK-1 — bugünkü 19 API yolunda davranış değişmedi: açılıştan bir gün önce 409 (dış yazım yokken de, başka bağlantı yazdıktan hemen sonra da), aynı gün 200
+    # Subtest: açılıştan bir gün önce (2026-03-09), dış yazım yok: 19 yolun hepsi 409 cash-before-opening; hiçbir şey yazılmadı, Kasa aynı
+    ok 1 - açılıştan bir gün önce (2026-03-09), dış yazım yok: 19 yolun hepsi 409 cash-before-opening; hiçbir şey yazılmadı, Kasa aynı
+      ---
+      duration_ms: 145.265017
+      type: 'test'
+      ...
+    # Subtest: açılıştan bir gün önce (2026-03-09), her istekten hemen önce BAŞKA BAĞLANTI yazdı: 19 yolun hepsi 409 cash-before-opening; hiçbir şey yazılmadı, Kasa aynı
+    ok 2 - açılıştan bir gün önce (2026-03-09), her istekten hemen önce BAŞKA BAĞLANTI yazdı: 19 yolun hepsi 409 cash-before-opening; hiçbir şey yazılmadı, Kasa aynı
+      ---
+      duration_ms: 141.037837
+      type: 'test'
+      ...
+    # Subtest: açılış günü (2026-03-10), her istekten önce başka bağlantı yazdı: 19 yolun hepsi 200
+    ok 3 - açılış günü (2026-03-10), her istekten önce başka bağlantı yazdı: 19 yolun hepsi 200
+      ---
+      duration_ms: 360.721699
+      type: 'test'
+      ...
+    1..3
+ok 2 - Ç5-K tur 2 DÜŞÜK-1 — bugünkü 19 API yolunda davranış değişmedi: açılıştan bir gün önce 409 (dış yazım yokken de, başka bağlantı yazdıktan hemen sonra da), aynı gün 200
+  ---
+  duration_ms: 1152.276446
+  type: 'suite'
+  ...
+# Subtest: Ç5-K tur 2 DÜŞÜK-3 K5 — Kasa açılışı SİLİNİNCE önbellek düşer (açılışsız Kasa'da kural yok)
+    # Subtest: açılış 10.03 → 11.03 girişi (önbellek dolar) → 09.03 girişi 409 → açılış silinir → 09.03 girişi 200
+    ok 1 - açılış 10.03 → 11.03 girişi (önbellek dolar) → 09.03 girişi 409 → açılış silinir → 09.03 girişi 200
+      ---
+      duration_ms: 62.330485
+      type: 'test'
+      ...
+    1..1
+ok 3 - Ç5-K tur 2 DÜŞÜK-3 K5 — Kasa açılışı SİLİNİNCE önbellek düşer (açılışsız Kasa'da kural yok)
+  ---
+  duration_ms: 364.520471
+  type: 'suite'
+  ...
+# Subtest: Ç5-K tur 2 DÜŞÜK-3 K6 — olaysız (eski sürüm biçimli) açılış öncesi kayıt tahsilatı Taksite Aktar ile karta taşınır: önceki hâl (d), yeni hareket SAYILMAZ
+    # Subtest: ön koşul: olaysız tahsilat açılıştan önce, uyarıda; Taksite Aktar 200 (paymentsMoved 1), karttaki satır aynı gün ve tutar, Kasa değişmez; Mutabakat Testi uyarı dışı sapma yok
+    ok 1 - ön koşul: olaysız tahsilat açılıştan önce, uyarıda; Taksite Aktar 200 (paymentsMoved 1), karttaki satır aynı gün ve tutar, Kasa değişmez; Mutabakat Testi uyarı dışı sapma yok
+      ---
+      duration_ms: 68.863611
+      type: 'test'
+      ...
+    1..1
+ok 4 - Ç5-K tur 2 DÜŞÜK-3 K6 — olaysız (eski sürüm biçimli) açılış öncesi kayıt tahsilatı Taksite Aktar ile karta taşınır: önceki hâl (d), yeni hareket SAYILMAZ
+  ---
+  duration_ms: 485.469816
+  type: 'suite'
+  ...
+# Subtest: Ç5-K tur 2 DÜŞÜK-3 K8 — açılış önbelleğinin damgası: başka bağlantı / store dışı yazım açılışı değiştirince bayatlamaz; 002 + yedekten geri yükleme
+    # Subtest: BAŞKA BAĞLANTI açılışı 05.03'e alır → 07.03 girişi 200 (yeni açılışla), 04.03 girişi 409 (açılış 05.03)
+    ok 1 - BAŞKA BAĞLANTI açılışı 05.03'e alır → 07.03 girişi 200 (yeni açılışla), 04.03 girişi 409 (açılış 05.03)
+      ---
+      duration_ms: 20.106181
+      type: 'test'
+      ...
+    # Subtest: STORE DIŞI yazım (aynı bağlantı) açılışı 03.03'e alır → 04.03 girişi 200, 02.03 girişi 409 (açılış 03.03)
+    ok 2 - STORE DIŞI yazım (aynı bağlantı) açılışı 03.03'e alır → 04.03 girişi 200, 02.03 girişi 409 (açılış 03.03)
+      ---
+      duration_ms: 17.828212
+      type: 'test'
+      ...
+    # Subtest: 002: açılış 05.03 iken yedek → açılış 10.03'e düzeltilir, 11.03 girişi (önbellek 10.03), 07.03 girişi 409 → yedekten geri yükleme → 07.03 girişi 200, 04.03 409 (geri gelen açılış 05.03); 001'in kuralı etkilenmez
+    ok 3 - 002: açılış 05.03 iken yedek → açılış 10.03'e düzeltilir, 11.03 girişi (önbellek 10.03), 07.03 girişi 409 → yedekten geri yükleme → 07.03 girişi 200, 04.03 409 (geri gelen açılış 05.03); 001'in kuralı etkilenmez
+      ---
+      duration_ms: 489.337492
+      type: 'test'
+      ...
+    1..3
+ok 5 - Ç5-K tur 2 DÜŞÜK-3 K8 — açılış önbelleğinin damgası: başka bağlantı / store dışı yazım açılışı değiştirince bayatlamaz; 002 + yedekten geri yükleme
+  ---
+  duration_ms: 897.313214
+  type: 'suite'
+  ...
+1..5
+# tests 10
+# suites 5
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3800.239771
+cikis=0
