@@ -3551,3 +3551,127 @@ yeni / değişen elle tablo **990/990** (`-elle-yeni-cari-*`: d41 129 + d42 74 +
 tablo farkı **94/94** izinli (`-elle-fark-*`) · G1 tarama **97/97** (`-g1-tara-*`) · mutant ↔ senaryo **342/342** (`-mutant-senaryo-*`; d35 … d43 × 261–298) · geniş tarama **2.201/2.201** (`-genis-tarama-*`; bakım 14
 ile aynı sayı) · defter öz testi **181/181** (`-defter-oz-*`; bu bakım defter kâhinine dokunmadı). Öz test, mutasyon, eşdeğerlik ve geniş tarama `flock -s -n …/olcum.lock` ile (ders 52); her adım
 `timeout` sınırlı. Program açılmadı. Koşu günlükleri `kahineski15-kos-utc.txt` / `-ist.txt` (yük 1,3 / 3,0 — 4 çekirdek).
+
+## 27. 2.5.0 Ç5 bakımı 16 — S155 (Şüpheli Alacak kuralının ölçüsü TOPLAM borç) + S158 ('iade tahsilat değildir' her kartta) + S156 / S157 = C (BİLİNEN SINIR) + S154 (bilgi) (13.11.2026, `date -u` 08:46; kararlar 13.11.2026 08:35 UTC ve 07:31 UTC — ana oturumun özet dosyası; eski kâhinler bakımı 16 — kodu görmeyen AYRI el; KÜÇÜK düzeltme bakımı) — kural seti `2.5.0` = §13 + … + §26 + bu bölüm
+
+Bu bakım bakım 15'in TOPLU sorularının (SK-30 … SK-34) yanıtlarını işler: S155 = A (SK-33 + SK-34 — S145'in ölçüsü), S158 = A (SK-32), S156 = C (SK-30), S157 = C (SK-31 (a) / (b) / (c)); ayrıca S154 = B
+(bilgi — S144 (c) ile sınırı). §13–§26'nın öbür kuralları DEĞİŞMEZ. `--kural 2.4.9` (ve 2.4.6 / 2.4.5 / `--legacy`) AYNEN. Defter kâhini (`test/bagimsiz/defter/`) DEĞİŞMEZ (S155'in reddi yevmiye
+yazmaz; S158 bakiyeyi ve yevmiyeyi değiştirmez). **Bu bölümün ilk commit'i yalnız YORUMDUR (ders 40 — önce kural, sonra kod); senaryo / mutant / G3 sayıları kod ve kanıt commit'lerinde eklenir.**
+
+### C00t Temiz oda (bakım 16)
+- **Girdi (tek kaynak; ana oturumun özet dosyası `scratchpad/kahin-eski16-kararlar.md`; KURAL KAYNAĞI yalnız KARAR satırlarıdır — soru metnindeki "program bugün (koşuldu)" sözü beklenti kaynağı
+  sayılmadı):**
+  - S155 KARAR (13.11 08:35, AYNEN): "S155 = A — Şüpheli Alacak kuralının ölçüsü TOPLAM borçtur: bir kayıt (tahsilat, çek, Alacak Yaz, iade, borç silme, geri yükleme — türü fark etmez) ancak
+    'kayıttan sonra carinin borcu açık şüpheli tutarın altına düşüyorsa' reddedilir; şüpheliye alma günündeki borca ayrıca BAKILMAZ (örnek: borç 1.000 → şüpheli 900 → sonradan yeni borç 500 →
+    şüpheli tarihinden önceye tahsilat 300 KABUL, bakiye 1.200; yeni borç yokken aynı tahsilat RET, bakiye 1.000). S145 = A bu ölçüyle okunur."
+  - S158 KARAR (13.11 08:35, AYNEN): "S158 = A — 'iade tahsilat değildir' (S151 = B) HER kartta geçerlidir: satış kartı olmayan kartta da faturasız stok iadesi ve Değersiz yazma kartın 'Tahsil
+    Edilen'ine / taksit satırının 'Ödenen'ine SAYILMAZ (örnek: Borç 900 → kart 900 → iade 300: 'Tahsil Edilen 0', 'Kalan 600')." Soru metninin A satırı: "evet — her kartta 'Tahsil Edilen 0' (iade ve
+    Değersiz yazma tahsilat sayılmaz; tek kural …)".
+  - S156 = C, S157 = C (13.11 08:35) — BİLİNEN SINIR (soru metinleri girdi dosyasında AYNEN; bakım 15'in SK-30 / SK-31 sorularıdır).
+  - S154 = B (13.11 07:31, AYNEN): "'Fazlasını Avans Yaz' ile kapanan kartta 'Tahsil Edilen' karttan alınan paranın TAMAMIDIR (kart 1.200 / 3; karttan 500, sonra karttan 800 avanslı → 'Tahsil
+    Edilen 1.300 · Kalan 0', fazla 100, bakiye −100)."
+  - Ana oturumun NOT'u (yorum, kural kaynağı DEĞİL — değerlendirildi): (1) reddin koşulu "kayıt işlendikten SONRA carinin (toplam) borcu < açık şüpheli tutar"; 'açık şüpheli tutar'ın bir kayıtla
+    nasıl değiştiği önceki kararlardan; tür TEK biçimde çıkmıyorsa SUS ve sor; şüpheliye ALMA adımı aynen. (2) S158 alanı değer alır; Kalan, bakiye, gecikmiş etkilenmez. (3) S156 / S157 neden metni.
+- **Birlikte okunan (kâhinin kendi belgesi):** bu dosyanın §8 C6 (ŞÜPHELİ KALAN, KS7 (b), K7), §13 C13.4 (3) / (4), §25 Y14-3 / Y14-4, §26 (bütünü — C00s, bakım 15 okuması, Y15-5 / Y15-6 / Y15-7 /
+  Y15-14, SK-30 … SK-34, C26.4 / C26.5 / C26.8); `model.py` şüpheli (`_supheli_hesap`, `_supheli_olaylar`, `supheli_al`, `degersiz`), S145 (`_s145_adim`, `_s145_asim`, `_tarihli_kalemler`,
+  `S145_DISI`), kart göstergeleri (`kontrol` — `pd` payları), `kart_tahsilat`, `kos`; `kos.mjs` yalnız `kart_tahsilat` eşlemesi (seçenek gönderilmiyor — S154 için); d41 / d42 / d43 elle senaryoları;
+  `docs/kanit/2026-11-13/kahineski15-arac/` araçları. Okunan / okunmayan dosyaların tam listesi (satır aralıklarıyla) ajan raporunda.
+- **Okunmayan:** `server/**`, `client/**`, `bulut/**`, `packaging/**`, `tools/**` (yalnız `kanit.mjs` çalıştırılır), `docs/erp/C5-ACILIS-TASARIM.md`, `docs/erp/C5B-TYK-TASARIM.md`, `docs/devir/**`,
+  `docs/2.5.0-IS-LISTESI*.md` (hiçbir sürümü), `test/bagimsiz/cari/YAPIM-ASAMASI.json`, iki kâhin klasörü dışındaki `test/**`, başka ajanların `docs/kanit/**` dosyaları (yalnız `kahineski15-arac/`
+  araçları), git farkı / geçmiş içeriği. Program koşulmadı. CLAUDE.md "Açık iş"teki program durumu kural / beklenti kaynağı sayılmadı.
+
+### Kâhinin BUGÜNKÜ (bakım 15, `6453ad3b`) okuması — dört kararın alanında (açıkça)
+- **S155 — bakım 15 TARİH ölçüsüyle okudu (§26 Y15-6 / C26.8):** yalnız TAHSİLAT adımı (`tahsilat`, `kart_tahsilat`) ve yalnız tarihi bir Şüpheli Alacak kaydının tarihinden ÖNCEYSE denetleniyordu:
+  o kaydın GÜNÜNDE K1 ("tutar ≤ o günkü borç − o anda açık öbür kayıtların kalanı"; o günkü borç = önceki günlerin bütün satırları + o günün borç yönlü satırları) tahsilatla birlikte yeniden kurulup
+  bozuluyorsa RET. Kararın örneğinde (yeni borç 500 şüpheliden SONRA) o günkü borç 1.000 − 300 = 700 < 900 → bakım 15 RET (bakiye 1.500) verirdi — S155'in B'si. Yanında: (SK-33) tahsilat DIŞINDAKİ
+  adım (çek, elle Alacak, stok iadesi, borç silme / düzeltme, fatura iptali, Silinenler'den geri yükleme …) bir kaydın gününde YENİ aşım doğuruyorsa → iki dünya SUS; (SK-34 (a)) aşım tahsilattan
+  ÖNCE zaten varsa → SUS; (SK-34 (b)) o günün borç yönlü satırlarının sayılışı kararı değiştiriyorsa → SUS; (SK-34 — "kurulamıyor") carinin tarihli borcu kurulamıyorsa (iade faturasının geri
+  ödemesi — günü kâhinde yok) → SUS. Şüpheli tarihinden sonraki (aynı gün dahil) tahsilat ve borç yetiyorken önceye tahsilat KABUL; faturaya bağlı tahsilat (şüpheliden düşmez) şüpheli tarihinden
+  SONRAYSA hiç denetlenmiyordu (kabul).
+- **S158:** SUSUYOR — §26 Y15-7 / C26.5 SK-32: satış kartı OLMAYAN kartın taksitini S2 sırasıyla para DIŞI kapatıcı (faturasız stok iadesi, iade faturasının artanı, Değersiz) kapattıysa ya da satış
+  kartında iade faturası artanı / Değersiz payı varsa `kart:<no>:odenen` ve `kart:<no>:taksit<i>:odenen` yazılmıyor; `kalan` yazılıyor. Kararın örneği d42 T7'dir (bakım 15 SK-32'nin kendi örneği).
+- **S156 / S157:** SUSUYOR (SK-30 / SK-31 (a) / (b) / (c)); neden metni "KULLANICIYA SORULMALI SK-30 / SK-31".
+- **S154:** alan yok / SUS — kâhinin dilinde 'Fazlasını Avans Yaz' seçeneği YOK: `kart_tahsilat {kayit, tutar, tarih}` seçenek taşımıyor (koşucu `kos.mjs` eşlemesi de yalnız tutar / tarih / nakit
+  gönderiyor — okundu, değiştirilmedi). Kartın kendi tahsilatının fazlası ("kartfazla", C13.4 (3) — fazla kendi tarihinde BAĞSIZ alacak) olan kartta `odenen` S144 = C ile SUS.
+
+### Yorumlar (ders 40 — kararlardan; kod yazılmadan ÖNCE; baş mimar kullanıcıya gösterir)
+- **Y16-1 — S155: kural (TOPLAM ölçü):** şüpheli kaydı olan carilerde durum değiştiren HER adımdan sonra (türü fark etmez — bağsız / faturaya bağlı tahsilat, Taksit Tahsilatı, alınan çek / senet,
+  elle Alacak, faturasız stok iadesi, iade faturası, Değersiz Alacak Yaz, borç kaydının silinmesi / tutarının ya da tarihinin değiştirilmesi, faturanın iptali / silinmesi, kartın silinmesi,
+  Silinenler'den geri yükleme …): A' = carinin açık şüpheli tutarı (aşağıda Y16-2), B' = carinin bakiyesi (borç +). **A' > 0 ve B' < A'** ise ve bunu ADIM doğurduysa (adım normal bakiyeyi düşürdü:
+  B' − A' < B − A; adımdan önce kural sağlanıyordu — sağlanmıyorsa Y16-4) adım REDDEDİLİR — hiçbir satır yazılmaz; Kasa, bakiye, şüpheli kalan değişmez; `adim:<id>:durum` "ret"
+  (ret iletisi / kodu YAZILMAZ — karar ileti metnini / kodunu vermedi). **Tarih ölçüsü YOK** ("şüpheliye alma günündeki borca ayrıca BAKILMAZ"): şüpheli kaydının günündeki borç, aynı günün
+  borcu, aşımın önceden olup olmadığı karar için ÖNEMSİZ — bakım 15'in SK-34 (a) / (b) ayrımları bu ölçüyle TEK sonuca iner. **Sınırlar (tek okuma):** tam eşitlik (B' = A') KABUL ("altına düşüyorsa"
+  kesin küçük; S145'in d41 S5'i aynen); kısmi kabul yok (adım bölünmez — bakım 15 aynen). Kararın iki örneği AYNEN: borç 1.000 → şüpheli 900 → sonradan yeni borç 500 → şüpheli tarihinden önceye
+  tahsilat 300: A' = 900 (önceye tarihli tahsilat şüpheliden düşmez), B' = 1.200 ≥ 900 → KABUL, bakiye 1.200; yeni borç yokken B' = 700 < 900 → RET, bakiye 1.000. Etiket KULLANICI.
+- **Y16-2 — 'açık şüpheli tutar'ın bir kayıtla nasıl değiştiği (önceki kararlardan — §8 ŞÜPHELİ KALAN [PLAN §3.11b/2 (a)–(c), §3.11b/3; 2.3.0-SUPHELI-KABUL K1 / K3 / K7], §26 Y15-6):** A = Σ
+  kayıt kalanları; kalan = alınan − şüpheliden düşen alacak satırları − Değersiz. Kayıt tarihinden SONRA (AYNI GÜN DAHİL) gelen alacak satırı — serbest (bağsız) tahsilat, alınan evrak, elle
+  Alacak, iade faturası, satış iadesi (faturasız stok iadesi), taksit tahsilatı — ÖNCE şüpheliden düşer (en eski kayıttan); FATURAYA BAĞLI tahsilat ("Kapatılacak Fatura", (b)) kendiliğinden normal
+  cari hesaba işlenir (DÜŞMEZ); kayıt tarihinden ÖNCE tarihli satır DÜŞMEZ (sonradan girilse de); Değersiz Alacak Yaz kendi kaydından düşer (≤ kalan, K7). Kâhinin bu kuralı bakım 15'te de
+  tek biçimdi (S145'in soru metnindeki örnek de bunu söylüyor: "bugün tarihli tahsilat 300: bakiye 700, açık şüpheli 600; önceki tarihli tahsilat düşürmez"). **Sonuçları (türlere göre):**
+  (a) kayıt gününde / sonrasında bağsız tahsilat, evrak, elle Alacak, iade faturası, stok iadesi, Taksit Tahsilatı, Değersiz: A ve B AYNI tutarda azalır (tutar ≤ kalan iken) → B − A değişmez →
+  hiç RET olmaz (tutar kalanı aşarsa Y16-5). (b) kayıt tarihinden ÖNCE tarihli alacak satırı (hangi türden olursa olsun): A değişmez, B azalır → RET olabilir (kararın örnekleri; S145).
+  (c) FATURAYA BAĞLI tahsilat (her tarihte): A değişmez, B azalır → RET olabilir (bakım 15'te şüpheliden SONRA tarihliyse hiç denetlenmiyordu — DEĞİŞİR; kâhinin önceki kararı (b) "kendiliğinden
+  normal" + S155 "türü fark etmez"). (d) borç yönlü satırın silinmesi / azaltılması, faturanın iptali / silinmesi, kartın (Yeni Borç kartı) silinmesi: A değişmez, B azalır → RET olabilir (kararın
+  sözü "borç silme"). (e) Silinenler'den geri yüklenen alacak satırı: kendi tarihinde yeniden girmiş sayılır — (a) / (b) / (c) gibi (kararın sözü "geri yükleme"). (f) alacak satırının tarihi kayıt
+  tarihinden önceye alınırsa: düştüğü şüpheli tutar geri açılır, A artar, B aynı → RET olabilir. (g) borç yönlü satır (Borç, fatura, Ödeme, ciro, karşılıksız dönen evrak, kart …) ve şüpheliden
+  düşmüş bir alacak satırının silinmesi: B artar (A en çok B kadar artar) → RET olmaz. **Faturaya bağlı EVRAK:** ŞÜPHELİ KALAN "alınan evrak"ı bağına bakmadan sayar ve istisnası yalnız "faturaya
+  bağlı tahsilat (Kapatılacak Fatura)" — kâhinin bakım 6'dan beri okuması (mutant 121 yalnız bağlı tahsilat); S138'in sorusu da "şüpheliden DÜŞEN faturaya bağlı çek"i öncül alıyordu → bağlı evrak
+  kayıttan sonra DÜŞER (tek okuma; S138 = C yalnız görünüm kalemini — hangi kalemden düştüğünü — BİLİNEN SINIR yaptı, düşüp düşmediğini değil).
+- **Y16-3 — şüpheliye ALMA adımının kendisi (Y16-1'in dışında):** K1 aynen (§8 ŞÜPHELİ KALAN; `supheli_al`): "Şüpheli Alacağa Al tutarı ≤ cari borç bakiyesi − açık kayıtların kalanı" — bugünkü
+  (toplam) bakiyeyle; şüpheliye alma tarihi geriye olsa da o günün borcuna bakılmaz (kâhin bakım 6'dan beri böyle; karar yeni bir şey söylemiyor — NOT (1)). Y16-1'in denetimi `supheli_al`'a ayrıca
+  uygulanmaz (K1 ondan sıkı: B ≥ A + tutar). Denetlenmeyen öbür adımlar (para satırı yazmayan ya da bütün durumu kendi kuralıyla kuran): cari açma, kullanıcı açma, yedek alma, YEDEKTEN geri yükleme
+  (bütün durum yedeğin anına döner — o an kural sağlanıyordu), dönem kilidi, sunucu yeniden başlatma, tablo yükleme (bakım 15'in `S145_DISI`'si aynen).
+- **Y16-4 — adımdan ÖNCE zaten bozuk kural (kâhinin sınırı):** Y16-1 her adımda uygulandığından ve `supheli_al` K1'i sağladığından adımdan önce B − A < 0 iken A > 0 olması yalnız denetlenmeyen
+  bir yoldan doğabilir (beklenen sayısı 0). Böyle bir carideki adım normal bakiyeyi düşürüyorsa (B' − A' < B − A) kâhin kabul / reddi BİLMEZ (karar "düşüyorsa" — önceden altındaysa ne olacağını
+  söylemiyor) → iki dünya SUS (bakım 15 düzeni), neden "kâhinin sınırı (Y16-4)"; düşürmüyorsa kabul. Geliştirme koşularında sayısı raporlanır.
+- **Y16-5 — SK-35: adım açık şüpheliyi SIFIRLIYOR ve carinin bakiyesi eksiye iniyor (karar SUSUYOR — SUS ve sor):** örnek: borç 1.000 → şüpheli 900 → bugün tarihli tahsilat 1.100: 900'ü şüpheliden
+  düşer (A' = 0), bakiye B' = −100. Okuma 1 ("açık şüpheli kalmadı — kural bağlamaz"): KABUL, bakiye −100 (100 avans). Okuma 2 (harfi: "carinin borcu (−100) açık şüpheli tutarın (0) altına
+  düşüyor"): RET, bakiye 1.000, açık şüpheli 900. Aynı soru açık kaydı olmayan (bütün kayıtları tahsil / Değersiz ile kapanmış) carinin bakiyesini eksiye indiren adımda da sorulur (A = A' = 0, B'
+  < 0 — Okuma 1 KABUL, Okuma 2 RET); hiç şüpheli kaydı olmayan cari bu kuralın dışındadır (Şüpheli Alacak kuralı). Kâhin: A' = 0 ve B' < 0 ve adım normal bakiyeyi düşürdüyse (B' − A' < B − A) → iki
+  dünya SUS, neden "KULLANICIYA SORULMALI SK-35". BAKİYE OKUMALAR ARASINDA FARKLI (ders 43).
+- **Y16-6 — bakım 15'te SK-33 / SK-34 ile susturulan adımlar (açıkça):** **değer alır** — SK-33 bütünü (tahsilat dışı adım: alınan çek / senet, elle Alacak, faturasız stok iadesi, iade faturası,
+  borç kaydının silinmesi / düzeltilmesi, faturanın iptali / silinmesi, Silinenler'den geri yükleme; rastgele s1'deki `hareket_sil` / `hareket_geri_yukle` iki dünyaları), SK-34 (a) (aşım önceden
+  var — artık yalnız adımdan SONRAKİ toplam ölçü), SK-34 (b) (aynı günün borcu — ölçüde tarih yok), SK-34 "kurulamıyor" (iade faturasının geri ödemesi — toplam ölçü tarihli borç istemez). **Hâlâ
+  SUS:** yalnız Y16-4 (önceden bozuk — kâhinin sınırı; beklenen 0) ve yeni SK-35 (Y16-5). Gerekçe: karar tek ölçü verdi ve 'açık şüpheli'nin kayıtla değişimi önceki karardan tek biçimde çıkıyor
+  (Y16-2); SK-35 ve Y16-4 kararın cümlesinin iki okumaya açık kaldığı yerler.
+- **Y16-7 — S155 × görünüm (§25 / §26 — değişmez):** RET edilen adım hiçbir satır yazmaz → o carinin bütün denetimleri adım yokmuş gibi (S130 görünümü, gecikmiş, Kalan, Kasa …). KABUL edilen adım
+  §25 / §26'nın kurallarıyla (S130 R, S136, S139; R kalemlerin toplamını aşarsa Y14-4 "bütün kalemler 0" — kararın örneğinde A' = 900 ≤ B' 1.200 olduğundan oluşmaz; Y16-1 her adımda B' ≥ A'
+  tuttuğundan R ≤ bakiye — Y14-4'ün o kolu artık yalnız SUS dünyalarında). Mizan, yevmiye: ret yazmaz.
+- **Y16-8 — S158: kapsam:** HER taksit kartında (Taksitler'den Mevcut Borç / Yeni Borç kartı, Tablodan Aktar kartı, stoktan taksitli satışla açılan kart; taksitli satış faturasının kendi kartı
+  kâhinde kart göstergesi taşımaz — C13.4 (1)) `kart:<no>:odenen` ('Tahsil Edilen') ve `kart:<no>:taksit<i>:odenen` ('Ödenen') = taksitin tek yükümlülük kuyruğunda (S129) kapanan kısmından
+  para DIŞI kapatıcıların kapattığı kısım ÇIKARILARAK: **faturasız stok iadesi** ve **Değersiz Alacak Yaz** (kararın sözü) ve **iade faturasının artanı** (S151'in kendi metni "İade faturasıyla yapılan
+  iadede kart küçülür, Tahsil Edilen 0" + S158 "her kartta" + soru metni "iade ve Değersiz yazma tahsilat sayılmaz" — iade faturası da iadedir; tek okuma). 'Kalan' (`kart:<no>:kalan`) = tutar −
+  taksitlerin kuyrukta kapanan BÜTÜN kısmı (para dışı dahil) — DEĞİŞMEZ (kararın örneği: "Kalan 600"). Bakiye, gecikmiş, takvim / Vade Takip / projeksiyon kalemleri, fatura açığı DEĞİŞMEZ (NOT (2)).
+  Kararın örneği AYNEN = d42 T7: Borç 900 → Taksitler'den kart 900 (3 × 300) → faturasız stok iadesi 300 ⇒ 'Tahsil Edilen 0', 'Kalan 600', taksit 'Ödenen' 0 / 0 / 0, bakiye 600. Satış kartında
+  Değersiz / iade faturası artanı payı da aynı kuralla (bakım 15'te SK-32 SUS idi). Aynı kartta para (tahsilat / evrak) + para dışı: 'Tahsil Edilen' yalnız para (d42 T6 düzeni). Etiket KULLANICI.
+  **SUS kalanlar (değişmez):** kartın kendi tahsilatının fazlası (S144 = C — `odenen`), karşı yönlü kalemli kartlı cari (S143 = C — `kalan`), SK-31 (S157 = C), C13.4 (11) tanımsız cari.
+- **Y16-9 — S154 ↔ S144 (c): sınır:** S154 'Fazlasını Avans Yaz' yolunu kurala bağladı ('Tahsil Edilen' = karttan alınan paranın tamamı). Kâhinin dilinde bu YOL (seçenek) yok: `kart_tahsilat`
+  seçeneksiz, fazlası kendi tarihinde BAĞSIZ alacak (C13.4 (3)); koşucu da seçenek göndermiyor. Kâhinin kart tahsilatı fazlasının programda hangi yola (Fazlasını Avans Yaz mı, başka bir yol mu)
+  karşılık geldiği kâhinin belgelerinden TEK biçimde çıkmıyor (ana oturumun notu: "S144 (c)'nin kapsadığı ÖBÜR alt durumlarda susman sürer") → S144 (c) SUS AYNEN; neden metnine "S154 = B ('Fazlasını
+  Avans Yaz' yolu) kâhinin dilinde ayrı adım değil — sınır ana oturumda" eklenir; değer YAZILMAZ. Ana oturuma: `kart_tahsilat`'a seçenek alanı (ör. `avansYaz: true`) ve koşucu eşlemesi eklenirse
+  (ayrı bakım) S154 o adımda değer alır: 'Tahsil Edilen' = Σ karttan alınan, 'Kalan' 0, bakiye − fazla.
+- **Y16-10 — S156 = C / S157 = C:** SK-30 ve SK-31 (a) / (b) / (c) SUS AYNEN; neden metinleri "… BİLİNEN SINIR (kullanıcı kararı S156 = C) S156 (§27 Y16-10; SK-30)" ve "… BİLİNEN SINIR (kullanıcı
+  kararı S157 = C) S157 (§27 Y16-10; SK-31 (a) | (b) | (c))" (KULLANICIYA SORULMALI değil).
+- **Y16-11 — DEĞİŞMEYEN:** şüphelisiz carilerin bütün denetimleri; şüpheli kayıtlı caride adımı RET olmayan / SUS olmayan bütün denetimler (§25 / §26); kart 'Kalan'ı; S136 / S139 / S140 / S151'in
+  (satış kartındaki stok iadesi) değerleri; S137 / S138 / S141 / S143 / S144 / S149 SUS'ları; `--kural 2.4.9` ve öncesi.
+
+### Dört kararın alt durumları (açıkça)
+| Alt durum | Bakım 15 | Bakım 16 |
+|---|---|---|
+| S155: şüpheli tarihinden önceye tahsilat, toplam borç YETİYOR ama o günkü borç yetmiyor (kararın KABUL örneği) | DEĞER = B (RET) | **DEĞER = A (KABUL)** |
+| S155: şüpheli tarihinden önceye tahsilat, toplam borç yetmiyor (kararın RET örneği; d41 S1, d39 N11) | DEĞER (RET) | DEĞER (RET — aynen) |
+| S155: tahsilat dışı adım (çek, Alacak Yaz, stok iadesi, iade faturası, borç silme, geri yükleme, tarih değişikliği) | SUS (SK-33) | **DEĞER** (toplam ölçü) |
+| S155: aşım önceden var / aynı günün borcu (SK-34 (a) / (b)) / tarihli borç kurulamıyor | SUS (SK-34) | **DEĞER** (toplam ölçü) |
+| S155: faturaya bağlı tahsilat şüpheli tarihinden SONRA, normal bakiyeyi aşıyor | DEĞER (kabul — denetlenmiyordu) | **DEĞER (RET)** |
+| S155: tam eşitlik / şüpheli tarihinden sonraki tahsilat (A ile B birlikte düşer) | DEĞER (kabul) | DEĞER (kabul — aynen) |
+| S155: adım açık şüpheliyi sıfırlıyor, bakiye eksiye (ya da kapanmış kayıtlı caride eksiye) | DEĞER (kabul) | **SUS** — KULLANICIYA SORULMALI SK-35 |
+| S155: adımdan önce kural zaten bozuk (yalnız denetlenmeyen yoldan) | — | SUS — kâhinin sınırı (Y16-4) |
+| S158: satış kartı olmayan kartta stok iadesi / iade faturası artanı / Değersiz payı; satış kartında iade faturası artanı / Değersiz | SUS (SK-32) | **DEĞER = A** (para dışı pay sayılmaz) |
+| S156 (SK-30) / S157 (SK-31 (a) / (b) / (c)) | SUS (KULLANICIYA SORULMALI) | SUS — BİLİNEN SINIR (metin) |
+| S154 ('Fazlasını Avans Yaz' yolu) | alan yok (S144 (c) SUS) | alan yok — S144 (c) SUS AYNEN (metin) |
+
+### KULLANICIYA SORULMALI (bakım 16; kâhin bu durumlarda SUSAR — ders 43, SORU DÜZENİ)
+- **SK-35 (S155'in sınırı — UÇ DURUM; BAKİYE OKUMALAR ARASINDA FARKLI):** (a) adım açık şüpheliyi sıfırlıyor ve bakiye eksiye iniyor: borç 1.000 (01.05) → 16.05 Şüpheli 900 → bugün tahsilat 1.100.
+  **A (öneri — 'açık şüpheli kalmadı, kural bağlamaz'; şüpheliye alınmamış cari gibi):** KABUL — 900 şüpheliden, 200 normal cariye; bakiye −100 (100 avans), açık şüpheli 0 / **B (kararın harfi —
+  borç −100 < açık şüpheli 0):** RET — bakiye 1.000, açık şüpheli 900, Kasa'da 1.100 yok. (b) kayıtları kapanmış (tamamı tahsil / Değersiz) caride bakiyeyi eksiye indiren adım (Değersiz 900 ile kapanan
+  kayıt, sonra Alacak Yaz 200 — bakiye 100 → −100): A KABUL (bakiye −100) / B RET (bakiye 100). **C (ikisi için):** uç durum böyle kalsın (BİLİNEN SINIR — kâhin susar).
