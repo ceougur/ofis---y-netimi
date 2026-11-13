@@ -1,0 +1,74 @@
+// Birleşik tur 7 HIZ KABUL (ders 53 (a), 47): temiz-100k KOPYASINDA — Mutabakat Testi (satır içi tarama), arka plan taraması (iş parçacığı), Silinenler geri yüklemesi
+// (İş 1: kimlik kümesi önce / sonra), Vade Takip ve Nakit Akışı (İş 3). Kip "acilissiz": veri olduğu gibi (Kasa açılışı yok → uyarı yok); kip "acilisli": kopyaya açılış
+// satırı (eski sürüm verisi gibi, ayrı bağlantı) Kasa hareketlerinin ortanca gününe yazılır → binlerce açılış öncesi satır (uyarı kümesi büyük).
+// Kullanım: node olcum-b7.mjs <kod kökü> <veri kopyası> <acilissiz|acilisli> [tekrar=5]
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { monitorEventLoopDelay } from "node:perf_hooks";
+import { pathToFileURL } from "node:url";
+import { DatabaseSync } from "node:sqlite";
+
+process.env.HUKUK_LICENSE_URL ||= "http://127.0.0.1:9";
+const [root, dir, kip, repeatText = "5"] = process.argv.slice(2);
+const repeat = Number(repeatText) || 5;
+const load = () => readFileSync("/proc/loadavg", "utf8").trim().split(" ").slice(0, 3).join(" ");
+const dbFile = path.join(dir, "data", "destekofis.sqlite");
+if (kip === "acilisli") {
+  const db = new DatabaseSync(dbFile);
+  const mid = db.prepare("SELECT date FROM cash_entries WHERE method = 'cash' ORDER BY date LIMIT 1 OFFSET (SELECT COUNT(*) / 2 FROM cash_entries WHERE method = 'cash')").get()?.date;
+  db.prepare("INSERT INTO cash_entries (id, kind, amount, date, description, method, is_opening, created_by, created_at) VALUES ('b7-olcum-acilis', 'in', 1000, ?, 'Açılış Bakiyesi', 'cash', 1, 'olcum', ?)").run(mid, `${mid}T08:00:00.000Z`);
+  db.close();
+  console.log(`açılış satırı ${mid} (ayrı bağlantı)`);
+}
+const { createApp } = await import(pathToFileURL(path.join(root, "server", "app.mjs")).href);
+const { createClient } = await import(pathToFileURL(path.join(root, "test", "helpers.mjs")).href);
+const PASS = "Kapi-Olcum-2026!";
+const t0 = performance.now();
+const app = createApp({
+  dataDir: path.join(dir, "data"), backupDir: path.join(dir, "backups"), logLevel: "silent", scheduleBackups: false,
+  env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "0123456789abcdef0123456789abcdef" },
+  startLicenseTimers: false, integrityScan: false, analysisWorker: false, now: "2026-10-08T12:00:00+03:00", moneyStrict: false,
+});
+const { port } = await app.listen(0, "127.0.0.1");
+console.log(`kod ${root} · kip ${kip} · açılış (listen) ${Math.round(performance.now() - t0)} ms · yük ${load()}`);
+const c = createClient(`http://127.0.0.1:${port}`);
+if ((await c.login("admin", PASS)).status !== 200) throw new Error("giriş");
+const data = x => (x?.data?.ok === true ? x.data.data : x.data);
+const h = monitorEventLoopDelay({ resolution: 5 });
+h.enable();
+const r = v => Math.round(v * 10) / 10;
+const results = {};
+async function timed(label, call) {
+  h.reset();
+  const s = performance.now();
+  const res = await call();
+  const ms = performance.now() - s;
+  (results[label] ||= []).push({ ms, loop: h.max / 1e6, status: res?.status ?? (res?.result ? 200 : res?.skipped ? `atlandı ${res.skipped}` : "?") });
+  return res;
+}
+const first = data(await c.get("/api/workspace/ledger/integrity"));
+console.log(`uyarı satırı (cash:before-opening) ${(first.checks || []).find(item => item.code === "cash:before-opening")?.count ?? 0}`);
+const today = "2026-10-08";
+const RANGE = "from=2026-01-01&to=2027-12-31";
+await c.get(`/api/workspace/overview/vade-takip?${RANGE}`);
+await c.get(`/api/workspace/overview/nakit-akisi?${RANGE}`);
+for (let k = 1; k <= repeat; k += 1) {
+  await timed("Mutabakat Testi", () => c.get("/api/workspace/ledger/integrity"));
+  await c.post("/api/workspace/cash", { kind: "in", amount: "1", date: today, description: `ölçüm tarama ${k}`, method: "cash" });
+  await timed("arka plan taraması", () => app.integrity.scanInBackground());
+  const made = data(await c.post("/api/workspace/cash", { kind: "in", amount: "12,50", date: today, description: `ölçüm geri ${k}`, method: "cash" }));
+  const id = made?.id || made?.entry?.id;
+  await c.del(`/api/workspace/cash/${id}`);
+  const listed = data(await c.get("/api/admin/trash"));
+  const item = (Array.isArray(listed) ? listed : listed.items || []).find(row => row.ref === id);
+  await timed("Silinenler geri yükleme", () => c.post("/api/admin/trash/restore", { id: item?.id }));
+  await timed("Vade Takip (ılık)", () => c.get(`/api/workspace/overview/vade-takip?${RANGE}`));
+  await timed("Nakit Akışı (ılık)", () => c.get(`/api/workspace/overview/nakit-akisi?${RANGE}`));
+}
+for (const [label, list] of Object.entries(results)) {
+  const ms = list.map(item => item.ms).sort((a, b) => a - b);
+  const loop = Math.max(...list.map(item => item.loop));
+  console.log(`SONUÇ ${kip} · ${label}: en iyi ${r(ms[0])} ms · ortanca ${r(ms[Math.floor(ms.length / 2)])} ms · olay döngüsü en çok ${r(loop)} ms · durumlar ${[...new Set(list.map(item => item.status))].join(",")} · tur tur ${ms.map(r).join(" ")}`);
+}
+console.log(`yük (sonda) ${load()}`);
+await app.close();

@@ -147,7 +147,7 @@ def KB(k, s="001", cari=None, fatura=None, acilis=None, kartlar=None, kasa=0, ka
     for ad, v in (acilis or {}).items():
         o[p + "acilis:%s:kalan" % ad] = K(v)
     for ad, (od, fz, kl, sy, tk) in (kartlar or {}).items():
-        o[p + "kart:%s:odenen" % ad] = K(od)
+        o[p + "kart:%s:odenen" % ad] = [K(x) for x in od] if isinstance(od, list) else K(od)   # liste = biri (S129 bakımı SM-1: K8-AVANS × S129)
         o[p + "kart:%s:fazla" % ad] = K(fz)
         o[p + "kart:%s:kalan" % ad] = [K(x) for x in kl] if isinstance(kl, list) else K(kl)   # liste = biri (K8-AVANS: avanslı kartın Kalan'ı)
         o[p + "kart:%s:tahsilatSayisi" % ad] = sy
@@ -285,15 +285,16 @@ _E05_YC = birles(AD("t1", "ret", "4xx"), AD("t2", "ret", "4xx"), AD("t3", "ret",
                  KB("k1", cari={"K": (1200, 0)}, kartlar={"KT1": (0, 0, 1200, 0, [0, 0, 0])}, kasa=0), SIL("k1:001:kasaGun:%s" % D1),
                  KB("k2", cari={"K": (1200, 0)}, kartlar={"KT1": (0, 0, 1200, 0, [0, 0, 0])}, kasa=0), SIL("k2:001:kasaGun:%s" % D1))
 elle("E05-es-taksit", "K: açılış 1.200, Mevcut Borcu Taksitlendir kartı 1.200 / 3. Kart tahsilatı 500 → taksit 400 / 100 / 0, kalan 700. 800 → 409 plan-overpay; 800 "
-     "Fazlasını Avans Yaz (yönetici) → taksitler 400 / 400 / 400, fazla (avans) 100, kartın Ödenen'i 1.300 (avans DAHİL — KARAR K8-AVANS), Kalan 0 ya da −100 "
-     "(karar yazmıyor; ikisi de kabul), cari −100; onaysız 100 → 409 plan-paid.",
-     ["PLAN §3.10/3 K8", "KULLANICI KARAR K8-AVANS 29.10.2026 (Ödenen avansı da içerir)", "S3 PARAMETRE", "S4 PARAMETRE (Fazlasını Avans Yaz)"],
+     "Fazlasını Avans Yaz (yönetici) → taksitler 400 / 400 / 400, fazla (avans) 100, kartın Ödenen'i 1.200 ya da 1.300 (S129 bakımı SM-1: tek kuyruk ödeneni 1.200 "
+     "ya da avans DAHİL 1.300 — KARAR K8-AVANS; ikisi de kabul), Kalan 0 ya da −100 (karar yazmıyor; ikisi de kabul), cari −100; onaysız 100 → 409 plan-paid.",
+     ["PLAN §3.10/3 K8", "KULLANICI KARAR K8-AVANS 29.10.2026 (Ödenen avansı da içerir)", "KULLANICI S129 A (göstergeler tek kuyruktan) — SM-1 iki okuma",
+      "S3 PARAMETRE", "S4 PARAMETRE (Fazlasını Avans Yaz)"],
      bas(), lambda kn: [cari("c1", "K", acilis="1200"), kart("ka", "KT1", "K", "1200", 3), tah("t1", "K", "500", ch(kn), kart="KT1"), kon("k1"),
                         tah("t2", "K", "800", ch(kn), kart="KT1"), tah("t3", "K", "800", ch(kn), kart="KT1", fazlaAvans=True),
                         tah("t4", "K", "100", ch(kn), kart="KT1"), kon("k2")],
      birles(AD("t1", "ok"), AD("t2", "ret", 409, "plan-overpay"), AD("t3", "ok"), AD("t4", "ret", 409, "plan-paid"),
             KB("k1", cari={"K": (700, 0)}, kartlar={"KT1": (500, 0, 700, 1, [400, 100, 0])}, kasa=500, kasaGun={D1: 500}),
-            KB("k2", cari={"K": (-100, 0)}, kartlar={"KT1": (1300, 100, [0, -100], 2, [400, 400, 400])}, kasa=1300, kasaGun={D1: 1300})),
+            KB("k2", cari={"K": (-100, 0)}, kartlar={"KT1": ([1200, 1300], 100, [0, -100], 2, [400, 400, 400])}, kasa=1300, kasaGun={D1: 1300})),
      pg={"taksit=yalniz_cari": _E05_YC,
          "onay=gecemez": birles(AD("t3", "ret", 409, "plan-overpay"), AD("t4", "ok"),
                                 KB("k2", cari={"K": (600, 0)}, kartlar={"KT1": (600, 0, 600, 2, [400, 200, 0])}, kasa=600, kasaGun={D1: 600})),
@@ -689,8 +690,10 @@ _E41_YC = birles(AD("t1", "ret", "4xx"), AD("t2", "ret", "4xx"), AD("t3", "ret",
 elle("E41-es-odenmis-kart-avans", "K: açılış 1.000, Mevcut Borcu Taksitlendir kartı 1.000 / 2 (500 + 500). Nakit 1.000 → kart ödenmiş (Kalan 0). Yönetici onaysız 200 → "
      "409 plan-paid. Yönetici Fazlasını Avans Yaz: nakit 200 → yazılır, tamamı avans (Kasa +200); havale 300 (BNK1) → yazılır, avans (banka +300). Personel onaysız 100 "
      "→ 409 plan-paid; personel Fazlasını Avans Yaz 100 → ret (yetkisiz; kod kararda yok: 403 plan-overpay-permission ya da 409 plan-paid). Sonuç: cari −500 (alacak), "
-     "kartın Ödenen'i 1.500 (avans dahil), fazla 500, Kalan 0 ya da −500, taksitler 500 / 500, Kasa 1.200, BNK1 300. Mobil = masaüstü.",
-     ["KULLANICI KARAR K8-AVANS 29.10.2026 (docs/2.4.7-IS-LISTESI.md 'KARAR — K8-AVANS')", "PLAN §3.10/3 Fazlasını Avans Yaz yalnız plans.manage",
+     "kartın Ödenen'i 1.000 ya da 1.500 (S129 bakımı SM-1: tek kuyruk ödeneni ya da avans dahil — ikisi de kabul), fazla 500, Kalan 0 ya da −500, taksitler 500 / 500, "
+     "Kasa 1.200, BNK1 300. Mobil = masaüstü.",
+     ["KULLANICI KARAR K8-AVANS 29.10.2026 (docs/2.4.7-IS-LISTESI.md 'KARAR — K8-AVANS')", "KULLANICI S129 A — SM-1 iki okuma",
+      "PLAN §3.10/3 Fazlasını Avans Yaz yalnız plans.manage",
       "KULLANICI kalıcı karar: Kasa yalnız nakit", "S3 PARAMETRE", "S4 PARAMETRE (Fazlasını Avans Yaz)"],
      bas(kullanicilar={"P": {"rol": "personel", "uzak": True}}, cihazlar={"DY": "Y", "DP": "P"}),
      lambda kn: [hesap("h1", "BNK1", "banka"), cari("c1", "K", acilis="1000"), kart("ka", "KT", "K", "1000", 2),
@@ -703,7 +706,7 @@ elle("E41-es-odenmis-kart-avans", "K: açılış 1.000, Mevcut Borcu Taksitlendi
      birles(AD("t1", "ok"), AD("t2", "ret", 409, "plan-paid"), AD("t3", "ok"), AD("t4", "ok"), AD("t5", "ret", 409, "plan-paid"),
             AD("t6", "ret", [403, 409], ["plan-overpay-permission", "plan-paid"]),
             KB("k0", cari={"K": (0, 0)}, kartlar={"KT": (1000, 0, 0, 1, [500, 500])}, kasa=1000, kasaGun={D1: 1000}, hesaplar={"BNK1": ("banka", 0)}),
-            KB("k1", cari={"K": (-500, 0)}, kartlar={"KT": (1500, 500, [0, -500], 3, [500, 500])}, kasa=1200, kasaGun={D1: 1200},
+            KB("k1", cari={"K": (-500, 0)}, kartlar={"KT": ([1000, 1500], 500, [0, -500], 3, [500, 500])}, kasa=1200, kasaGun={D1: 1200},
                hesaplar={"BNK1": ("banka", 300)})),
      pg={"taksit=yalniz_cari": _E41_YC,
          # telefon onay bayrağını göndermez → ödenmiş karta her yeni tahsilat 409 plan-paid (yetkisizinki de)
@@ -711,6 +714,31 @@ elle("E41-es-odenmis-kart-avans", "K: açılış 1.000, Mevcut Borcu Taksitlendi
                                 KB("k1", cari={"K": (0, 0)}, kartlar={"KT": (1000, 0, 0, 1, [500, 500])}, kasa=1000, kasaGun={D1: 1000},
                                    hesaplar={"BNK1": ("banka", 0)})),
          "taksit=yalniz_cari&onay=gecemez": _E41_YC},
+     cift=True)
+
+# E42 — eşdeğerlik: S129 = A (kullanıcı 12.11.2026) — taksit kartının göstergeleri TEK KUYRUKTAN; tahsilat sınırı S118 = B (kartın KENDİ kalanı). Beklenenler karar
+# metninden ELLE (kâhin koşulmadan): kararın iki örneği AYNEN — kart 900 (3 × 300) + karta bağlanmadan 500 → Tahsil Edilen 500 · Kalan 400 (taksitler 300 / 200 / 0),
+# bakiye 400; kart 600 (2 × 300) + bağsız 800 → Tahsil Edilen 600 · Kalan 0 (300 / 300), bakiye −200. Sonra S118 = B: kartın KENDİ kalanı (900 / 600) sınırdır —
+# kart seçilerek 900 kabul (tek kuyruğun kalanı 400 olsa da), ödenmiş (kendi kalanı 0) karta 1 → 409 plan-paid; LT'ye 700 → 409 plan-overpay (kendi kalanı 600),
+# 600 kabul (tek kuyruğun kalanı 0 olsa da). Göstergeler yine tek kuyruktan: KT 900 · 0 (300 / 300 / 300), LT 600 · 0; fazlası carinin alacağı (K −500, L −800);
+# Fazlasını Avans Yaz kullanılmadığı için kartın kendi avansı (fazla) 0. Mobil = masaüstü (karar: "ekranda tek sayı" — mobil için ayrı kural yok).
+_E42_K1 = KB("k1", cari={"K": (400, 1), "L": (-200, 1)}, kartlar={"KT": (500, 0, 400, 0, [300, 200, 0]), "LT": (600, 0, 0, 0, [300, 300])}, kasa=1300,
+             kasaGun={D1: 1300})
+elle("E42-es-s129-gosterge", "K: açılış 900, Mevcut Borcu Taksitlendir kartı 900 / 3; L: açılış 600, kart 600 / 2. Karta bağlanmadan K'ye 500, L'ye 800 → KT Tahsil Edilen 500 · "
+     "Kalan 400 (300 / 200 / 0), LT 600 · 0 (300 / 300); bakiye K 400, L −200 (S129 kararının iki örneği). Kart seçilerek KT'ye 900 → kabul (sınır kartın KENDİ "
+     "kalanı 900 — S118 = B); KT'ye 1 → 409 plan-paid; LT'ye 700 → 409 plan-overpay; LT'ye 600 → kabul. Son: KT 900 · 0, LT 600 · 0, K −500, L −800, Kasa 2.800.",
+     ["KULLANICI S129 A 12.11.2026 (göstergeler tek kuyruktan)", "KULLANICI S118 B 11.11.2026 (sınır kartın kendi kalanından)", "PLAN §3.10/3 K8", "S3 PARAMETRE"],
+     bas(), lambda kn: [cari("c1", "K", acilis="900"), kart("ka", "KT", "K", "900", 3), cari("c2", "L", acilis="600"), kart("kb", "LT", "L", "600", 2),
+                        tah("t1", "K", "500", ch(kn)), tah("t2", "L", "800", ch(kn)), kon("k1"),
+                        tah("t3", "K", "900", ch(kn), kart="KT"), tah("t4", "K", "1", ch(kn), kart="KT"),
+                        tah("t5", "L", "700", ch(kn), kart="LT"), tah("t6", "L", "600", ch(kn), kart="LT"), kon("k2")],
+     birles(AD("t1", "ok"), AD("t2", "ok"), AD("t3", "ok"), AD("t4", "ret", 409, "plan-paid"), AD("t5", "ret", 409, "plan-overpay"), AD("t6", "ok"),
+            _E42_K1,
+            KB("k2", cari={"K": (-500, 1), "L": (-800, 1)}, kartlar={"KT": (900, 0, 0, 1, [300, 300, 300]), "LT": (600, 0, 0, 1, [300, 300])}, kasa=2800,
+               kasaGun={D1: 2800})),
+     pg={"taksit=yalniz_cari": birles(AD("t3", "ret", "4xx"), AD("t4", "ret", "4xx"), AD("t5", "ret", "4xx"), AD("t6", "ret", "4xx"),
+                                      KB("k2", cari={"K": (400, 1), "L": (-200, 1)},
+                                         kartlar={"KT": (500, 0, 400, 0, [300, 200, 0]), "LT": (600, 0, 0, 0, [300, 300])}, kasa=1300, kasaGun={D1: 1300}))},
      cift=True)
 
 
@@ -1516,12 +1544,21 @@ class Akis:
                             self.out[p + "fatura:%s:acik" % ad] = v
             for kad in sorted(S["kart"]):
                 K = S["kart"][kad]
-                ham = sum(x for _, x in K["od"])
-                od = min(ham, K["top"])                              # taksitlere düşen
-                self.out[p + "kart:%s:odenen" % kad] = ham           # K8-AVANS: Ödenen avansı da içerir
-                self.out[p + "kart:%s:fazla" % kad] = ham - od
-                self.out[p + "kart:%s:kalan" % kad] = [0, K["top"] - ham] if ham > K["top"] else K["top"] - ham   # karar Kalan'ı yazmıyor: ikisi de
+                ham = sum(x for _, x in K["od"])                     # kartın KENDİ tahsilatları (S118 = B: sınır bundan — _istek)
+                fz = ham - min(ham, K["top"])                        # Fazlasını Avans Yaz ile yazılan avans (kendi)
+                self.out[p + "kart:%s:fazla" % kad] = fz
                 self.out[p + "kart:%s:tahsilatSayisi" % kad] = len(K["od"])
+                # S129 = A (README YS129-6; kâhinden ve cari kâhininden BAĞIMSIZ hesap): üreticinin kartlı carisi "açılış = kart tutarı + Mevcut Borç kartı" ve
+                # tahsilatlardan ibaret → tek kuyruğun tek borç kalemi kartın taksitleri: Tahsil Edilen = min(toplam, carinin BÜTÜN tahsilatları), en eski taksitten
+                tum = sum(x["m"] for x in S["kay"] if x["cari"] == K["cari"] and x["islem"] == "tahsilat")
+                if any(x["cari"] == K["cari"] and x["islem"] != "tahsilat" for x in S["kay"]) or \
+                        any(f["cari"] == K["cari"] for f in S["fat"].values()) or S["cari"][K["cari"]]["acilis"] != K["top"]:
+                    raise RuntimeError("akış: kartlı cari üreticinin alt kümesi dışında (YS129-6 hesabı geçersiz)")
+                od = min(K["top"], tum)
+                # YS129-4 / SM-1 (K8-AVANS × S129): kendi avansı varken iki okuma — tek kuyruk ödeneni ya da + avans; Kalan 0 ya da toplam − Ödenen (karar yazmıyor)
+                self.out[p + "kart:%s:odenen" % kad] = [od, od + fz] if fz else od
+                kl = sorted({K["top"] - od} | ({0, K["top"] - od - fz} if fz else set()), reverse=True)
+                self.out[p + "kart:%s:kalan" % kad] = kl if len(kl) > 1 else kl[0]
                 kal = od
                 for j, t in enumerate(K["tk"]):
                     self.out[p + "kart:%s:taksit%d:odenen" % (kad, j + 1)] = min(t, kal)
@@ -1633,7 +1670,7 @@ def kabul_uret(olay=RASTGELE_OLAY, yaz=True, gunluk=print):
     kabul = {
         "surum": 1, "dil": kahin.DIL,
         "aciklama": "DestekOfis 2.4.7 M5 mobil yazma (tahsilat / ödeme / stok) bağımsız kâhininin kabul kümesi. Programın kodu görülmeden karar metninden üretildi; "
-                    "para anlamı cari kâhinine (test/bagimsiz/cari/model.py, kural 2.4.6) devredilir. Kurallar, açık sorular, eşleme: README.md.",
+                    "para anlamı cari kâhinine (test/bagimsiz/cari/model.py, kural 2.4.6) devredilir; taksit kartının göstergeleri (Tahsil Edilen, Kalan, taksit Ödenen'i) aynı kâhinin tek kuyruğundan (kural 2.5.0 — S129 = A, 2.5.0 bakımı). Kurallar, açık sorular, eşleme: README.md.",
         "kaynak": ["CLAUDE.md Açık iş: MOBİL kararları (26.10.2026), Kalıcı ürün kararları, dersler 5/7/10/13/17/22/31/32/40/43",
                    "docs/erp/OTURUM-DEVIR-TESLIM-2.4.7.md §3.1", "docs/2.4.7-IS-LISTESI.md Nasıl bozulur?",
                    "docs/2.4.7-IS-LISTESI.md 'KARAR — K8-AVANS' (kullanıcı, 29.10.2026 \"A ÖNERİN UYGUN\"): ödenmiş karta onaylı Fazlasını Avans Yaz (plans.manage) → avans; Ödenen avansı da içerir", "docs/PRO-UZAKTAN-GORUNTULEME.md (eşleme / izin / lisans)",
@@ -1641,13 +1678,15 @@ def kabul_uret(olay=RASTGELE_OLAY, yaz=True, gunluk=print):
                    "BAKIM 29.10.2026 (README 'BAKIM 29.10.2026'): masaüstü modül ucu 2'den çok ondalığı yarım yukarı yuvarlar (docs/GECMIS-KARARLAR.md 2.1.0 yargıç "
                    "düzeltmesi '1,005 → 1,01'; mobil yuvarlamaz); BAŞ MİMAR KARARI 29.10.2026 gövdedeki cari 400 / yoldaki 404; birden çok ihlalde yalnız durum "
                    "sınıfı (SENARYO-DILI §5.6 [BELİRSİZ-17])",
+                   "2.5.0 bakımı — S129 (README '2.5.0 bakımı — S129'; kullanıcı 12.11.2026 S129 = A, 11.11.2026 S118 = B): taksit kartının göstergeleri tek "
+                   "kuyruktan (cari kâhini 2.5.0), tahsilat sınırı kartın KENDİ kalanından; K8-AVANS × S129 iki okuma (SM-1 — liste)",
                    "MEVCUT ÜRÜN (ana oturum koddan doğruladı): şirket yetkisi kullanıcı × şirket; yönetici hepsi; işaretsiz yalnız 001; roller her şirkette aynı"],
         "uretim": "python3 -I test/bagimsiz/mobil-yazma/senaryolar.py (rastgele tohum %s, %d olay)" % ("–".join(map(str, (RASTGELE_TOHUM[0], RASTGELE_TOHUM[-1]))), olay),
         "cari_model_sha256": _sha256(kahin._CARI_YOL),
         "parametreler": {k: list(v) for k, v in P.items()}, "oneri": kahin.ONERI, "taban_birlesim": ILK, "esdeger_birlesim": ESDEGER,
         "birlesim_bicimi": "kapatilacak=…;yollar=…;taksit=…;onay=…;eksi_stok=…;tarih=…;gec_yeniden=…;stok_yonu=… (bu sırayla)",
         "secilen_birlesim": "kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris",
-        "secim_notu": "Kullanıcı kararı S1–S8 (docs/2.4.7-IS-LISTESI.md 'KARARLAR — M5 mobil yazma', 29.10.2026; 5 dk yetkisiyle uygulandı): öneri birleşimi seçildi. Beklentiler değişmedi; yalnız seçim alanı. KARAR K8-AVANS (kullanıcı, 29.10.2026 'A ÖNERİN UYGUN'; ders 40/43) beklentileri değiştirdi: ödenmiş karta onaylı Fazlasını Avans Yaz yazılır (tamamı avans), kartın Ödenen'i avansı da içerir (E05, E41, R1–R3).",
+        "secim_notu": "Kullanıcı kararı S1–S8 (docs/2.4.7-IS-LISTESI.md 'KARARLAR — M5 mobil yazma', 29.10.2026; 5 dk yetkisiyle uygulandı): öneri birleşimi seçildi. Beklentiler değişmedi; yalnız seçim alanı. KARAR K8-AVANS (kullanıcı, 29.10.2026 'A ÖNERİN UYGUN'; ders 40/43) beklentileri değiştirdi: ödenmiş karta onaylı Fazlasını Avans Yaz yazılır (tamamı avans), kartın Ödenen'i avansı da içerir (E05, E41, R1–R3). S129 = A (kullanıcı 12.11.2026; 2.5.0 bakımı) kart göstergelerini tek kuyruğa taşıdı (bağsız tahsilat kartı da düşürür — E42, R1–R3); avanslı kartın Ödenen'i iki okumalı liste (SM-1).",
         "senaryolar": kayitlar,
         "goreli_ciftler": [{"ad": g["ad"], "aciklama": g["aciklama"], "kosul": g["kosul"], "masaustu": g["masaustu"], "mobil": g["mobil"]} for g in GORELI],
     }

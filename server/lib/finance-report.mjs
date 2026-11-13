@@ -218,8 +218,12 @@ export function dueList({ today, from = "", to = "", late = true, items = [] }) 
     const raw = item.amount === null || item.amount === undefined || item.amount === "" ? null : Number(item.amount);
     const amount = raw === null || !Number.isFinite(raw) ? null : roundMoney(raw);
     if (amount !== null && amount <= EPS) continue;
-    const state = days < 0 ? (item.month && item.date.slice(0, 7) === today.slice(0, 7) ? "month" : "overdue") : days === 0 ? "today" : "upcoming";
-    rows.push({ ...item, direction: item.direction === "out" ? "out" : item.direction === "in" ? "in" : "", amount, days, state });
+    const derived = days < 0 ? (item.month && item.date.slice(0, 7) === today.slice(0, 7) ? "month" : "overdue") : days === 0 ? "today" : "upcoming";
+    // Birleşik tur 7 (S52, S67, S69 = A): kalemin günü ve durumu kaynağından geldiyse (carinin sözlü borcu — lib/obligation-queue.mjs calendarState: vadesi geçmiş borç
+    // söz gününde durur, durumu "Gecikmiş", gün sayısı VADEDEN) tarihten yeniden türetilmez; takvim / zil ile aynı durum, aynı gün sayısı, aynı gecikmiş toplamı.
+    const { calendar, ...rest } = item;
+    const state = calendar?.state || derived;
+    rows.push({ ...rest, direction: item.direction === "out" ? "out" : item.direction === "in" ? "in" : "", amount, days: calendar?.state ? Number(calendar.days) || 0 : days, state });
   }
   rows.sort((a, b) => (a.date === b.date ? (a.direction === b.direction ? String(a.party || "").localeCompare(String(b.party || ""), "tr") : a.direction === "in" ? -1 : 1) : a.date < b.date ? -1 : 1));
   const bucket = () => ({ count: 0, amount: 0 });

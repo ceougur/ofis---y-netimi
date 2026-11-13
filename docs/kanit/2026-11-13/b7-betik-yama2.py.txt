@@ -1,0 +1,144 @@
+import sys
+root = sys.argv[1]
+p = root + '/server/lib/integrity.mjs'
+t = open(p).read()
+def rep(old, new, cnt=1):
+    global t
+    assert t.count(old) == cnt, (old[:80], t.count(old))
+    t = t.replace(old, new)
+
+rep('import { cashBeforeOpening, cashRestoreMark } from "./cash-opening.mjs";',
+    'import { cashBeforeOpening, cashExplained, cashRestoreMark } from "./cash-opening.mjs";')
+rep("""      const early = cashBeforeOpening(store, money());
+      if (early?.rows.length) {
+        const opening = early.opening.split("-").reverse().join(".");""",
+"""      const early = cashBeforeOpening(store, money());
+      if (early?.rows.length) {
+        // Birleşik tur 7 (DK-B6 ORTA-1): uyarının KİMLİK kümesi (noticeGrowth) — sonuca sayılmayan alan olarak (JSON'a / API'ye girmez).
+        noticeKeys.set("cash:before-opening", new Map(early.rows.map(item => [item.key, item.sample])));
+        const opening = early.opening.split("-").reverse().join(".");""")
+rep("""  function run({ events: touched = null, includeHidden = false } = {}) {
+    const started = performance.now();""",
+"""  function run({ events: touched = null, includeHidden = false } = {}) {
+    const started = performance.now();
+    const noticeKeys = new Map(); // uyarı kodu → Map(kimlik → örnek) (birleşik tur 7; withNoticeKeys)""")
+rep("""    lastRun = { scoped: Boolean(touched), ms: total, sections: timings, drift };
+    return { ok: failures.length === 0, checks, failures, durationMs: Math.round(total) };""",
+"""    lastRun = { scoped: Boolean(touched), ms: total, sections: timings, drift };
+    return withNoticeKeys({ ok: failures.length === 0, checks, failures, durationMs: Math.round(total) }, noticeKeys);""")
+rep("""  // ---------- Uyarının sayısı (2.5.0 birleşik tur 6; DK-D2T3 ORTA-1 — BAŞ MİMAR 11.11, kullanıcı onaylı) ----------""",
+"""  // ---------- Uyarının sayısı (2.5.0 birleşik tur 6; DK-D2T3 ORTA-1 — BAŞ MİMAR 11.11, kullanıcı onaylı) → kimlik kümesi (birleşik tur 7) ----------""")
+rep("""  // Sunum (sarı uyarı, Defter Mutabakatı'nda "Tutarlı", ilk yazımın süzgeçli yolu) değişmez: uyarı tabana / kapı alanına girmez.
+  let noticeMark = null; // { counts: Map(kod → sayı), restored }
+  const noticeCounts = result => new Map((result?.failures || []).filter(item => item.notice).map(item => [item.code, Number(item.count) || 0]));
+  const NOTICE_GROWTH = {
+    "cash:before-opening": (previous, count) => `Kasa açılışından önce tarihli hareket uyarısı arttı (${previous} → ${count} hareket; kapının görmediği yazım)`,
+  };
+  // restoredAt: taramanın anlık görüntüsüne giren geri yükleme sayacı. İş parçacığı taraması sürerken geri yükleme kesinleştiyse (sayaç değişti) bu tarama uyarıyı
+  // karşılaştırmaz (anlık görüntünün geri yüklemeyi içerip içermediği bilinmez — yanlış alarm olurdu); işaret değişmez, sonraki tarama karşılaştırır.
+  function noticeGrowth(result, restoredAt) {
+    const counts = noticeCounts(result);
+    if (!noticeMark) {
+      noticeMark = { counts, restored: restoredAt };
+      return [];
+    }
+    if (restoredAt !== cashRestoreMark(store)) return [];
+    const explained = Math.max(0, restoredAt - noticeMark.restored);
+    const out = [];
+    for (const item of result.failures.filter(entry => entry.notice)) {
+      const previous = noticeMark.counts.get(item.code) ?? 0;
+      const count = Number(item.count) || 0;
+      const unexplained = count - previous - (item.code === "cash:before-opening" ? explained : 0);
+      if (unexplained > 0) {
+        const name = NOTICE_GROWTH[item.code]?.(previous, count) || `${item.name}: uyarı arttı (${previous} → ${count}; kapının görmediği yazım)`;
+        out.push({ code: item.code, name, ok: false, notice: true, severity: "warning", count, previous, unexplained, sample: item.sample || [] });
+      }
+    }
+    noticeMark = { counts, restored: restoredAt };
+    return out;
+  }""",
+"""  // Sunum (sarı uyarı, Defter Mutabakatı'nda "Tutarlı", ilk yazımın süzgeçli yolu) değişmez: uyarı tabana / kapı alanına girmez.
+  // Birleşik tur 7 (DK-B6 ORTA-1; BAŞ MİMAR 12.11 12:52 — docs/devir/D2-ALTYAPI-TASARIM.md §16): SAYI yerine KİMLİK kümesi. Sayıyla iki tarama arasında sil + geri yükle +
+  // dış yazım (2 → 1 → 2 → 3) açıklanmış sayılıyordu (geri yükleme hak ekliyor, silme düşürmüyordu) ve sil + dış yazım (sayı aynı) görünmüyordu. Artık alarm = önceki
+  // kümede olmayan ve işaretten SONRA açıklanmamış (Silinenler geri yüklemesi; kapının kabul ettiği kimlik değişimi — önceki kimliği önceki kümedeyse ya da kendisi
+  // açıklanmışsa) her yeni kimlik; iletide açıklanamayan kimlik sayısı (DÜŞÜK-1).
+  let noticeMark = null; // { counts: Map(kod → sayı), keys: Map(kod → Set(kimlik)), restored }
+  const noticeCounts = result => new Map((result?.failures || []).filter(item => item.notice).map(item => [item.code, Number(item.count) || 0]));
+  const noticeKeySets = result => new Map([...(result?.noticeKeys || [])].map(([code, keys]) => [code, new Set(keys.keys())]));
+  const NO_KEYS = new Set();
+  const NOTICE_GROWTH = {
+    "cash:before-opening": (previous, count, unexplained) =>
+      count > previous
+        ? `Kasa açılışından önce tarihli hareket uyarısı arttı (${previous} → ${count} hareket; kapının görmediği yazım: ${unexplained} hareket)`
+        : `Kasa açılışından önce tarihli hareket uyarısına yeni hareket girdi (${previous} → ${count} hareket; kapının görmediği yazım: ${unexplained} hareket)`,
+  };
+  // restoredAt: taramanın anlık görüntüsünden önce okunan açıklama sıra numarası. İş parçacığı taraması sürerken bir açıklama kaydı (geri yükleme / kimlik değişimi)
+  // kesinleştiyse (sıra değişti) bu tarama uyarıyı karşılaştırmaz (anlık görüntünün onu içerip içermediği bilinmez — yanlış alarm olurdu); işaret değişmez, sonraki tarama
+  // karşılaştırır (o kayıt işaretten sonradır → açıklanmış).
+  function noticeGrowth(result, restoredAt) {
+    const counts = noticeCounts(result);
+    const keys = noticeKeySets(result);
+    if (!noticeMark) {
+      noticeMark = { counts, keys, restored: restoredAt };
+      return [];
+    }
+    if (restoredAt !== cashRestoreMark(store)) return [];
+    const explained = cashExplained(store);
+    const since = noticeMark.restored;
+    const out = [];
+    for (const item of result.failures.filter(entry => entry.notice)) {
+      const previous = noticeMark.counts.get(item.code) ?? 0;
+      const count = Number(item.count) || 0;
+      const now = keys.get(item.code);
+      let unexplained = count - previous; // kimliksiz uyarı (bugün yok): sayıyla
+      let sample = item.sample || [];
+      if (now) {
+        const prior = noticeMark.keys.get(item.code) || NO_KEYS;
+        const own = item.code === "cash:before-opening";
+        // İşaretten sonraki açıklama: geri yükleme (from '') ya da yerine geçtiği kimlik önceki kümede / kendisi açıklanmış kimlik değişimi.
+        const cleared = (key, depth = 0) => {
+          const entry = own ? explained.get(key) : null;
+          if (!entry || entry.seq <= since || depth > 16) return false;
+          return !entry.from || prior.has(entry.from) || cleared(entry.from, depth + 1);
+        };
+        const fresh = [...now].filter(key => !prior.has(key) && !cleared(key));
+        unexplained = fresh.length;
+        const samples = result.noticeKeys.get(item.code);
+        sample = fresh.slice(0, 5).map(key => samples.get(key) || key);
+      }
+      if (unexplained > 0) {
+        const name = NOTICE_GROWTH[item.code]?.(previous, count, unexplained) || `${item.name}: uyarıya kapının görmediği yazımla ${unexplained} kayıt girdi (${previous} → ${count})`;
+        out.push({ code: item.code, name, ok: false, notice: true, severity: "warning", count, previous, unexplained, sample });
+      }
+    }
+    noticeMark = { counts, keys, restored: restoredAt };
+    return out;
+  }""")
+rep("""        events?.publish?.("integrity.alert", { at: now().toISOString(), findings: findings.map(item => ({ code: item.code, name: item.name, count: item.count ?? 0, difference: item.difference ?? 0, ...(item.notice ? { notice: true, previous: item.previous } : {}) })) }, { users: admins });""",
+"""        events?.publish?.("integrity.alert", { at: now().toISOString(), findings: findings.map(item => ({ code: item.code, name: item.name, count: item.count ?? 0, difference: item.difference ?? 0, ...(item.notice ? { notice: true, previous: item.previous, unexplained: item.unexplained } : {}) })) }, { users: admins });""")
+rep("""    noticeMark = { counts: noticeCounts(result), restored: cashRestoreMark(store) };""",
+"""    noticeMark = { counts: noticeCounts(result), keys: noticeKeySets(result), restored: cashRestoreMark(store) };""")
+rep("""      return settleScan(outcome.result, outcome.lock, outcome.digest, "worker", restoredAt);""",
+"""      return settleScan(withNoticeKeys(outcome.result, outcome.noticeKeys), outcome.lock, outcome.digest, "worker", restoredAt);""")
+# helper at module level: before "export function createIntegrity"
+anchor = "export function createIntegrity("
+assert t.count(anchor) == 1
+t = t.replace(anchor, """/**
+ * Birleşik tur 7: uyarı kimlik kümesini (kod → Map(kimlik → örnek)) sonuca SAYILMAYAN alan olarak bağlar — Mutabakat Testi yanıtına / JSON'a girmez; iş parçacığı
+ * taraması kümeyi iletisinde ayrıca taşır (lib/integrity-scan-worker.mjs) ve ana iş parçacığı yeniden bağlar.
+ */
+export function withNoticeKeys(result, keys) {
+  if (result && typeof result === "object") Object.defineProperty(result, "noticeKeys", { value: keys instanceof Map ? keys : new Map(), enumerable: false, configurable: true });
+  return result;
+}
+
+""" + anchor)
+open(p, 'w').write(t)
+
+p = root + '/server/lib/integrity-scan-worker.mjs'
+t = open(p).read()
+rep("""  parentPort.postMessage({ ok: true, result, lock, digest, ms: Math.round(performance.now() - started) });""",
+"""  // Birleşik tur 7: uyarının kimlik kümesi sonucun sayılmayan alanıdır (yapılandırılmış kopya taşımaz) — ayrıca iletilir.
+  parentPort.postMessage({ ok: true, result, noticeKeys: result.noticeKeys, lock, digest, ms: Math.round(performance.now() - started) });""")
+open(p, 'w').write(t)
+print("tamam")

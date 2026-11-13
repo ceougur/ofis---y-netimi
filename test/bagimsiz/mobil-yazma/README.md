@@ -48,9 +48,9 @@ birleşimin (2⁸ = 256) beklenenini hesaplar; kullanıcı seçene dek program *
 | Dosya | İçerik |
 |---|---|
 | `kahin.py` | Model (yalnız standart kütüphane; cari kâhinini içe aktarır) + komut satırı (`hesapla`, `karsilastir`, `--mutasyonlar`) |
-| `senaryolar.py` | 51 elle uç senaryo (beklenenler ELLE; 20'si 10 masaüstü/mobil eşdeğerlik çifti) + 4 göreli çift + tohum 1–3 rastgele üretici ve onun BAĞIMSIZ akış modeli (`Akis`); `kabul.json`'u yazar |
-| `kabul.json` | 54 senaryo (51 elle, 3 rastgele), 8.160 adım; elle senaryolarda ilgili parametrelerin her birleşimi, rastgelelerde 10 birleşim (öneri tam, öbürleri fark olarak); göreli çiftler |
-| `kahin_test.py` | Kâhinin kendi testi (A–E, G, H, I) + 59 mutasyon (F); TAP + `# tests/pass/fail` |
+| `senaryolar.py` | 53 elle uç senaryo (beklenenler ELLE; 22'si 11 masaüstü/mobil eşdeğerlik çifti — E42 S129 bakımında) + 4 göreli çift + tohum 1–3 rastgele üretici ve onun BAĞIMSIZ akış modeli (`Akis`); `kabul.json`'u yazar |
+| `kabul.json` | 56 senaryo (53 elle, 3 rastgele), 8.184 adım; elle senaryolarda ilgili parametrelerin her birleşimi, rastgelelerde 10 birleşim (öneri tam, öbürleri fark olarak); göreli çiftler |
+| `kahin_test.py` | Kâhinin kendi testi (A–E, G, H, I, J) + 62 mutasyon (F); TAP + `# tests/pass/fail` |
 | `kanit/<gün>/` | `tools/kanit.mjs kos` kayıtları (çıkış kodu, sayılar, ham çıktı, commit) ve `kirmizi/` bilerek kırmızı kanıt |
 
 ## Nasıl koşulur
@@ -193,6 +193,109 @@ etkisi yok (iki tarafta da ret, kayıt yok, iki kanal aynı). Karar ürün sahib
 bulunamadı, 404") karar olarak yazılırsa kâhin 404 `bank-account-missing`'e, (b) "türü uymayan hesap → 400 `bank-account-invalid`" yazılırsa program düzeltilir;
 o zamana dek `ci.yml` `--haric` listesinde E02 çifti adıyla kalır.
 
+## 2.5.0 bakımı — S129 (taksit kartının göstergeleri tek kuyruktan) (13.11.2026; kodu görmeyen AYRI el; ders 5, 40, 43)
+
+**Bu bölümün ilk commit'i yalnız YORUMDUR (ders 40 — önce kural, sonra kod); senaryo / mutant / öz test sayıları kod ve kanıt commit'lerinde eklenir.**
+
+**Girdi (AYNEN; ana oturumun özet dosyası `scratchpad/kahin-mobil-s129-kararlar.md` — "programın hesap / görünüm davranışı hakkında bilgi içermez"):**
+- S129 KARAR (kullanıcı, 12.11.2026): "S129 = A — taksit kartının penceresindeki 'Tahsil Edilen' / 'Kalan' göstergeleri, Taksitler listesindeki aynı sütunlar ve taksit satırının
+  'Ödenen'i de TEK KUYRUKTAN gösterilir (ekranda tek sayı: örnekte kart 900, bağsız tahsilat 500 → Tahsil Edilen 500 · Kalan 400; kart 600, bağsız tahsilat 800 → Kalan 0 ·
+  Tamamlandı); tahsilat formunun sınırı / sorusu / önerilen tutarı S118 = B'deki gibi kartın KENDİ kalanından kalır."
+- İLGİLİ ÖNCEKİ KARAR (kullanıcı 11.11.2026 06:14 UTC) — S118 = B: "taksit tahsilatında sınır / soru / önerilen tutar kartın KENDİ kalanından (kural değişmedi)."
+- NOT (ana oturum): tek kuyruk = cari kâhininin bu alanlar için verdiği değer (kararın kâhindeki karşılığı orada bakım 14 ile işlendi — `test/bagimsiz/cari/KARARLAR.md` §25 Y14-10);
+  kendi başına yeni kuyruk kuralı yazılmaz; mobil gösterim için ayrı kural YOK ("ekranda tek sayı"); cari kâhini bakım 13 / 14 ile değişti — kabul yeniden üretilir, elle beklentiler
+  tek tek yeniden denetlenir.
+- Birlikte okunan (kâhinin kendi belgesi): yukarıdaki K9, V10, "KARAR K8-AVANS" (kullanıcı 29.10.2026: "Kart tutarları (Ödenen avansı da içerir) bugünkü gibi kalır"), S3;
+  cari kâhininin `KARARLAR.md` §25 (Y14-10, P1 / P2 / P3) ve `model.py` (`kart_odenen`, `tyk250`, `kart_ac`, `kontrol`'ün kart bölümü — yalnız içe aktarılır, DEĞİŞTİRİLMEZ).
+
+### Kâhinin BUGÜNKÜ okuması (bakım 29.10.2026 sonrası, değişiklikten önce — açıkça)
+- `kart:<k>:odenen` = kartın KENDİ tahsilatlarının (kart seçilerek girilen, `kart_tahsilat`) toplamı, avans DAHİL (K8-AVANS); `kart:<k>:kalan` = toplam − bu (avanslı kartta liste
+  [0, toplam − Ödenen]); `kart:<k>:taksit<i>:odenen` = kendi tahsilatlarının (en çok kart toplamı) en eski taksitten dağılımı (V10). Kaynak `kahin.py` `kontrol()` — kartın kendi
+  tablosu (`K["odemeler"]`); cari kâhininin kart değeri OKUNMUYOR (cari kâhini yalnız bakiye / fatura açığı / açılış kalanı için, kural seti `2.4.6`). Akış modeli (`Akis`) aynı okuma.
+- Karta BAĞLANMADAN alınan tahsilat (taksit kartlı cariye taksit dışı tahsilat — rastgele üretici bunu kurar; S3 = `yalniz_cari` kipinde telefonun tek yolu) yalnız cari bakiyesini
+  düşürür, kartın göstergelerine dokunmaz. Yani bugünkü okuma S129'un **B**'sidir (kartın kendi hesabı).
+- Tahsilat sınırı / sorusu (K9: 409 `plan-overpay`, 409 `plan-paid`, Fazlasını Avans Yaz yetkisi) kartın KENDİ kalanından (kendi tahsilatları) — S118 = B ile aynı.
+
+### Yorumlar (ders 40 — karardan; kod yazılmadan ÖNCE)
+- **YS129-1 — üç alan tek kuyruktan:** `kart:<k>:odenen` ("Tahsil Edilen" / liste sütunu), `kart:<k>:kalan` ("Kalan") ve `kart:<k>:taksit<i>:odenen` (taksit satırının "Ödenen"i) =
+  cari kâhininin VARSAYILAN kural setinin (`2.5.0` — tek yükümlülük kuyruğu, KARARLAR C13.4 (5) / (7), §25 Y14-10) AYNI çevrilmiş adımlar için verdiği kart ödeneni (`kart_odenen`:
+  kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı — S50); Kalan = toplam − bu. Kâhin kendi kuyruğunu YAZMAZ: aynı çevrilmiş adımlar cari kâhinine bir kez daha
+  `2.5.0` kipinde verilir, yalnız bu üç alan oradan okunur. Kararın iki örneği elle senaryo olur (kart 900 = 3 × 300 + bağsız 500 → Tahsil Edilen 500 · Kalan 400, taksitler
+  300 / 200 / 0, bakiye 400; kart 600 = 2 × 300 + bağsız 800 → Tahsil Edilen 600 · Kalan 0, taksitler 300 / 300, bakiye −200 — cari kâhininin P1 / P2'si ile aynı sayılar).
+- **YS129-2 — DEĞİŞMEYEN (S118 = B; kararın kendi sözü):** K9'un bütün ret denetimleri (`plan-overpay`, `plan-paid`, Fazlasını Avans Yaz ve yetkisi) kartın KENDİ kalanından
+  (kendi tahsilatları) okunmaya DEVAM eder; bağsız tahsilat kartın sınırını düşürmez (örnek: kart 900 + bağsız 500 → kart seçilerek 900'e kadar tahsilat kabul, 900'ü aşan
+  `plan-overpay`). `kart:<k>:fazla` (Fazlasını Avans Yaz ile yazılan avans) ve `kart:<k>:tahsilatSayisi` kartın kendi tahsilatlarından (göstergeler kararın saydıkları değil).
+  Bakiye, fatura açığı, açılış kalanı, Kasa / banka / POS / portföy AYNEN (`2.4.6` kipi; bu bakım dokunmaz).
+- **YS129-3 — mobil = masaüstü (NOT (4)):** karar "ekranda tek sayı" der; mobil gösterim için ayrı kural yok. Kâhin üç alanı kanaldan bağımsız aynı kaynaktan yazar (eşdeğerlik
+  D2 değişmez). Mobilin `taksit = yalniz_cari` kipinde telefonun bağsız tahsilatı artık kartın göstergelerini de düşürür (S3'ün gerekçesindeki "kartı düşürmez" okuması bu
+  kararla eskidi — S3 sorusunun kendisi ve seçimi değişmez).
+- **YS129-4 — iki kararın ayrıştığı alt durum: KARAR K8-AVANS × S129 (kâhin SEÇMEZ — ders 43):** kartın KENDİ tahsilatları kart toplamını aştığında (Fazlasını Avans Yaz ile — E05 t3,
+  E41, R1–R3'teki avanslar) K8-AVANS "Ödenen avansı da içerir" der; tek kuyruğun (cari kâhininin) kart ödeneni kart toplamını aşmaz (fazlası carinin alacağıdır — bakiye iki okumada
+  aynı). S129'un sözü bu durumu ayrıca söylemiyor. İki okuma: **(a)** S129'un harfi — Tahsil Edilen = tek kuyruk ödeneni (≤ toplam); **(b)** K8-AVANS sürer — Tahsil Edilen = tek kuyruk
+  ödeneni + kartın kendi avansı (`fazla`). Kâhin `kart:<k>:odenen`'de iki değeri LİSTE yazar (ikisi de kabul — mobil kâhinin K8-AVANS'taki "Kalan" düzeni); `kalan` listesi [0, toplam −
+  (b)] (a'nın Kalan'ı 0 zaten içinde — değer değişmez); taksit ödenenleri iki okumada aynı (taksit tutarını aşmaz — V10). Bakiye, Kasa, banka, `fazla` iki okumada aynı → KULLANICIYA
+  SORULMALI (aşağıda). Mutant 51 (K8-AVANS: "Ödenen avansı dışlar") artık okuma (a)'yı SEÇEN kâhindir (liste yerine tek değer) — elle liste onu yakalar; okuma (b)'yi seçen
+  mutant 62 de. (Yorum commit'inde "51 yakalanamaz" yazıyordu; ilk öz test koşusu 51'i E05'te yakaladı — tek değer ≠ liste; düzeltildi, kural aynı.)
+- **YS129-5 — cari kâhininin sustuğu yer:** cari kâhini `2.5.0` kipinde o carinin kuyruğunu tanımsız sayarsa (C13.4 (11) nedeni) ya da kartın kabulünü iki dünyalı bulursa (SK-18),
+  kâhin o kartın üç gösterge alanını YAZMAZ (SUS; öbür alanlar yazılır). `2.5.0` kipi kartı reddederse (G2 (b)) bu katmanın ön denetimi eksiktir → senaryo hatası (sessizce
+  geçilmez — `cari_sonuclari`'nın bugünkü düzeni).
+- **YS129-6 — akış modeli (`Akis`, kâhinden ve cari kâhininden bağımsız):** üreticinin kurduğu taksit kartlı cari yalnız "açılış = kart tutarı + Carinin Mevcut Borcunu Taksitlendir
+  kartı" ve tahsilatlardan oluşur (fatura / ödeme / elle kayıt yok); bu alt kümede tek kuyruğun TEK borç kalemi kartın taksitleridir → kararın örneklerindeki hesap: Tahsil Edilen =
+  min(toplam, carinin bütün tahsilatları), en eski taksitten. Bu, kararın örneğinin aynı alt kümeye uygulanmasıdır (genel kuyruk kuralı DEĞİL; ÇIKARIM — fark çıkarsa iki elden
+  biri yanlış: incelenir). YS129-4'ün iki okuması akışta da liste.
+- **YS129-7 — etiket:** değişen üç alan KULLANICI (S129 A); S118 = B alanları kendi etiketiyle; YS129-4 listesi KULLANICI (K8-AVANS) + KARARDA YOK.
+
+### KULLANICIYA SORULMALI (S129 bakımı; kâhin bu alt durumda SEÇMEZ — ders 43, SORU DÜZENİ; bakiye her seçenekte aynı)
+- **SM-1 (K8-AVANS × S129 — Fazlasını Avans Yaz ile ödenmiş karttaki "Tahsil Edilen"; UÇ DURUM DEĞİL — her avanslı kart):** K: açılış 1.200, kart 1.200 / 3; kart tahsilatı 500, sonra
+  800 Fazlasını Avans Yaz (yönetici) → avans 100, bakiye −100. **A (S129'un harfi — tek kuyruk):** Tahsil Edilen 1.200 · Kalan 0 (avans yalnız carinin alacağında görünür) / **B
+  (K8-AVANS sürer):** Tahsil Edilen 1.300 · Kalan 0 ya da −100 / **C:** uç durum böyle kalsın (BİLİNEN SINIR — kâhin iki değeri de kabul eder). Taksit satırları (400 / 400 / 400),
+  bakiye, Kasa iki seçenekte de aynı.
+
+### Kurallar (kod commit'i; yorumların karşılığı)
+- `kahin.py` `TYK_KURAL = "2.5.0"`, `tyk_kartlari()` (YS129-1 / YS129-5): `cari_sonuclari` kartlı cari varken aynı çevrilmiş adımları cari kâhinine bir kez daha `2.5.0` kipinde
+  verir; kart başına `kart_odenen` payları, tanımsız (C13.4 (11)) / SK-18 kartta `None`; `2.5.0` kipinin reddi → `SenaryoHatasi`. `kontrol()`: üç gösterge bu paylardan; YS129-4
+  listesi; `fazla` / `tahsilatSayisi` kendi tahsilatlarından. `istek()` K9 kalanı AYNEN kendi tahsilatlarından (YS129-2; yorum satırı eklendi).
+- `senaryolar.py`: `KB` kartın Ödenen'inde liste kabul eder; E05 / E41 beklentileri (SM-1 listesi); yeni E42 çifti; `Akis._kontrol` YS129-6 hesabı (alt küme dışına çıkarsa
+  `RuntimeError` — sessizce yanlış beklenti üretilmez).
+- Mutantlar: **60** S129 B (göstergeler kartın kendi tahsilatlarından — eski okuma), **61** S118 = B'nin tersi (sınır tek kuyruğun kalanından), **62** SM-1'in okuma (b)'si
+  SEÇİLİR; **51** (K8-AVANS: Ödenen avansı dışlar) bu bakımdan beri SM-1'in okuma (a)'sını SEÇER. SM-1 yanıtlanınca liste tek değere iner; seçilmeyen okumanın mutantı kalır.
+- `kahin_test.py` J1: 60 ve 61 E42'nin iki kanalında DEĞERLE (iki taraf da tek sayı — liste / biçim farkı sayılmaz), 60 ayrıca R1'de akış beklentisince.
+- `kahin_test.py` H2: cari kâhininin mutasyon taraması `/3` dosyalarında o kâhinin KENDİ düzeniyle (KARARLAR.md "Eşleme notları (Ç5-A / Ç5-B kod ajanı için)": "dört kip (2.5.0 +
+  2.4.9 + 2.4.6 + 2.4.5)"); bakımdan önce iki kipliydi (varsayılan + 2.4.5) ve cari kâhini `2.5.0`'a geçince 2.4.6 / 2.4.9'a özgü 10 mutantı göremiyordu (H2 bakımdan ÖNCE kırmızı:
+  "YAKALANMAYAN cari mutantları: 129, 130, 131, 133, 135, 136, 137, 138, 141, 143"); sonra 252/252.
+
+### Senaryolar (elle — kâhin koşulmadan karar metninden)
+- **E42-es-s129-gosterge** (yeni eşdeğerlik çifti, mobil / masaüstü): K açılış 900 + kart 900 / 3, L açılış 600 + kart 600 / 2; karta bağlanmadan K 500, L 800 → k1: KT Ödenen 500 ·
+  Kalan 400 · taksitler 300 / 200 / 0, LT 600 · 0 · 300 / 300; bakiye K 400, L −200, Kasa 1.300 (kararın iki örneği AYNEN). S118 = B: KT'ye kart seçilerek 900 → ok (kendi kalanı 900;
+  tek kuyruğun kalanı 400), KT'ye 1 → 409 `plan-paid`, LT'ye 700 → 409 `plan-overpay` (kendi kalanı 600), LT'ye 600 → ok (tek kuyruğun kalanı 0) → k2: KT 900 · 0 · 300 / 300 / 300,
+  LT 600 · 0, K −500, L −800, Kasa 2.800, iki kartta `fazla` 0, `tahsilatSayisi` 1. `taksit = yalniz_cari`: mobil kart adımları 4xx, k2 = k1. Mobil = masaüstü (D2).
+- **E05 / E41** (elle beklenti DEĞİŞTİ — SM-1): k2 `KT1:odenen` 1.300 → [1.200, 1.300]; E41 k1 `KT:odenen` 1.500 → [1.000, 1.500]. Kalan, taksitler, fazla, bakiye, Kasa AYNEN.
+- Öbür 47 elle senaryonun elle tablosu DEĞİŞMEDİ ve yeni cari kâhiniyle (bakım 14) 256 birleşimin hepsinde model = elle (kartlı caride bağsız tahsilat yalnız E42'de; cari kâhini
+  bakım 13 / 14 değişiklikleri — S130 şüpheli alacak, S133, S134 — bu kâhinin olay kümesine girmiyor: şüpheli / elle borç / stok satışı / dönem kilidiyle netleşme adımı yok).
+
+### Değişen beklentiler (eski `kabul.json` ↔ yeni; döküm `docs/kanit/2026-11-13/kahinmobil-s129/kabul-fark-dokum.json`, araç `arac/kabul-fark.py`, sınıflama `arac/dokum-sinifla.py`)
+| Senaryo | Alan | Eski → yeni | Karar | Sayı |
+|---|---|---|---|---|
+| E05 çifti (k2) | `kart:KT1:odenen` | 130000 → [120000, 130000] | SM-1 (K8-AVANS × S129 — liste) | 2 |
+| E41 çifti (k1) | `kart:KT:odenen` | 150000 → [100000, 150000] | SM-1 | 2 |
+| E42 çifti | senaryo YENİ | — | S129 A + S118 B | 2 senaryo |
+| R1 / R2 / R3 | `kart:<k>:odenen` (skaler, arttı) | ör. R1 k1729 KT1_2 25800 → 120000 | S129 A (bağsız tahsilatın kuyruk payı) | 102 / 81 / 98 |
+| R1 / R2 / R3 | `kart:<k>:kalan` (skaler, azaldı) | ör. R1 k1729 KT1_1 10904 → 0 | S129 A | 102 / 81 / 98 |
+| R1 / R2 / R3 | `kart:<k>:taksit<i>:odenen` (arttı) | ör. R1 k1729 KT1_2 taksit2 1800 → 24000 | S129 A | 243 / 165 / 175 |
+| R1 / R2 / R3 | `kart:<k>:odenen` (avanslı — eski değer listenin (b)'si) | ör. R1 k1729 KT1_2 180543 → [120000, 180543] | SM-1 | 48 / 59 / 52 |
+Toplam 1.308 anahtar (444 Ödenen, 281 Kalan, 583 taksit Ödenen) + 2 yeni senaryo; **kararla AÇIKLANAMAYAN 0** (azalan Ödenen / artan Kalan yok; bakiye, fatura açığı, açılış kalanı, Kasa,
+banka / POS, portföy, stok, adım yanıtları, `fazla`, `tahsilatSayisi` hiçbir senaryoda DEĞİŞMEDİ). Adımı değişen senaryo yok (E05 / E41'de yalnız `aciklama` metni). Rastgelelerin
+beklentisi akış modeli (`Akis`, YS129-6 — cari kâhinini kullanmaz) = model, 3 tohum × 10 birleşim.
+
+### Kanıt (S129 bakımı; `docs/kanit/2026-11-13/kahinmobil-s129/`, `tools/kanit.mjs kos`)
+- Bakımdan ÖNCE (taban `44c9025d`, ayrı kopya): öz test 149/152, çıkış 1 — A1 (kabul eski), A2 ("cari kâhini değişti"), H2 (10 cari mutantı iki kipte görünmüyor) (`taban-oz-once-utc.txt`).
+- İlk koşu (kod commit'inden önce, `cea78f3` + değişmiş dosyalar): 155/156 iki saat diliminde — tek kırmızı F M51 (README YS129-4'teki "yakalanamaz" yorumu yanlıştı; düzeltildi) (`kahinmobil-oz-*`).
+- **Kod commit'i `03a7b6b`, temiz ağaç: öz test 158/158, çıkış 0 — TZ=UTC ve TZ=Europe/Istanbul** (`kahinmobil-s129-oz-utc|ist.{json,log}`): A1 kabul güncel, A2 cari kâhini sha
+  eşleşiyor, 53 elle × 256 birleşim model = elle, R1–R3 × 10 birleşim model = akış, C4 5.000 olay, D1–D8, **62/62 mutasyon**, J1, H, H2 cari kâhini 252/252.
+- ESKİ kâhin (değişiklikten önceki `kahin.py`, ayrı kopya) yeni / değişen elle beklentilerde KIRMIZI, beklenen nedenle (`eski-kirmizi.txt`): E42 iki kanalda 3 birleşimde 8 fark
+  (eski: KT Ödenen 0 · Kalan 900, LT 0 · 600 — kartın kendi hesabı = S129 B), E05 / E41 iki kanalda 1 fark (eski tek değer 1.300 / 1.500, elle liste — SM-1).
+- Üretici: `uretici-denetle.txt` / `uretici-yaz.txt` (elle 53 × 256, rastgele 3 tohum × 10 birleşim model = akış). Program açılmadı.
+
 ## Senaryo dili `destekofis-mobil-yazma/1`
 
 ```json
@@ -290,14 +393,16 @@ aynı kimlik / farklı gövde, Benzer İşlem, Kasa eksi (001 Uyar, 002 Engelle)
 | Kimlik ömrü / geç yeniden gönderim | E24; mutant 33, 34 |
 | Sil + aynı adla aç; aynı adlı iki kişi | E38, E26 |
 | Rastgele sıra, binlerce olay, 2 şirket (ders 17) | R1–R3, C4; D1, D3–D7 |
+| (2.5.0 bakımı S129) Bağsız tahsilat kartın göstergelerini düşürmez; sınır tek kuyruktan okunur (kendi kalanı yerine); avanslı kartta kâhin bir okumayı seçer; mobil gösterim masaüstünden ayrışır | E42, E05, E41, R1–R3 (akış YS129-6); mutant 51, 60, 61, 62; J1 |
 | (Bakım 29.10.2026) Masaüstü modül ucunda 3 ondalık reddedilir ya da aşağı kesilir; mobilde yuvarlanır; gövdedeki cari 404 / yoldaki 400; iki ihlalde ilk ihlalin kodu dayatılır | R1–R3 (akış), E09, E16, I1–I3; mutant 54–59 |
 
-## Mutasyonlar (59; `kahin_test.py` F, `kahin.py --mutasyonlar`)
+## Mutasyonlar (62; `kahin_test.py` F, `kahin.py --mutasyonlar`)
 
 Her mutasyon modelden BAĞIMSIZ beklentilerce (elle beklenen, gerekirse üreticinin akış beklentisi) yakalanmalıdır; yakalanmayan = eksik senaryo. Liste
 `kahin.py --mutasyonlar`: istek kimliği (1–6, 33, 34, 35, 48), sunucu / cihaz / izin / lisans / şirket (7–12, 39, 41, 42), para yolu (13–17, 36–38, 43), K8 (18–20,
 31, 44, 47, K8-AVANS 49–53), stok (21, 22, 29, 30, 46), Kasa / Benzer İşlem (23, 40), tarih (24–27, 45), rol (28), yedek (32), bakım 29.10.2026 (54 masaüstü 3 ondalık
-400, 55 aşağı kesme, 56 gövdedeki cari 404, 57 yoldaki cari 400, 58 iki ihlalde ilk kod, 59 mobilde yuvarlama).
+400, 55 aşağı kesme, 56 gövdedeki cari 404, 57 yoldaki cari 400, 58 iki ihlalde ilk kod, 59 mobilde yuvarlama), 2.5.0 bakımı S129 (60 göstergeler kartın kendi hesabından, 61 sınır
+tek kuyruktan, 62 SM-1'in (b)'si seçilir; 51'in anlamı bu bakımdan beri: SM-1'in (a)'sı seçilir).
 
 ## DENENEN
 
@@ -337,6 +442,10 @@ Her mutasyon modelden BAĞIMSIZ beklentilerce (elle beklenen, gerekirse üretici
   adımları (nakit ve POS) kapsar; "1,005", 4+ ondalık, taksit kartı ve evrak girişinde ondalık yalnız kâhinin kendi testinde (I1). Gövdedeki cari için "bulunamayan"
   (hiçbir şirkette olmayan) kimlik ve mobil evrak (yalnız `yollar=evrak_dahil`, seçilmedi) programa karşı denenmedi. Kabul kümesine yeni senaryo eklenmedi
   (kapsam kararı "işi büyütme"; 54 senaryo).
+- (2.5.0 bakımı S129) Program koşulmadı (görev). Kartın / taksitin DURUM metni ("Tamamlandı", "Ödendi · Kısmen · Bekliyor") ve tahsilat formunun ÖNERİLEN tutarı — dilde anahtar yok
+  (yalnız sınır ret kodlarıyla: `plan-overpay` / `plan-paid`). Kartlı cari + fatura / elle borç / iade / şüpheli alacak (kart_ac bu dilde faturasız cariye açılır — S126 / S128 /
+  S130 komşuluğu cari kâhininde). Cari kâhininin `2.5.0` kipinin bu kâhinin senaryolarında reddettiği / sustuğu kart (YS129-5) hiçbir senaryoda oluşmadı — o yol yalnız kodda.
+  Bakiye / fatura açığı / açılış kalanının `2.4.6` yerine `2.5.0` kipinden okunması bu bakımın kapsamı dışında (aşağıda BİLİNEN SINIRLAR).
 
 ## BİLİNEN SINIRLAR
 
@@ -356,3 +465,9 @@ Her mutasyon modelden BAĞIMSIZ beklentilerce (elle beklenen, gerekirse üretici
   oluşturma ucunu yazmıyor). Yuvarlanınca 0 olan masaüstü tutarı ("0,004") 400 sayılır (ÇIKARIM; karşılaştırmada böyle bir adım yok).
 - **BİLİNEN KÂHİN FARKI — E02 t4** (havale yoluna POS kimliği): kâhin 400 `bank-account-invalid`, program 404 `bank-account-missing`; plan açıkça belirlemiyor (gerekçe
   "BAKIM 29.10.2026" (4)); kayıt / para etkisi yok; CI'de `--haric` ile adıyla dışarıda, karar bekler.
+- (2.5.0 bakımı S129) İki kural seti birlikte: kart göstergeleri cari kâhininin `2.5.0` kipinden, bakiye / fatura açığı / açılış kalanı `2.4.6` kipinden (bakım öncesi gibi). Bu
+  kâhinin olay kümesinde (vadesiz faturalar, elle borç / şüpheli / kilitli netleşme yok) iki kipin bakiyesi aynıdır; fatura açığının `2.5.0` (vade sırası) ile ayrışıp ayrışmadığı bu
+  bakımda DENENMEDİ — kural setinin bütünüyle `2.5.0`'a taşınması ayrı bakım ister.
+- (2.5.0 bakımı S129) SM-1 (K8-AVANS × S129) yanıtlanana dek avanslı kartın Ödenen'i iki değerli liste: iki okuma arasındaki sapma yakalanmaz (bakiye / Kasa / taksitler aynı).
+- (2.5.0 bakımı S129) Akış modeli (YS129-6) üreticinin alt kümesinde kararın örneğini uygular (kartın tek borç kalemi olduğu cari); karışık kalemli kartlı caride bağımsız ikinci
+  hesap yok — orada tek kaynak cari kâhinidir.

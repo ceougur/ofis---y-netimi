@@ -1,0 +1,722 @@
+TAP version 13
+# (node:29628) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Birleşik tur 7 İş 3 — Vade Takip: sözlü borcun durumu ve gün sayısı (9 hücre; ekran, Excel, PDF; zil ile aynı)
+    # Subtest: ekran (API) satırı: tarih söz günü, durum ve gün sayısı karar tablosundaki gibi; zil / takvim kalemi aynı (ufuktakiler)
+    not ok 1 - ekran (API) satırı: tarih söz günü, durum ve gün sayısı karar tablosundaki gibi; zil / takvim kalemi aynı (ufuktakiler)
+      ---
+      duration_ms: 19.736242
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-mut/test/vade-takip-soz-b7-250.test.mjs:69:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            {
+              hucre: 'Söz Hücresi v-10 p15',
+              vade: [
+                {
+                  date: '2026-11-04',
+        +         days: 15,
+        +         state: 'upcoming'
+        -         days: -10,
+        -         state: 'overdue'
+                }
+              ],
+              zilAyni: true
+            },
+            {
+        ...
+                  date: '2026-10-20',
+        +         days: 0,
+        +         state: 'today'
+        -         days: -10,
+        -         state: 'overdue'
+                }
+              ],
+        +     zilAyni: false
+        -     zilAyni: true
+            },
+            {
+              hucre: 'Söz Hücresi v-10 p-5',
+              vade: [
+                {
+                  date: '2026-10-15',
+        +         days: -5,
+        -         days: -10,
+                  state: 'overdue'
+                }
+              ],
+        +     zilAyni: false
+        -     zilAyni: true
+            },
+            {
+              hucre: 'Söz Hücresi v0 p15',
+              vade: [
+                {
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          hucre: 'Söz Hücresi v-10 p15'
+          vade:
+            0:
+              date: '2026-11-04'
+              state: 'overdue'
+              days: -10
+          zilAyni: true
+        1:
+          hucre: 'Söz Hücresi v-10 p0'
+          vade:
+            0:
+              date: '2026-10-20'
+              state: 'overdue'
+              days: -10
+          zilAyni: true
+        2:
+          hucre: 'Söz Hücresi v-10 p-5'
+          vade:
+            0:
+              date: '2026-10-15'
+              state: 'overdue'
+              days: -10
+          zilAyni: true
+        3:
+          hucre: 'Söz Hücresi v0 p15'
+          vade:
+            0:
+              date: '2026-11-04'
+              state: 'upcoming'
+              days: 15
+          zilAyni: true
+        4:
+          hucre: 'Söz Hücresi v0 p0'
+          vade:
+            0:
+              date: '2026-10-20'
+              state: 'today'
+              days: 0
+          zilAyni: true
+        5:
+          hucre: 'Söz Hücresi v0 p-5'
+          vade:
+            0:
+              date: '2026-10-15'
+              state: 'overdue'
+              days: -5
+          zilAyni: true
+        6:
+          hucre: 'Söz Hücresi v10 p15'
+          vade:
+            0:
+              date: '2026-11-04'
+              state: 'upcoming'
+              days: 15
+          zilAyni: true
+        7:
+          hucre: 'Söz Hücresi v10 p0'
+          vade:
+            0:
+              date: '2026-10-20'
+              state: 'today'
+              days: 0
+          zilAyni: true
+        8:
+          hucre: 'Söz Hücresi v10 p-5'
+          vade:
+            0:
+              date: '2026-10-15'
+              state: 'overdue'
+              days: -5
+          zilAyni: true
+      actual:
+        0:
+          hucre: 'Söz Hücresi v-10 p15'
+          vade:
+            0:
+              date: '2026-11-04'
+              state: 'upcoming'
+              days: 15
+          zilAyni: true
+        1:
+          hucre: 'Söz Hücresi v-10 p0'
+          vade:
+            0:
+              date: '2026-10-20'
+              state: 'today'
+              days: 0
+          zilAyni: false
+        2:
+          hucre: 'Söz Hücresi v-10 p-5'
+          vade:
+            0:
+              date: '2026-10-15'
+              state: 'overdue'
+              days: -5
+          zilAyni: false
+        3:
+          hucre: 'Söz Hücresi v0 p15'
+          vade:
+            0:
+              date: '2026-11-04'
+              state: 'upcoming'
+              days: 15
+          zilAyni: true
+        4:
+          hucre: 'Söz Hücresi v0 p0'
+          vade:
+            0:
+              date: '2026-10-20'
+              state: 'today'
+              days: 0
+          zilAyni: true
+        5:
+          hucre: 'Söz Hücresi v0 p-5'
+          vade:
+            0:
+              date: '2026-10-15'
+              state: 'overdue'
+              days: -5
+          zilAyni: true
+        6:
+          hucre: 'Söz Hücresi v10 p15'
+          vade:
+            0:
+              date: '2026-11-04'
+              state: 'upcoming'
+              days: 15
+          zilAyni: true
+        7:
+          hucre: 'Söz Hücresi v10 p0'
+          vade:
+            0:
+              date: '2026-10-20'
+              state: 'today'
+              days: 0
+          zilAyni: true
+        8:
+          hucre: 'Söz Hücresi v10 p-5'
+          vade:
+            0:
+              date: '2026-10-15'
+              state: 'overdue'
+              days: -5
+          zilAyni: true
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-mut/test/vade-takip-soz-b7-250.test.mjs:77:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Excel (Gün, Durum) ve PDF (Durum metni) ekranla aynı
+    not ok 2 - Excel (Gün, Durum) ve PDF (Durum metni) ekranla aynı
+      ---
+      duration_ms: 14.182997
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-mut/test/vade-takip-soz-b7-250.test.mjs:80:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            {
+        +     durum: 'Yaklaşan',
+        +     gun: 15,
+        -     durum: 'Gecikmiş',
+        -     gun: -10,
+              hucre: 'Söz Hücresi v-10 p15'
+            },
+            {
+        +     durum: 'Bugün',
+        +     gun: 0,
+        -     durum: 'Gecikmiş',
+        -     gun: -10,
+              hucre: 'Söz Hücresi v-10 p0'
+            },
+            {
+              durum: 'Gecikmiş',
+        +     gun: -5,
+        -     gun: -10,
+              hucre: 'Söz Hücresi v-10 p-5'
+            },
+            {
+              durum: 'Yaklaşan',
+              gun: 15,
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          hucre: 'Söz Hücresi v-10 p15'
+          gun: -10
+          durum: 'Gecikmiş'
+        1:
+          hucre: 'Söz Hücresi v-10 p0'
+          gun: -10
+          durum: 'Gecikmiş'
+        2:
+          hucre: 'Söz Hücresi v-10 p-5'
+          gun: -10
+          durum: 'Gecikmiş'
+        3:
+          hucre: 'Söz Hücresi v0 p15'
+          gun: 15
+          durum: 'Yaklaşan'
+        4:
+          hucre: 'Söz Hücresi v0 p0'
+          gun: 0
+          durum: 'Bugün'
+        5:
+          hucre: 'Söz Hücresi v0 p-5'
+          gun: -5
+          durum: 'Gecikmiş'
+        6:
+          hucre: 'Söz Hücresi v10 p15'
+          gun: 15
+          durum: 'Yaklaşan'
+        7:
+          hucre: 'Söz Hücresi v10 p0'
+          gun: 0
+          durum: 'Bugün'
+        8:
+          hucre: 'Söz Hücresi v10 p-5'
+          gun: -5
+          durum: 'Gecikmiş'
+      actual:
+        0:
+          hucre: 'Söz Hücresi v-10 p15'
+          gun: 15
+          durum: 'Yaklaşan'
+        1:
+          hucre: 'Söz Hücresi v-10 p0'
+          gun: 0
+          durum: 'Bugün'
+        2:
+          hucre: 'Söz Hücresi v-10 p-5'
+          gun: -5
+          durum: 'Gecikmiş'
+        3:
+          hucre: 'Söz Hücresi v0 p15'
+          gun: 15
+          durum: 'Yaklaşan'
+        4:
+          hucre: 'Söz Hücresi v0 p0'
+          gun: 0
+          durum: 'Bugün'
+        5:
+          hucre: 'Söz Hücresi v0 p-5'
+          gun: -5
+          durum: 'Gecikmiş'
+        6:
+          hucre: 'Söz Hücresi v10 p15'
+          gun: 15
+          durum: 'Yaklaşan'
+        7:
+          hucre: 'Söz Hücresi v10 p0'
+          gun: 0
+          durum: 'Bugün'
+        8:
+          hucre: 'Söz Hücresi v10 p-5'
+          gun: -5
+          durum: 'Gecikmiş'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-mut/test/vade-takip-soz-b7-250.test.mjs:90:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - Birleşik tur 7 İş 3 — Vade Takip: sözlü borcun durumu ve gün sayısı (9 hücre; ekran, Excel, PDF; zil ile aynı)
+  ---
+  duration_ms: 652.951172
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-mut/test/vade-takip-soz-b7-250.test.mjs:56:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Birleşik tur 7 İş 3 — Vade Takip 'Gecikmiş Tahsilat / Gecikmiş Ödeme' her aralık / kaynak / yön seçeneğinde
+    # Subtest: her seçenekte: toplam alanı = satırlardan = girdilerden beklenen (gecikmiş tahsilat ve ödeme)
+    not ok 1 - her seçenekte: toplam alanı = satırlardan = girdilerden beklenen (gecikmiş tahsilat ve ödeme)
+      ---
+      duration_ms: 41.614399
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-mut/test/vade-takip-soz-b7-250.test.mjs:140:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            {
+              ad: 'aralık late',
+              alanIn: 900,
+              alanOut: 250,
+        ...
+              ad: 'aralık today',
+        +     alanIn: 900,
+        -     alanIn: 1000,
+              alanOut: 250,
+        +     satirIn: 900,
+        -     satirIn: 1000,
+              satirOut: 250
+            },
+            {
+              ad: 'aralık next7',
+        +     alanIn: 900,
+        -     alanIn: 1000,
+              alanOut: 250,
+        +     satirIn: 900,
+        -     satirIn: 1000,
+              satirOut: 250
+            },
+            {
+              ad: 'aralık next30',
+        +     alanIn: 900,
+        +     alanOut: 250,
+        +     satirIn: 900,
+        +     satirOut: 250
+        -     alanIn: 1100,
+        -     alanOut: 950,
+        -     satirIn: 1100,
+        -     satirOut: 950
+            },
+            {
+              ad: 'aralık next90',
+        +     alanIn: 900,
+        +     alanOut: 250,
+        +     satirIn: 900,
+        +     satirOut: 250
+        -     alanIn: 1100,
+        -     alanOut: 950,
+        -     satirIn: 1100,
+        -     satirOut: 950
+            },
+            {
+              ad: 'aralık open',
+        +     alanIn: 900,
+        +     alanOut: 250,
+        +     satirIn: 900,
+        +     satirOut: 250
+        -     alanIn: 1100,
+        -     alanOut: 950,
+        -     satirIn: 1100,
+        -     satirOut: 950
+            },
+            {
+              ad: 'geniş özel aralık',
+        +     alanIn: 900,
+        +     alanOut: 250,
+        +     satirIn: 900,
+        +     satirOut: 250
+        -     alanIn: 1100,
+        -     alanOut: 950,
+        -     satirIn: 1100,
+        -     satirOut: 950
+            },
+            {
+              ad: 'gecikmişler hariç (late=0)',
+        +     alanIn: 0,
+        +     alanOut: 0,
+        +     satirIn: 0,
+        +     satirOut: 0
+        -     alanIn: 200,
+        -     alanOut: 700,
+        -     satirIn: 200,
+        -     satirOut: 700
+            },
+            {
+              ad: 'kaynak account',
+        +     alanIn: 300,
+        +     alanOut: 250,
+        +     satirIn: 300,
+        +     satirOut: 250
+        -     alanIn: 500,
+        -     alanOut: 950,
+        -     satirIn: 500,
+        -     satirOut: 950
+            },
+            {
+              ad: 'kaynak invoice',
+              alanIn: 300,
+              alanOut: 0,
+        ...
+              ad: 'yön in',
+        +     alanIn: 900,
+        -     alanIn: 1100,
+              alanOut: 0,
+        +     satirIn: 900,
+        -     satirIn: 1100,
+              satirOut: 0
+            },
+            {
+              ad: 'yön out',
+              alanIn: 0,
+        +     alanOut: 250,
+        -     alanOut: 950,
+              satirIn: 0,
+        +     satirOut: 250
+        -     satirOut: 950
+            }
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          ad: 'aralık late'
+          alanIn: 900
+          satirIn: 900
+          alanOut: 250
+          satirOut: 250
+        1:
+          ad: 'aralık today'
+          alanIn: 1000
+          satirIn: 1000
+          alanOut: 250
+          satirOut: 250
+        2:
+          ad: 'aralık next7'
+          alanIn: 1000
+          satirIn: 1000
+          alanOut: 250
+          satirOut: 250
+        3:
+          ad: 'aralık next30'
+          alanIn: 1100
+          satirIn: 1100
+          alanOut: 950
+          satirOut: 950
+        4:
+          ad: 'aralık next90'
+          alanIn: 1100
+          satirIn: 1100
+          alanOut: 950
+          satirOut: 950
+        5:
+          ad: 'aralık open'
+          alanIn: 1100
+          satirIn: 1100
+          alanOut: 950
+          satirOut: 950
+        6:
+          ad: 'geniş özel aralık'
+          alanIn: 1100
+          satirIn: 1100
+          alanOut: 950
+          satirOut: 950
+        7:
+          ad: 'gecikmişler hariç (late=0)'
+          alanIn: 200
+          satirIn: 200
+          alanOut: 700
+          satirOut: 700
+        8:
+          ad: 'kaynak account'
+          alanIn: 500
+          satirIn: 500
+          alanOut: 950
+          satirOut: 950
+        9:
+          ad: 'kaynak invoice'
+          alanIn: 300
+          satirIn: 300
+          alanOut: 0
+          satirOut: 0
+        10:
+          ad: 'kaynak plan'
+          alanIn: 300
+          satirIn: 300
+          alanOut: 0
+          satirOut: 0
+        11:
+          ad: 'yön in'
+          alanIn: 1100
+          satirIn: 1100
+          alanOut: 0
+          satirOut: 0
+        12:
+          ad: 'yön out'
+          alanIn: 0
+          satirIn: 0
+          alanOut: 950
+          satirOut: 950
+      actual:
+        0:
+          ad: 'aralık late'
+          alanIn: 900
+          satirIn: 900
+          alanOut: 250
+          satirOut: 250
+        1:
+          ad: 'aralık today'
+          alanIn: 900
+          satirIn: 900
+          alanOut: 250
+          satirOut: 250
+        2:
+          ad: 'aralık next7'
+          alanIn: 900
+          satirIn: 900
+          alanOut: 250
+          satirOut: 250
+        3:
+          ad: 'aralık next30'
+          alanIn: 900
+          satirIn: 900
+          alanOut: 250
+          satirOut: 250
+        4:
+          ad: 'aralık next90'
+          alanIn: 900
+          satirIn: 900
+          alanOut: 250
+          satirOut: 250
+        5:
+          ad: 'aralık open'
+          alanIn: 900
+          satirIn: 900
+          alanOut: 250
+          satirOut: 250
+        6:
+          ad: 'geniş özel aralık'
+          alanIn: 900
+          satirIn: 900
+          alanOut: 250
+          satirOut: 250
+        7:
+          ad: 'gecikmişler hariç (late=0)'
+          alanIn: 0
+          satirIn: 0
+          alanOut: 0
+          satirOut: 0
+        8:
+          ad: 'kaynak account'
+          alanIn: 300
+          satirIn: 300
+          alanOut: 250
+          satirOut: 250
+        9:
+          ad: 'kaynak invoice'
+          alanIn: 300
+          satirIn: 300
+          alanOut: 0
+          satirOut: 0
+        10:
+          ad: 'kaynak plan'
+          alanIn: 300
+          satirIn: 300
+          alanOut: 0
+          satirOut: 0
+        11:
+          ad: 'yön in'
+          alanIn: 900
+          satirIn: 900
+          alanOut: 0
+          satirOut: 0
+        12:
+          ad: 'yön out'
+          alanIn: 0
+          satirIn: 0
+          alanOut: 250
+          satirOut: 250
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-mut/test/vade-takip-soz-b7-250.test.mjs:150:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: cari düzeyi (Cari Listesi 'Gecikmiş', Anlık Durum): 'Tüm Açık' Gecikmiş Tahsilat − kapsam farkı = Σ cari gecikmiş; kapsam farkları açıkça
+    not ok 2 - cari düzeyi (Cari Listesi 'Gecikmiş', Anlık Durum): 'Tüm Açık' Gecikmiş Tahsilat − kapsam farkı = Σ cari gecikmiş; kapsam farkları açıkça
+      ---
+      duration_ms: 8.38747
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-mut/test/vade-takip-soz-b7-250.test.mjs:153:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            cariGecikmis: 900,
+            gecikmisAraligi: 900,
+        +   tumAcik: 900
+        -   tumAcik: 1100
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        tumAcik: 1100
+        cariGecikmis: 900
+        gecikmisAraligi: 900
+      actual:
+        tumAcik: 900
+        cariGecikmis: 900
+        gecikmisAraligi: 900
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-mut/test/vade-takip-soz-b7-250.test.mjs:165:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 2 - Birleşik tur 7 İş 3 — Vade Takip 'Gecikmiş Tahsilat / Gecikmiş Ödeme' her aralık / kaynak / yön seçeneğinde
+  ---
+  duration_ms: 587.156856
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-mut/test/vade-takip-soz-b7-250.test.mjs:100:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Birleşik tur 7 İş 3 — S130 = A × Nakit Akışı: şüpheliye alınan tutar nakit tahmininde beklenen tahsilat değildir
+    # Subtest: adım adım: şüpheli 900 (üç kaleme yayılır); kısmen tahsil 300; kısmen Değersiz 200; ikinci şüpheli kaydı 300; ilk kaydın kalanı Değersiz — her adımda eşitlik
+    ok 1 - adım adım: şüpheli 900 (üç kaleme yayılır); kısmen tahsil 300; kısmen Değersiz 200; ikinci şüpheli kaydı 300; ilk kaydın kalanı Değersiz — her adımda eşitlik
+      ---
+      duration_ms: 637.974435
+      type: 'test'
+      ...
+    # başlangıç: bakiye − açık şüpheli 1700, nakit 1700, vade 1700, faturasız 0 | şüpheli 900: bakiye − açık şüpheli 800, nakit 800, vade 800, faturasız 0 | tahsilat 300: bakiye − açık şüpheli 800, nakit 800, vade 800, faturasız 0 | Değersiz 200: bakiye − açık şüpheli 800, nakit 800, vade 800, faturasız 0 | ikinci şüpheli 300: bakiye − açık şüpheli 500, nakit 500, vade 500, faturasız 0 | ilk kaydın kalanı Değersiz: bakiye − açık şüpheli 500, nakit 500, vade 500, faturasız 0
+    1..1
+ok 3 - Birleşik tur 7 İş 3 — S130 = A × Nakit Akışı: şüpheliye alınan tutar nakit tahmininde beklenen tahsilat değildir
+  ---
+  duration_ms: 655.219177
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 7 İş 3 — S130 × S136 = A: taksit kartlı caride şüpheli tutar taksit kalemlerinden düşer (Nakit Akışı = Vade Takip)
+    # Subtest: kart 600 (2 taksit, ilki gecikmiş) + elle Borç 200; şüpheli 500 → iki ekranda kalan 300, aynı kalemler; faturasız dengeleme satırı yok
+    ok 1 - kart 600 (2 taksit, ilki gecikmiş) + elle Borç 200; şüpheli 500 → iki ekranda kalan 300, aynı kalemler; faturasız dengeleme satırı yok
+      ---
+      duration_ms: 310.782138
+      type: 'test'
+      ...
+    1..1
+ok 4 - Birleşik tur 7 İş 3 — S130 × S136 = A: taksit kartlı caride şüpheli tutar taksit kalemlerinden düşer (Nakit Akışı = Vade Takip)
+  ---
+  duration_ms: 326.607733
+  type: 'suite'
+  ...
+1..4
+# tests 6
+# suites 4
+# pass 2
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2575.90339

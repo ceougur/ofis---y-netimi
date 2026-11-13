@@ -1,0 +1,242 @@
+{
+ "aciklama": "Cari kâhini ↔ program YAPIM AŞAMASI listesi (S100 = A, KULLANICI KARARI 10.11.2026 17:54 UTC; docs/2.5.0-IS-LISTESI.md D). Ç5 paket paket ana dala girerken bugünkü farklar kararı / bekleyen paketiyle sabitlenir; kâhinin beklentisi DEĞİŞMEZ. Listede OLMAYAN fark, değeri DEĞİŞEN fark ve KAPANDIĞI hâlde listede duran kayıt kırmızıdır (liste yalnız küçülür). Yayın adayında liste BOŞ olmalı (tools/release.mjs). BİLİNEN.json'dan (kullanıcının ERTELEDİĞİ farklar) AYRIDIR.",
+ "kural": "2.5.0",
+ "uretim": "node test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz (varsayılan koşu: bütün elle senaryolar + rastgele tohum 1–2 × 60 işlem)",
+ "paketler": [
+  "Ç5-A",
+  "Ç5-B tur 2",
+  "Ç5-C",
+  "eşleme",
+  "AYRIŞTIRILMADI"
+ ],
+ "kayitlar": [
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "adim:n11t:durum",
+   "beklenen": "ok",
+   "program": "ret",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "adım kabul edilir",
+   "paket": "Ç5-B tur 2",
+   "not": "S145: şüpheli tarihinden ÖNCEKİ tarihe tahsilat programda ret (kâhin: kabul) — kullanıcı kararı bekliyor (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:cari:N11:bakiye",
+   "beklenen": 20000,
+   "program": 50000,
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
+   "paket": "Ç5-B tur 2",
+   "not": "S145: şüpheli tarihinden ÖNCEKİ tarihe tahsilat programda ret (kâhin: kabul) — kullanıcı kararı bekliyor (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:hareket:n11x:kalan",
+   "beklenen": 20000,
+   "program": 50000,
+   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
+   "kural": "C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta)",
+   "paket": "Ç5-B tur 2",
+   "not": "S145: şüpheli tarihinden ÖNCEKİ tarihe tahsilat programda ret (kâhin: kabul) — kullanıcı kararı bekliyor (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:kasa",
+   "beklenen": 280000,
+   "program": 250000,
+   "sinif": "BULGU KULLANICI · SINIF DIŞI",
+   "kural": "B1.2 Kasa değişmez / tahsilatlar Kasa'da",
+   "paket": "Ç5-B tur 2",
+   "not": "S145: şüpheli tarihinden ÖNCEKİ tarihe tahsilat programda ret (kâhin: kabul) — kullanıcı kararı bekliyor (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:kasaRapor:giris",
+   "beklenen": 280000,
+   "program": 250000,
+   "sinif": "BULGU KULLANICI · SINIF DIŞI",
+   "kural": "B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar)",
+   "paket": "Ç5-B tur 2",
+   "not": "S145: şüpheli tarihinden ÖNCEKİ tarihe tahsilat programda ret (kâhin: kabul) — kullanıcı kararı bekliyor (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:cariToplam:N1",
+   "beklenen": 80000,
+   "program": 170000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "Ç5-B tur 2",
+   "not": "S130 = A Nakit Akışı'nda uygulanmamış — BİRLEŞİK TUR 7'de düzeltilecek (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:cariToplam:N10",
+   "beklenen": 50000,
+   "program": 90000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "Ç5-B tur 2",
+   "not": "S130 = A Nakit Akışı'nda uygulanmamış — BİRLEŞİK TUR 7'de düzeltilecek (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:cariToplam:N11",
+   "beklenen": 0,
+   "program": 50000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "Ç5-B tur 2",
+   "not": "S145: şüpheli tarihinden ÖNCEKİ tarihe tahsilat programda ret (kâhin: kabul) — kullanıcı kararı bekliyor (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:cariToplam:N12",
+   "beklenen": 40000,
+   "program": 90000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "Ç5-B tur 2",
+   "not": "S130 = A Nakit Akışı'nda uygulanmamış — BİRLEŞİK TUR 7'de düzeltilecek (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:cariToplam:N13a",
+   "beklenen": 30000,
+   "program": 50000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "Ç5-B tur 2",
+   "not": "S130 = A Nakit Akışı'nda uygulanmamış — BİRLEŞİK TUR 7'de düzeltilecek (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:cariToplam:N2",
+   "beklenen": 30000,
+   "program": 70000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "Ç5-B tur 2",
+   "not": "S130 = A Nakit Akışı'nda uygulanmamış — BİRLEŞİK TUR 7'de düzeltilecek (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:cariToplam:N3",
+   "beklenen": 20000,
+   "program": 70000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "Ç5-B tur 2",
+   "not": "S130 = A Nakit Akışı'nda uygulanmamış — BİRLEŞİK TUR 7'de düzeltilecek (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:cariToplam:N4",
+   "beklenen": 0,
+   "program": 70000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "Ç5-B tur 2",
+   "not": "S130 = A Nakit Akışı'nda uygulanmamış — BİRLEŞİK TUR 7'de düzeltilecek (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:cariToplam:N6",
+   "beklenen": 20000,
+   "program": 50000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "Ç5-B tur 2",
+   "not": "S130 = A Nakit Akışı'nda uygulanmamış — BİRLEŞİK TUR 7'de düzeltilecek (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:cariToplam:N7",
+   "beklenen": 20000,
+   "program": 50000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin projeksiyon kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "Ç5-B tur 2",
+   "not": "S130 = A Nakit Akışı'nda uygulanmamış — BİRLEŞİK TUR 7'de düzeltilecek (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:fatura:N1F",
+   "beklenen": "yok",
+   "program": {
+    "amount": 20000,
+    "direction": "in"
+   },
+   "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
+   "kural": "fatura kalemi açık tutarıyla (belge tarihinde, geçmiş — her görünümde)",
+   "paket": "Ç5-B tur 2",
+   "not": "S130 = A Nakit Akışı'nda uygulanmamış — BİRLEŞİK TUR 7'de düzeltilecek (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:fatura:N2F",
+   "beklenen": "yok",
+   "program": {
+    "amount": 40000,
+    "direction": "in"
+   },
+   "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
+   "kural": "fatura kalemi açık tutarıyla (belge tarihinde, geçmiş — her görünümde)",
+   "paket": "Ç5-B tur 2",
+   "not": "S130 = A Nakit Akışı'nda uygulanmamış — BİRLEŞİK TUR 7'de düzeltilecek (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:fatura:N3F",
+   "beklenen": "yok",
+   "program": {
+    "amount": 40000,
+    "direction": "in"
+   },
+   "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
+   "kural": "fatura kalemi açık tutarıyla (belge tarihinde, geçmiş — her görünümde)",
+   "paket": "Ç5-B tur 2",
+   "not": "S130 = A Nakit Akışı'nda uygulanmamış — BİRLEŞİK TUR 7'de düzeltilecek (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:fatura:N4F",
+   "beklenen": "yok",
+   "program": {
+    "amount": 40000,
+    "direction": "in"
+   },
+   "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
+   "kural": "fatura kalemi açık tutarıyla (belge tarihinde, geçmiş — her görünümde)",
+   "paket": "Ç5-B tur 2",
+   "not": "S130 = A Nakit Akışı'nda uygulanmamış — BİRLEŞİK TUR 7'de düzeltilecek (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:fatura:N6F",
+   "beklenen": "yok",
+   "program": {
+    "amount": 20000,
+    "direction": "in"
+   },
+   "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
+   "kural": "fatura kalemi açık tutarıyla (belge tarihinde, geçmiş — her görünümde)",
+   "paket": "Ç5-B tur 2",
+   "not": "S130 = A Nakit Akışı'nda uygulanmamış — BİRLEŞİK TUR 7'de düzeltilecek (12.11 ön kontrol; iş listesi D)"
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "anahtar": "k1:projeksiyon:fatura:N7F",
+   "beklenen": "yok",
+   "program": {
+    "amount": 20000,
+    "direction": "in"
+   },
+   "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
+   "kural": "fatura kalemi açık tutarıyla (belge tarihinde, geçmiş — her görünümde)",
+   "paket": "Ç5-B tur 2",
+   "not": "S130 = A Nakit Akışı'nda uygulanmamış — BİRLEŞİK TUR 7'de düzeltilecek (12.11 ön kontrol; iş listesi D)"
+  }
+ ]
+}

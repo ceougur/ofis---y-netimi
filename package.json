@@ -108,6 +108,7 @@
     "test:hiz-243-arka-plan": "node --disable-warning=ExperimentalWarning test/e2e/hiz-243-arka-plan.mjs",
     "test:fatura-243-daha-fazla-yaris": "node --disable-warning=ExperimentalWarning test/e2e/fatura-243-daha-fazla-yaris.mjs",
     "test:suzgec-cubugu-yaris": "node --disable-warning=ExperimentalWarning test/e2e/suzgec-cubugu-yaris.mjs --kip hepsi --deneme 5",
+    "test:suzgec-tarih-yazim": "node --disable-warning=ExperimentalWarning test/e2e/suzgec-cubugu-yaris.mjs --kip yazim --deneme 3",
     "test:fatura-243-duzen-kaymasi": "node --disable-warning=ExperimentalWarning test/e2e/fatura-243-duzen-kaymasi.mjs",
     "test:gg243-arka-plan-yazma": "node --disable-warning=ExperimentalWarning test/e2e/gg243-arka-plan-yazma.mjs",
     "test:gg243-odak-dugme": "node --disable-warning=ExperimentalWarning test/e2e/gg243-odak-dugme.mjs",

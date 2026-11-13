@@ -1,0 +1,22 @@
+#!/bin/bash
+# Birleşik tur 7 İş 5 mutant koşusu (yük kilidiyle çağrılır): her mutant için ilgili test dosyaları, TZ=UTC.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+M=$S/b7-mut
+OUT=$S/b7-kanit/b7-is5-mutant.txt
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+: > $OUT
+declare -A TESTS=(
+  [M8]="test/yapim-asamasi-kapisi.test.mjs"
+  [M9]="test/kasa-acilis-vergi-s94-250.test.mjs"
+  [M10]="test/kasa-acilis-kimlik-b7-250.test.mjs test/kasa-acilis-uyari-artis-250.test.mjs"
+  [M11]="test/kasa-acilis-kimlik-b7-250.test.mjs test/kasa-acilis-uyari-artis-250.test.mjs"
+  [M12]="test/kasa-acilis-kimlik-b7-250.test.mjs test/kasa-acilis-uyari-artis-250.test.mjs"
+)
+for m in M8 M9 M10 M11 M12; do
+  python3 -I $S/b7-is/mutant5.py $M $m >> $OUT || exit 1
+  ( cd $M && TZ=UTC timeout -k 5 900 node --test ${TESTS[$m]} > $S/b7-kanit/b7-is5-mut-$m.tap 2>&1 )
+  echo "$m çıkış $? $(grep -E '^# (tests|pass|fail)' $S/b7-kanit/b7-is5-mut-$m.tap | tr '\n' ' ')" >> $OUT
+  grep -E '^    not ok|^not ok' $S/b7-kanit/b7-is5-mut-$m.tap | sed 's/^/   /' | cut -c1-150 >> $OUT
+done
+python3 -I $S/b7-is/mutant5.py $M orijinal || exit 1
+echo BITTI >> $OUT

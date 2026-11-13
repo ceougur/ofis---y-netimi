@@ -1,0 +1,27 @@
+== E05-es-taksit-mobil kontrol koşusu: 2 red/sus: []
+   2.5.0 kart (son çağrı): {'KT1': (120000, [40000, 40000, 40000])}
+   mobil: {'k1:001:kart:KT1:kalan': 70000, 'k1:001:kart:KT1:odenen': 50000, 'k1:001:kart:KT1:taksit1:odenen': 40000, 'k1:001:kart:KT1:taksit2:odenen': 10000, 'k1:001:kart:KT1:taksit3:odenen': 0, 'k2:001:kart:KT1:kalan': [0, -10000], 'k2:001:kart:KT1:odenen': 130000, 'k2:001:kart:KT1:taksit1:odenen': 40000, 'k2:001:kart:KT1:taksit2:odenen': 40000, 'k2:001:kart:KT1:taksit3:odenen': 40000}
+== E05-es-taksit-masaustu kontrol koşusu: 2 red/sus: []
+   2.5.0 kart (son çağrı): {'KT1': (120000, [40000, 40000, 40000])}
+   mobil: {'k1:001:kart:KT1:kalan': 70000, 'k1:001:kart:KT1:odenen': 50000, 'k1:001:kart:KT1:taksit1:odenen': 40000, 'k1:001:kart:KT1:taksit2:odenen': 10000, 'k1:001:kart:KT1:taksit3:odenen': 0, 'k2:001:kart:KT1:kalan': [0, -10000], 'k2:001:kart:KT1:odenen': 130000, 'k2:001:kart:KT1:taksit1:odenen': 40000, 'k2:001:kart:KT1:taksit2:odenen': 40000, 'k2:001:kart:KT1:taksit3:odenen': 40000}
+== E18-k8-yaris kontrol koşusu: 2 red/sus: []
+   2.5.0 kart (son çağrı): {'KT': (30000, [30000])}
+   mobil: {'k1:001:kart:KT:kalan': 20000, 'k1:001:kart:KT:odenen': 30000, 'k1:001:kart:KT:taksit1:odenen': 30000}
+== E28-rol-yetkisi kontrol koşusu: 1 red/sus: []
+   2.5.0 kart (son çağrı): {'KT': (10000, [10000])}
+   mobil: {'k1:001:kart:KT:kalan': 20000, 'k1:001:kart:KT:odenen': 10000, 'k1:001:kart:KT:taksit1:odenen': 10000}
+== E41-es-odenmis-kart-avans-mobil kontrol koşusu: 2 red/sus: []
+   2.5.0 kart (son çağrı): {'KT': (100000, [50000, 50000])}
+   mobil: {'k0:001:kart:KT:kalan': 0, 'k0:001:kart:KT:odenen': 100000, 'k0:001:kart:KT:taksit1:odenen': 50000, 'k0:001:kart:KT:taksit2:odenen': 50000, 'k1:001:kart:KT:kalan': [0, -50000], 'k1:001:kart:KT:odenen': 150000, 'k1:001:kart:KT:taksit1:odenen': 50000, 'k1:001:kart:KT:taksit2:odenen': 50000}
+== E41-es-odenmis-kart-avans-masaustu kontrol koşusu: 2 red/sus: []
+   2.5.0 kart (son çağrı): {'KT': (100000, [50000, 50000])}
+   mobil: {'k0:001:kart:KT:kalan': 0, 'k0:001:kart:KT:odenen': 100000, 'k0:001:kart:KT:taksit1:odenen': 50000, 'k0:001:kart:KT:taksit2:odenen': 50000, 'k1:001:kart:KT:kalan': [0, -50000], 'k1:001:kart:KT:odenen': 150000, 'k1:001:kart:KT:taksit1:odenen': 50000, 'k1:001:kart:KT:taksit2:odenen': 50000}
+== R1-rastgele-tohum1 kontrol koşusu: 6 red/sus: []
+   2.5.0 kart (son çağrı): {'KT2_1': (360000, [60000, 60000, 60000, 60000, 60000, 60000]), 'KT2_2': (400000, [66666, 66666, 66666, 66666, 66666, 66670]), 'KT2_3': (240000, [60000, 60000, 60000, 60000])}
+   mobil: {'k906:002:kart:KT2_2:taksit1:odenen': 66666, 'k906:002:kart:KT2_2:taksit2:odenen': 66666, 'k906:002:kart:KT2_2:taksit3:odenen': 36268, 'k906:002:kart:KT2_2:taksit4:odenen': 0, 'k906:002:kart:KT2_2:taksit5:odenen': 0, 'k906:002:kart:KT2_2:taksit6:odenen': 0, 'k906:002:kart:KT2_3:kalan': 6868, 'k906:002:kart:KT2_3:odenen': 233132, 'k906:002:kart:KT2_3:taksit1:odenen': 60000, 'k906:002:kart:KT2_3:taksit2:odenen': 60000, 'k906:002:kart:KT2_3:taksit3:odenen': 60000, 'k906:002:kart:KT2_3:taksit4:odenen': 53132}
+== R2-rastgele-tohum2 kontrol koşusu: 6 red/sus: []
+   2.5.0 kart (son çağrı): {'KT2_1': (120000, [40000, 40000, 40000]), 'KT2_2': (120000, [24000, 24000, 24000, 24000, 24000]), 'KT2_3': (120000, [20000, 20000, 20000, 20000, 20000, 20000])}
+   mobil: {'k892:002:kart:KT2_2:taksit2:odenen': 0, 'k892:002:kart:KT2_2:taksit3:odenen': 0, 'k892:002:kart:KT2_2:taksit4:odenen': 0, 'k892:002:kart:KT2_2:taksit5:odenen': 0, 'k892:002:kart:KT2_3:kalan': 70700, 'k892:002:kart:KT2_3:odenen': 49300, 'k892:002:kart:KT2_3:taksit1:odenen': 20000, 'k892:002:kart:KT2_3:taksit2:odenen': 20000, 'k892:002:kart:KT2_3:taksit3:odenen': 9300, 'k892:002:kart:KT2_3:taksit4:odenen': 0, 'k892:002:kart:KT2_3:taksit5:odenen': 0, 'k892:002:kart:KT2_3:taksit6:odenen': 0}
+== R3-rastgele-tohum3 kontrol koşusu: 6 red/sus: []
+   2.5.0 kart (son çağrı): {'KT2_1': (360000, [72000, 72000, 72000, 72000, 72000]), 'KT2_2': (360000, [72000, 72000, 72000, 72000, 72000]), 'KT2_3': (120000, [24000, 24000, 24000, 24000, 24000])}
+   mobil: {'k900:002:kart:KT2_2:taksit1:odenen': 72000, 'k900:002:kart:KT2_2:taksit2:odenen': 72000, 'k900:002:kart:KT2_2:taksit3:odenen': 41900, 'k900:002:kart:KT2_2:taksit4:odenen': 0, 'k900:002:kart:KT2_2:taksit5:odenen': 0, 'k900:002:kart:KT2_3:kalan': 17209, 'k900:002:kart:KT2_3:odenen': 102791, 'k900:002:kart:KT2_3:taksit1:odenen': 24000, 'k900:002:kart:KT2_3:taksit2:odenen': 24000, 'k900:002:kart:KT2_3:taksit3:odenen': 24000, 'k900:002:kart:KT2_3:taksit4:odenen': 24000, 'k900:002:kart:KT2_3:taksit5:odenen': 6791}

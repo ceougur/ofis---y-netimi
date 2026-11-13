@@ -1,0 +1,86 @@
+HIZ KABUL birleşik tur 7 · nproc 4 · başta 0.02 0.50 0.82 1/117 24385 · 04:04:27
+=== tur 1 · acilissiz · taban · başta 0.02 0.50 0.82 1/117 24391 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-taban · kip acilissiz · açılış (listen) 18709 ms · yük 0.24 0.53 0.82
+uyarı satırı (cash:before-opening) 0
+SONUÇ acilissiz · Mutabakat Testi: en iyi 6091.9 ms · ortanca 6178.8 ms · olay döngüsü en çok 6299.8 ms · durumlar 200 · tur tur 6091.9 6174.8 6178.8 6207.4 6300.3
+SONUÇ acilissiz · arka plan taraması: en iyi 6436.4 ms · ortanca 6536.4 ms · olay döngüsü en çok 15.5 ms · durumlar 200 · tur tur 6436.4 6533.1 6536.4 6650.2 6736
+SONUÇ acilissiz · Silinenler geri yükleme: en iyi 12.6 ms · ortanca 13.5 ms · olay döngüsü en çok 15.9 ms · durumlar 200 · tur tur 12.6 13.3 13.5 16.6 17.2
+SONUÇ acilissiz · Vade Takip (ılık): en iyi 2129.7 ms · ortanca 2258.2 ms · olay döngüsü en çok 7.1 ms · durumlar 200 · tur tur 2129.7 2133.4 2258.2 2268.2 2277.9
+SONUÇ acilissiz · Nakit Akışı (ılık): en iyi 3595.1 ms · ortanca 3613.6 ms · olay döngüsü en çok 3531.6 ms · durumlar 200 · tur tur 3595.1 3600.4 3613.6 3631.2 3658.4
+yük (sonda) 1.33 0.80 0.88
+çıkış 0 · sonda 1.33 0.80 0.88 1/109 24916
+=== tur 1 · acilissiz · yeni · başta 1.33 0.80 0.88 1/109 24921 
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a6c349be9d3823fef · kip acilissiz · açılış (listen) 19004 ms · yük 1.58 0.89 0.91
+uyarı satırı (cash:before-opening) 0
+SONUÇ acilissiz · Mutabakat Testi: en iyi 5960.8 ms · ortanca 6345.5 ms · olay döngüsü en çok 6480.2 ms · durumlar 200 · tur tur 5960.8 6187.3 6345.5 6366.8 6478.3
+SONUÇ acilissiz · arka plan taraması: en iyi 6510.5 ms · ortanca 6595.5 ms · olay döngüsü en çok 12.6 ms · durumlar 200 · tur tur 6510.5 6554.8 6595.5 6778.6 6867.6
+SONUÇ acilissiz · Silinenler geri yükleme: en iyi 13.8 ms · ortanca 14.9 ms · olay döngüsü en çok 15.2 ms · durumlar 200 · tur tur 13.8 14.2 14.9 16.2 16.4
+SONUÇ acilissiz · Vade Takip (ılık): en iyi 2202 ms · ortanca 2250.1 ms · olay döngüsü en çok 6.7 ms · durumlar 200 · tur tur 2202 2215.1 2250.1 2283 2378.7
+SONUÇ acilissiz · Nakit Akışı (ılık): en iyi 3585.4 ms · ortanca 3686.1 ms · olay döngüsü en çok 3626 ms · durumlar 200 · tur tur 3585.4 3587.9 3686.1 3751 3763.1
+yük (sonda) 1.23 0.97 0.94
+çıkış 0 · sonda 1.23 0.97 0.94 1/114 25144
+=== tur 1 · acilisli · taban · başta 1.21 0.97 0.94 1/114 25149 
+açılış satırı 2024-10-27 (ayrı bağlantı)
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-taban · kip acilisli · açılış (listen) 19587 ms · yük 1.24 0.99 0.95
+uyarı satırı (cash:before-opening) 18651
+SONUÇ acilisli · Mutabakat Testi: en iyi 6324.4 ms · ortanca 6424.2 ms · olay döngüsü en çok 6601.8 ms · durumlar 200 · tur tur 6324.4 6331 6424.2 6580.6 6602.1
+SONUÇ acilisli · arka plan taraması: en iyi 6677.6 ms · ortanca 6717.6 ms · olay döngüsü en çok 13.6 ms · durumlar 200 · tur tur 6677.6 6700.3 6717.6 6787.3 6841.3
+SONUÇ acilisli · Silinenler geri yükleme: en iyi 342.2 ms · ortanca 358.3 ms · olay döngüsü en çok 389.5 ms · durumlar 200 · tur tur 342.2 355 358.3 362.5 390.9
+SONUÇ acilisli · Vade Takip (ılık): en iyi 2150 ms · ortanca 2219.8 ms · olay döngüsü en çok 2128.6 ms · durumlar 200 · tur tur 2150 2156.2 2219.8 2306.9 2341.3
+SONUÇ acilisli · Nakit Akışı (ılık): en iyi 3686.1 ms · ortanca 3832.4 ms · olay döngüsü en çok 3804.2 ms · durumlar 200 · tur tur 3686.1 3750.4 3832.4 3878.9 3940.5
+yük (sonda) 1.06 1.00 0.97
+çıkış 0 · sonda 1.06 1.00 0.97 1/114 25349
+=== tur 1 · acilisli · yeni · başta 1.06 1.00 0.97 1/114 25354 
+açılış satırı 2024-10-27 (ayrı bağlantı)
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a6c349be9d3823fef · kip acilisli · açılış (listen) 19542 ms · yük 1.12 1.02 0.97
+uyarı satırı (cash:before-opening) 18651
+SONUÇ acilisli · Mutabakat Testi: en iyi 6330.2 ms · ortanca 6679.9 ms · olay döngüsü en çok 6790.6 ms · durumlar 200 · tur tur 6330.2 6491.5 6679.9 6706.6 6790.7
+SONUÇ acilisli · arka plan taraması: en iyi 6435.3 ms · ortanca 6849.5 ms · olay döngüsü en çok 12.9 ms · durumlar 200 · tur tur 6435.3 6699.8 6849.5 6859.5 6876.2
+SONUÇ acilisli · Silinenler geri yükleme: en iyi 360.1 ms · ortanca 383 ms · olay döngüsü en çok 438.8 ms · durumlar 200 · tur tur 360.1 382.4 383 417.8 441.5
+SONUÇ acilisli · Vade Takip (ılık): en iyi 2178.3 ms · ortanca 2284.9 ms · olay döngüsü en çok 6.3 ms · durumlar 200 · tur tur 2178.3 2265.3 2284.9 2347.1 2410.9
+SONUÇ acilisli · Nakit Akışı (ılık): en iyi 3601.2 ms · ortanca 3870.4 ms · olay döngüsü en çok 3997.2 ms · durumlar 200 · tur tur 3601.2 3829.2 3870.4 3888.9 4163
+yük (sonda) 1.18 1.10 1.01
+çıkış 0 · sonda 1.18 1.10 1.01 1/114 25478
+=== tur 2 · acilissiz · taban · başta 1.18 1.10 1.01 1/114 25483 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-taban · kip acilissiz · açılış (listen) 20299 ms · yük 1.66 1.22 1.05
+uyarı satırı (cash:before-opening) 0
+SONUÇ acilissiz · Mutabakat Testi: en iyi 6003.3 ms · ortanca 6330.2 ms · olay döngüsü en çok 6438.3 ms · durumlar 200 · tur tur 6003.3 6241.1 6330.2 6390.6 6443.2
+SONUÇ acilissiz · arka plan taraması: en iyi 6475.1 ms · ortanca 6553.9 ms · olay döngüsü en çok 11.9 ms · durumlar 200 · tur tur 6475.1 6495.2 6553.9 6560.4 6627.4
+SONUÇ acilissiz · Silinenler geri yükleme: en iyi 12.8 ms · ortanca 14.1 ms · olay döngüsü en çok 14.9 ms · durumlar 200 · tur tur 12.8 13.8 14.1 14.3 16.7
+SONUÇ acilissiz · Vade Takip (ılık): en iyi 2151.1 ms · ortanca 2175.4 ms · olay döngüsü en çok 7.8 ms · durumlar 200 · tur tur 2151.1 2157.1 2175.4 2305.3 2404.6
+SONUÇ acilissiz · Nakit Akışı (ılık): en iyi 3644.5 ms · ortanca 3729.2 ms · olay döngüsü en çok 3720.3 ms · durumlar 200 · tur tur 3644.5 3674.5 3729.2 3747.8 3851.8
+yük (sonda) 1.26 1.18 1.05
+çıkış 0 · sonda 1.26 1.18 1.05 1/117 25853
+=== tur 2 · acilissiz · yeni · başta 1.26 1.18 1.05 1/117 25858 
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a6c349be9d3823fef · kip acilissiz · açılış (listen) 18850 ms · yük 1.25 1.18 1.06
+uyarı satırı (cash:before-opening) 0
+SONUÇ acilissiz · Mutabakat Testi: en iyi 5958.6 ms · ortanca 5994.4 ms · olay döngüsü en çok 6048.2 ms · durumlar 200 · tur tur 5958.6 5988.6 5994.4 6003.7 6051.9
+SONUÇ acilissiz · arka plan taraması: en iyi 6159.6 ms · ortanca 6231.3 ms · olay döngüsü en çok 10.8 ms · durumlar 200 · tur tur 6159.6 6227.9 6231.3 6332.1 6336.6
+SONUÇ acilissiz · Silinenler geri yükleme: en iyi 12.1 ms · ortanca 13.4 ms · olay döngüsü en çok 14.9 ms · durumlar 200 · tur tur 12.1 12.8 13.4 13.7 19.4
+SONUÇ acilissiz · Vade Takip (ılık): en iyi 1983.9 ms · ortanca 2070.6 ms · olay döngüsü en çok 6.4 ms · durumlar 200 · tur tur 1983.9 2050.4 2070.6 2227.1 2244.2
+SONUÇ acilissiz · Nakit Akışı (ılık): en iyi 3507 ms · ortanca 3557.2 ms · olay döngüsü en çok 3460.3 ms · durumlar 200 · tur tur 3507 3541.1 3557.2 3589 3603.1
+yük (sonda) 1.15 1.17 1.07
+çıkış 0 · sonda 1.15 1.17 1.07 1/114 26122
+=== tur 2 · acilisli · taban · başta 1.14 1.17 1.06 1/114 26127 
+açılış satırı 2024-10-27 (ayrı bağlantı)
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-taban · kip acilisli · açılış (listen) 18890 ms · yük 1.18 1.18 1.07
+uyarı satırı (cash:before-opening) 18651
+SONUÇ acilisli · Mutabakat Testi: en iyi 6295.2 ms · ortanca 6306.4 ms · olay döngüsü en çok 6476 ms · durumlar 200 · tur tur 6295.2 6298.3 6306.4 6332.3 6475.3
+SONUÇ acilisli · arka plan taraması: en iyi 6430.9 ms · ortanca 6596.7 ms · olay döngüsü en çok 9.7 ms · durumlar 200 · tur tur 6430.9 6548.8 6596.7 6660.5 6780.2
+SONUÇ acilisli · Silinenler geri yükleme: en iyi 344.9 ms · ortanca 352.1 ms · olay döngüsü en çok 358.4 ms · durumlar 200 · tur tur 344.9 345.9 352.1 353.6 362.7
+SONUÇ acilisli · Vade Takip (ılık): en iyi 2117.7 ms · ortanca 2253.4 ms · olay döngüsü en çok 0 ms · durumlar 200 · tur tur 2117.7 2170.7 2253.4 2262.6 2277.9
+SONUÇ acilisli · Nakit Akışı (ılık): en iyi 3619.5 ms · ortanca 3778.5 ms · olay döngüsü en çok 3756 ms · durumlar 200 · tur tur 3619.5 3679.2 3778.5 3862.2 3891.8
+yük (sonda) 1.38 1.20 1.09
+çıkış 0 · sonda 1.38 1.20 1.09 1/115 26395
+=== tur 2 · acilisli · yeni · başta 1.35 1.20 1.09 1/115 26400 
+açılış satırı 2024-10-27 (ayrı bağlantı)
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a6c349be9d3823fef · kip acilisli · açılış (listen) 18633 ms · yük 1.60 1.25 1.11
+uyarı satırı (cash:before-opening) 18651
+SONUÇ acilisli · Mutabakat Testi: en iyi 6243.6 ms · ortanca 6313.2 ms · olay döngüsü en çok 6341.8 ms · durumlar 200 · tur tur 6243.6 6269 6313.2 6322.5 6340.4
+SONUÇ acilisli · arka plan taraması: en iyi 6450.8 ms · ortanca 6606.5 ms · olay döngüsü en çok 9.5 ms · durumlar 200 · tur tur 6450.8 6491.1 6606.5 6612.3 6817.1
+SONUÇ acilisli · Silinenler geri yükleme: en iyi 373.3 ms · ortanca 395.5 ms · olay döngüsü en çok 427 ms · durumlar 200 · tur tur 373.3 391.2 395.5 416.5 428.8
+SONUÇ acilisli · Vade Takip (ılık): en iyi 2098 ms · ortanca 2129.2 ms · olay döngüsü en çok 2081.4 ms · durumlar 200 · tur tur 2098 2103.2 2129.2 2167.6 2283.5
+SONUÇ acilisli · Nakit Akışı (ılık): en iyi 3569.4 ms · ortanca 3646.9 ms · olay döngüsü en çok 3588.2 ms · durumlar 200 · tur tur 3569.4 3617 3646.9 3653.9 3734.5
+yük (sonda) 1.39 1.27 1.12
+çıkış 0 · sonda 1.39 1.27 1.12 1/114 26473
+bitti 04:21:41

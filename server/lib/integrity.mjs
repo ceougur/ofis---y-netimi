@@ -37,7 +37,7 @@ import { BANK_SUBS, DOCUMENT_MAINS, DOCUMENT_SUB_NAMES, RECEIVED_MAINS, document
 import { compareVersions } from "./semver.mjs";
 import { CHEQUE_BOND_BAD, createScopedGate, familyOf } from "./integrity-scope.mjs";
 import { runScanWorker } from "./integrity-scan-runner.mjs";
-import { cashBeforeOpening, cashRestoreMark } from "./cash-opening.mjs";
+import { cashBeforeOpening, cashExplained, cashRestoreMark } from "./cash-opening.mjs";
 import { ledgerBalanceOf, openingCounterpart, openingReviewDrift, unlockedPastYears } from "./ledger-opening.mjs";
 import { systemClock } from "./clock.mjs";
 import { roundMoney, toCents } from "./money.mjs";
@@ -275,6 +275,15 @@ export function lockDigestOf(store, lock, { version = "" } = {}) {
   return hash.digest("hex");
 }
 
+/**
+ * Birleşik tur 7: uyarı kimlik kümesini (kod → Map(kimlik → örnek)) sonuca SAYILMAYAN alan olarak bağlar — Mutabakat Testi yanıtına / JSON'a girmez; iş parçacığı
+ * taraması kümeyi iletisinde ayrıca taşır (lib/integrity-scan-worker.mjs) ve ana iş parçacığı yeniden bağlar.
+ */
+export function withNoticeKeys(result, keys) {
+  if (result && typeof result === "object") Object.defineProperty(result, "noticeKeys", { value: keys instanceof Map ? keys : new Map(), enumerable: false, configurable: true });
+  return result;
+}
+
 export function createIntegrity({ store, ledger, accounts = () => null, stock = () => null, plans = () => null, period = () => null, money = () => null, pos = () => null, events = null, strict = false, verify = false, partyRows = 2000, dbPath = "", log = null, newId = () => `int-${crypto.randomUUID()}`, now = systemClock, canWrite = () => true }) {
   const has = table => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table));
   // v2.1.0 (§3.11): banka çekirdeğinin denetimleri (lib/bank/checks.mjs) — olay bazlı (COMMIT'te dokunulan olaylar) ve tam tarama.
@@ -337,6 +346,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
 
   function run({ events: touched = null, includeHidden = false } = {}) {
     const started = performance.now();
+    const noticeKeys = new Map(); // uyarı kodu → Map(kimlik → örnek) (birleşik tur 7; withNoticeKeys)
     // Bölüm süreleri (v2.1.0, §3.11 kapı ölçümü; tools/kapi-olcum.mjs): stats() ile okunur, sonuca ve API'ye girmez.
     const timings = {};
     let lapAt = started;
@@ -699,6 +709,8 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     if (!touched && has("cash_entries")) {
       const early = cashBeforeOpening(store, money());
       if (early?.rows.length) {
+        // Birleşik tur 7 (DK-B6 ORTA-1): uyarının KİMLİK kümesi (noticeGrowth) — sonuca sayılmayan alan olarak (JSON'a / API'ye girmez).
+        noticeKeys.set("cash:before-opening", new Map(early.rows.map(item => [item.key, item.sample])));
         const opening = early.opening.split("-").reverse().join(".");
         checks.push({ code: "cash:before-opening", name: "Kasa Açılışından Önce Tarihli Hareket", ok: false, count: early.rows.length, severity: "warning", notice: true, opening: early.opening, hint: `Bu nakit hareketleri Kasa açılışından (${opening}) önce tarihli (geri yüklenen yedek, eski sürüm verisi ya da Silinenler'den geri gelen kayıt). Tarihi değişmeden düzeltilebilir; açılıştan önceye yeni hareket girilemez. Hareketler açılışın içinde değilse yönetici Kasa → Açılış Bakiyesi'nin tarihini öne alır; uyarı kalkar.`, sample: early.rows.slice(0, 5).map(item => item.sample), items: early.rows.slice(0, 100).map(({ source, id, date }) => ({ source, id, date })) });
       }
@@ -779,7 +791,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     const failures = checks.filter(item => !item.ok);
     const total = performance.now() - started;
     lastRun = { scoped: Boolean(touched), ms: total, sections: timings, drift };
-    return { ok: failures.length === 0, checks, failures, durationMs: Math.round(total) };
+    return withNoticeKeys({ ok: failures.length === 0, checks, failures, durationMs: Math.round(total) }, noticeKeys);
   }
   let lastRun = null;
   let lastGate = null;
@@ -900,7 +912,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     distrust = new Set();
     known = new Set(baseline);
     // Birleşik tur 6 (DK-D2T3 ORTA-1): uyarının açılıştaki sayısı (ilk görünüş sessiz; yeniden başlatmada önceki artış yeniden bildirilmez).
-    noticeMark = { counts: noticeCounts(result), restored: cashRestoreMark(store) };
+    noticeMark = { counts: noticeCounts(result), keys: noticeKeySets(result), restored: cashRestoreMark(store) };
     const lock = period()?.lockedUntil?.() || "";
     lockState = { lock, digest: lockDigest(lock) };
     syncCounters();
@@ -1009,38 +1021,66 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
   // önceki taramalarda görülen sapma imzaları (COMMIT tabanından bağımsız; olay bazlı denetimlerin taban olmaması tarama sonucunu değiştirmez).
   let known = new Set();
   let lastScan = null;
-  // ---------- Uyarının sayısı (2.5.0 birleşik tur 6; DK-D2T3 ORTA-1 — BAŞ MİMAR 11.11, kullanıcı onaylı) ----------
+  // ---------- Uyarının sayısı (2.5.0 birleşik tur 6; DK-D2T3 ORTA-1 — BAŞ MİMAR 11.11, kullanıcı onaylı) → kimlik kümesi (birleşik tur 7) ----------
   // Uyarı (notice; bugün yalnız "Kasa Açılışından Önce Tarihli Hareket") sapma değildir, ama tarama kapının GÖRMEDİĞİ yazımı yakalamak içindir: açılıştan sonraki bir
   // nakit hareketinin tarihi dışarıdan (elle / dış araçla) açılış öncesine alınınca uyarı 2 → 3 olur, Kasa'da o tutar iki kez sayılır. Kural: tarama uyarının önceki
   // sayısını tutar (açılışta ölçülür — ilk görünüş sessiz; program yeniden açılınca önceki artış yeniden bildirilmez); kapının bu arada kabul ettiği Silinenler geri
   // yüklemelerinin kattığı satırlar (lib/cash-opening.mjs cashRestoreMark) açıklanmış sayılır; açıklanamayan ARTIŞ günlüğe ("scan") ve zile yazılır; azalma sessiz.
   // Sunum (sarı uyarı, Defter Mutabakatı'nda "Tutarlı", ilk yazımın süzgeçli yolu) değişmez: uyarı tabana / kapı alanına girmez.
-  let noticeMark = null; // { counts: Map(kod → sayı), restored }
+  // Birleşik tur 7 (DK-B6 ORTA-1; BAŞ MİMAR 12.11 12:52 — docs/devir/D2-ALTYAPI-TASARIM.md §16): SAYI yerine KİMLİK kümesi. Sayıyla iki tarama arasında sil + geri yükle +
+  // dış yazım (2 → 1 → 2 → 3) açıklanmış sayılıyordu (geri yükleme hak ekliyor, silme düşürmüyordu) ve sil + dış yazım (sayı aynı) görünmüyordu. Artık alarm = önceki
+  // kümede olmayan ve işaretten SONRA açıklanmamış (Silinenler geri yüklemesi; kapının kabul ettiği kimlik değişimi — önceki kimliği önceki kümedeyse ya da kendisi
+  // açıklanmışsa) her yeni kimlik; iletide açıklanamayan kimlik sayısı (DÜŞÜK-1).
+  let noticeMark = null; // { counts: Map(kod → sayı), keys: Map(kod → Set(kimlik)), restored }
   const noticeCounts = result => new Map((result?.failures || []).filter(item => item.notice).map(item => [item.code, Number(item.count) || 0]));
+  const noticeKeySets = result => new Map([...(result?.noticeKeys || [])].map(([code, keys]) => [code, new Set(keys.keys())]));
+  const NO_KEYS = new Set();
   const NOTICE_GROWTH = {
-    "cash:before-opening": (previous, count) => `Kasa açılışından önce tarihli hareket uyarısı arttı (${previous} → ${count} hareket; kapının görmediği yazım)`,
+    "cash:before-opening": (previous, count, unexplained) =>
+      count > previous
+        ? `Kasa açılışından önce tarihli hareket uyarısı arttı (${previous} → ${count} hareket; kapının görmediği yazım: ${unexplained} hareket)`
+        : `Kasa açılışından önce tarihli hareket uyarısına yeni hareket girdi (${previous} → ${count} hareket; kapının görmediği yazım: ${unexplained} hareket)`,
   };
-  // restoredAt: taramanın anlık görüntüsüne giren geri yükleme sayacı. İş parçacığı taraması sürerken geri yükleme kesinleştiyse (sayaç değişti) bu tarama uyarıyı
-  // karşılaştırmaz (anlık görüntünün geri yüklemeyi içerip içermediği bilinmez — yanlış alarm olurdu); işaret değişmez, sonraki tarama karşılaştırır.
+  // restoredAt: taramanın anlık görüntüsünden önce okunan açıklama sıra numarası. İş parçacığı taraması sürerken bir açıklama kaydı (geri yükleme / kimlik değişimi)
+  // kesinleştiyse (sıra değişti) bu tarama uyarıyı karşılaştırmaz (anlık görüntünün onu içerip içermediği bilinmez — yanlış alarm olurdu); işaret değişmez, sonraki tarama
+  // karşılaştırır (o kayıt işaretten sonradır → açıklanmış).
   function noticeGrowth(result, restoredAt) {
     const counts = noticeCounts(result);
+    const keys = noticeKeySets(result);
     if (!noticeMark) {
-      noticeMark = { counts, restored: restoredAt };
+      noticeMark = { counts, keys, restored: restoredAt };
       return [];
     }
     if (restoredAt !== cashRestoreMark(store)) return [];
-    const explained = Math.max(0, restoredAt - noticeMark.restored);
+    const explained = cashExplained(store);
+    const since = noticeMark.restored;
     const out = [];
     for (const item of result.failures.filter(entry => entry.notice)) {
       const previous = noticeMark.counts.get(item.code) ?? 0;
       const count = Number(item.count) || 0;
-      const unexplained = count - previous - (item.code === "cash:before-opening" ? explained : 0);
+      const now = keys.get(item.code);
+      let unexplained = count - previous; // kimliksiz uyarı (bugün yok): sayıyla
+      let sample = item.sample || [];
+      if (now) {
+        const prior = noticeMark.keys.get(item.code) || NO_KEYS;
+        const own = item.code === "cash:before-opening";
+        // İşaretten sonraki açıklama: geri yükleme (from '') ya da yerine geçtiği kimlik önceki kümede / kendisi açıklanmış kimlik değişimi.
+        const cleared = (key, depth = 0) => {
+          const entry = own ? explained.get(key) : null;
+          if (!entry || entry.seq <= since || depth > 16) return false;
+          return !entry.from || prior.has(entry.from) || cleared(entry.from, depth + 1);
+        };
+        const fresh = [...now].filter(key => !prior.has(key) && !cleared(key));
+        unexplained = fresh.length;
+        const samples = result.noticeKeys.get(item.code);
+        sample = fresh.slice(0, 5).map(key => samples.get(key) || key);
+      }
       if (unexplained > 0) {
-        const name = NOTICE_GROWTH[item.code]?.(previous, count) || `${item.name}: uyarı arttı (${previous} → ${count}; kapının görmediği yazım)`;
-        out.push({ code: item.code, name, ok: false, notice: true, severity: "warning", count, previous, unexplained, sample: item.sample || [] });
+        const name = NOTICE_GROWTH[item.code]?.(previous, count, unexplained) || `${item.name}: uyarıya kapının görmediği yazımla ${unexplained} kayıt girdi (${previous} → ${count})`;
+        out.push({ code: item.code, name, ok: false, notice: true, severity: "warning", count, previous, unexplained, sample });
       }
     }
-    noticeMark = { counts, restored: restoredAt };
+    noticeMark = { counts, keys, restored: restoredAt };
     return out;
   }
   // Tarama sonucunun işlenmesi (iki yol ortak): kilit izi, yeni sapmanın günlüğü ve zili.
@@ -1072,7 +1112,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       try {
         // Zil yalnız yöneticilere (sapmanın adı ve tutarı yönetim bilgisidir).
         const admins = has("users") ? store.all("SELECT id FROM users WHERE role = 'admin' AND active = 1").map(row => row.id) : [];
-        events?.publish?.("integrity.alert", { at: now().toISOString(), findings: findings.map(item => ({ code: item.code, name: item.name, count: item.count ?? 0, difference: item.difference ?? 0, ...(item.notice ? { notice: true, previous: item.previous } : {}) })) }, { users: admins });
+        events?.publish?.("integrity.alert", { at: now().toISOString(), findings: findings.map(item => ({ code: item.code, name: item.name, count: item.count ?? 0, difference: item.difference ?? 0, ...(item.notice ? { notice: true, previous: item.previous, unexplained: item.unexplained } : {}) })) }, { users: admins });
       } catch {
         // zil yayımlanamasa da kayıt yazıldı
       }
@@ -1131,7 +1171,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       const outcome = await backgroundScan;
       scanStats.runs += 1;
       scanFingerprint = fingerprint;
-      return settleScan(outcome.result, outcome.lock, outcome.digest, "worker", restoredAt);
+      return settleScan(withNoticeKeys(outcome.result, outcome.noticeKeys), outcome.lock, outcome.digest, "worker", restoredAt);
     } catch (error) {
       scanStats.failed += 1;
       log?.warn?.(`Mutabakat taraması arka planda çalışmadı (${error.message}); bir sonraki zamanda yeniden denenecek.`);

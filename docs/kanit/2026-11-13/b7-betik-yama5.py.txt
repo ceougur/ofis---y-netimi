@@ -1,0 +1,85 @@
+import sys
+root = sys.argv[1]
+p = root + '/test/e2e/suzgec-cubugu-yaris.mjs'
+t = open(p, encoding='utf-8').read()
+def rep(old, new):
+    global t
+    assert t.count(old) == 1, (old[:90], t.count(old))
+    t = t.replace(old, new)
+
+rep("""// Kipler (--kip): banka-tarih (Banka → Hareketler, Başlangıç), pos-tarih (Banka → POS, Başlangıç), rapor-tarih (Raporlar → Kasa Hareketleri, Başlangıç),
+//   gelen-tarih (Faturalar → Gelen e-Faturalar, Başlangıç). --kontrol: yeniden çizim yazmaya başlamadan biter (yarış yok) — aynı tuşlar doğru tarihi üretmeli.""",
+"""// Kipler (--kip): banka-tarih (Banka → Hareketler, Başlangıç), pos-tarih (Banka → POS, Başlangıç), rapor-tarih (Raporlar → Kasa Hareketleri, Başlangıç),
+//   gelen-tarih (Faturalar → Gelen e-Faturalar, Başlangıç). --kontrol: yeniden çizim yazmaya başlamadan biter (yarış yok) — aynı tuşlar doğru tarihi üretmeli.
+// Birleşik tur 7 (DK-B6 DÜŞÜK-4 + kullanıcı notu 12.11 12:54 "bu fatura süzgecinde de olabilir"; liste istemci taramasıyla — her süzgeç tarih kutusu): cek-tarih
+//   (Çek / Senet listesi, Vade Başı), fatura-tarih (Fatura listesi, Başlangıç), kasa-tarih (Kasa → Tarih Aralığı, Başlangıç), rapor-mizan / rapor-vade / rapor-akis /
+//   rapor-cek (Raporlar → Cari Mizanı ve Ekstresi / Vade Takip / Nakit Akış / Çek / Senet, Başlangıç). Çek / Senet ve Fatura listesinde YARIŞ OLMADAN da (kontrol
+//   kipi) bozuluyordu: yazarken her geçerli ara değerde (yıl 0002, 0020 …) liste yeniden yükleniyor, çubuk yeniden kuruluyordu ("0002-06-07" / boş).
+// --kip yazim (npm run test:suzgec-tarih-yazim): bütün kipler hem yarışla hem kontrol kipinde, ayrı süreçlerde; tek özet satırı.""")
+
+rep("""if (MODE === "hepsi") {
+  const { spawnSync } = await import("node:child_process");
+  let ok = 0;
+  let bad = 0;
+  for (const kip of ["banka-tarih", "pos-tarih", "rapor-tarih", "gelen-tarih"]) {
+    const run = spawnSync(process.execPath, ["--disable-warning=ExperimentalWarning", fileURLToPath(import.meta.url), "--kip", kip, "--deneme", opts.deneme, "--bekle", opts.bekle, ...(CONTROL ? ["--kontrol"] : [])], { encoding: "utf8", env: process.env, maxBuffer: 64 * 1024 * 1024 });""",
+"""const KIP_ADLARI = ["banka-tarih", "pos-tarih", "rapor-tarih", "gelen-tarih", "cek-tarih", "fatura-tarih", "kasa-tarih", "rapor-mizan", "rapor-vade", "rapor-akis", "rapor-cek"];
+if (MODE === "hepsi" || MODE === "yazim") {
+  const { spawnSync } = await import("node:child_process");
+  let ok = 0;
+  let bad = 0;
+  const runs = MODE === "hepsi" ? ["banka-tarih", "pos-tarih", "rapor-tarih", "gelen-tarih"].map(kip => [kip, CONTROL]) : KIP_ADLARI.flatMap(kip => [[kip, false], [kip, true]]);
+  for (const [kip, control] of runs) {
+    const run = spawnSync(process.execPath, ["--disable-warning=ExperimentalWarning", fileURLToPath(import.meta.url), "--kip", kip, "--deneme", opts.deneme, "--bekle", opts.bekle, ...(control ? ["--kontrol"] : [])], { encoding: "utf8", env: process.env, maxBuffer: 64 * 1024 * 1024 });""")
+
+rep("""  console.log(`\\n${bad ? "BAŞARISIZ" : "TAMAM"}: ${ok} denetim geçti, ${bad} başarısız. (dört kip: banka-tarih, pos-tarih, rapor-tarih, gelen-tarih)`);""",
+"""  console.log(`\\n${bad ? "BAŞARISIZ" : "TAMAM"}: ${ok} denetim geçti, ${bad} başarısız. (${MODE === "hepsi" ? "dört kip: banka-tarih, pos-tarih, rapor-tarih, gelen-tarih" : `${KIP_ADLARI.length} kip × yarış ve kontrol`})`);""")
+
+rep("""  "gelen-tarih": { field: `${TOP} [data-inbox-from]`, sentinel: `${TOP} .hof-inv-tabs`, hold: /\\/api\\/workspace\\/invoices\\/inbox(\\?|$)/, applied: null },
+};""",
+"""  "gelen-tarih": { field: `${TOP} [data-inbox-from]`, sentinel: `${TOP} .hof-inv-tabs`, hold: /\\/api\\/workspace\\/invoices\\/inbox(\\?|$)/, applied: null },
+  // Birleşik tur 7: liste süzgeçleri — tarih yazılınca liste kendiliğinden süzülür (applied); rapor sekmeleri "Raporu Getir" ile (yalnız kutu).
+  "cek-tarih": { field: `${TOP} [data-filter="from"]`, sentinel: `${TOP} .hof-plan-head`, hold: /\\/api\\/workspace\\/cheques\\?/, applied: /\\/api\\/workspace\\/cheques\\?.*from=2026-10-07/ },
+  "fatura-tarih": { field: `${TOP} .hof-inv-filters [data-filter="from"]`, sentinel: `${TOP} .hof-inv-tabs`, hold: /\\/api\\/workspace\\/invoices\\?/, applied: /\\/api\\/workspace\\/invoices\\?.*from=2026-10-07/ },
+  "kasa-tarih": { field: `${TOP} [data-from]`, sentinel: `${TOP} [data-list] > *`, hold: /\\/api\\/workspace\\/cash\\?from=/, applied: /\\/api\\/workspace\\/cash\\?from=2026-10-07/ },
+  "rapor-mizan": { field: `${TOP} [data-range="from"]`, sentinel: `${TOP} .hof-rep-top`, hold: /\\/api\\/workspace\\/overview\\/mizan\\?/, applied: null, tab: "mizan" },
+  "rapor-vade": { field: `${TOP} [data-range="from"]`, sentinel: `${TOP} .hof-rep-top`, hold: /\\/api\\/workspace\\/overview\\/vade-takip\\?/, applied: null, tab: "vade" },
+  "rapor-akis": { field: `${TOP} [data-range="from"]`, sentinel: `${TOP} .hof-rep-top`, hold: /\\/api\\/workspace\\/overview\\/nakit-akisi\\?/, applied: null, tab: "flow" },
+  "rapor-cek": { field: `${TOP} [data-range="from"]`, sentinel: `${TOP} .hof-rep-top`, hold: /\\/api\\/workspace\\/cheques\\?/, applied: null, tab: "cheques" },
+};""")
+
+rep("""    if (MODE === "rapor-tarih") return must("Kasa Giriş", api.post("/api/workspace/cash", { kind: "in", amount: String(writes), date: "2026-10-06", description: `Başka oturum ${writes}`, method: "cash" }));""",
+"""    if (MODE === "rapor-tarih" || MODE === "kasa-tarih" || (K.tab && K.tab !== "cheques")) return must("Kasa Giriş", api.post("/api/workspace/cash", { kind: "in", amount: String(writes), date: "2026-10-06", description: `Başka oturum ${writes}`, method: "cash" }));
+    if (MODE === "cek-tarih" || MODE === "fatura-tarih" || K.tab === "cheques") return must("çek", api.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", amount: String(100 + writes), issueDate: "2026-10-06", dueDate: "2026-12-31", drawer: "Keşideci", serialNo: `YR-${writes}-${randomUUID().slice(0, 6)}` }));""")
+
+rep("""  } else {
+    await page.click("#hof-sidecard [data-action=invoices]");
+    await page.waitForSelector(`${TOP} .hof-inv-tabs [data-tab="inbox"]`, { timeout: 15000 });
+    await page.click(`${TOP} .hof-inv-tabs [data-tab="inbox"]`);
+  }""",
+"""  } else if (MODE === "cek-tarih") {
+    await page.click("#hof-sidecard [data-action=cheques]");
+    await page.waitForSelector(`${TOP} .hof-plan-head`, { timeout: 15000 });
+  } else if (MODE === "fatura-tarih") {
+    await page.click("#hof-sidecard [data-action=invoices]");
+    await page.waitForSelector(`${TOP} .hof-inv-tabs`, { timeout: 15000 });
+  } else if (MODE === "kasa-tarih") {
+    await page.click("#hof-sidecard [data-action=cash]");
+    await page.waitForSelector(`${TOP} [data-period="range"]`, { timeout: 15000 });
+    await page.click(`${TOP} [data-period="range"]`);
+    await page.waitForSelector(`${TOP} [data-list] > *`, { timeout: 15000 });
+  } else if (K.tab) {
+    await page.click("#hof-sidecard [data-action=analytics]");
+    await page.waitForSelector(`${TOP} .hof-rep-tab[data-tab="${K.tab}"]`, { timeout: 15000 });
+    await page.click(`${TOP} .hof-rep-tab[data-tab="${K.tab}"]`);
+    await page.waitForSelector(`${TOP} .hof-rep-tab[data-tab="${K.tab}"].is-on`, { timeout: 15000 });
+  } else {
+    await page.click("#hof-sidecard [data-action=invoices]");
+    await page.waitForSelector(`${TOP} .hof-inv-tabs [data-tab="inbox"]`, { timeout: 15000 });
+    await page.click(`${TOP} .hof-inv-tabs [data-tab="inbox"]`);
+  }""")
+rep("""      // Banka / POS: süzgeç uygulandı (from=2026-10-07 isteği). Rapor ve Gelen Kutusu'nda tarih "Ön İzle" / "Gelen Kutusunu Yenile" ile uygulanır — yalnız kutu.""",
+"""      // Banka / POS / Çek / Senet / Fatura / Kasa: süzgeç uygulandı (from=2026-10-07 isteği). Rapor ve Gelen Kutusu'nda tarih "Ön İzle" / "Gelen Kutusunu Yenile" /
+      // "Raporu Getir" ile uygulanır — yalnız kutu.""")
+open(p, 'w', encoding='utf-8').write(t)
+print("tamam")

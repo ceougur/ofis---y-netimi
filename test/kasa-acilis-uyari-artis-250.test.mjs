@@ -26,7 +26,8 @@ const AFTER = "2026-03-11";
 const MOVED = "2026-03-08";
 const EARLY = ["2026-03-01", "2026-03-02", "2026-03-03", "2026-03-04", "2026-03-05", "2026-03-06", "2026-03-07"];
 const CODE = "cash:before-opening";
-const grew = (previous, count) => `Kasa açılışından önce tarihli hareket uyarısı arttı (${previous} → ${count} hareket; kapının görmediği yazım)`;
+// Birleşik tur 7 (DK-B6 DÜŞÜK-1): ileti açıklanamayan hareket sayısını söyler.
+const grew = (previous, count, unexplained = 1) => `Kasa açılışından önce tarihli hareket uyarısı arttı (${previous} → ${count} hareket; kapının görmediği yazım: ${unexplained} hareket)`;
 
 const unwrap = r => ({ status: r.status, data: r.data && typeof r.data === "object" && r.data.ok === true ? r.data.data : r.data, code: r.data?.code });
 const apiOf = client => ({

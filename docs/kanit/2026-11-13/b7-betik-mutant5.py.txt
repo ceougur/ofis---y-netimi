@@ -1,0 +1,29 @@
+# Birleşik tur 7 İş 5: dar kontrol DK-B6'nın yaşayan mutantları M8–M12 (M10 ve M12 İş 1'in kimlik kümesine uyarlanmış eşdeğer) — kopyada (argv[1]) tek mutasyon.
+# Kullanım: python3 -I mutant5.py <kopya> <M8|M9|M10|M11|M12|orijinal>. Dosyalar <dosya>.b7orijinal'den geri yüklenir.
+import os, shutil, sys
+root, name = sys.argv[1], sys.argv[2]
+M = {
+    # M8: kapı varsayılan çağrıda commit'i okumaz
+    'M8': ('tools/kanit.mjs', 'commit = yol === YAPIM_ASAMASI_YOLU, kok = ROOT } = {}) {', 'commit = false, kok = ROOT } = {}) {'),
+    # M9: Vergi iletisi açılış GÜNÜnde de "önce tarihli" der
+    'M9': ('server/routes/cash.mjs', 'String(row.date) < opening', 'String(row.date) <= opening'),
+    # M10 (kimlik kümesine uyarlanmış): birden çok satır getiren geri yüklemede yalnız İLK kimlik kaydedilir (önceden: satır sayısı yerine +1)
+    'M10': ('server/lib/cash-opening.mjs', '    for (const key of added) handle.state.explained.set(key, { seq: handle.state.restored, from: "" });', '    for (const key of added.slice(0, 1)) handle.state.explained.set(key, { seq: handle.state.restored, from: "" });'),
+    # M11: Mutabakat Günlüğü'nde "yalnız uyarı" denetimi every → some
+    'M11': ('server/routes/report-center.mjs', 'items.every(item => item?.notice === true)', 'items.some(item => item?.notice === true)'),
+    # M12: iş parçacığı taramasında açıklama sıra numarası anlık görüntüden SONRA (sonuç işlenirken) alınır
+    'M12': ('server/lib/integrity.mjs', 'return settleScan(withNoticeKeys(outcome.result, outcome.noticeKeys), outcome.lock, outcome.digest, "worker", restoredAt);', 'return settleScan(withNoticeKeys(outcome.result, outcome.noticeKeys), outcome.lock, outcome.digest, "worker");'),
+}
+for f, _, _ in M.values():
+    p = os.path.join(root, f)
+    o = p + '.b7orijinal'
+    if not os.path.exists(o):
+        shutil.copy(p, o)
+    shutil.copy(o, p)
+if name != 'orijinal':
+    f, a, b = M[name]
+    p = os.path.join(root, f)
+    t = open(p, encoding='utf-8').read()
+    assert t.count(a) == 1, (name, t.count(a))
+    open(p, 'w', encoding='utf-8').write(t.replace(a, b))
+print('mutant', name)

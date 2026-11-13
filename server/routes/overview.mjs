@@ -360,11 +360,14 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const withTable = legacyTable && params.get("table") !== "0";
     const group = GROUPS.has(text(params.get("group"))) ? text(params.get("group")) : "";
     const flows = [];
-    if (plans()?.openItems) flows.push(...plans().openItems(day));
+    // Birleşik tur 7 (S130 = A; S136 = A, S139 = A): Şüpheli Alacağa alınan tutar 'Tahsil Edilecek' kalemlerinden — NAKİT TAHMİNİ dahil — Vade Takip'le AYNI kalemlerden,
+    // AYNI sırayla (tek yükümlülük kuyruğu; taksit ve fatura kalemi withoutDoubtful, carinin vade kalemi openDueItems) düşer; faturasız cari alacağı (dengeleme) carinin
+    // bakiyesinden açık şüpheli tutar düşülerek hesaplanır (unbilledFlows) — şüpheli para nakit tahmininde beklenen tahsilat gibi görünmez. Bakiye değişmez.
+    if (plans()?.openItems) flows.push(...plans().openItems(day, { withoutDoubtful: true }));
     // v2.2.0 (plan §3.14): bankada tahsildeki evrak vade + hesabın iş günü takvimiyle (expected).
     if (cheques()?.flows) flows.push(...cheques().flows({ expected: true }));
     // Vadeli (açık hesap) faturaların ödenmemiş kısmı vadesinde beklenen giriş (satış) ya da çıkıştır (alış).
-    for (const item of invoices()?.openItems ? invoices().openItems(day, { net: true }) : []) flows.push(invoiceFlow(item));
+    for (const item of invoices()?.openItems ? invoices().openItems(day, { net: true, withoutDoubtful: true }) : []) flows.push(invoiceFlow(item));
     // 2.4.6 madde 11 (2.4.5 K6.3'teki BİLİNEN SINIR kapandı): carinin vadeli / sözlü borç kayıtları — zil, Tahsilat Takvimi ve Vade Takip'teki "account|<entryId>"
     // kalemlerinin AYNISI (ortak yardımcı routes/accounts.mjs openDueItems; tarih Beklenen Ödeme Tarihi ya da Vade Tarihi, tutar FIFO Kalan − Mevcut Borç kartının
     // kapsadığı, yön carinin borcu → giriş / carinin alacağı → çıkış). Vadeli fatura gibi: kaleme bağlanmamış alacak kalemi küçültmez. Pencere iki ucu kapalı
@@ -406,13 +409,13 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
   function unbilledFlows(day, accountDue = []) {
     if (!accounts()?.list) return [];
     const items = [];
-    for (const item of plans()?.openItems ? plans().openItems(day) : []) if (item.accountId) items.push({ accountId: item.accountId, date: item.date, amount: item.amount });
+    for (const item of plans()?.openItems ? plans().openItems(day, { withoutDoubtful: true }) : []) if (item.accountId) items.push({ accountId: item.accountId, date: item.date, amount: item.amount });
     const owed = new Map();
     const owe = (accountId, amount) => owed.set(accountId, roundMoney((owed.get(accountId) || 0) + amount));
     // 2.4.6 madde 11 düzeltmesi (2.4.3 MM5'ten kalan çift sayım; ana oturum kararı, KARAR REVİZYONU ORTA): açık vadeli ALIŞ faturası projeksiyonda kendi vadesinde
     // çıkıştır (invoiceFlow); bakiyeyi de küçülttüğü için faturasız alacağın hesabında bakiyeye geri eklenir — müşteri carisinde açık alış faturası varken ödeme iki
     // kez düşülüyordu (bakiye 700 → projeksiyon net 400). İade belgesi projeksiyonda ayrı kalem değildir (openItems returns olmadan; bakiye zaten net) → eklenmez.
-    for (const item of invoices()?.openItems ? invoices().openItems(day, { net: true }) : []) {
+    for (const item of invoices()?.openItems ? invoices().openItems(day, { net: true, withoutDoubtful: true }) : []) {
       if (item.side === "sale") items.push({ accountId: item.accountId, date: item.dueDate, amount: item.open });
       else if (item.side === "purchase" && item.accountId) owe(item.accountId, item.open);
     }
@@ -422,7 +425,10 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
       if (item.direction === "in") items.push({ accountId: item.accountId, date: item.dueDate, amount: item.amount });
       else owe(item.accountId, item.amount);
     }
-    const live = accounts().list({ id: "", role: "admin" }, { status: "all" }).accounts.map(account => ({ id: account.id, name: account.name, balance: owed.has(account.id) ? roundMoney(account.balance + owed.get(account.id)) : account.balance }));
+    // Birleşik tur 7 (S130 = A): açık şüpheli tutar carinin bakiyesinden düşülür — kalemlerden düşen şüpheli para dengeleme satırıyla geri gelmez.
+    const doubtfulOpen = doubtfulApi()?.openByAccount ? doubtfulApi().openByAccount().byAccount : new Map();
+    const held = id => roundMoney((doubtfulOpen.get(id)?.openMinor || 0) / 100);
+    const live = accounts().list({ id: "", role: "admin" }, { status: "all" }).accounts.map(account => ({ id: account.id, name: account.name, balance: roundMoney(account.balance + (owed.get(account.id) || 0) - held(account.id)) }));
     return reconcileReceivables(store, { accounts: live, items, day, skip })
       .unbilled.map(item => ({ date: item.date, direction: "in", amount: item.amount, source: "unbilled", label: "Faturasız Cari Alacağı", party: item.name, ref: { type: "account", id: item.accountId } }));
   }
@@ -561,6 +567,8 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     id: item.id,
     entryId: item.entryId,
     ref: { type: "account", id: item.accountId, entryId: item.entryId },
+    // Birleşik tur 7 (S52, S67, S69 = A): durum ve gün sayısı takvim kalemininki (calendarState) — Vade Takip tarihten yeniden türetmez (lib/finance-report.mjs dueList).
+    calendar: { state: item.state, days: item.days },
   });
   async function tableItems() {
     try {

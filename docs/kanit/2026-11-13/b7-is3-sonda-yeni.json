@@ -1,0 +1,53 @@
+{
+ "hucreler": [],
+ "satir": [
+  "Hücre v-10 p15: liste gecikmiş 100 | vade 2026-11-04|overdue|-10 | zil ",
+  "Hücre v-10 p0: liste gecikmiş 100 | vade 2026-10-20|overdue|-10 | zil 2026-10-20|overdue|-10",
+  "Hücre v-10 p-5: liste gecikmiş 100 | vade 2026-10-15|overdue|-10 | zil 2026-10-15|overdue|-10",
+  "Hücre v0 p15: liste gecikmiş 0 | vade 2026-11-04|upcoming|15 | zil ",
+  "Hücre v0 p0: liste gecikmiş 0 | vade 2026-10-20|today|0 | zil 2026-10-20|today|0",
+  "Hücre v0 p-5: liste gecikmiş 0 | vade 2026-10-15|overdue|-5 | zil 2026-10-15|overdue|-5",
+  "Hücre v10 p15: liste gecikmiş 0 | vade 2026-11-04|upcoming|15 | zil ",
+  "Hücre v10 p0: liste gecikmiş 0 | vade 2026-10-20|today|0 | zil 2026-10-20|today|0",
+  "Hücre v10 p-5: liste gecikmiş 0 | vade 2026-10-15|overdue|-5 | zil 2026-10-15|overdue|-5"
+ ],
+ "vadeToplam": {
+  "overdue": {
+   "count": 5,
+   "amount": 500
+  },
+  "today": {
+   "count": 2,
+   "amount": 200
+  },
+  "upcoming": {
+   "count": 2,
+   "amount": 200
+  },
+  "total": {
+   "count": 9,
+   "amount": 900
+  }
+ },
+ "anlik": [
+  "\"overdue\":300",
+  "\"overdueCount\":3",
+  "\"overdueSale\":0",
+  "\"overduePurchase\":0"
+ ],
+ "nakit": [
+  "Hücre v-10 p15: satır 2026-11-04|Tahsil Edilecek Borç (Ödeme Sözü) · gecikmiş ",
+  "Hücre v-10 p0: satır 2026-10-20|Tahsil Edilecek Borç (Ödeme Sözü) · gecikmiş ",
+  "Hücre v-10 p-5: satır  · gecikmiş 2026-10-15",
+  "Hücre v0 p15: satır 2026-11-04|Tahsil Edilecek Borç (Ödeme Sözü) · gecikmiş ",
+  "Hücre v0 p0: satır 2026-10-20|Tahsil Edilecek Borç (Ödeme Sözü) · gecikmiş ",
+  "Hücre v0 p-5: satır  · gecikmiş 2026-10-15",
+  "Hücre v10 p15: satır 2026-11-04|Tahsil Edilecek Borç (Ödeme Sözü) · gecikmiş ",
+  "Hücre v10 p0: satır 2026-10-20|Tahsil Edilecek Borç (Ödeme Sözü) · gecikmiş ",
+  "Hücre v10 p-5: satır  · gecikmiş 2026-10-15"
+ ],
+ "nakitGecikmis": {
+  "in": 300,
+  "out": 0
+ }
+}

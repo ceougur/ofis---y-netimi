@@ -108,9 +108,11 @@ export function installCashOpeningGuard(store) {
   const known = guardStates.get(store);
   if (known) return known;
   const counters = () => (typeof store.changeCounters === "function" ? store.changeCounters() : null);
-  // restored: Silinenler geri yüklemelerinin (restoringCash) "Kasa Açılışından Önce Tarihli Hareket" uyarısına kattığı satır sayısı (birikimli; yalnız artış).
-  // Mutabakat taraması (lib/integrity.mjs settleScan) uyarının önceki sayısından bu kadarını açıklanmış sayar (birleşik tur 6, DK-D2T3 ORTA-1).
-  const state = { restoring: 0, opening: null, openingTouched: false, restored: 0 };
+  // Uyarı kümesinin açıklanmış kimlikleri (birleşik tur 7, DK-B6 ORTA-1 — sayı yerine kimlik; docs/devir/D2-ALTYAPI-TASARIM.md §16): restored = sıra numarası
+  // (her kayıtta 1 artar; lib/integrity.mjs settleScan taramanın anlık görüntüsünden önce okur); explained = kimlik → { seq, from }: Silinenler geri yüklemesinin
+  // "Kasa Açılışından Önce Tarihli Hareket" uyarısına kattığı kimlikler (from '') ve kapının kabul ettiği kimlik değişimleri (from = önceki hâlin kimliği; pending
+  // işlem kesinleşince yazılır). Tarama yalnız işaretinden SONRAKİ kayıtları açıklama sayar.
+  const state = { restoring: 0, opening: null, openingTouched: false, restored: 0, explained: new Map(), pending: [] };
   // Açılış tarihinin önbelleği: başka bağlantı yazınca (data_version) ya da store dışı yazımda (total − tracked) geçersiz; açılış satırına dokunan işlem
   // kendi içinde yeniden okur ve COMMIT'ten sonra önbelleği düşürür.
   function openingDate(fresh) {
@@ -163,6 +165,7 @@ export function installCashOpeningGuard(store) {
   const guard = {
     check({ tables, scope }) {
       state.openingTouched = false;
+      state.pending = [];
       if (!scope || ![...(tables || [])].some(table => CASH_TABLE_SET.has(table))) return;
       const written = [];
       for (const table of CASH_TABLES) {
@@ -184,7 +187,13 @@ export function installCashOpeningGuard(store) {
         const prior = priorOf(table, row);
         if (prior) {
           const wasCash = isCashMovement(prior.table, prior.row);
-          if (wasCash && String(prior.row.date || "") === date) continue;
+          if (wasCash && String(prior.row.date || "") === date) {
+            // Birleşik tur 7: önceki hâli BAŞKA kimlikte (Tablodan Aktar, Aktarımı Geri Al, aynı İşlem No'lu yeniden yazım) — uyarı kümesinde onun yerine geçer.
+            const key = cashNoticeKeyOf(table, row.id);
+            const from = cashNoticeKeyOf(prior.table, prior.row.id);
+            if (key !== from) state.pending.push({ key, from });
+            continue;
+          }
           throw beforeOpeningError({ date, opening, change: true, converted: !wasCash && String(prior.row.date || "") === date, table, id: row.id });
         }
         if (state.restoring > 0) continue;
@@ -194,9 +203,15 @@ export function installCashOpeningGuard(store) {
     after() {
       if (state.openingTouched) state.opening = null;
       state.openingTouched = false;
+      if (state.pending.length) {
+        state.restored += 1;
+        for (const { key, from } of state.pending) state.explained.set(key, { seq: state.restored, from });
+      }
+      state.pending = [];
     },
     rolledBack() {
       state.openingTouched = false;
+      state.pending = [];
     },
   };
   const remove = store.addCommitGuard(guard);
@@ -212,15 +227,19 @@ export function installCashOpeningGuard(store) {
 export function restoringCash(store, fn) {
   const handle = guardStates.get(store);
   if (!handle) return fn();
-  // 2.5.0 birleşik tur 6 (DK-D2T3 ORTA-1; BAŞ MİMAR 11.11 — kullanıcı onaylı): en dış geri yüklemede uyarı sayısı önce / sonra ölçülür; artış (geri gelen satırlar
-  // ve görünürlüğü dönen üst kaydın — cari, kart, çek — satırları) state.restored'a eklenir. Tarama bu artışı "kapının görmediği yazım" saymaz. Ölçüm eşzamanlı
+  // 2.5.0 birleşik tur 6 (DK-D2T3 ORTA-1; BAŞ MİMAR 11.11 — kullanıcı onaylı): en dış geri yüklemede uyarı önce / sonra ölçülür. Birleşik tur 7 (DK-B6 ORTA-1; BAŞ MİMAR
+  // 12.11 12:52): sayı yerine KİMLİK — SONRA'da olup ÖNCE'de olmayan her kimlik (geri gelen satırlar ve görünürlüğü dönen üst kaydın — cari, kart, çek — satırları) bir sıra
+  // numarasıyla açıklanmış kaydedilir. Tarama bunları "kapının görmediği yazım" saymaz; silinip geri gelen satır başka bir kimliğin artışını açıklamaz. Ölçüm eşzamanlı
   // (fn store işlemlerini beklemeden bitirir; arada başka istek çalışmaz); fn hata verse de ölçülür (işlemin bir kısmı kesinleşmiş olabilir).
   const outer = handle.state.restoring === 0;
-  const before = outer ? countBeforeOpening(store) : 0;
+  const before = outer ? keysBeforeOpening(store) : null;
   const settle = () => {
-    if (!outer) return;
-    const after = countBeforeOpening(store);
-    if (before >= 0 && after > before) handle.state.restored += after - before;
+    if (!outer || !before) return;
+    const after = keysBeforeOpening(store);
+    const added = after ? [...after].filter(key => !before.has(key)) : [];
+    if (!added.length) return;
+    handle.state.restored += 1;
+    for (const key of added) handle.state.explained.set(key, { seq: handle.state.restored, from: "" });
   };
   handle.state.restoring += 1;
   let result;
@@ -236,21 +255,42 @@ export function restoringCash(store, fn) {
 }
 
 /**
- * Uyarı sayısı (cashBeforeOpening ile aynı tanım: Kasa açılışından önce tarihli görünür nakit hareketi; açılış yoksa 0). Okunamazsa -1 (eski şema): restoringCash
- * artışı ölçemez — o geri yükleme açıklama katmaz (taramanın bir sonraki karşılaştırması yine çalışır).
+ * Uyarı kümesi (cashBeforeOpening ile aynı tanım: Kasa açılışından önce tarihli görünür nakit hareketlerinin kimlikleri; açılış yoksa boş). Okunamazsa null (eski şema):
+ * restoringCash ölçemez — o geri yükleme açıklama katmaz (taramanın bir sonraki karşılaştırması yine çalışır).
  */
-function countBeforeOpening(store) {
+function keysBeforeOpening(store) {
   try {
-    return cashBeforeOpening(store)?.rows.length || 0;
+    // Hız (ders 47, 53): yalnız kimlik — örnek metni / kaynak adı kurulmaz (geri yükleme başına iki kez; 18.651 açılış öncesi satırda ölçüldü).
+    const opening = cashOpeningDate(store);
+    const keys = new Set();
+    if (!opening) return keys;
+    const lines = createMoneyLines(store);
+    for (const line of lines.lines({ ways: ["cash"], before: opening, light: true })) keys.add(noticeKeyOf(lines, line));
+    return keys;
   } catch {
-    return -1;
+    return null;
   }
 }
 
-/** Silinenler geri yüklemelerinin uyarıya kattığı birikimli satır sayısı (store başına; denetim kurulu değilse 0). lib/integrity.mjs settleScan okur. */
+/** Açıklama kayıtlarının sıra numarası (store başına; denetim kurulu değilse 0). lib/integrity.mjs settleScan taramanın anlık görüntüsünden önce okur. */
 export function cashRestoreMark(store) {
   return guardStates.get(store)?.state.restored ?? 0;
 }
+
+const NO_EXPLAINED = new Map();
+/** Açıklanmış kimlikler: kimlik → { seq, from } (Silinenler geri yüklemesi: from ''; kapının kabul ettiği kimlik değişimi: from = önceki kimlik). Salt okunur kullanılır. */
+export function cashExplained(store) {
+  return guardStates.get(store)?.state.explained ?? NO_EXPLAINED;
+}
+
+// Uyarı kümesinin kimliği: para satırının TABLOSU + satır kimliği (lib/bank/money-lines.mjs kaynakları; aynı tablonun iki kaynağı — cari / fatura — tek kimlik).
+const TABLE_OF_SOURCE = Object.freeze({ payment: "payments", manual: "cash_entries", account: "account_entries", invoice: "account_entries", bank: "account_entries", plan: "plan_entries", stock: "stock_moves", cheque: "cheque_events", bankLine: "bank_lines" });
+const cashNoticeKeyOf = (table, id) => `${table}:${id ?? ""}`;
+// Para satırının (money-lines) uyarı kimliği — cashBeforeOpening ve keysBeforeOpening AYNI tanımla.
+const noticeKeyOf = (lines, line) => {
+  const source = typeof lines.sourceName === "function" ? lines.sourceName(line.src) : "";
+  return cashNoticeKeyOf(TABLE_OF_SOURCE[source] || source || "?", line.id);
+};
 
 const SOURCE_LABEL = { payment: "Kayıt Tahsilatı", manual: "Kasa Hareketi", account: "Cari Hareketi", invoice: "Fatura Peşini", plan: "Taksit Hareketi", stock: "Stok Hareketi", cheque: "Çek / Senet Hareketi" };
 /**
@@ -263,7 +303,7 @@ export function cashBeforeOpening(store, money = null) {
   const lines = money?.lines ? money : createMoneyLines(store);
   const rows = lines.lines({ ways: ["cash"], before: opening, light: true }).map(line => {
     const source = typeof lines.sourceName === "function" ? lines.sourceName(line.src) : "";
-    return { source, id: String(line.id || ""), date: String(line.date || ""), sample: `${SOURCE_LABEL[source] || "Kasa Hareketi"} ${line.id} · ${dayText(line.date)}` };
+    return { source, id: String(line.id || ""), date: String(line.date || ""), key: noticeKeyOf(lines, line), sample: `${SOURCE_LABEL[source] || "Kasa Hareketi"} ${line.id} · ${dayText(line.date)}` };
   });
   return { opening, rows };
 }

@@ -1,0 +1,20 @@
+kalan kâhin adımları başladı 06:50:28 yük 0.90 1.09 1.17 2/110 1721 · ağaç 5dc16fee
+ci.yml'deki kâhin adımı sayısı 10
+ÖNCE KOŞULDU kahin-defter
+ÖNCE KOŞULDU kahin-cari
+ÖNCE KOŞULDU kahin-tutar
+0 kahin-ebelge-model :: python3 test/bagimsiz/ebelge/test_model.py :: [kanit] b7y-kahin-ebelge-model: GEÇTİ · çıkış 0 · 114/114 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 5dc16fe +1 izlenmeyen · linux 6.18.44-fc
+0 kahin-ebelge-mutasyon :: python3 test/bagimsiz/ebelge/mutasyon.py :: [kanit] b7y-kahin-ebelge-mutasyon: GEÇTİ · çıkış 0 · 55/55 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 5dc16fe +1 izlenmeyen · linux 6.18.44-f
+0 kahin-ebelge-senaryo :: npm run test:kahin-ebelge -- --senaryo test/bagimsiz/ebelge/senaryolar --ux15 acik :: [kanit] b7y-kahin-ebelge-senaryo: GEÇTİ · çıkış 0 · 27/27 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 5dc16fe +1 izlenmeyen · linu
+0 kahin-muhasebe-model :: python3 test/bagimsiz/muhasebe/test_model.py :: [kanit] b7y-kahin-muhasebe-model: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 5dc16fe +1 izlenmeyen · linux 6.18.44-
+0 kahin-muhasebe-mutasyon :: python3 test/bagimsiz/muhasebe/mutasyon.py :: [kanit] b7y-kahin-muhasebe-mutasyon: GEÇTİ · çıkış 0 · 277/277 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 5dc16fe +1 izlenmeyen · linux 6.18.
+ÖNCE KOŞULDU kahin-maliyet
+1 kahin-mobil-yazma :: npm run test:kahin-mobil-yazma -- --haric E02-es-havale-pos-mobil,E02-es-havale-pos-masaustu :: [kanit] b7y-kahin-mobil-yazma: BAŞARISIZ (çıkış 1; 3 başarısız, 0 iptal) · çıkış 1 · 49/52 geçti, 3 başarısız, 0 iptal, 0 a
+kâhin adımları bitti 07:10:46 yük 1.16 2.73 3.01 1/118 4692
+e2e başladı 07:10:46 yük 1.16 2.73 3.01 1/119 4696 · ağaç 5dc16fee · temiz mi: 0
+ekran senaryosu sayısı 96
+bitti 08:38:55 yük 3.47 2.58 1.75 2/135 952 · disk 8.1G
+çıkış 0
+yeşil senaryo: 96
+
+[exited with code 0]

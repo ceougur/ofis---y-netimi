@@ -1,0 +1,37 @@
+{
+ "once": {
+  "nakitAkisi": [
+   "account:in:1000@2026-06-02",
+   "account:in:500@2026-06-12",
+   "invoice:in:200@2026-05-23"
+  ],
+  "nakitToplam": 1700,
+  "vadeTakip": [
+   "account:1000",
+   "account:500",
+   "invoice:200"
+  ],
+  "vadeToplam": 1700,
+  "gecikmisToplamlari": {
+   "in": 1700,
+   "out": 0
+  }
+ },
+ "sonra": {
+  "nakitAkisi": [
+   "account:in:300@2026-06-02",
+   "account:in:500@2026-06-12"
+  ],
+  "nakitToplam": 800,
+  "vadeTakip": [
+   "account:300",
+   "account:500"
+  ],
+  "vadeToplam": 800,
+  "gecikmisToplamlari": {
+   "in": 800,
+   "out": 0
+  }
+ },
+ "bakiye": 1700
+}

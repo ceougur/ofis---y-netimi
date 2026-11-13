@@ -1,0 +1,2413 @@
+TAP version 13
+# Subtest: Birleşik tur 7 İş 1 — kimlik kümesi; satır içi tarama (Mutabakat Testi)
+    # Subtest: §16.1-1 (S1 / S1b): iki tarama arası sil + Silinenler'den geri yükle + dış yazım → alarm (2 → 3; açıklanamayan 1); sonraki tarama sessiz
+    not ok 1 - §16.1-1 (S1 / S1b): iki tarama arası sil + Silinenler'den geri yükle + dış yazım → alarm (2 → 3; açıklanamayan 1); sonraki tarama sessiz
+      ---
+      duration_ms: 656.258509
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/kasa-acilis-kimlik-b7-250.test.mjs:133:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            ikinci: {
+              gunluk: [],
+              sunucu: 0,
+              uyari: 3,
+        ...
+            ilk: {
+        +     gunluk: [],
+        +     sunucu: 0,
+        -     gunluk: [
+        -       'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım: 1 hareket)'
+        -     ],
+        -     sunucu: 1,
+              uyari: 3,
+        +     zil: []
+        -     zil: [
+        -       {
+        -         count: 3,
+        -         name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım: 1 hareket)',
+        -         previous: 2,
+        -         unexplained: 1
+        -       }
+        -     ]
+            }
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        ilk:
+          uyari: 3
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım: 1 hareket)'
+          zil:
+            0:
+              name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım: 1 hareket)'
+              count: 3
+              previous: 2
+              unexplained: 1
+          sunucu: 1
+        ikinci:
+          uyari: 3
+          gunluk:
+          zil:
+          sunucu: 0
+      actual:
+        ilk:
+          uyari: 3
+          gunluk:
+          zil:
+          sunucu: 0
+        ikinci:
+          uyari: 3
+          gunluk:
+          zil:
+          sunucu: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/kasa-acilis-kimlik-b7-250.test.mjs:139:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: §16.1-4 (S9; §15'in BİLİNEN SINIR'ı kapanır): sil + dış yazım (sayı aynı 2 → 2) → alarm 'yeni hareket girdi'
+    not ok 2 - §16.1-4 (S9; §15'in BİLİNEN SINIR'ı kapanır): sil + dış yazım (sayı aynı 2 → 2) → alarm 'yeni hareket girdi'
+      ---
+      duration_ms: 451.406502
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/kasa-acilis-kimlik-b7-250.test.mjs:142:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   gunluk: [],
+        +   sunucu: 0,
+        -   gunluk: [
+        -     'Kasa açılışından önce tarihli hareket uyarısına yeni hareket girdi (2 → 2 hareket; kapının görmediği yazım: 1 hareket)'
+        -   ],
+        -   sunucu: 1,
+            uyari: 2,
+        +   zil: []
+        -   zil: [
+        -     {
+        -       count: 2,
+        -       name: 'Kasa açılışından önce tarihli hareket uyarısına yeni hareket girdi (2 → 2 hareket; kapının görmediği yazım: 1 hareket)',
+        -       previous: 2,
+        -       unexplained: 1
+        -     }
+        -   ]
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        uyari: 2
+        gunluk:
+          0: 'Kasa açılışından önce tarihli hareket uyarısına yeni hareket girdi (2 → 2 hareket; kapının görmediği yazım: 1 hareket)'
+        zil:
+          0:
+            name: 'Kasa açılışından önce tarihli hareket uyarısına yeni hareket girdi (2 → 2 hareket; kapının görmediği yazım: 1 hareket)'
+            count: 2
+            previous: 2
+            unexplained: 1
+        sunucu: 1
+      actual:
+        uyari: 2
+        gunluk:
+        zil:
+        sunucu: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/kasa-acilis-kimlik-b7-250.test.mjs:146:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: §16.1-3: yalnız meşru geri yükleme — iki tek satırlık geri yükleme (2 → 4) ve birden çok satır getiren taksit kartı (4 → 6) sessiz; aynı aralıkta kart + dış yazım → açıklanamayan 1
+    not ok 3 - §16.1-3: yalnız meşru geri yükleme — iki tek satırlık geri yükleme (2 → 4) ve birden çok satır getiren taksit kartı (4 → 6) sessiz; aynı aralıkta kart + dış yazım → açıklanamayan 1
+      ---
+      duration_ms: 578.566387
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/kasa-acilis-kimlik-b7-250.test.mjs:149:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            azalma: {
+              gunluk: [],
+              sunucu: 0,
+              uyari: 4,
+        ...
+              gunluk: [
+        +       'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım)'
+        -       'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım: 1 hareket)'
+              ],
+              sunucu: 1,
+              uyari: 7,
+              zil: [
+                {
+                  count: 7,
+        +         name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım)',
+        -         name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım: 1 hareket)',
+                  previous: 4,
+        +         unexplained: undefined
+        -         unexplained: 1
+                }
+              ]
+            },
+            kart: {
+              gunluk: [],
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        tek:
+          uyari: 4
+          gunluk:
+          zil:
+          sunucu: 0
+        kart:
+          uyari: 6
+          gunluk:
+          zil:
+          sunucu: 0
+        azalma:
+          uyari: 4
+          gunluk:
+          zil:
+          sunucu: 0
+        birlikte:
+          uyari: 7
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım: 1 hareket)'
+          zil:
+            0:
+              name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım: 1 hareket)'
+              count: 7
+              previous: 4
+              unexplained: 1
+          sunucu: 1
+      actual:
+        tek:
+          uyari: 4
+          gunluk:
+          zil:
+          sunucu: 0
+        kart:
+          uyari: 6
+          gunluk:
+          zil:
+          sunucu: 0
+        azalma:
+          uyari: 4
+          gunluk:
+          zil:
+          sunucu: 0
+        birlikte:
+          uyari: 7
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım)'
+          zil:
+            0:
+              name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım)'
+              count: 7
+              previous: 4
+          sunucu: 1
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/kasa-acilis-kimlik-b7-250.test.mjs:162:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: §16.1-13 (kimliği yeniden kullanılan satır): geri gelen, taranan, silinip taranan, sonra DIŞARIDAN aynı kimlikle yeniden eklenen satır → alarm (eski açıklama düşer)
+    not ok 4 - §16.1-13 (kimliği yeniden kullanılan satır): geri gelen, taranan, silinip taranan, sonra DIŞARIDAN aynı kimlikle yeniden eklenen satır → alarm (eski açıklama düşer)
+      ---
+      duration_ms: 485.10023
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/kasa-acilis-kimlik-b7-250.test.mjs:165:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            dis: {
+              gunluk: [
+        +       'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)'
+        -       'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım: 1 hareket)'
+              ],
+              sunucu: 1,
+              uyari: 3,
+              zil: [
+                {
+                  count: 3,
+        +         name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)',
+        -         name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım: 1 hareket)',
+                  previous: 2,
+        +         unexplained: undefined
+        -         unexplained: 1
+                }
+              ]
+            },
+            geri: {
+              gunluk: [],
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        geri:
+          uyari: 3
+          gunluk:
+          zil:
+          sunucu: 0
+        silindi:
+          uyari: 2
+          gunluk:
+          zil:
+          sunucu: 0
+        dis:
+          uyari: 3
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım: 1 hareket)'
+          zil:
+            0:
+              name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım: 1 hareket)'
+              count: 3
+              previous: 2
+              unexplained: 1
+          sunucu: 1
+      actual:
+        geri:
+          uyari: 3
+          gunluk:
+          zil:
+          sunucu: 0
+        silindi:
+          uyari: 2
+          gunluk:
+          zil:
+          sunucu: 0
+        dis:
+          uyari: 3
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)'
+          zil:
+            0:
+              name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)'
+              count: 3
+              previous: 2
+          sunucu: 1
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/kasa-acilis-kimlik-b7-250.test.mjs:177:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: §16.1-14: kapının kabul ettiği kimlik değişimi (aynı İşlem No, aynı gün; önceki hâl önceki kümede) sessiz; dış yazımla kümeye girmiş satırın kapıdan kimlik değişimi → alarm
+    not ok 5 - §16.1-14: kapının kabul ettiği kimlik değişimi (aynı İşlem No, aynı gün; önceki hâl önceki kümede) sessiz; dış yazımla kümeye girmiş satırın kapıdan kimlik değişimi → alarm
+      ---
+      duration_ms: 451.216908
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/kasa-acilis-kimlik-b7-250.test.mjs:180:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            aklanmaz: {
+              gunluk: [
+        +       'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)'
+        -       'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım: 1 hareket)'
+              ],
+              sunucu: 1,
+              uyari: 3,
+              zil: [
+                {
+                  count: 3,
+        +         name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)',
+        -         name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım: 1 hareket)',
+                  previous: 2,
+        +         unexplained: undefined
+        -         unexplained: 1
+                }
+              ]
+            },
+            kimlikler: [
+              'b7-yeni-d1',
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        mesru:
+          uyari: 2
+          gunluk:
+          zil:
+          sunucu: 0
+        aklanmaz:
+          uyari: 3
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım: 1 hareket)'
+          zil:
+            0:
+              name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım: 1 hareket)'
+              count: 3
+              previous: 2
+              unexplained: 1
+          sunucu: 1
+        kimlikler:
+          0: 'b7-yeni-d1'
+          1: 'b7-yeni-e0'
+      actual:
+        mesru:
+          uyari: 2
+          gunluk:
+          zil:
+          sunucu: 0
+        aklanmaz:
+          uyari: 3
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)'
+          zil:
+            0:
+              name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)'
+              count: 3
+              previous: 2
+          sunucu: 1
+        kimlikler:
+          0: 'b7-yeni-d1'
+          1: 'b7-yeni-e0'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/kasa-acilis-kimlik-b7-250.test.mjs:197:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: §16.1-5 / 6: açılışı öne alma (sayı azalır) sessiz, sonra dış yazım alarm; açılışı silip yeniden girme (ilk hareketten sonra olamaz) sessiz
+    not ok 6 - §16.1-5 / 6: açılışı öne alma (sayı azalır) sessiz, sonra dış yazım alarm; açılışı silip yeniden girme (ilk hareketten sonra olamaz) sessiz
+      ---
+      duration_ms: 469.011765
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/kasa-acilis-kimlik-b7-250.test.mjs:200:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            dis: {
+              gunluk: [
+        +       'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım)'
+        -       'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım: 1 hareket)'
+              ],
+              sunucu: 1,
+              uyari: 1,
+              zil: [
+                {
+                  count: 1,
+        +         name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım)',
+        -         name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım: 1 hareket)',
+                  previous: 0,
+        +         unexplained: undefined
+        -         unexplained: 1
+                }
+              ]
+            },
+            oneAl: {
+              gunluk: [],
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        oneAl:
+          uyari: 0
+          gunluk:
+          zil:
+          sunucu: 0
+        dis:
+          uyari: 1
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım: 1 hareket)'
+          zil:
+            0:
+              name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım: 1 hareket)'
+              count: 1
+              previous: 0
+              unexplained: 1
+          sunucu: 1
+        silindi:
+          uyari: 0
+          gunluk:
+          zil:
+          sunucu: 0
+        yeniden:
+          uyari: 0
+          gunluk:
+          zil:
+          sunucu: 0
+      actual:
+        oneAl:
+          uyari: 0
+          gunluk:
+          zil:
+          sunucu: 0
+        dis:
+          uyari: 1
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım)'
+          zil:
+            0:
+              name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım)'
+              count: 1
+              previous: 0
+          sunucu: 1
+        silindi:
+          uyari: 0
+          gunluk:
+          zil:
+          sunucu: 0
+        yeniden:
+          uyari: 0
+          gunluk:
+          zil:
+          sunucu: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/kasa-acilis-kimlik-b7-250.test.mjs:210:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: §16.1-9: Şirket Verisini Sıfırla — küme yeniden ölçülür, sessiz (sıfırlamadan önce kaydedilen geri yükleme sonraki dış yazımı örtmez)
+    not ok 7 - §16.1-9: Şirket Verisini Sıfırla — küme yeniden ölçülür, sessiz (sıfırlamadan önce kaydedilen geri yükleme sonraki dış yazımı örtmez)
+      ---
+      duration_ms: 537.151227
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/kasa-acilis-kimlik-b7-250.test.mjs:213:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            dis: {
+              gunluk: [
+        +       'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım)'
+        -       'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım: 1 hareket)'
+              ],
+              sunucu: 1,
+              uyari: 1,
+              zil: [
+                {
+                  count: 1,
+        +         name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım)',
+        -         name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım: 1 hareket)',
+                  previous: 0,
+        +         unexplained: undefined
+        -         unexplained: 1
+                }
+              ]
+            },
+            sifir: {
+              gunluk: [],
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        sifir:
+          uyari: 0
+          gunluk:
+          zil:
+          sunucu: 0
+        temiz:
+          uyari: 0
+          gunluk:
+          zil:
+          sunucu: 0
+        dis:
+          uyari: 1
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım: 1 hareket)'
+          zil:
+            0:
+              name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım: 1 hareket)'
+              count: 1
+              previous: 0
+              unexplained: 1
+          sunucu: 1
+      actual:
+        sifir:
+          uyari: 0
+          gunluk:
+          zil:
+          sunucu: 0
+        temiz:
+          uyari: 0
+          gunluk:
+          zil:
+          sunucu: 0
+        dis:
+          uyari: 1
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım)'
+          zil:
+            0:
+              name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım)'
+              count: 1
+              previous: 0
+          sunucu: 1
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/kasa-acilis-kimlik-b7-250.test.mjs:223:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..7
+not ok 1 - Birleşik tur 7 İş 1 — kimlik kümesi; satır içi tarama (Mutabakat Testi)
+  ---
+  duration_ms: 3634.178131
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/kasa-acilis-kimlik-b7-250.test.mjs:132:3'
+  failureType: 'subtestsFailed'
+  error: '7 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Birleşik tur 7 İş 1 — kimlik kümesi; iş parçacığı taraması
+    # Subtest: §16.1-1 (S1 / S1b): iki tarama arası sil + Silinenler'den geri yükle + dış yazım → alarm (2 → 3; açıklanamayan 1); sonraki tarama sessiz
+    not ok 1 - §16.1-1 (S1 / S1b): iki tarama arası sil + Silinenler'den geri yükle + dış yazım → alarm (2 → 3; açıklanamayan 1); sonraki tarama sessiz
+      ---
+      duration_ms: 693.917068
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/kasa-acilis-kimlik-b7-250.test.mjs:133:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            ikinci: {
+              gunluk: [],
+              sunucu: 0,
+              uyari: 3,
+        ...
+            ilk: {
+        +     gunluk: [],
+        +     sunucu: 0,
+        -     gunluk: [
+        -       'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım: 1 hareket)'
+        -     ],
+        -     sunucu: 1,
+              uyari: 3,
+        +     zil: []
+        -     zil: [
+        -       {
+        -         count: 3,
+        -         name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım: 1 hareket)',
+        -         previous: 2,
+        -         unexplained: 1
+        -       }
+        -     ]
+            }
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        ilk:
+          uyari: 3
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım: 1 hareket)'
+          zil:
+            0:
+              name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım: 1 hareket)'
+              count: 3
+              previous: 2
+              unexplained: 1
+          sunucu: 1
+        ikinci:
+          uyari: 3
+          gunluk:
+          zil:
+          sunucu: 0
+      actual:
+        ilk:
+          uyari: 3
+          gunluk:
+          zil:
+          sunucu: 0
+        ikinci:
+          uyari: 3
+          gunluk:
+          zil:
+          sunucu: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/kasa-acilis-kimlik-b7-250.test.mjs:139:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: §16.1-4 (S9; §15'in BİLİNEN SINIR'ı kapanır): sil + dış yazım (sayı aynı 2 → 2) → alarm 'yeni hareket girdi'
+    not ok 2 - §16.1-4 (S9; §15'in BİLİNEN SINIR'ı kapanır): sil + dış yazım (sayı aynı 2 → 2) → alarm 'yeni hareket girdi'
+      ---
+      duration_ms: 617.408194
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/kasa-acilis-kimlik-b7-250.test.mjs:142:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   gunluk: [],
+        +   sunucu: 0,
+        -   gunluk: [
+        -     'Kasa açılışından önce tarihli hareket uyarısına yeni hareket girdi (2 → 2 hareket; kapının görmediği yazım: 1 hareket)'
+        -   ],
+        -   sunucu: 1,
+            uyari: 2,
+        +   zil: []
+        -   zil: [
+        -     {
+        -       count: 2,
+        -       name: 'Kasa açılışından önce tarihli hareket uyarısına yeni hareket girdi (2 → 2 hareket; kapının görmediği yazım: 1 hareket)',
+        -       previous: 2,
+        -       unexplained: 1
+        -     }
+        -   ]
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        uyari: 2
+        gunluk:
+          0: 'Kasa açılışından önce tarihli hareket uyarısına yeni hareket girdi (2 → 2 hareket; kapının görmediği yazım: 1 hareket)'
+        zil:
+          0:
+            name: 'Kasa açılışından önce tarihli hareket uyarısına yeni hareket girdi (2 → 2 hareket; kapının görmediği yazım: 1 hareket)'
+            count: 2
+            previous: 2
+            unexplained: 1
+        sunucu: 1
+      actual:
+        uyari: 2
+        gunluk:
+        zil:
+        sunucu: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/kasa-acilis-kimlik-b7-250.test.mjs:146:14)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: §16.1-3: yalnız meşru geri yükleme — iki tek satırlık geri yükleme (2 → 4) ve birden çok satır getiren taksit kartı (4 → 6) sessiz; aynı aralıkta kart + dış yazım → açıklanamayan 1
+    not ok 3 - §16.1-3: yalnız meşru geri yükleme — iki tek satırlık geri yükleme (2 → 4) ve birden çok satır getiren taksit kartı (4 → 6) sessiz; aynı aralıkta kart + dış yazım → açıklanamayan 1
+      ---
+      duration_ms: 1415.491945
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/kasa-acilis-kimlik-b7-250.test.mjs:149:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            azalma: {
+              gunluk: [],
+              sunucu: 0,
+              uyari: 4,
+        ...
+              gunluk: [
+        +       'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım)'
+        -       'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım: 1 hareket)'
+              ],
+              sunucu: 1,
+              uyari: 7,
+              zil: [
+                {
+                  count: 7,
+        +         name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım)',
+        -         name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım: 1 hareket)',
+                  previous: 4,
+        +         unexplained: undefined
+        -         unexplained: 1
+                }
+              ]
+            },
+            kart: {
+              gunluk: [],
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        tek:
+          uyari: 4
+          gunluk:
+          zil:
+          sunucu: 0
+        kart:
+          uyari: 6
+          gunluk:
+          zil:
+          sunucu: 0
+        azalma:
+          uyari: 4
+          gunluk:
+          zil:
+          sunucu: 0
+        birlikte:
+          uyari: 7
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım: 1 hareket)'
+          zil:
+            0:
+              name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım: 1 hareket)'
+              count: 7
+              previous: 4
+              unexplained: 1
+          sunucu: 1
+      actual:
+        tek:
+          uyari: 4
+          gunluk:
+          zil:
+          sunucu: 0
+        kart:
+          uyari: 6
+          gunluk:
+          zil:
+          sunucu: 0
+        azalma:
+          uyari: 4
+          gunluk:
+          zil:
+          sunucu: 0
+        birlikte:
+          uyari: 7
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım)'
+          zil:
+            0:
+              name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım)'
+              count: 7
+              previous: 4
+          sunucu: 1
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/kasa-acilis-kimlik-b7-250.test.mjs:162:14)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: §16.1-13 (kimliği yeniden kullanılan satır): geri gelen, taranan, silinip taranan, sonra DIŞARIDAN aynı kimlikle yeniden eklenen satır → alarm (eski açıklama düşer)
+    not ok 4 - §16.1-13 (kimliği yeniden kullanılan satır): geri gelen, taranan, silinip taranan, sonra DIŞARIDAN aynı kimlikle yeniden eklenen satır → alarm (eski açıklama düşer)
+      ---
+      duration_ms: 1046.622902
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/kasa-acilis-kimlik-b7-250.test.mjs:165:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            dis: {
+              gunluk: [
+        +       'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)'
+        -       'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım: 1 hareket)'
+              ],
+              sunucu: 1,
+              uyari: 3,
+              zil: [
+                {
+                  count: 3,
+        +         name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)',
+        -         name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım: 1 hareket)',
+                  previous: 2,
+        +         unexplained: undefined
+        -         unexplained: 1
+                }
+              ]
+            },
+            geri: {
+              gunluk: [],
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        geri:
+          uyari: 3
+          gunluk:
+          zil:
+          sunucu: 0
+        silindi:
+          uyari: 2
+          gunluk:
+          zil:
+          sunucu: 0
+        dis:
+          uyari: 3
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım: 1 hareket)'
+          zil:
+            0:
+              name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım: 1 hareket)'
+              count: 3
+              previous: 2
+              unexplained: 1
+          sunucu: 1
+      actual:
+        geri:
+          uyari: 3
+          gunluk:
+          zil:
+          sunucu: 0
+        silindi:
+          uyari: 2
+          gunluk:
+          zil:
+          sunucu: 0
+        dis:
+          uyari: 3
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)'
+          zil:
+            0:
+              name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)'
+              count: 3
+              previous: 2
+          sunucu: 1
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/kasa-acilis-kimlik-b7-250.test.mjs:177:14)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: §16.1-14: kapının kabul ettiği kimlik değişimi (aynı İşlem No, aynı gün; önceki hâl önceki kümede) sessiz; dış yazımla kümeye girmiş satırın kapıdan kimlik değişimi → alarm
+    not ok 5 - §16.1-14: kapının kabul ettiği kimlik değişimi (aynı İşlem No, aynı gün; önceki hâl önceki kümede) sessiz; dış yazımla kümeye girmiş satırın kapıdan kimlik değişimi → alarm
+      ---
+      duration_ms: 865.441401
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/kasa-acilis-kimlik-b7-250.test.mjs:180:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            aklanmaz: {
+              gunluk: [
+        +       'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)'
+        -       'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım: 1 hareket)'
+              ],
+              sunucu: 1,
+              uyari: 3,
+              zil: [
+                {
+                  count: 3,
+        +         name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)',
+        -         name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım: 1 hareket)',
+                  previous: 2,
+        +         unexplained: undefined
+        -         unexplained: 1
+                }
+              ]
+            },
+            kimlikler: [
+              'b7-yeni-d1',
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        mesru:
+          uyari: 2
+          gunluk:
+          zil:
+          sunucu: 0
+        aklanmaz:
+          uyari: 3
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım: 1 hareket)'
+          zil:
+            0:
+              name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım: 1 hareket)'
+              count: 3
+              previous: 2
+              unexplained: 1
+          sunucu: 1
+        kimlikler:
+          0: 'b7-yeni-d1'
+          1: 'b7-yeni-e0'
+      actual:
+        mesru:
+          uyari: 2
+          gunluk:
+          zil:
+          sunucu: 0
+        aklanmaz:
+          uyari: 3
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)'
+          zil:
+            0:
+              name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)'
+              count: 3
+              previous: 2
+          sunucu: 1
+        kimlikler:
+          0: 'b7-yeni-d1'
+          1: 'b7-yeni-e0'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/kasa-acilis-kimlik-b7-250.test.mjs:197:14)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: §16.1-5 / 6: açılışı öne alma (sayı azalır) sessiz, sonra dış yazım alarm; açılışı silip yeniden girme (ilk hareketten sonra olamaz) sessiz
+    not ok 6 - §16.1-5 / 6: açılışı öne alma (sayı azalır) sessiz, sonra dış yazım alarm; açılışı silip yeniden girme (ilk hareketten sonra olamaz) sessiz
+      ---
+      duration_ms: 1310.900824
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/kasa-acilis-kimlik-b7-250.test.mjs:200:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            dis: {
+              gunluk: [
+        +       'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım)'
+        -       'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım: 1 hareket)'
+              ],
+              sunucu: 1,
+              uyari: 1,
+              zil: [
+                {
+                  count: 1,
+        +         name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım)',
+        -         name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım: 1 hareket)',
+                  previous: 0,
+        +         unexplained: undefined
+        -         unexplained: 1
+                }
+              ]
+            },
+            oneAl: {
+              gunluk: [],
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        oneAl:
+          uyari: 0
+          gunluk:
+          zil:
+          sunucu: 0
+        dis:
+          uyari: 1
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım: 1 hareket)'
+          zil:
+            0:
+              name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım: 1 hareket)'
+              count: 1
+              previous: 0
+              unexplained: 1
+          sunucu: 1
+        silindi:
+          uyari: 0
+          gunluk:
+          zil:
+          sunucu: 0
+        yeniden:
+          uyari: 0
+          gunluk:
+          zil:
+          sunucu: 0
+      actual:
+        oneAl:
+          uyari: 0
+          gunluk:
+          zil:
+          sunucu: 0
+        dis:
+          uyari: 1
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım)'
+          zil:
+            0:
+              name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım)'
+              count: 1
+              previous: 0
+          sunucu: 1
+        silindi:
+          uyari: 0
+          gunluk:
+          zil:
+          sunucu: 0
+        yeniden:
+          uyari: 0
+          gunluk:
+          zil:
+          sunucu: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/kasa-acilis-kimlik-b7-250.test.mjs:210:14)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: §16.1-9: Şirket Verisini Sıfırla — küme yeniden ölçülür, sessiz (sıfırlamadan önce kaydedilen geri yükleme sonraki dış yazımı örtmez)
+    not ok 7 - §16.1-9: Şirket Verisini Sıfırla — küme yeniden ölçülür, sessiz (sıfırlamadan önce kaydedilen geri yükleme sonraki dış yazımı örtmez)
+      ---
+      duration_ms: 1138.979027
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/kasa-acilis-kimlik-b7-250.test.mjs:213:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            dis: {
+              gunluk: [
+        +       'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım)'
+        -       'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım: 1 hareket)'
+              ],
+              sunucu: 1,
+              uyari: 1,
+              zil: [
+                {
+                  count: 1,
+        +         name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım)',
+        -         name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım: 1 hareket)',
+                  previous: 0,
+        +         unexplained: undefined
+        -         unexplained: 1
+                }
+              ]
+            },
+            sifir: {
+              gunluk: [],
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        sifir:
+          uyari: 0
+          gunluk:
+          zil:
+          sunucu: 0
+        temiz:
+          uyari: 0
+          gunluk:
+          zil:
+          sunucu: 0
+        dis:
+          uyari: 1
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım: 1 hareket)'
+          zil:
+            0:
+              name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım: 1 hareket)'
+              count: 1
+              previous: 0
+              unexplained: 1
+          sunucu: 1
+      actual:
+        sifir:
+          uyari: 0
+          gunluk:
+          zil:
+          sunucu: 0
+        temiz:
+          uyari: 0
+          gunluk:
+          zil:
+          sunucu: 0
+        dis:
+          uyari: 1
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım)'
+          zil:
+            0:
+              name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım)'
+              count: 1
+              previous: 0
+          sunucu: 1
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/kasa-acilis-kimlik-b7-250.test.mjs:223:14)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..7
+not ok 2 - Birleşik tur 7 İş 1 — kimlik kümesi; iş parçacığı taraması
+  ---
+  duration_ms: 7089.768569
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/kasa-acilis-kimlik-b7-250.test.mjs:132:3'
+  failureType: 'subtestsFailed'
+  error: '7 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Birleşik tur 7 İş 1 — §16.1-12 (b): geri yükleme iş parçacığının anlık görüntüsünden SONRA kesinleşir (görüntüde yok) → o tarama karşılaştırmaz, sonraki tarama yanlış alarm vermez (ön koşul zorla — ders 20)
+    # Subtest: geri yükleme tarama sürerken, görüntüye girmeden: işaret ilerlemez; sonraki iki tarama sessiz, sayı +1
+    ok 1 - geri yükleme tarama sürerken, görüntüye girmeden: işaret ilerlemez; sonraki iki tarama sessiz, sayı +1
+      ---
+      duration_ms: 4280.698332
+      type: 'test'
+      ...
+    # ön koşul 2 / 8 denemede oluştu (gecikmeler: 400 200 100 150 175* 175 188 182*)
+    1..1
+ok 3 - Birleşik tur 7 İş 1 — §16.1-12 (b): geri yükleme iş parçacığının anlık görüntüsünden SONRA kesinleşir (görüntüde yok) → o tarama karşılaştırmaz, sonraki tarama yanlış alarm vermez (ön koşul zorla — ders 20)
+  ---
+  duration_ms: 4280.967132
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 7 İş 5 — M11: Mutabakat Günlüğü'nde sapma + uyarı artışını birlikte taşıyan kayıt 'Sapma' adıyla
+    # Subtest: dışarıdan aynı kimlikle yeniden yazılan Kasa satırı: tek tarama kaydı iki bulgu (İşlem Başlığı sapması + uyarı artışı) → 'Taramada Bulunan Sapma'; yalnız dış tarih taşıma → 'Taramada Bulunan Uyarı Artışı'
+    ok 1 - dışarıdan aynı kimlikle yeniden yazılan Kasa satırı: tek tarama kaydı iki bulgu (İşlem Başlığı sapması + uyarı artışı) → 'Taramada Bulunan Sapma'; yalnız dış tarih taşıma → 'Taramada Bulunan Uyarı Artışı'
+      ---
+      duration_ms: 437.379991
+      type: 'test'
+      ...
+    1..1
+ok 4 - Birleşik tur 7 İş 5 — M11: Mutabakat Günlüğü'nde sapma + uyarı artışını birlikte taşıyan kayıt 'Sapma' adıyla
+  ---
+  duration_ms: 437.550914
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 7 İş 3 — Vade Takip: sözlü borcun durumu ve gün sayısı (9 hücre; ekran, Excel, PDF; zil ile aynı)
+    # Subtest: ekran (API) satırı: tarih söz günü, durum ve gün sayısı karar tablosundaki gibi; zil / takvim kalemi aynı (ufuktakiler)
+    not ok 1 - ekran (API) satırı: tarih söz günü, durum ve gün sayısı karar tablosundaki gibi; zil / takvim kalemi aynı (ufuktakiler)
+      ---
+      duration_ms: 24.088982
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/vade-takip-soz-b7-250.test.mjs:69:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            {
+              hucre: 'Söz Hücresi v-10 p15',
+              vade: [
+                {
+                  date: '2026-11-04',
+        +         days: 15,
+        +         state: 'upcoming'
+        -         days: -10,
+        -         state: 'overdue'
+                }
+              ],
+              zilAyni: true
+            },
+            {
+        ...
+                  date: '2026-10-20',
+        +         days: 0,
+        +         state: 'today'
+        -         days: -10,
+        -         state: 'overdue'
+                }
+              ],
+        +     zilAyni: false
+        -     zilAyni: true
+            },
+            {
+              hucre: 'Söz Hücresi v-10 p-5',
+              vade: [
+                {
+                  date: '2026-10-15',
+        +         days: -5,
+        -         days: -10,
+                  state: 'overdue'
+                }
+              ],
+        +     zilAyni: false
+        -     zilAyni: true
+            },
+            {
+              hucre: 'Söz Hücresi v0 p15',
+              vade: [
+                {
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          hucre: 'Söz Hücresi v-10 p15'
+          vade:
+            0:
+              date: '2026-11-04'
+              state: 'overdue'
+              days: -10
+          zilAyni: true
+        1:
+          hucre: 'Söz Hücresi v-10 p0'
+          vade:
+            0:
+              date: '2026-10-20'
+              state: 'overdue'
+              days: -10
+          zilAyni: true
+        2:
+          hucre: 'Söz Hücresi v-10 p-5'
+          vade:
+            0:
+              date: '2026-10-15'
+              state: 'overdue'
+              days: -10
+          zilAyni: true
+        3:
+          hucre: 'Söz Hücresi v0 p15'
+          vade:
+            0:
+              date: '2026-11-04'
+              state: 'upcoming'
+              days: 15
+          zilAyni: true
+        4:
+          hucre: 'Söz Hücresi v0 p0'
+          vade:
+            0:
+              date: '2026-10-20'
+              state: 'today'
+              days: 0
+          zilAyni: true
+        5:
+          hucre: 'Söz Hücresi v0 p-5'
+          vade:
+            0:
+              date: '2026-10-15'
+              state: 'overdue'
+              days: -5
+          zilAyni: true
+        6:
+          hucre: 'Söz Hücresi v10 p15'
+          vade:
+            0:
+              date: '2026-11-04'
+              state: 'upcoming'
+              days: 15
+          zilAyni: true
+        7:
+          hucre: 'Söz Hücresi v10 p0'
+          vade:
+            0:
+              date: '2026-10-20'
+              state: 'today'
+              days: 0
+          zilAyni: true
+        8:
+          hucre: 'Söz Hücresi v10 p-5'
+          vade:
+            0:
+              date: '2026-10-15'
+              state: 'overdue'
+              days: -5
+          zilAyni: true
+      actual:
+        0:
+          hucre: 'Söz Hücresi v-10 p15'
+          vade:
+            0:
+              date: '2026-11-04'
+              state: 'upcoming'
+              days: 15
+          zilAyni: true
+        1:
+          hucre: 'Söz Hücresi v-10 p0'
+          vade:
+            0:
+              date: '2026-10-20'
+              state: 'today'
+              days: 0
+          zilAyni: false
+        2:
+          hucre: 'Söz Hücresi v-10 p-5'
+          vade:
+            0:
+              date: '2026-10-15'
+              state: 'overdue'
+              days: -5
+          zilAyni: false
+        3:
+          hucre: 'Söz Hücresi v0 p15'
+          vade:
+            0:
+              date: '2026-11-04'
+              state: 'upcoming'
+              days: 15
+          zilAyni: true
+        4:
+          hucre: 'Söz Hücresi v0 p0'
+          vade:
+            0:
+              date: '2026-10-20'
+              state: 'today'
+              days: 0
+          zilAyni: true
+        5:
+          hucre: 'Söz Hücresi v0 p-5'
+          vade:
+            0:
+              date: '2026-10-15'
+              state: 'overdue'
+              days: -5
+          zilAyni: true
+        6:
+          hucre: 'Söz Hücresi v10 p15'
+          vade:
+            0:
+              date: '2026-11-04'
+              state: 'upcoming'
+              days: 15
+          zilAyni: true
+        7:
+          hucre: 'Söz Hücresi v10 p0'
+          vade:
+            0:
+              date: '2026-10-20'
+              state: 'today'
+              days: 0
+          zilAyni: true
+        8:
+          hucre: 'Söz Hücresi v10 p-5'
+          vade:
+            0:
+              date: '2026-10-15'
+              state: 'overdue'
+              days: -5
+          zilAyni: true
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/vade-takip-soz-b7-250.test.mjs:77:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Excel (Gün, Durum) ve PDF (Durum metni) ekranla aynı
+    not ok 2 - Excel (Gün, Durum) ve PDF (Durum metni) ekranla aynı
+      ---
+      duration_ms: 14.049315
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/vade-takip-soz-b7-250.test.mjs:80:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            {
+        +     durum: 'Yaklaşan',
+        +     gun: 15,
+        -     durum: 'Gecikmiş',
+        -     gun: -10,
+              hucre: 'Söz Hücresi v-10 p15'
+            },
+            {
+        +     durum: 'Bugün',
+        +     gun: 0,
+        -     durum: 'Gecikmiş',
+        -     gun: -10,
+              hucre: 'Söz Hücresi v-10 p0'
+            },
+            {
+              durum: 'Gecikmiş',
+        +     gun: -5,
+        -     gun: -10,
+              hucre: 'Söz Hücresi v-10 p-5'
+            },
+            {
+              durum: 'Yaklaşan',
+              gun: 15,
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          hucre: 'Söz Hücresi v-10 p15'
+          gun: -10
+          durum: 'Gecikmiş'
+        1:
+          hucre: 'Söz Hücresi v-10 p0'
+          gun: -10
+          durum: 'Gecikmiş'
+        2:
+          hucre: 'Söz Hücresi v-10 p-5'
+          gun: -10
+          durum: 'Gecikmiş'
+        3:
+          hucre: 'Söz Hücresi v0 p15'
+          gun: 15
+          durum: 'Yaklaşan'
+        4:
+          hucre: 'Söz Hücresi v0 p0'
+          gun: 0
+          durum: 'Bugün'
+        5:
+          hucre: 'Söz Hücresi v0 p-5'
+          gun: -5
+          durum: 'Gecikmiş'
+        6:
+          hucre: 'Söz Hücresi v10 p15'
+          gun: 15
+          durum: 'Yaklaşan'
+        7:
+          hucre: 'Söz Hücresi v10 p0'
+          gun: 0
+          durum: 'Bugün'
+        8:
+          hucre: 'Söz Hücresi v10 p-5'
+          gun: -5
+          durum: 'Gecikmiş'
+      actual:
+        0:
+          hucre: 'Söz Hücresi v-10 p15'
+          gun: 15
+          durum: 'Yaklaşan'
+        1:
+          hucre: 'Söz Hücresi v-10 p0'
+          gun: 0
+          durum: 'Bugün'
+        2:
+          hucre: 'Söz Hücresi v-10 p-5'
+          gun: -5
+          durum: 'Gecikmiş'
+        3:
+          hucre: 'Söz Hücresi v0 p15'
+          gun: 15
+          durum: 'Yaklaşan'
+        4:
+          hucre: 'Söz Hücresi v0 p0'
+          gun: 0
+          durum: 'Bugün'
+        5:
+          hucre: 'Söz Hücresi v0 p-5'
+          gun: -5
+          durum: 'Gecikmiş'
+        6:
+          hucre: 'Söz Hücresi v10 p15'
+          gun: 15
+          durum: 'Yaklaşan'
+        7:
+          hucre: 'Söz Hücresi v10 p0'
+          gun: 0
+          durum: 'Bugün'
+        8:
+          hucre: 'Söz Hücresi v10 p-5'
+          gun: -5
+          durum: 'Gecikmiş'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/vade-takip-soz-b7-250.test.mjs:90:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 5 - Birleşik tur 7 İş 3 — Vade Takip: sözlü borcun durumu ve gün sayısı (9 hücre; ekran, Excel, PDF; zil ile aynı)
+  ---
+  duration_ms: 721.995683
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/vade-takip-soz-b7-250.test.mjs:56:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Birleşik tur 7 İş 3 — Vade Takip 'Gecikmiş Tahsilat / Gecikmiş Ödeme' her aralık / kaynak / yön seçeneğinde
+    # Subtest: her seçenekte: toplam alanı = satırlardan = girdilerden beklenen (gecikmiş tahsilat ve ödeme)
+    not ok 1 - her seçenekte: toplam alanı = satırlardan = girdilerden beklenen (gecikmiş tahsilat ve ödeme)
+      ---
+      duration_ms: 45.401034
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/vade-takip-soz-b7-250.test.mjs:140:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            {
+              ad: 'aralık late',
+              alanIn: 900,
+              alanOut: 250,
+        ...
+              ad: 'aralık today',
+        +     alanIn: 900,
+        -     alanIn: 1000,
+              alanOut: 250,
+        +     satirIn: 900,
+        -     satirIn: 1000,
+              satirOut: 250
+            },
+            {
+              ad: 'aralık next7',
+        +     alanIn: 900,
+        -     alanIn: 1000,
+              alanOut: 250,
+        +     satirIn: 900,
+        -     satirIn: 1000,
+              satirOut: 250
+            },
+            {
+              ad: 'aralık next30',
+        +     alanIn: 900,
+        +     alanOut: 250,
+        +     satirIn: 900,
+        +     satirOut: 250
+        -     alanIn: 1100,
+        -     alanOut: 950,
+        -     satirIn: 1100,
+        -     satirOut: 950
+            },
+            {
+              ad: 'aralık next90',
+        +     alanIn: 900,
+        +     alanOut: 250,
+        +     satirIn: 900,
+        +     satirOut: 250
+        -     alanIn: 1100,
+        -     alanOut: 950,
+        -     satirIn: 1100,
+        -     satirOut: 950
+            },
+            {
+              ad: 'aralık open',
+        +     alanIn: 900,
+        +     alanOut: 250,
+        +     satirIn: 900,
+        +     satirOut: 250
+        -     alanIn: 1100,
+        -     alanOut: 950,
+        -     satirIn: 1100,
+        -     satirOut: 950
+            },
+            {
+              ad: 'geniş özel aralık',
+        +     alanIn: 900,
+        +     alanOut: 250,
+        +     satirIn: 900,
+        +     satirOut: 250
+        -     alanIn: 1100,
+        -     alanOut: 950,
+        -     satirIn: 1100,
+        -     satirOut: 950
+            },
+            {
+              ad: 'gecikmişler hariç (late=0)',
+        +     alanIn: 0,
+        +     alanOut: 0,
+        +     satirIn: 0,
+        +     satirOut: 0
+        -     alanIn: 200,
+        -     alanOut: 700,
+        -     satirIn: 200,
+        -     satirOut: 700
+            },
+            {
+              ad: 'kaynak account',
+        +     alanIn: 300,
+        +     alanOut: 250,
+        +     satirIn: 300,
+        +     satirOut: 250
+        -     alanIn: 500,
+        -     alanOut: 950,
+        -     satirIn: 500,
+        -     satirOut: 950
+            },
+            {
+              ad: 'kaynak invoice',
+              alanIn: 300,
+              alanOut: 0,
+        ...
+              ad: 'yön in',
+        +     alanIn: 900,
+        -     alanIn: 1100,
+              alanOut: 0,
+        +     satirIn: 900,
+        -     satirIn: 1100,
+              satirOut: 0
+            },
+            {
+              ad: 'yön out',
+              alanIn: 0,
+        +     alanOut: 250,
+        -     alanOut: 950,
+              satirIn: 0,
+        +     satirOut: 250
+        -     satirOut: 950
+            }
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          ad: 'aralık late'
+          alanIn: 900
+          satirIn: 900
+          alanOut: 250
+          satirOut: 250
+        1:
+          ad: 'aralık today'
+          alanIn: 1000
+          satirIn: 1000
+          alanOut: 250
+          satirOut: 250
+        2:
+          ad: 'aralık next7'
+          alanIn: 1000
+          satirIn: 1000
+          alanOut: 250
+          satirOut: 250
+        3:
+          ad: 'aralık next30'
+          alanIn: 1100
+          satirIn: 1100
+          alanOut: 950
+          satirOut: 950
+        4:
+          ad: 'aralık next90'
+          alanIn: 1100
+          satirIn: 1100
+          alanOut: 950
+          satirOut: 950
+        5:
+          ad: 'aralık open'
+          alanIn: 1100
+          satirIn: 1100
+          alanOut: 950
+          satirOut: 950
+        6:
+          ad: 'geniş özel aralık'
+          alanIn: 1100
+          satirIn: 1100
+          alanOut: 950
+          satirOut: 950
+        7:
+          ad: 'gecikmişler hariç (late=0)'
+          alanIn: 200
+          satirIn: 200
+          alanOut: 700
+          satirOut: 700
+        8:
+          ad: 'kaynak account'
+          alanIn: 500
+          satirIn: 500
+          alanOut: 950
+          satirOut: 950
+        9:
+          ad: 'kaynak invoice'
+          alanIn: 300
+          satirIn: 300
+          alanOut: 0
+          satirOut: 0
+        10:
+          ad: 'kaynak plan'
+          alanIn: 300
+          satirIn: 300
+          alanOut: 0
+          satirOut: 0
+        11:
+          ad: 'yön in'
+          alanIn: 1100
+          satirIn: 1100
+          alanOut: 0
+          satirOut: 0
+        12:
+          ad: 'yön out'
+          alanIn: 0
+          satirIn: 0
+          alanOut: 950
+          satirOut: 950
+      actual:
+        0:
+          ad: 'aralık late'
+          alanIn: 900
+          satirIn: 900
+          alanOut: 250
+          satirOut: 250
+        1:
+          ad: 'aralık today'
+          alanIn: 900
+          satirIn: 900
+          alanOut: 250
+          satirOut: 250
+        2:
+          ad: 'aralık next7'
+          alanIn: 900
+          satirIn: 900
+          alanOut: 250
+          satirOut: 250
+        3:
+          ad: 'aralık next30'
+          alanIn: 900
+          satirIn: 900
+          alanOut: 250
+          satirOut: 250
+        4:
+          ad: 'aralık next90'
+          alanIn: 900
+          satirIn: 900
+          alanOut: 250
+          satirOut: 250
+        5:
+          ad: 'aralık open'
+          alanIn: 900
+          satirIn: 900
+          alanOut: 250
+          satirOut: 250
+        6:
+          ad: 'geniş özel aralık'
+          alanIn: 900
+          satirIn: 900
+          alanOut: 250
+          satirOut: 250
+        7:
+          ad: 'gecikmişler hariç (late=0)'
+          alanIn: 0
+          satirIn: 0
+          alanOut: 0
+          satirOut: 0
+        8:
+          ad: 'kaynak account'
+          alanIn: 300
+          satirIn: 300
+          alanOut: 250
+          satirOut: 250
+        9:
+          ad: 'kaynak invoice'
+          alanIn: 300
+          satirIn: 300
+          alanOut: 0
+          satirOut: 0
+        10:
+          ad: 'kaynak plan'
+          alanIn: 300
+          satirIn: 300
+          alanOut: 0
+          satirOut: 0
+        11:
+          ad: 'yön in'
+          alanIn: 900
+          satirIn: 900
+          alanOut: 0
+          satirOut: 0
+        12:
+          ad: 'yön out'
+          alanIn: 0
+          satirIn: 0
+          alanOut: 250
+          satirOut: 250
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/vade-takip-soz-b7-250.test.mjs:150:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: cari düzeyi (Cari Listesi 'Gecikmiş', Anlık Durum): 'Tüm Açık' Gecikmiş Tahsilat − kapsam farkı = Σ cari gecikmiş; kapsam farkları açıkça
+    not ok 2 - cari düzeyi (Cari Listesi 'Gecikmiş', Anlık Durum): 'Tüm Açık' Gecikmiş Tahsilat − kapsam farkı = Σ cari gecikmiş; kapsam farkları açıkça
+      ---
+      duration_ms: 13.3075
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/vade-takip-soz-b7-250.test.mjs:153:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            cariGecikmis: 900,
+            gecikmisAraligi: 900,
+        +   tumAcik: 900
+        -   tumAcik: 1100
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        tumAcik: 1100
+        cariGecikmis: 900
+        gecikmisAraligi: 900
+      actual:
+        tumAcik: 900
+        cariGecikmis: 900
+        gecikmisAraligi: 900
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/vade-takip-soz-b7-250.test.mjs:165:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 6 - Birleşik tur 7 İş 3 — Vade Takip 'Gecikmiş Tahsilat / Gecikmiş Ödeme' her aralık / kaynak / yön seçeneğinde
+  ---
+  duration_ms: 659.942024
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/vade-takip-soz-b7-250.test.mjs:100:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Birleşik tur 7 İş 3 — S130 = A × Nakit Akışı: şüpheliye alınan tutar nakit tahmininde beklenen tahsilat değildir
+    # Subtest: adım adım: şüpheli 900 (üç kaleme yayılır); kısmen tahsil 300; kısmen Değersiz 200; ikinci şüpheli kaydı 300; ilk kaydın kalanı Değersiz — her adımda eşitlik
+    not ok 1 - adım adım: şüpheli 900 (üç kaleme yayılır); kısmen tahsil 300; kısmen Değersiz 200; ikinci şüpheli kaydı 300; ilk kaydın kalanı Değersiz — her adımda eşitlik
+      ---
+      duration_ms: 683.492854
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/vade-takip-soz-b7-250.test.mjs:180:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            {
+              adim: 'başlangıç',
+              ayniKalem: true,
+              bakiyeEksiSupheli: 1700,
+        ...
+              adim: 'şüpheli 900',
+        +     ayniKalem: false,
+        -     ayniKalem: true,
+              bakiyeEksiSupheli: 800,
+              ekranSatir: 4,
+              excelSatir: 4,
+        +     faturasiz: [
+        +       700
+        +     ],
+        -     faturasiz: [],
+              nakit: {
+        +       day: 1700,
+        +       month: 1700,
+        +       week: 1700,
+        +       yok: 1700
+        -       day: 800,
+        -       month: 800,
+        -       week: 800,
+        -       yok: 800
+              },
+              vade: 800
+            },
+            {
+              adim: 'tahsilat 300',
+        +     ayniKalem: false,
+        -     ayniKalem: true,
+              bakiyeEksiSupheli: 800,
+              ekranSatir: 3,
+              excelSatir: 3,
+        +     faturasiz: [
+        +       600
+        +     ],
+        -     faturasiz: [],
+              nakit: {
+        +       day: 1400,
+        +       month: 1400,
+        +       week: 1400,
+        +       yok: 1400
+        -       day: 800,
+        -       month: 800,
+        -       week: 800,
+        -       yok: 800
+              },
+              vade: 800
+            },
+            {
+              adim: 'Değersiz 200',
+        +     ayniKalem: false,
+        -     ayniKalem: true,
+              bakiyeEksiSupheli: 800,
+              ekranSatir: 3,
+              excelSatir: 3,
+        +     faturasiz: [
+        +       400
+        +     ],
+        -     faturasiz: [],
+              nakit: {
+        +       day: 1200,
+        +       month: 1200,
+        +       week: 1200,
+        +       yok: 1200
+        -       day: 800,
+        -       month: 800,
+        -       week: 800,
+        -       yok: 800
+              },
+              vade: 800
+            },
+            {
+              adim: 'ikinci şüpheli 300',
+        +     ayniKalem: false,
+        -     ayniKalem: true,
+              bakiyeEksiSupheli: 500,
+              ekranSatir: 2,
+              excelSatir: 2,
+        +     faturasiz: [
+        +       700
+        +     ],
+        -     faturasiz: [],
+              nakit: {
+        +       day: 1200,
+        +       month: 1200,
+        +       week: 1200,
+        +       yok: 1200
+        -       day: 500,
+        -       month: 500,
+        -       week: 500,
+        -       yok: 500
+              },
+              vade: 500
+            },
+            {
+              adim: 'ilk kaydın kalanı Değersiz',
+        +     ayniKalem: false,
+        -     ayniKalem: true,
+              bakiyeEksiSupheli: 500,
+              ekranSatir: 2,
+              excelSatir: 2,
+        +     faturasiz: [
+        +       300
+        +     ],
+        -     faturasiz: [],
+              nakit: {
+        +       day: 800,
+        +       month: 800,
+        +       week: 800,
+        +       yok: 800
+        -       day: 500,
+        -       month: 500,
+        -       week: 500,
+        -       yok: 500
+              },
+              vade: 500
+            }
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          adim: 'başlangıç'
+          bakiyeEksiSupheli: 1700
+          nakit:
+            yok: 1700
+            day: 1700
+            week: 1700
+            month: 1700
+          vade: 1700
+          faturasiz:
+          ayniKalem: true
+          excelSatir: 3
+          ekranSatir: 3
+        1:
+          adim: 'şüpheli 900'
+          bakiyeEksiSupheli: 800
+          nakit:
+            yok: 800
+            day: 800
+            week: 800
+            month: 800
+          vade: 800
+          faturasiz:
+          ayniKalem: true
+          excelSatir: 4
+          ekranSatir: 4
+        2:
+          adim: 'tahsilat 300'
+          bakiyeEksiSupheli: 800
+          nakit:
+            yok: 800
+            day: 800
+            week: 800
+            month: 800
+          vade: 800
+          faturasiz:
+          ayniKalem: true
+          excelSatir: 3
+          ekranSatir: 3
+        3:
+          adim: 'Değersiz 200'
+          bakiyeEksiSupheli: 800
+          nakit:
+            yok: 800
+            day: 800
+            week: 800
+            month: 800
+          vade: 800
+          faturasiz:
+          ayniKalem: true
+          excelSatir: 3
+          ekranSatir: 3
+        4:
+          adim: 'ikinci şüpheli 300'
+          bakiyeEksiSupheli: 500
+          nakit:
+            yok: 500
+            day: 500
+            week: 500
+            month: 500
+          vade: 500
+          faturasiz:
+          ayniKalem: true
+          excelSatir: 2
+          ekranSatir: 2
+        5:
+          adim: 'ilk kaydın kalanı Değersiz'
+          bakiyeEksiSupheli: 500
+          nakit:
+            yok: 500
+            day: 500
+            week: 500
+            month: 500
+          vade: 500
+          faturasiz:
+          ayniKalem: true
+          excelSatir: 2
+          ekranSatir: 2
+      actual:
+        0:
+          adim: 'başlangıç'
+          bakiyeEksiSupheli: 1700
+          nakit:
+            yok: 1700
+            day: 1700
+            week: 1700
+            month: 1700
+          vade: 1700
+          faturasiz:
+          ayniKalem: true
+          excelSatir: 3
+          ekranSatir: 3
+        1:
+          adim: 'şüpheli 900'
+          bakiyeEksiSupheli: 800
+          nakit:
+            yok: 1700
+            day: 1700
+            week: 1700
+            month: 1700
+          vade: 800
+          faturasiz:
+            0: 700
+          ayniKalem: false
+          excelSatir: 4
+          ekranSatir: 4
+        2:
+          adim: 'tahsilat 300'
+          bakiyeEksiSupheli: 800
+          nakit:
+            yok: 1400
+            day: 1400
+            week: 1400
+            month: 1400
+          vade: 800
+          faturasiz:
+            0: 600
+          ayniKalem: false
+          excelSatir: 3
+          ekranSatir: 3
+        3:
+          adim: 'Değersiz 200'
+          bakiyeEksiSupheli: 800
+          nakit:
+            yok: 1200
+            day: 1200
+            week: 1200
+            month: 1200
+          vade: 800
+          faturasiz:
+            0: 400
+          ayniKalem: false
+          excelSatir: 3
+          ekranSatir: 3
+        4:
+          adim: 'ikinci şüpheli 300'
+          bakiyeEksiSupheli: 500
+          nakit:
+            yok: 1200
+            day: 1200
+            week: 1200
+            month: 1200
+          vade: 500
+          faturasiz:
+            0: 700
+          ayniKalem: false
+          excelSatir: 2
+          ekranSatir: 2
+        5:
+          adim: 'ilk kaydın kalanı Değersiz'
+          bakiyeEksiSupheli: 500
+          nakit:
+            yok: 800
+            day: 800
+            week: 800
+            month: 800
+          vade: 500
+          faturasiz:
+            0: 300
+          ayniKalem: false
+          excelSatir: 2
+          ekranSatir: 2
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/vade-takip-soz-b7-250.test.mjs:229:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # başlangıç: bakiye − açık şüpheli 1700, nakit 1700, vade 1700, faturasız 0 | şüpheli 900: bakiye − açık şüpheli 800, nakit 1700, vade 800, faturasız 1 | tahsilat 300: bakiye − açık şüpheli 800, nakit 1400, vade 800, faturasız 1 | Değersiz 200: bakiye − açık şüpheli 800, nakit 1200, vade 800, faturasız 1 | ikinci şüpheli 300: bakiye − açık şüpheli 500, nakit 1200, vade 500, faturasız 1 | ilk kaydın kalanı Değersiz: bakiye − açık şüpheli 500, nakit 800, vade 500, faturasız 1
+    1..1
+not ok 7 - Birleşik tur 7 İş 3 — S130 = A × Nakit Akışı: şüpheliye alınan tutar nakit tahmininde beklenen tahsilat değildir
+  ---
+  duration_ms: 706.557656
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/vade-takip-soz-b7-250.test.mjs:177:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Birleşik tur 7 İş 3 — S130 × S136 = A: taksit kartlı caride şüpheli tutar taksit kalemlerinden düşer (Nakit Akışı = Vade Takip)
+    # Subtest: kart 600 (2 taksit, ilki gecikmiş) + elle Borç 200; şüpheli 500 → iki ekranda kalan 300, aynı kalemler; faturasız dengeleme satırı yok
+    not ok 1 - kart 600 (2 taksit, ilki gecikmiş) + elle Borç 200; şüpheli 500 → iki ekranda kalan 300, aynı kalemler; faturasız dengeleme satırı yok
+      ---
+      duration_ms: 385.849614
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/vade-takip-soz-b7-250.test.mjs:244:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   ayni: false,
+        +   faturasiz: 1,
+        +   nakit: 800,
+        -   ayni: true,
+        -   faturasiz: 0,
+        -   nakit: 300,
+            nakitKalem: [
+              'plan:300',
+        +     'plan:300',
+        +     'unbilled:200'
+            ],
+            vade: 300
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        nakit: 300
+        vade: 300
+        ayni: true
+        faturasiz: 0
+        nakitKalem:
+          0: 'plan:300'
+      actual:
+        nakit: 800
+        vade: 300
+        ayni: false
+        faturasiz: 1
+        nakitKalem:
+          0: 'plan:300'
+          1: 'plan:300'
+          2: 'unbilled:200'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/vade-takip-soz-b7-250.test.mjs:256:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 8 - Birleşik tur 7 İş 3 — S130 × S136 = A: taksit kartlı caride şüpheli tutar taksit kalemlerinden düşer (Nakit Akışı = Vade Takip)
+  ---
+  duration_ms: 403.840217
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/vade-takip-soz-b7-250.test.mjs:241:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: YAPIM AŞAMASI kapısı (yapimAsamasiGate)
+    # Subtest: dolu liste → ret; ileti kayıt sayısını ve paket dağılımını söyler
+    ok 1 - dolu liste → ret; ileti kayıt sayısını ve paket dağılımını söyler
+      ---
+      duration_ms: 1.645063
+      type: 'test'
+      ...
+    # Subtest: CRLF satır sonlu dolu liste de ret (ders 27)
+    ok 2 - CRLF satır sonlu dolu liste de ret (ders 27)
+      ---
+      duration_ms: 0.237413
+      type: 'test'
+      ...
+    # Subtest: boş liste → geçer (LF ve CRLF)
+    ok 3 - boş liste → geçer (LF ve CRLF)
+      ---
+      duration_ms: 0.285298
+      type: 'test'
+      ...
+    # Subtest: dosya yok / bozuk JSON / kayitlar dizisi yok → ret (okunamayan boş sayılmaz, ders 4)
+    ok 4 - dosya yok / bozuk JSON / kayitlar dizisi yok → ret (okunamayan boş sayılmaz, ders 4)
+      ---
+      duration_ms: 0.493125
+      type: 'test'
+      ...
+    # Subtest: yalnız 'eşleme' paketli kayıtlar → yine ret (sayılır; paket dağılımında görünür)
+    ok 5 - yalnız 'eşleme' paketli kayıtlar → yine ret (sayılır; paket dağılımında görünür)
+      ---
+      duration_ms: 0.230754
+      type: 'test'
+      ...
+    # Subtest: varsayılan yol çalışma dizininden bağımsız: başka klasörden çağrılınca da depodaki listeyi okur (aynı sonuç)
+    ok 6 - varsayılan yol çalışma dizininden bağımsız: başka klasörden çağrılınca da depodaki listeyi okur (aynı sonuç)
+      ---
+      duration_ms: 50.410826
+      type: 'test'
+      ...
+    # Subtest: varsayılan çağrı (release.mjs'in yolu: yol ve commit verilmez) listeyi commit'le karşılaştırır; başka yolda karşılaştırmaz
+    ok 7 - varsayılan çağrı (release.mjs'in yolu: yol ve commit verilmez) listeyi commit'le karşılaştırır; başka yolda karşılaştırmaz
+      ---
+      duration_ms: 1.753832
+      type: 'test'
+      ...
+    # Subtest: kapı cari kâhininin okuduğu dosyayı denetler (aynı yol)
+    ok 8 - kapı cari kâhininin okuduğu dosyayı denetler (aynı yol)
+      ---
+      duration_ms: 1.170562
+      type: 'test'
+      ...
+    1..8
+ok 9 - YAPIM AŞAMASI kapısı (yapimAsamasiGate)
+  ---
+  duration_ms: 57.379705
+  type: 'suite'
+  ...
+# Subtest: YAPIM AŞAMASI kapısı — liste commit'ten de okunur (skip-worktree / assume-unchanged atlatması)
+    # Subtest: çalışma ağacında boş, commit'te dolu → ret: 'FARKLI' + 'commit'te boş değil'; ikisi aynıysa (CRLF ↔ LF dahil) geçer; commit'ten okunamıyor / bozuk → ret
+    ok 1 - çalışma ağacında boş, commit'te dolu → ret: 'FARKLI' + 'commit'te boş değil'; ikisi aynıysa (CRLF ↔ LF dahil) geçer; commit'ten okunamıyor / bozuk → ret
+      ---
+      duration_ms: 0.804339
+      type: 'test'
+      ...
+    # Subtest: gerçek git: dolu liste commit'lenir, skip-worktree işaretlenir, çalışma ağacında boşaltılır → git status temiz (ön koşul), kapı ret; işaret yoksa status 'M' gösterir
+    ok 2 - gerçek git: dolu liste commit'lenir, skip-worktree işaretlenir, çalışma ağacında boşaltılır → git status temiz (ön koşul), kapı ret; işaret yoksa status 'M' gösterir
+      ---
+      duration_ms: 118.236347
+      type: 'test'
+      ...
+    # Subtest: gerçek git: replace + skip-worktree → git status temiz ve bayraksız 'git show' boş liste (ön koşul), kapı ret (yerine koyma okunmaz)
+    not ok 3 - gerçek git: replace + skip-worktree → git status temiz ve bayraksız 'git show' boş liste (ön koşul), kapı ret (yerine koyma okunmaz)
+      ---
+      duration_ms: 97.596646
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/yapim-asamasi-kapisi.test.mjs:148:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   bosDegil: false,
+        +   farkli: false,
+        +   kapi: true
+        -   bosDegil: true,
+        -   farkli: true,
+        -   kapi: false
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        kapi: false
+        farkli: true
+        bosDegil: true
+      actual:
+        kapi: true
+        farkli: false
+        bosDegil: false
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/yapim-asamasi-kapisi.test.mjs:171:14)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 10 - YAPIM AŞAMASI kapısı — liste commit'ten de okunur (skip-worktree / assume-unchanged atlatması)
+  ---
+  duration_ms: 216.936269
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-eski/test/yapim-asamasi-kapisi.test.mjs:98:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: tools/release.mjs YAPIM AŞAMASI kapısı
+    # Subtest: depodaki liste doluysa (ya da okunamıyorsa) paket aracı anahtarı okumadan reddeder ve listeyi söyler; boşsa liste iletisi yok
+    ok 1 - depodaki liste doluysa (ya da okunamıyorsa) paket aracı anahtarı okumadan reddeder ve listeyi söyler; boşsa liste iletisi yok
+      ---
+      duration_ms: 71.69412
+      type: 'test'
+      ...
+    # Subtest: release.mjs kapıyı atlatma seçeneği vermez (liste yolu dışarıdan verilemez)
+    ok 2 - release.mjs kapıyı atlatma seçeneği vermez (liste yolu dışarıdan verilemez)
+      ---
+      duration_ms: 0.279863
+      type: 'test'
+      ...
+    1..2
+ok 11 - tools/release.mjs YAPIM AŞAMASI kapısı
+  ---
+  duration_ms: 72.174171
+  type: 'suite'
+  ...
+1..11
+# tests 35
+# suites 11
+# pass 14
+# fail 21
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 15810.439028

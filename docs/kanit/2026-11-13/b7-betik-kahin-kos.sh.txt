@@ -1,0 +1,18 @@
+#!/bin/bash
+# Birleşik tur 7 — D: kâhin ↔ program adımları (cari, defter) iki TZ, taban kopya ve yeni kod. Kâhin dosyalarına dokunulmaz; yalnız koşulur.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-a6c349be9d3823fef
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+OUT=$S/b7-kanit/b7-kahin.txt
+: > $OUT
+for tz in UTC Europe/Istanbul; do
+  t=${tz//\//-}
+  for kod in taban:$S/b7-taban yeni:$W; do
+    for k in cari defter; do
+      log=$S/b7-kanit/b7-kahin-$k-${kod%%:*}-$t.log
+      ( cd ${kod#*:} && TZ=$tz timeout -k 5 2400 npm run --silent test:kahin-$k > $log 2>&1 ); code=$?
+      echo "$k ${kod%%:*} $tz çıkış $code | $(grep -aE 'ÖZET|özet|geçti|başarısız|fark' $log | tail -3 | tr '\n' ' ' | cut -c1-300)" >> $OUT
+    done
+  done
+done
+echo BITTI >> $OUT

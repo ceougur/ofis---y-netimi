@@ -1,0 +1,32 @@
+{
+  "ad": "b7y-kahin-ebelge-mutasyon",
+  "komut": "python3 test/bagimsiz/ebelge/mutasyon.py",
+  "commit": "5dc16feebc400f20457df0dcd9c5217a1b978ba4",
+  "dal": "sinama-b7",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T06:50:30.286Z",
+  "sure_sn": 61.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 55,
+    "gecen": 55,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../b7y-aday-kanit/2026-11-13/b7y-kahin-ebelge-mutasyon.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag",
+  "ham_cikti_sha256": "5f35824af7cf0bd47d3db2faf9be254813e8f6038d1f81a8017224932ddfd5b7",
+  "ham_cikti_bayt": 11422
+}

@@ -1,0 +1,92 @@
+kurulum: Sözlü Gecikmiş 100 (vade −10, söz +15) · Sözü Geçmiş Vadesi Gelmemiş 150 (vade +10, söz −5) · Düz Gecikmiş 300 (vade −20) · Şüpheli Cari 1.000 + 500, şüpheli 900 · bir çek 400
+Cari Listesi (API): Sözlü Gecikmiş: bakiye 100, gecikmiş 100 · Sözü Geçmiş Vadesi Gelmemiş: bakiye 150, gecikmiş 0 · Düz Gecikmiş: bakiye -100, gecikmiş 0 · Şüpheli Cari: bakiye 1500, gecikmiş 600
+
+■ 1 Vade Takip — varsayılan aralık
+  [vade-varsayilan] seçili aralık: ["30 Gün"] · tarih kutuları: ["2026-10-20","2026-11-19"]
+    gösterge: Gecikmiş Tahsilat₺850,004 kalem
+    gösterge: Tahsil Edilecek₺850,004 kalem · bugün ₺0,00
+    gösterge: Ödenecek₺0,000 kalem
+    gösterge: Net (tahsil − ödeme)₺850,00
+    gösterge: Şüpheli Alacak₺900,001 cari · vade takibinin dışında
+    Vade | Kimden / Kime | Kaynak | Açıklama | Tahsil Edilecek | Ödenecek
+    02.06.2026140 gün geçti | Şüpheli Cari | Cari (vadeli) | Tahsil Edilecek BorçKayıt 03.04.2026 · 1.000,00 TL · kalan | ₺100,00 | 
+    12.06.2026130 gün geçti | Şüpheli Cari | Cari (vadeli) | Tahsil Edilecek BorçKayıt 03.04.2026 · 500,00 TL | ₺500,00 | 
+    15.10.20265 gün geçti | Sözü Geçmiş Vadesi Gelmemiş | Cari (vadeli) | Tahsil Edilecek Borç (Ödeme Sözü)Kayıt 03.04.2026 · 150,00 TL · Vade 30.10.2026 | ₺150,00 | 
+    04.11.202610 gün geçti | Sözlü Gecikmiş | Cari (vadeli) | Tahsil Edilecek Borç (Ödeme Sözü)Kayıt 03.04.2026 · 100,00 TL · Vade 10.10.2026 | ₺100,00 | 
+  çipler: ["Gecikmiş","Bugün","7 Gün","30 Gün","90 Gün","Tüm Açık"]
+
+■ 2 Vade Takip — 'Gecikmiş' hazır aralığı
+  çip 'Gecikmiş': tıklandı
+  [vade-gecikmis] seçili aralık: ["Gecikmiş"] · tarih kutuları: ["","2026-10-19"]
+    gösterge: Gecikmiş Tahsilat₺750,003 kalem
+    gösterge: Tahsil Edilecek₺750,003 kalem · bugün ₺0,00
+    gösterge: Ödenecek₺0,000 kalem
+    gösterge: Net (tahsil − ödeme)₺750,00
+    gösterge: Şüpheli Alacak₺900,001 cari · vade takibinin dışında
+    Vade | Kimden / Kime | Kaynak | Açıklama | Tahsil Edilecek | Ödenecek
+    02.06.2026140 gün geçti | Şüpheli Cari | Cari (vadeli) | Tahsil Edilecek BorçKayıt 03.04.2026 · 1.000,00 TL · kalan | ₺100,00 | 
+    12.06.2026130 gün geçti | Şüpheli Cari | Cari (vadeli) | Tahsil Edilecek BorçKayıt 03.04.2026 · 500,00 TL | ₺500,00 | 
+    15.10.20265 gün geçti | Sözü Geçmiş Vadesi Gelmemiş | Cari (vadeli) | Tahsil Edilecek Borç (Ödeme Sözü)Kayıt 03.04.2026 · 150,00 TL · Vade 30.10.2026 | ₺150,00 | 
+
+■ 3 Vade Takip — 'Tüm Açık'
+  çip 'Tüm Açık': tıklandı
+  [vade-tum-acik] seçili aralık: ["Tüm Açık"] · tarih kutuları: ["",""]
+    gösterge: Gecikmiş Tahsilat₺850,004 kalem
+    gösterge: Tahsil Edilecek₺1.250,005 kalem · bugün ₺0,00
+    gösterge: Ödenecek₺0,000 kalem
+    gösterge: Net (tahsil − ödeme)₺1.250,00
+    gösterge: Şüpheli Alacak₺900,001 cari · vade takibinin dışında
+    Vade | Kimden / Kime | Kaynak | Açıklama | Tahsil Edilecek | Ödenecek
+    02.06.2026140 gün geçti | Şüpheli Cari | Cari (vadeli) | Tahsil Edilecek BorçKayıt 03.04.2026 · 1.000,00 TL · kalan | ₺100,00 | 
+    12.06.2026130 gün geçti | Şüpheli Cari | Cari (vadeli) | Tahsil Edilecek BorçKayıt 03.04.2026 · 500,00 TL | ₺500,00 | 
+    15.10.20265 gün geçti | Sözü Geçmiş Vadesi Gelmemiş | Cari (vadeli) | Tahsil Edilecek Borç (Ödeme Sözü)Kayıt 03.04.2026 · 150,00 TL · Vade 30.10.2026 | ₺150,00 | 
+    04.11.202610 gün geçti | Sözlü Gecikmiş | Cari (vadeli) | Tahsil Edilecek Borç (Ödeme Sözü)Kayıt 03.04.2026 · 100,00 TL · Vade 10.10.2026 | ₺100,00 | 
+    29.11.202640 gün | Düz Gecikmiş | Çek | Alınan çek · No B7-CEK · Akbank | ₺400,00 | 
+
+■ 4 Vade Takip — başlangıç kutusuna insan hızında tarih yazma (01.10.2026)
+  çip '30 Gün': tıklandı
+  [vade-tarih-yazim] yazılan 10012026 → kutuda "2026-10-01"
+  [vade-yazimdan-sonra] seçili aralık: ["30 Gün"] · tarih kutuları: ["2026-10-01","2026-11-19"]
+    gösterge: Gecikmiş Tahsilat₺850,004 kalem
+    gösterge: Tahsil Edilecek₺850,004 kalem · bugün ₺0,00
+    gösterge: Ödenecek₺0,000 kalem
+    gösterge: Net (tahsil − ödeme)₺850,00
+    gösterge: Şüpheli Alacak₺900,001 cari · vade takibinin dışında
+    Vade | Kimden / Kime | Kaynak | Açıklama | Tahsil Edilecek | Ödenecek
+    02.06.2026140 gün geçti | Şüpheli Cari | Cari (vadeli) | Tahsil Edilecek BorçKayıt 03.04.2026 · 1.000,00 TL · kalan | ₺100,00 | 
+    12.06.2026130 gün geçti | Şüpheli Cari | Cari (vadeli) | Tahsil Edilecek BorçKayıt 03.04.2026 · 500,00 TL | ₺500,00 | 
+    15.10.20265 gün geçti | Sözü Geçmiş Vadesi Gelmemiş | Cari (vadeli) | Tahsil Edilecek Borç (Ödeme Sözü)Kayıt 03.04.2026 · 150,00 TL · Vade 30.10.2026 | ₺150,00 | 
+    04.11.202610 gün geçti | Sözlü Gecikmiş | Cari (vadeli) | Tahsil Edilecek Borç (Ödeme Sözü)Kayıt 03.04.2026 · 100,00 TL · Vade 10.10.2026 | ₺100,00 | 
+
+■ 5 Nakit Akış — varsayılan; sonra gecikmişler dahil
+  [akis-varsayilan] seçili aralık: ["30 Gün"] · tarih kutuları: ["2026-10-20","2026-11-19"]
+    gösterge: Bugünkü Nakit ve Banka₺0,00Nakit Kasa ₺0,00 · Gerçek Banka —
+    gösterge: Beklenen Giriş₺100,00
+    gösterge: Beklenen Çıkış₺0,00
+    gösterge: Tahmini Nakit ve Banka · 19.11.2026₺100,00
+    gösterge: En Düşük Tahmini Nakit ve Banka₺0,0020.10.2026
+    02.06.2026 | Cari (vadeli) | Tahsil Edilecek BorçŞüpheli Cari | ₺100,00 | 
+    12.06.2026 | Cari (vadeli) | Tahsil Edilecek BorçŞüpheli Cari | ₺500,00 | 
+    15.10.2026 | Cari (vadeli) | Tahsil Edilecek Borç (Ödeme Sözü)Sözü Geçmiş Vadesi Gelmemiş | ₺150,00 | 
+    Vade | Kaynak | Açıklama | Giriş | Çıkış | Beklenen Nakit ve Banka
+    20.10.2026 |  | BaşlangıçBugünkü nakit ve banka |  |  | ₺0,00
+    04.11.2026 | Cari (vadeli) | Tahsil Edilecek Borç (Ödeme Sözü)Sözlü Gecikmiş | ₺100,00 |  | ₺100,00
+  [akis-gecikmis-dahil] seçili aralık: ["30 Gün"] · tarih kutuları: ["2026-10-20","2026-11-19"]
+    gösterge: Bugünkü Nakit ve Banka₺0,00Nakit Kasa ₺0,00 · Gerçek Banka —
+    gösterge: Beklenen Giriş₺100,00
+    gösterge: Beklenen Çıkış₺0,00
+    gösterge: Tahmini Nakit ve Banka · 19.11.2026₺850,00
+    gösterge: En Düşük Tahmini Nakit ve Banka₺750,0020.10.2026
+    02.06.2026 | Cari (vadeli) | Tahsil Edilecek BorçŞüpheli Cari | ₺100,00 | 
+    12.06.2026 | Cari (vadeli) | Tahsil Edilecek BorçŞüpheli Cari | ₺500,00 | 
+    15.10.2026 | Cari (vadeli) | Tahsil Edilecek Borç (Ödeme Sözü)Sözü Geçmiş Vadesi Gelmemiş | ₺150,00 | 
+    Vade | Kaynak | Açıklama | Giriş | Çıkış | Beklenen Nakit ve Banka
+    20.10.2026 |  | BaşlangıçBugünkü nakit ve banka + gecikmişler |  |  | ₺750,00
+    04.11.2026 | Cari (vadeli) | Tahsil Edilecek Borç (Ödeme Sözü)Sözlü Gecikmiş | ₺100,00 |  | ₺850,00
+
+■ 6 Çek / Senet listesi — Vade Başı kutusuna insan hızında tarih yazma
+  [cek-tarih-yazim] yazılan 10012026 → kutuda "2026-10-01"
+  satır sayısı: 1
+
+■ 7 Fatura listesi — Başlangıç kutusuna insan hızında tarih yazma
+  [fatura-tarih-yazim] yazılan 10012026 → kutuda "2026-10-01"

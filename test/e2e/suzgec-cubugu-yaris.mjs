@@ -16,6 +16,11 @@
 // Beklenen: kutu 2026-10-07, odak kutuda; Banka / POS'ta süzgeç uygulanır (from=2026-10-07 isteği). Eski kodda odak kaybolur ya da tarih bozulur.
 // Kipler (--kip): banka-tarih (Banka → Hareketler, Başlangıç), pos-tarih (Banka → POS, Başlangıç), rapor-tarih (Raporlar → Kasa Hareketleri, Başlangıç),
 //   gelen-tarih (Faturalar → Gelen e-Faturalar, Başlangıç). --kontrol: yeniden çizim yazmaya başlamadan biter (yarış yok) — aynı tuşlar doğru tarihi üretmeli.
+// Birleşik tur 7 (DK-B6 DÜŞÜK-4 + kullanıcı notu 12.11 12:54 "bu fatura süzgecinde de olabilir"; liste istemci taramasıyla — her süzgeç tarih kutusu): cek-tarih
+//   (Çek / Senet listesi, Vade Başı), fatura-tarih (Fatura listesi, Başlangıç), kasa-tarih (Kasa → Tarih Aralığı, Başlangıç), rapor-mizan / rapor-vade / rapor-akis /
+//   rapor-cek (Raporlar → Cari Mizanı ve Ekstresi / Vade Takip / Nakit Akış / Çek / Senet, Başlangıç). Çek / Senet ve Fatura listesinde YARIŞ OLMADAN da (kontrol
+//   kipi) bozuluyordu: yazarken her geçerli ara değerde (yıl 0002, 0020 …) liste yeniden yükleniyor, çubuk yeniden kuruluyordu ("0002-06-07" / boş).
+// --kip yazim (npm run test:suzgec-tarih-yazim): bütün kipler hem yarışla hem kontrol kipinde, ayrı süreçlerde; tek özet satırı.
 // Çalıştırma:  node --disable-warning=ExperimentalWarning test/e2e/suzgec-cubugu-yaris.mjs --kip banka-tarih --deneme 10
 // Eski kod:    DEPO=<eski kopya> ile sunucu ve istemci o kopyadan yüklenir (betik yeni ağaçtan koşar; ders 23, 51).
 // Özet satırı "N denetim geçti, M başarısız" (tools/kanit.mjs okur). Başarısız deneme ya da hiç sayılan deneme yoksa çıkış 1.
@@ -36,19 +41,22 @@ const { values: opts } = parseArgs({ options: { kip: { type: "string", default: 
 const MODE = opts.kip;
 const CONTROL = opts.kontrol;
 // --kip hepsi (CI ve npm run test:suzgec-cubugu-yaris): dört kip ayrı süreçlerde sırayla (her biri kendi sunucusu ve tarayıcısı); tek özet satırı.
-if (MODE === "hepsi") {
+const KIP_ADLARI = ["banka-tarih", "pos-tarih", "rapor-tarih", "gelen-tarih", "cek-tarih", "fatura-tarih", "kasa-tarih", "rapor-mizan", "rapor-vade", "rapor-akis", "rapor-cek"];
+if (MODE === "hepsi" || MODE === "yazim") {
   const { spawnSync } = await import("node:child_process");
   let ok = 0;
   let bad = 0;
-  for (const kip of ["banka-tarih", "pos-tarih", "rapor-tarih", "gelen-tarih"]) {
-    const run = spawnSync(process.execPath, ["--disable-warning=ExperimentalWarning", fileURLToPath(import.meta.url), "--kip", kip, "--deneme", opts.deneme, "--bekle", opts.bekle, ...(CONTROL ? ["--kontrol"] : [])], { encoding: "utf8", env: process.env, maxBuffer: 64 * 1024 * 1024 });
+  // Kasa penceresinde arka plan yenilemesi yok → yalnız kontrol (yazım) kipi.
+  const runs = MODE === "hepsi" ? ["banka-tarih", "pos-tarih", "rapor-tarih", "gelen-tarih"].map(kip => [kip, CONTROL]) : KIP_ADLARI.flatMap(kip => (kip === "kasa-tarih" ? [[kip, true]] : [[kip, false], [kip, true]]));
+  for (const [kip, control] of runs) {
+    const run = spawnSync(process.execPath, ["--disable-warning=ExperimentalWarning", fileURLToPath(import.meta.url), "--kip", kip, "--deneme", opts.deneme, "--bekle", opts.bekle, ...(control ? ["--kontrol"] : [])], { encoding: "utf8", env: process.env, maxBuffer: 64 * 1024 * 1024 });
     process.stdout.write(run.stdout || "");
     process.stderr.write(run.stderr || "");
     const summary = /(\d+) denetim geçti, (\d+) başarısız/.exec(run.stdout || "");
     if (run.status === 0 && summary) ok += Number(summary[1]);
     else bad += summary ? Math.max(1, Number(summary[2])) : 1;
   }
-  console.log(`\n${bad ? "BAŞARISIZ" : "TAMAM"}: ${ok} denetim geçti, ${bad} başarısız. (dört kip: banka-tarih, pos-tarih, rapor-tarih, gelen-tarih)`);
+  console.log(`\n${bad ? "BAŞARISIZ" : "TAMAM"}: ${ok} denetim geçti, ${bad} başarısız. (${MODE === "hepsi" ? "dört kip: banka-tarih, pos-tarih, rapor-tarih, gelen-tarih" : `${KIP_ADLARI.length} kip × yarış ve kontrol`})`);
   process.exit(bad ? 1 : 0);
 }
 const TRIALS = Number(opts.deneme);
@@ -65,9 +73,18 @@ const KIPLER = {
   "pos-tarih": { field: `${bankWin} [data-pos-filter="from"]`, sentinel: `${bankWin} .hof-bank-tabs`, hold: /\/api\/workspace\/bank\/pos\/sales\?/, applied: /\/bank\/pos\/sales\?.*from=2026-10-07/ },
   "rapor-tarih": { field: `${TOP} [data-rc-main] [data-param="from"]`, sentinel: `${TOP} [data-rc-main] [data-rc-result]`, hold: /\/api\/workspace\/report-center\/kasa-hareketleri\?/, applied: null },
   "gelen-tarih": { field: `${TOP} [data-inbox-from]`, sentinel: `${TOP} .hof-inv-tabs`, hold: /\/api\/workspace\/invoices\/inbox(\?|$)/, applied: null },
+  // Birleşik tur 7: liste süzgeçleri — tarih yazılınca liste kendiliğinden süzülür (applied); rapor sekmeleri "Raporu Getir" ile (yalnız kutu).
+  "cek-tarih": { field: `${TOP} [data-filter="from"]`, sentinel: `${TOP} .hof-plan-head`, hold: /\/api\/workspace\/cheques\?/, applied: /\/api\/workspace\/cheques\?.*from=2026-10-07/ },
+  "fatura-tarih": { field: `${TOP} .hof-inv-filters [data-filter="from"]`, sentinel: `${TOP} .hof-inv-tabs`, hold: /\/api\/workspace\/invoices\?/, applied: /\/api\/workspace\/invoices\?.*from=2026-10-07/ },
+  "kasa-tarih": { field: `${TOP} [data-from]`, sentinel: `${TOP} [data-list] > *`, hold: /\/api\/workspace\/cash\?from=/, applied: /\/api\/workspace\/cash\?from=2026-10-07/, background: false },
+  "rapor-mizan": { field: `${TOP} [data-range="from"]`, sentinel: `${TOP} .hof-rep-top`, hold: /\/api\/workspace\/overview\/mizan\?/, applied: null, tab: "mizan" },
+  "rapor-vade": { field: `${TOP} [data-range="from"]`, sentinel: `${TOP} .hof-rep-top`, hold: /\/api\/workspace\/overview\/vade-takip\?/, applied: null, tab: "vade" },
+  "rapor-akis": { field: `${TOP} [data-range="from"]`, sentinel: `${TOP} .hof-rep-top`, hold: /\/api\/workspace\/overview\/nakit-akisi\?/, applied: null, tab: "flow" },
+  "rapor-cek": { field: `${TOP} [data-range="from"]`, sentinel: `${TOP} .hof-rep-top`, hold: /\/api\/workspace\/cheques\?/, applied: null, tab: "cheques" },
 };
 const K = KIPLER[MODE];
 if (!K) throw new Error(`bilinmeyen kip: ${MODE} (${Object.keys(KIPLER).join(" | ")})`);
+if (K.background === false && !CONTROL) throw new Error(`${MODE}: bu ekranda arka plan yenilemesi yok — yalnız --kontrol (yazım) kipi`);
 const unwrap = r => (r.data && typeof r.data === "object" && "ok" in r.data ? (r.data.ok ? r.data.data : r.data) : r.data);
 
 let passed = 0;
@@ -109,7 +126,8 @@ try {
   const trigger = () => {
     writes += 1;
     if (MODE === "gelen-tarih") return must("gelen kutusu durumu", other.post(`/api/workspace/invoices/inbox/${encodeURIComponent(inboxId)}/state`, { state: writes % 2 ? "ignored" : "new" }));
-    if (MODE === "rapor-tarih") return must("Kasa Giriş", api.post("/api/workspace/cash", { kind: "in", amount: String(writes), date: "2026-10-06", description: `Başka oturum ${writes}`, method: "cash" }));
+    if (MODE === "rapor-tarih" || MODE === "kasa-tarih" || (K.tab && K.tab !== "cheques")) return must("Kasa Giriş", api.post("/api/workspace/cash", { kind: "in", amount: String(writes), date: "2026-10-06", description: `Başka oturum ${writes}`, method: "cash" }));
+    if (MODE === "cek-tarih" || MODE === "fatura-tarih" || K.tab === "cheques") return must("çek", api.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", amount: String(100 + writes), issueDate: "2026-10-06", dueDate: "2026-12-31", drawer: "Keşideci", serialNo: `YR-${writes}-${randomUUID().slice(0, 6)}` }));
     return must("masraf", api.post(`${BANK}/vouchers`, { type: "fee", accountId: ziraat.id, date: "2026-10-07", amount: String(1 + (writes % 7)), feeType: "eft", tax: "bsmv_incl", description: `Başka oturum ${writes}`, similarOk: true, requestId: randomUUID() }));
   };
   console.log(`kip ${MODE}${CONTROL ? " (kontrol)" : ""}; kod ${process.env.DEPO ? `DEPO=${ROOT}` : "bu ağaç"}; tarayıcı ${browser.version()}`);
@@ -171,6 +189,22 @@ try {
     await page.waitForSelector(`${TOP} [data-rc-list] [data-report="kasa-hareketleri"]`, { timeout: 15000 });
     await page.click(`${TOP} [data-rc-list] [data-report="kasa-hareketleri"]`);
     await page.waitForSelector(`${TOP} [data-rc-main] .hof-rc-table`, { timeout: 15000 });
+  } else if (MODE === "cek-tarih") {
+    await page.click("#hof-sidecard [data-action=cheques]");
+    await page.waitForSelector(`${TOP} .hof-plan-head`, { timeout: 15000 });
+  } else if (MODE === "fatura-tarih") {
+    await page.click("#hof-sidecard [data-action=invoices]");
+    await page.waitForSelector(`${TOP} .hof-inv-tabs`, { timeout: 15000 });
+  } else if (MODE === "kasa-tarih") {
+    await page.click("#hof-sidecard [data-action=cash]");
+    await page.waitForSelector(`${TOP} [data-period="range"]`, { timeout: 15000 });
+    await page.click(`${TOP} [data-period="range"]`);
+    await page.waitForSelector(`${TOP} [data-list] > *`, { timeout: 15000 });
+  } else if (K.tab) {
+    await page.click("#hof-sidecard [data-action=analytics]");
+    await page.waitForSelector(`${TOP} .hof-rep-tab[data-tab="${K.tab}"]`, { timeout: 15000 });
+    await page.click(`${TOP} .hof-rep-tab[data-tab="${K.tab}"]`);
+    await page.waitForSelector(`${TOP} .hof-rep-tab[data-tab="${K.tab}"].is-on`, { timeout: 15000 });
   } else {
     await page.click("#hof-sidecard [data-action=invoices]");
     await page.waitForSelector(`${TOP} .hof-inv-tabs [data-tab="inbox"]`, { timeout: 15000 });
@@ -207,22 +241,25 @@ try {
       await page.fill(K.field, "");
       await page.waitForTimeout(500);
       await page.evaluate(() => document.activeElement?.blur?.());
-      const holding = new Promise(resolve => {
-        heldSeen = resolve;
-      });
-      armed = true;
-      await trigger();
-      await Promise.race([holding, new Promise((_, reject) => setTimeout(() => reject(new Error("arka plan yenilemesinin isteği 15 sn içinde gelmedi")), 15000))]);
-      await page.evaluate(([fieldSel, sentinelSel, control]) => {
-        window.__suzgecZorla = { fieldSel, sentinelSel, control, node: document.querySelector(fieldSel), sentinel: document.querySelector(sentinelSel), focused: false, typed: false, seen: false, replaced: false, precondition: false };
-      }, [K.field, K.sentinel, CONTROL]);
+      // Arka plan yenilemesi olmayan ekranda (Kasa penceresi: başka oturumun kaydında liste yenilenmez — koşarak: istek 15 sn içinde gelmedi) yalnız yazım denenir.
+      if (K.background !== false) {
+        const holding = new Promise(resolve => {
+          heldSeen = resolve;
+        });
+        armed = true;
+        await trigger();
+        await Promise.race([holding, new Promise((_, reject) => setTimeout(() => reject(new Error("arka plan yenilemesinin isteği 15 sn içinde gelmedi")), 15000))]);
+      }
+      await page.evaluate(([fieldSel, sentinelSel, control, quietOnly]) => {
+        window.__suzgecZorla = { fieldSel, sentinelSel, control, node: document.querySelector(fieldSel), sentinel: document.querySelector(sentinelSel), focused: false, typed: false, seen: quietOnly, replaced: false, precondition: quietOnly };
+      }, [K.field, K.sentinel, CONTROL, K.background === false]);
       const route = held;
       held = null;
       const redrawn = () => page.waitForFunction(() => window.__suzgecZorla?.seen, null, { timeout: 5000 }).catch(() => null);
       const before = requests.length;
       if (CONTROL) {
         // KONTROL: yeniden çizim yazmaya başlamadan biter.
-        await route.continue().catch(() => null);
+        await route?.continue().catch(() => null);
         await redrawn();
         await page.click(K.field, { position: { x: 8, y: 8 } });
         await page.keyboard.type(FIRST, { delay: 40 });
@@ -239,7 +276,8 @@ try {
       await page.keyboard.type(REST, { delay: 40 });
       await page.keyboard.press("Enter");
       const done = await page.waitForFunction(([sel, value]) => document.querySelector(sel)?.value === value && document.activeElement === document.querySelector(sel), [K.field, TARGET], { timeout: WAIT }).then(() => true).catch(() => false);
-      // Banka / POS: süzgeç uygulandı (from=2026-10-07 isteği). Rapor ve Gelen Kutusu'nda tarih "Ön İzle" / "Gelen Kutusunu Yenile" ile uygulanır — yalnız kutu.
+      // Banka / POS / Çek / Senet / Fatura / Kasa: süzgeç uygulandı (from=2026-10-07 isteği). Rapor ve Gelen Kutusu'nda tarih "Ön İzle" / "Gelen Kutusunu Yenile" /
+      // "Raporu Getir" ile uygulanır — yalnız kutu.
       let applied = !K.applied;
       for (const until = Date.now() + WAIT; !applied && Date.now() < until; ) {
         applied = requests.slice(before).some(url => K.applied.test(url));

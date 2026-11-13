@@ -1,0 +1,434 @@
+TAP version 13
+# (node:29650) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Birleşik tur 7 İş 3 — Vade Takip: sözlü borcun durumu ve gün sayısı (9 hücre; ekran, Excel, PDF; zil ile aynı)
+    # Subtest: ekran (API) satırı: tarih söz günü, durum ve gün sayısı karar tablosundaki gibi; zil / takvim kalemi aynı (ufuktakiler)
+    ok 1 - ekran (API) satırı: tarih söz günü, durum ve gün sayısı karar tablosundaki gibi; zil / takvim kalemi aynı (ufuktakiler)
+      ---
+      duration_ms: 19.220605
+      type: 'test'
+      ...
+    # Subtest: Excel (Gün, Durum) ve PDF (Durum metni) ekranla aynı
+    ok 2 - Excel (Gün, Durum) ve PDF (Durum metni) ekranla aynı
+      ---
+      duration_ms: 32.205132
+      type: 'test'
+      ...
+    1..2
+ok 1 - Birleşik tur 7 İş 3 — Vade Takip: sözlü borcun durumu ve gün sayısı (9 hücre; ekran, Excel, PDF; zil ile aynı)
+  ---
+  duration_ms: 653.841804
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 7 İş 3 — Vade Takip 'Gecikmiş Tahsilat / Gecikmiş Ödeme' her aralık / kaynak / yön seçeneğinde
+    # Subtest: her seçenekte: toplam alanı = satırlardan = girdilerden beklenen (gecikmiş tahsilat ve ödeme)
+    ok 1 - her seçenekte: toplam alanı = satırlardan = girdilerden beklenen (gecikmiş tahsilat ve ödeme)
+      ---
+      duration_ms: 38.123266
+      type: 'test'
+      ...
+    # Subtest: cari düzeyi (Cari Listesi 'Gecikmiş', Anlık Durum): 'Tüm Açık' Gecikmiş Tahsilat − kapsam farkı = Σ cari gecikmiş; kapsam farkları açıkça
+    ok 2 - cari düzeyi (Cari Listesi 'Gecikmiş', Anlık Durum): 'Tüm Açık' Gecikmiş Tahsilat − kapsam farkı = Σ cari gecikmiş; kapsam farkları açıkça
+      ---
+      duration_ms: 8.06694
+      type: 'test'
+      ...
+    1..2
+ok 2 - Birleşik tur 7 İş 3 — Vade Takip 'Gecikmiş Tahsilat / Gecikmiş Ödeme' her aralık / kaynak / yön seçeneğinde
+  ---
+  duration_ms: 579.03615
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 7 İş 3 — S130 = A × Nakit Akışı: şüpheliye alınan tutar nakit tahmininde beklenen tahsilat değildir
+    # Subtest: adım adım: şüpheli 900 (üç kaleme yayılır); kısmen tahsil 300; kısmen Değersiz 200; ikinci şüpheli kaydı 300; ilk kaydın kalanı Değersiz — her adımda eşitlik
+    not ok 1 - adım adım: şüpheli 900 (üç kaleme yayılır); kısmen tahsil 300; kısmen Değersiz 200; ikinci şüpheli kaydı 300; ilk kaydın kalanı Değersiz — her adımda eşitlik
+      ---
+      duration_ms: 650.881082
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-mut/test/vade-takip-soz-b7-250.test.mjs:180:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            {
+              adim: 'başlangıç',
+              ayniKalem: true,
+              bakiyeEksiSupheli: 1700,
+        ...
+              adim: 'şüpheli 900',
+        +     ayniKalem: false,
+        -     ayniKalem: true,
+              bakiyeEksiSupheli: 800,
+              ekranSatir: 3,
+              excelSatir: 3,
+        +     faturasiz: [
+        +       900
+        +     ],
+        -     faturasiz: [],
+              nakit: {
+        +       day: 1700,
+        +       month: 1700,
+        +       week: 1700,
+        +       yok: 1700
+        -       day: 800,
+        -       month: 800,
+        -       week: 800,
+        -       yok: 800
+              },
+              vade: 800
+            },
+            {
+              adim: 'tahsilat 300',
+        +     ayniKalem: false,
+        -     ayniKalem: true,
+              bakiyeEksiSupheli: 800,
+              ekranSatir: 3,
+              excelSatir: 3,
+        +     faturasiz: [
+        +       600
+        +     ],
+        -     faturasiz: [],
+              nakit: {
+        +       day: 1400,
+        +       month: 1400,
+        +       week: 1400,
+        +       yok: 1400
+        -       day: 800,
+        -       month: 800,
+        -       week: 800,
+        -       yok: 800
+              },
+              vade: 800
+            },
+            {
+              adim: 'Değersiz 200',
+        +     ayniKalem: false,
+        -     ayniKalem: true,
+              bakiyeEksiSupheli: 800,
+              ekranSatir: 3,
+              excelSatir: 3,
+        +     faturasiz: [
+        +       400
+        +     ],
+        -     faturasiz: [],
+              nakit: {
+        +       day: 1200,
+        +       month: 1200,
+        +       week: 1200,
+        +       yok: 1200
+        -       day: 800,
+        -       month: 800,
+        -       week: 800,
+        -       yok: 800
+              },
+              vade: 800
+            },
+            {
+              adim: 'ikinci şüpheli 300',
+        +     ayniKalem: false,
+        -     ayniKalem: true,
+              bakiyeEksiSupheli: 500,
+              ekranSatir: 2,
+              excelSatir: 2,
+        +     faturasiz: [
+        +       700
+        +     ],
+        -     faturasiz: [],
+              nakit: {
+        +       day: 1200,
+        +       month: 1200,
+        +       week: 1200,
+        +       yok: 1200
+        -       day: 500,
+        -       month: 500,
+        -       week: 500,
+        -       yok: 500
+              },
+              vade: 500
+            },
+            {
+              adim: 'ilk kaydın kalanı Değersiz',
+        +     ayniKalem: false,
+        -     ayniKalem: true,
+              bakiyeEksiSupheli: 500,
+              ekranSatir: 2,
+              excelSatir: 2,
+        +     faturasiz: [
+        +       300
+        +     ],
+        -     faturasiz: [],
+              nakit: {
+        +       day: 800,
+        +       month: 800,
+        +       week: 800,
+        +       yok: 800
+        -       day: 500,
+        -       month: 500,
+        -       week: 500,
+        -       yok: 500
+              },
+              vade: 500
+            }
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          adim: 'başlangıç'
+          bakiyeEksiSupheli: 1700
+          nakit:
+            yok: 1700
+            day: 1700
+            week: 1700
+            month: 1700
+          vade: 1700
+          faturasiz:
+          ayniKalem: true
+          excelSatir: 3
+          ekranSatir: 3
+        1:
+          adim: 'şüpheli 900'
+          bakiyeEksiSupheli: 800
+          nakit:
+            yok: 800
+            day: 800
+            week: 800
+            month: 800
+          vade: 800
+          faturasiz:
+          ayniKalem: true
+          excelSatir: 3
+          ekranSatir: 3
+        2:
+          adim: 'tahsilat 300'
+          bakiyeEksiSupheli: 800
+          nakit:
+            yok: 800
+            day: 800
+            week: 800
+            month: 800
+          vade: 800
+          faturasiz:
+          ayniKalem: true
+          excelSatir: 3
+          ekranSatir: 3
+        3:
+          adim: 'Değersiz 200'
+          bakiyeEksiSupheli: 800
+          nakit:
+            yok: 800
+            day: 800
+            week: 800
+            month: 800
+          vade: 800
+          faturasiz:
+          ayniKalem: true
+          excelSatir: 3
+          ekranSatir: 3
+        4:
+          adim: 'ikinci şüpheli 300'
+          bakiyeEksiSupheli: 500
+          nakit:
+            yok: 500
+            day: 500
+            week: 500
+            month: 500
+          vade: 500
+          faturasiz:
+          ayniKalem: true
+          excelSatir: 2
+          ekranSatir: 2
+        5:
+          adim: 'ilk kaydın kalanı Değersiz'
+          bakiyeEksiSupheli: 500
+          nakit:
+            yok: 500
+            day: 500
+            week: 500
+            month: 500
+          vade: 500
+          faturasiz:
+          ayniKalem: true
+          excelSatir: 2
+          ekranSatir: 2
+      actual:
+        0:
+          adim: 'başlangıç'
+          bakiyeEksiSupheli: 1700
+          nakit:
+            yok: 1700
+            day: 1700
+            week: 1700
+            month: 1700
+          vade: 1700
+          faturasiz:
+          ayniKalem: true
+          excelSatir: 3
+          ekranSatir: 3
+        1:
+          adim: 'şüpheli 900'
+          bakiyeEksiSupheli: 800
+          nakit:
+            yok: 1700
+            day: 1700
+            week: 1700
+            month: 1700
+          vade: 800
+          faturasiz:
+            0: 900
+          ayniKalem: false
+          excelSatir: 3
+          ekranSatir: 3
+        2:
+          adim: 'tahsilat 300'
+          bakiyeEksiSupheli: 800
+          nakit:
+            yok: 1400
+            day: 1400
+            week: 1400
+            month: 1400
+          vade: 800
+          faturasiz:
+            0: 600
+          ayniKalem: false
+          excelSatir: 3
+          ekranSatir: 3
+        3:
+          adim: 'Değersiz 200'
+          bakiyeEksiSupheli: 800
+          nakit:
+            yok: 1200
+            day: 1200
+            week: 1200
+            month: 1200
+          vade: 800
+          faturasiz:
+            0: 400
+          ayniKalem: false
+          excelSatir: 3
+          ekranSatir: 3
+        4:
+          adim: 'ikinci şüpheli 300'
+          bakiyeEksiSupheli: 500
+          nakit:
+            yok: 1200
+            day: 1200
+            week: 1200
+            month: 1200
+          vade: 500
+          faturasiz:
+            0: 700
+          ayniKalem: false
+          excelSatir: 2
+          ekranSatir: 2
+        5:
+          adim: 'ilk kaydın kalanı Değersiz'
+          bakiyeEksiSupheli: 500
+          nakit:
+            yok: 800
+            day: 800
+            week: 800
+            month: 800
+          vade: 500
+          faturasiz:
+            0: 300
+          ayniKalem: false
+          excelSatir: 2
+          ekranSatir: 2
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-mut/test/vade-takip-soz-b7-250.test.mjs:229:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # başlangıç: bakiye − açık şüpheli 1700, nakit 1700, vade 1700, faturasız 0 | şüpheli 900: bakiye − açık şüpheli 800, nakit 1700, vade 800, faturasız 1 | tahsilat 300: bakiye − açık şüpheli 800, nakit 1400, vade 800, faturasız 1 | Değersiz 200: bakiye − açık şüpheli 800, nakit 1200, vade 800, faturasız 1 | ikinci şüpheli 300: bakiye − açık şüpheli 500, nakit 1200, vade 500, faturasız 1 | ilk kaydın kalanı Değersiz: bakiye − açık şüpheli 500, nakit 800, vade 500, faturasız 1
+    1..1
+not ok 3 - Birleşik tur 7 İş 3 — S130 = A × Nakit Akışı: şüpheliye alınan tutar nakit tahmininde beklenen tahsilat değildir
+  ---
+  duration_ms: 667.911564
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-mut/test/vade-takip-soz-b7-250.test.mjs:177:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Birleşik tur 7 İş 3 — S130 × S136 = A: taksit kartlı caride şüpheli tutar taksit kalemlerinden düşer (Nakit Akışı = Vade Takip)
+    # Subtest: kart 600 (2 taksit, ilki gecikmiş) + elle Borç 200; şüpheli 500 → iki ekranda kalan 300, aynı kalemler; faturasız dengeleme satırı yok
+    not ok 1 - kart 600 (2 taksit, ilki gecikmiş) + elle Borç 200; şüpheli 500 → iki ekranda kalan 300, aynı kalemler; faturasız dengeleme satırı yok
+      ---
+      duration_ms: 326.012496
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-mut/test/vade-takip-soz-b7-250.test.mjs:244:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   ayni: false,
+        +   faturasiz: 2,
+        +   nakit: 800,
+        -   ayni: true,
+        -   faturasiz: 0,
+        -   nakit: 300,
+            nakitKalem: [
+              'plan:300',
+        +     'unbilled:200',
+        +     'unbilled:300'
+            ],
+            vade: 300
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        nakit: 300
+        vade: 300
+        ayni: true
+        faturasiz: 0
+        nakitKalem:
+          0: 'plan:300'
+      actual:
+        nakit: 800
+        vade: 300
+        ayni: false
+        faturasiz: 2
+        nakitKalem:
+          0: 'plan:300'
+          1: 'unbilled:200'
+          2: 'unbilled:300'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-mut/test/vade-takip-soz-b7-250.test.mjs:256:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 4 - Birleşik tur 7 İş 3 — S130 × S136 = A: taksit kartlı caride şüpheli tutar taksit kalemlerinden düşer (Nakit Akışı = Vade Takip)
+  ---
+  duration_ms: 341.953347
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-mut/test/vade-takip-soz-b7-250.test.mjs:241:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..4
+# tests 6
+# suites 4
+# pass 4
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2579.458715

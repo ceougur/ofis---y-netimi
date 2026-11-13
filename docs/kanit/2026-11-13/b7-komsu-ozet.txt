@@ -1,0 +1,6 @@
+Birleşik tur 7 — komşu testler ilk koşu (204 dosya, iki TZ): UTC 2460 test / 2459 geçti, İstanbul 2460 / 2459; tek düşen her ikisinde aynı:
+    not ok 2 - MM5: Nakit Akışı gecikmiş girişlerde faturasız cari alacağı (bugünden önceki parçalar) görünür; taksit ve fatura kalemi değişmez
+      ---
+      duration_ms: 13.832364
+      type: 'test'
+Neden: S130 = A ile değişen beklenti (Çekli Müşteri'nin açık şüpheli 2.000'i Nakit Akışı'nda faturasız cari alacağı olarak görünüyordu); test güncellendi (commit 4e08dcaf), iki TZ 7/7. İkinci koşu (istemci komşuları, 23 dosya): iki TZ 193/193.

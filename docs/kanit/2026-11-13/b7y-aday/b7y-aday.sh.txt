@@ -1,0 +1,39 @@
+#!/bin/bash
+# Ana oturum: BİRLEŞİK TUR 7 ADAYI — sınama ağacında (d2t3-ya-ag, dal sinama-b7): çalışma dalı ucu (Ç5-B kapanış birleşimli) + birleşik tur 7.
+# A: aday kurulur, liste yeniden üretilir + fark dökümü + yeni kayıtların etiketi, aday commit'i, kâhin adımları iki TZ, TAM npm test. Hata durdurmaz; her adımın çıkışı yazılır.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=$S/d2t3-ya-ag; K=$S/b7y-aday-kanit; L=test/bagimsiz/cari/YAPIM-ASAMASI.json
+DUZ=worktree-agent-a6c349be9d3823fef
+export KANIT_DIR=$K HUKUK_LICENSE_URL=http://127.0.0.1:9 PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194
+G="git -c user.name=ana -c user.email=ana@yerel"
+say() { grep -E "^# (tests|pass|fail|cancelled|skipped)" "$1" | tr '\n' ' '; }
+mkdir -p $K || exit 1
+cd $W || exit 1
+[ -z "$(git status -s | grep -v node_modules)" ] || { echo "sınama ağacı temiz değil"; exit 1; }
+git checkout -q -B sinama-b7 claude/epic-thompson-w0lc2l || exit 1
+$G merge -q --no-ff --no-verify -m "SINAMA: + birleşik tur 7 (gönderilmez)" $DUZ > $K/merge-1.out 2>&1 || { echo "birleşik tur 7 birleşimi çakıştı"; git status -s | grep -E '^(UU|AA|DU|UD)' | head; exit 1; }
+echo "başladı $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg) · aday $(git rev-parse --short HEAD) · birleşik tur 7 dalının ürün dosyalarında dal ucundan FARKLI olanlar (Ç5-B ile ortak dosyalar beklenir): [$(git diff $DUZ --name-only -- server client | tr '\n' ' ')]"
+cp $L $K/liste-oncesi.json || exit 1
+TZ=UTC timeout 3000 node test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz > $K/liste-uret.out 2>&1; echo "liste üretimi çıkış $?"; tail -2 $K/liste-uret.out | cut -c1-240
+python3 -I - $K/liste-oncesi.json $L <<'PY' || exit 1
+import json,sys
+from collections import Counter
+o={(e["senaryo"],e["anahtar"]):e for e in json.load(open(sys.argv[1],encoding="utf-8"))["kayitlar"]}
+d=json.load(open(sys.argv[2],encoding="utf-8")); n={(e["senaryo"],e["anahtar"]):e for e in d["kayitlar"]}
+kap=[k for k in o if k not in n]; yeni=[k for k in n if k not in o]; deg=[k for k in n if k in o and (o[k].get("program"),o[k].get("beklenen"))!=(n[k].get("program"),n[k].get("beklenen"))]
+print(f"liste farkı: önceki {len(o)} → yeni {len(n)} · kapanan {len(kap)} · yeni {len(yeni)} · değeri değişen {len(deg)}")
+print("kapananların notu:", dict(Counter((o[k].get("not") or "")[:40] for k in kap)))
+print("kalanların notu:", dict(Counter((e.get("not") or "")[:40] for e in d["kayitlar"])), "· paketler", dict(Counter(e["paket"] for e in d["kayitlar"])))
+for k in yeni[:8]: print("YENİ:", k, n[k].get("program"), n[k].get("beklenen"))
+for k in deg[:8]: print("DEĞİŞEN:", k)
+PY
+cp $L $K/liste-aday.json
+git add $L && $G commit -q --no-verify -m "SINAMA: birleşik tur 7 adayı — yeniden üretilmiş liste (gönderilmez)"; echo "aday commit $(git rev-parse --short HEAD) · temiz mi: $(git status -s | grep -v node_modules | wc -l)"
+for tz in UTC Europe/Istanbul; do m=${tz//\//-}; TZ=$tz timeout 3000 node tools/kanit.mjs kos b7y-kahin-cari-$m -- npm run test:kahin-cari > $K/kahin-cari-$m.out 2>&1; echo "kahin-cari $tz çıkış $? $(grep -E '^\[kanit\]' $K/kahin-cari-$m.out | tail -1 | cut -c1-130) $(grep -E 'ÖZET' $K/kahin-cari-$m.out | tail -1 | cut -c1-150)"; done
+for tz in UTC Europe/Istanbul; do m=${tz//\//-}; TZ=$tz timeout 1800 node tools/kanit.mjs kos b7y-kahin-defter-$m -- npm run test:kahin-defter > $K/kahin-defter-$m.out 2>&1; echo "kahin-defter $tz çıkış $? $(grep -E '^\[kanit\]' $K/kahin-defter-$m.out | tail -1 | cut -c1-130)"; done
+for t in kahin-tutar kahin-maliyet; do timeout 1200 node tools/kanit.mjs kos b7y-$t -- npm run test:$t > $K/$t.out 2>&1; echo "$t çıkış $? $(grep -E '^\[kanit\]' $K/$t.out | tail -1 | cut -c1-120)"; done
+python3 -I -c "import yaml,sys; yaml.safe_load(open(sys.argv[1]))" .github/workflows/ci.yml && echo "ci.yml ayrıştı"
+echo "kâhin bölümü bitti $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg)"
+flock -n $S/tam-npm-test.lock timeout 5400 node tools/kanit.mjs kos b7y-tam -- npm test > $K/tam.out 2>&1; echo "TAM npm test çıkış $? $(grep -E '^\[kanit\]' $K/tam.out | tail -1 | cut -c1-170)"; say $K/tam.out; echo
+grep -E "^not ok|✖" $K/tam.out | sort -u | head -12 | cut -c1-220
+echo "A bölümü bitti $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg) · disk $(df -h / | awk 'NR==2{print $4}')"

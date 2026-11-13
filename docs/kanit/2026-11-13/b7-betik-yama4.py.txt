@@ -1,0 +1,60 @@
+import sys
+root = sys.argv[1]
+def patch(rel, pairs):
+    p = root + '/' + rel
+    t = open(p, encoding='utf-8').read()
+    for old, new in pairs:
+        assert t.count(old) == 1, (rel, old[:90], t.count(old))
+        t = t.replace(old, new)
+    open(p, 'w', encoding='utf-8').write(t)
+
+patch('server/lib/finance-report.mjs', [
+    ("""    const state = days < 0 ? (item.month && item.date.slice(0, 7) === today.slice(0, 7) ? "month" : "overdue") : days === 0 ? "today" : "upcoming";
+    rows.push({ ...item, direction: item.direction === "out" ? "out" : item.direction === "in" ? "in" : "", amount, days, state });""",
+     """    const derived = days < 0 ? (item.month && item.date.slice(0, 7) === today.slice(0, 7) ? "month" : "overdue") : days === 0 ? "today" : "upcoming";
+    // Birleşik tur 7 (S52, S67, S69 = A): kalemin günü ve durumu kaynağından geldiyse (carinin sözlü borcu — lib/obligation-queue.mjs calendarState: vadesi geçmiş borç
+    // söz gününde durur, durumu "Gecikmiş", gün sayısı VADEDEN) tarihten yeniden türetilmez; takvim / zil ile aynı durum, aynı gün sayısı, aynı gecikmiş toplamı.
+    const { calendar, ...rest } = item;
+    const state = calendar?.state || derived;
+    rows.push({ ...rest, direction: item.direction === "out" ? "out" : item.direction === "in" ? "in" : "", amount, days: calendar?.state ? Number(calendar.days) || 0 : days, state });"""),
+])
+
+patch('server/routes/overview.mjs', [
+    ("""    // Kalem takvimdeki kimliğiyle (account|<entryId>) izlenir; tıklanınca carinin kartı açılır (ref.id cari).
+    id: item.id,
+    entryId: item.entryId,
+    ref: { type: "account", id: item.accountId, entryId: item.entryId },
+  });""",
+     """    // Kalem takvimdeki kimliğiyle (account|<entryId>) izlenir; tıklanınca carinin kartı açılır (ref.id cari).
+    id: item.id,
+    entryId: item.entryId,
+    ref: { type: "account", id: item.accountId, entryId: item.entryId },
+    // Birleşik tur 7 (S52, S67, S69 = A): durum ve gün sayısı takvim kalemininki (calendarState) — Vade Takip tarihten yeniden türetmez (lib/finance-report.mjs dueList).
+    calendar: { state: item.state, days: item.days },
+  });"""),
+    ("""    const flows = [];
+    if (plans()?.openItems) flows.push(...plans().openItems(day));""",
+     """    const flows = [];
+    // Birleşik tur 7 (S130 = A; S136 = A, S139 = A): Şüpheli Alacağa alınan tutar 'Tahsil Edilecek' kalemlerinden — NAKİT TAHMİNİ dahil — Vade Takip'le AYNI kalemlerden,
+    // AYNI sırayla (tek yükümlülük kuyruğu; taksit ve fatura kalemi withoutDoubtful, carinin vade kalemi openDueItems) düşer; faturasız cari alacağı (dengeleme) carinin
+    // bakiyesinden açık şüpheli tutar düşülerek hesaplanır (unbilledFlows) — şüpheli para nakit tahmininde beklenen tahsilat gibi görünmez. Bakiye değişmez.
+    if (plans()?.openItems) flows.push(...plans().openItems(day, { withoutDoubtful: true }));"""),
+    ("""    for (const item of invoices()?.openItems ? invoices().openItems(day, { net: true }) : []) flows.push(invoiceFlow(item));
+    // 2.4.6 madde 11 (2.4.5 K6.3'teki BİLİNEN SINIR kapandı)""",
+     """    for (const item of invoices()?.openItems ? invoices().openItems(day, { net: true, withoutDoubtful: true }) : []) flows.push(invoiceFlow(item));
+    // 2.4.6 madde 11 (2.4.5 K6.3'teki BİLİNEN SINIR kapandı)"""),
+    ("""    const items = [];
+    for (const item of plans()?.openItems ? plans().openItems(day) : []) if (item.accountId) items.push({ accountId: item.accountId, date: item.date, amount: item.amount });""",
+     """    const items = [];
+    for (const item of plans()?.openItems ? plans().openItems(day, { withoutDoubtful: true }) : []) if (item.accountId) items.push({ accountId: item.accountId, date: item.date, amount: item.amount });"""),
+    ("""    for (const item of invoices()?.openItems ? invoices().openItems(day, { net: true }) : []) {
+      if (item.side === "sale") items.push({ accountId: item.accountId, date: item.dueDate, amount: item.open });""",
+     """    for (const item of invoices()?.openItems ? invoices().openItems(day, { net: true, withoutDoubtful: true }) : []) {
+      if (item.side === "sale") items.push({ accountId: item.accountId, date: item.dueDate, amount: item.open });"""),
+    ("""    const live = accounts().list({ id: "", role: "admin" }, { status: "all" }).accounts.map(account => ({ id: account.id, name: account.name, balance: owed.has(account.id) ? roundMoney(account.balance + owed.get(account.id)) : account.balance }));""",
+     """    // Birleşik tur 7 (S130 = A): açık şüpheli tutar carinin bakiyesinden düşülür — kalemlerden düşen şüpheli para dengeleme satırıyla geri gelmez.
+    const doubtfulOpen = doubtfulApi()?.openByAccount ? doubtfulApi().openByAccount().byAccount : new Map();
+    const held = id => roundMoney((doubtfulOpen.get(id)?.openMinor || 0) / 100);
+    const live = accounts().list({ id: "", role: "admin" }, { status: "all" }).accounts.map(account => ({ id: account.id, name: account.name, balance: roundMoney(account.balance + (owed.get(account.id) || 0) - held(account.id)) }));"""),
+])
+print("tamam")
