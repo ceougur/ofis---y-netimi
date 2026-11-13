@@ -159,3 +159,37 @@ describe("Birleşik tur 8b — Vade Takip 'Bugün' / '7 Gün': 'Gecikmiş' göst
     }
   });
 });
+
+// '30 Gün' / '90 Gün' DEĞİŞMEZ (görev metni: önce = sonra birebir). Sözü 30 / 90 günden de ileride olan gecikmiş borç bu iki aralıkta bugün de görünmez — karar ('her aralıkta
+// aynı sayı') ile görev metninin ('30 / 90 Gün değişmez') ayrıştığı alt durum: TOPLU SORU (birleşik tur 8b raporu). Bu blok bugünkü davranışı SABİTLER; karar gelirse beklenti değişir.
+// Kurgu: vade −10 × söz +45 (100), vade −10 × söz +100 (100), sözsüz vade −2 (100). Girdilerden: 'Tüm Açık' / 'Gecikmiş' 300 / 3; '30 Gün' 100 / 1 (söz +45, +100 aralık dışı);
+// '90 Gün' 200 / 2 (söz +100 aralık dışı); 'Bugün' / '7 Gün' 300 / 3 (birleşik tur 8b).
+describe("Birleşik tur 8b — '30 Gün' / '90 Gün' bugünkü gibi: sözü aralıktan da ileride olan gecikmiş borç (TOPLU SORU — davranış sabitlenir)", () => {
+  let server;
+  let c;
+  const get = async url => {
+    const res = await c.get(url);
+    assert.equal(res.status, 200, `${url}: ${res.status}`);
+    return unwrap(res);
+  };
+  before(async () => {
+    server = await startTestServer({ now: { time: `${TODAY}T12:00:00+03:00`, fixed: true }, env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
+    c = await loginAdmin(server);
+    await c.post("/api/workspace/bank/setup/dismiss", {});
+    let n = 0;
+    for (const [name, body] of [["Uzak Söz p45", { dueDate: day(-10), expectedDate: day(45) }], ["Uzak Söz p100", { dueDate: day(-10), expectedDate: day(100) }], ["Uzak Sözsüz", { dueDate: day(-2) }]]) {
+      const a = unwrap(await c.post("/api/workspace/accounts", { name, type: "customer", registeredOn: day(-400), phone: `0500 782 ${String(10 + n).padStart(2, "0")} ${String((n += 1)).padStart(2, "0")}`, similarOk: true, force: true }));
+      assert.equal((await c.post(`/api/workspace/accounts/${a.id}/entries`, { method: "cash", cashForce: true, similarOk: true, kind: "debt", amount: "100", date: day(-30), ...body })).status, 200);
+    }
+  });
+  after(async () => server?.close());
+
+  it("gösterge: Gecikmiş 300 / 3, Bugün 300 / 3, 7 Gün 300 / 3, 30 Gün 100 / 1, 90 Gün 200 / 2, Tüm Açık 300 / 3", async () => {
+    const seen = {};
+    for (const preset of PRESETS) {
+      const data = await get(`/api/workspace/overview/vade-takip?preset=${preset}`);
+      seen[preset] = [data.totals.in.overdue.amount, data.totals.in.overdue.count];
+    }
+    assert.deepEqual(seen, { late: [300, 3], today: [300, 3], next7: [300, 3], next30: [100, 1], next90: [200, 2], open: [300, 3] });
+  });
+});
