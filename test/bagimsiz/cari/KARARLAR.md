@@ -3756,3 +3756,27 @@ metinleri C27.3.
   oluşmadı (yolu bilinmiyor). Havale tahsilatı (nakitten ayrı) elle senaryoda yok.
 - S158: iade faturasının artanının satış kartı olmayan kartı kapattığı elle senaryo yok (yalnız kural + mutant 302'nin Değersiz kolu). Taksitli satış faturasının kendi kartı (kart göstergesi yok).
 - S154: alan yok (Y16-9). İki şirket / yedek geri yükleme / silinen şüpheli kaydı ile bu bakımın kuralları.
+
+### C0t Değişen eski beklentiler (G3; bakım 15 (`6453ad3b`) ↔ bakım 16 kâhin çıktısı, `2.5.0`; eski kopyanın 97 elle senaryosu + d44 + rastgele s1 / ux18 tohum 1–10 × 120) — kararla ilgisiz eski beklenti DEĞİŞMEDİ
+Eski 49.425 → yeni 49.774 denetim; değişen / kalkan / yeni toplam **390**; **BEKLENMEYEN 0**; yalnız etiketi değişen 0 (dökümü `docs/kanit/2026-11-13/kahineski16-g3-dokum-*.json` — iki saat diliminde
+bayt bayt aynı; özet `kahineski16-esdeger-cari-*.log`). Sınıf İKİ modelin `_iz15` izinden cari cari (eski: s145ret / s145sus; yeni: s155ret / s155sus / s158); anahtar türü sınıfın alanında olmak zorunda:
+- **S155 (327: 297 yeni + 23 değişen + 7 kalkan):** d41 33 yeni (S7 / S8 / S9 — bakım 15'in SK-33 / SK-34 iki dünyası değer aldı); d44 57 yeni + 23 değişen + 7 kalkan (eski kâhin d44'te tarih ölçüsüyle: X1 RET
+  bakiye 1.500 → KABUL 1.200; X9 KABUL → RET; SK-33 alanındaki X3 / X4 / X5 / X10 / X11 / X14 SUS → RET; X12 eski KABUL → SK-35 SUS — 7 kalkan); rastgele s1 tohum 3 / 8 / 9 / 10 (66 + 61 + 74 + 6 yeni —
+  bakım 15'in SK-33 iki dünyası (`hareket_sil` / `hareket_geri_yukle`): yedi adımın HEPSİ toplam ölçüyle KABUL (s1-3 s024 / s094, s1-8 s058, s1-9 s059 / s078, s1-10 s075 / s090); rastgele RET yok).
+- **S158 (15 yeni):** d42 T7 4 (kararın örneği), d44 Y2 / Y4 / Y5 11.
+- **GENEL (46 yeni + 2 kalkan):** aynı kontrolde sınıflı değişiklik olan senaryoda Kasa / Kasa raporu / sayaç (iki dünya düzeninin eski kâhinde sildiği cari dışı denetimler geri geldi; d44'te X12'nin
+  SUS dünyası Kasa'yı ayırır — 2 kalkan).
+- **Öbür 95 eski elle senaryo ve 16 rastgele: fark 0** (adımları değişen eski senaryo 0; bakım 15'in S136 / S139 / S140 / S141 / S143 / S144 / S149 / S151 alanları DEĞİŞMEDİ).
+- **Eski ELLE tablolarda değişen beklentiler** (`kahineski16-elle-fark-*.log`, 97/97 izinli): d41 21 (S7 / S8 / S9 elleYok'tan değere 8 + 8 elleYok kalktı; SK-33 / SK-34 belirsiz kayıtları kalktı; R7 nedeni
+  S156 = C), d42 15 (T7 'Ödenen'ler elleYok'tan 0'a; SK-32 kaydı kalktı; T4 / T5 / T8 nedeni S157 = C). Öbür 95 dosya ve bütün dosyaların adımları AYNI.
+- `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`: **472/472 bayt bayt aynı** (97 eski elle + d44 + 20 rastgele × 4 kip); üretici 20/20 aynı dizi.
+- **Yeni / değişen elle tablolar ESKİ (bakım 15) kâhinde — beklenen NEDENLE kırmızı (ders 7, 38):** 272 elle denetimin **50**'si (`kahineski16-kirmizi-eski-cari-*.log`; d44 34, d41 9, d42 7):
+  tarih ölçüsü (X1 RET, bakiye 1.500, Kalan 1.000), SK-33 / SK-32 alanında "ANAHTAR YOK" (X3 / X4 / X5 / X10 / X11 / X14, S7 / S8 / S9; KY2 / KY4 / KY5 / KT7 'Ödenen'leri), bağlı tahsilat KABUL (X9 bakiye
+  700), SK-35 alanında değer (X12 KABUL, bakiye −100), yeni neden metinleri (S156 / S157 = C, SK-35) `belirsiz`'de yok; 222'si iki kâhinde aynı.
+
+### Kanıt (bakım 16; iki saat dilimi — UTC ve Europe/Istanbul çıktıları başlık / kanit satırları dışında bayt bayt aynı; kâhin `72783564`, temiz ağaç; koşuyu ana oturum yaptı — kilit bu ajanın koşusu sırasında doluydu; `docs/kanit/2026-11-13/kahineski16-*`, araçlar ve koşu betiği `kahineski16-arac/`)
+cari öz test **6.373/6.373** (`-cari-oz-*`: elle tablolar 98 senaryo, mutantlar 200–302 — 219–302 değerle) · mutasyon taraması **269/269** (`-cari-mutasyon-*`) · eşdeğerlik + G3 **590/590** (`-esdeger-cari-*`) ·
+yeni / değişen elle tablo **272/272** (`-elle-yeni-cari-*`: d44 73 + d41 126 + d42 73) · ESKİ kâhinde **50 kırmızı** / 272 (`-kirmizi-eski-cari-*`) · eski elle tablo farkı **97/97** izinli (`-elle-fark-*`) · G1
+tarama **98/98** (`-g1-tara-*`) · mutant ↔ senaryo **420/420** (`-mutant-senaryo-*`; d35 … d44 × 261–302) · geniş tarama **2.201/2.201** (`-genis-tarama-*`; bakım 15 ile aynı sayı) · defter öz testi **181/181**
+(`-defter-oz-*`; bu bakım defter kâhinine dokunmadı). Öz test, mutasyon, eşdeğerlik ve geniş tarama `flock -s -n …/olcum.lock` ile (ders 52); her adım `timeout` sınırlı. Program açılmadı. Koşu
+günlükleri `kahineski16-kos-utc.txt` / `-ist.txt` (yük 0,87 / 1,45 — 4 çekirdek). `s155-say.py` (RET / SUS sayıları + değişmez) bu koşuda YOK — ana oturumun isteğe bağlı ek komutu.
