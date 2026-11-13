@@ -43,7 +43,8 @@ try {
   } finally {
     db.exec("COMMIT");
   }
-  parentPort.postMessage({ ok: true, result, lock, digest, ms: Math.round(performance.now() - started) });
+  // Birleşik tur 7: uyarının kimlik kümesi sonucun sayılmayan alanıdır (yapılandırılmış kopya taşımaz) — ayrıca iletilir.
+  parentPort.postMessage({ ok: true, result, noticeKeys: result.noticeKeys, lock, digest, ms: Math.round(performance.now() - started) });
 } catch (error) {
   parentPort.postMessage({ ok: false, error: error?.message || String(error) });
 } finally {
