@@ -1043,3 +1043,46 @@ sağlayıcı carisinin açık şüphelisi varsa). Önce programın kendi yolunda
 ### 17.7 Ara rapor durumu (13.11.2026)
 BİTTİ (commit'li, kanıtlı): İş 0, İş 5, İş 6 (yeniden üretim; soru), İş 7'nin DÜŞÜK-1 / -3 / -4. KALAN (yeni temiz ajana — ders 46): İş 7 DÜŞÜK-2 (sekiz yaşayan mutantın testi),
 İş 1, 2, 3, 4, 8. İş 0'ın "Düzeltildi (Fiş …)" cümlesi İş 2'ye bağlı.
+
+### 17.8 Tur 2b (kod ajanı, 13.11.2026; taban `c5a2b-taban` c3dc4a36 = tur 2a ucu) — KODDAN ÖNCE yazıldı
+Sıra (görev metni): İş 4 → İş 2 → İş 3 → İş 1 → İş 8 → DÜŞÜK-2 → İş 5 ek testleri. Tur 2a'nın işleri (0, 5, 6, DÜŞÜK-1 / -3 / -4) yeniden yapılmaz.
+
+**İş 4 (§2.11; S14 / S25 / S39 = A) — DURDU (kodlanmadı; BAŞ MİMAR KARARI GEREKİYOR + KULLANICIYA SORULMALI).** Bugünkü kodda yeniden üretim (betik not defterinde
+`c5a2b-q4/betik/is4-uret.mjs`; F1 1.000 (−60), şüpheliye al 1.000 (−40), F2 500 (−30, kayıttan SONRA), F1'e bağlı nakit 400 (−20), bağsız nakit 100 (−15), F2'ye bağlı çek 300 (−10)):
+defter `A 120 400` (bağlı nakit; S25 (c) 128 bekler) · `A 128 100` (bağsız; değişmez) · `A 128 300` (F2'ye bağlı çek; S14 "sonradan kesilmiş fatura 120" bekler). Kuyruğun DIŞA verdiği
+şüpheli dağılımı (`buildObligations().doubtful`) aynı veride SON durumda `F1 500 + F2 100` — F2 kayıttan sonra kesildiği hâlde M13'ün ikinci geçişiyle ("yetmezse sonrakilerden")
+kuyrukta. Durma nedenleri: (1) kural "TAHSİLAT ANINDAKİ" dağılımı ve "o kalemi TAŞIYAN kaydı" ister; kuyruk yalnız bugünkü (son) durumu, kalem başına toplam olarak (kayıt kimliği yok)
+verir — eksik alan (görev metni: "eksik bir alan gerekiyorsa DUR ve raporla"); (2) döngü: kuyruğun girdisi (`doubtfulRecords` kalanları) defterin ikinci yükleyicisinden
+(`doubtfulState`) gelir; kural defteri kuyruğa bağlarsa ikisi birbirine bağlanır — ancak tahsilat tahsilat ilerleyen (zamana göre) bir kuyruk çağrısıyla çözülür; (3) M13'ün ikinci
+geçişi ↔ S14 metni ("sonradan kesilmiş fatura 120") yukarıdaki örnekte AYRIŞIR (iki okuma, para / defter kuralı — ders 43); (4) sınır (SUPHELI_NORMAL_ASIM yalnız 120'ye kalan
+kısma — kâhin Y4 / Z6) routes/accounts.mjs'te (`assertNormalRoom` → `doubtfulSkipOf`), dosya sınırı dışında. Kod, test, kâhin değişmedi.
+
+**İş 2 — Kural Farkı Düzeltme Fişi + "Düzeltildi" (§3.3; B14, B16; S76 = A; KG-15 A; EK-1 M7).**
+- Değişen yol: lib/ledger-opening.mjs'e saf plan işlevi (`ruleDiffCorrectionPlan`) + yazılmış düzeltmelerin toplamı (`postedRuleDiffCorrections`); lib/ledger-snapshots.mjs
+  `ruleDiff({ detail })` (isteğe bağlı: fark doğuran her maddenin hesap başına farkı — ön izlemenin "hangi kayıttan" listesi; varsayılan çıktı AYNEN) ve `checks()`'te kural farkı
+  öğesine düzeltme durumu; routes/ledger.mjs'e iki uç (GET ön izleme, POST kaydet; `system.manage`); istemci Yönetim › Sistem'de "Kural Farkı Düzeltme" penceresi + İş 0 satırının
+  "Düzeltildi" cümlesi.
+- Kural: tarih = kilit + 1; satırlar `ruleDiff().balances`'tan — 1–5 sınıfı hesaplar kilit günü sonundaki BİRİKİMLİ farkla (hesap + alt hesap + cari başına, yıllar toplanır);
+  6 / 7 sınıfı yıl yıl: fark yılı = fişin yılı → aynı hesap (eski kuralın hesabının tersi), önceki yıl → borç yönlü fark 681, alacak yönlü fark 671. ALT DEFTER hesabı (K6:
+  `subledgerAccounts()`; 120 / 128 …) fişe YAZILMAZ (B14 (a)); birikimli farkı sıfır olmayan alt defter hesabına katkı veren maddelerin BÜTÜN farkı fişin dışında kalır (S76 = A:
+  "bu fark fişle düzeltilmez") — böylece fiş her zaman dengeli; dışarıda kalan fark ön izlemede nedeniyle ("alt defter hesabı; Kilidi Aç → Yeniden Kilitle") görünür.
+  Ön izleme, satırların yanında farkı doğuran maddeleri (kimlik, tarih, kaynak, açıklama, hesap başına donmuş ↔ güncel) satır satır gösterir (S164 = C: program dışı yazımın bozduğu
+  satır sessizce fişe girmesin); kayıt yalnız ön izlemenin özeti (satırların imzası) gönderilince yazılır — ön izlemeden sonra fark değiştiyse 409 (iki kişi aynı anda).
+- Düğme pasif + görünür neden: kilit yok; kilit bugün ("Kilit bugünün tarihinde; düzeltme fişi yarın yazılabilir" — fiş ucunun 400 date-future'ı); kilitli dönemde onay bekleyen
+  Açılış Olabilir kaydı (B16: "önce Açılış Olabilir listesini tamamlayın"; sunucu da 409); düzeltilecek fark yok. Sunucu aynı nedenlerle reddeder (ekran tek kapı değil).
+- "Düzeltildi": düzeltilmemiş fark = plan (ruleDiff'ten) − Σ etkin rule-diff-correction fişleri (ters kaydı olanlar düşer; hesap + alt hesap + cari eşlemesiyle; 671 / 681
+  eşlemesi son düzeltmenin yılıyla). Hepsi 0 ve dışarıda kalan alt defter farkı yoksa öğe `ok` olur ve "… — Düzeltildi (Fiş 2026-00000N)" adıyla bilgi olarak listede kalır
+  (Mutabakat Testi uyarısız döner — D 12.11 15:57 (4)); dışarıda kalan alt defter farkı varsa uyarı sürer, ipucu B14'ü söyler. Düzeltme fazla kalırsa (kilit kaldırıldı ya da
+  yeniden kilitlendi — donmuş dönem güncel kuralla döndü) öğe kilit olmasa da görünür: "Kural Farkı Düzeltme Fişi fazla: … fişi ters kaydedin". Tarama / zil / Mutabakat Günlüğü:
+  `ledger:rule-diff` zaten sapma kümesinin dışında (tur 1d) — değişmez (sayıyla gösterilir).
+- Okuyucular (ders 10; tarama `ruleDiff|rule-diff`): integrity.mjs run (Mutabakat Testi, açılış, arka plan taraması), report-center.mjs Defter Mutabakatı (öğe adı + "Tutarlı"),
+  admin.js loadIntegrity, muhasebe sürücüsü (salt okur), testler kural-farki-* / donmus-defter-* / goc-243 / s127 / banka-220-senet-121 / koruma-taban / kilit-izi-alanlar /
+  senaryo-acilis-duzeni-250. Düzeltme fişi olmayan veride çıktı bayt bayt aynı (yeni alan yok).
+- Nasıl bozulur (§4 (8) + bugünkü kod): fiş → ters kayıt (uyarı geri gelir); iki fiş (ikincisi yalnız kalanı); aday onayından sonra ikinci fiş (B16 sırası); kilit ilerletilir
+  (fiş donmuş döneme girer — karşılaştırma dışı); Kilidi Aç / Yeniden Kilitle (fazla düzeltme uyarısı); kilit bugün; ileri / geri yıl (31.12 kilit → 01.01 fiş, önceki yıl 671 / 681;
+  iki TZ); aynı istek iki kez (replayed); iki kişi aynı anda (imza); yetkisiz (Muhasebe 403); eski kurala bağlı Excel kartı (S127; iki yön) çift düzeltilmez (değişmez sayıyla);
+  program dışı yazımın kural farkına karışması (S164 = C — ön izlemede kaynak satırı); yedekten geri yükleme (fiş yedekle gelir; durum yeniden hesaplanır).
+- Hız: ön izleme = bir `ruleDiff` (Mutabakat Testi'nin zaten yaptığı) + fiş toplamı (tek SQL); `checks()`'e yalnız fiş toplamı SQL'i (fiş yoksa tek `LIMIT 1`). Ölçüt: 100 bin satırda
+  ön izleme ≤ 0,5 sn hedef; Mutabakat Testi tabanın %10'u içinde.
+- Ekran: Yönetim › Sistem › Dönem Kilidi kartının altında "Kural Farkı Düzeltme" düğmesi → pencere (kilit, fiş tarihi, satırlar, dışarıda kalanlar, kaynak maddeler, onay kutusu,
+  "Fişi Kaydet"); pasifse nedeni görünür yazı.
