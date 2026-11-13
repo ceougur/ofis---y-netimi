@@ -4001,9 +4001,10 @@ YORUMDUR (ders 40 — önce kural, sonra kod); senaryo / mutant / G3 sayıları 
   d30'un beklentileri DEĞİŞMEDİ (KQ1 / KQ3 S144 susması aynen).
 - **İlk koşu (açıkça):** d45'in 115 elle denetiminin HEPSİ ve d30 / d42 / d43 / d44'ün güncellenmiş elle tabloları (331) yeni kâhinle ilk koşuda aynı; hiçbir elle değer kâhine göre düzeltilmedi.
 
-### C10u Mutantlar (bakım 17; `oz-test.py` DEĞERLE — çökmeden, elle tablo kırmızı)
-303 (d44 X12, d45 Z5) · 304 (d43 U1 / U2 'Tahsil Edilen', d45 A2) · 305 (d30 Q1 / Q3 — seçenekli adım sınır bölgesinde SUS'a düşer —, d43, d45 A1) · 306 (d43 U1 / U2, d45 A1) · 307 (d45 A5, d30 Q4 —
-kartın avansla ödenmiş kısmı tek kuyruk ödenenine girdiğinden sınır bölgesi kayar —, d43, d45). Bakım 6 … 16 mutantları (241–302) aynen yakalanıyor (`oz-test.py`; `mutant-senaryo.py` 261–307 × d35 … d45).
+### C10u Mutantlar (bakım 17; `oz-test.py` DEĞERLE — çökmeden, elle tablo kırmızı; senaryo listesi KOŞUDAN — bütün /3 elle senaryolar × 303–307)
+303 (d44 X12 — 3 elle değer; d45 Z5 — 2) · 304 (d43 U1 / U2 'Tahsil Edilen' — 2; d45 A1 / A2 — 8) · 305 (d30 Q1 / Q3 / Q5 — 14: seçenek yok sayılınca sınır bölgesindeki adım SK-36 ile susar; d43 U1 / U2 / U2F — 11;
+d45 A1 / A6B — 16) · 306 (d43 U1 / U2 — 2; d45 A1 — 1) · 307 (d45 A5 — 7; d30 / d31 / d32 KQ4 — 5 / 5 / 6: tek kuyruk ödeneni kartın avansla ödenmiş kısmını da içerdiğinden sınır kayar). Kod commit'indeki
+elle listedeki "307 … d43" YANLIŞTI (koşu: d43'te 307 yakalanmıyor) — burada düzeltildi. Bakım 6 … 16 mutantları (200–302) aynen yakalanıyor (`oz-test.py`; `mutant-senaryo.py` 261–307 × d35 … d45).
 
 ### Dil ekleri (/3, bakım 17)
 - **YENİ adım alanı:** `kart_tahsilat {kayit, tutar, tarih, fazlasiniAvansYaz}` — `fazlasiniAvansYaz: true` = 'Kalanı Aşan Tutar' sorusuna 'Fazlasını Avans Yaz'; alan yok / `false` = yanıt yok ya da
@@ -4030,3 +4031,30 @@ kartın avansla ödenmiş kısmı tek kuyruk ödenenine girdiğinden sınır bö
 - Seçenek: Tablodan Aktar kartı (taşınan tahsilatlı) kalanı aşan tahsilat; şüpheli kayıtlı caride seçenekli tahsilat (S155 ile birlikte); sınır bölgesinde S101'in SK-14 alanı (d30 Q5 — cari
   tanımsız, yalnız bakiye) dışında avansla ödenmiş kart — elle senaryo yok. Rastgele üretici seçenek üretmiyor ve kalanı aşan kart tahsilatı üretmiyor (tarama: 0) — üretici değişmedi.
 - S150: alan yok (Y17-9). İki şirket / yedek geri yükleme bu bakımın kurallarıyla.
+
+### C0u Değişen eski beklentiler (G3; bakım 16 (`kahin17-taban` = f61f058e) ↔ bakım 17 kâhin çıktısı, `2.5.0`; eski kopyanın 98 elle senaryosu + d45 + seçenek eklenmiş d30 / d43'ün yeni hâli + rastgele s1 / ux18 tohum 1–10 × 120) — kararla ilgisiz eski beklenti DEĞİŞMEDİ
+Eski 50.516 → yeni 50.454 denetim; değişen / kalkan / yeni toplam **140**; **BEKLENMEYEN 0**; yalnız etiketi değişen 13 (dökümü `docs/kanit/2026-11-13/kahineski17-g3-dokum-*.json` — iki saat diliminde
+bayt bayt aynı; özet `kahineski17-esdeger-cari-*.log`). Sınıf yeni modelin `_iz15` izinden cari cari; anahtar türü sınıfın alanında olmak zorunda:
+- **S118 (59: 26 değişen + 27 kalkan + 6 yeni):** ESKİ (seçeneksiz) d43 U1 / U2 yeni kâhinde RET (17 değişen + 5 yeni — `adim:u1k:durum` "ok" → "ret", U1 bakiye / açık toplamı, U2F açığı yeniden yazılır), ESKİ d30
+  Q1 / Q3 / Q5 sınır bölgesinde SUS (15 kalkan — iki dünya), d45 A2 (RET — eski kâhin kabul ediyordu) ve A6 (SK-36 SUS) (9 değişen + 12 kalkan + 1 yeni). Seçenek eklenmiş d30'un yeni hâli: fark 0.
+- **S154 (3 yeni):** d45 A1 KA1 'Tahsil Edilen' 130000; d43'ün yeni hâlinde KU1 110000, KU2 60000 (eski kâhinde S144 SUS).
+- **S159 (14 yeni):** d44 X12 7 (bakım 16 SK-35 iki dünyası — adımın durumu, bakiye, gecikmiş, x12a kalemleri), d45 Z5 7 (çekle aşan — eski kâhinde SK-35).
+- **S162 (19 kalkan):** d42 T7 / T6 9 (kart toplamı, taksit Ödenen, gecikmiş — T6 SK-37), d44 Y4 5, d45 B1 5.
+- **S163 (37 kalkan):** d45 C1 / C3 (açık kalem dağılımı; C1'de gecikmiş — C3'te gecikmiş yazılı kalır).
+- **GENEL (8: 2 değişen + 4 kalkan + 2 yeni):** aynı kontrolde sınıflı değişiklik olan senaryoda Kasa / Kasa raporu (eski d43 U1 / U2 reddi Kasa'yı 1.700 düşürür; d30 / d45 iki dünyası Kasa'yı ayırır; d44 X12
+  kabulü Kasa'yı geri getirir).
+- **Öbür 94 eski elle senaryo ve 20 rastgele: fark 0** (adımları değişen eski senaryo 0 — d30 / d43'te yalnız `fazlasiniAvansYaz` eklendi; üretici 20/20 aynı dizi).
+- **Eski ELLE tablolarda değişen beklentiler** (`kahineski17-elle-fark-*.log`, 98/98 izinli): d44 15 (X12 değerleri + SK-35 kaydı kalktı; Y4 taksit Ödenen / toplam / gecikmiş `elleYok`'a, S162 kaydı), d42 18
+  (T7 / T6 — S162 / SK-37), d43 6 (KU1 / KU2 'Tahsil Edilen' değer, S144 kayıtları kalktı); d30 ve d43'te 3 + 2 adıma yalnız seçenek eklendi. Öbür 94 dosya AYNI.
+- `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`: **484/484 bayt bayt aynı** (98 eski elle + d45 + d30 / d43 yeni hâli + 20 rastgele × 4 kip).
+- **Yeni / değişen elle tablolar ESKİ (bakım 16) kâhinde — beklenen NEDENLE kırmızı (ders 7, 38):** 446 elle denetimin **56**'sı (`kahineski17-kirmizi-eski-cari-*.log`; d45 34, d42 11, d44 9, d43 2, d30 0):
+  S159 alanında "ANAHTAR YOK" (SK-35 iki dünyası — d44 X12, d45 Z5), seçenek bilinmediğinden kabul (d45 A2 `ret` ↔ eski "ok", bakiye 700 ↔ −100), S154 'Tahsil Edilen' "ANAHTAR YOK" (KA1, KU1, KU2), SK-36 /
+  S162 / S163 alanında değer yazması (A6 durum / bakiye; KB1 / KT7 / KT6 / KY4 toplam, taksit Ödenen, gecikmiş; C1 / C3 dağılımı), yeni neden metinleri `belirsiz`'de yok (7); 390'ı iki kâhinde aynı (d30'un
+  138'i dahil — seçenek o senaryonun beklentilerini değiştirmedi).
+
+### Kanıt (bakım 17; iki saat dilimi — UTC ve Europe/Istanbul çıktıları başlık / kanit satırları dışında bayt bayt aynı, G3 dökümleri bayt bayt aynı; kâhin `750d066b`, temiz ağaç; `docs/kanit/2026-11-13/kahineski17-*`, araçlar ve koşu betiği `kahineski17-arac/`)
+cari öz test **6.514/6.514** (`-cari-oz-*`: elle tablolar 99 senaryo, mutantlar 200–307 — 219–307 değerle) · mutasyon taraması **274/274** (`-cari-mutasyon-*`) · eşdeğerlik + G3 **603/603** (`-esdeger-cari-*`) ·
+yeni / değişen elle tablo **446/446** (`-elle-yeni-cari-*`: d45 115 + d30 138 + d42 77 + d43 40 + d44 76) · ESKİ kâhinde **56 kırmızı** / 446 (`-kirmizi-eski-cari-*`) · eski elle tablo farkı **98/98** izinli
+(`-elle-fark-*`) · G1 tarama **99/99** (`-g1-tara-*`) · mutant ↔ senaryo **517/517** (`-mutant-senaryo-*`; d35 … d45 × 261–307) · geniş tarama **2.201/2.201** (`-genis-tarama-*`; bakım 16 ile aynı sayı) ·
+defter öz testi **181/181** (`-defter-oz-*`; bu bakım defter kâhinine dokunmadı). Hepsi çıkış 0, iki saat diliminde aynı sayılar. Öz test, mutasyon, eşdeğerlik ve geniş tarama `flock -s -n …/olcum.lock`
+ile (ders 52); her adım `timeout` sınırlı. Program açılmadı. Koşu günlükleri `kahineski17-kos-utc.txt` / `-ist.txt` (yük 1,83 / 2,42 — 4 çekirdek).
