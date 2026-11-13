@@ -673,10 +673,18 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     // olan gecikmiş borç dahil; 'Gecikmiş Tahsilat' göstergesi her aralıkta aynı sayı)"): hazır 'Gecikmiş' aralığında (elle tarih verilmediyse) üst sınır kalemin TARİHİ değil
     // DURUMUDUR — bugünden önceki her kalem (bugünkü gibi) + durumu Gecikmiş olan kalem (sözlü borç söz gününde durur — birleşik tur 7, S52 / S67 / S69). Elle girilen aralık ve
     // öbür hazır aralıklar değişmez; başlıktaki aralık metni bugünkü gibi (… – dün).
-    const lateOnly = preset === "late" && !text(params.get("from")) && !text(params.get("to"));
+    // Birleşik tur 8b (S150 = A'nın 'Bugün' / '7 Gün' kolu; baş mimar yorumu — gösterge ile satırlar ayrışmaz, ders 11): bu iki hazır aralıkta (elle tarih verilmediyse ve
+    // 'Gecikmişleri de göster' açıkken) aralığın kendi satırlarına durumu Gecikmiş olan her kalem de eklenir — tarihi aralıktan önce olanlar bugün zaten listede; eklenen yalnız
+    // günü (söz günü) aralığın bitişinden SONRA olan gecikmiş borçtur. Kalem öbür gecikmişler gibi yalnız 'Gecikmiş' kümesine (ve satır toplamına) girer; Bugün / Yaklaşan
+    // kümeleri, '30 Gün' / '90 Gün' / 'Tüm Açık' ve elle aralık değişmez; başlıktaki aralık metni bugünkü gibi.
+    const presetOnly = !text(params.get("from")) && !text(params.get("to"));
+    const lateOnly = preset === "late" && presetOnly;
+    const nearWithLate = (preset === "today" || preset === "next7") && presetOnly && late;
     const result = lateOnly
       ? { ...dueList({ today: day, from, to: "", late, items: items.filter(matches), keep: row => row.date < day || row.state === "overdue" }), to }
-      : dueList({ today: day, from, to, late, items: items.filter(matches) });
+      : nearWithLate
+        ? { ...dueList({ today: day, from, to: "", late, items: items.filter(matches), keep: row => row.date <= to || row.state === "overdue" }), to }
+        : dueList({ today: day, from, to, late, items: items.filter(matches) });
     if (needle) dormant = dormant.filter(item => foldText(`${item.party} ${item.detail}`).includes(needle));
     // 2.3.0 İz 1.6 (plan §3.11b/5 "hatırlatmalar şüpheli tutarı ayrı gösterir"): vade kalemlerinin DIŞINDA, açık şüpheli alacak toplamı
     // (bütün cariler; tarih süzgecine girmez — şüpheli alacağın vadesi yoktur). Yalnız tahsil yönü; Ödenecek süzgecinde 0.
