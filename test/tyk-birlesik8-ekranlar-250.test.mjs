@@ -277,3 +277,28 @@ describe("Birleşik tur 8 — İş 1: kart göstergelerinin yer tablosu kaynakla
     assert.equal((ws.match(/canCollect && ownLeft\(item\) > 0\.005/g) || []).length, 2, "kayıt detayının iki düğmesi kendi kalanından");
   });
 });
+
+// ---------------- İş 2 (dar kontrol Ç5-B kapanış 2 DÜŞÜK-C): "Kalanı Aşan Tutar" sorusunun metni formun nitelemesini taşır; KURAL değişmez (S118 = B) ----------------
+describe("Birleşik tur 8 — İş 2: 'Kalanı Aşan Tutar' sorusu kartın KENDİ kalanını niteleyerek söyler (S118 = B kuralı aynen)", () => {
+  let server;
+  let api;
+  before(async () => {
+    server = await startTestServer({ now: steppingClock(), env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
+    const client = await loginAdmin(server);
+    api = { get: async url => unwrap(await client.get(url)), post: async (url, body) => unwrap(await client.post(url, body)) };
+    await api.post("/api/workspace/bank/setup/dismiss", {});
+  });
+  after(async () => server?.close());
+  it("kart 900 (3 × 300) + bağsız 500 (pencere: Kalan 400): 901 → 409 plan-overpay, ileti 'kartın kendi tahsilatlarına göre kalan 900,00 TL'; 900 kabul (sınır kartın kendi kalanı)", async () => {
+    const acc = (await api.post("/api/workspace/accounts", { name: "Tur8 Soru Metni", type: "customer", registeredOn: day(-400), phone: "0500 288 99 01" })).data;
+    const plan = (await api.post("/api/workspace/plans", { name: acc.name, registeredOn: day(-40), total: "900", accountId: acc.id, mode: "auto", count: "3", firstDue: day(-10), everyMonths: "1" })).data;
+    assert.equal((await api.post(`/api/workspace/accounts/${acc.id}/entries`, { kind: "in", amount: "500", date: day(-5), method: "cash", cashForce: true, similarOk: true })).status, 200);
+    assert.equal((await api.get(`/api/workspace/plans/${plan.id}`)).data.totals.remaining, 400, "ön koşul: pencerenin Kalan'ı (kuyruk) 400");
+    const over = await api.post(`/api/workspace/plans/${plan.id}/entries`, { kind: "in", amount: "901", method: "cash", date: day(-1), cashForce: true, similarOk: true });
+    assert.deepEqual([over.status, over.data?.code ?? over.data?.error?.code], [409, "plan-overpay"], "kural aynı: sınır kartın kendi kalanı (S118 = B)");
+    const message = String(over.data?.message || over.data?.error?.message || over.data?.error || "");
+    assert.match(message, /Tutar kartın kalanını aşıyor: kartın kendi tahsilatlarına göre kalan 900,00 TL, girilen 901,00 TL, fazlası 1,00 TL;/, `soru metni nitelemeyi taşır: ${message}`);
+    const okay = await api.post(`/api/workspace/plans/${plan.id}/entries`, { kind: "in", amount: "900", method: "cash", date: day(-1), cashForce: true, similarOk: true });
+    assert.equal(okay.status, 200, "kartın kendi kalanı kadar tahsilat kabul (kural değişmedi)");
+  });
+});

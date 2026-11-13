@@ -1023,7 +1023,9 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       } else {
         const hint = !avans ? "" : manage ? ` Gerçekten bu karta avans yazılacaksa "${AVANS}" ile kaydedin.` : " Bu karta avans yazılacaksa yöneticinize başvurun.";
         if (rule === "plan-paid") throw new HttpError(409, `Bu kart ödendi (kalan ${tl(0)}); ${what}. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın.${hint}`, { code: "plan-paid", planId, remaining: 0, amount, excess });
-        throw new HttpError(409, `Tutar kartın kalanını aşıyor: kalan ${tl(left)}, girilen ${tl(amount)}, fazlası ${tl(excess)}; ${what}. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın.${hint}`, { code: "plan-overpay", planId, remaining: left, amount, excess });
+        // Birleşik tur 8 (dar kontrol Ç5-B kapanış 2 DÜŞÜK-C): soru metni formun açıklamasındaki nitelemeyi taşır — sınır kartın KENDİ kalanıdır (S118 = B, kural değişmedi);
+        // kart penceresi tek kuyruktan daha küçük Kalan gösterebilir (S129 = A).
+        throw new HttpError(409, `Tutar kartın kalanını aşıyor: kartın kendi tahsilatlarına göre kalan ${tl(left)}, girilen ${tl(amount)}, fazlası ${tl(excess)}; ${what}. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın.${hint}`, { code: "plan-overpay", planId, remaining: left, amount, excess });
       }
     }
     if (itemId) {
