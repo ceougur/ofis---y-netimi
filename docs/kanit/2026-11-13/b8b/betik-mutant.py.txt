@@ -1,0 +1,33 @@
+# Birleşik tur 8b mutantları: yeni overview.mjs'ten (overview.mjs.yeni) her mutant için ayrı dosya üretir.
+# Kullanım: python3 -I mutant.py <mutant kopyası kökü> <ad>  → server/routes/overview.mjs'i o mutantla yazar ("yeni" = mutantsız).
+import sys
+root, name = sys.argv[1], sys.argv[2]
+src = open(f"{root}/server/routes/overview.mjs.yeni", encoding="utf-8").read()
+near = 'const nearWithLate = (preset === "today" || preset === "next7") && presetOnly && late;'
+keep = 'keep: row => row.date <= to || row.state === "overdue" }), to }\n        : dueList'
+MUT = {
+    "yeni": [],
+    # M1: yalnız gösterge düzeltilir, satır eklenmez (toplamlar genişletilmiş kümeden, satırlar aralıktan)
+    "m1-yalniz-gosterge": [(keep, 'keep: row => row.date <= to || row.state === "overdue" }), to, __m1: true }\n        : dueList'),
+                           ('    if (needle) dormant =', '    if (result.__m1) result.rows = result.rows.filter(row => row.date <= to);\n    if (needle) dormant =')],
+    # M2: yalnız tahsilat yönü düzeltilir (ödeme yönündeki aralık sonrası gecikmiş eklenmez)
+    "m2-yalniz-tahsilat": [("? { ...dueList({ today: day, from, to: \"\", late, items: items.filter(matches), keep: row => row.date <= to",
+                            "? { ...dueList({ today: day, from, to: \"\", late, items: items.filter(matches).filter(item => item.direction !== \"out\" || item.date <= to), keep: row => row.date <= to")],
+    # M3: elle girilen aralık da değişir
+    "m3-elle-aralik": [(near, 'const nearWithLate = ((preset === "today" || preset === "next7") || !preset) && late;')],
+    # M4: 'Gecikmişleri de göster' kapalıyken de eklenir
+    "m4-late-kapali": [(near, 'const nearWithLate = (preset === "today" || preset === "next7") && presetOnly;')],
+    # M5: yalnız 'Bugün' düzeltilir ('7 Gün' değil)
+    "m5-yalniz-bugun": [(near, 'const nearWithLate = preset === "today" && presetOnly && late;')],
+    # M6: eklenen gecikmiş kalem 'Bugün' / 'Yaklaşan' kümesine de girer (durumu tarihten yeniden türetilir)
+    "m6-kume": [(keep, 'keep: row => row.date <= to || row.state === "overdue" }), to, __m6: true }\n        : dueList'),
+                ('    if (needle) dormant =', '    if (result.__m6) for (const row of result.rows) if (row.date > to) { result.totals[row.direction].overdue.amount -= row.amount; result.totals[row.direction].overdue.count -= 1; result.totals[row.direction].upcoming.amount += row.amount; result.totals[row.direction].upcoming.count += 1; }\n    if (needle) dormant =')],
+    # M7: 30 / 90 Gün da genişletilir (öbür aralıklar değişmemeli — bu kurguda ayırt edici değil; yaşarsa not edilir)
+    "m7-30-90": [(near, 'const nearWithLate = ["today", "next7", "next30", "next90"].includes(preset) && presetOnly && late;')],
+}
+out = src
+for old, new in MUT[name]:
+    assert out.count(old) == 1, (name, old[:60], out.count(old))
+    out = out.replace(old, new)
+open(f"{root}/server/routes/overview.mjs", "w", encoding="utf-8").write(out)
+print(name, "yazıldı", len(MUT[name]), "değişiklik")

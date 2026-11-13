@@ -1,0 +1,55 @@
+// Birleşik tur 8b — HIZ KABUL (ders 47, 53 (a)): DEĞİŞEN yol = Vade Takip 'Bugün' / '7 Gün' (+ 'Tüm Açık', 'Gecikmiş' denetim), temiz 100 bin satırlık verinin kopyasında;
+// ısınma 1 çağrı + N tekrar; en iyi + ortanca + olay döngüsü en çok. Yalnız OKUMA (veri değişmez → taban ve yeni aynı kopyada).
+// Kullanım: node olc-b8b.mjs <kod kökü> <veri kopyası> [tekrar=7]   (özel ölçüm kilidiyle çağrılır)
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { monitorEventLoopDelay } from "node:perf_hooks";
+import { pathToFileURL } from "node:url";
+
+process.env.HUKUK_LICENSE_URL ||= "http://127.0.0.1:9";
+const [root, dir, repeatText = "7"] = process.argv.slice(2);
+const repeat = Number(repeatText) || 7;
+const load = () => readFileSync("/proc/loadavg", "utf8").trim().split(" ").slice(0, 3).join(" ");
+const { createApp } = await import(pathToFileURL(path.join(root, "server", "app.mjs")).href);
+const { createClient } = await import(pathToFileURL(path.join(root, "test", "helpers.mjs")).href);
+const PASS = "Kapi-Olcum-2026!";
+const app = createApp({
+  dataDir: path.join(dir, "data"), backupDir: path.join(dir, "backups"), logLevel: "silent", scheduleBackups: false,
+  env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "0123456789abcdef0123456789abcdef" },
+  startLicenseTimers: false, integrityScan: false, analysisWorker: false, now: "2026-10-08T12:00:00+03:00", moneyStrict: false,
+});
+const { port } = await app.listen(0, "127.0.0.1");
+const client = createClient(`http://127.0.0.1:${port}`);
+if ((await client.login("admin", PASS)).status !== 200) throw new Error("giriş");
+console.log(`kod ${root} · yük (başta) ${load()}`);
+const h = monitorEventLoopDelay({ resolution: 5 });
+h.enable();
+const r = v => Math.round(v * 10) / 10;
+const results = new Map();
+const PATHS = [
+  ["Vade Takip Bugün", "/api/workspace/overview/vade-takip?preset=today"],
+  ["Vade Takip 7 Gün", "/api/workspace/overview/vade-takip?preset=next7"],
+  ["Vade Takip Tüm Açık", "/api/workspace/overview/vade-takip?preset=open"],
+  ["Vade Takip Gecikmiş", "/api/workspace/overview/vade-takip?preset=late"],
+];
+const unwrap = res => res.data?.data || res.data;
+for (const [, url] of PATHS) await client.get(url); // ısınma
+for (let i = 0; i < repeat; i += 1) {
+  for (const [label, url] of PATHS) {
+    h.reset();
+    const s = performance.now();
+    const res = await client.get(url);
+    const ms = performance.now() - s;
+    if (!results.has(label)) results.set(label, { ms: [], loop: [], status: new Set(), rows: new Set() });
+    const row = results.get(label);
+    row.ms.push(ms);
+    row.loop.push(h.max / 1e6);
+    row.status.add(res.status);
+    const d = unwrap(res);
+    row.rows.add(`${d?.rowTotal} satır · gecikmiş tahsil ${d?.totals?.in?.overdue?.amount} / ${d?.totals?.in?.overdue?.count} · ödeme ${d?.totals?.out?.overdue?.amount} / ${d?.totals?.out?.overdue?.count}`);
+  }
+}
+const median = list => [...list].sort((a, b) => a - b)[Math.floor(list.length / 2)];
+for (const [label, row] of results) console.log(`  ${label}: durum ${[...row.status].join("/")} · en iyi ${r(Math.min(...row.ms))} ms · ortanca ${r(median(row.ms))} ms · olay döngüsü en çok ${r(Math.max(...row.loop))} ms (n=${row.ms.length}) · ${[...row.rows].join(" | ")}`);
+console.log(`yük (sonda) ${load()}`);
+await app.close();

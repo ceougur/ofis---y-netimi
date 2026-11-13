@@ -1,0 +1,12 @@
+#!/bin/bash
+# Birleşik tur 8b mutant koşusu (yük kilidi paylaşımlı, beklemesiz; her mutant iki test dosyası, UTC).
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+M=$S/b8b-mutant
+cd $M || exit 1
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=$S/b8b-kanit TZ=UTC
+for name in m1-yalniz-gosterge m2-yalniz-tahsilat m3-elle-aralik m4-late-kapali m5-yalniz-bugun m6-kume m7-30-90 yeni; do
+  python3 -I $S/b8b-betik/mutant.py $M $name || exit 1
+  node tools/kanit.mjs kos b8b-mutant-$name -- node --test test/vade-takip-gecikmis-b8b-250.test.mjs test/vade-takip-gecikmis-b8-250.test.mjs > $S/b8b-kanit/mutant-$name.txt 2>&1
+  echo "$name çıkış=$? $(grep -E '^# (tests|pass|fail) ' $S/b8b-kanit/mutant-$name.txt | tr '\n' ' ')"
+done
+cp $M/server/routes/overview.mjs.yeni $M/server/routes/overview.mjs

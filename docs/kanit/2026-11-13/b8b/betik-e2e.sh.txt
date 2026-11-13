@@ -1,0 +1,12 @@
+#!/bin/bash
+# Birleşik tur 8b: Vade Takip'i açan ekran senaryoları (Grep taraması test/e2e: vade-takip | Vade Takip | "vade"), her biri bir kez, sırayla. Yük kilidi paylaşımlı, BEKLEMESİZ.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-a97f589d1520516a5
+exec 9>"$S/olcum.lock"
+flock -s -n 9 || { echo "KİLİT DOLU — KOŞULMADI"; exit 3; }
+cd $W || exit 1
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=$S/b8b-kanit PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194
+for f in senaryo-cari-vade-245 senaryo-raporlar suzgec-cubugu-yaris senaryo-pil-karti-245 senaryo-tyk-tur2a-250 ui-ux-217 uiux-ui11-244 senaryo-supheli-230 senaryo-taslak banka-210-ekran-aciklama-yetki; do
+  timeout -k 5 900 node tools/kanit.mjs kos b8b-e2e-$f -- node --disable-warning=ExperimentalWarning test/e2e/$f.mjs > $S/b8b-kanit/e2e-$f.txt 2>&1
+  echo "$f çıkış=$? · $(tail -2 $S/b8b-kanit/e2e-$f.txt | tr '\n' ' ' | cut -c1-200)"
+done

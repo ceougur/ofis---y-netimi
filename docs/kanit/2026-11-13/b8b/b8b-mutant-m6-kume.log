@@ -1,0 +1,617 @@
+TAP version 13
+# (node:5119) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Birleşik tur 8 — İş 4: Vade Takip 'Gecikmiş' hazır aralığı = durumu Gecikmiş olan kalemler (S150 = A)
+    # Subtest: 'Gecikmiş' aralığı: satırlar = 'Tüm Açık'ın durumu Gecikmiş olan satırları (sözü bugün / ileride olanlar dahil); gösterge 500 / 5 tahsilat, 100 / 2 ödeme
+    ok 1 - 'Gecikmiş' aralığı: satırlar = 'Tüm Açık'ın durumu Gecikmiş olan satırları (sözü bugün / ileride olanlar dahil); gösterge 500 / 5 tahsilat, 100 / 2 ödeme
+      ---
+      duration_ms: 22.481369
+      type: 'test'
+      ...
+    # Subtest: 'Gecikmiş Tahsilat / Ödeme' göstergesi: Gecikmiş = Bugün = 7 Gün = 30 Gün = 90 Gün = Tüm Açık (birleşik tur 8b); yön süzgeci (tahsilat / ödeme) ayrı ayrı
+    not ok 2 - 'Gecikmiş Tahsilat / Ödeme' göstergesi: Gecikmiş = Bugün = 7 Gün = 30 Gün = 90 Gün = Tüm Açık (birleşik tur 8b); yön süzgeci (tahsilat / ödeme) ayrı ayrı
+      ---
+      duration_ms: 26.821621
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8b-mutant/test/vade-takip-gecikmis-b8-250.test.mjs:55:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            late: [
+              500,
+              100
+            ],
+        ...
+            next7: [
+        +     400,
+        +     30
+        -     500,
+        -     100
+            ],
+            next90: [
+              500,
+              100
+            ],
+        ...
+            today: [
+        +     400,
+        +     30
+        -     500,
+        -     100
+            ]
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        late:
+          0: 500
+          1: 100
+        today:
+          0: 500
+          1: 100
+        next7:
+          0: 500
+          1: 100
+        next30:
+          0: 500
+          1: 100
+        next90:
+          0: 500
+          1: 100
+        open:
+          0: 500
+          1: 100
+      actual:
+        late:
+          0: 500
+          1: 100
+        today:
+          0: 400
+          1: 30
+        next7:
+          0: 400
+          1: 30
+        next30:
+          0: 500
+          1: 100
+        next90:
+          0: 500
+          1: 100
+        open:
+          0: 500
+          1: 100
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8b-mutant/test/vade-takip-gecikmis-b8-250.test.mjs:61:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Bugün / 7 Gün sözü aralığın bitişinden ileride olan gecikmiş kalemi de gösterir (birleşik tur 8b — S150 = A'nın eksik kolu; ayrıntı test/vade-takip-gecikmis-b8b-250.test.mjs)
+    not ok 3 - Bugün / 7 Gün sözü aralığın bitişinden ileride olan gecikmiş kalemi de gösterir (birleşik tur 8b — S150 = A'nın eksik kolu; ayrıntı test/vade-takip-gecikmis-b8b-250.test.mjs)
+      ---
+      duration_ms: 4.395224
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8b-mutant/test/vade-takip-gecikmis-b8-250.test.mjs:66:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        today
+        + actual - expected
+        
+          [
+        +   400,
+        +   4,
+        +   30,
+        +   1
+        -   500,
+        -   5,
+        -   100,
+        -   2
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 500
+        1: 5
+        2: 100
+        3: 2
+      actual:
+        0: 400
+        1: 4
+        2: 30
+        3: 1
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8b-mutant/test/vade-takip-gecikmis-b8-250.test.mjs:69:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ELLE girilen aralık değişmez: 60 gün önce … dün ⇒ yalnız tarihi aralıkta olan 4 satır (sözü ileride olan kalem YOK)
+    ok 4 - ELLE girilen aralık değişmez: 60 gün önce … dün ⇒ yalnız tarihi aralıkta olan 4 satır (sözü ileride olan kalem YOK)
+      ---
+      duration_ms: 4.777741
+      type: 'test'
+      ...
+    # Subtest: PDF ve Excel ekranla aynı satırlar ('Gecikmiş' aralığı)
+    ok 5 - PDF ve Excel ekranla aynı satırlar ('Gecikmiş' aralığı)
+      ---
+      duration_ms: 36.595161
+      type: 'test'
+      ...
+    1..5
+not ok 1 - Birleşik tur 8 — İş 4: Vade Takip 'Gecikmiş' hazır aralığı = durumu Gecikmiş olan kalemler (S150 = A)
+  ---
+  duration_ms: 868.884136
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8b-mutant/test/vade-takip-gecikmis-b8-250.test.mjs:21:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:5120) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Birleşik tur 8b — Vade Takip 'Bugün' / '7 Gün': 'Gecikmiş' göstergesi ve satırları öbür hazır aralıklarla aynı (S150 = A)
+    # Subtest: ön koşul (girdilerden): 'Tüm Açık'ta durumu Gecikmiş tahsil 610 / 7, ödeme 100 / 2; sözü aralığın bitişinden SONRA olan gecikmiş borç var (v−10 p15, tedarikçi sözlü)
+    ok 1 - ön koşul (girdilerden): 'Tüm Açık'ta durumu Gecikmiş tahsil 610 / 7, ödeme 100 / 2; sözü aralığın bitişinden SONRA olan gecikmiş borç var (v−10 p15, tedarikçi sözlü)
+      ---
+      duration_ms: 19.832747
+      type: 'test'
+      ...
+    # Subtest: ALTI hazır aralığın HEPSİNDE 'Gecikmiş Tahsilat' / 'Gecikmiş Ödeme' göstergesi aynı: 610 / 7 ve 100 / 2
+    not ok 2 - ALTI hazır aralığın HEPSİNDE 'Gecikmiş Tahsilat' / 'Gecikmiş Ödeme' göstergesi aynı: 610 / 7 ve 100 / 2
+      ---
+      duration_ms: 29.91277
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8b-mutant/test/vade-takip-gecikmis-b8b-250.test.mjs:71:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            late: [
+              610,
+              7,
+              100,
+        ...
+            next7: [
+        +     510,
+        +     6,
+        +     30,
+        +     1
+        -     610,
+        -     7,
+        -     100,
+        -     2
+            ],
+            next90: [
+              610,
+              7,
+              100,
+        ...
+            today: [
+        +     510,
+        +     6,
+        +     30,
+        +     1
+        -     610,
+        -     7,
+        -     100,
+        -     2
+            ]
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        late:
+          0: 610
+          1: 7
+          2: 100
+          3: 2
+        today:
+          0: 610
+          1: 7
+          2: 100
+          3: 2
+        next7:
+          0: 610
+          1: 7
+          2: 100
+          3: 2
+        next30:
+          0: 610
+          1: 7
+          2: 100
+          3: 2
+        next90:
+          0: 610
+          1: 7
+          2: 100
+          3: 2
+        open:
+          0: 610
+          1: 7
+          2: 100
+          3: 2
+      actual:
+        late:
+          0: 610
+          1: 7
+          2: 100
+          3: 2
+        today:
+          0: 510
+          1: 6
+          2: 30
+          3: 1
+        next7:
+          0: 510
+          1: 6
+          2: 30
+          3: 1
+        next30:
+          0: 610
+          1: 7
+          2: 100
+          3: 2
+        next90:
+          0: 610
+          1: 7
+          2: 100
+          3: 2
+        open:
+          0: 610
+          1: 7
+          2: 100
+          3: 2
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8b-mutant/test/vade-takip-gecikmis-b8b-250.test.mjs:74:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 'Bugün' / '7 Gün' satır kümesi = aralığın kendi satırları ∪ durumu Gecikmiş olan her satır ('Tüm Açık'tan); toplam = satırlar; gösterge = gecikmiş satırların toplamı
+    not ok 3 - 'Bugün' / '7 Gün' satır kümesi = aralığın kendi satırları ∪ durumu Gecikmiş olan her satır ('Tüm Açık'tan); toplam = satırlar; gösterge = gecikmiş satırların toplamı
+      ---
+      duration_ms: 10.229125
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8b-mutant/test/vade-takip-gecikmis-b8b-250.test.mjs:77:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        today: gösterge = gecikmiş satırlar
+        + actual - expected
+        
+          [
+        +   510,
+        +   6,
+        +   30,
+        +   1
+        -   610,
+        -   7,
+        -   100,
+        -   2
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 610
+        1: 7
+        2: 100
+        3: 2
+      actual:
+        0: 510
+        1: 6
+        2: 30
+        3: 1
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8b-mutant/test/vade-takip-gecikmis-b8b-250.test.mjs:88:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: aralıkların Bugün / Yaklaşan kümeleri DEĞİŞMEDİ (eklenen kalem yalnız 'Gecikmiş' kümesine girer)
+    not ok 4 - aralıkların Bugün / Yaklaşan kümeleri DEĞİŞMEDİ (eklenen kalem yalnız 'Gecikmiş' kümesine girer)
+      ---
+      duration_ms: 8.80855
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8b-mutant/test/vade-takip-gecikmis-b8b-250.test.mjs:94:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            inToday: [
+              200,
+              2
+            ],
+            inUpcoming: [
+        +     100,
+        +     1
+        -     0,
+        -     0
+            ],
+            outToday: [
+              0,
+              0
+            ],
+            outUpcoming: [
+        +     70,
+        +     1
+        -     0,
+        -     0
+            ]
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        inToday:
+          0: 200
+          1: 2
+        inUpcoming:
+          0: 0
+          1: 0
+        outToday:
+          0: 0
+          1: 0
+        outUpcoming:
+          0: 0
+          1: 0
+      actual:
+        inToday:
+          0: 200
+          1: 2
+        inUpcoming:
+          0: 100
+          1: 1
+        outToday:
+          0: 0
+          1: 0
+        outUpcoming:
+          0: 70
+          1: 1
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8b-mutant/test/vade-takip-gecikmis-b8b-250.test.mjs:98:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: yön süzgeci: Yalnız Tahsil Edilecek / Yalnız Ödenecek — 'Bugün' ve '7 Gün'de gösterge ve satırlar 'Gecikmiş' aralığıyla aynı gecikmişleri taşır
+    not ok 5 - yön süzgeci: Yalnız Tahsil Edilecek / Yalnız Ödenecek — 'Bugün' ve '7 Gün'de gösterge ve satırlar 'Gecikmiş' aralığıyla aynı gecikmişleri taşır
+      ---
+      duration_ms: 16.310059
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8b-mutant/test/vade-takip-gecikmis-b8b-250.test.mjs:102:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        today tahsilat
+        + actual - expected
+        
+          [
+        +   510,
+        +   6,
+        -   610,
+        -   7,
+            0
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 610
+        1: 7
+        2: 0
+      actual:
+        0: 510
+        1: 6
+        2: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8b-mutant/test/vade-takip-gecikmis-b8b-250.test.mjs:108:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ELLE girilen aralık DEĞİŞMEDİ: bugün … bugün ve bugün … +7 (hazır aralıkla aynı tarihler) sözü ileride olan gecikmiş kalemi göstermez — 510 / 6 tahsilat, 30 / 1 ödeme
+    ok 6 - ELLE girilen aralık DEĞİŞMEDİ: bugün … bugün ve bugün … +7 (hazır aralıkla aynı tarihler) sözü ileride olan gecikmiş kalemi göstermez — 510 / 6 tahsilat, 30 / 1 ödeme
+      ---
+      duration_ms: 8.394733
+      type: 'test'
+      ...
+    # Subtest: 'Gecikmişleri de göster' kapalıyken (late=0) 'Bugün' / '7 Gün' aralık dışından kalem eklemez (bugünkü gibi)
+    ok 7 - 'Gecikmişleri de göster' kapalıyken (late=0) 'Bugün' / '7 Gün' aralık dışından kalem eklemez (bugünkü gibi)
+      ---
+      duration_ms: 9.954233
+      type: 'test'
+      ...
+    # Subtest: PDF ve Excel ekranla aynı ('Bugün' ve '7 Gün'): satırlar ve 'Gecikmiş Tahsilat' / 'Gecikmiş Ödeme' özeti
+    not ok 8 - PDF ve Excel ekranla aynı ('Bugün' ve '7 Gün'): satırlar ve 'Gecikmiş Tahsilat' / 'Gecikmiş Ödeme' özeti
+      ---
+      duration_ms: 29.063543
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8b-mutant/test/vade-takip-gecikmis-b8b-250.test.mjs:130:3'
+      failureType: 'testCodeFailure'
+      error: 'today PDF özeti tahsilat'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: |-
+        Vade Takip
+        20.10.2026 – 20.10.2026 · gecikmişler dahil
+        Oluşturma: 20.10.2026 09:00
+        Hazırlayan: Ofis yöneticisi
+        Kalem
+        11
+        Tahsil Edilecek
+        810,00 TL
+        Gecikmiş Tahsilat
+        510,00 TL (6)
+        Ödenecek
+        100,00 TL
+        Gecikmiş Ödeme
+        30,00 TL (1)
+        Net (tahsil −
+        ödeme)
+        710,00 TL
+        Vade
+        Durum
+        Kimden / Kime
+        Kaynak
+        Açıklama
+        Tahsil Edilecek
+        Ödenecek
+        14.10.2026
+        6 gün
+        gecikti
+        Kaynak Fatura
+        Gecikmiş
+        Fatura
+        (vadeli)
+        Satış faturası FIS2026000000001 ·
+        Fatura tarihi 20.09.2026
+        60,00 TL
+        15.10.2026
+        10 gün
+        gecikti
+        Gecikmiş Hücre v-10
+        p-5
+        Cari
+        (vadeli)
+        Tahsil Edilecek Borç (Ödeme Sözü) ·
+        Kayıt 20.09.2026 · 100,00 TL · Vade
+        10.10.2026
+        100,00 TL
+        15.10.2026
+        5 gün
+        gecikti
+        Gecikmiş Hücre v0
+        p-5
+        Cari
+        (vadeli)
+        Tahsil Edilecek Borç (Ödeme Sözü) ·
+        Kayıt 20.09.2026 · 100,00 TL · Vade
+        20.10.2026
+        100,00 TL
+        15.10.2026
+        5 gün
+        gecikti
+        Gecikmiş Hücre v10
+        p-5
+        Cari
+        (vadeli)
+        Tahsil Edilecek Borç (Ödeme Sözü) ·
+        Kayıt 20.09.2026 · 100,00 TL · Vade
+        30.10.2026
+        100,00 TL
+        16.10.2026
+        4 gün
+        gecikti
+        —
+        Çek
+        Alınan çek · No B8B-1 · Akbank
+        50,00 TL
+        17.10.2026
+        3 gün
+        gecikti
+        Gecikmiş Tedarikçi
+        Vadeli
+        Cari
+        (vadeli)
+        Ödenecek Borç · Kayıt 20.09.2026 ·
+        30,00 TL
+        30,00 TL
+        20.10.2026
+        10 gün
+        gecikti
+        Gecikmiş Hücre v-10
+        p0
+        Cari
+        (vadeli)
+        Tahsil Edilecek Borç (Ödeme Sözü) ·
+        Kayıt 20.09.2026 · 100,00 TL · Vade
+        10.10.2026
+        100,00 TL
+        20.10.2026
+        Bugün
+        Gecikmiş Hücre v0
+        p0
+        Cari
+        (vadeli)
+        Tahsil Edilecek Borç (Ödeme Sözü) ·
+        Kayıt 20.09.2026 · 100,00 TL · Vade
+        20.10.2026
+        100,00 TL
+        20.10.2026
+        Bugün
+        Gecikmiş Hücre v10
+        p0
+        Cari
+        (vadeli)
+        Tahsil Edilecek Borç (Ödeme Sözü) ·
+        Kayıt 20.09.2026 · 100,00 TL · Vade
+        30.10.2026
+        100,00 TL
+        04.11.2026
+        10 gün
+        gecikti
+        Gecikmiş Hücre v-10
+        p15
+        Cari
+        (vadeli)
+        Tahsil Edilecek Borç (Ödeme Sözü) ·
+        Kayıt 20.09.2026 · 100,00 TL · Vade
+        10.10.2026
+        100,00 TL
+        04.11.2026
+        10 gün
+        gecikti
+        Gecikmiş Tedarikçi
+        Sözlü
+        Cari
+        (vadeli)
+        Ödenecek Borç (Ödeme Sözü) · Kayıt
+        20.09.2026 · 70,00 TL · Vade
+        10.10.2026
+        70,00 TL
+        DestekOfis · Vade Takip
+        Sayfa 1 / 1
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8b-mutant/test/vade-takip-gecikmis-b8b-250.test.mjs:147:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..8
+not ok 2 - Birleşik tur 8b — Vade Takip 'Bugün' / '7 Gün': 'Gecikmiş' göstergesi ve satırları öbür hazır aralıklarla aynı (S150 = A)
+  ---
+  duration_ms: 987.889791
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8b-mutant/test/vade-takip-gecikmis-b8b-250.test.mjs:31:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 13
+# suites 2
+# pass 6
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1383.801337

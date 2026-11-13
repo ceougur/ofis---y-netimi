@@ -1,0 +1,38 @@
+{
+  "ad": "b8b-mutant-m4-late-kapali",
+  "komut": "node --test test/vade-takip-gecikmis-b8b-250.test.mjs test/vade-takip-gecikmis-b8-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T16:28:54.984Z",
+  "sure_sn": 1.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 13,
+    "gecen": 12,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Birleşik tur 8b — Vade Takip 'Bugün' / '7 Gün': 'Gecikmiş' göstergesi ve satırları öbür hazır aralıklarla aynı (S150 = A) › 'Gecikmişleri de göster' kapalıyken (late=0) 'Bugün' / '7 Gün' aralık dışından kalem eklemez (bugünkü gibi)",
+      "konum": "test/vade-takip-gecikmis-b8b-250.test.mjs:123:3",
+      "hata": "today (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../b8b-kanit/2026-11-13/b8b-mutant-m4-late-kapali.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8b-mutant",
+  "ham_cikti_sha256": "afa3f9dc63235bd417f01cb1eb066f6e46108111a4462c62a016986b4486b553",
+  "ham_cikti_bayt": 7141
+}

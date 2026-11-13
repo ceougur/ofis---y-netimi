@@ -1,0 +1,17 @@
+#!/bin/bash
+# Birleşik tur 8b HIZ KABUL: taban ↔ yeni, temiz-100k'nın TEK taze kopyasında (yalnız okuma), sırayla iki tur (taban, yeni, taban, yeni). ÖZEL ölçüm kilidi (beklemez).
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+OUT=$S/b8b-kanit/hiz-b8b.txt
+exec 9>"$S/olcum.lock"
+flock -x -n 9 || { echo "KİLİT DOLU — ÖLÇÜLEMEDİ"; exit 3; }
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+echo "HIZ KABUL birleşik tur 8b · nproc $(nproc) · başta $(cat /proc/loadavg) · $(date -u +%H:%M:%S)" > $OUT
+rm -rf $S/b8b-olcum-kopya && cp -a $S/ana-kabul/temiz-100k $S/b8b-olcum-kopya || exit 1
+for k in taban:$S/b8b-taban yeni:/home/user/ofis---y-netimi/.claude/worktrees/agent-a97f589d1520516a5 taban:$S/b8b-taban yeni:/home/user/ofis---y-netimi/.claude/worktrees/agent-a97f589d1520516a5; do
+  ad=${k%%:*}; R=${k#*:}
+  sync; l0=$(cut -d' ' -f1 /proc/loadavg)
+  echo "=== $ad · başta $(cat /proc/loadavg) $(awk -v l=$l0 'BEGIN{print (l>2)?"· GEÇERSİZ (yük > 2)":""}')" >> $OUT
+  timeout -k 5 1500 node --disable-warning=ExperimentalWarning $S/b8b-betik/olc-b8b.mjs "$R" $S/b8b-olcum-kopya 7 >> $OUT 2>&1; echo "çıkış $? · sonda $(cat /proc/loadavg)" >> $OUT
+done
+rm -rf $S/b8b-olcum-kopya
+echo "bitti $(date -u +%H:%M:%S)" >> $OUT
