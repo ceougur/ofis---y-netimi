@@ -1139,17 +1139,21 @@
       // 2.5.0 Ç5-K tur 2 (dar kontrol ORTA-1; S20 = A "Mutabakat Testi uyarı verir"): sunucunun "uyarı" işaretli denetimi (notice; Kasa Açılışından Önce Tarihli Hareket)
       // sapma değildir — sarı, ne yapılacağı (hint) yazılı; başka sapma yoksa "N denetim tamam" bilgisi aynen kalır (uyarı ayrı cümle). Gerçek sapma varsa yine kırmızı.
       const notices = (result.failures || []).filter(item => item.notice);
-      const failures = (result.failures || []).filter(item => !item.notice);
+      // 2.5.0 Ç5-A tur 2 İş 0 (EY-1; D 12.11 15:57 (4)): "Kural Değişikliği Farkı" (ledger:rule-diff) tasarım gereği UYARIDIR (tur 1d: sapma kümesinin dışında) — sapma
+      // cümlesine ve kırmızıya girmez; ne yapılacağını söyleyen ayrı cümle (Kural Farkı Düzeltme). Gerçek sapma ve eski sürümden kalan satır eskisi gibi, ayrı görünür.
+      const ruleDiffs = (result.failures || []).filter(item => !item.notice && item.code === "ledger:rule-diff");
+      const failures = (result.failures || []).filter(item => !item.notice && item.code !== "ledger:rule-diff");
       const clean = !failures.length;
       const onlyLegacy = !clean && failures.every(legacyOnly);
       const noticeText = notices.length ? ` Uyarı (yeni işlemleri engellemez): ${notices.map(item => `${item.name} — ${item.count} hareket. ${item.hint || ""}`).join(" ")}`.replace(/\s+/g, " ").trimEnd() : "";
+      const ruleDiffText = ruleDiffs.map(item => ` Uyarı (yeni işlemleri engellemez): ${item.name} — ${item.count} madde${item.difference ? `, fark ${HOF.formatMoney(item.difference)}` : ""}. Kilitli dönemin raporları donmuş defterden okunur, değişmez; fark Yönetim › Kural Farkı Düzeltme ile ilk açık güne alınır.`).join("");
       health.textContent = (clean
-        ? `Mutabakat: ${result.checks.length - notices.length} denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı.${rolled ? ` Son kayıtlarda ${rolled} işlem sapma yaratacağı için geri alındı (Raporlar › Mutabakat Günlüğü).` : ""}`
+        ? `Mutabakat: ${result.checks.length - notices.length - ruleDiffs.length} denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı.${rolled ? ` Son kayıtlarda ${rolled} işlem sapma yaratacağı için geri alındı (Raporlar › Mutabakat Günlüğü).` : ""}`
         : onlyLegacy
           ? `Mutabakat: ${failures.length} denetimde eski sürümden kalan satır var; yeni işlemler engellenmez (${failures.map(item => `${item.name}: ${item.legacy} satır`).join(", ")}). ${failures.map(item => item.hint || "").filter(Boolean).join(" ")} Raporlar › Defter Mutabakatı'nda ayrıntıyı görün.`.replace(/\s+/g, " ")
-          : `Mutabakat: ${failures.length} denetimde sapma var (${failures.map(item => (legacyOnly(item) ? `${item.name} — eski sürümden kalan ${item.legacy} satır; yeni işlemler engellenmez` : item.name)).join(", ")}). Raporlar › Defter Mutabakatı'nda ayrıntıyı görün.`) + noticeText;
+          : `Mutabakat: ${failures.length} denetimde sapma var (${failures.map(item => (legacyOnly(item) ? `${item.name} — eski sürümden kalan ${item.legacy} satır; yeni işlemler engellenmez` : item.name)).join(", ")}). Raporlar › Defter Mutabakatı'nda ayrıntıyı görün.`) + ruleDiffText.replace(/\s+/g, " ").trimEnd() + noticeText;
       health.classList.toggle("adm-error-text", !clean && !onlyLegacy);
-      health.classList.toggle("adm-warn-text", clean ? notices.length > 0 : onlyLegacy);
+      health.classList.toggle("adm-warn-text", clean ? notices.length + ruleDiffs.length > 0 : onlyLegacy);
     } catch (error) {
       // Ç3 tur 3 (Ç3 küçük işler (c)): Mutabakat Testi çalışamazsa satır sessizce boşalmaz — neden görünür (ders 4: okunamayan boş değildir).
       health.textContent = `Mutabakat Testi çalıştırılamadı: ${error?.message || String(error)}`;
