@@ -250,3 +250,44 @@ Bkz. §1 (`server/routes/devir.mjs`). Hepsi ortak katmanda (`HUB_ONLY`'e `admin/
   dışından eklenip düzeltilen açılış öncesi YENİ satır 409. K6 politikası olmayan çıplak store'da işaret yok (yalnız `inserted`).
 - Testler: `test/kasa-acilis-uyari-artis-250.test.mjs` (9), `test/kasa-acilis-b6-250.test.mjs` (1), yaşayan mutantlar `test/kasa-acilis-mutant-b6-250.test.mjs` (3: A1, A16, A6),
   `test/devir-arsiv-wal-250.test.mjs` (+1: A4 özetsiz kayıtlı arşiv + `-wal`), `test/yapim-asamasi-kapisi.test.mjs` (+4: C1, C3, liste commit'ten — skip-worktree atlatması).
+
+## 16. Birleşik tur 7 — İş 1: uyarı artışı SAYI yerine KİMLİK kümesiyle (dar kontrol DK-B6 ORTA-1 + DÜŞÜK-1; BAŞ MİMAR KARARI 12.11 12:52 (1), (5); taban `birlesik7-taban` 3c81cf5c) — KODDAN ÖNCE yazıldı
+Kök neden (dar kontrol, ana oturum yeniden üretti): §15'in ORTA-1 kuralı sayıyla çalışır — geri yükleme "açıklama hakkı" ekler, silme düşürmez; iki tarama arasında sil (2 → 1) + Silinenler'den
+geri yükle (1 → 2) + kapının görmediği bir yazım (2 → 3) → açıklanamayan 0 sayılır, günlük / zil yok (S1, S1b). Aynı ailenin §15 BİLİNEN SINIR'ı: sil + dış artış (sayı aynı) görünmez (S9).
+KARAR (baş mimar): tarama uyarı satırlarının KİMLİKLERİNİ saklar; geri yükleme "geri gelen kimlikler"i kaydeder; alarm = önceki kümede ve geri gelenlerde olmayan her yeni kimlik.
+Uygulama planı:
+- Kimlik = para satırının tablo + satır kimliği (`cash_entries:<id>`, `payments:<id>`, `account_entries:<id>` …; lib/bank/money-lines.mjs kaynağının tablosu). Sayının tanımı (cashBeforeOpening)
+  DEĞİŞMEZ; küme aynı satırlardan kurulur. Küme sonuç nesnesinde SAYILMAYAN (JSON'a girmeyen) alandır: Mutabakat Testi yanıtı, Defter Mutabakatı ve sarı uyarı aynen; iş parçacığı kümeyi ayrıca
+  iletir.
+- Geri yükleme (restoringCash): en dış geri yüklemede küme önce / sonra alınır; SONRA'da olup ÖNCE'de olmayan her kimlik bir sıra numarasıyla "açıklanmış" kaydedilir (görünürlüğü dönen üst
+  kaydın — cari, kart, çek — satırları dahil; birden çok satır getiren geri yükleme hepsini kaydeder).
+- Kapının gördüğü KİMLİK DEĞİŞİMİ (sayı aynı; ör. Tablodan Aktar'da kayıt tahsilatının karta taşınması, Aktarımı Geri Al, aynı İşlem No'lu satırın yeniden yazılması): Kasa açılış
+  denetimi (installCashOpeningGuard) önceki hâli BAŞKA kimlikte olan kabul edilmiş açılış öncesi satırı, işlem kesinleşince (after) "öncekinin yerine geçen" diye kaydeder; tarama onu
+  ancak önceki kimlik önceki kümedeyse (ya da kendisi açıklanmışsa) açıklanmış sayar — yani dış yazımla kümeye giren satırın kimlik değişimi onu "aklamaz". Bu kalem kararın uygulanması
+  için gereklidir (yoksa kimlik kümesi bugün sessiz olan meşru yolları yanlış alarma çevirirdi); para / kapama kuralı değildir.
+- Tarama: sıra numarası taramanın anlık görüntüsünden önce okunur; tarama sürerken yeni bir kayıt (geri yükleme / kimlik değişimi) kesinleştiyse o tarama karşılaştırmaz, işaret
+  değişmez (§15'teki yarış kuralı aynen). Açıklanmış sayılan: sıra numarası işaretinkinden BÜYÜK kayıtlar (eskiler düşer — geri gelip sonra silinen ve dışarıdan yeniden giren kimlik
+  açıklanmış SAYILMAZ).
+- İleti (DÜŞÜK-1): açıklanamayan kimlik SAYISINI söyler — sayı arttıysa "Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım: 1 hareket)";
+  sayı artmadıysa (sil + dış yazım) "Kasa açılışından önce tarihli hareket uyarısına yeni hareket girdi (2 → 2 hareket; kapının görmediği yazım: 1 hareket)". Zilin yükünde ayrıca
+  `unexplained`. Mutabakat Günlüğü olay adı aynen.
+- Şema DEĞİŞMEZ (küme bellekte; göç yok). Açılışta ölçülür (ilk görünüş sessiz) — §15'in "program kapalıyken dış araçla yapılan artış" BİLİNEN SINIR'ı AYNEN kalır.
+
+### 16.1 "Nasıl bozulur?" (testler buradan; sonuçlar 16.3'te)
+1. İki tarama arası sil + geri yükle + dış yazım (S1 satır içi tarama, S1b iş parçacığı taraması) → alarm (açıklanamayan 1).
+2. Yalnız dış yazım (tarih taşıma; store dışı yeni satır) → alarm; ikinci tarama / yeniden açılış yinelemez.
+3. Yalnız meşru geri yükleme: tek satır; birden çok satır getiren (silinmiş carinin geri yüklenmesi — carinin açılış öncesi nakit satırları; silinmiş taksit kartı) → sessiz.
+4. Sil + dış yazım (sayı aynı; §15 BİLİNEN SINIR) → artık alarm.
+5. Açılışı öne alma (sayı azalır) → sessiz; ardından dış yazım → alarm; açılışı geriye alma (409 — sayı artamaz).
+6. Yeniden açılış: açılışı sil, tarama, açılışı yeniden gir (ilk hareketten sonra olamaz) → sessiz.
+7. İki şirket: bir şirketin geri yüklemesi / kimlik kaydı öbürünü etkilemez (küme ve kayıt şirketin kendi dosyası / store'unda).
+8. Yedekten geri yükleme: şirket yeniden açılır → küme yeniden ölçülür, sessiz; sonraki dış yazım → alarm.
+9. Şirket Verisini Sıfırla: küme yeniden ölçülür (uyarı yok), sessiz.
+10. Program yeniden başlayınca: küme kalıcı DEĞİL (açılışta ölçülür); açılış taraması ve ilk tarama yanlış alarm vermez; açılıştan sonra ilk taramadan önce yapılan dış yazım → alarm.
+11. Eski sürümden gelen veri (küme hiç yokken ilk tarama): v2.4.9'un gerçek koduyla üretilmiş veride açılış sessiz, ardından dış yazım → alarm.
+12. Arka plan taraması ↔ geri yükleme yarışı, iki sıra da: (a) geri yükleme anlık görüntüye girdi → o tarama karşılaştırmaz, sonraki sessiz; (b) geri yükleme anlık görüntüden SONRA
+    kesinleşti (görüntüde yok) → o tarama karşılaştırmaz, sonraki tarama geri geleni açıklanmış sayar (yanlış alarm yok) — ön koşul zorla kurulur (ders 20).
+13. Kimliği yeniden kullanılan satır (§15 A2 ailesi): geri gelip taranan, sonra silinip taranan, sonra DIŞARIDAN aynı kimlikle yeniden eklenen satır → alarm (eski açıklama düşmüş olmalı);
+    Silinenler'deki satırın kimliğiyle dışarıdan eklenen satır → alarm.
+14. Kapının gördüğü kimlik değişimi (önceki hâli başka kimlikte, aynı gün / tutar ya da aynı İşlem No) → sessiz; dış yazımla kümeye girmiş satırın kapıdan kimlik değişimi → alarm.
+15. Mutantlar (testin dişi): kimliği yok sayıp sayıya dönen; geri gelen kimlikleri hiç düşmeyen; kümeyi her taramada sıfırdan kuran (önceki küme olmadan) — hepsi kırmızı.
