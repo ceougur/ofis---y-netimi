@@ -1,0 +1,87 @@
+{
+ "eskiKuralaBagli": [
+  "plan-94fad820-e44d-46af-908f-84d71ea2757a",
+  "plan-13c62aa8-a11c-494e-9e12-e0737ea92730",
+  "plan-fb700def-860e-4e1e-849c-2f9c53f31df4",
+  "plan-3f739f86-ca7f-42c6-91dd-7cb854b22fd5"
+ ],
+ "kartlar": [
+  {
+   "id": "plan-5d9aa035-cdc7-4e2e-ac69-9d87cb157858",
+   "total": 2000,
+   "kayit": "2025-06-01",
+   "yukleme": "2025-11-10",
+   "mb": 0
+  },
+  {
+   "id": "plan-94fad820-e44d-46af-908f-84d71ea2757a",
+   "total": 3000,
+   "kayit": "2026-01-15",
+   "yukleme": "2025-11-10",
+   "mb": 0
+  },
+  {
+   "id": "plan-13c62aa8-a11c-494e-9e12-e0737ea92730",
+   "total": 1000,
+   "kayit": "2026-01-20",
+   "yukleme": "2025-11-10",
+   "mb": 0
+  },
+  {
+   "id": "plan-fb700def-860e-4e1e-849c-2f9c53f31df4",
+   "total": 6000,
+   "kayit": "2025-10-01",
+   "yukleme": "2026-11-10",
+   "mb": 0
+  },
+  {
+   "id": "plan-3f739f86-ca7f-42c6-91dd-7cb854b22fd5",
+   "total": 2400,
+   "kayit": "2025-10-01",
+   "yukleme": "2026-11-10",
+   "mb": 0
+  },
+  {
+   "id": "plan-6fee3943-36cf-40c3-a3db-7065e46fa418",
+   "total": 1800,
+   "kayit": "2026-02-15",
+   "yukleme": "2026-11-10",
+   "mb": 0
+  }
+ ],
+ "kaynaklar": [
+  "2025-01-02 Kasa açılışı [cash:cash-9e550434] 2025:500 10000 · 2025:519 -10000",
+  "2025-01-02 Cari (borç yaz) [account:aentry-be6] 2025:500 3000 · 2025:519 -3000",
+  "2025-11-10 Taksit kartı açılışı (Excel / tablo) [plan:plan-5d9aa035] 2025:120 -500 · 2025:602 2000 · 2025:519 -1500",
+  "2025-10-01 Taksit kartı açılışı (Excel / tablo) [plan:plan-fb700def] 2025:602 6000 · 2025:519 -6000",
+  "2025-10-01 Taksit kartı açılışı (Excel / tablo) [plan:plan-3f739f86] 2025:602 2400 · 2025:519 -2400",
+  "2025-11-10 Taksit açılışı (devir) [plan-entry:entry-0] 2025:500 -333.33 · 2025:120 333.33",
+  "2025-11-10 Taksit açılışı (devir) [plan-entry:entry-c] 2025:500 -166.67 · 2025:120 166.67",
+  "2025-11-10 Taksit açılışı (devir) [plan-entry:entry-5] 2025:500 -500 · 2025:519 500",
+  "2025-11-10 Taksit açılışı (devir) [plan-entry:entry-e] 2025:500 -100 · 2025:519 100"
+ ],
+ "fis": [
+  "B 500 11900",
+  "A 519 22300",
+  "B 681 10400"
+ ],
+ "kaydet": 200,
+ "bakiyeler": {
+  "karma": {
+   "100": 10800,
+   "120": 15500,
+   "500": 0,
+   "519": -26300
+  },
+  "bastan": {
+   "100": 10800,
+   "120": 15500,
+   "519": -26300
+  },
+  "karma6": {
+   "602": -10400,
+   "681": 10400
+  },
+  "bastan6": {}
+ }
+}

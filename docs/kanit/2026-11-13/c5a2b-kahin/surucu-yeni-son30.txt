@@ -1,0 +1,30 @@
+  s104-s80-formdaki-pesin-cari [Europe/Istanbul] OLAY #16 duzenle (api_yok) → SINIFLANMADI: düzenlenecek kayıt programda yok
+  s104-s80-formdaki-pesin-cari [Europe/Istanbul] OLAY #17 duzenle (api_yok) → SINIFLANMADI: düzenlenecek kayıt programda yok
+  s104-s80-formdaki-pesin-cari [Europe/Istanbul] OLAY #19 duzenle (api_yok) → SINIFLANMADI: düzenlenecek kayıt programda yok
+  s104-s80-formdaki-pesin-cari [Europe/Istanbul] OLAY #20 duzenle (api_yok) → SINIFLANMADI: düzenlenecek kayıt programda yok
+  s104-s80-formdaki-pesin-cari [Europe/Istanbul] OLAY #21 duzenle (api_yok) → SINIFLANMADI: düzenlenecek kayıt programda yok
+  s104-s80-formdaki-pesin-cari [Europe/Istanbul] ADIM 1 satis_faturasi F1 {"alt":{"102.00":300,"102.B1":-300}} → SINIFLANMADI
+  s104-s80-formdaki-pesin-cari [Europe/Istanbul] mu kasa_acilis_oncesi:P2 program null · kâhin 2026-01-06|2026-01-08 · bugün — → SINIFLANMADI
+  s104-s80-formdaki-pesin-cari [Europe/Istanbul] mz1 alt:102.00 program 300 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s104-s80-formdaki-pesin-cari [Europe/Istanbul] mz1 alt:102.B1 program 0 · kâhin 300 · bugün 300 → SINIFLANMADI
+  s104-s80-formdaki-pesin-cari [Europe/Istanbul] mz2 alt:102.00 program 300 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s104-s80-formdaki-pesin-cari [Europe/Istanbul] mz2 alt:102.B1 program 0 · kâhin 300 · bugün 300 → SINIFLANMADI
+  s104-s80-formdaki-pesin-cari [Europe/Istanbul] son alt:102.00 program 300 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s104-s80-formdaki-pesin-cari [Europe/Istanbul] son alt:102.B1 program 0 · kâhin 300 · bugün 300 → SINIFLANMADI
+  s104-s80-formdaki-pesin-cari [UTC] RED #4 kasa_acilis: kâhin kabul · program 409 cash-opening-after-first → SINIFLANMADI
+  s104-s80-formdaki-pesin-cari [UTC] OLAY #9 duzenle (api_yok) → SINIFLANMADI: düzenlenecek kayıt programda yok
+  s104-s80-formdaki-pesin-cari [UTC] OLAY #10 duzenle (api_yok) → SINIFLANMADI: düzenlenecek kayıt programda yok
+  s104-s80-formdaki-pesin-cari [UTC] OLAY #11 duzenle (api_yok) → SINIFLANMADI: düzenlenecek kayıt programda yok
+  s104-s80-formdaki-pesin-cari [UTC] OLAY #12 duzenle (api_yok) → SINIFLANMADI: düzenlenecek kayıt programda yok
+  s104-s80-formdaki-pesin-cari [UTC] OLAY #13 duzenle (api_yok) → SINIFLANMADI: düzenlenecek kayıt programda yok
+  s104-s80-formdaki-pesin-cari [UTC] OLAY #14 duzenle (api_yok) → SINIFLANMADI: düzenlenecek kayıt programda yok
+  s104-s80-formdaki-pesin-cari [UTC] OLAY #15 duzenle (api_yok) → SINIFLANMADI: düzenlenecek kayıt programda yok
+  s104-s80-formdaki-pesin-cari [UTC] OLAY #16 duzenle (api_yok) → SINIFLANMADI: düzenlenecek kayıt programda yok
+
+# tests 8456
+# pass 7550
+# fail 862
+# cancelled 0
+# skipped 44
+# todo 0
+Çıktı: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2b-q4/kanit/kahin-is2/surucu-yeni
