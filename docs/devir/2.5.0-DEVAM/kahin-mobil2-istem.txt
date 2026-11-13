@@ -1,0 +1,36 @@
+Sen DestekOfis projesinde MOBİL YAZMA KÂHİNİ BAKIMI 2 (S154 / S151 / S158 / S165) ajanısın (2.5.0 Ç5 — kâhin `test/bagimsiz/mobil-yazma/`). PROGRAMIN KODUNU GÖRMEZSİN (ders 5, 40). KENDİ dalında commit edersin; PUSH YAPMAZSIN. Yanıtın Türkçe. Eforun high. Küçük, dar bir bakımdır: S154 = B (tek değer), S151 = B / S158 = A (iade tahsilat değildir), S165 = A + S118 okuması (tahsilat sınırı; alanın varsa) kararlarının mobil yazma kâhinindeki karşılığı + cari kâhini değiştiği için kabul dosyasının yeniden üretimi.
+
+## Girdi
+Tek girdi kaynağın: `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin-mobil2-kararlar.md` (tamamını oku).
+
+## Hazırlık
+1. Worktree'de (dalında kendi commit'in YOKKEN) `git reset --hard kahinmobil2-taban` (yerel taban dalı = cari kâhini bakımı 17 + 18'in dalının ucu; ağaç ana daldan açıldığı için birleşim DEĞİL sıfırlama). Sonra `git log --oneline -3 -- test/bagimsiz/cari` ile bakım 18'in commit'lerinin dalında olduğunu doğrula.
+2. ÖNCE oku: `CLAUDE.md` (dersler 1–53; özellikle 5, 6, 31, 40, 43); `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`; girdi dosyası; `test/bagimsiz/mobil-yazma/README.md` (tamamı — kâhinin kendi kuralları ve bakım geçmişi); `test/bagimsiz/cari/KARARLAR.md` içinde bakım 15–18 bölümleri (§26–§29: S151 / S158, S154, 'Fazlasını Avans Yaz' seçeneği, S165 ve susma alanlarının cari kâhinindeki karşılığı).
+
+## Yasaklar (bağımsızlık)
+- `server/`, `client/`, `bulut/`, `packaging/`, `tools/` (kanit.mjs yalnız çalıştırılır), `docs/erp/C5-ACILIS-TASARIM.md`, `docs/erp/C5B-TYK-TASARIM.md`, `docs/devir/**`, `docs/2.5.0-IS-LISTESI*.md` (HER sürümü), `test/bagimsiz/cari/YAPIM-ASAMASI.json` ve `test/` altında `test/bagimsiz/mobil-yazma` + `test/bagimsiz/cari` dışındaki her şey OKUNMAZ. `test/bagimsiz/mobil-yazma/program-surucu.mjs` yalnız olay / alan EŞLEMESİ için okunabilir; DEĞİŞTİRME ve KOŞMA (programı açar).
+- `docs/kanit/` altında başka ajanların dosyaları ve git farkı / geçmiş içeriği açılmaz. Program KOŞULMAZ. CLAUDE.md'nin "Açık iş" bölümünde programın durumu hakkında gördüğün hiçbir şey kural / beklenti kaynağı DEĞİLDİR. Cari kâhininin modelini DEĞİŞTİRME (yalnız içe aktarılır).
+
+## İş
+1. Önce yorumu `test/bagimsiz/mobil-yazma/README.md`'ye (yeni "2.5.0 bakımı 2 — S154 / S151 / S158 / S165" bölümü) yaz ve AYRI commit et (ders 40): 'Tahsil Edilen' / taksit 'Ödenen' beklentin bugün hangi durumlarda iki değer kabul ediyor ya da iadeyi sayıyor; kararlarla ne olacak; tahsilat sınırı / 'Fazlasını Avans Yaz' için alanın var mı, varsa ne değişiyor.
+2. Kararları işle: S154 = B (tek değer); S151 / S158 (iade ve Değersiz 'Tahsil Edilen'e / 'Ödenen'e sayılmaz); sınır (S165 + S118 okuması) ve adım seçeneği — alanın varsa. Bu alanlarda cari kâhininin verdiği değeri kullan; cari kâhininin sustuğu alt durumda SEN DE SUS (neden metniyle). Kendi başına yeni kuyruk kuralı YAZMA.
+3. Kabul dosyasını kendi araçlarınla yeniden üret (cari kâhini değişti denetimi); ELLE yazılmış beklentileri tek tek yeniden denetle. Değişen HER beklenti için: hangi senaryo, hangi alan, eski → yeni değer, hangi karar gereği. Kararla açıklayamadığın değişiklik varsa İŞLEME, raporun "KULLANICIYA SORULMALI" bölümüne yaz ve o alanda SUS.
+4. Elle senaryo (kâhin koşulmadan, karar metninden): S154'ün örneği mobil kanaldan (1.300 · Kalan 0; bakiye −100) + aynı örnek masaüstü kanaldan (eşdeğerlik); S151 ve S158'in örnekleri (kanalın desteklediği adımlarla; desteklemiyorsa masaüstü adımı + mobil okuma); S165'in örneği — alanın varsa.
+5. Mutantlar: S154'ün A seçeneği (kart tutarını aşmaz); S151'in A seçeneği (iade sayılır) — değerle yakalanmalı; önceki bakımın mutantları hâlâ yakalanıyor mu.
+6. Kâhinin öz testi iki TZ (UTC, Europe/Istanbul) yeşil olmalı ("cari kâhini değişti" denetimi dahil).
+
+## Yöntem
+- Eski kâhin kopyası değişiklikten ÖNCE `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmobil2-<kısa>/` (`git archive HEAD test/bagimsiz/mobil-yazma test/bagimsiz/cari`).
+- Koşular: `KANIT_DIR=<kendi not defteri klasörün> node tools/kanit.mjs kos kahinmobil2-<ad> -- python3 -I -B <dosya>`; uzun koşu `flock -s -n /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock` ile (kilit doluysa bekleme döngüsü yok — ders 50); HER arka plan koşusu AÇIK SÜRE SINIRIYLA (`timeout -k 5 <sn> …`), yük kilidi boşta tutulmaz; kanıt `docs/kanit/2026-11-13/kahinmobil2-*`.
+- Yük okuması ile koşu başlatma AYNI adımda gönderilmez; yük > 4 ise koşu BAŞLATMA ama rapor verip BIRAKMA — tek seferlik bekleme komutuyla bekle (ör. `timeout 600 bash -c 'until [ "$(cut -d" " -f1 /proc/loadavg | cut -d. -f1)" -lt 4 ]; do sleep 20; done'`), sonra koş. Kanıt koşuları (iki saat dilimi) yapılmadan rapor verme.
+- Kendi arka plan işin sürerken turunu rapor vermeden BİTİRME; sonucu bekle, sonra raporla.
+- `pkill` / joker `rm` YOK. `/tmp` üzerinde boyut ölçme / tarama komutu KOŞMA. Commit'e yalnız kendi yolların (ders 44).
+- Commit iletisi sonunda tam olarak şu iki satır:
+  ```
+  Co-Authored-By: Claude <noreply@anthropic.com>
+  Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og
+  ```
+  (model adı YOK).
+
+## Rapor
+Yorum (eski okuma + yeni kural); değişen beklentilerin dökümü (senaryo / alan / eski → yeni / karar); adım diline alan eklendiyse adı, değerleri ve etkilenen senaryolar (sürücü eşlemesi için); yeni elle senaryolar ve değerleri; hâlâ sustuğun yerler; mutantlar; öz test sayıları (iki TZ, çıkış kodlarıyla); KULLANICIYA SORULMALI; DENENMEYEN; ana oturumun yeniden koşacağı komutlar; OKUNAN DOSYALARIN TAM LİSTESİ (satır aralıklarıyla).
