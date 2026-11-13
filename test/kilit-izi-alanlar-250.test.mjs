@@ -113,6 +113,7 @@ async function makeTemplate() {
     Object.assign(ids, {
       transferCash: s.get("SELECT id FROM cash_entries WHERE transfer_id <> '' ORDER BY rowid LIMIT 1").id,
       entryCheque: s.get("SELECT id FROM account_entries WHERE source = 'cheque' AND source_id = ?", ids.cheque1).id,
+      entryStock: s.get("SELECT id FROM account_entries WHERE source = 'stock' ORDER BY rowid LIMIT 1").id,
       entryIn: s.get("SELECT id FROM account_entries WHERE account_id = ? AND kind = 'in' AND note = 'Tahsilat'", ids.A).id,
       moveSale: s.get("SELECT id FROM stock_moves WHERE pay = 'account' AND kind = 'out'").id,
       planEntryCash: s.get("SELECT id FROM plan_entries WHERE plan_id = ? AND cheque_id = ''", ids.plan).id,
@@ -197,6 +198,7 @@ const LOCKED_SOURCE = ["ledger:snapshot", "period-lock"];
 const KINDS = [
   { name: "Kasa ↔ Banka transferinin bağı temizlenir", write: app => outside(app, "UPDATE cash_entries SET transfer_id = '' WHERE id = ?", ids.transferCash) },
   { name: "cari satırının kaynağı (evrak → elle)", write: app => outside(app, "UPDATE account_entries SET source = '' WHERE id = ?", ids.entryCheque) },
+  { name: "cari satırının kaynağı (stok → elle; evrak olgusuna girmeyen kaynak)", write: app => outside(app, "UPDATE account_entries SET source = '' WHERE id = ?", ids.entryStock) },
   { name: "cari satırının kaynak kimliği başka evrağa", write: app => outside(app, "UPDATE account_entries SET source_id = ? WHERE id = ?", ids.cheque3, ids.entryCheque) },
   { name: "şüpheli alacakta 'Normal Cariye İşlendi' işareti (128 → 120; sayı / tutar aynı)", write: app => outside(app, "UPDATE account_entries SET doubtful_skip = 1 WHERE id = ?", ids.entryIn) },
   { name: "taksit satırının evrak bağı temizlenir", write: app => outside(app, "UPDATE plan_entries SET cheque_id = '' WHERE id = ?", ids.planEntryCheque) },
@@ -368,7 +370,7 @@ describe("Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki ka
       await freezeDone(ctx.app);
       await quiet("yeniden kilitledikten sonra");
       outside(ctx.app, "UPDATE invoices SET gl_json = replace(gl_json, '600', '602') WHERE id = ?", ids.invSale);
-      assertFound(ctx.app.integrity.scan(), KINDS[7], ctx.fresh(), "yeniden kilitledikten sonra kapı dışı yazım");
+      assertFound(ctx.app.integrity.scan(), KINDS.find(kind => kind.name.startsWith("faturanın muhasebe kırılımı")), ctx.fresh(), "yeniden kilitledikten sonra kapı dışı yazım");
       outside(ctx.app, "UPDATE invoices SET gl_json = replace(gl_json, '602', '600') WHERE id = ?", ids.invSale);
       await ctx.server.close();
       ctx = await open(dirs);

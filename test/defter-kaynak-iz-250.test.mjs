@@ -211,11 +211,18 @@ const bump = value => {
   return `${text}x`;
 };
 
-/** Sütunun kilitli dönemdeki değişikliğini kilit izi görüyor mu: satırlar tek tek bozulur (geri alınan işlemde); ilk izi değiştiren bozmada durur. */
+/**
+ * Sütunun kilitli dönemdeki değişikliğini kilit izi görüyor mu: satırlar tek tek bozulur (geri alınan işlemde); ilk izi değiştiren bozmada durur. Bozma DEĞERİN kendisidir
+ * (bump): yalnız WHERE'de kalan sütunun boş ↔ dolu geçişi yetmez (ör. bağ başka bir bağa döner). Durum / tür benzeri sütunlarda (türetme değeri karşılaştırarak okur) ayrıca
+ * sütunun öbür değerleri ve programın bilinen değerleri denenir.
+ */
 export function tracked(db, store, column, lock, base) {
   const [table, name] = column.split(".");
-  const distinct = db.prepare(`SELECT DISTINCT "${name}" AS v FROM ${table} LIMIT 12`).all().map(row => row.v);
-  for (const row of db.prepare(`SELECT rowid AS r, "${name}" AS v FROM ${table} ORDER BY rowid`).all()) {
+  const distinct = ENUM_COLUMNS.has(name) ? db.prepare(`SELECT DISTINCT "${name}" AS v FROM ${table} LIMIT 12`).all().map(row => row.v) : [];
+  // Dolu değerli satırlar önce ve yalnız onlar (varsa): boş → dolu bozması yalnız WHERE'deki "<> ''" koşulunu sınar, değerin izde olduğunu göstermez.
+  const all = db.prepare(`SELECT rowid AS r, "${name}" AS v FROM ${table} ORDER BY rowid`).all();
+  const filled = all.filter(row => row.v !== null && row.v !== "" && row.v !== 0);
+  for (const row of ENUM_COLUMNS.has(name) || !filled.length ? all : filled) {
     const candidates = [...new Set([bump(row.v), ...distinct, ...(ENUM_COLUMNS.has(name) ? ENUMS : [])])].filter(value => value !== row.v);
     for (const value of candidates) {
       db.exec("SAVEPOINT bozma");
