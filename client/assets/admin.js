@@ -1146,7 +1146,12 @@
       const clean = !failures.length;
       const onlyLegacy = !clean && failures.every(legacyOnly);
       const noticeText = notices.length ? ` Uyarı (yeni işlemleri engellemez): ${notices.map(item => `${item.name} — ${item.count} hareket. ${item.hint || ""}`).join(" ")}`.replace(/\s+/g, " ").trimEnd() : "";
-      const ruleDiffText = ruleDiffs.map(item => ` Uyarı (yeni işlemleri engellemez): ${item.name} — ${item.count} madde${item.difference ? `, fark ${HOF.formatMoney(item.difference)}` : ""}. Kilitli dönemin raporları donmuş defterden okunur, değişmez; fark Yönetim › Kural Farkı Düzeltme ile ilk açık güne alınır.`).join("");
+      // Ç5-A tur 2b İş 2: Kural Farkı Düzeltme Fişi farkı kapattıysa öğe ok (Mutabakat Testi uyarısız) ve adı "… — Düzeltildi (Fiş …)" — bilgi cümlesi; fiş fazla kaldıysa
+      // (kilit kaldırıldı / yeniden kilitlendi) ya da farkın bir kısmı kaldıysa sunucunun ipucu.
+      const corrected = (result.checks || []).filter(item => item.ok && item.code === "ledger:rule-diff" && item.corrected);
+      const ruleDiffText = ruleDiffs.map(item => (item.correction?.over
+        ? ` Uyarı (yeni işlemleri engellemez): ${item.hint || item.name}`
+        : ` Uyarı (yeni işlemleri engellemez): ${item.name} — ${item.count} madde${item.difference ? `, fark ${HOF.formatMoney(item.difference)}` : ""}. Kilitli dönemin raporları donmuş defterden okunur, değişmez; ${item.correction?.vouchers?.length ? `${item.correction.remainderMinor ? "kalan fark" : "alt defter hesabı farkı fişle düzeltilmez (Kilidi Aç → Yeniden Kilitle);"} ${item.correction.remainderMinor ? "Yönetim › Kural Farkı Düzeltme ile ilk açık güne alınır." : `düzeltme fişi: ${item.correction.vouchers.join(", ")}.`}` : "fark Yönetim › Kural Farkı Düzeltme ile ilk açık güne alınır."}`)).join("") + corrected.map(item => ` Bilgi: ${item.name}; kilitli dönemin farkı ilk açık güne alındı.`).join("");
       health.textContent = (clean
         ? `Mutabakat: ${result.checks.length - notices.length - ruleDiffs.length} denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı.${rolled ? ` Son kayıtlarda ${rolled} işlem sapma yaratacağı için geri alındı (Raporlar › Mutabakat Günlüğü).` : ""}`
         : onlyLegacy
@@ -1177,6 +1182,8 @@
       syncLockButton();
     }
   }
+  // Ç5-A tur 2b İş 2: Kural Farkı Düzeltme penceresi (hof-kural-farki.js) fiş yazınca / ters kaydedince Mutabakat satırı yenilenir.
+  document.addEventListener("hof:rule-diff-changed", () => loadIntegrity());
   $("#adm-period").addEventListener("submit", event => {
     event.preventDefault();
     if (lockBusy) return HOF.toast(lockBusy, { type: "error" });
