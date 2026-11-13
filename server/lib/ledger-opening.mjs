@@ -1,9 +1,9 @@
 // 2.5.0 Ç5-A tur 1 — açılış düzeni (docs/erp/C5-ACILIS-TASARIM.md §2.4, §2.8, §3.5, §11): KG-16 "Açılış Olabilir" listesi, "Açılış Karşılığı" ikinci yükleyicisi (519 / 500,
 // modüllerin kendi tablolarından; journal()'dan bağımsız SQL) ve kilitsiz geçmiş yıl bilgisi (S53). Açılış Eşleştirme Fişi ve Kural Farkı Düzeltme Fişi TUR 2'de bu dosyaya eklenir
 // (eşleştirme denetimi aynı `openingCounterpart` toplamını okur).
-import { LEDGER_RULE_ALIASES, localDayOf } from "./general-ledger.mjs";
+import { ACCOUNT_PLAN, LEDGER_RULE_ALIASES, localDayOf } from "./general-ledger.mjs";
 import { leanAll } from "./lean-rows.mjs";
-import { roundMoney } from "./money.mjs";
+import { parseAmount, roundMoney } from "./money.mjs";
 import { isOpeningCandidateNote } from "./migrations.mjs";
 
 export { isOpeningCandidateNote };
@@ -388,4 +388,117 @@ export function postedRuleDiffCorrections(store) {
     .all("SELECT v.id, v.year, v.no, v.date FROM ledger_vouchers v WHERE v.type = 'rule-diff-correction' AND NOT EXISTS (SELECT 1 FROM ledger_vouchers r WHERE r.reversal_of = v.id) ORDER BY v.date, v.rowid")
     .map(row => ({ id: row.id, year: Number(row.year), no: Number(row.no), date: row.date }));
   return { any: true, net, active };
+}
+
+// ---- 2.5.0 Ç5-A tur 2c İş 1 — Açılış Eşleştirme Fişi (C5-ACILIS-TASARIM §2.7, §17.10; kural kitabı M-11; BAŞ MİMAR B10; kâhin red kodları ESLESTIRME_HESAP / ESLESTIRME_TERS) ----
+/** Açılış karşı hesabı (Eşleştirilecek Açılış Bakiyeleri; §2.2). */
+export const OPENING_MATCH_ACCOUNT = "519";
+const MATCH_MAX_LINES = 50;
+/** Madde kimliğinin öneki → açılış türü (519 dökümü; karma defterin maddeleri). Sıra önemlidir (uzun önek önce). */
+// Cariye işlenmemiş evrakın maddesi cari satırı biçimindedir ("account:free-in:<evrak>" / "account:free-out:<evrak>" — routes/ledger.mjs rows()); açılış evrakı sayılır.
+const MATCH_SOURCES = [["plan-entry:", "plans"], ["plan:", "plans"], ["stock-open:", "stock"], ["stock:", "stock"], ["cash:", "cash"], ["account:free-", "cheques"], ["account:", "accounts"], ["bank:", "bank"], ["cheque", "cheques"], ["voucher", "vouchers"]];
+const sourceKind = id => MATCH_SOURCES.find(([prefix]) => String(id).startsWith(prefix))?.[1] || "other";
+
+/**
+ * 519'un `date` günü SONUNDAKİ bakiyesi (kuruş, borç artı) ve açılış türlerine göre dökümü. entries: karma defter (Yevmiye / Mizan'ın okuduğu — routes/ledger.mjs book()); tarihi
+ * `date`'ten sonra olan maddeler sayılmaz, AYNI günün maddeleri (açılışlar, önceki eşleştirme ve kural farkı fişleri) sayılır. Dökümün toplamı = bakiye.
+ */
+export function openingMatchBalance(entries, date) {
+  const parts = { cash: 0, accounts: 0, plans: 0, stock: 0, bank: 0, cheques: 0, vouchers: 0, other: 0 };
+  let balance = 0;
+  for (const entry of entries) {
+    if (entry.date > date) continue;
+    for (const line of entry.lines) {
+      if (line.account !== OPENING_MATCH_ACCOUNT) continue;
+      const minor = line.debit - line.credit;
+      balance += minor;
+      parts[sourceKind(entry.id)] += minor;
+    }
+  }
+  return { balance, parts };
+}
+
+/**
+ * K6 kümesinde (subledgerAccounts — mutabakatın beklenen bakiyeleri) olmayan ama bakiyesi modülden ya da bilanço sunumundan gelen hesaplar — eşleştirme fişi bunlara da yazmaz:
+ * 153 Ticari Mallar (stok modülünün değeri; "eşleştirme fişi stok değerini DEĞİŞTİRMEZ"), 136 / 159 / 198 / 340 (ters bakiyeli cari / kart / vergi satırlarının bilançoda brüt
+ * gösterim karşılıkları — Ç6'nın hesapladığı satırlar; §3.3 "hesaplanmış satırlar"). BAŞ MİMAR değerlendirmesine (raporda).
+ */
+export const OPENING_MATCH_EXCLUDED = Object.freeze(new Set(["136", "153", "159", "198", "340"]));
+/** İzinli hedef hesaplar (M-11; §2.7): bilanço hesabı (1–5 sınıfı, hesap planında), 519 değil, alt defter hesabı değil (K6 + OPENING_MATCH_EXCLUDED). [{ code, name }]. */
+export function openingMatchTargets(subledger = new Set()) {
+  return Object.keys(ACCOUNT_PLAN)
+    .filter(code => /^[1-5]\d\d$/.test(code) && code !== OPENING_MATCH_ACCOUNT && !subledger.has(code) && !OPENING_MATCH_EXCLUDED.has(code))
+    .sort()
+    .map(code => ({ code, name: ACCOUNT_PLAN[code]?.ad || code }));
+}
+
+/**
+ * Açılış Eşleştirme Fişi'nin planı (saf). lines: [{ account, sub?, side: "debit" | "credit", amount }] (amount TL — metin ya da sayı) ya da kuruşla [{ account, sub?, debit, credit }];
+ * balance: 519'un fiş tarihi gün sonu bakiyesi (openingMatchBalance). Dönüş: { lines (hedefler + kendiliğinden 519 satırı; kuruş), net, after } ya da { error: { status, code, message } }.
+ *   - hedef izinli hesap (openingMatchTargets) değilse 400 opening-match-account (ESLESTIRME_HESAP);
+ *   - 519 satırı = −(hedeflerin net borcu); net 0 → 400 opening-match-zero;
+ *   - b = 519 bakiyesi, b' = b − net: b = 0 → 409 opening-match-nothing; b' ters işarete geçerse 409 opening-match-inverse (ESLESTIRME_TERS — aynı günün açılışları dahil);
+ *     |b'| > |b| (519'u büyütür — M-11 "bakiyesi ya da bir kısmı" değil) → 409 opening-match-direction.
+ */
+export function openingMatchPlan({ lines, balance, subledger = new Set() }) {
+  const fail = (status, code, message, extra = {}) => ({ error: { status, code, message, ...extra } });
+  const allowed = new Set(openingMatchTargets(subledger).map(item => item.code));
+  if (!Array.isArray(lines) || !lines.length) return fail(400, "opening-match-line", "Eşleştirilecek hedef hesap satırı girin.");
+  if (lines.length > MATCH_MAX_LINES) return fail(400, "opening-match-line", `En çok ${MATCH_MAX_LINES} hedef satırı girilebilir.`);
+  const targets = [];
+  for (const [index, line] of lines.entries()) {
+    const at = `${index + 1}. satır`;
+    const account = String(line?.account ?? "").trim();
+    if (!allowed.has(account)) {
+      const why = account === OPENING_MATCH_ACCOUNT ? "519'un karşılığı kendiliğinden yazılır" : subledger.has(account) || OPENING_MATCH_EXCLUDED.has(account) ? "bakiyesi kendi modülünün kayıtlarından ya da bilanço gösteriminden gelir" : "eşleştirmede kullanılmaz (bilanço hesabı değil ya da hesap planında yok)";
+      return fail(400, "opening-match-account", `${at}: ${account || "boş"} hesabı Açılış Eşleştirme'de hedef olamaz; ${why}.`, { line: index + 1, account });
+    }
+    const sub = String(line?.sub ?? "").trim();
+    if (sub && !new RegExp(`^${account}\\.\\d{2,4}$`).test(sub)) return fail(400, "opening-match-account", `${at}: ${sub} alt hesabı ${account} hesabına ait değil.`, { line: index + 1, account });
+    let debit;
+    let credit;
+    if (line?.side !== undefined) {
+      const value = parseAmount(line?.amount);
+      const minor = Math.round(value * 100);
+      const exact = Number.isFinite(value) && Math.abs(value * 100 - minor) < 1e-6;
+      if (!["debit", "credit"].includes(line.side) || !exact || !Number.isSafeInteger(minor) || minor <= 0) return fail(400, "opening-match-line", `${at}: tutarı sıfırdan büyük, en çok iki ondalıkla girin; borç ya da alacak seçin.`, { line: index + 1 });
+      [debit, credit] = line.side === "debit" ? [minor, 0] : [0, minor];
+    } else {
+      [debit, credit] = [line?.debit ?? 0, line?.credit ?? 0];
+      if (!Number.isSafeInteger(debit) || !Number.isSafeInteger(credit) || debit < 0 || credit < 0 || (debit > 0) === (credit > 0)) return fail(400, "opening-match-line", `${at}: satır ya borç ya alacak taşır (kuruş, sıfırdan büyük).`, { line: index + 1 });
+    }
+    targets.push({ account, sub, debit, credit });
+  }
+  const net = targets.reduce((sum, line) => sum + line.debit - line.credit, 0);
+  if (!Number.isSafeInteger(net)) return fail(400, "opening-match-line", "Fiş toplamı çok büyük.");
+  if (!net) return fail(400, "opening-match-zero", "Hedef satırların borcu alacağına eşit; 519'u değiştirmeyen fiş yazılmaz.");
+  if (!balance) return fail(409, "opening-match-nothing", "Fiş tarihinde eşleştirilecek açılış bakiyesi (519) yok.", { balanceMinor: 0 });
+  const after = balance - net;
+  const side = minor => (minor > 0 ? "borç" : "alacak");
+  const money = minor => (Math.abs(minor) / 100).toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  if (after && Math.sign(after) !== Math.sign(balance)) {
+    return fail(409, "opening-match-inverse", `Fiş 519'u ters bakiyeye geçirir: fiş tarihinde 519 bakiyesi ${money(balance)} ${side(balance)}; en çok ${money(balance)} eşleştirilebilir (fişten sonra ${money(after)} ${side(after)} olurdu).`, { balanceMinor: balance, afterMinor: after });
+  }
+  if (Math.abs(after) > Math.abs(balance)) {
+    return fail(409, "opening-match-direction", `Fiş 519 bakiyesini azaltmıyor, büyütüyor: fiş tarihinde 519 bakiyesi ${money(balance)} ${side(balance)}; hedef satırlar ${balance < 0 ? "alacak" : "borç"} tarafında olmalı.`, { balanceMinor: balance, afterMinor: after });
+  }
+  const counter = net > 0 ? { account: OPENING_MATCH_ACCOUNT, sub: "", debit: 0, credit: net } : { account: OPENING_MATCH_ACCOUNT, sub: "", debit: -net, credit: 0 };
+  return { lines: [...targets, counter], net, after };
+}
+
+/**
+ * Eşleştirme fişlerinin durumu (Mutabakat bilgi satırı; Ç6 "Kesin Değil — Ters Bakiye 519"): matched = etkin eşleştirme fişlerinin 519 net borcu (ters kayıtlar düşer); total = defterin
+ * 519 bakiyesi (entries: tam taramanın maddeleri). Fişten sonra açılış silinir / değişir de 519 fişlerin yönünün tersine geçerse `inverse` (ENGELLENMEZ — §2.7). Fiş yoksa null (tek
+ * `LIMIT 1` sorgusu).
+ */
+export function openingMatchState(store, entries) {
+  if (!has(store, "ledger_vouchers") || !has(store, "ledger_voucher_lines")) return null;
+  if (!store.get("SELECT 1 AS found FROM ledger_vouchers WHERE type = 'opening-match' LIMIT 1")) return null;
+  const matched = Number(store.get(
+    `SELECT COALESCE(SUM(l.debit_minor - l.credit_minor), 0) AS n FROM ledger_vouchers v CROSS JOIN ledger_voucher_lines l ON l.voucher_id = v.id
+     WHERE l.account = '519' AND (v.type = 'opening-match' OR (v.type = 'reversal' AND v.reversal_of IN (SELECT id FROM ledger_vouchers WHERE type = 'opening-match')))`,
+  )?.n) || 0;
+  if (!matched) return null;
+  const total = ledgerBalanceOf(entries, OPENING_MATCH_ACCOUNT);
+  return { matched, total, inverse: (matched > 0 && total > 0) || (matched < 0 && total < 0) };
 }

@@ -10,7 +10,7 @@ import { HttpError, ok, readJson, text } from "../lib/http.mjs";
 import { VOUCHER_TYPES, createLedgerVouchers, voucherJournalRows } from "../lib/ledger-vouchers.mjs";
 import { createLedgerSnapshots } from "../lib/ledger-snapshots.mjs";
 import { createHash } from "node:crypto";
-import { nextDayOf, oldRulePinnedPlans, postedRuleDiffCorrections, ruleDiffCorrectionPlan } from "../lib/ledger-opening.mjs";
+import { nextDayOf, oldRulePinnedPlans, openingMatchBalance, openingMatchPlan, openingMatchTargets, postedRuleDiffCorrections, ruleDiffCorrectionPlan } from "../lib/ledger-opening.mjs";
 import { leanAll } from "../lib/lean-rows.mjs";
 import { roundMoney } from "../lib/money.mjs";
 
@@ -653,6 +653,83 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     });
     if (!voucher.replayed) events?.publish?.("workspace.changed", { kind: "ledger", actorId: user.id, actorName: user.display_name }, { except: user.id });
     ok(res, { voucher, replayed: voucher.replayed === true });
+  });
+  // 2.5.0 Ç5-A tur 2c İş 1 — Açılış Eşleştirme Fişi (docs/erp/C5-ACILIS-TASARIM.md §2.7, §17.10; kural kitabı M-11; BAŞ MİMAR B10):
+  //   GET  /api/admin/ledger/opening-match?date=           → 519'un fiş tarihi gün sonu bakiyesi + açılış türlerine göre dökümü (karma defter), izinli hedef hesaplar, etkin
+  //                                                          eşleştirme fişleri, pasiflik nedeni (kilitli / ileri tarih / bakiye yok)
+  //   POST /api/admin/ledger/opening-match/preview         → { date, lines } — fişin satırları (+ kendiliğinden 519 satırı) ve fişten sonraki 519; ret yazmadan döner
+  //   POST /api/admin/ledger/opening-match                 → { requestId, date, lines, confirm: true } — yazım anında YENİDEN doğrulanır (iki kişi aynı anda: ikincisi güncel bakiyeyle)
+  // lines: [{ account, sub?, side: "debit" | "credit", amount }] (TL). Yetki system.manage (fiş defteri ve dönem kilidiyle aynı; Muhasebe 403). Kilit / ileri tarih / alt defter / istek
+  // kimliği Ç2'nin post sözleşmesiyle; 519'un ters bakiyeye geçmesi ve izinsiz hedef bu planla (lib/ledger-opening.mjs openingMatchPlan).
+  const MATCH_PARTS = { cash: "Kasa Açılışı", accounts: "Cari Açılışları", plans: "Taksit Kartları", stock: "Stok Açılışı", bank: "Banka Açılışları", cheques: "Açılış Evrakı", vouchers: "Fişler", other: "Diğer" };
+  const dayText = iso => iso.split("-").reverse().join(".");
+  function matchDate(value) {
+    const date = text(value) || period?.today() || "";
+    if (!DATE.test(date)) throw new HttpError(400, "Geçerli bir fiş tarihi seçin.", { code: "date-invalid" });
+    return date;
+  }
+  /** Fiş tarihinin 519 durumu (karma defter: Yevmiye / Mizan'ın okuduğu) ve pasiflik nedeni. Bütün yol eşzamanlı: plan ile yazım arasında olay döngüsüne sıra verilmez. */
+  function matchState(date) {
+    const lock = period?.lockedUntil() || "";
+    const today = period?.today() || "";
+    const { balance, parts } = openingMatchBalance(book({ to: date }), date);
+    let reason = "";
+    let code = "";
+    if (date > today) [reason, code] = [`İleri tarihli fiş yazılamaz (${dayText(date)}).`, "date-future"];
+    else if (lock && date <= lock) [reason, code] = [`${dayText(lock)} ve öncesi kapatılmış (kilitli) dönemdir; fiş tarihi ${dayText(nextDayOf(lock))} ya da sonrası olmalı.`, "period-locked"];
+    else if (!balance) [reason, code] = ["Fiş tarihinde eşleştirilecek açılış bakiyesi (519) yok.", "opening-match-nothing"];
+    return { date, today, lockedUntil: lock, balance, parts, reason, code };
+  }
+  function activeMatches() {
+    if (!has("ledger_vouchers")) return [];
+    return store
+      .all("SELECT v.id, v.year, v.no, v.date, v.total_minor AS totalMinor FROM ledger_vouchers v WHERE v.type = 'opening-match' AND NOT EXISTS (SELECT 1 FROM ledger_vouchers r WHERE r.reversal_of = v.id) ORDER BY v.date, v.rowid")
+      .map(row => ({ id: row.id, date: row.date, totalMinor: Number(row.totalMinor), noText: vouchers.voucherNoText(Number(row.year), Number(row.no)) }));
+  }
+  function matchPlan(state, lines) {
+    if (state.code === "date-future") throw new HttpError(400, state.reason, { code: state.code });
+    if (state.code === "period-locked") throw new HttpError(409, state.reason, { code: state.code, lockedUntil: state.lockedUntil });
+    const plan = openingMatchPlan({ lines, balance: state.balance, subledger: subledgerAccounts() });
+    if (plan.error) {
+      const { status, code, message, ...extra } = plan.error;
+      throw new HttpError(status, message, { code, ...extra });
+    }
+    return { ...plan, lines: plan.lines.map(line => ({ ...line, name: accountName(line.account) })) };
+  }
+  router.get("/api/admin/ledger/opening-match", async ({ req, res, url }) => {
+    auth.requirePermission(req, "system.manage");
+    const state = matchState(matchDate(url.searchParams.get("date")));
+    ok(res, {
+      date: state.date, today: state.today, lockedUntil: state.lockedUntil, balanceMinor: state.balance,
+      parts: Object.entries(state.parts).filter(([, minor]) => minor).map(([kind, minor]) => ({ kind, label: MATCH_PARTS[kind], minor })),
+      targets: openingMatchTargets(subledgerAccounts()), vouchers: activeMatches(), disabled: Boolean(state.reason), reason: state.reason, code: state.code,
+    });
+  });
+  router.post("/api/admin/ledger/opening-match/preview", async ({ req, res }) => {
+    auth.requirePermission(req, "system.manage");
+    const body = (await readJson(req)) || {};
+    const state = matchState(matchDate(body.date));
+    const plan = matchPlan(state, body.lines);
+    ok(res, { date: state.date, balanceMinor: state.balance, afterMinor: plan.after, lines: plan.lines, totalMinor: plan.lines.reduce((sum, line) => sum + line.debit, 0) });
+  });
+  router.post("/api/admin/ledger/opening-match", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "system.manage");
+    const body = (await readJson(req)) || {};
+    const requestId = text(req.headers["x-hof-request"]) || text(body.requestId);
+    if (!REQUEST_ID.test(requestId)) throw new HttpError(400, "İstek kimliği gerekli.", { code: "request-id-invalid" });
+    const requestKey = `api:opening-match:${requestId}`;
+    // Yinelenen istek (ağ, çift tıklama): ilk fiş döner (yeniden plan kurulmaz — ilk fiş 519'u zaten değiştirdi).
+    const seen = has("ledger_vouchers") ? store.get("SELECT id FROM ledger_vouchers WHERE request_key = ?", requestKey) : null;
+    if (seen) return ok(res, { voucher: { ...vouchers.get(seen.id), replayed: true }, replayed: true });
+    if (body.confirm !== true) throw new HttpError(400, "Fiş, ön izlemedeki satırlar onaylanarak yazılır.", { code: "opening-match-confirm" });
+    const date = matchDate(body.date);
+    const plan = matchPlan(matchState(date), body.lines);
+    const voucher = vouchers.post(user, {
+      type: "opening-match", date, description: "Açılış Eşleştirme (Eşleştirilecek Açılış Bakiyeleri)", source: "Açılış Eşleştirme", requestKey,
+      lines: plan.lines.map(({ account, sub, debit, credit }) => ({ account, sub, debit, credit })),
+    });
+    if (!voucher.replayed) events?.publish?.("workspace.changed", { kind: "ledger", actorId: user.id, actorName: user.display_name }, { except: user.id });
+    ok(res, { voucher, replayed: voucher.replayed === true, afterMinor: plan.after });
   });
   // Mutabakat testi (tüm denetimler) ve geri alınan işlemlerin günlüğü.
   router.get("/api/workspace/ledger/integrity", async ({ req, res }) => {
