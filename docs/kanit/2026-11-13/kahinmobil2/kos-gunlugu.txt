@@ -1,0 +1,11 @@
+basla 2026-11-13T18:47:31Z
+2.21 3.17 2.62 2/205 16749
+831e709b Mobil yazma kâhini bakımı 2 (kod): göstergeler cari kâhininin 2.5.0 kontrolünden (S154 B tek değer, S151 B / S158 A), Fazlasını Avans Yaz çevirisi, masaüstü stok_iade, E43, mutantlar 51 / 62 / 63, K1; kabul yeniden üretildi
+?? docs/kanit/2026-11-13/kahinmobil2/
+oz-utc cikis 0
+3.97 3.88 3.13 8/226 19276
+oz-ist cikis 0
+5.66 4.31 3.50 3/236 20676
+uretici cikis 1
+bitti 2026-11-13T19:00:23Z
+?? docs/kanit/2026-11-13/kahinmobil2/

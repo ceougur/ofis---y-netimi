@@ -1,0 +1,121 @@
+TAP version 13
+# Subtest: Ç5-A tur 2c — v2.4.9 kilitli verisinde açılış düzeni (kabul D): sınıf listesi, aday → Kural Farkı → Düzeltildi → eşleştirme → ters kayıt
+    # Subtest: [1] güncelleme: iki aday (kilitli 1); Kural Farkı fişi aday varken pasif (B16); karar → pasiflik kalkar
+    ok 1 - [1] güncelleme: iki aday (kilitli 1); Kural Farkı fişi aday varken pasif (B16); karar → pasiflik kalkar
+      ---
+      duration_ms: 58.116816
+      type: 'test'
+      ...
+    # Subtest: [2] sınıf listesi: kilitli dönemdeki her açılış türü kural farkında (eski 500 / 602 → 519); açık dönemdekiler farkta YOK, defterde 519 (reddedilen aday 602)
+    ok 2 - [2] sınıf listesi: kilitli dönemdeki her açılış türü kural farkında (eski 500 / 602 → 519); açık dönemdekiler farkta YOK, defterde 519 (reddedilen aday 602)
+      ---
+      duration_ms: 8.075783
+      type: 'test'
+      ...
+    # Subtest: [3] Kural Farkı Düzeltme Fişi 01.07.2026: B 500 6.370 / B 602 2.800 / A 519 9.170; Düzeltildi; değişmez (1–5 karma = baştan)
+    ok 3 - [3] Kural Farkı Düzeltme Fişi 01.07.2026: B 500 6.370 / B 602 2.800 / A 519 9.170; Düzeltildi; değişmez (1–5 karma = baştan)
+      ---
+      duration_ms: 50.323013
+      type: 'test'
+      ...
+    # Subtest: [4] Açılış Eşleştirme 20.11.2026: 519 = 11.670 alacak (fiş 9.170 + açık dönem 2.500); A 500 10.000 + A 570 1.670 → 519 sıfır; Açılış Karşılığı tutarlı
+    ok 4 - [4] Açılış Eşleştirme 20.11.2026: 519 = 11.670 alacak (fiş 9.170 + açık dönem 2.500); A 500 10.000 + A 570 1.670 → 519 sıfır; Açılış Karşılığı tutarlı
+      ---
+      duration_ms: 43.318535
+      type: 'test'
+      ...
+    # Subtest: [5] Kural Farkı fişi ters kaydedilir → uyarı geri gelir (Mizan'da 519 9.170 borç — kural farkı düzeltilmemiş; canlı türetmede 519 = 0, bilgi satırı YOK); açık dönemde açılış silinir → 519 eşleştirmenin tersine geçer: ENGELLENMEZ, bilgi satırı
+    ok 5 - [5] Kural Farkı fişi ters kaydedilir → uyarı geri gelir (Mizan'da 519 9.170 borç — kural farkı düzeltilmemiş; canlı türetmede 519 = 0, bilgi satırı YOK); açık dönemde açılış silinir → 519 eşleştirmenin tersine geçer: ENGELLENMEZ, bilgi satırı
+      ---
+      duration_ms: 59.061633
+      type: 'test'
+      ...
+    1..5
+ok 1 - Ç5-A tur 2c — v2.4.9 kilitli verisinde açılış düzeni (kabul D): sınıf listesi, aday → Kural Farkı → Düzeltildi → eşleştirme → ters kayıt
+  ---
+  duration_ms: 1540.209558
+  type: 'suite'
+  ...
+# Subtest: Ç5-A tur 2c İş 1 — Açılış Eşleştirme Fişi
+    # Subtest: ön izleme verisi: 519'un gün sonu bakiyesi ve açılış türlerine göre dökümü (toplam = bakiye); izinli hedefler alt defter hesabı ve 519 içermez
+    ok 1 - ön izleme verisi: 519'un gün sonu bakiyesi ve açılış türlerine göre dökümü (toplam = bakiye); izinli hedefler alt defter hesabı ve 519 içermez
+      ---
+      duration_ms: 11.335252
+      type: 'test'
+      ...
+    # Subtest: ret: izinsiz hedef (102, 120, 600, 519) 400 ESLESTIRME_HESAP; 519'u büyüten 409; ters bakiye 409 ESLESTIRME_TERS (aynı gün açılışı dahil, ertesi gün açılışı hariç); fiş yazılmaz
+    ok 2 - ret: izinsiz hedef (102, 120, 600, 519) 400 ESLESTIRME_HESAP; 519'u büyüten 409; ters bakiye 409 ESLESTIRME_TERS (aynı gün açılışı dahil, ertesi gün açılışı hariç); fiş yazılmaz
+      ---
+      duration_ms: 38.689369
+      type: 'test'
+      ...
+    # Subtest: kısmi + ikinci fiş (iki hedef) + fazlası ret; Açılış Karşılığı fiş satırlarını görür; cari / Kasa / banka / stok bakiyesi değişmez; aynı istek iki kez tek fiş
+    ok 3 - kısmi + ikinci fiş (iki hedef) + fazlası ret; Açılış Karşılığı fiş satırlarını görür; cari / Kasa / banka / stok bakiyesi değişmez; aynı istek iki kez tek fiş
+      ---
+      duration_ms: 73.29171
+      type: 'test'
+      ...
+    # Subtest: fişten sonra açık dönemde açılış silinir → 519 ters bakiye: ENGELLENMEZ; Mutabakat'ta bilgi satırı (zil / günlük değişmez); ters kayıtla geri döner
+    ok 4 - fişten sonra açık dönemde açılış silinir → 519 ters bakiye: ENGELLENMEZ; Mutabakat'ta bilgi satırı (zil / günlük değişmez); ters kayıtla geri döner
+      ---
+      duration_ms: 50.003958
+      type: 'test'
+      ...
+    # Subtest: iki kişi aynı anda kalanın tamamını eşleştirir: biri yazılır, öbürü güncel bakiyeyle (0) 409; Muhasebe 403; ileri tarih 400; kilitli tarih 409
+    ok 5 - iki kişi aynı anda kalanın tamamını eşleştirir: biri yazılır, öbürü güncel bakiyeyle (0) 409; Muhasebe 403; ileri tarih 400; kilitli tarih 409
+      ---
+      duration_ms: 341.33339
+      type: 'test'
+      ...
+    1..5
+ok 2 - Ç5-A tur 2c İş 1 — Açılış Eşleştirme Fişi
+  ---
+  duration_ms: 1076.427411
+  type: 'suite'
+  ...
+# Subtest: Ç5-A tur 2c İş 3 — Açılış Olabilir Kayıtlar: sayfalama, zil sayısı, toplu karar, geri al, kilitli satır, yetki
+    # Subtest: sayfalama + toplam; sayfasız çağrı tur 1 çıktısı (kilit alanı yok); zil sayısı kilitli dönemdeki adayı ayrıca verir; geçersiz sayfa 400
+    ok 1 - sayfalama + toplam; sayfasız çağrı tur 1 çıktısı (kilit alanı yok); zil sayısı kilitli dönemdeki adayı ayrıca verir; geçersiz sayfa 400
+      ---
+      duration_ms: 21.434419
+      type: 'test'
+      ...
+    # Subtest: toplu karar (aynı adlı iki cari): ikisi de onaylanır, 519; listede olmayan kimlik varsa HİÇBİRİ yazılmaz (404); karar tutar / tarih / yön / işaret değiştirmez
+    ok 2 - toplu karar (aynı adlı iki cari): ikisi de onaylanır, 519; listede olmayan kimlik varsa HİÇBİRİ yazılmaz (404); karar tutar / tarih / yön / işaret değiştirmez
+      ---
+      duration_ms: 31.449874
+      type: 'test'
+      ...
+    # Subtest: geri al: kararlı satır yeniden onay bekler (S47: defterde yine 519); ret → geri al → onay; listede olmayan satırda 404; adayda değişiklik yok
+    ok 3 - geri al: kararlı satır yeniden onay bekler (S47: defterde yine 519); ret → geri al → onay; listede olmayan satırda 404; adayda değişiklik yok
+      ---
+      duration_ms: 62.135861
+      type: 'test'
+      ...
+    # Subtest: kilitli satır: karar verilir, kilit izi ve donmuş defter değişmez; Kural Farkı fişi aday varken pasif, neden aday ekranını söyler (B16); karar verilince pasiflik kalkar
+    ok 4 - kilitli satır: karar verilir, kilit izi ve donmuş defter değişmez; Kural Farkı fişi aday varken pasif, neden aday ekranını söyler (B16); karar verilince pasiflik kalkar
+      ---
+      duration_ms: 32.634527
+      type: 'test'
+      ...
+    # Subtest: yetki: personel 403 (liste, zil, tek, toplu, geri al); Muhasebe uçları kullanır (tur 1 yetkisi accounts.manage); iki kişi aynı anda — son karar geçerli, kopya aynı
+    ok 5 - yetki: personel 403 (liste, zil, tek, toplu, geri al); Muhasebe uçları kullanır (tur 1 yetkisi accounts.manage); iki kişi aynı anda — son karar geçerli, kopya aynı
+      ---
+      duration_ms: 252.904503
+      type: 'test'
+      ...
+    1..5
+ok 3 - Ç5-A tur 2c İş 3 — Açılış Olabilir Kayıtlar: sayfalama, zil sayısı, toplu karar, geri al, kilitli satır, yetki
+  ---
+  duration_ms: 1462.961247
+  type: 'suite'
+  ...
+1..3
+# tests 15
+# suites 3
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5111.860751

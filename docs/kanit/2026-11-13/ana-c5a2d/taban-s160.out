@@ -1,0 +1,386 @@
+TAP version 13
+# Subtest: S160 = A — Banka'dan Ters Kaydet / Düzelt (KDV'li masrafın faturası): kilitli tahsilatın bağını düşüren iptal 409
+    # Subtest: Ters Kaydet 409 — tahsilat kilitli dönemde (05.10); banka olayı, fatura, bağ ve kilitli defter aynı
+    not ok 1 - Ters Kaydet 409 — tahsilat kilitli dönemde (05.10); banka olayı, fatura, bağ ve kilitli defter aynı
+      ---
+      duration_ms: 35.210009
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2d/taban/test/s160-iptal-yollari-250.test.mjs:97:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tahsilat kilitli dönemde (05.10): {"original":{"id":"ev-0mwfkt0j00000-abdcb9aa-3f3d-4b26","no":"BNK-2026-000004","type":"fee","typeLabel":"Banka Masrafı","status":"cancelled","statusLabel":"İptal Edildi","date":"2026-10-15","valueDate":"","direction":"","tryMinor":0,"amountMinor":0,"currency":"TRY","method":"","description":"","refe
+        + actual - expected
+        
+          {
+        +   bagKaldi: false,
+        +   fatura: 'cancelled',
+        +   kilitliDefterFarki: [
+        +     '+2026-10-05|128|account-9e81fd11-5050-402d-a033-f103e5e6cd44|0|10000',
+        +     '-2026-10-05|120|account-9e81fd11-5050-402d-a033-f103e5e6cd44|0|10000'
+        +   ],
+        +   olay: 'cancelled',
+        +   yanit: 200
+        -   bagKaldi: true,
+        -   fatura: 'issued',
+        -   kilitliDefterFarki: [],
+        -   olay: 'active',
+        -   yanit: 409
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        yanit: 409
+        olay: 'active'
+        fatura: 'issued'
+        bagKaldi: true
+        kilitliDefterFarki:
+      actual:
+        yanit: 200
+        olay: 'cancelled'
+        fatura: 'cancelled'
+        bagKaldi: false
+        kilitliDefterFarki:
+          0: '+2026-10-05|128|account-9e81fd11-5050-402d-a033-f103e5e6cd44|0|10000'
+          1: '-2026-10-05|120|account-9e81fd11-5050-402d-a033-f103e5e6cd44|0|10000'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2d/taban/test/s160-iptal-yollari-250.test.mjs:102:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Ters Kaydet 409 — tahsilat tam kilit günü; banka olayı, fatura, bağ ve kilitli defter aynı
+    not ok 2 - Ters Kaydet 409 — tahsilat tam kilit günü; banka olayı, fatura, bağ ve kilitli defter aynı
+      ---
+      duration_ms: 26.916463
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2d/taban/test/s160-iptal-yollari-250.test.mjs:97:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tahsilat tam kilit günü: {"original":{"id":"ev-0mwfkt0ok0000-db809f6f-3cff-4e2b","no":"BNK-2026-000012","type":"fee","typeLabel":"Banka Masrafı","status":"cancelled","statusLabel":"İptal Edildi","date":"2026-10-15","valueDate":"","direction":"","tryMinor":0,"amountMinor":0,"currency":"TRY","method":"","description":"","refe
+        + actual - expected
+        
+          {
+        +   bagKaldi: false,
+        +   fatura: 'cancelled',
+        +   kilitliDefterFarki: [
+        +     '+2026-10-10|128|account-413a684d-1d73-4134-b389-cd2d3325da1e|0|10000',
+        +     '-2026-10-10|120|account-413a684d-1d73-4134-b389-cd2d3325da1e|0|10000'
+        +   ],
+        +   olay: 'cancelled',
+        +   yanit: 200
+        -   bagKaldi: true,
+        -   fatura: 'issued',
+        -   kilitliDefterFarki: [],
+        -   olay: 'active',
+        -   yanit: 409
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        yanit: 409
+        olay: 'active'
+        fatura: 'issued'
+        bagKaldi: true
+        kilitliDefterFarki:
+      actual:
+        yanit: 200
+        olay: 'cancelled'
+        fatura: 'cancelled'
+        bagKaldi: false
+        kilitliDefterFarki:
+          0: '+2026-10-10|128|account-413a684d-1d73-4134-b389-cd2d3325da1e|0|10000'
+          1: '-2026-10-10|120|account-413a684d-1d73-4134-b389-cd2d3325da1e|0|10000'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2d/taban/test/s160-iptal-yollari-250.test.mjs:102:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Düzelt (Ters Kaydet'i çağırır) 409 — yeni işlem yazılmaz, banka olayı / fatura / bağ / kilitli defter aynı
+    not ok 3 - Düzelt (Ters Kaydet'i çağırır) 409 — yeni işlem yazılmaz, banka olayı / fatura / bağ / kilitli defter aynı
+      ---
+      duration_ms: 30.732418
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2d/taban/test/s160-iptal-yollari-250.test.mjs:111:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Düzelt: {"original":{"id":"ev-0mwfkt0m50000-f773d4f3-4e2e-40c2","no":"BNK-2026-000008","type":"fee","typeLabel":"Banka Masrafı","status":"cancelled","statusLabel":"İptal Edildi","date":"2026-10-15","valueDate":"","direction":"","tryMinor":0,"amountMinor":0,"currency":"TRY","method":"","description":"","refe
+        + actual - expected
+        
+          {
+        +   bagKaldi: false,
+        +   fatura: 'cancelled',
+        +   kilitliDefterFarki: [
+        +     '+2026-10-06|128|account-b7f5fc50-3070-4384-86af-b8dea370c0a5|0|10000',
+        +     '-2026-10-06|120|account-b7f5fc50-3070-4384-86af-b8dea370c0a5|0|10000'
+        +   ],
+        +   olay: 'cancelled',
+        +   yanit: 200,
+        +   yeniIslem: 2
+        -   bagKaldi: true,
+        -   fatura: 'issued',
+        -   kilitliDefterFarki: [],
+        -   olay: 'active',
+        -   yanit: 409,
+        -   yeniIslem: 0
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        yanit: 409
+        yeniIslem: 0
+        olay: 'active'
+        fatura: 'issued'
+        bagKaldi: true
+        kilitliDefterFarki:
+      actual:
+        yanit: 200
+        yeniIslem: 2
+        olay: 'cancelled'
+        fatura: 'cancelled'
+        bagKaldi: false
+        kilitliDefterFarki:
+          0: '+2026-10-06|128|account-b7f5fc50-3070-4384-86af-b8dea370c0a5|0|10000'
+          1: '-2026-10-06|120|account-b7f5fc50-3070-4384-86af-b8dea370c0a5|0|10000'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2d/taban/test/s160-iptal-yollari-250.test.mjs:116:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kilit DIŞINDAKİ tahsilat bağlıysa Ters Kaydet serbest (200): fatura iptal, bağ düşer, kilitli defter aynı
+    ok 4 - kilit DIŞINDAKİ tahsilat bağlıysa Ters Kaydet serbest (200): fatura iptal, bağ düşer, kilitli defter aynı
+      ---
+      duration_ms: 23.738475
+      type: 'test'
+      ...
+    # Subtest: ret yalnız TAHSİLAT yönünde: kilitli ÖDEME ve kilitli VERİLEN EVRAK bağlı faturada Ters Kaydet serbest (200); kilitli defter aynı
+    ok 5 - ret yalnız TAHSİLAT yönünde: kilitli ÖDEME ve kilitli VERİLEN EVRAK bağlı faturada Ters Kaydet serbest (200); kilitli defter aynı
+      ---
+      duration_ms: 45.406073
+      type: 'test'
+      ...
+    # Subtest: kilit kaldırılınca Ters Kaydet serbest; yeniden kilitleme çalışır ve öbür kilitli bağ yine korunur
+    not ok 6 - kilit kaldırılınca Ters Kaydet serbest; yeniden kilitleme çalışır ve öbür kilitli bağ yine korunur
+      ---
+      duration_ms: 8.048383
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2d/taban/test/s160-iptal-yollari-250.test.mjs:142:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Ters Kaydet (kilitsiz): 409 {"ok":false,"error":"Bu işlem iptal edilmiş.","code":"bank-already-reversed","eventId":"ev-0mwfkt0j00000-abdcb9aa-3f3d-4b26","eventNo":"BNK-2026-000004"}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2d/taban/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2d/taban/test/s160-iptal-yollari-250.test.mjs:144:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..6
+not ok 1 - S160 = A — Banka'dan Ters Kaydet / Düzelt (KDV'li masrafın faturası): kilitli tahsilatın bağını düşüren iptal 409
+  ---
+  duration_ms: 1244.743291
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2d/taban/test/s160-iptal-yollari-250.test.mjs:43:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: S160 = A — e-Belge (e-Arşiv) iptal akışı: kilitli tahsilatın bağını düşüren iptal 409, EDM'ye hiç gidilmez
+    # Subtest: e-Arşiv iptali 409 — tahsilat kilitli dönemde (09.10); EDM'ye HİÇ istek yok; belge, bağ ve kilitli defter aynı
+    not ok 1 - e-Arşiv iptali 409 — tahsilat kilitli dönemde (09.10); EDM'ye HİÇ istek yok; belge, bağ ve kilitli defter aynı
+      ---
+      duration_ms: 51.741314
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2d/taban/test/s160-iptal-yollari-250.test.mjs:201:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tahsilat kilitli dönemde (09.10): {"id":"invoice-f9282889-053f-4b3d-b639-312ff384cfa4","kind":"sale","kindLabel":"Satış Faturası","scenario":"service_sale","scenarioLabel":"Hizmet Satışı","status":"cancelled","statusLabel":"İptal Edildi","number":"TEA2026000000001","displayNo":"TEA2026000000001","internalNumber":false,"ettn":"44ff30
+        + actual - expected
+        
+          {
+        +   bagKaldi: false,
+        -   bagKaldi: true,
+            belge: {
+        +     e: 'cancelled',
+        +     status: 'cancelled'
+        -     e: 'sent',
+        -     status: 'issued'
+            },
+        +   edmIstekleri: [
+        +     'GetInvoiceStatus',
+        +     'GetInvoiceStatus',
+        +     'CancelInvoice'
+        +   ],
+        +   kilitliDefterFarki: [
+        +     '+2026-10-09|128|account-51c52412-3ab5-48af-9ce9-d86e0fc5a6a5|0|10000',
+        +     '-2026-10-09|120|account-51c52412-3ab5-48af-9ce9-d86e0fc5a6a5|0|10000'
+        +   ],
+        +   yanit: 200
+        -   edmIstekleri: [],
+        -   kilitliDefterFarki: [],
+        -   yanit: 409
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        yanit: 409
+        edmIstekleri:
+        belge:
+          status: 'issued'
+          e: 'sent'
+        bagKaldi: true
+        kilitliDefterFarki:
+      actual:
+        yanit: 200
+        edmIstekleri:
+          0: 'GetInvoiceStatus'
+          1: 'GetInvoiceStatus'
+          2: 'CancelInvoice'
+        belge:
+          status: 'cancelled'
+          e: 'cancelled'
+        bagKaldi: false
+        kilitliDefterFarki:
+          0: '+2026-10-09|128|account-51c52412-3ab5-48af-9ce9-d86e0fc5a6a5|0|10000'
+          1: '-2026-10-09|120|account-51c52412-3ab5-48af-9ce9-d86e0fc5a6a5|0|10000'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2d/taban/test/s160-iptal-yollari-250.test.mjs:207:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: e-Arşiv iptali 409 — tahsilat tam kilit günü; EDM'ye HİÇ istek yok; belge, bağ ve kilitli defter aynı
+    not ok 2 - e-Arşiv iptali 409 — tahsilat tam kilit günü; EDM'ye HİÇ istek yok; belge, bağ ve kilitli defter aynı
+      ---
+      duration_ms: 41.850616
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2d/taban/test/s160-iptal-yollari-250.test.mjs:201:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tahsilat tam kilit günü: {"id":"invoice-88ce39ea-0198-4748-9704-ccb00cff716f","kind":"sale","kindLabel":"Satış Faturası","scenario":"service_sale","scenarioLabel":"Hizmet Satışı","status":"cancelled","statusLabel":"İptal Edildi","number":"TEA2026000000002","displayNo":"TEA2026000000002","internalNumber":false,"ettn":"e31d45
+        + actual - expected
+        
+          {
+        +   bagKaldi: false,
+        -   bagKaldi: true,
+            belge: {
+        +     e: 'cancelled',
+        +     status: 'cancelled'
+        -     e: 'sent',
+        -     status: 'issued'
+            },
+        +   edmIstekleri: [
+        +     'GetInvoiceStatus',
+        +     'GetInvoiceStatus',
+        +     'CancelInvoice'
+        +   ],
+        +   kilitliDefterFarki: [
+        +     '+2026-10-10|128|account-287483d9-622f-4ef9-a10d-bd796d0a5588|0|10000',
+        +     '-2026-10-10|120|account-287483d9-622f-4ef9-a10d-bd796d0a5588|0|10000'
+        +   ],
+        +   yanit: 200
+        -   edmIstekleri: [],
+        -   kilitliDefterFarki: [],
+        -   yanit: 409
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        yanit: 409
+        edmIstekleri:
+        belge:
+          status: 'issued'
+          e: 'sent'
+        bagKaldi: true
+        kilitliDefterFarki:
+      actual:
+        yanit: 200
+        edmIstekleri:
+          0: 'GetInvoiceStatus'
+          1: 'GetInvoiceStatus'
+          2: 'CancelInvoice'
+        belge:
+          status: 'cancelled'
+          e: 'cancelled'
+        bagKaldi: false
+        kilitliDefterFarki:
+          0: '+2026-10-10|128|account-287483d9-622f-4ef9-a10d-bd796d0a5588|0|10000'
+          1: '-2026-10-10|120|account-287483d9-622f-4ef9-a10d-bd796d0a5588|0|10000'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2d/taban/test/s160-iptal-yollari-250.test.mjs:207:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kilit DIŞINDAKİ tahsilat bağlıysa e-Arşiv iptali serbest (200): EDM'de iptal (CancelInvoice bir kez), bağ düşer
+    ok 3 - kilit DIŞINDAKİ tahsilat bağlıysa e-Arşiv iptali serbest (200): EDM'de iptal (CancelInvoice bir kez), bağ düşer
+      ---
+      duration_ms: 40.54229
+      type: 'test'
+      ...
+    # Subtest: kilit kaldırılınca e-Arşiv iptali serbest (EDM'de iptal); yeniden kilitleme çalışır ve öbür kilitli bağ yine korunur (EDM'ye gidilmeden)
+    not ok 4 - kilit kaldırılınca e-Arşiv iptali serbest (EDM'de iptal); yeniden kilitleme çalışır ve öbür kilitli bağ yine korunur (EDM'ye gidilmeden)
+      ---
+      duration_ms: 8.003751
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2d/taban/test/s160-iptal-yollari-250.test.mjs:227:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        e-Arşiv iptali (kilitsiz): 409 {"ok":false,"error":"Bu fatura zaten iptal edilmiş.","code":"invoice-cancelled"}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2d/taban/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2d/taban/test/s160-iptal-yollari-250.test.mjs:230:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 2 - S160 = A — e-Belge (e-Arşiv) iptal akışı: kilitli tahsilatın bağını düşüren iptal 409, EDM'ye hiç gidilmez
+  ---
+  duration_ms: 894.930967
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2d/taban/test/s160-iptal-yollari-250.test.mjs:152:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 10
+# suites 2
+# pass 3
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2459.455562

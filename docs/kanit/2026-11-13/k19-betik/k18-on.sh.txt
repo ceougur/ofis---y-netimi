@@ -1,0 +1,58 @@
+#!/bin/bash
+# Ana oturum: KÂHİN PAKETİ (cari kâhini bakımı 17 + 18 [+ mobil yazma kâhini bakımı 2]) — ÖN KONTROL / ADAY ÖNCESİ (kâhin ağacımda: TABAN + KDAL; ürün = TABAN).
+# Çağrı: TABAN=<dal> KDAL=<kâhin dalı> flock -s -n olcum.lock timeout 7000 bash k18-on.sh   (TABAN varsayılanı çalışma dalı; KDAL varsayılanı mobil yazma kâhini bakımı 2 dalı — cari kâhini bakımı 17 + 18'i içerir)
+# KOŞUCU EŞLEMESİ burada işlenir (kart_tahsilat adımının fazlasiniAvansYaz alanı → isteğin overpay alanı) ve sınama commit'i olur.
+# Liste yeniden üretimi + fark dökümü, kâhin ↔ program (cari, UTC), mobil yazma kâhininin kabul dosyası yeniden üretimi + farkı + öz testi + kâhin ↔ program.
+# Hata durdurmaz (kurulum dışında); her adımın çıkışı yazılır. Sonunda ağaç commit'siz değişiklikle kalır (liste + kabul) — aday betiği yeniden dallandırır.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=$S/kahin8y-ag; K=$S/k18-on-kanit; TABAN=${TABAN:-claude/epic-thompson-w0lc2l}; KDAL=${KDAL:-worktree-agent-ae84e826635f4eb38}; L=test/bagimsiz/cari/YAPIM-ASAMASI.json; MK=test/bagimsiz/mobil-yazma
+export KANIT_DIR=$K HUKUK_LICENSE_URL=http://127.0.0.1:9 PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194
+G="git -c user.name=ana -c user.email=ana@yerel"
+mkdir -p $K || exit 1
+cd $W || exit 1
+[ -z "$(git status -s | grep -v node_modules)" ] || { echo "kâhin ağacı temiz değil"; git status -s | head -5; exit 1; }
+git checkout -q -B sinama-k18 $TABAN || exit 1
+$G merge -q --no-ff --no-verify -m "SINAMA: + kâhin paketi (gönderilmez)" $KDAL > $K/merge.out 2>&1 || { echo "birleşim çakıştı"; git status -s | grep -E '^(UU|AA)' | head; exit 1; }
+[ -e node_modules ] || ln -s /home/user/ofis---y-netimi/node_modules node_modules
+echo "başladı $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg) · ağaç $(git rev-parse --short HEAD) · ana dalla ürün farkı (kâhin + kanıt dışında BOŞ olmalı): [$(git diff $TABAN --name-only -- . ':!docs' ':!test/bagimsiz/cari' | tr '\n' ' ')]"
+python3 -I - test/bagimsiz/cari/kos.mjs <<'PY' || exit 1
+import sys
+p=sys.argv[1]; s=open(p,encoding='utf-8').read()
+x='{ kind: "in", amount: tlMetin(kurusOf(a.tutar)), date: t, method: "cash", cashForce: true, similarOk: true }));'
+assert s.count(x)>=1, s.count(x)
+i=s.index('case "kart_tahsilat": {'); j=s.index(x,i); assert j-i<1500, j-i
+y='{ kind: "in", amount: tlMetin(kurusOf(a.tutar)), date: t, method: "cash", cashForce: true, similarOk: true, ...(a.fazlasiniAvansYaz ? { overpay: true } : {}) }));'
+s=s[:j]+y+s[j+len(x):]
+s=s.replace("// bakım 6 eşlemesi (yalnız eşleme):","// bakım 17 eşlemesi (yalnız eşleme): adımın fazlasiniAvansYaz alanı = 'Kalanı Aşan Tutar' sorusuna 'Fazlasını Avans Yaz' yanıtı → isteğin overpay alanı; alan yoksa istek eskisi gibi (program kalanı aşan tutarı reddeder).\n          // bakım 6 eşlemesi (yalnız eşleme):",1)
+open(p,'w',encoding='utf-8').write(s)
+PY
+python3 -I $S/k18-surucu-esle.py test/bagimsiz/mobil-yazma/program-surucu.mjs || exit 1
+node --check test/bagimsiz/mobil-yazma/program-surucu.mjs || exit 1
+git add test/bagimsiz/cari/kos.mjs test/bagimsiz/mobil-yazma/program-surucu.mjs && $G commit -q --no-verify -m "SINAMA: koşucu + sürücü eşlemeleri — fazlasiniAvansYaz → overpay; stok_iade (gönderilmez)" || exit 1
+git diff HEAD~1 --stat | tail -1
+cp $L $K/liste-oncesi.json || exit 1
+TZ=UTC timeout 3000 node test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz > $K/liste-uret.out 2>&1; echo "liste üretimi çıkış $?"; tail -3 $K/liste-uret.out | cut -c1-260
+cp $L $K/liste-aday.json
+python3 -I - $K/liste-oncesi.json $K/liste-aday.json <<'PY'
+import json,sys
+from collections import Counter
+o={(e["senaryo"],e["anahtar"]):e for e in json.load(open(sys.argv[1]))["kayitlar"]}
+n={(e["senaryo"],e["anahtar"]):e for e in json.load(open(sys.argv[2]))["kayitlar"]}
+kap=[k for k in o if k not in n]; yeni=[k for k in n if k not in o]; deg=[k for k in n if k in o and (o[k].get("program"),o[k].get("beklenen"))!=(n[k].get("program"),n[k].get("beklenen"))]
+print(f"liste farkı: önceki {len(o)} → yeni {len(n)} · kapanan {len(kap)} · yeni {len(yeni)} · değeri değişen {len(deg)} · paketler {dict(Counter(e.get('paket') for e in n.values()))}")
+print("yeni kayıtların senaryoları:", dict(Counter(k[0] for k in yeni)))
+for k in yeni[:60]: print("  YENİ", k[0][:34], "|", k[1][:60], "| beklenen", str(n[k].get('beklenen'))[:40], "| program", str(n[k].get('program'))[:60])
+for k in kap[:10]: print("  KAPANAN", k[0][:34], "|", k[1][:60])
+PY
+TZ=UTC timeout 3000 node tools/kanit.mjs kos k18-on-kahin-cari-UTC -- npm run test:kahin-cari > $K/kahin-cari-UTC.out 2>&1; echo "kahin-cari UTC çıkış $? $(grep -E '^\[kanit\]' $K/kahin-cari-UTC.out | tail -1 | cut -c1-150) $(grep -E 'ÖZET' $K/kahin-cari-UTC.out | tail -1 | cut -c1-200)"
+cp $MK/kabul.json $K/kabul-oncesi.json
+timeout 1800 python3 -I -B $MK/senaryolar.py > $K/kabul-uret.out 2>&1; echo "mobil kabul üretimi çıkış $? :: $(tail -1 $K/kabul-uret.out | cut -c1-200)"
+echo "mobil kabul dosyası değişti mi: $(git status -s -- $MK | tr '\n' ' ')"
+python3 -I -B docs/kanit/2026-11-13/kahinmobil2/arac/kabul-fark.py $K/kabul-oncesi.json $MK/kabul.json $K/kabul-fark-dokum.json > $K/kabul-fark.out 2>&1; echo "kabul farkı çıkış $? :: $(tail -4 $K/kabul-fark.out | cut -c1-220 | tr '\n' '|')"
+TZ=UTC timeout 1800 node tools/kanit.mjs kos k18-on-mobil-oz-UTC -- python3 -I -B $MK/kahin_test.py > $K/mobil-oz-UTC.out 2>&1; echo "mobil öz test UTC çıkış $? :: $(tail -1 $K/mobil-oz-UTC.out | cut -c1-170)"
+timeout 3000 node tools/kanit.mjs kos k18-on-kahin-mobil-yazma -- npm run test:kahin-mobil-yazma -- --haric E02-es-havale-pos-mobil,E02-es-havale-pos-masaustu > $K/mobil-yazma.out 2>&1; echo "kâhin ↔ program (mobil yazma) çıkış $? :: $(tail -1 $K/mobil-yazma.out | cut -c1-200)"
+for tz in UTC Europe/Istanbul; do m=${tz//\//-}
+  TZ=$tz timeout 1800 node tools/kanit.mjs kos k18-on-cari-oz-$m -- python3 -I -B test/bagimsiz/cari/oz-test.py > $K/cari-oz-$m.out 2>&1; echo "cari öz test $tz çıkış $? :: $(grep -E '^\[kanit\]' $K/cari-oz-$m.out | tail -1 | cut -c1-130)"
+done
+TZ=Europe/Istanbul timeout 3000 node tools/kanit.mjs kos k18-on-kahin-cari-Ist -- npm run test:kahin-cari > $K/kahin-cari-Ist.out 2>&1; echo "kahin-cari Europe/Istanbul çıkış $? $(grep -E '^\[kanit\]' $K/kahin-cari-Ist.out | tail -1 | cut -c1-150) $(grep -E 'ÖZET' $K/kahin-cari-Ist.out | tail -1 | cut -c1-170)"
+echo "bitti $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg) · ağaç durumu (commit'siz; sonra sıfırlanır): $(git status -s | grep -v node_modules | wc -l) dosya"

@@ -1,0 +1,11 @@
+1. önceki yılın sonuç hesabı da aynı hesapta kalır (yıl yıl eşleme yok): YAKALANDI (çıkış 1, kırmızı 2)
+2. 671 ↔ 681 ters: YAKALANDI (çıkış 1, kırmızı 2)
+3. alt defter hesabı farkı fişe girer (dışlama yok): YAKALANDI (çıkış 1, kırmızı 1)
+4. Düzeltildi fiş toplamına bakmadan verilir: YAKALANDI (çıkış 1, kırmızı 1)
+5. sıra zorlaması (B16) kaldırılır: YAKALANDI (çıkış 1, kırmızı 1)
+6. kilit bugünken düğme etkin (neden yok): YAKALANDI (çıkış 1, kırmızı 1)
+7. ön izleme imzası denetlenmez: YAKALANDI (çıkış 1, kırmızı 1)
+8. fazla düzeltme görünmez: YAKALANDI (çıkış 1, kırmızı 1)
+9. kaynak farkının işareti ters (donmuş − güncel): YAKALANDI (çıkış 1, kırmızı 4)
+10. kilit + 1 yerine kilit günü: YAKALANDI (çıkış 1, kırmızı 6)
+# mutasyon 10, yakalanan 10, kaçan 0

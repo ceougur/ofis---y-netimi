@@ -1,0 +1,92 @@
+// ANA OTURUM — BİRLEŞİK TUR 8 + 8b EKRAN YÜRÜYÜŞÜ (Ç5-B yürüyüşünden; iadeli kart + Vade Takip'in altı hazır aralığı eklendi) (öz denetim 2, 11.11.2026; anayasa "kalite çıtası"): günlük iş akışı kullanıcı gözüyle; her adımda ekran görüntüsü + ekrandaki sayılar.
+// Kurulum programın API'siyle, bakış ve iki işlem (kart tahsilatı, taksit ekleme) EKRANDAN. Kullanım: ROOT=<kod kökü> node yuruyus.mjs
+import fs, { mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+process.env.HUKUK_LICENSE_URL = "http://127.0.0.1:9";
+const ROOT = process.env.ROOT;
+const imp = rel => import(pathToFileURL(path.join(ROOT, rel)).href);
+const { chromium } = await import(pathToFileURL(path.join(ROOT, "node_modules/playwright/index.mjs")).href);
+const { createApp } = await imp("server/app.mjs");
+const { createClient, installPageClock } = await imp("test/helpers.mjs");
+const { escClose } = await imp("test/e2e/esc-kapat.mjs");
+const OUT = process.env.OUT;
+const PASS = "Prova-Admin-2026!";
+const TODAY = "2026-06-15";
+const NOW = `${TODAY}T12:00:00+03:00`;
+const day = o => { const d = new Date(`${TODAY}T00:00:00Z`); d.setUTCDate(d.getUTCDate() + o); return d.toISOString().slice(0, 10); };
+const MODAL = ".hof-modal-backdrop.is-visible";
+const TOP = `${MODAL}:nth-last-child(1 of ${MODAL})`;
+const unwrap = r => (r.data && typeof r.data === "object" && "ok" in r.data ? (r.data.ok ? r.data.data : r.data) : r.data);
+const must = async (label, p) => { const r = await p; if (r.status !== 200) throw new Error(`${label}: ${r.status} ${JSON.stringify(r.data).slice(0, 300)}`); return unwrap(r); };
+const note = (...a) => console.log(...a);
+const root = mkdtempSync(path.join(tmpdir(), "yuruyus-ikikart-"));
+const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, now: NOW, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0", HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f51" } });
+const { port } = await app.listen(0, "127.0.0.1");
+const BASE = `http://127.0.0.1:${port}`;
+const api = createClient(BASE);
+const browser = await chromium.launch();
+let page = null; let n = 0;
+const shot = async name => { n += 1; const f = path.join(OUT, `${String(n).padStart(2, "0")}-${name}.png`); await page.screenshot({ path: f }).catch(() => null); return f; };
+const closeAll = async () => { for (let i = 0; i < 6 && (await page.$(MODAL)); i += 1) { await escClose(page); await page.waitForTimeout(250); } };
+const text = sel => page.$$eval(sel, ns => ns.map(x => x.textContent.replace(/\s+/g, " ").trim()));
+const step = async (title, fn) => { note(`\n■ ${title}`); try { await fn(); } catch (e) { note(`  ✗ ADIM YARIDA: ${String(e?.message || e).split("\n")[0]}`); await shot(`hata`); await closeAll().catch(() => null); } };
+try {
+  await api.login("admin", PASS);
+  await must("banka", api.post("/api/workspace/bank/setup/dismiss", {}));
+  // KÂHİN GÖZLEMİ (bakım 18, d46 R2'nin ilk yedi adımı): Borç 1.000 + Borç 200 → Mevcut Borç kartı 1.000 (2 taksit) + Mevcut Borç kartı 200 (1 taksit) → büyük karta 300 → küçük karta 300 'Fazlasını Avans Yaz'
+  const a = await must("cari", api.post("/api/workspace/accounts", { name: "İki Kartlı Örnek", type: "customer", registeredOn: "2026-03-01", phone: "0500 260 77 01" }));
+  const entry = body => must("hareket", api.post(`/api/workspace/accounts/${a.id}/entries`, { method: "cash", cashForce: true, ...body }));
+  await entry({ kind: "debt", amount: "1000", date: "2026-03-01" });
+  await entry({ kind: "debt", amount: "200", date: "2026-03-02" });
+  const k1 = await must("kart 1", api.post("/api/workspace/plans", { name: a.name, registeredOn: "2026-03-15", total: "1000", accountId: a.id, mode: "auto", count: 2, firstDue: "2026-04-01", coversBalance: true }));
+  const k2 = await must("kart 2", api.post("/api/workspace/plans", { name: a.name, registeredOn: "2026-03-16", total: "200", accountId: a.id, mode: "auto", count: 1, firstDue: "2026-07-01", coversBalance: true }));
+  const pay = (k, amount, date, extra = {}) => api.post(`/api/workspace/plans/${k.id}/entries`, { kind: "in", amount, date, method: "cash", cashForce: true, similarOk: true, ...extra });
+  const r1 = await pay(k1, "300", "2026-04-05"); note(`büyük karta 300: ${r1.status}`);
+  const r2 = await pay(k2, "300", "2026-04-06"); note(`küçük karta 300 (seçeneksiz): ${r2.status} ${JSON.stringify(r2.data).slice(0, 160)}`);
+  const r3 = await pay(k2, "300", "2026-04-06", { overpay: true }); note(`küçük karta 300 'Fazlasını Avans Yaz': ${r3.status}`);
+  if (r1.status !== 200 || r3.status !== 200) throw new Error("kurulum yanıtı 200 değil");
+  const acc = await must("cari oku", api.get(`/api/workspace/accounts/${a.id}`));
+  note(`API: bakiye ${acc.balance ?? acc.account?.balance} · kartlar ${JSON.stringify((acc.plans || []).map(p => ({ total: p.total, paid: p.paid ?? p.paidTotal, remaining: p.remaining })))}`);
+  const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: "tr-TR", deviceScaleFactor: 1 });
+  page = await context.newPage();
+  await installPageClock(page, app.config.now);
+  const errors = [];
+  page.on("pageerror", e => errors.push(`pageerror ${e.message}`));
+  await page.goto(`${BASE}/`);
+  await page.fill("#hof-auth input[name=username]", "admin");
+  await page.fill("#hof-auth input[name=password]", PASS);
+  await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
+  await page.waitForFunction(() => Boolean(window.HOF?.plans?.open && window.HOF?.accounts?.open && window.HOF?.dues), null, { timeout: 60000 });
+  await page.waitForTimeout(1000);
+  await closeAll();
+  for (const [k, label] of [[k1, "buyuk-kart"], [k2, "kucuk-kart"]]) {
+    await step(`Kart penceresi: ${label}`, async () => {
+      await page.evaluate(x => window.HOF.plans.open(x), k.id); await page.waitForTimeout(1500);
+      note(`  KPI: ${JSON.stringify((await text(`${TOP} .hof-kpi, ${TOP} [class*="kpi"]`)).slice(0, 4))}`);
+      const rows = await page.$$eval(`${TOP} tr[data-item]`, rs => rs.map(r => [...r.querySelectorAll("td")].map(td => td.textContent.replace(/\s+/g, " ").trim()).join(" | ")));
+      for (const r of rows) note(`     ${r}`);
+      await shot(`ikikart-${label}`); await closeAll();
+    });
+  }
+  await step("Cari kartı", async () => {
+    await page.evaluate(id => window.HOF.accounts.open(id), a.id); await page.waitForTimeout(1500);
+    note(`  göstergeler: ${JSON.stringify((await text(`${TOP} .hof-kpi, ${TOP} [class*="kpi"]`)).slice(0, 6))}`);
+    await shot("ikikart-cari"); await closeAll();
+  });
+  await step("Taksitler listesi (Tümü)", async () => {
+    await page.evaluate(() => window.HOF.plans.open()); await page.waitForSelector(`${TOP} [data-status]`, { timeout: 15000 });
+    await page.click(`${TOP} [data-status="all"]`); await page.waitForTimeout(700);
+    const rows = await page.$$eval(`${TOP} tr[data-plan]`, rs => rs.map(r => [...r.querySelectorAll("td")].map(td => td.textContent.replace(/\s+/g, " ").trim()).join(" | ")));
+    for (const r of rows) note(`     ${r}`);
+    note(`  liste göstergeleri: ${JSON.stringify((await text(`${TOP} .hof-kpi, ${TOP} [class*="kpi"]`)).slice(0, 6))}`);
+    await shot("ikikart-liste"); await closeAll();
+  });
+  note(`sayfa hatası: ${errors.length ? errors.slice(0, 5).join(" | ") : "yok"}`);
+  await context.close();
+} finally {
+  await browser.close().catch(() => null);
+  await app.close?.().catch(() => null);
+  fs.rmSync(root, { recursive: true, force: true });
+}

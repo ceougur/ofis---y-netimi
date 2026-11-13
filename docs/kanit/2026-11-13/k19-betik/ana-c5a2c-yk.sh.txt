@@ -1,0 +1,29 @@
+#!/bin/bash
+# Ana oturum: Ç5-A TUR 2c — yeni testlerin YENİDEN KOŞUSU (iki TZ) + TABAN KIRMIZISI + mutasyon + ekran senaryoları (ders 7, 16, 23, 38).
+# Yeni kod = tur 2c dalının ucu (kendi kopyam ana-c5a2c/yeni); taban = c5a2c-taban (kendi kopyam ana-c5a2c/taban); mutasyon kopyası ana-c5a2c/mut.
+# Eski sürüm etiketi isteyen testler için depo erişimi GIT_DIR ile. Çağrı: flock -s -n olcum.lock timeout 6000 bash ana-c5a2c/yk.sh
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+R=/home/user/ofis---y-netimi; K=$S/ana-c5a2c/kanit; Y=$S/ana-c5a2c/yeni; M=$S/ana-c5a2c/mut; TB=$S/ana-c5a2c/taban; A=worktree-agent-abcc7bb2b583ce32f
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194 GIT_DIR=$R/.git
+say() { grep -E "^# (tests|pass|fail|cancelled|skipped)" "$1" | tr '\n' ' '; }
+echo "başladı $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg)"
+for c in "$Y $A" "$M $A" "$TB c5a2c-taban"; do set -- $c; if [ ! -d $1 ]; then mkdir -p $1 && git -C $R archive $2 ':!docs/kanit' | tar -x -C $1 && ln -s $R/node_modules $1/node_modules || exit 1; fi; done
+T="test/acilis-olabilir-250.test.mjs test/acilis-eslestirme-250.test.mjs test/acilis-duzeni-v249-250.test.mjs"
+for t in $T; do [ -f $TB/$t ] && { echo "taban kopyasında $t ZATEN var — beklenmedik"; exit 1; }; done
+cd $Y || exit 1
+for tz in UTC Europe/Istanbul; do m=${tz//\//-}
+  TZ=$tz timeout 1500 node --disable-warning=ExperimentalWarning --test --test-concurrency=1 $T > $K/yeni-$m.out 2>&1; echo "YENİ üç test dosyası $tz çıkış $? $(say $K/yeni-$m.out)"
+done
+for s in senaryo-acilis-olabilir-250 senaryo-acilis-eslestirme-250; do
+  timeout 900 node test/e2e/$s.mjs > $K/yeni-$s.out 2>&1; echo "YENİ $s çıkış $? :: $(tail -2 $K/yeni-$s.out | tr '\n' ' ' | cut -c1-200)"
+  DEPO=$TB timeout 900 node test/e2e/$s.mjs > $K/taban-$s.out 2>&1; echo "TABAN $s (DEPO=taban) çıkış $? :: $(tail -2 $K/taban-$s.out | tr '\n' ' ' | cut -c1-200)"
+  grep -E "✗|waiting for" $K/taban-$s.out | head -3 | cut -c1-200
+done
+for t in $T; do cp $Y/$t $TB/$t || exit 1; done
+(cd $TB && TZ=UTC timeout 1500 node --disable-warning=ExperimentalWarning --test --test-concurrency=1 $T > $K/taban-test.out 2>&1; echo "TABAN üç test dosyası çıkış $? $(say $K/taban-test.out)")
+awk '/^    not ok [0-9]/{t=$3} /^      (expected|actual|error):/{print t": "$0}' $K/taban-test.out | head -24 | cut -c1-160
+for t in $T; do rm $TB/$t; done
+cd $Y || exit 1
+timeout 2400 node test/acilis-olabilir-250-mutasyon.mjs --kopya $M > $K/mut-olabilir.out 2>&1; echo "MUTASYON olabilir çıkış $? :: $(tail -2 $K/mut-olabilir.out | tr '\n' ' ' | cut -c1-300)"
+timeout 2400 node test/acilis-eslestirme-250-mutasyon.mjs --kopya $M > $K/mut-eslestirme.out 2>&1; echo "MUTASYON eşleştirme çıkış $? :: $(tail -2 $K/mut-eslestirme.out | tr '\n' ' ' | cut -c1-300)"
+echo "bitti $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg)"

@@ -599,11 +599,12 @@ async function kos(senaryo) {
           break;
         }
         case "kart_tahsilat": {
+          // bakım 17 eşlemesi (yalnız eşleme): adımın fazlasiniAvansYaz alanı = 'Kalanı Aşan Tutar' sorusuna 'Fazlasını Avans Yaz' yanıtı → isteğin overpay alanı; alan yoksa istek eskisi gibi (program kalanı aşan tutarı reddeder).
           // bakım 6 eşlemesi (yalnız eşleme): Taksitler'den açılan kartın (kart_ac) Taksit Tahsilatı — kart kimliği ids.kart'tan; Tablodan Aktar kartı kayıt anahtarıyla (eskisi gibi)
           const kartId = ids.kart[a.kayit]?.id;
           const planlar = kartId ? [] : (await api("GET", "/api/workspace/plans")).data?.plans || [];
           const pl = kartId ? { id: kartId } : planlar.find(x => x.caseKey === ids.anahtar[a.kayit]);
-          durum(a, await api("POST", `/api/workspace/plans/${pl?.id}/entries`, { kind: "in", amount: tlMetin(kurusOf(a.tutar)), date: t, method: "cash", cashForce: true, similarOk: true }));
+          durum(a, await api("POST", `/api/workspace/plans/${pl?.id}/entries`, { kind: "in", amount: tlMetin(kurusOf(a.tutar)), date: t, method: "cash", cashForce: true, similarOk: true, ...(a.fazlasiniAvansYaz ? { overpay: true } : {}) }));
           break;
         }
         case "geri_al": {

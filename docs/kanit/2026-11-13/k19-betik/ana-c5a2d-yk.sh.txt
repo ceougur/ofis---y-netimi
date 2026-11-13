@@ -1,0 +1,23 @@
+#!/bin/bash
+# Ana oturum: Ç5-A TUR 2d — yeni / genişleyen testlerin YENİDEN KOŞUSU (iki TZ) + S160 ek testinin TABAN KIRMIZISI (c5a2-taban) + sekiz mutant (ders 7, 16, 23, 38).
+# Çağrı: flock -s -n olcum.lock timeout 6000 bash ana-c5a2d/yk.sh
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+R=/home/user/ofis---y-netimi; K=$S/ana-c5a2d/kanit; Y=$S/ana-c5a2d/yeni; M=$S/ana-c5a2d/mut; TB=$S/ana-c5a2d/taban; A=worktree-agent-ac4b7ba8396fbd29d
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 GIT_DIR=$R/.git
+say() { grep -E "^# (tests|pass|fail|cancelled|skipped)" "$1" | tr '\n' ' '; }
+echo "başladı $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg)"
+for c in "$Y $A" "$M $A" "$TB c5a2-taban"; do set -- $c; if [ ! -d $1 ]; then mkdir -p $1 && git -C $R archive $2 ':!docs/kanit' | tar -x -C $1 && ln -s $R/node_modules $1/node_modules || exit 1; fi; done
+cd $Y || exit 1
+for tz in UTC Europe/Istanbul; do m=${tz//\//-}
+  TZ=$tz timeout 1500 node --disable-warning=ExperimentalWarning --test --test-concurrency=3 test/kilit-izi-alanlar-250.test.mjs > $K/yeni-kilit-$m.out 2>&1; echo "YENİ kilit izi alanları $tz çıkış $? $(say $K/yeni-kilit-$m.out)"
+  TZ=$tz timeout 1500 node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/s160-iptal-yollari-250.test.mjs test/s160-kilitli-tahsilat-bagi-250.test.mjs > $K/yeni-s160-$m.out 2>&1; echo "YENİ S160 iki dosya $tz çıkış $? $(say $K/yeni-s160-$m.out)"
+  TZ=$tz timeout 1500 node --disable-warning=ExperimentalWarning --test test/kural-farki-duzeltme-250.test.mjs > $K/yeni-kural-$m.out 2>&1; echo "YENİ kural farkı $tz çıkış $? $(say $K/yeni-kural-$m.out)"
+done
+T=test/s160-iptal-yollari-250.test.mjs
+[ -f $TB/$T ] && { echo "taban kopyasında yeni test ZATEN var — beklenmedik"; exit 1; }
+cp $Y/$T $TB/$T || exit 1
+(cd $TB && TZ=UTC timeout 1500 node --disable-warning=ExperimentalWarning --test --test-concurrency=1 $T > $K/taban-s160.out 2>&1; echo "TABAN (c5a2-taban) S160 iptal yolları çıkış $? $(say $K/taban-s160.out)")
+awk '/^    not ok [0-9]/{t=$3} /^      (expected|actual):/{print t": "$0}' $K/taban-s160.out | head -16 | cut -c1-150
+rm $TB/$T
+python3 -I $S/ana-c5a2d/mutant.py $R/.claude/worktrees/agent-ac4b7ba8396fbd29d/docs/kanit/2026-11-13/c5a2d-betik/mutant.py $M $K
+echo "bitti $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg)"

@@ -1,0 +1,6 @@
+SIRA=Q · cari: {"refNo":"1","dueDays":0,"eInvoice":0,"waOptOut":0}
+  cari.plans[0]: {"refNo":"1","itemCount":3,"total":900}
+  kart: {"refNo":"1","total":900,"coversBalance":1,"accountRef":"1"}
+  taksit: {"dueDate":"2026-05-06","amount":300,"paid":300,"remaining":0,"ownPaid":0,"ownRemaining":300,"accountPaid":300}
+  taksit: {"dueDate":"2026-06-06","amount":300,"paid":0,"remaining":300,"ownPaid":0,"ownRemaining":300,"accountPaid":0}
+  taksit: {"dueDate":"2026-07-06","amount":300,"paid":0,"remaining":300,"ownPaid":0,"ownRemaining":300,"accountPaid":0}

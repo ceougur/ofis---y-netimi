@@ -1,0 +1,16 @@
+# Ana oturum: test/yapim-asamasi-kapisi.test.mjs — liste BOŞ durumunun gizli test kusuru (liste ilk kez boşaldı; 13.11).
+# Test paket aracını PATH'siz koşuyor (git yok) → araç listeyi commit'ten OKUYAMAZ ve doğru olarak 'okunamayan liste boş sayılmaz' der;
+# eski beklenti 'liste boşsa iletide YAPIM AŞAMASI geçmez' bu ortamda yanlıştı. Yeni beklenti: git yokken 'commit'ten okunamadı' iletisi ZORUNLU
+# (aracı 'okunamayanı boş say'a çeviren mutant kırmızı olur); listenin boşluğu aynı testin başındaki yapimAsamasiGate() ile doğrulanıyor.
+# Çağrı: python3 -I k19-kapi-testi-duzelt.py <ağaç>/test/yapim-asamasi-kapisi.test.mjs
+import sys
+p=sys.argv[1]; s=open(p,encoding='utf-8').read()
+a='    if (depo.ok) assert.doesNotMatch(r.stderr, /YAPIM AŞAMASI/);\n'
+assert s.count(a)==1, s.count(a)
+b=('    // Liste boşken: bu koşuda git YOK (PATH boş) → araç listeyi commit\'ten okuyamaz; okunamayan liste boş SAYILMAZ (ders 4) — ileti zorunlu, dolu liste iletisi ("boş değil") yok.\n'
+   '    if (depo.ok) { assert.match(r.stderr, /YAPIM AŞAMASI listesi commit\'ten okunamadı/); assert.doesNotMatch(r.stderr, /boş değil/); }\n')
+s=s.replace(a,b)
+t='it("depodaki liste doluysa (ya da okunamıyorsa) paket aracı anahtarı okumadan reddeder ve listeyi söyler; boşsa liste iletisi yok", () => {'
+assert s.count(t)==1
+s=s.replace(t,'it("depodaki liste doluysa (ya da okunamıyorsa) paket aracı anahtarı okumadan reddeder ve listeyi söyler; boşsa dolu liste iletisi yok, git yokken \'okunamadı\' der", () => {')
+open(p,'w',encoding='utf-8').write(s); print('düzeltildi')

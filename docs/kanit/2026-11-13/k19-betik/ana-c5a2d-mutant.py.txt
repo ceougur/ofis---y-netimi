@@ -1,0 +1,22 @@
+# Ana oturum: tur 2d İş 1 mutantlarının YENİDEN KOŞUSU — tanımlar ajanın betiğinden (MUTS listesi) AYNEN okunur; kendi kopyamda tek tek açılır, test koşulur, dosya geri yazılır.
+# Çağrı: python3 -I mutant.py <ajanın mutant.py'si> <kendi mutasyon kopyam> <çıktı klasörü>
+import ast, subprocess, sys, os, re
+src=open(sys.argv[1],encoding='utf-8').read(); M=sys.argv[2].rstrip('/')+'/'; K=sys.argv[3]
+tree=ast.parse(src); env={}
+for n in tree.body:
+    if isinstance(n,ast.Assign) and len(n.targets)==1 and isinstance(n.targets[0],ast.Name) and n.targets[0].id in ('INT','SC','MUTS'):
+        env[n.targets[0].id]=eval(compile(ast.Expression(n.value),'m','eval'),dict(env))
+MUTS=env['MUTS']; print('mutant sayısı',len(MUTS))
+e=dict(os.environ,HUKUK_LICENSE_URL='http://127.0.0.1:9',TZ='UTC',GIT_DIR='/home/user/ofis---y-netimi/.git')
+for m in MUTS:
+    ad,acik,dosya,eski,yeni=m[:5]
+    p=M+dosya; s=open(p,encoding='utf-8').read()
+    if s.count(eski)<1: print(ad,'UYGULANAMADI (desen yok)'); continue
+    open(p,'w',encoding='utf-8').write(s.replace(eski,yeni,1))
+    try:
+        r=subprocess.run(['timeout','900','node','--disable-warning=ExperimentalWarning','--test','--test-concurrency=3','test/kilit-izi-alanlar-250.test.mjs'],cwd=M,env=e,capture_output=True,text=True)
+    finally:
+        open(p,'w',encoding='utf-8').write(s)
+    open(f'{K}/mut-{ad}.out','w',encoding='utf-8').write(r.stdout+r.stderr)
+    g=lambda k:(re.findall(rf'^# {k} (\d+)',r.stdout,re.M) or ['?'])[-1]
+    print(f"{ad}: çıkış {r.returncode} · tests {g('tests')} pass {g('pass')} fail {g('fail')} · {acik[:70]}")

@@ -580,6 +580,27 @@ def _j1():
     return out
 
 
+# ═════════════════════════════════════════ K — 2.5.0 bakımı 2 (README "2.5.0 bakımı 2"; beklenenler ELLE — E05 / E41 / E43, kararların örnekleri)
+K_BEKLENEN = {51: ("E05-", "E41-", "E43-"), 62: ("E05-", "E41-", "E43-"), 63: ("E43-",)}
+
+
+@test("K1 bakım 2 mutantları DEĞERLE yakalanır: 51 (S154 A — Tahsil Edilen kart tutarını aşmaz) ve 62 (avanslı kartın Kalan'ı eksi) E05 / E41 / E43'te, 63 (S151 A / S158 B — "
+      "iade sayılır) E43'te; iki kanalda, öneri ve eşdeğer birleşimde")
+def _k1():
+    out = []
+    for n, onekler in sorted(K_BEKLENEN.items()):
+        for k in S.ELLE:
+            if not k["ad"].startswith(onekler):
+                continue
+            for p in (dict(kahin.ONERI), S.ESDEGER):
+                f = _deger_farki(S.model_kos(k["senaryo"], p, n), S.elle_beklenen(k, p))
+                if not f:
+                    out.append("%s [%s] mutant %d değerle yakalanmadı" % (k["ad"], kahin.birlesim_adi(p), n))
+                elif p == S.ESDEGER:
+                    out.append("bilgi: %s mutant %d: %d değer farkı (ör. %s)" % (k["ad"], n, len(f), f[0]))
+    return out
+
+
 # ═════════════════════════════════════════ G
 def _cli(*args):
     return subprocess.run([sys.executable, "-I", os.path.join(_BURASI, "kahin.py")] + list(args), capture_output=True, text=True, timeout=600)

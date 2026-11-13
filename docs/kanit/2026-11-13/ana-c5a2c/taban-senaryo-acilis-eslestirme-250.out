@@ -1,0 +1,83 @@
+(node:1099) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+■ Boş veri: 519 bakiyesi yok → pasif, neden görünür yazı; Ön İzleme ve Fişi Kaydet pasif
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 60000ms exceeded.
+Call log:
+[2m  - waiting for locator('#adm-opening-match-open') to be visible[22m
+
+    at openWindow (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/yeni/test/e2e/senaryo-acilis-eslestirme-250.mjs:78:14)
+    at async file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/yeni/test/e2e/senaryo-acilis-eslestirme-250.mjs:92:20
+    at async step (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/yeni/test/e2e/senaryo-acilis-eslestirme-250.mjs:48:5)
+    at async file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/yeni/test/e2e/senaryo-acilis-eslestirme-250.mjs:91:3
+
+■ Açılışlar girilir (Kasa, cari, tedarikçi, banka, stok) → 519 bakiyesi 6.300,00 Alacak, dökümü türlere göre
+  ✓ ön koşul: defterde 519 = −6.300 (-6300)
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 60000ms exceeded.
+Call log:
+[2m  - waiting for locator('#adm-opening-match-open') to be visible[22m
+
+    at openWindow (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/yeni/test/e2e/senaryo-acilis-eslestirme-250.mjs:78:14)
+    at async file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/yeni/test/e2e/senaryo-acilis-eslestirme-250.mjs:108:20
+    at async step (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/yeni/test/e2e/senaryo-acilis-eslestirme-250.mjs:48:5)
+    at async file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/yeni/test/e2e/senaryo-acilis-eslestirme-250.mjs:101:3
+
+■ Hedef satırları: 500 Alacak 4.000 + (Satır Ekle) 570 Alacak 1.000 → Ön İzleme: 519 Borç 5.000 kendiliğinden; fişten sonra 1.300,00 Alacak
+  ✗ beklenmeyen hata: locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible:nth-last-child(1 of .hof-modal-backdrop.is-visible)').locator('[data-match-row="0"] [data-match-amount]')[22m
+
+    at /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/yeni/test/e2e/senaryo-acilis-eslestirme-250.mjs:122:18
+    at step (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/yeni/test/e2e/senaryo-acilis-eslestirme-250.mjs:48:11)
+    at /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/yeni/test/e2e/senaryo-acilis-eslestirme-250.mjs:119:9
+
+■ Onay kutusu Tab + Boşluk; Fişi Kaydet → fiş yazıldı; Mizan'da 500 −4.000, 570 −1.000, 519 −1.300; Kasa / cari / banka / stok aynı
+  ✗ beklenmeyen hata: locator.focus: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible:nth-last-child(1 of .hof-modal-backdrop.is-visible)').locator('[data-match-preview]')[22m
+
+    at /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/yeni/test/e2e/senaryo-acilis-eslestirme-250.mjs:146:49
+    at step (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/yeni/test/e2e/senaryo-acilis-eslestirme-250.mjs:48:11)
+    at /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/yeni/test/e2e/senaryo-acilis-eslestirme-250.mjs:144:9
+
+■ Kalanı aşan tutar (2.000 > 1.300): ön izleme reddeder (ters bakiye), Fişi Kaydet pasif; yazılmış fiş listede
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 60000ms exceeded.
+Call log:
+[2m  - waiting for locator('#adm-opening-match-open') to be visible[22m
+
+    at openWindow (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/yeni/test/e2e/senaryo-acilis-eslestirme-250.mjs:78:14)
+    at async file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/yeni/test/e2e/senaryo-acilis-eslestirme-250.mjs:167:20
+    at async step (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/yeni/test/e2e/senaryo-acilis-eslestirme-250.mjs:48:5)
+    at async file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/yeni/test/e2e/senaryo-acilis-eslestirme-250.mjs:166:3
+
+■ Ters Kaydet → 519 geri gelir (−6.300); fiş listeden düşer
+  ✗ beklenmeyen hata: locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible:nth-last-child(1 of .hof-modal-backdrop.is-visible)').locator('[data-match-reverse]')[22m
+
+    at /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/yeni/test/e2e/senaryo-acilis-eslestirme-250.mjs:181:49
+    at step (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/yeni/test/e2e/senaryo-acilis-eslestirme-250.mjs:48:11)
+    at /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/yeni/test/e2e/senaryo-acilis-eslestirme-250.mjs:180:9
+
+■ Kilitli tarih: kilit 28.02 → fiş tarihi 15.02 seçilince pasif + neden; Ön İzleme pasif
+(node:1099) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 60000ms exceeded.
+Call log:
+[2m  - waiting for locator('#adm-opening-match-open') to be visible[22m
+
+    at openWindow (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/yeni/test/e2e/senaryo-acilis-eslestirme-250.mjs:78:14)
+    at async file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/yeni/test/e2e/senaryo-acilis-eslestirme-250.mjs:195:20
+    at async step (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/yeni/test/e2e/senaryo-acilis-eslestirme-250.mjs:48:5)
+    at async file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/yeni/test/e2e/senaryo-acilis-eslestirme-250.mjs:192:3
+
+■ Muhasebe rolü: Yönetim paneline giremez; uçlar 403
+  ✗ uç 403
+  ✓ Muhasebe: Açılış Eşleştirme düğmesi görünmez
+  ✓ sayfa hatası yok
+
+BAŞARISIZ: 3 denetim geçti, 8 başarısız.
+
+# tests 11
+# pass 3
+# fail 8

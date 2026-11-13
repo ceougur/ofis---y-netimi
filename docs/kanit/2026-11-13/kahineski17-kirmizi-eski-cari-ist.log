@@ -1,0 +1,66 @@
+  ✗ d45-c5-s159-s154-s162-s163.json adim:z5e:durum: elle "ok" · kâhin "ANAHTAR YOK"
+  ✗ d45-c5-s159-s154-s162-s163.json k1:cari:Z5:bakiye: elle -10000 · kâhin "ANAHTAR YOK"
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KA1:odenen: elle 130000 · kâhin "ANAHTAR YOK"
+  ✗ d45-c5-s159-s154-s162-s163.json adim:ka2b:durum: elle "ret" · kâhin "ok"
+  ✗ d45-c5-s159-s154-s162-s163.json k1:cari:A2:bakiye: elle 70000 · kâhin -10000
+  ✗ d45-c5-s159-s154-s162-s163.json k1:cari:A2:gecikmis: elle 70000 · kâhin 0
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KA2:odenen: elle 50000 · kâhin "ANAHTAR YOK"
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KA2:kalan: elle 70000 · kâhin 0
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KA2:taksit2:odenen: elle 10000 · kâhin 40000
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KA2:taksit3:odenen: elle 0 · kâhin 40000
+  ✗ d45-c5-s159-s154-s162-s163.json adim:ka6t:durum: elle YOK (tanımsız) · kâhin "ok"
+  ✗ d45-c5-s159-s154-s162-s163.json k1:cari:A6:bakiye: elle YOK (tanımsız) · kâhin 40000
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KB1:toplam: elle YOK (tanımsız) · kâhin 90000
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KB1:taksit1:odenen: elle YOK (tanımsız) · kâhin 0
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KB1:taksit2:odenen: elle YOK (tanımsız) · kâhin 0
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KB1:taksit3:odenen: elle YOK (tanımsız) · kâhin 0
+  ✗ d45-c5-s159-s154-s162-s163.json k1:cari:B1:gecikmis: elle YOK (tanımsız) · kâhin 30000
+  ✗ d45-c5-s159-s154-s162-s163.json k1:fatura:C1F:acik: elle YOK (tanımsız) · kâhin 60000
+  ✗ d45-c5-s159-s154-s162-s163.json k1:hareket:c1e1:kalan: elle YOK (tanımsız) · kâhin 50000
+  ✗ d45-c5-s159-s154-s162-s163.json k1:hareket:c1e2:kalan: elle YOK (tanımsız) · kâhin 40000
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KC1:odenen: elle YOK (tanımsız) · kâhin 0
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KC1:kalan: elle YOK (tanımsız) · kâhin 70000
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KC1:taksit1:odenen: elle YOK (tanımsız) · kâhin 0
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KC1:taksit2:odenen: elle YOK (tanımsız) · kâhin 0
+  ✗ d45-c5-s159-s154-s162-s163.json k1:cari:C1:gecikmis: elle YOK (tanımsız) · kâhin 80000
+  ✗ d45-c5-s159-s154-s162-s163.json k1:takvim:fatura:C1F: elle YOK (tanımsız) · kâhin {"amount": 60000, "direction": "in"}
+  ✗ d45-c5-s159-s154-s162-s163.json k1:fatura:C3F:acik: elle YOK (tanımsız) · kâhin 60000
+  ✗ d45-c5-s159-s154-s162-s163.json k1:hareket:c3e2:kalan: elle YOK (tanımsız) · kâhin 40000
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KC3:kalan: elle YOK (tanımsız) · kâhin 70000
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KC3:taksit1:odenen: elle YOK (tanımsız) · kâhin 0
+  ✗ d45-c5-s159-s154-s162-s163.json belirsiz kaydı yok: adım ka6t + SK-36 + KULLANICIYA SORULMALI
+  ✗ d45-c5-s159-s154-s162-s163.json belirsiz kaydı yok: kart KB1 + S162 = B
+  ✗ d45-c5-s159-s154-s162-s163.json belirsiz kaydı yok: cari C1 açık kalem dağılımı + S163 = C
+  ✗ d45-c5-s159-s154-s162-s163.json belirsiz kaydı yok: cari C3 açık kalem dağılımı + S163 = C
+d45-c5-s159-s154-s162-s163.json: 115 elle denetim, 34 kırmızı
+d30-c5-s101-bitti-kart.json: 138 elle denetim, 0 kırmızı
+  ✗ d42-c5-s140-s151-satis-karti-iade.json k1:kart:KT7:toplam: elle YOK (tanımsız) · kâhin 90000
+  ✗ d42-c5-s140-s151-satis-karti-iade.json k1:kart:KT7:taksit1:odenen: elle YOK (tanımsız) · kâhin 0
+  ✗ d42-c5-s140-s151-satis-karti-iade.json k1:kart:KT7:taksit2:odenen: elle YOK (tanımsız) · kâhin 0
+  ✗ d42-c5-s140-s151-satis-karti-iade.json k1:kart:KT7:taksit3:odenen: elle YOK (tanımsız) · kâhin 0
+  ✗ d42-c5-s140-s151-satis-karti-iade.json k1:kart:KT6:taksit1:odenen: elle YOK (tanımsız) · kâhin 30000
+  ✗ d42-c5-s140-s151-satis-karti-iade.json k1:kart:KT6:taksit2:odenen: elle YOK (tanımsız) · kâhin 0
+  ✗ d42-c5-s140-s151-satis-karti-iade.json k1:cari:T6:gecikmis: elle YOK (tanımsız) · kâhin 0
+  ✗ d42-c5-s140-s151-satis-karti-iade.json k1:cari:T7:gecikmis: elle YOK (tanımsız) · kâhin 60000
+  ✗ d42-c5-s140-s151-satis-karti-iade.json k1:kart:KT6:toplam: elle YOK (tanımsız) · kâhin 100000
+  ✗ d42-c5-s140-s151-satis-karti-iade.json belirsiz kaydı yok: kart KT7 + S162 = B
+  ✗ d42-c5-s140-s151-satis-karti-iade.json belirsiz kaydı yok: kart KT6 + SK-37
+d42-c5-s140-s151-satis-karti-iade.json: 77 elle denetim, 11 kırmızı
+  ✗ d43-c5-bilinen-sinir-sus15.json k1:kart:KU1:odenen: elle 110000 · kâhin "ANAHTAR YOK"
+  ✗ d43-c5-bilinen-sinir-sus15.json k1:kart:KU2:odenen: elle 60000 · kâhin "ANAHTAR YOK"
+d43-c5-bilinen-sinir-sus15.json: 40 elle denetim, 2 kırmızı
+  ✗ d44-c5-s155-s158.json adim:x12t:durum: elle "ok" · kâhin "ANAHTAR YOK"
+  ✗ d44-c5-s155-s158.json k1:cari:X12:bakiye: elle -10000 · kâhin "ANAHTAR YOK"
+  ✗ d44-c5-s155-s158.json k1:cari:X12:gecikmis: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d44-c5-s155-s158.json k1:kart:KY4:taksit1:odenen: elle YOK (tanımsız) · kâhin 30000
+  ✗ d44-c5-s155-s158.json k1:kart:KY4:taksit2:odenen: elle YOK (tanımsız) · kâhin 0
+  ✗ d44-c5-s155-s158.json k1:kart:KY4:taksit3:odenen: elle YOK (tanımsız) · kâhin 0
+  ✗ d44-c5-s155-s158.json k1:kart:KY4:toplam: elle YOK (tanımsız) · kâhin 90000
+  ✗ d44-c5-s155-s158.json k1:cari:Y4:gecikmis: elle YOK (tanımsız) · kâhin 30000
+  ✗ d44-c5-s155-s158.json belirsiz kaydı yok: kart KY4 + S162 = B
+d44-c5-s155-s158.json: 76 elle denetim, 9 kırmızı
+ESKİ KÂHİN KIRMIZISI: 56/446 elle denetim kırmızı, 390 aynı (beklenen: kırmızı > 0; her kırmızının eski değeri yukarıda)
+# tests 56
+# pass 56
+# fail 0
+56/56 denetim geçti

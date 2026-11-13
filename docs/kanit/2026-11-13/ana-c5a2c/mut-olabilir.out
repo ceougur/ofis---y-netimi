@@ -1,0 +1,8 @@
+1. toplu kararda listede olmayan kimlik atlanır (yarım toplu karar): YAKALANDI (çıkış 1, kırmızı 2)
+2. geri al ret yazar: YAKALANDI (çıkış 1, kırmızı 1)
+3. kilitli dönemdeki aday sayısı tarihe bakmaz: YAKALANDI (çıkış 1, kırmızı 2)
+4. sayfalama başlangıcı yok sayılır: YAKALANDI (çıkış 1, kırmızı 1)
+5. toplu karar yetkisi görme yetkisine düşer: YAKALANDI (çıkış 1, kırmızı 1)
+6. toplu karar yinelenen kimliği iki kez sayar: YAKALANDI (çıkış 1, kırmızı 1)
+7. Kural Farkı nedeni aday ekranının yerini söylemez (eski metin): YAKALANDI (çıkış 1, kırmızı 1)
+# mutasyon 7, yakalanan 7, kaçan 0

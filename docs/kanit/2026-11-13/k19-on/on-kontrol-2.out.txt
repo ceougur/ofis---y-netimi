@@ -1,0 +1,30 @@
+başladı 22:31:12 yük 1.33 1.89 2.04 · ağaç fc476d80 · ana dalla ürün farkı (kâhin + kanıt dışında BOŞ olmalı): [test/bagimsiz/mobil-yazma/README.md test/bagimsiz/mobil-yazma/kabul.json test/bagimsiz/mobil-yazma/kahin.py test/bagimsiz/mobil-yazma/kahin_test.py test/bagimsiz/mobil-yazma/senaryolar.py ]
+sürücü eşlemesi işlendi
+ 2 files changed, 10 insertions(+), 2 deletions(-)
+liste üretimi çıkış 0
+  − kapanan: d43-c5-bilinen-sinir-sus15 k1:takvim:fatura:U2F · program {"amount":60000,"direction":"in"} / kâhin {"amount":40000,"direction":"in"} · paket eşleme
+  − kapanan: d44-c5-s155-s158 k1:kart:KY4:taksit3:odenen · program "okunamadı" / kâhin 0 · paket Ç5-B tur 2
+  − kapanan: d44-c5-s155-s158 k1:kart:KY4:toplam · program 60000 / kâhin 90000 · paket Ç5-B tur 2
+liste farkı: önceki 31 → yeni 0 · kapanan 31 · yeni 0 · değeri değişen 0 · paketler {}
+yeni kayıtların senaryoları: {}
+  KAPANAN d42-c5-s140-s151-satis-karti-iade | k1:cari:T6:gecikmis
+  KAPANAN d42-c5-s140-s151-satis-karti-iade | k1:kart:KT1:toplam
+  KAPANAN d42-c5-s140-s151-satis-karti-iade | k1:kart:KT3:taksit2:odenen
+  KAPANAN d42-c5-s140-s151-satis-karti-iade | k1:kart:KT3:toplam
+  KAPANAN d42-c5-s140-s151-satis-karti-iade | k1:kart:KT4:toplam
+  KAPANAN d42-c5-s140-s151-satis-karti-iade | k1:kart:KT6:toplam
+  KAPANAN d42-c5-s140-s151-satis-karti-iade | k1:kart:KT7:taksit3:odenen
+  KAPANAN d42-c5-s140-s151-satis-karti-iade | k1:kart:KT7:toplam
+  KAPANAN d42-c5-s140-s151-satis-karti-iade | k1:kart:KT8:toplam
+  KAPANAN d42-c5-s140-s151-satis-karti-iade | k1:takvim:cariToplam:T6
+kahin-cari UTC çıkış 0 [kanit] k18-on-kahin-cari-UTC: GEÇTİ · çıkış 0 · 17136/17136 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 3074dce +1 değişmiş dosya ÖZET [2.5.0]: 92 senaryo, 17136 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 0 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: yok; 0 denetim + 0 okuma 
+mobil kabul üretimi çıkış 0 :: # kabul.json yazıldı
+mobil kabul dosyası değişti mi: 
+kabul farkı çıkış 0 :: adımı değişen: []|açıklaması değişen: []|üst alan değişen: []|toplam değişen 0, BEKLENMEYEN 0|
+mobil öz test UTC çıkış 1 :: [kanit] k18-on-mobil-oz-UTC: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 161/162 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit 3074dce +1 d
+kâhin ↔ program (mobil yazma) çıkış 0 :: [kanit] k18-on-kahin-mobil-yazma: GEÇTİ · çıkış 0 · 56/56 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 3074dce +1 değişmiş dosya +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v
+cari öz test UTC çıkış 0 :: [kanit] k18-on-cari-oz-UTC: GEÇTİ · çıkış 0 · 6678/6678 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 3074dce +1 de
+cari öz test Europe/Istanbul çıkış 0 :: [kanit] k18-on-cari-oz-Europe-Istanbul: GEÇTİ · çıkış 0 · 6678/6678 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 3
+kahin-cari Europe/Istanbul çıkış 0 [kanit] k18-on-kahin-cari-Ist: GEÇTİ · çıkış 0 · 17136/17136 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 3074dce +1 değişmiş dosya ÖZET [2.5.0]: 92 senaryo, 17136 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 0 yapım aşaması (YAPIM-ASAMASI.json; paketlere g�
+bitti 22:56:14 yük 2.64 1.84 1.73 · ağaç durumu (commit'siz; sonra sıfırlanır): 1 dosya
+zincir çıkış 0

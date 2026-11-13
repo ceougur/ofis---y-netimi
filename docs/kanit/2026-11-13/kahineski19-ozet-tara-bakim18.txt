@@ -1,0 +1,53 @@
+c6b-cari-vade-dogrulama | k1:projeksiyon:cariToplam:H | 20000 | S149,S149 = C
+c6b-cari-vade-dogrulama | k2:projeksiyon:cariToplam:H | 20000 | S149,S149 = C
+c6b-cari-vade-dogrulama | k3:projeksiyon:cariToplam:H | 20000 | S149,S149 = C
+d12-c5-s69-soz-gunu-ve-gecmis | k1:projeksiyon:cariToplam:F2 | 45000 | S149,S149 = C
+d30-c5-s101-bitti-kart | k1:cari:Q1:acikEsitBakiye | false | S144,S144 = C,S154 = B
+d30-c5-s101-bitti-kart | k1:cari:Q1:acikToplam | 0 | S144,S144 = C,S154 = B
+d30-c5-s101-bitti-kart | k1:cari:Q1:gecikmis | 0 | S144,S144 = C,S154 = B
+d30-c5-s101-bitti-kart | k1:cari:Q3:acikEsitBakiye | false | S144,S144 = C,S154 = B
+d30-c5-s101-bitti-kart | k1:cari:Q3:acikToplam | 0 | S144,S144 = C,S154 = B
+d30-c5-s101-bitti-kart | k1:cari:Q3:gecikmis | 0 | S144,S144 = C,S154 = B
+d33-c5-s102-s105-sinirlar | k1:cari:T12b:acikEsitBakiye | false | k1: cari T12b gecikmiş tutarı tanımsız (2.5.0 C16.4): net kuyruk kurulamıyor (karşı yönlü kalem / açık satır; yalın deği
+d33-c5-s102-s105-sinirlar | k1:cari:T12b:acikToplam | 0 | k1: cari T12b gecikmiş tutarı tanımsız (2.5.0 C16.4): net kuyruk kurulamıyor (karşı yönlü kalem / açık satır; yalın deği
+d42-c5-s140-s151-satis-karti-iade | k1:cari:T6:acikEsitBakiye | false | S162 = B,S166,S166 = B
+d42-c5-s140-s151-satis-karti-iade | k1:cari:T6:acikToplam | 0 | S162 = B,S166,S166 = B
+d42-c5-s140-s151-satis-karti-iade | k1:cari:T7:acikEsitBakiye | true | S162,S162 = B
+d42-c5-s140-s151-satis-karti-iade | k1:cari:T7:acikToplam | 60000 | S162,S162 = B
+d42-c5-s140-s151-satis-karti-iade | k1:projeksiyon:cariToplam:T6 | 30000 | S162 = B,S166,S166 = B
+d42-c5-s140-s151-satis-karti-iade | k1:takvim:cariToplam:T6 | 0 | S162 = B,S166,S166 = B
+d42-c5-s140-s151-satis-karti-iade | k1:vadeTakip:cariToplam:T6 | {"catal": [0, 30000]} | S162 = B,S166,S166 = B
+d43-c5-bilinen-sinir-sus15 | k1:cari:U2:gecikmis | 40000 | S141,S141 = C
+d43-c5-bilinen-sinir-sus15 | k1:cari:U4:acikEsitBakiye | true | S149,S149 = C
+d43-c5-bilinen-sinir-sus15 | k1:cari:U4:acikToplam | 15000 | S149,S149 = C
+d43-c5-bilinen-sinir-sus15 | k1:cari:U6:acikEsitBakiye | true | S149,S149 = C
+d43-c5-bilinen-sinir-sus15 | k1:cari:U6:acikToplam | 15000 | S149,S149 = C
+d43-c5-bilinen-sinir-sus15 | k1:projeksiyon:cariToplam:U4 | 15000 | S149,S149 = C
+d43-c5-bilinen-sinir-sus15 | k1:projeksiyon:cariToplam:U6 | 15000 | S149,S149 = C
+d43-c5-bilinen-sinir-sus15 | k1:takvim:cariToplam:U4 | 15000 | S149,S149 = C
+d43-c5-bilinen-sinir-sus15 | k1:takvim:cariToplam:U6 | 15000 | S149,S149 = C
+d43-c5-bilinen-sinir-sus15 | k1:vadeTakip:cariToplam:U4 | 15000 | S149,S149 = C
+d43-c5-bilinen-sinir-sus15 | k1:vadeTakip:cariToplam:U6 | 15000 | S149,S149 = C
+d44-c5-s155-s158 | k1:cari:Y4:acikEsitBakiye | true | S162,S162 = B
+d44-c5-s155-s158 | k1:cari:Y4:acikToplam | 30000 | S162,S162 = B
+d45-c5-s159-s154-s162-s163 | k1:cari:B1:acikEsitBakiye | true | S162,S162 = B
+d45-c5-s159-s154-s162-s163 | k1:cari:B1:acikToplam | 60000 | S162,S162 = B
+d45-c5-s159-s154-s162-s163 | k1:cari:C1:acikEsitBakiye | true | S120,S163,S163 = C
+d45-c5-s159-s154-s162-s163 | k1:cari:C1:acikToplam | 150000 | S120,S163,S163 = C
+d45-c5-s159-s154-s162-s163 | k1:cari:C3:acikEsitBakiye | true | S120,S163,S163 = C
+d45-c5-s159-s154-s162-s163 | k1:cari:C3:acikToplam | 150000 | S120,S163,S163 = C
+d45-c5-s159-s154-s162-s163 | k1:cari:C3:gecikmis | 150000 | S120,S163,S163 = C
+d46-c5-s165-s118-sinir | k1:cari:Q7:acikEsitBakiye | false | S144,S144 = C,S154 = B
+d46-c5-s165-s118-sinir | k1:cari:Q7:acikToplam | 0 | S144,S144 = C,S154 = B
+d46-c5-s165-s118-sinir | k1:cari:Q7:gecikmis | 0 | S144,S144 = C,S154 = B
+d46-c5-s165-s118-sinir | k1:cari:Q8:acikEsitBakiye | false | S144,S144 = C,S154 = B
+d46-c5-s165-s118-sinir | k1:cari:Q8:acikToplam | 0 | S144,S144 = C,S154 = B
+d46-c5-s165-s118-sinir | k1:cari:Q8:gecikmis | 0 | S144,S144 = C,S154 = B
+toplam 45
+    14  S149,S149 = C
+    12  S144,S144 = C,S154 = B
+     6  S162,S162 = B
+     5  S162 = B,S166,S166 = B
+     5  S120,S163,S163 = C
+     2  k1: cari T12b gecikmiş tutarı tanımsız (2.5.0 C16.4): net kuyruk kurulamıyor (karşı yönlü kalem / açık satır; yalın deği
+     1  S141,S141 = C

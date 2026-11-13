@@ -1,0 +1,27 @@
+başladı 22:57:37 yük 1.59 1.70 1.69 · ağaç 3074dce1 · ana dalla ürün farkı (kâhin + kanıt + iki eşleme dışında BOŞ olmalı): [CLAUDE.md ]
+ön kontrolün bıraktığı liste: 0 kayıt
+mobil kabul üretimi çıkış 0 :: # kabul.json yazıldı
+kabul farkı çıkış 1 ::   File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8y-ag/docs/kanit/2026-11-13/kahinmobil2/arac/kabul-fark.py", line 50, in <module>|    json.dump(dokum, open(sys.argv[3], "w", encoding="utf-8"), ensure_ascii=False, indent=1, sort_keys=True)|                          ~~~~~~~~^^^|IndexError: list index out of range|
+mobil kabul dosyası değişti mi (BOŞ olmalı): []
+aday commit 69794c4d · temiz mi: 0
+liste 2. üretim çıkış 0 · fark (BOŞ olmalı): [] ESKİ LİSTEYLE FARK: yeni 0, kapanan 0, değeri değişen 0 (eski liste 0 kayıt → yeni 0)
+cari öz test UTC çıkış 0 :: [kanit] k19-cari-oz-UTC: GEÇTİ · çıkış 0 · 6678/6678 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 69794c4 +1 izlen
+mobil öz test UTC çıkış 0 :: [kanit] k19-mobil-oz-UTC: GEÇTİ · çıkış 0 · 162/162 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 69794c4 +1 izlenm
+cari öz test Europe/Istanbul çıkış 0 :: [kanit] k19-cari-oz-Europe-Istanbul: GEÇTİ · çıkış 0 · 6678/6678 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 6979
+mobil öz test Europe/Istanbul çıkış 0 :: [kanit] k19-mobil-oz-Europe-Istanbul: GEÇTİ · çıkış 0 · 162/162 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 69794
+ci.yml'deki kâhin adımı sayısı 10
+0 kahin-defter UTC :: [kanit] k19-kahin-defter-UTC: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 69794c4 +1 izlenmeyen � ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-J73YgZ
+0 kahin-defter Europe/Istanbul :: [kanit] k19-kahin-defter-Europe-Istanbul: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 69794c4 +1  ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-ldbsgY
+0 kahin-cari UTC :: [kanit] k19-kahin-cari-UTC: GEÇTİ · çıkış 0 · 17136/17136 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 69794c4 +1 izlenmeyen ÖZET [2.5.0]: 92 senaryo, 17136 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 0 yapım aşaması (YAPIM-ASAMASI.json; paketlere g�
+0 kahin-cari Europe/Istanbul :: [kanit] k19-kahin-cari-Europe-Istanbul: GEÇTİ · çıkış 0 · 17136/17136 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 69794c4 + ÖZET [2.5.0]: 92 senaryo, 17136 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 0 yapım aşaması (YAPIM-ASAMASI.json; paketlere g�
+0 kahin-tutar UTC :: [kanit] k19-kahin-tutar-UTC: GEÇTİ · çıkış 0 · 3559/3559 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 69794c4 +1 izlenmeyen  ÖZET: 3 tohum × 50 satır, 3559 denetim, 0 fark (BULGU 0), 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-tutar-qhvOcG
+0 kahin-ebelge-model UTC :: [kanit] k19-kahin-ebelge-model-UTC: GEÇTİ · çıkış 0 · 114/114 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 69794c4 +1 izlenm 
+0 kahin-ebelge-mutasyon UTC :: [kanit] k19-kahin-ebelge-mutasyon-UTC: GEÇTİ · çıkış 0 · 55/55 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 69794c4 +1 izlen 
+0 kahin-ebelge-senaryo UTC :: [kanit] k19-kahin-ebelge-senaryo-UTC: GEÇTİ · çıkış 0 · 27/27 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 69794c4 +1 izlenm 
+0 kahin-muhasebe-model UTC :: [kanit] k19-kahin-muhasebe-model-UTC: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 69794c4 +1 izle 
+0 kahin-muhasebe-mutasyon UTC :: [kanit] k19-kahin-muhasebe-mutasyon-UTC: GEÇTİ · çıkış 0 · 277/277 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 69794c4 +1 i 
+0 kahin-maliyet UTC :: [kanit] k19-kahin-maliyet-UTC: GEÇTİ · çıkış 0 · 41306/41306 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 69794c4 +1 izlenme 
+0 kahin-mobil-yazma UTC :: [kanit] k19-kahin-mobil-yazma-UTC: GEÇTİ · çıkış 0 · 56/56 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 69794c4 +1 izlenmeye 
+dört kapı testi çıkış 1 # tests 73 # pass 72 # fail 1 
+bitti 23:49:25 yük 2.24 3.12 3.34 · aday 69794c4d · temiz mi: 0
+zincir çıkış 0

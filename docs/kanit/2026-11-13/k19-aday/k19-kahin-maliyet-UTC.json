@@ -1,0 +1,32 @@
+{
+  "ad": "k19-kahin-maliyet-UTC",
+  "komut": "npm run test:kahin-maliyet",
+  "commit": "69794c4ddc4d49f376dfa97c6069094313364be6",
+  "dal": "sinama-k18",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T23:44:23.595Z",
+  "sure_sn": 129,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 41306,
+    "gecen": 41306,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../k19-aday-kanit/2026-11-13/k19-kahin-maliyet-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8y-ag",
+  "ham_cikti_sha256": "a52a9b6eccc8a535ba2aab3f586d335768ff646aba7918f015776cef346ab3f7",
+  "ham_cikti_bayt": 561
+}
