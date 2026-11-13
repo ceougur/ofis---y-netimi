@@ -862,3 +862,91 @@ KG-5'in kendisinden). Kâhin / tur 2 notu: Kural Farkı Düzeltme Fişi, `ledger
 8. Kapı ↔ süzgeç: kilitli satırda işaret değiştiren bir mağaza yazımı (testte) süzgeçte de "kilitli dönem" → tam kapı → 409 (eşdeğerlik ihlali yok).
 9. Mutantlar (testin dişi): işaretler izden çıkar; izde kimlik yerine yalnız sayı / toplam (dağılım kaybolur); karar gölgeyi yazmaz (meşru olayda yanlış alarm); açılışta / her taramada gölge
    durumdan kopyalanır (kapı dışı yazım yutulur) — hepsi kırmızı olmalı.
+
+## 16. Ç5-A tur 1f (kod ajanı, 13.11.2026; taban `c5a1f-taban` 2e257e21 = çalışma dalı ucu, tur 1e birleşimi d2d39258 içinde) — KODDAN ÖNCE yazıldı
+
+Kapsam (görev metni docs/devir/2.5.0-DEVAM/c5a1f-istem.txt; dar kontrol raporu docs/devir/2.5.0-DEVAM/dk-c5a1e-rapor.md G-1', DÜŞÜK-A; kaynak taraması
+docs/devir/2.5.0-DEVAM/c5a-turetme-girdileri-tarama.md; S146 = A): türetmenin okuduğu, kilit izinde OLMAYAN alanların kapı dışı değişikliği bulunur. Defter KURALLARI ve
+sayıları değişmez (yalnız TESPİT). Tur 1d'nin kararı (kural farkı sapma DEĞİL — `driftsOf`) ve tur 1e'nin girdileri (dört işaret + yükleme bağı / damgası, `opening_review_gate`)
+AYNEN kalır. Tur 2'nin işleri, istemci, kâhin KAPSAM DIŞI.
+
+### 16.1 Kanıt düzeneği (koşuldu; betikler ve ham çıktılar not defteri `c5a1f-is/`, kanıtı docs/kanit/2026-11-13/c5a1f-*)
+- Veri: v2.4.9'un GERÇEK koduyla API'den (`sablon.mjs`; ders 17, 23): banka hesabı + Kasa → Banka transferi, carili / carisiz çekler (biri kilitte karşılıksız, ikisi kilitte bankaya
+  tahsile verilmiş, biri tahsil edilmiş), cariye stok satışı + iade + peşin satış, stopajlı ve tevkifatlı alış faturası + satış faturası, taksit kartı (elle tahsilat + çekle
+  tahsilat), Excel'den kart (önceden ödenen = açılış taksit satırı), şüpheli alacak + sonrasında tahsilat; hepsi 01–09.10.2026, kilit 10.10.2026 (v2.4.9'da konur), bugün 20.10.2026.
+- (a) `alan.mjs`: güncel kodla açılış + dondurma; ayrı bağlantıyla TEK alan değişir; "canlı türetme değişti mi" = `ledger.build()` maddelerinin tarihi ≤ kilit satırlarının
+  (tarih | hesap | alt hesap | cari | borç | alacak) çoklu kümesi önce ↔ sonra (fark satır sayısı); ayrıca satır içi + arka plan taraması (bulgu, Mutabakat Günlüğü, zil).
+- (b) `mesru2.mjs`: kilitli tarihli satırlarda kapıdan geçen meşru yollar (yanıt kodu + sessiz mi + canlı türetme farkı).
+- Ölçümler Europe/Istanbul; kalıcı testler iki TZ.
+
+### 16.2 Alan tablosu (taban c5a1f-taban; "önce" = tabanda kapı dışı değişiklikte satır içi taramanın bulgusu / günlük / zil)
+| Alan | (a) kilitli canlı türetme değişir mi (betik: fark satırı) | (b) kilitli tarihli satırda meşru yazım (kaynak + betik) | önce: bulgu / günlük / zil | (c) seçilen yol | sınıf |
+|---|---|---|---|---|---|
+| cash_entries.transfer_id (temizle / koy) | EVET (2 / 2: 102 ↔ 770, 649 ↔ 102) | YOK (yalnız INSERT: transfer, Silinenler'den geri alma; kilitli tarihe INSERT / DELETE zaten izde) | gl:102 + bank:sub + bank:event + bank:transfer / 1 / 1 (başka denetim görüyor) | iz girdisi `cash_transfer_lock` | 1 |
+| account_entries.source ('cheque' → '') | EVET (2: 770 / 649.90 doğar) | YOK (yalnız INSERT) | **0 / 0 / 0** | iz girdisi `account_source_lock` | 1 |
+| account_entries.source_id (başka evrak; başka stok hareketi) | evrak: EVET (2) · stok: koşullu (0 — aynı nedenli hareket) | YOK | evrak: gl:101 + cheque:account / 1 / 1 · stok: stock:account / 1 / 1 | aynı girdi | 1 |
+| account_entries.doubtful_skip (0 → 1) | EVET (2: 128 → 120; yalnız şüpheli kaydı olan carinin tahsilatında) | YOK (cari hareketi düzenleme kilitte 409 — betik) | **0 / 0 / 0** | iz girdisi `account_doubtful_skip_lock` | 1 |
+| plan_entries.cheque_id (temizle) | EVET (2: 100 / 649.90) | YOK (yalnız INSERT; çekli satır düzenlenmez) | money:event / 1 / 1 | iz girdisi `plan_entries_bond_lock` | 1 |
+| plan_entries.opening (0 → 1; 1 → 0) | 0→1: EVET (2: 100 → 519) · yüklenen kartın açılış satırı 1 → 0: 0 (kart S127 ile eski kurala bağlı) | YOK | 0→1: **0 / 0 / 0** · 1→0: money:event / 1 / 1 | aynı girdi | 1 |
+| stock_moves.reason (cari satışı / peşin satış → 'preturn') | EVET (2 / 2: 600 → 153) | YOK (stok hareketi düzenleme kilitte 409) | **0 / 0 / 0** | iz girdisi `stock_reason_lock` | 1 |
+| invoices.gl_json (600 → 602; 770 → 760) | EVET (2 / 2) | YOK (taslakta yazılır; kesilmiş faturada kilit 409; numaralama yalnız açıklama) | **0 / 0 / 0** | iz girdisi `invoices_gl_lock` | 1 |
+| invoices.try_withheld / try_stoppage (+10 TL) | EVET (2 / 2: 360) | YOK | balance + invoice:try / 1 / 1 | aynı girdi | 1 |
+| cheque_collections.event_id (başka kaydın başlığı) | EVET (4: 101.01 / 101.02 tutarı 350 → 150) | YOK (yalnız INSERT; kapanış close_event_id'i yazar) | cheque:collections / 1 / 1 | iz girdisi `cheque_collections_event_lock` | 1 |
+| plans.created_at (Kayıt Tarihi boşken) | koşullu: yalnız `registered_on = ''` kartta (madde tarihi created_at'ın günü) | YOK — API boş Kayıt Tarihi yazmaz (PUT registeredOn "" → 200, değer AYNEN 01.10.2026: betik); göç 9 boşları doldurur | taban verisinde boş kart yok; boşaltmanın kendisi mevcut `plans` girdisinde | iz girdisi `plans_unregistered_lock` (normal veride satır üretmez) | 1 |
+| cheque_events.created_at (karşılıksız; aynı evrakta ikinci karşılıksız olayı) | koşullu: birden çok karşılıksız olayında madde tarihi (son oluşturulanın günü) — dışarıdan kilit SONRASI tarihli ikinci olay: 2 (madde kilitli dönemden çıkar) | YOK (karşılıksız son durum; geri alma kilitte 409 — betik) | **0 / 0 / 0** | `cheques_bounce_lock` (durumla birlikte) | 1 |
+| cheques.status | koşullu: yalnız kilitte karşılıksız olayı olan evrakta (bounced → portfolio: 2); olaysız portfolio → bounced: 0 | VAR ama kilitli karşılıksızı olan evrakta YOK: karşılıksız son durum, geri alma kilitte 409 (betik); öbür evrakta bugünkü tahsil / ciro / karşılıksız 200 (betik) | unbounce: **0 / 0 / 0** · olaysız bounce: gl:101 / 1 / 1 | (ii) yerine DAR iz girdisi: yalnız kilitte karşılıksız olayı olan evrakın durumu + seçilen karşılıksız günü + borç satırı var mı (`cheques_bounce_lock`) — meşru yazımı olmayan alt küme | 2 → dar |
+| cheques.account_id | koşullu: carili → '' (2: cariye işlenmemiş evrak maddesi doğar, çift madde); carisiz → cari: 0 | VAR: carisiz evrakın karşılıksızında cari seçimi (betik 200, türetme farkı 0); düzenleme kilitte 409 (betik; coreChanged) | carili → '': gl:101 + cheque:collections / 1 / 1 · carisiz → cari: 0 / 0 / 0 (türetme de değişmez) | (ii) yerine TÜRETİLEN OLGU izi: kilitli dönemde "cariye işlenmemiş" sayılan evrak kümesi (`cheques_free_lock`; türetmenin süzgeciyle aynı koşul) — meşru cari seçimi kümeyi değiştirmez | 2 → olgu |
+| account_entries.invoice_id | koşullu: yalnız şüpheli kaydı olan carinin TAHSİLATINDA 120 ↔ 128 (2) | **VAR ve kilitli türetmeyi DEĞİŞTİRİYOR**: kilit yokken 09.10 tarihli tahsilat 15.10 tarihli faturaya bağlanabiliyor (200); kilitten sonra fatura bugün iptal → 200, bağ kalkar (K4, 2.3.0), kilitli 09.10 maddesi 120 → 128 (fark 2), SESSİZ (0 / 0 / 0). POS kesinti bağlama da bağ yazar (kilit denetimi yok; satırlar sağlayıcı carisinin — şüpheli yalnız müşteride) | **0 / 0 / 0** | (iii) KODLANMAZ — BAŞ MİMAR KARARI GEREKİYOR (16.4) | 2 |
+| account_entries.opening_review | (tur 1e) | (tur 1e: K8-2) | (tur 1e) | DOKUNULMAZ (kopya + `opening:review`); durum ile kopyanın BİRLİKTE dışarıdan değişmesi BİLİNEN SINIR (BAŞ MİMAR KARARI, görev metni) | 2 |
+
+Açıklama alanları ((a) HAYIR — tutar / hesap değişmez; kalıcı testin istisna listesinde): payments.note, cash_entries.description, account_entries.note, plan_entries.note,
+stock_moves.note, cheque_events.note, cheques.serial_no, invoices.number, fin_events.no / description, ledger_vouchers.description, doubtful_*.note, doubtful_receivables.created_at /
+created_by (yalnız listeleme), stock_items.name / unit, accounts.name / ref_no (şüpheli kaydının etiketi). Taramanın "DOĞRULANMADI" hücreleri: (b) hücreleri yukarıdaki betik
+satırlarıyla kapandı; `fin_events.description` / `no` (açıklama) ve `vat_offsets.*` (mevcut `vat_offsets_lock`) betikle denenmedi — açıklama ya da zaten izde.
+
+### 16.3 SINIF 3 (satır dışı girdiler)
+| Girdi | Kilitli defteri değiştirir mi | Bugün gören denetim (betik) | Karar |
+|---|---|---|---|
+| Banka hesabının alt hesabı (`bank_accounts.gl_sub`) | EVET (dışarıdan 102.01 → 102.99: fark 4) | bank:sub + bank:voucher / günlük 1 / zil 1 (tabanda bulunuyor). Kapıdan: PUT glSub → 200 ama değer DEĞİŞMEZ (alan düzenlenemez; betik) | iz girdisi GEREKMEZ (kapıdan değişmiyor; dışarıdan değişince mevcut denetim görüyor) |
+| POS alt hesabı (`pos_terminals.gl_sub`) | EVET (kod okuması) | süzgeç tam kapıya yollar (FULL_TABLES); dış değişikliği gören denetim DOĞRULANMADI (POS kurulumu bu düzenekte yok) | BİLİNEN SINIR adayı (karar baş mimarın) |
+| Sunucunun saat dilimi | Yalnız yüklenen kartın (KG-5) yükleme damgasının YEREL günü — kilit sınırına denk gelen damgada madde kilitli dönemin öbür yanına geçer | hiçbiri (§15.2 SINIR ile aynı aile) | BİLİNEN SINIR adayı (ucuz kapatma yok: yerel gün SQL'de hesaplanamıyor) |
+| Aynı tarihli satır sırası (rowid) | Mizanı değiştirmez; aynı gün şüpheli kayıt ↔ tahsilat bağında 120 / 128 dağılımı (seq) | hiçbiri. VACUUM INTO (yedek) rowid'i KORUYOR (betik `vacuum.mjs`: boşluklu metin anahtarlı tabloda 133 / 133 aynı) — SQLite'ın belgelenmiş garantisi değil | BİLİNEN SINIR adayı (yalnız dış araç / elle müdahale ya da SQLite davranışı değişirse) |
+
+### 16.4 BAŞ MİMAR KARARI GEREKİYOR — cari satırının fatura bağı (`account_entries.invoice_id`)
+Bulgu (betikle üretildi): kilitli tarihli tahsilatın bağı, kilit SONRASI tarihli faturanın bugünkü iptaliyle kapıdan geçerek (200) değişiyor ve şüpheli kaydı olan caride kilitli
+dönemin canlı türetmesini 120 ↔ 128 kaydırıyor; hiçbir denetim görmüyor (kural farkının sayısında görünür — tur 2'nin fişi bunu "kural farkı" diye yazar). Aynı alanın kapı dışı
+değişikliği de görünmez. Yanlış alarmsız iz girdisiyle kapatılamaz: kopya deseni iptalin meşru değişikliğini "kapının yazdığı" diye kabul eder ama kilitli türetmenin meşru
+değişmesini engellemez; düz iz girdisi iptali 409'a çevirir (yeni 409 — K4 kararının davranışı değişir).
+- A: kilitli tarihli TAHSİLAT ('in') satırının bağı değişecekse (fatura iptali, POS bağlama) 409 "kapanmış dönem" + iz girdisi (satır, bağ var mı) — kilitli defter hiç değişmez; bedel:
+  böyle bir faturayı iptal etmek için önce kilidi açmak gerekir (yalnız kilitli tarihli tahsilatı bağlanmış faturada; seyrek).
+- B: iptal bağı koparır ama kilitli tarihli satırın bağı KALIR (yalnız açık dönemdeki satırların bağı kalkar) — para kuralı değişir (K4): KULLANICIYA SORULMALI (ders 43).
+- C: Uç durum böyle kalsın (BİLİNEN SINIR): yalnız şüpheli kaydı olan carinin, kilit sonrası faturaya bağlanmış kilitli tahsilatı; kapı dışı değişiklik görünmez.
+Öneri: A (kilitli dönem kapıdan geçerek değişmez ilkesi). Para kuralına dokunduğu için kullanıcıya sorulmalı. Bu turda KODLANMADI.
+
+### 16.5 Seçilen yol (SINIF 1 + dar SINIF 2) ve süzgeç
+- LOCK_SQL'e on girdi (`since: "2.5.0"`; LOCK_SQL_VERSION "2.5.0" KALIR — 2.5.0 yayımlanmadı; eski sürüm izleri `since` ile aynen; alanı olmayan eski şemada `requires` ile atlanır):
+  `cash_transfer_lock`, `account_source_lock`, `account_doubtful_skip_lock`, `plan_entries_bond_lock`, `stock_reason_lock`, `invoices_gl_lock`, `cheque_collections_event_lock`,
+  `plans_unregistered_lock`, `cheques_bounce_lock`, `cheques_free_lock`. Hepsi satır KİMLİKLERİYLE (dağılım değişimi de izi değiştirir); bağ / işaret alanlarında değeri boş / 0 olan
+  satır dışarıda (boş → dolu yeni satır olarak görünür; eski veride satır sayısı küçük).
+- Süzgeç (integrity-scope LOCK_FIELDS + özel denetimler) aynı alanları bilir: LOCK_FIELDS'e transfer_id, source, source_id, doubtful_skip, cheque_id, opening, reason, gl_json,
+  try_withheld, try_stoppage; tahsil kaydının verilme bloğuna event_id; Kayıt Tarihi boş kart; kilitli evrakın carisi; kilitli karşılıksızı olan evrakın durumu ve karşılıksız
+  olayları; kilitli evrakın "cariye işlenmemiş" olgusunu değiştirebilecek bağlı satırlar (evrağa bağlı alış / veriliş cari satırı, evrakla taksit satırı). Kilitli evrakın bugünkü
+  tahsili / cirosu tam kapıya DÜŞMEZ (hız; 16.7).
+- Kapıyı / taramayı çağıran yollar DEĞİŞMEZ (tur 1e ile aynı üç yer: COMMIT tam kapısı, taramanın period-lock'u, donmuş defterin kaynak izi).
+
+### 16.6 "Nasıl bozulur?" (önce yazıldı; testler buradan)
+1. Her SINIF 1 alanı ve dar SINIF 2 olgusu kapı dışından değişir → satır içi VE arka plan taraması: period-lock + ledger:snapshot, Mutabakat Günlüğü 1, zil 1.
+2. Program kapalıyken yazım → açılışta ledger:snapshot sapması (taban satırı, sunucu iletisi; açılışta zil yok — tur 1e düzeni).
+3. Sayı / tutar aynı, yalnız hesap dağılımı (600 → 602; iki satırın nedeni yer değiştirir) → bulunur.
+4. Meşru olaylar sessiz (bulgu / günlük / zil yok, yanıt kodu tabandakiyle AYNI): eski tarihli evrakın bugünkü tahsili, cirosu, karşılıksızı (carili, carisiz, carisiz + cari seçimi),
+   tahsile verilmiş evrakın bugünkü tahsili, kilitli karşılıksızı geri alma (409 AYNEN), açık dönem fatura iptali, taksit kartı kapatma, kilitli kart silme (409 AYNEN), Açılış Olabilir
+   onayı / reddi, kilidi ilerletme / kaldırma / yeniden koyma, yedek → geri yükleme, Şirket Verisini Sıfırla, eski sürüm verisiyle güncelleme.
+5. Eski şema (alan yok): `requires` girdiyi atlar; 2.4.9'un kaydettiği izle karşılaştırma `since` ile aynen (K11).
+6. Kapı ↔ süzgeç eşdeğerliği: kilitli satırda yeni alanı değiştiren mağaza yazımı süzgeçte de "kilitli dönem" → tam kapı → 409 (eşdeğerlik ihlali değil); gateVerify'lı testler her COMMIT'te.
+7. Kalıcı kaynak tarama testi: türetmenin okuduğu yeni bir sütun ne izde ne istisna listesinde → kırmızı; izden sütun çıkarılırsa → kırmızı.
+8. Mutantlar: her yeni iz girdisi çıkar; süzgeçten alan çıkar → kırmızı olmalı.
+
+### 16.7 Hız (ders 47, 53)
+İz on sorgu büyür (her biri kilitli dönemin satırlarını indeksli koşulla bir kez); `cheques_free_lock` kilitli evrak başına iki NOT EXISTS (idx_plan_entries_cheque,
+idx_account_entries_source). Değişen yollar: tam kapı (kilit izine dokunan yazım), tarama (Mutabakat Testi), açılış, dondurmanın kaynak izi; süzgeçte yalnız evrak / evrağa bağlı
+satırlarda tek indeksli sorgu. Ölçüm: temiz 100 bin satırlık veride taban ↔ yeni (ölçüm kilidiyle; sonuç kodla birlikte 16.8'de).
