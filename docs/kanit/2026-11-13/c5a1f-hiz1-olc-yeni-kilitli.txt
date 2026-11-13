@@ -1,0 +1,78 @@
+Ç5-A tur 1f ölçüm · yeni · kilitli · kod /home/user/ofis---y-netimi/.claude/worktrees/agent-af550e32f1aedd444 · nproc 4 · başta 1.02 1.06 1.36 1/121 32161 · 06:26:50
+kilit ('2026-06-30',)
+=== TZ Europe/Istanbul · başta 1.02 1.06 1.36 1/121 32168 
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-af550e32f1aedd444 · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1f-olcum/kopya · yük (başta) 1.02 1.06 1.36 · TZ Europe/Istanbul
+açılış (göç dahil) 22367 ms · şema 50
+donma (bekleyen 2.4.9 koşusu, 2026-06-30'e kadar) 8212 ms · kapsam 2026-06-30
+veri: 1484 cari, 102295 cari satırı, 11554 Kasa satırı, 11660 evrak, 339 banka satırı
+tur 1 · yük 1.01 1.06 1.35
+  Mizan + mutabakat (GET ledger): 200 · 3462.2 ms · olay döngüsü en çok 3460.3 ms
+  Yevmiye Defteri (rapor): 200 · 2131.5 ms · olay döngüsü en çok 2129.7 ms
+  Hesap Planı Mizanı (rapor): 200 · 3448.4 ms · olay döngüsü en çok 0 ms
+  Alt Hesap Mizanı (rapor): 200 · 445.8 ms · olay döngüsü en çok 0 ms
+  Defter Mutabakatı (rapor): 200 · 15518.3 ms · olay döngüsü en çok 0 ms
+  Mutabakat Testi (GET ledger/integrity): 200 · 14680.7 ms · olay döngüsü en çok 0 ms
+  Alacak Yaşlandırma (rapor): 200 · 1992.5 ms · olay döngüsü en çok 0 ms
+  Yevmiye Defteri bütün zaman (rapor): 200 · 4173.1 ms · olay döngüsü en çok 4171.2 ms
+  Banka İşlem Kartı (GET bank/events): 200 · 4.5 ms · olay döngüsü en çok 0 ms
+  YAZIM Borç Yaz (bütünlük kapısı): 200 · 304.6 ms · olay döngüsü en çok 0 ms · kapı yolu scoped · kapı 42.4 ms
+  YAZIM evrak (alınan çek, carili): 200 · 54.1 ms · olay döngüsü en çok 0 ms · kapı yolu scoped · kapı 44.3 ms
+  Açılış Olabilir listesi (yeni uç; tabanda 404): 200 · 68.7 ms · olay döngüsü en çok 0 ms
+  Kilit izi (lockDigestOf, 2026-06-30): 2961.7 ms
+  YAZIM kilitli evrağın bugünkü tahsili: 200 · 65.3 ms · olay döngüsü en çok 63.1 ms · kapı yolu scoped · kapı 51.5 ms
+tur 2 · yük 1.00 1.05 1.33
+  Mizan + mutabakat (GET ledger): 200 · 3059.1 ms · olay döngüsü en çok 0 ms
+  Yevmiye Defteri (rapor): 200 · 2137.6 ms · olay döngüsü en çok 0 ms
+  Hesap Planı Mizanı (rapor): 200 · 2960.3 ms · olay döngüsü en çok 0 ms
+  Alt Hesap Mizanı (rapor): 200 · 439.9 ms · olay döngüsü en çok 0 ms
+  Defter Mutabakatı (rapor): 200 · 15451.8 ms · olay döngüsü en çok 0 ms
+  Mutabakat Testi (GET ledger/integrity): 200 · 14693 ms · olay döngüsü en çok 0 ms
+  Alacak Yaşlandırma (rapor): 200 · 1773.8 ms · olay döngüsü en çok 0 ms
+  Yevmiye Defteri bütün zaman (rapor): 200 · 3726.1 ms · olay döngüsü en çok 0 ms
+  Banka İşlem Kartı (GET bank/events): 200 · 2.8 ms · olay döngüsü en çok 0 ms
+  YAZIM Borç Yaz (bütünlük kapısı): 200 · 279.6 ms · olay döngüsü en çok 276.8 ms · kapı yolu scoped · kapı 42.6 ms
+  YAZIM evrak (alınan çek, carili): 200 · 49 ms · olay döngüsü en çok 0 ms · kapı yolu scoped · kapı 43.1 ms
+  Açılış Olabilir listesi (yeni uç; tabanda 404): 200 · 67.4 ms · olay döngüsü en çok 0 ms
+  Kilit izi (lockDigestOf, 2026-06-30): 2825.9 ms
+  YAZIM kilitli evrağın bugünkü tahsili: 200 · 57.4 ms · olay döngüsü en çok 55.4 ms · kapı yolu scoped · kapı 50.6 ms
+yük (sonda) 1.00 1.04 1.31
+çıkış 0 · sonda 1.00 1.04 1.31 1/119 32250
+kilit ('2026-06-30',)
+=== TZ UTC · başta 1.00 1.04 1.31 1/119 32256 
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-af550e32f1aedd444 · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1f-olcum/kopya · yük (başta) 1.00 1.04 1.31 · TZ UTC
+açılış (göç dahil) 21581 ms · şema 50
+donma (bekleyen 2.4.9 koşusu, 2026-06-30'e kadar) 7883 ms · kapsam 2026-06-30
+veri: 1484 cari, 102295 cari satırı, 11554 Kasa satırı, 11660 evrak, 339 banka satırı
+tur 1 · yük 1.06 1.05 1.31
+  Mizan + mutabakat (GET ledger): 200 · 3180 ms · olay döngüsü en çok 3177.2 ms
+  Yevmiye Defteri (rapor): 200 · 2126.1 ms · olay döngüsü en çok 0 ms
+  Hesap Planı Mizanı (rapor): 200 · 3085.2 ms · olay döngüsü en çok 0 ms
+  Alt Hesap Mizanı (rapor): 200 · 434.6 ms · olay döngüsü en çok 0 ms
+  Defter Mutabakatı (rapor): 200 · 15021.6 ms · olay döngüsü en çok 0 ms
+  Mutabakat Testi (GET ledger/integrity): 200 · 15194 ms · olay döngüsü en çok 15191.8 ms
+  Alacak Yaşlandırma (rapor): 200 · 1792.2 ms · olay döngüsü en çok 0 ms
+  Yevmiye Defteri bütün zaman (rapor): 200 · 3884.6 ms · olay döngüsü en çok 0 ms
+  Banka İşlem Kartı (GET bank/events): 200 · 6.1 ms · olay döngüsü en çok 0 ms
+  YAZIM Borç Yaz (bütünlük kapısı): 200 · 281.2 ms · olay döngüsü en çok 0 ms · kapı yolu scoped · kapı 48.9 ms
+  YAZIM evrak (alınan çek, carili): 200 · 47.1 ms · olay döngüsü en çok 0 ms · kapı yolu scoped · kapı 39.1 ms
+  Açılış Olabilir listesi (yeni uç; tabanda 404): 200 · 56.6 ms · olay döngüsü en çok 0 ms
+  Kilit izi (lockDigestOf, 2026-06-30): 2531 ms
+  YAZIM kilitli evrağın bugünkü tahsili: 200 · 64.3 ms · olay döngüsü en çok 62 ms · kapı yolu scoped · kapı 50.5 ms
+tur 2 · yük 1.02 1.04 1.29
+  Mizan + mutabakat (GET ledger): 200 · 2949.2 ms · olay döngüsü en çok 0 ms
+  Yevmiye Defteri (rapor): 200 · 2251.7 ms · olay döngüsü en çok 0 ms
+  Hesap Planı Mizanı (rapor): 200 · 2714.5 ms · olay döngüsü en çok 0 ms
+  Alt Hesap Mizanı (rapor): 200 · 416.5 ms · olay döngüsü en çok 0 ms
+  Defter Mutabakatı (rapor): 200 · 15344 ms · olay döngüsü en çok 0 ms
+  Mutabakat Testi (GET ledger/integrity): 200 · 14425.9 ms · olay döngüsü en çok 0 ms
+  Alacak Yaşlandırma (rapor): 200 · 1894.6 ms · olay döngüsü en çok 0 ms
+  Yevmiye Defteri bütün zaman (rapor): 200 · 3675.4 ms · olay döngüsü en çok 0 ms
+  Banka İşlem Kartı (GET bank/events): 200 · 2.3 ms · olay döngüsü en çok 0 ms
+  YAZIM Borç Yaz (bütünlük kapısı): 200 · 274.5 ms · olay döngüsü en çok 271.8 ms · kapı yolu scoped · kapı 41.1 ms
+  YAZIM evrak (alınan çek, carili): 200 · 47.9 ms · olay döngüsü en çok 0 ms · kapı yolu scoped · kapı 42 ms
+  Açılış Olabilir listesi (yeni uç; tabanda 404): 200 · 66 ms · olay döngüsü en çok 0 ms
+  Kilit izi (lockDigestOf, 2026-06-30): 2787.9 ms
+  YAZIM kilitli evrağın bugünkü tahsili: 200 · 53.7 ms · olay döngüsü en çok 51.3 ms · kapı yolu scoped · kapı 46.7 ms
+yük (sonda) 1.33 1.10 1.29
+çıkış 0 · sonda 1.33 1.10 1.29 1/119 32341
+bitti 06:31:04

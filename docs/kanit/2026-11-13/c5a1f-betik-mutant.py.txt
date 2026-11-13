@@ -13,8 +13,11 @@ def entry(name):
 MUTS = [
  # LOCK_SQL girdisi çıkar (satırı ya da bloğu): (no, ad, dosya, eski, yeni, testler, desen)
  ("M1", "iz: cash_transfer_lock çıkar", INT, '  cash_transfer_lock: { requires: ["cash_entries.transfer_id"], since: "2.5.0", sql: "SELECT id, transfer_id FROM cash_entries WHERE transfer_id <> \'\' AND date <= ?1 ORDER BY id" },\n', "", KAYNAK + [IZ], r"\[1\]"),
- ("M2", "iz: account_source_lock çıkar", INT, '  account_source_lock: { requires: ["account_entries.source", "account_entries.source_id"], since: "2.5.0", sql: "SELECT id, source, source_id FROM account_entries WHERE (source <> \'\' OR source_id <> \'\') AND date <= ?1 ORDER BY id" },\n', "", KAYNAK + [IZ], r"\[1\]"),
- ("M3", "iz: account_doubtful_skip_lock çıkar", INT, '  account_doubtful_skip_lock: { requires: ["account_entries.doubtful_skip"], since: "2.5.0", sql: "SELECT id, doubtful_skip FROM account_entries WHERE doubtful_skip <> 0 AND date <= ?1 ORDER BY id" },\n', "", KAYNAK + [IZ], r"\[1\]"),
+ ("M2", "iz: account_source_lock'tan kaynak çıkar (WHERE kalır)", INT, 'sql: "SELECT id, source, source_id, doubtful_skip FROM account_entries', 'sql: "SELECT id, source_id, doubtful_skip FROM account_entries', KAYNAK + [IZ], r"\[1\]"),
+ ("M3", "iz: account_source_lock'tan doubtful_skip çıkar (WHERE kalır)", INT, 'sql: "SELECT id, source, source_id, doubtful_skip FROM account_entries', 'sql: "SELECT id, source, source_id FROM account_entries', KAYNAK + [IZ], r"\[1\]"),
+ ("C1", "önbellek: bu bağlantının yazımı (total_changes) anahtardan düşer", INT, 'return `${store.get("SELECT total_changes() AS n").n}|', 'return `|', KAYNAK, None),
+ ("C2", "önbellek: açık işlemde de kullanılır", INT, '  if (store.db?.isTransaction !== false) return "";\n', '', KAYNAK, None),
+ ("C3", "önbellek: başka bağlantının yazımı (data_version) anahtardan düşer", INT, '|${store.get("PRAGMA data_version").data_version}|', '|', KAYNAK, None),
  ("M4", "iz: plan_entries_bond_lock çıkar", INT, '  plan_entries_bond_lock: { requires: ["plan_entries.cheque_id", "plan_entries.opening"], since: "2.5.0", sql: "SELECT id, cheque_id, opening FROM plan_entries WHERE (cheque_id <> \'\' OR opening <> 0) AND date <= ?1 ORDER BY id" },\n', "", KAYNAK + [IZ], r"\[1\]"),
  ("M5", "iz: stock_reason_lock çıkar", INT, '  stock_reason_lock: { requires: ["stock_moves.reason"], since: "2.5.0", sql: "SELECT id, reason FROM stock_moves WHERE reason <> \'\' AND date <= ?1 ORDER BY id" },\n', "", KAYNAK + [IZ], r"\[1\]"),
  ("M6", "iz: invoices_gl_lock SELECT'ten gl_json çıkar (WHERE kalır)", INT, 'sql: "SELECT id, gl_json, try_withheld, try_stoppage FROM invoices', 'sql: "SELECT id, try_withheld, try_stoppage FROM invoices', KAYNAK + [IZ], r"\[1\]"),

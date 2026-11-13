@@ -1,0 +1,5 @@
+M2 YAKALANDI ['# tests 2 # pass 2 # fail 0 # cancelled 0 # skipped 0', '# tests 16 # pass 15 # fail 1 # cancelled 0 # skipped 0']
+M3 YAŞIYOR ['# tests 2 # pass 2 # fail 0 # cancelled 0 # skipped 0', '# tests 16 # pass 16 # fail 0 # cancelled 0 # skipped 0']
+C1 YAKALANDI ['# tests 2 # pass 1 # fail 1 # cancelled 0 # skipped 0']
+C2 YAKALANDI ['# tests 2 # pass 0 # fail 2 # cancelled 0 # skipped 0']
+C3 YAKALANDI ['# tests 2 # pass 1 # fail 1 # cancelled 0 # skipped 0']

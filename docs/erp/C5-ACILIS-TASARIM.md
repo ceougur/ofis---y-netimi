@@ -924,8 +924,8 @@ değişmesini engellemez; düz iz girdisi iptali 409'a çevirir (yeni 409 — K4
 Öneri: A (kilitli dönem kapıdan geçerek değişmez ilkesi). Para kuralına dokunduğu için kullanıcıya sorulmalı. Bu turda KODLANMADI.
 
 ### 16.5 Seçilen yol (SINIF 1 + dar SINIF 2) ve süzgeç
-- LOCK_SQL'e on girdi (`since: "2.5.0"`; LOCK_SQL_VERSION "2.5.0" KALIR — 2.5.0 yayımlanmadı; eski sürüm izleri `since` ile aynen; alanı olmayan eski şemada `requires` ile atlanır):
-  `cash_transfer_lock`, `account_source_lock`, `account_doubtful_skip_lock`, `plan_entries_bond_lock`, `stock_reason_lock`, `invoices_gl_lock`, `cheque_collections_event_lock`,
+- LOCK_SQL'e dokuz girdi (`since: "2.5.0"`; LOCK_SQL_VERSION "2.5.0" KALIR — 2.5.0 yayımlanmadı; eski sürüm izleri `since` ile aynen; alanı olmayan eski şemada `requires` ile atlanır):
+  `cash_transfer_lock`, `account_source_lock` (kaynak + kaynak kimliği + şüpheli işareti; hız için tek girdi — 16.8), `plan_entries_bond_lock`, `stock_reason_lock`, `invoices_gl_lock`, `cheque_collections_event_lock`,
   `plans_unregistered_lock`, `cheques_bounce_lock`, `cheques_free_lock`. Hepsi satır KİMLİKLERİYLE (dağılım değişimi de izi değiştirir); bağ / işaret alanlarında değeri boş / 0 olan
   satır dışarıda (boş → dolu yeni satır olarak görünür; eski veride satır sayısı küçük).
 - Süzgeç (integrity-scope LOCK_FIELDS + özel denetimler) aynı alanları bilir: LOCK_FIELDS'e transfer_id, source, source_id, doubtful_skip, cheque_id, opening, reason, gl_json,
@@ -952,7 +952,7 @@ idx_account_entries_source). Değişen yollar: tam kapı (kilit izine dokunan ya
 satırlarda tek indeksli sorgu. Ölçüm: temiz 100 bin satırlık veride taban ↔ yeni (ölçüm kilidiyle; sonuç kodla birlikte 16.8'de).
 
 ### 16.8 Sonuç (kodla birlikte; kanıt docs/kanit/2026-11-13/c5a1f-*)
-- Değişen ürün dosyaları: `lib/integrity.mjs` (LOCK_SQL'e on girdi, `since: "2.5.0"`), `lib/integrity-scope.mjs` (LOCK_FIELDS'e on alan; tahsil kaydının verilme bloğuna
+- Değişen ürün dosyaları: `lib/integrity.mjs` (LOCK_SQL'e dokuz girdi, `since: "2.5.0"`; iz önbelleği — hız), `lib/integrity-scope.mjs` (LOCK_FIELDS'e on alan; tahsil kaydının verilme bloğuna
   event_id; Kayıt Tarihi boş kart; `chequeLockRelevant` — evrak olguları). Göç / şema / istemci değişmedi.
 - Önce → sonra (`alan.mjs`, v2.4.9 verisi, kilit 10.10): her izlenen alanın kapı dışı değişikliği satır içi taramada `ledger:snapshot` + `period-lock`, Mutabakat Günlüğü 1, zil 1
   (taban: dokuz alanda 0 / 0 / 0, öbürlerinde yalnız başka bir denetimin yan bulgusu). Değişmeyen: fatura bağı (§16.4, bilerek), olaysız karşılıksız durumu ve carisiz evrağa cari
@@ -964,5 +964,13 @@ satırlarda tek indeksli sorgu. Ölçüm: temiz 100 bin satırlık veride taban 
   yükleme denetimi hiçbir yazımda çalışmaz; aynı işlemde para tablosuyla plan_imports yazan mağaza yazımı gateVerify'da "eşdeğerlik ihlali", üretimde kabul edilir (tarama sonra
   period-lock bulur). Meşru yazan yol yok. BAŞ MİMAR KARARI (rapor): SCOPE_TABLES'a plan_imports + keys() eşlemesi ya da ölü dalın kaldırılması.
 - Komşu düzeltmesi: `test/goc-243-stok-acilis.test.mjs` göç öncesi izi sürümsüz alıyordu (eski şemada sütunu olan yeni girdileri de sayıyordu) → iki taraf 2.4.2 tanımıyla (K11 deseni).
+- HIZ (temiz 100 bin; kanıt c5a1f-hiz1-* ve c5a1f-hiz2-*): (1) ÖLÇÜM KİLİDİYLE (yük 0,9–1,3; geçerli) ilk kodda kilitli veride Mutabakat Testi ortanca 13.016 → 14.687 ms
+  (+12,8 %, eşik aşıldı), kilit izinin kendisi 1.930 → 2.807 ms (+45,5 %), donma +8,9 %, kilitli evrağın bugünkü tahsili 54 → 61 ms (+12,3 %; taban dağılımı 46–69 ms), öbür
+  yollar ±10 % içinde. Tanı (prof.mjs): yeni girdiler tabloları yeniden tarıyor (cari kaynağı 271 ms, şüpheli işareti 126 ms, stok nedeni 112 ms, fatura kırılımı 101 ms) ve
+  Mutabakat Testi izi İKİ kez hesaplıyor (period-lock + donmuş defterin kaynak izi). (2) Düzeltme: iz aynı veri durumunda önbellekten (anahtar total_changes + data_version +
+  schema_version; açık işlemde kullanılmaz — eşdeğerlik testi + üç önbellek mutantı yakalandı), şüpheli işareti cari kaynağıyla tek taramada, süzgeçte karşılıksız dışı durum
+  geçişinde sorgu yok. (3) Düzeltmeden sonra ÖLÇÜM KİLİDİ ALINAMADI (ana oturumun ekran senaryoları / kâhin koşusu 1,5 saatten uzun paylaşımlı kilit tuttu) → yalnız TANI ölçümü
+  paylaşımlı kilitle (yük 0,6–3,5; kilitsiz kipin üç turu GEÇERSİZ): kilitli Mutabakat Testi 14.000 → 10.039 ms (−28 %), donma +12 % (gürültülü), Borç Yaz +21 % (gürültülü;
+  ilk geçerli ölçümde −10 %). RESMÎ KABUL ÖLÇÜMÜ YENİDEN KOŞULMALI (hepsi.sh, ölçüm kilidiyle).
 - Kaynak tarama testinin sınırı: dizin sırasıyla okunan sütun (ORDER BY'ın dizinden karşılandığı `cheque_events.created_at`) EXPLAIN'de Column olarak görünmez — o sütunun
   koruması davranış testinde ([1] ikinci karşılıksız olayı).
