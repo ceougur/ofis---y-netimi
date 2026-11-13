@@ -1,0 +1,127 @@
+TAP version 13
+# Subtest: Ç5-A tur 2b İş 2 — Kural Farkı Düzeltme Fişi
+    # Subtest: [1] v2.4.9 verisi (kilit 31.12.2025, Excel kartları): fiş 01.01.2026; önceki yıl 602 farkı 681'e; Düzeltildi; ters kayıtla uyarı geri; ikinci fiş; değişmez
+    ok 1 - [1] v2.4.9 verisi (kilit 31.12.2025, Excel kartları): fiş 01.01.2026; önceki yıl 602 farkı 681'e; Düzeltildi; ters kayıtla uyarı geri; ikinci fiş; değişmez
+      ---
+      duration_ms: 571.168088
+      type: 'test'
+      ...
+    # Subtest: [2] v2.0.26 verisi (kilit 05.10.2026; aynı yıl): yalnız 500 ↔ 519; gerçek eski sürüm satırı (ileri tarihli evrak) ayrı kalır; Muhasebe 403; iki kişi aynı anda
+    ok 2 - [2] v2.0.26 verisi (kilit 05.10.2026; aynı yıl): yalnız 500 ↔ 519; gerçek eski sürüm satırı (ileri tarihli evrak) ayrı kalır; Muhasebe 403; iki kişi aynı anda
+      ---
+      duration_ms: 871.992232
+      type: 'test'
+      ...
+    # Subtest: [3] kilit bugün: ön izleme pasif + görünür neden, kayıt 400 ve fiş yok
+    ok 3 - [3] kilit bugün: ön izleme pasif + görünür neden, kayıt 400 ve fiş yok
+      ---
+      duration_ms: 849.592092
+      type: 'test'
+      ...
+    # Subtest: [4] B16: kilitli dönemde onay bekleyen Açılış Olabilir kaydı varken fiş yazılmaz; karar verilince satırlar kararla değişir (onay 519, ret 602 / 770)
+    ok 4 - [4] B16: kilitli dönemde onay bekleyen Açılış Olabilir kaydı varken fiş yazılmaz; karar verilince satırlar kararla değişir (onay 519, ret 602 / 770)
+      ---
+      duration_ms: 1002.513581
+      type: 'test'
+      ...
+    # Subtest: [5] fazla düzeltme: fişten sonra kilit kaldırılır → uyarı (kilit olmasa da görünür); yeniden kilitlenir → yine fazla; ters kayıtla temiz
+    ok 5 - [5] fazla düzeltme: fişten sonra kilit kaldırılır → uyarı (kilit olmasa da görünür); yeniden kilitlenir → yine fazla; ters kayıtla temiz
+      ---
+      duration_ms: 1130.916886
+      type: 'test'
+      ...
+    # Subtest: [7] S164 = C: kilitli kaynağın kapı dışı değişikliği kural farkına karışırsa fişe sessizce girmez — alt defter hesabı farkı dışarıda, kaydı kaynak listesinde 'fişle düzeltilmez'
+    not ok 6 - [7] S164 = C: kilitli kaynağın kapı dışı değişikliği kural farkına karışırsa fişe sessizce girmez — alt defter hesabı farkı dışarıda, kaydı kaynak listesinde 'fişle düzeltilmez'
+      ---
+      duration_ms: 687.556756
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2d-q/mut/test/kural-farki-duzeltme-250.test.mjs:253:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        fiş satırları değişmez (bozulan satır fişe girmez)
+        + actual - expected
+        
+          [
+            'A 519 127800',
+        +   'A 671 100',
+        +   'B 120 100',
+            'B 500 127800'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'A 519 127800'
+        1: 'B 500 127800'
+      actual:
+        0: 'A 519 127800'
+        1: 'A 671 100'
+        2: 'B 120 100'
+        3: 'B 500 127800'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2d-q/mut/test/kural-farki-duzeltme-250.test.mjs:271:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [8] S164 = C ikinci örnek: kilitli tahsilatın fatura bağı kapı dışından yazılınca 120 / 128 farkı kaynağıyla dışarıda; fiş yalnız gerçek kural farkı (500 → 519)
+    not ok 7 - [8] S164 = C ikinci örnek: kilitli tahsilatın fatura bağı kapı dışından yazılınca 120 / 128 farkı kaynağıyla dışarıda; fiş yalnız gerçek kural farkı (500 → 519)
+      ---
+      duration_ms: 1048.73709
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2d-q/mut/test/kural-farki-duzeltme-250.test.mjs:291:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        fiş satırları değişmez (bağ farkı fişe girmez)
+        + actual - expected
+        
+          [
+        +   'A 120 100',
+            'A 519 800',
+        +   'B 128 100',
+            'B 500 800'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'A 519 800'
+        1: 'B 500 800'
+      actual:
+        0: 'A 120 100'
+        1: 'A 519 800'
+        2: 'B 128 100'
+        3: 'B 500 800'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2d-q/mut/test/kural-farki-duzeltme-250.test.mjs:335:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [6] kilitsiz v2.4.9 verisi: ön izleme pasif (kilit yok), fiş yazılmaz, Mutabakat Testi çıktısı değişmez
+    ok 8 - [6] kilitsiz v2.4.9 verisi: ön izleme pasif (kilit yok), fiş yazılmaz, Mutabakat Testi çıktısı değişmez
+      ---
+      duration_ms: 178.258316
+      type: 'test'
+      ...
+    1..8
+not ok 1 - Ç5-A tur 2b İş 2 — Kural Farkı Düzeltme Fişi
+  ---
+  duration_ms: 6342.47329
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2d-q/mut/test/kural-farki-duzeltme-250.test.mjs:58:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 8
+# suites 1
+# pass 6
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6717.483841

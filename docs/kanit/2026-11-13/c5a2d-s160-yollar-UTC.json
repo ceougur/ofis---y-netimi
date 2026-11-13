@@ -1,0 +1,32 @@
+{
+  "ad": "c5a2d-s160-yollar-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/s160-iptal-yollari-250.test.mjs test/s160-kilitli-tahsilat-bagi-250.test.mjs",
+  "commit": "3139aa4d4da9ca22dd20fb254aab90f172cb8a15",
+  "dal": "worktree-agent-ac4b7ba8396fbd29d",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T22:45:33.802Z",
+  "sure_sn": 4.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 17,
+    "gecen": 17,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2d-q/kanit/2026-11-13/c5a2d-s160-yollar-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac4b7ba8396fbd29d",
+  "ham_cikti_sha256": "09e0a27d4a5221fb7953e8c14490aa5d0df7cdb04414de7bad665f8ca6bace81",
+  "ham_cikti_bayt": 6178
+}

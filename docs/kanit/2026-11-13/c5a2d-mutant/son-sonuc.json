@@ -1,0 +1,42 @@
+[
+ {
+  "no": "Y2",
+  "name": "account_source_lock: source_id sütunu düşer",
+  "sonuc": "son-Y2 rc=1 sure=44s yuk=1.62 # tests 47 # pass 45 # fail 2 # cancelled 0 # skipped 0 # todo 0 \n    not ok 33 - [1] satır içi tarama — stok kaynaklı cari satırının kaynak kimliği kilit sonrası tedarikçiye iadeye (600 → 153; satır kümesi aynı)\n    not ok 34 - [2] arka plan taraması — stok kaynaklı cari satırının kaynak kimliği kilit sonrası tedarikçiye iadeye (600 → 153; satır kümesi aynı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur\nnot ok 1 - Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz"
+ },
+ {
+  "no": "Y3",
+  "name": "account_source_lock: doubtful_skip sütunu düşer (WHERE kalır)",
+  "sonuc": "son-Y3 rc=1 sure=46s yuk=1.57 # tests 47 # pass 46 # fail 1 # cancelled 0 # skipped 0 # todo 0 \n    not ok 46 - [10] kaynaklı (stok) kilitli cari satırında 'Normal Cariye İşlendi' işareti kapı dışından 0 → 1: türetme değişmez (işaret yalnız tahsilatta anlamlı) ama iz alanın kendisini taşır — bulunur\nnot ok 1 - Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz"
+ },
+ {
+  "no": "Y5",
+  "name": "cheques_bounce_lock: has_debt düşer",
+  "sonuc": "son-Y5 rc=1 sure=45s yuk=1.28 # tests 47 # pass 44 # fail 3 # cancelled 0 # skipped 0 # todo 0 \n    not ok 37 - [1] satır içi tarama — carisiz kilitli karşılıksıza cari yazılır + kilit SONRASI tarihli karşılıksız borç satırı (carinin karşılıksız borcu var olur; evrak kümesi aynı)\n    not ok 38 - [2] arka plan taraması — carisiz kilitli karşılıksıza cari yazılır + kilit SONRASI tarihli karşılıksız borç satırı (carinin karşılıksız borcu var olur; evrak kümesi aynı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur\n    not ok 45 - [9] kapıdan geçen iki adım: carisiz kilitli karşılıksıza cari yazımı kabul (iz aynı), ardından kilit SONRASI tarihli karşılıksız borç satırı RED (409 Kapanmış dönem; eşdeğerlik ihlali değil)\nnot ok 1 - Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz"
+ },
+ {
+  "no": "Y10",
+  "name": "süzgeç: tahsil kaydı verilme bloğunda event_id düşer",
+  "sonuc": "son-Y10 rc=0 sure=47s yuk=1.48 # tests 47 # pass 47 # fail 0 # cancelled 0 # skipped 0 # todo 0"
+ },
+ {
+  "no": "Y11",
+  "name": "evrak yardımcısı: cari satırı koşulu ters",
+  "sonuc": "son-Y11 rc=1 sure=47s yuk=1.86 # tests 47 # pass 46 # fail 1 # cancelled 0 # skipped 0 # todo 0 \n    not ok 45 - [9] kapıdan geçen iki adım: carisiz kilitli karşılıksıza cari yazımı kabul (iz aynı), ardından kilit SONRASI tarihli karşılıksız borç satırı RED (409 Kapanmış dönem; eşdeğerlik ihlali değil)\nnot ok 1 - Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz"
+ },
+ {
+  "no": "Y12",
+  "name": "evrak yardımcısı: kilitli evrağın carisi dalı düşer",
+  "sonuc": "son-Y12 rc=0 sure=46s yuk=2.44 # tests 47 # pass 47 # fail 0 # cancelled 0 # skipped 0 # todo 0"
+ },
+ {
+  "no": "Y18",
+  "name": "since etiketi: invoices_gl_lock 2.4.2 (eski sürüm iziyle karşılaştırmaya girer)",
+  "sonuc": "son-Y18 rc=1 sure=46s yuk=2.52 # tests 47 # pass 46 # fail 1 # cancelled 0 # skipped 0 # todo 0 \n    not ok 47 - [11] iz girdilerinin sürüm etiketi: v2.4.9'un GERÇEK kodunun kilit izi = güncel kodun 2.4.9 tanımıyla izi (aynı v2.4.9 deposu, göçten önce; kilitli dönemde kesilmiş fatura var)\nnot ok 1 - Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz"
+ },
+ {
+  "no": "Y23",
+  "name": "plan_entries_bond_lock: opening sütunu düşer (WHERE kalır)",
+  "sonuc": "son-Y23 rc=1 sure=45s yuk=2.49 # tests 47 # pass 45 # fail 2 # cancelled 0 # skipped 0 # todo 0 \n    not ok 35 - [1] satır içi tarama — evrak bağlı taksit satırının açılış alanı 0 → 1 (101 → 519; satır kümesi aynı)\n    not ok 36 - [2] arka plan taraması — evrak bağlı taksit satırının açılış alanı 0 → 1 (101 → 519; satır kümesi aynı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur\nnot ok 1 - Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz"
+ }
+]

@@ -1,0 +1,120 @@
+{
+ "fatura": "invoice-43c7df57-2bf1-4662-b395-00eedec2636e",
+ "K": "account-70df72c9-d8c9-46d5-b3c7-ab7588977979",
+ "tahsilat": "aentry-a6c873be-dd87-49e8-b107-4d5d6b31ff13",
+ "once": {
+  "code": "",
+  "disabled": false,
+  "lines": [
+   "A 519 800",
+   "B 500 800"
+  ],
+  "sources": [
+   {
+    "id": "account:aentry-a5e72da3-650a-4f24-8e22-67d7cf0fa661",
+    "excluded": false,
+    "deltas": [
+     "500 80000",
+     "519 -80000"
+    ]
+   }
+  ],
+  "excluded": []
+ },
+ "yazim": 1,
+ "sonra": {
+  "code": "",
+  "disabled": false,
+  "lines": [
+   "A 519 800",
+   "B 500 800"
+  ],
+  "sources": [
+   {
+    "id": "account:aentry-a5e72da3-650a-4f24-8e22-67d7cf0fa661",
+    "excluded": false,
+    "deltas": [
+     "500  80000",
+     "519  -80000"
+    ]
+   },
+   {
+    "id": "account:aentry-a6c873be-dd87-49e8-b107-4d5d6b31ff13",
+    "excluded": true,
+    "deltas": [
+     "128 K 10000",
+     "120 K -10000"
+    ]
+   }
+  ],
+  "excluded": [
+   "120 K -10000 true",
+   "128 K 10000 true"
+  ]
+ },
+ "kaydet": {
+  "status": 200,
+  "data": "{\"voucher\":{\"id\":\"lv-01274bc1-9d2c-4a03-ba1d-1b4c66f5c651\",\"year\":2026,\"no\":1,\"noText\":\"Fiş 2026-000001\",\"date\":\"2026-10-11\",\"type\":\"rule-diff-correction\",\"typeLabel\":\"Kural Farkı Düzeltme Fişi\",\"cls\":\"ordinary\",\"description\":\"Kural Değişikliği Farkı (Kilitli Dönem: 10.10.2026 ve Öncesi)\",\"source\":\"Kural Farkı Düzeltme\",\"requestKey\":\"api:rule-diff:kfd-15852-00000001\",\"reversalOf\":\"\",\"reversedBy\":\"\",\"totalMinor\":80000,\"lineCount\":2,\"createdBy\":\"user-452b59d0-7f4f-484f-99f9-555f8f162a96\",\"createdA"
+ },
+ "fis": [
+  {
+   "account": "500",
+   "sub": "",
+   "b": 80000,
+   "a": 0
+  },
+  {
+   "account": "519",
+   "sub": "",
+   "b": 0,
+   "a": 80000
+  }
+ ],
+ "mutabakat": {
+  "code": "ledger:rule-diff",
+  "name": "Kural Değişikliği Farkı (Kilitli Dönem: 10.10.2026 ve Öncesi)",
+  "ok": false,
+  "count": 2,
+  "difference": 900,
+  "sample": [
+   "account:aentry-a5e72da3-650a-4f24-8e22-67d7cf0fa661 (01.08.2026)",
+   "account:aentry-a6c873be-dd87-49e8-b107-4d5d6b31ff13 (09.10.2026)"
+  ],
+  "breakdown": [
+   {
+    "account": "120",
+    "frozenMinor": 80000,
+    "liveMinor": 70000,
+    "differenceMinor": -10000
+   },
+   {
+    "account": "128",
+    "frozenMinor": -10000,
+    "liveMinor": 0,
+    "differenceMinor": 10000
+   },
+   {
+    "account": "500",
+    "frozenMinor": -80000,
+    "liveMinor": 0,
+    "differenceMinor": 80000
+   },
+   {
+    "account": "519",
+    "frozenMinor": 0,
+    "liveMinor": -80000,
+    "differenceMinor": -80000
+   }
+  ],
+  "severity": "warning",
+  "hint": "Kilitli dönemin donmuş defteri güncel türetmeden farklı: neden defter kuralının program sürümüyle değişmesi ya da kilitli dönemin kaynak verisinin kapının görmediği bir yolla değişmesi olabilir. Kilitli dönemin raporları donmuş defterden okunur, değişmez. Kural farkı Kural Farkı Düzeltme Fişi ile ilk açık güne alınır. Kural Farkı Düzeltme Fişi (Fiş 2026-000001) fişle düzeltilebilen farkı kapattı; alt defter hesabı farkı fişle düzeltilmez (Kilidi Aç → Yeniden Kilitle).",
+  "correction": {
+   "vouchers": [
+    "Fiş 2026-000001"
+   ],
+   "remainderMinor": 0,
+   "excludedMinor": 10000,
+   "over": false
+  }
+ }
+}
