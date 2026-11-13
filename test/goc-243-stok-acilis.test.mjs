@@ -50,7 +50,9 @@ describe(`göç v30: ${OLD} verisindeki stok açılışları Ana Defter'e gelir 
         accounts: Object.fromEntries(ledger.trial.accounts.map(row => [row.code, row.balance])),
         stock: stock.items.map(item => ({ name: item.name, qty: item.qty, value: item.value })).sort((a, b) => a.name.localeCompare(b.name)),
         value: stock.totals.value,
-        digest: lockDigestOf(old.app.store, "2026-09-30"),
+        // 2.5.0 Ç5-A tur 1f: iz iki tarafta da AYNI tanımla (2.4.2'ninki) — sürümsüz çağrı eski şemada sütunu zaten olan 2.5.0 girdilerini de (transfer bağı, cari kaynağı, stok
+        // nedeni, fatura kırılımı …) sayar, göçten sonraki 2.4.2 tanımlı izle karşılaştırılamazdı (docs/erp/C5-ACILIS-TASARIM.md §16.8).
+        digest: lockDigestOf(old.app.store, "2026-09-30", { version: "2.4.2" }),
       };
       assert.equal(old.app.store.all("PRAGMA table_info(stock_moves)").some(column => column.name === "is_opening"), false, `${OLD} şemasında kolon yok`);
     } finally {
