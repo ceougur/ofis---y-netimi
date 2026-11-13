@@ -3780,3 +3780,164 @@ yeni / değişen elle tablo **272/272** (`-elle-yeni-cari-*`: d44 73 + d41 126 +
 tarama **98/98** (`-g1-tara-*`) · mutant ↔ senaryo **420/420** (`-mutant-senaryo-*`; d35 … d44 × 261–302) · geniş tarama **2.201/2.201** (`-genis-tarama-*`; bakım 15 ile aynı sayı) · defter öz testi **181/181**
 (`-defter-oz-*`; bu bakım defter kâhinine dokunmadı). Öz test, mutasyon, eşdeğerlik ve geniş tarama `flock -s -n …/olcum.lock` ile (ders 52); her adım `timeout` sınırlı. Program açılmadı. Koşu
 günlükleri `kahineski16-kos-utc.txt` / `-ist.txt` (yük 0,87 / 1,45 — 4 çekirdek). `s155-say.py` (RET / SUS sayıları + değişmez) bu koşuda YOK — ana oturumun isteğe bağlı ek komutu.
+
+## 28. 2.5.0 Ç5 bakımı 17 — S159 (açık şüpheli kalmadıysa S155 bağlamaz) + karttan tahsilat adımına 'Fazlasını Avans Yaz' seçeneği (S118 = B'nin sınırı, S154 = B değer alır) + S162 = B / S163 = C (BİLİNEN SINIR — susma) + S150 (BAŞ MİMAR YORUMU) (13.11.2026, `date -u` 17:22; kararlar 13.11.2026 10:40 / 16:11 UTC ve S118 / S154 — ana oturumun özet dosyası; eski kâhinler bakımı 17 — kodu görmeyen AYRI el; KÜÇÜK bakım, TOPLU KÂHİN BAKIMI) — kural seti `2.5.0` = §13 + … + §27 + bu bölüm
+
+Bu bakım: S159 = A (bakım 16'nın SK-35 sorusu), bakım 16 raporunda "ayrı bakım" denen adım seçeneği (karttan tahsilat adımı 'Kalanı Aşan Tutar' sorusunun yanıtını taşır — S118 = B'nin
+sınırı; S154 = B'nin 'Fazlasını Avans Yaz' yolu değer alır), S162 = B ve S163 = C (BİLİNEN SINIR — kâhin o alt durumlarda SUSAR) ve S150 = A için baş mimar yorumu. §13–§27'nin öbür kuralları
+DEĞİŞMEZ. `--kural 2.4.9` (ve 2.4.6 / 2.4.5 / `--legacy`) AYNEN (seçenek alanı ≤ 2.4.9'da okunmaz — kart tahsilatı her tutarda kabul, fazlası bağsız: B1.2 / C13.4 (3) aynen). Defter kâhini
+(`test/bagimsiz/defter/`) DEĞİŞMEZ (reddedilen adım yevmiye yazmaz; S159 kabulü tahsilatın kendi maddesidir; S162 / S163 bakiyeyi ve yevmiyeyi değiştirmez). **Bu bölümün ilk commit'i yalnız
+YORUMDUR (ders 40 — önce kural, sonra kod); senaryo / mutant / G3 sayıları kod ve kanıt commit'lerinde eklenir.**
+
+### C00u Temiz oda (bakım 17)
+- **Girdi (tek kaynak; ana oturumun özet dosyası `scratchpad/kahin-eski17-kararlar.md`; KURAL KAYNAĞI yalnız KARAR satırlarıdır — soru metnindeki "program bugün (koşuldu)" / "BUGÜN" sözü beklenti kaynağı
+  sayılmadı):**
+  - S159 KARAR (13.11 10:40, AYNEN; 10:42 teyit): "S159 = A — tahsilat açık şüphelinin tamamını kapatıp borcu da aşarsa KABUL: açık şüpheli kalmadıysa S155 kuralı bağlamaz, fazlası avans olur."
+    Soru örneği (AYNEN): "borç 1.000 → şüpheli 900 → bugün tahsilat 1.100 … KABUL — bakiye −100 (100 TL avans), açık şüpheli 0 (tam 1.000 tahsilatta bakiye 0, açık şüpheli 0; 300 tahsilatta bakiye
+    700, açık şüpheli 600)".
+  - Kart tahsilatı adımının seçeneği (ana oturum: "kural DEĞİL, senaryo dilinin eksiği"): DAYANAK S118 = B (11.11 06:14, AYNEN: "taksit tahsilatında 'Kalanı Aşan Tutar' / 'Kart Ödendi' sınırı,
+    sorusu ve formda ÖNERİLEN tutar kartın KENDİ kalanından gelir") ve S154 = B (13.11 07:31, AYNEN: "'Fazlasını Avans Yaz' ile kapanan kartta 'Tahsil Edilen' karttan alınan paranın TAMAMIDIR (kart
+    1.200 / 3; karttan 500, sonra karttan 800 avanslı → 'Tahsil Edilen 1.300 · Kalan 0', fazla 100, bakiye −100)"). İstenen: adım, tutar kartın KENDİ kalanını aşıyorsa yanıtı taşır — 'Fazlasını
+    Avans Yaz' (kayıt yazılır; aşan kısım avans) ya da yanıt YOK / vazgeçildi (HİÇBİR kayıt yazılmaz — 'ret', sayılar değişmez); kalanı aşmayan tahsilatta seçenek anlamsız.
+  - S162 = B (13.11 16:11, "önerilerin uygun"; soru metni girdi dosyasında AYNEN) — KAPSAM (ana oturum): "taksit kartı carinin borcunun TAMAMINI taşıyor (kart dışında açık borç yok) + FATURASIZ stok
+    iadesi" alt durumunda kartın göstergeleri (kart toplamı, taksit sayısı / satırları, Tahsil Edilen, İade, hangi taksitin açık kaldığı) ve GECİKMİŞ; bakiyede SUSMA; başka açık borç VARKEN bugünkü
+    beklenti AYNEN.
+  - S163 = C (13.11 16:11; soru metni girdi dosyasında AYNEN) — KAPSAM (ana oturum): S153 = A'nın 'üretilirse düzelt'i KAPANDI; susma alanı "elle açılan ve tek bir borca denk gelmeyen kart (S120) +
+    carinin o karttan ÖNCE tamamen kapanmış elle borçları var" alt durumunda açık KALEMLERİN dağılımı ve geçmiş bir güne göre gecikmiş; bakiye, kalemler toplamı ve BUGÜNKÜ toplam gecikmiş SUSMAZ.
+  - S150 = A için BAŞ MİMAR YORUMU (13.11 16:11; "kullanıcıya gösterildi, değiştirebilir; 'karar' değil") — aşağıda Y17-9.
+- **Birlikte okunan (kâhinin kendi belgesi):** bu dosyanın §13 C13.4 (3) / (4) / (6) / (7), §18 (S101 — Y6-4 / Y6-5, SK-14), §21 Y9-1 … Y9-7 (S120), §25 (S129 KARAR ve Y14-10 — 'kartın KENDİ
+  kalanı' ↔ tek kuyruk), §26 (Y15-5 / Y15-7 / Y15-14 / Y15-16; S150 "alan yok"), §27 (bütünü — Y16-1 … Y16-11, SK-35); `model.py` (`kart_tahsilat`, `_s145_adim`, `kart_ac`, `kontrol` kart
+  göstergeleri, `kontrol_v3` Vade Takip penceresi, `_alacak_govde250` bağlar / `kartfazla` / `pd` / `onceden`, `kos` iki dünya); `kos.mjs` YALNIZ `kart_tahsilat` ve Vade Takip eşlemesi (alan
+  adı için; değiştirilmedi); d30 / d42 / d43 / d44 elle senaryoları; `docs/kanit/2026-11-13/kahineski16-arac/` araçları. Okunan dosyaların tam listesi (satır aralıklarıyla) ajan raporunda.
+- **Okunmayan:** `server/**`, `client/**`, `bulut/**`, `packaging/**`, `tools/**` (yalnız `kanit.mjs` çalıştırılır), `docs/erp/C5-ACILIS-TASARIM.md`, `docs/erp/C5B-TYK-TASARIM.md`, `docs/devir/**`,
+  `docs/2.5.0-IS-LISTESI*.md` (hiçbir sürümü), `test/bagimsiz/cari/YAPIM-ASAMASI.json`, iki kâhin klasörü dışındaki `test/**`, başka ajanların `docs/kanit/**` dosyaları (yalnız `kahineski16-arac/`
+  araçları), git farkı / geçmiş içeriği. Program koşulmadı. CLAUDE.md "Açık iş"teki program durumu kural / beklenti kaynağı sayılmadı.
+
+### Kâhinin BUGÜNKÜ (bakım 16, `kahin17-taban`) okuması — beş alanda (açıkça)
+- **S159:** SUSUYOR — §27 Y16-5 SK-35: şüpheli kayıtlı caride adımdan önce A > 0, sonra A' = 0 ve B' < 0 → iki dünya (adım kabul ↔ adım yok), farklı çıkan denetimler (adımın durumu, bakiye …)
+  yazılmıyor; neden "KULLANICIYA SORULMALI SK-35 (§27 Y16-5)". Kararın örneği d44 X12'dir (bakım 16 SK-35'in kendi örneği). A = A' = 0 (kayıtları önceden kapanmış cari) bakım 16'da zaten KABUL (d44 X13).
+- **Adım seçeneği / S118 sınırı:** YOK — `kart_tahsilat {kayit, tutar, tarih}` her tutarda kabul; kartın açığını aşan kısım kendi tarihinde BAĞSIZ alacak (C13.4 (3) "kartfazla"). Kâhinde kartın
+  'Kalanı Aşan Tutar' sınırı / sorusu yok (Y14-10 "tahsilat formunun sınırı (S118 = B) YOK — eklenmedi").
+- **S154:** alan yok — `kartfazla` olan kartta `kart:<no>:odenen` S144 = C ile SUS (§26 Y15-14; neden metni §27 Y16-9 "S154 = B … kâhinin dilinde ayrı adım değil").
+- **S162:** DEĞER veriyor — kâhinin tek kuyruğunda faturasız stok iadesi bağsız kapatıcıdır (C13.4 (4) ANINDA): kart taksitlerinin en eskisinden düşer (S2 sırası); kart toplamı kartın asıl tutarı;
+  'Tahsil Edilen' / taksit 'Ödenen' iadeyi saymaz (S158 A), 'Kalan' = tutar − kuyrukta kapanan (iade dahil); gecikmiş kuyruk kalanından. Kararın örneği d42 T7'dir (S158 A'nın da örneği): kâhin
+  'Tahsil Edilen 0 · Kalan 600', taksit 'Ödenen' 0 / 0 / 0, gecikmiş 300 (sorunun A'sı) yazıyor. Satış kartı yalnızken (carinin başka borcu yok) d42 T6: S140 A sırası (ilk açık taksitten).
+- **S163:** DEĞER veriyor — S120 kartı (Y9-3) kartın günündeki AÇIK elle kalemleri eskiden yeniye içine alır; kapanmış elle borç ölçüye girmez (sorunun A'sı). Açık kalem dağılımı ve gecikmiş
+  bu okumayla yazılıyor.
+- **S150:** alan yok (§26 "S150: alan yok — Vade Takip denetimi kalem başına (`vadeTakip:hareket`, bugün + 6'ya kadar) ve görünüm toplamı; hazır aralık ve 'Gecikmiş Tahsilat' göstergesi yok").
+
+### Yorumlar (ders 40 — kararlardan; kod yazılmadan ÖNCE; baş mimar kullanıcıya gösterir)
+- **Y17-1 — S159: kural:** §27 Y16-1'in denetiminde adımdan SONRA carinin açık şüpheli tutarı A' = 0 ise kural BAĞLAMAZ — adım KABUL (bakiye eksiye inebilir; eksi bakiye carinin avansıdır).
+  Kararın gerekçesi ("açık şüpheli kalmadıysa S155 kuralı bağlamaz") adım türünü ayırmıyor ve S155 "türü fark etmez" diyor → tahsilat dışındaki alacak satırı (alınan evrak, elle Alacak, faturasız
+  stok iadesi, iade faturası, Taksit Tahsilatı) açık şüpheliyi sıfırlayıp bakiyeyi eksiye indirirse de KABUL (tek okuma). Böylece SK-35 (bakım 16) KALKAR; Y16-4 (adımdan önce kural zaten bozuk,
+  A' > 0) AYNEN SUS. Kararın örneği AYNEN = d44 X12: borç 1.000 (16.04) → 16.05 Şüpheli 900 → bugün (15.06) tahsilat 1.100: 900 şüpheliden düşer (Y16-2 (a) — kayıt tarihinden sonraki tahsilat),
+  200 normal cariye; A' = 0, B' = −100 → KABUL, bakiye −100, Kasa'da 1.100, açık şüpheli 0 (görünen kalem yok, gecikmiş 0). **Komşular (kararın kendi sayıları):** tam 1.000 → A' = 0, B' = 0 → kabul
+  (S155'in eşitliği de kabul) — bakiye 0, açık şüpheli 0; 300 → A' = 600 > 0, B' = 700 ≥ 600 → kabul — bakiye 700, açık şüpheli 600 (görünen 100). **Şüpheliden ÖNCEYE tarihli aşan tahsilat** (aynı
+  örnek, tahsilat 06.05 tarihli 1.100): önceye tarihli satır şüpheliden DÜŞMEZ (Y16-2 (b); S145'in soru metni) → A' = 900 > 0 kalır, B' = −100 < 900 → S155 RET (bakiye 1.000, açık şüpheli 900) —
+  açık şüpheli KALDIĞI için S159'un "kalmadıysa"sı uygulanmaz; S155 A'nın harfi tek sonuç veriyor → DEĞER (soru değil). Etiket KULLANICI (S159 A).
+- **Y17-2 — adım seçeneği: alan, değerleri, sınır (S118 = B):** `kart_tahsilat {kayit, tutar, tarih, fazlasiniAvansYaz}` — YENİ alan **`fazlasiniAvansYaz`**: `true` = kullanıcı 'Kalanı Aşan
+  Tutar' sorusuna **'Fazlasını Avans Yaz'** dedi; alan YOK ya da `false` = yanıt yok / vazgeçildi. **Sınır K (kartın KENDİ kalanı):** K = kart tutarı − karta DOĞRUDAN bağlı tahsilatların toplamı
+  (kartın önceki kabul edilmiş Taksit Tahsilatları + Tablodan Aktar'ın karta taşıdığı tahsilatlar / önceden ödenen parça). Dayanak: S129 KARAR — göstergeler tek kuyruktan, "tahsilat formunun
+  sınırı / sorusu / önerilen tutarı S118 = B'deki gibi kartın KENDİ kalanından kalır" (iki hesap ayrı); S129'un örneği: kart 900, karta BAĞLANMADAN 500 tahsilat → göstergeler 'Kalan 400' ama sınır
+  kartın kendi kalanı 900 — kart seçilmeden alınan tahsilatın tek kuyruktaki payı (S50) K'yı DÜŞÜRMEZ. **Kural (2.5.0):** (a) tutar ≤ K → soru yok; seçenek etkisiz (verilse de sonuç aynı); adım §13
+  C13.4 (3) ile kabul. (b) tutar > K ve `fazlasiniAvansYaz: true` → adım KABUL: kayıt yazılır (Kasa + tutar), kartın açık taksitleri vadesi ilk gelenden kapanır, AŞAN kısım avans — kâhinin tek
+  kuyruğunda "bağ fazlası kendi tarihinde BAĞSIZ alacak" (C13.4 (3) / (4) ANINDA, (1) A): carinin o gün açık başka borcu varsa onu kapatır, yoksa carinin avansı olarak kalır (kâhinin önceki kuralı
+  AYNEN; 'avans' ↔ 'bağsız alacak' kâhinin dilinde aynı şeydir). (c) tutar > K ve seçenek yok → adım **RET**: hiçbir satır yazılmaz — Kasa, bakiye, kart, kuyruk değişmez; `adim:<id>:durum` = `"ret"`
+  (ileti / kod YAZILMAZ — karar metni vermedi). Elle senaryo dosyasında ret: `"elleBeklenen": {"adim:<id>:durum": "ret", …}` + değişmeyen bakiye / kart değerleri. Etiket KULLANICI (S118 B).
+  **K'nın SINIRI (iki okuma — kâhinin belgelerinden TEK biçimde çıkmıyor):** "kartın KENDİ kalanı" (i) yukarıdaki K mı, (ii) K' = K − kartın avansla ödenmiş sayılan kısmı (S101 A: "satışın avansla
+  kapanmış kısmı kartın ödenmiş kısmı" — §18 R1 `onceden`) − kartın taksitlerini kapatan para DIŞI kapatıcı payı (faturasız stok iadesi, iade faturasının artanı, Değersiz — S151 / S158: 'Tahsil
+  Edilen'e sayılmaz ama 'Kalan'ı düşürür) mı? Kâhin adım anındaki K ve K''yü hesaplar: tutar ≤ K' → (a); tutar > K → (b) / (c); **K' < tutar ≤ K** → seçenek `true` ise iki okumada da KABUL (soru yoksa
+  kabul; soru varsa 'Fazlasını Avans Yaz') → DEĞER; seçenek YOKSA okuma (i) KABUL ↔ okuma (ii) RET — BAKİYE OKUMALAR ARASINDA FARKLI → **SUS** (iki dünya: adım kabul ↔ adım yok; bakım 7 SK-18
+  düzeni), neden "KULLANICIYA SORULMALI SK-36 (§28 Y17-2)".
+- **Y17-3 — S154 = B: değer alanı ve S144 (c) ile sınırı:** 'Fazlasını Avans Yaz' ile kapanan kart = kartın en az bir Taksit Tahsilatı Y17-2 (b) ile kabul edildi (tutar > K, iki okumada da soru
+  soruldu) VE o adımlarda K' = K (kartta avansla ödenmiş kısım / para dışı pay yok) VE kontrol anında kartın avansla ödenmiş sayılan kısmı 0. O kartta: **'Tahsil Edilen'** (`kart:<no>:odenen`) =
+  karttan alınan paranın TAMAMI (kartın kabul edilmiş Taksit Tahsilatları + Tablodan Aktar'ın taşıdığı tahsilatlar / parça); **'Kalan'** (`kart:<no>:kalan`) = 0 (bağlar kartın bütün taksitlerini
+  kapatır — tek kuyruk, değişmez); taksit **'Ödenen'** = taksitin tek kuyruktaki payı (S129 — taksit tutarları; değişmez); bakiye, fazlanın gittiği yer C13.4 (3) / (4) aynen. Kararın örneği AYNEN:
+  kart 1.200 / 3 (400 × 3), karttan 500 (K 1.200 ≥ 500 — soru yok), sonra karttan 800 'Fazlasını Avans Yaz' (K 700 < 800) → 'Tahsil Edilen 1.300 · Kalan 0', taksit 'Ödenen' 400 / 400 / 400, fazla
+  100, bakiye −100. **S144 (c)'nin ÖBÜR alt durumları (SUS AYNEN — S144 = C):** kartın kuyruk fazlası ('kartfazla') bu yoldan DOĞMADIYSA — kartın kendi tahsilatı K'yı aşmadığı hâlde avansla ödenmiş
+  sayılan kısım (S101) yüzünden kuyrukta artıyorsa (d30 KQ1 / KQ3) ya da fazla Y17-2'nin K' < tutar ≤ K seçenekli adımından doğduysa — `kart:<no>:odenen` YAZILMAZ; neden metni "BİLİNEN SINIR
+  (kullanıcı kararı S144 = C) S144 (§28 Y17-3 — S154 = B yalnız kartın kendi kalanını aşan 'Fazlasını Avans Yaz' adımıyla kapanan kartta)". Etiket KULLANICI (S154 B).
+- **Y17-4 — kartın kendi kalanını aşan tahsilat adımı taşıyan MEVCUT senaryolar (tarama: bütün elle senaryolar + rastgele s1 / ux18 tohum 1–10 × 120 işlem, iki dünya örnekleri dahil; 71 kart
+  tahsilatı adımının 5'i K' < tutar ya da K < tutar):** her birinin yazılış amacı ve yeni hâli —
+  (1) **d43 U1** (`u1k`: kart 1.000, K 1.000, tutar 1.100 — K'yı AŞIYOR): amacı S144 (c)'nin kendi örneği (kartın kendi tahsilatının fazlası, kabul edilip fazlası avans; eski beklentiler bakiye
+  −100, Kalan 0, taksit 500 / 500 — KABUL varsayıyor). Programda kartın kendi kalanını aşan tahsilatın kabul edildiği tek yol 'Fazlasını Avans Yaz'dır (S118 B) → **seçenekli** (`fazlasiniAvansYaz:
+  true`); beklentiler AYNI + `kart:KU1:odenen` `elleYok`'tan **110000**'e (S154 B — karttan alınan paranın tamamı), `belirsiz`'deki S144 kaydı KU1 için kalkar.
+  (2) **d43 U2** (`u2k`: kart 400, K 400, tutar 600 — AŞIYOR): amacı S141 (kart fazlası + fatura belge açığı); kabul varsayıyor (takvimde F 400) → **seçenekli**; beklentiler AYNI +
+  `kart:KU2:odenen` `elleYok`'tan **60000**'e (S154 B); S141'in susması (U2F belge açığı, açık toplamı) AYNEN; KU2'nin S144 kaydı kalkar.
+  (3) **d30 Q1** (`q1k`: avansla 'Bitti' satış kartı 600, K 600, K' 0, tutar 300 — sınır bölgesi): amacı S101 A'nın kendi örneği ("kartın tahsilatı avansa eklenir" — kabul) → **seçenekli** (iki
+  okumada da kabul); beklentiler AYNI; `kart:KQ1:odenen` S144 = C ile SUS AYNEN (fazla S101'den — Y17-3).
+  (4) **d30 Q3** (`q3k`: K 600, K' 200, tutar 500 — sınır bölgesi): amacı "kart tahsilatı açık kısmı aşıyor" (S101 — fazla avansa) → **seçenekli**; beklentiler AYNI; KQ3 `odenen` SUS AYNEN.
+  (5) **d30 Q5** (`q5k`: K 600, K' 0, tutar 300 — sınır bölgesi): amacı SK-14 (cari tanımsız — S101 × (2) A) — adımın kabulü S101 A'nın "kartın tahsilatı avansa eklenir"i → **seçenekli**;
+  beklentiler AYNI (cari tanımsız; bakiye ve kart tutarı yazılır).
+  Rastgele s1 / ux18: K' < tutar olan kart tahsilatı YOK → üretici DEĞİŞMEZ (aynı dizi). Öbür 66 kart tahsilatı tutar ≤ K' (seçenek gerekmez, değişmez). Amacı karar metinlerinden tek biçimde
+  çıkmayan senaryo YOK (hepsi kabul varsayıyordu ve kabulün tek yolu seçenek).
+- **Y17-5 — S162 = B: susma alanı (koşullar tek tek — kontrol anında, her etkin taksit kartı için):** (1) kartın taksitlerinden en az birinin bir kısmını **faturasız stok iadesi** kapattı (tek
+  kuyrukta kalemin para dışı payı "stok" > 0); (2) kontrol anında carinin tek kuyruğunda kart taksitleri DIŞINDA açık (kalanı > 0) borç yönlü kalem YOK — taksitsiz satış faturası, taksitli satış
+  faturasının taksiti, elle Borç / borçlu Açılış, stok veresiye satışı, karşılıksız borç kalemi (ölçü kontrol anı: kararın karşılaştırma örneğinde borç SONRADAN yazılınca iade ilk taksitten düşüyor
+  — durum anı belirler); (3) kartın türü Taksitler'den Mevcut Borç / Yeni Borç kartı ya da Tablodan Aktar kartı (satış kartı OLMAYAN — S158'in örneği) → **BİLİNEN SINIR (kullanıcı kararı S162 = B)**.
+  Stoktan taksitli satışla açılan kart (satış kartı) aynı yapıda (carinin tek borcu kendi satışı, sonra faturasız iade — d42 T6) → S140 A ("kart iadeyle küçülünce KENDİ satışını taşır … [0, 200]" —
+  örneği başka borçlu caride) ile S162'nin B'si ("başka borç yokken kart sondan küçülür") bu alt durumda iki okuma → **SUS** + KULLANICIYA SORULMALI **SK-37**. **SUS anahtarlar:** `kart:<no>:toplam`
+  (kart toplamı — sondan küçülme ↔ asıl tutar), `kart:<no>:taksit<i>:odenen` (taksit satırları — hangi taksitin kaldığı), carinin `cari:<ad>:gecikmis` (kararın örneğinde 600 ↔ 300). **DEĞER
+  (SUSMAZ):** bakiye (kararın sözü); `kart:<no>:kalan` ve `kart:<no>:odenen` — iki okumada AYNI ve S158 A KARARI'nın kendi örneği bu alt durumdadır ("Borç 900 → kart 900 → iade 300: 'Tahsil
+  Edilen 0', 'Kalan 600'"; S162'nin 'BUGÜN'ü de 'Tahsil Edilen 0 · Kalan 600'); Kasa, görünüm toplamı (Σ = bakiye), sayaç (açık taksit adedi iki okumada aynı). KAPSAM'dan SAPMA (açıkça; BAŞ
+  MİMAR'A — değerlendir): KAPSAM 'Tahsil Edilen'i susma listesine koyuyor; kâhin onu yazmaya DEVAM eder (gerekçe yukarıda — kararlı ve iki okumada aynı). 'İade' göstergesi ve taksit sayısı
+  kâhinin dilinde anahtar değil. Neden metni: "kart <no> göstergeleri kısmen tanımsız (2.5.0 §28): … BİLİNEN SINIR (kullanıcı kararı S162 = B) S162 (§28 Y17-5)" ve "cari <ad> gecikmiş tutarı
+  tanımsız (2.5.0 §28 Y17-5) … S162". (2) sağlanmıyorsa (başka açık borç VAR) bugünkü beklenti AYNEN (S151 / S158 — kararın karşılaştırma örneği: kart 900, iade ilk taksitten, 'Tahsil Edilen 0 · Kalan
+  600', gecikmiş 300).
+- **Y17-6 — S163 = C: susma alanı (koşullar tek tek):** (1) carinin kartı S120 alanında (Y9-3: Taksitler'den ELLE açılan Mevcut Borç kartı, açıldığı anda açık borç kart tutarından fazla, tutarı karta
+  eşit TEK elle borç yok — kart açık elle kalemleri eskiden yeniye içine aldı; Y9-2 'kendi' kartı, O = T kartı (S122 Y10-3 / S126 / S128), satış kartı, Tablodan Aktar kartı DIŞINDA — kararın "(S120)"si);
+  (2) kartın açıldığı ADIMDA carinin, kartın gününden önce doğmuş ve o anda TAMAMEN kapanmış (tek kuyruk kalanı 0 ve bir kartın içine alınmamış) en az bir elle borcu (elle Borç Yaz ya da borçlu
+  Açılış) var. Kâhin (2)'yi kart adımı anında, o ana kadar girilmiş kayıtlarla ölçer — kart adımından SONRA girilen geriye tarihli bir kayıtla kapanan eski borç ölçüye girmez (kâhinin sınırı;
+  DENENMEYEN). **Ayırt edebildiği:** iki koşul kâhinin kendi verisinden (S120 izi `s120`, kart adımındaki kuyruk) kesin okunuyor; programın "önceden ödenmiş" ölçüsünün NASIL hesaplandığı (yalnız soru
+  metni) kâhinde YOK → değer üretilmez, yalnız alan ayrılır. **SUS anahtarlar (o carinin):** açık KALEMLERİN dağılımı — `fatura:<ad>:acik`, `hareket:<id>:kalan`, `takvim | vadeTakip |
+  projeksiyon:hareket:<id>` ve `:fatura:<ad>`, kartlarının `odenen` / `kalan` / `taksit<i>:odenen` (kararın örneği 'fatura 247 + taksit 413' ↔ 'fatura 162 + taksit 498' — taksitin açığı da kayıyor);
+  `cari:<ad>:gecikmis` YALNIZ carinin açık kalemlerinden en az birinin vadesi bugün ya da ileride ise (dağılım kayınca bugünkü gecikmiş de kayabilir — kararın 'geçmiş bir günde 702 ↔ 787'si o günde
+  vadesi gelmemiş kalem bulunduğu için; bütün açık kalemlerin vadesi geçmişse gecikmiş = Σ açık = bakiye − R iki okumada AYNI — kararın 'bugünkü 1.670 = 1.670'si). **DEĞER (SUSMAZ):** bakiye, kalemler
+  toplamı (`cariToplam`, `acikToplam`, `acikEsitBakiye` — yazılıyorsa), Kasa; bütün açık kalemlerin vadesi geçmişken gecikmiş. Neden: "cari <ad> açık kalem dağılımı tanımsız (2.5.0 §28 Y17-6): S120
+  kartı <no> açılırken carinin kapanmış elle borcu (<adlar>) vardı — BİLİNEN SINIR (kullanıcı kararı S163 = C) S163". S153 = A'nın 'üretilirse düzelt'i kâhinde kural değildi (eklenmemişti) —
+  kapanması kâhinde bir değeri değiştirmez.
+- **Y17-7 — S162 / S163'te bakiyede / toplamlarda neden SUSMUYOR:** iki sorunun iki okuması da yalnız AYNI borcun kalemler (taksitler) arasındaki dağılımını değiştirir; hiçbir satır yazılmaz /
+  silinmez (S162: iade ikisinde de karttan düşer; S163: kartın ölçüsü bakiyeye girmez) → bakiye, Σ kalem, Kasa, mizan / yevmiye iki okumada aynı (girdi dosyası da öyle diyor: S162 bakiye 600 =
+  600; S163 bakiye 1.670 = 1.670, kalemler toplamı = bakiye).
+- **Y17-8 — DEĞİŞMEYEN:** kart tahsilatı tutar ≤ K' (bütün eski senaryoların 66 kart tahsilatı); S155'in RET / Y16-4 alanı; S158 / S151 / S140 değerleri (Y17-5 alanı dışında); S144 (c)'nin öbür
+  alt durumları; S141 / S143 / S149 / S156 / S157 susmaları; `--kural 2.4.9` ve öncesi (seçenek alanı okunmaz).
+- **Y17-9 — S150 = A — BAŞ MİMAR YORUMU (karar değil; kullanıcıya gösterildi, değiştirebilir) — AYNEN:** "'her aralıkta aynı sayı' ALTI hazır aralığın hepsini kapsar (Gecikmiş, Bugün, 7 Gün, 30
+  Gün, 90 Gün, Tüm Açık); gösterge ile satırlar ayrışmasın diye (toplam = satırlar) 'Bugün' ve '7 Gün' aralıklarında da durumu Gecikmiş olan HER kalem satır olarak listelenir; ELLE girilen tarih
+  aralığı bu yorumun DIŞINDADIR (değişmez). Yorumun kapattığı durum: vadesi geçmiş, sözü aralıktan SONRA olan borç (ör. vade 10 gün önce, söz 15 gün sonra) 'Bugün' ve '7 Gün' aralıklarında da
+  'Gecikmiş Tahsilat' göstergesine ve satırlara girer. … S149 = C alanında susman AYNEN sürer." **Kâhinde alanı: YOK** — kâhinin dilinde Vade Takip'in hazır aralığı ve 'Gecikmiş Tahsilat'
+  göstergesi yok; Vade Takip denetimi kalem başına (`vadeTakip:hareket:<id>` — kalem tarihi, Beklenen varsa o, bugün + 6'ya kadar KESİN; sonrası yazılmaz) ve görünüm toplamı; koşucu Vade Takip'i
+  YALNIZ 'Tüm Açık' (`preset=open`) ile okuyor (`kos.mjs` eşlemesi — alan adı için okundu, değiştirilmedi). Yorumun kapattığı durumdaki kalem (söz bugün + 15) kâhinde bugün + 6 penceresinin
+  dışında → hiçbir anahtar yazılmıyor (ne "var" ne "yok") — yorumla ÇELİŞEN beklenti YOK; beklenti DEĞİŞMEZ. Gecikmiş sayılma kuralı (C13.5 / S52 / S67 / S69; S149 = C susması) AYNEN. Ana
+  oturuma: hazır aralık denetimi istenirse koşucuya `preset` okuması + kâhine aralık anahtarı (ayrı bakım).
+
+### Beş alanın alt durumları (açıkça)
+| Alt durum | Bakım 16 | Bakım 17 |
+|---|---|---|
+| S159: adım açık şüpheliyi sıfırlıyor (A > 0 → A' = 0), bakiye eksiye (kararın örneği; d44 X12) | SUS (SK-35) | **DEĞER = KABUL** (Y17-1) |
+| S159: tam 1.000 / 300 (kararın komşuları) | DEĞER (kabul) | DEĞER (kabul — aynen) |
+| S159: şüpheliden ÖNCEYE tarihli aşan tahsilat (A' > 0) | DEĞER (RET) | DEĞER (RET — aynen; S155) |
+| Kart tahsilatı tutar ≤ K' | kabul | kabul (aynen; seçenek etkisiz) |
+| Kart tahsilatı tutar > K, seçenekli | kabul (fazlası bağsız) | **KABUL** (Y17-2 (b)) |
+| Kart tahsilatı tutar > K, seçeneksiz | kabul | **RET** (Y17-2 (c)) |
+| Kart tahsilatı K' < tutar ≤ K, seçenekli | kabul | kabul (iki okumada) |
+| Kart tahsilatı K' < tutar ≤ K, seçeneksiz | kabul | **SUS** — KULLANICIYA SORULMALI SK-36 |
+| S154: 'Fazlasını Avans Yaz' ile kapanan kartın 'Tahsil Edilen'i | alan yok (S144 SUS) | **DEĞER = B** (Y17-3) |
+| S144 (c): kart fazlası S101'den / sınır bölgesinden | SUS | SUS (aynen; metin) |
+| S162: kart carinin bütün açık borcunu taşıyor + faturasız stok iadesi (satış kartı olmayan) | DEĞER (A gibi) | **SUS** toplam / taksit Ödenen / gecikmiş — BİLİNEN SINIR; Kalan / Tahsil Edilen / bakiye DEĞER |
+| S162 × satış kartı (carinin tek borcu kendi satışı) | DEĞER (S140 A) | **SUS** — KULLANICIYA SORULMALI SK-37 |
+| S162: başka açık borç var (karşılaştırma örneği) | DEĞER | DEĞER (aynen) |
+| S163: S120 kartı + kart adımında kapanmış elle borç | DEĞER (A) | **SUS** açık kalem dağılımı (+ vadesi gelmemiş kalem varsa gecikmiş) — BİLİNEN SINIR |
+| S163: kapanmış eski borç yok / kart S120 değil | DEĞER | DEĞER (aynen) |
+| S150 (hazır aralık) | alan yok | alan yok (BAŞ MİMAR YORUMU — beklenti değişmez) |
+
+### KULLANICIYA SORULMALI (bakım 17; kâhin bu durumlarda SUSAR — ders 43, SORU DÜZENİ)
+- **SK-36 (S118 = B'nin sınırı — 'kartın KENDİ kalanı'na avansla ödenmiş kısım / para dışı iade payı girer mi; BAKİYE OKUMALAR ARASINDA FARKLI):** (a) avansla 'Bitti' kart: 01.05 tahsilat 1.000
+  (avans) → 05.05 stoktan taksitli satış 600 (2 × 300; kart avansla kapanmış — S101 A) → 10.05 karta Taksit Tahsilatı 300, 'Kalanı Aşan Tutar' sorusu yanıtsız. **A (kendi kalanı = kart tutarı −
+  kartın kendi tahsilatları = 600 — soru çıkmaz):** KABUL — 300 avansa (S101 A), bakiye −700. **B (kendi kalanı avansla ödenmiş kısmı da düşer = 0 — soru çıkar, yanıt yok):** RET — bakiye −400.
+  (b) para dışı pay: 01.03 Borç 900 + Borç Z 500 (vade 30.06) → 15.03 kart 900 (3 × 300) → 10.04 faturasız stok iadesi 300 (kartın 1. taksitinden) → 10.05 karta 700, yanıtsız. **A (kendi kalanı
+  900):** KABUL — bakiye 400 / **B (kendi kalanı iade düşülmüş 600):** RET — bakiye 1.100. **C (ikisi için):** uç durum böyle kalsın (BİLİNEN SINIR — kâhin susar). Seçenekli ('Fazlasını Avans Yaz')
+  adımda iki okuma da KABUL — soru yalnız yanıtsız adım içindir.
+- **SK-37 (S162 = B × S140 A — satış kartı carinin TEK borcunu taşıyorken faturasız iade; bakiye her seçenekte aynı):** 01.05 stoktan taksitli satış 1.000 (2 × 500: 01.06, 01.07) → 10.05 karta Taksit
+  Tahsilatı 300 → 10.06 faturasız stok iadesi 400; bugün 15.06; bakiye 300, 'Tahsil Edilen 300 · Kalan 300' iki okumada aynı. **A (S140 A'nın sırası — iade ilk açık taksitten, kart 1.000 kalır):**
+  1. taksit kapanır (Ödenen 300), 2. taksit 300 açık; gecikmiş 0 / **B (S162 = B'nin kuralı satış kartında da — "başka borç yokken kart sondan küçülür"):** kart 600 (2. taksit 100'e iner), 1.
+  taksitin 200'ü açık; gecikmiş 200 — BİLİNEN SINIR, kâhin susar / **C:** uç durum böyle kalsın (BİLİNEN SINIR). (Satış kartında başka borç VARKEN S140 A aynen — soru değil.)
