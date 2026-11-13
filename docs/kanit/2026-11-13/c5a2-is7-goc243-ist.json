@@ -1,0 +1,32 @@
+{
+  "ad": "c5a2-is7-goc243-ist",
+  "komut": "node --test test/goc-243-stok-acilis.test.mjs",
+  "commit": "7e8d322862889bd9c04b90dd32edd792557ace63",
+  "dal": "worktree-agent-a294d4187e1bf9872",
+  "kirli": 2,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T17:46:13.678Z",
+  "sure_sn": 2.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 1,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2-k7/kanit/2026-11-13/c5a2-is7-goc243-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a294d4187e1bf9872",
+  "ham_cikti_sha256": "935c8459a64d67e64566c537e30b51562d225a735db9b9ea4b9ade8df63b15b7",
+  "ham_cikti_bayt": 1080
+}
