@@ -1,8 +1,8 @@
 {
  "dil": "destekofis-cari/3",
  "bugun": "2026-06-15",
- "aciklama": "Bakım 14: S130'un SUS alanları — iki zaman okuması ayrışıyor (Q1, Q1b — SK-28 (a)), şüpheliden düşen bağlı çek (Q2 — SK-28 (b)), taksit kartı (Q3) ve verilen avans (Q4 — SK-27); BİLİNEN SINIRLAR — S133 = C (Q5 SUS; Q5b en son satış karta eşit değil — Y9-2 değer), S134 = C (Q6 kilitli netleşme SUS; Q7 kilitten sonra — S95 değer), S135 = C (Q8 SK-20 + S135)",
- "dayanak": "KARARLAR.md §25 (Y14-5, Y14-6, Y14-11 … Y14-14), §21 (Y9-2, SK-20), §17 (S95), §16 (C16.2), §13 C13.4 (11)",
+ "aciklama": "Bakım 14: S130'un SUS alanları — iki zaman okuması ayrışıyor (Q1, Q1b — SK-28 (a)), şüpheliden düşen bağlı çek (Q2 — SK-28 (b)), taksit kartı (Q3) ve verilen avans (Q4 — SK-27); BİLİNEN SINIRLAR — S133 = C (Q5 SUS; Q5b en son satış karta eşit değil — Y9-2 değer), S134 = C (Q6 kilitli netleşme SUS; Q7 kilitten sonra — S95 değer), S135 = C (Q8 SK-20 + S135) · bakım 15: S136 A — Q3 (kararın örneği: gecikmiş 700, kart göstergeleri değişmez) ve Q4 (verilen avans: Borç 200, avans 200) DEĞERLE; S137 = C / S138 = C — Q1 / Q1b / Q2 BİLİNEN SINIR",
+ "dayanak": "KARARLAR.md §25 (Y14-5, Y14-6, Y14-11 … Y14-14), §21 (Y9-2, SK-20), §17 (S95), §16 (C16.2), §13 C13.4 (11), §26 (Y15-1, Y15-2, Y15-10, Y15-11)",
  "elleBeklenen": {
   "k1:cari:Q1:bakiye": 90000,
   "k1:hareket:q1x:kalan": 60000,
@@ -45,15 +45,25 @@
   "k1:takvim:hareket:q7a": {"amount": 30000, "dueDate": "2026-06-02", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -13, "cari": "Q7", "person": "Kâzım Kilitsiz"},
   "k1:cari:Q8:bakiye": 90000,
   "k1:kart:KQ8:var": true,
-  "k1:kart:KQ8:toplam": 90000
+  "k1:kart:KQ8:toplam": 90000,
+  "k1:cari:Q3:gecikmis": 70000,
+  "k1:hareket:q4x:kalan": 50000,
+  "k1:takvim:hareket:q4x": {"amount": 20000, "dueDate": "2026-06-01", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -14, "cari": "Q4", "person": "Kenan Avanslı"},
+  "k1:vadeTakip:hareket:q4x": {"amount": 20000, "date": "2026-06-01", "direction": "in"},
+  "k1:projeksiyon:hareket:q4x": {"amount": 20000, "date": "2026-06-01", "direction": "in"},
+  "k1:takvim:hareket:q4o": {"amount": 20000, "dueDate": "2026-06-02", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -13, "cari": "Q4", "person": "Kenan Avanslı"},
+  "k1:vadeTakip:hareket:q4o": {"amount": 20000, "date": "2026-06-02", "direction": "in"},
+  "k1:projeksiyon:hareket:q4o": {"amount": 20000, "date": "2026-06-02", "direction": "in"},
+  "k1:cari:Q4:gecikmis": 40000,
+  "k1:takvim:cariToplam:Q4": 40000,
+  "k1:vadeTakip:cariToplam:Q4": 40000,
+  "k1:projeksiyon:cariToplam:Q4": 40000
  },
- "elleYok": ["k1:takvim:hareket:q1x", "k1:vadeTakip:hareket:q1x", "k1:projeksiyon:hareket:q1x", "k1:takvim:fatura:Q1F", "k1:takvim:cariToplam:Q1", "k1:cari:Q1:gecikmis", "k1:takvim:hareket:q1bx", "k1:vadeTakip:hareket:q1bx", "k1:projeksiyon:hareket:q1bx", "k1:takvim:fatura:Q1bF", "k1:takvim:cariToplam:Q1b", "k1:cari:Q1b:gecikmis", "k1:takvim:hareket:q2x", "k1:vadeTakip:hareket:q2x", "k1:projeksiyon:hareket:q2x", "k1:takvim:fatura:Q2F", "k1:takvim:cariToplam:Q2", "k1:cari:Q2:gecikmis", "k1:takvim:hareket:q3x", "k1:vadeTakip:hareket:q3x", "k1:projeksiyon:hareket:q3x", "k1:takvim:fatura:Q3F", "k1:takvim:cariToplam:Q3", "k1:cari:Q3:gecikmis", "k1:takvim:hareket:q4o", "k1:vadeTakip:hareket:q4o", "k1:projeksiyon:hareket:q4o", "k1:takvim:hareket:q4x", "k1:vadeTakip:hareket:q4x", "k1:projeksiyon:hareket:q4x", "k1:takvim:cariToplam:Q4", "k1:cari:Q4:gecikmis", "k1:cari:Q5:gecikmis", "k1:kart:KQ5:kalan", "k1:hareket:q5x:kalan", "k1:takvim:hareket:q5x", "k1:cari:Q6:gecikmis", "k1:hareket:q6b:kalan", "k1:hareket:q6a:kalan", "k1:takvim:hareket:q6a", "k1:cari:Q8:gecikmis", "k1:kart:KQ8:kalan", "k1:hareket:q8x:kalan", "k1:takvim:hareket:q8x"],
+ "elleYok": ["k1:takvim:hareket:q1x", "k1:vadeTakip:hareket:q1x", "k1:projeksiyon:hareket:q1x", "k1:takvim:fatura:Q1F", "k1:takvim:cariToplam:Q1", "k1:cari:Q1:gecikmis", "k1:takvim:hareket:q1bx", "k1:vadeTakip:hareket:q1bx", "k1:projeksiyon:hareket:q1bx", "k1:takvim:fatura:Q1bF", "k1:takvim:cariToplam:Q1b", "k1:cari:Q1b:gecikmis", "k1:takvim:hareket:q2x", "k1:vadeTakip:hareket:q2x", "k1:projeksiyon:hareket:q2x", "k1:takvim:fatura:Q2F", "k1:takvim:cariToplam:Q2", "k1:cari:Q2:gecikmis", "k1:takvim:hareket:q3x", "k1:vadeTakip:hareket:q3x", "k1:projeksiyon:hareket:q3x", "k1:takvim:fatura:Q3F", "k1:takvim:cariToplam:Q3", "k1:cari:Q5:gecikmis", "k1:kart:KQ5:kalan", "k1:hareket:q5x:kalan", "k1:takvim:hareket:q5x", "k1:cari:Q6:gecikmis", "k1:hareket:q6b:kalan", "k1:hareket:q6a:kalan", "k1:takvim:hareket:q6a", "k1:cari:Q8:gecikmis", "k1:kart:KQ8:kalan", "k1:hareket:q8x:kalan", "k1:takvim:hareket:q8x"],
  "elleBelirsiz": [
-  ["cari Q1 S130 görünümü tanımsız", "SK-28 (a)", "KULLANICIYA SORULMALI"],
-  ["cari Q1b S130 görünümü tanımsız", "SK-28 (a)"],
-  ["cari Q2 S130 görünümü tanımsız", "SK-28 (b)"],
-  ["cari Q3 S130 görünümü tanımsız", "SK-27"],
-  ["cari Q4 S130 görünümü tanımsız", "SK-27"],
+  ["cari Q1 S130 görünümü tanımsız", "S137 = C", "BİLİNEN SINIR"],
+  ["cari Q1b S130 görünümü tanımsız", "S137 = C"],
+  ["cari Q2 S130 görünümü tanımsız", "S138 = C", "BİLİNEN SINIR"],
   ["cari Q5 tanımsız", "S133 = C", "BİLİNEN SINIR"],
   ["cari Q6 net görünüm tanımsız", "S134 = C", "BİLİNEN SINIR"],
   ["cari Q8 tanımsız", "SK-20", "S123 = C", "S135 = C"]

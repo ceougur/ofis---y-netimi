@@ -1,0 +1,32 @@
+{
+  "ad": "kahineski15-cari-oz-utc",
+  "komut": "flock -s -n /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock python3 -I -B test/bagimsiz/cari/oz-test.py",
+  "commit": "ead8f4b3b284aa5453341d1dd8a15d5af1f38839",
+  "dal": "worktree-agent-a98fc03cad09a36cd",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T08:07:06.261Z",
+  "sure_sn": 26.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6295,
+    "gecen": 6295,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski15-kanit/2026-11-13/kahineski15-cari-oz-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a98fc03cad09a36cd",
+  "ham_cikti_sha256": "aa74688990df5a4fd75224d3dafbca2c7438c2b9d70b22778958b7d7988cc747",
+  "ham_cikti_bayt": 22793
+}

@@ -1,7 +1,7 @@
 {
  "dil": "destekofis-cari/3",
  "bugun": "2026-04-15",
- "aciklama": "Bakım 8 (S110 = A): kart açılırken açık borç kart tutarından fazlaysa kart KENDİ borcunu taşır — elle kart (kararın örneği E1, E2, E4, E7, E8, E14), satışla açılan kart (E5, E6, E9), sınır O = T (E3, eski kural aynen), karşı yönlü kalem (E10, susar), SK-19 (E11–E13) — bakım 9 (S120 A): kararın üç örneği AYNEN, değer yazılır",
+ "aciklama": "Bakım 8 (S110 = A): kart açılırken açık borç kart tutarından fazlaysa kart KENDİ borcunu taşır — elle kart (kararın örneği E1, E2, E4, E7, E8, E14), satışla açılan kart (E5, E6, E9), sınır O = T (E3, eski kural aynen), karşı yönlü kalem (E10, susar), SK-19 (E11–E13) — bakım 9 (S120 A): kararın üç örneği AYNEN, değer yazılır · bakım 15: S143 = C — BİLİNEN SINIR (§26), beklenti SUS'a çevrildi",
  "dayanak": "KARARLAR.md §20 (S110 A; Y8-1 … Y8-6; SK-19), §21 (S120 A — E11–E13), §13 C13.4 / C13.5, §18 Y6-4, §19 Y7-2 / Y7-3",
  "elleBeklenen": {
   "k1:cari:E1:bakiye": 150000,
@@ -155,7 +155,6 @@
   "k1:cari:E10:bakiye": 120000,
   "k1:fatura:E10F:acik": 60000,
   "k1:kart:KE10:toplam": 90000,
-  "k1:kart:KE10:kalan": 90000,
   "k1:cari:E11:bakiye": 180000,
   "k1:kart:KE11:var": true,
   "k1:kart:KE11:toplam": 90000,
@@ -235,9 +234,10 @@
   "k1:kart:KE13:taksit1:odenen": 0,
   "k1:kart:KE13:taksit2:odenen": 0
  },
- "elleYok": ["k1:kart:KE5:mevcutBorc", "k1:kart:KE9:mevcutBorc", "k1:hareket:e10b:kalan", "k1:takvim:hareket:e10b", "k1:cari:E10:gecikmis"],
+ "elleYok": ["k1:kart:KE5:mevcutBorc", "k1:kart:KE9:mevcutBorc", "k1:hareket:e10b:kalan", "k1:takvim:hareket:e10b", "k1:cari:E10:gecikmis", "k1:kart:KE10:kalan"],
  "elleBelirsiz": [
-  ["cari E10 net görünüm tanımsız"]
+  ["cari E10 net görünüm tanımsız"],
+  ["kart KE10", "S143 = C"]
  ],
  "adimlar": [
   {"id": "ce1", "islem": "cari_ac", "ad": "E1", "isim": "Ebru Örnek", "tarih": "2026-02-01"},

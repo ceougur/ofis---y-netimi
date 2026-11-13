@@ -1,0 +1,28 @@
+başladı 10:34:24 yük 1.20 1.43 0.73 · ağaç 62634961 · ana dalla ürün farkı (kâhin + kanıt dışında BOŞ olmalı): []
+liste üretimi çıkış 0
+YAPIM-ASAMASI.json YAZILDI (test/bagimsiz/cari/YAPIM-ASAMASI.json): 41 kayıt (0 okuma hatası) — paketlere göre: Ç5-B tur 2 3, AYRIŞTIRILMADI 38. Bu bir denetim sonucu DEĞİLDİR; liste varsayılan koşuyla denetlenir.
+ESKİ LİSTEYLE FARK: yeni 41, kapanan 5, değeri değişen 0 (eski liste 5 kayıt → yeni 41)
+ayrıştırılan 38 · toplam 41 · paketler {'Ç5-B tur 2': 24, 'eşleme': 17} · 'paketler' alanı türü list
+mobil kabul üretimi çıkış 0 :: # kabul.json yazıldı
+kabul farkı çıkış 0 :: sınıf: {}|senaryo: {}|[]|
+aday commit df0885f5 · temiz mi: 0
+liste 2. üretim çıkış 0 · fark (BOŞ olmalı): [] ESKİ LİSTEYLE FARK: yeni 0, kapanan 0, değeri değişen 0 (eski liste 41 kayıt → yeni 41)
+cari öz test UTC çıkış 0 :: [kanit] k16-cari-oz-UTC: GEÇTİ · çıkış 0 · 6373/6373 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit df0885f +1 izlen
+mobil öz test UTC çıkış 0 :: [kanit] k16-mobil-oz-UTC: GEÇTİ · çıkış 0 · 158/158 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit df0885f +1 izlenm
+cari öz test Europe/Istanbul çıkış 0 :: [kanit] k16-cari-oz-Europe-Istanbul: GEÇTİ · çıkış 0 · 6373/6373 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit df08
+mobil öz test Europe/Istanbul çıkış 0 :: [kanit] k16-mobil-oz-Europe-Istanbul: GEÇTİ · çıkış 0 · 158/158 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit df088
+ci.yml'deki kâhin adımı sayısı 10
+0 kahin-defter UTC :: [kanit] k16-kahin-defter-UTC: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit df0885f +1 izlenmeyen � ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-v8QdDE
+0 kahin-defter Europe/Istanbul :: [kanit] k16-kahin-defter-Europe-Istanbul: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit df0885f +1  ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-UTYxLr
+0 kahin-cari UTC :: [kanit] k16-kahin-cari-UTC: GEÇTİ · çıkış 0 · 16449/16449 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit df0885f +1 izlenmeyen ÖZET [2.5.0]: 90 senaryo, 16490 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 41 yapım aşaması (YAPIM-ASAMASI.json; paketlere g
+0 kahin-cari Europe/Istanbul :: [kanit] k16-kahin-cari-Europe-Istanbul: GEÇTİ · çıkış 0 · 16449/16449 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit df0885f + ÖZET [2.5.0]: 90 senaryo, 16490 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 41 yapım aşaması (YAPIM-ASAMASI.json; paketlere g
+0 kahin-tutar UTC :: [kanit] k16-kahin-tutar-UTC: GEÇTİ · çıkış 0 · 3559/3559 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit df0885f +1 izlenmeyen  ÖZET: 3 tohum × 50 satır, 3559 denetim, 0 fark (BULGU 0), 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-tutar-UBIygI
+0 kahin-ebelge-model UTC :: [kanit] k16-kahin-ebelge-model-UTC: GEÇTİ · çıkış 0 · 114/114 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit df0885f +1 izlenm 
+0 kahin-ebelge-mutasyon UTC :: [kanit] k16-kahin-ebelge-mutasyon-UTC: GEÇTİ · çıkış 0 · 55/55 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit df0885f +1 izlen 
+0 kahin-ebelge-senaryo UTC :: [kanit] k16-kahin-ebelge-senaryo-UTC: GEÇTİ · çıkış 0 · 27/27 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit df0885f +1 izlenm 
+0 kahin-muhasebe-model UTC :: [kanit] k16-kahin-muhasebe-model-UTC: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit df0885f +1 izle 
+0 kahin-muhasebe-mutasyon UTC :: [kanit] k16-kahin-muhasebe-mutasyon-UTC: GEÇTİ · çıkış 0 · 277/277 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit df0885f +1 i 
+0 kahin-maliyet UTC :: [kanit] k16-kahin-maliyet-UTC: GEÇTİ · çıkış 0 · 41306/41306 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit df0885f +1 izlenme 
+0 kahin-mobil-yazma UTC :: [kanit] k16-kahin-mobil-yazma-UTC: GEÇTİ · çıkış 0 · 54/54 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit df0885f +1 izlenmeye 
+dört kapı testi çıkış 0 # tests 73 # pass 73 # fail 0 
+bitti 11:41:23 yük 2.35 4.15 5.59 · aday df0885f5 · temiz mi: 0

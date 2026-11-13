@@ -1,0 +1,10 @@
+kahin-defter npm run test:kahin-defter
+kahin-cari npm run test:kahin-cari
+kahin-tutar npm run test:kahin-tutar
+kahin-ebelge-model python3 test/bagimsiz/ebelge/test_model.py
+kahin-ebelge-mutasyon python3 test/bagimsiz/ebelge/mutasyon.py
+kahin-ebelge-senaryo npm run test:kahin-ebelge -- --senaryo test/bagimsiz/ebelge/senaryolar --ux15 acik
+kahin-muhasebe-model python3 test/bagimsiz/muhasebe/test_model.py
+kahin-muhasebe-mutasyon python3 test/bagimsiz/muhasebe/mutasyon.py
+kahin-maliyet npm run test:kahin-maliyet
+kahin-mobil-yazma npm run test:kahin-mobil-yazma -- --haric E02-es-havale-pos-mobil,E02-es-havale-pos-masaustu

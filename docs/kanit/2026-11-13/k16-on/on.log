@@ -1,0 +1,61 @@
+başladı 09:24:57 yük 2.84 2.48 2.05 · ağaç 68eb2d36 · ana dalla ürün farkı (kâhin + kanıt dışında BOŞ olmalı): []
+liste üretimi çıkış 0
+  − kapanan: d39-c5-s130-supheli-kalemleri k1:hareket:n11x:kalan · program 50000 / kâhin 20000 · paket Ç5-B tur 2
+  − kapanan: d39-c5-s130-supheli-kalemleri k1:kasa · program 250000 / kâhin 280000 · paket Ç5-B tur 2
+  − kapanan: d39-c5-s130-supheli-kalemleri k1:kasaRapor:giris · program 250000 / kâhin 280000 · paket Ç5-B tur 2
+liste farkı: önceki 5 → yeni 41 · kapanan 5 · yeni 41 · değeri değişen 0 · paketler {'Ç5-B tur 2': 3, 'AYRIŞTIRILMADI': 38}
+yeni kayıtların senaryoları: {'d42-c5-s140-s151-satis-karti-iade': 16, 'd43-c5-bilinen-sinir-sus15': 19, 'd44-c5-s155-s158': 6}
+  YENİ d42-c5-s140-s151-satis-karti-iade | k1:cari:T6:gecikmis | beklenen 0 | program 20000
+  YENİ d42-c5-s140-s151-satis-karti-iade | k1:kart:KT1:odenen | beklenen 0 | program 50000
+  YENİ d42-c5-s140-s151-satis-karti-iade | k1:kart:KT1:taksit1:odenen | beklenen 0 | program 50000
+  YENİ d42-c5-s140-s151-satis-karti-iade | k1:kart:KT1:toplam | beklenen 100000 | program 70000
+  YENİ d42-c5-s140-s151-satis-karti-iade | k1:kart:KT2:odenen | beklenen 0 | program 30000
+  YENİ d42-c5-s140-s151-satis-karti-iade | k1:kart:KT2:taksit1:odenen | beklenen 0 | program 30000
+  YENİ d42-c5-s140-s151-satis-karti-iade | k1:kart:KT3:odenen | beklenen 0 | program 50000
+  YENİ d42-c5-s140-s151-satis-karti-iade | k1:kart:KT3:taksit1:odenen | beklenen 0 | program 50000
+  YENİ d42-c5-s140-s151-satis-karti-iade | k1:kart:KT3:taksit2:odenen | beklenen 0 | program okunamadı
+  YENİ d42-c5-s140-s151-satis-karti-iade | k1:kart:KT3:toplam | beklenen 100000 | program 50000
+  YENİ d42-c5-s140-s151-satis-karti-iade | k1:kart:KT4:toplam | beklenen 100000 | program 30000
+  YENİ d42-c5-s140-s151-satis-karti-iade | k1:kart:KT6:toplam | beklenen 100000 | program 60000
+  YENİ d42-c5-s140-s151-satis-karti-iade | k1:kart:KT7:taksit3:odenen | beklenen 0 | program okunamadı
+  YENİ d42-c5-s140-s151-satis-karti-iade | k1:kart:KT7:toplam | beklenen 90000 | program 60000
+  YENİ d42-c5-s140-s151-satis-karti-iade | k1:kart:KT8:toplam | beklenen 100000 | program 70000
+  YENİ d42-c5-s140-s151-satis-karti-iade | k1:takvim:cariToplam:T6 | beklenen 0 | program 20000
+  YENİ d43-c5-bilinen-sinir-sus15 | adim:u1k:durum | beklenen ok | program ret
+  YENİ d43-c5-bilinen-sinir-sus15 | adim:u2k:durum | beklenen ok | program ret
+  YENİ d43-c5-bilinen-sinir-sus15 | k1:cari:U1:acikEsitBakiye | beklenen False | program True
+  YENİ d43-c5-bilinen-sinir-sus15 | k1:cari:U1:acikToplam | beklenen 0 | program 100000
+  YENİ d43-c5-bilinen-sinir-sus15 | k1:cari:U1:bakiye | beklenen -10000 | program 100000
+  YENİ d43-c5-bilinen-sinir-sus15 | k1:cari:U1:gecikmis | beklenen 0 | program 100000
+  YENİ d43-c5-bilinen-sinir-sus15 | k1:cari:U2:bakiye | beklenen 40000 | program 100000
+  YENİ d43-c5-bilinen-sinir-sus15 | k1:cari:U2:gecikmis | beklenen 40000 | program 80000
+  YENİ d43-c5-bilinen-sinir-sus15 | k1:hareket:u1x:kalan | beklenen 0 | program 100000
+  YENİ d43-c5-bilinen-sinir-sus15 | k1:hareket:u2x:kalan | beklenen 0 | program 40000
+  YENİ d43-c5-bilinen-sinir-sus15 | k1:kart:KU1:kalan | beklenen 0 | program 100000
+  YENİ d43-c5-bilinen-sinir-sus15 | k1:kart:KU1:taksit1:odenen | beklenen 50000 | program 0
+  YENİ d43-c5-bilinen-sinir-sus15 | k1:kart:KU1:taksit2:odenen | beklenen 50000 | program 0
+  YENİ d43-c5-bilinen-sinir-sus15 | k1:kart:KU2:kalan | beklenen 0 | program 40000
+  YENİ d43-c5-bilinen-sinir-sus15 | k1:kart:KU2:taksit1:odenen | beklenen 20000 | program 0
+  YENİ d43-c5-bilinen-sinir-sus15 | k1:kart:KU2:taksit2:odenen | beklenen 20000 | program 0
+  YENİ d43-c5-bilinen-sinir-sus15 | k1:kasa | beklenen 170000 | program 0
+  YENİ d43-c5-bilinen-sinir-sus15 | k1:kasaRapor:giris | beklenen 170000 | program 0
+  YENİ d43-c5-bilinen-sinir-sus15 | k1:takvim:fatura:U2F | beklenen {'amount': 40000, 'direction': 'in'} | program {'amount': 60000, 'direction': 'in'}
+  YENİ d44-c5-s155-s158 | k1:kart:KY2:odenen | beklenen 0 | program 30000
+  YENİ d44-c5-s155-s158 | k1:kart:KY2:taksit1:odenen | beklenen 0 | program 30000
+  YENİ d44-c5-s155-s158 | k1:kart:KY4:taksit3:odenen | beklenen 0 | program okunamadı
+  YENİ d44-c5-s155-s158 | k1:kart:KY4:toplam | beklenen 90000 | program 60000
+  YENİ d44-c5-s155-s158 | k1:kart:KY5:odenen | beklenen 0 | program 40000
+  YENİ d44-c5-s155-s158 | k1:kart:KY5:taksit1:odenen | beklenen 0 | program 40000
+  KAPANAN d39-c5-s130-supheli-kalemleri | adim:n11t:durum
+  KAPANAN d39-c5-s130-supheli-kalemleri | k1:cari:N11:bakiye
+  KAPANAN d39-c5-s130-supheli-kalemleri | k1:hareket:n11x:kalan
+  KAPANAN d39-c5-s130-supheli-kalemleri | k1:kasa
+  KAPANAN d39-c5-s130-supheli-kalemleri | k1:kasaRapor:giris
+kahin-cari UTC çıkış 0 [kanit] k16-on-kahin-cari-UTC: GEÇTİ · çıkış 0 · 16449/16449 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 68eb2d3 +1 değişmiş dosya ÖZET [2.5.0]: 90 senaryo, 16490 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 41 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: AYRIŞTIRILMADI 38, Ç5-
+mobil kabul üretimi çıkış 0 :: # kabul.json yazıldı
+mobil kabul dosyası değişti mi:  M test/bagimsiz/mobil-yazma/kabul.json 
+kabul farkı çıkış 0 :: sınıf: {}|senaryo: {}|[]|
+mobil öz test UTC çıkış 1 :: [kanit] k16-on-mobil-oz-UTC: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 157/158 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit 68eb2d3 +2 d
+kâhin ↔ program (mobil yazma) çıkış 0 :: [kanit] k16-on-kahin-mobil-yazma: GEÇTİ · çıkış 0 · 54/54 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 68eb2d3 +2 değişmiş dosya +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v
+bitti 09:46:44 yük 6.48 5.93 4.43 · ağaç durumu (commit'siz; sonra sıfırlanır): 2 dosya
+çıkış 0
