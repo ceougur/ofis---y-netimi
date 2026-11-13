@@ -193,6 +193,63 @@ etkisi yok (iki tarafta da ret, kayıt yok, iki kanal aynı). Karar ürün sahib
 bulunamadı, 404") karar olarak yazılırsa kâhin 404 `bank-account-missing`'e, (b) "türü uymayan hesap → 400 `bank-account-invalid`" yazılırsa program düzeltilir;
 o zamana dek `ci.yml` `--haric` listesinde E02 çifti adıyla kalır.
 
+## 2.5.0 bakımı — S129 (taksit kartının göstergeleri tek kuyruktan) (13.11.2026; kodu görmeyen AYRI el; ders 5, 40, 43)
+
+**Bu bölümün ilk commit'i yalnız YORUMDUR (ders 40 — önce kural, sonra kod); senaryo / mutant / öz test sayıları kod ve kanıt commit'lerinde eklenir.**
+
+**Girdi (AYNEN; ana oturumun özet dosyası `scratchpad/kahin-mobil-s129-kararlar.md` — "programın hesap / görünüm davranışı hakkında bilgi içermez"):**
+- S129 KARAR (kullanıcı, 12.11.2026): "S129 = A — taksit kartının penceresindeki 'Tahsil Edilen' / 'Kalan' göstergeleri, Taksitler listesindeki aynı sütunlar ve taksit satırının
+  'Ödenen'i de TEK KUYRUKTAN gösterilir (ekranda tek sayı: örnekte kart 900, bağsız tahsilat 500 → Tahsil Edilen 500 · Kalan 400; kart 600, bağsız tahsilat 800 → Kalan 0 ·
+  Tamamlandı); tahsilat formunun sınırı / sorusu / önerilen tutarı S118 = B'deki gibi kartın KENDİ kalanından kalır."
+- İLGİLİ ÖNCEKİ KARAR (kullanıcı 11.11.2026 06:14 UTC) — S118 = B: "taksit tahsilatında sınır / soru / önerilen tutar kartın KENDİ kalanından (kural değişmedi)."
+- NOT (ana oturum): tek kuyruk = cari kâhininin bu alanlar için verdiği değer (kararın kâhindeki karşılığı orada bakım 14 ile işlendi — `test/bagimsiz/cari/KARARLAR.md` §25 Y14-10);
+  kendi başına yeni kuyruk kuralı yazılmaz; mobil gösterim için ayrı kural YOK ("ekranda tek sayı"); cari kâhini bakım 13 / 14 ile değişti — kabul yeniden üretilir, elle beklentiler
+  tek tek yeniden denetlenir.
+- Birlikte okunan (kâhinin kendi belgesi): yukarıdaki K9, V10, "KARAR K8-AVANS" (kullanıcı 29.10.2026: "Kart tutarları (Ödenen avansı da içerir) bugünkü gibi kalır"), S3;
+  cari kâhininin `KARARLAR.md` §25 (Y14-10, P1 / P2 / P3) ve `model.py` (`kart_odenen`, `tyk250`, `kart_ac`, `kontrol`'ün kart bölümü — yalnız içe aktarılır, DEĞİŞTİRİLMEZ).
+
+### Kâhinin BUGÜNKÜ okuması (bakım 29.10.2026 sonrası, değişiklikten önce — açıkça)
+- `kart:<k>:odenen` = kartın KENDİ tahsilatlarının (kart seçilerek girilen, `kart_tahsilat`) toplamı, avans DAHİL (K8-AVANS); `kart:<k>:kalan` = toplam − bu (avanslı kartta liste
+  [0, toplam − Ödenen]); `kart:<k>:taksit<i>:odenen` = kendi tahsilatlarının (en çok kart toplamı) en eski taksitten dağılımı (V10). Kaynak `kahin.py` `kontrol()` — kartın kendi
+  tablosu (`K["odemeler"]`); cari kâhininin kart değeri OKUNMUYOR (cari kâhini yalnız bakiye / fatura açığı / açılış kalanı için, kural seti `2.4.6`). Akış modeli (`Akis`) aynı okuma.
+- Karta BAĞLANMADAN alınan tahsilat (taksit kartlı cariye taksit dışı tahsilat — rastgele üretici bunu kurar; S3 = `yalniz_cari` kipinde telefonun tek yolu) yalnız cari bakiyesini
+  düşürür, kartın göstergelerine dokunmaz. Yani bugünkü okuma S129'un **B**'sidir (kartın kendi hesabı).
+- Tahsilat sınırı / sorusu (K9: 409 `plan-overpay`, 409 `plan-paid`, Fazlasını Avans Yaz yetkisi) kartın KENDİ kalanından (kendi tahsilatları) — S118 = B ile aynı.
+
+### Yorumlar (ders 40 — karardan; kod yazılmadan ÖNCE)
+- **YS129-1 — üç alan tek kuyruktan:** `kart:<k>:odenen` ("Tahsil Edilen" / liste sütunu), `kart:<k>:kalan` ("Kalan") ve `kart:<k>:taksit<i>:odenen` (taksit satırının "Ödenen"i) =
+  cari kâhininin VARSAYILAN kural setinin (`2.5.0` — tek yükümlülük kuyruğu, KARARLAR C13.4 (5) / (7), §25 Y14-10) AYNI çevrilmiş adımlar için verdiği kart ödeneni (`kart_odenen`:
+  kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı — S50); Kalan = toplam − bu. Kâhin kendi kuyruğunu YAZMAZ: aynı çevrilmiş adımlar cari kâhinine bir kez daha
+  `2.5.0` kipinde verilir, yalnız bu üç alan oradan okunur. Kararın iki örneği elle senaryo olur (kart 900 = 3 × 300 + bağsız 500 → Tahsil Edilen 500 · Kalan 400, taksitler
+  300 / 200 / 0, bakiye 400; kart 600 = 2 × 300 + bağsız 800 → Tahsil Edilen 600 · Kalan 0, taksitler 300 / 300, bakiye −200 — cari kâhininin P1 / P2'si ile aynı sayılar).
+- **YS129-2 — DEĞİŞMEYEN (S118 = B; kararın kendi sözü):** K9'un bütün ret denetimleri (`plan-overpay`, `plan-paid`, Fazlasını Avans Yaz ve yetkisi) kartın KENDİ kalanından
+  (kendi tahsilatları) okunmaya DEVAM eder; bağsız tahsilat kartın sınırını düşürmez (örnek: kart 900 + bağsız 500 → kart seçilerek 900'e kadar tahsilat kabul, 900'ü aşan
+  `plan-overpay`). `kart:<k>:fazla` (Fazlasını Avans Yaz ile yazılan avans) ve `kart:<k>:tahsilatSayisi` kartın kendi tahsilatlarından (göstergeler kararın saydıkları değil).
+  Bakiye, fatura açığı, açılış kalanı, Kasa / banka / POS / portföy AYNEN (`2.4.6` kipi; bu bakım dokunmaz).
+- **YS129-3 — mobil = masaüstü (NOT (4)):** karar "ekranda tek sayı" der; mobil gösterim için ayrı kural yok. Kâhin üç alanı kanaldan bağımsız aynı kaynaktan yazar (eşdeğerlik
+  D2 değişmez). Mobilin `taksit = yalniz_cari` kipinde telefonun bağsız tahsilatı artık kartın göstergelerini de düşürür (S3'ün gerekçesindeki "kartı düşürmez" okuması bu
+  kararla eskidi — S3 sorusunun kendisi ve seçimi değişmez).
+- **YS129-4 — iki kararın ayrıştığı alt durum: KARAR K8-AVANS × S129 (kâhin SEÇMEZ — ders 43):** kartın KENDİ tahsilatları kart toplamını aştığında (Fazlasını Avans Yaz ile — E05 t3,
+  E41, R1–R3'teki avanslar) K8-AVANS "Ödenen avansı da içerir" der; tek kuyruğun (cari kâhininin) kart ödeneni kart toplamını aşmaz (fazlası carinin alacağıdır — bakiye iki okumada
+  aynı). S129'un sözü bu durumu ayrıca söylemiyor. İki okuma: **(a)** S129'un harfi — Tahsil Edilen = tek kuyruk ödeneni (≤ toplam); **(b)** K8-AVANS sürer — Tahsil Edilen = tek kuyruk
+  ödeneni + kartın kendi avansı (`fazla`). Kâhin `kart:<k>:odenen`'de iki değeri LİSTE yazar (ikisi de kabul — mobil kâhinin K8-AVANS'taki "Kalan" düzeni); `kalan` listesi [0, toplam −
+  (b)] (a'nın Kalan'ı 0 zaten içinde — değer değişmez); taksit ödenenleri iki okumada aynı (taksit tutarını aşmaz — V10). Bakiye, Kasa, banka, `fazla` iki okumada aynı → KULLANICIYA
+  SORULMALI (aşağıda). Mutant 51 (K8-AVANS: "Ödenen avansı dışlar") okuma (a) ile aynı değeri verdiği için karar gelene dek YAKALANAMAZ — bilerek yakalanmayan diye ayrı sayılır.
+- **YS129-5 — cari kâhininin sustuğu yer:** cari kâhini `2.5.0` kipinde o carinin kuyruğunu tanımsız sayarsa (C13.4 (11) nedeni) ya da kartın kabulünü iki dünyalı bulursa (SK-18),
+  kâhin o kartın üç gösterge alanını YAZMAZ (SUS; öbür alanlar yazılır). `2.5.0` kipi kartı reddederse (G2 (b)) bu katmanın ön denetimi eksiktir → senaryo hatası (sessizce
+  geçilmez — `cari_sonuclari`'nın bugünkü düzeni).
+- **YS129-6 — akış modeli (`Akis`, kâhinden ve cari kâhininden bağımsız):** üreticinin kurduğu taksit kartlı cari yalnız "açılış = kart tutarı + Carinin Mevcut Borcunu Taksitlendir
+  kartı" ve tahsilatlardan oluşur (fatura / ödeme / elle kayıt yok); bu alt kümede tek kuyruğun TEK borç kalemi kartın taksitleridir → kararın örneklerindeki hesap: Tahsil Edilen =
+  min(toplam, carinin bütün tahsilatları), en eski taksitten. Bu, kararın örneğinin aynı alt kümeye uygulanmasıdır (genel kuyruk kuralı DEĞİL; ÇIKARIM — fark çıkarsa iki elden
+  biri yanlış: incelenir). YS129-4'ün iki okuması akışta da liste.
+- **YS129-7 — etiket:** değişen üç alan KULLANICI (S129 A); S118 = B alanları kendi etiketiyle; YS129-4 listesi KULLANICI (K8-AVANS) + KARARDA YOK.
+
+### KULLANICIYA SORULMALI (S129 bakımı; kâhin bu alt durumda SEÇMEZ — ders 43, SORU DÜZENİ; bakiye her seçenekte aynı)
+- **SM-1 (K8-AVANS × S129 — Fazlasını Avans Yaz ile ödenmiş karttaki "Tahsil Edilen"; UÇ DURUM DEĞİL — her avanslı kart):** K: açılış 1.200, kart 1.200 / 3; kart tahsilatı 500, sonra
+  800 Fazlasını Avans Yaz (yönetici) → avans 100, bakiye −100. **A (S129'un harfi — tek kuyruk):** Tahsil Edilen 1.200 · Kalan 0 (avans yalnız carinin alacağında görünür) / **B
+  (K8-AVANS sürer):** Tahsil Edilen 1.300 · Kalan 0 ya da −100 / **C:** uç durum böyle kalsın (BİLİNEN SINIR — kâhin iki değeri de kabul eder). Taksit satırları (400 / 400 / 400),
+  bakiye, Kasa iki seçenekte de aynı.
+
 ## Senaryo dili `destekofis-mobil-yazma/1`
 
 ```json
