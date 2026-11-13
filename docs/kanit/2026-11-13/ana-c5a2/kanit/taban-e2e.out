@@ -1,0 +1,25 @@
+(node:16552) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16552) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+■ İş 0. Kilitli eski veride Yönetim › Sistem: Kural Değişikliği Farkı uyarıdır (sarı, ne yapılacağı yazılı); eski sürümden kalan satır ayrı
+  ✓ ön koşul: veride kural farkı var (44 madde)
+  ✓ ön koşul: başka sapma yalnız eski sürümden kalan satır (İleri tarihli hareket (Çek/Senet Hareketleri): 1/1)
+  satır: Mutabakat: 2 denetimde sapma var (Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi), İleri tarihli hareket (Çek/Senet Hareketleri) — eski sürümden kalan 1 satır; yeni işlemler engellenmez). Raporlar › Defter Mutabakatı'nda ayrıntıyı görün.
+  ✗ satır kırmızı (hata) değil
+  ✗ satır sarı (uyarı)
+  ✗ 'denetimde sapma var' yazmıyor
+  ✗ eski sürümden kalan satır kendi cümlesinde, kural farkı onun içinde değil: ""
+  ✗ kural farkı ayrı uyarı cümlesinde, madde sayısıyla
+  ✗ ne yapılacağı yazılı (Kural Farkı Düzeltme)
+
+■ Mutabakat Günlüğü ekran açılınca değişmez (zil / günlük davranışı aynı)
+  ✓ günlük satırları aynı (1 → 1)
+  ✓ sayfa hatası yok
+
+BAŞARISIZ: 4 denetim geçti, 6 başarısız.
+
+# tests 10
+# pass 4
+# fail 6

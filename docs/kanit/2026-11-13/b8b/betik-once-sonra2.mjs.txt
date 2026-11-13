@@ -1,0 +1,35 @@
+// Birleşik tur 8b (ek) ÖNCE → SONRA, ikinci kurgu: sözü +45 / +100 gün olan gecikmiş borçlar (tahsilat 100 + 100 + sözsüz 100; ödeme 70 söz +45). Kullanım: node once-sonra2.mjs <kod kökü>
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+
+process.env.HUKUK_LICENSE_URL ||= "http://127.0.0.1:9";
+const root = process.argv[2];
+const { loginAdmin, startTestServer } = await import(pathToFileURL(path.join(root, "test", "helpers.mjs")).href);
+const TODAY = "2026-10-20";
+const day = offset => {
+  const at = new Date(`${TODAY}T00:00:00Z`);
+  at.setUTCDate(at.getUTCDate() + offset);
+  return at.toISOString().slice(0, 10);
+};
+const unwrap = r => (r.data && typeof r.data === "object" && "ok" in r.data ? (r.data.ok ? r.data.data : r.data) : r.data);
+const server = await startTestServer({ now: { time: `${TODAY}T12:00:00+03:00`, fixed: true }, env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
+const c = await loginAdmin(server);
+await c.post("/api/workspace/bank/setup/dismiss", {});
+const must = async p => { const r = await p; if (r.status !== 200) throw new Error(`${r.status} ${JSON.stringify(r.data).slice(0, 200)}`); return unwrap(r); };
+let n = 0;
+for (const [name, type, kind, amount, body] of [
+  ["Uzak Söz p45", "customer", "debt", "100", { dueDate: day(-10), expectedDate: day(45) }],
+  ["Uzak Söz p100", "customer", "debt", "100", { dueDate: day(-10), expectedDate: day(100) }],
+  ["Uzak Sözsüz", "customer", "debt", "100", { dueDate: day(-2) }],
+  ["Uzak Tedarikçi p45", "supplier", "credit", "70", { dueDate: day(-10), expectedDate: day(45) }],
+]) {
+  const a = await must(c.post("/api/workspace/accounts", { name, type, registeredOn: day(-400), phone: `0500 782 ${String(10 + n).padStart(2, "0")} ${String((n += 1)).padStart(2, "0")}`, similarOk: true, force: true }));
+  await must(c.post(`/api/workspace/accounts/${a.id}/entries`, { method: "cash", cashForce: true, similarOk: true, kind, amount, date: day(-30), ...body }));
+}
+const Q = [...["late", "today", "next7", "next30", "next90", "open"].map(p => [p, `preset=${p}`]), ["elle bugün…+30", `from=${day(0)}&to=${day(30)}`], ["elle bugün…+90", `from=${day(0)}&to=${day(90)}`], ["next30 late=0", "preset=next30&late=0"], ["next90 late=0", "preset=next90&late=0"]];
+for (const [label, q] of Q) {
+  const d = await must(c.get(`/api/workspace/overview/vade-takip?${q}`));
+  const t = d.totals;
+  console.log(`${label.padEnd(18)} | gecikmiş tahsil ${t.in.overdue.amount} / ${t.in.overdue.count} | gecikmiş ödeme ${t.out.overdue.amount} / ${t.out.overdue.count} | satır ${d.rows.length} | tahsil edilecek ${t.in.total.amount} | ödenecek ${t.out.total.amount}`);
+}
+await server.close();

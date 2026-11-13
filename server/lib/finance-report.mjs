@@ -208,7 +208,8 @@ const dayNumber = date => Date.parse(`${date}T00:00:00Z`) / DAY_MS;
 /**
  * @param {{ today: string, from?: string, to?: string, late?: boolean, items: Array<{ date: string, direction: "in"|"out"|"", amount: number|null, source: string, label: string, party?: string, detail?: string, ref?: object }> }} input
  */
-export function dueList({ today, from = "", to = "", late = true, items = [] }) {
+// keep (birleşik tur 8, S150 = A): satır kurulduktan SONRA (durumu belli) uygulanan ek süzgeç — Vade Takip'in 'Gecikmiş' hazır aralığı durumu Gecikmiş olan satırları tutar.
+export function dueList({ today, from = "", to = "", late = true, items = [], keep = null }) {
   const rows = [];
   for (const item of items) {
     if (!item || !item.date) continue;
@@ -223,6 +224,7 @@ export function dueList({ today, from = "", to = "", late = true, items = [] }) 
     // söz gününde durur, durumu "Gecikmiş", gün sayısı VADEDEN) tarihten yeniden türetilmez; takvim / zil ile aynı durum, aynı gün sayısı, aynı gecikmiş toplamı.
     const { calendar, ...rest } = item;
     const state = calendar?.state || derived;
+    if (keep && !keep({ date: item.date, state })) continue;
     rows.push({ ...rest, direction: item.direction === "out" ? "out" : item.direction === "in" ? "in" : "", amount, days: calendar?.state ? Number(calendar.days) || 0 : days, state });
   }
   rows.sort((a, b) => (a.date === b.date ? (a.direction === b.direction ? String(a.party || "").localeCompare(String(b.party || ""), "tr") : a.direction === "in" ? -1 : 1) : a.date < b.date ? -1 : 1));

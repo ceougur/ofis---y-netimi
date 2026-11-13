@@ -1,0 +1,24 @@
+[
+ {
+  "yol": "S10 dış artış, SONRA geri yükleme (taramasız) — N5 mutantının üründeki karşılığı",
+  "once": 2,
+  "sonra": 4,
+  "gunluk": [
+   "Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 4 hareket; kapının görmediği yazım: 1 hareket)"
+  ],
+  "alarmBekleniyor": true,
+  "alarmOldu": true,
+  "sonuc": "UYGUN"
+ },
+ {
+  "yol": "S11 dış artış, SONRA geri yükleme — iş parçacığı taraması",
+  "once": 2,
+  "sonra": 4,
+  "gunluk": [
+   "Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 4 hareket; kapının görmediği yazım: 1 hareket)"
+  ],
+  "alarmBekleniyor": true,
+  "alarmOldu": true,
+  "sonuc": "UYGUN"
+ }
+]

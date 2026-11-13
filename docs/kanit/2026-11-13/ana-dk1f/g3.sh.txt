@@ -1,0 +1,10 @@
+#!/bin/bash
+# Ana oturum: Ç5-A tur 1f dar kontrolü G-3'ün YENİDEN ÜRETİMİ — ajanın sondası (probe.mjs, CASE=late-covers) üç kodda: yeni (ana ağaç = 3e2e73a2 ürünü), once (tur 1f'ten önceki ana dal), c5aonce (8e90f9cf^1).
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad; A=$S/ana-dk1f; N=$S/dk-c5a1f-q
+cd $N || exit 1
+for k in yeni:/home/user/ofis---y-netimi once:$S/kahin8y-ag c5aonce:$A/c5aonce; do
+  ad=${k%%:*}; R=${k#*:}
+  for c in ${CASES:-late-covers}; do for ro in 0 1; do
+    timeout -k 5 300 env GIT_DIR=/home/user/ofis---y-netimi/.git MODE=case TPL=$N/tpl WORK=$A/work ROOT=$R CASE=$c REOPEN=$ro TZ=${TZ:-Europe/Istanbul} HUKUK_LICENSE_URL=http://127.0.0.1:9 node --disable-warning=ExperimentalWarning probe.mjs > $A/$ad-$c-$ro.json 2> $A/$ad-$c-$ro.err; echo "$ad $c reopen=$ro çıkış $? · $(head -c 900 $A/$ad-$c-$ro.json)"
+  done; done
+done

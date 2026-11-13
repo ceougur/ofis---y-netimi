@@ -19,6 +19,7 @@ import { methodInput } from "../lib/pay-method.mjs";
 import { systemClock } from "../lib/clock.mjs";
 import { IMPORT_SCOPES, createImportRequests } from "../lib/import-request.mjs";
 import { assertRowVersion, rowVersion, sameFields } from "../lib/row-version.mjs";
+import { recordingHidden } from "../lib/cash-opening.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 // v2.0.26 (G6): toplu aktarımda bir satırın iç işlemini geri alıp nedeniyle atlamak için (kapanmış dönem).
@@ -237,7 +238,10 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       // paid (Ç5-B kapanış düzeltmesi, S129 = A — KULLANICI KARARI 12.11 13:26 AYNEN: "taksit satırının 'Ödenen'i de TEK KUYRUKTAN gösterilir (ekranda tek sayı …)"):
       // satırın Ödenen'i = taksitin kuyrukta TAHSİL EDİLEN kısmı (lib/obligation-queue.mjs `collected`: kart tahsilatı + kart seçilmeden alınan tahsilatın / avansın payı);
       // kartın kendi tahsilatı ownPaid'de. Kapatılmış kartta bugünkü gösterim AYNEN (kural yazılmadı — kapanış dar kontrolünün kapsam dışı gözlemi).
-      return { ...item, remaining, ownRemaining: item.remaining, paid: closed ? item.paid : roundMoney(Math.min(item.amount, row ? row.collected || 0 : 0)), ownPaid: item.paid, held, accountPaid, partial: remaining > 0.005 && remaining < item.amount - 0.005, state };
+      // returned (birleşik tur 8, S151 = B / S158 = A): satırın faturasız iade / Değersiz Alacak ile kapanan kısmı — tahsilat değildir, Ödenen'e girmez, ayrı gösterilir.
+      const paid = closed ? item.paid : roundMoney(Math.min(item.amount, row ? row.collected || 0 : 0));
+      const returned = closed || !row ? 0 : roundMoney(Math.max(0, Math.min(item.amount - paid, row.returned || 0)));
+      return { ...item, remaining, ownRemaining: item.remaining, paid, returned, ownPaid: item.paid, held, accountPaid, partial: remaining > 0.005 && remaining < item.amount - 0.005, state };
     });
     // Ç5-B tur 2a (O-3): taksitlere bölünmemiş kalan ("rest") ve Taksit İadesi ("back") kuyruk kalanındadır (kalemleri queueExtras: takvim / zil / Vade Takip / nakit akışı).
     // Ç5-B tur 2b-2 (ekran yürüyüşü 1 Y2; BAŞ MİMAR KARARI 11.11 05:48 — sunum, S91 = A'nın sonucu): bu kalemin günü geçmişse kart da "Gecikti" sayılır (Taksitler'in Geciken
@@ -265,12 +269,12 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     // satırının 'Ödenen'i de TEK KUYRUKTAN gösterilir (ekranda tek sayı: örnekte kart 900, bağsız tahsilat 500 → Tahsil Edilen 500 · Kalan 400; kart 600, bağsız tahsilat
     // 800 → Kalan 0 · Tamamlandı); tahsilat formunun sınırı / sorusu / önerilen tutarı S118 = B'deki gibi kartın KENDİ kalanından kalır"): totals.paid / totals.remaining
     // GÖSTERİLEN sayılardır (shownTotals); kartın kendi hesabı totals.ownPaid / ownRemaining (lib/plans.mjs allocate) — sınır, Mutabakat Testi, mutabakat motoru bunları okur.
-    const shown = closed ? { paid: ledger.totals.paid, remaining: ledger.totals.remaining } : shownTotals(plan, ledger.totals, collectedOf(map));
+    const shown = closed ? { paid: ledger.totals.paid, remaining: ledger.totals.remaining, returned: 0 } : shownTotals(plan, ledger.totals, collectedOf(map), returnedOf(map));
     return {
       ...ledger,
       items,
       // ownOverdue: kartın kendi hesabıyla gecikmiş (taksit − kart tahsilatı; eski anlam) — onarım / göç karşılaştırmaları için.
-      totals: { ...ledger.totals, paid: shown.paid, remaining: shown.remaining, queueRemaining: remaining, accountPaid, overdue: roundMoney(overdue.reduce((sum, item) => sum + item.remaining, 0) + lateExtras.reduce((sum, item) => sum + item.remaining, 0)), overdueCount: overdue.length, overdueRest: roundMoney(lateExtras.reduce((sum, item) => sum + item.remaining, 0)), overdueExtras, ownOverdue: ledger.totals.overdue ?? 0 },
+      totals: { ...ledger.totals, paid: shown.paid, remaining: shown.remaining, returned: shown.returned, queueRemaining: remaining, accountPaid, overdue: roundMoney(overdue.reduce((sum, item) => sum + item.remaining, 0) + lateExtras.reduce((sum, item) => sum + item.remaining, 0)), overdueCount: overdue.length, overdueRest: roundMoney(lateExtras.reduce((sum, item) => sum + item.remaining, 0)), overdueExtras, ownOverdue: ledger.totals.overdue ?? 0 },
       next: next ? { id: next.id, seq: next.seq, dueDate: next.dueDate, remaining: next.remaining, days: next.days, state: next.state } : null,
       // S118 = B: kartın KENDİ hesabıyla sıradaki taksit (formun önerdiği tutar; ledger.next = allocate).
       ownNext: ledger.next || null,
@@ -289,20 +293,37 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     for (const [key, row] of map) if (key !== "back") sum += row.collected || 0;
     return roundMoney(sum);
   };
-  function shownTotals(plan, totals, collected) {
+  // Birleşik tur 8 (S151 = B, S158 = A): taksitlerin (ve taksitlendirilmemiş kalanın) faturasız iade / Değersiz Alacak ile kapanan kısmı.
+  const returnedOf = map => {
+    let sum = 0;
+    for (const [key, row] of map) if (key !== "back") sum += row.returned || 0;
+    return roundMoney(sum);
+  };
+  //   Birleşik tur 8 (S151 = B, S158 = A): iade / Değersiz Alacak ile kapanan kısım Tahsil Edilen DEĞİLDİR, `returned` (İade ile Kapanan) olarak ayrı durur; Kalan = Toplam −
+  //   Tahsil Edilen − İade ile Kapanan (Kalan'ın sayısı değişmez: önceden iade Tahsil Edilen'in içindeydi). Tahsil Edilen + Kalan + İade ile Kapanan = Toplam (fazla tahsilat hariç).
+  function shownTotals(plan, totals, collected, returnedRaw = 0) {
     const total = totals.total || 0;
     const unplannedPaid = plan.coversBalance ? Math.max(0, Math.min(totals.extra || 0, totals.unplanned || 0)) : 0;
     // Kartın KENDİ fazla tahsilatı (kart toplamını aşan; K8 "Fazlasını Avans Yaz" — plan §3.10/3) bugünkü gibi Tahsil Edilen'de görünür ("fazla ₺…" notuyla; karar yok).
     const over = Math.max(0, roundMoney((totals.ownPaid ?? totals.paid ?? 0) - total));
     const paid = roundMoney(Math.min(total, collected + unplannedPaid) + over);
-    return { paid, remaining: roundMoney(Math.max(0, total - paid)) };
+    const returned = roundMoney(Math.max(0, Math.min(returnedRaw, total - Math.min(total, collected + unplannedPaid))));
+    return { paid, remaining: roundMoney(Math.max(0, total - paid - returned)), returned };
   }
   // Cari kartı / Cari Listesi (routes/accounts.mjs): kartın özetine (kartın kendi hesabı) aynı gösterilen sayıları verir. tyk: carinin kuyruğu (obligationsFor / allObligations
   // öğesi); yoksa ya da kart kapalıysa null (özet değişmez). Dönüş { paid, remaining }.
   function shownTotalsOf(plan, tyk) {
     const map = tyk && plan.status !== "closed" ? tyk.installments?.get(plan.id) : null;
     if (!map || !plan.totals) return null;
-    return shownTotals(plan, plan.totals, collectedOf(map));
+    return shownTotals(plan, plan.totals, collectedOf(map), returnedOf(map));
+  }
+  // Birleşik tur 8 (S142 = A — KULLANICI KARARI 13.11 03:44 AYNEN: "cari kartındaki taksit kartı satırında durum etiketi ve 'sıradaki taksit' de aynı (tek) hesaptan"): cari
+  // kartının taksit kartı özeti kart penceresinin görünümünü (detailView ile aynı withQueue) taşır — Tahsil Edilen / Kalan, durum, geciken taksit sayısı, sıradaki taksit.
+  // plan: forAccount öğesi (kartın kendi hesabı + taksitleri); tyk: carinin kuyruğu. Kuyruk yoksa (carisiz, işlem içi) null — özet kartın kendi hesabında kalır.
+  function queueSummaryOf(plan, tyk) {
+    if (!tyk || !plan?.accountId || !Array.isArray(plan.items) || !plan.totals) return null;
+    const view = withQueue(plan, plan, new Map([[plan.accountId, tyk]]));
+    return view === plan ? null : { totals: view.totals, state: view.state, next: view.next };
   }
   // Ç5-B tur 2a (O-3, S91 = A — vadesiz kayıt kayıt gününde vadeli kalem; C5 §2.10 madde 9 "Vade Takip gecikmiş tutarı = gecikmiş"): kuyruğun kart kalemlerinden TAKSİT
   // OLMAYANLAR — kartın taksitlere bölünmemiş kalanı (vade = kartın açılış günü) ve Taksit İadesi (iadeler tahsilatı aşınca; vade = son iade günü) — takvim / zil / Vade Takip /
@@ -843,8 +864,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       store.run("UPDATE plans SET deleted_by = ?, deleted_at = ? WHERE id = ?", user.id, now(), plan.id);
       audit(user, "plan.deleted", plan.id, { name: plan.name, total: plan.total });
     };
-    if (bank) bank.post({ user, module: "plans", op: "delete", prev: { planId: plan.id, name: plan.name, total: plan.total }, write: remove });
-    else store.tx(remove);
+    // Birleşik tur 8 (DK-B7 ORTA-1; BAŞ MİMAR KARARI 13.11 09:54): silinirken görünürlüğü kalkan nakit satırlarının özeti Silinenler için yazılır (lib/cash-opening.mjs recordingHidden).
+    recordingHidden(store, "plan", plan.id, () => (bank ? bank.post({ user, module: "plans", op: "delete", prev: { planId: plan.id, name: plan.name, total: plan.total }, write: remove }) : store.tx(remove)));
     changed(user, { planId: plan.id });
     changed(user, { kind: "cash" });
     ok(res, { id: plan.id });
@@ -1015,7 +1036,9 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       } else {
         const hint = !avans ? "" : manage ? ` Gerçekten bu karta avans yazılacaksa "${AVANS}" ile kaydedin.` : " Bu karta avans yazılacaksa yöneticinize başvurun.";
         if (rule === "plan-paid") throw new HttpError(409, `Bu kart ödendi (kalan ${tl(0)}); ${what}. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın.${hint}`, { code: "plan-paid", planId, remaining: 0, amount, excess });
-        throw new HttpError(409, `Tutar kartın kalanını aşıyor: kalan ${tl(left)}, girilen ${tl(amount)}, fazlası ${tl(excess)}; ${what}. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın.${hint}`, { code: "plan-overpay", planId, remaining: left, amount, excess });
+        // Birleşik tur 8 (dar kontrol Ç5-B kapanış 2 DÜŞÜK-C): soru metni formun açıklamasındaki nitelemeyi taşır — sınır kartın KENDİ kalanıdır (S118 = B, kural değişmedi);
+        // kart penceresi tek kuyruktan daha küçük Kalan gösterebilir (S129 = A).
+        throw new HttpError(409, `Tutar kartın kalanını aşıyor: kartın kendi tahsilatlarına göre kalan ${tl(left)}, girilen ${tl(amount)}, fazlası ${tl(excess)}; ${what}. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın.${hint}`, { code: "plan-overpay", planId, remaining: left, amount, excess });
       }
     }
     if (itemId) {
@@ -1537,11 +1560,20 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   };
 
   // Kayda bağlı kartlar (v2.0.6): kişinin kartı için taksitleriyle; açık olanlar önce.
+  // Birleşik tur 8 (S129 = A — dar kontrol Ç5-B kapanış 2 ORTA-A): kaydın detayındaki "Taksit Planı" bölümü ve oradan açılan Tahsilat penceresi kart penceresiyle AYNI görünüm
+  // (detailView: kartın kendi hesabı + kuyruk görünümü; formun sınırı ownRemaining / ownNext — S118 = B). Carinin kuyruğu cari başına bir kez kurulur.
   function forCase(caseKey, caseSource, user) {
     if (!caseKey) return [];
+    const queues = new Map();
     return store
       .all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND p.case_key = ? AND (? = '' OR p.case_source = ?) ORDER BY (p.status = 'active') DESC, p.created_at`, caseKey, caseSource || "", caseSource || "")
-      .map(plan => shape(plan, user));
+      .map(plan => {
+        const shaped = shape(plan, user);
+        if (!plan.accountId) return shaped;
+        if (!queues.has(plan.accountId)) queues.set(plan.accountId, queueFor(plan.accountId));
+        const view = withQueue(plan, shaped, queues.get(plan.accountId));
+        return view === shaped ? shaped : { ...shaped, ...view };
+      });
   }
   // Kayda bağlı kartların hareketleri: kişinin işlem geçmişinde tahsilat / ödeme olarak listelenir.
   function entriesForCase(caseKey, caseSource) {
@@ -1557,7 +1589,28 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
 
   // Cari (v2.0.6): carilerin taksit özetleri tek geçişte (liste ve bakiye için) ve bir carinin kartları ayrıntılı.
   // accountIds (v2.1.0, §3.11): yalnız bu carilerin kartları (mutabakat kapısı dokunulan carileri denetler).
-  function summariesByAccount(accountIds = null) {
+  // Birleşik tur 8 (S142 = A; hız kabulü — Cari Listesi her kartta tam withQueue ile %20–40 yavaşlıyordu): Cari Listesi satırının ihtiyacı olan kuyruk görünümü yalnız sıradaki
+  // taksit ve geciken taksit sayısı — withQueue'nun AYNI kuralı (taksit kalanı = min(tutar, kuyruk kalanı); durum gün sayısından; sıradaki = kalanı olan ilk taksit). Kapatılmış
+  // ya da kuyruğu olmayan kartta null (satır kartın kendi hesabında). Eşdeğerlik: test/tyk-birlesik8-ekranlar-250 (Cari Listesi = kart penceresi).
+  function queueBrief(plan, ledger, all) {
+    const map = plan.accountId && all && plan.status !== "closed" ? all.get(plan.accountId)?.installments.get(plan.id) : null;
+    if (!map) return null;
+    let next = null;
+    let overdueCount = 0;
+    for (const item of ledger.items) {
+      const row = map.get(item.id);
+      const remaining = roundMoney(Math.min(item.amount, row ? row.remaining : 0));
+      if (remaining <= 0.005) continue;
+      const days = item.days;
+      const state = days < 0 ? "overdue" : days === 0 ? "today" : days <= 7 ? "upcoming" : "open";
+      if (state === "overdue") overdueCount += 1;
+      if (!next) next = { id: item.id, seq: item.seq, dueDate: item.dueDate, remaining, days, state };
+    }
+    return { next, overdueCount };
+  }
+  // queue (birleşik tur 8, S142 = A): bütün carilerin kuyruğu (kullanıcı isteğindeki Cari Listesi) — verilirse özete kart penceresinin durumu / sıradaki taksiti / geciken taksit
+  // sayısı `view` alanında eklenir; totals / state / next kartın KENDİ hesabında kalır (bakiye ve Mutabakat Testi onları okur).
+  function summariesByAccount(accountIds = null, { queue = null } = {}) {
     const only = accountIds ? JSON.stringify([...accountIds]) : null;
     const plans = only ? store.all(`${PLAN_SQL} WHERE +p.deleted_at IS NULL AND p.account_id <> '' AND p.account_id IN (SELECT value FROM json_each(?))`, only) : store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND p.account_id <> ''`);
     const out = new Map();
@@ -1576,8 +1629,9 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     const day = today();
     for (const plan of plans) {
       const ledger = allocate(plan, items.get(plan.id) || [], entries.get(plan.id) || [], { today: day });
+      const view = queue ? queueBrief(plan, ledger, queue) : null;
       if (!out.has(plan.accountId)) out.set(plan.accountId, []);
-      out.get(plan.accountId).push({ id: plan.id, name: plan.name, total: plan.total, coversBalance: Boolean(plan.coversBalance), status: plan.status, state: ledger.state, totals: ledger.totals, next: ledger.next, itemCount: ledger.items.length });
+      out.get(plan.accountId).push({ id: plan.id, name: plan.name, total: plan.total, coversBalance: Boolean(plan.coversBalance), status: plan.status, state: ledger.state, totals: ledger.totals, next: ledger.next, itemCount: ledger.items.length, ...(view ? { view } : {}) });
     }
     return out;
   }
@@ -1853,5 +1907,5 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   // ikinci kez saymaz; aktarma "kartı var" der.
   const linkedCases = source => new Set(store.all("SELECT case_key AS k FROM plans WHERE deleted_at IS NULL AND case_key <> '' AND case_source = ?", source || "").map(row => row.k));
 
-  return { shownTotalsOf, queueLedger: (plan, ledger, queue, day) => withQueue(plan, ledger, queue, day), queueAll: queueOf, uncoveredDebt, assertRestorable, assertCloseOpen, assertRoom, closeDayOf, trimCovers, shrinkPlan, leftOf, signedLeftOf, syncInvoiceCard, cashEntries, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, scheduledStart, lockedStartReason, adoptPayment, adoptAccountEntry, linkedCases };
+  return { shownTotalsOf, queueSummaryOf, queueLedger: (plan, ledger, queue, day) => withQueue(plan, ledger, queue, day), queueAll: queueOf, uncoveredDebt, assertRestorable, assertCloseOpen, assertRoom, closeDayOf, trimCovers, shrinkPlan, leftOf, signedLeftOf, syncInvoiceCard, cashEntries, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, scheduledStart, lockedStartReason, adoptPayment, adoptAccountEntry, linkedCases };
 }

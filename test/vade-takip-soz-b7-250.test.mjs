@@ -127,10 +127,16 @@ describe("Birleşik tur 7 İş 3 — Vade Takip 'Gecikmiş Tahsilat / Gecikmiş 
 
   // dueList'in aralık kuralı (finance-report.mjs başlığı; ekran metni): başlangıç ≤ tarih ≤ bitiş; "gecikmişler dahil" açıkken başlangıçtan önce tarihli GEÇMİŞ kalem de.
   // Aralığın kendisi (preset → başlangıç / bitiş) yanıttan okunur; para / durum kuralı girdilerden.
-  const inRange = (item, data) => !(data.to && item.date > data.to) && !(data.from && item.date < data.from && !(data.late && item.date < TODAY));
+  // Birleşik tur 8 (S150 = A — KULLANICI KARARI 13.11 06:12 AYNEN: "Vade Takip'in 'Gecikmiş' hazır aralığı durumu Gecikmiş olan HER kalemi gösterir (sözü bugün ya da ileride
+  // olan gecikmiş borç dahil; 'Gecikmiş Tahsilat' göstergesi her aralıkta aynı sayı)"): 'Gecikmiş' hazır aralığında tarih üst sınırı yerine durum — bugünden önceki her kalem +
+  // durumu Gecikmiş olan kalem.
+  // Birleşik tur 8b (S150 = A "her aralıkta aynı sayı"; baş mimar yorumu — gösterge ile satırlar ayrışmaz): ileriye bakan dört hazır aralıkta ('Bugün', '7 Gün', '30 Gün',
+  // '90 Gün') aralığın kendi kalemleri + durumu Gecikmiş olan her kalem (sözü aralığın bitişinden sonra olan gecikmiş borç dahil).
+  const ranged = (item, data) => !(data.to && item.date > data.to) && !(data.from && item.date < data.from && !(data.late && item.date < TODAY));
+  const inRange = (item, data, option = {}) => (option.lateOnly ? item.date < TODAY || item.state === "overdue" : option.nearLate ? ranged(item, data) || item.state === "overdue" : ranged(item, data));
   const sum = (items, direction) => Math.round(items.filter(item => item.direction === direction && item.state === "overdue").reduce((s, item) => s + item.amount, 0) * 100) / 100;
   const OPTIONS = [
-    ...["late", "today", "next7", "next30", "next90", "open"].map(preset => ({ ad: `aralık ${preset}`, q: `preset=${preset}` })),
+    ...["late", "today", "next7", "next30", "next90", "open"].map(preset => ({ ad: `aralık ${preset}`, q: `preset=${preset}`, lateOnly: preset === "late", nearLate: ["today", "next7", "next30", "next90"].includes(preset) })),
     { ad: "geniş özel aralık", q: `from=${day(-800)}&to=${day(800)}` },
     { ad: "gecikmişler hariç (late=0)", q: `from=${day(0)}&to=${day(60)}&late=0` },
     ...["account", "invoice", "plan"].map(source => ({ ad: `kaynak ${source}`, q: `preset=open&sources=${source}`, source })),
@@ -143,7 +149,7 @@ describe("Birleşik tur 7 İş 3 — Vade Takip 'Gecikmiş Tahsilat / Gecikmiş 
     for (const option of OPTIONS) {
       const data = await w.must(option.ad, w.client.get(`/api/workspace/overview/vade-takip?${option.q}`));
       const rows = data.rows.filter(row => row.amount !== null);
-      const scope = expected.filter(item => inRange(item, data) && (!option.source || item.source === option.source) && (!option.direction || item.direction === option.direction));
+      const scope = expected.filter(item => inRange(item, data, option) && (!option.source || item.source === option.source) && (!option.direction || item.direction === option.direction));
       seen.push({ ad: option.ad, alanIn: data.totals.in.overdue.amount, satirIn: sum(rows, "in"), alanOut: data.totals.out.overdue.amount, satirOut: sum(rows, "out") });
       want.push({ ad: option.ad, alanIn: sum(scope, "in"), satirIn: sum(scope, "in"), alanOut: sum(scope, "out"), satirOut: sum(scope, "out") });
     }
@@ -159,12 +165,12 @@ describe("Birleşik tur 7 İş 3 — Vade Takip 'Gecikmiş Tahsilat / Gecikmiş 
     // KAPSAM FARKI 1 (2.4.5 K6.3 — kararların bugünkü hâli; KULLANICIYA SORULMALI raporda): vadesi gelmemiş borçta söz günü geçti → takvim / zil / Vade Takip "Gecikmiş",
     // cari kartı / Cari Listesi gecikmiş saymaz (vade gelmedi). Hücreler v0 p−5 ve v10 p−5: 200.
     const k63 = expected.filter(item => item.direction === "in" && item.state === "overdue" && !item.cariGecikmis).reduce((s, item) => s + item.amount, 0);
-    // KAPSAM FARKI 2 (S67 = A "kalem söz gününde durur"): "Gecikmiş" aralığı (bitiş = dün) sözü BUGÜN ya da ileride olan gecikmiş borcu içermez — hücreler v−10 p15 ve
-    // v−10 p0: 200 (KULLANICIYA SORULMALI raporda).
+    // KAPSAM FARKI 2 KALKTI (birleşik tur 8, S150 = A): "Gecikmiş" aralığı sözü BUGÜN ya da ileride olan gecikmiş borcu da içerir — hücreler v−10 p15 ve v−10 p0: 200
+    // (önceden bitiş = dün olduğu için dışarıda kalıyordu; S67 = A "kalem söz gününde durur" aynen).
     const sozIleride = expected.filter(item => item.direction === "in" && item.state === "overdue" && item.date >= TODAY).reduce((s, item) => s + item.amount, 0);
     assert.deepEqual(
       { tumAcik: open.totals.in.overdue.amount, cariGecikmis, gecikmisAraligi: late.totals.in.overdue.amount },
-      { tumAcik: cariGecikmis + k63, cariGecikmis: 100 * 3 + 300 + 300, gecikmisAraligi: cariGecikmis + k63 - sozIleride },
+      { tumAcik: cariGecikmis + k63, cariGecikmis: 100 * 3 + 300 + 300, gecikmisAraligi: cariGecikmis + k63 },
     );
     assert.deepEqual({ k63, sozIleride }, { k63: 200, sozIleride: 200 });
   });

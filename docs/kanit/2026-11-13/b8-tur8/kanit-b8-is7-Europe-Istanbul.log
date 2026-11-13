@@ -1,0 +1,49 @@
+TAP version 13
+# (node:8327) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Birleşik tur 8 — İş 7: şüpheli kuralının reddi anlaşılır iletiyle (S145 = A, S155 = A); kural aynen
+    # Subtest: şüpheli tarihinden ÖNCEYE tahsilat 300 → RET, ileti 'borç 700,00 TL, açık şüpheli 900,00 TL'
+    ok 1 - şüpheli tarihinden ÖNCEYE tahsilat 300 → RET, ileti 'borç 700,00 TL, açık şüpheli 900,00 TL'
+      ---
+      duration_ms: 121.743352
+      type: 'test'
+      ...
+    # Subtest: öbür kayıt türleri aynı ileti: önceye Alacak Yaz 300 ve önceye faturasız stok iadesi 300 → RET
+    ok 2 - öbür kayıt türleri aynı ileti: önceye Alacak Yaz 300 ve önceye faturasız stok iadesi 300 → RET
+      ---
+      duration_ms: 146.393293
+      type: 'test'
+      ...
+    # Subtest: Silinenler'den geri yükleme (önceye tahsilat 300, şüpheliden önce silinmişti) → RET, aynı ileti
+    ok 3 - Silinenler'den geri yükleme (önceye tahsilat 300, şüpheliden önce silinmişti) → RET, aynı ileti
+      ---
+      duration_ms: 102.948545
+      type: 'test'
+      ...
+    # Subtest: KABUL edilenler değişmedi: bugün tarihli 300 (700), şüpheli günü 300 (700), borcun yettiği eski tarih 100 (900), sonradan yeni borç 500 varken önceye 300 (1.200)
+    ok 4 - KABUL edilenler değişmedi: bugün tarihli 300 (700), şüpheli günü 300 (700), borcun yettiği eski tarih 100 (900), sonradan yeni borç 500 varken önceye 300 (1.200)
+      ---
+      duration_ms: 219.9352
+      type: 'test'
+      ...
+    # Subtest: kapının GENEL iletisi başka nedenlerde aynen; şüpheli nedeni öbür bir nedenle birlikteyse genel ileti
+    ok 5 - kapının GENEL iletisi başka nedenlerde aynen; şüpheli nedeni öbür bir nedenle birlikteyse genel ileti
+      ---
+      duration_ms: 1.206005
+      type: 'test'
+      ...
+    1..5
+ok 1 - Birleşik tur 8 — İş 7: şüpheli kuralının reddi anlaşılır iletiyle (S145 = A, S155 = A); kural aynen
+  ---
+  duration_ms: 1106.334415
+  type: 'suite'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1437.774912

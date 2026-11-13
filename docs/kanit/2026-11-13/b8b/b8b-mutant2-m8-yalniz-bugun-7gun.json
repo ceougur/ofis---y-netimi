@@ -1,0 +1,53 @@
+{
+  "ad": "b8b-mutant2-m8-yalniz-bugun-7gun",
+  "komut": "node --test test/vade-takip-gecikmis-b8b-250.test.mjs test/vade-takip-gecikmis-b8-250.test.mjs test/vade-takip-soz-b7-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T16:49:14.976Z",
+  "sure_sn": 4.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 24,
+    "gecen": 20,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Birleşik tur 8b — sözü 30 / 90 günden de ileride olan gecikmiş borç: altı hazır aralıkta aynı gösterge ve satırlar (S150 = A) › gösterge: altı hazır aralığın hepsinde gecikmiş tahsilat 300 / 3, gecikmiş ödeme 70 / 1",
+      "konum": "test/vade-takip-gecikmis-b8b-250.test.mjs:203:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "Birleşik tur 8b — sözü 30 / 90 günden de ileride olan gecikmiş borç: altı hazır aralıkta aynı gösterge ve satırlar (S150 = A) › dört ileriye bakan aralıkta satır kümesi = 'Tüm Açık' satırları (hepsi Gecikmiş); satır 4, Tahsil Edilecek 300, Ödenecek 70; toplam = satırlar; başlık aralığı bugünkü gibi",
+      "konum": "test/vade-takip-gecikmis-b8b-250.test.mjs:209:3",
+      "hata": "next30: satır kümesi · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Birleşik tur 8b — sözü 30 / 90 günden de ileride olan gecikmiş borç: altı hazır aralıkta aynı gösterge ve satırlar (S150 = A) › yön süzgeci: tahsilat 300 / 3 (3 satır), ödeme 70 / 1 (1 satır) — dört ileriye bakan aralıkta",
+      "konum": "test/vade-takip-gecikmis-b8b-250.test.mjs:220:3",
+      "hata": "next30 · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Birleşik tur 8b — sözü 30 / 90 günden de ileride olan gecikmiş borç: altı hazır aralıkta aynı gösterge ve satırlar (S150 = A) › PDF ve Excel ekranla aynı (dört ileriye bakan aralık): dört satır ve 'Gecikmiş Tahsilat' 300 (3) / 'Gecikmiş Ödeme' 70 (1) özeti",
+      "konum": "test/vade-takip-gecikmis-b8b-250.test.mjs:237:3",
+      "hata": "next30 PDF satırları · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../b8b-kanit/2026-11-13/b8b-mutant2-m8-yalniz-bugun-7gun.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8b-mutant2",
+  "ham_cikti_sha256": "28fee5c8ccb25ae59f554c82880d3126c2996238ea6fea860b708fe3248a4559",
+  "ham_cikti_bayt": 18783
+}

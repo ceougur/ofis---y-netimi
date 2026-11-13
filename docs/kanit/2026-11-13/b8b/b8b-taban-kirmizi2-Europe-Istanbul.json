@@ -1,0 +1,68 @@
+{
+  "ad": "b8b-taban-kirmizi2-Europe-Istanbul",
+  "komut": "node --test test/vade-takip-gecikmis-b8b-250.test.mjs test/vade-takip-gecikmis-b8-250.yeni.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T16:30:01.752Z",
+  "sure_sn": 2.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 7,
+    "basarisiz": 7,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 7 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Birleşik tur 8 — İş 4: Vade Takip 'Gecikmiş' hazır aralığı = durumu Gecikmiş olan kalemler (S150 = A) › 'Gecikmiş Tahsilat / Ödeme' göstergesi: Gecikmiş = Bugün = 7 Gün = 30 Gün = 90 Gün = Tüm Açık (birleşik tur 8b); yön süzgeci (tahsilat / ödeme) ayrı ayrı",
+      "konum": "test/vade-takip-gecikmis-b8-250.yeni.test.mjs:55:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "Birleşik tur 8 — İş 4: Vade Takip 'Gecikmiş' hazır aralığı = durumu Gecikmiş olan kalemler (S150 = A) › Bugün / 7 Gün sözü aralığın bitişinden ileride olan gecikmiş kalemi de gösterir (birleşik tur 8b — S150 = A'nın eksik kolu; ayrıntı test/vade-takip-gecikmis-b8b-250.test.mjs)",
+      "konum": "test/vade-takip-gecikmis-b8-250.yeni.test.mjs:66:3",
+      "hata": "today · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Birleşik tur 8b — Vade Takip 'Bugün' / '7 Gün': 'Gecikmiş' göstergesi ve satırları öbür hazır aralıklarla aynı (S150 = A) › ALTI hazır aralığın HEPSİNDE 'Gecikmiş Tahsilat' / 'Gecikmiş Ödeme' göstergesi aynı: 610 / 7 ve 100 / 2",
+      "konum": "test/vade-takip-gecikmis-b8b-250.test.mjs:71:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "Birleşik tur 8b — Vade Takip 'Bugün' / '7 Gün': 'Gecikmiş' göstergesi ve satırları öbür hazır aralıklarla aynı (S150 = A) › 'Bugün' / '7 Gün' satır kümesi = aralığın kendi satırları ∪ durumu Gecikmiş olan her satır ('Tüm Açık'tan); toplam = satırlar; gösterge = gecikmiş satırların toplamı",
+      "konum": "test/vade-takip-gecikmis-b8b-250.test.mjs:77:3",
+      "hata": "today: satır kümesi · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Birleşik tur 8b — Vade Takip 'Bugün' / '7 Gün': 'Gecikmiş' göstergesi ve satırları öbür hazır aralıklarla aynı (S150 = A) › yön süzgeci: Yalnız Tahsil Edilecek / Yalnız Ödenecek — 'Bugün' ve '7 Gün'de gösterge ve satırlar 'Gecikmiş' aralığıyla aynı gecikmişleri taşır",
+      "konum": "test/vade-takip-gecikmis-b8b-250.test.mjs:102:3",
+      "hata": "today tahsilat · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Birleşik tur 8b — Vade Takip 'Bugün' / '7 Gün': 'Gecikmiş' göstergesi ve satırları öbür hazır aralıklarla aynı (S150 = A) › PDF ve Excel ekranla aynı ('Bugün' ve '7 Gün'): satırlar ve 'Gecikmiş Tahsilat' / 'Gecikmiş Ödeme' özeti",
+      "konum": "test/vade-takip-gecikmis-b8b-250.test.mjs:130:3",
+      "hata": "today PDF: v−10 p15 (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Birleşik tur 8b — '30 Gün' / '90 Gün' bugünkü gibi: sözü aralıktan da ileride olan gecikmiş borç (TOPLU SORU — davranış sabitlenir) › gösterge: Gecikmiş 300 / 3, Bugün 300 / 3, 7 Gün 300 / 3, 30 Gün 100 / 1, 90 Gün 200 / 2, Tüm Açık 300 / 3",
+      "konum": "test/vade-takip-gecikmis-b8b-250.test.mjs:187:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · ... Skipped lines"
+    }
+  ],
+  "ham_cikti": "../b8b-kanit/2026-11-13/b8b-taban-kirmizi2-Europe-Istanbul.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8b-taban",
+  "ham_cikti_sha256": "e7c59afba61e0e7876b13c9c6aaefaf4f9e5c3bc1df5afe0c1eac4a683589c46",
+  "ham_cikti_bayt": 19358
+}

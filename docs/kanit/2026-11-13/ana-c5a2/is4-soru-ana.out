@@ -1,0 +1,55 @@
+(node:10649) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{
+ "F2'ye bağlı çek 300": {
+  "supheli": "200",
+  "normalIsle400": "200",
+  "once": "120 100 · 128 1000 · kuyruk 10 = F1 6 + F2 4",
+  "yanit": "200",
+  "sonra": "120 100 · 128 700 · kuyruk 7 = F1 6 + F2 1",
+  "sonSatir": [
+   "2026-10-10 A 128 300"
+  ]
+ },
+ "F2'ye bağlı nakit 300": {
+  "supheli": "400 doubtful-before-debt Carinin borç hareketi yok; şüpheliye alınacak alacak bulunmuyor.",
+  "normalIsle400": "200",
+  "once": "120 100 · 128 0 · kuyruk 0 = ",
+  "yanit": "200",
+  "sonra": "120 -200 · 128 0 · kuyruk 0 = ",
+  "sonSatir": [
+   "2026-10-10 A 120 300"
+  ]
+ },
+ "F2'ye bağlı nakit 100": {
+  "supheli": "400 doubtful-before-debt Carinin borç hareketi yok; şüpheliye alınacak alacak bulunmuyor.",
+  "normalIsle400": "200",
+  "once": "120 100 · 128 0 · kuyruk 0 = ",
+  "yanit": "200",
+  "sonra": "120 0 · 128 0 · kuyruk 0 = ",
+  "sonSatir": [
+   "2026-10-10 A 120 100"
+  ]
+ },
+ "F1'e bağlı nakit 300": {
+  "supheli": "400 doubtful-before-debt Carinin borç hareketi yok; şüpheliye alınacak alacak bulunmuyor.",
+  "normalIsle400": "200",
+  "once": "120 100 · 128 0 · kuyruk 0 = ",
+  "yanit": "200",
+  "sonra": "120 -200 · 128 0 · kuyruk 0 = ",
+  "sonSatir": [
+   "2026-10-10 A 120 300"
+  ]
+ },
+ "bağsız nakit 300 (işaretsiz)": {
+  "supheli": "400 doubtful-before-debt Carinin borç hareketi yok; şüpheliye alınacak alacak bulunmuyor.",
+  "normalIsle400": "200",
+  "once": "120 100 · 128 0 · kuyruk 0 = ",
+  "yanit": "200",
+  "sonra": "120 -200 · 128 0 · kuyruk 0 = ",
+  "sonSatir": [
+   "2026-10-10 A 120 300"
+  ]
+ },
+ "mutabakat": []
+}

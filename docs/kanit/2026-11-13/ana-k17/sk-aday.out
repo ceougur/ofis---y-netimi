@@ -1,0 +1,20 @@
+SK-36 (a) avansla 'Bitti' kart: tahsilat 1.000 → stoktan taksitli satış 600 (2 taksit) → karta 300, seçeneksiz
+  önce: bakiye -400 · gecikmiş 0 · kartlar [{"toplam":600,"durum":"done","taksit":[]}]
+  kart: toplam 600 · tahsil undefined · kalan undefined · iade - · taksitler 2026-10-10:300|öd 300|ka 0 ; 2026-11-10:300|öd 300|ka 0
+  karta 300 SEÇENEKSİZ → 200
+  sonra: bakiye -700 · gecikmiş 0 · kartlar [{"toplam":600,"durum":"done","taksit":[]}]
+  karta 300 'Fazlasını Avans Yaz' ile → 200
+  seçenekliden sonra: bakiye -1000 · gecikmiş 0 · kartlar [{"toplam":600,"durum":"done","taksit":[]}]
+
+SK-36 (b) para dışı pay: Borç 900 + Borç 500 (vade +10) → kart 900 (3 × 300) → faturasız stok iadesi 300 → karta 700, seçeneksiz
+  önce: bakiye 1100 · gecikmiş 300 · kartlar [{"toplam":900,"durum":"overdue","taksit":[]}]
+  kart: toplam 900 · tahsil undefined · kalan undefined · iade - · taksitler 2026-09-10:300|öd 0|ka 0|iade 300 ; 2026-10-10:300|öd 0|ka 300 ; 2026-11-09:300|öd 0|ka 300
+  karta 700 SEÇENEKSİZ → 200
+  sonra: bakiye 400 · gecikmiş 0 · kartlar [{"toplam":900,"durum":"active","taksit":[]}]
+  karta 600 SEÇENEKSİZ → 409 plan-overpay {"ok":false,"error":"Tutar kartın kalanını aşıyor: kartın kendi tahsilatlarına göre kalan 200,00 TL, girilen 600,00 TL, fazlası 400,00 TL; yeni tahsilat yazılma
+  600'den sonra: bakiye 400 · gecikmiş 0 · kartlar [{"toplam":900,"durum":"active","taksit":[]}]
+
+SK-37 satış kartı: stoktan taksitli satış 1.000 (2 × 500; vadeler −10, +~20) → karttan 300 → faturasız stok iadesi 400 (başka borç YOK)
+  karttan 300 → 200
+  sonuç: bakiye 300 · gecikmiş 200 · kartlar [{"toplam":600,"durum":"overdue","taksit":[]}]
+  kart: toplam 600 · tahsil undefined · kalan undefined · iade - · taksitler 2026-10-10:500|öd 300|ka 200 ; 2026-11-10:100|öd 0|ka 100

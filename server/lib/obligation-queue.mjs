@@ -34,6 +34,8 @@ const RECEIVABLE = new Set(["sale", "smm"]);
 const PAYABLE = new Set(["purchase"]);
 const RETURNS = new Set(["sale_return", "purchase_return"]);
 const STOCK_RETURNS = new Set(["return", "preturn"]);
+// Birleşik tur 8 (S151 = B, S158 = A): kartın göstergesinde TAHSİLAT sayılmayan bağsız kapatıcılar — faturasız stok iadesi ve Değersiz Alacak satırı (yalnız gösterim).
+const isReturnPayer = payer => Boolean(payer?.line) && ((payer.line.origin === "stock" && STOCK_RETURNS.has(payer.line.stockReason)) || payer.line.origin === "doubtful");
 const EPS = 0; // kuruşla çalışılır
 
 /** Denetim izinden kilit geçmişi: [{ at, value }] (yazım sırasıyla). rows: audit_events (ledger.period.locked / unlocked) { at, payload }. */
@@ -1038,8 +1040,12 @@ function assemble(input, side, net) {
       // collected (Ç5-B kapanış düzeltmesi, S129 = A): taksitin TAHSİL EDİLEN kısmı — kart tahsilatı (bağlı) + kart seçilmeden gelen bağsız ödemenin payı (tahsilat, evrak,
       // faturasız stok iadesi, kart / bağ fazlası — S50) + avansla ödenmiş sayılan kısım (S101). İki YÜKÜMLÜLÜK kaleminin netleşmesi (elle Alacak, alış faturası — karar
       // (5) / S92) tahsilat değildir: sayılmaz (o caride kartın gösterimi bugünkü gibi kalır — kâhin C16.2 "karşı yönlü kalemli kartlı cari: tanım alanı dışı").
-      const collected = inst.closures.filter(c => !c.reverse && !c.payer?.due).reduce((sum, c) => sum + c.amount, 0);
-      map.set(inst.itemId || "rest", { remaining: tl(inst.left), doubtful: tl(held.get(inst.key) || 0), paid: tl(inst.amount - inst.left), collected: tl(collected), byAccount: tl(byAccount), amount: tl(inst.amount), vade: inst.vade, seq: inst.seq || 0 });
+      // Birleşik tur 8 (S151 = B, S158 = A — KULLANICI KARARI 13.11 AYNEN: "taksit kartının 'Tahsil Edilen'i (ve taksit satırının 'Ödenen'i) FATURASIZ stok iadesini SAYMAZ:
+      // iade tahsilat değildir … iade ayrı gösterilir"; "'iade tahsilat değildir' HER kartta geçerlidir … faturasız stok iadesi ve Değersiz yazma … SAYILMAZ"): iade / Değersiz
+      // Alacak satırının kapattığı pay `collected`dan çıkar, `returned`de ayrı durur. YALNIZ GÖSTERİM — kapama sırası, kalan, gecikmiş, takvim kalemleri değişmez.
+      const collected = inst.closures.filter(c => !c.reverse && !c.payer?.due && !isReturnPayer(c.payer)).reduce((sum, c) => sum + c.amount, 0);
+      const returned = inst.closures.filter(c => !c.reverse && !c.payer?.due && isReturnPayer(c.payer)).reduce((sum, c) => sum + c.amount, 0);
+      map.set(inst.itemId || "rest", { remaining: tl(inst.left), doubtful: tl(held.get(inst.key) || 0), paid: tl(inst.amount - inst.left), collected: tl(collected), returned: tl(returned), byAccount: tl(byAccount), amount: tl(inst.amount), vade: inst.vade, seq: inst.seq || 0 });
     }
     // Ç5-B tur 2a (O-3, S91 = A): kartın "Taksit İadesi" kalemi (iadeler tahsilatı aşınca; kartın borcudur) — takvim / zil / Vade Takip / nakit akışı kalemi (routes/plans.mjs).
     if (card.back) map.set("back", { remaining: tl(card.back.left), doubtful: tl(held.get(card.back.key) || 0), paid: tl(card.back.amount - card.back.left), byAccount: 0, amount: tl(card.back.amount), vade: card.back.vade, seq: 0 });

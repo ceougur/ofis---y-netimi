@@ -1,0 +1,111 @@
+TAP version 13
+# \# kaynak tarama: 30 sorgu, 188 sütun okunuyor; izde 128; istisna 27; istisna tablosu 19; rowid 16
+# Subtest: Ç5-A tur 1f — Ana Defter türetmesinin okuduğu her sütun kilit izinde ya da gerekçeli açık istisnada (kalıcı kaynak tarama; §16)
+    # Subtest: türetmenin okuduğu her sütun: kilitli satırda değişince iz değişir ya da açık istisnada; istisnalar güncel (hepsi türetmede okunuyor)
+    ok 1 - türetmenin okuduğu her sütun: kilitli satırda değişince iz değişir ya da açık istisnada; istisnalar güncel (hepsi türetmede okunuyor)
+      ---
+      duration_ms: 749.905216
+      type: 'test'
+      ...
+    # Subtest: kilit izinin önbelleği: aynı durumda aynı iz; bu bağlantının yazımı, başka bağlantının yazımı ve geri alınan işlem sonrası baştan hesaplanan izle aynı
+    ok 2 - kilit izinin önbelleği: aynı durumda aynı iz; bu bağlantının yazımı, başka bağlantının yazımı ve geri alınan işlem sonrası baştan hesaplanan izle aynı
+      ---
+      duration_ms: 26.587342
+      type: 'test'
+      ...
+    1..2
+ok 1 - Ç5-A tur 1f — Ana Defter türetmesinin okuduğu her sütun kilit izinde ya da gerekçeli açık istisnada (kalıcı kaynak tarama; §16)
+  ---
+  duration_ms: 2259.782295
+  type: 'suite'
+  ...
+# Subtest: göç v30: v2.4.2 verisindeki stok açılışları Ana Defter'e gelir (B 153 / A 500)
+    # Subtest: eski veride açılışlar işaretlenir; yalnız 153 / 500 değişir; kilit izi aynı; Mutabakat Testi temiz; geri dönüş çalışır
+    not ok 1 - eski veride açılışlar işaretlenir; yalnız 153 / 500 değişir; kilit izi aynı; Mutabakat Testi temiz; geri dönüş çalışır
+      ---
+      duration_ms: 6.058034
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2/yeni/test/goc-243-stok-acilis.test.mjs:35:3'
+      failureType: 'testCodeFailure'
+      error: 'v2.4.2 etiketi bu depoda yok (git fetch --tags gerekir).'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        checkoutTag (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2/yeni/test/guvenilirlik/surumler.mjs:33:22)
+        bootVersion (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2/yeni/test/guvenilirlik/surumler.mjs:68:18)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2/yeni/test/goc-243-stok-acilis.test.mjs:36:23)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+      ...
+    1..1
+not ok 2 - göç v30: v2.4.2 verisindeki stok açılışları Ana Defter'e gelir (B 153 / A 500)
+  ---
+  duration_ms: 8.231821
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2/yeni/test/goc-243-stok-acilis.test.mjs:30:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: S160 = A — kilitli dönemdeki tahsilatın fatura bağını düşüren iptal / silme 409; kilitli defter değişmez
+    # Subtest: iptal 409 — şüpheli VAR; bağ, fatura ve kilitli defter aynı
+    ok 1 - iptal 409 — şüpheli VAR; bağ, fatura ve kilitli defter aynı
+      ---
+      duration_ms: 13.10861
+      type: 'test'
+      ...
+    # Subtest: iptal 409 — şüpheli YOK (kural şüpheliye bağlanmaz); bağ, fatura ve kilitli defter aynı
+    ok 2 - iptal 409 — şüpheli YOK (kural şüpheliye bağlanmaz); bağ, fatura ve kilitli defter aynı
+      ---
+      duration_ms: 7.284611
+      type: 'test'
+      ...
+    # Subtest: iptal 409 — tahsilat tam kilit günü; bağ, fatura ve kilitli defter aynı
+    ok 3 - iptal 409 — tahsilat tam kilit günü; bağ, fatura ve kilitli defter aynı
+      ---
+      duration_ms: 4.63307
+      type: 'test'
+      ...
+    # Subtest: silme (iptali çağırır) 409 — fatura silinmedi, bağ ve kilitli defter aynı
+    ok 4 - silme (iptali çağırır) 409 — fatura silinmedi, bağ ve kilitli defter aynı
+      ---
+      duration_ms: 4.684346
+      type: 'test'
+      ...
+    # Subtest: Kapatılacak Fatura ile bağlanmış KİLİTLİ alınan evrak: iptal 409 (evrakın bağı kalır)
+    ok 5 - Kapatılacak Fatura ile bağlanmış KİLİTLİ alınan evrak: iptal 409 (evrakın bağı kalır)
+      ---
+      duration_ms: 2.3129
+      type: 'test'
+      ...
+    # Subtest: kilit DIŞINDAKİ tahsilat bağlıysa iptal serbest (200)
+    ok 6 - kilit DIŞINDAKİ tahsilat bağlıysa iptal serbest (200)
+      ---
+      duration_ms: 17.043178
+      type: 'test'
+      ...
+    # Subtest: kilit kaldırılınca iptal serbest; yeniden kilitleme çalışır (yönetici yolu)
+    ok 7 - kilit kaldırılınca iptal serbest; yeniden kilitleme çalışır (yönetici yolu)
+      ---
+      duration_ms: 187.897563
+      type: 'test'
+      ...
+    1..7
+ok 3 - S160 = A — kilitli dönemdeki tahsilatın fatura bağını düşüren iptal / silme 409; kilitli defter değişmez
+  ---
+  duration_ms: 1292.824259
+  type: 'suite'
+  ...
+1..3
+# tests 10
+# suites 3
+# pass 9
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4559.792611

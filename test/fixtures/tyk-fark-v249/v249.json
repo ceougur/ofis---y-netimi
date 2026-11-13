@@ -15,6 +15,11 @@
      "taksitler": [
       "1:500:500:overdue",
       "2:500:500:open"
+     ],
+     "gosterge": "0|1000",
+     "odenen": [
+      0,
+      0
      ]
     }
    ],
@@ -37,6 +42,11 @@
      "taksitler": [
       "1:500:500:overdue",
       "2:500:500:open"
+     ],
+     "gosterge": "0|1000",
+     "odenen": [
+      0,
+      0
      ]
     }
    ],
@@ -59,6 +69,11 @@
      "taksitler": [
       "1:500:500:overdue",
       "2:300:300:open"
+     ],
+     "gosterge": "0|800",
+     "odenen": [
+      0,
+      0
      ]
     }
    ],
@@ -81,6 +96,11 @@
      "taksitler": [
       "1:500:500:overdue",
       "2:500:500:open"
+     ],
+     "gosterge": "0|1000",
+     "odenen": [
+      0,
+      0
      ]
     }
    ],
@@ -103,6 +123,11 @@
      "taksitler": [
       "1:500:500:overdue",
       "2:500:500:open"
+     ],
+     "gosterge": "0|1000",
+     "odenen": [
+      0,
+      0
      ]
     }
    ],
@@ -125,6 +150,11 @@
      "taksitler": [
       "1:500:500:overdue",
       "2:500:500:open"
+     ],
+     "gosterge": "0|1000",
+     "odenen": [
+      0,
+      0
      ]
     }
    ],
@@ -154,6 +184,11 @@
      "taksitler": [
       "1:300:300:overdue",
       "2:300:300:open"
+     ],
+     "gosterge": "0|600",
+     "odenen": [
+      0,
+      0
      ]
     },
     {
@@ -163,6 +198,11 @@
      "taksitler": [
       "1:200:200:overdue",
       "2:200:200:open"
+     ],
+     "gosterge": "0|400",
+     "odenen": [
+      0,
+      0
      ]
     }
    ],
@@ -188,6 +228,11 @@
      "taksitler": [
       "1:300:300:overdue",
       "2:300:300:open"
+     ],
+     "gosterge": "0|600",
+     "odenen": [
+      0,
+      0
      ]
     }
    ],
@@ -210,6 +255,11 @@
      "taksitler": [
       "1:500:500:overdue",
       "2:500:500:open"
+     ],
+     "gosterge": "0|1000",
+     "odenen": [
+      0,
+      0
      ]
     }
    ],
@@ -232,6 +282,11 @@
      "taksitler": [
       "1:500:200:overdue",
       "2:500:500:open"
+     ],
+     "gosterge": "300|700",
+     "odenen": [
+      300,
+      0
      ]
     }
    ],
@@ -254,6 +309,11 @@
      "taksitler": [
       "1:500:500:overdue",
       "2:500:500:open"
+     ],
+     "gosterge": "0|1000",
+     "odenen": [
+      0,
+      0
      ]
     }
    ],
@@ -280,6 +340,12 @@
       "1:300:300:overdue",
       "2:300:300:open",
       "3:300:300:open"
+     ],
+     "gosterge": "0|900",
+     "odenen": [
+      0,
+      0,
+      0
      ]
     }
    ],
@@ -306,6 +372,11 @@
      "taksitler": [
       "1:500:500:overdue",
       "2:500:500:open"
+     ],
+     "gosterge": "0|1000",
+     "odenen": [
+      0,
+      0
      ]
     }
    ],
@@ -328,6 +399,11 @@
      "taksitler": [
       "1:500:500:overdue",
       "2:500:500:today"
+     ],
+     "gosterge": "0|1000",
+     "odenen": [
+      0,
+      0
      ]
     }
    ],
@@ -351,6 +427,11 @@
      "taksitler": [
       "1:500:100:overdue",
       "2:500:500:today"
+     ],
+     "gosterge": "400|600",
+     "odenen": [
+      400,
+      0
      ]
     }
    ],
@@ -374,6 +455,11 @@
      "taksitler": [
       "1:500:500:overdue",
       "2:500:500:open"
+     ],
+     "gosterge": "0|1000",
+     "odenen": [
+      0,
+      0
      ]
     }
    ],
@@ -393,7 +479,9 @@
      "ad": "TYKF T1 Taksitsiz Ayrı Kart",
      "durum": "active",
      "sekme": "active",
-     "taksitler": []
+     "taksitler": [],
+     "gosterge": "0|1000",
+     "odenen": []
     }
    ],
    "vadeTakip": [],
@@ -407,7 +495,9 @@
      "ad": "TYKF T10 Cari Tahsilatıyla Ödenmiş Taksitsiz Mevcut Borç",
      "durum": "active",
      "sekme": "active",
-     "taksitler": []
+     "taksitler": [],
+     "gosterge": "0|1000",
+     "odenen": []
     }
    ],
    "vadeTakip": [],
@@ -423,6 +513,10 @@
      "sekme": "done",
      "taksitler": [
       "1:1000:0:paid"
+     ],
+     "gosterge": "1100|0",
+     "odenen": [
+      1000
      ]
     },
     {
@@ -431,6 +525,10 @@
      "sekme": "active",
      "taksitler": [
       "1:1000:700:open"
+     ],
+     "gosterge": "300|700",
+     "odenen": [
+      300
      ]
     }
    ],
@@ -450,6 +548,11 @@
      "taksitler": [
       "1:300:300:overdue",
       "2:300:300:open"
+     ],
+     "gosterge": "0|1000",
+     "odenen": [
+      0,
+      0
      ]
     }
    ],
@@ -469,7 +572,9 @@
      "ad": "TYKF T3 Taksitsiz Mevcut Borç",
      "durum": "active",
      "sekme": "active",
-     "taksitler": []
+     "taksitler": [],
+     "gosterge": "0|1000",
+     "odenen": []
     }
    ],
    "vadeTakip": [],
@@ -485,6 +590,10 @@
      "sekme": "active/overdue",
      "taksitler": [
       "1:500:500:overdue"
+     ],
+     "gosterge": "0|1000",
+     "odenen": [
+      0
      ]
     }
    ],
@@ -503,7 +612,9 @@
      "ad": "TYKF T5 Taksitleri Silinmiş Stoktan Kart",
      "durum": "active",
      "sekme": "active",
-     "taksitler": []
+     "taksitler": [],
+     "gosterge": "0|1000",
+     "odenen": []
     }
    ],
    "vadeTakip": [],
@@ -542,7 +653,9 @@
      "ad": "TYKF T9 Kart Tahsilatıyla Ödenmiş Taksitsiz Kart",
      "durum": "done",
      "sekme": "done",
-     "taksitler": []
+     "taksitler": [],
+     "gosterge": "1000|0",
+     "odenen": []
     }
    ],
    "vadeTakip": [],
@@ -634,6 +747,11 @@
      "taksitler": [
       "1:150:150:overdue",
       "2:150:150:open"
+     ],
+     "gosterge": "0|300",
+     "odenen": [
+      0,
+      0
      ]
     }
    ],
@@ -660,6 +778,11 @@
      "taksitler": [
       "1:300:0:paid",
       "2:300:300:open"
+     ],
+     "gosterge": "300|300",
+     "odenen": [
+      300,
+      0
      ]
     }
    ],
@@ -679,6 +802,11 @@
      "taksitler": [
       "1:300:300:overdue",
       "2:300:300:open"
+     ],
+     "gosterge": "0|600",
+     "odenen": [
+      0,
+      0
      ]
     }
    ],
@@ -702,6 +830,12 @@
       "1:300:300:overdue",
       "2:300:300:open",
       "3:300:300:open"
+     ],
+     "gosterge": "0|900",
+     "odenen": [
+      0,
+      0,
+      0
      ]
     }
    ],
@@ -731,6 +865,12 @@
       "1:300:0:paid",
       "2:300:300:open",
       "3:300:300:open"
+     ],
+     "gosterge": "300|600",
+     "odenen": [
+      300,
+      0,
+      0
      ]
     }
    ],
@@ -758,6 +898,12 @@
       "1:300:300:overdue",
       "2:300:300:open",
       "3:300:300:open"
+     ],
+     "gosterge": "0|900",
+     "odenen": [
+      0,
+      0,
+      0
      ]
     }
    ],
@@ -816,6 +962,11 @@
      "taksitler": [
       "1:500:500:overdue",
       "2:500:500:open"
+     ],
+     "gosterge": "0|800",
+     "odenen": [
+      0,
+      0
      ]
     }
    ],
@@ -839,6 +990,11 @@
      "taksitler": [
       "1:500:500:overdue",
       "2:200:200:open"
+     ],
+     "gosterge": "0|700",
+     "odenen": [
+      0,
+      0
      ]
     }
    ],
@@ -861,6 +1017,11 @@
      "taksitler": [
       "1:500:500:overdue",
       "2:500:500:open"
+     ],
+     "gosterge": "0|1000",
+     "odenen": [
+      0,
+      0
      ]
     }
    ],
@@ -885,11 +1046,18 @@
       "1:300:0:paid",
       "2:300:300:closed",
       "3:300:300:closed"
+     ],
+     "gosterge": "300|600",
+     "odenen": [
+      300,
+      0,
+      0
      ]
     }
    ],
    "vadeTakip": [],
    "zil": []
   }
- }
+ },
+ "gostergeOkuma": "Birleşik tur 8 (13.11.2026, DÜŞÜK-E): kartların 'gosterge' (Tahsil Edilen|Kalan) ve 'odenen' (satır Ödenen'i) alanları v2.4.9'un GERÇEK koduyla (git archive v2.4.9 = ccf0b0ca) bu fikstürün verisinden test/tyk-fark-oku.mjs ile okundu (durağan saat = now); öbür alanlar ilk okumayla birebir aynı çıktı."
 }

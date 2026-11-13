@@ -1,0 +1,87 @@
+{
+ "retler": [
+  "taksitli fatura taksit 2 düzeltme: 400 due-before-start",
+  "taksit M71090-7-5-2: 400 due-before-start",
+  "Mevcut Borç kartı 418 (Kayıt 2026-01-09, 2 taksit): 400 ",
+  "Mevcut Borç kartı 130 (Kayıt 2025-06-01, 2 taksit): 400 ",
+  "kart hareketi: kart yok (M71090-7-16)",
+  "kart hareketi: kart yok (M71090-7-16)",
+  "kart tahsilatı 200 (2026-07-06) → taksit: 409 installment-paid"
+ ],
+ "sonuc": {
+  "cariBakiyesi": 2160,
+  "defterBakiye": 2160,
+  "sigmaKalem": 2160,
+  "FARK": 0,
+  "gecikmisBorc": 2160,
+  "vadeTakipTahsilEdilecek": 2160,
+  "vadeTakipOdenecek": 0,
+  "vadeTakip": [
+   "invoice:in:716@2026-08-08",
+   "plan:in:180@2026-08-11",
+   "plan:in:360@2026-08-11",
+   "plan:in:434@2026-10-19",
+   "plan:in:470@2026-10-09"
+  ],
+  "kalemler": [
+   "invoice:receivable:716@2026-08-08",
+   "installment:receivable:180@2026-08-11",
+   "plan-rest:receivable:360@2026-08-11",
+   "plan-rest:receivable:470@2026-10-09",
+   "installment:receivable:434@2026-10-19"
+  ],
+  "kartlar": [
+   "s2 tük 0/230 avans 230 kırp 0",
+   "S110-satis tük 620/840 avans 220 kırp 0",
+   "S110-satis tük 200/360 avans 160 kırp 0",
+   "S120 tük 910/952 avans 0 kırp 0",
+   "S120 tük 0/178 avans 0 kırp 0"
+  ],
+  "taksitler": [
+   "0/0",
+   "0/0",
+   "0/0",
+   "0/0",
+   "0/0",
+   "0",
+   "0/434",
+   "180/360",
+   "0",
+   "470"
+  ],
+  "mutabakat": true,
+  "gecis": {
+   "count": 25,
+   "stable": true
+  },
+  "gecikmisGunler": [
+   [
+    "2026-03-02",
+    0
+   ],
+   [
+    "2026-04-11",
+    0
+   ],
+   [
+    "2026-05-31",
+    0
+   ],
+   [
+    "2026-07-20",
+    0
+   ],
+   [
+    "2026-09-08",
+    1256
+   ],
+   [
+    "2026-11-17",
+    2160
+   ]
+  ],
+  "dolguAcik": 0
+ },
+ "adimSayisi": 56,
+ "HATA": null
+}

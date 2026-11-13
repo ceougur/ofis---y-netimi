@@ -1,0 +1,13 @@
+{
+ "F2'ye bağlı nakit 100": {
+  "supheli": "200",
+  "normalIsle400": "200",
+  "once": "120 100 · 128 1000 · kuyruk 1000 = F1 600 + F2 400",
+  "yanit": "200",
+  "sonra": "120 0 · 128 1000 · kuyruk 1000 = F1 600 + F2 400",
+  "sonSatir": [
+   "2026-10-10 A 120 100"
+  ]
+ },
+ "mutabakat": []
+}

@@ -1,0 +1,16 @@
+#!/bin/bash
+# Birleşik tur 8b (ek): iki kurgunun önce → sonra tablosu (taban ↔ yeni). Yük kilidi paylaşımlı, BEKLEMESİZ.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-a97f589d1520516a5
+exec 9>"$S/olcum.lock"
+flock -s -n 9 || { echo "KİLİT DOLU — KOŞULMADI"; exit 3; }
+export TZ=UTC HUKUK_LICENSE_URL=http://127.0.0.1:9
+OUT=$S/b8b-kanit/once-sonra2.txt
+: > $OUT
+for k in taban:$S/b8b-taban2 yeni:$W; do
+  for f in once-sonra.mjs once-sonra2.mjs; do
+    echo "=== ${k%%:*} · $f" >> $OUT
+    timeout -k 5 300 node $S/b8b-betik/$f ${k#*:} 2>&1 | grep "|" >> $OUT
+  done
+done
+cat $OUT

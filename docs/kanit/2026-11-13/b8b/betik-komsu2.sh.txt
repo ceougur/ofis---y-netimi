@@ -1,0 +1,15 @@
+#!/bin/bash
+# Birleşik tur 8b komşu (gerileme) koşusu: Vade Takip'i adıyla / API yoluyla / overview rotasıyla anan bütün *.test.mjs (Grep taraması; test/bagimsiz hariç) + yazım düzeni; iki TZ.
+# Yük kilidi paylaşımlı, BEKLEMESİZ.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-a97f589d1520516a5
+exec 9>"$S/olcum.lock"
+flock -s -n 9 || { echo "KİLİT DOLU — KOŞULMADI"; exit 3; }
+cd $W || exit 1
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=$S/b8b-kanit
+mapfile -t FILES < $S/b8b-betik/komsu-liste.txt
+for tz in UTC Europe/Istanbul; do
+  ad=b8b-komsu2-${tz//\//-}
+  TZ=$tz timeout -k 5 2400 node tools/kanit.mjs kos $ad -- node --test "${FILES[@]}" > $S/b8b-kanit/$ad.txt 2>&1
+  echo "$tz çıkış=$? $(grep -E '^# (tests|pass|fail|cancelled|skipped|todo) ' $S/b8b-kanit/$ad.txt | tr '\n' ' ')"
+done

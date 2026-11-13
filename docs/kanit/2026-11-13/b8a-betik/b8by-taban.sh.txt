@@ -1,0 +1,20 @@
+#!/bin/bash
+# Ana oturum: BİRLEŞİK TUR 8b — TABAN KIRMIZISI (ders 7, 23, 38): kendi ayrı kopyamda (birlesik8b-taban) 8b'nin yeni / genişleyen test dosyaları; neden iletiden okunur.
+# Çağrı: flock -s -n olcum.lock timeout 1500 bash b8by-taban.sh
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+R=/home/user/ofis---y-netimi; K=$S/b8a-kanit; TB=$S/b8by-taban; A8B=worktree-agent-a97f589d1520516a5
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+mkdir -p $K || exit 1
+echo "başladı $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg)"
+if [ ! -d $TB ]; then mkdir -p $TB && git -C $R archive birlesik8b-taban ':!docs/kanit' | tar -x -C $TB && ln -s $R/node_modules $TB/node_modules || exit 1; fi
+TESTLER=$(git -C $R diff --name-only --diff-filter=AM birlesik8b-taban $A8B -- test | grep -E '\.test\.mjs$' | grep -v -E '^test/(bagimsiz|e2e)/')
+echo "8b'nin yeni / değişen test dosyaları: $(echo $TESTLER) · ürün dosyaları: $(git -C $R diff --name-only birlesik8b-taban $A8B -- server client | tr '\n' ' ')"
+for f in $TESTLER; do git -C $R show $A8B:$f > $TB/$f || exit 1; done
+cd $TB || exit 1
+for f in $TESTLER; do
+  ad=$(basename $f .test.mjs)
+  TZ=UTC timeout 900 node --disable-warning=ExperimentalWarning --test --test-concurrency=1 $f > $K/taban8b-$ad.out 2>&1; c=$?
+  echo "TABAN $ad çıkış $c · $(grep -E '^# (tests|pass|fail)' $K/taban8b-$ad.out | tr '\n' ' ')"
+  grep -E "^\s*(not ok|error:|  message:)|AssertionError" $K/taban8b-$ad.out | head -14 | cut -c1-260
+done
+echo "bitti $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg)"

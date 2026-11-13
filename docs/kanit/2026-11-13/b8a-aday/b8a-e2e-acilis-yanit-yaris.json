@@ -1,0 +1,32 @@
+{
+  "ad": "b8a-e2e-acilis-yanit-yaris",
+  "komut": "npm run test:acilis-yanit-yaris",
+  "commit": "d72fbd1f22c44517157538c7999674d19fa1d1fb",
+  "dal": "sinama-b8a",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T19:50:33.001Z",
+  "sure_sn": 49.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 12,
+    "gecen": 12,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../b8a-kanit/2026-11-13/b8a-e2e-acilis-yanit-yaris.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag",
+  "ham_cikti_sha256": "ea9b155227cf06c745624930a0ff8270d3a2c07487c7cc0f8539682da584852e",
+  "ham_cikti_bayt": 4313
+}

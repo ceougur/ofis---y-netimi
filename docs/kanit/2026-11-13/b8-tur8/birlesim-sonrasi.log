@@ -1,0 +1,20 @@
+13:48:54 başladı · yük 1.90 2.12 1.82 · uç 34009207 Mer
+13:49:19 İş 1–8 UTC :: [kanit] b8-birlesim-is18-UTC: GEÇTİ · çıkış 0 · 99/99 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 3400920 +1 izlenmeyen · linux 6.18
+13:49:45 İş 1–8 Europe/Istanbul :: [kanit] b8-birlesim-is18-Europe-Istanbul: GEÇTİ · çıkış 0 · 99/99 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 3400920 +1 izlenmeyen �
+kahin-defter çıkış 0 :: [kanit] kahin-defter: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 3400920 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v2
+kahin-cari çıkış 1 :: [kanit] kahin-cari: BAŞARISIZ (çıkış 1; 10 başarısız, 0 iptal) · çıkış 1 · 16449/16459 geçti, 10 başarısız, 0 iptal, 0 atlanan · commit 3400920 +1 izle
+kahin-tutar çıkış 0 :: [kanit] kahin-tutar: GEÇTİ · çıkış 0 · 3559/3559 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 3400920 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v
+kahin-ebelge-model çıkış 0 :: [kanit] kahin-ebelge-model: GEÇTİ · çıkış 0 · 114/114 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 3400920 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · N
+kahin-ebelge-mutasyon çıkış 0 :: [kanit] kahin-ebelge-mutasyon: GEÇTİ · çıkış 0 · 55/55 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 3400920 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · 
+kahin-ebelge-senaryo çıkış 0 :: [kanit] kahin-ebelge-senaryo: GEÇTİ · çıkış 0 · 27/27 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 3400920 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · N
+kahin-muhasebe-model çıkış 0 :: [kanit] kahin-muhasebe-model: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 3400920 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 ·
+kahin-muhasebe-mutasyon çıkış 0 :: [kanit] kahin-muhasebe-mutasyon: GEÇTİ · çıkış 0 · 277/277 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 3400920 +1 izlenmeyen · linux 6.18.44-fc-v445 x64
+kahin-maliyet çıkış 0 :: [kanit] kahin-maliyet: GEÇTİ · çıkış 0 · 41306/41306 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 3400920 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · No
+kahin-mobil-yazma çıkış 0 :: [kanit] kahin-mobil-yazma: GEÇTİ · çıkış 0 · 54/54 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 3400920 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node
+kahin-defter çıkış 0 :: [kanit] kahin-defter: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 3400920 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v2
+kahin-cari çıkış 1 :: [kanit] kahin-cari: BAŞARISIZ (çıkış 1; 10 başarısız, 0 iptal) · çıkış 1 · 16449/16459 geçti, 10 başarısız, 0 iptal, 0 atlanan · commit 3400920 +1 izle
+kahin-tutar çıkış 0 :: [kanit] kahin-tutar: GEÇTİ · çıkış 0 · 3559/3559 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 3400920 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v
+kahin-ebelge-senaryo çıkış 0 :: [kanit] kahin-ebelge-senaryo: GEÇTİ · çıkış 0 · 27/27 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 3400920 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · N
+kahin-maliyet çıkış 0 :: [kanit] kahin-maliyet: GEÇTİ · çıkış 0 · 41306/41306 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 3400920 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · No
+kahin-mobil-yazma çıkış 0 :: [kanit] kahin-mobil-yazma: GEÇTİ · çıkış 0 · 54/54 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 3400920 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node
+14:32:49 bitti · yük 1.92 2.46 3.07

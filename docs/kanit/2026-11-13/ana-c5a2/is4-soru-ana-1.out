@@ -1,0 +1,11 @@
+{
+ "F2'ye bağlı nakit 300": {
+  "supheli": "200",
+  "normalIsle400": "200",
+  "once": "120 100 · 128 1000 · kuyruk 1000 = F1 600 + F2 400",
+  "yanit": "409 doubtful-normal-exceeds Normal cari hesaba işlenecek tahsilat (300,00 TL) carinin şüpheli dışı borç bakiyesini (100,00 TL) aşıyor; fazlası şüpheli alacaktan düşmek zorunda. Tutarı 100,",
+  "sonra": "120 100 · 128 1000 · kuyruk 1000 = F1 600 + F2 400",
+  "sonSatir": []
+ },
+ "mutabakat": []
+}

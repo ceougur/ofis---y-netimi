@@ -1,0 +1,28 @@
+#!/bin/bash
+# Ana oturum: Ç5-A TUR 2a — yeni / değişen testlerin YENİDEN KOŞUSU (iki TZ) + TABAN KIRMIZISI (ders 7, 23, 38, 51).
+# Yeni kod = tur 2a dalının ucu (kendi kopyam ana-c5a2/yeni); taban = c5a2-taban (kendi kopyam ana-c5a2/taban).
+# Tabana yalnız YENİ eklenen test dosyaları girer (s160 testi, yeni ekran senaryosu DEPO ile); değişen testler tabanda ESKİ hâliyle (ders 51).
+# Çağrı: flock -s -n olcum.lock timeout 3000 bash ana-c5a2/yk.sh
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+R=/home/user/ofis---y-netimi; K=$S/ana-c5a2/kanit; Y=$S/ana-c5a2/yeni; TB=$S/ana-c5a2/taban; A=worktree-agent-a294d4187e1bf9872
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194
+say() { grep -E "^# (tests|pass|fail|cancelled|skipped)" "$1" | tr '\n' ' '; }
+mkdir -p $K || exit 1
+echo "başladı $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg)"
+for c in "$Y $A" "$TB c5a2-taban"; do set -- $c
+  if [ ! -d $1 ]; then mkdir -p $1 && git -C $R archive $2 ':!docs/kanit' | tar -x -C $1 && ln -s $R/node_modules $1/node_modules || exit 1; fi
+done
+git -C $R show $A:test/s160-kilitli-tahsilat-bagi-250.test.mjs > $TB/test/s160-kilitli-tahsilat-bagi-250.test.mjs || exit 1
+cd $Y || exit 1
+for tz in UTC Europe/Istanbul; do m=${tz//\//-}
+  TZ=$tz timeout 900 node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/s160-kilitli-tahsilat-bagi-250.test.mjs test/goc-243-stok-acilis.test.mjs test/defter-kaynak-iz-250.test.mjs > $K/yeni-$m.out 2>&1; echo "YENİ üç test dosyası $tz çıkış $? $(say $K/yeni-$m.out)"
+done
+DONDURMA_YARIS=bitir timeout 900 node test/b7-dondurma-yaris-zorla.mjs test/goc-243-stok-acilis.test.mjs 2 --ad '' > $K/yeni-goc-zorla.out 2>&1; echo "YENİ göç testi zorlama çıkış $? :: $(tail -3 $K/yeni-goc-zorla.out | tr '\n' ' ' | cut -c1-300)"
+timeout 900 node test/e2e/senaryo-acilis-duzeni-250.mjs > $K/yeni-e2e.out 2>&1; echo "YENİ ekran senaryosu çıkış $? :: $(tail -2 $K/yeni-e2e.out | tr '\n' ' ' | cut -c1-240)"
+DEPO=$TB timeout 900 node test/e2e/senaryo-acilis-duzeni-250.mjs > $K/taban-e2e.out 2>&1; echo "TABAN ekran senaryosu (DEPO=taban) çıkış $? :: $(tail -2 $K/taban-e2e.out | tr '\n' ' ' | cut -c1-240)"
+grep -E "✖|HATA|BAŞARISIZ|beklen" $K/taban-e2e.out | head -8 | cut -c1-240
+cd $TB || exit 1
+TZ=UTC timeout 900 node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/s160-kilitli-tahsilat-bagi-250.test.mjs > $K/taban-s160.out 2>&1; echo "TABAN s160 testi çıkış $? $(say $K/taban-s160.out)"
+grep -E "^\s*(not ok|error:|  message:)|AssertionError" $K/taban-s160.out | head -16 | cut -c1-240
+DONDURMA_YARIS=bitir timeout 900 node test/b7-dondurma-yaris-zorla.mjs test/goc-243-stok-acilis.test.mjs 2 --ad '' > $K/taban-goc-zorla.out 2>&1; echo "TABAN göç testi (ESKİ test) zorlama çıkış $? :: $(tail -3 $K/taban-goc-zorla.out | tr '\n' ' ' | cut -c1-300)"
+echo "bitti $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg)"

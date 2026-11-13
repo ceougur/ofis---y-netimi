@@ -1,0 +1,72 @@
+// ANA OTURUM — birleşik tur 8 + 8b HIZ KABUL (tur 8 ajanının düzeneğinden; Vade Takip'in altı hazır aralığı eklendi) (ders 47, 53 (a)): DEĞİŞEN her okuma / yazım yolu, temiz 100 bin satırlık verinin taze kopyasında; en iyi + ortanca + olay döngüsü en çok.
+// Kullanım: node olc-b8.mjs <kod kökü> <veri kopyası> [tekrar=5]   (özel ölçüm kilidiyle çağrılır)
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { monitorEventLoopDelay } from "node:perf_hooks";
+import { pathToFileURL } from "node:url";
+
+process.env.HUKUK_LICENSE_URL ||= "http://127.0.0.1:9";
+const [root, dir, repeatText = "5"] = process.argv.slice(2);
+const repeat = Number(repeatText) || 5;
+const load = () => readFileSync("/proc/loadavg", "utf8").trim().split(" ").slice(0, 3).join(" ");
+const { createApp } = await import(pathToFileURL(path.join(root, "server", "app.mjs")).href);
+const { createClient } = await import(pathToFileURL(path.join(root, "test", "helpers.mjs")).href);
+const PASS = "Kapi-Olcum-2026!";
+const app = createApp({
+  dataDir: path.join(dir, "data"), backupDir: path.join(dir, "backups"), logLevel: "silent", scheduleBackups: false,
+  env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "0123456789abcdef0123456789abcdef" },
+  startLicenseTimers: false, integrityScan: false, analysisWorker: false, now: "2026-10-08T12:00:00+03:00", moneyStrict: false,
+});
+const { port } = await app.listen(0, "127.0.0.1");
+const client = createClient(`http://127.0.0.1:${port}`);
+if ((await client.login("admin", PASS)).status !== 200) throw new Error("giriş");
+const store = app.store;
+// Ölçülen kart: carili, en çok taksitli etkin kart; kayıt detayı için kayıt bağı veri kopyasında kurulur (okuma yolu aynı).
+// Kartın KENDİ kalanı ölçüm boyunca yetsin (yazım 409 'plan-overpay' ölçülmesin): kalan ≥ 1.000 TL olan, en çok hareketli carili kart.
+const plan = store.get("SELECT p.id, p.account_id AS acc FROM plans p WHERE p.deleted_at IS NULL AND p.status = 'active' AND p.account_id <> '' AND p.total - COALESCE((SELECT SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END) FROM plan_entries e WHERE e.plan_id = p.id), 0) >= 1000 ORDER BY (SELECT COUNT(*) FROM plan_entries e WHERE e.plan_id = p.id) DESC LIMIT 1");
+const source = app.context?.dataset?.currentKey ? app.context.dataset.currentKey() : "";
+store.run("UPDATE plans SET case_key = 'OLCUM-KAYIT', case_source = ? WHERE id = ?", source, plan.id);
+const victim = store.get("SELECT p.id FROM plans p WHERE p.deleted_at IS NULL AND p.status = 'active' AND p.account_id <> '' AND p.invoice_id = '' AND NOT EXISTS (SELECT 1 FROM plan_entries e WHERE e.plan_id = p.id AND (e.fin_ref <> '' OR e.cheque_id <> '')) AND NOT EXISTS (SELECT 1 FROM cheques c WHERE c.plan_id = p.id) ORDER BY (SELECT COUNT(*) FROM plan_entries e WHERE e.plan_id = p.id) DESC LIMIT 1");
+console.log(`kod ${root} · yük (başta) ${load()} · ölçülen kart ${plan.id} · silinen kart ${victim?.id}`);
+const h = monitorEventLoopDelay({ resolution: 5 });
+h.enable();
+const r = v => Math.round(v * 10) / 10;
+const results = new Map();
+const timed = async (label, call) => {
+  h.reset();
+  const s = performance.now();
+  const res = await call();
+  const ms = performance.now() - s;
+  if (!results.has(label)) results.set(label, { ms: [], loop: [], status: new Set() });
+  const row = results.get(label);
+  row.ms.push(ms);
+  row.loop.push(h.max / 1e6);
+  row.status.add(res.status);
+  return res;
+};
+const RANGE = "from=2026-01-01&to=2027-12-31";
+for (let i = 0; i < repeat; i += 1) {
+  await timed("YAZIM kart tahsilatı", () => client.post(`/api/workspace/plans/${plan.id}/entries`, { kind: "in", amount: "10", date: "2026-10-08", method: "cash", cashForce: true, similarOk: true }));
+  await timed("kart penceresi (yazımdan sonra)", () => client.get(`/api/workspace/plans/${plan.id}`));
+  await timed("kayıt detayı Taksit Planı (soğuk)", () => client.get("/api/workspace/cases/OLCUM-KAYIT/plans"));
+  await timed("kayıt detayı Taksit Planı (ılık)", () => client.get("/api/workspace/cases/OLCUM-KAYIT/plans"));
+  await timed("cari kartı (soğuk)", () => client.get(`/api/workspace/accounts/${plan.acc}`));
+  await timed("Cari Listesi (yazımdan sonra ilk)", () => client.get("/api/workspace/accounts?status=all&limit=50"));
+  await timed("Cari Listesi (ılık)", () => client.get("/api/workspace/accounts?status=all&limit=50"));
+  await timed("Taksitler listesi (ılık)", () => client.get("/api/workspace/plans?status=all"));
+  await timed("Vade Takip Gecikmiş (ılık)", () => client.get("/api/workspace/overview/vade-takip?preset=late"));
+  await timed("Vade Takip Tüm Açık (ılık)", () => client.get("/api/workspace/overview/vade-takip?preset=open"));
+  await timed("Vade Takip Bugün (ılık)", () => client.get("/api/workspace/overview/vade-takip?preset=today"));
+  await timed("Vade Takip 7 Gün (ılık)", () => client.get("/api/workspace/overview/vade-takip?preset=next7"));
+  await timed("Vade Takip 30 Gün (ılık)", () => client.get("/api/workspace/overview/vade-takip?preset=next30"));
+  await timed("Vade Takip 90 Gün (ılık)", () => client.get("/api/workspace/overview/vade-takip?preset=next90"));
+  await timed("zil / takvim (ılık)", () => client.get("/api/workspace/dues"));
+  if (victim && i < 3) {
+    await timed("SİL taksit kartı", () => client.del(`/api/workspace/plans/${victim.id}?cashForce=1`));
+    await timed("GERİ YÜKLE taksit kartı", () => client.post("/api/admin/trash/restore", { id: `plan:${victim.id}` }));
+  }
+}
+const median = list => [...list].sort((a, b) => a - b)[Math.floor(list.length / 2)];
+for (const [label, row] of results) console.log(`  ${label}: durum ${[...row.status].join("/")} · en iyi ${r(Math.min(...row.ms))} ms · ortanca ${r(median(row.ms))} ms · olay döngüsü en çok ${r(Math.max(...row.loop))} ms (n=${row.ms.length})`);
+console.log(`yük (sonda) ${load()}`);
+await app.close();

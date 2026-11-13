@@ -1,0 +1,115 @@
+TAP version 13
+# (node:8044) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Birleşik tur 8 — İş 7: şüpheli kuralının reddi anlaşılır iletiyle (S145 = A, S155 = A); kural aynen
+    # Subtest: şüpheli tarihinden ÖNCEYE tahsilat 300 → RET, ileti 'borç 700,00 TL, açık şüpheli 900,00 TL'
+    not ok 1 - şüpheli tarihinden ÖNCEYE tahsilat 300 → RET, ileti 'borç 700,00 TL, açık şüpheli 900,00 TL'
+      ---
+      duration_ms: 74.903769
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/supheli-ileti-b8-250.test.mjs:57:3'
+      failureType: 'testCodeFailure'
+      error: 'anlaşılır ileti: İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli Alacak — Carinin Normal Alacağı Eksi Değil (120 = kart − açık şüpheli ≥ 0)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: ~
+      operator: '=='
+      stack: |-
+        rejected (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/supheli-ileti-b8-250.test.mjs:52:12)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/supheli-ileti-b8-250.test.mjs:59:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: öbür kayıt türleri aynı ileti: önceye Alacak Yaz 300 ve önceye faturasız stok iadesi 300 → RET
+    not ok 2 - öbür kayıt türleri aynı ileti: önceye Alacak Yaz 300 ve önceye faturasız stok iadesi 300 → RET
+      ---
+      duration_ms: 45.298716
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/supheli-ileti-b8-250.test.mjs:61:3'
+      failureType: 'testCodeFailure'
+      error: 'anlaşılır ileti: İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli Alacak — Carinin Normal Alacağı Eksi Değil (120 = kart − açık şüpheli ≥ 0)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: ~
+      operator: '=='
+      stack: |-
+        rejected (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/supheli-ileti-b8-250.test.mjs:52:12)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/supheli-ileti-b8-250.test.mjs:63:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Silinenler'den geri yükleme (önceye tahsilat 300, şüpheliden önce silinmişti) → RET, aynı ileti
+    not ok 3 - Silinenler'den geri yükleme (önceye tahsilat 300, şüpheliden önce silinmişti) → RET, aynı ileti
+      ---
+      duration_ms: 100.909591
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/supheli-ileti-b8-250.test.mjs:67:3'
+      failureType: 'testCodeFailure'
+      error: 'anlaşılır ileti: İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli Alacak — Carinin Normal Alacağı Eksi Değil (120 = kart − açık şüpheli ≥ 0)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: ~
+      operator: '=='
+      stack: |-
+        rejected (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/supheli-ileti-b8-250.test.mjs:52:12)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/supheli-ileti-b8-250.test.mjs:77:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: KABUL edilenler değişmedi: bugün tarihli 300 (700), şüpheli günü 300 (700), borcun yettiği eski tarih 100 (900), sonradan yeni borç 500 varken önceye 300 (1.200)
+    ok 4 - KABUL edilenler değişmedi: bugün tarihli 300 (700), şüpheli günü 300 (700), borcun yettiği eski tarih 100 (900), sonradan yeni borç 500 varken önceye 300 (1.200)
+      ---
+      duration_ms: 216.339933
+      type: 'test'
+      ...
+    # Subtest: kapının GENEL iletisi başka nedenlerde aynen; şüpheli nedeni öbür bir nedenle birlikteyse genel ileti
+    not ok 5 - kapının GENEL iletisi başka nedenlerde aynen; şüpheli nedeni öbür bir nedenle birlikteyse genel ileti
+      ---
+      duration_ms: 0.818786
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/supheli-ileti-b8-250.test.mjs:95:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        The input did not match the regular expression /^Bu kayıt carinin borcunu açık şüpheli tutarın altına düşürür \(borç ([\d.,]+ TL), açık şüpheli ([\d.,]+ TL)\); kaydı şüpheliye alma tarihinden sonraya girin ya da önce şüpheli kaydını düzeltin\.$/. Input:
+        
+        'İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/supheli-ileti-b8-250.test.mjs:100:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 1 - Birleşik tur 8 — İş 7: şüpheli kuralının reddi anlaşılır iletiyle (S145 = A, S155 = A); kural aynen
+  ---
+  duration_ms: 849.911775
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/supheli-ileti-b8-250.test.mjs:22:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 1
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1132.624631

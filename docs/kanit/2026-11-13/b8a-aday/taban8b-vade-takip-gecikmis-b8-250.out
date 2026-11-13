@@ -1,0 +1,164 @@
+TAP version 13
+# Subtest: Birleşik tur 8 — İş 4: Vade Takip 'Gecikmiş' hazır aralığı = durumu Gecikmiş olan kalemler (S150 = A)
+    # Subtest: 'Gecikmiş' aralığı: satırlar = 'Tüm Açık'ın durumu Gecikmiş olan satırları (sözü bugün / ileride olanlar dahil); gösterge 500 / 5 tahsilat, 100 / 2 ödeme
+    ok 1 - 'Gecikmiş' aralığı: satırlar = 'Tüm Açık'ın durumu Gecikmiş olan satırları (sözü bugün / ileride olanlar dahil); gösterge 500 / 5 tahsilat, 100 / 2 ödeme
+      ---
+      duration_ms: 24.708317
+      type: 'test'
+      ...
+    # Subtest: 'Gecikmiş Tahsilat / Ödeme' göstergesi: Gecikmiş = Bugün = 7 Gün = 30 Gün = 90 Gün = Tüm Açık (birleşik tur 8b); yön süzgeci (tahsilat / ödeme) ayrı ayrı
+    not ok 2 - 'Gecikmiş Tahsilat / Ödeme' göstergesi: Gecikmiş = Bugün = 7 Gün = 30 Gün = 90 Gün = Tüm Açık (birleşik tur 8b); yön süzgeci (tahsilat / ödeme) ayrı ayrı
+      ---
+      duration_ms: 20.019499
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8by-taban/test/vade-takip-gecikmis-b8-250.test.mjs:56:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            late: [
+              500,
+              100
+            ],
+        ...
+            next7: [
+        +     400,
+        +     30
+        -     500,
+        -     100
+            ],
+            next90: [
+              500,
+              100
+            ],
+        ...
+            today: [
+        +     400,
+        +     30
+        -     500,
+        -     100
+            ]
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        late:
+          0: 500
+          1: 100
+        today:
+          0: 500
+          1: 100
+        next7:
+          0: 500
+          1: 100
+        next30:
+          0: 500
+          1: 100
+        next90:
+          0: 500
+          1: 100
+        open:
+          0: 500
+          1: 100
+      actual:
+        late:
+          0: 500
+          1: 100
+        today:
+          0: 400
+          1: 30
+        next7:
+          0: 400
+          1: 30
+        next30:
+          0: 500
+          1: 100
+        next90:
+          0: 500
+          1: 100
+        open:
+          0: 500
+          1: 100
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8by-taban/test/vade-takip-gecikmis-b8-250.test.mjs:62:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Bugün / 7 Gün sözü aralığın bitişinden ileride olan gecikmiş kalemi de gösterir (birleşik tur 8b — S150 = A'nın eksik kolu; ayrıntı test/vade-takip-gecikmis-b8b-250.test.mjs)
+    not ok 3 - Bugün / 7 Gün sözü aralığın bitişinden ileride olan gecikmiş kalemi de gösterir (birleşik tur 8b — S150 = A'nın eksik kolu; ayrıntı test/vade-takip-gecikmis-b8b-250.test.mjs)
+      ---
+      duration_ms: 4.898426
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8by-taban/test/vade-takip-gecikmis-b8-250.test.mjs:67:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        today
+        + actual - expected
+        
+          [
+        +   400,
+        +   4,
+        +   30,
+        +   1
+        -   500,
+        -   5,
+        -   100,
+        -   2
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 500
+        1: 5
+        2: 100
+        3: 2
+      actual:
+        0: 400
+        1: 4
+        2: 30
+        3: 1
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8by-taban/test/vade-takip-gecikmis-b8-250.test.mjs:70:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ELLE girilen aralık değişmez: 60 gün önce … dün ⇒ yalnız tarihi aralıkta olan 4 satır (sözü ileride olan kalem YOK)
+    ok 4 - ELLE girilen aralık değişmez: 60 gün önce … dün ⇒ yalnız tarihi aralıkta olan 4 satır (sözü ileride olan kalem YOK)
+      ---
+      duration_ms: 5.99944
+      type: 'test'
+      ...
+    # Subtest: PDF ve Excel ekranla aynı satırlar ('Gecikmiş' aralığı)
+    ok 5 - PDF ve Excel ekranla aynı satırlar ('Gecikmiş' aralığı)
+      ---
+      duration_ms: 44.211712
+      type: 'test'
+      ...
+    1..5
+not ok 1 - Birleşik tur 8 — İş 4: Vade Takip 'Gecikmiş' hazır aralığı = durumu Gecikmiş olan kalemler (S150 = A)
+  ---
+  duration_ms: 853.810048
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8by-taban/test/vade-takip-gecikmis-b8-250.test.mjs:22:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 3
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1255.281844

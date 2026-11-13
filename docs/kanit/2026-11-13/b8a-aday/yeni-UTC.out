@@ -1,0 +1,598 @@
+TAP version 13
+# Subtest: Birleşik tur 8 İş 8 — Silinenler özeti; satır içi tarama
+    # Subtest: ÖZETLİ öğe (kart bu kodla silindi) × değişmemiş gizli satır → sessiz (meşru geri yükleme)
+    ok 1 - ÖZETLİ öğe (kart bu kodla silindi) × değişmemiş gizli satır → sessiz (meşru geri yükleme)
+      ---
+      duration_ms: 918.296186
+      type: 'test'
+      ...
+    # Subtest: ÖZETSİZ (eski) öğe × değişmemiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+    ok 2 - ÖZETSİZ (eski) öğe × değişmemiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+      ---
+      duration_ms: 650.409197
+      type: 'test'
+      ...
+    # Subtest: ÖZETLİ öğe (kart bu kodla silindi) × tarihi değişmiş gizli satır → alarm (açıklanamayan 1)
+    ok 3 - ÖZETLİ öğe (kart bu kodla silindi) × tarihi değişmiş gizli satır → alarm (açıklanamayan 1)
+      ---
+      duration_ms: 450.835359
+      type: 'test'
+      ...
+    # Subtest: ÖZETSİZ (eski) öğe × tarihi değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+    ok 4 - ÖZETSİZ (eski) öğe × tarihi değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+      ---
+      duration_ms: 534.677979
+      type: 'test'
+      ...
+    # Subtest: ÖZETLİ öğe (kart bu kodla silindi) × tutarı değişmiş gizli satır → alarm (açıklanamayan 1)
+    ok 5 - ÖZETLİ öğe (kart bu kodla silindi) × tutarı değişmiş gizli satır → alarm (açıklanamayan 1)
+      ---
+      duration_ms: 487.357584
+      type: 'test'
+      ...
+    # Subtest: ÖZETSİZ (eski) öğe × tutarı değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+    ok 6 - ÖZETSİZ (eski) öğe × tutarı değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+      ---
+      duration_ms: 530.596467
+      type: 'test'
+      ...
+    # Subtest: ÖZETLİ öğe (kart bu kodla silindi) × kimliği değişmiş gizli satır → alarm (açıklanamayan 1)
+    ok 7 - ÖZETLİ öğe (kart bu kodla silindi) × kimliği değişmiş gizli satır → alarm (açıklanamayan 1)
+      ---
+      duration_ms: 546.319629
+      type: 'test'
+      ...
+    # Subtest: ÖZETSİZ (eski) öğe × kimliği değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+    ok 8 - ÖZETSİZ (eski) öğe × kimliği değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+      ---
+      duration_ms: 576.372282
+      type: 'test'
+      ...
+    # Subtest: tek satırlık öğe: yükü dışarıdan değiştirilmiş (tarih 03.03 → 05.03) Kasa hareketi geri yüklenince alarm; yükü değişmemiş öğe sessiz
+    ok 9 - tek satırlık öğe: yükü dışarıdan değiştirilmiş (tarih 03.03 → 05.03) Kasa hareketi geri yüklenince alarm; yükü değişmemiş öğe sessiz
+      ---
+      duration_ms: 564.67632
+      type: 'test'
+      ...
+    # Subtest: meşru yollar sessiz: sil → geri yükle → yeniden sil → geri yükle (kart); iki ayrı tek satır geri yüklemesi
+    ok 10 - meşru yollar sessiz: sil → geri yükle → yeniden sil → geri yükle (kart); iki ayrı tek satır geri yüklemesi
+      ---
+      duration_ms: 631.454463
+      type: 'test'
+      ...
+    # Subtest: DÜŞÜK-1 (i): dış yazım (açılış sonrası Kasa hareketi açılış öncesine) SONRA tek satır geri yükleme → alarm (2 → 4; açıklanamayan 1)
+    ok 11 - DÜŞÜK-1 (i): dış yazım (açılış sonrası Kasa hareketi açılış öncesine) SONRA tek satır geri yükleme → alarm (2 → 4; açıklanamayan 1)
+      ---
+      duration_ms: 612.053758
+      type: 'test'
+      ...
+    # Subtest: DÜŞÜK-1 (i) — ÖZETSİZ (eski) tek satırlık öğede de: dış yazım SONRA geri yükleme → alarm (geri yükleme önceden var olan kimliği açıklamaz)
+    ok 12 - DÜŞÜK-1 (i) — ÖZETSİZ (eski) tek satırlık öğede de: dış yazım SONRA geri yükleme → alarm (geri yükleme önceden var olan kimliği açıklamaz)
+      ---
+      duration_ms: 575.111797
+      type: 'test'
+      ...
+    1..12
+ok 1 - Birleşik tur 8 İş 8 — Silinenler özeti; satır içi tarama
+  ---
+  duration_ms: 7086.481223
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 8 İş 8 — Silinenler özeti; iş parçacığı taraması
+    # Subtest: ÖZETLİ öğe (kart bu kodla silindi) × değişmemiş gizli satır → sessiz (meşru geri yükleme)
+    ok 1 - ÖZETLİ öğe (kart bu kodla silindi) × değişmemiş gizli satır → sessiz (meşru geri yükleme)
+      ---
+      duration_ms: 729.390614
+      type: 'test'
+      ...
+    # Subtest: ÖZETSİZ (eski) öğe × değişmemiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+    ok 2 - ÖZETSİZ (eski) öğe × değişmemiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+      ---
+      duration_ms: 867.948332
+      type: 'test'
+      ...
+    # Subtest: ÖZETLİ öğe (kart bu kodla silindi) × tarihi değişmiş gizli satır → alarm (açıklanamayan 1)
+    ok 3 - ÖZETLİ öğe (kart bu kodla silindi) × tarihi değişmiş gizli satır → alarm (açıklanamayan 1)
+      ---
+      duration_ms: 688.075693
+      type: 'test'
+      ...
+    # Subtest: ÖZETSİZ (eski) öğe × tarihi değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+    ok 4 - ÖZETSİZ (eski) öğe × tarihi değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+      ---
+      duration_ms: 719.504257
+      type: 'test'
+      ...
+    # Subtest: ÖZETLİ öğe (kart bu kodla silindi) × tutarı değişmiş gizli satır → alarm (açıklanamayan 1)
+    ok 5 - ÖZETLİ öğe (kart bu kodla silindi) × tutarı değişmiş gizli satır → alarm (açıklanamayan 1)
+      ---
+      duration_ms: 913.920472
+      type: 'test'
+      ...
+    # Subtest: ÖZETSİZ (eski) öğe × tutarı değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+    ok 6 - ÖZETSİZ (eski) öğe × tutarı değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+      ---
+      duration_ms: 770.098607
+      type: 'test'
+      ...
+    # Subtest: ÖZETLİ öğe (kart bu kodla silindi) × kimliği değişmiş gizli satır → alarm (açıklanamayan 1)
+    ok 7 - ÖZETLİ öğe (kart bu kodla silindi) × kimliği değişmiş gizli satır → alarm (açıklanamayan 1)
+      ---
+      duration_ms: 820.035267
+      type: 'test'
+      ...
+    # Subtest: ÖZETSİZ (eski) öğe × kimliği değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+    ok 8 - ÖZETSİZ (eski) öğe × kimliği değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+      ---
+      duration_ms: 847.709119
+      type: 'test'
+      ...
+    # Subtest: tek satırlık öğe: yükü dışarıdan değiştirilmiş (tarih 03.03 → 05.03) Kasa hareketi geri yüklenince alarm; yükü değişmemiş öğe sessiz
+    ok 9 - tek satırlık öğe: yükü dışarıdan değiştirilmiş (tarih 03.03 → 05.03) Kasa hareketi geri yüklenince alarm; yükü değişmemiş öğe sessiz
+      ---
+      duration_ms: 973.408735
+      type: 'test'
+      ...
+    # Subtest: meşru yollar sessiz: sil → geri yükle → yeniden sil → geri yükle (kart); iki ayrı tek satır geri yüklemesi
+    ok 10 - meşru yollar sessiz: sil → geri yükle → yeniden sil → geri yükle (kart); iki ayrı tek satır geri yüklemesi
+      ---
+      duration_ms: 1212.035748
+      type: 'test'
+      ...
+    # Subtest: DÜŞÜK-1 (i): dış yazım (açılış sonrası Kasa hareketi açılış öncesine) SONRA tek satır geri yükleme → alarm (2 → 4; açıklanamayan 1)
+    ok 11 - DÜŞÜK-1 (i): dış yazım (açılış sonrası Kasa hareketi açılış öncesine) SONRA tek satır geri yükleme → alarm (2 → 4; açıklanamayan 1)
+      ---
+      duration_ms: 680.037875
+      type: 'test'
+      ...
+    # Subtest: DÜŞÜK-1 (i) — ÖZETSİZ (eski) tek satırlık öğede de: dış yazım SONRA geri yükleme → alarm (geri yükleme önceden var olan kimliği açıklamaz)
+    ok 12 - DÜŞÜK-1 (i) — ÖZETSİZ (eski) tek satırlık öğede de: dış yazım SONRA geri yükleme → alarm (geri yükleme önceden var olan kimliği açıklamaz)
+      ---
+      duration_ms: 706.448086
+      type: 'test'
+      ...
+    1..12
+ok 2 - Birleşik tur 8 İş 8 — Silinenler özeti; iş parçacığı taraması
+  ---
+  duration_ms: 9929.997588
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 8 İş 8 — DÜŞÜK-1 (ii) (mutant N8): uyarının kimlik kümesi Mutabakat Testi yanıtına SIZMAZ
+    # Subtest: Mutabakat Testi yanıtında 'noticeKeys' alanı yok; uyarının kendisi var
+    ok 1 - Mutabakat Testi yanıtında 'noticeKeys' alanı yok; uyarının kendisi var
+      ---
+      duration_ms: 428.312507
+      type: 'test'
+      ...
+    1..1
+ok 3 - Birleşik tur 8 İş 8 — DÜŞÜK-1 (ii) (mutant N8): uyarının kimlik kümesi Mutabakat Testi yanıtına SIZMAZ
+  ---
+  duration_ms: 428.530492
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 8 — İş 7: şüpheli kuralının reddi anlaşılır iletiyle (S145 = A, S155 = A); kural aynen
+    # Subtest: şüpheli tarihinden ÖNCEYE tahsilat 300 → RET, ileti 'borç 700,00 TL, açık şüpheli 900,00 TL'
+    ok 1 - şüpheli tarihinden ÖNCEYE tahsilat 300 → RET, ileti 'borç 700,00 TL, açık şüpheli 900,00 TL'
+      ---
+      duration_ms: 91.184584
+      type: 'test'
+      ...
+    # Subtest: öbür kayıt türleri aynı ileti: önceye Alacak Yaz 300 ve önceye faturasız stok iadesi 300 → RET
+    ok 2 - öbür kayıt türleri aynı ileti: önceye Alacak Yaz 300 ve önceye faturasız stok iadesi 300 → RET
+      ---
+      duration_ms: 124.866895
+      type: 'test'
+      ...
+    # Subtest: Silinenler'den geri yükleme (önceye tahsilat 300, şüpheliden önce silinmişti) → RET, aynı ileti
+    ok 3 - Silinenler'den geri yükleme (önceye tahsilat 300, şüpheliden önce silinmişti) → RET, aynı ileti
+      ---
+      duration_ms: 99.6161
+      type: 'test'
+      ...
+    # Subtest: KABUL edilenler değişmedi: bugün tarihli 300 (700), şüpheli günü 300 (700), borcun yettiği eski tarih 100 (900), sonradan yeni borç 500 varken önceye 300 (1.200)
+    ok 4 - KABUL edilenler değişmedi: bugün tarihli 300 (700), şüpheli günü 300 (700), borcun yettiği eski tarih 100 (900), sonradan yeni borç 500 varken önceye 300 (1.200)
+      ---
+      duration_ms: 213.897522
+      type: 'test'
+      ...
+    # Subtest: kapının GENEL iletisi başka nedenlerde aynen; şüpheli nedeni öbür bir nedenle birlikteyse genel ileti
+    ok 5 - kapının GENEL iletisi başka nedenlerde aynen; şüpheli nedeni öbür bir nedenle birlikteyse genel ileti
+      ---
+      duration_ms: 0.855559
+      type: 'test'
+      ...
+    1..5
+ok 4 - Birleşik tur 8 — İş 7: şüpheli kuralının reddi anlaşılır iletiyle (S145 = A, S155 = A); kural aynen
+  ---
+  duration_ms: 1001.311012
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 8 — İş 1: kartın göstergeleri yer tablosunun HER yerinde kart penceresiyle aynı (S129 = A, S142 = A)
+    # Subtest: KARAR ÖRNEĞİ (S129) + ORTA-A — kayda bağlı kart 900 (3 × 300), karta BAĞLANMADAN 500 tahsilat: her yerde Tahsil Edilen 500 · Kalan 400, satırlar 300 / 200 / 0
+    ok 1 - KARAR ÖRNEĞİ (S129) + ORTA-A — kayda bağlı kart 900 (3 × 300), karta BAĞLANMADAN 500 tahsilat: her yerde Tahsil Edilen 500 · Kalan 400, satırlar 300 / 200 / 0
+      ---
+      duration_ms: 171.933521
+      type: 'test'
+      ...
+    # Subtest: komşu 1 — BAĞSIZ tahsilat gecikmiş taksiti kapatır: kart 900 (ilk vade 40 gün önce), bağsız 300 ⇒ her yerde Tahsil Edilen 300, durum Gecikti · 1 taksit, sıradaki 2. taksit (S142: cari kartı satırı da)
+    ok 2 - komşu 1 — BAĞSIZ tahsilat gecikmiş taksiti kapatır: kart 900 (ilk vade 40 gün önce), bağsız 300 ⇒ her yerde Tahsil Edilen 300, durum Gecikti · 1 taksit, sıradaki 2. taksit (S142: cari kartı satırı da)
+      ---
+      duration_ms: 101.944416
+      type: 'test'
+      ...
+    # Subtest: komşu 2 — FAZLA ödeyen: kart 600 (2 × 300), bağsız 800 ⇒ her yerde Kalan 0 · Tamamlandı, sıradaki yok; cari 200 alacaklı
+    ok 3 - komşu 2 — FAZLA ödeyen: kart 600 (2 × 300), bağsız 800 ⇒ her yerde Kalan 0 · Tamamlandı, sıradaki yok; cari 200 alacaklı
+      ---
+      duration_ms: 89.021543
+      type: 'test'
+      ...
+    # Subtest: komşu 3 — İADE FATURASI almış taksitli fatura: 2 × 500 → iade faturası 1 adet ⇒ kart 500'e küçülür, her yerde Tahsil Edilen 0 · Kalan 500 (S151: iade faturasında bugünkü davranış aynen)
+    ok 4 - komşu 3 — İADE FATURASI almış taksitli fatura: 2 × 500 → iade faturası 1 adet ⇒ kart 500'e küçülür, her yerde Tahsil Edilen 0 · Kalan 500 (S151: iade faturasında bugünkü davranış aynen)
+      ---
+      duration_ms: 127.655077
+      type: 'test'
+      ...
+    # Subtest: komşu 4 — KAPATILMIŞ kart (S144 = C: gösterim bugünkü gibi): kart 900, karta 300, Kartı Kapat ⇒ her yerde Tahsil Edilen 300 · Kalan 600 (kartın kendi hesabı), durum Kapalı
+    ok 5 - komşu 4 — KAPATILMIŞ kart (S144 = C: gösterim bugünkü gibi): kart 900, karta 300, Kartı Kapat ⇒ her yerde Tahsil Edilen 300 · Kalan 600 (kartın kendi hesabı), durum Kapalı
+      ---
+      duration_ms: 106.882369
+      type: 'test'
+      ...
+    # Subtest: komşu 5 — VADESİ BUGÜN olan taksit geciken sayılmaz (Cari Listesi kısa kuyruk görünümü pencereyle aynı gün kuralı): kart 900, ilk vade bir ay önce, bağsız 300 ⇒ 1. taksit ödendi, 2. taksit bugün, N geciken 0
+    ok 6 - komşu 5 — VADESİ BUGÜN olan taksit geciken sayılmaz (Cari Listesi kısa kuyruk görünümü pencereyle aynı gün kuralı): kart 900, ilk vade bir ay önce, bağsız 300 ⇒ 1. taksit ödendi, 2. taksit bugün, N geciken 0
+      ---
+      duration_ms: 79.286985
+      type: 'test'
+      ...
+    # Subtest: mobil uçlar yer tablosundaki uçlara gider (17: aynı sayılar) — cari listesi, cari kartı, taksit özeti
+    ok 7 - mobil uçlar yer tablosundaki uçlara gider (17: aynı sayılar) — cari listesi, cari kartı, taksit özeti
+      ---
+      duration_ms: 1.026341
+      type: 'test'
+      ...
+    1..7
+ok 5 - Birleşik tur 8 — İş 1: kartın göstergeleri yer tablosunun HER yerinde kart penceresiyle aynı (S129 = A, S142 = A)
+  ---
+  duration_ms: 1165.706514
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 8 — İş 1: kart göstergelerinin yer tablosu kaynakla aynı (yeni bir gösterim yeri eklenince kırmızı)
+    # Subtest: routes/plans.mjs: kartın kendi biçimini (shape) okuyan yerler — detail (yazım içi), detailView (pencere, PDF; kuyruk), forCase (kayıt detayı; kuyruk), forAccount (cari kartı; queueSummaryOf)
+    ok 1 - routes/plans.mjs: kartın kendi biçimini (shape) okuyan yerler — detail (yazım içi), detailView (pencere, PDF; kuyruk), forCase (kayıt detayı; kuyruk), forAccount (cari kartı; queueSummaryOf)
+      ---
+      duration_ms: 3.17863
+      type: 'test'
+      ...
+    # Subtest: routes/plans.mjs ve öbür yollar: kartın kendi hesabını (allocate) kuran her yer kuyruk görünümüne bağlı ya da iç çağıran olarak listede
+    ok 2 - routes/plans.mjs ve öbür yollar: kartın kendi hesabını (allocate) kuran her yer kuyruk görünümüne bağlı ya da iç çağıran olarak listede
+      ---
+      duration_ms: 4.925718
+      type: 'test'
+      ...
+    # Subtest: routes/accounts.mjs: cari kartının taksit özeti queueSummaryOf (durum + sıradaki + Tahsil Edilen / Kalan), Cari Listesi kuyruğu summariesByAccount'a verir
+    ok 3 - routes/accounts.mjs: cari kartının taksit özeti queueSummaryOf (durum + sıradaki + Tahsil Edilen / Kalan), Cari Listesi kuyruğu summariesByAccount'a verir
+      ---
+      duration_ms: 0.961978
+      type: 'test'
+      ...
+    # Subtest: istemci: kart sayılarını gösteren dosyalar listede — yeni bir dosya kart toplamlarını okursa yer tablosuna eklenmeli
+    ok 4 - istemci: kart sayılarını gösteren dosyalar listede — yeni bir dosya kart toplamlarını okursa yer tablosuna eklenmeli
+      ---
+      duration_ms: 9.903411
+      type: 'test'
+      ...
+    1..4
+ok 6 - Birleşik tur 8 — İş 1: kart göstergelerinin yer tablosu kaynakla aynı (yeni bir gösterim yeri eklenince kırmızı)
+  ---
+  duration_ms: 19.39122
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 8 — İş 2: 'Kalanı Aşan Tutar' sorusu kartın KENDİ kalanını niteleyerek söyler (S118 = B kuralı aynen)
+    # Subtest: kart 900 (3 × 300) + bağsız 500 (pencere: Kalan 400): 901 → 409 plan-overpay, ileti 'kartın kendi tahsilatlarına göre kalan 900,00 TL'; 900 kabul (sınır kartın kendi kalanı)
+    ok 1 - kart 900 (3 × 300) + bağsız 500 (pencere: Kalan 400): 901 → 409 plan-overpay, ileti 'kartın kendi tahsilatlarına göre kalan 900,00 TL'; 900 kabul (sınır kartın kendi kalanı)
+      ---
+      duration_ms: 75.195093
+      type: 'test'
+      ...
+    1..1
+ok 7 - Birleşik tur 8 — İş 2: 'Kalanı Aşan Tutar' sorusu kartın KENDİ kalanını niteleyerek söyler (S118 = B kuralı aynen)
+  ---
+  duration_ms: 418.633841
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 8 — İş 3: faturasız iade ve Değersiz yazma kartın Tahsil Edilen'ine / satırın Ödenen'ine sayılmaz (S151 = B, S158 = A); yalnız gösterim
+    # Subtest: KARAR ÖRNEĞİ S151 — Borç 500 + satış kartı 1.000 (2 × 500) + faturasız iade 300: Tahsil Edilen 0, Kalan 700, iade ayrı (300), bakiye 1.200; liste ve cari kartı aynı
+    ok 1 - KARAR ÖRNEĞİ S151 — Borç 500 + satış kartı 1.000 (2 × 500) + faturasız iade 300: Tahsil Edilen 0, Kalan 700, iade ayrı (300), bakiye 1.200; liste ve cari kartı aynı
+      ---
+      duration_ms: 94.133779
+      type: 'test'
+      ...
+    # Subtest: KARAR ÖRNEĞİ S158 — Borç 900 → Mevcut Borç kartı 900 → faturasız iade 300: Tahsil Edilen 0, Kalan 600
+    ok 2 - KARAR ÖRNEĞİ S158 — Borç 900 → Mevcut Borç kartı 900 → faturasız iade 300: Tahsil Edilen 0, Kalan 600
+      ---
+      duration_ms: 66.063354
+      type: 'test'
+      ...
+    # Subtest: satış kartı (stoktan taksitli satış 1.000) × faturasız stok iadesi 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 700; satırların Ödenen'i 0
+    ok 3 - satış kartı (stoktan taksitli satış 1.000) × faturasız stok iadesi 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 700; satırların Ödenen'i 0
+      ---
+      duration_ms: 67.132458
+      type: 'test'
+      ...
+    # Subtest: satış kartı (stoktan taksitli satış 1.000) × Değersiz Alacak Yaz 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 700; satırların Ödenen'i 0
+    ok 4 - satış kartı (stoktan taksitli satış 1.000) × Değersiz Alacak Yaz 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 700; satırların Ödenen'i 0
+      ---
+      duration_ms: 102.889821
+      type: 'test'
+      ...
+    # Subtest: Mevcut Borç kartı (Borç 900 → kart 900) × faturasız stok iadesi 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 600; satırların Ödenen'i 0
+    ok 5 - Mevcut Borç kartı (Borç 900 → kart 900) × faturasız stok iadesi 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 600; satırların Ödenen'i 0
+      ---
+      duration_ms: 91.299544
+      type: 'test'
+      ...
+    # Subtest: Mevcut Borç kartı (Borç 900 → kart 900) × Değersiz Alacak Yaz 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 600; satırların Ödenen'i 0
+    ok 6 - Mevcut Borç kartı (Borç 900 → kart 900) × Değersiz Alacak Yaz 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 600; satırların Ödenen'i 0
+      ---
+      duration_ms: 114.957227
+      type: 'test'
+      ...
+    # Subtest: elle açılan ayrı kart (900) × faturasız stok iadesi 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 600; satırların Ödenen'i 0
+    ok 7 - elle açılan ayrı kart (900) × faturasız stok iadesi 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 600; satırların Ödenen'i 0
+      ---
+      duration_ms: 69.2089
+      type: 'test'
+      ...
+    # Subtest: elle açılan ayrı kart (900) × Değersiz Alacak Yaz 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 600; satırların Ödenen'i 0
+    ok 8 - elle açılan ayrı kart (900) × Değersiz Alacak Yaz 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 600; satırların Ödenen'i 0
+      ---
+      duration_ms: 100.791241
+      type: 'test'
+      ...
+    # Subtest: taksitli fatura kartı (2 × 500) × faturasız stok iadesi 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 700; satırların Ödenen'i 0
+    ok 9 - taksitli fatura kartı (2 × 500) × faturasız stok iadesi 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 700; satırların Ödenen'i 0
+      ---
+      duration_ms: 131.882714
+      type: 'test'
+      ...
+    # Subtest: taksitli fatura kartı (2 × 500) × Değersiz Alacak Yaz 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 700; satırların Ödenen'i 0
+    ok 10 - taksitli fatura kartı (2 × 500) × Değersiz Alacak Yaz 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 700; satırların Ödenen'i 0
+      ---
+      duration_ms: 85.571885
+      type: 'test'
+      ...
+    # Subtest: komşu — iade + bağsız tahsilat birlikte: satış kartı 1.000, iade 300 (1. taksit), bağsız 400 ⇒ Tahsil Edilen 400 (yalnız para), İade 300, Kalan 300
+    ok 11 - komşu — iade + bağsız tahsilat birlikte: satış kartı 1.000, iade 300 (1. taksit), bağsız 400 ⇒ Tahsil Edilen 400 (yalnız para), İade 300, Kalan 300
+      ---
+      duration_ms: 112.71468
+      type: 'test'
+      ...
+    # Subtest: komşu — KISMİ iade 120: Tahsil Edilen 0, İade 120, Kalan 880; satır 380 açık
+    ok 12 - komşu — KISMİ iade 120: Tahsil Edilen 0, İade 120, Kalan 880; satır 380 açık
+      ---
+      duration_ms: 65.840708
+      type: 'test'
+      ...
+    # Subtest: komşu — iadenin SİLİNMESİ: iade 300 → stok hareketi silinir ⇒ İade 0, Tahsil Edilen 0, Kalan 1.000
+    ok 13 - komşu — iadenin SİLİNMESİ: iade 300 → stok hareketi silinir ⇒ İade 0, Tahsil Edilen 0, Kalan 1.000
+      ---
+      duration_ms: 84.590973
+      type: 'test'
+      ...
+    # Subtest: S154 = B DOKUNULMADI — kart 1.200 / 3, karttan 500 + 800 'Fazlasını Avans Yaz' ⇒ Tahsil Edilen 1.300 · Kalan 0, İade 0
+    ok 14 - S154 = B DOKUNULMADI — kart 1.200 / 3, karttan 500 + 800 'Fazlasını Avans Yaz' ⇒ Tahsil Edilen 1.300 · Kalan 0, İade 0
+      ---
+      duration_ms: 113.827099
+      type: 'test'
+      ...
+    1..14
+ok 8 - Birleşik tur 8 — İş 3: faturasız iade ve Değersiz yazma kartın Tahsil Edilen'ine / satırın Ödenen'ine sayılmaz (S151 = B, S158 = A); yalnız gösterim
+  ---
+  duration_ms: 1794.252044
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 8 — İş 4: Vade Takip 'Gecikmiş' hazır aralığı = durumu Gecikmiş olan kalemler (S150 = A)
+    # Subtest: 'Gecikmiş' aralığı: satırlar = 'Tüm Açık'ın durumu Gecikmiş olan satırları (sözü bugün / ileride olanlar dahil); gösterge 500 / 5 tahsilat, 100 / 2 ödeme
+    ok 1 - 'Gecikmiş' aralığı: satırlar = 'Tüm Açık'ın durumu Gecikmiş olan satırları (sözü bugün / ileride olanlar dahil); gösterge 500 / 5 tahsilat, 100 / 2 ödeme
+      ---
+      duration_ms: 21.030112
+      type: 'test'
+      ...
+    # Subtest: 'Gecikmiş Tahsilat / Ödeme' göstergesi: Gecikmiş = Bugün = 7 Gün = 30 Gün = 90 Gün = Tüm Açık (birleşik tur 8b); yön süzgeci (tahsilat / ödeme) ayrı ayrı
+    ok 2 - 'Gecikmiş Tahsilat / Ödeme' göstergesi: Gecikmiş = Bugün = 7 Gün = 30 Gün = 90 Gün = Tüm Açık (birleşik tur 8b); yön süzgeci (tahsilat / ödeme) ayrı ayrı
+      ---
+      duration_ms: 24.579786
+      type: 'test'
+      ...
+    # Subtest: Bugün / 7 Gün sözü aralığın bitişinden ileride olan gecikmiş kalemi de gösterir (birleşik tur 8b — S150 = A'nın eksik kolu; ayrıntı test/vade-takip-gecikmis-b8b-250.test.mjs)
+    ok 3 - Bugün / 7 Gün sözü aralığın bitişinden ileride olan gecikmiş kalemi de gösterir (birleşik tur 8b — S150 = A'nın eksik kolu; ayrıntı test/vade-takip-gecikmis-b8b-250.test.mjs)
+      ---
+      duration_ms: 9.740923
+      type: 'test'
+      ...
+    # Subtest: ELLE girilen aralık değişmez: 60 gün önce … dün ⇒ yalnız tarihi aralıkta olan 4 satır (sözü ileride olan kalem YOK)
+    ok 4 - ELLE girilen aralık değişmez: 60 gün önce … dün ⇒ yalnız tarihi aralıkta olan 4 satır (sözü ileride olan kalem YOK)
+      ---
+      duration_ms: 2.614032
+      type: 'test'
+      ...
+    # Subtest: PDF ve Excel ekranla aynı satırlar ('Gecikmiş' aralığı)
+    ok 5 - PDF ve Excel ekranla aynı satırlar ('Gecikmiş' aralığı)
+      ---
+      duration_ms: 34.244833
+      type: 'test'
+      ...
+    1..5
+ok 9 - Birleşik tur 8 — İş 4: Vade Takip 'Gecikmiş' hazır aralığı = durumu Gecikmiş olan kalemler (S150 = A)
+  ---
+  duration_ms: 819.606641
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 8b — Vade Takip 'Bugün' / '7 Gün' / '30 Gün' / '90 Gün': 'Gecikmiş' göstergesi ve satırları öbür hazır aralıklarla aynı (S150 = A)
+    # Subtest: ön koşul (girdilerden): 'Tüm Açık'ta durumu Gecikmiş tahsil 610 / 7, ödeme 100 / 2; sözü aralığın bitişinden SONRA olan gecikmiş borç var (v−10 p15, tedarikçi sözlü)
+    ok 1 - ön koşul (girdilerden): 'Tüm Açık'ta durumu Gecikmiş tahsil 610 / 7, ödeme 100 / 2; sözü aralığın bitişinden SONRA olan gecikmiş borç var (v−10 p15, tedarikçi sözlü)
+      ---
+      duration_ms: 34.012773
+      type: 'test'
+      ...
+    # Subtest: ALTI hazır aralığın HEPSİNDE 'Gecikmiş Tahsilat' / 'Gecikmiş Ödeme' göstergesi aynı: 610 / 7 ve 100 / 2
+    ok 2 - ALTI hazır aralığın HEPSİNDE 'Gecikmiş Tahsilat' / 'Gecikmiş Ödeme' göstergesi aynı: 610 / 7 ve 100 / 2
+      ---
+      duration_ms: 44.742624
+      type: 'test'
+      ...
+    # Subtest: 'Bugün' / '7 Gün' / '30 Gün' / '90 Gün' satır kümesi = aralığın kendi satırları ∪ durumu Gecikmiş olan her satır ('Tüm Açık'tan); toplam = satırlar; gösterge = gecikmiş satırların toplamı
+    ok 3 - 'Bugün' / '7 Gün' / '30 Gün' / '90 Gün' satır kümesi = aralığın kendi satırları ∪ durumu Gecikmiş olan her satır ('Tüm Açık'tan); toplam = satırlar; gösterge = gecikmiş satırların toplamı
+      ---
+      duration_ms: 25.242812
+      type: 'test'
+      ...
+    # Subtest: aralıkların Bugün / Yaklaşan kümeleri DEĞİŞMEDİ (eklenen kalem yalnız 'Gecikmiş' kümesine girer)
+    ok 4 - aralıkların Bugün / Yaklaşan kümeleri DEĞİŞMEDİ (eklenen kalem yalnız 'Gecikmiş' kümesine girer)
+      ---
+      duration_ms: 16.166017
+      type: 'test'
+      ...
+    # Subtest: yön süzgeci: Yalnız Tahsil Edilecek / Yalnız Ödenecek — dört ileriye bakan aralıkta gösterge ve satırlar 'Gecikmiş' aralığıyla aynı gecikmişleri taşır
+    ok 5 - yön süzgeci: Yalnız Tahsil Edilecek / Yalnız Ödenecek — dört ileriye bakan aralıkta gösterge ve satırlar 'Gecikmiş' aralığıyla aynı gecikmişleri taşır
+      ---
+      duration_ms: 66.663383
+      type: 'test'
+      ...
+    # Subtest: ELLE girilen aralık DEĞİŞMEDİ: bugün … bugün ve bugün … +7 (hazır aralıkla aynı tarihler) sözü ileride olan gecikmiş kalemi göstermez — 510 / 6 tahsilat, 30 / 1 ödeme
+    ok 6 - ELLE girilen aralık DEĞİŞMEDİ: bugün … bugün ve bugün … +7 (hazır aralıkla aynı tarihler) sözü ileride olan gecikmiş kalemi göstermez — 510 / 6 tahsilat, 30 / 1 ödeme
+      ---
+      duration_ms: 8.145417
+      type: 'test'
+      ...
+    # Subtest: 'Gecikmişleri de göster' kapalıyken (late=0) dört ileriye bakan aralık dışından kalem eklemez (bugünkü gibi)
+    ok 7 - 'Gecikmişleri de göster' kapalıyken (late=0) dört ileriye bakan aralık dışından kalem eklemez (bugünkü gibi)
+      ---
+      duration_ms: 19.30245
+      type: 'test'
+      ...
+    # Subtest: PDF ve Excel ekranla aynı ('Bugün', '7 Gün', '30 Gün', '90 Gün'): satırlar ve 'Gecikmiş Tahsilat' / 'Gecikmiş Ödeme' özeti
+    ok 8 - PDF ve Excel ekranla aynı ('Bugün', '7 Gün', '30 Gün', '90 Gün'): satırlar ve 'Gecikmiş Tahsilat' / 'Gecikmiş Ödeme' özeti
+      ---
+      duration_ms: 110.229529
+      type: 'test'
+      ...
+    1..8
+ok 10 - Birleşik tur 8b — Vade Takip 'Bugün' / '7 Gün' / '30 Gün' / '90 Gün': 'Gecikmiş' göstergesi ve satırları öbür hazır aralıklarla aynı (S150 = A)
+  ---
+  duration_ms: 1191.311196
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 8b — sözü 30 / 90 günden de ileride olan gecikmiş borç: altı hazır aralıkta aynı gösterge ve satırlar (S150 = A)
+    # Subtest: gösterge: altı hazır aralığın hepsinde gecikmiş tahsilat 300 / 3, gecikmiş ödeme 70 / 1
+    ok 1 - gösterge: altı hazır aralığın hepsinde gecikmiş tahsilat 300 / 3, gecikmiş ödeme 70 / 1
+      ---
+      duration_ms: 22.280572
+      type: 'test'
+      ...
+    # Subtest: dört ileriye bakan aralıkta satır kümesi = 'Tüm Açık' satırları (hepsi Gecikmiş); satır 4, Tahsil Edilecek 300, Ödenecek 70; toplam = satırlar; başlık aralığı bugünkü gibi
+    ok 2 - dört ileriye bakan aralıkta satır kümesi = 'Tüm Açık' satırları (hepsi Gecikmiş); satır 4, Tahsil Edilecek 300, Ödenecek 70; toplam = satırlar; başlık aralığı bugünkü gibi
+      ---
+      duration_ms: 12.316368
+      type: 'test'
+      ...
+    # Subtest: yön süzgeci: tahsilat 300 / 3 (3 satır), ödeme 70 / 1 (1 satır) — dört ileriye bakan aralıkta
+    ok 3 - yön süzgeci: tahsilat 300 / 3 (3 satır), ödeme 70 / 1 (1 satır) — dört ileriye bakan aralıkta
+      ---
+      duration_ms: 18.908737
+      type: 'test'
+      ...
+    # Subtest: ELLE aralık ve late=0 DEĞİŞMEDİ: bugün … +30 → 100 / 1 ve 0 / 0; bugün … +90 → 200 / 2 ve 70 / 1; late=0 iken aralık dışından kalem yok
+    ok 4 - ELLE aralık ve late=0 DEĞİŞMEDİ: bugün … +30 → 100 / 1 ve 0 / 0; bugün … +90 → 200 / 2 ve 70 / 1; late=0 iken aralık dışından kalem yok
+      ---
+      duration_ms: 13.333281
+      type: 'test'
+      ...
+    # Subtest: PDF ve Excel ekranla aynı (dört ileriye bakan aralık): dört satır ve 'Gecikmiş Tahsilat' 300 (3) / 'Gecikmiş Ödeme' 70 (1) özeti
+    ok 5 - PDF ve Excel ekranla aynı (dört ileriye bakan aralık): dört satır ve 'Gecikmiş Tahsilat' 300 (3) / 'Gecikmiş Ödeme' 70 (1) özeti
+      ---
+      duration_ms: 57.569311
+      type: 'test'
+      ...
+    1..5
+ok 11 - Birleşik tur 8b — sözü 30 / 90 günden de ileride olan gecikmiş borç: altı hazır aralıkta aynı gösterge ve satırlar (S150 = A)
+  ---
+  duration_ms: 544.717043
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 7 İş 3 — Vade Takip: sözlü borcun durumu ve gün sayısı (9 hücre; ekran, Excel, PDF; zil ile aynı)
+    # Subtest: ekran (API) satırı: tarih söz günü, durum ve gün sayısı karar tablosundaki gibi; zil / takvim kalemi aynı (ufuktakiler)
+    ok 1 - ekran (API) satırı: tarih söz günü, durum ve gün sayısı karar tablosundaki gibi; zil / takvim kalemi aynı (ufuktakiler)
+      ---
+      duration_ms: 24.200557
+      type: 'test'
+      ...
+    # Subtest: Excel (Gün, Durum) ve PDF (Durum metni) ekranla aynı
+    ok 2 - Excel (Gün, Durum) ve PDF (Durum metni) ekranla aynı
+      ---
+      duration_ms: 53.649069
+      type: 'test'
+      ...
+    1..2
+ok 12 - Birleşik tur 7 İş 3 — Vade Takip: sözlü borcun durumu ve gün sayısı (9 hücre; ekran, Excel, PDF; zil ile aynı)
+  ---
+  duration_ms: 802.95094
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 7 İş 3 — Vade Takip 'Gecikmiş Tahsilat / Gecikmiş Ödeme' her aralık / kaynak / yön seçeneğinde
+    # Subtest: her seçenekte: toplam alanı = satırlardan = girdilerden beklenen (gecikmiş tahsilat ve ödeme)
+    ok 1 - her seçenekte: toplam alanı = satırlardan = girdilerden beklenen (gecikmiş tahsilat ve ödeme)
+      ---
+      duration_ms: 49.437209
+      type: 'test'
+      ...
+    # Subtest: cari düzeyi (Cari Listesi 'Gecikmiş', Anlık Durum): 'Tüm Açık' Gecikmiş Tahsilat − kapsam farkı = Σ cari gecikmiş; kapsam farkları açıkça
+    ok 2 - cari düzeyi (Cari Listesi 'Gecikmiş', Anlık Durum): 'Tüm Açık' Gecikmiş Tahsilat − kapsam farkı = Σ cari gecikmiş; kapsam farkları açıkça
+      ---
+      duration_ms: 18.131773
+      type: 'test'
+      ...
+    1..2
+ok 13 - Birleşik tur 7 İş 3 — Vade Takip 'Gecikmiş Tahsilat / Gecikmiş Ödeme' her aralık / kaynak / yön seçeneğinde
+  ---
+  duration_ms: 760.60156
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 7 İş 3 — S130 = A × Nakit Akışı: şüpheliye alınan tutar nakit tahmininde beklenen tahsilat değildir
+    # Subtest: adım adım: şüpheli 900 (üç kaleme yayılır); kısmen tahsil 300; kısmen Değersiz 200; ikinci şüpheli kaydı 300; ilk kaydın kalanı Değersiz — her adımda eşitlik
+    ok 1 - adım adım: şüpheli 900 (üç kaleme yayılır); kısmen tahsil 300; kısmen Değersiz 200; ikinci şüpheli kaydı 300; ilk kaydın kalanı Değersiz — her adımda eşitlik
+      ---
+      duration_ms: 790.242019
+      type: 'test'
+      ...
+    # başlangıç: bakiye − açık şüpheli 1700, nakit 1700, vade 1700, faturasız 0 | şüpheli 900: bakiye − açık şüpheli 800, nakit 800, vade 800, faturasız 0 | tahsilat 300: bakiye − açık şüpheli 800, nakit 800, vade 800, faturasız 0 | Değersiz 200: bakiye − açık şüpheli 800, nakit 800, vade 800, faturasız 0 | ikinci şüpheli 300: bakiye − açık şüpheli 500, nakit 500, vade 500, faturasız 0 | ilk kaydın kalanı Değersiz: bakiye − açık şüpheli 500, nakit 500, vade 500, faturasız 0
+    1..1
+ok 14 - Birleşik tur 7 İş 3 — S130 = A × Nakit Akışı: şüpheliye alınan tutar nakit tahmininde beklenen tahsilat değildir
+  ---
+  duration_ms: 817.453764
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 7 İş 3 — S130 × S136 = A: taksit kartlı caride şüpheli tutar taksit kalemlerinden düşer (Nakit Akışı = Vade Takip)
+    # Subtest: kart 600 (2 taksit, ilki gecikmiş) + elle Borç 200; şüpheli 500 → iki ekranda kalan 300, aynı kalemler; faturasız dengeleme satırı yok
+    ok 1 - kart 600 (2 taksit, ilki gecikmiş) + elle Borç 200; şüpheli 500 → iki ekranda kalan 300, aynı kalemler; faturasız dengeleme satırı yok
+      ---
+      duration_ms: 371.539595
+      type: 'test'
+      ...
+    1..1
+ok 15 - Birleşik tur 7 İş 3 — S130 × S136 = A: taksit kartlı caride şüpheli tutar taksit kalemlerinden düşer (Nakit Akışı = Vade Takip)
+  ---
+  duration_ms: 396.269222
+  type: 'suite'
+  ...
+1..15
+# tests 80
+# suites 15
+# pass 80
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 29672.934677
+
+[kanit] b8a-yeni-UTC: GEÇTİ · çıkış 0 · 80/80 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 1a10cdc +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4

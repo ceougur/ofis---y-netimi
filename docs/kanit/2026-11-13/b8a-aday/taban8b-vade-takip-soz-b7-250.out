@@ -1,0 +1,286 @@
+TAP version 13
+# Subtest: Birleşik tur 7 İş 3 — Vade Takip: sözlü borcun durumu ve gün sayısı (9 hücre; ekran, Excel, PDF; zil ile aynı)
+    # Subtest: ekran (API) satırı: tarih söz günü, durum ve gün sayısı karar tablosundaki gibi; zil / takvim kalemi aynı (ufuktakiler)
+    ok 1 - ekran (API) satırı: tarih söz günü, durum ve gün sayısı karar tablosundaki gibi; zil / takvim kalemi aynı (ufuktakiler)
+      ---
+      duration_ms: 18.160971
+      type: 'test'
+      ...
+    # Subtest: Excel (Gün, Durum) ve PDF (Durum metni) ekranla aynı
+    ok 2 - Excel (Gün, Durum) ve PDF (Durum metni) ekranla aynı
+      ---
+      duration_ms: 31.386041
+      type: 'test'
+      ...
+    1..2
+ok 1 - Birleşik tur 7 İş 3 — Vade Takip: sözlü borcun durumu ve gün sayısı (9 hücre; ekran, Excel, PDF; zil ile aynı)
+  ---
+  duration_ms: 706.253922
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 7 İş 3 — Vade Takip 'Gecikmiş Tahsilat / Gecikmiş Ödeme' her aralık / kaynak / yön seçeneğinde
+    # Subtest: her seçenekte: toplam alanı = satırlardan = girdilerden beklenen (gecikmiş tahsilat ve ödeme)
+    not ok 1 - her seçenekte: toplam alanı = satırlardan = girdilerden beklenen (gecikmiş tahsilat ve ödeme)
+      ---
+      duration_ms: 50.080208
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8by-taban/test/vade-takip-soz-b7-250.test.mjs:146:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            {
+              ad: 'aralık late',
+              alanIn: 1100,
+              alanOut: 950,
+        ...
+              ad: 'aralık today',
+        +     alanIn: 1000,
+        +     alanOut: 250,
+        +     satirIn: 1000,
+        +     satirOut: 250
+        -     alanIn: 1100,
+        -     alanOut: 950,
+        -     satirIn: 1100,
+        -     satirOut: 950
+            },
+            {
+              ad: 'aralık next7',
+        +     alanIn: 1000,
+        +     alanOut: 250,
+        +     satirIn: 1000,
+        +     satirOut: 250
+        -     alanIn: 1100,
+        -     alanOut: 950,
+        -     satirIn: 1100,
+        -     satirOut: 950
+            },
+            {
+              ad: 'aralık next30',
+              alanIn: 1100,
+              alanOut: 950,
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          ad: 'aralık late'
+          alanIn: 1100
+          satirIn: 1100
+          alanOut: 950
+          satirOut: 950
+        1:
+          ad: 'aralık today'
+          alanIn: 1100
+          satirIn: 1100
+          alanOut: 950
+          satirOut: 950
+        2:
+          ad: 'aralık next7'
+          alanIn: 1100
+          satirIn: 1100
+          alanOut: 950
+          satirOut: 950
+        3:
+          ad: 'aralık next30'
+          alanIn: 1100
+          satirIn: 1100
+          alanOut: 950
+          satirOut: 950
+        4:
+          ad: 'aralık next90'
+          alanIn: 1100
+          satirIn: 1100
+          alanOut: 950
+          satirOut: 950
+        5:
+          ad: 'aralık open'
+          alanIn: 1100
+          satirIn: 1100
+          alanOut: 950
+          satirOut: 950
+        6:
+          ad: 'geniş özel aralık'
+          alanIn: 1100
+          satirIn: 1100
+          alanOut: 950
+          satirOut: 950
+        7:
+          ad: 'gecikmişler hariç (late=0)'
+          alanIn: 200
+          satirIn: 200
+          alanOut: 700
+          satirOut: 700
+        8:
+          ad: 'kaynak account'
+          alanIn: 500
+          satirIn: 500
+          alanOut: 950
+          satirOut: 950
+        9:
+          ad: 'kaynak invoice'
+          alanIn: 300
+          satirIn: 300
+          alanOut: 0
+          satirOut: 0
+        10:
+          ad: 'kaynak plan'
+          alanIn: 300
+          satirIn: 300
+          alanOut: 0
+          satirOut: 0
+        11:
+          ad: 'yön in'
+          alanIn: 1100
+          satirIn: 1100
+          alanOut: 0
+          satirOut: 0
+        12:
+          ad: 'yön out'
+          alanIn: 0
+          satirIn: 0
+          alanOut: 950
+          satirOut: 950
+      actual:
+        0:
+          ad: 'aralık late'
+          alanIn: 1100
+          satirIn: 1100
+          alanOut: 950
+          satirOut: 950
+        1:
+          ad: 'aralık today'
+          alanIn: 1000
+          satirIn: 1000
+          alanOut: 250
+          satirOut: 250
+        2:
+          ad: 'aralık next7'
+          alanIn: 1000
+          satirIn: 1000
+          alanOut: 250
+          satirOut: 250
+        3:
+          ad: 'aralık next30'
+          alanIn: 1100
+          satirIn: 1100
+          alanOut: 950
+          satirOut: 950
+        4:
+          ad: 'aralık next90'
+          alanIn: 1100
+          satirIn: 1100
+          alanOut: 950
+          satirOut: 950
+        5:
+          ad: 'aralık open'
+          alanIn: 1100
+          satirIn: 1100
+          alanOut: 950
+          satirOut: 950
+        6:
+          ad: 'geniş özel aralık'
+          alanIn: 1100
+          satirIn: 1100
+          alanOut: 950
+          satirOut: 950
+        7:
+          ad: 'gecikmişler hariç (late=0)'
+          alanIn: 200
+          satirIn: 200
+          alanOut: 700
+          satirOut: 700
+        8:
+          ad: 'kaynak account'
+          alanIn: 500
+          satirIn: 500
+          alanOut: 950
+          satirOut: 950
+        9:
+          ad: 'kaynak invoice'
+          alanIn: 300
+          satirIn: 300
+          alanOut: 0
+          satirOut: 0
+        10:
+          ad: 'kaynak plan'
+          alanIn: 300
+          satirIn: 300
+          alanOut: 0
+          satirOut: 0
+        11:
+          ad: 'yön in'
+          alanIn: 1100
+          satirIn: 1100
+          alanOut: 0
+          satirOut: 0
+        12:
+          ad: 'yön out'
+          alanIn: 0
+          satirIn: 0
+          alanOut: 950
+          satirOut: 950
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8by-taban/test/vade-takip-soz-b7-250.test.mjs:156:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: cari düzeyi (Cari Listesi 'Gecikmiş', Anlık Durum): 'Tüm Açık' Gecikmiş Tahsilat − kapsam farkı = Σ cari gecikmiş; kapsam farkları açıkça
+    ok 2 - cari düzeyi (Cari Listesi 'Gecikmiş', Anlık Durum): 'Tüm Açık' Gecikmiş Tahsilat − kapsam farkı = Σ cari gecikmiş; kapsam farkları açıkça
+      ---
+      duration_ms: 9.848241
+      type: 'test'
+      ...
+    1..2
+not ok 2 - Birleşik tur 7 İş 3 — Vade Takip 'Gecikmiş Tahsilat / Gecikmiş Ödeme' her aralık / kaynak / yön seçeneğinde
+  ---
+  duration_ms: 694.413033
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8by-taban/test/vade-takip-soz-b7-250.test.mjs:100:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Birleşik tur 7 İş 3 — S130 = A × Nakit Akışı: şüpheliye alınan tutar nakit tahmininde beklenen tahsilat değildir
+    # Subtest: adım adım: şüpheli 900 (üç kaleme yayılır); kısmen tahsil 300; kısmen Değersiz 200; ikinci şüpheli kaydı 300; ilk kaydın kalanı Değersiz — her adımda eşitlik
+    ok 1 - adım adım: şüpheli 900 (üç kaleme yayılır); kısmen tahsil 300; kısmen Değersiz 200; ikinci şüpheli kaydı 300; ilk kaydın kalanı Değersiz — her adımda eşitlik
+      ---
+      duration_ms: 675.885984
+      type: 'test'
+      ...
+    # başlangıç: bakiye − açık şüpheli 1700, nakit 1700, vade 1700, faturasız 0 | şüpheli 900: bakiye − açık şüpheli 800, nakit 800, vade 800, faturasız 0 | tahsilat 300: bakiye − açık şüpheli 800, nakit 800, vade 800, faturasız 0 | Değersiz 200: bakiye − açık şüpheli 800, nakit 800, vade 800, faturasız 0 | ikinci şüpheli 300: bakiye − açık şüpheli 500, nakit 500, vade 500, faturasız 0 | ilk kaydın kalanı Değersiz: bakiye − açık şüpheli 500, nakit 500, vade 500, faturasız 0
+    1..1
+ok 3 - Birleşik tur 7 İş 3 — S130 = A × Nakit Akışı: şüpheliye alınan tutar nakit tahmininde beklenen tahsilat değildir
+  ---
+  duration_ms: 698.78993
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 7 İş 3 — S130 × S136 = A: taksit kartlı caride şüpheli tutar taksit kalemlerinden düşer (Nakit Akışı = Vade Takip)
+    # Subtest: kart 600 (2 taksit, ilki gecikmiş) + elle Borç 200; şüpheli 500 → iki ekranda kalan 300, aynı kalemler; faturasız dengeleme satırı yok
+    ok 1 - kart 600 (2 taksit, ilki gecikmiş) + elle Borç 200; şüpheli 500 → iki ekranda kalan 300, aynı kalemler; faturasız dengeleme satırı yok
+      ---
+      duration_ms: 412.586699
+      type: 'test'
+      ...
+    1..1
+ok 4 - Birleşik tur 7 İş 3 — S130 × S136 = A: taksit kartlı caride şüpheli tutar taksit kalemlerinden düşer (Nakit Akışı = Vade Takip)
+  ---
+  duration_ms: 441.422798
+  type: 'suite'
+  ...
+1..4
+# tests 6
+# suites 4
+# pass 5
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2921.317809

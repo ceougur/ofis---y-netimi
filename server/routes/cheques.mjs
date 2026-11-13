@@ -21,6 +21,7 @@ import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
 import { systemClock } from "../lib/clock.mjs";
 import { IMPORT_SCOPES, createImportRequests } from "../lib/import-request.mjs";
+import { recordingHidden } from "../lib/cash-opening.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => {
@@ -699,7 +700,8 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
   router.delete("/api/workspace/cheques/:id", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "cheques.manage");
     let result = null;
-    bank.post({ user, module: "cheque", op: "delete", prev: { chequeId: params.id }, write: () => {
+    // Birleşik tur 8 (DK-B7 ORTA-1; BAŞ MİMAR KARARI 13.11 09:54): silinirken görünürlüğü kalkan nakit satırlarının özeti Silinenler için yazılır (lib/cash-opening.mjs recordingHidden).
+    recordingHidden(store, "cheque", params.id, () => bank.post({ user, module: "cheque", op: "delete", prev: { chequeId: params.id }, write: () => {
       const cheque = chequeRow(params.id);
       collections.assertNotDeposited(cheque, "silinemez");
       const history = eventsOf(cheque.id);
@@ -713,7 +715,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
       store.run("UPDATE cheques SET deleted_by = ?, deleted_at = ? WHERE id = ?", user.id, now(), cheque.id);
       audit(user, "cheque.deleted", cheque.id, { serialNo: cheque.serialNo, amount: cheque.amount, dueDate: cheque.dueDate, direction: cheque.direction });
       result = { id: cheque.id, effects };
-    } });
+    } }));
     changed(user, { chequeId: result.id, ...touchedBy(result.effects) });
     ok(res, { id: result.id });
   });

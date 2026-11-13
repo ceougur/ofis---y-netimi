@@ -224,7 +224,10 @@ export function installCashOpeningGuard(store) {
  * Silinenler'den geri yükleme kapsamı (Z9 BAŞ MİMAR KARARI; S20): fn'nin işlemlerinde geri gelen para satırı Kasa açılışından önce tarihli olsa da aynen döner
  * (yalnız S12 kalkar; dönem kilidi, ileri tarih, düzeltme kuralı aynen). Eşzamanlı (düğüm tek iş parçacığı; fn store işlemlerini beklemeden bitirir).
  */
-export function restoringCash(store, fn) {
+// Birleşik tur 8 (dar kontrol DK-B7 ORTA-1; BAŞ MİMAR KARARI 13.11 09:54 — kullanıcıya gösterildi): expected = Silinenler öğesinin silinirkenki özeti (kimlik → 'tarih|kuruş';
+// recordingHidden / trash ekleme) — verilirse geri yükleme yalnız özette AYNI kimlik + tarih + tutarla duran satırları açıklar; silindikten sonra dışarıdan değişmiş (tarih / tutar /
+// kimlik) satır açıklanmaz → tarama 'kapının görmediği yazım' alarmı verir. Özeti olmayan (eski) öğede bugünkü davranış AYNEN (yanlış alarm üretilmez).
+export function restoringCash(store, fn, { expected = null } = {}) {
   const handle = guardStates.get(store);
   if (!handle) return fn();
   // 2.5.0 birleşik tur 6 (DK-D2T3 ORTA-1; BAŞ MİMAR 11.11 — kullanıcı onaylı): en dış geri yüklemede uyarı önce / sonra ölçülür. Birleşik tur 7 (DK-B6 ORTA-1; BAŞ MİMAR
@@ -235,11 +238,12 @@ export function restoringCash(store, fn) {
   const before = outer ? keysBeforeOpening(store) : null;
   const settle = () => {
     if (!outer || !before) return;
-    const after = keysBeforeOpening(store);
-    const added = after ? [...after].filter(key => !before.has(key)) : [];
-    if (!added.length) return;
+    const after = keysBeforeOpening(store, { signed: Boolean(expected) });
+    const added = after ? [...after.keys()].filter(key => !before.has(key)) : [];
+    const explains = expected ? added.filter(key => expected.get(key) === after.get(key)) : added;
+    if (!explains.length) return;
     handle.state.restored += 1;
-    for (const key of added) handle.state.explained.set(key, { seq: handle.state.restored, from: "" });
+    for (const key of explains) handle.state.explained.set(key, { seq: handle.state.restored, from: "" });
   };
   handle.state.restoring += 1;
   let result;
@@ -258,18 +262,76 @@ export function restoringCash(store, fn) {
  * Uyarı kümesi (cashBeforeOpening ile aynı tanım: Kasa açılışından önce tarihli görünür nakit hareketlerinin kimlikleri; açılış yoksa boş). Okunamazsa null (eski şema):
  * restoringCash ölçemez — o geri yükleme açıklama katmaz (taramanın bir sonraki karşılaştırması yine çalışır).
  */
-function keysBeforeOpening(store) {
+// signed: imza (tarih|kuruş) yalnız özetle karşılaştırılacaksa kurulur (hız kabulü: geri yüklemede gereksiz dizgi kurulmasın).
+function keysBeforeOpening(store, { signed = false } = {}) {
   try {
-    // Hız (ders 47, 53): yalnız kimlik — örnek metni / kaynak adı kurulmaz (geri yükleme başına iki kez; 18.651 açılış öncesi satırda ölçüldü).
+    // Hız (ders 47, 53): yalnız kimlik (+ istenirse imza) — örnek metni / kaynak adı kurulmaz (geri yükleme başına iki kez; 18.651 açılış öncesi satırda ölçüldü).
     const opening = cashOpeningDate(store);
-    const keys = new Set();
+    const keys = new Map();
     if (!opening) return keys;
     const lines = createMoneyLines(store);
-    for (const line of lines.lines({ ways: ["cash"], before: opening, light: true })) keys.add(noticeKeyOf(lines, line));
+    for (const line of lines.lines({ ways: ["cash"], before: opening, light: true })) keys.set(noticeKeyOf(lines, line), signed ? signatureOf(line) : true);
     return keys;
   } catch {
     return null;
   }
+}
+
+// Birleşik tur 8 (DK-B7 ORTA-1): satırın özeti — tarih + kuruş (kimlik anahtarın kendisi).
+const signatureOf = line => `${line.date || ""}|${Number(line.cents) || 0}`;
+const HIDDEN_PREFIX = "cash-hidden:";
+/** Silinenler özetinin ayar anahtarı (kaynak: plan / account / cheque / trash; ref: öğenin kimliği). */
+export const hiddenKeyOf = (source, ref) => `${HIDDEN_PREFIX}${source}:${ref}`;
+// Üst kaydın gizlenen para satırları (Kasa uyarısının kimliğiyle aynı tablo + kimlik; tarih + kuruş): kartın taksit hareketleri, carinin cari satırları, evrakın olayları.
+// Hız (ders 47, 53 (a)): yalnız silinen kaydın satırları, dizinli tek sorgu — Kasa'nın bütün satırları OKUNMAZ (ilk sürümde iki tam tarama kart silmeyi ~57 → ~700 ms yapıyordu).
+const CHILD_ROWS = {
+  plan: ["plan_entries", "SELECT id, date, CAST(ROUND(amount * 100) AS INTEGER) AS cents FROM plan_entries WHERE plan_id = ?"],
+  account: ["account_entries", "SELECT id, date, CAST(ROUND(amount * 100) AS INTEGER) AS cents FROM account_entries WHERE account_id = ?"],
+  cheque: ["cheque_events", "SELECT id, date, CAST(ROUND(amount * 100) AS INTEGER) AS cents FROM cheque_events WHERE cheque_id = ?"],
+};
+/**
+ * Üst kayıt (kart, cari, çek / senet) silinirken görünürlüğü kalkan para satırlarının özeti (kimlik → tarih|kuruş) — fn'den ÖNCE okunur (silinirkenki hâl), fn başarıyla
+ * bitince ayar tablosuna TEK değer olarak yazılır. fn hata verirse özet yazılmaz. Okunamazsa (eski şema) öğe özetsiz kalır (bugünkü davranış).
+ */
+export function recordingHidden(store, source, ref, fn) {
+  let rows = null;
+  try {
+    const [table, sql] = CHILD_ROWS[source] || [];
+    if (table) {
+      rows = {};
+      for (const row of store.all(sql, ref)) rows[`${table}:${row.id}`] = `${row.date || ""}|${Number(row.cents) || 0}`;
+    }
+  } catch {
+    rows = null;
+  }
+  const result = fn();
+  if (rows) {
+    try {
+      saveHidden(store, hiddenKeyOf(source, ref), rows);
+    } catch {
+      // özet yazılamadı: öğe özetsiz kalır (bugünkü davranış)
+    }
+  }
+  return result;
+}
+/** Özeti yazar (kimlik → 'tarih|kuruş'); tek satırlık Silinenler öğesi için yükten (lib/trash.mjs) de çağrılır. */
+export function saveHidden(store, key, rows) {
+  store.run("INSERT INTO settings (key, value, updated_at) VALUES (?, ?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at", key, JSON.stringify({ rows }), new Date().toISOString());
+}
+/** Özetleri birleştirir: hepsi varsa Map, biri yoksa null (eksik özet → bugünkü davranış; yanlış alarm üretilmez). */
+export function hiddenExpected(store, keys) {
+  const out = new Map();
+  for (const key of keys) {
+    let value = null;
+    try {
+      value = JSON.parse(store.get("SELECT value FROM settings WHERE key = ?", key)?.value || "null");
+    } catch {
+      value = null;
+    }
+    if (!value?.rows) return null;
+    for (const [rowKey, sig] of Object.entries(value.rows)) out.set(rowKey, sig);
+  }
+  return out;
 }
 
 /** Açıklama kayıtlarının sıra numarası (store başına; denetim kurulu değilse 0). lib/integrity.mjs settleScan taramanın anlık görüntüsünden önce okur. */

@@ -1,0 +1,32 @@
+{
+  "ad": "b8-is4-Europe-Istanbul",
+  "komut": "node --test test/vade-takip-gecikmis-b8-250.test.mjs test/vade-takip-soz-b7-250.test.mjs",
+  "commit": "eef11aa08e81adc4dcdd1cea3cbe8ca2d7cf0922",
+  "dal": "worktree-agent-a2ba3cc62b2d80923",
+  "kirli": 3,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T10:33:43.953Z",
+  "sure_sn": 3.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 11,
+    "gecen": 11,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-kanit/2026-11-13/b8-is4-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a2ba3cc62b2d80923",
+  "ham_cikti_sha256": "00cc1e8dde06729b525e18ee25075b22489a89cadf927034078ffb695d37a322",
+  "ham_cikti_bayt": 6674
+}

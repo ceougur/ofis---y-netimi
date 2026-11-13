@@ -1,0 +1,53 @@
+// ANA OTURUM — cari kâhini bakımı 17'nin SK-36 / SK-37 sorularının GERÇEK PROGRAMDA koşusu (ders 6; 'soruda program bugün böyle denmeden önce koşulur'). ROOT=<kod> node sk.mjs
+import { boot, day, TODAY } from "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-betik/h.mjs";
+const h = await boot();
+const { api, must } = h;
+const goods = await must("ürün", api.post("/api/workspace/stock", { name: "SK Ürün", code: "SK-1", unit: "Adet", unitPrice: "10", salePrice: "100" }));
+await must("alım", api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "in", qty: "500", unitPrice: "10", pay: "none", date: day(-300) }));
+const show = async (label, acc) => {
+  const c = await h.card(acc);
+  const plans = (c.plans || []).map(p => ({ toplam: p.total, tahsil: p.paid, kalan: p.remaining, iade: p.returned, durum: p.state ?? p.status, taksit: (p.items || []).map(i => `${i.dueDate}:${i.amount}|öd ${i.paid}|ka ${i.remaining ?? ""}${i.returned ? `|iade ${i.returned}` : ""}`) }));
+  console.log(`  ${label}: bakiye ${c.balance ?? c.totals?.balance} · gecikmiş ${c.totals?.overdueDebt} · kartlar ${JSON.stringify(plans)}`);
+  return c;
+};
+const pay = async (planId, amount, extra = {}) => { const r = await api.post(`/api/workspace/plans/${planId}/entries`, { kind: "in", amount: String(amount), date: TODAY, method: "cash", cashForce: true, similarOk: true, ...extra }); return `${r.status}${r.status === 200 ? "" : ` ${r.data?.code ?? r.data?.error?.code ?? ""} ${String(r.data?.message ?? r.data?.error?.message ?? JSON.stringify(r.data)).slice(0, 160)}`}`; };
+const planOf = async acc => (await h.card(acc)).plans[0];
+const fullPlan = async id => must("kart oku", api.get(`/api/workspace/plans/${id}`));
+const cardLine = async id => { const p = await fullPlan(id); const q = p.plan || p; return `toplam ${q.total} · tahsil ${q.paid} · kalan ${q.remaining} · iade ${q.returned ?? "-"} · taksitler ${(q.items || p.items || []).map(i => `${i.dueDate}:${i.amount}|öd ${i.paid}|ka ${i.remaining ?? ""}${i.returned ? `|iade ${i.returned}` : ""}`).join(" ; ")}`; };
+
+console.log("SK-36 (a) avansla 'Bitti' kart: tahsilat 1.000 → stoktan taksitli satış 600 (2 taksit) → karta 300, seçeneksiz");
+{
+  const a = await h.account("SK36a");
+  await h.entry(a, { kind: "in", amount: "1000", date: day(-30) });
+  await must("satış", api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "out", qty: "6", unitPrice: "100", pay: "account", method: "cash", accountId: a.id, date: day(-20), installments: { count: 2, firstDue: day(-10) } }));
+  const p = await planOf(a);
+  await show("önce", a); console.log("  kart:", await cardLine(p.id));
+  console.log("  karta 300 SEÇENEKSİZ →", await pay(p.id, 300));
+  await show("sonra", a);
+  console.log("  karta 300 'Fazlasını Avans Yaz' ile →", await pay(p.id, 300, { overpay: true }));
+  await show("seçenekliden sonra", a);
+}
+console.log("\nSK-36 (b) para dışı pay: Borç 900 + Borç 500 (vade +10) → kart 900 (3 × 300) → faturasız stok iadesi 300 → karta 700, seçeneksiz");
+{
+  const a = await h.account("SK36b");
+  await h.entry(a, { kind: "debt", amount: "900", date: day(-45) });
+  const p = await must("kart", api.post("/api/workspace/plans", { name: a.name, accountId: a.id, registeredOn: day(-44), total: "900", coversBalance: true }));
+  for (const [d, amt] of [[-40, "300"], [-10, "300"], [20, "300"]]) await must("taksit", api.post(`/api/workspace/plans/${p.id}/items`, { dueDate: day(d), amount: amt }));
+  await h.entry(a, { kind: "debt", amount: "500", date: day(-8), dueDate: day(10) });
+  await must("stok iadesi", api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "in", qty: "1", unitPrice: "300", pay: "account", accountId: a.id, date: day(-5), reason: "return" }));
+  await show("önce", a); console.log("  kart:", await cardLine(p.id));
+  console.log("  karta 700 SEÇENEKSİZ →", await pay(p.id, 700));
+  await show("sonra", a);
+  console.log("  karta 600 SEÇENEKSİZ →", await pay(p.id, 600));
+  await show("600'den sonra", a);
+}
+console.log("\nSK-37 satış kartı: stoktan taksitli satış 1.000 (2 × 500; vadeler −10, +~20) → karttan 300 → faturasız stok iadesi 400 (başka borç YOK)");
+{
+  const a = await h.account("SK37");
+  await must("satış", api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "out", qty: "10", unitPrice: "100", pay: "account", method: "cash", accountId: a.id, date: day(-20), installments: { count: 2, firstDue: day(-10) } }));
+  const p = await planOf(a);
+  console.log("  karttan 300 →", await pay(p.id, 300));
+  await must("stok iadesi", api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "in", qty: "4", unitPrice: "100", pay: "account", accountId: a.id, date: day(-5), reason: "return" }));
+  await show("sonuç", a); console.log("  kart:", await cardLine(p.id));
+}
+await h.server.close();

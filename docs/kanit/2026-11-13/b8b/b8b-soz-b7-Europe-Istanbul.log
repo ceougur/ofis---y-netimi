@@ -1,0 +1,77 @@
+TAP version 13
+# (node:9280) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Birleşik tur 7 İş 3 — Vade Takip: sözlü borcun durumu ve gün sayısı (9 hücre; ekran, Excel, PDF; zil ile aynı)
+    # Subtest: ekran (API) satırı: tarih söz günü, durum ve gün sayısı karar tablosundaki gibi; zil / takvim kalemi aynı (ufuktakiler)
+    ok 1 - ekran (API) satırı: tarih söz günü, durum ve gün sayısı karar tablosundaki gibi; zil / takvim kalemi aynı (ufuktakiler)
+      ---
+      duration_ms: 22.760579
+      type: 'test'
+      ...
+    # Subtest: Excel (Gün, Durum) ve PDF (Durum metni) ekranla aynı
+    ok 2 - Excel (Gün, Durum) ve PDF (Durum metni) ekranla aynı
+      ---
+      duration_ms: 38.975562
+      type: 'test'
+      ...
+    1..2
+ok 1 - Birleşik tur 7 İş 3 — Vade Takip: sözlü borcun durumu ve gün sayısı (9 hücre; ekran, Excel, PDF; zil ile aynı)
+  ---
+  duration_ms: 708.636453
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 7 İş 3 — Vade Takip 'Gecikmiş Tahsilat / Gecikmiş Ödeme' her aralık / kaynak / yön seçeneğinde
+    # Subtest: her seçenekte: toplam alanı = satırlardan = girdilerden beklenen (gecikmiş tahsilat ve ödeme)
+    ok 1 - her seçenekte: toplam alanı = satırlardan = girdilerden beklenen (gecikmiş tahsilat ve ödeme)
+      ---
+      duration_ms: 67.889236
+      type: 'test'
+      ...
+    # Subtest: cari düzeyi (Cari Listesi 'Gecikmiş', Anlık Durum): 'Tüm Açık' Gecikmiş Tahsilat − kapsam farkı = Σ cari gecikmiş; kapsam farkları açıkça
+    ok 2 - cari düzeyi (Cari Listesi 'Gecikmiş', Anlık Durum): 'Tüm Açık' Gecikmiş Tahsilat − kapsam farkı = Σ cari gecikmiş; kapsam farkları açıkça
+      ---
+      duration_ms: 13.458967
+      type: 'test'
+      ...
+    1..2
+ok 2 - Birleşik tur 7 İş 3 — Vade Takip 'Gecikmiş Tahsilat / Gecikmiş Ödeme' her aralık / kaynak / yön seçeneğinde
+  ---
+  duration_ms: 769.270579
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 7 İş 3 — S130 = A × Nakit Akışı: şüpheliye alınan tutar nakit tahmininde beklenen tahsilat değildir
+    # Subtest: adım adım: şüpheli 900 (üç kaleme yayılır); kısmen tahsil 300; kısmen Değersiz 200; ikinci şüpheli kaydı 300; ilk kaydın kalanı Değersiz — her adımda eşitlik
+    ok 1 - adım adım: şüpheli 900 (üç kaleme yayılır); kısmen tahsil 300; kısmen Değersiz 200; ikinci şüpheli kaydı 300; ilk kaydın kalanı Değersiz — her adımda eşitlik
+      ---
+      duration_ms: 696.349348
+      type: 'test'
+      ...
+    # başlangıç: bakiye − açık şüpheli 1700, nakit 1700, vade 1700, faturasız 0 | şüpheli 900: bakiye − açık şüpheli 800, nakit 800, vade 800, faturasız 0 | tahsilat 300: bakiye − açık şüpheli 800, nakit 800, vade 800, faturasız 0 | Değersiz 200: bakiye − açık şüpheli 800, nakit 800, vade 800, faturasız 0 | ikinci şüpheli 300: bakiye − açık şüpheli 500, nakit 500, vade 500, faturasız 0 | ilk kaydın kalanı Değersiz: bakiye − açık şüpheli 500, nakit 500, vade 500, faturasız 0
+    1..1
+ok 3 - Birleşik tur 7 İş 3 — S130 = A × Nakit Akışı: şüpheliye alınan tutar nakit tahmininde beklenen tahsilat değildir
+  ---
+  duration_ms: 721.929366
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 7 İş 3 — S130 × S136 = A: taksit kartlı caride şüpheli tutar taksit kalemlerinden düşer (Nakit Akışı = Vade Takip)
+    # Subtest: kart 600 (2 taksit, ilki gecikmiş) + elle Borç 200; şüpheli 500 → iki ekranda kalan 300, aynı kalemler; faturasız dengeleme satırı yok
+    ok 1 - kart 600 (2 taksit, ilki gecikmiş) + elle Borç 200; şüpheli 500 → iki ekranda kalan 300, aynı kalemler; faturasız dengeleme satırı yok
+      ---
+      duration_ms: 419.925901
+      type: 'test'
+      ...
+    1..1
+ok 4 - Birleşik tur 7 İş 3 — S130 × S136 = A: taksit kartlı caride şüpheli tutar taksit kalemlerinden düşer (Nakit Akışı = Vade Takip)
+  ---
+  duration_ms: 442.626935
+  type: 'suite'
+  ...
+1..4
+# tests 6
+# suites 4
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3002.680905

@@ -1,0 +1,134 @@
+TAP version 13
+# (node:10926) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Birleşik tur 8 — İş 1: kartın göstergeleri yer tablosunun HER yerinde kart penceresiyle aynı (S129 = A, S142 = A)
+    # Subtest: KARAR ÖRNEĞİ (S129) + ORTA-A — kayda bağlı kart 900 (3 × 300), karta BAĞLANMADAN 500 tahsilat: her yerde Tahsil Edilen 500 · Kalan 400, satırlar 300 / 200 / 0
+    ok 1 - KARAR ÖRNEĞİ (S129) + ORTA-A — kayda bağlı kart 900 (3 × 300), karta BAĞLANMADAN 500 tahsilat: her yerde Tahsil Edilen 500 · Kalan 400, satırlar 300 / 200 / 0
+      ---
+      duration_ms: 175.616997
+      type: 'test'
+      ...
+    # Subtest: komşu 1 — BAĞSIZ tahsilat gecikmiş taksiti kapatır: kart 900 (ilk vade 40 gün önce), bağsız 300 ⇒ her yerde Tahsil Edilen 300, durum Gecikti · 1 taksit, sıradaki 2. taksit (S142: cari kartı satırı da)
+    ok 2 - komşu 1 — BAĞSIZ tahsilat gecikmiş taksiti kapatır: kart 900 (ilk vade 40 gün önce), bağsız 300 ⇒ her yerde Tahsil Edilen 300, durum Gecikti · 1 taksit, sıradaki 2. taksit (S142: cari kartı satırı da)
+      ---
+      duration_ms: 101.983486
+      type: 'test'
+      ...
+    # Subtest: komşu 2 — FAZLA ödeyen: kart 600 (2 × 300), bağsız 800 ⇒ her yerde Kalan 0 · Tamamlandı, sıradaki yok; cari 200 alacaklı
+    ok 3 - komşu 2 — FAZLA ödeyen: kart 600 (2 × 300), bağsız 800 ⇒ her yerde Kalan 0 · Tamamlandı, sıradaki yok; cari 200 alacaklı
+      ---
+      duration_ms: 91.341757
+      type: 'test'
+      ...
+    # Subtest: komşu 3 — İADE FATURASI almış taksitli fatura: 2 × 500 → iade faturası 1 adet ⇒ kart 500'e küçülür, her yerde Tahsil Edilen 0 · Kalan 500 (S151: iade faturasında bugünkü davranış aynen)
+    ok 4 - komşu 3 — İADE FATURASI almış taksitli fatura: 2 × 500 → iade faturası 1 adet ⇒ kart 500'e küçülür, her yerde Tahsil Edilen 0 · Kalan 500 (S151: iade faturasında bugünkü davranış aynen)
+      ---
+      duration_ms: 128.857014
+      type: 'test'
+      ...
+    # Subtest: komşu 4 — KAPATILMIŞ kart (S144 = C: gösterim bugünkü gibi): kart 900, karta 300, Kartı Kapat ⇒ her yerde Tahsil Edilen 300 · Kalan 600 (kartın kendi hesabı), durum Kapalı
+    ok 5 - komşu 4 — KAPATILMIŞ kart (S144 = C: gösterim bugünkü gibi): kart 900, karta 300, Kartı Kapat ⇒ her yerde Tahsil Edilen 300 · Kalan 600 (kartın kendi hesabı), durum Kapalı
+      ---
+      duration_ms: 141.557666
+      type: 'test'
+      ...
+    # Subtest: komşu 5 — VADESİ BUGÜN olan taksit geciken sayılmaz (Cari Listesi kısa kuyruk görünümü pencereyle aynı gün kuralı): kart 900, ilk vade bir ay önce, bağsız 300 ⇒ 1. taksit ödendi, 2. taksit bugün, N geciken 0
+    ok 6 - komşu 5 — VADESİ BUGÜN olan taksit geciken sayılmaz (Cari Listesi kısa kuyruk görünümü pencereyle aynı gün kuralı): kart 900, ilk vade bir ay önce, bağsız 300 ⇒ 1. taksit ödendi, 2. taksit bugün, N geciken 0
+      ---
+      duration_ms: 107.943471
+      type: 'test'
+      ...
+    # Subtest: mobil uçlar yer tablosundaki uçlara gider (17: aynı sayılar) — cari listesi, cari kartı, taksit özeti
+    ok 7 - mobil uçlar yer tablosundaki uçlara gider (17: aynı sayılar) — cari listesi, cari kartı, taksit özeti
+      ---
+      duration_ms: 1.861532
+      type: 'test'
+      ...
+    1..7
+ok 1 - Birleşik tur 8 — İş 1: kartın göstergeleri yer tablosunun HER yerinde kart penceresiyle aynı (S129 = A, S142 = A)
+  ---
+  duration_ms: 1163.008782
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 8 — İş 1: kart göstergelerinin yer tablosu kaynakla aynı (yeni bir gösterim yeri eklenince kırmızı)
+    # Subtest: routes/plans.mjs: kartın kendi biçimini (shape) okuyan yerler — detail (yazım içi), detailView (pencere, PDF; kuyruk), forCase (kayıt detayı; kuyruk), forAccount (cari kartı; queueSummaryOf)
+    ok 1 - routes/plans.mjs: kartın kendi biçimini (shape) okuyan yerler — detail (yazım içi), detailView (pencere, PDF; kuyruk), forCase (kayıt detayı; kuyruk), forAccount (cari kartı; queueSummaryOf)
+      ---
+      duration_ms: 2.592173
+      type: 'test'
+      ...
+    # Subtest: routes/plans.mjs ve öbür yollar: kartın kendi hesabını (allocate) kuran her yer kuyruk görünümüne bağlı ya da iç çağıran olarak listede
+    ok 2 - routes/plans.mjs ve öbür yollar: kartın kendi hesabını (allocate) kuran her yer kuyruk görünümüne bağlı ya da iç çağıran olarak listede
+      ---
+      duration_ms: 4.07874
+      type: 'test'
+      ...
+    # Subtest: routes/accounts.mjs: cari kartının taksit özeti queueSummaryOf (durum + sıradaki + Tahsil Edilen / Kalan), Cari Listesi kuyruğu summariesByAccount'a verir
+    ok 3 - routes/accounts.mjs: cari kartının taksit özeti queueSummaryOf (durum + sıradaki + Tahsil Edilen / Kalan), Cari Listesi kuyruğu summariesByAccount'a verir
+      ---
+      duration_ms: 0.784745
+      type: 'test'
+      ...
+    # Subtest: istemci: kart sayılarını gösteren dosyalar listede — yeni bir dosya kart toplamlarını okursa yer tablosuna eklenmeli
+    ok 4 - istemci: kart sayılarını gösteren dosyalar listede — yeni bir dosya kart toplamlarını okursa yer tablosuna eklenmeli
+      ---
+      duration_ms: 8.275933
+      type: 'test'
+      ...
+    1..4
+ok 2 - Birleşik tur 8 — İş 1: kart göstergelerinin yer tablosu kaynakla aynı (yeni bir gösterim yeri eklenince kırmızı)
+  ---
+  duration_ms: 16.022732
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 8 — İş 2: 'Kalanı Aşan Tutar' sorusu kartın KENDİ kalanını niteleyerek söyler (S118 = B kuralı aynen)
+    # Subtest: kart 900 (3 × 300) + bağsız 500 (pencere: Kalan 400): 901 → 409 plan-overpay, ileti 'kartın kendi tahsilatlarına göre kalan 900,00 TL'; 900 kabul (sınır kartın kendi kalanı)
+    ok 1 - kart 900 (3 × 300) + bağsız 500 (pencere: Kalan 400): 901 → 409 plan-overpay, ileti 'kartın kendi tahsilatlarına göre kalan 900,00 TL'; 900 kabul (sınır kartın kendi kalanı)
+      ---
+      duration_ms: 69.380882
+      type: 'test'
+      ...
+    1..1
+ok 3 - Birleşik tur 8 — İş 2: 'Kalanı Aşan Tutar' sorusu kartın KENDİ kalanını niteleyerek söyler (S118 = B kuralı aynen)
+  ---
+  duration_ms: 422.271656
+  type: 'suite'
+  ...
+# (node:10927) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.8 İş Z — WhatsApp önizlemesi kartın eleme çekirdeğiyle (davranış aynen)
+    # Subtest: eleme çekirdeği (waFacts) ↔ tam cari kartı (detail): her cari sınıfında plan()'ın okuduğu alanlar birebir aynı; cari kartındaki taksit özeti kartın kendi ayrıntısıyla aynı
+    ok 1 - eleme çekirdeği (waFacts) ↔ tam cari kartı (detail): her cari sınıfında plan()'ın okuduğu alanlar birebir aynı; cari kartındaki taksit özeti kartın kendi ayrıntısıyla aynı
+      ---
+      duration_ms: 804.680914
+      type: 'test'
+      ...
+    # Subtest: önizlemenin eleme nedenleri sınıf tanımından; önizleme ve açma kişi başı tam kart OKUMAZ, gönderim anı okur; 'Zaten Kuyrukta' tek sorgu (süren VE duraklatılmış iş)
+    ok 2 - önizlemenin eleme nedenleri sınıf tanımından; önizleme ve açma kişi başı tam kart OKUMAZ, gönderim anı okur; 'Zaten Kuyrukta' tek sorgu (süren VE duraklatılmış iş)
+      ---
+      duration_ms: 764.290798
+      type: 'test'
+      ...
+    # Subtest: makine defteri: 'Tüm Hareketler' R3 sorgusunun planında claim_keys kişi anahtarlarıyla tek tek yoklanmaz; Tüm ↔ Özel aralık eşliği sonuç olarak aynen
+    ok 3 - makine defteri: 'Tüm Hareketler' R3 sorgusunun planında claim_keys kişi anahtarlarıyla tek tek yoklanmaz; Tüm ↔ Özel aralık eşliği sonuç olarak aynen
+      ---
+      duration_ms: 657.604823
+      type: 'test'
+      ...
+    1..3
+ok 4 - 2.4.8 İş Z — WhatsApp önizlemesi kartın eleme çekirdeğiyle (davranış aynen)
+  ---
+  duration_ms: 2227.89049
+  type: 'suite'
+  ...
+1..4
+# tests 15
+# suites 4
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2621.130624
+
+[kanit] b8-wa248-UTC: GEÇTİ · çıkış 0 · 15/15 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 3400920 +1 değişmiş dosya +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4

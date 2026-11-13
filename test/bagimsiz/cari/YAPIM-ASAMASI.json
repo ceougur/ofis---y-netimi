@@ -21,71 +21,11 @@
   },
   {
    "senaryo": "d42-c5-s140-s151-satis-karti-iade",
-   "anahtar": "k1:kart:KT1:odenen",
-   "beklenen": 0,
-   "program": 50000,
-   "sinif": "BULGU KULLANICI · SINIF DIŞI",
-   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50) · §26 Y15-7 S151 B: faturasız stok iadesinin kapattığı kısım 'Tahsil Edilen' / 'Ödenen' sayılmaz (Kalan aynen)",
-   "paket": "Ç5-B tur 2",
-   "not": "birleşik tur 8 (Ç5-B'nin son küçük turu): S151 = B / S158 = A / S140 = A — iadeli kartta 'Tahsil Edilen' / 'Ödenen' / kart toplamı / gecikmiş (ana oturum 13.11 ön kontrol; KAYIT)."
-  },
-  {
-   "senaryo": "d42-c5-s140-s151-satis-karti-iade",
-   "anahtar": "k1:kart:KT1:taksit1:odenen",
-   "beklenen": 0,
-   "program": 50000,
-   "sinif": "BULGU KULLANICI · SINIF DIŞI",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat · §26 Y15-7 S151 B: faturasız stok iadesinin kapattığı kısım 'Tahsil Edilen' / 'Ödenen' sayılmaz (Kalan aynen)",
-   "paket": "Ç5-B tur 2",
-   "not": "birleşik tur 8 (Ç5-B'nin son küçük turu): S151 = B / S158 = A / S140 = A — iadeli kartta 'Tahsil Edilen' / 'Ödenen' / kart toplamı / gecikmiş (ana oturum 13.11 ön kontrol; KAYIT)."
-  },
-  {
-   "senaryo": "d42-c5-s140-s151-satis-karti-iade",
    "anahtar": "k1:kart:KT1:toplam",
    "beklenen": 100000,
    "program": 70000,
    "sinif": "BULGU PLAN · SINIF DIŞI",
    "kural": "B1.3 kart tutarı = tablodaki kalan",
-   "paket": "Ç5-B tur 2",
-   "not": "birleşik tur 8 (Ç5-B'nin son küçük turu): S151 = B / S158 = A / S140 = A — iadeli kartta 'Tahsil Edilen' / 'Ödenen' / kart toplamı / gecikmiş (ana oturum 13.11 ön kontrol; KAYIT)."
-  },
-  {
-   "senaryo": "d42-c5-s140-s151-satis-karti-iade",
-   "anahtar": "k1:kart:KT2:odenen",
-   "beklenen": 0,
-   "program": 30000,
-   "sinif": "BULGU KULLANICI · SINIF DIŞI",
-   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50) · §26 Y15-7 S151 B: faturasız stok iadesinin kapattığı kısım 'Tahsil Edilen' / 'Ödenen' sayılmaz (Kalan aynen)",
-   "paket": "Ç5-B tur 2",
-   "not": "birleşik tur 8 (Ç5-B'nin son küçük turu): S151 = B / S158 = A / S140 = A — iadeli kartta 'Tahsil Edilen' / 'Ödenen' / kart toplamı / gecikmiş (ana oturum 13.11 ön kontrol; KAYIT)."
-  },
-  {
-   "senaryo": "d42-c5-s140-s151-satis-karti-iade",
-   "anahtar": "k1:kart:KT2:taksit1:odenen",
-   "beklenen": 0,
-   "program": 30000,
-   "sinif": "BULGU KULLANICI · SINIF DIŞI",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat · §26 Y15-7 S151 B: faturasız stok iadesinin kapattığı kısım 'Tahsil Edilen' / 'Ödenen' sayılmaz (Kalan aynen)",
-   "paket": "Ç5-B tur 2",
-   "not": "birleşik tur 8 (Ç5-B'nin son küçük turu): S151 = B / S158 = A / S140 = A — iadeli kartta 'Tahsil Edilen' / 'Ödenen' / kart toplamı / gecikmiş (ana oturum 13.11 ön kontrol; KAYIT)."
-  },
-  {
-   "senaryo": "d42-c5-s140-s151-satis-karti-iade",
-   "anahtar": "k1:kart:KT3:odenen",
-   "beklenen": 0,
-   "program": 50000,
-   "sinif": "BULGU KULLANICI · SINIF DIŞI",
-   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50) · §26 Y15-7 S151 B: faturasız stok iadesinin kapattığı kısım 'Tahsil Edilen' / 'Ödenen' sayılmaz (Kalan aynen)",
-   "paket": "Ç5-B tur 2",
-   "not": "birleşik tur 8 (Ç5-B'nin son küçük turu): S151 = B / S158 = A / S140 = A — iadeli kartta 'Tahsil Edilen' / 'Ödenen' / kart toplamı / gecikmiş (ana oturum 13.11 ön kontrol; KAYIT)."
-  },
-  {
-   "senaryo": "d42-c5-s140-s151-satis-karti-iade",
-   "anahtar": "k1:kart:KT3:taksit1:odenen",
-   "beklenen": 0,
-   "program": 50000,
-   "sinif": "BULGU KULLANICI · SINIF DIŞI",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat · §26 Y15-7 S151 B: faturasız stok iadesinin kapattığı kısım 'Tahsil Edilen' / 'Ödenen' sayılmaz (Kalan aynen)",
    "paket": "Ç5-B tur 2",
    "not": "birleşik tur 8 (Ç5-B'nin son küçük turu): S151 = B / S158 = A / S140 = A — iadeli kartta 'Tahsil Edilen' / 'Ödenen' / kart toplamı / gecikmiş (ana oturum 13.11 ön kontrol; KAYIT)."
   },
@@ -365,26 +305,6 @@
   },
   {
    "senaryo": "d44-c5-s155-s158",
-   "anahtar": "k1:kart:KY2:odenen",
-   "beklenen": 0,
-   "program": 30000,
-   "sinif": "BULGU KULLANICI · SINIF DIŞI",
-   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50) · §27 Y16-8 S158 A: iade / Değersiz tahsilat değildir (her kartta) — kapattıkları kısım 'Tahsil Edilen' / 'Ödenen' sayılmaz (Kalan aynen)",
-   "paket": "Ç5-B tur 2",
-   "not": "birleşik tur 8 (Ç5-B'nin son küçük turu): S151 = B / S158 = A / S140 = A — iadeli kartta 'Tahsil Edilen' / 'Ödenen' / kart toplamı / gecikmiş (ana oturum 13.11 ön kontrol; KAYIT)."
-  },
-  {
-   "senaryo": "d44-c5-s155-s158",
-   "anahtar": "k1:kart:KY2:taksit1:odenen",
-   "beklenen": 0,
-   "program": 30000,
-   "sinif": "BULGU KULLANICI · SINIF DIŞI",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat · §27 Y16-8 S158 A: iade / Değersiz tahsilat değildir (her kartta) — kapattıkları kısım 'Tahsil Edilen' / 'Ödenen' sayılmaz (Kalan aynen)",
-   "paket": "Ç5-B tur 2",
-   "not": "birleşik tur 8 (Ç5-B'nin son küçük turu): S151 = B / S158 = A / S140 = A — iadeli kartta 'Tahsil Edilen' / 'Ödenen' / kart toplamı / gecikmiş (ana oturum 13.11 ön kontrol; KAYIT)."
-  },
-  {
-   "senaryo": "d44-c5-s155-s158",
    "anahtar": "k1:kart:KY4:taksit3:odenen",
    "beklenen": 0,
    "program": "okunamadı",
@@ -400,26 +320,6 @@
    "program": 60000,
    "sinif": "BULGU PLAN · SINIF DIŞI",
    "kural": "B1.3 kart tutarı = tablodaki kalan",
-   "paket": "Ç5-B tur 2",
-   "not": "birleşik tur 8 (Ç5-B'nin son küçük turu): S151 = B / S158 = A / S140 = A — iadeli kartta 'Tahsil Edilen' / 'Ödenen' / kart toplamı / gecikmiş (ana oturum 13.11 ön kontrol; KAYIT)."
-  },
-  {
-   "senaryo": "d44-c5-s155-s158",
-   "anahtar": "k1:kart:KY5:odenen",
-   "beklenen": 0,
-   "program": 40000,
-   "sinif": "BULGU KULLANICI · SINIF DIŞI",
-   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50) · §27 Y16-8 S158 A: iade / Değersiz tahsilat değildir (her kartta) — kapattıkları kısım 'Tahsil Edilen' / 'Ödenen' sayılmaz (Kalan aynen)",
-   "paket": "Ç5-B tur 2",
-   "not": "birleşik tur 8 (Ç5-B'nin son küçük turu): S151 = B / S158 = A / S140 = A — iadeli kartta 'Tahsil Edilen' / 'Ödenen' / kart toplamı / gecikmiş (ana oturum 13.11 ön kontrol; KAYIT)."
-  },
-  {
-   "senaryo": "d44-c5-s155-s158",
-   "anahtar": "k1:kart:KY5:taksit1:odenen",
-   "beklenen": 0,
-   "program": 40000,
-   "sinif": "BULGU KULLANICI · SINIF DIŞI",
-   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat · §27 Y16-8 S158 A: iade / Değersiz tahsilat değildir (her kartta) — kapattıkları kısım 'Tahsil Edilen' / 'Ödenen' sayılmaz (Kalan aynen)",
    "paket": "Ç5-B tur 2",
    "not": "birleşik tur 8 (Ç5-B'nin son küçük turu): S151 = B / S158 = A / S140 = A — iadeli kartta 'Tahsil Edilen' / 'Ödenen' / kart toplamı / gecikmiş (ana oturum 13.11 ön kontrol; KAYIT)."
   }
