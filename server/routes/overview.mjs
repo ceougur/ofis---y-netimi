@@ -673,13 +673,13 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     // olan gecikmiş borç dahil; 'Gecikmiş Tahsilat' göstergesi her aralıkta aynı sayı)"): hazır 'Gecikmiş' aralığında (elle tarih verilmediyse) üst sınır kalemin TARİHİ değil
     // DURUMUDUR — bugünden önceki her kalem (bugünkü gibi) + durumu Gecikmiş olan kalem (sözlü borç söz gününde durur — birleşik tur 7, S52 / S67 / S69). Elle girilen aralık ve
     // öbür hazır aralıklar değişmez; başlıktaki aralık metni bugünkü gibi (… – dün).
-    // Birleşik tur 8b (S150 = A'nın 'Bugün' / '7 Gün' kolu; baş mimar yorumu — gösterge ile satırlar ayrışmaz, ders 11): bu iki hazır aralıkta (elle tarih verilmediyse ve
-    // 'Gecikmişleri de göster' açıkken) aralığın kendi satırlarına durumu Gecikmiş olan her kalem de eklenir — tarihi aralıktan önce olanlar bugün zaten listede; eklenen yalnız
-    // günü (söz günü) aralığın bitişinden SONRA olan gecikmiş borçtur. Kalem öbür gecikmişler gibi yalnız 'Gecikmiş' kümesine (ve satır toplamına) girer; Bugün / Yaklaşan
-    // kümeleri, '30 Gün' / '90 Gün' / 'Tüm Açık' ve elle aralık değişmez; başlıktaki aralık metni bugünkü gibi.
+    // Birleşik tur 8b (S150 = A: "'Gecikmiş Tahsilat' göstergesi her aralıkta aynı sayı"; baş mimar yorumu — gösterge ile satırlar ayrışmaz, ders 11): ileriye bakan hazır
+    // aralıklarda ('Bugün', '7 Gün', '30 Gün', '90 Gün'; elle tarih verilmediyse ve 'Gecikmişleri de göster' açıkken) aralığın kendi satırlarına durumu Gecikmiş olan her kalem de
+    // eklenir — tarihi aralıktan önce olanlar bugün zaten listede; eklenen yalnız günü (söz günü) aralığın bitişinden SONRA olan gecikmiş borçtur. Kalem öbür gecikmişler gibi
+    // yalnız 'Gecikmiş' kümesine (ve satır toplamına) girer; Bugün / Yaklaşan kümeleri, 'Tüm Açık', elle aralık ve late=0 değişmez; başlıktaki aralık metni bugünkü gibi.
     const presetOnly = !text(params.get("from")) && !text(params.get("to"));
     const lateOnly = preset === "late" && presetOnly;
-    const nearWithLate = (preset === "today" || preset === "next7") && presetOnly && late;
+    const nearWithLate = ["today", "next7", "next30", "next90"].includes(preset) && presetOnly && late;
     const result = lateOnly
       ? { ...dueList({ today: day, from, to: "", late, items: items.filter(matches), keep: row => row.date < day || row.state === "overdue" }), to }
       : nearWithLate

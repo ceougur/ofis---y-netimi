@@ -1,9 +1,11 @@
-// 2.5.0 BİRLEŞİK TUR 8b — S150 = A'nın 'Bugün' ve '7 Gün' kolu (Vade Takip göstergesi; para kuralı DEĞİL, görünüm).
+// 2.5.0 BİRLEŞİK TUR 8b — S150 = A'nın ileriye bakan hazır aralıklar kolu: 'Bugün', '7 Gün', '30 Gün', '90 Gün' (Vade Takip göstergesi; para kuralı DEĞİL, görünüm).
 // KARAR (iş listesi D, KULLANICI KARARI 13.11 06:12, AYNEN): "S150 = A — Vade Takip'in 'Gecikmiş' hazır aralığı durumu Gecikmiş olan HER kalemi gösterir (sözü bugün ya da ileride
-// olan gecikmiş borç dahil; 'Gecikmiş Tahsilat' göstergesi her aralıkta aynı sayı)". BAŞ MİMAR YORUMU (D): gösterge ile satırlar ayrışmaz (toplam = satırlar — ders 11) → 'Bugün' ve
-// '7 Gün' hazır aralıklarında durumu Gecikmiş olan HER kalem satır olarak da listelenir; ekran = PDF = Excel; iki yön; yön süzgeci; her kaynak.
-// DEĞİŞMEZ: elle girilen tarih aralığı; 'Gecikmiş' / '30 Gün' / '90 Gün' / 'Tüm Açık'; 'Gecikmiş' sayılma kuralı (S149 = C); aralıkların Bugün / Yaklaşan kümeleri.
-// Önceden (taban birlesik8b-taban): 'Bugün' / '7 Gün' vadesi 10 gün önce geçmiş, sözü 15 gün SONRA olan borcu göstermiyordu (gösterge 610 / 7 tahsilat, 30 / 1 ödeme).
+// olan gecikmiş borç dahil; 'Gecikmiş Tahsilat' göstergesi her aralıkta aynı sayı)". BAŞ MİMAR YORUMU (D): gösterge ile satırlar ayrışmaz (toplam = satırlar — ders 11) → 'Bugün',
+// '7 Gün', '30 Gün' ve '90 Gün' hazır aralıklarında durumu Gecikmiş olan HER kalem satır olarak da listelenir; ekran = PDF = Excel; iki yön; yön süzgeci; her kaynak. Ana oturum
+// 13.11: '30 / 90 Gün değişmez' satırı görev metninin hatasıydı (S-a = A) — dört aralık aynı kurala bağlı.
+// DEĞİŞMEZ: elle girilen tarih aralığı; 'Gecikmiş' / 'Tüm Açık'; 'Gecikmişleri de göster' kapalıyken (late=0) davranış; 'Gecikmiş' sayılma kuralı (S149 = C); aralıkların Bugün /
+// Yaklaşan kümeleri. Önceden (taban birlesik8b-taban): 'Bugün' / '7 Gün' vadesi 10 gün önce geçmiş, sözü 15 gün SONRA olan borcu göstermiyordu (gösterge 510 / 6 tahsilat, 30 / 1
+// ödeme); '30 Gün' / '90 Gün' sözü 30 / 90 günden ileride olan gecikmiş borcu göstermiyordu (ikinci kurgu).
 // Kurgu: dokuz hücre (vade −10 / 0 / +10 × söz +15 / 0 / −5; her biri 100 TL; birleşik tur 7 / 8 ile aynı) + tedarikçi (sözlü gecikmiş 70: vade −10, söz +15; sözsüz gecikmiş 30:
 // vade −3) + öbür kaynaklar: vadeli fatura (gecikmiş 60: vade −6; yaklaşan 20: vade +2), carisiz alınan çek (gecikmiş 50: vade −4; yaklaşan 40: vade +3).
 // Beklenen sayılar programdan DEĞİL girdilerden ve karar metninden: durumu Gecikmiş tahsil kalemleri = v−10 (p15, p0, p−5) + p−5 (v0, v10; S149 = C) + fatura 60 + çek 50
@@ -22,13 +24,13 @@ const day = offset => {
 };
 const unwrap = r => (r.data && typeof r.data === "object" && "ok" in r.data ? (r.data.ok ? r.data.data : r.data) : r.data);
 const PRESETS = ["late", "today", "next7", "next30", "next90", "open"];
-const NEAR = { today: { from: day(0), to: day(0) }, next7: { from: day(0), to: day(7) } };
+const NEAR = { today: { from: day(0), to: day(0) }, next7: { from: day(0), to: day(7) }, next30: { from: day(0), to: day(30) }, next90: { from: day(0), to: day(90) } };
 const key = row => `${row.source}|${row.party}|${row.date}|${row.direction}|${row.amount}`;
 const gauge = data => [data.totals.in.overdue.amount, data.totals.in.overdue.count, data.totals.out.overdue.amount, data.totals.out.overdue.count];
 const buckets = data => ({ inToday: [data.totals.in.today.amount, data.totals.in.today.count], inUpcoming: [data.totals.in.upcoming.amount, data.totals.in.upcoming.count], outToday: [data.totals.out.today.amount, data.totals.out.today.count], outUpcoming: [data.totals.out.upcoming.amount, data.totals.out.upcoming.count] });
 const sum = rows => Math.round(rows.reduce((total, row) => total + (row.amount || 0), 0) * 100) / 100;
 
-describe("Birleşik tur 8b — Vade Takip 'Bugün' / '7 Gün': 'Gecikmiş' göstergesi ve satırları öbür hazır aralıklarla aynı (S150 = A)", () => {
+describe("Birleşik tur 8b — Vade Takip 'Bugün' / '7 Gün' / '30 Gün' / '90 Gün': 'Gecikmiş' göstergesi ve satırları öbür hazır aralıklarla aynı (S150 = A)", () => {
   let server;
   let c;
   const get = async url => {
@@ -74,7 +76,7 @@ describe("Birleşik tur 8b — Vade Takip 'Bugün' / '7 Gün': 'Gecikmiş' göst
     assert.deepEqual(seen, Object.fromEntries(PRESETS.map(preset => [preset, [610, 7, 100, 2]])));
   });
 
-  it("'Bugün' / '7 Gün' satır kümesi = aralığın kendi satırları ∪ durumu Gecikmiş olan her satır ('Tüm Açık'tan); toplam = satırlar; gösterge = gecikmiş satırların toplamı", async () => {
+  it("'Bugün' / '7 Gün' / '30 Gün' / '90 Gün' satır kümesi = aralığın kendi satırları ∪ durumu Gecikmiş olan her satır ('Tüm Açık'tan); toplam = satırlar; gösterge = gecikmiş satırların toplamı", async () => {
     const open = await get("/api/workspace/overview/vade-takip?preset=open");
     for (const [preset, range] of Object.entries(NEAR)) {
       const data = await get(`/api/workspace/overview/vade-takip?preset=${preset}`);
@@ -92,14 +94,19 @@ describe("Birleşik tur 8b — Vade Takip 'Bugün' / '7 Gün': 'Gecikmiş' göst
   });
 
   it("aralıkların Bugün / Yaklaşan kümeleri DEĞİŞMEDİ (eklenen kalem yalnız 'Gecikmiş' kümesine girer)", async () => {
-    // Girdilerden: bugün = v0 p0 + v10 p0 (200 / 2); 7 Gün yaklaşan = fatura +2 (20) + çek +3 (40); ödeme yönünde bugün / yaklaşan yok.
-    const today = await get("/api/workspace/overview/vade-takip?preset=today");
-    const next7 = await get("/api/workspace/overview/vade-takip?preset=next7");
-    assert.deepEqual(buckets(today), { inToday: [200, 2], inUpcoming: [0, 0], outToday: [0, 0], outUpcoming: [0, 0] });
-    assert.deepEqual(buckets(next7), { inToday: [200, 2], inUpcoming: [60, 2], outToday: [0, 0], outUpcoming: [0, 0] });
+    // Girdilerden: bugün = v0 p0 + v10 p0 (200 / 2); 7 Gün yaklaşan = fatura +2 (20) + çek +3 (40); 30 / 90 Gün yaklaşan = + v0 p15, v10 p15 (200) = 260 / 4; ödeme yönünde
+    // bugün / yaklaşan yok.
+    const seen = {};
+    for (const preset of Object.keys(NEAR)) seen[preset] = buckets(await get(`/api/workspace/overview/vade-takip?preset=${preset}`));
+    assert.deepEqual(seen, {
+      today: { inToday: [200, 2], inUpcoming: [0, 0], outToday: [0, 0], outUpcoming: [0, 0] },
+      next7: { inToday: [200, 2], inUpcoming: [60, 2], outToday: [0, 0], outUpcoming: [0, 0] },
+      next30: { inToday: [200, 2], inUpcoming: [260, 4], outToday: [0, 0], outUpcoming: [0, 0] },
+      next90: { inToday: [200, 2], inUpcoming: [260, 4], outToday: [0, 0], outUpcoming: [0, 0] },
+    });
   });
 
-  it("yön süzgeci: Yalnız Tahsil Edilecek / Yalnız Ödenecek — 'Bugün' ve '7 Gün'de gösterge ve satırlar 'Gecikmiş' aralığıyla aynı gecikmişleri taşır", async () => {
+  it("yön süzgeci: Yalnız Tahsil Edilecek / Yalnız Ödenecek — dört ileriye bakan aralıkta gösterge ve satırlar 'Gecikmiş' aralığıyla aynı gecikmişleri taşır", async () => {
     for (const preset of Object.keys(NEAR)) {
       const inData = await get(`/api/workspace/overview/vade-takip?preset=${preset}&direction=in`);
       const outData = await get(`/api/workspace/overview/vade-takip?preset=${preset}&direction=out`);
@@ -113,21 +120,21 @@ describe("Birleşik tur 8b — Vade Takip 'Bugün' / '7 Gün': 'Gecikmiş' göst
   });
 
   it("ELLE girilen aralık DEĞİŞMEDİ: bugün … bugün ve bugün … +7 (hazır aralıkla aynı tarihler) sözü ileride olan gecikmiş kalemi göstermez — 510 / 6 tahsilat, 30 / 1 ödeme", async () => {
-    for (const range of Object.values(NEAR)) {
+    for (const range of [NEAR.today, NEAR.next7]) {
       const data = await get(`/api/workspace/overview/vade-takip?from=${range.from}&to=${range.to}`);
       assert.deepEqual(gauge(data), [510, 6, 30, 1], `${range.from}–${range.to}`);
       assert.ok(data.rows.every(row => row.date <= range.to), "satırlar aralıkta (ya da öncesinde)");
     }
   });
 
-  it("'Gecikmişleri de göster' kapalıyken (late=0) 'Bugün' / '7 Gün' aralık dışından kalem eklemez (bugünkü gibi)", async () => {
+  it("'Gecikmişleri de göster' kapalıyken (late=0) dört ileriye bakan aralık dışından kalem eklemez (bugünkü gibi)", async () => {
     for (const [preset, range] of Object.entries(NEAR)) {
       const data = await get(`/api/workspace/overview/vade-takip?preset=${preset}&late=0`);
       assert.ok(data.rows.every(row => row.date >= range.from && row.date <= range.to), preset);
     }
   });
 
-  it("PDF ve Excel ekranla aynı ('Bugün' ve '7 Gün'): satırlar ve 'Gecikmiş Tahsilat' / 'Gecikmiş Ödeme' özeti", async () => {
+  it("PDF ve Excel ekranla aynı ('Bugün', '7 Gün', '30 Gün', '90 Gün'): satırlar ve 'Gecikmiş Tahsilat' / 'Gecikmiş Ödeme' özeti", async () => {
     for (const preset of Object.keys(NEAR)) {
       const screen = await get(`/api/workspace/overview/vade-takip?preset=${preset}`);
       const names = screen.rows.map(row => row.party).filter(Boolean);
@@ -160,11 +167,12 @@ describe("Birleşik tur 8b — Vade Takip 'Bugün' / '7 Gün': 'Gecikmiş' göst
   });
 });
 
-// '30 Gün' / '90 Gün' DEĞİŞMEZ (görev metni: önce = sonra birebir). Sözü 30 / 90 günden de ileride olan gecikmiş borç bu iki aralıkta bugün de görünmez — karar ('her aralıkta
-// aynı sayı') ile görev metninin ('30 / 90 Gün değişmez') ayrıştığı alt durum: TOPLU SORU (birleşik tur 8b raporu). Bu blok bugünkü davranışı SABİTLER; karar gelirse beklenti değişir.
-// Kurgu: vade −10 × söz +45 (100), vade −10 × söz +100 (100), sözsüz vade −2 (100). Girdilerden: 'Tüm Açık' / 'Gecikmiş' 300 / 3; '30 Gün' 100 / 1 (söz +45, +100 aralık dışı);
-// '90 Gün' 200 / 2 (söz +100 aralık dışı); 'Bugün' / '7 Gün' 300 / 3 (birleşik tur 8b).
-describe("Birleşik tur 8b — '30 Gün' / '90 Gün' bugünkü gibi: sözü aralıktan da ileride olan gecikmiş borç (TOPLU SORU — davranış sabitlenir)", () => {
+// İkinci kurgu — sözü 30 / 90 günden de ileride olan gecikmiş borç (S-a = A, ana oturum 13.11: görev metnindeki '30 / 90 Gün değişmez' satırı hataydı; S150 = A "her aralıkta aynı
+// sayı"). Kurgu: vade −10 × söz +45 (100), vade −10 × söz +100 (100), sözsüz vade −2 (100) — tahsilat; tedarikçi vade −10 × söz +45 (70) — ödeme. Girdilerden: altı hazır aralığın
+// HEPSİNDE gecikmiş tahsilat 300 / 3, gecikmiş ödeme 70 / 1; dört kalem de durumu Gecikmiş olduğundan dört ileriye bakan aralıkta satır 4, Tahsil Edilecek 300, Ödenecek 70.
+// Önceden (taban): Bugün / 7 Gün / 30 Gün 100 / 1 ve 0 / 0 (satır 1); 90 Gün 200 / 2 ve 70 / 1 (satır 3). Elle aralık bugünkü gibi: bugün … +30 → 100 / 1, 0 / 0; bugün … +90 →
+// 200 / 2, 70 / 1.
+describe("Birleşik tur 8b — sözü 30 / 90 günden de ileride olan gecikmiş borç: altı hazır aralıkta aynı gösterge ve satırlar (S150 = A)", () => {
   let server;
   let c;
   const get = async url => {
@@ -172,24 +180,77 @@ describe("Birleşik tur 8b — '30 Gün' / '90 Gün' bugünkü gibi: sözü aral
     assert.equal(res.status, 200, `${url}: ${res.status}`);
     return unwrap(res);
   };
+  const FAR = [
+    ["Uzak Söz p45", "customer", "debt", "100", { dueDate: day(-10), expectedDate: day(45) }],
+    ["Uzak Söz p100", "customer", "debt", "100", { dueDate: day(-10), expectedDate: day(100) }],
+    ["Uzak Sözsüz", "customer", "debt", "100", { dueDate: day(-2) }],
+    ["Uzak Tedarikçi p45", "supplier", "credit", "70", { dueDate: day(-10), expectedDate: day(45) }],
+  ];
   before(async () => {
     server = await startTestServer({ now: { time: `${TODAY}T12:00:00+03:00`, fixed: true }, env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
     c = await loginAdmin(server);
     await c.post("/api/workspace/bank/setup/dismiss", {});
     let n = 0;
-    for (const [name, body] of [["Uzak Söz p45", { dueDate: day(-10), expectedDate: day(45) }], ["Uzak Söz p100", { dueDate: day(-10), expectedDate: day(100) }], ["Uzak Sözsüz", { dueDate: day(-2) }]]) {
-      const a = unwrap(await c.post("/api/workspace/accounts", { name, type: "customer", registeredOn: day(-400), phone: `0500 782 ${String(10 + n).padStart(2, "0")} ${String((n += 1)).padStart(2, "0")}`, similarOk: true, force: true }));
-      assert.equal((await c.post(`/api/workspace/accounts/${a.id}/entries`, { method: "cash", cashForce: true, similarOk: true, kind: "debt", amount: "100", date: day(-30), ...body })).status, 200);
+    for (const [name, type, kind, amount, body] of FAR) {
+      const res = await c.post("/api/workspace/accounts", { name, type, registeredOn: day(-400), phone: `0500 782 ${String(10 + n).padStart(2, "0")} ${String((n += 1)).padStart(2, "0")}`, similarOk: true, force: true });
+      assert.equal(res.status, 200, `cari ${name}`);
+      const a = unwrap(res);
+      assert.equal((await c.post(`/api/workspace/accounts/${a.id}/entries`, { method: "cash", cashForce: true, similarOk: true, kind, amount, date: day(-30), ...body })).status, 200, `hareket ${name}`);
     }
   });
   after(async () => server?.close());
 
-  it("gösterge: Gecikmiş 300 / 3, Bugün 300 / 3, 7 Gün 300 / 3, 30 Gün 100 / 1, 90 Gün 200 / 2, Tüm Açık 300 / 3", async () => {
+  it("gösterge: altı hazır aralığın hepsinde gecikmiş tahsilat 300 / 3, gecikmiş ödeme 70 / 1", async () => {
     const seen = {};
-    for (const preset of PRESETS) {
+    for (const preset of PRESETS) seen[preset] = gauge(await get(`/api/workspace/overview/vade-takip?preset=${preset}`));
+    assert.deepEqual(seen, Object.fromEntries(PRESETS.map(preset => [preset, [300, 3, 70, 1]])));
+  });
+
+  it("dört ileriye bakan aralıkta satır kümesi = 'Tüm Açık' satırları (hepsi Gecikmiş); satır 4, Tahsil Edilecek 300, Ödenecek 70; toplam = satırlar; başlık aralığı bugünkü gibi", async () => {
+    const open = await get("/api/workspace/overview/vade-takip?preset=open");
+    assert.ok(open.rows.every(row => row.state === "overdue"), "ön koşul: dört kalem de Gecikmiş");
+    for (const [preset, range] of Object.entries(NEAR)) {
       const data = await get(`/api/workspace/overview/vade-takip?preset=${preset}`);
-      seen[preset] = [data.totals.in.overdue.amount, data.totals.in.overdue.count];
+      assert.deepEqual(data.rows.map(key).sort(), open.rows.map(key).sort(), `${preset}: satır kümesi`);
+      assert.deepEqual([data.rows.length, data.totals.count, data.totals.in.total.amount, data.totals.out.total.amount], [4, 4, 300, 70], `${preset}: satır ve toplamlar`);
+      assert.deepEqual([data.from, data.to], [range.from, range.to], `${preset}: başlıktaki aralık`);
     }
-    assert.deepEqual(seen, { late: [300, 3], today: [300, 3], next7: [300, 3], next30: [100, 1], next90: [200, 2], open: [300, 3] });
+  });
+
+  it("yön süzgeci: tahsilat 300 / 3 (3 satır), ödeme 70 / 1 (1 satır) — dört ileriye bakan aralıkta", async () => {
+    for (const preset of Object.keys(NEAR)) {
+      const inData = await get(`/api/workspace/overview/vade-takip?preset=${preset}&direction=in`);
+      const outData = await get(`/api/workspace/overview/vade-takip?preset=${preset}&direction=out`);
+      assert.deepEqual([inData.rows.length, inData.totals.in.overdue.amount, inData.totals.in.overdue.count, outData.rows.length, outData.totals.out.overdue.amount, outData.totals.out.overdue.count], [3, 300, 3, 1, 70, 1], preset);
+    }
+  });
+
+  it("ELLE aralık ve late=0 DEĞİŞMEDİ: bugün … +30 → 100 / 1 ve 0 / 0; bugün … +90 → 200 / 2 ve 70 / 1; late=0 iken aralık dışından kalem yok", async () => {
+    assert.deepEqual(gauge(await get(`/api/workspace/overview/vade-takip?from=${day(0)}&to=${day(30)}`)), [100, 1, 0, 0]);
+    assert.deepEqual(gauge(await get(`/api/workspace/overview/vade-takip?from=${day(0)}&to=${day(90)}`)), [200, 2, 70, 1]);
+    for (const [preset, range] of Object.entries(NEAR)) {
+      const data = await get(`/api/workspace/overview/vade-takip?preset=${preset}&late=0`);
+      assert.ok(data.rows.every(row => row.date >= range.from && row.date <= range.to), `${preset} late=0`);
+    }
+  });
+
+  it("PDF ve Excel ekranla aynı (dört ileriye bakan aralık): dört satır ve 'Gecikmiş Tahsilat' 300 (3) / 'Gecikmiş Ödeme' 70 (1) özeti", async () => {
+    for (const preset of Object.keys(NEAR)) {
+      const pdf = await c.raw("GET", `/api/workspace/overview/vade-takip.pdf?preset=${preset}`);
+      assert.equal(pdf.status, 200);
+      const text = pdfText(pdf.buffer);
+      const lines = text.split(/\r?\n/).map(line => line.trim());
+      assert.deepEqual([lines.filter(line => /^(\d+ gün )?gecikti$/.test(line)).length, lines.filter(line => /^Uzak /.test(line)).length], [4, 4], `${preset} PDF satırları`);
+      assert.match(text, /Gecikmiş Tahsilat[\s\S]{0,40}300,00[\s\S]{0,10}\(3\)/, `${preset} PDF özeti tahsilat`);
+      assert.match(text, /Gecikmiş Ödeme[\s\S]{0,40}70,00[\s\S]{0,10}\(1\)/, `${preset} PDF özeti ödeme`);
+      const x = await c.raw("GET", `/api/workspace/overview/vade-takip.xlsx?preset=${preset}`);
+      assert.equal(x.status, 200);
+      const sheets = xlsxSheets(x.buffer);
+      const rows = sheets["Vade Takip"].filter(r => typeof r[0] === "number");
+      assert.deepEqual(rows.map(r => `${r[3]}|${r[2]}`).sort(), FAR.map(([name]) => `${name}|Gecikmiş`).sort(), `${preset} Excel satırları`);
+      const summary = Object.fromEntries(sheets["Özet"].map(r => [String(r[0]), String(r[1])]));
+      assert.match(summary["Gecikmiş Tahsilat"], /300,00.*\(3\)/, `${preset} Excel özeti tahsilat`);
+      assert.match(summary["Gecikmiş Ödeme"], /70,00.*\(1\)/, `${preset} Excel özeti ödeme`);
+    }
   });
 });

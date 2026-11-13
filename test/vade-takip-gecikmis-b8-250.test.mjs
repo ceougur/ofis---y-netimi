@@ -5,7 +5,8 @@
 // Kurgu: dokuz hücre (vade −10 / 0 / +10 × söz +15 / 0 / −5; birleşik tur 7 sondasıyla aynı) + tedarikçi yönü (sözlü gecikmiş 70: vade −10, söz +15; sözsüz gecikmiş 30: vade −3).
 // Beklenen (S52 / S67 / S69 = A — kalem söz gününde durur, durumu vadeden): durumu Gecikmiş olan tahsil kalemleri v−10 (p15, p0, p−5) + p−5 (v0, v10; S149 = C) = 5 × 100;
 // ödeme kalemleri 70 + 30.
-// Birleşik tur 8b: 'Bugün' / '7 Gün' hazır aralıkları da durumu Gecikmiş olan her kalemi gösterir (S150 = A'nın eksik kolu; önce 400 / 4 tahsilat, 30 / 1 ödeme).
+// Birleşik tur 8b: 'Bugün' / '7 Gün' / '30 Gün' / '90 Gün' hazır aralıkları da durumu Gecikmiş olan her kalemi gösterir (S150 = A'nın eksik kolu; bu kurguda önce Bugün / 7 Gün
+// 400 / 4 tahsilat, 30 / 1 ödeme; sözü 30 / 90 günden ileride olan kalem kurgusu test/vade-takip-gecikmis-b8b-250.test.mjs'te).
 import assert from "node:assert/strict";
 import { after, before, describe, it } from "node:test";
 import { loginAdmin, startTestServer } from "./helpers.mjs";
