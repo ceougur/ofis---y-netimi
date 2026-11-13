@@ -251,8 +251,12 @@ const LOCK_SQL = {
   // Kasa ↔ Banka transferinin bağı (transfer ↔ 649 / 770; ikizin banka bacağı).
   cash_transfer_lock: { requires: ["cash_entries.transfer_id"], since: "2.5.0", sql: "SELECT id, transfer_id FROM cash_entries WHERE transfer_id <> '' AND date <= ?1 ORDER BY id" },
   // Cari satırının kaynağı ve kaynak kimliği (çek / fatura / stok / banka: madde türü, evrağın yönü ve türü, stok hareketinin nedeni) ve şüpheli alacakta "Normal Cariye İşlendi" işareti (120 ↔ 128).
-  account_source_lock: { requires: ["account_entries.source", "account_entries.source_id"], since: "2.5.0", sql: "SELECT id, source, source_id FROM account_entries WHERE (source <> '' OR source_id <> '') AND date <= ?1 ORDER BY id" },
-  account_doubtful_skip_lock: { requires: ["account_entries.doubtful_skip"], since: "2.5.0", sql: "SELECT id, doubtful_skip FROM account_entries WHERE doubtful_skip <> 0 AND date <= ?1 ORDER BY id" },
+  // Tek tarama (hız, §16.8): üç alan bir girdide. doubtful_skip 2.3.0'dan beri var; alanı olmayan eski şemada girdi atlanır (araçlar / göç testleri — üretimde şema güncel).
+  account_source_lock: {
+    requires: ["account_entries.source", "account_entries.source_id", "account_entries.doubtful_skip"],
+    since: "2.5.0",
+    sql: "SELECT id, source, source_id, doubtful_skip FROM account_entries WHERE (source <> '' OR source_id <> '' OR doubtful_skip <> 0) AND date <= ?1 ORDER BY id",
+  },
   // Taksit satırının evrak bağı (101 / 121 ↔ para hesabı; evrağın "cariye işlenmemiş" sayılması) ve açılış alanı (B 519 ↔ para; yüklenen kartın T − P'si).
   plan_entries_bond_lock: { requires: ["plan_entries.cheque_id", "plan_entries.opening"], since: "2.5.0", sql: "SELECT id, cheque_id, opening FROM plan_entries WHERE (cheque_id <> '' OR opening <> 0) AND date <= ?1 ORDER BY id" },
   // Stok hareketinin nedeni (peşin ve cari satış / iade / alış iadesi: 600 ↔ 610 ↔ 153).
@@ -307,8 +311,40 @@ const LOCK_SQL = {
  * version (2.2.0 İz 4.2): o sürümün iz tanımı — girdinin "since" sürümü daha yeniyse atlanır (eski sürümün kaydettiği izle karşılaştırma;
  * çalışma anındaki kapı her zaman güncel tanımı kullanır: iz açılışta ölçülür, saklanmaz).
  */
+// 2.5.0 Ç5-A tur 1f (hız; ders 47, 53; docs/erp/C5-ACILIS-TASARIM.md §16.8): aynı veri durumunda iz yeniden hesaplanmaz — Mutabakat Testi aynı izi iki kez ister (taramanın
+// period-lock denetimi ve donmuş defterin kaynak izi; ikincisi `version: LOCK_SQL_VERSION` ile = güncel tanım). Veri durumu: bu bağlantının total_changes()'ı (kendi yazımları, işlem
+// içindekiler dahil), öbür bağlantıların kesinleşmiş yazımları (PRAGMA data_version) ve şema (PRAGMA schema_version); biri değişmişse yeniden hesaplanır. AÇIK İŞLEMDE önbellek ne
+// okunur ne yazılır (COMMIT kapısı: işlem geri alınırsa total_changes geri dönmez, işlem içindeki iz geri alınan veriye ait kalırdı). Okunamazsa (sahte depo) önbellek yok.
+const digestMemo = new WeakMap();
+function dataStamp(store) {
+  if (store.db?.isTransaction !== false) return "";
+  try {
+    return `${store.get("SELECT total_changes() AS n").n}|${store.get("PRAGMA data_version").data_version}|${store.get("PRAGMA schema_version").schema_version}`;
+  } catch {
+    return "";
+  }
+}
 export function lockDigestOf(store, lock, { version = "" } = {}) {
   if (!lock) return "";
+  // Güncel tanım ("" ya da LOCK_SQL_VERSION ve sonrası) aynı anahtar: hiçbir girdi atlanmaz.
+  const effective = version && compareVersions(version, LOCK_SQL_VERSION) < 0 ? version : LOCK_SQL_VERSION;
+  const stamp = store && typeof store === "object" ? dataStamp(store) : "";
+  const key = `${lock}|${effective}|${stamp}`;
+  if (stamp) {
+    const kept = digestMemo.get(store);
+    if (kept?.has(key)) return kept.get(key);
+  }
+  const digest = computeLockDigest(store, lock, version);
+  if (stamp) {
+    // total_changes / data_version okuması hesaplama sırasında değişmez (yalnız okuma); en çok birkaç anahtar tutulur (kilit / tanım çiftleri).
+    const kept = digestMemo.get(store) || new Map();
+    if (kept.size >= 8) kept.clear();
+    kept.set(key, digest);
+    digestMemo.set(store, kept);
+  }
+  return digest;
+}
+function computeLockDigest(store, lock, version) {
   const tables = new Set(store.all("SELECT name FROM sqlite_master WHERE type = 'table'").map(row => row.name));
   const columns = new Map();
   const has = requirement => {

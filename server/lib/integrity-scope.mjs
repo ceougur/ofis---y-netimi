@@ -54,7 +54,7 @@ const ACCOUNT_LEDGER_FIELDS = ["kind", "gl", "gl_sub", "currency"];
 const LOCK_FIELDS = {
   payments: { date: row => row.date, fields: ["amount", "date", "method", "fin_ref", "event_id"] },
   // 2.5.0 Ç5-A tur 1e: is_opening (LOCK_SQL cash_opening_lock / account_opening_lock / cheques_opening_lock).
-  // 2.5.0 Ç5-A tur 1f (§16): transfer_id (cash_transfer_lock), source / source_id / doubtful_skip (account_source_lock / account_doubtful_skip_lock), reason (stock_reason_lock),
+  // 2.5.0 Ç5-A tur 1f (§16): transfer_id (cash_transfer_lock), source / source_id / doubtful_skip (account_source_lock), reason (stock_reason_lock),
   // cheque_id / opening (plan_entries_bond_lock), gl_json / try_withheld / try_stoppage (invoices_gl_lock).
   cash_entries: { date: row => row.date, fields: ["kind", "amount", "date", "method", "fin_ref", "event_id", "tax_json", "is_opening", "transfer_id"] },
   account_entries: { date: row => row.date, fields: ["account_id", "kind", "amount", "date", "method", "fin_ref", "event_id", "fx_currency", "fx_minor", "fx_rate_e6", "fx_source", "is_opening", "source", "source_id", "doubtful_skip"] },
@@ -351,7 +351,9 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
     const chequeOf = id => (id ? store.get("SELECT direction, issue_date AS issueDate FROM cheques WHERE id = ?", String(id)) : null);
     if (table === "cheques") {
       if ((inTrace(pre?.issue_date) || inTrace(post?.issue_date)) && differs(pre, post, ["account_id"])) return "kilitli evrağın carisi";
-      if (differs(pre, post, ["status", "account_id"]) && lockedBounce((post || pre).id)) return "kilitli karşılıksızı olan evrak";
+      // Kilitli karşılıksızı olan evrak karşılıksız durumdadır: durumu karşılıksız OLMAYAN iki hâl arasındaki geçiş (bugünkü tahsil / ciro) sorgu gerektirmez.
+      const bounceSide = pre?.status === "bounced" || post?.status === "bounced";
+      if ((differs(pre, post, ["account_id"]) || (bounceSide && differs(pre, post, ["status"]))) && lockedBounce((post || pre).id)) return "kilitli karşılıksızı olan evrak";
       return "";
     }
     if (table === "cheque_events") {

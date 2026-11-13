@@ -14,7 +14,7 @@ import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { after, before, describe, it } from "node:test";
 import { createStore } from "../server/lib/db.mjs";
-import { lockDigestOf } from "../server/lib/integrity.mjs";
+import { LOCK_SQL_VERSION, lockDigestOf } from "../server/lib/integrity.mjs";
 import { registerLedgerRoutes } from "../server/routes/ledger.mjs";
 import { CURRENT, bootVersion } from "./guvenilirlik/surumler.mjs";
 
@@ -275,6 +275,46 @@ describe("Ç5-A tur 1f — Ana Defter türetmesinin okuduğu her sütun kilit iz
       assert.ok(found >= 60, `ön koşul: izde bulunan sütun sayısı (${found})`);
     } finally {
       db.close();
+    }
+  });
+
+  // §16.8 hız: aynı veri durumunda iz yeniden hesaplanmaz (önbellek). Eşdeğerlik (ders 47): her durumda önbellekli iz = yeni bağlantıda baştan hesaplanan iz.
+  it("kilit izinin önbelleği: aynı durumda aynı iz; bu bağlantının yazımı, başka bağlantının yazımı ve geri alınan işlem sonrası baştan hesaplanan izle aynı", { timeout: 120_000 }, () => {
+    const db = new DatabaseSync(file);
+    const other = new DatabaseSync(file);
+    const fresh = () => {
+      const conn = new DatabaseSync(file);
+      try {
+        return lockDigestOf(createStore(conn), LOCK);
+      } finally {
+        conn.close();
+      }
+    };
+    try {
+      const store = createStore(db);
+      const invoice = db.prepare("SELECT id FROM invoices WHERE status = 'issued' AND issue_date <= ? AND gl_json LIKE '%600%' LIMIT 1").get(LOCK).id;
+      const d1 = lockDigestOf(store, LOCK);
+      assert.equal(lockDigestOf(store, LOCK), d1, "aynı durum: aynı iz");
+      assert.equal(lockDigestOf(store, LOCK, { version: LOCK_SQL_VERSION }), d1, "güncel tanımın sürümlü çağrısı aynı iz");
+      assert.equal(d1, fresh(), "önbellekli = baştan");
+      db.prepare("UPDATE invoices SET gl_json = replace(gl_json, '600', '602') WHERE id = ?").run(invoice);
+      const d2 = lockDigestOf(store, LOCK);
+      assert.notEqual(d2, d1, "bu bağlantının yazımından sonra iz yeniden hesaplanır");
+      assert.equal(d2, fresh());
+      other.prepare("UPDATE invoices SET gl_json = replace(gl_json, '602', '600') WHERE id = ?").run(invoice);
+      const d3 = lockDigestOf(store, LOCK);
+      assert.equal(d3, d1, "başka bağlantının yazımından sonra iz yeniden hesaplanır");
+      assert.equal(d3, fresh());
+      db.exec("BEGIN");
+      db.prepare("UPDATE invoices SET gl_json = replace(gl_json, '600', '602') WHERE id = ?").run(invoice);
+      const inside = lockDigestOf(store, LOCK);
+      assert.notEqual(inside, d1, "işlem içindeki yazım izi değiştirir");
+      db.exec("ROLLBACK");
+      assert.equal(lockDigestOf(store, LOCK), d1, "geri alınan işlemden sonra işlem içindeki iz KULLANILMAZ");
+      assert.equal(fresh(), d1);
+    } finally {
+      db.close();
+      other.close();
     }
   });
 });
