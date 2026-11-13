@@ -7,9 +7,12 @@
 // Veri: programın kendi ürettiği eski sürüm fikstürleri (surum-2.4.9-s127 kilit 31.12.2025, surum-2.0.26-zincir kilit 05.10.2026, surum-2.4.9-s127-kilitsiz). Dondurmanın bitişi ÜRÜNÜN
 // DURUMUNDAN beklenir (runPending; ders 20). Sahte saat (ders 13); iki TZ'de koşulur; lisans servisi yok (ders 30).
 import assert from "node:assert/strict";
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { describe, it } from "node:test";
-import { CURRENT, bootVersion } from "./guvenilirlik/surumler.mjs";
+import { CURRENT, bootVersion, tagsAvailable } from "./guvenilirlik/surumler.mjs";
 import { readFixture, unpackFixture } from "./guvenilirlik/fikstur.mjs";
 
 process.env.HUKUK_LICENSE_URL ||= "http://127.0.0.1:9";
@@ -278,6 +281,76 @@ describe("Ç5-A tur 2b İş 2 — Kural Farkı Düzeltme Fişi", () => {
       assert.equal(app.store.get("SELECT COUNT(*) AS n FROM ledger_vouchers").n, 0);
     } finally {
       await ctx.close();
+    }
+  });
+
+  // Ç5-A tur 2d İş 3 — S164 = C'nin İKİNCİ örneği (kullanıcı kararı 13.11.2026 17:30: program dışından yazılan değişikliğin fark edilmemesi BİLİNEN SINIR — bu vaka yalnız bugünkü
+  // davranışı sabitler, taramanın onu görüp görmediğini SINAMAZ): kilitli tahsilatın fatura bağı (kilit izinde OLMAYAN alan; K-b) ayrı bağlantıyla yazılır — şüpheli caride kilitli
+  // dönemin canlı türetmesi A 128 → A 120 olur. Ön izleme farkı KAYNAĞIYLA gösterir (kayıt, tarih, hesap, cari; "fişle düzeltilmez") ve fiş satırlarına SESSİZCE GİRMEZ: fiş yalnız
+  // gerçek kural farkını (v2.4.9'un cari açılışı A 500 → A 519) taşır. Veri v2.4.9'un GERÇEK koduyla API'den (ders 17).
+  it("[8] S164 = C ikinci örnek: kilitli tahsilatın fatura bağı kapı dışından yazılınca 120 / 128 farkı kaynağıyla dışarıda; fiş yalnız gerçek kural farkı (500 → 519)", { timeout: 240_000, skip: tagsAvailable(["v2.4.9"]) ? false : "v2.4.9 etiketi yok" }, async () => {
+    const NOW = { time: "2026-10-20T12:00:00+03:00", fixed: true };
+    const root = mkdtempSync(path.join(tmpdir(), "kfd-s164b-"));
+    const dirs = { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups") };
+    const must = async (label, promise) => {
+      const res = await promise;
+      assert.equal(res.status, 200, `${label}: ${res.status} ${JSON.stringify(res.data).slice(0, 300)}`);
+      return res.data;
+    };
+    const ids = {};
+    let server = null;
+    try {
+      const old = await bootVersion("v2.4.9", { ...dirs, now: NOW });
+      try {
+        const api = await old.login();
+        const party = await must("cari (açılışlı)", api.post("/api/workspace/accounts", { name: "S164 İkinci Örnek", type: "customer", registeredOn: "2026-08-01", openingBalance: "800" }));
+        await must("borç", api.post(`/api/workspace/accounts/${party.id}/entries`, { kind: "debt", amount: "1000", date: "2026-08-20", note: "Hizmet" }));
+        await must("şüpheli", api.post(`/api/workspace/accounts/${party.id}/doubtful`, { amount: 600, date: "2026-09-20", reason: "lawsuit", note: "S164" }));
+        const invoice = await must("açık dönem faturası", api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: party.id, issueDate: "2026-10-15", lines: [{ name: "Danışmanlık", qty: 1, unitPrice: 300, vatRate: 0 }], payment: { rest: "open" } }));
+        await must("kilitli tahsilat (bağsız)", api.post(`/api/workspace/accounts/${party.id}/entries`, { kind: "in", amount: "100", date: "2026-10-09", method: "cash", cashForce: true, similarOk: true }));
+        await must("kilit", api.put("/api/admin/period-lock", { lockedUntil: "2026-10-10" }));
+        Object.assign(ids, { party: party.id, invoice: invoice.id, entry: old.app.store.get("SELECT id FROM account_entries WHERE account_id = ? AND kind = 'in'", party.id).id });
+      } finally {
+        await old.close();
+      }
+      server = await bootVersion(CURRENT, { ...dirs, now: NOW, integrityScan: false });
+      const { app } = server;
+      await app.ledger.snapshots.runPending();
+      assert.equal(app.ledger.snapshots.state().pending, null, "açılıştaki dondurma bitmeli");
+      const api = await server.login();
+      const before = (await api.get(URL)).data;
+      assert.deepEqual(lineText(before.lines), ["A 519 800", "B 500 800"], "ön koşul: gerçek kural farkı (v2.4.9'un cari açılışı 500 → 519)");
+      assert.deepEqual(before.excluded, [], "ön koşul: dışarıda kalan fark yok");
+      assert.ok(!before.sources.some(item => item.id === `account:${ids.entry}`), "ön koşul: tahsilat kural farkında değil");
+      const ruleBefore = await integrity(api);
+      assert.equal(ruleBefore.item?.count, 1, "ön koşul: Mutabakat Testi'nde bir kural farkı kaydı");
+      const other = new DatabaseSync(app.store.get("PRAGMA database_list").file);
+      try {
+        other.exec("PRAGMA busy_timeout = 5000");
+        assert.equal(other.prepare("UPDATE account_entries SET invoice_id = ? WHERE id = ?").run(ids.invoice, ids.entry).changes, 1, "kapı dışı yazım");
+      } finally {
+        other.close();
+      }
+      const after = (await api.get(URL)).data;
+      assert.deepEqual(lineText(after.lines), lineText(before.lines), "fiş satırları değişmez (bağ farkı fişe girmez)");
+      const source = after.sources.find(item => item.id === `account:${ids.entry}`);
+      assert.ok(source, `bağı değişen kayıt kaynak listesinde: ${JSON.stringify(after.sources).slice(0, 400)}`);
+      assert.equal(source.excluded, true, "fişle düzeltilmez");
+      assert.equal(source.date, "2026-10-09");
+      assert.deepEqual(source.deltas.map(item => `${item.account} ${item.party === ids.party ? "cari" : item.party} ${item.minor}`).sort(), ["120 cari -10000", "128 cari 10000"], "kaynağın hesap farkı (A 128 → A 120)");
+      assert.deepEqual(after.excluded.map(item => `${item.account} ${item.party === ids.party ? "cari" : item.party} ${item.minor} ${item.subledger}`).sort(), ["120 cari -10000 true", "128 cari 10000 true"], "120 / 128 farkı dışarıda (alt defter hesabı)");
+      for (const item of after.excluded) assert.match(item.reason, /Alt defter hesabı/);
+      const ruleAfter = await integrity(api);
+      assert.equal(ruleAfter.item?.count, 2, "Mutabakat Testi'nde kural farkı kaydı 1 → 2");
+      assert.ok(ruleAfter.item.sample.some(text => text.startsWith(`account:${ids.entry}`)), `Mutabakat Testi kaydı adıyla gösterir: ${JSON.stringify(ruleAfter.item.sample)}`);
+      const post = await api.post(URL, { requestId: rid(), digest: after.digest, confirm: true });
+      assert.equal(post.status, 200, JSON.stringify(post.data).slice(0, 300));
+      const lines = app.store.all("SELECT l.account, l.sub, l.debit_minor AS debit, l.credit_minor AS credit FROM ledger_vouchers v JOIN ledger_voucher_lines l ON l.voucher_id = v.id WHERE v.type = 'rule-diff-correction'");
+      assert.deepEqual(lines.map(line => `${line.debit ? "B" : "A"} ${line.sub || line.account} ${(line.debit || line.credit) / 100}`).sort(), ["A 519 800", "B 500 800"], "fiş yalnız gerçek kural farkı: 120 / 128 satırı yok");
+      assert.equal(app.store.get("SELECT COUNT(*) AS n FROM ledger_vouchers").n, 1);
+    } finally {
+      await server?.close().catch(() => {});
+      rmSync(root, { recursive: true, force: true });
     }
   });
 
