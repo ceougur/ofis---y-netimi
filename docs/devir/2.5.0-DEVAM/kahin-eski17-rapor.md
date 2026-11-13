@@ -180,3 +180,80 @@ bash docs/kanit/2026-11-13/kahineski17-arac/kos.sh utc   (sonra: … kos.sh ist)
 - **Araçlar:** `docs/kanit/2026-11-13/kahineski16-arac/` (kos.sh, karsilastir.py, bicim.py, yeni-senaryolar16.py 1–40, elle-karsilastir.py 1–20, elle-fark.py, mutant-senaryo.py, mutasyon-tara.py 1–30, genis-tarama.py 1–25, g1-tara.py 1–15); `kahineski16-kos-utc.txt` (ilk 1.500 bayt).
 
 Okunmayanlar: `server/`, `client/`, `bulut/`, `packaging/`, `tools/` (kanit.mjs çalıştırılmadı), `docs/devir/**`, iş listeleri, YAPIM-ASAMASI.json, iki kâhin klasörü dışındaki `test/**`, git farkı / geçmiş içeriği. Bir istisna: `ps` çıktısında başka bir sürecin komut satırı (muhasebe mutasyon koşusu) yalnız yük nedenini görmek için okundu.
+
+---
+
+(EK RAPOR — 13.11.2026; AYNEN)
+
+# Cari kâhini bakımı 17 — kanıt koşuları (ek rapor)
+
+Kanıt koşuları iki saat diliminde de tamam: bütün adımlar çıkış 0 verdi, G3'te BEKLENMEYEN 0. Model ve senaryolara dokunmadım (SK-36 / SK-37 susması aynen sürüyor).
+
+- **Dal:** `worktree-agent-a443903fcdb8ea29f`, ucu **261b1aec**. Ağaç temiz, push yok.
+- **Commit'ler:** c922f576 (yorum) → 750d066b (kod) → 261b1aec ("Kanıt:" — §28'in G3 ve Kanıt bölümleri, C10u düzeltmesi, `docs/kanit/2026-11-13/kahineski17-*`).
+- **Yük:** UTC koşusu başlarken 1,83, IST koşusu başlarken 2,42 (4 çekirdek); bekleme gerekmedi.
+
+## Test sayıları
+Kâhin `750d066b`, temiz ağaç. UTC ve Europe/Istanbul aynı sayıları verdi; çıktılar başlık satırları dışında bayt bayt aynı.
+
+| Koşu | UTC | Europe/Istanbul |
+|---|---|---|
+| Cari öz test | 6514/6514 | 6514/6514 |
+| Defter öz testi | 181/181 | 181/181 |
+| Mutasyon taraması | 274/274 | 274/274 |
+| Eşdeğerlik + G3 | 603/603 | 603/603 |
+| Yeni / değişen elle tablolar | 446/446 | 446/446 |
+| Eski kâhinde kırmızı | 56/56 | 56/56 |
+| Eski elle tablo farkı (izinli) | 98/98 | 98/98 |
+| G1 tarama | 99/99 | 99/99 |
+| Mutant ↔ senaryo (d35…d45 × 261–307) | 517/517 | 517/517 |
+| Geniş tarama | 2201/2201 | 2201/2201 |
+
+- **Üretici:** 20/20 aynı dizi.
+- **Adımlar:** eski kopyadaki 98 elle senaryonun hiçbirinin adımı değişmedi; d30 ve d43'e yalnız `fazlasiniAvansYaz` alanı eklendi.
+- **Eski kurallar (2.4.9 / 2.4.6 / 2.4.5 / legacy):** 484/484 bayt bayt aynı.
+
+## G3 dökümü (2.5.0)
+Eski kâhinde 50.516, yeni kâhinde 50.454 denetim var. Değişen / kalkan / yeni toplam **140**, **BEKLENMEYEN 0**, yalnız etiketi değişen 13. Dökümler iki saat diliminde bayt bayt aynı.
+
+| Sınıf | Adet | Nereden geliyor |
+|---|---|---|
+| S118 | 59 (26 değişen, 27 kalkan, 6 yeni) | Seçeneksiz eski d43 U1 / U2 artık RET; seçeneksiz eski d30 Q1 / Q3 / Q5 sınır bölgesinde SUS; d45 A2 RET, A6 SUS |
+| S154 | 3 yeni | KA1 130000; d43'ün yeni hâlinde KU1 110000, KU2 60000 |
+| S159 | 14 yeni | d44 X12 ve d45 Z5 |
+| S162 | 19 kalkan | d42 T7 / T6 (9), d44 Y4 (5), d45 B1 (5) |
+| S163 | 37 kalkan | d45 C1 / C3 |
+| GENEL | 8 | Kasa / Kasa raporu, aynı kontroldeki sınıflı değişiklik yüzünden |
+
+- Öbür 94 eski elle senaryo ve 20 rastgele senaryoda fark 0.
+- Seçenek eklenmiş d30'un yeni hâlinde de fark 0.
+
+## Mutantlar
+Değerle yakalanma, bütün /3 elle senaryolar üzerinde koşuyla okundu:
+
+| Mutant | Yakalayan senaryolar (kırmızı elle değer) |
+|---|---|
+| 303 | d44 X12 (3), d45 Z5 (2) |
+| 304 | d43 (2), d45 (8) |
+| 305 | d30 (14), d43 (11), d45 (16) |
+| 306 | d43 (2), d45 (1) |
+| 307 | d45 A5 (7), d30 / d31 / d32 KQ4 (5 / 5 / 6) |
+
+Kod commit'inde elle yazdığım listede "307 … d43" diyordum; yanlıştı, d43'te 307 yakalanmıyor. C10u'yu koşu sonucuyla düzelttim. 200–302 arası mutantlar aynen yakalanıyor.
+
+## Eski kâhinde kırmızı
+446 elle denetimin 56'sı eski (bakım 16) kâhinde kırmızı: d45 34, d42 11, d44 9, d43 2, d30 0. Kırmızıların hepsi beklenen nedenle:
+- S159 / S154 alanında "ANAHTAR YOK".
+- Seçeneği bilmediği için d45 A2'yi kabul etmesi (RET yerine "ok").
+- SK-36 / S162 / S163 alanında değer yazması.
+- 7 yeni `belirsiz` kaydının eski kâhinde olmaması.
+
+Kalan 390 denetim iki kâhinde aynı; d30'un 138'i de bunların içinde.
+
+## Dosyalar
+- `test/bagimsiz/cari/KARARLAR.md` (§28: C0u, Kanıt, C10u)
+- `docs/kanit/2026-11-13/kahineski17-arac/kos.sh`
+- `docs/kanit/2026-11-13/kahineski17-g3-dokum-utc.json`, `docs/kanit/2026-11-13/kahineski17-g3-dokum-ist.json`
+- `docs/kanit/2026-11-13/kahineski17-kos-utc.txt`, `docs/kanit/2026-11-13/kahineski17-kos-ist.txt`
+
+Yeniden koşmak için worktree'de: `bash docs/kanit/2026-11-13/kahineski17-arac/kos.sh utc`, sonra `… ist`.

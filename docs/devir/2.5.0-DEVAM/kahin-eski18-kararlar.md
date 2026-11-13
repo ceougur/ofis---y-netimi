@@ -1,0 +1,23 @@
+# Cari kâhini bakımı 18 — karar girdisi (ana oturum yazdı; TEK girdi kaynağın)
+
+Bu dosya, bakım 17'nin raporundaki TOPLU SORULARIN (SK-36, SK-37) yanıtlarını taşır. Soru metinlerinde geçen 'program bugün' sözü kural kaynağı DEĞİLDİR — kural yalnız KARAR satırlarıdır.
+
+## 1. KURALLAR
+### S165 (bakım 17'nin SK-36 (b) sorusu)
+Kullanıcıya gösterilen soru (AYNEN):
+karttan tahsilatta 'Kalanı Aşan Tutar' sınırına FATURASIZ İADE payı girer mi? ÖRNEK: Borç 900 + Borç 500 → kart 900 (3 × 300) → faturasız stok iadesi 300 (kartın ilk taksitinden düşüyor) → karta 700 tahsilat. PROGRAM BUGÜN (koşuldu): sormadan KABUL — bakiye 1.100 → 400 (sınır = kart tutarı − karttan alınan para = 900; iade tahsilat sayılmıyor); ardından aynı karta 600: RET ('kartın kendi tahsilatlarına göre kalan 200'). A (ÖNERİ): böyle kalsın ve KURAL olsun — sınır yalnız karttan alınan parayı sayar (S118 = B 'kartın KENDİ kalanı' ve S151 = B 'iade tahsilat değildir' ile aynı çizgi); kod değişmez; kâhin tarafı sıradaki toplu bakıma. B: iade de sayılsın — sınır 600 olur, 700'de 'Kalanı Aşan Tutar' sorusu çıkar; kod işi (taksit tahsilatı sınırı + dar kontrol). C: Uç durum böyle kalsın (program kabul eder; kural yazılmaz, kâhin susar) — BİLİNEN SINIR.
+
+KARAR (kullanıcı 13.11.2026 17:48 UTC, AYNEN: "önerilerin uygun" — iki soruda da öneri seçildi): S165 = A — karttan tahsilatta 'Kalanı Aşan Tutar' sınırı YALNIZ karttan alınan parayı sayar; faturasız iade (ve Değersiz yazma gibi para dışı pay) sınırı küçültmez (örnek: Borç 900 + Borç 500 → kart 900 → faturasız iade 300 → karta 700 sormadan KABUL, bakiye 400; ardından aynı karta 600 RET — kalan 200).
+
+### SK-36 (a) — SORU DEĞİL: S118 = B'nin kendi örnek sınıfı (BAŞ MİMAR OKUMASI; kullanıcıya 13.11.2026 17:45'te gösterildi — KARARLAR.md'ye 'BAŞ MİMAR OKUMASI' diye yaz)
+S118'in kullanıcıya gösterilen sorusu (AYNEN; önceki bakımda sana verilmişti): taksit tahsilatında 'Kalanı Aşan Tutar' / 'Kart Ödendi' SINIRI ve formda önerilen tutar hangi kalandan? Örnek: kart 1.000, karta 300 tahsil edildi (kartın kendi kalanı 700); carinin başka karttan 100 avansı var ve tek kuyruk bu 100'ü bu kartın taksitine sayıyor (taksit satırlarında kalan 600) — A: kuyruk kalanı (600): 600'den fazlası 'Kalanı Aşan Tutar' sorusuyla avansa yazılır / B (öneri): kartın KENDİ kalanı (700): sınır, soru ve formda önerilen tutar aynı sayıdan; taksit satırlarındaki 600 'cari avansı düşülmüş' gösterimi olarak kalır.
+S118 KARAR (kullanıcı 11.11.2026 06:14 UTC, AYNEN: "önerilerini uygula"): S118 = B — taksit tahsilatında 'Kalanı Aşan Tutar' / 'Kart Ödendi' sınırı, sorusu ve formda ÖNERİLEN tutar kartın KENDİ kalanından gelir; taksit satırlarındaki kuyruk kalanı 'cari avansı düşülmüş' gösterimi olarak kalır.
+OKUMA: carinin avansıyla ödenmiş kısım sınırı KÜÇÜLTMEZ — S118'in örneğinde 100 avans varken sınır 700'dür (600 değil). Bakım 17'nin SK-36 (a) örneği (tahsilat 1.000 → stoktan taksitli satış 600 → karta 300, soru yanıtsız) bu sınıfın uç hâlidir: kartın kendi kalanı 600 → 300 sınırın altında → soru çıkmaz, KABUL, bakiye −700.
+
+SONUÇ (S165 + S118 birlikte): bakım 17'deki K' okuması düşer — sınır K = kart tutarı − karta doğrudan bağlı tahsilatlar; ne avansla ödenmiş kısım ne para dışı (iade / Değersiz) pay K'yı küçültür. Bakım 17'de SK-36 nedeniyle susturduğun 'K' < tutar ≤ K, seçeneksiz' adımları KABUL olarak değer alır; tutar > K iken seçeneksiz adım RET (bakım 17'deki gibi). S154 = B'nin ve S144 (c)'nin öbür alt durumlarının susma / değer durumu bu kararla değişiyorsa tek tek yaz; karar metinlerinden tek biçimde çıkmayan yerde SUS ve sor.
+
+## 2. BİLİNEN SINIR — kâhin bu alt durumda SUSAR (kural YOK)
+### S166 = B (kullanıcı 13.11.2026 17:48 UTC, AYNEN: "önerilerin uygun" — iki soruda da öneri seçildi) — bakım 17'nin SK-37 sorusu
+Soru (AYNEN):
+S162 = B (kart carinin borcunun tamamını taşıyorken faturasız iadede kart sondan küçülür) SATIŞ kartını da kapsıyor mu? ÖRNEK: stoktan taksitli satış 1.000 (2 × 500; ilk vade 10 gün önce, ikincisi ileride) → karttan 300 → faturasız stok iadesi 400; başka borç yok. PROGRAM BUGÜN (koşuldu): kart SONDAN küçülüyor — toplam 600, 1. taksit 500 (ödenen 300, kalan 200), 2. taksit 100; gecikmiş 200; bakiye 300. A: iade EN ESKİ taksitten düşsün (S140 sırası) — 1. taksit kapanır, 2. taksitte 300 açık, gecikmiş 0, bakiye 300; kod işi (taksit çekirdeği + dar kontrol). B (ÖNERİ — S162 ile aynı; sarmal kuralının varsayılanı): böyle kalsın — BİLİNEN SINIR; kod değişmez, kâhin bu alt durumda susar.
+KAPSAM (ana oturum): bakım 17'de SK-37 diye susturduğun alan aynen susar; yalnız neden metni 'BİLİNEN SINIR (kullanıcı kararı S166 = B)' olur. Bakiye iki okumada AYNI — bakiyede SUSMA (bakım 17'deki gibi).
