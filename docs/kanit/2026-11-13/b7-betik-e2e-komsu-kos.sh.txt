@@ -1,0 +1,14 @@
+#!/bin/bash
+# Birleşik tur 7 — değişen ekranları (Çek / Senet ve Fatura listesi, Vade Takip, Nakit Akış, Raporlar) gören ekran senaryoları (liste e2e-komsu.txt taramasıyla), sırayla.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-a6c349be9d3823fef
+cd $W || exit 1
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194 KANIT_DIR=$S/b7-kanit
+OUT=$S/b7-kanit/b7-e2e-komsu.txt
+: > $OUT
+for n in ${*:-banka-210-ekran-aciklama fatura-243-duzen-kaymasi senaryo-215 senaryo-216 senaryo-217 senaryo-222 senaryo-223 senaryo-224 senaryo-226 senaryo-banka-210-temel senaryo-banka-210 senaryo-banka-210b senaryo-banka-220 senaryo-banka-rapor-243 senaryo-cari-vade-245 senaryo-defter-243 senaryo-iz32-230 senaryo-pil-karti-245 senaryo-portal-244 senaryo-pos-220 senaryo-rapor senaryo-supheli-230 senaryo-tahsile-ver-220 senaryo-taslak senaryo-tyk-tur2a-250 uiux-a-243 uiux-ui11-244 suzgec-cubugu-yaris ui-ux-217 e2e}; do
+  if [ $n = ui-ux-217 ]; then cmd="node --disable-warning=ExperimentalWarning test/e2e/ui-ux-217.mjs"; else cmd="npm run test:$n"; fi
+  timeout -k 5 1800 node tools/kanit.mjs kos b7-e2e-$n -- $cmd > $S/b7-kanit/b7-e2e-$n.log 2>&1
+  echo "$n çıkış $? | $(grep -aE 'denetim geçti|# (tests|pass|fail) |GEÇTİ|BAŞARISIZ|TAMAM' $S/b7-kanit/b7-e2e-$n.log | tail -2 | tr '\n' ' ' | cut -c1-220)" >> $OUT
+done
+echo BITTI >> $OUT

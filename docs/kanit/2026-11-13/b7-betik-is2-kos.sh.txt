@@ -1,0 +1,22 @@
+#!/bin/bash
+# Birleşik tur 7 İş 2: süzgeç tarih kutuları — her kip × (yarış, kontrol) × (yeni kod, taban) — betik yeni ağaçtan, DEPO ile taban kodu.
+# Kullanım: is2-kos.sh <çıktı öneki> [kip ...]   (kip verilmezse hepsi)
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-a6c349be9d3823fef
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194
+OUT=$S/b7-kanit/$1.txt
+shift
+KIPLER=${*:-banka-tarih pos-tarih rapor-tarih gelen-tarih cek-tarih fatura-tarih kasa-tarih rapor-mizan rapor-vade rapor-akis rapor-cek}
+: > $OUT
+for kip in $KIPLER; do
+  for kontrol in "" "--kontrol"; do
+    [ $kip = kasa-tarih ] && [ -z "$kontrol" ] && continue
+    for kod in yeni taban; do
+      dep=""; [ $kod = taban ] && dep=$S/b7-taban
+      log=$S/b7-kanit/b7-is2-$kip-${kontrol:+kontrol-}$kod.log
+      ( cd $W && DEPO=$dep timeout -k 5 600 node --disable-warning=ExperimentalWarning test/e2e/suzgec-cubugu-yaris.mjs --kip $kip --deneme 3 $kontrol > $log 2>&1 ); code=$?
+      echo "$kip ${kontrol:-yaris} $kod çıkış $code | $(grep -E 'denetim geçti' $log | tail -1) | $(grep -E '^[✓✗·] deneme' $log | sed -E 's/.*kutu "([^"]*)", odak ([^,]*).*/\1 \/ \2/' | tr '\n' ';')" >> $OUT
+    done
+  done
+done
+echo BITTI >> $OUT

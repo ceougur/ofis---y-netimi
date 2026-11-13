@@ -1,0 +1,45 @@
+banka-tarih yaris yeni çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip banka-tarih; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+banka-tarih yaris taban çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip banka-tarih; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+banka-tarih --kontrol yeni çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip banka-tarih kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+banka-tarih --kontrol taban çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip banka-tarih kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+pos-tarih yaris yeni çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip pos-tarih; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+pos-tarih yaris taban çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip pos-tarih; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+pos-tarih --kontrol yeni çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip pos-tarih kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+pos-tarih --kontrol taban çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip pos-tarih kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-tarih yaris yeni çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip rapor-tarih; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-tarih yaris taban çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip rapor-tarih; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-tarih --kontrol yeni çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip rapor-tarih kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-tarih --kontrol taban çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip rapor-tarih kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+gelen-tarih yaris yeni çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip gelen-tarih; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+gelen-tarih yaris taban çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip gelen-tarih; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+gelen-tarih --kontrol yeni çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip gelen-tarih kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+gelen-tarih --kontrol taban çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip gelen-tarih kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+cek-tarih yaris yeni çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip cek-tarih; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+cek-tarih yaris taban çıkış 1 | BAŞARISIZ: 0 denetim geçti, 3 başarısız. (kip cek-tarih; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+cek-tarih --kontrol yeni çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip cek-tarih kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+cek-tarih --kontrol taban çıkış 1 | BAŞARISIZ: 0 denetim geçti, 3 başarısız. (kip cek-tarih kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+fatura-tarih yaris yeni çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip fatura-tarih; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+fatura-tarih yaris taban çıkış 1 | BAŞARISIZ: 0 denetim geçti, 3 başarısız. (kip fatura-tarih; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+fatura-tarih --kontrol yeni çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip fatura-tarih kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+fatura-tarih --kontrol taban çıkış 1 | BAŞARISIZ: 0 denetim geçti, 3 başarısız. (kip fatura-tarih kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+kasa-tarih yaris yeni çıkış 1 | BAŞARISIZ: 0 denetim geçti, 4 başarısız. (kip kasa-tarih; ön koşul 0/3 denemede oluştu; 0 sayılmadı) | 
+kasa-tarih yaris taban çıkış 1 | BAŞARISIZ: 0 denetim geçti, 4 başarısız. (kip kasa-tarih; ön koşul 0/3 denemede oluştu; 0 sayılmadı) | 
+kasa-tarih --kontrol yeni çıkış 1 | BAŞARISIZ: 0 denetim geçti, 4 başarısız. (kip kasa-tarih kontrol; ön koşul 0/3 denemede oluştu; 0 sayılmadı) | 
+kasa-tarih --kontrol taban çıkış 1 | BAŞARISIZ: 0 denetim geçti, 4 başarısız. (kip kasa-tarih kontrol; ön koşul 0/3 denemede oluştu; 0 sayılmadı) | 
+rapor-mizan yaris yeni çıkış 1 | BAŞARISIZ: 0 denetim geçti, 3 başarısız. (kip rapor-mizan; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-mizan yaris taban çıkış 1 | BAŞARISIZ: 0 denetim geçti, 3 başarısız. (kip rapor-mizan; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-mizan --kontrol yeni çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip rapor-mizan kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-mizan --kontrol taban çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip rapor-mizan kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-vade yaris yeni çıkış 1 | BAŞARISIZ: 0 denetim geçti, 3 başarısız. (kip rapor-vade; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-vade yaris taban çıkış 1 | BAŞARISIZ: 0 denetim geçti, 3 başarısız. (kip rapor-vade; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-vade --kontrol yeni çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip rapor-vade kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-vade --kontrol taban çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip rapor-vade kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-akis yaris yeni çıkış 1 | BAŞARISIZ: 0 denetim geçti, 3 başarısız. (kip rapor-akis; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-akis yaris taban çıkış 1 | BAŞARISIZ: 0 denetim geçti, 3 başarısız. (kip rapor-akis; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-akis --kontrol yeni çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip rapor-akis kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-akis --kontrol taban çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip rapor-akis kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-cek yaris yeni çıkış 1 | BAŞARISIZ: 0 denetim geçti, 3 başarısız. (kip rapor-cek; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-cek yaris taban çıkış 1 | BAŞARISIZ: 0 denetim geçti, 3 başarısız. (kip rapor-cek; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-cek --kontrol yeni çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip rapor-cek kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-cek --kontrol taban çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip rapor-cek kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+BITTI

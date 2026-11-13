@@ -1,0 +1,155 @@
+TAP version 13
+# (node:28497) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: YAPIM AŞAMASI kapısı (yapimAsamasiGate)
+    # Subtest: dolu liste → ret; ileti kayıt sayısını ve paket dağılımını söyler
+    ok 1 - dolu liste → ret; ileti kayıt sayısını ve paket dağılımını söyler
+      ---
+      duration_ms: 1.625638
+      type: 'test'
+      ...
+    # Subtest: CRLF satır sonlu dolu liste de ret (ders 27)
+    ok 2 - CRLF satır sonlu dolu liste de ret (ders 27)
+      ---
+      duration_ms: 0.246557
+      type: 'test'
+      ...
+    # Subtest: boş liste → geçer (LF ve CRLF)
+    ok 3 - boş liste → geçer (LF ve CRLF)
+      ---
+      duration_ms: 0.320167
+      type: 'test'
+      ...
+    # Subtest: dosya yok / bozuk JSON / kayitlar dizisi yok → ret (okunamayan boş sayılmaz, ders 4)
+    ok 4 - dosya yok / bozuk JSON / kayitlar dizisi yok → ret (okunamayan boş sayılmaz, ders 4)
+      ---
+      duration_ms: 0.486639
+      type: 'test'
+      ...
+    # Subtest: yalnız 'eşleme' paketli kayıtlar → yine ret (sayılır; paket dağılımında görünür)
+    ok 5 - yalnız 'eşleme' paketli kayıtlar → yine ret (sayılır; paket dağılımında görünür)
+      ---
+      duration_ms: 0.231155
+      type: 'test'
+      ...
+    # Subtest: varsayılan yol çalışma dizininden bağımsız: başka klasörden çağrılınca da depodaki listeyi okur (aynı sonuç)
+    ok 6 - varsayılan yol çalışma dizininden bağımsız: başka klasörden çağrılınca da depodaki listeyi okur (aynı sonuç)
+      ---
+      duration_ms: 43.52117
+      type: 'test'
+      ...
+    # Subtest: varsayılan çağrı (release.mjs'in yolu: yol ve commit verilmez) listeyi commit'le karşılaştırır; başka yolda karşılaştırmaz
+    not ok 7 - varsayılan çağrı (release.mjs'in yolu: yol ve commit verilmez) listeyi commit'le karşılaştırır; başka yolda karşılaştırmaz
+      ---
+      duration_ms: 2.129406
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-mut/test/yapim-asamasi-kapisi.test.mjs:79:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   ayniYol: false,
+        -   ayniYol: true,
+            baskaYol: [
+              true,
+              false
+            ],
+        +   varsayilan: false
+        -   varsayilan: true
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        varsayilan: true
+        ayniYol: true
+        baskaYol:
+          0: true
+          1: false
+      actual:
+        varsayilan: false
+        ayniYol: false
+        baskaYol:
+          0: true
+          1: false
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-mut/test/yapim-asamasi-kapisi.test.mjs:87:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kapı cari kâhininin okuduğu dosyayı denetler (aynı yol)
+    ok 8 - kapı cari kâhininin okuduğu dosyayı denetler (aynı yol)
+      ---
+      duration_ms: 1.053951
+      type: 'test'
+      ...
+    1..8
+not ok 1 - YAPIM AŞAMASI kapısı (yapimAsamasiGate)
+  ---
+  duration_ms: 50.687181
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-mut/test/yapim-asamasi-kapisi.test.mjs:24:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: YAPIM AŞAMASI kapısı — liste commit'ten de okunur (skip-worktree / assume-unchanged atlatması)
+    # Subtest: çalışma ağacında boş, commit'te dolu → ret: 'FARKLI' + 'commit'te boş değil'; ikisi aynıysa (CRLF ↔ LF dahil) geçer; commit'ten okunamıyor / bozuk → ret
+    ok 1 - çalışma ağacında boş, commit'te dolu → ret: 'FARKLI' + 'commit'te boş değil'; ikisi aynıysa (CRLF ↔ LF dahil) geçer; commit'ten okunamıyor / bozuk → ret
+      ---
+      duration_ms: 0.796857
+      type: 'test'
+      ...
+    # Subtest: gerçek git: dolu liste commit'lenir, skip-worktree işaretlenir, çalışma ağacında boşaltılır → git status temiz (ön koşul), kapı ret; işaret yoksa status 'M' gösterir
+    ok 2 - gerçek git: dolu liste commit'lenir, skip-worktree işaretlenir, çalışma ağacında boşaltılır → git status temiz (ön koşul), kapı ret; işaret yoksa status 'M' gösterir
+      ---
+      duration_ms: 106.563598
+      type: 'test'
+      ...
+    # Subtest: gerçek git: replace + skip-worktree → git status temiz ve bayraksız 'git show' boş liste (ön koşul), kapı ret (yerine koyma okunmaz)
+    ok 3 - gerçek git: replace + skip-worktree → git status temiz ve bayraksız 'git show' boş liste (ön koşul), kapı ret (yerine koyma okunmaz)
+      ---
+      duration_ms: 107.996994
+      type: 'test'
+      ...
+    1..3
+ok 2 - YAPIM AŞAMASI kapısı — liste commit'ten de okunur (skip-worktree / assume-unchanged atlatması)
+  ---
+  duration_ms: 215.5934
+  type: 'suite'
+  ...
+# Subtest: tools/release.mjs YAPIM AŞAMASI kapısı
+    # Subtest: depodaki liste doluysa (ya da okunamıyorsa) paket aracı anahtarı okumadan reddeder ve listeyi söyler; boşsa liste iletisi yok
+    ok 1 - depodaki liste doluysa (ya da okunamıyorsa) paket aracı anahtarı okumadan reddeder ve listeyi söyler; boşsa liste iletisi yok
+      ---
+      duration_ms: 51.933142
+      type: 'test'
+      ...
+    # Subtest: release.mjs kapıyı atlatma seçeneği vermez (liste yolu dışarıdan verilemez)
+    ok 2 - release.mjs kapıyı atlatma seçeneği vermez (liste yolu dışarıdan verilemez)
+      ---
+      duration_ms: 0.343543
+      type: 'test'
+      ...
+    1..2
+ok 3 - tools/release.mjs YAPIM AŞAMASI kapısı
+  ---
+  duration_ms: 52.404842
+  type: 'suite'
+  ...
+1..3
+# tests 13
+# suites 3
+# pass 12
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 668.670044

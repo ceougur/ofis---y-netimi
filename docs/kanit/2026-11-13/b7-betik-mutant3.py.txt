@@ -1,0 +1,28 @@
+# Birleşik tur 7 İş 3 mutantları — kopyada (argv[1]) tek mutasyon; <dosya>.b7orijinal'den geri yüklenir.
+import os, shutil, sys
+root, name = sys.argv[1], sys.argv[2]
+M = {
+    # M3a: Vade Takip durumu ve gün sayısını kalemin tarihinden yeniden türetir (taban davranışı)
+    'M3a-tarihten': [('server/lib/finance-report.mjs', 'const state = calendar?.state || derived;', 'const state = derived;'),
+                     ('server/lib/finance-report.mjs', 'days: calendar?.state ? Number(calendar.days) || 0 : days, state });', 'days, state });')],
+    # M3b: Nakit Akışı faturasız cari alacağı açık şüpheliyi bakiyeden düşmez (dengeleme satırı şüpheliyi geri ekler)
+    'M3b-dengeleme': [('server/routes/overview.mjs', ' - held(account.id)) }));', ') }));')],
+    # M3c: Nakit Akışı taksit kalemleri şüpheli düşüşü olmadan (S136)
+    'M3c-taksit': [('server/routes/overview.mjs', '    if (plans()?.openItems) flows.push(...plans().openItems(day, { withoutDoubtful: true }));', '    if (plans()?.openItems) flows.push(...plans().openItems(day));')],
+    # M3d: Nakit Akışı fatura kalemi şüpheli düşüşü olmadan
+    'M3d-fatura': [('server/routes/overview.mjs', 'for (const item of invoices()?.openItems ? invoices().openItems(day, { net: true, withoutDoubtful: true }) : []) flows.push(invoiceFlow(item));', 'for (const item of invoices()?.openItems ? invoices().openItems(day, { net: true }) : []) flows.push(invoiceFlow(item));')],
+}
+files = sorted({f for pairs in M.values() for f, _, _ in pairs})
+for f in files:
+    p = os.path.join(root, f)
+    o = p + '.b7orijinal'
+    if not os.path.exists(o):
+        shutil.copy(p, o)
+    shutil.copy(o, p)
+if name != 'orijinal':
+    for f, a, b in M[name]:
+        p = os.path.join(root, f)
+        t = open(p, encoding='utf-8').read()
+        assert t.count(a) == 1, (name, a[:60], t.count(a))
+        open(p, 'w', encoding='utf-8').write(t.replace(a, b))
+print('mutant', name)

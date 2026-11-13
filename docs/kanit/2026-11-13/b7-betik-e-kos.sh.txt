@@ -1,0 +1,15 @@
+#!/bin/bash
+# dar kontrolün e-kapi.mjs'i (yayın kapısı atlatma denemeleri) yeni kod ve tabanda; tablo e-tablo.py olmadan kısa döküm.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+for k in yeni:/home/user/ofis---y-netimi/.claude/worktrees/agent-a6c349be9d3823fef taban:$S/b7-taban; do
+  ad=${k%%:*}
+  ROOT=${k#*:} timeout -k 5 300 node $S/b7-is/betik/e-kapi.mjs > $S/b7-kanit/b7-e-kapi-$ad.json 2> $S/b7-kanit/b7-e-kapi-$ad.err; echo "$ad çıkış $?"
+done
+python3 -I - "$S" <<'PY'
+import json, sys
+S = sys.argv[1]
+for ad in ["yeni", "taban"]:
+    print("==", ad)
+    for r in json.load(open(f"{S}/b7-kanit/b7-e-kapi-{ad}.json")):
+        print("  ", r["deneme"][:80].ljust(80), "temiz" if r["gitStatusTemiz"] else "kirli", "GEÇTİ" if r["kapiGecti"] else "RET")
+PY

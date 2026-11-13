@@ -1,0 +1,10 @@
+kip banka-tarih; kod DEPO=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-taban; tarayıcı 153.0.8010.12
+tarih kutusu aa/gg/yyyy: ilk bölüm "10", kalan "072026"
+    [suzgec-zorla] ON-KOSUL: ekran gün yazılmışken yeniden çizildi; kutu aynı düğüm, odak kutuda
+✓ deneme 1: yazılan 2026-10-07; kutu "2026-10-07", odak kutuda, kutu korundu, süzgeç uygulandı
+    [suzgec-zorla] ON-KOSUL: ekran gün yazılmışken yeniden çizildi; kutu aynı düğüm, odak kutuda
+✓ deneme 2: yazılan 2026-10-07; kutu "2026-10-07", odak kutuda, kutu korundu, süzgeç uygulandı
+    [suzgec-zorla] ON-KOSUL: ekran gün yazılmışken yeniden çizildi; kutu aynı düğüm, odak kutuda
+✓ deneme 3: yazılan 2026-10-07; kutu "2026-10-07", odak kutuda, kutu korundu, süzgeç uygulandı
+
+TAMAM: 3 denetim geçti, 0 başarısız. (kip banka-tarih; ön koşul 3/3 denemede oluştu; 0 sayılmadı)

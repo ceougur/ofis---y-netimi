@@ -1,0 +1,32 @@
+{
+  "ad": "b7-komsu-UTC",
+  "komut": "node --test --test-concurrency=2 test/disa-aktarim-dugmeleri.test.mjs test/ebelge-240-bitis-turu.test.mjs test/ebelge-244-secilenleri-gonder.test.mjs test/esmm-acik-244.test.mjs test/form-izolasyon.test.mjs test/gg243-cekirdek-kaynak.test.mjs test/gg243-dar-kontrol-gonderim.test.mjs test/gg243-dar2-gonderim.test.mjs test/gg243-gonderim.test.mjs test/guncelleme-hazir.test.mjs test/hiz-243-hesap-defter.test.mjs test/kilavuz-pdf-surum.test.mjs test/kilavuz-surum.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/liste-kapisi-daha-fazla.test.mjs test/netten-brute-244.test.mjs test/packaging.test.mjs test/platform-tasinabilirlik.test.mjs test/static.test.mjs test/supervisor.test.mjs test/updater.test.mjs test/yazim-duzeni.test.mjs test/yedek-denetim-221.test.mjs",
+  "commit": "55508b3a89d80a1d16d29d332db94525959a5626",
+  "dal": "worktree-agent-a6c349be9d3823fef",
+  "kirli": 14,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T02:13:32.782Z",
+  "sure_sn": 84.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 193,
+    "gecen": 193,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-kanit/2026-11-13/b7-komsu-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a6c349be9d3823fef",
+  "ham_cikti_sha256": "4ce18c4aee20309127729dde188041cdcb16d18b37a9d19afa46ac6f4224468a",
+  "ham_cikti_bayt": 66721
+}

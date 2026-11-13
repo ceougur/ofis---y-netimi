@@ -1,0 +1,461 @@
+TAP version 13
+# (node:28605) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Birleşik tur 7 İş 1 — kimlik kümesi; satır içi tarama (Mutabakat Testi)
+    # Subtest: §16.1-1 (S1 / S1b): iki tarama arası sil + Silinenler'den geri yükle + dış yazım → alarm (2 → 3; açıklanamayan 1); sonraki tarama sessiz
+    ok 1 - §16.1-1 (S1 / S1b): iki tarama arası sil + Silinenler'den geri yükle + dış yazım → alarm (2 → 3; açıklanamayan 1); sonraki tarama sessiz
+      ---
+      duration_ms: 662.100137
+      type: 'test'
+      ...
+    # Subtest: §16.1-4 (S9; §15'in BİLİNEN SINIR'ı kapanır): sil + dış yazım (sayı aynı 2 → 2) → alarm 'yeni hareket girdi'
+    ok 2 - §16.1-4 (S9; §15'in BİLİNEN SINIR'ı kapanır): sil + dış yazım (sayı aynı 2 → 2) → alarm 'yeni hareket girdi'
+      ---
+      duration_ms: 458.783843
+      type: 'test'
+      ...
+    # Subtest: §16.1-3: yalnız meşru geri yükleme — iki tek satırlık geri yükleme (2 → 4) ve birden çok satır getiren taksit kartı (4 → 6) sessiz; aynı aralıkta kart + dış yazım → açıklanamayan 1
+    not ok 3 - §16.1-3: yalnız meşru geri yükleme — iki tek satırlık geri yükleme (2 → 4) ve birden çok satır getiren taksit kartı (4 → 6) sessiz; aynı aralıkta kart + dış yazım → açıklanamayan 1
+      ---
+      duration_ms: 504.715106
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-mut/test/kasa-acilis-kimlik-b7-250.test.mjs:149:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            azalma: {
+              gunluk: [],
+              sunucu: 0,
+              uyari: 4,
+        ...
+              gunluk: [
+        +       'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım: 2 hareket)'
+        -       'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım: 1 hareket)'
+              ],
+              sunucu: 1,
+              uyari: 7,
+              zil: [
+                {
+                  count: 7,
+        +         name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım: 2 hareket)',
+        -         name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım: 1 hareket)',
+                  previous: 4,
+        +         unexplained: 2
+        -         unexplained: 1
+                }
+              ]
+            },
+            kart: {
+        +     gunluk: [
+        +       'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 6 hareket; kapının görmediği yazım: 1 hareket)'
+        +     ],
+        +     sunucu: 1,
+        -     gunluk: [],
+        -     sunucu: 0,
+              uyari: 6,
+        +     zil: [
+        +       {
+        +         count: 6,
+        +         name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 6 hareket; kapının görmediği yazım: 1 hareket)',
+        +         previous: 4,
+        +         unexplained: 1
+        +       }
+        +     ]
+        -     zil: []
+            },
+            tek: {
+              gunluk: [],
+              sunucu: 0,
+              uyari: 4,
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        tek:
+          uyari: 4
+          gunluk:
+          zil:
+          sunucu: 0
+        kart:
+          uyari: 6
+          gunluk:
+          zil:
+          sunucu: 0
+        azalma:
+          uyari: 4
+          gunluk:
+          zil:
+          sunucu: 0
+        birlikte:
+          uyari: 7
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım: 1 hareket)'
+          zil:
+            0:
+              name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım: 1 hareket)'
+              count: 7
+              previous: 4
+              unexplained: 1
+          sunucu: 1
+      actual:
+        tek:
+          uyari: 4
+          gunluk:
+          zil:
+          sunucu: 0
+        kart:
+          uyari: 6
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 6 hareket; kapının görmediği yazım: 1 hareket)'
+          zil:
+            0:
+              name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 6 hareket; kapının görmediği yazım: 1 hareket)'
+              count: 6
+              previous: 4
+              unexplained: 1
+          sunucu: 1
+        azalma:
+          uyari: 4
+          gunluk:
+          zil:
+          sunucu: 0
+        birlikte:
+          uyari: 7
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım: 2 hareket)'
+          zil:
+            0:
+              name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım: 2 hareket)'
+              count: 7
+              previous: 4
+              unexplained: 2
+          sunucu: 1
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-mut/test/kasa-acilis-kimlik-b7-250.test.mjs:162:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: §16.1-13 (kimliği yeniden kullanılan satır): geri gelen, taranan, silinip taranan, sonra DIŞARIDAN aynı kimlikle yeniden eklenen satır → alarm (eski açıklama düşer)
+    ok 4 - §16.1-13 (kimliği yeniden kullanılan satır): geri gelen, taranan, silinip taranan, sonra DIŞARIDAN aynı kimlikle yeniden eklenen satır → alarm (eski açıklama düşer)
+      ---
+      duration_ms: 519.022096
+      type: 'test'
+      ...
+    # Subtest: §16.1-14: kapının kabul ettiği kimlik değişimi (aynı İşlem No, aynı gün; önceki hâl önceki kümede) sessiz; dış yazımla kümeye girmiş satırın kapıdan kimlik değişimi → alarm
+    ok 5 - §16.1-14: kapının kabul ettiği kimlik değişimi (aynı İşlem No, aynı gün; önceki hâl önceki kümede) sessiz; dış yazımla kümeye girmiş satırın kapıdan kimlik değişimi → alarm
+      ---
+      duration_ms: 499.994308
+      type: 'test'
+      ...
+    # Subtest: §16.1-5 / 6: açılışı öne alma (sayı azalır) sessiz, sonra dış yazım alarm; açılışı silip yeniden girme (ilk hareketten sonra olamaz) sessiz
+    ok 6 - §16.1-5 / 6: açılışı öne alma (sayı azalır) sessiz, sonra dış yazım alarm; açılışı silip yeniden girme (ilk hareketten sonra olamaz) sessiz
+      ---
+      duration_ms: 558.374524
+      type: 'test'
+      ...
+    # Subtest: §16.1-9: Şirket Verisini Sıfırla — küme yeniden ölçülür, sessiz (sıfırlamadan önce kaydedilen geri yükleme sonraki dış yazımı örtmez)
+    ok 7 - §16.1-9: Şirket Verisini Sıfırla — küme yeniden ölçülür, sessiz (sıfırlamadan önce kaydedilen geri yükleme sonraki dış yazımı örtmez)
+      ---
+      duration_ms: 626.721511
+      type: 'test'
+      ...
+    1..7
+not ok 1 - Birleşik tur 7 İş 1 — kimlik kümesi; satır içi tarama (Mutabakat Testi)
+  ---
+  duration_ms: 3831.242366
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-mut/test/kasa-acilis-kimlik-b7-250.test.mjs:132:3'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:28605) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Birleşik tur 7 İş 1 — kimlik kümesi; iş parçacığı taraması
+    # Subtest: §16.1-1 (S1 / S1b): iki tarama arası sil + Silinenler'den geri yükle + dış yazım → alarm (2 → 3; açıklanamayan 1); sonraki tarama sessiz
+    ok 1 - §16.1-1 (S1 / S1b): iki tarama arası sil + Silinenler'den geri yükle + dış yazım → alarm (2 → 3; açıklanamayan 1); sonraki tarama sessiz
+      ---
+      duration_ms: 857.68866
+      type: 'test'
+      ...
+    # Subtest: §16.1-4 (S9; §15'in BİLİNEN SINIR'ı kapanır): sil + dış yazım (sayı aynı 2 → 2) → alarm 'yeni hareket girdi'
+    ok 2 - §16.1-4 (S9; §15'in BİLİNEN SINIR'ı kapanır): sil + dış yazım (sayı aynı 2 → 2) → alarm 'yeni hareket girdi'
+      ---
+      duration_ms: 729.072778
+      type: 'test'
+      ...
+# (node:28605) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: §16.1-3: yalnız meşru geri yükleme — iki tek satırlık geri yükleme (2 → 4) ve birden çok satır getiren taksit kartı (4 → 6) sessiz; aynı aralıkta kart + dış yazım → açıklanamayan 1
+    not ok 3 - §16.1-3: yalnız meşru geri yükleme — iki tek satırlık geri yükleme (2 → 4) ve birden çok satır getiren taksit kartı (4 → 6) sessiz; aynı aralıkta kart + dış yazım → açıklanamayan 1
+      ---
+      duration_ms: 1562.827377
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-mut/test/kasa-acilis-kimlik-b7-250.test.mjs:149:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            azalma: {
+              gunluk: [],
+              sunucu: 0,
+              uyari: 4,
+        ...
+              gunluk: [
+        +       'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım: 2 hareket)'
+        -       'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım: 1 hareket)'
+              ],
+              sunucu: 1,
+              uyari: 7,
+              zil: [
+                {
+                  count: 7,
+        +         name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım: 2 hareket)',
+        -         name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım: 1 hareket)',
+                  previous: 4,
+        +         unexplained: 2
+        -         unexplained: 1
+                }
+              ]
+            },
+            kart: {
+        +     gunluk: [
+        +       'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 6 hareket; kapının görmediği yazım: 1 hareket)'
+        +     ],
+        +     sunucu: 1,
+        -     gunluk: [],
+        -     sunucu: 0,
+              uyari: 6,
+        +     zil: [
+        +       {
+        +         count: 6,
+        +         name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 6 hareket; kapının görmediği yazım: 1 hareket)',
+        +         previous: 4,
+        +         unexplained: 1
+        +       }
+        +     ]
+        -     zil: []
+            },
+            tek: {
+              gunluk: [],
+              sunucu: 0,
+              uyari: 4,
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        tek:
+          uyari: 4
+          gunluk:
+          zil:
+          sunucu: 0
+        kart:
+          uyari: 6
+          gunluk:
+          zil:
+          sunucu: 0
+        azalma:
+          uyari: 4
+          gunluk:
+          zil:
+          sunucu: 0
+        birlikte:
+          uyari: 7
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım: 1 hareket)'
+          zil:
+            0:
+              name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım: 1 hareket)'
+              count: 7
+              previous: 4
+              unexplained: 1
+          sunucu: 1
+      actual:
+        tek:
+          uyari: 4
+          gunluk:
+          zil:
+          sunucu: 0
+        kart:
+          uyari: 6
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 6 hareket; kapının görmediği yazım: 1 hareket)'
+          zil:
+            0:
+              name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 6 hareket; kapının görmediği yazım: 1 hareket)'
+              count: 6
+              previous: 4
+              unexplained: 1
+          sunucu: 1
+        azalma:
+          uyari: 4
+          gunluk:
+          zil:
+          sunucu: 0
+        birlikte:
+          uyari: 7
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım: 2 hareket)'
+          zil:
+            0:
+              name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (4 → 7 hareket; kapının görmediği yazım: 2 hareket)'
+              count: 7
+              previous: 4
+              unexplained: 2
+          sunucu: 1
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-mut/test/kasa-acilis-kimlik-b7-250.test.mjs:162:14)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:28605) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: §16.1-13 (kimliği yeniden kullanılan satır): geri gelen, taranan, silinip taranan, sonra DIŞARIDAN aynı kimlikle yeniden eklenen satır → alarm (eski açıklama düşer)
+    ok 4 - §16.1-13 (kimliği yeniden kullanılan satır): geri gelen, taranan, silinip taranan, sonra DIŞARIDAN aynı kimlikle yeniden eklenen satır → alarm (eski açıklama düşer)
+      ---
+      duration_ms: 1089.576457
+      type: 'test'
+      ...
+    # Subtest: §16.1-14: kapının kabul ettiği kimlik değişimi (aynı İşlem No, aynı gün; önceki hâl önceki kümede) sessiz; dış yazımla kümeye girmiş satırın kapıdan kimlik değişimi → alarm
+    ok 5 - §16.1-14: kapının kabul ettiği kimlik değişimi (aynı İşlem No, aynı gün; önceki hâl önceki kümede) sessiz; dış yazımla kümeye girmiş satırın kapıdan kimlik değişimi → alarm
+      ---
+      duration_ms: 827.478182
+      type: 'test'
+      ...
+    # Subtest: §16.1-5 / 6: açılışı öne alma (sayı azalır) sessiz, sonra dış yazım alarm; açılışı silip yeniden girme (ilk hareketten sonra olamaz) sessiz
+    ok 6 - §16.1-5 / 6: açılışı öne alma (sayı azalır) sessiz, sonra dış yazım alarm; açılışı silip yeniden girme (ilk hareketten sonra olamaz) sessiz
+      ---
+      duration_ms: 1274.819084
+      type: 'test'
+      ...
+    # Subtest: §16.1-9: Şirket Verisini Sıfırla — küme yeniden ölçülür, sessiz (sıfırlamadan önce kaydedilen geri yükleme sonraki dış yazımı örtmez)
+    ok 7 - §16.1-9: Şirket Verisini Sıfırla — küme yeniden ölçülür, sessiz (sıfırlamadan önce kaydedilen geri yükleme sonraki dış yazımı örtmez)
+      ---
+      duration_ms: 1151.518776
+      type: 'test'
+      ...
+    1..7
+not ok 2 - Birleşik tur 7 İş 1 — kimlik kümesi; iş parçacığı taraması
+  ---
+  duration_ms: 7493.786668
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-mut/test/kasa-acilis-kimlik-b7-250.test.mjs:132:3'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:28605) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:28605) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Birleşik tur 7 İş 1 — §16.1-12 (b): geri yükleme iş parçacığının anlık görüntüsünden SONRA kesinleşir (görüntüde yok) → o tarama karşılaştırmaz, sonraki tarama yanlış alarm vermez (ön koşul zorla — ders 20)
+    # Subtest: geri yükleme tarama sürerken, görüntüye girmeden: işaret ilerlemez; sonraki iki tarama sessiz, sayı +1
+    ok 1 - geri yükleme tarama sürerken, görüntüye girmeden: işaret ilerlemez; sonraki iki tarama sessiz, sayı +1
+      ---
+      duration_ms: 3700.149737
+      type: 'test'
+      ...
+    # ön koşul 2 / 7 denemede oluştu (gecikmeler: 400 200 100 150 175 163* 163*)
+    1..1
+ok 3 - Birleşik tur 7 İş 1 — §16.1-12 (b): geri yükleme iş parçacığının anlık görüntüsünden SONRA kesinleşir (görüntüde yok) → o tarama karşılaştırmaz, sonraki tarama yanlış alarm vermez (ön koşul zorla — ders 20)
+  ---
+  duration_ms: 3700.424795
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 7 İş 5 — M11: Mutabakat Günlüğü'nde sapma + uyarı artışını birlikte taşıyan kayıt 'Sapma' adıyla
+    # Subtest: dışarıdan aynı kimlikle yeniden yazılan Kasa satırı: tek tarama kaydı iki bulgu (İşlem Başlığı sapması + uyarı artışı) → 'Taramada Bulunan Sapma'; yalnız dış tarih taşıma → 'Taramada Bulunan Uyarı Artışı'
+    ok 1 - dışarıdan aynı kimlikle yeniden yazılan Kasa satırı: tek tarama kaydı iki bulgu (İşlem Başlığı sapması + uyarı artışı) → 'Taramada Bulunan Sapma'; yalnız dış tarih taşıma → 'Taramada Bulunan Uyarı Artışı'
+      ---
+      duration_ms: 500.097954
+      type: 'test'
+      ...
+    1..1
+ok 4 - Birleşik tur 7 İş 5 — M11: Mutabakat Günlüğü'nde sapma + uyarı artışını birlikte taşıyan kayıt 'Sapma' adıyla
+  ---
+  duration_ms: 500.257468
+  type: 'suite'
+  ...
+# (node:28606) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Birleşik tur 6 — uyarının kapının görmediği artışı: günlük + zil; geri yükleme, azalma, yeniden açılış, iki şirket, yedek, gün dönümü sessiz
+    # Subtest: dış yazım (açılış günü girilen Kasa hareketinin tarihi başka bağlantıdan açılış öncesine): Mutabakat Testi günlük + zil + sunucu günlüğü, cümle düzeninde; sunum AYNEN; aynı artış ikinci kez bildirilmez
+    ok 1 - dış yazım (açılış günü girilen Kasa hareketinin tarihi başka bağlantıdan açılış öncesine): Mutabakat Testi günlük + zil + sunucu günlüğü, cümle düzeninde; sunum AYNEN; aynı artış ikinci kez bildirilmez
+      ---
+      duration_ms: 324.598038
+      type: 'test'
+      ...
+    # Subtest: azalma sessiz ve işaret onu izler: satır silinince (3 → 2) günlük yok; sonraki dış artış 2 → 3 diye bildirilir (iş parçacığı taraması da bulur)
+    ok 2 - azalma sessiz ve işaret onu izler: satır silinince (3 → 2) günlük yok; sonraki dış artış 2 → 3 diye bildirilir (iş parçacığı taraması da bulur)
+      ---
+      duration_ms: 231.931228
+      type: 'test'
+      ...
+    # Subtest: geri yükleme sayılır, ama dış artışı ÖRTMEZ: aynı aralıkta 1 geri yükleme + 1 dış artış → 2 → 4, açıklanamayan 1 → bildirilir; yalnız geri yükleme → sessiz
+    ok 3 - geri yükleme sayılır, ama dış artışı ÖRTMEZ: aynı aralıkta 1 geri yükleme + 1 dış artış → 2 → 4, açıklanamayan 1 → bildirilir; yalnız geri yükleme → sessiz
+      ---
+      duration_ms: 79.685437
+      type: 'test'
+      ...
+    # Subtest: üst kaydın geri yüklenmesi (silinmiş taksit kartı; nakit satırı yazılmaz, görünürlüğü döner) sayılır: 5 → 6 sessiz
+    ok 4 - üst kaydın geri yüklenmesi (silinmiş taksit kartı; nakit satırı yazılmaz, görünürlüğü döner) sayılır: 5 → 6 sessiz
+      ---
+      duration_ms: 28.789888
+      type: 'test'
+      ...
+    # Subtest: iş parçacığı taraması sürerken kesinleşen geri yükleme yanlış alarm vermez (ön koşul zorla: geri yükleme taramanın anlık görüntüsüne girdi — ders 20)
+    ok 5 - iş parçacığı taraması sürerken kesinleşen geri yükleme yanlış alarm vermez (ön koşul zorla: geri yükleme taramanın anlık görüntüsüne girdi — ders 20)
+      ---
+      duration_ms: 233.019972
+      type: 'test'
+      ...
+    # Subtest: gün dönümü (sahte saat ertesi gün 00:30): tarama yeniden koşar, sayı aynı → sessiz; yeni günde dış artış bildirilir
+    ok 6 - gün dönümü (sahte saat ertesi gün 00:30): tarama yeniden koşar, sayı aynı → sessiz; yeni günde dış artış bildirilir
+      ---
+      duration_ms: 280.530925
+      type: 'test'
+      ...
+    # Subtest: program yeniden açılınca: aynı artış İKİNCİ kez bildirilmez (açılış, Mutabakat Testi, iş parçacığı); açılıştan sonraki ilk nakit yazımı süzgeçli yolda; açılıştan sonra, İLK taramadan önce yapılan dış artış bildirilir (sayı açılışta ölçüldü)
+    ok 7 - program yeniden açılınca: aynı artış İKİNCİ kez bildirilmez (açılış, Mutabakat Testi, iş parçacığı); açılıştan sonraki ilk nakit yazımı süzgeçli yolda; açılıştan sonra, İLK taramadan önce yapılan dış artış bildirilir (sayı açılışta ölçüldü)
+      ---
+      duration_ms: 380.275832
+      type: 'test'
+      ...
+    # Subtest: iki şirket + yedekten geri yükleme: 002'nin geri yüklemesi / dış artışı yalnız 002'de; 002 yedekten dönünce (sayı geri gelir) yanlış alarm yok
+    ok 8 - iki şirket + yedekten geri yükleme: 002'nin geri yüklemesi / dış artışı yalnız 002'de; 002 yedekten dönünce (sayı geri gelir) yanlış alarm yok
+      ---
+      duration_ms: 832.124623
+      type: 'test'
+      ...
+    1..8
+ok 5 - Birleşik tur 6 — uyarının kapının görmediği artışı: günlük + zil; geri yükleme, azalma, yeniden açılış, iki şirket, yedek, gün dönümü sessiz
+  ---
+  duration_ms: 3106.540372
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 6 — dar kontrolün betiği: v2.4.9'un GERÇEK koduyla üretilmiş veri (açılış öncesi Kasa Giriş + cari nakit tahsilat) — dış artış bildirilir
+ok 6 - Birleşik tur 6 — dar kontrolün betiği: v2.4.9'un GERÇEK koduyla üretilmiş veri (açılış öncesi Kasa Giriş + cari nakit tahsilat) — dış artış bildirilir # SKIP v2.4.9 etiketi bu depoda yok (git fetch --tags)
+  ---
+  duration_ms: 0.07075
+  type: 'suite'
+  ...
+# (node:28606) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+1..6
+# tests 24
+# suites 6
+# pass 22
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 15962.577327

@@ -1,0 +1,23 @@
+mutant M8
+M8 çıkış 1 # tests 13 # pass 12 # fail 1 
+       not ok 7 - varsayılan çağrı (release.mjs'in yolu: yol ve commit verilmez) listeyi commit'le karşılaştırır; başka yolda karşılaştı
+   not ok 1 - YAPIM AŞAMASI kapısı (yapimAsamasiGate)
+mutant M9
+M9 çıkış 1 # tests 5 # pass 4 # fail 1 
+       not ok 4 - açılış GÜNÜ tarihli Vergi Ödemesi Kasa'dan düzeltilmek istenince: 409 cash-tax-payment, ileti değişmedi (çıkış yolu c�
+   not ok 1 - S94 = A — Kasa açılışından önce tarihli Vergi Ödemesi: düzeltme reddinin iletisi çıkış yolunu söyler; iki yol da çalış
+mutant M10
+M10 çıkış 1 # tests 24 # pass 22 # fail 2 
+       not ok 3 - §16.1-3: yalnız meşru geri yükleme — iki tek satırlık geri yükleme (2 → 4) ve birden çok satır getiren taksit kartı (4
+   not ok 1 - Birleşik tur 7 İş 1 — kimlik kümesi; satır içi tarama (Mutabakat Testi)
+       not ok 3 - §16.1-3: yalnız meşru geri yükleme — iki tek satırlık geri yükleme (2 → 4) ve birden çok satır getiren taksit kartı (4
+   not ok 2 - Birleşik tur 7 İş 1 — kimlik kümesi; iş parçacığı taraması
+mutant M11
+M11 çıkış 1 # tests 24 # pass 23 # fail 1 
+       not ok 1 - dışarıdan aynı kimlikle yeniden yazılan Kasa satırı: tek tarama kaydı iki bulgu (İşlem Başlığı sapması + uyarı artı
+   not ok 4 - Birleşik tur 7 İş 5 — M11: Mutabakat Günlüğü'nde sapma + uyarı artışını birlikte taşıyan kayıt 'Sapma' adıyla
+mutant M12
+M12 çıkış 1 # tests 24 # pass 23 # fail 1 
+       not ok 1 - geri yükleme tarama sürerken, görüntüye girmeden: işaret ilerlemez; sonraki iki tarama sessiz, sayı +1
+   not ok 3 - Birleşik tur 7 İş 1 — §16.1-12 (b): geri yükleme iş parçacığının anlık görüntüsünden SONRA kesinleşir (görüntüde y
+BITTI

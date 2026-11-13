@@ -1,0 +1,14 @@
+#!/bin/bash
+# senaryo-tyk-tur2a-250 E12 ("zilde: []"): taban kopyada ve yeni kodda ikişer kez (ders 6, 20 — neden okunur).
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194
+OUT=$S/b7-kanit/b7-tyk.txt
+: > $OUT
+for n in 1 2; do
+  for kod in taban:$S/b7-taban yeni:/home/user/ofis---y-netimi/.claude/worktrees/agent-a6c349be9d3823fef; do
+    log=$S/b7-kanit/b7-tyk-${kod%%:*}-$n.log
+    ( cd ${kod#*:} && timeout -k 5 900 npm run --silent test:senaryo-tyk-tur2a-250 > $log 2>&1 ); code=$?
+    echo "${kod%%:*} $n çıkış $code | $(grep -a 'SONUÇ' $log | tail -1) | $(grep -a '✗' $log | tr '\n' ' ' | cut -c1-200)" >> $OUT
+  done
+done
+echo BITTI >> $OUT

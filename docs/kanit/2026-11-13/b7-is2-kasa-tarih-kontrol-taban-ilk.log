@@ -1,0 +1,8 @@
+kip kasa-tarih (kontrol); kod DEPO=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-taban; tarayıcı 153.0.8010.12
+tarih kutusu aa/gg/yyyy: ilk bölüm "10", kalan "072026"
+✗ deneme 1: beklenmeyen hata arka plan yenilemesinin isteği 15 sn içinde gelmedi
+✗ deneme 2: beklenmeyen hata arka plan yenilemesinin isteği 15 sn içinde gelmedi
+✗ deneme 3: beklenmeyen hata arka plan yenilemesinin isteği 15 sn içinde gelmedi
+✗ ön koşul hiçbir denemede oluşmadı — sonuç geçersiz (ders 20)
+
+BAŞARISIZ: 0 denetim geçti, 4 başarısız. (kip kasa-tarih kontrol; ön koşul 0/3 denemede oluştu; 0 sayılmadı)

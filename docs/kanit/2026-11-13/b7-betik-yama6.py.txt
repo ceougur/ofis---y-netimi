@@ -1,0 +1,32 @@
+import sys
+root = sys.argv[1]
+p = root + '/client/assets/hof-overview.js'
+t = open(p, encoding='utf-8').read()
+def rep(old, new):
+    global t
+    assert t.count(old) == 1, (old[:90], t.count(old))
+    t = t.replace(old, new)
+rep("""      <label class="hof-rep-date"><span>Başlangıç</span><input type="date" data-range="from" value="${esc(state.preset === "all" ? "" : state.from)}\"""",
+    """      <span data-rep-dates style="display: contents"><label class="hof-rep-date"><span>Başlangıç</span><input type="date" data-range="from" value="${esc(state.preset === "all" ? "" : state.from)}\"""")
+rep("""      <label class="hof-rep-date"><span>Bitiş</span><input type="date" data-range="to" value="${esc(state.to)}"></label>
+      <button type="button" class="hof-button hof-button-small" data-run>Raporu Getir</button>""",
+    """      <label class="hof-rep-date"><span>Bitiş</span><input type="date" data-range="to" value="${esc(state.to)}"></label></span>
+      <button type="button" class="hof-button hof-button-small" data-run>Raporu Getir</button>""")
+rep("""      <label class="hof-rep-date"><span>Vade Başı</span><input type="date" data-range="from" value="${esc(s.from)}"></label>""",
+    """      <span data-rep-dates style="display: contents"><label class="hof-rep-date"><span>Vade Başı</span><input type="date" data-range="from" value="${esc(s.from)}"></label>""")
+rep("""data-range="to" value="${esc(s.to)}"></label>""", """data-range="to" value="${esc(s.to)}"></label></span>""")
+rep("""  function renderReport() {
+    const node = root();""", """  function renderReport({ background = false } = {}) {
+    const node = root();""")
+rep("""    HOF.swap(node, tabBar + content);
+    if (report.tab === "flow" && s.data) wireChart(node.querySelector("[data-chart]"), s.data);""",
+    """    // Birleşik tur 7 (DK-B6 DÜŞÜK-4 ailesi; süzgeç tarih kutuları taraması): canlı yenileme (başka oturumun kaydı → run({ quiet })) yazılmakta olan Başlangıç / Bitiş
+    // kutularını yeniden kurmaz — kutu yeni düğüm olunca imleç ilk bölüme düşüyor, yazılan tarih "0026-07-20" oluyordu (Cari Mizanı, Vade Takip, Nakit Akış, Çek / Senet).
+    // Kullanıcının kendi değişikliğinde yalnız odak kutulardayken korunur (HOF.swapKeeping; birleşik tur 6'nın POS kalıbı).
+    HOF.swapKeeping(node, tabBar + content, "[data-rep-dates]", { pending: background });
+    if (report.tab === "flow" && s.data) wireChart(node.querySelector("[data-chart]"), s.data);""")
+rep("""    if (report && report.tab === tab) renderReport();
+  }""", """    if (report && report.tab === tab) renderReport({ background: quiet });
+  }""")
+open(p, 'w', encoding='utf-8').write(t)
+print("tamam")

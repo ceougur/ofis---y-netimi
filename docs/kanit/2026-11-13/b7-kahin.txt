@@ -1,0 +1,9 @@
+cari taban UTC çıkış 0 | 2.5.0 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §13; 2.4.9 kâhinine göre): 2964 denetim, 83 senaryo · programla farkların 0'i bu sınıfta, 0'i SINIF DIŞI ÖZET [2.5.0]: 84 senaryo, 15166 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 74 yapım aşaması
+defter taban UTC çıkış 0 | ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-LvMt6b 
+cari yeni UTC çıkış 0 | 2.5.0 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §13; 2.4.9 kâhinine göre): 2964 denetim, 83 senaryo · programla farkların 0'i bu sınıfta, 0'i SINIF DIŞI ÖZET [2.5.0]: 84 senaryo, 15166 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 74 yapım aşaması
+defter yeni UTC çıkış 0 | ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-OhNnol 
+cari taban Europe/Istanbul çıkış 0 | 2.5.0 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §13; 2.4.9 kâhinine göre): 2964 denetim, 83 senaryo · programla farkların 0'i bu sınıfta, 0'i SINIF DIŞI ÖZET [2.5.0]: 84 senaryo, 15166 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 74 yapım aşaması
+defter taban Europe/Istanbul çıkış 0 | ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-R0elBn 
+cari yeni Europe/Istanbul çıkış 0 | 2.5.0 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §13; 2.4.9 kâhinine göre): 2964 denetim, 83 senaryo · programla farkların 0'i bu sınıfta, 0'i SINIF DIŞI ÖZET [2.5.0]: 84 senaryo, 15166 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 74 yapım aşaması
+defter yeni Europe/Istanbul çıkış 0 | ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-jFuuGm 
+BITTI

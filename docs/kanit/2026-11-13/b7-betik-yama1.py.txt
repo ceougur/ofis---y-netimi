@@ -1,0 +1,121 @@
+import sys
+p = sys.argv[1] + '/server/lib/cash-opening.mjs'
+t = open(p).read()
+def rep(old, new, cnt=1):
+    global t
+    assert t.count(old) == cnt, (old[:80], t.count(old))
+    t = t.replace(old, new)
+rep("""  // restored: Silinenler geri yüklemelerinin (restoringCash) "Kasa Açılışından Önce Tarihli Hareket" uyarısına kattığı satır sayısı (birikimli; yalnız artış).
+  // Mutabakat taraması (lib/integrity.mjs settleScan) uyarının önceki sayısından bu kadarını açıklanmış sayar (birleşik tur 6, DK-D2T3 ORTA-1).
+  const state = { restoring: 0, opening: null, openingTouched: false, restored: 0 };""",
+"""  // Uyarı kümesinin açıklanmış kimlikleri (birleşik tur 7, DK-B6 ORTA-1 — sayı yerine kimlik; docs/devir/D2-ALTYAPI-TASARIM.md §16): restored = sıra numarası
+  // (her kayıtta 1 artar; lib/integrity.mjs settleScan taramanın anlık görüntüsünden önce okur); explained = kimlik → { seq, from }: Silinenler geri yüklemesinin
+  // "Kasa Açılışından Önce Tarihli Hareket" uyarısına kattığı kimlikler (from '') ve kapının kabul ettiği kimlik değişimleri (from = önceki hâlin kimliği; pending
+  // işlem kesinleşince yazılır). Tarama yalnız işaretinden SONRAKİ kayıtları açıklama sayar.
+  const state = { restoring: 0, opening: null, openingTouched: false, restored: 0, explained: new Map(), pending: [] };""")
+rep("""    check({ tables, scope }) {
+      state.openingTouched = false;
+""", """    check({ tables, scope }) {
+      state.openingTouched = false;
+      state.pending = [];
+""")
+rep("""        if (prior) {
+          const wasCash = isCashMovement(prior.table, prior.row);
+          if (wasCash && String(prior.row.date || "") === date) continue;""", """        if (prior) {
+          const wasCash = isCashMovement(prior.table, prior.row);
+          if (wasCash && String(prior.row.date || "") === date) {
+            // Birleşik tur 7: önceki hâli BAŞKA kimlikte (Tablodan Aktar, Aktarımı Geri Al, aynı İşlem No'lu yeniden yazım) — uyarı kümesinde onun yerine geçer.
+            const key = cashNoticeKeyOf(table, row.id);
+            const from = cashNoticeKeyOf(prior.table, prior.row.id);
+            if (key !== from) state.pending.push({ key, from });
+            continue;
+          }""")
+rep("""    after() {
+      if (state.openingTouched) state.opening = null;
+      state.openingTouched = false;
+    },
+    rolledBack() {
+      state.openingTouched = false;
+    },""", """    after() {
+      if (state.openingTouched) state.opening = null;
+      state.openingTouched = false;
+      if (state.pending.length) {
+        state.restored += 1;
+        for (const { key, from } of state.pending) state.explained.set(key, { seq: state.restored, from });
+      }
+      state.pending = [];
+    },
+    rolledBack() {
+      state.openingTouched = false;
+      state.pending = [];
+    },""")
+rep("""  // 2.5.0 birleşik tur 6 (DK-D2T3 ORTA-1; BAŞ MİMAR 11.11 — kullanıcı onaylı): en dış geri yüklemede uyarı sayısı önce / sonra ölçülür; artış (geri gelen satırlar
+  // ve görünürlüğü dönen üst kaydın — cari, kart, çek — satırları) state.restored'a eklenir. Tarama bu artışı "kapının görmediği yazım" saymaz. Ölçüm eşzamanlı
+  // (fn store işlemlerini beklemeden bitirir; arada başka istek çalışmaz); fn hata verse de ölçülür (işlemin bir kısmı kesinleşmiş olabilir).
+  const outer = handle.state.restoring === 0;
+  const before = outer ? countBeforeOpening(store) : 0;
+  const settle = () => {
+    if (!outer) return;
+    const after = countBeforeOpening(store);
+    if (before >= 0 && after > before) handle.state.restored += after - before;
+  };""", """  // 2.5.0 birleşik tur 6 (DK-D2T3 ORTA-1; BAŞ MİMAR 11.11 — kullanıcı onaylı): en dış geri yüklemede uyarı önce / sonra ölçülür. Birleşik tur 7 (DK-B6 ORTA-1; BAŞ MİMAR
+  // 12.11 12:52): sayı yerine KİMLİK — SONRA'da olup ÖNCE'de olmayan her kimlik (geri gelen satırlar ve görünürlüğü dönen üst kaydın — cari, kart, çek — satırları) bir sıra
+  // numarasıyla açıklanmış kaydedilir. Tarama bunları "kapının görmediği yazım" saymaz; silinip geri gelen satır başka bir kimliğin artışını açıklamaz. Ölçüm eşzamanlı
+  // (fn store işlemlerini beklemeden bitirir; arada başka istek çalışmaz); fn hata verse de ölçülür (işlemin bir kısmı kesinleşmiş olabilir).
+  const outer = handle.state.restoring === 0;
+  const before = outer ? keysBeforeOpening(store) : null;
+  const settle = () => {
+    if (!outer || !before) return;
+    const after = keysBeforeOpening(store);
+    const added = after ? [...after].filter(key => !before.has(key)) : [];
+    if (!added.length) return;
+    handle.state.restored += 1;
+    for (const key of added) handle.state.explained.set(key, { seq: handle.state.restored, from: "" });
+  };""")
+rep("""/**
+ * Uyarı sayısı (cashBeforeOpening ile aynı tanım: Kasa açılışından önce tarihli görünür nakit hareketi; açılış yoksa 0). Okunamazsa -1 (eski şema): restoringCash
+ * artışı ölçemez — o geri yükleme açıklama katmaz (taramanın bir sonraki karşılaştırması yine çalışır).
+ */
+function countBeforeOpening(store) {
+  try {
+    return cashBeforeOpening(store)?.rows.length || 0;
+  } catch {
+    return -1;
+  }
+}
+
+/** Silinenler geri yüklemelerinin uyarıya kattığı birikimli satır sayısı (store başına; denetim kurulu değilse 0). lib/integrity.mjs settleScan okur. */
+export function cashRestoreMark(store) {
+  return guardStates.get(store)?.state.restored ?? 0;
+}
+""", """/**
+ * Uyarı kümesi (cashBeforeOpening ile aynı tanım: Kasa açılışından önce tarihli görünür nakit hareketlerinin kimlikleri; açılış yoksa boş). Okunamazsa null (eski şema):
+ * restoringCash ölçemez — o geri yükleme açıklama katmaz (taramanın bir sonraki karşılaştırması yine çalışır).
+ */
+function keysBeforeOpening(store) {
+  try {
+    return new Set((cashBeforeOpening(store)?.rows || []).map(row => row.key));
+  } catch {
+    return null;
+  }
+}
+
+/** Açıklama kayıtlarının sıra numarası (store başına; denetim kurulu değilse 0). lib/integrity.mjs settleScan taramanın anlık görüntüsünden önce okur. */
+export function cashRestoreMark(store) {
+  return guardStates.get(store)?.state.restored ?? 0;
+}
+
+const NO_EXPLAINED = new Map();
+/** Açıklanmış kimlikler: kimlik → { seq, from } (Silinenler geri yüklemesi: from ''; kapının kabul ettiği kimlik değişimi: from = önceki kimlik). Salt okunur kullanılır. */
+export function cashExplained(store) {
+  return guardStates.get(store)?.state.explained ?? NO_EXPLAINED;
+}
+
+// Uyarı kümesinin kimliği: para satırının TABLOSU + satır kimliği (lib/bank/money-lines.mjs kaynakları; aynı tablonun iki kaynağı — cari / fatura — tek kimlik).
+const TABLE_OF_SOURCE = Object.freeze({ payment: "payments", manual: "cash_entries", account: "account_entries", invoice: "account_entries", bank: "account_entries", plan: "plan_entries", stock: "stock_moves", cheque: "cheque_events", bankLine: "bank_lines" });
+const cashNoticeKeyOf = (table, id) => `${table}:${id ?? ""}`;
+""")
+rep("""    return { source, id: String(line.id || ""), date: String(line.date || ""), sample: `${SOURCE_LABEL[source] || "Kasa Hareketi"} ${line.id} · ${dayText(line.date)}` };""",
+"""    return { source, id: String(line.id || ""), date: String(line.date || ""), key: cashNoticeKeyOf(TABLE_OF_SOURCE[source] || source || "?", line.id), sample: `${SOURCE_LABEL[source] || "Kasa Hareketi"} ${line.id} · ${dayText(line.date)}` };""")
+open(p, 'w').write(t)
+print("tamam")

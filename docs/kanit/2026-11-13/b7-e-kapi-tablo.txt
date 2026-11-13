@@ -1,0 +1,28 @@
+yeni çıkış 0
+taban çıkış 0
+== yeni
+   kontrol: dolu liste, dokunulmadı                                                 temiz RET
+   skip-worktree + çalışma ağacında boş liste                                       temiz RET
+   assume-unchanged + çalışma ağacında boş liste                                    temiz RET
+   dosyayı sil                                                                      kirli RET
+   git rm --cached + .gitignore + commit (listesiz commit), ağaçta boş liste        temiz RET
+   boş liste ağaçta, commit edilmedi                                                kirli RET
+   boş liste commit edildi (CI kapısı ayrıca gerekir)                               temiz GEÇTİ
+   ayrık HEAD (dolu commit'te)                                                      temiz RET
+   başka dal: boş listeli dal checkout, HEAD = o dal                                temiz GEÇTİ
+   git replace (HEAD'deki liste blob'u boş liste blob'uyla değiştirildi) + skip-wor temiz RET
+   git replace (yalnız) + ağaçta boş                                                kirli RET
+   ağaçta aynı içerik, farklı anahtar sırası (JSON eşit sayılmalı mı)               kirli RET
+== taban
+   kontrol: dolu liste, dokunulmadı                                                 temiz RET
+   skip-worktree + çalışma ağacında boş liste                                       temiz RET
+   assume-unchanged + çalışma ağacında boş liste                                    temiz RET
+   dosyayı sil                                                                      kirli RET
+   git rm --cached + .gitignore + commit (listesiz commit), ağaçta boş liste        temiz RET
+   boş liste ağaçta, commit edilmedi                                                kirli RET
+   boş liste commit edildi (CI kapısı ayrıca gerekir)                               temiz GEÇTİ
+   ayrık HEAD (dolu commit'te)                                                      temiz RET
+   başka dal: boş listeli dal checkout, HEAD = o dal                                temiz GEÇTİ
+   git replace (HEAD'deki liste blob'u boş liste blob'uyla değiştirildi) + skip-wor temiz GEÇTİ
+   git replace (yalnız) + ağaçta boş                                                kirli GEÇTİ
+   ağaçta aynı içerik, farklı anahtar sırası (JSON eşit sayılmalı mı)               kirli RET
