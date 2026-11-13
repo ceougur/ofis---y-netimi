@@ -272,6 +272,33 @@ const LOCK_SQL = {
     since: "2.5.0",
     sql: "SELECT id, total, account_id, created_at FROM plans WHERE deleted_at IS NULL AND covers_balance = 0 AND registered_on = '' AND substr(created_at, 1, 10) <= ?1 ORDER BY id",
   },
+  // 2.5.0 Ç5-A tur 1f — SINIF 2 (§16.2; kilitli satırda kapıdan geçerek değişebilen alanların yanlış alarmsız alt kümesi / türetilen olgusu):
+  // Kapanmış dönemde KARŞILIKSIZ olayı olan evrak: durumu, türetmenin seçtiği karşılıksız günü (routes/ledger.mjs bouncedOn: en son oluşturulan karşılıksız olayı) ve carinin karşılıksız
+  // borç satırı var mı (hasDebt) — cariye işlenmemiş evrakın karşılıksız maddesi bunlardan doğar. Karşılıksız son durumdur, kilitli karşılıksızın geri alınması 409: bu evrakta durumu
+  // değiştiren meşru yol yok. Öbür evrakın durumu (bugünkü tahsil / ciro / karşılıksız) girmez.
+  cheques_bounce_lock: {
+    requires: ["cheques", "cheque_events", "account_entries", "accounts"],
+    since: "2.5.0",
+    sql: `SELECT c.id, c.status,
+                 COALESCE((SELECT ev.date FROM cheque_events ev WHERE ev.cheque_id = c.id AND ev.kind = 'bounce' ORDER BY ev.created_at DESC LIMIT 1), '') AS bounced_on,
+                 EXISTS (SELECT 1 FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
+                         WHERE e.source = 'cheque' AND e.source_id = c.id AND e.account_id = c.account_id AND e.kind = 'debt') AS has_debt
+          FROM cheques c WHERE c.id IN (SELECT cheque_id FROM cheque_events WHERE kind = 'bounce' AND date <= ?1) ORDER BY c.id`,
+  },
+  // Kapanmış dönemde alınmış / verilmiş evraktan türetmenin "cariye işlenmemiş" saydıkları (routes/ledger.mjs ile AYNI koşul: canlı taksit kartında evrakla satırı yok, canlı
+  // carisinde alış / veriliş satırı yok). Evrağın carisi (cheques.account_id) yalnız bu olgu üzerinden kilitli maddeyi belirler; carisiz evrakın karşılıksızında cari seçimi (meşru)
+  // olguyu DEĞİŞTİRMEZ (seçilen carinin alış satırı yoktur), carili evrağın carisinin dışarıdan silinmesi ya da başka cariye geçmesi değiştirir (çift / eksik madde).
+  cheques_free_lock: {
+    requires: ["cheques", "plan_entries.cheque_id", "plans", "account_entries", "accounts"],
+    since: "2.5.0",
+    sql: `SELECT c.id FROM cheques c
+          WHERE c.issue_date <= ?1 AND c.deleted_at IS NULL
+            AND NOT EXISTS (SELECT 1 FROM plan_entries pe JOIN plans p ON p.id = pe.plan_id AND p.deleted_at IS NULL WHERE pe.cheque_id = c.id)
+            AND NOT EXISTS (SELECT 1 FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
+                            WHERE e.source = 'cheque' AND e.source_id = c.id AND e.account_id = c.account_id
+                              AND e.kind = CASE WHEN c.direction = 'in' THEN 'credit' ELSE 'debt' END)
+          ORDER BY c.id`,
+  },
 };
 
 /**

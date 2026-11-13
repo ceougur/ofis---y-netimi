@@ -345,6 +345,39 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
   }
 
   // ---------- Kilit: dokunulan satır kilit izine giriyor mu? (LOCK_SQL'in satır koşulları) ----------
+  // 2.5.0 Ç5-A tur 1f: evrak olguları (LOCK_SQL cheques_bounce_lock / cheques_free_lock). Yalnız ilgili satırda tek indeksli sorgu.
+  function chequeLockRelevant(table, pre, post, lock, inTrace) {
+    const lockedBounce = id => Boolean(id) && Boolean(store.get("SELECT 1 AS found FROM cheque_events WHERE cheque_id = ? AND kind = 'bounce' AND date <= ? LIMIT 1", String(id), lock));
+    const chequeOf = id => (id ? store.get("SELECT direction, issue_date AS issueDate FROM cheques WHERE id = ?", String(id)) : null);
+    if (table === "cheques") {
+      if ((inTrace(pre?.issue_date) || inTrace(post?.issue_date)) && differs(pre, post, ["account_id"])) return "kilitli evrağın carisi";
+      if (differs(pre, post, ["status", "account_id"]) && lockedBounce((post || pre).id)) return "kilitli karşılıksızı olan evrak";
+      return "";
+    }
+    if (table === "cheque_events") {
+      if (pre?.kind !== "bounce" && post?.kind !== "bounce") return "";
+      if (differs(pre, post, ["kind", "date", "created_at", "cheque_id"]) && (lockedBounce(pre?.cheque_id) || lockedBounce(post?.cheque_id))) return "kilitli karşılıksızı olan evrağın olayı";
+      return "";
+    }
+    if (table === "account_entries") {
+      if (pre?.source !== "cheque" && post?.source !== "cheque") return "";
+      if (!differs(pre, post, ["account_id", "kind", "source", "source_id"])) return "";
+      for (const row of [pre, post]) {
+        if (row?.source !== "cheque") continue;
+        const found = chequeOf(row.source_id);
+        if (!found || !inTrace(found.issueDate)) continue;
+        if (row.kind === (found.direction === "in" ? "credit" : "debt")) return "kilitli evrağın cari satırı";
+        if (row.kind === "debt" && found.direction === "in" && lockedBounce(row.source_id)) return "kilitli karşılıksızın cari satırı";
+      }
+      return "";
+    }
+    if (table === "plan_entries") {
+      if (!pre?.cheque_id && !post?.cheque_id) return "";
+      if (!differs(pre, post, ["cheque_id", "plan_id"])) return "";
+      for (const row of [pre, post]) if (row?.cheque_id && inTrace(chequeOf(row.cheque_id)?.issueDate)) return "kilitli evrağın taksit satırı";
+    }
+    return "";
+  }
   function lockRelevant(s, lock) {
     if (!lock) return "";
     const locked = value => Boolean(value) && day(value) <= lock;
@@ -384,6 +417,10 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
         }
         // 2.5.0 Ç5-A tur 1e: Kayıt Tarihi kilitte olan yüklenmiş kartın yükleme damgası (LOCK_SQL plans_import_lock).
         if (table === "plan_imports" && differs(pre, post, ["created_at"]) && hasColumn("plans", "import_id") && store.get("SELECT 1 AS found FROM plans WHERE import_id = ? AND import_id <> '' AND deleted_at IS NULL AND covers_balance = 0 AND registered_on <> '' AND registered_on <= ? LIMIT 1", String((post || pre).id ?? ""), lock)) return "kart yüklemesi kilitli dönem";
+        // 2.5.0 Ç5-A tur 1f — SINIF 2 (§16; LOCK_SQL cheques_bounce_lock / cheques_free_lock): kilitli evrağın carisi, kilitli karşılıksızı olan evrağın durumu ve karşılıksız
+        // olayları, kilitli evrağın "cariye işlenmemiş" olgusunu belirleyen alış / veriliş cari satırı ve evrakla taksit satırı. Kilitli evrağın bugünkü tahsili / cirosu girmez.
+        const cheque = chequeLockRelevant(table, pre, post, lock, inTrace);
+        if (cheque) return cheque;
         if (table === "bank_lines" && store.get("SELECT 1 AS found FROM fin_events WHERE id = ? AND date <= ?", (post || pre).event_id, lock)) return "kilitli banka fişi";
         // Tahsil kaydı (lib/integrity.mjs LOCK_SQL cheque_collections_given / _closed): verilme ve kapanış ayrı iz girdileri (plan §3.14, §5.5).
         if (table === "cheque_collections") {
