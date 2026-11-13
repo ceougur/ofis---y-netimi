@@ -198,9 +198,12 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     // Birleşik tur 8 (S142 = A): özetin durum etiketi, geciken taksit sayısı ve sıradaki taksiti de kart penceresinin görünümünden (routes/plans.mjs queueSummaryOf); kartın kendi
     // hesabı totals.ownPaid / ownRemaining'de durur.
     const shownOf = shown && tyk && plans()?.queueSummaryOf ? plan => plans().queueSummaryOf(plan, tyk) : () => null;
+    // Yalnız satırın gösterdiği alanlar (Tahsil Edilen / Kalan / iade / geciken taksit sayısı) kuyruktan; kuyruğun iç alanları (queueRemaining, accountPaid, ownOverdue,
+    // overdueRest / overdueExtras) özete SIZMAZ — gecikmiş tutar ve own* kartın kendi hesabında kalır (WhatsApp eleme çekirdeği ile aynı alanlar; whatsapp-onizleme-olcek-248).
+    const shownTotalsOfView = ({ paid, remaining, returned, overdueCount }) => ({ paid, remaining, returned, overdueCount });
     const summaries = planList.map(plan => {
       const view = shownOf(plan);
-      return planSummaryOf(view ? { ...plan, totals: { ...plan.totals, ...view.totals }, state: view.state, next: view.next } : plan);
+      return planSummaryOf(view ? { ...plan, totals: { ...plan.totals, ...shownTotalsOfView(view.totals) }, state: view.state, next: view.next } : plan);
     });
     return {
       ...account,
