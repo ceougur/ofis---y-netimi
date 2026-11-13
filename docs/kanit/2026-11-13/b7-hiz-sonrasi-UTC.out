@@ -1,0 +1,1013 @@
+TAP version 13
+# (node:27034) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Birleşik tur 6 DÜŞÜK-1 — işlem içinde store dışından eklenip düzeltilen açılış öncesi YENİ satır: RED (önceden KABUL); eski satırın düzeltmesi KABUL
+    # Subtest: store dışı ekleme + store düzeltmesi (açılış öncesi) → 409 cash-before-opening, satır yazılmadı; aynı işlemde eski satırın tutar düzeltmesi + store dışı ilgisiz (açılış sonrası) ekleme → KABUL, iz: yalnız yeni satır doğmuş
+    ok 1 - store dışı ekleme + store düzeltmesi (açılış öncesi) → 409 cash-before-opening, satır yazılmadı; aynı işlemde eski satırın tutar düzeltmesi + store dışı ilgisiz (açılış sonrası) ekleme → KABUL, iz: yalnız yeni satır doğmuş
+      ---
+      duration_ms: 9.842794
+      type: 'test'
+      ...
+    1..1
+ok 1 - Birleşik tur 6 DÜŞÜK-1 — işlem içinde store dışından eklenip düzeltilen açılış öncesi YENİ satır: RED (önceden KABUL); eski satırın düzeltmesi KABUL
+  ---
+  duration_ms: 473.238246
+  type: 'suite'
+  ...
+# (node:27035) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç5-K tur 2 DÜŞÜK-1 — aynı işlemde eklenip düzeltilen açılış öncesi nakit satırı: dış yazımdan sonra da YENİ hareket (RED / RED / RED; store düzeyi, dar kontrol p12)
+    # Subtest: 1) dış yazım yok → 409; 2) başka bağlantı ayar yazdıktan sonra → 409 (önceden KABUL); 3) hemen ardından → 409; 4) store dışı yazımdan sonra → 409; açılıştan önce tarihli satır yazılmadı
+    ok 1 - 1) dış yazım yok → 409; 2) başka bağlantı ayar yazdıktan sonra → 409 (önceden KABUL); 3) hemen ardından → 409; 4) store dışı yazımdan sonra → 409; açılıştan önce tarihli satır yazılmadı
+      ---
+      duration_ms: 12.083698
+      type: 'test'
+      ...
+    # Subtest: işlem kapsamı: eklenen satırın iki kez düzeltilmesinde ilk yakalanan hâl 'eklendiği hâl' (born); işlemden önce var olan satırın önceki hâli born DEĞİL (lib/db.mjs sözleşmesi)
+    ok 2 - işlem kapsamı: eklenen satırın iki kez düzeltilmesinde ilk yakalanan hâl 'eklendiği hâl' (born); işlemden önce var olan satırın önceki hâli born DEĞİL (lib/db.mjs sözleşmesi)
+      ---
+      duration_ms: 9.964359
+      type: 'test'
+      ...
+    1..2
+ok 2 - Ç5-K tur 2 DÜŞÜK-1 — aynı işlemde eklenip düzeltilen açılış öncesi nakit satırı: dış yazımdan sonra da YENİ hareket (RED / RED / RED; store düzeyi, dar kontrol p12)
+  ---
+  duration_ms: 515.220781
+  type: 'suite'
+  ...
+# Subtest: Ç5-K tur 2 DÜŞÜK-1 — bugünkü 19 API yolunda davranış değişmedi: açılıştan bir gün önce 409 (dış yazım yokken de, başka bağlantı yazdıktan hemen sonra da), aynı gün 200
+    # Subtest: açılıştan bir gün önce (2026-03-09), dış yazım yok: 19 yolun hepsi 409 cash-before-opening; hiçbir şey yazılmadı, Kasa aynı
+    ok 1 - açılıştan bir gün önce (2026-03-09), dış yazım yok: 19 yolun hepsi 409 cash-before-opening; hiçbir şey yazılmadı, Kasa aynı
+      ---
+      duration_ms: 114.973277
+      type: 'test'
+      ...
+    # Subtest: açılıştan bir gün önce (2026-03-09), her istekten hemen önce BAŞKA BAĞLANTI yazdı: 19 yolun hepsi 409 cash-before-opening; hiçbir şey yazılmadı, Kasa aynı
+    ok 2 - açılıştan bir gün önce (2026-03-09), her istekten hemen önce BAŞKA BAĞLANTI yazdı: 19 yolun hepsi 409 cash-before-opening; hiçbir şey yazılmadı, Kasa aynı
+      ---
+      duration_ms: 140.280833
+      type: 'test'
+      ...
+    # Subtest: açılış günü (2026-03-10), her istekten önce başka bağlantı yazdı: 19 yolun hepsi 200
+    ok 3 - açılış günü (2026-03-10), her istekten önce başka bağlantı yazdı: 19 yolun hepsi 200
+      ---
+      duration_ms: 341.216647
+      type: 'test'
+      ...
+    1..3
+ok 3 - Ç5-K tur 2 DÜŞÜK-1 — bugünkü 19 API yolunda davranış değişmedi: açılıştan bir gün önce 409 (dış yazım yokken de, başka bağlantı yazdıktan hemen sonra da), aynı gün 200
+  ---
+  duration_ms: 1206.834489
+  type: 'suite'
+  ...
+# Subtest: Ç5-K tur 2 DÜŞÜK-3 K5 — Kasa açılışı SİLİNİNCE önbellek düşer (açılışsız Kasa'da kural yok)
+    # Subtest: açılış 10.03 → 11.03 girişi (önbellek dolar) → 09.03 girişi 409 → açılış silinir → 09.03 girişi 200
+    ok 1 - açılış 10.03 → 11.03 girişi (önbellek dolar) → 09.03 girişi 409 → açılış silinir → 09.03 girişi 200
+      ---
+      duration_ms: 66.737151
+      type: 'test'
+      ...
+    1..1
+ok 4 - Ç5-K tur 2 DÜŞÜK-3 K5 — Kasa açılışı SİLİNİNCE önbellek düşer (açılışsız Kasa'da kural yok)
+  ---
+  duration_ms: 437.086475
+  type: 'suite'
+  ...
+# Subtest: Ç5-K tur 2 DÜŞÜK-3 K6 — olaysız (eski sürüm biçimli) açılış öncesi kayıt tahsilatı Taksite Aktar ile karta taşınır: önceki hâl (d), yeni hareket SAYILMAZ
+    # Subtest: ön koşul: olaysız tahsilat açılıştan önce, uyarıda; Taksite Aktar 200 (paymentsMoved 1), karttaki satır aynı gün ve tutar, Kasa değişmez; Mutabakat Testi uyarı dışı sapma yok
+    ok 1 - ön koşul: olaysız tahsilat açılıştan önce, uyarıda; Taksite Aktar 200 (paymentsMoved 1), karttaki satır aynı gün ve tutar, Kasa değişmez; Mutabakat Testi uyarı dışı sapma yok
+      ---
+      duration_ms: 71.438748
+      type: 'test'
+      ...
+    1..1
+ok 5 - Ç5-K tur 2 DÜŞÜK-3 K6 — olaysız (eski sürüm biçimli) açılış öncesi kayıt tahsilatı Taksite Aktar ile karta taşınır: önceki hâl (d), yeni hareket SAYILMAZ
+  ---
+  duration_ms: 522.856169
+  type: 'suite'
+  ...
+# Subtest: Ç5-K tur 2 DÜŞÜK-3 K8 — açılış önbelleğinin damgası: başka bağlantı / store dışı yazım açılışı değiştirince bayatlamaz; 002 + yedekten geri yükleme
+    # Subtest: BAŞKA BAĞLANTI açılışı 05.03'e alır → 07.03 girişi 200 (yeni açılışla), 04.03 girişi 409 (açılış 05.03)
+    ok 1 - BAŞKA BAĞLANTI açılışı 05.03'e alır → 07.03 girişi 200 (yeni açılışla), 04.03 girişi 409 (açılış 05.03)
+      ---
+      duration_ms: 20.702745
+      type: 'test'
+      ...
+    # Subtest: STORE DIŞI yazım (aynı bağlantı) açılışı 03.03'e alır → 04.03 girişi 200, 02.03 girişi 409 (açılış 03.03)
+    ok 2 - STORE DIŞI yazım (aynı bağlantı) açılışı 03.03'e alır → 04.03 girişi 200, 02.03 girişi 409 (açılış 03.03)
+      ---
+      duration_ms: 11.539436
+      type: 'test'
+      ...
+    # Subtest: 002: açılış 05.03 iken yedek → açılış 10.03'e düzeltilir, 11.03 girişi (önbellek 10.03), 07.03 girişi 409 → yedekten geri yükleme → 07.03 girişi 200, 04.03 409 (geri gelen açılış 05.03); 001'in kuralı etkilenmez
+    ok 3 - 002: açılış 05.03 iken yedek → açılış 10.03'e düzeltilir, 11.03 girişi (önbellek 10.03), 07.03 girişi 409 → yedekten geri yükleme → 07.03 girişi 200, 04.03 409 (geri gelen açılış 05.03); 001'in kuralı etkilenmez
+      ---
+      duration_ms: 498.46655
+      type: 'test'
+      ...
+    1..3
+ok 6 - Ç5-K tur 2 DÜŞÜK-3 K8 — açılış önbelleğinin damgası: başka bağlantı / store dışı yazım açılışı değiştirince bayatlamaz; 002 + yedekten geri yükleme
+  ---
+  duration_ms: 955.685351
+  type: 'suite'
+  ...
+# (node:27041) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Birleşik tur 7 İş 1 — kimlik kümesi; satır içi tarama (Mutabakat Testi)
+    # Subtest: §16.1-1 (S1 / S1b): iki tarama arası sil + Silinenler'den geri yükle + dış yazım → alarm (2 → 3; açıklanamayan 1); sonraki tarama sessiz
+    ok 1 - §16.1-1 (S1 / S1b): iki tarama arası sil + Silinenler'den geri yükle + dış yazım → alarm (2 → 3; açıklanamayan 1); sonraki tarama sessiz
+      ---
+      duration_ms: 694.528335
+      type: 'test'
+      ...
+    # Subtest: §16.1-4 (S9; §15'in BİLİNEN SINIR'ı kapanır): sil + dış yazım (sayı aynı 2 → 2) → alarm 'yeni hareket girdi'
+    ok 2 - §16.1-4 (S9; §15'in BİLİNEN SINIR'ı kapanır): sil + dış yazım (sayı aynı 2 → 2) → alarm 'yeni hareket girdi'
+      ---
+      duration_ms: 532.34735
+      type: 'test'
+      ...
+    # Subtest: §16.1-3: yalnız meşru geri yükleme — iki tek satırlık geri yükleme (2 → 4) ve birden çok satır getiren taksit kartı (4 → 6) sessiz; aynı aralıkta kart + dış yazım → açıklanamayan 1
+    ok 3 - §16.1-3: yalnız meşru geri yükleme — iki tek satırlık geri yükleme (2 → 4) ve birden çok satır getiren taksit kartı (4 → 6) sessiz; aynı aralıkta kart + dış yazım → açıklanamayan 1
+      ---
+      duration_ms: 711.656295
+      type: 'test'
+      ...
+    # Subtest: §16.1-13 (kimliği yeniden kullanılan satır): geri gelen, taranan, silinip taranan, sonra DIŞARIDAN aynı kimlikle yeniden eklenen satır → alarm (eski açıklama düşer)
+    ok 4 - §16.1-13 (kimliği yeniden kullanılan satır): geri gelen, taranan, silinip taranan, sonra DIŞARIDAN aynı kimlikle yeniden eklenen satır → alarm (eski açıklama düşer)
+      ---
+      duration_ms: 585.444024
+      type: 'test'
+      ...
+    # Subtest: §16.1-14: kapının kabul ettiği kimlik değişimi (aynı İşlem No, aynı gün; önceki hâl önceki kümede) sessiz; dış yazımla kümeye girmiş satırın kapıdan kimlik değişimi → alarm
+    ok 5 - §16.1-14: kapının kabul ettiği kimlik değişimi (aynı İşlem No, aynı gün; önceki hâl önceki kümede) sessiz; dış yazımla kümeye girmiş satırın kapıdan kimlik değişimi → alarm
+      ---
+      duration_ms: 581.507945
+      type: 'test'
+      ...
+    # Subtest: §16.1-5 / 6: açılışı öne alma (sayı azalır) sessiz, sonra dış yazım alarm; açılışı silip yeniden girme (ilk hareketten sonra olamaz) sessiz
+    ok 6 - §16.1-5 / 6: açılışı öne alma (sayı azalır) sessiz, sonra dış yazım alarm; açılışı silip yeniden girme (ilk hareketten sonra olamaz) sessiz
+      ---
+      duration_ms: 528.232058
+      type: 'test'
+      ...
+    # Subtest: §16.1-9: Şirket Verisini Sıfırla — küme yeniden ölçülür, sessiz (sıfırlamadan önce kaydedilen geri yükleme sonraki dış yazımı örtmez)
+    ok 7 - §16.1-9: Şirket Verisini Sıfırla — küme yeniden ölçülür, sessiz (sıfırlamadan önce kaydedilen geri yükleme sonraki dış yazımı örtmez)
+      ---
+      duration_ms: 678.280938
+      type: 'test'
+      ...
+    1..7
+ok 7 - Birleşik tur 7 İş 1 — kimlik kümesi; satır içi tarama (Mutabakat Testi)
+  ---
+  duration_ms: 4313.579212
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 7 İş 1 — kimlik kümesi; iş parçacığı taraması
+    # Subtest: §16.1-1 (S1 / S1b): iki tarama arası sil + Silinenler'den geri yükle + dış yazım → alarm (2 → 3; açıklanamayan 1); sonraki tarama sessiz
+    ok 1 - §16.1-1 (S1 / S1b): iki tarama arası sil + Silinenler'den geri yükle + dış yazım → alarm (2 → 3; açıklanamayan 1); sonraki tarama sessiz
+      ---
+      duration_ms: 726.813144
+      type: 'test'
+      ...
+    # Subtest: §16.1-4 (S9; §15'in BİLİNEN SINIR'ı kapanır): sil + dış yazım (sayı aynı 2 → 2) → alarm 'yeni hareket girdi'
+    ok 2 - §16.1-4 (S9; §15'in BİLİNEN SINIR'ı kapanır): sil + dış yazım (sayı aynı 2 → 2) → alarm 'yeni hareket girdi'
+      ---
+      duration_ms: 794.171689
+      type: 'test'
+      ...
+# (node:27041) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: §16.1-3: yalnız meşru geri yükleme — iki tek satırlık geri yükleme (2 → 4) ve birden çok satır getiren taksit kartı (4 → 6) sessiz; aynı aralıkta kart + dış yazım → açıklanamayan 1
+    ok 3 - §16.1-3: yalnız meşru geri yükleme — iki tek satırlık geri yükleme (2 → 4) ve birden çok satır getiren taksit kartı (4 → 6) sessiz; aynı aralıkta kart + dış yazım → açıklanamayan 1
+      ---
+      duration_ms: 1658.992904
+      type: 'test'
+      ...
+# (node:27041) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: §16.1-13 (kimliği yeniden kullanılan satır): geri gelen, taranan, silinip taranan, sonra DIŞARIDAN aynı kimlikle yeniden eklenen satır → alarm (eski açıklama düşer)
+    ok 4 - §16.1-13 (kimliği yeniden kullanılan satır): geri gelen, taranan, silinip taranan, sonra DIŞARIDAN aynı kimlikle yeniden eklenen satır → alarm (eski açıklama düşer)
+      ---
+      duration_ms: 1213.296139
+      type: 'test'
+      ...
+    # Subtest: §16.1-14: kapının kabul ettiği kimlik değişimi (aynı İşlem No, aynı gün; önceki hâl önceki kümede) sessiz; dış yazımla kümeye girmiş satırın kapıdan kimlik değişimi → alarm
+    ok 5 - §16.1-14: kapının kabul ettiği kimlik değişimi (aynı İşlem No, aynı gün; önceki hâl önceki kümede) sessiz; dış yazımla kümeye girmiş satırın kapıdan kimlik değişimi → alarm
+      ---
+      duration_ms: 1099.301097
+      type: 'test'
+      ...
+    # Subtest: §16.1-5 / 6: açılışı öne alma (sayı azalır) sessiz, sonra dış yazım alarm; açılışı silip yeniden girme (ilk hareketten sonra olamaz) sessiz
+    ok 6 - §16.1-5 / 6: açılışı öne alma (sayı azalır) sessiz, sonra dış yazım alarm; açılışı silip yeniden girme (ilk hareketten sonra olamaz) sessiz
+      ---
+      duration_ms: 1544.482741
+      type: 'test'
+      ...
+    # Subtest: §16.1-9: Şirket Verisini Sıfırla — küme yeniden ölçülür, sessiz (sıfırlamadan önce kaydedilen geri yükleme sonraki dış yazımı örtmez)
+    ok 7 - §16.1-9: Şirket Verisini Sıfırla — küme yeniden ölçülür, sessiz (sıfırlamadan önce kaydedilen geri yükleme sonraki dış yazımı örtmez)
+      ---
+      duration_ms: 1234.969021
+      type: 'test'
+      ...
+    1..7
+ok 8 - Birleşik tur 7 İş 1 — kimlik kümesi; iş parçacığı taraması
+  ---
+  duration_ms: 8272.832754
+  type: 'suite'
+  ...
+# (node:27041) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27041) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27041) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27041) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27041) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Birleşik tur 7 İş 1 — §16.1-12 (b): geri yükleme iş parçacığının anlık görüntüsünden SONRA kesinleşir (görüntüde yok) → o tarama karşılaştırmaz, sonraki tarama yanlış alarm vermez (ön koşul zorla — ders 20)
+    # Subtest: geri yükleme tarama sürerken, görüntüye girmeden: işaret ilerlemez; sonraki iki tarama sessiz, sayı +1
+    ok 1 - geri yükleme tarama sürerken, görüntüye girmeden: işaret ilerlemez; sonraki iki tarama sessiz, sayı +1
+      ---
+      duration_ms: 6362.621076
+      type: 'test'
+      ...
+    # ön koşul 2 / 11 denemede oluştu (gecikmeler: 400 200* 200 300 250 225 213 207 204 202 201*)
+    1..1
+ok 9 - Birleşik tur 7 İş 1 — §16.1-12 (b): geri yükleme iş parçacığının anlık görüntüsünden SONRA kesinleşir (görüntüde yok) → o tarama karşılaştırmaz, sonraki tarama yanlış alarm vermez (ön koşul zorla — ders 20)
+  ---
+  duration_ms: 6362.909055
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 7 İş 5 — M11: Mutabakat Günlüğü'nde sapma + uyarı artışını birlikte taşıyan kayıt 'Sapma' adıyla
+    # Subtest: dışarıdan aynı kimlikle yeniden yazılan Kasa satırı: tek tarama kaydı iki bulgu (İşlem Başlığı sapması + uyarı artışı) → 'Taramada Bulunan Sapma'; yalnız dış tarih taşıma → 'Taramada Bulunan Uyarı Artışı'
+    ok 1 - dışarıdan aynı kimlikle yeniden yazılan Kasa satırı: tek tarama kaydı iki bulgu (İşlem Başlığı sapması + uyarı artışı) → 'Taramada Bulunan Sapma'; yalnız dış tarih taşıma → 'Taramada Bulunan Uyarı Artışı'
+      ---
+      duration_ms: 634.281724
+      type: 'test'
+      ...
+    1..1
+ok 10 - Birleşik tur 7 İş 5 — M11: Mutabakat Günlüğü'nde sapma + uyarı artışını birlikte taşıyan kayıt 'Sapma' adıyla
+  ---
+  duration_ms: 634.469975
+  type: 'suite'
+  ...
+# (node:27058) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Birleşik tur 6 — A1: çok satırlı INSERT'in BÜTÜN satırları işlem kapsamında 'eklendi' ve düzeltilince 'doğmuş'
+    # Subtest: üç satırlı INSERT + düzeltme: scope.inserted ve scope.born üç rowid'in hepsi (KABUL); iki satırlıdan biri açılış öncesiyse → 409, ikisi de yazılmadı
+    ok 1 - üç satırlı INSERT + düzeltme: scope.inserted ve scope.born üç rowid'in hepsi (KABUL); iki satırlıdan biri açılış öncesiyse → 409, ikisi de yazılmadı
+      ---
+      duration_ms: 6.273599
+      type: 'test'
+      ...
+    1..1
+ok 11 - Birleşik tur 6 — A1: çok satırlı INSERT'in BÜTÜN satırları işlem kapsamında 'eklendi' ve düzeltilince 'doğmuş'
+  ---
+  duration_ms: 570.651744
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 6 — A16: v2.4.9'dan gelen açılış öncesi peşin nakitli fatura (cari hareketlerinin SON satırı): Düzenle ile yalnız tutar → 200 (silinen peşinin rowid'ini yenisi alır)
+    # Subtest: Düzenle (300 → 350, tarih aynı — S26): 200; peşin satırı aynı rowid'de 350, tarih aynı; uyarı sürer (1 satır)
+    ok 1 - Düzenle (300 → 350, tarih aynı — S26): 200; peşin satırı aynı rowid'de 350, tarih aynı; uyarı sürer (1 satır)
+      ---
+      duration_ms: 912.933961
+      type: 'test'
+      ...
+    1..1
+ok 12 - Birleşik tur 6 — A16: v2.4.9'dan gelen açılış öncesi peşin nakitli fatura (cari hareketlerinin SON satırı): Düzenle ile yalnız tutar → 200 (silinen peşinin rowid'ini yenisi alır)
+  ---
+  duration_ms: 942.501649
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 6 — A6: Defter Mutabakatı, eski sürümden kalan satır + Kasa açılış uyarısı birlikte → 'Eski Sürümden Kalan' (yöneticiye bildirin DEĞİL)
+    # Subtest: alt başlık 'Eski sürümden kalan satır var …' + uyarı cümlesi; 'yöneticiye bildirin' yok; satırlar 'Eski Sürümden Kalan' ve 'Uyarı'
+    ok 1 - alt başlık 'Eski sürümden kalan satır var …' + uyarı cümlesi; 'yöneticiye bildirin' yok; satırlar 'Eski Sürümden Kalan' ve 'Uyarı'
+      ---
+      duration_ms: 18.621506
+      type: 'test'
+      ...
+    1..1
+ok 13 - Birleşik tur 6 — A6: Defter Mutabakatı, eski sürümden kalan satır + Kasa açılış uyarısı birlikte → 'Eski Sürümden Kalan' (yöneticiye bildirin DEĞİL)
+  ---
+  duration_ms: 406.322123
+  type: 'suite'
+  ...
+# (node:27076) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç5-K S12 = A: Kasa açılışından ÖNCE tarihli YENİ nakit hareketi her yolda 409; aynı gün ve sonra 200
+    # Subtest: 1 Kasa Giriş: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    ok 1 - 1 Kasa Giriş: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 38.222362
+      type: 'test'
+      ...
+    # Subtest: 1b Kasa Çıkış: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    ok 2 - 1b Kasa Çıkış: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 67.803811
+      type: 'test'
+      ...
+    # Subtest: 2 Bankadan Kasaya: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    ok 3 - 2 Bankadan Kasaya: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 47.027043
+      type: 'test'
+      ...
+    # Subtest: 2b Kasadan Bankaya: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    ok 4 - 2b Kasadan Bankaya: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 39.490989
+      type: 'test'
+      ...
+    # Subtest: 3 Kasa'dan Vergi Ödemesi: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    ok 5 - 3 Kasa'dan Vergi Ödemesi: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 39.771428
+      type: 'test'
+      ...
+    # Subtest: 4 cari nakit tahsilat: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    ok 6 - 4 cari nakit tahsilat: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 56.352124
+      type: 'test'
+      ...
+    # Subtest: 4b cari nakit ödeme: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    ok 7 - 4b cari nakit ödeme: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 36.062141
+      type: 'test'
+      ...
+    # Subtest: 5 satış faturası peşin nakit: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    ok 8 - 5 satış faturası peşin nakit: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 49.066427
+      type: 'test'
+      ...
+    # Subtest: 5b satıştan iade nakit para iadesi: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    ok 9 - 5b satıştan iade nakit para iadesi: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 58.897548
+      type: 'test'
+      ...
+    # Subtest: 6 taksit tahsilatı nakit: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    ok 10 - 6 taksit tahsilatı nakit: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 42.79342
+      type: 'test'
+      ...
+    # Subtest: 7 kayıt tahsilatı: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    ok 11 - 7 kayıt tahsilatı: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 35.171137
+      type: 'test'
+      ...
+    # Subtest: 9 çekin Kasa'dan tahsili: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    ok 12 - 9 çekin Kasa'dan tahsili: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 85.228403
+      type: 'test'
+      ...
+    # Subtest: 9b verilen çekin nakit ödemesi: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    ok 13 - 9b verilen çekin nakit ödemesi: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 83.018495
+      type: 'test'
+      ...
+    # Subtest: 10 nakit stok alımı: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    ok 14 - 10 nakit stok alımı: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 34.108154
+      type: 'test'
+      ...
+    # Subtest: 10b nakit stok satışı: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    ok 15 - 10b nakit stok satışı: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 38.398569
+      type: 'test'
+      ...
+    # Subtest: aynı işlemde eklenip hemen düzeltilen açılış öncesi nakit satırı YENİ harekettir (eklendiği hâli 'önceki hâl' sayılmaz — store düzeyi)
+    ok 16 - aynı işlemde eklenip hemen düzeltilen açılış öncesi nakit satırı YENİ harekettir (eklendiği hâli 'önceki hâl' sayılmaz — store düzeyi)
+      ---
+      duration_ms: 1.008555
+      type: 'test'
+      ...
+    # Subtest: nakit OLMAYAN eşleri açılıştan önce de 200 (Kasa'ya dokunmaz)
+    ok 17 - nakit OLMAYAN eşleri açılıştan önce de 200 (Kasa'ya dokunmaz)
+      ---
+      duration_ms: 83.727657
+      type: 'test'
+      ...
+    # Subtest: Mutabakat Testi temiz (yeni kural uyarı üretmez: açılıştan önce satır yok)
+    ok 18 - Mutabakat Testi temiz (yeni kural uyarı üretmez: açılıştan önce satır yok)
+      ---
+      duration_ms: 24.644159
+      type: 'test'
+      ...
+    1..18
+ok 14 - Ç5-K S12 = A: Kasa açılışından ÖNCE tarihli YENİ nakit hareketi her yolda 409; aynı gün ve sonra 200
+  ---
+  duration_ms: 1558.416253
+  type: 'suite'
+  ...
+# Subtest: Ç5-K B11 / T12 (düzeltme) — her test kendi kayıtlarıyla (eski kodda kırmızının nedeni S12'nin yokluğu)
+    # Subtest: B11 / T12: düzeltmeyle tarihi açılıştan önceye çekmek 409 (satır değişmez); açılış günü 200 — Kasa Giriş, cari, kayıt, taksit, stok, transfer
+    ok 1 - B11 / T12: düzeltmeyle tarihi açılıştan önceye çekmek 409 (satır değişmez); açılış günü 200 — Kasa Giriş, cari, kayıt, taksit, stok, transfer
+      ---
+      duration_ms: 34.405025
+      type: 'test'
+      ...
+    # Subtest: B11 / T12: açılıştan önce tarihli havale tahsilatını NAKDE çeviren düzeltme 409 (converted); havale olarak kalır
+    ok 2 - B11 / T12: açılıştan önce tarihli havale tahsilatını NAKDE çeviren düzeltme 409 (converted); havale olarak kalır
+      ---
+      duration_ms: 18.173071
+      type: 'test'
+      ...
+    1..2
+ok 15 - Ç5-K B11 / T12 (düzeltme) — her test kendi kayıtlarıyla (eski kodda kırmızının nedeni S12'nin yokluğu)
+  ---
+  duration_ms: 673.515123
+  type: 'suite'
+  ...
+# Subtest: Ç5-K R8 (açılışın düzeltilmesi) — ayrı şirket verisi
+    # Subtest: R8: açılışı ilk nakit hareketinden sonraya almak düzeltmede de 409 (tarih ve tutar biçimleri); öne almak 200 ve kural yeni tarihle işler (önbellek bayatlamaz)
+    ok 1 - R8: açılışı ilk nakit hareketinden sonraya almak düzeltmede de 409 (tarih ve tutar biçimleri); öne almak 200 ve kural yeni tarihle işler (önbellek bayatlamaz)
+      ---
+      duration_ms: 48.668127
+      type: 'test'
+      ...
+    1..1
+ok 16 - Ç5-K R8 (açılışın düzeltilmesi) — ayrı şirket verisi
+  ---
+  duration_ms: 411.790404
+  type: 'suite'
+  ...
+# Subtest: Ç5-K T11: açılışsız Kasa'da kural yok; açılış sonradan girilir
+    # Subtest: açılış yokken bütün yollar her tarihte 200; açılış (≤ ilk hareket) girilince kural işler; ilk hareketten sonraya açılış 409
+    ok 1 - açılış yokken bütün yollar her tarihte 200; açılış (≤ ilk hareket) girilince kural işler; ilk hareketten sonraya açılış 409
+      ---
+      duration_ms: 392.177577
+      type: 'test'
+      ...
+    1..1
+ok 17 - Ç5-K T11: açılışsız Kasa'da kural yok; açılış sonradan girilir
+  ---
+  duration_ms: 806.844993
+  type: 'suite'
+  ...
+# Subtest: Ç5-K Z9 + S26 / S40 / S44: Silinenler'den geri alınan açılış öncesi kayıt aynen döner, tarihi değişmeden düzeltilir, uyarı sürer
+    # Subtest: Silinenler'den geri yükleme 200 (S12 uygulanmaz); Mutabakat Testi 'Kasa Açılışından Önce Tarihli Hareket' UYARI (5 satır), sapma yok
+    ok 1 - Silinenler'den geri yükleme 200 (S12 uygulanmaz); Mutabakat Testi 'Kasa Açılışından Önce Tarihli Hareket' UYARI (5 satır), sapma yok
+      ---
+      duration_ms: 135.189962
+      type: 'test'
+      ...
+    # Subtest: YENİ açılış öncesi hareket geri yüklemeden sonra da 409 (S12 yalnız yeni kayıtta)
+    ok 2 - YENİ açılış öncesi hareket geri yüklemeden sonra da 409 (S12 yalnız yeni kayıtta)
+      ---
+      duration_ms: 6.88812
+      type: 'test'
+      ...
+    # Subtest: S26 / S40: tarihi değişmeden tutar ve açıklama düzeltmesi 200; uyarı sürer (sayı aynı)
+    ok 3 - S26 / S40: tarihi değişmeden tutar ve açıklama düzeltmesi 200; uyarı sürer (sayı aynı)
+      ---
+      duration_ms: 85.002482
+      type: 'test'
+      ...
+    # Subtest: S44: Kapatılacak Fatura bağı (ekle / kaldır) tarihi değişmeden 200
+    ok 4 - S44: Kapatılacak Fatura bağı (ekle / kaldır) tarihi değişmeden 200
+      ---
+      duration_ms: 54.301661
+      type: 'test'
+      ...
+    # Subtest: T12: aynı düzeltmede tarih açılıştan önceki BAŞKA güne → 409, tutar da yazılmaz (düzeltmenin tamamı)
+    ok 5 - T12: aynı düzeltmede tarih açılıştan önceki BAŞKA güne → 409, tutar da yazılmaz (düzeltmenin tamamı)
+      ---
+      duration_ms: 10.26007
+      type: 'test'
+      ...
+    # Subtest: açılıştan SONRAYA alınan kayıt kabul, uyarıdan çıkar; açılış öne alınınca uyarı kalkar
+    ok 6 - açılıştan SONRAYA alınan kayıt kabul, uyarıdan çıkar; açılış öne alınınca uyarı kalkar
+      ---
+      duration_ms: 52.024488
+      type: 'test'
+      ...
+    1..6
+ok 18 - Ç5-K Z9 + S26 / S40 / S44: Silinenler'den geri alınan açılış öncesi kayıt aynen döner, tarihi değişmeden düzeltilir, uyarı sürer
+  ---
+  duration_ms: 1042.081188
+  type: 'suite'
+  ...
+# Subtest: Ç5-K önceki hâl eşlemesi — açılış öncesi (Silinenler'den geri yüklenmiş) kayıt tahsilatının Taksite Aktar / Geri Al'ı (aynı İşlem No) yeni hareket sayılmaz
+    # Subtest: ön koşul: geri yüklenen tahsilat açılıştan önce (uyarıda)
+    ok 1 - ön koşul: geri yüklenen tahsilat açılıştan önce (uyarıda)
+      ---
+      duration_ms: 11.985173
+      type: 'test'
+      ...
+    # Subtest: Taksite Aktar (aynı İşlem No ile karta taşınır) ve Geri Al 200 — yeni hareket sayılmaz; Kasa değişmez
+    ok 2 - Taksite Aktar (aynı İşlem No ile karta taşınır) ve Geri Al 200 — yeni hareket sayılmaz; Kasa değişmez
+      ---
+      duration_ms: 60.95157
+      type: 'test'
+      ...
+    1..2
+ok 19 - Ç5-K önceki hâl eşlemesi — açılış öncesi (Silinenler'den geri yüklenmiş) kayıt tahsilatının Taksite Aktar / Geri Al'ı (aynı İşlem No) yeni hareket sayılmaz
+  ---
+  duration_ms: 705.361613
+  type: 'suite'
+  ...
+# Subtest: Ç5-K S20 = A: v2.4.9'un GERÇEK koduyla üretilmiş açılış öncesi nakit satırları — göç ve yedekten geri yükleme
+    # Subtest: göç (2.4.9 verisi 2.5.0 ile açılır): satırlar aynen, mizan 2.4.9 ile aynı, Mutabakat Testi UYARI (4 satır), sapma yok
+    ok 1 - göç (2.4.9 verisi 2.5.0 ile açılır): satırlar aynen, mizan 2.4.9 ile aynı, Mutabakat Testi UYARI (4 satır), sapma yok
+      ---
+      duration_ms: 89.422155
+      type: 'test'
+      ...
+    # Subtest: S12 göçten sonra: yeni açılış öncesi nakit 409; aynı adlı öbür cariye de 409
+    ok 2 - S12 göçten sonra: yeni açılış öncesi nakit 409; aynı adlı öbür cariye de 409
+      ---
+      duration_ms: 86.56009
+      type: 'test'
+      ...
+    # Subtest: S26 / S40 / S44 (eski sürüm verisi): tutar, açıklama, Kapatılacak Fatura (başka faturaya, kaldır), Normal Cari Hesaba İşle düzeltmesi 200; uyarı sürer
+    ok 3 - S26 / S40 / S44 (eski sürüm verisi): tutar, açıklama, Kapatılacak Fatura (başka faturaya, kaldır), Normal Cari Hesaba İşle düzeltmesi 200; uyarı sürer
+      ---
+      duration_ms: 205.565883
+      type: 'test'
+      ...
+    # Subtest: fatura Düzenle (eski sürüm verisi, peşin nakitli fatura açılıştan önce): yalnız not 200 (aynı İşlem No), peşin tutarı 200 (aynı fatura, aynı gün), tarihi açılıştan önceki başka güne 409
+    ok 4 - fatura Düzenle (eski sürüm verisi, peşin nakitli fatura açılıştan önce): yalnız not 200 (aynı İşlem No), peşin tutarı 200 (aynı fatura, aynı gün), tarihi açılıştan önceki başka güne 409
+      ---
+      duration_ms: 86.414232
+      type: 'test'
+      ...
+    # Subtest: T12 (eski sürüm verisi): tarih açılıştan önceki başka güne 409 — bağ ve tutar da değişmez
+    ok 5 - T12 (eski sürüm verisi): tarih açılıştan önceki başka güne 409 — bağ ve tutar da değişmez
+      ---
+      duration_ms: 45.535988
+      type: 'test'
+      ...
+    # Subtest: S45 / S57: bağlı açılış öncesi kaydın carisi bağ değişmeden düzeltilirse 409 entry-link-first, kayıt değişmez; S54: aynı düzeltmede bağ yeni carinin faturasına → 200, Kasa ve uyarı aynı
+    ok 6 - S45 / S57: bağlı açılış öncesi kaydın carisi bağ değişmeden düzeltilirse 409 entry-link-first, kayıt değişmez; S54: aynı düzeltmede bağ yeni carinin faturasına → 200, Kasa ve uyarı aynı
+      ---
+      duration_ms: 142.856951
+      type: 'test'
+      ...
+    # Subtest: S56 = A: S44 düzeltmesi şüpheli caride 'Normal Cari' sınırını aşarsa 409 doubtful-normal-exceeds (kâhin SUPHELI_NORMAL_ASIM); satır değişmez — Kasa açılış kuralından ÖNCE (routes/accounts.mjs:773, 2.3.0'dan)
+    ok 7 - S56 = A: S44 düzeltmesi şüpheli caride 'Normal Cari' sınırını aşarsa 409 doubtful-normal-exceeds (kâhin SUPHELI_NORMAL_ASIM); satır değişmez — Kasa açılış kuralından ÖNCE (routes/accounts.mjs:773, 2.3.0'dan)
+      ---
+      duration_ms: 65.750984
+      type: 'test'
+      ...
+    # Subtest: S55 = A (bağ hedefin doğduğu gün) — kapama kuralı Ç5-B'nin (lib/invoice-settle.mjs); Ç5-K yalnız Kasa denetiminin kayıttan SONRA tarihli faturaya bağı engellemediğini ölçer
+    ok 8 - S55 = A (bağ hedefin doğduğu gün) — kapama kuralı Ç5-B'nin (lib/invoice-settle.mjs); Ç5-K yalnız Kasa denetiminin kayıttan SONRA tarihli faturaya bağı engellemediğini ölçer
+      ---
+      duration_ms: 108.753646
+      type: 'test'
+      ...
+    # Subtest: yedekten geri yükleme: 2.4.9 yedeği 2.5.0'a geri yüklenir — silinen açılış öncesi satır aynen döner, uyarı yeniden 4
+    ok 9 - yedekten geri yükleme: 2.4.9 yedeği 2.5.0'a geri yüklenir — silinen açılış öncesi satır aynen döner, uyarı yeniden 4
+      ---
+      duration_ms: 445.538035
+      type: 'test'
+      ...
+    1..9
+ok 20 - Ç5-K S20 = A: v2.4.9'un GERÇEK koduyla üretilmiş açılış öncesi nakit satırları — göç ve yedekten geri yükleme
+  ---
+  duration_ms: 2209.632177
+  type: 'suite'
+  ...
+# Subtest: Ç5-K gün dönümü ve iki şirket
+    # Subtest: tarihsiz giriş programın bugününe yazılır: açılış günü 00:00:30 ve 23:59:30 aynı gün 200; dünü (açılıştan önce) 409; gece yarısından sonra ertesi gün 200 (yerel saat, iki TZ)
+    ok 1 - tarihsiz giriş programın bugününe yazılır: açılış günü 00:00:30 ve 23:59:30 aynı gün 200; dünü (açılıştan önce) 409; gece yarısından sonra ertesi gün 200 (yerel saat, iki TZ)
+      ---
+      duration_ms: 65.679108
+      type: 'test'
+      ...
+    # Subtest: iki şirket: 001'in açılışı 002'yi etkilemez (002 açılışsız, aynı tarih 200); 002'nin açılışı 001'e sızmaz
+    ok 2 - iki şirket: 001'in açılışı 002'yi etkilemez (002 açılışsız, aynı tarih 200); 002'nin açılışı 001'e sızmaz
+      ---
+      duration_ms: 256.345696
+      type: 'test'
+      ...
+    1..2
+ok 21 - Ç5-K gün dönümü ve iki şirket
+  ---
+  duration_ms: 687.047153
+  type: 'suite'
+  ...
+# (node:27112) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç5-K tur 2 — temiz veri (Kasa açılışı var, açılıştan önce satır yok): değişiklik yok
+    # Subtest: Mutabakat Testi tutarlı, uyarı denetimi listede YOK; Defter Mutabakatı alt başlığı aynen, 'Uyarı' satırı yok, Sonuç Tutarlı
+    ok 1 - Mutabakat Testi tutarlı, uyarı denetimi listede YOK; Defter Mutabakatı alt başlığı aynen, 'Uyarı' satırı yok, Sonuç Tutarlı
+      ---
+      duration_ms: 30.318261
+      type: 'test'
+      ...
+    1..1
+ok 22 - Ç5-K tur 2 — temiz veri (Kasa açılışı var, açılıştan önce satır yok): değişiklik yok
+  ---
+  duration_ms: 523.919643
+  type: 'suite'
+  ...
+# Subtest: Ç5-K tur 2 — Silinenler'den geri gelen açılış öncesi Kasa hareketi: uyarı SAPMA DEĞİL
+    # Subtest: Mutabakat Testi: denetim görünür (ok false, gizlenmez) ama UYARI işaretli (notice, severity warning); ne yapılacağı (hint) var, 'eski sürümden kalan' demez; örnek metni Kaynak · kimlik · tarih (K14); uyarı dışı sapma yok
+    ok 1 - Mutabakat Testi: denetim görünür (ok false, gizlenmez) ama UYARI işaretli (notice, severity warning); ne yapılacağı (hint) var, 'eski sürümden kalan' demez; örnek metni Kaynak · kimlik · tarih (K14); uyarı dışı sapma yok
+      ---
+      duration_ms: 18.640933
+      type: 'test'
+      ...
+    # Subtest: tarama 'yeni sapma' kaydı ve zili üretmez — Mutabakat Testi (iş parçacığında da), sayı ARTINCA da (ikinci geri yükleme)
+    ok 2 - tarama 'yeni sapma' kaydı ve zili üretmez — Mutabakat Testi (iş parçacığında da), sayı ARTINCA da (ikinci geri yükleme)
+      ---
+      duration_ms: 283.494235
+      type: 'test'
+      ...
+    # Subtest: Defter Mutabakatı (ekran verisi, PDF, Excel aynı): satır 'Uyarı'; Sonuç 'Tutarlı' (Fark Var DEĞİL); alt başlık uyarıyı ve ne yapılacağını söyler, 'yöneticiye bildirin' / 'eski sürümden kalan' demez
+    ok 3 - Defter Mutabakatı (ekran verisi, PDF, Excel aynı): satır 'Uyarı'; Sonuç 'Tutarlı' (Fark Var DEĞİL); alt başlık uyarıyı ve ne yapılacağını söyler, 'yöneticiye bildirin' / 'eski sürümden kalan' demez
+      ---
+      duration_ms: 96.207034
+      type: 'test'
+      ...
+    # Subtest: kapı: uyarının alanı yok — familyOf('cash:before-opening') = null (tam kapıyı tetiklemez)
+    ok 4 - kapı: uyarının alanı yok — familyOf('cash:before-opening') = null (tam kapıyı tetiklemez)
+      ---
+      duration_ms: 0.33644
+      type: 'test'
+      ...
+    # Subtest: program yeniden açılınca: açılış günlüğü / sunucu günlüğü 'sapma' yazmaz; açılıştan sonraki İLK nakit yazımı süzgeçli yolda (scoped), sonrakiler de
+    ok 5 - program yeniden açılınca: açılış günlüğü / sunucu günlüğü 'sapma' yazmaz; açılıştan sonraki İLK nakit yazımı süzgeçli yolda (scoped), sonrakiler de
+      ---
+      duration_ms: 157.491414
+      type: 'test'
+      ...
+    # Subtest: uyarı gerçeği GİZLEMEZ: gerçek sapma (kapının görmediği tanınmayan ödeme yolu) + uyarı → sapma 'Fark Var' + 'yöneticiye bildirin', taramada günlük + zil YALNIZ sapma için; uyarı satırı yine 'Uyarı'
+    ok 6 - uyarı gerçeği GİZLEMEZ: gerçek sapma (kapının görmediği tanınmayan ödeme yolu) + uyarı → sapma 'Fark Var' + 'yöneticiye bildirin', taramada günlük + zil YALNIZ sapma için; uyarı satırı yine 'Uyarı'
+      ---
+      duration_ms: 26.110828
+      type: 'test'
+      ...
+    1..6
+ok 23 - Ç5-K tur 2 — Silinenler'den geri gelen açılış öncesi Kasa hareketi: uyarı SAPMA DEĞİL
+  ---
+  duration_ms: 991.800921
+  type: 'suite'
+  ...
+# (node:27130) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27130) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Birleşik tur 6 — uyarının kapının görmediği artışı: günlük + zil; geri yükleme, azalma, yeniden açılış, iki şirket, yedek, gün dönümü sessiz
+    # Subtest: dış yazım (açılış günü girilen Kasa hareketinin tarihi başka bağlantıdan açılış öncesine): Mutabakat Testi günlük + zil + sunucu günlüğü, cümle düzeninde; sunum AYNEN; aynı artış ikinci kez bildirilmez
+    ok 1 - dış yazım (açılış günü girilen Kasa hareketinin tarihi başka bağlantıdan açılış öncesine): Mutabakat Testi günlük + zil + sunucu günlüğü, cümle düzeninde; sunum AYNEN; aynı artış ikinci kez bildirilmez
+      ---
+      duration_ms: 326.17292
+      type: 'test'
+      ...
+    # Subtest: azalma sessiz ve işaret onu izler: satır silinince (3 → 2) günlük yok; sonraki dış artış 2 → 3 diye bildirilir (iş parçacığı taraması da bulur)
+    ok 2 - azalma sessiz ve işaret onu izler: satır silinince (3 → 2) günlük yok; sonraki dış artış 2 → 3 diye bildirilir (iş parçacığı taraması da bulur)
+      ---
+      duration_ms: 281.113856
+      type: 'test'
+      ...
+    # Subtest: geri yükleme sayılır, ama dış artışı ÖRTMEZ: aynı aralıkta 1 geri yükleme + 1 dış artış → 2 → 4, açıklanamayan 1 → bildirilir; yalnız geri yükleme → sessiz
+    ok 3 - geri yükleme sayılır, ama dış artışı ÖRTMEZ: aynı aralıkta 1 geri yükleme + 1 dış artış → 2 → 4, açıklanamayan 1 → bildirilir; yalnız geri yükleme → sessiz
+      ---
+      duration_ms: 87.784819
+      type: 'test'
+      ...
+    # Subtest: üst kaydın geri yüklenmesi (silinmiş taksit kartı; nakit satırı yazılmaz, görünürlüğü döner) sayılır: 5 → 6 sessiz
+    ok 4 - üst kaydın geri yüklenmesi (silinmiş taksit kartı; nakit satırı yazılmaz, görünürlüğü döner) sayılır: 5 → 6 sessiz
+      ---
+      duration_ms: 22.651466
+      type: 'test'
+      ...
+    # Subtest: iş parçacığı taraması sürerken kesinleşen geri yükleme yanlış alarm vermez (ön koşul zorla: geri yükleme taramanın anlık görüntüsüne girdi — ders 20)
+    ok 5 - iş parçacığı taraması sürerken kesinleşen geri yükleme yanlış alarm vermez (ön koşul zorla: geri yükleme taramanın anlık görüntüsüne girdi — ders 20)
+      ---
+      duration_ms: 304.894438
+      type: 'test'
+      ...
+    # Subtest: gün dönümü (sahte saat ertesi gün 00:30): tarama yeniden koşar, sayı aynı → sessiz; yeni günde dış artış bildirilir
+    ok 6 - gün dönümü (sahte saat ertesi gün 00:30): tarama yeniden koşar, sayı aynı → sessiz; yeni günde dış artış bildirilir
+      ---
+      duration_ms: 285.591331
+      type: 'test'
+      ...
+    # Subtest: program yeniden açılınca: aynı artış İKİNCİ kez bildirilmez (açılış, Mutabakat Testi, iş parçacığı); açılıştan sonraki ilk nakit yazımı süzgeçli yolda; açılıştan sonra, İLK taramadan önce yapılan dış artış bildirilir (sayı açılışta ölçüldü)
+    ok 7 - program yeniden açılınca: aynı artış İKİNCİ kez bildirilmez (açılış, Mutabakat Testi, iş parçacığı); açılıştan sonraki ilk nakit yazımı süzgeçli yolda; açılıştan sonra, İLK taramadan önce yapılan dış artış bildirilir (sayı açılışta ölçüldü)
+      ---
+      duration_ms: 395.027266
+      type: 'test'
+      ...
+# (node:27130) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: iki şirket + yedekten geri yükleme: 002'nin geri yüklemesi / dış artışı yalnız 002'de; 002 yedekten dönünce (sayı geri gelir) yanlış alarm yok
+    ok 8 - iki şirket + yedekten geri yükleme: 002'nin geri yüklemesi / dış artışı yalnız 002'de; 002 yedekten dönünce (sayı geri gelir) yanlış alarm yok
+      ---
+      duration_ms: 715.623845
+      type: 'test'
+      ...
+    1..8
+ok 24 - Birleşik tur 6 — uyarının kapının görmediği artışı: günlük + zil; geri yükleme, azalma, yeniden açılış, iki şirket, yedek, gün dönümü sessiz
+  ---
+  duration_ms: 3207.198294
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 6 — dar kontrolün betiği: v2.4.9'un GERÇEK koduyla üretilmiş veri (açılış öncesi Kasa Giriş + cari nakit tahsilat) — dış artış bildirilir
+    # Subtest: 2.4.9 verisi açılır (uyarı 2, günlük yok, ilk yazım süzgeçli); açılış günü 250 TL Kasa Giriş başka bağlantıdan 08.03'e → uyarı 3 (tutar Kasa bakiyesinde kalır — açılışın içindeki günle iki kez), günlük + zil
+    ok 1 - 2.4.9 verisi açılır (uyarı 2, günlük yok, ilk yazım süzgeçli); açılış günü 250 TL Kasa Giriş başka bağlantıdan 08.03'e → uyarı 3 (tutar Kasa bakiyesinde kalır — açılışın içindeki günle iki kez), günlük + zil
+      ---
+      duration_ms: 924.157851
+      type: 'test'
+      ...
+    1..1
+ok 25 - Birleşik tur 6 — dar kontrolün betiği: v2.4.9'un GERÇEK koduyla üretilmiş veri (açılış öncesi Kasa Giriş + cari nakit tahsilat) — dış artış bildirilir
+  ---
+  duration_ms: 942.479389
+  type: 'suite'
+  ...
+# (node:27174) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: S94 = A — Kasa açılışından önce tarihli Vergi Ödemesi: düzeltme reddinin iletisi çıkış yolunu söyler; iki yol da çalışır
+    # Subtest: açılıştan önce tarihli Vergi Ödemesi Kasa'dan düzeltilmek istenince 409 cash-tax-payment: ileti çıkış yolunu söyler (açılış günü / sonrası ya da açılışı öne almak); satır değişmez
+    ok 1 - açılıştan önce tarihli Vergi Ödemesi Kasa'dan düzeltilmek istenince 409 cash-tax-payment: ileti çıkış yolunu söyler (açılış günü / sonrası ya da açılışı öne almak); satır değişmez
+      ---
+      duration_ms: 4.419134
+      type: 'test'
+      ...
+    # Subtest: açılıştan SONRA tarihli Vergi Ödemesi: ileti değişmedi (çıkış yolu cümlesi yok)
+    ok 2 - açılıştan SONRA tarihli Vergi Ödemesi: ileti değişmedi (çıkış yolu cümlesi yok)
+      ---
+      duration_ms: 4.898396
+      type: 'test'
+      ...
+    # Subtest: iletideki yol 1: sil + aynı tarihle yeniden giriş 409 cash-before-opening (S12, istisna yok); açılış GÜNÜ tarihiyle 200; uyarı kalkar
+    ok 3 - iletideki yol 1: sil + aynı tarihle yeniden giriş 409 cash-before-opening (S12, istisna yok); açılış GÜNÜ tarihiyle 200; uyarı kalkar
+      ---
+      duration_ms: 52.787635
+      type: 'test'
+      ...
+    # Subtest: açılış GÜNÜ tarihli Vergi Ödemesi Kasa'dan düzeltilmek istenince: 409 cash-tax-payment, ileti değişmedi (çıkış yolu cümlesi yok — açılış günü 'önce' sayılmaz)
+    ok 4 - açılış GÜNÜ tarihli Vergi Ödemesi Kasa'dan düzeltilmek istenince: 409 cash-tax-payment, ileti değişmedi (çıkış yolu cümlesi yok — açılış günü 'önce' sayılmaz)
+      ---
+      duration_ms: 4.577263
+      type: 'test'
+      ...
+    # Subtest: iletideki yol 2: yönetici Kasa açılışını öne alır (04.03) → açılıştan önceki güne (05.03) Vergi Ödemesi 200
+    ok 5 - iletideki yol 2: yönetici Kasa açılışını öne alır (04.03) → açılıştan önceki güne (05.03) Vergi Ödemesi 200
+      ---
+      duration_ms: 34.384735
+      type: 'test'
+      ...
+    1..5
+ok 26 - S94 = A — Kasa açılışından önce tarihli Vergi Ödemesi: düzeltme reddinin iletisi çıkış yolunu söyler; iki yol da çalışır
+  ---
+  duration_ms: 718.642055
+  type: 'suite'
+  ...
+# (node:27219) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Koruma — eski sürüm fikstürleri bugünkü kodla açılınca taban sapması hiçbir yazım ailesini tam kapıya düşürmez
+    # Subtest: fikstür listesi taramayla bulundu (19): surum-2.0.16-zincir, surum-2.0.17-zincir, surum-2.0.18-zincir, surum-2.0.19-cakisma, surum-2.0.19-eski, surum-2.0.19-zincir, surum-2.0.20-zincir, surum-2.0.21-zincir, surum-2.0.22-zincir, surum-2.0.23-zincir, surum-2.0.24-zincir, surum-2.0.25-zincir, surum-2.0.26-iade, surum-2.0.26-onarim-250, surum-2.0.26-turler, surum-2.0.26-zincir, surum-2.4.3-baslarken, surum-2.4.9-s127, surum-2.4.9-s127-kilitsiz
+    ok 1 - fikstür listesi taramayla bulundu (19): surum-2.0.16-zincir, surum-2.0.17-zincir, surum-2.0.18-zincir, surum-2.0.19-cakisma, surum-2.0.19-eski, surum-2.0.19-zincir, surum-2.0.20-zincir, surum-2.0.21-zincir, surum-2.0.22-zincir, surum-2.0.23-zincir, surum-2.0.24-zincir, surum-2.0.25-zincir, surum-2.0.26-iade, surum-2.0.26-onarim-250, surum-2.0.26-turler, surum-2.0.26-zincir, surum-2.4.3-baslarken, surum-2.4.9-s127, surum-2.4.9-s127-kilitsiz
+      ---
+      duration_ms: 0.863611
+      type: 'test'
+      ...
+# \# surum-2.0.16-zincir: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.16-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 2 - surum-2.0.16-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 534.768613
+      type: 'test'
+      ...
+# \# surum-2.0.17-zincir: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.17-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 3 - surum-2.0.17-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 795.045188
+      type: 'test'
+      ...
+# \# surum-2.0.18-zincir: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"004","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.18-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 4 - surum-2.0.18-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 1174.215491
+      type: 'test'
+      ...
+# \# surum-2.0.19-cakisma: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"005","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.19-cakisma: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 5 - surum-2.0.19-cakisma: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 620.436378
+      type: 'test'
+      ...
+# \# surum-2.0.19-eski: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.19-eski: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 6 - surum-2.0.19-eski: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 608.599945
+      type: 'test'
+      ...
+# \# surum-2.0.19-zincir: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"004","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.19-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 7 - surum-2.0.19-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 1147.223625
+      type: 'test'
+      ...
+# \# surum-2.0.20-zincir: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"004","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.20-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 8 - surum-2.0.20-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 1197.920131
+      type: 'test'
+      ...
+# \# surum-2.0.21-zincir: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"004","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.21-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 9 - surum-2.0.21-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 1283.557671
+      type: 'test'
+      ...
+# \# surum-2.0.22-zincir: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"004","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.22-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 10 - surum-2.0.22-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 1155.322324
+      type: 'test'
+      ...
+# \# surum-2.0.23-zincir: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"004","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.23-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 11 - surum-2.0.23-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 954.376101
+      type: 'test'
+      ...
+# (node:27219) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# \# surum-2.0.24-zincir: [{"sirket":"001","kuralFarki":true,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"004","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.24-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 12 - surum-2.0.24-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 1169.539279
+      type: 'test'
+      ...
+# (node:27219) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# \# surum-2.0.25-zincir: [{"sirket":"001","kuralFarki":true,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"004","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.25-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 13 - surum-2.0.25-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 1129.989862
+      type: 'test'
+      ...
+# (node:27219) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# \# surum-2.0.26-iade: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.26-iade: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 14 - surum-2.0.26-iade: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 383.108472
+      type: 'test'
+      ...
+# (node:27219) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# \# surum-2.0.26-onarim-250: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.26-onarim-250: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 15 - surum-2.0.26-onarim-250: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 523.561724
+      type: 'test'
+      ...
+# (node:27219) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# \# surum-2.0.26-turler: [{"sirket":"001","kuralFarki":true,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"004","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.26-turler: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 16 - surum-2.0.26-turler: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 1172.891328
+      type: 'test'
+      ...
+# (node:27219) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# \# surum-2.0.26-zincir: [{"sirket":"001","kuralFarki":true,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"007","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"004","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.0.26-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 17 - surum-2.0.26-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 1140.67286
+      type: 'test'
+      ...
+# \# surum-2.4.3-baslarken: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}},{"sirket":"002","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.4.3-baslarken: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 18 - surum-2.4.3-baslarken: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 327.433693
+      type: 'test'
+      ...
+# (node:27219) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# \# surum-2.4.9-s127: [{"sirket":"001","kuralFarki":true,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.4.9-s127: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 19 - surum-2.4.9-s127: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 273.417322
+      type: 'test'
+      ...
+# \# surum-2.4.9-s127-kilitsiz: [{"sirket":"001","kuralFarki":false,"sapmalar":[],"zararli":[],"yol":{"borcYaz":"scoped","kasaGiris":"scoped"}}]
+    # Subtest: surum-2.4.9-s127-kilitsiz: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+    ok 20 - surum-2.4.9-s127-kilitsiz: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda
+      ---
+      duration_ms: 153.395641
+      type: 'test'
+      ...
+    1..20
+ok 27 - Koruma — eski sürüm fikstürleri bugünkü kodla açılınca taban sapması hiçbir yazım ailesini tam kapıya düşürmez
+  ---
+  duration_ms: 15748.826047
+  type: 'suite'
+  ...
+# (node:27226) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27226) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç5-A tur 1d — Kural Değişikliği Farkı uyarıdır, yeni sapma değildir
+    # Subtest: [1] kilitli eski veri: dondurmadan sonraki İLK ARKA PLAN taraması sessiz (günlük / zil / sunucu yok), uyarı satırı var; ardından satır içi de sessiz
+    ok 1 - [1] kilitli eski veri: dondurmadan sonraki İLK ARKA PLAN taraması sessiz (günlük / zil / sunucu yok), uyarı satırı var; ardından satır içi de sessiz
+      ---
+      duration_ms: 1026.264185
+      type: 'test'
+      ...
+# (node:27226) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: [3] dondurmadan sonra yeniden açılış: taban satırı / sunucu 'kalan sapma' iletisi kural farkını taşımaz, ilk taramalar sessiz; kapı dışı kilitli kaynak değişimi yine bulunur
+    ok 2 - [3] dondurmadan sonra yeniden açılış: taban satırı / sunucu 'kalan sapma' iletisi kural farkını taşımaz, ilk taramalar sessiz; kapı dışı kilitli kaynak değişimi yine bulunur
+      ---
+      duration_ms: 1507.957437
+      type: 'test'
+      ...
+# (node:27226) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: [1] kilitli eski veri: dondurmadan sonraki İLK tarama SATIR İÇİ yoldan (Mutabakat Testi ucu) sessiz, uyarı satırı yanıtta
+    ok 3 - [1] kilitli eski veri: dondurmadan sonraki İLK tarama SATIR İÇİ yoldan (Mutabakat Testi ucu) sessiz, uyarı satırı yanıtta
+      ---
+      duration_ms: 1189.317668
+      type: 'test'
+      ...
+# (node:27226) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: [2] GERÇEK yeni sapma (kural farkı dışı) dondurmadan SONRA, kural farkıyla AYNI taramada: bulunur, günlüğe yazılır, zil + sunucu iletisi; kural farkı bulgu değil
+    ok 4 - [2] GERÇEK yeni sapma (kural farkı dışı) dondurmadan SONRA, kural farkıyla AYNI taramada: bulunur, günlüğe yazılır, zil + sunucu iletisi; kural farkı bulgu değil
+      ---
+      duration_ms: 971.193333
+      type: 'test'
+      ...
+# (node:27226) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: [4] kilitsiz veri: kural farkı denetimi yok, ilk tarama sessiz; gerçek sapma eskisi gibi bulunur (gerileme yok)
+    ok 5 - [4] kilitsiz veri: kural farkı denetimi yok, ilk tarama sessiz; gerçek sapma eskisi gibi bulunur (gerileme yok)
+      ---
+      duration_ms: 654.784089
+      type: 'test'
+      ...
+    1..5
+ok 28 - Ç5-A tur 1d — Kural Değişikliği Farkı uyarıdır, yeni sapma değildir
+  ---
+  duration_ms: 5351.09234
+  type: 'suite'
+  ...
+# (node:27281) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: mutabakat aracı: Kasa açılış uyarısı 'Uyarı' başlığında, sapma değil
+    # Subtest: yalnız uyarı: çıkış 0; '✓ … tutarlı' + '⚠ Uyarı' başlığında uyarının adı, sayısı ve ne yapılacağı; 'sapma' listesi yok; JSON ok true, notices; dosya değişmez
+    ok 1 - yalnız uyarı: çıkış 0; '✓ … tutarlı' + '⚠ Uyarı' başlığında uyarının adı, sayısı ve ne yapılacağı; 'sapma' listesi yok; JSON ok true, notices; dosya değişmez
+      ---
+      duration_ms: 1177.22731
+      type: 'test'
+      ...
+    # Subtest: gerçek sapma + uyarı: çıkış 1; sapma listesinde yalnız gerçek sapmalar (uyarı YOK), uyarı ayrı başlıkta
+    ok 2 - gerçek sapma + uyarı: çıkış 1; sapma listesinde yalnız gerçek sapmalar (uyarı YOK), uyarı ayrı başlıkta
+      ---
+      duration_ms: 608.985547
+      type: 'test'
+      ...
+    1..2
+ok 29 - mutabakat aracı: Kasa açılış uyarısı 'Uyarı' başlığında, sapma değil
+  ---
+  duration_ms: 2439.223711
+  type: 'suite'
+  ...
+1..29
+# tests 119
+# suites 29
+# pass 119
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 27761.435077
+
+[kanit] b7-hiz-sonrasi-UTC: GEÇTİ · çıkış 0 · 119/119 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit e4450f6 +1 değişmiş dosya +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4
