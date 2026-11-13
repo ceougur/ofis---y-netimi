@@ -400,3 +400,37 @@ sunucunun yanıtında kalemler VAR), yeni yardımcı (test/e2e/zil-oku.mjs — s
   net görünümde (G1) ise önce müşteriye verilen avansı / başka kartın taksitini — fatura listesi "açık 0", kart / Vade Takip / zil "783,88 açık". S99 = A "aynı sayı" ile çelişir
   (neden adayı: G2'de karşı tarafın avansına karşı yalnız cari kartı parası ve evrak "bağsız para" sayılıyor, kart fazlası sayılmıyor). Bakiye iki görünümde aynı. Yeniden üretim ve
   döküm: docs/kanit/2026-11-12/c5bkd-s99-bulgu.
+
+## 15. Birleşik tur 8 (13.11.2026; Ç5-B'nin son küçük turu — S129 = A'nın unutulan ekranları, S142, S151 / S158, S150, S153, S145 / S155 + dar kontrol küçükleri)
+Görev metni docs/devir/2.5.0-DEVAM/birlesik8-istem.txt; dar kontrol raporları dk-c5bkap2-rapor.md (ORTA-A, ORTA-B adayı, DÜŞÜK-A … E) ve dk-b7-rapor.md (ORTA-1, DÜŞÜK-1). Karar metinleri değişmedi.
+
+### 15.1 KART GÖSTERGELERİNİN YER TABLOSU (İş 1 (a); kod değişmeden ÖNCE kaynak taramasıyla)
+Tarama: `grep -rn "allocate(\|shape(\|withQueue\|queueLedger\|shownTotalsOf\|summariesByAccount\|forAccount(\|forCase(\|dueItems\|openItems" server` ve
+`grep -rn "totals\.paid\|totals\.remaining\|ownRemaining\|\.next\b\|planRemaining\|overdueInstallment" client/assets server`. "Kendi" = kartın kendi hesabı (lib/plans.mjs allocate);
+"kuyruk" = kart penceresinin görünümü (routes/plans.mjs withQueue — S129 = A). Önceki dar kontrolün listesinde 5 ve 6 numaralı yerler YOKTU (ORTA-A).
+
+| # | Yer (ekran / çıktı) | Uç / kaynak | Gösterilen alanlar | Önce | Sonra |
+|---|---|---|---|---|---|
+| 1 | Kart penceresi (göstergeler, taksit satırları, Geciken kutusu, durum) | GET /api/workspace/plans/:id → detailView | Tahsil Edilen / Kalan / Geciken, satır Ödenen / Kalan / durum, sıradaki | kuyruk | kuyruk (aynı) |
+| 2 | Taksitler listesi — her sekme (Devam Eden, Geciken, Biten, Kapalı, Tümü) + liste göstergeleri | GET /api/workspace/plans → list | Ödenen / Kalan / Geciken / durum / sıradaki vade | kuyruk | kuyruk (aynı) |
+| 3 | Taksit Listesi PDF / Yazdır | GET /plans/liste.pdf → list | aynı sütunlar | kuyruk | kuyruk (aynı) |
+| 4 | Taksit ekstresi PDF, makbuz PDF | GET /plans/:id/ekstre.pdf, /entries/:id/makbuz.pdf → detailView | Toplam / Tahsil edilen / Kalan, satırlar | kuyruk | kuyruk (aynı) |
+| 5 | KAYIT DETAYI "Taksit Planı" bölümü (client/assets/hof-workspace.js casePlanHtml) | GET /api/workspace/cases/:key/plans → forCase | Ödenen · % / Güncel Bakiye / sıradaki taksit / satır Kalan + durum / "N taksit gecikti" | **kendi** (shape) | **kuyruk** (forCase → withQueue); ₺ düğmesi kendi kalanından (S118 = B) |
+| 6 | Kayıt detayından açılan Tahsilat penceresi (hof-workspace.js openPlanCollect) | aynı uç (forCase) | Toplam / Ödenen / Kalan / Sıradaki, satır Ödenen / Kalan | **kendi** | **kuyruk**; "Tahsil Et" ve "Serbest Tutar" kendi kalanından (S118 = B) |
+| 7 | Kayıttan açılan tahsilat formu (HOF.plans.collect) | forCase öğesi | sınır / soru / önerilen tutar / "Hangi Taksite" | kendi (S118 = B) | kendi (aynı; ownRemaining / ownNext artık forCase'de de kuyruktan AYRI alanlarda) |
+| 8 | Cari kartı — Taksit Kartları satırı (hof-accounts.js planRow) | GET /api/workspace/accounts/:id → detail(shown) | Tahsil Edilen / Kalan | kuyruk (shownTotalsOf) | kuyruk (queueSummaryOf) |
+| 8b | — aynı satırın durum etiketi ("N taksit gecikti" / Tamamlandı / Devam Ediyor) ve "sıradaki" vadesi | aynı | state / totals.overdueCount / next | **kendi** | **kuyruk** (S142 = A) |
+| 9 | Cari kartı "Taksitten Kalan" (totals.planRemaining) | aynı | Σ Kalan | kuyruk | kuyruk (aynı) |
+| 10 | Cari kartı Tahsilat seçicisi "Taksite Yaz · Kalan · sıradaki · N taksit gecikti" (hof-accounts.js collect) | cari kartı özeti | Kalan; sıradaki / gecikti | Kalan kuyruk, **sıradaki / gecikti kendi** | hepsi **kuyruk**; hangi kartın listelendiği kendi kalanından (S118 = B — aynı) |
+| 11 | Çek / Senet formu "Taksite Say" seçenek metni (hof-cheques.js) | cari kartı özeti | kalan · sıradaki | kalan kuyruk, **sıradaki kendi** | ikisi **kuyruk** |
+| 12 | Cari Listesi satırı "Taksitten Kalan · N kart · N geciken · sıradaki taksit" (+ mobil cari listesi aynı uç) | GET /api/workspace/accounts → list (summariesByAccount) | Taksitten Kalan; N geciken; sıradaki | Taksitten Kalan kuyruk, **N geciken / sıradaki kendi** | hepsi **kuyruk** (planOverdueCount, next; eski alanlar overdueInstallment* karşılaştırma için kendi hesabında KALDI) |
+| 13 | Cari Listesi PDF / Excel | list | Taksitten Kalan | kuyruk | kuyruk (aynı) |
+| 14 | Cari ekstresi PDF özeti ("Taksitlerden Kalan") | viewOf | Σ Kalan | kuyruk | kuyruk (aynı) |
+| 15 | Rapor Merkezi — Taksit Kartları, Taksit Vade Listesi, Geciken Taksitler, Aylık Performans | report-center list / installmentReport / queueLedger | Ödenen / Kalan / Geciken / durum / sıradaki | kuyruk | kuyruk (aynı) |
+| 16 | Vade Takip, zil, takvim, Nakit Akışı | dueItems / openItems (withQueue) | taksit kalanı (kalem) | kuyruk | kuyruk (aynı) |
+| 17 | Mobil: /api/mobil/plans (özet sayısı), /api/mobil/accounts(/:id) | 2, 8, 12 ile aynı uçlar | — | 2 / 8 / 12 gibi | 2 / 8 / 12 gibi |
+| 18 | WhatsApp Ödeme Hatırlatma (lib/whatsapp/queue.mjs overdueOf — en eski gecikmiş taksit tarihi; accounts.waFacts) | kartın kendi özeti | sıradaki taksitin vadesi, eski "Geciken" | kendi | kendi — AYNEN (Ç5-C; bu turun kapsamı dışı) |
+| 19 | Mutabakat Testi, mutabakat kapısı / motoru, K8 sınırı, onarım / göç karşılaştırmaları | list(AUDITOR / ids), ownPaid / ownRemaining | kartın kendi hesabı | kendi | kendi — AYNEN (iç çağıranlar) |
+| 20 | Kayıt geçmişi (GET /cases/:key/history planPaid) ve kart "Hareketler" listesi | plan_entries | kartın GERÇEK hareketleri (gösterge değil) | hareket | hareket — AYNEN |
+
+Kalıcı tarama testi (test/tyk-birlesik8-250.test.mjs "kaynak taraması"): kart kaydını okuyan her uç (routes/plans.mjs `shape(` çağıranları) bu tablodaki bir sınıfa bağlıdır; yeni bir çağıran eklenince test kırmızı olur.
