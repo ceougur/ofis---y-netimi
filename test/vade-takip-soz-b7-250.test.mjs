@@ -130,10 +130,13 @@ describe("Birleşik tur 7 İş 3 — Vade Takip 'Gecikmiş Tahsilat / Gecikmiş 
   // Birleşik tur 8 (S150 = A — KULLANICI KARARI 13.11 06:12 AYNEN: "Vade Takip'in 'Gecikmiş' hazır aralığı durumu Gecikmiş olan HER kalemi gösterir (sözü bugün ya da ileride
   // olan gecikmiş borç dahil; 'Gecikmiş Tahsilat' göstergesi her aralıkta aynı sayı)"): 'Gecikmiş' hazır aralığında tarih üst sınırı yerine durum — bugünden önceki her kalem +
   // durumu Gecikmiş olan kalem.
-  const inRange = (item, data, option = {}) => (option.lateOnly ? item.date < TODAY || item.state === "overdue" : !(data.to && item.date > data.to) && !(data.from && item.date < data.from && !(data.late && item.date < TODAY)));
+  // Birleşik tur 8b (S150 = A'nın 'Bugün' / '7 Gün' kolu; baş mimar yorumu — gösterge ile satırlar ayrışmaz): bu iki hazır aralıkta aralığın kendi kalemleri + durumu Gecikmiş olan
+  // her kalem (sözü aralığın bitişinden sonra olan gecikmiş borç dahil).
+  const ranged = (item, data) => !(data.to && item.date > data.to) && !(data.from && item.date < data.from && !(data.late && item.date < TODAY));
+  const inRange = (item, data, option = {}) => (option.lateOnly ? item.date < TODAY || item.state === "overdue" : option.nearLate ? ranged(item, data) || item.state === "overdue" : ranged(item, data));
   const sum = (items, direction) => Math.round(items.filter(item => item.direction === direction && item.state === "overdue").reduce((s, item) => s + item.amount, 0) * 100) / 100;
   const OPTIONS = [
-    ...["late", "today", "next7", "next30", "next90", "open"].map(preset => ({ ad: `aralık ${preset}`, q: `preset=${preset}`, lateOnly: preset === "late" })),
+    ...["late", "today", "next7", "next30", "next90", "open"].map(preset => ({ ad: `aralık ${preset}`, q: `preset=${preset}`, lateOnly: preset === "late", nearLate: preset === "today" || preset === "next7" })),
     { ad: "geniş özel aralık", q: `from=${day(-800)}&to=${day(800)}` },
     { ad: "gecikmişler hariç (late=0)", q: `from=${day(0)}&to=${day(60)}&late=0` },
     ...["account", "invoice", "plan"].map(source => ({ ad: `kaynak ${source}`, q: `preset=open&sources=${source}`, source })),
