@@ -1,0 +1,51 @@
+{
+ "P1_stokIadesi": {
+  "iade": 200,
+  "tahsilEdilen": 0,
+  "kalan": 700,
+  "kendi": [
+   0,
+   1000
+  ],
+  "toplam": 1000,
+  "satirlar": [
+   "500|öd 0|kal 200|overdue",
+   "500|öd 0|kal 500|open"
+  ],
+  "hareketler": 0,
+  "bakiye": 1200,
+  "gecikmis": 200
+ },
+ "P2_iadeFaturasi": {
+  "iade": "200 ",
+  "tahsilEdilen": 0,
+  "kalan": 500,
+  "kendi": [
+   0,
+   500
+  ],
+  "toplam": 500,
+  "satirlar": [
+   "500|öd 0|kal 500|overdue"
+  ],
+  "hareketler": 0,
+  "bakiye": 500,
+  "gecikmis": 500
+ },
+ "P3_bagsizTahsilat": {
+  "tahsilEdilen": 300,
+  "kalan": 700,
+  "kendi": [
+   0,
+   1000
+  ],
+  "toplam": 1000,
+  "satirlar": [
+   "500|öd 300|kal 200|overdue",
+   "500|öd 0|kal 500|open"
+  ],
+  "hareketler": 0,
+  "bakiye": 1200,
+  "gecikmis": 200
+ }
+}

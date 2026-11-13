@@ -1,0 +1,32 @@
+{
+  "ad": "b8-is6-fark-UTC",
+  "komut": "node --test test/tyk-fark-v249-250.test.mjs",
+  "commit": "b07c5b239a1a8b270b7b05fbfaf1c3e30120b3e6",
+  "dal": "worktree-agent-a2ba3cc62b2d80923",
+  "kirli": 5,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T10:47:57.789Z",
+  "sure_sn": 1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 1,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-kanit/2026-11-13/b8-is6-fark-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a2ba3cc62b2d80923",
+  "ham_cikti_sha256": "1e1c0e2dc604cee56a7cc7177a964bb3e4f2b47502a46e82a7403d2cd7f9c523",
+  "ham_cikti_bayt": 2192
+}

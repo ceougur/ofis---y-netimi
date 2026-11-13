@@ -1,0 +1,68 @@
+11:48:35 · yük 1.41 1.95 3.96 · BAŞLADI (evre 1)
+kahin-maliyet çıkış 0 :: [kanit] kahin-maliyet: GEÇTİ · çıkış 0 · 41306/41306 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 6ab19f0 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · No
+kahin-mobil-yazma çıkış 0 :: [kanit] kahin-mobil-yazma: GEÇTİ · çıkış 0 · 54/54 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 6ab19f0 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node
+kahin-defter çıkış 0 :: [kanit] kahin-defter: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 6ab19f0 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v2
+kahin-cari çıkış 0 :: [kanit] kahin-cari: GEÇTİ · çıkış 0 · 15646/15646 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 6ab19f0 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node 
+kahin-tutar çıkış 0 :: [kanit] kahin-tutar: GEÇTİ · çıkış 0 · 3559/3559 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 6ab19f0 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v
+kahin-ebelge-senaryo çıkış 0 :: [kanit] kahin-ebelge-senaryo: GEÇTİ · çıkış 0 · 27/27 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 6ab19f0 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · N
+kahin-maliyet çıkış 0 :: [kanit] kahin-maliyet: GEÇTİ · çıkış 0 · 41306/41306 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 6ab19f0 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · No
+kahin-mobil-yazma çıkış 0 :: [kanit] kahin-mobil-yazma: GEÇTİ · çıkış 0 · 54/54 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 6ab19f0 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node
+kahin-defter çıkış 0 :: [kanit] kahin-defter: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v445 x64 · Node v22.23.4
+kahin-cari çıkış 0 :: [kanit] kahin-cari: GEÇTİ · çıkış 0 · 15646/15646 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v445 x64 · Node v22.23.4
+kahin-tutar çıkış 0 :: [kanit] kahin-tutar: GEÇTİ · çıkış 0 · 3559/3559 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v445 x64 · Node v22.23.4
+kahin-ebelge-senaryo çıkış 0 :: [kanit] kahin-ebelge-senaryo: GEÇTİ · çıkış 0 · 27/27 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v445 x64 · Node v22.23.4
+kahin-maliyet çıkış 0 :: [kanit] kahin-maliyet: GEÇTİ · çıkış 0 · 41306/41306 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v445 x64 · Node v22.23.4
+kahin-mobil-yazma çıkış 1 :: [kanit] kahin-mobil-yazma: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 53/54 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit undefined · lin
+kahin-defter çıkış 0 :: [kanit] kahin-defter: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v445 x64 · Node v22.23.4
+kahin-cari çıkış 0 :: [kanit] kahin-cari: GEÇTİ · çıkış 0 · 15646/15646 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v445 x64 · Node v22.23.4
+kahin-tutar çıkış 0 :: [kanit] kahin-tutar: GEÇTİ · çıkış 0 · 3559/3559 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v445 x64 · Node v22.23.4
+kahin-ebelge-senaryo çıkış 0 :: [kanit] kahin-ebelge-senaryo: GEÇTİ · çıkış 0 · 27/27 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v445 x64 · Node v22.23.4
+kahin-maliyet çıkış 0 :: [kanit] kahin-maliyet: GEÇTİ · çıkış 0 · 41306/41306 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v445 x64 · Node v22.23.4
+kahin-mobil-yazma çıkış 1 :: [kanit] kahin-mobil-yazma: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 53/54 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit undefined · lin
+12:31:09 · yük 2.34 2.55 3.18 · A bitti
+12:35:45 · yük 2.07 2.24 2.88 · B k16 cari UTC çıkış 1
+12:40:31 · yük 2.47 2.21 2.69 · B k16 cari Europe/Istanbul çıkış 1
+12:41:34 · yük 2.83 2.35 2.71 · C saf 121001 çıkış 0
+12:42:59 · yük 2.56 2.45 2.72 · C saf 131001 çıkış 0
+12:45:00 · yük 2.37 2.44 2.69 · C saf 141001 çıkış 0
+12:45:32 · yük 2.37 2.44 2.68 · C saf 151001 çıkış 0
+12:46:08 · yük 2.38 2.44 2.67 · C saf 161001 çıkış 0
+12:48:00 · yük 2.87 2.63 2.71 · D mutasyon taban çıkış 1
+12:57:58 · yük 2.66 2.68 2.70 · D mutasyon yeni çıkış 1
+12:57:58 · yük 2.66 2.68 2.70 · BİTTİ (evre 1)
+13:18:56 · yük 1.31 1.84 2.18 · BAŞLADI (evre 2)
+13:18:56 · yük 1.31 1.84 2.18 · E komşu dosya sayısı 383
+13:18:56 · yük 1.31 1.84 2.18 · E komşu UTC çıkış 1 :: 
+13:18:56 · yük 1.31 1.84 2.18 · E komşu Europe/Istanbul çıkış 1 :: 
+13:18:56 · yük 1.31 1.84 2.18 · F e2e run çıkış 1 :: 
+13:18:56 · yük 1.31 1.84 2.18 · F e2e senaryo-211 çıkış 1 :: 
+13:18:56 · yük 1.31 1.84 2.18 · F e2e senaryo-212 çıkış 1 :: 
+13:18:56 · yük 1.31 1.84 2.18 · F e2e senaryo-213 çıkış 1 :: 
+13:18:56 · yük 1.31 1.84 2.18 · F e2e senaryo-214 çıkış 1 :: 
+13:18:56 · yük 1.31 1.84 2.18 · F e2e senaryo-217 çıkış 1 :: 
+13:18:56 · yük 1.31 1.84 2.18 · F e2e senaryo-218 çıkış 1 :: 
+13:18:56 · yük 1.31 1.84 2.18 · F e2e senaryo-raporlar çıkış 1 :: 
+13:18:56 · yük 1.31 1.84 2.18 · F e2e senaryo-taslak çıkış 1 :: 
+13:18:56 · yük 1.31 1.84 2.18 · F e2e ui-ux-217 çıkış 1 :: 
+13:18:56 · yük 1.31 1.84 2.18 · F e2e uiux-a-243 çıkış 1 :: 
+13:18:56 · yük 1.31 1.84 2.18 · F e2e senaryo-banka-210 çıkış 1 :: 
+13:18:56 · yük 1.31 1.84 2.18 · F e2e senaryo-banka-210b çıkış 1 :: 
+13:18:56 · yük 1.31 1.84 2.18 · F e2e senaryo-tahsile-ver-220 çıkış 1 :: 
+13:18:56 · yük 1.31 1.84 2.18 · F e2e senaryo-k8-230 çıkış 1 :: 
+13:18:56 · yük 1.31 1.84 2.18 · F e2e senaryo-tyk-tur2a-250 çıkış 1 :: 
+13:18:56 · yük 1.31 1.84 2.18 · F e2e senaryo-supheli-230 çıkış 1 :: 
+13:18:56 · yük 1.31 1.84 2.18 · F e2e senaryo-iz5-230 çıkış 1 :: 
+13:18:56 · yük 1.31 1.84 2.18 · F e2e senaryo-cari-243 çıkış 1 :: 
+13:18:56 · yük 1.31 1.84 2.18 · F e2e senaryo-kayit-tahsilat-244 çıkış 1 :: 
+13:18:56 · yük 1.31 1.84 2.18 · F e2e senaryo-cari-vade-245 çıkış 1 :: 
+13:18:56 · yük 1.31 1.84 2.18 · F e2e senaryo-kasa-acilis-uyari-250 çıkış 1 :: 
+13:18:56 · yük 1.31 1.84 2.18 · F e2e senaryo-whatsapp-kvkk-250 çıkış 1 :: 
+13:18:56 · yük 1.31 1.84 2.18 · F e2e senaryo-ekstre-ayrinti-247 çıkış 1 :: 
+13:18:56 · yük 1.31 1.84 2.18 · F e2e senaryo-defter-243 çıkış 1 :: 
+13:18:56 · yük 1.31 1.84 2.18 · F e2e banka-210-ekran-aciklama-yetki çıkış 1 :: 
+13:18:56 · yük 1.31 1.84 2.18 · F e2e gg244-esmm-gonder çıkış 1 :: 
+13:18:56 · yük 1.31 1.84 2.18 · F e2e suzgec çıkış 1
+13:18:56 · yük 1.31 1.84 2.18 · BİTTİ (evre 2)
+14:33:57 · yük 1.45 2.21 2.94 · BAŞLADI (evre 2e)
+14:33:57 · yük 1.45 2.21 2.94 · E komşu dosya sayısı 383
+14:48:29 · yük 4.22 4.88 4.29 · E komşu UTC çıkış 1 :: [kanit] b8-komsu-UTC: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 4185/4186 geçti, 1 başarısız, 0 iptal, 0 atlanan · comm

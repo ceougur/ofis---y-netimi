@@ -1,0 +1,43 @@
+{
+  "ad": "b8-is3-grupB-UTC",
+  "komut": "node --test --test-concurrency=2 test/banka-210-asama78-modul.test.mjs test/banka-210-kurumsal-kart.test.mjs test/banka-220-pos-moduller.test.mjs test/banka-230-k8-taksit.test.mjs test/banka-230-supheli-bozma.test.mjs test/banka-230-supheli-ekran.test.mjs test/banka-230-supheli.test.mjs test/bulgu-223.test.mjs test/cari-hareket-249.test.mjs test/defter-213.test.mjs test/defter-243-raporlar.test.mjs test/ekstre-ayrinti-245.test.mjs test/goc-246-iade-bagi.test.mjs test/hesap-plani-sinif-250.test.mjs test/iade-210-onarim.test.mjs test/iade-geri-odeme-246.test.mjs test/kapama-ks7-245.test.mjs test/kapama-tek-gecis-245.test.mjs test/kasa-acilis-once-250.test.mjs test/mutabakat-213.test.mjs test/raporlar-209.test.mjs test/supheli-230-ayni-gun-degersiz.test.mjs test/supheli-230-elestirmen.test.mjs test/supheli-230-kontrol2.test.mjs test/supheli-230-sil-cakisma.test.mjs test/supheli-230-yargic.test.mjs test/supheli-240-k4-iptal.test.mjs test/tablodan-aktar-244.test.mjs test/takvim-govde-250.test.mjs test/tyk-250.test.mjs test/tyk-api-250.test.mjs test/tyk-birlesik8-ekranlar-250.test.mjs test/tyk-birlesik8-iade-250.test.mjs test/tyk-fark-v249-250.test.mjs test/tyk-goc-249-250.test.mjs test/tyk-kapanis-250.test.mjs test/tyk-kapanis-dis-250.test.mjs test/tyk-kapanis-sigma-250.test.mjs test/tyk-kilit-taksitli-250.test.mjs test/tyk-onbellek-250.test.mjs test/tyk-son-250.test.mjs test/tyk-tur2a-250.test.mjs test/tyk-tur2b1-250.test.mjs test/tyk-tur2b2-250.test.mjs test/ux18-cek-fatura-244.test.mjs test/vade-takip-soz-b7-250.test.mjs",
+  "commit": "3ceb1aed046ccc32689c2495d35b69864e92af53",
+  "dal": "worktree-agent-a2ba3cc62b2d80923",
+  "kirli": 5,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T10:31:03.018Z",
+  "sure_sn": 66.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 605,
+    "gecen": 603,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Birleşik tur 7 İş 3 — Vade Takip 'Gecikmiş Tahsilat / Gecikmiş Ödeme' her aralık / kaynak / yön seçeneğinde › her seçenekte: toplam alanı = satırlardan = girdilerden beklenen (gecikmiş tahsilat ve ödeme)",
+      "konum": "test/vade-takip-soz-b7-250.test.mjs:140:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Birleşik tur 7 İş 3 — Vade Takip 'Gecikmiş Tahsilat / Gecikmiş Ödeme' her aralık / kaynak / yön seçeneğinde › cari düzeyi (Cari Listesi 'Gecikmiş', Anlık Durum): 'Tüm Açık' Gecikmiş Tahsilat − kapsam farkı = Σ cari gecikmiş; kapsam farkları açıkça",
+      "konum": "test/vade-takip-soz-b7-250.test.mjs:153:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-kanit/2026-11-13/b8-is3-grupB-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a2ba3cc62b2d80923",
+  "ham_cikti_sha256": "f08f69010495a0535a8a5d91970d36bcd1b826583d7fc16a0f2bc10cc983fa2e",
+  "ham_cikti_bayt": 273965
+}

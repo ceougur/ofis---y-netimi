@@ -1,0 +1,32 @@
+
+> destekofis@2.4.9 test:kahin-defter
+> node --disable-warning=ExperimentalWarning test/bagimsiz/defter/kos.mjs
+
+187/187 denetim tuttu.
+  mutasyon 1 (KDV dahil fiyatta KDV'yi brüt × oran ile hesapla): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 2 (satıştan iade 610 yerine 600): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 3 (stopaj 360 yerine 193): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 4 (tevkifatlı satışta 391'e tam KDV): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 5 (POS komisyonu yazılmaz): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 6 (KDV mahsubunda devreden 190 kullanılmaz): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 7 (stok açılışı deftere yazılmaz (MM4 öncesi)): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 8 (yaşlandırmada faturasız bakiye atlanır (MM5 öncesi)): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 9 (gecikme zammı 689 yerine 360): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 10 (karşılıksız çek cariye yazılmaz): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 11 (31b-MM3: satıştan iade 360 tarafında): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 12 (31b-MM3: iade artı yazılır): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 13 (31b-MM8: yevmiyede aynı gün sınıfsız yazım sırası): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 14 (D1 (30.10 B): açılış karşı hesabı 500): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 15 (D2 (M-02 B): açıklaması 'açılış' ile başlayan yeni Borç / Alacak Yaz açılış sayılır): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 16 (D3 (30.10 (1) B): açılış evrakı 602 / 770'e): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 17 (D4 (S48 B): karşılıksız carisiz açılış evrakı gidere): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 18 (D4 (S48): cari seçilse de 519): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 19 (D5 (S49 B): formdan carisiz evrak 519'a): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 20 (D5 (S49 C): formdan carisiz evrak 602 / 770): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 21 (D9 (KG-5 B): Excel taksit kartı yeni satış): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 32 (D10 (S12 B): Kasa açılışından önce tarihli Kasa hareketi kabul): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 33 (D10 (B11 B): açılıştan önceye alınan düzeltme kabul): tam senaryoda YAKALANDI · bu koşuda yakalandı
+
+ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-xWLn3e
+
+[kanit] kahin-defter: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 3400920 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4

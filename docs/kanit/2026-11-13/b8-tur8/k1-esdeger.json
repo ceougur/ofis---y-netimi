@@ -1,0 +1,21 @@
+{
+ "K1": {
+  "cari": 12000,
+  "fark": 0,
+  "dolgulu": 155,
+  "dolguluFark": 0,
+  "ornek": []
+ },
+ "tohumlar": "81001…+60",
+ "olay": 40,
+ "sayac": {
+  "cari": 12000,
+  "S110": 0,
+  "S120": 0,
+  "S101": 0,
+  "kirpma": 0,
+  "fatura": 0,
+  "hata": 0
+ },
+ "sorunlar": []
+}

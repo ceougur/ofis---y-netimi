@@ -1,0 +1,21 @@
+{
+ "kaynak": "dataset://ofis",
+ "kartPenceresi": {
+  "tahsilEdilen": 500,
+  "kalan": 400,
+  "satirlar": [
+   "öd 300|kal 0",
+   "öd 200|kal 100",
+   "öd 0|kal 300"
+  ]
+ },
+ "kayitDetayBolumu": {
+  "odenen": 500,
+  "kalan": 400,
+  "satirlar": [
+   "öd 300|kal 0",
+   "öd 200|kal 100",
+   "öd 0|kal 300"
+  ]
+ }
+}

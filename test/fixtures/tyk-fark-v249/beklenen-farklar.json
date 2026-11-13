@@ -846,48 +846,48 @@
    "alan": "gecikmis",
    "eski": "500",
    "yeni": "0",
-   "karar": "S110 + S2 + S50 + KS7(a)",
-   "not": "kapanış düzeltme turu (12.11): ORTA-1 düzeltmesi — satışla açılan kart, faturasız stok iadesiyle 700'e küçülse de KENDİ satışını taşır (S110 = A; kaynak kartın açılış izinden); elle Borç 500 vadesiyle (+30) AYRI kalem. İade 800 bağsız ödemedir (2.4.5 KS7 a): vadesi en önce gelenden (S2) satışın kart dışı 300'ünü ve 1. taksiti (500) kapatır (S50). v2.4.9 iadeyi tarih sırasıyla önce elle Borç'a yazıyordu (taksit 500 + 200, Borç kalemi yok); 8d6ea9c9 akan saatte kartı tanımadığı için v2.4.9 ile aynı sayıyı veriyordu. Bakiye iki sürümde 700. TOPLU SORU TS-K1 (düzeltme turu raporu): kullanıcı teyidi bekleniyor."
+   "karar": "S140 = A + S110 + S2 + S50 + KS7(a)",
+   "not": "kapanış düzeltme turu (12.11): ORTA-1 düzeltmesi — satışla açılan kart, faturasız stok iadesiyle 700'e küçülse de KENDİ satışını taşır (S110 = A; kaynak kartın açılış izinden); elle Borç 500 vadesiyle (+30) AYRI kalem. İade 800 bağsız ödemedir (2.4.5 KS7 a): vadesi en önce gelenden (S2) satışın kart dışı 300'ünü ve 1. taksiti (500) kapatır (S50). v2.4.9 iadeyi tarih sırasıyla önce elle Borç'a yazıyordu (taksit 500 + 200, Borç kalemi yok); 8d6ea9c9 akan saatte kartı tanımadığı için v2.4.9 ile aynı sayıyı veriyordu. Bakiye iki sürümde 700. TOPLU SORU TS-K1 (düzeltme turu raporu): kullanıcı teyidi bekleniyor. Birleşik tur 8 (DÜŞÜK-E): TS-K1 kullanıcı kararıyla kapandı — S140 = A (KULLANICI KARARI 12.11 23:44: iadeyle küçülen satış kartı KENDİ satışını taşır; 2.4.9'dan farklı görünüm)."
   },
   {
    "cari": "TYKF V2 Satış Kartı İadeyle Küçülmüş",
    "alan": "kart1.durum",
    "eski": "\"overdue\"",
    "yeni": "\"active\"",
-   "karar": "S110 + S2 + S50 + KS7(a)",
-   "not": "kapanış düzeltme turu (12.11): ORTA-1 düzeltmesi — satışla açılan kart, faturasız stok iadesiyle 700'e küçülse de KENDİ satışını taşır (S110 = A; kaynak kartın açılış izinden); elle Borç 500 vadesiyle (+30) AYRI kalem. İade 800 bağsız ödemedir (2.4.5 KS7 a): vadesi en önce gelenden (S2) satışın kart dışı 300'ünü ve 1. taksiti (500) kapatır (S50). v2.4.9 iadeyi tarih sırasıyla önce elle Borç'a yazıyordu (taksit 500 + 200, Borç kalemi yok); 8d6ea9c9 akan saatte kartı tanımadığı için v2.4.9 ile aynı sayıyı veriyordu. Bakiye iki sürümde 700. TOPLU SORU TS-K1 (düzeltme turu raporu): kullanıcı teyidi bekleniyor."
+   "karar": "S140 = A + S110 + S2 + S50 + KS7(a)",
+   "not": "kapanış düzeltme turu (12.11): ORTA-1 düzeltmesi — satışla açılan kart, faturasız stok iadesiyle 700'e küçülse de KENDİ satışını taşır (S110 = A; kaynak kartın açılış izinden); elle Borç 500 vadesiyle (+30) AYRI kalem. İade 800 bağsız ödemedir (2.4.5 KS7 a): vadesi en önce gelenden (S2) satışın kart dışı 300'ünü ve 1. taksiti (500) kapatır (S50). v2.4.9 iadeyi tarih sırasıyla önce elle Borç'a yazıyordu (taksit 500 + 200, Borç kalemi yok); 8d6ea9c9 akan saatte kartı tanımadığı için v2.4.9 ile aynı sayıyı veriyordu. Bakiye iki sürümde 700. TOPLU SORU TS-K1 (düzeltme turu raporu): kullanıcı teyidi bekleniyor. Birleşik tur 8 (DÜŞÜK-E): TS-K1 kullanıcı kararıyla kapandı — S140 = A (KULLANICI KARARI 12.11 23:44: iadeyle küçülen satış kartı KENDİ satışını taşır; 2.4.9'dan farklı görünüm)."
   },
   {
    "cari": "TYKF V2 Satış Kartı İadeyle Küçülmüş",
    "alan": "kart1.sekme",
    "eski": "\"active/overdue\"",
    "yeni": "\"active\"",
-   "karar": "S110 + S2 + S50 + KS7(a)",
-   "not": "kapanış düzeltme turu (12.11): ORTA-1 düzeltmesi — satışla açılan kart, faturasız stok iadesiyle 700'e küçülse de KENDİ satışını taşır (S110 = A; kaynak kartın açılış izinden); elle Borç 500 vadesiyle (+30) AYRI kalem. İade 800 bağsız ödemedir (2.4.5 KS7 a): vadesi en önce gelenden (S2) satışın kart dışı 300'ünü ve 1. taksiti (500) kapatır (S50). v2.4.9 iadeyi tarih sırasıyla önce elle Borç'a yazıyordu (taksit 500 + 200, Borç kalemi yok); 8d6ea9c9 akan saatte kartı tanımadığı için v2.4.9 ile aynı sayıyı veriyordu. Bakiye iki sürümde 700. TOPLU SORU TS-K1 (düzeltme turu raporu): kullanıcı teyidi bekleniyor."
+   "karar": "S140 = A + S110 + S2 + S50 + KS7(a)",
+   "not": "kapanış düzeltme turu (12.11): ORTA-1 düzeltmesi — satışla açılan kart, faturasız stok iadesiyle 700'e küçülse de KENDİ satışını taşır (S110 = A; kaynak kartın açılış izinden); elle Borç 500 vadesiyle (+30) AYRI kalem. İade 800 bağsız ödemedir (2.4.5 KS7 a): vadesi en önce gelenden (S2) satışın kart dışı 300'ünü ve 1. taksiti (500) kapatır (S50). v2.4.9 iadeyi tarih sırasıyla önce elle Borç'a yazıyordu (taksit 500 + 200, Borç kalemi yok); 8d6ea9c9 akan saatte kartı tanımadığı için v2.4.9 ile aynı sayıyı veriyordu. Bakiye iki sürümde 700. TOPLU SORU TS-K1 (düzeltme turu raporu): kullanıcı teyidi bekleniyor. Birleşik tur 8 (DÜŞÜK-E): TS-K1 kullanıcı kararıyla kapandı — S140 = A (KULLANICI KARARI 12.11 23:44: iadeyle küçülen satış kartı KENDİ satışını taşır; 2.4.9'dan farklı görünüm)."
   },
   {
    "cari": "TYKF V2 Satış Kartı İadeyle Küçülmüş",
    "alan": "kart1.taksitler",
    "eski": "[\"1:500:500:overdue\",\"2:200:200:open\"]",
    "yeni": "[\"1:500:0:paid\",\"2:200:200:open\"]",
-   "karar": "S110 + S2 + S50 + KS7(a)",
-   "not": "kapanış düzeltme turu (12.11): ORTA-1 düzeltmesi — satışla açılan kart, faturasız stok iadesiyle 700'e küçülse de KENDİ satışını taşır (S110 = A; kaynak kartın açılış izinden); elle Borç 500 vadesiyle (+30) AYRI kalem. İade 800 bağsız ödemedir (2.4.5 KS7 a): vadesi en önce gelenden (S2) satışın kart dışı 300'ünü ve 1. taksiti (500) kapatır (S50). v2.4.9 iadeyi tarih sırasıyla önce elle Borç'a yazıyordu (taksit 500 + 200, Borç kalemi yok); 8d6ea9c9 akan saatte kartı tanımadığı için v2.4.9 ile aynı sayıyı veriyordu. Bakiye iki sürümde 700. TOPLU SORU TS-K1 (düzeltme turu raporu): kullanıcı teyidi bekleniyor."
+   "karar": "S140 = A + S110 + S2 + S50 + KS7(a)",
+   "not": "kapanış düzeltme turu (12.11): ORTA-1 düzeltmesi — satışla açılan kart, faturasız stok iadesiyle 700'e küçülse de KENDİ satışını taşır (S110 = A; kaynak kartın açılış izinden); elle Borç 500 vadesiyle (+30) AYRI kalem. İade 800 bağsız ödemedir (2.4.5 KS7 a): vadesi en önce gelenden (S2) satışın kart dışı 300'ünü ve 1. taksiti (500) kapatır (S50). v2.4.9 iadeyi tarih sırasıyla önce elle Borç'a yazıyordu (taksit 500 + 200, Borç kalemi yok); 8d6ea9c9 akan saatte kartı tanımadığı için v2.4.9 ile aynı sayıyı veriyordu. Bakiye iki sürümde 700. TOPLU SORU TS-K1 (düzeltme turu raporu): kullanıcı teyidi bekleniyor. Birleşik tur 8 (DÜŞÜK-E): TS-K1 kullanıcı kararıyla kapandı — S140 = A (KULLANICI KARARI 12.11 23:44: iadeyle küçülen satış kartı KENDİ satışını taşır; 2.4.9'dan farklı görünüm)."
   },
   {
    "cari": "TYKF V2 Satış Kartı İadeyle Küçülmüş",
    "alan": "vadeTakip",
    "eski": "[\"plan|1. taksit|500|2026-09-30|in\",\"plan|2. taksit|200|2026-10-30|in\"]",
    "yeni": "[\"account|Tahsil Edilecek Borç|500|2026-11-19|in\",\"plan|2. taksit|200|2026-10-30|in\"]",
-   "karar": "S110 + S2 + S50 + KS7(a)",
-   "not": "kapanış düzeltme turu (12.11): ORTA-1 düzeltmesi — satışla açılan kart, faturasız stok iadesiyle 700'e küçülse de KENDİ satışını taşır (S110 = A; kaynak kartın açılış izinden); elle Borç 500 vadesiyle (+30) AYRI kalem. İade 800 bağsız ödemedir (2.4.5 KS7 a): vadesi en önce gelenden (S2) satışın kart dışı 300'ünü ve 1. taksiti (500) kapatır (S50). v2.4.9 iadeyi tarih sırasıyla önce elle Borç'a yazıyordu (taksit 500 + 200, Borç kalemi yok); 8d6ea9c9 akan saatte kartı tanımadığı için v2.4.9 ile aynı sayıyı veriyordu. Bakiye iki sürümde 700. TOPLU SORU TS-K1 (düzeltme turu raporu): kullanıcı teyidi bekleniyor."
+   "karar": "S140 = A + S110 + S2 + S50 + KS7(a)",
+   "not": "kapanış düzeltme turu (12.11): ORTA-1 düzeltmesi — satışla açılan kart, faturasız stok iadesiyle 700'e küçülse de KENDİ satışını taşır (S110 = A; kaynak kartın açılış izinden); elle Borç 500 vadesiyle (+30) AYRI kalem. İade 800 bağsız ödemedir (2.4.5 KS7 a): vadesi en önce gelenden (S2) satışın kart dışı 300'ünü ve 1. taksiti (500) kapatır (S50). v2.4.9 iadeyi tarih sırasıyla önce elle Borç'a yazıyordu (taksit 500 + 200, Borç kalemi yok); 8d6ea9c9 akan saatte kartı tanımadığı için v2.4.9 ile aynı sayıyı veriyordu. Bakiye iki sürümde 700. TOPLU SORU TS-K1 (düzeltme turu raporu): kullanıcı teyidi bekleniyor. Birleşik tur 8 (DÜŞÜK-E): TS-K1 kullanıcı kararıyla kapandı — S140 = A (KULLANICI KARARI 12.11 23:44: iadeyle küçülen satış kartı KENDİ satışını taşır; 2.4.9'dan farklı görünüm)."
   },
   {
    "cari": "TYKF V2 Satış Kartı İadeyle Küçülmüş",
    "alan": "zil",
    "eski": "[\"plan|1. taksit|500|overdue\"]",
    "yeni": "[]",
-   "karar": "S110 + S2 + S50 + KS7(a)",
-   "not": "kapanış düzeltme turu (12.11): ORTA-1 düzeltmesi — satışla açılan kart, faturasız stok iadesiyle 700'e küçülse de KENDİ satışını taşır (S110 = A; kaynak kartın açılış izinden); elle Borç 500 vadesiyle (+30) AYRI kalem. İade 800 bağsız ödemedir (2.4.5 KS7 a): vadesi en önce gelenden (S2) satışın kart dışı 300'ünü ve 1. taksiti (500) kapatır (S50). v2.4.9 iadeyi tarih sırasıyla önce elle Borç'a yazıyordu (taksit 500 + 200, Borç kalemi yok); 8d6ea9c9 akan saatte kartı tanımadığı için v2.4.9 ile aynı sayıyı veriyordu. Bakiye iki sürümde 700. TOPLU SORU TS-K1 (düzeltme turu raporu): kullanıcı teyidi bekleniyor."
+   "karar": "S140 = A + S110 + S2 + S50 + KS7(a)",
+   "not": "kapanış düzeltme turu (12.11): ORTA-1 düzeltmesi — satışla açılan kart, faturasız stok iadesiyle 700'e küçülse de KENDİ satışını taşır (S110 = A; kaynak kartın açılış izinden); elle Borç 500 vadesiyle (+30) AYRI kalem. İade 800 bağsız ödemedir (2.4.5 KS7 a): vadesi en önce gelenden (S2) satışın kart dışı 300'ünü ve 1. taksiti (500) kapatır (S50). v2.4.9 iadeyi tarih sırasıyla önce elle Borç'a yazıyordu (taksit 500 + 200, Borç kalemi yok); 8d6ea9c9 akan saatte kartı tanımadığı için v2.4.9 ile aynı sayıyı veriyordu. Bakiye iki sürümde 700. TOPLU SORU TS-K1 (düzeltme turu raporu): kullanıcı teyidi bekleniyor. Birleşik tur 8 (DÜŞÜK-E): TS-K1 kullanıcı kararıyla kapandı — S140 = A (KULLANICI KARARI 12.11 23:44: iadeyle küçülen satış kartı KENDİ satışını taşır; 2.4.9'dan farklı görünüm)."
   },
   {
    "cari": "TYKF V3 Satış Kartı Faturasız İade",
@@ -926,8 +926,136 @@
    "alan": "kart1.taksitler",
    "eski": "[\"1:300:0:paid\",\"2:300:300:closed\",\"3:300:300:closed\"]",
    "yeni": "[\"1:300:0:paid\",\"2:300:0:paid\",\"3:300:0:paid\"]",
-   "karar": "M1e",
-   "not": "kapanış düzeltme turu (12.11): KAPSAM DIŞI GÖZLEM (kapanış dar kontrolü; Ç5-B öncesi kodda da aynı — bu turun farkı DEĞİL, kural yazılmadı): Kartı Kapat kalanı kuyrukta kartın bağıdır (M1e), kapatılan kartın ödenmemiş taksitlerini kapatır → satır 'Ödendi / kalan 0' (v2.4.9: 'Kapalı / kalan 300'). Kartın kendi Tahsil Edilen 300 / Kalan 600 değişmedi; bakiye 0."
+   "karar": "S144 = C",
+   "not": "kapanış düzeltme turu (12.11): KAPSAM DIŞI GÖZLEM (kapanış dar kontrolü; Ç5-B öncesi kodda da aynı — bu turun farkı DEĞİL, kural yazılmadı): Kartı Kapat kalanı kuyrukta kartın bağıdır (M1e), kapatılan kartın ödenmemiş taksitlerini kapatır → satır 'Ödendi / kalan 0' (v2.4.9: 'Kapalı / kalan 300'). Kartın kendi Tahsil Edilen 300 / Kalan 600 değişmedi; bakiye 0. Birleşik tur 8 (dar kontrol Ç5-B kapanış 2 DÜŞÜK-E): dayanak S144 = C (BİLİNEN SINIR — kapatılmış kartın gösterimi bugünkü hâlinde kalır); önceden yanlışlıkla 'M1e' yazılmıştı."
+  },
+  {
+   "cari": "TYKF B Stok Kısmi",
+   "alan": "kart1.gosterge",
+   "eski": "\"0|1000\"",
+   "yeni": "\"300|700\"",
+   "karar": "S129 = A + S50",
+   "not": "birleşik tur 8 (DÜŞÜK-E — yeni alan): kartın göstergesi ve satırın Ödenen'i TEK KUYRUKTAN (S129 = A): kart seçilmeden gelen bağsız para taksiti kapatır (S50) ve Tahsil Edilen'de görünür; v2.4.9 kartın kendi hesabını gösteriyordu."
+  },
+  {
+   "cari": "TYKF B Stok Kısmi",
+   "alan": "kart1.odenen",
+   "eski": "[0,0]",
+   "yeni": "[300,0]",
+   "karar": "S129 = A + S50",
+   "not": "birleşik tur 8 (DÜŞÜK-E — yeni alan): kartın göstergesi ve satırın Ödenen'i TEK KUYRUKTAN (S129 = A): kart seçilmeden gelen bağsız para taksiti kapatır (S50) ve Tahsil Edilen'de görünür; v2.4.9 kartın kendi hesabını gösteriyordu."
+  },
+  {
+   "cari": "TYKF J2 Kart Sonra Tahsilat",
+   "alan": "kart1.gosterge",
+   "eski": "\"0|1000\"",
+   "yeni": "\"400|600\"",
+   "karar": "S129 = A + S50",
+   "not": "birleşik tur 8 (DÜŞÜK-E — yeni alan): kartın göstergesi ve satırın Ödenen'i TEK KUYRUKTAN (S129 = A): kart seçilmeden gelen bağsız para taksiti kapatır (S50) ve Tahsil Edilen'de görünür; v2.4.9 kartın kendi hesabını gösteriyordu."
+  },
+  {
+   "cari": "TYKF J2 Kart Sonra Tahsilat",
+   "alan": "kart1.odenen",
+   "eski": "[0,0]",
+   "yeni": "[400,0]",
+   "karar": "S129 = A + S50",
+   "not": "birleşik tur 8 (DÜŞÜK-E — yeni alan): kartın göstergesi ve satırın Ödenen'i TEK KUYRUKTAN (S129 = A): kart seçilmeden gelen bağsız para taksiti kapatır (S50) ve Tahsil Edilen'de görünür; v2.4.9 kartın kendi hesabını gösteriyordu."
+  },
+  {
+   "cari": "TYKF P Kilitli",
+   "alan": "kart1.gosterge",
+   "eski": "\"0|1000\"",
+   "yeni": "\"300|700\"",
+   "karar": "S129 = A + S50",
+   "not": "birleşik tur 8 (DÜŞÜK-E — yeni alan): kartın göstergesi ve satırın Ödenen'i TEK KUYRUKTAN (S129 = A): kart seçilmeden gelen bağsız para taksiti kapatır (S50) ve Tahsil Edilen'de görünür; v2.4.9 kartın kendi hesabını gösteriyordu."
+  },
+  {
+   "cari": "TYKF P Kilitli",
+   "alan": "kart1.odenen",
+   "eski": "[0,0]",
+   "yeni": "[300,0]",
+   "karar": "S129 = A + S50",
+   "not": "birleşik tur 8 (DÜŞÜK-E — yeni alan): kartın göstergesi ve satırın Ödenen'i TEK KUYRUKTAN (S129 = A): kart seçilmeden gelen bağsız para taksiti kapatır (S50) ve Tahsil Edilen'de görünür; v2.4.9 kartın kendi hesabını gösteriyordu."
+  },
+  {
+   "cari": "TYKF T11 Başka Karttan Avans",
+   "alan": "kart2.gosterge",
+   "eski": "\"300|700\"",
+   "yeni": "\"400|600\"",
+   "karar": "S129 = A + S50",
+   "not": "birleşik tur 8 (DÜŞÜK-E — yeni alan): kartın göstergesi ve satırın Ödenen'i TEK KUYRUKTAN (S129 = A): kart seçilmeden gelen bağsız para taksiti kapatır (S50) ve Tahsil Edilen'de görünür; v2.4.9 kartın kendi hesabını gösteriyordu."
+  },
+  {
+   "cari": "TYKF T11 Başka Karttan Avans",
+   "alan": "kart2.odenen",
+   "eski": "[300]",
+   "yeni": "[400]",
+   "karar": "S129 = A + S50",
+   "not": "birleşik tur 8 (DÜŞÜK-E — yeni alan): kartın göstergesi ve satırın Ödenen'i TEK KUYRUKTAN (S129 = A): kart seçilmeden gelen bağsız para taksiti kapatır (S50) ve Tahsil Edilen'de görünür; v2.4.9 kartın kendi hesabını gösteriyordu."
+  },
+  {
+   "cari": "TYKF U10 S99 Avans Taksitli Taksitsiz",
+   "alan": "kart1.gosterge",
+   "eski": "\"0|300\"",
+   "yeni": "\"300|0\"",
+   "karar": "S129 = A + S99",
+   "not": "birleşik tur 8 (DÜŞÜK-E — yeni alan): S129 = A — gösterge tek kuyruktan; S99 = A bağsız avans taksitli faturanın kartını da kapatır."
+  },
+  {
+   "cari": "TYKF U10 S99 Avans Taksitli Taksitsiz",
+   "alan": "kart1.odenen",
+   "eski": "[0,0]",
+   "yeni": "[150,150]",
+   "karar": "S129 = A + S99",
+   "not": "birleşik tur 8 (DÜŞÜK-E — yeni alan): S129 = A — gösterge tek kuyruktan; S99 = A bağsız avans taksitli faturanın kartını da kapatır."
+  },
+  {
+   "cari": "TYKF U11 S101 Avans Stok Kart",
+   "alan": "kart1.gosterge",
+   "eski": "\"300|300\"",
+   "yeni": "\"600|0\"",
+   "karar": "S129 = A + S101",
+   "not": "birleşik tur 8 (DÜŞÜK-E — yeni alan): S129 = A — gösterge tek kuyruktan; S101 = A kartın avansla ödenmiş kısmı Tahsil Edilen'de ('Avansla Kapandı')."
+  },
+  {
+   "cari": "TYKF U11 S101 Avans Stok Kart",
+   "alan": "kart1.odenen",
+   "eski": "[300,0]",
+   "yeni": "[300,300]",
+   "karar": "S129 = A + S101",
+   "not": "birleşik tur 8 (DÜŞÜK-E — yeni alan): S129 = A — gösterge tek kuyruktan; S101 = A kartın avansla ödenmiş kısmı Tahsil Edilen'de ('Avansla Kapandı')."
+  },
+  {
+   "cari": "TYKF U12 S101 Kısmi Avans",
+   "alan": "kart1.gosterge",
+   "eski": "\"0|600\"",
+   "yeni": "\"400|200\"",
+   "karar": "S129 = A + S101",
+   "not": "birleşik tur 8 (DÜŞÜK-E — yeni alan): S129 = A — gösterge tek kuyruktan; S101 = A kartın avansla ödenmiş kısmı Tahsil Edilen'de ('Avansla Kapandı')."
+  },
+  {
+   "cari": "TYKF U12 S101 Kısmi Avans",
+   "alan": "kart1.odenen",
+   "eski": "[0,0]",
+   "yeni": "[300,100]",
+   "karar": "S129 = A + S101",
+   "not": "birleşik tur 8 (DÜŞÜK-E — yeni alan): S129 = A — gösterge tek kuyruktan; S101 = A kartın avansla ödenmiş kısmı Tahsil Edilen'de ('Avansla Kapandı')."
+  },
+  {
+   "cari": "TYKF V2 Satış Kartı İadeyle Küçülmüş",
+   "alan": "kart1.gosterge",
+   "eski": "\"0|700\"",
+   "yeni": "\"0|200\"",
+   "karar": "S151 = B + S140 = A + S129 = A",
+   "not": "birleşik tur 8 (DÜŞÜK-E — yeni alan): S151 = B — faturasız iade tahsilat değildir (Tahsil Edilen 0; iadeyle kapanan kısım Kalan'dan düşer, ayrı gösterilir); S140 = A kart kendi satışını taşır; S129 = A gösterge tek kuyruktan."
+  },
+  {
+   "cari": "TYKF V3 Satış Kartı Faturasız İade",
+   "alan": "kart1.gosterge",
+   "eski": "\"0|1000\"",
+   "yeni": "\"0|700\"",
+   "karar": "S151 = B + S129 = A",
+   "not": "birleşik tur 8 (DÜŞÜK-E — yeni alan): S151 = B — faturasız iade 300 tahsilat değildir: Tahsil Edilen 0, iadeyle kapanan 300 Kalan'dan düşer (Kalan 700), ayrı gösterilir; S129 = A gösterge tek kuyruktan."
   }
  ]
 }

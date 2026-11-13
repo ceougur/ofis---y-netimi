@@ -26,6 +26,9 @@ export async function readFacts(get, { today, prefix }) {
         durum: plan.state,
         sekme: Object.entries(tabs).filter(([, ids]) => ids.has(plan.id)).map(([status]) => status).join("/"),
         taksitler: (plan.items || []).map(item => `${item.seq}:${money(item.amount)}:${money(item.remaining)}:${item.state}`),
+        // Birleşik tur 8 (dar kontrol Ç5-B kapanış 2 DÜŞÜK-E; ders 53 (b)): kartın göstergesi (Tahsil Edilen / Kalan) ve satırın Ödenen'i de karşılaştırılır (S129 / S151 / S158).
+        gosterge: `${money(plan.totals?.paid)}|${money(plan.totals?.remaining)}`,
+        odenen: (plan.items || []).map(item => money(item.paid)),
       });
     }
     const rows = vade.filter(row => row.accountId === person.id || (row.ref?.type === "account" && row.ref?.id === person.id) || (row.ref?.type === "invoice" && mine.has(row.ref.id)));
@@ -62,6 +65,7 @@ export function diffFacts(oldFacts, newFacts) {
     push("kartSayisi", a.kartlar.length, b.kartlar.length);
     for (let i = 0; i < Math.min(a.kartlar.length, b.kartlar.length); i += 1) {
       for (const key of ["durum", "sekme", "taksitler"]) push(`kart${i + 1}.${key}`, a.kartlar[i][key], b.kartlar[i][key]);
+      for (const key of ["gosterge", "odenen"]) push(`kart${i + 1}.${key}`, a.kartlar[i][key], b.kartlar[i][key]);
     }
     push("vadeTakip", a.vadeTakip, b.vadeTakip);
     push("zil", a.zil, b.zil);

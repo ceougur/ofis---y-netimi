@@ -1,0 +1,130 @@
+{
+ "araliklar": {
+  "late": {
+   "gecikmisTahsilat": "300 / 3",
+   "gecikmisOdeme": "30 / 1",
+   "satir": 4,
+   "gecikmisSatir": 4,
+   "aralik": "…2026-10-19",
+   "satirlar": [
+    "Hücre v-10 p-5|2026-10-15|overdue|100",
+    "Hücre v0 p-5|2026-10-15|overdue|100",
+    "Hücre v10 p-5|2026-10-15|overdue|100",
+    "Tedarikçi Vadeli|2026-10-17|overdue|30"
+   ]
+  },
+  "today": {
+   "gecikmisTahsilat": "400 / 4",
+   "gecikmisOdeme": "30 / 1",
+   "satir": 7,
+   "gecikmisSatir": 5,
+   "aralik": "2026-10-20…2026-10-20",
+   "satirlar": [
+    "Hücre v-10 p-5|2026-10-15|overdue|100",
+    "Hücre v0 p-5|2026-10-15|overdue|100",
+    "Hücre v10 p-5|2026-10-15|overdue|100",
+    "Tedarikçi Vadeli|2026-10-17|overdue|30",
+    "Hücre v-10 p0|2026-10-20|overdue|100",
+    "Hücre v0 p0|2026-10-20|today|100",
+    "Hücre v10 p0|2026-10-20|today|100"
+   ]
+  },
+  "next7": {
+   "gecikmisTahsilat": "400 / 4",
+   "gecikmisOdeme": "30 / 1",
+   "satir": 7,
+   "gecikmisSatir": 5,
+   "aralik": "2026-10-20…2026-10-27",
+   "satirlar": [
+    "Hücre v-10 p-5|2026-10-15|overdue|100",
+    "Hücre v0 p-5|2026-10-15|overdue|100",
+    "Hücre v10 p-5|2026-10-15|overdue|100",
+    "Tedarikçi Vadeli|2026-10-17|overdue|30",
+    "Hücre v-10 p0|2026-10-20|overdue|100",
+    "Hücre v0 p0|2026-10-20|today|100",
+    "Hücre v10 p0|2026-10-20|today|100"
+   ]
+  },
+  "next30": {
+   "gecikmisTahsilat": "500 / 5",
+   "gecikmisOdeme": "100 / 2",
+   "satir": 11,
+   "gecikmisSatir": 7,
+   "aralik": "2026-10-20…2026-11-19",
+   "satirlar": [
+    "Hücre v-10 p-5|2026-10-15|overdue|100",
+    "Hücre v0 p-5|2026-10-15|overdue|100",
+    "Hücre v10 p-5|2026-10-15|overdue|100",
+    "Tedarikçi Vadeli|2026-10-17|overdue|30",
+    "Hücre v-10 p0|2026-10-20|overdue|100",
+    "Hücre v0 p0|2026-10-20|today|100",
+    "Hücre v10 p0|2026-10-20|today|100",
+    "Hücre v-10 p15|2026-11-04|overdue|100",
+    "Hücre v0 p15|2026-11-04|upcoming|100",
+    "Hücre v10 p15|2026-11-04|upcoming|100",
+    "Tedarikçi Sözlü|2026-11-04|overdue|70"
+   ]
+  },
+  "next90": {
+   "gecikmisTahsilat": "500 / 5",
+   "gecikmisOdeme": "100 / 2",
+   "satir": 11,
+   "gecikmisSatir": 7,
+   "aralik": "2026-10-20…2027-01-18",
+   "satirlar": [
+    "Hücre v-10 p-5|2026-10-15|overdue|100",
+    "Hücre v0 p-5|2026-10-15|overdue|100",
+    "Hücre v10 p-5|2026-10-15|overdue|100",
+    "Tedarikçi Vadeli|2026-10-17|overdue|30",
+    "Hücre v-10 p0|2026-10-20|overdue|100",
+    "Hücre v0 p0|2026-10-20|today|100",
+    "Hücre v10 p0|2026-10-20|today|100",
+    "Hücre v-10 p15|2026-11-04|overdue|100",
+    "Hücre v0 p15|2026-11-04|upcoming|100",
+    "Hücre v10 p15|2026-11-04|upcoming|100",
+    "Tedarikçi Sözlü|2026-11-04|overdue|70"
+   ]
+  },
+  "open": {
+   "gecikmisTahsilat": "500 / 5",
+   "gecikmisOdeme": "100 / 2",
+   "satir": 11,
+   "gecikmisSatir": 7,
+   "aralik": "…",
+   "satirlar": [
+    "Hücre v-10 p-5|2026-10-15|overdue|100",
+    "Hücre v0 p-5|2026-10-15|overdue|100",
+    "Hücre v10 p-5|2026-10-15|overdue|100",
+    "Tedarikçi Vadeli|2026-10-17|overdue|30",
+    "Hücre v-10 p0|2026-10-20|overdue|100",
+    "Hücre v0 p0|2026-10-20|today|100",
+    "Hücre v10 p0|2026-10-20|today|100",
+    "Hücre v-10 p15|2026-11-04|overdue|100",
+    "Hücre v0 p15|2026-11-04|upcoming|100",
+    "Hücre v10 p15|2026-11-04|upcoming|100",
+    "Tedarikçi Sözlü|2026-11-04|overdue|70"
+   ]
+  }
+ },
+ "late-in": {
+  "satir": 3,
+  "toplam": 300
+ },
+ "late-out": {
+  "satir": 1,
+  "toplam": 30
+ },
+ "elleAralik": {
+  "satir": 4,
+  "gecikmisTahsilat": 300
+ },
+ "pdf": {
+  "durum": 200,
+  "hucreSatiri": 3,
+  "tedarikci": 1
+ },
+ "excel": {
+  "durum": 200,
+  "satir": 4
+ }
+}
