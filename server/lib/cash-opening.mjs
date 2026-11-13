@@ -260,7 +260,13 @@ export function restoringCash(store, fn) {
  */
 function keysBeforeOpening(store) {
   try {
-    return new Set((cashBeforeOpening(store)?.rows || []).map(row => row.key));
+    // Hız (ders 47, 53): yalnız kimlik — örnek metni / kaynak adı kurulmaz (geri yükleme başına iki kez; 18.651 açılış öncesi satırda ölçüldü).
+    const opening = cashOpeningDate(store);
+    const keys = new Set();
+    if (!opening) return keys;
+    const lines = createMoneyLines(store);
+    for (const line of lines.lines({ ways: ["cash"], before: opening, light: true })) keys.add(noticeKeyOf(lines, line));
+    return keys;
   } catch {
     return null;
   }
@@ -280,6 +286,11 @@ export function cashExplained(store) {
 // Uyarı kümesinin kimliği: para satırının TABLOSU + satır kimliği (lib/bank/money-lines.mjs kaynakları; aynı tablonun iki kaynağı — cari / fatura — tek kimlik).
 const TABLE_OF_SOURCE = Object.freeze({ payment: "payments", manual: "cash_entries", account: "account_entries", invoice: "account_entries", bank: "account_entries", plan: "plan_entries", stock: "stock_moves", cheque: "cheque_events", bankLine: "bank_lines" });
 const cashNoticeKeyOf = (table, id) => `${table}:${id ?? ""}`;
+// Para satırının (money-lines) uyarı kimliği — cashBeforeOpening ve keysBeforeOpening AYNI tanımla.
+const noticeKeyOf = (lines, line) => {
+  const source = typeof lines.sourceName === "function" ? lines.sourceName(line.src) : "";
+  return cashNoticeKeyOf(TABLE_OF_SOURCE[source] || source || "?", line.id);
+};
 
 const SOURCE_LABEL = { payment: "Kayıt Tahsilatı", manual: "Kasa Hareketi", account: "Cari Hareketi", invoice: "Fatura Peşini", plan: "Taksit Hareketi", stock: "Stok Hareketi", cheque: "Çek / Senet Hareketi" };
 /**
@@ -292,7 +303,7 @@ export function cashBeforeOpening(store, money = null) {
   const lines = money?.lines ? money : createMoneyLines(store);
   const rows = lines.lines({ ways: ["cash"], before: opening, light: true }).map(line => {
     const source = typeof lines.sourceName === "function" ? lines.sourceName(line.src) : "";
-    return { source, id: String(line.id || ""), date: String(line.date || ""), key: cashNoticeKeyOf(TABLE_OF_SOURCE[source] || source || "?", line.id), sample: `${SOURCE_LABEL[source] || "Kasa Hareketi"} ${line.id} · ${dayText(line.date)}` };
+    return { source, id: String(line.id || ""), date: String(line.date || ""), key: noticeKeyOf(lines, line), sample: `${SOURCE_LABEL[source] || "Kasa Hareketi"} ${line.id} · ${dayText(line.date)}` };
   });
   return { opening, rows };
 }
