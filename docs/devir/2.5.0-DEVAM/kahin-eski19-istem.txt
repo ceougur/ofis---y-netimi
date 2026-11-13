@@ -1,0 +1,37 @@
+Sen DestekOfis projesinde ESKİ KÂHİNLER BAKIMI 19 ajanısın (2.5.0 Ç5 — cari kâhini `test/bagimsiz/cari/` + mobil yazma kâhininin kabul dosyası `test/bagimsiz/mobil-yazma/`). PROGRAMIN KODUNU GÖRMEZSİN (ders 5, 40). KENDİ dalında commit edersin; PUSH YAPMAZSIN. Yanıtın Türkçe. Eforun high. Bu ÇOK KÜÇÜK bir düzeltme bakımıdır: YENİ KURAL YOK — (1) ana oturumun bakım 17 girdisindeki belirsiz bir örneğin (S162'nin karşılaştırması — yazım sırası) düzeltilmesi, (2) üç bilinen sınır alanında (S170 = B, S157 = C, S166 = B) eksik kalan susma, (3) mobil yazma kâhininin kabul dosyasının yeniden üretilmesi.
+
+## Girdi
+Tek girdi kaynağın: `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin-eski19-kararlar.md` (tamamını oku).
+
+## Hazırlık
+1. Worktree'de (dalında kendi commit'in YOKKEN) `git reset --hard kahin19-taban` (yerel taban dalı = mobil yazma kâhini bakımı 2'nin dalının ucu — cari kâhini bakımı 17 ve 18'i de içerir; üstüne çalışacaksın; ağaç ana daldan açıldığı için birleşim DEĞİL sıfırlama). Sonra `git log --oneline -6 -- test/bagimsiz` ile bakım 17, 18 ve mobil bakım 2 commit'lerinin dalında olduğunu doğrula.
+2. ÖNCE oku: `CLAUDE.md` (dersler 1–53; özellikle 5, 6, 31, 40, 43); `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`; girdi dosyası; `test/bagimsiz/cari/KARARLAR.md` içinde bakım 17 ve 18 bölümleri (§28, §29 — TAMAMI) ile S140, S151 / S158, S157, S162, S166 kurallarını anlatan bölümler; `test/bagimsiz/mobil-yazma/README.md` içinde bakım 2 bölümü (kabul dosyasının üretimi).
+   Önceki kararlar YALNIZ kâhinin kendi KARARLAR.md'sinden okunur.
+
+## Yasaklar (bağımsızlık)
+- `server/`, `client/`, `bulut/`, `packaging/`, `tools/` (kanit.mjs yalnız çalıştırılır), `docs/erp/C5-ACILIS-TASARIM.md`, `docs/erp/C5B-TYK-TASARIM.md`, `docs/devir/**`, `docs/2.5.0-IS-LISTESI*.md` (HER sürümü — eski commit'teki hâli dahil), `test/bagimsiz/cari/YAPIM-ASAMASI.json` (programın bugünkü değerlerini taşır) ve `test/` altında `test/bagimsiz/cari` + `test/bagimsiz/defter` + `test/bagimsiz/mobil-yazma` (sürücüsü `program-surucu.mjs` HARİÇ — yalnız eşleme satırları aranabilir, koşulmaz, değişmez) dışındaki her şey OKUNMAZ. `kos.mjs` yalnız olay / alan EŞLEMESİ için okunabilir; DEĞİŞTİRME.
+- `docs/kanit/` altında başka ajanların dosyaları (kahineski4 … 18-arac ve kahinmobil2/arac araçları HARİÇ — uyarlayıp `docs/kanit/2026-11-13/kahineski19-arac/` altına kopyala) ve git farkı / geçmiş içeriği açılmaz. Program KOŞULMAZ. CLAUDE.md'nin "Açık iş" bölümünde programın durumu hakkında gördüğün hiçbir şey kural / beklenti kaynağı DEĞİLDİR. Girdi dosyasındaki soru metinlerinde geçen "program bugün" sözü de kural kaynağı DEĞİLDİR — kural yalnız KARAR satırlarıdır.
+
+## İş
+1. Önce yorumu KARARLAR.md'ye ("2.5.0 Ç5 bakımı 19", yeni bölüm) yaz ve AYRI commit et (ders 40): girdi dosyasının 1–4. maddeleri — hangi anahtarlar SUS'a döner, hangi örnek düzelir, hangi değerler AYNEN kalır; 'BAŞ MİMAR KARARI' ve 'yetkiyle uygulanan karar' etiketleri girdideki gibi.
+2. Modele / senaryolara işle: (1) S162 — ölçüt iadenin yazıldığı andaki durum (adım sırası); d45'in karşılaştırma carisi doğru sırayla DEĞERLE, 'iade önce, borç sonra' carisi SUS, tarih ↔ yazım sırası komşusu DEĞERLE. (2) S170 = B — satış kartı + faturasız iade: 'toplam' ve iadenin kapattığı taksitin 'Ödenen'i SUS; öbür değerler aynen. (3) S157 = C carilerinde 'toplam' SUS. (4) kalemlerde susan carinin türetilmiş toplam / özet anahtarları SUS (bütün senaryolar taranır; liste raporda).
+3. Mutantlar: (1)(b) için 'iade her zaman sondan küçültür' ve 'iade her zaman ilk taksitten' mutantları karşılaştırma carisinde DEĞERLE yakalanmalı; bakım 6 … 18 mutantları hâlâ yakalanıyor mu (susturulan anahtarlar yüzünden yaşayan mutant çıkarsa adıyla yaz — beklenen bir bedelse gerekçesiyle).
+4. G3: bakım 18'e göre değişen / yeni / kalkan denetim sayıları senaryo senaryo (bakım 17'nin `karsilastir.py` düzeni); girdinin 1–4. maddelerinin alanları DIŞINDA BEKLENMEYEN 0 olmalı. Kalkan (SUS'a dönen) her anahtar adıyla ve maddesiyle listelenir.
+5. Mobil yazma kâhini: kabul dosyasını kendi üreticisiyle yeniden üret, bakım 2'nin fark aracıyla dök (girdinin maddeleri dışında BEKLENMEYEN 0), mobil öz test iki saat diliminde. Kuralı ve sürücüsü DEĞİŞMEZ. Mobil öz testteki 'cari kâhini klasörü HEAD ile aynı' denetimi için cari kâhini değişikliklerini mobil koşusundan ÖNCE commit et.
+6. TOPLU SORULAR: kararların söylemediği HER alt durumu raporun 'KULLANICIYA SORULMALI' bölümünde TEK listede ver (durum, en küçük örnek, iki okuma, her okumada bakiye; çok uç durumsa üçüncü seçenek 'Uç durum böyle kalsın (BİLİNEN SINIR)'); o alanlarda SUS. Önceki bakımlarda sorduklarını YİNELEME.
+
+## Yöntem
+- Eski kâhin kopyası değişiklikten ÖNCE (bakım 18 + mobil bakım 2 hâli) `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski19-<kısa>/` (`git archive HEAD test/bagimsiz/defter test/bagimsiz/cari test/bagimsiz/mobil-yazma` — sıfırlamadan SONRA, kendi değişikliğinden ÖNCE).
+- Kâhinin kendi testleri iki TZ (UTC, Europe/Istanbul): `KANIT_DIR=<kendi not defteri klasörün> node tools/kanit.mjs kos kahineski19-<ad> -- python3 -I -B <dosya>`; mutasyon ve geniş tarama `flock -s -n /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock` ile (kilit doluysa bekleme döngüsü yok — ders 50); HER arka plan koşusu AÇIK SÜRE SINIRIYLA (`timeout -k 5 <sn> …`), yük kilidi boşta tutulmaz; uzun koşu baştan 2 saat sınırla; kanıt `docs/kanit/2026-11-13/kahineski19-*`.
+- Yük okuması ile koşu başlatma AYNI adımda gönderilmez: önce `cat /proc/loadavg`; yük > 4 ise koşu BAŞLATMA ama rapor verip BIRAKMA — tek seferlik bekleme komutuyla bekle (ör. `timeout 600 bash -c 'until [ "$(cut -d" " -f1 /proc/loadavg | cut -d. -f1)" -lt 4 ]; do sleep 20; done'`), sonra yükü yeniden oku ve koşuyu başlat. Bakım, kanıt koşuları (iki saat dilimi) yapılmadan BİTMİŞ sayılmaz.
+- Kendi arka plan işin sürerken turunu rapor vermeden BİTİRME; sonucu bekle, sonra raporla. Bekleme için boş komut döngüsü kurma. /tmp üzerinde boyut ölçme / tarama komutu koşma.
+- `pkill` / joker `rm` YOK. Commit'e yalnız kendi yolların (ders 44).
+- Commit iletisi sonunda tam olarak şu iki satır:
+  ```
+  Co-Authored-By: Claude <noreply@anthropic.com>
+  Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og
+  ```
+  (model adı YOK).
+
+## Rapor
+Yorum (dört madde); SUS'a dönen anahtarların TAM listesi (senaryo + anahtar + madde); hâlâ sustuğun öbür sınırlar; yeni / değişen elle senaryolar ve değerleri; koşucu eşlemesini etkileyen bir şey değiştiyse (adım alanı) açıkça; mutantlar; test sayıları (iki TZ, çıkış kodlarıyla); G3 dökümü; KULLANICIYA SORULMALI; DENENMEYEN; ana oturumun yeniden koşacağı komutlar; OKUNAN DOSYALARIN TAM LİSTESİ (satır aralıklarıyla).
