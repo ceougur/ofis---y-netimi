@@ -1032,3 +1032,14 @@ sağlayıcı carisinin açık şüphelisi varsa). Önce programın kendi yolunda
 - İş 3 Açılış Olabilir Kayıtlar ekranı + zil (uçlar tur 1'de, routes/opening-review.mjs); B16 sıra zorlaması.
 - İş 4 Şüpheli ↔ kuyruk defter kuralı (§2.11) — kuyruğun dağılımı okunur, kuyruk kodu değişmez.
 - İş 8 kılavuz (HTML + PDF aynı turda).
+
+### 17.6 İş 6 — sonuç (programın KENDİ yolu; betik docs/kanit/2026-11-13/c5a2-betik/pos-bag*.mjs; çıktı c5a2-is6-*.json)
+- ÜRETİLDİ (taban ve yeni kodda AYNI): KDV kipli POS (Sağlayıcı Carisi), Eylül'de iki satış (kesinti 660, 04.09), birinin tam iadesi (komisyon iadesi `in` 300, 14.09), Eylül kilidi,
+  "Şimdi Oluştur" (taslak 01.10) → "Kaydet": `linkFees` kilitli Eylül'ün İKİ satırına bağ yazar (bağlı 0 → 1). Sağlayıcı carisi TEDARİKÇİ ise şüpheliye alınamaz (409
+  doubtful-customer-only) → kilitli defter farkı 0. Sağlayıcı carisi MÜŞTERİ türündeyse (program kabul ediyor) ve 08.09'da 200 şüpheliye alınmışsa: kilitli dönemin canlı türetmesinde
+  14.09 satırı "A 128 200 + A 120 100" → "A 120 300" (fark 2 satır); tarama bulgusu yok, Mutabakat Günlüğü 0, zil 0. Cari bakiyesi iki okumada aynı (sınıflama farkı).
+- S160'ın söylemediği durum (bağ DÜŞÜRMEK değil YAZMAK) → KODLANMADI; KULLANICIYA SORULMALI (raporda; öneri: uç durum BİLİNEN SINIR).
+
+### 17.7 Ara rapor durumu (13.11.2026)
+BİTTİ (commit'li, kanıtlı): İş 0, İş 5, İş 6 (yeniden üretim; soru), İş 7'nin DÜŞÜK-1 / -3 / -4. KALAN (yeni temiz ajana — ders 46): İş 7 DÜŞÜK-2 (sekiz yaşayan mutantın testi),
+İş 1, 2, 3, 4, 8. İş 0'ın "Düzeltildi (Fiş …)" cümlesi İş 2'ye bağlı.
