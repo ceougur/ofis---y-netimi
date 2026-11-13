@@ -54,12 +54,14 @@ const ACCOUNT_LEDGER_FIELDS = ["kind", "gl", "gl_sub", "currency"];
 const LOCK_FIELDS = {
   payments: { date: row => row.date, fields: ["amount", "date", "method", "fin_ref", "event_id"] },
   // 2.5.0 Ç5-A tur 1e: is_opening (LOCK_SQL cash_opening_lock / account_opening_lock / cheques_opening_lock).
-  cash_entries: { date: row => row.date, fields: ["kind", "amount", "date", "method", "fin_ref", "event_id", "tax_json", "is_opening"] },
-  account_entries: { date: row => row.date, fields: ["account_id", "kind", "amount", "date", "method", "fin_ref", "event_id", "fx_currency", "fx_minor", "fx_rate_e6", "fx_source", "is_opening"] },
-  stock_moves: { date: row => row.date, fields: ["item_id", "kind", "qty", "amount", "date", "pay", "method", "account_id", "fin_ref", "event_id", "unit_price", "is_opening"] },
-  plan_entries: { date: row => row.date, fields: ["plan_id", "kind", "amount", "date", "method", "fin_ref", "event_id"] },
+  // 2.5.0 Ç5-A tur 1f (§16): transfer_id (cash_transfer_lock), source / source_id / doubtful_skip (account_source_lock / account_doubtful_skip_lock), reason (stock_reason_lock),
+  // cheque_id / opening (plan_entries_bond_lock), gl_json / try_withheld / try_stoppage (invoices_gl_lock).
+  cash_entries: { date: row => row.date, fields: ["kind", "amount", "date", "method", "fin_ref", "event_id", "tax_json", "is_opening", "transfer_id"] },
+  account_entries: { date: row => row.date, fields: ["account_id", "kind", "amount", "date", "method", "fin_ref", "event_id", "fx_currency", "fx_minor", "fx_rate_e6", "fx_source", "is_opening", "source", "source_id", "doubtful_skip"] },
+  stock_moves: { date: row => row.date, fields: ["item_id", "kind", "qty", "amount", "date", "pay", "method", "account_id", "fin_ref", "event_id", "unit_price", "is_opening", "reason"] },
+  plan_entries: { date: row => row.date, fields: ["plan_id", "kind", "amount", "date", "method", "fin_ref", "event_id", "cheque_id", "opening"] },
   cheque_events: { date: row => row.date, fields: ["cheque_id", "kind", "amount", "date", "method", "fin_ref", "event_id"] },
-  invoices: { date: row => (row.status !== "draft" ? row.issue_date : null), fields: ["kind", "status", "account_id", "issue_date", "try_payable", "try_vat"] },
+  invoices: { date: row => (row.status !== "draft" ? row.issue_date : null), fields: ["kind", "status", "account_id", "issue_date", "try_payable", "try_vat", "gl_json", "try_withheld", "try_stoppage"] },
   // 2.2.0 İz 4.2: evrak türü (cheques_instrument_lock; senet 121/321, çek 101/103).
   cheques: { date: row => row.issue_date, fields: ["direction", "amount", "issue_date", "deleted_at", "instrument", "is_opening"] },
   fin_events: { date: row => row.date, fields: ["type", "date", "reversal_of", "bank_ref", "counter_ref", "amount_minor", "try_minor"] },
@@ -357,6 +359,9 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
           const closedOn = row => (row.status === "closed" && !row.deleted_at ? [day(row.closed_at || row.updated_at), day(row.registered_on || row.created_at)].sort().at(-1) : "");
           // 2.5.0 Ç5-A tur 1e: yükleme bağı (LOCK_SQL plans_import_lock).
           if ((plain(pre) || plain(post)) && differs(pre, post, ["total", "account_id", "registered_on", "covers_balance", "deleted_at", "import_id"])) return "kart kilitli dönem";
+          // 2.5.0 Ç5-A tur 1f (§16): Kayıt Tarihi BOŞ kart — madde tarihi oluşturma günü (LOCK_SQL plans_unregistered_lock).
+          const unregistered = row => row && !row.deleted_at && Number(row.covers_balance) === 0 && !row.registered_on && locked(row.created_at);
+          if ((unregistered(pre) || unregistered(post)) && differs(pre, post, ["total", "account_id", "registered_on", "covers_balance", "deleted_at", "created_at"])) return "kart kilitli dönem (Kayıt Tarihi boş)";
           if ((locked(pre && closedOn(pre)) || locked(post && closedOn(post))) && differs(pre, post, ["account_id", "total", "status", "closed_at", "updated_at", "registered_on", "created_at", "deleted_at"])) return "kapatılmış kart kilitli dönem";
           const id = (post || pre).id;
           if (differs(pre, post, ["account_id", "deleted_at"]) && store.get("SELECT 1 AS found FROM plan_entries WHERE plan_id = ? AND date <= ? LIMIT 1", id, lock)) return "kartın kilitli tahsilatı";
@@ -382,7 +387,8 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
         if (table === "bank_lines" && store.get("SELECT 1 AS found FROM fin_events WHERE id = ? AND date <= ?", (post || pre).event_id, lock)) return "kilitli banka fişi";
         // Tahsil kaydı (lib/integrity.mjs LOCK_SQL cheque_collections_given / _closed): verilme ve kapanış ayrı iz girdileri (plan §3.14, §5.5).
         if (table === "cheque_collections") {
-          if ((inTrace(pre?.given_date) || inTrace(post?.given_date)) && differs(pre, post, ["cheque_id", "bank_account_id", "given_date"])) return "tahsil kaydı kilitli dönem (verilme)";
+          // 2.5.0 Ç5-A tur 1f (§16): event_id (LOCK_SQL cheque_collections_event_lock — 101.01 / 101.02 tutarı).
+          if ((inTrace(pre?.given_date) || inTrace(post?.given_date)) && differs(pre, post, ["cheque_id", "bank_account_id", "given_date", "event_id"])) return "tahsil kaydı kilitli dönem (verilme)";
           const closedOn = row => (row && row.closed_date ? row.closed_date : null);
           if ((inTrace(closedOn(pre)) || inTrace(closedOn(post))) && differs(pre, post, ["status", "closed_date", "close_event_id"])) return "tahsil kaydı kilitli dönem (kapanış)";
         }

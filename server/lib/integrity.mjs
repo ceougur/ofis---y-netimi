@@ -245,6 +245,33 @@ const LOCK_SQL = {
     sql: `SELECT p.id, p.import_id, COALESCE((SELECT x.created_at FROM plan_imports x WHERE x.id = p.import_id), '') AS imported FROM plans p
           WHERE p.deleted_at IS NULL AND p.covers_balance = 0 AND p.registered_on <> '' AND p.registered_on <= ?1 AND p.import_id <> '' ORDER BY p.id`,
   },
+  // 2.5.0 Ç5-A tur 1f (dar kontrol G-1'; S146 = A; docs/erp/C5-ACILIS-TASARIM.md §16): Ana Defter türetmesinin (routes/ledger.mjs rows) okuduğu, kilitli tarihli satırda kapıdan
+  // geçen HİÇBİR yolun yazmadığı alanlar (yalnız INSERT ya da kilitte 409 — §16.2 tablosu, betikle) — kapı dışı değişiklikleri (eski sürüm, dış araç, elle) böylece period-lock +
+  // ledger:snapshot ("Donmuş Dönemin Kaynağı Değişti") olarak bulunur. Satır KİMLİKLERİYLE; bağ / işaret alanı boş / 0 olan satır girmez (boş → dolu yeni satır olarak görünür).
+  // Kasa ↔ Banka transferinin bağı (transfer ↔ 649 / 770; ikizin banka bacağı).
+  cash_transfer_lock: { requires: ["cash_entries.transfer_id"], since: "2.5.0", sql: "SELECT id, transfer_id FROM cash_entries WHERE transfer_id <> '' AND date <= ?1 ORDER BY id" },
+  // Cari satırının kaynağı ve kaynak kimliği (çek / fatura / stok / banka: madde türü, evrağın yönü ve türü, stok hareketinin nedeni) ve şüpheli alacakta "Normal Cariye İşlendi" işareti (120 ↔ 128).
+  account_source_lock: { requires: ["account_entries.source", "account_entries.source_id"], since: "2.5.0", sql: "SELECT id, source, source_id FROM account_entries WHERE (source <> '' OR source_id <> '') AND date <= ?1 ORDER BY id" },
+  account_doubtful_skip_lock: { requires: ["account_entries.doubtful_skip"], since: "2.5.0", sql: "SELECT id, doubtful_skip FROM account_entries WHERE doubtful_skip <> 0 AND date <= ?1 ORDER BY id" },
+  // Taksit satırının evrak bağı (101 / 121 ↔ para hesabı; evrağın "cariye işlenmemiş" sayılması) ve açılış alanı (B 519 ↔ para; yüklenen kartın T − P'si).
+  plan_entries_bond_lock: { requires: ["plan_entries.cheque_id", "plan_entries.opening"], since: "2.5.0", sql: "SELECT id, cheque_id, opening FROM plan_entries WHERE (cheque_id <> '' OR opening <> 0) AND date <= ?1 ORDER BY id" },
+  // Stok hareketinin nedeni (peşin ve cari satış / iade / alış iadesi: 600 ↔ 610 ↔ 153).
+  stock_reason_lock: { requires: ["stock_moves.reason"], since: "2.5.0", sql: "SELECT id, reason FROM stock_moves WHERE reason <> '' AND date <= ?1 ORDER BY id" },
+  // Kesilmiş faturanın muhasebe kırılımı (matrah hesapları) ve tevkifat / stopaj tutarları (391 / 360, 193 / 360).
+  invoices_gl_lock: {
+    requires: ["invoices.gl_json", "invoices.try_withheld", "invoices.try_stoppage"],
+    since: "2.5.0",
+    sql: "SELECT id, gl_json, try_withheld, try_stoppage FROM invoices WHERE status <> 'draft' AND issue_date <= ?1 ORDER BY id",
+  },
+  // Bankaya Tahsile Ver kaydının işlem başlığı (101.01 / 101.02 maddesinin tutarı).
+  cheque_collections_event_lock: { requires: ["cheque_collections.event_id"], since: "2.5.0", sql: "SELECT id, event_id FROM cheque_collections WHERE given_date <= ?1 ORDER BY id" },
+  // Kayıt Tarihi BOŞ kartın oluşturma anı (madde tarihi = oluşturma günü; yukarıdaki plans girdisi yalnız dolu Kayıt Tarihli kartları kapsar). API boş Kayıt Tarihi yazmaz,
+  // göç 9 boşları doldurur: normal veride satır üretmez.
+  plans_unregistered_lock: {
+    requires: ["plans"],
+    since: "2.5.0",
+    sql: "SELECT id, total, account_id, created_at FROM plans WHERE deleted_at IS NULL AND covers_balance = 0 AND registered_on = '' AND substr(created_at, 1, 10) <= ?1 ORDER BY id",
+  },
 };
 
 /**
