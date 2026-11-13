@@ -1185,3 +1185,8 @@ işleri ve tur 1'in türetme kuralları değişmez. Ekranlar tur 2b'nin bağlama
 - Kâhinler: defter 187 / 187 (yeni + taban, iki TZ); cari 16.449 / 16.449 (yeni = taban), yapım aşaması 41 → 41 (fark yok; 'Ç5-A' paketi kaydı yok); muhasebe sürücüsü taban = yeni
   (8.456 test, 862 sınıflanmış / bekleyen fark, 44 atlanan), gerileme 226 / 226 — `acilis_eslestir` olayı sürücüde hâlâ "uygulanmadı (Ç5-ESLESTIRME)": sürücü eşlemesi
   (test/bagimsiz/** — bu turda değişmez) ana oturumun işi.
+
+### 17.12 Tur 2d (yalnız test; taban `c5a2d-taban` 04926fb5 = tur 2c ucu; kanıt docs/kanit/2026-11-13/c5a2d-*)
+- DÜŞÜK-2'nin sekiz mutantı: Y2, Y3, Y5, Y11, Y18, Y23 yeni testlerle ölür (kilit-izi-alanlar-250: üç kapı dışı vaka + [9] kapıdan iki adım + [10] kaynaklı satırda işaret + [11] v2.4.9'un gerçek izi = güncel kodun 2.4.9 tanımı); Y10, Y12 EŞDEĞER (süzgecin para denetimleri aynı yazımı yakalar — yanıt, ileti, tarama aynı; yalnız iç karar etiketi farklı; sonda betiği kanıtta).
+- S160 = A ek testleri (s160-iptal-yollari-250): Banka'dan Ters Kaydet / Düzelt ve e-Arşiv iptali 409 (EDM'ye istek yok, kilitli defter aynı); kilit dışı serbest; kilit kaldır → iptal → yeniden kilit; ödeme / verilen evrak bağı kurala girmez. (a)'daki kilitli tahsilat bağı arayüz yolundan kurulamaz (savunma katmanı).
+- S164 = C ikinci örneği (kural-farki-duzeltme-250 [8]): kilitli tahsilatın fatura bağı kapı dışından yazılınca 120 / 128 farkı ön izlemede kaynağıyla dışarıda, fiş yalnız gerçek kural farkı. Ürün kodu değişmedi.
