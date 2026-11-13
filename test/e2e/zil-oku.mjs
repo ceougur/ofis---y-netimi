@@ -4,12 +4,18 @@
 // yardımcı elle yenileme yapmaz (ders 34: ürünün canlı yenilemesi gizlenmez; yenilenmezse bekleme zaman aşımına düşer ve adım kırmızı olur).
 //   api: senaryonun API istemcisi (sayfayla AYNI kullanıcı — sürüm kişinin görebildiği kalem türlerini taşır).
 //   Dönüş: paneldeki satırların metinleri.
-export async function readBell(page, api, { timeout = 45_000 } = {}) {
+// Birleşik tur 8 (dar kontrol Ç5-B kapanış 2 — ZİL OKUMASI; ders 34): yardımcı sayfanın takviminin güncellenmesini BEKLEDİĞİ süreyi her okumada yazar; 5 sn'yi aşarsa UYARI
+// satırı basar (ürünün canlı yenilemesi yavaşsa gizlenmez, kayda geçer). Davranış (koşul, zaman aşımı) değişmedi.
+export const BELL_WARN_MS = 5000;
+export async function readBell(page, api, { timeout = 45_000, log = console.log } = {}) {
   const res = await api.get("/api/workspace/dues");
   if (res.status !== 200) throw new Error(`zil (sunucu): ${res.status}`);
   const server = res.data && typeof res.data === "object" && "ok" in res.data ? res.data.data : res.data;
   if (!server?.version) throw new Error("zil (sunucu): takvimin sürümü okunamadı");
+  const started = Date.now();
   await page.waitForFunction(version => window.HOF?.dues?.data?.()?.version === version, server.version, { timeout });
+  const waited = Date.now() - started;
+  log(`  zil: sayfanın takvimi sunucunun sürümüne ${waited} ms'de yetişti${waited > BELL_WARN_MS ? ` — UYARI: ${BELL_WARN_MS} ms'yi aştı (ürünün canlı yenilemesi yavaş)` : ""}`);
   await page.click(".topbar .top-actions > .icon-button");
   await page.waitForSelector(".hof-modal-backdrop.is-visible .hof-alert-list", { timeout: 15_000 });
   const items = await page.evaluate(() => [...document.querySelectorAll(".hof-alert-list li")].map(node => node.textContent.replace(/\s+/g, " ").trim()));

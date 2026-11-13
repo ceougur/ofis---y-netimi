@@ -76,10 +76,20 @@ export class GateEquivalenceError extends HttpError {
   }
 }
 
+// Birleşik tur 8 (S145 = A, S155 = A — KULLANICI KARARI 13.11 08:35 AYNEN: "Şüpheli Alacak kuralının ölçüsü TOPLAM borçtur: bir kayıt … ancak 'kayıttan sonra carinin borcu açık
+// şüpheli tutarın altına düşüyorsa' reddedilir … anlaşılır ileti bu kurala göre yazılır"): yalnız ret nedeni şüpheli kuralıysa (doubtful:balance) ileti anlaşılır cümle; KURAL,
+// durum kodu (409 ledger-integrity) ve kapının öbür nedenlerdeki genel iletisi AYNEN.
+const doubtfulText = failures => {
+  if (!failures.length || !failures.every(item => item.code === "doubtful:balance")) return "";
+  const party = failures[0].figures?.[0];
+  if (!party) return "";
+  return `Bu kayıt carinin borcunu açık şüpheli tutarın altına düşürür (borç ${money((party.balanceMinor || 0) / 100)}, açık şüpheli ${money((party.openMinor || 0) / 100)}); kaydı şüpheliye alma tarihinden sonraya girin ya da önce şüpheli kaydını düzeltin.`;
+};
+
 export class IntegrityError extends HttpError {
   constructor(failures) {
     const first = failures[0];
-    super(409, `İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (${first.name}${first.difference ? `: ${money(first.difference)} fark` : ""}). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.`, { code: "ledger-integrity", failures });
+    super(409, doubtfulText(failures) || `İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (${first.name}${first.difference ? `: ${money(first.difference)} fark` : ""}). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.`, { code: "ledger-integrity", failures });
     this.failures = failures;
   }
 }
@@ -433,12 +443,17 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       // Eleştirmen E2 (15.10.2026): kayıt tarihinden ÖNCE tarihli (geriye tarihli) tahsilat şüpheliden düşmez (K3) → carinin normal alacağı (120 =
         // kart − açık şüpheli) eksiye düşebilir; bu kural dışıdır ve burada KIRMIZI görünür (düzeltme: kaydı Şüpheliden Çıkar ya da tutarını düzelt).
         const negatives = [];
+        const figures = [];
         for (const row of store.all("SELECT DISTINCT d.account_id AS party, COALESCE(a.name, '') AS name FROM doubtful_receivables d LEFT JOIN accounts a ON a.id = d.account_id WHERE d.status = 'open' AND a.deleted_at IS NULL")) {
           const open = doubtfulSummary(store, row.party).openMinor;
           const normal = (parties.get(row.party) || 0) - open;
-          if (open > 0 && normal < 0) negatives.push(`${row.name || row.party}: 120 = ${(normal / 100).toFixed(2)} (açık şüpheli ${(open / 100).toFixed(2)}; geriye tarihli tahsilat/alacak kaydın tarihinden önce)`);
+          if (open > 0 && normal < 0) {
+            negatives.push(`${row.name || row.party}: 120 = ${(normal / 100).toFixed(2)} (açık şüpheli ${(open / 100).toFixed(2)}; geriye tarihli tahsilat/alacak kaydın tarihinden önce)`);
+            // Birleşik tur 8 (S155 = A): reddin anlaşılır iletisi için carinin borcu ve açık şüpheli tutarı (kuruş; yalnız ihlal varsa).
+            if (figures.length < 5) figures.push({ party: row.party, balanceMinor: normal + open, openMinor: open });
+          }
         }
-        checks.push({ code: "doubtful:balance", name: "Şüpheli Alacak — Carinin Normal Alacağı Eksi Değil (120 = kart − açık şüpheli ≥ 0)", ok: negatives.length === 0, count: negatives.length, sample: negatives.slice(0, 5) });
+        checks.push({ code: "doubtful:balance", name: "Şüpheli Alacak — Carinin Normal Alacağı Eksi Değil (120 = kart − açık şüpheli ≥ 0)", ok: negatives.length === 0, count: negatives.length, sample: negatives.slice(0, 5), ...(figures.length ? { figures } : {}) });
       }
       lap("parties");
     }
