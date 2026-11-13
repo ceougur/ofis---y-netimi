@@ -4412,3 +4412,38 @@ YORUMDUR (ders 40 — önce kural, sonra kod); senaryo / mutant / G3 sayıları 
 - S170: satış kartında Değersiz / iade faturası artanı (S170 yalnız FATURASIZ stok iadesinde); iki satış kartı (SK-31 (b) — tanımsız); taksitli satış faturasının kendi kartı — elle senaryo yok.
 - Madde 4: sayaç (`takvim:cariKalemSayisi`, `projeksiyon:cari`) S163 alanlı bir kontrolde hiç yazılmadı (taramada 0) — silme yolu senaryoyla denenmedi. Rastgele üretici satış kartı + faturasız iade
   üretmiyor (G3 rastgele farkı 0) — üretici değişmedi.
+
+### C10w Mutantlar (bakım 19; `oz-test.py` DEĞERLE — senaryo listesi koşudan)
+310 (iade her zaman sondan küçültür) → d45 B2 / B4 / B6 `kart:KB<n>:toplam` (3 elle değer) · 311 (iade her zaman ilk taksitten) → d45 B5 (`kart:KB5:kalan` 90000 ↔ 60000) + d45 A6 / A6B, d46 A7 / A8,
+d34 E8, d35 H13 (başka borcun vadesi kartın taksitlerinden önce olan öbür cariler; 37 elle değer) · 312 (ölçüt kontrol anı) → d45 B6 (5 elle değer: toplam, taksit Ödenen, gecikmiş — "ANAHTAR YOK").
+Karşılaştırma carisinde (b) / (c) (B2 / B4) "ilk taksitten" mutantı DEĞERLE AYRILAMAZ — kararın (b)'si iadenin İLK taksitten düşmesini söylüyor (beklenen = mutant); ayıran cari B5'tir (başka borcun
+vadesi ilk taksitten önce — iade S2 sırasıyla o borcu kapatır). Bakım 6 … 18 mutantları (200–309) aynen yakalanıyor (öz test 6.678/6.678; tarama 279/279 — 310–312 dahil). Susma alanlarının (S170, S157,
+madde 4) mutantı yok — `elleYok` / `elleBelirsiz` denetler (eski kâhin kırmızısı aşağıda).
+
+### C0w Değişen eski beklentiler (G3; bakım 18 + mobil 2 (`kahin19-taban` = 418a5d50) ↔ bakım 19 kâhin çıktısı, `2.5.0`; eski kopyanın 100 elle senaryosu + yeni d45 + rastgele s1 / ux18 tohum 1–10 × 120) — kararla ilgisiz eski beklenti DEĞİŞMEDİ
+Eski 50.797 → yeni 50.775 denetim; değişen / kalkan / yeni toplam **32** (27 kalkan + 5 yeni; DEĞİŞEN 0); **BEKLENMEYEN 0**; yalnız etiketi değişen 0. Döküm `docs/kanit/2026-11-13/kahineski19-g3-dokum-*.json`
+(iki saat diliminde bayt bayt aynı). Kalkan (SUS'a dönen) her anahtar:
+- **S162-OLCUT (madde 1 — 10 kalkan + 5 yeni):** eski d45 B2 (iade önce, Borç 500 sonra — (a)) `kart:KB2:toplam`, `kart:KB2:taksit1 | 2 | 3:odenen`, `cari:B2:gecikmis` (5 kalkan); yeni d45 B3 (aynı yapı) 5 kalkan;
+  yeni d45 B6 (borç iadeden sonra silindi — eski kâhin kontrol anı ölçüsüyle SUS'luyordu) `kart:KB6:toplam`, `taksit1 | 2 | 3:odenen`, `cari:B6:gecikmis` 5 YENİ. B2 (b) / B4 (c) / B5: fark 0.
+- **S170 (madde 2 — 12 kalkan):** d42 `kart:KT1:toplam`, `KT1:taksit1:odenen`, `KT1:taksit2:odenen`, `KT2:toplam`, `KT2:taksit1:odenen`, `KT3:toplam`, `KT3:taksit1:odenen`, `KT3:taksit2:odenen`,
+  `KT4:toplam`, `KT5:toplam`, `KT8:toplam` (son üçü aynı zamanda madde 3 — S157; sınıflayıcı önce S170'i sayar); d30 `kart:KQ7:toplam`.
+- **OZET (madde 4 — 5 kalkan):** d42 `takvim | vadeTakip | projeksiyon:cariToplam:T6` (S166 carisi); d43 `takvim:cariToplam:U4`, `takvim:cariToplam:U6` (S149).
+- **Öbür 96 eski elle senaryo ve 20 rastgele: fark 0** (adımı değişen eski senaryo yalnız d45 — izinli; üretici 20/20 aynı dizi).
+- **Eski ELLE tablolarda değişen beklentiler** (`kahineski19-elle-fark-*.log`, 100/100 izinli): d45 40 (B3 … B6 yeni, B1 / B3 pencere toplamı `elleYok`, adım: b2y iadeden önceye, tarihi 01.06), d42 34, d30 3, d43 4,
+  d44 3 — hepsi madde 1–4; değeri değişen eski elle beklenti YOK (yalnız `elleBeklenen` → `elleYok` ve yeni kayıtlar).
+- `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`: **484/484 bayt bayt aynı** (100 eski elle + yeni d45 + 20 rastgele × 4 kip).
+- **Yeni / değişen elle tablolar ESKİ (bakım 18) kâhinde — beklenen NEDENLE kırmızı (ders 7, 38):** 512 elle denetimin **37**'si (`kahineski19-kirmizi-eski-cari-*.log`; d45 11, d42 20, d30 2, d43 4, d44 0):
+  B6 "ANAHTAR YOK" (eski kâhinin kontrol anı ölçüsü — 5), B3 değer yazması (5) + `belirsiz` yok (1), S170 / S157 alanında toplam ve taksit Ödenen yazması (12), pencere toplamlarını yazması (T6 3, U4 / U6 2),
+  yeni neden metinleri `belirsiz`'de yok (9); 475'i iki kâhinde aynı. **Dişsiz kalanlar (açıkça):** d44 Y4 ve d45 B1 pencere toplamı `elleYok`'ları iki kâhinde de anahtar YAZILMADIĞI için kırmızı vermiyor
+  (kontrolde `cariToplam` kurulmuyor — madde 4 kuralı orada yalnız güvence); B2 / B4 / B5'in değerleri iki kâhinde aynı (ölçütten bağımsız — B2 / B4'ün eski kâhinde de kontrol anında başka borç açık).
+- **Madde 4 taraması (`kahineski19-ozet-tara-*.txt`, önce: `kahineski19-ozet-tara-bakim18.txt`):** bakım 18'de 45 kayıt → bakım 19'da 53 (5'i SUS'a döndü; 13'ü yeni `belirsiz` (S170 / B3) yüzünden listeye giren,
+  Y19-6'ya göre DEĞER kalan Σ açık / gecikmiş anahtarları). Kalan 53'ün hepsi Y19-6 (a) … (g) sınıfında (S149'un Vade Takip / projeksiyon toplamları, S144 / S141 / C16.4 carileri, S162 / S166 / S163 / S170
+  carilerinin `acikToplam` / `acikEsitBakiye` / gecikmiş'i).
+
+### Kanıt (bakım 19; iki saat dilimi — UTC ve Europe/Istanbul çıktıları başlık / kanit satırları dışında bayt bayt aynı, G3 dökümleri ve madde 4 taraması bayt bayt aynı; kâhin `df767e9b`, temiz ağaç; `docs/kanit/2026-11-13/kahineski19-*`, araçlar ve koşu betiği `kahineski19-arac/`)
+cari öz test **6.678/6.678** (`-cari-oz-*`: elle tablolar 100 senaryo, mutantlar 200–312 — 219–312 değerle) · mutasyon taraması **279/279** (`-cari-mutasyon-*`) · eşdeğerlik + G3 **605/605** (`-esdeger-cari-*`) ·
+yeni / değişen elle tablo **512/512** (`-elle-yeni-cari-*`: d45 161 + d42 89 + d30 139 + d43 44 + d44 79) · ESKİ kâhinde **37 kırmızı** / 512 (`-kirmizi-eski-cari-*`) · eski elle tablo farkı **100/100**
+izinli (`-elle-fark-*`) · G1 tarama **100/100** (`-g1-tara-*`) · mutant ↔ senaryo **676/676** (`-mutant-senaryo-*`; d30 + d35 … d46 × 261–312) · geniş tarama **2.201/2.201** (`-genis-tarama-*`; bakım 18 ile aynı
+sayı) · defter öz testi **181/181** (`-defter-oz-*`; bu bakım defter kâhinine dokunmadı) · madde 4 taraması (`-ozet-tara-*`, çıkış 0). Hepsi çıkış 0, iki saat diliminde aynı sayılar. Öz test, mutasyon, eşdeğerlik
+ve geniş tarama `flock -s -w 1800 …/olcum.lock` ile (ders 52 — kilit doluyken tek seferlik engelleyen bekleme, döngü yok); her adım `timeout` sınırlı. Program açılmadı. Koşu günlükleri
+`kahineski19-kos-utc.txt` / `-ist.txt` (yük 0,42 / 0,74 — 4 çekirdek). Mobil yazma kâhini: kabul dosyası bu bakımın cari kâhiniyle yeniden üretildi (`test/bagimsiz/mobil-yazma/README.md` "2.5.0 bakımı 3").
