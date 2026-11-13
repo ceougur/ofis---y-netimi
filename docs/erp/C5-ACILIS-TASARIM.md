@@ -1086,3 +1086,27 @@ kısma — kâhin Y4 / Z6) routes/accounts.mjs'te (`assertNormalRoom` → `doubt
   ön izleme ≤ 0,5 sn hedef; Mutabakat Testi tabanın %10'u içinde.
 - Ekran: Yönetim › Sistem › Dönem Kilidi kartının altında "Kural Farkı Düzeltme" düğmesi → pencere (kilit, fiş tarihi, satırlar, dışarıda kalanlar, kaynak maddeler, onay kutusu,
   "Fişi Kaydet"); pasifse nedeni görünür yazı.
+
+### 17.9 Tur 2b — İş 2 sonucu (kodla birlikte; kanıt docs/kanit/2026-11-13/c5a2b-*)
+- Değişen yol: server/lib/ledger-opening.mjs (`nextDayOf`, `PRIOR_YEAR_ACCOUNTS`, `ruleDiffCorrectionPlan`, `postedRuleDiffCorrections` — dosyanın sonu); server/lib/ledger-snapshots.mjs
+  (`ruleDiff({ detail })`; `checks()`'te kural farkı öğesine `correction` / `corrected`, `createLedgerSnapshots({ subledger })`); server/routes/ledger.mjs (GET / POST
+  /api/admin/ledger/rule-diff-correction, `subledger: () => subledgerAccounts()`); istemci client/assets/hof-kural-farki.js (yeni), client/admin.html (düğme + betik), client/assets/admin.js
+  (`loadIntegrity` Düzeltildi / fazla düzeltme cümlesi + yenileme olayı).
+- v2.4.9 verisi (surum-2.4.9-s127; kilit 31.12.2025): fiş 01.01.2026 = B 500 11.900 / B 681 10.400 / A 519 22.300 (9 kaynak madde: Kasa açılışı, cari açılışı, 3 Excel kartı (ikisi S127'nin eski
+  kurala bağlı kartı), 4 "Excel'de ödenmiş" satırı). Beklenen fikstürün v2.4.9 mizanından + ham tablolardan (2025'in 602'si = yüklenen kartların T'si). Fişten sonra 1–5 sınıfı karma =
+  baştan türetme (100 10.800, 120 15.500, 519 −26.300, 500 0) — S127 kartı ÇİFT düzeltilmez; 6. sınıf: kilitli yılın 602'si donmuş defterde kalır, 2026'da 681 karşılığı (§3.3 tasarımı).
+- v2.0.26 verisi (kilit 05.10.2026; aynı yıl): fiş 06.10.2026 = B 500 127.800 / A 519 127.800 (44 madde); eski sürümden kalan ileri tarihli evrak satırı ayrı ve aynen kalır.
+- Mutabakat Testi: fişten sonra uyarısız (failures yalnız gerçek eski sürüm satırı); öğe "… — Düzeltildi (Fiş 2026-000001)"; Mutabakat Günlüğü +0, zil 0 (fiş, ters kayıt, ikinci fiş).
+- Kilitli kaynağın kapı dışı değişikliği (S164 = C örneği; [7]): ön izleme bozulan kaydı "fişle düzeltilmez" diye listeler, 120 farkını dışarıda gösterir, fiş satırları değişmez; kayıt
+  kapı tarafından 409 ledger-integrity ile reddedilir (fiş yazılmaz).
+- Kalıcı test test/kural-farki-duzeltme-250.test.mjs 7 / 7 (UTC + Europe/Istanbul); tabanda 7 / 7 kırmızı (uç yok: 404 / ön izleme alanları yok). Mutasyon
+  test/kural-farki-duzeltme-250-mutasyon.mjs 10 / 10 yakalandı. Ekran senaryosu senaryo-acilis-duzeni-250 (İş 2 adımları eklendi) 27 / 27 iki TZ; tabanda İş 2 adımları kırmızı
+  (düğme yok). Komşular (32 dosya, taramayla) 337 / 337 × iki TZ; senaryo-kasa-acilis-uyari-250 20 / 20, senaryo-donem-kilidi-ilerleme-250 39 / 39, senaryo-226 22 / 22,
+  senaryo-213 64 / 64, senaryo-211 59 / 59.
+- Kâhinler: defter 187 / 187 (yeni ve taban, iki TZ); cari 16.449 / 16.449 (yeni = taban), yapım aşaması listesi 41 → 41 (fark yok — listede 'Ç5-A' paketi kaydı yok); muhasebe sürücüsü
+  yeni ↔ taban gerileme denetimi 226 / 226, program çıktısı BİREBİR (sürücü iki tarafta aynı 862 sınıflanmış / bekleyen fark).
+- HIZ (E): ÖLÇÜLEMEDİ — ölçüm kilidi (`flock -x`) 19:20–20:00 tek seferlik 40 dk beklemede alınamadı (ana oturumun e2e yığını paylaşımlı kilidi tutuyordu); düzenek hazır
+  (c5a2b-betik/olc.mjs + kos.sh + hepsi.sh: taban ↔ yeni, kilitsiz + kilitli, iki TZ, 3 tur, ön izleme yolu eklendi). Değişen yollar: Mutabakat Testi / Defter Mutabakatı / açılış
+  taraması (`checks()` + tek SQL; düzeltme fişi yoksa `LIMIT 1` sorgusu), yeni ön izleme (bir `ruleDiff` + plan). Ana oturum ölçer.
+- BİLİNEN SINIRLAR: 671 / 681 eşlemesi son etkin düzeltmenin yılıyla (kilit yıl sonunu düzeltmeden sonra aşarsa kalan fark yeni yıla göre önerilir); kilit kaldırılınca fiş
+  otomatik ters kaydedilmez (fazla düzeltme uyarısı + Ters Kaydet — kilit kaldırmanın fiş varken engellenip engellenmeyeceği BAŞ MİMAR değerlendirmesine).
