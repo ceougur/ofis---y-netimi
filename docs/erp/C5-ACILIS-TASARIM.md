@@ -1163,3 +1163,25 @@ işleri ve tur 1'in türetme kuralları değişmez. Ekranlar tur 2b'nin bağlama
 **İş 5 ek testleri:** Banka'dan Ters Kaydet ve e-Belge iptal akışı — kilitli tahsilat bağlıyken 409 + kilitli defter aynı (+ e-Belge'de dış servise HİÇ gidilmedi); kilit dışında serbest.
 **İş 2'nin eksik örneği:** S164 = C ikinci örnek — kilitli tahsilatın fatura bağı kapı dışından değişince Kural Farkı ön izlemesi kaynağı gösteriyor mu, fiş satırlarına giriyor mu
 (test/kural-farki-duzeltme-250.test.mjs'e vaka; ürün kodu değişmez).
+
+### 17.11 Tur 2c — sonuçlar (kodla birlikte; kanıt docs/kanit/2026-11-13/c5a2c-*)
+- İş 3 (BİTTİ): uçlara sayfalama + toplam, zil sayısı (`?counts=1`; kilitli dönemdeki aday `lockedCandidate`), toplu karar (aynı işlemde; listede olmayan kimlikte 404, hiçbiri yazılmaz),
+  "undo" (karar geri alınır, satır yeniden onay bekler — S47: defterde 519); sayfasız liste çıktısı tur 1'in AYNI. Ekran Yönetim › Sistem › "Açılış Olabilir Kayıtlar" (B10'dan sapma:
+  Cariler'in istemci dosyası Ç5-B'nin — BAŞ MİMAR değerlendirmesine); zil yalnız system.manage (pencere Yönetim'de); Kural Farkı aday nedeni yeri söyler ("Yönetim › Sistem › Açılış
+  Olabilir Kayıtlar") ve "Açılış Olabilir Kayıtları Aç" ile pencereye geçirir. Aynı adlı iki carinin satırı cari no / telefonla ayrılır (sayfalı listede).
+- İş 1 (BİTTİ): `openingMatchBalance` (karma defterden 519 gün sonu bakiyesi + açılış türlerine göre döküm; cariye işlenmemiş evrakın maddesi `account:free-*` → Açılış Evrakı),
+  `openingMatchTargets` (1–5 sınıfı, 519 değil, K6 değil, ayrıca 153 / 136 / 159 / 198 / 340 — stok değeri ve bilançonun brüt gösterim hesapları; BAŞ MİMAR değerlendirmesine),
+  `openingMatchPlan` (ret kodları opening-match-account / -inverse / -direction / -nothing / -zero / -line), `openingMatchState` (Mutabakat bilgi satırı `opening:519-inverse`). Bilgi
+  satırı CANLI türetmeye (Mutabakat'ın okuduğu) bakar: Kural Farkı fişi ters kaydedilince karma defterde (Mizan) 519 ters görünür ama canlı türetmede 0'dır — o fark "Kural
+  Değişikliği Farkı" uyarısındadır (iki ayrı uyarı yok). Açılış Karşılığı denetimi fiş satırlarını görür (sayıyla: parts.vouchers519 = 730.000 kuruş; 519 / 500 tutarlı).
+- v2.4.9 kilitli verisi (kabul D; test/acilis-duzeni-v249-250): Kural Farkı fişi B 500 6.370 / B 602 2.800 / A 519 9.170 — 2.4.9 "Açılış…" açıklamalı Borç Yaz'ı AÇIKLAMADAN açılış
+  sayıyordu (§2.3) → kilitli aday onayında farkı 500 → 519 (ilk beklenen 602 YANLIŞTI; sayı karar metniyle yeniden kuruldu). Eşleştirme 519 11.670 → 0; ters kayıtla uyarı geri.
+- İş 8 (BİTTİ): kılavuz 17. bölüme üç madde (Açılış Olabilir Kayıtlar, Kural Farkı Düzeltme, Açılış Eşleştirme); PDF yeniden üretildi ve denetlendi.
+- HIZ (kabul E; temiz 100 bin satır, kendi kopya, ölçüm kilidi; docs/kanit/2026-11-13/c5a2c-olcum): var olan yolların hiçbiri kötüleşmedi (Mizan, Yevmiye, Hesap / Alt Hesap Mizanı,
+  Defter Mutabakatı, Mutabakat Testi, Alacak Yaşlandırma, iki yazım yolu, Kural Farkı ön izlemesi — kilitsiz + kilitli); Açılış Olabilir sayfasız liste ilk ölçümde eşiğe değdi, 8 turla
+  yinelendi: taban en iyi 65,0 / ortanca 68,0 ms ↔ yeni 58,2 / 68,6 ms (kötüleşme yok). YENİ yollar: sayfalı liste ~0,1 sn, zil sayısı ~0,03 sn (≤ 0,5 sn); Açılış Eşleştirme GET /
+  ön izleme kilitsiz 1,6–2,0 sn, kilitli 3,0–3,3 sn, olay döngüsü de o kadar tutuluyor → ≤ 0,5 sn ÖLÇÜTÜ KARŞILANMADI (bir karma `book()` = bütün yevmiye türetmesi). Çare seçenekleri
+  ve öneri raporda (BAŞ MİMAR KARARI GEREKİYOR); bu turda değiştirilmedi.
+- Kâhinler: defter 187 / 187 (yeni + taban, iki TZ); cari 16.449 / 16.449 (yeni = taban), yapım aşaması 41 → 41 (fark yok; 'Ç5-A' paketi kaydı yok); muhasebe sürücüsü taban = yeni
+  (8.456 test, 862 sınıflanmış / bekleyen fark, 44 atlanan), gerileme 226 / 226 — `acilis_eslestir` olayı sürücüde hâlâ "uygulanmadı (Ç5-ESLESTIRME)": sürücü eşlemesi
+  (test/bagimsiz/** — bu turda değişmez) ana oturumun işi.
