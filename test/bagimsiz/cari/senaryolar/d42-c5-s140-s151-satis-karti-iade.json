@@ -2,7 +2,7 @@
  "dil": "destekofis-cari/3",
  "ad": "d42-c5-s140-s151-satis-karti-iade",
  "bugun": "2026-06-15",
- "aciklama": "Bakım 15: S140 A — satışla açılan kart iadeyle küçülünce kendi satışını taşır (T1 kararın örneği; T3 iade satışın tamamı; T6 kart tahsilatından sonra iade); S151 B — satış kartının 'Tahsil Edilen'i / taksit 'Ödenen'i faturasız stok iadesini saymaz (T2 kararın örneği; T1 / T3 / T6); SUS: SK-31 (a) iade kartın açığından büyük (T4), (b) başka satış (T5), (c) iadenin geri ödemesi (T8); SK-32 satış kartı olmayan kartta iade (T7) · bakım 16 (§27): S158 A — T7 (kararın örneği) 'Tahsil Edilen 0', taksit 'Ödenen' 0 / 0 / 0 (SK-32 kalktı); T4 / T5 / T8 nedeni S157 = C",
+ "aciklama": "Bakım 15: S140 A — satışla açılan kart iadeyle küçülünce kendi satışını taşır (T1 kararın örneği; T3 iade satışın tamamı; T6 kart tahsilatından sonra iade); S151 B — satış kartının 'Tahsil Edilen'i / taksit 'Ödenen'i faturasız stok iadesini saymaz (T2 kararın örneği; T1 / T3 / T6); SUS: SK-31 (a) iade kartın açığından büyük (T4), (b) başka satış (T5), (c) iadenin geri ödemesi (T8); SK-32 satış kartı olmayan kartta iade (T7) · bakım 16 (§27): S158 A — T7 (kararın örneği) 'Tahsil Edilen 0', taksit 'Ödenen' 0 / 0 / 0 (SK-32 kalktı); T4 / T5 / T8 nedeni S157 = C · bakım 17 (§28 Y17-5): T7 S162 = B alanı (kart carinin bütün açık borcunu taşıyor + faturasız iade) — kart toplamı, taksit Ödenen'leri ve gecikmiş SUS (BİLİNEN SINIR); 'Tahsil Edilen 0', 'Kalan 600', bakiye yazılır (S158 A'nın örneği); T6 satış kartı carinin tek borcu + iade — SK-37 SUS",
  "dayanak": "KARARLAR.md §26 (Y15-5, Y15-7), §20 (S110 — Y8-2), §19 (Y7-2), §13 C13.4 / C13.5, §25 Y14-10 (S129)",
  "elleBeklenen": {
   "k1:cari:T1:bakiye": 70000,
@@ -50,25 +50,20 @@
   "k1:cari:T6:bakiye": 30000,
   "k1:kart:KT6:odenen": 30000,
   "k1:kart:KT6:kalan": 30000,
-  "k1:kart:KT6:taksit1:odenen": 30000,
-  "k1:kart:KT6:taksit2:odenen": 0,
-  "k1:cari:T6:gecikmis": 0,
   "k1:cari:T7:bakiye": 60000,
-  "k1:kart:KT7:toplam": 90000,
   "k1:kart:KT7:kalan": 60000,
   "k1:cari:T8:bakiye": 100000,
   "k1:kart:KT8:var": true,
   "k1:kart:KT8:toplam": 100000,
-  "k1:kart:KT7:odenen": 0,
-  "k1:kart:KT7:taksit1:odenen": 0,
-  "k1:kart:KT7:taksit2:odenen": 0,
-  "k1:kart:KT7:taksit3:odenen": 0
+  "k1:kart:KT7:odenen": 0
  },
- "elleYok": ["k1:kart:KT4:odenen", "k1:kart:KT4:kalan", "k1:kart:KT4:taksit1:odenen", "k1:hareket:t4b:kalan", "k1:takvim:hareket:t4b", "k1:cari:T4:gecikmis", "k1:kart:KT5:odenen", "k1:kart:KT5:kalan", "k1:fatura:T5F:acik", "k1:cari:T5:gecikmis", "k1:kart:KT8:odenen", "k1:kart:KT8:kalan"],
+ "elleYok": ["k1:kart:KT4:odenen", "k1:kart:KT4:kalan", "k1:kart:KT4:taksit1:odenen", "k1:hareket:t4b:kalan", "k1:takvim:hareket:t4b", "k1:cari:T4:gecikmis", "k1:kart:KT5:odenen", "k1:kart:KT5:kalan", "k1:fatura:T5F:acik", "k1:cari:T5:gecikmis", "k1:kart:KT8:odenen", "k1:kart:KT8:kalan", "k1:kart:KT7:toplam", "k1:kart:KT7:taksit1:odenen", "k1:kart:KT7:taksit2:odenen", "k1:kart:KT7:taksit3:odenen", "k1:kart:KT6:taksit1:odenen", "k1:kart:KT6:taksit2:odenen", "k1:cari:T6:gecikmis", "k1:cari:T7:gecikmis", "k1:kart:KT6:toplam"],
  "elleBelirsiz": [
   ["cari T4 tanımsız", "S140", "SK-31 (a)", "BİLİNEN SINIR (kullanıcı kararı S157 = C) S157"],
   ["cari T5 tanımsız", "S140", "SK-31 (b)", "BİLİNEN SINIR (kullanıcı kararı S157 = C) S157"],
-  ["cari T8 tanımsız", "S140", "SK-31 (c)", "BİLİNEN SINIR (kullanıcı kararı S157 = C) S157"]
+  ["cari T8 tanımsız", "S140", "SK-31 (c)", "BİLİNEN SINIR (kullanıcı kararı S157 = C) S157"],
+  ["kart KT7", "S162 = B"],
+  ["kart KT6", "SK-37"]
  ],
  "adimlar": [
   {"id": "ct1", "islem": "cari_ac", "ad": "T1", "isim": "Tarık Örnek İade", "tarih": "2026-05-01"},

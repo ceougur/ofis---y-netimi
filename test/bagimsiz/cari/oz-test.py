@@ -42,6 +42,9 @@
 16. Bakım 16 (§27; S155 A, S158 A, S156 / S157 = C, S154 bilgi): Şüpheli Alacak kuralının ölçüsü TOPLAM borç — türü fark etmez, adımdan sonra borç açık şüpheli tutarın altına düşüyorsa RET
    (d44 X1 … X14: kararın iki örneği AYNEN + çek / Alacak Yaz / borç silme / stok iadesi / geri yükleme / tarih değişikliği / bağlı tahsilat; d41 S7 / S8 / S9 artık değerle); SK-35 SUS
    (d44 X12 / X13); 'iade tahsilat değildir' her kartta (d42 T7 — kararın örneği; d44 Y2 / Y4 / Y5); mutantlar 299–302 (293–296 yeni anlamıyla) DEĞERLE.
+17. Bakım 17 (§28; S159 A, kart tahsilatı 'Fazlasını Avans Yaz' seçeneği — S118 B sınırı, S154 B; S162 = B / S163 = C susması): açık şüpheli kalmadıysa S155 bağlamaz (d44 X12 artık değerle — kabul,
+   bakiye −100; d45 Z2 … Z5); kartın KENDİ kalanını aşan Taksit Tahsilatı seçenekle kabul, seçeneksiz RET, sınır bölgesinde seçeneksiz SUS SK-36 (d45 A1 … A6B; d43 U1 / U2 ve d30 Q1 / Q3 / Q5 seçenekli);
+   S162 / S163 BİLİNEN SINIR susmaları (d45 B1 / C1 / C3, d42 T7, d44 Y4; satış kartı SK-37 d42 T6); mutantlar 303–307 DEĞERLE.
 Çıktı: TAP benzeri sayılar + son satır "N/M denetim geçti". Çıkış 0 yalnız hepsi geçerse.
 """
 import importlib.util
