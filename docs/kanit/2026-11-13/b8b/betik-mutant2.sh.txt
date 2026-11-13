@@ -1,0 +1,14 @@
+#!/bin/bash
+# Birleşik tur 8b (ek) mutant koşusu: her mutant üç Vade Takip test dosyası, UTC. Yük kilidi paylaşımlı, BEKLEMESİZ.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+M=$S/b8b-mutant2
+exec 9>"$S/olcum.lock"
+flock -s -n 9 || { echo "KİLİT DOLU — KOŞULMADI"; exit 3; }
+cd $M || exit 1
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=$S/b8b-kanit TZ=UTC
+for name in m8-yalniz-bugun-7gun m9-yalniz-30gun m3-elle-aralik m1-yalniz-gosterge m2-yalniz-tahsilat m4-late-kapali m10-yalniz-90gun-eksik yeni; do
+  python3 -I $S/b8b-betik/mutant2.py $M $name || exit 1
+  timeout -k 5 600 node tools/kanit.mjs kos b8b-mutant2-$name -- node --test test/vade-takip-gecikmis-b8b-250.test.mjs test/vade-takip-gecikmis-b8-250.test.mjs test/vade-takip-soz-b7-250.test.mjs > $S/b8b-kanit/mutant2-$name.txt 2>&1
+  echo "$name çıkış=$? $(grep -E '^# (tests|pass|fail) ' $S/b8b-kanit/mutant2-$name.txt | tr '\n' ' ')"
+done
+cp $M/server/routes/overview.mjs.yeni $M/server/routes/overview.mjs
