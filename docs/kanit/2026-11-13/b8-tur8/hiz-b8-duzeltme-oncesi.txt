@@ -1,0 +1,70 @@
+HIZ KABUL birleşik tur 8 · nproc 4 · başta 1.02 1.26 1.65 1/111 17815 · 13:32:08
+=== taban · başta 1.02 1.26 1.64 1/111 17821 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban · yük (başta) 1.01 1.23 1.62 · ölçülen kart plan-4c06f1cc-75b8-4ebd-84d3-42148dbee2a4 · silinen kart plan-4c06f1cc-75b8-4ebd-84d3-42148dbee2a4~1
+  YAZIM kart tahsilatı: durum 200 · en iyi 847.2 ms · ortanca 1041.4 ms · olay döngüsü en çok 945.8 ms (n=5)
+  kart penceresi (yazımdan sonra): durum 200 · en iyi 1.9 ms · ortanca 2.2 ms · olay döngüsü en çok 0 ms (n=5)
+  kayıt detayı Taksit Planı (soğuk): durum 200 · en iyi 3.8 ms · ortanca 4.2 ms · olay döngüsü en çok 7.7 ms (n=5)
+  kayıt detayı Taksit Planı (ılık): durum 200 · en iyi 3.2 ms · ortanca 4.2 ms · olay döngüsü en çok 0 ms (n=5)
+  cari kartı (soğuk): durum 200 · en iyi 181.6 ms · ortanca 201.2 ms · olay döngüsü en çok 0 ms (n=5)
+  Cari Listesi (yazımdan sonra ilk): durum 200 · en iyi 563.9 ms · ortanca 780 ms · olay döngüsü en çok 775.9 ms (n=5)
+  Cari Listesi (ılık): durum 200 · en iyi 598.3 ms · ortanca 707.3 ms · olay döngüsü en çok 628.1 ms (n=5)
+  Taksitler listesi (ılık): durum 200 · en iyi 833.2 ms · ortanca 966.1 ms · olay döngüsü en çok 19.1 ms (n=5)
+  Vade Takip Gecikmiş (ılık): durum 200 · en iyi 1323.3 ms · ortanca 1431.1 ms · olay döngüsü en çok 1437.6 ms (n=5)
+  Vade Takip Tüm Açık (ılık): durum 200 · en iyi 1322.5 ms · ortanca 1422.1 ms · olay döngüsü en çok 1648.4 ms (n=5)
+  zil / takvim (ılık): durum 200 · en iyi 1750.6 ms · ortanca 1787.4 ms · olay döngüsü en çok 1599.1 ms (n=5)
+  SİL taksit kartı: durum 200 · en iyi 53.8 ms · ortanca 55.6 ms · olay döngüsü en çok 57 ms (n=3)
+  GERİ YÜKLE taksit kartı: durum 200 · en iyi 48.8 ms · ortanca 50.6 ms · olay döngüsü en çok 0 ms (n=3)
+yük (sonda) 1.01 1.20 1.60
+çıkış 0 · sonda 1.01 1.20 1.60 1/113 17972
+=== yeni · başta 1.01 1.20 1.60 1/113 17977 
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a2ba3cc62b2d80923 · yük (başta) 1.13 1.22 1.59 · ölçülen kart plan-4c06f1cc-75b8-4ebd-84d3-42148dbee2a4 · silinen kart plan-4c06f1cc-75b8-4ebd-84d3-42148dbee2a4~1
+  YAZIM kart tahsilatı: durum 200 · en iyi 991.3 ms · ortanca 1070.7 ms · olay döngüsü en çok 1062.7 ms (n=5)
+  kart penceresi (yazımdan sonra): durum 200 · en iyi 1.9 ms · ortanca 2.4 ms · olay döngüsü en çok 0 ms (n=5)
+  kayıt detayı Taksit Planı (soğuk): durum 200 · en iyi 3.5 ms · ortanca 4.3 ms · olay döngüsü en çok 0 ms (n=5)
+  kayıt detayı Taksit Planı (ılık): durum 200 · en iyi 3.5 ms · ortanca 4.2 ms · olay döngüsü en çok 0 ms (n=5)
+  cari kartı (soğuk): durum 200 · en iyi 175.1 ms · ortanca 233 ms · olay döngüsü en çok 260.8 ms (n=5)
+  Cari Listesi (yazımdan sonra ilk): durum 200 · en iyi 831.7 ms · ortanca 842.9 ms · olay döngüsü en çok 0 ms (n=5)
+  Cari Listesi (ılık): durum 200 · en iyi 747.9 ms · ortanca 764.1 ms · olay döngüsü en çok 0 ms (n=5)
+  Taksitler listesi (ılık): durum 200 · en iyi 865 ms · ortanca 943.9 ms · olay döngüsü en çok 18.4 ms (n=5)
+  Vade Takip Gecikmiş (ılık): durum 200 · en iyi 1356.6 ms · ortanca 1438.8 ms · olay döngüsü en çok 1710.2 ms (n=5)
+  Vade Takip Tüm Açık (ılık): durum 200 · en iyi 1444.9 ms · ortanca 1519.8 ms · olay döngüsü en çok 1733.3 ms (n=5)
+  zil / takvim (ılık): durum 200 · en iyi 1730.2 ms · ortanca 1976.8 ms · olay döngüsü en çok 1782.6 ms (n=5)
+  SİL taksit kartı: durum 200 · en iyi 50.4 ms · ortanca 53.9 ms · olay döngüsü en çok 57 ms (n=3)
+  GERİ YÜKLE taksit kartı: durum 200 · en iyi 49.3 ms · ortanca 53 ms · olay döngüsü en çok 0 ms (n=3)
+yük (sonda) 1.27 1.24 1.58
+çıkış 0 · sonda 1.27 1.24 1.58 1/113 18000
+=== taban · başta 1.27 1.24 1.58 1/113 18005 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban · yük (başta) 1.24 1.24 1.57 · ölçülen kart plan-4c06f1cc-75b8-4ebd-84d3-42148dbee2a4 · silinen kart plan-4c06f1cc-75b8-4ebd-84d3-42148dbee2a4~1
+  YAZIM kart tahsilatı: durum 200 · en iyi 1041.2 ms · ortanca 1081.4 ms · olay döngüsü en çok 1097.9 ms (n=5)
+  kart penceresi (yazımdan sonra): durum 200 · en iyi 2.3 ms · ortanca 3.2 ms · olay döngüsü en çok 0 ms (n=5)
+  kayıt detayı Taksit Planı (soğuk): durum 200 · en iyi 4.2 ms · ortanca 5.9 ms · olay döngüsü en çok 4.8 ms (n=5)
+  kayıt detayı Taksit Planı (ılık): durum 200 · en iyi 4 ms · ortanca 5.4 ms · olay döngüsü en çok 0 ms (n=5)
+  cari kartı (soğuk): durum 200 · en iyi 205.2 ms · ortanca 228.3 ms · olay döngüsü en çok 0 ms (n=5)
+  Cari Listesi (yazımdan sonra ilk): durum 200 · en iyi 676.3 ms · ortanca 704.4 ms · olay döngüsü en çok 0 ms (n=5)
+  Cari Listesi (ılık): durum 200 · en iyi 676.9 ms · ortanca 704 ms · olay döngüsü en çok 712 ms (n=5)
+  Taksitler listesi (ılık): durum 200 · en iyi 848.4 ms · ortanca 875.2 ms · olay döngüsü en çok 20.3 ms (n=5)
+  Vade Takip Gecikmiş (ılık): durum 200 · en iyi 1364.7 ms · ortanca 1408.4 ms · olay döngüsü en çok 1577.1 ms (n=5)
+  Vade Takip Tüm Açık (ılık): durum 200 · en iyi 1469.7 ms · ortanca 1486.4 ms · olay döngüsü en çok 1597 ms (n=5)
+  zil / takvim (ılık): durum 200 · en iyi 1763 ms · ortanca 1867.5 ms · olay döngüsü en çok 1840.3 ms (n=5)
+  SİL taksit kartı: durum 200 · en iyi 46.3 ms · ortanca 53.3 ms · olay döngüsü en çok 56.6 ms (n=3)
+  GERİ YÜKLE taksit kartı: durum 200 · en iyi 44.4 ms · ortanca 47.1 ms · olay döngüsü en çok 0 ms (n=3)
+yük (sonda) 1.11 1.20 1.54
+çıkış 0 · sonda 1.11 1.20 1.54 1/116 18027
+=== yeni · başta 1.11 1.20 1.54 1/116 18032 
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a2ba3cc62b2d80923 · yük (başta) 1.20 1.22 1.53 · ölçülen kart plan-4c06f1cc-75b8-4ebd-84d3-42148dbee2a4 · silinen kart plan-4c06f1cc-75b8-4ebd-84d3-42148dbee2a4~1
+  YAZIM kart tahsilatı: durum 200 · en iyi 875.3 ms · ortanca 1067.8 ms · olay döngüsü en çok 899.7 ms (n=5)
+  kart penceresi (yazımdan sonra): durum 200 · en iyi 2.1 ms · ortanca 2.3 ms · olay döngüsü en çok 0 ms (n=5)
+  kayıt detayı Taksit Planı (soğuk): durum 200 · en iyi 4.2 ms · ortanca 4.2 ms · olay döngüsü en çok 0 ms (n=5)
+  kayıt detayı Taksit Planı (ılık): durum 200 · en iyi 3.9 ms · ortanca 4.5 ms · olay döngüsü en çok 0 ms (n=5)
+  cari kartı (soğuk): durum 200 · en iyi 215.8 ms · ortanca 232 ms · olay döngüsü en çok 230 ms (n=5)
+  Cari Listesi (yazımdan sonra ilk): durum 200 · en iyi 797.4 ms · ortanca 837.7 ms · olay döngüsü en çok 946.3 ms (n=5)
+  Cari Listesi (ılık): durum 200 · en iyi 720.2 ms · ortanca 777.7 ms · olay döngüsü en çok 0 ms (n=5)
+  Taksitler listesi (ılık): durum 200 · en iyi 907.4 ms · ortanca 974.5 ms · olay döngüsü en çok 19.4 ms (n=5)
+  Vade Takip Gecikmiş (ılık): durum 200 · en iyi 1237.7 ms · ortanca 1351.5 ms · olay döngüsü en çok 1644.2 ms (n=5)
+  Vade Takip Tüm Açık (ılık): durum 200 · en iyi 1366.3 ms · ortanca 1451.6 ms · olay döngüsü en çok 1517.3 ms (n=5)
+  zil / takvim (ılık): durum 200 · en iyi 1671.2 ms · ortanca 1871.7 ms · olay döngüsü en çok 1795.2 ms (n=5)
+  SİL taksit kartı: durum 200 · en iyi 47.7 ms · ortanca 57.9 ms · olay döngüsü en çok 74.9 ms (n=3)
+  GERİ YÜKLE taksit kartı: durum 200 · en iyi 52.5 ms · ortanca 56.8 ms · olay döngüsü en çok 0 ms (n=3)
+yük (sonda) 1.10 1.19 1.51
+çıkış 0 · sonda 1.10 1.19 1.51 1/115 18055
+bitti 13:36:54

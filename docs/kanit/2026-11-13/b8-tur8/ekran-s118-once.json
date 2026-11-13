@@ -1,0 +1,77 @@
+{
+ "adimlar": [
+  [
+   "kart KPI",
+   [
+    "₺900,00Toplam Tutar",
+    "₺500,00Tahsil Edilen · %56",
+    "₺400,00Kalan",
+    "₺100,00Geciken · 1 taksit"
+   ]
+  ],
+  [
+   "taksit satırları",
+   [
+    "1. | 10.09.2026 | ₺300,00 | ₺300,00 | ₺0,00 | Ödendi | ₺✎×",
+    "2. | 10.10.202610 gün gecikti | ₺300,00 | ₺200,00 | ₺100,00 | Kısmen · Gecikti | ₺✎×",
+    "3. | 09.11.202620 gün kaldı | ₺300,00 |  | ₺300,00 | Bekliyor | ₺✎×"
+   ]
+  ],
+  [
+   "form (genel) önerilen tutar",
+   "300,00"
+  ],
+  [
+   "form bilgi notu",
+   [
+    "Carinin avansı bu kartın 500,00 TL'sini kapatıyor."
+   ]
+  ],
+  [
+   "form açıklaması",
+   "× DK Ekran Bağsız Tahsilat Gir Kartın kendi tahsilatlarına göre kalanı ₺900,00 · sıradaki 1. taksit ₺300,00 (carinin avansıyla kapalı görünüyor). Tutar seçilen yola (nakit kasa, banka, kredi kartı) tahsilat olarak düşer; kalanı aşan tutar kaydedilmez (yönetici avans yazabilir); çekle/senetle ödemede Çek / Senet Al’da “Taksite Say”ı seçin. Makbuz PDF’i hareketler listesinden alınır.Tutar (₺) *Tarih *Tahsilat YoluNakit"
+  ],
+  [
+   "901 sonrası üst pencere",
+   "× ONAY Kalanı Aşan Tutar Tutar kartın kalanını aşıyor: kalan 900,00 TL, girilen 901,00 TL, fazlası 1,00 TL; yeni tahsilat yazılmaz. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \"Fazlasını Avans Yaz\" ile kaydedin.VazgeçFazlasını Avans Yaz"
+  ],
+  [
+   "901 sonrası veri tabanı (kart hareketi adet / toplam)",
+   "0 / 0"
+  ],
+  [
+   "600 sonrası form",
+   "kapandı (soru yok)"
+  ],
+  [
+   "600 sonrası veri tabanı (kart hareketi adet / toplam)",
+   "1 / 600"
+  ],
+  [
+   "600 sonrası kart KPI",
+   [
+    "₺900,00Toplam Tutar",
+    "₺900,00Tahsil Edilen · %100",
+    "₺0,00Kalan",
+    "₺0,00Geciken · 0 taksit"
+   ]
+  ],
+  [
+   "600 sonrası taksit satırları",
+   [
+    "1. | 10.09.2026 | ₺300,00 | ₺300,00 | ₺0,00 | Ödendi | ✎×",
+    "2. | 10.10.2026 | ₺300,00 | ₺300,00 | ₺0,00 | Ödendi | ✎×",
+    "3. | 09.11.2026 | ₺300,00 | ₺300,00 | ₺0,00 | Ödendi | ₺✎×"
+   ]
+  ],
+  [
+   "600 sonrası cari bakiyesi / gecikmiş",
+   "-200 / 0"
+  ],
+  [
+   "taksit satırı düğmesi",
+   ":✎ → önerilen 300,00; not []"
+  ]
+ ],
+ "sayfaHatalari": []
+}

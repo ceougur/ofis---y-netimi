@@ -1,0 +1,11 @@
+14:51:50 başladı · yük 0.55 3.21 3.79
+UTC :: [kanit] b8-wa248-UTC: GEÇTİ · çıkış 0 · 15/15 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 3400920 +1 değişmiş dosya +1 izlenmeyen · linux 6
+Europe/Istanbul :: [kanit] b8-wa248-Europe-Istanbul: GEÇTİ · çıkış 0 · 15/15 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 3400920 +1 değişmiş dosya +1 izlenmeye
+mutant çıkış 0
+M1-1 forCase kendi hesabı: ÖLDÜ (kırmızı) · # pass 7 # fail 5 · not ok 1 - KARAR ÖRNEĞİ (S129) + ORTA-A — k
+M1-2 cari kartı durum/sıradaki kendi: UYGULANAMADI (eşleşme 0)
+M1-3 Cari Listesi sıradaki kendi: ÖLDÜ (kırmızı) · # pass 7 # fail 5 · not ok 1 - KARAR ÖRNEĞİ (S129) + ORTA-
+M1-4 summariesByAccount kuyruksuz: ÖLDÜ (kırmızı) · # pass 7 # fail 5 · not ok 1 - KARAR ÖRNEĞİ (S129) + ORTA-
+M1-5 queueBrief kartın kendi kalanı: ÖLDÜ (kırmızı) · # pass 7 # fail 5 · not ok 1 - KARAR ÖRNEĞİ (S129) + O
+M1-6 queueBrief bugünü geciken sayar: ÖLDÜ (kırmızı) · # pass 11 # fail 1 · not ok 6 - komşu 5 — VADESİ BUG
+14:52:05 bitti

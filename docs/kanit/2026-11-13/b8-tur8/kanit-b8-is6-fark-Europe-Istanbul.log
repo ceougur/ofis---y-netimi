@@ -1,0 +1,29 @@
+TAP version 13
+# (node:7834) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:7834) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# fark testi: 132 fark (50 cari); yazılı olmayan 0, değeri değişen 0, kapanmış ama listede duran 0
+#   karar başına: S50 + B1 2 · S50 8 · karar (5) + S92 2 · S1 + S91 + B1 4 · S1 + S91 8 · S101 + karar (e) 11.11 03:15 10 · S110 + B1 + S91 1 · S110 + S91 2 · S110 + B1 + S1 + S91 1 · S110 + S1 + S91 4 · S91 + B1 2 · Y2 (BAŞ MİMAR KARARI 11.11 05:48; S91 = A) 2 · S91 4 · S93 + S96 + S91 + B1 2 · S93 + S96 + S91 4 · S93 + S96 + B1 1 · S93 + S96 2 · S95 + S97 + S91 2 · S102 + S91 2 · S98 + S96 + S93 + S91 + B1 3 · S104 + S68 + S91 1 · S105 + S96 + S93 + B1 3 · S96 + S93 + B1 3 · S99 1 · S99 + B1 6 · S101 4 · S120 + S1 + S91 + B1 3 · S122 + S120 + S1 + S91 + B1 3 · S110 + S91 + B1 3 · S98 + S99 4 · S98 + S99 + S93 + B1 1 · S98 + S99 + S93 2 · S98 + S99 + B1 1 · S52 + B1 1 · S67 1 · S110 + S1 + S91 + B1 1 · S50 + M1e 1 · S140 = A + S110 + S2 + S50 + KS7(a) 6 · S2 + S50 + KS7(a) + B1 1 · S2 + S50 + KS7(a) 2 · S110 + S2 + S50 + KS7(a) 1 · S144 = C 1 · S129 = A + S50 8 · S129 = A + S99 2 · S129 = A + S101 4 · S151 = B + S140 = A + S129 = A 1 · S151 = B + S129 = A 1
+# Subtest: 2.5.0 Ç5-B — v2.4.9 GERÇEK verisinde sınıf sınıf fark testi (her fark karar numarasıyla)
+    # Subtest: fikstür bugünkü kodla: bütün farklar beklenen-farklar.json'da, değerleri aynı; listede kapanmış fark yok
+    ok 1 - fikstür bugünkü kodla: bütün farklar beklenen-farklar.json'da, değerleri aynı; listede kapanmış fark yok
+      ---
+      duration_ms: 647.808626
+      type: 'test'
+      ...
+    1..1
+ok 1 - 2.5.0 Ç5-B — v2.4.9 GERÇEK verisinde sınıf sınıf fark testi (her fark karar numarasıyla)
+  ---
+  duration_ms: 648.572314
+  type: 'suite'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1015.906083

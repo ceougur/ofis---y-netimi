@@ -1,0 +1,132 @@
+{
+ "via": "inline",
+ "adimlar": [
+  {
+   "ad": "M1 Kasa hareketi tutar düzeltmesi (aynı kimlik)",
+   "durum": "200",
+   "sayi": 8,
+   "alarm": [],
+   "beklenenAlarm": false,
+   "uygun": "UYGUN"
+  },
+  {
+   "ad": "M2 cari nakit tahsilat tutar düzeltmesi",
+   "durum": "200",
+   "sayi": 8,
+   "alarm": [],
+   "beklenenAlarm": false,
+   "uygun": "UYGUN"
+  },
+  {
+   "ad": "M3 fatura Düzenle (aynı gün; peşin yeniden yazılır)",
+   "durum": "peşin kimlik aentry-9e984b1a-f1fc-48bb-9b3c-05cb65d30577 → aentry-a4b135ac-48ba-4d7d-a034-f236ce3fbdd0",
+   "sayi": 8,
+   "alarm": [],
+   "beklenenAlarm": false,
+   "uygun": "UYGUN"
+  },
+  {
+   "ad": "M4 taksit tahsilatı tutar düzeltmesi",
+   "durum": "200",
+   "sayi": 8,
+   "alarm": [],
+   "beklenenAlarm": false,
+   "uygun": "UYGUN"
+  },
+  {
+   "ad": "M5 kayıt tahsilatı düzeltmesi",
+   "durum": "200",
+   "sayi": 8,
+   "alarm": [],
+   "beklenenAlarm": false,
+   "uygun": "UYGUN"
+  },
+  {
+   "ad": "M6 nakit stok satışı düzeltmesi",
+   "durum": "200",
+   "sayi": 8,
+   "alarm": [],
+   "beklenenAlarm": false,
+   "uygun": "UYGUN"
+  },
+  {
+   "ad": "M7 Taksite Aktar (kayıt tahsilatı → kart)",
+   "durum": "taşınan 1",
+   "sayi": 8,
+   "alarm": [],
+   "beklenenAlarm": false,
+   "uygun": "UYGUN"
+  },
+  {
+   "ad": "M8 Aktarımı Geri Al",
+   "durum": "200",
+   "sayi": 8,
+   "alarm": [],
+   "beklenenAlarm": false,
+   "uygun": "UYGUN"
+  },
+  {
+   "ad": "M9 Taksite Aktar + Geri Al + Taksite Aktar (aralarında tarama yok)",
+   "durum": "200",
+   "sayi": 8,
+   "alarm": [],
+   "beklenenAlarm": false,
+   "uygun": "UYGUN"
+  },
+  {
+   "ad": "M10 fatura Düzenle iki kez (arada tarama yok)",
+   "durum": "200",
+   "sayi": 8,
+   "alarm": [],
+   "beklenenAlarm": false,
+   "uygun": "UYGUN"
+  },
+  {
+   "ad": "D1 fatura Düzenle + aynı aralıkta dış tarih taşıma (1 açıklanamayan)",
+   "durum": "200",
+   "sayi": 9,
+   "alarm": [
+    "8 → 9 hareket; kapının görmediği yazım: 1 hareket"
+   ],
+   "beklenenAlarm": true,
+   "uygun": "UYGUN"
+  },
+  {
+   "ad": "D2 fatura Düzenle, sonra yeni peşin satırını DIŞARIDAN başka kimlikle değiştirme (sil + yeni kimlik; aynı gün/tutar)",
+   "durum": "peşin aentry-666b3cbe-b179-4a7d-9d93-a2b73c71db7b → dis-yer-degistir",
+   "sayi": 9,
+   "alarm": [
+    "9 → 9 hareket; kapının görmediği yazım: 1 hareket"
+   ],
+   "beklenenAlarm": true,
+   "uygun": "UYGUN"
+  },
+  {
+   "ad": "D3 Taksite Aktar edilmiş satırı (kart) DIŞARIDAN başka kimlikle yeniden yaz",
+   "durum": "kart satırı entry-78655019-d527-402c-893e-c61cffe10aa8 → dis-kart-1",
+   "sayi": 9,
+   "alarm": [
+    "9 → 9 hareket; kapının görmediği yazım: 1 hareket"
+   ],
+   "beklenenAlarm": true,
+   "uygun": "UYGUN"
+  },
+  {
+   "ad": "M11 kontrol: boş tarama",
+   "durum": "200",
+   "sayi": 9,
+   "alarm": [],
+   "beklenenAlarm": false,
+   "uygun": "UYGUN"
+  }
+ ],
+ "taban": {
+  "sayi": 8,
+  "alarm": []
+ },
+ "taban2": {
+  "sayi": 8,
+  "alarm": []
+ },
+ "kasa": 5726
+}

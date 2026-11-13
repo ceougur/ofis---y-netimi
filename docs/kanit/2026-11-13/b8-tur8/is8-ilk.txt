@@ -1,0 +1,171 @@
+TAP version 13
+# (node:9660) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Birleşik tur 8 İş 8 — Silinenler özeti; satır içi tarama
+    # Subtest: ÖZETLİ öğe (kart bu kodla silindi) × değişmemiş gizli satır → sessiz (meşru geri yükleme)
+    ok 1 - ÖZETLİ öğe (kart bu kodla silindi) × değişmemiş gizli satır → sessiz (meşru geri yükleme)
+      ---
+      duration_ms: 585.894997
+      type: 'test'
+      ...
+    # Subtest: ÖZETSİZ (eski) öğe × değişmemiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+    ok 2 - ÖZETSİZ (eski) öğe × değişmemiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+      ---
+      duration_ms: 485.370397
+      type: 'test'
+      ...
+    # Subtest: ÖZETLİ öğe (kart bu kodla silindi) × tarihi değişmiş gizli satır → alarm (açıklanamayan 1)
+    ok 3 - ÖZETLİ öğe (kart bu kodla silindi) × tarihi değişmiş gizli satır → alarm (açıklanamayan 1)
+      ---
+      duration_ms: 462.438973
+      type: 'test'
+      ...
+    # Subtest: ÖZETSİZ (eski) öğe × tarihi değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+    ok 4 - ÖZETSİZ (eski) öğe × tarihi değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+      ---
+      duration_ms: 554.013419
+      type: 'test'
+      ...
+    # Subtest: ÖZETLİ öğe (kart bu kodla silindi) × tutarı değişmiş gizli satır → alarm (açıklanamayan 1)
+    ok 5 - ÖZETLİ öğe (kart bu kodla silindi) × tutarı değişmiş gizli satır → alarm (açıklanamayan 1)
+      ---
+      duration_ms: 601.19206
+      type: 'test'
+      ...
+    # Subtest: ÖZETSİZ (eski) öğe × tutarı değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+    ok 6 - ÖZETSİZ (eski) öğe × tutarı değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+      ---
+      duration_ms: 510.768418
+      type: 'test'
+      ...
+    # Subtest: ÖZETLİ öğe (kart bu kodla silindi) × kimliği değişmiş gizli satır → alarm (açıklanamayan 1)
+    ok 7 - ÖZETLİ öğe (kart bu kodla silindi) × kimliği değişmiş gizli satır → alarm (açıklanamayan 1)
+      ---
+      duration_ms: 513.224306
+      type: 'test'
+      ...
+    # Subtest: ÖZETSİZ (eski) öğe × kimliği değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+    ok 8 - ÖZETSİZ (eski) öğe × kimliği değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+      ---
+      duration_ms: 527.349493
+      type: 'test'
+      ...
+    # Subtest: tek satırlık öğe: yükü dışarıdan değiştirilmiş (tarih 03.03 → 05.03) Kasa hareketi geri yüklenince alarm; yükü değişmemiş öğe sessiz
+    ok 9 - tek satırlık öğe: yükü dışarıdan değiştirilmiş (tarih 03.03 → 05.03) Kasa hareketi geri yüklenince alarm; yükü değişmemiş öğe sessiz
+      ---
+      duration_ms: 516.693602
+      type: 'test'
+      ...
+    # Subtest: meşru yollar sessiz: sil → geri yükle → yeniden sil → geri yükle (kart); iki ayrı tek satır geri yüklemesi
+    ok 10 - meşru yollar sessiz: sil → geri yükle → yeniden sil → geri yükle (kart); iki ayrı tek satır geri yüklemesi
+      ---
+      duration_ms: 540.892502
+      type: 'test'
+      ...
+    # Subtest: DÜŞÜK-1 (i): dış yazım (açılış sonrası Kasa hareketi açılış öncesine) SONRA tek satır geri yükleme → alarm (2 → 4; açıklanamayan 1)
+    ok 11 - DÜŞÜK-1 (i): dış yazım (açılış sonrası Kasa hareketi açılış öncesine) SONRA tek satır geri yükleme → alarm (2 → 4; açıklanamayan 1)
+      ---
+      duration_ms: 463.699983
+      type: 'test'
+      ...
+    1..11
+ok 1 - Birleşik tur 8 İş 8 — Silinenler özeti; satır içi tarama
+  ---
+  duration_ms: 5763.559024
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 8 İş 8 — Silinenler özeti; iş parçacığı taraması
+    # Subtest: ÖZETLİ öğe (kart bu kodla silindi) × değişmemiş gizli satır → sessiz (meşru geri yükleme)
+    ok 1 - ÖZETLİ öğe (kart bu kodla silindi) × değişmemiş gizli satır → sessiz (meşru geri yükleme)
+      ---
+      duration_ms: 683.667471
+      type: 'test'
+      ...
+    # Subtest: ÖZETSİZ (eski) öğe × değişmemiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+    ok 2 - ÖZETSİZ (eski) öğe × değişmemiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+      ---
+      duration_ms: 601.120262
+      type: 'test'
+      ...
+    # Subtest: ÖZETLİ öğe (kart bu kodla silindi) × tarihi değişmiş gizli satır → alarm (açıklanamayan 1)
+    ok 3 - ÖZETLİ öğe (kart bu kodla silindi) × tarihi değişmiş gizli satır → alarm (açıklanamayan 1)
+      ---
+      duration_ms: 747.868427
+      type: 'test'
+      ...
+    # Subtest: ÖZETSİZ (eski) öğe × tarihi değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+    ok 4 - ÖZETSİZ (eski) öğe × tarihi değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+      ---
+      duration_ms: 733.089862
+      type: 'test'
+      ...
+    # Subtest: ÖZETLİ öğe (kart bu kodla silindi) × tutarı değişmiş gizli satır → alarm (açıklanamayan 1)
+    ok 5 - ÖZETLİ öğe (kart bu kodla silindi) × tutarı değişmiş gizli satır → alarm (açıklanamayan 1)
+      ---
+      duration_ms: 706.57273
+      type: 'test'
+      ...
+    # Subtest: ÖZETSİZ (eski) öğe × tutarı değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+    ok 6 - ÖZETSİZ (eski) öğe × tutarı değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+      ---
+      duration_ms: 699.017635
+      type: 'test'
+      ...
+    # Subtest: ÖZETLİ öğe (kart bu kodla silindi) × kimliği değişmiş gizli satır → alarm (açıklanamayan 1)
+    ok 7 - ÖZETLİ öğe (kart bu kodla silindi) × kimliği değişmiş gizli satır → alarm (açıklanamayan 1)
+      ---
+      duration_ms: 814.87793
+      type: 'test'
+      ...
+    # Subtest: ÖZETSİZ (eski) öğe × kimliği değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+    ok 8 - ÖZETSİZ (eski) öğe × kimliği değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+      ---
+      duration_ms: 700.324977
+      type: 'test'
+      ...
+    # Subtest: tek satırlık öğe: yükü dışarıdan değiştirilmiş (tarih 03.03 → 05.03) Kasa hareketi geri yüklenince alarm; yükü değişmemiş öğe sessiz
+    ok 9 - tek satırlık öğe: yükü dışarıdan değiştirilmiş (tarih 03.03 → 05.03) Kasa hareketi geri yüklenince alarm; yükü değişmemiş öğe sessiz
+      ---
+      duration_ms: 883.409643
+      type: 'test'
+      ...
+    # Subtest: meşru yollar sessiz: sil → geri yükle → yeniden sil → geri yükle (kart); iki ayrı tek satır geri yüklemesi
+    ok 10 - meşru yollar sessiz: sil → geri yükle → yeniden sil → geri yükle (kart); iki ayrı tek satır geri yüklemesi
+      ---
+      duration_ms: 1208.765928
+      type: 'test'
+      ...
+    # Subtest: DÜŞÜK-1 (i): dış yazım (açılış sonrası Kasa hareketi açılış öncesine) SONRA tek satır geri yükleme → alarm (2 → 4; açıklanamayan 1)
+    ok 11 - DÜŞÜK-1 (i): dış yazım (açılış sonrası Kasa hareketi açılış öncesine) SONRA tek satır geri yükleme → alarm (2 → 4; açıklanamayan 1)
+      ---
+      duration_ms: 815.654156
+      type: 'test'
+      ...
+    1..11
+ok 2 - Birleşik tur 8 İş 8 — Silinenler özeti; iş parçacığı taraması
+  ---
+  duration_ms: 8595.611375
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 8 İş 8 — DÜŞÜK-1 (ii) (mutant N8): uyarının kimlik kümesi Mutabakat Testi yanıtına SIZMAZ
+    # Subtest: Mutabakat Testi yanıtında 'noticeKeys' alanı yok; uyarının kendisi var
+    ok 1 - Mutabakat Testi yanıtında 'noticeKeys' alanı yok; uyarının kendisi var
+      ---
+      duration_ms: 479.602238
+      type: 'test'
+      ...
+    1..1
+ok 3 - Birleşik tur 8 İş 8 — DÜŞÜK-1 (ii) (mutant N8): uyarının kimlik kümesi Mutabakat Testi yanıtına SIZMAZ
+  ---
+  duration_ms: 479.804156
+  type: 'suite'
+  ...
+1..3
+# tests 23
+# suites 3
+# pass 23
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 15172.747611
