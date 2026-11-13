@@ -291,3 +291,23 @@ Uygulama planı:
     Silinenler'deki satırın kimliğiyle dışarıdan eklenen satır → alarm.
 14. Kapının gördüğü kimlik değişimi (önceki hâli başka kimlikte, aynı gün / tutar ya da aynı İşlem No) → sessiz; dış yazımla kümeye girmiş satırın kapıdan kimlik değişimi → alarm.
 15. Mutantlar (testin dişi): kimliği yok sayıp sayıya dönen; geri gelen kimlikleri hiç düşmeyen; kümeyi her taramada sıfırdan kuran (önceki küme olmadan) — hepsi kırmızı.
+
+### 16.2 Kod (commit 124d26c6)
+- `server/lib/cash-opening.mjs`: denetim durumu `restored` = açıklama SIRA NUMARASI, `explained` = kimlik → { seq, from }; `restoringCash` önce / sonra KİMLİK kümesi alır (SONRA − ÖNCE
+  her kimlik aynı sıra numarasıyla); Kasa açılış denetimi önceki hâli BAŞKA kimlikte olan kabul edilmiş açılış öncesi satırı `pending`'e alır, `after()` (COMMIT'ten sonra)
+  yazar, `rolledBack()` atar. `cashBeforeOpening` satırına `key` (tablo:kimlik) eklendi; `cashExplained(store)` dışa açık.
+- `server/lib/integrity.mjs`: `run()` uyarı kümesini sonuca SAYILMAYAN alan olarak bağlar (`withNoticeKeys`; JSON / API yanıtı değişmez); `noticeGrowth` kümeyle karşılaştırır
+  (önceki kümede yok VE işaretten sonra açıklanmamış; kimlik değişimi önceki kimliğin durumunu taşır); ileti açıklanamayan sayıyı söyler; zil yükünde `unexplained`.
+- `server/lib/integrity-scan-worker.mjs`: küme iletide ayrıca (`noticeKeys`).
+
+### 16.3 Sonuçlar (iki TZ; kanıt docs/kanit/<gün>/b7-…)
+- 16.1-1 S1 / S1b: taban SESSİZ → yeni alarm "(2 → 3 hareket; kapının görmediği yazım: 1 hareket)"; ikinci tarama sessiz. 16.1-4 S9: taban sessiz → yeni "uyarısına yeni hareket
+  girdi (2 → 2 …: 1 hareket)". 16.1-3: tek satırlık iki geri yükleme ve iki satır getiren taksit kartı sessiz; kart + dış yazım → açıklanamayan 1. Cari geri yüklemesi para satırı
+  getirmez (hareketli cari silinemez — 409 account-has-movements); birden çok satırlık yol taksit kartı.
+- 16.1-5 / 6: açılışı öne alma sessiz, ardından dış yazım alarm; açılışı silip yeniden girme sessiz. 16.1-7 / 8 / 10 / 11 / 12 (a): birleşik tur 6'nın testleri (iki şirket, yedek,
+  yeniden açılış, v2.4.9 verisi, yarış) iletisi güncellenerek AYNEN yeşil. 16.1-9 sıfırlama: sessiz; sonraki dış yazım alarm. 16.1-12 (b): ön koşul ikiye bölmeli gecikme
+  aramasıyla ZORLA kuruldu (UTC 2 / 7, İstanbul 2 / 8 denemede); o tarama karşılaştırmadı, sonraki iki tarama sessiz. 16.1-13: geri gelip silinen kimliğin dışarıdan yeniden
+  yazılması alarm (taban da sayıyla alarm veriyordu — dişi mutantla). 16.1-14: kapıdan kimlik değişimi sessiz; dış yazımla giren satırın kimlik değişimi alarm.
+- Mutantlar: kimliği yok sayıp sayıya dönen 6 kırmızı; geri gelenleri hiç düşmeyen 2; kümeyi her taramada sıfırdan kuran 19; kimlik değişiminde önceki kimliğe bakmayan 2.
+  Yarış denetimini kaldıran mutant YAŞADI — EŞDEĞER: sıra numarası taramanın anlık görüntüsünden ÖNCE okunduğu için yarışan kayıt her iki sırada da "işaretten sonra"dır;
+  denetim korunur (savunma), dar kontrolün M12'si (sıra numarasını sonuç işlenirken okuyan) kırmızı.
