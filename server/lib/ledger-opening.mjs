@@ -248,3 +248,111 @@ export function createOpeningReview({ store }) {
   }
   return { list, decide };
 }
+
+// ---- 2.5.0 Ç5-A tur 2b İş 2 — Kural Farkı Düzeltme Fişi (C5-ACILIS-TASARIM §3.3, §17.8; KG-15 A; EK-1 M7; BAŞ MİMAR B14 (a), B16; KULLANICI S76 = A) ----
+/** Ertesi gün (YYYY-AA-GG; takvim günü, saat dilimi yok). */
+export const nextDayOf = iso => {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(iso || ""))) return "";
+  const at = new Date(`${iso}T00:00:00Z`);
+  at.setUTCDate(at.getUTCDate() + 1);
+  return at.toISOString().slice(0, 10);
+};
+const RESULT_CLASSES = new Set(["6", "7"]);
+/** Önceki yılın sonuç hesabı farkının fişteki hesabı: borç yönlü (gider artışı / gelir azalışı) 681, alacak yönlü 671 (§3.3). */
+export const PRIOR_YEAR_ACCOUNTS = Object.freeze({ debit: "681", credit: "671" });
+
+/**
+ * Kural Farkı Düzeltme Fişi'nin planı (saf; veri tabanı yok). diff: snapshots.ruleDiff({ detail: true }) — { through, count, entries: [{ id, date, source, text, deltas: [{ year,
+ * account, sub, party, minor }] }] } (minor = güncel − donmuş, borç artı). subledger: alt defter hesapları (routes/ledger.mjs subledgerAccounts — K6; fişe yazılmaz). year: fişin
+ * yılı. posted: yazılmış düzeltmelerin net toplamı (postedRuleDiffCorrections().net; anahtar "hesap|alt hesap").
+ *   - 1–5 sınıfı: kilit günü sonundaki BİRİKİMLİ fark (yıllar toplanır) hesap + alt hesap başına;
+ *   - 6 / 7 sınıfı: farkın yılı = fişin yılı → aynı hesap; önceki yıl → (yıl, hesap, alt hesap) farkı borç yönlüyse 681, alacak yönlüyse 671;
+ *   - ALT DEFTER (B14 (a); S76 = A): birikimli farkı sıfır olmayan alt defter hesabına katkı veren maddelerin BÜTÜN farkı fişin dışında kalır (fiş her zaman dengeli; dışarıda kalan
+ *     fark `excluded`'da nedeniyle). Dışlama kararlı noktaya kadar yinelenir (bir maddenin dışlanması başka bir alt defter hesabının birikimini sıfırdan çıkarabilir).
+ * Dönüş: { expected: Map, lines (düzeltilmemiş kalan; fiş satırları, kuruş), excluded: [{ account, sub, party, minor }], excludedEntries: Set, sources: [...] }.
+ */
+export function ruleDiffCorrectionPlan({ diff, subledger = new Set(), year, posted = new Map() }) {
+  const entries = (diff?.entries || []).filter(entry => entry.deltas?.length);
+  const owned = account => subledger.has(account);
+  const out = new Set();
+  const subledgerTotals = () => {
+    const totals = new Map();
+    for (const entry of entries) {
+      if (out.has(entry.id)) continue;
+      for (const delta of entry.deltas) {
+        if (!owned(delta.account)) continue;
+        const key = `${delta.account}|${delta.sub}|${delta.party}`;
+        totals.set(key, (totals.get(key) || 0) + delta.minor);
+      }
+    }
+    return totals;
+  };
+  for (let changed = true; changed; ) {
+    changed = false;
+    const bad = new Set([...subledgerTotals()].filter(([, minor]) => minor !== 0).map(([key]) => key));
+    if (!bad.size) break;
+    for (const entry of entries) {
+      if (out.has(entry.id)) continue;
+      if (entry.deltas.some(delta => owned(delta.account) && bad.has(`${delta.account}|${delta.sub}|${delta.party}`))) {
+        out.add(entry.id);
+        changed = true;
+      }
+    }
+  }
+  const excludedTotals = new Map();
+  const result = new Map();
+  const expected = new Map();
+  const add = (map, key, minor) => map.set(key, (map.get(key) || 0) + minor);
+  for (const entry of entries) {
+    for (const delta of entry.deltas) {
+      if (out.has(entry.id)) {
+        add(excludedTotals, `${delta.account}|${delta.sub}|${delta.party}`, delta.minor);
+        continue;
+      }
+      if (RESULT_CLASSES.has(delta.account[0]) && delta.year !== year) add(result, `${delta.year}|${delta.account}|${delta.sub}`, delta.minor);
+      // Fiş satırı cari taşımaz: cari hesapları (120, 320 …) alt defter hesabıdır, fişe yazılmaz (yukarıda dışlandı).
+      else add(expected, `${delta.account}|${delta.sub}`, delta.minor);
+    }
+  }
+  for (const [key, minor] of result) {
+    if (!minor) continue;
+    add(expected, `${minor > 0 ? PRIOR_YEAR_ACCOUNTS.debit : PRIOR_YEAR_ACCOUNTS.credit}|`, minor);
+  }
+  const lines = [];
+  for (const key of new Set([...expected.keys(), ...posted.keys()])) {
+    const minor = (expected.get(key) || 0) - (posted.get(key) || 0);
+    if (!minor) continue;
+    const [account, sub] = key.split("|");
+    lines.push({ account, sub, party: "", debit: minor > 0 ? minor : 0, credit: minor < 0 ? -minor : 0 });
+  }
+  lines.sort((a, b) => a.account.localeCompare(b.account) || a.sub.localeCompare(b.sub) || b.debit - a.debit);
+  const excluded = [...excludedTotals]
+    .filter(([, minor]) => minor !== 0)
+    .map(([key, minor]) => {
+      const [account, sub, party] = key.split("|");
+      return { account, sub, party, minor, subledger: owned(account) };
+    })
+    .sort((a, b) => a.account.localeCompare(b.account) || a.sub.localeCompare(b.sub) || a.party.localeCompare(b.party));
+  const sources = entries.map(entry => ({ id: entry.id, date: entry.date, source: entry.source || "", text: entry.text || "", inFrozen: entry.inFrozen !== false, inLive: entry.inLive !== false, excluded: out.has(entry.id), deltas: entry.deltas }));
+  return { expected, lines, excluded, excludedEntries: out, sources };
+}
+
+/**
+ * Yazılmış Kural Farkı Düzeltme Fişleri: net toplam (hesap|alt hesap → kuruş, borç artı; ters kayıtları dahil — ters kaydedilen fiş düşer), etkin (ters kaydı olmayan) fişler ve
+ * herhangi bir düzeltme fişi (ters kaydedilmiş dahil) var mı. Tablo yoksa boş.
+ */
+export function postedRuleDiffCorrections(store) {
+  const empty = { any: false, net: new Map(), active: [] };
+  if (!has(store, "ledger_vouchers") || !has(store, "ledger_voucher_lines")) return empty;
+  if (!store.get("SELECT 1 AS found FROM ledger_vouchers WHERE type = 'rule-diff-correction' LIMIT 1")) return empty;
+  const net = new Map();
+  for (const row of store.all(
+    `SELECT l.account, l.sub, SUM(l.debit_minor - l.credit_minor) AS net FROM ledger_vouchers v CROSS JOIN ledger_voucher_lines l ON l.voucher_id = v.id
+     WHERE v.type = 'rule-diff-correction' OR (v.type = 'reversal' AND v.reversal_of IN (SELECT id FROM ledger_vouchers WHERE type = 'rule-diff-correction'))
+     GROUP BY l.account, l.sub`,
+  )) if (Number(row.net)) net.set(`${row.account}|${row.sub || ""}`, Number(row.net));
+  const active = store
+    .all("SELECT v.id, v.year, v.no, v.date FROM ledger_vouchers v WHERE v.type = 'rule-diff-correction' AND NOT EXISTS (SELECT 1 FROM ledger_vouchers r WHERE r.reversal_of = v.id) ORDER BY v.date, v.rowid")
+    .map(row => ({ id: row.id, year: Number(row.year), no: Number(row.no), date: row.date }));
+  return { any: true, net, active };
+}

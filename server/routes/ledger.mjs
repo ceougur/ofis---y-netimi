@@ -2,14 +2,15 @@
 // Kasa'dan düşen hareket ana defterde de yoktur), yevmiyeyi ve mizanı kurar, mutabakat kapısını çalıştırır.
 //   GET /api/workspace/ledger?from=&to=  → mizan + mutabakat (Finans raporları yetkisi)
 // Rapor merkezi "Hesap Planı Mizanı", "Yevmiye Defteri" ve "Defter Mutabakatı" raporlarını bu servisten üretir.
-import { journal, moneyAccount, reconcile, trialBalance } from "../lib/general-ledger.mjs";
+import { ACCOUNT_PLAN, CHART, journal, moneyAccount, reconcile, trialBalance } from "../lib/general-ledger.mjs";
 import { DOUBTFUL_GL } from "../lib/doubtful-gl.mjs";
 import { doubtfulExpected, doubtfulRows, doubtfulUsed } from "../lib/bank/doubtful.mjs";
 import { systemClock } from "../lib/clock.mjs";
 import { HttpError, ok, readJson, text } from "../lib/http.mjs";
 import { VOUCHER_TYPES, createLedgerVouchers, voucherJournalRows } from "../lib/ledger-vouchers.mjs";
 import { createLedgerSnapshots } from "../lib/ledger-snapshots.mjs";
-import { oldRulePinnedPlans } from "../lib/ledger-opening.mjs";
+import { createHash } from "node:crypto";
+import { nextDayOf, oldRulePinnedPlans, postedRuleDiffCorrections, ruleDiffCorrectionPlan } from "../lib/ledger-opening.mjs";
 import { leanAll } from "../lib/lean-rows.mjs";
 import { roundMoney } from "../lib/money.mjs";
 
@@ -291,6 +292,8 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
   const snapshots = createLedgerSnapshots({
     store, period, now, build: () => build(), integrity, events, log, dbPath: config?.dbPath || "", batchLines: freezeBatchLines || 500, hook: __testFreezeHook,
     canWrite: () => !schemaGate && canWriteInBackground() !== false,
+    // Ç5-A tur 2b İş 2: "Düzeltildi" hesabı alt defter hesaplarını (fişe yazılmaz) bilir; subledgerAccounts aşağıda tanımlı (çağrı anında hazır).
+    subledger: () => subledgerAccounts(),
   });
   /**
    * Karma yevmiye (Yevmiye Defteri, Hesap Planı Mizanı, Ç6 raporları): kilitli dönem donmuş defterden, açık dönem canlı türetmeden. to ≤ kapsam ise canlı türetme yapılmaz.
@@ -582,6 +585,72 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     const requestId = text(req.headers["x-hof-request"]) || text(body.requestId);
     if (!REQUEST_ID.test(requestId)) throw new HttpError(400, "İstek kimliği gerekli.", { code: "request-id-invalid" });
     const voucher = vouchers.reverse(user, text(params.id), { date: text(body.date), description: body.description, requestKey: `api:${requestId}` });
+    if (!voucher.replayed) events?.publish?.("workspace.changed", { kind: "ledger", actorId: user.id, actorName: user.display_name }, { except: user.id });
+    ok(res, { voucher, replayed: voucher.replayed === true });
+  });
+  // 2.5.0 Ç5-A tur 2b İş 2 — Kural Farkı Düzeltme Fişi (docs/erp/C5-ACILIS-TASARIM.md §3.3, §17.8; KG-15 A; EK-1 M7; BAŞ MİMAR B14 (a), B16; KULLANICI S76 = A, S164 = C):
+  //   GET  /api/admin/ledger/rule-diff-correction  → ön izleme: kilit, fiş tarihi (kilit + 1), satırlar (düzeltilmemiş kalan), dışarıda kalan alt defter farkı, farkı doğuran
+  //                                                   maddeler (hangi kayıt, hangi hesap), yazılmış düzeltmeler, pasiflik nedeni, satırların imzası
+  //   POST /api/admin/ledger/rule-diff-correction  → { requestId, digest, confirm: true }: imza ön izlemeninkiyle aynıysa fiş (rule-diff-correction, olağan sınıf) yazılır
+  // Yetki system.manage (fiş defteri ve dönem kilidiyle aynı). Kural Farkı kapıda koşmaz; fiş Ç2'nin post sözleşmesiyle (kilit, ileri tarih, alt defter hesabı, istek kimliği).
+  const SHOWN_SOURCES = 500;
+  const accountName = code => ACCOUNT_PLAN[code]?.ad || CHART[code] || code;
+  function lockedCandidates(lock) {
+    if (!lock || !has("account_entries") || !hasColumn("account_entries", "opening_review")) return 0;
+    return Number(store.get("SELECT COUNT(*) AS n FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL WHERE e.opening_review = 'candidate' AND e.date <= ?", lock)?.n) || 0;
+  }
+  function correctionView() {
+    const lock = period?.lockedUntil() || "";
+    const today = period?.today() || "";
+    const cover = snapshots.coverage();
+    const pendingFreeze = snapshots.state().pending;
+    const date = lock ? nextDayOf(lock) : "";
+    const posted = postedRuleDiffCorrections(store);
+    const diff = cover && !pendingFreeze ? snapshots.ruleDiff({ detail: true }) : { through: cover, count: 0, sample: [], balances: [], entries: [] };
+    const year = Number(date.slice(0, 4)) || Number(String(today).slice(0, 4));
+    const plan = ruleDiffCorrectionPlan({ diff, subledger: subledgerAccounts(), year, posted: posted.net });
+    const candidates = lockedCandidates(lock);
+    let reason = "";
+    let code = "";
+    if (!lock) [reason, code] = ["Dönem kilidi yok; düzeltilecek kilitli dönem farkı yok.", "rule-diff-no-lock"];
+    else if (pendingFreeze || cover !== lock) [reason, code] = ["Kilitli dönemin defteri dondurulurken düzeltme fişi yazılmaz; dondurma bitince yeniden açın.", "rule-diff-freezing"];
+    else if (candidates) [reason, code] = [`Önce Açılış Olabilir listesini tamamlayın: kilitli dönemde onay bekleyen ${candidates} kayıt var (Cariler › Açılış Olabilir Kayıtlar).`, "rule-diff-candidates"];
+    else if (!plan.lines.length) [reason, code] = [posted.active.length ? "Fişle düzeltilebilen fark kalmadı." : "Düzeltilecek kural farkı yok.", "rule-diff-nothing"];
+    else if (date > today) [reason, code] = ["Kilit bugünün tarihinde; düzeltme fişi yarın yazılabilir.", "rule-diff-lock-today"];
+    const lines = plan.lines.map(line => ({ ...line, name: accountName(line.account) }));
+    const digest = createHash("sha256").update(JSON.stringify({ date, lines: plan.lines })).digest("hex").slice(0, 32);
+    const sources = plan.sources.slice(0, SHOWN_SOURCES).map(item => ({ ...item, deltas: item.deltas.map(delta => ({ ...delta, name: accountName(delta.account) })) }));
+    return {
+      lockedUntil: lock, frozenThrough: cover, today, date, count: diff.count, lines, digest,
+      totalMinor: plan.lines.reduce((sum, line) => sum + line.debit, 0),
+      excluded: plan.excluded.map(row => ({ ...row, name: accountName(row.account), reason: "Alt defter hesabı: bakiyesi kendi modülünün kayıtlarından gelir, fişle düzeltilmez (Kilidi Aç → Yeniden Kilitle ile kilitli dönem güncel kuralla yeniden donar)." })),
+      sources, sourceCount: plan.sources.length, candidates,
+      vouchers: posted.active.map(voucher => ({ ...voucher, noText: vouchers.voucherNoText(voucher.year, voucher.no) })),
+      disabled: Boolean(reason), reason, code,
+    };
+  }
+  router.get("/api/admin/ledger/rule-diff-correction", async ({ req, res }) => {
+    auth.requirePermission(req, "system.manage");
+    ok(res, correctionView());
+  });
+  router.post("/api/admin/ledger/rule-diff-correction", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "system.manage");
+    const body = (await readJson(req)) || {};
+    const requestId = text(req.headers["x-hof-request"]) || text(body.requestId);
+    if (!REQUEST_ID.test(requestId)) throw new HttpError(400, "İstek kimliği gerekli.", { code: "request-id-invalid" });
+    const requestKey = `api:rule-diff:${requestId}`;
+    // Yinelenen istek (ağ, çift tıklama): ilk fiş döner (yeniden plan kurulmaz — fiş yazıldıktan sonra kalan fark yoktur).
+    const seen = store.get("SELECT id FROM ledger_vouchers WHERE request_key = ?", requestKey);
+    if (seen) return ok(res, { voucher: { ...vouchers.get(seen.id), replayed: true }, replayed: true });
+    if (body.confirm !== true) throw new HttpError(400, "Fiş, ön izlemedeki satırlar onaylanarak yazılır.", { code: "rule-diff-confirm" });
+    const view = correctionView();
+    if (view.disabled) throw new HttpError(view.code === "rule-diff-lock-today" ? 400 : 409, view.reason, { code: view.code });
+    // S164 = C + iki kişi aynı anda: kullanıcı ön izlemede gördüğü satırları onaylar; arada fark değiştiyse (başka fiş, aday kararı, kayıt) yazılmaz.
+    if (text(body.digest) !== view.digest) throw new HttpError(409, "Ön izlemeden sonra kural farkı değişti; ön izlemeyi yenileyip satırları yeniden gözden geçirin.", { code: "rule-diff-changed" });
+    const voucher = vouchers.post(user, {
+      type: "rule-diff-correction", date: view.date, description: `Kural Değişikliği Farkı (Kilitli Dönem: ${view.lockedUntil.split("-").reverse().join(".")} ve Öncesi)`,
+      source: "Kural Farkı Düzeltme", requestKey, lines: view.lines.map(({ account, sub, debit, credit }) => ({ account, sub, debit, credit })),
+    });
     if (!voucher.replayed) events?.publish?.("workspace.changed", { kind: "ledger", actorId: user.id, actorName: user.display_name }, { except: user.id });
     ok(res, { voucher, replayed: voucher.replayed === true });
   });

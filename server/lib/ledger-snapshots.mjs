@@ -20,6 +20,8 @@ import { HttpError } from "./http.mjs";
 import { LOCK_SQL_VERSION, lockDigestOf } from "./integrity.mjs";
 import { RULE_249, buildRule249 } from "./ledger-rule-249/index.mjs";
 import { leanRows, leanStore } from "./lean-rows.mjs";
+import { nextDayOf, postedRuleDiffCorrections, ruleDiffCorrectionPlan } from "./ledger-opening.mjs";
+import { voucherNoText } from "./ledger-vouchers.mjs";
 import { LEDGER_SNAPSHOT_TRIGGERS_V47, LEDGER_SNAPSHOT_TRIGGER_NAMES } from "./migrations.mjs";
 
 /**
@@ -221,7 +223,7 @@ function startFreezeWorker(data, { onBatch, timeoutMs = 30 * 60_000 }) {
  * kancası ({ fn(phase, info), verifyLines }; "sync" | "batch" | "before-done" | "verify" | "purge" | "middle"; verifyLines: tablo doğrulamasının parça boyu — küçük veride
  * doğrulamayı parçalara bölüp parçalar arasında tutmak için). dbPath yoksa (bellek içi, araçlar) iş parçacığı yerine aynı işlemde dondurulur.
  */
-export function createLedgerSnapshots({ store, period = null, now = systemClock, build, integrity = () => null, events = null, log = null, dbPath = "", batchLines = 2000, hook = null, canWrite = () => true }) {
+export function createLedgerSnapshots({ store, period = null, now = systemClock, build, integrity = () => null, events = null, log = null, dbPath = "", batchLines = 2000, hook = null, canWrite = () => true, subledger = null }) {
   const ready = () => has(store, "ledger_snapshot_runs") && has(store, "ledger_snapshots");
   const batch = Math.max(1, Math.floor(Number(batchLines) || 2000));
   const useWorker = Boolean(dbPath) && dbPath !== ":memory:";
@@ -968,9 +970,29 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
    * Kural Değişikliği Farkı: kapsam içindeki her madde donmuş ↔ güncel türetme (tarih + satırlar). Fiş maddeleri (voucher-*) saklanan satırdır, karşılaştırılmaz.
    * Dönüş: { through, count, sample, balances: [{ year, account, sub, party, frozenMinor, liveMinor, differenceMinor }] } — tutarlar fark doğuran maddelerindir.
    */
-  function ruleDiff({ live = null } = {}) {
+  // detail (2.5.0 Ç5-A tur 2b İş 2; C5-ACILIS-TASARIM §17.8): fark doğuran her maddenin hesap başına farkı (entries: [{ id, date, source, text, inFrozen, inLive, deltas:
+  // [{ year, account, sub, party, minor }] }]; minor = güncel − donmuş) — Kural Farkı Düzeltme Fişi'nin planı ve ön izlemesinin "hangi kayıttan" listesi. Verilmezse çıktı AYNEN.
+  function ruleDiff({ live = null, detail = false } = {}) {
     const through = coverage();
-    if (!through) return { through, count: 0, sample: [], balances: [] };
+    if (!through) return { through, count: 0, sample: [], balances: [], ...(detail ? { entries: [] } : {}) };
+    const details = detail ? [] : null;
+    const detailOf = (a, b) => {
+      const deltas = new Map();
+      const put = (entry, sign) => {
+        if (!entry) return;
+        for (const line of entry.lines) {
+          const key = `${entry.date.slice(0, 4)}|${line.account}|${line.sub || ""}|${line.party || ""}`;
+          deltas.set(key, (deltas.get(key) || 0) + sign * ((Number(line.debit) || 0) - (Number(line.credit) || 0)));
+        }
+      };
+      put(a, -1);
+      put(b, 1);
+      const rows = [...deltas].filter(([, minor]) => minor !== 0).map(([key, minor]) => {
+        const [year, account, sub, party] = key.split("|");
+        return { year: Number(year), account, sub, party, minor };
+      });
+      if (rows.length) details.push({ id: (a || b).id, date: (b || a).date, source: (b || a).source || "", text: (b || a).text || "", inFrozen: Boolean(a), inLive: Boolean(b), deltas: rows });
+    };
     // Madde anahtarı: kimlik + kimliğin kaçıncı geçişi (aynı kimlikli iki madde ayrı karşılaştırılır).
     const keyer = () => {
       const seen = new Map();
@@ -1005,6 +1027,7 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
       if (sample.length < 5) sample.push(`${(a || b).id} (${dayText((a || b).date)})${a ? "" : " · donmuş defterde yok"}${b ? "" : " · güncel türetmede yok"}`);
       add(a, 1, "frozen");
       add(b, 1, "live");
+      if (details) detailOf(a, b);
     };
     // Donmuş maddeler birer birer (dizi kurulmaz; ders 47), dondurma sırasıyla; eşi bulunan güncel madde listeden düşer. Sonra yalnız güncel türetmede olanlar, türetme
     // sırasıyla — sıra (örnekler) önceki birleşik küme sırasıyla aynı: önce donmuş anahtarlar, sonra yalnız güncelde olanlar.
@@ -1024,7 +1047,7 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
       balances.push({ year: Number(year), account, sub, party, frozenMinor: row.frozen, liveMinor: row.live, differenceMinor: row.live - row.frozen });
     }
     balances.sort((x, y) => x.year - y.year || x.account.localeCompare(y.account) || x.sub.localeCompare(y.sub) || x.party.localeCompare(y.party));
-    return { through, count, sample, balances };
+    return { through, count, sample, balances, ...(details ? { entries: details } : {}) };
   }
 
   /**
@@ -1077,8 +1100,11 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
           }
         : {}),
     }];
-    if (cover) {
-      const diff = ruleDiff({ live });
+    // 2.5.0 Ç5-A tur 2b İş 2 (C5-ACILIS-TASARIM §3.3, §17.8; D 12.11 15:57 (4)): Kural Farkı Düzeltme Fişi varsa "düzeltilmemiş fark = plan − Σ düzeltme fişleri". Fiş yoksa
+    // bu blok hiçbir şey eklemez (çıktı önceki gibi).
+    const corrections = postedRuleDiffCorrections(store);
+    if (cover || corrections.active.length || corrections.net.size) {
+      const diff = cover ? ruleDiff({ live, detail: corrections.any }) : { through: "", count: 0, sample: [], balances: [], entries: [] };
       const byAccount = new Map();
       for (const row of diff.balances) {
         const item = byAccount.get(row.account) || { account: row.account, frozenMinor: 0, liveMinor: 0, differenceMinor: 0 };
@@ -1087,18 +1113,46 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
         item.differenceMinor += row.differenceMinor;
         byAccount.set(row.account, item);
       }
-      items.push({
+      const item = {
         code: "ledger:rule-diff",
-        name: `Kural Değişikliği Farkı (Kilitli Dönem: ${dayText(cover)} ve Öncesi)`,
+        name: `Kural Değişikliği Farkı (Kilitli Dönem: ${cover ? `${dayText(cover)} ve Öncesi` : "Yok"})`,
         ok: diff.count === 0,
         count: diff.count,
         difference: [...byAccount.values()].reduce((sum, row) => sum + Math.abs(row.differenceMinor), 0) / 200,
         sample: diff.sample,
         breakdown: [...byAccount.values()].filter(row => row.differenceMinor),
         ...(diff.count ? { severity: "warning", hint: ruleDiffHint({ rowsBroken, sourceChanged }) } : {}),
-      });
+      };
+      if (corrections.any) {
+        // Eşleme yılı (671 / 681): son etkin düzeltmenin yılı; yoksa ilk açık günün yılı.
+        const year = corrections.active.length ? corrections.active.at(-1).year : Number((nextDayOf(lock || cover) || "0").slice(0, 4));
+        const plan = ruleDiffCorrectionPlan({ diff, subledger: subledger?.() || new Set(), year, posted: corrections.net });
+        const remainderMinor = plan.lines.reduce((sum, line) => sum + line.debit, 0);
+        const excludedMinor = plan.excluded.reduce((sum, row) => sum + Math.abs(row.minor), 0) / 2;
+        const numbers = corrections.active.map(voucher => voucherNoText(voucher.year, voucher.no));
+        const over = diff.count === 0 && remainderMinor > 0;
+        if (numbers.length || over) item.correction = { vouchers: numbers, remainderMinor, excludedMinor, over };
+        if (numbers.length && diff.count && !remainderMinor && !excludedMinor) {
+          // Düzeltildi: uyarı bilgiye iner (Mutabakat Testi uyarısız; öğe listede kalır).
+          item.ok = true;
+          item.corrected = { vouchers: numbers };
+          item.name = `${item.name} — Düzeltildi (${numbers.join(", ")})`;
+          delete item.severity;
+          delete item.hint;
+        } else if (over) {
+          item.ok = false;
+          item.count = numbers.length || 1;
+          item.severity = "warning";
+          item.hint = `Kilitli dönemde düzeltilecek kural farkı kalmadı (kilit kaldırıldı ya da dönem güncel kuralla yeniden dondu); Kural Farkı Düzeltme Fişi (${numbers.join(", ") || "ters kaydı eksik"}) artık fazla — Yönetim › Kural Farkı Düzeltme'den ters kaydedin.`;
+        } else if (numbers.length && diff.count) {
+          item.hint = remainderMinor
+            ? `${item.hint} Kural Farkı Düzeltme Fişi (${numbers.join(", ")}) farkın bir kısmını düzeltti; kalan ön izlemede.`
+            : `${item.hint} Kural Farkı Düzeltme Fişi (${numbers.join(", ")}) fişle düzeltilebilen farkı kapattı; alt defter hesabı farkı fişle düzeltilmez (Kilidi Aç → Yeniden Kilitle).`;
+        }
+      }
+      items.push(item);
     }
-    return items.filter(item => includeHidden || !item.ok);
+    return items.filter(item => includeHidden || !item.ok || item.corrected);
   }
 
   /** Süren işi durdurur (sıfırlama, geri yükleme, kapanış): iş parçacığı sonlandırılır, sonraki işlem adımı yazmaz. */
