@@ -1,0 +1,38 @@
+Sen DestekOfis projesinde ESKİ KÂHİNLER BAKIMI 17 ajanısın (2.5.0 Ç5 — cari kâhini `test/bagimsiz/cari/`). PROGRAMIN KODUNU GÖRMEZSİN (ders 5, 40). KENDİ dalında commit edersin; PUSH YAPMAZSIN. Yanıtın Türkçe. Eforun high. Bu KÜÇÜK bir bakımdır (TOPLU KÂHİN BAKIMI): S159 = A (kural), karttan tahsilat adımına 'Fazlasını Avans Yaz' seçeneği + S154 = B'nin değer alması, S162 = B / S163 = C (bilinen sınır — susma), S150 = A için baş mimar yorumu (alanın varsa).
+
+## Girdi
+Tek girdi kaynağın: `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin-eski17-kararlar.md` (tamamını oku).
+
+## Hazırlık
+1. Worktree'de (dalında kendi commit'in YOKKEN) `git reset --hard kahin17-taban` (yerel taban dalı = çalışma dalının ucu; bakım 16 içinde — ağaç ana daldan açıldığı için birleşim DEĞİL sıfırlama). Sonra `git log --oneline -3 -- test/bagimsiz/cari` ile bakım 16'nın commit'lerinin dalında olduğunu doğrula.
+2. ÖNCE oku: `CLAUDE.md` (dersler 1–53; özellikle 5, 6, 31, 40, 43); `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`; girdi dosyası; `test/bagimsiz/cari/KARARLAR.md` içinde bakım 15 ve bakım 16 bölümleri ile S118, S120, S144 (c), S151 / S158, S153, S155 ve Vade Takip (S148–S150) kurallarını anlatan bölümler.
+   Önceki kararlar YALNIZ kâhinin kendi KARARLAR.md'sinden okunur.
+
+## Yasaklar (bağımsızlık)
+- `server/`, `client/`, `bulut/`, `packaging/`, `tools/` (kanit.mjs yalnız çalıştırılır), `docs/erp/C5-ACILIS-TASARIM.md`, `docs/erp/C5B-TYK-TASARIM.md`, `docs/devir/**`, `docs/2.5.0-IS-LISTESI*.md` (HER sürümü — eski commit'teki hâli dahil), `test/bagimsiz/cari/YAPIM-ASAMASI.json` (programın bugünkü değerlerini taşır) ve `test/` altında `test/bagimsiz/cari` + `test/bagimsiz/defter` dışındaki her şey OKUNMAZ. `kos.mjs` yalnız olay / alan EŞLEMESİ için okunabilir; DEĞİŞTİRME.
+- `docs/kanit/` altında başka ajanların dosyaları (kahineski4 … 16-arac araçları HARİÇ — uyarlayıp `docs/kanit/2026-11-13/kahineski17-arac/` altına kopyala) ve git farkı / geçmiş içeriği açılmaz. Program KOŞULMAZ. CLAUDE.md'nin "Açık iş" bölümünde programın durumu hakkında gördüğün hiçbir şey kural / beklenti kaynağı DEĞİLDİR. Girdi dosyasındaki soru metinlerinde geçen "program bugün" sözü de kural kaynağı DEĞİLDİR — kural yalnız KARAR satırlarıdır.
+
+## İş
+1. Önce yorumu KARARLAR.md'ye ("2.5.0 Ç5 bakımı 17", yeni bölüm) yaz ve AYRI commit et (ders 40): S159 — bakım 16'daki susman + yeni kural; karttan tahsilat adımının yeni seçeneği (alan adı, değerleri, 'ret' sonucu) ve S154 = B'nin S144 (c) ile sınırı; S162 / S163 — susma alanını modelinde NASIL ayırt ettiğin (koşul tek tek) ve bakiyede / toplamlarda neden susmadığın; S150 yorumu — alanın var mı, varsa nasıl işlediğin (BAŞ MİMAR YORUMU diye).
+2. Kuralları modele işle: S159 (kabul; açık şüpheli 0, fazlası avans); adım seçeneği (kalanı aşan tutar: 'Fazlasını Avans Yaz' → kayıt + avans; yanıt yok → ret, sayılar değişmez) + S154 = B (o yolda 'Tahsil Edilen' = karttan alınan paranın tamamı); S162 / S163 susma alanları (neden metni 'BİLİNEN SINIR (kullanıcı kararı S162 = B)' / '… S163 = C'); S150 yorumu (alanın varsa).
+3. Elle senaryolar (kâhin koşulmadan, karar metninden): S159'un örneği AYNEN (1.100 → bakiye −100, açık şüpheli 0) + komşular (tam 1.000 → 0 / 0; 300 → 700 / 600; şüpheliden ÖNCEYE tarihli aşan tahsilat — karar söylemiyorsa SUS ve sor). S154'ün örneği AYNEN (500, sonra 800 'Fazlasını Avans Yaz' → Tahsil Edilen 1.300 · Kalan 0, bakiye −100) + aynı adım seçeneksiz (ret; Tahsil Edilen 500 · Kalan 700, bakiye değişmez) + kalanı AŞMAYAN tahsilatta seçeneğin etkisizliği. S162'nin örneği: bakiye 600 beklenir, kart göstergeleri ve gecikmiş SUS; karşılaştırma örneği (başka borç 500 varken) bugünkü beklentinle AYNEN. S163: susma alanına giren en küçük elle örnek + alan dışında kalan komşusu (kapanmış eski borç YOK → değer verilir).
+4. Kartın kendi kalanını aşan tahsilat adımı taşıyan MEVCUT senaryolar: her biri için adımın yeni hâli (girdi dosyasındaki ölçüyle) ve değişen beklentiler tek tek (senaryo, adım, eski → yeni; hangi karar gereği). Bu liste ana oturumun koşucu eşlemesinin girdisidir — eksiksiz olsun.
+5. Mutantlar: S159'un B seçeneği (ret); adım seçeneğini yok sayan (her zaman kabul / her zaman ret); S154'ün A seçeneği (Tahsil Edilen kart tutarını aşmaz) — değerle yakalanmalı. Bakım 6 … 16 mutantları hâlâ yakalanıyor mu (sayının anlamı değişirse yaz).
+6. G3: bakım 16'ya göre değişen / yeni / kalkan denetim sayıları senaryo senaryo (bakım 16'nın `karsilastir.py` düzeni); S159 / adım seçeneği + S154 / S162 / S163 / S150 alanları DIŞINDA BEKLENMEYEN 0 olmalı.
+7. TOPLU SORULAR: kararların söylemediği HER alt durumu raporun 'KULLANICIYA SORULMALI' bölümünde TEK listede ver (durum, en küçük örnek, iki okuma, her okumada bakiye; çok uç durumsa üçüncü seçenek 'Uç durum böyle kalsın (BİLİNEN SINIR)'); o alanlarda SUS. Önceki bakımlarda sorduklarını YİNELEME.
+
+## Yöntem
+- Eski kâhin kopyası değişiklikten ÖNCE (bakım 16 hâli) `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski17-<kısa>/` (`git archive HEAD test/bagimsiz/defter test/bagimsiz/cari` — sıfırlamadan SONRA, kendi değişikliğinden ÖNCE).
+- Kâhinin kendi testleri iki TZ (UTC, Europe/Istanbul): `KANIT_DIR=<kendi not defteri klasörün> node tools/kanit.mjs kos kahineski17-<ad> -- python3 -I -B <dosya>`; mutasyon ve geniş tarama `flock -s -n /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock` ile (kilit doluysa bekleme döngüsü yok — ders 50); HER arka plan koşusu AÇIK SÜRE SINIRIYLA (`timeout -k 5 <sn> …`), yük kilidi boşta tutulmaz; uzun koşu baştan 2 saat sınırla; kanıt `docs/kanit/2026-11-13/kahineski17-*`.
+- Yük okuması ile koşu başlatma AYNI adımda gönderilmez: önce `cat /proc/loadavg`, yük > 4 ise yeni koşu başlatma.
+- Kendi arka plan işin sürerken turunu rapor vermeden BİTİRME; sonucu bekle, sonra raporla. Bekleme için boş komut döngüsü kurma. /tmp üzerinde boyut ölçme / tarama komutu koşma.
+- `pkill` / joker `rm` YOK. Commit'e yalnız kendi yolların (ders 44).
+- Commit iletisi sonunda tam olarak şu iki satır:
+  ```
+  Co-Authored-By: Claude <noreply@anthropic.com>
+  Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og
+  ```
+  (model adı YOK).
+
+## Rapor
+Yorum (önceki okuma + yeni kural); adımın yeni alanı (ad, değerler, 'ret'in senaryo dosyasındaki görünümü — koşucu eşlemesi için); kalanı aşan tahsilat taşıyan mevcut senaryoların TAM listesi (eski → yeni); S162 / S163 susma alanlarının koşulları; hâlâ sustuğun sınırlar (iki okuma, sayılarla); yeni / değişen elle senaryolar ve değerleri; mutantlar; test sayıları (iki TZ); G3 dökümü; KULLANICIYA SORULMALI; DENENMEYEN; ana oturumun yeniden koşacağı komutlar; OKUNAN DOSYALARIN TAM LİSTESİ (satır aralıklarıyla).
