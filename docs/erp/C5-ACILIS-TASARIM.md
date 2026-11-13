@@ -971,6 +971,9 @@ satırlarda tek indeksli sorgu. Ölçüm: temiz 100 bin satırlık veride taban 
   schema_version; açık işlemde kullanılmaz — eşdeğerlik testi + üç önbellek mutantı yakalandı), şüpheli işareti cari kaynağıyla tek taramada, süzgeçte karşılıksız dışı durum
   geçişinde sorgu yok. (3) Düzeltmeden sonra ÖLÇÜM KİLİDİ ALINAMADI (ana oturumun ekran senaryoları / kâhin koşusu 1,5 saatten uzun paylaşımlı kilit tuttu) → yalnız TANI ölçümü
   paylaşımlı kilitle (yük 0,6–3,5; kilitsiz kipin üç turu GEÇERSİZ): kilitli Mutabakat Testi 14.000 → 10.039 ms (−28 %), donma +12 % (gürültülü), Borç Yaz +21 % (gürültülü;
-  ilk geçerli ölçümde −10 %). RESMÎ KABUL ÖLÇÜMÜ YENİDEN KOŞULMALI (hepsi.sh, ölçüm kilidiyle).
+  ilk geçerli ölçümde −10 %). (4) RESMÎ KABUL (ölçüm kilidiyle, yük 0,96–1,91 — geçerli; c5a1f-hiz3-*): kilitsiz kipte bütün yollar −19 % … +4,5 %; kilitli kipte Mutabakat
+  Testi 13.765 → 9.156 ms (−33,5 %), Borç Yaz −1,8 %, evrak yazımı +0,4 %, kilitli evrağın bugünkü tahsili −11,7 %, açılış −5,6 %; DONMA (kilit konunca arka planda bir kez)
+  7.856 → 8.696 ms (+10,7 % — eşiği 0,7 puan AŞIYOR; dondurma iş parçacığının kendi bağlantısında iz bir kez hesaplanır, önbellek yardım etmez); kilit izinin kendisi +22,6 %.
+  Karar ana oturumun (BAŞ MİMAR KARARI GEREKİYOR — rapor).
 - Kaynak tarama testinin sınırı: dizin sırasıyla okunan sütun (ORDER BY'ın dizinden karşılandığı `cheque_events.created_at`) EXPLAIN'de Column olarak görünmez — o sütunun
   koruması davranış testinde ([1] ikinci karşılıksız olayı).
