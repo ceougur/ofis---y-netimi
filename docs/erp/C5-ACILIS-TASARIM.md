@@ -1110,3 +1110,56 @@ kısma — kâhin Y4 / Z6) routes/accounts.mjs'te (`assertNormalRoom` → `doubt
   taraması (`checks()` + tek SQL; düzeltme fişi yoksa `LIMIT 1` sorgusu), yeni ön izleme (bir `ruleDiff` + plan). Ana oturum ölçer.
 - BİLİNEN SINIRLAR: 671 / 681 eşlemesi son etkin düzeltmenin yılıyla (kilit yıl sonunu düzeltmeden sonra aşarsa kalan fark yeni yıla göre önerilir); kilit kaldırılınca fiş
   otomatik ters kaydedilmez (fazla düzeltme uyarısı + Ters Kaydet — kilit kaldırmanın fiş varken engellenip engellenmeyeceği BAŞ MİMAR değerlendirmesine).
+
+### 17.10 Tur 2c (kod ajanı, 13.11.2026; taban `c5a2c-taban` 3548840e = tur 2b ucu) — KODDAN ÖNCE yazıldı
+Sıra (görev metni): İş 3 → İş 1 → İş 8 → İş 7 DÜŞÜK-2 → İş 5 ek testleri → İş 2'nin eksik örneği (S164 = C ikinci örnek). İş 4 bu turda YAPILMAZ (kullanıcı kararı bekliyor); tur 2a / 2b'nin
+işleri ve tur 1'in türetme kuralları değişmez. Ekranlar tur 2b'nin bağlamasıyla (BAŞ MİMAR 13.11 (ii)): client/admin.html'e düğme + betik etiketi, her ekran yeni istemci dosyası.
+
+**İş 3 — Açılış Olabilir Kayıtlar ekranı + zil (§2.4; S47 = A, S51 = A; B16; tur 1e DÜŞÜK-3 sayfalama / toplu karar).**
+- Yeniden üretim (taban): uçlar var (GET liste, POST tek karar); ekran YOK, zilde aday yok, toplu karar yok, sayfalama yok, kararı geri almak (aday durumuna dönüş) YOK; Kural Farkı penceresi
+  aday varken pasif, neden "… (Cariler › Açılış Olabilir Kayıtlar)" diyor ama o ekran yok (yönlendirme yok).
+- Değişen yol: lib/ledger-opening.mjs `createOpeningReview` — `list({ all, limit, offset })` (toplam + sayfa; parametresiz çağrı AYNEN eski çıktı), `counts()` (zil için tek SQL;
+  kilitli dönemdeki aday sayısı ayrıca), `decide(id, "candidate")` (kararı geri al: yalnız kararlı satır; onay / ret gibi para alanına dokunmaz, kapının kopyasıyla aynı işlemde),
+  `decideMany(ids, decision)` (aynı işlemde; en çok 1.000; listede olmayan kimlik varsa HİÇBİRİ yazılmaz — 404); routes/opening-review.mjs: GET `?counts=1`, `?limit=&offset=`, POST
+  `/api/workspace/opening-review` (toplu: { ids, decision }), tek karar ucunda `decision: "undo"`; yetki aynen `accounts.manage` (tur 1). İstemci: client/assets/hof-acilis-olabilir.js (yeni
+  pencere: Tarih, Cari, Tür, Tutar, Açıklama, Durum, Kilitli Dönemde; tek / toplu Açılış (Onayla) / Açılış Değil (Reddet) / Karar Bekliyor'a Geri Al; bildirimde Geri Al), admin.html'e
+  "Açılış Olabilir Kayıtlar" düğmesi + betik; admin.js'te yalnız `#system/acilis-olabilir` adresinin pencereyi açması; hof-alerts.js'te yalnız aday sayısı (system.manage; "Yönetim →
+  Sistem" bağlantısı bu adrese); Kural Farkı penceresinin aday nedeni yanına "Açılış Olabilir Kayıtları Aç" bağlantısı ve sunucu nedenindeki yer adı "Yönetim › Sistem › Açılış Olabilir
+  Kayıtlar" (B10'dan sapma: Cariler sayfasının istemci dosyası Ç5-B'nin — dosya sınırı; BAŞ MİMAR KARARI GEREKİYOR raporda).
+- Okuyucular (ders 10; tarama `opening-review|createOpeningReview|rule-diff-candidates`): app.mjs (bağlama), test acilis-519-250, kg16-geri-alma-250, kural-farki-duzeltme-250 (+ mutasyon
+  [5] düzenli ifadesi), defter-hiz-esdegerlik-250, kilit-izi-alanlar-250, bank-post-izinli.json (ham yazım etiketi `ledger.opening-review` — aynı etiket); e2e senaryo-acilis-duzeni-250
+  (Kural Farkı penceresi), senaryo-211 (yazım düzeni gezintisi), yazim-duzeni testi.
+- Nasıl bozulur: boş liste; tek kayıt; aynı adlı iki cari; kilitli satır (onay / ret yapılır, kilit izi ve donmuş defter değişmez, Kural Farkı'nda görünür); toplu kararda listede olmayan
+  kimlik (hiçbiri yazılmaz); aynı karar tekrarı (değişiklik yok); geri al → aday (defter 519 — S47); onay → geri al → ret; iki kişi aynı anda (son karar geçerli, ikisi de 200; liste
+  yenilenir); Muhasebe rolü (uçlar 200 — tur 1 yetkisi; ekran Yönetim'de, Yönetim'e giremez); personel 403; geri yükleme / Silinenler (S51 tur 1e'de — değişmez); sayfalama sınırları
+  (limit 0 / çok büyük / eksi).
+- Hız: liste sayfası `LIMIT/OFFSET` (dizin opening_review'da yoksa tam tarama — aday satırı az; 100 bin satırda ölçülür ≤ 0,5 sn); zil sayısı tek GROUP BY.
+
+**İş 1 — Açılış Eşleştirme Fişi + ekranı (§2.7; M-11; B10; kâhin red kodları ESLESTIRME_HESAP / ESLESTIRME_TERS).**
+- Yeniden üretim (taban): fiş türü `opening-match` tanımlı (ledger-vouchers.mjs), hiçbir uç yazmıyor; muhasebe sürücüsü `acilis_eslestir` olayını "uygulanmadı (Ç5-ESLESTIRME)" diye
+  geçiyor (sürücü test/bagimsiz/** — DEĞİŞMEZ; eşleme ana oturumun işi).
+- Kural (lib/ledger-opening.mjs `openingMatchPlan` — saf): hedef satırları bilanço hesabı (1–5 sınıfı, hesap planında), 519 DEĞİL, alt defter hesabı DEĞİL (K6 `subledgerAccounts()`)
+  → aksi 400 `opening-match-account`; her satır tek taraflı > 0 kuruş; 519 satırı = −(hedeflerin net borcu) kendiliğinden; 519'un fiş tarihi GÜN SONU bakiyesi (karma defter = Yevmiye /
+  Mizan'ın okuduğu; aynı günün açılışları ve önceki eşleştirme / kural farkı fişleri dahil) b ise fişten sonra b' = b − net: b < 0 iken b ≤ b' ≤ 0, b > 0 iken 0 ≤ b' ≤ b; b' ters işarete
+  geçerse 409 `opening-match-inverse` (ESLESTIRME_TERS); |b'| > |b| (519'u büyüten — "bir kısmı" değil) 409 `opening-match-direction`; b = 0 409 `opening-match-nothing`; 519'u
+  değiştirmeyen fiş (net 0) 400. Tarih: varsayılan bugün; kilitli tarih 409 (Ç2 `post` `period-locked`), ileri tarih 400 (Ç2). Kısmi ve birden çok kez yapılabilir; ters kaydı Ç2 ucuyla.
+- Uçlar (routes/ledger.mjs; `system.manage`; Muhasebe 403): GET `/api/admin/ledger/opening-match?date=` (519 gün sonu bakiyesi, açılış türlerine göre dökümü — karma defterin 519
+  satırları madde kaynağına göre, toplamı = bakiye; izinli hedef hesaplar; yazılmış etkin eşleştirme fişleri), POST `…/opening-match/preview` (ön izleme: satırlar + 519 satırı + b';
+  reddi yazmadan döner), POST `…/opening-match` ({ requestId, date, lines, confirm: true } — yazım anında YENİDEN doğrulanır: iki kişi aynı anda ikincisi güncel bakiyeyle ret alır).
+- Mutabakat: tur 1'in "Açılış Karşılığı" (integrity.mjs) bütün fiş satırlarının 519 / 500'ünü zaten okur (`openingCounterpart.parts.vouchers519 / vouchers500`) → yeni kod yok, SAYIYLA
+  doğrulanır. Fişten sonra açık dönemde açılış silinir / değişir de 519 eşleştirmenin tersine geçerse ENGELLENMEZ → aynı blokta BİLGİ satırı `opening:519-inverse` (ok, info; zil /
+  tarama / günlük değişmez — `ledger:unlocked-years` kalıbı): "Eşleştirilecek Açılış Bakiyeleri (519) Eşleştirme Fişlerinin Tersine Geçti". Ç6 aynı veriyi (`openingMatchState`)
+  "Kesin Değil — Ters Bakiye 519" için okur.
+- Okuyucular (ders 10): integrity.mjs tam tarama (Mutabakat Testi, açılış, arka plan taraması, Defter Mutabakatı — report-center), muhasebe sürücüsü (fişi yevmiyeden salt okur), Yevmiye /
+  Mizan (fiş satırları voucherJournalRows'tan — değişmez), Kural Farkı (açık dönem fişi kilit ilerleyince donmuş defterde; ruleDiff iki tarafta da aynı fiş satırı — fark doğmaz).
+- Nasıl bozulur (§4 (9)): kısmi; iki kez; 519'u ters çeviren; izinsiz hesap (102, 120, 600, 519); aynı gün açılışı (dahil); fişten sonra açılışın silinmesi (bilgi satırı); aynı istek iki
+  kez (replayed); iki kişi aynı anda; kilitli tarih; ileri tarih; Muhasebe 403; ters kayıt (519 geri gelir); v2.4.9 kilitli verisi (kural farkı fişinden önce / sonra); kilit fişin üstüne
+  ilerler.
+- Hız: ön izleme / GET = bir karma `book({ to: date })` + toplama (Yevmiye'nin okuduğu yol); 100 bin satırda ≤ 0,5 sn hedef — ölçülür; Mutabakat Testi'ne bilgi satırı için tek fiş
+  SQL'i (fiş yoksa `LIMIT 1`).
+
+**İş 8 — kılavuz:** yalnız 'nasıl yapılır' (Açılış Olabilir Kayıtlar, Kural Farkı Düzeltme, Açılış Eşleştirme); HTML + PDF aynı commit'te (ders 42).
+**İş 7 DÜŞÜK-2:** sekiz yaşayan mutant (Y2, Y3, Y5, Y10, Y11, Y12, Y18, Y23 — dar kontrolün tanımı) için değerle yakalayan test; ürün davranışı DEĞİŞMEZ.
+**İş 5 ek testleri:** Banka'dan Ters Kaydet ve e-Belge iptal akışı — kilitli tahsilat bağlıyken 409 + kilitli defter aynı (+ e-Belge'de dış servise HİÇ gidilmedi); kilit dışında serbest.
+**İş 2'nin eksik örneği:** S164 = C ikinci örnek — kilitli tahsilatın fatura bağı kapı dışından değişince Kural Farkı ön izlemesi kaynağı gösteriyor mu, fiş satırlarına giriyor mu
+(test/kural-farki-duzeltme-250.test.mjs'e vaka; ürün kodu değişmez).
