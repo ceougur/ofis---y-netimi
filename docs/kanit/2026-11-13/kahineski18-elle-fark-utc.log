@@ -1,0 +1,21 @@
+d42-c5-s140-s151-satis-karti-iade.json: 2 elle beklenti değişti
+    elleBelirsiz kalktı    ["kart KT6", "SK-37"]: "" → ""
+    elleBelirsiz eklendi   ["kart KT6", "S166 = B", "BİLİNEN SINIR"]: "" → ""
+d45-c5-s159-s154-s162-s163.json: 12 elle beklenti değişti
+    değer                  adim:ka6t:durum: "(yok)" → "ok"
+    değer                  k1:cari:A6:bakiye: "(yok)" → 40000
+    değer                  k1:cari:A6:gecikmis: "(yok)" → 0
+    değer                  k1:hareket:a6z:kalan: "(yok)" → 40000
+    değer                  k1:kart:KA6:kalan: "(yok)" → 0
+    değer                  k1:kart:KA6:odenen: "(yok)" → 70000
+    değer                  k1:kart:KA6:taksit1:odenen: "(yok)" → 30000
+    değer                  k1:kart:KA6:taksit2:odenen: "(yok)" → 30000
+    değer                  k1:kart:KA6:taksit3:odenen: "(yok)" → 10000
+    elleYok kalktı         adim:ka6t:durum: "yok" → ""
+    elleYok kalktı         k1:cari:A6:bakiye: "yok" → ""
+    elleBelirsiz kalktı    ["adım ka6t", "SK-36", "KULLANICIYA SORULMALI"]: "" → ""
+yeni elle senaryo: d46-c5-s165-s118-sinir.json
+# tests 99
+# pass 99
+# fail 0
+99/99 denetim geçti

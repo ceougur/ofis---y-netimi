@@ -1,0 +1,31 @@
+  ✗ d46-c5-s165-s118-sinir.json adim:ka7t:durum: elle "ok" · kâhin "ANAHTAR YOK"
+  ✗ d46-c5-s165-s118-sinir.json adim:ka7u:durum: elle "ret" · kâhin "ANAHTAR YOK"
+  ✗ d46-c5-s165-s118-sinir.json k1:cari:A7:bakiye: elle 40000 · kâhin "ANAHTAR YOK"
+  ✗ d46-c5-s165-s118-sinir.json k1:kart:KA7:odenen: elle 70000 · kâhin "ANAHTAR YOK"
+  ✗ d46-c5-s165-s118-sinir.json k1:kart:KA7:taksit3:odenen: elle 10000 · kâhin "ANAHTAR YOK"
+  ✗ d46-c5-s165-s118-sinir.json k1:hareket:a7z:kalan: elle 40000 · kâhin "ANAHTAR YOK"
+  ✗ d46-c5-s165-s118-sinir.json adim:ka8t:durum: elle "ok" · kâhin "ANAHTAR YOK"
+  ✗ d46-c5-s165-s118-sinir.json k1:cari:A8:bakiye: elle -20000 · kâhin "ANAHTAR YOK"
+  ✗ d46-c5-s165-s118-sinir.json k1:kart:KA8:odenen: elle 130000 · kâhin "ANAHTAR YOK"
+  ✗ d46-c5-s165-s118-sinir.json k1:kart:KA8:taksit3:odenen: elle 30000 · kâhin "ANAHTAR YOK"
+  ✗ d46-c5-s165-s118-sinir.json k1:hareket:a8z:kalan: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d46-c5-s165-s118-sinir.json adim:q7k:durum: elle "ok" · kâhin "ANAHTAR YOK"
+  ✗ d46-c5-s165-s118-sinir.json k1:cari:Q7:bakiye: elle -70000 · kâhin "ANAHTAR YOK"
+d46-c5-s165-s118-sinir.json: 77 elle denetim, 13 kırmızı
+  ✗ d45-c5-s159-s154-s162-s163.json adim:ka6t:durum: elle "ok" · kâhin "ANAHTAR YOK"
+  ✗ d45-c5-s159-s154-s162-s163.json k1:cari:A6:bakiye: elle 40000 · kâhin "ANAHTAR YOK"
+  ✗ d45-c5-s159-s154-s162-s163.json k1:cari:A6:gecikmis: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KA6:odenen: elle 70000 · kâhin "ANAHTAR YOK"
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KA6:kalan: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KA6:taksit1:odenen: elle 30000 · kâhin "ANAHTAR YOK"
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KA6:taksit2:odenen: elle 30000 · kâhin "ANAHTAR YOK"
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KA6:taksit3:odenen: elle 10000 · kâhin "ANAHTAR YOK"
+  ✗ d45-c5-s159-s154-s162-s163.json k1:hareket:a6z:kalan: elle 40000 · kâhin "ANAHTAR YOK"
+d45-c5-s159-s154-s162-s163.json: 121 elle denetim, 9 kırmızı
+  ✗ d42-c5-s140-s151-satis-karti-iade.json belirsiz kaydı yok: kart KT6 + S166 = B + BİLİNEN SINIR
+d42-c5-s140-s151-satis-karti-iade.json: 77 elle denetim, 1 kırmızı
+ESKİ KÂHİN KIRMIZISI: 23/275 elle denetim kırmızı, 252 aynı (beklenen: kırmızı > 0; her kırmızının eski değeri yukarıda)
+# tests 23
+# pass 23
+# fail 0
+23/23 denetim geçti

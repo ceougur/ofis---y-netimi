@@ -4216,3 +4216,29 @@ d30 artık 305 / 307 / 309'u yakalamıyor (seçenekli sınır adımı her okumad
   stok iadesi kolu.
 - Tablodan Aktar kartında (taşınan tahsilat / parça) para dışı paylı sınır; şüpheli kayıtlı caride seçenekli tahsilat; Y18-3 (2)'nin kontrol anında sonradan doğan avansla ödenmiş kısım kolu —
   elle senaryo yok. Rastgele üretici seçenek ve sınır bölgesi tahsilatı üretmiyor (bakım 17 taraması) — üretici değişmedi.
+
+### C0v Değişen eski beklentiler (G3; bakım 17 (`kahin18-taban` = 261b1aec) ↔ bakım 18 kâhin çıktısı, `2.5.0`; eski kopyanın 99 elle senaryosu + d46 + rastgele s1 / ux18 tohum 1–10 × 120) — kararla ilgisiz eski beklenti DEĞİŞMEDİ
+Eski 50.322 → yeni 50.357 denetim; değişen / kalkan / yeni toplam **35** (hepsi YENİ — bakım 17'nin SK-36 iki dünyasının sildiği denetimler artık yazılıyor; DEĞİŞEN 0, KALKAN 0); **BEKLENMEYEN 0**; yalnız
+etiketi değişen 7 (sınır bölgesindeki kabul adımının durum etiketi §29 Y18-1). Döküm `docs/kanit/2026-11-13/kahineski18-g3-dokum-*.json` (iki saat diliminde bayt bayt aynı):
+- **S165 (29 yeni):** d45 A6 12 (adımın durumu "ok", bakiye / açık toplamı 400, gecikmiş 0, a6x / a6z Kalan, kart göstergeleri 700 / 0 / 300 · 300 · 100, a6z projeksiyon kalemi); d46 A7 / A8 17 (ka7t / ka7u /
+  ka8t durumları, bakiyeler, Z Kalan'ları ve kalemleri, KA7 / KA8 'Tahsil Edilen' 700 / 1.300 ve 3. taksit). **S118-OKUMA (2 yeni):** d46 Q7 (adımın durumu "ok", bakiye −700).
+  **GENEL (4 yeni):** d45 / d46 Kasa ve Kasa raporu girişi (iki dünya Kasa'yı ayırıyordu).
+- **Öbür 98 eski elle senaryo, d46'nın Q8 / Q9 / R1 / R2 / R3 carileri ve 20 rastgele: fark 0** (adımları değişen eski senaryo 0; üretici 20/20 aynı dizi; d30 Q1 / Q3 / Q5 seçenekli — aynı; d42 T6 yalnız
+  `belirsiz` metni — denetim farkı yok).
+- **Eski ELLE tablolarda değişen beklentiler** (`kahineski18-elle-fark-*.log`, 99/99 izinli): d45 12 (A6 — SK-36 `elleYok` / `elleBelirsiz` kalktı, 9 değer), d42 2 (T6 `elleBelirsiz` SK-37 → S166 = B). Öbür 97
+  dosya AYNI.
+- `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`: **480/480 bayt bayt aynı** (99 eski elle + d46 + 20 rastgele × 4 kip).
+- **Yeni / değişen elle tablolar ESKİ (bakım 17) kâhinde — beklenen NEDENLE kırmızı (ders 7, 38):** 275 elle denetimin **23**'ü (`kahineski18-kirmizi-eski-cari-*.log`; d46 13, d45 9, d42 1): hepsi ya
+  "ANAHTAR YOK" (SK-36 iki dünyası — A6 / A7 / A8 / Q7 adımları ve ayrışan denetimleri; KA8 'Tahsil Edilen' — bakım 17'de `_s154x` ile S144 SUS) ya da yeni neden metninin `belirsiz`'de olmaması (KT6 "S166 =
+  B"); 252'si iki kâhinde aynı (d46'nın Q8 / Q9 / R1 … R3 değerleri dahil — bakım 17 de K = K' ile aynı sonucu veriyordu).
+
+### C10v Mutantlar — koşudan (kesin)
+`oz-test.py` (DEĞERLE): 308 → 2 elle senaryo (d45 A6, d46 A7 / A8), 309 → 1 (d46 Q7); 303–307 aynen yakalanıyor (307 artık d45 A5 / A6 ve d46'da; d30'da değerle değil). `mutasyon-tara.py` (kos.mjs düzeni — herhangi
+bir çıktı farkı): 308 d45 / d46, 309 d30 / d31 / d32 (etiket / iz farkı). Bakım 6 … 17 mutantları (200–307) aynen yakalanıyor (öz test 6.611/6.611; tarama 276/276).
+
+### Kanıt (bakım 18; iki saat dilimi — UTC ve Europe/Istanbul çıktıları başlık / kanit satırları dışında bayt bayt aynı, G3 dökümleri bayt bayt aynı; kâhin `7434dd1f`, temiz ağaç; `docs/kanit/2026-11-13/kahineski18-*`, araçlar ve koşu betiği `kahineski18-arac/`)
+cari öz test **6.611/6.611** (`-cari-oz-*`: elle tablolar 100 senaryo, mutantlar 200–309 — 219–309 değerle) · mutasyon taraması **276/276** (`-cari-mutasyon-*`) · eşdeğerlik + G3 **600/600** (`-esdeger-cari-*`) ·
+yeni / değişen elle tablo **275/275** (`-elle-yeni-cari-*`: d46 77 + d45 121 + d42 77) · ESKİ kâhinde **23 kırmızı** / 275 (`-kirmizi-eski-cari-*`) · eski elle tablo farkı **99/99** izinli (`-elle-fark-*`) ·
+G1 tarama **100/100** (`-g1-tara-*`) · mutant ↔ senaryo **637/637** (`-mutant-senaryo-*`; d30 + d35 … d46 × 261–309) · geniş tarama **2.201/2.201** (`-genis-tarama-*`; bakım 17 ile aynı sayı) · defter öz testi
+**181/181** (`-defter-oz-*`; bu bakım defter kâhinine dokunmadı). Hepsi çıkış 0, iki saat diliminde aynı sayılar. Öz test, mutasyon, eşdeğerlik ve geniş tarama `flock -s -n …/olcum.lock` ile (ders 52); her adım
+`timeout` sınırlı. Program açılmadı. Koşu günlükleri `kahineski18-kos-utc.txt` / `-ist.txt` (yük 1,17 / 2,06 — 4 çekirdek).

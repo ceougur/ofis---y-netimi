@@ -1,0 +1,24 @@
+ÜRETİCİ: 20/20 aynı dizi (tur s1 + ux18, tohum 1–10 × 120 işlem)
+ADIMLAR: eski kopyadaki 99 elle senaryonun 0'inin adımları değişti: yok · yalnız `fazlasiniAvansYaz` eklenen: yok · yeni elle senaryo: d46-c5-s165-s118-sinir
+EŞDEĞERLİK (2.4.9 / 2.4.6 / 2.4.5 / --legacy; eski kopyanın 99 elle + yeni kopyanın yeni 1 elle + 20 rastgele senaryo × 4 kip): 480/480 bayt bayt aynı
+G3 (kural 2.5.0; 120 senaryo — eski kopyanın 99 elle senaryosu + yeni elle + 20 rastgele): eski 50322 denetim · yeni 50357 denetim · değişen / kalkan / yeni toplam 35 · BEKLENMEYEN 0 · yalnız etiketi değişen 7
+  GENEL          yeni         4
+      örn. d45-c5-s159-s154-s162-s163 k1:kasa: "(denetim yok)" → 790000
+      örn. d45-c5-s159-s154-s162-s163 k1:kasaRapor:giris: "(denetim yok)" → 790000
+      örn. d46-c5-s165-s118-sinir k1:kasa: "(denetim yok)" → 920100
+      örn. d46-c5-s165-s118-sinir k1:kasaRapor:giris: "(denetim yok)" → 920100
+  S118-OKUMA     yeni         2
+      örn. d46-c5-s165-s118-sinir adim:q7k:durum: "(denetim yok)" → "ok"
+      örn. d46-c5-s165-s118-sinir k1:cari:Q7:bakiye: "(denetim yok)" → -70000
+  S165           yeni        29
+      örn. d45-c5-s159-s154-s162-s163 adim:ka6t:durum: "(denetim yok)" → "ok"
+      örn. d45-c5-s159-s154-s162-s163 k1:cari:A6:acikToplam: "(denetim yok)" → 40000
+      örn. d45-c5-s159-s154-s162-s163 k1:cari:A6:bakiye: "(denetim yok)" → 40000
+      örn. d45-c5-s159-s154-s162-s163 k1:cari:A6:gecikmis: "(denetim yok)" → 0
+G3 senaryo senaryo (sınıf/tür: adet; listede olmayan senaryoda fark 0):
+  d45-c5-s159-s154-s162-s163               GENEL/yeni 2 · S165/yeni 12
+  d46-c5-s165-s118-sinir                   GENEL/yeni 2 · S118-OKUMA/yeni 2 · S165/yeni 17
+# tests 600
+# pass 600
+# fail 0
+600/600 denetim geçti
