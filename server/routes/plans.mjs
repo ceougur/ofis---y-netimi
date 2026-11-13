@@ -237,7 +237,10 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       // paid (Ç5-B kapanış düzeltmesi, S129 = A — KULLANICI KARARI 12.11 13:26 AYNEN: "taksit satırının 'Ödenen'i de TEK KUYRUKTAN gösterilir (ekranda tek sayı …)"):
       // satırın Ödenen'i = taksitin kuyrukta TAHSİL EDİLEN kısmı (lib/obligation-queue.mjs `collected`: kart tahsilatı + kart seçilmeden alınan tahsilatın / avansın payı);
       // kartın kendi tahsilatı ownPaid'de. Kapatılmış kartta bugünkü gösterim AYNEN (kural yazılmadı — kapanış dar kontrolünün kapsam dışı gözlemi).
-      return { ...item, remaining, ownRemaining: item.remaining, paid: closed ? item.paid : roundMoney(Math.min(item.amount, row ? row.collected || 0 : 0)), ownPaid: item.paid, held, accountPaid, partial: remaining > 0.005 && remaining < item.amount - 0.005, state };
+      // returned (birleşik tur 8, S151 = B / S158 = A): satırın faturasız iade / Değersiz Alacak ile kapanan kısmı — tahsilat değildir, Ödenen'e girmez, ayrı gösterilir.
+      const paid = closed ? item.paid : roundMoney(Math.min(item.amount, row ? row.collected || 0 : 0));
+      const returned = closed || !row ? 0 : roundMoney(Math.max(0, Math.min(item.amount - paid, row.returned || 0)));
+      return { ...item, remaining, ownRemaining: item.remaining, paid, returned, ownPaid: item.paid, held, accountPaid, partial: remaining > 0.005 && remaining < item.amount - 0.005, state };
     });
     // Ç5-B tur 2a (O-3): taksitlere bölünmemiş kalan ("rest") ve Taksit İadesi ("back") kuyruk kalanındadır (kalemleri queueExtras: takvim / zil / Vade Takip / nakit akışı).
     // Ç5-B tur 2b-2 (ekran yürüyüşü 1 Y2; BAŞ MİMAR KARARI 11.11 05:48 — sunum, S91 = A'nın sonucu): bu kalemin günü geçmişse kart da "Gecikti" sayılır (Taksitler'in Geciken
@@ -265,12 +268,12 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     // satırının 'Ödenen'i de TEK KUYRUKTAN gösterilir (ekranda tek sayı: örnekte kart 900, bağsız tahsilat 500 → Tahsil Edilen 500 · Kalan 400; kart 600, bağsız tahsilat
     // 800 → Kalan 0 · Tamamlandı); tahsilat formunun sınırı / sorusu / önerilen tutarı S118 = B'deki gibi kartın KENDİ kalanından kalır"): totals.paid / totals.remaining
     // GÖSTERİLEN sayılardır (shownTotals); kartın kendi hesabı totals.ownPaid / ownRemaining (lib/plans.mjs allocate) — sınır, Mutabakat Testi, mutabakat motoru bunları okur.
-    const shown = closed ? { paid: ledger.totals.paid, remaining: ledger.totals.remaining } : shownTotals(plan, ledger.totals, collectedOf(map));
+    const shown = closed ? { paid: ledger.totals.paid, remaining: ledger.totals.remaining, returned: 0 } : shownTotals(plan, ledger.totals, collectedOf(map), returnedOf(map));
     return {
       ...ledger,
       items,
       // ownOverdue: kartın kendi hesabıyla gecikmiş (taksit − kart tahsilatı; eski anlam) — onarım / göç karşılaştırmaları için.
-      totals: { ...ledger.totals, paid: shown.paid, remaining: shown.remaining, queueRemaining: remaining, accountPaid, overdue: roundMoney(overdue.reduce((sum, item) => sum + item.remaining, 0) + lateExtras.reduce((sum, item) => sum + item.remaining, 0)), overdueCount: overdue.length, overdueRest: roundMoney(lateExtras.reduce((sum, item) => sum + item.remaining, 0)), overdueExtras, ownOverdue: ledger.totals.overdue ?? 0 },
+      totals: { ...ledger.totals, paid: shown.paid, remaining: shown.remaining, returned: shown.returned, queueRemaining: remaining, accountPaid, overdue: roundMoney(overdue.reduce((sum, item) => sum + item.remaining, 0) + lateExtras.reduce((sum, item) => sum + item.remaining, 0)), overdueCount: overdue.length, overdueRest: roundMoney(lateExtras.reduce((sum, item) => sum + item.remaining, 0)), overdueExtras, ownOverdue: ledger.totals.overdue ?? 0 },
       next: next ? { id: next.id, seq: next.seq, dueDate: next.dueDate, remaining: next.remaining, days: next.days, state: next.state } : null,
       // S118 = B: kartın KENDİ hesabıyla sıradaki taksit (formun önerdiği tutar; ledger.next = allocate).
       ownNext: ledger.next || null,
@@ -289,20 +292,29 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     for (const [key, row] of map) if (key !== "back") sum += row.collected || 0;
     return roundMoney(sum);
   };
-  function shownTotals(plan, totals, collected) {
+  // Birleşik tur 8 (S151 = B, S158 = A): taksitlerin (ve taksitlendirilmemiş kalanın) faturasız iade / Değersiz Alacak ile kapanan kısmı.
+  const returnedOf = map => {
+    let sum = 0;
+    for (const [key, row] of map) if (key !== "back") sum += row.returned || 0;
+    return roundMoney(sum);
+  };
+  //   Birleşik tur 8 (S151 = B, S158 = A): iade / Değersiz Alacak ile kapanan kısım Tahsil Edilen DEĞİLDİR, `returned` (İade ile Kapanan) olarak ayrı durur; Kalan = Toplam −
+  //   Tahsil Edilen − İade ile Kapanan (Kalan'ın sayısı değişmez: önceden iade Tahsil Edilen'in içindeydi). Tahsil Edilen + Kalan + İade ile Kapanan = Toplam (fazla tahsilat hariç).
+  function shownTotals(plan, totals, collected, returnedRaw = 0) {
     const total = totals.total || 0;
     const unplannedPaid = plan.coversBalance ? Math.max(0, Math.min(totals.extra || 0, totals.unplanned || 0)) : 0;
     // Kartın KENDİ fazla tahsilatı (kart toplamını aşan; K8 "Fazlasını Avans Yaz" — plan §3.10/3) bugünkü gibi Tahsil Edilen'de görünür ("fazla ₺…" notuyla; karar yok).
     const over = Math.max(0, roundMoney((totals.ownPaid ?? totals.paid ?? 0) - total));
     const paid = roundMoney(Math.min(total, collected + unplannedPaid) + over);
-    return { paid, remaining: roundMoney(Math.max(0, total - paid)) };
+    const returned = roundMoney(Math.max(0, Math.min(returnedRaw, total - Math.min(total, collected + unplannedPaid))));
+    return { paid, remaining: roundMoney(Math.max(0, total - paid - returned)), returned };
   }
   // Cari kartı / Cari Listesi (routes/accounts.mjs): kartın özetine (kartın kendi hesabı) aynı gösterilen sayıları verir. tyk: carinin kuyruğu (obligationsFor / allObligations
   // öğesi); yoksa ya da kart kapalıysa null (özet değişmez). Dönüş { paid, remaining }.
   function shownTotalsOf(plan, tyk) {
     const map = tyk && plan.status !== "closed" ? tyk.installments?.get(plan.id) : null;
     if (!map || !plan.totals) return null;
-    return shownTotals(plan, plan.totals, collectedOf(map));
+    return shownTotals(plan, plan.totals, collectedOf(map), returnedOf(map));
   }
   // Birleşik tur 8 (S142 = A — KULLANICI KARARI 13.11 03:44 AYNEN: "cari kartındaki taksit kartı satırında durum etiketi ve 'sıradaki taksit' de aynı (tek) hesaptan"): cari
   // kartının taksit kartı özeti kart penceresinin görünümünü (detailView ile aynı withQueue) taşır — Tahsil Edilen / Kalan, durum, geciken taksit sayısı, sıradaki taksit.
