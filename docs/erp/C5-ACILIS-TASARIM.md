@@ -977,3 +977,58 @@ satırlarda tek indeksli sorgu. Ölçüm: temiz 100 bin satırlık veride taban 
   Karar ana oturumun (BAŞ MİMAR KARARI GEREKİYOR — rapor).
 - Kaynak tarama testinin sınırı: dizin sırasıyla okunan sütun (ORDER BY'ın dizinden karşılandığı `cheque_events.created_at`) EXPLAIN'de Column olarak görünmez — o sütunun
   koruması davranış testinde ([1] ikinci karşılıksız olayı).
+
+## 17. Ç5-A tur 2 (kod ajanı, 13.11.2026; taban `c5a2-taban` 7e8d3228) — KODDAN ÖNCE yazıldı
+Görev metni docs/devir/2.5.0-DEVAM/ (Ç5-A tur 2). Girdi: tur 1f dar kontrol raporu (dk-c5a1f-rapor.md), D 12.11 15:57 (4), D 13.11 10:40 (S160), D 13.11 17:19, D 13.11 17:30 (S164 = C +
+süreç kuralı). Sıra: 0 → 7 → 5 → 6 → 1 → 2 → 3 → 4 → 8; bir iş (kod + test + commit) bitmeden sonrakine geçilmez; tur 1'in türetme kurallarına dokunulmaz.
+
+### 17.1 İş 0 — Yönetim › Sistem'deki Mutabakat satırı (EY-1)
+- Yeniden üretim (taban; fikstür surum-2.0.26-zincir, kilit 05.10.2026, bugün 08.10.2026; açılış dondurması bitti + ilk tarama): satır KIRMIZI "Mutabakat: 2 denetimde sapma var
+  (Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi), İleri tarihli hareket (Çek/Senet Hareketleri) — eski sürümden kalan 1 satır; …)". Kural farkı 44 madde.
+  Kök neden: istemci (client/assets/admin.js loadIntegrity) yalnız `notice` işaretini uyarı sayıyor; `ledger:rule-diff` sunucuda `severity: "warning"` ama `notice` DEĞİL (notice'in
+  anlamı başka: noticeGrowth → günlük + zil). Sunucuya dokunulmaz (günlük / zil / Mutabakat Testi sonucu aynı kalsın — görev metni).
+- Değişen yol: YALNIZ istemci — admin.js loadIntegrity: `ledger:rule-diff` sapma listesinden ayrılır, ayrı "Uyarı (yeni işlemleri engellemez): <ad> — N madde, fark X. … fark Yönetim ›
+  Kural Farkı Düzeltme ile ilk açık güne alınır." cümlesi; renk: gerçek sapma varsa kırmızı, yalnız eski sürüm satırı / uyarı / kural farkı varsa sarı. "Düzeltildi (Fiş …)" İş 2'de
+  (sunucu alanı gelince aynı cümle değişir).
+- Okuyucular (ders 10): `#adm-integrity-status` — e2e senaryo-kasa-acilis-uyari-250, senaryo-donem-kilidi-ilerleme-250, senaryo-226, senaryo-213 (taramayla); kural farkı olmayan veride
+  metin bayt bayt aynı (yeni cümle boş; "N denetim tamam" sayısından yalnız kural farkı satırı düşer — o veride 0).
+- Nasıl bozulur: kural farkı + gerçek sapma birlikte (kırmızı kalmalı, kural farkı ayrı cümlede); yalnız kural farkı (sarı, "N denetim tamam" + uyarı); kural farkı + notice (iki uyarı
+  cümlesi); kural farkı 0 (görünmez — sunucu ok olanı listelemez).
+
+### 17.2 İş 7 — dar kontrol 1f'in DÜŞÜK'leri (yalnız test / ölü dal; ürün davranışı DEĞİŞMEZ)
+- DÜŞÜK-1 (goc-243 ara sıra kırmızı): test ön koşulu ürünün durumundan kurar (`snapshots.runPending()` beklenir) ve tek sonucu ADIYLA bekler: kilitli Masa açılışının (15.09, 5.000)
+  Kural Değişikliği Farkı yalnız 500 (+5.000) ↔ 519 (−5.000); başka sapma yok. Zorlama 'bitir' + 'gozlem' kiplerinde yeşil; eski test 'bitir'de beklenen nedenle kırmızı.
+- DÜŞÜK-2 (yaşayan sekiz mutant Y2, Y3, Y5, Y10, Y11, Y12, Y18, Y23): her biri için DEĞERLE yakalayan test (kilit-izi-alanlar-250 ailesine) — sütun düşerse iz / süzgeç farkı.
+- DÜŞÜK-3: kaynak tarama testine 'istisnadaki sütun izde olmamalı' denetimi.
+- DÜŞÜK-4: süzgeçteki ulaşılamayan dal (`plan_imports`, SCOPE_TABLES dışında) — SİLİNİR (ulaşılır kılmak db.mjs'e dokunmayı gerektirir; db.mjs bu turun dosya sınırı dışında; kapı
+  dışı değişikliği taramadaki `plans_import_lock` zaten görüyor).
+
+### 17.3 İş 5 — S160 = A (kilitli tahsilatın fatura bağını düşüren işlem 409)
+- Taramayla bağı düşüren yollar (grep `invoice_id = ''` / `DELETE FROM invoices` / `SET invoice_id`): (a) fatura iptali — routes/invoices.mjs `cancel` (cari hareketinin bağı +
+  Kapatılacak Fatura ile bağlanan evrak olayının bağı); bunu çağıran HER yol: iptal ucu, e-Belge iptal akışları (önce `dryRun` — ret EDM'ye gitmeden), silme (`deleteInvoice` →
+  `cancel`), Banka'dan Ters Kaydet (bank/vouchers.mjs → `cancel(fromBank)`); (b) cari hareketini düzenleme (accounts.mjs) — kilitli satır zaten 409; (c) evrak / cari hareketi Silinenler'den
+  geri yükleme (bağ düşebilir) — kilitli tarihli geri yükleme zaten 409 (`restoreDate`); (d) mahsup fişini kaldırma — kilitli tarihte zaten 409 ve mahsup defteri değiştirmez.
+- Kural: `cancel`'ın yazımında, dönem kilidi varken bu faturaya bağlı (`invoice_id`) kilit tarihli ya da öncesi bir TAHSİLAT (cari hareketi `kind = 'in'`) ya da Kapatılacak Fatura ile
+  bağlanmış ALINAN evrak olayı (`cheque_events.kind = 'receive'`, evrak faturanın kendi evrakı değil) varsa 409 `period-locked-bond`; ileti en eski kilitli tahsilatın tarihini söyler ve
+  "Değişiklik için yönetici dönem kilidini açmalı" der. Kural carinin şüpheli durumuna BAĞLANMAZ (S160 metni). Yardımcı lib/period.mjs'te (`assertBondOpen`).
+- Ödeme (`out`) ve verilen evrak (`issue`) bağı: karar metni "tahsilat" der; bağları defteri değiştirmez (doubtfulSkipOf yalnız `in`) → kurala ALINMAZ; BAŞ MİMAR KARARI GEREKİYOR
+  (raporda).
+- Nasıl bozulur: kilit açık (serbest); kilit dışı tahsilat bağlı (serbest); kilit kaldır → iptal → yeniden kilitle (çalışır); kilit tam tahsilat günü (= ret); iki tahsilat (biri kilitli);
+  silme yolu; e-Belge iptalinde dryRun; Banka'dan Ters Kaydet (komisyon faturasının kilitli aydaki iade satırı bağlıysa artık 409 — raporda); iade faturası iptali.
+- Hız: iptal başına iki dizinli sorgu (account_entries.invoice_id, cheque_events.invoice_id) — yalnız kilit varken.
+
+### 17.4 İş 6 — POS komisyon faturası kuşkusu (K-b (i); DOĞRULANMADI)
+`linkFees` (bank/pos.mjs:518) kilit denetimi olmadan o ayın kesinti / iade satırlarına bağ yazar; `in` (komisyon iadesi) satırı bağlanınca doubtfulSkipOf 128 → 120 değişebilir (yalnız
+sağlayıcı carisinin açık şüphelisi varsa). Önce programın kendi yolundan (POS kur → satış → iade → ay kilidi → komisyon faturası kaydı) üretilir; üretilirse KODLANMAZ → KULLANICIYA SORULMALI.
+
+### 17.5 İşler 1–4, 8 (plan; ayrıntı kodla birlikte bu bölüme eklenir)
+- İş 1 Açılış Eşleştirme Fişi: routes/ledger.mjs'e ön izleme + kaydet uçları (`system.manage`), doğrulama ledger-opening.mjs'te (izinli hedef: 500–503, 520–549, 570, 580, 590, 591 ve
+  alt defter dışı bilanço hesapları; 519'u fiş tarihi gün sonunda ters bakiyeye geçirme reddi — aynı gün açılışları dahil); `vouchers.post({ type: "opening-match", cls: "opening" })`.
+  Ekran Yönetim › Dönem Kilidi yanında. Açılış Karşılığı denetiminin fiş satırlarını gördüğü SAYIYLA gösterilir.
+- İş 2 Kural Farkı Düzeltme Fişi + "Düzeltildi": §3.3; satırlar `ruleDiff().balances` — bilanço hesapları birikimli, sonuç hesapları yıl yıl (fişin yılı → eski hesabın tersi; önceki yıl
+  → 671 / 681); alt defter hesabı farkı (120 ↔ 128) fişe girmez, ekranda nedeniyle. Ön izleme farkın HANGİ maddeden geldiğini satır satır gösterir (S164 = C: program dışı yazım
+  bozulması sessizce fişe girmesin). "Düzeltildi": düzeltilmemiş fark = ruleDiff − Σ rule-diff-correction (hesap eşlemesiyle); 0 → `ledger:rule-diff` öğesinde `corrected: { no }`;
+  tarama / zil / günlük bu öğeyi zaten sapma saymıyor (tur 1d) — değişmez.
+- İş 3 Açılış Olabilir Kayıtlar ekranı + zil (uçlar tur 1'de, routes/opening-review.mjs); B16 sıra zorlaması.
+- İş 4 Şüpheli ↔ kuyruk defter kuralı (§2.11) — kuyruğun dağılımı okunur, kuyruk kodu değişmez.
+- İş 8 kılavuz (HTML + PDF aynı turda).
