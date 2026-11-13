@@ -1190,3 +1190,87 @@ işleri ve tur 1'in türetme kuralları değişmez. Ekranlar tur 2b'nin bağlama
 - DÜŞÜK-2'nin sekiz mutantı: Y2, Y3, Y5, Y11, Y18, Y23 yeni testlerle ölür (kilit-izi-alanlar-250: üç kapı dışı vaka + [9] kapıdan iki adım + [10] kaynaklı satırda işaret + [11] v2.4.9'un gerçek izi = güncel kodun 2.4.9 tanımı); Y10, Y12 EŞDEĞER (süzgecin para denetimleri aynı yazımı yakalar — yanıt, ileti, tarama aynı; yalnız iç karar etiketi farklı; sonda betiği kanıtta).
 - S160 = A ek testleri (s160-iptal-yollari-250): Banka'dan Ters Kaydet / Düzelt ve e-Arşiv iptali 409 (EDM'ye istek yok, kilitli defter aynı); kilit dışı serbest; kilit kaldır → iptal → yeniden kilit; ödeme / verilen evrak bağı kurala girmez. (a)'daki kilitli tahsilat bağı arayüz yolundan kurulamaz (savunma katmanı).
 - S164 = C ikinci örneği (kural-farki-duzeltme-250 [8]): kilitli tahsilatın fatura bağı kapı dışından yazılınca 120 / 128 farkı ön izlemede kaynağıyla dışarıda, fiş yalnız gerçek kural farkı. Ürün kodu değişmedi.
+
+## 18. Ç5-A tur 3 (kod ajanı, 13.11.2026; taban `c5a3-taban` 9b543ae4 = çalışma dalı ucu + tur 2a–2d) — KODDAN ÖNCE yazıldı; DURDU (dosya sınırı — BAŞ MİMAR KARARI GEREKİYOR)
+Tek iş: §2.11 şüpheli ↔ kuyruk defter kuralı (S14, S25, S39 = A; S168 = B) + "Normal Cari Hesaba İşle" sınırının yalnız 120'ye düşecek kısma uygulanması; yol BAŞ MİMAR KARARI K-1
+(13.11 20:08: kuyruk dışarıya iki alan daha verir — belirli bir ana kadarki dağılım + kalem başına şüpheli kaydın kimliği; defter tahsilat tahsilat ilerleyerek okur). Kod, test, kâhin DEĞİŞMEDİ.
+
+### 18.1 Tabanda yeniden üretim (ders 6; ana oturumun betiğinin kopyası `scratchpad/c5a3-k2/is4-soru.mjs`; her son adım ayrı açılış; TZ Europe/Istanbul; çıkış 0 × 5; kanıt docs/kanit/2026-11-13/c5a2-tur3-taban-uret.txt)
+Ortak durum: F1 1.000 (−60) → şüpheliye alma 1.000 (−40) → F2 500 (−30, kayıttan SONRA) → bağsız nakit 400 "Normal Cari Hesaba İşle" (−20) ⇒ 120 = 100, 128 = 1.000, kuyruğun şüpheli
+dağılımı 1.000 = F1 600 + F2 400. Son adım (−10), taban (ana oturumun 13.11 20:06 okumasıyla BİREBİR) ↔ S168 = B'nin beklediği:
+
+| Son adım | Taban: yanıt · defter | S168 = B (karar) |
+|---|---|---|
+| F2'ye bağlı çek 300 | 200 · A 128 300 (128 = 700, 120 = 100; kuyruk F1 600 + F2 100) | KABUL · A 128 300 (aynı sayı; tabanda nedeni FARKLI: bağlı evrak her zaman 128'den, en eski kayıttan) |
+| F2'ye bağlı nakit 300 | 409 doubtful-normal-exceeds ("normal cari hesaba işlenecek 300 … şüpheli dışı borç 100'ü aşıyor") | KABUL · A 128 300 (128 = 700, 120 = 100) |
+| F2'ye bağlı nakit 100 | 200 · A 120 100 (120 = 0, 128 = 1.000) | KABUL · A 128 100 (F2'nin şüpheli payı 400 ≥ 100; 128 = 900, 120 = 100) |
+| F1'e bağlı nakit 300 | 409 (aynı ileti) | KABUL · A 128 300 (F1'in şüpheli payı 600) |
+| bağsız işaretsiz nakit 300 | 200 · A 128 300 (kuyruk F1 300 + F2 400) | DEĞİŞMEZ (bağsız: en eski kayıttan) |
+
+Mutabakat Testi beşinde de bulgusuz. ("F2'ye bağlı 500 → 400'ü 128'den, 100'ü 120'den" de kararın örneğidir; tabanda nakitse 409.)
+
+### 18.2 Engel — kuyruğun GİRDİSİ defterin ulaşamadığı yerde kuruluyor (dosya sınırı)
+- `buildObligations(input)` saftır; girdisi YALNIZ fatura servisinin kapanış (closure) içi işlevlerinde kurulur: routes/invoices.mjs `accountSettleInput` (carinin faturaları, bağlar — peşin
+  `source 'invoice'`, Kapatılacak Fatura `invoice_id`, çek / senet bağı `chequeLinks` (cheque_events.invoice_id + cheques.invoice_id + etkiler), mahsuplar, taksitli faturanın takvimi),
+  `obligationExtras` (kart takvimleri, Vade / Beklenen Ödeme Tarihi, şüpheli kalanları `doubtfulRecordsOf` → lib/bank/doubtful.mjs `doubtfulState`, kilit izi `lockResolver`, `linkTimesOf`,
+  `chequeLinkMoments`), `withExtras`; carinin satırları routes/accounts.mjs `entriesOf` + routes/plans.mjs `forAccount` → lib/accounts.mjs `accountLedger`. Dışa yalnız servis yüzü
+  (`obligationsFor / obligationsOf / allObligations`).
+- Defterin 120 / 128 ayrımı iki yükleyicide: (1) yevmiye — routes/ledger.mjs `rows()` → `doubtfulRows(store)` → general-ledger `journal()` → doubtful-gl `applyDoubtfulToJournal`;
+  (2) SQL — lib/bank/doubtful.mjs `doubtfulState` → `doubtfulCredits` (okuyanlar: Ana Defter beklenenleri `doubtfulExpected`, kapı `doubtfulProblems` + integrity-scope, cari listesi
+  `doubtfulOpenByAccount`, cari kartı `doubtfulSummary`, sınır `headroom` / `allocatedMinor`, ve KUYRUĞUN KENDİSİ `doubtfulRecordsOf`).
+- Defter türetmesi fatura servisi OLMADAN da koşar: lib/ledger-freeze-worker.mjs:36 (`registerLedgerRoutes` yalnız store ile — dondurma, kural farkı), lib/integrity-scan-worker.mjs:29–32
+  (cari servisi `invoices: () => null`); routes/ledger.mjs'in bağımlılıklarında fatura servisi yok. Defter kuralı kuyruğa bağlanınca bu yollar AYNI kuyruğu kurabilmeli (yoksa donmuş ↔
+  canlı, kapı ↔ yevmiye ayrışır).
+- Sonuç: K-1'in "defter kuyruğun iki yeni alanını okur" yolu bu turun yazılabilir dosyalarıyla (obligation-queue YALNIZ iki alan; doubtful-gl; bank/doubtful; general-ledger YALNIZ 120 / 128)
+  KURULAMAZ: kuyruğu çağırmak için girdisi gerekir; girdi yazılamaz dosyalarda (routes/invoices.mjs, routes/accounts.mjs, routes/plans.mjs, routes/ledger.mjs, işçiler). bank/doubtful.mjs'e
+  store'dan ikinci bir girdi kurucu yazmak routes/invoices.mjs SQL'inin kopyasıdır (K-1'in reddettiği "defterde ayrı dağılım"ın girdi düzeyindeki ikizi; çek bağı bugün yalnız `chequeLinks`
+  kuralıyla çözülüyor — çekin cari satırında `invoice_id` yok).
+- Döngü (tur 2b (2)): kuyruğun `doubtfulRecords`'u ikinci yükleyiciden gelir (routes/invoices.mjs:760–772); ikinci yükleyici kuyruğu okursa özyineleme. Çözüm (ilerleyen değerlendirme):
+  iç kuyruk çağrısı şüpheli kalanlarını DIŞARIDAN (ayırıcının o anki durumundan) alır, `doubtfulState`'i çağırmaz — bu da `obligationExtras`'ın (yazılamaz) değişmesini ister.
+- Ekranda da yazılamaz yer var: cari kartının "Normal Cariye İşlendi" etiketi (`doubtfulNormal = doubtfulSkipOf(entry)`, routes/accounts.mjs:188 → client/assets/hof-accounts.js:361) yeni
+  kuralda kısmen 128'e düşen bağlı tahsilatta yanlış olur; etiketin kaynağı sınırın kodu değildir.
+
+### 18.3 BAŞ MİMAR KARARI GEREKİYOR (seçenek + öneri + gerekçe)
+- (a) ÖNERİ — kuyruğun girdi kurucusunu store'a bağlı saf bir lib modülüne TAŞI (davranış aynı; ayrı tur "3a"): yeni `server/lib/obligation-input.mjs` ← routes/invoices.mjs
+  `accountSettleInput` / `chequeLinks` / `obligationExtras` (şüpheli kalanları PARAMETRE) / `linkTimesOf` / `chequeLinkMoments` / `lockResolver` SQL'i + carinin satırları (routes/accounts.mjs
+  `entriesOf` SQL'i, routes/plans.mjs `forAccount`'un kuyruğa giren alanları → `accountLedger`). Fatura servisi ve iki defter yükleyicisi bunu çağırır. Kapı: eşdeğerlik testi (bütün
+  fikstürlerde her carinin kuyruğu taşımadan önce = sonra, bayt bayt; tyk-onbellek kalıbı) + hız (cari kartı, liste, Anlık Durum, Vade Takip önce / sonra). Sonra tur "3b" kuralı bu
+  modülle yazar (K-1'in iki alanı + 18.4). Artı: tek kaynak; işçilerde de çalışır. Eksi: Ç5-B dosyalarına (routes/invoices.mjs, routes/accounts.mjs, routes/plans.mjs) dokunur — yalnız
+  taşıma; dar kontrolü bu farkı görür.
+- (b) store'dan İKİNCİ girdi kurucu (kopya) + kalıcı eşdeğerlik testi (kopya = servis, her carinin girdisi). Artı: Ç5-B dosyaları değişmez. Eksi: iki kurucu ayrışabilir (her bağ / kart
+  değişikliği iki yere); tek kuyruk ilkesinin ruhuna aykırı.
+- (c) fatura servisini deftere enjekte et (routes/ledger.mjs + app.mjs + üç işçi tam servis ağacı kurar). Eksi: işçiler ağırlaşır; servis olmayan yolda defter başka türetir → RET önerisi.
+
+### 18.4 Kural tasarımı (karar verilince kodun izleyeceği; kaynak S14, S25 (a)(b)(c), S39, S168 = B, §2.11)
+- Kuyruk (K-1): (a) `obligationsBefore(input, cut)` — girdinin satırları kuyruğun KENDİ olay anahtarıyla (`eventOrder`: tarih → sınıf → kayıt anı → yazım sırası) `cut`tan ÖNCEKİLER; şüpheli
+  kalanları çağırandan; (b) `doubtful.items[].records: [{ recordId, minor }]` (M13'ün kalemi hangi kaydın kalanından tuttuğu; kayıt sırası bugünkü gibi tarih ↑). Mevcut alanlar ve
+  kapama kuralı AYNEN (eşdeğerlik: yeni alanlar çıkarılınca çıktı tabanla bayt bayt).
+- Defter (iki yükleyici AYNI geri çağrıyla): carinin alacak satırları bugünkü sırada (doubtful-gl `by`); FATURAYA BAĞLI tahsilat / evrak / kart iadesi (bağın kaynağı kuyruğun bağı) için
+  kalemin o anki şüpheli payı h (kayıt başına) → 128 = min(tutar, Σh) o kayıtlardan, kalan 120 (S25 (b): faturanın açık kısmını aşan fazla carinin bağsız alacağı, 120). Bağı olmayan:
+  bugünkü kural (en eski açık kayıttan). "Normal Cari Hesaba İşle" işaretli: 120 (değişmez). Fatura peşini: 18.6 (1).
+- Sınır (İş 2): `assertNormalRoom` 120'ye düşecek kısmı = tutar − min(tutar, h(kalem, tahsilat anı)) ile ölçer; aşarsa ileti iki tutarı söyler (120'ye düşecek kısım, şüpheli dışı borç).
+- Kural sürümü: LEDGER_RULE_VERSION "2.5.0-defter" (Ç5-A'nın tek etiketi, B15 (a)) genişler; kilitli dönemin 120 ↔ 128 farkı B14 (a) — alt defter hesabı, Kural Farkı fişine girmez
+  (tur 2b İş 2 zaten dışarıda tutuyor, ön izlemede kaynağıyla); "Düzeltildi" bilgisi o fark varken gelmez.
+
+### 18.5 "Nasıl bozulur?" (kod turunun testleri buradan)
+Sıra (bağlı tahsilat kayıttan önce / aynı gün / sonra; fatura kayıttan önce / sonra; aynı gün iki bağlı tahsilat — yazım sırası); sil + yeniden yaz (bağlı tahsilatı sil, aynı tutarla bağsız
+gir); bağ sonradan değişir (Kapatılacak Fatura düzeltmesi, çek bağı değişir / kalkar, fatura iptali bağı düşürür — S160); ters kayıt (Banka'dan Ters Kaydet); karşılıksız (bağlı çek
+döner — UX18); kilit koy / kaldır / ilerlet (kilitli dönemin satırları donmuş; fark B14); iki kişi aynı anda (sınır yazım anında yeniden ölçülür); yarıda kesilme (işlem içi); eski sürüm
+verisi (v2.4.9'un gerçek koduyla şüpheli kaydı OLAN carili kilitli veri — kabul D); yedekten geri yükleme ve Silinenler; yetkisiz kullanıcı (Muhasebe / personel); iki kayıt (hangi kaydın
+kalemi — K-1 (b)); karşılık ayrılmış kayıt (644 kuralı düşümden sonra); Değersiz Alacak hedefli satırı (değişmez); taksit kartı tahsilatı (openedOn — değişmez).
+
+### 18.6 Açık noktalar (kod turunda AYIRT EDİCİ örnekle yeniden üretilecek; üretilirse KULLANICIYA SORULUR — ders 43)
+1. Fatura peşini (15.10.2026 kararı: 120). Peşin anında yeni faturanın kuyruktaki şüpheli payı yalnız M13'ün ikinci geçişiyle olur; net görünümde 120 ≥ 0 iken bu pay hesapla 0 çıkıyor
+   (ikinci geçiş önce daha erken vadeli, kayıttan sonraki kalemleri doldurur) → bu turda ayırt edici örnek KURULAMADI (DOĞRULANMADI). Avanslı (120 < 0) caride üretilirse sorulur.
+2. Avanslı caride (bağlı evrakın fazlası 120'ye, S25 (b)) kuyruğun şüpheli toplamı ile 128'in ayrışıp ayrışmadığı ve h'nin okunuşu — DOĞRULANMADI.
+
+### 18.7 Değişen kodu okuyanlar (ders 10; tarama `doubtfulSkipOf|doubtfulCredits|doubtfulState|allocateDoubtful|applyDoubtfulToJournal|doubtfulExpected|doubtfulOpenByAccount|doubtfulSummary|headroom|allocatedMinor`)
+Sunucu: lib/bank/doubtful.mjs, lib/doubtful-gl.mjs, lib/general-ledger.mjs, lib/integrity-scope.mjs, lib/integrity.mjs, routes/accounts.mjs, routes/invoices.mjs, routes/ledger.mjs (+ donmuş kural
+kopyası lib/ledger-rule-249/** — DEĞİŞMEZ). Testler (35; `doubtful-normal-exceeds|doubtfulSkip|/doubtful` dahil): banka-230-supheli*, supheli-230-*, supheli-240-k4-iptal, supheli-ileti-b8-250,
+cari-hareket-249, defter-243-raporlar, defter-kaynak-iz-250, ekstre-ayrinti-245, hesap-plani-sinif-250, kapama-ks7-245, kapama-tek-gecis-245, kasa-acilis-once-250 (+ mutasyon), kilit-izi-alanlar-250,
+kural-farki-duzeltme-250, mobil-yazma-247, s160-*, tyk-api-250, tyk-birlesik8-iade-250, tyk-onbellek-250, tyk-tur2a-250, ux18-cek-fatura-244, vade-takip-soz-b7-250, guvenilirlik/m30-olgular,
+mutabakat/motor, e2e/senaryo-supheli-230. Beklentisi bilerek değişecek olası testler (G3; kod turunda okunarak doğrulanacak): 15.10 kararının "bağlı tahsilat 120" vakaları, bağlı evrakın 128 vakaları.
+
+### 18.8 Hız etkisi (ders 47, 53 (a); karar sonrası ölçülecek)
+Şüpheli kaydı OLMAYAN caride ek iş: `doubtfulUsed` (tek LIMIT 1) — sıfıra yakın. Şüpheli carisinde: bağlı alacak başına bir kesilmiş kuyruk kurulumu (carinin satır sayısı kadar); toplu
+yollar (Yevmiye, Mizan, Defter Mutabakatı, Mutabakat Testi, cari listesi, Anlık Durum) yalnız şüpheli carileri için. Ölçüm: temiz 100 bin satır + şüpheli carili kopya, önce / sonra.
