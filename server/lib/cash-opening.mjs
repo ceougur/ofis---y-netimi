@@ -238,7 +238,7 @@ export function restoringCash(store, fn, { expected = null } = {}) {
   const before = outer ? keysBeforeOpening(store) : null;
   const settle = () => {
     if (!outer || !before) return;
-    const after = keysBeforeOpening(store);
+    const after = keysBeforeOpening(store, { signed: Boolean(expected) });
     const added = after ? [...after.keys()].filter(key => !before.has(key)) : [];
     const explains = expected ? added.filter(key => expected.get(key) === after.get(key)) : added;
     if (!explains.length) return;
@@ -262,14 +262,15 @@ export function restoringCash(store, fn, { expected = null } = {}) {
  * Uyarı kümesi (cashBeforeOpening ile aynı tanım: Kasa açılışından önce tarihli görünür nakit hareketlerinin kimlikleri; açılış yoksa boş). Okunamazsa null (eski şema):
  * restoringCash ölçemez — o geri yükleme açıklama katmaz (taramanın bir sonraki karşılaştırması yine çalışır).
  */
-function keysBeforeOpening(store) {
+// signed: imza (tarih|kuruş) yalnız özetle karşılaştırılacaksa kurulur (hız kabulü: geri yüklemede gereksiz dizgi kurulmasın).
+function keysBeforeOpening(store, { signed = false } = {}) {
   try {
-    // Hız (ders 47, 53): yalnız kimlik + imza — örnek metni / kaynak adı kurulmaz (geri yükleme başına iki kez; 18.651 açılış öncesi satırda ölçüldü).
+    // Hız (ders 47, 53): yalnız kimlik (+ istenirse imza) — örnek metni / kaynak adı kurulmaz (geri yükleme başına iki kez; 18.651 açılış öncesi satırda ölçüldü).
     const opening = cashOpeningDate(store);
     const keys = new Map();
     if (!opening) return keys;
     const lines = createMoneyLines(store);
-    for (const line of lines.lines({ ways: ["cash"], before: opening, light: true })) keys.set(noticeKeyOf(lines, line), signatureOf(line));
+    for (const line of lines.lines({ ways: ["cash"], before: opening, light: true })) keys.set(noticeKeyOf(lines, line), signed ? signatureOf(line) : true);
     return keys;
   } catch {
     return null;

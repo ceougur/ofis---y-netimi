@@ -199,6 +199,18 @@ describe("Birleşik tur 8 — İş 1: kartın göstergeleri yer tablosunun HER y
     assert.deepEqual(sameAsWindow(seen, { open: false }), []);
   });
 
+  it("komşu 5 — VADESİ BUGÜN olan taksit geciken sayılmaz (Cari Listesi kısa kuyruk görünümü pencereyle aynı gün kuralı): kart 900, ilk vade bir ay önce, bağsız 300 ⇒ 1. taksit ödendi, 2. taksit bugün, N geciken 0", async () => {
+    const acc = await h.account("Vadesi Bugün");
+    const firstDue = `${TODAY.slice(0, 5)}${String(Number(TODAY.slice(5, 7)) - 1).padStart(2, "0")}${TODAY.slice(7)}`;
+    const plan = await h.newCard(acc, 900, 3, { firstDue });
+    await h.entry(acc, { kind: "in", amount: "300", date: day(-5) });
+    const seen = await everywhere(acc, plan.id, null);
+    const w = seen.out["1 kart penceresi"];
+    assert.deepEqual([seen.win.totals.paid, w.overdueCount || 0, w.next, w.nextDue, w.items[1][2]], [300, 0, 2, TODAY, "today"], "kart penceresi: 2. taksit bugün, geciken yok");
+    assert.equal(seen.out["12 Cari Listesi"].overdueCount, 0, "Cari Listesi: vadesi bugün olan taksit geciken sayılmaz");
+    assert.deepEqual(sameAsWindow(seen), []);
+  });
+
   it("mobil uçlar yer tablosundaki uçlara gider (17: aynı sayılar) — cari listesi, cari kartı, taksit özeti", () => {
     const url = (pathname, query = "") => resolveMobile("GET", pathname, new URLSearchParams(query)).url;
     assert.match(url("/api/mobil/accounts"), /^\/api\/workspace\/accounts(\?|$)/);
@@ -252,7 +264,9 @@ describe("Birleşik tur 8 — İş 1: kart göstergelerinin yer tablosu kaynakla
       assert.ok(plans.slice(start, start + 3200).includes("withQueue("), `${name}: kuyruk görünümü`);
     }
     const sums = plans.slice(plans.indexOf("function summariesByAccount("), plans.indexOf("function summariesByAccount(") + 3200);
-    assert.ok(sums.includes("withQueue("), "summariesByAccount (Cari Listesi): kuyruk görünümü (view)");
+    assert.ok(sums.includes("queueBrief("), "summariesByAccount (Cari Listesi): kuyruk görünümü (view — queueBrief)");
+    const brief = plans.slice(plans.indexOf("function queueBrief("), plans.indexOf("function queueBrief(") + 1400);
+    assert.ok(brief.includes("installments.get(plan.id)") && brief.includes("Math.min(item.amount, row ? row.remaining : 0)"), "queueBrief withQueue'nun taksit kalanı kuralıyla");
   });
   it("routes/accounts.mjs: cari kartının taksit özeti queueSummaryOf (durum + sıradaki + Tahsil Edilen / Kalan), Cari Listesi kuyruğu summariesByAccount'a verir", () => {
     const text = read("server/routes/accounts.mjs");

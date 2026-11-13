@@ -1589,6 +1589,25 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
 
   // Cari (v2.0.6): carilerin taksit özetleri tek geçişte (liste ve bakiye için) ve bir carinin kartları ayrıntılı.
   // accountIds (v2.1.0, §3.11): yalnız bu carilerin kartları (mutabakat kapısı dokunulan carileri denetler).
+  // Birleşik tur 8 (S142 = A; hız kabulü — Cari Listesi her kartta tam withQueue ile %20–40 yavaşlıyordu): Cari Listesi satırının ihtiyacı olan kuyruk görünümü yalnız sıradaki
+  // taksit ve geciken taksit sayısı — withQueue'nun AYNI kuralı (taksit kalanı = min(tutar, kuyruk kalanı); durum gün sayısından; sıradaki = kalanı olan ilk taksit). Kapatılmış
+  // ya da kuyruğu olmayan kartta null (satır kartın kendi hesabında). Eşdeğerlik: test/tyk-birlesik8-ekranlar-250 (Cari Listesi = kart penceresi).
+  function queueBrief(plan, ledger, all) {
+    const map = plan.accountId && all && plan.status !== "closed" ? all.get(plan.accountId)?.installments.get(plan.id) : null;
+    if (!map) return null;
+    let next = null;
+    let overdueCount = 0;
+    for (const item of ledger.items) {
+      const row = map.get(item.id);
+      const remaining = roundMoney(Math.min(item.amount, row ? row.remaining : 0));
+      if (remaining <= 0.005) continue;
+      const days = item.days;
+      const state = days < 0 ? "overdue" : days === 0 ? "today" : days <= 7 ? "upcoming" : "open";
+      if (state === "overdue") overdueCount += 1;
+      if (!next) next = { id: item.id, seq: item.seq, dueDate: item.dueDate, remaining, days, state };
+    }
+    return { next, overdueCount };
+  }
   // queue (birleşik tur 8, S142 = A): bütün carilerin kuyruğu (kullanıcı isteğindeki Cari Listesi) — verilirse özete kart penceresinin durumu / sıradaki taksiti / geciken taksit
   // sayısı `view` alanında eklenir; totals / state / next kartın KENDİ hesabında kalır (bakiye ve Mutabakat Testi onları okur).
   function summariesByAccount(accountIds = null, { queue = null } = {}) {
@@ -1610,9 +1629,9 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     const day = today();
     for (const plan of plans) {
       const ledger = allocate(plan, items.get(plan.id) || [], entries.get(plan.id) || [], { today: day });
-      const view = queue ? withQueue(plan, ledger, queue, day) : ledger;
+      const view = queue ? queueBrief(plan, ledger, queue) : null;
       if (!out.has(plan.accountId)) out.set(plan.accountId, []);
-      out.get(plan.accountId).push({ id: plan.id, name: plan.name, total: plan.total, coversBalance: Boolean(plan.coversBalance), status: plan.status, state: ledger.state, totals: ledger.totals, next: ledger.next, itemCount: ledger.items.length, ...(view !== ledger ? { view: { state: view.state, next: view.next, overdueCount: view.totals.overdueCount || 0 } } : {}) });
+      out.get(plan.accountId).push({ id: plan.id, name: plan.name, total: plan.total, coversBalance: Boolean(plan.coversBalance), status: plan.status, state: ledger.state, totals: ledger.totals, next: ledger.next, itemCount: ledger.items.length, ...(view ? { view } : {}) });
     }
     return out;
   }
