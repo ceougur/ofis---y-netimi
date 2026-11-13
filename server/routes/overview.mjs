@@ -669,7 +669,14 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
       if (foldText(`${item.party || ""} ${item.label || ""} ${item.detail || ""} ${item.accountName || ""}`).includes(needle)) return true;
       return digits.length >= 3 && String(item.phone || "").replace(/\D/g, "").includes(digits);
     };
-    const result = dueList({ today: day, from, to, late, items: items.filter(matches) });
+    // Birleşik tur 8 (S150 = A — KULLANICI KARARI 13.11 06:12 AYNEN: "Vade Takip'in 'Gecikmiş' hazır aralığı durumu Gecikmiş olan HER kalemi gösterir (sözü bugün ya da ileride
+    // olan gecikmiş borç dahil; 'Gecikmiş Tahsilat' göstergesi her aralıkta aynı sayı)"): hazır 'Gecikmiş' aralığında (elle tarih verilmediyse) üst sınır kalemin TARİHİ değil
+    // DURUMUDUR — bugünden önceki her kalem (bugünkü gibi) + durumu Gecikmiş olan kalem (sözlü borç söz gününde durur — birleşik tur 7, S52 / S67 / S69). Elle girilen aralık ve
+    // öbür hazır aralıklar değişmez; başlıktaki aralık metni bugünkü gibi (… – dün).
+    const lateOnly = preset === "late" && !text(params.get("from")) && !text(params.get("to"));
+    const result = lateOnly
+      ? { ...dueList({ today: day, from, to: "", late, items: items.filter(matches), keep: row => row.date < day || row.state === "overdue" }), to }
+      : dueList({ today: day, from, to, late, items: items.filter(matches) });
     if (needle) dormant = dormant.filter(item => foldText(`${item.party} ${item.detail}`).includes(needle));
     // 2.3.0 İz 1.6 (plan §3.11b/5 "hatırlatmalar şüpheli tutarı ayrı gösterir"): vade kalemlerinin DIŞINDA, açık şüpheli alacak toplamı
     // (bütün cariler; tarih süzgecine girmez — şüpheli alacağın vadesi yoktur). Yalnız tahsil yönü; Ödenecek süzgecinde 0.
