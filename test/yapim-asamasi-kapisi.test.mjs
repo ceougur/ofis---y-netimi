@@ -74,6 +74,18 @@ describe("YAPIM AŞAMASI kapısı (yapimAsamasiGate)", () => {
     assert.deepEqual(JSON.parse(r.stdout.trim().split(/\r?\n/).at(-1)), { ok: burada.ok, sayi: burada.sayi, problems: burada.problems });
     assert.notEqual(burada.sayi, null, "depodaki liste okunabilmeli (okunamadı iletisi değil)");
   });
+  // Birleşik tur 7 İş 5 (dar kontrol DK-B6 DÜŞÜK-2, yaşayan mutant M8 `commit = false`): tools/release.mjs kapıyı bağımsız değişkensiz çağırır (`yapimAsamasiGate()`) —
+  // varsayılan çağrı da listeyi COMMIT'le karşılaştırmalı (skip-worktree atlatması yalnız açık `commit: true` ile kapanmış olmasın).
+  it("varsayılan çağrı (release.mjs'in yolu: yol ve commit verilmez) listeyi commit'le karşılaştırır; başka yolda karşılaştırmaz", () => {
+    assert.ok(readFileSync(path.join(ROOT, "tools", "release.mjs"), "utf8").split(/\r?\n/).some(satir => /yapimAsamasiGate\(\)/.test(satir)), "release.mjs kapıyı varsayılanla çağırıyor (ön koşul)");
+    const baska = JSON.stringify({ aciklama: "commit'teki", kayitlar: Array.from({ length: 7 }, (_, i) => kayit(`k${i}:mizan:519`, "M8")) }, null, 1);
+    const sahte = (...args) => ((args[0] === "--no-replace-objects" ? args.slice(1) : args)[0] === "show" ? baska : null);
+    const varsayilan = yapimAsamasiGate(undefined, { gitFn: sahte });
+    const ayniYol = yapimAsamasiGate(YAPIM_ASAMASI_YOLU, { gitFn: sahte });
+    const baskaYol = yapimAsamasiGate(yaz("baska.json", JSON.stringify({ kayitlar: [] })), { gitFn: sahte });
+    const farkli = r => r.problems.some(p => /çalışma ağacında commit'tekinden FARKLI \(commit'te 7,/.test(p));
+    assert.deepEqual({ varsayilan: farkli(varsayilan), ayniYol: farkli(ayniYol), baskaYol: [baskaYol.ok, farkli(baskaYol)] }, { varsayilan: true, ayniYol: true, baskaYol: [true, false] });
+  });
   it("kapı cari kâhininin okuduğu dosyayı denetler (aynı yol)", () => {
     assert.equal(YAPIM_ASAMASI_YOLU, path.join(ROOT, "test", "bagimsiz", "cari", "YAPIM-ASAMASI.json"));
     const kos = readFileSync(path.join(ROOT, "test", "bagimsiz", "cari", "kos.mjs"), "utf8");

@@ -268,3 +268,30 @@ describe("Birleşik tur 7 İş 1 — §16.1-12 (b): geri yükleme iş parçacı�
     assert.ok(met >= 1, `ön koşul hiçbir denemede oluşmadı: ${JSON.stringify(trials.map(({ k, delay, base, inSnapshot, restoredFirst }) => ({ k, delay, base, inSnapshot, restoredFirst })))}`);
   });
 });
+
+// Birleşik tur 7 İş 5 (dar kontrol DK-B6 DÜŞÜK-2, yaşayan mutant M11 `every` → `some`): aynı taramada SAPMA (dış yazımın kendi İşlem Başlığı sapması) ve uyarı artışı
+// birlikte bulununca Mutabakat Günlüğü'nde olay adı "Taramada Bulunan Sapma"dır (sapma uyarının adıyla örtülmez); yalnız uyarı artışında "Taramada Bulunan Uyarı Artışı".
+describe("Birleşik tur 7 İş 5 — M11: Mutabakat Günlüğü'nde sapma + uyarı artışını birlikte taşıyan kayıt 'Sapma' adıyla", () => {
+  it("dışarıdan aynı kimlikle yeniden yazılan Kasa satırı: tek tarama kaydı iki bulgu (İşlem Başlığı sapması + uyarı artışı) → 'Taramada Bulunan Sapma'; yalnız dış tarih taşıma → 'Taramada Bulunan Uyarı Artışı'", async t => {
+    const w = await world(t);
+    await w.restore(w.ids.early[2]);
+    await w.scan("inline");
+    const row = outside(w.store(), other => other.prepare("SELECT * FROM cash_entries WHERE id = ?").get(w.ids.early[2]));
+    await must("sil e2", w.api.del(`/api/workspace/cash/${w.ids.early[2]}`));
+    await w.scan("inline");
+    outside(w.store(), other => {
+      const columns = Object.keys(row);
+      other.prepare(`INSERT INTO cash_entries (${columns.join(", ")}) VALUES (${columns.map(() => "?").join(", ")})`).run(...columns.map(column => row[column]));
+    });
+    await w.scan("inline");
+    moveOutside(w.store(), w.ids.d2, MOVED);
+    await w.scan("inline");
+    const journal = await must("Mutabakat Günlüğü", w.api.get("/api/workspace/report-center/mutabakat-gunlugu"));
+    const growth = (journal.rows || []).filter(item => /Kasa açılışından önce tarihli hareket uyarısı arttı/.test(String(item[3])));
+    const seen = growth.map(item => ({ olay: item[1], sapmaDa: /İşlem Başlığı/.test(String(item[3])) })).sort((a, b) => (a.olay < b.olay ? -1 : 1));
+    assert.deepEqual(seen, [
+      { olay: "Taramada Bulunan Sapma", sapmaDa: true },
+      { olay: "Taramada Bulunan Uyarı Artışı", sapmaDa: false },
+    ]);
+  });
+});

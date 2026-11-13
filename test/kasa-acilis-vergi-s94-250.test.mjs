@@ -75,6 +75,15 @@ describe("S94 = A — Kasa açılışından önce tarihli Vergi Ödemesi: düzel
     assert.deepEqual({ ayniTarih: [same.status, same.code], acilisGunu: day.status, uyari: notice?.count ?? 0, satirlar: taxRows().map(row => [row.date, row.amount]) }, { ayniTarih: [409, "cash-before-opening"], acilisGunu: 200, uyari: 0, satirlar: [[LATER, 9], [OPEN, 8]] });
   });
 
+  // Birleşik tur 7 İş 5 (dar kontrol DK-B6 DÜŞÜK-2, yaşayan mutant M9 `<` → `<=`): açılış GÜNÜ tarihli Vergi Ödemesi açılıştan önce DEĞİLDİR (açılış günün başı) — ileti
+  // çıkış yolu cümlesini taşımaz, yanıtta açılış tarihi yok.
+  it("açılış GÜNÜ tarihli Vergi Ödemesi Kasa'dan düzeltilmek istenince: 409 cash-tax-payment, ileti değişmedi (çıkış yolu cümlesi yok — açılış günü 'önce' sayılmaz)", async () => {
+    const onDay = taxRows().find(row => row.date === OPEN);
+    assert.ok(onDay, "ön koşul: açılış günü tarihli Vergi Ödemesi");
+    const res = await api.put(`/api/workspace/cash/${onDay.id}`, { kind: "out", amount: "9", date: OPEN, description: "x", ...FORCE });
+    assert.deepEqual({ status: res.status, code: res.code, error: res.error, openingDate: res.data?.openingDate }, { status: 409, code: "cash-tax-payment", error: OLD_TEXT, openingDate: undefined });
+  });
+
   it("iletideki yol 2: yönetici Kasa açılışını öne alır (04.03) → açılıştan önceki güne (05.03) Vergi Ödemesi 200", async () => {
     await must("açılışı öne al", api.post("/api/workspace/cash/opening", { amount: "5.000", date: "2026-03-04" }));
     const res = await payTax(EARLY, "3");
