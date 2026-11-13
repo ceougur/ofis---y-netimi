@@ -1,0 +1,20 @@
+{
+ "SK-35: borç 1.000 (−60) → şüpheli 900 (−30) → BUGÜN tahsilat 1.100": {
+  "supheli": "200",
+  "kayit": "200",
+  "bakiye": -100,
+  "acikSupheli": 0
+ },
+ "komşu: borç 1.000 → şüpheli 900 (−30) → BUGÜN tahsilat 1.000 (tam)": {
+  "supheli": "200",
+  "kayit": "200",
+  "bakiye": 0,
+  "acikSupheli": 0
+ },
+ "komşu: borç 1.000 → şüpheli 900 (−30) → BUGÜN tahsilat 300": {
+  "supheli": "200",
+  "kayit": "200",
+  "bakiye": 700,
+  "acikSupheli": 60000
+ }
+}

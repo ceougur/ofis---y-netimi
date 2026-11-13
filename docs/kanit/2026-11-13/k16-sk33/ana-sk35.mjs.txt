@@ -1,0 +1,30 @@
+// ANA OTURUM (dar kontrol betiği değil): cari kâhini bakımı 16'nın SK-35 sorusu + X9 okuması — program BUGÜN ne yapıyor?
+import { boot, day, print } from "./k.mjs";
+const h = await boot({ now: { time: "2026-10-20T12:00:00+03:00", fixed: false } });
+const tick = () => h.server.clock.advance({ seconds: 30 });
+const { api } = h;
+const out = {};
+const st = r => `${r.status}${r.status >= 400 ? " " + String(r.data?.error?.message || r.data?.error || "").slice(0, 150) : ""}`;
+const card = async a => { const c = (await api.get(`/api/workspace/accounts/${a.id}`)).data; return { bakiye: c?.totals?.balance, acikSupheli: (c?.doubtful?.openMinor ?? null) }; };
+const take = (a, amount, date) => api.post(`/api/workspace/accounts/${a.id}/doubtful`, { amount, date, reason: "lawsuit", note: "ana oturum" });
+const ent = (a, body) => api.post(`/api/workspace/accounts/${a.id}/entries`, { method: "cash", cashForce: true, similarOk: true, ...body });
+async function run(ad, fn) { try { out[ad] = await fn(); } catch (e) { out[ad] = { HATA: String(e.message).slice(0, 300) }; } tick(); }
+try {
+  await run("SK-35: borç 1.000 (−60) → şüpheli 900 (−30) → BUGÜN tahsilat 1.100", async () => {
+    const a = await h.account("SK35 Asan"); await h.entry(a, { kind: "debt", amount: "1000", date: day(-60) }); tick();
+    const t = await take(a, 900, day(-30)); tick(); const r = await ent(a, { kind: "in", amount: "1100", date: day(0) });
+    return { supheli: st(t), kayit: st(r), ...(await card(a)) };
+  });
+  await run("komşu: borç 1.000 → şüpheli 900 (−30) → BUGÜN tahsilat 1.000 (tam)", async () => {
+    const a = await h.account("SK35 Tam"); await h.entry(a, { kind: "debt", amount: "1000", date: day(-60) }); tick();
+    const t = await take(a, 900, day(-30)); tick(); const r = await ent(a, { kind: "in", amount: "1000", date: day(0) });
+    return { supheli: st(t), kayit: st(r), ...(await card(a)) };
+  });
+  await run("komşu: borç 1.000 → şüpheli 900 (−30) → BUGÜN tahsilat 300", async () => {
+    const a = await h.account("SK35 Kismi"); await h.entry(a, { kind: "debt", amount: "1000", date: day(-60) }); tick();
+    const t = await take(a, 900, day(-30)); tick(); const r = await ent(a, { kind: "in", amount: "300", date: day(0) });
+    return { supheli: st(t), kayit: st(r), ...(await card(a)) };
+  });
+} catch (e) { out.HATA = String(e.stack || e.message).slice(0, 400); }
+await h.server.close();
+print(out);

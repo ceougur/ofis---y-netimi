@@ -1,0 +1,32 @@
+{
+  "ad": "k16-kahin-muhasebe-model-UTC",
+  "komut": "python3 test/bagimsiz/muhasebe/test_model.py",
+  "commit": "df0885f51fb3fe205459d150ec1ca22852c6b6b7",
+  "dal": "sinama-k16",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T11:07:37.687Z",
+  "sure_sn": 19.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 187,
+    "gecen": 187,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../k16-aday-kanit/2026-11-13/k16-kahin-muhasebe-model-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8y-ag",
+  "ham_cikti_sha256": "3c51df1a90d7ae324c5971dfaf07423b8084935a6da929085f98885f79ba484a",
+  "ham_cikti_bayt": 340
+}

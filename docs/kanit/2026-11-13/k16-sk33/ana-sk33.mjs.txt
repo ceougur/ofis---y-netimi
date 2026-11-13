@@ -1,0 +1,66 @@
+// ANA OTURUM (dar kontrol betiği değil): cari kâhini bakımı 15'in SK-33 / SK-34 soruları — program BUGÜN ne yapıyor?
+// Her alt durum ayrı caride. Şüpheliye alma tarihi −30; önceye tarihli kayıt −40.
+import { boot, day, print } from "./k.mjs";
+const h = await boot({ now: { time: "2026-10-20T12:00:00+03:00", fixed: false } });
+const tick = () => h.server.clock.advance({ seconds: 30 });
+const { api } = h;
+const out = {};
+const st = r => `${r.status}${r.status >= 400 ? " " + String(r.data?.error?.message || r.data?.error || "").slice(0, 150) : ""}`;
+const bal = async a => (await api.get(`/api/workspace/accounts/${a.id}`)).data?.totals?.balance;
+const take = (a, amount, date) => api.post(`/api/workspace/accounts/${a.id}/doubtful`, { amount, date, reason: "lawsuit", note: "ana oturum" });
+const ent = (a, body) => api.post(`/api/workspace/accounts/${a.id}/entries`, { method: "cash", cashForce: true, similarOk: true, ...body });
+async function run(ad, fn) { try { out[ad] = await fn(); } catch (e) { out[ad] = { HATA: String(e.message).slice(0, 300) }; } tick(); }
+try {
+  await run("S145 örneği: borç 1.000 → şüpheli 900 (−30) → TAHSİLAT 300 (−40)", async () => {
+    const a = await h.account("P0 Tahsilat"); await h.entry(a, { kind: "debt", amount: "1000", date: day(-60) }); tick();
+    const t = await take(a, 900, day(-30)); tick(); const r = await ent(a, { kind: "in", amount: "300", date: day(-40) });
+    return { supheli: st(t), kayit: st(r), bakiye: await bal(a) };
+  });
+  await run("SK-33 çek: borç 1.000 → şüpheli 900 (−30) → ÇEK 300 (düzenleme −40)", async () => {
+    const a = await h.account("SK33 Cek"); await h.entry(a, { kind: "debt", amount: "1000", date: day(-60) }); tick();
+    const t = await take(a, 900, day(-30)); tick();
+    const r = await api.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", amount: "300", issueDate: day(-40), dueDate: day(20), serialNo: "SK33-1", accountId: a.id, bank: "Akbank", drawer: "Keşideci" });
+    return { supheli: st(t), kayit: st(r), bakiye: await bal(a) };
+  });
+  await run("SK-33 Alacak Yaz: borç 1.000 → şüpheli 900 (−30) → ALACAK 300 (−40)", async () => {
+    const a = await h.account("SK33 Alacak"); await h.entry(a, { kind: "debt", amount: "1000", date: day(-60) }); tick();
+    const t = await take(a, 900, day(-30)); tick(); const r = await ent(a, { kind: "credit", amount: "300", date: day(-40), note: "İskonto" });
+    return { supheli: st(t), kayit: st(r), bakiye: await bal(a) };
+  });
+  await run("SK-33 borç silme: borç 700 (−60) + borç 300 (−50) → şüpheli 900 (−30) → 300'lük borcu SİL", async () => {
+    const a = await h.account("SK33 Silme"); await h.entry(a, { kind: "debt", amount: "700", date: day(-60) }); tick();
+    const b = await h.entry(a, { kind: "debt", amount: "300", date: day(-50) }); tick();
+    const t = await take(a, 900, day(-30)); tick(); const r = await api.del(`/api/workspace/accounts/${a.id}/entries/${b.id}`);
+    return { supheli: st(t), kayit: st(r), bakiye: await bal(a) };
+  });
+  await run("SK-34 (a) aşım önceden var: borç 500 (−60) + borç 500 (−20) → şüpheli 900 (−30) → tahsilat 50 (−40)", async () => {
+    const a = await h.account("SK34a"); await h.entry(a, { kind: "debt", amount: "500", date: day(-60) }); tick(); await h.entry(a, { kind: "debt", amount: "500", date: day(-20) }); tick();
+    const t = await take(a, 900, day(-30)); tick(); const r = await ent(a, { kind: "in", amount: "50", date: day(-40) });
+    return { supheli: st(t), kayit: st(r), bakiye: await bal(a) };
+  });
+  await run("SK-34 (b) aynı gün borç: borç 700 (−60) + borç 500 (−30) → şüpheli 900 (−30) → tahsilat 50 (−40)", async () => {
+    const a = await h.account("SK34b"); await h.entry(a, { kind: "debt", amount: "700", date: day(-60) }); tick(); await h.entry(a, { kind: "debt", amount: "500", date: day(-30) }); tick();
+    const t = await take(a, 900, day(-30)); tick(); const r = await ent(a, { kind: "in", amount: "50", date: day(-40) });
+    return { supheli: st(t), kayit: st(r), bakiye: await bal(a) };
+  });
+  await run("S145 komşusu: borç 1.000 → şüpheli 900 (−30) → tahsilat 100 (−40; borç yetiyor)", async () => {
+    const a = await h.account("P1 Yetiyor"); await h.entry(a, { kind: "debt", amount: "1000", date: day(-60) }); tick();
+    const t = await take(a, 900, day(-30)); tick(); const r = await ent(a, { kind: "in", amount: "100", date: day(-40) });
+    return { supheli: st(t), kayit: st(r), bakiye: await bal(a) };
+  });
+  await run("ÖLÇÜ: borç 1.000 (−60) → şüpheli 900 (−30) → yeni borç 500 (−10) → tahsilat 300 (−40)", async () => {
+    const a = await h.account("Olcu Sonradan Borc"); await h.entry(a, { kind: "debt", amount: "1000", date: day(-60) }); tick();
+    const t = await take(a, 900, day(-30)); tick(); await h.entry(a, { kind: "debt", amount: "500", date: day(-10) }); tick();
+    const r = await ent(a, { kind: "in", amount: "300", date: day(-40) });
+    const card = (await api.get(`/api/workspace/accounts/${a.id}`)).data;
+    return { supheli: st(t), kayit: st(r), bakiye: card?.totals?.balance, acikSupheli: (card?.doubtful?.openMinor ?? null) };
+  });
+  await run("ÖLÇÜ 2: borç 500 (−60) → şüpheli 900 (−30; o gün borç 500) — borç 500 (−20) SONRA girilirse şüpheliye alma", async () => {
+    const a = await h.account("Olcu Alma"); await h.entry(a, { kind: "debt", amount: "500", date: day(-60) }); tick();
+    const t0 = await take(a, 900, day(-30)); tick(); await h.entry(a, { kind: "debt", amount: "500", date: day(-20) }); tick();
+    const t1 = await take(a, 900, day(-30));
+    return { borc500ikenAlma900: st(t0), borc1000OlduktanSonraAlma900: st(t1), bakiye: await bal(a) };
+  });
+} catch (e) { out.HATA = String(e.stack || e.message).slice(0, 400); }
+await h.server.close();
+print(out);

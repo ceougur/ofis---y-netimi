@@ -1,0 +1,60 @@
+#!/bin/bash
+# Ana oturum: CARİ KÂHİNİ BAKIMI 15 + 16 PAKETİ — ADAY (kâhin ağacımda, dal sinama-k16 = çalışma dalı ucu + kâhin 16 dalı).
+# Liste yeniden üretimi + AYRIŞTIRMA (paket etiketleri) + mobil yazma kâhininin kabul dosyası; commit; kâhin öz testleri iki TZ; ci.yml'deki BÜTÜN kâhin adımları; dört kapı testi.
+# Hata durdurmaz (kurulum adımları dışında); her adımın çıkışı yazılır.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=$S/kahin8y-ag; K=$S/k16-aday-kanit; L=test/bagimsiz/cari/YAPIM-ASAMASI.json; MK=test/bagimsiz/mobil-yazma
+export KANIT_DIR=$K HUKUK_LICENSE_URL=http://127.0.0.1:9 PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194
+G="git -c user.name=ana -c user.email=ana@yerel"
+mkdir -p $K || exit 1
+cd $W || exit 1
+[ -z "$(git status -s | grep -v node_modules)" ] || { echo "kâhin ağacı temiz değil"; git status -s | head -5; exit 1; }
+git checkout -q -B sinama-k16 claude/epic-thompson-w0lc2l || exit 1
+$G merge -q --no-ff --no-verify -m "SINAMA: + cari kâhini bakımı 15 + 16 (gönderilmez)" worktree-agent-a24a9b176b2cdfc4a > $K/merge.out 2>&1 || { echo "birleşim çakıştı"; git status -s | grep -E '^(UU|AA)' | head; exit 1; }
+[ -e node_modules ] || ln -s /home/user/ofis---y-netimi/node_modules node_modules
+echo "başladı $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg) · ağaç $(git rev-parse --short HEAD) · ana dalla ürün farkı (kâhin + kanıt dışında BOŞ olmalı): [$(git diff claude/epic-thompson-w0lc2l --name-only -- . ':!docs' ':!test/bagimsiz/cari' | tr '\n' ' ')]"
+cp $L $K/liste-oncesi.json || exit 1
+TZ=UTC timeout 3000 node test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz > $K/liste-uret.out 2>&1; echo "liste üretimi çıkış $?"; grep -E "YAZILDI|ESKİ LİSTEYLE" $K/liste-uret.out | cut -c1-260
+python3 -I - $L <<'PY' || exit 1
+import json, sys
+from collections import Counter
+p = sys.argv[1]; d = json.load(open(p, encoding='utf-8'))
+n = 0
+for e in d['kayitlar']:
+    if e.get('paket') != 'AYRIŞTIRILMADI': continue
+    s = e['senaryo']
+    if s.startswith('d43-'):
+        e['paket'] = 'eşleme'; e['not'] = "kâhin dili ↔ koşucu: karttan kalanı AŞAN tahsilat adımı — program yalnız 'Fazlasını Avans Yaz' seçeneğiyle kabul ediyor (S118 = B), kâhinin adımında ve koşucuda seçenek yok; adım reddedilince sonraki sayılar ayrışıyor. Ürün hatası değil (ana oturum 13.11 ön kontrol; KAYIT). Sıradaki cari kâhini bakımı (S154 = B, S159) + koşucu eşlemesi."
+    elif s.startswith('d42-') or s.startswith('d44-'):
+        e['paket'] = 'Ç5-B tur 2'; e['not'] = "birleşik tur 8 (Ç5-B'nin son küçük turu): S151 = B / S158 = A / S140 = A — iadeli kartta 'Tahsil Edilen' / 'Ödenen' / kart toplamı / gecikmiş (ana oturum 13.11 ön kontrol; KAYIT)."
+    else:
+        raise SystemExit(f'ayrıştırılamayan kayıt: {s} {e["anahtar"]}')
+    n += 1
+if isinstance(d.get('paketler'), dict): d['paketler'] = dict(Counter(e['paket'] for e in d['kayitlar']))
+ham = open(p, encoding='utf-8').read()
+json.dump(d, open(p, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)  # üretici JSON.stringify(dosya, null, 1) yazar — aynı biçim (13.11: indent 2 ikinci üretimde yalnız biçim farkı çıkardı)
+if ham.endswith('\n'): open(p, 'a', encoding='utf-8').write('\n')
+print(f"ayrıştırılan {n} · toplam {len(d['kayitlar'])} · paketler {dict(Counter(e['paket'] for e in d['kayitlar']))} · 'paketler' alanı türü {type(d.get('paketler')).__name__}")
+PY
+cp $MK/kabul.json $K/kabul-oncesi.json
+timeout 1800 python3 -I -B $MK/senaryolar.py > $K/kabul-uret.out 2>&1; echo "mobil kabul üretimi çıkış $? :: $(tail -1 $K/kabul-uret.out | cut -c1-120)"
+python3 -I -B docs/kanit/2026-11-13/kahinmobil-s129/arac/kabul-fark.py $K/kabul-oncesi.json $MK/kabul.json > $K/kabul-fark.out 2>&1; echo "kabul farkı çıkış $? :: $(tail -4 $K/kabul-fark.out | cut -c1-200 | tr '\n' '|')"
+git add $L $MK/kabul.json && $G commit -q --no-verify -m "SINAMA: liste (ayrıştırılmış) + mobil kabul dosyası (gönderilmez)"; echo "aday commit $(git rev-parse --short HEAD) · temiz mi: $(git status -s | grep -v node_modules | wc -l)"
+# liste yeniden üretilince etiketler korunuyor mu + kapı testleri
+TZ=UTC timeout 3000 node test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz > $K/liste-uret2.out 2>&1; echo "liste 2. üretim çıkış $? · fark (BOŞ olmalı): [$(git status -s -- $L)] $(grep -E 'ESKİ LİSTEYLE' $K/liste-uret2.out | cut -c1-160)"
+git checkout -q -- $L
+for tz in UTC Europe/Istanbul; do m=${tz//\//-}
+  TZ=$tz timeout 1800 node tools/kanit.mjs kos k16-cari-oz-$m -- python3 -I -B test/bagimsiz/cari/oz-test.py > $K/cari-oz-$m.out 2>&1; echo "cari öz test $tz çıkış $? :: $(grep -E '^\[kanit\]' $K/cari-oz-$m.out | tail -1 | cut -c1-130)"
+  TZ=$tz timeout 1800 node tools/kanit.mjs kos k16-mobil-oz-$m -- python3 -I -B $MK/kahin_test.py > $K/mobil-oz-$m.out 2>&1; echo "mobil öz test $tz çıkış $? :: $(grep -E '^\[kanit\]' $K/mobil-oz-$m.out | tail -1 | cut -c1-130)"
+done
+grep -oE "kanit\.mjs kos kahin-[A-Za-z0-9_-]+ .*$" .github/workflows/ci.yml | sed 's/^kanit\.mjs kos //' > $K/kahin-liste.txt
+echo "ci.yml'deki kâhin adımı sayısı $(wc -l < $K/kahin-liste.txt)"
+while read -r ad komut; do
+  case "$ad" in kahin-cari|kahin-defter) tzs="UTC Europe/Istanbul";; *) tzs="UTC";; esac
+  for tz in $tzs; do m=${tz//\//-}
+    TZ=$tz timeout 3000 node tools/kanit.mjs kos k16-$ad-$m -- $komut > "$K/$ad-$m.out" 2>&1 < /dev/null; c=$?
+    echo "$c $ad $tz :: $(grep -E '^\[kanit\]' "$K/$ad-$m.out" | tail -1 | cut -c1-140) $(grep -E 'ÖZET' "$K/$ad-$m.out" | tail -1 | cut -c1-170)"
+  done
+done < $K/kahin-liste.txt
+timeout 900 node --test test/yapim-asamasi-kapisi.test.mjs test/platform-tasinabilirlik.test.mjs test/kanit-araci.test.mjs test/ci-kapi-listesi.test.mjs > $K/dort-test.out 2>&1; echo "dört kapı testi çıkış $? $(grep -E '^# (tests|pass|fail)' $K/dort-test.out | tr '\n' ' ')"
+echo "bitti $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg) · aday $(git rev-parse --short HEAD) · temiz mi: $(git status -s | grep -v node_modules | wc -l)"
