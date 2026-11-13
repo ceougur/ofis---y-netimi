@@ -2,7 +2,7 @@
  "dil": "destekofis-cari/3",
  "ad": "d41-c5-s136-s139-s145-s148",
  "bugun": "2026-06-15",
- "aciklama": "Bakım 15: S136 A — şüpheliye alınan tutar taksit kalemlerinden (R2 tek taksiti bitirir, R3 aşıp faturaya geçer), taksitli faturanın taksitlerinden (R4) ve verilen avans kaleminden (R5) de kuyruk sırasıyla düşer (kararın örneği d40 Q3); SK-30 (R7 — şüpheliden sonra Taksit Tahsilatı) SUS; S139 A — gecikmiş görünen kalemlerden (V1; kararın örneği d39 N1); S145 A — şüpheli tarihinden önceye tahsilat o tarihte borcu aşırıyorsa RET (S1 kararın örneği, S6 Taksit Tahsilatı), bugün (S2) / aynı gün (S3) / borç yetiyor (S4) / tam eşitlik (S5) kabul; SK-33 (S7 çek) ve SK-34 (a) / (b) (S8 / S9) SUS; S148 A onay (W1)",
+ "aciklama": "Bakım 15: S136 A — şüpheliye alınan tutar taksit kalemlerinden (R2 tek taksiti bitirir, R3 aşıp faturaya geçer), taksitli faturanın taksitlerinden (R4) ve verilen avans kaleminden (R5) de kuyruk sırasıyla düşer (kararın örneği d40 Q3); SK-30 (R7 — şüpheliden sonra Taksit Tahsilatı) SUS; S139 A — gecikmiş görünen kalemlerden (V1; kararın örneği d39 N1); S145 A — şüpheli tarihinden önceye tahsilat o tarihte borcu aşırıyorsa RET (S1 kararın örneği, S6 Taksit Tahsilatı), bugün (S2) / aynı gün (S3) / borç yetiyor (S4) / tam eşitlik (S5) kabul; SK-33 (S7 çek) ve SK-34 (a) / (b) (S8 / S9) SUS; S148 A onay (W1) · bakım 16 (§27): S155 A — S7 (çek) RET, S8 / S9 KABUL (toplam ölçü; SK-33 / SK-34 kalktı); R7 SK-30 → S156 = C",
  "dayanak": "KARARLAR.md §26 (Y15-1 … Y15-6, Y15-9), §25 (Y14-2 … Y14-5), §8 (K6.3, ŞÜPHELİ KALAN K1), §13 C13.4 / C13.5, §16 C16.1 / C16.4, §17 (S96)",
  "elleBeklenen": {
   "k1:cari:R2:bakiye": 100000,
@@ -114,14 +114,19 @@
   "k1:projeksiyon:hareket:w1x": {"amount": 10000, "date": "2026-06-30", "direction": "in"},
   "k1:cari:W1:gecikmis": 10000,
   "k1:takvim:cariToplam:W1": 0,
-  "k1:projeksiyon:cariToplam:W1": 10000
+  "k1:projeksiyon:cariToplam:W1": 10000,
+  "adim:s7e:durum": "ret",
+  "k1:cari:S7:bakiye": 100000,
+  "k1:hareket:s7x:kalan": 100000,
+  "k1:cari:S7:gecikmis": 10000,
+  "adim:s8t:durum": "ok",
+  "k1:cari:S8:bakiye": 95000,
+  "adim:s9t:durum": "ok",
+  "k1:cari:S9:bakiye": 110000
  },
- "elleYok": ["k1:takvim:hareket:r2x", "k1:takvim:fatura:R2F", "k1:takvim:cariToplam:R2", "k1:takvim:hareket:r3x", "k1:takvim:fatura:R3F", "k1:takvim:cariToplam:R3", "k1:cari:R7:gecikmis", "adim:s7e:durum", "k1:cari:S7:bakiye", "k1:hareket:s7x:kalan", "k1:cari:S7:gecikmis", "adim:s8t:durum", "k1:cari:S8:bakiye", "adim:s9t:durum", "k1:cari:S9:bakiye"],
+ "elleYok": ["k1:takvim:hareket:r2x", "k1:takvim:fatura:R2F", "k1:takvim:cariToplam:R2", "k1:takvim:hareket:r3x", "k1:takvim:fatura:R3F", "k1:takvim:cariToplam:R3", "k1:cari:R7:gecikmis"],
  "elleBelirsiz": [
-  ["cari R7 S130 görünümü tanımsız", "SK-30", "KULLANICIYA SORULMALI"],
-  ["adım s7e", "S145", "SK-33"],
-  ["adım s8t", "S145", "SK-34 (a)"],
-  ["adım s9t", "S145", "SK-34 (b)"]
+  ["cari R7 S130 görünümü tanımsız", "SK-30", "BİLİNEN SINIR (kullanıcı kararı S156 = C) S156"]
  ],
  "adimlar": [
   {"id": "cr2", "islem": "cari_ac", "ad": "R2", "isim": "Rıza Taksit Biter", "tarih": "2026-04-01"},

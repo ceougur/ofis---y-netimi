@@ -39,6 +39,9 @@
 15. Bakım 15 (§26; TOPLU — S136 / S139 / S140 / S145 / S151, S148 onay, S137 / S138 / S141 / S143 / S144 / S149 = C): şüpheliye alınan tutar taksitlerden ve verilen avanstan da düşer, şüpheli
    kayıtlı caride gecikmiş görünen kalemlerden (d39 / d40 güncellendi; d41), satış kartı iadeyle kendi satışını taşır ve 'Tahsil Edilen' iadeyi saymaz (d42), şüpheli tarihinden önceye tahsilat
    o tarihte borcu aşırıyorsa RET (d39 N11, d41); BİLİNEN SINIRLAR DEĞER'den SUS'a (d43; d12 F2, d30 KQ1 / KQ3, d34 KE10); mutantlar 286–298 DEĞERLE.
+16. Bakım 16 (§27; S155 A, S158 A, S156 / S157 = C, S154 bilgi): Şüpheli Alacak kuralının ölçüsü TOPLAM borç — türü fark etmez, adımdan sonra borç açık şüpheli tutarın altına düşüyorsa RET
+   (d44 X1 … X14: kararın iki örneği AYNEN + çek / Alacak Yaz / borç silme / stok iadesi / geri yükleme / tarih değişikliği / bağlı tahsilat; d41 S7 / S8 / S9 artık değerle); SK-35 SUS
+   (d44 X12 / X13); 'iade tahsilat değildir' her kartta (d42 T7 — kararın örneği; d44 Y2 / Y4 / Y5); mutantlar 299–302 (293–296 yeni anlamıyla) DEĞERLE.
 Çıktı: TAP benzeri sayılar + son satır "N/M denetim geçti". Çıkış 0 yalnız hepsi geçerse.
 """
 import importlib.util
