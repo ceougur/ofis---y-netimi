@@ -26,9 +26,11 @@ import { gzipSync } from "node:zlib";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const GZIP_OVER = 1024 * 1024;
 
+// Birleşik tur 7 (DK-B6 DÜŞÜK-3): yerine koyma nesneleri (`git replace`) okunmaz — `git replace <dolu listenin blob'u> <boş liste>` + skip-worktree ile commit'teki
+// YAPIM AŞAMASI listesi boş görünüp çalışma ağacı temiz kalıyordu (yayın kapısı geçiyordu). Kapı her zaman commit'in GERÇEK nesnelerini okur.
 const gitIn = cwd => (...args) => {
   try {
-    return execFileSync("git", args, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
+    return execFileSync("git", ["--no-replace-objects", ...args], { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
   } catch {
     return null;
   }
@@ -541,7 +543,8 @@ export function yapimAsamasiGate(yol = YAPIM_ASAMASI_YOLU, { gitFn = gitIn(ROOT)
   const problems = [];
   if (commit) {
     const rel = path.relative(kok, yol).split(path.sep).join("/");
-    const kayitli = gitFn("show", `HEAD:${rel}`);
+    // Birleşik tur 7 (DK-B6 DÜŞÜK-3): verilen gitFn ne olursa olsun yerine koyma nesnesi okunmaz (gitIn de aynı bayrakla çağırır).
+    const kayitli = gitFn("--no-replace-objects", "show", `HEAD:${rel}`);
     const commitListesi = kayitli === null ? { hata: `YAPIM AŞAMASI listesi commit'ten okunamadı (git show HEAD:${rel}) — okunamayan liste boş sayılmaz` } : yapimListesi(kayitli, `HEAD:${rel}`);
     if (commitListesi.hata) problems.push(commitListesi.hata);
     else {
