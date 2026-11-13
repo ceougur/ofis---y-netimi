@@ -950,3 +950,19 @@ değişmesini engellemez; düz iz girdisi iptali 409'a çevirir (yeni 409 — K4
 İz on sorgu büyür (her biri kilitli dönemin satırlarını indeksli koşulla bir kez); `cheques_free_lock` kilitli evrak başına iki NOT EXISTS (idx_plan_entries_cheque,
 idx_account_entries_source). Değişen yollar: tam kapı (kilit izine dokunan yazım), tarama (Mutabakat Testi), açılış, dondurmanın kaynak izi; süzgeçte yalnız evrak / evrağa bağlı
 satırlarda tek indeksli sorgu. Ölçüm: temiz 100 bin satırlık veride taban ↔ yeni (ölçüm kilidiyle; sonuç kodla birlikte 16.8'de).
+
+### 16.8 Sonuç (kodla birlikte; kanıt docs/kanit/2026-11-13/c5a1f-*)
+- Değişen ürün dosyaları: `lib/integrity.mjs` (LOCK_SQL'e on girdi, `since: "2.5.0"`), `lib/integrity-scope.mjs` (LOCK_FIELDS'e on alan; tahsil kaydının verilme bloğuna
+  event_id; Kayıt Tarihi boş kart; `chequeLockRelevant` — evrak olguları). Göç / şema / istemci değişmedi.
+- Önce → sonra (`alan.mjs`, v2.4.9 verisi, kilit 10.10): her izlenen alanın kapı dışı değişikliği satır içi taramada `ledger:snapshot` + `period-lock`, Mutabakat Günlüğü 1, zil 1
+  (taban: dokuz alanda 0 / 0 / 0, öbürlerinde yalnız başka bir denetimin yan bulgusu). Değişmeyen: fatura bağı (§16.4, bilerek), olaysız karşılıksız durumu ve carisiz evrağa cari
+  yazımı (türetme de değişmiyor), yüklenen kartın kilit SONRASI tarihli açılış satırı (§15.2 SINIR ailesi; money:event görüyor), banka alt hesabı (bank:sub görüyor).
+- Meşru yollar (`mesru2.mjs` + kalıcı test [4] / [5] / [6]): yanıt kodları tabanla AYNI (200 / 409), hepsi sessiz. Yeni 409 alan istek YOK.
+- Kalıcı testler: `test/kilit-izi-alanlar-250.test.mjs` (16 tür × satır içi + arka plan / kapalıyken; meşru; geri yükleme / sıfırlama; v2.0.26 ve v2.4.9 güncellemesi; süzgeç ↔
+  kapı; DÜŞÜK-A) ve `test/defter-kaynak-iz-250.test.mjs` (EXPLAIN tabanlı kaynak tarama: 30 sorgu, 188 sütun; izde 128, istisna 27 + 4 korumalı tablo, rowid 16).
+- DÜŞÜK-A: N3 kaynak tarama testiyle, N17 / N18 [8] ile öldü; N7 EŞDEĞER (ulaşılamaz dal): kapının kapsamı (lib/db.mjs SCOPE_TABLES) plan_imports'u yakalamaz — süzgecin
+  yükleme denetimi hiçbir yazımda çalışmaz; aynı işlemde para tablosuyla plan_imports yazan mağaza yazımı gateVerify'da "eşdeğerlik ihlali", üretimde kabul edilir (tarama sonra
+  period-lock bulur). Meşru yazan yol yok. BAŞ MİMAR KARARI (rapor): SCOPE_TABLES'a plan_imports + keys() eşlemesi ya da ölü dalın kaldırılması.
+- Komşu düzeltmesi: `test/goc-243-stok-acilis.test.mjs` göç öncesi izi sürümsüz alıyordu (eski şemada sütunu olan yeni girdileri de sayıyordu) → iki taraf 2.4.2 tanımıyla (K11 deseni).
+- Kaynak tarama testinin sınırı: dizin sırasıyla okunan sütun (ORDER BY'ın dizinden karşılandığı `cheque_events.created_at`) EXPLAIN'de Column olarak görünmez — o sütunun
+  koruması davranış testinde ([1] ikinci karşılıksız olayı).
