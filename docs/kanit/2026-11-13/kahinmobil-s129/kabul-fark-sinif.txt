@@ -1,0 +1,28 @@
+('E05', 'kart:odenen', 'SM-1 (eski değer listede)') 2
+('E41', 'kart:odenen', 'SM-1 (eski değer listede)') 2
+('R1-', 'kart:kalan', 'S129-bagsiz') 102
+('R1-', 'kart:odenen', 'S129-bagsiz') 102
+('R1-', 'kart:odenen', 'SM-1 (eski değer listede)') 48
+('R1-', 'kart:taksit<i>:odenen', 'S129-bagsiz') 243
+('R2-', 'kart:kalan', 'S129-bagsiz') 81
+('R2-', 'kart:odenen', 'S129-bagsiz') 81
+('R2-', 'kart:odenen', 'SM-1 (eski değer listede)') 59
+('R2-', 'kart:taksit<i>:odenen', 'S129-bagsiz') 165
+('R3-', 'kart:kalan', 'S129-bagsiz') 98
+('R3-', 'kart:odenen', 'S129-bagsiz') 98
+('R3-', 'kart:odenen', 'SM-1 (eski değer listede)') 52
+('R3-', 'kart:taksit<i>:odenen', 'S129-bagsiz') 175
+== SM-1 (eski değer listede)
+   E05-es-taksit-masaustu k2:001:kart:KT1:odenen 130000 -> [120000, 130000]
+   E05-es-taksit-mobil k2:001:kart:KT1:odenen 130000 -> [120000, 130000]
+   E41-es-odenmis-kart-avans-masaustu k1:001:kart:KT:odenen 150000 -> [100000, 150000]
+   E41-es-odenmis-kart-avans-mobil k1:001:kart:KT:odenen 150000 -> [100000, 150000]
+   R1-rastgele-tohum1 k2570:001:kart:KT1_1:odenen 151747 -> [120000, 151747]
+   R1-rastgele-tohum1 k1729:001:kart:KT1_2:odenen 180543 -> [120000, 180543]
+== S129-bagsiz
+   R1-rastgele-tohum1 k1729:001:kart:KT1_1:kalan 10904 -> 0
+   R1-rastgele-tohum1 k1729:001:kart:KT1_1:odenen 109096 -> 120000
+   R1-rastgele-tohum1 k1729:001:kart:KT1_1:taksit6:odenen 9096 -> 20000
+   R1-rastgele-tohum1 k1729:001:kart:KT1_2:kalan 94200 -> 0
+   R1-rastgele-tohum1 k1729:001:kart:KT1_2:odenen 25800 -> 120000
+   R1-rastgele-tohum1 k1729:001:kart:KT1_2:taksit2:odenen 1800 -> 24000

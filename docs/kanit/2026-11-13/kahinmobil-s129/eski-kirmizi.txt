@@ -1,0 +1,79 @@
+KIRMIZI E05-es-taksit-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] 1 fark
+   k2:001:kart:KT1:odenen: model 130000 · elle [120000, 130000]
+KIRMIZI E05-es-taksit-mobil [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] 1 fark
+   k2:001:kart:KT1:odenen: model 130000 · elle [120000, 130000]
+KIRMIZI E05-es-taksit-mobil [kapatilacak=secilir;yollar=evrak_dahil;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] 1 fark
+   k2:001:kart:KT1:odenen: model 130000 · elle [120000, 130000]
+KIRMIZI E05-es-taksit-masaustu [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] 1 fark
+   k2:001:kart:KT1:odenen: model 130000 · elle [120000, 130000]
+KIRMIZI E05-es-taksit-masaustu [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] 1 fark
+   k2:001:kart:KT1:odenen: model 130000 · elle [120000, 130000]
+KIRMIZI E05-es-taksit-masaustu [kapatilacak=secilir;yollar=evrak_dahil;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] 1 fark
+   k2:001:kart:KT1:odenen: model 130000 · elle [120000, 130000]
+KIRMIZI E41-es-odenmis-kart-avans-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] 1 fark
+   k1:001:kart:KT:odenen: model 150000 · elle [100000, 150000]
+KIRMIZI E41-es-odenmis-kart-avans-mobil [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] 1 fark
+   k1:001:kart:KT:odenen: model 150000 · elle [100000, 150000]
+KIRMIZI E41-es-odenmis-kart-avans-mobil [kapatilacak=secilir;yollar=evrak_dahil;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] 1 fark
+   k1:001:kart:KT:odenen: model 150000 · elle [100000, 150000]
+KIRMIZI E41-es-odenmis-kart-avans-masaustu [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] 1 fark
+   k1:001:kart:KT:odenen: model 150000 · elle [100000, 150000]
+KIRMIZI E41-es-odenmis-kart-avans-masaustu [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] 1 fark
+   k1:001:kart:KT:odenen: model 150000 · elle [100000, 150000]
+KIRMIZI E41-es-odenmis-kart-avans-masaustu [kapatilacak=secilir;yollar=evrak_dahil;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] 1 fark
+   k1:001:kart:KT:odenen: model 150000 · elle [100000, 150000]
+KIRMIZI E42-es-s129-gosterge-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] 8 fark
+   k1:001:kart:KT:kalan: model 90000 · elle 40000
+   k1:001:kart:KT:odenen: model 0 · elle 50000
+   k1:001:kart:KT:taksit1:odenen: model 0 · elle 30000
+   k1:001:kart:KT:taksit2:odenen: model 0 · elle 20000
+   k1:001:kart:LT:kalan: model 60000 · elle 0
+   k1:001:kart:LT:odenen: model 0 · elle 60000
+   k1:001:kart:LT:taksit1:odenen: model 0 · elle 30000
+   k1:001:kart:LT:taksit2:odenen: model 0 · elle 30000
+KIRMIZI E42-es-s129-gosterge-mobil [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] 8 fark
+   k1:001:kart:KT:kalan: model 90000 · elle 40000
+   k1:001:kart:KT:odenen: model 0 · elle 50000
+   k1:001:kart:KT:taksit1:odenen: model 0 · elle 30000
+   k1:001:kart:KT:taksit2:odenen: model 0 · elle 20000
+   k1:001:kart:LT:kalan: model 60000 · elle 0
+   k1:001:kart:LT:odenen: model 0 · elle 60000
+   k1:001:kart:LT:taksit1:odenen: model 0 · elle 30000
+   k1:001:kart:LT:taksit2:odenen: model 0 · elle 30000
+KIRMIZI E42-es-s129-gosterge-mobil [kapatilacak=secilir;yollar=evrak_dahil;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] 8 fark
+   k1:001:kart:KT:kalan: model 90000 · elle 40000
+   k1:001:kart:KT:odenen: model 0 · elle 50000
+   k1:001:kart:KT:taksit1:odenen: model 0 · elle 30000
+   k1:001:kart:KT:taksit2:odenen: model 0 · elle 20000
+   k1:001:kart:LT:kalan: model 60000 · elle 0
+   k1:001:kart:LT:odenen: model 0 · elle 60000
+   k1:001:kart:LT:taksit1:odenen: model 0 · elle 30000
+   k1:001:kart:LT:taksit2:odenen: model 0 · elle 30000
+KIRMIZI E42-es-s129-gosterge-masaustu [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] 8 fark
+   k1:001:kart:KT:kalan: model 90000 · elle 40000
+   k1:001:kart:KT:odenen: model 0 · elle 50000
+   k1:001:kart:KT:taksit1:odenen: model 0 · elle 30000
+   k1:001:kart:KT:taksit2:odenen: model 0 · elle 20000
+   k1:001:kart:LT:kalan: model 60000 · elle 0
+   k1:001:kart:LT:odenen: model 0 · elle 60000
+   k1:001:kart:LT:taksit1:odenen: model 0 · elle 30000
+   k1:001:kart:LT:taksit2:odenen: model 0 · elle 30000
+KIRMIZI E42-es-s129-gosterge-masaustu [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] 8 fark
+   k1:001:kart:KT:kalan: model 90000 · elle 40000
+   k1:001:kart:KT:odenen: model 0 · elle 50000
+   k1:001:kart:KT:taksit1:odenen: model 0 · elle 30000
+   k1:001:kart:KT:taksit2:odenen: model 0 · elle 20000
+   k1:001:kart:LT:kalan: model 60000 · elle 0
+   k1:001:kart:LT:odenen: model 0 · elle 60000
+   k1:001:kart:LT:taksit1:odenen: model 0 · elle 30000
+   k1:001:kart:LT:taksit2:odenen: model 0 · elle 30000
+KIRMIZI E42-es-s129-gosterge-masaustu [kapatilacak=secilir;yollar=evrak_dahil;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] 8 fark
+   k1:001:kart:KT:kalan: model 90000 · elle 40000
+   k1:001:kart:KT:odenen: model 0 · elle 50000
+   k1:001:kart:KT:taksit1:odenen: model 0 · elle 30000
+   k1:001:kart:KT:taksit2:odenen: model 0 · elle 20000
+   k1:001:kart:LT:kalan: model 60000 · elle 0
+   k1:001:kart:LT:odenen: model 0 · elle 60000
+   k1:001:kart:LT:taksit1:odenen: model 0 · elle 30000
+   k1:001:kart:LT:taksit2:odenen: model 0 · elle 30000
+# kırmızı birleşim-senaryo: 18

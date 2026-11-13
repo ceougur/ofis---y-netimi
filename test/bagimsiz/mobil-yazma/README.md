@@ -287,6 +287,15 @@ Toplam 1.308 anahtar (444 Ödenen, 281 Kalan, 583 taksit Ödenen) + 2 yeni senar
 banka / POS, portföy, stok, adım yanıtları, `fazla`, `tahsilatSayisi` hiçbir senaryoda DEĞİŞMEDİ). Adımı değişen senaryo yok (E05 / E41'de yalnız `aciklama` metni). Rastgelelerin
 beklentisi akış modeli (`Akis`, YS129-6 — cari kâhinini kullanmaz) = model, 3 tohum × 10 birleşim.
 
+### Kanıt (S129 bakımı; `docs/kanit/2026-11-13/kahinmobil-s129/`, `tools/kanit.mjs kos`)
+- Bakımdan ÖNCE (taban `44c9025d`, ayrı kopya): öz test 149/152, çıkış 1 — A1 (kabul eski), A2 ("cari kâhini değişti"), H2 (10 cari mutantı iki kipte görünmüyor) (`taban-oz-once-utc.txt`).
+- İlk koşu (kod commit'inden önce, `cea78f3` + değişmiş dosyalar): 155/156 iki saat diliminde — tek kırmızı F M51 (README YS129-4'teki "yakalanamaz" yorumu yanlıştı; düzeltildi) (`kahinmobil-oz-*`).
+- **Kod commit'i `03a7b6b`, temiz ağaç: öz test 158/158, çıkış 0 — TZ=UTC ve TZ=Europe/Istanbul** (`kahinmobil-s129-oz-utc|ist.{json,log}`): A1 kabul güncel, A2 cari kâhini sha
+  eşleşiyor, 53 elle × 256 birleşim model = elle, R1–R3 × 10 birleşim model = akış, C4 5.000 olay, D1–D8, **62/62 mutasyon**, J1, H, H2 cari kâhini 252/252.
+- ESKİ kâhin (değişiklikten önceki `kahin.py`, ayrı kopya) yeni / değişen elle beklentilerde KIRMIZI, beklenen nedenle (`eski-kirmizi.txt`): E42 iki kanalda 3 birleşimde 8 fark
+  (eski: KT Ödenen 0 · Kalan 900, LT 0 · 600 — kartın kendi hesabı = S129 B), E05 / E41 iki kanalda 1 fark (eski tek değer 1.300 / 1.500, elle liste — SM-1).
+- Üretici: `uretici-denetle.txt` / `uretici-yaz.txt` (elle 53 × 256, rastgele 3 tohum × 10 birleşim model = akış). Program açılmadı.
+
 ## Senaryo dili `destekofis-mobil-yazma/1`
 
 ```json
