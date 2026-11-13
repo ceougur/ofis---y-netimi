@@ -4,7 +4,7 @@ Sen DestekOfis projesinde ESKİ KÂHİNLER BAKIMI 16 ajanısın (2.5.0 Ç5 — c
 Tek girdi kaynağın: `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin-eski16-kararlar.md` (tamamını oku).
 
 ## Hazırlık
-1. Worktree'de `git merge --no-edit worktree-agent-a98fc03cad09a36cd` (bakım 15'in dalı — üstüne çalışacaksın; çakışma BEKLENMEZ, çıkarsa DUR ve raporla). Sonra `git log --oneline -4` ile bakım 15'in üç commit'inin dalında olduğunu doğrula.
+1. Worktree'de (dalında kendi commit'in YOKKEN) `git reset --hard worktree-agent-a98fc03cad09a36cd` (bakım 15'in dalı — üstüne çalışacaksın; ağaç ana daldan açıldığı için birleşim DEĞİL sıfırlama — düzeltme 13.11 08:45: ilk metindeki birleşim çakıştı). Sonra `git log --oneline -4` ile bakım 15'in üç commit'inin dalında olduğunu doğrula.
 2. ÖNCE oku: `CLAUDE.md` (dersler 1–53; özellikle 5, 6, 31, 40, 43); `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`; girdi dosyası; `test/bagimsiz/cari/KARARLAR.md` içinde bakım 15 bölümü (§26) ile Şüpheli Alacak kurallarını (K1 ve açık şüphelinin tahsilatla düşmesi) anlatan bölümler.
    Önceki kararlar YALNIZ kâhinin kendi KARARLAR.md'sinden okunur.
 
