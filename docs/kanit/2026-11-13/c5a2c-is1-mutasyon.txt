@@ -1,0 +1,12 @@
+1. izinli hedeflere alt defter hesabı girer (K6 yok): YAKALANDI (çıkış 1, kırmızı 2)
+2. 153 ve brüt gösterim hesapları izinli: YAKALANDI (çıkış 1, kırmızı 2)
+3. 519'un ters bakiye denetimi yok: YAKALANDI (çıkış 1, kırmızı 1)
+4. aynı günün açılışı gün sonu bakiyesine girmez: YAKALANDI (çıkış 1, kırmızı 5)
+5. 519'u büyüten fiş kabul edilir (yön denetimi yok): YAKALANDI (çıkış 1, kırmızı 1)
+6. 519 karşı satırı ters yönde: YAKALANDI (çıkış 1, kırmızı 4)
+7. 519 ters bakiye bilgi satırı yok: YAKALANDI (çıkış 1, kırmızı 2)
+8. bilgi satırı sapma sayılır (ok false): YAKALANDI (çıkış 1, kırmızı 2)
+9. ön izleme verisi Muhasebe'ye açık: YAKALANDI (çıkış 1, kırmızı 1)
+10. kilitli tarih denetimi ön izlemede yok: YAKALANDI (çıkış 1, kırmızı 1)
+# mutasyon 10, yakalanan 10, kaçan 0
+cikis=0

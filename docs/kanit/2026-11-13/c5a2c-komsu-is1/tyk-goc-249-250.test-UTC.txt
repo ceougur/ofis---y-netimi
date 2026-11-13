@@ -1,0 +1,26 @@
+TAP version 13
+# (node:7666) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç5-B — v2.4.9 verisi güncel kodun kuyruğunda
+    # Subtest: v2.4.9: iki fatura (vade belge sırasına ters) + bağsız tahsilat + Yeni Borç kartı + bağsız tahsilat + vadesiz Borç Yaz → güncel kod TYK sayıları
+    ok 1 - v2.4.9: iki fatura (vade belge sırasına ters) + bağsız tahsilat + Yeni Borç kartı + bağsız tahsilat + vadesiz Borç Yaz → güncel kod TYK sayıları
+      ---
+      duration_ms: 1007.62948
+      type: 'test'
+      ...
+    1..1
+ok 1 - 2.5.0 Ç5-B — v2.4.9 verisi güncel kodun kuyruğunda
+  ---
+  duration_ms: 1008.652379
+  type: 'suite'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1384.121422
+cikis=0

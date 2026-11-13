@@ -1,0 +1,83 @@
+TAP version 13
+# (node:1596) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Aşama 3 — Hesabı Atanmamış Eski Hareketler ve Kurulum Sihirbazı
+    # Subtest: Hesabı Atanmamış liste ve özet: 102.00 = 6.000, 108.00 = 3.000; satırlar İşlem No'lu
+    ok 1 - Hesabı Atanmamış liste ve özet: 102.00 = 6.000, 108.00 = 3.000; satırlar İşlem No'lu
+      ---
+      duration_ms: 28.396874
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: Bu Hesaba Ata — açılıştan önce 409, POS satırı 400, uygun olmayan hesap 400, satır yok 404
+    ok 2 - nasıl bozarım: Bu Hesaba Ata — açılıştan önce 409, POS satırı 400, uygun olmayan hesap 400, satır yok 404
+      ---
+      duration_ms: 126.62864
+      type: 'test'
+      ...
+# (node:1596) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: nasıl bozarım: kilitli dönemdeki satır — uçta 409 period-locked; bank.post içinden doğrudan bağlansa kapı (kilit izi) 409
+    ok 3 - nasıl bozarım: kilitli dönemdeki satır — uçta 409 period-locked; bank.post içinden doğrudan bağlansa kapı (kilit izi) 409
+      ---
+      duration_ms: 324.998437
+      type: 'test'
+      ...
+    # Subtest: sihirbaz: önizleme → çalıştır → geri al (birebir eski hâl); ikinci geri al 409
+    ok 4 - sihirbaz: önizleme → çalıştır → geri al (birebir eski hâl); ikinci geri al 409
+      ---
+      duration_ms: 114.909407
+      type: 'test'
+      ...
+# (node:1596) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:1596) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: nasıl bozarım: kilitli D ile sihirbaz 409; Geri Al'dan önce kilit → 409
+    ok 5 - nasıl bozarım: kilitli D ile sihirbaz 409; Geri Al'dan önce kilit → 409
+      ---
+      duration_ms: 495.611393
+      type: 'test'
+      ...
+    # Subtest: Bu Hesaba Ata tek satır; zaten bağlı satır 409
+    ok 6 - Bu Hesaba Ata tek satır; zaten bağlı satır 409
+      ---
+      duration_ms: 37.698395
+      type: 'test'
+      ...
+    # Subtest: Bankaya Geçmiş Say ve Kart Borcuna Aktar: tutar sınırı, kart hesabı, geri alınabilir
+    ok 7 - Bankaya Geçmiş Say ve Kart Borcuna Aktar: tutar sınırı, kart hesabı, geri alınabilir
+      ---
+      duration_ms: 110.884548
+      type: 'test'
+      ...
+    1..7
+ok 1 - Aşama 3 — Hesabı Atanmamış Eski Hareketler ve Kurulum Sihirbazı
+  ---
+  duration_ms: 1830.499106
+  type: 'suite'
+  ...
+# (node:1596) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Aşama 3 — sihirbaz eski sürüm verisinde (v2.0.26 zincir fikstürü)
+    # Subtest: olaysız eski satırlar: sihirbaz → mutabakat tamam → geri al → mizan ve alt hesaplar birebir aynı
+    ok 1 - olaysız eski satırlar: sihirbaz → mutabakat tamam → geri al → mizan ve alt hesaplar birebir aynı
+      ---
+      duration_ms: 844.284668
+      type: 'test'
+      ...
+    1..1
+ok 2 - Aşama 3 — sihirbaz eski sürüm verisinde (v2.0.26 zincir fikstürü)
+  ---
+  duration_ms: 844.617142
+  type: 'suite'
+  ...
+1..2
+# tests 8
+# suites 2
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3015.8679
+cikis=0

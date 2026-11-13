@@ -1,0 +1,65 @@
+Ç5-A tur 2c ölçüm · taban · kilitsiz · kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/taban · nproc 4 · başta 0.36 1.14 1.60 1/110 28667 · 21:59:04
+=== TZ Europe/Istanbul · başta 0.36 1.14 1.60 1/110 28673 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/taban · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/olcum/kopya · yük (başta) 0.36 1.14 1.60 · TZ Europe/Istanbul
+açılış (göç dahil) 19601 ms · şema 50
+donma: bekleyen koşu yok (kapsam —)
+veri: 1484 cari, 102295 cari satırı, 11554 Kasa satırı, 11660 evrak, 339 banka satırı
+tur 1 · yük 0.54 1.13 1.59
+  Açılış Olabilir listesi (sayfasız; tur 1 ucu): 200 · 71.9 ms · olay döngüsü en çok 69.3 ms
+  Açılış Olabilir listesi sayfalı (tur 2c; tabanda limit yok sayılır): 200 · 76.8 ms · olay döngüsü en çok 0 ms
+  Zil sayısı (tur 2c; tabanda tam liste): 200 · 67.3 ms · olay döngüsü en çok 0 ms
+  Kural Farkı Düzeltme ön izlemesi: 200 · 98.5 ms · olay döngüsü en çok 0 ms
+  Açılış Eşleştirme GET (tur 2c; tabanda 404): 404 · 4.9 ms · olay döngüsü en çok 0 ms
+  Açılış Eşleştirme ön izleme (tur 2c; tabanda 404): 404 · 3.9 ms · olay döngüsü en çok 0 ms
+tur 2 · yük 0.54 1.13 1.59
+  Açılış Olabilir listesi (sayfasız; tur 1 ucu): 200 · 66.1 ms · olay döngüsü en çok 64.9 ms
+  Açılış Olabilir listesi sayfalı (tur 2c; tabanda limit yok sayılır): 200 · 83 ms · olay döngüsü en çok 0 ms
+  Zil sayısı (tur 2c; tabanda tam liste): 200 · 96.1 ms · olay döngüsü en çok 0 ms
+  Kural Farkı Düzeltme ön izlemesi: 200 · 3.2 ms · olay döngüsü en çok 0 ms
+  Açılış Eşleştirme GET (tur 2c; tabanda 404): 404 · 2 ms · olay döngüsü en çok 0 ms
+  Açılış Eşleştirme ön izleme (tur 2c; tabanda 404): 404 · 2.5 ms · olay döngüsü en çok 0 ms
+tur 3 · yük 0.54 1.13 1.59
+  Açılış Olabilir listesi (sayfasız; tur 1 ucu): 200 · 89.4 ms · olay döngüsü en çok 88.1 ms
+  Açılış Olabilir listesi sayfalı (tur 2c; tabanda limit yok sayılır): 200 · 74.9 ms · olay döngüsü en çok 0 ms
+  Zil sayısı (tur 2c; tabanda tam liste): 200 · 69 ms · olay döngüsü en çok 0 ms
+  Kural Farkı Düzeltme ön izlemesi: 200 · 2.1 ms · olay döngüsü en çok 0 ms
+  Açılış Eşleştirme GET (tur 2c; tabanda 404): 404 · 1.8 ms · olay döngüsü en çok 0 ms
+  Açılış Eşleştirme ön izleme (tur 2c; tabanda 404): 404 · 1.9 ms · olay döngüsü en çok 0 ms
+tur 4 · yük 0.54 1.13 1.59
+  Açılış Olabilir listesi (sayfasız; tur 1 ucu): 200 · 66.8 ms · olay döngüsü en çok 0 ms
+  Açılış Olabilir listesi sayfalı (tur 2c; tabanda limit yok sayılır): 200 · 77.5 ms · olay döngüsü en çok 0 ms
+  Zil sayısı (tur 2c; tabanda tam liste): 200 · 72.9 ms · olay döngüsü en çok 71.6 ms
+  Kural Farkı Düzeltme ön izlemesi: 200 · 1.9 ms · olay döngüsü en çok 0 ms
+  Açılış Eşleştirme GET (tur 2c; tabanda 404): 404 · 1.2 ms · olay döngüsü en çok 0 ms
+  Açılış Eşleştirme ön izleme (tur 2c; tabanda 404): 404 · 1.7 ms · olay döngüsü en çok 0 ms
+tur 5 · yük 0.54 1.13 1.59
+  Açılış Olabilir listesi (sayfasız; tur 1 ucu): 200 · 72.1 ms · olay döngüsü en çok 0 ms
+  Açılış Olabilir listesi sayfalı (tur 2c; tabanda limit yok sayılır): 200 · 69 ms · olay döngüsü en çok 0 ms
+  Zil sayısı (tur 2c; tabanda tam liste): 200 · 63.9 ms · olay döngüsü en çok 0 ms
+  Kural Farkı Düzeltme ön izlemesi: 200 · 2.1 ms · olay döngüsü en çok 0 ms
+  Açılış Eşleştirme GET (tur 2c; tabanda 404): 404 · 1.4 ms · olay döngüsü en çok 0 ms
+  Açılış Eşleştirme ön izleme (tur 2c; tabanda 404): 404 · 1.7 ms · olay döngüsü en çok 0 ms
+tur 6 · yük 0.54 1.13 1.59
+  Açılış Olabilir listesi (sayfasız; tur 1 ucu): 200 · 65 ms · olay döngüsü en çok 0 ms
+  Açılış Olabilir listesi sayfalı (tur 2c; tabanda limit yok sayılır): 200 · 65.9 ms · olay döngüsü en çok 0 ms
+  Zil sayısı (tur 2c; tabanda tam liste): 200 · 63.1 ms · olay döngüsü en çok 0 ms
+  Kural Farkı Düzeltme ön izlemesi: 200 · 2.1 ms · olay döngüsü en çok 0 ms
+  Açılış Eşleştirme GET (tur 2c; tabanda 404): 404 · 1.2 ms · olay döngüsü en çok 0 ms
+  Açılış Eşleştirme ön izleme (tur 2c; tabanda 404): 404 · 1.7 ms · olay döngüsü en çok 0 ms
+tur 7 · yük 0.54 1.13 1.59
+  Açılış Olabilir listesi (sayfasız; tur 1 ucu): 200 · 65.1 ms · olay döngüsü en çok 0 ms
+  Açılış Olabilir listesi sayfalı (tur 2c; tabanda limit yok sayılır): 200 · 72.5 ms · olay döngüsü en çok 0 ms
+  Zil sayısı (tur 2c; tabanda tam liste): 200 · 65.4 ms · olay döngüsü en çok 0 ms
+  Kural Farkı Düzeltme ön izlemesi: 200 · 1.9 ms · olay döngüsü en çok 0 ms
+  Açılış Eşleştirme GET (tur 2c; tabanda 404): 404 · 1.4 ms · olay döngüsü en çok 0 ms
+  Açılış Eşleştirme ön izleme (tur 2c; tabanda 404): 404 · 1.6 ms · olay döngüsü en çok 0 ms
+tur 8 · yük 0.54 1.13 1.59
+  Açılış Olabilir listesi (sayfasız; tur 1 ucu): 200 · 69.1 ms · olay döngüsü en çok 0 ms
+  Açılış Olabilir listesi sayfalı (tur 2c; tabanda limit yok sayılır): 200 · 81.7 ms · olay döngüsü en çok 0 ms
+  Zil sayısı (tur 2c; tabanda tam liste): 200 · 67.9 ms · olay döngüsü en çok 0 ms
+  Kural Farkı Düzeltme ön izlemesi: 200 · 1.9 ms · olay döngüsü en çok 0 ms
+  Açılış Eşleştirme GET (tur 2c; tabanda 404): 404 · 1.2 ms · olay döngüsü en çok 0 ms
+  Açılış Eşleştirme ön izleme (tur 2c; tabanda 404): 404 · 1.8 ms · olay döngüsü en çok 0 ms
+yük (sonda) 0.54 1.13 1.59
+çıkış 0 · sonda 0.54 1.13 1.59 1/110 28764
+bitti 21:59:27

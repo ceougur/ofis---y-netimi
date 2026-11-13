@@ -1,0 +1,27 @@
+acilis-519-250.test-UTC çıkış=0 tests=13 pass=13 fail=0 skipped=0
+kg16-geri-alma-250.test-UTC çıkış=0 tests=6 pass=6 fail=0 skipped=0
+defter-hiz-esdegerlik-250.test-UTC çıkış=0 tests=4 pass=4 fail=0 skipped=0
+defter-hiz-esdegerlik-tur1d-250.test-UTC çıkış=0 tests=4 pass=4 fail=0 skipped=0
+kilit-izi-alanlar-250.test-UTC çıkış=0 tests=38 pass=38 fail=0 skipped=0
+kural-farki-duzeltme-250.test-UTC çıkış=0 tests=7 pass=7 fail=0 skipped=0
+kural-farki-kapi-disi-250.test-UTC çıkış=0 tests=18 pass=18 fail=0 skipped=0
+yazim-duzeni.test-UTC çıkış=0 tests=6 pass=6 fail=0 skipped=0
+kalan-metin-246.test-UTC çıkış=0 tests=11 pass=11 fail=0 skipped=0
+takvim-pil-kaynak.test-UTC çıkış=0 tests=16 pass=16 fail=0 skipped=0
+gorunen-adres-247.test-UTC çıkış=0 tests=2 pass=2 fail=0 skipped=0
+kapi-247.test-UTC çıkış=0 tests=28 pass=28 fail=0 skipped=0
+platform-tasinabilirlik.test-UTC çıkış=0 tests=6 pass=6 fail=0 skipped=0
+acilis-519-250.test-Europe-Istanbul çıkış=0 tests=13 pass=13 fail=0 skipped=0
+kg16-geri-alma-250.test-Europe-Istanbul çıkış=0 tests=6 pass=6 fail=0 skipped=0
+defter-hiz-esdegerlik-250.test-Europe-Istanbul çıkış=0 tests=4 pass=4 fail=0 skipped=0
+defter-hiz-esdegerlik-tur1d-250.test-Europe-Istanbul çıkış=0 tests=4 pass=4 fail=0 skipped=0
+kilit-izi-alanlar-250.test-Europe-Istanbul çıkış=0 tests=38 pass=38 fail=0 skipped=0
+kural-farki-duzeltme-250.test-Europe-Istanbul çıkış=0 tests=7 pass=7 fail=0 skipped=0
+kural-farki-kapi-disi-250.test-Europe-Istanbul çıkış=0 tests=18 pass=18 fail=0 skipped=0
+yazim-duzeni.test-Europe-Istanbul çıkış=0 tests=6 pass=6 fail=0 skipped=0
+kalan-metin-246.test-Europe-Istanbul çıkış=0 tests=11 pass=11 fail=0 skipped=0
+takvim-pil-kaynak.test-Europe-Istanbul çıkış=0 tests=16 pass=16 fail=0 skipped=0
+gorunen-adres-247.test-Europe-Istanbul çıkış=0 tests=2 pass=2 fail=0 skipped=0
+kapi-247.test-Europe-Istanbul çıkış=0 tests=28 pass=28 fail=0 skipped=0
+platform-tasinabilirlik.test-Europe-Istanbul çıkış=0 tests=6 pass=6 fail=0 skipped=0
+BITTI
