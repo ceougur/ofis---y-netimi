@@ -303,7 +303,7 @@
       load.applied();
       view.listError = "";
       view.list = more && view.list ? { ...data, invoices: [...view.list.invoices, ...data.invoices] } : data;
-      if (view.mode === "list") renderList();
+      if (view.mode === "list") renderList({ background: quiet });
     } catch (error) {
       if (quiet) throw error;
       if (!load.current()) return;
@@ -331,7 +331,7 @@
   // 2.4.4 (uzman UX25): "Belge Türü" süzgecinde e-SMM yalnız e-SMM açıkken (sunucu: config.esmmEnabled ve Entegratör Ayarları'nda
   // "e-SMM kullanıcısıyım" → meta.settings.esmm) görünür; kapalı özellik seçenek olarak çıkmaz. Seçili kalmış süzgeç (eski adres) görünür kalır.
   const profileOptions = () => Object.entries(meta.profiles || {}).filter(([id]) => id !== "ESMM" || meta?.settings?.esmm === true || view.profile === "ESMM");
-  function renderList() {
+  function renderList({ background = false } = {}) {
     const root = body();
     if (!root) return;
     const data = view.list;
@@ -358,7 +358,10 @@
     const selIds = [...view.selected].join(",");
     const tile = (label, value, tone = "", note = "") => `<div class="hof-rep-stat ${tone}"><span>${esc(label)}</span><strong>${esc(money(value || 0))}</strong>${note ? `<small>${esc(note)}</small>` : ""}</div>`;
     const accountChip = view.account ? `<span class="hof-inv-filter-chip">Cari: <b>${esc(view.account.name)}</b><button type="button" data-act="clear-account" aria-label="Cari süzgecini kaldır" title="Cari süzgecini kaldır">×</button></span>` : "";
-    HOF.swap(
+    // Birleşik tur 7 (DK-B6 DÜŞÜK-4 + kullanıcı notu 12.11 12:54): tarih süzgecine YAZARKEN her geçerli ara değerde (yıl 0002, 0020, 0202, 2026) liste yeniden yüklenip
+    // çubuk yeniden kuruluyordu — kutu yeni düğüm olunca imleç ilk bölüme düşüyor, sonraki tuşlar yanlış bölüme gidiyordu ("0002-06-07" / boş). Odak tarih kutularındayken
+    // (ya da arka plan yenilemesinde henüz uygulanmamış yazım varken) iki kutu yerinde kalır, çevresi yeni çizimden gelir (HOF.swapKeeping; birleşik tur 6'nın POS kalıbı).
+    HOF.swapKeeping(
       root,
       `<div class="hof-plan-head">
         <div class="hof-plan-title"><small>${edoc() ? "Satış, alış ve iade faturaları; e-Fatura ve e-Arşiv entegratör üzerinden gönderilir." : "Kaydedilen belgeler resmî hükmü olmayan <b>Müşteri Fişi</b> olarak basılır; e-Fatura / e-Arşiv bağlantısı kapalı."}</small></div>
@@ -373,8 +376,8 @@
       ${t ? `<div class="hof-rep-stats">${tile("Toplam (KDV Dahil)", t.payable, "", `${t.issued.toLocaleString("tr-TR")} belge`)}${tile("KDV", t.vat)}${tile("Açık Bakiye", t.open, t.open > 0 ? "is-receivable" : "")}${tile("Vadesi Geçmiş", t.overdue, t.overdue > 0 ? "is-payable" : "")}</div>` : ""}
       <div class="hof-plans-filters hof-chq-filters hof-inv-filters">
         <div class="hof-rep-presets" role="group" aria-label="Tarih">${PRESETS.map(([id, label]) => `<button type="button" class="hof-rep-chip ${view.preset === id && (id || (!view.from && !view.to)) ? "is-on" : ""}" data-preset="${id}">${label}</button>`).join("")}</div>
-        <label class="hof-rep-date"><span>Başlangıç</span><input type="date" data-filter="from" value="${esc(view.from)}"></label>
-        <label class="hof-rep-date"><span>Bitiş</span><input type="date" data-filter="to" value="${esc(view.to)}"></label>
+        <span data-list-dates style="display: contents"><label class="hof-rep-date"><span>Başlangıç</span><input type="date" data-filter="from" value="${esc(view.from)}"></label>
+        <label class="hof-rep-date"><span>Bitiş</span><input type="date" data-filter="to" value="${esc(view.to)}"></label></span>
         <select data-filter="pay" aria-label="Ödeme durumu">${PAY_OPTIONS.map(([id, label]) => `<option value="${id}" ${view.pay === id ? "selected" : ""}>${label}</option>`).join("")}</select>
         ${edoc() ? `<select data-filter="profile" aria-label="Belge türü"><option value="">Tüm Belge Türleri</option>${profileOptions().map(([id, label]) => `<option value="${id}" ${view.profile === id ? "selected" : ""}>${esc(label)}</option>`).join("")}</select>` : ""}
         <input type="search" data-filter="q" value="${esc(view.q)}" placeholder="No, cari, ürün, VKN, not ara…" aria-label="Ara">
@@ -387,6 +390,8 @@
         <p class="hof-rep-note">${data.total.toLocaleString("tr-TR")} belge${data.hasMore ? ` · <button type="button" class="hof-link-button" data-act="more">Daha Fazla Göster</button>` : ""}</p>`
           : HOF.listPending(view.listError)
       }`,
+      "[data-list-dates]",
+      { pending: background },
     );
   }
   // 2.4.4 (madde 30b, kullanıcı kararı 22.10.2026): yedek geri yüklendikten sonra TEK SEFERLİK uyarı (yalnız geri yüklenen şirkette; sunucu
