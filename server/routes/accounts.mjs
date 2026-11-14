@@ -10,6 +10,7 @@ import { doubtfulSkipOf } from "../lib/doubtful-gl.mjs";
 import { negativeConfirmed } from "../lib/bank/module-ref.mjs";
 import { posMetaOf } from "../lib/bank/pos.mjs";
 import { ACCOUNT_TYPES, TYPE_DEFAULT, accountLedger, accountTypeKey, balanceSide, classifyAccountType, isAccountType, mapAccountHeaders } from "../lib/accounts.mjs";
+import { createAccountLines } from "../lib/account-lines.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { matrixText, parseAmount, roundMoney } from "../lib/money.mjs";
 import { canUser } from "../lib/permissions.mjs";
@@ -41,8 +42,6 @@ const realDay = value => {
   return Number.isFinite(time) && new Date(time).toISOString().slice(0, 10) === value;
 };
 // Tek seferde en çok bu kadar satır (100 bin cari ~ 7 sn); fazlası raporda "kesildi" olarak bildirilir.
-// 2.4.5 KS7 (a): stoktan gelen cari satırının hareket nedeni (satıştan / alıştan iade bağsız ödemedir; lib/invoice-settle.mjs classifyLine).
-const STOCK_REASON_SQL = "CASE WHEN e.source = 'stock' THEN COALESCE((SELECT m.reason FROM stock_moves m WHERE m.id = e.source_id), '') ELSE '' END";
 const MAX_IMPORT = 250_000;
 const MAX_FIELDS = 60;
 const EPS = 0.005;
@@ -135,14 +134,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     return withFields(row);
   };
   const exists = id => Boolean(id && store.get("SELECT 1 AS found FROM accounts WHERE id = ? AND deleted_at IS NULL", id));
-  const entriesOf = accountId =>
-    store.all(
-      `SELECT e.id, e.kind, e.amount, e.date, e.note, e.method, e.receipt_no AS receiptNo, e.source, e.source_id AS sourceId, e.invoice_id AS invoiceId, e.fin_ref AS finRef, e.created_by AS createdBy, e.created_at AS createdAt, e.updated_at AS updatedAt,
-              e.doubtful_skip AS doubtfulSkip, e.due_date AS dueDate, e.expected_date AS expectedDate, e.refund_of AS refundOf, COALESCE(u.display_name, '') AS actorName,
-              ${STOCK_REASON_SQL} AS stockReason
-       FROM account_entries e LEFT JOIN users u ON u.id = e.created_by WHERE e.account_id = ? ORDER BY e.date, e.created_at, e.rowid`,
-      accountId,
-    );
+  const { entriesOf, entriesByAccount, ledgerLinesOf } = createAccountLines({ store });
   // 2.4.9 P1-b (kullanıcı kararı 03.11.2026): müşteride "Kredi Kartına İade" yalnız bu cariye kredi kartıyla yapılmış, silinmemiş bir Ödeme varken (ekrandaki
   // kutu cari ayrıntısının hasCardPayment bayrağıyla, POST aynı denetimle). Kartla ödeme = çıkış + kart yolu + bağı bir Kredi Kartı hesabı (POS iadesi POS'a
   // bağlıdır; hesapsız kart satırı fatura / stok POS iadesinden ayırt edilemez, sayılmaz). Tek sorgu (idx_account_entries_account), öğe başına okuma yok.
@@ -1745,15 +1737,9 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const args = list ? [list] : [];
     const only = scope ? ` AND a.id IN (${scope})` : "";
     const rows = store.all(`${ACCOUNT_SQL} WHERE a.deleted_at IS NULL${only} ORDER BY a.name COLLATE NOCASE`, ...args).map(({ fieldsJson, ...row }) => row);
-    const entries = new Map();
-    // v2.0.22: yol ve "Kapatılacak Fatura" bağı da (Cari kartındaki defterle aynı satır; fatura kapamada kullanılır).
-    for (const entry of store.all(`SELECT e.id, e.account_id AS accountId, e.kind, e.amount, e.date, e.note, e.method, e.receipt_no AS receiptNo, e.source, e.source_id AS sourceId, e.invoice_id AS invoiceId, e.refund_of AS refundOf, e.created_at AS createdAt, ${STOCK_REASON_SQL} AS stockReason FROM account_entries e${scope ? ` WHERE e.account_id IN (${scope})` : ""} ORDER BY e.date, e.created_at, e.rowid`, ...args)) {
-      if (!entries.has(entry.accountId)) entries.set(entry.accountId, []);
-      entries.get(entry.accountId).push(entry);
-    }
+    const entries = entriesByAccount(scope, args);
     const planMap = planMapIn || (plans()?.ledgerPlansByAccount ? plans().ledgerPlansByAccount() : new Map());
-    const lines = new Map();
-    for (const row of rows) lines.set(row.id, accountLedger(entries.get(row.id) || [], planMap.get(row.id) || []).lines);
+    const lines = ledgerLinesOf(rows, entries, planMap);
     return { accounts: rows, lines, ...(dated ? { dated: new Set(store.all(DATED_SQL).map(row => row.account_id)) } : {}) };
   }
   // Kasa (v2.1.0, K5): cari tahsilat ve ödemeleri Kasa'ya tek kaynaktan (lib/bank/money-lines.mjs, kaynak 3) düşer; silinen carinin

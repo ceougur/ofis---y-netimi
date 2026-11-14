@@ -1,12 +1,14 @@
 // 2.5.0 Ç5-A tur 3a (tasarım notu docs/erp/C5-ACILIS-TASARIM.md §18.9; BAŞ MİMAR KARARI 13.11 — §18.3 (a)): Tek Yükümlülük Kuyruğu'nun (lib/obligation-queue.mjs buildObligations)
 // ve fatura kapamasının (lib/invoice-settle.mjs) GİRDİ KURUCUSU — yalnız store ile kurulur (servis ağacı yok; saat yok — gün parametreyle). Gövdeler routes/invoices.mjs
 // registerInvoiceRoutes kapanışından AYNEN taşındı (girinti aynı; kapanış değişkeni yalnız store). Fatura servisi BİR örnek kurar (kilit izi belleği örnekte — ömrü aynı);
-// defter yükleyicileri ve işçiler (tur 3b) kendi örneğini kurar: createObligationInput({ store }). Carinin satırları (lib/accounts.mjs accountLedger) çağırandan gelir (§18.9 (4)).
+// defter yükleyicileri ve işçiler (tur 3b) kendi örneğini kurar: createObligationInput({ store }). Carinin satırları çağırandan gelir (§18.9 (4)) ya da — tur 3b (§18.11) — modül kendisi kurar
+// (ledgerLines / accountInput / batchInputs; lib/account-lines.mjs).
 import { parseJson } from "./http.mjs";
 import { INVOICE_KINDS } from "./invoice-math.mjs";
 import { lockAtOf, lockHistory } from "./obligation-queue.mjs";
 import { doubtfulState } from "./bank/doubtful.mjs";
 import { dayText } from "./plans.mjs";
+import { createAccountLines } from "./account-lines.mjs";
 
 export function createObligationInput({ store }) {
   // v2.0.17: mahsup fişinin karşı belgesinin adı ("Mahsup · ALS2026…" / "Mahsup · Alacak Yaz 15.09.2026").
@@ -234,5 +236,33 @@ export function createObligationInput({ store }) {
     }
     return { lines: ledger, invoices: all.map(item => ({ ...item, ...(plansById.get(item.id) || {}) })), links, chequeEvents, reversals, offsets, today: day };
   }
-  return { offsetLabel, chequeLinks, settleTables, batchSettleInput, settleKey, lockResolver, doubtfulRecordsOf, obligationExtras, linkTimesOf, chequeLinkMoments, withExtras, accountSettleInput };
+  // 2.5.0 Ç5-A tur 3b (§18.11 (4)): carinin SATIRLARI da modülün kendisinden (lib/account-lines.mjs — routes/accounts.mjs allLedgers'ın satır kuralı, routes/plans.mjs'in kart haritası;
+  // servis ağacı yok). Taşıma değil: yalnız taşınan parçaları bağlar. Eski "satırlar parametreyle" yolları (accountSettleInput / batchSettleInput) AYNEN kalır.
+  // Örnek gerekince (ilk çağrıda) kurulur; bellekleri (iade kesimi, satış kaynağı) bu modül örneğinin ömründedir.
+  let accountLines = null;
+  const linesOwn = () => (accountLines ||= createAccountLines({ store }));
+  // Silinmemiş carilerin (ids verilirse yalnız onların) defter satırları: Map(cari → satırlar); plans: kart haritası (ledgerPlansByAccount) — çok carili çağıran BİR kez verir.
+  function ledgerLines({ ids = null, plans = null } = {}) {
+    const own = linesOwn();
+    const list = Array.isArray(ids) ? JSON.stringify(ids.map(String)) : "";
+    const scope = list ? "SELECT value FROM json_each(?)" : "";
+    const args = list ? [list] : [];
+    const rows = store.all(`SELECT id FROM accounts WHERE deleted_at IS NULL${scope ? ` AND id IN (${scope})` : ""} ORDER BY name COLLATE NOCASE`, ...args);
+    const entries = own.entriesByAccount(scope, args);
+    return own.ledgerLinesOf(rows, entries, plans || own.ledgerPlansByAccount());
+  }
+  // Tek carinin kuyruk girdisi (routes/invoices.mjs obligationsFor'un girdisi); ledger verilmezse satırlar ledgerLines'tan (silinmiş / olmayan cari: satırsız).
+  function accountInput(accountId, day, ledger = null) {
+    return withExtras(accountSettleInput(accountId, ledger || ledgerLines({ ids: [accountId] }).get(accountId) || [], day), obligationExtras(accountId), accountId);
+  }
+  // Bütün (ya da ids) carilerin kuyruk girdileri: Map(cari → girdi) — routes/invoices.mjs allSettled'in kurgusu (settleTables + batchSettleInput + obligationExtras()).
+  function batchInputs(day, { ledgers = null, ids = null } = {}) {
+    const map = ledgers || ledgerLines({ ids });
+    const tables = settleTables();
+    const extras = obligationExtras();
+    const out = new Map();
+    for (const [accountId, lines] of map) out.set(accountId, withExtras(batchSettleInput(accountId, lines, tables, day), extras, accountId));
+    return out;
+  }
+  return { offsetLabel, chequeLinks, settleTables, batchSettleInput, settleKey, lockResolver, doubtfulRecordsOf, obligationExtras, linkTimesOf, chequeLinkMoments, withExtras, accountSettleInput, ledgerLines, accountInput, batchInputs };
 }
