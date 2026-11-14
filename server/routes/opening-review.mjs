@@ -11,13 +11,22 @@
 //                                                                   geri alınır, satır yeniden onay bekler)
 //   POST /api/workspace/opening-review                            → { items, changed } (accounts.manage) — toplu (tur 2c): { ids: [...], decision }; aynı işlemde, en çok 1.000;
 //                                                                   listede olmayan kimlik varsa hiçbiri yazılmaz (404)
+// YETKİ (2.5.0 Ç5-A tur 2e, dar kontrol c5a2 DÜŞÜK-4; BAŞ MİMAR KARARI 14.11 (c); C5-ACILIS-TASARIM §17.13): tarihi dönem kilidinin gününde ya da öncesinde olan (KİLİTLİ dönemdeki) satırın
+// kararı ve geri alınması — tek ve toplu — yalnız dönem kilidini koyan yetkiyle (system.manage — yönetici); yoksa 403 opening-review-locked ve ileti yöneticiye kalan kayıtları sayar.
+// Toplu kararda seçimde tek bir kilitli satır bile varsa İŞLEM BÜTÜN reddedilir (hiçbiri yazılmaz). Açık dönemdeki satır accounts.manage'da kalır; liste / sayı uçları değişmez. Karar
+// anındaki kilide bakılır: kilit sonradan ilerleyip kararlı satırı kapsarsa geri alma da yöneticidedir.
 import { HttpError, ok, readJson, text } from "../lib/http.mjs";
 import { createOpeningReview } from "../lib/ledger-opening.mjs";
+import { canUser } from "../lib/permissions.mjs";
 
 const DECISIONS = ["confirm", "reject", "undo"];
 const AUDIT = { confirm: "account.opening.confirmed", reject: "account.opening.rejected", undo: "account.opening.reopened" };
 const MAX_BULK = 1000;
 const MAX_PAGE = 500;
+const LOCKED_PERMISSION = "system.manage";
+const SHOWN_LOCKED = 5;
+const dayText = iso => String(iso || "").split("-").reverse().join(".");
+const moneyText = value => `${(Number(value) || 0).toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} TL`;
 
 export function registerOpeningReviewRoutes(router, { store, auth, audit = () => {}, events = null, period = null }) {
   const review = createOpeningReview({ store });
@@ -25,6 +34,30 @@ export function registerOpeningReviewRoutes(router, { store, auth, audit = () =>
     const decision = text(body.decision);
     if (!DECISIONS.includes(decision)) throw new HttpError(400, "Kararı seçin: Açılış (onayla), Açılış Değil (reddet) ya da Karar Bekliyor'a Geri Al.", { code: "opening-review-decision" });
     return decision;
+  };
+  /** DÜŞÜK-4: kilitli dönemdeki satırın kararı yalnız yöneticide (yukarıdaki YETKİ). Listede olmayan kimlik burada sayılmaz (404 kararın kendisinde). */
+  const assertLockedAllowed = (user, ids, { single = false } = {}) => {
+    const locked = period?.lockedUntil?.() || "";
+    if (!locked || canUser(user, LOCKED_PERMISSION)) return;
+    const unique = [...new Set(ids)];
+    let rows = [];
+    try {
+      rows = store.all(
+        `SELECT e.id, e.date, e.amount, COALESCE(a.name, '') AS name FROM account_entries e LEFT JOIN accounts a ON a.id = e.account_id
+         WHERE e.id IN (${unique.map(() => "?").join(", ")}) AND COALESCE(e.opening_review, '') <> '' AND e.date <= ? ORDER BY e.date, e.rowid`,
+        ...unique, locked,
+      );
+    } catch {
+      return; // liste hazır değil (sütun yok): karar ucu 503 döner
+    }
+    if (!rows.length) return;
+    const span = `${dayText(locked)} ve öncesi`;
+    const listed = rows.slice(0, SHOWN_LOCKED).map(row => `${dayText(row.date)} ${row.name} ${moneyText(row.amount)}`).join("; ");
+    const more = rows.length > SHOWN_LOCKED ? ` ve ${rows.length - SHOWN_LOCKED} kayıt daha` : "";
+    const message = single
+      ? `Bu kayıt kilitli dönemde (${span}); kararı yalnız yönetici verebilir ya da geri alabilir.`
+      : `Seçilen kayıtlardan ${rows.length} tanesi kilitli dönemde (${span}); kilitli dönemdeki kaydın kararını yalnız yönetici verebilir. Hiçbir karar kaydedilmedi. Yöneticiye kalan kayıtlar: ${listed}${more}.`;
+    throw new HttpError(403, message, { code: "opening-review-locked", lockedUntil: locked, ids: rows.map(row => row.id) });
   };
   const changedRows = (user, decision, rows) => {
     const changed = rows.filter(row => row.changed);
@@ -55,6 +88,7 @@ export function registerOpeningReviewRoutes(router, { store, auth, audit = () =>
     const ids = Array.isArray(body.ids) ? body.ids.map(id => text(id).slice(0, 120)).filter(Boolean) : [];
     if (!ids.length) throw new HttpError(400, "Karar verilecek kayıtları seçin.", { code: "opening-review-ids" });
     if (ids.length > MAX_BULK) throw new HttpError(400, `Toplu kararda en çok ${MAX_BULK} kayıt seçilebilir.`, { code: "opening-review-ids" });
+    assertLockedAllowed(user, ids);
     const result = store.tx(() => {
       const out = review.decideMany(ids, decision);
       // Listede olmayan kimlik: işlem geri alınır (yarım toplu karar yazılmaz).
@@ -69,7 +103,9 @@ export function registerOpeningReviewRoutes(router, { store, auth, audit = () =>
     const user = auth.requirePermission(req, "accounts.manage");
     const body = (await readJson(req)) || {};
     const decision = decisionOf(body);
-    const result = store.tx(() => review.decide(text(params.id).slice(0, 120), decision));
+    const id = text(params.id).slice(0, 120);
+    assertLockedAllowed(user, [id], { single: true });
+    const result = store.tx(() => review.decide(id, decision));
     if (result.status === 503) throw new HttpError(503, "Açılış Olabilir listesi hazır değil.");
     if (result.status === 404) throw new HttpError(404, "Bu kayıt Açılış Olabilir listesinde değil.", { code: "opening-review-missing" });
     if (result.changed) changedRows(user, decision, [{ ...result.row, changed: true }]);
