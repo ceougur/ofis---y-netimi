@@ -12,6 +12,7 @@ import { DOCUMENT_GL, documentGl, mainOfSub } from "./cheque-gl.mjs";
 import { DOUBTFUL_CHART, DOUBTFUL_GL, applyDoubtfulToJournal, doubtfulKeepOf } from "./doubtful-gl.mjs";
 import { roundMoney } from "./money.mjs";
 import { OPENING_ROLES, effectiveGl } from "./bank/voucher.mjs";
+import { isCovered } from "./bank/opening-cover.mjs";
 
 /**
  * Türetme kuralının sürümü (2.5.0 Ç3; docs/erp/C3-DONDURMA-TASARIM.md §5): kilit konunca donan satırlar bu etiketle saklanır (ledger_snapshots.rule_version). Bir olayın
@@ -378,8 +379,16 @@ export function journal(rows) {
     const value = cents(amount);
     if (!value) return;
     const line = (target, dr, cr) => {
-      const { account, sub } = typeof target === "string" ? { account: target, sub: "" } : target;
+      let { account, sub } = typeof target === "string" ? { account: target, sub: "" } : target;
+      // 2.5.0 Ç7a tur 2 (K-14 / K-15, S179 = A; lib/bank/opening-cover.mjs): hesabı atanmamış satır (102.00 / 108.00) açılıştan önceyse karşılığı 519 — para açılış
+      // bakiyesinin içindedir (olağan madde, hareketin tarihinde). Kart yolunda yön aileyi seçer: giriş POS tahsilatı, çıkış kurumsal kartla ödeme.
+      if ((sub === "102.00" || sub === "108.00") && isCovered({ way: sub === "102.00" ? "bank" : "card", kind: dr > 0 ? "in" : "out", date }, refs.cover)) {
+        account = OPENING_GL;
+        sub = "";
+      }
       const out = { account, debit: dr, credit: cr };
+      // 519 dökümünün türü (ledger-opening openingMatchBalance "Hesapsız Hareketler (Açılıştan Önce)"); dondurma ve mizan bu alanı okumaz.
+      if (account === OPENING_GL && typeof target !== "string" && target.account !== OPENING_GL) out.cover = true;
       // Bankaya Tahsile Ver (plan §3.14): alınan evrak 101.01 / 121.01 (portföy) ya da 101.02 / 121.02 (bankaya tahsile verilen) alt hesabında
       // izlenir; alt hesabı verilmemiş 101 / 121 satırı portföydür. Σ 101.* = 101, Σ 121.* = 121 (alt hesap mutabakatı: cheque:collections).
       if (sub) out.sub = sub;
@@ -644,15 +653,68 @@ export function journal(rows) {
     if (!fis.has(row.eventId)) fis.set(row.eventId, { date: row.date, text: row.description || row.no || "Banka fişi", seq: row.eventSeq, lines: [] });
     fis.get(row.eventId).lines.push(row);
   }
+  // 2.5.0 Ç7a tur 2b (KG-6 = A, S177 = A; lib/bank/pos-commission.mjs): etkin gün fişine bağlı kalemlerin kesintisi (S) satış günü maddesinde — gün fişinin 108 satırı ve gider
+  // satırı S kadar düşer (102 net değişmez; kalan gider = Komisyon Farkı, valörün gününde).
+  const settledCommission = new Map((rows.posSettled || []).map(row => [row.eventId, { posId: row.posId, minor: Number(row.minor) || 0 }]));
   for (const [eventId, item] of fis) {
-    const lines = item.lines
+    let covered = false;
+    let raw = item.lines
       .slice()
       .sort((a, b) => a.seq - b.seq)
-      .filter(line => Number(line.tryMinor) > 0)
-      .map(line => ({ account: effectiveGl(line), debit: line.side === "D" ? Number(line.tryMinor) : 0, credit: line.side === "C" ? Number(line.tryMinor) : 0, ...(line.sub ? { sub: String(line.sub) } : {}) }));
+      .filter(line => Number(line.tryMinor) > 0);
+    const commission = settledCommission.get(eventId);
+    if (commission?.minor) raw = netCommission(raw, commission, refs);
+    let lines = raw
+      .map(line => {
+        const debit = line.side === "D" ? Number(line.tryMinor) : 0;
+        const credit = line.side === "C" ? Number(line.tryMinor) : 0;
+        // 2.5.0 Ç7a tur 2 (K-14, S179 = A): hesabı atanmamış fiş satırı (Devir Kapanışı ve ters kaydı her zaman; Bankaya Geçmiş Say / Kart Borcuna Aktar'ın 108.00
+        // tarafı Devir Kapanışı'ndan önceyse) 519 — kapattığı satırlar zaten 519'dadır (lib/bank/opening-cover.mjs).
+        if (!line.ref && (line.sub === "102.00" || line.sub === "108.00") && line.ref !== undefined && isCovered({ bankLine: true, carry: Number(line.carry) === 1, date: item.date }, refs.cover)) {
+          covered = true;
+          return { account: OPENING_GL, debit, credit };
+        }
+        return { account: effectiveGl(line), debit, credit, ...(line.sub ? { sub: String(line.sub) } : {}) };
+      });
+    // Aynı maddede 519'un iki yanı netlenir (Devir Kapanışı: B 519 / A 519 → madde yazılmaz; mizanın devir hızı şişmez).
+    if (covered) {
+      const net = lines.filter(line => line.account === OPENING_GL).reduce((sum, line) => sum + line.debit - line.credit, 0);
+      lines = lines.filter(line => line.account !== OPENING_GL);
+      if (net) lines.push({ account: OPENING_GL, debit: net > 0 ? net : 0, credit: net < 0 ? -net : 0, cover: true });
+    }
     at = item.seq;
     // 2.5.0 Ç5-A (M-04 / M-05 / M-06, K-14; BAŞ MİMAR B3): saklı "500" (rol opening / closing) türetmede 519; açılış fişi ve Devir Kapanışı (ve ters kayıtları) açılış sınıfı.
     if (lines.length) out.push(stamp({ id: `bank:${eventId}`, date: item.date, source: "Banka fişi", text: item.text, lines, ...(item.lines.some(line => OPENING_ROLES.has(line.role)) ? { cls: OPENING_CLASS } : {}) }));
+  }
+  // 2.5.0 Ç7a tur 2b (KG-6 = A; kural kitabı §9 "satış (çekim) günü (B komisyon hesabı / A 108; valörde net)"; S178 = A: yalnız BSMV / vergisiz kip): POS kaydının (satış ya da
+  // iade) günü B komisyon hesabı / A 108.POS = kalemlerinin kesintisi (taksitli satışta bütün taksitler; iade edilen kesinti ters yön — KG-20 A). Komisyon hesabı kalem kalem:
+  // bankaya geçmiş kalemde gün fişinin gider satırının hesabı, bekleyende Banka Ayarları'ndaki güncel hesap.
+  for (const row of rows.posCommission || []) {
+    let parts;
+    try {
+      parts = JSON.parse(row.parts || "[]");
+    } catch {
+      parts = [];
+    }
+    const byGl = new Map();
+    let total = 0;
+    for (const [, minor, gl] of parts) {
+      const value = Number(minor) || 0;
+      if (!value) continue;
+      const account = gl || refs.commissionGl || "653";
+      byGl.set(account, (byGl.get(account) || 0) + value);
+      total += value;
+    }
+    const lines = [];
+    for (const [account, value] of byGl) if (value) lines.push({ account, debit: value > 0 ? value : 0, credit: value < 0 ? -value : 0 });
+    if (total) {
+      const { account, sub } = moneyAccount("card", row.posId, refs);
+      lines.push({ account, sub, debit: total < 0 ? -total : 0, credit: total > 0 ? total : 0 });
+    }
+    if (!lines.length) continue;
+    at = Number(row.seq);
+    const refund = row.kind === "refund";
+    out.push(stamp({ id: `pos-commission:${row.saleId}`, date: row.date, source: refund ? "POS Komisyon İadesi" : "POS Komisyonu", text: `${refund ? "POS Komisyon İadesi" : "POS Komisyonu (Satış Günü)"}${row.no ? ` · ${row.no}` : ""}`, lines }));
   }
   // 2.4.3 MM3: KDV Mahsup Fişi (ay sonu tarihli; vat_offsets): ayın 391'i ve 191'i kapanır, fark 360'a (ödenecek) ya da 190'a (devreden); önceki
   // devreden (190) kullanılır. Geri alınan fiş (reversed) ters kaydıyla AYNI GÜN yazılır (ay sonu mizanı sıfırlanır, iz görünür).
@@ -679,6 +741,28 @@ export function journal(rows) {
   }
   journalSort(out);
   return out;
+}
+/**
+ * 2.5.0 Ç7a tur 2b (KG-6; lib/bank/pos-commission.mjs): gün fişinin saklı satırları, bağlı kalemlerin kesintisi (S) satış günü maddesine alınmış olarak — 108 satırı (alacak yönlü
+ * işaretli v) v − S, gider satırı (borç yönlü işaretli x) x − S; satır yoksa açılır (108: POS'un alt hesabı; gider: güncel komisyon hesabı), sıfırsa yazılmaz. 102 satırı aynen.
+ */
+function netCommission(raw, { posId, minor }, refs) {
+  const out = raw.map(line => ({ ...line }));
+  const apply = (role, sign, make) => {
+    let line = out.find(item => item.role === role);
+    if (!line) {
+      line = { ...make(), side: sign > 0 ? "C" : "D", tryMinor: 0, seq: Number.MAX_SAFE_INTEGER };
+      out.push(line);
+    }
+    // sign: 108 satırında alacak, gider satırında borç artı.
+    const positive = sign > 0 ? "C" : "D";
+    const value = (line.side === positive ? 1 : -1) * Number(line.tryMinor) - minor;
+    line.side = value >= 0 ? positive : positive === "C" ? "D" : "C";
+    line.tryMinor = Math.abs(value);
+  };
+  apply("pos", 1, () => ({ role: "pos", gl: "108", sub: moneyAccount("card", posId, refs).sub, ref: posId || "" }));
+  apply("expense", -1, () => ({ role: "expense", gl: refs.commissionGl || "653", sub: "", ref: "" }));
+  return out.filter(line => Number(line.tryMinor) > 0);
 }
 /** Saklanan fişin yevmiye sınıfı (ledger_vouchers.journal_class) → madde kimliğinin öneki (JOURNAL_CLASS). */
 export const VOUCHER_ENTRY = Object.freeze({ opening: "voucher-open", ordinary: "voucher", "period-end": "voucher-end", closing: "voucher-close" });
@@ -712,6 +796,8 @@ export const JOURNAL_CLASS = Object.freeze({
   cheque: 36,
   "cheque-deposit": 36,
   "cheque-withdraw": 36,
+  // 2.5.0 Ç7a tur 2b (KG-6): POS kaydının satış / iade günü komisyon maddesi — kaydın para satırından sonra, Banka Fişi'nden (gün fişi) önce.
+  "pos-commission": 38,
   bank: 39,
   voucher: 45,
   "plan-close": 50,

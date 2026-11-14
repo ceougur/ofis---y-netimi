@@ -1,0 +1,21 @@
+#!/bin/bash
+# Ç7a tur 2b HIZ KABUL — özel ölçüm kilidinin İÇİNDE çağrılır (flock -x -n). Aynı tohumlu kopyadan taze kopya: taban / yeni × kilitsiz / kilitli.
+N=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b
+S=/dev/shm/c7a3-olcum
+YENI=/home/user/ofis---y-netimi/.claude/worktrees/agent-a39ae245edbf12bf8
+TABAN=$N/taban-wt
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+echo "başta yük $(cat /proc/loadavg) · $(date -u +%H:%M:%S)"
+for kip in ${KIPLER:-kilitsiz kilitli}; do
+  for kod in taban yeni; do
+    rm -rf "$S/$kod-$kip"
+    cp -a "$S/tohum" "$S/$kod-$kip" || exit 1
+    if [ "$kip" = kilitli ]; then python3 -I /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2-olcum/kilit.py "$S/$kod-$kip/data/destekofis.sqlite" || exit 1; fi
+    ROOT=$TABAN; [ "$kod" = yeni ] && ROOT=$YENI
+    echo "=== $kod $kip · yük $(cat /proc/loadavg)"
+    DUMP="$N/olcum/dokum-$kod-$kip${EK:-}.json" timeout -k 10 2400 node --disable-warning=ExperimentalWarning --max-old-space-size=6144 "$N/olcum/olc-c7a3.mjs" "$ROOT" "$S/$kod-$kip" 5 > "$N/olcum/olcum-$kod-$kip${EK:-}.log" 2>&1
+    echo "çıkış $?"
+    rm -rf "$S/$kod-$kip"
+  done
+done
+echo "sonda yük $(cat /proc/loadavg) · $(date -u +%H:%M:%S)"

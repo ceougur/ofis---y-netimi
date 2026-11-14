@@ -1,0 +1,18 @@
+UTC çıkış 0 · # tests 1751 # pass 1751 # fail 0 # cancelled 0 
+Europe/Istanbul çıkış 0 · # tests 1751 # pass 1751 # fail 0 # cancelled 0 
+senaryo-kart-faizi-250 çıkış 0 ·  · TAMAM: 26 denetim geçti, 0 başarısız. Ekran görüntüleri: /home/user/ofis---y-netimi/.claude/worktrees/agent-a39ae
+senaryo-banka-210 çıkış 1 ·  · BAŞARISIZ: 418 denetim geçti, 10 başarısız. Ekran görüntüleri: /home/user/ofis---y-netimi/.claude/worktrees/agen
+senaryo-banka-210b çıkış 0 ·  · ✓ senaryo-banka-210b: 90 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a
+senaryo-banka-210-temel çıkış 0 ·  · ✓ senaryo-banka-210-temel: 80 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/ag
+senaryo-banka-210-eski-satir çıkış 1 ·  · ✗ senaryo-banka-210-eski-satir: 25 geçti, 4 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktre
+senaryo-banka-220 çıkış 0 ·  · ✓ senaryo-banka-220: 76 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a3
+senaryo-pos-220 çıkış 0 ·  · ✓ senaryo-pos-220: 113 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a39
+senaryo-pos-kart-249 çıkış 0 ·  · ✓ senaryo-pos-kart-249: 383 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agen
+senaryo-raporlar çıkış 0 ·  · 87/87 denetim geçti. Ekran görüntüleri: /home/user/ofis---y-netimi/.claude/worktrees/agent-a39ae245edbf12bf8/test/e2
+senaryo-banka-rapor-243 çıkış 0 ·  · ✓ senaryo-banka-rapor-243: 38 geçti, 0 kaldı · depo /home/user/ofis---y-netimi/.claude/worktrees/agent-a39ae245edbf
+senaryo-211 çıkış 0 ·  · 59/59 denetim geçti. Ekran görüntüleri: /home/user/ofis---y-netimi/.claude/worktrees/agent-a39ae245edbf12bf8/test/e2
+senaryo-tahsile-ver-220 çıkış 0 ·  · ✓ senaryo-tahsile-ver-220: 140 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/a
+senaryo-acilis-duzeni-250 çıkış 0 · # pass 27 # fail 0  · # fail 0
+bitti 0
+
+[exited with code 0]

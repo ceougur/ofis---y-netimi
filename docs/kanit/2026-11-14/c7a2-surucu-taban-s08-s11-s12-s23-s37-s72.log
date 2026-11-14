@@ -1,0 +1,61 @@
+s08-pos-kg6 [TZ=UTC]: 20 olay · yapıldı 14 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 26 ms
+    s08-pos-kg6 [UTC] öz denetim TAMAM · AYNI 26 · U 3 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s08-pos-kg6 [TZ=Europe/Istanbul]: 20 olay · yapıldı 14 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 23 ms
+    s08-pos-kg6 [Europe/Istanbul] öz denetim TAMAM · AYNI 26 · U 3 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s11-kasa-carisiz-kg3 [TZ=UTC]: 19 olay · yapıldı 16 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 20 ms
+    s11-kasa-carisiz-kg3 [UTC] öz denetim TAMAM · AYNI 15 · U 12 · P 0 · K 0 · R 0 · SINIFLANMADI 3 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 2 (sınıfsız 2)  (1 sn + 0 sn)
+s11-kasa-carisiz-kg3 [TZ=Europe/Istanbul]: 19 olay · yapıldı 16 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 19 ms
+    s11-kasa-carisiz-kg3 [Europe/Istanbul] öz denetim TAMAM · AYNI 15 · U 12 · P 0 · K 0 · R 0 · SINIFLANMADI 3 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 2 (sınıfsız 2)  (1 sn + 0 sn)
+s12-banka-islemleri [TZ=UTC]: 17 olay · yapıldı 14 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 28 ms
+    s12-banka-islemleri [UTC] öz denetim TAMAM · AYNI 29 · U 4 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 2 (sınıfsız 2)  (1 sn + 0 sn)
+s12-banka-islemleri [TZ=Europe/Istanbul]: 17 olay · yapıldı 14 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 29 ms
+    s12-banka-islemleri [Europe/Istanbul] öz denetim TAMAM · AYNI 29 · U 4 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 2 (sınıfsız 2)  (1 sn + 0 sn)
+s23-devir-pos-valor-kg6 [TZ=UTC]: 7 olay · yapıldı 3 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 19 ms
+    s23-devir-pos-valor-kg6 [UTC] öz denetim TAMAM · AYNI 7 · U 2 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s23-devir-pos-valor-kg6 [TZ=Europe/Istanbul]: 7 olay · yapıldı 3 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 24 ms
+    s23-devir-pos-valor-kg6 [Europe/Istanbul] öz denetim TAMAM · AYNI 7 · U 2 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s37-kart-borcuna-aktar [TZ=UTC]: 10 olay · yapıldı 8 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 21 ms
+    s37-kart-borcuna-aktar [UTC] öz denetim TAMAM · AYNI 11 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 3 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 1 (sınıfsız 1)  (1 sn + 0 sn)
+s37-kart-borcuna-aktar [TZ=Europe/Istanbul]: 10 olay · yapıldı 8 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 25 ms
+    s37-kart-borcuna-aktar [Europe/Istanbul] öz denetim TAMAM · AYNI 11 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 3 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 1 (sınıfsız 1)  (1 sn + 0 sn)
+s72-s21-pos-valor-resmi-tatil [TZ=UTC]: 33 olay · yapıldı 22 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 30 ms
+    s72-s21-pos-valor-resmi-tatil [UTC] öz denetim TAMAM · AYNI 9 · U 3 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s72-s21-pos-valor-resmi-tatil [TZ=Europe/Istanbul]: 33 olay · yapıldı 22 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 23 ms
+    s72-s21-pos-valor-resmi-tatil [Europe/Istanbul] öz denetim TAMAM · AYNI 9 · U 3 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+
+AYNI 194 · U 60 · P 0 · K 0 · R 0 · SINIFLANMADI 12 · ÖLÇÜLEMEDİ 0 · red farkı 0 · uygulanamayan olay 0 · sınıfsız adım farkı 10 · değişmez 0 · öz denetim bozuk 0 · koşu hatası 0
+Ölçüm (olay döngüsü en çok, ms): s72-s21-pos-valor-resmi-tatil [UTC] 30 (koşu 1 sn; GET ledger ort 3 / en çok 6 ms) · s12-banka-islemleri [Europe/Istanbul] 29 (koşu 1 sn; GET ledger ort 3 / en çok 5 ms) · s12-banka-islemleri [UTC] 28 (koşu 1 sn; GET ledger ort 3 / en çok 5 ms) · s08-pos-kg6 [UTC] 26 (koşu 1 sn; GET ledger ort 3 / en çok 5 ms) · s37-kart-borcuna-aktar [Europe/Istanbul] 25 (koşu 1 sn; GET ledger ort 3 / en çok 4 ms)
+BEKLEYEN KURAL FARKLARI (kimlik: senaryo / denetim [UTC]): D2–D4 2/2 · Ç5-ACILIS-519 2/8 · Ç7a-K14-K15 2/12 · Ç7a-KG19 1/4 · Ç7a-KG6 3/8 · Ç7b-KG3 1/6
+U etiketleri: K14-HESAPSIZ 24 · KG6-POS-TARIH 16 · C5-ACILIS-519 16 · KG3-KAYIT 12 · KG19-YOLDAKI 8
+
+FARKLAR (22; ilk 200):
+  s11-kasa-carisiz-kg3 [Europe/Istanbul] ADIM 1 cari_acilis  {"ana":{"500":7000,"519":-7000}} → SINIFLANMADI
+  s11-kasa-carisiz-kg3 [Europe/Istanbul] ADIM 3 banka_acilis  {"ana":{"500":100000,"519":-100000}} → SINIFLANMADI
+  s11-kasa-carisiz-kg3 [Europe/Istanbul] bil ana:519 program -107000 · kâhin -100000 · bugün 0 → SINIFLANMADI
+  s11-kasa-carisiz-kg3 [Europe/Istanbul] mz ana:519 program -107000 · kâhin -100000 · bugün 0 → SINIFLANMADI
+  s11-kasa-carisiz-kg3 [Europe/Istanbul] son ana:519 program -107000 · kâhin -100000 · bugün 0 → SINIFLANMADI
+  s11-kasa-carisiz-kg3 [UTC] ADIM 1 cari_acilis  {"ana":{"500":7000,"519":-7000}} → SINIFLANMADI
+  s11-kasa-carisiz-kg3 [UTC] ADIM 3 banka_acilis  {"ana":{"500":100000,"519":-100000}} → SINIFLANMADI
+  s11-kasa-carisiz-kg3 [UTC] bil ana:519 program -107000 · kâhin -100000 · bugün 0 → SINIFLANMADI
+  s11-kasa-carisiz-kg3 [UTC] mz ana:519 program -107000 · kâhin -100000 · bugün 0 → SINIFLANMADI
+  s11-kasa-carisiz-kg3 [UTC] son ana:519 program -107000 · kâhin -100000 · bugün 0 → SINIFLANMADI
+  s12-banka-islemleri [Europe/Istanbul] ADIM 1 banka_acilis  {"ana":{"500":1000000,"519":-1000000}} → SINIFLANMADI
+  s12-banka-islemleri [Europe/Istanbul] ADIM 2 banka_acilis  {"ana":{"500":200000,"519":-200000}} → SINIFLANMADI
+  s12-banka-islemleri [UTC] ADIM 1 banka_acilis  {"ana":{"500":1000000,"519":-1000000}} → SINIFLANMADI
+  s12-banka-islemleri [UTC] ADIM 2 banka_acilis  {"ana":{"500":200000,"519":-200000}} → SINIFLANMADI
+  s37-kart-borcuna-aktar [Europe/Istanbul] ADIM 3 kart_acilis  {"ana":{"500":-100000,"519":100000}} → SINIFLANMADI
+  s37-kart-borcuna-aktar [Europe/Istanbul] bil ana:519 program 100000 · kâhin 80000 · bugün 0 → SINIFLANMADI
+  s37-kart-borcuna-aktar [Europe/Istanbul] mz ana:519 program 100000 · kâhin 80000 · bugün 0 → SINIFLANMADI
+  s37-kart-borcuna-aktar [Europe/Istanbul] son ana:519 program 100000 · kâhin 80000 · bugün 0 → SINIFLANMADI
+  s37-kart-borcuna-aktar [UTC] ADIM 3 kart_acilis  {"ana":{"500":-100000,"519":100000}} → SINIFLANMADI
+  s37-kart-borcuna-aktar [UTC] bil ana:519 program 100000 · kâhin 80000 · bugün 0 → SINIFLANMADI
+  s37-kart-borcuna-aktar [UTC] mz ana:519 program 100000 · kâhin 80000 · bugün 0 → SINIFLANMADI
+  s37-kart-borcuna-aktar [UTC] son ana:519 program 100000 · kâhin 80000 · bugün 0 → SINIFLANMADI
+
+# tests 276
+# pass 254
+# fail 22
+# cancelled 0
+# skipped 0
+# todo 0
+Çıktı: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2q/surucu-taban

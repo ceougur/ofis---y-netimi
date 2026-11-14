@@ -1,0 +1,73 @@
+{
+  "ad": "c7a2-taban-kirmizi",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/hesapsiz-acilis-250.test.mjs test/hesapsiz-acilis-v249-250.test.mjs",
+  "commit": "5abefb4cde4f95098a2b8c86c2b29a17521dec52",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v470 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-14T10:14:46.500Z",
+  "sure_sn": 1.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 0,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Ç7a K-14 / K-15 — açılıştan önceki hesapsız hareketin karşılığı 519 (S179 = A) › 1. açılıştan önceki havale 519'da, açılış günü ve sonrası 102.00'da; POS yalnız Devir Kapanışı'yla; kova ve 519 dökümü aynı satırları düşer",
+      "konum": "test/hesapsiz-acilis-250.test.mjs:55:3",
+      "hata": "20.09 tahsilat B 519 / A 120 · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç7a K-14 / K-15 — açılıştan önceki hesapsız hareketin karşılığı 519 (S179 = A) › 2. sınır yolun EN GEÇ açılışı; hesabın pasifliği sınırı değiştirmez; silinen hesabın açılışı sayılmaz",
+      "konum": "test/hesapsiz-acilis-250.test.mjs:78:3",
+      "hata": "01.10 ve 03.10 Garanti'nin açılışından (05.10) önce · 6700 !== 0 (beklenen 0, gelen 6700)"
+    },
+    {
+      "ad": "Ç7a K-14 / K-15 — açılıştan önceki hesapsız hareketin karşılığı 519 (S179 = A) › 3. Devir Kapanışı: D'den önceki POS da 519'a; kapanış maddesi yevmiyede yok; Geri Al birebir",
+      "konum": "test/hesapsiz-acilis-250.test.mjs:97:3",
+      "hata": "B 519 / A 519 netlenir, madde yazılmaz · 1 !== 0 (beklenen 0, gelen 1)"
+    },
+    {
+      "ad": "Ç7a K-14 / K-15 — açılıştan önceki hesapsız hareketin karşılığı 519 (S179 = A) › 4. K-15: kart hesabından önceki kurumsal kart ödemesi 519'da; Kart Borcuna Aktar havuzu boş; sonraki ödeme kart hesabına",
+      "konum": "test/hesapsiz-acilis-250.test.mjs:123:3",
+      "hata": "açılıştan önceki kart ödemesi A 519 · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç7a K-14 / K-15 — açılıştan önceki hesapsız hareketin karşılığı 519 (S179 = A) › 5. kapı: hesap varken 'Hesapsız (Açılıştan Önce)' ile girilen satır yazılır (süzgeçli kapı 409 vermez), 519'a düşer; silinince geri gelir",
+      "konum": "test/hesapsiz-acilis-250.test.mjs:143:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç7a K-14 / K-15 — v2.4.9 kilitli verisinde hesapsız açılış öncesi hareketler (kabul D): fark tam, donmuş defter değişmez, Kural Farkı fişi › [1] Kural Değişikliği Farkı: dört kaynak (H1, K1, H2, Devir Kapanışı) elle hesapla aynı; donmuş defter değişmedi",
+      "konum": "test/hesapsiz-acilis-v249-250.test.mjs:93:3",
+      "hata": "H1: 102.00 → 519 · + actual - expected · + {} (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç7a K-14 / K-15 — v2.4.9 kilitli verisinde hesapsız açılış öncesi hareketler (kabul D): fark tam, donmuş defter değişmez, Kural Farkı fişi › [2] Kural Farkı Düzeltme Fişi: yalnız bu kuralın kalemleri ve Ç5-A'nın 500 → 519'u; 102.00 / 108.00 alt defter hesabı farkı ayrı (fişe yazılmaz)",
+      "konum": "test/hesapsiz-acilis-v249-250.test.mjs:105:3",
+      "hata": "alt defter farkı (102.00 −700) ayrı listede: [] · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç7a K-14 / K-15 — v2.4.9 kilitli verisinde hesapsız açılış öncesi hareketler (kabul D): fark tam, donmuş defter değişmez, Kural Farkı fişi › [3] açık dönemde yeni hesapsız satır (Garanti'den önce) yeni kuralla: B 519 / A 120; farkta yok",
+      "konum": "test/hesapsiz-acilis-v249-250.test.mjs:120:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../kanit/2026-11-14/c7a2-taban-kirmizi.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2q/taban-ag",
+  "ham_cikti_sha256": "9770510c9573ca9a4b207d69634bee3186a93703a07bb0b6f4104b9769c62dbe",
+  "ham_cikti_bayt": 12155
+}

@@ -497,7 +497,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     const ledger = (await api("GET", "/api/workspace/ledger")).data;
     if (!ledger.trial.balanced || ledger.trial.totals.difference !== 0) problems.push(`Mizan dengesiz: borç ${ledger.trial.totals.debit} alacak ${ledger.trial.totals.credit}`);
     const gl = code => centsOf(ledger.trial.accounts.find(a => a.code === code)?.balance || 0);
-    if (gl("100") !== M.kasa.cash || gl("102") !== M.kasa.bank || gl("108") !== M.kasa.card - ccardNet()) problems.push(`Ana defter kasa hesapları ≠ model: 100 ${gl("100") / 100}, 102 ${gl("102") / 100}, 108 ${gl("108") / 100} (model 108 ${tl(M.kasa.card - ccardNet())})`);
+    if (gl("100") !== M.kasa.cash || gl("102") !== M.kasa.bank || gl("108") !== M.kasa.card - ccardNet() - posPendingFee()) problems.push(`Ana defter kasa hesapları ≠ model: 100 ${gl("100") / 100}, 102 ${gl("102") / 100}, 108 ${gl("108") / 100} (model 108 ${tl(M.kasa.card - ccardNet() - posPendingFee())})`);
     if (gl("309") !== ccardNet()) problems.push(`Ana defter 309 (Kurumsal Kredi Kartları) ${gl("309") / 100} · model ${tl(ccardNet())}`);
     // Bankaya Tahsile Ver (plan §3.14): 101.02 (Alt Hesap Mizanı) = modelde tahsildeki evrak; 101.01 = portföy − tahsildeki; 101 toplamı aynı.
     // Doğrulama T4: Alt Hesap Mizanı'nda 101.01 hiç tahsile verilmemiş şirkette de görünür (önceden yalnız tahsil kaydı varken denetleniyordu).
@@ -649,7 +649,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     const byTypeR = t => accounts.filter(a => a.type === t).reduce((s, a) => s + (M.cari.get(a.id) || 0), 0);
     // 2.3.0 İz 1: 120 = müşteri bakiyeleri (şüpheli müşterileri dahil) − açık şüpheli (128).
     const dcR = doubtfulCustomers.reduce((s, a) => s + (M.cari.get(a.id) || 0), 0) - (doubtfulOn ? doubtfulModel().open : 0);
-    for (const [code, want] of [["100", M.kasa.cash], ["102", M.kasa.bank], ["108", M.kasa.card - ccardNet()], ["309", ccardNet()], ["120", byTypeR("customer") + dcR], ["320", byTypeR("supplier")], ["336", byTypeR("other")]]) {
+    for (const [code, want] of [["100", M.kasa.cash], ["102", M.kasa.bank], ["108", M.kasa.card - ccardNet() - posPendingFee()], ["309", ccardNet()], ["120", byTypeR("customer") + dcR], ["320", byTypeR("supplier")], ["336", byTypeR("other")]]) {
       if (signedRow(code) !== want) problems.push(`Hesap Planı Mizanı raporu ${code}: ${tl(signedRow(code))} · model ${tl(want)}`);
     }
     if (sum(mizan, "Fark") !== 0) problems.push(`Hesap Planı Mizanı raporu: Fark ${tl(sum(mizan, "Fark"))}`);
@@ -1028,6 +1028,10 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   const bankNet = (bankId, until = "") => [...M.bankLines, ...boundRows()].filter(x => x.bankId === bankId && (!until || x.date <= until)).reduce((t, x) => t + x.cents, 0);
   /** K2: kurumsal kartlara bağlı satırların toplamı (309; ödeme −, iade +). */
   const ccardNet = (until = "") => cards.reduce((t, c) => t + bankNet(c.id, until), 0);
+  // 2.5.0 Ç7a tur 2b — BEKLENTİ BİLEREK DEĞİŞTİ (KG-6 = A, kullanıcı 05.11 17:16 (5): POS komisyonu satış (çekim) günü, valörde net): Ana Defter'in 108'i = bankaya geçmemiş NET
+  // alacak — bekleyen (gün fişi yazılmamış) satış kalemlerinin komisyonu satış gününde 653'e alındığı için 108'den düşer. Motorun POS'u BSMV Dahil, İade Edilmez (iade kaleminde
+  // komisyon iadesi yok). Kasa / Banka özetinin "card" yolu (kasaOf) DEĞİŞMEZ — o alt defterin kendi bakiyesi (brüt).
+  const posPendingFee = () => M.posSales.reduce((t, sale) => t + sale.items.filter(item => !item.settled).reduce((u, item) => u + item.commission, 0), 0);
   /**
    * Modül havalesine hesap seçimi (%60; kalan eski sürüm gibi hesapsız — bankPickLegacy). K2: corporate (kart yolu kurumsal kartla ödeme ya da
    * kurumsal karta iade: cari ödeme, alış tarafı fatura peşini, stok alımı) ise kart yolu da %60 kurumsal karta bağlanır; satış/tahsilat tarafında
