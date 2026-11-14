@@ -110,7 +110,8 @@ try {
     ctx.ziraat = await must("Ziraat", api.post("/api/workspace/bank/accounts", { bankName: "Ziraat Bankası", name: "Ana TL Hesabı", kind: "demand", opening: { date: "2026-10-01", amount: "100.000", confirmed: true } }));
     ctx.garanti = await must("Garanti", api.post("/api/workspace/bank/accounts", { bankName: "Garanti BBVA", name: "Ana TL Hesabı", kind: "demand", opening: { date: "2026-10-01", amount: "50.000", confirmed: true } }));
     const view = await summary();
-    ok(view.realBank.minor === 15_000_000 && view.unassigned.bankMinor === 100_000, `Gerçek Banka ${view.realBank.minor / 100}, Hesabı Atanmamış ${view.unassigned.bankMinor / 100}`);
+    // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7a tur 2 — K-14, KULLANICI KARARI S179 = A): açılıştan önceki hesapsız havale açılışta sayılır (defterde 519) → Hesabı Atanmamış kovası düşer. 10.09 iki hesabın açılışından (01.10) önce.
+    ok(view.realBank.minor === 15_000_000 && view.unassigned.bankMinor === 0, `Gerçek Banka ${view.realBank.minor / 100}, Hesabı Atanmamış ${view.unassigned.bankMinor / 100}`);
   });
 
   const openAbc = async () => {
@@ -141,7 +142,8 @@ try {
     const row = (await entriesOf(ctx.abc.id)).find(entry => entry.id === ctx.oldId);
     ok(!error && row?.amount === 1200 && row?.finRef === "", `düzeltildi: tutar ${row?.amount}, hesap “${row?.finRef}”${error ? `, hata “${error}”` : ""}`);
     const view = await summary();
-    ok(view.realBank.minor === 15_000_000 && view.unassigned.bankMinor === 120_000, `Gerçek Banka ${view.realBank.minor / 100} (değişmedi), Hesabı Atanmamış ${view.unassigned.bankMinor / 100}`);
+    // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7a tur 2 — K-14, KULLANICI KARARI S179 = A): açılıştan önceki hesapsız havale açılışta sayılır (defterde 519) → Hesabı Atanmamış kovası düşer.
+    ok(view.realBank.minor === 15_000_000 && view.unassigned.bankMinor === 0, `Gerçek Banka ${view.realBank.minor / 100} (değişmedi), Hesabı Atanmamış ${view.unassigned.bankMinor / 100}`);
     await closeAll();
   });
 
@@ -180,7 +182,8 @@ try {
       // Sonraki adımların toplamları değişmesin: satır API'den silinir.
       if (added) await must("sil", api.del(`/api/workspace/accounts/${ctx.abc.id}/entries/${added.id}`));
       const view = await summary();
-      ok(view.realBank.minor === 15_000_000 && view.unassigned.bankMinor === 120_000, `silindi: Gerçek Banka ${view.realBank.minor / 100}, Hesabı Atanmamış ${view.unassigned.bankMinor / 100}`);
+      // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7a tur 2 — K-14, KULLANICI KARARI S179 = A): açılıştan önceki hesapsız havale açılışta sayılır (defterde 519) → Hesabı Atanmamış kovası düşer.
+      ok(view.realBank.minor === 15_000_000 && view.unassigned.bankMinor === 0, `silindi: Gerçek Banka ${view.realBank.minor / 100}, Hesabı Atanmamış ${view.unassigned.bankMinor / 100}`);
     } finally {
       await page.unroute("**/api/workspace/bank/choices*", slow);
       await closeAll();
@@ -219,7 +222,8 @@ try {
     const added = list.find(entry => entry.amount === 300 && entry.date === "2026-09-15");
     ok(list.length === before + 1 && added?.finRef === "", `kaydedildi: ${list.length - before} satır, hesap “${added?.finRef}”`);
     const view = await summary();
-    ok(view.realBank.minor === 15_000_000 && view.unassigned.bankMinor === 150_000, `Gerçek Banka ${view.realBank.minor / 100}, Hesabı Atanmamış ${view.unassigned.bankMinor / 100}`);
+    // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7a tur 2 — K-14, KULLANICI KARARI S179 = A): açılıştan önceki hesapsız havale açılışta sayılır (defterde 519) → Hesabı Atanmamış kovası düşer. 15.09 da açılıştan önce.
+    ok(view.realBank.minor === 15_000_000 && view.unassigned.bankMinor === 0, `Gerçek Banka ${view.realBank.minor / 100}, Hesabı Atanmamış ${view.unassigned.bankMinor / 100}`);
     await closeAll();
   });
 
