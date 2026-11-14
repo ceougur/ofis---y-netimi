@@ -13,6 +13,7 @@ import { createHash } from "node:crypto";
 import { nextDayOf, oldRulePinnedPlans, openingMatchBalance, openingMatchPlan, openingMatchTargets, postedRuleDiffCorrections, ruleDiffCorrectionPlan, ruleDiffCorrectionYear } from "../lib/ledger-opening.mjs";
 import { leanAll } from "../lib/lean-rows.mjs";
 import { coverBounds } from "../lib/bank/opening-cover.mjs";
+import { commissionGlOf, commissionReady, salesSql as commissionSalesSql, settledSql as commissionSettledSql } from "../lib/bank/pos-commission.mjs";
 import { roundMoney } from "../lib/money.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -45,6 +46,8 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     if (has("pos_terminals")) for (const row of store.all("SELECT id, gl_sub AS glSub FROM pos_terminals")) out.pos[row.id] = { glSub: row.glSub };
     // 2.5.0 Ç7a tur 2 (K-14 / K-15, S179 = A; lib/bank/opening-cover.mjs): hesabı atanmamış satırın "açılışta sayılmış" sınırları (yalnız okuma).
     out.cover = coverBounds(store);
+    // 2.5.0 Ç7a tur 2b (KG-6, lib/bank/pos-commission.mjs): bekleyen POS kaleminin satış günü maddesinin komisyon hesabı (Banka Ayarları; yalnız okuma).
+    out.commissionGl = commissionGlOf(store);
     return out;
   }
   // filter (v2.1.0, §3.11 mutabakat kapısı "dokunulan varlıklar"): yalnız bu varlıkların satırları — { parties, plans, cheques, invoices,
@@ -222,6 +225,12 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
       // 2.5.0 Ç7a tur 2 (K-14; yalnız okuma): ref (hesabı atanmamış satır '') ve carry (Devir Kapanışı ya da ters kaydı — lib/bank/opening-cover.mjs CARRY_FLAG_SQL'in eşi).
       out.bankLines = all(`SELECT l.event_id AS eventId, e.rowid AS eventSeq, l.seq, l.role, l.gl, l.sub, l.side, l.try_minor AS tryMinor, e.date, e.no, e.description, l.ref AS ref,
         CASE WHEN e.type = 'carry_close' OR (e.type = 'reversal' AND EXISTS (SELECT 1 FROM fin_events o WHERE o.id = e.reversal_of AND o.type = 'carry_close')) THEN 1 ELSE 0 END AS carry FROM bank_lines l ${J} fin_events e ON e.id = l.event_id${filter ? ` WHERE ${set?.events ? `l.event_id IN ${set.events}` : "0"}` : ""} ORDER BY e.date, l.event_id, l.seq`, wanted(set?.events));
+    }
+    // 2.5.0 Ç7a tur 2b (KG-6 = A, S177 = A, S178 = A; lib/bank/pos-commission.mjs — yalnız okuma): POS kaydı başına TEK satır (satış / iade günü komisyon maddesi) ve gün fişi
+    // başına bağlı kalemlerin kesintisi (gün fişi türetmede net). Süzgeçli kurulumda (kapı) olaylarla — defter beklenenleri (money-lines groups) AYNI süzgeçle.
+    if (commissionReady(store) && has("fin_events") && has("bank_lines")) {
+      out.posCommission = all(commissionSalesSql(filter ? set?.events : null), wanted(set?.events));
+      out.posSettled = all(commissionSettledSql(filter ? set?.events : null), wanted(set?.events));
     }
     if (has("cheques")) {
       const eventOf = refOf("cheque_events", "ev") === "''" ? "''" : "ev.event_id";

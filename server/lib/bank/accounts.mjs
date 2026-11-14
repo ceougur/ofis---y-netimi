@@ -25,6 +25,7 @@ import { KIND_GL, accountSpan } from "./checks.mjs";
 import { NON_MONEY_TYPES } from "./event-types.mjs";
 import { MODULE_TABLES, MONEY_SOURCES } from "./money-lines.mjs";
 import { coverBounds, isCovered } from "./opening-cover.mjs";
+import { commissionTrial } from "./pos-commission.mjs";
 import { createBankSettings } from "./settings.mjs";
 import { assertLines, carryLines, openingLines, reclassLines } from "./voucher.mjs";
 import { bankPassiveError, negativeConfirmed } from "./module-ref.mjs";
@@ -1364,6 +1365,15 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
         ...Object.keys(refs.pos).map(id => ({ way: "card", ref: id, ...money.refTotal({ ref: id }) })),
         ...Object.entries(money.unassignedWays()).map(([way, sums]) => ({ way, ref: "", ...sums })),
       ].filter(group => group.count === undefined || group.count > 0).map(group => ({ way: group.way, ref: group.ref, opening: 0, debit: group.debit, credit: group.credit }));
+    // 2.5.0 Ç7a tur 2b (KG-6 = A; pos-commission.mjs): POS'un alt hesabı (108.POS) Ana Defter'in maddeleriyle — satış günü komisyon maddesi ve gün fişinin net 108 satırı.
+    for (const [posId, delta] of commissionTrial(store, { from, to })) {
+      if (!refs.pos[posId]) continue;
+      let group = groups.find(item => item.way === "card" && item.ref === posId);
+      if (!group) groups.push((group = { way: "card", ref: posId, opening: 0, debit: 0, credit: 0 }));
+      group.opening = Number(group.opening) + delta.opening;
+      group.debit = Number(group.debit) + delta.debit;
+      group.credit = Number(group.credit) + delta.credit;
+    }
     for (const group of groups) {
       const main = MAIN_OF_WAY[group.way];
       if (!main) continue;

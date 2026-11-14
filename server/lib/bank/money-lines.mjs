@@ -20,6 +20,7 @@ import { INVOICE_KINDS } from "../invoice-math.mjs";
 import { roundMoney, toCents } from "../money.mjs";
 import { INTERNAL_TYPES, typeLabel } from "./event-types.mjs";
 import { CARRY_FLAG_SQL, COVER_SQL, coverBounds, coverParams } from "./opening-cover.mjs";
+import { commissionByPos } from "./pos-commission.mjs";
 
 const INTERNAL_SQL = [...INTERNAL_TYPES].map(type => `'${type}'`).join(", ");
 // Banka görünümlerinin "Bugün / Bu Ay" giriş-çıkışına girmeyen düzeltme fişleri (açılış, Devir Kapanışı, eski bakiye aktarımı ve ters kayıtları;
@@ -372,7 +373,18 @@ export function createMoneyLines(store, { verify = false } = {}) {
    */
   function groups({ events = null, ids = null, ref = null } = {}) {
     const bounds = coverBounds(store);
-    return store.all(`SELECT CASE WHEN ${COVER_SQL} THEN 'opening' ELSE w.way END AS way, w.ref AS ref, COALESCE(SUM(CASE WHEN w.kind = 'in' THEN w.cents ELSE -w.cents END), 0) AS cents, COUNT(*) AS count FROM (${waySql({ light: true, events, ids, ref, cover: true })}) w GROUP BY 1, w.ref ORDER BY 1, w.ref`, { ...params({ events, ids, ref }), ...coverParams(bounds) });
+    const list = store.all(`SELECT CASE WHEN ${COVER_SQL} THEN 'opening' ELSE w.way END AS way, w.ref AS ref, COALESCE(SUM(CASE WHEN w.kind = 'in' THEN w.cents ELSE -w.cents END), 0) AS cents, COUNT(*) AS count FROM (${waySql({ light: true, events, ids, ref, cover: true })}) w GROUP BY 1, w.ref ORDER BY 1, w.ref`, { ...params({ events, ids, ref }), ...coverParams(bounds) });
+    // 2.5.0 Ç7a tur 2b (KG-6 = A; pos-commission.mjs): POS'un (yol card, ref = POS) defter beklenenine satış günü maddesine alınmış kesinti — süzgeçsizde bekleyen kalemlerin
+    // kesintisi düşer (108.POS = bankaya geçmemiş NET alacak); süzgeçli kapıda türetmeyle AYNI kapsam (olaylar; olaysız süzgeçte hiçbiri). Tek hesaba bakan okuma (ref) düzeltme almaz.
+    if (ref === null || ref === undefined) {
+      const wanted = events ? [...events] : ids ? [] : null;
+      for (const [posId, minor] of commissionByPos(store, { events: wanted })) {
+        const group = list.find(item => item.way === "card" && item.ref === posId);
+        if (group) group.cents = Number(group.cents) - minor;
+        else list.push({ way: "card", ref: posId, cents: -minor, count: 0 });
+      }
+    }
+    return list;
   }
   /**
    * Hesabın (ya da POS'un) bakiyesi, tek kaynaktan, en az kolonla (v2.1.0 Aşama 4; Hareketler'in yürüyen bakiyesi, Hesap Detayı): { cents, count }.

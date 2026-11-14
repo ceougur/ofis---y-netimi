@@ -21,6 +21,9 @@ const COVER = "server/lib/bank/opening-cover.mjs";
 const MONEY = "server/lib/bank/money-lines.mjs";
 const OPENING = "server/lib/ledger-opening.mjs";
 const K14 = "test/hesapsiz-acilis-250.test.mjs";
+const COMMISSION = "server/lib/bank/pos-commission.mjs";
+const BANK_ACCOUNTS = "server/lib/bank/accounts.mjs";
+const KG6 = "test/pos-komisyon-satis-gunu-250.test.mjs";
 
 // [no, ad, dosya, eski metin, yeni metin, koşulacak testler, beklenen neden]
 const MUTASYONLAR = [
@@ -108,6 +111,67 @@ const MUTASYONLAR = [
     "SELECT CASE WHEN ${COVER_SQL} THEN 'opening' ELSE w.way END AS way, w.ref AS ref, COALESCE(SUM(CASE WHEN w.kind = 'in' THEN w.cents ELSE -w.cents END), 0) AS cents, COUNT(*) AS count FROM (${waySql({ light: true, events, ids, ref, cover: true })})",
     "SELECT CASE WHEN (${COVER_SQL}) AND 0 THEN 'opening' ELSE w.way END AS way, w.ref AS ref, COALESCE(SUM(CASE WHEN w.kind = 'in' THEN w.cents ELSE -w.cents END), 0) AS cents, COUNT(*) AS count FROM (${waySql({ light: true, events, ids, ref, cover: true })})",
     [K14], /ledger-integrity|bank:sub:102\.00|gl:102/,
+  ],
+  // Ç7a tur 2b — KG-6 (KG-6 = A, S177 = A, S178 = A; tasarım notu §14.4). Karşı mutantlar DEĞERLE yakalanmalı (test/pos-komisyon-satis-gunu-250.test.mjs).
+  [
+    15, "KG-6: komisyon yine valör gününde (küme boş — türetme, beklenen ve Alt Hesap Mizanı birlikte eski kurala döner)", COMMISSION,
+    "i.status IN ('pending', 'settled') AND i.role IN ('sale', 'refund')\";",
+    "i.status IN ('pending', 'settled') AND i.role IN ('sale', 'refund') AND 0\";",
+    [KG6], /08\.10 B 653 250 \/ A 108\.01 250/,
+  ],
+  [
+    16, "KG-6: satış günü maddesinin komisyon hesabı 653 yerine 760", LEDGER,
+    '      const account = gl || refs.commissionGl || "653";',
+    '      const account = "760";',
+    [KG6], /08\.10 B 653 250 \/ A 108\.01 250|653 satış gününde 250/,
+  ],
+  [
+    17, "KG-6: KDV kipi de satış gününe alınır (S178 = A'ya aykırı)", COMMISSION,
+    "s.status NOT IN ('void', 'repair') AND s.tax_kind <> 'vat' AND",
+    "s.status NOT IN ('void', 'repair') AND",
+    [KG6], /KDV kipinde satış günü maddesi yok/,
+  ],
+  [
+    18, "KG-6: taksitli satışta yalnız ilk kalemin kesintisi", LEDGER,
+    "    for (const [, minor, gl] of parts) {",
+    "    for (const [, minor, gl] of parts.slice(0, 1)) {",
+    [KG6], /420 = 3 × 140/,
+  ],
+  [
+    19, "KG-6: gün fişinin 108 satırı netlenmez (brüt kalır)", LEDGER,
+    '  apply("pos", 1, () =>',
+    '  if (0) apply("pos", 1, () =>',
+    [KG6], /12\.10 B 102\.01 9\.750 \/ A 108\.01 9\.750/,
+  ],
+  [
+    20, "KG-6: defter beklenenleri bekleyen kesintiyi düşmez (yanlış alarm)", MONEY,
+    "    if (ref === null || ref === undefined) {\n      const wanted = events",
+    "    if (0) {\n      const wanted = events",
+    [KG6], /ledger-integrity|bank:sub:108\.01|gl:108|Mutabakat/,
+  ],
+  [
+    21, "KG-6: silinen (void) kalemler kümeye girer", COMMISSION,
+    "i.status IN ('pending', 'settled') AND i.role IN ('sale', 'refund')\";",
+    "i.status IN ('pending', 'settled', 'void') AND i.role IN ('sale', 'refund')\";",
+    [KG6], /yalnız yeni satış \(200\)/,
+  ],
+  [
+    22, "KG-6: iade kaleminin kesintisi satış gibi (işaret çevrilmez)", COMMISSION,
+    "(CASE WHEN i.role = 'refund' THEN -1 ELSE 1 END) * (i.commission_minor",
+    "(1) * (i.commission_minor",
+    [KG6], /iade günü B 108\.01 100 \/ A 653 100/,
+  ],
+  [
+    23, "KG-6: Alt Hesap Mizanı 108.POS'u brütten gösterir (düzeltme yok)", BANK_ACCOUNTS,
+    "    for (const [posId, delta] of commissionTrial(store, { from, to })) {",
+    "    for (const [posId, delta] of []) {",
+    [KG6], /108\.01 = bankaya geçmemiş NET alacak 9\.750/,
+  ],
+  [
+    24, "KG-6: BSMV Hariç kipte BSMV kesintiye girmez", COMMISSION,
+    "CASE WHEN s.tax_mode = 'excluded' THEN i.tax_minor ELSE 0 END",
+    "0",
+    [KG6], /250 \+ 12,50/,
   ],
 ];
 
