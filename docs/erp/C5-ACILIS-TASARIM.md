@@ -1533,3 +1533,31 @@ bağlı / bağsız × çek / nakit × kayıttan önce / sonra kesilmiş fatura �
 BEKLENEN nedenle kırmızı. (C) mutantlar (`…-mutasyon.mjs`, Ç2 / Ç3 düzeni): 128 ↔ 120 dağılımını eski sabite döndür (bağlı nakit 120, bağlı çek en eski kayıttan), ikinci yükleyiciyi eski kuralda
 bırak, kesiti satırın kendisini dahil ederek al, kayıt kalanını final durumdan ver, sınırı tutarın tamamına uygula, payı kayıt kimliği yerine en eski kayda yaz. (D) kâhinler önce / sonra
 (defter 187; cari listesi kendi kopyada; muhasebe sürücüsü). (E) komşular iki TZ (taramayla). (F) ekran: tahsilat formunda ret ↔ kabul (gerçek tıklama + Tab + insan hızı).
+
+### 19.7 Tur 3c — sonuç (kodla birlikte; kanıt docs/kanit/2026-11-14/c5a3c-*)
+- Değişen yol (19.2'den farkı): `doubtfulSkipOf` DEĞİŞMEDİ — cari kartının "Normal Cariye İşlendi" etiketinin tanımı olarak kaldı (routes/accounts.mjs detail bu turun dosya sınırı dışında); defterin
+  ayırıcısı yeni `doubtfulKeepOf`'u (işaret + peşin) okur (general-ledger tek satır, accounts sınırı). lib/account-lines.mjs'e cari kümesine göre kart haritası `ledgerPlansOf(ids)` (taşınan
+  `ledgerPlansByAccount` gövdesi aynı; eşdeğerliği kalıcı testte, silinmiş kart ve kart tahsilatıyla). Tahsilat formunun Kapatılacak Fatura yardım metni yeni kuralla (client/assets/hof-accounts.js, yalnız metin).
+  Kaynak taraması (test/defter-kaynak-iz-250) türetmenin yeni okuduğu üç evrak sütununu buldu (cheque_events.invoice_id / account_id, cheques.endorse_account_id) → account_entries.invoice_id
+  ailesinden gerekçeli istisna (S160 = A, S164 = C); BAŞ MİMAR değerlendirmesine.
+- S168 örneği (görev metni; tabanda ana oturumun okumasıyla birebir): F2'ye bağlı çek 300 → 200, A 128 300 (128 = 700, 120 = 100); F2'ye bağlı nakit 300 → 409 iken 200, A 128 300; F2'ye bağlı
+  nakit 100 → A 120 100 iken A 128 100 (128 = 900); F1'e bağlı nakit 300 → 409 iken 200, A 128 300; bağsız 300 DEĞİŞMEDİ; F2'ye bağlı 500 → A 128 400 + A 120 100; F2'ye bağlı 700 → 409
+  ("kısım 300; 700'ün 400'ü …; şüpheli dışı borç 100; Tutarı 500'e indirin").
+- Kalıcı test test/supheli-kuyruk-defter-250.test.mjs (24 vaka; v2.4.9 fikstürü test/fixtures/supheli-kuyruk-v249 — v2.4.9'un gerçek koduyla, programın API'siyle) iki TZ yeşil; tabanda 17 / 24
+  KIRMIZI (beklenen nedenlerle: 409, eski 120 / 128 değerleri, doubtfulBefore / ledgerPlansOf / linkedShares yok). Mutasyon 15 / 15 DEĞERLE (eşdeğer çıkan ilk M5 değiştirildi).
+- Kâhinler: defter 187 / 187 (taban = yeni, iki TZ). Cari 16.459 → 16.456 / 16.459: yeni 3 fark TEK senaryoda (d44 X9 — şüpheliye aktarılmış faturaya bağlı nakit; S25 (c) = A ile program 128'den
+  düşüp kabul ediyor, kâhin eski okumayla ret bekliyor) → kâhin bakımı; yapım aşaması listesi kendi kopyada 31 → 34 (yeni 3, kapanan 0, değişen 0; listede 'Ç5-A' paketli kayıt YOKTU).
+  Muhasebe sürücüsü: taban 862 → yeni 810 başarısız; gerileme 226 koşunun 12'si farklı — s68 / s74 / s75 (S14 / S25) SINIFLANMADI 17 → 0 / TZ (AYNI +48), s78 (S39) yalnız ret iletisi önceliği,
+  s108 / s109 ileti (düzeltildi — işaretli yolun önerilen tutarı bugünkü gibi); s68'de kalan 2 adım farkı S168 alt durumu (kuyruk dağılımı ↔ kâhinin "kalemin kendi kaydı / Şüpheliden Çıkar ile dönmüş
+  fatura" okuması) → karar S168 = B, kâhin bakımı.
+- v2.4.9 kilitli verisi: kilitli dönemin 120 / 128'i donmuş (2.4.9 kuralı); canlı türetme yeni kural; Kural Değişikliği Farkı uyarısı 3 kaynak (bağlı nakit 120 +400 / 128 −400, bağlı çek 120 −400 /
+  128 +400, S168 nakit 120 +100 / 128 −100), ön izlemede kaynağıyla "fişle düzeltilmez", fiş satırı 0, "Düzeltildi" yok; açık dönemde bağlı 100 → A 128 100; Mutabakat Testi bulgusuz.
+- Eşdeğerlik (tur 3b'nin döküm betiği; dışa açık yüz + carinin defteri + kart listesi / haritası): temiz 100 bin satır BAYT BAYT AYNI (1.892 satır, sha256 50e217fd…; tur 3b'ninkiyle aynı) ve
+  v2.4.9 fikstürü tyk-fark-v249 AYNI (51 satır, e08707ec…). Şüpheli + bağlı alacaklı carili veride fark YALNIZ o carilerde ve YALNIZ kayıt kalanından türeyen alanlarda: temiz 100 bin + program
+  yoluyla eklenmiş "Ölçüm Şüpheli Bağlı" carisi → 1 cari (doubtful.amount 9.500 → 5.500, items[].doubtful, invoiceNet.doubtful); supheli-kuyruk-v249 → 120 / 128'i değişen 5 cari (doubtful.amount /
+  items, invoiceNet.doubtful, items[].doubtful, overdue — kalem kalanları, kapama, kart alanları AYNI); bağlı çek F1 ve bağsız cari AYNI.
+- Komşular (tarama: değişen dosyaları adıyla, /api/workspace/accounts yolunu ya da 'doubtful'u anan 345 test dosyası) iki TZ 3.869 / 3.869; ekran senaryoları senaryo-supheli-230 67 / 67,
+  senaryo-banka-210 428 / 428, senaryo-supheli-kuyruk-250 (yeni) 12 / 12 — üçü iki TZ.
+- Beklentisi bilerek değişen mevcut test: YOK (kaynak taramasına üç istisna eklendi — yukarıda).
+- HIZ (E): ÖLÇÜLEMEDİ — ölçüm kilidi (`flock -x -n`) başka bir koşudaydı ve yük 3,3 (başka oturumun tam test koşusu); düzenek hazır (c5a3c-betik/hiz.sh, olc-c5a3c.mjs — değişen yollar + açılıştan sonraki ilk çağrı ayrı satır; olc-hazir.mjs — temiz 100 bin satıra programın API'siyle şüpheli + bağlı alacaklı cari). Ana oturum ölçer.
+- Açık noktalar (§18.6): (1) fatura peşini — avanslı (120 < 0) cari şüpheli kaydı açıkken programın yolundan kurulamıyor (S155 = A kapısı borcun açık şüphelinin altına düşmesini reddeder); 120 ≥ 0 iken peşin anında yeni faturanın kuyruktaki payı 0 (peşin 15.10 kuralıyla 120, iki okuma aynı sonucu verir) — DOĞRULANMADI (ayırt edici örnek kurulamadı; deneme c5a3c-pesin-avans-cek.txt). (2) Aynı denemede yeni bir AYRIŞMA çıktı: faturaya bağlı evrakın 120'ye düşen kısmı şüpheli dışı borcu aşınca kapı reddediyor (tabanda en eski kayıttan 128'den düşüp kabul ediliyordu) — S25 (b) ↔ S155 = A → KULLANICIYA SORULMALI (tur 3c raporu).
