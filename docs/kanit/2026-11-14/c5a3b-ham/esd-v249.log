@@ -1,0 +1,6 @@
+esd v249 · kaynak /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3b-z4/v249-kaynak · şimdi 2026-10-20T12:00:00+03:00 · yeni a4b53e9f · başta 2.40 2.37 2.33 2/158 566 · 02:53:18
+taban çıkış 0 · 1 sn · {"cariler":50,"sirketler":[{"id":"sirket-001","cari":50,"fatura":15,"kartli":2}],"satir":51,"sha256":"a218bc51e23e2dd1cc438d70c27398eb3d4350f19cadf31db6130c90706961cf"}
+yeni çıkış 0 · 0 sn · {"cariler":50,"sirketler":[{"id":"sirket-001","cari":50,"fatura":15,"kartli":2}],"satir":51,"sha256":"a218bc51e23e2dd1cc438d70c27398eb3d4350f19cadf31db6130c90706961cf"}
+SONUÇ v249: BAYT BAYT AYNI (51 satır; 865801 bayt; sha256 e08707ecb96142cd)
+KENDİ KENDİNE KURAN YOL (v249): {"sirket":"sirket-001","cari":50,"kumeAyni":true,"satirFark":0,"tekFark":0,"topluFark":0,"ornek":[],"sure":83} 
+sonda 2.29 2.35 2.32 2/214 682 · 02:53:19

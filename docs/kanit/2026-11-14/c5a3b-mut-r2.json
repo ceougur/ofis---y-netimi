@@ -1,0 +1,32 @@
+{
+  "ad": "c5a3b-mut-r2",
+  "komut": "node /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3b-z4/mut/test/r2-249/mutasyon.mjs /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3b-z4/mut",
+  "commit": "a4b53e9f27add461eaf2195b06060b33468bac08",
+  "dal": "worktree-agent-a076afd863444806e",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v470 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-14T02:10:38.499Z",
+  "sure_sn": 10.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 7,
+    "gecen": 7,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3b-z4/kanit/2026-11-14/c5a3b-mut-r2.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a076afd863444806e",
+  "ham_cikti_sha256": "b0ff3137f37615672b35e09229770f23241cbef6aa1ee3de35241cfa2e8c4b5f",
+  "ham_cikti_bayt": 2706
+}
