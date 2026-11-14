@@ -355,10 +355,11 @@ describe("2.5.0 Ç5-A tur 3b — carinin satırlarını kuran zincir (lib/accoun
     return out;
   }
   const lock = (co, until) => must(`kilit ${until || "yok"}`, "put", "/api/admin/period-lock", { lockedUntil: until }, co);
-  // Kart haritasının kuyruğa / deftere giren alanları (kimlikler etiketlenir).
+  // Kart haritasının kuyruğa / deftere giren alanları (kimlikler etiketlenir). Özette kullanıcı kimliği (rastgele; kart listesinin createdBy alanı) "[kullanıcı]" olur.
   const cardsOf = list => (list || []).map(plan => ({ id: plan.id, name: plan.name, total: plan.total, status: plan.status, coversBalance: plan.coversBalance, importId: plan.importId, returnCuts: plan.returnCuts, saleMoveId: plan.saleMoveId, planned: plan.planned, itemCount: plan.itemCount, paid: plan.totals?.paid, entries: plan.entries.length }));
 
-  function snapshot(target, company, state, digests) {
+  // Modül ↔ servis uyuşmazlıkları TOPLANIR, hakem karşılaştırmasından SONRA bildirilir: servisin de kullandığı zincire konan hata önce hakemde (değerle) görünsün.
+  function snapshot(target, company, state, digests, problems) {
     const ctx = target.context;
     const inv = ctx.invoices;
     const ids = ctx.store.all("SELECT id, name FROM accounts WHERE deleted_at IS NULL AND name LIKE 'OZ %' ORDER BY name");
@@ -373,31 +374,38 @@ describe("2.5.0 Ç5-A tur 3b — carinin satırlarını kuran zincir (lib/accoun
       const fresh = text(inv.obligationsFor(id, ledgerOf(id)));
       assert.equal(single.get(id), fresh, `${state} ${company} ${name}: obligationsOf (soğuk) = obligationsFor`);
       assert.equal(text(all.get(id)), fresh, `${state} ${company} ${name}: allObligations = obligationsFor`);
-      digests[`${state}|${company}|${name}`] = norm(JSON.stringify({ kuyruk: JSON.parse(fresh), satirlar: plain(lines.get(id)), kartlar: plain(cardsOf(map.get(id))) }));
+      digests[`${state}|${company}|${name}`] = norm(JSON.stringify({ kuyruk: JSON.parse(fresh), defter: plain(ledgerOf(id)), kartListesi: plain(ctx.plans.forAccount(id, AUDIT)), satirlar: plain(lines.get(id)), kartlar: plain(cardsOf(map.get(id))) }).replace(/user-[0-9a-f-]{36}/g, "[kullanıcı]"));
     }
     // işlem içinde (yazım yanıtı yolu): iade kesimi taranır, satış kaynağı belleğe yazılmaz — sonuç aynı
     const probe = ids.find(row => row.name.endsWith("İadeli Kart")).id;
     assert.equal(ctx.store.tx(() => text(inv.obligationsFor(probe, ledgerOf(probe)))), text(inv.obligationsFor(probe, ledgerOf(probe))), `${state} ${company}: işlem içi = işlem dışı`);
     if (WRITE_ZINCIR) return;
-    assert.ok(!loaded.error, `lib/obligation-input.mjs yüklenemedi: ${loaded.error?.message}`);
+    if (loaded.error) return void problems.push(`lib/obligation-input.mjs yüklenemedi: ${loaded.error.message}`);
+    const soft = fn => {
+      try {
+        fn();
+      } catch (error) {
+        problems.push(String(error.message).split("\n")[0]);
+      }
+    };
     const file = company === "001" ? server.app.config.dbPath : resolveDbPath(server.app.companies.dirsOf(server.app.companies.get(second.id)).dataDir);
     const db = openDatabase(file, { readOnly: true });
     try {
       const store = createStore(db);
       const input = loaded.module.createObligationInput({ store });
-      assert.equal(typeof input.ledgerLines, "function", "modül carinin satırlarını kendisi kuramıyor (ledgerLines yok — zincir taşınmadı)");
+      if (typeof input.ledgerLines !== "function") return void problems.push("modül carinin satırlarını kendisi kuramıyor (ledgerLines yok — zincir taşınmadı)");
       // satırlar: modülün kendi kurduğu = allLedgers (cari kümesi dahil — silinmiş cari yok)
       const own = input.ledgerLines();
-      assert.deepEqual([...own.keys()].sort(), [...lines.keys()].sort(), `${state} ${company}: modülün cari kümesi = allLedgers'ın cari kümesi`);
-      assert.deepEqual([...own.keys()].sort(), [...all.keys()].sort(), `${state} ${company}: modülün cari kümesi = allObligations'ın cari kümesi`);
+      soft(() => assert.deepEqual([...own.keys()].sort(), [...lines.keys()].sort(), `${state} ${company}: modülün cari kümesi = allLedgers'ın cari kümesi`));
+      soft(() => assert.deepEqual([...own.keys()].sort(), [...all.keys()].sort(), `${state} ${company}: modülün cari kümesi = allObligations'ın cari kümesi`));
       const inputs = input.batchInputs(TODAY);
       for (const { id, name } of ids) {
-        assert.equal(text(own.get(id)), text(lines.get(id)), `${state} ${company} ${name}: modülün kendi kurduğu satırlar = allLedgers`);
+        soft(() => assert.equal(text(own.get(id)), text(lines.get(id)), `${state} ${company} ${name}: modülün kendi kurduğu satırlar = allLedgers`));
         const mine = text(buildObligations(input.accountInput(id, TODAY)));
-        assert.equal(mine, text(inv.obligationsFor(id, ledgerOf(id))), `${state} ${company} ${name}: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor`);
-        assert.equal(text(buildObligations(inputs.get(id))), text(all.get(id)), `${state} ${company} ${name}: modül (yalnız store, satırları kendisi; toplu) = servis allObligations`);
+        soft(() => assert.equal(mine, text(inv.obligationsFor(id, ledgerOf(id))), `${state} ${company} ${name}: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor`));
+        soft(() => assert.equal(text(buildObligations(inputs.get(id))), text(all.get(id)), `${state} ${company} ${name}: modül (yalnız store, satırları kendisi; toplu) = servis allObligations`));
         // eski "satırlar parametreyle" yolu da çalışır
-        assert.equal(text(buildObligations(input.accountInput(id, TODAY, ledgerOf(id)))), mine, `${state} ${company} ${name}: satırlar parametreyle = kendisi`);
+        soft(() => assert.equal(text(buildObligations(input.accountInput(id, TODAY, ledgerOf(id)))), mine, `${state} ${company} ${name}: satırlar parametreyle = kendisi`));
       }
     } finally {
       db.close();
@@ -413,18 +421,19 @@ describe("2.5.0 Ç5-A tur 3b — carinin satırlarını kuran zincir (lib/accoun
     const child = () => server.app.openCompany(second.id);
     assert.ok(child(), "002 açık");
     const digests = {};
-    snapshot(server.app, "001", "ilk", digests);
-    snapshot(child(), "002", "ilk", digests);
+    const problems = [];
+    snapshot(server.app, "001", "ilk", digests, problems);
+    snapshot(child(), "002", "ilk", digests, problems);
     // iade SONRASI (iade kesimi belleği yenilenmeli); kart silinir (kart haritasından düşer)
     await must("ikinci iade", "post", "/api/workspace/invoices", { kind: "sale_return", originalId: one.v.rs.id, issueDate: day(0), lines: [{ originLineId: one.v.rs.lines[0].id, qty: 2 }], payment: {} });
     await must("kart sil", "del", `/api/workspace/plans/${one.goneCard.id}`);
     await must("002 ikinci iade", "post", "/api/workspace/invoices", { kind: "sale_return", originalId: two.v.rs.id, issueDate: day(0), lines: [{ originLineId: two.v.rs.lines[0].id, qty: 1 }], payment: {} }, second.id);
-    snapshot(server.app, "001", "iade-sil", digests);
-    snapshot(child(), "002", "iade-sil", digests);
+    snapshot(server.app, "001", "iade-sil", digests, problems);
+    snapshot(child(), "002", "iade-sil", digests, problems);
     // Silinenler'den geri gelen kart (aynı kimlik)
     await must("kart geri", "post", "/api/admin/trash/restore", { id: `plan:${one.goneCard.id}` });
-    snapshot(server.app, "001", "geri", digests);
-    snapshot(child(), "002", "geri", digests);
+    snapshot(server.app, "001", "geri", digests, problems);
+    snapshot(child(), "002", "geri", digests, problems);
     if (WRITE_ZINCIR) {
       writeFileSync(WRITE_ZINCIR, `${JSON.stringify({ uretim: "c5a3b-taban — taşımadan önceki kod; HAKEM_YAZ_ZINCIR ile bu vakanın kendisi", sayi: Object.keys(digests).length, cariler: digests }, null, 1)}\n`);
       return;
@@ -433,5 +442,7 @@ describe("2.5.0 Ç5-A tur 3b — carinin satırlarını kuran zincir (lib/accoun
     assert.deepEqual(Object.keys(digests).sort(), Object.keys(hakem.cariler).sort(), "aynı sınıf carileri ve durumlar");
     const differ = Object.keys(digests).filter(key => digests[key] !== hakem.cariler[key]);
     assert.deepEqual(differ, [], `hakemden farklı çıktı (taşıma davranışı değiştirdi): ${differ.slice(0, 5).join(" · ")}`);
+    // (1) modül (yalnız store, satırları kendisi) = servis yüzü
+    assert.deepEqual(problems, [], `modül ≠ servis (${problems.length}): ${problems.slice(0, 3).join(" · ")}`);
   });
 });
