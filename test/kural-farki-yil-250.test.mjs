@@ -228,6 +228,15 @@ describe("Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (program, 
       const v9 = await view();
       same(v9, i9, "yeniden kilit");
       assert.deepEqual(lineText(v9.lines), ["A 500 700", "B 681 700"], "2026'nın fazla düzeltmesi 2027'de önceki yıla ait (M7: borç yönlü 681)");
+
+      // 7) BUGÜNKÜ DAVRANIŞ (KODLANMADI — tur 2e raporunda KULLANICIYA SORULMALI): 2026'nın fişi 2027'de TERS kaydedilirse ters kaydın satırları ASIL fişin yılına sayılır ("ters
+      // kaydedilmiş fiş sayılmaz" — taban ile aynı); fiş ve tersi birbirini götürür, kural farkı öğesi kalmaz. Defterde ters kayıt 2027'nin 602'sine yazılır. Karar değişirse bu beklenti değişir.
+      await must("2026 fişini 2027'de ters kaydet", api.post(`/api/admin/ledger/vouchers/${p1.voucher.id}/reverse`, { requestId: rid(), date: "2027-01-05" }));
+      assert.equal(await item(), null, "fiş + tersi: kural farkı öğesi yok (fazla da yok)");
+      const v10 = await view();
+      assert.equal(v10.code, "rule-diff-nothing");
+      assert.equal(v10.reason, "Düzeltilecek kural farkı yok.");
+      assert.deepEqual(sums("2027-01-01", "2027-12-31", ["602", "681"]), { 602: 700, 681: 0 }, "ters kayıt 2027'nin 602'sine borç 700");
     } finally {
       await server?.close().catch(() => {});
       rmSync(root, { recursive: true, force: true });

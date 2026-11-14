@@ -348,6 +348,12 @@ describe("Ç5-A tur 2b İş 2 — Kural Farkı Düzeltme Fişi", () => {
       const lines = app.store.all("SELECT l.account, l.sub, l.debit_minor AS debit, l.credit_minor AS credit FROM ledger_vouchers v JOIN ledger_voucher_lines l ON l.voucher_id = v.id WHERE v.type = 'rule-diff-correction'");
       assert.deepEqual(lines.map(line => `${line.debit ? "B" : "A"} ${line.sub || line.account} ${(line.debit || line.credit) / 100}`).sort(), ["A 519 800", "B 500 800"], "fiş yalnız gerçek kural farkı: 120 / 128 satırı yok");
       assert.equal(app.store.get("SELECT COUNT(*) AS n FROM ledger_vouchers").n, 1);
+      // Tur 2e DÜŞÜK-2 (dar kontrol c5a2 N4): fiş yazıldıktan SONRA dışarıda kalan alt defter farkı (120 / 128, 100 TL) sürüyor → "Düzeltildi" DEĞİL; uyarı ve ipucu B14'ü söyler.
+      const fixed = await integrity(api);
+      assert.ok(fixed.item && fixed.item.ok === false && !fixed.item.corrected, `dışarıda kalan alt defter farkı varken Düzeltildi yok: ${JSON.stringify(fixed.item).slice(0, 400)}`);
+      assert.equal(fixed.item.correction?.remainderMinor, 0, "fişle düzeltilebilen fark kalmadı");
+      assert.equal(fixed.item.correction?.excludedMinor, 10_000, "dışarıda kalan 100 TL");
+      assert.match(fixed.item.hint, /fişle düzeltilebilen farkı kapattı; alt defter hesabı farkı fişle düzeltilmez/);
     } finally {
       await server?.close().catch(() => {});
       rmSync(root, { recursive: true, force: true });
