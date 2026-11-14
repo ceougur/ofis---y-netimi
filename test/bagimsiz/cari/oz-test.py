@@ -51,6 +51,9 @@
 19. Bakım 19 (§30; S162 = B'nin ölçütü iadenin YAZILDIĞI an — BAŞ MİMAR KARARI; S170 = B; S157 = C kart toplamı; madde 4 türetilmiş toplamlar): d45 B2 karşılaştırma örneği doğru sırayla (değerle),
    B3 iade önce / borç sonra SUS, B4 borcun yazımı önce / tarihi sonra (değerle), B5 başka borcun vadesi ilk taksitten önce (değerle), B6 borç iadeden sonra silindi (değerle); d42 T1 / T2 / T3
    (S170), T4 / T5 / T8 (S157), d30 Q7 (S170) kart toplamı SUS; pencere toplamları S162 / S166 / S149 carilerinde SUS (d42 T6 / T7, d43 U4 / U6, d44 Y4, d45 B1 / B3); mutantlar 310 / 311 / 312 DEĞERLE.
+20. Bakım 20 (§31; S168 = B, S181 = B): faturaya bağlı tahsilat / evrak faturanın kuyrukta şüpheli sayılan payı kadar şüpheliden düşer, 120'ye düşen kısım şüpheli dışı borcu aşarsa RET — d47 elle
+   tablosu (Z1 / Z3 / Z7 / Z8 değerle KABUL, Z2 / Z6 RET; Z4 SK-38 (d), Z5 SK-38 (c) SUS), d44 X9 artık KABUL; mutantlar 313 / 314 / 315 DEĞERLE, 316 (SUS kuralı) elle tablonun `elleYok` /
+   `elleBelirsiz` satırıyla.
 Çıktı: TAP benzeri sayılar + son satır "N/M denetim geçti". Çıkış 0 yalnız hepsi geçerse.
 """
 import importlib.util
@@ -319,7 +322,8 @@ def main():
         # bakım 6 (§18 Y6-1): S102–S105 = A — SK-9 … SK-12 okuma ayrışması ve SK-13 belge susması kalmadı (yalnız SK-14 … SK-17 ve Y5-7 / tanım alanı)
         eski_sk = [b for b in _m.son_belirsiz if "SK-9 … SK-12" in b or "(SK-13;" in b]
         denetle("%s SK-9 … SK-13 susması yok (S102–S105 A, S99 A)" % ad, not eski_sk, json.dumps(eski_sk[:2], ensure_ascii=False))
-    # 2. mutantlar 200–223
+    # 2. mutantlar 200–223 (… bakım 20: 313–316)
+    SUSMA_MUTANTLARI = {316}  # bakım 20 (§31 C10x): SUS kuralını değere çeviren mutant — `elleYok` / `elleBelirsiz` ile yakalanır
     for n, ad in M.MUTASYONLAR.items():
         if n < 200:
             continue
@@ -336,6 +340,11 @@ def main():
                     denetle("mutasyon %d çökmedi (%s)" % (n, os.path.basename(p)), False, repr(e)[:200])
                     continue
                 kirmizi = [k for k, b in sen["elleBeklenen"].items() if out.get(k, {}).get("b", "ANAHTAR YOK") != b]
+                if n in SUSMA_MUTANTLARI:
+                    # bakım 20 (§31 C10x): SUS kuralının mutantı değeri yazar — elle tablonun `elleYok` / `elleBelirsiz` satırı kırmızıya döner (elle tablo yine kırmızı)
+                    kirmizi += [k for k in (sen.get("elleYok") or []) if k in out]
+                    kirmizi += ["belirsiz:" + "+".join(x if isinstance(x, list) else [x]) for x in (sen.get("elleBelirsiz") or [])
+                                if not any(all(y in bb for y in (x if isinstance(x, list) else [x])) for bb in _m.son_belirsiz)]
                 if kirmizi:
                     degerle.append("%s:%s" % (os.path.basename(p), kirmizi[0]))
             denetle("mutasyon %d DEĞERLE yakalandı (elle tablo)" % n, bool(degerle), ad)

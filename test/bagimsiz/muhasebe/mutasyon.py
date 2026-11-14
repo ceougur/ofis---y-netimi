@@ -72,7 +72,7 @@ MUTANTLAR = [
     ("M41 devirde açık şüpheli karşılığı açılmaz (N-12)",
      [('if P:\n            self.madde(k, k.tarih, 0, [Bo(G, P), Al("129", P, c)], alt=1)',
        'if False:\n            self.madde(k, k.tarih, 0, [Bo(G, P), Al("129", P, c)], alt=1)')]),
-    ("M42 yoldaki transfer devirde açılmaz (K-07, N-13 tek başına)", [('if y["valor"] > K:\n                ekle("devir_yoldaki"', 'if False:\n                ekle("devir_yoldaki"')]),
+    # M42 (yoldaki transfer devirde açılmaz) KALKTI — bakım 12 S175 = C: 108.90 hiçbir senaryoda oluşmaz, kural yok (README bakım 12 Ş1)
     ("M43 POS komisyonu 760'a (2.5.1 kararı erken)", [('POS_KOMISYON = "653"', 'POS_KOMISYON = "760"')]),
     ("M44 103 düzenleyici değil, pasif (§7.2)",
      [('"103": ("Verilen Çekler ve Ödeme Emirleri (−)", "A-", "I.A")', '"103": ("Verilen Çekler ve Ödeme Emirleri (−)", "P", "III.A")')]),
@@ -165,7 +165,7 @@ MUTANTLAR = [
      [('or (kart_tarihi is not None and kart_tarihi > r["tarih"]):', ":")]),
     ("N32 K3: Mevcut Borç kartının taksiti de tarih kapısına girer",
      [('if kt is not None and kt.get("ilk_kaynak", kt["kaynak"]) != "mevcut_borc":', "if kt is not None:")]),
-    ("N33 K3 SINIR: normal tahsilat 120 bakiyesini aşabilir", [('if acik and normal > bak:', "if False:")]),
+    ("N33 K3 SINIR: normal tahsilat 120 bakiyesini aşabilir", [('elif acik and v["tutar"] > bak:', "elif False:")]),
     ("N34 K3: aynı gün sırası girilme sırasına göre (al → alacak satırı değil)", [('GUN_SINIFI = {"supheliye_al": 0,', 'GUN_SINIFI = {"supheliye_al": 3,')]),
     ("N35 K3: satıştan iade şüpheliden düşmez", [("sup, cozulme, kalan = self._supheliden_dus(k, c, M + K)", "sup, cozulme, kalan = ([], [], M + K)")]),
     ("N36 K3: Alacak Yaz şüpheliden düşmez",
@@ -259,7 +259,7 @@ MUTANTLAR = [
     ("B40b Y2 S14 B: bağlı çek / senet her durumda 128'den (en eski kayıt)",
      [('uygun = not v.get("normal_cari") and not v.get("fatura")', 'uygun = not v.get("normal_cari") and not (v.get("fatura") and yol not in ("cek", "senet"))')]),
     ("B40c Y4 S14 sınırı eski: SUPHELI_NORMAL_ASIM bağlı çekin tamamına",
-     [('normal = self._s14_normal(d, tarih, v) if acik else v["tutar"]', 'normal = v["tutar"]')]),
+     [('normal = v["tutar"] - sum(n for _, n in g.s14.get(kid, []))', 'normal = v["tutar"]')]),
     ("B40d Y3 S14: 128 kalemi taşıyan kayıttan değil en eski açık kayıttan",
      [('r = next((r for r in self.supheli.get(c, []) if r["id"] == kayit and r["kalan"] > 0), None)',
        'r = next((r for r in self.supheli.get(c, []) if r["kalan"] > 0), None)')]),
@@ -300,10 +300,10 @@ MUTANTLAR = [
        '        self.s14_olcum[tid] = {"olc": olc, "ch": pch, "tutar": tut}\n        if olc and pch and tut < sum(n for _, n in olc) + pch:\n'
        '            self.susulan_ek.append({"kaynak": tid, "neden": "S14_KISMI", "tutar": tut})')]),
     ("B51 Z6 S25 (b) B: faturanın açık kısmını aşan fazla reddedilir",
-     [("        return bag\n", '        if v["tutar"] - sum(n for _, n in dd.gecis().s14.get(kid, [])) - bag > 0:\n'
-                             '            raise Red("S14_FAZLA", "fazla")\n        return bag\n')]),
-    ("B51c Z6 S25 (b) sınır: SUPHELI_NORMAL_ASIM fazlaya da uygulanır (bakım 4 Y4 okuması)",
-     [("        return bag\n", '        return v["tutar"] - sum(n for _, n in dd.gecis().s14.get(kid, []))\n')]),
+     [("        if not olcum:\n            return normal\n",
+       '        if normal - sum(o["bagla"] for o in dd.kuyruk(v["cari"], tarih).ogeler if o["kaynak"] == kid and o["taraf"] == "a") > 0:\n'
+       '            raise Red("S14_FAZLA", "fazla")\n        if not olcum:\n            return normal\n')]),
+    # B51c (SUPHELI_NORMAL_ASIM fazlaya da uygulanır) bakım 12'de KURAL OLDU (S181 = B) — tersi B114
     ("B52 Z7 S25 (c) B: nakit / havale / POS bağlı tahsilat 120'de (bugünkü kural)",
      [('S14_YOLLARI = ("cek", "senet", "nakit", "havale", "pos", "kart")', 'S14_YOLLARI = ("cek", "senet", "kart")')]),
     ("B52b Z7 S25 (c) sınır: POS (brüt) kapsam dışı",
@@ -333,8 +333,9 @@ MUTANTLAR = [
      [('            r["kalan"] > 0 and r["tarih"] <= k.tarih for r in self.supheli.get(c, []))',
        '            r["kalan"] > 0 and (r["tarih"] < k.tarih if yol == "kart" else r["tarih"] <= k.tarih) for r in self.supheli.get(c, []))')]),
     ("B62 X3 S39 sınır: kart iadesinin faturanın açık kısmını aşan fazlası reddedilir (S25 (b) karta uygulanmaz)",
-     [("        return bag\n", '        if v["yol"] == "kart" and v["tutar"] - sum(n for _, n in dd.gecis().s14.get(kid, [])) - bag > 0:\n'
-                             '            raise Red("S39_FAZLA", "fazla")\n        return bag\n')]),
+     [("        if not olcum:\n            return normal\n",
+       '        if v["yol"] == "kart" and normal - sum(o["bagla"] for o in dd.kuyruk(v["cari"], tarih).ogeler if o["kaynak"] == kid and o["taraf"] == "a") > 0:\n'
+       '            raise Red("S39_FAZLA", "fazla")\n        if not olcum:\n            return normal\n')]),
     ("B63 X7 S40 B: geri yüklenmiş açılış öncesi Kasa kaydının açıklama / cari düzeltmesi T12 ile red",
      [("                self._s40_kapsam(k, dg)\n", '                if set(dg) - {"tarih", "tutar"}:\n                    raise\n                self._s40_kapsam(k, dg)\n')]),
     ("B64 X9 S40 sınır: cari düzeltmesi (para sonucu) red, açıklama kabul",
@@ -576,6 +577,47 @@ MUTANTLAR = [
        '            self._s44_sinir(d, k, v if v.get("normal_cari") or v.get("fatura") else dict(v, normal_cari=True), dg.get("tarih", k.tarih))')]),
     ("B109g Ö7 / Ö8 S85 kapsam: geri yüklenmiş kayıtta S26 tutarı denetlenmez (yalnız cari)",
      [('for a in ("cari", "tutar")):', 'for a in ("cari",)):')]),
+    # ---------------------------------------------------------------- kâhin bakımı 12 (README Ş1–Ş16)
+    ("B110 Ş1 S175 = A: valörlü transfer 108.90 ile (çıkış / valör maddesi; KG-19 kitabın A'sı)",
+     [('        self.madde(k, k.tarih, 1, [Bo("102." + a, t), Al("102." + g, t)])\n        self.m(k, k.tarih, ("banka", g), -t)\n        self.m(k, k.tarih, ("banka", a), t)\n',
+       '        valor = v.get("valor") or k.tarih\n        if valor > k.tarih:\n            self.madde(k, k.tarih, 1, [Bo(YOLDAKI, t), Al("102." + g, t)])\n'
+       '            self.madde(k, valor, 1, [Bo("102." + a, t), Al(YOLDAKI, t)], tur="transfer_valor", alt=1)\n            self.m(k, k.tarih, ("yoldaki",), t)\n'
+       '            self.m(k, valor, ("yoldaki",), -t)\n            self.yoldaki[k.id] = {"alici": a, "tutar": t, "valor": valor, "cikis": k.tarih}\n'
+       '        else:\n            self.madde(k, k.tarih, 1, [Bo("102." + a, t), Al("102." + g, t)])\n        self.m(k, k.tarih, ("banka", g), -t)\n        self.m(k, valor, ("banka", a), t)\n')]),
+    ("B110b Ş1 S175 = B: alıcı bankanın modül hareketi valör gününde (defter işlem gününde)",
+     [('        self.m(k, k.tarih, ("banka", a), t)\n', '        self.m(k, v.get("valor") or k.tarih, ("banka", a), t)\n')]),
+    ("B111 Ş3 S179 sınırı EN ERKEN açılış", [('            sinir = max((x.tarih for x in liste), default=None)', '            sinir = min((x.tarih for x in liste), default=None)')]),
+    ("B111b Ş3 K-14 sınırsız: hesapsız havale her zaman 519 (bakım 11 bayrak okuması)",
+     [('        if not self._s179_sinif(k, "banka_acilis"):', '        if False:')]),
+    ("B111c Ş4 K-15 iki okuma susması yok (yalnız bütün kartların en geç açılışı)", [('            if sinif(kendi) != once:', '            if False:')]),
+    ("B111d Ş5 aynı gün 519 sayılır (sınır dahil, susma yok)",
+     [('            if sinir is not None and sinir == k.tarih:', '            if False:'), ('            return sinir is not None and k.tarih < sinir', '            return sinir is not None and k.tarih <= sinir')]),
+    ("B111e Ş9 S183 susması yok (kilitten sonra yazılan açılış kilitli satırı sessizce yeniden sınıflar)",
+     [('        if len(kilitsiz) != len(ac) and sinif(kilitsiz) != once:', '        if False:')]),
+    ("B111f Ş4 K-15 sınırsız: eski kart hareketi her zaman 309 (açılıştan önce de)",
+     [('        if once:\n            self.madde(k, k.tarih, 1, [Bo(self.ch(c), t, c, k="odeme:" + k.id, tur="odeme"), Al(G, t)])',
+       '        if False:\n            self.madde(k, k.tarih, 1, [Bo(self.ch(c), t, c, k="odeme:" + k.id, tur="odeme"), Al(G, t)])')]),
+    ("B112 Ş10 S174 = B: kilit fişin yılının sonunu aşınca fark yeniden açılır (ikinci fiş)",
+     [('        if self.kural_farki_fisi is not None:\n            return {k: v for k, v in self._kural_farki_ham().items() if alt_defter_mi(k[0])}',
+       '        if self.kural_farki_fisi is not None and yil(next(f for f in self.fisler if f.id == self.kural_farki_fisi).tarih) == yil(ertesi(self.kilit)):\n'
+       '            return {k: v for k, v in self._kural_farki_ham().items() if alt_defter_mi(k[0])}')]),
+    ("B112b Ş10 S180 = B: fişin tersi farkı yeniden açar (ters kendi yılına)",
+     [('        if self.kural_farki_fisi is not None:\n            return {k: v for k, v in self._kural_farki_ham().items() if alt_defter_mi(k[0])}',
+       '        if self.kural_farki_fisi is not None and next(f for f in self.fisler if f.id == self.kural_farki_fisi).ters is None:\n'
+       '            return {k: v for k, v in self._kural_farki_ham().items() if alt_defter_mi(k[0])}')]),
+    ("B113 Ş12 S127 değişmezi dişsiz (donmuş + açık dönem çift yazımı görmez)",
+     [('                s127.append(f"{kid}: donmuş defterde ve açık dönemde")', '                pass')]),
+    ("B114 Ş13 S181 = A / bakım 11: fazla sınıra girmez (yalnız bağın 120'de kapattığı)",
+     [('        normal = v["tutar"] - sum(n for _, n in g.s14.get(kid, []))',
+       '        normal = sum(o["bagla"] for o in dd.kuyruk(v["cari"], tarih).ogeler if o["kaynak"] == kid and o["taraf"] == "a")')]),
+    ("B114b Ş13 S181 eşitlik red", [('        if normal > bak:\n            if acik_sonra == 0:', '        if normal >= bak:\n            if acik_sonra == 0:')]),
+    ("B114c Ş13 S155 ölçü susması yok (yalnız gün ölçüsü)", [('        if (normal > bak) != (normal > top):', '        if False:')]),
+    ("B114d Ş15 S159 susması yok (S181 harfiyle red)", [('            if acik_sonra == 0:', '            if False:')]),
+    ("B115 Ş14 S168 susması yok: tek kuyrukta kabul / ret ayrışsa da kâhinin kuyruğu (M13)",
+     [('        if normal_tek is None or (normal_tek > bak) != (normal > bak):', '        if False:')]),
+    ("B115b Ş14 S168 susmalar yazılmaz (iki görünümün payı ayrışsa da)", [('            if pf is None or min(tut, pf) != pk:', '            if False:')]),
+    ("B116 Ş16 S87 = B: Silinenler'den geri alınan Kasa açılışında R8 yok",
+     [('        if k.tur == "kasa_acilis" and k.durum == "silindi" and any(', '        if False and any(')]),
 ]
 
 
@@ -603,7 +645,7 @@ def kos(src):
     tm = yukle(src)
     yukleyici = unittest.defaultTestLoader
     suite = unittest.TestSuite()
-    for sinif in (tm.Yardimci, tm.OlayMaddeleri, tm.ElleSenaryolar, tm.Rastgele, tm.DegismezDenetcileri):  # SenaryoHijyeni, Dosyalar hariç
+    for sinif in (tm.Yardimci, tm.OlayMaddeleri, tm.Bakim12, tm.ElleSenaryolar, tm.Rastgele, tm.DegismezDenetcileri):  # SenaryoHijyeni, Dosyalar hariç (Bakim12: bakım 12)
         suite.addTests(yukleyici.loadTestsFromTestCase(sinif))
     with contextlib.redirect_stderr(io.StringIO()), contextlib.redirect_stdout(io.StringIO()):
         r = unittest.TextTestRunner(stream=io.StringIO(), verbosity=0).run(suite)
