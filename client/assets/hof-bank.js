@@ -504,7 +504,8 @@
       // 2.4.3 MM3: Vergi Ödemesi (B 360 / A 102; Vergi Ödemesi ve KDV Mahsubu yetkisi).
       if (["demand", "commercial", "other"].includes(a.kind) && HOF.can("tax.manage")) moveButtons.push(["v-tax", "+ Vergi Ödemesi", why]);
       else if (a.kind === "time") moveButtons.push(["v-interest", "+ Faiz", why, ""]);
-      else if (a.kind === "card") moveButtons.push(["v-card", "+ Kart Borcu Ödemesi", why, ""]);
+      // 2.5.0 Ç7a (D-07): kart ekstresindeki faiz ve gecikme bedeli bu karttan (Faiz Gideri: B 780 / A 309.k).
+      else if (a.kind === "card") moveButtons.push(["v-card", "+ Kart Borcu Ödemesi", why, ""], ["v-card-interest", "+ Kart Faizi", why, ""]);
       else if (a.kind === "loan" && HOF.can("bank.transfer")) moveButtons.push(["v-loan", "+ Kredi İşlemi", why, ""]);
     }
     // Aşama 9 (§8.5 "Transfer"): bankalar arası transfer bu hesaptan (Transfer Yapma yetkisi; vadeli hesap dahil).
@@ -1897,7 +1898,9 @@
   };
   const ALL_TYPES = ["fee", "interest_in", "interest_out", "other_in", "other_out", "card_payment", "loan_draw", "loan_repay", "transfer"];
   const TYPE_NAMES = { transfer: "Bankalar Arası Transfer", fee: "Banka Masrafı", interest_in: "Faiz Geliri", interest_out: "Faiz Gideri", other_in: "Diğer Gelir", other_out: "Diğer Gider", card_payment: "Kart Borcu Ödemesi", loan_draw: "Kredi Kullanımı", loan_repay: "Kredi Geri Ödemesi" };
-  const mainKinds = type => (type === "interest_in" || type === "transfer" ? ["demand", "commercial", "other", "time"] : ["demand", "commercial", "other"]);
+  // 2.5.0 Ç7a (kural kitabı D-07): Faiz Gideri kredi kartı hesabına da girilir (kart ekstresindeki faiz, gecikme bedeli: B 780 / A 309.k); Planlı İşlem'de kart seçilmez
+  // (sunucu TYPE_RULES interest_out planMain — kart faizi planlanmaz).
+  const mainKinds = (type, mode = "") => (type === "interest_in" || type === "transfer" ? ["demand", "commercial", "other", "time"] : type === "interest_out" && mode !== "plan" ? ["demand", "commercial", "other", "card"] : ["demand", "commercial", "other"]);
   // Sunucunun alan adı (HttpError field) → formdaki alan; alanı yazmayan hatalar koddan.
   const VOUCHER_FIELD = { toAccountId: "toAccountId", channel: "channel", valueDate: "valueDate", feeAmount: "feeAmount", Ücret: "feeAmount", feeTax: "feeTax", feeRate: "feeRate", amount: "amount", Tutar: "amount", "Stopaj Tutarı": "stoppageRate", stoppageAmount: "stoppageRate", "Stopaj Oranı": "stoppageRate", stoppageRate: "stoppageRate", "BSMV / KKDF": "taxAmount", taxAmount: "taxAmount", Faiz: "interestAmount", interestAmount: "interestAmount", "BSMV Oranı": "taxRate", "KDV Oranı": "taxRate", taxRate: "taxRate", vatRate: "taxRate", date: "date", plannedDate: "plannedDate", accountId: "accountId", cardAccountId: "cardAccountId", loanAccountId: "loanAccountId", feeType: "feeType", tax: "tax", gl: "gl", invoiceNo: "invoiceNo", "Fatura No": "invoiceNo", partyId: "partyId", type: "type", Açıklama: "description", Referans: "reference", repeat: "repeat" };
   const VOUCHER_CODE = { "bank-value-date": "valueDate", "bank-channel": "channel", "date-future": "date", "date-invalid": "date", "date-missing": "date", "period-locked": "date", "bank-before-opening": "date", "bank-fee-party": "partyId", "bank-party-missing": "partyId", "bank-fee-invoice": "invoiceNo", "invoice-duplicate": "invoiceNo", "bank-stoppage": "stoppageRate", "bank-gl-forbidden": "gl" };
@@ -1942,7 +1945,7 @@
     const loans = accounts.filter(account => account.kind === "loan");
     let types = mode === "correct" ? [card.type] : mode === "plan" ? ALL_TYPES : VOUCHER_GROUPS[group].types;
     const transferable = accounts.filter(account => mainKinds("transfer").includes(account.kind));
-    if (mode !== "correct") types = types.filter(item => (item !== "card_payment" || cards.length) && (!LOAN_KINDS.has(item) || (loans.length && HOF.can("bank.transfer"))) && (item !== "transfer" || (transferable.length > 1 && HOF.can("bank.transfer"))) && accounts.some(account => mainKinds(item).includes(account.kind)));
+    if (mode !== "correct") types = types.filter(item => (item !== "card_payment" || cards.length) && (!LOAN_KINDS.has(item) || (loans.length && HOF.can("bank.transfer"))) && (item !== "transfer" || (transferable.length > 1 && HOF.can("bank.transfer"))) && accounts.some(account => mainKinds(item, mode).includes(account.kind)));
     if (!types.length) return HOF.toast(group === "transfer" ? "Transfer için en az iki etkin TL banka hesabı (Vadesiz, Ticari, Vadeli ya da Diğer) gerekir. Önce Hesaplar'dan hesap açın." : "Bu işlem için uygun, etkin bir TL banka hesabı yok. Önce Hesaplar'dan hesap açın.", { type: "error" });
     const form0 = mode === "correct" ? card.form || {} : {};
     const initialType = type && types.includes(type) ? type : form0.type || types[0];
@@ -2140,7 +2143,7 @@
       const kind = typeNow();
       const select = field("accountId");
       if (select && kind !== lastType) {
-        const allowed = accounts.filter(account => mainKinds(kind).includes(account.kind));
+        const allowed = accounts.filter(account => mainKinds(kind, mode).includes(account.kind));
         const current = select.value || accountId;
         const pick = allowed.find(account => account.id === current) || allowed.find(account => account.kind === "demand") || allowed[0];
         select.innerHTML = allowed.map(account => `<option value="${esc(account.id)}" ${account.id === pick?.id ? "selected" : ""}>${esc(accountOption(account).label)}</option>`).join("");
@@ -2285,7 +2288,9 @@
       } else if (kind === "interest_out") {
         const extra = previewMinor(field("taxAmount")?.value) || 0;
         effect = { accountId: -(amount + extra) };
-        parts.push(`Bankadan Çıkan ${fmt(amount + extra)}`, `Faiz ${fmt(amount)}`, ...(extra ? [`BSMV / KKDF ${fmt(extra)}`] : []));
+        // Ç7a D-07: kart hesabında para bankadan çıkmaz, kart borcu artar (B 780 / A 309.k).
+        const onCard = accounts.find(account => account.id === field("accountId")?.value)?.kind === "card";
+        parts.push(`${onCard ? "Kart Borcuna Eklenen" : "Bankadan Çıkan"} ${fmt(amount + extra)}`, `Faiz ${fmt(amount)}`, ...(extra ? [`BSMV / KKDF ${fmt(extra)}`] : []));
       } else if (kind === "loan_repay") {
         const interest = previewMinor(field("interestAmount")?.value) || 0;
         effect = { accountId: -(amount + interest) };
@@ -2567,6 +2572,8 @@
           return HOF.taxPayment?.({ way: "bank", accountId: contextAccount(), onDone: () => reload() });
         case "v-card":
           return voucherForm({ group: "other", type: "card_payment", counterId: view.accountId });
+        case "v-card-interest":
+          return voucherForm({ group: "interest", type: "interest_out", accountId: view.accountId });
         case "v-loan":
           return voucherForm({ group: "other", type: "loan_draw", counterId: view.accountId });
         case "plan-new":

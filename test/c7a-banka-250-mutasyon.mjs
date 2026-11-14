@@ -29,7 +29,7 @@ const MUTASYONLAR = [
     2, "D-07: kart faizinin para satırı 309 yerine 102 (kart ↔ banka)", VOUCHER,
     "  const lines = [plainLine(\"expense\", gl, \"D\", amountMinor)];\n  if (taxMinor > 0) lines.push(plainLine(\"tax\", gl, \"D\", taxMinor, \"BSMV / KKDF\"));\n  lines.push(moneyLine(account, \"C\", amountMinor + taxMinor));",
     "  const lines = [plainLine(\"expense\", gl, \"D\", amountMinor)];\n  if (taxMinor > 0) lines.push(plainLine(\"tax\", gl, \"D\", taxMinor, \"BSMV / KKDF\"));\n  lines.push(account.kind === \"card\" ? { ...moneyLine(account, \"C\", amountMinor + taxMinor), role: \"bank\", gl: \"102\" } : moneyLine(account, \"C\", amountMinor + taxMinor));",
-    [D07], /D-07: B 780 faiz \+ BSMV \/ A 309\.k|bağı\/alt hesabı|mutabakat bozuk/,
+    [D07], /D-07: B 780 faiz \+ BSMV \/ A 309\.k|ledger-integrity[\s\S]*102\.00|mutabakat bozuk/,
   ],
   [
     3, "D-07: BSMV / KKDF satırı düşer (yalnız faiz yazılır)", VOUCHER,
