@@ -877,7 +877,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const amountCheck = (normalMinor, shareMinor) => {
       if (normalMinor - previousMinor <= room.roomMinor) return;
       const roomTl = roundMoney(Math.max(0, room.roomMinor) / 100);
-      const most = roundMoney(Math.max(0, room.roomMinor + previousMinor + shareMinor) / 100);
+      // Önerilen tutar: işaretli (ya da payı olmayan bağlı) tahsilatta bugünkü gibi şüpheli dışı borç; payı olan bağlı tahsilatta pay + şüpheli dışı borç (+ düzeltmede önceki 120 payı).
+      const most = shareMinor > 0 ? roundMoney(Math.max(0, room.roomMinor + previousMinor + shareMinor) / 100) : roomTl;
       throw new HttpError(409, `${what(normalMinor, shareMinor)} carinin şüpheli dışı borç bakiyesini (${tl(roomTl)}) aşıyor; fazlası şüpheli alacaktan düşmek zorunda. Tutarı ${tl(most)}'ye indirin ya da ${why}.`, { code: "doubtful-normal-exceeds", field: "amount", roomMinor: room.roomMinor, openMinor: room.openMinor, normalMinor, shareMinor });
     };
     if (flagged) {
