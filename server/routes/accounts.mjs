@@ -835,38 +835,61 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   };
   // Normal cari hesaba işlenen tahsilat (işaret ya da Kapatılacak Fatura bağı) carinin şüpheli dışı borç bakiyesini (120 = kart − açık şüpheli)
   // aşamaz: aşan kısım şüpheli alacaktan düşmek zorundadır (tam kapı doubtful:balance aynı kuralı sonradan "ledger-integrity" ile reddederdi;
-  // burada hiçbir şey yazılmadan açık 409 doubtful-normal-exceeds). Düzeltmede yalnız eklenen fark sayılır.
+  // burada açık 409 doubtful-normal-exceeds). Düzeltmede yalnız eklenen fark sayılır.
+  // 2.5.0 Ç5-A tur 3c (S168 = B; C5-ACILIS-TASARIM §19.1 SINIR): sınır YALNIZ 120'ye düşecek kısma uygulanır. "Normal Cari Hesaba İşle" işaretli tahsilatın tamamı 120'dir (bugünkü
+  // gibi; yazımdan önce). Yalnız Kapatılacak Fatura bağlı tahsilatta faturanın kuyrukta şüpheli sayılan kısmı önce 128'den düşer (lib/doubtful-gl.mjs `linked`) — 120'ye düşecek kısım
+  // = tutar − ayırıcının bu satıra verdiği 128 payı; pay yazımın AYNI işleminde, satır yerindeyken okunur (ayırıcının aynı gün sırası satırın kimliğine bağlı — yazımdan önce bilinemez).
+  // Dönüş: bağlı tahsilatta yazımdan SONRA çağrılacak denetim (satır kimliğiyle; aşarsa 409, işlem geri alınır), öbür durumda null.
   const assertNormalRoom = (account, input, previous = null) => {
-    if (input.kind !== "in" || account.type !== "customer" || !doubtful()?.headroom) return;
-    if (!doubtfulSkipOf({ kind: "in", invoiceId: input.invoiceId, doubtfulSkip: input.doubtfulSkip })) return;
+    if (input.kind !== "in" || account.type !== "customer" || !doubtful()?.headroom) return null;
+    const flagged = doubtfulSkipOf({ kind: "in", doubtfulSkip: input.doubtfulSkip });
+    if (!flagged && !input.invoiceId) return null;
     const room = doubtful().headroom(account.id);
-    if (!(room.openMinor > 0)) return;
+    if (!(room.openMinor > 0)) return null;
     // Önceki satırın ZATEN 120'de olan kısmı sayılmaz (işaretliyse tamamı; değilse ayırma kuralının şüpheliye düşürmediği kısmı — ör. kayıt
-    // tarihinden önceki tahsilat; kontrol turu 2 K3: önceden tamamı yeni sayılıp defter değişmediği hâlde 409).
+    // tarihinden önceki tahsilat, Ç5-A tur 3c'den beri bağlı tahsilatın 120 payı; kontrol turu 2 K3: önceden tamamı yeni sayılıp defter değişmediği hâlde 409).
     const previousMinor = previous && previous.kind === "in"
       ? (doubtfulSkipOf({ kind: "in", source: previous.source, invoiceId: previous.invoiceId, doubtfulSkip: previous.doubtfulSkip })
         ? Math.round(Number(previous.amount) * 100)
         : Math.round(Number(previous.amount) * 100) - (doubtful().allocatedMinor?.(account.id, previous.id) ?? 0))
       : 0;
-    const deltaMinor = Math.round(input.amount * 100) - previousMinor;
+    const amountMinor = Math.round(input.amount * 100);
+    const why = flagged ? "“Normal Cari Hesaba İşle” işaretini kaldırın" : "Kapatılacak Fatura bağını kaldırın";
     // 2.5.0 Ç5-B (K10-3, S85): düzeltmede tarih de değişirse sınır kaydın YENİ gününde — o güne kadarki bakiye (kayıt hariç) − açık şüpheli; bugünkü sınırla küçüğü.
+    let roomDay = null;
     if (previous && input.date && input.date !== previous.date) {
       const system = { id: "integrity", role: "admin", permissions: [] };
       const ledger = accountLedger(entriesOf(account.id).filter(entry => entry.id !== previous.id), plans()?.forAccount ? plans().forAccount(account.id, system) : []);
       const dayMinor = ledger.lines.filter(line => line.date <= input.date).reduce((sum, line) => sum + Math.round((Number(line.debit) || 0) * 100) - Math.round((Number(line.credit) || 0) * 100), 0);
-      const roomDay = dayMinor - room.openMinor;
+      roomDay = dayMinor - room.openMinor;
       if (roomDay < room.roomMinor) room.roomMinor = roomDay;
-      // Kayıt hariç ölçüldüğü için önceki payı düşülmez: yeni hâlin 120'ye yazacağı tutarın tamamı sayılır.
-      if (Math.round(input.amount * 100) > roomDay) {
-        const roomTl = roundMoney(Math.max(0, roomDay) / 100);
-        const why = input.doubtfulSkip ? "“Normal Cari Hesaba İşle” işaretini kaldırın" : "Kapatılacak Fatura bağını kaldırın";
-        throw new HttpError(409, `Normal cari hesaba işlenecek tahsilat (${tl(input.amount)}) ${dayText(input.date)} tarihinde carinin şüpheli dışı borç bakiyesini (${tl(roomTl)}) aşıyor; fazlası şüpheli alacaktan düşmek zorunda. Tutarı ya da tarihi değiştirin veya ${why}.`, { code: "doubtful-normal-exceeds", field: "date", roomMinor: roomDay, openMinor: room.openMinor });
-      }
     }
-    if (deltaMinor <= room.roomMinor) return;
-    const roomTl = roundMoney(Math.max(0, room.roomMinor) / 100);
-    const why = input.doubtfulSkip ? "“Normal Cari Hesaba İşle” işaretini kaldırın" : "Kapatılacak Fatura bağını kaldırın";
-    throw new HttpError(409, `Normal cari hesaba işlenecek tahsilat (${tl(input.amount)}) carinin şüpheli dışı borç bakiyesini (${tl(roomTl)}) aşıyor; fazlası şüpheli alacaktan düşmek zorunda. Tutarı ${tl(roomTl)}'ye indirin ya da ${why}.`, { code: "doubtful-normal-exceeds", field: "amount", roomMinor: room.roomMinor, openMinor: room.openMinor });
+    // İletinin ilk yarısı: bağlı tahsilatta 120'ye düşecek KISIM ve faturanın şüpheli payı; işaretlide tahsilatın tamamı (bugünkü metin).
+    const what = (normalMinor, shareMinor) => (shareMinor > 0
+      ? `Normal cari hesaba işlenecek kısım (${tl(roundMoney(normalMinor / 100))}; ${tl(input.amount)} tahsilatın ${tl(roundMoney(shareMinor / 100))}'si faturanın şüpheli alacaktaki payından düşüyor)`
+      : `Normal cari hesaba işlenecek tahsilat (${tl(roundMoney(normalMinor / 100))})`);
+    // Kayıt hariç ölçüldüğü için önceki payı düşülmez: yeni hâlin 120'ye yazacağı tutarın tamamı sayılır.
+    const dayCheck = (normalMinor, shareMinor) => {
+      if (roomDay === null || normalMinor <= roomDay) return;
+      const roomTl = roundMoney(Math.max(0, roomDay) / 100);
+      throw new HttpError(409, `${what(normalMinor, shareMinor)} ${dayText(input.date)} tarihinde carinin şüpheli dışı borç bakiyesini (${tl(roomTl)}) aşıyor; fazlası şüpheli alacaktan düşmek zorunda. Tutarı ya da tarihi değiştirin veya ${why}.`, { code: "doubtful-normal-exceeds", field: "date", roomMinor: roomDay, openMinor: room.openMinor, normalMinor, shareMinor });
+    };
+    const amountCheck = (normalMinor, shareMinor) => {
+      if (normalMinor - previousMinor <= room.roomMinor) return;
+      const roomTl = roundMoney(Math.max(0, room.roomMinor) / 100);
+      const most = roundMoney(Math.max(0, room.roomMinor + previousMinor + shareMinor) / 100);
+      throw new HttpError(409, `${what(normalMinor, shareMinor)} carinin şüpheli dışı borç bakiyesini (${tl(roomTl)}) aşıyor; fazlası şüpheli alacaktan düşmek zorunda. Tutarı ${tl(most)}'ye indirin ya da ${why}.`, { code: "doubtful-normal-exceeds", field: "amount", roomMinor: room.roomMinor, openMinor: room.openMinor, normalMinor, shareMinor });
+    };
+    if (flagged) {
+      dayCheck(amountMinor, 0);
+      amountCheck(amountMinor, 0);
+      return null;
+    }
+    return entryId => {
+      const shareMinor = Math.min(amountMinor, doubtful().allocatedMinor?.(account.id, entryId) ?? 0);
+      dayCheck(amountMinor - shareMinor, shareMinor);
+      amountCheck(amountMinor - shareMinor, shareMinor);
+    };
   };
   // v2.0.17: tahsilat/ödeme "Kapatılacak Fatura" ile bağlanabilir (boş = otomatik: carinin en eski açık faturası).
   // Bağ yalnız kapamayı belirler; cari bakiyesi ve Kasa değişmez. Fatura aynı carinin, kesilmiş, aynı yönde olmalı.
@@ -1101,7 +1124,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const body = await readJson(req);
     const input = entryInput(body, account.id);
     requireKindRight(user, input.kind);
-    assertNormalRoom(account, input);
+    const normalAfter = assertNormalRoom(account, input);
     assertCardRefundRoom(account, input, body);
     const finRef = refOf(input, body);
     requireBankOut(user, input.kind, finRef);
@@ -1124,6 +1147,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         k7.capture();
         const cardRefund = corporateOf(input, body) && input.kind === "in";
         const entry = addEntry(user, account.id, { ...input, finRef, pos: finRef && !corporateOf(input, body) ? posMetaOf(body) : null });
+        normalAfter?.(entry.id); // Ç5-A tur 3c: bağlı tahsilatın 120 payı yazımdan sonra (aşarsa 409, işlem geri alınır)
         audit(user, `account.entry.${input.kind}`, entry.id, { accountId: account.id, accountName: account.name, ...input, finRef, receiptNo: entry.receiptNo, ...(cardRefund ? { cardRefund: true } : {}) });
         return entry;
       },
@@ -1191,7 +1215,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         const input = entryInput({ ...base, ...body, kind: flip }, party.id, base);
         assertOffsetFree(previous, input);
         // S81 (S56 gibi): yeni hâl şüpheli kaydı açık bir cariye 120'den yazıyorsa sınır o carinin şüpheli dışı bakiyesi; cari değişince önceki satırın payı sayılmaz.
-        assertNormalRoom(party, input, cariChange ? null : previous);
+        const normalAfter = assertNormalRoom(party, input, cariChange ? null : previous);
         // 2.4.9 P1 tur 2: kart iadesi kuralları POST'la aynı — iade olmayan satır müşteride iadeye çevrilirken kartla ödeme denetimi (DÜŞÜK-2), etkin kart
         // yoksa 400 (DÜŞÜK-1). Var olan iade satırının tutar / tarih / kart düzeltmesi serbest.
         if (!wasCardRefund(previous)) assertCardRefundRoom(party, input, body);
@@ -1202,16 +1226,17 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         cash?.guardChange?.(cashSide(previous), cashSide(input), body.cashForce === true);
         const k7 = negativeOf([previous.finRef, finRef], previous.date < input.date ? previous.date : input.date, negativeForced(body));
         current.push(previous);
-        step = { previous, input, finRef, k7 };
+        step = { previous, input, finRef, k7, normalAfter };
       },
       write: () => {
-        const { previous, input, finRef, k7 } = step;
+        const { previous, input, finRef, k7, normalAfter } = step;
         k7.capture();
         const meta = finRef && !corporateOf(input, body, previous) ? posMetaOf(body) : null;
         const eventId = bank.eventFor("account_entries", { kind: input.kind, source: previous.source, date: input.date, method: input.method, event_id: previous.eventId, fin_ref: finRef, ...(meta ? { pos: meta } : {}) });
         store.run("UPDATE account_entries SET kind = ?, amount = ?, date = ?, note = ?, method = ?, invoice_id = ?, fin_ref = ?, event_id = ?, doubtful_skip = ?, due_date = ?, expected_date = ?, refund_of = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.kind, input.amount, input.date, input.note, input.method, input.invoiceId, finRef, eventId, input.doubtfulSkip ? 1 : 0, previous.source ? "" : input.dueDate, previous.source ? "" : input.expectedDate, previous.source ? "" : input.refundOf, user.id, now(), previous.id);
         // Ç5-B: cari değişimi aynı satırda (kimlik, Kasa / banka hareketi ve iz aynı); defterde cari boyutu yeni cariye geçer.
         if (cariChange) store.run("UPDATE account_entries SET account_id = ? WHERE id = ?", targetId, previous.id);
+        normalAfter?.(previous.id); // Ç5-A tur 3c: bağlı tahsilatın 120 payı yazımdan sonra (aşarsa 409, işlem geri alınır)
         audit(user, "account.entry.updated", previous.id, { accountId: cariChange ? targetId : account.id, ...(cariChange ? { previousAccountId: account.id } : {}), previous, ...input, finRef });
         return { id: previous.id };
       },
