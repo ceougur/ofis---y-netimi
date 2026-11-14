@@ -1,0 +1,16 @@
+▶ Ç5-A tur 1e — Silinenler'den dönen satırın KG-16 durumu (S51 = A, B8)
+  ✔ dar kontrolün örneği: v2.4.9'da girilmiş 'Açılış devri (ikinci)' → aday → onay (120 / 519) → sil → geri al: ONAYLI ve 519'da kalır (39.818392ms)
+  ✔ sınıf tablosu: reddedilen → reddedilen (602 / 770), aday → aday (519); kapının kopyası aynı (48.588216ms)
+  ✔ B8: v2.4.9'da silinmiş 'Açılış…' satırı (yükünde durum yok) güncel kodda geri alınınca ADAY (519) (18.817343ms)
+  ✔ kilitli dönem: kilitli aday silinmez (409); kilitten önce silinip sonra kilitlenen satır geri alınmaz (409) — durum değişmez (166.95492ms)
+  ✔ S51 = A: açılış silinir, cari başka açılış alır, eskisi geri alınır → 'Açılış Olabilir' (aday, 519) — 2.4.5'te silinmiş yük (açıklamadan) ve 2.5.0'da silinmiş yük (işaretten) (548.025598ms)
+  ✔ 2.4.5'te silinmiş açılış yükü (işaret alanı yok, açıklama 'Açılış bakiyesi'), cari başka işaretli açılışla → aday (410.250904ms)
+✔ Ç5-A tur 1e — Silinenler'den dönen satırın KG-16 durumu (S51 = A, B8) (2112.039397ms)
+ℹ tests 6
+ℹ suites 1
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2401.429474

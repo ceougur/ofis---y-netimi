@@ -1,0 +1,29 @@
+▶ 2.5.0 Ç3 tur 3 — YÜKSEK-1: süren dondurmanın satırları silinmez; koşu tablo doğrulanmadan tamamlanmaz
+  ✔ T1 (p1): dondurma YAZIM adımındayken aynı güne yinelenen kilit süren koşunun satırlarını silmez — bitince görünen donmuş satır = kayıtlı = canlı; Hesap Planı Mizanı, Yevmiye Defteri ve karma mizan = canlı; Mutabakat Testi temiz (5243.442594ms)
+  ✔ T3: koşunun satırı yazımdan sonra dışarıdan eksilirse (sayaç ↔ tablo farkı) koşu 'tamam' sayılmaz — görünür hata, kapsam yerinde, koşu bekler; aynı güne yeniden kilit baştan yazar ve tamamlar (323.203543ms)
+  ✔ T4 (ORTA-1): kilit geri çekilince bayat satır temizliği sürerken yeniden kilit 5 sn bütçesini aşmaz — 409 ledger-cleanup-running + Türkçe neden; kilit ve koşular değişmez; ilerleme görünür; temizlik bitince kilit 200 ve donar (10419.452054ms)
+  ✔ T6b (Ç3 küçük işler (b), etiketsiz): Mutabakat Günlüğü'nde 20.000 karakterde kesilmiş (geçersiz JSON) kayıt Mutabakat Testi'ni düşürmez — satır günlükte 'okunamadı' işaretiyle, öbür kayıtlar ayrıştırılır (16.993733ms)
+  ✔ T5 (Ç3 küçük işler (a), K4 ailesi): Defter Mutabakatı alt başlığı nedeni bilinmeyen ayrışmayı 'Defter kuralı program sürümüyle değişti' diye adlandırmaz — denetimin tarafsız iletisi + yeni işlemler engellenmez (13.90723ms)
+✔ 2.5.0 Ç3 tur 3 — YÜKSEK-1: süren dondurmanın satırları silinmez; koşu tablo doğrulanmadan tamamlanmaz (16946.343765ms)
+▶ 2.5.0 Ç3 tur 3 — YÜKSEK-1 (p5): açılışta süren eski kurallı (2.4.9) dondurma + aynı güne kilit
+  ✔ T2 (p5): eski sürüm kilidi → açılış onarımının 2.4.9 koşusu yazım adımındayken aynı güne kilit → satırlar silinmez; koşu 2.4.9 kuralıyla tamamlanır, görünen = kayıtlı = canlı (6063.168197ms)
+✔ 2.5.0 Ç3 tur 3 — YÜKSEK-1 (p5): açılışta süren eski kurallı (2.4.9) dondurma + aynı güne kilit (6063.379285ms)
+▶ 2.5.0 Ç3 tur 3 — ORTA-1: program temizlik bitmeden kapanırsa temizlik açılışta sürer ve süren iş sayılır
+  ✔ T4b: geri çekilen dönemin temizliği yarıda kalır (kapanış) → açılışta sürer; ilerleme görünümü 'süren iş' der, yeniden kilit 409; bitince kilit 200 (11130.024817ms)
+✔ 2.5.0 Ç3 tur 3 — ORTA-1: program temizlik bitmeden kapanırsa temizlik açılışta sürer ve süren iş sayılır (11130.384716ms)
+▶ 2.5.0 Ç3 tur 3 — S46 = A: eksilen donmuş dönem izi duruyorsa kendi kuralıyla, izsizse 2.4.9 kopyasıyla yeniden donar
+  ✔ U1: bu programın (2.5.0 kuralıyla) dondurduğu dönemin satırları dışarıdan silinir (iz durur) → açılışta aynı (2.5.0) kuralla yeniden donar; donmuş = canlı (1034.784458ms)
+  ✔ U2: izsiz bozulma (2.4.9'un deseni: önce dondurma izi, sonra satırlar) → açılışta GAP_RULE (2.4.9 kopyası) ile yeniden donar (S13) (1101.336354ms)
+  ✔ U3: karışık bileşim — (…, 30.06] 2.4.9 göç / onarım koşusu (izli), (30.06, 31.12] 2.5.0 koşusu (izli); satırların hepsi silinir → plan iki dilim: her dönem kendi kuralıyla (1484.845474ms)
+✔ 2.5.0 Ç3 tur 3 — S46 = A: eksilen donmuş dönem izi duruyorsa kendi kuralıyla, izsizse 2.4.9 kopyasıyla yeniden donar (3621.365679ms)
+▶ 2.5.0 Ç3 tur 3 — (b) 2.4.9'dan kalan kesik Mutabakat Günlüğü kaydı Mutabakat Testi'ni düşürmez
+  ✔ T6: v2.4.9 + v2.0.26 gerçek koduyla kesik kayıt → güncel kodda Mutabakat Testi 200, kesik satır detailUnreadable + neden (boş değil) (9225.359205ms)
+✔ 2.5.0 Ç3 tur 3 — (b) 2.4.9'dan kalan kesik Mutabakat Günlüğü kaydı Mutabakat Testi'ni düşürmez (9225.561951ms)
+ℹ tests 11
+ℹ suites 5
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 47300.051298

@@ -1,0 +1,20 @@
+▶ Aşama 3 — Hesabı Atanmamış Eski Hareketler ve Kurulum Sihirbazı
+  ✔ Hesabı Atanmamış liste ve özet: 102.00 = 6.000, 108.00 = 3.000; satırlar İşlem No'lu (19.286288ms)
+  ✔ nasıl bozarım: Bu Hesaba Ata — açılıştan önce 409, POS satırı 400, uygun olmayan hesap 400, satır yok 404 (79.282141ms)
+  ✔ nasıl bozarım: kilitli dönemdeki satır — uçta 409 period-locked; bank.post içinden doğrudan bağlansa kapı (kilit izi) 409 (221.172585ms)
+  ✔ sihirbaz: önizleme → çalıştır → geri al (birebir eski hâl); ikinci geri al 409 (86.831198ms)
+  ✔ nasıl bozarım: kilitli D ile sihirbaz 409; Geri Al'dan önce kilit → 409 (349.681936ms)
+  ✔ Bu Hesaba Ata tek satır; zaten bağlı satır 409 (28.833353ms)
+  ✔ Bankaya Geçmiş Say ve Kart Borcuna Aktar: tutar sınırı, kart hesabı, geri alınabilir (83.136429ms)
+✔ Aşama 3 — Hesabı Atanmamış Eski Hareketler ve Kurulum Sihirbazı (1324.64494ms)
+▶ Aşama 3 — sihirbaz eski sürüm verisinde (v2.0.26 zincir fikstürü)
+  ✔ olaysız eski satırlar: sihirbaz → mutabakat tamam → geri al → mizan ve alt hesaplar birebir aynı (695.404476ms)
+✔ Aşama 3 — sihirbaz eski sürüm verisinde (v2.0.26 zincir fikstürü) (695.676702ms)
+ℹ tests 8
+ℹ suites 2
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2308.751446

@@ -1,0 +1,15 @@
+▶ Ç5-A tur 2c — v2.4.9 kilitli verisinde açılış düzeni (kabul D): sınıf listesi, aday → Kural Farkı → Düzeltildi → eşleştirme → ters kayıt
+  ✔ [1] güncelleme: iki aday (kilitli 1); Kural Farkı fişi aday varken pasif (B16); karar → pasiflik kalkar (92.615227ms)
+  ✔ [2] sınıf listesi: kilitli dönemdeki her açılış türü kural farkında (eski 500 / 602 → 519); açık dönemdekiler farkta YOK, defterde 519 (reddedilen aday 602) (13.885374ms)
+  ✔ [3] Kural Farkı Düzeltme Fişi 01.07.2026: B 500 6.370 / B 602 2.800 / A 519 9.170; Düzeltildi; değişmez (1–5 karma = baştan) (59.897652ms)
+  ✔ [4] Açılış Eşleştirme 20.11.2026: 519 = 11.670 alacak (fiş 9.170 + açık dönem 2.500); A 500 10.000 + A 570 1.670 → 519 sıfır; Açılış Karşılığı tutarlı (32.375766ms)
+  ✔ [5] Kural Farkı fişi ters kaydedilir → uyarı geri gelir (Mizan'da 519 9.170 borç — kural farkı düzeltilmemiş; canlı türetmede 519 = 0, bilgi satırı YOK); açık dönemde açılış silinir → 519 eşleştirmenin tersine geçer: ENGELLENMEZ, bilgi satırı (81.811798ms)
+✔ Ç5-A tur 2c — v2.4.9 kilitli verisinde açılış düzeni (kabul D): sınıf listesi, aday → Kural Farkı → Düzeltildi → eşleştirme → ters kayıt (1545.150923ms)
+ℹ tests 5
+ℹ suites 1
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1903.499892

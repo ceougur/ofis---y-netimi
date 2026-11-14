@@ -1,0 +1,30 @@
+▶ Ç2 tur 3 — boundedDetail: sınırlı, her zaman geçerli JSON (lib/log-detail.mjs)
+  ✔ listeler ilk 50 öğe; kökün sayıları ve alanları aynen; çıktı her uzunlukta geçerli JSON (2.233851ms)
+  ✔ eşlem nesnesi (çok anahtarlı) liste gibi ilk 50 anahtar; az anahtarlı kayıt nesnesi kısaltılmaz (0.490356ms)
+  ✔ sınır içinde metin aşılırsa liste ÖNCE kısaltılır (öğeler bozulmaz), kayıt nesnesinin alanları ve kökün 20 alanı korunur; asla ortadan kesmez (0.942422ms)
+  ✔ maxList Infinity: sığan değer JSON.stringify ile BAYT BAYT aynı (integrity.mjs eşdeğerliği; rastgele yapılar, uzun metin, 1.000 öğeli liste); aşan değer geçerli ve sınır içinde (448.715911ms)
+  ✔ ders 47: uzun listenin kesilen öğeleri hiç okunmaz (öğe başına stringify döngüsü yok) (6.736655ms)
+✔ Ç2 tur 3 — boundedDetail: sınırlı, her zaman geçerli JSON (lib/log-detail.mjs) (460.497248ms)
+▶ Ç2 tur 3 — YAN BULGU 1: onarımın kaydı kesilmiş JSON olmaz (475+ fiş; kaldırılan + kaldırılmayan toplamı)
+  ✔ 600 fiş eski sürüm sıfırlamasından artakalır → hepsi kaldırılır; kayıt geçerli JSON (ilk 50 kimlik, removedCount 600); Mutabakat Testi 200 ve günlüğünde; Mutabakat Günlüğü raporu 200 (469.846042ms)
+  ✔ kaldırılan 300 + kaldırılmayan 300 (izi duran fişten sonra yazılmış): iki kayıt da geçerli JSON — ilk 50 kimlik + removedCount 300 / keptCount 300; kuşku kaydı yinelenmez (418.048522ms)
+  ✔ 50'den fazla kuşkulu fiş (sıfırlama izi yok, 60 fiş): kuşku kaydında ilk 50 kimlik + 50 neden + keptCount 60 — biçim tur 2'yle BAYT BAYT aynı (D5, D6) (294.900346ms)
+✔ Ç2 tur 3 — YAN BULGU 1: onarımın kaydı kesilmiş JSON olmaz (475+ fiş; kaldırılan + kaldırılmayan toplamı) (1190.93031ms)
+▶ Ç2 tur 3 — K5 test boşlukları (dar kontrol D1, D2, D3): onarım yazım sırasının uçlarını doğru okur
+  ✔ D1: işlem geçmişini SİLMEYEN İKİNCİ sıfırlama izi — EN SON iz sayılır: eski sürüm sıfırlaması (1. iz) → izli fiş → silmeyen 2. iz ⇒ izsiz fiş KALIR (reset-without-wipe) (292.6697ms)
+  ✔ D2: iki izli fiş ARASINA düşen izsiz fiş — İZLİ İLK fiş sayılır: sıfırlamadan önceki fiş kaldırılır, aradaki izsiz fiş KALIR (after-traced) (286.963327ms)
+  ✔ D3: sıfırlama izinden ÖNCE ve SONRA iz — İLK iz sayılır: sıfırlama izi bir izden sonra yazılmışsa işlem geçmişini silmemiştir ⇒ izsiz fiş KALIR (son iz sıfırlamadan sonra olsa da) (302.621001ms)
+✔ Ç2 tur 3 — K5 test boşlukları (dar kontrol D1, D2, D3): onarım yazım sırasının uçlarını doğru okur (890.636411ms)
+▶ Ç2 tur 3 — integrity.mjs: açılışta bulunan sapmanın kaydı ('baseline') sınırlı, sığan kayıtta eskisiyle BAYT BAYT aynı; her açılışta yinelenmez
+  ✔ 20.000'i aşan taban (5 × 6.000 karakterlik bozuk tarih): kayıt geçerli JSON ve sınır içinde, her sapma alanlarıyla; Mutabakat Testi 200; ikinci açılışta yeni satır yok (576.039704ms)
+  ✔ sığan taban (5 × 100 karakter): kayıt JSON.stringify(sapmalar) ile BAYT BAYT aynı (eski formül `.slice(0, 20000)` ile de); ikinci açılışta yeni satır yok (446.462598ms)
+  ✔ G6 v2.4.9 GERÇEK kodu: v2.4.9'un yazdığı sığan taban kaydı güncel sürümde aynen kalır (yeni satır yok); kesik (20.000'i aşan) kayıttan sonra bir kez geçerli yeni kayıt, sonra yinelenmez (1160.595293ms)
+✔ Ç2 tur 3 — integrity.mjs: açılışta bulunan sapmanın kaydı ('baseline') sınırlı, sığan kayıtta eskisiyle BAYT BAYT aynı; her açılışta yinelenmez (2196.672204ms)
+ℹ tests 14
+ℹ suites 4
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5022.793779

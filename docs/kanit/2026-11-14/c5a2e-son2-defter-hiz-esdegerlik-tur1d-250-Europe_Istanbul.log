@@ -1,0 +1,14 @@
+▶ İş F — S127 bağlılık kararı yalnız okunan kartlar için; sonuç süzgeçsizle aynı
+  ✔ surum-2.4.9-s127: karar kart başına (ids ∩); süzgeçli türetme (evrak, kart, cari, taksit satırı) = süzgeçsiz (301.295745ms)
+  ✔ surum-2.4.9-s127-kilitsiz: karar kart başına (ids ∩); süzgeçli türetme (evrak, kart, cari, taksit satırı) = süzgeçsiz (91.617567ms)
+  ✔ surum-2.0.26-zincir: karar kart başına (ids ∩); süzgeçli türetme (evrak, kart, cari, taksit satırı) = süzgeçsiz (594.03426ms)
+  ✔ göç penceresi (bekleyen 2.4.9 koşusu sürerken) ve kararı YALNIZ açılış satırının günü belirleyen kart: süzgeçli karar = süzgeçsiz (ek denetim — elle bozulmuş durum) (224.978429ms)
+✔ İş F — S127 bağlılık kararı yalnız okunan kartlar için; sonuç süzgeçsizle aynı (1213.118565ms)
+ℹ tests 4
+ℹ suites 1
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1529.294797

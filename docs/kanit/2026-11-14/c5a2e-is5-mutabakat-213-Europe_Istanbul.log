@@ -1,0 +1,18 @@
+▶ mutabakat kapısı
+  ✔ günlük iş akışından sonra tüm denetimler tutarlı (19.728217ms)
+  ✔ stok hareketi olmayan cari satırı (sızıntı) yazılamaz: işlem geri alınır, günlüğe düşer (10.376322ms)
+  ✔ kuruştan küçük küsurat: işlem dışı tek satır yazımı da kapıdan geçer ve geri alınır (6.676516ms)
+  ✔ çok adımlı işlemde bir adım sapma yaratırsa önceki adımlar da yazılmaz (8.70606ms)
+  ✔ eski sürümden kalan sapma ilgisiz işlemleri engellemez; ama büyütülemez (53.779868ms)
+  ✔ taksitlendirilmiş veresiye satıştan iade: taksit kartı iade kadar küçülür (kart borçtan büyük kalmaz) (50.578681ms)
+  ✔ Satış Yapma yetkisi: kasiyer ürün yönetimi olmadan nakit/kart satış ve iade girer; alım giremez (180.653842ms)
+  ✔ Raporlar: Defter Mutabakatı denetimleri ve Mutabakat Günlüğü (15.031478ms)
+✔ mutabakat kapısı (802.578142ms)
+ℹ tests 8
+ℹ suites 1
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1114.319956

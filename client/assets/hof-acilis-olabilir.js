@@ -36,7 +36,8 @@
       </tbody></table>`;
   }
   function pager(view) {
-    if (!view.total || view.total <= PAGE) return "";
+    // Toplam bir sayfaya sığıyor ve ilk sayfadaysak çubuk yok (tur 2e DÜŞÜK-1: başlangıç load()'da son dolu sayfaya çekilir).
+    if (!view.total || (view.total <= PAGE && !view.offset)) return "";
     const first = view.offset + 1;
     const last = Math.min(view.offset + view.items.length, view.total);
     return `<div class="hof-actions" data-review-pager><button type="button" class="hof-button hof-button-ghost hof-button-small" data-review-page="-1"${view.offset ? "" : " disabled"}>Önceki Sayfa</button><span class="adm-muted">${first}–${last} / ${view.total}</span><button type="button" class="hof-button hof-button-ghost hof-button-small" data-review-page="1"${last < view.total ? "" : " disabled"}>Sonraki Sayfa</button></div>`;
@@ -56,9 +57,15 @@
   async function open({ all = false } = {}) {
     if (current) return;
     const state = { all, offset: 0, view: null, selected: new Set(), busy: false };
+    const fetchPage = () => HOF.api(`${URL}?limit=${PAGE}&offset=${state.offset}${state.all ? "&all=1" : ""}`);
     const load = async () => {
-      const query = `?limit=${PAGE}&offset=${state.offset}${state.all ? "&all=1" : ""}`;
-      const data = await HOF.api(`${URL}${query}`);
+      let data = await fetchPage();
+      // Tur 2e DÜŞÜK-1 (dar kontrol c5a2): sayfanın kayıtları kararla bitince (başlangıç ≥ toplam) liste boş görünmesin — başlangıç son dolu sayfaya çekilir, yeniden okunur.
+      const total = Number(data.total) || 0;
+      if (!data.items.length && total > 0 && state.offset >= total) {
+        state.offset = Math.floor((total - 1) / PAGE) * PAGE;
+        data = await fetchPage();
+      }
       state.view = { ...data, all: state.all, offset: state.offset };
       // Sayfada olmayan seçim düşer (toplu karar yalnız görülen kayıtlara).
       state.selected = new Set([...state.selected].filter(id => data.items.some(item => item.id === id)));

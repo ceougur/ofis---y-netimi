@@ -1,0 +1,194 @@
+▶ Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (saf plan)
+  ✖ [y1] eşleme yılı tek tanım: ilk açık günün (kilit + 1) yılı; 30.12 / 31.12 sınırı; kilit yoksa donmuş dönem, o da yoksa bugün (0.568256ms)
+  ✖ [y2] S174 = A: 2026'da yazılmış fiş (B 500 / A 602) kilit 31.12.2026'yı aşınca kendi yılında düzeltilmiş sayılır — 2027'de fiş önerilmez (1.906579ms)
+  ✖ [y3] eski yıldan DÜZELTİLMEMİŞ fark + aynı yıl düzeltilmiş fark birlikte: yeni fiş yalnız düzeltilmemiş kısmı, 671'e (0.563842ms)
+  ✖ [y4] eski biçim (yıl ayrımsız toplam) ve tek yıl fişi: sonuç expected − posted (bugünkü hesap AYNEN) (0.687648ms)
+  ✖ [y5] fazla düzeltme yıl sonundan sonra: tutar doğru (700); fişin yılı eşleme yılından SONRA ise (kilit geri alındı) satırlar fişin tersi (0.278589ms)
+  ✔ [y6] N1: alt defter dışlaması kararlı noktaya kadar yinelenir — birinci maddenin dışlanması ikinci maddenin alt defter hesabını sıfırdan çıkarır (0.422542ms)
+✖ Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (saf plan) (5.277008ms)
+▶ Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (program, v2.4.9 verisi)
+  ✖ [y7] S174 = A uçtan uca: fiş 2026 → kilit 30.12 (602) → kilit 31.12 (671) → aday onayı → 'Fişle düzeltilebilen fark kalmadı' + Düzeltildi; ikinci fiş; ters kayıt; kilit kaldır / yeniden kilitle (1257.595129ms)
+✖ Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (program, v2.4.9 verisi) (1258.260354ms)
+ℹ tests 7
+ℹ suites 2
+ℹ pass 1
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1538.952922
+
+✖ failing tests:
+
+test at test/kural-farki-yil-250.test.mjs:28:3
+✖ [y1] eşleme yılı tek tanım: ilk açık günün (kilit + 1) yılı; 30.12 / 31.12 sınırı; kilit yoksa donmuş dönem, o da yoksa bugün (0.568256ms)
+  TypeError: opening.ruleDiffCorrectionYear is not a function
+      at ruleDiffCorrectionYear (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2e-k3/taban-ag/test/kural-farki-yil-250.test.mjs:24:48)
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2e-k3/taban-ag/test/kural-farki-yil-250.test.mjs:29:18)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.start (node:internal/test_runner/test:944:17)
+      at node:internal/test_runner/test:1440:71
+      at node:internal/per_context/primordials:466:82
+      at new Promise (<anonymous>)
+      at new SafePromise (node:internal/per_context/primordials:435:3)
+      at node:internal/per_context/primordials:466:9
+
+test at test/kural-farki-yil-250.test.mjs:36:3
+✖ [y2] S174 = A: 2026'da yazılmış fiş (B 500 / A 602) kilit 31.12.2026'yı aşınca kendi yılında düzeltilmiş sayılır — 2027'de fiş önerilmez (1.906579ms)
+  AssertionError [ERR_ASSERTION]: 2027: satır yok (2027 mizanı 602 = 0, 671 = 0)
+  + actual - expected
+  
+  + [
+  +   {
+  +     account: '500',
+  +     credit: 0,
+  +     debit: 70000,
+  +     party: '',
+  +     sub: ''
+  +   },
+  +   {
+  +     account: '671',
+  +     credit: 70000,
+  +     debit: 0,
+  +     party: '',
+  +     sub: ''
+  +   }
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2e-k3/taban-ag/test/kural-farki-yil-250.test.mjs:39:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ { account: '500', sub: '', party: '', debit: 70000, credit: 0 }, { account: '671', sub: '', party: '', debit: 0, credit: 70000 } ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/kural-farki-yil-250.test.mjs:46:3
+✖ [y3] eski yıldan DÜZELTİLMEMİŞ fark + aynı yıl düzeltilmiş fark birlikte: yeni fiş yalnız düzeltilmemiş kısmı, 671'e (0.563842ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   'A 671 1000',
+  +   'B 500 700',
+  -   'A 671 300',
+      'B 519 300'
+    ]
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2e-k3/taban-ag/test/kural-farki-yil-250.test.mjs:49:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'A 671 1000', 'B 500 700', 'B 519 300' ],
+    expected: [ 'A 671 300', 'B 519 300' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/kural-farki-yil-250.test.mjs:61:3
+✖ [y4] eski biçim (yıl ayrımsız toplam) ve tek yıl fişi: sonuç expected − posted (bugünkü hesap AYNEN) (0.687648ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    [
+      {
+  +     account: '500',
+  +     credit: 0,
+  +     debit: 70000,
+  +     party: '',
+  +     sub: ''
+  +   },
+  +   {
+        account: '519',
+        credit: 0,
+        debit: 30000,
+        party: '',
+        sub: ''
+  ...
+        account: '602',
+  +     credit: 100000,
+  -     credit: 30000,
+        debit: 0,
+        party: '',
+        sub: ''
+      }
+    ]
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2e-k3/taban-ag/test/kural-farki-yil-250.test.mjs:66:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { account: '500', sub: '', party: '', debit: 70000, credit: 0 }, { account: '519', sub: '', party: '', debit: 30000, credit: 0 }, { account: '602', sub: '', party: '', debit: 0, credit: 100000 } ],
+    expected: [ { account: '519', sub: '', party: '', debit: 30000, credit: 0 }, { account: '602', sub: '', party: '', debit: 0, credit: 30000 } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/kural-farki-yil-250.test.mjs:70:3
+✖ [y5] fazla düzeltme yıl sonundan sonra: tutar doğru (700); fişin yılı eşleme yılından SONRA ise (kilit geri alındı) satırlar fişin tersi (0.278589ms)
+  AssertionError [ERR_ASSERTION]: fazla tutar 700
+  
+  0 !== 70000
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2e-k3/taban-ag/test/kural-farki-yil-250.test.mjs:74:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 70000,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/kural-farki-yil-250.test.mjs:96:3
+✖ [y7] S174 = A uçtan uca: fiş 2026 → kilit 30.12 (602) → kilit 31.12 (671) → aday onayı → 'Fişle düzeltilebilen fark kalmadı' + Düzeltildi; ikinci fiş; ters kayıt; kilit kaldır / yeniden kilitle (1257.595129ms)
+  AssertionError [ERR_ASSERTION]: yalnız düzeltilmemiş 300, önceki yıl 671 (EK-1 M7); fiş 1'in 700'ü yeniden önerilmez
+  + actual - expected
+  
+    [
+  +   'A 671 1000',
+  -   'A 671 300',
+      'B 519 300',
+  +   'B 602 700'
+    ]
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2e-k3/taban-ag/test/kural-farki-yil-250.test.mjs:179:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'A 671 1000', 'B 519 300', 'B 602 700' ],
+    expected: [ 'A 671 300', 'B 519 300' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

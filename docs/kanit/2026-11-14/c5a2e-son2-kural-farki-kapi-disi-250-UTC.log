@@ -1,0 +1,28 @@
+▶ Ç5-A tur 1e — kilitli dönemin kapı dışı bozulması bulunur; meşru olaylar sessiz
+  ✔ [1] satır içi tarama — Kasa satırının açılış işareti 0→1 (497.559548ms)
+  ✔ [2] arka plan taraması — Kasa satırının açılış işareti 0→1; [3] program kapalıyken yapılan aynı yazım açılışta bulunur (1037.514654ms)
+  ✔ [1] satır içi tarama — cari satırının açılış işareti 0→1 (431.151038ms)
+  ✔ [2] arka plan taraması — cari satırının açılış işareti 0→1; [3] program kapalıyken yapılan aynı yazım açılışta bulunur (1079.237086ms)
+  ✔ [1] satır içi tarama — cari satırının açılış işareti 1→0 (519 → 602) (428.209166ms)
+  ✔ [2] arka plan taraması — cari satırının açılış işareti 1→0 (519 → 602); [3] program kapalıyken yapılan aynı yazım açılışta bulunur (1053.86118ms)
+  ✔ [1] satır içi tarama — iki carinin işareti yer değiştirir (sayı ve tutar aynı, yalnız hesap dağılımı) (406.136833ms)
+  ✔ [2] arka plan taraması — iki carinin işareti yer değiştirir (sayı ve tutar aynı, yalnız hesap dağılımı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur (1050.303864ms)
+  ✔ [1] satır içi tarama — KG-16 durumu (Açılış Olabilir onayı alanı) (422.236457ms)
+  ✔ [2] arka plan taraması — KG-16 durumu (Açılış Olabilir onayı alanı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur (1044.065155ms)
+  ✔ [1] satır içi tarama — evrakın açılış işareti (409.004649ms)
+  ✔ [2] arka plan taraması — evrakın açılış işareti; [3] program kapalıyken yapılan aynı yazım açılışta bulunur (1010.274446ms)
+  ✔ [1] satır içi tarama — taksit kartının Excel yükleme bağı (404.809823ms)
+  ✔ [2] arka plan taraması — taksit kartının Excel yükleme bağı; [3] program kapalıyken yapılan aynı yazım açılışta bulunur (1013.543976ms)
+  ✔ [4] meşru olaylar sessiz: kilitli satırda KG-16 onayı ve reddi (K8-2), kilidin ilerletilmesi, kaldırılması ve yeniden kilitleme; yeniden açılış (2034.995746ms)
+  ✔ [5] yedekten geri yükleme ve Şirket Verisini Sıfırla sessiz (949.073405ms)
+  ✔ [6] göç 50: gölge sütunu olmayan (göç 49'da kalmış) dosya açılınca gölge durumdan doldurulur — sessiz (517.305775ms)
+  ✔ [7] kapıdan geçen (mağaza) yazım kilitli satırın açılış işaretini değiştiremez: süzgeç de 'kilitli dönem' der → tam kapı reddeder (eşdeğerlik ihlali yok) (445.442181ms)
+✔ Ç5-A tur 1e — kilitli dönemin kapı dışı bozulması bulunur; meşru olaylar sessiz (14884.905947ms)
+ℹ tests 18
+ℹ suites 1
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15205.169743

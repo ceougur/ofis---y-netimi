@@ -1,0 +1,18 @@
+▶ 2.5.0 Ç1 — hesap planı sınıflaması
+  ✔ CHART'taki her hesap tam bir yere düşer (bilanço kalemi ya da gelir tablosu kalemi ya da yansıtma / kapanış türü); sınıfsız ya da çift sınıflı yok (1.463672ms)
+  ✔ tür ve MSUGT kalemi kural kitabı §2 tablosuyla aynı (eksik hesaplar eklendi) (0.29462ms)
+  ✔ ters bakiye kuralları (çekirdek §13, kural kitabı §7.3): brütleştirme, Kesin Değil, KARAR GEREKİYOR (0.644766ms)
+  ✔ 7/A yansıtma: 760 → 761 / 631, 770 → 771 / 632, 780 → 781 / 660; gelir tablosunda yansıtıldığı hesabın satırında (0.224548ms)
+  ✔ yardımcılar: alt hesap ana hesabın sınıfını alır; planda olmayan kod null (0.139764ms)
+  ✔ adlar: 770 Tekdüzen adıyla; geri kalan 2.4.9 adları değişmedi; yeni hesaplar planda (0.532028ms)
+  ✔ alt hesap tanımları (yalnız tanım): 600.90 / 610.90 Belgesiz, 602.90 / 770.90 Sınıflandırılmamış, 336.90 Sınıflandırılmamış Tahsilatlar (0.442704ms)
+  ✔ defterin yazabildiği her hesap planda (sınıflanabilir): banka fişi rolleri, evrak, şüpheli alacak, fatura gider türleri, yevmiye kaynağı (1.142266ms)
+✔ 2.5.0 Ç1 — hesap planı sınıflaması (6.42648ms)
+ℹ tests 8
+ℹ suites 1
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 66.579668

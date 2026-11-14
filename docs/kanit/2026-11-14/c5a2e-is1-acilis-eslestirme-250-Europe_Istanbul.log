@@ -1,0 +1,15 @@
+▶ Ç5-A tur 2c İş 1 — Açılış Eşleştirme Fişi
+  ✔ ön izleme verisi: 519'un gün sonu bakiyesi ve açılış türlerine göre dökümü (toplam = bakiye); izinli hedefler alt defter hesabı ve 519 içermez (9.472677ms)
+  ✔ ret: izinsiz hedef (102, 120, 600, 519) 400 ESLESTIRME_HESAP; 519'u büyüten 409; ters bakiye 409 ESLESTIRME_TERS (aynı gün açılışı dahil, ertesi gün açılışı hariç); fiş yazılmaz (31.607566ms)
+  ✔ kısmi + ikinci fiş (iki hedef) + fazlası ret; Açılış Karşılığı fiş satırlarını görür; cari / Kasa / banka / stok bakiyesi değişmez; aynı istek iki kez tek fiş (61.691338ms)
+  ✔ fişten sonra açık dönemde açılış silinir → 519 ters bakiye: ENGELLENMEZ; Mutabakat'ta bilgi satırı (zil / günlük değişmez); ters kayıtla geri döner (42.927459ms)
+  ✔ iki kişi aynı anda kalanın tamamını eşleştirir: biri yazılır, öbürü güncel bakiyeyle (0) 409; Muhasebe 403; ileri tarih 400; kilitli tarih 409 (337.314803ms)
+✔ Ç5-A tur 2c İş 1 — Açılış Eşleştirme Fişi (908.202204ms)
+ℹ tests 5
+ℹ suites 1
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1175.524738

@@ -1,0 +1,16 @@
+başla 06:22
+2.23 3.04 2.90 2/122 13172
+dosya sayısı 39
+yeşil satır: 78
+e2e senaryo-acilis-duzeni-250 UTC çıkış 0 [kanit] c5a2e-e2e-senaryo-acilis-duzeni-250-UTC: GEÇTİ · çıkış 0 · 27/27 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 7c05fad +1 izlen
+e2e senaryo-acilis-duzeni-250 Europe/Istanbul çıkış 0 [kanit] c5a2e-e2e-senaryo-acilis-duzeni-250-Europe_Istanbul: GEÇTİ · çıkış 0 · 27/27 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 7c05
+e2e senaryo-acilis-olabilir-250 UTC çıkış 0 [kanit] c5a2e-e2e-senaryo-acilis-olabilir-250-UTC: GEÇTİ · çıkış 0 · 45/45 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 7c05fad +1 izl
+e2e senaryo-acilis-olabilir-250 Europe/Istanbul çıkış 0 [kanit] c5a2e-e2e-senaryo-acilis-olabilir-250-Europe_Istanbul: GEÇTİ · çıkış 0 · 45/45 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 7c
+e2e senaryo-acilis-eslestirme-250 UTC çıkış 0 [kanit] c5a2e-e2e-senaryo-acilis-eslestirme-250-UTC: GEÇTİ · çıkış 0 · 29/29 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 7c05fad +1 i
+e2e senaryo-acilis-eslestirme-250 Europe/Istanbul çıkış 0 [kanit] c5a2e-e2e-senaryo-acilis-eslestirme-250-Europe_Istanbul: GEÇTİ · çıkış 0 · 29/29 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 
+B7 bitir test/kural-farki-yil-250.test.mjs çıkış 0  [zorla özet] test/kural-farki-yil-250.test.mjs · 1 yineleme · ön koşul gerçekleşti 1 · gerçekleşmedi 0 · ön koşullu yeşil 1 · ön koşullu kırmızı 0 · süre doldu, ön koşul bilin
+B7 bitir test/acilis-olabilir-yetki-250.test.mjs çıkış 0  [zorla özet] test/acilis-olabilir-yetki-250.test.mjs · 1 yineleme · ön koşul gerçekleşti 1 · gerçekleşmedi 0 · ön koşullu yeşil 1 · ön koşullu kırmızı 0 · süre doldu, ön koşul
+B7 gozlem test/kural-farki-yil-250.test.mjs çıkış 0  [zorla özet] test/kural-farki-yil-250.test.mjs · 1 yineleme · ön koşul gerçekleşti 1 · gerçekleşmedi 0 · ön koşullu yeşil 1 · ön koşullu kırmızı 0 · süre doldu, ön koşul bilin
+B7 gozlem test/acilis-olabilir-yetki-250.test.mjs çıkış 0  [zorla özet] test/acilis-olabilir-yetki-250.test.mjs · 1 yineleme · ön koşul gerçekleşti 1 · gerçekleşmedi 0 · ön koşullu yeşil 1 · ön koşullu kırmızı 0 · süre doldu, ön koşul
+bitti 06:33
+kilit/çıkış 0

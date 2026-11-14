@@ -1,0 +1,12 @@
+aday durumu: candidate
+[0] kural farkı (karar yok): {"ok":false,"count":1,"name":"Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi)","hint":"Kilitli dönemin donmuş defteri güncel türetmeden farklı: neden defter kuralının program sürümüyle değişmesi ya da kilitli dönemin kaynak verisinin kapının görmediği bir yolla değişmesi olabilir. Kilitli dönemin raporları"}
+[1] ön izleme (ret, 2026): 2026-10-06 false  | A 602 700 | B 500 700
+[1] fiş: Fiş 2026-000001 2026-10-06 A 602 700 | B 500 700
+[1] Mutabakat: true {"ok":true,"count":1,"name":"Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi) — Düzeltildi (Fiş 2026-000001)","corrected":{"vouchers":["Fiş 2026-000001"]},"correction":{"vouchers":["Fiş 2026-000001"],"remainderMinor":0,"excludedMinor":0,"over":false},"hint":""}
+[2] Mutabakat (2027, kilit 31.12.2026): true  {"ok":true,"count":1,"name":"Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2026 ve Öncesi) — Düzeltildi (Fiş 2026-000001)","corrected":{"vouchers":["Fiş 2026-000001"]},"correction":{"vouchers":["Fiş 2026-000001"],"remainderMinor":0,"excludedMinor":0,"over":false},"hint":""}
+[2] ön izleme: 2027-01-01 disabled false   | A 671 700 | B 602 700 | count 1
+[3] ikinci fiş: 200 Fiş 2027-000001 2027-01-01 A 671 700 | B 602 700
+[3] Mutabakat: true {"ok":true,"count":1,"name":"Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2026 ve Öncesi) — Düzeltildi (Fiş 2026-000001, Fiş 2027-000001)","corrected":{"vouchers":["Fiş 2026-000001","Fiş 2027-000001"]},"correction":{"vouchers":["Fiş 2026-000001","Fiş 2027-000001"],"remainderMinor":0,"excludedMinor":0,"over":false},"hint":""}
+[3] ön izleme: true rule-diff-nothing | 
+[3] 2027 defteri: {"500":0,"519":0,"602":700,"671":-700,"681":0}
+[3] 2026 defteri: {"500":0,"519":0,"602":-700,"671":0,"681":0}

@@ -3,6 +3,7 @@
 // seçip toplu ret; "Tümü" süzgeci + satırda Geri Al; boş liste; iki kişi aynı anda; Muhasebe rolü Yönetim'e giremez. Veri: v2.4.9'un GERÇEK koduyla API'den (aynı adlı iki cari,
 // kilitli dönemde aday; ders 17) → güncel kod açılır, göç 48 adayları kurar. Saat sahte ve sabit (ders 13); lisans servisi yok (ders 30); pencere seçicisi son görünen pencere (ders 39).
 // DEPO=<kopya> ile başka kod kopyasına karşı koşulur (eski kod: ekran yok → kırmızı).
+// Tur 2e (dar kontrol c5a2 DÜŞÜK-1): ayrı veriyle 250 aday — 2. sayfanın 50 kaydı toplu kararla bitince kalan 200 kayıt GÖRÜNÜR (liste boş görünmez, sayfa çubuğu doğru); en sonda.
 // Çalıştırma: node test/e2e/senaryo-acilis-olabilir-250.mjs
 import fs from "node:fs";
 import { tmpdir } from "node:os";
@@ -262,6 +263,86 @@ try {
   await browser.close().catch(() => null);
   await server.close().catch(() => null);
   fs.rmSync(root, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 });
+}
+
+// ---- Tur 2e DÜŞÜK-1: sayfadaki kayıtlar toplu kararla bitince liste boş görünmez (ayrı veri: v2.4.9'un GERÇEK koduyla 250 "Açılış…" Borç Yaz) ----
+{
+  const root2 = fs.mkdtempSync(path.join(tmpdir(), "c5a2e-e2e-acilis-250-"));
+  const dirs2 = { dataDir: path.join(root2, "data"), backupDir: path.join(root2, "backups") };
+  let server2 = null;
+  let browser2 = null;
+  const ids250 = [];
+  try {
+    const old = await bootVersion("v2.4.9", { ...dirs2, now: NOW });
+    try {
+      const o = await old.login();
+      await o.post("/api/workspace/bank/setup/dismiss", {});
+      const party = (await o.post("/api/workspace/accounts", { name: "Toplu Açılış Müşteri", type: "customer", registeredOn: "2026-09-01" })).data;
+      for (let index = 1; index <= 250; index += 1) {
+        const res = await o.post(`/api/workspace/accounts/${party.id}/entries`, { kind: "debt", amount: String(10 + index), date: "2026-10-12", note: `Açılış devri ${String(index).padStart(3, "0")}` });
+        if (res.status !== 200) throw new Error(`v2.4.9 kayıt ${index}: ${res.status}`);
+      }
+      ids250.push(...old.app.store.all("SELECT id FROM account_entries WHERE account_id = ? ORDER BY rowid", party.id).map(row => row.id));
+    } finally {
+      await old.close();
+    }
+    server2 = await bootVersion(CURRENT, { ...dirs2, now: NOW });
+    await server2.app.ledger.snapshots.runPending();
+    const app2 = server2.app;
+    const count2 = state => app2.store.get("SELECT COUNT(*) AS n FROM account_entries WHERE opening_review = ?", state).n;
+    ok(ids250.length === 250 && count2("candidate") === 250, `ön koşul: göç 48 250 satırı aday yaptı (${count2("candidate")})`);
+    browser2 = await chromium.launch();
+    const context = await browser2.newContext({ viewport: { width: 1440, height: 900 }, locale: "tr-TR", timezoneId: "Europe/Istanbul" });
+    const p2 = await context.newPage();
+    await installPageClock(p2, app2.config.now);
+    const errors2 = [];
+    p2.on("pageerror", error => errors2.push(`pageerror ${error.message}`));
+    await p2.goto(`${server2.base}/`);
+    await p2.fill("#hof-auth input[name=username]", "admin");
+    await p2.fill("#hof-auth input[name=password]", ADMIN_PASSWORD);
+    await Promise.all([p2.waitForEvent("load"), p2.click('#hof-auth button[type="submit"]')]);
+    await p2.waitForSelector("#hof-sidecard", { timeout: 60000 });
+    await step("250 aday: 2. sayfanın 50 kaydı toplu onay → kalan 200 kayıt görünür, liste boş değil, sayfa çubuğu doğru (DÜŞÜK-1)", async () => {
+      await p2.goto(`${server2.base}/admin.html#system`, { waitUntil: "load" });
+      await p2.click('.adm-tabs [data-tab="system"]');
+      await p2.waitForSelector("#adm-opening-review-open", { state: "visible", timeout: 60000 });
+      await p2.click("#adm-opening-review-open");
+      await p2.waitForSelector(`${MODAL} [data-review-summary]`, { timeout: 60000 });
+      await human(p2);
+      const dialog = top(p2);
+      ok((await dialog.locator("[data-review-table] tbody tr").count()) === 200, "1. sayfa 200 satır");
+      ok(/1–200 \/ 250/.test(await dialog.locator("[data-review-pager]").textContent()), "sayfa çubuğu 1–200 / 250");
+      await dialog.locator('[data-review-page="1"]').click();
+      await p2.waitForFunction(() => document.querySelectorAll(".hof-modal-backdrop.is-visible [data-review-table] tbody tr").length === 50, null, { timeout: 30000 });
+      await human(p2);
+      ok(/201–250 \/ 250/.test(await top(p2).locator("[data-review-pager]").textContent()), "2. sayfa: 201–250 / 250");
+      await top(p2).locator("[data-review-all]").check();
+      await human(p2);
+      ok((await top(p2).locator("[data-review-bulk-why]").textContent()).trim() === "50 kayıt seçili.", "sayfadaki 50 kayıt seçili");
+      await top(p2).locator('[data-review-bulk="confirm"]').click();
+      await p2.locator(".hof-toast", { hasText: "50 kayıt açılış sayıldı." }).last().waitFor({ timeout: 30000 });
+      await p2.waitForFunction(() => document.querySelectorAll(".hof-modal-backdrop.is-visible [data-review-table] tbody tr").length > 0, null, { timeout: 15000 }).catch(() => null);
+      await human(p2);
+      const after = top(p2);
+      const rows = await after.locator("[data-review-table] tbody tr").count();
+      const summary = (await after.locator("[data-review-summary]").textContent()).trim();
+      ok(count2("confirmed") === 50 && count2("candidate") === 200, `veri tabanı: 50 onaylandı, 200 onay bekliyor (${count2("confirmed")} / ${count2("candidate")})`);
+      ok(/^Onay bekleyen 200 kayıt/.test(summary), `özet: "${summary}"`);
+      ok(rows === 200, `kalan 200 kayıt görünür (satır ${rows})`);
+      ok((await after.locator("[data-review-empty]").count()) === 0, "'Onay bekleyen kayıt yok' iletisi yok");
+      ok((await after.locator("[data-review-pager]").count()) === 0, "toplam bir sayfaya sığıyor: sayfa çubuğu yok");
+      await shot("toplu-karar-sonrasi-kalan-200", p2);
+    });
+    ok(errors2.length === 0, `sayfa hatası yok (250 aday)${errors2.length ? `: ${errors2.join(" | ")}` : ""}`);
+    await context.close();
+  } catch (error) {
+    failed += 1;
+    console.log(`✗ beklenmeyen hata (250 aday): ${error.stack || error.message}`);
+  } finally {
+    await browser2?.close().catch(() => null);
+    await server2?.close().catch(() => null);
+    fs.rmSync(root2, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 });
+  }
 }
 console.log(`\n${failed ? "BAŞARISIZ" : "TAMAM"}: ${passed} denetim geçti, ${failed} başarısız.`);
 console.log(`\n# tests ${passed + failed}\n# pass ${passed}\n# fail ${failed}`);
