@@ -73,6 +73,9 @@ const UNASSIGNED = ["U102", "U108"];
 // hesaplarının EN GEÇ açılışından (01.10) önce → açılışta sayılır: defterde 519, Hesabı Atanmamış kovasının BAKİYESİNDE ve Alt Hesap Mizanı'nda yok. U108 (POS tahsilatı; POS'un
 // açılışı yok, Devir Kapanışı yok) kovada kalır. Satır listeleri (Banka Hareket Raporu "Hesabı Atanmamış" seçimi) DEĞİŞMEDİ — U102 orada görünür.
 const IN_LEDGER_UNASSIGNED = ["U108"];
+// 2.5.0 Ç7a tur 2b — BEKLENTİ BİLEREK DEĞİŞTİ (BAŞ MİMAR KARARI 14.11 10:17 (2)): açılışta sayılmış satırlar (U102'nin tek satırı) banka raporlarının satırlarında "Açılışta Sayıldı"
+// işaretiyle KALIR, tutar / bakiye hücreleri boş; özet, TOPLAM, devir ve Banka Bakiye Raporu'nun Hesabı Atanmamış satırı bu satırları DÜŞER (toplam = kova).
+const COUNTED = new Set(UNASSIGNED.filter(key => !IN_LEDGER_UNASSIGNED.includes(key)));
 
 const RANGES = [
   { label: "varsayılan (Bu Yıl)", q: {}, from: "2026-01-01", to: "2026-12-31" },
@@ -287,7 +290,7 @@ describe("2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, h
   });
 
   it("Banka Bakiye Raporu: her grup × her dönem — Gerçek Banka, Kart ve Kredi Borcu, Hesabı Atanmamış ayrı; Giriş/Çıkış yalnız dış hareket", async () => {
-    const GROUPS = { real: REAL, debt: DEBT, unassigned: UNASSIGNED, all: [...REAL, ...DEBT, ...UNASSIGNED] };
+    const GROUPS = { real: REAL, debt: DEBT, unassigned: IN_LEDGER_UNASSIGNED, all: [...REAL, ...DEBT, ...IN_LEDGER_UNASSIGNED] };
     const groupName = key => (REAL.includes(key) ? K10.realBank : DEBT.includes(key) ? K10.debt : K10.unassigned);
     for (const r of RANGES) {
       for (const group of Object.keys(GROUPS)) {
@@ -311,7 +314,7 @@ describe("2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, h
         // Özet (her grupta aynı): K10 adlarıyla dönem sonu.
         assert.equal(summaryOf(data, K10.realBank), closing(REAL, r), `${tag}: özet Gerçek Banka`);
         assert.equal(summaryOf(data, K10.debt), -closing(DEBT, r) || 0, `${tag}: özet Kart ve Kredi Borcu`);
-        if (UNASSIGNED.some(key => of([key]).some(row => upTo(row.d, r)))) assert.equal(summaryOf(data, K10.unassigned), closing(UNASSIGNED, r), `${tag}: özet Hesabı Atanmamış`);
+        if (IN_LEDGER_UNASSIGNED.some(key => of([key]).some(row => upTo(row.d, r)))) assert.equal(summaryOf(data, K10.unassigned), closing(IN_LEDGER_UNASSIGNED, r), `${tag}: özet Hesabı Atanmamış`);
         if (group === "real" || group === "all") await checkFiles("banka-bakiye", query, data, tag);
       }
     }
@@ -335,7 +338,7 @@ describe("2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, h
           const data = await screen("banka-hareket", query, tag);
           const devir = data.rows.filter(row => row[col(data, "İşlem Türü")] === "Devir");
           const body = data.rows.filter(row => row[col(data, "İşlem Türü")] !== "Devir");
-          const seen = keys.filter(key => of([key]).some(row => upTo(row.d, r)));
+          const seen = keys.filter(key => !COUNTED.has(key) && of([key]).some(row => upTo(row.d, r)));
           assert.equal(devir.length, ["Z", "G", "K", "L"].includes(choice) ? 1 : seen.length, `${tag}: devir satırı sayısı`);
           for (const key of seen) {
             const row = devir.find(cells => cells[col(data, "Hesap")] === lastLabel(key));
@@ -350,6 +353,10 @@ describe("2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, h
             const wanted = [];
             for (const row of [...of([key])].map((row, index) => ({ row, index })).sort((a, b) => (a.row.d === b.row.d ? a.index - b.index : a.row.d < b.row.d ? -1 : 1)).map(item => item.row)) {
               if (!upTo(row.d, r) || beforeRange(row.d, r)) continue;
+              if (COUNTED.has(key)) {
+                if (!move) wanted.push({ ...row, extIn: 0, extOut: 0, trIn: 0, trOut: 0, balance: 0, counted: true });
+                continue;
+              }
               running += row.signed;
               if (row.adj ? !move : pick(row)) wanted.push({ ...row, balance: running });
             }
@@ -361,11 +368,12 @@ describe("2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, h
               assert.deepEqual([cell("Giriş"), cell("Çıkış"), cell("Transfer Giriş"), cell("Transfer Çıkış"), cell("Bakiye")], [w.extIn, w.extOut, w.trIn, w.trOut, w.balance], `${tag}: ${key} ${index + 1}. satır (${w.label || ""} ${w.d})`);
               assert.match(row[col(data, "İşlem No")], /^BNK-2026-\d{6}$/, `${tag}: İşlem No`);
               if (w.adj) assert.match(row[col(data, "Açıklama")], /Açılış ve Devir Düzeltmesi/, `${tag}: açılış açıklaması`);
+              if (w.counted) assert.match(row[col(data, "Açıklama")], /Açılışta Sayıldı/, `${tag}: açılışta sayılmış satır işaretli`);
             });
             count += got.length;
           }
           assert.equal(body.length, count, `${tag}: başka hesabın satırı yok`);
-          const f = flows(keys, r);
+          const f = flows(keys.filter(key => !COUNTED.has(key)), r);
           assert.deepEqual([summaryOf(data, "Devir"), summaryOf(data, "Giriş"), summaryOf(data, "Çıkış"), summaryOf(data, "Transfer Giriş"), summaryOf(data, "Transfer Çıkış"), summaryOf(data, "Dönem Sonu")], [f.opening, f.in, f.out, f.trIn, f.trOut, f.closing], `${tag}: özet`);
           if (["Z", "G", "K", "L"].includes(choice)) {
             const list = of(keys).filter(row => inRange(row.d, r));

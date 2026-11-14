@@ -25,10 +25,12 @@ const later = (a, b) => (a > b ? a : b);
  * yapılır (ayrımın kendisi test/hesapsiz-acilis-250.test.mjs). Üretimde hiçbir yol değiştirmez.
  */
 export const COVER_TEST = { off: false };
+// Ç7a tur 2b: rapor iş parçacığı (lib/report-worker.mjs) bu modülün AYRI örneğini yükler — testin kipi ona ortam değişkeniyle geçer (yalnız test; üretimde tanımsız).
+const testOff = () => COVER_TEST.off || process.env.HUKUK_TEST_COVER_OFF === "1";
 
 /** Açılış sınırları (tek SQL; tablo yoksa ''): { bank, card, pos, carry }. */
 export function coverBounds(store) {
-  if (COVER_TEST.off) return Object.freeze({ bank: "", card: "", pos: "", carry: "", off: true });
+  if (testOff()) return Object.freeze({ bank: "", card: "", pos: "", carry: "", off: true });
   const accounts = hasTable(store, "bank_accounts");
   const events = hasTable(store, "fin_events");
   if (!accounts && !events) return Object.freeze({ bank: "", card: "", pos: "", carry: "" });

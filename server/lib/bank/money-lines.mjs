@@ -714,30 +714,32 @@ export function createMoneyLines(store, { verify = false } = {}) {
    * paylara girmez; "" = dönem başı yok). day verilirse hesabı atanmamış ve day'den SONRAKİ satırlar ayrı grupta (ahead = 1; eski sürümden kalan
    * ileri tarihli hareket). Dönüş: [{ key, ahead, lines, closing, opening, ext_in, ext_out, tr_in, tr_out, adjust, first }] (kuruş).
    */
-  function classifiedTotals({ ways = null, ref = null, refs = null, unbound = false, until = "", from = "", day = "" } = {}) {
+  function classifiedTotals({ ways = null, ref = null, refs = null, unbound = false, until = "", from = "", day = "", uncounted = false } = {}) {
     const { bankAccounts, tables } = load();
     const fee = tables.has("fin_events") && bankAccounts;
-    const filters = [wayFilter(ways), unbound ? "w.ref = ''" : ""].filter(Boolean);
+    // 2.5.0 Ç7a tur 2b (BAŞ MİMAR KARARI 14.11 10:17 (2); opening-cover.mjs): uncounted — "açılışta sayılmış" hesabı atanmamış satırlar toplamlara girmez (kova ile aynı küme).
+    const filters = [wayFilter(ways), unbound ? "w.ref = ''" : "", uncounted ? `NOT ${COVER_SQL}` : ""].filter(Boolean);
     const columns = classColumns({ src: "w.src", kind: "w.kind", cents: "w.cents", internal: "w.internal", base: "w.head_base", fee: fee ? feeSql({ bank: "w.head_bank", kind: "w.ref_kind" }) : "0" });
     const pre = "(:pfrom <> '' AND w.date < :pfrom)";
     const sql = `SELECT ${KEY_SQL("w")} AS key, CASE WHEN :pday <> '' AND w.ref = '' AND w.date > :pday THEN 1 ELSE 0 END AS ahead, COUNT(*) AS lines,
         COALESCE(SUM(${SIGNED_SQL("w")}), 0) AS closing, COALESCE(SUM(CASE WHEN ${pre} THEN ${SIGNED_SQL("w")} ELSE 0 END), 0) AS opening,
         ${CLASS_KEYS.map(key => `COALESCE(SUM(CASE WHEN ${pre} THEN 0 ELSE ${columns[key]} END), 0) AS ${key}`).join(", ")}, MIN(w.date) AS first
-      FROM (${waySql({ light: true, heads: true, ref, refs, unbound, until, ways })}) w
+      FROM (${waySql({ light: true, heads: true, ref, refs, unbound, until, ways, cover: uncounted })}) w
       ${fee ? feeJoin("w.src = 9 AND fx.event_id = w.event_id") : ""}
       ${filters.length ? `WHERE ${filters.join(" AND ")}` : ""}
       GROUP BY 1, 2 ORDER BY 1, 2`;
-    return store.all(sql, { ...params({ ref, refs, until }), pfrom: from || "", pday: day || "" });
+    return store.all(sql, { ...params({ ref, refs, until }), pfrom: from || "", pday: day || "", ...(uncounted ? coverParams(coverBounds(store)) : {}) });
   }
   /**
    * Anahtar bazında (classifiedTotals'taki anahtar) satır toplamı, ilk görünme sırasıyla — Banka Hareket Raporu'nun dönem başı devri (before: dönem
    * başı): lines ile aynı satırlar; [{ key, cents (işaretli toplam), count }]; lines'ın sırasında (tarih, giriş zamanı, kaynak, satır) ilk satırı
    * önce gelen anahtar önce. Satırlar JS'e çekilmez; ilk satırı aynı güne düşen anahtarlar o günün satırlarıyla sıralanır.
    */
-  function keyTotals({ ways = null, ref = null, refs = null, unbound = false, before = "", until = "" } = {}) {
-    const options = { light: true, ways, ref, refs, unbound, before, until };
-    const filters = [wayFilter(ways), unbound ? "w.ref = ''" : ""].filter(Boolean);
-    const groups = store.all(`SELECT ${KEY_SQL("w")} AS key, COALESCE(SUM(${SIGNED_SQL("w")}), 0) AS cents, COUNT(*) AS count, MIN(w.date) AS first FROM (${waySql(options)}) w${filters.length ? ` WHERE ${filters.join(" AND ")}` : ""} GROUP BY 1`, params(options));
+  function keyTotals({ ways = null, ref = null, refs = null, unbound = false, before = "", until = "", uncounted = false } = {}) {
+    const options = { light: true, ways, ref, refs, unbound, before, until, cover: uncounted };
+    // uncounted (Ç7a tur 2b): "açılışta sayılmış" hesabı atanmamış satırlar devre girmez (classifiedTotals ile aynı).
+    const filters = [wayFilter(ways), unbound ? "w.ref = ''" : "", uncounted ? `NOT ${COVER_SQL}` : ""].filter(Boolean);
+    const groups = store.all(`SELECT ${KEY_SQL("w")} AS key, COALESCE(SUM(${SIGNED_SQL("w")}), 0) AS cents, COUNT(*) AS count, MIN(w.date) AS first FROM (${waySql(options)}) w${filters.length ? ` WHERE ${filters.join(" AND ")}` : ""} GROUP BY 1`, { ...params(options), ...(uncounted ? coverParams(coverBounds(store)) : {}) });
     const byDay = new Map();
     for (const group of groups) byDay.set(group.first, [...(byDay.get(group.first) || []), group.key]);
     // rank: yalnız aynı gün başlayan anahtarlar, o günün satır sırasındaki ilk yerleriyle (anahtarın sonraki günlerdeki satırları sayılmaz).

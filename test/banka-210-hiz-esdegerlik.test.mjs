@@ -38,6 +38,8 @@ import { COVER_TEST } from "../server/lib/bank/opening-cover.mjs";
 // Hesabı Atanmamış kovasından ve defter beklenenlerinden düşer (defterde 519). Bu dosyanın kâhini 2.1.0'ın (2824f22) money-lines / rapor merkezi kopyasıdır ve bu ayrımı
 // bilmez: hız düzeltmesinin eşdeğerliği ayrımsız kipte ölçülür (COVER_TEST.off; yalnız bu süreç). Ayrımın kendisi test/hesapsiz-acilis-250.test.mjs'te.
 COVER_TEST.off = true;
+// Ç7a tur 2b: rapor iş parçacığı modülün ayrı örneğini yükler; kip ona ortam değişkeniyle geçer (Banka raporlarının "Açılışta Sayıldı" ayrımı da bu kipte kapalı).
+process.env.HUKUK_TEST_COVER_OFF = "1";
 
 const NOW = "2026-10-08T12:00:00+03:00";
 const LATER = "2026-10-23T12:00:00+03:00";

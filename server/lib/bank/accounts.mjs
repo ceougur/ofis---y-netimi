@@ -944,6 +944,8 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     const lines = legacyLines(way).sort((a, b) => (a.date === b.date ? (a.id < b.id ? 1 : -1) : a.date < b.date ? 1 : -1));
     const ids = [...new Set(lines.map(line => line.event_id).filter(Boolean))];
     const numbers = new Map(ids.length ? store.all("SELECT id, no FROM fin_events WHERE id IN (SELECT value FROM json_each(?))", JSON.stringify(ids)).map(row => [row.id, row.no]) : []);
+    // 2.5.0 Ç7a tur 2b (S179 = A + BAŞ MİMAR KARARI 14.11 10:17 (2); opening-cover.mjs): "açılışta sayılmış" satır listede KALIR (counted; "Açılışta Sayıldı"), bakiyeye (totals) girmez.
+    const cover = coverBounds(store);
     const rows = lines.slice(0, max).map(line => {
       const extra = parseExtra(line.extra);
       const isLocked = Boolean(locked) && line.date <= locked;
@@ -969,6 +971,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
         future: isFuture,
         assignable: line.way === "bank" && !isLocked && !isClosed && !isFuture,
         reason,
+        counted: isCovered({ way: line.way === "bank" ? "bank" : "card", kind: line.kind, date: line.date }, cover),
       };
     });
     const totals = unassignedTotals();
