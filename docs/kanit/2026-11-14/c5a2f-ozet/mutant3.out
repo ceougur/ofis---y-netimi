@@ -1,0 +1,27 @@
+== [kosu3] taban (TZ Europe/Istanbul): TABAN YEŞİL · çıkış 0 {'tests': 10, 'pass': 10, 'fail': 0, 'cancelled': 0} · düşen: 
+== [kosu3] S1-gec-yil-dusulur (TZ Europe/Istanbul): ÖLDÜ · çıkış 1 {'tests': 10, 'pass': 7, 'fail': 3, 'cancelled': 0} · düşen: [y5] [y8] [y10]
+     · |- fişin yılı > eşleme yılı: 2026'ya fiş önerilmez + actual - expected + [ + { + account: '500', + credit: 70000, + debit: 0, + party: '', + sub: '' + }, + { + account: '671', + credit: 0, + debit: 70000, + party: '', + sub: '' + } + ] - [] 
+     · |- fark 2027 fişiyle kendi yılında kapanmış: 2026'ya fiş önerilmez (2026 mizanı 671 = 0) + actual - expected + [ + 'A 602 700', + 'B 671 700' + ] - [] 
+     · |- 2026'ya ikinci fiş önerilmez (tur 2e: B 671 700 / A 602 700): [{"account":"602","sub":"","party":"","debit":0,"credit":70000,"name":"Diğer Gelirler (Hizmet, Taksitli Satış, Kayıt Tahsilatları)"},{"account":"671","sub":"","party":"","debit":70000,"credit":0,"name":"Önceki Dönem Gelir ve Kârları"}]
+== [kosu3] S2-ipucu-eski (TZ Europe/Istanbul): ÖLDÜ · çıkış 1 {'tests': 10, 'pass': 9, 'fail': 1, 'cancelled': 0} · düşen: [y7]
+     · |- The input did not match the regular expression /\(Fiş 2026-000001\) artık fazla\. Fişin tarihi kilitli dönemde olduğu için ters kaydı yazılamaz — Yönetim › Sistem › Kural Farkı Düzeltme'de ön izlemedeki fişi kaydedin; fazla ilk açık güne alınır\.$/. Input: "Kilitli dönemde düzeltilecek kural fark
+== [kosu3] S3-fazla-sayilmaz (TZ Europe/Istanbul): ÖLDÜ · çıkış 1 {'tests': 10, 'pass': 7, 'fail': 3, 'cancelled': 0} · düşen: [y5] [y8] [y10]
+     · |- fazla 700, fişin kendi yılı 2027 + actual - expected + [] - [ - { - minor: 70000, - year: 2027 - } - ] 
+     · |- Expected values to be strictly deep-equal: + actual - expected + [] - [ - { - minor: 70000, - year: 2027 - } - ] 
+     · |- Expected values to be strictly equal: + actual - expected + 'rule-diff-nothing' - 'rule-diff-own-year' ^ 
+== [kosu3] S4-fazla-satir (TZ Europe/Istanbul): ÖLDÜ · çıkış 1 {'tests': 10, 'pass': 9, 'fail': 1, 'cancelled': 0} · düşen: [y8]
+     · |- Expected values to be strictly deep-equal: + actual - expected + [ + { + account: '500', + credit: 0, + debit: 70000, + party: '', + sub: '' + }, + { + account: '519', + credit: 40000, + debit: 0, + party: '', + sub: '' + }, + { + account: '602', + credit: 30000, + debit: 0, + party: '', + sub: '
+== [kosu3] S5-bolunmus-ilk (TZ Europe/Istanbul): ÖLDÜ · çıkış 1 {'tests': 10, 'pass': 9, 'fail': 1, 'cancelled': 0} · düşen: [y8]
+     · |- Expected values to be strictly deep-equal: + actual - expected [ + 'A 602 200', + 'A 671 50', - 'A 602 700', 'B 500 250', - 'B 671 450' ] 
+== [kosu3] S6-neden-yok (TZ Europe/Istanbul): ÖLDÜ · çıkış 1 {'tests': 10, 'pass': 9, 'fail': 1, 'cancelled': 0} · düşen: [y10]
+     · |- Expected values to be strictly equal: + actual - expected + 'rule-diff-nothing' - 'rule-diff-own-year' ^ 
+== [kosu3] S7-kova-cevrilmez (TZ Europe/Istanbul): ÖLDÜ · çıkış 1 {'tests': 10, 'pass': 8, 'fail': 2, 'cancelled': 0} · düşen: [y8] [y10]
+     · |- fazla yok + actual - expected + [ + { + minor: 70000, + year: 2027 + } + ] - [] 
+     · |- Expected values to be strictly equal: + actual - expected + 'rule-diff-own-year' - 'rule-diff-nothing' ^ 
+== [kosu3] S8-kendi-ipucu-yok (TZ Europe/Istanbul): ÖLDÜ · çıkış 1 {'tests': 10, 'pass': 9, 'fail': 1, 'cancelled': 0} · düşen: [y10]
+     · |- Expected values to be strictly equal: + actual - expected + "Kilitli dönemde düzeltilecek kural farkı kalmadı (kilit kaldırıldı ya da dönem güncel kuralla yeniden dondu); Kural Farkı Düzeltme Fişi (Fiş 2027-000001) artık fazla — Yönetim › Sistem › Kural Farkı Düzeltme'den ters kaydedin." - "Kural
+== [kosu3] K-c-satir-yili (TZ Europe/Istanbul): ÖLDÜ · çıkış 1 {'tests': 10, 'pass': 9, 'fail': 1, 'cancelled': 0} · düşen: [y10]
+     · |- eşleme yılına (2026) önerilecek kalan yok (tur 2e: 700) 70000 !== 0 
+== [kosu3] P3-yon-ham (TZ Europe/Istanbul): ÖLDÜ · çıkış 1 {'tests': 10, 'pass': 9, 'fail': 1, 'cancelled': 0} · düşen: [y9]
+     · '681 borç 700: A 519 1400,B 500 700,B 671 700'
+== [kosu3] Y2-ortu-once (TZ Europe/Istanbul): YAŞADI · çıkış 0 {'tests': 10, 'pass': 10, 'fail': 0, 'cancelled': 0} · düşen: 

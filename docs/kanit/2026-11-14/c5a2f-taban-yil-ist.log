@@ -1,0 +1,237 @@
+TAP version 13
+# Subtest: Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (saf plan)
+    # Subtest: [y1] eşleme yılı tek tanım: ilk açık günün (kilit + 1) yılı; 30.12 / 31.12 sınırı; kilit yoksa donmuş dönem, o da yoksa bugün
+    ok 1 - [y1] eşleme yılı tek tanım: ilk açık günün (kilit + 1) yılı; 30.12 / 31.12 sınırı; kilit yoksa donmuş dönem, o da yoksa bugün
+      ---
+      duration_ms: 0.918316
+      type: 'test'
+      ...
+    # Subtest: [y2] S174 = A: 2026'da yazılmış fiş (B 500 / A 602) kilit 31.12.2026'yı aşınca kendi yılında düzeltilmiş sayılır — 2027'de fiş önerilmez
+    ok 2 - [y2] S174 = A: 2026'da yazılmış fiş (B 500 / A 602) kilit 31.12.2026'yı aşınca kendi yılında düzeltilmiş sayılır — 2027'de fiş önerilmez
+      ---
+      duration_ms: 1.067734
+      type: 'test'
+      ...
+    # Subtest: [y3] eski yıldan DÜZELTİLMEMİŞ fark + aynı yıl düzeltilmiş fark birlikte: yeni fiş yalnız düzeltilmemiş kısmı, 671'e
+    ok 3 - [y3] eski yıldan DÜZELTİLMEMİŞ fark + aynı yıl düzeltilmiş fark birlikte: yeni fiş yalnız düzeltilmemiş kısmı, 671'e
+      ---
+      duration_ms: 0.52607
+      type: 'test'
+      ...
+    # Subtest: [y4] eski biçim (yıl ayrımsız toplam) ve tek yıl fişi: sonuç expected − posted (bugünkü hesap AYNEN)
+    ok 4 - [y4] eski biçim (yıl ayrımsız toplam) ve tek yıl fişi: sonuç expected − posted (bugünkü hesap AYNEN)
+      ---
+      duration_ms: 0.152584
+      type: 'test'
+      ...
+    # Subtest: [y5] fazla düzeltme yıl sonundan sonra: tutar doğru (700); fişin yılı eşleme yılından SONRA ise (kilit geri alındı) satırlar fişin tersi
+    not ok 5 - [y5] fazla düzeltme yıl sonundan sonra: tutar doğru (700); fişin yılı eşleme yılından SONRA ise (kilit geri alındı) satırlar fişin tersi
+      ---
+      duration_ms: 1.277373
+      type: 'test'
+      location: '/dev/shm/c5a2f-k1/taban/test/kural-farki-yil-250.test.mjs:72:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        fişin yılı > eşleme yılı: 2026'ya fiş önerilmez
+        + actual - expected
+        
+        + [
+        +   {
+        +     account: '500',
+        +     credit: 70000,
+        +     debit: 0,
+        +     party: '',
+        +     sub: ''
+        +   },
+        +   {
+        +     account: '671',
+        +     credit: 0,
+        +     debit: 70000,
+        +     party: '',
+        +     sub: ''
+        +   }
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0:
+          account: '500'
+          sub: ''
+          party: ''
+          debit: 0
+          credit: 70000
+        1:
+          account: '671'
+          sub: ''
+          party: ''
+          debit: 70000
+          credit: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/c5a2f-k1/taban/test/kural-farki-yil-250.test.mjs:84:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [y8] S185 = A iki yönde: fişin yılı > eşleme yılı — 2027 fişi 2026'nın farkını KENDİ yılında (671) düzeltmiş sayılır; yalnız düzeltilmemiş fark 2026'ya (602), fazla fiş kendi yılında
+    not ok 6 - [y8] S185 = A iki yönde: fişin yılı > eşleme yılı — 2027 fişi 2026'nın farkını KENDİ yılında (671) düzeltmiş sayılır; yalnız düzeltilmemiş fark 2026'ya (602), fazla fiş kendi yılında
+      ---
+      duration_ms: 0.349475
+      type: 'test'
+      location: '/dev/shm/c5a2f-k1/taban/test/kural-farki-yil-250.test.mjs:89:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        fark 2027 fişiyle kendi yılında kapanmış: 2026'ya fiş önerilmez (2026 mizanı 671 = 0)
+        + actual - expected
+        
+        + [
+        +   'A 602 700',
+        +   'B 671 700'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'A 602 700'
+        1: 'B 671 700'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/c5a2f-k1/taban/test/kural-farki-yil-250.test.mjs:96:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [y9] DÜŞÜK-3 (P3): önceki yılın fazla düzeltmesinde 671 / 681 yönü KALAN farkın yönünden (EK-1 M7) — ham farkın yönünden değil
+    ok 7 - [y9] DÜŞÜK-3 (P3): önceki yılın fazla düzeltmesinde 671 / 681 yönü KALAN farkın yönünden (EK-1 M7) — ham farkın yönünden değil
+      ---
+      duration_ms: 0.247209
+      type: 'test'
+      ...
+    # Subtest: [y6] N1: alt defter dışlaması kararlı noktaya kadar yinelenir — birinci maddenin dışlanması ikinci maddenin alt defter hesabını sıfırdan çıkarır
+    ok 8 - [y6] N1: alt defter dışlaması kararlı noktaya kadar yinelenir — birinci maddenin dışlanması ikinci maddenin alt defter hesabını sıfırdan çıkarır
+      ---
+      duration_ms: 0.366259
+      type: 'test'
+      ...
+    1..8
+not ok 1 - Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (saf plan)
+  ---
+  duration_ms: 5.747629
+  type: 'suite'
+  location: '/dev/shm/c5a2f-k1/taban/test/kural-farki-yil-250.test.mjs:27:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (program, v2.4.9 verisi)
+    # Subtest: [y7] S174 = A uçtan uca: fiş 2026 → kilit 30.12 (602) → kilit 31.12 (671) → aday onayı → 'Fişle düzeltilebilen fark kalmadı' + Düzeltildi; ikinci fiş; ters kayıt; kilit kaldır / yeniden kilitle
+    not ok 1 - [y7] S174 = A uçtan uca: fiş 2026 → kilit 30.12 (602) → kilit 31.12 (671) → aday onayı → 'Fişle düzeltilebilen fark kalmadı' + Düzeltildi; ikinci fiş; ters kayıt; kilit kaldır / yeniden kilitle
+      ---
+      duration_ms: 1486.263919
+      type: 'test'
+      location: '/dev/shm/c5a2f-k1/taban/test/kural-farki-yil-250.test.mjs:147:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        The input did not match the regular expression /\(Fiş 2026-000001\) artık fazla\. Fişin tarihi kilitli dönemde olduğu için ters kaydı yazılamaz — Yönetim › Sistem › Kural Farkı Düzeltme'de ön izlemedeki fişi kaydedin; fazla ilk açık güne alınır\.$/. Input:
+        
+        "Kilitli dönemde düzeltilecek kural farkı kalmadı (kilit kaldırıldı ya da dönem güncel kuralla yeniden dondu); Kural Farkı Düzeltme Fişi (Fiş 2026-000001) artık fazla — Yönetim › Sistem › Kural Farkı Düzeltme'den ters kaydedin."
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: "Kilitli dönemde düzeltilecek kural farkı kalmadı (kilit kaldırıldı ya da dönem güncel kuralla yeniden dondu); Kural Farkı Düzeltme Fişi (Fiş 2026-000001) artık fazla — Yönetim › Sistem › Kural Farkı Düzeltme'den ters kaydedin."
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/c5a2f-k1/taban/test/kural-farki-yil-250.test.mjs:281:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [y10] S185 = A uçtan uca: 2027 fişi → kilit 30.11.2026'ya geri — (b) doğrudan: Düzeltildi, 2026'ya fiş yok, yeni 2026 farkı 602'ye; (a) önce kaldır: fiş fazla, ipucu kendi yılında ters kayıt, ters kayıtla temiz
+    not ok 2 - [y10] S185 = A uçtan uca: 2027 fişi → kilit 30.11.2026'ya geri — (b) doğrudan: Düzeltildi, 2026'ya fiş yok, yeni 2026 farkı 602'ye; (a) önce kaldır: fiş fazla, ipucu kendi yılında ters kayıt, ters kayıtla temiz
+      ---
+      duration_ms: 972.235954
+      type: 'test'
+      location: '/dev/shm/c5a2f-k1/taban/test/kural-farki-yil-250.test.mjs:307:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        2026'ya ikinci fiş önerilmez (tur 2e: B 671 700 / A 602 700): [{"account":"602","sub":"","party":"","debit":0,"credit":70000,"name":"Diğer Gelirler (Hizmet, Taksitli Satış, Kayıt Tahsilatları)"},{"account":"671","sub":"","party":"","debit":70000,"credit":0,"name":"Önceki Dönem Gelir ve Kârları"}]
+        + actual - expected
+        
+        + [
+        +   {
+        +     account: '602',
+        +     credit: 70000,
+        +     debit: 0,
+        +     name: 'Diğer Gelirler (Hizmet, Taksitli Satış, Kayıt Tahsilatları)',
+        +     party: '',
+        +     sub: ''
+        +   },
+        +   {
+        +     account: '671',
+        +     credit: 0,
+        +     debit: 70000,
+        +     name: 'Önceki Dönem Gelir ve Kârları',
+        +     party: '',
+        +     sub: ''
+        +   }
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0:
+          account: '602'
+          sub: ''
+          party: ''
+          debit: 0
+          credit: 70000
+          name: 'Diğer Gelirler (Hizmet, Taksitli Satış, Kayıt Tahsilatları)'
+        1:
+          account: '671'
+          sub: ''
+          party: ''
+          debit: 70000
+          credit: 0
+          name: 'Önceki Dönem Gelir ve Kârları'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/c5a2f-k1/taban/test/kural-farki-yil-250.test.mjs:375:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 2 - Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (program, v2.4.9 verisi)
+  ---
+  duration_ms: 2459.026314
+  type: 'suite'
+  location: '/dev/shm/c5a2f-k1/taban/test/kural-farki-yil-250.test.mjs:146:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 10
+# suites 2
+# pass 6
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2732.606434

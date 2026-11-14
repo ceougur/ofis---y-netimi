@@ -1,0 +1,57 @@
+KOD /home/user/ofis---y-netimi/.claude/worktrees/agent-a46c87e85c8b28c2f TZ Europe/Istanbul
+[A dogrudan] --- geri 2026-11-30, bugün 2027-01-10
+[A dogrudan] kilit 31.12.2026 ön izleme: 2027-01-01 disabled=false  | A 671 700 | B 500 700 | toplam 700
+[A dogrudan] fiş Fiş 2027-000001 2027-01-01 A 671 700 | B 500 700 | satır: ok=true Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2026 ve Öncesi) — Düzeltildi (Fiş 2027-000001) kalan=0 fazla=false kendi-yılı=- ipucu=""
+[A dogrudan] kilit 2026-11-30'ya geri: 200  örtü 2026-11-30
+[A dogrudan] ön izleme: 2026-12-01 disabled=true rule-diff-nothing | (satır yok) | toplam 0 | satır: ok=true Kural Değişikliği Farkı (Kilitli Dönem: 30.11.2026 ve Öncesi) — Düzeltildi (Fiş 2027-000001) kalan=0 fazla=false kendi-yılı=- ipucu=""
+[A dogrudan] ön izleme nedeni: Fişle düzeltilebilen fark kalmadı.
+[A dogrudan] defter: 2026 {"500":-700,"519":-350,"602":0,"671":0,"681":0} · 2027 {"500":700,"519":0,"602":0,"671":-700,"681":0}
+[A once-kaldir] --- geri 2026-11-30, bugün 2027-01-10
+[A once-kaldir] kilit 31.12.2026 ön izleme: 2027-01-01 disabled=false  | A 671 700 | B 500 700 | toplam 700
+[A once-kaldir] fiş Fiş 2027-000001 2027-01-01 A 671 700 | B 500 700 | satır: ok=true Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2026 ve Öncesi) — Düzeltildi (Fiş 2027-000001) kalan=0 fazla=false kendi-yılı=- ipucu=""
+[A once-kaldir] kilit 2026-11-30'ya geri: 200  örtü 2026-11-30
+[A once-kaldir] ön izleme: 2026-12-01 disabled=true rule-diff-own-year | (satır yok) | toplam 0 | satır: ok=false Kural Değişikliği Farkı (Kilitli Dönem: 30.11.2026 ve Öncesi) kalan=0 fazla=true kendi-yılı=Fiş 2027-000001 700 ipucu="0001) kilitli dönemin farkından fazla (kilit, fişin yılından geriye alındı) — fişi kendi yılında, Yönetim › Sistem › Kural Farkı Düzeltme'den ters kaydedin; kalan fark varsa sonra ön izlemede görünür."
+[A once-kaldir] ön izleme nedeni: Kural Farkı Düzeltme Fişi (Fiş 2027-000001) kilitli dönemin farkından fazla (kilit, fişin yılından geriye alındı); bu döneme fiş önerilmez. Fişi aşağıdaki Yazılmış Düzeltme Fişleri'nden kendi yılında ters kaydedin; kalan fark varsa sonra burada görünür.
+[A once-kaldir] ekranın tarihsiz Ters Kaydet'i: 200  Fiş 2027-000002 2027-01-01 | sonra ön izleme 2026-12-01 disabled=true rule-diff-nothing | (satır yok) | toplam 0 | satır: (kural farkı satırı yok)
+[A once-kaldir] defter: 2026 {"500":0,"519":-350,"602":-700,"671":0,"681":0} · 2027 {"500":0,"519":0,"602":0,"671":0,"681":0}
+[A dogrudan] --- geri 2026-12-30, bugün 2027-01-01
+[A dogrudan] kilit 31.12.2026 ön izleme: 2027-01-01 disabled=false  | A 671 700 | B 500 700 | toplam 700
+[A dogrudan] fiş Fiş 2027-000001 2027-01-01 A 671 700 | B 500 700 | satır: ok=true Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2026 ve Öncesi) — Düzeltildi (Fiş 2027-000001) kalan=0 fazla=false kendi-yılı=- ipucu=""
+[A dogrudan] kilit 2026-12-30'ya geri: 200  örtü 2026-12-30
+[A dogrudan] ön izleme: 2026-12-31 disabled=true rule-diff-nothing | (satır yok) | toplam 0 | satır: ok=true Kural Değişikliği Farkı (Kilitli Dönem: 30.12.2026 ve Öncesi) — Düzeltildi (Fiş 2027-000001) kalan=0 fazla=false kendi-yılı=- ipucu=""
+[A dogrudan] ön izleme nedeni: Fişle düzeltilebilen fark kalmadı.
+[A dogrudan] defter: 2026 {"500":-700,"519":-350,"602":0,"671":0,"681":0} · 2027 {"500":700,"519":0,"602":0,"671":-700,"681":0}
+[A once-kaldir] --- geri 2026-12-30, bugün 2027-01-01
+[A once-kaldir] kilit 31.12.2026 ön izleme: 2027-01-01 disabled=false  | A 671 700 | B 500 700 | toplam 700
+[A once-kaldir] fiş Fiş 2027-000001 2027-01-01 A 671 700 | B 500 700 | satır: ok=true Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2026 ve Öncesi) — Düzeltildi (Fiş 2027-000001) kalan=0 fazla=false kendi-yılı=- ipucu=""
+[A once-kaldir] kilit 2026-12-30'ya geri: 200  örtü 2026-12-30
+[A once-kaldir] ön izleme: 2026-12-31 disabled=true rule-diff-own-year | (satır yok) | toplam 0 | satır: ok=false Kural Değişikliği Farkı (Kilitli Dönem: 30.12.2026 ve Öncesi) kalan=0 fazla=true kendi-yılı=Fiş 2027-000001 700 ipucu="0001) kilitli dönemin farkından fazla (kilit, fişin yılından geriye alındı) — fişi kendi yılında, Yönetim › Sistem › Kural Farkı Düzeltme'den ters kaydedin; kalan fark varsa sonra ön izlemede görünür."
+[A once-kaldir] ön izleme nedeni: Kural Farkı Düzeltme Fişi (Fiş 2027-000001) kilitli dönemin farkından fazla (kilit, fişin yılından geriye alındı); bu döneme fiş önerilmez. Fişi aşağıdaki Yazılmış Düzeltme Fişleri'nden kendi yılında ters kaydedin; kalan fark varsa sonra burada görünür.
+[A once-kaldir] ekranın tarihsiz Ters Kaydet'i: 200  Fiş 2027-000002 2027-01-01 | sonra ön izleme 2026-12-31 disabled=true rule-diff-nothing | (satır yok) | toplam 0 | satır: (kural farkı satırı yok)
+[A once-kaldir] defter: 2026 {"500":0,"519":-350,"602":-700,"671":0,"681":0} · 2027 {"500":0,"519":0,"602":0,"671":0,"681":0}
+[B ters-kayit] fiş Fiş 2026-000001 2026-10-06 A 602 700 | B 500 700 | satır: ok=true Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi) — Düzeltildi (Fiş 2026-000001) kalan=0 fazla=false kendi-yılı=- ipucu=""
+[B ters-kayit] kilit kaldır → 31.12.2026: ön izleme 2027-01-01 disabled=false  | A 500 700 | B 681 700 | toplam 700 | satır: ok=false Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2026 ve Öncesi) kalan=700 fazla=true kendi-yılı=- ipucu=" Fişi (Fiş 2026-000001) artık fazla. Fişin tarihi kilitli dönemde olduğu için ters kaydı yazılamaz — Yönetim › Sistem › Kural Farkı Düzeltme'de ön izlemedeki fişi kaydedin; fazla ilk açık güne alınır."
+[B ters-kayit] tarihsiz ters kayıt: 409 period-locked 
+[B ters-kayit] 10.01.2027 ters kayıt: 200 Fiş 2027-000001 A 500 700 | B 602 700
+[B ters-kayit] sonra: ön izleme 2027-01-01 disabled=true rule-diff-nothing | (satır yok) | toplam 0 | satır: (kural farkı satırı yok)
+[B ters-kayit] defter: 2026 {"500":700,"519":-350,"602":-1400,"671":0,"681":0} · 2027 {"500":-700,"519":0,"602":700,"671":0,"681":0}
+[B onizleme-fisi] fiş Fiş 2026-000001 2026-10-06 A 602 700 | B 500 700 | satır: ok=true Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi) — Düzeltildi (Fiş 2026-000001) kalan=0 fazla=false kendi-yılı=- ipucu=""
+[B onizleme-fisi] kilit kaldır → 31.12.2026: ön izleme 2027-01-01 disabled=false  | A 500 700 | B 681 700 | toplam 700 | satır: ok=false Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2026 ve Öncesi) kalan=700 fazla=true kendi-yılı=- ipucu=" Fişi (Fiş 2026-000001) artık fazla. Fişin tarihi kilitli dönemde olduğu için ters kaydı yazılamaz — Yönetim › Sistem › Kural Farkı Düzeltme'de ön izlemedeki fişi kaydedin; fazla ilk açık güne alınır."
+[B onizleme-fisi] ön izleme fişi: 200 Fiş 2027-000001 A 500 700 | B 681 700
+[B onizleme-fisi] sonra: ön izleme 2027-01-01 disabled=true rule-diff-nothing | (satır yok) | toplam 0 | satır: (kural farkı satırı yok)
+[B onizleme-fisi] defter: 2026 {"500":700,"519":-350,"602":-1400,"671":0,"681":0} · 2027 {"500":-700,"519":0,"602":0,"671":0,"681":700}
+[D onceki-yil-671] fiş Fiş 2026-000001 2026-01-01 A 671 700 | B 500 700 | satır: ok=true Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2025 ve Öncesi) — Düzeltildi (Fiş 2026-000001) kalan=0 fazla=false kendi-yılı=- ipucu=""
+[D onceki-yil-671] 2027, kilit kaldır → 31.12.2026: ön izleme 2027-01-01 disabled=false  | A 500 700 | B 671 700 | toplam 700 | satır: ok=false Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2026 ve Öncesi) kalan=700 fazla=true kendi-yılı=- ipucu=" Fişi (Fiş 2026-000001) artık fazla. Fişin tarihi kilitli dönemde olduğu için ters kaydı yazılamaz — Yönetim › Sistem › Kural Farkı Düzeltme'de ön izlemedeki fişi kaydedin; fazla ilk açık güne alınır."
+[D onceki-yil-671] fazla önerisi kaydedildi: 200 A 500 700 | B 671 700 | sonra rule-diff-nothing | satır: (kural farkı satırı yok)
+[D onceki-yil-671] defter: 2025 {"500":0,"519":0,"602":-700,"671":0,"681":0} · 2026 {"500":700,"519":0,"602":0,"671":-700,"681":0} · 2027 {"500":-700,"519":0,"602":0,"671":700,"681":0}
+[D ayni-yil-602] fiş Fiş 2026-000001 2026-03-06 A 602 700 | B 500 700 | satır: ok=true Kural Değişikliği Farkı (Kilitli Dönem: 05.03.2026 ve Öncesi) — Düzeltildi (Fiş 2026-000001) kalan=0 fazla=false kendi-yılı=- ipucu=""
+[D ayni-yil-602] 2027, kilit kaldır → 31.12.2026: ön izleme 2027-01-01 disabled=false  | A 500 700 | B 681 700 | toplam 700 | satır: ok=false Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2026 ve Öncesi) kalan=700 fazla=true kendi-yılı=- ipucu=" Fişi (Fiş 2026-000001) artık fazla. Fişin tarihi kilitli dönemde olduğu için ters kaydı yazılamaz — Yönetim › Sistem › Kural Farkı Düzeltme'de ön izlemedeki fişi kaydedin; fazla ilk açık güne alınır."
+[D ayni-yil-602] fazla önerisi kaydedildi: 200 A 500 700 | B 681 700 | sonra rule-diff-nothing | satır: (kural farkı satırı yok)
+[D ayni-yil-602] defter: 2025 {"500":0,"519":0,"602":0,"671":0,"681":0} · 2026 {"500":700,"519":0,"602":-1400,"671":0,"681":0} · 2027 {"500":-700,"519":0,"602":0,"671":0,"681":700}
+[C] kilit 2026-12-30 (200) bugün 2026-12-31: 2026-12-31 disabled=false  | A 602 700 | B 500 700 | toplam 700 → kayıt 200 Fiş 2026-000001; sonra rule-diff-nothing; satır ok=true Kural Değişikliği Farkı (Kilitli Dönem: 30.12.2026 ve Öncesi) — Düzeltildi (Fiş 2026-000001) kalan=0 fazla=false kendi-yılı=- ipucu=""
+[C] kilit 2026-12-31 (200) bugün 2026-12-31: 2027-01-01 disabled=true rule-diff-lock-today | A 671 700 | B 500 700 | toplam 700
+[C] kilit 2026-12-31 (200) bugün 2027-01-01: 2027-01-01 disabled=false  | A 671 700 | B 500 700 | toplam 700 → kayıt 200 Fiş 2027-000001; sonra rule-diff-nothing; satır ok=true Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2026 ve Öncesi) — Düzeltildi (Fiş 2027-000001) kalan=0 fazla=false kendi-yılı=- ipucu=""
+[C] kilit 2027-01-01 (200) bugün 2027-01-01: 2027-01-02 disabled=true rule-diff-lock-today | A 671 700 | B 500 700 | toplam 700
+[C] kilit 2027-01-01 (200) bugün 2027-01-10: 2027-01-02 disabled=false  | A 671 700 | B 500 700 | toplam 700 → kayıt 200 Fiş 2027-000001; sonra rule-diff-nothing; satır ok=true Kural Değişikliği Farkı (Kilitli Dönem: 01.01.2027 ve Öncesi) — Düzeltildi (Fiş 2027-000001) kalan=0 fazla=false kendi-yılı=- ipucu=""
+[C] kilit 2026-12-30 (200) bugün 2027-01-10: 2026-12-31 disabled=false  | A 602 700 | B 500 700 | toplam 700 → kayıt 200 Fiş 2026-000001; sonra rule-diff-nothing; satır ok=true Kural Değişikliği Farkı (Kilitli Dönem: 30.12.2026 ve Öncesi) — Düzeltildi (Fiş 2026-000001) kalan=0 fazla=false kendi-yılı=- ipucu=""
+[C] kilit 2026-12-29 (200) bugün 2026-12-30: 2026-12-30 disabled=false  | A 602 700 | B 500 700 | toplam 700 → kayıt 200 Fiş 2026-000001; sonra rule-diff-nothing; satır ok=true Kural Değişikliği Farkı (Kilitli Dönem: 29.12.2026 ve Öncesi) — Düzeltildi (Fiş 2026-000001) kalan=0 fazla=false kendi-yılı=- ipucu=""

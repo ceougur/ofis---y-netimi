@@ -1,0 +1,66 @@
+başta 1.56 2.54 3.32 2/124 16353 · nproc 4 · 13:37:02
+Mem:              15           2           1           1          13          13
+/dev/vda        252G   34G  4.9G  88% /
+kilit 200
+düzeltme fişi Fiş 2027-000001
+519 -116310.08 false 
+eşleştirme fişi 200 {"voucher":{"id":"lv-f9d30ded-70eb-4f9c-920e-0d71b064f717","year":2027,"no":2,"noText":"Fiş 2027-000002","date":"2027-01
+Mutabakat: false ledger:rule-diff
+== tur 1 taban (G) kilit 30.11.2026'ya geri
+yük (başta) 1.24 2.18 3.11 · kilit 2026-11-30
+Kural Farkı ön izleme: 200 · 3959/3961/3836 ms (en iyi 3836, ortanca 3959) · döngü en çok 3959 ms
+Mutabakat Testi: 200 · 18648/8304/7658 ms (en iyi 7658, ortanca 8304) · döngü en çok 8305 ms
+Defter Mutabakatı: 200 · 10345/10387/10205 ms (en iyi 10205, ortanca 10345) · döngü en çok 10343 ms
+  ön izleme: etkin · satır 2 · kaynak 0 · yazılmış fiş 1
+yük (sonda) 1.07 1.91 2.95
+== tur 1 taban (K) kilit 31.12.2026
+yük (başta) 1.40 1.93 2.93 · kilit 2026-12-31
+Kural Farkı ön izleme: 200 · 3890/4070/3967 ms (en iyi 3890, ortanca 3967) · döngü en çok 4066 ms
+Mutabakat Testi: 200 · 11156/7876/7660 ms (en iyi 7660, ortanca 7876) · döngü en çok 11157 ms
+Defter Mutabakatı: 200 · 9975/9715/9878 ms (en iyi 9715, ortanca 9878) · döngü en çok 9974 ms
+  ön izleme: etkin · satır 2 · kaynak 0 · yazılmış fiş 1
+yük (sonda) 1.32 1.80 2.81
+== tur 1 yeni (G) kilit 30.11.2026'ya geri
+yük (başta) 1.21 1.73 2.76 · kilit 2026-11-30
+Kural Farkı ön izleme: 200 · 3886/3898/3651 ms (en iyi 3651, ortanca 3886) · döngü en çok 3899 ms
+Mutabakat Testi: 200 · 18544/7101/7529 ms (en iyi 7101, ortanca 7529) · döngü en çok 18556 ms
+Defter Mutabakatı: 200 · 9708/9763/9623 ms (en iyi 9623, ortanca 9708) · döngü en çok 9764 ms
+  ön izleme: pasif (rule-diff-own-year) · satır 0 · kaynak 0 · yazılmış fiş 1
+yük (sonda) 1.29 1.64 2.65
+== tur 1 yeni (K) kilit 31.12.2026
+yük (başta) 1.19 1.59 2.60 · kilit 2026-12-31
+Kural Farkı ön izleme: 200 · 3842/3548/3436 ms (en iyi 3436, ortanca 3548) · döngü en çok 3838 ms
+Mutabakat Testi: 200 · 11030/7474/7571 ms (en iyi 7474, ortanca 7571) · döngü en çok 11031 ms
+Defter Mutabakatı: 200 · 10549/9863/10471 ms (en iyi 9863, ortanca 10471) · döngü en çok 10553 ms
+  ön izleme: etkin · satır 2 · kaynak 0 · yazılmış fiş 1
+yük (sonda) 1.10 1.48 2.50
+== tur 2 taban (G) kilit 30.11.2026'ya geri
+yük (başta) 1.06 1.44 2.46 · kilit 2026-11-30
+Kural Farkı ön izleme: 200 · 3898/4069/3890 ms (en iyi 3890, ortanca 3898) · döngü en çok 3894 ms
+Mutabakat Testi: 200 · 18367/7870/7836 ms (en iyi 7836, ortanca 7870) · döngü en çok 18371 ms
+Defter Mutabakatı: 200 · 10875/9985/10468 ms (en iyi 9985, ortanca 10468) · döngü en çok 9982 ms
+  ön izleme: etkin · satır 2 · kaynak 0 · yazılmış fiş 1
+yük (sonda) 1.12 1.37 2.34
+== tur 2 taban (K) kilit 31.12.2026
+yük (başta) 1.32 1.39 2.33 · kilit 2026-12-31
+Kural Farkı ön izleme: 200 · 4284/4397/4223 ms (en iyi 4223, ortanca 4284) · döngü en çok 4396 ms
+Mutabakat Testi: 200 · 11384/8333/8063 ms (en iyi 8063, ortanca 8333) · döngü en çok 8061 ms
+Defter Mutabakatı: 200 · 10523/11045/10376 ms (en iyi 10376, ortanca 10523) · döngü en çok 11048 ms
+  ön izleme: etkin · satır 2 · kaynak 0 · yazılmış fiş 1
+yük (sonda) 1.26 1.37 2.25
+== tur 2 yeni (G) kilit 30.11.2026'ya geri
+yük (başta) 1.32 1.37 2.23 · kilit 2026-11-30
+Kural Farkı ön izleme: 200 · 3980/3950/3871 ms (en iyi 3871, ortanca 3950) · döngü en çok 3976 ms
+Mutabakat Testi: 200 · 19384/7936/7935 ms (en iyi 7935, ortanca 7936) · döngü en çok 19394 ms
+Defter Mutabakatı: 200 · 10525/10654/10640 ms (en iyi 10525, ortanca 10640) · döngü en çok 10654 ms
+  ön izleme: pasif (rule-diff-own-year) · satır 0 · kaynak 0 · yazılmış fiş 1
+yük (sonda) 1.17 1.32 2.14
+== tur 2 yeni (K) kilit 31.12.2026
+yük (başta) 1.11 1.29 2.11 · kilit 2026-12-31
+Kural Farkı ön izleme: 200 · 4069/4266/4127 ms (en iyi 4069, ortanca 4127) · döngü en çok 4264 ms
+Mutabakat Testi: 200 · 11823/8361/8316 ms (en iyi 8316, ortanca 8361) · döngü en çok 11828 ms
+Defter Mutabakatı: 200 · 10730/10768/10875 ms (en iyi 10730, ortanca 10768) · döngü en çok 10872 ms
+  ön izleme: etkin · satır 2 · kaynak 0 · yazılmış fiş 1
+yük (sonda) 1.21 1.27 2.03
+sonda 1.21 1.27 2.03 1/132 16814 · 13:51:02
+cikis 0

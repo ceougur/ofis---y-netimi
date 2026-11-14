@@ -1,0 +1,32 @@
+{
+  "ad": "c5a2f-komsu-ist",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-reporter=tap test/acilis-519-250.test.mjs test/acilis-duzeni-v249-250.test.mjs test/acilis-olabilir-250.test.mjs test/banka-210-gg-tarama.test.mjs test/banka-210-gg-turler.test.mjs test/banka-210-goc-zinciri.test.mjs test/banka-210-saat.test.mjs test/banka-210-sihirbaz.test.mjs test/banka-220-senet-121.test.mjs test/banka-220-tahsile-ver.test.mjs test/banka-onarim-kayit-250.test.mjs test/db-tx-kayip-250.test.mjs test/defter-hiz-esdegerlik-250.test.mjs test/defter-hiz-esdegerlik-tur1d-250.test.mjs test/defter-kaynak-iz-250.test.mjs test/donmus-defter-250.test.mjs test/donmus-defter-bellek-250.test.mjs test/donmus-defter-tur1-250.test.mjs test/donmus-defter-tur3-250.test.mjs test/donmus-defter-tur4-250.test.mjs test/fis-defteri-kayit-250.test.mjs test/goc-243-stok-acilis.test.mjs test/hesap-plani-sinif-250.test.mjs test/kapali-kart-ekstre-tarihi-250.test.mjs test/kg16-geri-alma-250.test.mjs test/kilit-izi-alanlar-250.test.mjs test/koruma-taban-ailesi-250.test.mjs test/kural-farki-alarm-250.test.mjs test/kural-farki-duzeltme-250.test.mjs test/kural-farki-kapi-disi-250.test.mjs test/kural-farki-yil-250.test.mjs test/s127-tek-kez-250.test.mjs test/yazim-duzeni.test.mjs test/acilis-olabilir-yetki-250.test.mjs test/s160-kilitli-tahsilat-bagi-250.test.mjs",
+  "commit": "06e82c2fb5cb6460e4ff35b430cbbbfb10a962fe",
+  "dal": "worktree-agent-a46c87e85c8b28c2f",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v470 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-14T12:35:37.599Z",
+  "sure_sn": 121.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 338,
+    "gecen": 338,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-14/c5a2f-komsu-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a46c87e85c8b28c2f",
+  "ham_cikti_sha256": "90b8a444fff4fe8dd7ccc2d07072780f8a4b42c049c4f304b685ca91d7f086a8",
+  "ham_cikti_bayt": 158358
+}

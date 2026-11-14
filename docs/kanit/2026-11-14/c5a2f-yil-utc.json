@@ -1,0 +1,32 @@
+{
+  "ad": "c5a2f-yil-utc",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-reporter=tap test/kural-farki-yil-250.test.mjs",
+  "commit": "06e82c2fb5cb6460e4ff35b430cbbbfb10a962fe",
+  "dal": "worktree-agent-a46c87e85c8b28c2f",
+  "kirli": 1,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v470 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-14T12:40:50.573Z",
+  "sure_sn": 3.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 10,
+    "gecen": 10,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-14/c5a2f-yil-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a46c87e85c8b28c2f",
+  "ham_cikti_sha256": "f55d6c81759f7c43c4514845f84e753186f97a0e42e481cb9c8feaeceedf38ce",
+  "ham_cikti_bayt": 4819
+}
