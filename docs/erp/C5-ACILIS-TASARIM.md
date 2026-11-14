@@ -1190,3 +1190,45 @@ işleri ve tur 1'in türetme kuralları değişmez. Ekranlar tur 2b'nin bağlama
 - DÜŞÜK-2'nin sekiz mutantı: Y2, Y3, Y5, Y11, Y18, Y23 yeni testlerle ölür (kilit-izi-alanlar-250: üç kapı dışı vaka + [9] kapıdan iki adım + [10] kaynaklı satırda işaret + [11] v2.4.9'un gerçek izi = güncel kodun 2.4.9 tanımı); Y10, Y12 EŞDEĞER (süzgecin para denetimleri aynı yazımı yakalar — yanıt, ileti, tarama aynı; yalnız iç karar etiketi farklı; sonda betiği kanıtta).
 - S160 = A ek testleri (s160-iptal-yollari-250): Banka'dan Ters Kaydet / Düzelt ve e-Arşiv iptali 409 (EDM'ye istek yok, kilitli defter aynı); kilit dışı serbest; kilit kaldır → iptal → yeniden kilit; ödeme / verilen evrak bağı kurala girmez. (a)'daki kilitli tahsilat bağı arayüz yolundan kurulamaz (savunma katmanı).
 - S164 = C ikinci örneği (kural-farki-duzeltme-250 [8]): kilitli tahsilatın fatura bağı kapı dışından yazılınca 120 / 128 farkı ön izlemede kaynağıyla dışarıda, fiş yalnız gerçek kural farkı. Ürün kodu değişmedi.
+
+### 17.13 Tur 2e (küçük düzeltme turu; taban `c5a2e-taban` 4967d07d = çalışma dalı ucu; dar kontrol raporu dk-c5a2-rapor.md) — KODDAN ÖNCE yazıldı
+Girdi: ORTA-1 + DÜŞÜK-1 … DÜŞÜK-4 (dar kontrol), KARAR 14.11 05:40 (S174 = A — 5 dk yetkisiyle; kullanıcı değiştirebilir), BAŞ MİMAR KARARI 14.11 05:31 (c) (DÜŞÜK-4). Sıra: ORTA-1 → DÜŞÜK-4 → DÜŞÜK-1 →
+DÜŞÜK-2 → DÜŞÜK-3. Fiş YOKKEN ve aday kararı YOKKEN bütün defter çıktıları tabanla BİREBİR (yeni kod yalnız yazılmış düzeltme fişi varken çalışır).
+
+**ORTA-1 (S174 = A) — yeniden üretim (taban, dar kontrolün betiği p1-yil.mjs, Europe/Istanbul, çıkış 0):** v2.4.9'da 02.10.2026 "Açılış bakiyesi" Borç Yaz 700, kilit 05.10.2026 → güncel
+kodda ret → ön izleme B 500 700 / A 602 700, Fiş 2026-000001 (06.10.2026), satır "Düzeltildi". 10.01.2027'de kilit 31.12.2026: satır "Düzeltildi (Fiş 2026-000001)" AMA ön izleme ETKİN
+B 602 700 / A 671 700 (01.01.2027); kaydedilince 2027'de 602 +700, 671 −700; satır "Düzeltildi (Fiş 2026-000001, Fiş 2027-000001)".
+- Kök neden: `ruleDiffCorrectionPlan` yazılmış fişleri eşlenmiş (hesap|alt hesap) TOPLAM olarak, ön izlemenin eşleme yılıyla düşüyor; 2026'nın 602 farkı 2027'nin eşlemesinde 671'e gidiyor,
+  fişin 602 satırı ise 602'den düşülüyor → B 602 / A 671. Ön izleme yılı = kilit + 1'in yılı; Yönetim satırı (`checks()`) yılı = son etkin fişin yılı → iki yer farklı kural.
+- Yol (A): YIL KURALI TEK YERDE — lib/ledger-opening.mjs `ruleDiffCorrectionYear({ lock, cover, today })` (eşleme yılı = ilk açık günün (kilit + 1) yılı; kilit yoksa donmuş dönemin
+  ertesi günü, o da yoksa bugünün yılı); routes/ledger.mjs ön izlemesi ve lib/ledger-snapshots.mjs `checks()` ikisi de bunu okur. YAZILMIŞ FİŞİN DÜŞÜLMESİ fişin KENDİ yılıyla:
+  `postedRuleDiffCorrections().byYear` (fişin yılı → hesap|alt hesap → net; ters kaydın satırları ASIL fişin yılına sayılır — ters kaydedilmiş fiş sayılmaz, eski kural AYNEN);
+  `ruleDiffCorrectionPlan({ postedByYear })`: fişin yılı < eşleme yılı ise fişin 6 / 7 sınıfı (671 / 681 dışı) satırı o yılın HAM farkından (yıl, hesap, alt hesap) düşülür, kalan ham
+  fark eşleme yılına göre 671 / 681'e eşlenir; fişin 1–5 sınıfı ve 671 / 681 satırları ile eşleme yılındaki (ya da sonraki) fişin bütün satırları eskisi gibi eşlenmiş toplamdan düşülür.
+  Yalnız tek yıl fişi varken (fişin yılı = eşleme yılı) sonuç eskisiyle BİREBİR (`expected − posted`).
+- Örnekte: kilit 31.12.2026 → ham fark (2026, 602) −700 − fişin 602 satırı (−700) = 0; 500 +700 − 700 = 0 → satır yok, ön izleme pasif "Fişle düzeltilebilen fark kalmadı.", satır
+  "Düzeltildi (Fiş 2026-000001)"; 2027 mizanı 602 = 0, 671 = 0.
+- DEĞİŞMEYEN (testle): düzeltilmemiş önceki yıl farkı 671 / 681'e (EK-1 M7); aynı yıl içi düzeltme bugünkü gibi; ters kaydedilmiş fiş sayılmaz; fazla düzeltme uyarısı doğru tutarla;
+  iki yılda iki fiş birlikte; kilit kaldır / yeniden kilitle.
+- Okuyucular (ders 10; tarama `ruleDiffCorrectionPlan|postedRuleDiffCorrections|nextDayOf`): routes/ledger.mjs `correctionView` (GET / POST ön izleme ve kayıt), lib/ledger-snapshots.mjs
+  `checks()` (Mutabakat Testi, Defter Mutabakatı, açılış / arka plan taraması, Yönetim satırı), testler kural-farki-duzeltme-250 / acilis-duzeni-v249-250 / acilis-olabilir-250, kanıt
+  betikleri (docs/kanit; koşulmaz). `net` alanı aynen kalır (geri uyum).
+- Nasıl bozulur: bugünün yılı ≠ kilit + 1'in yılı (kilit yıl içinde, bugün yeni yılda — ön izleme fişin yılıyla eşler); fişin yılı ≠ kilit + 1'in yılı (S174); 30.12 / 31.12 kilit sınırı
+  (fiş 31.12.2026 → 602; fiş 01.01.2027 → 671) iki TZ; eski yılın DÜZELTİLMEMİŞ farkı + aynı yıl düzeltilmiş fark birlikte (yeni fiş yalnız 671); fiş → ters kayıt (aynı yıl); kilit
+  kaldır → yeniden kilitle (fazla tutar); kilit bugün; B16 aday kilit gününde.
+- KULLANICIYA SORULMALI adayı (KODLANMAZ, bugünkü davranış kalır): önceki yılın farkını düzelten fiş YENİ yılda ters kaydedilirse (ters kayıt satırları yeni yılın defterine yazılır) fark
+  hangi yılın sayılsın — bugünkü kural "ters kaydedilmiş fiş sayılmaz" (asıl fişin yılı) AYNEN; sayıyla raporda.
+
+**DÜŞÜK-4 (BAŞ MİMAR KARARI 14.11 (c)) — yetki:** routes/opening-review.mjs: karar / geri alma isteğindeki satırlardan tarihi dönem kilidinin gününde ya da öncesinde olan varsa
+`system.manage` (dönem kilidini koyan yetki — yönetici) istenir; yoksa 403 `opening-review-locked`, ileti yöneticiye kalan kayıtları (tarih, cari, tutar) sayar. Toplu kararda bir tane bile
+varsa İŞLEM BÜTÜN reddedilir (hiçbiri yazılmaz). Açık dönemdeki satır bugünkü yetkide (`accounts.manage`). Liste / sayı uçları değişmez. Kilit sonradan ilerleyip kararlı satırı kapsarsa
+geri alma da yöneticide (karar anındaki kilide bakılır).
+
+**DÜŞÜK-1 — ekran:** client/assets/hof-acilis-olabilir.js `load()`: yanıt boş, toplam > 0 ve başlangıç ≥ toplam ise başlangıç son dolu sayfaya çekilip yeniden okunur; sayfa çubuğu toplam
+≤ sayfa boyu VE başlangıç 0 ise gizlenir. Ekran senaryosu senaryo-acilis-olabilir-250'ye vaka: 250 aday, 2. sayfanın 50 kaydı toplu onay → kalan 200 kayıt görünür.
+
+**DÜŞÜK-2 — eksik testler (ürün kodu değişmez):** N1 (zincirleme alt defter dışlaması — saf plan işlevine iki adımlı vaka), N3 (ters kaydedilmiş fiş etkin listede / ipucunda yok), N4 (fiş
+yazıldıktan SONRA dışarıda kalan alt defter farkı varken "Düzeltildi" yok), N9 (zil: kilit günündeki aday kilitli sayılır), N10 (B16: kilit günündeki aday fişi engeller), N11 (ön izleme
+yılı fiş tarihinin yılı), N12 (silinmiş evrakın Kapatılacak Fatura bağı S160 reddine girmez).
+
+**DÜŞÜK-3 — metin:** fazla düzeltme ipucundaki yer "Yönetim › Sistem › Kural Farkı Düzeltme".

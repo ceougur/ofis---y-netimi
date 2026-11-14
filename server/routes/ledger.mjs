@@ -10,7 +10,7 @@ import { HttpError, ok, readJson, text } from "../lib/http.mjs";
 import { VOUCHER_TYPES, createLedgerVouchers, voucherJournalRows } from "../lib/ledger-vouchers.mjs";
 import { createLedgerSnapshots } from "../lib/ledger-snapshots.mjs";
 import { createHash } from "node:crypto";
-import { nextDayOf, oldRulePinnedPlans, openingMatchBalance, openingMatchPlan, openingMatchTargets, postedRuleDiffCorrections, ruleDiffCorrectionPlan } from "../lib/ledger-opening.mjs";
+import { nextDayOf, oldRulePinnedPlans, openingMatchBalance, openingMatchPlan, openingMatchTargets, postedRuleDiffCorrections, ruleDiffCorrectionPlan, ruleDiffCorrectionYear } from "../lib/ledger-opening.mjs";
 import { leanAll } from "../lib/lean-rows.mjs";
 import { roundMoney } from "../lib/money.mjs";
 
@@ -607,8 +607,9 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     const date = lock ? nextDayOf(lock) : "";
     const posted = postedRuleDiffCorrections(store);
     const diff = cover && !pendingFreeze ? snapshots.ruleDiff({ detail: true }) : { through: cover, count: 0, sample: [], balances: [], entries: [] };
-    const year = Number(date.slice(0, 4)) || Number(String(today).slice(0, 4));
-    const plan = ruleDiffCorrectionPlan({ diff, subledger: subledgerAccounts(), year, posted: posted.net });
+    // Eşleme yılı (671 / 681) TEK tanımdan (Yönetim satırı ile aynı — S174 = A, tur 2e); yazılmış fişler kendi yıllarıyla düşülür.
+    const year = ruleDiffCorrectionYear({ lock, cover, today });
+    const plan = ruleDiffCorrectionPlan({ diff, subledger: subledgerAccounts(), year, postedByYear: posted.byYear });
     const candidates = lockedCandidates(lock);
     let reason = "";
     let code = "";
