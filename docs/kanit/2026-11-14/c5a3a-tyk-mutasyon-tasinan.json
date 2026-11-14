@@ -1,0 +1,32 @@
+{
+  "ad": "c5a3a-tyk-mutasyon-tasinan",
+  "komut": "node test/tyk-mutasyon-250.mjs --klasor /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3a-t1/tyk-mut-klasor --yalniz O1-API,O1C-a,O1C-b,O1C-d,D05,D06,KD5-c",
+  "commit": "23d657dc0dbfd78a945652b87dc3d413cda11a18",
+  "dal": "worktree-agent-a068d42a7b77ba335",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-14T00:50:33.465Z",
+  "sure_sn": 44.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 7,
+    "gecen": 7,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3a-t1/kanit/2026-11-14/c5a3a-tyk-mutasyon-tasinan.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a068d42a7b77ba335",
+  "ham_cikti_sha256": "2e9788c2d86981d38e51e8fbb741a7b213433f3f4e1c4208e6f1bab0727933c8",
+  "ham_cikti_bayt": 3011
+}
