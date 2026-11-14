@@ -1,0 +1,22 @@
+▶ S160 = A — Banka'dan Ters Kaydet / Düzelt (KDV'li masrafın faturası): kilitli tahsilatın bağını düşüren iptal 409
+  ✔ Ters Kaydet 409 — tahsilat kilitli dönemde (05.10); banka olayı, fatura, bağ ve kilitli defter aynı (12.792663ms)
+  ✔ Ters Kaydet 409 — tahsilat tam kilit günü; banka olayı, fatura, bağ ve kilitli defter aynı (6.15273ms)
+  ✔ Düzelt (Ters Kaydet'i çağırır) 409 — yeni işlem yazılmaz, banka olayı / fatura / bağ / kilitli defter aynı (7.382901ms)
+  ✔ kilit DIŞINDAKİ tahsilat bağlıysa Ters Kaydet serbest (200): fatura iptal, bağ düşer, kilitli defter aynı (26.860813ms)
+  ✔ ret yalnız TAHSİLAT yönünde: kilitli ÖDEME ve kilitli VERİLEN EVRAK bağlı faturada Ters Kaydet serbest (200); kilitli defter aynı (41.307831ms)
+  ✔ kilit kaldırılınca Ters Kaydet serbest; yeniden kilitleme çalışır ve öbür kilitli bağ yine korunur (183.769445ms)
+✔ S160 = A — Banka'dan Ters Kaydet / Düzelt (KDV'li masrafın faturası): kilitli tahsilatın bağını düşüren iptal 409 (1312.024621ms)
+▶ S160 = A — e-Belge (e-Arşiv) iptal akışı: kilitli tahsilatın bağını düşüren iptal 409, EDM'ye hiç gidilmez
+  ✔ e-Arşiv iptali 409 — tahsilat kilitli dönemde (09.10); EDM'ye HİÇ istek yok; belge, bağ ve kilitli defter aynı (9.764775ms)
+  ✔ e-Arşiv iptali 409 — tahsilat tam kilit günü; EDM'ye HİÇ istek yok; belge, bağ ve kilitli defter aynı (5.949468ms)
+  ✔ kilit DIŞINDAKİ tahsilat bağlıysa e-Arşiv iptali serbest (200): EDM'de iptal (CancelInvoice bir kez), bağ düşer (48.092813ms)
+  ✔ kilit kaldırılınca e-Arşiv iptali serbest (EDM'de iptal); yeniden kilitleme çalışır ve öbür kilitli bağ yine korunur (EDM'ye gidilmeden) (208.049761ms)
+✔ S160 = A — e-Belge (e-Arşiv) iptal akışı: kilitli tahsilatın bağını düşüren iptal 409, EDM'ye hiç gidilmez (1054.162369ms)
+ℹ tests 10
+ℹ suites 2
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2722.571143

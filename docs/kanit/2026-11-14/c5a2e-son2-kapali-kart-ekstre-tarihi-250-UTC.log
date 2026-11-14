@@ -1,0 +1,16 @@
+▶ 2.5.0 BİRLEŞİK TUR 5 — kapalı kartın "Kart kapatıldı" satırı: cari ekstre = genel defter (kapanış günü)
+  ✔ kapanış günü: üç yerde de kapanış günü (ön koşul: closed_at = kapanış günü) (33.722873ms)
+  ✔ +40 gün: kartın yalnız NOTU düzeltildi / cari adı değişti / aynı içerikle Kaydet → satır kapanış gününde kalır (ön koşul: kartın updated_at'i ilerledi) (53.004084ms)
+  ✔ closed_at boş eski kart (2.0.13 öncesi benzetimi): son güncelleme günü; ilk düzeltmede dondurulur, üç yer aynı gün kalır; closed_at Kayıt Tarihi'nden önceyse Kayıt Tarihi (90.362328ms)
+✔ 2.5.0 BİRLEŞİK TUR 5 — kapalı kartın "Kart kapatıldı" satırı: cari ekstre = genel defter (kapanış günü) (702.417409ms)
+▶ 2.5.0 BİRLEŞİK TUR 5 — v2.4.9 gerçek koduyla kapatılıp düzeltilmiş kart güncel kodda
+  ✔ v2.4.9: kapat → +40 gün notu düzelt; güncel kod: cari kartı / Cari Ekstre / Yevmiye 689 kapanış gününde (679.576316ms)
+✔ 2.5.0 BİRLEŞİK TUR 5 — v2.4.9 gerçek koduyla kapatılıp düzeltilmiş kart güncel kodda (679.888295ms)
+ℹ tests 4
+ℹ suites 2
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1681.472889

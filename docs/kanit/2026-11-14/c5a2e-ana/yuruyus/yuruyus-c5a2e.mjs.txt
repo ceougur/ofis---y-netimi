@@ -1,0 +1,181 @@
+// ANA OTURUM — Ç5-A TUR 2e ADAYI EKRAN YÜRÜYÜŞÜ (S174 = A: yazılmış düzeltme fişi kendi yılında; kilit yıl sonunu aşınca yeni fiş önerilmez) — tur 2 betiğinden (anayasa "kalite çıtası"; şikâyet 1). Kullanıcı gözüyle, baştan sona:
+// eski sürümde (v2.4.9'un GERÇEK koduyla, API'den) kişi gir → borç yaz → dönemi kilitle → güncelle → zil → Açılış Olabilir Kayıtlar (onay / ret) →
+// Kural Farkı Düzeltme fişi → Açılış Eşleştirme fişi → Hesap Planı Mizanı → Yönetim satırı. Beklenen sayılar girdilerden ELLE (aşağıda BEKLENEN).
+// Kullanım: ROOT=<kod kökü> OUT=<klasör> node yuruyus-c5a2.mjs
+import fs from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+process.env.HUKUK_LICENSE_URL = "http://127.0.0.1:9";
+const ROOT = process.env.ROOT;
+const OUT = process.env.OUT;
+const imp = rel => import(pathToFileURL(path.join(ROOT, rel)).href);
+const { chromium } = await import(pathToFileURL(path.join(ROOT, "node_modules/playwright/index.mjs")).href);
+const { installPageClock, ADMIN_PASSWORD } = await imp("test/helpers.mjs");
+const { CURRENT, bootVersion } = await imp("test/guvenilirlik/surumler.mjs");
+const { escClose } = await imp("test/e2e/esc-kapat.mjs");
+const MODAL = ".hof-modal-backdrop.is-visible";
+const TOP = `${MODAL}:nth-last-child(1 of ${MODAL})`;
+const note = (...a) => console.log(...a);
+fs.mkdirSync(OUT, { recursive: true });
+const NOW = { time: "2026-10-20T12:00:00+03:00", fixed: true };
+const LOCK = "2026-10-05";
+const NOW2 = { time: "2027-01-05T12:00:00+03:00", fixed: true };
+const root = fs.mkdtempSync(path.join(tmpdir(), "ana-c5a2e-yuruyus-"));
+const dataDir = path.join(root, "data"); const backupDir = path.join(root, "backups");
+const ids = {};
+note("BEKLENEN (tur 2e; girdilerden elle): güncel kod 05.01.2027'de açılır; A'nın 700'ü REDDEDİLİR (kilitli dönemde → 602 kural farkı) → Kural Farkı fişi 06.10.2026 → kilit 31.12.2026'ya alınınca pencere PASİF 'Fişle düzeltilebilen fark kalmadı.', Mutabakat satırı 'Düzeltildi (Fiş 2026-000001)', 2027 mizanında 602 = 0 ve 671 = 0; B'nin 300'ü (açık dönem) ONAYLANIR.");
+note("ÖNCEKİ (tur 2): eski sürümde A carisine 02.10 'Açılış bakiyesi' 700 borç (kilitli dönemde), B carisine 12.10 'Açılış devri' 300 borç, A'ya 12.10 'Mal bedeli' 50 borç; kilit 05.10.");
+note("  zil: 2 kayıt onay bekliyor (700 ve 300; 'Mal bedeli' aday DEĞİL). 700 onaylanır, 300 reddedilir. Cari bakiyeleri hiç değişmez: A 750 borç, B 300 borç.");
+note("  onaydan sonra 700'ün karşılığı açılış geçici hesabına (519) geçmeli — kilitli dönemde olduğu için fark Kural Farkı Düzeltme fişiyle işlenir; fişten sonra 519 alacak 700.");
+note("  Açılış Eşleştirme: 519 bakiyesi 700 → 500 Sermaye alacak 700 → fişten sonra 519 = 0, 500 alacak 700.");
+{
+  const old = await bootVersion("v2.4.9", { dataDir, backupDir, now: NOW });
+  try {
+    const o = await old.login();
+    const yaz = async (label, p) => { const r = await p; note(`  eski sürüm · ${label}: ${r.status}`); if (r.status !== 200) throw new Error(`${label}: ${r.status} ${JSON.stringify(r.data).slice(0, 300)}`); return r.data?.data ?? r.data; };
+    await o.post("/api/workspace/bank/setup/dismiss", {});
+    const a = await yaz("cari A", o.post("/api/workspace/accounts", { name: "Yürüyüş Müşteri A", type: "customer", registeredOn: "2026-09-01" }));
+    const b = await yaz("cari B", o.post("/api/workspace/accounts", { name: "Yürüyüş Müşteri B", type: "customer", registeredOn: "2026-09-01" }));
+    ids.a = a.id; ids.b = b.id;
+    await yaz("A 700 Açılış bakiyesi 02.10", o.post(`/api/workspace/accounts/${a.id}/entries`, { kind: "debt", amount: "700", date: "2026-10-02", note: "Açılış bakiyesi" }));
+    await yaz("B 300 Açılış devri 12.10", o.post(`/api/workspace/accounts/${b.id}/entries`, { kind: "debt", amount: "300", date: "2026-10-12", note: "Açılış devri" }));
+    await yaz("A 50 Mal bedeli 12.10", o.post(`/api/workspace/accounts/${a.id}/entries`, { kind: "debt", amount: "50", date: "2026-10-12", note: "Mal bedeli" }));
+    const k = await o.put("/api/admin/period-lock", { lockedUntil: LOCK }); note(`  eski sürüm · dönem kilidi ${LOCK}: ${k.status}`);
+    ids.e700 = old.app.store.get("SELECT id FROM account_entries WHERE account_id = ? AND amount = 700", a.id)?.id;
+    ids.e300 = old.app.store.get("SELECT id FROM account_entries WHERE account_id = ? AND amount = 300", b.id)?.id;
+  } finally { await old.close(); }
+}
+const server = await bootVersion(CURRENT, { dataDir, backupDir, now: NOW2 });
+const app = server.app; const BASE = server.base;
+const browser = await chromium.launch();
+let page = null; let n = 0;
+const shot = async name => { n += 1; const f = path.join(OUT, `${String(n).padStart(2, "0")}-${name}.png`); await page.screenshot({ path: f }).catch(() => null); return f; };
+const closeAll = async () => { for (let i = 0; i < 6 && (await page.$(MODAL)); i += 1) { await escClose(page); await page.waitForTimeout(250); } };
+const step = async (title, fn) => { note(`\n■ ${title}`); try { await fn(); } catch (e) { note(`  ✗ ADIM YARIDA: ${String(e?.message || e).split("\n")[0]}`); await shot("hata"); await closeAll().catch(() => null); } };
+const metin = async (sel, lim = 900) => ((await page.locator(sel).first().innerText().catch(() => "(yok)")) || "").replace(/[ \t]+/g, " ").replace(/\n+/g, " ¦ ").slice(0, lim);
+const bal = code => { let d = 0; for (const e of app.ledger.book({})) for (const l of e.lines) if (String(l.account) === code) d += l.debit - l.credit; return Math.round(d * 100) / 100; };
+const defter = etiket => note(`  DEFTER (${etiket}): 120 = ${bal("120")} · 519 = ${bal("519")} · 500 = ${bal("500")} · 600 = ${bal("600")} · 649 = ${bal("649")} · 671 = ${bal("671")} · 681 = ${bal("681")}`);
+const cariBakiye = async () => { const api = await server.login(); for (const k of ["a", "b"]) { const r = await api.get(`/api/workspace/accounts/${ids[k]}`); const d = r.data?.data ?? r.data; note(`  cari ${k.toUpperCase()} bakiye: ${r.status} · ${JSON.stringify(d?.balance ?? d?.account?.balance ?? d?.summary ?? "?").slice(0, 120)}`); } };
+const sistem = async () => {
+  await closeAll();
+  await page.goto(`${BASE}/admin.html#system`, { waitUntil: "load" });
+  await page.click('.adm-tabs [data-tab="system"]');
+  await page.waitForFunction(() => (document.querySelector("#adm-integrity-status")?.textContent || "").length > 10, null, { timeout: 60000 });
+  await page.waitForTimeout(600);
+  note(`  Dönem kilidi: ${await metin("#adm-period-status", 200)}`);
+  note(`  Mutabakat satırı: ${await metin("#adm-integrity-status", 500)}`);
+};
+const anaEkran = async () => { await page.goto(`${BASE}/`, { waitUntil: "load" }); await page.waitForSelector("#hof-sidecard", { timeout: 60000 }); await page.waitForTimeout(1500); };
+const openReport = async match => {
+  await closeAll();
+  await page.click('#hof-sidecard [data-action="analytics"]');
+  await page.waitForSelector(`${MODAL} .hof-rep-tab[data-tab="all"]`, { timeout: 15000 });
+  await page.click(`${MODAL} .hof-rep-tab[data-tab="all"]`);
+  await page.waitForSelector(`${MODAL} [data-rc-list] [data-report]`, { timeout: 15000 });
+  const id = await page.$$eval(`${MODAL} [data-rc-list] [data-report]`, (ns, m) => ns.find(x => new RegExp(m).test(x.textContent))?.getAttribute("data-report") || null, match);
+  if (!id) throw new Error(`rapor listede yok: ${match}`);
+  await page.click(`${MODAL} [data-rc-list] [data-report="${id}"]`);
+  await page.waitForFunction(sel => { const main = document.querySelector(`${sel} [data-rc-main]`); return main && main.getAttribute("aria-busy") !== "true" && main.querySelector(".hof-rc-table, .hof-rc-summary, .hof-empty") && !/Rapor hazırlanıyor/.test(main.innerText); }, MODAL, { timeout: 30000 });
+  await page.waitForTimeout(400);
+};
+const tableOf = () => page.$$eval(`${MODAL} [data-rc-main] tr`, rows => rows.map(tr => [...tr.querySelectorAll("th,td")].map(td => td.textContent.replace(/\s+/g, " ").trim()).join(" | ")));
+const mizan = async etiket => { await anaEkran(); await openReport("Hesap Planı Mizanı"); const rows = await tableOf(); note(`  Hesap Planı Mizanı (${etiket}) — ${rows.length} satır:`); for (const r of rows.slice(0, 40)) note(`    ${r}`); await shot(`mizan-${etiket}`); await closeAll(); };
+const tabIle = async sel => { for (let i = 0; i < 400; i += 1) { await page.keyboard.press("Tab"); if (await page.evaluate(s => document.activeElement?.matches?.(s) || false, sel)) return true; } return false; };
+
+try {
+  const snaps = app.ledger.snapshots;
+  note(`\naçılışta dondurma durumu: ${JSON.stringify(snaps.state()).slice(0, 300)}`);
+  await Promise.race([snaps.runPending(), new Promise((_, rej) => setTimeout(() => rej(new Error("dondurma 120 sn'de bitmedi")), 120000).unref())]);
+  note(`dondurmadan sonra: ${JSON.stringify(snaps.state()).slice(0, 300)}`);
+  const scan = await app.integrity.scanInBackground().catch(e => ({ hata: String(e.message) }));
+  note(`ilk arka plan taraması: bulgu ${JSON.stringify((scan.findings || []).map(f => f.code))} ${scan.hata || ""}`);
+  note(`aday durumu (veri tabanı): ${JSON.stringify(app.store.all("SELECT amount, note, date, opening_review AS durum FROM account_entries ORDER BY date, amount"))}`);
+  defter("güncellemeden hemen sonra"); await cariBakiye();
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: "tr-TR", timezoneId: "Europe/Istanbul" });
+  page = await context.newPage();
+  await installPageClock(page, app.config.now);
+  page.on("pageerror", e => note(`  ! sayfa hatası: ${String(e.message).split("\n")[0]}`));
+  await page.goto(`${BASE}/`);
+  await page.fill("#hof-auth input[name=username]", "admin");
+  await page.fill("#hof-auth input[name=password]", ADMIN_PASSWORD);
+  await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
+  await page.waitForSelector("#hof-sidecard", { timeout: 60000 });
+
+  await step("1 Ana ekran: zil", async () => {
+    await page.waitForTimeout(3500);
+    await page.click(".topbar .top-actions > .icon-button");
+    await page.waitForTimeout(800);
+    note(`  zil listesi: ${await metin(".hof-alert-list", 700)}`);
+    await shot("zil");
+    await page.keyboard.press("Escape");
+  });
+  await step("2 Yönetim › Sistem: satırlar (karar öncesi)", async () => { await sistem(); await page.$eval("#adm-integrity-status", x => x.scrollIntoView({ block: "center" })); await shot("sistem-once"); });
+  await step("3 Kural Farkı Düzeltme penceresi (aday varken): pasif mi, nedeni ne", async () => {
+    await page.click("#adm-rule-diff-open"); await page.waitForSelector(`${TOP} [data-rule-diff-save]`, { timeout: 60000 }); await page.waitForTimeout(600);
+    note(`  pencere: ${await metin(TOP, 1400)}`);
+    note(`  Fişi Kaydet pasif: ${await page.locator(`${TOP} [data-rule-diff-save]`).isDisabled()} · neden: ${await metin(`${TOP} [data-rule-diff-save-why]`, 200)}`);
+    await shot("kural-farki-aday-varken"); await closeAll();
+  });
+  await step("4 Açılış Olabilir Kayıtlar: 300 onay, 700 ret (tur 2e)", async () => {
+    await page.click("#adm-opening-review-open"); await page.waitForSelector(`${MODAL} [data-review-summary]`, { timeout: 60000 }); await page.waitForTimeout(600);
+    note(`  özet: ${await metin(`${TOP} [data-review-summary]`, 300)}`);
+    note(`  tablo: ${await metin(`${TOP} [data-review-table]`, 1200)}`);
+    await shot("olabilir-liste");
+    await page.locator(`${TOP} [data-review-row="${ids.e300}"] [data-review-decision="confirm"]`).click(); await page.waitForTimeout(900);
+    if (await page.$(`${MODAL} [data-answer="yes"]`)) { note(`  SORU (onay): ${await metin(TOP, 400)}`); await shot("olabilir-onay-sorusu"); await page.locator(`${TOP} [data-answer="yes"]`).click(); await page.waitForTimeout(900); }
+    note(`  bildirim (onaydan sonra): ${await metin(".hof-toast, .hof-toasts, [data-toast]", 300)}`);
+    await shot("olabilir-onaydan-sonra");
+    await page.locator(`${TOP} [data-review-row="${ids.e700}"] [data-review-decision="reject"]`).click(); await page.waitForTimeout(900);
+    if (await page.$(`${MODAL} [data-answer="yes"]`)) { note(`  SORU (ret): ${await metin(TOP, 400)}`); await page.locator(`${TOP} [data-answer="yes"]`).click(); await page.waitForTimeout(900); }
+    note(`  özet (kararlardan sonra): ${await metin(`${TOP} [data-review-summary]`, 300)}`);
+    note(`  tablo / boş liste: ${await metin(`${TOP} [data-review-table], ${TOP} [data-review-empty]`, 600)}`);
+    await shot("olabilir-kararlardan-sonra"); await closeAll();
+    note(`  aday durumu (veri tabanı): ${JSON.stringify(app.store.all("SELECT amount, opening_review AS durum FROM account_entries ORDER BY date, amount"))}`);
+    defter("kararlardan sonra"); await cariBakiye();
+  });
+  await step("5 Yönetim › Sistem satırı + Kural Farkı Düzeltme: ön izleme → Tab + Boşluk ile onay → Fişi Kaydet", async () => {
+    await sistem(); await shot("sistem-karardan-sonra");
+    await page.click("#adm-rule-diff-open"); await page.waitForSelector(`${TOP} [data-rule-diff-save]`, { timeout: 60000 }); await page.waitForTimeout(600);
+    note(`  fiş satırları: ${await metin(`${TOP} [data-rule-diff-lines]`, 700)}`);
+    note(`  farkı doğuran kayıtlar: ${await metin(`${TOP} [data-rule-diff-sources]`, 700)}`);
+    note(`  Fişi Kaydet pasif (onaysız): ${await page.locator(`${TOP} [data-rule-diff-save]`).isDisabled()} · neden: ${await metin(`${TOP} [data-rule-diff-save-why]`, 200)}`);
+    await shot("kural-farki-onizleme");
+    const ulasti = await tabIle("[data-rule-diff-confirm]"); note(`  Tab ile onay kutusuna ulaşıldı: ${ulasti}`);
+    await page.keyboard.press("Space"); await page.waitForTimeout(400);
+    note(`  Fişi Kaydet pasif (onaylı): ${await page.locator(`${TOP} [data-rule-diff-save]`).isDisabled()}`);
+    await page.locator(`${TOP} [data-rule-diff-save]`).click(); await page.waitForTimeout(1500);
+    if (await page.$(`${MODAL} [data-answer="yes"]`)) { note(`  SORU: ${await metin(TOP, 400)}`); await page.locator(`${TOP} [data-answer="yes"]`).click(); await page.waitForTimeout(1500); }
+    await shot("kural-farki-kayittan-sonra"); await closeAll();
+    await sistem(); await shot("sistem-fisten-sonra");
+    note(`  fişler (veri tabanı): ${JSON.stringify(app.store.all("SELECT type, number, date, status FROM ledger_vouchers"))}`);
+    defter("düzeltme fişinden sonra");
+  });
+  await step("6 Dönem Kilidi 31.12.2026 → Kural Farkı Düzeltme penceresi (S174 = A: yeni fiş önerilmemeli)", async () => {
+    const api = await server.login(); const k = await api.put("/api/admin/period-lock", { lockedUntil: "2026-12-31" }); note(`  dönem kilidi 31.12.2026: ${k.status}`);
+    const g = await api.get("/api/admin/ledger/rule-diff-correction"); note(`  ön izleme ucu: ${g.status} · ${JSON.stringify(g.data).slice(0, 400)}`);
+    await sistem(); await shot("sistem-kilit-yil-sonu");
+    await page.click("#adm-rule-diff-open"); await page.waitForSelector(TOP, { timeout: 60000 }); await page.waitForTimeout(1500);
+    note(`  pencere: ${await metin(TOP, 900)}`);
+    note(`  Fişi Kaydet pasif: ${await page.locator(`${TOP} [data-rule-diff-save]`).isDisabled().catch(() => "(düğme yok)")} · neden: ${await metin(`${TOP} [data-rule-diff-save-why]`, 200)}`);
+    await shot("kural-farki-kilit-yil-sonu"); await closeAll();
+    defter("kilit yıl sonuna alındıktan sonra");
+  });
+  await step("7 Hesap Planı Mizanı (Bu Yıl = 2027) + Yevmiye", async () => {
+    await mizan("2027");
+    await anaEkran(); await openReport("Yevmiye Defteri"); const rows = await tableOf(); note(`  Yevmiye Defteri — ${rows.length} satır:`); for (const r of rows.slice(0, 40)) note(`    ${r}`); await shot("yevmiye"); await closeAll();
+  });
+  await step("9 Yönetim › Sistem son hâl + Mutabakat Testi", async () => {
+    await sistem(); await shot("sistem-son");
+    const api = await server.login(); const r = await api.get("/api/workspace/ledger/integrity"); const d = r.data?.data ?? r.data;
+    note(`  Mutabakat Testi: ${r.status} · ${JSON.stringify(d).slice(0, 500)}`);
+  });
+  await step("10 Ana ekran: zil (son)", async () => {
+    await anaEkran(); await page.waitForTimeout(3000); await page.click(".topbar .top-actions > .icon-button"); await page.waitForTimeout(800);
+    note(`  zil listesi: ${await metin(".hof-alert-list", 700)}`); await shot("zil-son");
+  });
+} catch (e) { console.error("HATA:", e); } finally {
+  await browser.close();
+  await server.close?.().catch(() => null);
+  if (root.startsWith(tmpdir())) fs.rmSync(root, { recursive: true, force: true });
+}

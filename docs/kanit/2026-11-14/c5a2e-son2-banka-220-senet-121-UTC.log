@@ -1,0 +1,35 @@
+▶ Senet 121 / 321 — çalışıyor mu (sayılarla, planın yevmiyesiyle)
+  ✔ alınan senet 121.01 (B 121 / A 120), alınan çek 101.01; verilen senet 321 (B 320 / A 321), verilen çek 103; Defter Mutabakatı gl:121 / gl:321 (85.961654ms)
+  ✔ Hesap Planı Mizanı ve Alt Hesap Mizanı: Tekdüzen adları (101 Alınan Çekler, 103 Verilen Çekler ve Ödeme Emirleri (−), 121, 321; 121.01/121.02) (31.714903ms)
+  ✔ Tahsile Ver B 121.02 / A 121.01; Bankadan Geri Al B 121.01 / A 121.02; 101.0x değişmez; İşlem Kartı adlarıyla; Tahsildeki Çek ve Senetler = 101.02 + 121.02 (88.29524ms)
+  ✔ tahsildeki senet Tahsil Edildi: B 102.01 / A 121.02, Ziraat +1.000; Geri Al → yeniden 121.02; karşılıksız: B 120 / A 121.02, cari yeniden borçlu (138.660608ms)
+  ✔ verilen senet ödemesi B 321 / A 102.01 (Ziraat −900); verilen çek ödemesi B 103 / A 102.01; 321 = 0, 103 = 0 (61.584088ms)
+✔ Senet 121 / 321 — çalışıyor mu (sayılarla, planın yevmiyesiyle) (769.689708ms)
+▶ Senet 121 / 321 — ciro, carisiz, taksit, fatura, iptal, sil → geri yükle
+  ✔ ciro: B 320 / A 121.01; carisiz senet B 121.01 / A 602 ve karşılıksızı B 770 / A 121.01; taksite sayılan senet B 121.01 / A 120 (90.846052ms)
+  ✔ faturadan gelen alınan senet 121 (+2.000) ve verilen senet 321 (−450); fatura iptal edilince evrakla birlikte geri (119.791121ms)
+  ✔ sil → geri yükle: 121 −300 / +300 (64.327032ms)
+✔ Senet 121 / 321 — ciro, carisiz, taksit, fatura, iptal, sil → geri yükle (569.151969ms)
+▶ Senet 121 / 321 — nasıl bozarım: tür düzenleme, kilitli dönem, kilit izi
+  ✔ açık dönemde senet → çek: 121 −500, 101 +500 (aynı tutar); geri senet; tahsildeyken 409 cheque-deposited; işlem görmüşken 409 (131.021106ms)
+  ✔ kilitli dönemde (alış 02.10, kilit 05.10) tür değişikliği 409 period-locked, 121 aynı; ham SQL ile değiştirilirse kilit izi değişir ve Mutabakat Testi 'Kapanmış dönem' der (172.809233ms)
+✔ Senet 121 / 321 — nasıl bozarım: tür düzenleme, kilitli dönem, kilit izi (580.50452ms)
+▶ Senet 121 / 321 — şirket ayrımı, yetki, Şirket Verisini Sıfırla, Banka Fişi rolleri
+  ✔ yetkisiz personel senet giremez (403, hiçbir şey yazılmaz); ?hofCompany=: 002'nin senedi 001'in 121'ine girmez (279.514878ms)
+  ✔ Şirket Verisini Sıfırla: 101 / 121 / 103 / 321 sıfır, Mutabakat Testi temiz; sonra yeni senet yine 121'e (129.507383ms)
+  ✔ Banka Fişi: hiçbir rolde 121 / 321 seçilemez (§3.11 rol listesi; 400 bank-gl-forbidden); Hesap Eşlemeleri'nde 400 (5.209036ms)
+✔ Senet 121 / 321 — şirket ayrımı, yetki, Şirket Verisini Sıfırla, Banka Fişi rolleri (690.217178ms)
+▶ Senet 121 / 321 — eşdeğerlik: gerçek eski kod (v2.1.0) ile aynı veri
+  ✔ eski sürümün verisi yeni kuralla: 101 + 121 = eski 101, 103 + 321 = eski 103, öbür hesaplar ve toplam aynı; kilitli dönem sahte fark vermez (907.284291ms)
+✔ Senet 121 / 321 — eşdeğerlik: gerçek eski kod (v2.1.0) ile aynı veri (907.524427ms)
+▶ Senet 121 / 321 — eşdeğerlik: surum-2.0.26-turler (gerçek 2.0.26 koduyla üretilmiş; verilen ve ödenmiş senet)
+  ✔ 2.0.26'nın kendi ölçüsüyle: 103 + 321 = eski 103, öbür hesaplar ve toplam aynı; 321 borç = alacak = 300 (909.059639ms)
+✔ Senet 121 / 321 — eşdeğerlik: surum-2.0.26-turler (gerçek 2.0.26 koduyla üretilmiş; verilen ve ödenmiş senet) (909.293124ms)
+ℹ tests 15
+ℹ suites 6
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4703.031381

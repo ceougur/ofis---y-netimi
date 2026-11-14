@@ -1,0 +1,20 @@
+▶ S160 = A — kilitli dönemdeki tahsilatın fatura bağını düşüren iptal / silme 409; kilitli defter değişmez
+  ✔ iptal 409 — şüpheli VAR; bağ, fatura ve kilitli defter aynı (13.306037ms)
+  ✔ iptal 409 — şüpheli YOK (kural şüpheliye bağlanmaz); bağ, fatura ve kilitli defter aynı (11.580622ms)
+  ✔ iptal 409 — tahsilat tam kilit günü; bağ, fatura ve kilitli defter aynı (6.941759ms)
+  ✔ silme (iptali çağırır) 409 — fatura silinmedi, bağ ve kilitli defter aynı (13.405321ms)
+  ✔ Kapatılacak Fatura ile bağlanmış KİLİTLİ alınan evrak: iptal 409 (evrakın bağı kalır) (2.928317ms)
+  ✔ kilit DIŞINDAKİ tahsilat bağlıysa iptal serbest (200) (20.946463ms)
+  ✔ kilit kaldırılınca iptal serbest; yeniden kilitleme çalışır (yönetici yolu) (199.180276ms)
+✔ S160 = A — kilitli dönemdeki tahsilatın fatura bağını düşüren iptal / silme 409; kilitli defter değişmez (1487.911842ms)
+▶ S160 = A — silinmiş evrakın kilitli bağı iptali engellemez
+  ✔ silinmiş evrak (Kapatılacak Fatura, kilitli tarih) → iptal 200, fatura iptal edildi (297.835166ms)
+✔ S160 = A — silinmiş evrakın kilitli bağı iptali engellemez (690.552822ms)
+ℹ tests 8
+ℹ suites 2
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2494.004762

@@ -1,0 +1,30 @@
+▶ Ç5-A tur 2b İş 2 — Kural Farkı Düzeltme Fişi
+  ✖ [5] fazla düzeltme: fişten sonra kilit kaldırılır → uyarı (kilit olmasa da görünür); yeniden kilitlenir → yine fazla; ters kayıtla temiz (814.178211ms)
+✖ Ç5-A tur 2b İş 2 — Kural Farkı Düzeltme Fişi (815.71544ms)
+ℹ tests 1
+ℹ suites 1
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1188.739686
+
+✖ failing tests:
+
+test at test/kural-farki-duzeltme-250.test.mjs:227:3
+✖ [5] fazla düzeltme: fişten sonra kilit kaldırılır → uyarı (kilit olmasa da görünür); yeniden kilitlenir → yine fazla; ters kayıtla temiz (814.178211ms)
+  AssertionError [ERR_ASSERTION]: ipucundaki ekran yeri (tur 2e DÜŞÜK-3)
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2e-k3/taban-ag/test/kural-farki-duzeltme-250.test.mjs:240:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 4)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: "Kilitli dönemde düzeltilecek kural farkı kalmadı (kilit kaldırıldı ya da dönem güncel kuralla yeniden dondu); Kural Farkı Düzeltme Fişi (Fiş 2026-000001) artık fazla — Yönetim › Kural Farkı Düzeltme'den ters kaydedin.",
+    expected: /artık fazla — Yönetim › Sistem › Kural Farkı Düzeltme'den ters kaydedin\.$/,
+    operator: 'match',
+    diff: 'simple'
+  }

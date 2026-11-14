@@ -1,0 +1,6 @@
+e2e-senaryo-iz1-kasa-acilis test:senaryo-iz1-kasa-acilis
+e2e-senaryo-kasa-acilis-uyari-250 test:senaryo-kasa-acilis-uyari-250
+e2e-senaryo-acilis-duzeni-250 test:senaryo-acilis-duzeni-250
+e2e-senaryo-acilis-olabilir-250 test:senaryo-acilis-olabilir-250
+e2e-senaryo-acilis-eslestirme-250 test:senaryo-acilis-eslestirme-250
+e2e-acilis-yanit-yaris test:acilis-yanit-yaris

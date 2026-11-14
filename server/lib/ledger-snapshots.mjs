@@ -20,7 +20,7 @@ import { HttpError } from "./http.mjs";
 import { LOCK_SQL_VERSION, lockDigestOf } from "./integrity.mjs";
 import { RULE_249, buildRule249 } from "./ledger-rule-249/index.mjs";
 import { leanRows, leanStore } from "./lean-rows.mjs";
-import { nextDayOf, postedRuleDiffCorrections, ruleDiffCorrectionPlan } from "./ledger-opening.mjs";
+import { postedRuleDiffCorrections, ruleDiffCorrectionPlan, ruleDiffCorrectionYear } from "./ledger-opening.mjs";
 import { voucherNoText } from "./ledger-vouchers.mjs";
 import { LEDGER_SNAPSHOT_TRIGGERS_V47, LEDGER_SNAPSHOT_TRIGGER_NAMES } from "./migrations.mjs";
 
@@ -1124,9 +1124,9 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
         ...(diff.count ? { severity: "warning", hint: ruleDiffHint({ rowsBroken, sourceChanged }) } : {}),
       };
       if (corrections.any) {
-        // Eşleme yılı (671 / 681): son etkin düzeltmenin yılı; yoksa ilk açık günün yılı.
-        const year = corrections.active.length ? corrections.active.at(-1).year : Number((nextDayOf(lock || cover) || "0").slice(0, 4));
-        const plan = ruleDiffCorrectionPlan({ diff, subledger: subledger?.() || new Set(), year, posted: corrections.net });
+        // Eşleme yılı (671 / 681) TEK tanımdan — ön izlemeyle aynı (S174 = A, tur 2e); yazılmış fişler kendi yıllarıyla düşülür.
+        const year = ruleDiffCorrectionYear({ lock, cover, today: period?.today?.() || "" });
+        const plan = ruleDiffCorrectionPlan({ diff, subledger: subledger?.() || new Set(), year, postedByYear: corrections.byYear });
         const remainderMinor = plan.lines.reduce((sum, line) => sum + line.debit, 0);
         const excludedMinor = plan.excluded.reduce((sum, row) => sum + Math.abs(row.minor), 0) / 2;
         const numbers = corrections.active.map(voucher => voucherNoText(voucher.year, voucher.no));
@@ -1143,7 +1143,7 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
           item.ok = false;
           item.count = numbers.length || 1;
           item.severity = "warning";
-          item.hint = `Kilitli dönemde düzeltilecek kural farkı kalmadı (kilit kaldırıldı ya da dönem güncel kuralla yeniden dondu); Kural Farkı Düzeltme Fişi (${numbers.join(", ") || "ters kaydı eksik"}) artık fazla — Yönetim › Kural Farkı Düzeltme'den ters kaydedin.`;
+          item.hint = `Kilitli dönemde düzeltilecek kural farkı kalmadı (kilit kaldırıldı ya da dönem güncel kuralla yeniden dondu); Kural Farkı Düzeltme Fişi (${numbers.join(", ") || "ters kaydı eksik"}) artık fazla — Yönetim › Sistem › Kural Farkı Düzeltme'den ters kaydedin.`;
         } else if (numbers.length && diff.count) {
           item.hint = remainderMinor
             ? `${item.hint} Kural Farkı Düzeltme Fişi (${numbers.join(", ")}) farkın bir kısmını düzeltti; kalan ön izlemede.`

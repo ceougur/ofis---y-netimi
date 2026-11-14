@@ -1,0 +1,59 @@
+
+> destekofis@2.4.9 test:senaryo-acilis-eslestirme-250
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-acilis-eslestirme-250.mjs
+
+
+■ Boş veri: 519 bakiyesi yok → pasif, neden görünür yazı; Ön İzleme ve Fişi Kaydet pasif
+  ✓ pencere başlığı
+  ✓ pasifliğin nedeni görünür yazı
+  ✓ Ön İzleme pasif
+  ✓ Fişi Kaydet pasif
+
+■ Açılışlar girilir (Kasa, cari, tedarikçi, banka, stok) → 519 bakiyesi 6.300,00 Alacak, dökümü türlere göre
+  ✓ ön koşul: defterde 519 = −6.300 (-6300)
+  ✓ bakiye: "Fiş tarihinin gün sonunda 519 Eşleştirilecek Açılış Bakiyeleri: ₺6.300,00 Alacak."
+  döküm: Kasa Açılışı ₺1.000,00 Alacak | Cari Açılışları ₺100,00 Alacak | Stok Açılışı ₺200,00 Alacak | Banka Açılışları ₺5.000,00 Alacak | Toplam ₺6.300,00 Alacak
+  ✓ döküm: Kasa, Cari, Banka, Stok + Toplam
+  ✓ ilk satır önerisi: 500 Alacak
+
+■ Hedef satırları: 500 Alacak 4.000 + (Satır Ekle) 570 Alacak 1.000 → Ön İzleme: 519 Borç 5.000 kendiliğinden; fişten sonra 1.300,00 Alacak
+  ✓ ön izlemeden önce Fişi Kaydet pasif
+  ✓ neden görünür yazı
+  satırlar: 500 Sermaye ₺4.000,00 | 570 Geçmiş Yıllar Kârları ₺1.000,00 | 519 Eşleştirilecek Açılış Bakiyeleri ₺5.000,00 | Toplam ₺5.000,00 ₺5.000,00
+  ✓ fiş satırları 500 / 570 / 519 + toplam
+  ✓ fişten sonra 519
+
+■ Onay kutusu Tab + Boşluk; Fişi Kaydet → fiş yazıldı; Mizan'da 500 −4.000, 570 −1.000, 519 −1.300; Kasa / cari / banka / stok aynı
+  ✓ onay kutusuna Tab ile ulaşıldı
+  ✓ onaydan sonra Fişi Kaydet etkin
+  ✓ bir eşleştirme fişi
+  ✓ Mizan: 500 -4000, 570 -1000, 519 -1300
+  ✓ Kasa / banka / cari / stok bakiyesi değişmez
+  ✓ Açılış Karşılığı (519, 500) tutarlı
+
+■ Kalanı aşan tutar (2.000 > 1.300): ön izleme reddeder (ters bakiye), Fişi Kaydet pasif; yazılmış fiş listede
+  ✓ bakiye 1.300,00 Alacak
+  ✓ ret iletisi: "Fiş 519'u ters bakiyeye geçirir: fiş tarihinde 519 bakiyesi 1.300,00 alacak; en çok 1.300,00 eşleştirilebilir (fişten sonra 700,00 borç olurdu)."
+  ✓ Fişi Kaydet pasif
+  ✓ yazılmış eşleştirme fişi listede
+
+■ Ters Kaydet → 519 geri gelir (−6.300); fiş listeden düşer
+  ✓ 519 geri geldi (-6300)
+  ✓ etkin eşleştirme fişi yok
+
+■ Kilitli tarih: kilit 28.02 → fiş tarihi 15.02 seçilince pasif + neden; Ön İzleme pasif
+  ✓ neden: "28.02.2026 ve öncesi kapatılmış (kilitli) dönemdir; fiş tarihi 01.03.2026 ya da sonrası olmalı."
+  ✓ Ön İzleme pasif
+
+■ Muhasebe rolü: Yönetim paneline giremez; uçlar 403
+  ✓ uç 403
+  ✓ Muhasebe: Açılış Eşleştirme düğmesi görünmez
+  ✓ sayfa hatası yok
+
+TAMAM: 29 denetim geçti, 0 başarısız.
+
+# tests 29
+# pass 29
+# fail 0
+
+[kanit] c5a2e-e2e-senaryo-acilis-eslestirme-250-UTC: GEÇTİ · çıkış 0 · 29/29 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit d2a37e3 +1 izlenmeyen · linux 6.18.44-fc-v470 x64 · Node v22.23.4

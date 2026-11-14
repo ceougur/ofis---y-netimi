@@ -1,0 +1,15 @@
+▶ B7 — arka plan taraması
+  ✔ gerçek 2.0.26 verisi: arka plan sonucu = satır içi sonuç; tam çalışma ana iş parçacığında koşmaz (936.876376ms)
+  ✔ gerçek 2.0.26 verisi, açılıştaki bekleyen dondurma: sürerken iki yol aynı (kural farkı henüz yok); bitince arka plan taraması ATLANMADAN yeniden koşar ve kural farkını görür (1144.169287ms)
+  ✔ değişiklik yoksa atlanır; yazım ya da gün değişince yeniden koşar; tarama veri yazmaz (943.035782ms)
+  ✔ nasıl bozarım: store dışı bozuk satırı bulur; tarama sürerken yazımlar geçer ve yanlış sapma çıkmaz; iş parçacığı açılamazsa sunucu sürer (709.692839ms)
+  ✔ iş parçacığı açılamazsa (veri dosyası yok) tarama 'çalışmadı' olur, sunucu ve sonraki tarama etkilenmez (621.847137ms)
+✔ B7 — arka plan taraması (4356.993558ms)
+ℹ tests 5
+ℹ suites 1
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4709.22198

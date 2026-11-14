@@ -1,0 +1,102 @@
+HIZ KABUL Ç5-A tur 2 (ana oturum) · kilitsiz · tekrar 5 · nproc 4 · başta 4.08 3.41 2.51 1/116 22851 · 10:01:38 · taban 04302dcf · aday d2a37e3d
+=== taban · başta 4.08 3.41 2.51 1/116 22858 · GEÇERSİZ (yük > 2)
+kod /home/user/ofis---y-netimi · yük (başta) 3.27 3.27 2.48 · TZ Europe/Istanbul
+  AÇILIŞ (göç dahil): durum 200 · en iyi 17493.8 ms · ortanca 17493.8 ms · olay döngüsü en çok 0 ms (n=1)
+donma: bekleyen koşu yok (kapsam —)
+fatura yanıtı anahtarları: ok,data · id invoice-d39c75c0-627f-4313-ab51-7233bfe79ee4
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 2571.8 ms · ortanca 2727 ms · olay döngüsü en çok 2724.2 ms (n=5)
+  Yevmiye Defteri (rapor): durum 200 · en iyi 1661.2 ms · ortanca 1903.3 ms · olay döngüsü en çok 1807.7 ms (n=5)
+  Hesap Planı Mizanı (rapor): durum 200 · en iyi 2431.4 ms · ortanca 2606.5 ms · olay döngüsü en çok 0 ms (n=5)
+  Alt Hesap Mizanı (rapor): durum 200 · en iyi 338.2 ms · ortanca 366.4 ms · olay döngüsü en çok 0 ms (n=5)
+  Defter Mutabakatı (rapor): durum 200 · en iyi 8765.1 ms · ortanca 9068.6 ms · olay döngüsü en çok 0 ms (n=5)
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 5686.5 ms · ortanca 5899.2 ms · olay döngüsü en çok 0 ms (n=5)
+  Yevmiye Defteri bütün zaman (rapor): durum 200 · en iyi 2308.6 ms · ortanca 2461.7 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM Borç Yaz: durum 200 · en iyi 232.4 ms · ortanca 249.6 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM evrak (alınan çek, carili): durum 200 · en iyi 41.8 ms · ortanca 43.5 ms · olay döngüsü en çok 42.7 ms (n=5)
+  YAZIM fatura (satış, açık hesap): durum 200 · en iyi 148.2 ms · ortanca 159.3 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM fatura iptali: durum 200 · en iyi 75.5 ms · ortanca 87 ms · olay döngüsü en çok 96.9 ms (n=5)
+  cari kartı: durum 200 · en iyi 161.1 ms · ortanca 195.2 ms · olay döngüsü en çok 0 ms (n=5)
+  Açılış Olabilir listesi (sayfasız): durum 200 · en iyi 57 ms · ortanca 60.2 ms · olay döngüsü en çok 0 ms (n=5)
+  Açılış Olabilir listesi sayfalı (yeni; tabanda limit yok sayılır): durum 200 · en iyi 91.1 ms · ortanca 101 ms · olay döngüsü en çok 0 ms (n=5)
+  Zil sayısı (yeni; tabanda tam liste): durum 200 · en iyi 28.7 ms · ortanca 31 ms · olay döngüsü en çok 0 ms (n=5)
+  Kural Farkı Düzeltme ön izlemesi (yeni; tabanda 404): durum 200 · en iyi 2.1 ms · ortanca 2.4 ms · olay döngüsü en çok 0 ms (n=5)
+  Açılış Eşleştirme GET (yeni; tabanda 404): durum 200 · en iyi 1509.6 ms · ortanca 1639.8 ms · olay döngüsü en çok 1554 ms (n=5)
+  Açılış Eşleştirme ön izleme (yeni; tabanda 404): durum 200 · en iyi 1472.2 ms · ortanca 1651.9 ms · olay döngüsü en çok 1847.6 ms (n=5)
+yük (sonda) 1.20 2.39 2.26
+çıkış 0 · sonda 1.20 2.39 2.26 1/112 23056
+=== aday · başta 1.20 2.39 2.26 1/112 23061 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag · yük (başta) 1.14 2.30 2.24 · TZ Europe/Istanbul
+  AÇILIŞ (göç dahil): durum 200 · en iyi 17879.4 ms · ortanca 17879.4 ms · olay döngüsü en çok 0 ms (n=1)
+donma: bekleyen koşu yok (kapsam —)
+fatura yanıtı anahtarları: ok,data · id invoice-7a9b0f5d-7f5a-408b-a3dd-09d12a35f065
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 2307.6 ms · ortanca 2566.1 ms · olay döngüsü en çok 2646.6 ms (n=5)
+  Yevmiye Defteri (rapor): durum 200 · en iyi 1709.1 ms · ortanca 1777.8 ms · olay döngüsü en çok 1887.4 ms (n=5)
+  Hesap Planı Mizanı (rapor): durum 200 · en iyi 2328.7 ms · ortanca 2433.4 ms · olay döngüsü en çok 0 ms (n=5)
+  Alt Hesap Mizanı (rapor): durum 200 · en iyi 326.6 ms · ortanca 367.3 ms · olay döngüsü en çok 0 ms (n=5)
+  Defter Mutabakatı (rapor): durum 200 · en iyi 8594.4 ms · ortanca 8930.6 ms · olay döngüsü en çok 0 ms (n=5)
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 5405.8 ms · ortanca 5704 ms · olay döngüsü en çok 5779.8 ms (n=5)
+  Yevmiye Defteri bütün zaman (rapor): durum 200 · en iyi 2201.8 ms · ortanca 2300 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM Borç Yaz: durum 200 · en iyi 209 ms · ortanca 226.7 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM evrak (alınan çek, carili): durum 200 · en iyi 37.8 ms · ortanca 38.4 ms · olay döngüsü en çok 62.4 ms (n=5)
+  YAZIM fatura (satış, açık hesap): durum 200 · en iyi 132 ms · ortanca 157.9 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM fatura iptali: durum 200 · en iyi 73.1 ms · ortanca 80.3 ms · olay döngüsü en çok 0 ms (n=5)
+  cari kartı: durum 200 · en iyi 172.9 ms · ortanca 192.5 ms · olay döngüsü en çok 0 ms (n=5)
+  Açılış Olabilir listesi (sayfasız): durum 200 · en iyi 54.4 ms · ortanca 57.8 ms · olay döngüsü en çok 0 ms (n=5)
+  Açılış Olabilir listesi sayfalı (yeni; tabanda limit yok sayılır): durum 200 · en iyi 86.6 ms · ortanca 91.8 ms · olay döngüsü en çok 0 ms (n=5)
+  Zil sayısı (yeni; tabanda tam liste): durum 200 · en iyi 28.4 ms · ortanca 30.2 ms · olay döngüsü en çok 0 ms (n=5)
+  Kural Farkı Düzeltme ön izlemesi (yeni; tabanda 404): durum 200 · en iyi 1.9 ms · ortanca 2 ms · olay döngüsü en çok 0 ms (n=5)
+  Açılış Eşleştirme GET (yeni; tabanda 404): durum 200 · en iyi 1591.7 ms · ortanca 1637.5 ms · olay döngüsü en çok 0 ms (n=5)
+  Açılış Eşleştirme ön izleme (yeni; tabanda 404): durum 200 · en iyi 1503.6 ms · ortanca 1661.7 ms · olay döngüsü en çok 1659.9 ms (n=5)
+yük (sonda) 1.33 1.87 2.08
+çıkış 0 · sonda 1.33 1.87 2.08 1/113 23098
+=== taban · başta 1.33 1.87 2.08 1/113 23103 
+kod /home/user/ofis---y-netimi · yük (başta) 1.31 1.83 2.06 · TZ Europe/Istanbul
+  AÇILIŞ (göç dahil): durum 200 · en iyi 18411.9 ms · ortanca 18411.9 ms · olay döngüsü en çok 0 ms (n=1)
+donma: bekleyen koşu yok (kapsam —)
+fatura yanıtı anahtarları: ok,data · id invoice-e70642dd-c676-4f54-a4e9-d475e0847120
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 2557.2 ms · ortanca 2647.4 ms · olay döngüsü en çok 2728.4 ms (n=5)
+  Yevmiye Defteri (rapor): durum 200 · en iyi 1747 ms · ortanca 1788.8 ms · olay döngüsü en çok 1786.8 ms (n=5)
+  Hesap Planı Mizanı (rapor): durum 200 · en iyi 2451.5 ms · ortanca 2556.1 ms · olay döngüsü en çok 0 ms (n=5)
+  Alt Hesap Mizanı (rapor): durum 200 · en iyi 362 ms · ortanca 368.6 ms · olay döngüsü en çok 377.2 ms (n=5)
+  Defter Mutabakatı (rapor): durum 200 · en iyi 8869 ms · ortanca 9142.3 ms · olay döngüsü en çok 0 ms (n=5)
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 5455.4 ms · ortanca 6038.2 ms · olay döngüsü en çok 0 ms (n=5)
+  Yevmiye Defteri bütün zaman (rapor): durum 200 · en iyi 2313 ms · ortanca 2440.8 ms · olay döngüsü en çok 2485.1 ms (n=5)
+  YAZIM Borç Yaz: durum 200 · en iyi 257.7 ms · ortanca 266.6 ms · olay döngüsü en çok 265 ms (n=5)
+  YAZIM evrak (alınan çek, carili): durum 200 · en iyi 38.7 ms · ortanca 47.3 ms · olay döngüsü en çok 46.9 ms (n=5)
+  YAZIM fatura (satış, açık hesap): durum 200 · en iyi 137.8 ms · ortanca 156.1 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM fatura iptali: durum 200 · en iyi 81.1 ms · ortanca 87.7 ms · olay döngüsü en çok 0 ms (n=5)
+  cari kartı: durum 200 · en iyi 190.9 ms · ortanca 201.8 ms · olay döngüsü en çok 204.5 ms (n=5)
+  Açılış Olabilir listesi (sayfasız): durum 200 · en iyi 59 ms · ortanca 62.7 ms · olay döngüsü en çok 61.1 ms (n=5)
+  Açılış Olabilir listesi sayfalı (yeni; tabanda limit yok sayılır): durum 200 · en iyi 92.7 ms · ortanca 102.8 ms · olay döngüsü en çok 0 ms (n=5)
+  Zil sayısı (yeni; tabanda tam liste): durum 200 · en iyi 30.8 ms · ortanca 31.2 ms · olay döngüsü en çok 0 ms (n=5)
+  Kural Farkı Düzeltme ön izlemesi (yeni; tabanda 404): durum 200 · en iyi 2.1 ms · ortanca 2.5 ms · olay döngüsü en çok 0 ms (n=5)
+  Açılış Eşleştirme GET (yeni; tabanda 404): durum 200 · en iyi 1575.9 ms · ortanca 1647.1 ms · olay döngüsü en çok 0 ms (n=5)
+  Açılış Eşleştirme ön izleme (yeni; tabanda 404): durum 200 · en iyi 1611.3 ms · ortanca 1623.6 ms · olay döngüsü en çok 1611.7 ms (n=5)
+yük (sonda) 1.08 1.56 1.92
+çıkış 0 · sonda 1.08 1.56 1.92 1/111 23140
+=== aday · başta 1.07 1.55 1.92 1/110 23145 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag · yük (başta) 1.05 1.53 1.90 · TZ Europe/Istanbul
+  AÇILIŞ (göç dahil): durum 200 · en iyi 17775.6 ms · ortanca 17775.6 ms · olay döngüsü en çok 0 ms (n=1)
+donma: bekleyen koşu yok (kapsam —)
+fatura yanıtı anahtarları: ok,data · id invoice-16dd1851-2396-4bb9-a642-97affe7412af
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 2408 ms · ortanca 2610.8 ms · olay döngüsü en çok 2726.3 ms (n=5)
+  Yevmiye Defteri (rapor): durum 200 · en iyi 1622 ms · ortanca 1850 ms · olay döngüsü en çok 1873.8 ms (n=5)
+  Hesap Planı Mizanı (rapor): durum 200 · en iyi 2362.7 ms · ortanca 2613 ms · olay döngüsü en çok 0 ms (n=5)
+  Alt Hesap Mizanı (rapor): durum 200 · en iyi 349.8 ms · ortanca 372 ms · olay döngüsü en çok 370.1 ms (n=5)
+  Defter Mutabakatı (rapor): durum 200 · en iyi 9059.4 ms · ortanca 9521.9 ms · olay döngüsü en çok 0 ms (n=5)
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 5581.6 ms · ortanca 5886.6 ms · olay döngüsü en çok 6337.6 ms (n=5)
+  Yevmiye Defteri bütün zaman (rapor): durum 200 · en iyi 2333.4 ms · ortanca 2502.5 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM Borç Yaz: durum 200 · en iyi 210.2 ms · ortanca 238.2 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM evrak (alınan çek, carili): durum 200 · en iyi 41.6 ms · ortanca 44.4 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM fatura (satış, açık hesap): durum 200 · en iyi 146 ms · ortanca 160.2 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM fatura iptali: durum 200 · en iyi 76.2 ms · ortanca 86.1 ms · olay döngüsü en çok 0 ms (n=5)
+  cari kartı: durum 200 · en iyi 168.9 ms · ortanca 194.8 ms · olay döngüsü en çok 0 ms (n=5)
+  Açılış Olabilir listesi (sayfasız): durum 200 · en iyi 55.7 ms · ortanca 59.9 ms · olay döngüsü en çok 60.7 ms (n=5)
+  Açılış Olabilir listesi sayfalı (yeni; tabanda limit yok sayılır): durum 200 · en iyi 88.2 ms · ortanca 95 ms · olay döngüsü en çok 0 ms (n=5)
+  Zil sayısı (yeni; tabanda tam liste): durum 200 · en iyi 29.4 ms · ortanca 31.3 ms · olay döngüsü en çok 0 ms (n=5)
+  Kural Farkı Düzeltme ön izlemesi (yeni; tabanda 404): durum 200 · en iyi 2 ms · ortanca 2.2 ms · olay döngüsü en çok 0 ms (n=5)
+  Açılış Eşleştirme GET (yeni; tabanda 404): durum 200 · en iyi 1571.8 ms · ortanca 1617 ms · olay döngüsü en çok 1675.6 ms (n=5)
+  Açılış Eşleştirme ön izleme (yeni; tabanda 404): durum 200 · en iyi 1573.8 ms · ortanca 1631.7 ms · olay döngüsü en çok 1942 ms (n=5)
+yük (sonda) 1.00 1.31 1.76
+çıkış 0 · sonda 1.00 1.31 1.76 1/113 23262
+bitti 10:12:37
