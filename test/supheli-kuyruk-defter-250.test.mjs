@@ -244,6 +244,8 @@ describe("Ç5-A tur 3c: şüpheli ↔ kuyruk defter kuralı (S14, S25, S39, S168
     const s = await scenario("Kesit");
     await must("bağlı 300", cash(s.acc, s.at(-10), 300, { invoiceId: s.f2 }));
     const row = await lastEntry(s.acc);
+    // Satırdan SONRA bir bağsız tahsilat: kesite girmemeli (girerse Fatura 1'in açığı 400'e iner, Fatura 2'nin payı 500'e çıkar).
+    await must("sonraki bağsız 200", cash(s.acc, s.at(-5), 200));
     const { createObligationInput } = await import(lib("obligation-input.mjs"));
     const { buildObligations, doubtfulBefore } = await import(lib("obligation-queue.mjs"));
     assert.equal(typeof doubtfulBefore, "function", "kuyruk doubtfulBefore'u dışa verir");
@@ -253,11 +255,11 @@ describe("Ç5-A tur 3c: şüpheli ↔ kuyruk defter kuralı (S14, S25, S39, S168
     const cut = doubtfulBefore({ ...input, doubtfulRecords: [{ id: recordId, date: s.at(-40), remainingMinor: 100000 }] }, { lineId: row.id });
     assert.deepEqual(cut.get(`inv:${s.f2}`), { minor: 40000, records: [{ recordId, minor: 40000 }] });
     assert.deepEqual(cut.get(`inv:${s.f1}`), { minor: 60000, records: [{ recordId, minor: 60000 }] });
-    // Kuyruğun kendisi: son durum (kayıt kalanı 700) → 700 = Fatura 1 600 + Fatura 2 100; dönüşte yeni alan yok.
+    // Kuyruğun kendisi: son durum (kayıt kalanı 1.000 − 300 − 200 = 500) → 500 = Fatura 1 400 + Fatura 2 100; dönüşte yeni alan yok.
     const q = buildObligations(input);
     assert.deepEqual(Object.keys(q).sort(), ["coverage", "doubtful", "entries", "installments", "invoiceNet", "invoices", "items", "overdue", "prepaidPasses"]);
     assert.deepEqual(Object.keys(q.doubtful).sort(), ["amount", "items"]);
-    assert.equal(q.doubtful.amount, 700);
+    assert.equal(q.doubtful.amount, 500);
     for (const item of q.doubtful.items) assert.deepEqual(Object.keys(item).sort(), ["amount", "invoiceId", "itemId", "key", "kind", "lineId", "planId", "vade"]);
   });
 
@@ -266,13 +268,15 @@ describe("Ç5-A tur 3c: şüpheli ↔ kuyruk defter kuralı (S14, S25, S39, S168
     const acc = await must("cari", api.post("/api/workspace/accounts", { name: "Şüpheli Kuyruk Kartlı", type: "customer", registeredOn: day(-1200), phone: "0500 319 99 02" }));
     await must("borç", api.post(`/api/workspace/accounts/${acc.id}/entries`, { kind: "debt", amount: "1200", date: day(base - 20), method: "cash", cashForce: true, similarOk: true }));
     await must("kart", api.post("/api/workspace/plans", { name: acc.name, registeredOn: day(base - 15), total: "1200", accountId: acc.id, mode: "auto", count: "3", firstDue: day(base), everyMonths: "1", coversBalance: true }));
-    await must("kart 2", api.post("/api/workspace/plans", { name: acc.name, registeredOn: day(base - 12), total: "300", accountId: acc.id, mode: "auto", count: "2", firstDue: day(base + 5), everyMonths: "1", coversBalance: false }));
+    const second = await must("kart 2", api.post("/api/workspace/plans", { name: acc.name, registeredOn: day(base - 12), total: "300", accountId: acc.id, mode: "auto", count: "2", firstDue: day(base + 5), everyMonths: "1", coversBalance: false }));
+    await must("kart 2 tahsilatı", api.post(`/api/workspace/plans/${second.id || second.plan?.id}/entries`, { kind: "in", amount: "100", date: day(base - 11), method: "cash", cashForce: true, similarOk: true }));
     const third = await must("kart 3 (silinecek)", api.post("/api/workspace/plans", { name: acc.name, registeredOn: day(base - 10), total: "200", accountId: acc.id, mode: "auto", count: "1", firstDue: day(base + 6), everyMonths: "1", coversBalance: false }));
     await must("kart 3 sil", api.del(`/api/workspace/plans/${third.id || third.plan?.id}`));
     const { createAccountLines } = await import(lib("account-lines.mjs"));
     const lines = createAccountLines({ store: server.app.store });
     const all = lines.ledgerPlansByAccount();
     assert.ok((all.get(acc.id) || []).length >= 2, "kartlı cari haritada");
+    assert.ok((all.get(acc.id) || []).some(plan => plan.entries.length > 0), "ön koşul: kartta tahsilat satırı var (kart haritasının tahsilat alanı sınanır)");
     const ids = server.app.store.all("SELECT id FROM accounts").map(row => row.id);
     const scoped = lines.ledgerPlansOf(ids);
     for (const id of ids) assert.deepEqual(scoped.get(id) || [], all.get(id) || [], `cari ${id}`);

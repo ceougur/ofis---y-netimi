@@ -31,7 +31,8 @@ const MUTASYONLAR = [
   [2, "128 ↔ 120 dağılımı eski sabite: bağlı evrak en eski kayıttan (kuyruk payı okunmaz — geri çağrı yok)", [[GL, "        const shares = linked && !credit.openedOn", "        const shares = false && linked && !credit.openedOn"]]],
   [3, "ikinci yükleyici (doubtfulState) eski kuralda kalır", [[BD, "  const { state, allocations } = allocateDoubtful({ records, provisions, credits, linked: rows.linked || null });", "  const { state, allocations } = allocateDoubtful({ records, provisions, credits, linked: null });"]]],
   [4, "yevmiye yükleyicisi (doubtfulRows) eski kuralda kalır", [[GL, "credits, linked: typeof doubtful?.linked === \"function\" ? doubtful.linked : null });", "credits, linked: null });"]]],
-  [5, "kesit satırın KENDİSİNİ de içerir", [[OQ, "    if (line.id === lineId) return false;\n", ""]]],
+  // M5: önce "if (line.id === lineId) return false;" satırı silinerek denendi — EŞDEĞER mutant (satırın kendisi anahtar eşitliğiyle zaten dışarıda: "< 0"); yerine eşitliği içeren karşılaştırma.
+  [5, "kesit satırın KENDİSİNİ ve aynı anahtarı da içerir (< yerine <=)", [[OQ, "    if (line.id === lineId) return false;\n", ""], [OQ, "    return eventOrder(keyOf(line), edge) < 0;", "    return eventOrder(keyOf(line), edge) <= 0;"]]],
   [6, "kesit yok — kuyruğun son durumu okunur (sonraki satırlar dahil)", [[OQ, "    if (line.date !== cut.date) return line.date < cut.date;\n", "    if (line.date !== cut.date) return true;\n"]]],
   [7, "pay kayıt kimliği yerine en eski açık kayda yazılır", [[GL, "            const record = live.get(share.recordId);", "            const record = open[0];"]]],
   [8, "kalem başına kayıt kimliği boş (K-1 (b) yok)", [[OQ, "        else list.push({ recordId: record.id ?? \"\", minor: take });", "        else list.push({ recordId: \"\", minor: take });"]]],
