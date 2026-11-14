@@ -270,6 +270,15 @@ kapı (süzgeçli kurulum) — tek satır yazımında 409 çıkmamalı; Silinenl
 - Sabit kalır: oran / vergi kipi satış anında pos_sales / pos_items'a yazılır (POS kartı güncellemesi bekleyen kalemi değiştirmez); modül satırı düzeltilince satış void + yeni satış.
   Komisyon hesabı ayarı sonradan değişirse bekleyen parçanın satış günü maddesinin hesabı değişir (kilitliyse ruleDiff) — BİLİNEN SINIR adayı.
 
+### 13.3a Tur 2'nin durumu (ARA RAPOR; kanıt docs/kanit/2026-11-14/c7a2-*)
+- İş 0 (veri kaynağı — K-14 kısmı) ve iş 3 (K-14 / K-15) YAPILDI (commit'ler df68e175, aa2133c4, 8da5f5f5, 20b68330). KG-6 (iş 1), alan adı (iş 4), kılavuz (iş 5) BAŞLAMADI —
+  yeni temiz ajana (ders 46). KG-6'nın veri kaynağı eki (rows().posCommission / posSettle, refs().commissionGl) iş 1 ile birlikte yazılır (§13.3; taslak: satış başına toplu SQL,
+  parça = kalemin gün fişi; etkin gün fişinde S kadar gider ve 108 alacağı düşer; groups() 108.POS beklenenine −bekleyen kesinti; Alt Hesap Mizanı 108.POS aynı kural).
+- Uygulamada §13.2'den sapma (sonuç): Hesabı Atanmamış LİSTESİ (legacy rows) ve Banka raporlarının "Hesabı Atanmamış" seçimi (rapor merkezi — dosya sınırı dışı) açılışta sayılmış
+  satırları göstermeye DEVAM eder; yalnız BAKİYE (kova: Banka Genel Bakış, Hesaplar, ANLIK DURUM, Nakit Akış, Birleşik Rapor, Hesabı Atanmamış toplamı, Alt Hesap Mizanı) düşer.
+  Sonuç: Banka Bakiye Raporu'nun özetindeki "Hesabı Atanmamış Eski Hareketler" (satırlardan toplanır) Banka Genel Bakış'tan büyük görünebilir → BAŞ MİMAR KARARI GEREKİYOR (rapor).
+- Kurulum Sihirbazı'nın Devir Kapanışı tutarı ham kalır (D'den önceki BÜTÜN bağsız satırlar — 2.4.9 kuralıyla da tutarlı); defterde B 519 / A 519 netlenir.
+
 ### 13.4 Okuyucular (ders 10)
 Yevmiye Defteri, Hesap Planı Mizanı, Alt Hesap Mizanı, Defter Mutabakatı, Mutabakat Testi (102 / 108 / alt hesap / 519 "Açılış Karşılığı"), kapı (integrity-scope süzgeçli kurulumu —
 groups({ ids, events }) ile), dondurma / ruleDiff / Kural Farkı Düzeltme Fişi, Açılış Eşleştirme (519 dökümü), Banka Genel Bakış / Hesaplar / ANLIK DURUM / Nakit Akış / Birleşik Rapor
