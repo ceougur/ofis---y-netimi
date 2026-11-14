@@ -1,0 +1,154 @@
+{
+ "mod": "bagla",
+ "tahsilatBagi": "",
+ "kilit": 200,
+ "dondurma": {
+  "coverage": "2026-10-10",
+  "lock": "2026-10-10",
+  "pending": null,
+  "runs": 1
+ },
+ "once": {
+  "status": 200,
+  "disabled": true,
+  "code": "rule-diff-nothing",
+  "reason": "Düzeltilecek kural farkı yok.",
+  "lines": [],
+  "sources": [],
+  "excluded": [],
+  "digest": "3a2298c28c08304d18f51f1245404213",
+  "keys": [
+   "lockedUntil",
+   "frozenThrough",
+   "today",
+   "date",
+   "count",
+   "lines",
+   "digest",
+   "totalMinor",
+   "excluded",
+   "sources",
+   "sourceCount",
+   "candidates",
+   "vouchers",
+   "disabled",
+   "reason",
+   "code"
+  ]
+ },
+ "yazim": 1,
+ "kilitliDefterFarki": [
+  "+2026-10-09|120|cari|B0|A10000",
+  "-2026-10-09|128|cari|B0|A10000"
+ ],
+ "sonra": {
+  "status": 200,
+  "disabled": true,
+  "code": "rule-diff-nothing",
+  "reason": "Düzeltilecek kural farkı yok.",
+  "lines": [],
+  "sources": [
+   {
+    "id": "account:aentry-8e125ed0-f48f-44f2-b47e-4c29ac69b7bb",
+    "date": "2026-10-09",
+    "source": "Cari tahsilat",
+    "text": "",
+    "inFrozen": true,
+    "inLive": true,
+    "excluded": true,
+    "deltas": [
+     {
+      "year": 2026,
+      "account": "128",
+      "sub": "",
+      "party": "account-e2020175-b539-4d37-9ef9-8556ebe00d33",
+      "minor": 10000,
+      "name": "Şüpheli Ticari Alacaklar"
+     },
+     {
+      "year": 2026,
+      "account": "120",
+      "sub": "",
+      "party": "account-e2020175-b539-4d37-9ef9-8556ebe00d33",
+      "minor": -10000,
+      "name": "Alıcılar (Müşteri Carileri)"
+     }
+    ]
+   }
+  ],
+  "excluded": [
+   {
+    "account": "120",
+    "sub": "",
+    "party": "account-e2020175-b539-4d37-9ef9-8556ebe00d33",
+    "minor": -10000,
+    "subledger": true,
+    "name": "Alıcılar (Müşteri Carileri)",
+    "reason": "Alt defter hesabı: bakiyesi kendi modülünün kayıtlarından gelir, fişle düzeltilmez (Kilidi Aç → Yeniden Kilitle ile kilitli dönem güncel kuralla yeniden donar)."
+   },
+   {
+    "account": "128",
+    "sub": "",
+    "party": "account-e2020175-b539-4d37-9ef9-8556ebe00d33",
+    "minor": 10000,
+    "subledger": true,
+    "name": "Şüpheli Ticari Alacaklar",
+    "reason": "Alt defter hesabı: bakiyesi kendi modülünün kayıtlarından gelir, fişle düzeltilmez (Kilidi Aç → Yeniden Kilitle ile kilitli dönem güncel kuralla yeniden donar)."
+   }
+  ],
+  "digest": "3a2298c28c08304d18f51f1245404213",
+  "keys": [
+   "lockedUntil",
+   "frozenThrough",
+   "today",
+   "date",
+   "count",
+   "lines",
+   "digest",
+   "totalMinor",
+   "excluded",
+   "sources",
+   "sourceCount",
+   "candidates",
+   "vouchers",
+   "disabled",
+   "reason",
+   "code"
+  ]
+ },
+ "entryId": "aentry-8e125ed0-f48f-44f2-b47e-4c29ac69b7bb",
+ "party": "account-e2020175-b539-4d37-9ef9-8556ebe00d33",
+ "mutabakat": {
+  "ok": false,
+  "failures": [
+   "ledger:rule-diff"
+  ],
+  "kural": {
+   "code": "ledger:rule-diff",
+   "name": "Kural Değişikliği Farkı (Kilitli Dönem: 10.10.2026 ve Öncesi)",
+   "ok": false,
+   "count": 1,
+   "difference": 100,
+   "sample": [
+    "account:aentry-8e125ed0-f48f-44f2-b47e-4c29ac69b7bb (09.10.2026)"
+   ],
+   "breakdown": [
+    {
+     "account": "120",
+     "frozenMinor": 0,
+     "liveMinor": -10000,
+     "differenceMinor": -10000
+    },
+    {
+     "account": "128",
+     "frozenMinor": -10000,
+     "liveMinor": 0,
+     "differenceMinor": 10000
+    }
+   ],
+   "severity": "warning",
+   "hint": "Kilitli dönemin donmuş defteri güncel türetmeden farklı: neden defter kuralının program sürümüyle değişmesi ya da kilitli dönemin kaynak verisinin kapının görmediği bir yolla değişmesi olabilir. Kilitli dönemin raporları donmuş defterden okunur, değişmez. Kural farkı Kural Farkı Düzeltme Fişi ile ilk açık güne alınır."
+  }
+ },
+ "tarama": []
+}

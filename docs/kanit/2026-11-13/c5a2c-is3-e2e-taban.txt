@@ -1,0 +1,93 @@
+(node:19797) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:19797) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓ ön koşul: göç 48 dört satırı aday yaptı (v2.4.9 verisi)
+
+■ Zil: 'Açılış Olabilir Kayıtlar — 4 kayıt onay bekliyor'; Yönetim → Sistem bağlantısı pencereyi açar
+  ✗ beklenmeyen hata: locator.waitFor: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-alert-list li').filter({ hasText: 'kayıt onay bekliyor' }).first() to be visible[22m
+
+    at /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/c3/test/e2e/senaryo-acilis-olabilir-250.mjs:119:24
+    at async step (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/c3/test/e2e/senaryo-acilis-olabilir-250.mjs:73:5)
+    at async file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/c3/test/e2e/senaryo-acilis-olabilir-250.mjs:115:3
+
+■ Kural Farkı penceresi aday varken pasif; neden aday ekranının yerini söyler; 'Açılış Olabilir Kayıtları Aç' pencereye geçirir (B16)
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 60000ms exceeded.
+Call log:
+[2m  - waiting for locator('#adm-opening-review-open') to be visible[22m
+
+    at openSystem (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/c3/test/e2e/senaryo-acilis-olabilir-250.mjs:98:11)
+    at async file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/c3/test/e2e/senaryo-acilis-olabilir-250.mjs:132:5
+    at async step (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/c3/test/e2e/senaryo-acilis-olabilir-250.mjs:73:5)
+    at async file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/c3/test/e2e/senaryo-acilis-olabilir-250.mjs:131:3
+
+■ Pencere: dört satır, aynı adlı iki cari, kilitli satır 'Kilitli'; toplu düğmeler pasif ve nedeni görünür
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 60000ms exceeded.
+Call log:
+[2m  - waiting for locator('#adm-opening-review-open') to be visible[22m
+
+    at openSystem (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/c3/test/e2e/senaryo-acilis-olabilir-250.mjs:98:11)
+    at async openWindow (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/c3/test/e2e/senaryo-acilis-olabilir-250.mjs:101:3)
+    at async file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/c3/test/e2e/senaryo-acilis-olabilir-250.mjs:149:20
+    at async step (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/c3/test/e2e/senaryo-acilis-olabilir-250.mjs:73:5)
+    at async file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/c3/test/e2e/senaryo-acilis-olabilir-250.mjs:148:3
+
+■ Tek karar: kilitli satır 'Açılış (Onayla)' → onaylandı; bildirimde Geri Al → yeniden onay bekliyor
+  ✗ beklenmeyen hata: locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible:nth-last-child(1 of .hof-modal-backdrop.is-visible)').locator('[data-review-row="aentry-2a5de7b6-e364-4c92-a89f-a06f0f89e051"]').locator('[data-review-decision="confirm"]')[22m
+
+    at /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/c3/test/e2e/senaryo-acilis-olabilir-250.mjs:167:81
+    at step (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/c3/test/e2e/senaryo-acilis-olabilir-250.mjs:73:11)
+    at /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/c3/test/e2e/senaryo-acilis-olabilir-250.mjs:165:9
+
+■ Toplu karar klavyeyle: Tab ile iki satırın kutusuna gelip Boşluk; 'Seçilenleri Reddet' → ikisi reddedildi
+  ✗ beklenmeyen hata: locator.focus: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible:nth-last-child(1 of .hof-modal-backdrop.is-visible)').locator('[data-review-row="aentry-140b7833-f673-4a73-a4a5-5080f3e22b7a"]').locator('[data-review-pick]')[22m
+
+    at /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/c3/test/e2e/senaryo-acilis-olabilir-250.mjs:180:66
+    at step (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/c3/test/e2e/senaryo-acilis-olabilir-250.mjs:73:11)
+    at /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/c3/test/e2e/senaryo-acilis-olabilir-250.mjs:178:9
+
+■ 'Tümü' süzgeci: kararlı satırlarda Geri Al; geri alınan satır yeniden onay bekler
+  ✗ beklenmeyen hata: locator.selectOption: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible:nth-last-child(1 of .hof-modal-backdrop.is-visible)').locator('[data-review-filter]')[22m
+
+    at /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/c3/test/e2e/senaryo-acilis-olabilir-250.mjs:202:49
+    at step (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/c3/test/e2e/senaryo-acilis-olabilir-250.mjs:73:11)
+    at /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/c3/test/e2e/senaryo-acilis-olabilir-250.mjs:201:9
+
+■ İki kişi aynı anda: ikinci yönetici aynı satırı onaylar, ilk ekranın eski görünümünden ret — son karar geçerli, liste güncel
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 60000ms exceeded.
+Call log:
+[2m  - waiting for locator('#adm-opening-review-open') to be visible[22m
+
+    at openSystem (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/c3/test/e2e/senaryo-acilis-olabilir-250.mjs:98:11)
+    at async openWindow (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/c3/test/e2e/senaryo-acilis-olabilir-250.mjs:101:3)
+    at async file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/c3/test/e2e/senaryo-acilis-olabilir-250.mjs:215:21
+    at async step (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/c3/test/e2e/senaryo-acilis-olabilir-250.mjs:73:5)
+    at async file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/c3/test/e2e/senaryo-acilis-olabilir-250.mjs:212:3
+
+■ Bütün adaylara karar → boş liste; Kural Farkı penceresi artık aday nedeniyle pasif değil; zil sayısı 0
+  ✗ beklenmeyen hata: locator.selectOption: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible:nth-last-child(1 of .hof-modal-backdrop.is-visible)').locator('[data-review-filter]')[22m
+
+    at /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/c3/test/e2e/senaryo-acilis-olabilir-250.mjs:227:49
+    at step (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/c3/test/e2e/senaryo-acilis-olabilir-250.mjs:73:11)
+    at /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2c-q/c3/test/e2e/senaryo-acilis-olabilir-250.mjs:226:9
+
+■ Muhasebe rolü: Yönetim paneline giremez (pencere yönetimde); personel uçlarda 403
+  ✓ Muhasebe: Yönetim'e giremez, pencere açılmaz
+  ✓ sayfa hatası yok
+
+BAŞARISIZ: 3 denetim geçti, 8 başarısız.
+
+# tests 11
+# pass 3
+# fail 8
+cikis=1

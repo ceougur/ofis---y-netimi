@@ -1,0 +1,32 @@
+{
+  "ad": "c5a2-is5-komsu-utc",
+  "komut": "node --test test/banka-210-ters-kayit.test.mjs test/banka-220-pos-valor.test.mjs test/banka-220-senet-121.test.mjs test/banka-220-tahsile-ver.test.mjs test/bulgu-223.test.mjs test/cari-hareket-249.test.mjs test/ertelenen-224.test.mjs test/inceleme-226.test.mjs test/silinenler-donem-kilidi-244.test.mjs test/banka-210-saat.test.mjs test/donem-213.test.mjs test/donmus-defter-bellek-250.test.mjs test/fis-defteri-yasam-250.test.mjs",
+  "commit": "c4316e1becbb70035433f30db9cd69179f168327",
+  "dal": "worktree-agent-a294d4187e1bf9872",
+  "kirli": 2,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T17:56:54.386Z",
+  "sure_sn": 26.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 237,
+    "gecen": 237,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2-k7/kanit/2026-11-13/c5a2-is5-komsu-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a294d4187e1bf9872",
+  "ham_cikti_sha256": "b762f0499922b1448cfaf9bfd1517fb923140696b67497a8493eb00a2370e22e",
+  "ham_cikti_bayt": 95653
+}

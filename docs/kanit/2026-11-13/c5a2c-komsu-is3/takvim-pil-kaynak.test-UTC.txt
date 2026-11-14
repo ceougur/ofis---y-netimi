@@ -1,0 +1,121 @@
+TAP version 13
+# Subtest: Takvim kalemi kaynağı — sunucu ↔ istemci dalları (kaynak tarama)
+    # Subtest: sunucu taraması boş değil: taksit, çek / senet, fatura ve planlı banka kaynakları bulundu (ders 4)
+    ok 1 - sunucu taraması boş değil: taksit, çek / senet, fatura ve planlı banka kaynakları bulundu (ders 4)
+      ---
+      duration_ms: 0.65896
+      type: 'test'
+      ...
+    # Subtest: Tahsilat Takvimi pil kartı (hof-promises.js) sunucunun her takvim kaynağı için ayrı dal taşır
+    ok 2 - Tahsilat Takvimi pil kartı (hof-promises.js) sunucunun her takvim kaynağı için ayrı dal taşır
+      ---
+      duration_ms: 1.389536
+      type: 'test'
+      ...
+    # Subtest: zil (hof-alerts.js) pil kartının yardımcısını kullanır ya da her kaynak için kendi dalını taşır; kalemi kendi başına workspace.payment'a göndermez
+    ok 3 - zil (hof-alerts.js) pil kartının yardımcısını kullanır ya da her kaynak için kendi dalını taşır; kalemi kendi başına workspace.payment'a göndermez
+      ---
+      duration_ms: 1.321012
+      type: 'test'
+      ...
+    # Subtest: madde 3: tablo kaleminin Tahsilat Gir'i (pil kartı ve zil) tutar ve tablo borcu taşımaz
+    ok 4 - madde 3: tablo kaleminin Tahsilat Gir'i (pil kartı ve zil) tutar ve tablo borcu taşımaz
+      ---
+      duration_ms: 1.664168
+      type: 'test'
+      ...
+    # Subtest: Vade Takip openRef (hof-overview.js) sunucunun Vade Takip satırlarındaki her kaynak türünü açar
+    ok 5 - Vade Takip openRef (hof-overview.js) sunucunun Vade Takip satırlarındaki her kaynak türünü açar
+      ---
+      duration_ms: 1.563604
+      type: 'test'
+      ...
+    1..5
+ok 1 - Takvim kalemi kaynağı — sunucu ↔ istemci dalları (kaynak tarama)
+  ---
+  duration_ms: 7.640901
+  type: 'suite'
+  ...
+# Subtest: Takvim kalemi kaynağı — ortak yardımcının düğmeleri (pil kartı = zil = Vade Takip)
+    # Subtest: sunucunun her kaynağı (ve sözleşmedeki account) için bu testte bir örnek var
+    ok 1 - sunucunun her kaynağı (ve sözleşmedeki account) için bu testte bir örnek var
+      ---
+      duration_ms: 0.280785
+      type: 'test'
+      ...
+    # Subtest: satış faturası: Fatura Kartını Aç + Tahsilat Gir faturanın kendi formu; Ödendi Say yok; seçili kayda gitmez
+    ok 2 - satış faturası: Fatura Kartını Aç + Tahsilat Gir faturanın kendi formu; Ödendi Say yok; seçili kayda gitmez
+      ---
+      duration_ms: 1.322764
+      type: 'test'
+      ...
+    # Subtest: alış faturası: Ödeme Gir (yetki: accounts.manage); tahsilat yetkisi yetmez
+    ok 3 - alış faturası: Ödeme Gir (yetki: accounts.manage); tahsilat yetkisi yetmez
+      ---
+      duration_ms: 1.446411
+      type: 'test'
+      ...
+    # Subtest: planlı banka işlemi: yalnız Planlı İşlemleri Aç (tahsilat formu ve Ödendi Say yok)
+    ok 4 - planlı banka işlemi: yalnız Planlı İşlemleri Aç (tahsilat formu ve Ödendi Say yok)
+      ---
+      duration_ms: 0.741387
+      type: 'test'
+      ...
+    # Subtest: tablodaki kayıt (madde 3): Tahsilat Gir kaydın carisine — tutar ve tablo borcu YOK, kişi/telefon/not var; Ödendi Say ve Söz İptal var
+    ok 5 - tablodaki kayıt (madde 3): Tahsilat Gir kaydın carisine — tutar ve tablo borcu YOK, kişi/telefon/not var; Ödendi Say ve Söz İptal var
+      ---
+      duration_ms: 1.167972
+      type: 'test'
+      ...
+    # Subtest: kayıt anahtarı boş tablo kalemi seçili kayda düşmez: Tahsilat Gir ve Kayda Git yok
+    ok 6 - kayıt anahtarı boş tablo kalemi seçili kayda düşmez: Tahsilat Gir ve Kayda Git yok
+      ---
+      duration_ms: 0.393467
+      type: 'test'
+      ...
+    # Subtest: öbür sayfanın tablo kalemi: tahsilat o sayfada; Kayda Git sayfa adıyla o sayfaya geçer; Ödendi Say çalışır
+    ok 7 - öbür sayfanın tablo kalemi: tahsilat o sayfada; Kayda Git sayfa adıyla o sayfaya geçer; Ödendi Say çalışır
+      ---
+      duration_ms: 0.582443
+      type: 'test'
+      ...
+    # Subtest: taksit ve çek / senet bugünkü yollarında
+    ok 8 - taksit ve çek / senet bugünkü yollarında
+      ---
+      duration_ms: 0.517344
+      type: 'test'
+      ...
+    # Subtest: carinin vadeli borcu (madde 6, K6.3): Cariyi Aç + Tahsilat Gir / Ödeme Gir carinin formu, tutar = Kalan
+    ok 9 - carinin vadeli borcu (madde 6, K6.3): Cariyi Aç + Tahsilat Gir / Ödeme Gir carinin formu, tutar = Kalan
+      ---
+      duration_ms: 0.503746
+      type: 'test'
+      ...
+    # Subtest: tanınmayan kaynak tablo kaydı gibi işlenmez: hiçbir düğme yok
+    ok 10 - tanınmayan kaynak tablo kaydı gibi işlenmez: hiçbir düğme yok
+      ---
+      duration_ms: 0.401933
+      type: 'test'
+      ...
+    # Subtest: Vade Takip openRef aynı yolu açar: fatura → Fatura Kartı, planlı banka → Planlı İşlemler, cari, taksit, çek; kayıt ve Kasa hof-overview'da kalır
+    ok 11 - Vade Takip openRef aynı yolu açar: fatura → Fatura Kartı, planlı banka → Planlı İşlemler, cari, taksit, çek; kayıt ve Kasa hof-overview'da kalır
+      ---
+      duration_ms: 0.671838
+      type: 'test'
+      ...
+    1..11
+ok 2 - Takvim kalemi kaynağı — ortak yardımcının düğmeleri (pil kartı = zil = Vade Takip)
+  ---
+  duration_ms: 8.552744
+  type: 'suite'
+  ...
+1..2
+# tests 16
+# suites 2
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 132.325891
+cikis=0

@@ -1,0 +1,74 @@
+# ANA OTURUM — Ç5-A TUR 2 DAR KONTROL görev metni üreteci (prensip §9). Kullanıcı kararları iş listesinden / CLAUDE.md'den AYNEN çekilir (elle yeniden yazılmaz).
+# Çağrı: BIRLESIM=<birleşim commit'i> OLCUM="<hız kabul özeti>" python3 -I dk-c5a2-istem-uret.py <çıktı dosyası>
+import os, re, sys
+B = os.environ.get('BIRLESIM', '<BİRLEŞİM>'); OLC = os.environ.get('OLCUM', '<ÖLÇÜM NOTU>')
+SP = '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad'
+il = open('docs/2.5.0-IS-LISTESI.md', encoding='utf-8').read().split('\n')
+cm = open('CLAUDE.md', encoding='utf-8').read().split('\n')
+onc = open('docs/devir/2.5.0-DEVAM/dk-c5a1f-istem.txt', encoding='utf-8').read().split('\n')
+def tek(lines, basla, icer=None):
+    hit = [l for l in lines if l.startswith(basla) and (icer is None or icer in l)]
+    assert len(hit) == 1, (basla, icer, len(hit))
+    return hit[0].strip()
+KARARLAR = [
+    tek(il, '  S47 = A'), tek(il, '  S51 = A'),
+    tek(il, '- KULLANICI KARARI 13.11 10:40'),
+    tek(il, '- KULLANICI KARARI 13.11 17:30'),
+    tek(il, '- KULLANICI KARARI 13.11 18:16'),
+    tek(il, '- KARAR 13.11 22:15'),
+]
+SUREC = tek(cm, '  Ç5-A DAR KONTROL SÜREÇ KURALI')
+SINIR = [tek(il, '- BİLİNEN SINIR (S164 = C'), tek(il, '- BİLİNEN SINIR (S167 = C'), tek(il, '- BİLİNEN SINIR (S173 = C')]
+yontem = [l.replace('dkc5a1f', 'dkc5a2').replace('dk-c5a1f', 'dk-c5a2') for l in onc[32:41]]
+assert yontem[0].startswith('## Yöntem'), yontem[0][:40]
+out = []
+w = out.append
+w(f"Sen DestekOfis projesinde bağımsız DAR KONTROL incelemecisisin (2.5.0 — Ç5-A TUR 2: açılış düzeninin fişleri ve ekranları — Kural Farkı Düzeltme Fişi, Açılış Eşleştirme Fişi, Açılış Olabilir Kayıtlar ekranı + zil, kilitli tahsilatın fatura bağını düşüren işlemlerin reddi, Yönetim sayfasındaki satır, kılavuz). Yalnız HATA ararsın. Düzeltme, commit ve push YAPMAZSIN. PARA ÇEKİRDEĞİ (defter) — eforun high. Yanıtın Türkçe.")
+w("")
+w("## Hazırlık")
+w(f"1. Ajan ağaçları ana daldan açılır → worktree'de ÖNCE `git reset --hard claude/epic-thompson-w0lc2l` (çalışma dalı ucu; incelenecek birleşim {B} içinde). Kendi commit'in olmayacak.")
+w(onc[4])
+w("3. ÖNCE oku: `CLAUDE.md` (anayasa + dersler 1–54; özellikle 3, 6, 7, 10, 11, 12, 13, 17, 20, 22, 23, 25, 28, 31, 34, 36, 38, 39, 40, 43, 47, 50, 51, 52, 53, 54); `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md` (tamamı; §3 senin kuralların); `docs/erp/C5-ACILIS-TASARIM.md` (KURALLARI oku: §2–§4 ve B10 / B16; tur bölümlerindeki — özellikle §17 — GEREKÇE ve 'sonuçlar' düzeltme ajanlarının sözüdür: kanıt sayma, kodla karşılaştır) ve `docs/erp/C3-DONDURMA-TASARIM.md`; muhasebeleştirme kural kitabında M-11 (açılış eşleştirme) ve KG-15 (kural değişikliği farkı) — `docs/erp/` altında, python ile ara; önceki dar kontrolün raporu `docs/devir/2.5.0-DEVAM/dk-c5a1f-rapor.md` (yaşayan sekiz mutantı ve 'TUR 2 İÇİN' listesi — betikleri OKUNUR: " + SP + "/dk-c5a1f-q; üzerine yazma, kendi klasörüne kopyala).")
+w("   OKUNMAZ (prensip §3 bağımsızlık): düzeltme ajanlarının raporları (`docs/devir/2.5.0-DEVAM/c5a2-ara-rapor.md`, `c5a2b-ara-rapor.md`, `c5a2c-ara-rapor.md`, `c5a2d-rapor.md`), görev metinleri (`c5a2-istem.txt`, `c5a2b-istem.txt`, `c5a2c-istem.txt`, `c5a2d-istem.txt`), D'deki \"… Ç5-A TUR 2a / 2b / 2c / 2d …\" başlıklı karar kayıtları, `docs/2.5.0-IS-LISTESI-KAYIT.md` içindeki tur 2 kayıtları ve `docs/kanit/2026-11-13/c5a2*` + `docs/kanit/2026-11-14/c5a2*` altındaki ajan / ana oturum çıktıları. Kodu ve testleri farktan oku.")
+w(onc[7])
+w("5. Not defteri: `" + SP + "/dk-c5a2-<kısa>` (ders 25). Eski kod kopyaları `git -C /home/user/ofis---y-netimi archive <ref> ':!docs/kanit' | tar -x -C <klasör>` + node_modules bağı; eski sürüm ETİKETİ isteyen test / senaryo arşiv kopyasında koşulamaz — kopyayı `git -C /home/user/ofis---y-netimi worktree add --detach <klasör> <ref>` ile aç, iş bitince `git worktree remove <klasör>` (DERS 54: hiçbir koşuya `GIT_DIR` / `GIT_WORK_TREE` VERME); biten kopyanı kendi TAM yoluyla HEMEN sil; her uzun koşudan önce `df -h /` (disk DAR — 5 GB'ın altına düşürme; aynı anda en çok BİR eski kod kopyası tut). Yük > 4 ise bekle (rapor verip bırakma).")
+w("")
+w("## Kapsam (DURMA KURALI — yalnız bu fark)")
+w(f"`git diff {B}^1 {B} -- server client test package.json .github docs/kilavuz ':!test/bagimsiz'` — bu farktaki işler: (İş 0) Yönetim › Sistem'deki Mutabakat satırında kilitli eski veri için 'kural değişikliği farkı' artık sapma değil uyarı / bilgi; (İş 1) Açılış Eşleştirme Fişi + ekranı (519'un öz kaynak hesaplarıyla eşleştirilmesi; ön izleme, onay kutusu, Ters Kaydet); (İş 2) Kural Farkı Düzeltme Fişi + penceresi + 'Düzeltildi' bilgisi + 'fazla düzeltme' uyarısı; (İş 3) Açılış Olabilir Kayıtlar ekranı + zil sayısı + toplu karar + Geri Al + sayfalama; (İş 5) kilitli dönemdeki tahsilatın fatura bağını DÜŞÜRECEK işlemin reddi (fatura iptali / silme ve iptali çağıran öbür yollar); (İş 7) önceki dar kontrolün DÜŞÜK'leri (yalnız test / ölü dal); (İş 8) kılavuz + PDF; yeni testler, üç yeni ekran senaryosu ve CI listesine eklenmeleri. EK KAPSAM (ana oturumun kendi yazdığı tek test düzeltmesi — bağımsız göz görsün): `git diff 1e63eaa7^1 1e63eaa7 -- test/yapim-asamasi-kapisi.test.mjs` (boş liste dalının beklentisi). KAPSAM DIŞI: şüpheli ↔ kuyruk defter kuralı (120 / 128 ayrımının kuyruğa bağlanması — ayrı tur; bugünkü davranış BİLİNEN), `test/bagimsiz/**` (kâhinler).")
+w("BAŞ MİMAR KARARLARI — DEĞERLENDİR (karar metinlerine / tasarım notunun KURALLARINA uyuyor mu; betikle göster):")
+w("- (K-a) S160'ın kapsamı: ret yalnız TAHSİLAT yönünde (cari tahsilat hareketi + alınan evrakın faturaya bağı); ödeme / verilen evrak bağı kurala girmiyor ('o bağlar kilitli defteri değiştirmiyor' okuması) — doğru mu: ödeme yönünde bağı düşen işlem kilitli dönemin yevmiye satırını değiştirebiliyor mu?")
+w("- (K-b) İptali çağıran HER yol aynı reddi alır (Banka'dan Ters Kaydet, e-Belge iptal akışı dahil; yönetici kilidi açıp işlemi yapar) — atlanan yol var mı (toplu iptal, iade belgesi, Silinenler'den geri yükleme, yedekten geri yükleme, mobil yazma, POS komisyon faturasının yolu: 'Ters Kaydet yolu yok, doğrudan iptali 409' cümlesi DOĞRULANMADI — değerlendir); reddedilen istek geride yarım iz bırakıyor mu (dış servise istek, numara tüketimi, stok / Kasa satırı)? Kilitli tahsilat bağı bazı yollarda programın arayüzünden kurulamıyor (savunma katmanı) — gerçekten kurulamıyor mu?")
+w("- (K-c) Düzeltme fişi varken kilidin kaldırılması ENGELLENMEZ ('fazla düzeltme' uyarısı + Ters Kaydet yolu kalır; Kilidi Aç → Yeniden Kilitle yolu bozulmasın diye) — bu yolda defter sessizce yanlış kalabiliyor mu (kilit açıldı → kilitli dönemin kaydı değişti → yeniden kilitlendi → fiş artık fazla / eksik; uyarı çıkıyor mu, tutarı doğru mu; ikinci fiş birincinin üstüne doğru farkı mı yazıyor)?")
+w("- (K-d) Düzeltme fişinde ÖNCEKİ YIL gelir / gider farkının 671 / 681'e yazılması ve eşlemenin YILI (son etkin düzeltmenin yılı alınıyor; birden çok düzeltme + kilidin yıl sonunu aşması birlikteyken kalan fark yeni yıla göre öneriliyor — 'BİLİNEN SINIR adayı'; yeniden üretilmedi): somut yanlış sayı üretebiliyor musun? Üretirsen KULLANICIYA SORULMALI (defter kuralı).")
+w("- (K-e) Dosya sınırı yorumları: kural farkı hesabına madde başına ayrıntı seçeneği ve alt defter hesapları parametresi eklendi ('varsayılan çıktı aynı' iddiası) — bu işlevin BÜTÜN eski çağıranlarında çıktı birebir mi (birleşim öncesi ↔ sonrası, büyük veride)?")
+w("- (K-f) Açılış Olabilir Kayıtlar ekranının YERİ Yönetim › Sistem (tasarım notunda B10 'Cariler' diyordu): zil yalnız yöneticiye; uçların yetkisi önceki turdaki gibi (Muhasebe rolü API'den karar verebiliyor ama ekranı yok) — yetki tutarsızlığı bir açık mı (Muhasebe API'den kilitli dönemi etkileyen karar verebiliyor mu)?")
+w("- (K-g) Eşleştirme fişinin İZİNLİ HEDEF LİSTESİ: alt defterle bağlı hesaplar + stok + dört 'brüt gösterim karşılığı' hesabı dışlandı — liste M-11 ile uyumlu mu; izinli bir hesaba yazılan fiş herhangi bir alt defter ↔ ana defter denetimini (Mutabakat Testi, Defter Mutabakatı) bozuyor mu; izinsiz hesap API'den doğrudan gönderilince de ret mi?")
+w("- (K-h) 519'u BÜYÜTEN fişin reddi ve 519'u TERS bakiyeye geçiren fişin reddi (aynı günün açılışları dahil): fiş tarihi geçmişe / geleceğe alınınca, fişten SONRA bir açılış silinince / reddedilince 519 ters bakiyeye düşüyor mu, o zaman ne oluyor (bilgi satırı; canlı türetmeye bakıyor — düzeltme fişi ters kaydedilince tek uyarı)?")
+w("- (K-i) Önceki dar kontrolün yaşayan sekiz mutantından ikisi EŞDEĞER sayıldı ('dışarıdan gözlenen hiçbir davranışı değiştirmiyor'); teste özel ürün kancası eklenmedi — gerçekten eşdeğer mi (gözlenebilir bir fark üretebiliyor musun)? İzdeki alanların 'sözleşme testi' anlamlı mı?")
+w("- (K-j) S164 = C'nin ikinci örneği (fatura bağının kapı dışı değişmesi): ön izleme farkı kaynağıyla GÖSTERİYOR, fişe sessizce girmiyor (test sabitledi) — doğru mu?")
+w("- (K-k) Karar verilmemiş (onay bekleyen) aday defterde AÇILIŞ sayılıyor; ret sonrası sıradan Borç / Alacak Yaz'a dönüyor; kilitli dönemdeki adayın kararı donmuş defteri değiştirmiyor, fark düzeltme fişiyle ilk açık güne alınıyor; Kural Farkı penceresi kilitli dönemde aday varken PASİF — S47 / S51 metinleriyle uyumlu mu? Geri Al sonrası (karar → fiş → Geri Al) düzeltme fişi ↔ defter tutarlı mı?")
+w("- (K-l) `test/yapim-asamasi-kapisi.test.mjs` boş liste dalı (EK KAPSAM): araç git'siz koşuda listeyi commit'ten okuyamıyor ve 'okunamayan liste boş sayılmaz' diyor; test artık bunu bekliyor — beklenti doğru mu, dişi var mı (mutant: okunamayan listeyi boş say)?")
+w(f"- (K-m) HIZ: ana oturumun kabul ölçümü — {OLC}. İki yönetici ön izlemesinin büyük verideki yavaşlığı kararla BİLİNEN (aşağıda S173). Ölçümü YİNELEME; yalnız şunu ölç: iki yeni fiş VARKEN (düzeltme fişi + eşleştirme fişi kaydedilmiş büyük veride) Yevmiye / Mizan / Defter Mutabakatı / Mutabakat Testi birleşim öncesine göre kötüleşiyor mu; Açılış Olabilir listesinde çok aday (ör. 5.000) varken liste / toplu karar / zil süresi ve olay döngüsü en çoğu.")
+w("KULLANICI KARARLARI (iş listesinden AYNEN):")
+for k in KARARLAR: w(k)
+w("SÜREÇ KURALI (kullanıcı kararı — bu dar kontrolde GEÇERLİ; CLAUDE.md'den AYNEN): " + SUREC)
+w("BİLİNEN — YENİDEN YAZMA (yalnız yeni bir yüzü varsa bildir):")
+for s in SINIR: w(s)
+w("- Şüpheli kaydı açık caride faturaya bağlı nakdin hep normal alacağa, bağlı çekin hep şüpheli alacağa yazılması (kuralın kodu ayrı turda). Açılış Eşleştirme penceresinde 'Hedef Hesaplar' kutularının biçimi ve dökümdeki 'Fişler' etiketi (ana oturumun ekran yürüyüşü gözlemi — son adayın UI / UX incelemesine yazıldı). Düzeltme ajanının 'DENENMEYEN' dediği alanlar SENİN işin: yedekten geri yükleme / Silinenler ile düzeltme fişi ve eşleştirme fişi; iki şirket.")
+w("")
+w("## Ne ara")
+w("- GERİLEME: bulduğun her gerilemeyi raporun EN BAŞINDA ayrı başlıkla ver — neye göre gerileme (v2.4.9'a mı, bu birleşimin öncesine mi). Birleşim öncesi ↔ sonrası: fiş YOKKEN ve aday YOKKEN bütün defter çıktıları (Yevmiye, Mizan, Alt Hesap Mizanı, Defter Mutabakatı, Mutabakat Testi, Bilanço / Gelir Tablosu varsa) BİREBİR mi — temiz büyük veride ve v2.4.9 kilitli verisinde, iki saat diliminde.")
+w("- İKİ FİŞ ↔ DEĞİŞMEZLER: her maddede Σ borç = Σ alacak; 519 = −(Σ modül açılışları) + fiş satırları; mizan 120 = müşteri carileri toplamı; fişler cari / Kasa / stok / taksit bakiyesini DEĞİŞTİRMEZ; fiş numarası sırası (silinen / ters kaydedilen numara yeniden kullanılıyor mu); aynı fişin iki kez kaydı (çift tıklama, iki kullanıcı aynı anda, yarıda kesilme — sunucu ortada kapanırsa yarım fiş kalıyor mu); fiş tarihi kilitli güne / geleceğe / başka yıla; Ters Kaydet'in ters kaydı; fiş kaydedildikten SONRA kilit tarihi ileri / geri alınınca.")
+w("- KURAL FARKI DÜZELTME: tutar gerçekten 'kural farkı' mı — fişe hangi bozulma sınıfları karışabilir (önceki raporun 'TUR 2 İÇİN' listesi); 'fişle düzeltilebilen fark kalmadı' / 'Düzeltildi' bilgisi yanlış yerde çıkıyor mu (fark var ama 'Düzeltildi'; fark yok ama uyarı); birden çok düzeltme üst üste; kilit bugünse pasif + neden; yıl dönümü (kilit 31.12, fiş 01.01; önceki yılın gelir / gider farkı); eski sürümlerin farklı kilitli verileri (v2.0.26 zinciri, v2.4.9) ile.")
+w("- AÇILIŞ OLABİLİR: onay / ret / Geri Al / toplu karar sıralarının HER permütasyonunda defter aynı mı (rastgele sıra; ders 17); aynı adlı iki cari; iki kişi aynı anda aynı adaya karar; sayfalama (sınırda, boş sayfa, karar sırasında liste değişirse); silinen / Silinenler'den geri yüklenen aday (S51); zil sayısı = listedeki onay bekleyen; yetkisiz kullanıcı (her rol, her uç: GET / POST / toplu).")
+w("- S160 REDDİ: yanlış alarm (kilitsiz veride ya da bağ kilit SONRASI tarihliyken ret ÇIKMAMALI) ve kaçan yol (yukarıda K-b); ret iletisi kullanıcıya ne yapacağını söylüyor mu; ret sonrası veri tabanı birebir aynı mı.")
+w("- EKRAN (ders 11, 12, 34, 39; yazım düzeni): üç yeni pencere gerçek tıklama + Tab + insan hızında; pasif düğmenin nedeni görünür yazı mı; boş veri, tek kayıt; ESC / kaydetmeden kapatma sorusu; yazım düzeni (her sözcüğün ilk harfi büyük — ad niteliğindeki metinlerde); kılavuz metni yalnız 'nasıl yapılır' mı, PDF kaynakla aynı sürüm mü (ders 42).")
+w("- TEST DİŞİ: kendi kopyanda en az 8 YENİ mutant (depodaki / önceki raporlardaki listelerden FARKLI; iki fişin red koşulları, tarih kuralı, 671 / 681 eşlemesi, aday sayımı, S160 süzgeci, toplu kararın işlem bütünlüğü) — yaşayan her mutant için hangi test eksik. Yeni testler birleşim öncesi kodda BEKLENEN NEDENLE kırmızı mı (ders 38, 51)? Üç yeni ekran senaryosu eski kodda kırmızı mı?")
+w("- Gün / ay / yıl dönümü ve saat dilimi (TZ=UTC ve TZ=Europe/Istanbul); G2 komşu: değişen işlevlerin BÜTÜN çağıranları (test/ ve server/ taramasıyla, tahminle değil); iki şirket; yedek → geri yükle → fişler ve aday kararları duruyor mu; şema kapısı (ortak ayara / yedeğe yazan değişiklik varsa).")
+w("")
+out.extend(yontem)
+w("")
+w("## Rapor (prensip §3 biçimi)")
+w("EN BAŞTA: GERİLEMELER (varsa; neye göre). Sonra: her yeni bulgu — sınıf (YÜKSEK / ORTA / DÜŞÜK; SÜREÇ KURALI'na göre), dosya:satır, betik + çıktı (sayılarla), kök neden, en küçük düzeltme önerisi; değişmezler tablosu (kurgu ↔ değişmez ↔ sonuç); permütasyon / rastgele sıra sonucu; iptal yolları tablosu (yol ↔ ret mi ↔ geride iz var mı); yetki tablosu (rol × uç); birleşim öncesi ↔ sonrası eşdeğerlik (fişsiz / adaysız); yeni mutantların sonucu; ölçüm (loadavg ile); baş mimar kararlarının (K-a … K-m) tek tek değerlendirmesi; KULLANICIYA SORULMALI; DOĞRULANMADI; DENENMEYEN; bıraktığın not defteri klasörleri (tam yol). Bulgu yoksa açıkça 'YÜKSEK / ORTA YOK'.")
+open(sys.argv[1], 'w', encoding='utf-8').write('\n'.join(out) + '\n')
+print('yazıldı', sys.argv[1], sum(len(x) for x in out))

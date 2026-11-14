@@ -1,0 +1,52 @@
+#!/bin/bash
+# Ana oturum: Ç5-A TUR 2 (2a + 2b + 2c + 2d) — TEK ADAY (ders 35, 37, 41): sınama ağacı ÖNCEDEN kurulur (dal sinama-c5a2 = çalışma dalı ucu + tur 2d dalı + CI listesi sınama commit'i);
+# yeni / değişen testler iki TZ, LİSTE yeniden üretimi (fark dökülür, listeye işlenir, İKİNCİ üretim fark vermemeli), ci.yml'deki BÜTÜN kâhin adımları,
+# dört kapı testi, komşular (taramayla) Europe/Istanbul, sonra TAM npm test. Hata durdurmaz (kurulum dışında); her adımın çıkışı yazılır.
+# Çağrı: flock -s -n olcum.lock timeout 7100 bash c5a2-aday.sh
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=$S/d2t3-ya-ag; K=$S/c5a2-kanit; L=test/bagimsiz/cari/YAPIM-ASAMASI.json
+A2=worktree-agent-ac4b7ba8396fbd29d; ANA=claude/epic-thompson-w0lc2l
+export KANIT_DIR=$K HUKUK_LICENSE_URL=http://127.0.0.1:9 PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194
+G="git -c user.name=ana -c user.email=ana@yerel"
+say() { grep -E "^# (tests|pass|fail|cancelled|skipped)" "$1" | tr '\n' ' '; }
+mkdir -p $K || exit 1
+cd $W || exit 1
+[ -z "$(git status -s | grep -v node_modules)" ] || { echo "sınama ağacı temiz değil"; git status -s | head -5; exit 1; }
+[ "$(git rev-parse --abbrev-ref HEAD)" = "sinama-c5a2" ] || { echo "sınama ağacı sinama-c5a2 dalında değil"; exit 1; }
+[ -e node_modules ] || ln -s /home/user/ofis---y-netimi/node_modules node_modules
+echo "başladı $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg) · aday $(git rev-parse --short HEAD) = ana $(git rev-parse --short $ANA) + Ç5-A tur 2 $(git rev-parse --short $A2) + CI listesi sınama commit'i"
+YENI=$(git diff --name-only --diff-filter=AM $ANA HEAD -- test | grep -E '\.test\.mjs$' | grep -v -E '^test/(bagimsiz|e2e)/' | tr '\n' ' ')
+echo "yeni / değişen test dosyaları: $YENI"
+for tz in UTC Europe/Istanbul; do m=${tz//\//-}
+  TZ=$tz timeout 2400 node tools/kanit.mjs kos c5a2-yeni-$m -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 $YENI > $K/yeni-$m.out 2>&1; echo "yeni testler $tz çıkış $? $(say $K/yeni-$m.out)"
+done
+# LİSTE
+TZ=UTC timeout 3000 node test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz > $K/liste-uret.out 2>&1; echo "liste üretimi çıkış $? · durum: [$(git status -s -- $L)]"
+grep -E 'ESKİ LİSTEYLE|YENİ KAYIT|KAPANAN|DEĞERİ DEĞİŞEN|yeni|kapanan' $K/liste-uret.out | head -8 | cut -c1-220
+git diff -- $L > $K/liste-fark.diff
+node -e "const cp=require('child_process'),fs=require('fs');const a=JSON.parse(cp.execSync('git show HEAD:'+process.argv[1])).kayitlar,b=JSON.parse(fs.readFileSync(process.argv[1],'utf8')).kayitlar;const say=x=>{const o={};for(const k of x)o[k.paket]=(o[k.paket]||0)+1;return JSON.stringify(o)};const an=k=>k.senaryo+'|'+k.anahtar;const A=new Set(a.map(an)),B=new Set(b.map(an));console.log('liste önce',a.length,say(a),'→ sonra',b.length,say(b),'· kapanan',[...A].filter(x=>!B.has(x)).length,'· yeni',[...B].filter(x=>!A.has(x)).length)" $L 2>&1 | cut -c1-400
+if [ -n "$(git status -s -- $L)" ]; then git add $L && $G commit -q --no-verify -m "SINAMA: liste yeniden üretildi (gönderilmez)" || exit 1; fi
+TZ=UTC timeout 3000 node test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz > $K/liste-uret2.out 2>&1; echo "İKİNCİ liste üretimi çıkış $? · fark (BOŞ olmalı): [$(git status -s -- $L)]"
+git checkout -q -- $L
+# KÂHİN ADIMLARI
+grep -oE "kanit\.mjs kos kahin-[A-Za-z0-9_-]+ .*$" .github/workflows/ci.yml | sed 's/^kanit\.mjs kos //' > $K/kahin-liste.txt
+echo "ci.yml'deki kâhin adımı sayısı $(wc -l < $K/kahin-liste.txt)"
+while read -r ad komut; do
+  case "$ad" in kahin-cari|kahin-defter) tzs="UTC Europe/Istanbul";; *) tzs="UTC";; esac
+  for tz in $tzs; do m=${tz//\//-}
+    TZ=$tz timeout 3000 node tools/kanit.mjs kos c5a2-$ad-$m -- $komut > "$K/$ad-$m.out" 2>&1 < /dev/null; c=$?
+    echo "$c $ad $tz :: $(grep -E '^\[kanit\]' "$K/$ad-$m.out" | tail -1 | cut -c1-150) $(grep -E 'ÖZET' "$K/$ad-$m.out" | tail -1 | cut -c1-150)"
+  done
+done < $K/kahin-liste.txt
+for y in .github/workflows/ci.yml .github/workflows/release.yml; do python3 -I -c "import yaml,sys; yaml.safe_load(open(sys.argv[1]))" $y && echo "$y ayrıştı"; done
+timeout 900 node --test test/yapim-asamasi-kapisi.test.mjs test/platform-tasinabilirlik.test.mjs test/kanit-araci.test.mjs test/ci-kapi-listesi.test.mjs > $K/dort-test.out 2>&1; echo "dört kapı testi çıkış $? $(say $K/dort-test.out)"
+# KOMŞULAR (taramayla — ders 10): değişen her ürün dosyasını adıyla anan testler, Europe/Istanbul (UTC tam testte)
+git diff --name-only $ANA HEAD -- server client | xargs -n1 basename | sort -u > $K/degisen.txt
+grep -r -l -F -f $K/degisen.txt test --include='*.test.mjs' | grep -v -E '^test/(bagimsiz|e2e)/' | sort -u > $K/komsu.txt
+echo "değişen ürün dosyası $(wc -l < $K/degisen.txt) · komşu test dosyası $(wc -l < $K/komsu.txt)"
+TZ=Europe/Istanbul timeout 5400 node tools/kanit.mjs kos c5a2-komsu-Ist -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 $(tr '\n' ' ' < $K/komsu.txt) > $K/komsu-Ist.out 2>&1; echo "komşular İstanbul çıkış $? $(say $K/komsu-Ist.out)"
+grep -E "^not ok|✖" $K/komsu-Ist.out | sort -u | head -8 | cut -c1-220
+echo "kâhin + komşu bölümü bitti $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg) · temiz mi: $(git status -s | grep -v node_modules | wc -l)"
+flock -n $S/tam-npm-test.lock timeout 5400 node tools/kanit.mjs kos c5a2-tam -- npm test > $K/tam.out 2>&1; echo "TAM npm test çıkış $? $(grep -E '^\[kanit\]' $K/tam.out | tail -1 | cut -c1-170)"; say $K/tam.out; echo
+grep -E "^not ok|✖" $K/tam.out | sort -u | head -12 | cut -c1-220
+echo "bitti $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg) · aday $(git rev-parse --short HEAD) · temiz mi: $(git status -s | grep -v node_modules | wc -l) · disk $(df -h / | awk 'NR==2{print $4}')"

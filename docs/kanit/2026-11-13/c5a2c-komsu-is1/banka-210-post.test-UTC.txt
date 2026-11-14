@@ -1,0 +1,167 @@
+TAP version 13
+# (node:1479) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: bank.post — bütün para yazıcıları işlem başlığı yazar (çalışıyor mu)
+    # Subtest: Kasa elle giriş: cash_in / cash_out; yanıt gövdesi aynı ({ id }); düzelt = aynı olay; sil → cancelled; geri yükle → aynı olay active
+    ok 1 - Kasa elle giriş: cash_in / cash_out; yanıt gövdesi aynı ({ id }); düzelt = aynı olay; sil → cancelled; geri yükle → aynı olay active
+      ---
+      duration_ms: 108.978538
+      type: 'test'
+      ...
+    # Subtest: Kasa ↔ Banka transferi: iki bacak tek olay (cash_transfer, kopya banka bacağından); sil → iptal; geri yükle → ikisi aynı olayda
+    ok 2 - Kasa ↔ Banka transferi: iki bacak tek olay (cash_transfer, kopya banka bacağından); sil → iptal; geri yükle → ikisi aynı olayda
+      ---
+      duration_ms: 75.876387
+      type: 'test'
+      ...
+    # Subtest: kayıt tahsilatı: record_in, yol korunur; düzelt / sil / geri yükle aynı olay
+    ok 3 - kayıt tahsilatı: record_in, yol korunur; düzelt / sil / geri yükle aynı olay
+      ---
+      duration_ms: 63.018426
+      type: 'test'
+      ...
+    # Subtest: cari: tahsilat party_in, ödeme party_out (cari = kopyada); Borç Yaz / Alacak Yaz / açılış olay almaz
+    ok 4 - cari: tahsilat party_in, ödeme party_out (cari = kopyada); Borç Yaz / Alacak Yaz / açılış olay almaz
+      ---
+      duration_ms: 120.374195
+      type: 'test'
+      ...
+    # Subtest: fatura peşini: invoice_cash (fatura bağı kopyada); fatura borcu olaysız; iptal → peşin olayı cancelled; düzenle → eski iptal, yeni etkin
+    ok 5 - fatura peşini: invoice_cash (fatura bağı kopyada); fatura borcu olaysız; iptal → peşin olayı cancelled; düzenle → eski iptal, yeni etkin
+      ---
+      duration_ms: 75.683067
+      type: 'test'
+      ...
+    # Subtest: taksit: tahsilat plan_in (kart ve cari kopyada); Excel açılışı (opening=1) ve çekli taksit satırı olaysız
+    ok 6 - taksit: tahsilat plan_in (kart ve cari kopyada); Excel açılışı (opening=1) ve çekli taksit satırı olaysız
+      ---
+      duration_ms: 226.016241
+      type: 'test'
+      ...
+    # Subtest: stok: peşin satış stock_cash (yön Kasa'ya göre); açık hesap olaysız; peşin → açık hesap → peşin geçişinde olay iptal / yeni
+    ok 7 - stok: peşin satış stock_cash (yön Kasa'ya göre); açık hesap olaysız; peşin → açık hesap → peşin geçişinde olay iptal / yeni
+      ---
+      duration_ms: 103.324274
+      type: 'test'
+      ...
+    # Subtest: çek: alındı / ciro / karşılıksız olaysız; tahsil cheque_collect, ödeme cheque_pay; geri al → cancelled
+    ok 8 - çek: alındı / ciro / karşılıksız olaysız; tahsil cheque_collect, ödeme cheque_pay; geri al → cancelled
+      ---
+      duration_ms: 146.467216
+      type: 'test'
+      ...
+    # Subtest: eski sürümden kalan olaysız para satırı düzeltilince olay alır (K11)
+    ok 9 - eski sürümden kalan olaysız para satırı düzeltilince olay alır (K11)
+      ---
+      duration_ms: 11.611457
+      type: 'test'
+      ...
+    # Subtest: İşlem No'lar tekil ve boşluksuz; Mutabakat Testi'nin denetim listesi değişmedi (işlem başlığı tarih denetimi görünmez)
+    ok 10 - İşlem No'lar tekil ve boşluksuz; Mutabakat Testi'nin denetim listesi değişmedi (işlem başlığı tarih denetimi görünmez)
+      ---
+      duration_ms: 363.148083
+      type: 'test'
+      ...
+    1..10
+ok 1 - bank.post — bütün para yazıcıları işlem başlığı yazar (çalışıyor mu)
+  ---
+  duration_ms: 1776.931397
+  type: 'suite'
+  ...
+# Subtest: bank.post — Taksite Aktar (op 'move') olayı taşır, geri alma geri getirir
+    # Subtest: kayıt tahsilatı karta taşınır: aynı olay, kaynak tablo plan_entries, yol aynı; geri al → payments, aynı olay
+    ok 1 - kayıt tahsilatı karta taşınır: aynı olay, kaynak tablo plan_entries, yol aynı; geri al → payments, aynı olay
+      ---
+      duration_ms: 115.837372
+      type: 'test'
+      ...
+    1..1
+ok 2 - bank.post — Taksite Aktar (op 'move') olayı taşır, geri alma geri getirir
+  ---
+  duration_ms: 418.10072
+  type: 'suite'
+  ...
+# Subtest: K6 — test kipinde ihlal işlemi geri alır (nasıl bozarım)
+    # Subtest: 1. bank.post dışından para satırı (geçerli Kasa girişi) → money:event, ROLLBACK
+    ok 1 - 1. bank.post dışından para satırı (geçerli Kasa girişi) → money:event, ROLLBACK
+      ---
+      duration_ms: 87.638247
+      type: 'test'
+      ...
+    # Subtest: 2. para olmayan satır bank.post dışından yazılır → yanlış alarm yok (Borç Yaz, açılış, çekli taksit, stok açık hesap)
+    ok 2 - 2. para olmayan satır bank.post dışından yazılır → yanlış alarm yok (Borç Yaz, açılış, çekli taksit, stok açık hesap)
+      ---
+      duration_ms: 31.791986
+      type: 'test'
+      ...
+    # Subtest: 3. izinli listedeki para dışı yazıcı para satırı yazar → assertNonMoney test kipinde hata
+    ok 3 - 3. izinli listedeki para dışı yazıcı para satırı yazar → assertNonMoney test kipinde hata
+      ---
+      duration_ms: 0.662416
+      type: 'test'
+      ...
+    # Subtest: 4. store.raw dışından para tablosuna UPDATE / DELETE → test kipinde hata, değişiklik geri alınır; raw ve yalnız açıklama serbest
+    ok 4 - 4. store.raw dışından para tablosuna UPDATE / DELETE → test kipinde hata, değişiklik geri alınır; raw ve yalnız açıklama serbest
+      ---
+      duration_ms: 69.365662
+      type: 'test'
+      ...
+    # Subtest: 6. aynı istek kimliği iki kez → tek satır (ikincisi replayed); aynı kimlik farklı gövde → 409
+    ok 5 - 6. aynı istek kimliği iki kez → tek satır (ikincisi replayed); aynı kimlik farklı gövde → 409
+      ---
+      duration_ms: 22.540084
+      type: 'test'
+      ...
+    # Subtest: 7. eşzamanlı 12 Kasa girişi → 12 olay, numaralar tekil ve boşluksuz
+    ok 6 - 7. eşzamanlı 12 Kasa girişi → 12 olay, numaralar tekil ve boşluksuz
+      ---
+      duration_ms: 169.14746
+      type: 'test'
+      ...
+    # Subtest: 8. yarıda kesilme: yazımdan sonra hata → olay, satır, istek kaydı, işlem geçmişi ve İşlem No sayacı yazılmaz
+    ok 7 - 8. yarıda kesilme: yazımdan sonra hata → olay, satır, istek kaydı, işlem geçmişi ve İşlem No sayacı yazılmaz
+      ---
+      duration_ms: 1.750791
+      type: 'test'
+      ...
+    # Subtest: 9. sözleşme: prev'siz düzeltme/silme/taşıma/geri yükleme/atama, bilinmeyen tür, bank.post dışında olay → hata
+    ok 8 - 9. sözleşme: prev'siz düzeltme/silme/taşıma/geri yükleme/atama, bilinmeyen tür, bank.post dışında olay → hata
+      ---
+      duration_ms: 0.592317
+      type: 'test'
+      ...
+    1..8
+ok 3 - K6 — test kipinde ihlal işlemi geri alır (nasıl bozarım)
+  ---
+  duration_ms: 708.975577
+  type: 'suite'
+  ...
+# Subtest: K6 — üretim kipinde ihlal işi durdurmaz, günlüğe düşer (nasıl bozarım 5)
+    # Subtest: para olmayan API işlemleri günlüğe hiçbir şey yazmaz (Borç Yaz, Alacak Yaz, açılış, taksit kartı, stok açık hesap)
+    ok 1 - para olmayan API işlemleri günlüğe hiçbir şey yazmaz (Borç Yaz, Alacak Yaz, açılış, taksit kartı, stok açık hesap)
+      ---
+      duration_ms: 106.982686
+      type: 'test'
+      ...
+    # Subtest: kaçak para satırı ve ham UPDATE: iş durmaz, meta.bank.integrity günlüğüne düşer
+    ok 2 - kaçak para satırı ve ham UPDATE: iş durmaz, meta.bank.integrity günlüğüne düşer
+      ---
+      duration_ms: 20.145669
+      type: 'test'
+      ...
+    1..2
+ok 4 - K6 — üretim kipinde ihlal işi durdurmaz, günlüğe düşer (nasıl bozarım 5)
+  ---
+  duration_ms: 454.235992
+  type: 'suite'
+  ...
+1..4
+# tests 21
+# suites 4
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3752.551129
+cikis=0

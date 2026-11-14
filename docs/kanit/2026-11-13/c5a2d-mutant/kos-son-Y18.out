@@ -1,0 +1,323 @@
+TAP version 13
+# Subtest: Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz
+    # Subtest: [1] satır içi tarama — Kasa ↔ Banka transferinin bağı temizlenir
+    ok 1 - [1] satır içi tarama — Kasa ↔ Banka transferinin bağı temizlenir
+      ---
+      duration_ms: 634.2417
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — Kasa ↔ Banka transferinin bağı temizlenir; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 2 - [2] arka plan taraması — Kasa ↔ Banka transferinin bağı temizlenir; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1234.604189
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — cari satırının kaynağı (evrak → elle)
+    ok 3 - [1] satır içi tarama — cari satırının kaynağı (evrak → elle)
+      ---
+      duration_ms: 548.352198
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — cari satırının kaynağı (evrak → elle); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 4 - [2] arka plan taraması — cari satırının kaynağı (evrak → elle); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1226.132445
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — cari satırının kaynağı (stok → elle; evrak olgusuna girmeyen kaynak)
+    ok 5 - [1] satır içi tarama — cari satırının kaynağı (stok → elle; evrak olgusuna girmeyen kaynak)
+      ---
+      duration_ms: 488.876909
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — cari satırının kaynağı (stok → elle; evrak olgusuna girmeyen kaynak); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 6 - [2] arka plan taraması — cari satırının kaynağı (stok → elle; evrak olgusuna girmeyen kaynak); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1343.42372
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — cari satırının kaynak kimliği başka evrağa
+    ok 7 - [1] satır içi tarama — cari satırının kaynak kimliği başka evrağa
+      ---
+      duration_ms: 507.470658
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — cari satırının kaynak kimliği başka evrağa; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 8 - [2] arka plan taraması — cari satırının kaynak kimliği başka evrağa; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1217.591968
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — şüpheli alacakta 'Normal Cariye İşlendi' işareti (128 → 120; sayı / tutar aynı)
+    ok 9 - [1] satır içi tarama — şüpheli alacakta 'Normal Cariye İşlendi' işareti (128 → 120; sayı / tutar aynı)
+      ---
+      duration_ms: 547.864082
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — şüpheli alacakta 'Normal Cariye İşlendi' işareti (128 → 120; sayı / tutar aynı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 10 - [2] arka plan taraması — şüpheli alacakta 'Normal Cariye İşlendi' işareti (128 → 120; sayı / tutar aynı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1218.878004
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — taksit satırının evrak bağı temizlenir
+    ok 11 - [1] satır içi tarama — taksit satırının evrak bağı temizlenir
+      ---
+      duration_ms: 497.97113
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — taksit satırının evrak bağı temizlenir; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 12 - [2] arka plan taraması — taksit satırının evrak bağı temizlenir; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1290.278851
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — taksit satırının açılış alanı 0 → 1 (100 → 519)
+    ok 13 - [1] satır içi tarama — taksit satırının açılış alanı 0 → 1 (100 → 519)
+      ---
+      duration_ms: 519.795763
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — taksit satırının açılış alanı 0 → 1 (100 → 519); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 14 - [2] arka plan taraması — taksit satırının açılış alanı 0 → 1 (100 → 519); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1165.37466
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — stok hareketinin nedeni (satış → alış iadesi; 600 → 153)
+    ok 15 - [1] satır içi tarama — stok hareketinin nedeni (satış → alış iadesi; 600 → 153)
+      ---
+      duration_ms: 523.268239
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — stok hareketinin nedeni (satış → alış iadesi; 600 → 153); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 16 - [2] arka plan taraması — stok hareketinin nedeni (satış → alış iadesi; 600 → 153); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1250.320642
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — faturanın muhasebe kırılımı (600 → 602; tutar aynı, yalnız hesap dağılımı)
+    ok 17 - [1] satır içi tarama — faturanın muhasebe kırılımı (600 → 602; tutar aynı, yalnız hesap dağılımı)
+      ---
+      duration_ms: 482.289037
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — faturanın muhasebe kırılımı (600 → 602; tutar aynı, yalnız hesap dağılımı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 18 - [2] arka plan taraması — faturanın muhasebe kırılımı (600 → 602; tutar aynı, yalnız hesap dağılımı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1183.887358
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — faturanın tevkifat tutarı
+    ok 19 - [1] satır içi tarama — faturanın tevkifat tutarı
+      ---
+      duration_ms: 473.225092
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — faturanın tevkifat tutarı; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 20 - [2] arka plan taraması — faturanın tevkifat tutarı; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1273.251802
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — faturanın stopaj tutarı
+    ok 21 - [1] satır içi tarama — faturanın stopaj tutarı
+      ---
+      duration_ms: 535.857601
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — faturanın stopaj tutarı; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 22 - [2] arka plan taraması — faturanın stopaj tutarı; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1229.849463
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — tahsil kaydının işlem başlığı (101.01 / 101.02 tutarı)
+    ok 23 - [1] satır içi tarama — tahsil kaydının işlem başlığı (101.01 / 101.02 tutarı)
+      ---
+      duration_ms: 499.917061
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — tahsil kaydının işlem başlığı (101.01 / 101.02 tutarı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 24 - [2] arka plan taraması — tahsil kaydının işlem başlığı (101.01 / 101.02 tutarı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1237.287167
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — Kayıt Tarihi boş kartın oluşturma anı
+    ok 25 - [1] satır içi tarama — Kayıt Tarihi boş kartın oluşturma anı
+      ---
+      duration_ms: 502.557854
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — Kayıt Tarihi boş kartın oluşturma anı; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 26 - [2] arka plan taraması — Kayıt Tarihi boş kartın oluşturma anı; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1238.682042
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — kilitli karşılıksızı olan evrağın durumu (karşılıksız → portföyde)
+    ok 27 - [1] satır içi tarama — kilitli karşılıksızı olan evrağın durumu (karşılıksız → portföyde)
+      ---
+      duration_ms: 497.52366
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — kilitli karşılıksızı olan evrağın durumu (karşılıksız → portföyde); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 28 - [2] arka plan taraması — kilitli karşılıksızı olan evrağın durumu (karşılıksız → portföyde); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1234.635542
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — aynı evrakta kilit SONRASI tarihli ikinci karşılıksız olayı (en son oluşturulan; madde kilitli dönemden çıkar)
+    ok 29 - [1] satır içi tarama — aynı evrakta kilit SONRASI tarihli ikinci karşılıksız olayı (en son oluşturulan; madde kilitli dönemden çıkar)
+      ---
+      duration_ms: 527.112236
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — aynı evrakta kilit SONRASI tarihli ikinci karşılıksız olayı (en son oluşturulan; madde kilitli dönemden çıkar); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 30 - [2] arka plan taraması — aynı evrakta kilit SONRASI tarihli ikinci karşılıksız olayı (en son oluşturulan; madde kilitli dönemden çıkar); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1138.096108
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — carili evrağın carisi silinir (cariye işlenmemiş sayılır; çift madde)
+    ok 31 - [1] satır içi tarama — carili evrağın carisi silinir (cariye işlenmemiş sayılır; çift madde)
+      ---
+      duration_ms: 607.706887
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — carili evrağın carisi silinir (cariye işlenmemiş sayılır; çift madde); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 32 - [2] arka plan taraması — carili evrağın carisi silinir (cariye işlenmemiş sayılır; çift madde); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1218.659326
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — stok kaynaklı cari satırının kaynak kimliği kilit sonrası tedarikçiye iadeye (600 → 153; satır kümesi aynı)
+    ok 33 - [1] satır içi tarama — stok kaynaklı cari satırının kaynak kimliği kilit sonrası tedarikçiye iadeye (600 → 153; satır kümesi aynı)
+      ---
+      duration_ms: 579.321492
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — stok kaynaklı cari satırının kaynak kimliği kilit sonrası tedarikçiye iadeye (600 → 153; satır kümesi aynı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 34 - [2] arka plan taraması — stok kaynaklı cari satırının kaynak kimliği kilit sonrası tedarikçiye iadeye (600 → 153; satır kümesi aynı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1264.831007
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — evrak bağlı taksit satırının açılış alanı 0 → 1 (101 → 519; satır kümesi aynı)
+    ok 35 - [1] satır içi tarama — evrak bağlı taksit satırının açılış alanı 0 → 1 (101 → 519; satır kümesi aynı)
+      ---
+      duration_ms: 552.566856
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — evrak bağlı taksit satırının açılış alanı 0 → 1 (101 → 519; satır kümesi aynı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 36 - [2] arka plan taraması — evrak bağlı taksit satırının açılış alanı 0 → 1 (101 → 519; satır kümesi aynı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1367.812725
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — carisiz kilitli karşılıksıza cari yazılır + kilit SONRASI tarihli karşılıksız borç satırı (carinin karşılıksız borcu var olur; evrak kümesi aynı)
+    ok 37 - [1] satır içi tarama — carisiz kilitli karşılıksıza cari yazılır + kilit SONRASI tarihli karşılıksız borç satırı (carinin karşılıksız borcu var olur; evrak kümesi aynı)
+      ---
+      duration_ms: 533.096514
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — carisiz kilitli karşılıksıza cari yazılır + kilit SONRASI tarihli karşılıksız borç satırı (carinin karşılıksız borcu var olur; evrak kümesi aynı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 38 - [2] arka plan taraması — carisiz kilitli karşılıksıza cari yazılır + kilit SONRASI tarihli karşılıksız borç satırı (carinin karşılıksız borcu var olur; evrak kümesi aynı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1183.498944
+      type: 'test'
+      ...
+    # Subtest: [4] meşru olaylar sessiz, yanıt kodları tabandakiyle aynı: eski tarihli evrakın bugünkü tahsili / cirosu / karşılıksızı, tahsile verilmiş evrağın tahsili, açık dönem fatura iptali, kart kapatma, Silinenler'den geri alma, numaralama ve POS bağlama yazımları
+    ok 39 - [4] meşru olaylar sessiz, yanıt kodları tabandakiyle aynı: eski tarihli evrakın bugünkü tahsili / cirosu / karşılıksızı, tahsile verilmiş evrağın tahsili, açık dönem fatura iptali, kart kapatma, Silinenler'den geri alma, numaralama ve POS bağlama yazımları
+      ---
+      duration_ms: 3939.957973
+      type: 'test'
+      ...
+    # Subtest: [5] kilidi ilerletme / kaldırma / yeniden koyma, yedek → geri yükleme ve Şirket Verisini Sıfırla sessiz; yeniden kilitlenmiş dönemde kapı dışı yazım yine bulunur
+    ok 40 - [5] kilidi ilerletme / kaldırma / yeniden koyma, yedek → geri yükleme ve Şirket Verisini Sıfırla sessiz; yeniden kilitlenmiş dönemde kapı dışı yazım yine bulunur
+      ---
+      duration_ms: 2352.782861
+      type: 'test'
+      ...
+    # Subtest: [6] eski sürümün gerçek koduyla üretilmiş KİLİTLİ veriyle güncelleme (surum-2.0.26-zincir): ilk açılış + ilk tarama + ikinci açılış — yeni bulgu / günlük / zil yok
+    ok 41 - [6] eski sürümün gerçek koduyla üretilmiş KİLİTLİ veriyle güncelleme (surum-2.0.26-zincir): ilk açılış + ilk tarama + ikinci açılış — yeni bulgu / günlük / zil yok
+      ---
+      duration_ms: 1330.861172
+      type: 'test'
+      ...
+    # Subtest: [6] eski sürümün gerçek koduyla üretilmiş KİLİTLİ veriyle güncelleme (surum-2.4.9-s127): ilk açılış + ilk tarama + ikinci açılış — yeni bulgu / günlük / zil yok
+    ok 42 - [6] eski sürümün gerçek koduyla üretilmiş KİLİTLİ veriyle güncelleme (surum-2.4.9-s127): ilk açılış + ilk tarama + ikinci açılış — yeni bulgu / günlük / zil yok
+      ---
+      duration_ms: 778.125078
+      type: 'test'
+      ...
+    # Subtest: [7] kapıdan geçen (mağaza) yazım kilitli satırın yeni izlenen alanını değiştiremez: süzgeç de 'kilitli dönem' der → tam kapı reddeder (eşdeğerlik ihlali yok)
+    ok 43 - [7] kapıdan geçen (mağaza) yazım kilitli satırın yeni izlenen alanını değiştiremez: süzgeç de 'kilitli dönem' der → tam kapı reddeder (eşdeğerlik ihlali yok)
+      ---
+      duration_ms: 617.27099
+      type: 'test'
+      ...
+    # Subtest: [8] DÜŞÜK-A: kapı dışı KG-16 sapmasından sonra sıradan yazımlar REDDEDİLMEZ (denetim yalnız tam taramada); durumu tanımsız ama kopyası kararlı satıra karar verilebilir ve sapma kalkar
+    ok 44 - [8] DÜŞÜK-A: kapı dışı KG-16 sapmasından sonra sıradan yazımlar REDDEDİLMEZ (denetim yalnız tam taramada); durumu tanımsız ama kopyası kararlı satıra karar verilebilir ve sapma kalkar
+      ---
+      duration_ms: 591.234276
+      type: 'test'
+      ...
+    # Subtest: [9] kapıdan geçen iki adım: carisiz kilitli karşılıksıza cari yazımı kabul (iz aynı), ardından kilit SONRASI tarihli karşılıksız borç satırı RED (409 Kapanmış dönem; eşdeğerlik ihlali değil)
+    ok 45 - [9] kapıdan geçen iki adım: carisiz kilitli karşılıksıza cari yazımı kabul (iz aynı), ardından kilit SONRASI tarihli karşılıksız borç satırı RED (409 Kapanmış dönem; eşdeğerlik ihlali değil)
+      ---
+      duration_ms: 534.896046
+      type: 'test'
+      ...
+    # Subtest: [10] kaynaklı (stok) kilitli cari satırında 'Normal Cariye İşlendi' işareti kapı dışından 0 → 1: türetme değişmez (işaret yalnız tahsilatta anlamlı) ama iz alanın kendisini taşır — bulunur
+    ok 46 - [10] kaynaklı (stok) kilitli cari satırında 'Normal Cariye İşlendi' işareti kapı dışından 0 → 1: türetme değişmez (işaret yalnız tahsilatta anlamlı) ama iz alanın kendisini taşır — bulunur
+      ---
+      duration_ms: 496.124564
+      type: 'test'
+      ...
+    # Subtest: [11] iz girdilerinin sürüm etiketi: v2.4.9'un GERÇEK kodunun kilit izi = güncel kodun 2.4.9 tanımıyla izi (aynı v2.4.9 deposu, göçten önce; kilitli dönemde kesilmiş fatura var)
+    not ok 47 - [11] iz girdilerinin sürüm etiketi: v2.4.9'un GERÇEK kodunun kilit izi = güncel kodun 2.4.9 tanımıyla izi (aynı v2.4.9 deposu, göçten önce; kilitli dönemde kesilmiş fatura var)
+      ---
+      duration_ms: 1.669265
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2d-q/mut/test/kilit-izi-alanlar-250.test.mjs:604:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kilit tarihi: güncel kodun 2.4.9 tanımıyla izi v2.4.9'un iziyle aynı
+        + actual - expected
+        
+        + '541b4a5720f67e293ac4871044e43d071250b5631ce2457a680ab4ae7a4776aa'
+        - '3a7f82c85844486fbe5097465e17224f4074728e9b908b0a55c6d59fbf868402'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '3a7f82c85844486fbe5097465e17224f4074728e9b908b0a55c6d59fbf868402'
+      actual: '541b4a5720f67e293ac4871044e43d071250b5631ce2457a680ab4ae7a4776aa'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2d-q/mut/test/kilit-izi-alanlar-250.test.mjs:606:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..47
+not ok 1 - Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz
+  ---
+  duration_ms: 45184.741091
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2d-q/mut/test/kilit-izi-alanlar-250.test.mjs:264:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 47
+# suites 1
+# pass 46
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 45528.677332

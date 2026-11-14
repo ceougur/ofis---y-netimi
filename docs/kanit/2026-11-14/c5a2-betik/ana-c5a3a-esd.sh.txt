@@ -1,0 +1,21 @@
+#!/bin/bash
+# Ana oturum: Ç5-A TUR 3a — BÜYÜK VERİDE BAYT BAYT EŞDEĞERLİK (yeniden koşunun kapsayıcı yenilenmesiyle kesilen SON adımı; öncekiler ana-c5a3a/yk.out'ta). Depo değişkeni VERİLMEZ (ders 54).
+# Çağrı: flock -s -n olcum.lock timeout 6000 bash ana-c5a3a/esd.sh
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+K=$S/ana-c5a3a/kanit; Y=$S/ana-c5a3a/yeni; TB=$S/ana-c5a3a/taban; KAYNAK=$S/ana-kabul/temiz-100k
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+[ -d $Y/server ] && [ -d $TB/server ] && [ -f $Y/server/lib/obligation-input.mjs ] && [ ! -f $TB/server/lib/obligation-input.mjs ] || { echo "kopyalar beklenen durumda değil"; exit 1; }
+echo "eşdeğerlik başladı $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg)"
+for KOD in taban yeni; do
+  ROOT=$TB; [ $KOD = yeni ] && ROOT=$Y
+  KOPYA=/dev/shm/ana-c5a3a-esd-$KOD
+  [ -e "$KOPYA" ] && { echo "kopya zaten var: $KOPYA"; exit 1; }
+  cp -a "$KAYNAK" "$KOPYA" || exit 1
+  s=$(date +%s)
+  timeout -k 5 3000 node --disable-warning=ExperimentalWarning $S/c5a3a-t1/betik/dok.mjs "$ROOT" "$KOPYA" $K/esd-$KOD.jsonl "2026-10-08T12:00:00+03:00" > $K/esd-$KOD.ozet 2>&1
+  echo "eşdeğerlik dökümü $KOD çıkış $? · $(( $(date +%s) - s )) sn · yük $(cut -d' ' -f1 /proc/loadavg) · $(tail -1 $K/esd-$KOD.ozet | cut -c1-160)"
+  rm -rf /dev/shm/ana-c5a3a-esd-$KOD
+done
+if cmp -s $K/esd-taban.jsonl $K/esd-yeni.jsonl; then echo "SONUÇ: BAYT BAYT AYNI ($(wc -l < $K/esd-yeni.jsonl) satır; sha256 $(sha256sum < $K/esd-yeni.jsonl | cut -c1-16); boyut $(du -h $K/esd-yeni.jsonl | cut -f1))"; else echo "SONUÇ: FARK VAR"; cmp $K/esd-taban.jsonl $K/esd-yeni.jsonl | head -2; fi
+sha256sum $K/esd-taban.jsonl $K/esd-yeni.jsonl | cut -c1-80 > $K/esd-sha256.txt; rm -f $K/esd-taban.jsonl $K/esd-yeni.jsonl
+echo "bitti $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg) · disk $(df -h / | awk 'NR==2{print $4}')"

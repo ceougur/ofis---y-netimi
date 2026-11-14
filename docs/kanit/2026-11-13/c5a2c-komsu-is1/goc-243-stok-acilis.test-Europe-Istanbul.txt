@@ -1,0 +1,28 @@
+TAP version 13
+# (node:13179) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:13179) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: göç v30: v2.4.2 verisindeki stok açılışları Ana Defter'e gelir (B 153 / A 500)
+    # Subtest: eski veride açılışlar işaretlenir; yalnız 153 / 500 değişir; kilit izi aynı; Mutabakat Testi temiz; geri dönüş çalışır
+    ok 1 - eski veride açılışlar işaretlenir; yalnız 153 / 500 değişir; kilit izi aynı; Mutabakat Testi temiz; geri dönüş çalışır
+      ---
+      duration_ms: 1197.245734
+      type: 'test'
+      ...
+    1..1
+ok 1 - göç v30: v2.4.2 verisindeki stok açılışları Ana Defter'e gelir (B 153 / A 500)
+  ---
+  duration_ms: 1203.263881
+  type: 'suite'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1579.814318
+cikis=0

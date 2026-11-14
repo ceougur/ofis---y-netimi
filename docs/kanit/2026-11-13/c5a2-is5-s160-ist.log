@@ -1,0 +1,69 @@
+TAP version 13
+# (node:19626) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:19626) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:19626) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: S160 = A — kilitli dönemdeki tahsilatın fatura bağını düşüren iptal / silme 409; kilitli defter değişmez
+    # Subtest: iptal 409 — şüpheli VAR; bağ, fatura ve kilitli defter aynı
+    ok 1 - iptal 409 — şüpheli VAR; bağ, fatura ve kilitli defter aynı
+      ---
+      duration_ms: 25.08311
+      type: 'test'
+      ...
+    # Subtest: iptal 409 — şüpheli YOK (kural şüpheliye bağlanmaz); bağ, fatura ve kilitli defter aynı
+    ok 2 - iptal 409 — şüpheli YOK (kural şüpheliye bağlanmaz); bağ, fatura ve kilitli defter aynı
+      ---
+      duration_ms: 7.9055
+      type: 'test'
+      ...
+    # Subtest: iptal 409 — tahsilat tam kilit günü; bağ, fatura ve kilitli defter aynı
+    ok 3 - iptal 409 — tahsilat tam kilit günü; bağ, fatura ve kilitli defter aynı
+      ---
+      duration_ms: 6.505301
+      type: 'test'
+      ...
+    # Subtest: silme (iptali çağırır) 409 — fatura silinmedi, bağ ve kilitli defter aynı
+    ok 4 - silme (iptali çağırır) 409 — fatura silinmedi, bağ ve kilitli defter aynı
+      ---
+      duration_ms: 5.901668
+      type: 'test'
+      ...
+    # Subtest: Kapatılacak Fatura ile bağlanmış KİLİTLİ alınan evrak: iptal 409 (evrakın bağı kalır)
+    ok 5 - Kapatılacak Fatura ile bağlanmış KİLİTLİ alınan evrak: iptal 409 (evrakın bağı kalır)
+      ---
+      duration_ms: 3.0258
+      type: 'test'
+      ...
+    # Subtest: kilit DIŞINDAKİ tahsilat bağlıysa iptal serbest (200)
+    ok 6 - kilit DIŞINDAKİ tahsilat bağlıysa iptal serbest (200)
+      ---
+      duration_ms: 21.063134
+      type: 'test'
+      ...
+# (node:19626) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:19626) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kilit kaldırılınca iptal serbest; yeniden kilitleme çalışır (yönetici yolu)
+    ok 7 - kilit kaldırılınca iptal serbest; yeniden kilitleme çalışır (yönetici yolu)
+      ---
+      duration_ms: 204.412377
+      type: 'test'
+      ...
+    1..7
+ok 1 - S160 = A — kilitli dönemdeki tahsilatın fatura bağını düşüren iptal / silme 409; kilitli defter değişmez
+  ---
+  duration_ms: 1332.888358
+  type: 'suite'
+  ...
+1..1
+# tests 7
+# suites 1
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1721.102668

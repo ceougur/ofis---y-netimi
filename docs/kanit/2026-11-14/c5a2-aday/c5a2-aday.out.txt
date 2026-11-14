@@ -1,0 +1,34 @@
+başladı 00:00:28 yük 0.51 0.53 1.73 · aday 20a847ae = ana 5f5beacc + Ç5-A tur 2 23f73856 + CI listesi sınama commit'i
+yeni / değişen test dosyaları: test/acilis-duzeni-v249-250.test.mjs test/acilis-eslestirme-250.test.mjs test/acilis-olabilir-250.test.mjs test/defter-kaynak-iz-250.test.mjs test/goc-243-stok-acilis.test.mjs test/kilit-izi-alanlar-250.test.mjs test/kural-farki-duzeltme-250.test.mjs test/s160-iptal-yollari-250.test.mjs test/s160-kilitli-tahsilat-bagi-250.test.mjs 
+yeni testler UTC çıkış 0 # tests 90 # pass 90 # fail 0 # cancelled 0 # skipped 0 
+yeni testler Europe/Istanbul çıkış 0 # tests 90 # pass 90 # fail 0 # cancelled 0 # skipped 0 
+liste üretimi çıkış 0 · durum: []
+  mutasyon 3 (5b: carinin borcuna taşınan tahsilatlar geri eklenmez (D = bakiye)): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc …)
+  mutasyon 4 (5b: borç kalandan azsa kişi aktarılmaz yerine yeni borç yazılır): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc …)
+  mutasyon 7 (UX18: karşılıksız evrak faturayı yeniden açmaz): YAKALANDI (b2-ux18-karsiliksiz[2.4.4], b2-ux18-sira[2.4.4], b2-ux18-temel[2.4.4] …)
+  mutasyon 10 (Geri al: taşınan tahsilatlar cariye dönmez): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc …)
+  mutasyon 11 (5a: taşıma Kasa'yı azaltır): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc …)
+  mutasyon 12 (Kart: tahsilat en yeni taksitten başlayarak sayılır): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc …)
+  mutasyon 38 (Yerine koy (aynı dosyayı yeniden yükle) kayda bağlı tahsilatı kayıttan koparır): YAKALANDI (b3f-kayit-anahtari, b3g-tablo-bag-surekliligi, b3h-dosya-no-ve-devam …)
+  mutasyon 49 (N1 öncesi: Dosya No'lu tabloda dosya numarası değişen kaydın bağı kişi eşleşmesiyle yeni dosyaya taşınır): YAKALANDI (b3m-dosya-no-degisimi)
+liste önce 0 {} → sonra 0 {} · kapanan 0 · yeni 0
+İKİNCİ liste üretimi çıkış 0 · fark (BOŞ olmalı): []
+ci.yml'deki kâhin adımı sayısı 10
+0 kahin-defter UTC :: [kanit] c5a2-kahin-defter-UTC: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 20a847a +1 izlenmeyen · linux 6 ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-BagPND
+0 kahin-defter Europe/Istanbul :: [kanit] c5a2-kahin-defter-Europe-Istanbul: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 20a847a +1 izlenmeye ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-wQOHQG
+0 kahin-cari UTC :: [kanit] c5a2-kahin-cari-UTC: GEÇTİ · çıkış 0 · 17136/17136 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 20a847a +1 izlenmeyen · linux ÖZET [2.5.0]: 92 senaryo, 17136 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 0 yapım aşaması (YAPIM-ASAMAS
+0 kahin-cari Europe/Istanbul :: [kanit] c5a2-kahin-cari-Europe-Istanbul: GEÇTİ · çıkış 0 · 17136/17136 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 20a847a +1 izlenme ÖZET [2.5.0]: 92 senaryo, 17136 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 0 yapım aşaması (YAPIM-ASAMAS
+0 kahin-tutar UTC :: [kanit] c5a2-kahin-tutar-UTC: GEÇTİ · çıkış 0 · 3559/3559 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 20a847a +1 izlenmeyen · linux  ÖZET: 3 tohum × 50 satır, 3559 denetim, 0 fark (BULGU 0), 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-tutar-J2A9Nx
+0 kahin-ebelge-model UTC :: [kanit] c5a2-kahin-ebelge-model-UTC: GEÇTİ · çıkış 0 · 114/114 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 20a847a +1 izlenmeyen · l 
+0 kahin-ebelge-mutasyon UTC :: [kanit] c5a2-kahin-ebelge-mutasyon-UTC: GEÇTİ · çıkış 0 · 55/55 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 20a847a +1 izlenmeyen ·  
+0 kahin-ebelge-senaryo UTC :: [kanit] c5a2-kahin-ebelge-senaryo-UTC: GEÇTİ · çıkış 0 · 27/27 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 20a847a +1 izlenmeyen · l 
+0 kahin-muhasebe-model UTC :: [kanit] c5a2-kahin-muhasebe-model-UTC: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 20a847a +1 izlenmeyen · 
+0 kahin-muhasebe-mutasyon UTC :: [kanit] c5a2-kahin-muhasebe-mutasyon-UTC: GEÇTİ · çıkış 0 · 277/277 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 20a847a +1 izlenmeyen 
+0 kahin-maliyet UTC :: [kanit] c5a2-kahin-maliyet-UTC: GEÇTİ · çıkış 0 · 41306/41306 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 20a847a +1 izlenmeyen · li 
+0 kahin-mobil-yazma UTC :: [kanit] c5a2-kahin-mobil-yazma-UTC: GEÇTİ · çıkış 0 · 56/56 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 20a847a +1 izlenmeyen · linu 
+.github/workflows/ci.yml ayrıştı
+.github/workflows/release.yml ayrıştı
+dört kapı testi çıkış 1 # tests 73 # pass 71 # fail 2 # cancelled 0 # skipped 0 
+değişen ürün dosyası 15 · komşu test dosyası 83
+komşular İstanbul çıkış 0 # tests 817 # pass 817 # fail 0 # cancelled 0 # skipped 0 
+kâhin + komşu bölümü bitti 00:51:22 yük 2.19 2.43 2.98 · temiz mi: 0

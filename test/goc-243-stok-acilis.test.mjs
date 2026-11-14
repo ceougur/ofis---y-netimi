@@ -17,6 +17,14 @@ import { lockDigestOf } from "../server/lib/integrity.mjs";
 import { CURRENT, bootVersion } from "./guvenilirlik/surumler.mjs";
 
 const OLD = "v2.4.2";
+/** Mutabakat Testi: tek sonuç kilitli Masa açılışının (15.09, 4 × 1.250) Kural Değişikliği Farkı — yalnız 500 (+5.000) ↔ 519 (−5.000); başka sapma yok. */
+function assertOnlyOpeningRuleDiff(integrity) {
+  const others = integrity.failures.filter(item => item.code !== "ledger:rule-diff");
+  assert.deepEqual(others, [], JSON.stringify(others).slice(0, 400));
+  const diff = integrity.failures.find(item => item.code === "ledger:rule-diff");
+  assert.ok(diff, `kilitli açılışın kural farkı görünmeli: ${JSON.stringify(integrity.failures).slice(0, 300)}`);
+  assert.deepEqual(diff.breakdown.map(row => [row.account, row.differenceMinor]).sort(), [["500", 500000], ["519", -500000]], JSON.stringify(diff.breakdown));
+}
 const NOW = "2026-10-20T12:00:00+03:00";
 
 describe(`göç v30: ${OLD} verisindeki stok açılışları Ana Defter'e gelir (B 153 / A 500)`, () => {
@@ -76,8 +84,12 @@ describe(`göç v30: ${OLD} verisindeki stok açılışları Ana Defter'e gelir 
       assert.equal(lockDigestOf(current.app.store, "2026-09-30", { version: "2.4.2" }), before.digest, "kilit izi göç öncesiyle aynı");
       const stock = (await api.get("/api/workspace/stock")).data;
       assert.deepEqual(stock.items.map(item => ({ name: item.name, qty: item.qty, value: item.value })).sort((a, b) => a.name.localeCompare(b.name)), before.stock, "stok miktarı ve değeri aynı");
+      // 2.5.0 Ç5-A tur 2 (dar kontrol 1f DÜŞÜK-1; ders 20): ön koşul ÜRÜNÜN DURUMUNDAN — açılışta bekleyen dondurma (kilit 30.09, 2.4.9 kuralıyla) beklenir; sonuç
+      // dondurmanın bitiş anına bağlı değildir. Donmuş dönemle güncel kural arasındaki tek fark kilitli Masa açılışının karşı hesabıdır (500 → 519, 5.000; Kural Değişikliği Farkı
+      // UYARISI — C5-ACILIS-TASARIM §3.1); başka hiçbir denetim sapmaz. Önceden `failures` boş beklenirdi: dondurma GET'ten önce biterse kırmızı (zorlama: DONDURMA_YARIS=bitir).
+      await current.app.ledger.snapshots.runPending();
       const integrity = (await api.get("/api/workspace/ledger/integrity")).data;
-      assert.deepEqual(integrity.failures, [], JSON.stringify(integrity.failures).slice(0, 400));
+      assertOnlyOpeningRuleDiff(integrity);
       assert.equal(integrity.checks.find(item => item.code === "stock:opening")?.ok, true);
       // Açık dönemde yeni açılış (güncel kod) da gelir; kapı temiz.
       const res = await api.post("/api/workspace/stock", { name: "Askılık", unit: "Adet", unitPrice: "150", openingQty: "2", openingDate: "2026-10-05" });
@@ -100,7 +112,8 @@ describe(`göç v30: ${OLD} verisindeki stok açılışları Ana Defter'e gelir 
     try {
       const api = await again.login();
       assert.equal(again.app.store.get("SELECT m.is_opening AS f FROM stock_moves m JOIN stock_items i ON i.id = m.item_id WHERE i.name = 'Geri Dönüş Ürünü'").f, 0);
-      assert.deepEqual((await api.get("/api/workspace/ledger/integrity")).data.failures, []);
+      await again.app.ledger.snapshots.runPending();
+      assertOnlyOpeningRuleDiff((await api.get("/api/workspace/ledger/integrity")).data);
     } finally {
       await again.close();
     }

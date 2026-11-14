@@ -1,0 +1,51 @@
+TAP version 13
+# (node:8026) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8026) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# Subtest: A13 — eski ileri tarihli satırlar yaşlanınca para işlemleri kilitlenmez
+    # Subtest: açılış günü: tahsilat 200 (eski ileri tarihli satırlar taban)
+    ok 1 - açılış günü: tahsilat 200 (eski ileri tarihli satırlar taban)
+      ---
+      duration_ms: 32.912706
+      type: 'test'
+      ...
+    # Subtest: çalışıyor mu: 2 gün sonra (eski satırların ikisi geçmişe düştü) tahsilat, Kasa girişi ve çek 200; Mutabakat Testi kalan eski satırı gösterir
+    ok 2 - çalışıyor mu: 2 gün sonra (eski satırların ikisi geçmişe düştü) tahsilat, Kasa girişi ve çek 200; Mutabakat Testi kalan eski satırı gösterir
+      ---
+      duration_ms: 124.629255
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: aynı anda yeni ileri tarihli satır API'den 400, doğrudan işlemle kapıda 409 (dates:future)
+    ok 3 - nasıl bozarım: aynı anda yeni ileri tarihli satır API'den 400, doğrudan işlemle kapıda 409 (dates:future)
+      ---
+      duration_ms: 13.621153
+      type: 'test'
+      ...
+    # Subtest: çalışıyor mu: bütün eski satırlar geçmişe düşünce de (5 gün) işlemler 200, Mutabakat Testi ok
+    ok 4 - çalışıyor mu: bütün eski satırlar geçmişe düşünce de (5 gün) işlemler 200, Mutabakat Testi ok
+      ---
+      duration_ms: 31.754123
+      type: 'test'
+      ...
+    # Subtest: çalışıyor mu: yeniden başlatma (taban yeniden ölçülür) sonrası da aynı
+    ok 5 - çalışıyor mu: yeniden başlatma (taban yeniden ölçülür) sonrası da aynı
+      ---
+      duration_ms: 27.414815
+      type: 'test'
+      ...
+    1..5
+ok 1 - A13 — eski ileri tarihli satırlar yaşlanınca para işlemleri kilitlenmez
+  ---
+  duration_ms: 755.41857
+  type: 'suite'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1134.23698
+cikis=0

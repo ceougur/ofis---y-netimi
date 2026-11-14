@@ -1,0 +1,23 @@
+TAP version 13
+# Subtest: 2.5.0 Ç5-A tur 3a — kuyruğun girdi kurucusu (lib/obligation-input.mjs): yalnız store ile = servis yüzü; davranış taşımadan önceki kodla aynı
+    # Subtest: sınıf verisi iki şirkette, kilitli ↔ kilitsiz: modül (yalnız store) = servis yüzü; servis yüzü = taşımadan önceki kodun hakemi
+    ok 1 - sınıf verisi iki şirkette, kilitli ↔ kilitsiz: modül (yalnız store) = servis yüzü; servis yüzü = taşımadan önceki kodun hakemi
+      ---
+      duration_ms: 1580.931255
+      type: 'test'
+      ...
+    1..1
+ok 1 - 2.5.0 Ç5-A tur 3a — kuyruğun girdi kurucusu (lib/obligation-input.mjs): yalnız store ile = servis yüzü; davranış taşımadan önceki kodla aynı
+  ---
+  duration_ms: 1928.21576
+  type: 'suite'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2235.412968

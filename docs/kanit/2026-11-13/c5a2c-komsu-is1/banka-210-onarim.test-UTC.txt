@@ -1,0 +1,36 @@
+TAP version 13
+# (node:1378) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:1378) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: eski sürüme dönüş: gerçek eski kod v20 dosyasına yazar → açılış onarımı (a–h)
+    # Subtest: v2.0.26 yazar, bu dal açılınca onarır; yalnız ilgili kayıtlar etkilenir; ikinci açılışta değişiklik yok
+    ok 1 - v2.0.26 yazar, bu dal açılınca onarır; yalnız ilgili kayıtlar etkilenir; ikinci açılışta değişiklik yok
+      ---
+      duration_ms: 1598.507209
+      type: 'test'
+      ...
+# (node:1378) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: v2.0.25 yazar, bu dal açılınca onarır; yalnız ilgili kayıtlar etkilenir; ikinci açılışta değişiklik yok
+    ok 2 - v2.0.25 yazar, bu dal açılınca onarır; yalnız ilgili kayıtlar etkilenir; ikinci açılışta değişiklik yok
+      ---
+      duration_ms: 1543.987524
+      type: 'test'
+      ...
+    1..2
+ok 1 - eski sürüme dönüş: gerçek eski kod v20 dosyasına yazar → açılış onarımı (a–h)
+  ---
+  duration_ms: 3143.725654
+  type: 'suite'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3517.51874
+cikis=0

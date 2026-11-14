@@ -1,0 +1,60 @@
+TAP version 13
+# (node:8613) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8613) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: B7 — arka plan taraması
+    # Subtest: gerçek 2.0.26 verisi: arka plan sonucu = satır içi sonuç; tam çalışma ana iş parçacığında koşmaz
+    ok 1 - gerçek 2.0.26 verisi: arka plan sonucu = satır içi sonuç; tam çalışma ana iş parçacığında koşmaz
+      ---
+      duration_ms: 1013.394457
+      type: 'test'
+      ...
+# (node:8613) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: gerçek 2.0.26 verisi, açılıştaki bekleyen dondurma: sürerken iki yol aynı (kural farkı henüz yok); bitince arka plan taraması ATLANMADAN yeniden koşar ve kural farkını görür
+    ok 2 - gerçek 2.0.26 verisi, açılıştaki bekleyen dondurma: sürerken iki yol aynı (kural farkı henüz yok); bitince arka plan taraması ATLANMADAN yeniden koşar ve kural farkını görür
+      ---
+      duration_ms: 1336.744047
+      type: 'test'
+      ...
+    # Subtest: değişiklik yoksa atlanır; yazım ya da gün değişince yeniden koşar; tarama veri yazmaz
+    ok 3 - değişiklik yoksa atlanır; yazım ya da gün değişince yeniden koşar; tarama veri yazmaz
+      ---
+      duration_ms: 1162.946516
+      type: 'test'
+      ...
+# (node:8613) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: nasıl bozarım: store dışı bozuk satırı bulur; tarama sürerken yazımlar geçer ve yanlış sapma çıkmaz; iş parçacığı açılamazsa sunucu sürer
+    ok 4 - nasıl bozarım: store dışı bozuk satırı bulur; tarama sürerken yazımlar geçer ve yanlış sapma çıkmaz; iş parçacığı açılamazsa sunucu sürer
+      ---
+      duration_ms: 843.328812
+      type: 'test'
+      ...
+# (node:8613) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: iş parçacığı açılamazsa (veri dosyası yok) tarama 'çalışmadı' olur, sunucu ve sonraki tarama etkilenmez
+    ok 5 - iş parçacığı açılamazsa (veri dosyası yok) tarama 'çalışmadı' olur, sunucu ve sonraki tarama etkilenmez
+      ---
+      duration_ms: 772.101271
+      type: 'test'
+      ...
+    1..5
+ok 1 - B7 — arka plan taraması
+  ---
+  duration_ms: 5130.242483
+  type: 'suite'
+  ...
+# (node:8613) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+1..1
+# tests 5
+# suites 1
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5457.934115
+cikis=0

@@ -267,6 +267,11 @@ describe("Ç5-A tur 1f — Ana Defter türetmesinin okuduğu her sütun kilit iz
       assert.deepEqual(missing, [], `kilit izinde OLMAYAN ve istisna listesinde de olmayan türetme sütunları (LOCK_SQL'e ekleyin ya da gerekçeyle istisnaya yazın): ${missing.join(", ")}`);
       const stale = [...EXCEPTIONS.keys()].filter(column => !reads.has(column));
       assert.deepEqual(stale, [], `istisna listesinde türetmenin artık okumadığı sütun: ${stale.join(", ")}`);
+      // 2.5.0 Ç5-A tur 2 (dar kontrol 1f DÜŞÜK-3, mutant Y21): istisna listesinin dürüstlüğü — istisnadaki sütun izde OLMAMALI (izdeyse istisna yanlış / bayat; izlenen bir sütun
+      // istisnaya eklenince test yeşil kalıyordu). Aynı bozma yöntemiyle (tracked).
+      const honest = [...EXCEPTIONS.keys()].filter(column => reads.has(column) && tracked(db, store, column, LOCK, base));
+      assert.deepEqual(honest, [], `istisna listesinde kilit izinde OLAN sütun (istisnadan çıkarın): ${honest.join(", ")}`);
+      assert.equal(lockDigestOf(store, LOCK), base, "istisna bozmaları geri alındı (iz aynı)");
       for (const table of EXCEPTION_TABLES.keys()) {
         assert.ok(db.prepare("SELECT 1 AS found FROM sqlite_master WHERE type = 'trigger' AND tbl_name = ? AND sql LIKE '%BEFORE UPDATE%' LIMIT 1").get(table), `istisna tablosu tetikleyiciyle korunuyor: ${table}`);
       }

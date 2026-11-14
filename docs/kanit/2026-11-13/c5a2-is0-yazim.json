@@ -1,0 +1,32 @@
+{
+  "ad": "c5a2-is0-yazim",
+  "komut": "node --test test/yazim-duzeni.test.mjs",
+  "commit": "4b332a528d6230e57a5856398a5e7268590bfb5b",
+  "dal": "worktree-agent-a294d4187e1bf9872",
+  "kirli": 2,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T17:48:19.201Z",
+  "sure_sn": 0.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 6,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2-k7/kanit/2026-11-13/c5a2-is0-yazim.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a294d4187e1bf9872",
+  "ham_cikti_sha256": "d52d056f5bcea1929beccc25ea79c437f92b03ab6429e978480809e9e29fc961",
+  "ham_cikti_bayt": 1623
+}

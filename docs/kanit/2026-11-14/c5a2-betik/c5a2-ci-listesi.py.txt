@@ -1,0 +1,32 @@
+# Ana oturum: Ç5-A tur 2'nin üç yeni ekran senaryosunu CI'ye EKSİKSİZ ekler — (1) package.json betikleri, (2) ci.yml koşu adımları, (3) ci.yml Doğrulama Kapısı --beklenen listesi,
+# (4) release.yml koşu adımları. Daha önce işlenmiş adımları atlar (yeniden koşulabilir). Çağrı: python3 -I c5a2-ci-listesi.py <ağaç kökü>
+import sys, json
+W=sys.argv[1].rstrip('/')+'/'
+N=('senaryo-acilis-duzeni-250','senaryo-acilis-olabilir-250','senaryo-acilis-eslestirme-250')
+p=W+'package.json'; s=open(p,encoding='utf-8').read()
+a='    "test:senaryo-kasa-acilis-uyari-250": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-kasa-acilis-uyari-250.mjs",\n'
+assert s.count(a)==1
+ek=''.join(f'    "test:{n}": "node --disable-warning=ExperimentalWarning test/e2e/{n}.mjs",\n' for n in N if f'"test:{n}"' not in s)
+if ek: s=s.replace(a,a+ek); open(p,'w',encoding='utf-8').write(s)
+json.load(open(p,encoding='utf-8'))
+p=W+'.github/workflows/ci.yml'; s=open(p,encoding='utf-8').read()
+a='      - run: node tools/kanit.mjs kos e2e-senaryo-kasa-acilis-uyari-250 npm run test:senaryo-kasa-acilis-uyari-250\n'
+assert s.count(a)==1
+if 'kos e2e-senaryo-acilis-duzeni-250' not in s:
+    ek=('      # 2.5.0 Ç5-A tur 2: Açılış Düzeni — Yönetim satırı ve Kural Farkı Düzeltme Fişi penceresi; Açılış Olabilir Kayıtlar ekranı + zil; Açılış Eşleştirme Fişi ekranı.\n'
+        + ''.join(f'      - run: node tools/kanit.mjs kos e2e-{n} npm run test:{n}\n' for n in N))
+    s=s.replace(a,a+ek)
+b='e2e-senaryo-kasa-acilis-uyari-250'
+sat=[l for l in s.split('\n') if '--beklenen' in l and b in l]; assert len(sat)==1, len(sat)
+if 'e2e-senaryo-acilis-duzeni-250' not in sat[0]:
+    assert sat[0].count(b)==1 and '\r' not in sat[0]
+    yeni=sat[0].replace(b, b+''.join(f',e2e-{n}' for n in N),1)   # ad listenin SONUNDA da olabilir — virgül öne konur; satır sonu eklenmez (ders 49)
+    assert '\n' not in yeni and s.count(sat[0])==1
+    s=s.replace(sat[0],yeni)
+open(p,'w',encoding='utf-8').write(s)
+p=W+'.github/workflows/release.yml'; s=open(p,encoding='utf-8').read()
+a='      - run: npm run test:senaryo-kasa-acilis-uyari-250\n'
+assert s.count(a)==1
+ek=''.join(f'      - run: npm run test:{n}\n' for n in N if f'npm run test:{n}\n' not in s)
+if ek: s=s.replace(a,a+ek); open(p,'w',encoding='utf-8').write(s)
+print('işlendi')

@@ -1,0 +1,9 @@
+var-taban rc=0 sure=62s yuk=2.90 # tests 151 # pass 151 # fail 0 # cancelled 0 # skipped 0 # todo 0 
+Y2 var-Y2 rc=0 sure=53s yuk=3.12 # tests 151 # pass 151 # fail 0 # cancelled 0 # skipped 0 # todo 0
+Y3 var-Y3 rc=0 sure=53s yuk=2.75 # tests 151 # pass 151 # fail 0 # cancelled 0 # skipped 0 # todo 0
+Y5 var-Y5 rc=0 sure=59s yuk=2.96 # tests 151 # pass 151 # fail 0 # cancelled 0 # skipped 0 # todo 0
+Y10 var-Y10 rc=0 sure=54s yuk=2.16 # tests 151 # pass 151 # fail 0 # cancelled 0 # skipped 0 # todo 0
+Y11 var-Y11 rc=0 sure=54s yuk=2.81 # tests 151 # pass 151 # fail 0 # cancelled 0 # skipped 0 # todo 0
+Y12 var-Y12 rc=0 sure=60s yuk=3.62 # tests 151 # pass 151 # fail 0 # cancelled 0 # skipped 0 # todo 0
+Y18 var-Y18 rc=0 sure=57s yuk=3.36 # tests 151 # pass 151 # fail 0 # cancelled 0 # skipped 0 # todo 0
+Y23 var-Y23 rc=0 sure=56s yuk=3.32 # tests 151 # pass 151 # fail 0 # cancelled 0 # skipped 0 # todo 0

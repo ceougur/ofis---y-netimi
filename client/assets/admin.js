@@ -109,6 +109,10 @@
     "bank.account.deleted": "Banka hesabını sildi",
     "bank.account.opening.entered": "Banka açılış bakiyesini girdi",
     "bank.account.opening.corrected": "Banka açılış bakiyesini düzeltti",
+    // 2.5.0 Ç5-A: Açılış Olabilir Kayıtlar kararları (routes/opening-review.mjs).
+    "account.opening.confirmed": "Açılış Olabilir kaydını açılış saydı",
+    "account.opening.rejected": "Açılış Olabilir kaydını açılış saymadı",
+    "account.opening.reopened": "Açılış Olabilir kaydının kararını geri aldı",
     "bank.legacy.assigned": "Eski banka hareketini hesaba atadı",
     "bank.legacy.reclassed": "Hesabı atanmamış POS / kart bakiyesini aktardı",
     "bank.setup": "Banka Kurulum Sihirbazı'nı çalıştırdı",
@@ -1139,17 +1143,26 @@
       // 2.5.0 Ç5-K tur 2 (dar kontrol ORTA-1; S20 = A "Mutabakat Testi uyarı verir"): sunucunun "uyarı" işaretli denetimi (notice; Kasa Açılışından Önce Tarihli Hareket)
       // sapma değildir — sarı, ne yapılacağı (hint) yazılı; başka sapma yoksa "N denetim tamam" bilgisi aynen kalır (uyarı ayrı cümle). Gerçek sapma varsa yine kırmızı.
       const notices = (result.failures || []).filter(item => item.notice);
-      const failures = (result.failures || []).filter(item => !item.notice);
+      // 2.5.0 Ç5-A tur 2 İş 0 (EY-1; D 12.11 15:57 (4)): "Kural Değişikliği Farkı" (ledger:rule-diff) tasarım gereği UYARIDIR (tur 1d: sapma kümesinin dışında) — sapma
+      // cümlesine ve kırmızıya girmez; ne yapılacağını söyleyen ayrı cümle (Kural Farkı Düzeltme). Gerçek sapma ve eski sürümden kalan satır eskisi gibi, ayrı görünür.
+      const ruleDiffs = (result.failures || []).filter(item => !item.notice && item.code === "ledger:rule-diff");
+      const failures = (result.failures || []).filter(item => !item.notice && item.code !== "ledger:rule-diff");
       const clean = !failures.length;
       const onlyLegacy = !clean && failures.every(legacyOnly);
       const noticeText = notices.length ? ` Uyarı (yeni işlemleri engellemez): ${notices.map(item => `${item.name} — ${item.count} hareket. ${item.hint || ""}`).join(" ")}`.replace(/\s+/g, " ").trimEnd() : "";
+      // Ç5-A tur 2b İş 2: Kural Farkı Düzeltme Fişi farkı kapattıysa öğe ok (Mutabakat Testi uyarısız) ve adı "… — Düzeltildi (Fiş …)" — bilgi cümlesi; fiş fazla kaldıysa
+      // (kilit kaldırıldı / yeniden kilitlendi) ya da farkın bir kısmı kaldıysa sunucunun ipucu.
+      const corrected = (result.checks || []).filter(item => item.ok && item.code === "ledger:rule-diff" && item.corrected);
+      const ruleDiffText = ruleDiffs.map(item => (item.correction?.over
+        ? ` Uyarı (yeni işlemleri engellemez): ${item.hint || item.name}`
+        : ` Uyarı (yeni işlemleri engellemez): ${item.name} — ${item.count} madde${item.difference ? `, fark ${HOF.formatMoney(item.difference)}` : ""}. Kilitli dönemin raporları donmuş defterden okunur, değişmez; ${item.correction?.vouchers?.length ? `${item.correction.remainderMinor ? "kalan fark" : "alt defter hesabı farkı fişle düzeltilmez (Kilidi Aç → Yeniden Kilitle);"} ${item.correction.remainderMinor ? "Yönetim › Kural Farkı Düzeltme ile ilk açık güne alınır." : `düzeltme fişi: ${item.correction.vouchers.join(", ")}.`}` : "fark Yönetim › Kural Farkı Düzeltme ile ilk açık güne alınır."}`)).join("") + corrected.map(item => ` Bilgi: ${item.name}; kilitli dönemin farkı ilk açık güne alındı.`).join("");
       health.textContent = (clean
-        ? `Mutabakat: ${result.checks.length - notices.length} denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı.${rolled ? ` Son kayıtlarda ${rolled} işlem sapma yaratacağı için geri alındı (Raporlar › Mutabakat Günlüğü).` : ""}`
+        ? `Mutabakat: ${result.checks.length - notices.length - ruleDiffs.length} denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı.${rolled ? ` Son kayıtlarda ${rolled} işlem sapma yaratacağı için geri alındı (Raporlar › Mutabakat Günlüğü).` : ""}`
         : onlyLegacy
           ? `Mutabakat: ${failures.length} denetimde eski sürümden kalan satır var; yeni işlemler engellenmez (${failures.map(item => `${item.name}: ${item.legacy} satır`).join(", ")}). ${failures.map(item => item.hint || "").filter(Boolean).join(" ")} Raporlar › Defter Mutabakatı'nda ayrıntıyı görün.`.replace(/\s+/g, " ")
-          : `Mutabakat: ${failures.length} denetimde sapma var (${failures.map(item => (legacyOnly(item) ? `${item.name} — eski sürümden kalan ${item.legacy} satır; yeni işlemler engellenmez` : item.name)).join(", ")}). Raporlar › Defter Mutabakatı'nda ayrıntıyı görün.`) + noticeText;
+          : `Mutabakat: ${failures.length} denetimde sapma var (${failures.map(item => (legacyOnly(item) ? `${item.name} — eski sürümden kalan ${item.legacy} satır; yeni işlemler engellenmez` : item.name)).join(", ")}). Raporlar › Defter Mutabakatı'nda ayrıntıyı görün.`) + ruleDiffText.replace(/\s+/g, " ").trimEnd() + noticeText;
       health.classList.toggle("adm-error-text", !clean && !onlyLegacy);
-      health.classList.toggle("adm-warn-text", clean ? notices.length > 0 : onlyLegacy);
+      health.classList.toggle("adm-warn-text", clean ? notices.length + ruleDiffs.length > 0 : onlyLegacy);
     } catch (error) {
       // Ç3 tur 3 (Ç3 küçük işler (c)): Mutabakat Testi çalışamazsa satır sessizce boşalmaz — neden görünür (ders 4: okunamayan boş değildir).
       health.textContent = `Mutabakat Testi çalıştırılamadı: ${error?.message || String(error)}`;
@@ -1173,6 +1186,8 @@
       syncLockButton();
     }
   }
+  // Ç5-A tur 2b İş 2: Kural Farkı Düzeltme penceresi (hof-kural-farki.js) fiş yazınca / ters kaydedince Mutabakat satırı yenilenir.
+  document.addEventListener("hof:rule-diff-changed", () => loadIntegrity());
   $("#adm-period").addEventListener("submit", event => {
     event.preventDefault();
     if (lockBusy) return HOF.toast(lockBusy, { type: "error" });
@@ -1869,6 +1884,8 @@
     // Lisans etkinleştirilmemiş veya salt okunurken yönetici önce Lisans sekmesini görür.
     const needsLicense = me.license && !me.license.writable && visible.includes("license");
     selectTab(visible.includes(requested) ? requested : needsLicense ? "license" : visible[0]);
+    // 2.5.0 Ç5-A tur 2c İş 3: zildeki "Açılış Olabilir Kayıtlar" bildirimi (#system/acilis-olabilir) pencereyi açar (client/assets/hof-acilis-olabilir.js).
+    if (hashTab === "system" && hashIntent === "acilis-olabilir" && visible.includes("system")) document.dispatchEvent(new CustomEvent("hof:opening-review-open"));
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot, { once: true });
   else boot();

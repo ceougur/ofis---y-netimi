@@ -1,0 +1,106 @@
+BEKLENEN (girdilerden elle): eski sürümde A carisine 02.10 'Açılış bakiyesi' 700 borç (kilitli dönemde), B carisine 12.10 'Açılış devri' 300 borç, A'ya 12.10 'Mal bedeli' 50 borç; kilit 05.10.
+  zil: 2 kayıt onay bekliyor (700 ve 300; 'Mal bedeli' aday DEĞİL). 700 onaylanır, 300 reddedilir. Cari bakiyeleri hiç değişmez: A 750 borç, B 300 borç.
+  onaydan sonra 700'ün karşılığı açılış geçici hesabına (519) geçmeli — kilitli dönemde olduğu için fark Kural Farkı Düzeltme fişiyle işlenir; fişten sonra 519 alacak 700.
+  Açılış Eşleştirme: 519 bakiyesi 700 → 500 Sermaye alacak 700 → fişten sonra 519 = 0, 500 alacak 700.
+  eski sürüm · cari A: 200
+  eski sürüm · cari B: 200
+  eski sürüm · A 700 Açılış bakiyesi 02.10: 200
+  eski sürüm · B 300 Açılış devri 12.10: 200
+  eski sürüm · A 50 Mal bedeli 12.10: 200
+  eski sürüm · dönem kilidi 2026-10-05: 200
+
+açılışta dondurma durumu: {"coverage":"2026-10-05","lock":"2026-10-05","pending":null,"runs":1}
+dondurmadan sonra: {"coverage":"2026-10-05","lock":"2026-10-05","pending":null,"runs":1}
+ilk arka plan taraması: bulgu [] 
+aday durumu (veri tabanı): [{"amount":700,"note":"Açılış bakiyesi","date":"2026-10-02","durum":"candidate"},{"amount":50,"note":"Mal bedeli","date":"2026-10-12","durum":""},{"amount":300,"note":"Açılış devri","date":"2026-10-12","durum":"candidate"}]
+  DEFTER (güncellemeden hemen sonra): 120 = 105000 · 519 = -30000 · 500 = -70000 · 600 = 0 · 649 = 0 · 671 = 0 · 681 = 0
+  cari A bakiye: 200 · "?"
+  cari B bakiye: 200 · "?"
+
+■ 1 Ana ekran: zil
+  zil listesi: Tahsilat alınmadı ¦ 3 ¦ 18 gün gecikti ¦ Yürüyüş Müşteri A ¦ Tahsil Edilecek Borç · Açılış bakiyesi · vade 02.10.2026 · ₺700,00 ¦ ✕ ¦ Tahsilat Gir ¦ Cariyi Aç ¦ 8 gün gecikti ¦ Yürüyüş Müşteri A ¦ Tahsil Edilecek Borç · Mal bedeli · vade 12.10.2026 · ₺50,00 ¦ ✕ ¦ Tahsilat Gir ¦ Cariyi Aç ¦ 8 gün gecikti ¦ Yürüyüş Müşteri B ¦ Tahsil Edilecek Borç · Açılış devri · vade 12.10.2026 · ₺300,00 ¦ ✕ ¦ Tahsilat Gir ¦ Cariyi Aç ¦ Sistem ¦ 1 ¦ Onay Bekliyor ¦ 2 kayıt onay bekliyor ¦ Eski sürümden gelen, açıklaması 'Açılış…' ile başlayan Borç Yaz / Alacak Yaz kayıtları; açılış olup olmadığını seçin (Yönetim → Sistem → Açılış Olabilir Kayıtlar). ¦ ✕ ¦ Yönetim → Sistem
+
+■ 2 Yönetim › Sistem: satırlar (karar öncesi)
+  Dönem kilidi: 05.10.2026 ve öncesi kilitli.
+  Mutabakat satırı: Mutabakat: 64 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Uyarı (yeni işlemleri engellemez): Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi) — 1 madde, fark ₺700,00. Kilitli dönemin raporları donmuş defterden okunur, değişmez; fark Yönetim › Kural Farkı Düzeltme ile ilk açık güne alınır.
+
+■ 3 Kural Farkı Düzeltme penceresi (aday varken): pasif mi, nedeni ne
+  pencere: × ¦ DÖNEM KİLİDİ VE MUTABAKAT ¦ Kural Farkı Düzeltme ¦ Kilitli dönem: 05.10.2026 ve öncesi. Fiş tarihi (ilk açık gün): 06.10.2026. Kilitli dönemin raporları donmuş defterden okunur ve değişmez; fark bu fişle ilk açık güne alınır. Önceki yılların gelir / gider farkı 671 / 681'e yazılır. ¦ Önce Açılış Olabilir listesini tamamlayın: kilitli dönemde onay bekleyen 1 kayıt var (Yönetim › Sistem › Açılış Olabilir Kayıtlar). Açılış Olabilir Kayıtları Aç ¦ Fiş Satırları ¦ HESAP HESAP ADI BORÇ ALACAK ¦ 500 Sermaye ₺700,00  ¦ 519 Eşleştirilecek Açılış Bakiyeleri ₺700,00 ¦ Toplam ₺700,00 ₺700,00 ¦ Farkı Doğuran Kayıtlar ¦ Kilitli dönemde güncel kuralın donmuş defterden farklı türettiği kayıtlar (1 kayıt). Beklemediğiniz bir kayıt varsa fişi kaydetmeden önce kaydı inceleyin. ¦ TARİH KAYNAK AÇIKLAMA HESAP FARKI ¦ 02.10.2026 Cari (borç yaz) Açılış bakiyesi 500 +₺700,00 · 519 −₺700,00 ¦ Satırları ve farkı doğuran kayıtları gözden geçirdim; fiş ilk açık güne yazılsın. ¦ Fişi Kaydet ¦ Önce Açılış Olabilir listesini tamamlayın: kilitli dönemde onay bekleyen 1 kayıt var (Yönetim › Sistem › Açılış Olabilir Kayıtlar).
+  Fişi Kaydet pasif: true · neden: Önce Açılış Olabilir listesini tamamlayın: kilitli dönemde onay bekleyen 1 kayıt var (Yönetim › Sistem › Açılış Olabilir Kayıtlar).
+
+■ 4 Açılış Olabilir Kayıtlar: 700 onay, 300 ret
+  özet: Onay bekleyen 2 kayıt (kilitli dönemde 1) · Açılış 0 · Açılış Değil 0
+  tablo:  TARİH CARİ TÜR TUTAR AÇIKLAMA DURUM DÖNEM İŞLEM ¦  02.10.2026 Yürüyüş Müşteri A ¦ 1 Borç Yaz ₺700,00 Açılış bakiyesi Onay Bekliyor Kilitli Açılış (Onayla) Açılış Değil (Reddet) ¦  12.10.2026 Yürüyüş Müşteri B ¦ 2 Borç Yaz ₺300,00 Açılış devri Onay Bekliyor Açık Açılış (Onayla) Açılış Değil (Reddet)
+  bildirim (onaydan sonra): 1 kayıt açılış sayıldı. ¦ Geri Al ¦ ×
+  özet (kararlardan sonra): Onay bekleyen 0 kayıt · Açılış 1 · Açılış Değil 1
+  tablo / boş liste: Onay bekleyen kayıt yok.
+  aday durumu (veri tabanı): [{"amount":700,"durum":"confirmed"},{"amount":50,"durum":""},{"amount":300,"durum":"rejected"}]
+  DEFTER (kararlardan sonra): 120 = 105000 · 519 = 0 · 500 = -70000 · 600 = 0 · 649 = 0 · 671 = 0 · 681 = 0
+  cari A bakiye: 200 · "?"
+  cari B bakiye: 200 · "?"
+
+■ 5 Yönetim › Sistem satırı + Kural Farkı Düzeltme: ön izleme → Tab + Boşluk ile onay → Fişi Kaydet
+  Dönem kilidi: 05.10.2026 ve öncesi kilitli.
+  Mutabakat satırı: Mutabakat: 64 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Uyarı (yeni işlemleri engellemez): Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi) — 1 madde, fark ₺700,00. Kilitli dönemin raporları donmuş defterden okunur, değişmez; fark Yönetim › Kural Farkı Düzeltme ile ilk açık güne alınır.
+  fiş satırları: HESAP HESAP ADI BORÇ ALACAK ¦ 500 Sermaye ₺700,00  ¦ 519 Eşleştirilecek Açılış Bakiyeleri ₺700,00 ¦ Toplam ₺700,00 ₺700,00
+  farkı doğuran kayıtlar: TARİH KAYNAK AÇIKLAMA HESAP FARKI ¦ 02.10.2026 Cari (borç yaz) Açılış bakiyesi 500 +₺700,00 · 519 −₺700,00
+  Fişi Kaydet pasif (onaysız): true · neden: Kaydetmek için onay kutusunu işaretleyin.
+  Tab ile onay kutusuna ulaşıldı: true
+  Fişi Kaydet pasif (onaylı): false
+  Dönem kilidi: 05.10.2026 ve öncesi kilitli.
+  Mutabakat satırı: Mutabakat: 66 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Bilgi: Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi) — Düzeltildi (Fiş 2026-000001); kilitli dönemin farkı ilk açık güne alındı.
+  ✗ ADIM YARIDA: no such column: number
+
+■ 6 Hesap Planı Mizanı (düzeltme fişinden sonra)
+  Hesap Planı Mizanı (duzeltmeden-sonra) — 6 satır:
+    Hesap | Hesap Adı | Devir | Borç | Alacak | Bakiye | Yön
+    120 | Alıcılar (Müşteri Carileri) | ₺0,00 | ₺1.050,00 | ₺0,00 | ₺1.050,00 | Borç
+    500 | Sermaye | ₺0,00 | ₺700,00 | ₺700,00 | ₺0,00 | 
+    519 | Eşleştirilecek Açılış Bakiyeleri | ₺0,00 | ₺0,00 | ₺700,00 | ₺700,00 | Alacak
+    602 | Diğer Gelirler (Hizmet, Taksitli Satış, Kayıt Tahsilatları) | ₺0,00 | ₺0,00 | ₺350,00 | ₺350,00 | Alacak
+    TOPLAM |  | ₺0,00 | ₺1.750,00 | ₺1.750,00 |  | 
+
+■ 7 Açılış Eşleştirme: 519 bakiyesi → 500 alacak 700 → Ön İzleme → Tab + Boşluk → Fişi Kaydet
+  Dönem kilidi: 05.10.2026 ve öncesi kilitli.
+  Mutabakat satırı: Mutabakat: 66 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Bilgi: Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi) — Düzeltildi (Fiş 2026-000001); kilitli dönemin farkı ilk açık güne alındı.
+  519 bakiyesi: Fiş tarihinin gün sonunda 519 Eşleştirilecek Açılış Bakiyeleri: ₺700,00 Alacak.
+  döküm: AÇILIŞ TÜRÜ 519 TUTARI ¦ Fişler ₺700,00 Alacak ¦ Toplam ₺700,00 Alacak
+  neden / durum: (yok)
+  ilk satır önerisi: hesap 500 · yön credit · tutar '700,00'
+  ön izleme satırları: HESAP HESAP ADI BORÇ ALACAK ¦ 500 Sermaye ₺700,00 ¦ 519 Eşleştirilecek Açılış Bakiyeleri ₺700,00  ¦ Toplam ₺700,00 ₺700,00
+  fişten sonra: Fişten sonra 519: ₺0,00 (tamamı eşleşti). · hata: (yok)
+  Tab ile onay kutusuna ulaşıldı: true
+  Fişi Kaydet pasif (onaylı): false · neden: 
+  pencere (kayıttan sonra): (yok)
+  ✗ ADIM YARIDA: no such column: number
+
+■ 8 Hesap Planı Mizanı (eşleştirmeden sonra) + Yevmiye
+  Hesap Planı Mizanı (eslestirmeden-sonra) — 6 satır:
+    Hesap | Hesap Adı | Devir | Borç | Alacak | Bakiye | Yön
+    120 | Alıcılar (Müşteri Carileri) | ₺0,00 | ₺1.050,00 | ₺0,00 | ₺1.050,00 | Borç
+    500 | Sermaye | ₺0,00 | ₺700,00 | ₺1.400,00 | ₺700,00 | Alacak
+    519 | Eşleştirilecek Açılış Bakiyeleri | ₺0,00 | ₺700,00 | ₺700,00 | ₺0,00 | 
+    602 | Diğer Gelirler (Hizmet, Taksitli Satış, Kayıt Tahsilatları) | ₺0,00 | ₺0,00 | ₺350,00 | ₺350,00 | Alacak
+    TOPLAM |  | ₺0,00 | ₺2.450,00 | ₺2.450,00 |  | 
+  Yevmiye Defteri — 12 satır:
+    Tarih | İşlem | Açıklama | Hesap | Borç | Alacak
+    02.10.2026 | Cari (borç yaz) | Açılış bakiyesi | 120 | ₺700,00 | 
+    02.10.2026 | Cari (borç yaz) | Açılış bakiyesi | 500 |  | ₺700,00
+    06.10.2026 | Kural Farkı Düzeltme Fişi | Fiş 2026-000001 · Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi) | 500 | ₺700,00 | 
+    06.10.2026 | Kural Farkı Düzeltme Fişi | Fiş 2026-000001 · Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi) | 519 |  | ₺700,00
+    12.10.2026 | Cari (borç yaz) | Açılış devri | 120 | ₺300,00 | 
+    12.10.2026 | Cari (borç yaz) | Açılış devri | 602 |  | ₺300,00
+    12.10.2026 | Cari (borç yaz) | Mal bedeli | 120 | ₺50,00 | 
+    12.10.2026 | Cari (borç yaz) | Mal bedeli | 602 |  | ₺50,00
+    20.10.2026 | Açılış Eşleştirme Fişi | Fiş 2026-000002 · Açılış Eşleştirme (Eşleştirilecek Açılış Bakiyeleri) | 500 |  | ₺700,00
+    20.10.2026 | Açılış Eşleştirme Fişi | Fiş 2026-000002 · Açılış Eşleştirme (Eşleştirilecek Açılış Bakiyeleri) | 519 | ₺700,00 | 
+    TOPLAM |  |  |  | ₺2.450,00 | ₺2.450,00
+
+■ 9 Yönetim › Sistem son hâl + Mutabakat Testi
+  Dönem kilidi: 05.10.2026 ve öncesi kilitli.
+  Mutabakat satırı: Mutabakat: 66 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Bilgi: Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi) — Düzeltildi (Fiş 2026-000001); kilitli dönemin farkı ilk açık güne alındı.
+  Mutabakat Testi: 200 · {"ok":true,"checks":[{"code":"balance","name":"Çift yönlü kayıt (borç = alacak)","ok":true,"difference":0},{"code":"gl:100","name":"100 Kasa (Nakit)","ok":true,"difference":0,"ledger":0,"subledger":0},{"code":"gl:101","name":"101 Alınan Çekler","ok":true,"difference":0,"ledger":0,"subledger":0},{"code":"gl:102","name":"102 Bankalar (Havale / EFT)","ok":true,"difference":0,"ledger":0,"subledger":0},{"code":"gl:103","name":"103 Verilen Çekler ve Ödeme Emirleri (−)","ok":true,"difference":0,"ledger
+
+■ 10 Ana ekran: zil (son)
+  zil listesi: Tahsilat alınmadı ¦ 3 ¦ 18 gün gecikti ¦ Yürüyüş Müşteri A ¦ Tahsil Edilecek Borç · Açılış bakiyesi · vade 02.10.2026 · ₺700,00 ¦ ✕ ¦ Tahsilat Gir ¦ Cariyi Aç ¦ 8 gün gecikti ¦ Yürüyüş Müşteri A ¦ Tahsil Edilecek Borç · Mal bedeli · vade 12.10.2026 · ₺50,00 ¦ ✕ ¦ Tahsilat Gir ¦ Cariyi Aç ¦ 8 gün gecikti ¦ Yürüyüş Müşteri B ¦ Tahsil Edilecek Borç · Açılış devri · vade 12.10.2026 · ₺300,00 ¦ ✕ ¦ Tahsilat Gir ¦ Cariyi Aç
+çıkış 0

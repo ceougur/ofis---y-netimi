@@ -1,0 +1,10 @@
+#!/bin/bash
+# Ana oturum: tur 2 hız kabulü — ÖZEL ölçüm kilidi BİR KEZ alınır (en çok BEKLE sn beklenir; ders 50: sıra flock ile), iki kip art arda aynı kilit altında.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+exec 8>"$S/olcum.lock"
+echo "kilit bekleniyor $(date -u +%H:%M:%S)"
+flock -x -w ${BEKLE:-3000} 8 || { echo "KİLİT ALINAMADI — ÖLÇÜLEMEDİ $(date -u +%H:%M:%S)"; exit 3; }
+echo "kilit alındı $(date -u +%H:%M:%S) · yük $(cut -d' ' -f1-3 /proc/loadavg)"
+KILIT_BENDE=1 bash $S/c5a2-olcum/hiz.sh kilitsiz 5 ${1:-hiz-c5a2}-kilitsiz 9<&- || exit 1
+KILIT_BENDE=1 bash $S/c5a2-olcum/hiz.sh kilitli 5 ${1:-hiz-c5a2}-kilitli 9<&- || exit 1
+echo "iki kip bitti $(date -u +%H:%M:%S) · yük $(cut -d' ' -f1-3 /proc/loadavg)"

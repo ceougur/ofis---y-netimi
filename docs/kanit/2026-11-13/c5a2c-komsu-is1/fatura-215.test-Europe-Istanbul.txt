@@ -1,0 +1,56 @@
+TAP version 13
+# (node:12481) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Fatura 2.0.15: QA düzeltmeleri ve eklemeleri
+    # Subtest: Toplu kesme: taslaklar tarih sırasıyla kesilir; stoğu eksiye düşüren taslak kesilmez, diğerleri kesilir; kesilmiş belge invoice-not-draft
+    ok 1 - Toplu kesme: taslaklar tarih sırasıyla kesilir; stoğu eksiye düşüren taslak kesilmez, diğerleri kesilir; kesilmiş belge invoice-not-draft
+      ---
+      duration_ms: 112.473175
+      type: 'test'
+      ...
+    # Subtest: Toplu iptal: seçilenler iptal edilir; iadesi olan belge iptal edilmez; en yeni belge önce; personel 403; boş liste 400
+    ok 2 - Toplu iptal: seçilenler iptal edilir; iadesi olan belge iptal edilmez; en yeni belge önce; personel 403; boş liste 400
+      ---
+      duration_ms: 150.731301
+      type: 'test'
+      ...
+    # Subtest: Logo: yalnız JPEG, 150 KB ve 1200 piksel sınırı; belgeye kopyalanmaz; PDF'e DCTDecode görseli olarak gömülür; kaldırılınca çıkmaz
+    ok 3 - Logo: yalnız JPEG, 150 KB ve 1200 piksel sınırı; belgeye kopyalanmaz; PDF'e DCTDecode görseli olarak gömülür; kaldırılınca çıkmaz
+      ---
+      duration_ms: 79.495129
+      type: 'test'
+      ...
+    # Subtest: Kaşe / imza alanı: satış PDF'inde Teslim Alan ve Düzenleyen kutuları; ayar kapatılınca yok; alış belgesinde hiç basılmaz
+    ok 4 - Kaşe / imza alanı: satış PDF'inde Teslim Alan ve Düzenleyen kutuları; ayar kapatılınca yok; alış belgesinde hiç basılmaz
+      ---
+      duration_ms: 36.978399
+      type: 'test'
+      ...
+    # Subtest: Stok kartı: fatura kalemine bağlı ürün silinmez (409 invoice-linked); fatura iptal edilince silinir
+    ok 5 - Stok kartı: fatura kalemine bağlı ürün silinmez (409 invoice-linked); fatura iptal edilince silinir
+      ---
+      duration_ms: 70.587685
+      type: 'test'
+      ...
+    # Subtest: Fiyat Farkı Faturası senaryosu: stoksuz satış kalemi, cariye borç; senaryo listesinde ve varsayılan satış senaryosu olarak seçilebilir
+    ok 6 - Fiyat Farkı Faturası senaryosu: stoksuz satış kalemi, cariye borç; senaryo listesinde ve varsayılan satış senaryosu olarak seçilebilir
+      ---
+      duration_ms: 58.669128
+      type: 'test'
+      ...
+    1..6
+ok 1 - Fatura 2.0.15: QA düzeltmeleri ve eklemeleri
+  ---
+  duration_ms: 1007.682257
+  type: 'suite'
+  ...
+1..1
+# tests 6
+# suites 1
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1417.688197
+cikis=0

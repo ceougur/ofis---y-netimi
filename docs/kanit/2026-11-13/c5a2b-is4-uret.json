@@ -1,0 +1,26 @@
+{
+ "F1": "200",
+ "supheli": "200",
+ "F2": "200",
+ "a_bagliNakit": "200",
+ "c_bagsizNakit": "200",
+ "b_F2yeBagliCek": "200",
+ "defter": [
+  "2026-09-10 Şüpheli Alacağa Al | A 120 1000.00",
+  "2026-09-30 Cari tahsilat | A 120 400.00",
+  "2026-10-05 Cari tahsilat | A 128 100.00",
+  "2026-10-10 Çek / Senet | A 128 300.00"
+ ],
+ "kart": {
+  "bakiye": 700,
+  "supheli": 60000
+ },
+ "kuyrukSupheli": {
+  "tutar": 600,
+  "kalemler": [
+   "invoice:F1 500",
+   "invoice:F2 100"
+  ]
+ },
+ "mutabakat": []
+}

@@ -1,0 +1,298 @@
+TAP version 13
+# (node:6114) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:6114) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: G1 — kilitli günde kapatılmış taksit kartı (kilit bugün)
+    # Subtest: nasıl bozarım: kilitli günde kapatılmış yeni borç kartını yeniden aç → 409 period-locked
+    ok 1 - nasıl bozarım: kilitli günde kapatılmış yeni borç kartını yeniden aç → 409 period-locked
+      ---
+      duration_ms: 3.235413
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: kilitli günde kapatılmış Mevcut Borç kartını sil → 409 period-locked
+    ok 2 - nasıl bozarım: kilitli günde kapatılmış Mevcut Borç kartını sil → 409 period-locked
+      ---
+      duration_ms: 1.913855
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: kilitten önce silinmiş kapatılmış kartı kilitten sonra geri yükle → 409 period-locked
+    ok 3 - nasıl bozarım: kilitten önce silinmiş kapatılmış kartı kilitten sonra geri yükle → 409 period-locked
+      ---
+      duration_ms: 10.033908
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: kilit bugünken açık kart kapatılırsa vazgeçilen kalan kilitli güne yazılırdı → 409 period-locked
+    ok 4 - nasıl bozarım: kilit bugünken açık kart kapatılırsa vazgeçilen kalan kilitli güne yazılırdı → 409 period-locked
+      ---
+      duration_ms: 3.728772
+      type: 'test'
+      ...
+    # Subtest: çalışıyor mu: kilitli günde kapatılmış kartın adı ve notu düzeltilir (200)
+    ok 5 - çalışıyor mu: kilitli günde kapatılmış kartın adı ve notu düzeltilir (200)
+      ---
+      duration_ms: 13.215227
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: kilit izi kapanışı kapsar — doğrudan SQL ile yeniden açma, silme ya da tutar değişikliği kapıda geri alınır
+    ok 6 - nasıl bozarım: kilit izi kapanışı kapsar — doğrudan SQL ile yeniden açma, silme ya da tutar değişikliği kapıda geri alınır
+      ---
+      duration_ms: 25.785129
+      type: 'test'
+      ...
+    # Subtest: kilitli dönemin mizanı (120, 689) değişmedi; mutabakat 0
+    ok 7 - kilitli dönemin mizanı (120, 689) değişmedi; mutabakat 0
+      ---
+      duration_ms: 20.169883
+      type: 'test'
+      ...
+    1..7
+ok 1 - G1 — kilitli günde kapatılmış taksit kartı (kilit bugün)
+  ---
+  duration_ms: 1018.450778
+  type: 'suite'
+  ...
+# (node:6114) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: G1 — 01.05.2025'te kapatılmış kart (kilit 30.06.2025): tahsilat, çek karşılıksızı
+    # Subtest: nasıl bozarım: kilitli dönemde kapatılmış karta bugün tahsilat → 409 period-locked (689 kilitli günde küçülürdü)
+    ok 1 - nasıl bozarım: kilitli dönemde kapatılmış karta bugün tahsilat → 409 period-locked (689 kilitli günde küçülürdü)
+      ---
+      duration_ms: 5.483235
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: karta sayılan çek bugün karşılıksız çıkarsa tahsilat karttan düşerdi → 409 period-locked
+    ok 2 - nasıl bozarım: karta sayılan çek bugün karşılıksız çıkarsa tahsilat karttan düşerdi → 409 period-locked
+      ---
+      duration_ms: 3.524436
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: doğrudan SQL ile kapatılmış karta açık dönemde tahsilat eklenirse kilit izi yakalar
+    ok 3 - nasıl bozarım: doğrudan SQL ile kapatılmış karta açık dönemde tahsilat eklenirse kilit izi yakalar
+      ---
+      duration_ms: 12.134584
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: 2.0.13 öncesi kapatılmış kartın (kapanış günü boş) adı düzeltilince vazgeçilen kalanın günü kaymaz
+    ok 4 - nasıl bozarım: 2.0.13 öncesi kapatılmış kartın (kapanış günü boş) adı düzeltilince vazgeçilen kalanın günü kaymaz
+      ---
+      duration_ms: 15.869271
+      type: 'test'
+      ...
+    # Subtest: çalışıyor mu: kilitten sonra kapatılmış kart yeniden açılır, tahsilat alır, yeniden kapanır (200)
+    ok 5 - çalışıyor mu: kilitten sonra kapatılmış kart yeniden açılır, tahsilat alır, yeniden kapanır (200)
+      ---
+      duration_ms: 57.925935
+      type: 'test'
+      ...
+    # Subtest: kilitli dönemin mizanı değişmedi
+    ok 6 - kilitli dönemin mizanı değişmedi
+      ---
+      duration_ms: 3.22725
+      type: 'test'
+      ...
+    1..6
+ok 2 - G1 — 01.05.2025'te kapatılmış kart (kilit 30.06.2025): tahsilat, çek karşılıksızı
+  ---
+  duration_ms: 840.867195
+  type: 'suite'
+  ...
+# (node:6114) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: G2 — kilitli dönemde tahsilatı olan kartın carisi değişmez
+    # Subtest: nasıl bozarım: müşterinin kartını tedarikçi cariye taşı → 409 period-locked; kart müşteride, kilitli mizan aynı
+    ok 1 - nasıl bozarım: müşterinin kartını tedarikçi cariye taşı → 409 period-locked; kart müşteride, kilitli mizan aynı
+      ---
+      duration_ms: 6.719841
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: hedef carinin kilitli dönemde hareketi yokken de nedenli 409 period-locked (ledger-integrity değil)
+    ok 2 - nasıl bozarım: hedef carinin kilitli dönemde hareketi yokken de nedenli 409 period-locked (ledger-integrity değil)
+      ---
+      duration_ms: 2.510466
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: doğrudan SQL ile kartın carisi değişirse kilit izi yakalar (iki cari de kilitli dönemde hareketli)
+    ok 3 - nasıl bozarım: doğrudan SQL ile kartın carisi değişirse kilit izi yakalar (iki cari de kilitli dönemde hareketli)
+      ---
+      duration_ms: 13.753138
+      type: 'test'
+      ...
+    # Subtest: çalışıyor mu: kilitli tahsilatlı kartın adı ve notu değişir; açık dönem kartı başka cariye taşınır (200)
+    ok 4 - çalışıyor mu: kilitli tahsilatlı kartın adı ve notu değişir; açık dönem kartı başka cariye taşınır (200)
+      ---
+      duration_ms: 47.327309
+      type: 'test'
+      ...
+    1..4
+ok 3 - G2 — kilitli dönemde tahsilatı olan kartın carisi değişmez
+  ---
+  duration_ms: 882.308009
+  type: 'suite'
+  ...
+# (node:6114) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: G3 — kilitli dönemdeki kuruşlu çek: arayüzün gövdesiyle yalnız vade düzeltme
+    # Subtest: çalışıyor mu: arayüz gövdesiyle yalnız vade düzeltilir — carisiz ve carili (200); tutar ve cari satırı aynı
+    ok 1 - çalışıyor mu: arayüz gövdesiyle yalnız vade düzeltilir — carisiz ve carili (200); tutar ve cari satırı aynı
+      ---
+      duration_ms: 37.597961
+      type: 'test'
+      ...
+    # Subtest: çalışıyor mu: kilitli evrakta form tutar/tarih alanlarını açmaz (canEditCore false, coreLocked); açık dönemde açar
+    ok 2 - çalışıyor mu: kilitli evrakta form tutar/tarih alanlarını açmaz (canEditCore false, coreLocked); açık dönemde açar
+      ---
+      duration_ms: 3.37578
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: virgüllü yeni tutar (1 kuruş fark) → 409 period-locked; tutar aynı
+    ok 3 - nasıl bozarım: virgüllü yeni tutar (1 kuruş fark) → 409 period-locked; tutar aynı
+      ---
+      duration_ms: 3.279106
+      type: 'test'
+      ...
+    # Subtest: çalışıyor mu: açık dönemdeki kuruşlu çekte form gövdesi tutarı değiştirmeden kaydedilince cari satırı yeniden yazılmaz
+    ok 4 - çalışıyor mu: açık dönemdeki kuruşlu çekte form gövdesi tutarı değiştirmeden kaydedilince cari satırı yeniden yazılmaz
+      ---
+      duration_ms: 12.547555
+      type: 'test'
+      ...
+    1..4
+ok 4 - G3 — kilitli dönemdeki kuruşlu çek: arayüzün gövdesiyle yalnız vade düzeltme
+  ---
+  duration_ms: 609.348821
+  type: 'suite'
+  ...
+# Subtest: G4 — eski sürümden kalan satır Mutabakat Testi'nde, Defter Mutabakatı'nda ve Günlük'te görünür
+    # Subtest: çalışıyor mu: Mutabakat Testi eski satırları gösterir (ok false; legacy sayısı), yeni işlemleri engellemez
+    ok 1 - çalışıyor mu: Mutabakat Testi eski satırları gösterir (ok false; legacy sayısı), yeni işlemleri engellemez
+      ---
+      duration_ms: 38.018135
+      type: 'test'
+      ...
+    # Subtest: çalışıyor mu: Defter Mutabakatı satırı 'Eski Sürümden Kalan' der; Mutabakat Günlüğü'nde açılış sapması (baseline) var
+    ok 2 - çalışıyor mu: Defter Mutabakatı satırı 'Eski Sürümden Kalan' der; Mutabakat Günlüğü'nde açılış sapması (baseline) var
+      ---
+      duration_ms: 13.390634
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: eski satır varken yeni ileri tarihli / tanınmayan yollu satır kapıda yine 409
+    ok 3 - nasıl bozarım: eski satır varken yeni ileri tarihli / tanınmayan yollu satır kapıda yine 409
+      ---
+      duration_ms: 12.539732
+      type: 'test'
+      ...
+    # Subtest: çalışıyor mu: eski satırlar kalkınca Mutabakat Testi yeniden tutarlı
+    ok 4 - çalışıyor mu: eski satırlar kalkınca Mutabakat Testi yeniden tutarlı
+      ---
+      duration_ms: 20.383181
+      type: 'test'
+      ...
+    1..4
+ok 5 - G4 — eski sürümden kalan satır Mutabakat Testi'nde, Defter Mutabakatı'nda ve Günlük'te görünür
+  ---
+  duration_ms: 427.978657
+  type: 'suite'
+  ...
+# Subtest: G5 — ileri tarihli eski hareketin Silinenler'den geri yüklenmesi
+    # Subtest: nasıl bozarım: ileri alış tarihli eski çek silinip geri yüklenirse nedenli 400 date-future (evrak silinmiş kalır)
+    ok 1 - nasıl bozarım: ileri alış tarihli eski çek silinip geri yüklenirse nedenli 400 date-future (evrak silinmiş kalır)
+      ---
+      duration_ms: 53.621603
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: ileri tarihli eski kayıt tahsilatı silinip yeniden başlatmadan sonra geri yüklenirse nedenli 400 date-future
+    ok 2 - nasıl bozarım: ileri tarihli eski kayıt tahsilatı silinip yeniden başlatmadan sonra geri yüklenirse nedenli 400 date-future
+      ---
+      duration_ms: 30.16767
+      type: 'test'
+      ...
+    1..2
+ok 6 - G5 — ileri tarihli eski hareketin Silinenler'den geri yüklenmesi
+  ---
+  duration_ms: 394.440975
+  type: 'suite'
+  ...
+# (node:6114) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: G6 — Taksite Aktar, Excel'den taksit yükleme ve aktarımı geri alma: dönem kilidinde nedenli
+    # Subtest: nasıl bozarım: ilk vadesi kilitli dönemde olan kişi Taksite Aktar'da nedeniyle atlanır; kart açılmaz, tahsilat kayıtta kalır
+    ok 1 - nasıl bozarım: ilk vadesi kilitli dönemde olan kişi Taksite Aktar'da nedeniyle atlanır; kart açılmaz, tahsilat kayıtta kalır
+      ---
+      duration_ms: 265.294198
+      type: 'test'
+      ...
+    # Subtest: çalışıyor mu: kilitli dönemde hiçbir şeyi olmayan kişi aynı anda aktarılır (200)
+    ok 2 - çalışıyor mu: kilitli dönemde hiçbir şeyi olmayan kişi aynı anda aktarılır (200)
+      ---
+      duration_ms: 22.608136
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: Excel'den taksit yüklemede ilk vadesi kilitli dönemde olan satır nedeniyle atlanır (yükleme durmaz)
+    ok 3 - nasıl bozarım: Excel'den taksit yüklemede ilk vadesi kilitli dönemde olan satır nedeniyle atlanır (yükleme durmaz)
+      ---
+      duration_ms: 39.467649
+      type: 'test'
+      ...
+# (node:6114) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: nasıl bozarım: kilitten önce yapılmış aktarımı kilitten sonra geri al → 409 period-locked (taşınan tahsilat kilitli günde)
+    ok 4 - nasıl bozarım: kilitten önce yapılmış aktarımı kilitten sonra geri al → 409 period-locked (taşınan tahsilat kilitli günde)
+      ---
+      duration_ms: 252.281075
+      type: 'test'
+      ...
+    1..4
+ok 7 - G6 — Taksite Aktar, Excel'den taksit yükleme ve aktarımı geri alma: dönem kilidinde nedenli
+  ---
+  duration_ms: 983.618762
+  type: 'suite'
+  ...
+# Subtest: G7 — silmede eksi bakiye sorusu nedenini söyler
+    # Subtest: çalışıyor mu: kayıt tahsilatı ve cari silmede soru 'silinince Nakit Kasa'dan … düşer' der ('çıkış' değil)
+    ok 1 - çalışıyor mu: kayıt tahsilatı ve cari silmede soru 'silinince Nakit Kasa'dan … düşer' der ('çıkış' değil)
+      ---
+      duration_ms: 63.753447
+      type: 'test'
+      ...
+    # Subtest: çalışıyor mu: kayıtta çıkış sorusu (yeni ödeme) eski metniyle kalır
+    ok 2 - çalışıyor mu: kayıtta çıkış sorusu (yeni ödeme) eski metniyle kalır
+      ---
+      duration_ms: 2.576134
+      type: 'test'
+      ...
+    1..2
+ok 8 - G7 — silmede eksi bakiye sorusu nedenini söyler
+  ---
+  duration_ms: 360.204944
+  type: 'suite'
+  ...
+# Subtest: G8 — mahsup ve geri yükleme mesajları
+    # Subtest: çalışıyor mu: mahsuptaki satır silinirken mesaj arayüzdeki yolu söyler (faturanın kartı → Bu Faturayı Kapatanlar → Kaldır)
+    ok 1 - çalışıyor mu: mahsuptaki satır silinirken mesaj arayüzdeki yolu söyler (faturanın kartı → Bu Faturayı Kapatanlar → Kaldır)
+      ---
+      duration_ms: 42.331026
+      type: 'test'
+      ...
+    # Subtest: çalışıyor mu: iptal edilen faturaya bağlı tahsilat geri yüklenince mesaj fatura numarasını ve nedeni söyler
+    ok 2 - çalışıyor mu: iptal edilen faturaya bağlı tahsilat geri yüklenince mesaj fatura numarasını ve nedeni söyler
+      ---
+      duration_ms: 80.353493
+      type: 'test'
+      ...
+    1..2
+ok 9 - G8 — mahsup ve geri yükleme mesajları
+  ---
+  duration_ms: 465.650567
+  type: 'suite'
+  ...
+1..9
+# tests 35
+# suites 9
+# pass 35
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6345.368785
+cikis=0

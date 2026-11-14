@@ -417,8 +417,8 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
           );
           if (found) return "kilitli dönemde hareketi olan cari";
         }
-        // 2.5.0 Ç5-A tur 1e: Kayıt Tarihi kilitte olan yüklenmiş kartın yükleme damgası (LOCK_SQL plans_import_lock).
-        if (table === "plan_imports" && differs(pre, post, ["created_at"]) && hasColumn("plans", "import_id") && store.get("SELECT 1 AS found FROM plans WHERE import_id = ? AND import_id <> '' AND deleted_at IS NULL AND covers_balance = 0 AND registered_on <> '' AND registered_on <= ? LIMIT 1", String((post || pre).id ?? ""), lock)) return "kart yüklemesi kilitli dönem";
+        // 2.5.0 Ç5-A tur 2 (dar kontrol 1f DÜŞÜK-4 / N7): "plan_imports" (yükleme damgası) dalı SİLİNDİ — tablo SCOPE_TABLES'ta değil (lib/db.mjs), süzgeç bu tablonun yazımını hiç
+        // görmez (ulaşılamayan dal). Program yükleme damgasını kart yüklenirken bir kez yazar; kapı dışı değişikliği taramadaki LOCK_SQL plans_import_lock bulur.
         // 2.5.0 Ç5-A tur 1f — SINIF 2 (§16; LOCK_SQL cheques_bounce_lock / cheques_free_lock): kilitli evrağın carisi, kilitli karşılıksızı olan evrağın durumu ve karşılıksız
         // olayları, kilitli evrağın "cariye işlenmemiş" olgusunu belirleyen alış / veriliş cari satırı ve evrakla taksit satırı. Kilitli evrağın bugünkü tahsili / cirosu girmez.
         const cheque = chequeLockRelevant(table, pre, post, lock, inTrace);

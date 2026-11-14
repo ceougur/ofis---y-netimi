@@ -1,0 +1,52 @@
+TAP version 13
+# (node:6511) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Birleşik tur 6 — A1: çok satırlı INSERT'in BÜTÜN satırları işlem kapsamında 'eklendi' ve düzeltilince 'doğmuş'
+    # Subtest: üç satırlı INSERT + düzeltme: scope.inserted ve scope.born üç rowid'in hepsi (KABUL); iki satırlıdan biri açılış öncesiyse → 409, ikisi de yazılmadı
+    ok 1 - üç satırlı INSERT + düzeltme: scope.inserted ve scope.born üç rowid'in hepsi (KABUL); iki satırlıdan biri açılış öncesiyse → 409, ikisi de yazılmadı
+      ---
+      duration_ms: 22.051322
+      type: 'test'
+      ...
+    1..1
+ok 1 - Birleşik tur 6 — A1: çok satırlı INSERT'in BÜTÜN satırları işlem kapsamında 'eklendi' ve düzeltilince 'doğmuş'
+  ---
+  duration_ms: 466.25362
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 6 — A16: v2.4.9'dan gelen açılış öncesi peşin nakitli fatura (cari hareketlerinin SON satırı): Düzenle ile yalnız tutar → 200 (silinen peşinin rowid'ini yenisi alır)
+    # Subtest: Düzenle (300 → 350, tarih aynı — S26): 200; peşin satırı aynı rowid'de 350, tarih aynı; uyarı sürer (1 satır)
+    ok 1 - Düzenle (300 → 350, tarih aynı — S26): 200; peşin satırı aynı rowid'de 350, tarih aynı; uyarı sürer (1 satır)
+      ---
+      duration_ms: 760.346612
+      type: 'test'
+      ...
+    1..1
+ok 2 - Birleşik tur 6 — A16: v2.4.9'dan gelen açılış öncesi peşin nakitli fatura (cari hareketlerinin SON satırı): Düzenle ile yalnız tutar → 200 (silinen peşinin rowid'ini yenisi alır)
+  ---
+  duration_ms: 771.896072
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 6 — A6: Defter Mutabakatı, eski sürümden kalan satır + Kasa açılış uyarısı birlikte → 'Eski Sürümden Kalan' (yöneticiye bildirin DEĞİL)
+    # Subtest: alt başlık 'Eski sürümden kalan satır var …' + uyarı cümlesi; 'yöneticiye bildirin' yok; satırlar 'Eski Sürümden Kalan' ve 'Uyarı'
+    ok 1 - alt başlık 'Eski sürümden kalan satır var …' + uyarı cümlesi; 'yöneticiye bildirin' yok; satırlar 'Eski Sürümden Kalan' ve 'Uyarı'
+      ---
+      duration_ms: 15.106265
+      type: 'test'
+      ...
+    1..1
+ok 3 - Birleşik tur 6 — A6: Defter Mutabakatı, eski sürümden kalan satır + Kasa açılış uyarısı birlikte → 'Eski Sürümden Kalan' (yöneticiye bildirin DEĞİL)
+  ---
+  duration_ms: 408.533526
+  type: 'suite'
+  ...
+1..3
+# tests 3
+# suites 3
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1997.732248
+cikis=0

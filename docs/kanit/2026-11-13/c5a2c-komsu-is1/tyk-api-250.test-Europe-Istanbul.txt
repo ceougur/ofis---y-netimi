@@ -1,0 +1,144 @@
+TAP version 13
+# (node:15598) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç5-B — Tek Yükümlülük Kuyruğu (API)
+    # Subtest: B1: bütün ekranlar aynı sayı (cari kartı = liste = Anlık Durum = mobil cari listesi = Vade Takip = zil; fatura durumu)
+        # Subtest: cari kartı: Gecikmiş Borç 1.100 (3 kalem), bakiye 1.400; eski alan (taksit) ayrı
+        ok 1 - cari kartı: Gecikmiş Borç 1.100 (3 kalem), bakiye 1.400; eski alan (taksit) ayrı
+          ---
+          duration_ms: 5.654498
+          type: 'test'
+          ...
+        # Subtest: cari listesi satırı ve 'Gecikmiş Borcu Olan' süzgeci aynı sayı; sıralama TYK'ya göre
+        ok 2 - cari listesi satırı ve 'Gecikmiş Borcu Olan' süzgeci aynı sayı; sıralama TYK'ya göre
+          ---
+          duration_ms: 4.474062
+          type: 'test'
+          ...
+        # Subtest: Anlık Durum alacak gecikmişi = cari listesinin toplamı (bu sunucuda tek gecikmiş cari bu)
+        ok 3 - Anlık Durum alacak gecikmişi = cari listesinin toplamı (bu sunucuda tek gecikmiş cari bu)
+          ---
+          duration_ms: 16.116075
+          type: 'test'
+          ...
+        # Subtest: Rapor Merkezi Cari Listesi: report-center TYK'ya geçene kadar eski anlam (geciken taksit 300; cari kartı Gecikmiş Borç 1.100)
+        ok 4 - Rapor Merkezi Cari Listesi: report-center TYK'ya geçene kadar eski anlam (geciken taksit 300; cari kartı Gecikmiş Borç 1.100)
+          ---
+          duration_ms: 10.90395
+          type: 'test'
+          ...
+        # Subtest: Vade Takip: carinin vadesi geçmiş kalemleri toplamı = gecikmiş; aynı borç bir kez (fatura 500, borç 300, taksit 300)
+        ok 5 - Vade Takip: carinin vadesi geçmiş kalemleri toplamı = gecikmiş; aynı borç bir kez (fatura 500, borç 300, taksit 300)
+          ---
+          duration_ms: 12.503249
+          type: 'test'
+          ...
+        # Subtest: zil / takvim: aynı kalemler (ufuk +7 gün); fatura durumu Vadesi Geçti, Kalan 500
+        ok 6 - zil / takvim: aynı kalemler (ufuk +7 gün); fatura durumu Vadesi Geçti, Kalan 500
+          ---
+          duration_ms: 15.760508
+          type: 'test'
+          ...
+        # Subtest: S50: taksit kartı ekranı taksit kalanını kuyruktan gösterir; kartın kendi hesabı (Kalan 600) değişmez
+        ok 7 - S50: taksit kartı ekranı taksit kalanını kuyruktan gösterir; kartın kendi hesabı (Kalan 600) değişmez
+          ---
+          duration_ms: 2.452871
+          type: 'test'
+          ...
+        1..7
+    ok 1 - B1: bütün ekranlar aynı sayı (cari kartı = liste = Anlık Durum = mobil cari listesi = Vade Takip = zil; fatura durumu)
+      ---
+      duration_ms: 155.005046
+      type: 'suite'
+      ...
+    # Subtest: S50 = A: kart seçilmeden alınan tahsilat ayrı kartın vadesi gelmiş taksitini kapatır; Taksitler ve zil bunu gösterir
+    ok 2 - S50 = A: kart seçilmeden alınan tahsilat ayrı kartın vadesi gelmiş taksitini kapatır; Taksitler ve zil bunu gösterir
+      ---
+      duration_ms: 61.945381
+      type: 'test'
+      ...
+    # Subtest: S52 / S72 / S73: Ödeme Sözü gecikmişi değiştirmez; söz günü DAHİL 'Ödeme Sözü Var'; söz geçince düşer
+    ok 3 - S52 / S72 / S73: Ödeme Sözü gecikmişi değiştirmez; söz günü DAHİL 'Ödeme Sözü Var'; söz geçince düşer
+      ---
+      duration_ms: 73.768074
+      type: 'test'
+      ...
+    # Subtest: düzeltmede cari değişimi (S54 / S57 / S79 / S80 / S81 / S83 / S84 / S85; sıra K10-1)
+        # Subtest: S57: bağlı (Kapatılacak Fatura) kaydın carisi bağ değişmeden düzeltilmez → 409 entry-link-first; kayıt değişmez
+        ok 1 - S57: bağlı (Kapatılacak Fatura) kaydın carisi bağ değişmeden düzeltilmez → 409 entry-link-first; kayıt değişmez
+          ---
+          duration_ms: 65.512458
+          type: 'test'
+          ...
+        # Subtest: S79 = A (S54 gibi): aynı düzeltmede cari + bağ değişirse kabul — bağ yeni carinin belgesine; eski fatura yeniden açılır
+        ok 2 - S79 = A (S54 gibi): aynı düzeltmede cari + bağ değişirse kabul — bağ yeni carinin belgesine; eski fatura yeniden açılır
+          ---
+          duration_ms: 177.671468
+          type: 'test'
+          ...
+        # Subtest: bağsız kaydın carisi düzeltilir (S57 uygulanmaz); iki carinin bakiyesi ve kuyruğu yeniden kurulur
+        ok 3 - bağsız kaydın carisi düzeltilir (S57 uygulanmaz); iki carinin bakiyesi ve kuyruğu yeniden kurulur
+          ---
+          duration_ms: 88.374871
+          type: 'test'
+          ...
+        # Subtest: S80 / S83 / S84 = A: fatura formunda alınan / yapılan peşinin carisi ya da bağı → 409 invoice-payment-edit ('faturayı düzenleyin')
+        ok 4 - S80 / S83 / S84 = A: fatura formunda alınan / yapılan peşinin carisi ya da bağı → 409 invoice-payment-edit ('faturayı düzenleyin')
+          ---
+          duration_ms: 100.354216
+          type: 'test'
+          ...
+# (node:15598) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+        # Subtest: K10-1: kilitli dönemdeki peşinin carisi → önce KILITLI_DONEM (409 period-locked)
+        ok 5 - K10-1: kilitli dönemdeki peşinin carisi → önce KILITLI_DONEM (409 period-locked)
+          ---
+          duration_ms: 230.701606
+          type: 'test'
+          ...
+        # Subtest: S81 = A: Normal Cari tahsilat aynı düzeltmede şüpheli kaydı açık bir cariye alınıp 120 bakiyesini aşarsa red (doubtful-normal-exceeds)
+        ok 6 - S81 = A: Normal Cari tahsilat aynı düzeltmede şüpheli kaydı açık bir cariye alınıp 120 bakiyesini aşarsa red (doubtful-normal-exceeds)
+          ---
+          duration_ms: 110.152711
+          type: 'test'
+          ...
+        # Subtest: S85 = A (K10-3): Normal Cari kaydın yalnız TARİHİ 120'nin küçük olduğu güne alınırsa sınır yeni günde ölçülür → red
+        ok 7 - S85 = A (K10-3): Normal Cari kaydın yalnız TARİHİ 120'nin küçük olduğu güne alınırsa sınır yeni günde ölçülür → red
+          ---
+          duration_ms: 82.315124
+          type: 'test'
+          ...
+        1..7
+    ok 4 - düzeltmede cari değişimi (S54 / S57 / S79 / S80 / S81 / S83 / S84 / S85; sıra K10-1)
+      ---
+      duration_ms: 855.694621
+      type: 'suite'
+      ...
+    # Subtest: artımlı önbellek (tasarım §5): yazımdan sonra yalnız dokunulan cari yeniden kurulur; her carinin sonucu cari başına baştan kurulumla aynı
+    ok 5 - artımlı önbellek (tasarım §5): yazımdan sonra yalnız dokunulan cari yeniden kurulur; her carinin sonucu cari başına baştan kurulumla aynı
+      ---
+      duration_ms: 52.260126
+      type: 'test'
+      ...
+    # Subtest: mutabakat kapısının list()'i (iç kimlik 'ledger' / 'integrity', ids) TYK hesaplamaz
+    ok 6 - mutabakat kapısının list()'i (iç kimlik 'ledger' / 'integrity', ids) TYK hesaplamaz
+      ---
+      duration_ms: 5.156022
+      type: 'test'
+      ...
+    1..6
+ok 1 - 2.5.0 Ç5-B — Tek Yükümlülük Kuyruğu (API)
+  ---
+  duration_ms: 1722.483617
+  type: 'suite'
+  ...
+1..1
+# tests 18
+# suites 3
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2073.198079
+cikis=0
