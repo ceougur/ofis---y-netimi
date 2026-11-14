@@ -59,13 +59,13 @@ const MUTASYONLAR = [
     6, "K-14: açılıştan önceki hesapsız satır banka tarafına yazılır (defterde 519'a geçmez)", LEDGER,
     "      if ((sub === \"102.00\" || sub === \"108.00\") && isCovered(",
     "      if ((sub === \"102.00\" || sub === \"108.00\") && false && isCovered(",
-    [K14], /ledger-integrity|20\.09 tahsilat B 519 \/ A 120/,
+    [K14], /gate-equivalence[^\n]*gl:102|ledger-integrity|20\.09 tahsilat B 519 \/ A 120/,
   ],
   [
     7, "K-14: açılış günü sınırı '<' yerine '≤' (açılış günündeki satır da 519'a)", COVER,
     "  if (way === \"bank\") return Boolean(bounds.bank) && date < bounds.bank;",
     "  if (way === \"bank\") return Boolean(bounds.bank) && date <= bounds.bank;",
-    [K14], /açılış günü \(01\.10\) açılıştan SONRA|ledger-integrity/,
+    [K14], /açılış günü \(01\.10\) açılıştan SONRA|gate-equivalence[^\n]*gl:102|ledger-integrity/,
   ],
   [
     8, "K-14: EN GEÇ yerine EN ERKEN açılış tarihi", COVER,
@@ -76,8 +76,8 @@ const MUTASYONLAR = [
   [
     9, "K-14: kovanın ekran bakiyesi açılışta sayılmış satırları düşmez", MONEY,
     "w WHERE w.ref = '' AND NOT ${COVER_SQL} GROUP BY w.way`",
-    "w WHERE w.ref = '' GROUP BY w.way`",
-    [K14], /bankMinor: 670000|ledger-integrity/,
+    "w WHERE w.ref = '' AND NOT (${COVER_SQL} AND 0) GROUP BY w.way`",
+    [K14], /bankMinor: 670000/,
   ],
   [
     10, "K-14: pasif hesabın açılışı sınırdan düşer (durum fark etmez kuralı bozulur)", COVER,
@@ -95,7 +95,7 @@ const MUTASYONLAR = [
     12, "K-15: kart yolunda yön ayrımı kalkar (kart ödemesi de POS sınırına — yalnız Devir Kapanışı)", COVER,
     "    const limit = kind === \"out\" ? bounds.card : bounds.pos;",
     "    const limit = bounds.pos;",
-    [K14], /açılıştan önceki kart ödemesi A 519|ledger-integrity/,
+    [K14], /açılıştan önceki kart ödemesi A 519|gate-equivalence[^\n]*gl:108|ledger-integrity/,
   ],
   [
     13, "K-14: 519 ikinci yükleyicisi açılışta sayılmış satırları bilmez (Açılış Karşılığı yanlış alarm)", OPENING,
@@ -144,6 +144,8 @@ for (const [no, name, file, before, after, tests, reason] of MUTASYONLAR) {
   } finally {
     writeFileSync(target, original);
   }
+  // MUT_OUT=<klasör>: her mutantın ham çıktısı ayrı dosyaya (kanıt; nedeni okumak için — ders 38).
+  if (process.env.MUT_OUT) writeFileSync(path.join(process.env.MUT_OUT, `mutant-${no}.log`), result.out);
   const ok = result.status !== 0 && reason.test(result.out);
   if (ok) caught += 1;
   // Ç7a tur 2: kırmızının NEDENİ çıktıda (ders 38) — eşleşen ilk satır yazılır.
