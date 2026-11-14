@@ -1,0 +1,14 @@
+#!/bin/bash
+# Ana oturum: Ç5-A TUR 2 ADAYI — TAM npm test (aday kapısının kapsayıcı yenilenmesiyle kesilen SON adımı; önceki adımlar c5a2-aday.out'ta). Sınama ağacı dal sinama-c5a2.
+# Çağrı: flock -s -n olcum.lock timeout 6000 bash c5a2-tam.sh
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=$S/d2t3-ya-ag; K=$S/c5a2-kanit
+export KANIT_DIR=$K HUKUK_LICENSE_URL=http://127.0.0.1:9 PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194
+say() { grep -E "^# (tests|pass|fail|cancelled|skipped)" "$1" | tr '\n' ' '; }
+cd $W || exit 1
+[ "$(git rev-parse --abbrev-ref HEAD)" = "sinama-c5a2" ] || { echo "sınama ağacı sinama-c5a2 dalında değil"; exit 1; }
+[ -z "$(git status -s | grep -v node_modules)" ] || { echo "sınama ağacı temiz değil"; git status -s | head -5; exit 1; }
+echo "tam test başladı $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg) · aday $(git rev-parse --short HEAD) · disk $(df -h / | awk 'NR==2{print $4}')"
+flock -n $S/tam-npm-test.lock timeout 5400 node tools/kanit.mjs kos c5a2-tam -- npm test > $K/tam.out 2>&1; echo "TAM npm test çıkış $? $(grep -E '^\[kanit\]' $K/tam.out | tail -1 | cut -c1-170)"; say $K/tam.out; echo
+grep -E "^not ok|✖" $K/tam.out | sort -u | head -12 | cut -c1-220
+echo "bitti $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg) · aday $(git rev-parse --short HEAD) · temiz mi: $(git status -s | grep -v node_modules | wc -l) · disk $(df -h / | awk 'NR==2{print $4}')"

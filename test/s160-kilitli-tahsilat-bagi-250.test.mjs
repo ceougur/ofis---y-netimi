@@ -116,3 +116,35 @@ describe("S160 = A — kilitli dönemdeki tahsilatın fatura bağını düşüre
     assertBondReject(await api.post(`/api/workspace/invoices/${B.invoice.id}/cancel`, { reason: "deneme" }), "yeniden kilitten sonra", "2026-10-09");
   });
 });
+
+// Tur 2e DÜŞÜK-2 (dar kontrol c5a2 N12): SİLİNMİŞ alınan evrakın Kapatılacak Fatura bağı kilitli tarihte olsa da S160 reddine GİRMEZ (evrak Silinenler'de; tahsilat değil). Programın
+// kendi yolu: evrak faturaya bağlanır → evrak silinir (olayın bağı kalır) → kilit → iptal 200. Silinmemiş evrakta aynı yol 409 (yukarıdaki vaka).
+describe("S160 = A — silinmiş evrakın kilitli bağı iptali engellemez", () => {
+  let server2;
+  let api2;
+  before(async () => {
+    server2 = await startTestServer({ now: NOW });
+    api2 = await loginAdmin(server2);
+  });
+  after(() => server2?.close());
+
+  it("silinmiş evrak (Kapatılacak Fatura, kilitli tarih) → iptal 200, fatura iptal edildi", async () => {
+    const take = async (label, promise) => {
+      const res = await promise;
+      assert.equal(res.status, 200, `${label}: ${res.status} ${JSON.stringify(res.data).slice(0, 300)}`);
+      return res.data && typeof res.data === "object" && "ok" in res.data ? res.data.data : res.data;
+    };
+    const account = await take("cari", api2.post("/api/workspace/accounts", { name: "S160 Silinmiş Evrak", type: "customer" }));
+    await take("borç", api2.post(`/api/workspace/accounts/${account.id}/entries`, { kind: "debt", amount: "1000", date: "2026-08-20", note: "Hizmet" }));
+    const invoice = await take("fatura", api2.post("/api/workspace/invoices", { scenario: "service_sale", accountId: account.id, issueDate: "2026-10-15", lines: [{ name: "Danışmanlık", qty: 1, unitPrice: 300, vatRate: 0 }], payment: { rest: "open" } }));
+    await take("evrak (Kapatılacak Fatura)", api2.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", bank: "Akbank", drawer: "X", serialNo: "S160-SIL", amount: "100", accountId: account.id, issueDate: "2026-10-08", dueDate: "2026-12-01", invoiceId: invoice.id }));
+    const cheque = server2.app.store.get("SELECT id FROM cheques WHERE serial_no = 'S160-SIL'");
+    await take("evrak sil", api2.del(`/api/workspace/cheques/${cheque.id}`));
+    const event = server2.app.store.get("SELECT c.deleted_at AS gone, ev.invoice_id AS inv, ev.date FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id WHERE c.id = ? AND ev.kind = 'receive'", cheque.id);
+    assert.ok(event?.gone && event.inv === invoice.id && event.date <= LOCK, `ön koşul: silinmiş evrakın olayı kilitli tarihte faturaya bağlı: ${JSON.stringify(event)}`);
+    await take("kilit", api2.put("/api/admin/period-lock", { lockedUntil: LOCK }));
+    const res = await api2.post(`/api/workspace/invoices/${invoice.id}/cancel`, {});
+    assert.equal(res.status, 200, `silinmiş evrak S160 reddine girmez: ${res.status} ${JSON.stringify(res.data).slice(0, 300)}`);
+    assert.equal(server2.app.store.get("SELECT status FROM invoices WHERE id = ?", invoice.id).status, "cancelled");
+  });
+});

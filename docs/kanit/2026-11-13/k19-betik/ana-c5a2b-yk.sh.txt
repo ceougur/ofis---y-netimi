@@ -1,0 +1,28 @@
+#!/bin/bash
+# Ana oturum: Ç5-A TUR 2b — yeni testlerin YENİDEN KOŞUSU (iki TZ) + TABAN KIRMIZISI + mutasyon (ders 7, 16, 23, 38).
+# Yeni kod = tur 2b dalının ucu (kendi kopyam ana-c5a2b/yeni); taban = c5a2b-taban = c3dc4a36 (kendi kopyam ana-c5a2/yeni — tur 2a yeniden koşusunun 'yeni'si, aynı commit).
+# Tabana yalnız YENİ test dosyası girer (kural-farki-duzeltme-250); ekran senaryosu yeni kopyadan DEPO=taban ile.
+# Çağrı: flock -s -n olcum.lock timeout 3000 bash ana-c5a2b/yk.sh
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+R=/home/user/ofis---y-netimi; K=$S/ana-c5a2b/kanit; Y=$S/ana-c5a2b/yeni; M=$S/ana-c5a2b/mut; TB=$S/ana-c5a2/yeni; A=worktree-agent-a5b6e29fe068192ef
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194
+say() { grep -E "^# (tests|pass|fail|cancelled|skipped)" "$1" | tr '\n' ' '; }
+echo "başladı $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg)"
+[ -d $TB ] || { echo "taban kopyası yok"; exit 1; }
+for c in $Y $M; do if [ ! -d $c ]; then mkdir -p $c && git -C $R archive $A ':!docs/kanit' | tar -x -C $c && ln -s $R/node_modules $c/node_modules || exit 1; fi; done
+T=test/kural-farki-duzeltme-250.test.mjs
+[ -f $TB/$T ] && { echo "taban kopyasında yeni test ZATEN var — beklenmedik"; exit 1; }
+cd $Y || exit 1
+for tz in UTC Europe/Istanbul; do m=${tz//\//-}
+  TZ=$tz timeout 900 node --disable-warning=ExperimentalWarning --test --test-concurrency=1 $T > $K/yeni-$m.out 2>&1; echo "YENİ kural farkı testi $tz çıkış $? $(say $K/yeni-$m.out)"
+done
+timeout 900 node test/e2e/senaryo-acilis-duzeni-250.mjs > $K/yeni-e2e.out 2>&1; echo "YENİ ekran senaryosu çıkış $? :: $(tail -2 $K/yeni-e2e.out | tr '\n' ' ' | cut -c1-240)"
+DEPO=$TB timeout 900 node test/e2e/senaryo-acilis-duzeni-250.mjs > $K/taban-e2e.out 2>&1; echo "TABAN ekran senaryosu (DEPO=taban) çıkış $? :: $(tail -2 $K/taban-e2e.out | tr '\n' ' ' | cut -c1-240)"
+grep -E "✖|✗|HATA|BAŞARISIZ|beklen" $K/taban-e2e.out | head -6 | cut -c1-240
+cp $Y/$T $TB/$T || exit 1
+(cd $TB && TZ=UTC timeout 900 node --disable-warning=ExperimentalWarning --test --test-concurrency=1 $T > $K/taban-test.out 2>&1; echo "TABAN kural farkı testi çıkış $? $(say $K/taban-test.out)")
+grep -E "^\s*(not ok|error:)|AssertionError|404" $K/taban-test.out | head -12 | cut -c1-200
+rm $TB/$T
+cd $Y || exit 1
+timeout 2400 node test/kural-farki-duzeltme-250-mutasyon.mjs --kopya $M > $K/mutasyon.out 2>&1; echo "MUTASYON çıkış $? :: $(tail -4 $K/mutasyon.out | tr '\n' ' ' | cut -c1-400)"
+echo "bitti $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg)"

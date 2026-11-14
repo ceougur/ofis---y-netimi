@@ -1,0 +1,3 @@
+1. deneme 06:22 kilit dolu (flock -x -n çıkış 1)
+2. deneme 06:34 alındı (ön izleme / Mutabakat / Defter / aday yolları ölçüldü; POST requestId kısa → 400, ölçülmedi)
+3. deneme (yalnız POST) 06:47 kilit dolu (flock -x -n çıkış 1)

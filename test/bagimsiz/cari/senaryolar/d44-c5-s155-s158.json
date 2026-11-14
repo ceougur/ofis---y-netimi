@@ -2,7 +2,7 @@
  "dil": "destekofis-cari/3",
  "ad": "d44-c5-s155-s158",
  "bugun": "2026-06-15",
- "aciklama": "Bakım 16: S155 A — Şüpheli Alacak kuralının ölçüsü TOPLAM borç: kararın iki örneği AYNEN (X1 sonradan doğan borçla KABUL, bakiye 1.200; X2 yeni borç yokken RET, bakiye 1.000), aynı örnekte çek (X3), Alacak Yaz (X4), borç silme (X5), stok iadesi (X11), Silinenler'den geri yükleme (X10), tarih değişikliği (X14) RET; faturaya bağlı tahsilat şüpheliden sonra (X9) RET; borç yetiyor (X6), tam eşitlik (X7), şüpheliden sonraki tahsilat (X8) KABUL; SK-35 (X12) SUS; kayıtları kapanmış caride avans (X13) KABUL. S158 A — 'iade tahsilat değildir' her kartta: Değersiz (Y2), tahsilat + iade (Y4), satış kartında Değersiz (Y5)",
+ "aciklama": "Bakım 16: S155 A — Şüpheli Alacak kuralının ölçüsü TOPLAM borç: kararın iki örneği AYNEN (X1 sonradan doğan borçla KABUL, bakiye 1.200; X2 yeni borç yokken RET, bakiye 1.000), aynı örnekte çek (X3), Alacak Yaz (X4), borç silme (X5), stok iadesi (X11), Silinenler'den geri yükleme (X10), tarih değişikliği (X14) RET; faturaya bağlı tahsilat şüpheliden sonra (X9) RET; borç yetiyor (X6), tam eşitlik (X7), şüpheliden sonraki tahsilat (X8) KABUL; SK-35 (X12) SUS; kayıtları kapanmış caride avans (X13) KABUL. S158 A — 'iade tahsilat değildir' her kartta: Değersiz (Y2), tahsilat + iade (Y4), satış kartında Değersiz (Y5) · bakım 17 (§28): X12 S159 A — KABUL, bakiye −100, açık şüpheli 0 (SK-35 kalktı); Y4 S162 = B alanı — kart toplamı / taksit Ödenen / gecikmiş SUS, 'Tahsil Edilen 300', 'Kalan 300', bakiye yazılır · bakım 19 (§30 Y19-5 (1) — madde 4): Y4 (S162 alanı) pencere toplamları SUS",
  "dayanak": "KARARLAR.md §27 (Y16-1 … Y16-8), §26 (Y15-6, Y15-7), §8 (ŞÜPHELİ KALAN K1, KS7 (b)), §13 C13.4",
  "elleBeklenen": {
   "adim:x1s:durum": "ok",
@@ -65,20 +65,20 @@
   "k1:cari:Y4:bakiye": 30000,
   "k1:kart:KY4:odenen": 30000,
   "k1:kart:KY4:kalan": 30000,
-  "k1:kart:KY4:taksit1:odenen": 30000,
-  "k1:kart:KY4:taksit2:odenen": 0,
-  "k1:kart:KY4:taksit3:odenen": 0,
   "adim:y5d:durum": "ok",
   "k1:cari:Y5:bakiye": 60000,
   "k1:kart:KY5:toplam": 100000,
   "k1:kart:KY5:odenen": 0,
   "k1:kart:KY5:kalan": 60000,
   "k1:kart:KY5:taksit1:odenen": 0,
-  "k1:kart:KY5:taksit2:odenen": 0
+  "k1:kart:KY5:taksit2:odenen": 0,
+  "adim:x12t:durum": "ok",
+  "k1:cari:X12:bakiye": -10000,
+  "k1:cari:X12:gecikmis": 0
  },
- "elleYok": ["adim:x12t:durum", "k1:cari:X12:bakiye"],
+ "elleYok": ["k1:kart:KY4:taksit1:odenen", "k1:kart:KY4:taksit2:odenen", "k1:kart:KY4:taksit3:odenen", "k1:kart:KY4:toplam", "k1:cari:Y4:gecikmis", "k1:takvim:cariToplam:Y4", "k1:vadeTakip:cariToplam:Y4", "k1:projeksiyon:cariToplam:Y4"],
  "elleBelirsiz": [
-  ["adım x12t", "S155", "SK-35", "KULLANICIYA SORULMALI"]
+  ["kart KY4", "S162 = B"]
  ],
  "adimlar": [
   {"id": "cx1", "islem": "cari_ac", "ad": "X1", "isim": "Xavier Sonra Borç Kabul", "tarih": "2026-04-16"},

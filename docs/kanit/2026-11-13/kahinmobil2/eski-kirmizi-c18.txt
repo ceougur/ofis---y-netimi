@@ -1,0 +1,26 @@
+# eski kâhin: eski kâhin (kahinmobil2-taban) + cari bakım 18 (cari model /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmobil2-q7/test/bagimsiz/cari/model.py)
+KIRMIZI E05-es-taksit-mobil [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris]: 1 fark
+    SenaryoHatasi (eski kâhin): cari kâhini (2.5.0) adımı reddetti (katman ön denetimi eksik): {"id": "t3", "tutar": "800,00", "tarih": "2026-10-20", "islem": "kart_tahsilat", "kayit": "KT1"}
+KIRMIZI E05-es-taksit-mobil [kapatilacak=secilir;yollar=evrak_dahil;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]: 1 fark
+    SenaryoHatasi (eski kâhin): cari kâhini (2.5.0) adımı reddetti (katman ön denetimi eksik): {"id": "t3", "tutar": "800,00", "tarih": "2026-10-20", "islem": "kart_tahsilat", "kayit": "KT1"}
+KIRMIZI E05-es-taksit-masaustu [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris]: 1 fark
+    SenaryoHatasi (eski kâhin): cari kâhini (2.5.0) adımı reddetti (katman ön denetimi eksik): {"id": "t3", "tutar": "800,00", "tarih": "2026-10-20", "islem": "kart_tahsilat", "kayit": "KT1"}
+KIRMIZI E05-es-taksit-masaustu [kapatilacak=secilir;yollar=evrak_dahil;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]: 1 fark
+    SenaryoHatasi (eski kâhin): cari kâhini (2.5.0) adımı reddetti (katman ön denetimi eksik): {"id": "t3", "tutar": "800,00", "tarih": "2026-10-20", "islem": "kart_tahsilat", "kayit": "KT1"}
+KIRMIZI E41-es-odenmis-kart-avans-mobil [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris]: 1 fark
+    SenaryoHatasi (eski kâhin): cari kâhini (2.5.0) adımı reddetti (katman ön denetimi eksik): {"id": "t3", "tutar": "200,00", "tarih": "2026-10-20", "islem": "kart_tahsilat", "kayit": "KT"}
+KIRMIZI E41-es-odenmis-kart-avans-mobil [kapatilacak=secilir;yollar=evrak_dahil;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]: 1 fark
+    SenaryoHatasi (eski kâhin): cari kâhini (2.5.0) adımı reddetti (katman ön denetimi eksik): {"id": "t3", "tutar": "200,00", "tarih": "2026-10-20", "islem": "kart_tahsilat", "kayit": "KT"}
+KIRMIZI E41-es-odenmis-kart-avans-masaustu [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris]: 1 fark
+    SenaryoHatasi (eski kâhin): cari kâhini (2.5.0) adımı reddetti (katman ön denetimi eksik): {"id": "t3", "tutar": "200,00", "tarih": "2026-10-20", "islem": "kart_tahsilat", "kayit": "KT"}
+KIRMIZI E41-es-odenmis-kart-avans-masaustu [kapatilacak=secilir;yollar=evrak_dahil;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]: 1 fark
+    SenaryoHatasi (eski kâhin): cari kâhini (2.5.0) adımı reddetti (katman ön denetimi eksik): {"id": "t3", "tutar": "200,00", "tarih": "2026-10-20", "islem": "kart_tahsilat", "kayit": "KT"}
+KIRMIZI E43-es-iade-sinir-mobil [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris]: 1 fark
+    SenaryoHatasi (eski kâhin): bilinmeyen islem: 'stok_iade'
+KIRMIZI E43-es-iade-sinir-mobil [kapatilacak=secilir;yollar=evrak_dahil;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]: 1 fark
+    SenaryoHatasi (eski kâhin): bilinmeyen islem: 'stok_iade'
+KIRMIZI E43-es-iade-sinir-masaustu [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris]: 1 fark
+    SenaryoHatasi (eski kâhin): bilinmeyen islem: 'stok_iade'
+KIRMIZI E43-es-iade-sinir-masaustu [kapatilacak=secilir;yollar=evrak_dahil;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]: 1 fark
+    SenaryoHatasi (eski kâhin): bilinmeyen islem: 'stok_iade'
+# toplam 110 (senaryo × birleşim): KIRMIZI 12, aynı 98

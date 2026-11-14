@@ -1,0 +1,27 @@
+#!/bin/bash
+# Ana oturum: Ç5-A TUR 2 (2a–2d) — ana ağaçta TEK birleşim (commit'siz bırakır). Her adım hata durdurur.
+# Tur 2d dalı (2a–2d'yi içerir) + CI listesine üç ekran senaryosu (tek betik, dört yer). Aday: sınama ağacı ucu c27df7b7.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+R=/home/user/ofis---y-netimi; A=worktree-agent-ac4b7ba8396fbd29d; C=c27df7b7; G=docs/kanit/2026-11-14
+cd $R || exit 1
+[ -z "$(git status -s)" ] || { echo "ana ağaç temiz değil"; git status -s | head -5; exit 1; }
+git merge --no-ff --no-commit $A > $S/c5a2-merge.out 2>&1; echo "merge çıkış $? · çakışmalar: $(git status -s | grep -E '^(UU|AA|DU|UD|AU|UA)' | tr '\n' ' ')"
+[ -f .git/MERGE_HEAD ] || { echo "birleşim başlamadı"; tail -5 $S/c5a2-merge.out; exit 1; }
+[ "$(git status -s | grep -cE '^(UU|AA|DU|UD|AU|UA)')" = "0" ] || { echo "beklenmeyen çakışma"; exit 1; }
+python3 -I $S/c5a2-ci-listesi.py $R || exit 1
+git add package.json .github/workflows/ci.yml .github/workflows/release.yml || exit 1
+echo "aday $C ile fark (belgeler dışında; BOŞ olmalı): [$(git diff $C --name-only -- . ':!docs' ':!CLAUDE.md' | tr '\n' ' ')]"
+[ -z "$(git diff $C --name-only -- . ':!docs' ':!CLAUDE.md')" ] || { echo "ADAYDAN FARKLI"; exit 1; }
+echo "aday ile docs farkı (iş listesi / kayıt / devir / kanıt dışında BOŞ olmalı): [$(git diff $C --name-only -- docs ':!docs/2.5.0-IS-LISTESI.md' ':!docs/2.5.0-IS-LISTESI-KAYIT.md' ':!docs/devir' ':!docs/kanit' ':!docs/GECMIS-KARARLAR.md' | tr '\n' ' ')]"
+for w in ci.yml release.yml; do python3 -I -c "import yaml,sys; yaml.safe_load(open(sys.argv[1]))" .github/workflows/$w && echo "$w ayrıştı" || exit 1; done
+mkdir -p $G/c5a2-aday $G/c5a2-yuruyus $G/c5a2-betik || exit 1
+find $S/c5a2-kanit -maxdepth 1 -type f -size -400k -exec cp {} $G/c5a2-aday/ \;
+for d in 2026-11-13 2026-11-14; do [ -d $S/c5a2-kanit/$d ] && find $S/c5a2-kanit/$d -maxdepth 1 -type f -size -400k -exec cp {} $G/c5a2-aday/ \; ; done
+for f in c5a2-aday.out c5a2-tam.out c5a2-e2e.out c5a2-hiz.out; do [ -f $S/$f ] && cp $S/$f $G/c5a2-aday/$f.txt; done
+[ -f $S/c5a2-kanit/hiz-karsilastirma.txt ] && cp $S/c5a2-kanit/hiz-karsilastirma.txt $G/c5a2-aday/
+cp $S/c5a2-yuruyus/yuruyus.out $G/c5a2-yuruyus/yuruyus.out.txt || exit 1
+for p in ${YURUYUS_PNG:-04-olabilir-liste 08-kural-farki-onizleme 14-eslestirme-onizleme 19-sistem-son}; do cp $S/c5a2-yuruyus/cikti/$p.png $G/c5a2-yuruyus/ || exit 1; done
+for f in c5a2-aday.sh c5a2-tam.sh c5a2-e2e.sh c5a2-ci-listesi.py c5a2-birlesim.sh c5a2-olcum/olc-c5a2.mjs c5a2-olcum/hiz.sh c5a2-olcum/ikisi.sh c5a2-olcum/kilit.py b8a-olcum/karsilastir.py c5a2-yuruyus/yuruyus-c5a2.mjs ana-c5a3a/yk.sh ana-c5a3a/esd.sh dk-c5a2-istem-uret.py; do cp $S/$f $G/c5a2-betik/$(echo $f | tr '/' '-').txt || exit 1; done
+mkdir -p $G/ana-c5a3a && find $S/ana-c5a3a/kanit -type f -size -400k -exec cp {} $G/ana-c5a3a/ \;
+echo "kanıt eklenen: $(git status -s -uall $G | grep -c '^??') dosya · Windows'ta açılmayan ad: $(git status -s -uall $G | cut -c4- | grep -cE '[<>:"|?*]|[ .]$') · eklenen boyut $(du -sch $G/c5a2-aday $G/c5a2-yuruyus $G/c5a2-betik $G/ana-c5a3a | tail -1 | cut -f1)"
+git status -s | grep -v "^?? " | grep -v " docs/kanit/" | cut -c1-110 | head -60; echo "izlenmeyen (kanıt dışı): $(git status -s -uall | grep '^??' | grep -v " $G/" | head -5)"

@@ -1,0 +1,121 @@
+{
+ "S1_stokHareketi_disYazim": {
+  "taban": {
+   "sayi": 0,
+   "alarm": [],
+   "sapma": []
+  },
+  "sil": 200,
+  "ozetSayisi": 0,
+  "silindi": {
+   "sayi": 0,
+   "alarm": [],
+   "sapma": []
+  },
+  "disYazim": {
+   "sayi": 0,
+   "alarm": [],
+   "sapma": []
+  },
+  "geriYukle": "200",
+  "geriYuklendi": {
+   "sayi": 1,
+   "alarm": [],
+   "sapma": []
+  },
+  "satirTarihi": "2026-03-05",
+  "kasa": 5040
+ },
+ "S2_kasaHareketi_disYazim": {
+  "taban": {
+   "sayi": 0,
+   "alarm": [],
+   "sapma": []
+  },
+  "sil": 200,
+  "ozetSayisi": 1,
+  "disYazim": {
+   "sayi": 0,
+   "alarm": [],
+   "sapma": []
+  },
+  "geriYukle": "200",
+  "geriYuklendi": {
+   "sayi": 1,
+   "alarm": [
+    "Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım: 1 hareket)"
+   ],
+   "sapma": []
+  },
+  "satirTarihi": "2026-03-05",
+  "kasa": 5040
+ },
+ "S3_kart_mesru": {
+  "hareket_in_300": 200,
+  "hareket_in_33,33": 200,
+  "hareket_out_50": 200,
+  "satirlar": [
+   "in:300@2026-03-12",
+   "in:33.33@2026-03-13",
+   "out:50@2026-03-14"
+  ],
+  "taban": {
+   "sayi": 0,
+   "alarm": [],
+   "sapma": []
+  },
+  "sil": 200,
+  "ozet": {
+   "rows": {
+    "plan_entries:entry-457d0969-88b2-4cd0-a743-1c0bf5da034a": "2026-03-12|30000",
+    "plan_entries:entry-b0563474-c26a-4084-a4ca-4e28527478b4": "2026-03-13|3333",
+    "plan_entries:entry-2ea25d53-9927-4f58-889b-8be48b51a8e8": "2026-03-14|5000"
+   }
+  },
+  "geriYukle": "200",
+  "geriYuklendi": {
+   "sayi": 0,
+   "alarm": [],
+   "sapma": []
+  },
+  "kasa": 5283.33
+ },
+ "S4_tekSatir_mesru": {
+  "taban": {
+   "sayi": 0,
+   "alarm": [],
+   "sapma": []
+  },
+  "sil": 200,
+  "ozet": {
+   "rows": {
+    "plan_entries:entry-789bf2f3-6dd3-4bfb-940a-18def937cd18": "2026-03-12|12345"
+   }
+  },
+  "geriYukle": "200",
+  "geriYuklendi": {
+   "sayi": 0,
+   "alarm": [],
+   "sapma": []
+  },
+  "kasa": 5123.45
+ },
+ "S5_cariHareketi_tutar": {
+  "taban": {
+   "sayi": 0,
+   "alarm": [],
+   "sapma": []
+  },
+  "kasaOnce": 5070,
+  "sil": 200,
+  "geriYukle": "200",
+  "geriYuklendi": {
+   "sayi": 1,
+   "alarm": [
+    "Kasa açılışından önce tarihli hareket uyarısı arttı (0 → 1 hareket; kapının görmediği yazım: 1 hareket)"
+   ],
+   "sapma": []
+  },
+  "kasa": 5070
+ }
+}

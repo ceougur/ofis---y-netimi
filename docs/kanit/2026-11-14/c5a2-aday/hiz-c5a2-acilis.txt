@@ -1,0 +1,8 @@
+AÇILIŞ AYRIMI (ana oturum) · kilitsiz veri · 04:14:57 · taban 40d9dd18 · aday c27df7b7 · başta 1.30 1.14 1.12
+  taban: ilk açılış 18010 ms (şema 50) · ikinci 17691 ms · üçüncü 18055 ms · yük 1.52 1.23 1.15
+  aday: ilk açılış 16304 ms (şema 50) · ikinci 16344 ms · üçüncü 15657 ms · yük 1.68 1.31 1.18
+  taban: ilk açılış 18718 ms (şema 50) · ikinci 17345 ms · üçüncü 18566 ms · yük 1.63 1.38 1.21
+  aday: ilk açılış 17370 ms (şema 50) · ikinci 16119 ms · üçüncü 16326 ms · yük 1.27 1.32 1.20
+  taban: ilk açılış 16123 ms (şema 50) · ikinci 15601 ms · üçüncü 15260 ms · yük 1.12 1.27 1.18
+  aday: ilk açılış 17380 ms (şema 50) · ikinci 17514 ms · üçüncü 17594 ms · yük 1.10 1.23 1.18
+bitti 04:20:09

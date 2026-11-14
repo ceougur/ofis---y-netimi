@@ -1,0 +1,46 @@
+// ANA OTURUM — BİRLEŞİK TUR 8 + 8b EKRAN YÜRÜYÜŞÜ (Ç5-B yürüyüşünden; iadeli kart + Vade Takip'in altı hazır aralığı eklendi) (öz denetim 2, 11.11.2026; anayasa "kalite çıtası"): günlük iş akışı kullanıcı gözüyle; her adımda ekran görüntüsü + ekrandaki sayılar.
+// Kurulum programın API'siyle, bakış ve iki işlem (kart tahsilatı, taksit ekleme) EKRANDAN. Kullanım: ROOT=<kod kökü> node yuruyus.mjs
+import fs, { mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+process.env.HUKUK_LICENSE_URL = "http://127.0.0.1:9";
+const ROOT = process.env.ROOT;
+const imp = rel => import(pathToFileURL(path.join(ROOT, rel)).href);
+const { chromium } = await import(pathToFileURL(path.join(ROOT, "node_modules/playwright/index.mjs")).href);
+const { createApp } = await imp("server/app.mjs");
+const { createClient, installPageClock } = await imp("test/helpers.mjs");
+const { escClose } = await imp("test/e2e/esc-kapat.mjs");
+const OUT = process.env.OUT;
+const PASS = "Prova-Admin-2026!";
+const TODAY = "2026-10-20";
+const NOW = `${TODAY}T12:00:00+03:00`;
+const day = o => { const d = new Date(`${TODAY}T00:00:00Z`); d.setUTCDate(d.getUTCDate() + o); return d.toISOString().slice(0, 10); };
+const MODAL = ".hof-modal-backdrop.is-visible";
+const TOP = `${MODAL}:nth-last-child(1 of ${MODAL})`;
+const unwrap = r => (r.data && typeof r.data === "object" && "ok" in r.data ? (r.data.ok ? r.data.data : r.data) : r.data);
+const must = async (label, p) => { const r = await p; if (r.status !== 200) throw new Error(`${label}: ${r.status} ${JSON.stringify(r.data).slice(0, 300)}`); return unwrap(r); };
+const note = (...a) => console.log(...a);
+const root = mkdtempSync(path.join(tmpdir(), "ana-k18-"));
+const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, now: NOW, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0", HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f51" } });
+const { port } = await app.listen(0, "127.0.0.1");
+const BASE = `http://127.0.0.1:${port}`;
+const api = createClient(BASE);
+
+// ANA OTURUM — Ç5-B kapanış dar kontrolü 3'ün S-K-a sorusunun yeniden üretimi: aynı tarihler HAZIR aralıkla ve ELLE girilince 'Gecikmiş Tahsilat' göstergesi
+try {
+  await api.login("admin", PASS);
+  await must("banka", api.post("/api/workspace/bank/setup/dismiss", {}));
+  let n = 0;
+  for (const [ad, soz, tutar] of [["Söz 45", 45, "100"], ["Söz 100", 100, "200"], ["Söz 3", 3, "400"], ["Sözsüz", null, "800"]]) {
+    const a = await must("cari", api.post("/api/workspace/accounts", { name: `Sonda Vade ${ad}`, type: "customer", registeredOn: day(-400), phone: `0500 260 9${n += 1} 01` }));
+    await must("borç", api.post(`/api/workspace/accounts/${a.id}/entries`, { method: "cash", cashForce: true, kind: "debt", amount: tutar, date: day(-30), dueDate: day(-10), ...(soz ? { expectedDate: day(soz) } : {}) }));
+  }
+  for (const [ad, q] of [["HAZIR 7 Gün", "preset=next7"], [`ELLE ${day(0)} – ${day(7)}`, `from=${day(0)}&to=${day(7)}`], ["HAZIR 30 Gün", "preset=next30"], [`ELLE ${day(0)} – ${day(30)}`, `from=${day(0)}&to=${day(30)}`], ["HAZIR Gecikmiş", "preset=late"]]) {
+    const r = await api.get(`/api/workspace/overview/vade-takip?${q}`); const v = unwrap(r);
+    note(`${ad}: ${r.status} · gecikmiş tahsilat ${v.totals.in.overdue.amount} / ${v.totals.in.overdue.count} · satır ${v.rows.length} · satır toplamı ${Math.round(v.rows.reduce((t, x) => t + Number(x.amount || 0), 0))} · aralık ${v.from ?? v.range?.from ?? ""} – ${v.to ?? v.range?.to ?? ""}`);
+  }
+} finally {
+  await app.close?.().catch(() => null);
+  fs.rmSync(root, { recursive: true, force: true });
+}

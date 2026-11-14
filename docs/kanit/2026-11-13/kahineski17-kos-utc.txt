@@ -1,0 +1,1182 @@
+commit 750d066b5d37c596583bb567b22a2402fdf98ecf · TZ=UTC · 2026-11-13T17:43:55Z · yük 1.83 3.21 3.00 7/163 10902
+  mutasyon 200 (Ç5 C13.1 (30.10 B): açılış karşı hesabı 500): YAKALANDI (c6c-mevcut-borc-karti.json, d1-c5-acilis-519.json, d2-c5-kg5-excel-kart.json)
+  mutasyon 201 (Ç5 C13.1: alacaklı açılışın karşılığı ters yönde (B CH / A 519)): YAKALANDI (d1-c5-acilis-519.json)
+  mutasyon 202 (Ç5 C13.2 (KG-5 B): Tablodan Aktar yeni borç kartı gelire (B 120 / A 600)): YAKALANDI (c14f-c1-geri-al-y2.json, c2-tablodan-aktar-kapisi.json, d2-c5-kg5-excel-kart.json)
+  mutasyon 203 (Ç5 C13.2: Mevcut Borç kartı da madde yazar (B 120 / A 519)): YAKALANDI (c6c-mevcut-borc-karti.json, d2-c5-kg5-excel-kart.json)
+  mutasyon 204 (Ç5 C13.3 (S49 B): carisiz evrak 519'a): YAKALANDI (d11-c5-s66-carisiz-karsiliksiz.json, d3-c5-carisiz-evrak.json)
+  mutasyon 205 (Ç5 C13.4 (S50 B): kart seçilmeden alınan tahsilat taksit kapatmaz (taksitler yalnız kart tahsilatıyla)): YAKALANDI (d34-c5-s110-kendi-borcu.json, d35-c5-s120-elle-borclar.json, d36-c5-s122-kart-odemesi.json)
+  mutasyon 206 (Ç5 C13.4 (S2 B): kapama belge tarihi sırasıyla (Vade sırayı değiştirmez — 2.4.9)): YAKALANDI (c10-ks10-projeksiyon-cari-vade.json, c13-ks83-ayni-gun-sira.json, c6-cari-vade-fifo.json)
+  mutasyon 207 (Ç5 C13.4 ((1) B): HAVUZ — bağsız ödeme sonradan doğan erken vadeli borca kayar): YAKALANDI (d16-c5-s92-net-gorunum.json, d26-c5-bakim5-susan.json, d27-c5-s99-taksitli-avans.json)
+  mutasyon 208 (Ç5 C13.4 (M1e B): Mevcut Borç kartı alttaki borcu tüketmez (kart ile borç birlikte)): YAKALANDI (c6c-mevcut-borc-karti.json, d30-c5-s101-bitti-kart.json, d31-c5-s101-taksit-vade-gunu.json)
+  mutasyon 209 (Ç5 C13.5 (S52 B): ileri tarihli Ödeme Sözü varken borç gecikmiş sayılmaz): YAKALANDI (d10-c5-s67-soz-takvim.json, d12-c5-s69-soz-gunu-ve-gecmis.json, d13-c5-s69-soz-ertesi-gun.json)
+  mutasyon 210 (Ç5 C13.5 (S1 B): vadesiz kalem gecikmiş sayılmaz): YAKALANDI (d10-c5-s67-soz-takvim.json, d11-c5-s66-carisiz-karsiliksiz.json, d12-c5-s69-soz-gunu-ve-gecmis.json)
+  mutasyon 211 (Ç5 C13.5 (M1f B): vade günü gecikmiş sayılır): YAKALANDI (d10-c5-s67-soz-takvim.json, d12-c5-s69-soz-gunu-ve-gecmis.json, d14-c5-s91-vadesiz-kayit-gunu.json)
+  mutasyon 212 (Ç5 C13.5 ((5) B): gecikmiş tutar net borçla sınırlanmaz): YAKALANDI (d16-c5-s92-net-gorunum.json, d17-c5-s93-verilen-avans.json, d18-c5-s93-avans-ertesi-gun.json)
+  mutasyon 213 (Ç5 C13.4 ((2) B): bağ, hedefi önceden bağsız kapanmışsa bağsız olur ('ilk gelen kazanır')): YAKALANDI (c12-ks81-sb-kalan-dagilimi.json)
+  mutasyon 214 (Ç5 C14.1 (S68 B): borç tarafında bağsız ödeme / ciro / iade bedeli kayıt tarihi + yazım sırasıyla kapatır (2.4.5 K-b)): YAKALANDI (c13-ks83-ayni-gun-sira.json, d33-c5-s102-s105-sinirlar.json, d9-c5-s68-borc-tarafi-vade.json)
+  mutasyon 215 (Ç5 C14.2 (S67 B): vadesi geçmiş borca ileri tarihli sözde takvim kaleminin durumu ve gün sayısı söz tarihine göre (K6.3)): YAKALANDI (c6-cari-vade-fifo.json, d10-c5-s67-soz-takvim.json, d13-c5-s69-soz-ertesi-gun.json)
+  mutasyon 216 (Ç5 C14.3 (S66 B): carisiz evrakın karşılıksızı, cari seçilmezse gidere (B 770 / A 101)): YAKALANDI (d11-c5-s66-carisiz-karsiliksiz.json)
+  mutasyon 217 (Ç5 C14.3 (S66): cari seçilse de cari borçlanmaz (B 649 / A 101)): YAKALANDI (d11-c5-s66-carisiz-karsiliksiz.json, d14-c5-s91-vadesiz-kayit-gunu.json, d15-c5-s91-vadesiz-ertesi-gun.json)
+  mutasyon 218 (Ç5 C14.3 (S66): seçilen carinin karşılıksız borcu tek yükümlülük kuyruğunda kalem değil (avans kapatmaz, gecikmiş sayılmaz)): YAKALANDI (d11-c5-s66-carisiz-karsiliksiz.json, d14-c5-s91-vadesiz-kayit-gunu.json, d15-c5-s91-vadesiz-ertesi-gun.json)
+  mutasyon 219 (Ç5 C15.1 (S69 B): söz günü kalem 'Bugün, 0', söz geçince gün sayısı sözden (K6.3)): DEĞERLE YAKALANDI (4 elle senaryo; ilk: d10-c5-s67-soz-takvim.json:k1:takvim:hareket:c1)
+  mutasyon 220 (Ç5 C15.1 sınırı: S69 yalnız söz GEÇMİŞSE — söz günü (Beklenen = bugün) K6.3 'today' 0): DEĞERLE YAKALANDI (2 elle senaryo; ilk: d10-c5-s67-soz-takvim.json:k1:takvim:hareket:c1)
+  mutasyon 221 (Ç5 C15.2 (a) sınırı: söz vadeden ÖNCE iken de durum Gecikmiş, gün sayısı vadeden): DEĞERLE YAKALANDI (3 elle senaryo; ilk: d10-c5-s67-soz-takvim.json:k1:takvim:hareket:g1)
+  mutasyon 222 (Ç5 C15.1 sınırı: gün sayısı vade ERTESİNDEN (bir gün eksik)): DEĞERLE YAKALANDI (5 elle senaryo; ilk: d10-c5-s67-soz-takvim.json:k1:takvim:hareket:a1)
+  mutasyon 223 (Ç5 C15.2 (b) / C14.2 sınırı (M1f B): vade günü vadesi geçmiş sayılır (v ≤ bugün)): DEĞERLE YAKALANDI (2 elle senaryo; ilk: d10-c5-s67-soz-takvim.json:k1:takvim:hareket:f1)
+  mutasyon 224 (Ç5 C16.1 (S91 B): vadesiz kayıt takvim / Vade Takip / projeksiyon kalemi değil (K6.3 aynen — yalnız Vade / Beklenen Ödeme Tarihi'li kayıt)): DEĞERLE YAKALANDI (16 elle senaryo; ilk: d14-c5-s91-vadesiz-kayit-gunu.json:k1:takvim:hareket:a1)
+  mutasyon 225 (Ç5 C16.1 sınırı: vadesiz kalemin günü kayıt gününün ERTESİ (kayıt günü ↔ ertesi gün)): DEĞERLE YAKALANDI (14 elle senaryo; ilk: d14-c5-s91-vadesiz-kayit-gunu.json:k1:takvim:hareket:a1)
+  mutasyon 226 (Ç5 C16.2 (S92 B): Kalan / takvim / Vade Takip'te iki taraf ayrı (KS2 aynen), yalnız gecikmiş netleşir): DEĞERLE YAKALANDI (9 elle senaryo; ilk: d16-c5-s92-net-gorunum.json:k1:hareket:s1:kalan)
+  mutasyon 227 (Ç5 C16.4 (S9 eski okuma — C13.5): gecikmiş = min(net borç, kendi tarafının brüt gecikmişi) — karşı kalem vadesi en önce gelen borçtan düşülmez): DEĞERLE YAKALANDI (14 elle senaryo; ilk: d16-c5-s92-net-gorunum.json:k1:cari:M3:gecikmis)
+  mutasyon 228 (Ç5 C16.2 sınırı (netleşme tarihi): karşı yönlü kalemler BELGE tarihinde değil VADELERİNDE netleşir (vadesi gelmemiş karşı kalem düşülmez)): DEĞERLE YAKALANDI (4 elle senaryo; ilk: d16-c5-s92-net-gorunum.json:k1:hareket:s1:kalan)
+  mutasyon 229 (Ç5 C16.2 sınırı (netleşme tarihi): karşı yönlü kalemler zamandan bağımsız, ödemelerden ÖNCE netleşir): DEĞERLE YAKALANDI (8 elle senaryo; ilk: d16-c5-s92-net-gorunum.json:k1:hareket:a6:kalan)
+  mutasyon 230 (Ç5 C16.3 (S93 B): tedarikçi türündeki caride gecikmiş tutar yok (yalnız müşteri rolündeki carilerde)): DEĞERLE YAKALANDI (7 elle senaryo; ilk: d11-c5-s66-carisiz-karsiliksiz.json:k1:cari:T:gecikmis)
+  mutasyon 231 (Ç5 C16.3 sınırı: verilen avans ödeme GÜNÜ gecikmiş sayılır (v ≤ bugün)): DEĞERLE YAKALANDI (2 elle senaryo; ilk: d17-c5-s93-verilen-avans.json:k1:cari:TB:gecikmis)
+  mutasyon 232 (Ç5 C16.1: stok veresiye / karşılıksız borç kalemi görünüm toplamına girmez (yalnız elle kayıt ve fatura)): DEĞERLE YAKALANDI (2 elle senaryo; ilk: d14-c5-s91-vadesiz-kayit-gunu.json:k1:takvim:cariToplam:S)
+  mutasyon 233 (Ç5 C16.2 ((5) B): karşı yönlü kalemli caride faturanın belge durumu (açık) da netleşir (Mahsup Et'siz)): DEĞERLE YAKALANDI (2 elle senaryo; ilk: d16-c5-s92-net-gorunum.json:k1:fatura:FS:acik)
+  mutasyon 234 (Ç5 C17 (S95 B): netleşme geri alınmaz — sonradan gelen bağsız ödeme netleşmiş kalanı kapatır, artanı avans): DEĞERLE YAKALANDI (7 elle senaryo; ilk: d19-c5-s92-okuma-ayrisan.json:k1:hareket:n1b:kalan)
+  mutasyon 235 (Ç5 C17 (S96 B): verilen avans takvim / Vade Takip / projeksiyon kalemi değil (yalnız gecikmiş toplamında)): DEĞERLE YAKALANDI (13 elle senaryo; ilk: d17-c5-s93-verilen-avans.json:k1:takvim:cariKalemSayisi)
+  mutasyon 236 (Ç5 C17 (S97 B): aynı gün her taraf önce kendi içinde — ödeme o günün netleşmesini de geri alır): DEĞERLE YAKALANDI (4 elle senaryo; ilk: d19-c5-s92-okuma-ayrisan.json:k1:hareket:n5a:kalan)
+  mutasyon 237 (Ç5 C17 (S98 B): gelen alacak yönlü satır önce yükümlülük kalemlerini, sonra verilen avansı kapatır): DEĞERLE YAKALANDI (8 elle senaryo; ilk: d19-c5-s92-okuma-ayrisan.json:k1:hareket:n6b:kalan)
+  mutasyon 238 (Ç5 C17 sınırı (S96): avans kaleminin günü ödeme gününün ERTESİ): DEĞERLE YAKALANDI (13 elle senaryo; ilk: d17-c5-s93-verilen-avans.json:k1:takvim:hareket:o1)
+  mutasyon 239 (Ç5 C17 sınırı (S95): yalnız iki gün ve daha önceki netleşme geri alınır (ertesi günkü ödeme dünkü netleşmeyi bozmaz)): DEĞERLE YAKALANDI (4 elle senaryo; ilk: d20-c5-s95-netlesme-sonrasi-odeme.json:k1:hareket:p6b:kalan)
+  mutasyon 240 (Ç5 C17 sınırı (S98): avansın sıradaki vadesi ödeme gününün ertesi (vadesi o gün olan borçla eşitte belge günü önce)): DEĞERLE YAKALANDI (2 elle senaryo; ilk: d25-c5-s98-avans-sirasi.json:k1:hareket:r2b:kalan)
+  mutasyon 241 (Ç5 C18 (S99 B): bağsız para taksitli faturanın taksitlerini kapatmaz (2.4.9 kuralı — fatura durumu ve kuyruk)): DEĞERLE YAKALANDI (4 elle senaryo; ilk: d27-c5-s99-taksitli-avans.json:k1:fatura:P2F:acik)
+  mutasyon 242 (Ç5 C18 sınırı (S99): taksitli faturanın taksitleri kuyruğa faturanın gününde vadeli girer (taksit tarihi değil)): DEĞERLE YAKALANDI (3 elle senaryo; ilk: d27-c5-s99-taksitli-avans.json:k1:fatura:P2F:acik)
+  mutasyon 243 (Ç5 C18 (S101 B): kart kendi borcunu taksitleriyle taşır — avansın kapattığı borç karta geçince avans serbest kalır, kartın taksitleri bağsız parayla kapanmaz): DEĞERLE YAKALANDI (4 elle senaryo; ilk: d30-c5-s101-bitti-kart.json:k1:kart:KQ2:odenen)
+  mutasyon 244 (Ç5 C18 sınırı (S101): avansla ödenmiş sayılan kısım kartın vadesi EN SON gelen taksitinden): DEĞERLE YAKALANDI (4 elle senaryo; ilk: d30-c5-s101-bitti-kart.json:k1:kart:KQ2:taksit1:odenen)
+  mutasyon 245 (Ç5 C18 (S102 B / SK-9 B): netleşme kalanlar arasında tarih sırasıyla yeniden kurulur (biçim K1)): DEĞERLE YAKALANDI (1 elle senaryo; ilk: d26-c5-bakim5-susan.json:k1:hareket:s9x:kalan)
+  mutasyon 246 (Ç5 C18 (S103 B / SK-10 B): verilen avansın alışla kapanışı sonraki bağsız tahsilatla geri alınır): DEĞERLE YAKALANDI (2 elle senaryo; ilk: d26-c5-bakim5-susan.json:k1:fatura:S10F:acik)
+  mutasyon 247 (Ç5 C18 (S104 B / SK-11 B): bağsız Ödeme önce alacak yönlü kalemleri, sonra alınan avansı kapatır): DEĞERLE YAKALANDI (2 elle senaryo; ilk: d26-c5-bakim5-susan.json:k1:hareket:s11a:kalan)
+  mutasyon 248 (Ç5 C18 (S105 B / SK-12 B): gelen alış faturası açık alış iadesi alacağı ile verilen avansı vade sırasıyla kapatır): DEĞERLE YAKALANDI (2 elle senaryo; ilk: d26-c5-bakim5-susan.json:k1:takvim:hareket:s12o)
+  mutasyon 249 (Ç5 C18 (SK-13 B): faturanın belge durumu tek taraflı kuyruktan (verilen avans kalem sayılmaz)): DEĞERLE YAKALANDI (6 elle senaryo; ilk: d25-c5-s98-avans-sirasi.json:k1:fatura:R3F:acik)
+  mutasyon 250 (Ç5 C18 sınırı (S104): alınan avansın sıradaki vadesi tahsilat gününün ertesi (vadesi o gün olan Alacak'la eşitte belge günü önce)): DEĞERLE YAKALANDI (1 elle senaryo; ilk: d33-c5-s102-s105-sinirlar.json:k1:hareket:t11ba:kalan)
+  mutasyon 251 (Ç5 C19 (G2 (b) kalkar): elle Mevcut Borç kartı taksitlendirilebilecek borçtan büyükken / borç yokken de kabul edilir (bakım 6 davranışı — S101 / EK-2B 32)): DEĞERLE YAKALANDI (1 elle senaryo; ilk: d30-c5-s101-bitti-kart.json:adim:kq6:durum)
+  mutasyon 252 (Ç5 C19 (S101 B, satışla açılan kart): kart kendi satışını taksitleriyle taşır — avansın kapattığı satış karta geçince avans serbest, kartın taksitleri bağsız parayla kapanmaz): DEĞERLE YAKALANDI (4 elle senaryo; ilk: d30-c5-s101-bitti-kart.json:k1:kart:KQ2:odenen)
+  mutasyon 253 (Ç5 C19 sınırı (G2 (b)): kart = taksitlendirilebilecek borç da reddedilir): DEĞERLE YAKALANDI (14 elle senaryo; ilk: d30-c5-s101-bitti-kart.json:adim:kqr3:durum)
+  mutasyon 254 (Ç5 C19 sınırı (G2 (b)): kart taksitlendirilebilecek borcu 1 kuruş aşınca kabul edilir): DEĞERLE YAKALANDI (1 elle senaryo; ilk: d30-c5-s101-bitti-kart.json:adim:kqr4:durum)
+  mutasyon 255 (Ç5 C19 (Y7-2 (1) B): satışla açılan kart kendi satışını değil kuyruktaki açık borcu vade sırasıyla tüketir): DEĞERLE YAKALANDI (2 elle senaryo; ilk: d30-c5-s101-bitti-kart.json:k1:kart:KQ9A:odenen)
+  mutasyon 256 (Ç5 C20 (S110 B): açık borç kart tutarından fazlayken kart (elle ve satışla açılan) vadesi en önce gelen borçları içine alır (S2)): DEĞERLE YAKALANDI (9 elle senaryo; ilk: d30-c5-s101-bitti-kart.json:k1:kart:KQ9A:odenen)
+  mutasyon 257 (Ç5 C20 (S110 yalnız satış kolunda): elle Mevcut Borç kartı açık borç fazlayken vade sırasıyla tüketir (bakım 7 davranışı)): DEĞERLE YAKALANDI (8 elle senaryo; ilk: d34-c5-s110-kendi-borcu.json:k1:takvim:fatura:E1F)
+  mutasyon 258 (Ç5 C20 sınırı (S110): açık borç kart tutarına EŞİTken de kural uygulanır (fazla ↔ eşit)): DEĞERLE YAKALANDI (6 elle senaryo; ilk: d30-c5-s101-bitti-kart.json:k1:kart:KQR3:odenen)
+  mutasyon 259 (Ç5 C20 sınırı (S110): açık borç kart tutarını yalnız 1 kuruştan fazla aşınca kural uygulanır): DEĞERLE YAKALANDI (1 elle senaryo; ilk: d34-c5-s110-kendi-borcu.json:k1:takvim:fatura:E4F)
+  mutasyon 260 (Ç5 C20 (S110 yalnız elle kolda): satışla açılan kart açık borç fazlayken vade sırasıyla tüketir): DEĞERLE YAKALANDI (2 elle senaryo; ilk: d30-c5-s101-bitti-kart.json:k1:kart:KQ9A:odenen)
+  mutasyon 261 (Ç5 C21 (S120 B): tutarı karta eşit bir kalem (türü ne olursa) varsa onu, yoksa bütün borçları vade sırasıyla içine alır): DEĞERLE YAKALANDI (7 elle senaryo; ilk: d34-c5-s110-kendi-borcu.json:k1:takvim:fatura:E11F)
+  mutasyon 262 (Ç5 C21 (faturayı da içine alan elle kol): tek eşit elle borç yoksa kart faturalar dahil bütün borçları eskiden yeniye içine alır): DEĞERLE YAKALANDI (6 elle senaryo; ilk: d34-c5-s110-kendi-borcu.json:k1:takvim:fatura:E11F)
+  mutasyon 263 (Ç5 C21 (sıra ters): elle borçları yeniden eskiye içine alır): DEĞERLE YAKALANDI (5 elle senaryo; ilk: d34-c5-s110-kendi-borcu.json:k1:takvim:hareket:e11x)
+  mutasyon 264 (Ç5 C21 ('eşit TEK elle borç' istisnası ezilir): karta eşit tek elle borç varken de elle borçları eskiden yeniye içine alır): DEĞERLE YAKALANDI (1 elle senaryo; ilk: d35-c5-s120-elle-borclar.json:k1:takvim:hareket:h4ax)
+  mutasyon 265 (Ç5 C22 (S122 B): kartın ödenen kısmı elle borçlara en yeniden (içine alma sırasının tersi) düşer): DEĞERLE YAKALANDI (4 elle senaryo; ilk: d35-c5-s120-elle-borclar.json:k1:hareket:h10x:kalan)
+  mutasyon 266 (Ç5 C22 (orantılı): kartın ödenen kısmı elle borçlara karttaki paylarıyla orantılı dağılır): DEĞERLE YAKALANDI (4 elle senaryo; ilk: d35-c5-s120-elle-borclar.json:k1:hareket:h10x:kalan)
+  mutasyon 267 (Ç5 C22 (her ödeme baştan): her taksitin ödenen kısmı ayrı ayrı ilk elle borçtan başlayarak dağılır (yalnız ilk ödemede doğru — önceki ödemeyi bilmez)): DEĞERLE YAKALANDI (3 elle senaryo; ilk: d36-c5-s122-kart-odemesi.json:k1:hareket:j2x:kalan)
+  mutasyon 268 (Ç5 C22 (kuyruğu da düşürür): elle borca düşen pay kuyruk kalanından da düşer (gecikmiş / takvim değişir)): DEĞERLE YAKALANDI (1 elle senaryo; ilk: d36-c5-s122-kart-odemesi.json:k1:cari:J2:gecikmis)
+  mutasyon 269 (Ç5 C22 (kart ödeneni görünmez): elle borçlara dağıtılan ödeme kartın ödenen kısmından düşer (kart kalanı = kart tutarı)): DEĞERLE YAKALANDI (4 elle senaryo; ilk: d35-c5-s120-elle-borclar.json:k1:kart:KH10:odenen)
+  mutasyon 270 (Ç5 C23 (S126 B): faturalı bakiye kadar kartta ödeme önce elle borçlara (içine alma sırasıyla), sonra faturalara düşer): DEĞERLE YAKALANDI (3 elle senaryo; ilk: d36-c5-s122-kart-odemesi.json:k1:fatura:J13F:acik)
+  mutasyon 271 (Ç5 C23 (yalnız fatura): faturalı bakiye kadar kartta ödeme yalnız faturaların açığını düşürür (elle kayıtların Kalan'ı düşmez)): DEĞERLE YAKALANDI (1 elle senaryo; ilk: d37-c5-s126-faturali-kart.json:k1:cari:L3:acikToplam)
+  mutasyon 272 (Ç5 C23 (yalnız elle): faturalı bakiye kadar kartta ödeme yalnız elle kayıtların Kalan'ını düşürür (faturanın açığı düşmez)): DEĞERLE YAKALANDI (3 elle senaryo; ilk: d36-c5-s122-kart-odemesi.json:k1:fatura:J13F:acik)
+  mutasyon 273 (Ç5 C23 (bakiye çift sayım): faturalı bakiye kadar kartta faturaya düşen pay cari bakiyesini bir kez daha düşürür): DEĞERLE YAKALANDI (3 elle senaryo; ilk: d36-c5-s122-kart-odemesi.json:k1:cari:J13:bakiye)
+  mutasyon 274 (Ç5 C23 (gecikmiş): faturalı bakiye kadar kartın içindeki faturanın açığı kuyrukta kendi vadesiyle de sayılır (gecikmiş / takvim değişir)): DEĞERLE YAKALANDI (3 elle senaryo; ilk: d36-c5-s122-kart-odemesi.json:k1:cari:J13:gecikmis)
+  mutasyon 275 (Ç5 C24 (S128 B): öbür kalem türlü bakiye kadar kartta ödeme önce fatura ve elle borçlara (içine alma sırasıyla), sonra öbür kalemlere düşer): DEĞERLE YAKALANDI (2 elle senaryo; ilk: d37-c5-s126-faturali-kart.json:k1:cari:L14:acikToplam)
+  mutasyon 276 (Ç5 C24 (yalnız fatura / elle): öbür kalem türlü bakiye kadar kartta ödeme yalnız fatura ve elle kalemleri düşürür (stok / karşılıksız kalemi atlanır)): DEĞERLE YAKALANDI (2 elle senaryo; ilk: d37-c5-s126-faturali-kart.json:k1:cari:L14:acikToplam)
+  mutasyon 277 (Ç5 C24 (yalnız öbür tür): öbür kalem türlü bakiye kadar kartta ödeme yalnız stok / karşılıksız kalemlerini düşürür (fatura açığı / elle Kalan düşmez)): DEĞERLE YAKALANDI (1 elle senaryo; ilk: d38-c5-s128-ozge-kalemli-kart.json:k1:cari:M3:acikToplam)
+  mutasyon 278 (Ç5 C24 (bakiye çift sayım): öbür kalem türlü bakiye kadar kartta stok / karşılıksız kalemine düşen pay cari bakiyesini bir kez daha düşürür): DEĞERLE YAKALANDI (2 elle senaryo; ilk: d37-c5-s126-faturali-kart.json:k1:cari:L14:bakiye)
+  mutasyon 279 (Ç5 C24 (gecikmiş): öbür kalem türlü bakiye kadar kartın içindeki stok / karşılıksız kaleminin defter kalanı kuyrukta kendi vadesiyle de sayılır (gecikmiş / takvim değişir)): DEĞERLE YAKALANDI (2 elle senaryo; ilk: d37-c5-s126-faturali-kart.json:k1:cari:L14:gecikmis)
+  mutasyon 280 (Ç5 C25 (S130 B): Şüpheli Alacağa alınan tutar takvim / Vade Takip / projeksiyon kalemlerinden düşmez (kalemler = kuyruk kalanı)): DEĞERLE YAKALANDI (5 elle senaryo; ilk: d39-c5-s130-supheli-kalemleri.json:k1:takvim:hareket:acilis:N1)
+  mutasyon 281 (Ç5 C25 (en yeniden): Şüpheli Alacağa alınan tutar kalemlerden en yeniden (kuyruk sırasının tersi) düşer): DEĞERLE YAKALANDI (3 elle senaryo; ilk: d39-c5-s130-supheli-kalemleri.json:k1:takvim:hareket:acilis:N1)
+  mutasyon 282 (Ç5 C25 (orantılı): Şüpheli Alacağa alınan tutar kalemlere kuyruk kalanlarıyla orantılı dağılır): DEĞERLE YAKALANDI (3 elle senaryo; ilk: d39-c5-s130-supheli-kalemleri.json:k1:takvim:hareket:acilis:N1)
+  mutasyon 283 (Ç5 C25 (bakiye de düşer): Şüpheli Alacağa alınan tutar cari bakiyesini de düşürür): DEĞERLE YAKALANDI (5 elle senaryo; ilk: d39-c5-s130-supheli-kalemleri.json:k1:cari:N1:bakiye)
+  mutasyon 284 (Ç5 C25 (Değersiz sonrası değişir): Değersiz yazılan kısım şüpheli tutardan düşülmez — Değersiz yazılınca kalemler bir kez daha düşer): DEĞERLE YAKALANDI (1 elle senaryo; ilk: d39-c5-s130-supheli-kalemleri.json:k1:takvim:hareket:acilis:N1b)
+  mutasyon 285 (Ç5 C25 ('en eski' belge tarihi): Şüpheli Alacağa alınan tutar kalemlerden belge (hareket) tarihi → yazım sırasıyla düşer (vade sırası değil)): DEĞERLE YAKALANDI (1 elle senaryo; ilk: d39-c5-s130-supheli-kalemleri.json:k1:takvim:hareket:acilis:N1)
+  mutasyon 286 (Ç5 C26 (S136 B): Şüpheli Alacağa alınan tutar taksit kalemlerinden ve verilen avans kaleminden düşmez (taksitler / avans kendi tutarıyla)): DEĞERLE YAKALANDI (1 elle senaryo; ilk: d41-c5-s136-s139-s145-s148.json:k1:takvim:hareket:r4x)
+  mutasyon 287 (Ç5 C26 (S136 yarım): taksitlerden düşer ama verilen avans kaleminden düşmez): DEĞERLE YAKALANDI (1 elle senaryo; ilk: d41-c5-s136-s139-s145-s148.json:k1:takvim:hareket:r5o)
+  mutasyon 288 (Ç5 C26 (S139 B): şüpheli kayıtlı caride gecikmiş şüpheli tutar dahil (kuyruk kalanından)): DEĞERLE YAKALANDI (5 elle senaryo; ilk: d39-c5-s130-supheli-kalemleri.json:k1:cari:N1:gecikmis)
+  mutasyon 289 (Ç5 C26 (S139 yarım): gecikmişte taksit kalemleri görünen değil kuyruk kalanıyla): DEĞERLE YAKALANDI (2 elle senaryo; ilk: d40-c5-s130-sus-bilinen-sinir.json:k1:cari:Q3:gecikmis)
+  mutasyon 290 (Ç5 C26 (S140 öncesi): satış kartından sonraki faturasız stok iadesi kuyruk sırasıyla (S2) dağılır — kart kendi satışını taşımaz): DEĞERLE YAKALANDI (1 elle senaryo; ilk: d42-c5-s140-s151-satis-karti-iade.json:k1:kart:KT1:kalan)
+  mutasyon 291 (Ç5 C26 (S140 B): kart elle borcu da içine alır — iade önce kart dışı kalemleri, sonra kartın SON taksitinden kapatır): DEĞERLE YAKALANDI (1 elle senaryo; ilk: d42-c5-s140-s151-satis-karti-iade.json:k1:kart:KT1:toplam)
+  mutasyon 292 (Ç5 C26 (S140 yarım): iade kartın taksitlerini SONDAN (en son taksitten) kapatır): DEĞERLE YAKALANDI (1 elle senaryo; ilk: d42-c5-s140-s151-satis-karti-iade.json:k1:cari:T1:gecikmis)
+  mutasyon 293 (Ç5 C26 / C27 (S145 B): tahsilat (bağsız / bağlı / Taksit Tahsilatı) hiç reddedilmez (borç açık şüphelinin altına düşse de; öbür türler denetlenir)): DEĞERLE YAKALANDI (4 elle senaryo; ilk: d39-c5-s130-supheli-kalemleri.json:k1:cari:N11:bakiye)
+  mutasyon 294 (Ç5 C26 / C27 (S155 sınır): adımdan sonra borç açık şüpheli tutara EŞİTKEN de ret): DEĞERLE YAKALANDI (2 elle senaryo; ilk: d41-c5-s136-s139-s145-s148.json:adim:s5t:durum)
+  mutasyon 295 (Ç5 C26 / C27 (S155 sınır): şüpheliyle AYNI günün alacak satırı denetimde şüpheliden düşmemiş ('önceki') sayılır): DEĞERLE YAKALANDI (1 elle senaryo; ilk: d41-c5-s136-s139-s145-s148.json:adim:s3t:durum)
+  mutasyon 296 (Ç5 C26 / C27 (S145 yarım): şüpheli tarihinden önceki her tahsilat ret (toplam borç yetse de)): DEĞERLE YAKALANDI (2 elle senaryo; ilk: d41-c5-s136-s139-s145-s148.json:adim:s4t:durum)
+  mutasyon 297 (Ç5 C26 (S151 A): satış kartının 'Tahsil Edilen'i / taksit 'Ödenen'i faturasız stok iadesini sayar): DEĞERLE YAKALANDI (2 elle senaryo; ilk: d42-c5-s140-s151-satis-karti-iade.json:k1:kart:KT1:odenen)
+  mutasyon 298 (Ç5 C26 (S151 yarım): kartın 'Tahsil Edilen'i iadeyi saymaz ama taksit 'Ödenen'i sayar): DEĞERLE YAKALANDI (3 elle senaryo; ilk: d42-c5-s140-s151-satis-karti-iade.json:k1:kart:KT1:taksit1:odenen)
+  mutasyon 299 (Ç5 C27 (S155 B): TARİH ölçüsü — her adımda şüpheli kaydının GÜNÜNDEKİ borç (o günün borç yönlü satırları dahil) şüpheli tutara yetmiyorsa ret; toplam ölçü yok): DEĞERLE YAKALANDI (1 elle senaryo; ilk: d44-c5-s155-s158.json:adim:x1t:durum)
+  mutasyon 300 (Ç5 C27 (S155 yarım): toplam ölçü yalnız tahsilatta (tahsilat / Taksit Tahsilatı); çek, Alacak Yaz, iade, borç silme, geri yükleme denetlenmez (kabul)): DEĞERLE YAKALANDI (2 elle senaryo; ilk: d41-c5-s136-s139-s145-s148.json:adim:s7e:durum)
+  mutasyon 301 (Ç5 C27 (S158 B): satış kartı OLMAYAN kartta 'Tahsil Edilen' / taksit 'Ödenen' iadeyi ve Değersiz'i sayar (yalnız satış kartında sayılmaz)): DEĞERLE YAKALANDI (3 elle senaryo; ilk: d42-c5-s140-s151-satis-karti-iade.json:k1:kart:KT7:odenen)
+  mutasyon 302 (Ç5 C27 (S158 yarım): yalnız faturasız stok iadesi sayılmaz — Değersiz ve iade faturası artanı 'Tahsil Edilen' / 'Ödenen'e sayılır): DEĞERLE YAKALANDI (1 elle senaryo; ilk: d44-c5-s155-s158.json:k1:kart:KY2:odenen)
+  mutasyon 303 (Ç5 C28 (S159 B): adım açık şüpheliyi sıfırlayıp bakiyeyi eksiye indirirse RET (S155'in harfi — borç < açık şüpheli 0)): DEĞERLE YAKALANDI (2 elle senaryo; ilk: d44-c5-s155-s158.json:adim:x12t:durum)
+  mutasyon 304 (Ç5 C28 (seçenek yok sayılır — her zaman kabul): kartın kendi kalanını aşan Taksit Tahsilatı seçeneksiz de kabul, fazlası bağsız (bakım 16 davranışı)): DEĞERLE YAKALANDI (2 elle senaryo; ilk: d43-c5-bilinen-sinir-sus15.json:k1:kart:KU1:odenen)
+  mutasyon 305 (Ç5 C28 (seçenek yok sayılır — her zaman ret): kartın kendi kalanını aşan Taksit Tahsilatı 'Fazlasını Avans Yaz' seçeneğiyle de RET): DEĞERLE YAKALANDI (3 elle senaryo; ilk: d30-c5-s101-bitti-kart.json:k1:hareket:q1b:kalan)
+  mutasyon 306 (Ç5 C28 (S154 A): 'Fazlasını Avans Yaz' ile kapanan kartın 'Tahsil Edilen'i kart tutarını aşmaz (tek kuyruk ödeneni)): DEĞERLE YAKALANDI (2 elle senaryo; ilk: d43-c5-bilinen-sinir-sus15.json:k1:kart:KU1:odenen)
+  mutasyon 307 (Ç5 C28 (S118 A): kart tahsilatının sınırı tek kuyruk Kalan'ı (kart seçilmeden alınan tahsilatın S50 payı da düşer) — kartın kendi kalanı değil): DEĞERLE YAKALANDI (4 elle senaryo; ilk: d30-c5-s101-bitti-kart.json:k1:kart:KQ4:odenen)
+  çapraz denetim (saf TYK): 183 kalem · tarih sıralı alanda 2.4.9 = 2.5.0: 104 kalem
+  bakım 4 + 5 + 6 çapraz denetim: saf net 140 kalem (karşı yönlü kalemli caride) + 611 kalem (tek yönde; 26 taksit) · saf belge durumu 95 fatura · avans 287 cari · (ii) 346 cari · gecikmiş (i) 542 cari · susulan: okuma ayrışan (SK-17) 2, tanım alanı dışı 26 · S98 ile kendi tarafından ayrışan 21 cari
+  G1 (bakım 7): 99 elle senaryo, 188 seriden numara alan belge adımı tarih sırasıyla denetlendi
+# tests 6514
+# pass 6514
+# fail 0
+6514/6514 denetim geçti
+
+[kanit] kahineski17-cari-oz-utc: GEÇTİ · çıkış 0 · 6514/6514 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 750d066 · linux 6.18.44-fc-v445 x64 · Node v22.23.4
+== cari-oz: çıkış 0
+  mutasyon 14 (D1 (30.10 B): açılış karşı hesabı 500): YAKALANDI (senaryo.json, g1-goc-kilitsiz.json, g2-goc-kilitli.json)
+  mutasyon 15 (D2 (M-02 B): açıklaması 'açılış' ile başlayan yeni Borç / Alacak Yaz açılış sayılır): YAKALANDI (senaryo.json, g3-s51-b8-geri-alma.json, g4-yeni-kayitlar.json)
+  mutasyon 16 (D3 (30.10 (1) B): açılış evrakı 602 / 770'e): YAKALANDI (senaryo.json, g2-goc-kilitli.json, g4-yeni-kayitlar.json)
+  mutasyon 17 (D4 (S48 B): karşılıksız carisiz açılış evrakı gidere (770)): YAKALANDI (senaryo.json, g4-yeni-kayitlar.json)
+  mutasyon 18 (D4 (S48): cari seçilse de 519 (cari borçlanmaz)): YAKALANDI (senaryo.json, g4-yeni-kayitlar.json)
+  mutasyon 19 (D5 (S49 B): formdan carisiz evrak 519'a): YAKALANDI (senaryo.json, g4-yeni-kayitlar.json, g7-s66-carisiz-karsiliksiz.json)
+  mutasyon 20 (D5 (S49 C): formdan carisiz evrak 602 / 770 (bugünkü)): YAKALANDI (senaryo.json, g4-yeni-kayitlar.json, g7-s66-carisiz-karsiliksiz.json)
+  mutasyon 21 (D9 (KG-5 B): Excel taksit kartı yeni satış (B CH T / A 600 T; B 519 P / A CH P)): YAKALANDI (senaryo.json, g4-yeni-kayitlar.json)
+  mutasyon 22 (D6 (S47 B): onay bekleyen aday 602 / 770'te): YAKALANDI (g1-goc-kilitsiz.json, g3-s51-b8-geri-alma.json, g6-s65-acilis-basi.json)
+  mutasyon 23 (D6 (KG-16 B): 'Açılış Olabilir' listesi yok (aday sessizce 602 / 770, onay etkisiz)): YAKALANDI (g1-goc-kilitsiz.json, g2-goc-kilitli.json, g3-s51-b8-geri-alma.json)
+  mutasyon 24 (D6 (B6 B): Türkçe katlama yok (yalnız 'Açılış' tam yazımı aday)): YAKALANDI (g1-goc-kilitsiz.json, g6-s65-acilis-basi.json)
+  mutasyon 25 (D6 (B6 B): 'Devir' / 'Devreden' de aday): YAKALANDI (g1-goc-kilitsiz.json, g6-s65-acilis-basi.json)
+  mutasyon 26 (D6 (S51 B): Silinenler'den geri alınan açılış (carinin başka açılışı varken) reddedilir): YAKALANDI (g3-s51-b8-geri-alma.json)
+  mutasyon 27 (D6 (S53 B): göçte son tamamlanmış yılın 31 Aralık'ına kendiliğinden kilit (eski kuralla donar)): YAKALANDI (g1-goc-kilitsiz.json, g6-s65-acilis-basi.json (çöktü))
+  mutasyon 28 (D7 (Ç3 yok): kilitli dönemin maddeleri de göçte yeni kurala geçer): YAKALANDI (g2-goc-kilitli.json, g8-s66-kilitli-donem.json)
+  mutasyon 29 (D8 (KG-15 B): Kural Farkı Düzeltme Fişi yazılmaz): YAKALANDI (g2-goc-kilitli.json)
+  mutasyon 30 (D8 (M7 B): önceki mali yılın farkı da 602 / 770'e (671 / 681 yok)): YAKALANDI (g2-goc-kilitli.json)
+  mutasyon 31 (D8 (B16 B): onay bekleyen aday varken Kural Farkı fişi yazılır): YAKALANDI (g2-goc-kilitli.json)
+  mutasyon 32 (D10 (S12 B): Kasa açılışından önce tarihli Kasa hareketi kabul): YAKALANDI (senaryo.json, g4-yeni-kayitlar.json, g5-kasa-hareket-once.json)
+  mutasyon 33 (D10 (B11 B): Kasa hareketinin tarihini açılıştan önceye alan düzeltme kabul): YAKALANDI (senaryo.json, g4-yeni-kayitlar.json)
+  mutasyon 34 (D10 (EK-2B 33 B): Kasa açılışının tarihi Kasa'nın ilk hareketinden sonra olabilir): YAKALANDI (g5-kasa-hareket-once.json)
+  mutasyon 35 (D6′ (S65 B): açıklamasında 'açılış' ORTADA geçen eski kayıt da aday): YAKALANDI (g6-s65-acilis-basi.json)
+  mutasyon 36 (D4′ (S66 B): carisiz evrakın karşılıksızı, cari seçilmezse gidere (B 770 / A 101)): YAKALANDI (g7-s66-carisiz-karsiliksiz.json, g8-s66-kilitli-donem.json)
+  mutasyon 37 (D4′ (S66): cari seçilse de cari borçlanmaz (B 649 / A 101)): YAKALANDI (g7-s66-carisiz-karsiliksiz.json, g8-s66-kilitli-donem.json)
+  mutasyon 38 (D4′ Y2 (G-7 B): kilitli dönem içinde tarihli karşılıksız kabul (madde donmuş döneme yazılır)): YAKALANDI (g8-s66-kilitli-donem.json)
+  mutasyon 39 (ÖK-1 denetimi yok: açık taksit kartlı cariye Excel taksit kartı sessizce kurulur (sayı üretilir)): YAKALANDI (g9-ok1-acik-taksitli-fatura.json (beklenen çöküş kalktı), g9b-ok1-acik-excel-karti.json (beklenen çöküş kalktı))
+# tests 181
+# pass 181
+# fail 0
+181/181 denetim geçti
+
+[kanit] kahineski17-defter-oz-utc: GEÇTİ · çıkış 0 · 181/181 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 750d066 · linux 6.18.44-fc-v445 x64 · Node v22.23.4
+== defter-oz: çıkış 0
+  mutasyon 1 (5a: sığmayan tahsilat bölünür (kartı doldurana kadar parçası taşınır)): YAKALANDI (b1-5a-tasima[2.4.4])
+  mutasyon 2 (5a: sığmayan tahsilat atlanır, sonraki küçükler taşınmaya devam eder): YAKALANDI (b1-5a-tasima[2.4.4])
+  mutasyon 3 (5b: carinin borcuna taşınan tahsilatlar geri eklenmez (D = bakiye)): YAKALANDI (b1-5a-bayat-ve-yeniden[2.4.4], b1-5a-tasima[2.4.4], b1-5b-borc[2.4.4])
+  mutasyon 4 (5b: borç kalandan azsa kişi aktarılmaz yerine yeni borç yazılır): YAKALANDI (b1-5a-bayat-ve-yeniden[2.4.4], b1-5a-tasima[2.4.4], b1-5b-borc[2.4.4])
+  mutasyon 5 (5c: aynı dosya no her sekmede ayrı sayılır (çift sayım)): YAKALANDI (b1-5c-rapor[2.4.4])
+  mutasyon 6 (UX18: bağlı evrakın fazlası en eski açık faturaya gitmez (avans kalır)): YAKALANDI (b2-ux18-karsiliksiz[2.4.4], b2-ux18-temel[2.4.4])
+  mutasyon 7 (UX18: karşılıksız evrak faturayı yeniden açmaz): YAKALANDI (b2-ux18-karsiliksiz[2.4.4], b2-ux18-sira[2.4.4], b2-ux18-temel[2.4.4])
+  mutasyon 8 (UX18: fatura iptalinde evrakın bağı düşmez (evrak hiçbir faturayı kapatmaz)): YAKALANDI (b2-ux18-temel[2.4.4])
+  mutasyon 9 (Otomatik kapama en YENİ faturadan başlar): YAKALANDI (b2-ux18-karsiliksiz[2.4.4], b2-ux18-sira[2.4.4], b2-ux18-temel[2.4.4])
+  mutasyon 10 (Geri al: taşınan tahsilatlar cariye dönmez): YAKALANDI (b1-5a-bayat-ve-yeniden[2.4.4], b1-5a-tasima[2.4.4], b1-5b-borc[2.4.4])
+  mutasyon 11 (5a: taşıma Kasa'yı azaltır): YAKALANDI (b1-5a-bayat-ve-yeniden[2.4.4], b1-5a-tasima[2.4.4], b1-5b-borc[2.4.4])
+  mutasyon 12 (Kart: tahsilat en yeni taksitten başlayarak sayılır): YAKALANDI (b1-5a-bayat-ve-yeniden[2.4.4], b1-5a-tasima[2.4.4], b1-5b-borc[2.4.4])
+  mutasyon 13 (Mizan: alınan senet 101'e yazılır (121 yerine)): YAKALANDI (b2-ux18-karsiliksiz, b2-ux18-temel, d11-c5-s66-carisiz-karsiliksiz)
+  mutasyon 14 (K3: Kalan önceliği yok (toplam önce)): YAKALANDI (b3-u2-tablo-borcu[2.4.4], b3e-vergi-sutunu, b3o-seyrek-kalan)
+  mutasyon 15 (K3: Ödeme Sözü tutarı borç sayılır): YAKALANDI (b1-5c-rapor[2.4.4], b3-u2-tablo-borcu[2.4.4], b3w-yalniz-soz-tutari)
+  mutasyon 16 (K3: gün/adet sütunu tutar sayılır): YAKALANDI (b3-u2-tablo-borcu[2.4.4], b3b-k1-k4-donem-raporlar)
+  mutasyon 17 (K3: Kalan hücresi boşsa borç 0 (toplama düşmez)): YAKALANDI (b3-u2-tablo-borcu[2.4.4], b3o-seyrek-kalan, b3q-takvim-kalemi)
+  mutasyon 18 (K2 (04:09): farklı sekmede aynı dosya no tek kayıt — yalnız ilk borçlu sekme sayılır (03:12 kuralı)): YAKALANDI (b3-u2-tablo-borcu[2.4.4], b3c-k2-donem-ayni-no, b3d-c3-kisi-gruplama)
+  mutasyon 19 (MM6: Nakit Akışı Kasa girişi yalnız cari tahsilatı sayar (evrak tahsili ve kayıt tahsilatı dışarıda)): YAKALANDI (b1-5c-rapor[2.4.4], b2-ux18-temel, b3-u2-tablo-borcu[2.4.4])
+  mutasyon 20 (U1: Nihai Tüketici 11111111111'li en eski cariyi (adı belli olsa da) seçer): YAKALANDI (b5-u1-nihai-tuketici)
+  mutasyon 21 (U1: işaretli cari adı/kimliği değişse de kullanılır): YAKALANDI (b5-u1-nihai-tuketici)
+  mutasyon 22 (MM6: elle Kasa çıkışı Nakit Akışı'nda sayılmaz): YAKALANDI (b3-u2-tablo-borcu[2.4.4])
+  mutasyon 23 (K1: aynı sekmede tekrar eden dosya no yalnız ilk satırla sayılır): YAKALANDI (b3b-k1-k4-donem-raporlar, b3c-k2-donem-ayni-no)
+  mutasyon 24 (K3: Kalan'sız Tutar + Tahsil Edilen tablosunda ödenen düşülmez): YAKALANDI (b3b-k1-k4-donem-raporlar, b3c-k2-donem-ayni-no, b3e-vergi-sutunu)
+  mutasyon 25 (K3: toplam − ödenen negatifse 0'a çekilmez): YAKALANDI (b3b-k1-k4-donem-raporlar, b3e-vergi-sutunu)
+  mutasyon 26 (K2: 'birden çok sekmede; ayrı sayıldı' notu yok (rapor ve Tahsilat Takvimi)): YAKALANDI (b1-5c-rapor[2.4.4], b3-u2-tablo-borcu[2.4.4], b3c-k2-donem-ayni-no)
+  mutasyon 27 (K5: Kasa'yı görme yetkisi olmayan kullanıcı Kasa giriş/çıkışını görür): YAKALANDI (b3b-k1-k4-donem-raporlar[2.4.4])
+  mutasyon 28 (C3: aynı kimlik farklı adları birleştirir (kişi kimliğe göre)): YAKALANDI (b3d-c3-kisi-gruplama, b3p-ayni-ad-telefon[2.4.4])
+  mutasyon 29 (C3: aynı ad farklı kimlik tek kişi (yalnız ada göre)): YAKALANDI (b3d-c3-kisi-gruplama, b3p-ayni-ad-telefon[2.4.4])
+  mutasyon 30 (C3: kimliksiz satır aynı adın tek kimliğine katılmaz): YAKALANDI (b3d-c3-kisi-gruplama)
+  mutasyon 31 (C3: aynı adı paylaşan kişilerin etiketinde kimlik yok): YAKALANDI (b3d-c3-kisi-gruplama, b3p-ayni-ad-telefon[2.4.4])
+  mutasyon 32 (C3 kimliksiz satır: çok kimlikli adın kimliksiz kaydı ilk kimliğe katılır (ayrı kalmaz)): YAKALANDI (b3d-c3-kisi-gruplama)
+  mutasyon 33 (C3 kimlik sütunu: sağlama hanesi tutmayan değer de kimlik sayılır): YAKALANDI (b3d-c3-kisi-gruplama)
+  mutasyon 34 (Kimlik sütunu: 'Vergi No' / 'Vergi Numarası' / 'Vergi Kimlik' tutar sayılır): YAKALANDI (b3d-c3-kisi-gruplama, b3f-kayit-anahtari[2.4.4])
+  mutasyon 35 (Vergi sütunu (KDV, Vergi, Vergi Tutarı, Stopaj, Tevkifat, ÖTV) tutar sayılır ve Genel Toplam ayrı sınıf değil (eski K3: borç belirlenemez)): YAKALANDI (b3e-vergi-sutunu, b3k-vergi-tek-kolon)
+  mutasyon 36 (Tutar + Genel Toplam tablosunda borç Tutar (KDV hariç)): YAKALANDI (b3e-vergi-sutunu)
+  mutasyon 37 (Borç sütunu belirlenemeyen kişiler raporda notsuz kaybolur): YAKALANDI (b3e-vergi-sutunu, b3n-borc-kolonu-kisi-ozniteligi, b3o-seyrek-kalan)
+  mutasyon 38 (Yerine koy (aynı dosyayı yeniden yükle) kayda bağlı tahsilatı kayıttan koparır): YAKALANDI (b3f-kayit-anahtari[2.4.4], b3g-tablo-bag-surekliligi[2.4.4], b3h-dosya-no-ve-devam[2.4.4])
+  mutasyon 39 (Sağlaması tutmayan Vergi No / TC değeri kayıt kimliğine girer (değer değişince tahsilat kopar)): YAKALANDI (b3f-kayit-anahtari[2.4.4], b3m-dosya-no-degisimi[2.4.4])
+  mutasyon 40 (Yerine koy güvenli eşleşmede de bağı koparır (satır içeriği anahtar)): YAKALANDI (b3f-kayit-anahtari[2.4.4], b3g-tablo-bag-surekliligi[2.4.4], b3h-dosya-no-ve-devam[2.4.4])
+  mutasyon 41 (Güvenli eşleşme yokken uyarı ve onay yok (sessiz)): YAKALANDI (b3g-tablo-bag-surekliligi[2.4.4], b3j-ayni-ad-takas[2.4.4], b3m-dosya-no-degisimi[2.4.4])
+  mutasyon 42 (N3 öncesi: aynı konum + aynı kişi eşleşmesi kişi değeri iki tabloda AYNI SAYIDA satırdayken de geçerli (bağ yanlış kişiye gidebilir)): YAKALANDI (b3g-tablo-bag-surekliligi[2.4.4], b3j-ayni-ad-takas[2.4.4])
+  mutasyon 43 (Devamı olarak ekle aynı kişi + aynı tutar satırını söylemez, onay istemez): YAKALANDI (b3h-dosya-no-ve-devam[2.4.4])
+  mutasyon 44 (İçeriği aynı satır yer değişince (aynı adlı iki satırın yer değiştirmesi) eşleşmez — onay ister): YAKALANDI (b3g-tablo-bag-surekliligi[2.4.4])
+  mutasyon 45 (Devamı olarak ekle içeriği tamamen aynı satırı ikinci kez ekler ve onay ister): YAKALANDI (b3i-devam-ayni-icerik[2.4.4])
+  mutasyon 46 (Devamı olarak ekle güvenli eşleşen (aynı kişi, başka hücresi farklı) satırı güncellemez, ikinci kez ekler ve onay ister): YAKALANDI (b3h-dosya-no-ve-devam[2.4.4])
+  mutasyon 47 (N4 öncesi: tablodaki TEK tutar kolonu vergi kolonuysa da borç sayılmaz): YAKALANDI (b3k-vergi-tek-kolon)
+  mutasyon 48 (N6 öncesi: tabloda artık olmayan kayda tahsilat yazımı kabul edilir): YAKALANDI (b3g-tablo-bag-surekliligi[2.4.4])
+  mutasyon 49 (N1 öncesi: Dosya No'lu tabloda dosya numarası değişen kaydın bağı kişi eşleşmesiyle yeni dosyaya taşınır): YAKALANDI (b3m-dosya-no-degisimi[2.4.4])
+  mutasyon 50 (N1: geri gelen dosya numarasının bağları yeniden görünmez): YAKALANDI (b3m-dosya-no-degisimi[2.4.4])
+  mutasyon 51 (Y1 öncesi: başlığında 'borç' geçen kişi özniteliği kolonu (Borçlu Telefon, Borçlu TC) tutar sayılır): YAKALANDI (b3g-tablo-bag-surekliligi[2.4.4], b3n-borc-kolonu-kisi-ozniteligi)
+  mutasyon 52 (Y1: iki tutar kolonlu (Kalan/toplam yok) tabloda ilk tutar kolonu borç sayılır (not yerine)): YAKALANDI (b3e-vergi-sutunu, b3n-borc-kolonu-kisi-ozniteligi)
+  mutasyon 53 (Y3 öncesi: Kalan hücresi boş, Toplam yok — tek tutar kolonu (Aidat) ana tutar sayılmaz (borç belirlenemez)): YAKALANDI (b3o-seyrek-kalan, b3w-yalniz-soz-tutari)
+  mutasyon 54 (Y3: Kalan hücresi boş, iki aday (Aidat + Gecikme Faizi) — ikisinin toplamı borç sayılır (not yerine)): YAKALANDI (b3o-seyrek-kalan)
+  mutasyon 55 (Y1: 'önce cari açın' Açılış Bakiyesi satırın ilk tutar hücresinden dolar (raporların borcundan değil)): YAKALANDI (b3b-k1-k4-donem-raporlar[2.4.4], b3c-k2-donem-ayni-no[2.4.4], b3n-borc-kolonu-kisi-ozniteligi[2.4.4])
+  mutasyon 56 (Y2 öncesi: aynı adlı iki satır telefonla ayırt edilse de güvenli eşleşme sayılmaz (kişi değeri yalnız ad + kimlik)): YAKALANDI (b3p-ayni-ad-telefon[2.4.4])
+  mutasyon 57 (TAKVİM KALEMİ öncesi: vade kaleminin tutarı satır borcudur (Kalan) — dönem / taksit tutarı kolonu yok sayılır): YAKALANDI (b3o-seyrek-kalan, b3q-takvim-kalemi, b3s-soz-tutari-kalemi)
+  mutasyon 58 (TAKVİM KALEMİ: kalem tutarı dönem tutarıdır, Kalan Borç daha küçükse de (min alınmaz)): YAKALANDI (b3o-seyrek-kalan, b3q-takvim-kalemi, b3r-kalan-sifir-eksi)
+  mutasyon 59 (TAKVİM KALEMİ: Tablodaki Kişiler de vade kaleminin tutarını (dönem tutarı) gösterir (satır borcu yerine)): YAKALANDI (b3o-seyrek-kalan, b3q-takvim-kalemi, b3r-kalan-sifir-eksi)
+  mutasyon 60 (Z2 öncesi: Kalan Borç 0 ya da eksi satırın vade kalemi görünür (tutarı min(dönem tutarı, Kalan))): YAKALANDI (b3r-kalan-sifir-eksi)
+  mutasyon 61 (Z3 öncesi: ödeme sözü kalemi söz tutarı değil, min(dönem tutarı, Kalan)): YAKALANDI (b3s-soz-tutari-kalemi, b3t-sozlesme-tutari, b3u-sozlesme-tarihi-soz-basliklari)
+  mutasyon 62 (SÖZ TUTARI öncesi: 'söz' ile başlayan her başlık söz sütunudur ('Sözleşme Tutarı', 'Sözleşme No' da söz)): YAKALANDI (b3t-sozlesme-tutari, b3v-taahhut-soz-miktari, b3w-yalniz-soz-tutari)
+  mutasyon 63 (SÖZLEŞME TARİHİ öncesi: 'Sözleşme Tarihi' vade tarihi sayılır (vade kalemi açar)): YAKALANDI (b3u-sozlesme-tarihi-soz-basliklari)
+  mutasyon 64 (SÖZ TUTARI: yalnız 'Söz Tutarı' söz sütunu — 'Ödeme Sözü Tutarı', 'Taahhüt Tutarı' söz sayılmaz): YAKALANDI (b3u-sozlesme-tarihi-soz-basliklari, b3v-taahhut-soz-miktari, b3w-yalniz-soz-tutari)
+  mutasyon 65 (ÖDEME SÖZÜ başlıkları: taahhüt ailesi tam sözcük ('Taahhütname', 'Taahhütlü' söz değil)): YAKALANDI (b3v-taahhut-soz-miktari, b3w-yalniz-soz-tutari, b3x-yalin-soz-ve-tutar)
+  mutasyon 66 (ÖDEME SÖZÜ başlıkları: söz tutarı sütunu yalnız 'tutar' sözcüğüyle ('Söz Miktarı', 'Taahhüt Miktarı' söz tutarı değil)): YAKALANDI (b3v-taahhut-soz-miktari, b3w-yalniz-soz-tutari)
+  mutasyon 67 (5b + ÖDEME SÖZÜ: söz ailesi + dönem sözcüğü ('Taahhütlü Ücret') para kolonu sayılmaz (ücret borç / dönem tutarı olmaz)): YAKALANDI (b3w-yalniz-soz-tutari)
+  mutasyon 68 (5b + ÖDEME SÖZÜ: 'Taahhütlü Ücret' söz tutarı sayılır (ücret borç değil, kalemi ödeme sözü)): YAKALANDI (b3w-yalniz-soz-tutari)
+  mutasyon 69 (A1 + Z6: yalın sayı değerli 'Ödeme Sözü' / 'Söz' / 'Taahhüt' sütunu söz tutarıdır (söz kalemi bu sütundan tutar alır)): YAKALANDI (b3x-yalin-soz-ve-tutar)
+  mutasyon 70 (A1 + Z6: yalın sayı değerli 'Ödeme Sözü' / 'Söz' / 'Taahhüt' sütunu tutar sayılır (borç olur)): YAKALANDI (b3x-yalin-soz-ve-tutar)
+  mutasyon 71 (Y1/N4/K3 muafiyeti öncesi: borç/alacak/kalan/bakiye/toplam sözcüklü söz-ailesi başlığı ('Taahhüt Alacağı', 'Taahhüt Bakiyesi') yalın söz sayılır): YAKALANDI (b3y-taahhut-alacak-bakiye)
+  mutasyon 72 (K3 gün/adet/ay: '(Ay)' söz-ailesi miktar sütunu ('Taahhüt Miktarı (Ay)') söz tutarı sayılır): YAKALANDI (b3y-taahhut-alacak-bakiye)
+  mutasyon 73 (S1: elle Borç/Alacak ve Açılış kuyruğa girmez (bağsız ödeme yalnız faturaları kapatır; elle kaydın Kalan'ı tutarı)): YAKALANDI (c10-ks10-projeksiyon-cari-vade[2.4.9], c12-ks81-sb-kalan-dagilimi[2.4.9], c13-ks83-ayni-gun-sira[2.4.9])
+  mutasyon 74 (S1: Açılış Bakiyesi kuyruğa girmez): YAKALANDI (c10-ks10-projeksiyon-cari-vade[2.4.9], c6-cari-vade-fifo[2.4.9], c7-ks7-bagsiz-kapaticilar[2.4.9])
+  mutasyon 75 (S1: kuyruk Vade Tarihi'ne göre dizilir (kayıt tarihi yerine)): YAKALANDI (c10-ks10-projeksiyon-cari-vade[2.4.9], c13-ks83-ayni-gun-sira[2.4.9], c6-cari-vade-fifo[2.4.9])
+  mutasyon 76 (S1: aynı tarihte yazım sırası ters): YAKALANDI (c13-ks83-ayni-gun-sira[2.4.9], c14c-c1-silinmis-cariye-yazim[2.4.6], c6-cari-vade-fifo[2.4.9])
+  mutasyon 77 (S1: bağlı ödeme (Kapatılacak Fatura) de en eskiden dağıtılır): YAKALANDI (c12-ks81-sb-kalan-dagilimi[2.4.9], c6-cari-vade-fifo[2.4.9], c7b-supheli-kalan[2.4.9])
+  mutasyon 78 (S1: silinen tahsilat Kalan'ı geri açmaz (kuyrukta kalır)): YAKALANDI (c6-cari-vade-fifo[2.4.9], d36-c5-s122-kart-odemesi[2.4.9], d37-c5-s126-faturali-kart[2.4.9])
+  mutasyon 80 (K6.3: kalem tutarı kaydın tutarı (Kalan değil)): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c12-ks81-sb-kalan-dagilimi, c14e-c1-pasife-al)
+  mutasyon 81 (K6.3: kalem tarihi Vade Tarihi (Beklenen Ödeme Tarihi'ne kaymaz)): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c6-cari-vade-fifo, c6b-cari-vade-dogrulama)
+  mutasyon 82 (K6.3: Beklenen Ödeme Tarihi'nde etikete ' (Ödeme Sözü)' eklenmez): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c6-cari-vade-fifo, c6b-cari-vade-dogrulama)
+  mutasyon 83 (K6.3: ufuk yok (bugünden 7 günden sonraki kalem de görünür)): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c6-cari-vade-fifo, d10-c5-s67-soz-takvim)
+  mutasyon 84 (K6.3: Kalan'ı 0 olan kayıt da kalem): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c12-ks81-sb-kalan-dagilimi, c13-ks83-ayni-gun-sira[2.4.9])
+  mutasyon 85 (K6.3: yalnız Vade Tarihi kalem açar (Beklenen Ödeme Tarihi tek başına açmaz)): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c6-cari-vade-fifo, c6b-cari-vade-dogrulama)
+  mutasyon 86 (K6.3: cari görüntüleme yetkisi olmayan kullanıcı cari kalemlerini görür): YAKALANDI (c6-cari-vade-fifo)
+  mutasyon 87 (K6.3: 'Ödendi Say' (settle) cari kalemini kabul eder ve kapatır): YAKALANDI (c6-cari-vade-fifo)
+  mutasyon 88 (K6.1: Vade / Beklenen Ödeme Tarihi kaydın tarihinden önce olabilir (400 yok)): YAKALANDI (c6b-cari-vade-dogrulama)
+  mutasyon 89 (K6.1: tahsilat (in) gönderilen Vade Tarihi'ni kaydeder): YAKALANDI (c6-cari-vade-fifo)
+  mutasyon 90 (K6.4: Düzenle (yalnız tutar/tarih) vade alanlarını siler): YAKALANDI (c6-cari-vade-fifo, c6b-cari-vade-dogrulama)
+  mutasyon 91 (K1: kayıt tahsilatı kapısı yok (POST 200, Kasa'ya girer)): YAKALANDI (c1-kayit-tahsilat-kapisi)
+  mutasyon 92 (K1: eski kayıt tahsilatının silinmesi de kapalı (DELETE ret)): YAKALANDI (c1-kayit-tahsilat-kapisi)
+  mutasyon 93 (K1: Silinenler'den geri yüklenen kayıt tahsilatı Kasa'ya dönmez): YAKALANDI (c1-kayit-tahsilat-kapisi)
+  mutasyon 94 (Madde 2: Tablodan Aktar kapısı yok (POST 200, kart açılır)): YAKALANDI (c2-tablodan-aktar-kapisi)
+  mutasyon 95 (Madde 2: eski aktarımın Geri Al'ı da kapalı): YAKALANDI (b1-5a-bayat-ve-yeniden[2.4.4], b1-5a-tasima[2.4.4], b1-5b-borc[2.4.4])
+  mutasyon 96 (Madde 4: tablonun tutarlı kalemleri (ödeme günü, aidat, söz) Takvim'de kalır): YAKALANDI (b3b-k1-k4-donem-raporlar, b3c-k2-donem-ayni-no, b3k-vergi-tek-kolon)
+  mutasyon 97 (Madde 4: tablonun tutarsız tarih hatırlatmaları (duruşma, sözleşme bitiş, icra son tarihi) da kalkar): YAKALANDI (c4-uyari-kapisi)
+  mutasyon 98 (Madde 4: Vade Takip'te tablo tutarlı kalemleri kalır): YAKALANDI (b3b-k1-k4-donem-raporlar, b3c-k2-donem-ayni-no, b3k-vergi-tek-kolon)
+  mutasyon 99 (K6.3 (yalnız 2.4.5 kural seti — 2.4.6 kararıyla geçersiz, KS10 doğrusu): Nakit Akış Projeksiyonu cari vadesini katar): YAKALANDI (c10-ks10-projeksiyon-cari-vade[2.4.5], c12-ks81-sb-kalan-dagilimi[2.4.5], c6-cari-vade-fifo[2.4.5])
+  mutasyon 100 (K6.3: yön ters (carinin borcu 'out')): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c12-ks81-sb-kalan-dagilimi, c13-ks83-ayni-gun-sira)
+  mutasyon 101 (S1 borç tarafı: elle Alacak / alacak yönlü Açılış ödemelerle kapanmaz (yalnız alış faturaları)): YAKALANDI (c10-ks10-projeksiyon-cari-vade[2.4.9], c12-ks81-sb-kalan-dagilimi[2.4.9], c13-ks83-ayni-gun-sira[2.4.9])
+  mutasyon 102 (K6.1: biçimsiz tarih kabul edilir): YAKALANDI (c6b-cari-vade-dogrulama)
+  mutasyon 103 (K6.4: yedekten geri yüklemede vade alanları boş gelir): YAKALANDI (c6-cari-vade-fifo)
+  mutasyon 104 (K6.4: Silinenler'den geri yüklenen elle kayıt vade alanlarını yitirir): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c6-cari-vade-fifo)
+  mutasyon 105 (K1: kayıt tahsilatı düzeltmesi (PUT /payments/:id) açık): YAKALANDI (c1-kayit-tahsilat-kapisi)
+  mutasyon 109 (K6.5: Beklenen Ödeme Tarihi Vade Tarihi'nden önce → 400): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c6-cari-vade-fifo, c6b-cari-vade-dogrulama)
+  mutasyon 114 (KS7: faturasız stok Satış İadesi bağsız kapatıcı değil (D1 eski hata sınıfı)): YAKALANDI (c11-ks81-sa-mevcut-borc-karti[2.4.9], c12-ks81-sb-kalan-dagilimi[2.4.9], c13-ks83-ayni-gun-sira[2.4.9])
+  mutasyon 115 (KS7: Değersiz Alacak Yaz bağsız kapatıcı değil (D1 eski hata sınıfı)): YAKALANDI (c7-ks7-bagsiz-kapaticilar[2.4.9], c7b-supheli-kalan[2.4.9], d39-c5-s130-supheli-kalemleri[2.4.9])
+  mutasyon 116 (KS7: Şüpheli Alacağa Al da kapatıcı (bakiye değişmediği hâlde borçları kapatır)): YAKALANDI (c7-ks7-bagsiz-kapaticilar[2.4.9], c7b-supheli-kalan[2.4.9], d39-c5-s130-supheli-kalemleri[2.4.9])
+  mutasyon 118 (KS7.1: tedarikçiye nedensiz stok çıkışı ('Stok satışı') alış iadesi gibi bağsız ödeme sayılır): YAKALANDI (c7-ks7-bagsiz-kapaticilar[2.4.9], d16-c5-s92-net-gorunum[2.4.9], d30-c5-s101-bitti-kart[2.4.9])
+  mutasyon 119 (§3.11b (a): tahsilat şüpheli kaydın kalanını düşürmez (değersiz sınırı alınan − değersiz)): YAKALANDI (c7b-supheli-kalan, d39-c5-s130-supheli-kalemleri, d40-c5-s130-sus-bilinen-sinir)
+  mutasyon 120 (§3.11b / K3: kayıt tarihinden ÖNCE tarihli alacak satırı da şüpheliden düşer): YAKALANDI (c7-ks7-bagsiz-kapaticilar, c7b-supheli-kalan, d39-c5-s130-supheli-kalemleri)
+  mutasyon 121 (§3.11b (b): faturaya bağlı tahsilat da şüpheliden düşer): YAKALANDI (c7b-supheli-kalan, d44-c5-s155-s158)
+  mutasyon 110 (K6.5: açılış satırı yokken açılış vadesi kabul edilir (opening-missing yok)): YAKALANDI (c6b-cari-vade-dogrulama)
+  mutasyon 111 (K6.5: kapanmış dönemdeki kaydın vade alanları değiştirilebilir): YAKALANDI (c6b-cari-vade-dogrulama)
+  mutasyon 112 (K6.5: Mevcut Borç kartlı caride kalem tutarı kart kapsamı düşülmeden Kalan): YAKALANDI (c6c-mevcut-borc-karti, d2-c5-kg5-excel-kart, d34-c5-s110-kendi-borcu)
+  mutasyon 113 (K6.5: Mevcut Borç kartlı caride Kalan kart kapsamını içermez (Kalan − kapsam)): YAKALANDI (c6c-mevcut-borc-karti, d2-c5-kg5-excel-kart, d34-c5-s110-kendi-borcu[2.4.9])
+  mutasyon 106 (KS5: ufkun sınır günü (bugün + 7) takvimde yok (hariç)): YAKALANDI (c6-cari-vade-fifo)
+  mutasyon 107 (KS4: Kasa sütunları Tablodaki Nakit Akışı'nda kalır (Kasa raporuyla aynı)): YAKALANDI (b2-ux18-karsiliksiz, b2-ux18-retler, b2-ux18-sira)
+  mutasyon 108 (KS4: Kasa yetkisi olmayan kullanıcıya Tablodaki Nakit Akışı'nda Kasa notu kalır): YAKALANDI (b3b-k1-k4-donem-raporlar)
+  mutasyon 117 (KS9 (madde 10) / KS7 simetri: faturasız Alış İadesi (preturn) bağsız ödeme değil (alış faturasını / elle Alacak'ı kapatmaz)): YAKALANDI (c12-ks81-sb-kalan-dagilimi[2.4.9], c13-ks83-ayni-gun-sira[2.4.9], c8-ks8-iade-geri-odemesi[2.4.9])
+  mutasyon 122 (KS10: Nakit Akış Projeksiyonu cari vadesini katmaz (2.4.5 BİLİNEN SINIR davranışı)): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c12-ks81-sb-kalan-dagilimi, c13-ks83-ayni-gun-sira)
+  mutasyon 123 (KS10: Projeksiyon kalemi FIFO Kalan yerine kaydın tutarı): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c12-ks81-sb-kalan-dagilimi, c13-ks83-ayni-gun-sira[2.4.9])
+  mutasyon 124 (KS10: Projeksiyon kalem tarihi Vade Tarihi (Beklenen Ödeme Tarihi'ne kaymaz)): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c6-cari-vade-fifo, c6b-cari-vade-dogrulama)
+  mutasyon 125 (KS10 + K6.5 (1): Mevcut Borç kartlı caride projeksiyon kalemi kart kapsamı düşülmeden Kalan (taksitlerle çift)): YAKALANDI (c6c-mevcut-borc-karti, d2-c5-kg5-excel-kart, d34-c5-s110-kendi-borcu)
+  mutasyon 126 (KS10 'bir kez': carinin projeksiyon toplamı iki kat (Faturasız Cari Alacağı + vadeli kalem çift sayım)): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c14a-c1-hareket-turleri, c14b-c1-silinenler-ve-geri-yukleme)
+  mutasyon 127 (KS10: projeksiyon penceresinden (bugün + 30) sonraki kalem de görünür): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c6-cari-vade-fifo, d16-c5-s92-net-gorunum)
+  mutasyon 128 (KS10: vadesi geçmiş cari kalemi projeksiyonda (gecikenler dahil) görünmez): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c12-ks81-sb-kalan-dagilimi, c14a-c1-hareket-turleri)
+  mutasyon 129 (KS8 (DB1): iade geri ödemesi yok — müşteriye bağsız Ödeme borç tarafında ödeme sayılır, iade yine borçları kapatır (2.4.5 davranışı)): YAKALANDI (c11-ks81-sa-mevcut-borc-karti[2.4.9], c12-ks81-sb-kalan-dagilimi[2.4.9], c13-ks83-ayni-gun-sira[2.4.9])
+  mutasyon 130 (KS8: Ödeme ile geri ödenen FATURA iadesi asıl faturanın açığından yine düşer (geri ödeme bağı yalnız stok iadesinde)): YAKALANDI (c12-ks81-sb-kalan-dagilimi[2.4.9], c8-ks8-iade-geri-odemesi[2.4.9], c8b-ks8-bagli-iade-odemesi[2.4.9])
+  mutasyon 131 (KS8: kısmi geri ödemede iadenin TAMAMI geri ödenmiş sayılır): YAKALANDI (c12-ks81-sb-kalan-dagilimi[2.4.9], c8-ks8-iade-geri-odemesi[2.4.9])
+  mutasyon 133 (KS8.3 okuması (25.10 ~15:30 GERİ ALINDI): bağsız para ÖNCE iadenin geri ödemesi (açık not + kapatıcı kısım), sonra karşı taraftaki yükümlülükler (elle Alacak)): YAKALANDI (c13-ks83-ayni-gun-sira[2.4.9], c14c-c1-silinmis-cariye-yazim[2.4.6], c8-ks8-iade-geri-odemesi[2.4.9])
+  mutasyon 142 (§9 ilk okuması: iadenin TAMAMI (açık not + kapatıcı kısım) kendi tarihinde K-b FIFO'sunda — KS8.1 'artan' koşulu yok (daha eski tarihli iade elle Alacak'tan önce geri ödenir)): YAKALANDI (c12-ks81-sb-kalan-dagilimi, c13-ks83-ayni-gun-sira, c8-ks8-iade-geri-odemesi)
+  mutasyon 143 (KS8.1: ikinci aşamada (artan para) EN YENİ kapatıcı iade önce geri ödenir (karar: en eski önce)): YAKALANDI (c12-ks81-sb-kalan-dagilimi[2.4.9])
+  mutasyon 137 (KS8.1 (B2): bağsız geri ödeme yalnız iadenin AÇIK notunu geri öder (ikinci aşama yok) — iadenin kapattığı borcu yeniden açmaz, artan avans): YAKALANDI (c11-ks81-sa-mevcut-borc-karti[2.4.9], c12-ks81-sb-kalan-dagilimi[2.4.9], c13-ks83-ayni-gun-sira[2.4.9])
+  mutasyon 138 (K-e: ciro / tedarikçiden alınan evrak iade geri ödemesi sayılmaz (yalnız nakit Ödeme / Tahsilat)): YAKALANDI (c13-ks83-ayni-gun-sira[2.4.9])
+  mutasyon 139 (K-P1: projeksiyon penceresinin son günü (bugün + 30) hariç): YAKALANDI (c10-ks10-projeksiyon-cari-vade)
+  mutasyon 140 (K6.5 (1) (B1): Mevcut Borç kartlı caride fatura kalemi kart kapsamı düşülmeden açık (taksitlerle çift sayım)): YAKALANDI (c11-ks81-sa-mevcut-borc-karti, d30-c5-s101-bitti-kart[2.4.9], d34-c5-s110-kendi-borcu)
+  mutasyon 141 (KS8.2 öncesi: iadeden ÖNCE tarihli bağsız Ödeme iade geri ödemesi sayılmaz (tarih koşulu var)): YAKALANDI (c13-ks83-ayni-gun-sira[2.4.9], d26-c5-bakim5-susan[2.4.9])
+  mutasyon 134 (R1 / K1 İADE KAPANIŞI: iadenin kendi geri ödemesi (geri nakit) iadeyi kapatmaz — iade yine asıl faturanın açığından düşer): YAKALANDI (c8-ks8-iade-geri-odemesi[2.4.9])
+  mutasyon 135 (KS9 simetri: tedarikçiden iade bedelinin geri tahsilatı (Tahsilat) alış iadesine bağlanmaz — alış iadesi yine alış faturasını kapatır): YAKALANDI (c12-ks81-sb-kalan-dagilimi[2.4.9], c8-ks8-iade-geri-odemesi[2.4.9])
+  mutasyon 136 (KS8: Kapatılacak Fatura = iade belgesi olan (bağlı) Ödeme iadeyi kapatmaz (havuza gider)): YAKALANDI (c8b-ks8-bagli-iade-odemesi[2.4.9])
+  mutasyon 150 (C1.1: hareketli cari silinebilir (hareket denetimi yok)): YAKALANDI (c14a-c1-hareket-turleri, c14b-c1-silinenler-ve-geri-yukleme, c14d-c1-ayni-ad)
+  mutasyon 151 (C1.4 S1 B: Silinenler'deki kayıt (silinmiş tahsilat / Borç Yaz / evrak / taslak fatura / taksit kartı) hareket sayılır): YAKALANDI (c14b-c1-silinenler-ve-geri-yukleme, c14f-c1-geri-al-y2)
+  mutasyon 152 (C1.5 S2 B: tutarı sıfır taksit kartı hareket sayılmaz): YAKALANDI (c14a-c1-hareket-turleri)
+  mutasyon 153 (C1.1 İLKE: taslak ve iptal fatura hareket sayılmaz (yalnız düzenlenmiş fatura)): YAKALANDI (c14a-c1-hareket-turleri, c14b-c1-silinenler-ve-geri-yukleme, c14f-c1-geri-al-y2)
+  mutasyon 154 (C1.1 İLKE: Borç / Alacak Yaz ve Açılış Bakiyesi hareket sayılmaz): YAKALANDI (c14a-c1-hareket-turleri, c14d-c1-ayni-ad, c14e-c1-pasife-al)
+  mutasyon 155 (C1.6: silinmiş cariye tahsilat yazılır (yazım anında cari denetimi yok) — Kasa'ya girer): YAKALANDI (c14c-c1-silinmis-cariye-yazim)
+  mutasyon 156 (C1.7: Silinenler'den geri yüklenen kayıt hareket sayılmaz (geri yüklenen hareketli cari yine silinir)): YAKALANDI (c14b-c1-silinenler-ve-geri-yukleme)
+  mutasyon 157 (C1.10 Y2: aktarımın açtığı cari hareketli olsa da Geri Al'da kalkar): YAKALANDI (c14f-c1-geri-al-y2)
+  mutasyon 158 (C1.10 Y2: Silinenler'deki kayıt aktarımın açtığı cariyi tutmaz (S1 A Y2'ye de uygulanır)): YAKALANDI (c14f-c1-geri-al-y2)
+  mutasyon 159 (C1.2: silinen hareketsiz cari Silinenler'e gitmez (geri yüklenemez)): YAKALANDI (b5-u1-nihai-tuketici, c14a-c1-hareket-turleri, c14b-c1-silinenler-ve-geri-yukleme)
+  mutasyon 160 (C1.9: Pasife Al carinin nakit tahsilat / ödemelerini Kasa'dan düşürür): YAKALANDI (c14e-c1-pasife-al)
+  mutasyon 161 (C1.9: pasif hareketli cari silinebilir): YAKALANDI (c14e-c1-pasife-al)
+  mutasyon 162 (C1.1 H11: ciro alan cari hareketsiz sayılır): YAKALANDI (c14a-c1-hareket-turleri)
+  mutasyon 163 (C1.1 H4: stok hareketinin cari satırı hareket sayılmaz): YAKALANDI (c14a-c1-hareket-turleri)
+  mutasyon 164 (C1.12: hareket ada göre aranır (aynı adlı başka carinin hareketi bu cariyi de kilitler)): YAKALANDI (c14d-c1-ayni-ad)
+  mutasyon 165 (C1.3: değişiklik geçmişi (ad değişikliği) hareket sayılır): YAKALANDI (c14d-c1-ayni-ad)
+  mutasyon 166 (C1.3: kayıt (tablo) tahsilatı kayda bağlı carinin hareketi sayılır): YAKALANDI (c14g-c1-kayit-tahsilati)
+  mutasyon 167 (C1.2: hareketsiz cari de silinemez): YAKALANDI (b5-u1-nihai-tuketici, c14a-c1-hareket-turleri, c14b-c1-silinenler-ve-geri-yukleme)
+  mutasyon 168 (C1.6: carisi silinmişken Silinenler'den hareket / evrak / fatura geri yüklenir): YAKALANDI (c14b-c1-silinenler-ve-geri-yukleme)
+  mutasyon 169 (C1.7: cari geri yüklenince ayrı silinmiş kayıtları da geri gelir): YAKALANDI (c14b-c1-silinenler-ve-geri-yukleme)
+  mutasyon 170 (C1.8: taksit kartı geri yüklemesi silinmiş carisini geri getirmez (kart geri yüklenemez — çıkmaz)): YAKALANDI (c14b-c1-silinenler-ve-geri-yukleme)
+  mutasyon 171 (C1.11: ürünü silinen stok satırı hareket sayılmaz): YAKALANDI (c14a-c1-hareket-turleri)
+  mutasyon 172 (C1.1 H11: alınan çek / senet hareket sayılmaz): YAKALANDI (c14a-c1-hareket-turleri, c14b-c1-silinenler-ve-geri-yukleme, c14f-c1-geri-al-y2)
+  mutasyon 173 (C1.1: ret Kasa'yı değiştirir — silinemeyen carinin nakit tahsilat / ödemeleri Kasa'dan düşer (müşteri bulgusunun belirtisi)): YAKALANDI (c14a-c1-hareket-turleri, c14b-c1-silinenler-ve-geri-yukleme, c14d-c1-ayni-ad)
+  mutasyon 174 (C1.6: silinmiş cariye Borç / Alacak Yaz, ödeme, fatura, evrak, kart, stok satırı yazılır (yalnız tahsilat denetlenir)): YAKALANDI (c14c-c1-silinmis-cariye-yazim)
+  mutasyon 200 (Ç5 C13.1 (30.10 B): açılış karşı hesabı 500): YAKALANDI (c6c-mevcut-borc-karti, d1-c5-acilis-519, d2-c5-kg5-excel-kart)
+  mutasyon 201 (Ç5 C13.1: alacaklı açılışın karşılığı ters yönde (B CH / A 519)): YAKALANDI (d1-c5-acilis-519)
+  mutasyon 202 (Ç5 C13.2 (KG-5 B): Tablodan Aktar yeni borç kartı gelire (B 120 / A 600)): YAKALANDI (c14f-c1-geri-al-y2, c2-tablodan-aktar-kapisi, d2-c5-kg5-excel-kart)
+  mutasyon 203 (Ç5 C13.2: Mevcut Borç kartı da madde yazar (B 120 / A 519)): YAKALANDI (c6c-mevcut-borc-karti, d2-c5-kg5-excel-kart)
+  mutasyon 204 (Ç5 C13.3 (S49 B): carisiz evrak 519'a): YAKALANDI (d11-c5-s66-carisiz-karsiliksiz, d3-c5-carisiz-evrak)
+  mutasyon 205 (Ç5 C13.4 (S50 B): kart seçilmeden alınan tahsilat taksit kapatmaz (taksitler yalnız kart tahsilatıyla)): YAKALANDI (d27-c5-s99-taksitli-avans, d28-c5-s99-taksit-vade-gunu, d29-c5-s99-taksit-ertesi-gun)
+  mutasyon 206 (Ç5 C13.4 (S2 B): kapama belge tarihi sırasıyla (Vade sırayı değiştirmez — 2.4.9)): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c13-ks83-ayni-gun-sira, c6-cari-vade-fifo)
+  mutasyon 207 (Ç5 C13.4 ((1) B): HAVUZ — bağsız ödeme sonradan doğan erken vadeli borca kayar): YAKALANDI (d16-c5-s92-net-gorunum, d26-c5-bakim5-susan, d27-c5-s99-taksitli-avans)
+  mutasyon 208 (Ç5 C13.4 (M1e B): Mevcut Borç kartı alttaki borcu tüketmez (kart ile borç birlikte)): YAKALANDI (c6c-mevcut-borc-karti, d30-c5-s101-bitti-kart, d31-c5-s101-taksit-vade-gunu)
+  mutasyon 209 (Ç5 C13.5 (S52 B): ileri tarihli Ödeme Sözü varken borç gecikmiş sayılmaz): YAKALANDI (d10-c5-s67-soz-takvim, d12-c5-s69-soz-gunu-ve-gecmis, d13-c5-s69-soz-ertesi-gun)
+  mutasyon 210 (Ç5 C13.5 (S1 B): vadesiz kalem gecikmiş sayılmaz): YAKALANDI (d10-c5-s67-soz-takvim, d11-c5-s66-carisiz-karsiliksiz, d12-c5-s69-soz-gunu-ve-gecmis)
+  mutasyon 211 (Ç5 C13.5 (M1f B): vade günü gecikmiş sayılır): YAKALANDI (d10-c5-s67-soz-takvim, d12-c5-s69-soz-gunu-ve-gecmis, d14-c5-s91-vadesiz-kayit-gunu)
+  mutasyon 212 (Ç5 C13.5 ((5) B): gecikmiş tutar net borçla sınırlanmaz): YAKALANDI (d16-c5-s92-net-gorunum, d17-c5-s93-verilen-avans, d18-c5-s93-avans-ertesi-gun)
+  mutasyon 213 (Ç5 C13.4 ((2) B): bağ, hedefi önceden bağsız kapanmışsa bağsız olur ('ilk gelen kazanır')): YAKALANDI (c12-ks81-sb-kalan-dagilimi, d17-c5-s93-verilen-avans, d18-c5-s93-avans-ertesi-gun)
+  mutasyon 214 (Ç5 C14.1 (S68 B): borç tarafında bağsız ödeme / ciro / iade bedeli kayıt tarihi + yazım sırasıyla kapatır (2.4.5 K-b)): YAKALANDI (c13-ks83-ayni-gun-sira, d33-c5-s102-s105-sinirlar, d9-c5-s68-borc-tarafi-vade)
+  mutasyon 215 (Ç5 C14.2 (S67 B): vadesi geçmiş borca ileri tarihli sözde takvim kaleminin durumu ve gün sayısı söz tarihine göre (K6.3)): YAKALANDI (c6-cari-vade-fifo, d10-c5-s67-soz-takvim, d13-c5-s69-soz-ertesi-gun)
+  mutasyon 216 (Ç5 C14.3 (S66 B): carisiz evrakın karşılıksızı, cari seçilmezse gidere (B 770 / A 101)): YAKALANDI (d11-c5-s66-carisiz-karsiliksiz)
+  mutasyon 217 (Ç5 C14.3 (S66): cari seçilse de cari borçlanmaz (B 649 / A 101)): YAKALANDI (d11-c5-s66-carisiz-karsiliksiz, d14-c5-s91-vadesiz-kayit-gunu, d15-c5-s91-vadesiz-ertesi-gun)
+  mutasyon 218 (Ç5 C14.3 (S66): seçilen carinin karşılıksız borcu tek yükümlülük kuyruğunda kalem değil (avans kapatmaz, gecikmiş sayılmaz)): YAKALANDI (d11-c5-s66-carisiz-karsiliksiz, d14-c5-s91-vadesiz-kayit-gunu, d15-c5-s91-vadesiz-ertesi-gun)
+  mutasyon 219 (Ç5 C15.1 (S69 B): söz günü kalem 'Bugün, 0', söz geçince gün sayısı sözden (K6.3)): YAKALANDI (c10-ks10-projeksiyon-cari-vade, d10-c5-s67-soz-takvim, d12-c5-s69-soz-gunu-ve-gecmis)
+  mutasyon 220 (Ç5 C15.1 sınırı: S69 yalnız söz GEÇMİŞSE — söz günü (Beklenen = bugün) K6.3 'today' 0): YAKALANDI (d10-c5-s67-soz-takvim, d12-c5-s69-soz-gunu-ve-gecmis)
+  mutasyon 221 (Ç5 C15.2 (a) sınırı: söz vadeden ÖNCE iken de durum Gecikmiş, gün sayısı vadeden): YAKALANDI (c6b-cari-vade-dogrulama, d10-c5-s67-soz-takvim, d12-c5-s69-soz-gunu-ve-gecmis)
+  mutasyon 222 (Ç5 C15.1 sınırı: gün sayısı vade ERTESİNDEN (bir gün eksik)): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c6-cari-vade-fifo, d10-c5-s67-soz-takvim)
+  mutasyon 223 (Ç5 C15.2 (b) / C14.2 sınırı (M1f B): vade günü vadesi geçmiş sayılır (v ≤ bugün)): YAKALANDI (d10-c5-s67-soz-takvim, d12-c5-s69-soz-gunu-ve-gecmis)
+  mutasyon 224 (Ç5 C16.1 (S91 B): vadesiz kayıt takvim / Vade Takip / projeksiyon kalemi değil (K6.3 aynen — yalnız Vade / Beklenen Ödeme Tarihi'li kayıt)): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c14a-c1-hareket-turleri, c14b-c1-silinenler-ve-geri-yukleme)
+  mutasyon 225 (Ç5 C16.1 sınırı: vadesiz kalemin günü kayıt gününün ERTESİ (kayıt günü ↔ ertesi gün)): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c14a-c1-hareket-turleri, c14b-c1-silinenler-ve-geri-yukleme)
+  mutasyon 226 (Ç5 C16.2 (S92 B): Kalan / takvim / Vade Takip'te iki taraf ayrı (KS2 aynen), yalnız gecikmiş netleşir): YAKALANDI (c12-ks81-sb-kalan-dagilimi, c13-ks83-ayni-gun-sira, c6b-cari-vade-dogrulama)
+  mutasyon 227 (Ç5 C16.4 (S9 eski okuma — C13.5): gecikmiş = min(net borç, kendi tarafının brüt gecikmişi) — karşı kalem vadesi en önce gelen borçtan düşülmez): YAKALANDI (d16-c5-s92-net-gorunum, d17-c5-s93-verilen-avans, d18-c5-s93-avans-ertesi-gun)
+  mutasyon 228 (Ç5 C16.2 sınırı (netleşme tarihi): karşı yönlü kalemler BELGE tarihinde değil VADELERİNDE netleşir (vadesi gelmemiş karşı kalem düşülmez)): YAKALANDI (d16-c5-s92-net-gorunum, d19-c5-s92-okuma-ayrisan, d20-c5-s95-netlesme-sonrasi-odeme)
+  mutasyon 229 (Ç5 C16.2 sınırı (netleşme tarihi): karşı yönlü kalemler zamandan bağımsız, ödemelerden ÖNCE netleşir): YAKALANDI (c12-ks81-sb-kalan-dagilimi, c8-ks8-iade-geri-odemesi, d16-c5-s92-net-gorunum)
+  mutasyon 230 (Ç5 C16.3 (S93 B): tedarikçi türündeki caride gecikmiş tutar yok (yalnız müşteri rolündeki carilerde)): YAKALANDI (d11-c5-s66-carisiz-karsiliksiz, d17-c5-s93-verilen-avans, d18-c5-s93-avans-ertesi-gun)
+  mutasyon 231 (Ç5 C16.3 sınırı: verilen avans ödeme GÜNÜ gecikmiş sayılır (v ≤ bugün)): YAKALANDI (d17-c5-s93-verilen-avans, d22-c5-s96-avans-kalemi)
+  mutasyon 232 (Ç5 C16.1: stok veresiye / karşılıksız borç kalemi görünüm toplamına girmez (yalnız elle kayıt ve fatura)): YAKALANDI (d14-c5-s91-vadesiz-kayit-gunu, d15-c5-s91-vadesiz-ertesi-gun, d30-c5-s101-bitti-kart)
+  mutasyon 233 (Ç5 C16.2 ((5) B): karşı yönlü kalemli caride faturanın belge durumu (açık) da netleşir (Mahsup Et'siz)): YAKALANDI (c7-ks7-bagsiz-kapaticilar, c8-ks8-iade-geri-odemesi, d16-c5-s92-net-gorunum)
+  mutasyon 234 (Ç5 C17 (S95 B): netleşme geri alınmaz — sonradan gelen bağsız ödeme netleşmiş kalanı kapatır, artanı avans): YAKALANDI (c12-ks81-sb-kalan-dagilimi, c8-ks8-iade-geri-odemesi, d19-c5-s92-okuma-ayrisan)
+  mutasyon 235 (Ç5 C17 (S96 B): verilen avans takvim / Vade Takip / projeksiyon kalemi değil (yalnız gecikmiş toplamında)): YAKALANDI (c14a-c1-hareket-turleri, c14e-c1-pasife-al, c8-ks8-iade-geri-odemesi)
+  mutasyon 236 (Ç5 C17 (S97 B): aynı gün her taraf önce kendi içinde — ödeme o günün netleşmesini de geri alır): YAKALANDI (d19-c5-s92-okuma-ayrisan, d24-c5-s97-ayni-gun, d26-c5-bakim5-susan)
+  mutasyon 237 (Ç5 C17 (S98 B): gelen alacak yönlü satır önce yükümlülük kalemlerini, sonra verilen avansı kapatır): YAKALANDI (d19-c5-s92-okuma-ayrisan, d22-c5-s96-avans-kalemi, d23-c5-s96-avans-ertesi-gun)
+  mutasyon 238 (Ç5 C17 sınırı (S96): avans kaleminin günü ödeme gününün ERTESİ): YAKALANDI (c14a-c1-hareket-turleri, c14e-c1-pasife-al, c8-ks8-iade-geri-odemesi)
+  mutasyon 239 (Ç5 C17 sınırı (S95): yalnız iki gün ve daha önceki netleşme geri alınır (ertesi günkü ödeme dünkü netleşmeyi bozmaz)): YAKALANDI (d20-c5-s95-netlesme-sonrasi-odeme, d21-c5-s95-ertesi-ay, d24-c5-s97-ayni-gun)
+  mutasyon 240 (Ç5 C17 sınırı (S98): avansın sıradaki vadesi ödeme gününün ertesi (vadesi o gün olan borçla eşitte belge günü önce)): YAKALANDI (d25-c5-s98-avans-sirasi, d33-c5-s102-s105-sinirlar)
+  mutasyon 241 (Ç5 C18 (S99 B): bağsız para taksitli faturanın taksitlerini kapatmaz (2.4.9 kuralı — fatura durumu ve kuyruk)): YAKALANDI (d27-c5-s99-taksitli-avans, d28-c5-s99-taksit-vade-gunu, d29-c5-s99-taksit-ertesi-gun)
+  mutasyon 242 (Ç5 C18 sınırı (S99): taksitli faturanın taksitleri kuyruğa faturanın gününde vadeli girer (taksit tarihi değil)): YAKALANDI (d27-c5-s99-taksitli-avans, d28-c5-s99-taksit-vade-gunu, d29-c5-s99-taksit-ertesi-gun)
+  mutasyon 243 (Ç5 C18 (S101 B): kart kendi borcunu taksitleriyle taşır — avansın kapattığı borç karta geçince avans serbest kalır, kartın taksitleri bağsız parayla kapanmaz): YAKALANDI (d30-c5-s101-bitti-kart, d31-c5-s101-taksit-vade-gunu, d32-c5-s101-taksit-ertesi-gun)
+  mutasyon 244 (Ç5 C18 sınırı (S101): avansla ödenmiş sayılan kısım kartın vadesi EN SON gelen taksitinden): YAKALANDI (d30-c5-s101-bitti-kart, d31-c5-s101-taksit-vade-gunu, d32-c5-s101-taksit-ertesi-gun)
+  mutasyon 245 (Ç5 C18 (S102 B / SK-9 B): netleşme kalanlar arasında tarih sırasıyla yeniden kurulur (biçim K1)): YAKALANDI (d26-c5-bakim5-susan)
+  mutasyon 246 (Ç5 C18 (S103 B / SK-10 B): verilen avansın alışla kapanışı sonraki bağsız tahsilatla geri alınır): YAKALANDI (d26-c5-bakim5-susan, d33-c5-s102-s105-sinirlar)
+  mutasyon 247 (Ç5 C18 (S104 B / SK-11 B): bağsız Ödeme önce alacak yönlü kalemleri, sonra alınan avansı kapatır): YAKALANDI (d26-c5-bakim5-susan, d33-c5-s102-s105-sinirlar)
+  mutasyon 248 (Ç5 C18 (S105 B / SK-12 B): gelen alış faturası açık alış iadesi alacağı ile verilen avansı vade sırasıyla kapatır): YAKALANDI (d26-c5-bakim5-susan, d33-c5-s102-s105-sinirlar)
+  mutasyon 249 (Ç5 C18 (SK-13 B): faturanın belge durumu tek taraflı kuyruktan (verilen avans kalem sayılmaz)): YAKALANDI (d25-c5-s98-avans-sirasi, d26-c5-bakim5-susan, d27-c5-s99-taksitli-avans)
+  mutasyon 250 (Ç5 C18 sınırı (S104): alınan avansın sıradaki vadesi tahsilat gününün ertesi (vadesi o gün olan Alacak'la eşitte belge günü önce)): YAKALANDI (d33-c5-s102-s105-sinirlar)
+  mutasyon 251 (Ç5 C19 (G2 (b) kalkar): elle Mevcut Borç kartı taksitlendirilebilecek borçtan büyükken / borç yokken de kabul edilir (bakım 6 davranışı — S101 / EK-2B 32)): YAKALANDI (d30-c5-s101-bitti-kart, d38-c5-s128-ozge-kalemli-kart)
+  mutasyon 252 (Ç5 C19 (S101 B, satışla açılan kart): kart kendi satışını taksitleriyle taşır — avansın kapattığı satış karta geçince avans serbest, kartın taksitleri bağsız parayla kapanmaz): YAKALANDI (d30-c5-s101-bitti-kart, d31-c5-s101-taksit-vade-gunu, d32-c5-s101-taksit-ertesi-gun)
+  mutasyon 253 (Ç5 C19 sınırı (G2 (b)): kart = taksitlendirilebilecek borç da reddedilir): YAKALANDI (c11-ks81-sa-mevcut-borc-karti, d19-c5-s92-okuma-ayrisan, d30-c5-s101-bitti-kart)
+  mutasyon 254 (Ç5 C19 sınırı (G2 (b)): kart taksitlendirilebilecek borcu 1 kuruş aşınca kabul edilir): YAKALANDI (d30-c5-s101-bitti-kart)
+  mutasyon 255 (Ç5 C19 (Y7-2 (1) B): satışla açılan kart kendi satışını değil kuyruktaki açık borcu vade sırasıyla tüketir): YAKALANDI (d30-c5-s101-bitti-kart, d34-c5-s110-kendi-borcu)
+  mutasyon 256 (Ç5 C20 (S110 B): açık borç kart tutarından fazlayken kart (elle ve satışla açılan) vadesi en önce gelen borçları içine alır (S2)): YAKALANDI (d30-c5-s101-bitti-kart, d34-c5-s110-kendi-borcu, d35-c5-s120-elle-borclar)
+  mutasyon 257 (Ç5 C20 (S110 yalnız satış kolunda): elle Mevcut Borç kartı açık borç fazlayken vade sırasıyla tüketir (bakım 7 davranışı)): YAKALANDI (d34-c5-s110-kendi-borcu, d35-c5-s120-elle-borclar, d36-c5-s122-kart-odemesi)
+  mutasyon 258 (Ç5 C20 sınırı (S110): açık borç kart tutarına EŞİTken de kural uygulanır (fazla ↔ eşit)): YAKALANDI (c11-ks81-sa-mevcut-borc-karti, d30-c5-s101-bitti-kart, d34-c5-s110-kendi-borcu)
+  mutasyon 259 (Ç5 C20 sınırı (S110): açık borç kart tutarını yalnız 1 kuruştan fazla aşınca kural uygulanır): YAKALANDI (d34-c5-s110-kendi-borcu)
+  mutasyon 260 (Ç5 C20 (S110 yalnız elle kolda): satışla açılan kart açık borç fazlayken vade sırasıyla tüketir): YAKALANDI (d30-c5-s101-bitti-kart, d34-c5-s110-kendi-borcu)
+  mutasyon 261 (Ç5 C21 (S120 B): tutarı karta eşit bir kalem (türü ne olursa) varsa onu, yoksa bütün borçları vade sırasıyla içine alır): YAKALANDI (d34-c5-s110-kendi-borcu, d35-c5-s120-elle-borclar, d36-c5-s122-kart-odemesi)
+  mutasyon 262 (Ç5 C21 (faturayı da içine alan elle kol): tek eşit elle borç yoksa kart faturalar dahil bütün borçları eskiden yeniye içine alır): YAKALANDI (d34-c5-s110-kendi-borcu, d35-c5-s120-elle-borclar, d36-c5-s122-kart-odemesi)
+  mutasyon 263 (Ç5 C21 (sıra ters): elle borçları yeniden eskiye içine alır): YAKALANDI (d34-c5-s110-kendi-borcu, d35-c5-s120-elle-borclar, d36-c5-s122-kart-odemesi)
+  mutasyon 264 (Ç5 C21 ('eşit TEK elle borç' istisnası ezilir): karta eşit tek elle borç varken de elle borçları eskiden yeniye içine alır): YAKALANDI (d35-c5-s120-elle-borclar, d40-c5-s130-sus-bilinen-sinir)
+  mutasyon 265 (Ç5 C22 (S122 B): kartın ödenen kısmı elle borçlara en yeniden (içine alma sırasının tersi) düşer): YAKALANDI (d35-c5-s120-elle-borclar, d36-c5-s122-kart-odemesi, d37-c5-s126-faturali-kart)
+  mutasyon 266 (Ç5 C22 (orantılı): kartın ödenen kısmı elle borçlara karttaki paylarıyla orantılı dağılır): YAKALANDI (d35-c5-s120-elle-borclar, d36-c5-s122-kart-odemesi, d37-c5-s126-faturali-kart)
+  mutasyon 267 (Ç5 C22 (her ödeme baştan): her taksitin ödenen kısmı ayrı ayrı ilk elle borçtan başlayarak dağılır (yalnız ilk ödemede doğru — önceki ödemeyi bilmez)): YAKALANDI (d36-c5-s122-kart-odemesi, d37-c5-s126-faturali-kart, d38-c5-s128-ozge-kalemli-kart)
+  mutasyon 268 (Ç5 C22 (kuyruğu da düşürür): elle borca düşen pay kuyruk kalanından da düşer (gecikmiş / takvim değişir)): YAKALANDI (d36-c5-s122-kart-odemesi)
+  mutasyon 269 (Ç5 C22 (kart ödeneni görünmez): elle borçlara dağıtılan ödeme kartın ödenen kısmından düşer (kart kalanı = kart tutarı)): YAKALANDI (d35-c5-s120-elle-borclar, d36-c5-s122-kart-odemesi, d37-c5-s126-faturali-kart)
+  mutasyon 270 (Ç5 C23 (S126 B): faturalı bakiye kadar kartta ödeme önce elle borçlara (içine alma sırasıyla), sonra faturalara düşer): YAKALANDI (d36-c5-s122-kart-odemesi, d37-c5-s126-faturali-kart, d38-c5-s128-ozge-kalemli-kart)
+  mutasyon 271 (Ç5 C23 (yalnız fatura): faturalı bakiye kadar kartta ödeme yalnız faturaların açığını düşürür (elle kayıtların Kalan'ı düşmez)): YAKALANDI (d37-c5-s126-faturali-kart)
+  mutasyon 272 (Ç5 C23 (yalnız elle): faturalı bakiye kadar kartta ödeme yalnız elle kayıtların Kalan'ını düşürür (faturanın açığı düşmez)): YAKALANDI (d36-c5-s122-kart-odemesi, d37-c5-s126-faturali-kart, d38-c5-s128-ozge-kalemli-kart)
+  mutasyon 273 (Ç5 C23 (bakiye çift sayım): faturalı bakiye kadar kartta faturaya düşen pay cari bakiyesini bir kez daha düşürür): YAKALANDI (d36-c5-s122-kart-odemesi, d37-c5-s126-faturali-kart, d38-c5-s128-ozge-kalemli-kart)
+  mutasyon 274 (Ç5 C23 (gecikmiş): faturalı bakiye kadar kartın içindeki faturanın açığı kuyrukta kendi vadesiyle de sayılır (gecikmiş / takvim değişir)): YAKALANDI (d36-c5-s122-kart-odemesi, d37-c5-s126-faturali-kart, d38-c5-s128-ozge-kalemli-kart)
+  mutasyon 275 (Ç5 C24 (S128 B): öbür kalem türlü bakiye kadar kartta ödeme önce fatura ve elle borçlara (içine alma sırasıyla), sonra öbür kalemlere düşer): YAKALANDI (d37-c5-s126-faturali-kart, d38-c5-s128-ozge-kalemli-kart)
+  mutasyon 276 (Ç5 C24 (yalnız fatura / elle): öbür kalem türlü bakiye kadar kartta ödeme yalnız fatura ve elle kalemleri düşürür (stok / karşılıksız kalemi atlanır)): YAKALANDI (d37-c5-s126-faturali-kart, d38-c5-s128-ozge-kalemli-kart)
+  mutasyon 277 (Ç5 C24 (yalnız öbür tür): öbür kalem türlü bakiye kadar kartta ödeme yalnız stok / karşılıksız kalemlerini düşürür (fatura açığı / elle Kalan düşmez)): YAKALANDI (d38-c5-s128-ozge-kalemli-kart)
+  mutasyon 278 (Ç5 C24 (bakiye çift sayım): öbür kalem türlü bakiye kadar kartta stok / karşılıksız kalemine düşen pay cari bakiyesini bir kez daha düşürür): YAKALANDI (d37-c5-s126-faturali-kart, d38-c5-s128-ozge-kalemli-kart)
+  mutasyon 279 (Ç5 C24 (gecikmiş): öbür kalem türlü bakiye kadar kartın içindeki stok / karşılıksız kaleminin defter kalanı kuyrukta kendi vadesiyle de sayılır (gecikmiş / takvim değişir)): YAKALANDI (d37-c5-s126-faturali-kart, d38-c5-s128-ozge-kalemli-kart)
+  mutasyon 280 (Ç5 C25 (S130 B): Şüpheli Alacağa alınan tutar takvim / Vade Takip / projeksiyon kalemlerinden düşmez (kalemler = kuyruk kalanı)): YAKALANDI (c7-ks7-bagsiz-kapaticilar, d39-c5-s130-supheli-kalemleri, d40-c5-s130-sus-bilinen-sinir)
+  mutasyon 281 (Ç5 C25 (en yeniden): Şüpheli Alacağa alınan tutar kalemlerden en yeniden (kuyruk sırasının tersi) düşer): YAKALANDI (c7-ks7-bagsiz-kapaticilar, d39-c5-s130-supheli-kalemleri, d40-c5-s130-sus-bilinen-sinir)
+  mutasyon 282 (Ç5 C25 (orantılı): Şüpheli Alacağa alınan tutar kalemlere kuyruk kalanlarıyla orantılı dağılır): YAKALANDI (c7-ks7-bagsiz-kapaticilar, d39-c5-s130-supheli-kalemleri, d40-c5-s130-sus-bilinen-sinir)
+  mutasyon 283 (Ç5 C25 (bakiye de düşer): Şüpheli Alacağa alınan tutar cari bakiyesini de düşürür): YAKALANDI (c7-ks7-bagsiz-kapaticilar, d39-c5-s130-supheli-kalemleri, d40-c5-s130-sus-bilinen-sinir)
+  mutasyon 284 (Ç5 C25 (Değersiz sonrası değişir): Değersiz yazılan kısım şüpheli tutardan düşülmez — Değersiz yazılınca kalemler bir kez daha düşer): YAKALANDI (c7-ks7-bagsiz-kapaticilar, c7b-supheli-kalan, d39-c5-s130-supheli-kalemleri)
+  mutasyon 285 (Ç5 C25 ('en eski' belge tarihi): Şüpheli Alacağa alınan tutar kalemlerden belge (hareket) tarihi → yazım sırasıyla düşer (vade sırası değil)): YAKALANDI (c7-ks7-bagsiz-kapaticilar, d39-c5-s130-supheli-kalemleri)
+  mutasyon 286 (Ç5 C26 (S136 B): Şüpheli Alacağa alınan tutar taksit kalemlerinden ve verilen avans kaleminden düşmez (taksitler / avans kendi tutarıyla)): YAKALANDI (d41-c5-s136-s139-s145-s148)
+  mutasyon 287 (Ç5 C26 (S136 yarım): taksitlerden düşer ama verilen avans kaleminden düşmez): YAKALANDI (d41-c5-s136-s139-s145-s148)
+  mutasyon 288 (Ç5 C26 (S139 B): şüpheli kayıtlı caride gecikmiş şüpheli tutar dahil (kuyruk kalanından)): YAKALANDI (d39-c5-s130-supheli-kalemleri, d40-c5-s130-sus-bilinen-sinir, d41-c5-s136-s139-s145-s148)
+  mutasyon 289 (Ç5 C26 (S139 yarım): gecikmişte taksit kalemleri görünen değil kuyruk kalanıyla): YAKALANDI (d40-c5-s130-sus-bilinen-sinir, d41-c5-s136-s139-s145-s148)
+  mutasyon 290 (Ç5 C26 (S140 öncesi): satış kartından sonraki faturasız stok iadesi kuyruk sırasıyla (S2) dağılır — kart kendi satışını taşımaz): YAKALANDI (d42-c5-s140-s151-satis-karti-iade)
+  mutasyon 291 (Ç5 C26 (S140 B): kart elle borcu da içine alır — iade önce kart dışı kalemleri, sonra kartın SON taksitinden kapatır): YAKALANDI (d42-c5-s140-s151-satis-karti-iade)
+  mutasyon 292 (Ç5 C26 (S140 yarım): iade kartın taksitlerini SONDAN (en son taksitten) kapatır): YAKALANDI (d42-c5-s140-s151-satis-karti-iade)
+  mutasyon 293 (Ç5 C26 / C27 (S145 B): tahsilat (bağsız / bağlı / Taksit Tahsilatı) hiç reddedilmez (borç açık şüphelinin altına düşse de; öbür türler denetlenir)): YAKALANDI (d39-c5-s130-supheli-kalemleri, d41-c5-s136-s139-s145-s148, d44-c5-s155-s158)
+  mutasyon 294 (Ç5 C26 / C27 (S155 sınır): adımdan sonra borç açık şüpheli tutara EŞİTKEN de ret): YAKALANDI (d41-c5-s136-s139-s145-s148, d44-c5-s155-s158)
+  mutasyon 295 (Ç5 C26 / C27 (S155 sınır): şüpheliyle AYNI günün alacak satırı denetimde şüpheliden düşmemiş ('önceki') sayılır): YAKALANDI (d41-c5-s136-s139-s145-s148)
+  mutasyon 296 (Ç5 C26 / C27 (S145 yarım): şüpheli tarihinden önceki her tahsilat ret (toplam borç yetse de)): YAKALANDI (c7b-supheli-kalan, d39-c5-s130-supheli-kalemleri, d41-c5-s136-s139-s145-s148)
+  mutasyon 297 (Ç5 C26 (S151 A): satış kartının 'Tahsil Edilen'i / taksit 'Ödenen'i faturasız stok iadesini sayar): YAKALANDI (d42-c5-s140-s151-satis-karti-iade, d44-c5-s155-s158)
+  mutasyon 298 (Ç5 C26 (S151 yarım): kartın 'Tahsil Edilen'i iadeyi saymaz ama taksit 'Ödenen'i sayar): YAKALANDI (d42-c5-s140-s151-satis-karti-iade, d44-c5-s155-s158, d45-c5-s159-s154-s162-s163)
+  mutasyon 299 (Ç5 C27 (S155 B): TARİH ölçüsü — her adımda şüpheli kaydının GÜNÜNDEKİ borç (o günün borç yönlü satırları dahil) şüpheli tutara yetmiyorsa ret; toplam ölçü yok): YAKALANDI (d44-c5-s155-s158, d45-c5-s159-s154-s162-s163)
+  mutasyon 300 (Ç5 C27 (S155 yarım): toplam ölçü yalnız tahsilatta (tahsilat / Taksit Tahsilatı); çek, Alacak Yaz, iade, borç silme, geri yükleme denetlenmez (kabul)): YAKALANDI (d41-c5-s136-s139-s145-s148, d44-c5-s155-s158, d45-c5-s159-s154-s162-s163)
+  mutasyon 301 (Ç5 C27 (S158 B): satış kartı OLMAYAN kartta 'Tahsil Edilen' / taksit 'Ödenen' iadeyi ve Değersiz'i sayar (yalnız satış kartında sayılmaz)): YAKALANDI (d42-c5-s140-s151-satis-karti-iade, d44-c5-s155-s158, d45-c5-s159-s154-s162-s163)
+  mutasyon 302 (Ç5 C27 (S158 yarım): yalnız faturasız stok iadesi sayılmaz — Değersiz ve iade faturası artanı 'Tahsil Edilen' / 'Ödenen'e sayılır): YAKALANDI (d44-c5-s155-s158)
+  mutasyon 303 (Ç5 C28 (S159 B): adım açık şüpheliyi sıfırlayıp bakiyeyi eksiye indirirse RET (S155'in harfi — borç < açık şüpheli 0)): YAKALANDI (d44-c5-s155-s158, d45-c5-s159-s154-s162-s163)
+  mutasyon 304 (Ç5 C28 (seçenek yok sayılır — her zaman kabul): kartın kendi kalanını aşan Taksit Tahsilatı seçeneksiz de kabul, fazlası bağsız (bakım 16 davranışı)): YAKALANDI (d43-c5-bilinen-sinir-sus15, d45-c5-s159-s154-s162-s163)
+  mutasyon 305 (Ç5 C28 (seçenek yok sayılır — her zaman ret): kartın kendi kalanını aşan Taksit Tahsilatı 'Fazlasını Avans Yaz' seçeneğiyle de RET): YAKALANDI (d30-c5-s101-bitti-kart, d43-c5-bilinen-sinir-sus15, d45-c5-s159-s154-s162-s163)
+  mutasyon 306 (Ç5 C28 (S154 A): 'Fazlasını Avans Yaz' ile kapanan kartın 'Tahsil Edilen'i kart tutarını aşmaz (tek kuyruk ödeneni)): YAKALANDI (d43-c5-bilinen-sinir-sus15, d45-c5-s159-s154-s162-s163)
+  mutasyon 307 (Ç5 C28 (S118 A): kart tahsilatının sınırı tek kuyruk Kalan'ı (kart seçilmeden alınan tahsilatın S50 payı da düşer) — kartın kendi kalanı değil): YAKALANDI (d30-c5-s101-bitti-kart, d31-c5-s101-taksit-vade-gunu, d32-c5-s101-taksit-ertesi-gun)
+MUTASYON TARAMASI (kos.mjs düzeni; 99 elle senaryo × kipler): 274/274 mutant yakalandı
+# tests 274
+# pass 274
+# fail 0
+274/274 denetim geçti
+
+[kanit] kahineski17-cari-mutasyon-utc: GEÇTİ · çıkış 0 · 274/274 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 750d066 · linux 6.18.44-fc-v445 x64 · Node v22.23.4
+== cari-mutasyon: çıkış 0
+ÜRETİCİ: 20/20 aynı dizi (tur s1 + ux18, tohum 1–10 × 120 işlem)
+ADIMLAR: eski kopyadaki 98 elle senaryonun 0'inin adımları değişti: yok · yalnız `fazlasiniAvansYaz` eklenen: d30-c5-s101-bitti-kart, d43-c5-bilinen-sinir-sus15 · yeni elle senaryo: d45-c5-s159-s154-s162-s163
+EŞDEĞERLİK (2.4.9 / 2.4.6 / 2.4.5 / --legacy; eski kopyanın 98 elle + yeni kopyanın yeni 3 elle + 20 rastgele senaryo × 4 kip): 484/484 bayt bayt aynı
+G3 (kural 2.5.0; 119 senaryo — eski kopyanın 98 elle senaryosu + yeni elle + 20 rastgele): eski 50516 denetim · yeni 50454 denetim · değişen / kalkan / yeni toplam 140 · BEKLENMEYEN 0 · yalnız etiketi değişen 13
+  GENEL          degisen      2
+      örn. d43-c5-bilinen-sinir-sus15 k1:kasa: 170000 → 0
+      örn. d43-c5-bilinen-sinir-sus15 k1:kasaRapor:giris: 170000 → 0
+  GENEL          kalkan       4
+      örn. d30-c5-s101-bitti-kart k1:kasa: 820000 → "(denetim yok)"
+      örn. d30-c5-s101-bitti-kart k1:kasaRapor:giris: 820000 → "(denetim yok)"
+      örn. d45-c5-s159-s154-s162-s163 k1:kasa: 870000 → "(denetim yok)"
+      örn. d45-c5-s159-s154-s162-s163 k1:kasaRapor:giris: 870000 → "(denetim yok)"
+  GENEL          yeni         2
+      örn. d44-c5-s155-s158 k1:kasa: "(denetim yok)" → 270000
+      örn. d44-c5-s155-s158 k1:kasaRapor:giris: "(denetim yok)" → 270000
+  S118           degisen     26
+      örn. d43-c5-bilinen-sinir-sus15 adim:u1k:durum: "ok" → "ret"
+      örn. d43-c5-bilinen-sinir-sus15 adim:u2k:durum: "ok" → "ret"
+      örn. d43-c5-bilinen-sinir-sus15 k1:cari:U1:acikEsitBakiye: false → true
+      örn. d43-c5-bilinen-sinir-sus15 k1:cari:U1:acikToplam: 0 → 100000
+  S118           kalkan      27
+      örn. d30-c5-s101-bitti-kart adim:q1k:durum: "ok" → "(denetim yok)"
+      örn. d30-c5-s101-bitti-kart adim:q3k:durum: "ok" → "(denetim yok)"
+      örn. d30-c5-s101-bitti-kart adim:q5k:durum: "ok" → "(denetim yok)"
+      örn. d30-c5-s101-bitti-kart k1:cari:Q1:acikEsitBakiye: false → "(denetim yok)"
+  S118           yeni         6
+      örn. d43-c5-bilinen-sinir-sus15 k1:cari:U2:acikEsitBakiye: "(denetim yok)" → true
+      örn. d43-c5-bilinen-sinir-sus15 k1:cari:U2:acikToplam: "(denetim yok)" → 100000
+      örn. d43-c5-bilinen-sinir-sus15 k1:fatura:U2F:acik: "(denetim yok)" → 60000
+      örn. d43-c5-bilinen-sinir-sus15 k1:kart:KU1:odenen: "(denetim yok)" → 0
+  S154           yeni         3
+      örn. d45-c5-s159-s154-s162-s163 k1:kart:KA1:odenen: "(denetim yok)" → 130000
+      örn. yeni:d43-c5-bilinen-sinir-sus15 k1:kart:KU1:odenen: "(denetim yok)" → 110000
+      örn. yeni:d43-c5-bilinen-sinir-sus15 k1:kart:KU2:odenen: "(denetim yok)" → 60000
+  S159           yeni        14
+      örn. d44-c5-s155-s158 adim:x12t:durum: "(denetim yok)" → "ok"
+      örn. d44-c5-s155-s158 k1:cari:X12:bakiye: "(denetim yok)" → -10000
+      örn. d44-c5-s155-s158 k1:cari:X12:gecikmis: "(denetim yok)" → 0
+      örn. d44-c5-s155-s158 k1:hareket:x12a:kalan: "(denetim yok)" → 0
+  S162           kalkan      19
+      örn. d42-c5-s140-s151-satis-karti-iade k1:cari:T6:gecikmis: 0 → "(denetim yok)"
+      örn. d42-c5-s140-s151-satis-karti-iade k1:cari:T7:gecikmis: 60000 → "(denetim yok)"
+      örn. d42-c5-s140-s151-satis-karti-iade k1:kart:KT6:taksit1:odenen: 30000 → "(denetim yok)"
+      örn. d42-c5-s140-s151-satis-karti-iade k1:kart:KT6:taksit2:odenen: 0 → "(denetim yok)"
+  S163           kalkan      37
+      örn. d45-c5-s159-s154-s162-s163 k1:cari:C1:gecikmis: 80000 → "(denetim yok)"
+      örn. d45-c5-s159-s154-s162-s163 k1:fatura:C1F:acik: 60000 → "(denetim yok)"
+      örn. d45-c5-s159-s154-s162-s163 k1:fatura:C3F:acik: 60000 → "(denetim yok)"
+      örn. d45-c5-s159-s154-s162-s163 k1:hareket:c1e0:kalan: 0 → "(denetim yok)"
+G3 senaryo senaryo (sınıf/tür: adet; listede olmayan senaryoda fark 0):
+  d30-c5-s101-bitti-kart                   GENEL/kalkan 2 · S118/kalkan 15
+  d42-c5-s140-s151-satis-karti-iade        S162/kalkan 9
+  d43-c5-bilinen-sinir-sus15               GENEL/degisen 2 · S118/degisen 17 · S118/yeni 5
+  d44-c5-s155-s158                         GENEL/yeni 2 · S159/yeni 7 · S162/kalkan 5
+  d45-c5-s159-s154-s162-s163               GENEL/kalkan 2 · S118/degisen 9 · S118/kalkan 12 · S118/yeni 1 · S154/yeni 1 · S159/yeni 7 · S162/kalkan 5 · S163/kalkan 37
+  yeni:d43-c5-bilinen-sinir-sus15          S154/yeni 2
+# tests 603
+# pass 603
+# fail 0
+603/603 denetim geçti
+
+[kanit] kahineski17-esdeger-cari-utc: GEÇTİ · çıkış 0 · 603/603 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 750d066 · linux 6.18.44-fc-v445 x64 · Node v22.23.4
+== esdeger-cari: çıkış 0
+d45-c5-s159-s154-s162-s163.json: 115 elle denetim, 0 kırmızı
+d30-c5-s101-bitti-kart.json: 138 elle denetim, 0 kırmızı
+d42-c5-s140-s151-satis-karti-iade.json: 77 elle denetim, 0 kırmızı
+d43-c5-bilinen-sinir-sus15.json: 40 elle denetim, 0 kırmızı
+d44-c5-s155-s158.json: 76 elle denetim, 0 kırmızı
+# tests 446
+# pass 446
+# fail 0
+446/446 denetim geçti
+
+[kanit] kahineski17-elle-yeni-cari-utc: GEÇTİ · çıkış 0 · 446/446 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 750d066 · linux 6.18.44-fc-v445 x64 · Node v22.23.4
+== elle-yeni-cari: çıkış 0
+  ✗ d45-c5-s159-s154-s162-s163.json adim:z5e:durum: elle "ok" · kâhin "ANAHTAR YOK"
+  ✗ d45-c5-s159-s154-s162-s163.json k1:cari:Z5:bakiye: elle -10000 · kâhin "ANAHTAR YOK"
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KA1:odenen: elle 130000 · kâhin "ANAHTAR YOK"
+  ✗ d45-c5-s159-s154-s162-s163.json adim:ka2b:durum: elle "ret" · kâhin "ok"
+  ✗ d45-c5-s159-s154-s162-s163.json k1:cari:A2:bakiye: elle 70000 · kâhin -10000
+  ✗ d45-c5-s159-s154-s162-s163.json k1:cari:A2:gecikmis: elle 70000 · kâhin 0
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KA2:odenen: elle 50000 · kâhin "ANAHTAR YOK"
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KA2:kalan: elle 70000 · kâhin 0
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KA2:taksit2:odenen: elle 10000 · kâhin 40000
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KA2:taksit3:odenen: elle 0 · kâhin 40000
+  ✗ d45-c5-s159-s154-s162-s163.json adim:ka6t:durum: elle YOK (tanımsız) · kâhin "ok"
+  ✗ d45-c5-s159-s154-s162-s163.json k1:cari:A6:bakiye: elle YOK (tanımsız) · kâhin 40000
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KB1:toplam: elle YOK (tanımsız) · kâhin 90000
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KB1:taksit1:odenen: elle YOK (tanımsız) · kâhin 0
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KB1:taksit2:odenen: elle YOK (tanımsız) · kâhin 0
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KB1:taksit3:odenen: elle YOK (tanımsız) · kâhin 0
+  ✗ d45-c5-s159-s154-s162-s163.json k1:cari:B1:gecikmis: elle YOK (tanımsız) · kâhin 30000
+  ✗ d45-c5-s159-s154-s162-s163.json k1:fatura:C1F:acik: elle YOK (tanımsız) · kâhin 60000
+  ✗ d45-c5-s159-s154-s162-s163.json k1:hareket:c1e1:kalan: elle YOK (tanımsız) · kâhin 50000
+  ✗ d45-c5-s159-s154-s162-s163.json k1:hareket:c1e2:kalan: elle YOK (tanımsız) · kâhin 40000
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KC1:odenen: elle YOK (tanımsız) · kâhin 0
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KC1:kalan: elle YOK (tanımsız) · kâhin 70000
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KC1:taksit1:odenen: elle YOK (tanımsız) · kâhin 0
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KC1:taksit2:odenen: elle YOK (tanımsız) · kâhin 0
+  ✗ d45-c5-s159-s154-s162-s163.json k1:cari:C1:gecikmis: elle YOK (tanımsız) · kâhin 80000
+  ✗ d45-c5-s159-s154-s162-s163.json k1:takvim:fatura:C1F: elle YOK (tanımsız) · kâhin {"amount": 60000, "direction": "in"}
+  ✗ d45-c5-s159-s154-s162-s163.json k1:fatura:C3F:acik: elle YOK (tanımsız) · kâhin 60000
+  ✗ d45-c5-s159-s154-s162-s163.json k1:hareket:c3e2:kalan: elle YOK (tanımsız) · kâhin 40000
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KC3:kalan: elle YOK (tanımsız) · kâhin 70000
+  ✗ d45-c5-s159-s154-s162-s163.json k1:kart:KC3:taksit1:odenen: elle YOK (tanımsız) · kâhin 0
+  ✗ d45-c5-s159-s154-s162-s163.json belirsiz kaydı yok: adım ka6t + SK-36 + KULLANICIYA SORULMALI
+  ✗ d45-c5-s159-s154-s162-s163.json belirsiz kaydı yok: kart KB1 + S162 = B
+  ✗ d45-c5-s159-s154-s162-s163.json belirsiz kaydı yok: cari C1 açık kalem dağılımı + S163 = C
+  ✗ d45-c5-s159-s154-s162-s163.json belirsiz kaydı yok: cari C3 açık kalem dağılımı + S163 = C
+d45-c5-s159-s154-s162-s163.json: 115 elle denetim, 34 kırmızı
+d30-c5-s101-bitti-kart.json: 138 elle denetim, 0 kırmızı
+  ✗ d42-c5-s140-s151-satis-karti-iade.json k1:kart:KT7:toplam: elle YOK (tanımsız) · kâhin 90000
+  ✗ d42-c5-s140-s151-satis-karti-iade.json k1:kart:KT7:taksit1:odenen: elle YOK (tanımsız) · kâhin 0
+  ✗ d42-c5-s140-s151-satis-karti-iade.json k1:kart:KT7:taksit2:odenen: elle YOK (tanımsız) · kâhin 0
+  ✗ d42-c5-s140-s151-satis-karti-iade.json k1:kart:KT7:taksit3:odenen: elle YOK (tanımsız) · kâhin 0
+  ✗ d42-c5-s140-s151-satis-karti-iade.json k1:kart:KT6:taksit1:odenen: elle YOK (tanımsız) · kâhin 30000
+  ✗ d42-c5-s140-s151-satis-karti-iade.json k1:kart:KT6:taksit2:odenen: elle YOK (tanımsız) · kâhin 0
+  ✗ d42-c5-s140-s151-satis-karti-iade.json k1:cari:T6:gecikmis: elle YOK (tanımsız) · kâhin 0
+  ✗ d42-c5-s140-s151-satis-karti-iade.json k1:cari:T7:gecikmis: elle YOK (tanımsız) · kâhin 60000
+  ✗ d42-c5-s140-s151-satis-karti-iade.json k1:kart:KT6:toplam: elle YOK (tanımsız) · kâhin 100000
+  ✗ d42-c5-s140-s151-satis-karti-iade.json belirsiz kaydı yok: kart KT7 + S162 = B
+  ✗ d42-c5-s140-s151-satis-karti-iade.json belirsiz kaydı yok: kart KT6 + SK-37
+d42-c5-s140-s151-satis-karti-iade.json: 77 elle denetim, 11 kırmızı
+  ✗ d43-c5-bilinen-sinir-sus15.json k1:kart:KU1:odenen: elle 110000 · kâhin "ANAHTAR YOK"
+  ✗ d43-c5-bilinen-sinir-sus15.json k1:kart:KU2:odenen: elle 60000 · kâhin "ANAHTAR YOK"
+d43-c5-bilinen-sinir-sus15.json: 40 elle denetim, 2 kırmızı
+  ✗ d44-c5-s155-s158.json adim:x12t:durum: elle "ok" · kâhin "ANAHTAR YOK"
+  ✗ d44-c5-s155-s158.json k1:cari:X12:bakiye: elle -10000 · kâhin "ANAHTAR YOK"
+  ✗ d44-c5-s155-s158.json k1:cari:X12:gecikmis: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d44-c5-s155-s158.json k1:kart:KY4:taksit1:odenen: elle YOK (tanımsız) · kâhin 30000
+  ✗ d44-c5-s155-s158.json k1:kart:KY4:taksit2:odenen: elle YOK (tanımsız) · kâhin 0
+  ✗ d44-c5-s155-s158.json k1:kart:KY4:taksit3:odenen: elle YOK (tanımsız) · kâhin 0
+  ✗ d44-c5-s155-s158.json k1:kart:KY4:toplam: elle YOK (tanımsız) · kâhin 90000
+  ✗ d44-c5-s155-s158.json k1:cari:Y4:gecikmis: elle YOK (tanımsız) · kâhin 30000
+  ✗ d44-c5-s155-s158.json belirsiz kaydı yok: kart KY4 + S162 = B
+d44-c5-s155-s158.json: 76 elle denetim, 9 kırmızı
+ESKİ KÂHİN KIRMIZISI: 56/446 elle denetim kırmızı, 390 aynı (beklenen: kırmızı > 0; her kırmızının eski değeri yukarıda)
+# tests 56
+# pass 56
+# fail 0
+56/56 denetim geçti
+
+[kanit] kahineski17-kirmizi-eski-cari-utc: GEÇTİ · çıkış 0 · 56/56 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 750d066 · linux 6.18.44-fc-v445 x64 · Node v22.23.4
+== kirmizi-eski-cari: çıkış 0
+d30-c5-s101-bitti-kart.json: 3 adıma yalnız `fazlasiniAvansYaz: true` eklendi (§28 Y17-4)
+d42-c5-s140-s151-satis-karti-iade.json: 18 elle beklenti değişti
+    değer                  k1:cari:T6:gecikmis: 0 → "(yok)"
+    değer                  k1:kart:KT6:taksit1:odenen: 30000 → "(yok)"
+    değer                  k1:kart:KT6:taksit2:odenen: 0 → "(yok)"
+    değer                  k1:kart:KT7:taksit1:odenen: 0 → "(yok)"
+    değer                  k1:kart:KT7:taksit2:odenen: 0 → "(yok)"
+    değer                  k1:kart:KT7:taksit3:odenen: 0 → "(yok)"
+    değer                  k1:kart:KT7:toplam: 90000 → "(yok)"
+    elleYok eklendi        k1:cari:T6:gecikmis: "" → "yok"
+    elleYok eklendi        k1:cari:T7:gecikmis: "" → "yok"
+    elleYok eklendi        k1:kart:KT6:taksit1:odenen: "" → "yok"
+    elleYok eklendi        k1:kart:KT6:taksit2:odenen: "" → "yok"
+    elleYok eklendi        k1:kart:KT6:toplam: "" → "yok"
+    elleYok eklendi        k1:kart:KT7:taksit1:odenen: "" → "yok"
+    elleYok eklendi        k1:kart:KT7:taksit2:odenen: "" → "yok"
+    elleYok eklendi        k1:kart:KT7:taksit3:odenen: "" → "yok"
+    elleYok eklendi        k1:kart:KT7:toplam: "" → "yok"
+    elleBelirsiz eklendi   ["kart KT7", "S162 = B"]: "" → ""
+    elleBelirsiz eklendi   ["kart KT6", "SK-37"]: "" → ""
+d43-c5-bilinen-sinir-sus15.json: 2 adıma yalnız `fazlasiniAvansYaz: true` eklendi (§28 Y17-4)
+d43-c5-bilinen-sinir-sus15.json: 6 elle beklenti değişti
+    değer                  k1:kart:KU1:odenen: "(yok)" → 110000
+    değer                  k1:kart:KU2:odenen: "(yok)" → 60000
+    elleYok kalktı         k1:kart:KU1:odenen: "yok" → ""
+    elleYok kalktı         k1:kart:KU2:odenen: "yok" → ""
+    elleBelirsiz kalktı    ["kart KU1", "S144 = C", "BİLİNEN SINIR"]: "" → ""
+    elleBelirsiz kalktı    ["kart KU2", "S144 = C"]: "" → ""
+d44-c5-s155-s158.json: 15 elle beklenti değişti
+    değer                  adim:x12t:durum: "(yok)" → "ok"
+    değer                  k1:cari:X12:bakiye: "(yok)" → -10000
+    değer                  k1:cari:X12:gecikmis: "(yok)" → 0
+    değer                  k1:kart:KY4:taksit1:odenen: 30000 → "(yok)"
+    değer                  k1:kart:KY4:taksit2:odenen: 0 → "(yok)"
+    değer                  k1:kart:KY4:taksit3:odenen: 0 → "(yok)"
+    elleYok kalktı         adim:x12t:durum: "yok" → ""
+    elleYok kalktı         k1:cari:X12:bakiye: "yok" → ""
+    elleYok eklendi        k1:cari:Y4:gecikmis: "" → "yok"
+    elleYok eklendi        k1:kart:KY4:taksit1:odenen: "" → "yok"
+    elleYok eklendi        k1:kart:KY4:taksit2:odenen: "" → "yok"
+    elleYok eklendi        k1:kart:KY4:taksit3:odenen: "" → "yok"
+    elleYok eklendi        k1:kart:KY4:toplam: "" → "yok"
+    elleBelirsiz kalktı    ["adım x12t", "S155", "SK-35", "KULLANICIYA SORULMALI"]: "" → ""
+    elleBelirsiz eklendi   ["kart KY4", "S162 = B"]: "" → ""
+yeni elle senaryo: d45-c5-s159-s154-s162-s163.json
+# tests 98
+# pass 98
+# fail 0
+98/98 denetim geçti
+
+[kanit] kahineski17-elle-fark-utc: GEÇTİ · çıkış 0 · 98/98 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 750d066 · linux 6.18.44-fc-v445 x64 · Node v22.23.4
+== elle-fark: çıkış 0
+  (bilgi, --sert: alış dahil) c6-cari-vade-fifo.json: adım 11 f2 2026-05-15 < 2026-05-20 (f1)
+  (bilgi, --sert: alış dahil) c7-ks7-bagsiz-kapaticilar.json: adım 4 f2 2026-05-15 < 2026-05-20 (f1)
+  (bilgi, --sert: alış dahil) c8-ks8-iade-geri-odemesi.json: adım 16 as1 2026-05-10 < 2026-05-12 (fb2); adım 17 as2 2026-05-11 < 2026-05-12 (fb2)
+  (bilgi, --sert: alış dahil) d16-c5-s92-net-gorunum.json: adım 33 f10 2026-03-01 < 2026-03-10 (f2p); adım 34 af10 2026-03-05 < 2026-03-10 (f2p); adım 37 at1f 2026-03-01 < 2026-03-10 (f2p)
+  (bilgi, --sert: alış dahil) d17-c5-s93-verilen-avans.json: adım 12 af4 2026-06-01 < 2026-06-12 (af3); adım 17 af5 2026-06-06 < 2026-06-12 (af3)
+  (bilgi, --sert: alış dahil) d18-c5-s93-avans-ertesi-gun.json: adım 12 af4 2026-06-01 < 2026-06-12 (af3); adım 17 af5 2026-06-06 < 2026-06-12 (af3)
+  (bilgi, --sert: alış dahil) d22-c5-s96-avans-kalemi.json: adım 9 v3f 2026-06-01 < 2026-06-05 (v2f)
+  (bilgi, --sert: alış dahil) d23-c5-s96-avans-ertesi-gun.json: adım 9 v3f 2026-06-01 < 2026-06-05 (v2f)
+  (bilgi, --sert: alış dahil) d26-c5-bakim5-susan.json: adım 19 s13f 2026-03-05 < 2026-03-10 (s12f)
+  (bilgi, --sert: alış dahil) d33-c5-s102-s105-sinirlar.json: adım 35 t13bf 2026-03-01 < 2026-03-10 (t12bf); adım 40 t13cf 2026-03-01 < 2026-03-10 (t12bf); adım 44 t17a 2026-03-05 < 2026-03-10 (t12bf)
+  (bilgi, --sert: alış dahil) d9-c5-s68-borc-tarafi-vade.json: adım 23 af4 2026-05-01 < 2026-05-10 (af3)
+G1 TARAMASI (satış faturası + iade, senaryo içi tarih sırası): 99 senaryo ihlalsiz, 0 ihlalli; --sert ile yalnız alış yüzünden ihlalli 11
+# tests 99
+# pass 99
+# fail 0
+99/99 denetim geçti
+
+[kanit] kahineski17-g1-tara-utc: GEÇTİ · çıkış 0 · 99/99 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 750d066 · linux 6.18.44-fc-v445 x64 · Node v22.23.4
+== g1-tara: çıkış 0
+d45-c5-s159-s154-s162-s163 mutant 261:   1 elle değer kırmızı · C2F
+d45-c5-s159-s154-s162-s163 mutant 262:   1 elle değer kırmızı · C2F
+d45-c5-s159-s154-s162-s163 mutant 263:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 264:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 265:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 266:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 267:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 268:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 269:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 270:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 271:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 272:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 273:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 274:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 275:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 276:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 277:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 278:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 279:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 280:   4 elle değer kırmızı · Z3, Z4
+d45-c5-s159-s154-s162-s163 mutant 281:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 282:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 283:   2 elle değer kırmızı · Z3, Z4
+d45-c5-s159-s154-s162-s163 mutant 284:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 285:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 286:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 287:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 288:   2 elle değer kırmızı · Z3, Z4
+d45-c5-s159-s154-s162-s163 mutant 289:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 290:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 291:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 292:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 293:   4 elle değer kırmızı · Z4
+d45-c5-s159-s154-s162-s163 mutant 294:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 295:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 296:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 297:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 298:   2 elle değer kırmızı · A6B, B2
+d45-c5-s159-s154-s162-s163 mutant 299:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 300:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 301:   5 elle değer kırmızı · A6B, B1, B2
+d45-c5-s159-s154-s162-s163 mutant 302:   0 elle değer kırmızı · -
+d45-c5-s159-s154-s162-s163 mutant 303:   2 elle değer kırmızı · Z5
+d45-c5-s159-s154-s162-s163 mutant 304:   8 elle değer kırmızı · A1, A2
+d45-c5-s159-s154-s162-s163 mutant 305:  16 elle değer kırmızı · A1, A6B, a6b
+d45-c5-s159-s154-s162-s163 mutant 306:   1 elle değer kırmızı · A1
+d45-c5-s159-s154-s162-s163 mutant 307:   7 elle değer kırmızı · A5
+d44-c5-s155-s158           mutant 261:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 262:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 263:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 264:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 265:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 266:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 267:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 268:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 269:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 270:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 271:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 272:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 273:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 274:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 275:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 276:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 277:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 278:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 279:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 280:  10 elle değer kırmızı · X2, X3, X6, X7, X8
+d44-c5-s155-s158           mutant 281:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 282:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 283:  12 elle değer kırmızı · X1, X10, X11, X14, X2, X3, X4, X5, X6, X7, X8, X9
+d44-c5-s155-s158           mutant 284:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 285:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 286:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 287:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 288:   5 elle değer kırmızı · X2, X3, X6, X7, X8
+d44-c5-s155-s158           mutant 289:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 290:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 291:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 292:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 293:   8 elle değer kırmızı · X2, X9, x2a
+d44-c5-s155-s158           mutant 294:   4 elle değer kırmızı · X7
+d44-c5-s155-s158           mutant 295:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 296:  12 elle değer kırmızı · X1, X6, X7, x1a, x6a
+d44-c5-s155-s158           mutant 297:   2 elle değer kırmızı · Y5
+d44-c5-s155-s158           mutant 298:   2 elle değer kırmızı · Y2, Y5
+d44-c5-s155-s158           mutant 299:   5 elle değer kırmızı · X1, X9, x1a
+d44-c5-s155-s158           mutant 300:  15 elle değer kırmızı · X10, X11, X3, X4, X5, x3a, x4a, x5b
+d44-c5-s155-s158           mutant 301:   3 elle değer kırmızı · Y2, Y4
+d44-c5-s155-s158           mutant 302:   4 elle değer kırmızı · Y2, Y5
+d44-c5-s155-s158           mutant 303:   3 elle değer kırmızı · X12
+d44-c5-s155-s158           mutant 304:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 305:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 306:   0 elle değer kırmızı · -
+d44-c5-s155-s158           mutant 307:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 261:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 262:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 263:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 264:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 265:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 266:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 267:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 268:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 269:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 270:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 271:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 272:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 273:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 274:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 275:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 276:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 277:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 278:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 279:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 280:  52 elle değer kırmızı · R2, R3, R4, R5, S1, S2, S3, S4, S5, S6, S7, V1, r5o, r5x, s1x, s2x, s3x, s4x, s5x, v1x
+d41-c5-s136-s139-s145-s148 mutant 281:  16 elle değer kırmızı · R4, V1, r4x, r5o, r5x, v1x, v1y
+d41-c5-s136-s139-s145-s148 mutant 282:  17 elle değer kırmızı · R4, V1, r4x, r5o, r5x, v1x, v1y
+d41-c5-s136-s139-s145-s148 mutant 283:  15 elle değer kırmızı · R2, R3, R4, R5, R7, S1, S2, S3, S4, S5, S6, S7, S8, S9, V1
+d41-c5-s136-s139-s145-s148 mutant 284:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 285:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 286:  12 elle değer kırmızı · R4, R5, S6, r4x, r5o
+d41-c5-s136-s139-s145-s148 mutant 287:   7 elle değer kırmızı · R5, r5o
+d41-c5-s136-s139-s145-s148 mutant 288:  12 elle değer kırmızı · R2, R3, R4, R5, S1, S2, S3, S4, S5, S6, S7, V1
+d41-c5-s136-s139-s145-s148 mutant 289:   4 elle değer kırmızı · R2, R3, R4, S6
+d41-c5-s136-s139-s145-s148 mutant 290:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 291:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 292:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 293:  15 elle değer kırmızı · S1, S6, s1x
+d41-c5-s136-s139-s145-s148 mutant 294:   9 elle değer kırmızı · S5, s5x
+d41-c5-s136-s139-s145-s148 mutant 295:   3 elle değer kırmızı · S3, s3x
+d41-c5-s136-s139-s145-s148 mutant 296:  22 elle değer kırmızı · S4, S5, S8, S9, s4x, s5x
+d41-c5-s136-s139-s145-s148 mutant 297:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 298:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 299:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 300:   4 elle değer kırmızı · S7, s7x
+d41-c5-s136-s139-s145-s148 mutant 301:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 302:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 303:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 304:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 305:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 306:   0 elle değer kırmızı · -
+d41-c5-s136-s139-s145-s148 mutant 307:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 261:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 262:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 263:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 264:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 265:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 266:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 267:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 268:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 269:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 270:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 271:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 272:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 273:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 274:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 275:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 276:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 277:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 278:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 279:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 280:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 281:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 282:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 283:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 284:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 285:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 286:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 287:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 288:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 289:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 290:  15 elle değer kırmızı · T1, T3, T4, t1b, t3b
+d42-c5-s140-s151-satis-karti-iade mutant 291:  25 elle değer kırmızı · T1, T2, T3, T4, t1b, t2b, t3b
+d42-c5-s140-s151-satis-karti-iade mutant 292:   2 elle değer kırmızı · T1, T2
+d42-c5-s140-s151-satis-karti-iade mutant 293:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 294:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 295:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 296:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 297:   9 elle değer kırmızı · T1, T2, T3, T6
+d42-c5-s140-s151-satis-karti-iade mutant 298:   5 elle değer kırmızı · T1, T2, T3
+d42-c5-s140-s151-satis-karti-iade mutant 299:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 300:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 301:   1 elle değer kırmızı · T7
+d42-c5-s140-s151-satis-karti-iade mutant 302:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 303:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 304:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 305:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 306:   0 elle değer kırmızı · -
+d42-c5-s140-s151-satis-karti-iade mutant 307:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 261:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 262:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 263:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 264:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 265:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 266:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 267:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 268:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 269:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 270:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 271:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 272:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 273:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 274:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 275:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 276:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 277:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 278:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 279:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 280:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 281:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 282:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 283:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 284:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 285:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 286:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 287:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 288:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 289:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 290:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 291:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 292:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 293:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 294:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 295:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 296:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 297:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 298:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 299:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 300:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 301:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 302:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 303:   0 elle değer kırmızı · -
+d43-c5-bilinen-sinir-sus15 mutant 304:   2 elle değer kırmızı · U1, U2
+d43-c5-bilinen-sinir-sus15 mutant 305:  11 elle değer kırmızı · U1, U2, U2F
+d43-c5-bilinen-sinir-sus15 mutant 306:   2 elle değer kırmızı · U1, U2
+d43-c5-bilinen-sinir-sus15 mutant 307:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 261:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 262:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 263:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 264:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 265:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 266:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 267:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 268:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 269:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 270:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 271:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 272:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 273:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 274:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 275:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 276:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 277:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 278:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 279:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 280:  75 elle değer kırmızı · N1, N10, N11, N12, N13a, N1F, N2, N2F, N3, N3F, N4, N4F, N6, N6F, N7, N7F, n10x, n11x, n12x, n13a, n3x, n4x, n6x, n7x
+d39-c5-s130-supheli-kalemleri mutant 281:  35 elle değer kırmızı · N1, N10F, N1F, N2F, N3F, N6F, N7F, n10x, n12x, n12y, n1b, n2x, n3x, n6x, n7x
+d39-c5-s130-supheli-kalemleri mutant 282:  55 elle değer kırmızı · N1, N10, N10F, N12, N1F, N2, N2F, N3, N3F, N6F, N7F, n10x, n12x, n12y, n1b, n2x, n3x, n6x, n7x
+d39-c5-s130-supheli-kalemleri mutant 283:  10 elle değer kırmızı · N1, N10, N11, N12, N13a, N2, N3, N4, N6, N7
+d39-c5-s130-supheli-kalemleri mutant 284:  29 elle değer kırmızı · N1b, N5, N5F, N6, N6F, n1b, n5x, n6x
+d39-c5-s130-supheli-kalemleri mutant 285:   4 elle değer kırmızı · N1, N1F
+d39-c5-s130-supheli-kalemleri mutant 286:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 287:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 288:  10 elle değer kırmızı · N1, N10, N11, N12, N13a, N2, N3, N4, N6, N7
+d39-c5-s130-supheli-kalemleri mutant 289:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 290:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 291:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 292:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 293:   3 elle değer kırmızı · N11, n11x
+d39-c5-s130-supheli-kalemleri mutant 294:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 295:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 296:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 297:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 298:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 299:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 300:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 301:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 302:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 303:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 304:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 305:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 306:   0 elle değer kırmızı · -
+d39-c5-s130-supheli-kalemleri mutant 307:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 261:   1 elle değer kırmızı · Q5b
+d40-c5-s130-sus-bilinen-sinir mutant 262:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 263:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 264:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 265:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 266:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 267:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 268:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 269:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 270:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 271:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 272:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 273:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 274:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 275:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 276:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 277:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 278:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 279:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 280:   8 elle değer kırmızı · Q3, Q4, q4x
+d40-c5-s130-sus-bilinen-sinir mutant 281:   6 elle değer kırmızı · q4o, q4x
+d40-c5-s130-sus-bilinen-sinir mutant 282:  10 elle değer kırmızı · Q4, q4o, q4x
+d40-c5-s130-sus-bilinen-sinir mutant 283:   5 elle değer kırmızı · Q1, Q1b, Q2, Q3, Q4
+d40-c5-s130-sus-bilinen-sinir mutant 284:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 285:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 286:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 287:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 288:   2 elle değer kırmızı · Q3, Q4
+d40-c5-s130-sus-bilinen-sinir mutant 289:   1 elle değer kırmızı · Q3
+d40-c5-s130-sus-bilinen-sinir mutant 290:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 291:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 292:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 293:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 294:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 295:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 296:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 297:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 298:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 299:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 300:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 301:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 302:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 303:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 304:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 305:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 306:   0 elle değer kırmızı · -
+d40-c5-s130-sus-bilinen-sinir mutant 307:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 261:   8 elle değer kırmızı · M19, m19x, m19y
+d38-c5-s128-ozge-kalemli-kart mutant 262:   8 elle değer kırmızı · M19, m19x, m19y
+d38-c5-s128-ozge-kalemli-kart mutant 263:  15 elle değer kırmızı · M19, m19x, m19y
+d38-c5-s128-ozge-kalemli-kart mutant 264:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 265:  32 elle değer kırmızı · M1, M10, M17a, M18F, M2, M3, M5, M6, M7, M7F, M8, M9, m10x, m12x, m17a, m18x, m19x, m19y, m1x, m2x, m3x, m5x, m6x, m7x, m8x, m9x
+d38-c5-s128-ozge-kalemli-kart mutant 266:  32 elle değer kırmızı · M1, M10, M17a, M18F, M2, M3, M5, M6, M7, M7F, M8, M9, m10x, m12x, m17a, m18x, m19x, m19y, m1x, m2x, m3x, m5x, m6x, m7x, m8x, m9x
+d38-c5-s128-ozge-kalemli-kart mutant 267:  30 elle değer kırmızı · M10, M16B, M16b, M3, M4, M5, M7, M7F, M8, m10x, m16b, m3x, m4x, m5x, m8x
+d38-c5-s128-ozge-kalemli-kart mutant 268:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 269:  56 elle değer kırmızı · M1, M10, M12, M13, M16B, M17a, M18, M19, M2, M3, M4, M5, M6, M7, M8, M9
+d38-c5-s128-ozge-kalemli-kart mutant 270:   2 elle değer kırmızı · M18F, m18x
+d38-c5-s128-ozge-kalemli-kart mutant 271:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 272:   2 elle değer kırmızı · M18F, m18x
+d38-c5-s128-ozge-kalemli-kart mutant 273:   1 elle değer kırmızı · M18
+d38-c5-s128-ozge-kalemli-kart mutant 274:   2 elle değer kırmızı · M18, M18F
+d38-c5-s128-ozge-kalemli-kart mutant 275:  26 elle değer kırmızı · M1, M10, M17a, M2, M3, M5, M7, M7F, M8, M9, m10x, m12x, m17a, m1x, m2x, m3x, m5x, m7x, m8x, m9x
+d38-c5-s128-ozge-kalemli-kart mutant 276:  26 elle değer kırmızı · M1, M10, M17a, M2, M3, M5, M7, M7F, M8, M9, m10x, m12x, m17a, m1x, m2x, m3x, m5x, m7x, m8x, m9x
+d38-c5-s128-ozge-kalemli-kart mutant 277:  23 elle değer kırmızı · M10, M16b, M3, M4, M5, M6, M7, M7F, M8, m10x, m16b, m3x, m4x, m5x, m6x, m8x
+d38-c5-s128-ozge-kalemli-kart mutant 278:  13 elle değer kırmızı · M1, M10, M12, M13, M16b, M17a, M2, M3, M4, M5, M7, M8, M9
+d38-c5-s128-ozge-kalemli-kart mutant 279:   7 elle değer kırmızı · M1, M11, M12, M13, M17a, M6, M9
+d38-c5-s128-ozge-kalemli-kart mutant 280:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 281:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 282:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 283:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 284:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 285:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 286:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 287:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 288:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 289:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 290:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 291:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 292:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 293:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 294:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 295:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 296:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 297:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 298:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 299:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 300:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 301:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 302:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 303:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 304:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 305:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 306:   0 elle değer kırmızı · -
+d38-c5-s128-ozge-kalemli-kart mutant 307:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 261:   9 elle değer kırmızı · L18F, l18x, l18y
+d37-c5-s126-faturali-kart  mutant 262:   9 elle değer kırmızı · L18F, l18x, l18y
+d37-c5-s126-faturali-kart  mutant 263:  18 elle değer kırmızı · L18, L18F, l18x, l18y
+d37-c5-s126-faturali-kart  mutant 264:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 265:  33 elle değer kırmızı · L10F, L12F, L13C, L14, L15, L15F, L16a, L1F, L2F, L3F, L5F, L6F, L7F, L8F, L9F, l10x, l13c, l14x, l16a, l17x, l17y, l18x, l18y, l1x, l2x, l3x, l5x, l6x, l7x, l8x, l9x
+d37-c5-s126-faturali-kart  mutant 266:  33 elle değer kırmızı · L10F, L12F, L13C, L14, L15, L15F, L16a, L1F, L2F, L3F, L5F, L6F, L7F, L8F, L9F, l10x, l13c, l14x, l16a, l17x, l17y, l18x, l18y, l1x, l2x, l3x, l5x, l6x, l7x, l8x, l9x
+d37-c5-s126-faturali-kart  mutant 267:  23 elle değer kırmızı · L13B, L13b, L3F, L4F, L5F, L7F, l13b, l3x, l4x, l5x, l7x
+d37-c5-s126-faturali-kart  mutant 268:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 269:  66 elle değer kırmızı · L1, L10, L12, L13B, L13C, L14, L15, L16a, L17, L18, L2, L3, L4, L5, L6, L7, L8, L9
+d37-c5-s126-faturali-kart  mutant 270:  18 elle değer kırmızı · L10F, L16a, L1F, L2F, L3F, L5F, L7F, L8F, L9F, l10x, l16a, l1x, l2x, l3x, l5x, l7x, l8x, l9x
+d37-c5-s126-faturali-kart  mutant 271:  20 elle değer kırmızı · L13C, L13b, L15, L15F, L3, L4, L5, L6F, L7F, l13b, l13c, l3x, l4x, l5x, l6x, l7x
+d37-c5-s126-faturali-kart  mutant 272:  39 elle değer kırmızı · L10, L10F, L12, L12F, L13B, L13b, L16a, L1F, L2, L2F, L3, L3F, L4, L4F, L5, L5F, L7, L7F, L8, L8F, L9F, l10x, l16a, l1x, l2x, l3x, l5x, l7x, l8x, l9x
+d37-c5-s126-faturali-kart  mutant 273:  12 elle değer kırmızı · L1, L10, L12, L13b, L16a, L2, L3, L4, L5, L7, L8, L9
+d37-c5-s126-faturali-kart  mutant 274:  21 elle değer kırmızı · L1, L11, L11F, L12, L12F, L13C, L13c, L15, L15F, L16a, L1F, L6, L6F, L7, L7F, L8, L8F, L9, L9F
+d37-c5-s126-faturali-kart  mutant 275:   2 elle değer kırmızı · L14, l14x
+d37-c5-s126-faturali-kart  mutant 276:   2 elle değer kırmızı · L14, l14x
+d37-c5-s126-faturali-kart  mutant 277:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 278:   1 elle değer kırmızı · L14
+d37-c5-s126-faturali-kart  mutant 279:   1 elle değer kırmızı · L14
+d37-c5-s126-faturali-kart  mutant 280:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 281:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 282:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 283:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 284:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 285:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 286:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 287:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 288:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 289:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 290:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 291:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 292:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 293:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 294:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 295:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 296:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 297:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 298:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 299:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 300:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 301:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 302:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 303:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 304:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 305:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 306:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 307:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 261:  86 elle değer kırmızı · J10F, J11B, J17a, J1F, J2F, J3F, J4F, J5F, J6F, J8F, j10b, j11b, j17a, j1x, j1y, j2x, j2y, j3x, j3y, j4x, j4y, j5x, j5y, j5z, j6y, j7x, j7y, j8x, j8y, j9x, j9y
+d36-c5-s122-kart-odemesi   mutant 262:  86 elle değer kırmızı · J10F, J11B, J17a, J1F, J2F, J3F, J4F, J5F, J6F, J8F, j10b, j11b, j17a, j1x, j1y, j2x, j2y, j3x, j3y, j4x, j4y, j5x, j5y, j5z, j6y, j7x, j7y, j8x, j8y, j9x, j9y
+d36-c5-s122-kart-odemesi   mutant 263: 174 elle değer kırmızı · J1, J17a, J1F, J2, J2F, J4, J4F, J5, J5F, J6, J6F, J7, J7F, J8, J8F, J9, J9F, j17a, j1x, j1y, j2x, j2y, j3x, j3y, j4x, j4y, j5x, j5y, j5z, j6x, j6y, j7x, j7y, j8x, j8y, j9x, j9y
+d36-c5-s122-kart-odemesi   mutant 264:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 265:  22 elle değer kırmızı · J13F, j12x, j12y, j13x, j17a, j1x, j1y, j2x, j2y, j4x, j4y, j5x, j5z, j6x, j6y, j7x, j7y, j8x, j8y, j9x, j9y
+d36-c5-s122-kart-odemesi   mutant 266:  23 elle değer kırmızı · J13F, j12x, j12y, j13x, j17a, j1x, j1y, j2x, j2y, j4x, j4y, j5x, j5y, j5z, j6x, j6y, j7x, j7y, j8x, j8y, j9x, j9y
+d36-c5-s122-kart-odemesi   mutant 267:  33 elle değer kırmızı · J11B, J11b, j11b, j2x, j2y, j3x, j3y, j4x, j4y, j5x, j5y, j5z, j7x, j7y, j9x, j9y
+d36-c5-s122-kart-odemesi   mutant 268:  16 elle değer kırmızı · J2, J3, J4, J5, j2y, j3y, j4y, j5z
+d36-c5-s122-kart-odemesi   mutant 269:  51 elle değer kırmızı · J1, J11B, J12, J13, J17a, J2, J3, J4, J5, J6, J7, J8, J9
+d36-c5-s122-kart-odemesi   mutant 270:   2 elle değer kırmızı · J13F, j13x
+d36-c5-s122-kart-odemesi   mutant 271:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 272:   2 elle değer kırmızı · J13F, j13x
+d36-c5-s122-kart-odemesi   mutant 273:   1 elle değer kırmızı · J13
+d36-c5-s122-kart-odemesi   mutant 274:   2 elle değer kırmızı · J13, J13F
+d36-c5-s122-kart-odemesi   mutant 275:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 276:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 277:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 278:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 279:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 280:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 281:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 282:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 283:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 284:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 285:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 286:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 287:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 288:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 289:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 290:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 291:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 292:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 293:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 294:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 295:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 296:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 297:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 298:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 299:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 300:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 301:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 302:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 303:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 304:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 305:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 306:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 307:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 261:  68 elle değer kırmızı · H10F, H11F, H12F, H13F, H14F, H15a, H1F, H2F, H4B, H5F, H6A, H7F, H9B, h10x, h10y, h11x, h11y, h12x, h12y, h13x, h13y, h14x, h14y, h15a, h1x, h1y, h2x, h4b, h5y, h6a, h7x, h7y, h9b
+d35-c5-s120-elle-borclar   mutant 262:  64 elle değer kırmızı · H10F, H11F, H12F, H13F, H14F, H15a, H1F, H2F, H5F, H6A, H7F, H9B, h10x, h10y, h11x, h11y, h12x, h12y, h13x, h13y, h14x, h14y, h15a, h1x, h1y, h2x, h5y, h6a, h7x, h7y, h9b
+d35-c5-s120-elle-borclar   mutant 263:  92 elle değer kırmızı · H10, H10F, H11, H11F, H5, h10x, h10y, h11x, h11y, h12x, h12y, h13x, h13y, h14x, h14y, h15a, h1x, h1y, h2x, h2y, h5y, h6a, h9b
+d35-c5-s120-elle-borclar   mutant 264:   6 elle değer kırmızı · h4a
+d35-c5-s120-elle-borclar   mutant 265:   4 elle değer kırmızı · h10x, h10y, h11x, h11y
+d35-c5-s120-elle-borclar   mutant 266:   4 elle değer kırmızı · h10x, h10y, h11x, h11y
+d35-c5-s120-elle-borclar   mutant 267:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 268:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 269:   6 elle değer kırmızı · H10, H11
+d35-c5-s120-elle-borclar   mutant 270:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 271:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 272:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 273:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 274:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 275:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 276:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 277:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 278:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 279:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 280:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 281:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 282:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 283:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 284:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 285:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 286:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 287:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 288:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 289:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 290:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 291:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 292:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 293:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 294:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 295:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 296:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 297:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 298:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 299:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 300:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 301:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 302:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 303:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 304:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 305:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 306:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 307:   0 elle değer kırmızı · -
+# tests 517
+# pass 517
+# fail 0
+517/517 denetim geçti
+
+[kanit] kahineski17-mutant-senaryo-utc: GEÇTİ · çıkış 0 · 517/517 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 750d066 · linux 6.18.44-fc-v445 x64 · Node v22.23.4
+== mutant-senaryo: çıkış 0
+GENİŞ TARAMA (s1 tohum 1–30 × 120 işlem): (ii) 420 · cari:net 135 · cari:tanimsiz 215 · cari:tek 820 · gecikmiş (i) 513 · gecikmiş tanımsız 198 · kesim 390 · saf belge 386 · saf:net 677 · saf:tek 516 · tanimsiz:tanım alanı dışı 215 · tek=kendi tarafı 1750
+# tests 2201
+# pass 2201
+# fail 0
+2201/2201 denetim geçti
+
+[kanit] kahineski17-genis-tarama-utc: GEÇTİ · çıkış 0 · 2201/2201 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 750d066 · linux 6.18.44-fc-v445 x64 · Node v22.23.4
+== genis-tarama: çıkış 0
+bitti 2026-11-13T17:48:22Z

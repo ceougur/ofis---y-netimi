@@ -176,7 +176,7 @@ describe("YAPIM AŞAMASI kapısı — liste commit'ten de okunur (skip-worktree 
 });
 
 describe("tools/release.mjs YAPIM AŞAMASI kapısı", () => {
-  it("depodaki liste doluysa (ya da okunamıyorsa) paket aracı anahtarı okumadan reddeder ve listeyi söyler; boşsa liste iletisi yok", () => {
+  it("depodaki liste doluysa (ya da okunamıyorsa) paket aracı anahtarı okumadan reddeder ve listeyi söyler; boşsa dolu liste iletisi yok, git yokken 'okunamadı' der", () => {
     const depo = yapimAsamasiGate();
     const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !/^path$/i.test(key)));
     env.PATH = ""; // git / gh bulunamaz → CI kapısı da reddeder; liste kapısı yine iletide görünmeli (ikisi birlikte yazılır)
@@ -184,7 +184,8 @@ describe("tools/release.mjs YAPIM AŞAMASI kapısı", () => {
     assert.equal(r.status, 1, r.stdout + r.stderr);
     assert.match(r.stderr, /Doğrulanmamış commit'ten imzalı paket üretilmez/);
     assert.doesNotMatch(r.stderr, /yok-boyle-bir-anahtar|İmza anahtarı bulunamadı/, "kapı anahtardan önce");
-    if (depo.ok) assert.doesNotMatch(r.stderr, /YAPIM AŞAMASI/);
+    // Liste boşken: bu koşuda git YOK (PATH boş) → araç listeyi commit'ten okuyamaz; okunamayan liste boş SAYILMAZ (ders 4) — ileti zorunlu, dolu liste iletisi ("boş değil") yok.
+    if (depo.ok) { assert.match(r.stderr, /YAPIM AŞAMASI listesi commit'ten okunamadı/); assert.doesNotMatch(r.stderr, /boş değil/); }
     else for (const p of depo.problems) assert.ok(r.stderr.includes(p), `iletide yok: ${p}\n${r.stderr}`);
   });
   it("release.mjs kapıyı atlatma seçeneği vermez (liste yolu dışarıdan verilemez)", () => {

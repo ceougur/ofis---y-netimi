@@ -1,0 +1,23 @@
+#!/bin/bash
+# Ana oturum: KÂHİN PAKETİ (cari kâhini bakımı 17 + 18 + 19 + mobil yazma kâhini bakımı 2 + 3) — ana ağaçta TEK birleşim (commit'siz bırakır). Her adım hata durdurur.
+# Kâhin dalı + adaydan (kâhin ağacı ucu) dört dosya: koşucu eşlemesi, sürücü eşlemesi, yeniden üretilmiş (BOŞ) liste, kapı testinin boş liste beklentisi.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+R=/home/user/ofis---y-netimi; A=worktree-agent-a2ad151373ec5a9ff; C=7bc8b70f; G=docs/kanit/2026-11-13
+cd $R || exit 1
+[ -z "$(git status -s)" ] || { echo "ana ağaç temiz değil"; git status -s | head -5; exit 1; }
+git merge --no-ff --no-commit $A > $S/k19-merge.out 2>&1; echo "merge çıkış $? · çakışmalar: $(git status -s | grep -E '^(UU|AA|DU|UD|AU|UA)' | tr '\n' ' ')"
+[ -f .git/MERGE_HEAD ] || { echo "birleşim başlamadı"; tail -5 $S/k19-merge.out; exit 1; }
+[ "$(git status -s | grep -cE '^(UU|AA|DU|UD|AU|UA)')" = "0" ] || { echo "beklenmeyen çakışma"; exit 1; }
+git checkout $C -- test/bagimsiz/cari/kos.mjs test/bagimsiz/mobil-yazma/program-surucu.mjs test/bagimsiz/cari/YAPIM-ASAMASI.json test/yapim-asamasi-kapisi.test.mjs || exit 1
+echo "aday $C ile fark (belgeler dışında; BOŞ olmalı): [$(git diff $C --name-only -- . ':!docs' ':!CLAUDE.md' | tr '\n' ' ')]"
+[ -z "$(git diff $C --name-only -- . ':!docs' ':!CLAUDE.md')" ] || { echo "ADAYDAN FARKLI"; exit 1; }
+echo "ürün kodu farkı (server / client; BOŞ olmalı): [$(git diff HEAD --name-only -- server client | tr '\n' ' ')]"
+for w in ci.yml release.yml; do python3 -I -c "import yaml,sys; yaml.safe_load(open(sys.argv[1]))" .github/workflows/$w && echo "$w ayrıştı" || exit 1; done
+kop() { mkdir -p $G/$2 || exit 1; find $S/$1 -maxdepth 1 -type f -size -400k -exec cp {} $G/$2/ \; ; for d in 2026-11-13 2026-11-14; do [ -d $S/$1/$d ] && find $S/$1/$d -maxdepth 1 -type f -size -400k -exec cp {} $G/$2/ \; ; done; }
+kop k19-aday-kanit k19-aday; kop k18-on-kanit k19-on; kop ana-k18 ana-k18; kop ana-dkkap3 ana-dkkap3; kop ana-c5a2b/kanit ana-c5a2b; kop ana-c5a2c/kanit ana-c5a2c; kop ana-c5a2d/kanit ana-c5a2d
+mkdir -p $G/k19-betik || exit 1
+for f in k18-on.sh k19-aday.sh k19-birlesim.sh k18-surucu-esle.py k19-kapi-testi-duzelt.py kahin-eski19-uret.py ana-c5a2b/yk.sh ana-c5a2c/yk.sh ana-c5a2d/yk.sh ana-c5a2d/mutant.py b8a-olcum/iki-kart.mjs; do cp $S/$f $G/k19-betik/$(echo $f | tr '/' '-').txt || exit 1; done
+cp $S/k18-on.out $G/k19-on/on-kontrol-1.out.txt; cp $S/k19-on.out $G/k19-on/on-kontrol-2.out.txt; cp $S/k19-aday.out $G/k19-aday/aday.out.txt
+for f in $(find $G/ana-k18 $G/ana-dkkap3 -type f \( -name '*.sh' -o -name '*.mjs' -o -name '*.py' \)); do mv $f $f.txt; done
+echo "kanıt eklenen: $(git status -s -uall $G | grep -c '^??') dosya · Windows'ta açılmayan ad: $(git status -s -uall $G | cut -c4- | grep -cE '[<>:"|?*]|[ .]$') · eklenen boyut $(du -sch $G/k19-aday $G/k19-on $G/k19-betik $G/ana-k18 $G/ana-dkkap3 $G/ana-c5a2b $G/ana-c5a2c $G/ana-c5a2d | tail -1 | cut -f1)"
+git status -s | grep -v "^?? " | grep -v " docs/kanit/" | cut -c1-110 | head -40; echo "izlenmeyen (kanıt dışı): $(git status -s -uall | grep '^??' | grep -v " $G/" | head -5)"

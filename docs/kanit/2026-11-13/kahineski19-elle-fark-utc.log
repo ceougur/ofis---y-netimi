@@ -1,0 +1,95 @@
+d30-c5-s101-bitti-kart.json: 3 elle beklenti değişti
+    değer                  k1:kart:KQ7:toplam: 60000 → "(yok)"
+    elleYok eklendi        k1:kart:KQ7:toplam: "" → "yok"
+    elleBelirsiz eklendi   ["kart KQ7 toplamı", "S170 = B"]: "" → ""
+d42-c5-s140-s151-satis-karti-iade.json: 34 elle beklenti değişti
+    değer                  k1:kart:KT1:taksit1:odenen: 0 → "(yok)"
+    değer                  k1:kart:KT1:taksit2:odenen: 0 → "(yok)"
+    değer                  k1:kart:KT1:toplam: 100000 → "(yok)"
+    değer                  k1:kart:KT2:taksit1:odenen: 0 → "(yok)"
+    değer                  k1:kart:KT2:toplam: 100000 → "(yok)"
+    değer                  k1:kart:KT3:taksit1:odenen: 0 → "(yok)"
+    değer                  k1:kart:KT3:taksit2:odenen: 0 → "(yok)"
+    değer                  k1:kart:KT3:toplam: 100000 → "(yok)"
+    değer                  k1:kart:KT4:toplam: 100000 → "(yok)"
+    değer                  k1:kart:KT5:toplam: 100000 → "(yok)"
+    değer                  k1:kart:KT8:toplam: 100000 → "(yok)"
+    elleYok eklendi        k1:kart:KT1:taksit1:odenen: "" → "yok"
+    elleYok eklendi        k1:kart:KT1:taksit2:odenen: "" → "yok"
+    elleYok eklendi        k1:kart:KT1:toplam: "" → "yok"
+    elleYok eklendi        k1:kart:KT2:taksit1:odenen: "" → "yok"
+    elleYok eklendi        k1:kart:KT2:toplam: "" → "yok"
+    elleYok eklendi        k1:kart:KT3:taksit1:odenen: "" → "yok"
+    elleYok eklendi        k1:kart:KT3:taksit2:odenen: "" → "yok"
+    elleYok eklendi        k1:kart:KT3:toplam: "" → "yok"
+    elleYok eklendi        k1:kart:KT4:toplam: "" → "yok"
+    elleYok eklendi        k1:kart:KT5:toplam: "" → "yok"
+    elleYok eklendi        k1:kart:KT8:toplam: "" → "yok"
+    elleYok eklendi        k1:projeksiyon:cariToplam:T6: "" → "yok"
+    elleYok eklendi        k1:projeksiyon:cariToplam:T7: "" → "yok"
+    elleYok eklendi        k1:takvim:cariToplam:T6: "" → "yok"
+    elleYok eklendi        k1:takvim:cariToplam:T7: "" → "yok"
+    elleYok eklendi        k1:vadeTakip:cariToplam:T6: "" → "yok"
+    elleYok eklendi        k1:vadeTakip:cariToplam:T7: "" → "yok"
+    elleBelirsiz eklendi   ["kart KT1 toplamı", "S170 = B"]: "" → ""
+    elleBelirsiz eklendi   ["kart KT2 toplamı", "S170 = B"]: "" → ""
+    elleBelirsiz eklendi   ["kart KT3 toplamı", "S170 = B"]: "" → ""
+    elleBelirsiz eklendi   ["kart KT4 toplamı", "Y19-3", "S157 = C"]: "" → ""
+    elleBelirsiz eklendi   ["kart KT5 toplamı", "Y19-3", "S157 = C"]: "" → ""
+    elleBelirsiz eklendi   ["kart KT8 toplamı", "Y19-3", "S157 = C"]: "" → ""
+d43-c5-bilinen-sinir-sus15.json: 4 elle beklenti değişti
+    elleYok eklendi        k1:takvim:cariToplam:U4: "" → "yok"
+    elleYok eklendi        k1:takvim:cariToplam:U6: "" → "yok"
+    elleBelirsiz eklendi   ["cari U4 takvim pencere toplamı", "S149"]: "" → ""
+    elleBelirsiz eklendi   ["cari U6 takvim pencere toplamı", "S149"]: "" → ""
+d44-c5-s155-s158.json: 3 elle beklenti değişti
+    elleYok eklendi        k1:projeksiyon:cariToplam:Y4: "" → "yok"
+    elleYok eklendi        k1:takvim:cariToplam:Y4: "" → "yok"
+    elleYok eklendi        k1:vadeTakip:cariToplam:Y4: "" → "yok"
+d45-c5-s159-s154-s162-s163.json: 3 adım değişti
+d45-c5-s159-s154-s162-s163.json: 40 elle beklenti değişti
+    değer                  k1:cari:B3:bakiye: "(yok)" → 110000
+    değer                  k1:cari:B4:bakiye: "(yok)" → 110000
+    değer                  k1:cari:B4:gecikmis: "(yok)" → 30000
+    değer                  k1:cari:B5:bakiye: "(yok)" → 110000
+    değer                  k1:cari:B5:gecikmis: "(yok)" → 80000
+    değer                  k1:cari:B6:bakiye: "(yok)" → 60000
+    değer                  k1:cari:B6:gecikmis: "(yok)" → 30000
+    değer                  k1:hareket:b6y:var: "(yok)" → false
+    değer                  k1:kart:KB3:kalan: "(yok)" → 60000
+    değer                  k1:kart:KB3:odenen: "(yok)" → 0
+    değer                  k1:kart:KB4:kalan: "(yok)" → 60000
+    değer                  k1:kart:KB4:odenen: "(yok)" → 0
+    değer                  k1:kart:KB4:taksit1:odenen: "(yok)" → 0
+    değer                  k1:kart:KB4:taksit2:odenen: "(yok)" → 0
+    değer                  k1:kart:KB4:taksit3:odenen: "(yok)" → 0
+    değer                  k1:kart:KB4:toplam: "(yok)" → 90000
+    değer                  k1:kart:KB5:kalan: "(yok)" → 90000
+    değer                  k1:kart:KB5:odenen: "(yok)" → 0
+    değer                  k1:kart:KB5:taksit1:odenen: "(yok)" → 0
+    değer                  k1:kart:KB5:taksit2:odenen: "(yok)" → 0
+    değer                  k1:kart:KB5:taksit3:odenen: "(yok)" → 0
+    değer                  k1:kart:KB5:toplam: "(yok)" → 90000
+    değer                  k1:kart:KB6:kalan: "(yok)" → 60000
+    değer                  k1:kart:KB6:odenen: "(yok)" → 0
+    değer                  k1:kart:KB6:taksit1:odenen: "(yok)" → 0
+    değer                  k1:kart:KB6:taksit2:odenen: "(yok)" → 0
+    değer                  k1:kart:KB6:taksit3:odenen: "(yok)" → 0
+    değer                  k1:kart:KB6:toplam: "(yok)" → 90000
+    elleYok eklendi        k1:cari:B3:gecikmis: "" → "yok"
+    elleYok eklendi        k1:kart:KB3:taksit1:odenen: "" → "yok"
+    elleYok eklendi        k1:kart:KB3:taksit2:odenen: "" → "yok"
+    elleYok eklendi        k1:kart:KB3:taksit3:odenen: "" → "yok"
+    elleYok eklendi        k1:kart:KB3:toplam: "" → "yok"
+    elleYok eklendi        k1:projeksiyon:cariToplam:B1: "" → "yok"
+    elleYok eklendi        k1:projeksiyon:cariToplam:B3: "" → "yok"
+    elleYok eklendi        k1:takvim:cariToplam:B1: "" → "yok"
+    elleYok eklendi        k1:takvim:cariToplam:B3: "" → "yok"
+    elleYok eklendi        k1:vadeTakip:cariToplam:B1: "" → "yok"
+    elleYok eklendi        k1:vadeTakip:cariToplam:B3: "" → "yok"
+    elleBelirsiz eklendi   ["kart KB3", "S162 = B"]: "" → ""
+yeni elle senaryo: yok
+# tests 100
+# pass 100
+# fail 0
+100/100 denetim geçti

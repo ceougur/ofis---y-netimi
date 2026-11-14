@@ -1,0 +1,18 @@
+▶ H1 — cari satırının açılış işareti (ayrı sorgu) ↔ veri tabanının kolonları
+  ✔ 2.0.26 verisi (göç 48 adayları + Açılış Olabilir kararları): karşı hesap 519 / 602 / 770 kolonlardan beklenenle aynı; süzgeçli = süzgeçsiz (812.243898ms)
+✔ H1 — cari satırının açılış işareti (ayrı sorgu) ↔ veri tabanının kolonları (812.958456ms)
+▶ H2 — yüklenen kartın alanları (ayrı sorgu) ↔ veri tabanı
+  ✔ surum-2.4.9-s127-kilitsiz: KG-5 tek madde T − P / A 519, açılış satırı maddesiz (S127'ye bağlı kart eski yapıda); süzgeçli (kart, taksit satırı) = süzgeçsiz (81.474473ms)
+  ✔ surum-2.4.9-s127: KG-5 tek madde T − P / A 519, açılış satırı maddesiz (S127'ye bağlı kart eski yapıda); süzgeçli (kart, taksit satırı) = süzgeçsiz (256.455254ms)
+✔ H2 — yüklenen kartın alanları (ayrı sorgu) ↔ veri tabanı (338.221304ms)
+▶ H3 — journalSort ≡ sort(journalOrder)
+  ✔ gerçek maddeler (2.4.9 S127 kilitli fikstürü + 2.0.26) karıştırılmış girdiyle; eşit anahtarlar, yazım sırası olmayan, açılış sınıflı ve bilinmeyen önekli maddeler (10.673094ms)
+✔ H3 — journalSort ≡ sort(journalOrder) (10.800937ms)
+ℹ tests 4
+ℹ suites 3
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1534.533977

@@ -1,0 +1,4 @@
+DURUM=T1 · bakiye undefined · gecikmiş null · kart toplam 700 · kalan undefined · tahsil undefined · iade undefined
+  taksit: {"dueDate":"2026-06-01","amount":500,"paid":500,"remaining":0,"ownRemaining":500}
+  taksit: {"dueDate":"2026-07-01","amount":200,"paid":0,"remaining":200,"ownRemaining":200}
+  cari sayıları: {"dueDays":0,"eInvoice":0,"waOptOut":0}

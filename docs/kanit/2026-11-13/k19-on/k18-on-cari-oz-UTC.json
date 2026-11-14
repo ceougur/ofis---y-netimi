@@ -1,0 +1,32 @@
+{
+  "ad": "k18-on-cari-oz-UTC",
+  "komut": "python3 -I -B test/bagimsiz/cari/oz-test.py",
+  "commit": "3074dce18919e7282483d4a047c676fe0049b690",
+  "dal": "sinama-k18",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T22:50:11.999Z",
+  "sure_sn": 42.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6678,
+    "gecen": 6678,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../k18-on-kanit/2026-11-13/k18-on-cari-oz-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8y-ag",
+  "ham_cikti_sha256": "01fb07720d59dec81490a9f1e0a1444d142187bb6a2dc07b7d59fa4e011b053d",
+  "ham_cikti_bayt": 26569
+}

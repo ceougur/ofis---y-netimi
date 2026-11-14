@@ -1,0 +1,21 @@
+# Ana oturum: mobil yazma kâhini sürücüsüne `stok_iade` kurulum adımının EŞLEMESİ (yalnız eşleme; kâhin ajanı sürücüyü değiştirmez).
+# Çağrı: python3 -I k18-surucu-esle.py <ağaç>/test/bagimsiz/mobil-yazma/program-surucu.mjs
+import sys
+p = sys.argv[1]; s = open(p, encoding='utf-8').read()
+x = '      case "urun_ac": {\n'
+assert s.count(x) == 1, s.count(x)
+assert 'case "stok_iade"' not in s, 'eşleme zaten var'
+y = '''      case "stok_iade": {
+        // bakım 2 eşlemesi (ana oturum; yalnız eşleme): masaüstünden FATURASIZ stok satış iadesi — cari kâhini koşucusundaki eşlemeyle aynı istek
+        // (POST /api/workspace/stock/:id/moves {kind: "in", reason: "return", pay: "account"}); iade malı kartı şirket başına ilk kullanımda açılır (ids.urun'a girmez — stok kontrollerini etkilemez).
+        if (!ids.iadeMal?.[code]) (ids.iadeMal ||= {})[code] = (await must("iade malı kartı", call(admin, "POST", withCompany("/api/workspace/stock", code), { kind: "goods", code: "M5-IADE-MAL", name: "Kâhin İade Malı", unit: "Adet", openingQty: "100000", salePrice: "100" }))).id;
+        await must(`${a.id} stok iadesi`, call(admin, "POST", withCompany(`/api/workspace/stock/${ids.iadeMal[code]}/moves`, code), { kind: "in", reason: "return", qty: "1", unitPrice: a.tutar, pay: "account", accountId: ids.cari[a.cari], date: day }));
+        return;
+      }
+'''
+s = s.replace(x, y + x)
+z = 'const SETUP = new Set(["cari_ac", "fatura", "iade", '
+assert s.count(z) == 1, s.count(z)
+s = s.replace(z, 'const SETUP = new Set(["cari_ac", "fatura", "iade", "stok_iade", ')
+open(p, 'w', encoding='utf-8').write(s)
+print('sürücü eşlemesi işlendi')
