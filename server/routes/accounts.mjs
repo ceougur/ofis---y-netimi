@@ -9,6 +9,7 @@ import { methodInput } from "../lib/pay-method.mjs";
 import { doubtfulKeepOf, doubtfulSkipOf } from "../lib/doubtful-gl.mjs";
 import { negativeConfirmed } from "../lib/bank/module-ref.mjs";
 import { posMetaOf } from "../lib/bank/pos.mjs";
+import { doubtfulState } from "../lib/bank/doubtful.mjs";
 import { ACCOUNT_TYPES, TYPE_DEFAULT, accountLedger, accountTypeKey, balanceSide, classifyAccountType, isAccountType, mapAccountHeaders } from "../lib/accounts.mjs";
 import { createAccountLines } from "../lib/account-lines.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
@@ -167,17 +168,35 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       cardIds = new Set(); // banka tabloları yoksa (göç öncesi veri)
     }
     // Karar 15.10.2026 (plan §3.11b/2): doubtfulSkip = kullanıcı işareti ("Normal Cari Hesaba İşle"); doubtfulNormal = satırın şüpheliden
-    // düşmediği (işaret, fatura peşini ya da Kapatılacak Fatura bağı; lib/doubtful-gl.mjs doubtfulSkipOf) — ekranda "Normal Cariye İşlendi";
+    // düşmediği (işaret, fatura peşini ya da — tur 3d'den beri ayırıcının payı 0 olan — Kapatılacak Fatura bağı; normalOf) — ekranda "Normal Cariye İşlendi";
     // yalnız şüpheli kaydı olan caride (yoksa her peşin satırı etiketlenirdi).
     const doubtfulSummary = doubtful()?.summary ? doubtful().summary(account.id) : null;
     const hasDoubtful = Boolean(doubtfulSummary && doubtfulSummary.count > 0);
+    // 2.5.0 Ç5-A tur 3d (BAŞ MİMAR KARARI 14.11 09:00 (2); S168 = B): Kapatılacak Fatura bağlı tahsilatın etiketi defterin AYIRICISININ o satıra verdiği şüpheli
+    // payından (lib/bank/doubtful.mjs doubtfulState allocations — assertNormalRoom'un allocatedMinor'ı ile aynı kaynak; ikinci hesap yok). Kart açılışında cari
+    // başına en çok BİR kez ve yalnız ilk bağlı satır gerektirince (ders 47; bağlı tahsilatı olmayan şüpheli carisinde ek iş yok); yalnız şüpheli kaydı olan caride. İşaretli ("Normal Cari Hesaba İşle") ve fatura peşini tahsilatı ayırıcıya girmez (doubtfulKeepOf) →
+    // tamamı 120. Bağlı satır: pay 0 → "Normal Cariye İşlendi"; pay = tutar → etiket yok (tamamı 128'den); arada → "Kısmen Normal Cariye İşlendi" + 120'ye düşen tutar.
+    let allocations = null;
+    const shareOf = entryId => {
+      allocations ||= doubtfulState(store, { parties: [account.id] }).allocations;
+      return (allocations.get(`account:${entryId}`)?.records || []).reduce((sum, item) => sum + item.minor, 0);
+    };
+    const normalOf = entry => {
+      if (!hasDoubtful || !doubtfulSkipOf(entry)) return { doubtfulNormal: false };
+      if (doubtfulKeepOf(entry)) return { doubtfulNormal: true };
+      const amountMinor = Math.round((Number(entry.amount) || 0) * 100);
+      const shareMinor = Math.min(amountMinor, shareOf(entry.id));
+      if (shareMinor <= 0) return { doubtfulNormal: true };
+      if (shareMinor >= amountMinor) return { doubtfulNormal: false };
+      return { doubtfulNormal: false, doubtfulNormalPart: roundMoney((amountMinor - shareMinor) / 100) };
+    };
     // 2.4.6 madde 9 (DB1): iadeye bağlı geri ödemenin iadesi (refundLabel; iade silinmişse / iptal edilmişse söylenir).
     const refundText = id => {
       const target = refundTargetOf(account.id, id);
       if (!target) return "İade bulunamadı (silinmiş)";
       return target.valid ? refundLabelOf(target) : `${refundLabelOf(target)} · ${target.type === "invoice" ? "iptal edildi" : "cariye yazılmıyor"}`;
     };
-    const entries = entriesOf(account.id).map(entry => ({ ...entry, doubtfulSkip: Number(entry.doubtfulSkip) === 1, doubtfulNormal: hasDoubtful && doubtfulSkipOf(entry), editable: entry.source === "" && (manage || (entry.createdBy === user.id && entry.kind === "in")), ...(entry.kind === "in" && entry.method === "card" && cardIds.has(entry.finRef) ? { cardRefund: true } : {}), ...(entry.refundOf ? { refundLabel: refundText(entry.refundOf) } : {}) }));
+    const entries = entriesOf(account.id).map(entry => ({ ...entry, doubtfulSkip: Number(entry.doubtfulSkip) === 1, ...normalOf(entry), editable: entry.source === "" && (manage || (entry.createdBy === user.id && entry.kind === "in")), ...(entry.kind === "in" && entry.method === "card" && cardIds.has(entry.finRef) ? { cardRefund: true } : {}), ...(entry.refundOf ? { refundLabel: refundText(entry.refundOf) } : {}) }));
     const planList = plans()?.forAccount ? plans().forAccount(account.id, user) : [];
     const ledger = accountLedger(entries, planList);
     // 2.4.5 madde 6 (BAŞ MİMAR KARARI K6.2): elle Borç / Alacak ve Açılış Bakiyesi satırının Kalan'ı (TL, kuruşa yuvarlı) — fatura kapamasıyla aynı

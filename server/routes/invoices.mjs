@@ -35,6 +35,7 @@ import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { METHODS, METHODS_IN, METHODS_OUT, methodLabel, methodInput } from "../lib/pay-method.mjs";
 import { bankForm, negativeConfirmed } from "../lib/bank/module-ref.mjs";
 import { posMetaOf } from "../lib/bank/pos.mjs";
+import { doubtfulState } from "../lib/bank/doubtful.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { createSecretBox } from "../lib/secret-box.mjs";
 import { addMonths, dayText, isoDay } from "../lib/plans.mjs";
@@ -3431,22 +3432,48 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     ok(res, { results, deleted: results.filter(item => item.ok).length, failed: results.filter(item => !item.ok).length });
   });
   // K4: iptal edilince Kapatılacak Fatura bağı kalkacak, şüpheli alacağı açık carideki "Normal Cariye İşlendi" tahsilatlar.
+  // 2.5.0 Ç5-A tur 3d (BAŞ MİMAR KARARI 14.11 09:00 (3); S168 = B): bağlı tahsilatın yalnız 120'ye düşen kısmı normal cari hesaba işlidir — faturanın kuyrukta şüpheli
+  // sayılan payı zaten 128'den düşer. Pay defterin AYIRICISINDAN (lib/bank/doubtful.mjs doubtfulState allocations; cari kartının etiketiyle aynı kaynak), cari başına
+  // bir kez. normalMinor = tutar − pay; tamamı 128'den düşen satır listeye girmez (iptal onu normal cariden çıkarmaz).
   function doubtfulRelinks(invoiceId) {
-    return store.all(
-      `SELECT e.id, e.date, e.amount FROM account_entries e
+    const rows = store.all(
+      `SELECT e.id, e.account_id AS accountId, e.date, e.amount FROM account_entries e
        WHERE e.invoice_id = ? AND e.kind = 'in' AND e.doubtful_skip = 0 AND e.source <> 'invoice'
          AND EXISTS (SELECT 1 FROM doubtful_receivables d WHERE d.account_id = e.account_id AND d.status NOT IN ('cancelled', 'released'))
        ORDER BY e.date, e.rowid`,
       invoiceId,
     );
+    if (!rows.length) return [];
+    const allocations = doubtfulState(store, { parties: [...new Set(rows.map(row => row.accountId))] }).allocations;
+    const shareOf = id => (allocations.get(`account:${id}`)?.records || []).reduce((sum, item) => sum + item.minor, 0);
+    return rows
+      .map(({ accountId, ...row }) => {
+        const amountMinor = Math.round((Number(row.amount) || 0) * 100);
+        const shareMinor = Math.min(amountMinor, shareOf(row.id));
+        return { ...row, normalMinor: amountMinor - shareMinor, shareMinor };
+      })
+      .filter(row => row.normalMinor > 0);
   }
   function doubtfulRelinkText(list, { done = false } = {}) {
     if (!list.length) return "";
     const total = list.reduce((sum, entry) => sum + Math.round((Number(entry.amount) || 0) * 100), 0) / 100;
-    const what = list.length === 1 ? `Bu faturaya bağlı ${moneyText(total)} tahsilat` : `Bu faturaya bağlı ${list.length} tahsilat (toplam ${moneyText(total)})`;
+    const tip = done
+      ? 'Normal cari hesapta kalmasını isterseniz cari kartında tahsilatı açıp "Normal Cari Hesaba İşle"yi işaretleyin.'
+      : 'Normal cari hesapta kalmasını isterseniz iptalden sonra cari kartında tahsilatı açıp "Normal Cari Hesaba İşle"yi işaretleyin.';
+    if (!list.some(entry => entry.shareMinor > 0)) {
+      const what = list.length === 1 ? `Bu faturaya bağlı ${moneyText(total)} tahsilat` : `Bu faturaya bağlı ${list.length} tahsilat (toplam ${moneyText(total)})`;
+      return done
+        ? `${what} artık şüpheli alacaktan düşüyor (faturayla bağı kalktı). ${tip}`
+        : `${what} şu an normal cari hesaba işli (cari şüpheli alacakta). Fatura iptal edilince bağı kalkar ve tahsilat şüpheli alacaktan düşer. ${tip}`;
+    }
+    // Payı olan bağlı tahsilat: yalnız 120'deki kısım söylenir (örnek: 500,00 TL tahsilatın 100,00 TL'si; 400,00 TL'si faturanın şüpheli payından 128'den düşmüş).
+    const normal = list.reduce((sum, entry) => sum + entry.normalMinor, 0) / 100;
+    const part = list.length === 1
+      ? `Bu faturaya bağlı ${moneyText(total)} tahsilatın ${moneyText(normal)}'si`
+      : `Bu faturaya bağlı ${list.length} tahsilatın (toplam ${moneyText(total)}) ${moneyText(normal)}'si`;
     return done
-      ? `${what} artık şüpheli alacaktan düşüyor (faturayla bağı kalktı). Normal cari hesapta kalmasını isterseniz cari kartında tahsilatı açıp "Normal Cari Hesaba İşle"yi işaretleyin.`
-      : `${what} şu an normal cari hesaba işli (cari şüpheli alacakta). Fatura iptal edilince bağı kalkar ve tahsilat şüpheli alacaktan düşer. Normal cari hesapta kalmasını isterseniz iptalden sonra cari kartında tahsilatı açıp "Normal Cari Hesaba İşle"yi işaretleyin.`;
+      ? `${part} artık şüpheli alacaktan düşüyor (faturayla bağı kalktı; kalanı zaten faturanın şüpheli alacaktaki payından düşmüştü). ${tip}`
+      : `${part} şu an normal cari hesaba işli (cari şüpheli alacakta; kalanı faturanın şüpheli alacaktaki payından düşüyor). Fatura iptal edilince bağı kalkar ve bu kısım şüpheli alacaktan düşer. ${tip}`;
   }
   // Belge başına tek entegratör işlemi (gönderim YA DA iptal). Yük denemesi (iki şirket, on kullanıcı; dar kontrol turu 3 B6): iki kullanıcı aynı
   // e-Arşivi aynı anda iptal edince ikisi de entegratöre iptal gönderiyordu. Kontrol turu 4: gönderim sürerken başka kullanıcı iptal edebiliyordu
