@@ -1,0 +1,32 @@
+{
+  "ad": "c7a-taban-surucu",
+  "komut": "node test/bagimsiz/muhasebe-surucu/kos.mjs --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-k4/surucu-taban",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v470 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-14T05:48:09.743Z",
+  "sure_sn": 279.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6438,
+    "gecen": 5774,
+    "basarisiz": 620,
+    "iptal": 0,
+    "atlanan": 44
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 620 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "../kanit/2026-11-14/c7a-taban-surucu.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-k4/taban-kod",
+  "ham_cikti_sha256": "11a77a3b118720cab87de14da6a0f8ddad55fde7979c42e79fff9861f3a2cc8f",
+  "ham_cikti_bayt": 109801
+}
