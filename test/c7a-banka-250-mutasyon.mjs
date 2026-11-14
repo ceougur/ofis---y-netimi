@@ -135,13 +135,15 @@ const MUTASYONLAR = [
     18, "KG-6: taksitli satışta yalnız ilk kalemin kesintisi", LEDGER,
     "    for (const [, minor, gl] of parts) {",
     "    for (const [, minor, gl] of parts.slice(0, 1)) {",
-    [KG6], /420 = 3 × 140/,
+    // Program kendi kapısıyla da DEĞERLE yakalar: satış günü maddesi 140, beklenen 420 → 108 farkı 280 (409 ledger-integrity).
+    [KG6], /420 = 3 × 140|108 Kredi Kartı Tahsilatları \(POS\): 280,00 TL fark/,
   ],
   [
     19, "KG-6: gün fişinin 108 satırı netlenmez (brüt kalır)", LEDGER,
     '  apply("pos", 1, () =>',
     '  if (0) apply("pos", 1, () =>',
-    [KG6], /12\.10 B 102\.01 9\.750 \/ A 108\.01 9\.750/,
+    // Gider satırı netlenip 108 netlenmezse madde dengesiz: kapı "Çift yönlü kayıt (borç = alacak)" ile reddeder (409).
+    [KG6], /12\.10 B 102\.01 9\.750 \/ A 108\.01 9\.750|Çift yönlü kayıt \(borç = alacak\)/,
   ],
   [
     20, "KG-6: defter beklenenleri bekleyen kesintiyi düşmez (yanlış alarm)", MONEY,
@@ -150,10 +152,11 @@ const MUTASYONLAR = [
     [KG6], /ledger-integrity|bank:sub:108\.01|gl:108|Mutabakat/,
   ],
   [
-    21, "KG-6: silinen (void) kalemler kümeye girer", COMMISSION,
+    // (İlk sürümde 21 "void kalemler kümeye girer"di — EŞDEĞER: void kalem yalnız void kayıtta olur ve kayıt koşulu onu zaten dışlar; kalem koşulu gereksiz bekçidir.)
+    21, "KG-6: iade kalemleri kümeden düşer (iade edilen kesinti iade gününe yazılmaz)", COMMISSION,
     "i.status IN ('pending', 'settled') AND i.role IN ('sale', 'refund')\";",
-    "i.status IN ('pending', 'settled', 'void') AND i.role IN ('sale', 'refund')\";",
-    [KG6], /yalnız yeni satış \(200\)/,
+    "i.status IN ('pending', 'settled') AND i.role IN ('sale')\";",
+    [KG6], /iade günü B 108\.01 100 \/ A 653 100/,
   ],
   [
     22, "KG-6: iade kaleminin kesintisi satış gibi (işaret çevrilmez)", COMMISSION,
