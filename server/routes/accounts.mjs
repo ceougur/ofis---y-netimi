@@ -6,7 +6,7 @@
 // Hesap kuralı server/lib/accounts.mjs içinde (saf, testli); burada doğrulama, kayıt ve yetki vardır.
 import { createHash, randomUUID } from "node:crypto";
 import { methodInput } from "../lib/pay-method.mjs";
-import { doubtfulSkipOf } from "../lib/doubtful-gl.mjs";
+import { doubtfulKeepOf, doubtfulSkipOf } from "../lib/doubtful-gl.mjs";
 import { negativeConfirmed } from "../lib/bank/module-ref.mjs";
 import { posMetaOf } from "../lib/bank/pos.mjs";
 import { ACCOUNT_TYPES, TYPE_DEFAULT, accountLedger, accountTypeKey, balanceSide, classifyAccountType, isAccountType, mapAccountHeaders } from "../lib/accounts.mjs";
@@ -842,14 +842,14 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // Dönüş: bağlı tahsilatta yazımdan SONRA çağrılacak denetim (satır kimliğiyle; aşarsa 409, işlem geri alınır), öbür durumda null.
   const assertNormalRoom = (account, input, previous = null) => {
     if (input.kind !== "in" || account.type !== "customer" || !doubtful()?.headroom) return null;
-    const flagged = doubtfulSkipOf({ kind: "in", doubtfulSkip: input.doubtfulSkip });
+    const flagged = doubtfulKeepOf({ kind: "in", doubtfulSkip: input.doubtfulSkip });
     if (!flagged && !input.invoiceId) return null;
     const room = doubtful().headroom(account.id);
     if (!(room.openMinor > 0)) return null;
     // Önceki satırın ZATEN 120'de olan kısmı sayılmaz (işaretliyse tamamı; değilse ayırma kuralının şüpheliye düşürmediği kısmı — ör. kayıt
     // tarihinden önceki tahsilat, Ç5-A tur 3c'den beri bağlı tahsilatın 120 payı; kontrol turu 2 K3: önceden tamamı yeni sayılıp defter değişmediği hâlde 409).
     const previousMinor = previous && previous.kind === "in"
-      ? (doubtfulSkipOf({ kind: "in", source: previous.source, invoiceId: previous.invoiceId, doubtfulSkip: previous.doubtfulSkip })
+      ? (doubtfulKeepOf({ kind: "in", source: previous.source, doubtfulSkip: previous.doubtfulSkip })
         ? Math.round(Number(previous.amount) * 100)
         : Math.round(Number(previous.amount) * 100) - (doubtful().allocatedMinor?.(account.id, previous.id) ?? 0))
       : 0;

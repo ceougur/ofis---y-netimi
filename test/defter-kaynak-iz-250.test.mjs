@@ -46,6 +46,12 @@ export const EXCEPTIONS = new Map([
   // SINIF 2.
   ["account_entries.opening_review", "SINIF 2 — kapının yazdığı kopya + opening:review denetimi (§15.2 (2), K8-2)"],
   ["account_entries.invoice_id", "SINIF 2 — BAŞ MİMAR KARARI GEREKİYOR (§16.4): fatura iptali kilitli tahsilatın bağını meşru olarak koparır"],
+  // 2.5.0 Ç5-A tur 3c (§19; S14, S25, S168 = B — şüpheli ↔ kuyruk kuralı kuyruğun bağını okur, lib/bank/doubtful.mjs linkedShares → lib/obligation-input.mjs chequeLinks): evrakın fatura
+  // bağı ve evrak olaylarını carinin kuyruğuna seçen iki sütun. account_entries.invoice_id ile AYNI aile: kilitli evrakın bağı / olayın carisi programın yolundan değişmez (dönem kilidi,
+  // S160 = A); kapı dışı değişiklik S164 = C (kullanıcı kararı 13.11 17:30: "kilit izine EKLENMEZ" — BİLİNEN SINIR). BAŞ MİMAR değerlendirmesine (tur 3c raporu).
+  ["cheque_events.invoice_id", "SINIF 2 — Ç5-A tur 3c (§19): evrakın Kapatılacak Fatura bağı (şüpheli carisinde 120 / 128); S160 = A, S164 = C"],
+  ["cheque_events.account_id", "SINIF 2 — Ç5-A tur 3c (§19): evrak olayının carisi (kuyruğun girdisinde olay seçimi); S164 = C"],
+  ["cheques.endorse_account_id", "SINIF 2 — Ç5-A tur 3c (§19): ciro edilen cari (kuyruğun girdisinde olay seçimi); S164 = C"],
   // SINIF 3 (§16.3).
   ["bank_accounts.id", "SINIF 3 — banka / POS tanımı; dış değişikliği bank:sub görür, kapıdan alt hesap değişmez (§16.3)"],
   ["bank_accounts.kind", "SINIF 3 (§16.3)"],

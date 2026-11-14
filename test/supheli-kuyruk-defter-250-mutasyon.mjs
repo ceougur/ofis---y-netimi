@@ -25,7 +25,7 @@ const CRASH = /TypeError|ReferenceError|SyntaxError|Maximum call stack/;
 // [no, ad, [[dosya, eski, yeni], …]]
 const MUTASYONLAR = [
   [1, "128 ↔ 120 dağılımı eski sabite: bağlı tahsilat her zaman 120 (iki yükleyicide)", [
-    [GL, "  kind === \"in\" && (doubtfulSkip === true || Number(doubtfulSkip) === 1 || source === \"invoice\");", "  kind === \"in\" && (doubtfulSkip === true || Number(doubtfulSkip) === 1 || source === \"invoice\" || Boolean(_invoiceId));"],
+    [GL, "export const doubtfulKeepOf = ({ kind, source = \"\", doubtfulSkip = 0 } = {}) =>\n  kind === \"in\" && (doubtfulSkip === true || Number(doubtfulSkip) === 1 || source === \"invoice\");", "export const doubtfulKeepOf = ({ kind, source = \"\", invoiceId = \"\", doubtfulSkip = 0 } = {}) =>\n  kind === \"in\" && (doubtfulSkip === true || Number(doubtfulSkip) === 1 || source === \"invoice\" || Boolean(invoiceId));"],
     [BD, "WHERE (e.kind = 'in' AND e.doubtful_skip = 0 AND e.source <> 'invoice') OR", "WHERE (e.kind = 'in' AND e.doubtful_skip = 0 AND e.source <> 'invoice' AND e.invoice_id = '') OR"],
   ]],
   [2, "128 ↔ 120 dağılımı eski sabite: bağlı evrak en eski kayıttan (kuyruk payı okunmaz — geri çağrı yok)", [[GL, "        const shares = linked && !credit.openedOn", "        const shares = false && linked && !credit.openedOn"]]],

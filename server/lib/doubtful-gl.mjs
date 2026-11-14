@@ -24,13 +24,19 @@
 import { roundMoney } from "./money.mjs";
 
 /**
- * Karar 15.10.2026 (plan §3.11b/2): tahsilat satırı şüpheliden düşmeyip 120'de kalır mı? Kullanıcı işareti (doubtful_skip = 1, "Normal Cari
- * Hesaba İşle") ya da fatura peşini (source 'invoice'). Yalnız tahsilat ('in') satırında anlamlı.
- * 2.5.0 Ç5-A tur 3c (S25 (c), S39, S168 = B; C5-ACILIS-TASARIM §19.1): Kapatılacak Fatura bağı (invoice_id) artık "her zaman 120" DEĞİL — bağlı satır ayırıcıya girer, faturanın kuyrukta
- * şüpheli sayılan kısmı önce 128'den düşer (allocateDoubtful `linked`); invoiceId alanı imzada kalır (çağıranlar aynı), sonucu etkilemez.
- * SQL ikizi: lib/bank/doubtful.mjs doubtfulCredits (e.doubtful_skip = 0 AND e.source <> 'invoice').
+ * Karar 15.10.2026 (plan §3.11b/2): tahsilat satırı "Normal Cariye İşlendi" mi? Kullanıcı işareti (doubtful_skip = 1, "Normal Cari Hesaba İşle"),
+ * fatura peşini (source 'invoice') ya da Kapatılacak Fatura bağı (invoice_id). Yalnız tahsilat ('in') satırında anlamlı.
+ * 2.5.0 Ç5-A tur 3c (S25 (c), S39, S168 = B; C5-ACILIS-TASARIM §19): DEFTERİN 120 / 128 ayrımı artık bunu DEĞİL doubtfulKeepOf'u okur — Kapatılacak Fatura bağlı satır ayırıcıya
+ * girer, faturanın kuyrukta şüpheli sayılan kısmı önce 128'den düşer (allocateDoubtful `linked`). Bu işlev yalnız cari kartının "Normal Cariye İşlendi" etiketinin (routes/accounts.mjs
+ * detail — bu turun dosya sınırı dışında; etiketin ayırıcıdan okunması BAŞ MİMAR KARARI bekliyor) bugünkü tanımı olarak kalır.
  */
-export const doubtfulSkipOf = ({ kind, source = "", invoiceId: _invoiceId = "", doubtfulSkip = 0 } = {}) =>
+export const doubtfulSkipOf = ({ kind, source = "", invoiceId = "", doubtfulSkip = 0 } = {}) =>
+  kind === "in" && (doubtfulSkip === true || Number(doubtfulSkip) === 1 || source === "invoice" || Boolean(invoiceId));
+/**
+ * 2.5.0 Ç5-A tur 3c (§19.1): tahsilat satırı şüpheliden HİÇ düşmeyip tamamı 120'de kalır mı (defterin ayırıcısı)? "Normal Cari Hesaba İşle" işareti ya da fatura peşini (15.10.2026
+ * kararı, değişmez). Kapatılacak Fatura bağı burada YOK: bağlı satırın payı ayırıcının `linked` kuralıyla. SQL ikizi: lib/bank/doubtful.mjs doubtfulCredits (e.doubtful_skip = 0 AND e.source <> 'invoice').
+ */
+export const doubtfulKeepOf = ({ kind, source = "", doubtfulSkip = 0 } = {}) =>
   kind === "in" && (doubtfulSkip === true || Number(doubtfulSkip) === 1 || source === "invoice");
 
 export const DOUBTFUL_GL = Object.freeze({ doubtful: "128", provision: "129", groundless: "644", expense: "654", loss: "659" });
