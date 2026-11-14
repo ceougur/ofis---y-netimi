@@ -58,14 +58,14 @@ const MUTASYONLAR = [
   [
     6, "K-14: açılıştan önceki hesapsız satır banka tarafına yazılır (defterde 519'a geçmez)", LEDGER,
     "      if ((sub === \"102.00\" || sub === \"108.00\") && isCovered(",
-    "      if (false && isCovered(",
-    [K14], /B 519 \/ A 120|Açılış Karşılığı|opening:519|102\.00/,
+    "      if ((sub === \"102.00\" || sub === \"108.00\") && false && isCovered(",
+    [K14], /ledger-integrity|20\.09 tahsilat B 519 \/ A 120/,
   ],
   [
     7, "K-14: açılış günü sınırı '<' yerine '≤' (açılış günündeki satır da 519'a)", COVER,
     "  if (way === \"bank\") return Boolean(bounds.bank) && date < bounds.bank;",
     "  if (way === \"bank\") return Boolean(bounds.bank) && date <= bounds.bank;",
-    [K14], /açılış günü \(01\.10\) açılıştan SONRA|ledger-integrity|102\.00/,
+    [K14], /açılış günü \(01\.10\) açılıştan SONRA|ledger-integrity/,
   ],
   [
     8, "K-14: EN GEÇ yerine EN ERKEN açılış tarihi", COVER,
@@ -77,7 +77,7 @@ const MUTASYONLAR = [
     9, "K-14: kovanın ekran bakiyesi açılışta sayılmış satırları düşmez", MONEY,
     "w WHERE w.ref = '' AND NOT ${COVER_SQL} GROUP BY w.way`",
     "w WHERE w.ref = '' GROUP BY w.way`",
-    [K14], /bankMinor: (670000|6700|.*270000)|kova|Alt Hesap|102\.00/,
+    [K14], /bankMinor: 670000|ledger-integrity/,
   ],
   [
     10, "K-14: pasif hesabın açılışı sınırdan düşer (durum fark etmez kuralı bozulur)", COVER,
@@ -95,7 +95,7 @@ const MUTASYONLAR = [
     12, "K-15: kart yolunda yön ayrımı kalkar (kart ödemesi de POS sınırına — yalnız Devir Kapanışı)", COVER,
     "    const limit = kind === \"out\" ? bounds.card : bounds.pos;",
     "    const limit = bounds.pos;",
-    [K14], /açılıştan önceki kart ödemesi A 519|ledger-integrity|108\.00/,
+    [K14], /açılıştan önceki kart ödemesi A 519|ledger-integrity/,
   ],
   [
     13, "K-14: 519 ikinci yükleyicisi açılışta sayılmış satırları bilmez (Açılış Karşılığı yanlış alarm)", OPENING,
@@ -106,8 +106,8 @@ const MUTASYONLAR = [
   [
     14, "K-14: defter beklenenleri (groups) açılışta sayılmış satırı 102.00'da bekler (yanlış alarm)", MONEY,
     "SELECT CASE WHEN ${COVER_SQL} THEN 'opening' ELSE w.way END AS way, w.ref AS ref, COALESCE(SUM(CASE WHEN w.kind = 'in' THEN w.cents ELSE -w.cents END), 0) AS cents, COUNT(*) AS count FROM (${waySql({ light: true, events, ids, ref, cover: true })})",
-    "SELECT w.way AS way, w.ref AS ref, COALESCE(SUM(CASE WHEN w.kind = 'in' THEN w.cents ELSE -w.cents END), 0) AS cents, COUNT(*) AS count FROM (${waySql({ light: true, events, ids, ref, cover: true })})",
-    [K14], /bank:sub|ledger-integrity|Mutabakat|gl:102/,
+    "SELECT CASE WHEN (${COVER_SQL}) AND 0 THEN 'opening' ELSE w.way END AS way, w.ref AS ref, COALESCE(SUM(CASE WHEN w.kind = 'in' THEN w.cents ELSE -w.cents END), 0) AS cents, COUNT(*) AS count FROM (${waySql({ light: true, events, ids, ref, cover: true })})",
+    [K14], /ledger-integrity|bank:sub:102\.00|gl:102/,
   ],
 ];
 
@@ -146,7 +146,9 @@ for (const [no, name, file, before, after, tests, reason] of MUTASYONLAR) {
   }
   const ok = result.status !== 0 && reason.test(result.out);
   if (ok) caught += 1;
-  console.log(`${ok ? "ok" : "not ok"} ${no} - ${name}: çıkış ${result.status}, ${result.pass} geçti / ${result.fail} kaldı${ok ? "" : ` — beklenen neden görülmedi (${reason})`}`);
+  // Ç7a tur 2: kırmızının NEDENİ çıktıda (ders 38) — eşleşen ilk satır yazılır.
+  const why = ok ? (result.out.split("\n").find(line => reason.test(line)) || "").trim().slice(0, 240) : "";
+  console.log(`${ok ? "ok" : "not ok"} ${no} - ${name}: çıkış ${result.status}, ${result.pass} geçti / ${result.fail} kaldı${ok ? ` — neden: ${why}` : ` — beklenen neden görülmedi (${reason})`}`);
   if (!ok) console.log(result.out.split("\n").filter(line => /not ok|error:|Error|beklenen/.test(line)).slice(0, 12).join("\n"));
 }
 console.log(`\n# tests ${tried}\n# pass ${caught}\n# fail ${tried - caught}`);
