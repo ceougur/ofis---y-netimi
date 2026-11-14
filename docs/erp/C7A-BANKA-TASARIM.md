@@ -284,3 +284,55 @@ Yevmiye Defteri, Hesap Planı Mizanı, Alt Hesap Mizanı, Defter Mutabakatı, Mu
 groups({ ids, events }) ile), dondurma / ruleDiff / Kural Farkı Düzeltme Fişi, Açılış Eşleştirme (519 dökümü), Banka Genel Bakış / Hesaplar / ANLIK DURUM / Nakit Akış / Birleşik Rapor
 (kova), Hesabı Atanmamış Eski Hareketler (liste + havuz), Kurulum Sihirbazı ön izlemesi, mobil özet (kova summary() üzerinden), yedek / geri yükleme (veri değişmez; türetme). Banka /
 POS raporları, Banka Masraf Raporu, Kasa penceresi: DEĞİŞMEZ.
+
+## 14. Tur 2b (14.11.2026; taban `c7a3-taban` 5ba59cbc; görev metni `docs/devir/2.5.0-DEVAM/c7a2-istem.txt` + `c7a3-ek.txt`) — KODDAN ÖNCE yazıldı
+
+Kararlar (AYNEN iş listesi D / C): S177 = A (sonradan değişen oran / vergi kipi ya da valörde farklı gelen net: fark değişikliğin / valörün gününde), S178 = A (KG-6 yalnız BSMV /
+vergisiz kipte; KDV kipi bugünkü gibi), S182 = C, S183 = A, S184 = A (K-14 / K-15 kodu DEĞİŞMEZ), BAŞ MİMAR KARARI 14.11 10:17 (2): açılışta sayılmış hesapsız satırlar Hesabı
+Atanmamış LİSTESİNDE ve banka raporlarının satırlarında 'Açılışta Sayıldı' işaretiyle KALIR, özet / TOPLAM satırları bu satırları DÜŞER (toplam = kova). Sıra: KG-6 → kart formundaki
+alan adı → liste / rapor işareti → kılavuz + PDF.
+
+### 14.1 KG-6 — bugünkü madde ↔ kitabın maddesi (örnek: Ziraat POS BSMV Dahil, Tek Çekim %2,5, valör 2 iş günü; 08.10 satış 10.000)
+- Bugün: 08.10 B 108.01 10.000 / A 120 10.000 (T-03). 12.10 gün fişi (saklı satırlar): B 102.01 9.750 · B 653 250 / A 108.01 10.000. 08.10–11.10 arası 108.01 = 10.000 (brüt).
+- Kitap (KG-6 = A, kullanıcı 05.11 (5); D-01 "komisyon tarihi ve hesabı KG-6"): 08.10 B 108.01 10.000 / A 120; 08.10 B 653 250 / A 108.01 250 (satış günü); 12.10 B 102.01 9.750 /
+  A 108.01 9.750 (valörde net). 08.10–11.10 arası 108.01 = 9.750 (bankaya geçmemiş NET alacak).
+- Taksitli (12.10 satış 12.000, 3 taksit %3,5 = 420; kalemler 140 × 3): 12.10 B 653 420 / A 108.01 420 (BÜTÜN taksitler); her valörde B 102.01 3.860 / A 108.01 3.860.
+- İade (D-04, KG-20 A): İade Edilmez → kesinti iadesi 0, iade günü madde yok; Oransal / Tam → iade günü B 108.01 / A 653 (iade edilen kesinti); iade kaleminin gün fişi 108'i net.
+- KDV kipi (S178 = A): bugünkü gibi — gün fişinde B 320.sağlayıcı / A 108 (valör günü); satış günü maddesi YOK.
+
+### 14.2 Türetme (tek kaynak `server/lib/bank/pos-commission.mjs`)
+KÜME: POS kalemi (pos_items rol sale / refund, durum pending / settled) ∧ kaydı (pos_sales) void ya da repair DEĞİL ∧ kaydın vergi türü KDV değil. Kalemin kesintisi
+σ = (komisyon + (vergi hariç kipte vergi) + sabit ücret kalemi) × (iade kaleminde −1) — gün fişinin dayTotals'ı ile AYNI formül (pos-math deductionOf + fee_minor).
+- Satış (iade) günü maddesi `pos-commission:<kayıt>` (yevmiye sınıfı 38: para / cari satırlarından sonra, Banka Fişi'nden önce): kaydın tarihinde B komisyon hesabı Σσ / A 108.POS Σσ
+  (Σσ < 0 → ters yön). Komisyon hesabı kalem kalem: bankaya geçmiş kalemde gün fişinin saklı gider satırının hesabı (yoksa güncel ayar), bekleyen kalemde Banka Ayarları'ndaki
+  güncel hesap (gl.commission, varsayılan 653).
+- Etkin gün fişi (pos_settlement): S = o fişe bağlı küme kalemlerinin Σσ'sı; madde türetmede 108 satırı (saklı, alacak yönlü işaretli v) → v − S, gider satırı (saklı, borç yönlü
+  işaretli x) → x − S (satır yoksa güncel hesapla açılır, sıfırsa yazılmaz); 102 satırı DEĞİŞMEZ. Kalan gider = Komisyon Farkı (Ekstre ile / Elle Onay; S177 = A valörün gününde)
+  + onarım bekleyen (repair) kayıtların kesintisi. Ters kaydedilmiş gün fişinin kalemi yoktur (kalemler bekleyene döner) → asıl ve ters kayıt saklı satırlarla birbirini götürür.
+- Defter beklenenleri (money-lines groups — Defter Mutabakatı, Mutabakat Testi, kapı): POS'un (yol card, ref = POS) beklenenine −Σσ(kapsamdaki kayıtlar) + Σσ(kapsamdaki gün fişleri).
+  Süzgeçsizde = −Σσ(bekleyen); süzgeçli kapıda kayıt kapsamı "kaydın işlem başlığı olaylarda", gün fişi kapsamı "gün fişi olaylarda" — rows() ile AYNI süzgeç (iki taraf aynı SQL'den).
+- Alt Hesap Mizanı (tüm zamanlar ve dönem): 108.POS'un devir / borç / alacak'ı aynı maddelerle (satış günü maddesinin alacağı, gün fişi satırının v → v − S değişimi yönüyle).
+- POS raporları, Banka Masraf Raporu, POS Bekleyen, Hesap Detayı (POS), Nakit Akış: saklı satırlardan / kalemlerden okur → DEĞİŞMEZ.
+
+### 14.3 Okuyucular (ders 10)
+Yevmiye, Hesap Planı Mizanı, Alt Hesap Mizanı (108.POS), Defter Mutabakatı ve Mutabakat Testi (108, bank:sub:108.POS), kapı (tam ve süzgeçli), dondurma / ruleDiff / Kural Farkı
+Düzeltme Fişi (653 sonuç hesabı; 108 alt defter hesabı → farkı sıfır olmayan madde fişin dışında, "Kilidi Aç → Yeniden Kilitle"), Gelir Tablosu / Bilanço (Ç6; 653 dönemselliği),
+muhasebe kâhini sürücüsü, rastgele sıra motoru (test/mutabakat; 108 modeli bekleyen net), defter kaynak taraması (kilit izi / istisna). 2.4.9 kopyası (ledger-rule-249) kendi satır
+okuyucusuyla → ETKİLENMEZ.
+
+### 14.4 Nasıl bozulur? (testler buradan)
+Sıra (satış → valör / iade → valör / iki satış aynı gün fişinde); valör günü değişir (Şimdi Aktar — erken aktarım); POS ayarı sonradan değişir (oran / vergi kipi: kayıtta saklı; yalnız
+düzeltme void + yeni kayıt); komisyon hesabı ayarı değişir (bekleyen kalemin hesabı değişir — BİLİNEN SINIR adayı; bankaya geçmiş kalem gün fişinin hesabında kalır); Elle Onay /
+Ekstre ile farklı net (Komisyon Farkı valör gününde); iade (İade Edilmez / Oransal / Tam; bekleyen kaleme düşen / iade valörüne kalan); İptal İadesi; kayıt silinir (void) / Silinenler'den
+döner; ters kayıt (yeniden planlama); taksitli satış; sabit ücret; KDV kipi (değişmez); onarım bekleyen kayıt; iki POS / iki hesap; iki şirket; eski sürüm (v2.4.9) kilitli verisi
+(çekim kilitli / valör açık; ikisi kilitli; ikisi açık; iade; Şimdi Aktar); yıl dönümü (satış Aralık, valör Ocak); yarıda kesilme (türetme saf; yazım yok).
+Karşı mutantlar: komisyonu valör gününe geri al; komisyon hesabını değiştir; KDV kipini de satış gününe al; taksitli satışta yalnız ilk kalemin kesintisi; gün fişinin 108'ini netleme;
+beklenende bekleyeni düşmeme; repair / void kaydı kümeye al; iade kaleminin işaretini çevir.
+
+### 14.5 Kart formundaki alan adı (iş 4) ve kılavuz (iş 5)
+- Faiz formunda kart seçiliyken hesap kutusunun adı "Banka Hesabı" yerine "Kredi Kartı" (yazım düzeni; formun öbür kipleri aynen).
+- Kılavuz: "Kart faizi nasıl girilir" + "Hesabı Atanmamış listesinde 'Açılışta Sayıldı'" kısa nasıl yapılır; PDF aynı turda (ders 42). Defter maddesi anlatımı kılavuza girmez.
+
+### 14.6 Liste / rapor işareti (BAŞ MİMAR KARARI 14.11 10:17 (2))
+Ayrım TEK kaynaktan (opening-cover isCovered — defterin kullandığı koşul): Hesabı Atanmamış listesinin satırına `counted` + görünür "Açılışta Sayıldı"; listenin toplamı = kova (zaten
+unassignedTotals). Banka raporlarında (Hesabı Atanmamış seçimi) satırlar kalır, işaret sütunu / etiketiyle; dönem başı / sonu, giriş / çıkış toplamları ve özet bu satırları düşer.
