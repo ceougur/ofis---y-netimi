@@ -1,0 +1,8 @@
+d44-c5-s155-s158.json: 2 elle beklenti değişti
+    değer                  adim:x9t:durum: "ret" → "ok"
+    değer                  k1:cari:X9:bakiye: 100000 → 70000
+yeni elle senaryo: d47-c5-s168-s181-bagli-tahsilat.json
+# tests 100
+# pass 100
+# fail 0
+100/100 denetim geçti

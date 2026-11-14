@@ -1572,6 +1572,12 @@ KULLANICIYA SORULMALI (S54–S57 eki; SORU DÜZENİ 06.11 09:01):
   durumu SUS beklentisinden `susmalar` beklentisine çevrildi, yukarıda). Eski senaryolardan s12, s27 (A1) ve s74 (A6) elle değerleri MODEL DEĞİŞTİKTEN SONRA, ilk koşunun kırmızısı üzerine yeniden ELLE
   hesaplandı (karar gereği değişen alanlar; hesap senaryo yorumlarında).
 
+- Kanıt (`docs/kanit/2026-11-14/kahinmuh12-*`; ölçülen commit eab3aedc, kirli 0; koşu betiği `kahinmuh12-arac/kos.sh`, çıktılar `kahinmuh12-kos-utc.txt` / `-ist.txt`): `kahinmuh12-muh-test-utc / -ist`
+  (198/198 iki saat diliminde), `kahinmuh12-muh-mutasyon-*` (293/293 öldü; `flock -s` ölçüm kilidi), `kahinmuh12-muh-eski-kirmizi-*` (eski kâhin + yeni dosyalar: 198'den 14 kırmızı — yukarıdaki 13'e ek olarak
+  model commit'inde güncellenen s12 ve s27 (108.90), `Dosyalar` dahil; s74'ün yeni hâli (PB2 10000 — fazla yok) eski kâhinde de yeşil; s111 yeşil), `kahinmuh12-muh-g3-*` (60.948/60.948, BEKLENMEYEN 0;
+  döküm `kahinmuh12-muh-g3-dokum-*.json` — iki saat diliminde bayt bayt aynı), `kahinmuh12-muh-yeni-mutantlar-*` (22 yeni / taşınan mutantın öldürenleri; kanıt aracı özet satırı tanımadı — "BELİRSİZ"
+  yazar, ham çıktıda 22 ÖLDÜ). UTC ve Europe/Istanbul özet satırları aynı.
+
 ### Yeni senaryolar, testler ve mutasyonlar
 - Elle senaryolar (4, toplam 114): s110 (S179: iki banka hesabı, hesapsız havale en geç açılıştan önce → 519; kart açılışı yokken eski kart hareketi 309, kart sonradan açılınca 519 — S183 açık dönem),
   s111 (S174: fiş 06.10.2026, kilit 31.12.2026 → ikinci düzeltme KURAL_FARKI_YOK, 2027 mizanında 602.90 / 671 hareketi yok; S180: fişin 15.01.2027 tersi → yine KURAL_FARKI_YOK, ters kayıt 2027'de), s112 (S181:

@@ -1,0 +1,2178 @@
+[
+ {
+  "dosya": "senaryo",
+  "senaryo": "s110-s179-hesapsiz-sinir-en-gec-acilis",
+  "sinif": "YENI",
+  "anahtar": "(yeni dosya)"
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s111-s174-s180-kural-farki-kendi-yilinda",
+  "sinif": "YENI",
+  "anahtar": "(yeni dosya)"
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s112-s181-bagli-tahsilat-120-siniri",
+  "sinif": "YENI",
+  "anahtar": "(yeni dosya)"
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s113-s87-r8-geri-alma",
+  "sinif": "YENI",
+  "anahtar": "(yeni dosya)"
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s12-banka-islemleri",
+  "sinif": "A1",
+  "anahtar": "aciklama",
+  "eski": "Transfer + ücret/BSMV, valörlü transfer 108.90, masraf, faizler, diğer gelir/gider.",
+  "yeni": "Transfer + ücret/BSMV, valörlü transfer işlem gününde doğrudan alıcıya (S175 = C; 108.90 yok), masraf, faizler, diğer gelir/gider."
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s12-banka-islemleri",
+  "sinif": "A1",
+  "anahtar": "elle/A/bil/detay/I.A/102.B2",
+  "eski": 278500,
+  "yeni": 328500
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s12-banka-islemleri",
+  "sinif": "A1",
+  "anahtar": "elle/A/bil/detay/I.A/108.90",
+  "eski": 50000,
+  "yeni": 0
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s27-devir-yoldaki-supheli-evrak-taksit",
+  "sinif": "A1",
+  "anahtar": "elle/A/devir/arsiv_kapanis/102.B2",
+  "eski": "∅",
+  "yeni": 100000
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s27-devir-yoldaki-supheli-evrak-taksit",
+  "sinif": "A1",
+  "anahtar": "elle/A/devir/arsiv_kapanis/108.90",
+  "eski": 100000,
+  "yeni": 0
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s27-devir-yoldaki-supheli-evrak-taksit",
+  "sinif": "A1",
+  "anahtar": "elle/A/devir/yeni_acilis/102.B2",
+  "eski": "∅",
+  "yeni": 100000
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s27-devir-yoldaki-supheli-evrak-taksit",
+  "sinif": "A1",
+  "anahtar": "elle/A/devir/yeni_acilis/108.90",
+  "eski": 100000,
+  "yeni": 0
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "aciklama",
+  "eski": "S25 (a) kısmen şüpheliye aktarılmış faturaya küçük / ortanca / tam toplam çek: önce şüpheli kısım (128), kalan 120; (b) çekin faturanın açık kısmını aşan fazlası carinin bağsız alacağı (avans, 120): başka açık faturaya ya da avansa; sınır fazlaya uygulanmaz.",
+  "yeni": "S25 (a) kısmen şüpheliye aktarılmış faturaya küçük / ortanca / tam toplam çek: önce şüpheli kısım (128), kalan 120; (b) çekin faturanın açık kısmını aşan fazlası carinin bağsız alacağı (120): başka açık faturaya (bakım 12: S181 = B — fazla sınıra girer; açık borcu olmayan caride avans alanı SUS)."
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "elle/A/ak3",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "elle/A/ak3/0/k",
+  "eski": "tahsilat:PB2",
+  "yeni": "∅"
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "elle/A/ak3/0/kalan",
+  "eski": -3000,
+  "yeni": "∅"
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "elle/A/ak3/0/tarih",
+  "eski": "2026-05-20",
+  "yeni": "∅"
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "elle/A/ak3/0/tur",
+  "eski": "tahsilat",
+  "yeni": "∅"
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "elle/A/ak3/0/vade",
+  "eski": "2026-05-20",
+  "yeni": "∅"
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "elle/A/bil/aktif/I.A",
+  "eski": 34000,
+  "yeni": 31000
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "elle/A/bil/pasif/III.D",
+  "eski": 3000,
+  "yeni": 0
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "elle/A/mz/satirlar/101.01/bakiye",
+  "eski": 34000,
+  "yeni": 31000
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "elle/A/mz/satirlar/120|C3/bakiye",
+  "eski": -3000,
+  "yeni": 0
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "elle/A/yevPB2/0/satirlar/0/b",
+  "eski": 13000,
+  "yeni": 10000
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "elle/A/yevPB2/0/satirlar/2/a",
+  "eski": 3000,
+  "yeni": "∅"
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "elle/A/yevPB2/0/satirlar/2/c",
+  "eski": "C3",
+  "yeni": "∅"
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "elle/A/yevPB2/0/satirlar/2/h",
+  "eski": "120",
+  "yeni": "∅"
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "olaylar/15/tutar",
+  "eski": 13000,
+  "yeni": 10000
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-1",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/arsiv:0/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-1",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-1",
+  "sinif": "A1",
+  "anahtar": "dallar/A/raporlar/mz_arsiv/ana/108/alacak",
+  "eski": 4672011,
+  "yeni": 4017911
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-1",
+  "sinif": "A1",
+  "anahtar": "dallar/A/raporlar/mz_arsiv/ana/108/borc",
+  "eski": 4672011,
+  "yeni": 4017911
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-1",
+  "sinif": "A1",
+  "anahtar": "dallar/A/raporlar/mz_arsiv/satirlar/108.90/alacak",
+  "eski": 654100,
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-1",
+  "sinif": "A1",
+  "anahtar": "dallar/A/raporlar/mz_arsiv/satirlar/108.90/bakiye",
+  "eski": 0,
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-1",
+  "sinif": "A1",
+  "anahtar": "dallar/A/raporlar/mz_arsiv/satirlar/108.90/borc",
+  "eski": 654100,
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-1",
+  "sinif": "A1",
+  "anahtar": "dallar/A/raporlar/mz_arsiv/satirlar/108.90/devir",
+  "eski": 0,
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-1",
+  "sinif": "A1",
+  "anahtar": "dallar/A/raporlar/mz_arsiv/toplam/alacak",
+  "eski": 213621015,
+  "yeni": 212966915
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-1",
+  "sinif": "A1",
+  "anahtar": "dallar/A/raporlar/mz_arsiv/toplam/borc",
+  "eski": 213621015,
+  "yeni": 212966915
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-1",
+  "sinif": "A6-S168",
+  "anahtar": "dallar/A/susmalar/0/cari",
+  "eski": "∅",
+  "yeni": "C4"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-1",
+  "sinif": "A6-S168",
+  "anahtar": "dallar/A/susmalar/0/dosya",
+  "eski": "∅",
+  "yeni": "arsiv-2026"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-1",
+  "sinif": "A6-S168",
+  "anahtar": "dallar/A/susmalar/0/kaynak",
+  "eski": "∅",
+  "yeni": "P308"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-1",
+  "sinif": "A6-S168",
+  "anahtar": "dallar/A/susmalar/0/kural",
+  "eski": "∅",
+  "yeni": "S168"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-1",
+  "sinif": "A6-S168",
+  "anahtar": "dallar/A/susmalar/0/pay_m13",
+  "eski": "∅",
+  "yeni": 0
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-1",
+  "sinif": "A6-S168",
+  "anahtar": "dallar/A/susmalar/0/pay_tek_kuyruk",
+  "eski": "∅",
+  "yeni": 472560
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-1",
+  "sinif": "A6-S168",
+  "anahtar": "dallar/A/susmalar/0/tarih",
+  "eski": "∅",
+  "yeni": "2026-07-24"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-1",
+  "sinif": "A6-S168",
+  "anahtar": "dallar/A/susmalar/1/cari",
+  "eski": "∅",
+  "yeni": "C4"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-1",
+  "sinif": "A6-S168",
+  "anahtar": "dallar/A/susmalar/1/dosya",
+  "eski": "∅",
+  "yeni": "arsiv-2026"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-1",
+  "sinif": "A6-S168",
+  "anahtar": "dallar/A/susmalar/1/kaynak",
+  "eski": "∅",
+  "yeni": "P386"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-1",
+  "sinif": "A6-S168",
+  "anahtar": "dallar/A/susmalar/1/kural",
+  "eski": "∅",
+  "yeni": "S168"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-1",
+  "sinif": "A6-S168",
+  "anahtar": "dallar/A/susmalar/1/pay_m13",
+  "eski": "∅",
+  "yeni": 0
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-1",
+  "sinif": "A6-S168",
+  "anahtar": "dallar/A/susmalar/1/pay_tek_kuyruk",
+  "eski": "∅",
+  "yeni": 101880
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-1",
+  "sinif": "A6-S168",
+  "anahtar": "dallar/A/susmalar/1/tarih",
+  "eski": "∅",
+  "yeni": "2026-09-22"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-2",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/arsiv:0/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-2",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-2",
+  "sinif": "A1",
+  "anahtar": "dallar/A/raporlar/mz_arsiv/ana/108/alacak",
+  "eski": 2154835,
+  "yeni": 2143435
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-2",
+  "sinif": "A1",
+  "anahtar": "dallar/A/raporlar/mz_arsiv/ana/108/borc",
+  "eski": 2154835,
+  "yeni": 2143435
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-2",
+  "sinif": "A1",
+  "anahtar": "dallar/A/raporlar/mz_arsiv/satirlar/108.90/alacak",
+  "eski": 11400,
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-2",
+  "sinif": "A1",
+  "anahtar": "dallar/A/raporlar/mz_arsiv/satirlar/108.90/bakiye",
+  "eski": 0,
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-2",
+  "sinif": "A1",
+  "anahtar": "dallar/A/raporlar/mz_arsiv/satirlar/108.90/borc",
+  "eski": 11400,
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-2",
+  "sinif": "A1",
+  "anahtar": "dallar/A/raporlar/mz_arsiv/satirlar/108.90/devir",
+  "eski": 0,
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-2",
+  "sinif": "A1",
+  "anahtar": "dallar/A/raporlar/mz_arsiv/toplam/alacak",
+  "eski": 175674210,
+  "yeni": 175662810
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-2",
+  "sinif": "A1",
+  "anahtar": "dallar/A/raporlar/mz_arsiv/toplam/borc",
+  "eski": 175674210,
+  "yeni": 175662810
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-2",
+  "sinif": "A6-S168",
+  "anahtar": "dallar/A/susmalar/0/cari",
+  "eski": "∅",
+  "yeni": "C3"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-2",
+  "sinif": "A6-S168",
+  "anahtar": "dallar/A/susmalar/0/dosya",
+  "eski": "∅",
+  "yeni": "arsiv-2026"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-2",
+  "sinif": "A6-S168",
+  "anahtar": "dallar/A/susmalar/0/kaynak",
+  "eski": "∅",
+  "yeni": "P253"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-2",
+  "sinif": "A6-S168",
+  "anahtar": "dallar/A/susmalar/0/kural",
+  "eski": "∅",
+  "yeni": "S168"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-2",
+  "sinif": "A6-S168",
+  "anahtar": "dallar/A/susmalar/0/pay_m13",
+  "eski": "∅",
+  "yeni": 0
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-2",
+  "sinif": "A6-S168",
+  "anahtar": "dallar/A/susmalar/0/pay_tek_kuyruk",
+  "eski": "∅",
+  "yeni": 291960
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-2",
+  "sinif": "A6-S168",
+  "anahtar": "dallar/A/susmalar/0/tarih",
+  "eski": "∅",
+  "yeni": "2026-08-07"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-3",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/arsiv:0/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-3",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-3",
+  "sinif": "A1",
+  "anahtar": "dallar/A/raporlar/mz_yeni/ana/108/alacak",
+  "eski": 263860,
+  "yeni": 203060
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-3",
+  "sinif": "A1",
+  "anahtar": "dallar/A/raporlar/mz_yeni/ana/108/borc",
+  "eski": 263860,
+  "yeni": 203060
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-3",
+  "sinif": "A1",
+  "anahtar": "dallar/A/raporlar/mz_yeni/satirlar/108.90/alacak",
+  "eski": 60800,
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-3",
+  "sinif": "A1",
+  "anahtar": "dallar/A/raporlar/mz_yeni/satirlar/108.90/bakiye",
+  "eski": 0,
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-3",
+  "sinif": "A1",
+  "anahtar": "dallar/A/raporlar/mz_yeni/satirlar/108.90/borc",
+  "eski": 60800,
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-3",
+  "sinif": "A1",
+  "anahtar": "dallar/A/raporlar/mz_yeni/satirlar/108.90/devir",
+  "eski": 0,
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-3",
+  "sinif": "A1",
+  "anahtar": "dallar/A/raporlar/mz_yeni/toplam/alacak",
+  "eski": 78822469,
+  "yeni": 78761669
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "rastgele-3",
+  "sinif": "A1",
+  "anahtar": "dallar/A/raporlar/mz_yeni/toplam/borc",
+  "eski": 78822469,
+  "yeni": 78761669
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s01-satis-tahsilat-nakit",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s02-ihracat-tevkifat",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s03-alis-stok-tevkifat-havale",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s04-gider-yansitma-stopaj-devir",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/arsiv:0/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s04-gider-yansitma-stopaj-devir",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s05-iadeler",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s06-esmm-gelen-smm",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s07-duzenle-iptal-sil-kilit",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s08-pos-kg6",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s08-pos-kg6",
+  "sinif": "A5",
+  "anahtar": "dallar/KG6=B/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s09-cek-senet-alinan",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s10-cek-senet-verilen",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s100-s68-bagsiz-odeme-vade-sirasi",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s101-s72-soz-gunu",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s102-s73-soz-butun-borc",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s103-s79-olagan-bag-cari",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s104-s80-formdaki-pesin-cari",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s105-s81-olagan-normal-cari-siniri",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s106-s83-alis-formundaki-pesin-odeme-cari",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s107-s84-formdaki-pesin-bagi",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s108-s85-normal-cari-tutar-tarih",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s109-s85-geri-yuklenmis-cari-tutar",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s11-kasa-carisiz-kg3",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s11-kasa-carisiz-kg3",
+  "sinif": "A5",
+  "anahtar": "dallar/KG3=B/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s11-kasa-carisiz-kg3",
+  "sinif": "A5",
+  "anahtar": "dallar/KG3=KITAP/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s110-s179-hesapsiz-sinir-en-gec-acilis",
+  "sinif": "YENI",
+  "anahtar": "(yeni dosya)"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s111-s174-s180-kural-farki-kendi-yilinda",
+  "sinif": "YENI",
+  "anahtar": "(yeni dosya)"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s112-s181-bagli-tahsilat-120-siniri",
+  "sinif": "YENI",
+  "anahtar": "(yeni dosya)"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s113-s87-r8-geri-alma",
+  "sinif": "YENI",
+  "anahtar": "(yeni dosya)"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s12-banka-islemleri",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s12-banka-islemleri",
+  "sinif": "A1",
+  "anahtar": "dallar/A/raporlar/bil/detay/I.A/102.B2",
+  "eski": 278500,
+  "yeni": 328500
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s12-banka-islemleri",
+  "sinif": "A1",
+  "anahtar": "dallar/A/raporlar/bil/detay/I.A/108.90",
+  "eski": 50000,
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s13-kart-kredi-ters-bakiye",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s14-kdv-mahsup-360",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s15-supheli-alacak",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s16-stok-modulu-kg2-kg11",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s16-stok-modulu-kg2-kg11",
+  "sinif": "A5",
+  "anahtar": "dallar/KG11=B/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s16-stok-modulu-kg2-kg11",
+  "sinif": "A5",
+  "anahtar": "dallar/KG2=B/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s17-cari-duzeltme-kg16",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s17-cari-duzeltme-kg16",
+  "sinif": "A5",
+  "anahtar": "dallar/KG16=B/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s18-acilislar-eslestirme",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s19-taksit-kg5",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s19-taksit-kg5",
+  "sinif": "A5",
+  "anahtar": "dallar/KG5=B/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s20-ters-bakiye-avans-ayni-ad",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s21-devir-ayni-adli-iki-cari",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/arsiv:0/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s21-devir-ayni-adli-iki-cari",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s22-devir-temel",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/arsiv:0/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s22-devir-temel",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s23-devir-pos-valor-kg6",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/arsiv:0/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s23-devir-pos-valor-kg6",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s23-devir-pos-valor-kg6",
+  "sinif": "A5",
+  "anahtar": "dallar/KG6=B/degismezler/arsiv:0/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s23-devir-pos-valor-kg6",
+  "sinif": "A5",
+  "anahtar": "dallar/KG6=B/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s24-devir-eksi-stok-kg9",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/arsiv:0/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s24-devir-eksi-stok-kg9",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s24-devir-eksi-stok-kg9",
+  "sinif": "A5",
+  "anahtar": "dallar/KG9=B/degismezler/arsiv:0/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s24-devir-eksi-stok-kg9",
+  "sinif": "A5",
+  "anahtar": "dallar/KG9=B/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s25-devir-onceki-yil-kg12",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/arsiv:0/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s25-devir-onceki-yil-kg12",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s25-devir-onceki-yil-kg12",
+  "sinif": "A5",
+  "anahtar": "dallar/KG12=B/degismezler/arsiv:0/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s25-devir-onceki-yil-kg12",
+  "sinif": "A5",
+  "anahtar": "dallar/KG12=B/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s26a-devir-borc-ve-alacaklari-aktar",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/arsiv:0/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s26a-devir-borc-ve-alacaklari-aktar",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s26b-devir-sadece-bakiyeyi-aktar",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/arsiv:0/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s26b-devir-sadece-bakiyeyi-aktar",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s27-devir-yoldaki-supheli-evrak-taksit",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/arsiv:0/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s27-devir-yoldaki-supheli-evrak-taksit",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s27-devir-yoldaki-supheli-evrak-taksit",
+  "sinif": "A1",
+  "anahtar": "dallar/A/raporlar/devir/arsiv_kapanis/102.B2",
+  "eski": "∅",
+  "yeni": 100000
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s27-devir-yoldaki-supheli-evrak-taksit",
+  "sinif": "A1",
+  "anahtar": "dallar/A/raporlar/devir/arsiv_kapanis/108.90",
+  "eski": 100000,
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s27-devir-yoldaki-supheli-evrak-taksit",
+  "sinif": "A1",
+  "anahtar": "dallar/A/raporlar/devir/yeni_acilis/102.B2",
+  "eski": "∅",
+  "yeni": 100000
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s27-devir-yoldaki-supheli-evrak-taksit",
+  "sinif": "A1",
+  "anahtar": "dallar/A/raporlar/devir/yeni_acilis/108.90",
+  "eski": 100000,
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s28-devri-yenile-kg7",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/arsiv:0/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s28-devri-yenile-kg7",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s29-devri-geri-al",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s30-kilit-kural-farki-kg15",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s30-kilit-kural-farki-kg15",
+  "sinif": "A5",
+  "anahtar": "dallar/KG15=B/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s31-eslestirme-sonra-devir",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/arsiv:0/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s31-eslestirme-sonra-devir",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s32-yil-donumu-29-subat",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/arsiv:0/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s32-yil-donumu-29-subat",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s33-gecikmis-b1",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s33-gecikmis-b1",
+  "sinif": "A5",
+  "anahtar": "dallar/B1=B/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s34-ocakta-aralik-iadesi",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/arsiv:0/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s34-ocakta-aralik-iadesi",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s35-banka-ters-kayit",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s36-yuvarlama-kg2-ic-yuzde",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s36-yuvarlama-kg2-ic-yuzde",
+  "sinif": "A5",
+  "anahtar": "dallar/KG2=B/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s37-kart-borcuna-aktar",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s38-cari-tur-degistir",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s39-mahsup-acik-kalem",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/arsiv:0/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s39-mahsup-acik-kalem",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s40-s1-vadesiz-gecikmis",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s41-s2-vade-sirasi",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s42-s3-supheli-hatirlatma",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s43-s4-mahsuptan-sonra-ters",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s44-s5-iptalde-avans",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s45-m2-devirde-gecikmis-ayni",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/arsiv:0/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s45-m2-devirde-gecikmis-ayni",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s46-m3-m12-tek-net-satir-ekstre",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/arsiv:0/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s46-m3-m12-tek-net-satir-ekstre",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s47-m4-onceki-yil-kilitli",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/arsiv:0/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s47-m4-onceki-yil-kilitli",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s48-m5-eksi-stok-devri",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/arsiv:0/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s48-m5-eksi-stok-devri",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s49-m7-kural-farki-671-681",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s50-m13-supheli-devir",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/arsiv:0/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s50-m13-supheli-devir",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s51-m1e-mevcut-borc-karti",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s52-k3-supheli-caride-alacak-satirlari",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s53-kasa-acilis-duzelt-fatura-sil-geri-yukle",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s54-r1-ayni-gun-borc-once",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s55-r2-bag-kendi-tarihinde",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s56-r3-kilitli-bag",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/arsiv:0/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s56-r3-kilitli-bag",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s57-r4-kart-kucultme",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s58-r9-kartli-fatura-sil-iptal",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s59-r5-ayni-kisi-alis-satis",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s60-r6-kart-kapat-borcta-kalir",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s61-r20-karsiliksiz-fatura-vadesi",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s62-r16-127-ters-bakiye",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s63-s11-kilitli-karsiliksiz",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/arsiv:0/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s63-s11-kilitli-karsiliksiz",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s64-s12-kasa-acilistan-once",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s65-m1f-vade-gunu",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s66-s18-avans-evrak-karsiliksiz",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/arsiv:0/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s66-s18-avans-evrak-karsiliksiz",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s67-s19-kilit-ilerletme",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s68-s14-supheli-caride-bagli-cek",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s68-s14-supheli-caride-bagli-cek",
+  "sinif": "A6-S168",
+  "anahtar": "dallar/A/susmalar/0/cari",
+  "eski": "∅",
+  "yeni": "C2"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s68-s14-supheli-caride-bagli-cek",
+  "sinif": "A6-S168",
+  "anahtar": "dallar/A/susmalar/0/dosya",
+  "eski": "∅",
+  "yeni": "canli"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s68-s14-supheli-caride-bagli-cek",
+  "sinif": "A6-S168",
+  "anahtar": "dallar/A/susmalar/0/kaynak",
+  "eski": "∅",
+  "yeni": "P4"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s68-s14-supheli-caride-bagli-cek",
+  "sinif": "A6-S168",
+  "anahtar": "dallar/A/susmalar/0/kural",
+  "eski": "∅",
+  "yeni": "S168"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s68-s14-supheli-caride-bagli-cek",
+  "sinif": "A6-S168",
+  "anahtar": "dallar/A/susmalar/0/pay_m13",
+  "eski": "∅",
+  "yeni": 0
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s68-s14-supheli-caride-bagli-cek",
+  "sinif": "A6-S168",
+  "anahtar": "dallar/A/susmalar/0/pay_tek_kuyruk",
+  "eski": "∅",
+  "yeni": 2000
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s68-s14-supheli-caride-bagli-cek",
+  "sinif": "A6-S168",
+  "anahtar": "dallar/A/susmalar/0/tarih",
+  "eski": "∅",
+  "yeni": "2026-04-20"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s69-s15-kartli-fatura-iptal",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s70-s20-silinenlerden-geri-yukle-kasa",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s71-s20-yedekten-eski-veri-kasa",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s72-s21-pos-valor-resmi-tatil",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/arsiv:0/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s72-s21-pos-valor-resmi-tatil",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s73-s24-devir-k-kilidi",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/arsiv:0/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s73-s24-devir-k-kilidi",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "dallar/A/raporlar/ak3",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "dallar/A/raporlar/ak3/0/k",
+  "eski": "tahsilat:PB2",
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "dallar/A/raporlar/ak3/0/kalan",
+  "eski": -3000,
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "dallar/A/raporlar/ak3/0/tarih",
+  "eski": "2026-05-20",
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "dallar/A/raporlar/ak3/0/tur",
+  "eski": "tahsilat",
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "dallar/A/raporlar/ak3/0/vade",
+  "eski": "2026-05-20",
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "dallar/A/raporlar/bil/aktif/I.A",
+  "eski": 34000,
+  "yeni": 31000
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "dallar/A/raporlar/bil/aktif_toplam",
+  "eski": 56000,
+  "yeni": 53000
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "dallar/A/raporlar/bil/detay/I.A/101.01",
+  "eski": 34000,
+  "yeni": 31000
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "dallar/A/raporlar/bil/detay/III.D/120|C3",
+  "eski": 3000,
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "dallar/A/raporlar/bil/pasif/III.D",
+  "eski": 3000,
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "dallar/A/raporlar/bil/pasif_toplam",
+  "eski": 56000,
+  "yeni": 53000
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "dallar/A/raporlar/mz/ana/101/bakiye",
+  "eski": 34000,
+  "yeni": 31000
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "dallar/A/raporlar/mz/ana/101/borc",
+  "eski": 34000,
+  "yeni": 31000
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "dallar/A/raporlar/mz/ana/120/alacak",
+  "eski": 44000,
+  "yeni": 41000
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "dallar/A/raporlar/mz/ana/120/bakiye",
+  "eski": 9000,
+  "yeni": 12000
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "dallar/A/raporlar/mz/satirlar/101.01/bakiye",
+  "eski": 34000,
+  "yeni": 31000
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "dallar/A/raporlar/mz/satirlar/101.01/borc",
+  "eski": 34000,
+  "yeni": 31000
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "dallar/A/raporlar/mz/satirlar/120|C3/alacak",
+  "eski": 17000,
+  "yeni": 14000
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "dallar/A/raporlar/mz/satirlar/120|C3/bakiye",
+  "eski": -3000,
+  "yeni": 0
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "dallar/A/raporlar/mz/toplam/alacak",
+  "eski": 132000,
+  "yeni": 129000
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "dallar/A/raporlar/mz/toplam/borc",
+  "eski": 132000,
+  "yeni": 129000
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "dallar/A/raporlar/yevPB2/0/satirlar/0/b",
+  "eski": 13000,
+  "yeni": 10000
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "dallar/A/raporlar/yevPB2/0/satirlar/2/a",
+  "eski": 3000,
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "dallar/A/raporlar/yevPB2/0/satirlar/2/c",
+  "eski": "C3",
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "dallar/A/raporlar/yevPB2/0/satirlar/2/e/k",
+  "eski": "tahsilat:PB2",
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "dallar/A/raporlar/yevPB2/0/satirlar/2/e/link",
+  "eski": "fatura:F31",
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "dallar/A/raporlar/yevPB2/0/satirlar/2/e/tur",
+  "eski": "tahsilat",
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s74-s25-ab-kismi-ve-fazla",
+  "sinif": "A6-S181",
+  "anahtar": "dallar/A/raporlar/yevPB2/0/satirlar/2/h",
+  "eski": "120",
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s75-s25-c-nakit-havale-pos",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s76-s26-geri-yuklenen-kasa-tutar-duzelt",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s77-s27-pos-valor-yarim-gun",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s78-s39-kart-iade-supheli",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s79-s40-geri-yuklenen-kasa-tutar-disi-alan",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s80-s44-geri-yuklenen-kasa-fatura-bagi",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s81-s44-geri-yuklenen-kasa-taksit-normal-cari",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s82-s45-bagli-geri-yuklenen-kayit-cari",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s83-s47-b6-acilis-olabilir-bekleyis",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s84-s48-carisiz-acilis-evraki-karsiliksiz",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s85-s49-formdan-carisiz-evrak",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s86-s50-tek-kuyruk-kart-taksiti",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s87-s51-geri-alinan-acilis",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s88-s52-odeme-sozu",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s89-s53-kilitsiz-gecmis-yil",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s90-s53-kilitli-gecmis-yil",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s91-b5-kg5-yukleme-yerel-gunu",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s92-b11-kasa-acilis-oncesi-duzeltme",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s93-b14-alt-defter-kural-farki",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s94-s54-ayni-duzeltmede-bag-cari",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s95-s55-bag-hedefi-sonra",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s96-s56-s44-normal-cari-siniri",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s97-s57-olagan-bagli-kayit-cari",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s98-s65-acilis-ortada",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s99-s66-formdan-carisiz-evrak-karsiliksiz",
+  "sinif": "A5",
+  "anahtar": "dallar/A/degismezler/canli/s127_tek_yazim",
+  "eski": "∅",
+  "yeni": []
+ }
+]

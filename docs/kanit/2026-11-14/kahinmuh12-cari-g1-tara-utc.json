@@ -1,0 +1,32 @@
+{
+  "ad": "kahinmuh12-cari-g1-tara-utc",
+  "komut": "python3 -I -B docs/kanit/2026-11-14/kahinmuh12-arac/g1-tara.py test/bagimsiz/cari/senaryolar --sert",
+  "commit": "eab3aedc73c97a0c10aae1c45e72d898ae43ce8e",
+  "dal": "kahin-muh12-calisma",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v470 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-14T12:41:08.953Z",
+  "sure_sn": 0,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 101,
+    "gecen": 101,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh12-kanit/2026-11-14/kahinmuh12-cari-g1-tara-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/kahin-muh12-aa91",
+  "ham_cikti_sha256": "9aad31f8e37139e55e8da665d3cc831820952e4e155f0eb9924ebe9fbf9b19ed",
+  "ham_cikti_bayt": 1682
+}

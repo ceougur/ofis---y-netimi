@@ -1,0 +1,32 @@
+{
+  "ad": "kahinmuh12-muh-mutasyon-utc",
+  "komut": "flock -s -w 3600 /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock python3 -I -B test/bagimsiz/muhasebe/mutasyon.py",
+  "commit": "eab3aedc73c97a0c10aae1c45e72d898ae43ce8e",
+  "dal": "kahin-muh12-calisma",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v470 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-14T12:17:58.342Z",
+  "sure_sn": 890.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 293,
+    "gecen": 293,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh12-kanit/2026-11-14/kahinmuh12-muh-mutasyon-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/kahin-muh12-aa91",
+  "ham_cikti_sha256": "af816851e3dcdb04f5f5bc616c2bf61869ef827d2b09df5b0e19b52e023e622d",
+  "ham_cikti_bayt": 59041
+}

@@ -4566,3 +4566,18 @@ denetlenmiyor — `mizanBilinir` şüpheli adımlarında zaten kapalı). **Bu b�
   sonra (payı yazıldığı an sabit — DENENMEYEN), devirle gelen şüpheli kayıt, iki şüpheli kaydı olup ikisi de adımdan önce tarihli caride payın kayıtlara dağılımı (en eski kayıttan — §8 aynen; senaryo yok),
   POS / havale yolu (bu kâhinde nakit / havale aynı satır), mobil yazma kâhini (kuralı değişmedi; kabul dosyası bu bakımda yeniden üretilmedi — d47 mobil kümede değil).
 
+
+### C0x Değişen eski beklentiler (G3; bakım 19 (`kahin-muh12-taban` = 807c70f6) ↔ bakım 20 kâhin çıktısı, `2.5.0`; eski kopyanın 100 elle senaryosu + d47 + rastgele s1 / ux18 tohum 1–10 × 120) — kararla ilgisiz eski beklenti DEĞİŞMEDİ
+- Üretici 20/20 aynı dizi; eski elle senaryoların adımları DEĞİŞMEDİ (d47 yeni); `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`: **484/484 bayt bayt aynı**.
+- 2.5.0 G3: eski 50.552 denetim · yeni 50.537 · değişen / kalkan / yeni 83 · **BEKLENMEYEN 0** · yalnız etiketi değişen 6. Sınıflar: S168 değişen 34 / kalkan 29 / yeni 16; GENEL değişen 2 / kalkan 2. Rastgele: 0 fark.
+- **d44 (B1 — X9 ailesi; S168 = B):** `adim:x9t:durum` "ret" → "ok"; `k1:cari:X9:bakiye` 100000 → 70000; `k1:fatura:FX9:acik` 100000 → 70000; GENEL `k1:kasa` / `k1:kasaRapor:giris` 270000 → 300000
+  (tahsilat kabul edildi). **KALKAN (SUS'a dönen) 7:** `k1:cari:X9:gecikmis`, `k1:takvim:fatura:FX9`, `k1:vadeTakip:fatura:FX9`, `k1:projeksiyon:fatura:FX9`, `k1:takvim:cariToplam:X9`, `k1:vadeTakip:cariToplam:X9`,
+  `k1:projeksiyon:cariToplam:X9` — şüpheliden düşen faturaya bağlı tahsilat S130 görünümünü S138 = C (BİLİNEN SINIR) ile susturur (§31 SK-38 (e) notu). Sayıyla: X9 RET dünyasında bakiye 1.000, açık şüpheli 900,
+  normal 100; KABUL dünyasında bakiye 700, açık şüpheli 600, normal 100 — girdinin "bakiye değişmez" sözü yalnız normal (120) tutarı için doğru; carinin toplam bakiyesi kabul edilen 300 kadar düşer.
+- **d47 (yeni senaryo — eski kâhinle de koşuldu):** S168 değişen 31 / kalkan 22 / yeni 16, GENEL kalkan 2 (Kasa — Z4 / Z5 SUS dünyaları). Eski kâhinde d47'nin 29 elle denetiminden 24'ü kırmızı (beklenen nedenle).
+
+### Kanıt (bakım 20; iki saat dilimi; kâhin `eab3aedc`, temiz ağaç; `docs/kanit/2026-11-14/kahinmuh12-*`, araçlar ve koşu betiği `kahinmuh12-arac/`)
+- oz-test **6.715/6.715** (UTC ve Europe/Istanbul) · mutasyon taraması (kos.mjs düzeni) **283/283** · G3 **605/605** (BEKLENMEYEN 0) · yeni / değişen elle tablo **108/108** (d47 29 + d44 79) · ESKİ kâhinde
+  **26 kırmızı** / 108 (beklenen nedenle: bağlı tahsilat düşmüyor, bağlı evrak tamamıyla düşüyor, SK-38 susması yok) · eski elle tablo farkı **100/100** izinli (yalnız d44 X9) · G1 taraması **101/101** · mutant ↔
+  senaryo **784/784** (d35 … d47 × 261–316) · geniş tarama **2.201/2.201** · özet taraması (madde 4) yazıldı. Defter kâhini ve mobil yazma kâhini bu bakımda KOŞULMADI (klasörleri bu ajanın okuma kapsamı
+  dışında — ana oturum CI'nin `test:kahin-defter` adımıyla ve mobil kabul dosyasının yeniden üretimiyle denetler).
