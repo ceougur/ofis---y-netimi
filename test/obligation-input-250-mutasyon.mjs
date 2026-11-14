@@ -26,7 +26,9 @@ const MUTASYONLAR = [
   [4, "bağ zamanı kayar — Kapatılacak Fatura düzeltmesinin anı okunmaz (oluşturulma anı)", [[OI, "        )) if (row.id && row.at) out.set(`${prefix}${row.id}`, row.at);", "        )) if (false) out.set(`${prefix}${row.id}`, row.at);"]]],
   [5, "çek bağının anı kayar — evrak düzeltmesinin anı yerine ilk olayın kaydı", [[OI, "const at = String(row.changed || \"\") > String(row.created || \"\") ? String(row.changed) : String(row.created || \"\");", "const at = String(row.created || \"\");"]]],
   [6, "kilit çözücü hep 'açık' döner (kilit izi okunmaz)", [[OI, "    const at = lockAtOf(lockHistory(rows));", "    const at = lockAtOf(lockHistory([]));"]]],
-  [7, "kilit belleği anahtarsız (kilit kalkınca / değişince bayat kilit)", [[OI, "    if (!store.inTransaction && lockCache.key === key && lockCache.at) return lockCache.at;", "    if (!store.inTransaction && lockCache.at) return lockCache.at;"]]],
+  [7, "kilit belleği anahtarsız (kilit kalkınca / değişince bayat kilit)", [[OI, "    if (!store.inTransaction && lockCache.key === key && lockCache.at) return lockCache.at;", "    if (!store.inTransaction && lockCache.at) return lockCache.at;"]], /hakemden farklı çıktı|modül \(yalnız store, tek cari\) = servis obligationsFor/],
+  // M7 bir ÖNBELLEK mutantıdır: bayat değer yalnız servisin uzun ömürlü örneğinde birikir; testin ayrı bağlantıda YENİ kurduğu örnek o durumda bağımsız hakemdir
+  // (aynı mutant kodu taşır ama belleği boştur) → "modül = servis" iletisi bu mutantta değer karşılaştırmasıdır. Mantık mutantlarında (öbürleri) o ileti sayılmaz.
   [8, "mahsup fişinin karşı belge adı yanlış (cari satırı her zaman 'Borç Yaz')", [[OI, "    return entry ? `Mahsup · ${entry.kind === \"credit\" ? \"Alacak Yaz\" : \"Borç Yaz\"}", "    return entry ? `Mahsup · ${\"Borç Yaz\"}"]]],
   [9, "Vade Tarihi okunmaz (elle borç belge gününde vadeli)", [[OI, "      if (row.dueDate) dueDates.set(row.id, row.dueDate);\n", ""]]],
   [10, "Beklenen Ödeme Tarihi okunmaz", [[OI, "      if (row.expectedDate) promises.set(row.id, row.expectedDate);\n", ""]]],
@@ -48,7 +50,7 @@ console.log(`taban: ${taban.pass} geçti / ${taban.fail} kaldı (çıkış ${tab
 if (taban.status !== 0 || taban.fail !== 0 || !(taban.pass > 0)) throw new Error(`taban testi yeşil değil — mutasyon taraması anlamsız\n${taban.out.slice(-3000)}`);
 let yakalanan = 0;
 let toplam = 0;
-for (const [no, ad, degisiklikler] of MUTASYONLAR) {
+for (const [no, ad, degisiklikler, neden = HAKEM] of MUTASYONLAR) {
   if (ONLY && !ONLY.has(no)) continue;
   toplam += 1;
   const asillar = new Map();
@@ -63,10 +65,10 @@ for (const [no, ad, degisiklikler] of MUTASYONLAR) {
     }
     const r = run(TEST);
     if (DUMP) writeFileSync(path.join(DUMP, `M${no}.txt`), r.out);
-    const caught = r.status !== 0 && HAKEM.test(r.out);
+    const caught = r.status !== 0 && neden.test(r.out);
     if (caught) yakalanan += 1;
     const ilk = (r.out.match(/(hakemden farklı çıktı|allObligations = obligationsFor)[^\n]*/) || r.out.match(/AssertionError[^\n]*\n[^\n]*/) || [""])[0].replace(/\s+/g, " ").slice(0, 300);
-    console.log(`M${no} ${caught ? "YAKALANDI" : "YAKALANMADI"} — ${ad} (${r.pass} geçti / ${r.fail} kaldı; hakem iletisi ${HAKEM.test(r.out) ? "var" : "YOK"}) ilk hata: ${ilk}`);
+    console.log(`M${no} ${caught ? "YAKALANDI" : "YAKALANMADI"} — ${ad} (${r.pass} geçti / ${r.fail} kaldı; beklenen değer iletisi ${neden.test(r.out) ? "var" : "YOK"}) ilk hata: ${ilk}`);
   } finally {
     for (const [full, text] of asillar) writeFileSync(full, text);
   }
