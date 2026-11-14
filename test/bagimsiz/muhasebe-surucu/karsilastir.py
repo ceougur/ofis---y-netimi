@@ -135,15 +135,7 @@ def degistir(m, k, d):
         elif h == M.G and tur == "cari_acilis" and k is not None and ACIKLAMA_YOLU.get(KAYNAK_NO.get(id(k))) and not M.acilis_aciklamasi(v.get("aciklama", "")):
             n = "770" if v.get("yon") == "alacak" else "602"
             et.add("C5-CARI-ACIKLAMA")
-        elif h == M.G and tur == "hesapsiz_hareket":
-            n = "102.00"
-            et.add("K14-HESAPSIZ")
-        elif h == M.G and tur == "kart_borcuna_aktar":
-            n = "108.00"
-            et.add("K14-HESAPSIZ")
-        elif h == M.YOLDAKI and tur == "banka_transfer":
-            n = "102." + v["alici"]
-            et.add("KG19-YOLDAKI")
+        # K-14 / K-15 (S179 = A) Ç7a tur 2 ile ve KG-19 = C (S175; kâhin bakımı 12 108.90'ı kaldırdı) programda (14.11.2026): BUGÜN dönüşümleri kalktı.
         elif h == M.G and (m.tur in ACILIS or tur in ACILIS or m.tur == "cari_acilis"):
             n, _ = "500", et.add("C5-ACILIS-519")
         elif h == M.G and tur == "evrak_acilis":
@@ -332,7 +324,7 @@ def bek_gorunum(model, ufuk, ceviri):
 # ------------------------------------------------------------------------------------------------ 3. adım adım koşu
 DAL = M.Kurallar.etiketten(A.dal)
 bugun_dal = dict(p.split("=") for p in A.dal.split(",") if "=" in p)
-bugun_dal.update({"KG6": "B", "KG7": "B", "KG15": "B"})
+bugun_dal.update({"KG7": "B", "KG15": "B"})   # KG-6 = A Ç7a tur 2b ile programda (14.11.2026): BUGÜN görünümü artık KG-6 B değil
 BUGUN = M.Kurallar(**bugun_dal)
 mk = Izli(S, DAL)        # KÂHİN
 mb = Izli(S, BUGUN)      # BUGÜN
