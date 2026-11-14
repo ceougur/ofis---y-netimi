@@ -336,3 +336,12 @@ beklenende bekleyeni düşmeme; repair / void kaydı kümeye al; iade kaleminin 
 ### 14.6 Liste / rapor işareti (BAŞ MİMAR KARARI 14.11 10:17 (2))
 Ayrım TEK kaynaktan (opening-cover isCovered — defterin kullandığı koşul): Hesabı Atanmamış listesinin satırına `counted` + görünür "Açılışta Sayıldı"; listenin toplamı = kova (zaten
 unassignedTotals). Banka raporlarında (Hesabı Atanmamış seçimi) satırlar kalır, işaret sütunu / etiketiyle; dönem başı / sonu, giriş / çıkış toplamları ve özet bu satırları düşer.
+
+### 14.7 Sonuç (tur 2b; kanıt docs/kanit/2026-11-14/c7a3-*)
+- KG-6 YAPILDI (3d716563; kabul D e185fb58): satış / iade günü maddesi `pos-commission:<kayıt>` (B komisyon hesabı / A 108.POS), etkin gün fişi netlenir (S kadar 108 ve gider düşer);
+  KDV kipi değişmedi (S178 = A); Komisyon Farkı valörün gününde (S177 = A). Defter beklenenleri (groups) ve Alt Hesap Mizanı aynı kuralla; POS raporları / Banka Masraf Raporu
+  saklı satırlardan (değişmedi). Kilitli dönem: KG-6 maddeleri 108 alt defter hesabına dokunduğu için Kural Farkı Düzeltme Fişi'nin DIŞINDA (C5 B14 (a), S76 = A) → "Kilidi Aç →
+  Yeniden Kilitle" ile donmuş defter yeni kurala geçer (kabul D [3]).
+- Kart formundaki alan adı (e769bfeb), liste / rapor işareti (e077ce06), kılavuz + PDF (3c1b5012) YAPILDI.
+- 108 ters bakiye: İade Edilmez İptal İadesi'nde (satışın tamamı iade, komisyon bankada kalır) valörlere kadar 108.POS eksi (bankaya borç; her Komisyon Tahsili gün fişinde
+  kapanır) — kitabın KG-6 + KG-20 A'sının sonucu (Ç6: Bilanço sınıflaması ters bakiyeyi bilmeli — bağlantı noktası).
