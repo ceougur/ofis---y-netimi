@@ -263,3 +263,175 @@ describe("2.5.0 Ç5-A tur 3a — kuyruğun girdi kurucusu (lib/obligation-input.
     assert.deepEqual(differ, [], `hakemden farklı çıktı (taşıma davranışı değiştirdi): ${differ.slice(0, 5).join(" · ")}`);
   });
 });
+
+// ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+// 2.5.0 Ç5-A tur 3b (tasarım notu §18.11; BAŞ MİMAR KARARI 14.11 — §18.9 (4) (i)): carinin SATIRLARINI kuran zincir (routes/accounts.mjs entriesOf / allLedgers'ın satır döngüleri,
+// routes/plans.mjs returnCuts / saleSources / ledgerPlansByAccount) lib/account-lines.mjs'e TAŞINDI; modül (lib/obligation-input.mjs ledgerLines / accountInput / batchInputs) satırları
+// KENDİSİ kurar. Bu vaka (ayrı sunucu, ayrı hakem — yukarıdaki vakanın hakemi değişmez):
+//   (1) modül YALNIZ store ile (ayrı salt okunur bağlantı; cari / taksit / fatura servisi YOK) satırları da kendisi kurunca kuyruk = servis yüzü (tek cari: obligationsFor ↔ cari kartının
+//       defteri; toplu: allObligations, cari kümesi dahil) ve satırlar = allLedgers;
+//   (2) servis yüzünün normalleştirilmiş çıktısı (kuyruk + carinin defter satırları + kart haritası) TAŞIMADAN ÖNCEKİ kodun hakemiyle aynı (test/fixtures/obligation-input-250-zincir-hakem.json;
+//       c5a3b-taban'da `HAKEM_YAZ_ZINCIR=<dosya>` ile bu vakanın kendisi üretti) — zincire bilerek konan hata (kart atla, iade kesimi kaydır, satış kaynağı boş, bayat bellek, iki şirket
+//       karışır …) burada DEĞERLE yakalanır (test/obligation-input-250-mutasyon.mjs M15–).
+// Sınıflar: bağlı + aynı gün iki bağsız tahsilat (satır sırası), şüpheli kaydı, çek bağı, iadeli Mevcut Borç kartı (iade kesimi; iade SONRASI ikinci durum — bellek), stoktan taksitli satış (satış
+// kaynağı), silinen → Silinenler'den geri gelen kart, silinen cari, kilitli dönem, ikinci şirket (aynı adlarla farklı tutar). Sahte DURAĞAN saat, her yazımda +1 dk (ders 13).
+// Tabanda (c5a3b-taban) KIRMIZI: modülde ledgerLines yok — (2) tabanda yeşildir (hakemi o üretti).
+const HAKEM_ZINCIR = path.join(HERE, "fixtures", "obligation-input-250-zincir-hakem.json");
+const WRITE_ZINCIR = process.env.HAKEM_YAZ_ZINCIR || "";
+
+describe("2.5.0 Ç5-A tur 3b — carinin satırlarını kuran zincir (lib/account-lines.mjs): modül satırları kendisi kurar = servis yüzü; davranış taşımadan önceki kodla aynı", () => {
+  let server;
+  let client;
+  let second;
+  before(async () => {
+    server = await startTestServer({ now: { time: NOW, fixed: true }, env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
+    client = await loginAdmin(server);
+  });
+  after(async () => server?.close());
+  const tick = () => server.clock.advance({ minutes: 1 });
+  const scoped = (url, co) => (co ? `${url}${url.includes("?") ? "&" : "?"}hofCompany=${co}` : url);
+  const call = async (method, url, body, co) => unwrap(await client[method](scoped(url, co), body));
+  const must = async (label, method, url, body, co) => {
+    const res = await call(method, url, body, co);
+    assert.equal(res.status, 200, `${label}: ${res.status} ${JSON.stringify(res.data).slice(0, 300)}`);
+    tick();
+    return res.data;
+  };
+  let n = 0;
+  async function build(co, tag, scale) {
+    await call("post", "/api/workspace/bank/setup/dismiss", {}, co);
+    await must("negatif kasa", "put", "/api/admin/negative-policy", { cash: "off" }, co);
+    const account = name => must(`cari ${name}`, "post", "/api/workspace/accounts", { name: `OZ ${tag} ${name}`, type: "customer", registeredOn: day(-400), phone: `0500 254 ${String(10 + (n += 1)).padStart(2, "0")} 00` }, co);
+    const item = await must("hizmet", "post", "/api/workspace/stock", { kind: "service", code: `OZ-HZM-${tag}`, name: "OZ Hizmet", unit: "Adet", salePrice: "100" }, co);
+    const sale = async (acc, date, qty, due) => must("fatura", "post", "/api/workspace/invoices", { scenario: "service_sale", accountId: acc.id, issueDate: date, lines: [{ itemId: item.id, qty, unitPrice: String(100 * scale), vatRate: 0 }], payment: { rest: "open", dueDate: due } }, co);
+    const entry = async (acc, body) => {
+      const known = new Set((await must("cari kartı", "get", `/api/workspace/accounts/${acc.id}`, undefined, co)).entries.map(e => e.id));
+      return (await must("hareket", "post", `/api/workspace/accounts/${acc.id}/entries`, { method: "cash", cashForce: true, ...body }, co)).entries.find(e => !known.has(e.id));
+    };
+    const out = {};
+    const v = {};
+    const steps = [];
+    const at = (date, fn) => steps.push({ date, i: steps.length, fn });
+    // bağlı tahsilat + aynı gün iki bağsız tahsilat (satır okuyucunun sırası: tarih → kayıt anı → yazım sırası)
+    out.bound = await account("Bağlı");
+    at(day(-50), () => sale(out.bound, day(-50), 3, day(-50)));
+    at(day(-40), async () => { v.bf2 = (await sale(out.bound, day(-40), 3, day(-10))).id; });
+    at(day(-5), () => entry(out.bound, { kind: "in", amount: String(250 * scale), date: day(-5), invoiceId: v.bf2 }));
+    at(day(-5), () => entry(out.bound, { kind: "in", amount: String(40 * scale), date: day(-5) }));
+    at(day(-5), () => entry(out.bound, { kind: "in", amount: String(30 * scale), date: day(-5) }));
+    // iadeli Mevcut Borç kartı: satış → kart (mevcut borcu taksitlendirir) → satıştan iade (kartın kapsamından düşer — iade kesimi)
+    out.ret = await account("İadeli Kart");
+    at(day(-30), async () => { v.rs = await sale(out.ret, day(-30), 10, day(-30)); });
+    at(day(-29), async () => { v.rp = await must("kapsayan kart", "post", "/api/workspace/plans", { accountId: out.ret.id, name: `${out.ret.name} Kart`, registeredOn: day(-29), total: String(1000 * scale), mode: "auto", count: "2", firstDue: day(20), coversBalance: true }, co); });
+    at(day(-20), () => must("iade", "post", "/api/workspace/invoices", { kind: "sale_return", originalId: v.rs.id, issueDate: day(-20), lines: [{ originLineId: v.rs.lines[0].id, qty: 3 }], payment: {} }, co));
+    if (tag === "001") {
+      // şüpheli kaydı
+      out.doubt = await account("Şüpheli");
+      at(day(-60), () => sale(out.doubt, day(-60), 10, day(-60)));
+      at(day(-45), () => must("şüpheliye al", "post", `/api/workspace/accounts/${out.doubt.id}/doubtful`, { amount: "1000", date: day(-45), reason: "lawsuit", note: "dava" }, co));
+      at(day(-10), () => entry(out.doubt, { kind: "in", amount: "300", date: day(-10) }));
+      // çek bağı (Kapatılacak Fatura)
+      out.cheque = await account("Çek");
+      at(day(-40), async () => { v.cf = (await sale(out.cheque, day(-40), 5, day(-10))).id; });
+      at(day(-20), () => must("evrak", "post", "/api/workspace/cheques", { direction: "in", instrument: "cheque", accountId: out.cheque.id, amount: "500", issueDate: day(-20), dueDate: day(40), serialNo: `OZ${tag}${(n += 1)}`, bank: "Ziraat", invoiceId: v.cf }, co));
+      // stoktan veresiye satış + taksitlendir (satışla açılan kart — satış kaynağı) + kart tahsilatı
+      out.stock = await account("Stok Taksit");
+      const goods = await must("ürün", "post", "/api/workspace/stock", { name: "OZ Ürün", code: "OZ-URN", unit: "Adet", unitPrice: "10", salePrice: "100" }, co);
+      at(day(-100), () => must("alım", "post", `/api/workspace/stock/${goods.id}/moves`, { kind: "in", qty: "100", unitPrice: "10", pay: "none", date: day(-100) }, co));
+      at(day(-15), () => must("taksitli satış", "post", `/api/workspace/stock/${goods.id}/moves`, { kind: "out", qty: "6", unitPrice: "100", pay: "account", method: "cash", accountId: out.stock.id, date: day(-15), installments: { count: "2", firstDue: day(-3), everyMonths: "1" } }, co));
+      at(day(-1), () => entry(out.stock, { kind: "in", amount: "200", date: day(-1) }));
+      // silinecek (sonra Silinenler'den geri gelecek) kart: elle borç + Yeni Borç kartı
+      out.gone = await account("Silinen Kart");
+      at(day(-20), () => entry(out.gone, { kind: "debt", amount: "400", date: day(-20) }));
+      at(day(-8), async () => { out.goneCard = await must("kart", "post", "/api/workspace/plans", { name: `${out.gone.name} Kart`, registeredOn: day(-8), total: "600", accountId: out.gone.id, mode: "auto", count: "2", firstDue: day(-5), everyMonths: "1" }, co); });
+      at(day(-2), () => entry(out.gone, { kind: "in", amount: "150", date: day(-2) }));
+      // silinen cari (satırsız) — kendi kendine kuran yolun cari kümesine girmez
+      out.dead = await account("Silinen Cari");
+    }
+    steps.sort((x, y) => (x.date === y.date ? x.i - y.i : x.date < y.date ? -1 : 1));
+    for (const step of steps) await step.fn();
+    if (out.dead) await must("cari sil", "del", `/api/workspace/accounts/${out.dead.id}`, undefined, co);
+    out.v = v;
+    return out;
+  }
+  const lock = (co, until) => must(`kilit ${until || "yok"}`, "put", "/api/admin/period-lock", { lockedUntil: until }, co);
+  // Kart haritasının kuyruğa / deftere giren alanları (kimlikler etiketlenir).
+  const cardsOf = list => (list || []).map(plan => ({ id: plan.id, name: plan.name, total: plan.total, status: plan.status, coversBalance: plan.coversBalance, importId: plan.importId, returnCuts: plan.returnCuts, saleMoveId: plan.saleMoveId, planned: plan.planned, itemCount: plan.itemCount, paid: plan.totals?.paid, entries: plan.entries.length }));
+
+  function snapshot(target, company, state, digests) {
+    const ctx = target.context;
+    const inv = ctx.invoices;
+    const ids = ctx.store.all("SELECT id, name FROM accounts WHERE deleted_at IS NULL AND name LIKE 'OZ %' ORDER BY name");
+    assert.ok(ids.length >= 2, `${company}: sınıf carileri (${ids.length})`);
+    const ledgerOf = id => ctx.accounts.detail(id, AUDIT, { withRemaining: false }).ledger;
+    const norm = labeller(ctx.store);
+    const single = new Map(ids.map(({ id }) => [id, text(inv.obligationsOf(id, () => ledgerOf(id)))]));
+    const all = inv.allObligations();
+    const lines = ctx.accounts.allLedgers({}).lines;
+    const map = ctx.plans.ledgerPlansByAccount();
+    for (const { id, name } of ids) {
+      const fresh = text(inv.obligationsFor(id, ledgerOf(id)));
+      assert.equal(single.get(id), fresh, `${state} ${company} ${name}: obligationsOf (soğuk) = obligationsFor`);
+      assert.equal(text(all.get(id)), fresh, `${state} ${company} ${name}: allObligations = obligationsFor`);
+      digests[`${state}|${company}|${name}`] = norm(JSON.stringify({ kuyruk: JSON.parse(fresh), satirlar: plain(lines.get(id)), kartlar: plain(cardsOf(map.get(id))) }));
+    }
+    // işlem içinde (yazım yanıtı yolu): iade kesimi taranır, satış kaynağı belleğe yazılmaz — sonuç aynı
+    const probe = ids.find(row => row.name.endsWith("İadeli Kart")).id;
+    assert.equal(ctx.store.tx(() => text(inv.obligationsFor(probe, ledgerOf(probe)))), text(inv.obligationsFor(probe, ledgerOf(probe))), `${state} ${company}: işlem içi = işlem dışı`);
+    if (WRITE_ZINCIR) return;
+    assert.ok(!loaded.error, `lib/obligation-input.mjs yüklenemedi: ${loaded.error?.message}`);
+    const file = company === "001" ? server.app.config.dbPath : resolveDbPath(server.app.companies.dirsOf(server.app.companies.get(second.id)).dataDir);
+    const db = openDatabase(file, { readOnly: true });
+    try {
+      const store = createStore(db);
+      const input = loaded.module.createObligationInput({ store });
+      assert.equal(typeof input.ledgerLines, "function", "modül carinin satırlarını kendisi kuramıyor (ledgerLines yok — zincir taşınmadı)");
+      // satırlar: modülün kendi kurduğu = allLedgers (cari kümesi dahil — silinmiş cari yok)
+      const own = input.ledgerLines();
+      assert.deepEqual([...own.keys()].sort(), [...lines.keys()].sort(), `${state} ${company}: modülün cari kümesi = allLedgers'ın cari kümesi`);
+      assert.deepEqual([...own.keys()].sort(), [...all.keys()].sort(), `${state} ${company}: modülün cari kümesi = allObligations'ın cari kümesi`);
+      const inputs = input.batchInputs(TODAY);
+      for (const { id, name } of ids) {
+        assert.equal(text(own.get(id)), text(lines.get(id)), `${state} ${company} ${name}: modülün kendi kurduğu satırlar = allLedgers`);
+        const mine = text(buildObligations(input.accountInput(id, TODAY)));
+        assert.equal(mine, text(inv.obligationsFor(id, ledgerOf(id))), `${state} ${company} ${name}: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor`);
+        assert.equal(text(buildObligations(inputs.get(id))), text(all.get(id)), `${state} ${company} ${name}: modül (yalnız store, satırları kendisi; toplu) = servis allObligations`);
+        // eski "satırlar parametreyle" yolu da çalışır
+        assert.equal(text(buildObligations(input.accountInput(id, TODAY, ledgerOf(id)))), mine, `${state} ${company} ${name}: satırlar parametreyle = kendisi`);
+      }
+    } finally {
+      db.close();
+    }
+  }
+
+  it("sınıf verisi iki şirkette; iade sonrası ve Silinenler'den geri gelen kart: modül satırları kendisi kurar = servis yüzü; servis yüzü = taşımadan önceki kodun hakemi", { timeout: 300_000 }, async () => {
+    const created = await must("ikinci şirket", "post", "/api/companies", { name: "OZ İkinci Şirket" });
+    second = created.company;
+    const one = await build("", "001", 1);
+    const two = await build(second.id, "002", 2);
+    await lock("", day(-35));
+    const child = () => server.app.openCompany(second.id);
+    assert.ok(child(), "002 açık");
+    const digests = {};
+    snapshot(server.app, "001", "ilk", digests);
+    snapshot(child(), "002", "ilk", digests);
+    // iade SONRASI (iade kesimi belleği yenilenmeli); kart silinir (kart haritasından düşer)
+    await must("ikinci iade", "post", "/api/workspace/invoices", { kind: "sale_return", originalId: one.v.rs.id, issueDate: day(0), lines: [{ originLineId: one.v.rs.lines[0].id, qty: 2 }], payment: {} });
+    await must("kart sil", "del", `/api/workspace/plans/${one.goneCard.id}`);
+    await must("002 ikinci iade", "post", "/api/workspace/invoices", { kind: "sale_return", originalId: two.v.rs.id, issueDate: day(0), lines: [{ originLineId: two.v.rs.lines[0].id, qty: 1 }], payment: {} }, second.id);
+    snapshot(server.app, "001", "iade-sil", digests);
+    snapshot(child(), "002", "iade-sil", digests);
+    // Silinenler'den geri gelen kart (aynı kimlik)
+    await must("kart geri", "post", "/api/admin/trash/restore", { id: `plan:${one.goneCard.id}` });
+    snapshot(server.app, "001", "geri", digests);
+    snapshot(child(), "002", "geri", digests);
+    if (WRITE_ZINCIR) {
+      writeFileSync(WRITE_ZINCIR, `${JSON.stringify({ uretim: "c5a3b-taban — taşımadan önceki kod; HAKEM_YAZ_ZINCIR ile bu vakanın kendisi", sayi: Object.keys(digests).length, cariler: digests }, null, 1)}\n`);
+      return;
+    }
+    const hakem = JSON.parse(readFileSync(HAKEM_ZINCIR, "utf8"));
+    assert.deepEqual(Object.keys(digests).sort(), Object.keys(hakem.cariler).sort(), "aynı sınıf carileri ve durumlar");
+    const differ = Object.keys(digests).filter(key => digests[key] !== hakem.cariler[key]);
+    assert.deepEqual(differ, [], `hakemden farklı çıktı (taşıma davranışı değiştirdi): ${differ.slice(0, 5).join(" · ")}`);
+  });
+});
