@@ -237,7 +237,7 @@ describe("Ç5-A tur 2b İş 2 — Kural Farkı Düzeltme Fişi", () => {
       await app.ledger.snapshots.runPending();
       const unlocked = await integrity(api);
       assert.ok(unlocked.item && unlocked.item.ok === false && unlocked.item.correction?.over === true, `kilit kalkınca fiş fazla görünür: ${JSON.stringify(unlocked.item)}`);
-      assert.match(unlocked.item.hint, /artık fazla/);
+      assert.match(unlocked.item.hint, /artık fazla — Yönetim › Sistem › Kural Farkı Düzeltme'den ters kaydedin\.$/, "ipucundaki ekran yeri (tur 2e DÜŞÜK-3)");
       assert.equal((await api.put("/api/admin/period-lock", { lockedUntil: lock })).status, 200);
       await app.ledger.snapshots.runPending();
       const relocked = await integrity(api);

@@ -1143,7 +1143,7 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
           item.ok = false;
           item.count = numbers.length || 1;
           item.severity = "warning";
-          item.hint = `Kilitli dönemde düzeltilecek kural farkı kalmadı (kilit kaldırıldı ya da dönem güncel kuralla yeniden dondu); Kural Farkı Düzeltme Fişi (${numbers.join(", ") || "ters kaydı eksik"}) artık fazla — Yönetim › Kural Farkı Düzeltme'den ters kaydedin.`;
+          item.hint = `Kilitli dönemde düzeltilecek kural farkı kalmadı (kilit kaldırıldı ya da dönem güncel kuralla yeniden dondu); Kural Farkı Düzeltme Fişi (${numbers.join(", ") || "ters kaydı eksik"}) artık fazla — Yönetim › Sistem › Kural Farkı Düzeltme'den ters kaydedin.`;
         } else if (numbers.length && diff.count) {
           item.hint = remainderMinor
             ? `${item.hint} Kural Farkı Düzeltme Fişi (${numbers.join(", ")}) farkın bir kısmını düzeltti; kalan ön izlemede.`

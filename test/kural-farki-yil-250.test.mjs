@@ -51,6 +51,8 @@ describe("Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (saf plan)
     // İki fiş (2026'da bir, 2027'de yeni fark için bir): ikisi birlikte farkı kapatır.
     const both = byYear({ 2026: { "500|": 70_000, "602|": -70_000 }, 2027: { "519|": 30_000, "671|": -30_000 } });
     assert.deepEqual(ruleDiffCorrectionPlan({ diff, year: 2027, postedByYear: both }).lines, []);
+    // İki yıl sonu: 2027'nin fişindeki 671 satırı (2026 farkının karşılığı) 2028'de de eşlenmiş toplamdan düşülür — yeni fiş önerilmez (ham farka sayılırsa B 681 / A 671 hayalet fişi çıkar).
+    assert.deepEqual(ruleDiffCorrectionPlan({ diff, year: 2028, postedByYear: both }).lines, [], "2028: iki fiş farkı kapatmış kalır");
     // EK-1 M7'nin iki örneği (önceki yıl): eski kural açılış çekini 770'e gider yazmışsa B 519 / A 671; 602'ye gelir yazmışsa B 681 / A 519.
     const expense = { entries: [entry("cheque:c1", [d("770", -20_000), d("519", 20_000)])] };
     assert.deepEqual(lineText(ruleDiffCorrectionPlan({ diff: expense, year: 2027, postedByYear: new Map() }).lines), ["A 671 200", "B 519 200"]);
@@ -225,6 +227,7 @@ describe("Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (program, 
       await lock("2026-12-31");
       const i9 = await item();
       assert.ok(i9?.correction?.over === true && i9.correction.remainderMinor === 70_000, `yeniden kilit: fazla 700: ${JSON.stringify(i9)}`);
+      assert.match(i9.hint, /artık fazla — Yönetim › Sistem › Kural Farkı Düzeltme'den ters kaydedin\.$/, "ipucundaki ekran yeri (DÜŞÜK-3)");
       const v9 = await view();
       same(v9, i9, "yeniden kilit");
       assert.deepEqual(lineText(v9.lines), ["A 500 700", "B 681 700"], "2026'nın fazla düzeltmesi 2027'de önceki yıla ait (M7: borç yönlü 681)");
