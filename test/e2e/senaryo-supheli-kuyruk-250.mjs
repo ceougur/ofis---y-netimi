@@ -121,6 +121,32 @@ try {
   const integrity = await must("Mutabakat Testi", admin.get("/api/workspace/ledger/integrity"));
   ok(integrity.ok === true, "Mutabakat Testi tamam (iki yükleyici aynı kural)");
   await shot(page, "supheli-kuyruk-2-kabul");
+
+  // 2.5.0 Ç5-A tur 3d (BAŞ MİMAR KARARI 14.11 09:00 (2)): etiket ayırıcının payından — pay 0 → "Normal Cariye İşlendi"; tamamı şüpheliden düştüyse etiket yok; kısmi → "Kısmen
+  // Normal Cariye İşlendi" + 120'ye düşen tutar. S168 = B'nin sözü: F2'ye bağlı 300'den sonra kuyruk şüphelisi 700 = F1 600 + F2 100 → F2'ye bağlı 200: 100'ü 128'den, 100'ü 120'den.
+  console.log("\n■ 3 Hareketler etiketi: işaretli 400 'Normal Cariye İşlendi', F2'ye bağlı 300 (tamamı 128) etiketsiz; F2'ye bağlı 200 → 'Kısmen Normal Cariye İşlendi (₺100,00)'");
+  const tags = async () => ({
+    full: await page.$$eval(`${card} .hof-plans-entries [data-doubtful-normal]`, nodes => nodes.map(node => node.textContent.trim())).catch(() => []),
+    part: await page.$$eval(`${card} .hof-plans-entries [data-doubtful-normal-part]`, nodes => nodes.map(node => node.textContent.replace(/\s+/g, " ").trim())).catch(() => []),
+  });
+  const reopen = async () => {
+    await escClose(page).catch(() => null);
+    await page.evaluate(id => window.HOF.accounts.open(id), acc.id);
+    await page.waitForSelector(`${card} .hof-plans-entries`, { timeout: 10000 });
+    await page.waitForTimeout(500);
+  };
+  await reopen();
+  const t1 = await tags();
+  ok(JSON.stringify(t1) === JSON.stringify({ full: ["Normal Cariye İşlendi"], part: [] }), `etiketler (300'den sonra): ${JSON.stringify(t1)} (yalnız işaretli 400'de 'Normal Cariye İşlendi')`);
+  await must("F2'ye bağlı 200", admin.post(`/api/workspace/accounts/${acc.id}/entries`, { kind: "in", amount: "200", date: D0, method: "cash", cashForce: true, similarOk: true, invoiceId: f2 }));
+  const after200 = gl(acc.id);
+  ok(after200.b120 === 0 && after200.b128 === 600, `veri tabanı: ${JSON.stringify(after200)} (128 = 600, 120 = 0)`);
+  await reopen();
+  const t2 = await tags();
+  ok(JSON.stringify(t2) === JSON.stringify({ full: ["Normal Cariye İşlendi"], part: ["Kısmen Normal Cariye İşlendi (₺100,00)"] }), `etiketler (200'den sonra): ${JSON.stringify(t2)} (tutar ekranın para biçimiyle)`);
+  await page.$eval(`${card} .hof-plans-entries`, node => node.scrollIntoView({ block: "center" })).catch(() => null);
+  await shot(page, "supheli-kuyruk-3-etiket");
+  await page.locator(`${card} .hof-plans-entries`).first().screenshot({ path: path.join(shots, "supheli-kuyruk-3-hareketler.png") }).catch(() => null);
   await escClose(page).catch(() => null);
 } catch (error) {
   failed += 1;

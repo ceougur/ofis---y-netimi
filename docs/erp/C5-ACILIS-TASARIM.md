@@ -1622,3 +1622,19 @@ bırak, kesiti satırın kendisini dahil ederek al, kayıt kalanını final duru
 - Beklentisi bilerek değişen mevcut test: YOK (kaynak taramasına üç istisna eklendi — yukarıda).
 - HIZ (E): ÖLÇÜLEMEDİ — ölçüm kilidi (`flock -x -n`) başka bir koşudaydı ve yük 3,3 (başka oturumun tam test koşusu); düzenek hazır (c5a3c-betik/hiz.sh, olc-c5a3c.mjs — değişen yollar + açılıştan sonraki ilk çağrı ayrı satır; olc-hazir.mjs — temiz 100 bin satıra programın API'siyle şüpheli + bağlı alacaklı cari). Ana oturum ölçer.
 - Açık noktalar (§18.6): (1) fatura peşini — avanslı (120 < 0) cari şüpheli kaydı açıkken programın yolundan kurulamıyor (S155 = A kapısı borcun açık şüphelinin altına düşmesini reddeder); 120 ≥ 0 iken peşin anında yeni faturanın kuyruktaki payı 0 (peşin 15.10 kuralıyla 120, iki okuma aynı sonucu verir) — DOĞRULANMADI (ayırt edici örnek kurulamadı; deneme c5a3c-pesin-avans-cek.txt). (2) Aynı denemede yeni bir AYRIŞMA çıktı: faturaya bağlı evrakın 120'ye düşen kısmı şüpheli dışı borcu aşınca kapı reddediyor (tabanda en eski kayıttan 128'den düşüp kabul ediliyordu) — S25 (b) ↔ S155 = A → KULLANICIYA SORULMALI (tur 3c raporu).
+
+### 19.8 Tur 3d (küçük düzeltme; taban = tur 3c ucu 4ecbee10 + tur 2e adayı d2a37e3d, birleşim 1ef58e5e; BAŞ MİMAR KARARI 14.11 09:00 (2), (3), (4); kanıt docs/kanit/2026-11-14/c5a3d-*)
+- Etiket (routes/accounts.mjs detail): Kapatılacak Fatura bağlı tahsilatın "Normal Cariye İşlendi" etiketi ayırıcının o satıra verdiği şüpheli payından (lib/bank/doubtful.mjs doubtfulState
+  allocations — sınırın allocatedMinor'ı ile AYNI kaynak; ikinci hesap yok): pay 0 → "Normal Cariye İşlendi"; pay = tutar → etiket yok; kısmi → `doubtfulNormalPart` (120'ye düşen TL) ve ekranda
+  "Kısmen Normal Cariye İşlendi (<tutar>)" (data-doubtful-normal-part). İşaretli ve peşin satır (doubtfulKeepOf) değişmedi. Ayırma cari başına en çok BİR kez ve yalnız ilk bağlı satır
+  gerektirince (şüpheli kaydı olmayan ya da bağlı tahsilatı olmayan caride ek iş yok — ders 47).
+- Fatura iptali bildirimi (routes/invoices.mjs doubtfulRelinks / doubtfulRelinkText): satır başına normalMinor = tutar − pay; tamamı 128'den düşen satır listeye girmez (iptal onu normal
+  cariden çıkarmaz → bildirim yok); payı olan satırda metin yalnız 120'deki kısmı söyler ("… 500,00 TL tahsilatın 100,00 TL'si şu an normal cari hesaba işli …"); payı olmayanda eski metin.
+  İşlem kaydının (invoice.cancelled doubtfulRelinked) alanları aynı; listesi yalnız normal kısmı olan satırlar.
+- Kılavuz: "Tahsilatta seçim" maddesinde Kapatılacak Fatura cümlesi yeni kurala göre (HTML + PDF, ders 42).
+- Bilerek DEĞİŞMEYEN: defter kuralı, kuyruk, sınır, hız yolu (tur 3c'nin işi); bağsız tahsilatta etiket yok (önceki gibi).
+- Ekran: senaryo-supheli-kuyruk-250 adım 3 (etiket kümesi: işaretli 400 tam; F2'ye bağlı 300 + aynı gün F2'ye bağlı 200 → bir "Kısmen … (₺100,00)"; 128 = 600, 120 = 0 — S168 = B'nin
+  "kuyruk şüphelisi 700 = F1 600 + F2 100" sözünden). Tutar ekranın para biçimiyle (₺100,00).
+- GÖZLEM (kapsam dışı — defter kuralı, DOKUNULMADI): aynı gün iki bağlı tahsilatta ayırıcı alacakları `tie: credit.key` (account:<UUID>) ile sıralar → HANGİ satırın kısmi olduğu kimliğe bağlı
+  (ekranda 300'lük satır "Kısmen" çıktı, önceden etiketsizdi; 200'lük etiketsiz). Toplam 120 / 128 ve etiket kümesi bu örnekte sıradan bağımsız; satır başına dağılım ders 31'e aykırı
+  olabilir → ana oturuma / dar kontrole (lib/doubtful-gl.mjs `by`; kayıtlar için `seq` var, alacaklar için yok).
