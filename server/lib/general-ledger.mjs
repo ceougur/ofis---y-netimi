@@ -12,6 +12,7 @@ import { DOCUMENT_GL, documentGl, mainOfSub } from "./cheque-gl.mjs";
 import { DOUBTFUL_CHART, DOUBTFUL_GL, applyDoubtfulToJournal, doubtfulSkipOf } from "./doubtful-gl.mjs";
 import { roundMoney } from "./money.mjs";
 import { OPENING_ROLES, effectiveGl } from "./bank/voucher.mjs";
+import { isCovered } from "./bank/opening-cover.mjs";
 
 /**
  * Türetme kuralının sürümü (2.5.0 Ç3; docs/erp/C3-DONDURMA-TASARIM.md §5): kilit konunca donan satırlar bu etiketle saklanır (ledger_snapshots.rule_version). Bir olayın
@@ -378,8 +379,16 @@ export function journal(rows) {
     const value = cents(amount);
     if (!value) return;
     const line = (target, dr, cr) => {
-      const { account, sub } = typeof target === "string" ? { account: target, sub: "" } : target;
+      let { account, sub } = typeof target === "string" ? { account: target, sub: "" } : target;
+      // 2.5.0 Ç7a tur 2 (K-14 / K-15, S179 = A; lib/bank/opening-cover.mjs): hesabı atanmamış satır (102.00 / 108.00) açılıştan önceyse karşılığı 519 — para açılış
+      // bakiyesinin içindedir (olağan madde, hareketin tarihinde). Kart yolunda yön aileyi seçer: giriş POS tahsilatı, çıkış kurumsal kartla ödeme.
+      if ((sub === "102.00" || sub === "108.00") && isCovered({ way: sub === "102.00" ? "bank" : "card", kind: dr > 0 ? "in" : "out", date }, refs.cover)) {
+        account = OPENING_GL;
+        sub = "";
+      }
       const out = { account, debit: dr, credit: cr };
+      // 519 dökümünün türü (ledger-opening openingMatchBalance "Hesapsız Hareketler (Açılıştan Önce)"); dondurma ve mizan bu alanı okumaz.
+      if (account === OPENING_GL && typeof target !== "string" && target.account !== OPENING_GL) out.cover = true;
       // Bankaya Tahsile Ver (plan §3.14): alınan evrak 101.01 / 121.01 (portföy) ya da 101.02 / 121.02 (bankaya tahsile verilen) alt hesabında
       // izlenir; alt hesabı verilmemiş 101 / 121 satırı portföydür. Σ 101.* = 101, Σ 121.* = 121 (alt hesap mutabakatı: cheque:collections).
       if (sub) out.sub = sub;
@@ -645,11 +654,28 @@ export function journal(rows) {
     fis.get(row.eventId).lines.push(row);
   }
   for (const [eventId, item] of fis) {
-    const lines = item.lines
+    let covered = false;
+    let lines = item.lines
       .slice()
       .sort((a, b) => a.seq - b.seq)
       .filter(line => Number(line.tryMinor) > 0)
-      .map(line => ({ account: effectiveGl(line), debit: line.side === "D" ? Number(line.tryMinor) : 0, credit: line.side === "C" ? Number(line.tryMinor) : 0, ...(line.sub ? { sub: String(line.sub) } : {}) }));
+      .map(line => {
+        const debit = line.side === "D" ? Number(line.tryMinor) : 0;
+        const credit = line.side === "C" ? Number(line.tryMinor) : 0;
+        // 2.5.0 Ç7a tur 2 (K-14, S179 = A): hesabı atanmamış fiş satırı (Devir Kapanışı ve ters kaydı her zaman; Bankaya Geçmiş Say / Kart Borcuna Aktar'ın 108.00
+        // tarafı Devir Kapanışı'ndan önceyse) 519 — kapattığı satırlar zaten 519'dadır (lib/bank/opening-cover.mjs).
+        if (!line.ref && (line.sub === "102.00" || line.sub === "108.00") && line.ref !== undefined && isCovered({ bankLine: true, carry: Number(line.carry) === 1, date: item.date }, refs.cover)) {
+          covered = true;
+          return { account: OPENING_GL, debit, credit };
+        }
+        return { account: effectiveGl(line), debit, credit, ...(line.sub ? { sub: String(line.sub) } : {}) };
+      });
+    // Aynı maddede 519'un iki yanı netlenir (Devir Kapanışı: B 519 / A 519 → madde yazılmaz; mizanın devir hızı şişmez).
+    if (covered) {
+      const net = lines.filter(line => line.account === OPENING_GL).reduce((sum, line) => sum + line.debit - line.credit, 0);
+      lines = lines.filter(line => line.account !== OPENING_GL);
+      if (net) lines.push({ account: OPENING_GL, debit: net > 0 ? net : 0, credit: net < 0 ? -net : 0, cover: true });
+    }
     at = item.seq;
     // 2.5.0 Ç5-A (M-04 / M-05 / M-06, K-14; BAŞ MİMAR B3): saklı "500" (rol opening / closing) türetmede 519; açılış fişi ve Devir Kapanışı (ve ters kayıtları) açılış sınıfı.
     if (lines.length) out.push(stamp({ id: `bank:${eventId}`, date: item.date, source: "Banka fişi", text: item.text, lines, ...(item.lines.some(line => OPENING_ROLES.has(line.role)) ? { cls: OPENING_CLASS } : {}) }));

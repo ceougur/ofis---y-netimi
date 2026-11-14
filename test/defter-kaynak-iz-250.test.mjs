@@ -51,6 +51,12 @@ export const EXCEPTIONS = new Map([
   ["bank_accounts.kind", "SINIF 3 (§16.3)"],
   ["bank_accounts.gl", "SINIF 3 (§16.3)"],
   ["bank_accounts.gl_sub", "SINIF 3 (§16.3)"],
+  // Ç7a tur 2 (K-14 / K-15, S179 = A; lib/bank/opening-cover.mjs coverBounds): "açılışta sayılmış" sınırı — yolun hesaplarının EN GEÇ açılış tarihi ve etkin Devir Kapanışı günü.
+  // Programdan değişimi açılış / Devir Kapanışı fişini yazar ya da ters kaydeder (kilitli tarihte 409 period-locked); kilitli dönemin türetmesi değişirse ruleDiff'te (Kural
+  // Değişikliği Farkı) görünür, donmuş defter değişmez. Dış değişikliği Açılış Karşılığı (opening:519) ve bank:sub görür. SINIF 3 (§16.3) — banka tanımı.
+  ["bank_accounts.opening_date", "SINIF 3 — Ç7a K-14 sınırı (opening-cover; §16.3)"],
+  ["bank_accounts.currency", "SINIF 3 — Ç7a K-14 sınırı: yalnız TL hesaplar (opening-cover; §16.3)"],
+  ["fin_events.status", "SINIF 3 — Ç7a K-14 sınırı: etkin Devir Kapanışı (Geri Al ters kaydı yazar; kilitli dönemde 409; §16.3)"],
   ["pos_terminals.id", "SINIF 3 — POS alt hesabı BİLİNEN SINIR adayı (§16.3)"],
   ["pos_terminals.gl_sub", "SINIF 3 (§16.3)"],
   ["vat_offsets.created_at", "SINIF 3 — yalnız aynı tarihli sıra (§16.3)"],

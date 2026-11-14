@@ -69,6 +69,10 @@ const FEES = [];
 const REAL = ["Z", "G"];
 const DEBT = ["K", "L"];
 const UNASSIGNED = ["U102", "U108"];
+// 2.5.0 Ç7a tur 2 — BEKLENTİ BİLEREK DEĞİŞTİ (K-14, KULLANICI KARARI S179 = A; docs/erp/C7A-BANKA-TASARIM.md §13.2): U102'nin tek satırı (20.09 eski havale) havale
+// hesaplarının EN GEÇ açılışından (01.10) önce → açılışta sayılır: defterde 519, Hesabı Atanmamış kovasının BAKİYESİNDE ve Alt Hesap Mizanı'nda yok. U108 (POS tahsilatı; POS'un
+// açılışı yok, Devir Kapanışı yok) kovada kalır. Satır listeleri (Banka Hareket Raporu "Hesabı Atanmamış" seçimi) DEĞİŞMEDİ — U102 orada görünür.
+const IN_LEDGER_UNASSIGNED = ["U108"];
 
 const RANGES = [
   { label: "varsayılan (Bu Yıl)", q: {}, from: "2026-01-01", to: "2026-12-31" },
@@ -403,7 +407,7 @@ describe("2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, h
   });
 
   it("Alt Hesap Mizanı: her dönem; alt hesaplar = bağımsız defter; ana hesaplar = Hesap Planı Mizanı (102, 108, 300, 309)", async () => {
-    const ALL = [...REAL, ...DEBT, ...UNASSIGNED];
+    const ALL = [...REAL, ...DEBT, ...IN_LEDGER_UNASSIGNED];
     for (const r of RANGES) {
       const tag = `alt-hesap-mizani ${r.label}`;
       const data = await screen("alt-hesap-mizani", r.q, tag);
@@ -430,7 +434,7 @@ describe("2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, h
     }
     const ledger = await must("mizan", api.get("/api/workspace/ledger"));
     const gl = code => Math.round((ledger.trial.accounts.find(row => row.code === code)?.balance || 0) * 100);
-    assert.equal(gl("102"), closing(["Z", "G", "U102"]), "102 = 102.01 + 102.02 + 102.00");
+    assert.equal(gl("102"), closing(["Z", "G"]), "102 = 102.01 + 102.02 (açılıştan önceki eski havale 519'da — S179 = A)");
     assert.equal(gl("108"), closing(["U108"]), "108 = 108.00");
     assert.equal(gl("309"), closing(["K"]), "309 = kart");
     assert.equal(gl("300"), closing(["L"]), "300 = kredi");
@@ -486,7 +490,7 @@ describe("2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, h
     assert.equal(Math.round(bank.balance * 100), closing(REAL), "Gerçek Banka = 102.01 + 102.02 (kart, kredi ve hesabı atanmamış hariç)");
     assert.equal(Math.round(bank.debt.total * 100), -closing(DEBT), "Kart ve Kredi Borcu = 3.000 + 9.000");
     assert.equal(-closing(DEBT), 1_200_000);
-    assert.equal(Math.round(bank.unassigned.total * 100), closing(UNASSIGNED), "Hesabı Atanmamış 102.00 + 108.00");
+    assert.equal(Math.round(bank.unassigned.total * 100), closing(IN_LEDGER_UNASSIGNED), "Hesabı Atanmamış 102.00 + 108.00 (açılıştan önceki eski havale açılışta — S179 = A)");
     const today = flows(REAL, { from: TODAY, to: TODAY });
     assert.deepEqual([bank.today.in, bank.today.out, bank.transfer.in, bank.transfer.out].map(value => Math.round(value * 100)), [today.in, today.out, today.trIn, today.trOut], "bugün: dış giriş/çıkış, transfer ayrı");
     assert.deepEqual([today.in, today.out, today.trIn, today.trOut], [150_000, 10_000, 1_000_000, 100_000], "bağımsız: bugün 1.500 tahsilat, 100 kredi faizi; kredi 10.000 / geri ödeme 1.000 transfer");

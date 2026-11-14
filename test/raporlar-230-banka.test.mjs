@@ -560,7 +560,9 @@ describe("2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenl
         assert.deepEqual([cellOf(data, row, "Giriş"), cellOf(data, row, "Çıkış"), cellOf(data, row, "Planlanan Transfer"), cellOf(data, row, "Beklenen Gerçek Banka")], [item.in, item.out, item.transfer, balance], `${c.label}: ${item.source} sayıları`);
       });
       assert.equal(summaryOf(data, `Bugünkü ${K10.realBank}`), start, `${c.label}: Bugünkü Gerçek Banka`);
-      assert.equal(summaryOf(data, K10.unassigned), 500_000, `${c.label}: Hesabı Atanmamış ayrı (başlangıca girmez)`);
+      // 2.5.0 Ç7a tur 2 — BEKLENTİ BİLEREK DEĞİŞTİ (K-14, KULLANICI KARARI S179 = A): tek eski havale (20.09) hesapların en geç açılışından (01.10) önce → açılışta sayılır;
+      // Hesabı Atanmamış kovası 0 (önce 5.000) — özette satır yok. Başlangıca girmemesi aynen.
+      assert.ok(!data.summary.some(([key]) => key === K10.unassigned), `${c.label}: Hesabı Atanmamış (açılıştan önceki eski havale açılışta) özette yok`);
       assert.equal(summaryOf(data, "Başlangıç"), openingValue);
       assert.equal(summaryOf(data, "Beklenen Giriş"), sumBy(expected, item => item.in));
       assert.equal(summaryOf(data, "Beklenen Çıkış"), sumBy(expected, item => item.out));

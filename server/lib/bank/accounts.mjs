@@ -24,6 +24,7 @@ import { CHART, UNASSIGNED_SUBS, moneyAccount } from "../general-ledger.mjs";
 import { KIND_GL, accountSpan } from "./checks.mjs";
 import { NON_MONEY_TYPES } from "./event-types.mjs";
 import { MODULE_TABLES, MONEY_SOURCES } from "./money-lines.mjs";
+import { coverBounds, isCovered } from "./opening-cover.mjs";
 import { createBankSettings } from "./settings.mjs";
 import { assertLines, carryLines, openingLines, reclassLines } from "./voucher.mjs";
 import { bankPassiveError, negativeConfirmed } from "./module-ref.mjs";
@@ -1092,6 +1093,8 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     if (closed && date < closed) return { bank: 0, card: 0, closedThrough: closed };
     const chain = carryChainIds(date);
     const out = { bank: 0, card: 0, closedThrough: closed };
+    // Ç7a tur 2: Devir Kapanışı'nın tutarı D'den önceki BÜTÜN bağsız satırlardır (açılışta sayılmışlar dahil; kapanış maddesi defterde 519 / 519 netlenir, 2.4.9 kuralıyla
+    // B 519 / A 102.00 — iki kuralda da tutarlı).
     for (const line of money.lines({ ways: ["bank", "card"], light: true, unbound: true, until: date })) {
       if (line.ref) continue;
       if (line.date < date || (Number(line.src) === 9 && line.date === date && chain.has(line.event_id))) out[line.way === "bank" ? "bank" : "card"] += (line.kind === "in" ? 1 : -1) * Number(line.cents);
@@ -1130,7 +1133,14 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     };
     rows = rows.filter(line => !(locked && line.date <= locked));
     const net = rows.reduce((sum, line) => sum + (line.kind === "in" ? 1 : -1) * Number(line.cents), 0);
-    const unassigned = unassignedTotals();
+    // 2.5.0 Ç7a tur 2 (K-14, S179 = A): "sonra" kovası kurulumdan SONRAKİ sınırlarla — Devir Kapanışı yazılırsa D'den önceki hesapsız satırlar açılışta sayılır (kovadan çıkar;
+    // tutarları defterde zaten 519); bağlanan satır kovadaysa kovadan çıkar. Önceden "bugünkü kova − Devir Kapanışı − bağlanan" idi (Devir Kapanışı defterde 519'u netlediği için).
+    const now = coverBounds(store);
+    const closes = Boolean(carry.bank || carry.card);
+    const boundary = closes && date > now.carry ? date : now.carry;
+    const after = closes ? Object.freeze({ bank: now.bank > boundary ? now.bank : boundary, card: now.card > boundary ? now.card : boundary, pos: boundary, carry: boundary }) : now;
+    const unassigned = money.unassigned({ until: today(), bounds: after });
+    const leaving = rows.filter(line => !isCovered({ way: "bank", kind: line.kind, date: line.date }, after)).reduce((sum, line) => sum + (line.kind === "in" ? 1 : -1) * Number(line.cents), 0);
     return {
       account,
       opening,
@@ -1145,7 +1155,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
         closedThrough: carry.closedThrough || "",
         assign: { rows: rows.map(line => ({ table: tableOfLine(line), id: line.id, date: line.date, kind: line.kind, amountMinor: Number(line.cents) })), count: rows.length, amountMinor: net },
         skipped,
-        after: { unassignedBankMinor: unassigned.bank - carry.bank - net, unassignedCardMinor: unassigned.card - carry.card, accountMinor: money.refTotal({ ref: account.id }).cents + net },
+        after: { unassignedBankMinor: unassigned.bank - leaving, unassignedCardMinor: unassigned.card, accountMinor: money.refTotal({ ref: account.id }).cents + net },
       },
     };
   }
@@ -1274,7 +1284,13 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
    */
   function reclassAvailable(mode, account, date) {
     const closed = carryBoundary();
-    const since = closed && closed > account.opening_date ? closed : account.opening_date;
+    let since = closed && closed > account.opening_date ? closed : account.opening_date;
+    // 2.5.0 Ç7a tur 2 (K-14 / K-15, S179 = A; opening-cover.mjs): kurumsal kartlardan en geç açılanın açılışından önceki hesapsız kart ödemesi "açılışta sayılmış"tır (defterde
+    // 519; kovada yok) — Kart Borcuna Aktar havuzuna girmez. Tek kartta sınır kartın kendi açılışıdır (değişmez).
+    if (mode === "card") {
+      const cover = coverBounds(store).card;
+      if (cover > since) since = cover;
+    }
     const side = mode === "bank" ? "in" : "out";
     const pool = legacyLines("card", { light: true, since, until: date }).filter(line => line.kind === side).reduce((sum, line) => sum + Number(line.cents), 0);
     const used = Number(store.get(

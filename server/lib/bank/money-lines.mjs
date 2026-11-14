@@ -19,6 +19,7 @@ import { INSTRUMENTS } from "../cheques.mjs";
 import { INVOICE_KINDS } from "../invoice-math.mjs";
 import { roundMoney, toCents } from "../money.mjs";
 import { INTERNAL_TYPES, typeLabel } from "./event-types.mjs";
+import { CARRY_FLAG_SQL, COVER_SQL, coverBounds, coverParams } from "./opening-cover.mjs";
 
 const INTERNAL_SQL = [...INTERNAL_TYPES].map(type => `'${type}'`).join(", ");
 // Banka görünümlerinin "Bugün / Bu Ay" giriş-çıkışına girmeyen düzeltme fişleri (açılış, Devir Kapanışı, eski bakiye aktarımı ve ters kayıtları;
@@ -77,6 +78,8 @@ export const MONEY_SOURCES = Object.freeze([
       party: "COALESCE(fe.party_id, '')", internal: `CASE WHEN fe.type IN (${INTERNAL_SQL}) THEN 1 WHEN fe.type = 'reversal' AND EXISTS (SELECT 1 FROM fin_events io WHERE io.id = fe.reversal_of AND io.type IN (${INTERNAL_SQL})) THEN 1 ELSE 0 END`,
       wayHint: "CASE l.role WHEN 'bank' THEN 'bank' WHEN 'pos' THEN 'card' WHEN 'card' THEN 'ccard' ELSE 'loan' END",
       created: "fe.created_at", updated: "fe.updated_at", actor: "fe.created_by", eventId: "l.event_id", valueDate: "fe.value_date", fxMinor: "l.fx_minor", currency: "l.currency",
+      // 2.5.0 Ç7a tur 2 (K-14; opening-cover.mjs): Devir Kapanışı ya da ters kaydının satırı (yalnız cover kipinde okunur).
+      carry: CARRY_FLAG_SQL,
       // baseType: ters kaydın asıl işlem türü (raporlarda açılış/Devir Kapanışı zincirinin ters kaydı da düzeltme sayılır).
       extra: "json_object('description', fe.description, 'eventType', fe.type, 'eventNo', fe.no, 'baseType', CASE WHEN fe.type = 'reversal' THEN (SELECT o.type FROM fin_events o WHERE o.id = fe.reversal_of) ELSE fe.type END)",
       // Sınıflamanın başlık girdileri (classifiedTotals; satırın kendi işlem başlığından, ikinci kez okunmadan): asıl işlem türü (satır yolundaki
@@ -237,7 +240,7 @@ export function createMoneyLines(store, { verify = false } = {}) {
   // Kaynağın SELECT'i. light: yalnız özet kolonları; filter: kaynağa itilen koşullar (:after, :events, :ids_<tablo>).
   // ids (v2.1.0, §3.11 mutabakat kapısı): yalnız bu satırlar ({ tablo: kimlikler }); Banka Fişi satırları events ile (verilmezse yok).
   // refs (11.10.2026 hız düzeltmesi): yalnız bu hesapların satırları (hesap listesi; '' hiçbir zaman). before: yalnız bu tarihten ÖNCEKİ satırlar.
-  function select(source, { light, after, events, ids, ref = null, refs = null, lean = false, unbound = false, since = "", until = "", before = "", ways = null, heads = false }) {
+  function select(source, { light, after, events, ids, ref = null, refs = null, lean = false, unbound = false, since = "", until = "", before = "", ways = null, heads = false, cover = false }) {
     const { has, tables } = load();
     const r = source.read;
     const a = r.alias;
@@ -256,6 +259,8 @@ export function createMoneyLines(store, { verify = false } = {}) {
     ];
     // heads (yalnız classifiedTotals): sınıflamanın başlık girdileri; modül satırında boş (sınıflama başlığa yalnız fiş satırında bakar).
     if (heads && !lean) parts.push(`${r.headBase || "''"} AS head_base`, `${r.headBank || "''"} AS head_bank`);
+    // cover (Ç7a tur 2, K-14): "açılışta sayılmış" koşulunun Banka Fişi işareti (opening-cover.mjs COVER_SQL w.carry); modül satırında 0.
+    if (cover && !lean) parts.push(`${r.carry || "0"} AS carry`);
     if (!light && !lean) {
       parts.push(
         `${r.updated || `${a}.updated_at`} AS updated_at`, `${r.actor || `${a}.created_by`} AS actor_id`, `${r.extra} AS extra`,
@@ -356,9 +361,18 @@ export function createMoneyLines(store, { verify = false } = {}) {
   /** Kasa'nın satır nesneleri (2.0.26 ile aynı biçim). */
   const rows = (options = {}) => lines({ ...options, light: false }).map(shape);
 
-  /** Yol ve hesap bazında toplam (kuruş): [{ way, ref, cents, count }]. ids: yalnız bu satırlar ({ tablo: kimlikler }; Banka Fişi events ile). */
-  function groups({ events = null, ids = null, ref = null } = {}) {
+  /** Yol ve hesap bazında HAM toplam (kuruş): [{ way, ref, cents, count }] — Kasa penceresi (balances) ve money:report (verifyReport). */
+  function rawGroups({ events = null, ids = null, ref = null } = {}) {
     return store.all(`SELECT w.way AS way, w.ref AS ref, COALESCE(SUM(CASE WHEN w.kind = 'in' THEN w.cents ELSE -w.cents END), 0) AS cents, COUNT(*) AS count FROM (${waySql({ light: true, events, ids, ref })}) w GROUP BY w.way, w.ref ORDER BY w.way, w.ref`, params({ events, ids, ref }));
+  }
+  /**
+   * Ana Defter'in beklenenleri (Defter Mutabakatı, Mutabakat Testi, kapının süzgeçli kurulumu — routes/ledger expected / expectedSubs, integrity-scope): ham gruplar;
+   * 2.5.0 Ç7a tur 2 (K-14 / K-15, S179 = A; opening-cover.mjs) ile "açılışta sayılmış" hesabı atanmamış satırlar yol "opening" altında — defterde 519'dadırlar; 102 / 108 ve
+   * 102.00 / 108.00 beklenenine girmezler (519'u ledger-opening openingCounterpart bekler). [{ way, ref, cents, count }]; ids: yalnız bu satırlar (Banka Fişi events ile).
+   */
+  function groups({ events = null, ids = null, ref = null } = {}) {
+    const bounds = coverBounds(store);
+    return store.all(`SELECT CASE WHEN ${COVER_SQL} THEN 'opening' ELSE w.way END AS way, w.ref AS ref, COALESCE(SUM(CASE WHEN w.kind = 'in' THEN w.cents ELSE -w.cents END), 0) AS cents, COUNT(*) AS count FROM (${waySql({ light: true, events, ids, ref, cover: true })}) w GROUP BY 1, w.ref ORDER BY 1, w.ref`, { ...params({ events, ids, ref }), ...coverParams(bounds) });
   }
   /**
    * Hesabın (ya da POS'un) bakiyesi, tek kaynaktan, en az kolonla (v2.1.0 Aşama 4; Hareketler'in yürüyen bakiyesi, Hesap Detayı): { cents, count }.
@@ -458,18 +472,24 @@ export function createMoneyLines(store, { verify = false } = {}) {
   // 2.1.0 temel sürüm (ileri tarihli eski havale; plan A13 / karar 42): until (bugün) verilirse yalnız o güne kadarki satırlar — bugünkü bakiye
   // gösteren her ekran (Banka Genel Bakış, Hesaplar, ANLIK DURUM, Nakit Akış, Birleşik Rapor) bununla okur; after verilirse yalnız o günden
   // SONRAKİ (eski sürümden kalan ileri tarihli) satırlar, ayrı bilgi olarak. İkisi de yoksa tüm zamanlar (Alt Hesap Mizanı, Ana Defter gibi).
-  function unassigned({ until = "", after = "" } = {}) {
-    const ways = unassignedWays({ until, after });
+  // bounds (Ç7a tur 2): "açılışta sayılmış" sınırları (opening-cover.mjs coverBounds; verilmezse bugünkü) — Kurulum Sihirbazı ön izlemesi kurulumdan SONRAKİ sınırlarla okur.
+  function unassigned({ until = "", after = "", bounds = null } = {}) {
+    const ways = unassignedWays({ until, after, bounds });
     return { bank: ways.bank?.cents || 0, card: ways.card?.cents || 0, count: (ways.bank?.count || 0) + (ways.card?.count || 0), first: [ways.bank?.first, ways.card?.first].filter(Boolean).sort()[0] || "" };
   }
-  /** Bağsız satırlar yol bazında: { [yol]: { cents, debit, credit, count, first } } (saklanır; Alt Hesap Mizanı'nın 102.00 / 108.00 satırları). */
-  function unassignedWays({ until = "", after = "" } = {}) {
+  /**
+   * Bağsız satırlar yol bazında: { [yol]: { cents, debit, credit, count, first } } (saklanır; Alt Hesap Mizanı'nın 102.00 / 108.00 satırları). 2.5.0 Ç7a tur 2 (S179 = A):
+   * "açılışta sayılmış" satırlar (opening-cover.mjs) DÜŞER — defterde 519'dadırlar; kovanın ekran bakiyesi (Banka Genel Bakış, Hesaplar, ANLIK DURUM, Nakit Akış, Birleşik Rapor)
+   * ve Alt Hesap Mizanı defterle aynı.
+   */
+  function unassignedWays({ until = "", after = "", bounds = null } = {}) {
     const stamp = stampOf();
-    const key = `|unassigned|${until}|${after}`;
+    const cover = bounds || coverBounds(store);
+    const key = `|unassigned|${until}|${after}|${cover.bank}|${cover.card}|${cover.pos}`;
     const hit = stamp ? totals.get(key) : null;
     if (hit && hit.stamp === stamp) return hit.ways;
     const ways = {};
-    for (const group of store.all(`SELECT w.way AS way, COALESCE(SUM(CASE WHEN w.kind = 'in' THEN w.cents ELSE -w.cents END), 0) AS cents, COALESCE(SUM(CASE WHEN w.kind = 'in' THEN w.cents ELSE 0 END), 0) AS debit, COALESCE(SUM(CASE WHEN w.kind = 'in' THEN 0 ELSE w.cents END), 0) AS credit, COUNT(*) AS count, MIN(w.date) AS first FROM (${waySql({ light: true, unbound: true, until, after })}) w WHERE w.ref = '' GROUP BY w.way`, params({ until, after }))) {
+    for (const group of store.all(`SELECT w.way AS way, COALESCE(SUM(CASE WHEN w.kind = 'in' THEN w.cents ELSE -w.cents END), 0) AS cents, COALESCE(SUM(CASE WHEN w.kind = 'in' THEN w.cents ELSE 0 END), 0) AS debit, COALESCE(SUM(CASE WHEN w.kind = 'in' THEN 0 ELSE w.cents END), 0) AS credit, COUNT(*) AS count, MIN(w.date) AS first FROM (${waySql({ light: true, unbound: true, until, after, cover: true })}) w WHERE w.ref = '' AND NOT ${COVER_SQL} GROUP BY w.way`, { ...params({ until, after }), ...coverParams(cover) })) {
       ways[group.way] = { cents: Number(group.cents) || 0, debit: Number(group.debit) || 0, credit: Number(group.credit) || 0, count: Number(group.count) || 0, first: group.first || "" };
     }
     if (stamp && keep()) {
@@ -488,11 +508,20 @@ export function createMoneyLines(store, { verify = false } = {}) {
         COALESCE(SUM(CASE WHEN :pfrom <> '' AND w.date < :pfrom THEN (CASE WHEN w.kind = 'in' THEN w.cents ELSE -w.cents END) ELSE 0 END), 0) AS opening,
         COALESCE(SUM(CASE WHEN (:pfrom = '' OR w.date >= :pfrom) AND w.kind = 'in' THEN w.cents ELSE 0 END), 0) AS debit,
         COALESCE(SUM(CASE WHEN (:pfrom = '' OR w.date >= :pfrom) AND w.kind <> 'in' THEN w.cents ELSE 0 END), 0) AS credit
-      FROM (${waySql({ light: true, until: to })}) w GROUP BY w.way, w.ref ORDER BY w.way, w.ref`;
-    return store.all(sql, { ...params({ until: to }), pfrom: from });
+      FROM (${waySql({ light: true, until: to, cover: true })}) w GROUP BY 1, w.ref ORDER BY 1, w.ref`;
+    // 2.5.0 Ç7a tur 2 (S179 = A): "açılışta sayılmış" hesabı atanmamış satırlar yol "opening" (Alt Hesap Mizanı 102.00 / 108.00'a girmez; defterde 519).
+    return store.all(sql.replace("SELECT w.way AS way,", `SELECT CASE WHEN ${COVER_SQL} THEN 'opening' ELSE w.way END AS way,`), { ...params({ until: to }), pfrom: from, ...coverParams(coverBounds(store)) });
+  }
+  /**
+   * 2.5.0 Ç7a tur 2 (K-14 / K-15, S179 = A): "açılışta sayılmış" hesabı atanmamış satırların işaretli toplamı (kuruş; giriş +, çıkış −) — defterdeki 519 payı (ledger-opening
+   * openingCounterpart "Hesapsız Hareketler (Açılıştan Önce)"). Bağsız satırların kısmi indeksiyle (unbound).
+   */
+  function coveredTotal() {
+    const row = store.get(`SELECT COALESCE(SUM(CASE WHEN w.kind = 'in' THEN w.cents ELSE -w.cents END), 0) AS cents, COUNT(*) AS count FROM (${waySql({ light: true, unbound: true, cover: true })}) w WHERE ${COVER_SQL}`, coverParams(coverBounds(store)));
+    return { cents: Number(row?.cents) || 0, count: Number(row?.count) || 0 };
   }
   /** Yol bazında bakiye (kuruş): { cash, bank, card, ccard, loan, unknown, all }. */
-  function balances(list = groups()) {
+  function balances(list = rawGroups()) {
     const out = Object.fromEntries(WAYS.map(way => [way, 0]));
     for (const group of list) out[group.way] = (out[group.way] || 0) + Number(group.cents);
     out.all = WAYS.reduce((sum, way) => sum + out[way], 0);
@@ -730,7 +759,7 @@ export function createMoneyLines(store, { verify = false } = {}) {
       const key = `${line.way}|${line.ref}`;
       fromRows.set(key, (fromRows.get(key) || 0) + (line.kind === "in" ? 1 : -1) * toCents(line.amount));
     }
-    const fromSummary = new Map(groups({ events }).map(group => [`${group.way}|${group.ref}`, Number(group.cents)]));
+    const fromSummary = new Map(rawGroups({ events }).map(group => [`${group.way}|${group.ref}`, Number(group.cents)]));
     const out = [];
     for (const key of new Set([...fromRows.keys(), ...fromSummary.keys()])) {
       if ((fromRows.get(key) || 0) !== (fromSummary.get(key) || 0)) out.push({ key, rows: fromRows.get(key) || 0, summary: fromSummary.get(key) || 0 });
@@ -738,7 +767,7 @@ export function createMoneyLines(store, { verify = false } = {}) {
     return out;
   }
 
-  return { lines, rows, shape, classified, classifiedTotals, keyTotals, wayBalance, firstDate, sourceName: src => SOURCE_NAMES[Number(src)] || "", groups, periodGroups, refTotal, eventsTotal, lastDate, afterIsEmpty, prime, unassigned, unassignedWays, balances, summary, flows, verifyReport, signedCents, reset: () => {
+  return { lines, rows, shape, classified, classifiedTotals, keyTotals, wayBalance, firstDate, sourceName: src => SOURCE_NAMES[Number(src)] || "", groups, rawGroups, coveredTotal, periodGroups, refTotal, eventsTotal, lastDate, afterIsEmpty, prime, unassigned, unassignedWays, balances, summary, flows, verifyReport, signedCents, reset: () => {
     schema = null;
     totals.clear();
   } };
