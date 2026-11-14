@@ -1,0 +1,176 @@
+TAP version 13
+# (node:31206) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç5-A tur 3c: şüpheli ↔ kuyruk defter kuralı (S14, S25, S39, S168 = B) ve 'Normal Cari Hesaba İşle' sınırı
+    # Subtest: S168 örneği — Fatura 2'ye bağlı 300 NAKİT: KABUL (bugün 409), 128 = 700, 120 = 100; satır A 128 300
+    ok 1 - S168 örneği — Fatura 2'ye bağlı 300 NAKİT: KABUL (bugün 409), 128 = 700, 120 = 100; satır A 128 300
+      ---
+      duration_ms: 160.789566
+      type: 'test'
+      ...
+    # Subtest: S168 örneği — Fatura 2'ye bağlı 300 ÇEK: KABUL, 128 = 700, 120 = 100 (kuyruğun Fatura 2 payından)
+    ok 2 - S168 örneği — Fatura 2'ye bağlı 300 ÇEK: KABUL, 128 = 700, 120 = 100 (kuyruğun Fatura 2 payından)
+      ---
+      duration_ms: 106.050837
+      type: 'test'
+      ...
+    # Subtest: Fatura 2'ye bağlı 100 nakit → 128'den 100 (Fatura 2'nin şüpheli payı 400 ≥ 100): 128 = 900, 120 = 100 (bugün A 120 100)
+    ok 3 - Fatura 2'ye bağlı 100 nakit → 128'den 100 (Fatura 2'nin şüpheli payı 400 ≥ 100): 128 = 900, 120 = 100 (bugün A 120 100)
+      ---
+      duration_ms: 123.82755
+      type: 'test'
+      ...
+    # Subtest: Fatura 1'e bağlı 300 nakit → KABUL (bugün 409), 128'den 300: 128 = 700, 120 = 100
+    ok 4 - Fatura 1'e bağlı 300 nakit → KABUL (bugün 409), 128'den 300: 128 = 700, 120 = 100
+      ---
+      duration_ms: 129.496435
+      type: 'test'
+      ...
+    # Subtest: bağsız işaretsiz 300 nakit → DEĞİŞMEZ (en eski açık kayıttan 128 300)
+    ok 5 - bağsız işaretsiz 300 nakit → DEĞİŞMEZ (en eski açık kayıttan 128 300)
+      ---
+      duration_ms: 135.350221
+      type: 'test'
+      ...
+    # Subtest: Fatura 2'ye bağlı 500 nakit → 400'ü 128'den, 100'ü 120'den (S25 (a)): 128 = 600, 120 = 0
+    ok 6 - Fatura 2'ye bağlı 500 nakit → 400'ü 128'den, 100'ü 120'den (S25 (a)): 128 = 600, 120 = 0
+      ---
+      duration_ms: 127.108855
+      type: 'test'
+      ...
+    # Subtest: Fatura 2'ye bağlı 500 ÇEK → 400 128'den, 100 120'den (S25 (a); bugün en eski kayıttan 128 500)
+    ok 7 - Fatura 2'ye bağlı 500 ÇEK → 400 128'den, 100 120'den (S25 (a); bugün en eski kayıttan 128 500)
+      ---
+      duration_ms: 122.502342
+      type: 'test'
+      ...
+    # Subtest: SINIR: Fatura 2'ye bağlı 700 nakit → 120'ye düşecek 300 > şüpheli dışı borç 100: RET AYNEN, ileti iki tutarı söyler, hiçbir şey yazılmaz
+    ok 8 - SINIR: Fatura 2'ye bağlı 700 nakit → 120'ye düşecek 300 > şüpheli dışı borç 100: RET AYNEN, ileti iki tutarı söyler, hiçbir şey yazılmaz
+      ---
+      duration_ms: 142.809269
+      type: 'test'
+      ...
+    # Subtest: SINIR: 'Normal Cari Hesaba İşle' işaretli tahsilat bugünkü gibi (tamamı 120): 300 > 100 → RET, ileti 'tahsilat (300,00 TL)'
+    ok 9 - SINIR: 'Normal Cari Hesaba İşle' işaretli tahsilat bugünkü gibi (tamamı 120): 300 > 100 → RET, ileti 'tahsilat (300,00 TL)'
+      ---
+      duration_ms: 141.856626
+      type: 'test'
+      ...
+    # Subtest: sınıf: kayıttan ÖNCE kesilmiş faturaya bağlı nakit (S25 (c))
+    ok 10 - sınıf: kayıttan ÖNCE kesilmiş faturaya bağlı nakit (S25 (c))
+      ---
+      duration_ms: 123.467543
+      type: 'test'
+      ...
+    # Subtest: sınıf: kayıttan ÖNCE kesilmiş faturaya bağlı çek (S14)
+    ok 11 - sınıf: kayıttan ÖNCE kesilmiş faturaya bağlı çek (S14)
+      ---
+      duration_ms: 118.221178
+      type: 'test'
+      ...
+    # Subtest: sınıf: kayıttan SONRA kesilmiş, kuyrukta şüpheli payı olmayan faturaya bağlı nakit (S14'ün sözü)
+    ok 12 - sınıf: kayıttan SONRA kesilmiş, kuyrukta şüpheli payı olmayan faturaya bağlı nakit (S14'ün sözü)
+      ---
+      duration_ms: 137.078344
+      type: 'test'
+      ...
+    # Subtest: sınıf: kayıttan SONRA kesilmiş, kuyrukta şüpheli payı olmayan faturaya bağlı çek (S14; bugün 128)
+    ok 13 - sınıf: kayıttan SONRA kesilmiş, kuyrukta şüpheli payı olmayan faturaya bağlı çek (S14; bugün 128)
+      ---
+      duration_ms: 152.035856
+      type: 'test'
+      ...
+    # Subtest: sınıf: bağsız nakit (değişmez)
+    ok 14 - sınıf: bağsız nakit (değişmez)
+      ---
+      duration_ms: 161.829876
+      type: 'test'
+      ...
+    # Subtest: sınıf: bağsız çek (değişmez)
+    ok 15 - sınıf: bağsız çek (değişmez)
+      ---
+      duration_ms: 172.118514
+      type: 'test'
+      ...
+    # Subtest: sınıf: kısmen şüpheli faturaya bağlı 700 nakit (S25 (a): 600 128, 100 120)
+    ok 16 - sınıf: kısmen şüpheli faturaya bağlı 700 nakit (S25 (a): 600 128, 100 120)
+      ---
+      duration_ms: 164.13997
+      type: 'test'
+      ...
+    # Subtest: iki kayıt (K-1 (b)): Fatura 2'ye bağlı çek Fatura 2'yi tutan İKİNCİ kayıttan düşer (en eski kayıttan değil)
+    ok 17 - iki kayıt (K-1 (b)): Fatura 2'ye bağlı çek Fatura 2'yi tutan İKİNCİ kayıttan düşer (en eski kayıttan değil)
+      ---
+      duration_ms: 183.662526
+      type: 'test'
+      ...
+    # Subtest: aynı gün bağlı + bağsız iki tahsilat: toplam ayırıcının sırasından bağımsız (ders 31) — iki cari, ters yazım sırası, aynı 120 / 128
+    ok 18 - aynı gün bağlı + bağsız iki tahsilat: toplam ayırıcının sırasından bağımsız (ders 31) — iki cari, ters yazım sırası, aynı 120 / 128
+      ---
+      duration_ms: 767.535347
+      type: 'test'
+      ...
+    # Subtest: düzeltme: bağ kaldırılır / yeniden kurulur, tutar sınırı düzeltmede de; sil + bağsız yeniden gir
+    ok 19 - düzeltme: bağ kaldırılır / yeniden kurulur, tutar sınırı düzeltmede de; sil + bağsız yeniden gir
+      ---
+      duration_ms: 329.645338
+      type: 'test'
+      ...
+    # Subtest: K-1 (a) + (b): doubtfulBefore — satırdan ÖNCEKİ anki dağılım, kalem başına kayıt kimliğiyle; kuyruğun bugünkü çıktısına alan eklenmez
+    ok 20 - K-1 (a) + (b): doubtfulBefore — satırdan ÖNCEKİ anki dağılım, kalem başına kayıt kimliğiyle; kuyruğun bugünkü çıktısına alan eklenmez
+      ---
+      duration_ms: 184.86546
+      type: 'test'
+      ...
+    # Subtest: kart haritası (ledgerPlansOf) cari kümesiyle = bütün harita (ledgerPlansByAccount) — her cari
+    ok 21 - kart haritası (ledgerPlansOf) cari kümesiyle = bütün harita (ledgerPlansByAccount) — her cari
+      ---
+      duration_ms: 174.187165
+      type: 'test'
+      ...
+# (node:31206) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:31206) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kilit: kilitli dönemin 120 / 128'i donmuş = canlı (aynı kural); kilitten sonra bağlı tahsilat o anki dağılımdan
+    ok 22 - kilit: kilitli dönemin 120 / 128'i donmuş = canlı (aynı kural); kilitten sonra bağlı tahsilat o anki dağılımdan
+      ---
+      duration_ms: 545.259065
+      type: 'test'
+      ...
+    # Subtest: ESM döngüsü (lib/bank/doubtful.mjs ↔ lib/obligation-input.mjs): hangisi önce yüklenirse yüklensin çalışır
+    ok 23 - ESM döngüsü (lib/bank/doubtful.mjs ↔ lib/obligation-input.mjs): hangisi önce yüklenirse yüklensin çalışır
+      ---
+      duration_ms: 220.256503
+      type: 'test'
+      ...
+    1..23
+ok 1 - Ç5-A tur 3c: şüpheli ↔ kuyruk defter kuralı (S14, S25, S39, S168 = B) ve 'Normal Cari Hesaba İşle' sınırı
+  ---
+  duration_ms: 5002.499405
+  type: 'suite'
+  ...
+# (node:31206) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç5-A tur 3c — v2.4.9 gerçek verisi (kilitli + kilitsiz; sınıf sınıf)
+    # Subtest: donmuş 2.4.9 ↔ canlı yeni kural; fark kaynağıyla ön izlemede, fiş satırı yok; açık dönemde yeni kural
+    ok 1 - donmuş 2.4.9 ↔ canlı yeni kural; fark kaynağıyla ön izlemede, fiş satırı yok; açık dönemde yeni kural
+      ---
+      duration_ms: 422.091355
+      type: 'test'
+      ...
+    1..1
+ok 2 - Ç5-A tur 3c — v2.4.9 gerçek verisi (kilitli + kilitsiz; sınıf sınıf)
+  ---
+  duration_ms: 422.317346
+  type: 'suite'
+  ...
+1..2
+# tests 24
+# suites 2
+# pass 24
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5746.060382
