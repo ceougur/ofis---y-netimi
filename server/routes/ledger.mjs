@@ -616,7 +616,12 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     if (!lock) [reason, code] = ["Dönem kilidi yok; düzeltilecek kilitli dönem farkı yok.", "rule-diff-no-lock"];
     else if (pendingFreeze || cover !== lock) [reason, code] = ["Kilitli dönemin defteri dondurulurken düzeltme fişi yazılmaz; dondurma bitince yeniden açın.", "rule-diff-freezing"];
     else if (candidates) [reason, code] = [`Önce Açılış Olabilir listesini tamamlayın: kilitli dönemde onay bekleyen ${candidates} kayıt var (Yönetim › Sistem › Açılış Olabilir Kayıtlar).`, "rule-diff-candidates"];
-    else if (!plan.lines.length) [reason, code] = [posted.active.length ? "Fişle düzeltilebilen fark kalmadı." : "Düzeltilecek kural farkı yok.", "rule-diff-nothing"];
+    else if (plan.ownYearOver?.length) {
+      // S185 = A: yılı eşleme yılından sonra olan fiş farkı aşıyor — kilitli döneme (eşleme yılına) fiş önerilmez; fiş kendi yılında ters kaydedilir (Ters Kaydet fişin kendi tarihiyle yazar).
+      const years = new Set(plan.ownYearOver.map(row => row.year));
+      const own = posted.active.filter(voucher => years.has(Number(String(voucher.date).slice(0, 4)))).map(voucher => vouchers.voucherNoText(voucher.year, voucher.no));
+      [reason, code] = [`Kural Farkı Düzeltme Fişi (${own.join(", ")}) kilitli dönemin farkından fazla (kilit, fişin yılından geriye alındı); bu döneme fiş önerilmez. Fişi aşağıdaki Yazılmış Düzeltme Fişleri'nden kendi yılında ters kaydedin; kalan fark varsa sonra burada görünür.`, "rule-diff-own-year"];
+    } else if (!plan.lines.length) [reason, code] = [posted.active.length ? "Fişle düzeltilebilen fark kalmadı." : "Düzeltilecek kural farkı yok.", "rule-diff-nothing"];
     else if (date > today) [reason, code] = ["Kilit bugünün tarihinde; düzeltme fişi yarın yazılabilir.", "rule-diff-lock-today"];
     const lines = plan.lines.map(line => ({ ...line, name: accountName(line.account) }));
     const digest = createHash("sha256").update(JSON.stringify({ date, lines: plan.lines })).digest("hex").slice(0, 32);
