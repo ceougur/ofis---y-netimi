@@ -1427,3 +1427,29 @@ tabanda KIRMIZI (modülde `ledgerLines` yok). Mutantlar (en az 6, DEĞERLE): kar
 alanı düşer; kendi kendine kuran yolda silinmiş cari girer; modül düzeyi tekil örnek (iki şirket karışır); iade kesimi belleği bayat (anahtar sabit). (C) kâhinler taban = yeni. (D) komşular iki TZ;
 r2-249 M1–M7 ve tyk-mutasyon'un taşınan desenleri yeni yolda TEK eşleşme + ÖLÜ. (E) hız: cari kartı, Cari Listesi, Taksitler, karttan tahsilat, Vade Takip, zil / takvim, fatura kaydı. (F) ekran: ci.yml'de
 'tyk' geçenler + değişen dosyaları yükleyen cari / taksit / fatura senaryoları.
+
+### 18.12 Tur 3b — sonuç (kodla birlikte; kanıt docs/kanit/2026-11-14/c5a3b-*)
+- Taşıma: 131 satır (routes/plans.mjs 1638–1750 = 113; routes/accounts.mjs 44–45, 138–145, 1748–1753, 1755–1756 = 18) → lib/account-lines.mjs BAYT BAYT (taşıma betiği her bloğun yeni dosyada ardışık
+  ve aynen TEK kez geçtiğini doğruladı). Gövdede DEĞİŞEN SATIR YOK; eklenenler: allLedgers'ın iki parçasının işlev başlığı + `return` satırı (4 satır), dosya başı yorumu ve iki içe aktarım, dönüş
+  nesnesi. Kaynakta: plans.mjs ve accounts.mjs'e birer içe aktarım + birer örnek satırı; allLedgers'ta iki çağrı satırı (planMap satırı aynen arada — sorgu sırası aynı). obligation-input.mjs: içe aktarım,
+  başlık yorumunun bir cümlesi, üç yeni işlev (ledgerLines, accountInput, batchInputs) ve dönüş nesnesine üç ad; tur 3a'nın taşıdığı gövdelerin hiçbiri değişmedi.
+- A (bayt bayt; dışa açık yüz + cari kartının defteri + allLedgers satırları + cari kartının kart listesi + kart haritası): temiz 100 bin satır (2 şirket, 1.890 cari, 37.941 fatura, 5.928 kartlı fatura)
+  taban ↔ yeni döküm 1.892 satır / 499.731.234 bayt, SHA-256 50e217fd…4298 iki tarafta AYNI (fark 0); v2.4.9 fikstürü (50 cari) 51 satır, SHA-256 e08707ec…7732 AYNI. Yeni kodda ayrıca modülün
+  KENDİ kurduğu yol (yalnız store, ayrı salt okunur bağlantı) ↔ servis bütün carilerde: temiz 100 bin 1.484 + 406 cari, v2.4.9 50 cari — cari kümesi aynı, satır farkı 0, tek cari farkı 0, toplu farkı 0.
+- B: test/obligation-input-250.test.mjs'e ikinci vaka (ayrı sunucu; 24 cari-durum; ayrı hakem test/fixtures/obligation-input-250-zincir-hakem.json, c5a3b-taban'da üretildi, UTC = İstanbul bayt bayt;
+  tur 3a'nın vakası ve hakemi DEĞİŞMEDİ). İki TZ yeşil (2 / 2); tabanda KIRMIZI ("ledgerLines yok — zincir taşınmadı"; 1 / 2). Mutasyon 26 / 26 DEĞERLE (tur 3a'nın 14'ü + 12 yeni).
+  İlk taramada 5 yeni mutant değer iletisiyle yakalanmadı; nedenleri ve düzeltmesi testte (hakem karşılaştırması modül ↔ servis karşılaştırmasından önceye alındı; hakeme cari kartının defteri ve kart
+  listesi eklendi; programı çökerten "modül düzeyi tekil örnek" mutantı değerle yakalanan "süreç düzeyi kart haritası belleği" mutantıyla değiştirildi).
+- C: kâhin defter 187 denetim 0 fark (taban = yeni); kâhin cari 16.459 / 16.459 (+31 yapım aşaması; taban = yeni; çıktılar yalnız geçici klasör adında farklı); yapım aşaması listesi kendi kopyada
+  yeniden üretildi: FARKSIZ.
+- D: komşu (343 dosya — değişen dosyaları adıyla anan 27 + /api/workspace/accounts|plans yolunu anan 337; tarama) iki TZ 3.827 / 3.827; r2-249 M1–M7 yeni yolda 7 / 7 ÖLDÜ (tek eşleşme denetimi betiğin
+  kendisinde), tyk-mutasyon-250 KD1-c/d/e/f/i 5 / 5 ÖLDÜ; öbür mutasyon dosyalarının hiçbir dizgisi taşınan metne uymuyor (tarama).
+- E (hız; temiz 100 bin satırın taze kopyası, 5 tekrar, sıra taban → yeni → taban → yeni, `flock -x`): ölçüm 1 iki çift (yük 0,82–1,34) — sekiz yol iki çiftte de ölçütü geçti; Vade Takip 1. çiftte
+  −2,2 % / −3,7 %, 2. çiftte +10,4 % / +21,0 % (tabanın o koşudaki en iyisi 1.080 ms — öbür üç koşu 1.157–1.307). 'eşiğe değen yol tek ölçümle hükme bağlanmaz' kuralı gereği YİNELENDİ: ölçüm 2'nin 1. çifti (yük 0,93–1,40) Vade Takip
+  +4,8 % / +2,7 %, öbür yollar ±7 % içinde; 2. çiftin yeni koşusu yük 2,25 ile başladı → GEÇERSİZ. Okuma: taşıma işlev yerini değiştirir, iş miktarını değiştirmez (aynı SQL, aynı sıra); üç geçerli çiftin
+  ikisinde Vade Takip ölçütün içinde — SINIRDA, ana oturumun aday ölçümünde ayrıca bakılmalı.
+- F: ci.yml'deki 65 e2e adından cari VE taksit / iade yoluna dokunanlar (tarama; 'tyk' geçen dahil) 33 + adı iade / kart / kayıt bağı olan 4 = 37 senaryo, hepsi yeşil (çıkış 0).
+- B7 dondurma yarışı (yeni test 'bitir' / 'gozlem' kipleri): ön koşul gerçekleşmedi — testin verisinde açılışta bekleyen dondurma YOK ("açılışta bekliyor false"; kilit sunucu açıldıktan sonra konuyor);
+  'gozlem' kipi 240 sn'de asılıyor — tabandaki (değişmemiş) tur 3a vakasında da AYNI (zorlama betiğinin bekleyen dondurması olmayan testteki davranışı; kapsam dışı not).
+- Tur 3c için: tek cari yolu (`accountInput(id, gün)` satırsız çağrı) kart haritasını HER çağrıda baştan kurar — temiz 100 bin satırda 1.484 carinin tek tek kurulması 589 sn (cari başına ~0,4 sn); çok
+  carili yükleyici haritayı BİR kez kurup `ledgerLines({ ids, plans })` ile satırları alır, sonra `accountInput(id, gün, satırlar)` ya da doğrudan `batchInputs(gün, { ledgers })` (ders 47).
