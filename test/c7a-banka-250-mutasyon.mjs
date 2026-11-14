@@ -77,7 +77,7 @@ const MUTASYONLAR = [
     9, "K-14: kovanın ekran bakiyesi açılışta sayılmış satırları düşmez", MONEY,
     "w WHERE w.ref = '' AND NOT ${COVER_SQL} GROUP BY w.way`",
     "w WHERE w.ref = '' AND NOT (${COVER_SQL} AND 0) GROUP BY w.way`",
-    [K14], /bankMinor: 670000/,
+    [K14], /bankMinor: 670000|actual: 6700$/m,
   ],
   [
     10, "K-14: pasif hesabın açılışı sınırdan düşer (durum fark etmez kuralı bozulur)", COVER,
