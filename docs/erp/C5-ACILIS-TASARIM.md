@@ -1232,3 +1232,22 @@ yazıldıktan SONRA dışarıda kalan alt defter farkı varken "Düzeltildi" yok
 yılı fiş tarihinin yılı), N12 (silinmiş evrakın Kapatılacak Fatura bağı S160 reddine girmez).
 
 **DÜŞÜK-3 — metin:** fazla düzeltme ipucundaki yer "Yönetim › Sistem › Kural Farkı Düzeltme".
+
+### 17.14 Tur 2e — sonuçlar (kodla birlikte; kanıt docs/kanit/2026-11-14/c5a2e-*; özet ve betikler c5a2e-ozet/)
+- ORTA-1 (S174 = A): yıl kuralının TEK tanımı `ruleDiffCorrectionYear` (lib/ledger-opening.mjs); okuyanlar routes/ledger.mjs `correctionView` (GET / POST) ve lib/ledger-snapshots.mjs `checks()` (Mutabakat
+  Testi, Defter Mutabakatı, açılış / arka plan taraması, Yönetim satırı). Dar kontrolün örneği (p1-yil.mjs, v2.4.9 verisi): kilit 31.12.2026 sonrası ön izleme ÖNCE etkin B 602 700 / A 671 700 →
+  SONRA pasif "Fişle düzeltilebilen fark kalmadı."; satır "Düzeltildi (Fiş 2026-000001)". Kalıcı test test/kural-farki-yil-250 7 / 7 iki TZ; tabanda 6 / 7 kırmızı (y7: B 519 300 / B 602 700 /
+  A 671 1000 ↔ beklenen B 519 300 / A 671 300; y6 tabanda da yeşil — N1, ürün doğru).
+- Fazla düzeltme yıl sonundan sonra (kilit kaldır / yeniden kilitle; tutar aynı 700): ön izleme ÖNCE B 602 700 / A 500 700 → SONRA B 681 700 / A 500 700 (M7 — önceki yıl, borç yönlü 681). Önceki
+  yılın fişi yeni yılda TERS kaydedilirse: bugünkü kural (asıl fişin yılı; çift birbirini götürür) AYNEN — kodlanmadı, KULLANICIYA SORULMALI (tur 2e raporu).
+- DÜŞÜK-4: Avukat / Muhasebe kilitli adaya (kilit günü dahil) tek karar / geri alma ve kilitli kayıt içeren toplu karar ÖNCE 200 → SONRA 403 opening-review-locked (toplu: hiçbiri yazılmaz). Test
+  test/acilis-olabilir-yetki-250 3 / 3 iki TZ; tabanda 3 / 3 kırmızı (200 ≠ 403).
+- DÜŞÜK-1: senaryo-acilis-olabilir-250 45 / 45 iki TZ; tabanda 43 / 45 (satır 0, "Onay bekleyen kayıt yok").
+- DÜŞÜK-2: N1, N3, N4, N9, N10, N11, N12 ve tur 2e'nin E1–E3, E5, E7–E10 mutantları DEĞERLE öldü; E4 iki yıl sonu vakasıyla öldü; E6 (Yönetim satırının yılı = son etkin fişin yılı) EŞDEĞER
+  (öğe yalnız tutar taşır; eşleme hesabı tutarı değiştirmez).
+- DÜŞÜK-3: ipucu "… — Yönetim › Sistem › Kural Farkı Düzeltme'den ters kaydedin."
+- Kâhinler: defter 187 / 187 iki TZ (taban = yeni); cari 17.136 / 17.136 (taban = yeni), yapım aşaması listesi yeniden üretimi depodakiyle bayt bayt aynı (0 kayıt).
+- Eşdeğerlik (fişsiz / adaysız): üç fikstür × iki TZ ve temiz 100 bin satır kilitsiz + kilitli 30.06.2026 — Mutabakat Testi, Defter Mutabakatı, Yevmiye, Hesap / Alt Hesap Mizanı, defter, aday
+  listesi, bütün maddeler BİREBİR.
+- Komşular (taramayla 39 dosya) 720 / 720 iki TZ; üç ekran senaryosu iki TZ yeşil; yeni iki test B7 zorlamasının 'bitir' ve 'gozlem' kiplerinde yeşil (ön koşul gerçekleşti).
+- Hız (ölçüm kilidi, yük 1,0–1,7): kötüleşen yol yok (ayrıntı rapor); Kural Farkı kaydı (POST) ayrıca ÖLÇÜLEMEDİ (kilit dolu) — yolu ön izlemeyle aynı plan + bir fiş yazımı.
