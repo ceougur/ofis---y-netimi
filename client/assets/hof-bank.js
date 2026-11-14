@@ -2158,7 +2158,9 @@
       }
       const transfer = kind === "transfer";
       if (transfer) syncTarget();
-      label("accountId", transfer ? "Gönderen Hesap" : "Banka Hesabı");
+      // 2.5.0 Ç7a tur 2b (D-07 kart faizi; yazım düzeni): seçili hesap kredi kartıysa alanın adı "Kredi Kartı".
+      const chosen = accounts.find(account => account.id === select?.value);
+      label("accountId", transfer ? "Gönderen Hesap" : chosen?.kind === "card" ? "Kredi Kartı" : "Banka Hesabı");
       show("toAccountId", transfer);
       show("channel", transfer);
       show("valueDate", transfer);

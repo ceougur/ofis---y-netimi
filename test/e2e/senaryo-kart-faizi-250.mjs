@@ -119,6 +119,15 @@ try {
     const accounts = await options(page, "accountId");
     ok(accounts.some(item => item.value === CARD.id) && accounts.some(item => item.value === ZIRAAT.id) && !accounts.some(item => item.value === OLD.id), `hesap listesi: ${accounts.map(item => item.label).join(" | ")} (kart ve Ziraat; pasif kart yok)`);
     ok((await page.$eval(`${form} [name="accountId"]`, node => node.value)) === CARD.id, "Banka Hesabı = Şirket Kartı (hesap detayından seçili)");
+    // 2.5.0 Ç7a tur 2b (iş 4; yazım düzeni): kart seçiliyken alanın adı "Kredi Kartı", vadesiz hesap seçilince "Banka Hesabı".
+    const fieldName = () => page.$eval(`${form} [name="accountId"]`, node => (node.closest(".hof-field")?.querySelector(":scope > span")?.firstChild?.textContent || "").trim());
+    ok((await fieldName()) === "Kredi Kartı", `kart seçiliyken alan adı: "${await fieldName()}"`);
+    await page.selectOption(`${form} [name="accountId"]`, ZIRAAT.id);
+    await page.waitForTimeout(200);
+    ok((await fieldName()) === "Banka Hesabı", `Ziraat seçilince alan adı: "${await fieldName()}"`);
+    await page.selectOption(`${form} [name="accountId"]`, CARD.id);
+    await page.waitForTimeout(200);
+    ok((await fieldName()) === "Kredi Kartı", "karta dönünce yine Kredi Kartı");
   });
 
   await step("2. Klavyeyle 200 + BSMV 10; önizleme Kart Borcuna Eklenen 210; Kaydet → kart borcu 5.210, B 780 / A 309.k", async () => {
