@@ -16,6 +16,11 @@ const ONLY = opt("--yalniz") ? new Set(opt("--yalniz").split(",").map(Number)) :
 const VOUCHER = "server/lib/bank/voucher.mjs";
 const VOUCHERS = "server/lib/bank/vouchers.mjs";
 const D07 = "test/kart-faizi-250.test.mjs";
+const LEDGER = "server/lib/general-ledger.mjs";
+const COVER = "server/lib/bank/opening-cover.mjs";
+const MONEY = "server/lib/bank/money-lines.mjs";
+const OPENING = "server/lib/ledger-opening.mjs";
+const K14 = "test/hesapsiz-acilis-250.test.mjs";
 
 // [no, ad, dosya, eski metin, yeni metin, koşulacak testler, beklenen neden]
 const MUTASYONLAR = [
@@ -48,6 +53,61 @@ const MUTASYONLAR = [
     "        return { lines: interestOutLines({ account: shape(account), amountMinor, taxMinor: optionalAmount(body.taxAmount, \"BSMV / KKDF\"), gl: values.gl.interestExpense }) };",
     "        return { lines: interestOutLines({ account: shape(account), amountMinor, taxMinor: optionalAmount(body.taxAmount, \"BSMV / KKDF\"), gl: account.kind === \"card\" ? \"770\" : values.gl.interestExpense }) };",
     [D07], /D-07: B 780 faiz \+ BSMV \/ A 309\.k/,
+  ],
+  // Ç7a tur 2 — K-14 / K-15 (S179 = A; tasarım notu §13.2). Karşı mutantlar DEĞERLE yakalanmalı.
+  [
+    6, "K-14: açılıştan önceki hesapsız satır banka tarafına yazılır (defterde 519'a geçmez)", LEDGER,
+    "      if ((sub === \"102.00\" || sub === \"108.00\") && isCovered(",
+    "      if (false && isCovered(",
+    [K14], /B 519 \/ A 120|Açılış Karşılığı|opening:519|102\.00/,
+  ],
+  [
+    7, "K-14: açılış günü sınırı '<' yerine '≤' (açılış günündeki satır da 519'a)", COVER,
+    "  if (way === \"bank\") return Boolean(bounds.bank) && date < bounds.bank;",
+    "  if (way === \"bank\") return Boolean(bounds.bank) && date <= bounds.bank;",
+    [K14], /açılış günü \(01\.10\) açılıştan SONRA|ledger-integrity|102\.00/,
+  ],
+  [
+    8, "K-14: EN GEÇ yerine EN ERKEN açılış tarihi", COVER,
+    "(SELECT MAX(opening_date) FROM bank_accounts WHERE deleted_at IS NULL AND currency = 'TRY' AND kind IN (${BANK_KINDS_SQL}))",
+    "(SELECT MIN(opening_date) FROM bank_accounts WHERE deleted_at IS NULL AND currency = 'TRY' AND kind IN (${BANK_KINDS_SQL}))",
+    [K14], /Garanti'nin açılışından \(05\.10\) önce|en geç/,
+  ],
+  [
+    9, "K-14: kovanın ekran bakiyesi açılışta sayılmış satırları düşmez", MONEY,
+    "w WHERE w.ref = '' AND NOT ${COVER_SQL} GROUP BY w.way`",
+    "w WHERE w.ref = '' GROUP BY w.way`",
+    [K14], /bankMinor: (670000|6700|.*270000)|kova|Alt Hesap|102\.00/,
+  ],
+  [
+    10, "K-14: pasif hesabın açılışı sınırdan düşer (durum fark etmez kuralı bozulur)", COVER,
+    "WHERE deleted_at IS NULL AND currency = 'TRY' AND kind IN (${BANK_KINDS_SQL}))",
+    "WHERE deleted_at IS NULL AND status = 'active' AND currency = 'TRY' AND kind IN (${BANK_KINDS_SQL}))",
+    [K14], /pasif hesabın açılışı sınırda kalır/,
+  ],
+  [
+    11, "K-14: Devir Kapanışı maddesi netlenmez (B 519 / A 519 yevmiyede kalır)", LEDGER,
+    "    if (covered) {\n      const net",
+    "    if (false) {\n      const net",
+    [K14], /B 519 \/ A 519 netlenir, madde yazılmaz/,
+  ],
+  [
+    12, "K-15: kart yolunda yön ayrımı kalkar (kart ödemesi de POS sınırına — yalnız Devir Kapanışı)", COVER,
+    "    const limit = kind === \"out\" ? bounds.card : bounds.pos;",
+    "    const limit = bounds.pos;",
+    [K14], /açılıştan önceki kart ödemesi A 519|ledger-integrity|108\.00/,
+  ],
+  [
+    13, "K-14: 519 ikinci yükleyicisi açılışta sayılmış satırları bilmez (Açılış Karşılığı yanlış alarm)", OPENING,
+    "  const counterpart = parts.cash + parts.accounts + parts.plans + parts.stock + parts.bank + parts.unassigned + parts.cheques + parts.vouchers519;",
+    "  const counterpart = parts.cash + parts.accounts + parts.plans + parts.stock + parts.bank + parts.cheques + parts.vouchers519;",
+    [K14], /opening:519|Açılış Karşılığı|Mutabakat Testi/,
+  ],
+  [
+    14, "K-14: defter beklenenleri (groups) açılışta sayılmış satırı 102.00'da bekler (yanlış alarm)", MONEY,
+    "SELECT CASE WHEN ${COVER_SQL} THEN 'opening' ELSE w.way END AS way, w.ref AS ref, COALESCE(SUM(CASE WHEN w.kind = 'in' THEN w.cents ELSE -w.cents END), 0) AS cents, COUNT(*) AS count FROM (${waySql({ light: true, events, ids, ref, cover: true })})",
+    "SELECT w.way AS way, w.ref AS ref, COALESCE(SUM(CASE WHEN w.kind = 'in' THEN w.cents ELSE -w.cents END), 0) AS cents, COUNT(*) AS count FROM (${waySql({ light: true, events, ids, ref, cover: true })})",
+    [K14], /bank:sub|ledger-integrity|Mutabakat|gl:102/,
   ],
 ];
 
