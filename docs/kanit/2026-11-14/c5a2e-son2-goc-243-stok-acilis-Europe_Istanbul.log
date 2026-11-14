@@ -1,0 +1,11 @@
+▶ göç v30: v2.4.2 verisindeki stok açılışları Ana Defter'e gelir (B 153 / A 500)
+  ✔ eski veride açılışlar işaretlenir; yalnız 153 / 500 değişir; kilit izi aynı; Mutabakat Testi temiz; geri dönüş çalışır (1006.037144ms)
+✔ göç v30: v2.4.2 verisindeki stok açılışları Ana Defter'e gelir (B 153 / A 500) (1011.200708ms)
+ℹ tests 1
+ℹ suites 1
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1301.409343

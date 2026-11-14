@@ -1,0 +1,16 @@
+▶ yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ✔ arayüz dosyalarında kurala uymayan ad yok (54.951491ms)
+  ✔ hareket türü adları ve programın varsayılan adları kurala uyuyor (4.428019ms)
+  ✔ derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor (2.106488ms)
+  ✔ Maliyet Hesap Kartı şablonunun adları kurala uyuyor (2.918353ms)
+  ✔ mobil görünümde (client/mobil) kurala uymayan ad yok (3.139ms)
+  ✔ rapor, PDF ve Excel başlıklarında kurala uymayan ad yok (27.396927ms)
+✔ yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük (96.673982ms)
+ℹ tests 6
+ℹ suites 1
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 150.89538

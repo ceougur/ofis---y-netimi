@@ -1,0 +1,24 @@
+▶ 2.5.0 Ç3 tur 1 — önbellek, aynı gün / başka gün yeniden kilit, iletiler, ara dilim
+  ✔ ORTA-1: Şirket Verisini Sıfırla + aynı güne yeniden kilitten sonra Hesap Planı Mizanı (uç ve Rapor Merkezi) YENİ verinin toplamını gösterir (önbellek son koşunun kimliğiyle) (1126.830966ms)
+  ✔ ORTA-3: göçün / onarımın bekleyen 2.4.9 koşusu varken AYNI güne yeniden kilit — koşu kendi kuralıyla (2.4.9) sürer, güncel kuralla yeni koşu açılmaz (557.125179ms)
+  ✔ ORTA-3 ailesi: bekleyen 2.4.9 koşusu varken kilit İLERLETİLİNCE koşu 2.4.9 ile tamamlanır, kalan dönem güncel kuralla; GERİ ÇEKİLİNCE (koşunun içine) kısa koşu yine 2.4.9 (802.700639ms)
+  ✔ ORTA-3 ailesi (eşzamanlı): bekleyen 2.4.9 koşusu varken kapanış fişi kilidi ilerletir (postAll lockThrough) — koşu 2.4.9 ile, kalan dönem güncel kuralla, ikisi aynı işlemde (370.370926ms)
+  ✔ ORTA-3 ailesi: kuralı bu programda olmayan bekleyen koşu güncel kurala GEÇMEZ, yarım donmaz — ilerlemede ve Mutabakat Testi'nde görünür; eşzamanlı kilit düşer; kilit kaldırılınca bırakılır (826.677141ms)
+  ✔ K4: eksik donmuş satır ayrı iletiyle; 'Kural Değişikliği Farkı' nedeni bilinmeyende tarafsız, nedeni biliniyorsa onu söyler; denetim adları Yazım düzeninde (724.329629ms)
+  ✔ §5 kural kayıt defteri: RULE_HISTORY'nin son öğesi güncel kural, önceki her kuralın kopyası (ledger-rule-<sürüm>/) ve kayıt defteri girdisi var; her kuralın bekleyen koşusu (iş parçacığında) kendi kuralıyla donar (878.721277ms)
+  ✔ DÜŞÜK-3 (ders 47): göç / onarım penceresinde ara dilim (2.4.9) koşu başına bir kez kurulur — çıktı önbelleksiz yolla birebir; yazım, kural farkı ve işlem içi okuma yeniden kurar; kilitli yılın Yevmiye Defteri güncel türetme kurmaz (576.12956ms)
+✔ 2.5.0 Ç3 tur 1 — önbellek, aynı gün / başka gün yeniden kilit, iletiler, ara dilim (5864.818349ms)
+▶ 2.5.0 Ç3 tur 1 — ORTA-2 / ORTA-3 açılış (dosya kapatılıp ham bağlantıyla değiştirilir, yeniden açılır)
+  ✔ ORTA-2: eski sürüm donmuş satırları silip AYNI güne yeniden kilitlediyse açılış onarımı kapsamı indirir, kilitli yıl GAP_RULE (2.4.9) ile yeniden donar — Yevmiye Defteri ve Hesap Planı Mizanı dolu, Mutabakat Testi tutarlı (815.830406ms)
+  ✔ ORTA-2 (ileri kilit): eski sürüm satırları silip kilidi İLERLETTİYSE eski kapsamın satırları da yeniden donar (05.05 satırı kaybolmaz) (747.384133ms)
+  ✔ ORTA-2 (sağlama noktası): yalnız son koşunun satırları silindiyse kapsam sağlam son koşunun gününe iner; önceki koşunun satırları (güncel kural) korunur, kalan dönem GAP_RULE ile donar (843.430235ms)
+  ✔ ORTA-3 ailesi (yarıda kesilme): bekleyen 2.4.9 koşusu sürerken kilit ilerletildi ve dondurma kesildi → açılışta koşu 2.4.9 ile sürer, kalan dönem (ilerletme izi) güncel kuralla donar (852.020776ms)
+✔ 2.5.0 Ç3 tur 1 — ORTA-2 / ORTA-3 açılış (dosya kapatılıp ham bağlantıyla değiştirilir, yeniden açılır) (3270.582985ms)
+ℹ tests 12
+ℹ suites 2
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9429.636615

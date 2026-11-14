@@ -1,0 +1,106 @@
+başla 06:08
+/dev/vda        252G   28G   11G  72% /
+2.18 3.21 3.06 2/207 6330
+A defter UTC çıkış 0 [kanit] c5a2e-yeni-kahin-defter-UTC: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v470 x
+A defter Europe/Istanbul çıkış 0 [kanit] c5a2e-yeni-kahin-defter-Europe_Istanbul: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.
+B cari UTC çıkış 0 [kanit] c5a2e-yeni-kahin-cari-UTC: GEÇTİ · çıkış 0 · 17136/17136 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v470
+B liste üretimi çıkış 0 · depodaki liste ↔ üretilen: depo 0 üretilen 0
+B liste: depodaki ile BAYT BAYT AYNI
+== C surum-2.4.9-s127 · TZ UTC · bugün 2026-11-10
+  taban çıkış 0 taban kilit=2025-12-31 integrity 200 26ms (döngü 24) · ledger 200 8ms (döngü 0) · yevmiye 200 7ms (döngü 0) · hesapMizani 200 9ms (döngü 0) · altHesap 200 6ms (döngü 0) · defterMut 200 14ms (döngü 0) · 
+  yeni çıkış 0 yeni kilit=2025-12-31 integrity 200 34ms (döngü 30) · ledger 200 11ms (döngü 8) · yevmiye 200 9ms (döngü 0) · hesapMizani 200 6ms (döngü 0) · altHesap 200 6ms (döngü 0) · defterMut 200 29ms (döngü 0) · 
+  integrity    AYNI
+  ledger       AYNI
+  yevmiye      AYNI
+  hesapMizani  AYNI
+  altHesap     AYNI
+  defterMut    AYNI
+  adaylar      AYNI
+  book         AYNI (15 ↔ 15 madde)
+SONUÇ: BİREBİR
+== C surum-2.0.26-zincir · TZ UTC · bugün 2026-10-08
+  taban çıkış 0 taban kilit=2026-10-05 integrity 200 54ms (döngü 47) · ledger 200 36ms (döngü 0) · yevmiye 200 16ms (döngü 0) · hesapMizani 200 16ms (döngü 0) · altHesap 200 5ms (döngü 0) · defterMut 200 54ms (döngü 0) 
+  yeni çıkış 0 yeni kilit=2026-10-05 integrity 200 44ms (döngü 39) · ledger 200 25ms (döngü 23) · yevmiye 200 22ms (döngü 0) · hesapMizani 200 21ms (döngü 0) · altHesap 200 6ms (döngü 0) · defterMut 200 43ms (döngü 0) 
+  integrity    AYNI
+  ledger       AYNI
+  yevmiye      AYNI
+  hesapMizani  AYNI
+  altHesap     AYNI
+  defterMut    AYNI
+  adaylar      AYNI
+  book         AYNI (430 ↔ 430 madde)
+SONUÇ: BİREBİR
+== C surum-2.4.9-s127-kilitsiz · TZ UTC · bugün 2026-11-10
+  taban çıkış 0 taban kilit= integrity 200 18ms (döngü 15) · ledger 200 7ms (döngü 0) · yevmiye 200 7ms (döngü 0) · hesapMizani 200 6ms (döngü 0) · altHesap 200 4ms (döngü 0) · defterMut 200 19ms (döngü 0) · adaylar 20
+  yeni çıkış 0 yeni kilit= integrity 200 17ms (döngü 15) · ledger 200 7ms (döngü 0) · yevmiye 200 7ms (döngü 0) · hesapMizani 200 6ms (döngü 0) · altHesap 200 5ms (döngü 0) · defterMut 200 16ms (döngü 0) · adaylar 200
+  integrity    AYNI
+  ledger       AYNI
+  yevmiye      AYNI
+  hesapMizani  AYNI
+  altHesap     AYNI
+  defterMut    AYNI
+  adaylar      AYNI
+  book         AYNI (9 ↔ 9 madde)
+SONUÇ: BİREBİR
+== C surum-2.4.9-s127 · TZ Europe/Istanbul · bugün 2026-11-10
+  taban çıkış 0 taban kilit=2025-12-31 integrity 200 26ms (döngü 19) · ledger 200 8ms (döngü 6) · yevmiye 200 7ms (döngü 0) · hesapMizani 200 8ms (döngü 0) · altHesap 200 4ms (döngü 0) · defterMut 200 14ms (döngü 0) · 
+  yeni çıkış 0 yeni kilit=2025-12-31 integrity 200 24ms (döngü 20) · ledger 200 9ms (döngü 0) · yevmiye 200 8ms (döngü 0) · hesapMizani 200 12ms (döngü 0) · altHesap 200 6ms (döngü 5) · defterMut 200 15ms (döngü 0) · 
+  integrity    AYNI
+  ledger       AYNI
+  yevmiye      AYNI
+  hesapMizani  AYNI
+  altHesap     AYNI
+  defterMut    AYNI
+  adaylar      AYNI
+  book         AYNI (15 ↔ 15 madde)
+SONUÇ: BİREBİR
+== C surum-2.0.26-zincir · TZ Europe/Istanbul · bugün 2026-10-08
+  taban çıkış 0 taban kilit=2026-10-05 integrity 200 54ms (döngü 49) · ledger 200 23ms (döngü 0) · yevmiye 200 26ms (döngü 0) · hesapMizani 200 19ms (döngü 0) · altHesap 200 5ms (döngü 0) · defterMut 200 38ms (döngü 0) 
+  yeni çıkış 0 yeni kilit=2026-10-05 integrity 200 48ms (döngü 43) · ledger 200 21ms (döngü 19) · yevmiye 200 16ms (döngü 0) · hesapMizani 200 16ms (döngü 0) · altHesap 200 5ms (döngü 0) · defterMut 200 39ms (döngü 0) 
+  integrity    AYNI
+  ledger       AYNI
+  yevmiye      AYNI
+  hesapMizani  AYNI
+  altHesap     AYNI
+  defterMut    AYNI
+  adaylar      AYNI
+  book         AYNI (430 ↔ 430 madde)
+SONUÇ: BİREBİR
+== C surum-2.4.9-s127-kilitsiz · TZ Europe/Istanbul · bugün 2026-11-10
+  taban çıkış 0 taban kilit= integrity 200 18ms (döngü 15) · ledger 200 11ms (döngü 0) · yevmiye 200 7ms (döngü 5) · hesapMizani 200 5ms (döngü 0) · altHesap 200 4ms (döngü 0) · defterMut 200 13ms (döngü 0) · adaylar 2
+  yeni çıkış 0 yeni kilit= integrity 200 16ms (döngü 14) · ledger 200 6ms (döngü 0) · yevmiye 200 6ms (döngü 0) · hesapMizani 200 5ms (döngü 0) · altHesap 200 4ms (döngü 0) · defterMut 200 22ms (döngü 0) · adaylar 200
+  integrity    AYNI
+  ledger       AYNI
+  yevmiye      AYNI
+  hesapMizani  AYNI
+  altHesap     AYNI
+  defterMut    AYNI
+  adaylar      AYNI
+  book         AYNI (9 ↔ 9 madde)
+SONUÇ: BİREBİR
+/dev/vda        252G   28G   11G  72% /
+C 100k taban kilit - çıkış 0 taban kilit= integrity 200 6376ms (döngü 6371) · ledger 200 3038ms (döngü 0) · yevmiye 200 2628ms (döngü 0) · hesapMizani 200 2562ms (döngü 0) · altHesap 200 330ms (döngü 0) · defterMut 200 8180ms (döngü 0) · adaylar 200 63ms (döngü 0) · m
+C 100k yeni kilit - çıkış 0 yeni kilit= integrity 200 6866ms (döngü 6862) · ledger 200 2874ms (döngü 0) · yevmiye 200 2510ms (döngü 0) · hesapMizani 200 2607ms (döngü 0) · altHesap 200 371ms (döngü 0) · defterMut 200 8445ms (döngü 0) · adaylar 200 60ms (döngü 0) · ma
+  integrity    AYNI
+  ledger       AYNI
+  yevmiye      AYNI
+  hesapMizani  AYNI
+  altHesap     AYNI
+  defterMut    AYNI
+  adaylar      AYNI
+  book         AYNI (153803 ↔ 153803 madde)
+SONUÇ: BİREBİR
+C 100k taban kilit 2026-06-30 çıkış 0 taban kilit=2026-06-30 integrity 200 22561ms (döngü 22565) · ledger 200 3304ms (döngü 0) · yevmiye 200 3993ms (döngü 0) · hesapMizani 200 3071ms (döngü 0) · altHesap 200 378ms (döngü 0) · defterMut 200 10791ms (döngü 0) · adaylar 200 56ms (d�
+C 100k yeni kilit 2026-06-30 çıkış 0 yeni kilit=2026-06-30 integrity 200 20222ms (döngü 20233) · ledger 200 3350ms (döngü 0) · yevmiye 200 3681ms (döngü 0) · hesapMizani 200 3214ms (döngü 0) · altHesap 200 368ms (döngü 0) · defterMut 200 10750ms (döngü 0) · adaylar 200 65ms (dö
+  integrity    AYNI
+  ledger       AYNI
+  yevmiye      AYNI
+  hesapMizani  AYNI
+  altHesap     AYNI
+  defterMut    AYNI
+  adaylar      AYNI
+  book         AYNI (153803 ↔ 153803 madde)
+SONUÇ: BİREBİR
+bitti 06:21
+/dev/vda        252G   28G   11G  72% /
+kilit/çıkış 0

@@ -1,0 +1,43 @@
+{
+  "ad": "c5a2e-e2e-acilis-olabilir-taban",
+  "komut": "node test/e2e/senaryo-acilis-olabilir-250.mjs",
+  "commit": "1b984469b72cfa86444c451e4d5a0dc6687911b5",
+  "dal": "worktree-agent-a43a9593927943672",
+  "kirli": 2,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v470 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-14T06:04:16.179Z",
+  "sure_sn": 38.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 45,
+    "gecen": 43,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "kalan 200 kayıt görünür (satır 0)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "'Onay bekleyen kayıt yok' iletisi yok",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2e-k3/kanit/2026-11-14/c5a2e-e2e-acilis-olabilir-taban.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a43a9593927943672",
+  "ham_cikti_sha256": "3e595b6f8394a03a29bf9e240ed0afc134167ece9719935e6a387e70bc3c5d51",
+  "ham_cikti_bayt": 4046
+}

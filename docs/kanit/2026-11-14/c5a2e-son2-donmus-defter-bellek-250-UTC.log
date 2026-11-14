@@ -1,0 +1,17 @@
+▶ 2.5.0 Ç3 tamamlama — büyük okumada sıkı satırlar (lib/lean-rows.mjs)
+  ✔ B1: leanAll / leanRows = store.all — aynı anahtarlar, aynı sıra, aynı değerler (metin, tamsayı, ondalık, NULL, BLOB, büyük tamsayı; konumlu ve adlı parametre); tutma sınırı aşılınca da (12.135242ms)
+  ✔ B2: sıkı satırlar V8'in hızlı kipinde (ayrı süreç, --allow-natives-syntax: %HasFastProperties); store.all'ın satırı bilgi için ölçülür (40.594417ms)
+  ✔ B5: 2.4.9 kural kopyasını çağıran her yer sıkı depoyla çağırır (kaynak taraması; kopyanın kendisi değişmez) (44.737437ms)
+✔ 2.5.0 Ç3 tamamlama — büyük okumada sıkı satırlar (lib/lean-rows.mjs) (98.416536ms)
+▶ 2.5.0 Ç3 tamamlama — türetme ve donmuş defter sıkı satırlarla (eski sürüm verisi, güncel şema)
+  ✔ B3: Ana Defter türetmesi (güncel kural ve 2.4.9 kopyası) kaynak satırlarını store.all ile okumaz; çıktı store.all'lı türetmeyle BİREBİR; donmuş okuma ve Kural Değişikliği Farkı da store.all'sız (60.087046ms)
+  ✔ B4: iş parçacığı kipi — donmuş satırlar parça parça üretilir (parça 7 satır: tam parçalar + eksik son parça); yazılan = türetilen (sayı, borç, alacak), donmuş = canlı; koşunun toplamları satırlarla aynı (172.024025ms)
+✔ 2.5.0 Ç3 tamamlama — türetme ve donmuş defter sıkı satırlarla (eski sürüm verisi, güncel şema) (461.801479ms)
+ℹ tests 5
+ℹ suites 2
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 716.010747

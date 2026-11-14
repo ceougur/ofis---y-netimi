@@ -1,0 +1,12 @@
+▶ mutabakat aracı: Kasa açılış uyarısı 'Uyarı' başlığında, sapma değil
+  ✔ yalnız uyarı: çıkış 0; '✓ … tutarlı' + '⚠ Uyarı' başlığında uyarının adı, sayısı ve ne yapılacağı; 'sapma' listesi yok; JSON ok true, notices; dosya değişmez (949.051359ms)
+  ✔ gerçek sapma + uyarı: çıkış 1; sapma listesinde yalnız gerçek sapmalar (uyarı YOK), uyarı ayrı başlıkta (446.469571ms)
+✔ mutabakat aracı: Kasa açılış uyarısı 'Uyarı' başlığında, sapma değil (1820.19436ms)
+ℹ tests 2
+ℹ suites 1
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2105.377202
