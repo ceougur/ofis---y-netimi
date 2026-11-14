@@ -13,6 +13,7 @@
      "madde_dengesi": [],
      "mizan_dengesi": [],
      "modul_defter": [],
+     "s127_tek_yazim": [],
      "tyk": []
     },
     "canli": {
@@ -24,6 +25,7 @@
      "madde_dengesi": [],
      "mizan_dengesi": [],
      "modul_defter": [],
+     "s127_tek_yazim": [],
      "tahmini_aylik_toplam": [],
      "tyk": []
     }
@@ -2002,9 +2004,9 @@
        "devir": 0
       },
       "108": {
-       "alacak": 263860,
+       "alacak": 203060,
        "bakiye": 0,
-       "borc": 263860,
+       "borc": 203060,
        "devir": 0
       },
       "120": {
@@ -2170,12 +2172,6 @@
        "alacak": 619614,
        "bakiye": -197644,
        "borc": 421970,
-       "devir": 0
-      },
-      "108.90": {
-       "alacak": 60800,
-       "bakiye": 0,
-       "borc": 60800,
        "devir": 0
       },
       "108.POS1": {
@@ -2367,9 +2363,9 @@
      },
      "son": "2027-02-28",
      "toplam": {
-      "alacak": 78822469,
+      "alacak": 78761669,
       "bakiye": 0,
-      "borc": 78822469,
+      "borc": 78761669,
       "devir": 0
      }
     },

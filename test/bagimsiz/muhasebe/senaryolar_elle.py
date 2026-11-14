@@ -311,13 +311,14 @@ S("s12-banka-islemleri", ["K-05", "K-06", "K-07", "K-08", "K-09", "K-10", "K-11"
     o("banka_diger_gider", "2026-02-28", banka="B2", tutar=1500),
     BIL("bil", "2026-02-28"), GT("gt", "2026-01-01", "2026-02-28"), BIL("bil2", "2026-03-02"),
 ], {"A": {
-    # B1: 1000000 − 100000 − 525 − 50000 − 1050 + 25500 + 2000 = 875925; B2: 200000 + 100000 − 12000 − 8000 − 1500 = 278500
-    "bil/detay/I.A/102.B1": 875925, "bil/detay/I.A/102.B2": 278500, "bil/detay/I.A/108.90": 50000,
+    # B1: 1000000 − 100000 − 525 − 50000 − 1050 + 25500 + 2000 = 875925; B2: 200000 + 100000 + 50000 − 12000 − 8000 − 1500 = 328500
+    # bakım 12 (S175 = C, README Ş1): valörlü transfer 27.02'de doğrudan B2'ye — 108.90 yok (bakım 11'e kadar B2 278500, 108.90 50000)
+    "bil/detay/I.A/102.B1": 875925, "bil/detay/I.A/102.B2": 328500, "bil/detay/I.A/108.90": 0,
     "bil/aktif/I.A": 1204425, "bil/aktif/I.H": 6500, "bil/pasif/V.G": 1200000, "bil/pasif/V.F": 10925,
     # E = 525 + 1050 + 10000; F = 30000 + 2000; G = 1500; H = 8000
     "gt/kalemler/E": 11575, "gt/kalemler/F": 32000, "gt/kalemler/G": 1500, "gt/kalemler/H": 8000, "gt/kalemler/DNK": 10925,
     "bil2/detay/I.A/102.B2": 328500, "bil2/aktif/I.A": 1204425,
-}}, aciklama="Transfer + ücret/BSMV, valörlü transfer 108.90, masraf, faizler, diğer gelir/gider.")
+}}, aciklama="Transfer + ücret/BSMV, valörlü transfer işlem gününde doğrudan alıcıya (S175 = C; 108.90 yok), masraf, faizler, diğer gelir/gider.")
 
 # ------------------------------------------------------------------------------------------------ S13
 S("s13-kart-kredi-ters-bakiye", ["M-04", "T-06", "D-05", "D-06", "D-07", "D-08", "D-09", "D-10", "T-11", "§7.3"], [
@@ -685,7 +686,9 @@ S("s27-devir-yoldaki-supheli-evrak-taksit", ["N-11", "N-12", "K-07", "M-08", "M-
     o("tahsilat", "2027-02-01", cari="C1", yol="havale", banka="B1", tutar=60000, supheliden=True),
     BIL("bil", "2027-02-28"), GT("gt", "2027-01-01", "2027-02-28"), R("gec3", "gecikmis", cari="C3", tarih="2027-02-15"),
 ], {"A": {
-    "devir/arsiv_kapanis/108.90": 100000, "devir/yeni_acilis/108.90": 100000, "devir/yeni_acilis/128|C1": 150000,
+    # bakım 12 (S175 = C, README Ş1): 31.12 transferi (valör 02.01) işlem gününde doğrudan B2'ye — yoldaki transfer devri yok (bakım 11'e kadar 108.90 100000)
+    "devir/arsiv_kapanis/108.90": 0, "devir/yeni_acilis/108.90": 0, "devir/arsiv_kapanis/102.B2": 100000, "devir/yeni_acilis/102.B2": 100000,
+    "devir/yeni_acilis/128|C1": 150000,
     "devir/yeni_acilis/129|C1": -100000, "devir/yeni_acilis/101.02": 40000, "devir/yeni_acilis/103": -60000,
     "devir/yeni_acilis/120|C3": 60000, "devir/yeni_acilis/590": -170000, "devir/acilis/N13": {"590": -170000, "519": 170000},
     # 2027: kalan şüpheli 90000 < karşılık 100000 → 10000 → 644
@@ -2145,7 +2148,7 @@ S("s74-s25-ab-kismi-ve-fazla", ["S25 (a)", "S25 (b)", "S14", "K3", "karar (1)", 
     o("tahsilat", "2026-05-10", id="PC1", cari="C2", yol="cek", evrak="CK21", tutar=10000, fatura="F21"),   # (b) fazla 2000, başka açık fatura var
     o("tahsilat", "2026-05-10", id="PB1", cari="C3", yol="cek", evrak="CK31", tutar=4000, fatura="F32"),    # (a) iki kısmın tam toplamı
     o("tahsilat", "2026-05-15", id="PA2", cari="C1", yol="cek", evrak="CK12", tutar=4000, fatura="F12"),    # (a) ortanca: kalan şüpheli 2000 + 120'den 2000
-    o("tahsilat", "2026-05-20", id="PB2", cari="C3", yol="cek", evrak="CK32", tutar=13000, fatura="F31"),   # (b) fazla 3000, açık borç yok → avans
+    o("tahsilat", "2026-05-20", id="PB2", cari="C3", yol="cek", evrak="CK32", tutar=10000, fatura="F31"),   # bakım 12: 13000 → 10000 (fazla 3000 S181 ↔ S159 alanı — SUS)
     R("g1", "gecikmis", cari="C1", tarih="2026-06-01"), R("ak1", "acik_kalemler", cari="C1", tarih="2026-06-01"),
     R("g2", "gecikmis", cari="C2", tarih="2026-06-01"), R("ak2", "acik_kalemler", cari="C2", tarih="2026-06-01"),
     R("g3", "gecikmis", cari="C3", tarih="2026-06-01"), R("ak3", "acik_kalemler", cari="C3", tarih="2026-06-01"),
@@ -2169,26 +2172,25 @@ S("s74-s25-ab-kismi-ve-fazla", ["S25 (a)", "S25 (b)", "S14", "K3", "karar (1)", 
     "ak2": [{"k": "fatura:F22", "tur": "fatura", "kalan": 4000, "vade": "2026-04-30", "tarih": "2026-03-03"},
             {"k": "fatura:F23", "tur": "fatura", "kalan": 5000, "vade": "2026-05-31", "tarih": "2026-03-04"}],
     "sk2/0/id": "SC", "sk2/0/kalan": 0,
-    # C3: PB1 4000 = F32'nin iki kısmının toplamı (2000 + 2000) → A 128 2000 (SB 12000 → 10000), A 120 2000. PB2 13000: F31'in açık kısmı yalnız 128'de 10000
-    # → A 128 10000 (SB kalan 0; karşılık 6000 > 0 → K6: B 129 / A 644 6000); FAZLA 3000 A 120 bağsız alacak, açık borç yok → AVANS (120 alacaklı −3000 → Bilanço 340).
-    # Eski kâhin: normal kısım 3000 > 120 bakiyesi 0 → SUPHELI_NORMAL_ASIM (S25 (b) B "reddedilir" ile aynı sonuç).
-    "mz/satirlar/128|C3/bakiye": 0, "mz/satirlar/129|C3/bakiye": 0, "mz/satirlar/120|C3/bakiye": -3000,
+    # C3: PB1 4000 = F32'nin iki kısmının toplamı (2000 + 2000) → A 128 2000 (SB 12000 → 10000), A 120 2000. PB2 10000 (bakım 12: 13000'den — fazla 3000'in
+    # 120'yi eksiye indirip açık şüpheliyi sıfırladığı alan S181 = B ↔ S159 = A ayrışması, README Ş15, KULLANICIYA SORULMALI 6): F31'in açık kısmı yalnız 128'de
+    # 10000 → A 128 10000 (SB kalan 0; karşılık 6000 > 0 → K6: B 129 / A 644 6000); 120'ye bir şey düşmez.
+    "mz/satirlar/128|C3/bakiye": 0, "mz/satirlar/129|C3/bakiye": 0, "mz/satirlar/120|C3/bakiye": 0,
     "mz/satirlar/644/bakiye": -6000, "mz/satirlar/654/bakiye": 6000,
     "g3/gecikmis": 0, "g3/supheli": 0, "g3/kahin_susuyor": 0,
-    "ak3": [{"k": "tahsilat:PB2", "tur": "tahsilat", "kalan": -3000, "vade": "2026-05-20", "tarih": "2026-05-20"}],
+    "ak3": [],
     "sk3/0/id": "SB", "sk3/0/kalan": 0, "sk3/0/karsilik": 0,
-    "yevPB2/0/kaynak": "PB2", "yevPB2/0/satirlar/0/h": "101.01", "yevPB2/0/satirlar/0/b": 13000,
+    "yevPB2/0/kaynak": "PB2", "yevPB2/0/satirlar/0/h": "101.01", "yevPB2/0/satirlar/0/b": 10000,
     "yevPB2/0/satirlar/1/h": "128", "yevPB2/0/satirlar/1/c": "C3", "yevPB2/0/satirlar/1/a": 10000,
-    "yevPB2/0/satirlar/2/h": "120", "yevPB2/0/satirlar/2/c": "C3", "yevPB2/0/satirlar/2/a": 3000,
     "yevPB2/1/tur": "karsilik_cozulme", "yevPB2/1/satirlar/1/h": "644", "yevPB2/1/satirlar/1/a": 6000,
     # hatırlatma (S7 A): C1'in açık kaydı var → etiketli, elle şüphesiz gecikmiş 3000; C2 kaydı kapandı → otomatik 9000; C3 gecikmiş yok
     "hat/otomatik": {"C2": 9000}, "hat/supheli_etiketli": ["C1"], "hat/elle": {"C1": 3000},
-    # evrak portföyü 3000 + 10000 + 4000 + 4000 + 13000; gelir 53000
-    "mz/satirlar/101.01/bakiye": 34000, "mz/satirlar/600/bakiye": -53000,
-    # Bilanço: alacaklı müşteri (C3 −3000) III.D Alınan Avanslar; I.C = 120 C1 3000 + 120 C2 9000 + 128 C1 10000
-    "bil/pasif/III.D": 3000, "bil/aktif/I.C": 22000, "bil/aktif/I.A": 34000,
+    # evrak portföyü 3000 + 10000 + 4000 + 4000 + 10000; gelir 53000
+    "mz/satirlar/101.01/bakiye": 31000, "mz/satirlar/600/bakiye": -53000,
+    # Bilanço: alacaklı müşteri yok (bakım 12: C3 avansı kalktı); I.C = 120 C1 3000 + 120 C2 9000 + 128 C1 10000
+    "bil/pasif/III.D": 0, "bil/aktif/I.C": 22000, "bil/aktif/I.A": 31000,
 }}, aciklama="S25 (a) kısmen şüpheliye aktarılmış faturaya küçük / ortanca / tam toplam çek: önce şüpheli kısım (128), kalan 120; (b) çekin faturanın açık "
-             "kısmını aşan fazlası carinin bağsız alacağı (avans, 120): başka açık faturaya ya da avansa; sınır fazlaya uygulanmaz.")
+             "kısmını aşan fazlası carinin bağsız alacağı (120): başka açık faturaya (bakım 12: S181 = B — fazla sınıra girer; açık borcu olmayan caride avans alanı SUS).")
 
 # ------------------------------------------------------------------------------------------------ S75
 S("s75-s25-c-nakit-havale-pos", ["S25 (c)", "S14", "K3", "T-01", "T-02", "T-03", "KG-6", "D-01", "J-01", "J-04", "K6", "M13"], [

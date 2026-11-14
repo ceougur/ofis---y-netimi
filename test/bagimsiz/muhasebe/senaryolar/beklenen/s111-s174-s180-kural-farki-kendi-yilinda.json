@@ -1,0 +1,239 @@
+{
+ "ad": "s111-s174-s180-kural-farki-kendi-yilinda",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [
+    "BY1"
+   ],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
+     "kdv_mahsup": [],
+     "kural_farki_yeni_kural": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "s127_tek_yazim": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "fark0": {
+     "500": 70000,
+     "602.90": -70000
+    },
+    "fark1": {},
+    "fark2": {},
+    "fark3": {},
+    "mz26": {
+     "ana": {
+      "120": {
+       "alacak": 0,
+       "bakiye": 70000,
+       "borc": 70000,
+       "devir": 0
+      },
+      "500": {
+       "alacak": 70000,
+       "bakiye": 0,
+       "borc": 70000,
+       "devir": 0
+      },
+      "602": {
+       "alacak": 70000,
+       "bakiye": -70000,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "bas": "2026-01-01",
+     "satirlar": {
+      "120|C2": {
+       "alacak": 0,
+       "bakiye": 70000,
+       "borc": 70000,
+       "devir": 0
+      },
+      "500": {
+       "alacak": 70000,
+       "bakiye": 0,
+       "borc": 70000,
+       "devir": 0
+      },
+      "602.90": {
+       "alacak": 70000,
+       "bakiye": -70000,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "son": "2026-12-31",
+     "toplam": {
+      "alacak": 140000,
+      "bakiye": 0,
+      "borc": 140000,
+      "devir": 0
+     }
+    },
+    "mz26b": {
+     "ana": {
+      "120": {
+       "alacak": 0,
+       "bakiye": 70000,
+       "borc": 70000,
+       "devir": 0
+      },
+      "500": {
+       "alacak": 70000,
+       "bakiye": 0,
+       "borc": 70000,
+       "devir": 0
+      },
+      "602": {
+       "alacak": 70000,
+       "bakiye": -70000,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "bas": "2026-01-01",
+     "satirlar": {
+      "120|C2": {
+       "alacak": 0,
+       "bakiye": 70000,
+       "borc": 70000,
+       "devir": 0
+      },
+      "500": {
+       "alacak": 70000,
+       "bakiye": 0,
+       "borc": 70000,
+       "devir": 0
+      },
+      "602.90": {
+       "alacak": 70000,
+       "bakiye": -70000,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "son": "2026-12-31",
+     "toplam": {
+      "alacak": 140000,
+      "bakiye": 0,
+      "borc": 140000,
+      "devir": 0
+     }
+    },
+    "mz27": {
+     "ana": {
+      "120": {
+       "alacak": 0,
+       "bakiye": 70000,
+       "borc": 0,
+       "devir": 70000
+      },
+      "602": {
+       "alacak": 0,
+       "bakiye": -70000,
+       "borc": 0,
+       "devir": -70000
+      }
+     },
+     "bas": "2027-01-01",
+     "satirlar": {
+      "120|C2": {
+       "alacak": 0,
+       "bakiye": 70000,
+       "borc": 0,
+       "devir": 70000
+      },
+      "602.90": {
+       "alacak": 0,
+       "bakiye": -70000,
+       "borc": 0,
+       "devir": -70000
+      }
+     },
+     "son": "2027-12-31",
+     "toplam": {
+      "alacak": 0,
+      "bakiye": 0,
+      "borc": 0,
+      "devir": 0
+     }
+    },
+    "mz27b": {
+     "ana": {
+      "120": {
+       "alacak": 0,
+       "bakiye": 70000,
+       "borc": 0,
+       "devir": 70000
+      },
+      "500": {
+       "alacak": 70000,
+       "bakiye": -70000,
+       "borc": 0,
+       "devir": 0
+      },
+      "602": {
+       "alacak": 0,
+       "bakiye": 0,
+       "borc": 70000,
+       "devir": -70000
+      }
+     },
+     "bas": "2027-01-01",
+     "satirlar": {
+      "120|C2": {
+       "alacak": 0,
+       "bakiye": 70000,
+       "borc": 0,
+       "devir": 70000
+      },
+      "500": {
+       "alacak": 70000,
+       "bakiye": -70000,
+       "borc": 0,
+       "devir": 0
+      },
+      "602.90": {
+       "alacak": 0,
+       "bakiye": 0,
+       "borc": 70000,
+       "devir": -70000
+      }
+     },
+     "son": "2027-12-31",
+     "toplam": {
+      "alacak": 70000,
+      "bakiye": 0,
+      "borc": 70000,
+      "devir": 0
+     }
+    }
+   },
+   "redler": [
+    {
+     "kod": "KURAL_FARKI_YOK",
+     "neden": "",
+     "olay": 8,
+     "tur": "kural_farki_duzelt"
+    },
+    {
+     "kod": "KURAL_FARKI_YOK",
+     "neden": "",
+     "olay": 14,
+     "tur": "kural_farki_duzelt"
+    }
+   ]
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

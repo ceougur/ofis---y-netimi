@@ -1,5 +1,5 @@
 {
- "aciklama": "Transfer + ücret/BSMV, valörlü transfer 108.90, masraf, faizler, diğer gelir/gider.",
+ "aciklama": "Transfer + ücret/BSMV, valörlü transfer işlem gününde doğrudan alıcıya (S175 = C; 108.90 yok), masraf, faizler, diğer gelir/gider.",
  "ad": "s12-banka-islemleri",
  "bankalar": {
   "B1": {
@@ -43,8 +43,8 @@
    "bil/aktif/I.A": 1204425,
    "bil/aktif/I.H": 6500,
    "bil/detay/I.A/102.B1": 875925,
-   "bil/detay/I.A/102.B2": 278500,
-   "bil/detay/I.A/108.90": 50000,
+   "bil/detay/I.A/102.B2": 328500,
+   "bil/detay/I.A/108.90": 0,
    "bil/pasif/V.F": 10925,
    "bil/pasif/V.G": 1200000,
    "bil2/aktif/I.A": 1204425,

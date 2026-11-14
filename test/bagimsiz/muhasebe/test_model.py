@@ -1020,7 +1020,7 @@ class Bakim12(unittest.TestCase):
         self.assertEqual([satirlar(m) for m in r["raporlar"]["yev"] if m["tarih"] == "2026-02-27"], [{"102.B2": 500, "102.B1": -500}])
         self.assertEqual(r["raporlar"]["mz"]["satirlar"]["102.B2"]["bakiye"], 500)
         self.assertNotIn("108.90", r["raporlar"]["mz"]["satirlar"])
-        self.assertEqual(M.Model(senaryo([o("banka_transfer", "2026-02-27", gonderen="B1", alici="B2", tutar=500, valor="2026-03-02")])).kos()["degismezler"]["modul_defter"], [])
+        self.assertEqual(M.Model(senaryo([o("banka_transfer", "2026-02-27", gonderen="B1", alici="B2", tutar=500, valor="2026-03-02")])).kos()["degismezler"]["canli"]["modul_defter"], [])
         self.assertTrue(M.tumu_tuttu(r["degismezler"]), r["degismezler"])
 
     def test_S179_K14_sinir_en_gec_banka_acilisi(self):
@@ -1066,7 +1066,7 @@ class Bakim12(unittest.TestCase):
                      o("donem_kilitle", tarih="2026-02-28", kural="2.4.9")])
         m = M.Model(s)
         r = m.kos()
-        self.assertEqual(r["degismezler"]["s127_tek_yazim"], [])
+        self.assertEqual(r["degismezler"]["canli"]["s127_tek_yazim"], [])
         d = m.canli
         x = next(mm for mm in d.gecis().maddeler if mm.kaynak == "X1")
         d.donmus = list(d.donmus) + [M.Madde(x.id, "2026-02-01", x.sinif, x.seq, x.kaynak, x.tur, x.satirlar, x.ek)]
@@ -1088,10 +1088,15 @@ class Bakim12(unittest.TestCase):
                       o("satis_faturasi", "2026-02-10", id="F2", cari="C1", M=500, K=0),
                       o("tahsilat", "2026-02-12", cari="C1", yol="nakit", tutar=400, normal_cari=True),
                       o("tahsilat", "2026-02-15", cari="C1", yol=yol, evrak="CK1", tutar=300, fatura="F2")], "S168")
-        # Ş14 (iv): şüpheliden sonra kesilen faturanın vadesi şüpheli kalemden ÖNCE → susar
-        self.sus([o("satis_faturasi", "2026-01-10", id="F1", cari="C1", M=1000, K=0, vade="2026-06-30"), o("supheliye_al", "2026-02-01", id="S1", cari="C1", tutar=1000),
-                  o("satis_faturasi", "2026-02-10", id="F2", cari="C1", M=500, K=0, vade="2026-03-01"),
-                  o("tahsilat", "2026-02-15", cari="C1", yol="nakit", tutar=300, fatura="F2")], "S168")
+        # Ş14: şüpheliden sonra kesilen faturanın vadesi şüpheli kalemden ÖNCE — iki görünümde pay farklı (M13 0, tek kuyruk 300) ama kabul / ret aynı → değer (M13) +
+        # `susmalar` (kâhin bu carinin 120 / 128 ayrımında susar)
+        r = M.kos(senaryo([o("satis_faturasi", "2026-01-10", id="F1", cari="C1", M=1000, K=0, vade="2026-06-30"), o("supheliye_al", "2026-02-01", id="S1", cari="C1", tutar=1000),
+                           o("satis_faturasi", "2026-02-10", id="F2", cari="C1", M=500, K=0, vade="2026-03-01"),
+                           o("tahsilat", "2026-02-15", id="T1", cari="C1", yol="nakit", tutar=300, fatura="F2"), E.MZ("mz", "2026-01-01", "2026-02-28")]))
+        self.assertEqual([x["kod"] for x in r["redler"]], [])
+        self.assertEqual(r["susmalar"], [{"kural": "S168", "kaynak": "T1", "cari": "C1", "tarih": "2026-02-15", "pay_m13": 0, "pay_tek_kuyruk": 300, "dosya": "canli"}])
+        s = r["raporlar"]["mz"]["satirlar"]
+        self.assertEqual((s["128|C1"]["bakiye"] + s["120|C1"]["bakiye"], s["100"]["bakiye"]), (1200, 300))
         # Ş15: payı açık şüphelinin tamamını kapatıp 120'yi eksiye indiren bağlı tahsilat (S181 ↔ S159) → susar
         self.sus([o("satis_faturasi", "2026-01-10", id="F1", cari="C1", M=1000, K=0), o("supheliye_al", "2026-02-01", id="S1", cari="C1", tutar=1000),
                   o("tahsilat", "2026-02-15", cari="C1", yol="nakit", tutar=1200, fatura="F1")], "S159")
