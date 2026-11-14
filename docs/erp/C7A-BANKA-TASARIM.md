@@ -135,7 +135,15 @@ mutantları (komisyonu valöre geri al, 108.90'ı atla, valör = çıkış gün�
 
 ## 8. Yeniden üretim ve kabul sayıları
 
-Kodla birlikte bu bölüme eklenir (kanıt docs/kanit/2026-11-14/c7a-*).
+Kanıt docs/kanit/2026-11-14/c7a-*. Tabanın yeniden üretimi (c7a-taban'ın arşiv kopyası; muhasebe sürücüsü, gerçek program, UTC ve Europe/Istanbul aynı; kuruş → TL):
+- s08 (KG-6): 10.08 POS tahsilatı B 108.01 1.000 / A 120 1.000; 12.08 gün fişi B 102.01 975 · B 653 25 / A 108.01 1.000; 22.08 POS iadesi (valörden önce) B 120 100 / A 108.01 100;
+  P3'ün gün fişi B 102.01 290 · B 653 10 / A 108.01 300 (iade netleşir, komisyon iadesi yok — İadede Komisyon "İade Edilmez").
+- s12 (KG-19): 27.02 valörlü transfer (valör 02.03) B 102.02 500 / A 102.01 500 — işlem gününde, 108.90 yok. Ücretli transfer 01.02: B 102.02 1.000 · B 770 5,25 / A 102.01 1.005,25.
+- s37 (K-15): 15.01 açılıştan önce kart ödemesi B 320 200 / A 108.00 200 (kâhin: A 519); 01.02 kart açılışı B 519 1.000 / A 309.01; 10.02 B 320 300 / A 309.01.
+- s11 (K-14): 20.12.2025 hesapsız havale tahsilatı B 102.00 70 / A 120 70 (kâhin: B 519); 01.01.2026 banka açılışı B 102.01 1.000 / A 519.
+- s13 (D-07): 04.03 kart faizi 20 → api_yok "400 … faiz gideri Vadesiz, Ticari ya da Diğer TL hesaptan girilir".
+- Sürücünün BEKLEYEN kimlikleri (taban): Ç7a-KG6 3 senaryo / 8 denetim (s08, s23, s72), Ç7a-KG19 1 / 4 (s12), Ç7a-K14-K15 2 / 12 (s11, s37).
+Kabul sayıları (A–G) teslim raporunda.
 
 ## 9. BAŞ MİMAR KARARI GEREKİYOR (mimari; seçenek + öneri + gerekçe — ders 40)
 
@@ -181,3 +189,19 @@ K-14 / K-15 için kullanıcı kararı yok (kitabın "K değil" satırları; S21 
 ## 11. DOĞRULANMADI / DENENMEYEN (bu tasarım turu)
 - Yaygın programların (Mikro, Netsis, Logo, AKINSOFT) valörlü transfer ve POS komisyonu düzeni: belge okunmadı → öneride dayanak yazılmadı.
 - KG-6 / KG-19 / K-14 için eski sürüm (v2.4.9) kilitli verisinde kural farkı: kural kodlanmadığından üretilmedi.
+
+## 12. Sonuç (kodla birlikte; kanıt docs/kanit/2026-11-14/c7a-*)
+
+- D-07 YAPILDI (commit cc02ec13 sunucu + test + mutasyon; 87c7dd12 ekran + ekran senaryosu + kılavuz / PDF). KG-19, KG-6, K-14 / K-15 KODLANMADI — §0 / §9 B1 (dosya sınırı)
+  ve §10 S-a … S-e kararlarını bekler. Kural sürümü değişmedi (D-07 türetmeyi değiştirmez; B2).
+- Yeni test test/kart-faizi-250.test.mjs: yeni kodda 3/3 (UTC, Europe/Istanbul); tabanda 0/3 — neden "400 … faiz gideri Vadesiz, Ticari ya da Diğer TL hesaptan girilir"
+  (bank-account-invalid) ve planlı kart faizinin nedeni yok. Mutasyon test/c7a-banka-250-mutasyon.mjs 5/5 YAKALANDI (kabulü geri al; 309 ↔ 102 — kapı 409 ledger-integrity 102.00 sapması;
+  BSMV düşer; planlı kart faizi kabul; 780 ↔ 770).
+- Komşular (G2 taraması; 25 dosya): 305/305 iki saat diliminde. Ekran: yeni senaryo test/e2e/senaryo-kart-faizi-250.mjs 23/23 iki saat diliminde, tabanda 3 geçti / 5 kaldı ("+ Kart Faizi"
+  yok); senaryo-banka-210 428/428, -temel 80/80, 210b 90/90, gg243-banka-kart-aciklama 11/11, senaryo-211 59/59, banka-210-planli-yaris 19/19, banka-210-kart-onbellek-yaris 49/49.
+- Kâhinler: defter 187/187 önce = sonra; cari 17.136/17.136 önce = sonra, yapım aşaması listesi kendi kopyamda yeniden üretildi, DEĞİŞMEDİ (boş). Muhasebe sürücüsü (226 koşu): program çıktısı
+  218 koşuda bayt bayt aynı; farklı 8 = rastgele-1/2/3 ve s13 × 2 saat dilimi — kart_faiz olayları artık uygulanıyor (api_yok → yapıldı, B 780 / A 309.01); sınıflar AYNI 6.528 / U 1.022 /
+  SINIFLANMADI 376 önce = sonra, P 54 → 18 (P3-KART-FAIZI-YOLU-YOK'un 36 olay farkı kalktı; yeni fark yok). Ç7a-KG6 (3 senaryo / 8 denetim), Ç7a-KG19 (1 / 4), Ç7a-K14-K15 (2 / 12) AYNEN
+  bekliyor. Sürücü tabanda da kırmızı (çıkış 1; SINIFLANMADI'lar Ç5'ten sonra eskiyen BUGÜN görünümünden — ana oturumun bekleyen "muhasebe sürücüsü karşılaştırması" işi).
+- Rastgele sıra (test/mutabakat, 400 işlem × 2 tohum, her 20 işlemde doğrulama): taban 2/2, yeni 2/2.
+- Hız: ÖLÇÜLEMEDİ — ölçüm kilidi doluydu (başka oturum); bekleme döngüsü kurulmadı. Değişen yol yalnız Banka Fişi yazımının hesap türü denetimi (sabit küme üyeliği).
