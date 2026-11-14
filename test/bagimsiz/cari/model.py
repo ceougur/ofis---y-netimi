@@ -395,6 +395,11 @@ MUTASYONLAR = {
     310: "Ç5 C30 (iade her zaman sondan küçültür): S162 = B'nin sondan küçülmesi carinin başka borcu varken de — kart toplamı faturasız iade payı kadar küçülür",
     311: "Ç5 C30 (iade her zaman ilk taksitten): faturasız stok iadesi S2 sırası yerine her zaman önce carinin kartının açık taksitlerini kapatır",
     312: "Ç5 C30 (S162 ölçütü kontrol anı — bakım 17): alan, kontrol anında kart dışında açık borç yoksa (iadenin yazıldığı andaki durum değil)",
+    # bakım 20 (KARARLAR.md §31 — S168 = B, S181 = B)
+    313: "Ç5 C31 (S168 A / bakım 19): faturaya bağlı tahsilat şüpheliden hiç düşmez; bağlı evrak bağına bakılmadan düşer (pay yok sayılır)",
+    314: "Ç5 C31 (pay yok sayılır — tamamı): faturaya bağlı tahsilat / evrak bağsız gibi açık şüphelinin tamamından düşer",
+    315: "Ç5 C31 (bağlı evrak bakım 19): faturaya bağlı evrak payına bakılmadan tamamıyla şüpheliden düşer",
+    316: "Ç5 C31 (SK-38 susması yok): payı tanımsız adım ve S181 ↔ S159 alanı değerle (pay 0 / S159 kabul)",
 }
 # 2.4.9 C1.6: silinmiş cariye yazılamayan para adımları (hedef cari adımın `cari`'si) ve carisi silinmişken yapılamayan Silinenler geri yüklemeleri (hedef kaydın carisi)
 # bakım 15 (§26 Y15-6) S145: denetlenmeyen adımlar (durumu kendi kuralıyla kuran / para satırı yazmayan) ve geri alma kopyasının dışında kalan alanlar (yedek_al ile aynı)
@@ -598,6 +603,7 @@ class Model:
         self._ok_etiket = {}       # 2.4.9: kabul edilen adımın durum etiketi (adım id → (etiket, kural)); yoksa PLAN "adım kabul edilir"
         self.sus_kart = []         # bakım 7 (§19 Y7-3) SK-18: kabulü iki okumada ayrışan elle Mevcut Borç kartı adımları [(adım id, kart, cari, kalem okuması, bakiye okuması)]
         self.sus_s145 = []         # bakım 16 (§27 Y16-4 / Y16-5): kabulü S155'in sınırında kalan adımlar [(adım id, cari, kod, neden)] (bakım 15'te SK-33 / SK-34)
+        self._s168_sus = {}        # bakım 20 (§31 Y20-6): faturaya bağlı adımın şüpheli payı tanımsız → adım id → (cari, kod, neden) (_s145_adim iki dünyaya alır)
         self.sus_s118 = []         # bakım 17 (§28 Y17-2) SK-36: seçeneksiz, kartın kendi kalanının iki okumasının arasında kalan Taksit Tahsilatı [(adım id, kart, cari, K, K', tutar)] — bakım 18 (§29 Y18-1): artık DOLMAZ (SK-36 kalktı)
         self._iz15 = defaultdict(set)  # bakım 15 izi (sonucu değiştirmez; G3 sınıflaması): cari → {"s136", "s139", "s140", "s140sus", "s145ret", "s145sus", "s149", "s141", "s143", "s144", "s151", "sk32", "sk30", "s155ret", "s155sus", "s158"} (bakım 16) + {"s159", "s118ret", "s118sus", "s154", "s162", "sk37", "s163"} (bakım 17) + {"s165", "s118okuma", "s166"} (bakım 18; "sk37" → "s166")
         self._s149_k = {}          # bakım 19 (§30 Y19-5 (3)): kontrol → takvim kalemi S149 = C ile SUS olan cariler
@@ -3278,11 +3284,47 @@ class Model:
             self.cariler[a["cari"]]["tckn"] = a["tckn"]
         return "ok"
 
+    def _s168_pay(self, aid, cari, fatura, tarih):
+        """Bakım 20 (§31 Y20-1 … Y20-6) [KULLANICI S168 = B, S181 = B]: şüpheli kaydı açık caride faturaya bağlı tahsilat / evrakın şüpheliden düşebileceği tutar = faturanın
+        kuyrukta şüpheli sayılan payı — adımın YAZILDIĞI anda (adım hariç) Pay(X) = X'in kuyruk kalanı − S130 görünen tutarı. None: kural bağlamaz (2.4.9 ve öncesi, bağsız, açık
+        şüpheli yok ya da açık kayıtların HEPSİ adımdan sonra tarihli — Y16-2). SUS (adım `_s168_sus`'a, pay 0): görünüm tanımsız (SK-38 (a) — S137 / S138 / S156 = C), fatura kuyrukta
+        düz kalem değil (SK-38 (b)), açık kayıtların bir kısmı adımdan sonra tarihli (SK-38 (c)). Mutantlar 313 (pay yok sayılır — bakım 19), 314 (tamamı düşer)."""
+        if not self.k250 or not fatura or cari not in self.cariler or self.mut == 313:
+            return None
+        kalan = self.supheli_durum(cari)
+        acik = [n for n, v in kalan.items() if v > 0]
+        if not acik:
+            return None
+        sonra = [n for n in acik if self.supheliler[n]["tarih"] > tarih]
+        if len(sonra) == len(acik):
+            return None
+        self._iz15[cari].add("s168")
+        if sonra:
+            self._s168_sus[aid] = (cari, "SK-38 (c)", "açık şüpheli kayıtlarından %s adımdan (%s) sonra tarihli — payın hangi kayda düşeceği karar metninde yok" % (",".join(sorted(sonra)), tarih))
+            return 0
+        if self.mut == 314:
+            return sum(kalan[n] for n in acik)  # mutant 314: pay yok sayılır — faturaya bağlı adım bağsız gibi bütün açık şüpheliden düşer
+        self._onbellek = {}
+        g = self.s130(cari)
+        t = self.tyk250(cari)
+        self._onbellek = {}
+        if g["iz"] != "alan" or g["gorunen"] is None:
+            self._s168_sus[aid] = (cari, "SK-38 (a)", "adımın anında Şüpheli Alacak görünümü tanımsız (%s) — pay yok (S138 / S137 / S156 = C — BİLİNEN SINIR)" % (g["neden"] or g["iz"]))
+            return 0
+        x = t["kalemler"].get(fatura)
+        if x is None or x.get("tur") != "n" or x.get("kart"):
+            self._s168_sus[aid] = (cari, "SK-38 (b)", "fatura %s kuyrukta düz kalem değil (taksitli / karta alınmış / kapanmış) — pay tanımsız" % fatura)
+            return 0
+        return max(0, t["kuyruk"].get(fatura, 0) - g["gorunen"].get(fatura, t["kuyruk"].get(fatura, 0)))
+
     def tahsilat(self, a):
         f = a.get("fatura")
         nakit = a.get("yol", "nakit") != "havale"
+        pay168 = self._s168_pay(a["id"], a["cari"], f, a.get("tarih", self.bugun))
         self.tahsilatlar[a["id"]] = {"cari": a["cari"], "tutar": kurus(a["tutar"]), "tarih": a.get("tarih", self.bugun),
                                      "seq": self.yeni_seq(), "fatura": f, "kart": None, "aktif": True, "nakit": nakit}
+        if pay168 is not None:
+            self.tahsilatlar[a["id"]]["s168"] = min(pay168, kurus(a["tutar"]))  # bakım 20 (§31 Y20-2): şüpheliden düşen kısım
         # /3: hareket kaydı (silme / geri yükleme; K6.1 tahsilat Vade alanı taşımaz — gönderilirse kaydedilmez)
         self.hareketler[a["id"]] = {"cari": a["cari"], "tur": "tahsilat", "ref": self.tahsilatlar[a["id"]], "aktif": True,
                                     "gonderilen": bool(a.get("vade") or a.get("beklenen"))}
@@ -3361,6 +3403,10 @@ class Model:
         if self.mut == 104 and h["tur"] in ("borc", "alacak"):
             h["vade"], h["beklenen"] = "", ""
         r = self._hareket_ref(h)
+        if r is not None and h["tur"] == "tahsilat" and "s168" in r:
+            # bakım 20 (§31 Y20-7): geri yüklenen faturaya bağlı tahsilat "kendi tarihinde yeniden girmiş sayılır" (Y16-2 (e)) — pay geri yükleme ANINDA yeniden ölçülür
+            pay168 = self._s168_pay(a["id"], r["cari"], r["fatura"], r["tarih"])
+            r["s168"] = 0 if pay168 is None else min(pay168, r["tutar"])
         if r is not None:
             r["aktif"] = True
             r.pop("silindi", None)
@@ -3489,9 +3535,14 @@ class Model:
         for tn, t in self.tahsilatlar.items():
             if t["aktif"] and t["cari"] == cari and not (t["fatura"] and self.mut != 121):
                 alacak.append((t["tarih"], t["seq"], t["tutar"], ("t", tn, t["fatura"] or t["kart"])))
+            elif t["aktif"] and t["cari"] == cari and t.get("s168"):
+                # bakım 20 (§31 Y20-2 (a)) [KULLANICI S168 = B]: faturaya bağlı tahsilat faturanın şüpheli payı kadar düşer (bakım 16–19: hiç düşmez)
+                alacak.append((t["tarih"], t["seq"], t["s168"], ("t", tn, t["fatura"])))
         for en, e in self.evraklar.items():
             if e["cari"] == cari and e["durum"] not in ("silindi", "karsiliksiz"):
-                alacak.append((e["tarih"], e["seq"], e["tutar"], ("e", en, e["fatura"])))
+                if "s168" in e and not e["s168"]:
+                    continue  # bakım 20 (§31 Y20-2 (b)): faturaya bağlı evrak — pay 0, düşmez
+                alacak.append((e["tarih"], e["seq"], e["s168"] if "s168" in e else e["tutar"], ("e", en, e["fatura"])))
         for hn, h in self.hareketler.items():
             if h["cari"] == cari and h["aktif"] and h["tur"] == "alacak":
                 alacak.append((h["tarih"], h["seq"], h["tutar"], ("h", hn, None)))
@@ -3630,6 +3681,13 @@ class Model:
         if isinstance(sonuc, tuple):
             return sonuc
         self._onbellek = {}
+        if a["id"] in self._s168_sus and self.mut != 316:
+            # bakım 20 (§31 Y20-6 (a) / (b) / (c)): faturaya bağlı adımın şüpheli payı tanımsız → kabul / ret de tanımsız — iki dünya SUS (adım kabul ↔ adım yok)
+            c_, kod_, ne_ = self._s168_sus[a["id"]]
+            self.sus_s145.append((a["id"], c_, kod_, ne_))
+            self._iz15[c_].add("s168sus")
+            return sonuc
+        b168 = (a["islem"] == "tahsilat" and (self.tahsilatlar.get(a["id"]) or {}).get("s168")) or (a["islem"] == "evrak" and (self.evraklar.get(a.get("ad")) or {}).get("s168"))
         ret_c, sus = None, []
         for c in cariler:
             if c not in self.cariler:
@@ -3649,6 +3707,10 @@ class Model:
                     sus.append((c, "Y16-4", "adımdan önce de carinin borcu (%d) açık şüpheli tutarın (%d) altında — kâhinin sınırı (karar 'altına düşüyorsa' diyor)" % (B, A)))
                 else:
                     ret_c = ret_c or c
+            elif A2 == 0 and B2 < 0 and A > 0 and b168 and self.mut != 316:
+                # bakım 20 (§31 Y20-6 (d)) SK-38 (d): faturaya bağlı adımın payı açık şüphelinin TAMAMINI kapattı ve bakiye eksiye indi — S181 = B'nin harfi RET, S159 = A KABUL → SUS
+                sus.append((c, "SK-38 (d)", "faturaya bağlı adım açık şüpheliyi sıfırlayıp bakiyeyi eksiye indiriyor (%d) — S181 = B 'reddedilir' ↔ S159 = A 'kural bağlamaz'" % B2))
+                self._iz15[c].add("s168sus")
             elif A2 == 0 and B2 < 0 and A > 0:
                 # bakım 17 (§28 Y17-1) [KULLANICI S159 A]: adım açık şüpheliyi sıfırlıyor ve bakiyeyi eksiye indiriyor — açık şüpheli kalmadıysa S155 kuralı bağlamaz, fazlası avans (KABUL;
                 # türü fark etmez). Bakım 16'da SK-35 SUS idi. Kayıtları ÖNCEDEN kapanmış caride (A = A' = 0) zaten kabul (§27 Y16-5 düzeltmesi). Mutant 303 (S159 B): RET.
@@ -4297,9 +4359,13 @@ class Model:
         f = a.get("fatura")
         if f and self.faturalar[f]["tutar"] < kurus(a["tutar"]):
             self.etiketCari[a["cari"]].add("ux18-fazla")
+        pay168 = self._s168_pay(a["id"], a["cari"], f, a.get("tarih", self.bugun)) if self.mut != 315 else None
         self.evraklar[a["ad"]] = {"cari": a["cari"], "tur": a.get("tur", "cek"), "tutar": kurus(a["tutar"]),
                                   "tarih": a.get("tarih", self.bugun), "seq": self.yeni_seq(), "fatura": f,
                                   "durum": "portfoy", "ciroCari": None, "kendi": False}
+        if pay168 is not None:
+            # bakım 20 (§31 Y20-2 (b)): faturaya bağlı evrak payı kadar şüpheliden (mutant 315: bağına bakılmadan tamamı — bakım 19)
+            self.evraklar[a["ad"]]["s168"] = min(pay168, kurus(a["tutar"]))
         return "ok"
 
     def karsiliksiz(self, a):
@@ -5696,7 +5762,8 @@ class Model:
                     del out[anahtar]
             for aid, cari, kod, ne in self.sus_s145:
                 self.belirsiz.append("adım %s: cari %s S155 — %s: iki dünyada (adım kabul / adım yok) farklı çıkan denetimler yazılmadı: %s" % (
-                    aid, cari, ne, ("KULLANICIYA SORULMALI %s (§27 Y16-5)" % kod) if kod.startswith("SK-35") else "kâhinin sınırı (§27 Y16-4)"))
+                    aid, cari, ne, ("KULLANICIYA SORULMALI %s (§31 Y20-6)" % kod) if kod.startswith("SK-38") else
+                    ("KULLANICIYA SORULMALI %s (§27 Y16-5)" % kod) if kod.startswith("SK-35") else "kâhinin sınırı (§27 Y16-4)"))
         if self.sus_s118:
             # bakım 17 (§28 Y17-2) SK-36: seçeneksiz Taksit Tahsilatı kartın kendi kalanının iki okumasının arasında (K' < tutar ≤ K) — okuma (i) kabul ↔ okuma (ii) ret. Kâhin SUSAR: adım kabul
             # (bu koşu) ve adım yok (adımsız senaryo) dünyalarında farklı çıkan (ya da yalnız birinde olan) her denetim yazılmaz (bakım 16 düzeni — adıma başvuran sonraki adımlar da çıkar)
