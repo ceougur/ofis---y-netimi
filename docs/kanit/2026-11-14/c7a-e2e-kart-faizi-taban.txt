@@ -1,0 +1,35 @@
+
+1. Kart hesabının Hesap Detayı'nda + Kart Faizi; form Faiz Gideri ve kartla açılır
+  ✗ Hesap Detayı'nda '+ Kart Faizi' düğmesi
+  ✗ adım durdu: TypeError: Cannot read properties of null (reading 'getAttribute')
+    at file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-k4/taban-kod/test/e2e/senaryo-kart-faizi-250.mjs:111:22
+    at async step (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-k4/taban-kod/test/e2e/senaryo-kart-faizi-250.mjs:48:5)
+    at async file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-k4/taban-kod/test/e2e/senaryo-kart-faizi-250.mjs:107:3
+
+2. Klavyeyle 200 + BSMV 10; önizleme Kart Borcuna Eklenen 210; Kaydet → kart borcu 5.210, B 780 / A 309.k
+  ✗ adım durdu: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('form.hof-bank-voucher [name="amount"]')[22m
+
+    at /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-k4/taban-kod/test/e2e/senaryo-kart-faizi-250.mjs:126:16
+    at async step (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-k4/taban-kod/test/e2e/senaryo-kart-faizi-250.mjs:48:5)
+    at async file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-k4/taban-kod/test/e2e/senaryo-kart-faizi-250.mjs:124:3
+
+3. Faiz Geliri seçilince kart hesap listesinden çıkar; Esc → yazılmaz
+  ✗ adım durdu: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-bank-modal [data-act="v-card-interest"]')[22m
+
+    at /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-k4/taban-kod/test/e2e/senaryo-kart-faizi-250.mjs:157:16
+    at async step (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-k4/taban-kod/test/e2e/senaryo-kart-faizi-250.mjs:48:5)
+    at async file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-k4/taban-kod/test/e2e/senaryo-kart-faizi-250.mjs:155:3
+
+4. + Planlı İşlem → Faiz Gideri: kart listede yok (kart faizi planlanmaz)
+  ✓ planlı Faiz Gideri hesapları: Ziraat Bankası · Ana TL Hesabı (ZIR-TL)
+
+5. Pasif kartta + Kart Faizi pasif, nedeni görünür yazı
+  ✗ pasif kartta düğme pasif + neden (title)
+  ✓ neden ekranda görünür yazı
+  ✓ tarayıcı hatası yok
+
+BAŞARISIZ: 3 denetim geçti, 5 başarısız. Ekran görüntüleri: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-k4/taban-kod/test/e2e/artifacts/senaryo-kart-faizi-250

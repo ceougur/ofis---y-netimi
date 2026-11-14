@@ -1,0 +1,20 @@
+pdf: DestekOfis-Kullanim-Kilavuzu
+✓ açılış ekranında “Resimli kullanım kılavuzunu açın” bağlantısı /kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf
+✓ sunucunun verdiği kılavuz: 200 application/pdf sha256 fc8d9501883888881896e4871a6d52ab34fcc347f9feb3a647a031c5a9b8c287
+✓ sol menü “Kullanım Kılavuzu” → yeni sekme /kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf
+pdf cikis 0
+e2e senaryo-kart-faizi-250 cikis 1 · BAŞARISIZ: 21 denetim geçti, 1 başarısız. Ekran görüntüleri: /home/user/ofis---y-netimi/.claude/worktrees/agent-a2a0272debd031466/test/e2e/artifacts/sen
+e2e senaryo-banka-210 cikis 0 · TAMAM: 428 denetim geçti, 0 başarısız. Ekran görüntüleri: /home/user/ofis---y-netimi/.claude/worktrees/agent-a2a0272debd031466/test/e2e/artifacts/senaryo
+e2e senaryo-banka-210-temel cikis 0 · 
+e2e senaryo-banka-210b cikis 0 · 
+e2e gg243-banka-kart-aciklama cikis 0 · 
+e2e senaryo-211 cikis 0 · 
+e2e banka-210-planli-yaris cikis 0 · 
+e2e banka-210-kart-onbellek-yaris cikis 0 · 
+senaryo-banka-210:  TAMAM: 428 denetim geçti, 0 başarısız. Ekran görüntüleri: /home/user/ofis---y-netimi/.claude/worktrees/agent-a2a0272debd031466/test/e2e/artifacts/senaryo-banka-210 
+senaryo-banka-210-temel:  ✓ senaryo-banka-210-temel: 80 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a2a0272debd031466/test/e2e/artifacts/senaryo-banka-210-temel 
+senaryo-banka-210b:  ✓ senaryo-banka-210b: 90 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a2a0272debd031466/test/e2e/artifacts/senaryo-banka-210b 
+gg243-banka-kart-aciklama:  ✓ gg243-banka-kart-aciklama: 11 geçti, 0 kaldı 
+senaryo-211:  59/59 denetim geçti. Ekran görüntüleri: /home/user/ofis---y-netimi/.claude/worktrees/agent-a2a0272debd031466/test/e2e/artifacts/senaryo-211 
+banka-210-planli-yaris:  ✓ banka-210-planli-yaris: 19 geçti, 0 kaldı 
+banka-210-kart-onbellek-yaris:  ✓ banka-210-kart-onbellek-yaris: 49 geçti, 0 kaldı 

@@ -1,0 +1,32 @@
+{
+  "ad": "c7a-sonra-kahin-cari",
+  "komut": "npm run test:kahin-cari",
+  "commit": "87c7dd12ff987444d90469324627f2c64e61d939",
+  "dal": "worktree-agent-a2a0272debd031466",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v470 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-14T06:12:15.267Z",
+  "sure_sn": 258,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 17136,
+    "gecen": 17136,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-k4/kanit/2026-11-14/c7a-sonra-kahin-cari.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a2a0272debd031466",
+  "ham_cikti_sha256": "c80ebf2d0bc5c0d30058e2518662ca726064ca6962da4182d288e091f5b9cfb3",
+  "ham_cikti_bayt": 68352
+}
