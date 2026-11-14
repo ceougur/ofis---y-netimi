@@ -141,7 +141,8 @@ export function createObligationInput({ store }) {
     }
     return out;
   }
-  function obligationExtras(accountId = null) {
+  // 2.5.0 Ç5-A tur 3c (§19.1 DÖNGÜ): doubtful — şüpheli kalanları DIŞARIDAN (Map cari → [{ id, date, remainingMinor }]; lib/bank/doubtful.mjs ayırıcısının o anki durumu); verilmezse bugünkü doubtfulRecordsOf.
+  function obligationExtras(accountId = null, doubtful = null) {
     const only = accountId ? " AND p.account_id = ?" : "";
     const args = accountId ? [accountId] : [];
     const schedules = new Map();
@@ -153,7 +154,7 @@ export function createObligationInput({ store }) {
       if (row.expectedDate) promises.set(row.id, row.expectedDate);
     }
     const lockAt = lockResolver();
-    return { schedules, dueDates, promises, doubtful: doubtfulRecordsOf(accountId ? [accountId] : null), lockAt, linkTimes: lockAt.active ? linkTimesOf(accountId) : new Map(), linkMoments: lockAt.active ? chequeLinkMoments(accountId) : new Map() };
+    return { schedules, dueDates, promises, doubtful: doubtful || doubtfulRecordsOf(accountId ? [accountId] : null), lockAt, linkTimes: lockAt.active ? linkTimesOf(accountId) : new Map(), linkMoments: lockAt.active ? chequeLinkMoments(accountId) : new Map() };
   }
   // Ç5-B tur 2a (O-1, karar (3) — "kilitten sonraki bağ"): bağın KURULDUĞU an. Bağ (Kapatılacak Fatura, "Hangi Taksite") kaydın düzeltilmesiyle kurulduysa / değiştiyse an,
   // bağı değiştiren son düzeltmenin denetim izindeki anıdır (account.entry.updated: önceki ↔ yeni invoiceId; plan.entry.updated: önceki ↔ yeni itemId); değişmediyse kaydın

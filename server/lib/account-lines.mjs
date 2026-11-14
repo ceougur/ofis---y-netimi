@@ -145,5 +145,37 @@ export function createAccountLines({ store }) {
     }
     return out;
   }
-  return { entriesOf, entriesByAccount, ledgerLinesOf, returnCuts, scanReturnCuts, saleSources, ledgerPlansByAccount };
+  // 2.5.0 Ç5-A tur 3c (§19.2; ders 47): kart haritası yalnız VERİLEN carilerin kartlarıyla — şüpheli ↔ kuyruk defter kuralı (lib/bank/doubtful.mjs linkedShares) kuyruğu yalnız bağlı alacaklı
+  // şüpheli carisi için kurar; ledgerPlansByAccount bütün kartları okur (temiz 100 bin satırda ~250 ms — yazım yolunun kapısına binemez). Kart başına alanlar ledgerPlansByAccount'la AYNI
+  // (iade kesimi returnCuts, satış kaynağı saleSources, sıra aynı); eşdeğerlik kalıcı testte (test/supheli-kuyruk-defter-250.test.mjs: her cari için küme haritası = bütün haritanın o carisi).
+  function ledgerPlansOf(ids) {
+    const out = new Map();
+    const list = JSON.stringify([...new Set((ids || []).map(String))]);
+    const plans = store.all("SELECT p.id, p.account_id AS accountId, p.name, p.total, p.status, p.covers_balance AS coversBalance, p.registered_on AS registeredOn, p.created_at AS createdAt, p.updated_at AS updatedAt, p.closed_at AS closedAt, p.import_id AS importId FROM json_each(?) j CROSS JOIN plans p ON p.account_id = j.value WHERE p.deleted_at IS NULL AND p.account_id <> '' ORDER BY p.rowid", list);
+    if (!plans.length) return out;
+    const planIds = JSON.stringify(plans.map(plan => plan.id));
+    const seqs = new Map();
+    const counts = new Map();
+    const planned = new Map();
+    for (const item of store.all("SELECT i.id, i.plan_id AS planId, i.seq, i.amount FROM json_each(?) j CROSS JOIN plan_items i ON i.plan_id = j.value", planIds)) {
+      seqs.set(item.id, item.seq);
+      counts.set(item.planId, (counts.get(item.planId) || 0) + 1);
+      planned.set(item.planId, (planned.get(item.planId) || 0) + (Number(item.amount) || 0));
+    }
+    const entries = new Map();
+    for (const entry of store.all("SELECT e.id, e.plan_id AS planId, e.item_id AS itemId, e.kind, e.amount, e.date, e.note, e.receipt_no AS receiptNo, e.opening, e.cheque_id AS chequeId, e.created_at AS createdAt FROM json_each(?) j CROSS JOIN plan_entries e ON e.plan_id = j.value ORDER BY e.date, e.created_at, e.rowid", planIds)) {
+      if (!entries.has(entry.planId)) entries.set(entry.planId, []);
+      entries.get(entry.planId).push({ ...entry, opening: Boolean(entry.opening), itemSeq: entry.itemId ? seqs.get(entry.itemId) || null : null });
+    }
+    const cutsOf = returnCuts();
+    const sales = saleSources(plans.filter(plan => plan.coversBalance && !plan.importId).map(plan => plan.id));
+    for (const plan of plans) {
+      const own = entries.get(plan.id) || [];
+      const paid = roundMoney(own.reduce((sum, entry) => sum + (entry.kind === "in" ? Number(entry.amount) || 0 : -(Number(entry.amount) || 0)), 0));
+      if (!out.has(plan.accountId)) out.set(plan.accountId, []);
+      out.get(plan.accountId).push({ ...plan, itemCount: counts.get(plan.id) || 0, planned: roundMoney(planned.get(plan.id) || 0), returnCuts: cutsOf.get(plan.id) || 0, saleMoveId: sales.get(plan.id) || "", totals: { paid }, entries: own });
+    }
+    return out;
+  }
+  return { entriesOf, entriesByAccount, ledgerLinesOf, returnCuts, scanReturnCuts, saleSources, ledgerPlansByAccount, ledgerPlansOf };
 }
