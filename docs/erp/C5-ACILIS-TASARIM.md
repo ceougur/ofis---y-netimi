@@ -1252,6 +1252,27 @@ yılı fiş tarihinin yılı), N12 (silinmiş evrakın Kapatılacak Fatura bağ�
 - Komşular (taramayla 39 dosya) 720 / 720 iki TZ; üç ekran senaryosu iki TZ yeşil; yeni iki test B7 zorlamasının 'bitir' ve 'gozlem' kiplerinde yeşil (ön koşul gerçekleşti).
 - Hız (ölçüm kilidi, yük 1,0–1,7): kötüleşen yol yok (ayrıntı rapor); Kural Farkı kaydı (POST) ayrıca ÖLÇÜLEMEDİ (kilit dolu) — yolu ön izlemeyle aynı plan + bir fiş yazımı.
 
+### 17.15 Tur 2f (tek düzeltme turu; taban `c5a2f-taban` 807c70f6 = çalışma dalı ucu, tur 2e birleşimi 7429fedc içinde; dar kontrol raporu dk-c5a2e-rapor.md)
+Girdi: S185 = A (KARAR 14.11 11:28 — kullanıcı kuralıyla öneri; değiştirilebilir), DÜŞÜK-1 (ipucu), DÜŞÜK-3 (yalnız test), S186 = C (kod değişmez).
+- S185 = A — "sonraki yılın fişi de KENDİ yılında düzeltilmiş sayılır (S174 = A iki yönde)": `ruleDiffCorrectionPlan` önce yılı ≤ eşleme yılı olan fişleri tur 2e'nin kuralıyla düşer (kalan:
+  hesap|alt hesap → kuruş, eşleme yılının hesaplarıyla). Yılı eşleme yılından SONRA olan fiş (kilit fişin yılından geriye alındı) bunun ARDINDAN, yıl sırasıyla, KENDİ yılının eşlemesiyle
+  düşülür: kalanın 1–5 sınıfı ve 671 / 681 satırı aynı kovada; eşleme yılının 6 / 7 sınıfı satırı fişin yılında önceki yıl → kalanın yönüyle 671 / 681 kovasında. Fişin satırı kovasındaki farkı
+  aynı yönde, en çok farkın kendisi kadar kapatır (kapanan kalan satırlardan düşülür — eşleme yılının hesabıyla). Fişin bir satırı kovasını AŞIYORSA (aynı yönde fark yok / daha az) fiş
+  FAZLADIR: `ownYearOver` (yıl, fazla) ve eşleme yılına HİÇ satır önerilmez — fazlası fişin kendi yılındadır, fiş kendi yılında ters kaydedilir (ekranın Ters Kaydet'i fişin kendi tarihiyle
+  yazar; kilit fişin yılından önce olduğu için açık dönem); ters kayıttan sonra kalan fark eşleme yılında önerilir. Kısmen kapanan kova kalanı BİRDEN ÇOK hesaba bölmeyi gerektirirse (karar
+  söylemiyor; ör. 2026'nın 602 farkı + 2025'in farkı aynı 671 kovasında) o fiş tur 2e'nin kuralıyla (eşlenmiş toplamdan) düşülür — tur 2f raporunda KULLANICIYA SORULMALI. Yılı > eşleme
+  yılı olan fiş yoksa sonuç tur 2e ile BİREBİR (yeni dal çalışmaz).
+- Yıl kuralı yine TEK tanım (`ruleDiffCorrectionYear`); ön izleme (routes/ledger.mjs `correctionView`) ve `checks()` (Mutabakat Testi, Defter Mutabakatı, taramalar, Yönetim satırı) aynı
+  planı okur. Ön izleme: fazla fiş varken pasif, kod `rule-diff-own-year`, neden fişin numarasıyla "… kendi yılında ters kaydedin". Yönetim satırı: `correction.over` = true, `ownYear`
+  (fiş numaraları), `ownYearMinor`, kalan (`remainderMinor`) = ön izlemenin toplamı (0); ipucu "Kural Farkı Düzeltme Fişi (Fiş 2027-…) kilitli dönemin farkından fazla (kilit, fişin
+  yılından geriye alındı) — fişi kendi yılında, Yönetim › Sistem › Kural Farkı Düzeltme'den ters kaydedin; kalan fark varsa sonra ön izlemede görünür."
+- DÜŞÜK-1: eşleme yılının "fazla" ipucu (fark kalmadı, fiş fazla): etkin bir fişin tarihi kilit gününde ya da öncesindeyse (ekranın Ters Kaydet'i 409 alır — yıl sonundan sonra önceki yılın
+  fişi, ya da aynı yılda kilit fişin tarihini aşmış) ipucu ters kayıt önermez, "ön izlemedeki fişi kaydedin; fazla ilk açık güne alınır" der; öbür durumda (kilit yok / fiş açık dönemde)
+  tur 2e metni AYNEN.
+- DÜŞÜK-3: K-c (satırın yılı = son etkin fişin yılı) vaka A(a)'da değerle (kalan 0 ↔ 700, ipucu); P3 (yön ham farktan) saf vakada 681 ↔ 671; Y2 (örtü kilitten önce) — kilit ≠ örtü yalnız
+  dondurma sürerken (ön izleme pasif, geçici durum); kalıcı durumda eşdeğer (raporda).
+- Kapsam dışı (dokunulmadı): Ters Kaydet onayındaki "bugünün tarihiyle yazılır" cümlesi (sunucu fişin kendi tarihini kullanır).
+
 ## 18. Ç5-A tur 3 (kod ajanı, 13.11.2026; taban `c5a3-taban` 9b543ae4 = çalışma dalı ucu + tur 2a–2d) — KODDAN ÖNCE yazıldı; DURDU (dosya sınırı — BAŞ MİMAR KARARI GEREKİYOR)
 Tek iş: §2.11 şüpheli ↔ kuyruk defter kuralı (S14, S25, S39 = A; S168 = B) + "Normal Cari Hesaba İşle" sınırının yalnız 120'ye düşecek kısma uygulanması; yol BAŞ MİMAR KARARI K-1
 (13.11 20:08: kuyruk dışarıya iki alan daha verir — belirli bir ana kadarki dağılım + kalem başına şüpheli kaydın kimliği; defter tahsilat tahsilat ilerleyerek okur). Kod, test, kâhin DEĞİŞMEDİ.

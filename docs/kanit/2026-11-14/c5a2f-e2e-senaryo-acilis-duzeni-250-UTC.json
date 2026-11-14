@@ -1,0 +1,32 @@
+{
+  "ad": "c5a2f-e2e-senaryo-acilis-duzeni-250-UTC",
+  "komut": "node test/e2e/senaryo-acilis-duzeni-250.mjs",
+  "commit": "23b1bab86af7585d7da3a7b4e11e507fc1aa75b5",
+  "dal": "worktree-agent-a46c87e85c8b28c2f",
+  "kirli": 0,
+  "izlenmeyen": 43,
+  "platform": "linux 6.18.44-fc-v470 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-14T13:35:45.234Z",
+  "sure_sn": 7.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 27,
+    "gecen": 27,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-14/c5a2f-e2e-senaryo-acilis-duzeni-250-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a46c87e85c8b28c2f",
+  "ham_cikti_sha256": "048af39bece65f0620aed34c8dea590ec434702ad07176d424bca2b3eee30c8e",
+  "ham_cikti_bayt": 3853
+}

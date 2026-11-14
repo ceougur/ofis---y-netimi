@@ -1,0 +1,22 @@
+// Tur 2f — saf plan işleviyle yeni kuralın el denemesi (kanıt değil; kalıcı testler test/kural-farki-yil-250'de). Kullanım: KOD=<kod kökü> node saf.mjs
+import path from "node:path";
+const o = await import(path.join(process.env.KOD, "server/lib/ledger-opening.mjs"));
+const d = (account, minor, year = 2026) => ({ year, account, sub: "", party: "", minor });
+const e = (id, deltas) => ({ id, date: "2026-10-02", deltas });
+const by = obj => new Map(Object.entries(obj).map(([y, l]) => [Number(y), new Map(Object.entries(l))]));
+const lt = p => `${(p.lines.map(l => `${l.debit ? "B" : "A"} ${l.account} ${(l.debit || l.credit) / 100}`).sort().join(" | ")) || "(yok)"} ${JSON.stringify(p.ownYearOver ?? "-")}`;
+const r1 = e("r1", [d("500", 70000), d("602", -70000)]);
+const f27 = by({ 2027: { "500|": 70000, "671|": -70000 } });
+console.log("A(b) kilit geri, fark var:", lt(o.ruleDiffCorrectionPlan({ diff: { entries: [r1] }, year: 2026, postedByYear: f27 })));
+console.log("A(a) fark yok:", lt(o.ruleDiffCorrectionPlan({ diff: { entries: [] }, year: 2026, postedByYear: f27 })));
+const r2 = e("r2", [d("519", 30000), d("602", -30000)]);
+console.log("A(b)+R2:", lt(o.ruleDiffCorrectionPlan({ diff: { entries: [r1, r2] }, year: 2026, postedByYear: f27 })));
+console.log("2027 içinde (eşit yıl):", lt(o.ruleDiffCorrectionPlan({ diff: { entries: [r1] }, year: 2027, postedByYear: f27 })));
+const p3d = { entries: [e("r2", [d("519", 30000), d("602", -30000)]), e("r1", [d("500", 70000), d("519", -70000)])] };
+console.log("P3:", lt(o.ruleDiffCorrectionPlan({ diff: p3d, year: 2027, postedByYear: by({ 2026: { "519|": 100000, "602|": -100000 } }) })));
+const part = { entries: [e("r1", [d("500", 70000), d("602", -30000), d("519", -40000)])] };
+console.log("kısmi fazla 2027 fişi:", lt(o.ruleDiffCorrectionPlan({ diff: part, year: 2026, postedByYear: f27 })));
+const sp = { entries: [e("r1", [d("500", 75000), d("602", -70000), d("602", -5000, 2025)])] };
+console.log("bölünmüş:", lt(o.ruleDiffCorrectionPlan({ diff: sp, year: 2026, postedByYear: by({ 2027: { "500|": 50000, "671|": -50000 } }) })));
+const both = by({ 2026: { "500|": 70000, "602|": -70000 }, 2027: { "519|": 30000, "671|": -30000 } });
+console.log("iki fiş 2026+2027, kilit 2026:", lt(o.ruleDiffCorrectionPlan({ diff: { entries: [r1, r2] }, year: 2026, postedByYear: both })));

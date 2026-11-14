@@ -317,8 +317,10 @@ export const ruleDiffCorrectionYear = ({ lock = "", cover = "", today = "" } = {
  *     fark `excluded`'da nedeniyle). Dışlama kararlı noktaya kadar yinelenir (bir maddenin dışlanması başka bir alt defter hesabının birikimini sıfırdan çıkarabilir).
  * Yazılmış fişin düşülmesi (S174 = A — fiş KENDİ yılında düzeltilmiş sayılır): fişin yılı < `year` ise fişin 6 / 7 sınıfı (671 / 681 dışı) satırı o yılın HAM farkından (yıl, hesap, alt
  * hesap) düşülür ve kalan ham fark `year`a göre eşlenir; fişin öbür satırları (1–5 sınıfı, 671 / 681) ve yılı ≥ `year` olan fişin bütün satırları eşlenmiş toplamdan düşülür. Bütün fişler
- * `year`ın fişiyse sonuç `expected − posted` (eski hesap AYNEN).
- * Dönüş: { expected: Map, lines (düzeltilmemiş kalan; fiş satırları, kuruş), excluded: [{ account, sub, party, minor }], excludedEntries: Set, sources: [...] }.
+ * `year`ın fişiyse sonuç `expected − posted` (eski hesap AYNEN). Yılı `year`dan SONRA olan fiş (kilit fişin yılından geriye alındı; S185 = A) kendi yılının eşlemesiyle düşülür; farkı
+ * aşıyorsa `ownYearOver`a girer ve hiç satır önerilmez (fiş kendi yılında ters kaydedilir).
+ * Dönüş: { expected: Map, lines (düzeltilmemiş kalan; fiş satırları, kuruş), excluded: [{ account, sub, party, minor }], excludedEntries: Set, sources: [...],
+ *   ownYearOver: [{ year, minor }] (yılı `year`dan sonra olan ve farkı aşan fişlerin yılı ve fazlası — borç tarafı, kuruş) }.
  */
 export function ruleDiffCorrectionPlan({ diff, subledger = new Set(), year, posted = new Map(), postedByYear = null }) {
   const entries = (diff?.entries || []).filter(entry => entry.deltas?.length);
@@ -369,11 +371,14 @@ export function ruleDiffCorrectionPlan({ diff, subledger = new Set(), year, post
     if (!minor) continue;
     add(expected, priorOf(minor), minor);
   }
-  // Yazılmış fişler (S174 = A): önceki yılın fişinin sonuç satırı o yılın ham farkından; öbürleri eşlenmiş toplamdan.
+  // Yazılmış fişler (S174 = A): önceki yılın fişinin sonuç satırı o yılın ham farkından; öbürleri eşlenmiş toplamdan. Yılı eşleme yılından SONRA olan fiş (kilit fişin yılından
+  // geriye alındı — S185 = A) burada değil, aşağıda KENDİ yılının eşlemesiyle düşülür.
   const byYear = postedByYear || new Map([[year, posted]]);
+  const later = [...byYear].filter(([postYear]) => Number(postYear) > year).sort((a, b) => Number(a[0]) - Number(b[0]));
   const prior = new Map(result);
   const deducted = new Map();
   for (const [postYear, map] of byYear) {
+    if (Number(postYear) > year) continue;
     for (const [key, minor] of map) {
       if (!minor) continue;
       const account = key.split("|")[0];
@@ -383,10 +388,54 @@ export function ruleDiffCorrectionPlan({ diff, subledger = new Set(), year, post
   }
   const due = new Map(same);
   for (const [, minor] of prior) if (minor) add(due, priorOf(minor), minor);
-  const lines = [];
+  const rest = new Map();
   for (const key of new Set([...due.keys(), ...deducted.keys()])) {
     const minor = (due.get(key) || 0) - (deducted.get(key) || 0);
-    if (!minor) continue;
+    if (minor) rest.set(key, minor);
+  }
+  // S185 = A (C5-ACILIS-TASARIM §17.15): yılı eşleme yılından SONRA olan fiş de KENDİ yılında düzeltilmiş sayılır. Kalan fark fişin yılının eşlemesine çevrilir (1–5 sınıfı ve
+  // 671 / 681 aynı hesap; eşleme yılının 6 / 7 sınıfı farkı fişin yılında önceki yıl → kalanın yönüyle 671 / 681), fişin satırı kendi kovasındaki farkı (aynı yönde, en çok farkın kendisi
+  // kadar) kapatır. Fişin satırı kovasındaki farkı AŞIYORSA fiş FAZLADIR (ownYearOver): eşleme yılına fiş ÖNERİLMEZ (hiç satır yok) — fazlası fişin kendi yılındadır, fiş kendi yılında
+  // ters kaydedilir; ters kayıttan sonra kalan fark eşleme yılında önerilir. Kısmen kapanan kovada kalanı birden çok hesaba bölmek gerekirse (karar bunu söylemiyor) o fiş bugünkü
+  // kuralla (eşlenmiş toplamdan) düşülür.
+  const ownYearOver = [];
+  for (const [postYear, map] of later) {
+    const ownKey = (key, minor) => (RESULT_CLASSES.has(key[0]) && !PRIOR_YEAR_SET.has(key.split("|")[0]) ? priorOf(minor) : key);
+    const buckets = new Map();
+    for (const [key, minor] of rest) {
+      const bucket = ownKey(key, minor);
+      const item = buckets.get(bucket) || { minor: 0, keys: [] };
+      item.minor += minor;
+      item.keys.push(key);
+      buckets.set(bucket, item);
+    }
+    const apply = [];
+    const over = { debit: 0, credit: 0 };
+    let split = false;
+    for (const [key, minor] of map) {
+      if (!minor) continue;
+      const item = buckets.get(key) || { minor: 0, keys: [] };
+      const covered = Math.sign(item.minor) === Math.sign(minor) ? Math.sign(minor) * Math.min(Math.abs(minor), Math.abs(item.minor)) : 0;
+      if (minor - covered > 0) over.debit += minor - covered;
+      else over.credit += covered - minor;
+      if (!covered) continue;
+      if (covered === item.minor) for (const own of item.keys) apply.push([own, rest.get(own)]);
+      else if (item.keys.length === 1) apply.push([item.keys[0], covered]);
+      else split = true;
+    }
+    if (over.debit || over.credit) {
+      ownYearOver.push({ year: Number(postYear), minor: Math.max(over.debit, over.credit) });
+      continue;
+    }
+    if (split) {
+      for (const [key, minor] of map) if (minor) add(rest, key, -minor);
+      continue;
+    }
+    for (const [key, minor] of apply) add(rest, key, -minor);
+  }
+  const lines = [];
+  for (const [key, minor] of rest) {
+    if (!minor || ownYearOver.length) continue;
     const [account, sub] = key.split("|");
     lines.push({ account, sub, party: "", debit: minor > 0 ? minor : 0, credit: minor < 0 ? -minor : 0 });
   }
@@ -399,7 +448,7 @@ export function ruleDiffCorrectionPlan({ diff, subledger = new Set(), year, post
     })
     .sort((a, b) => a.account.localeCompare(b.account) || a.sub.localeCompare(b.sub) || a.party.localeCompare(b.party));
   const sources = entries.map(entry => ({ id: entry.id, date: entry.date, source: entry.source || "", text: entry.text || "", inFrozen: entry.inFrozen !== false, inLive: entry.inLive !== false, excluded: out.has(entry.id), deltas: entry.deltas }));
-  return { expected, lines, excluded, excludedEntries: out, sources };
+  return { expected, lines, excluded, excludedEntries: out, sources, ownYearOver };
 }
 
 /**
