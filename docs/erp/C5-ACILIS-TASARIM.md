@@ -1357,3 +1357,73 @@ YALNIZ işlev içinde kullanır (ESM döngüsü üst düzeyde değer okumadıkç
 - D: komşu (188 dosya, tarama) iki TZ 2.199 / 2.199; tyk-mutasyon-250'nin taşınan yedi deseni yeni yerinde 7 / 7 ÖLDÜ.
 - E: hız ÖLÇÜLEMEDİ (ölçüm kilidi başka bir koşudaydı; ana oturum ölçer).
 - F: on bir ekran senaryosu yeşil (sayılar raporda).
+
+### 18.11 Tur 3b — YALNIZ TAŞIMA: carinin SATIRLARINI kuran zincir (kod ajanı, 14.11.2026; taban `c5a3b-taban` bac4b267 = tur 3a ucu) — KODDAN ÖNCE yazıldı
+BAŞ MİMAR KARARI (14.11): §18.9 (4) (i) KABUL (zincir de taşınır), (ii) RET. Bu alt bölüm 3b'nin planıdır; kural (S168 = B, §18.4) ve §18.6'nın iki açık noktası TUR 3c'nindir.
+
+**(1) Yeni yer — ikinci saf lib dosyası `server/lib/account-lines.mjs` `createAccountLines({ store })`** (obligation-input.mjs'in İÇİNE değil). Gerekçe: (a) bellek sahipliği — iade kesimi ve
+satış kaynağı bellekleri bugün TAKSİT servisinin örneğindedir; taksit servisi onları kendi örneğinde tutmaya devam etmeli (ömür aynı) ve bunun için kuyruğun girdi kurucusunu (kilit izi
+belleğiyle) kurması gerekmesin; (b) zincirin okuyucuları kuyruktan geniştir (cari kartı, Mizan / allLedgers, Cari Listesi, ekstre, WhatsApp çekirdeği) — "carinin satırları" ayrı bir
+kavramdır; (c) döngü yok: account-lines yalnız lib/accounts.mjs (accountLedger) ve lib/money.mjs (roundMoney) içe aktarır; lib/bank/doubtful.mjs'i İÇE AKTARMAZ (tur 3c'de doubtful.mjs
+satırları buradan kurabilir, §18.2 madde 3'ün döngüsüne girmeden). obligation-input.mjs account-lines'ı içe aktarır ve kendi örneğini GEREKİNCE (ilk çağrıda) kurar.
+
+| İşlev / değer (taban dosya:satır) | Ne | Yeni yer |
+|---|---|---|
+| `STOCK_REASON_SQL` + yorumu (routes/accounts.mjs:44–45, modül düzeyi) | stoktan gelen cari satırının hareket nedeni | account-lines.mjs modül düzeyi (dışa verilmez; iki okuyucusu da taşınıyor) |
+| `entriesOf` (routes/accounts.mjs:138–145) | tek carinin satır okuyucusu (cari kartı) | account-lines.mjs, `createAccountLines` kapanışı |
+| allLedgers'ın satır okuma döngüsü (routes/accounts.mjs:1748–1753) | bütün / seçili carilerin satırları tek sorguda | `entriesByAccount(scope, args)` — gövde AYNEN + `return entries;` |
+| allLedgers'ın `accountLedger` döngüsü (routes/accounts.mjs:1755–1756) | carinin defter satırları (kart haritasıyla) | `ledgerLinesOf(rows, entries, planMap)` — gövde AYNEN + `return lines;` |
+| `cutsCache`, `returnCuts`, `scanReturnCuts` (routes/plans.mjs:1638–1670, yorumlarıyla) | iade kesimleri + bellek | account-lines.mjs |
+| `saleSourceCache`, `SALE_SOURCE_SQL`, `parsePayload`, `saleSourceOfEvent`, `saleSources` (routes/plans.mjs:1671–1721, yorumlarıyla) | satışla açılan kartın kaynağı + bellek | account-lines.mjs |
+| `ledgerPlansByAccount` (routes/plans.mjs:1722–1750) | bütün carilerin kart haritası | account-lines.mjs |
+
+Girinti AYNI (kapanış içi işlev iki boşluk, gövde dört). Gövdelerde değişen satır YOK; yalnız allLedgers'ın iki parçası işleve dönerken başlık + `return` satırı eklenir (iki işlev ayrı:
+allLedgers'ta satır sorgusu kart haritasından ÖNCE koşuyordu — sıra aynen korunsun diye `planMap` satırı iki çağrının ARASINDA kalır).
+
+**(2) Çağıranlar (ders 10 — tarama `ledgerPlansByAccount|returnCuts|scanReturnCuts|saleSources|saleSourceOfEvent|SALE_SOURCE_SQL|parsePayload|entriesOf|STOCK_REASON_SQL|cutsCache|saleSourceCache|allLedgers`
+server / test / tools / client).** Üretim:
+- routes/plans.mjs: kapanışta taşınan bloğun yerine TEK satır `const { returnCuts, saleSources, ledgerPlansByAccount } = createAccountLines({ store });` (kayıt sırasında, aynı yerde) — `forAccount`
+  (returnCuts, saleSources; METİN AYNI) ve dönüş nesnesindeki `ledgerPlansByAccount` (dışa açık yüz AYNI ad, aynı işlev) bu örnekten. Önce: kapanış içi işlev; sonra: aynı ad, örnekten.
+- routes/accounts.mjs: `entriesOf` tanımının yerine `const { entriesOf, entriesByAccount, ledgerLinesOf } = createAccountLines({ store });`; `entriesOf` çağrıları (detail 188, waFacts 248,
+  düzeltme sınırı 863) METİN AYNI; allLedgers'ta iki parça `const entries = entriesByAccount(scope, args);` ve `const lines = ledgerLinesOf(rows, entries, planMap);` olur (planMap satırı aynen arada).
+  allLedgers'ın imzası / dönüşü AYNI → okuyucuları (routes/invoices.mjs 707 allSettled, 2154 repairScreen; routes/overview.mjs 257; routes/report-center.mjs 1789, 1821) DEĞİŞMEZ.
+- `plans().ledgerPlansByAccount` okuyucuları (routes/accounts.mjs allLedgers 1754, routes/invoices.mjs 2150) DEĞİŞMEZ (aynı servis yüzü).
+- Başka sunucu / istemci dosyası bu adları çağırmaz (lib/accounts.mjs, lib/obligation-queue.mjs, routes/whatsapp.mjs yalnız yorumda; lib/companies.mjs ve lib/formula/compute.mjs'teki `entriesOf` başka işlevdir).
+- Testler: adları yalnız servis yüzünden (`plans.ledgerPlansByAccount`, `plans.forAccount(...).returnCuts`) ya da yorumda okur; mutasyon desenleri DOSYA YOLUYLA: test/r2-249/mutasyon.mjs M1–M7 (returnCuts /
+  scanReturnCuts gövdeleri) ve test/tyk-mutasyon-250.mjs'in taşınan metni hedefleyen desenleri (saleSourceOfEvent, ledgerPlansByAccount — taramayla) → yalnız dosya yolu `server/lib/account-lines.mjs`
+  olur (desen metni aynı). Öbür mutasyon dosyaları (b2-249, bs234-250, kasa-acilis-once-250, mobil-yazma-247) taşınan metne desen UYGULAMAZ (taramayla doğrulanır; uyarsa DUR).
+
+**(3) Bellekler ve ömürleri.**
+- `cutsCache` — anahtar `total_changes|data_version` (bu bağlantının ve başka bağlantının yazması), işlem içinde ne okunur ne yazılır. Bugün taksit servisinin örneğinde (şirket başına, servis
+  kaydı anında BİR kez). Sonra: taksit servisi kayıt anında BİR `createAccountLines` örneği kurar → bellek o örnekte, ömür ve anahtar AYNI. accounts servisi kendi örneğini kurar ama bellekli
+  işlevlerini çağırmaz (yalnız entriesOf / entriesByAccount / ledgerLinesOf — belleksiz). obligation-input'un örneği (yalnız yeni kendi kendine kuran yol) ayrı belleğe sahiptir; bu turda
+  üretimde çağrılmaz.
+- `saleSourceCache` — kart kimliği → kaynak (kart açıldıktan sonra değişmez; geçersiz kılma YOK), işlem içinde yazılmaz. Ömür aynı gerekçeyle aynı (taksit servisinin örneği).
+- Silinenler'den geri gelen kart AYNI kimlikle döner → kaynağı değişmez (bugünkü kural; bellek doğru kalır). Geri yükleme bekletilir, yeniden açılışta uygulanır → servisler (ve örnekler) yeniden
+  kurulur; iki şirket: her şirket kendi servis ağacını → kendi örneğini kurar (bellek paylaşılmaz).
+- Bellekler örnek DIŞINDA (modül düzeyinde) TUTULMAZ — iki şirket aynı süreçte yaşar; modül düzeyi bellek şirketler arası sızardı (mutant olarak sınanır).
+
+**(4) Modülün kendi kendine kurduğu satırlar (tek cari ve toplu yol — işçide servis ağacı olmadan).** obligation-input.mjs'e üç YENİ işlev (taşıma değil; yalnız taşınan parçaları bağlar):
+`ledgerLines({ ids, plans } = {})` → silinmemiş carilerin (ids verilirse yalnız onların) defter satırları Map'i — allLedgers'ın satır kuralı (`entriesByAccount` + `ledgerPlansByAccount` + `ledgerLinesOf`;
+cari kümesi `accounts` tablosundan `deleted_at IS NULL`, sıra allLedgers gibi ad); `accountInput(accountId, day, ledger = null)` → tek carinin kuyruk girdisi (`withExtras(accountSettleInput(…), obligationExtras(id), id)`;
+satır verilmezse `ledgerLines({ ids: [id] })`); `batchInputs(day, { ledgers, ids } = {})` → bütün carilerin girdisi (`settleTables` + `batchSettleInput` + `obligationExtras()` — allSettled'in kurgusu).
+Eski "satırlar parametreyle" yolları (`accountSettleInput(id, ledger, day)`, `batchSettleInput(...)`) AYNEN kalır. İşçide: `createObligationInput({ store: createStore(openDatabase(dbPath, { readOnly: true })) })`
+→ `buildObligations(input.accountInput(id, gün))` / `input.batchInputs(gün)`. Tek cari yolu kart haritası için bütün kartları okur (allLedgers({ ids }) ile aynı kural — "ids kümesindeki defter kümesiz
+çağrıdakiyle birebir"); çok carili defter yükleyicisi `plans` parametresiyle haritayı BİR kez verir (tur 3c; ders 47).
+Kapı: tek cari kendi kurduğu = `invoices.obligationsFor(id, cari kartının defteri)`; toplu = `allObligations().get(id)` ve cari kümesi aynı (kalıcı test).
+
+**(5) "Nasıl bozulur?"** (testler buradan) — önbellek ömrü: taksit servisi İKİ örnek kurarsa ya da her çağrıda yeni örnek kurarsa bellek boşa düşer (hız; tek örnek koddan okunur, r2-249 YAPI hücresi
+istek başına tarama sayısını sayar); bayat bellek (anahtar sabit) → iade yazıldıktan sonra kesinti eski kalır (kalıcı testte iade SONRASI ikinci durum + mutant); işlem içi çağrı: `store.inTransaction`
+dalları aynen (işlem içinde tarama; kaynak belleğe yazılmaz) — kalıcı testte işlem içinden okuma; iki şirket: aynı süreçte iki şirket, farklı veri — modül düzeyi tekil örnek (mutant) şirketleri
+karıştırır; geri yükleme sonrası: servisler yeniden kurulur (ömür aynı); Silinenler'den geri gelen kart / hareket: silinen kart haritadan düşer, geri gelince aynı kimlikle döner — kalıcı testte
+sil → durum → geri getir → durum; eşzamanlı istek: tek süreç, bellek örnekte, aynı anahtar → aynı değer; satır sırası: aynı gün iki satır yazım sırasıyla (ORDER BY tarih, kayıt anı, rowid — aynen);
+silinmiş cari: kendi kendine kuran yolda cari kümesine girmez (mutant); döngüsel içe aktarma: account-lines → lib/accounts.mjs → money.mjs (routes/ yok, doubtful yok).
+
+**(6) Kanıt planı.** (A) bayt bayt: tur 3a'nın döküm betiği (dışa açık yüz) + carinin defter satırları (cari kartı `detail().ledger`, allLedgers satırları, Mizan kart haritası) temiz 100 bin
+satırda, v2.4.9 fikstüründe, sınıf verisinde; taban ↔ yeni fark 0. (B) kalıcı testin YENİ vakası (ayrı sunucu, ayrı hakem dosyası `test/fixtures/obligation-input-250-zincir-hakem.json` — tur 3a'nın
+hakemi DEĞİŞMEZ): sınıflar bağsız / bağlı tahsilat, çek / senet bağı, şüpheli kaydı, taksit kartı, iadeli Mevcut Borç kartı (iade kesimi; iade SONRASI ikinci durum), stoktan taksitli satış (satış
+kaynağı), silinen + Silinenler'den geri gelen kart, silinen cari, faturasız iade, kilitli dönem, iki şirket; modül YALNIZ store ile satırları da kendisi kurar. Hakem tabanda (`HAKEM_YAZ_ZINCIR`) üretilir;
+tabanda KIRMIZI (modülde `ledgerLines` yok). Mutantlar (en az 6, DEĞERLE): kart haritasında bir kart atlanır; silinmiş kart haritaya girer; iade kesimi kayar; satış kaynağı boş; satır okuyucuda bağ
+alanı düşer; kendi kendine kuran yolda silinmiş cari girer; modül düzeyi tekil örnek (iki şirket karışır); iade kesimi belleği bayat (anahtar sabit). (C) kâhinler taban = yeni. (D) komşular iki TZ;
+r2-249 M1–M7 ve tyk-mutasyon'un taşınan desenleri yeni yolda TEK eşleşme + ÖLÜ. (E) hız: cari kartı, Cari Listesi, Taksitler, karttan tahsilat, Vade Takip, zil / takvim, fatura kaydı. (F) ekran: ci.yml'de
+'tyk' geçenler + değişen dosyaları yükleyen cari / taksit / fatura senaryoları.
