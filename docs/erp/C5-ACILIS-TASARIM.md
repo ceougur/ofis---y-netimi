@@ -1345,3 +1345,15 @@ içe aktarmaz (3b'de içe aktarırsa döngü — (7)).
 kurar; carinin satırları (4)'ün kararına bağlı. Döngü (§18.2 madde 3): `doubtfulRecordsOf` → `doubtfulState` → (3b) kuyruk → `doubtfulRecordsOf` — çözüm önerisi: 3b'de
 `obligationExtras` şüpheli kalanlarını dışarıdan alan bir parametre kazanır (varsayılan bugünkü `doubtfulRecordsOf`; ayırıcı kendi o anki durumunu verir) ve lib/bank/doubtful.mjs modülü
 YALNIZ işlev içinde kullanır (ESM döngüsü üst düzeyde değer okumadıkça çalışır; yine de 3b'de ayrı sınanır).
+
+### 18.10 Tur 3a — sonuç (kodla birlikte; kanıt docs/kanit/2026-11-14/c5a3a-*)
+- Taşıma: 225 satır routes/invoices.mjs 631–639, 647–733, 740–844, 986–1009 → lib/obligation-input.mjs 13–236 BAYT BAYT (betikle doğrulandı: taşınan satırlar tabandakiyle aynı dizi);
+  servis tarafında yalnız iki içe aktarım satırı ve tek `const { … } = createObligationInput({ store })` satırı (632) değişti; kullanılmayan iki içe aktarım (doubtfulState, lockAtOf / lockHistory)
+  servisten modüle geçti. Gövdede DEĞİŞEN SATIR YOK. Zincir (§18.9 (4)) TAŞINMADI — BAŞ MİMAR KARARI GEREKİYOR (r2-249 mutasyon dosyası yazılabilir listede değil).
+- A (bayt bayt): temiz 100 bin satır (iki şirket, 1.890 cari, 37.941 fatura, 5.928 kartlı fatura) taban ↔ yeni döküm 1.892 satır, SHA-256 365a8f75…a323 iki tarafta AYNI (fark 0);
+  v2.4.9 fikstürü (50 cari) 51 satır, SHA-256 5fe1e924…2650 AYNI; sınıf verisi: kalıcı testin hakemi (aşağıda).
+- B: test/obligation-input-250.test.mjs (30 cari-durum; iki TZ yeşil; tabanda KIRMIZI — modül yok); test/obligation-input-250-mutasyon.mjs 14 / 14 mutant DEĞERLE yakalandı.
+- C: kâhin defter 187 denetim 0 fark (taban = yeni); kâhin cari 16.459 / 16.459 (+31 yapım aşaması; taban = yeni); yapım aşaması listesi kendi kopyada yeniden üretildi: FARKSIZ.
+- D: komşu (188 dosya, tarama) iki TZ 2.199 / 2.199; tyk-mutasyon-250'nin taşınan yedi deseni yeni yerinde 7 / 7 ÖLDÜ.
+- E: hız ÖLÇÜLEMEDİ (ölçüm kilidi başka bir koşudaydı; ana oturum ölçer).
+- F: on bir ekran senaryosu yeşil (sayılar raporda).
