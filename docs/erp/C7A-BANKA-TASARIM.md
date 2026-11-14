@@ -78,7 +78,7 @@ v2.4.9 verisi dahil) yeniden türetilmez, kural farkı görünmez, aynı açık 
   kart vadesi (cardDueFlows: kart bakiyesinden), Hareketler (kart hesabı süzgeci), İşlem Kartı (form: interest_out dalı movements.mjs:264), Banka Masraf Raporu (interest_out GİRMEZ —
   değişmedi), Gelir Tablosu (780 → H). Kasa / cari / stok / taksit dokunulmaz.
 
-## 3. KG-19 — tasarım (KODLANMADI; §9 B1 kararı bekleniyor)
+## 3. KG-19 — tasarım (KODLANMAZ — S175 = C, kullanıcı 14.11 06:31; valörlü transfer bugünkü gibi, 108.90 açılmaz; BİLİNEN SINIR; metin 2.5.1'de A'ya geçilirse diye durur)
 
 Hedef türetme (rows() `bankLines`'a `e.value_date` + `e.type` gelirse): `transfer` (ve ters kaydı) başlığında `value_date` > `date` ise alıcı hesabın para satırı (rol bank, D, ref ≠
 bank_ref) iki maddeye bölünür: işlem gününde B 108.90 / A 102.gönderen (+ ücret satırları), valör gününde B 102.alıcı / A 108.90. Ters kaydın kendi tarihi (KG-18) ve asıl valörün
@@ -86,7 +86,7 @@ ilişkisi ayrıca (aşağıda S-b). 108.90 "Yoldaki Transferler" PLAN_SUBS'a (he
 Mutabakat (102.alıcı ↔ program; 108.90 değişmezi = yoldaki transferlerin toplamı), dondurma (kilit çıkış ile valör arasına düşerse kural farkı), Nakit Akışı, Banka Bakiye Raporu.
 Takvim: valör günü transferde KULLANICININ girdiği tarihtir (tatile düşerse program kaydırmaz — vouchers.mjs valueDate yalnız aralık denetimi); S21 / S27 POS valörü içindir (§6).
 
-## 4. KG-6 — tasarım (KODLANMADI; §9 B1 kararı + §10 soruları bekleniyor)
+## 4. KG-6 — tasarım (tur 2: S177 = A, S178 = A; ayrıntılı tasarım §13.3)
 
 Hedef türetme: POS satışının (pos_sales, rol sale) satış gününde B komisyon hesabı (Banka Ayarları; varsayılan 653) / A 108.POS = satışın kesintisi (BSMV / vergisiz kip; taksitli
 satışta BÜTÜN taksitlerin toplamı); gün fişi maddesinde 653 satırı türetmede 108'e katlanır (A 108 brüt − kesinti = net; B 102 net). İade (refund kalemi) ve İadede Komisyon: iade
@@ -95,7 +95,7 @@ kapandığı gün fişi } ister (pos_items toplu SQL, satış başına tek satı
 yalnız defter maddesi), Banka Masraf Raporu (POS komisyonu satırı gün fişinden okunuyor — tarihi değişmez mi? karar), dondurma (çekim kilitli / valör açık → kural farkı), Gelir
 Tablosu dönemselliği.
 
-## 5. K-14 / K-15 — tasarım (KODLANMADI; §9 B1 + §10 soruları)
+## 5. K-14 / K-15 — tasarım (tur 2: S179 = A; ayrıntılı tasarım §13.2)
 
 Hedef türetme: `fin_ref = ''` para satırı (havale → 102.00, kurumsal kart ödemesi → 108.00) "açılıştan önce" ise banka / kart tarafı yerine 519 (açılış sınıfı DEĞİL — olağan madde,
 hareketin tarihinde); Devir Kapanışı maddesinin 102.00 / 108.00 satırları aynı kümede 519 (madde kendi içinde sıfırlanır → yazılmaz ya da B 519 / A 519); Bankaya Geçmiş Say /
@@ -145,7 +145,7 @@ Kanıt docs/kanit/2026-11-14/c7a-*. Tabanın yeniden üretimi (c7a-taban'ın ar�
 - Sürücünün BEKLEYEN kimlikleri (taban): Ç7a-KG6 3 senaryo / 8 denetim (s08, s23, s72), Ç7a-KG19 1 / 4 (s12), Ç7a-K14-K15 2 / 12 (s11, s37).
 Kabul sayıları (A–G) teslim raporunda.
 
-## 9. BAŞ MİMAR KARARI GEREKİYOR (mimari; seçenek + öneri + gerekçe — ders 40)
+## 9. BAŞ MİMAR KARARI GEREKİYOR (mimari; seçenek + öneri + gerekçe — ders 40) — tur 1'in soruları; KARARLAR (iş listesi D 14.11 06:27): B1 = A, B2 etiket aynı, B3 ayar kalır (varsayılan S27), B4 kart ücreti 2.5.1
 
 - **B1 — dosya sınırı (KG-19 / KG-6 / K-14 / K-15'in ön koşulu).** `server/routes/ledger.mjs rows()` (YAZILMAZ) türetmenin istediği alanları vermiyor (§0).
   Seçenek A (öneri): rows()'a en küçük ek, YALNIZ okuma — (i) `bankLines` sorgusuna `e.value_date AS valueDate, e.type AS eventType, e.bank_ref AS bankRef, l.ref AS ref`; (ii) `refs()`
@@ -161,7 +161,7 @@ Kabul sayıları (A–G) teslim raporunda.
   kılavuzda değil, Banka Ayarları yardım metninde "S27" davranışı. Seçenek B: ayar kaldırılır.
 - **B4 — D-07'de Masraf (fee) kart hesabında.** Kart yıllık ücreti / ekstre ücreti kitabın D-07'si değildir (780 değil 770); bu tur yalnız Faiz Gideri'ni açtı. İstenirse ayrı küçük iş.
 
-## 10. KULLANICIYA SORULMALI (para / defter — ders 43; SORU DÜZENİ; yanıta kadar ne kodda ne kâhinde kesinleşir)
+## 10. KULLANICIYA SORULMALI (para / defter — ders 43; SORU DÜZENİ; yanıta kadar ne kodda ne kâhinde kesinleşir) — YANITLANDI 14.11 06:31 ("bana sorun varsa önerilerini uygula"): S-a = S175 = C, S-b = S176 DÜŞTÜ, S-c = S177 = A, S-d = S178 = A, S-e = S179 = A
 
 İş listesi C / D'de ve C3 / C5 §8 / §9'da aynı soru ARANDI (python ile satır satır; "KG-19", "KG-6", "valör", "108.90", "Hesapsız", "K-14", "K-15"): KG-6 için yalnız 05.11 (5); KG-19 /
 K-14 / K-15 için kullanıcı kararı yok (kitabın "K değil" satırları; S21 / S27 POS valörü için).
@@ -205,3 +205,73 @@ K-14 / K-15 için kullanıcı kararı yok (kitabın "K değil" satırları; S21 
   bekliyor. Sürücü tabanda da kırmızı (çıkış 1; SINIFLANMADI'lar Ç5'ten sonra eskiyen BUGÜN görünümünden — ana oturumun bekleyen "muhasebe sürücüsü karşılaştırması" işi).
 - Rastgele sıra (test/mutabakat, 400 işlem × 2 tohum, her 20 işlemde doğrulama): taban 2/2, yeni 2/2.
 - Hız: ÖLÇÜLEMEDİ — ölçüm kilidi doluydu (başka oturum); bekleme döngüsü kurulmadı. Değişen yol yalnız Banka Fişi yazımının hesap türü denetimi (sabit küme üyeliği).
+
+## 13. Tur 2 (14.11.2026; taban `c7a2-taban` 5abefb4c; görev metni `docs/devir/2.5.0-DEVAM/c7a2-istem.txt`) — KODDAN ÖNCE yazıldı
+
+Kararlar (AYNEN iş listesi D / C): S175 = C (KG-19 kodlanmaz; sürücüdeki Ç7a-KG19 farkı KALIR), S176 DÜŞTÜ, S177 = A, S178 = A, S179 = A; B1 = A (rows() / refs()'e yalnız okuyan
+ekler), B2 (kural sürümü etiketi "2.5.0-defter" aynı kalır), B3 (arife ayarı kalır), B4 (kart yıllık ücreti 2.5.1). Sıra: veri kaynağı (0) → K-14 / K-15 (3) → KG-6 (1) → kart
+formundaki alan adı (4) → kılavuz (5).
+
+### 13.1 Veri kaynağı (iş 0; `server/routes/ledger.mjs` YALNIZ rows() / refs())
+- `refs().cover` = açılış sınırları (yeni yardımcı `server/lib/bank/opening-cover.mjs` `coverBounds(store)`; tek SQL): `bank` = max(Devir Kapanışı günü, silinmemiş TL Vadesiz /
+  Ticari / Diğer hesapların EN GEÇ açılış tarihi), `card` = max(Devir Kapanışı, silinmemiş TL kredi kartlarının EN GEÇ açılışı), `pos` = Devir Kapanışı günü. Devir Kapanışı = etkin en
+  geç `carry_close` günü (accounts.carryBoundary ile aynı SQL).
+- `rows().bankLines` satırına `eventType` ve `baseType` (ters kaydın asıl türü — Devir Kapanışı zincirini tanımak için). Valör / referans bu turda GEREKMEDİ (KG-19 yok; KG-6
+  kalemden okur).
+- KG-6 için `rows().posCommission` (§13.3) ve `refs().commissionGl`.
+- 2.4.9 kopyası (ledger-rule-249, kendi ledger-rows.mjs'i) etkilenmez: yeni alanları okumaz.
+
+### 13.2 K-14 / K-15 (S179 = A) — "açılışta sayılmış" hesapsız satır
+TANIM (tek kaynak `opening-cover.mjs`; defter, tek kaynağın defter beklenenleri, kova, Alt Hesap Mizanı ve 519 ikinci yükleyicisi AYNI tanımı kullanır). Hesabı atanmamış
+(fin_ref / ref '') para satırı "açılışta sayılmış"tır ⟺
+- modül satırı, havale yolu (102.00): tarih < cover.bank;
+- modül satırı, kart yolu (108.00), yön ÇIKIŞ (kurumsal kartla ödeme — Kart Borcuna Aktar havuzu): tarih < cover.card;
+- modül satırı, kart yolu, yön GİRİŞ (POS tahsilatı — Bankaya Geçmiş Say havuzu; POS'un açılış tarihi yoktur): tarih < cover.pos (yalnız Devir Kapanışı);
+- Banka Fişi satırı: Devir Kapanışı ve ters kaydının satırı HER ZAMAN (kapanışın kapattığı küme tanım gereği açılıştadır); öbürleri (Bankaya Geçmiş Say / Kart Borcuna Aktar'ın 108.00
+  tarafı) tarih < cover.pos.
+"<" (eşit değil): açılış günü D'nin gün başındaki bakiyedir (plan §10.3); D günlü satır açılıştan SONRADIR (pickRef'in "none" kabulüyle aynı ölçü).
+Hesap kümesi: silinmemiş, TL, durum fark etmez (pasif hesabın açılışı defterde durur; silinen hesabın açılışı ters kaydedilir). pickRef yalnız ETKİN hesaplara bakar; türetme duruma
+bakarsa bir hesabı pasife almak geçmiş günlerin defterini değiştirirdi → BAŞ MİMAR KARARI GEREKİYOR (öneri: durum fark etmez — kodlanan).
+Yön ayrımı (kart yolu): program bugün 108.00'ı iki havuza yönle ayırıyor (reclassAvailable: giriş = Bankaya Geçmiş Say, çıkış = Kart Borcuna Aktar); tanım aynı ayrımı kullanır.
+Uç durum (KULLANICIYA SORULMALI — uç durum seçeneğiyle): hesapsız POS İADESİ (çıkış) kart ailesine, kurumsal karta gelen hesapsız İADE (giriş) POS ailesine düşer.
+
+DEFTER (journal; olağan madde, açılış sınıfı DEĞİL, hareketin tarihinde): açılışta sayılmış satırın 102.00 / 108.00 tarafı 519 (alt hesapsız). Örnek s11: 20.12.2025 hesapsız havale
+tahsilatı 70 → B 519 70 / A 120 70 (bugün B 102.00). s37: 15.01 kart ödemesi 200 (kart açılışı 01.02) → B 320 200 / A 519 200 (bugün A 108.00). Devir Kapanışı: B 519 X / A 519 X → aynı
+hesabın iki yanı netlenir, madde YAZILMAZ (519 bakiyesi değişmez; mizanın devir hızı şişmez); ters kaydı da. Bankaya Geçmiş Say / Kart Borcuna Aktar: 108.00 tarafı yalnız küme
+koşulunda 519 (yeni aktarımda olanaksız — havuz aşağıda).
+TEK KAYNAK (money-lines): `groups()` (yalnız defter beklenenleri: Defter Mutabakatı / Mutabakat Testi / kapı) açılışta sayılmış satırı yol "opening" altında verir (102 / 108 / alt
+hesap beklenenine GİRMEZ); `verifyReport` ve `balances()` (Kasa penceresi) ham gruplarla (değişmez). `unassigned` / `unassignedWays` (kova: Banka Genel Bakış, Hesaplar, ANLIK DURUM,
+Nakit Akış, Birleşik Rapor; Alt Hesap Mizanı 102.00 / 108.00) ve `periodGroups` (Alt Hesap Mizanı dönemli) aynı satırları DÜŞER (S179 = A'nın parçası).
+519 İKİNCİ YÜKLEYİCİ (`ledger-opening.mjs openingCounterpart`): yeni tür `parts.unassigned` = açılışta sayılmış satırların işaretli toplamı (giriş +, çıkış −; Devir Kapanışı'nın para
+tarafı dahil — `parts.bank`'taki kapanış satırını netler). Açılış Eşleştirme dökümünde ayrı tür "Hesapsız Hareketler (Açılıştan Önce)". Değişmez: 519 = −(Σ modül açılışları) + fişler
++ bu satırlar.
+KOVA LİSTESİ (Hesabı Atanmamış Eski Hareketler): satırlar listelenmeye devam eder (bağlanabilen bağlanınca 519'dan çıkar, hesaba girer); bakiye (totals) yalnız kalan küme.
+Kart Borcuna Aktar havuzu: başlangıç max(Devir Kapanışı, hedef kart açılışı, cover.card) — açılışta sayılmış ödeme havuza girmez (tek kartta değişmez; çok kartta en geç açılıştan önceki
+ödeme artık aktarılmaz — S179 = A). Bankaya Geçmiş Say havuzu değişmez. Kurulum Sihirbazı ön izlemesinin "sonra" kovası kurulumdan sonraki sınırlarla.
+KİLİTLİ DÖNEM: donmuş defter DEĞİŞMEZ; eski veride kilitli tarihteki hesapsız satır (102.00 → 519) ve Devir Kapanışı maddesi ruleDiff'te "Kural Değişikliği Farkı" (madde sayısı +
+hesap / alt hesap tutarı); Kural Farkı Düzeltme Fişi ilk açık güne taşır (Ç5-A düzeni).
+NASIL BOZULUR (testler buradan): açılış günü tam D ('<' ↔ '≤'); iki hesap farklı açılış (en geç ↔ en erken); hesap pasife / silinir; Devir Kapanışı + Geri Al; satır hesaba atanır / geri
+alınır; kart ödemesi açılıştan önce / sonra; POS tahsilatı (giriş) açılıştan önce; kilitli dönemde kalan eski satır; eski sürüm (v2.4.9) verisi; iki şirket (sınırlar şirket deposundan);
+kapı (süzgeçli kurulum) — tek satır yazımında 409 çıkmamalı; Silinenler'den geri yükleme; Hesap Planı Mizanı ↔ Alt Hesap Mizanı.
+
+### 13.3 KG-6 (S177 = A, S178 = A) — POS komisyonu satış (çekim) günü
+- Veri (`rows().posCommission`, toplu SQL — ders 47; satış başına satır, gün fişi parçaları json): BSMV / vergisiz kipteki (pos_sales.tax_kind ≠ vat; S178 = A) satış ve iade kayıtlarının
+  (durum ≠ repair) void olmayan kalemleri; kesinti = komisyon + (vergi hariç kipte vergi) + sabit ücret (gün fişinin dayTotals'ıyla AYNI formül); iade kalemi eksi (İadede Komisyon,
+  KG-20 A). Parça: kalemin gün fişi (event_id; bekleyen '').
+- Defter: satış (iade) GÜNÜNDE madde `pos-commission:<satış>`: B komisyon hesabı / A 108.POS (iadede ters). Komisyon hesabı: parçanın gün fişindeki saklı gider satırının hesabı; bekleyen
+  parçada Banka Ayarları'ndaki güncel hesap (varsayılan 653).
+- Etkin gün fişi (pos_settlement) maddesi: kapattığı kalemlerin S'i gider satırından ve 108 alacağından düşer → 102 = net, 108 = net; kalan gider satırı yalnız Komisyon Farkı (Ekstre
+  ile / Elle Onay — S177 = A: valörün gününde). Ters kaydedilmiş gün fişinin kalemi yoktur (pos.mjs denetimi) → ters kayıt saklı satırlarla aynen.
+- KDV kipi (ödeme kuruluşu): DEĞİŞMEZ (S178 = A; sağlayıcı carisinin ekstresi aynı).
+- Tek kaynak: `groups()` 108 / 108.POS beklenenine kesintiyi işler (süzgeçli kurulumda: dahil satışların bütün parçaları −, dahil gün fişlerinin parçaları +; süzgeçsizde = −bekleyen).
+  Alt Hesap Mizanı 108.POS aynı kuralla.
+- POS raporları ve Banka Masraf Raporu (fiş satırlarından okur) DEĞİŞMEZ.
+- Kilitli dönem: çekim kilitli / valör açık → satış günü maddesi donmuş defterde yok → ruleDiff; gün fişi açık dönemde net; Kural Farkı Düzeltme Fişi.
+- Sabit kalır: oran / vergi kipi satış anında pos_sales / pos_items'a yazılır (POS kartı güncellemesi bekleyen kalemi değiştirmez); modül satırı düzeltilince satış void + yeni satış.
+  Komisyon hesabı ayarı sonradan değişirse bekleyen parçanın satış günü maddesinin hesabı değişir (kilitliyse ruleDiff) — BİLİNEN SINIR adayı.
+
+### 13.4 Okuyucular (ders 10)
+Yevmiye Defteri, Hesap Planı Mizanı, Alt Hesap Mizanı, Defter Mutabakatı, Mutabakat Testi (102 / 108 / alt hesap / 519 "Açılış Karşılığı"), kapı (integrity-scope süzgeçli kurulumu —
+groups({ ids, events }) ile), dondurma / ruleDiff / Kural Farkı Düzeltme Fişi, Açılış Eşleştirme (519 dökümü), Banka Genel Bakış / Hesaplar / ANLIK DURUM / Nakit Akış / Birleşik Rapor
+(kova), Hesabı Atanmamış Eski Hareketler (liste + havuz), Kurulum Sihirbazı ön izlemesi, mobil özet (kova summary() üzerinden), yedek / geri yükleme (veri değişmez; türetme). Banka /
+POS raporları, Banka Masraf Raporu, Kasa penceresi: DEĞİŞMEZ.
