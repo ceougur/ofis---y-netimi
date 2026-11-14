@@ -4516,3 +4516,53 @@ denetlenmiyor — `mizanBilinir` şüpheli adımlarında zaten kapalı). **Bu b�
   bakiye aynı). Öneri (i) (Y16-2: kayıt tarihinden önce tarihli satır o kayıttan düşmez). Üçüncü: uç durum böyle kalsın (BİLİNEN SINIR).
 - **SK-38 (d) — S181 ile S159 aynı alanda (UÇ):** F1 1.000 → şüpheliye alma 1.000 → F1'e bağlı 1.200 tahsilat: Pay 1.000 → 1.000 şüpheliden, 200 normal → A' 0, B' −200. (i) S181'in harfi: RET, bakiye 1.000,
   açık şüpheli 1.000. (ii) S159 = A: açık şüpheli kalmadı → kabul, bakiye −200 (200 avans). Öneri (ii). Üçüncü: uç durum böyle kalsın (BİLİNEN SINIR).
+- **SK-38 (e) — not (yeni soru değil):** X9'un görünüm anahtarları (takvim / Vade Takip / projeksiyon kalemleri ve pencere toplamları, gecikmiş) S138 = C yüzünden SUS'a döndü (aşağıda G3): faturaya bağlı tahsilat
+  artık şüpheliden DÜŞTÜĞÜ için "şüpheliden düşen faturaya bağlı ödeme" görünümü susturuyor. S168 = B'nin payı görünümle tutarlı (düşüş faturanın görünen tutarını değiştirmez) — kullanıcı isterse S138 = C bu
+  alanda kaldırılabilir; öneri: bugünkü gibi kalsın (BİLİNEN SINIR).
+
+### Kurallar (kod commit'i; yorumların `model.py`'deki karşılığı)
+- `_s168_pay(aid, cari, fatura, tarih)` (Y20-1, Y20-2, Y20-6 (a)–(c)): `k250` ve faturaya bağlı adımda; açık şüpheli yoksa ya da açık kayıtların hepsi adımdan sonra tarihliyse `None` (kural bağlamaz);
+  karışık tarihte SK-38 (c); görünüm (`s130`) `alan` değilse SK-38 (a); fatura kuyrukta düz kalem değilse SK-38 (b); yoksa Pay = kuyruk kalanı − görünen tutar. `tahsilat` / `evrak` adımı payı
+  (`min(pay, tutar)`) `s168` alanına yazar (adım kaydı; geri alınırsa S155 RET'inde durum geri alınır).
+- `_supheli_olaylar` (Y20-2): faturaya bağlı tahsilat `s168` tutarı kadar alacak satırı (önceden hiç); faturaya bağlı evrak `s168` alanı varsa o tutar (0 ise satır yok), yoksa eski kural (bağına
+  bakılmadan tamamı — 2.4.9 ve öncesi, mutant 315).
+- `hareket_geri_yukle` (Y20-7): faturaya bağlı tahsilatın payı geri yükleme anında yeniden ölçülür.
+- `_s145_adim` (Y20-3, Y20-6 (d)): payı tanımsız adım iki dünya SUS (`sus_s145`, kod SK-38 (…)); S155 RET aynen (S181 = B); faturaya bağlı adımda A > 0 → A' = 0 ve B' < 0 → SK-38 (d) SUS (S159'un
+  kabulünden ÖNCE). `kos` belirsiz iletisi "KULLANICIYA SORULMALI SK-38 (…) (§31 Y20-6)".
+- İz `_iz15[cari]`: "s168" (pay ölçüldü), "s168sus" (SUS) — G3 sınıflaması için; sonucu değiştirmez.
+
+### C8x Nasıl bozulur? (bakım 20 — kod commit'inde, senaryolarla birlikte yazıldı)
+| # | Bozulma | Senaryo / mutant |
+|---|---|---|
+| Z223 | Faturaya bağlı tahsilat şüpheliden hiç düşmez (bakım 16–19 okuması) | d44 X9, d47 Z1 / Z3 / Z8 (mutant 313) |
+| Z224 | Pay yok sayılır — bağlı adım bağsız gibi açık şüphelinin tamamından düşer | d47 Z2 (mutant 314) |
+| Z225 | Faturaya bağlı evrak payına bakılmadan tamamıyla düşer (bakım 19) | d47 Z2 / Z7 (mutant 315) |
+| Z226 | SK-38 alanında (payı tanımsız / S181 ↔ S159) değer uydurulur | d47 Z4 / Z5 (mutant 316 — elleYok / elleBelirsiz) |
+| Z227 | Eşitlikte RET (B' = A') | d47 Z3 / Z6 (mutant 294 — bakım 16, aynen) |
+| Z228 | Geri yüklemede pay ölçülmez (eski adımın payı ya da 0) | d47 Z8 (değerle; mutantı yok — kodda tek yol) |
+
+### Senaryolar (bakım 20; elle tablolar — kâhin koşulmadan karar metinlerinden ve §31'den)
+- **`d47-c5-s168-s181-bagli-tahsilat`** (bugün 15.06.2026; 29 elle denetim): Z1 (Y20-5 (1) — kararın dağılımıyla aynı komşu: FZ1a 600 + FZ1b 500, şüpheliye alma 1.000 → FZ1b'ye bağlı 300 KABUL; Değersiz 701
+  RET / 700 KABUL — açık şüpheli 700; bakiye 100), Z2 (Y20-5 (2) — S181'in örneği AYNEN: bağlı çek 900 RET; Değersiz 1.000 KABUL — çek düşmedi; bakiye 500), Z3 (pay 900, tahsilat 1.000 → A' 0, B' 0 KABUL;
+  Değersiz 1 RET), Z4 (SK-38 (d) SUS — elleYok + belirsiz), Z5 (SK-38 (c) SUS), Z6 (pay 0 — S14'ün sözü: 600 RET, 500 eşit KABUL), Z7 (bağlı çek 450 > pay 400: 400 şüpheliden, 50 normal; Değersiz 601 RET /
+  600 KABUL; bakiye 50), Z8 (Y20-7: tahsilat → sil → geri yükle, pay yeniden 400; Değersiz 701 RET / 700 KABUL; bakiye 100). Açık şüpheli tutar, kâhinin denetim anahtarı olmadığı için Değersiz Alacak Yaz'ın
+  K7 sınırıyla (tutar ≤ kalan) ölçüldü. Fatura adımları G1 gereği tarih sırasıyla (kod commit'inde sıraya alındı — elle değerler aynı; ilk koşuda G1 taraması kırmızıydı).
+- **`d44` (karar gereği güncellendi):** X9 `adim:x9t:durum` "ret" → "ok", `k1:cari:X9:bakiye` 100000 → 70000 (Y20-4).
+
+### C10x Mutantlar (bakım 20; `oz-test.py` DEĞERLE — senaryo listesi koşudan)
+- 313 (bağlı tahsilat düşmez — d44 X9, d47), 314 (pay yok sayılır — d47 Z2), 315 (bağlı evrak tamamı — d47 Z2 / Z7) DEĞERLE; 316 (SK-38 susması yok) elle tablonun `elleYok` / `elleBelirsiz` satırıyla
+  (`oz-test.py`'de `SUSMA_MUTANTLARI = {316}` — SUS kuralının mutantı değeri yazar, değer tablosu bu alanda bilerek boştur). Bakım 6 … 19 mutantları aynen yakalanıyor (`oz-test.py`; `mutant-senaryo.py`
+  261–316 × d35 … d47).
+
+### Dil ekleri (/3, bakım 20)
+- YOK. Adım alanları değişmedi (`tahsilat {fatura}`, `evrak {fatura}`, `hareket_sil` / `hareket_geri_yukle`, `degersiz`).
+
+### Eşleme notları (ana oturum için; `kos.mjs` bu bakımda AÇILMADI ve DEĞİŞMEDİ)
+- Faturaya bağlı tahsilat / evrakın KABUL / RET'i ve şüpheli payı yalnız 2.5.0 kuralında; açık şüpheli tutar programda Değersiz Alacak Yaz'ın sınırıyla ya da şüpheli kayıtları raporuyla okunur.
+- SK-38 SUS adımlarının denetimleri (adım durumu, bakiye, Kasa) iki dünyada farklıysa yazılmaz (`belirsiz` kaydı "KULLANICIYA SORULMALI SK-38 (…) (§31 Y20-6)").
+
+### C12x DENENMEYEN (bakım 20; neden)
+- Programla karşılaştırma (ana oturumun işi). Faturaya bağlı evrakın Silinenler'den geri yüklenmesi (dilde evrak geri yükleme yolu kullanılmadı), faturanın iptali / silinmesi payı ölçülmüş bağlı adımdan
+  sonra (payı yazıldığı an sabit — DENENMEYEN), devirle gelen şüpheli kayıt, iki şüpheli kaydı olup ikisi de adımdan önce tarihli caride payın kayıtlara dağılımı (en eski kayıttan — §8 aynen; senaryo yok),
+  POS / havale yolu (bu kâhinde nakit / havale aynı satır), mobil yazma kâhini (kuralı değişmedi; kabul dosyası bu bakımda yeniden üretilmedi — d47 mobil kümede değil).
+
