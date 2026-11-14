@@ -9,7 +9,7 @@
 //
 // Hesap planı: Tekdüzen Hesap Planı'nın ilgili hesapları.
 import { DOCUMENT_GL, documentGl, mainOfSub } from "./cheque-gl.mjs";
-import { DOUBTFUL_CHART, DOUBTFUL_GL, applyDoubtfulToJournal, doubtfulSkipOf } from "./doubtful-gl.mjs";
+import { DOUBTFUL_CHART, DOUBTFUL_GL, applyDoubtfulToJournal, doubtfulKeepOf } from "./doubtful-gl.mjs";
 import { roundMoney } from "./money.mjs";
 import { OPENING_ROLES, effectiveGl } from "./bank/voucher.mjs";
 
@@ -483,11 +483,11 @@ export function journal(rows) {
       else post(id, row.date, "Cari (alacak yaz)", row.note, isOpening ? OPENING_GL : "770", control, row.amount);
       if (isOpening) opened(n);
     } else if (row.kind === "in") {
-      // Karar 15.10.2026 (plan §3.11b/2; lib/doubtful-gl.mjs doubtfulSkipOf): "Normal Cari Hesaba İşle" işaretli tahsilat, fatura peşini ve
-      // Kapatılacak Fatura bağlı tahsilat şüpheliden düşmez (A 120 kalır); ayırma kuralı bu işareti okur. SQL ikizi doubtfulCredits.
+      // Karar 15.10.2026 (plan §3.11b/2): "Normal Cari Hesaba İşle" işaretli tahsilat ve fatura peşini şüpheliden düşmez (A 120 kalır); ayırma kuralı bu işareti okur.
+      // 2.5.0 Ç5-A tur 3c (S25 (c), S39, S168 = B): Kapatılacak Fatura bağlı tahsilat ayırıcıya girer (lib/doubtful-gl.mjs doubtfulKeepOf / `linked`). SQL ikizi doubtfulCredits.
       const n = out.length;
       post(id, row.date, "Cari tahsilat", row.note, moneyOf(row), control, row.amount);
-      if (out.length > n && doubtfulSkipOf(row)) out[out.length - 1].doubtful = { skip: true };
+      if (out.length > n && doubtfulKeepOf(row)) out[out.length - 1].doubtful = { skip: true };
     } else if (row.kind === "out") post(id, row.date, "Cari ödeme", row.note, control, moneyOf(row), row.amount);
   }
   for (const plan of rows.plans || []) {

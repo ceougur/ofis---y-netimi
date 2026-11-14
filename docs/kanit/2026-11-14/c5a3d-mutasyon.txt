@@ -1,0 +1,7 @@
+M1 etiket payı okumadan (eski tanım): çıkış 1 # fail 2 → ÖLDÜ
+M2 kısmi tutar = pay (120 yerine 128): çıkış 1 # fail 1 → ÖLDÜ
+M3 pay = tutar iken yine tam etiket: çıkış 1 # fail 1 → ÖLDÜ
+M4 pay 0 iken etiket yok: çıkış 1 # fail 1 → ÖLDÜ
+M5 bildirim tutarın tamamını söyler: çıkış 1 # fail 1 → ÖLDÜ
+M6 tamamı 128'den düşen satır listede kalır: çıkış 1 # fail 1 → ÖLDÜ
+M7 bildirim payı görmez (eski metin): çıkış 1 # fail 1 → ÖLDÜ

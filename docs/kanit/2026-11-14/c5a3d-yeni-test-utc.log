@@ -1,0 +1,37 @@
+TAP version 13
+# (node:30527) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç5-A tur 3d: 'Normal Cariye İşlendi' etiketi ve fatura iptali bildirimi ayırıcının payından
+    # Subtest: pay = tutar: F2'ye bağlı 300 tamamı şüpheliden (128) → etiket YOK; işaretli 400 → 'Normal Cariye İşlendi'; iptal penceresinde bildirim yok
+    ok 1 - pay = tutar: F2'ye bağlı 300 tamamı şüpheliden (128) → etiket YOK; işaretli 400 → 'Normal Cariye İşlendi'; iptal penceresinde bildirim yok
+      ---
+      duration_ms: 155.118443
+      type: 'test'
+      ...
+    # Subtest: kısmi pay: F2'ye bağlı 500 → 400 128'den, 100 120'den → 'Kısmen Normal Cariye İşlendi' 100; iptal bildirimi 100'ü söyler
+    ok 2 - kısmi pay: F2'ye bağlı 500 → 400 128'den, 100 120'den → 'Kısmen Normal Cariye İşlendi' 100; iptal bildirimi 100'ü söyler
+      ---
+      duration_ms: 131.319362
+      type: 'test'
+      ...
+    # Subtest: pay 0: faturanın kuyrukta şüpheli payı yok (işaretli tahsilat yok) → bağlı 200 tamamı 120 → 'Normal Cariye İşlendi'; iptal bildirimi eski metin
+    ok 3 - pay 0: faturanın kuyrukta şüpheli payı yok (işaretli tahsilat yok) → bağlı 200 tamamı 120 → 'Normal Cariye İşlendi'; iptal bildirimi eski metin
+      ---
+      duration_ms: 78.313171
+      type: 'test'
+      ...
+    1..3
+ok 1 - Ç5-A tur 3d: 'Normal Cariye İşlendi' etiketi ve fatura iptali bildirimi ayırıcının payından
+  ---
+  duration_ms: 769.076587
+  type: 'suite'
+  ...
+1..1
+# tests 3
+# suites 1
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1072.457962

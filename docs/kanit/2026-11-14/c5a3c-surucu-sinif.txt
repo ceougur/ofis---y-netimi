@@ -1,0 +1,8 @@
+('s68-s14-supheli-caride-bagli-cek', 'Europe-Istanbul') TABAN {'AYNI': 22, 'U': 2, 'P': 0, 'K': 0, 'R': 0, 'SINIFLANMADI': 5} → YENİ {'AYNI': 28, 'U': 2, 'P': 0, 'K': 0, 'R': 0, 'SINIFLANMADI': 0}
+('s68-s14-supheli-caride-bagli-cek', 'UTC') TABAN {'AYNI': 22, 'U': 2, 'P': 0, 'K': 0, 'R': 0, 'SINIFLANMADI': 5} → YENİ {'AYNI': 28, 'U': 2, 'P': 0, 'K': 0, 'R': 0, 'SINIFLANMADI': 0}
+('s74-s25-ab-kismi-ve-fazla', 'Europe-Istanbul') TABAN {'AYNI': 23, 'U': 6, 'P': 0, 'K': 0, 'R': 0, 'SINIFLANMADI': 7} → YENİ {'AYNI': 30, 'U': 6, 'P': 0, 'K': 0, 'R': 0, 'SINIFLANMADI': 0}
+('s74-s25-ab-kismi-ve-fazla', 'UTC') TABAN {'AYNI': 23, 'U': 6, 'P': 0, 'K': 0, 'R': 0, 'SINIFLANMADI': 7} → YENİ {'AYNI': 30, 'U': 6, 'P': 0, 'K': 0, 'R': 0, 'SINIFLANMADI': 0}
+('s75-s25-c-nakit-havale-pos', 'Europe-Istanbul') TABAN {'AYNI': 16, 'U': 3, 'P': 0, 'K': 0, 'R': 0, 'SINIFLANMADI': 5} → YENİ {'AYNI': 27, 'U': 4, 'P': 0, 'K': 0, 'R': 0, 'SINIFLANMADI': 0}
+('s75-s25-c-nakit-havale-pos', 'UTC') TABAN {'AYNI': 16, 'U': 3, 'P': 0, 'K': 0, 'R': 0, 'SINIFLANMADI': 5} → YENİ {'AYNI': 27, 'U': 4, 'P': 0, 'K': 0, 'R': 0, 'SINIFLANMADI': 0}
+taban {'AYNI': 6528, 'U': 1022, 'P': 16, 'K': 0, 'R': 0, 'SINIFLANMADI': 376, 'OLCULEMEDI': 44}
+yeni {'AYNI': 6576, 'U': 1024, 'P': 16, 'K': 0, 'R': 0, 'SINIFLANMADI': 342, 'OLCULEMEDI': 42}

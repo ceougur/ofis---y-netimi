@@ -1,0 +1,465 @@
+TAP version 13
+# Subtest: mutabakat aracı --sirket
+    # Subtest: --sirket 002 --json: yalnız 002, kodu ve adıyla; tutarlı (çıkış 0)
+    ok 1 - --sirket 002 --json: yalnız 002, kodu ve adıyla; tutarlı (çıkış 0)
+      ---
+      duration_ms: 589.654562
+      type: 'test'
+      ...
+    # Subtest: --sirket 007: bozuk veri yakalanır (kuruş), çıkış 1; sapma 007'nin adıyla yazılır
+    ok 2 - --sirket 007: bozuk veri yakalanır (kuruş), çıkış 1; sapma 007'nin adıyla yazılır
+      ---
+      duration_ms: 542.270094
+      type: 'test'
+      ...
+    # Subtest: --sirket tümü --json: dört şirket; yalnız bozuk olan (007) ve eski sapması olan (001) tutarsız; dosyalara dokunulmaz
+    ok 3 - --sirket tümü --json: dört şirket; yalnız bozuk olan (007) ve eski sapması olan (001) tutarsız; dosyalara dokunulmaz
+      ---
+      duration_ms: 1188.877041
+      type: 'test'
+      ...
+    # Subtest: bilinmeyen şirket kodu: çıkış 2 ve açık hata
+    ok 4 - bilinmeyen şirket kodu: çıkış 2 ve açık hata
+      ---
+      duration_ms: 40.159944
+      type: 'test'
+      ...
+    # Subtest: bayraksız çağrı eskisi gibi 001'i denetler (JSON biçimi değişmez)
+    ok 5 - bayraksız çağrı eskisi gibi 001'i denetler (JSON biçimi değişmez)
+      ---
+      duration_ms: 539.887065
+      type: 'test'
+      ...
+    1..5
+ok 1 - mutabakat aracı --sirket
+  ---
+  duration_ms: 3053.575102
+  type: 'suite'
+  ...
+# Subtest: 2.4.3 MM3 / MM4 — kapının yeni denetimleri bozmayı yakalar
+    # Subtest: stock:opening: açılış maddesi yevmiyeden düşerse kırmızı; düzelince yeşil
+    ok 1 - stock:opening: açılış maddesi yevmiyeden düşerse kırmızı; düzelince yeşil
+      ---
+      duration_ms: 43.392434
+      type: 'test'
+      ...
+    # Subtest: bank:voucher: Diğer Gider fişine 360 (tax_payable) elle yazılırsa kırmızı
+    ok 2 - bank:voucher: Diğer Gider fişine 360 (tax_payable) elle yazılırsa kırmızı
+      ---
+      duration_ms: 50.069349
+      type: 'test'
+      ...
+    # Subtest: balance: Kasa vergi satırının ayrıntısı tutarla uyuşmazsa madde dengesiz (kırmızı)
+    ok 3 - balance: Kasa vergi satırının ayrıntısı tutarla uyuşmazsa madde dengesiz (kırmızı)
+      ---
+      duration_ms: 40.741987
+      type: 'test'
+      ...
+    1..3
+ok 2 - 2.4.3 MM3 / MM4 — kapının yeni denetimleri bozmayı yakalar
+  ---
+  duration_ms: 500.717393
+  type: 'suite'
+  ...
+# Subtest: 2.4.3 MM5–MM9 — rapor düzeltmeleri
+    # Subtest: MM5: Alacak Yaşlandırma faturasız borcu hareket tarihiyle yaşlandırır; carinin dilimleri = borç bakiyesi; toplam 10.700 (kâhin)
+    ok 1 - MM5: Alacak Yaşlandırma faturasız borcu hareket tarihiyle yaşlandırır; carinin dilimleri = borç bakiyesi; toplam 10.700 (kâhin)
+      ---
+      duration_ms: 46.743654
+      type: 'test'
+      ...
+    # Subtest: MM5: Nakit Akışı gecikmiş girişlerde faturasız cari alacağı (bugünden önceki parçalar) görünür; taksit ve fatura kalemi değişmez
+    ok 2 - MM5: Nakit Akışı gecikmiş girişlerde faturasız cari alacağı (bugünden önceki parçalar) görünür; taksit ve fatura kalemi değişmez
+      ---
+      duration_ms: 22.573169
+      type: 'test'
+      ...
+    # Subtest: MM6: Banka Nakit Akış Raporu Çek Hesabı bağlı verilen çeki vadesinde çıkış sayar (hesapsız çek girmez); her dönem seçeneği
+    ok 3 - MM6: Banka Nakit Akış Raporu Çek Hesabı bağlı verilen çeki vadesinde çıkış sayar (hesapsız çek girmez); her dönem seçeneği
+      ---
+      duration_ms: 48.563851
+      type: 'test'
+      ...
+    # Subtest: MM7: Stok Durumu, Kategoriye Göre ve Stok Hareket Özeti aynı gün aynı değer (eksi stok eksi değer: 5.000 − 400 = 4.600); süzgeçler
+    ok 4 - MM7: Stok Durumu, Kategoriye Göre ve Stok Hareket Özeti aynı gün aynı değer (eksi stok eksi değer: 5.000 − 400 = 4.600); süzgeçler
+      ---
+      duration_ms: 126.867667
+      type: 'test'
+      ...
+    # Subtest: MM8: Yevmiye Defteri özetinde Madde = farklı madde sayısı (tam sayı), Satır = satır sayısı; boş dönem 0
+    ok 5 - MM8: Yevmiye Defteri özetinde Madde = farklı madde sayısı (tam sayı), Satır = satır sayısı; boş dönem 0
+      ---
+      duration_ms: 31.592059
+      type: 'test'
+      ...
+    # Subtest: MM9: Cari Listesi özeti — Toplam Borç / Toplam Alacak, Müşteri Alacakları ve Tedarikçi Borçları ayrı, net açık adla; her süzgeç
+    ok 6 - MM9: Cari Listesi özeti — Toplam Borç / Toplam Alacak, Müşteri Alacakları ve Tedarikçi Borçları ayrı, net açık adla; her süzgeç
+      ---
+      duration_ms: 282.452437
+      type: 'test'
+      ...
+    # Subtest: Mutabakat Testi temiz
+    ok 7 - Mutabakat Testi temiz
+      ---
+      duration_ms: 10.280383
+      type: 'test'
+      ...
+    1..7
+ok 3 - 2.4.3 MM5–MM9 — rapor düzeltmeleri
+  ---
+  duration_ms: 1262.394531
+  type: 'suite'
+  ...
+# Subtest: Ç5-A tur 1d — Kural Değişikliği Farkı uyarıdır, yeni sapma değildir
+    # Subtest: [1] kilitli eski veri: dondurmadan sonraki İLK ARKA PLAN taraması sessiz (günlük / zil / sunucu yok), uyarı satırı var; ardından satır içi de sessiz
+    ok 1 - [1] kilitli eski veri: dondurmadan sonraki İLK ARKA PLAN taraması sessiz (günlük / zil / sunucu yok), uyarı satırı var; ardından satır içi de sessiz
+      ---
+      duration_ms: 814.982187
+      type: 'test'
+      ...
+    # Subtest: [3] dondurmadan sonra yeniden açılış: taban satırı / sunucu 'kalan sapma' iletisi kural farkını taşımaz, ilk taramalar sessiz; kapı dışı kilitli kaynak değişimi yine bulunur
+    ok 2 - [3] dondurmadan sonra yeniden açılış: taban satırı / sunucu 'kalan sapma' iletisi kural farkını taşımaz, ilk taramalar sessiz; kapı dışı kilitli kaynak değişimi yine bulunur
+      ---
+      duration_ms: 1039.263257
+      type: 'test'
+      ...
+    # Subtest: [1] kilitli eski veri: dondurmadan sonraki İLK tarama SATIR İÇİ yoldan (Mutabakat Testi ucu) sessiz, uyarı satırı yanıtta
+    ok 3 - [1] kilitli eski veri: dondurmadan sonraki İLK tarama SATIR İÇİ yoldan (Mutabakat Testi ucu) sessiz, uyarı satırı yanıtta
+      ---
+      duration_ms: 766.848035
+      type: 'test'
+      ...
+    # Subtest: [2] GERÇEK yeni sapma (kural farkı dışı) dondurmadan SONRA, kural farkıyla AYNI taramada: bulunur, günlüğe yazılır, zil + sunucu iletisi; kural farkı bulgu değil
+    ok 4 - [2] GERÇEK yeni sapma (kural farkı dışı) dondurmadan SONRA, kural farkıyla AYNI taramada: bulunur, günlüğe yazılır, zil + sunucu iletisi; kural farkı bulgu değil
+      ---
+      duration_ms: 678.658061
+      type: 'test'
+      ...
+    # Subtest: [4] kilitsiz veri: kural farkı denetimi yok, ilk tarama sessiz; gerçek sapma eskisi gibi bulunur (gerileme yok)
+    ok 5 - [4] kilitsiz veri: kural farkı denetimi yok, ilk tarama sessiz; gerçek sapma eskisi gibi bulunur (gerileme yok)
+      ---
+      duration_ms: 440.421741
+      type: 'test'
+      ...
+    1..5
+ok 4 - Ç5-A tur 1d — Kural Değişikliği Farkı uyarıdır, yeni sapma değildir
+  ---
+  duration_ms: 3741.542789
+  type: 'suite'
+  ...
+# Subtest: Ç5-A tur 2b İş 2 — Kural Farkı Düzeltme Fişi
+    # Subtest: [1] v2.4.9 verisi (kilit 31.12.2025, Excel kartları): fiş 01.01.2026; önceki yıl 602 farkı 681'e; Düzeltildi; ters kayıtla uyarı geri; ikinci fiş; değişmez
+    ok 1 - [1] v2.4.9 verisi (kilit 31.12.2025, Excel kartları): fiş 01.01.2026; önceki yıl 602 farkı 681'e; Düzeltildi; ters kayıtla uyarı geri; ikinci fiş; değişmez
+      ---
+      duration_ms: 498.115522
+      type: 'test'
+      ...
+    # Subtest: [2] v2.0.26 verisi (kilit 05.10.2026; aynı yıl): yalnız 500 ↔ 519; gerçek eski sürüm satırı (ileri tarihli evrak) ayrı kalır; Muhasebe 403; iki kişi aynı anda
+    ok 2 - [2] v2.0.26 verisi (kilit 05.10.2026; aynı yıl): yalnız 500 ↔ 519; gerçek eski sürüm satırı (ileri tarihli evrak) ayrı kalır; Muhasebe 403; iki kişi aynı anda
+      ---
+      duration_ms: 739.034207
+      type: 'test'
+      ...
+    # Subtest: [3] kilit bugün: ön izleme pasif + görünür neden, kayıt 400 ve fiş yok
+    ok 3 - [3] kilit bugün: ön izleme pasif + görünür neden, kayıt 400 ve fiş yok
+      ---
+      duration_ms: 801.639877
+      type: 'test'
+      ...
+    # Subtest: [4] B16: kilitli dönemde onay bekleyen Açılış Olabilir kaydı varken fiş yazılmaz; karar verilince satırlar kararla değişir (onay 519, ret 602 / 770)
+    ok 4 - [4] B16: kilitli dönemde onay bekleyen Açılış Olabilir kaydı varken fiş yazılmaz; karar verilince satırlar kararla değişir (onay 519, ret 602 / 770)
+      ---
+      duration_ms: 910.172303
+      type: 'test'
+      ...
+    # Subtest: [5] fazla düzeltme: fişten sonra kilit kaldırılır → uyarı (kilit olmasa da görünür); yeniden kilitlenir → yine fazla; ters kayıtla temiz
+    ok 5 - [5] fazla düzeltme: fişten sonra kilit kaldırılır → uyarı (kilit olmasa da görünür); yeniden kilitlenir → yine fazla; ters kayıtla temiz
+      ---
+      duration_ms: 829.447838
+      type: 'test'
+      ...
+    # Subtest: [7] S164 = C: kilitli kaynağın kapı dışı değişikliği kural farkına karışırsa fişe sessizce girmez — alt defter hesabı farkı dışarıda, kaydı kaynak listesinde 'fişle düzeltilmez'
+    ok 6 - [7] S164 = C: kilitli kaynağın kapı dışı değişikliği kural farkına karışırsa fişe sessizce girmez — alt defter hesabı farkı dışarıda, kaydı kaynak listesinde 'fişle düzeltilmez'
+      ---
+      duration_ms: 584.951848
+      type: 'test'
+      ...
+    # Subtest: [8] S164 = C ikinci örnek: kilitli tahsilatın fatura bağı kapı dışından yazılınca 120 / 128 farkı kaynağıyla dışarıda; fiş yalnız gerçek kural farkı (500 → 519)
+    ok 7 - [8] S164 = C ikinci örnek: kilitli tahsilatın fatura bağı kapı dışından yazılınca 120 / 128 farkı kaynağıyla dışarıda; fiş yalnız gerçek kural farkı (500 → 519)
+      ---
+      duration_ms: 841.895225
+      type: 'test'
+      ...
+    # Subtest: [6] kilitsiz v2.4.9 verisi: ön izleme pasif (kilit yok), fiş yazılmaz, Mutabakat Testi çıktısı değişmez
+    ok 8 - [6] kilitsiz v2.4.9 verisi: ön izleme pasif (kilit yok), fiş yazılmaz, Mutabakat Testi çıktısı değişmez
+      ---
+      duration_ms: 140.062532
+      type: 'test'
+      ...
+    1..8
+ok 5 - Ç5-A tur 2b İş 2 — Kural Farkı Düzeltme Fişi
+  ---
+  duration_ms: 5346.755913
+  type: 'suite'
+  ...
+# Subtest: Ç5-A tur 1e — kilitli dönemin kapı dışı bozulması bulunur; meşru olaylar sessiz
+    # Subtest: [1] satır içi tarama — Kasa satırının açılış işareti 0→1
+    ok 1 - [1] satır içi tarama — Kasa satırının açılış işareti 0→1
+      ---
+      duration_ms: 526.863894
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — Kasa satırının açılış işareti 0→1; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 2 - [2] arka plan taraması — Kasa satırının açılış işareti 0→1; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1113.882648
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — cari satırının açılış işareti 0→1
+    ok 3 - [1] satır içi tarama — cari satırının açılış işareti 0→1
+      ---
+      duration_ms: 435.78661
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — cari satırının açılış işareti 0→1; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 4 - [2] arka plan taraması — cari satırının açılış işareti 0→1; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1088.76268
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — cari satırının açılış işareti 1→0 (519 → 602)
+    ok 5 - [1] satır içi tarama — cari satırının açılış işareti 1→0 (519 → 602)
+      ---
+      duration_ms: 434.132735
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — cari satırının açılış işareti 1→0 (519 → 602); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 6 - [2] arka plan taraması — cari satırının açılış işareti 1→0 (519 → 602); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1040.897673
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — iki carinin işareti yer değiştirir (sayı ve tutar aynı, yalnız hesap dağılımı)
+    ok 7 - [1] satır içi tarama — iki carinin işareti yer değiştirir (sayı ve tutar aynı, yalnız hesap dağılımı)
+      ---
+      duration_ms: 440.519687
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — iki carinin işareti yer değiştirir (sayı ve tutar aynı, yalnız hesap dağılımı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 8 - [2] arka plan taraması — iki carinin işareti yer değiştirir (sayı ve tutar aynı, yalnız hesap dağılımı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1046.612596
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — KG-16 durumu (Açılış Olabilir onayı alanı)
+    ok 9 - [1] satır içi tarama — KG-16 durumu (Açılış Olabilir onayı alanı)
+      ---
+      duration_ms: 448.212276
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — KG-16 durumu (Açılış Olabilir onayı alanı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 10 - [2] arka plan taraması — KG-16 durumu (Açılış Olabilir onayı alanı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1023.699472
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — evrakın açılış işareti
+    ok 11 - [1] satır içi tarama — evrakın açılış işareti
+      ---
+      duration_ms: 424.123275
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — evrakın açılış işareti; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 12 - [2] arka plan taraması — evrakın açılış işareti; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1082.905053
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — taksit kartının Excel yükleme bağı
+    ok 13 - [1] satır içi tarama — taksit kartının Excel yükleme bağı
+      ---
+      duration_ms: 452.275522
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — taksit kartının Excel yükleme bağı; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 14 - [2] arka plan taraması — taksit kartının Excel yükleme bağı; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1109.311714
+      type: 'test'
+      ...
+    # Subtest: [4] meşru olaylar sessiz: kilitli satırda KG-16 onayı ve reddi (K8-2), kilidin ilerletilmesi, kaldırılması ve yeniden kilitleme; yeniden açılış
+    ok 15 - [4] meşru olaylar sessiz: kilitli satırda KG-16 onayı ve reddi (K8-2), kilidin ilerletilmesi, kaldırılması ve yeniden kilitleme; yeniden açılış
+      ---
+      duration_ms: 2058.885399
+      type: 'test'
+      ...
+    # Subtest: [5] yedekten geri yükleme ve Şirket Verisini Sıfırla sessiz
+    ok 16 - [5] yedekten geri yükleme ve Şirket Verisini Sıfırla sessiz
+      ---
+      duration_ms: 1034.529367
+      type: 'test'
+      ...
+    # Subtest: [6] göç 50: gölge sütunu olmayan (göç 49'da kalmış) dosya açılınca gölge durumdan doldurulur — sessiz
+    ok 17 - [6] göç 50: gölge sütunu olmayan (göç 49'da kalmış) dosya açılınca gölge durumdan doldurulur — sessiz
+      ---
+      duration_ms: 547.943306
+      type: 'test'
+      ...
+    # Subtest: [7] kapıdan geçen (mağaza) yazım kilitli satırın açılış işaretini değiştiremez: süzgeç de 'kilitli dönem' der → tam kapı reddeder (eşdeğerlik ihlali yok)
+    ok 18 - [7] kapıdan geçen (mağaza) yazım kilitli satırın açılış işaretini değiştiremez: süzgeç de 'kilitli dönem' der → tam kapı reddeder (eşdeğerlik ihlali yok)
+      ---
+      duration_ms: 466.798564
+      type: 'test'
+      ...
+    1..18
+ok 6 - Ç5-A tur 1e — kilitli dönemin kapı dışı bozulması bulunur; meşru olaylar sessiz
+  ---
+  duration_ms: 15401.767261
+  type: 'suite'
+  ...
+# Subtest: mutabakat kapısı
+    # Subtest: günlük iş akışından sonra tüm denetimler tutarlı
+    ok 1 - günlük iş akışından sonra tüm denetimler tutarlı
+      ---
+      duration_ms: 13.12127
+      type: 'test'
+      ...
+    # Subtest: stok hareketi olmayan cari satırı (sızıntı) yazılamaz: işlem geri alınır, günlüğe düşer
+    ok 2 - stok hareketi olmayan cari satırı (sızıntı) yazılamaz: işlem geri alınır, günlüğe düşer
+      ---
+      duration_ms: 9.603054
+      type: 'test'
+      ...
+    # Subtest: kuruştan küçük küsurat: işlem dışı tek satır yazımı da kapıdan geçer ve geri alınır
+    ok 3 - kuruştan küçük küsurat: işlem dışı tek satır yazımı da kapıdan geçer ve geri alınır
+      ---
+      duration_ms: 10.540945
+      type: 'test'
+      ...
+    # Subtest: çok adımlı işlemde bir adım sapma yaratırsa önceki adımlar da yazılmaz
+    ok 4 - çok adımlı işlemde bir adım sapma yaratırsa önceki adımlar da yazılmaz
+      ---
+      duration_ms: 13.130147
+      type: 'test'
+      ...
+    # Subtest: eski sürümden kalan sapma ilgisiz işlemleri engellemez; ama büyütülemez
+    ok 5 - eski sürümden kalan sapma ilgisiz işlemleri engellemez; ama büyütülemez
+      ---
+      duration_ms: 53.638659
+      type: 'test'
+      ...
+    # Subtest: taksitlendirilmiş veresiye satıştan iade: taksit kartı iade kadar küçülür (kart borçtan büyük kalmaz)
+    ok 6 - taksitlendirilmiş veresiye satıştan iade: taksit kartı iade kadar küçülür (kart borçtan büyük kalmaz)
+      ---
+      duration_ms: 62.81974
+      type: 'test'
+      ...
+    # Subtest: Satış Yapma yetkisi: kasiyer ürün yönetimi olmadan nakit/kart satış ve iade girer; alım giremez
+    ok 7 - Satış Yapma yetkisi: kasiyer ürün yönetimi olmadan nakit/kart satış ve iade girer; alım giremez
+      ---
+      duration_ms: 187.158903
+      type: 'test'
+      ...
+    # Subtest: Raporlar: Defter Mutabakatı denetimleri ve Mutabakat Günlüğü
+    ok 8 - Raporlar: Defter Mutabakatı denetimleri ve Mutabakat Günlüğü
+      ---
+      duration_ms: 15.825758
+      type: 'test'
+      ...
+    1..8
+ok 7 - mutabakat kapısı
+  ---
+  duration_ms: 842.290432
+  type: 'suite'
+  ...
+# Subtest: mutabakat aracı: Kasa açılış uyarısı 'Uyarı' başlığında, sapma değil
+    # Subtest: yalnız uyarı: çıkış 0; '✓ … tutarlı' + '⚠ Uyarı' başlığında uyarının adı, sayısı ve ne yapılacağı; 'sapma' listesi yok; JSON ok true, notices; dosya değişmez
+    ok 1 - yalnız uyarı: çıkış 0; '✓ … tutarlı' + '⚠ Uyarı' başlığında uyarının adı, sayısı ve ne yapılacağı; 'sapma' listesi yok; JSON ok true, notices; dosya değişmez
+      ---
+      duration_ms: 788.880426
+      type: 'test'
+      ...
+    # Subtest: gerçek sapma + uyarı: çıkış 1; sapma listesinde yalnız gerçek sapmalar (uyarı YOK), uyarı ayrı başlıkta
+    ok 2 - gerçek sapma + uyarı: çıkış 1; sapma listesinde yalnız gerçek sapmalar (uyarı YOK), uyarı ayrı başlıkta
+      ---
+      duration_ms: 406.087643
+      type: 'test'
+      ...
+    1..2
+ok 8 - mutabakat aracı: Kasa açılış uyarısı 'Uyarı' başlığında, sapma değil
+  ---
+  duration_ms: 1672.094848
+  type: 'suite'
+  ...
+# Subtest: kuruş aritmetiği
+    # Subtest: roundMoney yarım kuruşu sıfırdan uzağa yuvarlar; kayan nokta artığı taşımaz; −0 üretmez
+    ok 1 - roundMoney yarım kuruşu sıfırdan uzağa yuvarlar; kayan nokta artığı taşımaz; −0 üretmez
+      ---
+      duration_ms: 1.177202
+      type: 'test'
+      ...
+    # Subtest: satır tutarı (miktar × birim fiyat) programda ve bağımsız tam sayı hesabında aynı
+    ok 2 - satır tutarı (miktar × birim fiyat) programda ve bağımsız tam sayı hesabında aynı
+      ---
+      duration_ms: 15.286941
+      type: 'test'
+      ...
+    1..2
+ok 9 - kuruş aritmetiği
+  ---
+  duration_ms: 17.217766
+  type: 'suite'
+  ...
+# Subtest: dört çekirdek mutabakatı (model tabanlı)
+    # Subtest: tohum 1: 120 günlük sıralı çizelgede 300 rastgele işlem (hatalı tarih, dönem kilidi, eksiye düşürme dahil) ve 40 eşzamanlı istek; her işlemden sonra tutarlı
+    ok 1 - tohum 1: 120 günlük sıralı çizelgede 300 rastgele işlem (hatalı tarih, dönem kilidi, eksiye düşürme dahil) ve 40 eşzamanlı istek; her işlemden sonra tutarlı
+      ---
+      duration_ms: 17751.617437
+      type: 'test'
+      ...
+    # Subtest: tohum 2: 120 günlük sıralı çizelgede 300 rastgele işlem (hatalı tarih, dönem kilidi, eksiye düşürme dahil) ve 40 eşzamanlı istek; her işlemden sonra tutarlı
+    ok 2 - tohum 2: 120 günlük sıralı çizelgede 300 rastgele işlem (hatalı tarih, dönem kilidi, eksiye düşürme dahil) ve 40 eşzamanlı istek; her işlemden sonra tutarlı
+      ---
+      duration_ms: 17290.777296
+      type: 'test'
+      ...
+    # Subtest: tohum 3: POS ekseni açık, 200 rastgele işlem (POS tahsilatı, iadesi, silme; çek/senet tahsile ver); her işlemden ve raporlardan sonra tutarlı
+    ok 3 - tohum 3: POS ekseni açık, 200 rastgele işlem (POS tahsilatı, iadesi, silme; çek/senet tahsile ver); her işlemden ve raporlardan sonra tutarlı
+      ---
+      duration_ms: 10334.367348
+      type: 'test'
+      ...
+    1..3
+ok 10 - dört çekirdek mutabakatı (model tabanlı)
+  ---
+  duration_ms: 45377.370795
+  type: 'suite'
+  ...
+# Subtest: mutabakat motoru yıl dönümü (2.4.8 MZ; sahte saat 22.01.2027, çizelge 15.12.2026 → 22.01.2027)
+    # Subtest: tohum 39: geçen yıl tarihli, geçen yılın serisinde daha geç belgesi olmayan kronoloji denemesi ret beklemez; her işlem ve iki yılın numara sırası tutarlı
+    ok 1 - tohum 39: geçen yıl tarihli, geçen yılın serisinde daha geç belgesi olmayan kronoloji denemesi ret beklemez; her işlem ve iki yılın numara sırası tutarlı
+      ---
+      duration_ms: 19439.499639
+      type: 'test'
+      ...
+    # Subtest: tohum 29: geçen yılın serisinde daha geç belge varken geçen yıl tarihli belge yine 400 chronology ile reddedilir; her işlem tutarlı
+    ok 2 - tohum 29: geçen yılın serisinde daha geç belge varken geçen yıl tarihli belge yine 400 chronology ile reddedilir; her işlem tutarlı
+      ---
+      duration_ms: 18511.228931
+      type: 'test'
+      ...
+    1..2
+ok 11 - mutabakat motoru yıl dönümü (2.4.8 MZ; sahte saat 22.01.2027, çizelge 15.12.2026 → 22.01.2027)
+  ---
+  duration_ms: 37951.722221
+  type: 'suite'
+  ...
+1..11
+# tests 63
+# suites 11
+# pass 63
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 118197.809001

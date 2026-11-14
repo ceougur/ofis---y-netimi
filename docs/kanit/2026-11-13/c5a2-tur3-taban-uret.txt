@@ -1,0 +1,70 @@
+# Ç5-A tur 3 — S168 örneğinin TABANDA yeniden üretimi (ders 6). Kod: c5a3-taban 9b543ae4 (ajan ağacı). Betik: ana oturumun scratchpad/ana-c5a2/is4-soru.mjs kopyası
+# (+ yardımcıları scratchpad/c5a2b-q4/betik/k.mjs ve h.mjs kopyaları); not defteri scratchpad/c5a3-k2.
+# Komut (her son adım ayrı açılışta): HUKUK_LICENSE_URL=http://127.0.0.1:9 TZ=Europe/Istanbul ROOT=<ağaç> SON=<0..4> timeout -k 5 300 node is4-soru.mjs — beşinin çıkışı 0.
+# İlk çıktı dosyasının saati: 2026-11-13 23:04 UTC.
+## SON=0
+{
+ "F2'ye bağlı çek 300": {
+  "supheli": "200",
+  "normalIsle400": "200",
+  "once": "120 100 · 128 1000 · kuyruk 1000 = F1 600 + F2 400",
+  "yanit": "200",
+  "sonra": "120 100 · 128 700 · kuyruk 700 = F1 600 + F2 100",
+  "sonSatir": [
+   "2026-10-10 A 128 300"
+  ]
+ },
+ "mutabakat": []
+}
+## SON=1
+{
+ "F2'ye bağlı nakit 300": {
+  "supheli": "200",
+  "normalIsle400": "200",
+  "once": "120 100 · 128 1000 · kuyruk 1000 = F1 600 + F2 400",
+  "yanit": "409 doubtful-normal-exceeds Normal cari hesaba işlenecek tahsilat (300,00 TL) carinin şüpheli dışı borç bakiyesini (100,00 TL) aşıyor; fazlası şüpheli alacaktan düşmek zorunda. Tutarı 100,",
+  "sonra": "120 100 · 128 1000 · kuyruk 1000 = F1 600 + F2 400",
+  "sonSatir": []
+ },
+ "mutabakat": []
+}
+## SON=2
+{
+ "F2'ye bağlı nakit 100": {
+  "supheli": "200",
+  "normalIsle400": "200",
+  "once": "120 100 · 128 1000 · kuyruk 1000 = F1 600 + F2 400",
+  "yanit": "200",
+  "sonra": "120 0 · 128 1000 · kuyruk 1000 = F1 600 + F2 400",
+  "sonSatir": [
+   "2026-10-10 A 120 100"
+  ]
+ },
+ "mutabakat": []
+}
+## SON=3
+{
+ "F1'e bağlı nakit 300": {
+  "supheli": "200",
+  "normalIsle400": "200",
+  "once": "120 100 · 128 1000 · kuyruk 1000 = F1 600 + F2 400",
+  "yanit": "409 doubtful-normal-exceeds Normal cari hesaba işlenecek tahsilat (300,00 TL) carinin şüpheli dışı borç bakiyesini (100,00 TL) aşıyor; fazlası şüpheli alacaktan düşmek zorunda. Tutarı 100,",
+  "sonra": "120 100 · 128 1000 · kuyruk 1000 = F1 600 + F2 400",
+  "sonSatir": []
+ },
+ "mutabakat": []
+}
+## SON=4
+{
+ "bağsız nakit 300 (işaretsiz)": {
+  "supheli": "200",
+  "normalIsle400": "200",
+  "once": "120 100 · 128 1000 · kuyruk 1000 = F1 600 + F2 400",
+  "yanit": "200",
+  "sonra": "120 100 · 128 700 · kuyruk 700 = F1 300 + F2 400",
+  "sonSatir": [
+   "2026-10-10 A 128 300"
+  ]
+ },
+ "mutabakat": []
+}

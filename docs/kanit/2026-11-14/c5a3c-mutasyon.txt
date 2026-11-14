@@ -1,0 +1,17 @@
+taban: 24 geçti / 0 kaldı (çıkış 0)
+M1 YAKALANDI — 128 ↔ 120 dağılımı eski sabite: bağlı tahsilat her zaman 120 (iki yükleyicide) (12 geçti / 12 kaldı; değer iletisi var; çökme yok) düşen: 
+M2 YAKALANDI — 128 ↔ 120 dağılımı eski sabite: bağlı evrak en eski kayıttan (kuyruk payı okunmaz — geri çağrı yok) (15 geçti / 9 kaldı; değer iletisi var; çökme yok) düşen: 
+M3 YAKALANDI — ikinci yükleyici (doubtfulState) eski kuralda kalır (16 geçti / 8 kaldı; değer iletisi var; çökme yok) düşen: 
+M4 YAKALANDI — yevmiye yükleyicisi (doubtfulRows) eski kuralda kalır (16 geçti / 8 kaldı; değer iletisi var; çökme yok) düşen: 
+M5 YAKALANDI — kesit satırın KENDİSİNİ ve aynı anahtarı da içerir (< yerine <=) (23 geçti / 1 kaldı; değer iletisi var; çökme yok) düşen: 
+M6 YAKALANDI — kesit yok — kuyruğun son durumu okunur (sonraki satırlar dahil) (23 geçti / 1 kaldı; değer iletisi var; çökme yok) düşen: 
+M7 YAKALANDI — pay kayıt kimliği yerine en eski açık kayda yazılır (23 geçti / 1 kaldı; değer iletisi var; çökme yok) düşen: 
+M8 YAKALANDI — kalem başına kayıt kimliği boş (K-1 (b) yok) (8 geçti / 16 kaldı; değer iletisi var; çökme yok) düşen: 
+M9 YAKALANDI — sınır tutarın TAMAMINA uygulanır (128 payı düşülmez) (17 geçti / 7 kaldı; değer iletisi var; çökme yok) düşen: 
+M10 YAKALANDI — yeni tahsilatta yazım sonrası sınır denetimi atlanır (23 geçti / 1 kaldı; değer iletisi var; çökme yok) düşen: 
+M11 YAKALANDI — düzeltmede yazım sonrası sınır denetimi atlanır (23 geçti / 1 kaldı; değer iletisi var; çökme yok) düşen: 
+M12 YAKALANDI — kesitin aynı gün kuralı kalkar (ayırıcının işlediği alacak yerine kuyruğun anahtarı) (23 geçti / 1 kaldı; değer iletisi var; çökme yok) düşen: 
+M13 YAKALANDI — kart haritası (cari kümesi) silinmiş kartı da alır (23 geçti / 1 kaldı; değer iletisi var; çökme yok) düşen: 
+M14 YAKALANDI — kart haritası (cari kümesi) kart tahsilatlarını okumaz (23 geçti / 1 kaldı; değer iletisi var; çökme yok) düşen: 
+M15 YAKALANDI — S25 (b) yerine fazlası da şüpheliden (pay sınırı kalkar) (20 geçti / 4 kaldı; değer iletisi var; çökme yok) düşen: 
+SONUÇ: 15 geçti, 0 kaldı (15 mutasyonun 15'i yakalandı)

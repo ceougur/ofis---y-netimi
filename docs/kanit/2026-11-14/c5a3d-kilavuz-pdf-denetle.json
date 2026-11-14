@@ -1,0 +1,32 @@
+{
+  "ad": "c5a3d-kilavuz-pdf-denetle",
+  "komut": "node docs/kilavuz/pdf-denetle.mjs",
+  "commit": "41f38493ca5620334bcc6884773ea67510e64250",
+  "dal": "worktree-agent-a58859d049073732b",
+  "kirli": 2,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v470 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-14T10:20:55.796Z",
+  "sure_sn": 9.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 39,
+    "gecen": 39,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-14/c5a3d-kilavuz-pdf-denetle.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a58859d049073732b",
+  "ham_cikti_sha256": "528525939a742d2a5c2548f5704f812b1a31e898c6d01d8ad873da844b5c7695",
+  "ham_cikti_bayt": 2211
+}

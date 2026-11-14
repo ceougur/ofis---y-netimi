@@ -1,0 +1,386 @@
+(node:29248) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+▶ Ç5-A tur 3c: şüpheli ↔ kuyruk defter kuralı (S14, S25, S39, S168 = B) ve 'Normal Cari Hesaba İşle' sınırı
+  ✖ S168 örneği — Fatura 2'ye bağlı 300 NAKİT: KABUL (bugün 409), 128 = 700, 120 = 100; satır A 128 300 (114.766105ms)
+  ✔ S168 örneği — Fatura 2'ye bağlı 300 ÇEK: KABUL, 128 = 700, 120 = 100 (kuyruğun Fatura 2 payından) (96.252658ms)
+  ✖ Fatura 2'ye bağlı 100 nakit → 128'den 100 (Fatura 2'nin şüpheli payı 400 ≥ 100): 128 = 900, 120 = 100 (bugün A 120 100) (76.060004ms)
+  ✖ Fatura 1'e bağlı 300 nakit → KABUL (bugün 409), 128'den 300: 128 = 700, 120 = 100 (63.652071ms)
+  ✔ bağsız işaretsiz 300 nakit → DEĞİŞMEZ (en eski açık kayıttan 128 300) (97.083946ms)
+  ✖ Fatura 2'ye bağlı 500 nakit → 400'ü 128'den, 100'ü 120'den (S25 (a)): 128 = 600, 120 = 0 (63.540362ms)
+  ✖ Fatura 2'ye bağlı 500 ÇEK → 400 128'den, 100 120'den (S25 (a); bugün en eski kayıttan 128 500) (75.799121ms)
+  ✖ SINIR: Fatura 2'ye bağlı 700 nakit → 120'ye düşecek 300 > şüpheli dışı borç 100: RET AYNEN, ileti iki tutarı söyler, hiçbir şey yazılmaz (65.423469ms)
+  ✔ SINIR: 'Normal Cari Hesaba İşle' işaretli tahsilat bugünkü gibi (tamamı 120): 300 > 100 → RET, ileti 'tahsilat (300,00 TL)' (110.56398ms)
+  ✖ sınıf: kayıttan ÖNCE kesilmiş faturaya bağlı nakit (S25 (c)) (91.000818ms)
+  ✔ sınıf: kayıttan ÖNCE kesilmiş faturaya bağlı çek (S14) (103.111563ms)
+  ✔ sınıf: kayıttan SONRA kesilmiş, kuyrukta şüpheli payı olmayan faturaya bağlı nakit (S14'ün sözü) (81.98295ms)
+  ✖ sınıf: kayıttan SONRA kesilmiş, kuyrukta şüpheli payı olmayan faturaya bağlı çek (S14; bugün 128) (69.885994ms)
+  ✔ sınıf: bağsız nakit (değişmez) (86.540588ms)
+  ✔ sınıf: bağsız çek (değişmez) (81.618149ms)
+  ✖ sınıf: kısmen şüpheli faturaya bağlı 700 nakit (S25 (a): 600 128, 100 120) (76.889094ms)
+  ✖ iki kayıt (K-1 (b)): Fatura 2'ye bağlı çek Fatura 2'yi tutan İKİNCİ kayıttan düşer (en eski kayıttan değil) (81.283915ms)
+  ✖ aynı gün bağlı + bağsız iki tahsilat: toplam ayırıcının sırasından bağımsız (ders 31) — iki cari, ters yazım sırası, aynı 120 / 128 (92.626129ms)
+  ✖ düzeltme: bağ kaldırılır / yeniden kurulur, tutar sınırı düzeltmede de; sil + bağsız yeniden gir (77.690323ms)
+  ✖ K-1 (a) + (b): doubtfulBefore — satırdan ÖNCEKİ anki dağılım, kalem başına kayıt kimliğiyle; kuyruğun bugünkü çıktısına alan eklenmez (77.511775ms)
+  ✖ kart haritası (ledgerPlansOf) cari kümesiyle = bütün harita (ledgerPlansByAccount) — her cari (118.297954ms)
+  ✖ kilit: kilitli dönemin 120 / 128'i donmuş = canlı (aynı kural); kilitten sonra bağlı tahsilat o anki dağılımdan (81.386431ms)
+  ✖ ESM döngüsü (lib/bank/doubtful.mjs ↔ lib/obligation-input.mjs): hangisi önce yüklenirse yüklensin çalışır (55.353451ms)
+✖ Ç5-A tur 3c: şüpheli ↔ kuyruk defter kuralı (S14, S25, S39, S168 = B) ve 'Normal Cari Hesaba İşle' sınırı (2320.388644ms)
+(node:29248) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+▶ Ç5-A tur 3c — v2.4.9 gerçek verisi (kilitli + kilitsiz; sınıf sınıf)
+  ✖ donmuş 2.4.9 ↔ canlı yeni kural; fark kaynağıyla ön izlemede, fiş satırı yok; açık dönemde yeni kural (470.091305ms)
+✖ Ç5-A tur 3c — v2.4.9 gerçek verisi (kilitli + kilitsiz; sınıf sınıf) (470.550596ms)
+ℹ tests 24
+ℹ suites 2
+ℹ pass 7
+ℹ fail 17
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3105.391282
+
+✖ failing tests:
+
+test at test/supheli-kuyruk-defter-250.test.mjs:85:3
+✖ S168 örneği — Fatura 2'ye bağlı 300 NAKİT: KABUL (bugün 409), 128 = 700, 120 = 100; satır A 128 300 (114.766105ms)
+  AssertionError [ERR_ASSERTION]: KABUL bekleniyor: 409 Normal cari hesaba işlenecek tahsilat (300,00 TL) carinin şüpheli dışı borç bakiyesini (100,00 TL) aşıyor; fazlası şüpheli alacaktan düşmek zorunda. Tutarı 100,00 TL'ye indirin ya da Kapatılacak Fatura bağını kaldırın.
+  
+  409 !== 200
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3c-k7/taban/test/supheli-kuyruk-defter-250.test.mjs:89:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 409,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/supheli-kuyruk-defter-250.test.mjs:100:3
+✖ Fatura 2'ye bağlı 100 nakit → 128'den 100 (Fatura 2'nin şüpheli payı 400 ≥ 100): 128 = 900, 120 = 100 (bugün A 120 100) (76.060004ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   b120: 0,
+  +   b128: 1000
+  -   b120: 100,
+  -   b128: 900
+    }
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3c-k7/taban/test/supheli-kuyruk-defter-250.test.mjs:103:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { b120: 0, b128: 1000 },
+    expected: { b120: 100, b128: 900 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/supheli-kuyruk-defter-250.test.mjs:107:3
+✖ Fatura 1'e bağlı 300 nakit → KABUL (bugün 409), 128'den 300: 128 = 700, 120 = 100 (63.652071ms)
+  AssertionError [ERR_ASSERTION]: tahsilat: 409 {"ok":false,"error":"Normal cari hesaba işlenecek tahsilat (300,00 TL) carinin şüpheli dışı borç bakiyesini (100,00 TL) aşıyor; fazlası şüpheli alacaktan düşmek zorunda. Tutarı 100,00 TL'ye indirin ya da Kapatılacak Fatura bağını kaldırın.","code":"doubtful-normal-exceeds","field":"amount","roomMinor":10000,"openMinor":100000}
+  
+  409 !== 200
+  
+      at must (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3c-k7/taban/test/supheli-kuyruk-defter-250.test.mjs:51:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3c-k7/taban/test/supheli-kuyruk-defter-250.test.mjs:109:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 409,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/supheli-kuyruk-defter-250.test.mjs:121:3
+✖ Fatura 2'ye bağlı 500 nakit → 400'ü 128'den, 100'ü 120'den (S25 (a)): 128 = 600, 120 = 0 (63.540362ms)
+  AssertionError [ERR_ASSERTION]: tahsilat: 409 {"ok":false,"error":"Normal cari hesaba işlenecek tahsilat (500,00 TL) carinin şüpheli dışı borç bakiyesini (100,00 TL) aşıyor; fazlası şüpheli alacaktan düşmek zorunda. Tutarı 100,00 TL'ye indirin ya da Kapatılacak Fatura bağını kaldırın.","code":"doubtful-normal-exceeds","field":"amount","roomMinor":10000,"openMinor":100000}
+  
+  409 !== 200
+  
+      at must (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3c-k7/taban/test/supheli-kuyruk-defter-250.test.mjs:51:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3c-k7/taban/test/supheli-kuyruk-defter-250.test.mjs:123:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 409,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/supheli-kuyruk-defter-250.test.mjs:128:3
+✖ Fatura 2'ye bağlı 500 ÇEK → 400 128'den, 100 120'den (S25 (a); bugün en eski kayıttan 128 500) (75.799121ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   b120: 100,
+  +   b128: 500
+  -   b120: 0,
+  -   b128: 600
+    }
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3c-k7/taban/test/supheli-kuyruk-defter-250.test.mjs:131:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { b120: 100, b128: 500 },
+    expected: { b120: 0, b128: 600 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/supheli-kuyruk-defter-250.test.mjs:134:3
+✖ SINIR: Fatura 2'ye bağlı 700 nakit → 120'ye düşecek 300 > şüpheli dışı borç 100: RET AYNEN, ileti iki tutarı söyler, hiçbir şey yazılmaz (65.423469ms)
+  AssertionError [ERR_ASSERTION]: Normal cari hesaba işlenecek tahsilat (700,00 TL) carinin şüpheli dışı borç bakiyesini (100,00 TL) aşıyor; fazlası şüpheli alacaktan düşmek zorunda. Tutarı 100,00 TL'ye indirin ya da Kapatılacak Fatura bağını kaldırın.
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3c-k7/taban/test/supheli-kuyruk-defter-250.test.mjs:141:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: "Normal cari hesaba işlenecek tahsilat (700,00 TL) carinin şüpheli dışı borç bakiyesini (100,00 TL) aşıyor; fazlası şüpheli alacaktan düşmek zorunda. Tutarı 100,00 TL'ye indirin ya da Kapatılacak Fatura bağını kaldırın.",
+    expected: /Normal cari hesaba işlenecek kısım \(300,00 TL; 700,00 TL tahsilatın 400,00 TL'si faturanın şüpheli alacaktaki payından düşüyor\)/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at test/supheli-kuyruk-defter-250.test.mjs:172:5
+✖ sınıf: kayıttan ÖNCE kesilmiş faturaya bağlı nakit (S25 (c)) (91.000818ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   b120: 500,
+  +   b128: 600
+  -   b120: 900,
+  -   b128: 200
+    }
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3c-k7/taban/test/supheli-kuyruk-defter-250.test.mjs:178:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { b120: 500, b128: 600 },
+    expected: { b120: 900, b128: 200 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/supheli-kuyruk-defter-250.test.mjs:172:5
+✖ sınıf: kayıttan SONRA kesilmiş, kuyrukta şüpheli payı olmayan faturaya bağlı çek (S14; bugün 128) (69.885994ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   b120: 900,
+  +   b128: 200
+  -   b120: 500,
+  -   b128: 600
+    }
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3c-k7/taban/test/supheli-kuyruk-defter-250.test.mjs:178:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { b120: 900, b128: 200 },
+    expected: { b120: 500, b128: 600 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/supheli-kuyruk-defter-250.test.mjs:172:5
+✖ sınıf: kısmen şüpheli faturaya bağlı 700 nakit (S25 (a): 600 128, 100 120) (76.889094ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   b120: 200,
+  +   b128: 600
+  -   b120: 800,
+  -   b128: 0
+    }
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3c-k7/taban/test/supheli-kuyruk-defter-250.test.mjs:178:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { b120: 200, b128: 600 },
+    expected: { b120: 800, b128: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/supheli-kuyruk-defter-250.test.mjs:184:3
+✖ iki kayıt (K-1 (b)): Fatura 2'ye bağlı çek Fatura 2'yi tutan İKİNCİ kayıttan düşer (en eski kayıttan değil) (81.283915ms)
+  AssertionError [ERR_ASSERTION]: kayıt 1 (Fatura 1'i tutar) dokunulmadı
+  
+  70000 !== 100000
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3c-k7/taban/test/supheli-kuyruk-defter-250.test.mjs:198:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 70000,
+    expected: 100000,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/supheli-kuyruk-defter-250.test.mjs:204:3
+✖ aynı gün bağlı + bağsız iki tahsilat: toplam ayırıcının sırasından bağımsız (ders 31) — iki cari, ters yazım sırası, aynı 120 / 128 (92.626129ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   b120: 200,
+  +   b128: 500
+  -   b120: 500,
+  -   b128: 200
+    }
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3c-k7/taban/test/supheli-kuyruk-defter-250.test.mjs:211:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { b120: 200, b128: 500 },
+    expected: { b120: 500, b128: 200 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/supheli-kuyruk-defter-250.test.mjs:224:3
+✖ düzeltme: bağ kaldırılır / yeniden kurulur, tutar sınırı düzeltmede de; sil + bağsız yeniden gir (77.690323ms)
+  AssertionError [ERR_ASSERTION]: bağlı 300: 409 {"ok":false,"error":"Normal cari hesaba işlenecek tahsilat (300,00 TL) carinin şüpheli dışı borç bakiyesini (100,00 TL) aşıyor; fazlası şüpheli alacaktan düşmek zorunda. Tutarı 100,00 TL'ye indirin ya da Kapatılacak Fatura bağını kaldırın.","code":"doubtful-normal-exceeds","field":"amount","roomMinor":10000,"openMinor":100000}
+  
+  409 !== 200
+  
+      at must (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3c-k7/taban/test/supheli-kuyruk-defter-250.test.mjs:51:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3c-k7/taban/test/supheli-kuyruk-defter-250.test.mjs:226:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 409,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/supheli-kuyruk-defter-250.test.mjs:243:3
+✖ K-1 (a) + (b): doubtfulBefore — satırdan ÖNCEKİ anki dağılım, kalem başına kayıt kimliğiyle; kuyruğun bugünkü çıktısına alan eklenmez (77.511775ms)
+  AssertionError [ERR_ASSERTION]: bağlı 300: 409 {"ok":false,"error":"Normal cari hesaba işlenecek tahsilat (300,00 TL) carinin şüpheli dışı borç bakiyesini (100,00 TL) aşıyor; fazlası şüpheli alacaktan düşmek zorunda. Tutarı 100,00 TL'ye indirin ya da Kapatılacak Fatura bağını kaldırın.","code":"doubtful-normal-exceeds","field":"amount","roomMinor":10000,"openMinor":100000}
+  
+  409 !== 200
+  
+      at must (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3c-k7/taban/test/supheli-kuyruk-defter-250.test.mjs:51:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3c-k7/taban/test/supheli-kuyruk-defter-250.test.mjs:245:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 409,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/supheli-kuyruk-defter-250.test.mjs:266:3
+✖ kart haritası (ledgerPlansOf) cari kümesiyle = bütün harita (ledgerPlansByAccount) — her cari (118.297954ms)
+  TypeError: lines.ledgerPlansOf is not a function
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3c-k7/taban/test/supheli-kuyruk-defter-250.test.mjs:281:26)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+
+test at test/supheli-kuyruk-defter-250.test.mjs:287:3
+✖ kilit: kilitli dönemin 120 / 128'i donmuş = canlı (aynı kural); kilitten sonra bağlı tahsilat o anki dağılımdan (81.386431ms)
+  AssertionError [ERR_ASSERTION]: bağlı 300: 409 {"ok":false,"error":"Normal cari hesaba işlenecek tahsilat (300,00 TL) carinin şüpheli dışı borç bakiyesini (100,00 TL) aşıyor; fazlası şüpheli alacaktan düşmek zorunda. Tutarı 100,00 TL'ye indirin ya da Kapatılacak Fatura bağını kaldırın.","code":"doubtful-normal-exceeds","field":"amount","roomMinor":10000,"openMinor":100000}
+  
+  409 !== 200
+  
+      at must (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3c-k7/taban/test/supheli-kuyruk-defter-250.test.mjs:51:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3c-k7/taban/test/supheli-kuyruk-defter-250.test.mjs:289:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 409,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/supheli-kuyruk-defter-250.test.mjs:300:3
+✖ ESM döngüsü (lib/bank/doubtful.mjs ↔ lib/obligation-input.mjs): hangisi önce yüklenirse yüklensin çalışır (55.353451ms)
+  AssertionError [ERR_ASSERTION]: bank/doubtful.mjs önce: 
+  
+  3 !== 0
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3c-k7/taban/test/supheli-kuyruk-defter-250.test.mjs:304:14)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 3,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/supheli-kuyruk-defter-250.test.mjs:314:3
+✖ donmuş 2.4.9 ↔ canlı yeni kural; fark kaynağıyla ön izlemede, fiş satırı yok; açık dönemde yeni kural (470.091305ms)
+  AssertionError [ERR_ASSERTION]: S25 (c): şüpheliye aktarılmış faturaya bağlı nakit 128'den
+  + actual - expected
+  
+    {
+  +   b120: 500,
+  +   b128: 600
+  -   b120: 900,
+  -   b128: 200
+    }
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3c-k7/taban/test/supheli-kuyruk-defter-250.test.mjs:341:14)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { b120: 500, b128: 600 },
+    expected: { b120: 900, b128: 200 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,60 @@
+■ 44. Banka Masraf Raporu: transfer ücreti 5,25 (5,00 + BSMV 0,25) + masraf 10,50 (10,00 + 0,50) = 15,75; 770 · şirket 004
+  ✓ masraflar: EFT (Transfer Ücreti) 5,25 TL · EFT 10,50 TL · TOPLAM 15,75 TL
+  ✓ transfer ücreti satırı; hesap 770
+  ✓ Hesap Planı Mizanı 770 = 15,75
+■ 45. Alt Hesap Mizanı: 102.00 5.000 · 102.01 87.984,25 · 102.02 72.500 · 309.01 3.000 (Alacak); alınan evrak yok → 101 satırı yok · şirket 004
+  ✓ alt hesaplar: 102.00 5.000,00 TL Borç · 102.01 87.984,25 TL Borç · 102.02 72.500,00 TL Borç · 309.01 3.000,00 TL Alacak
+  ✓ ana hesaplar alt hesaplarının toplamına eşit
+■ 46. Banka ve POS Hareketleri: Dönem Giriş 26.500 (eski havale 5.000 dahil), Çıkış 15,75; Transfer Giriş 21.000 / Çıkış 32.000 ayrı (giriş-çıkış şişmez) · şirket 004
+  ✓ özet: {"Devir":"0,00 TL","Dönem Giriş":"26.500,00 TL","Dönem Çıkış":"15,75 TL","Dönem Net":"26.484,25 TL","Transfer Giriş":"21.000,00 TL","Transfer Çıkış":"32.000,00 TL","Açılış ve Devir Düzeltmeleri":"150.000,00 TL","Dönem Sonu":"165.484,25 TL","Banka (tüm hareketler)":"165.484,25 TL","POS / Kredi Kartı (tüm hareketler)":"0,00 TL"}
+  ✓ TOPLAM = dış giriş/çıkış (TOPLAM |  |  |  | 26.500,00 TL | 15,75 TL |  | )
+  ✓ ücretli transfer satırı: Çıkış 5,25, transfer tutarı açıklamada
+■ 46b. 2.3.0 İz 3.3 raporları ekrandan: Günlük Banka (6 gün, Dönem Sonu 160.484,25; TOPLAM Giriş 21.500 / Çıkış 15,75 / Transfer 21.000 · 32.000), Banka Bazında (Ziraat 87.984,25 · borç 3.000; Garanti 72.500; TOPLAM 160.484,25), Kasa–Banka Transfer 2 satır, Bankalar Arası 1 satır (ücret 5,25) · şirket 004
+  ✓ Günlük Banka Raporu: 6 gün, Dönem Sonu 160.484,25 TL
+  ✓ TOPLAM = dış giriş/çıkış, transfer ayrı, yürüyen bakiye toplanmaz (TOPLAM | 10 | 21.500,00 TL | 15,75 TL | 21.000,00 TL | 32.000,00 TL | 150.000,00 TL | 160.484,25 TL | )
+  ✓ son günün Gün Sonu Bakiyesi = Gerçek Banka (08.10.2026 | 2 | 1.500,00 TL |  | 1.000,00 TL |  |  | 2.500,00 TL | 160.484,25 TL)
+  ✓ Banka Bazında: Garanti BBVA | 1 | 72.500,00 TL | 0,00 TL | 72.500,00 TL · Ziraat Bankası | 2 | 87.984,25 TL | 3.000,00 TL | 84.984,25 TL
+  ✓ TOPLAM Gerçek Banka 160.484,25; Hesabı Atanmamış özette ayrı (TOPLAM | 3 | 160.484,25 TL | 3.000,00 TL | 157.484,25 TL)
+  ✓ Kasa ve Banka Transfer: 05.10.2026 | BNK-2026-000006 | Bankadan Kasaya Aktar | Ziraat Bankası · Ana TL Hesabı (102.01) |  | 10.000,00 TL | Bankadan Kasaya Aktarım | Ofis yöneticisi · 08.10.2026 | BNK-2026-000011 | Kasadan Bankaya Yatır | Garanti BBVA · Ana TL Hesabı (102.02) | 1.000,00 TL |  | Kasadan Bankaya Yatırma | Ofis yöneticisi · {"Transfer":"2","Kasadan Bankaya":"1.000,00 TL","Bankadan Kasaya":"10.000,00 TL","Net (Bankaya)":"-9.000,00 TL"}
+  ✓ Bankalar Arası Transfer: 06.10.2026 | BNK-2026-000007 | Ziraat Bankası · Ana TL Hesabı | Garanti BBVA · Ana TL Hesabı | 20.000,00 TL | 5,25 TL | 20.005,25 TL | EFT |  | Gerçekleşti | 
+  ✓ Banka Nakit Akış: başlangıç Gerçek Banka ({"Bugünkü Gerçek Banka":"160.484,25 TL","Hesabı Atanmamış Eski Hareketler":"5.000,00 TL","Başlangıç":"160.484,25 TL","Beklenen Giriş":"0,00 TL","Beklenen Çıkış":"0,00 TL","Planlanan Transferler":"0,00 TL","Dönem Sonu Tahmini Gerçek Banka":"160.484,25 TL","En Düşük Tahmini Gerçek Banka":"160.484,25 TL (08.10.2026)"})
+■ 46c. Tüm Zamanlar (İz 5.2): Banka Hareket Raporu'nda Tüm Zamanlar seçilince Başlangıç alanı BOŞ, kapsam metni 'Tüm Zamanlar', ekranda ve PDF'te '1976' yok · şirket 004
+  ✓ Tüm Zamanlar: Başlangıç "", kapsam "Gerçek Banka (Tüm Hesaplar) · Tüm Zamanlar · 08.10.2026 tarihine kadar", 19xx false
+  ✓ PDF: Tüm Zamanlar, 19xx yok
+■ 46d. Banka → Hareketler PDF / Excel düğmeleri (İz 5.1): Ziraat seçili + Transfer türü → Excel satırları ekrandaki satırlarla aynı, TOPLAM; PDF açılır · şirket 004
+  ✓ Ziraat hareketleri ekranda (6)
+  ✓ düğmeler süzgeçli bağ taşır: [["PDF","/api/workspace/bank/movements.pdf?account=bacc-522ec845-0ff6-493c-b708-ac6fc39e20e0"],["Excel","/api/workspace/bank/movements.xlsx?account=bacc-522ec845-0ff6-493c-b708-ac6fc39e20e0"]]
+  ✓ Excel: 6 satır = ekran 6, TOPLAM (TOPLAM |  |  |  |  | 120000 | 32015.75 |  |  | )
+  ✓ İşlem No sırası ekranla aynı (BNK-2026-000009,BNK-2026-000008,BNK-2026-000007,BNK-2026-000006,BNK-2026-000005,BNK-2026-000002 / BNK-2026-000009,BNK-2026-000008,BNK-2026-000007,BNK-2026-000006,BNK-2026-000005,BNK-2026-000002)
+  ✓ PDF açılır
+■ 47. Canlı yenileme: açık Banka Bakiye Raporu ve ANLIK DURUM — başka oturumdan Garanti'ye masraf 100 → ikisi de yeni sayıyı kendiliğinden gösterir · şirket 004
+  ✓ başka oturumdan masraf 100 (Garanti)
+  ✓ açık rapor kendiliğinden yenilendi: 160.384,25 TL
+  ✓ ANLIK DURUM kendiliğinden yeni sayı (Gerçek Banka: banka hesaplarınızın (102) bakiyesi ₺160.384,25. Bugün giriş ₺1.50)
+■ 48. Birleşik Rapor (Yönetim → Şirketler): Gerçek Banka, Kart ve Kredi Borcu, Hesabı Atanmamış Eski Hareketler sütunları ANLIK DURUM'la aynı ad ve sayı · şirket 004
+  ✓ sütunlar: Şirket | Nakit Kasa | Gerçek Banka | Kart ve Kredi Borcu | Hesabı Atanmamış Eski Hareketler | Cari Alacak | Cari Borç | Geciken Taksit | Stok Değeri | Açık Satış Faturası | Açık Alış Faturası | Bu Ay Satış | Bu Ay Alış
+  ✓ Rapor Şirketi satırı: ₺160.384,25 · ₺3.000,00 · ₺5.000,00
+■ 49. Yetki: muhasebe Raporlar'da Finans Raporları (2.4.3 H9: varsayılan) ve Banka grubunu görür; personelde Banka raporu 403 · şirket 004
+  ✓ muhasebe menüde Raporlar'ı görür (Banka Raporları yetkisi)
+  ✓ muhasebenin Tüm Raporlar'ı: ☰Cari, ₺Kasa, ▦Stok, •Fatura, ✎Çek / Senet, ▤Taksit, ▣Banka, •Ana Defter, ≡Kayıtlar · Cari: mizan, cari-listesi, cari-ekstre, cari-hareketleri, cari-tahsilat, alacak-yaslandirma, supheli-alacaklar
+  ✓ muhasebe Banka Bakiye Raporu'nu açar
+  ✓ personel Banka Bakiye Raporu 403 (403)
+■ 25. Kalemle ad (side.bank) ve yazım düzeni · şirket 001
+  ✓ menüde yeni ad
+  ✓ pencere başlığında yeni ad
+  ✓ gezilen bütün banka ekranlarında adlar başlık yazımıyla
+  ✓ son durumda mutabakat ok
+  ✓ hiçbir ekranda tarayıcı hatası yok
+■ 50. Kabul 1–16 sonu mizanı ekrandan: Hesap Planı Mizanı 100 = 10.000 B · 102 = 160.000 B · 120 = 0 · 391 = 3.333,33 A · 519 = 150.000 A (2.5.0 Ç5-A: açılış karşı hesabı) · 600 = 16.666,67 A; Fark 0; Alt Hesap Mizanı 102.01 = 90.000, 102.02 = 70.000 · şirket 001
+  ✓ ekranda 100: ₺10.000,00 Borç (beklenen 10000 Borç)
+  ✓ ekranda 102: ₺160.000,00 Borç (beklenen 160000 Borç)
+  ✓ ekranda 391: ₺3.333,33 Alacak (beklenen 3333.33 Alacak)
+  ✓ ekranda 519: ₺150.000,00 Alacak (beklenen 150000 Alacak)
+  ✓ ekranda 600: ₺16.666,67 Alacak (beklenen 16666.67 Alacak)
+  ✓ ekranda 120 ABC: borç ₺20.000,00 · alacak ₺20.000,00 · bakiye ₺0,00 (beklenen 20.000 / 20.000 / 0)
+  ✓ başka bakiyeli hesap yok (770 = 0, 153/621 yok)
+  ✓ özet: Dönem Borç ₺220.000,00 = Dönem Alacak ₺220.000,00 · Fark ₺0,00
+  ✓ ekranda Alt Hesap Mizanı: 102.01 = 90.000, 102.02 = 70.000; ana hesap = alt hesaplar (✓)
+  ✓ Ürün A 9 (beklenen 9)
+  ✓ kabul 16 sonu mutabakat ok
+TAMAM: 428 denetim geçti, 0 başarısız. Ekran görüntüleri: /home/user/ofis---y-netimi/.claude/worktrees/agent-a21e56c46518ba374/test/e2e/artifacts/senaryo-banka-210
