@@ -1,0 +1,32 @@
+{
+  "ad": "c7a3-yeni-testler-istanbul",
+  "komut": "node --test --test-concurrency=2 test/pos-komisyon-satis-gunu-250.test.mjs test/pos-komisyon-v249-250.test.mjs test/hesapsiz-isaret-250.test.mjs test/hesapsiz-acilis-250.test.mjs test/hesapsiz-acilis-v249-250.test.mjs test/kart-faizi-250.test.mjs",
+  "commit": "ce5fc2e39407477a69a3c13020b7bcf69d01fe7c",
+  "dal": "worktree-agent-a39ae245edbf12bf8",
+  "kirli": 0,
+  "izlenmeyen": 28,
+  "platform": "linux 6.18.44-fc-v470 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-14T11:48:18.895Z",
+  "sure_sn": 6.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 28,
+    "gecen": 28,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/kanit/2026-11-14/c7a3-yeni-testler-istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a39ae245edbf12bf8",
+  "ham_cikti_sha256": "94be3a5135c3c5430442730709d6c72819cadd9299bb31fa82e177cadd71156f",
+  "ham_cikti_bayt": 12734
+}

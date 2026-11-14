@@ -1,0 +1,127 @@
+TAP version 13
+# (node:15543) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:15543) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç7a KG-6 — v2.4.9 kilitli verisinde POS komisyonu (kabul D): fark tam, donmuş defter değişmez, Kilidi Aç → Yeniden Kilitle
+    # Subtest: [1] Kural Değişikliği Farkı: KG-6 kaynakları sınıf sınıf elle hesapla aynı; açık dönem farkta yok; donmuş defter değişmedi
+    not ok 1 - [1] Kural Değişikliği Farkı: KG-6 kaynakları sınıf sınıf elle hesapla aynı; açık dönem farkta yok; donmuş defter değişmedi
+      ---
+      duration_ms: 9.053843
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban-wt/test/pos-komisyon-v249-250.test.mjs:111:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        C1 satış günü (02.03)
+        + actual - expected
+        
+        + {}
+        - {
+        -   '108.01': -25000,
+        -   '653': 25000
+        - }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        653: 25000
+        108.01: -25000
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban-wt/test/pos-komisyon-v249-250.test.mjs:114:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: [2] Kural Farkı Düzeltme Fişi: KG-6 maddeleri 108.01 alt defter hesabına dokunduğu için fişin DIŞINDA (S76 = A); fişte 653 ve 108 yok
+    not ok 2 - [2] Kural Farkı Düzeltme Fişi: KG-6 maddeleri 108.01 alt defter hesabına dokunduğu için fişin DIŞINDA (S76 = A); fişte 653 ve 108 yok
+      ---
+      duration_ms: 4.814109
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban-wt/test/pos-komisyon-v249-250.test.mjs:140:3'
+      failureType: 'testCodeFailure'
+      error: '108.01 farkı ayrı listede (Kilidi Aç → Yeniden Kilitle): []'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban-wt/test/pos-komisyon-v249-250.test.mjs:146:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:15543) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:15543) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: [3] Kilidi Aç → Yeniden Kilitle: donmuş defter yeni kuralla, KG-6 farkı kalmaz; 653'ün kilitli dönem toplamı satış günleriyle
+    not ok 3 - [3] Kilidi Aç → Yeniden Kilitle: donmuş defter yeni kuralla, KG-6 farkı kalmaz; 653'ün kilitli dönem toplamı satış günleriyle
+      ---
+      duration_ms: 221.771867
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban-wt/test/pos-komisyon-v249-250.test.mjs:149:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        653 = 845 (satış / iade günleri)
+        
+        32500 !== 84500
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 84500
+      actual: 32500
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban-wt/test/pos-komisyon-v249-250.test.mjs:158:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [4] açık dönemde yeni satış yeni kuralla: 22.04 satış 1.000 → 22.04 B 653 25 / A 108.01 25
+    not ok 4 - [4] açık dönemde yeni satış yeni kuralla: 22.04 satış 1.000 → 22.04 B 653 25 / A 108.01 25
+      ---
+      duration_ms: 36.2774
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban-wt/test/pos-komisyon-v249-250.test.mjs:162:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + undefined
+        - '2026-04-22'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '2026-04-22'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban-wt/test/pos-komisyon-v249-250.test.mjs:167:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 1 - Ç7a KG-6 — v2.4.9 kilitli verisinde POS komisyonu (kabul D): fark tam, donmuş defter değişmez, Kilidi Aç → Yeniden Kilitle
+  ---
+  duration_ms: 1411.963674
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban-wt/test/pos-komisyon-v249-250.test.mjs:45:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 0
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1714.797223
