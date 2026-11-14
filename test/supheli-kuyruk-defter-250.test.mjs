@@ -14,10 +14,13 @@
 // tarihlidir (taban günü senaryo başına 30 gün ilerler).
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
+import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { after, before, describe, it } from "node:test";
-import { loginAdmin, startTestServer } from "./helpers.mjs";
+import { gunzipSync } from "node:zlib";
+import { loginAdmin, removeTestDir, startTestServer } from "./helpers.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const lib = rel => pathToFileURL(path.join(HERE, "..", "server", "lib", rel)).href;
@@ -296,6 +299,75 @@ describe("Ç5-A tur 3c: şüpheli ↔ kuyruk defter kuralı (S14, S25, S39, S168
       const res = spawnSync(process.execPath, ["--disable-warning=ExperimentalWarning", "--input-type=module", "-e", code], { encoding: "utf8", env: { ...process.env, HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
       assert.equal(res.status, 0, `${first} önce: ${res.stderr}`);
       assert.match(res.stdout, /^ok true/);
+    }
+  });
+});
+
+// Kabul D (ders 17, 53 (b)): v2.4.9'un GERÇEK koduyla üretilmiş, şüpheli kaydı OLAN carili KİLİTLİ veri (test/fixtures/supheli-kuyruk-v249; üretici uret.mjs.txt). Güncellemeden sonra:
+// kilitli dönemin 120 / 128'i donmuş (2.4.9 kuralı), canlı türetme yeni kural; fark Kural Değişikliği Farkı (uyarı) ve düzeltme fişi ön izlemesinde KAYNAĞIYLA, fişe girmez (B14 (a));
+// açık dönemde yeni kural. Beklenenler karar metinlerinden (S14, S25 (c), S168 = B — dosyanın başı).
+describe("Ç5-A tur 3c — v2.4.9 gerçek verisi (kilitli + kilitsiz; sınıf sınıf)", () => {
+  it("donmuş 2.4.9 ↔ canlı yeni kural; fark kaynağıyla ön izlemede, fiş satırı yok; açık dönemde yeni kural", { timeout: 180_000 }, async () => {
+    const DIR = path.join(HERE, "fixtures", "supheli-kuyruk-v249");
+    const old = JSON.parse(readFileSync(path.join(DIR, "v249.json"), "utf8"));
+    assert.equal(old.kod, "v2.4.9 (ccf0b0ca)", "ön koşul: fikstür v2.4.9'un gerçek koduyla üretildi");
+    const root = mkdtempSync(path.join(tmpdir(), "supheli-kuyruk-v249-"));
+    const dataDir = path.join(root, "data");
+    mkdirSync(dataDir, { recursive: true });
+    writeFileSync(path.join(dataDir, "destekofis.sqlite"), gunzipSync(readFileSync(path.join(DIR, "destekofis.sqlite.gz"))));
+    copyFileSync(path.join(DIR, "sirketler.json"), path.join(dataDir, "sirketler.json"));
+    const server = await startTestServer({ dataDir, backupDir: path.join(root, "backups"), now: { time: old.now, fixed: true }, env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
+    try {
+      const client = await loginAdmin(server);
+      const get = async url => unwrap(await client.get(url));
+      const app = server.app;
+      await app.context.ledger.snapshots.runPending(); // açılışta bekleyen dondurma (göç) — ürünün kendi koşusu biter
+      assert.equal(app.context.ledger.snapshots.state().coverage, old.kilit, "kilitli dönem donmuş");
+      const bal = () => {
+        const b = {};
+        for (const entry of app.ledger.build()) for (const line of entry.lines || []) if ((line.account === "120" || line.account === "128") && line.party) {
+          b[line.party] ||= { 120: 0, 128: 0 };
+          b[line.party][line.account] += line.debit - line.credit;
+        }
+        return label => ({ b120: (b[old.cariler[label].id]?.[120] || 0) / 100, b128: (b[old.cariler[label].id]?.[128] || 0) / 100 });
+      };
+      const now = bal();
+      // 2.4.9'da (fikstürün kendi sayısı) ↔ yeni kural (karar metni):
+      assert.deepEqual(old.cariler["Kilitli F1 Bağlı Nakit"].defter249, { b120: 500, b128: 600 }, "2.4.9: bağlı nakit 120'den");
+      assert.deepEqual(now("Kilitli F1 Bağlı Nakit"), { b120: 900, b128: 200 }, "S25 (c): şüpheliye aktarılmış faturaya bağlı nakit 128'den");
+      assert.deepEqual(old.cariler["Kilitli F2 Bağlı Çek"].defter249, { b120: 900, b128: 200 }, "2.4.9: bağlı çek en eski kayıttan 128");
+      assert.deepEqual(now("Kilitli F2 Bağlı Çek"), { b120: 500, b128: 600 }, "S14: kuyrukta şüpheli payı olmayan (sonradan kesilmiş) faturaya bağlı çek 120");
+      assert.deepEqual(now("Kilitli F1 Bağlı Çek"), { b120: 900, b128: 200 }, "S14: şüpheliye aktarılmış faturaya bağlı çek 128 (iki kuralda aynı)");
+      assert.deepEqual(now("Kilitli Bağsız Nakit"), { b120: 900, b128: 200 }, "bağsız: değişmez");
+      assert.deepEqual(old.cariler["Kilitli S168 F2 Nakit 100"].defter249, { b120: 0, b128: 1000 });
+      assert.deepEqual(now("Kilitli S168 F2 Nakit 100"), { b120: 100, b128: 900 }, "S168 = B: Fatura 2'nin şüpheli payından 128");
+      assert.deepEqual(now("Kilitsiz F1 Bağlı Nakit"), { b120: 900, b128: 200 }, "kilitsiz dönem: yeni kural");
+      assert.deepEqual(now("Kilitsiz F2 Bağlı Çek"), { b120: 500, b128: 600 }, "kilitsiz dönem: yeni kural");
+      // Kural farkı: uyarı (kilitli dönem donmuş); üç kaynak (bağlı nakit, bağlı çek, S168 nakit) — 120 ↔ 128, alt defter, fişe girmez; "Düzeltildi" yok.
+      const integrity = await get("/api/workspace/ledger/integrity");
+      const item = (integrity.data.checks || []).find(check => check.code === "ledger:rule-diff");
+      assert.ok(item && item.ok === false && item.severity === "warning" && item.count === 3, `kural farkı uyarısı: ${JSON.stringify(item)?.slice(0, 300)}`);
+      assert.ok(!/Düzeltildi/.test(item.name), "120 ↔ 128 farkı varken 'Düzeltildi' gelmez");
+      assert.deepEqual(item.breakdown.map(row => [row.account, row.differenceMinor]).sort(), [["120", 10000], ["128", -10000]]);
+      const preview = (await get("/api/admin/ledger/rule-diff-correction")).data;
+      assert.deepEqual([preview.lines.length, preview.code], [0, "rule-diff-nothing"], "fişe yazılacak satır yok (B14 (a))");
+      const sources = preview.sources.map(source => ({ id: source.id, excluded: source.excluded, deltas: source.deltas.map(d => `${d.account} ${d.minor / 100}`).sort() }));
+      assert.equal(sources.length, 3, JSON.stringify(sources));
+      for (const source of sources) assert.equal(source.excluded, true, "kaynak 'fişle düzeltilmez' (alt defter)");
+      const byParty = label => preview.sources.find(source => source.deltas.some(d => d.party === old.cariler[label].id));
+      assert.deepEqual(byParty("Kilitli F1 Bağlı Nakit").deltas.map(d => `${d.account} ${d.minor / 100}`).sort(), ["120 400", "128 -400"]);
+      assert.deepEqual(byParty("Kilitli F2 Bağlı Çek").deltas.map(d => `${d.account} ${d.minor / 100}`).sort(), ["120 -400", "128 400"]);
+      assert.deepEqual(byParty("Kilitli S168 F2 Nakit 100").deltas.map(d => `${d.account} ${d.minor / 100}`).sort(), ["120 100", "128 -100"]);
+      assert.equal(byParty("Kilitli F1 Bağlı Çek"), undefined, "iki kuralda aynı sonuç → kaynak listesinde yok");
+      // Açık dönemde: Fatura 1'e bağlı 100 nakit → Fatura 1'in o anki şüpheli payından (kalan 200) 128'den.
+      const a = old.cariler["Kilitli F1 Bağlı Nakit"];
+      const write = unwrap(await client.post(`/api/workspace/accounts/${a.id}/entries`, { kind: "in", amount: "100", date: "2026-09-10", method: "cash", cashForce: true, similarOk: true, invoiceId: a.f1 }));
+      assert.equal(write.status, 200, JSON.stringify(write.data).slice(0, 300));
+      assert.deepEqual(bal()("Kilitli F1 Bağlı Nakit"), { b120: 900, b128: 100 });
+      assert.deepEqual((app.integrity.scan().findings || []).map(f => f.code), [], "Mutabakat Testi bulgusuz");
+    } finally {
+      await server.close();
+      removeTestDir(root);
     }
   });
 });

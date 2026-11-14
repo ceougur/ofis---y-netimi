@@ -1,0 +1,80 @@
+{
+ "kod": "v2.4.9 (ccf0b0ca)",
+ "cariler": {
+  "Kilitli F1 Bağlı Nakit": {
+   "id": "account-7247750e-012a-4eb8-93d8-8d10bb86ac75",
+   "f1": "invoice-b8ba3e60-7d87-4099-aa84-a54fb5f8a283",
+   "f2": "invoice-c668132f-52ec-41e0-be20-41fad09acd3e",
+   "base": -300,
+   "defter249": {
+    "b120": 500,
+    "b128": 600
+   }
+  },
+  "Kilitli F2 Bağlı Çek": {
+   "id": "account-9c9c29a1-4862-4596-9950-b407d55d982f",
+   "f1": "invoice-c12b73df-313f-4bb5-9bed-2ca90b6bc5c3",
+   "f2": "invoice-2fdd8150-141d-40cd-b752-55b524a8ddf9",
+   "base": -260,
+   "defter249": {
+    "b120": 900,
+    "b128": 200
+   }
+  },
+  "Kilitli F1 Bağlı Çek": {
+   "id": "account-4b56f113-2e71-48da-8957-022c5b9f8a0f",
+   "f1": "invoice-642b5735-1c4b-4953-8c30-ef18e487cc86",
+   "f2": "invoice-a5dce7c6-2d05-4071-8ff2-43bb8c5c9888",
+   "base": -220,
+   "defter249": {
+    "b120": 900,
+    "b128": 200
+   }
+  },
+  "Kilitli Bağsız Nakit": {
+   "id": "account-6ffc7cee-e5ff-4a48-b162-a4efb7e298f3",
+   "f1": "invoice-67f4e870-8078-4bca-85b6-075414b7bd95",
+   "f2": "invoice-17581120-9abc-4ecf-b299-f9e5c8a069cb",
+   "base": -180,
+   "defter249": {
+    "b120": 900,
+    "b128": 200
+   }
+  },
+  "Kilitli S168 F2 Nakit 100": {
+   "id": "account-598f8c5d-86ad-467c-abea-6e64b117c2bb",
+   "f1": "invoice-8ce273cc-d55a-4cba-b8e2-65b6a9804391",
+   "f2": "invoice-13ce8636-0ade-4e04-bdf7-3d74c1e47c53",
+   "base": -140,
+   "defter249": {
+    "b120": 0,
+    "b128": 1000
+   }
+  },
+  "Kilitsiz F1 Bağlı Nakit": {
+   "id": "account-0385ef95-cb95-4505-8d64-0967d51b62a7",
+   "f1": "invoice-65117874-7329-4d69-a983-1c592372f092",
+   "f2": "invoice-5eb6a917-dd85-4a89-817d-59bdefce89fb",
+   "base": -90,
+   "defter249": {
+    "b120": 500,
+    "b128": 600
+   }
+  },
+  "Kilitsiz F2 Bağlı Çek": {
+   "id": "account-7534467a-7035-4629-9e90-dd3367f873f7",
+   "f1": "invoice-f7ef644c-45e6-4a30-8d14-3167d29777e4",
+   "f2": "invoice-43a27ea7-3d6c-487d-94bb-485b191f9dfe",
+   "base": -50,
+   "defter249": {
+    "b120": 900,
+    "b128": 200
+   }
+  }
+ },
+ "kilit": "2026-07-12",
+ "mutabakat": [],
+ "now": "2026-10-20T12:00:00+03:00",
+ "today": "2026-10-20",
+ "uretim": "v2.4.9 etiketinin ayrı çalışma ağacında (worktree --detach): ROOT=<o ağaç> OUT=<veri klasörü> TZ=Europe/Istanbul node uret.mjs.txt — programın kendi API'siyle (Ç5-A tur 3c, 14.11.2026)"
+}
