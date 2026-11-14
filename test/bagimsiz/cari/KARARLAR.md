@@ -4447,3 +4447,72 @@ izinli (`-elle-fark-*`) · G1 tarama **100/100** (`-g1-tara-*`) · mutant ↔ se
 sayı) · defter öz testi **181/181** (`-defter-oz-*`; bu bakım defter kâhinine dokunmadı) · madde 4 taraması (`-ozet-tara-*`, çıkış 0). Hepsi çıkış 0, iki saat diliminde aynı sayılar. Öz test, mutasyon, eşdeğerlik
 ve geniş tarama `flock -s -w 1800 …/olcum.lock` ile (ders 52 — kilit doluyken tek seferlik engelleyen bekleme, döngü yok); her adım `timeout` sınırlı. Program açılmadı. Koşu günlükleri
 `kahineski19-kos-utc.txt` / `-ist.txt` (yük 0,42 / 0,74 — 4 çekirdek). Mobil yazma kâhini: kabul dosyası bu bakımın cari kâhiniyle yeniden üretildi (`test/bagimsiz/mobil-yazma/README.md` "2.5.0 bakımı 3").
+
+## 31. 2.5.0 Ç5 bakımı 20 — S168 = B + S181 = B (faturaya bağlı tahsilat / evrak, şüpheliye aktarılmış fatura — d44 X9 ailesi) (14.11.2026, `date -u` 11:45; kararlar 13.11.2026 20:15 UTC (S168, KULLANICI KARARI) ve 14.11.2026 09:00 UTC (S181, KULLANICI KURALIYLA ÖNERİ UYGULANDI) — ana oturumun özet dosyası; muhasebe kâhini bakımı 12 ile TOPLU bakım — kodu görmeyen AYRI el) — kural seti `2.5.0` = §13 + … + §30 + bu bölüm
+
+Bu bakım yalnız B1'i işler: bakım 16'nın (§27) "faturaya bağlı tahsilat şüpheliden SONRA da düşmez → RET olabilir" okuması S168 = B ve S181 = B ile yeniden okunur. §13–§30'un öbür kuralları DEĞİŞMEZ. `--kural 2.4.9`
+(ve 2.4.6 / 2.4.5 / `--legacy`) AYNEN (bu bölümün bütün yolları yalnız `k250`). Defter kâhini (`test/bagimsiz/defter/`) bu bakımda DEĞİŞMEZ (şüpheli / normal dağılımının yevmiyesi bu kâhinde
+denetlenmiyor — `mizanBilinir` şüpheli adımlarında zaten kapalı). **Bu bölümün ilk commit'i yalnız YORUMDUR (ders 40 — önce kural, sonra kod); senaryo / mutant / G3 sayıları kod ve kanıt commit'lerinde eklenir.**
+
+### C00x Temiz oda (bakım 20)
+- **Girdi (tek kaynak; ana oturumun özet dosyası `scratchpad/kahin-muh12-kararlar.md`, B1 ve A6; KURAL KAYNAĞI yalnız KARAR / KAPSAM satırlarıdır — soru metinlerindeki "program bugün" / "koşuldu" sözü ve
+  oradaki sayılar beklenti kaynağı SAYILMADI):**
+  - **S168 = B (KULLANICI KARARI 13.11 20:15, AYNEN özü):** "şüpheli kaydı açık caride faturaya bağlı tahsilat, fatura şüpheli kaydından SONRA kesilmiş olsa da, faturanın kuyrukta şüpheli sayılan kısmını ÖNCE şüpheli
+    alacaktan (128) düşer, kalanı normal alacaktan (120); defterin 120 / 128 ayrımı kuyruğun dağılımını izler (tasarım notu §2.11 + S25 (a) ile aynı sıra). S14 = A'nın 'sonradan kesilmiş fatura 120' sözü,
+    faturanın kuyrukta şüpheli sayılan kısmı YOKSA geçerlidir. Örnek: Fatura 1 1.000 → şüpheliye alma 1.000 → Fatura 2 500 (kayıttan sonra) → 400 nakit 'Normal Cari Hesaba İşle' (120 = 100, 128 = 1.000;
+    şüpheli dağılımı Fatura 1 600 + Fatura 2 400) → Fatura 2'ye bağlı 300 tahsilat (çek de nakit de) KABUL, 128 = 700, 120 = 100."
+  - **S181 = B (KULLANICI KURALIYLA ÖNERİ UYGULANDI 14.11 09:00 — kullanıcı değiştirebilir):** "fazla 120'ye; 120 eksiye düşerse işlem reddedilir (S155 = A'nın açık sözü; kullanıcı evrakı bağsız girer ya da
+    tutarı böler) — örnekte ret" (örnek: F1 1.000 → şüpheliye alma 1.000 → F2 500 → F2'ye bağlı çek 900).
+  - **S14 = A, S25 = A, S155 = A** (önceki kararlar; metinleri girdide AYNEN). KAPSAM (baş mimar): "bakım 15 / S155 okumasında 'faturaya bağlı tahsilat şüpheliden SONRA düşmez → RET' beklenen her yer bu
+    kararlarla yeniden okunur: faturanın kuyrukta şüpheli payı varsa o pay kadar şüpheli alacaktan düşer ve (120'ye düşen kısım şüpheli dışı borcu aşmıyorsa) KABUL … bu ailenin DIŞINDA BEKLENMEYEN 0.
+    Bakiye (carinin toplam bakiyesi) değişmez — yalnız kabul / ret ve şüpheli / normal dağılımı değişir; bunu sayıyla göster."
+- **Birlikte okunan (kâhinin kendi belgesi):** bu dosyanın §26 (S136 / S137 / S138 / S145 alanları — C26.x, SK-27 / SK-28), §27 (bütünü — Y16-1 … Y16-6, d44), §28 Y17-1 (S159), §30 (C00w, C0w); `model.py`
+  (`tahsilat`, `evrak`, `hareket_geri_yukle`, `supheli_durum` / `_supheli_hesap` / `_supheli_olaylar`, `_s145_adim`, `_s155_acik`, `s130`, `tyk250`, `kos` SUS dünyaları, `MUTASYONLAR`); d39 / d40 / d41 / d44 elle
+  senaryoları; `oz-test.py`; `docs/kanit/2026-11-13/kahineski19-arac/` araçları. `kos.mjs` bu bakımda AÇILMADI (adım alanı değişmiyor).
+- **Okunmayan:** `server/**`, `client/**`, `bulut/**`, `packaging/**`, `tools/**` (yalnız `kanit.mjs` çalıştırılır), `docs/devir/**`, `docs/2.5.0-IS-LISTESI*.md` (hiçbir sürümü), kâhinin kaynak listesinde olmayan
+  `docs/erp/` dosyaları, `test/bagimsiz/cari/YAPIM-ASAMASI.json` ve `BILINEN.json`, iki kâhin klasörü dışındaki `test/**` (sürücü dahil), başka ajanların `docs/kanit/**` dosyaları, git farkı / geçmiş
+  içeriği. Program koşulmadı.
+
+### Kâhinin BUGÜNKÜ (bakım 19, `kahin-muh12-taban` = 807c70f6) okuması — B1 alanında (açıkça)
+- ŞÜPHELİ KALAN (`_supheli_olaylar`): faturaya bağlı TAHSİLAT hiçbir tarihte şüpheliden düşmez (Y16-2 (c) — "kendiliğinden normal"); faturaya bağlı EVRAK (çek / senet) bağına bakılmadan kayıt tarihinden sonraysa
+  ÖNCE şüpheliden düşer (en eski kayıttan; Y16-2 "Faturaya bağlı EVRAK"). S155 (Y16-1): adımdan sonra A' > 0 ve B' < A' ise ve adım normal bakiyeyi düşürdüyse RET.
+- d44 X9: FX9 1.000 (16.04) → SX9 900 (16.05) → 20.05 FX9'a bağlı 300 tahsilat → RET (A' 900, B' 700 < 900); bakiye 1.000, açık şüpheli 900.
+
+### Yorumlar (ders 40 — kararlardan; kod yazılmadan ÖNCE; baş mimar kullanıcıya gösterir)
+- **Y20-1 — "faturanın kuyrukta şüpheli sayılan kısmı" (S168 = B):** bu kâhinin kalem görünümü §25 / §26'nın S130 / S136 görünümüdür: açık şüpheli tutar R carinin bütün 'Tahsil Edilecek' kalemlerinden tek
+  yükümlülük kuyruğunun sırasıyla (vade → belge → yazım), en eskiden düşer — ödemeler önce kuyruğu eskiden yeniye kapatır, R kalan kalemlere en eskiden dağılır. Kararın örneğindeki dağılım ("Fatura 1 600 +
+  Fatura 2 400") bu görünümle AYNIDIR. **Pay(X)** = X faturasının kuyruk kalanı − X'in görünen tutarı (S130 `gorunen`) — adımın YAZILDIĞI anda, adımın kendisi hariç (kararın "o andaki kalem görünümü";
+  bakım 19'un "yazıldığı an" ölçütüyle aynı düzen). Kâhin yorumu — BAŞ MİMAR değerlendirir.
+- **Y20-2 — kural (S168 = B + S181 = B; türü: faturaya bağlı TAHSİLAT ve faturaya bağlı EVRAK — kararın sözü "çek de nakit de", S181 "evrakın (çek / senet / tahsilat)"):** şüpheli kaydı açık caride (adımdan
+  önce R > 0) faturaya bağlı adımın şüpheliden düşen kısmı = min(tutar, Pay(X)) — açık şüpheli kayıtlardan en eskiden (§8 ŞÜPHELİ KALAN sırası); kalanı normal cari hesaba (120). Pay(X) = 0 ise (fatura
+  şüpheli kaydından sonra kesildi ve kuyrukta şüpheli payı yok — S14'ün sözü) tamamı normal: bakım 16'nın X9 okuması bu durumda AYNEN. **Değişen:** (a) faturaya bağlı TAHSİLAT artık payı kadar düşer
+  (Y16-2 (c)'nin "A değişmez"i → "A pay kadar azalır"); (b) faturaya bağlı EVRAK artık bağına bakılmadan değil, payı kadar düşer — payı aşan kısmı normal (Y16-2'nin "Faturaya bağlı EVRAK" satırı bu kadarıyla
+  değişir; S138 = C görünüm kuralı aynen). Etiket KULLANICI.
+- **Y20-3 — ret (S181 = B; S155 = A aynen):** 120'ye düşen kısım şüpheli dışı borcu aşarsa = adımdan sonra B' − A' < 0 → Y16-1'in RET'i (hiçbir satır yazılmaz; Kasa, bakiye, şüpheli kalan aynı); eşitlik KABUL
+  (Y16-1 aynen). S181 için yeni ölçü yok: "120'nin eksiye düşmesi" bu kâhinde B' − A' < 0'dır (TOPLAM ölçü). Etiket KULLANICI.
+- **Y20-4 — X9 (kararla yeniden okunan bakım 16 beklentisi; sayılarla):** FX9 1.000 → SX9 900 → FX9'a bağlı 300: kuyruk FX9 1.000, R 900 → görünen FX9 100 → Pay 900 → 300'ün tamamı şüpheliden → A' 600,
+  B' 700 ≥ 600 → **KABUL** (bakım 16: RET). Bakiye 700 (bakım 16: 1.000 — RET olduğu için), açık şüpheli 600 (bakım 16: 900), normal (B − A) 100 (iki okumada da 100). Girdinin "bakiye değişmez" sözü yalnız
+  KABUL edilen adımda doğrudur (adım kabul edilince bakiye tutar kadar düşer; RET'ten KABUL'e dönen adımda bakiye ret dünyasından farklıdır) — sayılar aynen yazıldı. Normal (120) tutarı iki dünyada aynı.
+- **Y20-5 — kararların iki örneği bu kâhinin dilinde:** (1) S168'in örneğindeki 400 'Normal Cari Hesaba İşle' adımı bu kâhinin dilinde YOK (bağsız tahsilat kayıttan sonra ŞÜPHELİDEN düşer — §8 / K3) → örnek
+  AYNEN kurulamaz; dağılımı aynı olan komşu kurulur: F1 600 (vade önce) + F2 500 → şüpheliye alma 1.000 (görünüm F1 0 / F2 100 → pay F1 600, F2 400) → F2'ye bağlı 300 → KABUL, açık şüpheli 700, bakiye 800,
+  normal 100 (kararın sayılarıyla aynı). (2) S181'in örneği AYNEN (çek = faturaya bağlı evrak): F1 1.000 → şüpheliye alma 1.000 → F2 500 → F2'ye bağlı çek 900: kuyruk F1 1.000, F2 500; R 1.000 → görünen F1 0,
+  F2 500 → Pay(F2) 0 → 900 normal → A' 1.000, B' 600 < 1.000 → **RET**; bakiye 1.500, açık şüpheli 1.000. (Bakım 16'da bu çek bağına bakılmadan düşerdi → A' 100, B' 600 → KABUL — değişen.)
+- **Y20-6 — SUS (kararın söylemediği; iki dünya — §27 düzeni, `sus_s145`):** (a) adımın anında S130 görünümü TANIMSIZ (S137 / S138 / S156 / avans + iade — §25 / §26 susmaları): Pay(X) yok → SUS, neden
+  "KULLANICIYA SORULMALI SK-38 (a)". Not: S138 = C (BİLİNEN SINIR) şüpheliden düşen faturaya bağlı bir adımdan SONRA görünümü susturur — aynı caride ikinci bir faturaya bağlı adım bu yüzden SUS'a düşer. (b) X
+  kuyrukta düz bir kalem değil (taksitli fatura / karta alınmış fatura / iade faturası …) → Pay(X) tanımsız → SUS (SK-38 (b)). (c) carinin açık şüpheli kayıtlarından bir kısmı adımdan SONRA tarihli (Y16-2:
+  "kayıt tarihinden ÖNCE tarihli satır düşmez") — R'nin hangi kısmının pay sayılacağı karar metninde yok → SUS (SK-38 (c)); açık kayıtların HEPSİ adımdan sonra tarihliyse düşmez (Y16-2 aynen; değer).
+  (d) **S181 ↔ S159:** düşüş açık şüphelinin TAMAMINI kapatıyor (A > 0 → A' = 0) ve bakiye eksiye iniyor (B' < 0): S181'in harfi RET, S159 = A (§28 Y17-1) KABUL → SUS (SK-38 (d)).
+- **Y20-7 — Silinenler'den geri yükleme:** geri yüklenen faturaya bağlı tahsilat / evrak Y16-2 (e) gereği "kendi tarihinde yeniden girmiş sayılır" → Pay(X) geri yükleme ANINDA yeniden ölçülür (Y20-1, Y20-6 aynen).
+  Kâhin yorumu — BAŞ MİMAR değerlendirir.
+
+### KULLANICIYA SORULMALI (bakım 20; kâhin bu durumlarda SUSAR — ders 43, SORU DÜZENİ)
+- **SK-38 (a) — yeni soru DEĞİL:** görünümün tanımsız olduğu alanlar kullanıcının önceki kararlarıdır (S137 / S138 / S156 = C — BİLİNEN SINIR); aynı caride şüpheliden düşen faturaya bağlı bir adımdan
+  SONRAKİ ikinci faturaya bağlı adım S138 = C yüzünden SUS kalır. Teslim notunun BİLİNEN SINIRLAR'ına (S138 = C'nin S168 alanındaki sonucu).
+- **SK-38 (b) — taksitli / karta alınmış faturaya bağlı tahsilat (UÇ):** F1 1.200 taksitli (3 × 400) → şüpheliye alma 800 → F1'e bağlı 400. Faturanın kuyruktaki kalemi taksitlerdir; (i) pay = taksitlerin
+  görünen tutarlarından düşen toplam (800) → 400 şüpheliden, A' 400, B' 800, normal 400 → KABUL; (ii) bağlı tahsilat taksiti kapatır, pay taksit sırasıyla (ilk taksit 400'ün tamamı şüpheli) → aynı sayı;
+  iki okuma bu örnekte aynı ama taksit sırası ile görünüm sırası ayrışınca farklı. Öneri: Uç durum böyle kalsın (BİLİNEN SINIR).
+- **SK-38 (c) — açık şüpheli kayıtlarından biri adımdan SONRA tarihli (UÇ):** F1 1.000 → 01.05 şüpheliye alma 300 → 20.05 şüpheliye alma 400 → 10.05 tarihli F1'e bağlı 500. (i) yalnız 01.05 kaydı sayılır
+  (pay en çok 300) → 300 şüpheliden, 200 normal → A' 400, B' 500 ≥ 400 → KABUL; (ii) bütün açık şüpheli (700) görünümde → pay 700 → 500 şüpheliden → A' 200, B' 500 → KABUL (şüpheli / normal dağılımı farklı;
+  bakiye aynı). Öneri (i) (Y16-2: kayıt tarihinden önce tarihli satır o kayıttan düşmez). Üçüncü: uç durum böyle kalsın (BİLİNEN SINIR).
+- **SK-38 (d) — S181 ile S159 aynı alanda (UÇ):** F1 1.000 → şüpheliye alma 1.000 → F1'e bağlı 1.200 tahsilat: Pay 1.000 → 1.000 şüpheliden, 200 normal → A' 0, B' −200. (i) S181'in harfi: RET, bakiye 1.000,
+  açık şüpheli 1.000. (ii) S159 = A: açık şüpheli kalmadı → kabul, bakiye −200 (200 avans). Öneri (ii). Üçüncü: uç durum böyle kalsın (BİLİNEN SINIR).
