@@ -61,7 +61,9 @@ jobs:
 
   e2e:
     name: Uçtan uca (Chromium)
-    runs-on: ubuntu-latest
+    # ubuntu-24.04'e sabit (19.11.2026): GitHub'ın ubuntu-latest'i Ubuntu 26.04'e geçti; Playwright 1.56 orada chromium kuramıyor
+    # ('Playwright does not support chromium on ubuntu26.04-x64' — CI #1082). release.yml / windows.yml zaten ubuntu-24.04.
+    runs-on: ubuntu-24.04
     env:
       KANIT_DIR: kanit-cikti
     steps:
