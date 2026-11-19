@@ -76,7 +76,8 @@ hesaplanmış "Dönem Net Kârı" = t yılının 1 Ocak–t Gelir Tablosu Dönem
 ## 7. "Kesin Değil" ve dipnotlar
 - TEK toplayıcı `notFinalReasons(facts)` (kitap §7.4 sırası): rapor kendi bilgisini (facts) verir, toplayıcı kod + Türkçe metin + ayrıntı listesi döndürür; Gelir Tablosu ve Bilanço AYNI işlevi çağırır.
   Tur 1'de Gelir Tablosu'nun nedenleri: satışların maliyeti tahmini (KG-11); eksi stok (KG-9; t = b ve a − 1); dengesiz madde (dönemin maddelerinde Σ B ≠ Σ A); Kural Değişikliği Farkı (kapsam
-  dönemin yıllarına değiyorsa `snapshots.ruleDiff`, 6 / 7 ya da 153 hesabında yıl satırı varsa); sınıflandırılmamış hesap; Defter Türü bilanço esası değil ("Bilgi Amaçlı"). Bilanço'nun
+  dönemin yılına değiyorsa: dönemin KİLİTLİ kısmında donmuş ↔ güncel türetmenin 6 / 7 ve 153 yıl × hesap toplamı — `periodRuleDiff`; bütün kilitli geçmişi madde madde karşılaştıran
+  `snapshots.ruleDiff` 100 bin satırda ~2,7 sn sürdüğü için kullanılmadı, o iş Mutabakat Testi'nin "ledger:rule-diff" denetimidir); sınıflandırılmamış hesap; Defter Türü bilanço esası değil ("Bilgi Amaçlı"). Bilanço'nun
   nedenleri (519 ≠ 0, eksi kasa / imkânsız ters bakiye, borçlu 360, kapanmamış önceki yıl, önceki yıl KDV mahsubu, defter mutabakatı farkı — alt defter ↔ bilanço hesapları) tur 2'de AYNI toplayıcıya.
 - Dipnotlar `footnotes(facts)` (§7.5): (1) yasal tablo değildir, (2) dönem sonu işlemleri yapılmaz, (3) "Kasa ve banka 'Diğer Gider' çıkışları (… TL)" = dönemin 770.90 tutarı, (5) Serbest Meslek
   Kazanç Defteri'nde, (6) .90 alt hesapların gelir ve gider tutarları (varsa). (4) krediler — Bilanço'nun. Metinler kitaptan AYNEN.
@@ -88,6 +89,9 @@ hesaplanmış "Dönem Net Kârı" = t yılının 1 Ocak–t Gelir Tablosu Dönem
 - Hacim (plan §8; ders 47): 100.000 satırda ≤ 3 sn, olay döngüsü en çok ≤ 50 ms → hesap rapor iş parçacığında (salt okunur bağlantı, TEK okuma işlemi — WAL anlık görüntüsü; integrity-scan-worker /
   freeze-worker deseni); ana iş parçacığında yalnız ileti. Veri değişmedikçe önbellek (`store.changeCounters()` + bugün + kilit + parametreler; en çok 8 sonuç). İş parçacığı açılamazsa (veri
   tabanı yolu yok, açık işlem içinde) aynı işlev iş parçacığısız (sonuç aynı; test iki yolu karşılaştırır). Değerleme: iki toplu sorgu, ürün başına O(hareket).
+- ÖLÇÜLDÜ (19.11, temiz 100 bin satır, yük < 2; kanıt docs/kanit/2026-11-19/c6h1-hiz-*): Gelir Tablosu kilitsiz ortanca 2,84–3,03 sn, kilitli (30.06.2026) 2,97–3,47 sn; değerleme ~0,7 sn; önbellekten
+  ~5 ms; ana iş parçacığının olay döngüsü istek başına en çok ~10–14 ms (95 örnekte 5 kez 59–118 ms sıçrama — nedeni DOĞRULANMADI). Sürenin ~2,1–2,5 sn'si Ana Defter'in canlı türetmesi (build;
+  Hesap Planı Mizanı ile aynı maliyet) → bütçe sınırda; türetmenin hızlanması Ç6-HESAP'ın dışında (BAŞ MİMAR KARARI GEREKİYOR B-c).
 
 ## 9. Nasıl bozulur? (testler buradan; plan §9 madde 6, 8, 9, 10)
 1. 7/A yansıtma (760 → 631, 770 → 632, 780 → 660); iade 610 ve .90; POS komisyonu 653; kredi faizi 780 → H; vergi ödemesi gecikme zammı 689 → J; boş dönem; tek kayıt; çeyrek sınırı (31.03 / 01.04).
@@ -108,3 +112,6 @@ hesaplanmış "Dönem Net Kârı" = t yılının 1 Ocak–t Gelir Tablosu Dönem
 - B-a BAŞ MİMAR KARARI GEREKİYOR (D4 zamanı): kapanmış yılın (N-01 yazılmış) ara dönemi — ay / çeyrek Gelir Tablosu tahmin mi, 621 mi; bu turda "yılda 621 varsa o yıl kesin, tahmin yok" (aylar toplamı
   o yılda yalnız Aralık'ta SMM gösterir). Öneri: kapanmış yılın [a, b] < 31.12 parçasında da T(b) − T(a − 1) ve N-01'in 621'i yalnız 31.12'yi içeren parçada T(31.12) − T(a − 1) ile değiştirilir.
 - B-b BAŞ MİMAR KARARI GEREKİYOR: stok ↔ 153 ayrışması uyarı mı Kesin Değil nedeni mi (kod: uyarı; tutar gösterilir).
+- B-c BAŞ MİMAR KARARI GEREKİYOR (hacim): 100 bin satırda süre bütçenin (≤ 3 sn) sınırında / az üstünde (kilitli kipte ortanca en çok 3,47 sn). Seçenekler: (a) BİLİNEN SINIR (2.1.0 "bütçeyi az aşanlar
+  BİLİNEN SINIR" kararı; önbellek yinelenen açılışı ~5 ms yapar); (b) kilitli dönemin yıllarında donmuş defter toplamını SQL ile okuyup canlı türetmeyi yalnız açık döneme kısmak (ledger.mjs / ledger-snapshots
+  değişikliği — bu turun dosya sınırı dışında). Öneri (a) şimdi, (b) Ç6-EKRAN ile birlikte ölçülerek.
