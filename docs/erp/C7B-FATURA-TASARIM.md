@@ -284,3 +284,81 @@ kümeye süzülür — ürün kodu DEĞİŞMEZ.
 - Ç3 testlerinin tohumu (donmus-defter-tur1 / tur3 / tur4 / yasam): Ç5-A G3'ün ilkesiyle iki kuralda AYNI türetilen veriye çevrildi (Borç Yaz → satış faturası, carisiz Kasa girişi →
   carinin nakit tahsilatı); tur1'in kural benzetimi faturanın 600'üne (642). bellek: 2.4.9 kopyası ↔ güncel farkı Ç5-A hesapları + Ç7b kural kimlikleri (c7b-kural çevirisi, geçiş günü
   dosyanın işaretinden). gg2-hiz (B-10 = B): eşdeğerlik banka Alt Hesap Mizanı'nın kümesine süzüldü.
+
+## 14. Tur 2d (19.11.2026; görev metni `docs/devir/2.5.0-DEVAM/c7b2d-istem.txt`) — KG-7 "KDV İndirim Dönemi" + kilit izi eki + Sıfırla eki — KODDAN ÖNCE yazıldı
+Kaynaklar: kural kitabı KG-7 = A ("varsayılan belge ayı, kullanıcı kayıt ayına alabilir — KDVK 29/3: izleyen yıl sonuna kadar"), EK-1 M8 (1) (üst sınır belge yılını izleyen yılın Aralık'ı),
+M8 (2) (V-01 satırları dönem etiketine göre), M8 (6) / S4 (mahsuptan sonra düzenleme: engel konmaz, Güncel Değil + Geri Al; azaltan fark sonraki mahsuba — §2.3), §2.6 (bu notun KG-7 tasarımı;
+göç numarası 51 yerine **52** — 51 tur 2c'nin). Tur 2c kararı (2) ve (3) (iş listesi D 19.11 06:39).
+
+### 14.1 Şema — göç 52
+`invoices.vat_period TEXT NOT NULL DEFAULT ''` (YYYY-AA; **boş = belge ayı**). Yalnız ekleyici, eşgüçlü (sütun varsa hiçbir şey yapmaz; değer YAZMAZ — eski faturalar '' = bugünkü davranış). Tablo
+yoksa atlanır. Para alanı değil; defter maddesi okumaz (journal DEĞİŞMEZ). Yedek: sütun dosyayla taşınır; ≤ 51 yedeği geri yüklenince göç 52 koşar ('' — belge ayı).
+
+### 14.2 Alan ve doğrulama (`routes/invoices.mjs documentInput`)
+- Gövde alanı `vatPeriod` ('' ya da YYYY-AA); verilmezse var olan faturanınki (Düzenle / taslağı kes), yoksa ''. Saklanan değer NORMAL: belge ayına eşitse '' (alan boşken belge tarihi değişirse
+  dönem yeni belge ayını izler).
+- Yalnız ALIŞ faturasında (`purchase`; Stoğa Mal Alışı ve Hizmet ve Gider Alışı). Başka türde dolu değer **400** `vat-period-kind` ("KDV İndirim Dönemi yalnız alış faturasında seçilir.") —
+  sessizce yok sayılmaz (ders 3). Alıştan iade de dahil DEĞİL (§2.6: iade kendi ayında).
+- Biçim YYYY-AA değilse 400 `vat-period` ("KDV İndirim Dönemi Yıl-Ay biçiminde olmalı (ör. 2027-01)."). Sınır: belge ayı ≤ dönem ≤ belge yılı + 1'in Aralık'ı; dışı **400** `vat-period-range`
+  ("KDV İndirim Dönemi faturanın ayından (Aralık 2026) önce olamaz." / "KDV İndirim Dönemi en geç Aralık 2027 olabilir (fatura yılını izleyen yılın sonu)."). Taslakta da aynı denetim. Belge
+  tarihi düzenlenip dolu dönem aralık dışına düşerse aynı 400 (kullanıcı dönemi düzeltir; sessiz düzeltme yok).
+- Bugünden sonraki ay seçilebilir (kitap yalnız izleyen yıl sonunu sınırlar); o ayın mahsubu ay bitmeden yazılamaz (bugünkü kural).
+- KİLİT: dönem ≥ belge ayı olduğundan seçilen ayın sonu ≥ belge tarihi; belge kilitli dönemdeyse kaydetme / Düzenle zaten 409 (period.assertOpen / modifyBlock). Ayrı kilit denetimi ERİŞİLEMEZ
+  (§2.6'nın "seçilen ayın sonu kilit gerisindeyse 409" cümlesi bu yüzden kodlanmaz — ölü kod yazılmaz; test kilitli belgede Düzenle'nin 409'unu gösterir).
+- MAHSUBU YAZILMIŞ AYA ALMA / AYDAN ÇIKARMA: ENGEL YOK (M8 (6): "Engel konmaz (yeni kural sayılmaz; ders 45)"). Mahsubu yapılmış aya taşınan KDV ARTIRAN farktır → o ay "Güncel Değil" (Geri Al
+  + yeniden — bugünkü kural); mahsubu yapılmış aydan çıkan KDV AZALTAN farktır → S4 (§2.3) ile sonraki ilk mahsuba taşınır (İ_M = şimdi(M) + min(0, C)): KDV iki kez indirilmez, saklı mahsup
+  değişmez. KULLANICIYA SORU GEREKMEZ (kitabın ve S4'ün metni).
+- Yol: Düzenle (kaydedilmiş faturada da; §2.6). Düzenle'nin pasif olduğu belgede (iadesi olan, banka masrafı, kilitli…) alan da değişmez — nedeni bugünkü gibi görünür yazı.
+
+### 14.3 Mahsup seçimi (`routes/tax.mjs` YALNIZ `figureTable`)
+`figureTable(entries)` ayların 191 hareketini maddenin tarihine göre topluyordu. EK: dönemi belge ayından farklı kesilmiş alış faturalarının kimlikleri TEK toplu SQL ile
+(`SELECT id, vat_period FROM invoices WHERE kind = 'purchase' AND status = 'issued' AND vat_period <> '' AND vat_period <> substr(issue_date, 1, 7)`; ders 47) okunur; `invoice:<id>` maddesinin 191
+satırı dönem ayına yazılır (391 ve öbür hesaplar değişmez). Ön izleme (İ), liste (`stale`), S4 birikimi (`carriedBefore` aynı tabloyu okur) ve KDV Özeti'nin "Mahsuptan Sonra Değişen Ay"
+satırı (offsetList) böylece aynı kuralla. Defter maddesi DEĞİŞMEZ: 191 belge tarihinde; dönemi ileri alınmış faturanın ayının sonunda 191 bakiyesi mahsupsuz tutarı gösterir (§7.3; EK-1 M8
+(4)'ün "Bilanço'da brüt" cümlesi). Kural farkı / dondurma / Defter Mutabakatı journal'dan okur → etkilenmez. 2.4.9 kopyası değişmez.
+
+### 14.4 Düzenle, iade, iptal, silme, taslak, tekrar
+- Düzenle: dönem değişince eski ay azaltan (S4 taşıması), yeni ay artıran (mahsupluysa Güncel Değil). Belge tarihi değişince alan '' ise yeni ayı izler.
+- İade (alıştan iade): alanı yok; asıl faturanın dönemini izlemez (KDVK 35 — iade kendi ayında; F-08 391'de).
+- İptal Et: iptal edilmiş belge türetmeden çıkar (G-7) → KDV'si hiçbir aya girmez (dönem alanı kalır, etkisiz).
+- Silinenler'den geri yükleme: belge iptal edilmiş (etkisiz) olarak döner; eski satırda sütun yoksa '' (göç).
+- Taslak: alan saklanır; taslağı kes yolunda taşınır. Tekrarlanan fatura (runRepeats) şablonun dönemini ALMAZ (yeni belge kendi ayında). Kopyala (istemci): dönem kopyalanmaz.
+- Gelen e-Fatura kutusundan alınan alış faturası: '' (belge ayı); kullanıcı Düzenle ile seçer.
+
+### 14.5 Ekran (fatura formu `client/assets/hof-invoices.js`)
+- Yalnız alış faturasında, başlıkta "Tedarikçinin Fatura No"dan sonra açılır liste **"KDV İndirim Dönemi"** (yazım düzeni): seçenekler belge ayı ("Aralık 2026 (Fatura Ayı)") … belge yılını
+  izleyen yılın Aralık'ı; altında kısa açıklama (cümle düzeni). Tarih değişince seçenekler yeniden kurulur; seçili ay yeni aralıkta değilse fatura ayına döner ve bunu söyleyen görünür yazı çıkar.
+  Satış / iade / makbuz formunda alan YOK. Tab sırası DOM sırası (tabindex yok): … → Tedarikçinin Fatura No → KDV İndirim Dönemi. Belge kartında dönem belge ayından farklıysa "KDV İndirim
+  Dönemi" satırı. PDF / UBL / Excel dışa aktarma DEĞİŞMEZ.
+
+### 14.6 Tur 2c kararı (2) — kilit izi eki (`lib/integrity.mjs`)
+B-7 düzeni: LOCK_SQL'e iki girdi, `since "2.5.2"`, `LOCK_SQL_VERSION` "2.5.1" → "2.5.2" (kilit izi TANIMININ sürümü): `rule_shift_lock` = `settings` 'ledger.ruleShiftThrough' (değer '' değilse
+tek satır) ve `vat_offsets_rule_lock` = `vat_offsets(id, rule_version)` (rule_version ≠ '' VE tarih ≤ kilit). Kilitsiz geçişsiz dosyada ve güncel kuralla yazılmış mahsuplarda satır YOK. Önceki
+tanımla (2.5.1 ve öncesi) kaydedilmiş donmuş defter koşusu kendi sürümüyle karşılaştırılır → var olan kilitlerde yanlış alarm yok. Geçiş günü ayarını program yolu yazmaz (yalnız göç 51 — INSERT
+OR IGNORE — ve Sıfırla'nın silmesi; Sıfırla kilidi de kaldırır), rule_version'ı yalnız göç 51 yazar. Kapı dışı değişiklik: donmuş dönemin kaynağı değişti uyarısı (ledger:snapshot).
+`test/defter-kaynak-iz-250` istisnasından `vat_offsets.rule_version` çıkar. (`invoices.vat_period` kilit izine GİRMEZ — bu turun izni yok; bkz. 14.9 B-12.)
+
+### 14.7 Tur 2c kararı (3) — Sıfırla eki (`server/app.mjs`)
+"Tüm Hareketleri Sil" ('movements') kipinde 'ledger.ruleShiftThrough' da silinir (sıfırlanan dosyada eski veri kalmaz — eski yön anlamsız). "Tümünü Sıfırla" ('all') zaten siliyordu ("ledger."
+KEEP_SETTINGS'te yok). Göç 51 yeniden koşmaz (şema 52) → sıfırlanan dosyada geçiş yok, bütün yeni kayıtlar yeni kuralla.
+
+### 14.8 Nasıl bozulur? (önce yazıldı; testler buradan)
+1. Sınır: belge ayı (kabul, '' saklanır), belge ayından bir ay önce (400), izleyen yılın Aralık'ı (kabul), izleyen yılın Ocak'ı (400) — sınırı bir ay kaydıran mutant.
+2. Aralık faturası Ocak dönemine: Aralık mahsubunun İ'sinde YOK, Ocak'ta VAR; iki TZ (Europe/Istanbul, UTC) — ay sonu 31.12 belge tarihi.
+3. Alan yok sayılırsa (hep belge ayı) — mutant: Ocak İ eksik.
+4. Mahsubu yapılmış aya sonradan dönemi o ay olan fatura → o ay Güncel Değil; mahsubu yapılmış aydan sonraki aya alınan fatura → sonraki ayın ön izlemesinde S4 taşıması (iki kez indirim yok).
+5. Satış / alıştan iade / makbuzda dolu alan 400; boş alan kabul.
+6. Düzenle: tarih ileri alınıp dolu dönem aralık dışı → 400; alan '' iken tarih değişince yeni ay.
+7. İptal Et: dönemi ileri alınmış fatura iptal → dönem ayının İ'sinden düşer.
+8. Göç 52: eski veri (v2.4.9 gerçek kodu) → '' ve mahsup tutarları göç öncesiyle aynı; yeniden koşu eşgüçlü; mutant: göç sütunu varsayılansız (NULL).
+9. Kilit izi: geçiş günü ve rule_version kapı dışı değişince iz değişir (2.5.2), 2.5.1 tanımında değişmez; v2.4.9 kilitli veride güncellemeden sonra yanlış alarm yok (ledger:snapshot, period-lock).
+10. Sıfırla 'movements': geçiş günü silinir; 'all' zaten.
+11. e-Belge: alış faturası gönderilmez; satış faturasının UBL'i değişmez.
+12. Form: alış formunda görünür, satışta yok; Tab ile ulaşılır; seçim kaydedilir (veri tabanı okunur); tarih değişince seçenekler.
+
+### 14.9 BAŞ MİMAR KARARI GEREKİYOR (bu turda kodlanmadı — dosya sınırı)
+- **B-11 — KDV Özeti (Beyanname Hazırlığı) belge ayına göre gruplar** (`routes/report-center.mjs` kdv-ozeti: `substr(i.issue_date, 1, 7)`): dönemi ileri alınmış alış faturasının İndirilecek KDV'si
+  raporda belge ayında, KDV Mahsup Fişi'nde dönem ayında görünür → "Beyanname Hazırlığı" ile mahsup ayrışır. (A) rapor alış satırlarını `vat_period`'a göre (boşsa belge ayı) gruplar ve aralık
+  süzgecini de döneme uygular (report-center.mjs izni); (B) rapor belge ayında kalır + dipnot. Öneri: A (raporun adı beyanname hazırlığı; KDVK 29/3 indirim dönemi beyannamenin dönemidir).
+- **B-12 — `invoices.vat_period` kilit izinde değil:** kilitli Aralık faturasının dönemi Ocak ise açık Ocak mahsubu bu alana bağlı; program yolundan değişmez (Düzenle kilitte 409), kapı dışı
+  değişiklik izsiz. (A) LOCK_SQL'e `invoices(id, vat_period)` (vat_period ≠ '', since 2.5.2 — aynı sürüm artışı); (B) gerekçeli istisna (journal okumaz). Öneri: A, sonraki turda integrity.mjs izniyle.
