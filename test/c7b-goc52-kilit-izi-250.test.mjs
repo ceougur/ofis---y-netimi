@@ -108,10 +108,13 @@ describe("Ç7b tur 2d — göç 52, kilit izi eki, Sıfırla eki (v2.4.9 gerçek
       // (b2) Kapı dışı değişiklik (ayrı bağlantı): güncel iz değişir, 2.5.1 tanımının izi değişmez (önceki koşu yanlış alarm vermez).
       const digests = () => ({ now: lockDigestOf(store, LOCK, { version: LOCK_SQL_VERSION }), v251: lockDigestOf(store, LOCK, { version: "2.5.1" }) });
       const base = digests();
+      // 2.5.0 Ç7b tur 2e (B-12 = A; C7B-FATURA-TASARIM §15.2): kilitli (Eylül) alış faturasının KDV İndirim Dönemi de kilit izinde (2.5.2 tanımı; v2.4.9 verisinde '' — satır yok).
+      const lockedBuy = store.get("SELECT id FROM invoices WHERE kind = 'purchase' AND status = 'issued' AND issue_date <= ? ORDER BY issue_date LIMIT 1", LOCK).id;
       const other = new DatabaseSync(store.get("PRAGMA database_list").file);
       try {
         other.exec("PRAGMA busy_timeout = 5000");
         for (const [label, sql, args, undo] of [
+          ["kilitli faturanın KDV İndirim Dönemi", "UPDATE invoices SET vat_period = '2026-10' WHERE id = ?", [lockedBuy], ["UPDATE invoices SET vat_period = '' WHERE id = ?", [lockedBuy]]],
           ["geçiş günü", "UPDATE settings SET value = '2026-09-15' WHERE key = 'ledger.ruleShiftThrough'", [], ["UPDATE settings SET value = ? WHERE key = 'ledger.ruleShiftThrough'", [LOCK]]],
           ["geçiş günü silindi", "UPDATE settings SET value = '' WHERE key = 'ledger.ruleShiftThrough'", [], ["UPDATE settings SET value = ? WHERE key = 'ledger.ruleShiftThrough'", [LOCK]]],
           ["kilitli mahsubun kural sürümü", "UPDATE vat_offsets SET rule_version = '' WHERE id = ?", [sep.id], ["UPDATE vat_offsets SET rule_version = '2.4.9' WHERE id = ?", [sep.id]]],
@@ -121,10 +124,10 @@ describe("Ç7b tur 2d — göç 52, kilit izi eki, Sıfırla eki (v2.4.9 gerçek
             const after = digests();
             assert.notEqual(after.now, base.now, `${label}: güncel kilit izi değişmeli`);
             assert.equal(after.v251, base.v251, `${label}: 2.5.1 tanımının izi değişmemeli`);
-            if (label === "geçiş günü") {
+            if (label === "geçiş günü" || label === "kilitli faturanın KDV İndirim Dönemi") {
               const bad = await must("Mutabakat Testi (kapı dışı)", api.get("/api/workspace/ledger/integrity"));
               const snap = [...(bad.failures || []), ...(bad.checks || [])].find(item => item.code === "ledger:snapshot" && item.ok === false);
-              assert.ok(snap, `kapı dışı geçiş günü değişikliği donmuş dönemin kaynağı değişti diye görünür: ${JSON.stringify((bad.failures || []).map(item => item.code))}`);
+              assert.ok(snap, `kapı dışı ${label} değişikliği donmuş dönemin kaynağı değişti diye görünür: ${JSON.stringify((bad.failures || []).map(item => item.code))}`);
             }
           } finally {
             other.prepare(undo[0]).run(...undo[1]);

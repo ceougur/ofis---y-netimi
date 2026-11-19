@@ -16,6 +16,7 @@ import { after, before, describe, it } from "node:test";
 import { createStore } from "../server/lib/db.mjs";
 import { LOCK_SQL_VERSION, lockDigestOf } from "../server/lib/integrity.mjs";
 import { registerLedgerRoutes } from "../server/routes/ledger.mjs";
+import { registerTaxRoutes } from "../server/routes/tax.mjs";
 import { CURRENT, bootVersion } from "./guvenilirlik/surumler.mjs";
 
 process.env.HUKUK_LICENSE_URL ||= "http://127.0.0.1:9";
@@ -80,6 +81,9 @@ export const EXCEPTIONS = new Map([
   ["pos_terminals.id", "SINIF 3 — POS alt hesabı BİLİNEN SINIR adayı (§16.3)"],
   ["pos_terminals.gl_sub", "SINIF 3 (§16.3)"],
   ["vat_offsets.created_at", "SINIF 3 — yalnız aynı tarihli sıra (§16.3)"],
+  // 2.5.0 Ç7b tur 2e (B-12; C7B-FATURA-TASARIM §15.2): KDV mahsubunun liste sorgusu (routes/tax.mjs offsetRows) geri alınma ZAMANINI yalnız listede gösterir (reversedAt); tutar, ay ve
+  // Güncel Değil denetimi okumaz (geri alınmışlık status'tan — izde).
+  ["vat_offsets.reversed_at", "yalnız listeleme (§16.2; KDV mahsubu listesinin geri alınma zamanı)"],
   // 2.5.0 Ç7b tur 2d — BEKLENTİ BİLEREK DEĞİŞTİ (tur 2c kararı (2), BAŞ MİMAR KARARI 19.11 06:39; C7B-FATURA-TASARIM §14.6): mahsubun kural sürümü (vat_offsets.rule_version) artık KİLİT
   // İZİNDE (lib/integrity.mjs vat_offsets_rule_lock, since 2.5.2) — tur 2c'nin istisnası kaldırıldı. Geçiş günü ayarı (settings 'ledger.ruleShiftThrough') da izde (rule_shift_lock);
   // settings.value satırı (yukarıda) Ç7a KG-6'nın Banka Ayarları değeri için kalır.
@@ -146,6 +150,9 @@ async function makeData() {
     await must("iade", api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "in", reason: "return", qty: "1", unitPrice: "100", pay: "account", method: "cash", accountId: A.id, date: "2026-09-05" }));
     await must("peşin satış", api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "out", qty: "2", unitPrice: "100", pay: "cash", method: "cash", date: "2026-09-04" }));
     await must("kira (stopaj)", api.post("/api/workspace/invoices", { kind: "purchase", scenario: "expense_purchase", accountId: S.id, issueDate: "2026-09-02", number: "KIRA-09", profile: "KAGIT", stoppageRate: 20, lines: [{ name: "Eylül Kirası", qty: 1, unitPrice: 10000, vatRate: 0, exemptionCode: "351", expenseCode: "rent" }], payment: { rest: "open" } }));
+    // 2.5.0 Ç7b tur 2e (B-12 = A; §15.2): KDV İndirim Dönemi ileri alınmış KİLİTLİ alış faturası — KDV'si açık Ekim'in mahsubuna girer (routes/tax.mjs figureTable); dönemin kilit
+    // izinde (invoices_vat_period_lock) olduğu bu satırın bozulmasıyla görülür.
+    await must("dönemi ileri alınan alış", api.post("/api/workspace/invoices", { kind: "purchase", scenario: "expense_purchase", accountId: T.id, issueDate: "2026-09-03", number: "GEC-09", profile: "KAGIT", vatPeriod: "2026-10", lines: [{ name: "Kırtasiye", qty: 1, unitPrice: 500, vatRate: 20, expenseCode: "office" }], payment: { rest: "open" } }));
     await must("temizlik (tevkifat)", api.post("/api/workspace/invoices", { kind: "purchase", scenario: "expense_purchase", accountId: T.id, issueDate: "2026-09-03", number: "PRL-09", profile: "KAGIT", lines: [{ name: "Temizlik Hizmeti", qty: 1, unitPrice: 2000, vatRate: 20, withholdingCode: "612", expenseCode: "cleaning" }], payment: { rest: "open" } }));
     await must("satış", api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: A.id, issueDate: "2026-09-04", lines: [{ name: "Danışmanlık", qty: 1, unitPrice: 1000, vatRate: 20 }], payment: { rest: "open" } }));
     // 2.5.0 Ç7b (KG-24 = A, B-7): ihracat istisna kodlu kalemi olan karma satış — türetme kalemin hesabını / istisna kodunu / netini okur (601 payı); kilit izinde
@@ -223,8 +230,12 @@ export function derivationReads(db) {
     return prepare.call(this, sql);
   };
   try {
-    const ledger = registerLedgerRoutes(new Proxy({}, { get: () => () => {} }), { store: createStore(db), auth: null });
+    const store = createStore(db);
+    const ledger = registerLedgerRoutes(new Proxy({}, { get: () => () => {} }), { store, auth: null });
     ledger.build();
+    // 2.5.0 Ç7b tur 2e (B-12 = A; C7B-FATURA-TASARIM §15.2): KDV mahsubunun okuduğu sorgular da (yevmiye + KDV İndirim Dönemi + saklı mahsuplar; ön izleme / liste / Güncel Değil
+    // aynı kümeyi okur) — mahsubun okuduğu bir sütun izde değilse (ör. invoices.vat_period) bu sınıf açık yeniden kaçmasın.
+    registerTaxRoutes(new Proxy({}, { get: () => () => {} }), { store, auth: null, ledger: () => ledger }).offsetList();
   } finally {
     delete db.prepare;
   }

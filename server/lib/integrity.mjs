@@ -132,6 +132,7 @@ const labelOf = table => TABLE_LABEL[table] || table;
 // (ledger_snapshot_runs.digest_version); tanım büyüyünce bu sürüm yükselir, eski koşunun izi kendi sürümüyle karşılaştırılır (lockDigestOf version).
 // 2.5.0 Ç7b (B-7): "2.5.1" — kalem istisna kodu girdisi (invoice_lines_export_lock); 2.5.0'ın koşuları kendi tanımıyla karşılaştırılır.
 // 2.5.0 Ç7b tur 2d (tur 2c kararı (2)): "2.5.2" — kural geçiş günü ve eski KDV mahsubunun kural sürümü (rule_shift_lock, vat_offsets_rule_lock); 2.5.1 ve öncesinin koşuları kendi tanımıyla.
+// 2.5.0 Ç7b tur 2e (B-12): aynı sürüme faturanın KDV İndirim Dönemi (invoices_vat_period_lock) — 2.5.2 yayımlanmadığından numara değişmez.
 export const LOCK_SQL_VERSION = "2.5.2";
 // Kapanmış dönemin parmak izi: kilit tarihi ve öncesindeki her para satırı (tutar, yön, yol, tarih, cari/kalem bağı) ve
 // o dönemde cariye borç yazan kartlar. Kilit altındaki tek bir satır değişirse, silinirse ya da eklenirse iz değişir.
@@ -298,6 +299,10 @@ const LOCK_SQL = {
   // geçişsiz dosyada ve güncel kuralla yazılmış mahsupta satır yok). Sürüme bağlı (since "2.5.2"): önceki tanımla kaydedilmiş koşu kendi sürümüyle — yanlış alarm yok.
   rule_shift_lock: { requires: ["settings"], since: "2.5.2", sql: `SELECT key, value FROM settings WHERE key = '${RULE_SHIFT_KEY}' AND value <> '' AND ?1 <> ''` },
   vat_offsets_rule_lock: { requires: ["vat_offsets.rule_version"], since: "2.5.2", sql: "SELECT id, rule_version FROM vat_offsets WHERE rule_version <> '' AND date <= ?1 ORDER BY id" },
+  // 2.5.0 Ç7b tur 2e (B-12 = A — BAŞ MİMAR KARARI 19.11 09:29; KG-7; docs/erp/C7B-FATURA-TASARIM.md §15.2): alış faturasının "KDV İndirim Dönemi" (göç 52) — kilitli faturanın KDV'si
+  // dönem ayının mahsubuna girer (routes/tax.mjs figureTable; açık ay kilitli belgeye bağlı). Program yolundan kilitli belgede değişmez (Düzenle 409); kapı dışı değişiklik izde görünür.
+  // Yalnız DOLU dönemli faturalar satır üretir (dönemsiz veride iz aynı). Aynı tanım sürümü (2.5.2 yayımlanmadı): önceki tanımla kaydedilmiş koşu kendi sürümüyle — yanlış alarm yok.
+  invoices_vat_period_lock: { requires: ["invoices.vat_period"], since: "2.5.2", sql: "SELECT id, vat_period FROM invoices WHERE status <> 'draft' AND vat_period <> '' AND issue_date <= ?1 ORDER BY id" },
   // Bankaya Tahsile Ver kaydının işlem başlığı (101.01 / 101.02 maddesinin tutarı).
   cheque_collections_event_lock: { requires: ["cheque_collections.event_id"], since: "2.5.0", sql: "SELECT id, event_id FROM cheque_collections WHERE given_date <= ?1 ORDER BY id" },
   // Kayıt Tarihi BOŞ kartın oluşturma anı (madde tarihi = oluşturma günü; yukarıdaki plans girdisi yalnız dolu Kayıt Tarihli kartları kapsar). API boş Kayıt Tarihi yazmaz,
