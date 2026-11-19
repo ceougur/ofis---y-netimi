@@ -139,3 +139,29 @@ yeniden üretim + kalıcı test.
 
 ## 10. KULLANICIYA SORULMALI
 - (yok — kodlanan kurallar kullanıcı kararlarından; S4'ün "yalnız azaltan kalıntı" okuması kararın metnidir: "indirilecek KDV'yi azaltan kayıt".)
+
+## 11. Tur 2 (19.11.2026; görev metni `docs/devir/2.5.0-DEVAM/c7b2-istem.txt`) — §9'un kararları ve kod sürerken değişen yerler
+Kararlar (iş listesi D, BAŞ MİMAR KARARI 19.11 04:03): B-1 = B (780 türü ve tanınmayan türün 770.90'ı 2.5.1); B-2 = İZİN (`routes/ledger.mjs` YALNIZ expected()'in 336 / 191 / 391 kalemleri, türetmeyle
+aynı turda); B-3 = A (rows().invoices'a kalem bazında ihracat payı); B-4 = AYRI TUR (karar (6) / KG-23 "Borçta Kalsın" Ç7b TUR 3; YB-1 bu turda); B-5 = A (işaret listesi korunur). Böylece §0
+tablosunda KG-3, KG-24, KG-8 / F-08 "KODLANIR"a geçti; Kartı Kapat'ın defter / cari etkisi DEĞİŞMEZ (tur 3).
+
+### 11.1 Kod sürerken değişen / eklenen yerler
+- `server/lib/general-ledger.mjs`: `UNCLASSIFIED_GL` (cashIn / cashOut / debtWrite / creditWrite / sale / saleReturn / collection — §2.1, §2.2, KG-3); `EXPORT_SALES_GL` = "601",
+  `EXPORT_EXEMPTIONS` = 301 / 302 (lib/invoice-math.mjs EXEMPTIONS'ta "11/1-a Mal İhracatı" / "11/1-a Hizmet İhracatı" — başka kod ihracat sayılmaz; ihraç kayıtlı 701–704 vb. 600'de kalır),
+  `exportSplit()`; hesap planına **601 "Yurt Dışı Satışlar"** (gelir, GT A — kural kitabı §2 satırı; plan tanımında yoktu). Kayıt tahsilatı A 336.90 (party YOK — cari değil).
+- `server/routes/ledger.mjs`: rows().invoices `exportJson` (yalnız ihracat kalemi olan satış / SMM'de, hesap → [ihracat neti, toplam net] kuruş; fatura başına `invoice_lines(invoice_id, seq)` indeksiyle bir arama);
+  expected(): 336 −= Σ payments (KG-3), 191 = alış + satıştan iade, 391 = −(satış + alıştan iade) (KG-8 / F-08). Defter Mutabakatı'nın öbür kalemleri ve kilit izi DEĞİŞMEDİ.
+- Satıştan iadenin ihracat kalemi 610'da kalır (F-07; kalem hesabı lineAccount("sale_return") = 610 — KG-24 yalnız satış / SMM).
+- Kural sürümü: `LEDGER_RULE_VERSION` "2.5.0-defter" GENİŞLER (B15 (a) / Ç7a B2 düzeni: yayımlanmamış ara kural; 2.4.9 kopyası `lib/ledger-rule-249` değişmez) — kilitli v2.4.9 verisinde fark
+  ruleDiff'te görünür. Hangi fark fişe girer: 6 / 7 sınıfı (649 → 649.90, 770 → 770.90, 602 → 602.90 / 600.90, 600 → 600.90 / 601, 610 → 610.90) Kural Farkı Düzeltme Fişi'ne; 336 / 191 / 391
+  ALT DEFTER hesabıdır (subledgerAccounts = expected()'in anahtarları) → B14 (a): fişe yazılmaz, birikimli farkı sıfır değilse katkı veren maddelerin BÜTÜN farkı fişin dışında kalır.
+- "Kesin Değil" (KG-3 B "336.90 … + Kesin Değil"): bugün defter / mizan ekranında alt hesap için gösterge YOK (ACCOUNT_PLAN'ın `ters` alanı yalnız bilanço sunumu — Ç6). Yeni ekran açılmadı;
+  bağlantı noktası Ç6-HESAP (336.90 satırı party taşımaz → bilanço brütleştirmesinde "cari" boyutuna girmez).
+
+### 11.2 Yeni bulgu — KG-8 ile ESKİ KDV mahsupları (BAŞ MİMAR KARARI GEREKİYOR: B-6)
+KDV Mahsup Fişi saklı tutarlarla türetilir (vat_offsets.out_minor / in_minor). KG-8 / F-08 iade KDV'sini 391 ↔ 191 arasında taşıyınca, KURAL DEĞİŞMEDEN ÖNCE yazılmış ve ayında iade olan
+mahsupta H ve İ ikisi de Δ = (satıştan iade KDV'si + alıştan iade KDV'si) kadar "güncel"den ayrışır (ödenecek / devreden DEĞİŞMEZ: H − İ aynı). Sonuç: o ay "Güncel Değil" görünür ve mahsuptan
+sonra 191 = +Δ (borç), 391 = −Δ (alacak) kalır (toplamı 0; 360 / 190 doğru). Kilitli ayda 191 / 391 alt defter hesabı → fişle düzeltilmez (B14). Seçenekler: (A) göç 51'de etkin + geri alınmış
+her mahsubun out_minor / in_minor'ına o ayın iade KDV'si Δ eklenir (H − İ, ödenecek, devreden, ters fiş aynı kalır; kilitli ayda donmuş ↔ güncel birikimli 191 / 391 farkı ay sonunda 0);
+(B) dokunulmaz — kullanıcı açık ayda Geri Al + yeniden yapar (yalnız en son mahsup geri alınabildiğinden zincir geri alınır), kilitli ayda BİLİNEN SINIR. Öneri: A (para değişmez, yalnız
+sınıflama; tek seferlik ve göç numarası zaten ayrıldı). Bu turda KODLANMADI (göç 51'in izni yalnız KG-7) — §11.3'ün kalıcı testi bugünkü (B) davranışını sayıyla gösterir.
