@@ -18,6 +18,9 @@
 // KG / Ç5 / Ç7a / Ç7b etiketleri) → "BEKLEYEN KURAL FARKLARI" (ozet.json bekleyen: kimlik → senaryo / denetim sayısı). Geçmiş günlü raporun farkı (program
 // as-of okumaz) ÖLÇÜLEMEDİ: geçti sayılmaz, "# skipped" ve ayrı listede. Varsayılan dal A (kâhin bakımı: eski "KG3=SORU" etiketi kalktı).
 // GERİLEME (G5): aynı sürücüyle eski ve yeni ağacın program çıktıları → python3 -I test/bagimsiz/muhasebe-surucu/gerileme.py <eski çıktı> <yeni çıktı>.
+// SÜRÜCÜ BAKIMI 3 (19.11.2026; kâhin bakımı 12 + Ç5-A tur 2 / 2e / 2f / tur 3 + Ç7a sonrası): BUGÜN görünümünde yalnız ana dala girmemiş paketler (Ç7b, D2–D6, Ç5-C) kalır;
+// Kural Farkı fişi / fiş ters kaydı / Açılış Olabilir / Açılış Eşleştirme / carisiz evrak programın uçlarına eşlenir; 2.4.9 kurallı kilit eski sürümde konur (göç dondurur);
+// yeni sınıf SUSMA (kâhinin susması: `susmalar` S168, ara adımda açılıştan türetme, S11 — # skipped) ve elle ÖLÇÜLEMEDİ (sürücünün eşleme sınırı — # skipped).
 // Çıkış: 0 yalnız SINIFLANMADI / P / K / R / red farkı / sürücü hatası / öz denetim bozukluğu yoksa. Sonda node:test biçiminde özet (# tests / # pass / # fail).
 import { spawn } from "node:child_process";
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
