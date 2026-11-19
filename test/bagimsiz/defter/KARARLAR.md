@@ -259,3 +259,38 @@ Yeni cariler (`g4` M2, `senaryo.json` M6) `cari` olayıyla açılır (açılış
 - SS-1 … SS-5'in sınırları (grup, aynı adlı ayrı cari, kapanmış / iptal / silinmiş kart, taksit kartı dışı kayıt, genel tahsilatla kapanan kart): kararda yok → senaryo KURULMADI (kâhin bu durumlarda
   hata vermez; beklentisi yazılmadı).
 - Program koşulmadı (görev gereği; `npm run test:kahin-defter` ana oturumda).
+
+## 2.5.0 Ç5 bakımı 4 (19.11.2026; muhasebe kâhini bakımı 13 ile aynı TOPLU KÂHİN BAKIMI — kodu görmeyen AYRI el)
+
+Kural seti adı değişmedi (`2.5.0` varsayılan = bakım 1–3 + bu bölüm; `--kural 2.4.9` AYNEN — 2.4.3'ün iade KDV'si zaten eski yön, bayt bayt aynı kalmalı).
+
+### Kaynak (temiz oda; ders 5, 40)
+- **Karar metni:** ana oturumun girdi dosyası (19.11.2026; `scratchpad/kahin-muh13-kararlar.md`) B1: kitap KG-8 satırı ("Satıştan iade KDV'si | B 191 (KDVK 35, indirim) | B 391 (hesaplananı azaltır) | A; mahsup sonucu
+  iki dalda aynı"), F-07 / F-08 satırları (F-07 "610; 191", F-08 "CH | 153 …; 391"), KULLANICI KARARI 05.11 17:16 "hepsi A", A2'nin bütün KARAR satırları (kural geçiş günü — muhasebe kâhini README bakım 13'te
+  AYNEN) ve girdinin KAPSAM satırları. OKUMA KURALI: girdideki "BİLGİ (ana oturum)" satırı (program ↔ kâhin farkının hangi dört anahtarda olduğu) kural / beklenti kaynağı SAYILMADI — yalnız yorumda hangi
+  kurala dayandığı yazılır. Kitaptan yalnız §3-F, §9 KG tablosu ve EK-1 M8 okundu (muhasebe kâhininin bakım 13'üyle aynı okuma).
+- **Okunan / okunmayan:** bu klasör (`kos.mjs` / `karsilastir.mjs` yalnız olay / alan EŞLEMESİ için — `kos.mjs`'in KDV satırı programın "KDV Özeti" raporunu okuyor; kod değiştirilmedi, koşulmadı), girdi,
+  CLAUDE.md, muhasebe kâhininin README'si (bölümler). Program koşulmadı. Tam liste ajan raporunda.
+
+### Kurallar (kaynak her satırda)
+- **D11 İade KDV'sinin yönü — KG-8 = A, F-08** [kitap KG-8 A, F-07, F-08; KULLANICI 05.11 "hepsi A"]: 2.5.0 kuralında satıştan iade **B 610 matrah, B 191 KDV / A 120** (bakım 1–3'ün `2.5.0`'ı 2.4.3'ün "B 391"ini
+  taşıyordu — kararlı sütun DEĞİLDİ); alıştan iade **B 320 / A 153|770 matrah, A 391 KDV** (eskisi "A 191"). Tevkifatlı satışın iadesinde 191'e yazılan tutar KDV − tevkifat (satıcının hesapladığı KDV'nin
+  düzeltmesi; madde dengesi bunu zorunlu kılar: A 120 = matrah + KDV − tevkifat); tevkifatlı alışın iadesinde 391'e KDV'nin TAMAMI (alışta 191'e tamamı yazılmıştı), 360 satırı aynen. Stopaj / Tevkifat
+  Özeti (31b-MM3) değişmez.
+- **D11′ KDV mahsubu ↔ KDV Özeti** [EK-1 M8 6 / S4 "İ = dönemi M olan 191 NET hareketi … H = dönemi M olan 391 net hareketi"; girdi A3 KARAR (19.11 09:29) "04:35'teki 'KDV Özeti bugünkü düzeninde kalır'
+  kararı defter kalemleriyle farka ilişkindi; bu fark MA'da incelenmeye DEVAM eder"]: mahsup fişi (MM3) ayın DEFTERDEKİ 391 ve 191 net hareketini sıfırlar (H = 391 alacak − borç, İ = 191 borç − alacak; mahsup
+  ve mahsup ters fişleri hariç) — iade yönü değişince fişin satırları değişir, H − İ (ödenecek / devreden) DEĞİŞMEZ ("mahsup sonucu iki dalda aynı"). Kâhinin `kdv` çıktısı programın **KDV Özeti** raporunun
+  karşılığıdır (`kos.mjs`: `report-center/kdv-ozeti`); 04:35 kararı gereği KDV Özeti bugünkü düzeninde kalır → `kdv` (fatura kaynaklı hesaplanan / indirilecek; iade kendi tarafını azaltır) DEĞİŞMEZ. Kâhin
+  yorumu — BAŞ MİMAR değerlendirir (KDV Özeti ↔ defter kalemleri farkı MA listesinde).
+- **D12 Kural geçiş günü (A2: B-8 + B-6)** [girdi A2 KARAR satırları AYNEN]: kâhinin dilinde güncelleme anı = `goc {tarih, kilit?}` olayı (bakım 1 D6 / D7: önceki olaylar 2.4.9'un yazdığı eski kayıtlar);
+  **geçiş günü = `goc.kilit`** (göçteki dönem kilidi; kilitsiz göçte geçiş YOK — bütün kayıtlar yeni yön). (a) Tarihi ≤ geçiş günü olan satıştan / alıştan iade ESKİ yön (2.4.9: B 391 / A 191) — D7'nin
+  donmuş maddesiyle aynı, Kural Farkı yok; (b) göçten ÖNCE yazılmış (listede `goc`'tan önce) ve ters kaydedilmemiş `kdv_mahsup`'un ayındaki iade ESKİ yön (geçiş gününden sonra tarihli olsa da); mahsup göçten sonra
+  ters kaydedilince (`kdv_mahsup_geri_al`) o ayın iadeleri yeni yöne geçer (G-7 yeniden türetme), yeniden yazılan mahsup yeni yönle; (c) göçten önce yazılmış ama (a) / (b) dışında kalan iade göçte yeni yöne
+  geçer (S53 A: kilitsiz dönem yeni kurala geçer — D6 ile aynı ilke); (d) göçten önceki dönemde kâhin iadeyi eski yönle yazar (2.4.9 programı) — göç öncesi mahsubun tutarları böyle oluşur. Ay = belge ayı
+  (kâhinde KDV İndirim Dönemi alanı yok). D8 (Kural Farkı fişi) yalnız açılış kaynaklarına bakar — iade bu kural gereği iki türetmede aynı, fiş etkilenmez.
+- **Bu kâhinin dört anahtarı (girdinin sorusu):** `senaryo.json` K_EYLUL 191 / 391 ve K_SON 191 / 391'in beklentisi iade yönüne dayanır: K_EYLUL (Eylül mahsubundan önce) F8 satıştan iadenin KDV'si 195,00 ve F9 alıştan
+  iadenin KDV'si 24,00; K_SON (Kasım, mahsupsuz ay) F6R satıştan iadenin KDV − tevkifatı 800,00 ve F3R alıştan iadenin KDV'si 400,00. Bakım 1–3'te bu dört değer 2.4.3'ün eski yönündeydi (B 391 / A 191); D11 ile
+  kararlı sütuna geçer (elle hesap aşağıda). `senaryo.json` göçsüz → geçiş YOK (D12 kilitsiz).
+
+### KULLANICIYA SORULMALI (bakım 4)
+- YOK (D11 / D11′ / D12 karar ve kitap metninden; kâhin yorumları — tevkifatlı iadenin tutarı, `kdv` çıktısının değişmemesi, geçiş gününün `goc.kilit` olması — BAŞ MİMAR'a gösterilir).
