@@ -16,6 +16,7 @@ import { lockDigestOf } from "../server/lib/integrity.mjs";
 import { LATEST_VERSION } from "../server/lib/migrations.mjs";
 import { ADMIN_PASSWORD, createUser, loginAdmin, startTestServer } from "./helpers.mjs";
 import { lockAndWait, waitForFreeze } from "./fixtures/donma-bekle.mjs";
+import { c7bAll, c7bOf, c7bRuleOf } from "./fixtures/c7b-kural.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const NOW = "2027-01-10T10:00:00+03:00";
@@ -184,7 +185,7 @@ describe("2.5.0 Ç3 — donmuş defter: kilit, ilerletme, geri çekme, kural de�
     const trial2026 = await reportRows(admin, "hesap-mizani", q2026);
     const trial2027 = await reportRows(admin, "hesap-mizani", q2027);
     // Yeni kural (sürüm yükseltmesi benzetimi): Kasa'ya elle girişin karşılığı 649 yerine 642.
-    rule.fn = entries => entries.map(entry => (entry.id.startsWith("cash:") && entry.lines.some(line => line.account === "649") ? { ...entry, lines: entry.lines.map(line => (line.account === "649" ? { ...line, account: "642" } : line)) } : entry));
+    rule.fn = entries => entries.map(entry => (entry.id.startsWith("cash:") && entry.lines.some(line => line.account === "649") ? { ...entry, lines: entry.lines.map(line => (line.account === "649" ? { ...line, account: "642", sub: undefined } : line)) } : entry));
     try {
       assert.deepEqual(await reportRows(admin, "yevmiye", q2026), journal2026, "kilitli yılın Yevmiye Defteri aynı");
       assert.deepEqual(await reportRows(admin, "hesap-mizani", q2026), trial2026, "kilitli yılın Hesap Planı Mizanı aynı");
@@ -429,7 +430,11 @@ describe("2.5.0 Ç3 — 2.4.9 kural kopyası (dondurulmuş) ve kural tuzağı", 
     try {
       const admin = await loginAdmin(server);
       await seed(admin);
-      const old = new Map(canon(rule.buildRule249(server.app.store)).map(entry => [entry.id, entry]));
+      // 2.5.0 Ç7b (test/fixtures/c7b-kural.mjs): 2.4.9 kopyasının maddesi Ç7b kural kimlikleriyle çevrilir (Kasa 649.90 / 770.90, Borç / Alacak Yaz 602.90 / 770.90, belgesiz 600.90 /
+      // 610.90, kayıt tahsilatı 336.90, iade KDV'si 191 / 391) — Ç5-A kimlikleri aşağıda ayrıca.
+      const raw249 = rule.buildRule249(server.app.store);
+      const c7bChanged = raw249.filter(entry => c7bRuleOf(entry) && JSON.stringify(c7bOf(entry).lines) !== JSON.stringify(entry.lines)).map(entry => entry.id);
+      const old = new Map(canon(c7bAll(raw249)).map(entry => [entry.id, entry]));
       const live = new Map(canon(server.app.ledger.build()).map(entry => [entry.id, entry]));
       assert.deepEqual([...live.keys()].sort(), [...old.keys()].sort(), "madde kimlikleri aynı (B9: açılış sınıfı kimliği değiştirmez)");
       const explained = [];
@@ -437,11 +442,13 @@ describe("2.5.0 Ç3 — 2.4.9 kural kopyası (dondurulmuş) ve kural tuzağı", 
         const want = structuredClone(entry);
         // Ç5-A kural kimlikleri: stok açılışı M-07 (500 → 519); "Açılış bakiyesi" açıklamalı, açılış İŞARETSİZ Borç Yaz C-01 (500 → 602; P1 / M-02 "açıklamadan değil").
         if (id.startsWith("stock-open:")) for (const line of want.lines) if (line[0] === "500") line[0] = "519";
-        if (id.startsWith("account:") && want.text.startsWith("Açılış")) for (const line of want.lines) if (line[0] === "500") line[0] = "602";
+        // Ç7b (C-01, KG-4 = A): açılış işaretsiz Borç Yaz'ın karşılığı 602.90 alt hesabıyla.
+        if (id.startsWith("account:") && want.text.startsWith("Açılış")) for (const line of want.lines) if (line[0] === "500") [line[0], line[1]] = ["602", "602.90"];
         if (JSON.stringify(want) !== JSON.stringify(entry)) explained.push(id);
         assert.deepEqual(live.get(id), want, `${id}: güncel türetme ↔ 2.4.9 farkı Ç5-A kural kimliklerinin dışında`);
       }
       assert.equal(explained.length, 2, `beklenen iki fark (stok açılışı + açıklamalı Borç Yaz) görülmedi: ${explained.join(", ")}`);
+      assert.ok(c7bChanged.length > 0, "Ç7b kural kimlikleriyle açıklanan fark görülmedi (veride Kasa / Borç Yaz var)");
       // 2.4.9 kopyası değişmedi: açılışlar orada hâlâ 500'de.
       assert.ok([...old.values()].some(entry => entry.lines.some(line => line[0] === "500")), "2.4.9 kopyası açılışı 500'e yazmıyor");
     } finally {

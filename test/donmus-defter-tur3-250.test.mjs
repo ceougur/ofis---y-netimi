@@ -241,7 +241,7 @@ describe("2.5.0 Ç3 tur 3 — YÜKSEK-1: süren dondurmanın satırları silinme
     hook.fn = null;
     if (S().coverage() !== LOCK) await lockAndWait(admin, LOCK);
     // Kural değişikliği benzetimi (F5 ile aynı): Kasa'ya elle girişin karşılığı 649 yerine 642.
-    rule.fn = entries => entries.map(entry => (entry.id.startsWith("cash:") && entry.lines.some(line => line.account === "649") ? { ...entry, lines: entry.lines.map(line => (line.account === "649" ? { ...line, account: "642" } : line)) } : entry));
+    rule.fn = entries => entries.map(entry => (entry.id.startsWith("cash:") && entry.lines.some(line => line.account === "649") ? { ...entry, lines: entry.lines.map(line => (line.account === "649" ? { ...line, account: "642", sub: undefined } : line)) } : entry));
     try {
       const report = await must("Defter Mutabakatı", admin.get("/api/workspace/report-center/defter-mutabakati"));
       assert.ok(report.rows.some(row => row[5] === "Kural Değişikliği Farkı"), "ön koşul: kilitli dönemde ayrışma var");

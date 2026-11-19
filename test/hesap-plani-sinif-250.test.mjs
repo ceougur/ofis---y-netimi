@@ -247,7 +247,8 @@ describe("2.5.0 Ç1 — hesap planı sınıflaması", () => {
     // Kaynak taraması: yevmiyeyi kuran iki dosyadaki hesap kodu sabitleri (tırnak içinde üç hane). Bütün metin üzerinde (satır bölünmez; CRLF fark etmez).
     for (const file of ["server/lib/general-ledger.mjs", "server/routes/ledger.mjs"]) {
       const source = readFileSync(new URL(`../${file}`, import.meta.url), "utf8");
-      for (const [, code] of source.matchAll(/"(\d{3})"/g)) used.add(code);
+      // 2.5.0 Ç7b (KG-24): KDV istisna KODLARI (301 / 302 ihracat; general-ledger EXPORT_EXEMPTIONS) hesap kodu değildir — taramadan çıkar (adıyla, sabitin kendisinden).
+      for (const [, code] of source.matchAll(/"(\d{3})"/g)) if (!(gl.EXPORT_EXEMPTIONS || []).includes(code)) used.add(code);
     }
     const missing = [...used].map(String).filter(code => !Object.hasOwn(gl.CHART, code)).sort();
     assert.deepEqual(missing, [], "defterin yazabildiği ama planda olmayan hesap");

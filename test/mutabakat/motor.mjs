@@ -650,9 +650,10 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       return row[6] === "Alacak" ? -value : value;
     };
     const byTypeR = t => accounts.filter(a => a.type === t).reduce((s, a) => s + (M.cari.get(a.id) || 0), 0);
+    // 2.5.0 Ç7b — BEKLENTİ BİLEREK DEĞİŞTİ (KG-3 = A; yukarıdaki Ana Defter denetimiyle aynı): mizanın 336'sı = "Diğer" cariler − kayıt tahsilatları (336.90; cari değil).
     // 2.3.0 İz 1: 120 = müşteri bakiyeleri (şüpheli müşterileri dahil) − açık şüpheli (128).
     const dcR = doubtfulCustomers.reduce((s, a) => s + (M.cari.get(a.id) || 0), 0) - (doubtfulOn ? doubtfulModel().open : 0);
-    for (const [code, want] of [["100", M.kasa.cash], ["102", M.kasa.bank], ["108", M.kasa.card - ccardNet() - posPendingFee()], ["309", ccardNet()], ["120", byTypeR("customer") + dcR], ["320", byTypeR("supplier")], ["336", byTypeR("other")]]) {
+    for (const [code, want] of [["100", M.kasa.cash], ["102", M.kasa.bank], ["108", M.kasa.card - ccardNet() - posPendingFee()], ["309", ccardNet()], ["120", byTypeR("customer") + dcR], ["320", byTypeR("supplier")], ["336", byTypeR("other") - (bank ? M.payments.reduce((t, e) => t + e.amount, 0) : 0)]]) {
       if (signedRow(code) !== want) problems.push(`Hesap Planı Mizanı raporu ${code}: ${tl(signedRow(code))} · model ${tl(want)}`);
     }
     if (sum(mizan, "Fark") !== 0) problems.push(`Hesap Planı Mizanı raporu: Fark ${tl(sum(mizan, "Fark"))}`);

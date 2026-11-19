@@ -221,7 +221,7 @@ describe("2.5.0 Ç3 tur 1 — önbellek, aynı gün / başka gün yeniden kilit,
       assert.equal(items["ledger:snapshot"].name, "Donmuş Defter (31.12.2026 ve Öncesi)");
       assert.equal(items["ledger:rule-diff"].name, "Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2026 ve Öncesi)");
       // (a) Nedeni bilinmeyen ayrışma (kural benzetimi): tarafsız açıklama.
-      rule.fn = entries => entries.map(entry => (entry.id.startsWith("cash:") ? { ...entry, lines: entry.lines.map(line => (line.account === "649" ? { ...line, account: "642" } : line)) } : entry));
+      rule.fn = entries => entries.map(entry => (entry.id.startsWith("cash:") ? { ...entry, lines: entry.lines.map(line => (line.account === "649" ? { ...line, account: "642", sub: undefined } : line)) } : entry));
       let diff = (await must("tarama", admin.get("/api/workspace/ledger/integrity"))).checks.find(check => check.code === "ledger:rule-diff");
       assert.ok(diff && !diff.ok, "ön koşul: fark var");
       assert.doesNotMatch(diff.hint, /^Defter kuralı program sürümüyle değişti/, `nedeni bilinmeyen ayrışma "kural değişti" diye adlandırılıyor: ${diff.hint}`);
@@ -334,7 +334,7 @@ describe("2.5.0 Ç3 tur 1 — önbellek, aynı gün / başka gün yeniden kilit,
       assert.deepEqual(canon(fresh), canon(expected()));
       assert.ok(fresh.some(entry => entry.date === "2027-01-08"));
       // Güncel kural değişirse (veri aynı) ara dilim 2.4.9'dan okunur, açık dönem yeni kuralla — önbellek "aynı" bilgisiyle yanlış dilim vermez.
-      const swap = entries => entries.map(entry => (entry.id.startsWith("cash:") ? { ...entry, lines: entry.lines.map(line => (line.account === "649" ? { ...line, account: "642" } : line)) } : entry));
+      const swap = entries => entries.map(entry => (entry.id.startsWith("cash:") ? { ...entry, lines: entry.lines.map(line => (line.account === "649" ? { ...line, account: "642", sub: undefined } : line)) } : entry));
       rule.fn = swap;
       const changed = L.book();
       assert.deepEqual(canon(changed), canon([...upTo(build249(store), LOCK), ...swap(L.build()).filter(entry => entry.date > LOCK)]), "kural farkında ara dilim 2.4.9'dan");

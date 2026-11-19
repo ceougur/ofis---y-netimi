@@ -458,8 +458,15 @@ describe("Ç5-K S20 = A: v2.4.9'un GERÇEK koduyla üretilmiş açılış önces
     const ledger = await v.get("/api/workspace/ledger");
     const now250 = Object.fromEntries(ledger.data.trial.accounts.map(row => [String(row.code), Math.round(row.balance * 100)]));
     // 2.5.0 Ç5-A (G3: C5-ACILIS-TASARIM §2.2; M-01 — Kasa açılışının karşı hesabı 519): 2.4.9'un 500'ü yeni kuralda 519; öbür hesaplar aynı.
+    // 2.5.0 Ç7b — BEKLENTİ BİLEREK DEĞİŞTİ (KG-3 = A, T-14): kayıt (dosya) tahsilatı 602 → 336.90 (gelir değil) — eski 602'den kayıt tahsilatlarının toplamı (veri tabanından) 336'ya.
+    const collected = Math.round(Number(store.get("SELECT COALESCE(SUM(amount), 0) AS n FROM payments").n) * 100);
     const want = Object.fromEntries(Object.entries(old249).map(([code, minor]) => [code === "500" ? "519" : code, minor]));
-    assert.deepEqual(now250, want, "mizan 2.4.9 ile aynı (yalnız 500 → 519)");
+    if (collected) {
+      want["602"] = (want["602"] || 0) + collected;
+      want["336"] = (want["336"] || 0) - collected;
+      for (const code of ["602", "336"]) if (!want[code]) delete want[code];
+    }
+    assert.deepEqual(now250, want, "mizan 2.4.9 ile aynı (yalnız 500 → 519 ve Ç7b KG-3 602 → 336)");
     const integrity = (await v.get("/api/workspace/ledger/integrity")).data;
     assertIntegrity(integrity, "göç");
     const warning = warningOf(integrity);

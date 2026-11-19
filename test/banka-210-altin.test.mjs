@@ -37,7 +37,7 @@ import { localDay, pdfText, unwrap, xlsxSheets } from "./banka-210-ortak.mjs";
 import { fixtureExists, unpackFixture } from "./guvenilirlik/fikstur.mjs";
 import { CURRENT, bootVersion, tagsAvailable } from "./guvenilirlik/surumler.mjs";
 import { runReconciliation } from "./mutabakat/motor.mjs";
-import { c5aIntegrity, c5aMizanReport, c5aOpeningFold, c5aReconciliationReport, c5aTrialAccounts, foldDocumentRows, foldIntegrityChecks, foldReconciliation, foldTrialAccounts, hasDocumentSplit, legacyBankBox, legacyBankPos, legacyCashFlow, normDocumentNames } from "./guvenilirlik/defter-olgulari.mjs";
+import { c5aIntegrity, c5aMizanReport, c5aReconciliationChecks, c5aOpeningFold, c5aReconciliationReport, c5aTrialAccounts, foldDocumentRows, foldIntegrityChecks, foldReconciliation, foldTrialAccounts, hasDocumentSplit, legacyBankBox, legacyBankPos, legacyCashFlow, normDocumentNames } from "./guvenilirlik/defter-olgulari.mjs";
 import { CHART } from "../server/lib/general-ledger.mjs";
 import { invoiceStates, k1Check } from "./guvenilirlik/kapama-k1-fark.mjs";
 import { settleInvoices as settleK1Oncesi } from "./guvenilirlik/kapama-k1-oncesi.mjs";
@@ -155,7 +155,7 @@ function legacyOpenings(url, data) {
     const credit = [...c5aFold.delta.values()].reduce((sum, row) => sum + row.credit, 0);
     const tl = value => Math.round(value) / 100;
     const c = value => Math.round(Number(value || 0) * 100);
-    return { ...data, entryCount: data.entryCount + c5aFold.entryDelta, trial: { ...data.trial, accounts: c5aTrialAccounts(data.trial.accounts, c5aFold, CHART), totals: { ...data.trial.totals, debit: tl(c(data.trial.totals.debit) + debit), credit: tl(c(data.trial.totals.credit) + credit), difference: tl(c(data.trial.totals.difference) + debit - credit) } } };
+    return { ...data, entryCount: data.entryCount + c5aFold.entryDelta, reconciliation: { ...data.reconciliation, checks: c5aReconciliationChecks(data.reconciliation.checks, c5aFold) }, trial: { ...data.trial, accounts: c5aTrialAccounts(data.trial.accounts, c5aFold, CHART), totals: { ...data.trial.totals, debit: tl(c(data.trial.totals.debit) + debit), credit: tl(c(data.trial.totals.credit) + credit), difference: tl(c(data.trial.totals.difference) + debit - credit) } } };
   }
   if (base === "/api/workspace/ledger/integrity") return c5aIntegrity(data, c5aFold);
   if (base === "/api/workspace/report-center/hesap-mizani" && url.includes("from=2000-01-01")) return c5aMizanReport(data, c5aFold, CHART);

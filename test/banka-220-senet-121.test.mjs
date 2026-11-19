@@ -461,13 +461,15 @@ describe(`Senet 121 / 321 — eşdeğerlik: gerçek eski kod (${OLD}) ile aynı 
       assert.deepEqual([newTrial["121"]?.[2] ?? 0, newTrial["321"]?.[2] ?? 0, newTrial["101"]?.[2] ?? 0, newTrial["103"]?.[2] ?? 0], [want["121"], want["321"], want["101"], want["103"]], "ham tablo");
       assert.deepEqual([want["121"], want["321"], want["101"], want["103"]], [deposits ? 100000 + 20000 + 90000 + 200000 + 80000 : 100000 + 20000 + 90000 + 200000, -(90000 + 45000), 40000, -30000], "senaryonun elle yazılmış sayıları");
       // Kilitli dönem: sahte fark yok. Ç5-A tur 1d: kural farkı uyarısı kararın açıkladığı farktır (elle yazılmış tutarlar; hesap → |fark| kuruş).
-      const RULE_DIFF = { 500: 10000000, 519: 10000000, 602: 20000, 649: 20000 };
+      // 2.5.0 Ç7b — BEKLENTİ BİLEREK DEĞİŞTİ (KG-2 = A, H-03; kullanıcı 05.11 17:16 (2)): kilitli dönemin taksit kartı Yeni Borç'u (900 TL) 602 → 600.90 — 602'nin farkı 200 + 900,
+      // 600'ün farkı 900; kural farkının maddesi 3 (banka açılışı + carisiz senet + kart), tutarı 100.200 + 900 = 101.100 TL (elle: (1e7 + 1e7 + 90.000 + 110.000 + 20.000) / 2 kuruş).
+      const RULE_DIFF = { 500: 10000000, 519: 10000000, 600: 90000, 602: 110000, 649: 20000 };
       const ruleDiffOk = (result, label) => {
         assert.deepEqual(result.failures.filter(item => item.code !== "ledger:rule-diff"), [], `${label}: kural farkı dışında Mutabakat Testi temiz`);
         const diff = result.failures.find(item => item.code === "ledger:rule-diff");
-        assert.ok(diff && diff.severity === "warning" && diff.count === 2, `${label}: kural farkı uyarısı (banka açılışı + carisiz senet): ${JSON.stringify(diff).slice(0, 600)}`);
+        assert.ok(diff && diff.severity === "warning" && diff.count === 3, `${label}: kural farkı uyarısı (banka açılışı + carisiz senet + taksit kartı): ${JSON.stringify(diff).slice(0, 600)}`);
         assert.deepEqual(Object.fromEntries(diff.breakdown.map(row => [row.account, Math.abs(row.differenceMinor)])), RULE_DIFF, `${label}: kural farkı yalnız Ç5-A'nın açıkladığı hesaplarda: ${JSON.stringify(diff.breakdown)}`);
-        assert.equal(diff.difference, 100200, label);
+        assert.equal(diff.difference, 101100, label);
       };
       const integrity = await ok("Mutabakat Testi", next.get("/api/workspace/ledger/integrity"));
       ruleDiffOk(integrity, "yeni kuralla Mutabakat Testi");

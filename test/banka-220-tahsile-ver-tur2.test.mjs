@@ -93,9 +93,10 @@ describe("T11 — taksite sayılmış çek karşılıksız: alış günü maddes
     assert.deepEqual(await trialOf(api, "?to=2026-10-20"), c.slice, "20.10 kesiti karşılıksızdan önce ve sonra aynı");
   });
 
-  it("son mizan: 602 yalnız taksitli satışlar (−4.700), 770 hareketsiz, 120 +4.700, 101 ve 101.01/101.02 sıfır; Mutabakat tamam", async () => {
+  // 2.5.0 Ç7b — BEKLENTİ BİLEREK DEĞİŞTİ (KG-2 = A, H-03; kullanıcı 05.11 17:16 (2)): taksit kartı Yeni Borç belgesiz gelirdir — 602 → 600 (alt hesap 600.90); tutar aynı.
+  it("son mizan: 600 (600.90 Belgesiz) yalnız taksitli satışlar (−4.700), 602 ve 770 hareketsiz, 120 +4.700, 101 ve 101.01/101.02 sıfır; Mutabakat tamam", async () => {
     const trial = await trialOf(api);
-    assert.deepEqual(pick(trial, ["101", "120", "121", "320", "602", "770"]), { 101: 0, 120: 470000, 121: 0, 320: 0, 602: -470000, 770: 0 });
+    assert.deepEqual(pick(trial, ["101", "120", "121", "320", "600", "602", "770"]), { 101: 0, 120: 470000, 121: 0, 320: 0, 600: -470000, 602: 0, 770: 0 });
     const subs = Object.fromEntries((await must("alt", api.get(`${BANK}/sub-trial`))).rows.map(row => [row.sub, cents(row.balance)]));
     assert.deepEqual([subs["101.01"] || 0, subs["101.02"] || 0], [0, 0]);
     await integrityOk(api, "T11 karşılıksız sonrası");

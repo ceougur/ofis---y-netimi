@@ -189,3 +189,36 @@ kümelerine Ç7b kural kimlikleri: Kasa ± .90, Borç / Alacak Yaz .90, stok / t
   kapı dışı değişiklik izsiz kalır).
 - **KDV Özeti raporu (report-center kdv-ozeti) DEĞİŞMEDİ:** "Hesaplanan" = satış − satıştan iade, "İndirilecek" = alış − alıştan iade (beyanname görünümü); defter artık KG-8 / F-08 ile
   391 = satış + alıştan iade, 191 = alış + satıştan iade. Ödenecek aynı; iki ekranın kalemleri ayrışır → KULLANICIYA SORULMALI (A rapor beyanname düzeninde kalsın — öneri; B defterle aynı).
+
+## 12. Tur 2b (19.11.2026; görev metni `docs/devir/2.5.0-DEVAM/c7b2b-istem.txt`) — kararlar ve kod sürerken değişen yerler
+Kararlar (iş listesi D, BAŞ MİMAR KARARI 19.11 04:35): B-6 = saklı mahsup tutarı DEĞİŞMEZ, mahsubu güncellemeden ÖNCE yazılmış ayın iade KDV'si ESKİ yönle (göç 51 yalnız işaret); B-7 =
+kalem alanları kilit izine (sürüm artar, var olan kilitte yanlış alarm yok); KDV Özeti DEĞİŞMEZ (A); S15 → tur 3.
+
+### 12.1 Kırık komşular (§11.4'ün devamı) — beklenti değişiklikleri (her biri testte "BEKLENTİ BİLEREK DEĞİŞTİ" + karar numarasıyla)
+- Ortak çeviri `test/fixtures/c7b-kural.mjs` (YENİ): 2.4.9 kopyasının maddesi → Ç7b güncel kuralı (K-01 / K-02, C-01 / C-02, KG-2, KG-3, KG-8, F-08; KG-24 kalem ister — çevrilmez) ve Kural
+  Farkı Düzeltme Fişi'nin Ç7b payı (`c7bCorrectionLines`: aynı yıl aynı hesap, önceki yılın 6 / 7 sınıfı 671 / 681 — M7, alt defter hesabına dokunan madde fiş dışı — B14 (a)).
+- `test/guvenilirlik/defter-olgulari.mjs`: Defter Mutabakatı / Mutabakat Testi'nin alt defter denetimleri (336 / 191 / 391) BÜTÜN canlı türetmeyi okur → katlamanın bütün zaman farkı
+  (`deltaAll`) iki yana birlikte eklenir (`c5aReconciliationChecks`, `c5aIntegrity`, `c5aReconciliationReport`). `test/mutabakat/motor.mjs`: Hesap Planı Mizanı raporunun 336'sı da KG-3'le.
+- banka-220-senet-121 (KG-2: kilitli kartın 900 TL'si 602 → 600.90; kural farkı 3 madde, 101.100 TL), banka-220-tahsile-ver-tur2 (KG-2: 600 −4.700), hesap-plani-sinif (istisna kodu 301 / 302
+  hesap kodu değil), kapi-para-245 ve kasa-acilis-once (KG-3: kayıt tahsilatı 602 → 336), kural-farki-yil y7 / y10 (C-01: reddedilen Borç Yaz 602.90), kural-farki-duzeltme [2] / [4] / [7] / [8]
+  (Ç7b sınıflama farkları fişte; [7] bozulan satır tahsilat; [8] elle Borç Yaz 1.000 602 → 602.90), donmus-defter-250 (kural tuzağı Ç7b çevirisiyle; 649 → 642 benzetiminde alt hesap düşer),
+  defter-kaynak-iz-250 (karma ihracat satışı — B-7).
+
+### 12.2 B-7 kodu
+`server/lib/integrity.mjs` LOCK_SQL `invoice_lines_export_lock` (since "2.5.1"; yalnız ihracat kalemi olan satış / SMM faturasının kalemleri: id, fatura, hesap, istisna kodu, net) ve
+LOCK_SQL_VERSION "2.5.1" (kilit izi TANIMININ sürümü). Önceki tanımla kaydedilmiş koşunun izi kendi sürümüyle karşılaştırılır (girdi atlanır). Süzgeç (`lib/integrity-scope.mjs` LOCK_FIELDS)
+DEĞİŞMEDİ (dosya sınırı): kilitli kaleme programın yolundan yazım yok (Düzenle kilitte 409); kapı dışı yazım tam taramada görülür. Test `test/c7b-kilit-izi-250.test.mjs` (v2.4.9 gerçek kodu).
+
+### 12.3 Yeni bulgular (DUR, raporla — dosya sınırı / karar)
+- **B-8 — alt defter hesabına dokunan Ç7b kuralları kilitli dönemde "Düzeltildi"ye ulaşmaz.** KG-3 (602 → 336.90) ve KG-8 / F-08 (391 ↔ 191) kilitli eski veride ALT DEFTER farkıdır → B14 (a):
+  maddenin bütün farkı fişin dışında, Kural Değişikliği Farkı uyarısı fişle kapanmaz (ipucu "alt defter hesabı farkı fişle düzeltilmez"). Kilitli döneminde kayıt tahsilatı ya da (mahsupsuz ayda)
+  iade faturası olan HER eski kurulumda uyarı kalıcı. Seçenekler: (A) bu üç kuralın yeni yönü yalnız açık dönemden (güncellemedeki kilit gününden sonra) — kilitli dönemdeki kayıt eski yönle
+  (B-6'nın genellemesi; göç 51 kural geçiş gününü işaretler); (B) uyarı kalır (BİLİNEN SINIR). Öneri A. Testler bugünkü davranışı sabitler (kural-farki-duzeltme [2] / [4]).
+- **B-9 — süzgecin fatura formülü eski yönde.** `lib/integrity-scope.mjs` (dosya sınırı DIŞI; "süzgece DOKUNMA") fatura yazımında 191 / 391'i Ç7b öncesi yönle hesaplar → iade faturası yazımında
+  süzgeç bulgu verir, tam kapı kabul eder (üretimde doğruluk değil hız: tam kapı + "invoice" ailesine güvensizlik; testte eşdeğerlik ihlali — banka-210-gg-cari kırmızı, tabanda yeşil). B-6
+  süzgeçte de aynı ay kuralını ister. Öneri: integrity-scope.mjs'e YALNIZ 191 / 391 formülü (+ KG-3'ün 336'sı) için izin.
+- **B-10 — Alt Hesap Mizanı (Banka modülü, `lib/bank/**` hızlı yolu) Ç7b'nin banka dışı .90 alt hesaplarını göstermez** (336.90, 600.90, 602.90, 610.90, 649.90, 770.90); Ana Defter'in
+  subTrial'ı gösterir → banka-210-gg2-hiz kırmızı. Seçenekler: (A) hızlı yol bu alt hesapları da listeler (lib/bank izni; Ç6-EKRAN ile); (B) Alt Hesap Mizanı yalnız banka / evrak alt hesapları
+  (test süzer). Öneri: karar baş mimarın — Ç6-EKRAN'ın alt hesap raporu tasarımına bağlı.
+- **Önceki yılın sınıflama farkı 671 / 681 brüt çifti:** kilitli önceki yıldaki yalnız alt hesap / aynı Gelir Tablosu kalemi içi farklar (649 → 649.90, 602 → 600.90) M7 ile fişe 671 ve 681
+  ÇİFTİ olarak girer (net 0; v2.0.26 verisinde 155.990,50 TL). Kural metniyle tutarlı; MA'da (mali müşavir ara kabulü) gözden geçirilmeli.
