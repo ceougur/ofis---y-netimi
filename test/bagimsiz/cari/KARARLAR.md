@@ -4581,3 +4581,106 @@ denetlenmiyor — `mizanBilinir` şüpheli adımlarında zaten kapalı). **Bu b�
   **26 kırmızı** / 108 (beklenen nedenle: bağlı tahsilat düşmüyor, bağlı evrak tamamıyla düşüyor, SK-38 susması yok) · eski elle tablo farkı **100/100** izinli (yalnız d44 X9) · G1 taraması **101/101** · mutant ↔
   senaryo **784/784** (d35 … d47 × 261–316) · geniş tarama **2.201/2.201** · özet taraması (madde 4) yazıldı. Defter kâhini ve mobil yazma kâhini bu bakımda KOŞULMADI (klasörleri bu ajanın okuma kapsamı
   dışında — ana oturum CI'nin `test:kahin-defter` adımıyla ve mobil kabul dosyasının yeniden üretimiyle denetler).
+
+## 32. 2.5.0 Ç5 bakımı 21 — C1 KG-3 (kayıt tahsilatının karşılığı 336.90) + C2 kural geçiş günü + C3 Kartı Kapat 'Borçta Kalsın' (KG-23) + C4 S15 (taksit kartında tahsilatı olan faturanın iptali) + C5 S25 (şüpheliye aktarılmış faturaya bağlı tahsilatın ayrıntıları) (19.11.2026, `date -u` 22:06; girdi ana oturumun özet dosyası `scratchpad/kahin-cari21-kararlar.md` — kodu görmeyen AYRI el) — kural seti `2.5.0` = §13 + … + §31 + bu bölüm
+
+Bu bakım yalnız girdideki C1–C5'i işler. §13–§31'in öbür kuralları DEĞİŞMEZ. `--kural 2.4.9` (ve 2.4.6 / 2.4.5 / `--legacy`) AYNEN (bu bölümün bütün yolları yalnız `k250`; 2.4.9 ve öncesinde kayıt
+tahsilatı B 100 / A 602 kalır — C1.4). **Bu bölümün ilk commit'i yalnız YORUMDUR (ders 40 — önce kural, sonra kod); senaryo / mutant / G3 sayıları senaryo, kod ve kanıt commit'lerinde eklenir.**
+
+### C00y Temiz oda (bakım 21)
+- **Girdi (tek kaynak):** `scratchpad/kahin-cari21-kararlar.md` — başındaki OKUMA KURALI bağlayıcı: soru metinlerindeki "program bugün" / "bugünkü davranış" / "koşuldu" / "tur" / "test" sözleri ve
+  oradaki sayılar kural kaynağı SAYILMADI; kural yalnız KARAR satırları (seçilen seçeneğin metni), kitap satırları ve KAPSAM satırlarıdır. Etiketler girdideki gibi.
+- **Girdide KESİK satırlar (ana oturuma — açıkça):** girdinin beş satırı cümle ortasında bitiyor: C1 KULLANICI KARARI ("(1) B1 gecikmiş borca vadesi geçmiş fatura kalanı da girer (taksitli" — 05.11
+  'hepsi A' listesinin kalanı yok), C3 KULLANICI KARARI ("vazgeçme ayrı ve görünür işlemle (Alacak Yaz" — parantezin kalanı yok), C4 SORU ("B: reddedilir," — B'nin kalanı yok; karar satırı TAM), C5
+  SORU ("(b) çekin faturanın açık kısmını aşan" — soru metni kesik) ve C5 KARAR ("(c) nakit / havale / POS ile" — **(c) kolunun kuralı YOK**). Kesik kısımlardan kural türetilmedi: C1 / C3 / C4'te
+  karar ve KAPSAM satırları kuralı tam veriyor; C5 (a) ve (b) karar satırında tam; **C5 (c) metni olmadığı için bu bakımda doğrulanamadı** (aşağıda Y21-5 (c), KULLANICIYA SORULMALI değil —
+  ana oturum tam metni verirse sonraki bakımda).
+- **Kitap satırının sütunları (açıkça):** girdi KG-3 satırının sütunlarını "kimlik | olay | bugün | seçenek A | seçenek B | karar" diye adlandırıyor; kitabın kendi tablosunun (§9 KG) başlığı
+  "KG | Konu | Seçenek A | Seçenek B | Öneri" — satır AYNEN aynı. Kitabın başlığıyla okunur: Seçenek A = 649.90 Sınıflandırılmamış Gelir, Seçenek B = 336.90 Sınıflandırılmamış Tahsilatlar (pasif) +
+  Kesin Değil, Öneri = "Kayıt tahsilatı B …; Kasa + Tahsilat A". Kullanıcının 05.11 'hepsi A'sı mali müşavirin sorularının A (öneri) seçenekleridir; KAPSAM aynı sonucu açıkça yazıyor: kayıt
+  tahsilatının karşılığı 336.90. İki adlandırma aynı sonuca götürür — fark kural değiştirmez.
+- **Birlikte okunan (kâhinin kendi belgesi / kaynak listesi):** bu dosyanın §3 B2.5 / B2.6, §5 dil, §8 C1 (C1.1–C1.5), §13 (C13.3, C12f), §18 Y6-3 (taksitli fatura; "Taksitli faturaya bağlı tahsilat /
+  evrak yok"; "'kart' = faturanın kendi kartı … ayrı anahtarı yok"), §26 (S144 (d) "Kartı Kapat kâhinin dilinde yok"), §31 (bütünü — Y20-1 … Y20-7, d47); `docs/erp/MUHASEBELESTIRME-KURAL-KITABI.md`
+  (§3-T T-13 / T-14, §3-K K-01, §3-H H-01 / H-02 / H-07, §8 genel değişmezler, §9 KG tablosu KG-3 / KG-23 satırları); `model.py` (`kayit_tahsilat*`, mizan bloğu, `donem_kilitle`, `sunucu_yeniden`,
+  `fatura_iptal`, `kart_tahsilat`, `_s168_pay`, `tahsilat`, `evrak`, `_supheli_olaylar`, `MUTASYONLAR`); `oz-test.py`; `senaryolar/` (c1, c14g, d47); `kos.mjs` YALNIZ eşleme için (adım türleri, mizan ve
+  kart okuması — DEĞİŞTİRİLMEDİ).
+- **Okunmayan:** `server/**`, `client/**`, `bulut/**`, `packaging/**`, `tools/**` (yalnız `kanit.mjs` çalıştırılır), `docs/devir/**`, `docs/2.5.0-IS-LISTESI*.md` (hiçbir sürümü), kâhinin kaynak
+  listesinde olmayan `docs/erp/` dosyaları (tasarım notları dahil), `YAPIM-ASAMASI.json`, `BILINEN.json`, `test/bagimsiz/muhasebe-surucu/`, cari kâhini dışındaki `test/**`, başka ajanların
+  `docs/kanit/**` dosyaları, git farkı / geçmiş içeriği. Program koşulmadı. CLAUDE.md "Açık iş" kural / beklenti kaynağı sayılmadı.
+
+### Kâhinin BUGÜNKÜ (bakım 20, `c7b2f-kahin` = e779340f) okuması — C1–C5 alanında (açıkça)
+- Kayıt tahsilatı (`kayit_tahsilat`, anahtar `legacyCasePayments` açık): Kasa'da; mizan B 100 / A **602** (C1.4 — "madde 1: eski satırlar defterde (A 602) aynen", BAŞ MİMAR); düzeltme / silme / geri yükleme
+  aynı satırı izler. Elle senaryo c1 (k1 … k5) ve c14g (k1, k2) `mizan:602` yazıyor (elle tablosu yok — değerleri kâhin çıktısında).
+- Dönem kilidi (`donem_kilitle`) yalnız elle Borç / Alacak düzeltmesini ve S134 okumasını etkiler; kayıt tahsilatının hesabına dokunmaz. Dilde "eski sürüm + güncelleme" adımı YOK (`sunucu_yeniden` AYNI
+  programı yeniden açar).
+- Kartı Kapat dilde YOK (§26 S144 (d), C12f).
+- Faturanın KENDİ taksit kartı (`fatura {taksit}`) kuyrukta taksitlerdir; dilde o karta Taksit Tahsilatı adımı YOK (`kart_tahsilat {kayit}` yalnız Taksitler'den açılan / aktarılan kartı bilir; §18 Y6-3).
+  `fatura_iptal` faturayı iptal eder, bağlı tahsilat bağsız kalır (B2.5 / S5); Taksitler'den açılmış Mevcut Borç kartı faturayı içine almışsa iptalden sonra kart açık borçtan büyük kalır → carinin kuyruk
+  denetimleri C13.4 (11) / EK-2B 32 ile SUS (bakiye ve mizan yazılır).
+- Şüpheli kaydı açık caride faturaya bağlı tahsilat / evrak (§31 Y20-2): şüpheliden düşen = min(tutar, Pay(X)), kalanı normal (120); 120'ye düşen kısım şüpheli dışı borcu aşarsa RET (Y20-3); SK-38
+  (a)–(d) SUS.
+
+### Yorumlar (ders 40 — kararlardan; kod yazılmadan ÖNCE; baş mimar kullanıcıya gösterir)
+- **Y21-1 — C1 KG-3 (KULLANICI KARARI 05.11 'hepsi A'):** kayıt tahsilatının karşılığı GELİR değil, **336.90 'Sınıflandırılmamış Tahsilatlar' (pasif)**. Kâhinde DEĞİŞEN kural: C1.4'ün 2.5.0 dalı —
+  kayıt tahsilatı (nakit) **B 100 / A 336**; 2.4.9 ve öncesinde B 100 / A 602 AYNEN. **Düzey:** bu kâhinin mizanı ANA HESAP düzeyindedir (mizan anahtarı hesabın ilk üç hanesi: carisiz evrakın
+  649.90'ı `mizan:649` — C13.3; 100 / 101 / 120 / 121 / 320 / 519 / 600 aynı düzende) → beklenen anahtar **`mizan:336`** (336.90 alt hesap; ana hesap 336 Diğer Çeşitli Borçlar). Silme / geri yükleme /
+  düzeltme aynı satırı izler (C1.2 / C1.3 aynen — yalnız karşı hesap değişir). Kasa, Tablodaki Kişiler tahsilatı, kayıt tahsilatı kapısı (410) DEĞİŞMEZ. **Değişen beklenen:** `<k>:mizan:602`
+  (eski −tutar) **kalkar**, `<k>:mizan:336` (−tutar) **gelir** — c1 (k1 … k5), c14g (k1, k2) ve yeni d48. **Kararın öbür kolu** (Kasa + Tahsilat → 649.90, KG-3 öneri A / K-01) bu kâhinin dilinde YOK
+  (carisiz Kasa tahsilatı adımı yok) → DENENMEYEN; carisiz EVRAK (S49 = A, C13.3 → 649) KG-3'ün konusu değil (ayrı karar) → DEĞİŞMEZ. **"+ Kesin Değil"** işareti bu kâhinin dilinde okunmuyor →
+  DENENMEYEN + SÜRÜCÜ İÇİN. Etiket **KULLANICI**.
+- **Y21-2 — C2 kural geçiş günü (KULLANICI KURALIYLA ÖNERİ UYGULANDI, BAŞ MİMAR KARARI 19.11):** KG-3'ün yeni yönü (336) geçiş günü'nden SONRAKİ kayıt tahsilatlarına; geçişten önceki kayıt
+  tahsilatları ESKİ yönde (602) kalır. Geçiş günü = programın bu sürüme güncellendiği andaki kilit tarihi; güncellemede kilit yoksa geçiş YOK (bütün kayıtlar yeni yön); kilit sonradan açılıp
+  kapansa da geçiş günü değişmez ("belirleyici, tek tanım"). **Bu kâhinin dili "eski sürümde kilitlenmiş veri + güncelleme" sırasını KURAMAZ** (her senaryo bu sürümün programıyla boş veriden
+  başlar; `sunucu_yeniden` aynı programı yeniden açar — güncelleme değildir). Kâhinin her senaryosu bu yüzden **kilitsiz güncelleme** dünyasıdır: geçiş YOK → bütün kayıt tahsilatları yeni yön (336).
+  Kararın tek tanımından doğrudan çıkan iki sonuç DEĞERLE kurulur (yeni kural değil — kararın sözü): (i) güncellemeden SONRA konan dönem kilidi geçiş günü DEĞİLDİR (kilitten önceki kayıt
+  tahsilatı yine 336); (ii) programın yeniden açılması (aynı sürüm) geçiş günü koymaz; kilidi açıp yeniden kilitlemek de koymaz. **Kurulamayan:** geçişli dünya (kilitli eski sürüm verisi + güncelleme)
+  — beklenen 602 / 336 ayrımı bu kâhinde YOK → **DENENMEYEN + SÜRÜCÜ İÇİN** (eski sürümün gerçek koduyla üretilmiş kilitli veri gerekir — ders 17; koşucunun işi değil, ana oturumun / sürücünün).
+  Kararın B-6 parçası (KG-8 / F-08 iade KDV'si) cari kâhininin konusu değil (KDV yok) → DOKUNULMADI. Etiket **BAŞ MİMAR** (girdideki gibi: KULLANICI KURALIYLA ÖNERİ UYGULANDI, BAŞ MİMAR KARARI).
+- **Y21-3 — C3 Kartı Kapat 'Borçta Kalsın' (KG-23 = A; 2B-S5 / S10 = A — KULLANICI KARARI):** kalan varken Kartı Kapat yalnız ödeme planını bitirir — carinin bakiyesi DEĞİŞMEZ, madde YOK (kitap H-07),
+  kalan kalemler carinin borcunda kalır, ertesi günden gecikmiş, hatırlatmaya girer; vazgeçme ayrı ve görünür işlem (Alacak Yaz). **Kâhinin dilinde Kartı Kapat YOK** (§26 S144 (d)) → görev metni
+  gereği dil EKLENMEDİ: **SUS + DENENMEYEN + SÜRÜCÜ İÇİN** (bir `kart_kapat {kart, tarih}` adımı ve kapanmış kartın okunuşu gerekir). Dil eklendiğinde yazılacak beklenen (kararın sözü): bakiye ve
+  mizan kapatmadan önceyle AYNI; kartın kalan kalemlerinin tutarları carinin kuyruğunda AYNEN; gecikmiş kapatmanın ertesi gününden — ama "kendi vadeleriyle" (KAPSAM) ile "ertesi günden gecikmiş"
+  (karar) vadesi gelmemiş kalemde iki okumalı → KULLANICIYA SORULMALI SK-39. Hiçbir mevcut beklenen değişmez. Etiket **KULLANICI** (dil eklenince).
+- **Y21-4 — C4 S15 = A (KULLANICI KARARI):** taksit kartında tahsilatı olan faturanın İptal Et'i KABUL; kart kapanır; kartın o faturaya ait tahsilatları carinin bağsız alacağı (avans) olur (S5 /
+  EK-2B 35 ile aynı). **Bu kâhinin dilinde:** (a) faturanın KENDİ taksit kartı (`fatura {taksit}`) — dilde o karta Taksit Tahsilatı adımı yok, taksitli faturaya bağlı tahsilat da yok (§18 Y6-3) →
+  kararın asıl durumu KURULAMAZ: **DENENMEYEN + SÜRÜCÜ İÇİN** (faturanın kendi kartına `kart_tahsilat`). (b) Taksitler'den açılmış **Mevcut Borç kartı** faturayı içine almış, karta Taksit
+  Tahsilatı girilmiş, sonra fatura iptal — kurulabilir; ama kararın "kart kapanır" sözü faturanın kendi kartı için mi, faturayı içine alan Taksitler kartı için de mi geçerli, kararda yok (kart başka
+  kalemleri de taşıyabilir: "o faturaya ait tahsilatları") → kartın göstergeleri ve carinin kuyruğu **SUS** (bugünkü C13.4 (11) susması AYNEN; kural uydurulmaz) → **KULLANICIYA SORULMALI SK-40**.
+  **İki okumada AYNI olan** (değerle yazılır): iptal kabul; carinin bakiyesi = iptalden önceki bakiye − faturanın tutarı (kartın tahsilatı carinin alacağı olarak kalır — kaybolmaz); Kasa ve mizan
+  (B 100 / A 120 tahsilat, fatura maddesi iptal) aynı. Yeni elle senaryo d49 A1 bunu sayıyla gösterir. **Kural değişmedi** → eski kâhinde de yeşil (beklenen — kırmızı aranmaz; mutant 322 dişi
+  gösterir). Etiket **KULLANICI**.
+- **Y21-5 — C5 S25 = A (KULLANICI KARARI; kâhin S25'i §31'de zaten modelliyor — YENİ KURAL YAZILMAZ):** bakım 20'nin kuralı: şüpheliden düşen = min(tutar, Pay(X)), kalanı (fazlası dahil) 120.
+  (a) **kısmen şüpheliye aktarılmış faturaya iki kısmın toplamından küçük çek → önce şüpheli kısım (128), kalan 120:** min(tutar, Pay) önce şüpheliden — d47 Z7 (FZ7b 500: pay 400 + görünen 100; çek 450 →
+  400 şüpheliden, 50 normal; Değersiz 601 RET / 600 KABUL) ve Z1 (tahsilat 300 < pay 400 → tamamı şüpheliden) KARARA UYUYOR — değerler DEĞİŞMEZ; yeni dişi: mutant 321 ("şüpheli kısımdan önce 120 düşer").
+  (b) **çekin faturanın açık kısmını aşan fazlası → carinin bağsız alacağı (avans, 120):** bakım 20'nin kuralında fazla zaten 120 tarafında (Y20-2 "kalanı normal") ve TYK'da bağ fazlası kendi gününde
+  bağsız (C13.4) → karar modelleniyor; elle senaryosu YOKTU → yeni d49 B1 / B2 (değerler aşağıda, kâhin koşulmadan elle). Yeni dişi: mutant 320 ("fazla bağsız gibi şüpheliden düşer"). 120'nin eksiye düşmesi
+  (S181 RET) ve A' = 0 ile B' < 0 (SK-38 (d) — S181 ↔ S159) **AYNEN** — S25 (b) fazlanın HESABINI söyler, S181 sonradan RET sınırını koydu; SK-38 (d) için S25 (b) yanıt sayılmadı (bakım 20 S25'i
+  birlikte okuyup SUS bıraktı — yeni soru değil). (c) **metni girdide kesik** ("nakit / havale / POS ile …") → kural YOK, beklenen yazılmadı; bu kâhinde faturaya bağlı NAKİT tahsilat çekle aynı kurala
+  bağlı (Y20-2 — S168'in "çek de nakit de" sözü), havale (`tahsilat {yol: "havale"}`) aynı satır (mizan denetlenmez), POS yolu dilde yok. (c)'nin kararla uyuşup uyuşmadığı ana oturumun tam metni
+  gelmeden söylenemez → DENENMEYEN. Etiket **KULLANICI**.
+
+### Elle hesap (kâhin koşulmadan — kararların sözüyle)
+- **d48 (C1 + C2; bugün 15.06.2026; anahtar `legacyCasePayments` açık; İcra sekmesi 2026/1 Kemal Kaya, 2026/2 Leyla Ak):** p1 kayıt tahsilatı 2026/1 400 (08.06) · p2 2026/2 250 (10.06) → **k1**: Kasa
+  650, mizan 100 = 650, **336 = −650**, 602 YOK, 120 = 0 · dk1 dönem kilidi 09.06 (p1'i kapsar — güncellemeden SONRA konan kilit) · p3 2026/1 100 (12.06) → **k2**: Kasa 750, 100 = 750, **336 = −750**,
+  602 YOK · r1 program yeniden açılır (anahtar açık, kilit duruyor) → **k3** aynı · dk2 kilit açılır, dk3 yeniden 14.06'ya kilitlenir → **k4** aynı · r2 yeniden açılış anahtar KAPALI (eski satırlar
+  kalır) → **k5** aynı. Bütün adımlar ok. (Kural: Y21-1 + Y21-2 (i) / (ii).)
+- **d49 (C4 + C5; bugün 15.06.2026):**
+  - **A1 (Y21-4 (b)):** FA1 satış 900 (10.03) · Taksitler'den Mevcut Borç kartı KA1 900 (3 taksit, ilk vade 01.04; 15.03) · KA1'e Taksit Tahsilatı 300 (05.04) · FA1 İptal Et → iptal KABUL (ok),
+    **bakiye −300** (900 − 300 − 900), fatura durumu iptal, Kasa 300; carinin kuyruğu SUS (belirsiz kaydı "cari A1 tanımsız"; SK-40).
+  - **B1 (Y21-5 (b) — fazla 120'ye, başka normal borç onu taşır):** FB1a 600 (16.04) · FB1b 500 (20.04) · şüpheliye alma SB1 800 (16.05) · FB1c 400 (17.05) · FB1b'ye bağlı çek 700 (20.05). Çekin yazıldığı
+    anda kuyruk FB1a 600, FB1b 500, FB1c 400; açık şüpheli R = 800 en eskiden → görünen FB1a 0, FB1b 300, FB1c 400 → Pay(FB1b) = 200. Çek: 200 şüpheliden (128), 500 normal (120) — FB1b'nin açık 500'ü
+    kapanır (bağ), fazla 200 bağsız (kendi gününde TYK: en eski açık FB1a). Ölçü (S155 / S181): adımdan önce B 1.500, A 800 → B − A = 700; 120'ye düşen 500 ≤ 700 → **KABUL**; A' = 600, B' = 800.
+    **k1:** bakiye 800, fatura açıkları FB1a 400, FB1b 0, FB1c 400 (Σ 800 = bakiye). Değersiz Alacak Yaz 601 (21.05) → **RET** (açık şüpheli 600 < 601), 600 → **KABUL** → **k2:** bakiye 200.
+  - **B2 (Y21-5 (b) — faturanın tamamı şüpheli, fazla 120'ye; A' = 0, B' ≥ 0 — SK-38 (d) DEĞİL):** FB2a 1.000 (16.04) · şüpheliye alma SB2 1.000 (16.05) · FB2b 400 (17.05) · FB2a'ya bağlı çek 1.200 (20.05).
+    Görünen FB2a 0, FB2b 400 → Pay(FB2a) = 1.000 → 1.000 şüpheliden, 200 normal; FB2a kapanır, fazla 200 bağsız (FB2b'yi 200'e indirir). B − A = 400 ≥ 200 → **KABUL**; A' = 0, B' = 200 (≥ 0 — S181 de S159
+    de KABUL). **k1:** bakiye 200, FB2a 0, FB2b 200. Değersiz 1 → **RET** (açık şüpheli 0) → **k2:** bakiye 200.
+
+### KULLANICIYA SORULMALI (bakım 21; kâhin bu durumlarda SUSAR — ders 43, SORU DÜZENİ)
+- **SK-39 — Kartı Kapat'tan sonra vadesi GELMEMİŞ kalan kalemin gecikmişi (C3; dil eklenince):** kart 900 (3 × 300; vadeler 01.04 / 01.05 / 01.06), 1. taksit ödendi, 10.04'te Kartı Kapat; bugün 15.04.
+  (i) kararın sözü "ertesi günden gecikmiş": kalan 600'ün tamamı 11.04'ten gecikmiş → gecikmiş 600; (ii) KAPSAM'ın "kendi vadeleriyle": kalemler kendi vadesinde gecikir → 15.04'te gecikmiş 0 (01.05'ten
+  300, 01.06'dan 600). Bakiye iki okumada 600 (değişmez). Öneri (i) (kararın harfi; kapatılan plan artık vade vermez). Üçüncü: uç durum böyle kalsın (BİLİNEN SINIR) — dil eklenene kadar zaten SUS.
+- **SK-40 — Taksitler kartının (Mevcut Borç) içine aldığı faturanın iptali (C4):** FA1 900 → Mevcut Borç kartı KA1 900 (3 × 300) → Taksit Tahsilatı 300 → FA1 İptal Et. (i) S15 bu karta da uygulanır: kart
+  kapanır, kartın tahsilatı (300) carinin avansı → sonradan kesilen 500'lük fatura avanstan 200'e iner; kart göstergeleri kapanmış kartınki; (ii) kart açık kalır (yalnız faturanın KENDİ kartı kapanır):
+  kartta 600 kalan durur ama alttaki borç yok — kart borçtan büyük (EK-2B 32 tanımsızlığı), 500'lük fatura açık 500, kartın 300'ü kartta. Bakiye iki okumada AYNI (iptal sonrası −300; 500'lük faturadan sonra
+  200). Öneri (i) (S15 / S5 / EK-2B 35 ile tek kural: borcu kalkan kart kapanır, parası avans). Üçüncü: uç durum böyle kalsın (BİLİNEN SINIR) — kart göstergeleri bugünkü gibi SUS.
+- **Not (yeni soru değil):** SK-38 (d) (S181 ↔ S159) S25 (b)'nin fazla kuralıyla kapanmadı — bakım 20'nin sorusu AYNEN geçerli; S25 (c)'nin metni girdide kesik (ana oturuma).
