@@ -54,6 +54,8 @@
 20. Bakım 20 (§31; S168 = B, S181 = B): faturaya bağlı tahsilat / evrak faturanın kuyrukta şüpheli sayılan payı kadar şüpheliden düşer, 120'ye düşen kısım şüpheli dışı borcu aşarsa RET — d47 elle
    tablosu (Z1 / Z3 / Z7 / Z8 değerle KABUL, Z2 / Z6 RET; Z4 SK-38 (d), Z5 SK-38 (c) SUS), d44 X9 artık KABUL; mutantlar 313 / 314 / 315 DEĞERLE, 316 (SUS kuralı) elle tablonun `elleYok` /
    `elleBelirsiz` satırıyla.
+21. Bakım 21 (§32; C1 KG-3 = A, C2 geçiş günü, C4 S15, C5 S25): kayıt tahsilatı B 100 / A 336 — d48 elle tablosu (sonradan konan kilit, yeniden açılış, kilit aç-kapa geçiş koymaz; 602 `elleYok`);
+   Mevcut Borç kartlı faturanın iptali (bakiye, SUS) ve S25 (b) fazlası 120'ye — d49 elle tablosu; mutantlar 317–322 DEĞERLE.
 Çıktı: TAP benzeri sayılar + son satır "N/M denetim geçti". Çıkış 0 yalnız hepsi geçerse.
 """
 import importlib.util
