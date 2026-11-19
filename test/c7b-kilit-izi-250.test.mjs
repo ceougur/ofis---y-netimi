@@ -82,7 +82,7 @@ describe("Ç7b B-7 — kalem istisna kodu kilit izinde; var olan kilitte yanlı�
         other.close();
       }
       assert.equal(lockDigestOf(store, LOCK, { version: LOCK_SQL_VERSION }), before.now, "geri alındı");
-      assert.equal(LOCK_SQL_VERSION, "2.5.1", "kilit izi tanımının sürümü arttı (B-7)");
+      assert.equal(LOCK_SQL_VERSION, "2.5.2", "kilit izi tanımının sürümü arttı (B-7: 2.5.1; Ç7b tur 2d — BEKLENTİ BİLEREK DEĞİŞTİ, tur 2c kararı (2): 2.5.2 geçiş günü / mahsup kural sürümü)");
     } finally {
       await server?.close();
       rmSync(root, { recursive: true, force: true });

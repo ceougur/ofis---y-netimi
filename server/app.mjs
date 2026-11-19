@@ -42,6 +42,7 @@ import { migrateBankGrants } from "./lib/bank/grants.mjs";
 import { markLegacyRows, repairBank } from "./lib/bank/repair.mjs";
 import { clearVouchers, repairLegacyReset } from "./lib/ledger-vouchers.mjs";
 import { clearSnapshots } from "./lib/ledger-snapshots.mjs";
+import { RULE_SHIFT_KEY } from "./lib/ledger-rule-shift.mjs";
 import { LOCK_KEY, createPeriod } from "./lib/period.mjs";
 import { registerDueRoutes } from "./routes/dues.mjs";
 import { registerPlanRoutes } from "./routes/plans.mjs";
@@ -1291,6 +1292,9 @@ function buildApp(overrides, opening) {
           if (Object.keys(kept).length !== Object.keys(invoice.start).length) store.setSetting("invoice.settings", JSON.stringify({ ...invoice, start: kept }));
         }
       }
+      // 2.5.0 Ç7b tur 2d (tur 2c kararı (3) — BAŞ MİMAR KARARI 19.11 06:39; docs/erp/C7B-FATURA-TASARIM.md §14.7): "Tüm Hareketleri Sil" kural geçiş gününü de siler — sıfırlanan dosyada eski
+      // veri kalmaz, eski yön anlamsız (bundan sonraki her kayıt yeni kuralla). "Tümünü Sıfırla" "ledger." ayarlarını zaten siler (KEEP_SETTINGS'te yok).
+      store.run("DELETE FROM settings WHERE key = ?", RULE_SHIFT_KEY);
       if (unlocked) {
         store.run("DELETE FROM settings WHERE key = ?", LOCK_KEY);
         audit(user, "ledger.period.unlocked", "period", { previous: unlocked, lockedUntil: "", reason: "company.reset", mode });

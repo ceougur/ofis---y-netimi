@@ -40,6 +40,7 @@ import { runScanWorker } from "./integrity-scan-runner.mjs";
 import { cashBeforeOpening, cashExplained, cashRestoreMark } from "./cash-opening.mjs";
 import { ledgerBalanceOf, openingCounterpart, openingMatchState, openingReviewDrift, unlockedPastYears } from "./ledger-opening.mjs";
 import { systemClock } from "./clock.mjs";
+import { RULE_SHIFT_KEY } from "./ledger-rule-shift.mjs";
 import { roundMoney, toCents } from "./money.mjs";
 
 const CHEQUE_BOND_SQL = `SELECT ev.id FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id LEFT JOIN invoices i ON i.id = ev.invoice_id WHERE ${CHEQUE_BOND_BAD} LIMIT 5`;
@@ -130,7 +131,8 @@ const labelOf = table => TABLE_LABEL[table] || table;
 // 2.5.0 Ç3: LOCK_SQL tanımının sürümü — en yeni girdinin "since"i (test/donmus-defter-250.test.mjs denetler). Donmuş defter koşusu kaynak izini bu tanımla saklar
 // (ledger_snapshot_runs.digest_version); tanım büyüyünce bu sürüm yükselir, eski koşunun izi kendi sürümüyle karşılaştırılır (lockDigestOf version).
 // 2.5.0 Ç7b (B-7): "2.5.1" — kalem istisna kodu girdisi (invoice_lines_export_lock); 2.5.0'ın koşuları kendi tanımıyla karşılaştırılır.
-export const LOCK_SQL_VERSION = "2.5.1";
+// 2.5.0 Ç7b tur 2d (tur 2c kararı (2)): "2.5.2" — kural geçiş günü ve eski KDV mahsubunun kural sürümü (rule_shift_lock, vat_offsets_rule_lock); 2.5.1 ve öncesinin koşuları kendi tanımıyla.
+export const LOCK_SQL_VERSION = "2.5.2";
 // Kapanmış dönemin parmak izi: kilit tarihi ve öncesindeki her para satırı (tutar, yön, yol, tarih, cari/kalem bağı) ve
 // o dönemde cariye borç yazan kartlar. Kilit altındaki tek bir satır değişirse, silinirse ya da eklenirse iz değişir.
 const LOCK_SQL = {
@@ -290,6 +292,12 @@ const LOCK_SQL = {
             AND EXISTS (SELECT 1 FROM invoice_lines x WHERE x.invoice_id = i.id AND x.exemption_code IN ('301', '302'))
           ORDER BY l.invoice_id, l.id`,
   },
+  // 2.5.0 Ç7b tur 2d (tur 2c kararı (2) — BAŞ MİMAR KARARI 19.11 06:39; B-6 / B-8 = A; lib/ledger-rule-shift.mjs; docs/erp/C7B-FATURA-TASARIM.md §13, §14.6): kural geçiş günü (göç 51'in
+  // 'ledger.ruleShiftThrough' ayarı — tarihi ≤ geçiş günü olan kayıt tahsilatı / iade KDV'si eski yönde) ve güncellemeden önce yazılmış KDV mahsubunun işareti (rule_version '2.4.9' — etkin eski
+  // mahsubun ayında iade KDV'si eski yönde). İkisini de yalnız göç 51 yazar (Sıfırla siler, kilidi de kaldırır): program yolundan kilitli dönemde değişmez. Satır yalnız işaret VARSA (kilitsiz
+  // geçişsiz dosyada ve güncel kuralla yazılmış mahsupta satır yok). Sürüme bağlı (since "2.5.2"): önceki tanımla kaydedilmiş koşu kendi sürümüyle — yanlış alarm yok.
+  rule_shift_lock: { requires: ["settings"], since: "2.5.2", sql: `SELECT key, value FROM settings WHERE key = '${RULE_SHIFT_KEY}' AND value <> '' AND ?1 <> ''` },
+  vat_offsets_rule_lock: { requires: ["vat_offsets.rule_version"], since: "2.5.2", sql: "SELECT id, rule_version FROM vat_offsets WHERE rule_version <> '' AND date <= ?1 ORDER BY id" },
   // Bankaya Tahsile Ver kaydının işlem başlığı (101.01 / 101.02 maddesinin tutarı).
   cheque_collections_event_lock: { requires: ["cheque_collections.event_id"], since: "2.5.0", sql: "SELECT id, event_id FROM cheque_collections WHERE given_date <= ?1 ORDER BY id" },
   // Kayıt Tarihi BOŞ kartın oluşturma anı (madde tarihi = oluşturma günü; yukarıdaki plans girdisi yalnız dolu Kayıt Tarihli kartları kapsar). API boş Kayıt Tarihi yazmaz,
