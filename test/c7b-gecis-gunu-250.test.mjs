@@ -104,7 +104,7 @@ describe("Ç7b tur 2c — kural geçiş günü (B-8 = A + B-6; v2.4.9 gerçek ko
       assert.equal(app.ledger.snapshots.state().pending, null, "açılıştaki dondurma bitmeli");
       let api = await server.login();
       // (1) Göç 51'in işaretleri (yalnız işaret; tutar yok).
-      assert.equal(app.store.get("SELECT value FROM settings WHERE key = 'ledger.ruleShiftThrough'").value, LOCK, "geçiş günü = güncellemedeki kilit");
+      assert.equal(app.store.get("SELECT value FROM settings WHERE key = 'ledger.ruleShiftThrough'")?.value, LOCK, "geçiş günü = güncellemedeki kilit");
       assert.deepEqual(app.store.all("SELECT month, rule_version AS v, out_minor AS o, in_minor AS i, payable_minor AS p FROM vat_offsets ORDER BY month").map(row => `${row.month} ${row.v} ${row.o}/${row.i}/${row.p}`), ["2026-09 2.4.9 20000/10000/10000", "2026-10 2.4.9 20000/10000/10000"], "eski mahsuplar işaretli, saklı tutarlar DEĞİŞMEDİ (elle: H 200 / İ 100 / ödenecek 100)");
       // (2) Gün sınırı ve ay kuralı.
       let at = accountsOf(app);
@@ -137,7 +137,7 @@ describe("Ç7b tur 2c — kural geçiş günü (B-8 = A + B-6; v2.4.9 gerçek ko
       await app.ledger.snapshots.runPending();
       await cleanScan(api, "kilit ileri");
       MIGRATIONS.find(item => item.version === 51).up(app.store, { now: () => new Date(NOW.time) });
-      assert.equal(app.store.get("SELECT value FROM settings WHERE key = 'ledger.ruleShiftThrough'").value, LOCK, "yeniden koşan göç geçiş gününü değiştirmez (kilit artık 31.10)");
+      assert.equal(app.store.get("SELECT value FROM settings WHERE key = 'ledger.ruleShiftThrough'")?.value, LOCK, "yeniden koşan göç geçiş gününü değiştirmez (kilit artık 31.10)");
       assert.deepEqual(app.store.all("SELECT month, status, rule_version AS v FROM vat_offsets ORDER BY month, rowid").map(row => `${row.month} ${row.status} ${row.v}`), ["2026-09 active 2.4.9", "2026-10 reversed 2.4.9", "2026-10 active "], "yeniden koşan göç yeni mahsubu eski saymaz");
       // (5) Kilit kalkar; geçiş gününden önce tarihli YENİ kayıt eski yönde (tek tanım), sonrası yeni; yeniden kilit (güncel kuralla donar) temiz.
       await must("kilidi kaldır", api.put("/api/admin/period-lock", { lockedUntil: "" }));
@@ -172,7 +172,7 @@ describe("Ç7b tur 2c — kural geçiş günü (B-8 = A + B-6; v2.4.9 gerçek ko
       app = server.app;
       await app.ledger.snapshots.runPending();
       api = await server.login();
-      assert.equal(app.store.get("SELECT value FROM settings WHERE key = 'ledger.ruleShiftThrough'").value, LOCK, "geri yüklemede geçiş günü = yedeğin kilidi");
+      assert.equal(app.store.get("SELECT value FROM settings WHERE key = 'ledger.ruleShiftThrough'")?.value, LOCK, "geri yüklemede geçiş günü = yedeğin kilidi");
       assert.equal(app.store.get("SELECT COUNT(*) AS n FROM invoices WHERE issue_date = '2026-11-20'").n, 0, "ön koşul: yedekteki veri (sonraki iade yok)");
       assert.deepEqual(app.store.all("SELECT month, rule_version AS v FROM vat_offsets ORDER BY month, rowid").map(row => `${row.month} ${row.v}`), ["2026-09 2.4.9", "2026-10 2.4.9"], "geri yüklemede eski mahsuplar yeniden işaretli");
       at = accountsOf(app);
@@ -194,7 +194,7 @@ describe("Ç7b tur 2c — kural geçiş günü (B-8 = A + B-6; v2.4.9 gerçek ko
       const app = server.app;
       await app.ledger.snapshots.runPending();
       const api = await server.login();
-      assert.equal(app.store.get("SELECT value FROM settings WHERE key = 'ledger.ruleShiftThrough'").value, "", "kilitsiz dosyada geçiş yok ('' yazılır)");
+      assert.equal(app.store.get("SELECT value FROM settings WHERE key = 'ledger.ruleShiftThrough'")?.value, "", "kilitsiz dosyada geçiş yok ('' yazılır)");
       const at = accountsOf(app);
       assert.deepEqual([at.payment("2026-09-29"), at.payment("2026-09-30"), at.payment("2026-10-01")], ["336.90", "336.90", "336.90"], "kilitsiz: hepsi yeni kural");
       assert.deepEqual([at.vat("sale_return", "2026-10-20"), at.vat("purchase_return", "2026-10-21"), at.vat("sale_return", "2026-11-10"), at.vat("purchase_return", "2026-11-11")], ["391", "191", "191", "391"], "Ekim (eski mahsup) eski, Kasım yeni");
