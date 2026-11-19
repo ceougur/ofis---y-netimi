@@ -1,0 +1,43 @@
+{
+ "ad": "ek-supheli-acik",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "s127_tek_yazim": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "af": [
+     {
+      "fatura": "F2",
+      "kalan": 500,
+      "tarih": "2026-01-06",
+      "vade": "2026-03-31"
+     }
+    ],
+    "g": {
+     "cari": "C1",
+     "detay": [],
+     "gecikmis": 0,
+     "supheli": 1000,
+     "tarih": "2026-02-05"
+    }
+   },
+   "redler": []
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}
