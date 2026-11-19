@@ -1,0 +1,17 @@
+ATILAN (GEÇERSİZ) BLOKLAR: yok
+yol | ana en iyi / ort.ortanca / döngü | taban | uç | uç/ana en iyi | uç/ana ortanca | uç/taban ortanca | hüküm (uç ↔ ana)
+Mizan + mutabakat (GET ledger) | 3162 / 3439 / 0 | 3817 / 4045 / 4316 | 3392 / 3704 / 3982 | 1.07 | 1.08 | 0.92 | tamam
+Yevmiye Defteri (rapor) | 2372 / 2470 / 0 | 2459 / 2643 / 0 | 2376 / 2669 / 2707 | 1.00 | 1.08 | 1.01 | tamam
+Hesap Planı Mizanı (rapor) | 3052 / 3148 / 0 | 3412 / 3702 / 0 | 3176 / 3334 / 0 | 1.04 | 1.06 | 0.90 | tamam
+Alt Hesap Mizanı (rapor) | 432 / 449 / 0 | 472 / 486 / 0 | 471 / 506 / 0 | 1.09 | 1.13 | 1.04 | eşikte (tek ölçüt)
+Defter Mutabakatı (rapor) | 17274 / 17802 / 0 | 19421 / 20076 / 0 | 18067 / 18825 / 0 | 1.05 | 1.06 | 0.94 | tamam
+Mutabakat Testi (GET ledger/integrity) | 10020 / 10291 / 0 | 10676 / 11380 / 0 | 10295 / 10753 / 11224 | 1.03 | 1.04 | 0.94 | tamam
+Alacak Yaşlandırma (rapor) | 2027 / 2155 / 0 | 2340 / 2476 / 2508 | 2102 / 2262 / 0 | 1.04 | 1.05 | 0.91 | tamam
+Cari Listesi | 766 / 858 / 0 | 891 / 974 / 0 | 791 / 832 / 0 | 1.03 | 0.97 | 0.85 | tamam
+zil (dues) | 1858 / 2004 / 1684 | 1844 / 2087 / 1701 | 1910 / 2037 / 1773 | 1.03 | 1.02 | 0.98 | tamam
+cari kartı (şüpheli + bağlı) | 172 / 179 / 212 | 472 / 514 / 633 | 121 / 126 / 144 | 0.70 | 0.70 | 0.24 | tamam
+cari kartı (şüphelisiz, en kalabalık) | 222 / 261 / 0 | 206 / 226 / 0 | 150 / 159 / 0 | 0.68 | 0.61 | 0.70 | tamam
+YAZIM bağlı tahsilat (şüpheli cari; kapı) | 341 / 365 / 0 | 1400 / 1474 / 0 | 315 / 341 / 346 | 0.92 | 0.94 | 0.23 | tamam
+YAZIM tahsilat (şüphelisiz cari; kapı) | 287 / 301 / 0 | 414 / 426 / 0 | 167 / 180 / 196 | 0.58 | 0.60 | 0.42 | tamam
+Kural Farkı Düzeltme ön izlemesi | 4602 / 4844 / 0 | 5101 / 5254 / 5427 | 4951 / 5222 / 5256 | 1.08 | 1.08 | 0.99 | tamam
+KÖTÜLEŞEN YOL SAYISI (uç ↔ ana) 0

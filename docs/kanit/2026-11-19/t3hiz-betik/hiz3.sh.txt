@@ -4,7 +4,7 @@
 S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad; H=$S/ana-hiz; A=$S/t3hiz-a; V=/dev/shm/t3hiz
 KIP=${1:-kilitsiz}; UC=$2; N=${3:-5}; SEC=${4:-t3b,t3c,c7a,t2}
 export HUKUK_LICENSE_URL=http://127.0.0.1:9 TZ=Europe/Istanbul
-exec 9>"$S/olcum.lock"; flock -x -w 3600 9 || { echo "KİLİT ALINAMADI — ÖLÇÜLEMEDİ"; exit 3; }
+[ -n "$KILIT_ALINDI" ] || { exec 9>"$S/olcum.lock"; flock -x -w 3600 9 || { echo "KİLİT ALINAMADI — ÖLÇÜLEMEDİ"; exit 3; } }
 echo "kilit $(date -u +%H:%M:%S) yük $(cut -d' ' -f1-3 /proc/loadavg) · ana k-ana · taban k-s3 · uç k-$UC · $KIP"
 for is in "t3b:$S/c5a3b-z4/betik/olc.mjs:$S/ana-kabul/temiz-100k" "t3c:$S/c5a3c-k7/olc-c5a3c.mjs:$V/hazir3c-kaynak" "c7a:$S/c7a-t2b/olcum/olc-c7a3.mjs:$V/tohum7-kaynak" "t2:$S/c5a2-olcum/olc-c5a2.mjs:$S/ana-kabul/temiz-100k"; do
   ad=${is%%:*}; r=${is#*:}; B=${r%%:*}; D=${r#*:}; OUT=$A/hiz3-$ad-$KIP.txt

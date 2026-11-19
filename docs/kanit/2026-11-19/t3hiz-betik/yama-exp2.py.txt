@@ -1,0 +1,17 @@
+p = '/dev/shm/t3hiz/k-exp/server/lib/bank/money-lines.mjs'
+s = open(p).read()
+old = "    return store.all(sql.replace(\"SELECT w.way AS way,\", `SELECT CASE WHEN ${COVER_SQL} THEN 'opening' ELSE w.way END AS way,`), { ...params({ until: to }), pfrom: from, ...coverParams(coverBounds(store)) });\n  }\n  function periodGroups("
+assert s.count(old) == 1
+new = """    const v = process.env.PGV || "a";
+    let q = sql;
+    if (v === "a") q = sql.replace("SELECT w.way AS way,", `SELECT CASE WHEN ${COVER_SQL} THEN 'opening' ELSE w.way END AS way,`);
+    if (v === "b") q = sql.replace("SELECT w.way AS way,", `SELECT CASE WHEN w.way IN ('bank', 'card') AND ${COVER_SQL} THEN 'opening' ELSE w.way END AS way,`);
+    if (v === "c") q = sql;
+    if (v === "d") q = sql.replace(", cover: true", "").replace("waySql({ light: true, until: to, cover: true })", "waySql({ light: true, until: to })");
+    if (v === "e") q = sql.replace("GROUP BY 1, w.ref ORDER BY 1, w.ref", "GROUP BY w.way, w.ref ORDER BY w.way, w.ref");
+    return store.all(q, { ...params({ until: to }), pfrom: from, ...coverParams(coverBounds(store)) });
+  }
+  function periodGroups("""
+s = s.replace(old, new)
+s = s.replace("FROM (${waySql({ light: true, until: to, cover: true })}) w GROUP BY 1, w.ref ORDER BY 1, w.ref`;\n    const v", "FROM (${process.env.PGV === 'd' ? waySql({ light: true, until: to }) : waySql({ light: true, until: to, cover: true })}) w GROUP BY 1, w.ref ORDER BY 1, w.ref`;\n    const v")
+open(p, 'w').write(s)

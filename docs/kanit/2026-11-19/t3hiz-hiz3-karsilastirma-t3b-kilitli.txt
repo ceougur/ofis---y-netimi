@@ -1,0 +1,12 @@
+ATILAN (GEÇERSİZ) BLOKLAR: yok
+yol | ana en iyi / ort.ortanca / döngü | taban | uç | uç/ana en iyi | uç/ana ortanca | uç/taban ortanca | hüküm (uç ↔ ana)
+karttan tahsilat yazımı | 1190 / 1223 / 1270 | 1205 / 1272 / 1378 | 1029 / 1062 / 1284 | 0.86 | 0.87 | 0.83 | tamam
+Cari Listesi (yazımdan sonra ilk) | 1674 / 1736 / 1824 | 1650 / 1747 / 1885 | 1665 / 1704 / 1841 | 0.99 | 0.98 | 0.98 | tamam
+Cari Listesi (ılık) | 1610 / 1690 / 1882 | 1659 / 1771 / 1815 | 1660 / 1714 / 1842 | 1.03 | 1.01 | 0.97 | tamam
+cari kartı (kalabalık) | 240 / 252 / 286 | 246 / 255 / 279 | 180 / 185 / 194 | 0.75 | 0.74 | 0.73 | tamam
+Taksitler listesi | 1736 / 1775 / 1872 | 1729 / 1784 / 1797 | 1715 / 1783 / 1815 | 0.99 | 1.00 | 1.00 | tamam
+Vade Takip | 2446 / 2522 / 2733 | 2467 / 2572 / 2726 | 2394 / 2537 / 2825 | 0.98 | 1.01 | 0.99 | tamam
+zil / takvim | 2981 / 3007 / 2754 | 2817 / 2974 / 2928 | 2918 / 3038 / 2884 | 0.98 | 1.01 | 1.02 | tamam
+fatura kaydı | 184 / 207 / 234 | 213 / 228 / 272 | 83 / 90 / 131 | 0.45 | 0.44 | 0.40 | tamam
+Cari Listesi (fatura yazımından sonra ilk) | 1810 / 1893 / 1932 | 1896 / 1929 / 1924 | 1780 / 1831 / 1841 | 0.98 | 0.97 | 0.95 | tamam
+KÖTÜLEŞEN YOL SAYISI (uç ↔ ana) 0

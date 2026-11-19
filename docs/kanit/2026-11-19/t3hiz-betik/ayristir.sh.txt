@@ -5,7 +5,7 @@ S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad; A=$S
 OUT=$1; VERI=$2; KIP=$3; N=$4; YOL=$5; shift 5
 case $VERI in d1) SRC=$V/hazir3c-kaynak;; d2) SRC=$S/ana-kabul/temiz-100k;; d3) SRC=$V/tohum7-kaynak;; *) echo "veri?"; exit 2;; esac
 export HUKUK_LICENSE_URL=http://127.0.0.1:9 TZ=Europe/Istanbul
-exec 9>"$S/olcum.lock"; flock -x -w 3600 9 || { echo "KİLİT ALINAMADI — ÖLÇÜLEMEDİ" >> $OUT; exit 3; }
+[ -n "$KILIT_ALINDI" ] || { exec 9>"$S/olcum.lock"; flock -x -w 3600 9 || { echo "KİLİT ALINAMADI — ÖLÇÜLEMEDİ" >> $OUT; exit 3; } }
 echo "AYRIŞTIRMA $VERI ($SRC) · $KIP · tekrar $N · yollar $YOL · kilit $(date -u +%H:%M:%S) · yük $(cut -d' ' -f1-3 /proc/loadavg)" >> $OUT
 for d in "$@"; do
   K=$V/veri-kopya; rm -rf $K && cp -a "$SRC" $K || exit 1

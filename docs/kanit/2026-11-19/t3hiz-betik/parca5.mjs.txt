@@ -1,0 +1,16 @@
+// t3hiz: Alt Hesap Mizanı'nın periodGroups'u (salt okunur) — kod kökleri arasında süre. node parca5.mjs <veri kopyası> <kod>…
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+const [dir, ...roots] = process.argv.slice(2);
+for (const root of roots) {
+  const imp = p => import(pathToFileURL(path.join(root, p)).href);
+  const dbm = await imp("server/lib/db.mjs");
+  const ml = await imp("server/lib/bank/money-lines.mjs");
+  const store = dbm.createStore(dbm.openDatabase(path.join(dir, "data", "destekofis.sqlite"), { readOnly: true }));
+  const lines = ml.createMoneyLines(store);
+  const ms = [];
+  let out;
+  for (let i = 0; i < 9; i += 1) { const s = performance.now(); out = lines.periodGroups({ from: "2026-01-01", to: "2026-12-31" }); ms.push(performance.now() - s); }
+  ms.sort((a, b) => a - b);
+  console.log(`${root.split("/").pop()}: periodGroups en iyi ${ms[0].toFixed(1)} · ortanca ${ms[4].toFixed(1)} ms · ${out.length} grup`);
+}
