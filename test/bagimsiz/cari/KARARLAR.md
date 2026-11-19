@@ -4893,3 +4893,44 @@ YORUMDUR (ders 40 — önce kural, sonra kod); senaryo / elle beklenen, kural ko
 
 ### Dil ekleri (/3, bakım 21b)
 - YOK. Adım alanları değişmedi (`fatura_iptal`, `kart_ac {mevcut}`, `kart_tahsilat`, `tahsilat {fatura, yol}`, `supheli_al`, `degersiz`, `evrak {fatura}`, `fatura {taksit}`, `kontrol {gecikmis, acikToplam}`).
+
+### SÜRÜCÜ İÇİN / eşleme notları (ana oturum için; `kos.mjs` bu bakımda yalnız OKUNDU, DEĞİŞMEDİ)
+- **S206 kapanmış kart (Y21b-7):** kâhin kapanmış kartın hiçbir anahtarını yazmaz (`belirsiz` "kart … S206 = A ile kapandı"). Koşucu kart_ac kartını `GET /plans/:id` ile okur (`var` = kayıt var ve
+  silinmemiş) — kapanmış kart listede / silinmiş sayılıyor mu, 'Tahsil Edilen' / 'Kalan' ne gösteriyor, kâhin bilmez; kapanmış kartın DURUMU (ör. `status`) ayrı bir okumayla denetlenmeli (dil anahtarı yok).
+  Carinin kuyruğu (bakiye, açık, gecikmiş, açık toplamı, sonraki faturanın açığı) kâhinde değerle — koşucunun okuduğu alanlar değişmedi.
+- **S205 / Kartı Kapat (Y21b-6, Y21b-3):** dilde adım yok — `kart_kapat {kart, tarih}` (ve kapanmış kartın okunuşu) eklenirse beklenen: bakiye değişmez, madde yok (689 yok), kalan kalemler carinin
+  kuyruğunda tutarlarıyla, gecikmiş = kalanın TAMAMI kapatma gününün ertesi gününden (SK-39 örneği: 15.04'te 600). Vazgeçme (Alacak Yaz / Şüpheli → Değersiz) mevcut adımlarla. "Önceden kapatılmış kartlar
+  olduğu gibi kalır" geçiş kuralı — eski sürüm verisiyle (ders 17).
+- **S25 (c) POS:** faturaya bağlı POS tahsilatı dilde yok (`tahsilat {yol}` yalnız nakit / havale — koşucu `method: cash | bank`); eklenirse beklenen nakitle aynı (payı kadar şüpheliden).
+- **S15 asıl durum:** faturanın kendi taksit kartına kart seçilerek Taksit Tahsilatı dilde yok (§32 aynen); kart seçilmeden alınan tahsilatla (S50) kurulan komşusu d50 I4.
+- **C2 / C3 geçiş:** §32 aynen (geçişli dünya koşucuda kurulamaz).
+
+### C12z DENENMEYEN (bakım 21b; neden)
+- Programla karşılaştırma (ana oturumun işi; program koşulmadı).
+- C1 (Y21b-1): devir modülünün açık kalemi (dilde yok); KG-2 / KG-6 … KG-16 (cari kâhininin konusu değil); B1'in WhatsApp Ödeme Hatırlatma seçimine etkisi (WhatsApp kâhini); Kasa + Tahsilat'ın 649.90'ı
+  (carisiz Kasa girişi dilde yok — §32 aynen).
+- C2: geçişli dünya (§32 aynen).
+- C3 / S205: Kartı Kapat bütünüyle (dilde yok) — bakiye değişmezliği, gecikmiş (S205), hatırlatma, Alacak Yaz / Değersiz ile vazgeçme, "önceden kapatılmış kartlar".
+- C4: faturanın kendi taksit kartına kart seçilerek Taksit Tahsilatı + iptal (dilde yok).
+- C5 (c): POS yolu (dilde yok); havalenin mizanı (banka hesabı — bu kâhinde denetlenmez).
+- S206: kapanmış kartın göstergeleri (SUS — kararda yok); kapanmış karta sonradan Taksit Tahsilatı (kâhin RET okur — "kartı olmayan kayda kart tahsilatı girilemez", senaryo yok); iptalin geri alınması /
+  faturanın Silinenler'den geri yüklenmesi kapanan kartı açar mı (kararda yok, senaryo yok); kart faturanın bir kısmını içine almışken iptal (tek kalem — kural aynı, senaryo yok); SK-41 (a) / (b) (SUS).
+- Defter kâhini (`test/bagimsiz/defter/`) ve mobil yazma kâhini bu bakımda KOŞULMADI / AÇILMADI (okuma kapsamı dışında) — S206'nın mizanı değişmediği için (kart maddesiz, iptal maddesiz) defter
+  tarafında fark beklenmez; ana oturum CI'nin `test:kahin-defter` adımıyla denetler.
+
+### C0z Değişen eski beklentiler (G3; bakım 21 (`c7b2f-kc21` = 301c0e29) ↔ bakım 21b kâhin çıktısı, `2.5.0`; eski kopyanın 103 elle senaryosu + d50 + rastgele s1 / ux18 tohum 1–10 × 120) — kararla ilgisiz eski beklenti DEĞİŞMEDİ
+- Üretici 20/20 aynı dizi; eski elle senaryoların adımları DEĞİŞMEDİ (d49'un yalnız elle tablosu ve açıklaması — elle fark 103/103, izinli yalnız d49 A1 / KA1: 6 `elleYok` eklendi, `elleBelirsiz` "cari A1 tanımsız
+  (C13.4 (11))" → "kart KA1 … S206 = A"); `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`: **496/496 bayt bayt aynı**.
+- 2.5.0 G3: eski 50.867 denetim · yeni 50.866 · değişen / kalkan / yeni **17** · **BEKLENMEYEN 0** · yalnız etiketi değişen 0. Hepsi **S206** (C6): KALKAN 9 — d49 `k1` / `k2:kart:KA1:var` / `toplam` / `mevcutBorc`
+  (6), d50 `k1:kart:KI1:var` / `toplam` / `mevcutBorc` (3) (kapanmış kartın göstergeleri SUS); YENİ 8 — d49 `k1` / `k2:takvim:fatura:FA1` "yok" (2; carinin kuyruğu tanımlı), d50 I1'in `acikEsitBakiye` true,
+  `acikToplam` 20.000, `gecikmis` 20.000, `fatura:FI1b:acik` 20.000, `takvim:fatura:FI1` "yok", `takvim:fatura:FI1b` {20.000, in} (6). Carinin bakiyesi, Kasa ve adım durumları İKİ modelde AYNI (S206 bakiyeyi
+  değiştirmez — sayıyla: A1 −300, I1 200, Kasa d49 300 / d50 1.300). SK-41 (I2 / I3), C1 (G1), C4 (I4), C5 (c) (H1 … H3) alanında fark 0 (kural değişmedi). Rastgele 0 fark. SUS'a dönen kart anahtarı 9
+  (yukarıda); SUS'tan çıkan cari anahtarı 8.
+
+### Kanıt (bakım 21b; iki saat dilimi — UTC ve Europe/Istanbul ham çıktıları bayt bayt aynı; kâhin `388cb993`, temiz ağaç (yalnız `node_modules` bağı izlenmeyen); `docs/kanit/2026-11-19/kahincari21b-*`, araçlar ve koşu betiği `kahincari21b-arac/`)
+- oz-test **6.867/6.867** · mutasyon taraması (kos.mjs düzeni) **292/292** (323–325 yakalandı: 323 d49 / d50, 324 d49 / d50, 325 d50) · G3 **620/620** (BEKLENMEYEN 0) · yeni / değişen elle tablo **84/84** (d50 57 + d49 27) ·
+  ESKİ kâhinde (bakım 21) **17 kırmızı** / 84 (beklenen nedenle — hepsi S206 / SK-41 alanında: I1 açık / gecikmiş / açık toplamı ANAHTAR YOK ×4, KI1 ×3 ve KA1 ×6 göstergeleri yazılıyor, `belirsiz` "S206 = A" ×2 /
+  "SK-41 (a)" / "SK-41 (b)" yok; G1, H1 … H3, I4 ve bakiyeler eski kâhinde de yeşil — kural değişmedi) · eski elle tablo farkı **103/103** izinli · G1 taraması **104/104** · mutant ↔ senaryo **1.105/1.105**
+  (d35 … d50 × 261–325) · geniş tarama **2.201/2.201** · özet taraması (madde 4) yazıldı — bakım 21'e göre yeni 3 satır (d50 I1'in açık toplamı / eşitlik / gecikmiş; `belirsiz`'de adı geçen KI1 kartıdır, cari
+  tanımlı — TASARIM GEREĞİ: yalnız kapanmış kartın göstergeleri SUS). Not: UTC koşusu başlarken yük 4,58 / 4 çekirdekti (başka işler; önceden bir kez beklendi; koşu zamana bağlı değil — çıktılar Europe/Istanbul
+  ile bayt bayt aynı). Defter kâhini ve mobil yazma kâhini KOŞULMADI (okuma kapsamı dışında).

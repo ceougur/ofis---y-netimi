@@ -1,0 +1,158 @@
+{
+ "ozet": {
+  "S206/kalkan": 9,
+  "S206/yeni": 8
+ },
+ "senaryo": {
+  "d49-c5-s15-s25-iptal-ve-fazla": {
+   "S206/kalkan": 6,
+   "S206/yeni": 2
+  },
+  "d50-c5-s206-s25c-b1-iptal-havale": {
+   "S206/kalkan": 3,
+   "S206/yeni": 6
+  }
+ },
+ "etiket_degisen": 0,
+ "dokum": [
+  {
+   "senaryo": "d49-c5-s15-s25-iptal-ve-fazla",
+   "anahtar": "k1:kart:KA1:mevcutBorc",
+   "eski": true,
+   "yeni": "(denetim yok)",
+   "sinif": "S206",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d49-c5-s15-s25-iptal-ve-fazla",
+   "anahtar": "k1:kart:KA1:toplam",
+   "eski": 90000,
+   "yeni": "(denetim yok)",
+   "sinif": "S206",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d49-c5-s15-s25-iptal-ve-fazla",
+   "anahtar": "k1:kart:KA1:var",
+   "eski": true,
+   "yeni": "(denetim yok)",
+   "sinif": "S206",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d49-c5-s15-s25-iptal-ve-fazla",
+   "anahtar": "k1:takvim:fatura:FA1",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S206",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d49-c5-s15-s25-iptal-ve-fazla",
+   "anahtar": "k2:kart:KA1:mevcutBorc",
+   "eski": true,
+   "yeni": "(denetim yok)",
+   "sinif": "S206",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d49-c5-s15-s25-iptal-ve-fazla",
+   "anahtar": "k2:kart:KA1:toplam",
+   "eski": 90000,
+   "yeni": "(denetim yok)",
+   "sinif": "S206",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d49-c5-s15-s25-iptal-ve-fazla",
+   "anahtar": "k2:kart:KA1:var",
+   "eski": true,
+   "yeni": "(denetim yok)",
+   "sinif": "S206",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d49-c5-s15-s25-iptal-ve-fazla",
+   "anahtar": "k2:takvim:fatura:FA1",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S206",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:cari:I1:acikEsitBakiye",
+   "eski": "(denetim yok)",
+   "yeni": true,
+   "sinif": "S206",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:cari:I1:acikToplam",
+   "eski": "(denetim yok)",
+   "yeni": 20000,
+   "sinif": "S206",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:cari:I1:gecikmis",
+   "eski": "(denetim yok)",
+   "yeni": 20000,
+   "sinif": "S206",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:fatura:FI1b:acik",
+   "eski": "(denetim yok)",
+   "yeni": 20000,
+   "sinif": "S206",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:kart:KI1:mevcutBorc",
+   "eski": true,
+   "yeni": "(denetim yok)",
+   "sinif": "S206",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:kart:KI1:toplam",
+   "eski": 90000,
+   "yeni": "(denetim yok)",
+   "sinif": "S206",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:kart:KI1:var",
+   "eski": true,
+   "yeni": "(denetim yok)",
+   "sinif": "S206",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:takvim:fatura:FI1",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S206",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:takvim:fatura:FI1b",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 20000,
+    "direction": "in"
+   },
+   "sinif": "S206",
+   "tur": "yeni"
+  }
+ ]
+}
