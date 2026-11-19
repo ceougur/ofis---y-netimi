@@ -1,0 +1,119 @@
+# Ç7b tur 2d — karşı mutantlar (python3 -I mutant.py; her mutant 2 koşu × 2 TZ; dosya her mutanttan sonra geri yazıldı, çalışma ağacı temiz kaldı)
+# M1'in ilk tanımı ('[] && …') etkisizdi (no-op; [] doğru sayılır) → KAÇTI göründü; değerle yeniden tanımlandı (const period = month) ve yeniden koşuldu ('M1 (yeniden)').
+M1 alanı yok say (hep belge ayı) | Europe/Istanbul koşu 1: çıkış 0 tests 5 pass 5 fail 0 cancelled 0 → KAÇTI | 
+M1 alanı yok say (hep belge ayı) | Europe/Istanbul koşu 2: çıkış 0 tests 5 pass 5 fail 0 cancelled 0 → KAÇTI | 
+M1 alanı yok say (hep belge ayı) | UTC koşu 1: çıkış 0 tests 5 pass 5 fail 0 cancelled 0 → KAÇTI | 
+M1 alanı yok say (hep belge ayı) | UTC koşu 2: çıkış 0 tests 5 pass 5 fail 0 cancelled 0 → KAÇTI | 
+M2a üst sınır bir ay erken (izleyen yılın Kasım'ı) | Europe/Istanbul koşu 1: çıkış 1 tests 5 pass 4 fail 1 cancelled 0 → YAKALANDI | error: `izleyen yılın Ocak'ından sonra: ileti {"ok":false,"error":"KDV İndirim Dönemi en geç Kasım 2027 olabilir (fatura yılını izleyen yılın sonu).","code":"vat-period-range","field":"vatPeriod"}` / error: '1 subtest failed'
+M2a üst sınır bir ay erken (izleyen yılın Kasım'ı) | Europe/Istanbul koşu 2: çıkış 1 tests 5 pass 4 fail 1 cancelled 0 → YAKALANDI | error: `izleyen yılın Ocak'ından sonra: ileti {"ok":false,"error":"KDV İndirim Dönemi en geç Kasım 2027 olabilir (fatura yılını izleyen yılın sonu).","code":"vat-period-range","field":"vatPeriod"}` / error: '1 subtest failed'
+M2a üst sınır bir ay erken (izleyen yılın Kasım'ı) | UTC koşu 1: çıkış 1 tests 5 pass 4 fail 1 cancelled 0 → YAKALANDI | error: `izleyen yılın Ocak'ından sonra: ileti {"ok":false,"error":"KDV İndirim Dönemi en geç Kasım 2027 olabilir (fatura yılını izleyen yılın sonu).","code":"vat-period-range","field":"vatPeriod"}` / error: '1 subtest failed'
+M2a üst sınır bir ay erken (izleyen yılın Kasım'ı) | UTC koşu 2: çıkış 1 tests 5 pass 4 fail 1 cancelled 0 → YAKALANDI | error: `izleyen yılın Ocak'ından sonra: ileti {"ok":false,"error":"KDV İndirim Dönemi en geç Kasım 2027 olabilir (fatura yılını izleyen yılın sonu).","code":"vat-period-range","field":"vatPeriod"}` / error: '1 subtest failed'
+M2b üst sınır bir ay geç (iki yıl sonraki Ocak) | Europe/Istanbul koşu 1: çıkış 1 tests 5 pass 4 fail 1 cancelled 0 → YAKALANDI | error: |- / error: '1 subtest failed'
+M2b üst sınır bir ay geç (iki yıl sonraki Ocak) | Europe/Istanbul koşu 2: çıkış 1 tests 5 pass 4 fail 1 cancelled 0 → YAKALANDI | error: |- / error: '1 subtest failed'
+M2b üst sınır bir ay geç (iki yıl sonraki Ocak) | UTC koşu 1: çıkış 1 tests 5 pass 4 fail 1 cancelled 0 → YAKALANDI | error: |- / error: '1 subtest failed'
+M2b üst sınır bir ay geç (iki yıl sonraki Ocak) | UTC koşu 2: çıkış 1 tests 5 pass 4 fail 1 cancelled 0 → YAKALANDI | error: |- / error: '1 subtest failed'
+M2c alt sınır bir ay erken (belge ayından önceki ay kabul) | Europe/Istanbul koşu 1: çıkış 1 tests 5 pass 1 fail 4 cancelled 0 → YAKALANDI | error: |- / error: |- / error: |-
+M2c alt sınır bir ay erken (belge ayından önceki ay kabul) | Europe/Istanbul koşu 2: çıkış 1 tests 5 pass 1 fail 4 cancelled 0 → YAKALANDI | error: |- / error: |- / error: |-
+M2c alt sınır bir ay erken (belge ayından önceki ay kabul) | UTC koşu 1: çıkış 1 tests 5 pass 1 fail 4 cancelled 0 → YAKALANDI | error: |- / error: |- / error: |-
+M2c alt sınır bir ay erken (belge ayından önceki ay kabul) | UTC koşu 2: çıkış 1 tests 5 pass 1 fail 4 cancelled 0 → YAKALANDI | error: |- / error: |- / error: |-
+M3a kilit izine geçiş günü eki yok | Europe/Istanbul koşu 1: çıkış 1 tests 3 pass 2 fail 1 cancelled 0 → YAKALANDI | error: 'geçiş günü: güncel kilit izi değişmeli' / error: '1 subtest failed'
+M3a kilit izine geçiş günü eki yok | Europe/Istanbul koşu 2: çıkış 1 tests 3 pass 2 fail 1 cancelled 0 → YAKALANDI | error: 'geçiş günü: güncel kilit izi değişmeli' / error: '1 subtest failed'
+M3a kilit izine geçiş günü eki yok | UTC koşu 1: çıkış 1 tests 3 pass 2 fail 1 cancelled 0 → YAKALANDI | error: 'geçiş günü: güncel kilit izi değişmeli' / error: '1 subtest failed'
+M3a kilit izine geçiş günü eki yok | UTC koşu 2: çıkış 1 tests 3 pass 2 fail 1 cancelled 0 → YAKALANDI | error: 'geçiş günü: güncel kilit izi değişmeli' / error: '1 subtest failed'
+M3b kilit izine mahsup kural sürümü eki yok | Europe/Istanbul koşu 1: çıkış 1 tests 3 pass 2 fail 1 cancelled 0 → YAKALANDI | error: 'kilitli mahsubun kural sürümü: güncel kilit izi değişmeli' / error: '1 subtest failed'
+M3b kilit izine mahsup kural sürümü eki yok | Europe/Istanbul koşu 2: çıkış 1 tests 3 pass 2 fail 1 cancelled 0 → YAKALANDI | error: 'kilitli mahsubun kural sürümü: güncel kilit izi değişmeli' / error: '1 subtest failed'
+M3b kilit izine mahsup kural sürümü eki yok | UTC koşu 1: çıkış 1 tests 3 pass 2 fail 1 cancelled 0 → YAKALANDI | error: 'kilitli mahsubun kural sürümü: güncel kilit izi değişmeli' / error: '1 subtest failed'
+M3b kilit izine mahsup kural sürümü eki yok | UTC koşu 2: çıkış 1 tests 3 pass 2 fail 1 cancelled 0 → YAKALANDI | error: 'kilitli mahsubun kural sürümü: güncel kilit izi değişmeli' / error: '1 subtest failed'
+M3c ek sürüme bağlı değil (since yok — 2.5.1 koşusunda yanlış alarm) | Europe/Istanbul koşu 1: çıkış 1 tests 3 pass 2 fail 1 cancelled 0 → YAKALANDI | error: |- / + actual - expected / + '224a429c87ecbe38b4cac8856936f31183cd4224cf319d462b8fba411277c011'
+M3c ek sürüme bağlı değil (since yok — 2.5.1 koşusunda yanlış alarm) | Europe/Istanbul koşu 2: çıkış 1 tests 3 pass 2 fail 1 cancelled 0 → YAKALANDI | error: |- / + actual - expected / + '43c0842e93005486b7e39c8bece5f7fac9d93eb3aaf2d74cfb84dadbe0bc3faa'
+M3c ek sürüme bağlı değil (since yok — 2.5.1 koşusunda yanlış alarm) | UTC koşu 1: çıkış 1 tests 3 pass 2 fail 1 cancelled 0 → YAKALANDI | error: |- / + actual - expected / + '8338749e44626627fc232586bb9870ea313dc841d9bd3bdb0421e639ac8fa6bb'
+M3c ek sürüme bağlı değil (since yok — 2.5.1 koşusunda yanlış alarm) | UTC koşu 2: çıkış 1 tests 3 pass 2 fail 1 cancelled 0 → YAKALANDI | error: |- / + actual - expected / + 'b665941077fc3c00bb49046decb2c4c4431747ca567d6080ca7e148f3096e1bd'
+M4 Sıfırla geçiş gününü silmez | Europe/Istanbul koşu 1: çıkış 1 tests 3 pass 2 fail 1 cancelled 0 → YAKALANDI | error: |- / + actual - expected / + [Object: null prototype] {
+M4 Sıfırla geçiş gününü silmez | Europe/Istanbul koşu 2: çıkış 1 tests 3 pass 2 fail 1 cancelled 0 → YAKALANDI | error: |- / + actual - expected / + [Object: null prototype] {
+M4 Sıfırla geçiş gününü silmez | UTC koşu 1: çıkış 1 tests 3 pass 2 fail 1 cancelled 0 → YAKALANDI | error: |- / + actual - expected / + [Object: null prototype] {
+M4 Sıfırla geçiş gününü silmez | UTC koşu 2: çıkış 1 tests 3 pass 2 fail 1 cancelled 0 → YAKALANDI | error: |- / + actual - expected / + [Object: null prototype] {
+M5a göç sütunu varsayılansız (NULL) | Europe/Istanbul koşu 1: çıkış 1 tests 3 pass 2 fail 1 cancelled 0 → YAKALANDI | error: |- / + actual - expected / +   0,
+M5a göç sütunu varsayılansız (NULL) | Europe/Istanbul koşu 2: çıkış 1 tests 3 pass 2 fail 1 cancelled 0 → YAKALANDI | error: |- / + actual - expected / +   0,
+M5a göç sütunu varsayılansız (NULL) | UTC koşu 1: çıkış 1 tests 3 pass 2 fail 1 cancelled 0 → YAKALANDI | error: |- / + actual - expected / +   0,
+M5a göç sütunu varsayılansız (NULL) | UTC koşu 2: çıkış 1 tests 3 pass 2 fail 1 cancelled 0 → YAKALANDI | error: |- / + actual - expected / +   0,
+M5b göç belge ayını yazar | Europe/Istanbul koşu 1: çıkış 1 tests 3 pass 2 fail 1 cancelled 0 → YAKALANDI | error: |- / + actual - expected / +   '2026-09',
+M5b göç belge ayını yazar | Europe/Istanbul koşu 2: çıkış 1 tests 3 pass 2 fail 1 cancelled 0 → YAKALANDI | error: |- / + actual - expected / +   '2026-09',
+M5b göç belge ayını yazar | UTC koşu 1: çıkış 1 tests 3 pass 2 fail 1 cancelled 0 → YAKALANDI | error: |- / + actual - expected / +   '2026-09',
+M5b göç belge ayını yazar | UTC koşu 2: çıkış 1 tests 3 pass 2 fail 1 cancelled 0 → YAKALANDI | error: |- / + actual - expected / +   '2026-09',
+BİTTİ
+## M1 (yeniden)
+M1 alanı yok say (hep belge ayı) | Europe/Istanbul koşu 1: çıkış 1 tests 5 pass 2 fail 3 cancelled 0 → YAKALANDI | error: |- / + actual - expected / +   60000,
+M1 alanı yok say (hep belge ayı) | Europe/Istanbul koşu 2: çıkış 1 tests 5 pass 2 fail 3 cancelled 0 → YAKALANDI | error: |- / + actual - expected / +   60000,
+M1 alanı yok say (hep belge ayı) | UTC koşu 1: çıkış 1 tests 5 pass 2 fail 3 cancelled 0 → YAKALANDI | error: |- / + actual - expected / +   60000,
+M1 alanı yok say (hep belge ayı) | UTC koşu 2: çıkış 1 tests 5 pass 2 fail 3 cancelled 0 → YAKALANDI | error: |- / + actual - expected / +   60000,
+BİTTİ
+## betik
+#!/usr/bin/env python3
+# Ç7b tur 2d karşı mutantları: dosyaya tek değişiklik → hedef test (iki kez, iki TZ) → dosya geri yazılır. Kullanım: python3 -I mutant.py <worktree> <çıktı>
+import os, subprocess, sys
+
+root, out = sys.argv[1], sys.argv[2]
+MUTANTS = [
+    ("M1 alanı yok say (hep belge ayı)", "server/routes/tax.mjs",
+     'const period = periods.get(entry.id) || month;',
+     'const period = month;',
+     "test/c7b-kdv-donemi-250.test.mjs"),
+    ("M2a üst sınır bir ay erken (izleyen yılın Kasım'ı)", "server/routes/invoices.mjs",
+     'const last = `${Number(date.slice(0, 4)) + 1}-12`;',
+     'const last = `${Number(date.slice(0, 4)) + 1}-11`;',
+     "test/c7b-kdv-donemi-250.test.mjs"),
+    ("M2b üst sınır bir ay geç (iki yıl sonraki Ocak)", "server/routes/invoices.mjs",
+     'if (value > last) fail400(',
+     'if (value > last && value > `${Number(date.slice(0, 4)) + 2}-01`) fail400(',
+     "test/c7b-kdv-donemi-250.test.mjs"),
+    ("M2c alt sınır bir ay erken (belge ayından önceki ay kabul)", "server/routes/invoices.mjs",
+     'if (value < first) fail400(',
+     'if (value < first && value.slice(0, 4) === first.slice(0, 4) && Number(value.slice(5)) < Number(first.slice(5)) - 1) fail400(',
+     "test/c7b-kdv-donemi-250.test.mjs"),
+    ("M3a kilit izine geçiş günü eki yok", "server/lib/integrity.mjs",
+     "rule_shift_lock: { requires: [\"settings\"]",
+     "rule_shift_lock_yok: { requires: [\"settings_yok\"]",
+     "test/c7b-goc52-kilit-izi-250.test.mjs"),
+    ("M3b kilit izine mahsup kural sürümü eki yok", "server/lib/integrity.mjs",
+     'vat_offsets_rule_lock: { requires: ["vat_offsets.rule_version"]',
+     'vat_offsets_rule_lock: { requires: ["vat_offsets.rule_version_yok"]',
+     "test/c7b-goc52-kilit-izi-250.test.mjs"),
+    ("M3c ek sürüme bağlı değil (since yok — 2.5.1 koşusunda yanlış alarm)", "server/lib/integrity.mjs",
+     'rule_shift_lock: { requires: ["settings"], since: "2.5.2",',
+     'rule_shift_lock: { requires: ["settings"],',
+     "test/c7b-goc52-kilit-izi-250.test.mjs"),
+    ("M4 Sıfırla geçiş gününü silmez", "server/app.mjs",
+     'store.run("DELETE FROM settings WHERE key = ?", RULE_SHIFT_KEY);',
+     'void RULE_SHIFT_KEY;',
+     "test/c7b-goc52-kilit-izi-250.test.mjs"),
+    ("M5a göç sütunu varsayılansız (NULL)", "server/lib/migrations.mjs",
+     'addColumn(store, "invoices", "vat_period", "TEXT NOT NULL DEFAULT \'\'");',
+     'addColumn(store, "invoices", "vat_period", "TEXT");',
+     "test/c7b-goc52-kilit-izi-250.test.mjs"),
+    ("M5b göç belge ayını yazar", "server/lib/migrations.mjs",
+     'addColumn(store, "invoices", "vat_period", "TEXT NOT NULL DEFAULT \'\'");',
+     'addColumn(store, "invoices", "vat_period", "TEXT NOT NULL DEFAULT \'\'"); store.run("UPDATE invoices SET vat_period = substr(issue_date, 1, 7)");',
+     "test/c7b-goc52-kilit-izi-250.test.mjs"),
+]
+env = dict(os.environ, HUKUK_LICENSE_URL="http://127.0.0.1:9")
+with open(out, "w", encoding="utf-8") as log:
+    for name, rel, old, new, test in [m for m in MUTANTS if not os.environ.get('YALNIZ') or m[0].startswith(os.environ['YALNIZ'])]:
+        path = os.path.join(root, rel)
+        src = open(path, encoding="utf-8").read()
+        if src.count(old) != 1:
+            log.write(f"{name}: UYGULANAMADI (desen {src.count(old)} kez)\n")
+            continue
+        open(path, "w", encoding="utf-8").write(src.replace(old, new))
+        try:
+            for tz in ("Europe/Istanbul", "UTC"):
+                for run in (1, 2):
+                    p = subprocess.run(["timeout", "-k", "5", "900", "node", "--test", test], cwd=root, env=dict(env, TZ=tz), capture_output=True, text=True)
+                    text = p.stdout + p.stderr
+                    counts = {k: next((l.split()[-1] for l in text.splitlines() if l.startswith(f"# {k} ")), "?") for k in ("tests", "pass", "fail", "cancelled")}
+                    errors = [l.strip() for l in text.splitlines() if l.strip().startswith(("error:", "'", "+ ", "- ")) ][:3]
+                    verdict = "YAKALANDI" if p.returncode != 0 and counts["fail"] not in ("0", "?") else "KAÇTI"
+                    log.write(f"{name} | {tz} koşu {run}: çıkış {p.returncode} tests {counts['tests']} pass {counts['pass']} fail {counts['fail']} cancelled {counts['cancelled']} → {verdict} | {' / '.join(errors)[:300]}\n")
+                    log.flush()
+        finally:
+            open(path, "w", encoding="utf-8").write(src)
+    log.write("BİTTİ\n")

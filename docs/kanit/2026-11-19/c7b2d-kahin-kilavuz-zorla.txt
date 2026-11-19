@@ -1,0 +1,23 @@
+# Ç7b tur 2d — defter kâhini (npm run test:kahin-defter) iki TZ — 183 / 187, dört fark TABANDAKİYLE AYNI (K_EYLUL 191 / 391, K_SON 191 / 391; KG-8 / F-08 kâhin bakımına ait); YENİ kırmızı YOK
+  ✗ mizan K_EYLUL 191: program 3.035,00 · kâhin 2.816,00
+  ✗ mizan K_EYLUL 391: program -2.274,00 · kâhin -2.055,00
+  ✗ mizan K_SON 191: program 800,00 · kâhin -400,00
+  ✗ mizan K_SON 391: program -400,00 · kâhin 800,00
+ÖZET: 187 denetim, 4 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-pWugrC
+[kanit] başarısız testler (4):
+[kanit] c7b2d-kahin-defter-ist: BAŞARISIZ (çıkış 1; 4 başarısız, 0 iptal) · çıkış 1 · 183/187 geçti, 4 başarısız, 0 iptal, 0 atlanan · commit a44e4e5 +1 izlenmeyen · linux 6.18.44-fc-v653 x64 · Node v22.23.4
+  ✗ mizan K_EYLUL 191: program 3.035,00 · kâhin 2.816,00
+  ✗ mizan K_EYLUL 391: program -2.274,00 · kâhin -2.055,00
+  ✗ mizan K_SON 191: program 800,00 · kâhin -400,00
+  ✗ mizan K_SON 391: program -400,00 · kâhin 800,00
+ÖZET: 187 denetim, 4 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-dGFm5r
+[kanit] başarısız testler (4):
+[kanit] c7b2d-kahin-defter-utc: BAŞARISIZ (çıkış 1; 4 başarısız, 0 iptal) · çıkış 1 · 183/187 geçti, 4 başarısız, 0 iptal, 0 atlanan · commit a44e4e5 +1 izlenmeyen · linux 6.18.44-fc-v653 x64 · Node v22.23.4
+# kılavuz
+EKRANDA BULUNMAYAN: 0
+ekran-banka: 74 denetim geçti, 0 başarısız · metin-denetle (bütün bölümler): 880/880 ad (ekranda 619, program kaynağında 261)
+[kanit] c7b2d-kilavuz-metin: GEÇTİ · çıkış 0 · 954/954 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 39de5de +2 değişmiş dosya +1 izlenmeyen · linux 6.18.44-fc-v653 x64 · Node v22.23.4
+[kanit] c7b2d-pdf-denetle: GEÇTİ · çıkış 0 · 39/39 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 39de5de +2 değişmiş dosya +1 izlenmeyen · linux 6.18.44-fc-v653 x64 · Node v22.23.4
+# dondurma yarışı zorlaması (test/b7-dondurma-yaris-zorla.mjs, test/c7b-goc52-kilit-izi-250, 2 yineleme)
+/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2d-ana/zorla-bitir.out:[zorla özet] test/c7b-goc52-kilit-izi-250.test.mjs · 2 yineleme · ön koşul gerçekleşti 2 · gerçekleşmedi 0 · ön koşullu yeşil 2 · ön koşullu kırmızı 0 · süre doldu, ön koşul bilinmiyor 0
+/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2d-ana/zorla-gozlem.out:[zorla özet] test/c7b-goc52-kilit-izi-250.test.mjs · 2 yineleme · ön koşul gerçekleşti 2 · gerçekleşmedi 0 · ön koşullu yeşil 2 · ön koşullu kırmızı 0 · süre doldu, ön koşul bilinmiyor 0

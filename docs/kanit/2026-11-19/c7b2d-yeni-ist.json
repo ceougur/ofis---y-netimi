@@ -1,0 +1,32 @@
+{
+  "ad": "c7b2d-yeni-ist",
+  "komut": "node --test test/c7b-kdv-donemi-250.test.mjs test/c7b-goc52-kilit-izi-250.test.mjs test/c7b-kilit-izi-250.test.mjs test/defter-kaynak-iz-250.test.mjs test/donmus-defter-250.test.mjs test/donmus-defter-yasam-250.test.mjs test/kural-farki-kapi-disi-250.test.mjs",
+  "commit": "a44e4e5fa7c963e6724445f38cee19c93b0344fb",
+  "dal": "worktree-agent-a187e057786d3b7e4",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v653 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-19T09:19:47.885Z",
+  "sure_sn": 29.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 49,
+    "gecen": 49,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2d-ana/kanit/2026-11-19/c7b2d-yeni-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a187e057786d3b7e4",
+  "ham_cikti_sha256": "a839bc64229e143efaebf1ade2b265e2f9382690080347064e3e030f0033d392",
+  "ham_cikti_bayt": 30989
+}
