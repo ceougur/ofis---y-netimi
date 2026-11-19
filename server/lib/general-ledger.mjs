@@ -13,6 +13,7 @@ import { DOUBTFUL_CHART, DOUBTFUL_GL, applyDoubtfulToJournal, doubtfulKeepOf } f
 import { roundMoney } from "./money.mjs";
 import { OPENING_ROLES, effectiveGl } from "./bank/voucher.mjs";
 import { isCovered } from "./bank/opening-cover.mjs";
+import { NO_SHIFT, oldCollection, oldReturnVat } from "./ledger-rule-shift.mjs";
 
 /**
  * Türetme kuralının sürümü (2.5.0 Ç3; docs/erp/C3-DONDURMA-TASARIM.md §5): kilit konunca donan satırlar bu etiketle saklanır (ledger_snapshots.rule_version). Bir olayın
@@ -457,8 +458,11 @@ export function journal(rows) {
     return { account: gl.received, sub: atBank ? gl.bank : gl.portfolio };
   };
   const given = instrument => documentGl(instrument).given;
+  // 2.5.0 Ç7b tur 2c (KURAL GEÇİŞ GÜNÜ — B-8 = A + B-6; lib/ledger-rule-shift.mjs): KG-3 ve KG-8 / F-08'in yeni yönü yalnız geçiş gününden sonraki kayıtlara (rows.ruleShift; verilmezse
+  // geçiş yok). Geçiş gününde ve öncesinde tarihli kayıt eski yönde (alt defter hesabı — kilitli dönemde Kural Değişikliği Farkı doğurmaz; fişle düzeltilemezdi, B14).
+  const shift = rows.ruleShift || NO_SHIFT;
   // 2.5.0 Ç7b (KG-3 = A, T-14): kayıt (dosya) tahsilatı gelir değil — B para / A 336.90 "Sınıflandırılmamış Tahsilatlar" (Ç7b öncesi: A 602). Cari satırı değildir (party yok).
-  for (const row of rows.payments || []) (at = row.seq), post(`payment:${row.id}`, row.date, "Kayıt tahsilatı", row.note || "Tahsilat", moneyOf(row), UNCLASSIFIED_GL.collection, row.amount);
+  for (const row of rows.payments || []) (at = row.seq), post(`payment:${row.id}`, row.date, "Kayıt tahsilatı", row.note || "Tahsilat", moneyOf(row), oldCollection(shift, row.date) ? "602" : UNCLASSIFIED_GL.collection, row.amount);
   for (const row of rows.cashEntries || []) {
     at = row.seq;
     // v2.0.17: Kasa ↔ Banka transferi gelir/gider değildir — tek fiş, 100 ↔ 102 (nakit tarafı yazılır, banka tarafı atlanır). v2.1.0: banka
@@ -656,10 +660,11 @@ export function journal(rows) {
         { account: "391", side: "credit", amount: vat - withheld },
       ]);
     } else if (row.kind === "sale_return") {
-      // 2.5.0 Ç7b (KG-8 = A, F-07; KDVK 35): satıştan iade KDV'si iade döneminde İNDİRİM — B 191 (Ç7b öncesi: B 391). Mahsup sonucu iki dalda aynı.
+      // 2.5.0 Ç7b (KG-8 = A, F-07; KDVK 35): satıştan iade KDV'si iade döneminde İNDİRİM — B 191 (Ç7b öncesi: B 391). Mahsup sonucu iki dalda aynı. Geçiş gününde / öncesinde ya da
+      // güncellemeden önce mahsup edilmiş (etkin) ayda eski yön B 391 (tur 2c; B-6, B-8).
       postLines(`invoice:${row.id}`, row.date, "Satıştan iade faturası", label, [
         ...nets.map(net => ({ ...net, side: "debit" })),
-        { account: "191", side: "debit", amount: vat - withheld },
+        { account: oldReturnVat(shift, row.date) ? "391" : "191", side: "debit", amount: vat - withheld },
         { account: control, side: "credit", amount: payable },
       ]);
     } else if (row.kind === "purchase") {
@@ -670,12 +675,12 @@ export function journal(rows) {
         { account: control, side: "credit", amount: payable },
       ]);
     } else if (row.kind === "purchase_return") {
-      // 2.5.0 Ç7b (F-08): alıştan iade KDV'si A 391 (Ç7b öncesi: A 191).
+      // 2.5.0 Ç7b (F-08): alıştan iade KDV'si A 391 (Ç7b öncesi: A 191). Geçiş gününde / öncesinde ya da güncellemeden önce mahsup edilmiş ayda eski yön A 191 (tur 2c).
       postLines(`invoice:${row.id}`, row.date, "Alıştan iade faturası", label, [
         { account: control, side: "debit", amount: payable },
         { account: "360", side: "debit", amount: withheld + stoppage },
         ...nets.map(net => ({ ...net, side: "credit" })),
-        { account: "391", side: "credit", amount: vat },
+        { account: oldReturnVat(shift, row.date) ? "191" : "391", side: "credit", amount: vat },
       ]);
     }
   }

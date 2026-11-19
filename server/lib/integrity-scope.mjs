@@ -32,6 +32,7 @@ import { collectionProblems } from "./bank/collections.mjs";
 import { doubtfulProblems, doubtfulSummary, doubtfulUsed } from "./bank/doubtful.mjs";
 import { BANK_SUBS, DOCUMENT_MAINS, DOCUMENT_SUB_NAMES, RECEIVED_MAINS, documentWanted } from "./cheque-gl.mjs";
 import { moneyAccount, partyBalances, subBalances } from "./general-ledger.mjs";
+import { oldReturnVatSql, ruleShiftOf } from "./ledger-rule-shift.mjs";
 import { toCents } from "./money.mjs";
 
 const AUDITOR = { id: "integrity", role: "admin", permissions: [] };
@@ -662,9 +663,14 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
       const list = json(s.invoices);
       const c = column => `CAST(ROUND(${column} * 100) AS INTEGER)`;
       const fromLedger = build({ invoices: [...s.invoices] });
+      // 2.5.0 Ç7b tur 2c (B-9; KURAL GEÇİŞ GÜNÜ — lib/ledger-rule-shift.mjs): iade KDV'si türetmeyle (journal) ve beklenenle (routes/ledger.mjs expected) AYNI kuralla — KG-8 satıştan iade
+      // B 191, F-08 alıştan iade A 391; geçiş gününde / öncesinde ya da güncellemeden önce mahsup edilmiş (etkin) ayda eski yön (satıştan iade B 391, alıştan iade A 191).
+      const old = oldReturnVatSql(ruleShiftOf(store), "issue_date");
       const sums = store.get(
-        `SELECT COALESCE(SUM(CASE kind WHEN 'purchase' THEN ${c("try_vat")} WHEN 'purchase_return' THEN -${c("try_vat")} END), 0) AS v191,
-                COALESCE(SUM(CASE WHEN kind IN ('sale', 'smm') THEN -(${c("try_vat")} - ${c("try_withheld")}) WHEN kind = 'sale_return' THEN ${c("try_vat")} - ${c("try_withheld")} END), 0) AS v391,
+        `SELECT COALESCE(SUM(CASE WHEN kind = 'purchase' THEN ${c("try_vat")} WHEN kind = 'purchase_return' AND ${old} THEN -${c("try_vat")}
+                                  WHEN kind = 'sale_return' AND NOT ${old} THEN ${c("try_vat")} - ${c("try_withheld")} END), 0) AS v191,
+                COALESCE(SUM(CASE WHEN kind IN ('sale', 'smm') THEN -(${c("try_vat")} - ${c("try_withheld")}) WHEN kind = 'sale_return' AND ${old} THEN ${c("try_vat")} - ${c("try_withheld")}
+                                  WHEN kind = 'purchase_return' AND NOT ${old} THEN -${c("try_vat")} END), 0) AS v391,
                 COALESCE(SUM(CASE kind WHEN 'purchase' THEN -(${c("try_withheld")} + ${c("try_stoppage")}) WHEN 'purchase_return' THEN ${c("try_withheld")} + ${c("try_stoppage")} END), 0) AS v360,
                 COALESCE(SUM(CASE WHEN kind IN ('sale', 'smm') THEN ${c("try_stoppage")} END), 0) AS v193
          FROM invoices i WHERE +i.status = 'issued' AND EXISTS (SELECT 1 FROM accounts a WHERE a.id = i.account_id AND a.deleted_at IS NULL) AND i.id IN ${IN}`,

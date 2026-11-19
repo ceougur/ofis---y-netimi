@@ -1646,6 +1646,29 @@ export const MIGRATIONS = [
       });
     },
   },
+  {
+    version: 51,
+    name: "v2.5.0 Ç7b kural geçiş günü ve eski KDV mahsuplarının kural sürümü (yalnız işaret; para dışı)",
+    up(store, { now = systemClock } = {}) {
+      // 2.5.0 Ç7b tur 2c (docs/erp/C7B-FATURA-TASARIM.md §13; BAŞ MİMAR KARARI 19.11 04:35 B-6 ve 05:07 B-8 = A; lib/ledger-rule-shift.mjs): KG-3 (kayıt tahsilatı 336.90) ve KG-8 / F-08
+      // (iade KDV'si 191 ↔ 391) yeni yönü KURAL GEÇİŞ GÜNÜ'nden sonraki kayıtlara. YALNIZ İŞARET — tutar, yön, tarih DEĞİŞMEZ (saklı KDV mahsubu dahil: verilmiş beyan ile defter aynı kalır).
+      //   (1) settings 'ledger.ruleShiftThrough' = o anki dönem kilidi (tam tarih değilse '' — kilitsiz dosyada geçiş yok). INSERT OR IGNORE: yeniden koşan göç var olan değeri DEĞİŞTİRMEZ
+      //       (sonradan konan / taşınan kilit geçiş günü olmaz — tek tanım).
+      //   (2) vat_offsets.rule_version ('' = güncel kural; sütunun varsayılanı, yazım yolu değişmez). Sütun BU GÖÇTE eklendiyse var olan bütün mahsuplar (etkin + geri alınmış) '2.4.9'
+      //       — güncellemeden önce yazılmıştır; yeniden koşuda (sütun var) işaretlenmez (yeni mahsup eski sayılmaz).
+      // Göç öncesi (≤ 50) yedeğin geri yüklenmesi bu göçü o yedeğin kilidiyle yeniden koşar. Kilit izine girmez (lib/integrity.mjs; kapı dışı değişiklik kilitli dönemde Kural Değişikliği
+      // Farkı olarak görünür). Eşgüçlü.
+      store.raw("migration.v51", () => {
+        if (columnExists(store, "settings", "value")) {
+          const lock = String(store.get("SELECT value FROM settings WHERE key = 'ledger.lockedUntil'")?.value || "");
+          store.run("INSERT OR IGNORE INTO settings (key, value, updated_at) VALUES ('ledger.ruleShiftThrough', ?, ?)", isFullDate(lock) ? lock : "", now().toISOString());
+        }
+        if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'vat_offsets'") || columnExists(store, "vat_offsets", "rule_version")) return;
+        addColumn(store, "vat_offsets", "rule_version", "TEXT NOT NULL DEFAULT ''");
+        store.run("UPDATE vat_offsets SET rule_version = '2.4.9'");
+      });
+    },
+  },
 ];
 /** Excel / Sheets "Açılış portföyü" evrakının ilk olay notu (routes/cheques.mjs OPENING_PORTFOLIO_NOTE ile AYNI metin; göç 49). */
 const OPENING_PORTFOLIO_NOTE = "Açılış portföyü (Excel/Sheets)";

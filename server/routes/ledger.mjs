@@ -15,6 +15,7 @@ import { leanAll } from "../lib/lean-rows.mjs";
 import { coverBounds } from "../lib/bank/opening-cover.mjs";
 import { commissionGlOf, commissionReady, salesSql as commissionSalesSql, settledSql as commissionSettledSql } from "../lib/bank/pos-commission.mjs";
 import { roundMoney } from "../lib/money.mjs";
+import { oldCollectionSql, oldReturnVatSql, ruleShiftOf } from "../lib/ledger-rule-shift.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 // Carisiz evrak satırlarının yazım sırası tabanı (MM8): cari satırlarının rowid'lerinden büyük (aynı gün aynı sınıfta onlardan sonra gelir).
@@ -301,6 +302,8 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     // düşer (integrity-scope FULL_TABLES). Alt defter hesabına (beklenen bakiyesi olan her hesap: cari kontrol hesapları dahil) fiş yazılmaz — Ç2 tur 1: fiş denetiminde
     // 400 (aşağıda subledgerAccounts); kapı ikinci katman (C2-FIS-DEFTERI-TASARIM.md §11).
     if (!filter) out.vouchers = voucherJournalRows(store);
+    // 2.5.0 Ç7b tur 2c (KURAL GEÇİŞ GÜNÜ; lib/ledger-rule-shift.mjs): KG-3 / KG-8 / F-08'in eski ↔ yeni yönü — süzgeçli kurulumda da aynı (tek tanım; iki küçük sorgu).
+    out.ruleShift = ruleShiftOf(store);
     return out;
   }
   // 2.5.0 Ç5-A: carisiz evrakın karşı hesabı journal()'da (açılış evrakı 519, formdan carisiz 649.90 / 770.90 — S49); 2.4.9'da burada 602 / 770'e çevriliyordu.
@@ -343,7 +346,9 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
       out[code] = roundMoney(out[code] + (Number(account.balance) || 0));
     }
     // 2.5.0 Ç7b (KG-3 = A; B-2): kayıt (dosya) tahsilatları 336.90'ın alacağındadır (cari değil) — 336'nın beklenenine kayıt alt defterinin kendi toplamıyla katılır.
-    if (has("payments")) out[336] = roundMoney(out[336] - Number(store.get("SELECT COALESCE(SUM(CAST(ROUND(amount * 100) AS INTEGER)), 0) AS n FROM payments").n) / 100);
+    // Tur 2c (KURAL GEÇİŞ GÜNÜ; lib/ledger-rule-shift.mjs): geçiş gününde / öncesinde tarihli tahsilat eski yönde (602) — 336'ya katılmaz.
+    const shift = ruleShiftOf(store);
+    if (has("payments")) out[336] = roundMoney(out[336] - Number(store.get(`SELECT COALESCE(SUM(CAST(ROUND(amount * 100) AS INTEGER)), 0) AS n FROM payments WHERE NOT ${oldCollectionSql(shift, "date")}`).n) / 100);
     // Çek/senet alt defteri (2.2.0 İz 4.2, plan §3.11a): portföydeki alınan çek 101, senet 121; ödenecek verilen çek 103, senet 321. 121/321
     // satırı yalnız senet girilmişse (silinmiş olsa da) açılır: senet kullanmayan kurulumun Defter Mutabakatı ve Mutabakat Testi'nin denetim
     // listesi 2.1.0 ile aynı kalır (300/309 kuralı gibi). Senedi olmayan veride yevmiye 121/321'e satır yazmaz.
@@ -383,12 +388,17 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     // Hesaplanan KDV (satış + alıştan iade; tevkifat düşülmüş; Ç7b F-08), 360 tevkifat ve stopaj (alıcı olarak kestiklerimiz),
     // 193 stopaj (müşterinin bizden kestiği). Borç bakiyesi artı.
     if (has("invoices")) {
+      // Tur 2c (KURAL GEÇİŞ GÜNÜ; lib/ledger-rule-shift.mjs): geçiş gününde / öncesinde ya da güncellemeden önce mahsup edilmiş (etkin) ayda iade KDV'si ESKİ yönde (satıştan iade 391'in
+      // borcunda, alıştan iade 191'in alacağında) — türetmeyle (journal) aynı tanım.
+      const old = oldReturnVatSql(shift, "i.issue_date");
       const sums = store.get(
         // 2.5.0 Ç7b (KG-8 = A, F-07 / F-08; B-2): satıştan iade KDV'si 191'in borcunda (Ç7b öncesi 391'in borcunda), alıştan iade KDV'si 391'in alacağında (Ç7b öncesi 191'in alacağında).
         `SELECT COALESCE(SUM(CASE WHEN kind = 'purchase' THEN CAST(ROUND(try_vat * 100) AS INTEGER)
-                                  WHEN kind = 'sale_return' THEN CAST(ROUND(try_vat * 100) AS INTEGER) - CAST(ROUND(try_withheld * 100) AS INTEGER) END), 0) AS v191,
+                                  WHEN kind = 'sale_return' AND NOT ${old} THEN CAST(ROUND(try_vat * 100) AS INTEGER) - CAST(ROUND(try_withheld * 100) AS INTEGER)
+                                  WHEN kind = 'purchase_return' AND ${old} THEN -CAST(ROUND(try_vat * 100) AS INTEGER) END), 0) AS v191,
                 COALESCE(SUM(CASE WHEN kind IN ('sale', 'smm') THEN -(CAST(ROUND(try_vat * 100) AS INTEGER) - CAST(ROUND(try_withheld * 100) AS INTEGER))
-                                  WHEN kind = 'purchase_return' THEN -CAST(ROUND(try_vat * 100) AS INTEGER) END), 0) AS v391,
+                                  WHEN kind = 'sale_return' AND ${old} THEN CAST(ROUND(try_vat * 100) AS INTEGER) - CAST(ROUND(try_withheld * 100) AS INTEGER)
+                                  WHEN kind = 'purchase_return' AND NOT ${old} THEN -CAST(ROUND(try_vat * 100) AS INTEGER) END), 0) AS v391,
                 COALESCE(SUM(CASE kind WHEN 'purchase' THEN -(CAST(ROUND(try_withheld * 100) AS INTEGER) + CAST(ROUND(try_stoppage * 100) AS INTEGER))
                                        WHEN 'purchase_return' THEN CAST(ROUND(try_withheld * 100) AS INTEGER) + CAST(ROUND(try_stoppage * 100) AS INTEGER) END), 0) AS v360,
                 COALESCE(SUM(CASE WHEN kind IN ('sale', 'smm') THEN CAST(ROUND(try_stoppage * 100) AS INTEGER) END), 0) AS v193
