@@ -377,3 +377,70 @@ KEEP_SETTINGS'te yok). Göç 51 yeniden koşmaz (şema 52) → sıfırlanan dosy
   (2) **test/acilis-onarimi-hiz-250 'eşdeğerlik' tabanda kırmızı** (Ç7b tur 2–2c'den kalma; Ç7b öncesi kodda yeşil): v2.0.26 fikstüründe kilitli Kasa carisiz hareketinin 649 / 770 → .90 alt
   hesabı (K-01 / K-02) Kural Değişikliği Farkı uyarısı verir, beklenen döküm Ç7b öncesi kodla üretilmiş → BEKLENTİ değişmesi TUR 2e'de (komşu taraması o dosyayı kaçırmıştı).
   (3) Kılavuz maddesindeki "Kartı Kapat'ın kalanı borçta bırakması" bugünkü kodda DOĞRU DEĞİL (onay metni "carinin borcundan düşülür"; 'Borçta Kalsın' TUR 3) → kılavuza yazılmadı, TUR 3'e.
+
+## 15. Tur 2e (19.11.2026; görev metni `docs/devir/2.5.0-DEVAM/c7b2e-istem.txt`) — B-11, B-12, Sıfırla ↔ KDV mahsubu, onarım eşdeğerliği — KODDAN ÖNCE yazıldı
+Kararlar (iş listesi D, BAŞ MİMAR KARARI 19.11 09:29 UTC — Ç7b TUR 2d RAPOR): (B-11) = A, (B-12) = A, SIFIRLA ↔ KDV MAHSUBU = HATA (düzeltilir), ONARIM EŞDEĞERLİĞİ = ÖNCE HATA (ders 6).
+Bugünkü davranış taban kodda (c7b2e-taban = 9d933883) yeniden üretildi (not defteri `c7b2e-ana/uc-madde-taban.out`, `onarim-kok-yeni.out`, `onarim-kok-onc7b.out`). Örnek (tur 2d raporunun):
+sahte saat 10.02.2027; Aralık 2026 satış 10.000 + KDV 2.000, alış P1 1.000 + 200 (15.12), alış P2 2.000 + 400 (31.12, KDV İndirim Dönemi Ocak 2027); Ocak 2027 satış 1.000 + 200, alış P3 500 + 100.
+
+### 15.1 B-11 — KDV Özeti (Beyanname Hazırlığı) alış satırları KDV İndirim Dönemi'ne göre (`routes/report-center.mjs` YALNIZ kdv-ozeti)
+- BUGÜN: rapor belge ayına göre gruplar. Aralık (01.12–31.12): Alış 2 belge, KDV 600; İndirilecek KDV (191) 600; Ödenecek 1.400. Ocak: Alış 1 belge, KDV 100; Ödenecek 100. KDV Mahsup Fişi ise
+  Aralık İ 200, Ocak İ 500 (dönem ayına) → rapor ile mahsup ay ay AYRIŞIR.
+- DEĞİŞECEK: raporun iki sorgusu (satırlar ve özet başlıkları) belgenin "KDV günü"nü kullanır: alış faturasında (kind = 'purchase') `vat_period` dolu ve belge ayından farklıysa dönem ayının
+  İLK günü (`vat_period || '-01'`), değilse belge tarihi. Ay grubu bu günün ayı; aralık süzgeci (from / to) bu güne uygulanır. Satış, SMM, satıştan iade ve alıştan iade belge tarihinde
+  (§14.4: iade kendi ayında). "Mahsuptan Sonra Değişen Ay" / "KDV Mahsup Fişi" özet satırları değişmez (offsetList zaten dönem ayıyla). Sütun yoksa (göç 52 öncesi şema — ör. salt okunur
+  arşiv) bugünkü sorgu (belge tarihi).
+- NEDEN AYIN İLK GÜNÜ (yorum; dönem bir AYDIR, günü yok): ay grubu her seçenekte aynı; günlük aralıkta (Son 30 Gün, elle aralık) belge YALNIZ BİR aralıkta sayılır — iki bitişik aralığın
+  toplamı birleşik aralığa eşit (ay ortasında bölünen aralıkta çift sayım yok); "Bu Ay" / "Geçen Ay" / "Bu Yıl" tam ay olduğundan sonuç ayın hangi günü seçilse de aynı; programda ay kalemini
+  ayın ilk gününe yazma örneği var (lib/finance-report.mjs vade takibi: "Tablodaki ay kalemi … ayın ilk gününe yazılır"). Sonuç: "Tüm Zamanlar" (bugüne kadar) gelecekteki bir aya alınmış
+  faturayı o ay gelene dek göstermez (dönemi henüz başlamamış indirim — beyannamede de o ay). Rapor 'BAŞ MİMAR KARARI GEREKİYOR'da gösterir (değiştirilebilir).
+- SONRA (örnek): Aralık Alış 1 belge, matrah 1.000, KDV 200, İndirilecek 200, Ödenecek 1.800 = mahsup; Ocak Alış 2 belge, matrah 2.500, KDV 500, Net KDV Devreden 300 = mahsup.
+- TEST (`test/c7b-kdv-ozeti-donem-250.test.mjs`, YENİ): her süzgeç seçeneği (Bu Ay, Geçen Ay, Bu Yıl, Tüm Zamanlar, Son 30 Gün, elle Aralık / Ocak / 15.12–15.01 / bölünmüş iki aralık) için
+  toplam = satırlar (TOPLAM Alış = Σ alış satırı), özetin 191'i = TOPLAM Alış − TOPLAM Alıştan İade, ekran = PDF metni = Excel hücreleri; ay ay KDV Mahsup Fişi ön izlemesinin İ'si = raporun
+  İndirilecek KDV'si (iadesiz örnekte); iki TZ (Europe/Istanbul, UTC); belge tarihi 31.12 (ay / yıl sonu).
+
+### 15.2 B-12 — faturanın KDV İndirim Dönemi kilit izine (`lib/integrity.mjs` YALNIZ LOCK_SQL eki)
+- BUGÜN: kilit 31.12.2026; kilitli P2'nin dönemi kapı dışı Ocak → Şubat değişince kilit izi DEĞİŞMEZ; açık Ocak'ın mahsup ön izlemesi İ 500 → 100 olur (izsiz).
+- DEĞİŞECEK: LOCK_SQL'e `invoices_vat_period_lock` = `SELECT id, vat_period FROM invoices WHERE status <> 'draft' AND vat_period <> '' AND issue_date <= ?1 ORDER BY id`, `requires
+  ["invoices.vat_period"]`, `since "2.5.2"` (tanım sürümü AYNI — 2.5.2 yayımlanmadı; tur 2d'nin iki ekiyle aynı sürüm). Yalnız DOLU dönemli faturalar satır üretir → dönemsiz veride iz
+  aynı; v2.4.9 verisinde (sütun '' ) güncellemeden sonra yanlış alarm yok; 2.5.1 ve öncesinin koşuları kendi tanımıyla.
+- TEST: `test/defter-kaynak-iz-250` kaynak taramasına KDV mahsubunun okuduğu sorgular da girer (routes/tax.mjs `offsetList` — yevmiye + `vatPeriods` + mahsup satırları); veriye dönemi ileri
+  alınmış kilitli bir alış faturası eklenir. Bu sınıf açık (mahsubun okuduğu sütun izde değil) yeniden kaçarsa test kırılır: eki çıkaran mutant KIRMIZI. Yalnız listede görünen
+  `vat_offsets.reversed_at` gerekçeli istisna (taramada çıkarsa). `test/c7b-goc52-kilit-izi-250` (b)'ye: kilitli faturanın dönemi kapı dışı değişince güncel iz değişir, 2.5.1 izi değişmez.
+
+### 15.3 Sıfırla ↔ KDV mahsubu (`server/app.mjs` YALNIZ MOVEMENT_TABLES)
+- BUGÜN: Aralık mahsubu yazılmış dosyada "Tüm Hareketleri Sil" → faturalar 0, `vat_offsets` 1 satır kalır; mizan 191 −200 / 360 −1.800 / 391 +2.000 (faturasız); Mutabakat Testi YEŞİL; KDV
+  Mahsup Fişi listesinde "Aralık 2026 — Güncel Değil". "Tümünü Sıfırla" da aynı listeyi (MOVEMENT_TABLES + CARD_TABLES) kullanır → aynı hata orada da.
+- DEĞİŞECEK: MOVEMENT_TABLES'a "vat_offsets" (iki kip de siler; mahsup bir hareket kaydıdır — fatura gibi). Başka değişiklik yok (kartlar, ayarlar, kilit kaldırma aynen).
+- NEDEN MUTABAKAT YAKALAMIYOR: Defter Mutabakatı'nın / Mutabakat Testi'nin beklenen 391 / 191 / 190 / 360'ı (routes/ledger.mjs expected) etkin mahsupların tutarlarını `vat_offsets`'in
+  KENDİSİNDEN ekler; yevmiyenin mahsup maddesi de aynı satırdan türer → yetim mahsup iki yana EŞİT girer, fark sıfır. Mahsubun saklı tutarını o ayın gerçek 391 / 191 hareketiyle
+  karşılaştıran denetim Mutabakat'ta YOK; bu karşılaştırma yalnız KDV mahsubunun "Güncel Değil" işaretidir (routes/tax.mjs offsetList — uyarı, kapı değil). Kapı değişikliği ayrı karar.
+- TEST (`test/c7b-sifirla-kdv-mahsup-250.test.mjs`, YENİ): iki kip ayrı veride; sonra mizan 191 / 360 / 391 / 190 = 0, Mutabakat Testi yeşil, mahsup listesi boş, kartlar (movements) kalır;
+  sıfırlamadan sonra yeni ayın mahsubu sıfırdan doğru (eski mahsup "sonraki ay mahsup edilmiş" engeli koymaz).
+
+### 15.4 Onarım eşdeğerliği — kök neden (ders 6; ÖNCE HATA diye ele alındı)
+- YENİDEN ÜRETİM (`test/acilis-onarimi-hiz-250` fikstürü = v2.0.26 gerçek kodu verisi; bugün 06.11.2026, kilit 07.10.2026; göç 51 geçiş günü 07.10.2026): açılışta dondurma koşusu 2.4.9 kuralıyla
+  (rule_version "2.4.9" — `lib/ledger-rule-249/`) donar. Kural Değişikliği Farkı TEK madde: `cash:cash-57559235…` 08.08.2026 "Açılış" carisiz Kasa girişi 200.000 TL — DONMUŞ 100 / 649
+  (alt hesapsız), CANLI 100 / 649.90 (K-01, §2.1). Hesap başına (ana hesap) fark 0: −200.000 649'dan 649.90'a geçer, 649'un bakiyesi aynı → `difference` 0, `breakdown` boş; madde sayısı 1
+  → uyarı (ok false). Ç7b öncesi kodda (c7b2-taban) aynı veride fark yok (ok true) — beklenen döküm o kodla üretilmiş.
+- B-8 ÖLÇÜSÜ: B-8 (= A + B-6; §13 başlığı) yalnız alt defter hesabına dokunan üç kuralı (KG-3, KG-8, F-08) geçiş gününe bağlar ve AÇIKÇA "KG-2, KG-24, .90 alt hesapları (alt defter dışı)
+  Kural Farkı Düzeltme Fişi'yle eskisi gibi" der; §3 (okuyucu tablosu) ve §4 (5) ".90 farkı kilitli dönemde görünür, fişle Düzeltildi" der; §13.4 (6) aynı. → B-8 bu kaydı KAÇIRMIYOR: .90
+  farkı B-8'in kapsamı DIŞINDA, kararla. Kural farkı uyarısı TASARIMIN SONUCU; ürün hatası değil.
+- FİŞLE KAPANIYOR MU (yeniden üretildi): Kural Farkı Düzeltme Fişi ön izlemesi 08.10.2026 B 649 200.000 / A 649.90 200.000; fiş yazılınca Mutabakat Testi = Ç7b öncesi kodun sonucu (ok true).
+- 'FARKSIZ UYARI' AYRI HATA MI: hayır — uyarı GERÇEK bir alt hesap farkıdır (madde sayısı doğru). `difference` / `breakdown` ana hesap düzeyinde toplanır (yalnız alt hesap kayan maddede 0
+  / boş); Yönetim ekranı fark tutarını yalnız sıfırdan farklıysa yazar ("1 madde … fark Kural Farkı Düzeltme ile ilk açık güne alınır") — "0 TL farkı var" demiyor; breakdown istemcide
+  gösterilmiyor. Alt hesap kırılımında tutarın görünmemesi DÜŞÜK gözlem: lib/ledger-snapshots.mjs (dosya sınırı DIŞI) → rapor 'BAŞ MİMAR KARARI GEREKİYOR'.
+- DEĞİŞECEK (yalnız test): `test/acilis-onarimi-hiz-250` "eşdeğerlik" — BEKLENTİ BİLEREK DEĞİŞTİ (K-01 §2.1; B-8 kapsamı §13 başlığı; §4 (5); §13.4 (6)): bütün bölümler eski dökümle birebir;
+  YALNIZ Mutabakat Testi bölümü: yeni {ok:false, failures:[ledger:rule-diff]} ve kural farkı TAM OLARAK bu tek madde (649 → 649.90, 200.000 TL; B-8'in üç kuralından madde YOK); sonra Kural
+  Farkı Düzeltme Fişi yazılır ve Mutabakat Testi eski dökümün Mutabakat'ıyla BİREBİR (ok true). Fikstür ve beklenen döküm dosyası DEĞİŞMEZ (kâhin = eski kodun gerçek çıktısı).
+  `lib/ledger-rule-shift.mjs` DEĞİŞMEZ.
+- KOMŞU: v2.4.9 gerçek kodu verisi (`test/c7b-goc52-kilit-izi-250`) ve v2.0.26 verisinin öbür testleri (kural-farki-*, donmus-defter-*) G2 taramasında.
+
+### 15.5 Nasıl bozulur? (önce yazıldı; testler buradan)
+1. KDV Özeti belge ayına geri döner (mutant) → Aralık / Ocak İ mahsupla ayrışır; süzgeç dönemi belge tarihine uygular → bölünmüş aralıkta belge kaybolur ya da iki kez sayılır.
+2. Özet (191) sorgusu satırlardan farklı kuralla → TOPLAM Alış ≠ İndirilecek KDV.
+3. Alıştan iade de dönemle gruplanır → iade kendi ayından kayar (§14.4).
+4. PDF / Excel ekrandan farklı (aynı `run` — denetlenir).
+5. Kilit izinden dönem eki çıkar → kaynak tarama ve (b) testi kırmızı; ek sürüme bağlı değil → 2.5.1 koşusunda yanlış alarm.
+6. Sıfırla mahsubu silmez → mizan 360 / 391 / 191 ≠ 0; 'all' kipi unutulur.
+7. Onarım eşdeğerliği: beklenti gevşer (her rule-diff kabul) → B-8'in üç kuralından kilitli fark sızarsa görülmez — test fark maddesini tek tek sayar.
