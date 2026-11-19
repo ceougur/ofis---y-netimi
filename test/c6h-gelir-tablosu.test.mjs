@@ -151,6 +151,8 @@ describe("Ç6-HESAP Gelir Tablosu — Kesin Değil, dipnotlar, hata", () => {
     assert.equal(out.smm.estimated, false);
     assert.deepEqual(item(out, "D").hesaplar.map(row => [row.hesap, row.tutarMinor, Boolean(row.tahmini)]), [["621", 24000, false]]);
     assert.ok(!out.kesinDegil.some(row => row.kod === "smm-tahmini"));
+    assert.equal(out.smm.stockFlowMinor, 60000, "153 akışı N-01 (dönem sonu sınıfı) maddesini saymaz");
+    assert.equal(out.smm.differenceMinor, 0);
   });
   it("dipnot 3 (770.90 tutarı) ve dipnot 6 (.90 gelir / gider)", () => {
     const out = gt("2026-01-01", "2026-03-31");
