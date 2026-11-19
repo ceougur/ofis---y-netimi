@@ -4874,3 +4874,22 @@ YORUMDUR (ders 40 — önce kural, sonra kod); senaryo / elle beklenen, kural ko
   (H1 / H2 / H3). **Bakım 21 modelinde 10 kırmızı** (beklenen nedenle — hepsi S206 / SK-41 alanında: I1'in açık / gecikmiş / açık toplamı ANAHTAR YOK ×4 (cari C13.4 (11) tanımsız), KI1 göstergeleri
   yazılıyor ×3, `belirsiz` "S206 = A" / "SK-41 (a)" / "SK-41 (b)" yok ×3); G1, H1 … H3, I4 ve I2 / I3 bakiyeleri bakım 21 modelinde de YEŞİL (kural değişmedi — beklenen).
 - **`d49` (karar gereği güncellendi — izinli):** A1'in `elleBelirsiz`'i ve yeni 6 `elleYok`; bakım 21 modelinde **7 kırmızı** (beklenen nedenle: KA1 göstergeleri yazılıyor ×6, `belirsiz` "S206 = A" yok ×1).
+
+### Kurallar (bakım 21b kod commit'i; yorumların `model.py`'deki karşılığı)
+- `_s206_kartlar(fad, f)` (Y21b-7 / Y21b-8): iptalden ÖNCE carinin kuyruğundan (`tyk250` → `tuketilen`) faturayı içine almış Taksitler'den açılmış Mevcut Borç kartları (`api`, `mevcut`, `satis` yok, aktif):
+  yalnız bu faturayı içine almış + aktif Taksit Tahsilatı var → "s206"; başka kalem de içine almış → "SK-41 (a)"; tahsilatsız → "SK-41 (b)". Kuyruk iptalden önce tanımsızsa boş (bugünkü susma aynen).
+  Yalnız `k250`.
+- `fatura_iptal` (Y21b-7): "s206" kartı kapanır (`aktif` false, `s206` işareti); kartın aktif Taksit Tahsilatlarının kart bağı kalkar (`kart` → None, iz `s206kart`) → kendi tarihinde bağsız kaynak (C13.4 (3) /
+  (4)). "SK-41 (…)" kartı açık kalır, `_sk41` işareti (carinin kuyruğu kart açık borçtan büyük olduğu için tanımsız — `tyk250` nedeni "KULLANICIYA SORULMALI SK-41 (…) (§33 Y21b-8)"). Mutant 322 (bakım 21)
+  kapatmadan önce koşar (aynen).
+- `kontrol` kart bloğu (Y21b-7): `s206` işaretli kapanmış kartın hiçbir göstergesi yazılmaz; `belirsiz` "kart … S206 = A ile kapandı … (§33 Y21b-7; SÜRÜCÜ İÇİN)".
+- `tahsilat` (Y21b-5): kural DEĞİŞMEDİ (pay yolundan bağımsız); yalnız mutant 325.
+- İz `_iz15[cari]`: "s206" (kart kapandı), "sk41" (SUS) — G3 sınıflaması için; sonucu değiştirmez.
+- S205 (Y21b-6) / C3 (Y21b-3): kural kodu YOK (dilde Kartı Kapat yok).
+
+### C10z Mutantlar (bakım 21b; `oz-test.py` DEĞERLE — senaryo listesi koşudan)
+- 323 (S206 B — kart açık kalır: d50 I1), 325 (havale bağlı tahsilat şüpheliden düşmez: d50 H1 RET'e döner, H3 Değersiz 601 kabul) DEĞERLE; 324 (S206 susması yok — SK-41 kartı da kapanır, kapanmış kartın
+  `var` = false yazılır) elle tablonun `elleYok` / `elleBelirsiz` satırıyla (`SUSMA_MUTANTLARI = {316, 324}`). Bakım 6 … 21 mutantları aynen yakalanıyor (322 artık d49 A1 ve d50 I1'de).
+
+### Dil ekleri (/3, bakım 21b)
+- YOK. Adım alanları değişmedi (`fatura_iptal`, `kart_ac {mevcut}`, `kart_tahsilat`, `tahsilat {fatura, yol}`, `supheli_al`, `degersiz`, `evrak {fatura}`, `fatura {taksit}`, `kontrol {gecikmis, acikToplam}`).
