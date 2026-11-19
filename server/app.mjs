@@ -31,6 +31,7 @@ import { registerAdminRoutes } from "./routes/admin.mjs";
 import { registerAuthRoutes } from "./routes/auth.mjs";
 import { registerCashRoutes } from "./routes/cash.mjs";
 import { registerLedgerRoutes } from "./routes/ledger.mjs";
+import { registerFinancialStatementRoutes } from "./routes/financial-statements.mjs";
 import { registerBankRoutes } from "./routes/bank.mjs";
 import { createPosQueue } from "./lib/bank/pos.mjs";
 import { registerWhatsappRoutes } from "./routes/whatsapp.mjs";
@@ -658,6 +659,8 @@ function buildApp(overrides, opening) {
   undo.push(() => reportRunner?.close());
   // sharedStore (2.4.7, müşteri isteği 6a): kişi başına rapor tercihleri ortak katmanda (kullanıcılar orada; 002'de de aynı kişi aynı tercihi görür).
   context.reportCenter = registerReportCenter(router, { ...context, sharedStore: hub ? hub.store : store, tax: () => context.tax, cash: () => context.cash, accounts: () => context.accounts, plans: () => context.plans, stock: () => context.stock, cheques: () => context.cheques, invoices: () => context.invoices, overview: () => context.overview, ledger: () => context.ledger, integrity: () => context.integrity, doubtful: () => context.doubtful, offload: reportRunner ? job => reportRunner.run({ ...job, dbPath: config.dbPath, fx: config.fxEnabled === true, later: config.bankLater === true }) : null });
+  // 2.5.0 Ç6-HESAP (docs/erp/C6-HESAP-TASARIM.md §8): mali tabloların hesabı (Gelir Tablosu, stok değerlemesi) — JSON okuma ucu, rapor iş parçacığında.
+  context.financialStatements = registerFinancialStatementRoutes(router, { ...context, ledger: () => context.ledger });
   registerDueRoutes(router, { ...context, calendar: () => context.tableReports?.calendar });
   const documents = registerDocumentRoutes(router, context);
   undo.push(() => documents.stop());
