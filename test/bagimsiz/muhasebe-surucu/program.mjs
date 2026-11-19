@@ -14,6 +14,7 @@
 // Reddedilen istek başarı sayılmaz (ders 3): durum + kod + ileti program.json'a yazılır.
 process.env.HUKUK_LICENSE_URL ||= "http://127.0.0.1:9";
 
+import { randomUUID } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { monitorEventLoopDelay, performance } from "node:perf_hooks";
@@ -46,6 +47,7 @@ const tl = kurus => {
 const kurus = v => Math.round((Number(v) || 0) * 100);
 const ilkTarih = s.olaylar.map(o => o.tarih).filter(Boolean).sort()[0] || "2026-01-01";
 const oncekiGun = iso => new Date(Date.parse(`${iso}T00:00:00Z`) - 86400000).toISOString().slice(0, 10);
+const ertesiGun = iso => new Date(Date.parse(`${iso}T00:00:00Z`) + 86400000).toISOString().slice(0, 10);
 const ertesiAy = ay => new Date(Date.UTC(Number(ay.slice(0, 4)), Number(ay.slice(5, 7)), 1)).toISOString().slice(0, 10);
 const gunAdi = iso => `${iso.slice(8, 10)}.${iso.slice(5, 7)}.${iso.slice(0, 4)}`;
 
@@ -55,7 +57,11 @@ const loop = monitorEventLoopDelay({ resolution: 5 });
 // senaryonun son `yedekten` olayına KADARKİ bütün olayları ESKİ SÜRÜMÜN GERÇEK koduyla (varsayılan v2.4.9; test/guvenilirlik/surumler.mjs — etiketin ayrı kopyası,
 // ders 23) aynı veri klasörüne yazar, eski programı kapatır ve sınanan programı AYNI klasörle açar (eski sürüm verisinin göçü). Bu olayların kaydında
 // `surum` yazılır; eski sürüm 2.5.0'ın reddedeceği bir olayı kabul ederse karşılaştırıcı farkı gösterir (sürücünün kurulum sınırı, ders 6).
-const SON_YEDEK = s.olaylar.reduce((son, o, i) => (o.yedekten ? i + 1 : son), 0);
+// SÜRÜCÜ BAKIMI 3: kâhinin `donem_kilitle {kural: "2.4.9"}` olayı "göçte 2.4.9 kuralıyla DONMUŞ kilit" (README senaryo dili "2.4.9 göç senaryosu"; S174'ün örneği "veri v2.4.9'un
+// gerçek koduyla … kilit 05.10.2026 → güncellemeden sonra"): kilit ESKİ sürümde konur, sınanan program o veriyi göçle açar (göç 47: kilitli dönem 2.4.9 kopyasıyla donar).
+// Bu yüzden eski sürümde koşulan olaylar son `yedekten` olayına VE son 2.4.9 kurallı kilide KADAR (hangisi sonraysa). Önceki sürücü kilidi sınanan programda koyuyordu —
+// kilitli dönem güncel kuralla donuyor, Kural Farkı hiç doğmuyordu (s30 / s49 / s93 / s111).
+const SON_YEDEK = s.olaylar.reduce((son, o, i) => (o.yedekten || (o.tur === "donem_kilitle" && o.kural === "2.4.9") ? i + 1 : son), 0);
 const ESKI_SURUM = opt("--eski-surum", "v2.4.9");
 const sunucuAc = () => startTestServer({
   dataDir: path.join(VERI, "data"),
@@ -93,7 +99,8 @@ async function api(method, url, body, etiket = "") {
 const saat = gun => server.clock.set(gun);
 
 // ---------------------------------------------------------------- kimlikler
-const ids = { cari: {}, urun: {}, banka: {}, kart: {}, kredi: {}, pos: {}, olay: {}, evrak: {}, taksit: {}, supheli: {}, satirlar: {}, satir: {} };
+const ids = { cari: {}, urun: {}, banka: {}, kart: {}, kredi: {}, pos: {}, olay: {}, evrak: {}, taksit: {}, supheli: {}, satirlar: {}, satir: {}, fis: [] };
+const istekKimligi = () => randomUUID().replace(/-/g, "");
 const altHesap = {}; // program alt hesap kodu → kâhin anahtarı (102.B1, 108.POS1, 309.KK1, 300.KR1)
 const CARI_TUR = { musteri: "customer", tedarikci: "supplier", diger: "other" };
 const olaylar = [];
@@ -162,8 +169,22 @@ function acilisOlayi(tur, alan, anahtar) {
 
 // Cari telefonu (sürücünün; kâhinde yok): aynı adlı iki cariyi Excel'den taksit yüklemede ayırmak için (program ad + telefonla eşler).
 const telefon = c => `0532${String(1000000 + [...String(c)].reduce((a, ch) => (a * 31 + ch.charCodeAt(0)) % 9000000, 7)).slice(-7)}`;
+// SÜRÜCÜ BAKIMI 3: cari açılışı programda YALNIZ cari açılırken girilir (routes/accounts.mjs POST openingBalance — açık cariye açılış yolu yok). Senaryoda carinin açılış
+// olayı varken cari daha önce başka bir olayda (ör. açılış evrakının keşidecisi) gerekiyorsa ve açılışın günü o olayın günü ya da öncesiyse kullanıcının yolu cariyi
+// AÇILIŞIYLA açmaktır: açılış olayı o olayda tüketilir (kayıtta "onceden", karşılaştırıcı kâhinde de o adımda uygular). Kâhinin açıklaması programın açılış satırı
+// açıklamasından ("Açılış bakiyesi") farklıysa satırın açıklaması düzeltilir (kullanıcı Açılış Bakiyesi satırını Düzenle'den yeniden adlandırır — 2.4.6 madde 12: açılış
+// is_opening'den tanınır; 2.4.9 defteri açıklamadan tanır, kâhin bakımı 1 "2.4.9: açılış AÇIKLAMADAN"). Önceki sürücü bu cariyi açılışsız açıp açılışı Borç Yaz'la
+// giriyordu (s30 C1).
+const oncedenAcilis = {}; // cari_acilis olay no → cariyi açan olay no
 async function cariAc(c, acilis = null) {
   if (ids.cari[c]) return ids.cari[c];
+  if (!acilis && program.olayNo) {
+    const i = s.olaylar.findIndex((x, j) => x.tur === "cari_acilis" && x.cari === c && j + 1 > program.olayNo && x.tarih <= (program.olayTarihi || "9999-12-31"));
+    if (i >= 0) {
+      acilis = s.olaylar[i];
+      oncedenAcilis[i + 1] = program.olayNo;
+    }
+  }
   const tanim = s.cariler?.[c] || { ad: c, tur: "musteri" };
   const body = { name: tanim.ad, type: CARI_TUR[tanim.tur] || "customer", phone: telefon(c), registeredOn: acilis ? acilis.tarih : ilkTarih, similarOk: true, force: true };
   if (acilis) Object.assign(body, { openingBalance: tl(acilis.tutar), openingSide: acilis.yon === "alacak" ? "credit" : "debt" });
@@ -174,6 +195,13 @@ async function cariAc(c, acilis = null) {
     program.cari_kimlik[id] = c;
     const no = r.data?.refNo || r.data?.account?.refNo;
     if (no) program.cari_no[String(no)] = c;
+    if (acilis) {
+      const eid = r.data?.openingEntryId || r.data?.account?.openingEntryId || (await api("GET", `/api/workspace/accounts/${id}`, undefined, "kurulum:acilis-satiri")).data?.openingEntryId || "";
+      if (eid && acilis.id) ids.olay[acilis.id] = eid;
+      if (eid && acilis.aciklama && acilis.aciklama !== "Açılış bakiyesi") {
+        await kur(`cari-acilis-aciklama:${c}`, "PUT", `/api/workspace/accounts/${id}/entries/${eid}`, { kind: acilis.yon === "alacak" ? "credit" : "debt", amount: tl(acilis.tutar), date: acilis.tarih, note: acilis.aciklama, ...benzer });
+      }
+    }
   }
   return id || null;
 }
@@ -364,8 +392,9 @@ const guncel = {};
 async function duzenleHareket(kaynak, degisiklik, fid) {
   const once = guncel[kaynak.id] || kaynak;
   const yeni = { ...once, ...degisiklik };
-  // Ana oturum kararı 06.11: cari hareketinin "Cari" alanı (S40 cari düzeltmesi kabul, S45 / S57 bağlıysa red, S54 bağ + cari) Ç5-B'de yazılacak → uygulanmadı (U).
-  if ("cari" in degisiklik && degisiklik.cari !== once.cari) return uygulanmadi("Ç5-B", "cari hareketinin carisi programda henüz düzeltilemez (S40 / S45 / S54 / S57 — routes/accounts.mjs PUT entries 'Cari' alanı Ç5-B'de)");
+  // SÜRÜCÜ BAKIMI 3: cari hareketinin "Cari" alanı Ç5-B ile programda (routes/accounts.mjs PUT entries gövdede accountId — S40 kabul, S45 / S57 bağlıysa red, S54 / S79 bağ +
+  // cari aynı düzeltmede, S80 / S83 / S84 fatura formundaki peşin FATURA_DUZENLENMELI). İstek ESKİ carinin kartından (URL), yeni cari gövdede.
+  const cariDegisti = "cari" in degisiklik && degisiklik.cari !== once.cari;
   if ("taksit_karti" in degisiklik && (degisiklik.taksit_karti || "") !== (once.taksit_karti || "")) return apiYok("taksit kartı bağı programda tek kayıt düzeltmesi olarak yok", "Ç5-B");
   let r;
   if (kaynak.tur === "kasa_giris" || kaynak.tur === "kasa_cikis") {
@@ -376,7 +405,8 @@ async function duzenleHareket(kaynak, degisiklik, fid) {
     const giris = kaynak.tur === "tahsilat";
     const yol = { method: YOL[yeni.yol] || "cash", ...(yeni.yol === "havale" ? { bankAccountId: await bankaId(yeni.banka || "B1") } : {}) };
     const fatura = "fatura" in yeni ? { invoiceId: yeni.fatura ? ids.olay[yeni.fatura] || "" : "" } : {};
-    r = await api("PUT", `/api/workspace/accounts/${ids.cari[yeni.cari]}/entries/${fid}`, { kind: giris ? "in" : "out", amount: tl(yeni.tutar), date: yeni.tarih, note: yeni.aciklama || kaynak.id, ...yol, ...fatura, ...(giris ? { doubtfulSkip: yeni.normal_cari === true } : {}), ...benzer });
+    if (cariDegisti) await cariAc(yeni.cari);
+    r = await api("PUT", `/api/workspace/accounts/${ids.cari[once.cari]}/entries/${fid}`, { kind: giris ? "in" : "out", amount: tl(yeni.tutar), date: yeni.tarih, note: yeni.aciklama || kaynak.id, ...yol, ...fatura, ...(giris ? { doubtfulSkip: yeni.normal_cari === true } : {}), ...(cariDegisti ? { accountId: ids.cari[yeni.cari] } : {}), ...benzer });
   }
   if (r.ok) guncel[kaynak.id] = yeni;
   return sonuc(kaynak, r, { yol: `${kaynak.tur} Düzenle (${Object.keys(degisiklik).join(", ")})` });
@@ -416,6 +446,7 @@ async function uygula(o, no) {
       return id ? { durum: "yapildi", status: 200 } : { durum: "red", status: program.kurulum.at(-1)?.status, kod: program.kurulum.at(-1)?.kod, ileti: program.kurulum.at(-1)?.ileti };
     }
     case "cari_acilis": {
+      if (oncedenAcilis[no]) return { durum: "onceden", ile: oncedenAcilis[no], yol: `cari ${v.cari} olay ${oncedenAcilis[no]}'de bu açılışla açıldı (açık cariye açılış yolu yok)` };
       if (!ids.cari[v.cari]) {
         const id = await cariAc(v.cari, v);
         return id ? { durum: "yapildi", status: 200, yol: "cari açılırken Açılış Bakiyesi (is_opening)" } : { durum: "red", status: program.kurulum.at(-1)?.status, kod: program.kurulum.at(-1)?.kod, ileti: program.kurulum.at(-1)?.ileti };
@@ -477,8 +508,6 @@ async function uygula(o, no) {
       }
       return sonuc(o, r);
     }
-    case "acilis_eslestir":
-      return uygulanmadi("Ç5-ESLESTIRME (M-11)", "Açılış Eşleştirme Fişi (M-11) 2.5.0'da yazılacak");
 
     // ---- fatura
     case "satis_faturasi":
@@ -508,6 +537,18 @@ async function uygula(o, no) {
         if (kartOlayi) {
           faturaKarti[kartOlayi.id] = { fatura: o.id, planId: r.data?.planId || "" };
           tuketilen.add(kartOlayi);
+        }
+        // SÜRÜCÜ BAKIMI 3 (S80 / S83 / S84 — s104 / s106 / s107): fatura formunda alınan / yapılan peşinin cari kartındaki satırı (source 'invoice', source_id = fatura) —
+        // kâhinin `duzenle {kaynak: <peşin>}` olayı bu satırın Düzenle'sine gider (program carisini / bağını yalnız faturadan değiştirir: 409 invoice-payment-edit).
+        if (pesin.length) {
+          const kart = await api("GET", `/api/workspace/accounts/${ids.cari[v.cari]}`, undefined, "pesin-satirlari");
+          const satirlar = (kart.data?.entries || []).filter(e => e.source === "invoice" && e.sourceId === ids.olay[o.id] && (e.kind === "in" || e.kind === "out"));
+          pesin.filter(x => ["nakit", "havale"].includes(x.yol)).forEach((x, i) => {
+            if (satirlar[i] && x.id) {
+              ids.olay[x.id] = satirlar[i].id;
+              ids.satir[x.id] = `account_entries:${satirlar[i].id}`;
+            }
+          });
         }
       }
       return sonuc(o, r, { ...(pesin.length ? { not: `peşin ödeme fatura formunda: ${pesin.map(x => x.id).join(", ")}` } : {}), ...(kartOlayi ? { kart: `faturanın kendi kartı ${kartOlayi.id} fatura formunda (Kalanı Taksitlendir; planId ${r.data?.planId || "YOK"})` } : {}), ...(v.indirim_ayi ? { eksik: "KG-7 KDV İndirim Dönemi alanı programda yok (gönderilmedi)" } : {}), ...(tevUyari ? { uyari: tevUyari } : {}) });
@@ -627,6 +668,15 @@ async function uygula(o, no) {
       }
       // Ç5-K: Kasa Giriş / Çıkış Kasa penceresindeki satırdan silinir (Silinenler'e düşer).
       if (kaynak && (kaynak.tur === "kasa_giris" || kaynak.tur === "kasa_cikis")) return sonuc(o, await api("DELETE", `/api/workspace/cash/${fid}?cashForce=1`), { yol: "Kasa satırı Sil" });
+      // SÜRÜCÜ BAKIMI 3 (S87 = A, R8 geri almada — s113): Kasa açılışı Kasa penceresindeki açılış satırından silinir (yalnız yönetici — routes/cash.mjs 2.2.0 İz 1.3; Silinenler'e
+      // düşer); Silinenler'den geri yükleme aşağıda (geri_yukle).
+      if (kaynak && kaynak.tur === "kasa_acilis") {
+        const r = await api("DELETE", `/api/workspace/cash/${fid}?cashForce=1`);
+        if (r.ok && kasaAcilis.durum?.id === v.kaynak) kasaAcilis.silinen = kasaAcilis.durum, (kasaAcilis.durum = null);
+        return sonuc(o, r, { yol: "Kasa açılış satırı Sil" });
+      }
+      // SÜRÜCÜ BAKIMI 3 (S51 — s87): cari kartındaki Borç / Alacak Yaz ve Açılış Bakiyesi satırı Sil (Silinenler'e düşer).
+      if (kaynak && ["borc_yaz", "alacak_yaz", "cari_acilis"].includes(kaynak.tur)) return sonuc(o, await api("DELETE", `/api/workspace/accounts/${ids.cari[kaynak.cari]}/entries/${fid}`), { yol: "cari kartı satırı Sil" });
       if (kaynak && kaynak.tur !== "taslak" && !/faturasi|esmm|smm/.test(kaynak.tur)) return apiYok(`sil: ${kaynak.tur} için silme eşlemesi yazılmadı`);
       return sonuc(o, await api("DELETE", `/api/workspace/invoices/${fid}`));
     }
@@ -643,7 +693,9 @@ async function uygula(o, no) {
       const cop = await api("GET", "/api/admin/trash");
       const item = (Array.isArray(cop.data) ? cop.data : cop.data?.items || []).find(x => x.ref === fid || x.id === `trash:${fid}`);
       if (!item) return apiYok(`Silinenler'de ${v.kaynak} yok (program faturayı silmemiş olabilir)`);
-      return sonuc(o, await api("POST", "/api/admin/trash/restore", { id: item.id }));
+      const r = await api("POST", "/api/admin/trash/restore", { id: item.id });
+      if (r.ok && kasaAcilis.silinen?.id === v.kaynak) (kasaAcilis.durum = kasaAcilis.silinen), (kasaAcilis.silinen = null);
+      return sonuc(o, r);
     }
     case "mahsup": {
       const a = ids.olay[v.fatura1];
@@ -712,10 +764,15 @@ async function uygula(o, no) {
       return sonuc(o, r);
     }
     case "kart_borcuna_aktar": {
-      // K-15: eski kart hareketi. Açılıştan önce: Kredi Kartı yolu "Hesapsız (Açılıştan Önce)"; açılıştan sonra kart hesabıyla ödeme (B CH / A 309).
-      const kid = v.acilistan_once ? "none" : await kartId(v.kart);
+      // K-15: eski kart hareketi. SÜRÜCÜ BAKIMI 3 (kâhin bakımı 12 "Sürücü için" (2), S179 = A): "açılıştan önce" artık senaryonun alanından (acilistan_once) DEĞİL —
+      // kâhin onu kart açılışlarından türetir; programda da kartın açılışından gelir. Ekranın yolu: hareket KARTIN KENDİ açılışından (senaryonun kart_acilis olayı) önceyse
+      // kart hesabıyla girilemez (409 bank-before-opening — hesabın açılışı D'nin gün başı) → Kredi Kartı yolu "Hesapsız (Açılıştan Önce)" (bankAccountId none; program
+      // S179 sınırıyla 519 ya da Hesabı Atanmamış kovası 108.00); kartın açılış olayı yoksa ya da hareket açılış günü / sonrasındaysa kart hesabıyla ödeme (B CH / A 309).
+      const kartinAcilisi = acilisOlayi("kart_acilis", "kart", v.kart);
+      const once = Boolean(kartinAcilisi && v.tarih < kartinAcilisi.tarih);
+      const kid = once ? "none" : await kartId(v.kart);
       const r = await cariGiris(v.cari, { kind: "out", amount: tl(v.tutar), date: v.tarih, method: "card", bankAccountId: kid, note: "Kart Borcuna Aktar" });
-      return sonuc(o, r, { yol: v.acilistan_once ? "kart ödemesi hesapsız (açılıştan önce)" : "kart hesabıyla ödeme" });
+      return sonuc(o, r, { yol: once ? `kart ödemesi hesapsız (kartın açılışı ${kartinAcilisi.tarih}'ten önce)` : "kart hesabıyla ödeme", ...("acilistan_once" in v && Boolean(v.acilistan_once) !== once ? { uyari: `senaryonun acilistan_once (${v.acilistan_once}) kartın kendi açılışından türetilenle (${once}) aynı değil` } : {}) });
     }
 
     // ---- kasa ve banka
@@ -837,8 +894,25 @@ async function uygula(o, no) {
       return r ? sonuc(o, r) : apiYok(`evrak ${v.evrak} programda yok`);
     }
     case "evrak_karsiliksiz": {
-      const r = await evrakIslem(v, "bounce");
+      // SÜRÜCÜ BAKIMI 3 (S48 / S66 = A — kâhin bakımı 8 `evrak_karsiliksiz.cari`): carisiz açılış / form evrakında karşılıksız penceresinin isteğe bağlı Cari alanı (accountId).
+      const r = await evrakIslem(v, "bounce", v.cari ? { accountId: await cariAc(v.cari) } : {});
       return r ? sonuc(o, r) : apiYok(`evrak ${v.evrak} programda yok`);
+    }
+    case "carisiz_evrak": {
+      // SÜRÜCÜ BAKIMI 3 (S49 = A; Ç5-A): formdan CARİSİZ evrak (cari de keşideci / lehtar adı da yok) — Çek / Senet → Yeni, Cari boş (routes/cheques.mjs: alınan B 101 / A 649.90,
+      // verilen B 770.90 / A 103).
+      const instrument = v.evrak_turu === "senet" ? "note" : "cheque";
+      const yon = v.yon === "verilen" ? "out" : "in";
+      const r = await api("POST", "/api/workspace/cheques", { direction: yon, instrument, amount: tl(v.tutar), accountId: "", issueDate: v.tarih, dueDate: v.vade || v.tarih, serialNo: v.evrak, bank: "Akbank", drawer: "", ...(yon === "out" ? { bankAccountId: await bankaId(v.banka || "B1") } : {}), ...benzer });
+      if (r.ok) ids.evrak[v.evrak] = r.data?.id || r.data?.cheque?.id;
+      return sonuc(o, r, { yol: "Çek / Senet formu, Cari ve keşideci boş" });
+    }
+    case "acilis_eslestir": {
+      // SÜRÜCÜ BAKIMI 3: Açılış Eşleştirme Fişi programda (Ç5-A tur 2c İş 1; kural kitabı M-11; BAŞ MİMAR B10) — Yönetim › Sistem › Açılış Eşleştirme: satırlar (hesap, taraf,
+      // tutar; 519 karşı satırını program kendisi ekler) → POST /api/admin/ledger/opening-match { requestId, date, lines, confirm }.
+      const lines = (v.satirlar || []).map(x => ({ account: String(x.hesap).split(".")[0], ...(String(x.hesap).includes(".") ? { sub: String(x.hesap) } : {}), side: x.borc ? "debit" : "credit", amount: tl(x.borc || x.alacak) }));
+      const r = await api("POST", "/api/admin/ledger/opening-match", { requestId: istekKimligi(), date: v.tarih, lines, confirm: true });
+      return sonuc(o, r, { yol: "Açılış Eşleştirme Fişi" });
     }
     case "verilen_evrak_ode": {
       const ek = v.yol === "nakit" ? { method: "cash" } : { method: "bank", bankAccountId: await bankaId(v.banka || "B1") };
@@ -996,11 +1070,53 @@ async function uygula(o, no) {
       // Ç3 (2.5.0, birleşti 2ba5ac0b): kilit kancası kilitli dönemin defterini DONDURUR (göç 47); yanıtta frozenThrough + freeze. Kâhinin kural
       // "2.4.9" (göçte 2.4.9 kuralıyla donmuş kilit) programda bugünkü kural = 2.4.9 kopyası olduğundan aynı türetme (Ç5 / Ç7 kural değişiklikleri sonra).
       const r = await api("PUT", "/api/admin/period-lock", { lockedUntil: v.tarih, force: true });
+      if (r.ok) program.kilit = r.data?.lockedUntil || v.tarih;
       const kilit = r.ok ? { frozenThrough: r.data?.frozenThrough ?? null, freeze: r.data?.freeze ? { state: r.data.freeze.state || r.data.freeze.status || "", ...Object.fromEntries(Object.entries(r.data.freeze).filter(([k]) => /run|through|rule|done|state|error/i.test(k)).slice(0, 8)) } : null } : {};
       return sonuc(o, r, { ...(v.kural === "2.4.9" ? { not: "kâhin: 2.4.9 kuralıyla donmuş kilit (program: Ç3 dondurması, bugünkü kural 2.4.9 kopyası)" } : {}), kilit });
     }
-    case "kural_farki_duzelt":
-      return uygulanmadi("Ç5-KG15", "Kural Farkı Düzeltme Fişi (KG-15; Ç3 tasarım notu §13: Ç5'in işi)");
+    case "kural_farki_duzelt": {
+      // SÜRÜCÜ BAKIMI 3: Kural Farkı Düzeltme Fişi programda (Ç5-A tur 2b İş 2, 2e, 2f; KG-15 A; S174 / S180 / S185 = A). Ekranın yolu (client/assets/hof-kural-farki.js):
+      // pencere açılır (GET ön izleme); düğme pasifse (disabled + reason) istek GÖNDERİLMEZ — ekran ön koşulu reddi (status "ekran", kod = ön izlemenin code'u; ders 3:
+      // başarı sayılmaz); değilse ön izlemenin imzasıyla (digest) onaylanır (POST { requestId, digest, confirm }). Saat: fiş tarihi kilit + 1 — kullanıcı fişi o gün ya da sonra
+      // yazar (akışta saat olaydan önce en az kilit + 1'e ilerler).
+      const g = await api("GET", "/api/admin/ledger/rule-diff-correction", undefined, "kural-farki-onizleme");
+      if (!g.ok) return sonuc(o, g);
+      const onizleme = { tarih: g.data?.date, satirlar: (g.data?.lines || []).map(l => `${l.account}${l.sub ? `/${l.sub}` : ""} B ${l.debit} A ${l.credit}`), disari: (g.data?.excluded || []).map(x => x.account), fisler: (g.data?.vouchers || []).map(x => x.noText) };
+      if (g.data?.disabled) return { durum: "red", status: "ekran", kod: g.data.code || "", ileti: `Kural Farkı Düzeltme düğmesi pasif: ${g.data.reason || ""} (istek gönderilmedi)`, yol: "ekran ön koşulu", onizleme };
+      const rid = istekKimligi();
+      const r = await api("POST", "/api/admin/ledger/rule-diff-correction", { requestId: rid, digest: g.data?.digest, confirm: true });
+      if (r.ok) ids.fis.push({ id: r.data?.voucher?.id, no: r.data?.voucher?.noText || "", tarih: r.data?.voucher?.date || onizleme.tarih });
+      return sonuc(o, r, { onizleme, ...(r.ok ? { fis: r.data?.voucher?.noText || r.data?.voucher?.id } : {}) });
+    }
+    case "fis_ters": {
+      // SÜRÜCÜ BAKIMI 3 (kâhin bakımı 12 "Sürücü için": s111'in `fis_ters {fis: "fis2"}` = senaryonun Kural Farkı Düzeltme Fişi): Yazılmış Düzeltme Fişleri › Ters Kaydet
+      // (POST /api/admin/ledger/vouchers/:id/reverse). Kâhinin fiş kimliği (sayaç) programın fiş kimliğiyle eşlenmez: senaryonun EN SON yazılmış (ters kaydedilmemiş)
+      // düzeltme fişi. TARİH: ekran tarih göndermez (sunucu asıl fişin tarihini kullanır; onay metni "bugünün tarihiyle" der — iş listesi B 2.5.1 maddesi); kâhinin olayının
+      // tarihi (S180: "2027'de TERS kaydedilirse") API'nin `date` alanıyla gönderilir — EKRAN YOLU DEĞİL (raporda yazılı).
+      const fis = [...ids.fis].reverse().find(x => !x.ters);
+      if (!fis?.id) return apiYok(`ters kaydedilecek Kural Farkı Düzeltme Fişi programda yok (${v.fis})`);
+      const rid = istekKimligi();
+      const r = await api("POST", `/api/admin/ledger/vouchers/${encodeURIComponent(fis.id)}/reverse`, { requestId: rid, ...(v.tarih ? { date: v.tarih } : {}) });
+      if (r.ok) fis.ters = r.data?.voucher?.id || true;
+      return sonuc(o, r, { yol: `Ters Kaydet ${fis.no} (kâhin ${v.fis}; tarih ${v.tarih || "asıl fişin"} API date alanıyla)` });
+    }
+    case "acilis_onayla": {
+      // SÜRÜCÜ BAKIMI 3: KG-16 "Açılış Olabilir" listesi programda (Ç5-A tur 1 / 2c İş 3; S47 / S51 = A) — Yönetim › Sistem › Açılış Olabilir Kayıtlar: satırda Açılış (onayla) /
+      // Açılış Değil (reddet) → POST /api/workspace/opening-review/:id { decision: confirm | reject }. Satır: kaynağın cari hareketi (kimliği; yoksa listede carinin aynı tarih +
+      // tutarlı satırı — eski sürümde girilen kayıt, yanıtında kimlik olmayabilir).
+      const kaynak = s.olaylar.find(x => x.id === v.kaynak);
+      const liste = await api("GET", "/api/workspace/opening-review?all=1", undefined, "acilis-olabilir");
+      const items = liste.data?.items || [];
+      let item = items.find(x => x.id === ids.olay[v.kaynak]);
+      if (!item && kaynak) item = items.find(x => x.accountId === ids.cari[kaynak.cari] && x.date === kaynak.tarih && Math.round(Number(x.amount) * 100) === kaynak.tutar);
+      if (!item) return { durum: "red", status: "ekran", kod: "opening-review-missing", ileti: `Açılış Olabilir listesinde ${v.kaynak} yok (listede ${items.length} satır; istek gönderilmedi)`, yol: "ekran ön koşulu" };
+      const r = await api("POST", `/api/workspace/opening-review/${encodeURIComponent(item.id)}`, { decision: v.karar === "red" ? "reject" : "confirm" });
+      return sonuc(o, r, { yol: `Açılış Olabilir Kayıtlar: ${v.karar === "red" ? "Açılış Değil" : "Açılış"} (önceki ${item.review})` });
+    }
+    case "odeme_sozu":
+      // Ödeme Sözü (S52; defter olayı değil): kâhinde yalnız Ödeme Hatırlatma'nın "Ödeme Sözü Var" elemesini değiştirir — hatırlatma tutarı ve elemesi Ç5-C'de (BAŞ MİMAR KARARI
+      // 06.11 19:26 B1-W). Programda sözün yolu cari hareketinin Beklenen Ödeme Tarihi'dir; kâhinin carisi düzeyindeki söz hangi harekete yazılacağını söylemez → uygulanmadı (U).
+      return uygulanmadi("Ç5-C", "Ödeme Sözü yalnız Ödeme Hatırlatma elemesini değiştirir (S52 / S72 / S73) — hatırlatma Ç5-C'de; programda söz hareketin Beklenen Ödeme Tarihi (cari düzeyi yok)");
     case "devir":
       return uygulanmadi("D2–D4", "yıl sonu devri (arşiv + yeni yıl açılışı)");
     case "devri_yenile": {
@@ -1016,8 +1132,6 @@ async function uygula(o, no) {
     }
     case "devri_geri_al":
       return uygulanmadi("D4-GERI-AL", "Devri Geri Al");
-    case "fis_ters":
-      return uygulanmadi("Ç2", "saklanan fişin ters kaydı");
     default:
       return apiYok(`olay türü sürücüde yok: ${o.tur}`);
   }
@@ -1231,9 +1345,13 @@ try {
       continue;
     }
     // KDV Mahsup Fişi ay bitmeden yapılamaz (program 409 vat-offset-blocked): olayın günü yok → saat ayın ertesi gününe (kullanıcı ay bitince yapar).
-    await ilerle(o.tur === "kdv_mahsup" ? ertesiAy(o.ay) : o.tarih, no);
+    // SÜRÜCÜ BAKIMI 3: Kural Farkı Düzeltme Fişi kilit + 1'e yazılır ve ileri tarihli fiş yazılmaz (routes/ledger.mjs rule-diff-lock-today) → saat en az kilit + 1 (kullanıcı
+    // fişi kilidin ertesi günü ya da sonra yazar; kâhinin fişi de kilit + 1 tarihli).
+    await ilerle(o.tur === "kdv_mahsup" ? ertesiAy(o.ay) : o.tur === "kural_farki_duzelt" && program.kilit ? ertesiGun(program.kilit) : o.tarih, no);
     const t0 = performance.now();
     let r;
+    program.olayNo = no;
+    program.olayTarihi = o.tarih || program.saat;
     try {
       r = await uygula(o, no);
     } catch (e) {
