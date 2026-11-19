@@ -309,6 +309,10 @@ for x in P["olaylar"]:
 
 # Programın faturanın formuna aldığı peşin ödemeler ("faturada"): kâhinde de fatura adımında uygulanır.
 faturada = {}
+ONCEDEN = {}   # SÜRÜCÜ BAKIMI 3: tetikleyen olay no → program o olayda (cariyi açılışıyla açarken) girdiği cari açılışı olay no'ları (program.mjs "onceden")
+for x in P["olaylar"]:
+    if x.get("durum") == "onceden" and x.get("ile"):
+        ONCEDEN.setdefault(int(x["ile"]), []).append(int(x["no"]))
 for x in P["olaylar"]:
     if x.get("durum") == "faturada":
         o = olaylar[int(x["no"]) - 1]
@@ -498,6 +502,9 @@ def uygula_ikisi(x, o, i):
         return
     mk.adim(o, i)
     mb.adim(bugun_olay(o), i)
+    for j in ONCEDEN.get(i, []):   # SÜRÜCÜ BAKIMI 3: program bu cari açılışını bu olayda (cariyi açarken) girdi
+        mk.adim(olaylar[j - 1], j)
+        mb.adim(bugun_olay(olaylar[j - 1]), j)
     for j in faturada.get(o.get("id"), []):
         mk.adim(olaylar[j - 1], j)
         mb.adim(bugun_olay(olaylar[j - 1]), j)
@@ -514,7 +521,8 @@ for x in P["olaylar"]:
         if ro["rapor"] in TYK:
             kah_t, hata_t = guvenli(lambda: tyk_kahin(mk.canli, ro))
             tyk_anlik[ro["ad"]] = {"kahin": kah_t, "kartlar": bugun_kartlar(int(no)), **({"susma": hata_t} if hata_t else {})}
-        (ka, kb_), hata = guvenli(lambda: (mk.kopya_bakiye(), mb.kopya_bakiye()))
+        ikili, hata = guvenli(lambda: (mk.kopya_bakiye(), mb.kopya_bakiye()))
+        ka, kb_ = ikili if ikili else (None, None)
         rapor_sirasi.append((x, ka, kb_, list(aciklanan), hata))
         continue
     else:
@@ -523,6 +531,10 @@ for x in P["olaylar"]:
         ufuk = x.get("saat") or ufuk
         if x.get("durum") == "yapildi" or (o["tur"] == "devri_yenile" and x.get("alt")):
             uygula_ikisi(x, o, i)
+        else:
+            for j in ONCEDEN.get(i, []):   # tetikleyen olay reddedilse de cari açılışıyla açıldı
+                mk.adim(olaylar[j - 1], j)
+                mb.adim(bugun_olay(olaylar[j - 1]), j)
         if x.get("delta"):
             prog_kum = topla(prog_kum, prog_gorunum(x.get("delta")) or {})
     if not x.get("delta"):
