@@ -273,6 +273,38 @@ export function incomeStatement({ entries, valuation, from, to, bookType = "unse
 }
 
 /**
+ * Gelir Tablosu'nun Kural Değişikliği Farkı (Ç3; kitap §7.4): dönemin KİLİTLİ kısmında [from, to] (to ≤ kilit kapsamı) donmuş defterin ve güncel türetmenin gelir tablosu hesapları (6 / 7) ile
+ * 153'ü (satışların maliyeti tahmini) için yıl × hesap toplamları. Tutar farkı olan satırlar döner (snapshots.ruleDiff'in balances biçimi). Madde eşleştirmesi yapılmaz — tabloyu değiştiren
+ * yalnız hesap toplamıdır; bütün kilitli geçmişi karşılaştıran snapshots.ruleDiff 100.000 satırda ~2,7 sn (ölçüm: docs/kanit/2026-11-19/c6h1-hiz-parca) — Mutabakat Testi'nin "ledger:rule-diff"
+ * denetimi o işi yapar. Saklanan fişler (voucher-*) iki tarafta da karşılaştırılmaz (snapshots.ruleDiff ile aynı).
+ */
+export function periodRuleDiff({ frozen, live, from, to }) {
+  const sums = new Map();
+  const add = (list, side) => {
+    for (const entry of list) {
+      if (entry.date < from || entry.date > to || String(entry.id).startsWith("voucher")) continue;
+      for (const line of entry.lines) {
+        if (!(line.account === "153" || /^[67]/.test(line.account))) continue;
+        const key = `${entry.date.slice(0, 4)}|${line.account}`;
+        const row = sums.get(key) || { frozen: 0, live: 0 };
+        row[side] += (Number(line.debit) || 0) - (Number(line.credit) || 0);
+        sums.set(key, row);
+      }
+    }
+  };
+  add(frozen, "frozen");
+  add(live, "live");
+  const balances = [];
+  for (const [key, row] of sums) {
+    if (row.frozen === row.live) continue;
+    const [year, account] = key.split("|");
+    balances.push({ year: Number(year), account, sub: "", party: "", frozenMinor: row.frozen, liveMinor: row.live, differenceMinor: row.live - row.frozen });
+  }
+  balances.sort((a, b) => a.year - b.year || a.account.localeCompare(b.account));
+  return { through: to, balances };
+}
+
+/**
  * Okuma ucunun ve rapor iş parçacığının ORTAK hesabı (tek kod yolu; sonuç iki yolda birebir). ledger: routes/ledger.mjs servis nesnesi (book, build, snapshots).
  * Kilit kapsamı dönemin yılına değiyorsa güncel türetme BİR kez kurulur; karma yevmiyeye ve Kural Değişikliği Farkı'na aynı nesne verilir (ikinci tam türetme yok).
  */
@@ -285,7 +317,7 @@ export function incomeStatementOf({ store, ledger, from, to }) {
   if (cover && cover >= start) {
     const live = ledger.build();
     entries = ledger.book({ from: start, to, live });
-    ruleDiff = ledger.snapshots.ruleDiff({ live });
+    ruleDiff = periodRuleDiff({ frozen: entries, live, from: start, to: to < cover ? to : cover });
   } else entries = ledger.book({ from: start, to });
   const valuation = createStockValuation(loadValuationInput(store));
   return incomeStatement({ entries, valuation, from, to, bookType: bookTypeOf(store), ruleDiff });

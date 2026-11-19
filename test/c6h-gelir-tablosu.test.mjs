@@ -16,7 +16,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { ACCOUNT_PLAN, incomeStatementItemOf } from "../server/lib/general-ledger.mjs";
-import { footnotes, incomeLineOf, incomeStatement, notFinalReasons } from "../server/lib/financial-statements.mjs";
+import { footnotes, incomeLineOf, incomeStatement, notFinalReasons, periodRuleDiff } from "../server/lib/financial-statements.mjs";
 import { MOVE_CLASS, createStockValuation } from "../server/lib/stock-valuation.mjs";
 
 const L = (account, debit, credit, sub) => ({ account, debit, credit, ...(sub ? { sub } : {}) });
@@ -167,6 +167,13 @@ describe("Ç6-HESAP Gelir Tablosu — Kesin Değil, dipnotlar, hata", () => {
     assert.throws(() => gt("2025-12-01", "2026-01-31"), error => error.status === 400 && error.code === "gelir-tablosu-tek-yil");
     assert.throws(() => gt("2026-03-01", "2026-02-01"), error => error.status === 400 && error.code === "gelir-tablosu-aralik");
     assert.throws(() => gt("2026-02-30", "2026-03-01"), error => error.status === 400);
+  });
+  it("dönemin Kural Değişikliği Farkı: donmuş ↔ güncel yıl × hesap toplamı (6 / 7 ve 153); fiş maddesi ve dönem dışı karşılaştırılmaz", () => {
+    const frozen = [E("invoice:s1", "2026-01-15", L("120", 1180000, 0), L("600", 0, 1000000), L("391", 0, 180000)), E("voucher:v", "2026-02-01", L("602", 0, 500), L("100", 500, 0))];
+    const live = [E("invoice:s1", "2026-01-15", L("120", 1180000, 0), L("519", 0, 1000000), L("391", 0, 180000)), E("cash:d", "2026-07-01", L("600", 0, 9), L("100", 9, 0))];
+    const out = periodRuleDiff({ frozen, live, from: "2026-01-01", to: "2026-06-30" });
+    assert.deepEqual(out.balances.map(row => [row.year, row.account, row.frozenMinor, row.liveMinor, row.differenceMinor]), [[2026, "600", -1000000, 0, 1000000]]);
+    assert.deepEqual(periodRuleDiff({ frozen, live: frozen, from: "2026-01-01", to: "2026-06-30" }).balances, []);
   });
   it("toplayıcı: verilmeyen bulgu neden yazmaz; Bilanço nedenleri aynı işlevden (tur 2)", () => {
     assert.deepEqual(notFinalReasons({}), []);
