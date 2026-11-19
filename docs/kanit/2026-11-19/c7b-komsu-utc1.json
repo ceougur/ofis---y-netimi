@@ -1,0 +1,158 @@
+{
+  "ad": "c7b-komsu-utc1",
+  "komut": "node --test --test-concurrency=2 test/acilis-519-250.test.mjs test/acilis-duzeni-v249-250.test.mjs test/acilis-eslestirme-250.test.mjs test/acilis-isareti-246.test.mjs test/acilis-olabilir-250.test.mjs test/acilis-sinir-250.test.mjs test/asama0-226-saat.test.mjs test/asama0-226.test.mjs test/banka-210-acilis.test.mjs test/banka-210-altin.test.mjs test/banka-210-arayuz-hareket.test.mjs test/banka-210-ariza.test.mjs test/banka-210-asama5-cari.test.mjs test/banka-210-asama6-kasa.test.mjs test/banka-210-asama78-modul.test.mjs test/banka-210-bozarim.test.mjs test/banka-210-defter.test.mjs test/banka-210-dun-bugun.test.mjs test/banka-210-eslesmis.test.mjs test/banka-210-fis.test.mjs test/banka-210-gg-cari.test.mjs test/banka-210-gg-eski.test.mjs test/banka-210-gg-geri-yukle.test.mjs test/banka-210-gg-kapi.test.mjs test/banka-210-gg-olay.test.mjs test/banka-210-gg-turler.test.mjs test/banka-210-gg2-bag.test.mjs test/banka-210-gg2-devir.test.mjs test/banka-210-gg2-fis.test.mjs test/banka-210-gg2-gosterge.test.mjs test/banka-210-gg2-hesap.test.mjs test/banka-210-gg2-hiz.test.mjs test/banka-210-gg3-bag.test.mjs test/banka-210-goc-zinciri.test.mjs test/banka-210-hareketler.test.mjs test/banka-210-hesap.test.mjs test/banka-210-hiz-esdegerlik.test.mjs test/banka-210-ileri-tarihli-eski.test.mjs test/banka-210-kabul-mizan.test.mjs test/banka-210-kapi-kapsam.test.mjs test/banka-210-kapi.test.mjs test/banka-210-kurumsal-kart.test.mjs test/banka-210-onarim.test.mjs test/banka-210-planli.test.mjs test/banka-210-post.test.mjs test/banka-210-raporlar.test.mjs test/banka-210-saat.test.mjs test/banka-210-sihirbaz.test.mjs test/banka-210-sira.test.mjs test/banka-210-tek-kaynak.test.mjs test/banka-210-ters-kayit.test.mjs test/banka-210-transfer.test.mjs test/banka-210-yargic.test.mjs test/banka-210-yetki-matrisi.test.mjs test/banka-220-cek-hesabi.test.mjs test/banka-220-hesap-kart.test.mjs test/banka-220-pos-iz3.test.mjs test/banka-220-pos-kabul.test.mjs test/banka-220-pos-kdv.test.mjs test/banka-220-pos-valor.test.mjs test/banka-220-senet-121.test.mjs test/banka-220-tahsile-ver-dogrulama.test.mjs test/banka-220-tahsile-ver-isaret.test.mjs test/banka-220-tahsile-ver-tur2.test.mjs test/banka-220-tahsile-ver.test.mjs test/banka-230-46-iade-iptal.test.mjs test/banka-230-k8-taksit.test.mjs test/banka-230-supheli-bozma.test.mjs test/banka-230-supheli.test.mjs test/banka-onarim-kayit-250.test.mjs test/birlesik-tur2-yaris-250.test.mjs test/c7b-kitap-turetme-250.test.mjs test/cari-bilgi-222.test.mjs test/cari-tur-222.test.mjs test/cari-vade-245.test.mjs test/cek-istek-kimligi-247.test.mjs test/defter-213.test.mjs test/defter-243-kapi.test.mjs test/defter-243-raporlar.test.mjs test/defter-243-stok-acilis.test.mjs test/defter-243-ux24-toplam.test.mjs test/defter-243-vergi.test.mjs test/defter-hiz-esdegerlik-250.test.mjs test/defter-hiz-esdegerlik-tur1d-250.test.mjs test/defter-kaynak-iz-250.test.mjs test/defter-turu-c4.test.mjs test/donem-213.test.mjs test/donmus-defter-250.test.mjs test/donmus-defter-bellek-250.test.mjs test/donmus-defter-kilit-ucu-250.test.mjs test/donmus-defter-tur1-250.test.mjs test/donmus-defter-tur3-250.test.mjs test/donmus-defter-tur4-250.test.mjs test/donmus-defter-yasam-250.test.mjs test/ebelge-243-gonderim.test.mjs test/ebelge-244-secilenleri-gonder.test.mjs test/einvoice-edm.test.mjs test/ekstre-ayrinti-245.test.mjs test/ertelenen-224.test.mjs test/fatura-215.test.mjs test/fatura-230-ayarlar-banka.test.mjs test/fatura-244-numara-tarih-onay.test.mjs test/fis-defteri-250.test.mjs test/fis-defteri-kayit-250.test.mjs test/fis-defteri-koruma-250.test.mjs test/fis-defteri-yasam-250.test.mjs test/gg243-dar-kontrol-ek.test.mjs test/gg243-dar-kontrol-gonderim.test.mjs test/gg243-dar2-gonderim.test.mjs test/gg243-dar3-stok.test.mjs test/gg243-dar3.test.mjs test/gg243-gonderim.test.mjs test/goc-243-iade-ref.test.mjs test/goc-243-stok-acilis.test.mjs test/goc-243-stok-kdv.test.mjs test/goc-244-esmm-gonderim.test.mjs test/goc-244-iptal-suresi.test.mjs test/goc-246-iade-bagi.test.mjs test/goc48-bosluk-250.test.mjs test/hakem-k3-kasa-istek-kimligi.test.mjs test/hakem-k4-yineleme-sirasi.test.mjs test/hakem-k5-banka-eksi-kodu.test.mjs test/hakem-k8-kredi.test.mjs test/hesap-plani-sinif-250.test.mjs test/hesapsiz-acilis-250.test.mjs test/hesapsiz-acilis-v249-250.test.mjs test/iade-210-fazla-tahsilat.test.mjs test/iade-210-onarim.test.mjs test/iade-210.test.mjs test/iade-geri-odeme-246.test.mjs test/ice-aktarma-istek-kimligi-248.test.mjs test/inceleme-222.test.mjs test/inceleme-226-2.test.mjs test/inceleme-226.test.mjs test/is-akisi.test.mjs test/istek-kimligi-222.test.mjs test/iz1-kasa-acilis.test.mjs test/kapali-kart-ekstre-tarihi-250.test.mjs test/kapama-ks7-245.test.mjs test/kapi-para-245.test.mjs test/kart-faizi-250.test.mjs test/kasa-acilis-iz-250.test.mjs test/kasa-acilis-kimlik-b7-250.test.mjs test/kasa-acilis-mutant-b6-250.test.mjs test/kasa-acilis-once-250.test.mjs test/kasa-acilis-silinenler-ozet-b8-250.test.mjs test/kasa-acilis-uyari-250.test.mjs test/kasa-acilis-uyari-artis-250.test.mjs test/kasa-acilis-vergi-s94-250.test.mjs test/kg16-geri-alma-250.test.mjs test/kilit-izi-alanlar-250.test.mjs test/koruma-taban-ailesi-250.test.mjs test/kullanici-yetki-210.test.mjs test/kural-farki-alarm-250.test.mjs test/kural-farki-duzeltme-250.test.mjs test/kural-farki-yil-250.test.mjs test/license.test.mjs test/mm-smm-244.test.mjs test/mobil-247.test.mjs test/mutabakat-213.test.mjs test/personel-ozluk-244.test.mjs test/pos-komisyon-satis-gunu-250.test.mjs test/pos-komisyon-v249-250.test.mjs test/rapor-220.test.mjs test/raporlar-210-banka.test.mjs test/raporlar-230-banka.test.mjs test/s127-tek-kez-250.test.mjs test/s160-iptal-yollari-250.test.mjs test/s160-kilitli-tahsilat-bagi-250.test.mjs test/silinenler-donem-kilidi-244.test.mjs test/stok-alis-iadesi-246.test.mjs test/stopaj-tevkifat-iade-244.test.mjs test/supheli-230-karar.test.mjs test/supheli-230-kontrol2.test.mjs test/supheli-230-sil-cakisma.test.mjs test/supheli-230-yargic.test.mjs test/supheli-240-k4-iptal.test.mjs test/supheli-kuyruk-defter-250.test.mjs test/tablodan-aktar-244.test.mjs test/tyk-api-250.test.mjs test/tyk-goc-249-250.test.mjs test/tyk-kapanis-250.test.mjs test/tyk-kilit-taksitli-250.test.mjs test/ux18-cek-fatura-244.test.mjs test/yevmiye-sira-244.test.mjs",
+  "commit": "f1c8bbe5b0b156fba3472745797af76ec23b5c1a",
+  "dal": "worktree-agent-afbfc981262c5b2b8",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v653 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-19T04:18:17.333Z",
+  "sure_sn": 488.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2048,
+    "gecen": 1970,
+    "basarisiz": 66,
+    "iptal": 12,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 66 başarısız, 12 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 Ç5-A tur 1 — modül açılışları 519, KG-5, açılış evrakı, carisiz evrak, sınıf, denetim › açılış İŞARETTEN tanınır: göçten sonra yazılmış 'AÇILIŞ BAKİYESİ' Borç Yaz 602, 'Açılış bakiyesi' Alacak Yaz 770 (C-01 / C-02; P1, K8-1)",
+      "konum": "test/acilis-519-250.test.mjs:102:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS, ANLIK DURUM, Ana Defter ve raporları gösterir › zincir fikstürü surum-2.0.26-zincir (2.0.16 → 2.0.26 gerçek sürüm koduyla, 4 şirket)",
+      "konum": "test/banka-210-altin.test.mjs:497:3",
+      "hata": "114 fark: · zincir · 001 · Ç5-A katlaması: cash:cash-817a45b2-6565-467b-9bc7-3d6ef3a05654: çevirmeden sonra 649.90 kaldı · zincir · 001 · Ç5-A katlaması: cash:cash-8b26bcf0-1c5b-4db3-8e52-ac02449a3c0a: çevirmeden sonra 770.90 kaldı (beklenen , gelen )"
+    },
+    {
+      "ad": "altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS, ANLIK DURUM, Ana Defter ve raporları gösterir › v2.0.26'nın kendi koduyla üretilen veri (mutabakat motoru: 120 güne yayılmış 260 rastgele işlem, dönem kilidi, iade/iptal)",
+      "konum": "test/banka-210-altin.test.mjs:520:3",
+      "hata": "36 fark: · motor · 001 · Ç5-A katlaması: account:aentry-22274d04-034c-41b8-a557-469747aa5f8b: çevirmeden sonra 770.90 kaldı · motor · 001 · Ç5-A katlaması: account:aentry-b6d83f94-59f2-4da3-a38c-7712abca6665: çevirmeden sonra 770.90 kaldı"
+    },
+    {
+      "ad": "B8 — carinin defter bakiyesi: SQL toplamı = yevmiye (iki yolun eşdeğerliği) › rastgele mutabakat motoru (eşik 0: her cari SQL yolunda, eşdeğerlik denetimi açık): her işlem tutarlı, süzgeç bulgusu yok, her cari eşit",
+      "konum": "test/banka-210-gg-cari.test.mjs:39:3",
+      "hata": "motor: her işlemde tutarlı · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "GG2 — kilitli dönemdeki KDV'li masraf: Ters Kaydet bugün tarihli iade faturası yazar › Ters Kaydet → 08.10 tarihli Alıştan İade + bankaya 120 giriş; 770, 191, 320 net 0; kilitli dönem değişmez",
+      "konum": "test/banka-210-gg2-fis.test.mjs:159:3",
+      "hata": "191 net 0 · 2000 !== 0 (beklenen 0, gelen 2000)"
+    },
+    {
+      "ad": "GG2 — Alt Hesap Mizanı ve Genel Bakış tek kaynaktan (Ana Defter kurulmadan) = eski yol › tüm zamanlar ve üç dönem: alt hesaplar, borç/alacak/bakiye ve ana hesaplar Ana Defter'le kuruşu kuruşuna aynı",
+      "konum": "test/banka-210-gg2-hiz.test.mjs:70:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "GG2 — Alt Hesap Mizanı ve Genel Bakış tek kaynaktan (Ana Defter kurulmadan) = eski yol › Genel Bakış ve Hesaplar: bütün para satırlarının gruplanmasıyla bulunan değerlerle aynı",
+      "konum": "test/banka-210-gg2-hiz.test.mjs:82:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "GG2 — Alt Hesap Mizanı ve Genel Bakış tek kaynaktan (Ana Defter kurulmadan) = eski yol",
+      "konum": "test/banka-210-gg2-hiz.test.mjs:43:1",
+      "hata": "motor tutarlı · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11) › surum-2.0.16-zincir",
+      "konum": "test/banka-210-goc-zinciri.test.mjs:45:5",
+      "hata": "surum-2.0.16-zincir 001: Ç5-A katlaması (donmuş dönemin kural farkı dahil) — kural dışı fark · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11) › surum-2.0.17-zincir",
+      "konum": "test/banka-210-goc-zinciri.test.mjs:45:5",
+      "hata": "surum-2.0.17-zincir 001: Ç5-A katlaması (donmuş dönemin kural farkı dahil) — kural dışı fark · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11) › surum-2.0.18-zincir",
+      "konum": "test/banka-210-goc-zinciri.test.mjs:45:5",
+      "hata": "surum-2.0.18-zincir 001: Ç5-A katlaması (donmuş dönemin kural farkı dahil) — kural dışı fark · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11) › surum-2.0.19-zincir",
+      "konum": "test/banka-210-goc-zinciri.test.mjs:45:5",
+      "hata": "surum-2.0.19-zincir 001: Ç5-A katlaması (donmuş dönemin kural farkı dahil) — kural dışı fark · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11) › surum-2.0.20-zincir",
+      "konum": "test/banka-210-goc-zinciri.test.mjs:45:5",
+      "hata": "surum-2.0.20-zincir 001: Ç5-A katlaması (donmuş dönemin kural farkı dahil) — kural dışı fark · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11) › surum-2.0.21-zincir",
+      "konum": "test/banka-210-goc-zinciri.test.mjs:45:5",
+      "hata": "surum-2.0.21-zincir 001: Ç5-A katlaması (donmuş dönemin kural farkı dahil) — kural dışı fark · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11) › surum-2.0.22-zincir",
+      "konum": "test/banka-210-goc-zinciri.test.mjs:45:5",
+      "hata": "surum-2.0.22-zincir 001: Ç5-A katlaması (donmuş dönemin kural farkı dahil) — kural dışı fark · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11) › surum-2.0.23-zincir",
+      "konum": "test/banka-210-goc-zinciri.test.mjs:45:5",
+      "hata": "surum-2.0.23-zincir 001: Ç5-A katlaması (donmuş dönemin kural farkı dahil) — kural dışı fark · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11) › surum-2.0.24-zincir",
+      "konum": "test/banka-210-goc-zinciri.test.mjs:45:5",
+      "hata": "surum-2.0.24-zincir 001: Ç5-A katlaması (donmuş dönemin kural farkı dahil) — kural dışı fark · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11) › surum-2.0.25-zincir",
+      "konum": "test/banka-210-goc-zinciri.test.mjs:45:5",
+      "hata": "surum-2.0.25-zincir 001: Ç5-A katlaması (donmuş dönemin kural farkı dahil) — kural dışı fark · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11) › surum-2.0.26-zincir",
+      "konum": "test/banka-210-goc-zinciri.test.mjs:45:5",
+      "hata": "surum-2.0.26-zincir 001: Ç5-A katlaması (donmuş dönemin kural farkı dahil) — kural dışı fark · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11) › surum-2.0.19-cakisma",
+      "konum": "test/banka-210-goc-zinciri.test.mjs:45:5",
+      "hata": "surum-2.0.19-cakisma 001: Ç5-A katlaması (donmuş dönemin kural farkı dahil) — kural dışı fark · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11) › surum-2.0.19-eski",
+      "konum": "test/banka-210-goc-zinciri.test.mjs:45:5",
+      "hata": "surum-2.0.19-eski 001: Ç5-A katlaması (donmuş dönemin kural farkı dahil) — kural dışı fark · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11) › surum-2.0.26-turler",
+      "konum": "test/banka-210-goc-zinciri.test.mjs:45:5",
+      "hata": "surum-2.0.26-turler 001: Ç5-A katlaması (donmuş dönemin kural farkı dahil) — kural dışı fark · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "hız düzeltmesi eşdeğerliği — tohum 21 (300 motor işlemi + elle banka işlemleri) › veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)",
+      "konum": "test/banka-210-hiz-esdegerlik.test.mjs:408:5",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "hız düzeltmesi eşdeğerliği — tohum 21 (300 motor işlemi + elle banka işlemleri) › Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)",
+      "konum": "test/banka-210-hiz-esdegerlik.test.mjs:433:5",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "hız düzeltmesi eşdeğerliği — tohum 21 (300 motor işlemi + elle banka işlemleri) › moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)",
+      "konum": "test/banka-210-hiz-esdegerlik.test.mjs:445:5",
+      "hata": "test did not finish before its parent and was cancelled"
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2/kanit/komsu/2026-11-19/c7b-komsu-utc1.log.gz",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-afbfc981262c5b2b8",
+  "ham_cikti_sha256": "be854c1fa8e5cc843fd11fb52c2a2f8807ffa87c90e9e6ec5b1548fd2131ee0b",
+  "ham_cikti_bayt": 1851414
+}
