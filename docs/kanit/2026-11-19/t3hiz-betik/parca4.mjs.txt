@@ -1,0 +1,18 @@
+// t3hiz: Ç7a'nın kapı / türetme ekleri (salt okunur). node parca4.mjs <kod> <veri kopyası>
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+const [root, dir] = process.argv.slice(2);
+const imp = p => import(pathToFileURL(path.join(root, p)).href);
+const dbm = await imp("server/lib/db.mjs");
+const store = dbm.createStore(dbm.openDatabase(path.join(dir, "data", "destekofis.sqlite"), { readOnly: true }));
+const t = (label, fn, n = 7) => { const ms = []; for (let i = 0; i < n; i += 1) { const s = performance.now(); fn(); ms.push(performance.now() - s); } ms.sort((a, b) => a - b); console.log(`${label}: en iyi ${ms[0].toFixed(2)} · ortanca ${ms[Math.floor(n / 2)].toFixed(2)} ms`); };
+const cover = await imp("server/lib/bank/opening-cover.mjs").catch(() => null);
+const pos = await imp("server/lib/bank/pos-commission.mjs").catch(() => null);
+const ml = await imp("server/lib/bank/money-lines.mjs");
+const lo = await imp("server/lib/ledger-opening.mjs");
+if (cover) t("coverBounds", () => cover.coverBounds(store));
+if (pos) t("commissionByPos (süzgeçsiz)", () => pos.commissionByPos(store));
+const lines = ml.createMoneyLines(store);
+if (lines.coveredTotal) t("coveredTotal", () => lines.coveredTotal());
+t("openingCounterpart", () => lo.openingCounterpart(store));
+if (lines.groups) t("groups (süzgeçsiz)", () => lines.groups());

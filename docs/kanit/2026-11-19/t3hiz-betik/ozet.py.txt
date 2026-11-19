@@ -1,0 +1,12 @@
+# ayrıştırma çıktısı → yol × durum tablosu (en iyi / ortanca / olay döngüsü en çok); GEÇERSİZ blok '!' ile işaretli. Çağrı: python3 -I ozet.py <dosya>
+import re, sys
+rows = {}; order = []; bad = set(); cur = None
+for l in open(sys.argv[1], encoding='utf-8'):
+    if l.startswith('=== '):
+        cur = l.split()[1]; order.append(cur)
+        if 'GEÇERSİZ' in l: bad.add(cur)
+    m = re.match(r'  (.+?): durum (\S+) · en iyi ([\d.]+) ms · ortanca ([\d.]+) ms · olay döngüsü en çok ([\d.]+)', l)
+    if m: rows.setdefault(m.group(1), {})[cur] = (float(m.group(3)), float(m.group(4)), float(m.group(5)), m.group(2))
+print('yol | ' + ' | '.join(f"{c}{'!' if c in bad else ''}" for c in order))
+for k, v in rows.items():
+    print(f"{k[:44]} | " + ' | '.join(f"{v[c][0]:.0f}/{v[c][1]:.0f}/{v[c][2]:.0f}{'' if v[c][3] == '200' else ' D' + v[c][3]}" if c in v else '-' for c in order))

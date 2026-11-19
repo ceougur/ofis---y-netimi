@@ -1,0 +1,10 @@
+#!/bin/bash
+# t3hiz: ayrıştırma için kod kopyaları (git archive; /dev/shm/t3hiz/k-<ad>; docs hariç) — çalışma ağacından çağrılır (git yalnız bu ağaçta).
+V=/dev/shm/t3hiz
+for spec in "$@"; do
+  ad=${spec%%=*}; ref=${spec#*=}
+  [ -d $V/k-$ad ] && { echo "var $ad"; continue; }
+  mkdir -p $V/k-$ad && git archive $ref ':!docs' | tar -x -C $V/k-$ad || exit 1
+  ln -s /home/user/ofis---y-netimi/node_modules $V/k-$ad/node_modules
+  echo "$ad = $ref $(git rev-parse --short $ref)"
+done

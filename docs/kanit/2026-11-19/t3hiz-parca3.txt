@@ -1,0 +1,33 @@
+aday 2 ESKİ: en iyi 39.19 · ortanca 39.52 ms
+aday 2 YENİ: en iyi 5.42 · ortanca 5.52 ms
+aynı mı true 1
+aday 2 ESKİ (bütün cariler): en iyi 12084.64 · ortanca 12084.64 ms
+aday 2 YENİ (bütün cariler): en iyi 48.85 · ortanca 49.90 ms
+bütün carilerde aynı mı true 1167
+  plan MERGE (UNION)
+  plan LEFT
+  plan MERGE (UNION)
+  plan LEFT
+  plan SCAN j VIRTUAL TABLE INDEX 1:
+  plan SEARCH c USING INDEX idx_cheques_account (account_id=?)
+  plan SEARCH ev EXISTS USING INDEX idx_cheque_events_cheque (cheque_id=?)
+  plan USE TEMP B-TREE FOR ORDER BY
+  plan RIGHT
+  plan SCAN c
+  plan LIST SUBQUERY 3
+  plan SCAN json_each VIRTUAL TABLE INDEX 1:
+  plan CREATE BLOOM FILTER
+  plan SEARCH ev EXISTS USING INDEX idx_cheque_events_cheque (cheque_id=?)
+  plan USE TEMP B-TREE FOR ORDER BY
+  plan RIGHT
+  plan SCAN ev
+  plan LIST SUBQUERY 6
+  plan SCAN json_each VIRTUAL TABLE INDEX 1:
+  plan CREATE BLOOM FILTER
+  plan SEARCH c EXISTS USING COVERING INDEX sqlite_autoindex_cheques_1 (id=?)
+  plan USE TEMP B-TREE FOR ORDER BY
+accountSettleInput: en iyi 4.17 · ortanca 6.21 ms
+obligationExtras: en iyi 0.07 · ortanca 0.12 ms
+bağlı satır 25 satır 45
+doubtfulBefore × 25: en iyi 5.35 · ortanca 7.55 ms
+JSON (girdi): en iyi 0.14 · ortanca 0.18 ms

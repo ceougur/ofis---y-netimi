@@ -1,0 +1,12 @@
+#!/bin/bash
+# t3hiz: hakemi DÜZELTMEDEN ÖNCEKİ kodda (9c09f18d kopyası /dev/shm/t3hiz/k-hakem) üretir — iki saat diliminde; ikisi aynı olmalı.
+A=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3hiz-a
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-af7c4e455433c3703
+cp $W/test/t3hiz-esdegerlik-250.test.mjs /dev/shm/t3hiz/k-hakem/test/ || exit 1
+cd /dev/shm/t3hiz/k-hakem || exit 1
+for tz in Europe/Istanbul UTC; do
+  ad=${tz//\//-}
+  HAKEM_YAZ=$A/hakem-$ad.json HUKUK_LICENSE_URL=http://127.0.0.1:9 TZ=$tz timeout -k 5 1500 node --test --test-reporter=spec test/t3hiz-esdegerlik-250.test.mjs > $A/hakem-$ad.out 2>&1
+  echo "$tz çıkış $? · $(grep -E '^ℹ (tests|pass|fail|skipped)' $A/hakem-$ad.out | tr '\n' ' ')"
+done
+cmp $A/hakem-Europe-Istanbul.json $A/hakem-UTC.json && echo "İKİ SAAT DİLİMİ AYNI ($(wc -c < $A/hakem-UTC.json) bayt)"

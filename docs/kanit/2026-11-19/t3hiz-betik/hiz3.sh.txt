@@ -1,0 +1,29 @@
+#!/bin/bash
+# t3hiz ÖNCE / SONRA (iş 4; ders 15, 47, 52, 53 (a)) — ana oturumun hiz.sh'ının kopyası, ÜÇ kodla: ana (c53a757a = 542a85d5'in kodu) → taban (9c09f18d) → uç → ana → taban → uç; her blok verinin
+# TAZE kopyasında; ÖZEL ölçüm kilidi (tek seferlik bekler). Dört betik ve veriler ana oturumunkiler (OKUNUR; üstüne yazılmaz). Çağrı: timeout 7000 bash hiz3.sh <kilitsiz|kilitli> <uç kod adı> [tekrar=5] [betikler=t3b,t3c,c7a,t2]
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad; H=$S/ana-hiz; A=$S/t3hiz-a; V=/dev/shm/t3hiz
+KIP=${1:-kilitsiz}; UC=$2; N=${3:-5}; SEC=${4:-t3b,t3c,c7a,t2}
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 TZ=Europe/Istanbul
+exec 9>"$S/olcum.lock"; flock -x -w 3600 9 || { echo "KİLİT ALINAMADI — ÖLÇÜLEMEDİ"; exit 3; }
+echo "kilit $(date -u +%H:%M:%S) yük $(cut -d' ' -f1-3 /proc/loadavg) · ana k-ana · taban k-s3 · uç k-$UC · $KIP"
+for is in "t3b:$S/c5a3b-z4/betik/olc.mjs:$S/ana-kabul/temiz-100k" "t3c:$S/c5a3c-k7/olc-c5a3c.mjs:$V/hazir3c-kaynak" "c7a:$S/c7a-t2b/olcum/olc-c7a3.mjs:$V/tohum7-kaynak" "t2:$S/c5a2-olcum/olc-c5a2.mjs:$S/ana-kabul/temiz-100k"; do
+  ad=${is%%:*}; r=${is#*:}; B=${r%%:*}; D=${r#*:}; OUT=$A/hiz3-$ad-$KIP.txt
+  case ",$SEC," in *",$ad,"*) ;; *) continue;; esac
+  echo "HIZ $ad · $KIP · tekrar $N · başta $(cat /proc/loadavg) · $(date -u +%H:%M:%S)" > $OUT
+  for k in ana:$V/k-ana taban:$V/k-s3 uc:$V/k-$UC ana:$V/k-ana taban:$V/k-s3 uc:$V/k-$UC; do
+    kn=${k%%:*}; R=${k#*:}; K=$V/kopya
+    rm -rf $K && cp -a "$D" $K || exit 1
+    [ "$KIP" = kilitli ] && { python3 -I $S/c5a2-olcum/kilit.py $K/data/destekofis.sqlite >> $OUT || exit 1; }
+    sync; l0=$(cut -d' ' -f1 /proc/loadavg)
+    echo "=== $kn · başta $(cat /proc/loadavg) $(awk -v l=$l0 'BEGIN{print (l>2)?"· GEÇERSİZ (yük > 2)":""}')" >> $OUT
+    if [ $ad = t3b ]; then
+      timeout -k 5 2400 node --max-old-space-size=8192 --disable-warning=ExperimentalWarning $B "$R" $K $N $V/olc.json >> $OUT 2>&1; c=$?; python3 -I $H/json2satir.py $V/olc.json >> $OUT
+    else
+      timeout -k 5 2400 node --max-old-space-size=8192 --disable-warning=ExperimentalWarning $B "$R" $K $N >> $OUT 2>&1; c=$?
+    fi
+    echo "çıkış $c · sonda $(cat /proc/loadavg)" >> $OUT
+  done
+  rm -rf $V/kopya $V/olc.json
+  echo "$ad bitti $(date -u +%H:%M:%S) · $(grep -c 'GEÇERSİZ' $OUT) geçersiz blok · çıkışlar: $(grep -o '^çıkış [0-9]*' $OUT | tr '\n' ' ')"
+done
+echo "bitti $(date -u +%H:%M:%S) yük $(cut -d' ' -f1-3 /proc/loadavg)"

@@ -1,0 +1,83 @@
+(node:22331) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+▶ 2.5.0 TEK ADAY HIZ (t3hiz): şüpheli ↔ kuyruk ayırıcısının ön denetimi, kuyruk girdisinin sorgu planları ve işlem dışı belleği — davranış AYNEN
+  ✖ H1 + H2: aday cari kümesi ve kuyruk girdisi (her cari) ESKİ sorgu / gövdeyle aynı — harita sırası dahil, iki şirkette (2796.377081ms)
+  ✖ H3: bellekli ↔ belleksiz ↔ hakem — ilk durum, kilitli dönem, yazım, kapı reddi, store dışı yazım, başka bağlantı, kilit kalkınca; iki şirket (148.117143ms)
+  ✖ H3: kesit belleğinin anahtarı görünümü taşır — aynı satır, farklı açık kalan / aynı gün işlenen → belleksiz sonuçla aynı (0.706174ms)
+  ✖ H3: geri alınan işlemin İÇİNDE okunan durum bellekte kalmaz (geri alma total_changes'ı azaltmaz — aynı anahtar) (0.295096ms)
+✖ 2.5.0 TEK ADAY HIZ (t3hiz): şüpheli ↔ kuyruk ayırıcısının ön denetimi, kuyruk girdisinin sorgu planları ve işlem dışı belleği — davranış AYNEN (3583.729715ms)
+ℹ tests 4
+ℹ suites 1
+ℹ pass 0
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4148.699744
+
+✖ failing tests:
+
+test at test/t3hiz-esdegerlik-250.test.mjs:256:3
+✖ H1 + H2: aday cari kümesi ve kuyruk girdisi (her cari) ESKİ sorgu / gövdeyle aynı — harita sırası dahil, iki şirkette (2796.377081ms)
+  AssertionError [ERR_ASSERTION]: LINKED_CHEQUE_PARTIES_SQL yok — ön denetim eski sorguda
+      at TestContext.<anonymous> (file:///dev/shm/t3hiz/k-hakem/test/t3hiz-esdegerlik-250.test.mjs:267:16)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/t3hiz-esdegerlik-250.test.mjs:296:3
+✖ H3: bellekli ↔ belleksiz ↔ hakem — ilk durum, kilitli dönem, yazım, kapı reddi, store dışı yazım, başka bağlantı, kilit kalkınca; iki şirket (148.117143ms)
+  AssertionError [ERR_ASSERTION]: linkedShares'in belleği (LINKED_MEMO_TEST) yok — hız düzeltmesi uygulanmamış
+      at stage (file:///dev/shm/t3hiz/k-hakem/test/t3hiz-esdegerlik-250.test.mjs:245:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async TestContext.<anonymous> (file:///dev/shm/t3hiz/k-hakem/test/t3hiz-esdegerlik-250.test.mjs:306:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/t3hiz-esdegerlik-250.test.mjs:341:3
+✖ H3: kesit belleğinin anahtarı görünümü taşır — aynı satır, farklı açık kalan / aynı gün işlenen → belleksiz sonuçla aynı (0.706174ms)
+  AssertionError [ERR_ASSERTION]: LINKED_MEMO_TEST yok
+      at TestContext.<anonymous> (file:///dev/shm/t3hiz/k-hakem/test/t3hiz-esdegerlik-250.test.mjs:342:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/t3hiz-esdegerlik-250.test.mjs:375:3
+✖ H3: geri alınan işlemin İÇİNDE okunan durum bellekte kalmaz (geri alma total_changes'ı azaltmaz — aynı anahtar) (0.295096ms)
+  AssertionError [ERR_ASSERTION]: LINKED_MEMO_TEST yok
+      at TestContext.<anonymous> (file:///dev/shm/t3hiz/k-hakem/test/t3hiz-esdegerlik-250.test.mjs:376:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

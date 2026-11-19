@@ -1,0 +1,18 @@
+#!/bin/bash
+# t3hiz AYRIŞTIRMA (iş 1): kararın KÖTÜ / eşikteki yolları, commit commit, AYNI veri kaynağının taze kopyasında; ÖZEL ölçüm kilidi (tek seferlik bekler).
+# Çağrı: timeout 7000 bash ayristir.sh <çıktı dosyası> <veri: d1|d2|d3> <kip: kilitsiz|kilitli> <tekrar> <yollar> <durum…>   (durum = /dev/shm/t3hiz/k-<ad>)
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad; A=$S/t3hiz-a; V=/dev/shm/t3hiz
+OUT=$1; VERI=$2; KIP=$3; N=$4; YOL=$5; shift 5
+case $VERI in d1) SRC=$V/hazir3c-kaynak;; d2) SRC=$S/ana-kabul/temiz-100k;; d3) SRC=$V/tohum7-kaynak;; *) echo "veri?"; exit 2;; esac
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 TZ=Europe/Istanbul
+exec 9>"$S/olcum.lock"; flock -x -w 3600 9 || { echo "KİLİT ALINAMADI — ÖLÇÜLEMEDİ" >> $OUT; exit 3; }
+echo "AYRIŞTIRMA $VERI ($SRC) · $KIP · tekrar $N · yollar $YOL · kilit $(date -u +%H:%M:%S) · yük $(cut -d' ' -f1-3 /proc/loadavg)" >> $OUT
+for d in "$@"; do
+  K=$V/veri-kopya; rm -rf $K && cp -a "$SRC" $K || exit 1
+  [ "$KIP" = kilitli ] && { python3 -I $S/c5a2-olcum/kilit.py $K/data/destekofis.sqlite >> $OUT || exit 1; }
+  sync; l0=$(cut -d' ' -f1 /proc/loadavg)
+  echo "=== $d · başta $(cat /proc/loadavg) $(awk -v l=$l0 'BEGIN{print (l>2)?"· GEÇERSİZ (yük > 2)":""}')" >> $OUT
+  timeout -k 5 1500 node --max-old-space-size=8192 --disable-warning=ExperimentalWarning $A/olc-kisa.mjs $V/k-$d $K $N $YOL >> $OUT 2>&1; echo "çıkış $? · sonda $(cat /proc/loadavg)" >> $OUT
+done
+rm -rf $V/veri-kopya
+echo "bitti $(date -u +%H:%M:%S)" >> $OUT

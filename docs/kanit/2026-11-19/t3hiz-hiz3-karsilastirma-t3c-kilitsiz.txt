@@ -1,0 +1,17 @@
+ATILAN (GEÇERSİZ) BLOKLAR: ['hiz3-t3c-kilitsiz.txt:taban']
+yol | ana en iyi / ort.ortanca / döngü | taban | uç | uç/ana en iyi | uç/ana ortanca | uç/taban ortanca | hüküm (uç ↔ ana)
+Mizan + mutabakat (GET ledger) | 3267 / 3506 / 3959 | 3799 / 3910 / 0 | 3352 / 3806 / 0 | 1.03 | 1.09 | 0.97 | tamam
+Yevmiye Defteri (rapor) | 2192 / 2365 / 0 | 2321 / 2434 / 0 | 2091 / 2460 / 0 | 0.95 | 1.04 | 1.01 | tamam
+Hesap Planı Mizanı (rapor) | 3272 / 3441 / 0 | 3708 / 3878 / 0 | 3247 / 3756 / 0 | 0.99 | 1.09 | 0.97 | tamam
+Alt Hesap Mizanı (rapor) | 445 / 497 / 0 | 485 / 493 / 0 | 476 / 566 / 0 | 1.07 | 1.14 | 1.15 | eşikte (tek ölçüt)
+Defter Mutabakatı (rapor) | 12075 / 12559 / 0 | 13340 / 13608 / 0 | 11865 / 12796 / 0 | 0.98 | 1.02 | 0.94 | tamam
+Mutabakat Testi (GET ledger/integrity) | 7526 / 7908 / 8439 | 8323 / 8467 / 0 | 7347 / 8330 / 0 | 0.98 | 1.05 | 0.98 | tamam
+Alacak Yaşlandırma (rapor) | 2016 / 2321 / 2475 | 2370 / 2461 / 0 | 2023 / 2280 / 0 | 1.00 | 0.98 | 0.93 | tamam
+Cari Listesi | 804 / 867 / 0 | 980 / 1030 / 1070 | 818 / 943 / 0 | 1.02 | 1.09 | 0.92 | tamam
+zil (dues) | 2046 / 2276 / 11 | 2074 / 2180 / 17 | 1963 / 2209 / 2179 | 0.96 | 0.97 | 1.01 | tamam
+cari kartı (şüpheli + bağlı) | 185 / 215 / 262 | 496 / 502 / 572 | 123 / 149 / 186 | 0.66 | 0.69 | 0.30 | tamam
+cari kartı (şüphelisiz, en kalabalık) | 240 / 263 / 0 | 229 / 239 / 0 | 155 / 175 / 0 | 0.64 | 0.67 | 0.73 | tamam
+YAZIM bağlı tahsilat (şüpheli cari; kapı) | 367 / 394 / 0 | 1432 / 1534 / 1530 | 325 / 382 / 524 | 0.89 | 0.97 | 0.25 | tamam
+YAZIM tahsilat (şüphelisiz cari; kapı) | 306 / 321 / 0 | 417 / 423 / 0 | 168 / 188 / 206 | 0.55 | 0.58 | 0.44 | tamam
+Kural Farkı Düzeltme ön izlemesi | 2 / 2 / 0 | 2 / 2 / 0 | 2 / 2 / 0 | 1.00 | 0.98 | 1.05 | küçük (<20 ms)
+KÖTÜLEŞEN YOL SAYISI (uç ↔ ana) 0

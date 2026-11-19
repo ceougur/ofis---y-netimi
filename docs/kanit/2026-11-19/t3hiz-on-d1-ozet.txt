@@ -1,0 +1,14 @@
+yol | ana | uc1
+Mizan + mutabakat (GET ledger) | 3084/3085/3074 | 3050/3123/3118
+Yevmiye Defteri (rapor) | 2040/2147/2181 | 2065/2098/2096
+Hesap Planı Mizanı (rapor) | 3020/3058/0 | 3108/3117/0
+Alt Hesap Mizanı (rapor) | 440/462/0 | 468/472/0
+Defter Mutabakatı (rapor) | 10852/10891/0 | 10994/11006/0
+Mutabakat Testi (GET ledger/integrity) | 6763/6870/0 | 6937/6984/6984
+Alacak Yaşlandırma (rapor) | 1902/1921/2051 | 1929/1930/0
+Cari Listesi | 739/768/0 | 726/786/0
+zil (dues) | 1828/1829/1617 | 1821/1840/1611
+cari kartı (şüpheli + bağlı) | 162/170/172 | 120/120/121
+cari kartı (şüphelisiz, en kalabalık) | 203/207/0 | 148/152/0
+YAZIM bağlı tahsilat (şüpheli cari; kapı) | 300/306/0 | 340/355/0
+YAZIM tahsilat (şüphelisiz cari; kapı) | 267/269/0 | 145/150/0
