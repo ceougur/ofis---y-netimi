@@ -1,0 +1,93 @@
+# Ç7b tur 2e — yeni / değişen testler: c7b2e-taban (9d933883) git worktree kopyasında KIRMIZI (yalnız test dosyası kopyalandı — ders 51), yeni kodda YEŞİL
+## taban: b11-taban (Europe/Istanbul)
+    # Subtest: ay grupları: Aralık'ta P2 / P4 YOK, Ocak'ta P2 VAR, Mart'ta P4; alıştan iade kendi ayında (kâhin)
+    not ok 1 - ay grupları: Aralık'ta P2 / P4 YOK, Ocak'ta P2 VAR, Mart'ta P4; alıştan iade kendi ayında (kâhin)
+      error: |-
+        Aralık (kâhin)
+      error: |-
+        400 + 140 = 540 (kâhin)
+      error: |-
+        2026-12: rapor TOPLAM Alış = mahsup İ
+        66000 !== 20000
+    # Subtest: Düzenle: P2'nin dönemi Şubat'a alınınca rapor Ocak'tan Şubat'a taşır (kâhin: Ocak 100, Şubat 440)
+    not ok 4 - Düzenle: P2'nin dönemi Şubat'a alınınca rapor Ocak'tan Şubat'a taşır (kâhin: Ocak 100, Şubat 440)
+      error: |-
+  error: '4 subtests failed'
+# tests 4
+# pass 0
+# fail 4
+## taban: taban-defter-kaynak-iz-250 (Europe/Istanbul)
+      error: |-
+        kilit izinde OLMAYAN ve istisna listesinde de olmayan türetme sütunları (LOCK_SQL'e ekleyin ya da gerekçeyle istisnaya yazın): invoices.vat_period
+  error: '1 subtest failed'
+# tests 2
+# pass 1
+# fail 1
+## taban: taban-c7b-goc52-kilit-izi-250 (Europe/Istanbul)
+      error: 'kilitli faturanın KDV İndirim Dönemi: güncel kilit izi değişmeli'
+  error: '1 subtest failed'
+# tests 3
+# pass 2
+# fail 1
+## taban: taban-sifirla (Europe/Istanbul)
+      error: |-
+        movements: faturalar ve KDV mahsupları silindi
+      error: |-
+        all: faturalar ve KDV mahsupları silindi
+  error: '2 subtests failed'
+# tests 2
+# pass 0
+# fail 2
+## taban: ekran senaryosu senaryo-kdv-donemi-250 (Europe/Istanbul)
+  ✗ KDV Özeti satırı Şubat 2027 · Alış · 2.000 / 400 ([["Bu dönemde kayıt yok. Tüm Zamanları Göster"]])
+  ✗ TOPLAM satırı = satırlar ([])
+✗ senaryo-kdv-donemi-250: 20 geçti, 2 kaldı
+## onarım eşdeğerliği — ESKİ test tabanda (yeni uçla aynı kod) KIRMIZI
+        mutabakat: yeni {"ok":false,"failures":["ledger:rule-diff"]} ↔ eski {"ok":true,"failures":[]}
+        +   'mutabakat: yeni {"ok":false,"failures":["ledger:rule-diff"]} ↔ eski {"ok":true,"failures":[]}'
+        0: 'mutabakat: yeni {"ok":false,"failures":["ledger:rule-diff"]} ↔ eski {"ok":true,"failures":[]}'
+# tests 1
+## onarım eşdeğerliği — YENİ test Ç7b öncesi kodda (c7b2-taban, git archive kopyası; test + onarim-dokum.mjs kopyalandı) KIRMIZI
+        mutabakat (fişten önce; K-01): {"ok":true,"failures":[]} ↔ beklenen {ok:false, failures:[ledger:rule-diff]}
+        kural farkı: yalnız 08.08.2026 Kasa girişi 649 → 649.90 (200.000 TL) beklenir; görülen []
+        Kural Farkı Düzeltme Fişi ön izlemesi: {"date":"2026-10-08","lines":[],"disabled":true,"code":"rule-diff-nothing"}
+        Kural Farkı Düzeltme Fişi yazılamadı: 409
+        +   'mutabakat (fişten önce; K-01): {"ok":true,"failures":[]} ↔ beklenen {ok:false, failures:[ledger:rule-diff]}',
+        +   'kural farkı: yalnız 08.08.2026 Kasa girişi 649 → 649.90 (200.000 TL) beklenir; görülen []',
+        +   'Kural Farkı Düzeltme Fişi ön izlemesi: {"date":"2026-10-08","lines":[],"disabled":true,"code":"rule-diff-nothing"}',
+        +   'Kural Farkı Düzeltme Fişi yazılamadı: 409'
+        0: 'mutabakat (fişten önce; K-01): {"ok":true,"failures":[]} ↔ beklenen {ok:false, failures:[ledger:rule-diff]}'
+        1: 'kural farkı: yalnız 08.08.2026 Kasa girişi 649 → 649.90 (200.000 TL) beklenir; görülen []'
+        2: 'Kural Farkı Düzeltme Fişi ön izlemesi: {"date":"2026-10-08","lines":[],"disabled":true,"code":"rule-diff-nothing"}'
+        3: 'Kural Farkı Düzeltme Fişi yazılamadı: 409'
+# tests 1
+# pass 0
+# fail 1
+## yeni kod — iki TZ
+b11 Europe-Istanbul: # tests 4 # pass 4 # fail 0 
+b11 UTC: # tests 4 # pass 4 # fail 0 
+kaynak-iz Europe-Istanbul: # tests 2 # pass 2 # fail 0 
+kaynak-iz UTC: # tests 2 # pass 2 # fail 0 
+goc52 Europe-Istanbul: # tests 3 # pass 3 # fail 0 
+goc52 UTC: # tests 3 # pass 3 # fail 0 
+sifirla Europe-Istanbul: # tests 2 # pass 2 # fail 0 
+sifirla UTC: # tests 2 # pass 2 # fail 0 
+onarim Europe-Istanbul: # tests 3 # pass 3 # fail 0 
+onarim UTC: # tests 3 # pass 3 # fail 0 
+senaryo-kdv-donemi-250 Europe-Istanbul: ✓ senaryo-kdv-donemi-250: 22 geçti, 0 kaldı
+senaryo-kdv-donemi-250 UTC: ✓ senaryo-kdv-donemi-250: 22 geçti, 0 kaldı
+[kanit] c7b2e-yeni-ist: GEÇTİ · çıkış 0 · 66/66 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a9aad79 +1 değişmiş dosya +1 izlenmeyen · linux 6.18.44-fc-v653 x64 · Node v22.23.4
+[kanit] c7b2e-yeni-utc: GEÇTİ · çıkış 0 · 66/66 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a9aad79 +1 değişmiş dosya +1 izlenmeyen · linux 6.18.44-fc-v653 x64 · Node v22.23.4
+## dondurma yarışı zorlaması (test/b7-dondurma-yaris-zorla.mjs)
+[zorla özet] test/c7b-goc52-kilit-izi-250.test.mjs · 1 yineleme · ön koşul gerçekleşti 1 · gerçekleşmedi 0 · ön koşullu yeşil 1 · ön koşullu kırmızı 0 · süre doldu, ön koşul bilinmiyor 0
+[zorla özet] test/c7b-goc52-kilit-izi-250.test.mjs · 1 yineleme · ön koşul gerçekleşti 1 · gerçekleşmedi 0 · ön koşullu yeşil 1 · ön koşullu kırmızı 0 · süre doldu, ön koşul bilinmiyor 0
+[zorla özet] test/acilis-onarimi-hiz-250.test.mjs · 2 yineleme · ön koşul gerçekleşti 2 · gerçekleşmedi 0 · ön koşullu yeşil 2 · ön koşullu kırmızı 0 · süre doldu, ön koşul bilinmiyor 0
+[zorla özet] test/acilis-onarimi-hiz-250.test.mjs · 2 yineleme · ön koşul gerçekleşti 2 · gerçekleşmedi 0 · ön koşullu yeşil 2 · ön koşullu kırmızı 0 · süre doldu, ön koşul bilinmiyor 0
+## tek tek komşular (Europe/Istanbul; ön sinyal — tam liste c7b2e-komsu)
+tek-c7b-kdv-donemi-250: # pass 5 # fail 0 
+tek-c7b-kilit-izi-250: # pass 1 # fail 0 
+tek-defter-243-ux24-toplam: # pass 4 # fail 0 
+tek-donmus-defter-250: # pass 13 # fail 0 
+tek-kilit-izi-alanlar-250: # pass 47 # fail 0 
+tek-raporlar-224: # pass 52 # fail 0 
+tek-sema-kapisi-bs7: # pass 4 # fail 0 
