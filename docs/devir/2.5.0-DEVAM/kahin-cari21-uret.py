@@ -16,6 +16,14 @@ def tek(lines, basla):
     assert len(hit) == 1, (basla, len(hit))
     return hit[0].strip()
 
+import re
+def blok(basla):
+    # 19.11 düzeltme: iş listesindeki devam satırları ('  ' ile başlayıp yeni madde / soru olmayan) da okunur — tek satır okuma metni KESİYORDU.
+    h = [i for i, l in enumerate(il) if l.startswith(basla)]; assert len(h) == 1, (basla, len(h))
+    s = h[0]; e = s + 1
+    while e < len(il) and il[e].startswith('  ') and not re.match(r'  (S\d+[ =(]|\(\d+\) )', il[e]): e += 1
+    return ' '.join(x.strip() for x in il[s:e])
+
 def dkayit(onek):
     x = [e for e in dent if e.startswith(onek)]
     assert len(x) == 1, (onek, len(x))
@@ -27,11 +35,10 @@ def kes(metin, bas, son):
     return metin[i:j + len(son)].strip()
 
 KG3 = tek(kk, '| KG-3 K |'); KG23 = tek(kk, '| KG-23 |')
-HEPSI_A = [l.strip() for l in il if l.startswith('- KULLANICI KARARI (05.11 17:16 UTC')]
-assert len(HEPSI_A) == 1
-BORCTA = tek(il, '  (6) 2B-S5 / S10 = A "Borçta Kalsın"')
-S15S = tek(il, '  S15 (R5)'); S15K = tek(il, '  S15 = A:')
-S25S = tek(il, '  S25 (S14 ayrıntıları)'); S25K = tek(il, '  S25 = A:')
+HEPSI_A = [blok('- KULLANICI KARARI (05.11 17:16 UTC')]
+BORCTA = blok('  (6) 2B-S5 / S10 = A "Borçta Kalsın"')
+S15S = blok('  S15 (R5)'); S15K = blok('  S15 = A:')
+S25S = blok('  S25 (S14 ayrıntıları)'); S25K = blok('  S25 = A:')
 d0631 = dkayit('KULLANICI 14.11 06:31 UTC').strip()
 e0507 = dkayit('BAŞ MİMAR KARARI 19.11 05:07')
 B8 = kes(e0507, 'bu ÜÇ kuralın yeni yönü', 'tek tanım).')
