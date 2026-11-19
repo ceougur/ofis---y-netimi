@@ -1,5 +1,5 @@
 {
- "aciklama": "2.5.0 Ç5 bakımı 4 (D11 + D12; A2 B-8 + B-6): göç 20.08.2026, kilit 30.06 = KURAL GEÇİŞ GÜNÜ. Geçişten önceki iadeler (I1 satıştan, R1 alıştan) ESKİ yön (B 391 / A 191); Temmuz'un mahsubu göçten önce yazılmış → I2 ESKİ yön; Ağustos'ta göç öncesi mahsup yok → I3 YENİ yön (B 191). Temmuz mahsubu göçten sonra ters kaydedilince I2 yeni yöne geçer; yeniden yazılan mahsup yeni yönle (H 100, İ 20; 360 aynı 80). Yalnız model (göç).",
+ "aciklama": "2.5.0 Ç5 bakımı 4 (D11 + D12; A2 B-8 + B-6): göç 20.08.2026, kilit 30.06 = KURAL GEÇİŞ GÜNÜ. Geçişten önceki iadeler (I1 satıştan, R1 alıştan) ESKİ yön (B 391 / A 191); Temmuz'un mahsubu göçten önce yazılmış → I2 ESKİ yön; Ağustos'ta göç öncesi mahsup yok → I3 YENİ yön (B 191). Temmuz mahsubu göçten sonra ters kaydedilince I2 yeni yöne geçer; yeniden yazılan mahsup yeni yönle (H 100, İ 20; 360 aynı 80). Yalnız model (göç). Mayıs'taki I5 (geçiş öncesi, mahsupsuz ay) yalnız B-8 ile eski yön.",
  "simdi": "2026-08-31T17:00:00+03:00",
  "bugun": "2026-08-31",
  "olaylar": [
@@ -84,6 +84,39 @@
    "tur": "kdv_mahsup",
    "tarih": "2026-03-31",
    "ay": "2026-03"
+  },
+  {
+   "id": "F5",
+   "tur": "fatura",
+   "fatura": "satis",
+   "tarih": "2026-05-03",
+   "cari": "M1",
+   "kalemler": [
+    {
+     "ad": "Hizmet",
+     "miktar": 10,
+     "fiyat": 20,
+     "kdv": 20
+    }
+   ],
+   "odeme": {
+    "acik": true
+   }
+  },
+  {
+   "id": "I5",
+   "tur": "fatura",
+   "fatura": "satis_iade",
+   "tarih": "2026-05-06",
+   "cari": "M1",
+   "asil": "F5",
+   "kalemler": [
+    {
+     "satir": 0,
+     "miktar": 1
+    }
+   ],
+   "not": "≤ geçiş günü, Mayıs'ın mahsubu YOK → eski yön yalnız B-8'den (B 391 4)"
   },
   {
    "id": "F2",
@@ -190,35 +223,35 @@
   }
  ],
  "elleBeklenenTL": {
-  "aciklama": "TL. K1: 391 = −200 (F1) + 20 (I1 eski) + 180 (MH03: H 200 − 20) − 100 (F2) + 20 (I2 eski) + 80 (MH07) − 80 (F3) = −80; 191 = 100 (A1) − 20 (R1 eski) − 80 (MH03: İ 100 − 20) + 8 (I3 yeni) = 8; 360 = −100 (MH03) − 80 (MH07) = −180. K2 (MH07 ters: A 391 80 / B 360 80; I2 yeni → B 191 20): 391 −180, 191 28, 360 −100. K3 (MH07B: B 391 100 / A 191 20 / A 360 80): 391 −80, 191 8, 360 −180. 120 = 1.200 − 120 + 600 − 120 + 480 − 48 = 1.992; 600 −1.900; 610 240; 770 = 500 − 100 = 400; 320 = −600 + 120 = −480.",
+  "aciklama": "TL. K1: 391 = −200 (F1) + 20 (I1 eski) + 180 (MH03: H 200 − 20) − 100 (F2) + 20 (I2 eski) + 80 (MH07) − 80 (F3) = −80; 191 = 100 (A1) − 20 (R1 eski) − 80 (MH03: İ 100 − 20) + 8 (I3 yeni) = 8; 360 = −100 (MH03) − 80 (MH07) = −180. K2 (MH07 ters: A 391 80 / B 360 80; I2 yeni → B 191 20): 391 −180, 191 28, 360 −100. K3 (MH07B: B 391 100 / A 191 20 / A 360 80): 391 −80, 191 8, 360 −180. 120 = 1.200 − 120 + 600 − 120 + 480 − 48 = 1.992; 600 −1.900; 610 240; 770 = 500 − 100 = 400; 320 = −600 + 120 = −480. Mayıs (geçiş öncesi, mahsupsuz — yalnız B-8): F5 B 120 240 / A 600 200 / A 391 40; I5 ESKİ yön B 610 20 / B 391 4 / A 120 24 → her kontrolde 120 +216, 600 −200, 610 +20, 391 −36: K1 / K3 391 −116, K2 −216; 120 2.208, 600 −2.100, 610 260.",
   "kontroller": {
    "K1": {
-    "120": 1992,
-    "600": -1900,
+    "120": 2208,
+    "600": -2100,
     "770": 400,
     "320": -480,
-    "610": 240,
-    "391": -80,
+    "610": 260,
+    "391": -116,
     "191": 8,
     "360": -180
    },
    "K2": {
-    "120": 1992,
-    "600": -1900,
+    "120": 2208,
+    "600": -2100,
     "770": 400,
     "320": -480,
-    "610": 240,
-    "391": -180,
+    "610": 260,
+    "391": -216,
     "191": 28,
     "360": -100
    },
    "K3": {
-    "120": 1992,
-    "600": -1900,
+    "120": 2208,
+    "600": -2100,
     "770": 400,
     "320": -480,
-    "610": 240,
-    "391": -80,
+    "610": 260,
+    "391": -116,
     "191": 8,
     "360": -180
    }
@@ -226,7 +259,7 @@
   "retler": [],
   "acilisOlabilir": [],
   "cari": {
-   "Geçiş Alfa Ltd.": 1992,
+   "Geçiş Alfa Ltd.": 2208,
    "Geçiş Tedarik A.Ş.": -480
   }
  }
