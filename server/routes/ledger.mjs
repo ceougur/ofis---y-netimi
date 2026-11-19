@@ -2,7 +2,7 @@
 // Kasa'dan düşen hareket ana defterde de yoktur), yevmiyeyi ve mizanı kurar, mutabakat kapısını çalıştırır.
 //   GET /api/workspace/ledger?from=&to=  → mizan + mutabakat (Finans raporları yetkisi)
 // Rapor merkezi "Hesap Planı Mizanı", "Yevmiye Defteri" ve "Defter Mutabakatı" raporlarını bu servisten üretir.
-import { ACCOUNT_PLAN, CHART, journal, moneyAccount, reconcile, trialBalance } from "../lib/general-ledger.mjs";
+import { ACCOUNT_PLAN, CHART, EXPORT_EXEMPTIONS, journal, moneyAccount, reconcile, trialBalance } from "../lib/general-ledger.mjs";
 import { DOUBTFUL_GL } from "../lib/doubtful-gl.mjs";
 import { doubtfulExpected, doubtfulRows, doubtfulUsed } from "../lib/bank/doubtful.mjs";
 import { systemClock } from "../lib/clock.mjs";
@@ -202,10 +202,18 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
       }
     }
     // Fatura (v2.0.15): yalnız kesilmiş olanlar (taslak ve iptal deftere girmez). Carisi silinmiş fatura olamaz (silme engelli).
+    // 2.5.0 Ç7b (KG-24 = A; BAŞ MİMAR KARARI B-3 = A): satış / SMM'nin ihracat istisna kodlu kalem payı (general-ledger exportSplit) — yalnız ihracat kalemi olan faturada, hesap
+    // başına [ihracat kalemleri neti, bütün kalemlerin neti] (kuruş, belge para birimi); öbür faturada NULL. invoice_lines(invoice_id, seq) indeksiyle fatura başına bir arama.
+    const exportCodes = EXPORT_EXEMPTIONS.map(code => `'${code}'`).join(", ");
+    const exportJson = has("invoice_lines")
+      ? `CASE WHEN i.kind IN ('sale', 'smm') AND EXISTS (SELECT 1 FROM invoice_lines l WHERE l.invoice_id = i.id AND l.exemption_code IN (${exportCodes}))
+              THEN (SELECT json_group_object(acc, json_array(e, t)) FROM (SELECT l.gl_account AS acc, SUM(CASE WHEN l.exemption_code IN (${exportCodes}) THEN CAST(ROUND(l.net * 100) AS INTEGER) ELSE 0 END) AS e,
+                    SUM(CAST(ROUND(l.net * 100) AS INTEGER)) AS t FROM invoice_lines l WHERE l.invoice_id = i.id GROUP BY l.gl_account)) END AS exportJson`
+      : "NULL AS exportJson";
     if (has("invoices")) {
       out.invoices = all(
         `SELECT i.id, i.rowid AS seq, i.kind, i.issue_date AS date, i.number, i.gl_json AS glJson, i.try_vat AS tryVat, i.try_withheld AS tryWithheld, i.try_stoppage AS tryStoppage,
-                i.try_payable AS tryPayable, a.type AS accountType, a.id AS party
+                i.try_payable AS tryPayable, a.type AS accountType, a.id AS party, ${exportJson}
          FROM invoices i ${J} accounts a ON a.id = i.account_id AND a.deleted_at IS NULL WHERE ${X}i.status = 'issued'${where("i", [[set?.parties, "SELECT id FROM invoices WHERE account_id IN $"], [set?.invoices, own("invoices")]], "AND")}`,
         wanted(set?.parties, set?.invoices),
       );
@@ -334,6 +342,8 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
       const code = { customer: "120", supplier: "320", other: "336" }[account.type] || "120";
       out[code] = roundMoney(out[code] + (Number(account.balance) || 0));
     }
+    // 2.5.0 Ç7b (KG-3 = A; B-2): kayıt (dosya) tahsilatları 336.90'ın alacağındadır (cari değil) — 336'nın beklenenine kayıt alt defterinin kendi toplamıyla katılır.
+    if (has("payments")) out[336] = roundMoney(out[336] - Number(store.get("SELECT COALESCE(SUM(CAST(ROUND(amount * 100) AS INTEGER)), 0) AS n FROM payments").n) / 100);
     // Çek/senet alt defteri (2.2.0 İz 4.2, plan §3.11a): portföydeki alınan çek 101, senet 121; ödenecek verilen çek 103, senet 321. 121/321
     // satırı yalnız senet girilmişse (silinmiş olsa da) açılır: senet kullanmayan kurulumun Defter Mutabakatı ve Mutabakat Testi'nin denetim
     // listesi 2.1.0 ile aynı kalır (300/309 kuralı gibi). Senedi olmayan veride yevmiye 121/321'e satır yazmaz.
@@ -369,14 +379,16 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
       }
       out[127] = open;
     }
-    // Vergi hesapları (v2.0.15) — fatura alt defterinin kendi toplamları: 191 İndirilecek KDV (alış − alıştan iade), 391
-    // Hesaplanan KDV (satış − satıştan iade; tevkifat düşülmüş), 360 tevkifat ve stopaj (alıcı olarak kestiklerimiz),
+    // Vergi hesapları (v2.0.15) — fatura alt defterinin kendi toplamları: 191 İndirilecek KDV (alış + satıştan iade; Ç7b KG-8), 391
+    // Hesaplanan KDV (satış + alıştan iade; tevkifat düşülmüş; Ç7b F-08), 360 tevkifat ve stopaj (alıcı olarak kestiklerimiz),
     // 193 stopaj (müşterinin bizden kestiği). Borç bakiyesi artı.
     if (has("invoices")) {
       const sums = store.get(
-        `SELECT COALESCE(SUM(CASE kind WHEN 'purchase' THEN CAST(ROUND(try_vat * 100) AS INTEGER) WHEN 'purchase_return' THEN -CAST(ROUND(try_vat * 100) AS INTEGER) END), 0) AS v191,
+        // 2.5.0 Ç7b (KG-8 = A, F-07 / F-08; B-2): satıştan iade KDV'si 191'in borcunda (Ç7b öncesi 391'in borcunda), alıştan iade KDV'si 391'in alacağında (Ç7b öncesi 191'in alacağında).
+        `SELECT COALESCE(SUM(CASE WHEN kind = 'purchase' THEN CAST(ROUND(try_vat * 100) AS INTEGER)
+                                  WHEN kind = 'sale_return' THEN CAST(ROUND(try_vat * 100) AS INTEGER) - CAST(ROUND(try_withheld * 100) AS INTEGER) END), 0) AS v191,
                 COALESCE(SUM(CASE WHEN kind IN ('sale', 'smm') THEN -(CAST(ROUND(try_vat * 100) AS INTEGER) - CAST(ROUND(try_withheld * 100) AS INTEGER))
-                                  WHEN kind = 'sale_return' THEN CAST(ROUND(try_vat * 100) AS INTEGER) - CAST(ROUND(try_withheld * 100) AS INTEGER) END), 0) AS v391,
+                                  WHEN kind = 'purchase_return' THEN -CAST(ROUND(try_vat * 100) AS INTEGER) END), 0) AS v391,
                 COALESCE(SUM(CASE kind WHEN 'purchase' THEN -(CAST(ROUND(try_withheld * 100) AS INTEGER) + CAST(ROUND(try_stoppage * 100) AS INTEGER))
                                        WHEN 'purchase_return' THEN CAST(ROUND(try_withheld * 100) AS INTEGER) + CAST(ROUND(try_stoppage * 100) AS INTEGER) END), 0) AS v360,
                 COALESCE(SUM(CASE WHEN kind IN ('sale', 'smm') THEN CAST(ROUND(try_stoppage * 100) AS INTEGER) END), 0) AS v193
