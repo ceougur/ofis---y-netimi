@@ -7,7 +7,8 @@
   "elleBeklenenTL": {
     "aciklama": "2.5.0 Ç5 elle tablo (KISMİ — yalnız Ç5'in değiştirdiği / eklediği hesaplar; öbürleri 2.4.3 kâhininden aynen): 519 = −(Kasa 10.000 + banka 50.000 + P1 stoğu 100 × 50 + M1A 5.000 + M5A 2.000 + M4A 5.000 − T1A 8.000) − AE1 3.000 − AE2 1.000 + AE3 800 + AE1K 3.000 − EX1 4.500; 500 = 0; 101 = CK1 2.500 (+ AE1 − AE1K); 121 = S1 2.000 + CK3 700 (+ AE2 − AE2K); 103 = C3 −2.000 − CK2 1.200 − AE3 800; 602 = −(BY1 + BY2 + BY3); 649 = −(CK1 + CK3).",
     "kismi": true,
-    "kontroller": { "K_SON": { "500": 0, "519": -73700, "101": 2500, "121": 2700, "103": -4000, "602": -2050, "649": -3200 } },
+    "kontroller": { "K_EYLUL": { "191": 3035, "391": -2274 }, "K_SON": { "500": 0, "519": -73700, "101": 2500, "121": 2700, "103": -4000, "602": -2050, "649": -3200, "191": 800, "391": -400 } },
+    "aciklamaBakim4": "Bakım 4 (D11, KG-8 = A / F-08): K_EYLUL 191 = 2.840,00 (alışlar) + 195,00 (F8 satıştan iade, B 191) = 3.035,00; 391 = −2.250,00 (satışlar) − 24,00 (F9 alıştan iade, A 391) = −2.274,00 (eski yön: 2.816,00 / −2.055,00); K_SON (Kasım, mahsupsuz) 191 = +800,00 (F6R KDV 1.000 − tevkifat 200), 391 = −400,00 (F3R KDV) (eski: −400,00 / +800,00).",
     "retler": ["KDZ1", "KG0"],
     "cari": { "Ahmet Yılmaz": 1100, "Excel Kart Müşterisi Ltd.": 4500 },
     "yaslandirmaCariler": { "Ahmet Yılmaz": 1100, "Excel Kart Müşterisi Ltd.": 4500 }
