@@ -97,6 +97,19 @@ async function api(method, url, body, etiket = "") {
   return { ok, status: r.status, data, kod: ok ? "" : data?.code || "", ileti: ok ? "" : String(data?.error || data?.message || "").slice(0, 400) };
 }
 const saat = gun => server.clock.set(gun);
+// SÜRÜCÜ BAKIMI 3: kilitli dönemin donmuş defteri arka planda yazılır (göçte 2.4.9 koşusu; kilitten sonra dondurma). Kullanıcı Dönem Kilidi kartında "dondurma bitti"yi bekler
+// (Kural Farkı penceresi dondurma sürerken pasif — rule-diff-freezing). Sürücü kilitten ve göçten sonra dondurma bitene kadar bekler (en çok 120 sn; süre kayda yazılır).
+async function donmaBekle(etiket) {
+  const t0 = performance.now();
+  for (let i = 0; i < 600; i += 1) {
+    const r = await api("GET", "/api/workspace/ledger/lock", undefined, `donma:${etiket}`);
+    if (!r.ok) return { hata: r.status };
+    const f = r.data?.freeze || {};
+    if (!r.data?.lockedUntil || (!f.pending && !f.active && (r.data.frozenThrough || "") === r.data.lockedUntil)) return { ms: Math.round(performance.now() - t0), frozenThrough: r.data?.frozenThrough || "" };
+    await new Promise(res => setTimeout(res, 200));
+  }
+  return { zaman_asimi: true, ms: Math.round(performance.now() - t0) };
+}
 
 // ---------------------------------------------------------------- kimlikler
 const ids = { cari: {}, urun: {}, banka: {}, kart: {}, kredi: {}, pos: {}, olay: {}, evrak: {}, taksit: {}, supheli: {}, satirlar: {}, satir: {}, fis: [] };
@@ -306,6 +319,17 @@ function faturaGovdesi(o, kind) {
 function pesinler(fatura) {
   return s.olaylar.filter(x => (x.tur === "tahsilat" || x.tur === "odeme") && x.fatura === fatura.id && x.fatura_odemesi && x.tarih === fatura.tarih);
 }
+// SÜRÜCÜ BAKIMI 3 (S80 / S83 / S84): formdaki peşinlerin cari kartındaki satırları (source 'invoice', source_id = fatura; satır sırası formun peşin sırası) → kâhin kimlikleri.
+async function pesinSatirlari(fatura) {
+  const kart = await api("GET", `/api/workspace/accounts/${ids.cari[fatura.cari]}`, undefined, "pesin-satirlari");
+  const satirlar = (kart.data?.entries || []).filter(e => e.source === "invoice" && e.sourceId === ids.olay[fatura.id] && (e.kind === "in" || e.kind === "out"));
+  pesinler(fatura).filter(x => ["nakit", "havale"].includes(x.yol)).forEach((x, i) => {
+    if (satirlar[i] && x.id) {
+      ids.olay[x.id] = satirlar[i].id;
+      ids.satir[x.id] = `account_entries:${satirlar[i].id}`;
+    }
+  });
+}
 
 const benzer = { similarOk: true, cashForce: true, force: true, exceedOk: true };
 const sonuc = (o, r, ek = {}) => ({ durum: r.ok ? "yapildi" : "red", status: r.status, ...(r.ok ? {} : { kod: r.kod, ileti: r.ileti }), ...ek });
@@ -397,6 +421,27 @@ async function duzenleHareket(kaynak, degisiklik, fid) {
   const cariDegisti = "cari" in degisiklik && degisiklik.cari !== once.cari;
   if ("taksit_karti" in degisiklik && (degisiklik.taksit_karti || "") !== (once.taksit_karti || "")) return apiYok("taksit kartı bağı programda tek kayıt düzeltmesi olarak yok", "Ç5-B");
   let r;
+  const fo = kaynak.fatura_odemesi && tuketilen.has(kaynak) ? s.olaylar.find(x => x.id === kaynak.fatura) : null;
+  const bagDegisti = "fatura" in degisiklik && (degisiklik.fatura || "") !== (once.fatura || "");
+  if (fo && !cariDegisti && !bagDegisti) {
+    // SÜRÜCÜ BAKIMI 3 (S80 = A "carisi aynı peşinin tutarı / açıklaması bugünkü kuralla kabul"): fatura formundaki peşin cari kartından düzeltilemez (409 invoice-linked —
+    // "Fatura ekranından …"); ekranın yolu faturayı Düzenle → peşin satırı (tutar / yol). Peşinin tarihi faturanınkidir (formda ayrı tarih yok).
+    if ("tarih" in degisiklik && degisiklik.tarih !== once.tarih) return apiYok("formdaki peşinin tarihi faturadan ayrı düzeltilemez (fatura formunda peşin satırının tarihi yok)", "eşleme");
+    const kind = { satis_faturasi: "sale", alis_faturasi: "purchase", esmm: "smm", gelen_smm: "purchase" }[fo.tur];
+    const g = faturaGovdesi(fo, kind);
+    if (g.eslenemez || !ids.olay[fo.id]) return apiYok(`formdaki peşinin faturası (${fo.id}) eşlenemedi`);
+    const cash = [];
+    for (const [i, x] of pesinler(fo).filter(y => ["nakit", "havale"].includes(y.yol)).entries()) {
+      const cur = x.id === kaynak.id ? yeni : guncel[x.id] || x;
+      cash.push({ amount: tl(cur.tutar), method: YOL[cur.yol], lineKey: `p${i + 1}`, ...(cur.yol === "havale" ? { bankAccountId: await bankaId(cur.banka || "B1") } : {}) });
+    }
+    r = await api("POST", `/api/workspace/invoices/${ids.olay[fo.id]}/edit`, { ...g.body, payment: { cash, rest: "open", ...(fo.vade ? { dueDate: fo.vade } : {}) }, force: true });
+    if (r.ok) {
+      guncel[kaynak.id] = yeni;
+      await pesinSatirlari(fo);
+    }
+    return sonuc(kaynak, r, { yol: `formdaki peşin: fatura ${fo.id} Düzenle (${Object.keys(degisiklik).join(", ")})` });
+  }
   if (kaynak.tur === "kasa_giris" || kaynak.tur === "kasa_cikis") {
     r = await api("PUT", `/api/workspace/cash/${fid}`, { kind: kaynak.tur === "kasa_giris" ? "in" : "out", amount: tl(yeni.tutar), date: yeni.tarih, description: yeni.aciklama || (kaynak.tur === "kasa_giris" ? "Kasaya Giriş" : "Kasadan Çıkış"), ...benzer });
   } else if (yeni.taksit_karti) {
@@ -476,8 +521,10 @@ async function uygula(o, no) {
       // Çek / senet açılış portföyü (cariye işlenmemiş): Çek / Senet → Excel'den Yükle, "carilere dokunmadan" (post: false), keşideci adıyla cariye bağlanır.
       const yon = v.yon === "alinan" ? "in" : "out";
       const tur = v.evrak_turu === "senet" ? "Senet" : "Çek";
-      const ad = s.cariler?.[v.cari]?.ad || v.cari;
-      await cariAc(v.cari);
+      // SÜRÜCÜ BAKIMI 3 (S48 — s84): carisiz açılış evrakı (kâhinde cari yok). Excel yüklemesi keşideci / borçlu ister ("Keşideci / borçlu boş" satırı atlar); gerçek portföy
+      // listesinde keşideci adı vardır ve hiçbir cariyle eşleşmez → sürücü cariyle eşleşmeyen "Keşideci <evrak>" yazar. Önceki sürücü adı boş gönderiyordu, evrak hiç açılmıyordu.
+      const ad = v.cari ? s.cariler?.[v.cari]?.ad || v.cari : `Keşideci ${v.evrak}`;
+      if (v.cari) await cariAc(v.cari);
       const matrix = [["Yön", "Tür", "Seri No", "Banka", "Keşideci", "Tutar", "Vade", "Tarih"], [yon === "in" ? "Alınan" : "Verilen", tur, v.evrak, "Akbank", ad, tl(v.tutar), gunAdi(v.vade || v.tarih), gunAdi(v.tarih)]];
       const roles = { 0: "direction", 1: "instrument", 2: "serial", 3: "bank", 4: "drawer", 5: "amount", 6: "due", 7: "issue" };
       const r = await api("POST", "/api/workspace/cheques/import", { matrix, headerAt: 0, roles, fileName: `acilis-${v.evrak}.xlsx`, post: false, direction: yon });
@@ -543,16 +590,7 @@ async function uygula(o, no) {
         }
         // SÜRÜCÜ BAKIMI 3 (S80 / S83 / S84 — s104 / s106 / s107): fatura formunda alınan / yapılan peşinin cari kartındaki satırı (source 'invoice', source_id = fatura) —
         // kâhinin `duzenle {kaynak: <peşin>}` olayı bu satırın Düzenle'sine gider (program carisini / bağını yalnız faturadan değiştirir: 409 invoice-payment-edit).
-        if (pesin.length) {
-          const kart = await api("GET", `/api/workspace/accounts/${ids.cari[v.cari]}`, undefined, "pesin-satirlari");
-          const satirlar = (kart.data?.entries || []).filter(e => e.source === "invoice" && e.sourceId === ids.olay[o.id] && (e.kind === "in" || e.kind === "out"));
-          pesin.filter(x => ["nakit", "havale"].includes(x.yol)).forEach((x, i) => {
-            if (satirlar[i] && x.id) {
-              ids.olay[x.id] = satirlar[i].id;
-              ids.satir[x.id] = `account_entries:${satirlar[i].id}`;
-            }
-          });
-        }
+        if (pesin.length) await pesinSatirlari(o);
       }
       return sonuc(o, r, { ...(pesin.length ? { not: `peşin ödeme fatura formunda: ${pesin.map(x => x.id).join(", ")}` } : {}), ...(kartOlayi ? { kart: `faturanın kendi kartı ${kartOlayi.id} fatura formunda (Kalanı Taksitlendir; planId ${r.data?.planId || "YOK"})` } : {}), ...(v.indirim_ayi ? { eksik: "KG-7 KDV İndirim Dönemi alanı programda yok (gönderilmedi)" } : {}), ...(tevUyari ? { uyari: tevUyari } : {}) });
     }
@@ -1078,8 +1116,9 @@ async function uygula(o, no) {
       // "2.4.9" (göçte 2.4.9 kuralıyla donmuş kilit) programda bugünkü kural = 2.4.9 kopyası olduğundan aynı türetme (Ç5 / Ç7 kural değişiklikleri sonra).
       const r = await api("PUT", "/api/admin/period-lock", { lockedUntil: v.tarih, force: true });
       if (r.ok) program.kilit = r.data?.lockedUntil || v.tarih;
+      if (r.ok && !server.eski) r.donma = await donmaBekle(`kilit:${v.tarih}`);
       const kilit = r.ok ? { frozenThrough: r.data?.frozenThrough ?? null, freeze: r.data?.freeze ? { state: r.data.freeze.state || r.data.freeze.status || "", ...Object.fromEntries(Object.entries(r.data.freeze).filter(([k]) => /run|through|rule|done|state|error/i.test(k)).slice(0, 8)) } : null } : {};
-      return sonuc(o, r, { ...(v.kural === "2.4.9" ? { not: "kâhin: 2.4.9 kuralıyla donmuş kilit (program: Ç3 dondurması, bugünkü kural 2.4.9 kopyası)" } : {}), kilit });
+      return sonuc(o, r, { ...(v.kural === "2.4.9" ? { not: "kâhin: 2.4.9 kuralıyla donmuş kilit — sürücü kilidi ESKİ sürümde koyar, göç kilitli dönemi 2.4.9 kopyasıyla dondurur" } : {}), kilit, ...(r.donma ? { donma: r.donma } : {}) });
     }
     case "kural_farki_duzelt": {
       // SÜRÜCÜ BAKIMI 3: Kural Farkı Düzeltme Fişi programda (Ç5-A tur 2b İş 2, 2e, 2f; KG-15 A; S174 / S180 / S185 = A). Ekranın yolu (client/assets/hof-kural-farki.js):
@@ -1329,7 +1368,7 @@ try {
     if (ADIM) {
       const d = await durum(`gun:${no}`);
       const delta = fark(sonOkunan.deger, d);
-      olaylar.push({ no: `${no}g`, tur: "gun", tarih: gun, onceki, durum: "yapildi", settled: st.data?.settled || 0, delta });
+      olaylar.push({ no: `${no}g`, tur: "gun", tarih: gun, onceki, durum: "yapildi", settled: st.data?.settled || 0, delta, ...(server.eski ? { surum: server.eski } : {}) });
       sonOkunan.deger = d;
     }
   };
@@ -1384,9 +1423,10 @@ try {
       // SÜRÜCÜ BAKIMI 3: göçün kendi farkı (eski sürümün 2.4.9 türetmesi → sınanan programın türetmesi; ör. açılışlar 500 → 519) ayrı "gun" adımı olarak yazılır — önceki
       // sürücü okumayı yeniden başlatıyordu (fark kayboluyordu; BUGÜN görünümünün 519 → 500 dönüşümü bunu örtüyordu). Eski sürüm adımları (kayıtta `surum`) karşılaştırıcıda
       // KARŞILAŞTIRILMAZ (okuma eski programın); karşılaştırma bu göç adımından başlar.
+      const donma = await donmaBekle(`gecis:${no}`);
       if (ADIM) {
         const d = await durum(`gecis:${no}`);
-        olaylar.push({ no: `${no}g`, tur: "gun", tarih: program.saat, onceki: program.saat, durum: "yapildi", gecis: ESKI_SURUM, delta: fark(sonOkunan.deger, d) });
+        olaylar.push({ no: `${no}g`, tur: "gun", tarih: program.saat, onceki: program.saat, durum: "yapildi", gecis: ESKI_SURUM, donma, delta: fark(sonOkunan.deger, d) });
         sonOkunan.deger = d;
       }
     }
