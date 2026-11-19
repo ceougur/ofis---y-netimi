@@ -332,6 +332,8 @@ def adim_sinifi(adim):
             continue
         if k.get("senaryo") and k["senaryo"] != S["ad"]:
             continue
+        if k.get("tz") and k["tz"] != P.get("tz"):   # SÜRÜCÜ BAKIMI 3: yalnız bir saat diliminde geçerli kural
+            continue
         if k.get("senaryo_onek") and not S["ad"].startswith(k["senaryo_onek"]):
             continue
         turler = k.get("olay_turu") or ["*"]
@@ -633,6 +635,8 @@ def sinifla(senaryo, rapor, alan, anahtar):
             continue
         if k.get("senaryo") not in (None, "*", senaryo):
             continue
+        if k.get("tz") and k["tz"] != P.get("tz"):
+            continue
         if k.get("senaryo_onek") and not senaryo.startswith(k["senaryo_onek"]):
             continue
         if kapsam == "rapor" and k.get("rapor") not in (None, "*", rapor):
@@ -762,13 +766,20 @@ def tyk_satir(alan, anahtar, p, k, b, kimlik, rapor_adi, yok=False):
 def kart_metni(kk):
     if kk is None:
         return None
-    return ("Kapalı" if kk.get("kapali") else "Açık") + " " + "; ".join(f"{x['vade']} {x['tutar']}/{x['kalan']}" for x in kk.get("taksitler", []) if x["tutar"])
+    # SÜRÜCÜ BAKIMI 3: tamamen ödenmiş taksit (kalan 0) iki yanda da yazılmaz — kâhin Excel'de "Ödenen"i taksit tutarından düşüp satırı bırakmıyor (s91 TE1), program satırı
+    # tutarıyla ve kalan 0 ile gösteriyor; açık taksitlerin vade / tutar / kalanı karşılaştırılır.
+    return ("Kapalı" if kk.get("kapali") else "Açık") + " " + "; ".join(f"{x['vade']} {x['tutar']}/{x['kalan']}" for x in kk.get("taksitler", []) if x["tutar"] and x["kalan"])
 
 
 # SÜRÜCÜ BAKIMI 3: Ç5-B (Tek Yükümlülük Kuyruğu) ana dalda KAPANDI (14.11) — gecikmiş, bütün carilerin gecikmişi, kartlar ve açık faturalar raporlarının BUGÜN (eski kural)
 # karşılığı kalktı (program = kâhin olmalı; değilse önce HATA — ders 6). Ödeme Hatırlatma (WhatsApp alıcı listesinin tutarı / şüpheli etiketi / elle seçimi) Ç5-C'de: ESKİ
 # anlamda (BAŞ MİMAR KARARI 06.11 19:26 B1-W "totals.overdue WhatsApp için ESKİ anlamında kalır … Ç5-C'de WhatsApp yeni alana geçer") — U, kimlik Ç5-C.
 YOK_BUGUN = "—"   # BUGÜN karşılığı yok (kural programda): hiçbir program değerine eşit değil
+BEKLEYEN_ONEK = ("Ç7b", "D4", "D2")   # henüz ana dala girmemiş paketler: bu kimlikli satırda eski kuralın (BUGÜN) karşılığı geçerli kalır (U)
+
+
+def bugun_ya_da_yok(kim, deger):
+    return deger if any(str(k).startswith(BEKLEYEN_ONEK) for k in kim) else YOK_BUGUN
 
 
 def tyk_susma(alan, anahtar, rapor_adi, cariler):
@@ -790,7 +801,7 @@ def tyk_karsilastir(o, r, an, rapor_adi):
             return [tyk_susma("gecikmis", o["cari"], rapor_adi, {o["cari"]})]
         p = (r.get("cari_kart") or {}).get("gecikmis")
         kim = kalem_kimligi(kah.get("detay")) | set(SENARYO_KIMLIK)
-        out = [tyk_satir("gecikmis", o["cari"], p, kah["gecikmis"], YOK_BUGUN, kim, rapor_adi)]
+        out = [tyk_satir("gecikmis", o["cari"], p, kah["gecikmis"], bugun_ya_da_yok(kim, bugun_gecikmis(kartlar, o["cari"], t)), kim, rapor_adi)]
         if kah.get("kahin_susuyor"):
             out.append({"alan": "kahin_susuyor", "anahtar": o["cari"], "kahin": kah["kahin_susuyor"], "sinif": "SUSMA", "aciklama": "kâhin susuyor (S8 ↔ kilit; S11) — kâhinin kendi susması, karşılaştırılmaz"})
         return out
@@ -816,7 +827,8 @@ def tyk_karsilastir(o, r, an, rapor_adi):
         for k in sorted(set(prg) | set(kah) | {k for k, v in kartlar.items() if v["cari"] == o["cari"]}):
             b = kartlar.get(k)
             bm = kart_metni({"kapali": b["kapali"], "taksitler": b["liste"]}) if b and b["cari"] == o["cari"] else None
-            out.append(tyk_satir("kart", k, kart_metni(prg.get(k)), kart_metni(kah.get(k)), YOK_BUGUN, set(SENARYO_KIMLIK) or {"Ç5-B1"}, rapor_adi))
+            kim = set(SENARYO_KIMLIK) or {"Ç5-B1"}
+            out.append(tyk_satir("kart", k, kart_metni(prg.get(k)), kart_metni(kah.get(k)), bugun_ya_da_yok(kim, bm), kim, rapor_adi))
         return out
     if rr == "acik_faturalar":
         prg = {}
@@ -909,7 +921,9 @@ for x_r, a, b, acik_r, ara_hata in rapor_sirasi:
             kah_ana[M.ana(k.split("|")[0])] += v
         prg = defaultdict(int)
         dz = r.get("duzeltme")
-        if dz and "lines" in dz:
+        # Yazılmış (etkin) düzeltme fişi yokken kalan = ham fark (Mutabakat Testi ledger:rule-diff; ön izlemenin satırları M7 ile 671 / 681'e eşlenmiş olur — kâhinin
+        # kural_farki'si hesabın kendi farkıdır); fiş varsa ön izlemenin kalan satırları + alt defter farkı.
+        if dz and "lines" in dz and dz.get("vouchers"):
             # SÜRÜCÜ BAKIMI 3: kalan fark = Kural Farkı Düzeltme ön izlemesinin satırları (borç +) + alt defter farkı (program.mjs raporOku)
             for ln in dz["lines"]:
                 prg[M.ana(ln["account"])] += int(ln.get("debit") or 0) - int(ln.get("credit") or 0)

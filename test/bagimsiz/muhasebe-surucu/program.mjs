@@ -424,6 +424,8 @@ async function duzenleHareket(kaynak, degisiklik, fid) {
   const kartDegisti = "taksit_karti" in degisiklik && (degisiklik.taksit_karti || "") !== (once.taksit_karti || "");
   // Formdaki peşinde bağın her değişimi (fatura / taksit kartı) cari kartındaki Düzenle'den 409 invoice-payment-edit (S84): istek fatura bağı kaldırılarak gider (kart bağı
   // gövdede taşınamaz — yol yok), program reddeder. Formda olmayan kaydın taksit kartı bağı: cari hareketini karta / kartlar arası taşıyan tek kayıt düzeltmesi YOK (S44 / S79).
+  // Taksit kartı tahsilatının (kartın satırı, plan_entries) Düzenle formunda Cari alanı yok: carisi değişen düzeltme ekrandan kurulamaz (ekran ön koşulu reddi; istek gönderilmez).
+  if (cariDegisti && once.taksit_karti && !kartDegisti) return { durum: "red", status: "ekran", kod: "plan-entry-no-party", ileti: "taksit kartı tahsilatının Düzenle formunda Cari alanı yok (istek gönderilmedi)", yol: "ekran ön koşulu" };
   if (kartDegisti && !fo) return apiYok("taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)", "eşleme");
   const bagDegisti = ("fatura" in degisiklik && (degisiklik.fatura || "") !== (once.fatura || "")) || kartDegisti;
   if (fo && !cariDegisti && !bagDegisti) {
@@ -958,7 +960,15 @@ async function uygula(o, no) {
     case "acilis_eslestir": {
       // SÜRÜCÜ BAKIMI 3: Açılış Eşleştirme Fişi programda (Ç5-A tur 2c İş 1; kural kitabı M-11; BAŞ MİMAR B10) — Yönetim › Sistem › Açılış Eşleştirme: satırlar (hesap, taraf,
       // tutar; 519 karşı satırını program kendisi ekler) → POST /api/admin/ledger/opening-match { requestId, date, lines, confirm }.
-      const lines = (v.satirlar || []).map(x => ({ account: String(x.hesap).split(".")[0], ...(String(x.hesap).includes(".") ? { sub: String(x.hesap) } : {}), side: x.borc ? "debit" : "credit", amount: tl(x.borc || x.alacak) }));
+      // Kâhinin alt hesabı harfli olabilir (s62 "127.K1" — kart bazında); program alt hesabı <hesap>.<2–4 rakam> ister → senaryodaki ilk görülüş sırasıyla 01, 02, …
+      const altKod = h => {
+        const [ana, alt] = String(h).split(".");
+        if (!alt || /^\d{2,4}$/.test(alt)) return { account: ana, ...(alt ? { sub: String(h) } : {}) };
+        const sira = (ids.altEslestir ||= {});
+        sira[h] ||= `${ana}.${String(Object.keys(sira).filter(k => k.startsWith(`${ana}.`)).length + 1).padStart(2, "0")}`;
+        return { account: ana, sub: sira[h] };
+      };
+      const lines = (v.satirlar || []).map(x => ({ ...altKod(x.hesap), side: x.borc ? "debit" : "credit", amount: tl(x.borc || x.alacak) }));
       const r = await api("POST", "/api/admin/ledger/opening-match", { requestId: istekKimligi(), date: v.tarih, lines, confirm: true });
       return sonuc(o, r, { yol: "Açılış Eşleştirme Fişi" });
     }
@@ -1380,7 +1390,18 @@ try {
       sonOkunan.deger = d;
     }
   };
-  for (const [i, o] of s.olaylar.entries()) {
+  // SÜRÜCÜ BAKIMI 3 (B5 — s91): ardışık Excel taksit yüklemeleri (aralarında başka olay yok) YÜKLEME ANI sırasıyla koşulur — kâhinin listesinde yükleme anları geriye gidebilir
+  // (TE1 09.03 22:30Z, sonra TE2 / TE3 05.03); sahte saat geri alınmaz (geri alınınca program 500 gate-equivalence 'dates:future:plan_entries' veriyordu — gerçek kullanımda saat
+  // ileri akar). Bağımsız olaylar (ayrı cariler); karşılaştırıcı kâhini programın sırasıyla uygular (P.olaylar sırası).
+  const sira = [...s.olaylar.keys()];
+  for (let a = 0; a < sira.length; ) {
+    let b = a;
+    while (b < sira.length && s.olaylar[sira[b]].tur === "taksit_excel" && s.olaylar[sira[b]].yukleme_ani) b += 1;
+    if (b - a > 1) sira.splice(a, b - a, ...sira.slice(a, b).sort((x, y) => Date.parse(s.olaylar[x].yukleme_ani) - Date.parse(s.olaylar[y].yukleme_ani)));
+    a = Math.max(b, a + 1);
+  }
+  for (const i of sira) {
+    const o = s.olaylar[i];
     const no = i + 1;
     const kayit = { no, tur: o.tur, ...(o.id ? { id: o.id } : {}), ...(o.tarih ? { tarih: o.tarih } : {}) };
     if (o.tur === "rapor") {
@@ -1401,7 +1422,11 @@ try {
     // KDV Mahsup Fişi ay bitmeden yapılamaz (program 409 vat-offset-blocked): olayın günü yok → saat ayın ertesi gününe (kullanıcı ay bitince yapar).
     // SÜRÜCÜ BAKIMI 3: Kural Farkı Düzeltme Fişi kilit + 1'e yazılır ve ileri tarihli fiş yazılmaz (routes/ledger.mjs rule-diff-lock-today) → saat en az kilit + 1 (kullanıcı
     // fişi kilidin ertesi günü ya da sonra yazar; kâhinin fişi de kilit + 1 tarihli).
-    await ilerle(o.tur === "kdv_mahsup" ? ertesiAy(o.ay) : o.tur === "kural_farki_duzelt" && program.kilit ? ertesiGun(program.kilit) : o.tarih, no);
+    // SÜRÜCÜ BAKIMI 3 (B5 — s91): Excel taksit kartının `yukleme_ani` (içe aktarma anı, UTC damgası) — kullanıcı dosyayı o anda yükler; program KG-5 maddesini o anın
+    // İstanbul yerel gününe yazar. Saat önce o günün olağan saatine ilerler, içe aktarma tam o anda yapılır. Önceki sürücü olayın Kayıt Tarihi'nde yüklüyordu.
+    const yuklemeGunu = o.tur === "taksit_excel" && o.yukleme_ani ? new Date(Date.parse(o.yukleme_ani) + 3 * 3600000).toISOString().slice(0, 10) : "";
+    await ilerle(o.tur === "kdv_mahsup" ? ertesiAy(o.ay) : o.tur === "kural_farki_duzelt" && program.kilit ? ertesiGun(program.kilit) : yuklemeGunu || o.tarih, no);
+    if (yuklemeGunu) saat(o.yukleme_ani);
     const t0 = performance.now();
     let r;
     program.olayNo = no;
@@ -1411,7 +1436,8 @@ try {
     } catch (e) {
       r = { durum: "surucu_hatasi", ileti: String(e?.stack || e).slice(0, 600) };
     }
-    Object.assign(kayit, r, { ms: Math.round(performance.now() - t0), saat: program.saat }, server.eski ? { surum: server.eski } : {});
+    if (yuklemeGunu) saat(program.saat);
+    Object.assign(kayit, r, { ms: Math.round(performance.now() - t0), saat: program.saat }, server.eski ? { surum: server.eski } : {}, yuklemeGunu ? { yukleme_ani: o.yukleme_ani } : {});
     if (ADIM && (r.durum === "yapildi" || r.durum === "red" || r.durum === "faturada")) {
       const d = await durum(`olay:${no}`);
       kayit.delta = fark(sonOkunan.deger, d);
