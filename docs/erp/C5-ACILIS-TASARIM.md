@@ -1709,3 +1709,19 @@ kanıtlanabilir bir bellek yok — store.tx'in işlem kimliği dışarı verilme
 listesinde de), H2 eski gövde = yeni (her cari, harita SIRASI dahil), H3 bellekli soğuk = ılık = belleksiz, ve her aşama düzeltmeden önceki kodun hakemiyle (test/fixtures/t3hiz-esdegerlik-250-hakem.json,
 9c09f18d kopyasında HAKEM_YAZ ile; iki saat diliminde bayt bayt aynı) — ortak mantığa konan hata bellekli = belleksiz olsa da hakemde DEĞERLE ölür. Mutasyon test/t3hiz-esdegerlik-250-mutasyon.mjs.
 100 bin satırda tam çıktı: dışa açık yüz dökümü (tur 3b'nin dok.mjs'i) + ayırıcı dökümü taban ↔ yeni.
+
+**(5) Kodlama sırasında eklenen (aynı ilke, davranış aynen).** H1b: ön denetimin evrak sorgusu yalnız HENÜZ aday olmayan carilere (küme birleşimdir; bağlı tahsilatı olan cari zaten aday) — yazımın kapısında
+tek bağlı carisi için sorgu hiç koşmaz. H3b: aday kümesi de işlem dışı bellekte (aynı veri durumu + aynı cari listesi). Ç7a'nın Borç Yaz +25 ms'si (1)'deki tek ölçümdü: önce / sonra ölçümünde
+Borç Yaz (kapı, d3) ana 259 / 275 → uç 161 / 177 (H1 + H4 + H2) — Ç7a'ya ayrı düzeltme GEREKMEDİ. Temiz veride Mutabakat Testi / Yevmiye bütün zaman ayrıştırması (ana · a3 Ç7a · s1 tur 3 · uç;
+iki tur, 5 tekrar, `flock -x`, yük ≤ 1,8): Mutabakat Testi ana 7.091–7.313 / uç 7.272–7.323 (en iyi), Yevmiye bütün zaman ana 2.989–3.047 / uç 3.020–3.071 — fark %3'ün altında, gerileme YOK.
+
+**(6) Sonuç (kanıt docs/kanit/2026-11-19/t3hiz-*; ölçüm ana c53a757a · taban 9c09f18d · uç 0e252c6c ürün kodu, sıra ana → taban → uç × 2, her blok taze kopya, 5 tekrar, `flock -x`).**
+- Kilitsiz: kararın KÖTÜ yollarının hiçbiri uç ↔ ana %10'u en iyi VE ortancada aşmıyor; çoğu ANA DALDAN HIZLI (H2 / H4 ana dalda da koşan yolları hızlandırdı): cari kartı (şüpheli + bağlı) 185 / 215 → 123 / 149,
+  YAZIM bağlı tahsilat 367 / 394 → 325 / 382, YAZIM tahsilat (şüphelisiz) 306 / 321 → 168 / 188, evrak 49 / 55 → 12 / 17, fatura 187 / 214 → 69 / 89, iptal 97 / 105 → 59 / 69, Borç Yaz 284 / 323 → 179 / 228,
+  fatura kaydı 182 / 197 → 78 / 84; Mizan, Yevmiye, Hesap Planı Mizanı, Defter Mutabakatı, Mutabakat Testi, Alacak Yaşlandırma, Cari Listesi %0–9. Eşikte (tek ölçüt): Alt Hesap Mizanı (ortanca +8–15 %, en iyi
+  +3–7 %; uç ↔ taban 0,98–1,09 — bu düzeltmenin dokunmadığı yol), Cari Listesi (ılık) (+9 / +11 %; taban da +7 / +7 %). t2 betiğinde Yevmiye bütün zaman 1,11 / 1,11 (uç ↔ taban 1,00) — (5)'teki hedefli
+  ölçümde yeniden üretilmedi (gürültü; ana oturumun yeniden ölçümünde bakılmalı).
+- Kilitli: bkz. KAYIT (ana oturuma rapor) — t3b / t3c / c7a / t2 dosyaları docs/kanit/2026-11-19/t3hiz-hiz3-*-kilitli.txt.
+- Eşdeğerlik: 100 bin satırda dışa açık yüz + ayırıcı dökümü taban ↔ uç BAYT BAYT aynı (hazir3c 1.897 satır / 503.880.829 bayt; temiz 1.896 satır / 503.640.858 bayt; şüpheli satırları dahil); kalıcı test
+  4 / 4 iki TZ (tabanda 4 / 4 KIRMIZI — beklenen nedenle); mutasyon 14 / 14 değerle (ilk taramada 8 / 14, sonra 13 / 14: eşdeğer çıkan M7 değiştirildi, sınıf verisi ayırt edici yapıldı, geri alınan
+  işlem vakası eklendi).
