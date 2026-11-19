@@ -4,6 +4,7 @@
 //      ok tuşuyla "Ocak 2027" seçilir, kaydedilir → veri tabanında vat_period = 2027-01; belge kartında "KDV İndirim Dönemi: Ocak 2027"; Ocak KDV mahsubu ön izlemesinde İ = 400 (elle).
 //   B) Tarih değişince: dönem Aralık 2027 seçiliyken tarih 15.12.2025 → seçenekler Aralık 2025 … Aralık 2026; seçili dönem aralık dışı → fatura ayına döner ve görünür yazı söyler.
 //   C) Satış formunda alan YOK.
+//   D) (tur 2e, B-11) KDV Özeti: A'nın faturası (dönem Şubat 2027) Bu Yıl'da "Şubat 2027 · Alış" satırında; Aralık 2026 satırı yok; TOPLAM = satırlar.
 // Çıkış: "N geçti, M kaldı".
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -188,6 +189,28 @@ try {
   console.log("C) Satış formunda alan yok");
   await openForm("service_sale", "Ayşe");
   ok(!(await page.$(SELECT)), "satış formunda KDV İndirim Dönemi YOK");
+  await closeAll();
+
+  // 2.5.0 Ç7b tur 2e (B-11 = A; C7B-FATURA-TASARIM §15.1): KDV Özeti (Beyanname Hazırlığı) alış KDV'sini KDV İndirim Dönemi'nin ayında gösterir. A'nın faturası (31.12.2026, dönem Şubat
+  // 2027 — Düzenle'den sonra) ilk açılışta (Bu Yıl = 2027) "Şubat 2027 · Alış" satırında; Aralık 2026 satırı yok (elle: KDV 400, matrah 2.000).
+  console.log("D) KDV Özeti: dönemi ileri alınan alış faturası dönem ayında (ekranda)");
+  await page.click('#hof-sidecard [data-action="analytics"]');
+  await page.waitForSelector(`${MODAL} .hof-rep-tab[data-tab="all"]`, { timeout: 15000 });
+  await page.click(`${MODAL} .hof-rep-tab[data-tab="all"]`);
+  await page.waitForSelector(`${MODAL} [data-rc-list] [data-report="kdv-ozeti"]`, { timeout: 15000 });
+  await page.click(`${MODAL} [data-rc-list] [data-report="kdv-ozeti"]`);
+  await page.waitForFunction(sel => {
+    const main = document.querySelector(`${sel} [data-rc-main]`);
+    return main && main.getAttribute("aria-busy") !== "true" && main.querySelector(".hof-rc-table, .hof-rc-summary, .hof-empty") && !/Rapor hazırlanıyor/.test(main.innerText);
+  }, MODAL, { timeout: 15000 });
+  const cells = selector => page.$$eval(selector, rows => rows.map(row => [...row.querySelectorAll("td")].map(td => td.textContent.trim())));
+  const body = await cells(`${MODAL} [data-rc-main] .hof-rc-table tbody tr`);
+  const foot = await cells(`${MODAL} [data-rc-main] .hof-rc-table tfoot tr`);
+  const digits = text => String(text || "").replace(/[^\d,]/g, "");
+  ok(body.length === 1 && body[0][0] === "Şubat 2027" && body[0][1] === "Alış" && digits(body[0][4]) === "2000,00" && digits(body[0][5]) === "400,00", `KDV Özeti satırı Şubat 2027 · Alış · 2.000 / 400 (${JSON.stringify(body)})`);
+  ok(!body.some(row => row[0] === "Aralık 2026"), "Aralık 2026 satırı yok (belge ayı değil, dönem ayı)");
+  ok(foot.length === 1 && digits(foot[0][5]) === "400,00", `TOPLAM satırı = satırlar (${JSON.stringify(foot)})`);
+  await page.screenshot({ path: path.join(process.env.EKRAN_DIR || root, "kdv-ozeti-donem.png") }).catch(() => null);
   await closeAll();
 } catch (error) {
   failed += 1;
