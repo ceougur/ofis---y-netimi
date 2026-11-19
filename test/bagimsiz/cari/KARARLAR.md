@@ -4834,3 +4834,43 @@ YORUMDUR (ders 40 — önce kural, sonra kod); senaryo / elle beklenen, kural ko
   kart kalmaz — S206'nın gerekçesi "B kullanıcıyı borçsuz ama açık bir kartla bırakır"); (ii) kart açık kalır (borcu kalmamış, ödemesiz kart). Öneri (i). Üçüncü: **Uç durum böyle kalsın (BİLİNEN
   SINIR)** — kâhin bugünkü gibi SUS.
 - Not (yeni soru değil): SK-38 (d) (S181 ↔ S159) — §32'deki gibi AYNEN açık.
+
+### Elle hesap (bakım 21b — kâhin koşulmadan, kararların sözüyle; model değişmeden ÖNCE yazıldı)
+- **d50 (bugün 15.06.2026; `kontrol {gecikmis, acikToplam}`):**
+  - **I1 (Y21b-7 — S206'nın örneği):** FI1 satış 900 (10.03) · KI1 Mevcut Borç kartı 900 (3 taksit, ilk vade 01.04; 15.03 — FI1'i içine alır) · KI1'e Taksit Tahsilatı 300 (05.04) · FI1 İptal Et (ok) → kart
+    kapanır, 300 avans (05.04'te açık borç yok — bekler) · FI1b satış 500 (20.04) → bekleyen avans o gün kapatır → **FI1b açık 200**, **bakiye 200**, **gecikmiş 200** (v = 20.04 < bugün; min(200, 200)),
+    **açık toplamı 200 = bakiye** (eşit). Kart KI1'in göstergeleri (var / toplam / mevcut borç / Tahsil Edilen / Kalan / taksit Ödenen) `elleYok` + `belirsiz` "kart KI1 … S206 = A".
+  - **I2 (Y21b-8 (a) — SK-41 (a), SUS):** elle Borç 400 (01.03) + FI2 500 (10.03) → KI2 900 (ikisini içine alır) → Taksit Tahsilatı 300 (05.04) → FI2 İptal Et (ok) → **bakiye 100**; gecikmiş / açık toplamı /
+    kart Tahsil Edilen / Kalan `elleYok`; `belirsiz` "cari I2 tanımsız … SK-41 (a)".
+  - **I3 (Y21b-8 (b) — SK-41 (b), SUS):** FI3 900 (10.03) → KI3 900 → FI3 İptal Et (ok) → **bakiye 0**; gecikmiş / açık toplamı / kart Tahsil Edilen / Kalan `elleYok`; `belirsiz` "cari I3 tanımsız … SK-41 (b)".
+  - **I4 (Y21b-4 — S15'in asıl durumu):** FI4 900 taksitli (3 × 300; 01.04 / 01.05 / 01.06; 10.03) · kart seçilmeden tahsilat 300 (05.04 — S50: 1. taksiti kapatır) · FI4 İptal Et (ok) → faturanın
+    taksitleri kalkar, 300 avans → **bakiye −300**, **gecikmiş 0**, **açık toplamı 0** ≠ bakiye (avans — eşit değil).
+  - **G1 (Y21b-1 — B1 kolları):** FG1a 600 (10.04) · FG1a'ya bağlı çek 600 (20.04, portföyde) · FG1b 400 (10.05) · FG1c 900 taksitli (3 × 300; 01.06 / 01.07 / 01.08; 12.05) · bağsız tahsilat 100 (01.06 —
+    o gün açık FG1b (v 10.05) ve FG1c 1. taksiti (v 01.06); S2 vade sırası → FG1b) → **FG1a açık 0** (çekle kapandı — sayılmaz), **FG1b açık 300**, **bakiye 1.200** (600 + 400 + 900 − 600 − 100),
+    **gecikmiş 600** = FG1b 300 + FG1c 1. taksit 300 (2. / 3. taksit vadesi gelmedi — taksitli faturada yalnız taksit; min(1.200, 600)).
+  - **H1 (Y21b-5 (c) havale, pay ≥ tutar — d47 Z1'in havale karşılığı):** FH1a 600 (16.04) · FH1b 500 (20.04) · şüpheliye alma 1.000 (16.05) → görünen FH1a 0, FH1b 100 → Pay(FH1b) 400 · FH1b'ye bağlı
+    HAVALE 300 (20.05) → 300 şüpheliden; B' 800 ≥ A' 700 → **KABUL** · Değersiz 701 → **RET** (açık şüpheli 700), 700 → **KABUL** → **bakiye 100**.
+  - **H2 (Y21b-5 (c) nakit, pay < tutar):** FH2a 600 (16.04) · FH2b 500 (20.04) · şüpheliye alma 800 (16.05) → görünen FH2a 0, FH2b 300 → Pay(FH2b) 200 · FH2b'ye bağlı NAKİT 300 (20.05) → 200 şüpheliden,
+    100 normal; adımdan önce B 1.100, A 800; sonra B' 800 ≥ A' 600 → **KABUL** · Değersiz 601 → **RET**, 600 → **KABUL** → **bakiye 200**.
+  - **H3 (Y21b-5 (c) havale, pay < tutar):** H2'nin aynısı havaleyle → **KABUL**, Değersiz 601 **RET** / 600 **KABUL**, **bakiye 200**.
+  - **Kasa 1.300** (nakit: KI1 300 + KI2 300 + I4 300 + H2 300 + G1 100; havaleler Kasa'ya girmez).
+- **d49 A1 (S206 = A — bakım 21'in SUS'u kalkar):** değerler AYNEN (iptal ok, bakiye −300, Kasa 300); `elleBelirsiz` "cari A1 tanımsız (C13.4 (11))" → "kart KA1 … S206 = A"; kart KA1'in var / toplam /
+  mevcut borç (k1, k2) `elleYok` (kapanmış kartın göstergeleri SUS).
+
+### C8z Nasıl bozulur? (bakım 21b — senaryolarla birlikte yazıldı)
+| # | Bozulma | Senaryo / mutant |
+|---|---|---|
+| Z238 | S206: fatura iptalinde Mevcut Borç kartı açık kalır (bakım 21 davranışı) — carinin kuyruğu tanımsız / sonraki fatura tam açık | d50 I1, d49 A1 (mutant 323) |
+| Z239 | S206: kapanan kartın tahsilatı kaybolur (carinin alacağından düşer) | d50 I1 bakiye / FI1b açık (mutant 322 — bakım 21) |
+| Z240 | S206 sınırı yok sayılır — çok kalemli / tahsilatsız kart da kapanır, değer uydurulur | d50 I2 / I3 `elleYok` + `belirsiz` (mutant 324 — SUS) |
+| Z241 | Kapanmış kartın göstergeleri (Tahsil Edilen / Kalan / listede) uydurulur | d50 I1, d49 A1 `elleYok` + `belirsiz` (mutant 324) |
+| Z242 | S25 (c): faturaya bağlı HAVALE şüpheliden düşmez (yalnız nakit / çek) | d50 H1 (RET'e döner), H3 (Değersiz 601 kabul) (mutant 325) |
+| Z243 | S25 (c): faturaya bağlı NAKİT şüpheliden düşmez | d47 Z1, d50 H2 (mutant 313 — bakım 20) |
+| Z244 | B1: çekle kapanan fatura / vadesi gelmemiş taksit gecikmişe girer; bağsız tahsilat en eski kaleme düşmez | d50 G1 (bakım 1–12 mutantları; değerle) |
+| Z245 | S15 asıl durum: taksitli faturanın iptalinde S50 tahsilatı kaybolur / taksitler kuyrukta kalır | d50 I4 (değerle) |
+
+### Senaryolar (bakım 21b; elle tablolar — kâhin koşulmadan karar metinlerinden; §33 "Elle hesap")
+- **`d50-c5-s206-s25c-b1-iptal-havale`** (bugün 15.06.2026; 48 adım; 57 elle denetim — 40 değer + 14 `elleYok` + 3 `elleBelirsiz`): C6 S206 (I1 değer, I2 / I3 SUS), C4 S15 asıl durum (I4), C1 B1 (G1), C5 (c)
+  (H1 / H2 / H3). **Bakım 21 modelinde 10 kırmızı** (beklenen nedenle — hepsi S206 / SK-41 alanında: I1'in açık / gecikmiş / açık toplamı ANAHTAR YOK ×4 (cari C13.4 (11) tanımsız), KI1 göstergeleri
+  yazılıyor ×3, `belirsiz` "S206 = A" / "SK-41 (a)" / "SK-41 (b)" yok ×3); G1, H1 … H3, I4 ve I2 / I3 bakiyeleri bakım 21 modelinde de YEŞİL (kural değişmedi — beklenen).
+- **`d49` (karar gereği güncellendi — izinli):** A1'in `elleBelirsiz`'i ve yeni 6 `elleYok`; bakım 21 modelinde **7 kırmızı** (beklenen nedenle: KA1 göstergeleri yazılıyor ×6, `belirsiz` "S206 = A" yok ×1).

@@ -1,8 +1,8 @@
 {
  "dil": "destekofis-cari/3",
  "ad": "d49-c5-s15-s25-iptal-ve-fazla",
- "aciklama": "Bakım 21 (§32): C4 S15 = A — Taksitler'den açılmış Mevcut Borç kartının içine aldığı faturanın iptali (A1): iptal kabul, kartın tahsilatı carinin alacağı olarak kalır (bakiye −300); kartın göstergeleri ve carinin kuyruğu SUS (SK-40 — 'kart kapanır' bu karta da mı, kararda yok). C5 S25 = A (b) — çekin faturanın açık kısmını aşan fazlası 120'ye (carinin bağsız alacağı): B1 kısmen şüpheli fatura, fazlayı başka normal borç taşır (KABUL; açık şüpheli 600), B2 faturanın tamamı şüpheli, fazla 120'ye, A' = 0 ve B' ≥ 0 (KABUL — SK-38 (d) değil). Açık şüpheli tutar Değersiz Alacak Yaz'ın kabul / reddiyle ölçülür (K7: tutar ≤ kalan).",
- "dayanak": "KARARLAR.md §32 (Y21-4, Y21-5), §31 (Y20-1 … Y20-3), §18 Y6-3, §3 B2.5, §8 (ŞÜPHELİ KALAN K7)",
+ "aciklama": "Bakım 21 (§32): C4 S15 = A — Taksitler'den açılmış Mevcut Borç kartının içine aldığı faturanın iptali (A1): iptal kabul, kartın tahsilatı carinin alacağı olarak kalır (bakiye −300); bakım 21b (§33 Y21b-7, S206 = A): kart kapanır, kapanmış kartın göstergeleri SUS (carinin kuyruğu tanımlı). C5 S25 = A (b) — çekin faturanın açık kısmını aşan fazlası 120'ye (carinin bağsız alacağı): B1 kısmen şüpheli fatura, fazlayı başka normal borç taşır (KABUL; açık şüpheli 600), B2 faturanın tamamı şüpheli, fazla 120'ye, A' = 0 ve B' ≥ 0 (KABUL — SK-38 (d) değil). Açık şüpheli tutar Değersiz Alacak Yaz'ın kabul / reddiyle ölçülür (K7: tutar ≤ kalan).",
+ "dayanak": "KARARLAR.md §33 (Y21b-7), §32 (Y21-4, Y21-5), §31 (Y20-1 … Y20-3), §18 Y6-3, §3 B2.5, §8 (ŞÜPHELİ KALAN K7)",
  "bugun": "2026-06-15",
  "adimlar": [
   {"id": "ca1", "islem": "cari_ac", "ad": "A1", "isim": "Aslı İptal Kart", "tarih": "2026-03-01"},
@@ -49,7 +49,8 @@
   "k2:cari:B2:bakiye": 20000,
   "k2:cari:A1:bakiye": -30000
  },
+ "elleYok": ["k1:kart:KA1:var", "k1:kart:KA1:toplam", "k1:kart:KA1:mevcutBorc", "k2:kart:KA1:var", "k2:kart:KA1:toplam", "k2:kart:KA1:mevcutBorc"],
  "elleBelirsiz": [
-  ["cari A1 tanımsız", "C13.4 (11)"]
+  ["kart KA1", "S206 = A"]
  ]
 }
