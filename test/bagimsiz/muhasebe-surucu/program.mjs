@@ -419,10 +419,13 @@ async function duzenleHareket(kaynak, degisiklik, fid) {
   // SÜRÜCÜ BAKIMI 3: cari hareketinin "Cari" alanı Ç5-B ile programda (routes/accounts.mjs PUT entries gövdede accountId — S40 kabul, S45 / S57 bağlıysa red, S54 / S79 bağ +
   // cari aynı düzeltmede, S80 / S83 / S84 fatura formundaki peşin FATURA_DUZENLENMELI). İstek ESKİ carinin kartından (URL), yeni cari gövdede.
   const cariDegisti = "cari" in degisiklik && degisiklik.cari !== once.cari;
-  if ("taksit_karti" in degisiklik && (degisiklik.taksit_karti || "") !== (once.taksit_karti || "")) return apiYok("taksit kartı bağı programda tek kayıt düzeltmesi olarak yok", "Ç5-B");
   let r;
   const fo = kaynak.fatura_odemesi && tuketilen.has(kaynak) ? s.olaylar.find(x => x.id === kaynak.fatura) : null;
-  const bagDegisti = "fatura" in degisiklik && (degisiklik.fatura || "") !== (once.fatura || "");
+  const kartDegisti = "taksit_karti" in degisiklik && (degisiklik.taksit_karti || "") !== (once.taksit_karti || "");
+  // Formdaki peşinde bağın her değişimi (fatura / taksit kartı) cari kartındaki Düzenle'den 409 invoice-payment-edit (S84): istek fatura bağı kaldırılarak gider (kart bağı
+  // gövdede taşınamaz — yol yok), program reddeder. Formda olmayan kaydın taksit kartı bağı: cari hareketini karta / kartlar arası taşıyan tek kayıt düzeltmesi YOK (S44 / S79).
+  if (kartDegisti && !fo) return apiYok("taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)", "eşleme");
+  const bagDegisti = ("fatura" in degisiklik && (degisiklik.fatura || "") !== (once.fatura || "")) || kartDegisti;
   if (fo && !cariDegisti && !bagDegisti) {
     // SÜRÜCÜ BAKIMI 3 (S80 = A "carisi aynı peşinin tutarı / açıklaması bugünkü kuralla kabul"): fatura formundaki peşin cari kartından düzeltilemez (409 invoice-linked —
     // "Fatura ekranından …"); ekranın yolu faturayı Düzenle → peşin satırı (tutar / yol). Peşinin tarihi faturanınkidir (formda ayrı tarih yok).
@@ -1330,6 +1333,11 @@ async function raporOku(o) {
     // Ç3: "Kural Değişikliği Farkı (Kilitli Dönem)" — donmuş defter ↔ güncel türetme (Mutabakat Testi tam taraması; ledger:rule-diff).
     const r = await api("GET", "/api/workspace/ledger/integrity", undefined, "rapor:kural_farki");
     out.denetimler = (r.data?.checks || r.data?.extra || []).filter(x => /^ledger:/.test(x.code || "")).map(x => ({ code: x.code, ok: x.ok, count: x.count, breakdown: x.breakdown || [] }));
+    // SÜRÜCÜ BAKIMI 3: kâhinin `kural_farki` raporu fiş yazıldıktan SONRAKİ kalan farktır (README bakım 8 W18: "fiş yazıldıktan sonra kural_farki yalnız alt defter farkını
+    // gösterir"). Mutabakat Testi'nin ledger:rule-diff'i ham donmuş ↔ güncel farkıdır (yazılmış fişi düşmez) → programın karşılığı Kural Farkı Düzeltme penceresinin ön
+    // izlemesi: düzeltilmemiş kalan satırlar (lines) + fişle düzeltilmeyen alt defter farkı (excluded).
+    const d = await api("GET", "/api/admin/ledger/rule-diff-correction", undefined, "rapor:kural_farki");
+    out.duzeltme = d.ok ? { lines: (d.data?.lines || []).map(l => ({ account: l.account, sub: l.sub || "", debit: l.debit, credit: l.credit })), excluded: (d.data?.excluded || []).map(x => ({ account: x.account, sub: x.sub || "", party: x.party || "", minor: x.minor })), code: d.data?.code || "", disabled: Boolean(d.data?.disabled), vouchers: (d.data?.vouchers || []).map(v => v.noText) } : { hata: d.status, ileti: d.ileti };
   }
   return out;
 }
