@@ -1721,7 +1721,16 @@ iki tur, 5 tekrar, `flock -x`, yük ≤ 1,8): Mutabakat Testi ana 7.091–7.313 
   fatura kaydı 182 / 197 → 78 / 84; Mizan, Yevmiye, Hesap Planı Mizanı, Defter Mutabakatı, Mutabakat Testi, Alacak Yaşlandırma, Cari Listesi %0–9. Eşikte (tek ölçüt): Alt Hesap Mizanı (ortanca +8–15 %, en iyi
   +3–7 %; uç ↔ taban 0,98–1,09 — bu düzeltmenin dokunmadığı yol), Cari Listesi (ılık) (+9 / +11 %; taban da +7 / +7 %). t2 betiğinde Yevmiye bütün zaman 1,11 / 1,11 (uç ↔ taban 1,00) — (5)'teki hedefli
   ölçümde yeniden üretilmedi (gürültü; ana oturumun yeniden ölçümünde bakılmalı).
-- Kilitli: bkz. KAYIT (ana oturuma rapor) — t3b / t3c / c7a / t2 dosyaları docs/kanit/2026-11-19/t3hiz-hiz3-*-kilitli.txt.
+- Kilitli (geçersiz blok yok; c7a + t2 ikinci koşuda — ilk koşu iş süre sınırında c7a'nın son bloğunda kesildi, kesik dosya t3hiz-hiz3-c7a-kilitli-kesik.txt): KÖTÜ yol YOK. cari kartı (şüpheli + bağlı)
+  172 / 179 → 121 / 126, YAZIM bağlı tahsilat 341 / 365 → 315 / 341, YAZIM tahsilat (şüphelisiz) 287 / 301 → 167 / 180, Borç Yaz (kapı, d3) 290 / 312 → 161 / 183, Mizan / Hesap Planı Mizanı / Defter Mutabakatı /
+  Mutabakat Testi / Alacak Yaşlandırma / Cari Listesi / Hesabı Atanmamış listesi %−3…+5. Alt Hesap Mizanı 1,09 / 1,10 (sınırda; uç ↔ taban 1,02 — Ç7a'nın yolu, bu düzeltmenin dokunmadığı; ayrıştırması
+  t3hiz-ahm-d2.txt). Eşikte (tek ölçüt): Açılış Olabilir listesi (sayfasız) 74 / 77 → 73 / 86 (en iyi aynı; ortanca tek blokta).
+- Alt Hesap Mizanı ayrıştırması (temiz veri, kilitsiz, iki tur × 7 tekrar, `flock -x`; t3hiz-ahm-d2.txt): ana 252 / 265 · a1 (Ç7a D-07) 245–259 · a2 (Ç7a tur 2, 5ba59cbc) 286 / 289 · a3 285–294 ·
+  s1 (tur 3) 249–259 · s2 285–304 · uç 284 / 293 → +%13 / +%11, GERİLETEN Ç7a tur 2 (K-14 / K-15): lib/bank/money-lines.mjs periodGroups'un satır başına `CASE WHEN COVER_SQL THEN 'opening'` yol ifadesi ve
+  ifadeyle gruplama (100 bin satırda periodGroups 231 → 270 ms; ölçüm t3hiz-parca6 / deney: işaret kolonu ~6 ms, CASE + ifadeyle gruplama ~30 ms). Sonucu AYNI dört yeniden yazım denendi (yol ön süzgeci;
+  kapsam bayrağıyla gruplayıp JS'te birleştirme; ham gruplar + açılışta sayılmış satırlar ayrı sorgu — 114 dönem karşılaştırmasında bayt bayt aynı AMA 428 ms, bağsız satırların kısmi dizini bu veride
+  büyük küme): hiçbiri hızlandırmadı → kod GERİ ALINDI, değişiklik yok. BAŞ MİMAR KARARI GEREKİYOR (rapor): kalıcı çözüm satıra yazılan "açılışta sayılmış" bayrağı ya da önceden hesaplanmış dönem
+  tablosu (göç / yeni alan — bu turun dışında) ya da BİLİNEN SINIR (~+35 ms / 100 bin satır; önce / sonra ölçümlerinde en iyi +%3–10, ortanca +%7–15 — sınırda).
 - Eşdeğerlik: 100 bin satırda dışa açık yüz + ayırıcı dökümü taban ↔ uç BAYT BAYT aynı (hazir3c 1.897 satır / 503.880.829 bayt; temiz 1.896 satır / 503.640.858 bayt; şüpheli satırları dahil); kalıcı test
   4 / 4 iki TZ (tabanda 4 / 4 KIRMIZI — beklenen nedenle); mutasyon 14 / 14 değerle (ilk taramada 8 / 14, sonra 13 / 14: eşdeğer çıkan M7 değiştirildi, sınıf verisi ayırt edici yapıldı, geri alınan
   işlem vakası eklendi).
