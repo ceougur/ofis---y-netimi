@@ -908,10 +908,20 @@ for x_r, a, b, acik_r, ara_hata in rapor_sirasi:
         for k, v in kah.items():
             kah_ana[M.ana(k.split("|")[0])] += v
         prg = defaultdict(int)
-        for d in r.get("denetimler") or []:
-            if d.get("code") == "ledger:rule-diff":
-                for b in d.get("breakdown") or []:
-                    prg[b["account"]] += int(b.get("differenceMinor") or 0)
+        dz = r.get("duzeltme")
+        if dz and "lines" in dz:
+            # SÜRÜCÜ BAKIMI 3: kalan fark = Kural Farkı Düzeltme ön izlemesinin satırları (borç +) + alt defter farkı (program.mjs raporOku)
+            for ln in dz["lines"]:
+                prg[M.ana(ln["account"])] += int(ln.get("debit") or 0) - int(ln.get("credit") or 0)
+            for ex in dz.get("excluded") or []:
+                prg[M.ana(ex["account"])] += int(ex.get("minor") or 0)
+            out["program_kaynak"] = "rule-diff-correction (kalan)"
+        else:
+            for d in r.get("denetimler") or []:
+                if d.get("code") == "ledger:rule-diff":
+                    for b in d.get("breakdown") or []:
+                        prg[b["account"]] += int(b.get("differenceMinor") or 0)
+        prg = {h: v for h, v in prg.items() if v}
         # SÜRÜCÜ BAKIMI 3: Kural Farkı Düzeltme Fişi programda (KG-15 A; S174 / S180 / S185 = A) — BUGÜN karşılığı (0) kalktı.
         out["satirlar"] = [tyk_satir("kural_farki", h, prg.get(h, 0), kah_ana.get(h, 0), YOK_BUGUN, {"Ç5-KG15"}, ad)
                            for h in sorted(set(prg) | {h for h, v in kah_ana.items() if v})]
@@ -927,6 +937,12 @@ for r in redler:
         k = sinifla(S["ad"], "red", r["tur"], str(r["no"]))
         if k:
             r["sinif"], r["aciklama"] = k["sinif"], k.get("aciklama", "")
+            if k.get("kimlik"):
+                r["kimlik"] = k["kimlik"] if isinstance(k["kimlik"], list) else [k["kimlik"]]
+        elif padim.get(str(r["no"]), {}).get("surum"):
+            # SÜRÜCÜ BAKIMI 3: olay göçten ÖNCE eski sürümde (program.mjs SON_YEDEK: son `yedekten` olayına / 2.4.9 kurallı kilide kadar) koşuldu — kabul / ret sınanan programın
+            # değil eski sürümün kuralıdır (sürücü sınırı: senaryo yedekten olmayan olayı yedekten olandan önce sıralamış). ÖLÇÜLEMEDİ (geçti sayılmaz).
+            r["sinif"], r["aciklama"] = "OLCULEMEDI", f"olay eski sürümde ({padim[str(r['no'])]['surum']}) koşuldu — kabul / ret sınanan programın değil"
 
 # ------------------------------------------------------------------------------------------------ 6. son durum (bütün olaylar) ve değişmezler
 son_ufuk = P.get("saat")
