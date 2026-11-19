@@ -1,0 +1,215 @@
+{
+ "ozet": {
+  "KG3/kalkan": 12,
+  "KG3/yeni": 12
+ },
+ "senaryo": {
+  "c1-kayit-tahsilat-kapisi": {
+   "KG3/kalkan": 5,
+   "KG3/yeni": 5
+  },
+  "c14g-c1-kayit-tahsilati": {
+   "KG3/kalkan": 2,
+   "KG3/yeni": 2
+  },
+  "d48-c5-kg3-kayit-tahsilati-336": {
+   "KG3/kalkan": 5,
+   "KG3/yeni": 5
+  }
+ },
+ "etiket_degisen": 0,
+ "dokum": [
+  {
+   "senaryo": "c1-kayit-tahsilat-kapisi",
+   "anahtar": "k1:mizan:336",
+   "eski": "(denetim yok)",
+   "yeni": -90000,
+   "sinif": "KG3",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "c1-kayit-tahsilat-kapisi",
+   "anahtar": "k1:mizan:602",
+   "eski": -90000,
+   "yeni": "(denetim yok)",
+   "sinif": "KG3",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "c1-kayit-tahsilat-kapisi",
+   "anahtar": "k2:mizan:336",
+   "eski": "(denetim yok)",
+   "yeni": -90000,
+   "sinif": "KG3",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "c1-kayit-tahsilat-kapisi",
+   "anahtar": "k2:mizan:602",
+   "eski": -90000,
+   "yeni": "(denetim yok)",
+   "sinif": "KG3",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "c1-kayit-tahsilat-kapisi",
+   "anahtar": "k3:mizan:336",
+   "eski": "(denetim yok)",
+   "yeni": -20000,
+   "sinif": "KG3",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "c1-kayit-tahsilat-kapisi",
+   "anahtar": "k3:mizan:602",
+   "eski": -20000,
+   "yeni": "(denetim yok)",
+   "sinif": "KG3",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "c1-kayit-tahsilat-kapisi",
+   "anahtar": "k4:mizan:336",
+   "eski": "(denetim yok)",
+   "yeni": -90000,
+   "sinif": "KG3",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "c1-kayit-tahsilat-kapisi",
+   "anahtar": "k4:mizan:602",
+   "eski": -90000,
+   "yeni": "(denetim yok)",
+   "sinif": "KG3",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "c1-kayit-tahsilat-kapisi",
+   "anahtar": "k5:mizan:336",
+   "eski": "(denetim yok)",
+   "yeni": -70000,
+   "sinif": "KG3",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "c1-kayit-tahsilat-kapisi",
+   "anahtar": "k5:mizan:602",
+   "eski": -70000,
+   "yeni": "(denetim yok)",
+   "sinif": "KG3",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "c14g-c1-kayit-tahsilati",
+   "anahtar": "k1:mizan:336",
+   "eski": "(denetim yok)",
+   "yeni": -70000,
+   "sinif": "KG3",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "c14g-c1-kayit-tahsilati",
+   "anahtar": "k1:mizan:602",
+   "eski": -70000,
+   "yeni": "(denetim yok)",
+   "sinif": "KG3",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "c14g-c1-kayit-tahsilati",
+   "anahtar": "k2:mizan:336",
+   "eski": "(denetim yok)",
+   "yeni": -70000,
+   "sinif": "KG3",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "c14g-c1-kayit-tahsilati",
+   "anahtar": "k2:mizan:602",
+   "eski": -70000,
+   "yeni": "(denetim yok)",
+   "sinif": "KG3",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d48-c5-kg3-kayit-tahsilati-336",
+   "anahtar": "k1:mizan:336",
+   "eski": "(denetim yok)",
+   "yeni": -65000,
+   "sinif": "KG3",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d48-c5-kg3-kayit-tahsilati-336",
+   "anahtar": "k1:mizan:602",
+   "eski": -65000,
+   "yeni": "(denetim yok)",
+   "sinif": "KG3",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d48-c5-kg3-kayit-tahsilati-336",
+   "anahtar": "k2:mizan:336",
+   "eski": "(denetim yok)",
+   "yeni": -75000,
+   "sinif": "KG3",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d48-c5-kg3-kayit-tahsilati-336",
+   "anahtar": "k2:mizan:602",
+   "eski": -75000,
+   "yeni": "(denetim yok)",
+   "sinif": "KG3",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d48-c5-kg3-kayit-tahsilati-336",
+   "anahtar": "k3:mizan:336",
+   "eski": "(denetim yok)",
+   "yeni": -75000,
+   "sinif": "KG3",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d48-c5-kg3-kayit-tahsilati-336",
+   "anahtar": "k3:mizan:602",
+   "eski": -75000,
+   "yeni": "(denetim yok)",
+   "sinif": "KG3",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d48-c5-kg3-kayit-tahsilati-336",
+   "anahtar": "k4:mizan:336",
+   "eski": "(denetim yok)",
+   "yeni": -75000,
+   "sinif": "KG3",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d48-c5-kg3-kayit-tahsilati-336",
+   "anahtar": "k4:mizan:602",
+   "eski": -75000,
+   "yeni": "(denetim yok)",
+   "sinif": "KG3",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d48-c5-kg3-kayit-tahsilati-336",
+   "anahtar": "k5:mizan:336",
+   "eski": "(denetim yok)",
+   "yeni": -75000,
+   "sinif": "KG3",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d48-c5-kg3-kayit-tahsilati-336",
+   "anahtar": "k5:mizan:602",
+   "eski": -75000,
+   "yeni": "(denetim yok)",
+   "sinif": "KG3",
+   "tur": "kalkan"
+  }
+ ]
+}

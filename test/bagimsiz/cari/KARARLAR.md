@@ -4684,3 +4684,71 @@ tahsilatı B 100 / A 602 kalır — C1.4). **Bu bölümün ilk commit'i yalnız 
   kartta 600 kalan durur ama alttaki borç yok — kart borçtan büyük (EK-2B 32 tanımsızlığı), 500'lük fatura açık 500, kartın 300'ü kartta. Bakiye iki okumada AYNI (iptal sonrası −300; 500'lük faturadan sonra
   200). Öneri (i) (S15 / S5 / EK-2B 35 ile tek kural: borcu kalkan kart kapanır, parası avans). Üçüncü: uç durum böyle kalsın (BİLİNEN SINIR) — kart göstergeleri bugünkü gibi SUS.
 - **Not (yeni soru değil):** SK-38 (d) (S181 ↔ S159) S25 (b)'nin fazla kuralıyla kapanmadı — bakım 20'nin sorusu AYNEN geçerli; S25 (c)'nin metni girdide kesik (ana oturuma).
+
+### Kurallar (kod commit'i `4f9da850`; yorumların `model.py`'deki karşılığı)
+- `_kg3_hesap(o)` (Y21-1, Y21-2): kayıt tahsilatının mizan karşı hesabı — `k250`'de **336**, 2.4.9 ve öncesinde 602 (C1.4 aynen). Mizan bloğu `m[self._kg3_hesap(o)] -= tutar`; `mizan:336` KULLANICI
+  etiketiyle (yalnız kayıt tahsilatı varken yazılır — 602 gibi; programda bakiyesi 0 olan hesabı koşucu yazmaz, kâhin de yazmaz). Geçiş günü YOK (kilitsiz güncelleme); `donem_kilitle` ve
+  `sunucu_yeniden` hesabı değiştirmez.
+- `_s25_dusen(pay, tutar)` (Y21-5): bakım 20'nin `min(pay, tutar)`'ı AYNEN (tahsilat ve evrak adımı) — yalnız mutantlar 320 / 321 için ayrı yardımcı; `_s168_pay` mutantlar için faturanın kuyruk
+  kalanını ve görünen tutarını not eder (sonucu değiştirmez).
+- C3 / C4: kural kodu YOK (dilde Kartı Kapat yok; S15'in kurulabilen alanında bugünkü kural karara uyuyor — Y21-4). `fatura_iptal`'e yalnız mutant 322.
+
+### C8y Nasıl bozulur? (bakım 21 — senaryolarla birlikte yazıldı)
+| # | Bozulma | Senaryo / mutant |
+|---|---|---|
+| Z229 | Kayıt tahsilatı 2.5.0'da hâlâ 602'de (gelir) | d48 k1 … k5 (`mizan:336`, `mizan:602` elleYok), c1 / c14g G3 (mutant 317) |
+| Z230 | Güncellemeden SONRA konan dönem kilidi geçiş günü sayılır (kilitten önceki kayıt tahsilatı 602'ye döner) | d48 k2 / k4 (mutant 318) |
+| Z231 | Programın yeniden açılışı geçiş günü koyar (o anki kilit) | d48 k3 (mutant 319) |
+| Z232 | Kilit açılıp yeniden konunca geçiş günü kayar | d48 k4 (mutant 318 — o anki kilit) |
+| Z233 | Anahtar kapanınca eski kayıt tahsilatlarının karşı hesabı değişir / satır kaybolur | d48 k5 (değerle; mutantı yok — kodda tek yol) |
+| Z234 | S25 (b): çekin faturanın açık kısmını aşan fazlası şüpheliden düşer | d49 B1 (Değersiz 600), d47 Z2 (mutant 320) |
+| Z235 | S25 (a): kısmen şüpheli faturaya bağlı adım önce normal kısımdan düşer | d47 Z1 / Z7 (mutant 321) |
+| Z236 | S15: faturanın iptalinde kartın tahsilatı carinin alacağından kaybolur | d49 A1 bakiye (mutant 322) |
+| Z237 | S15 alanında (Mevcut Borç kartı içine aldığı fatura iptal) kart / kuyruk değeri uydurulur | d49 A1 `elleBelirsiz` (C13.4 (11) susması aynen; mutantı bakım 6'nınki) |
+
+### Senaryolar (bakım 21; elle tablolar — kâhin koşulmadan karar metinlerinden; §32 "Elle hesap")
+- **`d48-c5-kg3-kayit-tahsilati-336`** (bugün 15.06.2026; 29 elle denetim — 24 değer + 5 `elleYok`): C1 + C2 (Y21-1, Y21-2 (i) / (ii)). Bakım 20 modelinde **10 kırmızı** (beklenen nedenle: `mizan:336`
+  ANAHTAR YOK ×5, `mizan:602` yazılıyor ×5); bakım 21 modelinde 29/29.
+- **`d49-c5-s15-s25-iptal-ve-fazla`** (bugün 15.06.2026; 21 elle denetim — 20 değer + 1 `elleBelirsiz`): C4 A1 (Y21-4 (b)), C5 (b) B1 / B2 (Y21-5). Kural değişmediği için bakım 20 modelinde de 21/21
+  (beklenen — "S25'i zaten modelliyorsa göster"); dişi mutantlar 320 / 322.
+- C5 (a): d47 Z7 / Z1 (bakım 20 senaryosu — değerleri DEĞİŞMEDİ) kararın (a) koluyla aynı.
+
+### C10y Mutantlar (bakım 21; `oz-test.py` DEĞERLE)
+- 317 (KG-3 eski yön — d48 k1), 318 (o anki kilit geçiş sayılır — d48 k2), 319 (yeniden açılıştaki kilit geçiş sayılır — d48 k3), 320 (S25 (b) fazla şüpheliden — d47 Z2, d49 B1), 321 (S25 (a)
+  önce 120 — d47 Z1 / Z7), 322 (S15 iptalde kart tahsilatı kaybolur — d49 A1). Görev metninin örnek mutantlarından "Kartı Kapat kalanı siler" / "Kartı Kapat bakiyeyi değiştirir" KURULAMADI
+  (dilde Kartı Kapat yok — DENENMEYEN); "geçiş günü yok sayılır" bu kâhinde doğru davranışın kendisidir (geçiş yok) — tersi 318 / 319.
+
+### Dil ekleri (/3, bakım 21)
+- YOK. Adım alanları değişmedi (`kayit_tahsilat*`, `donem_kilitle`, `sunucu_yeniden {anahtar}`, `kart_ac {mevcut}`, `kart_tahsilat`, `fatura_iptal`, `supheli_al`, `evrak {fatura}`, `degersiz`).
+
+### SÜRÜCÜ İÇİN / eşleme notları (ana oturum için; `kos.mjs` bu bakımda yalnız OKUNDU, DEĞİŞMEDİ)
+- **`<k>:mizan:336`:** kâhin ana hesap kodunu bekler (`649.90` → `mizan:649` düzeni). Koşucu mizanı `ledger.trial.accounts[].code`'dan aynen yazar; program kayıt tahsilatını `336.90` alt hesap
+  koduyla listeliyorsa eşleme (ilk üç hane) gerekir — `649`'un bugün nasıl eşleştiği ana oturumca doğrulanmalı. Sabit sıfır listesine (100 … 770) 336 EKLENMEZ (kâhin 336'yı yalnız kayıt tahsilatı
+  varken yazar). Koşucunun "kâhinin bilmediği sıfırdan farklı mizan hesabı" denetimi 602'yi (eski yön) yakalar.
+- **"Kesin Değil" işareti (KG-3 B):** kâhinin dilinde ve koşucuda okunmuyor.
+- **Kartı Kapat (C3):** dilde adım yok — `kart_kapat {kart, tarih}` (ve kapanmış kartın okunuşu: `plans?status=all` / `GET /plans/:id`) eklenirse Y21-3'ün beklenenleri yazılır (SK-39 yanıtından sonra).
+- **Faturanın kendi taksit kartına Taksit Tahsilatı (C4 asıl durum):** dilde yok (`kart_tahsilat` yalnız `ids.anahtar` / `ids.kart` kartlarını bilir; taksitli faturanın kartı kimliğiyle tutulmuyor).
+- **Kural geçiş günü (C2):** geçişli dünya (eski sürümde kilitlenmiş veri + güncelleme) koşucuda kurulamaz — eski sürümün gerçek koduyla üretilmiş veri gerekir (ders 17); defter kâhini / sürücü tarafı.
+- C4 / C5'te koşucunun okuduğu alanlar değişmedi.
+
+### C12y DENENMEYEN (bakım 21; neden)
+- Programla karşılaştırma (ana oturumun işi; program koşulmadı).
+- C1: Kasa + Tahsilat'ın 649.90'ı (dilde carisiz Kasa tahsilatı yok); "Kesin Değil" işareti; kayıt tahsilatının kilitli dönemde silinmesi / düzeltilmesi (kâhinin dilinde kilit bu adımlara bağlı değil).
+- C2: geçişli dünya (kilitli eski sürüm verisi + güncelleme → geçişten önceki kayıt tahsilatı 602, sonraki 336) — dil kuramaz.
+- C3: Kartı Kapat bütünüyle (dilde yok) — bakiye değişmezliği, kalanın kuyrukta kalması, gecikmiş (SK-39), hatırlatma, Alacak Yaz ile vazgeçme.
+- C4: faturanın kendi taksit kartına Taksit Tahsilatı + iptal (dilde yok); Taksitler kartı alanında kart göstergeleri ve kuyruk (SK-40 — SUS).
+- C5 (c): metni girdide kesik — beklenen yazılmadı. POS yolu dilde yok.
+- Defter kâhini (`test/bagimsiz/defter/`) ve mobil yazma kâhini bu bakımda KOŞULMADI / AÇILMADI (okuma kapsamı dışında) — kayıt tahsilatının 602 → 336 değişikliği defter kâhinine de dokunuyorsa
+  ana oturumun işi (CI `test:kahin-defter`).
+
+### C0y Değişen eski beklentiler (G3; bakım 20 (`c7b2f-kahin` = e779340f) ↔ bakım 21 kâhin çıktısı, `2.5.0`; eski kopyanın 101 elle senaryosu + d48 / d49 + rastgele s1 / ux18 tohum 1–10 × 120) — kararla ilgisiz eski beklenti DEĞİŞMEDİ
+- Üretici 20/20 aynı dizi; eski elle senaryoların adımları ve elle tabloları DEĞİŞMEDİ (elle fark 101/101, izinli değişiklik yok); `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`: **492/492 bayt bayt aynı**.
+- 2.5.0 G3: eski 50.765 denetim · yeni 50.765 · değişen / kalkan / yeni **24** · **BEKLENMEYEN 0** · yalnız etiketi değişen 0. Hepsi **KG3** (C1): `mizan:602` KALKAN 12, `mizan:336` YENİ 12 — aynı tutarla
+  (−tutar). Senaryo senaryo: c1 (k1 … k5: 602 −90.000 / −90.000 / −20.000 / −90.000 / −70.000 → 336 aynı tutarlar), c14g (k1 / k2: −70.000 → 336 −70.000), d48 (k1 … k5: −65.000 / −75.000 ×4 → 336).
+  Rastgele 0 fark (üretici kayıt tahsilatı üretmez). d49'da iki model AYNI (C4 / C5 kural değişmedi). SUS'a dönen / SUS'tan çıkan anahtar YOK.
+
+### Kanıt (bakım 21; iki saat dilimi — UTC ve Europe/Istanbul ham çıktıları bayt bayt aynı; kâhin `61e7d7a6`, temiz ağaç; `docs/kanit/2026-11-19/kahincari21-*`, araçlar ve koşu betiği `kahincari21-arac/`)
+- oz-test **6.779/6.779** · mutasyon taraması (kos.mjs düzeni) **289/289** (317–322 yakalandı) · G3 **614/614** (BEKLENMEYEN 0) · yeni elle tablo **50/50** (d48 29 + d49 21) · ESKİ kâhinde **10 kırmızı** / 50
+  (beklenen nedenle: `mizan:336` ANAHTAR YOK ×5, `mizan:602` yazılıyor ×5; d49 eski kâhinde de yeşil — kural değişmedi) · eski elle tablo farkı **101/101** izinli (değişiklik yok) · G1 taraması **103/103** ·
+  mutant ↔ senaryo **992/992** (d35 … d49 × 261–322) · geniş tarama **2.201/2.201** · özet taraması yazıldı. Not: Europe/Istanbul koşusu başlarken yük 4,10 / 4 çekirdekti (başka işler; koşu
+  zamana bağlı değil — çıktılar UTC ile bayt bayt aynı). Defter kâhini ve mobil yazma kâhini KOŞULMADI (okuma kapsamı dışında).
