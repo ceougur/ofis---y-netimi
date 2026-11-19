@@ -15,6 +15,8 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { createClock } from "../server/lib/clock.mjs";
 import { createStore, openDatabase } from "../server/lib/db.mjs";
 import { runMigrations } from "../server/lib/migrations.mjs";
+import { ruleShiftOf } from "../server/lib/ledger-rule-shift.mjs";
+import { c7bAll } from "./fixtures/c7b-kural.mjs";
 import { createPeriod } from "../server/lib/period.mjs";
 import { createRouter } from "../server/lib/router.mjs";
 import { registerLedgerRoutes } from "../server/routes/ledger.mjs";
@@ -223,9 +225,13 @@ describe("2.5.0 Ç3 tamamlama — türetme ve donmuş defter sıkı satırlarla 
     const oldMap = keyed(copy);
     const newMap = keyed(current);
     const differing = [...new Set([...oldMap.keys(), ...newMap.keys()])].filter(id => JSON.stringify(oldMap.get(id)) !== JSON.stringify(newMap.get(id)));
+    // 2.5.0 Ç7b tur 2c — BEKLENTİ BİLEREK DEĞİŞTİ (Ç7b kural kimlikleri K-01 / K-02, C-01 / C-02, KG-2, KG-3, KG-8 / F-08; kural geçiş günü B-8 = A + B-6): Ç5-A dışı fark yalnız Ç7b'nin
+    // karar numaralı kurallarında — 2.4.9 maddesi kural metniyle çevrilir (test/fixtures/c7b-kural.mjs; geçiş günü ve eski mahsup ayları dosyanın göç 51 işaretinden), kalan fark Ç5-A'nın.
+    const shift = ruleShiftOf(store);
+    const translated = keyed(c7bAll(copy, { through: shift.through, oldVatMonths: shift.oldVatMonths }));
     for (const id of differing) {
       const rest = entry => (entry ? entry.lines.filter(line => !C5.has(line[0])) : null);
-      assert.deepEqual(rest(newMap.get(id)), rest(oldMap.get(id)), `${id}: fark Ç5-A hesaplarının dışında`);
+      assert.deepEqual(rest(newMap.get(id)), rest(translated.get(id)), `${id}: fark Ç5-A hesaplarının ve Ç7b kural kimliklerinin dışında`);
     }
     assert.ok(differing.length > 0, "v2.0.26 verisinde Ç5-A farkı beklenirdi (açıklamalı eski açılış)");
     assert.equal(diff.count, differing.length, `Kural Değişikliği Farkı = bağımsız sayılan fark (${JSON.stringify(diff.sample)})`);

@@ -32,7 +32,11 @@ const NOW = "2026-10-08T12:00:00+03:00";
 // alt hesabını taşır ve Alt Hesap Mizanı'nda her zaman görünür (doğrulama T4: önceden yalnız şirkette tahsil kaydı varken görünüyordu).
 function fromLedger(app, { from = "", to = "" } = {}) {
   const entries = app.context.ledger.build();
-  const rows = subTrial(entries, { from, to }).map(row => ({ sub: row.sub, account: row.account, opening: row.opening, debit: row.debit, credit: row.credit, balance: row.balance }));
+  // 2.5.0 Ç7b tur 2c — BEKLENTİ BİLEREK DEĞİŞTİ (BAŞ MİMAR KARARI 19.11 05:07 B-10 = B): banka modülünün Alt Hesap Mizanı KENDİ tanımlı kümesini gösterir — para hesaplarının (102 / 108 /
+  // 300 / 309) ve alınan evrakın (101.0x / 121.0x) alt hesapları. Ç7b'nin banka dışı .90 alt hesapları (336.90, 600.90, 602.90, 610.90, 649.90, 770.90) Ana Defter'in alt hesap mizanında
+  // (bütün alt hesaplar Ç6-EKRAN'da); eşdeğerlik bu kümeye süzülür, ürün kodu değişmez.
+  const BANK_SUB_MAINS = new Set(["101", "102", "108", "121", "300", "309"]);
+  const rows = subTrial(entries, { from, to }).filter(row => BANK_SUB_MAINS.has(String(row.account))).map(row => ({ sub: row.sub, account: row.account, opening: row.opening, debit: row.debit, credit: row.credit, balance: row.balance }));
   const trial = trialBalance(entries, { from, to });
   // 2.2.0 İz 4.2 (plan §3.11a; bilerek güncellendi): alınan senet 121 (121.01 / 121.02) da Alt Hesap Mizanı'nda ana hesap.
   const mains = ["101", "102", "108", "121", "300", "309"].map(code => ({ account: code, balance: trial.accounts.find(row => row.code === code)?.balance || 0 })).filter(item => item.balance);

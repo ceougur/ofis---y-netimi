@@ -80,6 +80,10 @@ export const EXCEPTIONS = new Map([
   ["pos_terminals.id", "SINIF 3 — POS alt hesabı BİLİNEN SINIR adayı (§16.3)"],
   ["pos_terminals.gl_sub", "SINIF 3 (§16.3)"],
   ["vat_offsets.created_at", "SINIF 3 — yalnız aynı tarihli sıra (§16.3)"],
+  // 2.5.0 Ç7b tur 2c (B-6 / B-8 = A, KURAL GEÇİŞ GÜNÜ; C7B-FATURA-TASARIM §13.3, §13.4 (10)): mahsubun kural sürümü YALNIZ göç 51'in işareti (program yolu yazmaz; yeni mahsup ''), etkin
+  // eski mahsubun ayında iade KDV'si eski yönde. Kilit izine almak lib/integrity.mjs ister (bu turun dosya sınırı dışı — BAŞ MİMAR KARARI GEREKİYOR); kapı dışı değişiklik kilitli dönemde
+  // donmuş ↔ güncel farkı (Kural Değişikliği Farkı, uyarı) olarak görünür. settings.value (geçiş günü 'ledger.ruleShiftThrough') yukarıdaki satırla zaten istisnada.
+  ["vat_offsets.rule_version", "SINIF 3 — Ç7b tur 2c: göç 51'in işareti (yalnız göç yazar); kapı dışı değişiklik Kural Değişikliği Farkı'nda — kilit izi BAŞ MİMAR KARARI bekliyor (§13.4 (10))"],
 ]);
 // Bütün tabloların rowid'i: aynı tarihli satır sırası (SINIF 3, §16.3) — ayrı kural (aşağıda).
 // Satırları tetikleyiciyle değiştirilemeyen tablolar (değiştirme girişimi ABORT): donmuş defter (C3 §3; kaynak / satır bozukluğu ledger:snapshot) ve saklanan fiş (Ç2; ledger_vouchers_lock).

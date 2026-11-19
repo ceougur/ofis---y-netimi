@@ -66,10 +66,13 @@ const closeOnce = async server => {
 // Programın kendi API'siyle: 2026'nın her ayına Kasa girişleri + bir cari (açılış, tahsilat) + 2027 başı.
 async function seed(admin, count = 40) {
   const customer = await must("cari", admin.post("/api/workspace/accounts", { name: "Ece Tan", registeredOn: "2026-01-03" }));
-  await must("açılış", admin.post(`/api/workspace/accounts/${customer.id}/entries`, { kind: "debt", amount: "700", date: "2026-01-03", note: "Devir borcu" })); // 2.5.0 Ç5-A (G3): Ç3 mekaniği verisi iki kuralda da AYNI türetilsin diye açılış dışı açıklama ("Açılış…" Borç Yaz 2.4.9 kuralında 500, güncel kuralda 602 — K8-1; o ayrışma kural tuzağı ve test/acilis-*-250 testlerinin konusu)
-  for (let i = 1; i <= count; i += 1) await must(`kasa ${i}`, admin.post("/api/workspace/cash", { kind: "in", amount: String(10 + i), date: `2026-${String(1 + (i % 12)).padStart(2, "0")}-1${i % 9}`, description: `Giriş ${i}` }));
+  // 2.5.0 Ç5-A (G3): Ç3 mekaniği verisi iki kuralda da AYNI türetilsin ("Açılış…" Borç Yaz 2.4.9 kuralında 500, güncel kuralda 602 — K8-1; o ayrışma test/acilis-*-250 testlerinin konusu).
+  // 2.5.0 Ç7b tur 2c — BİLEREK DEĞİŞTİ (aynı ilke; Ç7b C-01 Borç Yaz 602 → 602.90, K-01 carisiz Kasa girişi 649 → 649.90): borç satış faturasıyla (F-01 — iki kuralda aynı), Kasa girişleri
+  // carinin nakit tahsilatıyla (B 100 / A 120 — iki kuralda aynı; tutar ve günler aynen). Kural farkının kendisi test/c7b-*-250 ve kural-farki-*-250'nin konusu.
+  await must("devir borcu (fatura)", admin.post("/api/workspace/invoices", { scenario: "service_sale", accountId: customer.id, issueDate: "2026-01-03", lines: [{ name: "Devir Borcu", qty: 1, unitPrice: 1000, vatRate: 20 }], payment: { rest: "open" } }));
+  for (let i = 1; i <= count; i += 1) await must(`kasa ${i}`, admin.post(`/api/workspace/accounts/${customer.id}/entries`, { kind: "in", amount: String(10 + i), date: `2026-${String(1 + (i % 12)).padStart(2, "0")}-1${i % 9}`, method: "cash", note: `Giriş ${i}` }));
   await must("tahsilat", admin.post(`/api/workspace/accounts/${customer.id}/entries`, { kind: "in", amount: "150", date: "2026-11-20", method: "cash", note: "Tahsilat" }));
-  await must("yeni yıl", admin.post("/api/workspace/cash", { kind: "in", amount: "25", date: "2027-01-04", description: "Yeni yıl" }));
+  await must("yeni yıl", admin.post(`/api/workspace/accounts/${customer.id}/entries`, { kind: "in", amount: "25", date: "2027-01-04", method: "cash", note: "Yeni yıl" }));
 }
 
 const runsOf = store => store.all("SELECT no, kind, state, from_date AS fromDate, through, rule_version AS rule, reason FROM ledger_snapshot_runs ORDER BY no").map(row => ({ ...row }));

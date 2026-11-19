@@ -52,10 +52,14 @@ const legacyPending = (server, lock) => {
 
 async function seed(admin) {
   const customer = await must("müşteri", admin.post("/api/workspace/accounts", { name: "Tur Bir", registeredOn: "2026-01-05" }));
-  await must("açılış", admin.post(`/api/workspace/accounts/${customer.id}/entries`, { kind: "debt", amount: "900", date: "2026-01-05", note: "Devir borcu" })); // 2.5.0 Ç5-A (G3): Ç3 mekaniği verisi iki kuralda da AYNI türetilsin diye açılış dışı açıklama ("Açılış…" Borç Yaz 2.4.9 kuralında 500, güncel kuralda 602 — K8-1; o ayrışma kural tuzağı ve test/acilis-*-250 testlerinin konusu)
+  // 2.5.0 Ç5-A (G3): Ç3 mekaniği verisi iki kuralda da AYNI türetilsin ("Açılış…" Borç Yaz 2.4.9 kuralında 500, güncel kuralda 602 — K8-1; o ayrışma test/acilis-*-250 testlerinin konusu).
+  // 2.5.0 Ç7b tur 2c — BİLEREK DEĞİŞTİ (aynı ilke; Ç7b C-01 Borç Yaz 602 → 602.90, K-01 carisiz Kasa girişi 649 → 649.90): borç satış faturasıyla (F-01: B 120 / A 600 / A 391 — iki kuralda
+  // aynı; 750 + KDV 150 = 900), Kasa girişleri carinin nakit tahsilatıyla (B 100 / A 120 — iki kuralda aynı; tutar ve günler aynen, Kasa 100 bakiyesi aynı). Kural farkının kendisi
+  // test/c7b-*-250 ve kural-farki-*-250'nin konusu.
+  await must("devir borcu (fatura)", admin.post("/api/workspace/invoices", { scenario: "service_sale", accountId: customer.id, issueDate: "2026-01-05", lines: [{ name: "Devir Borcu", qty: 1, unitPrice: 750, vatRate: 20 }], payment: { rest: "open" } }));
   const cash = {};
   for (const [day, amount] of [["2026-03-10", "1.000"], ["2026-05-05", "250"], ["2026-08-01", "300"], ["2026-12-31", "75"], ["2027-01-02", "60"]]) {
-    cash[day] = (await must(`kasa ${day}`, admin.post("/api/workspace/cash", { kind: "in", amount, date: day, description: `Giriş ${day}` }))).id;
+    cash[day] = (await must(`kasa ${day}`, admin.post(`/api/workspace/accounts/${customer.id}/entries`, { kind: "in", amount, date: day, method: "cash", note: `Giriş ${day}` }))).entryId;
   }
   await must("tahsilat", admin.post(`/api/workspace/accounts/${customer.id}/entries`, { kind: "in", amount: "200", date: "2026-10-15", method: "cash", note: "Tahsilat" }));
   return { customer, cash };
@@ -221,20 +225,20 @@ describe("2.5.0 Ç3 tur 1 — önbellek, aynı gün / başka gün yeniden kilit,
       assert.equal(items["ledger:snapshot"].name, "Donmuş Defter (31.12.2026 ve Öncesi)");
       assert.equal(items["ledger:rule-diff"].name, "Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2026 ve Öncesi)");
       // (a) Nedeni bilinmeyen ayrışma (kural benzetimi): tarafsız açıklama.
-      rule.fn = entries => entries.map(entry => (entry.id.startsWith("cash:") ? { ...entry, lines: entry.lines.map(line => (line.account === "649" ? { ...line, account: "642", sub: undefined } : line)) } : entry));
+      rule.fn = entries => entries.map(entry => (entry.id.startsWith("invoice:") ? { ...entry, lines: entry.lines.map(line => (line.account === "600" ? { ...line, account: "642", sub: undefined } : line)) } : entry));
       let diff = (await must("tarama", admin.get("/api/workspace/ledger/integrity"))).checks.find(check => check.code === "ledger:rule-diff");
       assert.ok(diff && !diff.ok, "ön koşul: fark var");
       assert.doesNotMatch(diff.hint, /^Defter kuralı program sürümüyle değişti/, `nedeni bilinmeyen ayrışma "kural değişti" diye adlandırılıyor: ${diff.hint}`);
       assert.match(diff.hint, /neden defter kuralının program sürümüyle değişmesi ya da kilitli dönemin kaynak verisinin/);
       rule.fn = null;
       // (b) Kaynak izi değişti (dış yazım): açıklama bunu söyler.
-      store.db.prepare("UPDATE cash_entries SET amount = 1100 WHERE id = ?").run(data.cash["2026-03-10"]);
+      store.db.prepare("UPDATE account_entries SET amount = 1100 WHERE id = ?").run(data.cash["2026-03-10"]); // Ç7b tur 2c: tohumun Kasa girişi carinin nakit tahsilatı (yukarıda)
       try {
         diff = (await must("tarama", admin.get("/api/workspace/ledger/integrity"))).checks.find(check => check.code === "ledger:rule-diff");
         assert.ok(diff && !diff.ok, "ön koşul: kaynak değişince fark var");
         assert.match(diff.hint, /^Kilitli dönemin kaynak kayıtları dondurmadan sonra değişti/, diff.hint);
       } finally {
-        store.db.prepare("UPDATE cash_entries SET amount = 1000 WHERE id = ?").run(data.cash["2026-03-10"]);
+        store.db.prepare("UPDATE account_entries SET amount = 1000 WHERE id = ?").run(data.cash["2026-03-10"]);
       }
       // (c) Eksik donmuş satır (2.4.9'un sıfırlamasının deseni: önce iz, sonra satırlar) — çalışan programda (açılış onarımı koşmadan): ayrı ve doğru ileti.
       store.db.exec("DELETE FROM audit_events WHERE type = 'ledger.snapshot.frozen'");
@@ -334,14 +338,14 @@ describe("2.5.0 Ç3 tur 1 — önbellek, aynı gün / başka gün yeniden kilit,
       assert.deepEqual(canon(fresh), canon(expected()));
       assert.ok(fresh.some(entry => entry.date === "2027-01-08"));
       // Güncel kural değişirse (veri aynı) ara dilim 2.4.9'dan okunur, açık dönem yeni kuralla — önbellek "aynı" bilgisiyle yanlış dilim vermez.
-      const swap = entries => entries.map(entry => (entry.id.startsWith("cash:") ? { ...entry, lines: entry.lines.map(line => (line.account === "649" ? { ...line, account: "642", sub: undefined } : line)) } : entry));
+      const swap = entries => entries.map(entry => (entry.id.startsWith("invoice:") ? { ...entry, lines: entry.lines.map(line => (line.account === "600" ? { ...line, account: "642", sub: undefined } : line)) } : entry));
       rule.fn = swap;
       const changed = L.book();
       assert.deepEqual(canon(changed), canon([...upTo(build249(store), LOCK), ...swap(L.build()).filter(entry => entry.date > LOCK)]), "kural farkında ara dilim 2.4.9'dan");
       assert.equal(middles, 3);
       assert.deepEqual(L.book(), changed);
       assert.equal(middles, 3, "farklı dilim de saklanır");
-      assert.ok(changed.some(entry => entry.date <= LOCK && entry.lines.some(line => line.account === "649")), "kilitli dönemde 2.4.9 kuralı (649)");
+      assert.ok(changed.some(entry => entry.date <= LOCK && entry.lines.some(line => line.account === "600")), "kilitli dönemde 2.4.9 kuralı (600)"); // Ç7b tur 2c: benzetim tohumun faturasında (600 → 642; tohumda carisiz Kasa yok — yukarıda)
       rule.fn = null;
       // İşlemin içinde saklanmaz (GG2).
       const before = middles;

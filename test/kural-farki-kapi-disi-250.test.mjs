@@ -327,7 +327,7 @@ describe("Ç5-A tur 1e — kilitli dönemin kapı dışı bozulması bulunur; me
         db.close();
       }
       ctx = await open(dirs);
-      assert.equal(ctx.app.store.get("PRAGMA user_version").user_version, 50);
+      assert.equal(ctx.app.store.get("PRAGMA user_version").user_version, 51); // Ç7b tur 2c — BEKLENTİ BİLEREK DEĞİŞTİ (B-8 = A): göç 51 (yalnız işaret)
       assert.equal(ctx.app.store.get("SELECT opening_review_gate AS g FROM account_entries WHERE id = ?", ids.candidate).g, "confirmed", "göç 50 kararı kopyalar");
       const scan = ctx.app.integrity.scan();
       assert.deepEqual(scan.findings, []);
