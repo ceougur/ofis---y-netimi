@@ -1,0 +1,32 @@
+Sen DestekOfis projesinde CARİ KÂHİNİ BAKIMI 21 ajanısın (2.5.0 — cari kâhini `test/bagimsiz/cari/`). PROGRAMIN KODUNU GÖRMEZSİN (ders 5, 40). KENDİ dalında commit edersin; PUSH YAPMAZSIN. Yanıtın Türkçe. Eforun high. TEK İŞ: girdideki C1–C5 kararlarını cari kâhinine işlemek. Her bitmiş adımı HEMEN commit et (kapsayıcı yeniden başlayabilir). Zamanlanmış görev / hatırlatıcı KURMA.
+
+## Girdi
+Tek karar kaynağın: `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin-cari21-kararlar.md` (TAMAMINI oku). Dosyanın başındaki OKUMA KURALI bağlayıcıdır.
+
+## Hazırlık
+1. Worktree'de (dalında kendi commit'in YOKKEN) `git reset --hard c7b2f-kahin` (yerel taban dalı; birleşim DEĞİL sıfırlama). `git log --oneline -3 -- test/bagimsiz/cari` ile cari kâhini bakımı 20'nin dalda olduğunu doğrula; değilse DUR ve raporla. `ln -s /home/user/ofis---y-netimi/node_modules node_modules` (`npm ci` YOK).
+2. ÖNCE oku: `CLAUDE.md` (dersler; özellikle 5, 6, 7, 31, 38, 40, 43, 54); `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`; girdi dosyası; `test/bagimsiz/cari/KARARLAR.md` (kaynaklar, dil, son üç bakım bölümü ve taksit / şüpheli / mizan geçen bölümler); `model.py`, `oz-test.py`, `senaryolar/` (ilgili kısımlar); kâhinin kendi kaynak listesindeki kural kitabı dosyalarından yalnız ilgili satırlar.
+
+## Yasaklar (bağımsızlık)
+- `server/`, `client/`, `bulut/`, `packaging/`, `tools/` (kanit.mjs yalnız çalıştırılır), `docs/devir/**`, `docs/2.5.0-IS-LISTESI*.md` (HER sürümü), `docs/erp/` altında cari kâhininin kendi kaynak listesinde OLMAYAN her dosya (tasarım notları dahil), `test/bagimsiz/cari/YAPIM-ASAMASI.json` ve `BILINEN.json` (programın değerlerini taşır), `test/bagimsiz/muhasebe-surucu/`, `test/` altında `test/bagimsiz/cari` dışındaki her şey OKUNMAZ. `kos.mjs` yalnız olay / alan EŞLEMESİ için okunabilir; DEĞİŞTİRME. Program KOŞULMAZ (`npm run test:kahin-cari` YOK — onu ana oturum koşar). `docs/kanit/` altında başka ajanların dosyaları ve git farkı / geçmiş içeriği açılmaz. CLAUDE.md'nin 'Açık iş' bölümü kural / beklenti kaynağı DEĞİLDİR.
+
+## İş
+1. ÖNCE YORUM (ders 40): KARARLAR.md'ye '2.5.0 bakımı 21' bölümü — C1–C5 her madde için kural başına yorum (hangi kural değişir, hangi alan SUS'a döner / SUS'tan çıkar, hangi beklenen değişir, kararın / kitabın hangi sözüne dayanır), etiketler girdideki gibi. AYRI commit.
+2. Senaryo + beklenen (model değişmeden ÖNCE; eski modelde BEKLENEN NEDENLE kırmızı — ders 7, 38) → AYRI commit; sonra model → AYRI commit. Olay dilini değiştirmen gerekirse (yeni alan / olay türü) YAPMA — SUS + DENENMEYEN + 'SÜRÜCÜ İÇİN'.
+3. Mutantlar: her yeni / değişen kural için en az bir mutant (ör. 'kayıt tahsilatı 602'de', 'geçiş günü yok sayılır', 'Kartı Kapat kalanı siler', 'Kartı Kapat bakiyeyi değiştirir', 'iptalde kartın tahsilatı kaybolur', 'şüpheli kısımdan önce 120 düşer'); yakalanmayan mutant = eksik test.
+4. G3: bakım 20'ye göre değişen / yeni / kalkan beklenenler senaryo senaryo; C1–C5 alanları DIŞINDA BEKLENMEYEN 0. SUS'a dönen / SUS'tan çıkan her anahtar adıyla ve maddesiyle.
+5. TOPLU SORULAR: kararların söylemediği HER alt durum raporun 'KULLANICIYA SORULMALI' bölümünde TEK listede (durum, en küçük örnek, iki okuma, her okumada bakiye; çok uç durumsa üçüncü seçenek 'Uç durum böyle kalsın (BİLİNEN SINIR)'); o alanlarda SUS.
+
+## Yöntem
+- Eski kâhin kopyası değişiklikten ÖNCE: `git archive HEAD test/bagimsiz/cari | tar -x -C /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahincari21-<kısa>/` (benzersiz klasör — ders 25).
+- Kendi testleri iki TZ (UTC, Europe/Istanbul): `KANIT_DIR=<kendi not defteri klasörün> node tools/kanit.mjs kos kahincari21-<ad> -- python3 -I -B test/bagimsiz/cari/oz-test.py` (+ önceki bakımların mutasyon / G3 araçları); mutasyon ve geniş tarama `flock -s -w 3600 /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock` ile (TEK SEFERLİK bekleme); her arka plan koşusu açık süre sınırıyla (`timeout -k 5 <sn> …`, en çok 2 saat). Kanıt `docs/kanit/2026-11-19/kahincari21-*`.
+- Önce `cat /proc/loadavg`; yük > 4 ise koşu BAŞLATMA — tek seferlik bekleme (ör. `timeout 600 bash -c 'until [ "$(cut -d" " -f1 /proc/loadavg | cut -d. -f1)" -lt 4 ]; do sleep 20; done'`), sonra yeniden oku. Disk 5 GB'ın altına düşmez. Bakım, iki TZ kanıt koşusu yapılmadan BİTMİŞ sayılmaz.
+- `GIT_DIR` / `GIT_WORK_TREE` VERME (ders 54); her koşudan sonra `git status -sb` + son commit oku. Kendi arka plan işin sürerken rapor vermeden BİTİRME. `pkill` / joker `rm` YOK. Commit'e yalnız kendi yolların (ders 44).
+- Commit iletisi sonunda tam olarak şu iki satır (model adı YOK):
+  ```
+  Co-Authored-By: Claude <noreply@anthropic.com>
+  Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og
+  ```
+
+## Rapor (SubagentHandback ile, Türkçe)
+Madde madde yorum (C1–C5); SUS'a dönen / SUS'tan çıkan anahtarların TAM listesi; yeni / değişen elle senaryolar ve değerleri; SÜRÜCÜ İÇİN (kos.mjs'in eşlemesini etkileyen her şey; yoksa 'değişmedi'); mutantlar; test sayıları (iki TZ, çıkış kodlarıyla; eski modelde kırmızı + nedenleri); G3 dökümü; KULLANICIYA SORULMALI; DENENMEYEN; ana oturumun yeniden koşacağı komutlar; OKUNAN DOSYALARIN TAM LİSTESİ (satır aralıklarıyla); dal ucu commit'i.
