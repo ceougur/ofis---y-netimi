@@ -1180,6 +1180,11 @@ class Bakim13(unittest.TestCase):
         sus = [x for x in r.get("susmalar", []) if x["kural"] == "S168"]
         self.assertEqual([(x["kaynak"], x["pay_m13"]) for x in sus], [("P", 0)])
         self.assertEqual(r["raporlar"]["mz"]["satirlar"]["128|C1"]["bakiye"], 600)
+        # Ü13 (i) + kabul / ret ayrışıyor: vade sırasıyla F2'nin payı 500 (tek kuyruk KABUL: 120'ye 100 ≤ 500), belge sırasıyla 0; M13 payı 0 → 600 > 120 bakiyesi 500 RED →
+        # kâhin susar (bakım 13: mutasyon koşusunda B115'in dişi kalmamıştı — kararın örneği artık değer; bu durum eklendi)
+        self.sus([o("satis_faturasi", "2026-01-10", id="F1", cari="C1", M=1000, K=0, vade="2026-06-30"), o("supheliye_al", "2026-02-01", id="S1", cari="C1", tutar=1000),
+                  o("satis_faturasi", "2026-02-10", id="F2", cari="C1", M=500, K=0, vade="2026-03-01"),
+                  o("tahsilat", "2026-02-15", cari="C1", yol="nakit", tutar=600, fatura="F2")], "S168")
 
     def test_A5_S192_kalem_raporu_susmasi_s42(self):
         # Ü14 (A7 s42): kalem raporlarında tek kuyruk ↔ M13 kalem dağılımı ayrışan carinin raporu `susmalar`'da (kural S192); toplamlar aynı
@@ -1463,6 +1468,18 @@ class DegismezDenetcileri(unittest.TestCase):
             m._o_kural_farki_duzelt({}, d)
         self.assertEqual(c.exception.kod, "KURAL_FARKI_ALT_DEFTER")
         self.assertEqual([f for f in d.fisler if f.tur == "kural_farki"], [])
+        # bakım 13 (s93'ün öbür dişi — B91b): fark alt defter + alt defter dışında (Kasa açılışı 2.4.9'da 500) → fiş yalnız 500 / 519'u düzeltir, alt defter farkı raporda KALIR
+        m = self._model([o("kasa_acilis", "2026-01-01", tutar=10000)] + temel)
+        d = m.canli
+        d.donmus = [M.Madde(x.id, x.tarih, x.sinif, x.seq, x.kaynak, x.tur,
+                            [dict(sat, h={"128": "120", "519": "500"}.get(sat["h"], sat["h"])) if x.kaynak in ("P1",) or x.tur == "kasa_acilis" else sat
+                             for sat in x.satirlar] if (x.kaynak == "P1" or x.tur == "kasa_acilis") else x.satirlar, x.ek)
+                    for x in d.gecis().maddeler if x.tarih <= "2026-03-31"]
+        d.donmus_sinir, d.donmus_kural, d.kilit = "2026-03-31", "2.4.9", "2026-03-31"
+        d.degisti()
+        self.assertEqual(d.kural_farki(), {"120|C1": 4000, "128|C1": -4000, "500": 10000, "519": -10000})
+        m._o_kural_farki_duzelt({}, d)
+        self.assertEqual(d.kural_farki(), {"120|C1": 4000, "128|C1": -4000})
         # W19 / Ü17: 2.4.9 kilidinden önceki S14 adayı (karşılıklı ya da değil) → kâhin susar (s93 nedeniyle)
         for ek in ([], [o("karsilik_ayir", "2026-03-05", cari="C1", kayit="SA1", tutar=8000)]):
             with self.assertRaises(AssertionError) as c:

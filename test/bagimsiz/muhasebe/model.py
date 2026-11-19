@@ -1930,8 +1930,9 @@ class Dosya:
                 if m > 0:
                     p.append((kayit, m))
                     kalan -= m
-            if kalan > 0:
-                p.append((None, kalan))               # S192: M13 kayıt payını aşan tek kuyruk payı — açık kayıtlardan en eskisi önce (Gecis._s14_dus)
+            ek = pay - min(pay, sum(n for _, n in olcum.get("olc", [])))
+            if ek > 0:
+                p.append((None, ek))                  # S192: M13 kayıt payını aşan tek kuyruk payı — açık kayıtlardan en eskisi önce (Gecis._s14_dus)
             if p:
                 plan[tid] = p
         return plan
