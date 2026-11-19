@@ -20,17 +20,29 @@
    },
    "devirler": [],
    "raporlar": {
-    "acik": [],
+    "acik": [
+     {
+      "fatura": "F1",
+      "kalan": 50000,
+      "tarih": "2026-01-10",
+      "vade": "2026-02-10"
+     }
+    ],
     "g1": {
      "cari": "C1",
      "detay": [
+      {
+       "kalan": 50000,
+       "kalem": "fatura:F1",
+       "vade": "2026-02-10"
+      },
       {
        "kalan": 30000,
        "kalem": "kart:TK1",
        "vade": "2026-03-01"
       }
      ],
-     "gecikmis": 30000,
+     "gecikmis": 80000,
      "supheli": 0,
      "tarih": "2026-03-02"
     },
@@ -38,17 +50,22 @@
      "cari": "C1",
      "detay": [
       {
+       "kalan": 50000,
+       "kalem": "fatura:F1",
+       "vade": "2026-02-10"
+      },
+      {
        "kalan": 30000,
        "kalem": "kart:TK1",
        "vade": "2026-03-01"
       },
       {
-       "kalan": 20000,
+       "kalan": 10000,
        "kalem": "borc:BY1",
        "vade": "2026-03-15"
       }
      ],
-     "gecikmis": 50000,
+     "gecikmis": 90000,
      "supheli": 0,
      "tarih": "2026-03-16"
     },
@@ -56,7 +73,12 @@
      "cari": "C1",
      "detay": [
       {
-       "kalan": 20000,
+       "kalan": 50000,
+       "kalem": "fatura:F1",
+       "vade": "2026-02-10"
+      },
+      {
+       "kalan": 10000,
        "kalem": "borc:BY1",
        "vade": "2026-03-15"
       },
@@ -66,7 +88,7 @@
        "vade": "2026-04-01"
       }
      ],
-     "gecikmis": 50000,
+     "gecikmis": 90000,
      "supheli": 0,
      "tarih": "2026-04-02"
     }

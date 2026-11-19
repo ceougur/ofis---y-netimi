@@ -3378,18 +3378,7 @@
      }
     }
    },
-   "redler": [],
-   "susmalar": [
-    {
-     "cari": "C3",
-     "dosya": "arsiv-2026",
-     "kaynak": "P253",
-     "kural": "S168",
-     "pay_m13": 0,
-     "pay_tek_kuyruk": 291960,
-     "tarih": "2026-08-07"
-    }
-   ]
+   "redler": []
   }
  },
  "dil": "muhasebe-kahin/1"

@@ -104,7 +104,44 @@
      "tarih": "2026-05-01"
     }
    },
-   "redler": []
+   "redler": [],
+   "susmalar": [
+    {
+     "cari": "C1",
+     "dosya": "canli",
+     "kural": "S192",
+     "rapor": "g2",
+     "tarih": "2026-04-11"
+    },
+    {
+     "cari": "C1",
+     "dosya": "canli",
+     "kural": "S192",
+     "rapor": "h2",
+     "tarih": "2026-04-11"
+    },
+    {
+     "cari": "C1",
+     "dosya": "canli",
+     "kural": "S192",
+     "rapor": "acik",
+     "tarih": "2026-05-01"
+    },
+    {
+     "cari": "C1",
+     "dosya": "canli",
+     "kural": "S192",
+     "rapor": "g3",
+     "tarih": "2026-05-01"
+    },
+    {
+     "cari": "C1",
+     "dosya": "canli",
+     "kural": "S192",
+     "rapor": "h3",
+     "tarih": "2026-05-01"
+    }
+   ]
   }
  },
  "dil": "muhasebe-kahin/1"

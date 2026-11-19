@@ -1,0 +1,225 @@
+{
+ "aciklama": "S192 A: S168 = B'nin örneği — faturaya bağlı tahsilatın şüpheli payı tek kuyruk görünümünden; KABUL, 128 700, 120 100 (çek ve nakit).",
+ "ad": "s117-a5-s192-tek-kuyruk-payi",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "mz/satirlar/100/bakiye": 1100,
+   "mz/satirlar/101.01/bakiye": 300,
+   "mz/satirlar/120|C1/bakiye": 100,
+   "mz/satirlar/120|C3/bakiye": 100,
+   "mz/satirlar/128|C1/bakiye": 700,
+   "mz/satirlar/128|C3/bakiye": 700,
+   "mz/satirlar/600/bakiye": -3000,
+   "redler": [],
+   "sk1/0/id": "S1",
+   "sk1/0/kalan": 700,
+   "sk3/0/id": "S3",
+   "sk3/0/kalan": 700,
+   "yev/0/kaynak": "P2",
+   "yev/0/satirlar/0/b": 300,
+   "yev/0/satirlar/0/h": "101.01",
+   "yev/0/satirlar/1/a": 300,
+   "yev/0/satirlar/1/c": "C1",
+   "yev/0/satirlar/1/h": "128",
+   "yev/1/kaynak": "P4",
+   "yev/1/satirlar/0/b": 300,
+   "yev/1/satirlar/0/h": "100",
+   "yev/1/satirlar/1/a": 300,
+   "yev/1/satirlar/1/c": "C3",
+   "yev/1/satirlar/1/h": "128"
+  }
+ },
+ "kapsam": [
+  "S192",
+  "S168",
+  "S181",
+  "S14",
+  "K3",
+  "J-01",
+  "M13",
+  "Ü12"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "K": 0,
+   "M": 1000,
+   "cari": "C1",
+   "id": "F1",
+   "tarih": "2026-01-10",
+   "tur": "satis_faturasi"
+  },
+  {
+   "K": 0,
+   "M": 1000,
+   "cari": "C3",
+   "id": "F3",
+   "tarih": "2026-01-11",
+   "tur": "satis_faturasi"
+  },
+  {
+   "cari": "C1",
+   "id": "S1",
+   "tarih": "2026-02-01",
+   "tur": "supheliye_al",
+   "tutar": 1000
+  },
+  {
+   "cari": "C3",
+   "id": "S3",
+   "tarih": "2026-02-01",
+   "tur": "supheliye_al",
+   "tutar": 1000
+  },
+  {
+   "K": 0,
+   "M": 500,
+   "cari": "C1",
+   "id": "F2",
+   "tarih": "2026-02-10",
+   "tur": "satis_faturasi"
+  },
+  {
+   "K": 0,
+   "M": 500,
+   "cari": "C3",
+   "id": "F4",
+   "tarih": "2026-02-11",
+   "tur": "satis_faturasi"
+  },
+  {
+   "cari": "C1",
+   "id": "P1",
+   "normal_cari": true,
+   "tarih": "2026-02-12",
+   "tur": "tahsilat",
+   "tutar": 400,
+   "yol": "nakit"
+  },
+  {
+   "cari": "C3",
+   "id": "P3",
+   "normal_cari": true,
+   "tarih": "2026-02-12",
+   "tur": "tahsilat",
+   "tutar": 400,
+   "yol": "nakit"
+  },
+  {
+   "cari": "C1",
+   "evrak": "CK1",
+   "fatura": "F2",
+   "id": "P2",
+   "tarih": "2026-02-15",
+   "tur": "tahsilat",
+   "tutar": 300,
+   "yol": "cek"
+  },
+  {
+   "cari": "C3",
+   "fatura": "F4",
+   "id": "P4",
+   "tarih": "2026-02-15",
+   "tur": "tahsilat",
+   "tutar": 300,
+   "yol": "nakit"
+  },
+  {
+   "ad": "yev",
+   "bas": "2026-02-15",
+   "rapor": "yevmiye",
+   "son": "2026-02-15",
+   "tur": "rapor"
+  },
+  {
+   "ad": "sk1",
+   "cari": "C1",
+   "rapor": "supheli_kayitlari",
+   "tur": "rapor"
+  },
+  {
+   "ad": "sk3",
+   "cari": "C3",
+   "rapor": "supheli_kayitlari",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mz",
+   "bas": "2026-01-01",
+   "rapor": "mizan",
+   "son": "2026-02-28",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

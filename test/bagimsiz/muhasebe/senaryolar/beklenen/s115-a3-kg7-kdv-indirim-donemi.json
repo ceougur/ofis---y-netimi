@@ -1,0 +1,328 @@
+{
+ "ad": "s115-a3-kg7-kdv-indirim-donemi",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "s127_tek_yazim": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "mz01": {
+     "ana": {
+      "120": {
+       "alacak": 0,
+       "bakiye": 180000,
+       "borc": 60000,
+       "devir": 120000
+      },
+      "191": {
+       "alacak": 6000,
+       "bakiye": 1000,
+       "borc": 0,
+       "devir": 7000
+      },
+      "320": {
+       "alacak": 0,
+       "bakiye": -114000,
+       "borc": 0,
+       "devir": -114000
+      },
+      "360": {
+       "alacak": 4000,
+       "bakiye": -12000,
+       "borc": 0,
+       "devir": -8000
+      },
+      "391": {
+       "alacak": 10000,
+       "bakiye": 0,
+       "borc": 10000,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 50000,
+       "bakiye": -150000,
+       "borc": 0,
+       "devir": -100000
+      },
+      "770": {
+       "alacak": 0,
+       "bakiye": 95000,
+       "borc": 0,
+       "devir": 95000
+      }
+     },
+     "bas": "2027-01-01",
+     "satirlar": {
+      "120|C1": {
+       "alacak": 0,
+       "bakiye": 180000,
+       "borc": 60000,
+       "devir": 120000
+      },
+      "191": {
+       "alacak": 6000,
+       "bakiye": 1000,
+       "borc": 0,
+       "devir": 7000
+      },
+      "320|T1": {
+       "alacak": 0,
+       "bakiye": -114000,
+       "borc": 0,
+       "devir": -114000
+      },
+      "360": {
+       "alacak": 4000,
+       "bakiye": -12000,
+       "borc": 0,
+       "devir": -8000
+      },
+      "391": {
+       "alacak": 10000,
+       "bakiye": 0,
+       "borc": 10000,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 50000,
+       "bakiye": -150000,
+       "borc": 0,
+       "devir": -100000
+      },
+      "770": {
+       "alacak": 0,
+       "bakiye": 95000,
+       "borc": 0,
+       "devir": 95000
+      }
+     },
+     "son": "2027-01-31",
+     "toplam": {
+      "alacak": 70000,
+      "bakiye": 0,
+      "borc": 70000,
+      "devir": 0
+     }
+    },
+    "mz12": {
+     "ana": {
+      "120": {
+       "alacak": 0,
+       "bakiye": 120000,
+       "borc": 120000,
+       "devir": 0
+      },
+      "191": {
+       "alacak": 12000,
+       "bakiye": 7000,
+       "borc": 19000,
+       "devir": 0
+      },
+      "320": {
+       "alacak": 114000,
+       "bakiye": -114000,
+       "borc": 0,
+       "devir": 0
+      },
+      "360": {
+       "alacak": 8000,
+       "bakiye": -8000,
+       "borc": 0,
+       "devir": 0
+      },
+      "391": {
+       "alacak": 20000,
+       "bakiye": 0,
+       "borc": 20000,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 100000,
+       "bakiye": -100000,
+       "borc": 0,
+       "devir": 0
+      },
+      "770": {
+       "alacak": 0,
+       "bakiye": 95000,
+       "borc": 95000,
+       "devir": 0
+      }
+     },
+     "bas": "2026-12-01",
+     "satirlar": {
+      "120|C1": {
+       "alacak": 0,
+       "bakiye": 120000,
+       "borc": 120000,
+       "devir": 0
+      },
+      "191": {
+       "alacak": 12000,
+       "bakiye": 7000,
+       "borc": 19000,
+       "devir": 0
+      },
+      "320|T1": {
+       "alacak": 114000,
+       "bakiye": -114000,
+       "borc": 0,
+       "devir": 0
+      },
+      "360": {
+       "alacak": 8000,
+       "bakiye": -8000,
+       "borc": 0,
+       "devir": 0
+      },
+      "391": {
+       "alacak": 20000,
+       "bakiye": 0,
+       "borc": 20000,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 100000,
+       "bakiye": -100000,
+       "borc": 0,
+       "devir": 0
+      },
+      "770": {
+       "alacak": 0,
+       "bakiye": 95000,
+       "borc": 95000,
+       "devir": 0
+      }
+     },
+     "son": "2026-12-31",
+     "toplam": {
+      "alacak": 254000,
+      "bakiye": 0,
+      "borc": 254000,
+      "devir": 0
+     }
+    },
+    "yev0131": [
+     {
+      "id": "fis8",
+      "kaynak": "fis8",
+      "satirlar": [
+       {
+        "b": 10000,
+        "e": {
+         "donem": "2027-01"
+        },
+        "h": "391"
+       },
+       {
+        "a": 6000,
+        "e": {
+         "donem": "2027-01"
+        },
+        "h": "191"
+       },
+       {
+        "a": 4000,
+        "h": "360"
+       }
+      ],
+      "sinif": 2,
+      "tarih": "2027-01-31",
+      "tur": "kdv_mahsup"
+     }
+    ],
+    "yev1220": [
+     {
+      "id": "A2#0",
+      "kaynak": "A2",
+      "satirlar": [
+       {
+        "b": 30000,
+        "h": "770"
+       },
+       {
+        "b": 6000,
+        "e": {
+         "donem": "2027-01",
+         "indirim_ayi": "2027-01"
+        },
+        "h": "191"
+       },
+       {
+        "a": 36000,
+        "c": "T1",
+        "e": {
+         "k": "fatura:A2",
+         "tur": "fatura",
+         "vade": "2026-12-20"
+        },
+        "h": "320"
+       }
+      ],
+      "sinif": 1,
+      "tarih": "2026-12-20",
+      "tur": "alis_faturasi"
+     }
+    ],
+    "yev1231": [
+     {
+      "id": "fis6",
+      "kaynak": "fis6",
+      "satirlar": [
+       {
+        "b": 20000,
+        "e": {
+         "donem": "2026-12"
+        },
+        "h": "391"
+       },
+       {
+        "a": 12000,
+        "e": {
+         "donem": "2026-12"
+        },
+        "h": "191"
+       },
+       {
+        "a": 8000,
+        "h": "360"
+       }
+      ],
+      "sinif": 2,
+      "tarih": "2026-12-31",
+      "tur": "kdv_mahsup"
+     }
+    ]
+   },
+   "redler": [
+    {
+     "kod": "KDV_INDIRIM_DONEMI",
+     "neden": "2026-11: belge ayı 2026-12 … 2027-12 dışında",
+     "olay": 5,
+     "tur": "alis_faturasi"
+    },
+    {
+     "kod": "KDV_INDIRIM_DONEMI",
+     "neden": "2028-01: belge ayı 2026-12 … 2027-12 dışında",
+     "olay": 6,
+     "tur": "alis_faturasi"
+    }
+   ]
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

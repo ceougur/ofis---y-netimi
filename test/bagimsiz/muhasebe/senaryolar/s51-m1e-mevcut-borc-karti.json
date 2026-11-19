@@ -1,5 +1,5 @@
 {
- "aciklama": "M1e: Carinin Mevcut Borcu kartı alttaki borcu tüketir; kart ile alttaki borç birlikte sayılmaz.",
+ "aciklama": "M1e + S120 A: Carinin Mevcut Borcu kartı alttaki borcu tüketir (açık borç kart tutarından fazlaysa yalnız elle borçları, faturalar kendi vadesiyle); kart ile alttaki borç birlikte sayılmaz.",
  "ad": "s51-m1e-mevcut-borc-karti",
  "bankalar": {
   "B1": {
@@ -40,17 +40,26 @@
  "dil": "muhasebe-kahin/1",
  "elle": {
   "A": {
-   "acik": [],
-   "g1/gecikmis": 30000,
-   "g2/gecikmis": 50000,
-   "g3/gecikmis": 50000
+   "acik": [
+    {
+     "fatura": "F1",
+     "kalan": 50000,
+     "tarih": "2026-01-10",
+     "vade": "2026-02-10"
+    }
+   ],
+   "g1/gecikmis": 80000,
+   "g2/gecikmis": 90000,
+   "g3/gecikmis": 90000
   }
  },
  "kapsam": [
   "M1e",
   "H-02",
   "H-04",
-  "S2"
+  "S2",
+  "S110",
+  "S120"
  ],
  "kartlar": {
   "KK1": {
@@ -79,7 +88,7 @@
    "id": "BY1",
    "tarih": "2026-01-15",
    "tur": "borc_yaz",
-   "tutar": 30000,
+   "tutar": 70000,
    "vade": "2026-03-15"
   },
   {

@@ -67,7 +67,8 @@
     "C1",
     "C3"
    ],
-   "mod0531/kart|KK1": 27000,
+   "mod0531/kart|KK1": 27300,
+   "mz/satirlar/102.B1/bakiye": 300,
    "mz/satirlar/120|C1/bakiye": 0,
    "mz/satirlar/120|C2/bakiye": 4000,
    "mz/satirlar/120|C3/bakiye": 0,
@@ -75,7 +76,7 @@
    "mz/satirlar/128|C2/bakiye": 0,
    "mz/satirlar/128|C3/bakiye": 2000,
    "mz/satirlar/129|C2/bakiye": 0,
-   "mz/satirlar/309.KK1/bakiye": -27000,
+   "mz/satirlar/309.KK1/bakiye": -27300,
    "mz/satirlar/519/bakiye": 50000,
    "mz/satirlar/600/bakiye": -39000,
    "mz/satirlar/644/bakiye": -3000,
@@ -123,7 +124,8 @@
   "J-01",
   "J-04",
   "K6",
-  "M13"
+  "M13",
+  "P1-b"
  ],
  "kartlar": {
   "KK1": {
@@ -142,6 +144,54 @@
    "tarih": "2026-01-02",
    "tur": "kart_acilis",
    "tutar": 50000
+  },
+  {
+   "cari": "C1",
+   "kart": "KK1",
+   "tarih": "2026-01-05",
+   "tur": "odeme",
+   "tutar": 100,
+   "yol": "kart"
+  },
+  {
+   "banka": "B1",
+   "cari": "C1",
+   "tarih": "2026-01-05",
+   "tur": "tahsilat",
+   "tutar": 100,
+   "yol": "havale"
+  },
+  {
+   "cari": "C2",
+   "kart": "KK1",
+   "tarih": "2026-01-05",
+   "tur": "odeme",
+   "tutar": 100,
+   "yol": "kart"
+  },
+  {
+   "banka": "B1",
+   "cari": "C2",
+   "tarih": "2026-01-05",
+   "tur": "tahsilat",
+   "tutar": 100,
+   "yol": "havale"
+  },
+  {
+   "cari": "C3",
+   "kart": "KK1",
+   "tarih": "2026-01-05",
+   "tur": "odeme",
+   "tutar": 100,
+   "yol": "kart"
+  },
+  {
+   "banka": "B1",
+   "cari": "C3",
+   "tarih": "2026-01-05",
+   "tur": "tahsilat",
+   "tutar": 100,
+   "yol": "havale"
   },
   {
    "K": 0,

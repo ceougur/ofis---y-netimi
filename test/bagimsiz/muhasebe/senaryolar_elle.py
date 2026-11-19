@@ -1580,17 +1580,21 @@ S("s61-r20-karsiliksiz-fatura-vadesi", ["S8", "EK-2 K-1", "E22", "Ç-07", "M1c"]
 }}, aciklama="S8: karşılıksız evrakla yeniden açılan fatura kendi vadesiyle gecikir; öteki bağsız ödemeler kendi günlerinde yeniden dağılır.")
 
 # ------------------------------------------------------------------------------------------------ S62
-S("s62-r16-127-ters-bakiye", ["EK-2 36", "E14", "M-11", "§7.3"], [
+S("s62-r16-127-ters-bakiye", ["EK-2 36", "E14", "M-11", "§7.3", "S198"], [
     o("kasa_acilis", "2026-01-01", tutar=100000),
+    # bakım 13 — S198 = A (README Ü16): 127 eşleştirmede hedef olamaz → bu eşleştirme (127 satırlı) RED, hiçbir satırı yazılmaz; 127'nin ters bakiye sınıflaması
+    # (EK-2 36) carisiz Excel kartıyla kurulamıyor (dilde yok — DENENMEYEN) → birim testte elle fişle (test_EK2_36_127_ters_bakiye_brut)
     o("acilis_eslestir", tarih="2026-01-01", satirlar=[{"hesap": "127.K1", "alacak": 5000}, {"hesap": "127.K2", "borc": 8000},
                                                     {"hesap": "500", "alacak": 103000}]),
+    o("acilis_eslestir", tarih="2026-01-01", satirlar=[{"hesap": "500", "alacak": 100000}]),
     BIL("bil", "2026-01-01"),
 ], {"A": {
-    # alacaklı 127 (fazla tahsil edilmiş carisiz kart) Pasif III.D 340; kart (alt hesap) bazında brüt, borçlu 127.K2 ile netleşmez
-    "bil/aktif/I.A": 100000, "bil/aktif/I.C": 8000, "bil/pasif/III.D": 5000, "bil/pasif/V.A": 103000,
-    "bil/detay/III.D/127.K1": 5000, "bil/detay/I.C/127.K2": 8000, "bil/aktif_toplam": 108000, "bil/pasif_toplam": 108000,
+    # eski (bakım 2–12): eşleştirme kabul — I.C 8000 (127.K2), III.D 5000 (127.K1), V.A 103000, toplam 108000
+    "redler": ["ESLESTIRME_HESAP"],
+    # yalnız 500'lü eşleştirme: 519 −100000 + 100000 = 0; Aktif I.A 100000 = Pasif V.A 100000; Kesin Değil yok
+    "bil/aktif/I.A": 100000, "bil/pasif/V.A": 100000, "bil/aktif_toplam": 100000, "bil/pasif_toplam": 100000,
     "bil/kesin_degil": [],
-}}, aciklama="EK-2 36: 127 Diğer Ticari Alacaklar; alacaklı kart 340'ta, kart bazında brüt.")
+}}, aciklama="S198 A: 127 Açılış Eşleştirme'de hedef olamaz (red); EK-2 36'nın 127 brüt sınıflaması birim testte.")
 
 # ================================================================================================ KÂHİN BAKIMI 3 (06.11.2026)
 # Kaynak: kullanıcı kararı 06.11 03:35 UTC "hepsi A" — S11, S12 (iş listesi D, AYNEN); S8 (05.11 21:08) ve karar (3) (05.11 21:30) ile birlikte.

@@ -1196,6 +1196,17 @@ class Bakim13(unittest.TestCase):
         self.assertEqual([x["kod"] for x in r["redler"]], ["ESLESTIRME_HESAP"])
         self.assertEqual(r["raporlar"]["mz"]["satirlar"]["519"]["bakiye"], -900)
 
+    def test_EK2_36_127_ters_bakiye_brut(self):
+        # Ü16 (S198 = A): s62'nin 127 dişi — 127 kart (alt hesap) bazında brüt, alacaklı 127 Pasif III.D; bakiye eşleştirmeyle kurulamadığı için deftere ELLE fiş konur
+        m = M.Model(senaryo([o("kasa_acilis", "2026-01-01", tutar=100000)]))
+        m.kos()
+        d = m.canli
+        d.fis_ekle("2026-01-01", 0, "test_127", [M.L("127.K1", -5000), M.L("127.K2", 8000), M.L("500", -103000), M.L("519", 100000)])
+        b = d.bilanco("2026-01-01")
+        self.assertEqual((b["aktif"]["I.A"], b["aktif"]["I.C"], b["pasif"]["III.D"], b["pasif"]["V.A"], b["aktif_toplam"], b["pasif_toplam"]),
+                         (100000, 8000, 5000, 103000, 108000, 108000))
+        self.assertEqual((b["detay"]["III.D"]["127.K1"], b["detay"]["I.C"]["127.K2"]), (5000, 8000))
+
     def test_A7_s93_2_4_9_S14_susar(self):
         # Ü17: eski s93'ün olayları — 2.4.9 kuralıyla donan dönemde şüpheli caride faturaya bağlı çek (S14 adayı) → kâhin susar
         self.sus([o("kasa_acilis", "2026-01-01", tutar=10000), o("satis_faturasi", "2026-02-01", id="F1", cari="C1", M=10000, K=0),
