@@ -271,3 +271,16 @@ ayarları silinir → geçiş yok; "Hareketleri": ayar kalır (app.mjs dosya sı
 ### 13.5 B-9 / B-10
 B-9: süzgecin 191 / 391 formülü = beklenen (13.1'in SQL'i). B-10 = B: banka modülünün Alt Hesap Mizanı kendi kümesini (102 / 108 / 300 / 309 + 101.0x / 121.0x) gösterir; `gg2-hiz` eşdeğerliği bu
 kümeye süzülür — ürün kodu DEĞİŞMEZ.
+
+### 13.6 Tur 2c — kod ve sonuç (kodla birlikte; kanıt docs/kanit/2026-11-19/c7b2c-*)
+- Kod: `lib/ledger-rule-shift.mjs` (YENİ), journal (kayıt tahsilatı / iki iade KDV'si satırı), routes/ledger.mjs rows() TEK SATIR girdi (`out.ruleShift`) + expected() 336 / 191 / 391,
+  integrity-scope fatura bölümü (B-9), göç 51. `routes/tax.mjs` DEĞİŞMEDİ (ön izleme / liste / Güncel Değil `build()`'i okur — kendiliğinden geçişli; test (3) bunu sayıyla gösterir).
+- 336 ayrışmasının yeniden üretimi (tur 2b: v2.0.26 verisi, fişten sonra 336 karma −750 ↔ Defter Mutabakatı −1.500): TABAN (c7b2c-taban) açılışta da fişten sonra da 336 karma −750 · canlı
+  −1.500 · beklenen −1.500, 191 karma 5.376 · canlı 5.466, 391 karma −69.517,50 · canlı −69.607,50 (kilitli 750 TL kayıt tahsilatı + kilitli iade KDV'si 90 TL donmuş defterde 2.4.9
+  yönünde, canlı türetmede Ç7b yönünde — B14 (a) yüzünden fişle kapanamıyordu; ÜRÜN HATASI DEĞİL, B-8'in kendisi). YENİ KOD: üç hesapta karma = canlı = beklenen (336 −750; 191 5.376; 391
+  −69.517,50), fiş ön izlemesinde dışarıda kalan fark yok, fişten sonra kural farkı "Düzeltildi" (yalnız eski sürümün ileri tarihli evrak satırı kalır).
+- Göç 51'in işaretini kilit izine almak (`vat_offsets.rule_version`, `settings['ledger.ruleShiftThrough']`) lib/integrity.mjs ister — dosya sınırı dışı: test/defter-kaynak-iz-250'de gerekçeli
+  açık istisna (SINIF 3; BAŞ MİMAR KARARI GEREKİYOR). Şirket Verisini Sıfırla "Hareketleri" geçiş gününü silmez (app.mjs dosya sınırı dışı; rapor).
+- Ç3 testlerinin tohumu (donmus-defter-tur1 / tur3 / tur4 / yasam): Ç5-A G3'ün ilkesiyle iki kuralda AYNI türetilen veriye çevrildi (Borç Yaz → satış faturası, carisiz Kasa girişi →
+  carinin nakit tahsilatı); tur1'in kural benzetimi faturanın 600'üne (642). bellek: 2.4.9 kopyası ↔ güncel farkı Ç5-A hesapları + Ç7b kural kimlikleri (c7b-kural çevirisi, geçiş günü
+  dosyanın işaretinden). gg2-hiz (B-10 = B): eşdeğerlik banka Alt Hesap Mizanı'nın kümesine süzüldü.
