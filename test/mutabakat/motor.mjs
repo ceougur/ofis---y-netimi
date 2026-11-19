@@ -520,7 +520,10 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     // 2.3.0 İz 1 (plan §3.11b/4): 120 = müşteri bakiyeleri − açık şüpheli (128); 128 = Σ kalan; 129 = −Σ karşılık; 654 = Σ ayrılan; 644 = Σ çözülen.
     const dm = doubtfulOn ? doubtfulModel() : null;
     const dc = doubtfulCustomers.reduce((s, a) => s + (M.cari.get(a.id) || 0), 0) - (dm ? dm.open : 0);
-    if (gl("120") !== byType("customer") + dc || gl("320") !== byType("supplier") || gl("336") !== byType("other")) problems.push(`Ana defter cari hesapları ≠ model: 120 ${gl("120") / 100}/${(byType("customer") + dc) / 100}, 320 ${gl("320") / 100}/${byType("supplier") / 100}, 336 ${gl("336") / 100}/${byType("other") / 100}`);
+    // 2.5.0 Ç7b — BEKLENTİ BİLEREK DEĞİŞTİ (KG-3 = A, kullanıcı 05.11 17:16 (3): kayıt (dosya) tahsilatı gelir değil → 336.90 "Sınıflandırılmamış Tahsilatlar"): Ana Defter'in 336'sı =
+    // "Diğer" carilerin bakiyesi − modeldeki kayıt tahsilatları (336.90'ın alacağı; cari değil). Eski sürüm kodunu süren koşu (bank: false — v2.0.26) eski kuralla (602).
+    const collected = bank ? M.payments.reduce((t, e) => t + e.amount, 0) : 0;
+    if (gl("120") !== byType("customer") + dc || gl("320") !== byType("supplier") || gl("336") !== byType("other") - collected) problems.push(`Ana defter cari hesapları ≠ model: 120 ${gl("120") / 100}/${(byType("customer") + dc) / 100}, 320 ${gl("320") / 100}/${byType("supplier") / 100}, 336 ${gl("336") / 100}/${(byType("other") - collected) / 100}`);
     if (dm) {
       for (const [code, want] of [["128", dm.open], ["129", -dm.provision], ["654", dm.expense], ["644", -dm.groundless]]) if (gl(code) !== want) problems.push(`Ana defter ${code} ${gl(code) / 100} · model ${tl(want)} (şüpheli alacak)`);
       const list2 = (await api("GET", "/api/workspace/doubtful?status=all")).data;

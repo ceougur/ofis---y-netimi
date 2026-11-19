@@ -104,8 +104,8 @@ describe("2.5.0 Ç5-A tur 1 — modül açılışları 519, KG-5, açılış evr
     const entries = server.app.ledger.build();
     const debt = entries.find(entry => entry.text === "AÇILIŞ BAKİYESİ");
     const credit = entries.find(entry => entry.text === "Açılış bakiyesi" && entry.source === "Cari (alacak yaz)" && entry.lines[0].credit + entry.lines[0].debit === 3000);
-    assert.deepEqual(linesOf(debt), ["A 602 70", "B 120 70"]);
-    assert.deepEqual(linesOf(credit), ["A 320 30", "B 770 30"]);
+    assert.deepEqual(linesOf(debt), ["A 602.90 70", "B 120 70"], "Ç7b (KG-4 = A): Borç Yaz 602.90");
+    assert.deepEqual(linesOf(credit), ["A 320 30", "B 770.90 30"], "Ç7b (KG-4 = A): Alacak Yaz 770.90");
     assert.equal(debt.cls, undefined);
   });
 

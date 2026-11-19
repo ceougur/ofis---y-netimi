@@ -293,6 +293,15 @@ export function c5aOpeningFold(ledger, store) {
       ];
     }
     const lines = entry.lines.map(line => {
+      // 2.5.0 Ç7b (docs/erp/C7B-FATURA-TASARIM.md §11): güncel kural → 2.4.9 düzeni — kayıt tahsilatı 336.90 → 602 (KG-3); belgesiz 600.90 → 600 (stok) / 602 (taksit Yeni Borç)
+      // ve 610.90 → 610 (KG-2); Borç Yaz 602.90, Alacak Yaz / Kasa çıkışı 770.90, Kasa girişi 649.90 → ana hesap (KG-4, K-01 / K-02); ihracat 601 → 600 (KG-24); satıştan iade
+      // KDV'si 191 → 391, alıştan iade KDV'si 391 → 191 (KG-8 / F-08).
+      if (!kind && line.sub === "336.90") return { ...line, account: "602", sub: undefined };
+      if (!kind && line.sub === "600.90") return { ...line, account: String(entry.id).startsWith("plan:") ? "602" : "600", sub: undefined };
+      if (!kind && ["610.90", "602.90", "649.90", "770.90"].includes(line.sub)) return { ...line, sub: undefined };
+      if (line.account === "601") return { ...line, account: "600" };
+      if (entry.source === "Satıştan iade faturası" && line.account === "191") return { ...line, account: "391" };
+      if (entry.source === "Alıştan iade faturası" && line.account === "391") return { ...line, account: "191" };
       if (kind && line.sub === "649.90") return { ...line, account: kind === "in" ? "602" : "770", sub: undefined };
       if (kind && line.sub === "770.90") return { ...line, sub: undefined };
       if (line.account !== "519") return line;
@@ -324,7 +333,7 @@ export function c5aOpeningFold(ledger, store) {
     const legacy = legacyOf(entry);
     for (const item of legacy) {
       legacyById.set(item.id, { date: entry.date, lines: item.lines });
-      for (const line of item.lines) if (line.account === "519" || line.sub === "649.90" || line.sub === "770.90") problems.push(`${item.id}: çevirmeden sonra ${line.sub || line.account} kaldı`);
+      for (const line of item.lines) if (line.account === "519" || line.account === "601" || ["649.90", "770.90", "336.90", "600.90", "610.90", "602.90"].includes(line.sub)) problems.push(`${item.id}: çevirmeden sonra ${line.sub || line.account} kaldı`);
     }
     if (entry.date <= boundary) continue;
     add(entry.lines, -1);
