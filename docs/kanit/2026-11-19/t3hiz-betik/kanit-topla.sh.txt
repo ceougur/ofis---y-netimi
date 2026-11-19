@@ -1,0 +1,27 @@
+#!/bin/bash
+# t3hiz: ham çıktılar ve betikler → docs/kanit/2026-11-19/t3hiz-* (ayrı "Kanıt:" commit'i). Yeniden çağrılabilir (üstüne yazar).
+A=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3hiz-a
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-af7c4e455433c3703
+K=$W/docs/kanit/2026-11-19
+mkdir -p $K/t3hiz-betik $K/t3hiz-mutasyon || exit 1
+# kanit.mjs kos çıktıları (json + log)
+cp $A/kanit/2026-11-19/t3hiz-* $K/ 2>/dev/null
+# ölçümler
+for f in ayr-d1 ayr-d2 ayr-d3 on-d1 on-d2 mt-d2 ahm-d2 hiz3-c7a-kilitli-kesik hiz3-kilitli2 son-olcum parca6 hiz3-t3b-kilitsiz hiz3-t3c-kilitsiz hiz3-c7a-kilitsiz hiz3-t2-kilitsiz hiz3-t3b-kilitli hiz3-t3c-kilitli hiz3-c7a-kilitli hiz3-t2-kilitli hiz3-kilitsiz hiz3-kilitli; do
+  [ -f $A/$f.txt ] && cp $A/$f.txt $K/t3hiz-$f.txt
+  [ -f $A/$f.log ] && cp $A/$f.log $K/t3hiz-$f.log
+done
+for k in kilitsiz kilitli; do
+  ls $A/hiz3-*-$k.txt >/dev/null 2>&1 && python3 -I $A/karsilastir3.py $A/hiz3-t3b-$k.txt $A/hiz3-t3c-$k.txt $A/hiz3-c7a-$k.txt $A/hiz3-t2-$k.txt > $K/t3hiz-hiz3-karsilastirma-$k.txt 2>&1
+  for b in t3b t3c c7a t2; do [ -f $A/hiz3-$b-$k.txt ] && python3 -I $A/karsilastir3.py $A/hiz3-$b-$k.txt > $K/t3hiz-hiz3-karsilastirma-$b-$k.txt 2>&1; done
+done
+for f in ayr-d1 ayr-d2 ayr-d3 on-d1 on-d2 mt-d2 ahm-d2; do [ -f $A/$f.txt ] && python3 -I $A/ozet.py $A/$f.txt > $K/t3hiz-$f-ozet.txt 2>&1; done
+# eşdeğerlik testi, taban kırmızısı, hakem üretimi, 100 bin satır dökümü
+for f in yeni4-Europe-Istanbul yeni4-UTC taban-Europe-Istanbul taban-UTC hakem-Europe-Istanbul hakem-UTC; do [ -f $A/$f.out ] && cp $A/$f.out $K/t3hiz-test-$f.out; done
+cp $A/esd/* $K/t3hiz-betik/ 2>/dev/null; cp $A/esd.out $K/t3hiz-esd-100bin.txt 2>/dev/null
+cp $A/mut.out $K/t3hiz-mutasyon-ozet.txt 2>/dev/null; cp $A/mut/M*.txt $K/t3hiz-mutasyon/ 2>/dev/null
+for f in komsu-ist komsu-utc kahin e2e; do [ -f $A/$f.log ] && cp $A/$f.log $K/t3hiz-$f.txt; done
+cp $A/komsu.txt $K/t3hiz-komsu-dosyalari.txt
+for f in olc-kisa.mjs ayristir.sh kopyala.sh ozet.py hiz3.sh karsilastir3.py esd.sh dok.mjs yama-dok.py parca.mjs parca2.mjs parca3.mjs parca4.mjs parca5.mjs parca6.mjs parca7.mjs parca8.mjs yama-pg.py yama-exp.py yama-exp2.py son-olcum.sh prof.py hakem.sh yeni.sh taban-kirmizi.sh komsu.sh kahin.sh e2e.sh kanit-topla.sh; do cp $A/$f $K/t3hiz-betik/$f.txt; done
+cp $A/parca3.out $K/t3hiz-parca3.txt 2>/dev/null
+du -sh $K/t3hiz-* | tail -3; ls $K | grep -c t3hiz

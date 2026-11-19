@@ -1,0 +1,19 @@
+#!/bin/bash
+# t3hiz: 100 bin satırda TAM ÇIKTI eşdeğerliği — taban (9c09f18d, /dev/shm/t3hiz/k-s3) ↔ yeni (/dev/shm/t3hiz/k-<ad>) dökümü AYNI veri kaynağının iki taze kopyasında.
+# Çağrı: bash esd.sh <yeni kod adı> <ad> <veri kaynağı>
+A=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3hiz-a; V=/dev/shm/t3hiz
+YENI=$1; AD=$2; KAYNAK=$3
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 TZ=Europe/Istanbul
+mkdir -p $A/esd || exit 1
+echo "esd $AD · kaynak $KAYNAK · yeni k-$YENI · başta $(cat /proc/loadavg) · $(date -u +%H:%M:%S)"
+for KOD in s3 $YENI; do
+  KOPYA=$V/esd-$AD-$KOD
+  rm -rf "$KOPYA" && cp -a "$KAYNAK" "$KOPYA" || exit 1
+  s=$(date +%s)
+  timeout -k 5 3000 node --max-old-space-size=8192 --disable-warning=ExperimentalWarning $A/dok.mjs $V/k-$KOD "$KOPYA" $V/esd-$AD-$KOD.jsonl > $A/esd/$AD-$KOD.ozet 2>&1
+  echo "$KOD çıkış $? · $(( $(date +%s) - s )) sn · $(tail -1 $A/esd/$AD-$KOD.ozet | cut -c1-200)"
+  rm -rf "$KOPYA"
+done
+sha256sum $V/esd-$AD-s3.jsonl $V/esd-$AD-$YENI.jsonl | sed "s#$V/##" > $A/esd/$AD.sha256
+if cmp -s $V/esd-$AD-s3.jsonl $V/esd-$AD-$YENI.jsonl; then echo "SONUÇ $AD: BAYT BAYT AYNI ($(wc -l < $V/esd-$AD-$YENI.jsonl) satır; $(wc -c < $V/esd-$AD-$YENI.jsonl) bayt; sha256 $(sha256sum < $V/esd-$AD-$YENI.jsonl | cut -c1-16)); şüpheli satırı $(grep -c '"cari":"\[şüpheli' $V/esd-$AD-$YENI.jsonl)"; else echo "SONUÇ $AD: FARK VAR"; cmp $V/esd-$AD-s3.jsonl $V/esd-$AD-$YENI.jsonl | head -3; fi
+echo "sonda $(cat /proc/loadavg) · $(date -u +%H:%M:%S)"

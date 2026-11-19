@@ -1,0 +1,13 @@
+#!/bin/bash
+# t3hiz: kâhin ↔ program adımları (defter 187 / 187, cari 17.253 / 17.253 beklenir — değişmemeli), iki saat diliminde, kanit.mjs kos ile.
+A=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3hiz-a
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-af7c4e455433c3703
+cd $W || exit 1
+for tz in Europe/Istanbul UTC; do
+  ad=${tz//\//-}
+  for k in defter cari; do
+    s=$(date +%s)
+    HUKUK_LICENSE_URL=http://127.0.0.1:9 TZ=$tz KANIT_DIR=$A/kanit timeout -k 10 3000 node tools/kanit.mjs kos t3hiz-kahin-$k-$ad -- npm run test:kahin-$k > $A/kahin-$k-$ad.out 2>&1
+    echo "$tz $k çıkış $? · $(( $(date +%s) - s )) sn · $(tail -2 $A/kahin-$k-$ad.out | tr '\n' ' ' | cut -c1-300)"
+  done
+done

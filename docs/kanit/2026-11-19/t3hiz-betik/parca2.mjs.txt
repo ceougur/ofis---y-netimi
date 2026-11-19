@@ -1,0 +1,20 @@
+// t3hiz: şüpheli yükleyicilerinin süresi taban ↔ aday (salt okunur). node parca2.mjs <kod> <veri kopyası>
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+const [root, dir] = process.argv.slice(2);
+const imp = p => import(pathToFileURL(path.join(root, p)).href);
+const dbm = await imp("server/lib/db.mjs");
+const D = await imp("server/lib/bank/doubtful.mjs");
+if (process.env.BELLEKSIZ && D.LINKED_MEMO_TEST) D.LINKED_MEMO_TEST.off = true;
+const store = dbm.createStore(dbm.openDatabase(path.join(dir, "data", "destekofis.sqlite"), { readOnly: true }));
+const t = (label, fn, n = 5) => { const ms = []; let v; for (let i = 0; i < n; i += 1) { const s = performance.now(); v = fn(); ms.push(performance.now() - s); } ms.sort((a, b) => a - b); console.log(`${label}: en iyi ${ms[0].toFixed(1)} · ortanca ${ms[Math.floor(n / 2)].toFixed(1)} ms`); return v; };
+const acc = store.get("SELECT id FROM accounts WHERE name = 'Ölçüm Şüpheli Bağlı'")?.id;
+const plain = store.get("SELECT a.id FROM accounts a WHERE a.deleted_at IS NULL AND a.type = 'customer' AND NOT EXISTS (SELECT 1 FROM doubtful_receivables d WHERE d.account_id = a.id) ORDER BY (SELECT COUNT(*) FROM account_entries e WHERE e.account_id = a.id) DESC LIMIT 1").id;
+t("doubtfulRows (bütün)", () => D.doubtfulRows(store));
+t("doubtfulState (bütün)", () => D.doubtfulState(store));
+if (acc) t("doubtfulState (şüpheli bağlı cari)", () => D.doubtfulState(store, { parties: [acc] }));
+t("doubtfulState (şüphelisiz cari)", () => D.doubtfulState(store, { parties: [plain] }));
+t("doubtfulExpected", () => D.doubtfulExpected(store));
+t("doubtfulProblems (bütün)", () => D.doubtfulProblems(store));
+t("doubtfulOpenByAccount", () => D.doubtfulOpenByAccount(store));
+if (acc) t("doubtfulSummary (şüpheli bağlı)", () => D.doubtfulSummary(store, acc));

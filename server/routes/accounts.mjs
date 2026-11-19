@@ -331,7 +331,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const planMap = plans()?.summariesByAccount ? plans().summariesByAccount(ids, { queue: tykAll }) : new Map();
     // 2.3.0 İz 1.6 (plan §3.11b/5): cari başına açık şüpheli alacak (TL) — listede "Şüpheli" rozeti, ANLIK DURUM alacak toplamında ayrı satır.
     // Şüpheli hiç kullanılmamışsa tek sorgu, boş (lib/bank/doubtful.mjs doubtfulOpenByAccount).
-    const doubtfulMap = doubtful()?.openByAccount ? doubtful().openByAccount().byAccount : new Map();
+    // TEK ADAY HIZ (t3hiz): ids'li çağrıda (kartın bakiye / sınır okuması, yazım yanıtı) yalnız o carilerin şüphelisi — önceden her çağrıda bütün şirketin ayırıcısı koşuyordu.
+    const doubtfulMap = doubtful()?.openByAccount ? doubtful().openByAccount(only ? { parties: [...ids] } : {}).byAccount : new Map();
     const search = searchOf(q);
     const totals = { count: 0, debtor: 0, creditor: 0, debtorCount: 0, creditorCount: 0, balance: 0, overdue: 0, overdueCount: 0, planRemaining: 0, doubtful: 0, doubtfulCount: 0 };
     const labels = new Set();

@@ -1,0 +1,36 @@
+// t3hiz: periodGroups (iki sorgu) ↔ periodGroupsOneQuery (Ç7a'nın tek sorgusu, hakem) 100 bin satırda — her şirket, çok dönem; süre. node parca6.mjs <kod> <veri kopyası>…
+import { readdirSync, existsSync } from "node:fs";
+import path from "node:path";
+import { isDeepStrictEqual } from "node:util";
+import { pathToFileURL } from "node:url";
+const [root, ...dirs] = process.argv.slice(2);
+const imp = p => import(pathToFileURL(path.join(root, p)).href);
+const dbm = await imp("server/lib/db.mjs");
+const ml = await imp("server/lib/bank/money-lines.mjs");
+const day = (base, n) => { const d = new Date(`${base}T00:00:00Z`); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+let bad = 0;
+let checks = 0;
+for (const dir of dirs) {
+  const files = [path.join(dir, "data", "destekofis.sqlite")];
+  const co = path.join(dir, "data", "sirketler");
+  if (existsSync(co)) for (const name of readdirSync(co)) { const f = path.join(co, name, "destekofis.sqlite"); if (existsSync(f)) files.push(f); }
+  for (const file of files) {
+    const store = dbm.createStore(dbm.openDatabase(file, { readOnly: true }));
+    const money = ml.createMoneyLines(store);
+    const ranges = [["", ""], ["2026-01-01", "2026-12-31"], ["2025-01-01", "2025-12-31"], ["", "2026-06-30"], ["2026-07-01", ""], ["2026-10-08", "2026-10-08"], ["2027-01-01", "2027-12-31"]];
+    for (let m = 1; m <= 12; m += 1) { const s = `2026-${String(m).padStart(2, "0")}-01`; ranges.push([s, day(s, 27)]); }
+    let opening = 0;
+    for (const [from, to] of ranges) {
+      checks += 1;
+      const a = money.periodGroups({ from, to });
+      const b = money.periodGroupsOneQuery({ from, to });
+      if (b.some(g => g.way === "opening")) opening += 1;
+      if (!isDeepStrictEqual(a, b)) { bad += 1; console.log("FARK", file, from, to, JSON.stringify(a).slice(0, 300), JSON.stringify(b).slice(0, 300)); }
+    }
+    const t = fn => { const ms = []; for (let i = 0; i < 7; i += 1) { const s = performance.now(); fn(); ms.push(performance.now() - s); } ms.sort((x, y) => x - y); return `${ms[0].toFixed(1)} / ${ms[3].toFixed(1)}`; };
+    console.log(`${file.replace(dir, "")}: ${ranges.length} dönem, açılışta sayılmış gruplu ${opening} · süre (en iyi / ortanca) yeni ${t(() => money.periodGroups({ from: "2026-01-01", to: "2026-12-31" }))} ms · tek sorgu ${t(() => money.periodGroupsOneQuery({ from: "2026-01-01", to: "2026-12-31" }))} ms`);
+    store.db.close?.();
+  }
+}
+console.log(`SONUÇ: ${checks} karşılaştırma, ${bad} fark`);
+process.exitCode = bad ? 1 : 0;

@@ -1,0 +1,39 @@
+// t3hiz: linkedShares'in parçalarının süresi (salt okunur; yalnız aday kodda). node parca.mjs <kod> <veri kopyası>
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+const [root, dir] = process.argv.slice(2);
+const imp = p => import(pathToFileURL(path.join(root, p)).href);
+
+const { createStore } = await imp("server/lib/db.mjs");
+const dbm = await imp("server/lib/db.mjs");
+console.log(Object.keys(dbm).join(","));
+const { createObligationInput } = await imp("server/lib/obligation-input.mjs");
+const { createAccountLines } = await imp("server/lib/account-lines.mjs");
+const { doubtfulBefore } = await imp("server/lib/obligation-queue.mjs");
+const D = await imp("server/lib/bank/doubtful.mjs");
+const db = dbm.openDatabase(path.join(dir, "data", "destekofis.sqlite"), { readOnly: true });
+const store = createStore ? createStore(db) : db;
+const t = (label, fn) => { const s = performance.now(); const v = fn(); console.log(`${label}: ${(performance.now() - s).toFixed(1)} ms`); return v; };
+const records = t("doubtfulRows (parties yok)", () => D.doubtfulRows(store)).records;
+const parties = [...new Set(records.map(r => r.party))];
+console.log("şüpheli cari", parties.length);
+const list = JSON.stringify(parties);
+const cand1 = t("aday SQL 1 (bağlı satır)", () => store.all("SELECT DISTINCT e.account_id AS id FROM json_each(?) j CROSS JOIN account_entries e ON e.account_id = j.value WHERE e.invoice_id <> '' AND e.kind = 'in'", list));
+const cand2 = t("aday SQL 2 (evrak bağı)", () => store.all("SELECT DISTINCT j.value AS id FROM json_each(?) j WHERE EXISTS (SELECT 1 FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id WHERE ev.invoice_id <> '' AND (c.account_id = j.value OR c.endorse_account_id = j.value OR ev.account_id = j.value))", list));
+const cands = [...new Set([...cand1, ...cand2].map(r => r.id))];
+console.log("aday", cands.length, "(bağlı satır", cand1.length, ", evrak", cand2.length, ")");
+const input = createObligationInput({ store });
+const lines = createAccountLines({ store });
+const plans = t("ledgerPlansOf(adaylar)", () => lines.ledgerPlansOf(cands));
+let tl = 0, ts = 0, te = 0;
+for (const party of cands) {
+  let s = performance.now(); const ledger = input.ledgerLines({ ids: [party], plans }).get(party) || []; tl += performance.now() - s;
+  s = performance.now(); const base = input.accountSettleInput(party, ledger, ""); ts += performance.now() - s;
+  s = performance.now(); input.obligationExtras(party, new Map()); te += performance.now() - s;
+}
+console.log(`aday başına toplam: ledgerLines ${tl.toFixed(1)} ms · accountSettleInput ${ts.toFixed(1)} ms · obligationExtras ${te.toFixed(1)} ms`);
+t("linkedShares (yalnız kurulum)", () => D.linkedShares(store, parties));
+t("doubtfulState (bütün şirket)", () => D.doubtfulState(store));
+t("doubtfulState (bütün şirket) 2", () => D.doubtfulState(store));
+for (const p of cands.slice(0, 3)) t(`doubtfulState (yalnız ${p.slice(0, 16)})`, () => D.doubtfulState(store, { parties: [p] }));
+t("doubtfulOpenByAccount", () => D.doubtfulOpenByAccount(store));

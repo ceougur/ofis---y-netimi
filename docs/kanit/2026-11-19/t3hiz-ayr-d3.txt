@@ -1,0 +1,58 @@
+AYRIŞTIRMA d3 (/dev/shm/t3hiz/tohum7-kaynak) · kilitli · tekrar 3 · yollar mizan,legacy,borc · kilit 07:19:35 · yük 1.56 1.91 1.89
+kilit ('2026-06-30',)
+=== ana · başta 1.56 1.91 1.89 1/117 25287 
+kod /dev/shm/t3hiz/k-ana · yük (başta) 1.83 1.95 1.90 · TZ Europe/Istanbul
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 3062.1 ms · ortanca 3134.1 ms · olay döngüsü en çok 3705.7 ms (n=3)
+  Hesabı Atanmamış listesi: durum 200 · en iyi 1094 ms · ortanca 1107.2 ms · olay döngüsü en çok 0 ms (n=3)
+  YAZIM Borç Yaz (kapı): durum 200 · en iyi 243.5 ms · ortanca 269.1 ms · olay döngüsü en çok 273.2 ms (n=3)
+yük (sonda) 1.60 1.88 1.88
+çıkış 0 · sonda 1.60 1.88 1.88 1/118 25392
+kilit ('2026-06-30',)
+=== a1 · başta 1.60 1.88 1.88 1/118 25398 
+kod /dev/shm/t3hiz/k-a1 · yük (başta) 1.49 1.84 1.87 · TZ Europe/Istanbul
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 2922.2 ms · ortanca 2928.3 ms · olay döngüsü en çok 3565.2 ms (n=3)
+  Hesabı Atanmamış listesi: durum 200 · en iyi 1160.3 ms · ortanca 1175.1 ms · olay döngüsü en çok 0 ms (n=3)
+  YAZIM Borç Yaz (kapı): durum 200 · en iyi 257.7 ms · ortanca 265.2 ms · olay döngüsü en çok 269.5 ms (n=3)
+yük (sonda) 1.41 1.79 1.85
+çıkış 0 · sonda 1.41 1.79 1.85 1/115 25580
+kilit ('2026-06-30',)
+=== a2 · başta 1.41 1.79 1.85 1/115 25586 
+kod /dev/shm/t3hiz/k-a2 · yük (başta) 1.48 1.79 1.85 · TZ Europe/Istanbul
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 2893.2 ms · ortanca 3189.7 ms · olay döngüsü en çok 3760.2 ms (n=3)
+  Hesabı Atanmamış listesi: durum 200 · en iyi 1120.5 ms · ortanca 1170 ms · olay döngüsü en çok 0 ms (n=3)
+  YAZIM Borç Yaz (kapı): durum 200 · en iyi 248.6 ms · ortanca 266.8 ms · olay döngüsü en çok 270.5 ms (n=3)
+yük (sonda) 1.31 1.72 1.82
+çıkış 0 · sonda 1.31 1.72 1.82 1/117 25715
+kilit ('2026-06-30',)
+=== a3 · başta 1.31 1.72 1.82 1/117 25721 
+kod /dev/shm/t3hiz/k-a3 · yük (başta) 1.20 1.66 1.80 · TZ Europe/Istanbul
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 3109.9 ms · ortanca 3199.8 ms · olay döngüsü en çok 3722.4 ms (n=3)
+  Hesabı Atanmamış listesi: durum 200 · en iyi 1172.3 ms · ortanca 1185.6 ms · olay döngüsü en çok 0 ms (n=3)
+  YAZIM Borç Yaz (kapı): durum 200 · en iyi 274.5 ms · ortanca 279.2 ms · olay döngüsü en çok 282.3 ms (n=3)
+yük (sonda) 1.42 1.68 1.80
+çıkış 0 · sonda 1.42 1.68 1.80 1/117 25752
+kilit ('2026-06-30',)
+=== s1 · başta 1.42 1.68 1.80 1/117 25758 
+kod /dev/shm/t3hiz/k-s1 · yük (başta) 1.27 1.63 1.78 · TZ Europe/Istanbul
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 3059.6 ms · ortanca 3222 ms · olay döngüsü en çok 3913.3 ms (n=3)
+  Hesabı Atanmamış listesi: durum 200 · en iyi 1128.5 ms · ortanca 1155.6 ms · olay döngüsü en çok 1200.6 ms (n=3)
+  YAZIM Borç Yaz (kapı): durum 200 · en iyi 293.7 ms · ortanca 303.1 ms · olay döngüsü en çok 305.4 ms (n=3)
+yük (sonda) 1.24 1.59 1.77
+çıkış 0 · sonda 1.24 1.59 1.77 1/119 25782
+kilit ('2026-06-30',)
+=== s2 · başta 1.24 1.59 1.77 1/119 25788 
+kod /dev/shm/t3hiz/k-s2 · yük (başta) 1.16 1.54 1.74 · TZ Europe/Istanbul
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 3065.1 ms · ortanca 3343.6 ms · olay döngüsü en çok 3938.5 ms (n=3)
+  Hesabı Atanmamış listesi: durum 200 · en iyi 1116 ms · ortanca 1171.3 ms · olay döngüsü en çok 1165 ms (n=3)
+  YAZIM Borç Yaz (kapı): durum 200 · en iyi 291.9 ms · ortanca 303.6 ms · olay döngüsü en çok 311.7 ms (n=3)
+yük (sonda) 1.11 1.51 1.73
+çıkış 0 · sonda 1.11 1.51 1.73 1/117 25811
+kilit ('2026-06-30',)
+=== s3 · başta 1.11 1.51 1.73 1/117 25817 
+kod /dev/shm/t3hiz/k-s3 · yük (başta) 1.13 1.48 1.71 · TZ Europe/Istanbul
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 3090 ms · ortanca 3241.6 ms · olay döngüsü en çok 3684.7 ms (n=3)
+  Hesabı Atanmamış listesi: durum 200 · en iyi 1114.9 ms · ortanca 1137.4 ms · olay döngüsü en çok 0 ms (n=3)
+  YAZIM Borç Yaz (kapı): durum 200 · en iyi 301.4 ms · ortanca 301.7 ms · olay döngüsü en çok 312 ms (n=3)
+yük (sonda) 1.20 1.47 1.70
+çıkış 0 · sonda 1.20 1.47 1.70 1/118 25846
+bitti 07:25:01

@@ -1,0 +1,28 @@
+ATILAN (GEÇERSİZ) BLOKLAR: yok
+yol | ana en iyi / ort.ortanca / döngü | taban | uç | uç/ana en iyi | uç/ana ortanca | uç/taban ortanca | hüküm (uç ↔ ana)
+AÇILIŞ (göç dahil) | 24512 / 24833 / 0 | 25958 / 26515 / 0 | 24573 / 25479 / 0 | 1.00 | 1.03 | 0.96 | tamam
+DONMA (bekleyen koşu) | 8724 / 9252 / 0 | 9095 / 9136 / 0 | 8264 / 8423 / 0 | 0.95 | 0.91 | 0.92 | tamam
+Mizan + mutabakat (GET ledger) | 3264 / 3551 / 3840 | 3186 / 3361 / 4886 | 3147 / 3453 / 4041 | 0.96 | 0.97 | 1.03 | tamam
+Yevmiye Defteri (rapor, yıl) | 2304 / 2729 / 0 | 2447 / 2551 / 0 | 2348 / 2532 / 0 | 1.02 | 0.93 | 0.99 | tamam
+Hesap Planı Mizanı (rapor) | 3105 / 3349 / 0 | 3206 / 3341 / 0 | 3045 / 3303 / 0 | 0.98 | 0.99 | 0.99 | tamam
+Alt Hesap Mizanı (rapor, yıl) | 434 / 466 / 0 | 476 / 499 / 0 | 476 / 499 / 0 | 1.10 | 1.07 | 1.00 | tamam
+Alt Hesap Mizanı (Banka, tüm zamanlar) | 352 / 390 / 0 | 365 / 381 / 0 | 368 / 388 / 0 | 1.04 | 1.00 | 1.02 | tamam
+Defter Mutabakatı (rapor) | 17329 / 18234 / 0 | 17548 / 18385 / 0 | 17296 / 18222 / 0 | 1.00 | 1.00 | 0.99 | tamam
+Mutabakat Testi (GET ledger/integrity) | 10079 / 10658 / 10863 | 10258 / 10537 / 10930 | 10069 / 10806 / 10721 | 1.00 | 1.01 | 1.03 | tamam
+Banka Bakiye Raporu (Tümü, tüm zamanlar) | 343 / 367 / 7 | 336 / 348 / 20 | 344 / 367 / 16 | 1.00 | 1.00 | 1.05 | tamam
+Banka Bazında Bakiye | 340 / 401 / 8 | 325 / 339 / 7 | 330 / 344 / 8 | 0.97 | 0.86 | 1.01 | tamam
+Banka Hareket Raporu (Gerçek Banka, yıl) | 107 / 122 / 7 | 109 / 115 / 6 | 110 / 116 / 6 | 1.03 | 0.95 | 1.01 | tamam
+Banka Hareket Raporu (Hesabı Atanmamış, tüm za | 1244 / 1383 / 10 | 1309 / 1364 / 18 | 1285 / 1433 / 9 | 1.03 | 1.04 | 1.05 | tamam
+Günlük Banka Raporu (yıl) | 128 / 137 / 6 | 122 / 130 / 6 | 125 / 131 / 11 | 0.98 | 0.96 | 1.01 | tamam
+Cari Banka Hareketleri (yıl) | 338 / 385 / 10 | 350 / 371 / 10 | 354 / 377 / 10 | 1.05 | 0.98 | 1.01 | tamam
+Banka ve POS Hareketleri (Hesabı Atanmamış) | 1048 / 1166 / 1247 | 1069 / 1189 / 1247 | 1058 / 1164 / 1280 | 1.01 | 1.00 | 0.98 | tamam
+Banka Masraf Raporu (yıl) | 97 / 110 / 6 | 100 / 108 / 6 | 100 / 107 / 6 | 1.03 | 0.98 | 0.99 | tamam
+POS Komisyon Raporu (yıl) | 94 / 112 / 6 | 96 / 104 / 6 | 96 / 112 / 8 | 1.03 | 1.00 | 1.08 | tamam
+POS Satış Raporu (yıl) | 98 / 111 / 6 | 96 / 104 / 7 | 96 / 112 / 6 | 0.98 | 1.01 | 1.07 | tamam
+POS Ödeme Takvimi | 2 / 3 / 0 | 2 / 3 / 0 | 3 / 3 / 0 | 1.04 | 0.97 | 0.97 | küçük (<20 ms)
+Hesabı Atanmamış listesi | 1229 / 1327 / 1477 | 1232 / 1291 / 1297 | 1223 / 1329 / 1397 | 1.00 | 1.00 | 1.03 | tamam
+Banka Genel Bakış (özet) | 50 / 61 / 75 | 51 / 57 / 70 | 51 / 62 / 87 | 1.01 | 1.02 | 1.08 | tamam
+POS İşlemleri listesi | 7 / 11 / 13 | 8 / 8 / 0 | 7 / 9 / 0 | 1.01 | 0.83 | 1.08 | küçük (<20 ms)
+YAZIM POS çekimi (kapı) | 9577 / 10175 / 0 | 9431 / 9825 / 0 | 9572 / 10023 / 0 | 1.00 | 0.99 | 1.02 | tamam
+YAZIM Borç Yaz (kapı) | 290 / 312 / 345 | 296 / 324 / 332 | 161 / 183 / 207 | 0.56 | 0.59 | 0.56 | tamam
+KÖTÜLEŞEN YOL SAYISI (uç ↔ ana) 0
