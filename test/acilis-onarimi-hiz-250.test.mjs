@@ -85,6 +85,10 @@ describe("2.5.0 AH — açılış onarımı: öğe başına ağır okuma yok, ç
     // (649), canlı türetme Ç7b kuralıyla (649.90) → Kural Değişikliği Farkı TEK madde. B-8 (kural geçiş günü; §13 başlığı) bunu KAPSAMAZ, kararla: ".90 alt hesapları (alt defter dışı)
     // Kural Farkı Düzeltme Fişi'yle eskisi gibi" (§4 (5), §13.4 (6)). Beklenen: ledger:rule-diff uyarısı yalnız bu madde (B-8'in üç kuralının hesaplarında — 336 / 191 / 391 / 602 — fark
     // YOK); Kural Farkı Düzeltme Fişi yazılınca Mutabakat Testi eski dökümün Mutabakat'ıyla BİREBİR. Fikstür ve beklenen döküm dosyası (eski kodun gerçek çıktısı) DEĞİŞMEDİ.
+    // Ön koşul ÜRÜNÜN DURUMUNDAN (tur 1d kalıbı; ders 20): açılışın bekleyen dondurması bitmiş olmalı — kural farkı, Mutabakat'ın ledger:rule-diff'i ve düzeltme fişi donmuş defteri okur
+    // (dondurma sürerken kapsam boş → uyarı yok; zorlama: test/b7-dondurma-yaris-zorla.mjs bitir / gozlem / tut).
+    await app.ledger.snapshots.runPending();
+    assert.equal(app.ledger.snapshots.state().pending, null, "ön koşul: açılıştaki dondurma bitti");
     const after = {};
     const dump = await dumpRepair(app, {
       screen: true,
