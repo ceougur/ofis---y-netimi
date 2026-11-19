@@ -57,6 +57,7 @@ S196 (Ç5-A tur 2f ajanının sorusu — kilit fişin yılından geri alındıkt
 - Program başlatırken `HUKUK_LICENSE_URL=http://127.0.0.1:9`. Koşular `KANIT_DIR=<kendi not defteri klasörün> node tools/kanit.mjs kos surucu3-<ad> -- <komut>`; ham çıktı `docs/kanit/2026-11-14/surucu3-*` (büyükse .gz) ayrı 'Kanıt:' commit'inde. Veri klasörleri /dev/shm'de kendi klasöründe; bitince tam yoluyla sil.
 - Her arka plan koşusu açık süre sınırıyla (`timeout -k 5 <sn>`); yük okuması ile koşu başlatma AYNI adımda gönderilmez; yük > 4 ise tek seferlik bekleme komutuyla bekle. Hiçbir koşuya GIT_DIR / GIT_WORK_TREE VERME (ders 54). `pkill` / joker `rm` YOK. Tam `npm test` YOK (ana oturum koşuyor — kilit paylaşımlı). Ölçüm yapmıyorsun.
 - Commit'e yalnız kendi yolların (`git add test/bagimsiz/muhasebe-surucu docs/kanit/2026-11-14/surucu3-*`; ders 44). Commit iletisi sonunda tam olarak 'Co-Authored-By: Claude <noreply@anthropic.com>' ve 'Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og' (model adı YOK).
+- KAPSAYICI YENİDEN BAŞLAYABİLİR (19.11'de iki kez oldu; önceki iki sürücü ajanı commit'siz kesildi — işleri kayboldu): her bitmiş eşleme adımını (kod + kendi testi) HEMEN commit'le; koşu çıktılarını da adım adım 'Kanıt:' commit'ine al.
 - Kendi arka plan işin sürerken rapor vermeden BİTİRME. Bekleme için boş döngü kurma.
 
 ## Rapor

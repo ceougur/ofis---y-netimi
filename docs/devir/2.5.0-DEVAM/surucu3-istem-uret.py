@@ -1,0 +1,43 @@
+# ANA OTURUM — muhasebe sürücüsü bakımı 3 görev metni üreteci. Kararlar iş listesinden, sürücü notları kâhin raporundan AYNEN. Kullanım: cd <depo>; python3 -I <bu> <çıktı>
+import sys
+il=open('docs/2.5.0-IS-LISTESI.md',encoding='utf-8').read().split('\n')
+def tek(b):
+    h=[l for l in il if l.startswith(b)]; assert len(h)==1,(b,len(h)); return h[0].strip()
+SOR=[tek(f'  S{n} (') for n in [14,25,155,168,174,175,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196]]
+r=open('docs/devir/2.5.0-DEVAM/kahin-muh12-rapor.md',encoding='utf-8').read()
+i=r.find('### SÜRÜCÜ İÇİN'); j=r.find('\n### ',i+5); assert i>0 and j>i
+SURUCU=r[i:j].strip()
+SP='/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad'
+o=[]; w=o.append
+w("Sen DestekOfis projesinde MUHASEBE SÜRÜCÜSÜ BAKIMI 3 ajanısın (2.5.0; Ç5-A tur 2 / 2e / 2f + tur 3 + Ç7a + muhasebe kâhini bakımı 12 sonrası). Kodu görürsün. Görevin: sürücüyü (test/bagimsiz/muhasebe-surucu/) programın ve kâhinin bugünkü hâline uyarlamak, programı kâhinle karşılaştırmak, her farkı sınıflamak. Yanıtın Türkçe. KENDİ dalında commit edersin; PUSH YAPMAZSIN.")
+w("")
+w("## Hazırlık")
+w(f"1. Worktree'de (dalında kendi commit'in YOKKEN) `git reset --hard surucu3-taban` (yerel taban dalı = ana oturumun SINAMA ağacının ucu: çalışma dalı + Ç5-A tur 3 (3a–3d) + Ç7a (D-07, K-14 / K-15, KG-6, 'Açılışta Sayıldı') + kâhin bakımı 12 + Ç5-A tur 2f + CI listesi + ana oturumun sürücü değişikliği 9c09f18d — BUGÜN görünümünden KG-6 = B, K-14 / K-15 ve KG-19 dönüşümleri kalktı). `git log --oneline -6` ile doğrula; değilse DUR. `ln -s /home/user/ofis---y-netimi/node_modules node_modules` (`npm ci` YOK).")
+w("2. ÖNCE oku: `CLAUDE.md` (dersler 1–54; özellikle 5, 6, 16, 31, 40, 43, 54); `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`; `test/bagimsiz/muhasebe-surucu/` (kos.mjs, program.mjs, karsilastir.py, siniflama.json, gerileme.py); `test/bagimsiz/muhasebe/README.md` içinde 'Senaryo dili' ve 'Kâhin bakımı 12' bölümü; ana oturumun ön koşusu `" + SP + "/ana-surucu/c1.out` (18 senaryo × iki TZ, 9c09f18d'de: AYNI 700 · U 50 · SINIFLANMADI 98 · red farkı 4 · uygulanamayan olay 12 · sınıfsız adım farkı 32 · koşu hatası 4 — s11 / s37 hesap açılışı türetmesi, s30 / s49 / s93 Kural Farkı fişi, s110–s113 yeni dil).")
+w("")
+w("## Kararlar (iş listesinden AYNEN — sınıflamada dayanak bunlar)")
+for s in SOR: w(s)
+w("")
+w("## Kâhinin sürücü için notu (kâhin bakımı 12 raporundan AYNEN)")
+w(SURUCU)
+w("")
+w("## Yasaklar (bağımsızlık; ders 5, 40)")
+w("- `test/bagimsiz/muhasebe/` (kâhin klasörü) YAZILMAZ; kâhinin beklentisi programa uydurulmaz. Program kodu (server/, client/) DEĞİŞTİRİLMEZ — program hatası (P) yalnız raporlanır. Kâhin şüphesi (K) yalnız kural kitabı / karar metni AYNEN alıntılanarak yazılır.")
+w("")
+w("## İş")
+w("1. Sürücüyü uyarla: (a) Kural Farkı Düzeltme Fişi — programda Ç5-A tur 2 / 2e / 2f ile var (KG-15 A; S174, S180, S185 = A); BUGÜN görünümündeki KG15 = B kalkar, kâhinin fiş olayları (`fis_ters {fis}` dahil) programın fiş uçlarına eşlenir; (b) hesap açılışları — kâhin 'açılıştan önce'yi banka_acilis / kart_acilis'ten türetiyor (yukarıdaki not 1–2): programda tanımlı ama açılış olayı olmayan hesap açılmaz; s11 / s37 / s110'un koşu hatası / farkı bu eşlemeyle kapanmalı; (c) `susmalar` çıktısı (not 4) — listelenen carinin 120 / 128 ayrımı, 128 / 129 kalanları ve gecikmiş / şüpheli raporları karşılaştırılmaz, 120 + 128 TOPLAMI karşılaştırılır (sürücüde açık kural; atlanan anahtarlar raporda sayılır); (d) POS'lar BSMV / vergisiz kipte (not 6); (e) `degismezler/*/s127_tek_yazim` karşılaştırılmaz (not 7). Uygulanamayan olay kalırsa adıyla yaz; sessizce atlama.")
+w("2. BÜTÜN senaryoları (elle + rastgele) iki saat diliminde koş (TZ=UTC, TZ=Europe/Istanbul) — sürücünün kendi `--paralel` değeriyle, `flock -s -w 3600 " + SP + "/olcum.lock` altında. Sınıfla: AYNI · U (henüz koda girmemiş, belgeli karar — kimlikli) · P · K · R · SINIFLANMADI. Bu turda koda giren kurallar (KG-6 = A, K-14 / K-15 = S179, KG-19 = C, Kural Farkı fişi S174 / S180 / S185, şüpheli ↔ kuyruk S168 = B / S181 = B, R8) artık U DEĞİLDİR: program = kâhin olmalı; değilse önce HATADIR (ders 6) — yeniden üret, kök neden yaz, P / K / R'ye ayır. Kâhinin sustuğu (BİLİNEN SINIR) alanlar karşılaştırılmaz.")
+w("3. GERİLEME DENETİMİ (gerileme.py): aynı senaryoların PROGRAM ÇIKTISI — eski ağaç = ana dal kodu (`git archive claude/epic-thompson-w0lc2l | tar -x` ayrı kopyada, " + SP + "/surucu3-<kısa>/eski; ders 23, 25) ↔ sınama ağacı. Her fark: senaryo, alan, hangi pakete ait (tur 3 şüpheli ↔ kuyruk, Ç7a KG-6 / K-14 / D-07 / işaret, tur 2f) ve hangi kararla açıklanıyor. Açıklanmayan fark = bulgu.")
+w("4. Testin dişi: programın ayrı kopyasında iki bilinçli hata (ör. KG-6 komisyonu valör gününe geri; hesapsız hareket sınırı en erken açılış) — sürücü SINIFLANMADI / P ile yakalamalı.")
+w("5. TOPLU SORULAR: kararların söylemediği alt durum çıkarsa raporun 'KULLANICIYA SORULMALI' bölümünde TEK listede (durum, en küçük örnek, iki okuma, her okumada bakiye; uç durumsa üçüncü seçenek 'Uç durum böyle kalsın (BİLİNEN SINIR)').")
+w("")
+w("## Yöntem")
+w("- Program başlatırken `HUKUK_LICENSE_URL=http://127.0.0.1:9`. Koşular `KANIT_DIR=<kendi not defteri klasörün> node tools/kanit.mjs kos surucu3-<ad> -- <komut>`; ham çıktı `docs/kanit/2026-11-14/surucu3-*` (büyükse .gz) ayrı 'Kanıt:' commit'inde. Veri klasörleri /dev/shm'de kendi klasöründe; bitince tam yoluyla sil.")
+w("- Her arka plan koşusu açık süre sınırıyla (`timeout -k 5 <sn>`); yük okuması ile koşu başlatma AYNI adımda gönderilmez; yük > 4 ise tek seferlik bekleme komutuyla bekle. Hiçbir koşuya GIT_DIR / GIT_WORK_TREE VERME (ders 54). `pkill` / joker `rm` YOK. Tam `npm test` YOK (ana oturum koşuyor — kilit paylaşımlı). Ölçüm yapmıyorsun.")
+w("- Commit'e yalnız kendi yolların (`git add test/bagimsiz/muhasebe-surucu docs/kanit/2026-11-14/surucu3-*`; ders 44). Commit iletisi sonunda tam olarak 'Co-Authored-By: Claude <noreply@anthropic.com>' ve 'Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og' (model adı YOK).")
+w("- KAPSAYICI YENİDEN BAŞLAYABİLİR (19.11'de iki kez oldu; önceki iki sürücü ajanı commit'siz kesildi — işleri kayboldu): her bitmiş eşleme adımını (kod + kendi testi) HEMEN commit'le; koşu çıktılarını da adım adım 'Kanıt:' commit'ine al.")
+w("- Kendi arka plan işin sürerken rapor vermeden BİTİRME. Bekleme için boş döngü kurma.")
+w("")
+w("## Rapor")
+w("EN BAŞTA sürücüde değişen her eşleme (önce → sonra); sınıf sayıları (iki TZ) ve ana oturumun ön koşusuyla karşılaştırma; P listesi (her biri senaryo + adım + program ↔ kâhin sayısı + kök neden + dosya:satır), K listesi (yalnız kitap / karar alıntısıyla), R listesi; BEKLEYEN KURAL FARKLARI tablosu (kimlik → senaryo / denetim sayısı — bu turda kapanması gerekenlerin hiçbiri kalmamalı); `susmalar` nedeniyle atlanan anahtar sayısı; GERİLEME DENETİMİ sonucu; dişi; ana oturumun yeniden koşacağı 4–5 senaryo komutu + beklenen sayılar; KULLANICIYA SORULMALI; DENENMEYEN; dal ucu.")
+open(sys.argv[1],'w',encoding='utf-8').write('\n'.join(o)+'\n'); print('yazıldı',sum(len(x) for x in o))
