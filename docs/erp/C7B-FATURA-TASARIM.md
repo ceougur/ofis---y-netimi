@@ -165,3 +165,27 @@ sonra 191 = +Δ (borç), 391 = −Δ (alacak) kalır (toplamı 0; 360 / 190 doğ
 her mahsubun out_minor / in_minor'ına o ayın iade KDV'si Δ eklenir (H − İ, ödenecek, devreden, ters fiş aynı kalır; kilitli ayda donmuş ↔ güncel birikimli 191 / 391 farkı ay sonunda 0);
 (B) dokunulmaz — kullanıcı açık ayda Geri Al + yeniden yapar (yalnız en son mahsup geri alınabildiğinden zincir geri alınır), kilitli ayda BİLİNEN SINIR. Öneri: A (para değişmez, yalnız
 sınıflama; tek seferlik ve göç numarası zaten ayrıldı). Bu turda KODLANMADI (göç 51'in izni yalnız KG-7) — §11.3'ün kalıcı testi bugünkü (B) davranışını sayıyla gösterir.
+
+### 11.3 S4 kodu (§2.3'ün uygulaması) ve F-08 ile ilişkisi
+`routes/tax.mjs`: `figureTable()` (ayların 191 / 391 hareketi tek geçişte), `carriedBefore()` (etkin mahsupların İ farkı Σ, yalnız min(0, C) taşınır); ön izlemeye `carriedInMinor` + bilgi satırı;
+listede `stale` = H farkı ya da İ'nin ARTIRAN farkı. Not: F-08'le alıştan iade (Ters Kaydet'in yazdığı bugün tarihli Alıştan İade dahil) 191'i değil 391'i hareket ettirir → sürücünün s43
+örneği ("ters madde A 191 Mart'a etiketli") programda S4'e değil kendi ayının 391'ine düşer; S4 kalıntısını programda doğuran yollar: geçmiş aya düşen İptal Et / Düzenle / silme (alış faturası).
+
+### 11.4 YARIM — kırık komşular (G2 taraması 185 dosya, UTC: 1970 / 2048 geçti, 66 başarısız, 12 iptal; ham çıktı not defteri `c7b2/komsu-utc1.out`)
+Düzeltildi, HENÜZ KOŞULMADI (ölçüm kilidi dolu): acilis-519-250 (KG-4), hesap-plani-sinif-250 (601), banka-210-gg2-fis (F-08: 191 +20 / 391 −20), banka-220-pos-kabul (KG-8: 391 −7.000,
+191 +500), mutabakat motoru 336 modeli (KG-3; banka-210-gg-cari, banka-210-gg2-hiz, banka-210-hiz-esdegerlik), eski düzen katlaması `test/guvenilirlik/defter-olgulari.mjs` (Ç7b → 2.4.9;
+banka-210-altin, banka-210-goc-zinciri). DOKUNULMADI (sonraki tur): banka-220-senet-121 (eski veride kural farkı uyarısı — Ç7b sınıfları), banka-220-tahsile-ver-tur2 ("602 yalnız taksitli
+satışlar" → 600.90), kapi-para-245 (incelenmedi), kasa-acilis-once-250 ("yalnız 500 → 519" → Kasa 649.90 / 770.90), kural-farki-duzeltme-250 ve kural-farki-yil-250 (Düzeltme Fişi satırlarına
+Ç7b'nin 6 / 7 sınıfı farkları girer — kabul D'nin elle beklenenleri buradan), donmus-defter-250 / -bellek / -tur1 / -tur3 / -tur4 / -yasam (Ç3'ün 2.4.9 kopyası ↔ güncel türetme açıklama
+kümelerine Ç7b kural kimlikleri: Kasa ± .90, Borç / Alacak Yaz .90, stok / taksit 600.90 / 610.90, kayıt tahsilatı 336.90, 601, iade KDV'si), defter-kaynak-iz-250 (aşağıda B-7).
+
+### 11.5 Yeni bulgular
+- **S15 = A KODDA YOK** (§2.5'in "Ç5-B / birleşik tur 8'de yapıldı" okuması YANLIŞ): tahsilatı olan taksitli faturanın İptal Et'i bugün 409 `plan-has-payments` ("fatura iptal edilemez. Borcu
+  düşürmek için iade faturası kesin."); test/ertelenen-224 bu reddi bekliyor. Kodu `routes/invoices.mjs` iptal yolu + kartın kapanması (dosya sınırı dışında: invoices.mjs bu turda YALNIZ
+  KG-7 / KG-24) → DUR, raporla. Yeniden üretim testi not defterinde (`c7b2/s15/c7b-s15-iptal-250.test.mjs`; depoya girmedi — kırmızı).
+- **B-7 (BAŞ MİMAR KARARI GEREKİYOR) — KG-24'ün girdisi kilit izinde değil:** rows().invoices artık `invoice_lines.exemption_code / gl_account / net` okuyor; defter-kaynak-iz-250 bunları
+  "kilit izinde olmayan türetme sütunu" diye kırıyor. (A) LOCK_SQL'e invoice_lines(exemption_code, gl_account, net) eklemek (kilit izi sürümü artar — `integrity.mjs` kilit izine bu turda
+  dokunma yasak); (B) gerekçeli istisna (kesilmiş faturanın kalemi yalnız Düzenle ile değişir; Düzenle kilitli dönemde 409; gl_json zaten izde). Öneri: A (kalem istisna kodu gl_json'da yok —
+  kapı dışı değişiklik izsiz kalır).
+- **KDV Özeti raporu (report-center kdv-ozeti) DEĞİŞMEDİ:** "Hesaplanan" = satış − satıştan iade, "İndirilecek" = alış − alıştan iade (beyanname görünümü); defter artık KG-8 / F-08 ile
+  391 = satış + alıştan iade, 191 = alış + satıştan iade. Ödenecek aynı; iki ekranın kalemleri ayrışır → KULLANICIYA SORULMALI (A rapor beyanname düzeninde kalsın — öneri; B defterle aynı).
