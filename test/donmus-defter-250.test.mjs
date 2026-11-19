@@ -91,7 +91,7 @@ describe("2.5.0 Ç3 — donmuş defter: kilit, ilerletme, geri çekme, kural de�
     assert.ok(S()?.state, "donmuş defter yok (ledger.snapshots)");
     // 2.5.0 Ç5-A (G3): göç 48 (KG-16 adayları) ve 49 (açılış evrakı işareti) eklendi; donmuş defter tabloları göç 47'de. Ç5-A tur 1e: göç 50 (KG-16 durumunun kapının yazdığı kopyası).
     // 2.5.0 Ç7b tur 2c — BEKLENTİ BİLEREK DEĞİŞTİ (BAŞ MİMAR KARARI 19.11 05:07 B-8 = A): göç 51 (kural geçiş günü + eski KDV mahsuplarının kural sürümü; yalnız işaret).
-    assert.equal(LATEST_VERSION, 51, "göç 51 (donmuş defter göç 47'de; 48 / 49 / 50 Ç5-A; 51 Ç7b geçiş günü)");
+    assert.equal(LATEST_VERSION, 52, "göç 52 (donmuş defter göç 47'de; 48 / 49 / 50 Ç5-A; 51 Ç7b geçiş günü; 52 Ç7b KG-7 — BEKLENTİ BİLEREK DEĞİŞTİ, tur 2d)");
     const live = L().build();
     const result = await lock(LOCK_2026);
     assert.equal(result.lockedUntil, LOCK_2026);

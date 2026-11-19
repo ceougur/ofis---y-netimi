@@ -1669,6 +1669,19 @@ export const MIGRATIONS = [
       });
     },
   },
+  {
+    version: 52,
+    name: "v2.5.0 Ç7b KG-7 alış faturasının KDV İndirim Dönemi (invoices.vat_period; boş = belge ayı; para dışı)",
+    up(store) {
+      // 2.5.0 Ç7b tur 2d (KG-7 = A, KDVK 29/3; EK-1 M8 (1); docs/erp/C7B-FATURA-TASARIM.md §2.6, §14.1): alış faturasının 191'inin hangi ayın KDV mahsubuna girdiği. YYYY-AA; '' = belge ayı.
+      // Yalnız ekleyici: var olan faturalara değer YAZILMAZ ('' = bugünkü davranış — mahsup tutarları göçten önceki gibi). Defter maddesi okumaz (191 belge tarihinde); okuyan routes/tax.mjs
+      // figureTable. Eşgüçlü (sütun varsa dokunulmaz).
+      store.raw("migration.v52", () => {
+        if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'invoices'") || columnExists(store, "invoices", "vat_period")) return;
+        addColumn(store, "invoices", "vat_period", "TEXT NOT NULL DEFAULT ''");
+      });
+    },
+  },
 ];
 /** Excel / Sheets "Açılış portföyü" evrakının ilk olay notu (routes/cheques.mjs OPENING_PORTFOLIO_NOTE ile AYNI metin; göç 49). */
 const OPENING_PORTFOLIO_NOTE = "Açılış portföyü (Excel/Sheets)";

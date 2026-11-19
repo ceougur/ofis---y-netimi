@@ -174,6 +174,22 @@ const pad2 = value => String(value).padStart(2, "0");
 const moneyText = (value, currency = "TRY") => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(value) || 0)} ${currency === "TRY" ? "TL" : currency}`;
 const c2 = value => roundMoney((Number(value) || 0) / 100);
 const toCents = value => Math.round((Number(value) || 0) * 100);
+// 2.5.0 Ç7b tur 2d (KG-7 = A, KDVK 29/3; EK-1 M8 (1); docs/erp/C7B-FATURA-TASARIM.md §14.2): alış faturasının "KDV İndirim Dönemi" — belge ayı … belge yılını izleyen yılın Aralık'ı. Saklanan değer
+// belge ayına eşitse '' (boş = belge ayı: tarih değişince dönem yeni ayı izler). Yalnız alışta; başka türde dolu değer 400 (sessizce yok sayılmaz). Kilit ayrıca denetlenmez: dönem ≥ belge ayı,
+// belge kilitli dönemdeyse kayıt / Düzenle zaten 409.
+const PERIOD_MONTHS = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+const periodLabel = month => `${PERIOD_MONTHS[Number(month.slice(5, 7)) - 1]} ${month.slice(0, 4)}`;
+function vatPeriodOf(kind, date, raw) {
+  const value = String(raw ?? "").trim();
+  if (!value) return "";
+  if (kind !== "purchase") fail400("KDV İndirim Dönemi yalnız alış faturasında seçilir.", "vatPeriod", { code: "vat-period-kind" });
+  if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(value)) fail400("KDV İndirim Dönemi Yıl-Ay biçiminde olmalı (ör. 2027-01).", "vatPeriod", { code: "vat-period" });
+  const first = date.slice(0, 7);
+  const last = `${Number(date.slice(0, 4)) + 1}-12`;
+  if (value < first) fail400(`KDV İndirim Dönemi faturanın ayından (${periodLabel(first)}) önce olamaz.`, "vatPeriod", { code: "vat-period-range" });
+  if (value > last) fail400(`KDV İndirim Dönemi en geç ${periodLabel(last)} olabilir (fatura yılını izleyen yılın sonu).`, "vatPeriod", { code: "vat-period-range" });
+  return value === first ? "" : value;
+}
 
 export function registerInvoiceRoutes(router, { store, bank, auth, audit, events, config = {}, period = null, cash = null, trash = null, accounts = () => null, stock = () => null, plans = () => null, cheques = () => null, bankModule = () => null, edocUsage = null, now: clock = systemClock }) {
   // e-Belge bağlantısı kapalıyken (varsayılan; program sahibi açana kadar) her belge kâğıt/bilgi fişidir: e-Fatura,
@@ -598,7 +614,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       i.stoppage_rate AS stoppageRate, i.base_total AS baseTotal, i.discount_total AS discountTotal, i.net_total AS netTotal, i.goods_net AS goodsNet, i.service_net AS serviceNet, i.vat_total AS vatTotal,
       i.withheld_total AS withheldTotal, i.stoppage_total AS stoppageTotal, i.gross_total AS grossTotal, i.payable_total AS payableTotal, i.try_net AS tryNet, i.try_vat AS tryVat,
       i.try_withheld AS tryWithheld, i.try_stoppage AS tryStoppage, i.try_payable AS tryPayable, i.gl_json AS glJson, i.payment_json AS paymentJson, i.due_date AS dueDate, i.plan_id AS planId,
-      i.original_id AS originalId, i.order_no AS orderNo, i.order_date AS orderDate, i.despatch_no AS despatchNo, i.despatch_date AS despatchDate, i.paper_no AS paperNo, i.return_ref AS returnRef, i.note, i.e_status AS eStatus, i.e_profile AS eProfile, i.e_adapter AS eAdapter,
+      i.original_id AS originalId, i.order_no AS orderNo, i.order_date AS orderDate, i.despatch_no AS despatchNo, i.despatch_date AS despatchDate, i.paper_no AS paperNo, i.return_ref AS returnRef, i.vat_period AS vatPeriod, i.note, i.e_status AS eStatus, i.e_profile AS eProfile, i.e_adapter AS eAdapter,
       i.e_message AS eMessage, i.e_at AS eAt, i.created_by AS createdBy, i.created_at AS createdAt, i.updated_at AS updatedAt, i.issued_at AS issuedAt, i.cancelled_at AS cancelledAt, i.cancel_reason AS cancelReason,
       COALESCE(a.name, '') AS accountName, COALESCE(a.ref_no, '') AS accountRef, COALESCE(a.phone, '') AS accountPhone, COALESCE(a.tax_no, '') AS accountTaxNo, COALESCE(a.type, '') AS accountType,
       COALESCE(u.display_name, '') AS actorName, COALESCE(o.number, '') AS originalNumber, COALESCE(o.issue_date, '') AS originalDate
@@ -1186,6 +1202,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       despatchDate: row.despatchDate,
       paperNo: row.paperNo,
       returnRef: row.returnRef || "",
+      vatPeriod: row.vatPeriod || "",
       payment: paymentView(row, payments),
       eMessage: row.eMessage,
       eAt: row.eAt,
@@ -1655,6 +1672,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       if (v && !validDate(v)) fail400(`${label} geçerli bir tarih değil.`, field);
       return v;
     };
+    const vatPeriod = vatPeriodOf(kind, date, body.vatPeriod ?? existing?.vatPeriod);
     const party = partySnapshot(account, body.buyer || (existing ? parseJson(existing.partyJson, null) : null));
     const number = !meta.own ? limited(body.number ?? existing?.number ?? "", 40, "Fatura No").toLocaleUpperCase("tr-TR") : "";
     return {
@@ -1681,6 +1699,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       paperNo: limited(body.paperNo ?? existing?.paperNo ?? "", 40, "Kâğıt Fatura No"),
       returnRef: returnRefOf(meta, original, body, existing),
       despatchDate: dateField(body.despatchDate ?? existing?.despatchDate, "İrsaliye tarihi", "despatchDate"),
+      vatPeriod,
       lines,
       computed,
       money,
@@ -2402,6 +2421,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         despatch_date: doc.despatchDate,
         paper_no: doc.paperNo,
         return_ref: doc.returnRef || "",
+        vat_period: doc.vatPeriod || "",
         note: doc.note,
         updated_by: user.id,
         updated_at: stamp,
@@ -2561,6 +2581,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         despatch_date: doc.despatchDate,
         paper_no: doc.paperNo,
         return_ref: doc.returnRef || "",
+        vat_period: doc.vatPeriod || "",
         note: doc.note,
         updated_by: user.id,
         updated_at: stamp,

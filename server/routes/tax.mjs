@@ -162,19 +162,28 @@ export function registerTaxRoutes(router, { store, auth, audit, events, bank, pe
    * Ayların 391 / 191 hareketi (mahsup fişleri hariç) ve ay başındaki 190 (kuruş): Ana Defter'in kendi yevmiyesinden, TEK geçişte (2.5.0 Ç7b: liste ve ön izleme her ay için yevmiyeyi
    * yeniden dolaşmıyor — ders 47). of(month) eski monthFigures'ın aynı sonucu: { out, input, carry }.
    */
+  // 2.5.0 Ç7b tur 2d (KG-7 = A, KDVK 29/3; EK-1 M8 (2): V-01 satırları dönem etiketine göre; docs/erp/C7B-FATURA-TASARIM.md §14.3): "KDV İndirim Dönemi" belge ayından farklı kesilmiş alış
+  // faturaları — maddenin 191'i dönem ayının mahsubuna girer (defter maddesi DEĞİŞMEZ: 191 belge tarihinde). Tek toplu sorgu (ders 47); sütun yoksa (göç 52 öncesi şema) dönem yok.
+  function vatPeriods() {
+    if (!has("invoices") || !store.all("PRAGMA table_info(invoices)").some(column => column.name === "vat_period")) return new Map();
+    return new Map(store.all("SELECT id, vat_period AS period FROM invoices WHERE kind = 'purchase' AND status = 'issued' AND vat_period <> '' AND vat_period <> substr(issue_date, 1, 7)").map(row => [`invoice:${row.id}`, row.period]));
+  }
   function figureTable(entries) {
     const months = new Map();
     const carries = [];
+    const periods = vatPeriods();
     for (const entry of entries) {
       const offset = entry.id.startsWith("vat-offset");
       const month = String(entry.date).slice(0, 7);
+      const period = periods.get(entry.id) || month;
       for (const line of entry.lines) {
         if (line.account === "190") carries.push([entry.date, line.debit - line.credit]);
         if (offset || (line.account !== "391" && line.account !== "191")) continue;
-        const row = months.get(month) || { out: 0, input: 0 };
+        const key = line.account === "191" ? period : month;
+        const row = months.get(key) || { out: 0, input: 0 };
         if (line.account === "391") row.out += line.credit - line.debit;
         else row.input += line.debit - line.credit;
-        months.set(month, row);
+        months.set(key, row);
       }
     }
     return {
