@@ -63,48 +63,30 @@ OZ = oz_denetim()
 # ------------------------------------------------------------------------------------------------ 1. bugünkü kural değişimleri (DEĞİŞİM tablosu)
 # Her satır: etiket → (dayanak metni, iş). Dayanaklar AYNEN plan / kitap / iş listesinden; program kodundan değil.
 ETIKET = {
-    "C5-ACILIS-519": ("çekirdek planı §6 Ç5: 'Bütün modül açılışlarının karşı hesabı 500 yerine GEÇİCİ AÇILIŞ HESABI'; §1 bugün 500", "Ç5"),
-    "C5-EVRAK-ACILIS": ("çekirdek planı §1: 'Cariye işlenmemiş evrak (Excel \"Açılış portföyü\") 602 / 770'e (gelir / gider) gider'; §6 'geçici hesaba'", "Ç5"),
-    "C1-ALT-90": ("çekirdek planı §13 / kitap §2: '.90' alt hesapları (600.90, 610.90, 602.90, 770.90, 649.90) bugün yok; §1 'Alt hesap: banka 102.NN …'", "Ç1"),
+    # SÜRÜCÜ BAKIMI 3 (19.11.2026): programa girmiş kuralların satırları kalktı — C5-ACILIS-519, C5-EVRAK-ACILIS, C5-EVRAK-KARSILIKSIZ, C5-CARI-ACIKLAMA, KG5-EXCEL, KG16-ACIKLAMA
+    # (Ç5-K / Ç5-A açılış düzeni), KG15-DUZELTME (Ç5-A tur 2 / 2e / 2f), KG6-POS-TARIH / KG19-YOLDAKI / K14-HESAPSIZ (Ç7a tur 2 / 2b), C1-ALT-90 (program '.90' alt hesaplarını yazar).
     "KG2-H03": ("kitap H-03 / KG-2 A (ürün sahibi 05.11 'hepsi A'): taksit Yeni Borç 600.90; bugün CHART 602 'Taksitli Satış'", "KG-2 (D bölümü (2); iş kodu atanmamış)"),
     "KG3-KAYIT": ("iş listesi D (3): 'KG-3 kayıt (dosya) tahsilatı gelir değil → Sınıflandırılmamış Tahsilatlar'; bugün CHART 602 'Kayıt Tahsilatları'", "KG-3 (iş kodu atanmamış)"),
-    "KG5-EXCEL": ("iş listesi D (4): 'KG-5 Excel'den yüklenen taksit kartı açılış alacağı (519 karşılıklı), gelir değil'; bugün kart toplamı 602, Ödenen 500 (çekirdek §1 'taksit … açılış 500')", "KG-5 / Ç5"),
-    "KG6-POS-TARIH": ("iş listesi D (5): 'KG-6 POS komisyonu satış günü'; kitap KG-6 B = valör günü (D-01, bugünkü)", "KG-6 (iş kodu atanmamış; D 'ETKİ: banka modülü')"),
     "KG7-INDIRIM": ("iş listesi D (6): 'KG-7 alış faturasında KDV İndirim Dönemi'; kitap KG-7 B = hep belge ayı (bugünkü)", "KG-7 (iş kodu atanmamış; kesme çizgisinde 2.5.1'e kayabilir)"),
     "KG8-IADE-KDV": ("kitap KG-8 (K değil; 'baş mimar + mali müşavir A'): satıştan iade KDV'si B 191; B seçeneği 391", "KG-8 (iş kodu atanmamış)"),
-    "KG16-ACIKLAMA": ("çekirdek planı §1: \"'Açılış bakiyesi' açıklamalı elle borç defterde hâlâ 500'e gider\"; KG-16 A 'Açılış Olabilir' listesi", "KG-16 / Ç5"),
     "KG24-IHRACAT": ("kitap KG-24 A (K değil): ihracat 601; B 600 (bugün CHART'ta 601 yok — çekirdek §1)", "Ç1 + türetme (iş kodu atanmamış)"),
     "F06-GIDER-TURU": ("kitap F-06: 'Gider türü → hesap eşlemesi Ç1'de yazılır (DOĞRULANMADI)' — finansman 780", "Ç1"),
-    "KG19-YOLDAKI": ("kitap KG-19 A (K değil): valörlü transferde 108.90 Yoldaki Transferler; B 'çıkış günü doğrudan alıcı hesaba'", "KG-19 (iş kodu atanmamış)"),
-    "KG15-DUZELTME": ("kitap KG-15 A / iş listesi D (10): Kural Farkı Düzeltme Fişi", "Ç3 / KG-15"),
-    "C5-EVRAK-KARSILIKSIZ": ("çekirdek planı §1 'Cariye işlenmemiş evrak (Excel \"Açılış portföyü\") 602 / 770'e (gelir / gider) gider' + 30.10 (1) 'açılış çekleri gelir / gidere yazılmaz' (Ç5); kitap Ç-07 'Müşteri yeniden borçlanır' — bugün karşılıksız açılış çeki 770'e (cariye borç yazılmaz)", "Ç5 (planda karşılıksız tarafı AÇIK YAZMIYOR — Ç5 ajanına not)"),
-    "C5-CARI-ACIKLAMA": ("çekirdek planı §1: 'CARİ AÇILIŞI ise AÇIKLAMADAN (/^açılış/i …)' — açılış işareti yalnız cari açılırken; önceden açık caride açılış Borç / Alacak Yaz satırıdır (açıklaması 'Açılış' değilse 602 / 770)", "Ç5"),
-    "K14-HESAPSIZ": ("kitap K-14 / K-15: 'Hesapsız (Açılıştan Önce)' ve açılıştan önceki Kart Borcuna Aktar'da banka / kart tarafı yerine G; bugün BANKA-MODULU-PLAN K11 / §10: '102.00 ve 108.00 Hesabı Atanmamış Eski Hareketler'", "Ç7a (iş listesi A Ç7a: K-14 / K-15)"),
     "C7b6-KAPAT": ("kullanıcı kararı 05.11 21:30 (6) 'Kartı Kapat yalnız ödeme planını bitirir; kalan carinin borcunda kalır … BUGÜNKÜ DAVRANIŞ DEĞİŞİR (kalan 689'la borçtan düşüyordu)'; kâhin README R6 `eski` = 2.4.9 davranışı B 689 / A CH", "Ç7b (iş listesi D İŞ ATAMASI (4)(6) → Ç7b)"),
+    "SURUCU-CARI-ACILIS-YOLU": ("SÜRÜCÜ YOLU (karar değil): programda cari açılışı yalnız cari açılırken (routes/accounts.mjs POST openingBalance); sürücü cariyi açılış olayından ÖNCE başka olayla açmak zorunda kaldıysa açılış Borç / Alacak Yaz satırıdır (602.90 / 770.90)", "sürücü sınırı (eşleme)"),
 }
 
 # G5 (iş listesi D, 05.11 21:48): HENÜZ KODA GİRMEMİŞ kurallardan gelen her fark KURAL KİMLİĞİYLE durur. Etiket → kimlik (iş listesi A satırlarındaki
-# atamadan; Ç5: açılış düzeni + B1, Ç7a: banka türetmesi, Ç7b: fatura / KDV / taksit / kayıt türetmesi, D4: devir). Kimliksiz etiket = ATANMAMIŞ (rapora).
+# atamadan; Ç7b: fatura / KDV / taksit / kayıt türetmesi, D4: devir). Kimliksiz etiket = ATANMAMIŞ (rapora).
 KIMLIK = {
-    "C5-ACILIS-519": "Ç5-ACILIS-519",
-    "C5-EVRAK-ACILIS": "Ç5-ACILIS-519",
-    "C5-CARI-ACIKLAMA": "Ç5-ACILIS-519",
-    "C5-EVRAK-KARSILIKSIZ": "Ç5-KARSILIKSIZ-ACILIS-CEKI",
-    "KG5-EXCEL": "Ç5-KG5",
-    "KG16-ACIKLAMA": "Ç5-KG16 (P1)",
-    "KG15-DUZELTME": "Ç5-KG15",
-    "BUGUN-DALI": "Ç5-KG15",
-    "KG6-POS-TARIH": "Ç7a-KG6",
-    "KG19-YOLDAKI": "Ç7a-KG19",
-    "K14-HESAPSIZ": "Ç7a-K14-K15",
+    "BUGUN-DALI": "BUGÜN-DALI (KG-7 = B)",
     "KG2-H03": "Ç7b-KG2",
     "KG3-KAYIT": "Ç7b-KG3",
     "KG7-INDIRIM": "Ç7b-KG7",
     "KG8-IADE-KDV": "Ç7b-KG8 (P2)",
     "KG24-IHRACAT": "Ç7b-KG24",
     "F06-GIDER-TURU": "Ç7b-F06",
-    "C1-ALT-90": "ATANMAMIŞ-ALT-90 (KG-4 602.90 / 770.90, K-01 649.90, K-02 770.90, M14 770.90)",
     "C7b6-KAPAT": "Ç7b-(6)",
+    "SURUCU-CARI-ACILIS-YOLU": "SÜRÜCÜ-YOLU (açık cariye açılış)",
 }
 # Tek Yükümlülük Kuyruğu (gecikmiş / hatırlatma / kart / açık fatura) farklarının kimliği: senaryonun kâhin `kapsam`ındaki karar (kullanıcı 21:08 / 21:30)
 # + kâhinin gecikmiş ayrıntısındaki kalem türü (bugünkü kural yalnız taksit kartını sayar — iş listesi C "bugün cari 'Geciken' yalnız taksit kartından").
@@ -129,27 +111,22 @@ def degistir(m, k, d):
     for s in m.satirlar:
         h = s["h"]
         n = h
-        if tur == "evrak_karsiliksiz" and v.get("evrak") in EVRAK_ACILIS and s["c"] and M.ana(h) in ("120", "320", "336"):
-            n = "770"
-            et.add("C5-EVRAK-KARSILIKSIZ")
-        elif h == M.G and tur == "cari_acilis" and k is not None and ACIKLAMA_YOLU.get(KAYNAK_NO.get(id(k))) and not M.acilis_aciklamasi(v.get("aciklama", "")):
+        if h == M.G and tur == "cari_acilis" and k is not None and ACIKLAMA_YOLU.get(KAYNAK_NO.get(id(k))):
+            # SÜRÜCÜ BAKIMI 3: cari açılışı programda YALNIZ cari açılırken girilir (routes/accounts.mjs POST openingBalance; açık cariye açılış yolu yok). Sürücü cariyi açılışıyla
+            # ilk gerektiği olayda açar (program.mjs cariAc); açılış olayından ÖNCE başka bir günle gerekmişse açılış Borç / Alacak Yaz satırıdır — 2.5.0'da açıklama ne olursa olsun
+            # 602.90 / 770.90 (KG-16 A: açılış is_opening'den; açıklama yalnız göç adayında). Etiket sürücü yolu (U değil: kimlik SURUCU-YOLU).
             n = "770" if v.get("yon") == "alacak" else "602"
-            et.add("C5-CARI-ACIKLAMA")
-        # K-14 / K-15 (S179 = A) Ç7a tur 2 ile ve KG-19 = C (S175; kâhin bakımı 12 108.90'ı kaldırdı) programda (14.11.2026): BUGÜN dönüşümleri kalktı.
-        elif h == M.G and (m.tur in ACILIS or tur in ACILIS or m.tur == "cari_acilis"):
-            n, _ = "500", et.add("C5-ACILIS-519")
-        elif h == M.G and tur == "evrak_acilis":
-            n = "602" if v.get("yon") == "alinan" else "770"
-            et.add("C5-EVRAK-ACILIS")
+            et.add("SURUCU-CARI-ACILIS-YOLU")
+        # SÜRÜCÜ BAKIMI 3 (19.11.2026): Ç5 açılış düzeni programda (Ç5-K, Ç5-A tur 1–2f: bütün modül açılışları 519; açılış evrakı 519; karşılıksız açılış evrakı 519;
+        # KG-5 Excel kartı 519; KG-16 'Açılış…' açıklamalı yeni Borç / Alacak Yaz sıradan C-01 / C-02) — C5-ACILIS-519, C5-EVRAK-ACILIS, C5-EVRAK-KARSILIKSIZ, KG16-ACIKLAMA,
+        # KG5-EXCEL BUGÜN dönüşümleri kalktı (program = kâhin olmalı; değilse fark önce HATADIR — ders 6). K-14 / K-15 (S179 = A) Ç7a tur 2 ile ve KG-19 = C (S175; kâhin bakımı
+        # 12 108.90'ı kaldırdı) programda (14.11.2026): BUGÜN dönüşümleri kalktı.
         elif tur == "taksit_karti" and h == M.BELGESIZ_GELIR:
             n = "602"
             et.add("KG2-H03")
         elif tur == "kayit_tahsilati" and h in (M.CARISIZ_PASIF, M.CARISIZ_GELIR):
             n = "602"
             et.add("KG3-KAYIT")
-        elif tur in ("borc_yaz", "alacak_yaz") and h in (M.BORC_YAZ, M.ALACAK_YAZ, M.G) and M.acilis_aciklamasi(v.get("aciklama", "")):
-            n = "500"
-            et.add("KG16-ACIKLAMA")
         elif tur == "satis_iade_faturasi" and h == "191":
             n = "391"
             et.add("KG8-IADE-KDV")
@@ -159,9 +136,7 @@ def degistir(m, k, d):
         elif h == "780" and tur in ("alis_faturasi", "alis_iade_faturasi") and v.get("gider_turu") == "finansman":
             n = "770"
             et.add("F06-GIDER-TURU")
-        elif h.endswith(".90") and h != M.YOLDAKI:
-            n = M.ana(h)
-            et.add("C1-ALT-90")
+        # SÜRÜCÜ BAKIMI 3: C1-ALT-90 kalktı — program '.90' alt hesaplarını yazar (general-ledger.mjs 600.90 / 602.90 / 649.90 / 770.90); karşılaştırma ana hesap düzeyinde.
         out.append(dict(s, h=n))
     return out, et
 
@@ -234,10 +209,7 @@ def bakiye_hesapla(maddeler, kaynaklar, ufuk=None, bas=None, ceviri=False):
                         etiketler[M.ana(s["h"])].add("KG19-YOLDAKI")
                         etiketler[s["h"]].add("KG19-YOLDAKI")
                     continue
-                if k is not None and k.tur == "taksit_excel" and m.tur == "taksit_excel":
-                    satirlar, et = kg5_excel(m, k), {"KG5-EXCEL"}
-                else:
-                    satirlar, et = degistir(m, k, None)
+                satirlar, et = degistir(m, k, None)   # SÜRÜCÜ BAKIMI 3: KG-5 Excel kartı (519) programda — kg5_excel dönüşümü kalktı
             else:
                 satirlar, et = m.satirlar, set()
             for s in satirlar:
@@ -324,7 +296,8 @@ def bek_gorunum(model, ufuk, ceviri):
 # ------------------------------------------------------------------------------------------------ 3. adım adım koşu
 DAL = M.Kurallar.etiketten(A.dal)
 bugun_dal = dict(p.split("=") for p in A.dal.split(",") if "=" in p)
-bugun_dal.update({"KG7": "B", "KG15": "B"})   # KG-6 = A Ç7a tur 2b ile programda (14.11.2026): BUGÜN görünümü artık KG-6 B değil
+bugun_dal.update({"KG7": "B"})   # KG-6 = A Ç7a tur 2b ile programda (14.11.2026): BUGÜN görünümü artık KG-6 B değil; SÜRÜCÜ BAKIMI 3: KG-15 = A (Kural Farkı
+#                                  Düzeltme Fişi Ç5-A tur 2 / 2e / 2f ile programda — S174 / S180 / S185 = A) — KG15 = B kalktı
 BUGUN = M.Kurallar(**bugun_dal)
 mk = Izli(S, DAL)        # KÂHİN
 mb = Izli(S, BUGUN)      # BUGÜN
@@ -479,6 +452,36 @@ def kalem_kimligi(detay):
 
 tyk_anlik = {}   # rapor adı → {kahin, bugun_kartlar}
 
+# SÜRÜCÜ BAKIMI 3 — ARA ADIMDA KÂHİN SUSMASI: kâhin maddelerini dosyanın BÜTÜN kaynaklarından türetir; olay olay koşuda (Izli) türetme o ana kadarki kaynaklarla yapılır.
+# Kâhin bakımı 12 (S179 = A, README Ş3 / Ş4) "açılıştan önce"yi açılış olaylarından türettiği için sonradan gelen açılıştan ÖNCE uygulanan hesapsız hareket / Kart Borcuna
+# Aktar o ara adımda "senaryo hatası" (kâhin susar) verir (s11, s37: hareket olayı açılış olayından önce sıralanmış). O adım (ve o andaki rapor) KARŞILAŞTIRILMAZ — SUSMA
+# sayılır; açılış olayından sonraki adımlar ve son durum karşılaştırılır. Kâhinin klasörüne dokunulmaz.
+ARA_SUSMA = []
+
+
+def guvenli(f):
+    try:
+        return f(), None
+    except AssertionError as e:
+        if "senaryo hatası" in str(e):
+            return None, str(e)[:400]
+        raise
+
+
+# SÜRÜCÜ BAKIMI 3 — `susmalar` (kâhin bakımı 12 S168, README "Sürücü için"): listelenen carinin o tahsilattan (tarih) sonraki 120 / 128 ayrımı, 128 / 129 kalanları, karşılık
+# çözülmesi ve gecikmiş / şüpheli / hatırlatma raporları KARŞILAŞTIRILMAZ (sinif SUSMA); carinin toplamı (120 + 128) ve öbür anahtarlar karşılaştırılır. Devirsiz
+# eşdeğerde dosya ayrımı (canli / arsiv-<yıl>) yok: susma o günden sonra her raporda.
+SUSMALAR = [(x["cari"], x["tarih"], x.get("kaynak", ""), x.get("kural", "")) for x in (B["dallar"].get("A", {}).get("susmalar") or [])]
+SUS_ANA = {"120", "128", "129", "644"}
+
+
+def sus_cariler(gun):
+    return {c for c, t, _, _ in SUSMALAR if gun is None or t <= gun}
+
+
+def sus_aciklama(cariler):
+    return "kâhin susar (S168; kâhin bakımı 12 `susmalar`): " + ", ".join(f"{c} {k} {t}" for c, t, k, _ in SUSMALAR if c in cariler)
+
 prog_kum = prog_gorunum(P.get("baslangic")) or {"ana": {}, "alt": {}, "cari": {}}
 raporlar = {}
 rapor_sirasi = []
@@ -509,8 +512,10 @@ for x in P["olaylar"]:
     elif x.get("durum") == "rapor":
         ro = olaylar[int(no) - 1]
         if ro["rapor"] in TYK:
-            tyk_anlik[ro["ad"]] = {"kahin": tyk_kahin(mk.canli, ro), "kartlar": bugun_kartlar(int(no))}
-        rapor_sirasi.append((x, mk.kopya_bakiye(), mb.kopya_bakiye(), list(aciklanan)))
+            kah_t, hata_t = guvenli(lambda: tyk_kahin(mk.canli, ro))
+            tyk_anlik[ro["ad"]] = {"kahin": kah_t, "kartlar": bugun_kartlar(int(no)), **({"susma": hata_t} if hata_t else {})}
+        (ka, kb_), hata = guvenli(lambda: (mk.kopya_bakiye(), mb.kopya_bakiye()))
+        rapor_sirasi.append((x, ka, kb_, list(aciklanan), hata))
         continue
     else:
         i = int(no)
@@ -522,7 +527,11 @@ for x in P["olaylar"]:
             prog_kum = topla(prog_kum, prog_gorunum(x.get("delta")) or {})
     if not x.get("delta"):
         continue
-    bb, _ = bek_gorunum(mb, ufuk, True)
+    r_, hata = guvenli(lambda: bek_gorunum(mb, ufuk, True))
+    if hata:
+        ARA_SUSMA.append({"no": no, "tur": x["tur"], "neden": hata})
+        continue
+    bb, _ = r_
     f_b = fark(prog_kum, bb)
     if f_b != onceki_fark:
         degisim = fark(topla(f_b, {}), onceki_fark)
@@ -530,7 +539,12 @@ for x in P["olaylar"]:
         adim_tarihi = x.get("tarih") if x["tur"] == "gun" else (M.ay_sonu(kok["ay"]) if kok["tur"] in ("kdv_mahsup",) else kok.get("tarih") or ufuk)
         kayit = {"no": no, "tur": x["tur"], "olay_turu": ("gun→" + kok["tur"]) if x["tur"] == "gun" else x["tur"], "id": x.get("id", ""), "tarih": adim_tarihi, "degisim": degisim, "durum": x.get("durum")}
         kul = adim_sinifi(kayit)
-        if kul:
+        sus = sus_cariler(adim_tarihi)
+        anah = {f"{a}:{k}" for a, v in degisim.items() for k in v}
+        if not kul and sus and anah <= {f"ana:{h}" for h in SUS_ANA} and degisim.get("ana", {}).get("120", 0) + degisim.get("ana", {}).get("128", 0) == 0:
+            kayit["sinif"] = "SUSMA"
+            kayit["aciklama"] = sus_aciklama(sus)
+        elif kul:
             kayit["sinif"] = "/".join(sorted({k["sinif"] for k in kul}))
             kayit["kod"] = ",".join(k["kod"] for k in kul)
             aciklanan.append((kayit["tarih"], degisim, kayit["sinif"], kayit["kod"]))
@@ -543,8 +557,7 @@ for x in P["olaylar"]:
 tam = Izli(S, DAL)
 tamb = Izli(S, BUGUN)
 # BUGÜN dalı kaynaklı red farkının kimliği (KG-7 KDV İndirim Dönemi / KG-6 POS komisyon günü / KG-15): senaryoda hangisi var.
-RED_DAL_KIMLIK = sorted(({"Ç7b-KG7"} if any(o.get("indirim_ayi") or any(d.get("indirim_ayi") for d in o.get("duzeltmeler", [])) for o in S["olaylar"]) else set())
-                        | ({"Ç7a-KG6"} if any(o["tur"] == "tahsilat" and o.get("yol") == "pos" and o.get("komisyon") for o in S["olaylar"]) else set())) or ["Ç5-KG15"]
+RED_DAL_KIMLIK = sorted({"Ç7b-KG7"} if any(o.get("indirim_ayi") or any(d.get("indirim_ayi") for d in o.get("duzeltmeler", [])) for o in S["olaylar"]) else set()) or ["BUGÜN-DALI (KG-7 = B)"]
 kred, bred = {}, {}
 for i, o in enumerate(olaylar, start=1):
     r = tam.adim(o, i)
@@ -645,14 +658,27 @@ def aciklanan_toplam(liste, son=None, bas=None, donemsel=False):
 
 
 # BUGÜN dalı (KG-6 = B, KG-7 = B) kaynaklı U satırlarının etiketi: senaryoda POS komisyonu / KDV indirim dönemi var mı.
-DAL_ETIKETI = sorted(({"KG6-POS-TARIH"} if any(o["tur"] == "tahsilat" and o.get("yol") == "pos" and o.get("komisyon") for o in S["olaylar"]) else set())
-                     | ({"KG7-INDIRIM"} if any(o.get("indirim_ayi") for o in S["olaylar"]) or any(d.get("indirim_ayi") for o in S["olaylar"] for d in o.get("duzeltmeler", [])) else set())) or ["BUGUN-DALI"]
+DAL_ETIKETI = sorted(({"KG7-INDIRIM"} if any(o.get("indirim_ayi") for o in S["olaylar"]) or any(d.get("indirim_ayi") for o in S["olaylar"] for d in o.get("duzeltmeler", [])) else set())) or ["BUGUN-DALI"]
+
+
+RAPOR_GUNU = [None]   # o an karşılaştırılan raporun günü (susmalar)
 
 
 def karsilastir_gorunum(prg, kah, bug, et, rapor_adi, sadece=None, acik_toplam=None):
     satirlar = []
     acik = {}
     ekg, eks = acik_toplam if acik_toplam else ({"ana": {}, "alt": {}, "cari": {}}, {})
+    sus = sus_cariler(RAPOR_GUNU[0] if rapor_adi != "son" else None)
+    if sus:
+        # S168 susması: 120 ve 128 ayrı ayrı değil TOPLAM olarak karşılaştırılır; 129 / 644 (karşılık) farklıysa SUSMA.
+        def birlestir(g):
+            g = {alan: dict(v) for alan, v in g.items()}
+            a = g.setdefault("ana", {})
+            top = a.pop("120", 0) + a.pop("128", 0)
+            if top:
+                a["120+128"] = top
+            return g
+        prg, kah, bug = birlestir(prg), birlestir(kah), birlestir(bug)
     for alan in ("ana", "alt", "cari"):
         anahtarlar = set(prg.get(alan, {})) | set(kah.get(alan, {})) | set(bug.get(alan, {}))
         for k in sorted(anahtarlar):
@@ -663,6 +689,9 @@ def karsilastir_gorunum(prg, kah, bug, et, rapor_adi, sadece=None, acik_toplam=N
                 continue
             if p == kk:
                 sinif = "AYNI"
+            elif sus and alan == "ana" and k in SUS_ANA:
+                sinif = "SUSMA"
+                acik[(alan, k)] = sus_aciklama(sus)
             elif p == bb:
                 sinif = "U"
             elif ekg.get(alan, {}).get(k) and p == bb + ekg[alan][k]:
@@ -722,33 +751,50 @@ def kart_metni(kk):
     return ("Kapalı" if kk.get("kapali") else "Açık") + " " + "; ".join(f"{x['vade']} {x['tutar']}/{x['kalan']}" for x in kk.get("taksitler", []) if x["tutar"])
 
 
+# SÜRÜCÜ BAKIMI 3: Ç5-B (Tek Yükümlülük Kuyruğu) ana dalda KAPANDI (14.11) — gecikmiş, bütün carilerin gecikmişi, kartlar ve açık faturalar raporlarının BUGÜN (eski kural)
+# karşılığı kalktı (program = kâhin olmalı; değilse önce HATA — ders 6). Ödeme Hatırlatma (WhatsApp alıcı listesinin tutarı / şüpheli etiketi / elle seçimi) Ç5-C'de: ESKİ
+# anlamda (BAŞ MİMAR KARARI 06.11 19:26 B1-W "totals.overdue WhatsApp için ESKİ anlamında kalır … Ç5-C'de WhatsApp yeni alana geçer") — U, kimlik Ç5-C.
+YOK_BUGUN = "—"   # BUGÜN karşılığı yok (kural programda): hiçbir program değerine eşit değil
+
+
+def tyk_susma(alan, anahtar, rapor_adi, cariler):
+    return {"alan": alan, "anahtar": anahtar, "sinif": "SUSMA", "aciklama": sus_aciklama(cariler)}
+
+
 def tyk_karsilastir(o, r, an, rapor_adi):
     if r.get("gecmis_gunlu"):
         GECMIS_GUN[rapor_adi] = r["gecmis_gunlu"]
     kah, kartlar, t = an.get("kahin"), an.get("kartlar") or {}, o.get("tarih")
     rr = o["rapor"]
+    if an.get("susma"):
+        return [{"alan": rr, "anahtar": "-", "sinif": "SUSMA", "aciklama": "kâhin bu ara raporda susar: " + an["susma"]}]
     if kah is None:
         return [{"alan": rr, "anahtar": "-", "sinif": "SINIFLANMADI", "aciklama": "kâhin değeri kurulamadı"}]
+    sus = sus_cariler(t)
     if rr == "gecikmis":
+        if o["cari"] in sus:
+            return [tyk_susma("gecikmis", o["cari"], rapor_adi, {o["cari"]})]
         p = (r.get("cari_kart") or {}).get("gecikmis")
         kim = kalem_kimligi(kah.get("detay")) | set(SENARYO_KIMLIK)
-        out = [tyk_satir("gecikmis", o["cari"], p, kah["gecikmis"], bugun_gecikmis(kartlar, o["cari"], t), kim, rapor_adi)]
+        out = [tyk_satir("gecikmis", o["cari"], p, kah["gecikmis"], YOK_BUGUN, kim, rapor_adi)]
         if kah.get("kahin_susuyor"):
-            out.append({"alan": "kahin_susuyor", "anahtar": o["cari"], "kahin": kah["kahin_susuyor"], "sinif": "U", "kimlik": ["Ç5-S11"], "aciklama": "kâhin susuyor (S8 ↔ kilit) — KULLANICI KARARI 06.11 03:35 S11 = A (kilitli dönemdeki kapanış değişmez, karşılıksız ayrı borç, vadesi karşılıksız günü); program Ç5'te, kâhin bakımı 3'te kuracak"})
+            out.append({"alan": "kahin_susuyor", "anahtar": o["cari"], "kahin": kah["kahin_susuyor"], "sinif": "SUSMA", "aciklama": "kâhin susuyor (S8 ↔ kilit; S11) — kâhinin kendi susması, karşılaştırılmaz"})
         return out
     if rr == "gecikmis_tumu":
         cariler = r.get("cariler") or {}
-        return [tyk_satir("gecikmis", c, (cariler.get(c) or {}).get("gecikmis"), v, bugun_gecikmis(kartlar, c, t), {"Ç5-B1"} | set(SENARYO_KIMLIK), rapor_adi) for c, v in sorted(kah.items())]
+        return [tyk_susma("gecikmis", c, rapor_adi, {c}) if c in sus else tyk_satir("gecikmis", c, (cariler.get(c) or {}).get("gecikmis"), v, YOK_BUGUN, {"Ç5-B1"} | set(SENARYO_KIMLIK), rapor_adi) for c, v in sorted(kah.items())]
     if rr == "hatirlatma":
         al = r.get("alicilar") or {}
         prg = {c: x["gecikmis"] for c, x in al.items() if isinstance(x, dict) and x.get("gecikmis", 0) > 0 and c in S["cariler"]}
         bug = {c: g for c in S["cariler"] for g in [bugun_gecikmis(kartlar, c, t)] if g > 0}
         out = []
         for c in sorted(set(prg) | set(kah["otomatik"]) | set(bug)):
-            kim = {"Ç5-B1"} | set(SENARYO_KIMLIK) | ({"Ç5-S7"} if c in kah.get("supheli_etiketli", []) else set())
-            out.append(tyk_satir("otomatik", c, prg.get(c, 0), kah["otomatik"].get(c, 0), bug.get(c, 0), kim, rapor_adi))
-        out.append(tyk_satir("supheli_etiketli", "liste", [], sorted(kah.get("supheli_etiketli", [])), [], {"Ç5-S7"}, rapor_adi))
-        out.append(tyk_satir("elle", "liste", {}, kah.get("elle", {}), {}, {"Ç5-S7"}, rapor_adi))
+            if c in sus:
+                out.append(tyk_susma("otomatik", c, rapor_adi, {c}))
+                continue
+            out.append(tyk_satir("otomatik", c, prg.get(c, 0), kah["otomatik"].get(c, 0), bug.get(c, 0), {"Ç5-C"}, rapor_adi))
+        out.append(tyk_satir("supheli_etiketli", "liste", [], sorted(x for x in kah.get("supheli_etiketli", []) if x not in sus), [], {"Ç5-C"}, rapor_adi))
+        out.append(tyk_satir("elle", "liste", {}, kah.get("elle", {}), {}, {"Ç5-C"}, rapor_adi))
         return out
     if rr == "kartlar":
         prg = {k: v for k, v in (r.get("kartlar") or {}).items() if "yok" not in v}
@@ -756,7 +802,7 @@ def tyk_karsilastir(o, r, an, rapor_adi):
         for k in sorted(set(prg) | set(kah) | {k for k, v in kartlar.items() if v["cari"] == o["cari"]}):
             b = kartlar.get(k)
             bm = kart_metni({"kapali": b["kapali"], "taksitler": b["liste"]}) if b and b["cari"] == o["cari"] else None
-            out.append(tyk_satir("kart", k, kart_metni(prg.get(k)), kart_metni(kah.get(k)), bm, set(SENARYO_KIMLIK) or {"Ç5-B1"}, rapor_adi))
+            out.append(tyk_satir("kart", k, kart_metni(prg.get(k)), kart_metni(kah.get(k)), YOK_BUGUN, set(SENARYO_KIMLIK) or {"Ç5-B1"}, rapor_adi))
         return out
     if rr == "acik_faturalar":
         prg = {}
@@ -766,11 +812,13 @@ def tyk_karsilastir(o, r, an, rapor_adi):
                 if f and f.get("cari") == o["cari"]:
                     prg[x["fatura"]] = prg.get(x["fatura"], 0) + x["kalan"]
         kahd = {x["fatura"]: x["kalan"] for x in kah}
-        return [tyk_satir("fatura", f, prg.get(f, 0), kahd.get(f, 0), None, set(SENARYO_KIMLIK) or {"Ç5-B1"}, rapor_adi) for f in sorted(set(prg) | set(kahd))]
+        if o["cari"] in sus:
+            return [tyk_susma("fatura", f, rapor_adi, {o["cari"]}) for f in sorted(set(prg) | set(kahd))]
+        return [tyk_satir("fatura", f, prg.get(f, 0), kahd.get(f, 0), YOK_BUGUN, set(SENARYO_KIMLIK) or {"Ç5-B1"}, rapor_adi) for f in sorted(set(prg) | set(kahd))]
     if rr == "acik_kalemler":
-        return [tyk_satir("acik_kalem", o["cari"], None, json.dumps(kah, ensure_ascii=False, sort_keys=True) if kah else None, None, {"Ç5-B1 (ortak açık kalem görünümü)"} | set(SENARYO_KIMLIK), rapor_adi, yok=True)]
+        return [tyk_satir("acik_kalem", o["cari"], None, json.dumps(kah, ensure_ascii=False, sort_keys=True) if kah else None, None, {"GÖRÜNÜM-YOK (açık kalemler: programda okunacak uç yok)"}, rapor_adi, yok=True)]
     if rr == "kilit_bag_notu":
-        return [tyk_satir("kilit_bag_notu", o["cari"], None, json.dumps(kah, ensure_ascii=False, sort_keys=True) if kah else None, None, {"Ç5-(3)"}, rapor_adi, yok=True)]
+        return [tyk_satir("kilit_bag_notu", o["cari"], None, json.dumps(kah, ensure_ascii=False, sort_keys=True) if kah else None, None, {"GÖRÜNÜM-YOK (kilit bağ notu: programda okunacak uç yok)"}, rapor_adi, yok=True)]
     return []
 
 
@@ -782,7 +830,7 @@ UYGULANMADI_RAPOR = {
     "kural_farki": "Kural Farkı (Ç3/KG-15) yok",
     "degerleme": "Dönem sonu değerleme (§5) yok — yalnız stok MİKTARLARI karşılaştırıldı",
 }
-for x_r, a, b, acik_r in rapor_sirasi:
+for x_r, a, b, acik_r, ara_hata in rapor_sirasi:
     rno = int(x_r["no"])
     o = olaylar[rno - 1]
     ad = o["ad"]
@@ -790,6 +838,12 @@ for x_r, a, b, acik_r in rapor_sirasi:
     if r is None:
         continue
     out = {"tur": o["rapor"], "dosya": o.get("dosya", "canli"), "satirlar": []}
+    if ara_hata and o["rapor"] not in TYK:
+        out["satirlar"] = [{"alan": o["rapor"], "anahtar": "-", "sinif": "SUSMA", "aciklama": "kâhin bu ara raporda susar (açılış sonraki olayda): " + ara_hata}]
+        out["ozet"] = {s: 0 for s in ("AYNI", "U", "P", "K", "R", "SINIFLANMADI", "OLCULEMEDI")} | {"SUSMA": 1}
+        raporlar[ad] = out
+        continue
+    RAPOR_GUNU[0] = o.get("son") or o.get("tarih")
     if o["rapor"] in UYGULANMADI_RAPOR:
         out["uygulanmadi"] = UYGULANMADI_RAPOR[o["rapor"]]
     if o["rapor"] == "mizan":
@@ -844,13 +898,14 @@ for x_r, a, b, acik_r in rapor_sirasi:
             if d.get("code") == "ledger:rule-diff":
                 for b in d.get("breakdown") or []:
                     prg[b["account"]] += int(b.get("differenceMinor") or 0)
-        out["satirlar"] = [tyk_satir("kural_farki", h, prg.get(h, 0), kah_ana.get(h, 0), 0, {"Ç5-KG15"}, ad)
+        # SÜRÜCÜ BAKIMI 3: Kural Farkı Düzeltme Fişi programda (KG-15 A; S174 / S180 / S185 = A) — BUGÜN karşılığı (0) kalktı.
+        out["satirlar"] = [tyk_satir("kural_farki", h, prg.get(h, 0), kah_ana.get(h, 0), YOK_BUGUN, {"Ç5-KG15"}, ad)
                            for h in sorted(set(prg) | {h for h, v in kah_ana.items() if v})]
         out["program_denetimleri"] = r.get("denetimler")
     elif o["rapor"] == "acilis_fisleri":
         kah = (B["dallar"].get("A", {}).get("raporlar", {}) or {}).get(ad)
         out["satirlar"] = [tyk_satir("acilis_fisleri", o.get("tarih", ""), None, json.dumps(kah, ensure_ascii=False), None, {"D4-(7)"}, ad, yok=True)]
-    out["ozet"] = {s: sum(1 for x in out["satirlar"] if (x["sinif"] == s if s in ("AYNI", "U", "SINIFLANMADI", "OLCULEMEDI") else s in x["sinif"].split("/"))) for s in ("AYNI", "U", "P", "K", "R", "SINIFLANMADI", "OLCULEMEDI")}
+    out["ozet"] = {s: sum(1 for x in out["satirlar"] if (x["sinif"] == s if s in ("AYNI", "U", "SINIFLANMADI", "OLCULEMEDI", "SUSMA") else s in x["sinif"].split("/"))) for s in ("AYNI", "U", "P", "K", "R", "SINIFLANMADI", "OLCULEMEDI", "SUSMA")}
     raporlar[ad] = out
 
 for r in redler:
@@ -865,26 +920,9 @@ kb, _ = mk.bakiye(ufuk=son_ufuk)
 bb, et = mb.bakiye(ufuk=son_ufuk, ceviri=True)
 son = karsilastir_gorunum(prog_gorunum(P.get("son")) or {}, gorunumler(kb), gorunumler(bb), et, "son", acik_toplam=aciklanan_toplam(aciklanan))
 
-# KULLANICI KARARI 06.11 03:35 S12 = A ("Kasa açılışından ÖNCE tarihli yeni Kasa hareketi bankadaki gibi reddedilir"; program Ç5'te, kâhin bakımı 3'te).
-# Bugün ikisi de kabul eder (kâhin değişmezi kasa_acilis_ilk böyle hareketi HATA sayar) → programa uygulanmış her böyle hareket kimlikli U satırı.
-KASA_YOLU = {"kasa_giris", "kasa_cikis", "bankadan_kasaya", "kasadan_bankaya", "kayit_tahsilati"}
-kasa_acilis_gunu = None
-for x in P["olaylar"]:
-    if x.get("tur") == "kasa_acilis" and x.get("durum") == "yapildi":
-        kasa_acilis_gunu = kasa_acilis_gunu or olaylar[int(x["no"]) - 1]["tarih"]
-if kasa_acilis_gunu:
-    for x in P["olaylar"]:
-        if x.get("tur") == "gun" or x.get("durum") != "yapildi":
-            continue
-        o = olaylar[int(x["no"]) - 1]
-        nakit = o["tur"] in KASA_YOLU or (o["tur"] in ("tahsilat", "odeme", "vergi_odeme") and o.get("yol") == "nakit") or (o["tur"].startswith("stok_") and o.get("karsi") == "nakit")
-        if nakit and o.get("tarih") and o["tarih"] < kasa_acilis_gunu:
-            son.append({"alan": "kasa_acilistan_once", "anahtar": str(x["no"]), "program": "kabul", "kahin": "kabul (değişmez kasa_acilis_ilk hata)", "bugun": "kabul", "sinif": "U", "kimlik": ["Ç5-S12"],
-                        "aciklama": f"{o['tur']} {o['tarih']} < Kasa açılışı {kasa_acilis_gunu}: S12 = A ile reddedilecek (banka 409 bank-before-opening gibi)"})
-kahin_deg = (B["dallar"].get("A", {}).get("degismezler") or {})
-for dosya_adi, dd in (kahin_deg.items() if isinstance(kahin_deg, dict) else []):
-  if isinstance(dd, dict) and dd.get("kasa_acilis_ilk"):
-    son.append({"alan": "kahin_degismez", "anahtar": f"{dosya_adi}:kasa_acilis_ilk", "kahin": dd["kasa_acilis_ilk"], "sinif": "U", "kimlik": ["Ç5-S12"], "aciklama": "kâhin değişmezi Kasa açılışından önce hareket buldu (S12 = A, kâhin bakımı 3)"})
+# SÜRÜCÜ BAKIMI 3: S12 = A (Kasa açılışından önce tarihli Kasa hareketi reddedilir) Ç5-K ile programda — "kasa_acilistan_once" U satırları kalktı (programın kabul / reddi
+# kâhinin red kararıyla RED bölümünde karşılaştırılır; yedekten gelen eski veri S20 = A ile ikisinde de kabul). Kâhinin kendi değişmezleri (kasa_acilis_ilk, s127_tek_yazim)
+# programla KARŞILAŞTIRILMAZ (README bakım 12 "Sürücü için": s127_tek_yazim kâhinin kendi değişmezidir).
 degismez = {
     "program_her_adimda_dengeli": all(x.get("dengeli", True) for x in P["olaylar"] if "dengeli" in x),
     "program_her_adimda_mutabakat": all(x.get("mutabakat", True) for x in P["olaylar"] if "mutabakat" in x),
@@ -896,7 +934,9 @@ durumlar = defaultdict(int)
 for x in P["olaylar"]:
     durumlar[x.get("durum") or "?"] += 1
 tum = [x for r in raporlar.values() for x in r["satirlar"]] + son
-ozet = {s: sum(1 for x in tum if (x["sinif"] == s if s in ("AYNI", "U", "SINIFLANMADI", "OLCULEMEDI") else s in x["sinif"].split("/"))) for s in ("AYNI", "U", "P", "K", "R", "SINIFLANMADI", "OLCULEMEDI")}
+ozet = {s: sum(1 for x in tum if (x["sinif"] == s if s in ("AYNI", "U", "SINIFLANMADI", "OLCULEMEDI", "SUSMA") else s in x["sinif"].split("/"))) for s in ("AYNI", "U", "P", "K", "R", "SINIFLANMADI", "OLCULEMEDI", "SUSMA")}
+ozet["adim_susma"] = sum(1 for a in adim_farklari if a.get("sinif") == "SUSMA")
+ozet["ara_susma"] = len(ARA_SUSMA)
 ozet["adim_sinifsiz"] = sum(1 for a in adim_farklari if a.get("sinif") == "SINIFLANMADI")
 sonuc = {
     "senaryo": S["ad"], "tz": P.get("tz"), "dal": A.dal, "bugun_dal": BUGUN.etiket(), "oz_denetim": {k: v for k, v in OZ.items() if k != "kahin_redler"},
@@ -911,4 +951,4 @@ os.makedirs(os.path.dirname(os.path.abspath(A.cikti)), exist_ok=True)
 with open(A.cikti, "w", encoding="utf-8") as f:
     json.dump(sonuc, f, ensure_ascii=False, indent=1, sort_keys=True)
 red_fark = sum(1 for r in redler if r["sonuc"] != "AYNI" and not r.get("sinif"))
-print(f"{S['ad']} [{P.get('tz')}] öz denetim {'TAMAM' if OZ['raporlar_ayni'] else 'BOZUK'} · AYNI {ozet['AYNI']} · U {ozet['U']} · P {ozet['P']} · K {ozet['K']} · R {ozet['R']} · SINIFLANMADI {ozet['SINIFLANMADI']} · ÖLÇÜLEMEDİ {ozet['OLCULEMEDI']} · red farkı {red_fark} · adım farkı {len(adim_farklari)} (sınıfsız {ozet['adim_sinifsiz']})")
+print(f"{S['ad']} [{P.get('tz')}] öz denetim {'TAMAM' if OZ['raporlar_ayni'] else 'BOZUK'} · AYNI {ozet['AYNI']} · U {ozet['U']} · P {ozet['P']} · K {ozet['K']} · R {ozet['R']} · SINIFLANMADI {ozet['SINIFLANMADI']} · ÖLÇÜLEMEDİ {ozet['OLCULEMEDI']} · SUSMA {ozet['SUSMA']} (adım {ozet['adim_susma']}, ara {ozet['ara_susma']}) · red farkı {red_fark} · adım farkı {len(adim_farklari)} (sınıfsız {ozet['adim_sinifsiz']})")
