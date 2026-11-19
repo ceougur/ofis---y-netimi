@@ -362,3 +362,18 @@ KEEP_SETTINGS'te yok). Göç 51 yeniden koşmaz (şema 52) → sıfırlanan dosy
   süzgecini de döneme uygular (report-center.mjs izni); (B) rapor belge ayında kalır + dipnot. Öneri: A (raporun adı beyanname hazırlığı; KDVK 29/3 indirim dönemi beyannamenin dönemidir).
 - **B-12 — `invoices.vat_period` kilit izinde değil:** kilitli Aralık faturasının dönemi Ocak ise açık Ocak mahsubu bu alana bağlı; program yolundan değişmez (Düzenle kilitte 409), kapı dışı
   değişiklik izsiz. (A) LOCK_SQL'e `invoices(id, vat_period)` (vat_period ≠ '', since 2.5.2 — aynı sürüm artışı); (B) gerekçeli istisna (journal okumaz). Öneri: A, sonraki turda integrity.mjs izniyle.
+
+### 14.10 Tur 2d — kod ve sonuç (kodla birlikte; kanıt docs/kanit/2026-11-19/c7b2d-*)
+- Kod: göç 52 (`lib/migrations.mjs`), `routes/invoices.mjs` (vatPeriodOf + INVOICE_SQL / documentInput / writeIssued / writeDraft / detail), `routes/tax.mjs` (vatPeriods + figureTable'ın
+  191 anahtarı), `lib/integrity.mjs` (rule_shift_lock, vat_offsets_rule_lock, LOCK_SQL_VERSION 2.5.2), `app.mjs` (Sıfırla 'movements' geçiş gününü siler), `client/assets/hof-invoices.js`
+  (alan + seçenekler + tarih değişince yeniden kurma + belge kartı satırı), kılavuz. Defter maddesi, 2.4.9 kopyası, süzgeç DEĞİŞMEDİ. §2.6'nın erişilemeyen kilit 409'u kodlanmadı (§14.2).
+- Ekran: alan iki sütun genişliğinde (tek sütunda "Aralık 2025 (Fatura Ay" kesiliyordu — ekran görüntüsüyle görüldü, düzeltildi). Tarih değişince seçili dönem aralık dışına düşerse yazı
+  kullanıcı dönemi kendisi seçene dek kalır (aynı tarihin ikinci change olayı silmez).
+- Sonuç: yeni testler (c7b-kdv-donemi-250, c7b-goc52-kilit-izi-250, ekran senaryosu senaryo-kdv-donemi-250) tabanda nedenleriyle KIRMIZI, yeni kodda iki TZ'de YEŞİL; 10 karşı mutant
+  yakalandı; G2 komşu 323 dosya iki TZ 3401 / 3402 (tek kırmızı tabanda da var — aşağıda); 46 ekran senaryosu iki TZ yeşil; defter kâhini 183 / 187 (tabandaki dört fark).
+- Yeni bulgular (dosya sınırı / kapsam dışı; kodlanmadı):
+  (1) **Sıfırla ↔ KDV mahsubu:** "Tüm Hareketleri Sil" `vat_offsets`'i silmiyor (MOVEMENT_TABLES'ta yok; 2.4.3'ten beri) — sıfırlanan şirkette mizan 360 −200 / 391 +200 kalır, Mutabakat
+  Testi yakalamıyor (tabanda da aynı; c7b2d-bulgu-sifirla-kdv-mahsup.txt). Öneri: app.mjs MOVEMENT_TABLES'a "vat_offsets" (+ kalıcı test) — ayrı küçük iş.
+  (2) **test/acilis-onarimi-hiz-250 'eşdeğerlik' tabanda kırmızı** (Ç7b tur 2–2c'den kalma; Ç7b öncesi kodda yeşil): v2.0.26 fikstüründe kilitli Kasa carisiz hareketinin 649 / 770 → .90 alt
+  hesabı (K-01 / K-02) Kural Değişikliği Farkı uyarısı verir, beklenen döküm Ç7b öncesi kodla üretilmiş → BEKLENTİ değişmesi TUR 2e'de (komşu taraması o dosyayı kaçırmıştı).
+  (3) Kılavuz maddesindeki "Kartı Kapat'ın kalanı borçta bırakması" bugünkü kodda DOĞRU DEĞİL (onay metni "carinin borcundan düşülür"; 'Borçta Kalsın' TUR 3) → kılavuza yazılmadı, TUR 3'e.
