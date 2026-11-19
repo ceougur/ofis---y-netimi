@@ -68,6 +68,7 @@ ETIKET = {
     # SÜRÜCÜ BAKIMI 4 (19.11.2026; Ç7b tur 2–2e + kâhin bakımı 13): Ç7b'nin koda giren kuralları (KG-2 belgesiz 600.90 / 610.90, KG-3 kayıt tahsilatı 336.90 + kural geçiş günü,
     # KG-4, KG-7 KDV İndirim Dönemi, KG-8 / F-08 iade KDV'si + geçiş günü + B-6, KG-24 ihracat 601, F-06 / M14 gider türleri, 649.90) programda — KG2-H03, KG3-KAYIT, KG7-INDIRIM,
     # KG8-IADE-KDV, KG24-IHRACAT, F06-GIDER-TURU BUGÜN dönüşümleri kalktı (program = kâhin olmalı; değilse fark önce HATADIR — ders 6). Kalan: Kartı Kapat 'Borçta Kalsın' (Ç7b tur 3).
+    "F06-FINANSMAN-251": ("kitap F-06 / M14 'finansman türü 780'; Ç7b tasarım notu §9 B-1 (BAŞ MİMAR KARARI 19.11 04:03) B-1 = B: '780 türü ve tanınmayan türün 770.90'ı 2.5.1' — programın gider türü listesinde finansman yok, 770'e düşer", "2.5.1 (Ç7b B-1; iş listesi B)"),
     "C7b6-KAPAT": ("kullanıcı kararı 05.11 21:30 (6) 'Kartı Kapat yalnız ödeme planını bitirir; kalan carinin borcunda kalır … BUGÜNKÜ DAVRANIŞ DEĞİŞİR (kalan 689'la borçtan düşüyordu)'; kâhin README R6 `eski` = 2.4.9 davranışı B 689 / A CH", "Ç7b (iş listesi D İŞ ATAMASI (4)(6) → Ç7b)"),
     "SURUCU-CARI-ACILIS-YOLU": ("SÜRÜCÜ YOLU (karar değil): programda cari açılışı yalnız cari açılırken (routes/accounts.mjs POST openingBalance); sürücü cariyi açılış olayından ÖNCE başka olayla açmak zorunda kaldıysa açılış Borç / Alacak Yaz satırıdır (602.90 / 770.90)", "sürücü sınırı (eşleme)"),
 }
@@ -76,6 +77,7 @@ ETIKET = {
 # atamadan; Ç7b: fatura / KDV / taksit / kayıt türetmesi, D4: devir). Kimliksiz etiket = ATANMAMIŞ (rapora).
 KIMLIK = {
     "BUGUN-DALI": "BUGÜN-DALI",
+    "F06-FINANSMAN-251": "2.5.1-Ç7b-B1 (F-06 finansman 780)",
     "C7b6-KAPAT": "Ç7b-(6)",
     "SURUCU-CARI-ACILIS-YOLU": "SÜRÜCÜ-YOLU (açık cariye açılış)",
 }
@@ -112,7 +114,11 @@ def degistir(m, k, d):
         # KG-5 Excel kartı 519; KG-16 'Açılış…' açıklamalı yeni Borç / Alacak Yaz sıradan C-01 / C-02) — C5-ACILIS-519, C5-EVRAK-ACILIS, C5-EVRAK-KARSILIKSIZ, KG16-ACIKLAMA,
         # KG5-EXCEL BUGÜN dönüşümleri kalktı (program = kâhin olmalı; değilse fark önce HATADIR — ders 6). K-14 / K-15 (S179 = A) Ç7a tur 2 ile ve KG-19 = C (S175; kâhin bakımı
         # 12 108.90'ı kaldırdı) programda (14.11.2026): BUGÜN dönüşümleri kalktı.
-        # SÜRÜCÜ BAKIMI 4: KG2-H03 / KG3-KAYIT / KG8-IADE-KDV / KG24-IHRACAT / F06-GIDER-TURU dönüşümleri kalktı (Ç7b tur 2–2e programda).
+        # SÜRÜCÜ BAKIMI 4: KG2-H03 / KG3-KAYIT / KG8-IADE-KDV / KG24-IHRACAT / F06-GIDER-TURU dönüşümleri kalktı (Ç7b tur 2–2e programda). Finansman gider türü (780) Ç7b B-1 = B
+        # ile 2.5.1'de: BUGÜN görünümünde 770 (U, kimlik 2.5.1-Ç7b-B1).
+        elif h == "780" and tur in ("alis_faturasi", "alis_iade_faturasi") and v.get("gider_turu") == "finansman":
+            n = "770"
+            et.add("F06-FINANSMAN-251")
         # SÜRÜCÜ BAKIMI 3: C1-ALT-90 kalktı — program '.90' alt hesaplarını yazar (general-ledger.mjs 600.90 / 602.90 / 649.90 / 770.90); karşılaştırma ana hesap düzeyinde.
         out.append(dict(s, h=n))
     return out, et

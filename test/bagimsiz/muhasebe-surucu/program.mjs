@@ -713,6 +713,7 @@ async function uygula(o, no) {
         const h = hesapOlayi[v.kaynak];
         const hid = (h.tur === "banka" ? ids.banka : ids.kart)[h.anahtar];
         if (!hid) return apiYok(`silinecek ${h.tur} hesabı ${h.anahtar} programda yok`);
+        await altHesaplariOku();   // silinen hesabın alt hesap kodu (102.NN) eşlemede kalsın — sondaki okuma silinen hesabı listelemez
         const r = await api("DELETE", `/api/workspace/bank/accounts/${encodeURIComponent(hid)}`);
         if (r.ok) delete (h.tur === "banka" ? ids.banka : ids.kart)[h.anahtar];
         return sonuc(o, r, { yol: `Banka Hesapları › ${h.anahtar} Sil (açılış ters kaydedilir)` });
@@ -1414,6 +1415,22 @@ try {
     if (b - a > 1) sira.splice(a, b - a, ...sira.slice(a, b).sort((x, y) => Date.parse(s.olaylar[x].yukleme_ani) - Date.parse(s.olaylar[y].yukleme_ani)));
     a = Math.max(b, a + 1);
   }
+  // SÜRÜCÜ BAKIMI 4 (kâhin bakımı 13 A7 s104 / Ü19: 'F2 / P2 / KA aynı yedekten'): geri yüklenen yedekte bulunan kayıtların GİRİŞ sırası yedeğin içeriğini değiştirmez
+  // (README senaryo dili `yedekten`: 'kayıt geri yüklenen yedekte / eski sürüm verisinde vardı — veri aynen'). Eski sürüm (v2.4.9) Kasa açılışını ilk Kasa hareketinden SONRA
+  // tarihli kabul etmez (409 cash-opening-after-first); açılış önce girilir, sonra açılıştan önce tarihli hareket (eski sürümde S12 yok) — yedekteki veri aynı.
+  // Yalnız eski sürüm aşamasında (olay no ≤ SON_YEDEK) ve yalnız kesintisiz `yedekten` bloğunun içinde; karşılaştırıcı kâhini programın sırasıyla uygular (yedekten olayda
+  // kâhin S12 / R8 uygulamaz).
+  if (SON_YEDEK) {
+    for (let p = 0; p < sira.length; p += 1) {
+      const o = s.olaylar[sira[p]];
+      if (!(o.tur === "kasa_acilis" && o.yedekten && sira[p] + 1 <= SON_YEDEK)) continue;
+      let q = p;
+      while (q > 0 && s.olaylar[sira[q - 1]].yedekten) q -= 1;
+      if (q < p) sira.splice(q, 0, ...sira.splice(p, 1));
+    }
+  }
+  // Eski sürümden sınanan programa geçiş: eski sürüm aşamasının (olay no ≤ SON_YEDEK) programdaki SON olayından sonra (sıra değişse de).
+  const SON_ESKI = SON_YEDEK ? [...sira].reverse().find(i => i + 1 <= SON_YEDEK) + 1 : 0;
   for (const i of sira) {
     const o = s.olaylar[i];
     const no = i + 1;
@@ -1460,7 +1477,7 @@ try {
       sonOkunan.deger = d;
     }
     olaylar.push(kayit);
-    if (server.eski && no === SON_YEDEK) {
+    if (server.eski && no === SON_ESKI) {
       // Eski sürüm kapanır, sınanan program aynı veri klasörüyle açılır (göç); saat kaldığı yerden.
       await server.app.close();
       server = await sunucuAc();
