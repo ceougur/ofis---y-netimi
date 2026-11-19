@@ -1227,7 +1227,10 @@ function buildApp(overrides, opening) {
     "fin_events", "bank_lines", "pos_sales", "pos_items", "cheque_collections", "bank_statements", "bank_statement_lines", "bank_matches", "bank_plans", "bank_jobs", "request_keys",
     // 2.5.0 Ç3: "ledger_snapshots" (2.1.0'dan beri bu listedeydi) çıkarıldı — donmuş defter silme tetikleyicisi bu döngüyü düşürürdü; clearSnapshots siler (aşağıda).
     // 2.3.0 İz 1 (plan §3.11b/4 "Şirket Verisini Sıfırla listeleri"): şüpheli alacak kayıtları ve karşılıkları hareketle silinir.
-    "doubtful_receivables", "doubtful_provisions"];
+    "doubtful_receivables", "doubtful_provisions",
+    // 2.5.0 Ç7b tur 2e (SIFIRLA ↔ KDV MAHSUBU = HATA — BAŞ MİMAR KARARI 19.11 09:29; docs/erp/C7B-FATURA-TASARIM.md §15.3): KDV Mahsup Fişi (2.4.3) faturalar gibi hareket kaydıdır; listede
+    // yoktu → sıfırlanan şirkette faturasız 191 / 360 / 391 / 190 kalıyordu (iki kipte de).
+    "vat_offsets"];
   const CARD_TABLES = ["accounts", "stock_items", "plan_groups", "dataset_rows", "dataset_imports", "records", "overrides", "deleted_records", "notes", "phones", "liens", "tasks", "case_notes", "case_documents", "source_snapshots", "free_cells", "free_rows", "free_history", "free_sheets", "messages",
     "bank_accounts", "pos_terminals", "pos_rates",
     // 2.4.4 Personel Özlük: çalışan kartları kart verisidir — "Tümünü Sıfırla" siler, "Tüm Hareketleri Sil" dokunmaz.
