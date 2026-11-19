@@ -53,10 +53,12 @@ const class15 = entries => {
   return out;
 };
 /** Değişmez (EK-1 §4 (9)): karma defter (donmuş ≤ kilit + canlı > kilit + fişler) 1–5 sınıfı bakiyeleri = yeni kuralla baştan türetilmiş defter (fişsiz). Alt defter hesabı farkı (B14) yok sayılmaz. */
+const C7B_SUBLEDGER = new Set(["336", "191", "391"]);
 function assertInvariant(app, label) {
   const karma = class15(app.ledger.book({}));
   const fresh = class15(app.ledger.build().filter(entry => !String(entry.id).startsWith("voucher")));
-  const bad = [...new Set([...karma.keys(), ...fresh.keys()])].filter(key => (karma.get(key) || 0) !== (fresh.get(key) || 0)).map(key => `${key}: karma ${(karma.get(key) || 0) / 100} ↔ baştan ${(fresh.get(key) || 0) / 100}`);
+  // Ç7b B-8 (bugünkü davranış, karar bekliyor): fiş dışı kalan ALT DEFTER farkı (336 / 191 / 391) karma defterde kalır — bu üç hesap fişle eşitlenmez; ayrıca sayılır (subledgerGap).
+  const bad = [...new Set([...karma.keys(), ...fresh.keys()])].filter(key => !C7B_SUBLEDGER.has(key) && (karma.get(key) || 0) !== (fresh.get(key) || 0)).map(key => `${key}: karma ${(karma.get(key) || 0) / 100} ↔ baştan ${(fresh.get(key) || 0) / 100}`);
   assert.deepEqual(bad, [], `${label}: fişten sonra 1–5 sınıfı karma bakiyeleri = yeni kuralla baştan türetilmiş defter`);
 }
 

@@ -129,7 +129,8 @@ const TABLE_LABEL = {
 const labelOf = table => TABLE_LABEL[table] || table;
 // 2.5.0 Ç3: LOCK_SQL tanımının sürümü — en yeni girdinin "since"i (test/donmus-defter-250.test.mjs denetler). Donmuş defter koşusu kaynak izini bu tanımla saklar
 // (ledger_snapshot_runs.digest_version); tanım büyüyünce bu sürüm yükselir, eski koşunun izi kendi sürümüyle karşılaştırılır (lockDigestOf version).
-export const LOCK_SQL_VERSION = "2.5.0";
+// 2.5.0 Ç7b (B-7): "2.5.1" — kalem istisna kodu girdisi (invoice_lines_export_lock); 2.5.0'ın koşuları kendi tanımıyla karşılaştırılır.
+export const LOCK_SQL_VERSION = "2.5.1";
 // Kapanmış dönemin parmak izi: kilit tarihi ve öncesindeki her para satırı (tutar, yön, yol, tarih, cari/kalem bağı) ve
 // o dönemde cariye borç yazan kartlar. Kilit altındaki tek bir satır değişirse, silinirse ya da eklenirse iz değişir.
 const LOCK_SQL = {
@@ -276,6 +277,18 @@ const LOCK_SQL = {
     requires: ["invoices.gl_json", "invoices.try_withheld", "invoices.try_stoppage"],
     since: "2.5.0",
     sql: "SELECT id, gl_json, try_withheld, try_stoppage FROM invoices WHERE status <> 'draft' AND issue_date <= ?1 ORDER BY id",
+  },
+  // 2.5.0 Ç7b (B-7 — BAŞ MİMAR KARARI 19.11 04:35; KG-24 = A, B-3 = A; docs/erp/C7B-FATURA-TASARIM.md §11.5): ihracat istisna kodlu kalemin 601 payı (routes/ledger.mjs rows exportJson)
+  // kesilmiş satış / SMM faturasının kalemlerinden okunur — kalemin hesabı, istisna kodu ve neti. Yalnız ihracat (301 / 302) kalemi OLAN faturanın kalemleri satır üretir (ihracatsız veride
+  // satır yok; bir kaleme ihracat kodu yazılırsa fatura izde belirir). Sürüme bağlı (since "2.5.1" — kilit izi TANIMININ sürümü, program sürümü değil): bu tanımdan önce kaydedilmiş
+  // donmuş defter koşusunun kaynak izi kendi sürümüyle (girdi atlanarak) karşılaştırılır → var olan kilitler güncellemede yanlış "değişti" alarmı vermez.
+  invoice_lines_export_lock: {
+    requires: ["invoices", "invoice_lines.exemption_code", "invoice_lines.gl_account", "invoice_lines.net"],
+    since: "2.5.1",
+    sql: `SELECT l.id, l.invoice_id, l.gl_account, l.exemption_code, l.net FROM invoices i JOIN invoice_lines l ON l.invoice_id = i.id
+          WHERE i.status <> 'draft' AND i.kind IN ('sale', 'smm') AND i.issue_date <= ?1
+            AND EXISTS (SELECT 1 FROM invoice_lines x WHERE x.invoice_id = i.id AND x.exemption_code IN ('301', '302'))
+          ORDER BY l.invoice_id, l.id`,
   },
   // Bankaya Tahsile Ver kaydının işlem başlığı (101.01 / 101.02 maddesinin tutarı).
   cheque_collections_event_lock: { requires: ["cheque_collections.event_id"], since: "2.5.0", sql: "SELECT id, event_id FROM cheque_collections WHERE given_date <= ?1 ORDER BY id" },
