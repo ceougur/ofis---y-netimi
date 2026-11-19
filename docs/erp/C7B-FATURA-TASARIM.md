@@ -222,3 +222,52 @@ DEĞİŞMEDİ (dosya sınırı): kilitli kaleme programın yolundan yazım yok (
   (test süzer). Öneri: karar baş mimarın — Ç6-EKRAN'ın alt hesap raporu tasarımına bağlı.
 - **Önceki yılın sınıflama farkı 671 / 681 brüt çifti:** kilitli önceki yıldaki yalnız alt hesap / aynı Gelir Tablosu kalemi içi farklar (649 → 649.90, 602 → 600.90) M7 ile fişe 671 ve 681
   ÇİFTİ olarak girer (net 0; v2.0.26 verisinde 155.990,50 TL). Kural metniyle tutarlı; MA'da (mali müşavir ara kabulü) gözden geçirilmeli.
+
+## 13. Tur 2c (19.11.2026; görev metni `docs/devir/2.5.0-DEVAM/c7b2c-istem.txt`) — KURAL GEÇİŞ GÜNÜ (B-8 = A + B-6), B-9, B-10 — KODDAN ÖNCE yazıldı
+Kararlar (iş listesi D, BAŞ MİMAR KARARI 19.11 04:35 ve 05:07): KG-3 (kayıt tahsilatı 602 → 336.90), KG-8 (satıştan iade KDV'si 391 → 191) ve F-08 (alıştan iade KDV'si 191 → 391)
+YENİ YÖNÜ yalnız KURAL GEÇİŞ GÜNÜ'nden SONRAKİ kayıtlara; geçiş günü = güncellemedeki kilit tarihi (kilitsiz dosyada geçiş yok — hepsi yeni kural); geçiş gününden önceki (≤) kayıt eski
+yönde kalır (kilit sonradan açılıp kapansa da — tek tanım). B-6: KG-8 / F-08'de ayrıca güncellemeden ÖNCE yazılmış (etkin) KDV mahsubunun ayı eski yönde; mahsup ters kaydedilirse o ay
+yeni yöne geçer (yeniden yazılan mahsup yeni yönle). Göç 51 YALNIZ işaret (TUTAR YOK). KG-2, KG-24, .90 alt hesapları (alt defter dışı) Kural Farkı Düzeltme Fişi'yle eskisi gibi.
+
+### 13.1 Tek yardımcı — `server/lib/ledger-rule-shift.mjs` (YENİ)
+- Girdi (göç 51'in işaretleri): `settings['ledger.ruleShiftThrough']` = geçiş günü (YYYY-AA-GG; '' = geçiş yok — göç kilitsiz dosyada da '' yazar, böylece yeniden koşan göç sonradan
+  konan kilitle geçiş YARATMAZ) ve `vat_offsets.rule_version` ('2.4.9' = güncellemeden önce yazılmış mahsup; '' = güncel kuralla yazılmış — sütunun varsayılanı, yazım yolu değişmez).
+- `ruleShiftOf(store)` → `{ through, oldVatMonths }` (oldVatMonths: rule_version = '2.4.9' VE status = 'active' mahsupların ayları, YYYY-AA kümesi). Tablo / sütun yoksa geçiş yok.
+- Saf yüklemler (türetme): `oldCollection(shift, date)` = through ≠ '' VE date ≤ through (KG-3); `oldReturnVat(shift, date)` = oldCollection(shift, date) VEYA ay(date) ∈ oldVatMonths
+  (KG-8 / F-08). SQL karşılıkları (beklenen + süzgeç; AYNI tanım): `oldCollectionSql(shift, sütun)`, `oldReturnVatSql(shift, sütun)` — değerler biçimle doğrulanıp yazına gömülür
+  (YYYY-AA-GG / YYYY-AA dışı değer geçiş yok sayılır). `NO_SHIFT` = hiç geçiş yok (journal'a girdi verilmezse).
+- Ay = tarih metninin ilk 7 karakteri (yevmiye tarihi yerel gün metnidir — iki TZ'de aynı).
+
+### 13.2 Okuyucular (tarama: `UNCLASSIFIED_GL|336\.90|KG-8|F-08|KG-3|"391"|"191"` server/** — ders 10)
+| Okuyucu | Dosya | Nasıl |
+|---|---|---|
+| Türetme (yevmiye, mizan, karma defter, dondurma, kural farkı, KDV mahsubu ön izleme / Güncel Değil — hepsi `build()` = `journal(rows())`) | `lib/general-ledger.mjs` journal | `rows.ruleShift` → kayıt tahsilatı eskiyse A 602, satıştan iade KDV'si eskiyse B 391, alıştan iade KDV'si eskiyse A 191 |
+| journal'ın girdisi | `routes/ledger.mjs` rows() | `out.ruleShift = ruleShiftOf(store)` — TEK SATIR (süzgeçli ve süzgeçsiz kurulum; dosya sınırı: rows() listede yok → rapor 'BAŞ MİMAR KARARI GEREKİYOR'da) |
+| Defter Mutabakatı / Mutabakat Testi / tam kapı beklenen | `routes/ledger.mjs` expected() | 336: yalnız geçiş sonrası tahsilatlar düşülür; 191 / 391: iade KDV'si CASE ile eski / yeni yön |
+| Süzgeç (dokunulan faturalar) | `lib/integrity-scope.mjs` fatura bölümü | 191 / 391 aynı CASE (B-9: süzgeç Ç7b öncesi yöndeydi — artık türetmeyle aynı kural, geçiş dahil) |
+| KDV Mahsubu ön izleme / liste / `stale` | `routes/tax.mjs` | `ledger().build()` okur → kendiliğinden geçişli; ayrı kod GEREKMEZ (ters kaydedilen eski mahsubun ayı yeniden yazımda yeni yönle hesaplanır) |
+| 2.4.9 kopyası | `lib/ledger-rule-249/**` | DEĞİŞMEZ (eski yön zaten) |
+| KDV Özeti, Stopaj ve Tevkifat Özeti | `routes/report-center.mjs` | DEĞİŞMEZ (beyanname düzeni; karar KDV ÖZETİ = A) |
+| partyTotals (ağır cari SQL'i) | `routes/ledger.mjs` | 336.90 cari satırı değil, 191 / 391 cari değil → etkilenmez |
+
+### 13.3 Göç 51 (YALNIZ işaret; para alanı yok; kilit izine girmez)
+`settings` 'ledger.ruleShiftThrough' = o anki 'ledger.lockedUntil' (tam tarih değilse '') — INSERT OR IGNORE (yeniden koşuda var olan değer DEĞİŞMEZ); `vat_offsets.rule_version TEXT NOT
+NULL DEFAULT ''` eklenir ve YALNIZ sütun bu göçte eklendiyse var olan bütün satırlar (etkin + geri alınmış) '2.4.9' işaretlenir (yeniden koşuda yeni mahsuplar eski sayılmaz).
+Geri yükleme: ≤ 50 yedeği açılınca göç 51 o yedeğin kilidiyle koşar; 51 yedeği işaretleriyle gelir. İki şirket: her dosyanın kendi işareti. Şirket Verisini Sıfırla "Tümünü": 'ledger.'
+ayarları silinir → geçiş yok; "Hareketleri": ayar kalır (app.mjs dosya sınırı dışı — rapor).
+
+### 13.4 Nasıl bozulur? (önce yazıldı; testler buradan)
+1. Geçiş günü TAM o gün tarihli tahsilat / iade (eski), bir gün önce (eski), bir gün sonra (yeni) — '<' ↔ '≤' mutantı.
+2. Kilit güncellemeden sonra İLERİ alınır (geçiş sabit; ileri kilitte yeni yön donar), GERİ alınır / açılır ve geçiş öncesine kayıt girilir (eski yön — tek tanım).
+3. Eski mahsuplu ay: Güncel Değil YOK; ters kayıt → ay yeni yöne; yeniden mahsup → tutarlar yeni yönle; Defter Mutabakatı her adımda temiz (191 / 391).
+4. Kilitsiz eski dosya: geçiş yok → hepsi yeni (bugünkü Ç7b); eski mahsup ayları yine eski (B-6).
+5. Yeni şirket (göç zinciri sıfırdan): geçiş yok, işaretli mahsup yok.
+6. v2.0.26 ve v2.4.9 gerçek kodun verisi (fikstür): güncellemeden sonra 336 / 191 / 391 için Kural Değişikliği Farkı ÇIKMAZ; KG-2 / KG-24 / .90 farkı fişle 'Düzeltildi'.
+7. Geri yükleme (≤ 50 yedeği → göç 51 yeniden), iki şirket (biri kilitli biri kilitsiz).
+8. Aynı gün sıra (ders 31): geçiş yüklemi yalnız tarihe bakar — sınıf / yazım sırası etkisiz.
+9. Süzgeç ↔ tam kapı eşdeğerliği: iade faturası yazımında süzgeç bulgu VERMEZ (gg-cari), geçiş öncesi tarihli iade (kilit açıkken) de.
+10. Kapı dışı: ayar / rule_version elle değişirse türetme değişir — kilitli dönemde donmuş ↔ güncel farkı (Kural Değişikliği Farkı) görünür; kilit izine girmez (integrity.mjs dosya sınırı dışı).
+
+### 13.5 B-9 / B-10
+B-9: süzgecin 191 / 391 formülü = beklenen (13.1'in SQL'i). B-10 = B: banka modülünün Alt Hesap Mizanı kendi kümesini (102 / 108 / 300 / 309 + 101.0x / 121.0x) gösterir; `gg2-hiz` eşdeğerliği bu
+kümeye süzülür — ürün kodu DEĞİŞMEZ.
