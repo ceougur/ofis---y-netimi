@@ -41,10 +41,16 @@ export function c7bRuleOf(entry) {
   if (source === "Alıştan iade faturası") return "F-08";
   return "";
 }
-/** 2.4.9 kopyasının maddesi → Ç7b güncel kuralının maddesi (yeni nesne; girdi değişmez). */
-export function c7bOf(entry, { oldVatMonths = null } = {}) {
+/** Kural geçiş gününün kapsadığı (alt defter hesabına dokunan) Ç7b kuralları (B-8 = A, BAŞ MİMAR KARARI 19.11 05:07). */
+export const SHIFTED_RULES = Object.freeze(new Set(["KG-3", "KG-8", "F-08"]));
+/**
+ * 2.4.9 kopyasının maddesi → Ç7b güncel kuralının maddesi (yeni nesne; girdi değişmez). through (KURAL GEÇİŞ GÜNÜ, tur 2c — kararın metninden: "geçiş günü güncellemedeki kilit tarihi;
+ * geçişten önceki kayıtlar ESKİ yönde"): madde tarihi ≤ through ise KG-3 / KG-8 / F-08 çevrilmez. oldVatMonths (B-6): güncellemeden önce mahsup edilmiş aylarda KG-8 / F-08 çevrilmez.
+ */
+export function c7bOf(entry, { oldVatMonths = null, through = "" } = {}) {
   const rule = c7bRuleOf(entry);
   if (!rule) return entry;
+  if (through && SHIFTED_RULES.has(rule) && String(entry.date || "") <= through) return entry;
   const source = String(entry.source || "");
   const month = String(entry.date || "").slice(0, 7);
   const lines = entry.lines.map(line => {
@@ -73,13 +79,13 @@ export const c7bAll = (entries, options) => entries.map(entry => c7bOf(entry, op
  * sınıfı farkı (yıl, hesap, alt hesap) net yönüyle 681 (borç) / 671 (alacak) (EK-1 M7); alt defter hesabına (336 / 191 / 391 — Defter Mutabakatı'nın alt defteri) dokunan maddenin BÜTÜN
  * farkı fişin DIŞINDA (B14 (a)). Dönüş: [{ account, sub, debit, credit }] (kuruş), hesap + alt hesap başına net.
  */
-export function c7bCorrectionLines(entries, { year, oldVatMonths = null } = {}) {
+export function c7bCorrectionLines(entries, { year, oldVatMonths = null, through = "" } = {}) {
   const net = new Map();
   const prior = new Map();
   const add = (map, key, minor) => map.set(key, (map.get(key) || 0) + minor);
   for (const entry of entries) {
     if (!c7bRuleOf(entry)) continue;
-    const next = c7bOf(entry, { oldVatMonths });
+    const next = c7bOf(entry, { oldVatMonths, through });
     const delta = new Map();
     for (const line of next.lines) add(delta, `${line.account}|${line.sub || ""}`, line.debit - line.credit);
     for (const line of entry.lines) add(delta, `${line.account}|${line.sub || ""}`, -(line.debit - line.credit));
