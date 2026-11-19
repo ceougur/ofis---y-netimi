@@ -459,7 +459,7 @@ sahte saat 10.02.2027; Aralık 2026 satış 10.000 + KDV 2.000, alış P1 1.000 
   M3 Sıfırla mahsubu silmez, M3b yalnız Tümünü Sıfırla — 8 / 8 YAKALANDI. M4 / M4b (B-8 kuralları sızar) onarım testinde KAÇTI: fikstürün kilitli döneminde kayıt tahsilatı / iade KDV'si yok
   — onarım testi B-8'in koruyucusu DEĞİL; aynı iki mutant B-8'in kendi testinde (`c7b-gecis-gunu-250`) iki TZ'de YAKALANDI ('geçiş gününde / öncesinde iade KDV'si eski yönde', 'KG-3: geçiş
   gününde ve öncesinde 602').
-- Komşu (G2; tur 2d listesi ∪ değişen dosyaları / API yollarını anan testler, 388 dosya) iki TZ 4024 / 4024. Ekran senaryoları (taramayla 58) iki TZ — sayılar kanıt dosyasında. Defter kâhini
+- Komşu (G2; tur 2d listesi ∪ değişen dosyaları / API yollarını anan testler, 388 dosya) iki TZ 4024 / 4024. Ekran senaryoları (taramayla 58) iki TZ 58 / 58 çıkış 0 (senaryo-kdv-donemi-250 22 / 22). Defter kâhini
   iki TZ 183 / 187 (tabandaki dört fark — K_EYLUL, K_SON 191 / 391; yeni kırmızı yok). Kılavuz metin 954 / 954, PDF denetimi 39 / 39. Dondurma zorlaması (gozlem, bitir) onarım ve göç 52
   testinde ön koşul gerçekleşti, yeşil.
 - 'Tümünü Sıfırla' da mahsupları artık siler (aynı hata o kipte de vardı; tek liste). Sıfırlama listelerinin dışında kalan öbür tablolar para tablosu değil (kullanıcı, oturum, mobil, sohbet,
