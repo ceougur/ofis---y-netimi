@@ -112,6 +112,7 @@ async function donmaBekle(etiket) {
 }
 
 // ---------------------------------------------------------------- kimlikler
+const hesapOlayi = {}; // SÜRÜCÜ BAKIMI 4: banka / kart açılış olayının kimliği → hesap (S190 silme)
 const ids = { cari: {}, urun: {}, banka: {}, kart: {}, kredi: {}, pos: {}, olay: {}, evrak: {}, taksit: {}, supheli: {}, satirlar: {}, satir: {}, fis: [] };
 const istekKimligi = () => randomUUID().replace(/-/g, "");
 const altHesap = {}; // program alt hesap kodu → kâhin anahtarı (102.B1, 108.POS1, 309.KK1, 300.KR1)
@@ -481,11 +482,13 @@ async function uygula(o, no) {
       return sonuc(o, r);
     }
     case "banka_acilis": {
+      if (o.id) hesapOlayi[o.id] = { tur: "banka", anahtar: v.banka };
       if (ids.banka[v.banka]) return sonuc(o, await api("POST", `/api/workspace/bank/accounts/${ids.banka[v.banka]}/opening`, { date: v.tarih, amount: tl(v.tutar), confirmed: true }));
       const id = await bankaAc(v.banka, v);
       return id ? { durum: "yapildi", status: 200 } : { durum: "red", status: program.kurulum.at(-1)?.status, kod: program.kurulum.at(-1)?.kod, ileti: program.kurulum.at(-1)?.ileti };
     }
     case "kart_acilis": {
+      if (o.id) hesapOlayi[o.id] = { tur: "kart", anahtar: v.kart };
       if (ids.kart[v.kart]) return sonuc(o, await api("POST", `/api/workspace/bank/accounts/${ids.kart[v.kart]}/opening`, { date: v.tarih, amount: tl(v.tutar), confirmed: true }));
       const id = await kartAc(v.kart, v);
       return id ? { durum: "yapildi", status: 200 } : { durum: "red", status: program.kurulum.at(-1)?.status, kod: program.kurulum.at(-1)?.kod, ileti: program.kurulum.at(-1)?.ileti };
@@ -582,8 +585,9 @@ async function uygula(o, no) {
       const kartOlayi = o.tur === "satis_faturasi" ? faturaKartOlayi(o) : null;
       const taksitli = kartOlayi ? { rest: "installments", installments: { count: kartOlayi.taksitler?.length || 1, firstDue: kartOlayi.taksitler?.[0]?.vade || o.tarih, everyMonths: 1 } } : null;
       const body = { ...g.body, payment: { cash, ...(taksitli || { rest: "open" }), ...(v.vade ? { dueDate: v.vade } : {}) } };
-      if (o.tur === "alis_faturasi" && v.indirim_ayi) body.__kdvIndirimAyi = v.indirim_ayi;
-      delete body.__kdvIndirimAyi;
+      // SÜRÜCÜ BAKIMI 4 (Ç7b tur 2d / 2e; kâhin bakımı 13 A3): alış faturasının (ve programda alış türündeki gelen SMM'nin) 'KDV İndirim Dönemi' → gövdenin `vatPeriod` alanı (YYYY-AA;
+      // fatura formunun açılır listesi: fatura ayı … izleyen yılın Aralık'ı). Sınır dışı dönem programda 400 vat-period-range (kâhin RED KDV_INDIRIM_DONEMI) — red karşılaştırılır.
+      if ((o.tur === "alis_faturasi" || o.tur === "gelen_smm") && v.indirim_ayi) body.vatPeriod = v.indirim_ayi;
       const r = await api("POST", "/api/workspace/invoices", body);
       if (r.ok) {
         ids.olay[o.id] = r.data?.id || r.data?.invoice?.id;
@@ -597,7 +601,7 @@ async function uygula(o, no) {
         // kâhinin `duzenle {kaynak: <peşin>}` olayı bu satırın Düzenle'sine gider (program carisini / bağını yalnız faturadan değiştirir: 409 invoice-payment-edit).
         if (pesin.length) await pesinSatirlari(o);
       }
-      return sonuc(o, r, { ...(pesin.length ? { not: `peşin ödeme fatura formunda: ${pesin.map(x => x.id).join(", ")}` } : {}), ...(kartOlayi ? { kart: `faturanın kendi kartı ${kartOlayi.id} fatura formunda (Kalanı Taksitlendir; planId ${r.data?.planId || "YOK"})` } : {}), ...(v.indirim_ayi ? { eksik: "KG-7 KDV İndirim Dönemi alanı programda yok (gönderilmedi)" } : {}), ...(tevUyari ? { uyari: tevUyari } : {}) });
+      return sonuc(o, r, { ...(pesin.length ? { not: `peşin ödeme fatura formunda: ${pesin.map(x => x.id).join(", ")}` } : {}), ...(kartOlayi ? { kart: `faturanın kendi kartı ${kartOlayi.id} fatura formunda (Kalanı Taksitlendir; planId ${r.data?.planId || "YOK"})` } : {}), ...(v.indirim_ayi ? { yol: `KDV İndirim Dönemi ${v.indirim_ayi}` } : {}), ...(tevUyari ? { uyari: tevUyari } : {}) });
     }
     case "satis_iade_faturasi":
     case "alis_iade_faturasi": {
@@ -703,6 +707,16 @@ async function uygula(o, no) {
       return sonuc(o, await api("POST", `/api/workspace/invoices/${fid}/cancel`, { reason: "Müşteri vazgeçti", payments: "drop", refund: "none" }));
     }
     case "sil": {
+      // SÜRÜCÜ BAKIMI 4 (S190 = A; kâhin bakımı 13 A4 / Ü11 'silinen hesap = Silinenler'deki açılış kaydı' — s116): banka / kart açılışının silinmesi ekranda hesabın Sil'idir
+      // (Banka Hesapları › Sil — DELETE /api/workspace/bank/accounts/:id; açılış ters kaydedilir). Açılışı yalnız silen ayrı bir ekran yolu yok.
+      if (hesapOlayi[v.kaynak]) {
+        const h = hesapOlayi[v.kaynak];
+        const hid = (h.tur === "banka" ? ids.banka : ids.kart)[h.anahtar];
+        if (!hid) return apiYok(`silinecek ${h.tur} hesabı ${h.anahtar} programda yok`);
+        const r = await api("DELETE", `/api/workspace/bank/accounts/${encodeURIComponent(hid)}`);
+        if (r.ok) delete (h.tur === "banka" ? ids.banka : ids.kart)[h.anahtar];
+        return sonuc(o, r, { yol: `Banka Hesapları › ${h.anahtar} Sil (açılış ters kaydedilir)` });
+      }
       const fid = ids.olay[v.kaynak];
       if (!fid) return apiYok("silinecek kayıt programda yok");
       const kaynak = s.olaylar.find(x => x.id === v.kaynak);
