@@ -372,4 +372,37 @@ describe("2.5.0 TEK ADAY HIZ (t3hiz): şüpheli ↔ kuyruk ayırıcısının ön
     }
     assert.ok(new Set(results).size >= 3, `görünümler farklı sonuç vermeli (sınama anlamlı): ${new Set(results).size}`);
   });
+  it("H3: geri alınan işlemin İÇİNDE okunan durum bellekte kalmaz (geri alma total_changes'ı azaltmaz — aynı anahtar)", { skip: Boolean(WRITE), timeout: 120_000 }, async () => {
+    assert.ok(D.LINKED_MEMO_TEST, "LINKED_MEMO_TEST yok");
+    const { store } = server.app;
+    const party = store.get("SELECT id FROM accounts WHERE name = 'Şüpheli S168 001'")?.id;
+    assert.ok(party, "sınıf verisi yok (Şüpheli S168)");
+    // Carinin EN BÜYÜK bağlı tahsilatı (kuyrukta payı olan faturaya — S168 Fatura 2) ve faturası; işlem içinde ondan ÖNCE tarihli, aynı faturaya bağlı büyük tahsilat yazılır (o kesitin kuyruğunu değiştirir) ve işlem geri alınır.
+    const last = store.get("SELECT id, date, invoice_id AS invoiceId, created_by AS createdBy FROM account_entries WHERE account_id = ? AND kind = 'in' AND invoice_id <> '' ORDER BY amount DESC, rowid LIMIT 1", party);
+    assert.ok(last, "bağlı tahsilat yok");
+    const earlier = (() => {
+      const at = new Date(`${last.date}T00:00:00Z`);
+      at.setUTCDate(at.getUTCDate() - 1);
+      return at.toISOString().slice(0, 10);
+    })();
+    const state = () => JSON.stringify(plain(D.doubtfulState(store, { parties: [party] })));
+    memoOff(false);
+    const before = state();
+    const total0 = store.changeCounters().total;
+    let inside = "";
+    assert.throws(() => store.tx(() => {
+      store.db.prepare("INSERT INTO account_entries (id, account_id, kind, amount, date, note, source, source_id, created_by, created_at, method, invoice_id) VALUES (?, ?, 'in', 5000, ?, 't3hiz geri alınacak', '', '', ?, ?, 'cash', ?)")
+        .run("t3hiz-geri-alinacak", party, earlier, last.createdBy, "2026-10-20T09:00:00.000Z", last.invoiceId);
+      inside = state();
+      throw new Error("t3hiz: bilerek geri al");
+    }), /bilerek geri al/);
+    assert.ok(!store.get("SELECT 1 AS found FROM account_entries WHERE id = 't3hiz-geri-alinacak'"), "işlem geri alındı");
+    assert.notEqual(inside, before, "sınama anlamlı: işlem içindeki durum farklı (yazılan satır kesite girdi)");
+    assert.ok(store.changeCounters().total > total0, "sınama anlamlı: geri alma total_changes'ı azaltmadı (işlem dışındaki okuma işlem içindekiyle aynı sayacı görür)");
+    memoOff(true);
+    const off = state();
+    memoOff(false);
+    assert.equal(off, before, "belleksiz: geri alınan satır yok");
+    assert.equal(state(), off, "bellekli: geri alınan işlemin içindeki kurulum bellekte KALMAMALI");
+  });
 });
