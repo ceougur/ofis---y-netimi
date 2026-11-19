@@ -33,6 +33,7 @@ const MUTASYONLAR = [
   [11, "H3 kesit anahtarı aynı gün işlenenleri (include) taşımaz", [[BD, "return value === true ? \"1\" : value === false ? \"0\" : \"-\";", "return \"-\";"]]],
   [12, "ortak: bir carinin (ilk aday) bağlı payı atlanır (bellekli = belleksiz; yalnız hakem yakalar)", [[BD, "    const invoiceId = base.links.get(lineId);\n    if (!invoiceId) return null;", "    const invoiceId = base.links.get(lineId);\n    if (!invoiceId || credit.party === [...candidates][0]) return null;"]]],
   [13, "ortak: kesitin şüpheli kalanı yarıya düşer (bellekli = belleksiz; yalnız hakem yakalar)", [[BD, "    const held = doubtfulBefore({ ...base, doubtfulRecords: view.open }, { lineId, include });", "    const held = doubtfulBefore({ ...base, doubtfulRecords: view.open.map(record => ({ ...record, remainingMinor: Math.floor(record.remainingMinor / 2) })) }, { lineId, include });"]]],
+  [14, "H1 ön denetimde evrak sorgusu yalnız ZATEN aday olan carilere sorulur (birleşim yerine kesişim)", [[BD, "const rest = ids.filter(id => !candidates.has(id));", "const rest = ids.filter(id => candidates.has(id));"]]],
 ];
 
 const run = args => {

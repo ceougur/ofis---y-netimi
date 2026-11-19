@@ -132,7 +132,9 @@ export function linkedShares(store, parties) {
     // 2.5.0 TEK ADAY HIZ (t3hiz; ders 47): koşul AYNI (faturaya bağlı olayı olan evrakın carisi / ciro edileni / olayın carisi), ama kollar ayrı — önceki tek EXISTS her cari için
     // bütün olayları evrakıyla dolaşıyordu (100 bin satırda cari başına ~13 ms; şüpheli kaydı olan her şirkette HER yazımın kapısında). Evrakın carisi idx_cheques_account'tan; ciro edilen ve
     // olayın carisi dizinsiz kolonlar → tek tarama (cari sayısından bağımsız). Eşdeğerlik test/t3hiz-esdegerlik-250.test.mjs (eski sorgu hakem; bütün cariler kümesinde de).
-    for (const row of store.all(LINKED_CHEQUE_PARTIES_SQL, list)) candidates.add(row.id);
+    // Küme BİRLEŞİMDİR: bağlı tahsilatı olduğu için zaten aday olan cari evrak sorgusuna sorulmaz (yazımın kapısında tek bağlı carisi → sorgu hiç koşmaz).
+    const rest = ids.filter(id => !candidates.has(id));
+    if (rest.length) for (const row of store.all(LINKED_CHEQUE_PARTIES_SQL, JSON.stringify(rest))) candidates.add(row.id);
   }
   if (!remembered) memo?.candidates.set(list, candidates);
   if (!candidates.size) return null;
