@@ -325,3 +325,8 @@ Yeni olay türü / alan YOK. `senaryo.json`'un 191 / 391'i artık KG-8 = A / F-0
 - g10 / g11 programla koşulamaz (göç — bakım 1 ile aynı neden); KDV İndirim Dönemi alanı bu kâhinin dilinde yok (A3 / B-11 muhasebe kâhininde).
 - Tevkifatlı satış iadesinin 191 tutarı (KDV − tevkifat) yalnız `senaryo.json` F6R ile (madde dengesi gereği tek okuma — yorum D11).
 - Göç öncesi mahsubun göçten sonra tersi + yeniden yazılması geçiş öncesi (kilitli) ayda — kilitli dönemde ters kayıt yolu bu kâhinde yok.
+
+### Kanıt (bakım 4; `docs/kanit/2026-11-19/kahinmuh13-defter-*`, ölçülen commit aab20223)
+`kahinmuh13-defter-oz-utc / -ist` 263/263 (öz test; mutantlar 1–45 yakalandı) · `kahinmuh13-defter-eski-kirmizi-*` eski kâhin (bakım 3, b9ba393e kopyası) + yeni senaryo dosyaları: 257'den 18 kırmızı
+(senaryo.json K_EYLUL / K_SON ve g10 / g11'in yalnız 191 / 391 anahtarları; g10'un I5'inden önceki hâliyle de aynı sayı — I5 eski kâhinde de eski yön) · `kahinmuh13-defter-g3-*` 1.040/1.040 (BEKLENMEYEN 0).
+İki saat diliminde aynı. `npm run test:kahin-defter` (programla) ana oturumda.

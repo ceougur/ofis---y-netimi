@@ -1706,6 +1706,11 @@ KULLANICIYA SORULMALI (S54–S57 eki; SORU DÜZENİ 06.11 09:01):
   S179 susması erken tetiklendi; s11, s37, `test_K02_K14_K07`); anlam aynı.
 - **Defter g10:** Mayıs'taki I5 (geçiş öncesi, mahsupsuz ay) kâhin değiştikten SONRA eklendi — ilk öz test koşusunda mutant 42 (geçiş günü yok sayılır) YAKALANMADI (g10'un geçiş öncesi iadeleri
   Mart'ın göç öncesi mahsubuyla zaten eski yöndeydi; B-8'in tek başına dişi yoktu). Elle değerler eklenen iki olayın elle hesabı (KARARLAR bakım 4); kâhin çıktısıyla ilk koşuda tuttu.
+- **Mutasyon koşusundan sonra (aab20223):** ilk tam mutasyon koşusunda (UTC, 9480a5d2) 317 mutanttan üçü SAĞ KALDI — hepsi bu bakımın değişikliklerinin dişi aldığı eski kurallar: B50b (S25 (a)
+  sınırı — yeni planın "M13 kayıt payını aşan kısım" satırı kalan tutardan hesaplandığı için mutantı örtüyordu; kısım artık M13 ölçümünden BAĞIMSIZ hesaplanır, mutantsız davranış eşdeğer — bütün elle
+  değerler ve beklenen dosyaları bayt bayt aynı), B91b (fişten sonra kalan alt defter farkının raporlanması — dişi s93'teydi; `test_B14_…`'ya elle donmuş farkla Kasa açılışı 500 + bağlı çek 120 eklendi:
+  fiş yalnız 500 / 519'u düzeltir, 120 / 128 farkı raporda kalır), B115 (S168 kabul / ret susması — dişi kararın örneğindeydi, o artık değer; `test_A5_S192_ozel_durumlar_susar`'a Ü13 (i) sınıfında kabul /
+  ret ayrışan durum eklendi). Değerler mutasyon yüzünden DEĞİŞMEDİ (yalnız test eklendi).
 
 ### Önceki beklentilerle çelişen yerler (eski → yeni, nedeni; G3 — `docs/kanit/2026-11-19/kahinmuh13-muh-g3-*`, betiği `kahinmuh13-arac/g3-muh.py`, atıf `g3-atif.py`)
 - Karşılaştırma: eski kâhinin (bakım 12, `kahin-muh13-taban` = b9ba393e kopyası) `senaryolar/` ↔ yeni kâhininki, anahtar anahtar; BEKLENMEYEN 0 (sınıflar aşağıda; her sınıf bir girdi maddesi).
@@ -1782,3 +1787,14 @@ KULLANICIYA SORULMALI (S54–S57 eki; SORU DÜZENİ 06.11 09:01):
 - A7: S155'in öbür kayıt türleri (yalnız SUS koruması); s93'ün 2.4.9 S14'ü (SUS; BAŞ MİMAR için hizalama yolu Ü17'de); 2.4.9'un S53 Defter Mutabakatı bilgisinde S14 türetmesi (kâhin hâlâ plan metniyle —
   susmaz; bilgi amaçlı satır).
 - Dinî bayram tarihleri (Z12 aynen).
+
+### Kanıt (`docs/kanit/2026-11-19/kahinmuh13-*`; ölçülen commit aab20223, kirli 0 — "+1 izlenmeyen" çalışma ağacındaki `node_modules` bağlantısı; koşu betiği `kahinmuh13-arac/kos.sh`, çıktılar `kahinmuh13-kos-utc.txt` / `-ist.txt` / `-ist-mutasyon.txt`)
+- `kahinmuh13-muh-test-utc / -ist`: 213/213 (iki saat diliminde, çıkış 0).
+- `kahinmuh13-muh-mutasyon-utc / -ist`: 317/317 öldü (çıkış 0; `flock -s` ölçüm kilidi — iki koşu da başka bir işin özel kilidini bekledi; ist mutasyonu kos.sh'nin arka plan süre sınırı yüzünden ayrı koşuldu:
+  `kahinmuh13-kos-ist-mutasyon.txt`). İlk tam koşu (9480a5d2, UTC) 314/317 — sağ kalan B50b / B91b / B115 (`kahinmuh13-ilk-kos/`; düzeltme yukarıda "Mutasyon koşusundan sonra").
+- `kahinmuh13-muh-eski-kirmizi-*`: eski kâhin (b9ba393e kopyası) + yeni `senaryolar_elle.py` / `test_model.py`: 213 testten 21 kırmızı (d8f3d3cc'deki 20 + s62'nin S198 hâli), hepsi beklenen nedenle
+  (yukarıdaki yazılış sırası; iletiler günlükte).
+- `kahinmuh13-muh-g3-*`: 61.837/61.837, BEKLENMEYEN 0 (sınıflar: A5-S192-pay 192, A5-S192-susma 61, A6-S197 43, A6-S198 32, A7-s104-sira 18, A7-s108-S155 107, A7-s51-S120 44, A7-s78-P1b 317,
+  A7-s93-KALKTI 2, YENI 8); döküm `kahinmuh13-muh-g3-dokum-*.json` iki saat diliminde bayt bayt aynı. `kahinmuh13-muh-g3-atif-*`: 3/3 (rastgele farkların tamamı S192 benimsemesinden).
+- Defter kâhini (KARARLAR bakım 4): `kahinmuh13-defter-oz-*` 263/263, `kahinmuh13-defter-eski-kirmizi-*` 257'den 18 kırmızı (yalnız 191 / 391), `kahinmuh13-defter-g3-*` 1.040/1.040.
+- UTC ve Europe/Istanbul özet satırları aynı.

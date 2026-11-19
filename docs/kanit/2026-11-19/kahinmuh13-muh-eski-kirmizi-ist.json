@@ -1,0 +1,32 @@
+{
+  "ad": "kahinmuh13-muh-eski-kirmizi-ist",
+  "komut": "python3 -I -B /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/test_model.py",
+  "commit": "aab202235d58794230da5c73a00587b38312e7df",
+  "dal": "worktree-agent-a1cc7f1375640faa7",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v653 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-19T19:12:43.428Z",
+  "sure_sn": 16.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 213,
+    "gecen": 192,
+    "basarisiz": 21,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 21 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kanit/2026-11-19/kahinmuh13-muh-eski-kirmizi-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1cc7f1375640faa7",
+  "ham_cikti_sha256": "fe909948774c84d1273a5eb478ff31b50876ef33656be3e010b5009de1c6e503",
+  "ham_cikti_bayt": 31514
+}
