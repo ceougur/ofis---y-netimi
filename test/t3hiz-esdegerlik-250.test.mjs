@@ -182,7 +182,9 @@ describe("2.5.0 TEK ADAY HIZ (t3hiz): şüpheli ↔ kuyruk ayırıcısının ön
     const E = await acc("Şüpheli Çekli");
     const eF1 = await sale(E, 800);
     await take(E, 800);
-    await cheque(E, 300, eF1);
+    const eF2 = await sale(E, 400);
+    await cheque(E, 300, eF2);
+    ids.eF1 = eF1;
     const F = await acc("Şüpheli Bağsız Çekli");
     await sale(F, 700);
     await take(F, 700);
@@ -191,7 +193,8 @@ describe("2.5.0 TEK ADAY HIZ (t3hiz): şüpheli ↔ kuyruk ayırıcısının ön
     const C = await acc("Şüphelisiz Kalabalık");
     const cInv = [];
     for (const amount of [900, 800, 700, 600]) cInv.push(await sale(C, amount, { cash: [{ amount: String(amount / 4), method: "cash" }], cheques: [], endorse: [], rest: "open" }));
-    for (const [due, expected] of [[20, 25], [10, 0], [0, 15], [30, 30]]) await must("elle borç", "post", `/api/workspace/accounts/${C.id}/entries`, { kind: "debt", amount: String(100 + due + expected), date: at(), ...(due ? { dueDate: day(due) } : {}), ...(expected ? { expectedDate: day(expected) } : {}), note: `vade ${due}/${expected}` }, co);
+    // Son satır GERİYE tarihli (yazım sırası ≠ tarih sırası): haritanın sırası dizin seçimine bağlıysa (eski plan source_id · rowid, carinin dizini tarih) burada ayrışır.
+    for (const [due, expected, back] of [[20, 25, 0], [10, 0, 0], [0, 15, 0], [30, 30, 3]]) await must("elle borç", "post", `/api/workspace/accounts/${C.id}/entries`, { kind: "debt", amount: String(100 + due + expected), date: back ? day(t - back) : at(), ...(due ? { dueDate: day(due) } : {}), ...(expected ? { expectedDate: day(expected) } : {}), note: `vade ${due}/${expected}` }, co);
     await cash(C, 150, { invoiceId: cInv[1] });
     const cLinked = await cheque(C, 220, cInv[2]);
     await cheque(C, 130);
@@ -291,18 +294,27 @@ describe("2.5.0 TEK ADAY HIZ (t3hiz): şüpheli ↔ kuyruk ayırıcısının ön
   });
 
   it("H3: bellekli ↔ belleksiz ↔ hakem — ilk durum, kilitli dönem, yazım, kapı reddi, store dışı yazım, başka bağlantı, kilit kalkınca; iki şirket", { timeout: 900_000 }, async () => {
-    const ids = { A: server.app.store.get("SELECT id FROM accounts WHERE name = 'Şüpheli S168 001'").id };
-    ids.aF2 = server.app.store.get("SELECT id FROM invoices WHERE account_id = ? AND status = 'issued' ORDER BY rowid LIMIT 1 OFFSET 1", ids.A).id;
-    ids.aFree = server.app.store.get("SELECT id FROM account_entries WHERE account_id = ? AND kind = 'in' AND invoice_id = '' AND doubtful_skip = 0 AND source = '' ORDER BY rowid LIMIT 1", ids.A).id;
+    // Sınıf verisi önceki testte kuruldu; kurulamadıysa (ör. bilerek hata açılmış program yazımı reddetti) değer iletisiyle düşer (TypeError zinciri değil).
+    const row = (sql, ...args) => {
+      const found = server.app.store.get(sql, ...args);
+      assert.ok(found, `sınıf verisi yok: ${sql.slice(0, 80)}`);
+      return found;
+    };
+    const ids = { A: row("SELECT id FROM accounts WHERE name = 'Şüpheli S168 001'").id };
+    ids.aF2 = row("SELECT id FROM invoices WHERE account_id = ? AND status = 'issued' ORDER BY rowid LIMIT 1 OFFSET 1", ids.A).id;
+    ids.aFree = row("SELECT id FROM account_entries WHERE account_id = ? AND kind = 'in' AND invoice_id = '' AND doubtful_skip = 0 AND source = '' ORDER BY rowid LIMIT 1", ids.A).id;
     await stage("1 ilk");
     await stage("1 ilk (002)", second.id);
     await must("kilit", "put", "/api/admin/period-lock", { lockedUntil: day(-150) });
     await stage("2 kilitli");
     // Yazım: aynı gün yeni bağlı tahsilat (kilit sonrası gün).
-    await must("bağlı tahsilat", "post", `/api/workspace/accounts/${ids.A}/entries`, { kind: "in", amount: "25", date: day(-10), method: "cash", cashForce: true, similarOk: true, invoiceId: ids.aF2 });
+    // Yazım AYIRT EDİCİ: kayıttan sonra kesilen yeni faturaya bağlı tahsilat — kuyrukta payı yok → bağlı kural 120 (bağsız kural olsaydı 128); bayat kurulum (satır yok → bağsız) burada ayrışır.
+    const h = await must("yeni fatura", "post", "/api/workspace/invoices", { scenario: "service_sale", accountId: ids.A, issueDate: day(-12), lines: [{ name: "Hizmet", qty: 1, unitPrice: "300", vatRate: 0 }], payment: { rest: "open" } });
+    await must("bağlı tahsilat", "post", `/api/workspace/accounts/${ids.A}/entries`, { kind: "in", amount: "25", date: day(-10), method: "cash", cashForce: true, similarOk: true, invoiceId: h.id });
     const afterWrite = await stage("3 yazım");
     // Kapı reddi: önce bellek ılık (aşama), sonra 120'ye düşecek kısmı şüpheli dışı borcu aşan bağlı tahsilat — işlem GERİ ALINIR; döküm değişmez.
-    const rejected = await call("post", `/api/workspace/accounts/${ids.A}/entries`, { kind: "in", amount: "5000", date: day(-10), method: "cash", cashForce: true, similarOk: true, invoiceId: ids.aF2 });
+    // Reddedilen satır sonraki bağlı tahsilattan ÖNCE tarihli: işlem içinde kurulan (geri alınan) kurulum bellekte kalsaydı sonraki kesite girerdi.
+    const rejected = await call("post", `/api/workspace/accounts/${ids.A}/entries`, { kind: "in", amount: "5000", date: day(-11), method: "cash", cashForce: true, similarOk: true, invoiceId: ids.aF2 });
     assert.equal(rejected.status, 409, `kapı reddi bekleniyor: ${rejected.status} ${JSON.stringify(rejected.data).slice(0, 300)}`);
     const afterReject = await stage("4 kapı reddi");
     assert.equal(afterReject.text, afterWrite.text, "reddedilen yazım dökümü değiştirmez");
@@ -329,7 +341,8 @@ describe("2.5.0 TEK ADAY HIZ (t3hiz): şüpheli ↔ kuyruk ayırıcısının ön
   it("H3: kesit belleğinin anahtarı görünümü taşır — aynı satır, farklı açık kalan / aynı gün işlenen → belleksiz sonuçla aynı", { skip: Boolean(WRITE), timeout: 120_000 }, async () => {
     assert.ok(D.LINKED_MEMO_TEST, "LINKED_MEMO_TEST yok");
     const { store } = server.app;
-    const party = store.get("SELECT id FROM accounts WHERE name = 'Aynı Gün Şüpheli 001'").id;
+    const party = store.get("SELECT id FROM accounts WHERE name = 'Aynı Gün Şüpheli 001'")?.id;
+    assert.ok(party, "sınıf verisi yok (Aynı Gün Şüpheli)");
     const lines = store.all("SELECT id, date FROM account_entries WHERE account_id = ? AND kind = 'in' AND invoice_id <> '' ORDER BY rowid", party);
     const records = store.all("SELECT id, date, amount_minor AS amountMinor FROM doubtful_receivables WHERE account_id = ? AND status <> 'cancelled' ORDER BY rowid", party);
     assert.ok(lines.length >= 2 && records.length >= 1);
@@ -345,9 +358,12 @@ describe("2.5.0 TEK ADAY HIZ (t3hiz): şüpheli ↔ kuyruk ayırıcısının ön
     for (const line of [...lines, ...sameDay]) {
       for (const view of views) {
         memoOff(true);
-        const expected = JSON.stringify(D.linkedShares(store, [party])({ ref: `account:${line.id}`, party }, view));
+        const fresh = D.linkedShares(store, [party]);
+        assert.equal(typeof fresh, "function", "bağlı alacaklı şüpheli carisi için geri çağrı (aday) bekleniyor (belleksiz)");
+        const expected = JSON.stringify(fresh({ ref: `account:${line.id}`, party }, view));
         memoOff(false);
         const shared = D.linkedShares(store, [party]);
+        assert.equal(typeof shared, "function", "bağlı alacaklı şüpheli carisi için geri çağrı (aday) bekleniyor");
         const got = JSON.stringify(shared({ ref: `account:${line.id}`, party }, view));
         assert.equal(got, expected, `kesit belleği görünümü ayırt etmeli: ${line.id} ${JSON.stringify([...view.done])}`);
         assert.equal(JSON.stringify(D.linkedShares(store, [party])({ ref: `account:${line.id}`, party }, view)), expected, "ılık bellek aynı");
