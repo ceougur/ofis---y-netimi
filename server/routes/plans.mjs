@@ -811,6 +811,15 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       if (previous.status === "closed" && status !== "closed") assertCloseOpen(previous.id, "Kart yeniden açılamaz.");
       else if (previous.status === "closed" && moneyChange) assertCloseOpen(previous.id, "Kartın tutarı, carisi ve Kayıt Tarihi değiştirilemez.");
       if (previous.status !== "closed" && status === "closed") period?.assertOpen(today(), "Kartın kapatılma günü");
+      // 2.5.0 Ç7b (YB-1; docs/erp/C7B-FATURA-TASARIM.md §2.4): Kartı Kapat onayı eskimiş "Kalan X" ile verilemez — istemci onayladığı kalanı gönderir (closeRemaining, TL); işlemin
+      // İÇİNDE kartın GÜNCEL kalanı (kart penceresinin gösterdiği totals.remaining) kuruşu kuruşuna aynı değilse 409 plan-close-stale + güncel kalan; istemci güncel kalanla yeniden
+      // sorar. Alan yoksa (eski istemci) bugünkü gibi. Kapatmanın defter / cari etkisi DEĞİŞMEDİ (karar (6) / KG-23 → Ç7b tur 3).
+      if (previous.status !== "closed" && status === "closed" && body.closeRemaining !== undefined && body.closeRemaining !== null) {
+        const current = roundMoney(Number(detail(previous.id, user)?.totals?.remaining) || 0);
+        if (Math.round(current * 100) !== Math.round((Number(body.closeRemaining) || 0) * 100)) {
+          throw new HttpError(409, `Kartın kalanı siz onayladıktan sonra değişti; güncel kalan ${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(current)} TL. Kartı Kapat yeniden sorulacak.`, { code: "plan-close-stale", remaining: current });
+        }
+      }
       if (accountId !== previous.accountId) assertPartyOpen(previous.id);
       // v2.0.23 (3. gözden geçirme): Mevcut Borç kartı açıldığı andaki borcu taksitlendirir; tutarı sonradan büyütülünce kart
       // yeni borcu da sayıyor ya da başka faturayı "ödenmiş" gösteriyordu. Yeni borç için yeni kart açılır.

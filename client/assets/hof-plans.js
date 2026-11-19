@@ -921,7 +921,8 @@
   }
   // 2.4.3 (uzman UX8): kalanı olan kart tek tıkla kapanıyordu (uyarılar susar, kalan istenmez); düğme pencerenin "Kapat"ıyla da aynı addaydı.
   // Kalan varken açıkça sorulur; kalansız (ödenmiş) kart sorusuz kapanır.
-  async function closePlan(plan) {
+  // 2.5.0 Ç7b (YB-1): onaylanan kalan sunucuya gider (closeRemaining); kalan bu arada değiştiyse (409 plan-close-stale) pencere GÜNCEL kalanla yeniden sorar — eski onay kullanılmaz.
+  async function closePlan(plan, retry = 0) {
     const left = Number(plan.totals?.remaining) || 0;
     if (left > 0.004) {
       const go = await HOF.confirm({
@@ -932,7 +933,16 @@
       });
       if (!go) return;
     }
-    return setStatus(plan, "closed");
+    try {
+      applyPlan(await HOF.api(`/api/workspace/plans/${encodeURIComponent(plan.id)}`, { method: "PUT", body: { status: "closed", closeRemaining: Math.round(left * 100) / 100 } }));
+      HOF.toast("Kart kapatıldı; uyarı vermez.", { type: "success" });
+    } catch (error) {
+      if (error?.status === 409 && error?.data?.code === "plan-close-stale" && retry < 2) {
+        HOF.toast(error.message || "Kartın kalanı değişti.", { type: "warning" });
+        return closePlan({ ...plan, totals: { ...(plan.totals || {}), remaining: Number(error.data.remaining) || 0 } }, retry + 1);
+      }
+      HOF.toastError(error);
+    }
   }
   async function setStatus(plan, status) {
     try {
